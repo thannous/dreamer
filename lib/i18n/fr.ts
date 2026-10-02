@@ -1,4 +1,8 @@
 const translations: Record<string, string> = {
+    "dream_categories.explore_angle": "Explorer un angle",
+    "dream_categories.exchange_saved": "Un échange enregistré",
+    "dream_categories.resume": "Reprendre",
+    "dream_categories.recap.context": "Prendre du recul sur cet échange",
     "dream_categories.recap.plus": "Avec Noctalia Plus.",
     "dream_categories.recap.enrich": "De nouveaux échanges peuvent enrichir ton bilan.",
     "dream_categories.recap.read": "Lire mon bilan",
@@ -1464,7 +1468,7 @@ const translations: Record<string, string> = {
     'dream_categories.growth.title': 'Croissance personnelle',
     "dream_categories.growth.description": "Ce que ce rêve ouvre pour toi",
     'dream_categories.free_chat_prompt': 'Pose une question sur ce rêve',
-    'dream_categories.view_chat': 'Voir la discussion',
+    'dream_categories.view_chat': 'Voir la conversation',
     'dream_categories.exploration360.eyebrow': 'Réflexion',
     'dream_categories.exploration360.title': 'Compléter la lecture entière',
     'dream_categories.exploration360.body.incomplete': 'Passe par les symboles, les émotions et la croissance pour débloquer une synthèse finale.',

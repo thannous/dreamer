@@ -1,4 +1,8 @@
 const translations: Record<string, string> = {
+    "dream_categories.explore_angle": "Esplora una prospettiva",
+    "dream_categories.exchange_saved": "Uno scambio salvato",
+    "dream_categories.resume": "Riprendi",
+    "dream_categories.recap.context": "Rifletti su questo scambio",
     "dream_categories.recap.plus": "Con Noctalia Plus.",
     "dream_categories.recap.enrich": "Nuovi scambi possono arricchire il tuo riepilogo.",
     "dream_categories.recap.read": "Leggi il mio riepilogo",
