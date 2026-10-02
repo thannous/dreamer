@@ -337,7 +337,7 @@ function renderFooter(context) {
     `                            <div class="text-sm font-bold">${escapeHtml(locale.googlePlay)}</div>`,
     '                        </div>',
     '                    </a>',
-    `                    <a${conversionLink(context, 'footer', 'web')} href="${getWebAppUrl(lang, { medium: 'footer' })}" class="glass-button px-4 py-2 rounded-lg flex items-center gap-3 text-left hover:bg-white/10 footer-webapp-cta" rel="noopener" target="_blank">`,
+    `                    <a${conversionLink(context, 'footer', 'web')} href="${getWebAppUrl(lang, { medium: 'footer' })}" class="glass-button px-4 py-2 rounded-lg flex items-center gap-3 text-left hover:bg-white/10 footer-webapp-cta" rel="noopener">`,
     '                        <i data-lucide="globe" class="w-5 h-5"></i>',
     '                        <div class="leading-none">',
     `                            <div class="text-[9px] uppercase">${escapeHtml(locale.webAppKicker)}</div>`,

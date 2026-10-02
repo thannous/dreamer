@@ -31,11 +31,11 @@ describe('blog web app CTA module', () => {
     // Play stays available in the same module with its usual attributes.
     expect(html).toContain(`href="${getAndroidStoreUrl('fr')}" rel="nofollow noopener noreferrer" target="_blank"`);
 
-    // The web app is our own property: new tab, no nofollow.
+    // Continue in this tab so the CTA also works when new windows are blocked.
     const webAppAnchor = html.match(/<a [^>]*dream\.noctalia\.app[^>]*>/g);
     expect(webAppAnchor).toHaveLength(1);
     expect(webAppAnchor[0]).toContain('rel="noopener"');
-    expect(webAppAnchor[0]).toContain('target="_blank"');
+    expect(webAppAnchor[0]).not.toContain('target="_blank"');
     expect(webAppAnchor[0]).not.toContain('nofollow');
   });
 

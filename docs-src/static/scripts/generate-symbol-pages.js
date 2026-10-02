@@ -342,7 +342,7 @@ function renderSymbolConversionActions(lang, content, pagePath = '') {
   const sharedLocale = SHARED_LOCALES[lang] || SHARED_LOCALES.en;
   const webAppHref = getWebAppUrl(lang, { medium: 'symbol_page', content });
   return `<div class="flex flex-col sm:flex-row flex-wrap items-stretch sm:items-center justify-center gap-3">
-                    <a${conversionLinkAttributes(pagePath, 'final', 'web')} href="${webAppHref}" class="symbol-webapp-cta inline-flex items-center justify-center gap-2 px-8 py-4 bg-dream-salmon text-dream-dark rounded-full font-bold hover:bg-dream-salmon/90 transition-colors" rel="noopener" target="_blank">
+                    <a${conversionLinkAttributes(pagePath, 'final', 'web')} href="${webAppHref}" class="symbol-webapp-cta inline-flex items-center justify-center gap-2 px-8 py-4 bg-dream-salmon text-dream-dark rounded-full font-bold hover:bg-dream-salmon/90 transition-colors" rel="noopener">
                         ${escapeHtml(sharedLocale.webAppCta)} <i data-lucide="arrow-right" class="w-5 h-5"></i>
                     </a>
                     <a${conversionLinkAttributes(pagePath, 'final', 'play')} href="${getAndroidStoreUrl(lang)}" class="inline-flex items-center justify-center gap-2 px-8 py-4 bg-dream-salmon text-dream-dark rounded-full font-bold hover:bg-dream-salmon/90 transition-colors" rel="nofollow noopener noreferrer" target="_blank">
@@ -967,7 +967,7 @@ function generatePage(symbol, allSymbols, i18n, extended, lang) {
                     <a${conversionLinkAttributes(conversionPath, 'inline', 'play')} href="${escapeHtml(softCta.href)}" class="inline-flex items-center justify-center gap-2 px-5 py-3 rounded-full bg-dream-salmon text-dream-dark font-bold hover:bg-dream-salmon/90 transition-colors">
                         ${escapeHtml(softCta.button || t.cta_button)} <i data-lucide="arrow-right" class="w-5 h-5"></i>
                     </a>${softCta.webButton ? `
-                    <a${conversionLinkAttributes(conversionPath, 'inline', 'web')} href="${escapeHtml(getWebAppUrl(lang, { medium: 'symbol_page', content: symbol.id }))}" class="inline-flex items-center justify-center gap-2 px-5 py-3 rounded-full glass-button text-dream-cream font-bold transition-colors" rel="noopener" target="_blank">${escapeHtml(softCta.webButton)}</a>
+                    <a${conversionLinkAttributes(conversionPath, 'inline', 'web')} href="${escapeHtml(getWebAppUrl(lang, { medium: 'symbol_page', content: symbol.id }))}" class="inline-flex items-center justify-center gap-2 px-5 py-3 rounded-full glass-button text-dream-cream font-bold transition-colors" rel="noopener">${escapeHtml(softCta.webButton)}</a>
                     </div>` : ''}
                 </div>
             </aside>` : '';

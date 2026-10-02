@@ -31,7 +31,7 @@ function renderBlogWebAppCta({ lang, locale, pageId, pagePath = '' }) {
     `<h3 class="font-serif text-2xl md:text-3xl mb-4 text-dream-cream">${escapeHtml(locale.webAppHeading)}</h3>`,
     `<p class="text-purple-200/70 mb-6 max-w-lg mx-auto">${escapeHtml(locale.webAppNote)}</p>`,
     '<div class="flex flex-col sm:flex-row flex-wrap justify-center gap-3">',
-    `<a${conversionLinkAttributes(pagePath, 'final', 'web')} class="inline-flex items-center justify-center gap-2 px-8 py-4 bg-dream-salmon text-dream-dark rounded-full font-bold hover:bg-dream-salmon/90 transition-colors" href="${webAppHref}" rel="noopener" target="_blank">${escapeHtml(locale.webAppCta)} <i class="w-5 h-5" data-lucide="arrow-right"></i></a>`,
+    `<a${conversionLinkAttributes(pagePath, 'final', 'web')} class="inline-flex items-center justify-center gap-2 px-8 py-4 bg-dream-salmon text-dream-dark rounded-full font-bold hover:bg-dream-salmon/90 transition-colors" href="${webAppHref}" rel="noopener">${escapeHtml(locale.webAppCta)} <i class="w-5 h-5" data-lucide="arrow-right"></i></a>`,
     `<a${conversionLinkAttributes(pagePath, 'final', 'play')} class="inline-flex items-center justify-center gap-2 px-8 py-4 glass-button text-dream-cream rounded-full font-bold transition-colors" href="${storeHref}" rel="nofollow noopener noreferrer" target="_blank"><i class="w-5 h-5" data-lucide="play"></i> ${escapeHtml(locale.googlePlay)}</a>`,
     '</div>',
     '</aside>',

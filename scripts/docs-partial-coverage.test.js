@@ -222,11 +222,11 @@ describe('navigation and footer visibility for partial coverage', () => {
     expect(html).toContain('>Experimentar no navegador</a>');
     expect(html).toContain(`${siteConfig.storeLinks.androidBase}&hl=pt-BR`);
 
-    // Our own property: opens in a new tab without nofollow.
+    // Continue to the journal in this tab, including browsers that block new windows.
     const webAppAnchors = html.match(/<a [^>]*dream\.noctalia\.app[^>]*>/g) || [];
     expect(webAppAnchors).toHaveLength(2);
     for (const anchor of webAppAnchors) {
-      expect(anchor).toContain('target="_blank"');
+      expect(anchor).not.toContain('target="_blank"');
       expect(anchor).toContain('rel="noopener"');
       expect(anchor).not.toContain('nofollow');
     }
@@ -294,7 +294,7 @@ describe('navigation and footer visibility for partial coverage', () => {
       const anchors = html.match(/<a [^>]*dream\.noctalia\.app[^>]*>/g) || [];
       expect(anchors).toHaveLength(1);
       expect(anchors[0]).toContain(`href="${webAppHref}"`);
-      expect(anchors[0]).toContain('target="_blank"');
+      expect(anchors[0]).not.toContain('target="_blank"');
       expect(anchors[0]).not.toContain('nofollow');
       // Play stays first in the same column.
       expect(html.indexOf(siteConfig.storeLinks.androidBase)).toBeLessThan(html.indexOf(webAppHref));
