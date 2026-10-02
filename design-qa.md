@@ -1,3 +1,43 @@
+# Capturer — L’éditeur essentiel, 2026-10-02
+
+Integration owner: `codex/capture-essential`. User selected displayed concept 1. Scope: the existing Capture screen, both input modes, restrained introduction, large editor, adjacent status/count, full-width save action and synchronized system appearance on web. Implementation and delivery are authorized by the selected work package; publication authorization persists from the user’s delegation. EAS, stores and physical-device qualification remain separate.
+
+Source visual truth: /Users/timax/Projects/noctalia/dist/capturer-maquettes-20261002/01-editeur-essentiel.png (1391×1131; light left, dark right). Base: `1cffb84afc351fb38d2e6af77343e5f3d20135ed`, including Today #234 and Reflection #235. No new raster assets or dependencies are needed; actual Fraunces/Space Grotesk and existing IconSymbol controls are retained.
+
+Evidence: private ignored `output/capture-essential-20261002/`; final rendered screenshots/traces in `final/`; combined `comparison-light.png`, `comparison-dark.png` and focused `actions-light.png` / `actions-dark.png`. Actual Chromium viewport: 390×844 CSS px, density 1. Source panels: 680×1131 and 681×1131, proportionally normalized to 390×649/648 and padded below to 390×844. No image or type stretching. The generated source is shorter than the requested viewport; the implemented editor deliberately uses the additional real available height rather than leaving an unrelated empty space. The same synthetic French 260-character story is used in both themes. Guest quota copy is an existing conditional state absent from the concept.
+
+Findings and comparison history:
+- [P2 resolved] Existing editor was 196px high; the new E2E failed before implementation. Expanded portrait editor fills the available central region with a 260px minimum.
+- [P2 resolved] First expansion retained the old 286px CSS maximum, leaving controls and count below the field. Explicit percentage maximum removes the legacy cap; the count is now within 20px of the field.
+- [P2 resolved] Landscape inline Save overlapped the editor because flex:0 used a zero basis. Intrinsic flex basis with no shrinking keeps the document and Save in normal scroll flow.
+- [P1 resolved] Auto changed CSS ground while native-style field colors stayed light after a dark system transition. The web-only color-scheme hook now subscribes to matchMedia with React useSyncExternalStore and a light SSR snapshot. Explicit overrides and live light→dark system transitions pass the real browser E2E. Native appearance code is unchanged.
+
+Required fidelity surfaces:
+- Typography/fonts: actual Fraunces 34/42 heading, quiet 18/24 brand and readable Space Grotesk 16/25 portrait narrative; compact landscape retains its existing typography. No fallback-font substitution. App-owned headings wrap for enlarged native text, but native scaling is not physically qualified.
+- Spacing/layout: quiet one-line introduction, large bounded field, 12px grouping and adjacent local status/count. Save spans reading width with a 56px minimum; existing floating five-destination navigation remains. At 320×640 and 640×390, long text remains editable and Save remains reachable by scrolling. No actionable overlap in final captures.
+- Colors/tokens: canonical ink/ivory/champagne-on palette retained. Both explicit light/dark override the opposite system mode, and Auto follows subsequent system changes. Token contrast ratios are unchanged; rendered field foreground/background are asserted.
+- Images/icons: no imagery in this screen; existing native icon system used. Microphone plus existing clear control are intentionally retained even though the concept shows only the microphone. No handcrafted or rasterized UI substitutes.
+- Copy/content: existing localized “Quelques mots suffisent…” provides the discreet introduction; exact character count and confirmed local-draft status remain. Useful voice, review, restore/error and guest states retain their logic.
+
+Final comparison: source and implementation opened together in both combined comparisons; action/detail comparison also opened. Previous P1/P2 issues are resolved. Residual P3: source raster fonts, status checkmark and nav geometry are approximate; actual fonts, conditional guest copy, existing clear control and shared footer conventions take precedence.
+
+Behavior: 4 focused web/mock journeys passed (19.2s): empty/whitespace save guard; fragment saveability; exact persisted story including paragraph breaks re-read in the normal edit UI; theme overrides and live Auto; count/editor/action geometry; long-text narrow/landscape reachability; draft preserved across Write/Tell; existing guest save and simulated analysis. Traces, HTML/JUnit and screenshots are repeatable artifacts. Mock session persistence is not native durability, microphone, production AI or real-account proof.
+
+Rerun:
+`E2E_WEB_PORT=8092 E2E_REUSE_SERVER=1 mise exec -- npm run test:e2e:web -- e2e/web/capture-editor.spec.ts e2e/web/journeys.spec.ts --grep 'capture gives|capture keeps|guest keeps|guest saves' --workers=1 --output=output/capture-essential-20261002/final`
+Server:
+`EXPO_PUBLIC_MOCK_PERSISTENCE=true mise exec -- npm run start:mock -- --web --port 8092`
+
+Validation: focused lint passes with one existing unchanged recording effect warning; explicit TypeScript 6 check of the new E2E passes. Final required app/test/Jest qualification is `test:prepush` on the clean committed candidate, then final-head required CI before merge. Source hashes and test revision/state are preserved in private evidence. No database, entitlement, quota, AI, recording permission or billing logic is modified.
+
+Implementation checklist: selected concept resolved; actual source/implementation and action comparisons inspected; P1/P2 corrected; focused observable journeys pass; no unrelated checkout changes incorporated; final clean prepush and CI remain delivery gates. Native Android/iOS, native keyboard/text scaling and microphone quality remain unqualified.
+
+Prepush follow-up: app/test types and 13 existing affected suites passed; the Footer fixture could not load the new platform icon (requireNativeViewManager unavailable in Jest). Mock only that decorative boundary and remove the obsolete exact flex-layout assertion; preserve existing save/help/disabled/accessibility and unconstrained-label assertions. No app behavior or E2E evidence changes.
+
+final result: passed
+
+---
+
 # Reflection — selected concept 3, 2026-10-02
 
 Source visual truth: /Users/timax/Projects/noctalia/dist/reflexion-maquettes-v2-20261002/03-reve-en-contexte.png (1391×1131, dark left/light right).

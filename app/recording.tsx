@@ -4,7 +4,6 @@ import { MockNavigationRail } from '@/components/dev/MockNavigationRail';
 import { NoctaliaBottomNav } from '@/components/navigation/NoctaliaBottomNav';
 import { NoctaliaScreenHeader } from '@/components/NoctaliaScreenHeader';
 import { IconSymbol } from '@/components/ui/icon-symbol';
-import { AtmosphereBackground } from '@/components/recording/AtmosphereBackground';
 import { OfflineModelDownloadSheet } from '@/components/recording/OfflineModelDownloadSheet';
 import { RecordingFooter } from '@/components/recording/RecordingFooter';
 import { MicPermissionRationaleSheet } from '@/components/recording/RecordingSheets';
@@ -1656,7 +1655,6 @@ export default function RecordingScreen() {
           end={{ x: 1, y: 1 }}
           style={StyleSheet.absoluteFill}
         />
-        {inputMode === 'text' && !editableCapture ? <AtmosphereBackground /> : null}
         {isDesktopWeb ? (
           <Pressable
             onPress={captureReview ? openReviewExit : closeRecording}
@@ -1695,6 +1693,7 @@ export default function RecordingScreen() {
             {!isDesktopWeb ? (
               <NoctaliaScreenHeader
                 includeTopInset={false}
+                prominentTitle
                 titleKey="nav.capture_dream"
                 actions={[{
                   icon: 'gear',
@@ -1773,6 +1772,7 @@ export default function RecordingScreen() {
                   />
                 ) : <RecordingTextInput
                   compact={isCompactLandscape}
+                  expanded={!isCompactLandscape && !isDesktopWeb}
                   layout="textFirst"
                   ref={textInputRef}
                   value={transcript}
@@ -1787,7 +1787,7 @@ export default function RecordingScreen() {
                   instructionText={keyboardVisible ? '' :
                     captureIntent === 'remembered'
                       ? t('recording.remembered.active_instruction')
-                      : t('recording.write.instruction')
+                      : t('recording.placeholder')
                   }
                   switchToVoiceLabel={voiceControlLabel}
                   voiceSupported={isVoiceSupported}
@@ -1814,6 +1814,7 @@ export default function RecordingScreen() {
                 {hydrationStatus === 'ready' && !editableCapture ? (
                   <RecordingDraftProgress
                     compact={inputMode === 'voice'}
+                    inlineStatus={inputMode === 'text' && !captureReview}
                     value={captureReview?.text ?? transcript}
                     persisted={transcript.length > 0 && lastPersistedValue === persistedDraftValue}
                   />
@@ -1996,14 +1997,19 @@ const styles = StyleSheet.create({
   inlineFooterContent: {
     // Let the document grow with the editor and Save instead of shrinking it
     // to the small landscape viewport.
-    flex: 0,
+    flexGrow: 0,
+    flexShrink: 0,
+    flexBasis: 'auto',
   },
   bodySection: {
     flex: 1,
     justifyContent: 'flex-start',
-    gap: 24,
+    gap: 12,
   },
   bodySectionCompact: {
+    flexGrow: 0,
+    flexShrink: 0,
+    flexBasis: 'auto',
     gap: 12,
   },
   fixedFooter: {

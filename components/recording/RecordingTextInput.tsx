@@ -12,6 +12,7 @@ import { IconSymbol } from '@/components/ui/icon-symbol';
 
 export interface RecordingTextInputProps {
   compact?: boolean;
+  expanded?: boolean;
   layout?: 'textFirst' | 'voiceFirst';
   value: string;
   onChange: (text: string) => void;
@@ -43,6 +44,7 @@ export const RecordingTextInput = forwardRef<TextInput, RecordingTextInputProps>
   function RecordingTextInput(
     {
       compact = false,
+      expanded = false,
       value,
       layout = 'textFirst',
       onChange,
@@ -93,8 +95,8 @@ export const RecordingTextInput = forwardRef<TextInput, RecordingTextInputProps>
       Boolean(footerActions) || (!isVoiceFirst && voiceSupported) || Boolean(onOpenDetails && hasValue) || Boolean(onClear && hasValue);
 
     const textEditor = (
-      <View style={styles.editor}>
-        {!hasValue ? (
+      <View style={[styles.editor, expanded && styles.editorExpanded]}>
+        {!hasValue && !expanded ? (
           <View
             style={[styles.placeholderIcon, compact && styles.placeholderIconCompact]}
             accessibilityElementsHidden={true}
@@ -143,6 +145,7 @@ export const RecordingTextInput = forwardRef<TextInput, RecordingTextInputProps>
             compact && styles.textInputCompact,
             compact && styles.compactInputOverlay,
             hasValue && styles.textInputWithValue,
+            expanded && [styles.textInputExpanded, { minHeight: Math.max(260, 50 * fontScale + 90) }],
             showInlineActions && styles.textInputWithInlineActions,
             compact && showInlineActions && styles.textInputWithInlineActionsCompact,
             {
@@ -165,6 +168,7 @@ export const RecordingTextInput = forwardRef<TextInput, RecordingTextInputProps>
           <View
             style={[
               styles.inlineActionFooter,
+              expanded && styles.inlineActionFooterExpanded,
               compact && styles.inlineActionFooterCompact,
               { backgroundColor: colors.backgroundCard },
             ]}
@@ -344,12 +348,13 @@ export const RecordingTextInput = forwardRef<TextInput, RecordingTextInputProps>
     );
 
     return (
-      <>
+      <View style={[styles.composer, expanded && styles.composerExpanded]}>
         {instructionText ? <View
           style={[
             styles.recordingSection,
             composerLayout.narrow && styles.recordingSectionNarrow,
             compact && styles.recordingSectionCompact,
+            expanded && styles.recordingSectionExpanded,
           ]}
         >
           <Text
@@ -357,6 +362,7 @@ export const RecordingTextInput = forwardRef<TextInput, RecordingTextInputProps>
               styles.instructionText,
               composerLayout.narrow && styles.instructionTextNarrow,
               compact && styles.instructionTextCompact,
+              expanded && styles.instructionTextExpanded,
               { color: noctalia.text.secondary },
             ]}
           >
@@ -366,7 +372,7 @@ export const RecordingTextInput = forwardRef<TextInput, RecordingTextInputProps>
 
         <View
           nativeID={layout}
-          style={styles.textInputSection}
+          style={[styles.textInputSection, expanded && styles.textInputSectionExpanded]}
           testID="recording-composer"
         >
           {isVoiceFirst && voiceSupported ? expressiveVoiceControl : textEditor}
@@ -379,12 +385,27 @@ export const RecordingTextInput = forwardRef<TextInput, RecordingTextInputProps>
           ) : null}
 
         </View>
-      </>
+      </View>
     );
   }
 );
 
 const styles = StyleSheet.create({
+  composer: { gap: 16 },
+  composerExpanded: { flex: 1, gap: 12, width: '100%', maxWidth: 512, alignSelf: 'center' },
+  recordingSectionExpanded: { marginTop: 0, alignItems: 'flex-start' },
+  instructionTextExpanded: { fontFamily: Fonts.spaceGrotesk.regular, fontSize: 14, lineHeight: 20, textAlign: 'left' },
+  textInputSectionExpanded: { flex: 1 },
+  editorExpanded: { flex: 1, borderRadius: 16 },
+  textInputExpanded: {
+    flex: 1,
+    maxHeight: '100%',
+    borderRadius: 16,
+    paddingLeft: 20,
+    fontFamily: Fonts.spaceGrotesk.regular,
+    lineHeight: 25,
+  },
+  inlineActionFooterExpanded: { borderBottomLeftRadius: 15, borderBottomRightRadius: 15 },
   recordingSection: {
     alignItems: 'center',
     justifyContent: 'center',
