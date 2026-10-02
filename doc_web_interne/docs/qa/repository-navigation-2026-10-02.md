@@ -48,8 +48,11 @@ command, environment, assertions and result in ignored local output.
   fixtures, individual assertions, command and pass/fail. Rerun with
   `mise exec -- node test-results/navigation-cli/driver.cjs` there.
 
-The final `test:prepush` and remote CI result will be recorded with the committed
-revision before delivery. No native build or device qualification is claimed.
+On committed revision `c064b8250ab887fee02a5b9cefcc6f4f7c5c0752`,
+`mise exec -- npm run test:prepush` passed both app/test TypeScript checks and
+49 assertions across three affected suites, against fresh base
+`7df7752d66bbca7e695c4763f63c1f581cc08ac7`. Later changes to this record do not
+change the tested scripts. No native build or device qualification is claimed.
 
 ## Corrections and handoff
 
@@ -62,5 +65,7 @@ Java is checked before build preparation; the catalog exposes release effects.
 
 The primary checkout's existing package/OTA files were not changed or included.
 Publication, builds, store submissions and device operations remain separate.
-Next action: final committed validation, then scoped PR delivery. A merge to
-master requires production publication intent under AGENTS.md.
+Local validation is complete. Next action: scoped branch push and PR delivery,
+subject to the tool approval for the explicit GitHub destination, followed by CI
+on the final PR head. A merge to master requires production publication intent
+under AGENTS.md.
