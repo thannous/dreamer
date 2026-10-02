@@ -5,6 +5,21 @@ Android app on a disposable emulator. Both use the existing mock service adapter
 screens, routing, state and user interactions are real. No production account,
 password, paid subscription or AI request is needed.
 
+## Choose a suite
+
+| Suite | Command | Services and proof boundary |
+| --- | --- | --- |
+| Mock web journeys | `test:e2e:web` | Real UI and routing with simulated storage, AI and billing; session continuity and error recovery. |
+| Real local backend | `test:e2e:backend` | Disposable Supabase Auth/Postgres/PostgREST; save/reload, account isolation, server quotas and offline sync. See [backend qualification](../doc_web_interne/docs/e2e-backend-qualification.md). |
+| Mock native journeys | `test:e2e:journeys` | Maestro on a disposable emulator; native UI with simulated services. Requires a compatible installed development binary. |
+| Native storage and permissions | `test:e2e:storage`, `test:e2e:permissions` | Existing compatible emulator binary; native storage after process restart and permission recovery. See [native prerequisites and evidence limits](../doc_web_interne/docs/e2e-backend-qualification.md#native-checks-without-a-payment). |
+| RevenueCat SDK and billing | `test:e2e:subscription-teststore` and guarded transaction flows | The SDK probe performs no payment. Purchase/restore flows have separate authorization and preflights in [the billing QA guide](../doc_web_interne/docs/revenuecat-qa-workflow.md). |
+
+The profile table below applies to the simulated web/native journeys. Backend and
+native qualification have their own fixtures and prerequisites; a mock pass cannot
+substitute for them. The [task index](../doc_web_interne/docs/README.md) links the
+implementation and release guides.
+
 ## Profiles and coverage
 
 | Profile | Preconditions | Observable outcomes |
@@ -104,10 +119,12 @@ real Supabase authentication/RLS, cross-device sync, dream durability after a
 process restart, microphone behavior, AI quality or store billing. The mock dream
 store is in memory; revisiting a screen tests session continuity only.
 
-An optional separate backend smoke suite may qualify login and save/reload when
-service access is available. Payment coverage in this suite remains entirely
-simulated; real purchases are never a prerequisite. Existing guarded Test Store
-and release flows are retained but are not invoked by these commands.
+The implemented [local backend suite](../doc_web_interne/docs/e2e-backend-qualification.md)
+qualifies login, save/reload, account isolation and recovery against real local
+services with `test:e2e:backend`. Its report records revision, fixtures, assertions
+and rerun command. Payment coverage in the mock journeys remains simulated; real
+purchases are never a prerequisite. Guarded Test Store transaction and release
+flows remain separate from these commands.
 
 Seven obsolete Maestro web flows were replaced by `web/journeys.spec.ts`: recording
 save, journal search, dream delete, transcript edit, favorite toggle/filter and

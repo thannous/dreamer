@@ -6,7 +6,10 @@ const packageJson = require('../package.json');
 const FAMILY_DESCRIPTIONS = {
   Development: 'Expo development servers and native project runs',
   Quality: 'lint, type checks, unit tests, and performance tests',
+  'Web E2E': 'Playwright journeys with simulated services',
+  'Backend E2E': 'Playwright journeys with disposable local Supabase',
   'Android E2E': 'Maestro flows and release-device scenarios',
+  'Mobile release': 'release planning, preparation, builds and version mirrors',
   Android: 'device, Play, build, and release gates',
   Subscriptions: 'RevenueCat and Google Play QA evidence',
   Site: 'generated marketing-site build, validation, preview, and deploy',
@@ -19,7 +22,10 @@ const FAMILY_DESCRIPTIONS = {
 };
 
 function classifyScript(name) {
+  if (/^test:e2e:web(?::|$)/.test(name)) return 'Web E2E';
+  if (name === 'test:e2e:backend' || name === 'start:backend-e2e') return 'Backend E2E';
   if (name.startsWith('test:e2e')) return 'Android E2E';
+  if (name.startsWith('release:') || name === 'eas-build-pre-install') return 'Mobile release';
   if (name.startsWith('android:')) return 'Android';
   if (name.startsWith('subscription:')) return 'Subscriptions';
   if (name.startsWith('docs:') || name === 'serve:docs' || name === 'generate-sitemap' || name === 'validate-seo') return 'Site';
@@ -34,6 +40,9 @@ function classifyScript(name) {
 }
 
 function scriptSafety(name) {
+  if (name === 'release:build') return 'starts a remote build';
+  if (name === 'release:prepare') return 'writes release manifests';
+  if (name === 'release:versions:sync') return 'writes local version mirrors';
   if (/^docs:deploy:/.test(name)) return 'publishes';
   if (/^(docs:(build|build-guides|dev|release-check)|generate-sitemap|content:build-manifest$|content:build-site-manifest$)/.test(name)) return 'writes generated files';
   if (/^(subscription:qa:(evidence|play-state|revenuecat-subscriber-expiry|google-play-state)|android:.*-state)$/.test(name)) return 'writes QA evidence';

@@ -17,6 +17,25 @@ describe('script catalog', () => {
     expect(scriptSafety('generate-sitemap')).toBe('writes generated files');
   });
 
+  it('separates web, backend and native E2E entry points', () => {
+    expect(classifyScript('test:e2e:web')).toBe('Web E2E');
+    expect(classifyScript('test:e2e:web:report')).toBe('Web E2E');
+    expect(classifyScript('test:e2e:backend')).toBe('Backend E2E');
+    expect(classifyScript('start:backend-e2e')).toBe('Backend E2E');
+    expect(classifyScript('test:e2e:journeys')).toBe('Android E2E');
+    expect(classifyScript('release:build')).toBe('Mobile release');
+    expect(classifyScript('release:check')).toBe('Mobile release');
+  });
+
+  it('distinguishes release preparation, remote builds and counter synchronization', () => {
+    expect(scriptSafety('release:prepare')).toBe('writes release manifests');
+    expect(scriptSafety('release:build')).toBe('starts a remote build');
+    expect(scriptSafety('release:versions:sync')).toBe('writes local version mirrors');
+    expect(scriptSafety('release:plan')).toBe('read-only or runtime');
+    expect(scriptSafety('release:check')).toBe('read-only or runtime');
+    expect(scriptSafety('release:versions:check')).toBe('read-only or runtime');
+  });
+
   it('returns a stable catalog', () => {
     expect(buildCatalog({ 'docs:check': 'check', start: 'start' })).toEqual([
       { command: 'start', family: 'Development', name: 'start', safety: 'read-only or runtime' },
