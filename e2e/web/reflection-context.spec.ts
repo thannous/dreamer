@@ -24,6 +24,10 @@ async function prepareReflection(page: Page, media: 'loaded' | 'failed' | 'absen
     await page.getByTestId('btn.journal.illustrate').click();
     if (media !== 'failed') await expect(page.getByTestId('btn.journal.illustration.expand')).toBeVisible();
     await expect(page.getByTestId('journal.detail.image.generation_dots')).toHaveCount(0);
+    if (media === 'failed') {
+      await page.getByTestId('component.metadataCard').scrollIntoViewIfNeeded();
+      await expect(page.getByTestId('journal.detail.image.unavailable')).toBeVisible();
+    }
   }
   await page.getByTestId('btn.editMetadata').click();
   await page.getByTestId('input.dreamTitle').fill(dreamTitle);

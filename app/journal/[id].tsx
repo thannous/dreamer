@@ -2274,7 +2274,7 @@ const JournalDetailContent = memo(function JournalDetailContent({ dream }: { dre
     return (
       <View testID={TID.Component.JournalIllustration} className={hasIllustratedCover ? '-mx-4 mb-4' : 'mb-5 overflow-hidden rounded-lg'}>
         {coverImageFailed ? (
-          <View className="mx-2 mb-5 flex-row items-center gap-3 rounded-lg bg-ink-soft p-3">
+          <View testID="journal.detail.image.unavailable" className="mx-2 mb-5 flex-row items-center gap-3 rounded-lg bg-ink-soft p-3">
             <IconSymbol name="photo" size={24} color={noctalia.text.secondary} />
             <Text className="flex-1 font-sans text-[13px] text-ivory-muted">{t('analysis.reading.image_unavailable')}</Text>
             <Pressable onPress={() => { setFailedCoverUri(null); media.retry(); }} accessibilityRole="button" className="min-h-11 justify-center">

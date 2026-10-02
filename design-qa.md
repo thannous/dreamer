@@ -45,6 +45,8 @@ E2E_WEB_PORT=8087 E2E_REUSE_SERVER=1 mise exec -- npm run test:e2e:web -- e2e/we
 
 L’identité exacte du candidat, les résultats et les préconditions figurent dans le rapport Playwright et le manifeste local. Les services réseau réels sont bloqués par les fixtures : ceci valide le parcours de l’interface avec services simulés. Installation iPhone/Android, comportement natif du clavier et grande taille de texte restent non qualifiés par cette exécution web. Aucun changement natif ou de dépendance.
 
+CI initiale (ff93bab, job 2214) : 30/34 parcours passent. Deux assertions supposaient un seul élément img alors qu’Expo conserve l’image précédente pendant le fondu ; deux autres éditaient le titre avant que l’erreur de chargement ait stabilisé la mise en page. Correction : vérifier l’URI de l’image réellement demandée et sa largeur naturelle, et attendre l’état d’illustration indisponible avant d’éditer. Aucun délai arbitraire ni augmentation de timeout. Le nouvel identifiant de l’état indisponible sert à cette vérification stable.
+
 
 ---
 

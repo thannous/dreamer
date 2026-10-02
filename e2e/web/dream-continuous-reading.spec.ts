@@ -40,13 +40,18 @@ for (const mode of ['light', 'dark'] as const) {
     await expect(page.getByTestId('journal.detail.image.generation_dots')).toHaveCount(0);
     await page.getByTestId('btn.journal.illustration.expand').scrollIntoViewIfNeeded();
     const image = page.getByTestId('btn.journal.illustration.expand');
-    await expect(image.locator('img')).toBeVisible();
+    // Expo retains the previous blob image during a crossfade. Check the actual
+    // fixture URI rather than requiring the image wrapper to contain one img.
+    const renderedImage = image.locator('img[src^="https://picsum.photos/"]');
+    await expect(renderedImage).toBeVisible();
+    await expect.poll(() => renderedImage.evaluate(el => (el as HTMLImageElement).naturalWidth)).toBeGreaterThan(0);
+    await expect(renderedImage).toHaveCSS('opacity', '1');
     await expect.poll(async () => (await image.boundingBox())?.height ?? 0).toBeGreaterThan(750);
     await expect(page.getByTestId('component.dreamDetail.actionCard')).toBeHidden();
-    const originalSource = await image.locator('img').getAttribute('src');
+    const originalSource = await renderedImage.getAttribute('src');
     await page.emulateMedia({ colorScheme: mode });
     await expect(page.getByTestId('screen.dreamDetail')).toHaveCSS('background-color', mode === 'dark' ? 'rgb(3, 4, 13)' : 'rgb(240, 228, 212)');
-    await expect(image.locator('img')).toHaveAttribute('src', originalSource!);
+    await expect(renderedImage).toHaveAttribute('src', originalSource!);
     await page.screenshot({ path: info.outputPath(`dream-${mode}-hero.png`) });
     await page.getByTestId('component.transcriptCard').scrollIntoViewIfNeeded();
     const action = page.getByTestId('component.dreamDetail.actionCard');
