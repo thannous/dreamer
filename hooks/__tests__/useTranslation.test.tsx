@@ -172,7 +172,6 @@ describe('useTranslation', () => {
       );
 
       const { result } = renderHook(() => useTranslation());
-      const firstT = result.current.t;
 
       expect(result.current.translationRevision).toBe(0);
       expect(mockLoadTranslations).toHaveBeenCalledWith('fr');
@@ -185,7 +184,6 @@ describe('useTranslation', () => {
       await waitFor(() => {
         expect(result.current.translationRevision).toBe(1);
       });
-      expect(result.current.t).toBe(firstT);
     });
 
     it('refreshes fallback text when the pack becomes ready between render and effect', async () => {

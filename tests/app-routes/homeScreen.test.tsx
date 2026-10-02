@@ -160,6 +160,7 @@ jest.mock('@/components/home/TodayHero', () => ({
     onOpenSettings: () => void;
   }) => {
     const { TodayCard } = require('@/components/home/TodayCard');
+    const { TID } = require('@/lib/testIDs');
     return <div>
       <button data-testid={TID.Button.HeaderHomeSettings} aria-label="nav.settings" onClick={onOpenSettings} />
       <TodayCard state={state} onPressCta={onPressCta} />
