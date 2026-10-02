@@ -1,5 +1,37 @@
 # Design QA
 
+## 2026-10-02 — Aujourd’hui, galerie éditoriale (latest work package)
+
+Integration owner: `codex/aujourdhui-gallery`. Scope: the approved Home gallery in dark and light, its existing state-driven action, compact recurring insight, and native reminder/settings entry. Implementation, scoped fixes and PR delivery are authorized; production publication, EAS, store submission and device installation are not included in this package.
+
+Source visual truth: `/Users/timax/Projects/noctalia/dist/aujourdhui-galerie-editoriale-20261002/sombre.png` and `clair.png` (841×1870 px each). The common synthetic illustration is copied unchanged into `e2e/fixtures/home-dream.png` (SHA-256 `8367fc0820920e2376f8968e8e46bff5234921b51f95a545acc50dee174eb3ab`); it is a test fixture, not a bundled replacement for user artwork.
+
+Implementation/evidence: private ignored `output/aujourdhui-20261002/`: `implemented-themes.png`, `comparison-dark.png`, `comparison-light.png`, `detail-dark.png`, `detail-light.png`, `final-web/`, `final-report/`, `final-junit/` and `evidence.json`. Source frames are proportionally normalized to 390×867 CSS px; actual Chromium captures are 390×867 px at density 1. Full comparisons place source and implementation next to each other; caption/action details use the same crop and density. Narrow fallback capture is 320×640 px.
+
+State/preconditions: Friday 2 October 2026; mock Plus persona with a newly saved, analyzed and explicitly illustrated synthetic dream; French selected through settings; explicit dark/light preferences tested against the opposite system preference. External billing/backend calls are blocked. Reduced motion is enabled for stable visual captures. Empty/guest draft and failed-image cases have separate journeys.
+
+Findings and fixes:
+- P1 resolved: React Compiler cached fallback copy after a lazy language pack loaded. `useTranslation` opts out of compiler memoization of the external mutable cache and refreshes translator identity when its revision changes. The E2E switches from English to French and observes the translated Home heading.
+- P2 resolved: the initial image crop hid the subject under the reading veil. The image plane is offset within the clipped hero, and the hero occupies 58% of the viewport with bounded height.
+- P2 resolved: the initial brand/title spacing and recurring row were too dense. The brand is 18 px, the page title 38/46, dream title 29/32, and action 24/30; the compact theme label omits the redundant “theme” prefix.
+- Fonts/typography: existing Fraunces display and sans families retained; reference hierarchy and two-line dream title inspected in both full and detail comparisons. Content remains wrapping rather than ellipsized. Native font scaling is not qualified.
+- Spacing/layout: 24 px reading margins, a single underlined action, bounded immersive image and a compact insight row. Settings touch area is 44 px and the action at least 56 px. Existing floating five-destination navigation is intentionally retained, so the reference footer is not copied.
+- Colors/tokens: canonical ink/ivory/champagne-on tokens and theme-derived image veils. Heading/date sit under a strong local veil; action and supporting copy sit on a solid ground. The same source/cache identity remains across themes. No recoloring or theme-specific generation.
+- Image quality: the original raster fixture is used unchanged, cover-fitted and clipped. Subject/crop inspected with the saturated turquoise/coral/violet illustration. A failed image collapses the artwork region while preserving title, action and navigation.
+- Copy/content: localized label, dream title and “Reprendre ce rêve”; recurring counts come from journal data. Web omits the unsupported reminder action. Native uses an existing settings entry and shows a next reminder only when both enabled and permitted.
+
+Validation: focused Expo lint and explicit TypeScript checks of both changed E2E files passed. Home E2E: **3 passed (29.5s)**, with trace, screenshots, HTML and JUnit reports. Rerun: `E2E_WEB_PORT=8085 E2E_REUSE_SERVER=1 mise exec -- npm run test:e2e:web -- e2e/web/home-editorial.spec.ts --workers=1`. Use `EXPO_PUBLIC_MOCK_PERSISTENCE=true mise exec -- npm run start:mock -- --web --port 8085` for a reusable server, or omit `E2E_REUSE_SERVER` to let Playwright launch it. `evidence.json` records the tested base revision, dirty source snapshot, per-file hashes, deleted files, fixture identity and command; final committed code can be compared to those hashes without treating a dirty run as a clean-head run. Required final checks use `npm run test:prepush` on the committed clean worktree.
+
+Reflection continuity: the adapted existing E2E passes through Home → compact recurring insight → weekly recap → the suggested dream → reflection, including one-angle recap and its later refresh (**1 passed, 13.0s**, trace in `reflection-via-recap/`). It no longer depends on the removed Home next-action row.
+
+Broader validation: after adapting the existing settings navigation and the return from stacked capture to journal tabs, the complete web suite passes (**27 passed, 1.4m**; `all-web/`, `all-web-report/`, `all-web-junit/`). Explicit TypeScript checks cover all three changed web specs and the backend fixture. The first-head backend CI failure was a deterministic duplicate “Settings” selector before its backend assertions; its two selectors now use Home settings → All settings, and final-head backend qualification depends on CircleCI. No backend API, Auth, entitlement, schema or fixture account lifecycle was modified.
+
+Limits: a separate attempt through the journal list encountered `Failed to set an indexed property [0] on CSSStyleDeclaration`; its trace remains in `reflection-gap/`. The shared journal/Markdown surface was not changed to suppress it, and the journal-list entry remains unqualified by this package. No Android/iOS physical rendering, native text scaling, notification scheduling or production AI qualification. The dependency symlink initially broke Metro dynamic imports; isolated `npm ci` resolved that environment issue.
+
+Implementation checklist: source/implementation comparisons inspected; P1/P2 findings above resolved; existing draft/day-rollover/routing state retained; artifacts preserved privately; final pre-push/remote CI evidence to accompany PR delivery. P3: artwork composition and the existing shared footer can vary from the synthetic reference; neither changes the approved Home hierarchy.
+
+final result: passed (Home web/mock visual and functional scope only)
+
 Source visual: `/Users/tanuki/.codex/generated_images/019e930f-9f65-7131-bc49-b5963e40f541/ig_0cd7b98a92836eb8016a218f907450819085595d87962de403.png`
 
 Target: Noctalia Android journal screen on the connected ADB device.

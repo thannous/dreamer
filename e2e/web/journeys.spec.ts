@@ -10,8 +10,11 @@ async function startGuest(page: Page) {
 }
 
 async function openSettings(page: Page) {
-  await page.getByTestId('btn.recording.home').click();
-  await page.getByRole('button', { name: 'Settings', exact: true }).click();
+  const homeTab = page.getByTestId('tab.home').filter({ visible: true });
+  if (await homeTab.isVisible()) await homeTab.click();
+  else await page.getByTestId('btn.recording.home').click();
+  await page.getByTestId('btn.header.home.settings').click();
+  await page.getByTestId('quick-settings.all').click();
 }
 
 async function selectProfile(page: Page, profile: 'new' | 'existing' | 'plus') {
@@ -26,8 +29,10 @@ async function journal(page: Page) {
   const back = page.getByTestId('btn.navigateJournal');
   if (await back.isVisible()) await back.click();
   else {
-    await page.getByTestId('btn.recording.home').click();
-    await page.getByRole('button', { name: 'Journal', exact: true }).click();
+    if (!await page.getByTestId('tab.journal').filter({ visible: true }).isVisible()) {
+      await page.getByTestId('btn.recording.home').click();
+    }
+    await page.getByTestId('tab.journal').filter({ visible: true }).click();
   }
   await expect(page.getByTestId('screen.journal').filter({ visible: true })).toHaveCount(1);
 }
@@ -230,10 +235,13 @@ for (const profile of ['new', 'plus'] as const) {
 }
 
 test('reflection offers an optional recap after one angle and updates it after another exchange', async ({ page }, testInfo) => {
-  await selectProfile(page, 'plus');
+  await page.emulateMedia({ reducedMotion: 'reduce' });
   await page.setViewportSize({ width: 390, height: 867 });
-  await page.getByRole('tab', { name: 'Today', exact: true }).click();
-  await page.getByTestId('btn.inspiration.personalReadingNext').click();
+  await selectProfile(page, 'plus');
+  await page.getByTestId('tab.home').filter({ visible: true }).click();
+  await page.getByTestId('btn.inspiration.personalReadingRecap').click();
+  await expect(page.getByTestId('screen.weeklyRecap')).toBeVisible();
+  await page.getByTestId('btn.weeklyRecap.openDream').click();
   await expect(page.getByTestId('component.transcriptCard')).toBeVisible();
   await page.getByTestId('component.dreamDetail.actionCard').click();
 

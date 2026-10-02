@@ -4,22 +4,18 @@ import { useSafeAreaInsets } from "react-native-safe-area-context";
 import React, { memo, useCallback, useEffect, useMemo, useState } from "react";
 import {
   Platform,
+  Pressable,
   ScrollView,
   Text,
   View,
   useWindowDimensions,
-  type ViewStyle,
 } from "react-native";
 import { ScreenContainer } from "@/components/ScreenContainer";
-import { AtmosphericBackground } from "@/components/inspiration/AtmosphericBackground";
-import { TodayCard } from "@/components/home/TodayCard";
-import { ReminderOptInCard } from "@/components/reminders/ReminderOptInCard";
+import { TodayHero } from "@/components/home/TodayHero";
 import { PersonalReadingCard } from "@/components/inspiration/PersonalReadingCard";
 import { useNotificationSettingsController } from "@/components/settings/useNotificationSettingsController";
 import { buildPersonalReading } from "@/lib/personalReading";
-import { PageHeader } from "@/components/inspiration/PageHeader";
-import { NoctaliaScreenHeader } from "@/components/NoctaliaScreenHeader";
-import { PressableScale, Reveal } from "@/components/motion";
+import { PressableScale } from "@/components/motion";
 import { IconSymbol } from "@/components/ui/icon-symbol";
 import { ThemeLayout } from "@/constants/journalTheme";
 import {
@@ -58,12 +54,6 @@ type TranslateFn = ReturnType<typeof useTranslation>["t"];
 const DATE_CHECK_INTERVAL_MS = 5 * 60 * 1000;
 
 /**
- * `ReminderOptInCard` takes a `ViewStyle` prop rather than a `className`, and merges that
- * style after its own frame. Keep that spacing as a style object.
- */
-const REMINDER_CARD_SPACING: ViewStyle = { marginBottom: 24 };
-
-/**
  * Inspiration / rituals screen.
  *
  * Tracks daily ritual progress and resets it when the local date changes.
@@ -85,7 +75,6 @@ export default function InspirationScreen() {
   // Note: guestLimitReached was removed - quota is now enforced on analysis, not recording
   const [selectedRitualId, setSelectedRitualId] = useState<RitualId>("starter");
   const [progressDate, setProgressDate] = useState<string>(getLocalDateKey());
-  const [showAnimations, setShowAnimations] = useState(false);
   const [hasDraft, setHasDraft] = useState(false);
   const [now, setNow] = useState(() => Date.now());
 
@@ -93,10 +82,6 @@ export default function InspirationScreen() {
   const navigationLayout = getBottomNavigationLayout(width, height, fontScale);
   const scrollHeader = !isDesktopLayout && navigationLayout.compact && navigationLayout.largeText;
   const navigationClearance = navigationLayout.barHeight + Math.max(insets.bottom, navigationLayout.minimumBottomInset);
-
-  // Section geometry, kept in one place so a section can't drift from its neighbours.
-  const mobilePadding = isDesktopLayout ? "" : "px-5";
-  const desktopFullSection = isDesktopLayout ? "w-full px-3" : "";
 
   const scrollContentBottomPadding = isDesktopLayout
     ? ThemeLayout.spacing.xl
@@ -111,12 +96,12 @@ export default function InspirationScreen() {
   }, []);
 
   const personalReading = useMemo(
-    () => (dreamsLoaded && dreams.length > 0 ? buildPersonalReading(dreams) : null),
-    [dreams, dreamsLoaded]
+    () => (dreamsLoaded && dreams.length > 0 ? buildPersonalReading(dreams, now) : null),
+    [dreams, dreamsLoaded, now]
   );
   const notificationSettings = useNotificationSettingsController();
   const nextReminderText =
-    !notificationSettings.unsupported && notificationSettings.notificationsEnabled
+    !notificationSettings.unsupported && notificationSettings.notificationsEnabled && notificationSettings.hasPermissions
       ? notificationSettings.nextReminderText
       : null;
   const todayState = useMemo<TodayState | null>(() => {
@@ -134,6 +119,16 @@ export default function InspirationScreen() {
       })),
     });
   }, [dreams, dreamsLoaded, hasDraft, now]);
+  const featuredDream = useMemo(() => {
+    if (todayState?.action.kind === 'open_dream') {
+      const id = todayState.action.dreamId;
+      return dreams.find((dream) => dream.id === id) ?? null;
+    }
+    if (todayState?.id !== 'rest') return null;
+    const todayKey = getLocalDateKey(new Date(now));
+    return dreams.reduce<(typeof dreams)[number] | null>((latest, dream) =>
+      getLocalDateKey(new Date(dream.id)) === todayKey && (!latest || dream.id > latest.id) ? dream : latest, null);
+  }, [dreams, now, todayState]);
   useEffect(() => {
     if (!todayState) return;
     void trackProductEvent("home_today_viewed", {
@@ -171,29 +166,6 @@ export default function InspirationScreen() {
   const handleOpenSleepSounds = useCallback(() => {
     router.push("/sleep-sounds" as any);
   }, []);
-  const homeHeaderActions = useMemo(
-    () => [
-      {
-        icon: "book" as IconName,
-        onPress: () => router.push("/symbol-dictionary" as any),
-        accessibilityLabel: t("header.home.dictionary"),
-        testID: TID.Button.HeaderHomeDictionary,
-      },
-      {
-        icon: "moon.stars.fill" as IconName,
-        onPress: () => router.push(`/ritual/${selectedRitualId}` as any),
-        accessibilityLabel: t("header.home.inspiration"),
-        testID: TID.Button.HeaderHomeInspiration,
-      },
-      {
-        icon: "gear" as IconName,
-        onPress: openQuickSettings,
-        accessibilityLabel: t("nav.settings"),
-        testID: TID.Button.HeaderHomeSettings,
-      },
-    ],
-    [selectedRitualId, t, openQuickSettings],
-  );
 
   const syncTodayClock = useCallback((nextNow = Date.now()) => {
     setNow((current) => {
@@ -331,30 +303,9 @@ export default function InspirationScreen() {
     return () => clearInterval(timer);
   }, [refreshTodayForOpenScreen]);
 
-  useFocusEffect(
-    useCallback(() => {
-      setShowAnimations(true);
-      return () => setShowAnimations(false);
-    }, []),
-  );
-
-  const header = isDesktopLayout ? (
-    <PageHeader
-      titleKey="inspiration.title"
-      animationSeed={showAnimations ? 1 : 0}
-      topSpacing={ThemeLayout.spacing.md}
-      style={{ paddingBottom: ThemeLayout.spacing.md }}
-    />
-  ) : <NoctaliaScreenHeader titleKey="nav.home" actions={homeHeaderActions} />;
-
   return (
     <ScrollPerfProvider isScrolling={scrollPerf.isScrolling}>
-      <View className="flex-1 bg-ink">
-        {/* Atmospheric dreamlike background */}
-        <AtmosphericBackground />
-
-        {!scrollHeader ? header : null}
-
+      <View testID="screen.home" className="flex-1 bg-ink">
         <ScrollView
           className="flex-1"
           style={scrollHeader ? { marginBottom: navigationClearance } : undefined}
@@ -365,34 +316,26 @@ export default function InspirationScreen() {
           onMomentumScrollBegin={scrollPerf.onMomentumScrollBegin}
           onMomentumScrollEnd={scrollPerf.onMomentumScrollEnd}
         >
-          {scrollHeader ? header : null}
-          <ScreenContainer key="resources" className={`pt-4 ${isDesktopLayout ? "px-5" : "px-0"}`}>
-            <View className={isDesktopLayout ? "-mx-3 flex-row flex-wrap" : undefined}>
-              <Reveal index={0} className={`mb-[34px] ${mobilePadding} ${desktopFullSection}`}>
-                <TodayCard
-                  state={todayState}
-                  onPressCta={handleTodayCta}
-                  animateOnMount={false}
-                />
-              </Reveal>
-
-              {/* Morning reminder opt-in (one-time, native only) */}
-              <Reveal index={1} className={`${mobilePadding} ${desktopFullSection}`}>
-                <ReminderOptInCard surface="home" style={REMINDER_CARD_SPACING} />
-              </Reveal>
-
-              {/* Reading of the day — derived from the user's own journal */}
+          <ScreenContainer maxWidth={760} desktopPaddingHorizontal={0} className={isDesktopLayout ? 'px-8' : undefined}>
+            <TodayHero state={todayState} dream={featuredDream} now={now}
+              onPressCta={handleTodayCta} onOpenSettings={openQuickSettings} />
+            <View className="px-6">
               {personalReading ? (
-                <Reveal index={2} className={`mb-[34px] ${mobilePadding} ${desktopFullSection}`}>
-                  <PersonalReadingCard
-                    reading={personalReading}
-                    nextReminderText={nextReminderText}
-                    animateOnMount={false}
-                  />
-                </Reveal>
+                <PersonalReadingCard reading={personalReading} nextReminderText={nextReminderText}
+                  animateOnMount={false} compact />
               ) : null}
-
-              <Reveal index={4} className={`mb-6 ${mobilePadding} ${desktopFullSection}`}>
+              {!notificationSettings.unsupported ? <Pressable
+                onPress={() => router.push('/settings')}
+                accessibilityRole="button" accessibilityLabel={nextReminderText ?? t('home.today.add_reminder')}
+                testID="btn.home.reminder"
+                className="min-h-[60px] flex-row items-center gap-3 border-t border-line py-4 active:opacity-70">
+                <View className="w-10 items-center"><IconSymbol name="bell" size={23} color={noctalia.accent.text} /></View>
+                <Text className="min-w-0 flex-1 font-sans text-[15px] leading-[22px] text-ivory-muted">
+                  {nextReminderText ?? t('home.today.add_reminder')}
+                </Text>
+                <IconSymbol name="chevron.right" size={18} color={noctalia.text.tertiary} />
+              </Pressable> : null}
+              <View className="pb-6 pt-8">
                 <HomeResourcesRow
                   t={t}
                   noctalia={noctalia}
@@ -406,8 +349,7 @@ export default function InspirationScreen() {
                   onOpenGuides={handleOpenGuides}
                   onOpenSleepSounds={handleOpenSleepSounds}
                 />
-              </Reveal>
-
+              </View>
             </View>
           </ScreenContainer>
         </ScrollView>
