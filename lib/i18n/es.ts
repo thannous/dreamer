@@ -943,6 +943,8 @@ const translations: Record<string, string> = {
     "release_notes.primary": "Descubrir mi diario",
     'release_notes.later': 'Más tarde',
     'release_notes.close': 'Cerrar las novedades',
+    'settings.control.enabled': 'Activado',
+    'settings.control.disabled': 'Desactivado',
     'settings.title': 'Configuración',
     'settings.app_version': 'Versión {version}',
     'settings.section.account': 'Cuenta',

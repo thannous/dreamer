@@ -944,6 +944,8 @@ const translations: Record<string, string> = {
     "release_notes.primary": "Découvrir mon journal",
     'release_notes.later': 'Plus tard',
     'release_notes.close': 'Fermer les nouveautés',
+    'settings.control.enabled': 'Activé',
+    'settings.control.disabled': 'Désactivé',
     'settings.title': 'Paramètres',
     'settings.app_version': 'Version {version}',
     'settings.section.account': 'Compte',
