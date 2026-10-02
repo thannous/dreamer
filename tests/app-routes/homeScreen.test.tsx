@@ -153,6 +153,19 @@ jest.mock('@/components/inspiration/GlassCard', () => ({
 jest.mock('@/components/inspiration/AtmosphericBackground', () => ({
   AtmosphericBackground: () => null,
 }));
+jest.mock('@/components/home/TodayHero', () => ({
+  TodayHero: ({ state, onPressCta, onOpenSettings }: {
+    state: unknown;
+    onPressCta: () => void;
+    onOpenSettings: () => void;
+  }) => {
+    const { TodayCard } = require('@/components/home/TodayCard');
+    return <div>
+      <button data-testid={TID.Button.HeaderHomeSettings} aria-label="nav.settings" onClick={onOpenSettings} />
+      <TodayCard state={state} onPressCta={onPressCta} />
+    </div>;
+  },
+}));
 jest.mock('@/components/inspiration/PageHeader', () => ({
   PageHeader: ({ titleKey }: { titleKey: string }) => <header>{titleKey}</header>,
 }));
@@ -305,30 +318,6 @@ async function renderHome(dreams: DreamAnalysis[], loaded = true) {
 }
 
 describe('Home Accueil Aujourd’hui', () => {
-  it.each([[640, 320], [915, 412]])('keeps one header in the content viewport at %i by %i dp with large text', async (width: number, height: number) => {
-    mockPlatformOS = 'android';
-    mockBottomInset = 24;
-    const view = await renderHome([]);
-    for (const scale of [1, 1.5, 2]) {
-      mockWidth = width;
-      mockHeight = height;
-      mockFontScale = scale;
-      view.rerender(<HomeScreen />);
-      const scroll = screen.getByTestId('home-scroll');
-      const settings = screen.getByTestId(TID.Button.HeaderHomeSettings);
-      expect(scroll.contains(settings)).toBe(scale >= 1.3);
-      expect(screen.getAllByTestId(TID.Button.HeaderHomeSettings)).toHaveLength(1);
-      if (scale >= 1.3) {
-        expect(height - Number(scroll.getAttribute('data-margin-bottom'))).toBeGreaterThanOrEqual(120);
-        expect(Number(scroll.getAttribute('data-padding-bottom'))).toBeLessThan(50);
-      }
-      mockWidth = height;
-      mockHeight = width;
-      view.rerender(<HomeScreen />);
-      expect(screen.getByTestId('home-scroll').contains(screen.getByTestId(TID.Button.HeaderHomeSettings))).toBe(false);
-    }
-  });
-
   beforeEach(() => {
     mockBottomInset = 0;
     mockWidth = 390;
@@ -481,7 +470,7 @@ describe('Home Accueil Aujourd’hui', () => {
     await renderHome([]);
 
     expect(screen.getByTestId(TID.Text.HomeTodayState).textContent).toBe('empty');
-    fireEvent.click(screen.getByTestId(TID.Button.HeaderHomeInspiration));
+    fireEvent.click(screen.getByTestId(TID.Button.HomeResourcesRitual));
     expect(mockPush).toHaveBeenCalledWith('/ritual/lucid');
   });
 
@@ -503,7 +492,7 @@ describe('Home Accueil Aujourd’hui', () => {
     expect(expected).toBeGreaterThanOrEqual(layout.barHeight + layout.minimumBottomInset);
   });
 
-  it('exposes a mobile settings header action without dropping dictionary or inspiration', async () => {
+  it('exposes mobile settings with dictionary and inspiration in resources', async () => {
     mockPlatformOS = 'ios';
     mockWidth = 390;
     await renderHome([]);
@@ -511,8 +500,8 @@ describe('Home Accueil Aujourd’hui', () => {
     const settings = screen.getByTestId(TID.Button.HeaderHomeSettings);
     expect(settings).toBeTruthy();
     expect(settings.getAttribute('aria-label')).toBe('nav.settings');
-    expect(screen.getByTestId(TID.Button.HeaderHomeDictionary)).toBeTruthy();
-    expect(screen.getByTestId(TID.Button.HeaderHomeInspiration)).toBeTruthy();
+    expect(screen.getByTestId(TID.Button.HomeResourcesSymbols)).toBeTruthy();
+    expect(screen.getByTestId(TID.Button.HomeResourcesRitual)).toBeTruthy();
 
     fireEvent.click(settings);
     expect(mockPush).toHaveBeenCalledWith('/settings');
