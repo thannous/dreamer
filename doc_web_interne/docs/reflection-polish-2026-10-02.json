@@ -39,14 +39,14 @@
     },
     "designQA": "Normalized comparison against approved option 1; French light/dark and 320px inspection; canonical fonts/palette, 44px+ targets. Native text scaling and physical-device quality unqualified."
   },
-  "nativeQualification": "not tested",
+  "nativeQualification": "Motorola followup qualifies Reflection/free Plus routing at font scale 1.0 and 1.5; real Plus recap and iOS remain unqualified",
   "backendDeployment": "not needed; existing Plus gate retained",
   "requiredFinalCheck": "npm run test:prepush on the clean committed candidate; result recorded in PR validation.",
   "knownBaselineIssue": "Mobile web journal fails in FlashList RecyclerView style handling. New phone journey uses the supported Today recommendation entry. This unrelated journal defect is not fixed or qualified by this change.",
   "delivery": "Implementation and PR only. Master merge may trigger Cloudflare production publication; no production/store/backend deployment or new device installation authorized here.",
   "directPlusFollowup": {
     "scope": "Direct Plus offer from Reflection for guest/free users; keep Plus synthesis route and reading saved recaps",
-    "authorizations": "Local master correction and final commit; physical Motorola verification requested. New device installation and paid subscription are separate unresolved prerequisites.",
+    "authorizations": "Local master correction and commits; user explicitly allows local device install/reinstall and app-data reset for development/QA without separate confirmation or backup prerequisite",
     "sourceBase": "7fe91a79f3e09fffa827521ac14400a71a11f48e",
     "validationSnapshot": "ceb4ebe897416c23dcf7265bfbd66e460412051f",
     "failureModes": [
@@ -60,20 +60,23 @@
       "types": "app/test types passed",
       "lint": "focused lint passed",
       "prepush": "Clean validation snapshot passed app/test types and 4 existing route tests; scoped implementation hashes match master working files",
-      "diffCheck": "passed"
+      "diffCheck": "passed",
+      "native": "Focused real-device Reflection/free Plus journey passed at font scale 1.0 and 1.5; visual inspection completed"
     },
     "e2eRerun": "E2E_WEB_PORT=8085 E2E_REUSE_SERVER=1 mise exec -- npm run test:e2e:web -- --grep 'free reflection opens Plus directly|reflection offers an optional recap' --workers 1",
     "e2eArtifacts": "test-results/e2e-web: traces and screenshots; HTML and JUnit reports ignored by Git",
     "device": {
       "platform": "Motorola physical",
-      "installedVersion": "3.4.6 (83)",
+      "installedVersion": "3.4.5 (83), current local QA candidate",
       "installSource": "Local ADB install",
-      "fontScale": "1.0, reread unchanged",
+      "fontScale": "1.0 and 1.5 tested; restored and reread 1.0",
       "existingAccount": "Confirmed signed in; email omitted",
       "entitlement": "Free; Plus expired",
-      "updatedScreen": "Not yet installed; cannot qualify new rendering or native text scaling",
-      "realRecap": "Blocked by Plus entitlement",
-      "stateRestored": "Settings view restored; device lock released"
+      "updatedScreen": "Reflection visually inspected at both sizes; readable text, wrapped descriptions, reachable recap CTA",
+      "realRecap": "Not generated; blocked by existing free entitlement",
+      "stateRestored": "System font scale 1.0 restored; Android configuration restart returns to Capture; device lock released",
+      "routing": "Faire le point opens the Plus offer; close returns to Reflection at both text scales",
+      "offerLayoutObservation": "Comparison table breaks long words at font scale 1.5; separate offer polish remains optional"
     },
     "nativeCandidate": {
       "sourceSnapshot": "ceb4ebe897416c23dcf7265bfbd66e460412051f",
@@ -82,10 +85,16 @@
       "version": "3.4.5 (83), local QA candidate; master versionName retained, EAS build counter synchronized in private checkout only",
       "apkSha256": "7f32f6ec4adb3fd973449b80452f501394278e9815bd2c9f425fd596bf71d4f7",
       "signing": "Verified same signing certificate as installed 3.4.6 (83)",
-      "deviceInstallation": "Not performed; explicit authorization pending",
-      "baselineDependencyCheck": "Expo SDK 57 patch-level recommendations pre-exist; dependencies left unchanged"
+      "deviceInstallation": "Installed locally with adb install -r; same signing certificate verified; package and installed 3.4.5 (83) reread",
+      "baselineDependencyCheck": "Expo SDK 57 patch-level recommendations pre-exist; dependencies left unchanged",
+      "embeddedUpdateId": "2bb862cb-5983-4a2b-a875-412bc8cc1ae3",
+      "launchedOtaUpdateId": "unknown",
+      "runtimeVersion": "unknown",
+      "channel": "unknown"
     },
-    "nextAction": "Explicit compatible-update authorization and verified data-preservation method required for device rendering/text-scale QA; existing account needs Plus for real recap quality.",
-    "delivery": "Scoped correction on local master; local commit only, no push/publication"
+    "nextAction": "Real recap quality still needs active Plus on the existing account; no purchase or entitlement change performed",
+    "delivery": "Scoped correction on local master; local commit only, no push/publication",
+    "sourceCommit": "b65af7088ebf6662fef3b05ce8352f74d4463cba",
+    "physicalEvidence": "Private device dossier contains build identity, real/free account preconditions, exact rerun command, assertions/results, before/offer/return screenshots and UI XML; private account/content not committed"
   }
 }
