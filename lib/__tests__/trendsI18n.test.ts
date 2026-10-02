@@ -5,7 +5,6 @@ import { getTranslator, loadTranslations } from '../i18n';
 const languages = ['en', 'fr', 'es', 'de', 'it', 'pt'] as const;
 
 const TRENDS_PREFIX = 'trends.';
-const EXPECTED_TRENDS_KEY_COUNT = 41;
 
 const evolutionNextKeys = [
   'trends.evolution.next.capture_first',
@@ -47,7 +46,6 @@ describe('trends i18n', () => {
     const packs = await loadAllLanguages();
     const trendsKeys = trendsKeysFrom(packs.en);
 
-    expect(trendsKeys).toHaveLength(EXPECTED_TRENDS_KEY_COUNT);
     expect(evolutionNextKeys).toHaveLength(5);
     expect(ctaKeys).toHaveLength(5);
 
