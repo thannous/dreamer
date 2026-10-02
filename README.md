@@ -6,6 +6,9 @@ Noctalia is an AI-powered dream journal app for capturing, interpreting, and exp
 - Google Play: https://play.google.com/store/apps/details?id=com.tanuki75.noctalia
 - Contact: contact@noctalia.app
 
+For development, start with the [repository task index](doc_web_interne/docs/README.md)
+and the [command catalog](scripts/README.md).
+
 ## What It Does
 
 Noctalia helps people record dreams by voice or text, then turns those entries into structured dream insights:
