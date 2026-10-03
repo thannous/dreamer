@@ -12,12 +12,14 @@ import type { RecordingInputModePreference } from '@/lib/types';
 interface RecordingInputModeSelectProps {
   value: RecordingInputModePreference;
   disabled?: boolean;
+  locked?: boolean;
   onChange: (value: RecordingInputModePreference) => void | Promise<void>;
 }
 
 export function RecordingInputModeSelect({
   value,
   disabled = false,
+  locked = false,
   onChange,
 }: RecordingInputModeSelectProps) {
   const { colors, mode } = useTheme();
@@ -66,7 +68,7 @@ export function RecordingInputModeSelect({
                 void onChange(option.value);
               }
             }}
-            disabled={disabled}
+            disabled={disabled || locked}
             style={[
               styles.option,
               {
@@ -75,7 +77,7 @@ export function RecordingInputModeSelect({
               },
             ]}
             accessibilityRole="tab"
-            accessibilityState={{ selected: isSelected, disabled }}
+            accessibilityState={{ selected: isSelected, disabled: disabled || locked }}
             accessibilityLabel={option.label}
             testID={option.testID}
           >

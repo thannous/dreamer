@@ -12,6 +12,7 @@ import { IconSymbol } from '@/components/ui/icon-symbol';
 
 export interface RecordingTextInputProps {
   compact?: boolean;
+  chat?: boolean;
   expanded?: boolean;
   layout?: 'textFirst' | 'voiceFirst';
   value: string;
@@ -44,6 +45,7 @@ export const RecordingTextInput = forwardRef<TextInput, RecordingTextInputProps>
   function RecordingTextInput(
     {
       compact = false,
+      chat = false,
       expanded = false,
       value,
       layout = 'textFirst',
@@ -81,7 +83,7 @@ export const RecordingTextInput = forwardRef<TextInput, RecordingTextInputProps>
     );
     const hasValue = value.trim().length > 0;
     const [isFocused, setIsFocused] = useState(false);
-    const compactMinHeight = Math.max(96, 23 * fontScale + 70);
+    const compactMinHeight = chat ? Math.max(64, 24 * fontScale + 40) : Math.max(96, 23 * fontScale + 70);
     const isVoicePreparing = voiceStatus === 'preparing';
     const isVoiceFirst = layout === 'voiceFirst';
     const voiceLabel = switchToVoiceLabel || t('recording.mode.switch_to_voice') || 'Dicter mon r\u00eave';
@@ -95,8 +97,8 @@ export const RecordingTextInput = forwardRef<TextInput, RecordingTextInputProps>
       Boolean(footerActions) || (!isVoiceFirst && voiceSupported) || Boolean(onOpenDetails && hasValue) || Boolean(onClear && hasValue);
 
     const textEditor = (
-      <View style={[styles.editor, expanded && styles.editorExpanded]}>
-        {!hasValue && !expanded ? (
+      <View style={[styles.editor, expanded && styles.editorExpanded, chat && styles.chatEditor]}>
+        {!hasValue && !expanded && !chat ? (
           <View
             style={[styles.placeholderIcon, compact && styles.placeholderIconCompact]}
             accessibilityElementsHidden={true}
@@ -120,6 +122,7 @@ export const RecordingTextInput = forwardRef<TextInput, RecordingTextInputProps>
               showInlineActions && styles.textInputWithInlineActionsCompact,
               { minHeight: compactMinHeight, maxHeight: undefined },
               styles.textMeasurement,
+              chat && styles.chatInput,
             ]}
             testID={`${inputTestID}-measurement`}
           >
@@ -148,6 +151,7 @@ export const RecordingTextInput = forwardRef<TextInput, RecordingTextInputProps>
             expanded && [styles.textInputExpanded, { minHeight: Math.max(260, 50 * fontScale + 90) }],
             showInlineActions && styles.textInputWithInlineActions,
             compact && showInlineActions && styles.textInputWithInlineActionsCompact,
+            chat && styles.chatInput,
             {
               backgroundColor: noctalia.surface.base,
               borderColor: isFocused ? noctalia.accent.base : noctalia.surface.border,
@@ -170,6 +174,7 @@ export const RecordingTextInput = forwardRef<TextInput, RecordingTextInputProps>
               styles.inlineActionFooter,
               expanded && styles.inlineActionFooterExpanded,
               compact && styles.inlineActionFooterCompact,
+              chat && styles.chatActions,
               { backgroundColor: colors.backgroundCard },
             ]}
           >
@@ -391,6 +396,9 @@ export const RecordingTextInput = forwardRef<TextInput, RecordingTextInputProps>
 );
 
 const styles = StyleSheet.create({
+  chatEditor: { borderRadius: 16 },
+  chatInput: { fontFamily: Fonts.spaceGrotesk.regular, fontStyle: 'normal', fontSize: 16, lineHeight: 24, paddingLeft: 14, paddingRight: 116, paddingTop: 20, paddingBottom: 20, maxHeight: 180, borderRadius: 16 },
+  chatActions: { bottom: 8, right: 8, left: 'auto', width: 96, minHeight: 44, paddingRight: 0, paddingBottom: 0 },
   composer: { gap: 16 },
   composerExpanded: { flex: 1, gap: 12, width: '100%', maxWidth: 512, alignSelf: 'center' },
   recordingSectionExpanded: { marginTop: 0, alignItems: 'flex-start' },

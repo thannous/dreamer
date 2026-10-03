@@ -367,11 +367,16 @@ jest.doMock('@/components/recording/RecordingConversation', () => ({
       <span data-testid="conversation-story">{props.storyTranscript}</span>
       <span data-testid="conversation-question">{props.question}</span>
       {props.needsDecision ? <button data-testid="conversation-continue-questions" onClick={props.onContinueQuestions}>Continue questions</button> : null}
-      <button data-testid="conversation-finish" onClick={props.onFinish}>Done</button>
+      <button data-testid="conversation-finish" disabled={props.finishDisabled} onClick={props.onFinish}>Done</button>
       <button data-testid="conversation-restart" onClick={props.onRestart}>Restart</button>
       <button data-testid="conversation-mute" onClick={props.onMute}>Mute</button>
       <button data-testid="conversation-submit" onClick={props.onAnswerSubmit}>Send</button>
       <button data-testid="recording-review-transcript" onClick={props.onReview}>Review</button>
+      {props.review ? <div data-testid="capture-review-card">
+        <textarea data-testid="capture-review-text" value={props.review.text} onChange={(event) => props.onReviewChange(event.currentTarget.value)} />
+        <button data-testid="capture-review-exit" onClick={props.onExitReview}>Exit</button>
+        {props.saved ? <button data-testid="capture-review-open" onClick={props.onOpenSaved}>Open</button> : <button data-testid="recording-save" disabled={props.disabled || !!props.answer.trim()} onClick={props.onSave}>Save</button>}
+      </div> : null}
     </>;
   },
 }));
@@ -722,6 +727,10 @@ async function advancePastAutosaveWindow() {
   });
 }
 
+function getCaptureSaveAction() {
+  return screen.queryByTestId('recording-save') ?? screen.getByTestId('conversation-finish');
+}
+
 describe('Recording screen', () => {
   it.each([[640, 320], [915, 412]])('keeps one Save action and the draft when rotating through compact %i by %i dp', async (width: number, height: number) => {
     mockPlatformOS = 'android';
@@ -743,7 +752,7 @@ describe('Recording screen', () => {
         const navHeight = getBottomNavigationLayout(width, height, scale).barHeight;
         act(() => mockBottomNavLayout?.({ nativeEvent: { layout: { y: height - navHeight - 24 } } }));
         const scroll = screen.getByTestId(TID.Screen.Recording);
-        const save = screen.getByTestId('recording-save') as HTMLButtonElement;
+        const save = getCaptureSaveAction() as HTMLButtonElement;
         expect(screen.getAllByTestId('recording-save')).toHaveLength(1);
         expect(scroll.contains(save)).toBe(true);
         expect(save.disabled).toBe(false);
@@ -755,7 +764,7 @@ describe('Recording screen', () => {
         for (const event of ['keyboardDidShow', 'keyboardDidHide']) {
           act(() => mockKeyboardListeners[event]?.());
           expect(screen.getAllByTestId('recording-save')).toHaveLength(1);
-          expect(screen.getByTestId(TID.Screen.Recording).contains(screen.getByTestId('recording-save'))).toBe(true);
+          expect(screen.getByTestId(TID.Screen.Recording).contains(getCaptureSaveAction())).toBe(true);
           expect((screen.getByTestId(TID.Input.DreamTranscript) as HTMLTextAreaElement).value).toBe(draft);
         }
 
@@ -763,7 +772,7 @@ describe('Recording screen', () => {
         mockViewportHeight = width;
         view.rerender(<RecordingScreen />);
         expect(screen.getAllByTestId('recording-save')).toHaveLength(1);
-        expect(screen.getByTestId(TID.Screen.Recording).contains(screen.getByTestId('recording-save'))).toBe(false);
+        expect(screen.getByTestId(TID.Screen.Recording).contains(getCaptureSaveAction())).toBe(false);
         expect((screen.getByTestId(TID.Input.DreamTranscript) as HTMLTextAreaElement).value).toBe(draft);
         view.unmount();
       }
@@ -804,7 +813,7 @@ describe('Recording screen', () => {
     const styles = JSON.parse(screen.getByTestId(TID.Screen.Recording).getAttribute('data-native-style') ?? '[]');
     const style = Object.assign({}, ...styles.filter(Boolean));
     expect(style.marginBottom).toBe(440);
-    expect(screen.getByTestId('recording-save')).toBeTruthy();
+    expect(getCaptureSaveAction()).toBeTruthy();
     expect(screen.getByTestId('recording-bottom-nav')).toBeTruthy();
   });
 
@@ -894,11 +903,13 @@ describe('Recording screen', () => {
     await waitFor(() => expect(screen.getByTestId('conversation-question').textContent).toBe('What else do you remember?'));
     fireEvent.change(screen.getByTestId(TID.Input.DreamTranscript), { target: { value: 'A door was open.' } });
     fireEvent.click(screen.getByTestId('conversation-submit'));
-    fireEvent.click(screen.getByTestId('recording-save'));
+    fireEvent.click(screen.queryByTestId('conversation-finish') ?? getCaptureSaveAction());
     await screen.findByTestId('capture-review-text');
     expect(mockAddDream).not.toHaveBeenCalled();
     fireEvent.change(screen.getByTestId('capture-review-text'), { target: { value: 'My corrected account.' } });
-    fireEvent.click(screen.getByTestId('recording-save'));
+    fireEvent.click(getCaptureSaveAction());
+    await screen.findByTestId('capture-review-open');
+    fireEvent.click(screen.getByTestId('capture-review-open'));
     await waitFor(() => expect(mockReplace).toHaveBeenCalledWith({ pathname: '/journal/[id]', params: { id: '42', saved: '1' } }));
     expect(mockAddDream).toHaveBeenCalledWith(expect.objectContaining({ transcript: 'My corrected account.', captureOriginalTranscript: answerPair('A blue garden at dawn', 'A door was open.') }));
     expect(mockAnalyzeDream).not.toHaveBeenCalled();
@@ -920,7 +931,7 @@ describe('Recording screen', () => {
     expect(mockFormatCaptureNarrative).not.toHaveBeenCalled();
     expect((screen.getByTestId('capture-review-text') as HTMLTextAreaElement).value).toBe('A garden.\n\nBlue flowers.\n\nA bird.\n\nIt was quiet.');
     expect(mockAddDream).not.toHaveBeenCalled();
-    fireEvent.click(screen.getByTestId('recording-save'));
+    fireEvent.click(getCaptureSaveAction());
     await waitFor(() => expect(mockAddDream).toHaveBeenCalledWith(expect.objectContaining({ transcript: 'A garden.\n\nBlue flowers.\n\nA bird.\n\nIt was quiet.', captureOriginalTranscript: expected })));
     expect(mockRequestCaptureQuestion).toHaveBeenCalledTimes(3);
     expect(mockFormatCaptureNarrative).not.toHaveBeenCalled();
@@ -948,7 +959,7 @@ describe('Recording screen', () => {
     render(<RecordingScreen />);
     await awaitEditorReady();
     expect((screen.getByTestId(TID.Input.DreamTranscript) as HTMLTextAreaElement).value).toBe(expected);
-    fireEvent.click(screen.getByTestId('recording-save'));
+    fireEvent.click(getCaptureSaveAction());
     await waitFor(() => expect(mockAddDream).toHaveBeenCalledWith(expect.objectContaining({ transcript: expected })));
     expect(mockAnalyzeDream).not.toHaveBeenCalled();
   });
@@ -1026,9 +1037,9 @@ describe('Recording screen', () => {
     render(<RecordingScreen />);
     await awaitEditorReady();
     fireEvent.change(screen.getByTestId(TID.Input.DreamTranscript), { target: { value: 'A blue garden at dawn' } });
-    fireEvent.click(screen.getByTestId('recording-save'));
+    fireEvent.click(screen.queryByTestId('conversation-finish') ?? getCaptureSaveAction());
     await screen.findByTestId('capture-review-text');
-    fireEvent.click(screen.getByTestId('recording-save'));
+    fireEvent.click(getCaptureSaveAction());
     await waitFor(() => expect(Alert.alert).toHaveBeenCalled());
     expect(mockReplace).not.toHaveBeenCalled();
     expect((screen.getByTestId('capture-review-text') as HTMLTextAreaElement).value).toBe('A blue garden at dawn');
@@ -1053,7 +1064,7 @@ describe('Recording screen', () => {
     expect(screen.getByTestId('conversation-story').textContent).toBe(edited);
     await act(async () => { fireEvent.click(screen.getByTestId('recording-review-transcript')); });
     expect((screen.getByTestId('capture-adjust-section-1') as HTMLTextAreaElement).value).toBe('Gris, je crois.');
-    fireEvent.click(screen.getByTestId('recording-save'));
+    fireEvent.click(screen.queryByTestId('conversation-finish') ?? getCaptureSaveAction());
     await screen.findByTestId('capture-review-text');
     expect(mockFormatCaptureNarrative).not.toHaveBeenCalled();
     expect((screen.getByTestId('capture-review-text') as HTMLTextAreaElement).value).toBe('Je marchais sur une plage.\n\nGris, je crois.');
@@ -1088,10 +1099,10 @@ describe('Recording screen', () => {
     await act(async () => { fireEvent.click(screen.getByTestId('recording-review-transcript')); });
     fireEvent.change(screen.getByTestId('capture-adjust-section-0'), { target: { value: '' } });
     fireEvent.change(screen.getByTestId('capture-adjust-section-1'), { target: { value: '' } });
-    expect((screen.getByTestId('recording-save') as HTMLButtonElement).disabled).toBe(true);
+    expect((getCaptureSaveAction() as HTMLButtonElement).disabled).toBe(true);
     expect(screen.getByText('Quelle couleur ?')).toBeTruthy();
     fireEvent.click(screen.getByTestId('capture-adjust-close'));
-    expect((screen.getByTestId('recording-save') as HTMLButtonElement).disabled).toBe(true);
+    expect((getCaptureSaveAction() as HTMLButtonElement).disabled).toBe(true);
   });
 
   it('keeps the final dictated words when opening the answer editor during listening', async () => {
@@ -1190,12 +1201,12 @@ describe('Recording screen', () => {
     mockFormatCaptureNarrative.mockRejectedValueOnce(new Error('offline'));
     render(<RecordingScreen />);
     await awaitEditorReady();
-    fireEvent.click(screen.getByTestId('recording-save'));
+    fireEvent.click(screen.queryByTestId('conversation-finish') ?? getCaptureSaveAction());
     await screen.findByTestId('capture-review-text');
     expect(mockFormatCaptureNarrative).not.toHaveBeenCalled();
     expect(mockAddDream).not.toHaveBeenCalled();
     expect((screen.getByTestId('capture-review-text') as HTMLTextAreaElement).value).toBe('Une plage.');
-    await act(async () => { fireEvent.click(screen.getByTestId('recording-save')); });
+    await act(async () => { fireEvent.click(getCaptureSaveAction()); });
     expect(mockAddDream).toHaveBeenCalledWith(expect.objectContaining({ transcript: 'Une plage.' }));
   });
 
@@ -1230,8 +1241,8 @@ describe('Recording screen', () => {
       mockIsRecordingRef.current = false;
       return { transcript: 'Une plage noire.' };
     });
-    fireEvent.click(screen.getByTestId('recording-save'));
-    fireEvent.click(screen.getByTestId('recording-save'));
+    fireEvent.click(getCaptureSaveAction());
+    fireEvent.click(screen.queryByTestId('conversation-finish') ?? getCaptureSaveAction());
     await screen.findByTestId('capture-review-text');
     expect(mockFormatCaptureNarrative).not.toHaveBeenCalled();
     expect((screen.getByTestId('capture-review-text') as HTMLTextAreaElement).value).toBe('Une plage noire.');
@@ -1249,7 +1260,7 @@ describe('Recording screen', () => {
     act(() => mockOnPartialTranscript?.('Une plage.'));
     let resolve!: (value: { transcript: string }) => void;
     mockStopRecording.mockReturnValueOnce(new Promise(done => { resolve = done; }));
-    fireEvent.click(screen.getByTestId('recording-save'));
+    fireEvent.click(getCaptureSaveAction());
     await waitFor(() => expect(mockStopRecording).toHaveBeenCalled());
     view.unmount();
     await act(async () => resolve({ transcript: 'Une plage noire.' }));
@@ -1422,15 +1433,15 @@ describe('Recording screen', () => {
     render(<RecordingScreen />);
     await awaitEditorReady();
 
-    const saveButton = screen.getByTestId('recording-save') as HTMLButtonElement;
+    const saveButton = getCaptureSaveAction() as HTMLButtonElement;
     expect(saveButton.disabled).toBe(true);
 
     fireEvent.change(screen.getByTestId(TID.Input.DreamTranscript), {
       target: { value: '   ' },
     });
 
-    expect(screen.getByTestId('recording-save')).toBeTruthy();
-    expect((screen.getByTestId('recording-save') as HTMLButtonElement).disabled).toBe(true);
+    expect(getCaptureSaveAction()).toBeTruthy();
+    expect((getCaptureSaveAction() as HTMLButtonElement).disabled).toBe(true);
     expect(mockAddDream).not.toHaveBeenCalled();
   });
 
@@ -1445,7 +1456,7 @@ describe('Recording screen', () => {
         target: { value: longTranscript },
       });
 
-      const saveButton = screen.getByTestId('recording-save') as HTMLButtonElement;
+      const saveButton = getCaptureSaveAction() as HTMLButtonElement;
       expect(saveButton.disabled).toBe(false);
       fireEvent.click(saveButton);
 
@@ -1463,13 +1474,13 @@ describe('Recording screen', () => {
       render(<RecordingScreen />);
       await awaitEditorReady();
 
-      expect(screen.getByTestId('recording-save')).toBeTruthy();
+      expect(getCaptureSaveAction()).toBeTruthy();
 
       fireEvent.change(screen.getByTestId(TID.Input.DreamTranscript), {
         target: { value: fragment },
       });
 
-      const saveButton = screen.getByTestId('recording-save') as HTMLButtonElement;
+      const saveButton = getCaptureSaveAction() as HTMLButtonElement;
       expect(saveButton.disabled).toBe(false);
       fireEvent.click(saveButton);
 
@@ -1489,14 +1500,14 @@ describe('Recording screen', () => {
       await awaitEditorReady();
       const input = screen.getByTestId(TID.Input.DreamTranscript) as HTMLTextAreaElement;
       fireEvent.change(input, { target: { value: 'Un lac et une porte rouge' } });
-      fireEvent.click(screen.getByTestId('recording-save'));
+      fireEvent.click(getCaptureSaveAction());
 
       await waitFor(() => {
         expect(Alert.alert).toHaveBeenCalledWith(
           'common.error_title',
           frenchTranslations[`journal.persistence.${operation}_cache`]
         );
-        expect((screen.getByTestId('recording-save') as HTMLButtonElement).disabled).toBe(false);
+        expect((getCaptureSaveAction() as HTMLButtonElement).disabled).toBe(false);
       });
       expect(input.value).toBe('Un lac et une porte rouge');
       expect(mockSaveTranscript).not.toHaveBeenCalledWith('');
@@ -1504,7 +1515,7 @@ describe('Recording screen', () => {
       expect(mockCategorizeDream).not.toHaveBeenCalled();
       const firstCapture = mockAddDream.mock.calls[0][0];
 
-      fireEvent.click(screen.getByTestId('recording-save'));
+      fireEvent.click(getCaptureSaveAction());
       await waitFor(() => expect(mockReplace).toHaveBeenCalledWith({
         pathname: '/journal/[id]',
         params: { id: '42', saved: '1' },
@@ -1524,7 +1535,7 @@ describe('Recording screen', () => {
     fireEvent.change(screen.getByTestId(TID.Input.DreamTranscript), {
       target: { value: 'A dream I want to keep' },
     });
-    await act(async () => { fireEvent.click(screen.getByTestId('recording-save')); });
+    await act(async () => { fireEvent.click(getCaptureSaveAction()); });
     expect(Alert.alert).toHaveBeenCalledWith(
       'recording.guest_recording.limit_title',
       'recording.guest_recording.limit_message',
@@ -1544,7 +1555,7 @@ describe('Recording screen', () => {
     fireEvent.change(screen.getByTestId(TID.Input.DreamTranscript), {
       target: { value: 'A blue room under the rain' },
     });
-    const save = screen.getByTestId('recording-save');
+    const save = getCaptureSaveAction();
     await act(async () => {
       fireEvent.click(save);
       fireEvent.click(save);
@@ -1565,7 +1576,7 @@ describe('Recording screen', () => {
     render(<RecordingScreen />);
     await awaitEditorReady();
     fireEvent.change(screen.getByTestId(TID.Input.DreamTranscript), { target: { value: 'A blue room under the rain' } });
-    fireEvent.click(screen.getByTestId('recording-save'));
+    fireEvent.click(getCaptureSaveAction());
     await waitFor(() => expect(mockTrackDreamSaveMilestone).toHaveBeenCalledWith(false));
   });
 
@@ -1614,8 +1625,8 @@ describe('Recording screen', () => {
     await awaitEditorReady();
     fireEvent.change(screen.getByTestId(TID.Input.DreamTranscript), { target: { value: 'A quiet lake' } });
     await act(async () => {
-      fireEvent.click(screen.getByTestId('recording-save'));
-      fireEvent.click(screen.getByTestId('recording-save'));
+      fireEvent.click(getCaptureSaveAction());
+      fireEvent.click(getCaptureSaveAction());
     });
     expect(mockAddDream).toHaveBeenCalledTimes(1);
     expect(mockReplace).not.toHaveBeenCalled();
@@ -1640,7 +1651,7 @@ describe('Recording screen', () => {
       const view = render(<RecordingScreen />);
       await awaitEditorReady();
       fireEvent.change(screen.getByTestId(TID.Input.DreamTranscript), { target: { value: 'A quiet lake' } });
-      await act(async () => { fireEvent.click(screen.getByTestId('recording-save')); });
+      await act(async () => { fireEvent.click(getCaptureSaveAction()); });
       expect(mockReplace).toHaveBeenCalledTimes(1);
       expect(mockReplace).toHaveBeenCalledWith({ pathname: '/journal/[id]', params: { id: '42', saved: '1', ...(access === 'guest' ? { autoAnalyze: '1' } : {}) } });
       mockQuotaState.loading = false;
@@ -1659,7 +1670,7 @@ describe('Recording screen', () => {
     const view = render(<RecordingScreen />);
     await awaitEditorReady();
     fireEvent.change(screen.getByTestId(TID.Input.DreamTranscript), { target: { value: 'A quiet lake' } });
-    await act(async () => { fireEvent.click(screen.getByTestId('recording-save')); });
+    await act(async () => { fireEvent.click(getCaptureSaveAction()); });
     mockQuotaState.tier = 'plus';
     view.rerender(<RecordingScreen />);
     await act(async () => { finish(buildDream('A quiet lake')); });
@@ -1986,7 +1997,7 @@ describe('Recording screen', () => {
     expect(screen.getByTestId(TID.Screen.Recording).getAttribute('aria-busy')).toBe('false');
     const input = screen.getByTestId(TID.Input.DreamTranscript) as HTMLTextAreaElement;
     expect(input.disabled).toBe(true);
-    expect((screen.getByTestId('recording-save') as HTMLButtonElement).disabled).toBe(true);
+    expect((getCaptureSaveAction() as HTMLButtonElement).disabled).toBe(true);
     expect(screen.queryByTestId(TID.Component.RecordingDraftProgress)).toBeNull();
     expect(screen.queryByTestId('recording-voice-hint')).toBeNull();
     fireEvent.click(screen.getByTestId('recording-mode-text'));

@@ -151,9 +151,13 @@ export default function RecordingScreen() {
   const [transcript, setTranscript] = useState('');
   const [editableCapture, setEditableCapture] = useState<CaptureEditableDraft | null>(null);
   const [captureReviewState, setCaptureReview] = useState<CaptureReview | null>(null);
+  const captureReviewRef = useRef<CaptureReview | null>(null);
+  const [savedCapture, setSavedCapture] = useState<{ dream: DreamAnalysis; review: CaptureReview; scope: string } | null>(null);
   const captureReview = useMemo(() => captureReviewState && captureReviewState.text === captureReviewState.source
     ? { ...captureReviewState, text: buildCaptureNarrative(captureReviewState.source) }
     : captureReviewState, [captureReviewState]);
+  useEffect(() => { captureReviewRef.current = captureReview; }, [captureReview]);
+  const savedConversation = savedCapture?.scope === onboardingScope ? savedCapture : null;
   const [reviewExitStep, setReviewExitStep] = useState<'options' | 'confirm' | null>(null);
   const [isLeavingReview, setIsLeavingReview] = useState(false);
   const leavingReviewRef = useRef(false);
@@ -184,19 +188,20 @@ export default function RecordingScreen() {
   const consecutiveEmptyHandsFreeRestartsRef = useRef(0);
   const handleRestoreDraft = useCallback((savedValue: string) => {
     const { transcript: savedTranscript, review } = decodeCaptureDraft(savedValue);
+    captureReviewRef.current = review;
     setCaptureReview(review);
     setTranscript(savedTranscript);
     answerInsertionRef.current = null;
     setAnswerBase(null);
-    setCurrentAnswer('');
+    setCurrentAnswer(review?.pendingAnswer ?? '');
     baseTranscriptRef.current = savedTranscript;
     dictationInsertionRef.current = null;
     transcriptSelectionRef.current = undefined;
     setTranscriptSelection(undefined);
   }, []);
   const persistedDraftValue = useMemo(
-    () => captureReview ? encodeCaptureReview(captureReview) : transcript,
-    [captureReview, transcript]
+    () => savedConversation ? '' : captureReview ? encodeCaptureReview(captureReview) : transcript,
+    [captureReview, savedConversation, transcript]
   );
   const { noteInput, persistBeforeExit, clearAfterSuccessfulSave, lastPersistedValue, isHydrated, hydrationStatus, retryHydration } = useRecordingDraftPersistence({
     transcript: persistedDraftValue,
@@ -487,8 +492,27 @@ export default function RecordingScreen() {
     [captureIntent, isHydrated, noteInput]
   );
 
+  const noteReviewAnswer = useCallback((answer: string): boolean => {
+    const review = captureReviewRef.current;
+    if (!review) return false;
+    const next = { ...review, pendingAnswer: answer };
+    if (!noteInput(encodeCaptureReview(next))) return false;
+    captureReviewRef.current = next;
+    setCaptureReview(next);
+    setCurrentAnswer(answer);
+    return true;
+  }, [noteInput]);
+
   const applyDictationTranscript = useCallback((speech: string): boolean => {
     if (!isHydrated || discardDictationRef.current || restartingCaptureRef.current || formatSourceRef.current !== null || !speech.trim()) return false;
+    const review = captureReviewRef.current;
+    if (review) {
+      const answer = review.pendingAnswer ?? '';
+      const insertion = dictationInsertionRef.current ?? { base: answer, selection: { start: answer.length, end: answer.length } };
+      const result = insertDictation(insertion, speech);
+      dictationInsertionRef.current = insertion;
+      return noteReviewAnswer(result.text);
+    }
     const base = baseTranscriptRef.current;
     const insertion = dictationInsertionRef.current ?? {
       base,
@@ -505,7 +529,7 @@ export default function RecordingScreen() {
       setCurrentAnswer(result.text.slice(answerInsertionRef.current.base.length).trimStart());
     }
     return true;
-  }, [isHydrated, noteInput]);
+  }, [isHydrated, noteInput, noteReviewAnswer]);
 
   const stopRecordingFromNativeEndRef = useRef<(() => void) | null>(null);
 
@@ -608,6 +632,8 @@ export default function RecordingScreen() {
   );
 
   const resetComposer = useCallback(() => {
+    captureReviewRef.current = null;
+    setSavedCapture(null);
     setCaptureReview(null);
     setReviewExitStep(null);
     setEditableCapture(null);
@@ -799,8 +825,9 @@ export default function RecordingScreen() {
         consecutiveEmptyHandsFreeRestartsRef.current = 0;
       }
 
-      let sourceTranscript = baseTranscriptRef.current || transcript;
-      if (inputMode === 'voice') {
+      const readyReview = captureReviewRef.current;
+      let sourceTranscript = readyReview ? readyReview.pendingAnswer ?? '' : baseTranscriptRef.current || transcript;
+      if (inputMode === 'voice' && !readyReview) {
         const answerInsertion = getAnswerInsertion();
         // An unanswered question is only persisted once words are entered.
         if (sourceTranscript === answerInsertion.storyBase) sourceTranscript = answerInsertion.base;
@@ -808,7 +835,7 @@ export default function RecordingScreen() {
       }
       dictationInsertionRef.current = {
         base: sourceTranscript,
-        selection: transcriptSelectionRef.current ?? {
+        selection: readyReview ? { start: sourceTranscript.length, end: sourceTranscript.length } : transcriptSelectionRef.current ?? {
           start: sourceTranscript.length,
           end: sourceTranscript.length,
         },
@@ -1005,7 +1032,7 @@ export default function RecordingScreen() {
   }, [dictationIntent, isHandsFreeRestarting, isRecording, stopRecording]);
 
   const handleSaveDream = useCallback(async (completeWithHelp = false) => {
-    if (!isHydrated || isPersisting || saveInFlightRef.current || formatRequestRef.current) return;
+    if (!isHydrated || isPersisting || saveInFlightRef.current || formatRequestRef.current || savedConversation || captureReviewRef.current?.pendingAnswer?.trim()) return;
     saveInFlightRef.current = true;
     setIsPersisting(true);
     try {
@@ -1076,7 +1103,11 @@ export default function RecordingScreen() {
           }
         });
       }
-      navigateToSavedDream(savedDream, { saved: true, recall: completeWithHelp, autoAnalyze: isNewDream && !user && !completeWithHelp });
+      if (inputMode === 'voice' && captureReview) {
+        setSavedCapture({ dream: savedDream, review: captureReview, scope: onboardingScope });
+      } else {
+        navigateToSavedDream(savedDream, { saved: true, recall: completeWithHelp, autoAnalyze: isNewDream && !user && !completeWithHelp });
+      }
     } catch (error) {
       if (error instanceof GuestDreamLimitError) {
         Alert.alert(t('recording.guest_recording.limit_title'), t('recording.guest_recording.limit_message', { limit: GUEST_DREAM_RECORDING_LIMIT }), [
@@ -1109,6 +1140,9 @@ export default function RecordingScreen() {
     buildDraftDream,
     captureIntent,
     captureReview,
+    savedConversation,
+    inputMode,
+    onboardingScope,
     clearAfterSuccessfulSave,
     draftDream,
     dreams,
@@ -1130,6 +1164,8 @@ export default function RecordingScreen() {
   const noctalia = useMemo(() => getNoctaliaDesignTokens(colors, mode), [colors, mode]);
   const gradientColors = noctalia.screen.gradient;
   const isDesktopWeb = Platform.OS === 'web' && viewportWidth >= DESKTOP_BREAKPOINT;
+  const chatMode = inputMode === 'voice' && !editableCapture;
+  const chatLayout = chatMode && !isCompactLandscape;
   const closeRecording = useCallback(() => {
     if (router.canGoBack()) {
       router.back();
@@ -1179,28 +1215,30 @@ export default function RecordingScreen() {
   // reserved area cannot squeeze the editor out of the viewport.
   const inlineFooter = isCompactLandscape;
   const scrollBottomReservation = separateFooterViewport
-    ? fixedFooterBottomOffset + (inlineFooter ? 0 : footerHeight)
+    ? fixedFooterBottomOffset + (inlineFooter || chatMode ? 0 : footerHeight)
     : 0;
   const mainContentStyle = useMemo(
     () => [
       styles.mainContent,
-      (inlineFooter || inputMode === 'voice' || !!editableCapture) && styles.inlineFooterContent,
+      (inlineFooter || !!editableCapture) && styles.inlineFooterContent,
+      chatLayout && styles.chatMainContent,
       isCompactLandscape && styles.mainContentCompact,
       {
         paddingTop: 16,
-        paddingBottom: inlineFooter
+        paddingBottom: chatMode ? 8 : inlineFooter
           ? 16 + (keyboardVisible ? insets.bottom : 0)
           : separateFooterViewport ? 16 : fixedFooterBottomOffset + footerHeight,
       },
     ],
     [
       fixedFooterBottomOffset,
+      chatMode,
+      chatLayout,
       editableCapture,
       footerHeight,
       isCompactLandscape,
       separateFooterViewport,
       inlineFooter,
-      inputMode,
       keyboardVisible,
       insets.bottom,
     ]
@@ -1558,7 +1596,8 @@ export default function RecordingScreen() {
   }, [askCaptureQuestion, conversation.needsDecision, captureReview, editableCapture, isFormatting, inputMode, isHydrated, isRecordingRef]);
 
   const handleConversationAnswerChange = useCallback((text: string) => {
-    if (!isHydrated) return;
+    if (!isHydrated || savedConversation) return;
+    if (captureReviewRef.current) { noteReviewAnswer(text); return; }
     const insertion = getAnswerInsertion();
     const result = text.trim()
       ? insertDictation(insertion, text)
@@ -1571,7 +1610,7 @@ export default function RecordingScreen() {
     baseTranscriptRef.current = result.text;
     setTranscript(result.text);
     transcriptSelectionRef.current = result.selection;
-  }, [getAnswerInsertion, isHydrated, noteInput]);
+  }, [getAnswerInsertion, isHydrated, noteInput, noteReviewAnswer, savedConversation]);
 
   const handleValidateCapture = useCallback(async () => {
     if (!isHydrated || isPersisting || formatRequestRef.current) return;
@@ -1586,15 +1625,20 @@ export default function RecordingScreen() {
       }
       if (controller.signal.aborted) return;
       const source = baseTranscriptRef.current || transcript;
-      if (!isTranscriptSaveable(source)) return;
-      formatSourceRef.current = source;
       // Keep narrator words in the review and questions in the original exchanges.
       const text = buildCaptureNarrative(source);
+      if (!isTranscriptSaveable(text)) return;
+      formatSourceRef.current = source;
       if (controller.signal.aborted || formatRequestRef.current !== controller) return;
       const review = { source, text };
       if (!noteInput(encodeCaptureReview(review))) return;
+      captureReviewRef.current = review;
       setCaptureReview(review);
       setEditableCapture(null);
+      setCurrentAnswer('');
+      setAnswerBase(null);
+      answerInsertionRef.current = null;
+      dictationInsertionRef.current = null;
       Keyboard.dismiss();
       scrollViewRef.current?.scrollTo({ y: 0, animated: false });
     } catch {
@@ -1612,6 +1656,35 @@ export default function RecordingScreen() {
       }
     }
   }, [cancelConversation, handleSaveDream, isHydrated, isPersisting, isRecordingRef, noteInput, stopRecording, t, transcript]);
+
+  const handleConversationSubmit = useCallback(async () => {
+    captureMicrophoneMutedRef.current = true;
+    if (isRecordingRef.current || dictationIntentRef.current === 'listening') {
+      await stopRecording({ silent: true, reason: 'stop' });
+    }
+    const review = captureReviewRef.current;
+    if (review) {
+      const answer = review.pendingAnswer?.trim();
+      if (!answer) return;
+      const source = `${review.source}\n\n${t('recording.conversation.question_label')} ${t('recording.chat.add_detail')}\n${t('recording.conversation.answer_label')} ${answer}`;
+      const next = { source, text: `${review.text.trim()}\n\n${answer}` };
+      if (!noteInput(encodeCaptureReview(next))) return;
+      captureReviewRef.current = next;
+      setCaptureReview(next);
+      baseTranscriptRef.current = source;
+      setTranscript(source);
+    }
+    answerInsertionRef.current = null;
+    dictationInsertionRef.current = null;
+    setAnswerBase(null);
+    setCurrentAnswer('');
+    captureMicrophoneMutedRef.current = false;
+    if (!review) {
+      const done = await askCaptureQuestion(baseTranscriptRef.current);
+      if (done) await handleValidateCapture();
+    }
+    Keyboard.dismiss();
+  }, [askCaptureQuestion, handleValidateCapture, isRecordingRef, noteInput, stopRecording, t]);
 
   const saveButtonLabel = isFormatting ? t('recording.review.preparing')
     : captureReview ? t('recording.button.save_dream')
@@ -1667,7 +1740,8 @@ export default function RecordingScreen() {
               !isDesktopWeb && { marginTop: insets.top },
               separateFooterViewport && { marginBottom: scrollBottomReservation },
             ]}
-            contentContainerStyle={styles.scrollContent}
+            contentContainerStyle={[styles.scrollContent, chatLayout && styles.chatScrollContent]}
+            scrollEnabled={!chatLayout}
             keyboardShouldPersistTaps="handled"
             testID={TID.Screen.Recording}
             accessibilityState={{ busy: hydrationStatus === 'loading' }}
@@ -1675,7 +1749,7 @@ export default function RecordingScreen() {
             {!isDesktopWeb ? (
               <NoctaliaScreenHeader
                 includeTopInset={false}
-                prominentTitle
+                prominentTitle={!isCompactLandscape}
                 titleKey="nav.capture_dream"
                 actions={[{
                   icon: 'gear',
@@ -1686,10 +1760,11 @@ export default function RecordingScreen() {
             ) : null}
             <MockNavigationRail />
             <View style={mainContentStyle}>
-              <View style={[styles.bodySection, isCompactLandscape && styles.bodySectionCompact]}>
+              <View style={[styles.bodySection, isCompactLandscape && styles.bodySectionCompact, chatLayout && styles.chatBody]}>
                 {!editableCapture && !keyboardVisible ? <RecordingInputModeSelect
                   value={inputMode}
-                  disabled={interactionDisabled || isPreparingRecording || !!captureReview}
+                  disabled={interactionDisabled || isPreparingRecording}
+                  locked={!!captureReview || !!savedConversation}
                   onChange={handleInputModePreferenceChange}
                 /> : null}
 
@@ -1704,7 +1779,7 @@ export default function RecordingScreen() {
                 />
 
                 {editableCapture ? <CaptureDraftEditor draft={editableCapture} disabled={interactionDisabled}
-                  onChange={handleCaptureSectionChange} onClose={closeCaptureEditor} /> : captureReview ? <CaptureReviewPanel
+                  onChange={handleCaptureSectionChange} onClose={closeCaptureEditor} /> : captureReview && inputMode !== 'voice' ? <CaptureReviewPanel
                   text={captureReview.text} source={captureReview.source} disabled={interactionDisabled} onExit={openReviewExit}
                   onChange={(text) => {
                     if (leavingReviewRef.current) return;
@@ -1714,10 +1789,24 @@ export default function RecordingScreen() {
                 /> : inputMode === 'voice' ? (
                   <RecordingConversation
                     key={captureRestartCount}
+                    compact={isCompactLandscape}
+                    finishDisabled={isSaveDisabled}
+                    review={savedConversation?.review ?? captureReview ?? undefined}
+                    saved={!!savedConversation}
+                    onReviewChange={(text) => {
+                      const review = captureReviewRef.current;
+                      if (!review || savedConversation || interactionDisabled) return;
+                      const next = { ...review, text };
+                      if (noteInput(encodeCaptureReview(next))) { captureReviewRef.current = next; setCaptureReview(next); }
+                    }}
+                    onSave={() => handleSaveDream()}
+                    onExitReview={openReviewExit}
+                    onOpenSaved={() => { if (savedConversation) navigateToSavedDream(savedConversation.dream, { saved: true }); }}
+                    onNewCapture={resetComposer}
                     onRestart={handleRestartCapture}
                     transcript={transcript}
                     answer={currentAnswer}
-                    storyTranscript={conversation.done ? buildCaptureNarrative(answerBase ?? transcript) : answerBase ?? transcript}
+                    storyTranscript={savedConversation?.review.source ?? captureReview?.source ?? answerBase ?? transcript}
                     question={conversation.question}
                     loading={conversation.loading}
                     unavailable={conversation.unavailable}
@@ -1738,19 +1827,7 @@ export default function RecordingScreen() {
                     }}
                     onReview={openCaptureEditor}
                     onAnswerChange={handleConversationAnswerChange}
-                    onAnswerSubmit={async () => {
-                      captureMicrophoneMutedRef.current = true;
-                      if (isRecordingRef.current || dictationIntentRef.current === 'listening') {
-                        await stopRecording({ silent: true, reason: 'stop' });
-                      }
-                      answerInsertionRef.current = null;
-                      setAnswerBase(null);
-                      setCurrentAnswer('');
-                      captureMicrophoneMutedRef.current = false;
-                      const done = await askCaptureQuestion(baseTranscriptRef.current);
-                      if (done) await handleValidateCapture();
-                      Keyboard.dismiss();
-                    }}
+                    onAnswerSubmit={handleConversationSubmit}
                   />
                 ) : <RecordingTextInput
                   compact={isCompactLandscape}
@@ -1793,7 +1870,7 @@ export default function RecordingScreen() {
                   onClear={handleClearTranscript}
                 />}
 
-                {hydrationStatus === 'ready' && !editableCapture ? (
+                {hydrationStatus === 'ready' && !editableCapture && !savedConversation ? (
                   <RecordingDraftProgress
                     compact={inputMode === 'voice'}
                     inlineStatus={inputMode === 'text' && !captureReview}
@@ -1804,10 +1881,10 @@ export default function RecordingScreen() {
 
               </View>
 
-              {inlineFooter ? saveFooter : null}
+              {inlineFooter && !chatMode ? saveFooter : null}
             </View>
           </ScrollView>
-          {!inlineFooter ? (
+          {!inlineFooter && !chatMode ? (
             <View pointerEvents="box-none" style={fixedFooterStyle} onLayout={handleFooterLayout}>
               {saveFooter}
             </View>
@@ -1916,6 +1993,9 @@ export default function RecordingScreen() {
 }
 
 const styles = StyleSheet.create({
+  chatScrollContent: { flex: 1, minHeight: 0 },
+  chatMainContent: { minHeight: 0 },
+  chatBody: { minHeight: 0 },
   gradient: {
     flex: 1,
     position: 'relative',
