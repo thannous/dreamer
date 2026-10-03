@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { Alert, FlatList, StyleSheet, Text, TextInput, View } from 'react-native';
 import { router } from 'expo-router';
 import { LucidButton, LucidCard, LucidIconAction, LucidScreen, LucidScreenHeader, LucidSectionHeader } from '@/components/lucid/LucidUI';
-import { getLucidPalette, LucidSpace, LucidType } from '@/constants/lucidTheme';
+import { getLucidPalette, LucidRadius, LucidSpace, LucidType } from '@/constants/lucidTheme';
 import { useLucidTrainer } from '@/context/LucidTrainerContext';
 import { useTheme } from '@/context/ThemeContext';
 import { useLucidJournalImport } from '@/hooks/useLucidJournalImport';
@@ -317,5 +317,5 @@ const styles = StyleSheet.create({
   listContent: { gap: LucidSpace.md },
   body: { fontFamily: 'SpaceGrotesk_400Regular', fontSize: LucidType.caption[0], lineHeight: LucidType.caption[1] },
   group: { gap: LucidSpace.md },
-  editor: { minHeight: 140, borderWidth: 1, borderRadius: 12, padding: LucidSpace.md, textAlignVertical: 'top', fontSize: 16 },
+  editor: { minHeight: 140, borderWidth: 1, borderRadius: LucidRadius.md, padding: LucidSpace.md, textAlignVertical: 'top', fontFamily: 'SpaceGrotesk_400Regular', fontSize: LucidType.body[0], lineHeight: LucidType.body[1] },
 });

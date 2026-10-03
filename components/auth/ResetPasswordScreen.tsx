@@ -1,3 +1,4 @@
+import { LucidRadius } from '@/constants/lucidTheme';
 import React, { useEffect, useMemo, useState } from 'react';
 import { isAuthApiError } from '@supabase/auth-js';
 import {
@@ -16,7 +17,7 @@ import { router } from 'expo-router';
 import { AtmosphericBackground } from '@/components/inspiration/AtmosphericBackground';
 import { EyeIcon, EyeOffIcon } from '@/components/icons/DreamIcons';
 import { ThemeLayout } from '@/constants/journalTheme';
-import { getNoctaliaDesignTokens } from '@/constants/noctaliaDesign';
+import { getAuthDesignTokens } from '@/constants/authTheme';
 import { Fonts } from '@/constants/theme';
 import { useAuth } from '@/context/AuthContext';
 import { useTheme } from '@/context/ThemeContext';
@@ -48,7 +49,7 @@ const getUpdateErrorKey = (error: unknown): string => {
  */
 const ResetPasswordScreen: React.FC = () => {
   const { colors, mode } = useTheme();
-  const noctalia = useMemo(() => getNoctaliaDesignTokens(colors, mode), [colors, mode]);
+  const noctalia = useMemo(() => getAuthDesignTokens(colors, mode), [colors, mode]);
   const insets = useSafeAreaInsets();
   const { t } = useTranslation();
   const { user, loading: authLoading } = useAuth();
@@ -322,7 +323,7 @@ const ResetPasswordScreen: React.FC = () => {
       style={[styles.container, { backgroundColor: noctalia.screen.background }]}
       testID={TID.Screen.ResetPassword}
     >
-      <AtmosphericBackground />
+      {!isLucidTrainer ? <AtmosphericBackground /> : null}
       <ScrollView
         style={styles.scroll}
         contentContainerStyle={[
@@ -380,9 +381,9 @@ const styles = StyleSheet.create({
     textAlign: 'center',
   },
   title: {
-    fontFamily: Fonts.spaceGrotesk.bold,
-    fontSize: 22,
-    lineHeight: 28,
+    fontFamily: isLucidTrainer ? 'Fraunces_600SemiBold' : Fonts.spaceGrotesk.bold,
+    fontSize: isLucidTrainer ? 34 : 22,
+    lineHeight: isLucidTrainer ? 40 : 28,
     marginBottom: ThemeLayout.spacing.xs,
   },
   subtitle: {
@@ -393,7 +394,7 @@ const styles = StyleSheet.create({
   },
   input: {
     borderWidth: 1,
-    borderRadius: ThemeLayout.borderRadius.sm,
+    borderRadius: isLucidTrainer ? LucidRadius.lg : ThemeLayout.borderRadius.sm,
     paddingHorizontal: ThemeLayout.spacing.md,
     paddingVertical: 12,
     marginBottom: 10,
@@ -428,11 +429,11 @@ const styles = StyleSheet.create({
   },
   primaryButton: {
     alignItems: 'center',
-    borderRadius: ThemeLayout.borderRadius.sm,
+    borderRadius: isLucidTrainer ? LucidRadius.lg : ThemeLayout.borderRadius.sm,
     borderWidth: 1,
     justifyContent: 'center',
     marginTop: ThemeLayout.spacing.sm,
-    minHeight: 48,
+    minHeight: isLucidTrainer ? 52 : 48,
     paddingHorizontal: ThemeLayout.spacing.md,
     paddingVertical: 12,
   },
@@ -442,11 +443,11 @@ const styles = StyleSheet.create({
   },
   secondaryButton: {
     alignItems: 'center',
-    borderRadius: ThemeLayout.borderRadius.sm,
+    borderRadius: isLucidTrainer ? LucidRadius.lg : ThemeLayout.borderRadius.sm,
     borderWidth: 1,
     justifyContent: 'center',
     marginTop: ThemeLayout.spacing.sm,
-    minHeight: 48,
+    minHeight: isLucidTrainer ? 52 : 48,
     paddingHorizontal: ThemeLayout.spacing.md,
     paddingVertical: 12,
   },

@@ -145,7 +145,7 @@ const COPY = {
     cue_heard_in_dream: 'Signal entendu dans le rêve',
     cue_heard_woke: 'Signal entendu, réveil',
     cue_indeterminate: 'Signal incertain',
-    signs: 'Signes oniriques confirmés', noSigns: 'Aucun signe confirmé. Examine les suggestions dans ton Journal.', signFrequency: (count: number) => `${count} rêves sources`,
+    signs: 'Signes oniriques confirmés', noSigns: 'Aucun signe confirmé. Examinez les suggestions dans votre Journal.', signFrequency: (count: number) => `${count} rêves sources`,
     labTitle: 'Pratique de stabilisation', labHint: 'Compteurs locaux de pratique seulement. Ils ne prouvent aucun effet.', labPractices: 'Pratiques', labCompletions: 'Complétions', labRepeats: 'Répétitions', labOpen: 'Ouvrir le labo', labResume: 'Reprendre', labLoading: 'Chargement du labo…', labError: 'Stats du labo indisponibles. Les autres Insights restent visibles.',
   },
   es: {

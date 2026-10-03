@@ -112,6 +112,8 @@ export function LucidJourneyMap({
   labels,
   primaryActionLabel,
   primaryActionLoading = false,
+  primaryActionDisabled = false,
+  primaryActionDisabledReason,
   reduceMotion = false,
   immersive = false,
   immersiveTopInset = 0,
@@ -130,6 +132,8 @@ export function LucidJourneyMap({
   labels: LucidJourneyLabels;
   primaryActionLabel: string;
   primaryActionLoading?: boolean;
+  primaryActionDisabled?: boolean;
+  primaryActionDisabledReason?: string;
   reduceMotion?: boolean;
   /** Renders progress and the active-session CTA directly over the journey artwork. */
   immersive?: boolean;
@@ -233,6 +237,8 @@ export function LucidJourneyMap({
       compact={immersive && !reflow}
       labels={labels}
       loading={primaryActionLoading}
+      disabled={primaryActionDisabled}
+      disabledReason={primaryActionDisabledReason}
       objectiveNumberOfLines={immersive && reflow ? undefined : 2}
       reduceMotion={motionReduced}
       session={currentSession}
@@ -633,6 +639,8 @@ function CurrentSessionCard({
   session,
   labels,
   loading,
+  disabled,
+  disabledReason,
   compact = false,
   objectiveNumberOfLines,
   reduceMotion,
@@ -642,6 +650,8 @@ function CurrentSessionCard({
   session: LucidProgramSession;
   labels: LucidJourneyLabels;
   loading: boolean;
+  disabled: boolean;
+  disabledReason?: string;
   compact?: boolean;
   objectiveNumberOfLines?: number;
   reduceMotion: boolean;
@@ -719,27 +729,28 @@ function CurrentSessionCard({
       ) : null}
       <PressableScale
         accessibilityRole="button"
-        accessibilityState={{ busy: loading, disabled: loading }}
-        disabled={loading}
+        accessibilityState={{ busy: loading, disabled: loading || disabled }}
+        disabled={loading || disabled}
         onPress={onPress}
         scale={reduceMotion ? 1 : LucidPress.scale}
         testID="lucid-journey-continue"
         style={[
           styles.cta,
-          { backgroundColor: palette.accentStrong },
+          { backgroundColor: disabled ? palette.surfaceRaised : palette.accentStrong },
         ]}
       >
         {loading ? (
           <ActivityIndicator color={palette.backgroundDeep} />
         ) : (
           <>
-            <Text style={[styles.ctaLabel, { color: palette.backgroundDeep }]}>
+            <Text style={[styles.ctaLabel, { color: disabled ? palette.textMuted : palette.backgroundDeep }]}>
               {actionLabel}
             </Text>
-            <Ionicons name="arrow-forward" size={LucidIcon.md} color={palette.backgroundDeep} />
+            <Ionicons name="arrow-forward" size={LucidIcon.md} color={disabled ? palette.textMuted : palette.backgroundDeep} />
           </>
         )}
       </PressableScale>
+      {disabled && disabledReason ? <Text style={[styles.objective, { color: palette.amber }]}>{disabledReason}</Text> : null}
     </View>
   );
 }

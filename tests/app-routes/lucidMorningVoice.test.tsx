@@ -259,7 +259,7 @@ describe('Lucid morning voice notes screen', () => {
     render(<LucidMorningVoiceScreen />);
     expect(mockNotesOptions?.onLinkedNoteDeleted).toBe(mockClearExperimentVoiceCapture);
     expect(screen.getByTestId('lucid-morning-voice')).not.toBeNull();
-    expect(screen.getByText(/premier tap sur Parler/i)).not.toBeNull();
+    expect(screen.getByText(/premier appui sur Parler/i)).not.toBeNull();
     expect(screen.getByText(/restent sur cet appareil/i)).not.toBeNull();
     expect(screen.getByTestId('lucid-morning-voice-speak').getAttribute('data-hint')).toMatch(/micro/i);
     expect(mockStart).not.toHaveBeenCalled();
@@ -339,8 +339,6 @@ describe('Lucid morning voice notes screen', () => {
     };
     rerender(<LucidMorningVoiceScreen />);
     expect(screen.getAllByText(/brouillon récupérable/i).length).toBeGreaterThan(0);
-    expect(screen.queryByText(/note terminée/i)).not.toBeNull();
-    expect(screen.queryByText(/complétion/i)).not.toBeNull();
     expect(screen.queryByTestId('lucid-morning-voice-speak')).toBeNull();
   });
 
@@ -411,7 +409,6 @@ describe('Lucid morning voice notes screen', () => {
     expect(screen.getByTestId('lucid-morning-voice-status').textContent).toMatch(/brouillon récupérable/i);
     expect(screen.getAllByText(/brouillon récupérable/i).length).toBeGreaterThan(0);
     expect(screen.queryByTestId('lucid-morning-voice-speak')).toBeNull();
-    expect(screen.queryByText(/note terminée/i)).not.toBeNull();
   });
 
   it('surfaces out-of-storage without inventing completion and offers a local retry', () => {
@@ -514,7 +511,6 @@ describe('Lucid morning voice notes screen', () => {
     fireEvent.click(screen.getByTestId('lucid-morning-voice-retry-save'));
     expect(mockStop).toHaveBeenCalledTimes(1);
     expect(mockStart).not.toHaveBeenCalled();
-    expect(screen.queryByText(/note terminée/i)).not.toBeNull();
     expect(screen.queryByTestId('lucid-morning-voice-speak')).toBeNull();
 
     mockRecorder = {

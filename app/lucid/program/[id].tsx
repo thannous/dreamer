@@ -17,9 +17,9 @@ import {
   LucidScreen,
   LucidSectionHeader,
 } from '@/components/lucid/LucidUI';
-import { getLucidPalette, LucidRadius, LucidSpace, LucidType } from '@/constants/lucidTheme';
+import { getLucidPalette, LucidIcon, LucidRadius, LucidSpace, LucidType } from '@/constants/lucidTheme';
 import { useLucidTrainer } from '@/context/LucidTrainerContext';
-import { useTheme } from '@/context/ThemeContext';
+import { ThemeModeScope, useTheme } from '@/context/ThemeContext';
 import { useLucidNow } from '@/hooks/useLucidNow';
 import {
   buildLucidProgramCalendar,
@@ -31,6 +31,7 @@ import { canUseLucidWbtb, evaluateLucidSafetyPolicyFromState } from '@/lib/lucid
 
 const COPY = {
   en: {
+    blocked: 'WBTB is unavailable for your current sleep profile.',
     program: 'Guided program', journey: 'Journey', progress: 'Progress',
     evidence: 'Evidence and limits', limits: 'What the research cannot promise',
     unlockHint: 'Complete the previous session to unlock this one.',
@@ -44,6 +45,7 @@ const COPY = {
     safetyTitle: 'Protect your sleep tonight', unavailable: 'Program unavailable', about: 'Method and safety',
   },
   fr: {
+    blocked: 'Le WBTB est indisponible avec votre profil de sommeil actuel.',
     program: 'Programme guidé', journey: 'Parcours', progress: 'Progression',
     evidence: 'Preuves et limites', limits: 'Ce que la recherche ne peut pas promettre',
     unlockHint: 'Terminez la séance précédente pour débloquer celle-ci.',
@@ -57,6 +59,7 @@ const COPY = {
     safetyTitle: 'Ce soir, protégez votre sommeil', unavailable: 'Programme indisponible', about: 'Méthode et sécurité',
   },
   es: {
+    blocked: 'WBTB no está disponible para tu perfil de sueño actual.',
     program: 'Programa guiado', journey: 'Recorrido', progress: 'Progreso',
     evidence: 'Evidencia y límites', limits: 'Lo que la investigación no puede prometer',
     unlockHint: 'Completa la sesión anterior para desbloquear esta.',
@@ -70,6 +73,7 @@ const COPY = {
     safetyTitle: 'Protege tu sueño esta noche', unavailable: 'Programa no disponible', about: 'Método y seguridad',
   },
   de: {
+    blocked: 'WBTB ist für dein aktuelles Schlafprofil nicht verfügbar.',
     program: 'Geführtes Programm', journey: 'Pfad', progress: 'Fortschritt',
     evidence: 'Evidenz und Grenzen', limits: 'Was die Forschung nicht versprechen kann',
     unlockHint: 'Schließe die vorherige Einheit ab, um diese freizuschalten.',
@@ -83,6 +87,7 @@ const COPY = {
     safetyTitle: 'Schütze heute Nacht deinen Schlaf', unavailable: 'Programm nicht verfügbar', about: 'Methode und Sicherheit',
   },
   it: {
+    blocked: 'WBTB non è disponibile per il tuo profilo di sonno attuale.',
     program: 'Programma guidato', journey: 'Percorso', progress: 'Progresso',
     evidence: 'Prove e limiti', limits: 'Cosa la ricerca non può promettere',
     unlockHint: 'Completa la sessione precedente per sbloccare questa.',
@@ -234,16 +239,7 @@ export default function LucidProgramDetailScreen() {
     </View>
   );
 
-  const introduction = (
-    <View style={styles.introduction}>
-      {startedAt === null ? (
-        <Text style={[styles.summary, { color: palette.textSecondary }]}>{program.summary}</Text>
-      ) : null}
-      {programMeta}
-    </View>
-  );
-
-  const mildProgramDetails = (
+  const programDetails = (
     <View style={styles.programDetails} testID="lucid-program-details">
       <LucidSectionHeader title={program.title} caption={program.expandedName} />
       {programMeta}
@@ -251,11 +247,12 @@ export default function LucidProgramDetailScreen() {
   );
 
   const journey = (
+    <ThemeModeScope mode="dark">
     <LucidJourneyMap
       currentSession={currentSession}
       days={journeyDays}
-      immersive={id === 'mild'}
-      immersiveTopInset={id === 'mild' ? insets?.top ?? 0 : undefined}
+      immersive
+      immersiveTopInset={insets?.top ?? 0}
       labels={{
         progress: copy.progress,
         session: copy.session,
@@ -268,49 +265,39 @@ export default function LucidProgramDetailScreen() {
         safetyTitle: copy.safetyTitle,
         safetyBody: copy.calendarHint,
       }}
-      primaryActionLabel={actionLabel}
+      primaryActionLabel={wbtbBlocked && progress?.status !== 'completed' ? copy.unavailable : actionLabel}
       primaryActionLoading={busy}
+      primaryActionDisabled={wbtbBlocked && progress?.status !== 'completed'}
+      primaryActionDisabledReason={wbtbBlocked ? copy.blocked : undefined}
       progressValue={completed}
-      programLabel={id === 'mild' ? `${copy.journey} ${program.title}` : copy.journey}
+      programLabel={`${copy.journey} ${program.title}`}
       reduceMotion={state?.onboarding.accessibility?.reduceMotion ?? false}
       sessionsEnabled={wbtbBlocked ? false : active || progress?.status === 'completed'}
       started={startedAt !== null}
-      trailing={id === 'mild' ? (
+      trailing={(
         <LucidIconAction
           label={content.chrome.common.back}
           icon="arrow-back"
           onPress={close}
         />
-      ) : undefined}
+      )}
       onPrimaryAction={() => void handleStart()}
       onSessionPress={(session) => {
         if (wbtbBlocked && !progress?.completedExerciseIds.includes(session.id)) return;
         router.push(`/lucid/session/${id}/${session.session}`);
       }}
     />
+    </ThemeModeScope>
   );
-
-  const immersiveMild = id === 'mild';
 
   return (
     <LucidScreen
-      title={immersiveMild ? undefined : program.title}
-      subtitle={immersiveMild ? undefined : program.expandedName}
-      trailing={immersiveMild ? undefined : <LucidIconAction label={content.chrome.common.back} icon="arrow-back" onPress={close} />}
-      contentStyle={immersiveMild ? styles.immersiveScreenContent : undefined}
+      contentStyle={styles.immersiveScreenContent}
       testID="lucid-program-detail"
     >
-      {immersiveMild ? (
-        journey
-      ) : (
-        <>
-          {introduction}
-          {journey}
-        </>
-      )}
-
-      <View style={[styles.supportingContent, immersiveMild && styles.supportingContentImmersive]}>
-        {immersiveMild ? mildProgramDetails : null}
+      {journey}
+      <View style={[styles.supportingContent, styles.supportingContentImmersive]}>
+        {programDetails}
 
         {active || paused ? (
           <View
@@ -346,7 +333,7 @@ export default function LucidProgramDetailScreen() {
             testID="lucid-program-about-toggle"
           >
             <View style={styles.disclosureTitleRow}>
-              <Ionicons name="information-circle-outline" size={22} color={palette.accent} />
+              <Ionicons name="information-circle-outline" size={LucidIcon.lg} color={palette.accent} />
               <Text style={[styles.disclosureTitle, { color: palette.text }]}>{copy.about}</Text>
             </View>
             <Ionicons name={aboutExpanded ? 'chevron-up' : 'chevron-down'} size={20} color={palette.textSecondary} />
@@ -391,7 +378,6 @@ const styles = StyleSheet.create({
     paddingHorizontal: 0,
     gap: 0,
   },
-  introduction: { gap: LucidSpace.sm, paddingBottom: LucidSpace.xs },
   programDetails: { gap: LucidSpace.sm },
   summary: { fontFamily: 'SpaceGrotesk_400Regular', fontSize: LucidType.bodySm[0], lineHeight: LucidType.bodySm[1] },
   meta: { flexDirection: 'row', flexWrap: 'wrap', gap: LucidSpace.xs },

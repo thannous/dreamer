@@ -1,3 +1,6 @@
+import Ionicons from '@expo/vector-icons/Ionicons';
+import { LucidRadius } from '@/constants/lucidTheme';
+import { isLucidTrainer } from '@/lib/appVariant';
 import React, { useCallback, useEffect, useMemo, useState, type FormEvent } from 'react';
 import { router } from 'expo-router';
 import { AuthApiError, isAuthApiError } from '@supabase/auth-js';
@@ -19,7 +22,7 @@ import { useTheme } from '@/context/ThemeContext';
 import { useLanguage } from '@/context/LanguageContext';
 import { useTranslation } from '@/hooks/useTranslation';
 import { ThemeLayout } from '@/constants/journalTheme';
-import { getNoctaliaDesignTokens } from '@/constants/noctaliaDesign';
+import { getAuthDesignTokens } from '@/constants/authTheme';
 import { Fonts } from '@/constants/theme';
 import { EmailVerificationPendingDialog, EmailVerificationSuccessDialog } from '@/components/auth/EmailVerificationDialog';
 import AppleSignInButton from '@/components/auth/AppleSignInButton';
@@ -44,7 +47,7 @@ import {
 } from '@/lib/navigationIntents';
 import { isSupabaseConfigured } from '@/lib/supabase';
 import { isMockModeEnabled as isMockModeEnabledEnv } from '@/lib/env';
-import { StandardBottomSheet } from '@/components/ui/StandardBottomSheet';
+import { AuthBottomSheet as StandardBottomSheet } from '@/components/auth/AuthBottomSheet';
 import { IconSymbol } from '@/components/ui/icon-symbol';
 
 const isMockModeEnabled = isMockModeEnabledEnv();
@@ -102,7 +105,7 @@ export const EmailAuthCard: React.FC<Props> = ({
   showSignOut = true,
 }) => {
   const { colors, mode } = useTheme();
-  const noctalia = useMemo(() => getNoctaliaDesignTokens(colors, mode), [colors, mode]);
+  const noctalia = useMemo(() => getAuthDesignTokens(colors, mode), [colors, mode]);
   const isEmbedded = presentation === 'embedded';
   const cardBg = noctalia.surface.raised;
   const { t } = useTranslation();
@@ -110,6 +113,14 @@ export const EmailAuthCard: React.FC<Props> = ({
   const onboarding = useOptionalOnboarding();
   const dreamsActions = useOptionalDreamsActions();
   const { language } = useLanguage();
+  const lucidDescription = {
+    en: 'Local training works without an account. Sync remains optional; guest training is imported only with your agreement.',
+    fr: 'L’entraînement local fonctionne sans compte. La synchronisation reste facultative ; l’import des données invitées demande votre accord.',
+    es: 'El entrenamiento local funciona sin cuenta. La sincronización es opcional; importar datos de invitado requiere tu consentimiento.',
+    de: 'Lokales Training funktioniert ohne Konto. Synchronisierung ist optional; Gastdaten werden nur mit deiner Zustimmung importiert.',
+    it: 'Il training locale funziona senza account. La sincronizzazione è facoltativa; i dati ospite vengono importati solo con il tuo consenso.',
+    pt: 'O treino local funciona sem conta. A sincronização é opcional; importar dados de convidado exige o seu consentimento.',
+  }[language];
 
   const [formMode, setFormMode] = useState(initialMode);
   const [email, setEmail] = useState('');
@@ -611,7 +622,7 @@ export const EmailAuthCard: React.FC<Props> = ({
             testID={formMode === 'signup' ? TID.Button.AuthSignUp : TID.Button.AuthSignIn}
             disabled={emailActionsDisabled}
             onPress={formMode === 'signup' ? attemptSignUp : attemptSignIn}
-            style={[styles.btn, { minHeight: 48, backgroundColor: emailActionsDisabled ? noctalia.action.disabled : noctalia.action.primary, borderColor: emailActionsDisabled ? noctalia.action.disabledBorder : noctalia.action.primaryBorder }]}>
+            style={[styles.btn, { minHeight: isLucidTrainer ? 52 : 48, backgroundColor: emailActionsDisabled ? noctalia.action.disabled : noctalia.action.primary, borderColor: emailActionsDisabled ? noctalia.action.disabledBorder : noctalia.action.primaryBorder }]}>
             {submitting ? <ActivityIndicator color={noctalia.action.primaryText} /> : (
               <Text style={[styles.btnText, { color: emailActionsDisabled ? noctalia.action.disabledText : noctalia.action.primaryText, textAlign: 'center' }]}>
                 {t(formMode === 'signup' ? 'settings.account.button.sign_up' : 'settings.account.button.sign_in')}
@@ -620,7 +631,7 @@ export const EmailAuthCard: React.FC<Props> = ({
           </Pressable>
           <Pressable accessibilityRole="button" disabled={isBusy} testID="auth.switchMode"
             onPress={() => { setFormMode(formMode === 'signup' ? 'signin' : 'signup'); closeForgotPassword(); }}
-            style={{ minHeight: 48, justifyContent: 'center', alignItems: 'center' }}>
+            style={{ minHeight: isLucidTrainer ? 52 : 48, justifyContent: 'center', alignItems: 'center' }}>
             <Text style={{ color: noctalia.text.secondary, textAlign: 'center' }}>
               {t(formMode === 'signup' ? 'settings.account.already_registered' : 'settings.account.button.sign_up')}
             </Text>
@@ -844,7 +855,7 @@ export const EmailAuthCard: React.FC<Props> = ({
           { color: noctalia.text.secondary },
         ]}
       >
-        {t('settings.account.description_signed_in')}
+        {isLucidTrainer ? lucidDescription : t('settings.account.description_signed_in')}
       </Text>
 
       <EmailVerificationBanner isCompact={isCompact} />
@@ -913,7 +924,7 @@ export const EmailAuthCard: React.FC<Props> = ({
         ]}
         testID={isEmbedded ? undefined : 'settings-account-migration-hint'}
       >
-        {t('settings.account.description_signed_out')}
+        {isLucidTrainer ? lucidDescription : t('settings.account.description_signed_out')}
       </Text>
 
       {unverifiedEmail ? (
@@ -1091,7 +1102,11 @@ export const EmailAuthCard: React.FC<Props> = ({
             },
           ]}
         >
-          <IconSymbol name="moon.stars.fill" size={24} color={noctalia.accent.soft} />
+          {isLucidTrainer ? (
+            <Ionicons name="person-outline" size={24} color={noctalia.accent.text} />
+          ) : (
+            <IconSymbol name="moon.stars.fill" size={24} color={noctalia.accent.soft} />
+          )}
         </View>
         <View style={styles.summaryCopy}>
           <View
@@ -1120,14 +1135,14 @@ export const EmailAuthCard: React.FC<Props> = ({
           ) : null}
           {user ? (
             <Text style={[styles.summaryDescription, { color: noctalia.text.secondary }]}>
-              {t('settings.account.description_signed_in')}
+              {isLucidTrainer ? lucidDescription : t('settings.account.description_signed_in')}
             </Text>
           ) : (
             <Text
               style={[styles.summaryDescription, { color: noctalia.text.secondary }]}
               testID="settings-account-migration-hint"
             >
-              {t('settings.account.description_signed_out')}
+              {isLucidTrainer ? lucidDescription : t('settings.account.description_signed_out')}
             </Text>
           )}
         </View>
@@ -1165,7 +1180,7 @@ export const EmailAuthCard: React.FC<Props> = ({
         <View style={styles.summaryActions}>
           <Pressable
             accessibilityRole="button"
-            onPress={() => setAccountSheetVisible(true)}
+            onPress={() => { if (isLucidTrainer) setFormMode('signup'); setAccountSheetVisible(true); }}
             style={({ pressed }) => [
               styles.summaryPrimaryAction,
               {
@@ -1182,7 +1197,7 @@ export const EmailAuthCard: React.FC<Props> = ({
           </Pressable>
           <Pressable
             accessibilityRole="button"
-            onPress={() => setAccountSheetVisible(true)}
+            onPress={() => { if (isLucidTrainer) setFormMode('signin'); setAccountSheetVisible(true); }}
             style={({ pressed }) => [
               styles.summarySecondaryAction,
               {
@@ -1338,7 +1353,7 @@ const styles = StyleSheet.create({
   },
   summaryPrimaryAction: {
     alignItems: 'center',
-    borderRadius: ThemeLayout.borderRadius.sm,
+    borderRadius: isLucidTrainer ? LucidRadius.lg : ThemeLayout.borderRadius.sm,
     borderWidth: 1,
     flex: 1.4,
     justifyContent: 'center',
@@ -1347,7 +1362,7 @@ const styles = StyleSheet.create({
   },
   summarySecondaryAction: {
     alignItems: 'center',
-    borderRadius: ThemeLayout.borderRadius.sm,
+    borderRadius: isLucidTrainer ? LucidRadius.lg : ThemeLayout.borderRadius.sm,
     borderWidth: 0,
     flex: 1,
     justifyContent: 'center',
@@ -1356,7 +1371,7 @@ const styles = StyleSheet.create({
   },
   summarySingleAction: {
     alignItems: 'center',
-    borderRadius: ThemeLayout.borderRadius.sm,
+    borderRadius: isLucidTrainer ? LucidRadius.lg : ThemeLayout.borderRadius.sm,
     borderWidth: 1,
     justifyContent: 'center',
     minHeight: 54,
@@ -1404,7 +1419,7 @@ const styles = StyleSheet.create({
   },
   input: {
     borderWidth: 1,
-    borderRadius: ThemeLayout.borderRadius.sm,
+    borderRadius: isLucidTrainer ? LucidRadius.lg : ThemeLayout.borderRadius.sm,
     paddingHorizontal: ThemeLayout.spacing.md,
     paddingVertical: 12,
     marginBottom: 10,
@@ -1443,7 +1458,7 @@ const styles = StyleSheet.create({
     flex: 1,
     paddingVertical: 12,
     paddingHorizontal: ThemeLayout.spacing.md,
-    borderRadius: ThemeLayout.borderRadius.sm,
+    borderRadius: isLucidTrainer ? LucidRadius.lg : ThemeLayout.borderRadius.sm,
     alignItems: 'center',
     justifyContent: 'center',
     borderWidth: 1,
@@ -1476,7 +1491,7 @@ const styles = StyleSheet.create({
     lineHeight: 18,
   },
   userInfo: {
-    borderRadius: ThemeLayout.borderRadius.sm,
+    borderRadius: isLucidTrainer ? LucidRadius.lg : ThemeLayout.borderRadius.sm,
     padding: ThemeLayout.spacing.md,
     marginBottom: ThemeLayout.spacing.sm,
   },
@@ -1521,7 +1536,7 @@ const styles = StyleSheet.create({
     marginBottom: ThemeLayout.spacing.xs,
   },
   mockSection: {
-    borderRadius: ThemeLayout.borderRadius.md,
+    borderRadius: isLucidTrainer ? LucidRadius.lg : ThemeLayout.borderRadius.md,
     padding: ThemeLayout.spacing.md,
   },
   mockSectionEmbedded: {
@@ -1544,7 +1559,7 @@ const styles = StyleSheet.create({
     gap: 10,
   },
   mockButton: {
-    borderRadius: ThemeLayout.borderRadius.sm,
+    borderRadius: isLucidTrainer ? LucidRadius.lg : ThemeLayout.borderRadius.sm,
     borderWidth: 1,
     paddingHorizontal: 14,
     paddingVertical: 11,
@@ -1571,7 +1586,7 @@ const styles = StyleSheet.create({
   },
   unverifiedBanner: {
     borderWidth: 1,
-    borderRadius: ThemeLayout.borderRadius.md,
+    borderRadius: isLucidTrainer ? LucidRadius.lg : ThemeLayout.borderRadius.md,
     padding: ThemeLayout.spacing.md,
     marginBottom: ThemeLayout.spacing.md,
   },
@@ -1589,7 +1604,7 @@ const styles = StyleSheet.create({
     fontFamily: Fonts.spaceGrotesk.regular,
   },
   unverifiedAction: {
-    borderRadius: ThemeLayout.borderRadius.sm,
+    borderRadius: isLucidTrainer ? LucidRadius.lg : ThemeLayout.borderRadius.sm,
     borderWidth: 1,
     paddingVertical: ThemeLayout.spacing.xs,
     paddingHorizontal: ThemeLayout.spacing.sm,
@@ -1622,7 +1637,7 @@ const styles = StyleSheet.create({
   },
   forgotPasswordPanel: {
     borderWidth: 1,
-    borderRadius: ThemeLayout.borderRadius.md,
+    borderRadius: isLucidTrainer ? LucidRadius.lg : ThemeLayout.borderRadius.md,
     padding: ThemeLayout.spacing.md,
     marginTop: ThemeLayout.spacing.md,
   },

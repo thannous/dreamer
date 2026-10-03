@@ -355,7 +355,7 @@ const styles = StyleSheet.create({
   destinationBottom: { gap: LucidSpace.md },
   destinationTitleRow: { flexDirection: 'row', alignItems: 'flex-end', gap: LucidSpace.md },
   destinationCopy: { flex: 1, gap: 2 },
-  title: { fontFamily: 'Fraunces_600SemiBold', fontSize: LucidType.h2[0], lineHeight: LucidType.h2[1] },
+  title: { fontFamily: 'SpaceGrotesk_700Bold', fontSize: LucidType.h2[0], lineHeight: LucidType.h2[1] },
   expanded: { fontFamily: 'SpaceGrotesk_500Medium', fontSize: LucidType.caption[0], lineHeight: LucidType.caption[1] },
   why: { fontFamily: 'SpaceGrotesk_400Regular', fontSize: LucidType.caption[0], lineHeight: LucidType.caption[1] },
   noticeRow: { flexDirection: 'row', alignItems: 'flex-start', gap: LucidSpace.sm, paddingHorizontal: LucidSpace.sm },

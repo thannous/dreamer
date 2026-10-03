@@ -1,3 +1,6 @@
+import { AuthBottomSheet } from './AuthBottomSheet';
+import { LucidRadius } from '@/constants/lucidTheme';
+import { isLucidTrainer } from '@/lib/appVariant';
 import React, { useMemo } from 'react';
 import { ActivityIndicator, StyleSheet, Text, View } from 'react-native';
 
@@ -5,7 +8,7 @@ import { BottomSheet } from '@/components/ui/BottomSheet';
 import { BottomSheetActions, BottomSheetPrimaryAction, BottomSheetSecondaryAction } from '@/components/ui/BottomSheetActions';
 import { EmailVerificationIcon } from '@/components/icons/EmailVerificationIcon';
 import { ThemeLayout } from '@/constants/journalTheme';
-import { getNoctaliaDesignTokens } from '@/constants/noctaliaDesign';
+import { getAuthDesignTokens } from '@/constants/authTheme';
 import { Fonts } from '@/constants/theme';
 import { useTheme } from '@/context/ThemeContext';
 import { useTranslation } from '@/hooks/useTranslation';
@@ -34,10 +37,15 @@ export const EmailVerificationPendingDialog: React.FC<EmailVerificationPendingDi
   cooldownMessage,
 }) => {
   const { colors, mode } = useTheme();
-  const noctalia = useMemo(() => getNoctaliaDesignTokens(colors, mode), [colors, mode]);
+  const noctalia = useMemo(() => getAuthDesignTokens(colors, mode), [colors, mode]);
   const { t } = useTranslation();
 
   const title = t('settings.account.verification.title');
+  if (isLucidTrainer) return <AuthBottomSheet visible={visible} onClose={onClose} title={title} subtitle={`${t('settings.account.verification.subtitle_prefix')} ${email}`} actions={{ primaryLabel: resend.label, primaryLoading: resend.state === 'loading', primaryDisabled: resend.state === 'disabled', onPrimary: resend.onPress, primaryTestID: resend.testID ?? TID.Button.AuthResendVerification, secondaryLabel: t('common.done'), onSecondary: onClose, secondaryTestID: TID.Button.AuthCloseVerification }}>
+    {statusMessage ? <Text style={[styles.status, { color: noctalia.text.secondary }]} testID={TID.Text.AuthEmailVerificationStatus}>{statusMessage}</Text> : null}
+    {cooldownMessage ? <Text style={[styles.cooldown, { color: noctalia.text.secondary }]}>{cooldownMessage}</Text> : null}
+  </AuthBottomSheet>;
+
 
   return (
     <BottomSheet
@@ -45,6 +53,7 @@ export const EmailVerificationPendingDialog: React.FC<EmailVerificationPendingDi
       onClose={onClose}
       style={[styles.sheet, { backgroundColor: noctalia.surface.raised }]}
       backdropColor={noctalia.surface.overlay}
+      surfaceColor={isLucidTrainer ? noctalia.surface.raised : undefined}
     >
       <View style={styles.header}>
         {/* Hero icon */}
@@ -119,8 +128,10 @@ export const EmailVerificationSuccessDialog: React.FC<EmailVerificationSuccessDi
   onClose,
 }) => {
   const { colors, mode } = useTheme();
-  const noctalia = useMemo(() => getNoctaliaDesignTokens(colors, mode), [colors, mode]);
+  const noctalia = useMemo(() => getAuthDesignTokens(colors, mode), [colors, mode]);
   const { t } = useTranslation();
+
+  if (isLucidTrainer) return <AuthBottomSheet visible={visible} onClose={onClose} title={t('settings.account.verification.success_title')} subtitle={t('settings.account.verification.success_subtitle')} actions={{ primaryLabel: t('common.continue'), onPrimary: onClose, primaryTestID: TID.Button.AuthCloseVerification }} />;
 
   return (
     <BottomSheet
@@ -128,6 +139,7 @@ export const EmailVerificationSuccessDialog: React.FC<EmailVerificationSuccessDi
       onClose={onClose}
       style={[styles.sheet, { backgroundColor: noctalia.surface.raised }]}
       backdropColor={noctalia.surface.overlay}
+      surfaceColor={isLucidTrainer ? noctalia.surface.raised : undefined}
     >
       <View style={styles.header}>
         <View style={styles.iconContainer}>
@@ -189,7 +201,7 @@ const styles = StyleSheet.create({
     gap: ThemeLayout.spacing.xs,
     paddingHorizontal: ThemeLayout.spacing.md,
     paddingVertical: ThemeLayout.spacing.sm,
-    borderRadius: ThemeLayout.borderRadius.md,
+    borderRadius: isLucidTrainer ? LucidRadius.lg : ThemeLayout.borderRadius.md,
     marginTop: ThemeLayout.spacing.sm,
   },
   badgeText: {

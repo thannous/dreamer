@@ -1,8 +1,10 @@
+import { LucidRadius } from '@/constants/lucidTheme';
+import { isLucidTrainer } from '@/lib/appVariant';
 import React, { useMemo, useState } from 'react';
 import { View, Text, StyleSheet, Pressable, ActivityIndicator, Alert, Platform } from 'react-native';
 import { signInWithGoogle, signInWithGoogleWeb } from '@/lib/auth';
 import { ThemeLayout } from '@/constants/journalTheme';
-import { getNoctaliaDesignTokens } from '@/constants/noctaliaDesign';
+import { getAuthDesignTokens } from '@/constants/authTheme';
 import { Fonts } from '@/constants/theme';
 import { useTheme } from '@/context/ThemeContext';
 import { useTranslation } from '@/hooks/useTranslation';
@@ -30,7 +32,7 @@ export default function GoogleSignInButton({
 }) {
   const [loading, setLoading] = useState(false);
   const { colors, mode } = useTheme();
-  const noctalia = useMemo(() => getNoctaliaDesignTokens(colors, mode), [colors, mode]);
+  const noctalia = useMemo(() => getAuthDesignTokens(colors, mode), [colors, mode]);
   const { t } = useTranslation();
 
   const handleGoogleSignIn = async () => {
@@ -116,7 +118,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     paddingVertical: 12,
     paddingHorizontal: ThemeLayout.spacing.md,
-    borderRadius: ThemeLayout.borderRadius.sm,
+    borderRadius: isLucidTrainer ? LucidRadius.lg : ThemeLayout.borderRadius.sm,
     borderWidth: 1,
     gap: ThemeLayout.spacing.sm,
   },

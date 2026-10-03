@@ -4,6 +4,7 @@ import { Alert, StyleSheet, Text, View } from 'react-native';
 
 import {
   LucidButton,
+  LucidDisclosure,
   LucidIconAction,
   LucidScreen,
   LucidSectionHeader,
@@ -15,6 +16,7 @@ import type { LucidHkSleepCategory, LucidHkSleepIssueKind } from '@/lib/lucid/he
 import type { LucidLocale } from '@/lib/lucid/model';
 import { closeLucidRoute } from '@/lib/lucid/routes';
 import {
+  getLucidHealthKitAvailability,
   queryLucidHealthKitSleepAnalysis,
   requestLucidHealthKitSleepReadAuthorization,
 } from '@/services/lucidHealthKit';
@@ -47,7 +49,7 @@ const COPY = {
     title: 'Apple Health sleep import',
     back: 'Back',
     notice:
-      'This local prototype can import past Apple Health sleepAnalysis samples. It does not detect REM in real time, write Health data, or drive night cues.',
+      'Optional import of the last seven days of Apple Health sleep data. Read-only, kept on this device. No live sleep detection or night cues.',
     connect: 'Connect Apple Health and import',
     connecting: 'Importing…',
     working: 'Working…',
@@ -104,7 +106,7 @@ const COPY = {
     title: 'Import sommeil Apple Health',
     back: 'Retour',
     notice:
-      'Ce prototype local peut importer d’anciens échantillons sleepAnalysis d’Apple Health. Il ne détecte pas le REM en temps réel, n’écrit pas dans Health et ne pilote aucun signal nocturne.',
+      'Import facultatif des données de sommeil Apple Health des sept derniers jours. Lecture seule, conservée sur cet appareil. Aucun suivi en direct ni signal nocturne.',
     connect: 'Connecter Apple Health et importer',
     connecting: 'Import…',
     working: 'Traitement…',
@@ -161,7 +163,7 @@ const COPY = {
     title: 'Importación de sueño de Apple Health',
     back: 'Atrás',
     notice:
-      'Este prototipo local puede importar muestras sleepAnalysis pasadas de Apple Health. No detecta REM en tiempo real, no escribe en Health ni activa señales nocturnas.',
+      'Importación opcional de los últimos siete días de sueño de Apple Health. Solo lectura, guardada en este dispositivo. Sin detección en directo ni señales nocturnas.',
     connect: 'Conectar Apple Health e importar',
     connecting: 'Importando…',
     working: 'Trabajando…',
@@ -218,7 +220,7 @@ const COPY = {
     title: 'Apple-Health-Schlafimport',
     back: 'Zurück',
     notice:
-      'Dieser lokale Prototyp kann frühere Apple-Health-sleepAnalysis-Proben importieren. Er erkennt REM nicht in Echtzeit, schreibt nicht in Health und steuert keine Nachtsignale.',
+      'Optionaler Import der letzten sieben Tage Schlafdaten aus Apple Health. Nur lesend, auf diesem Gerät gespeichert. Keine Live-Erkennung oder Nachtsignale.',
     connect: 'Apple Health verbinden und importieren',
     connecting: 'Importiere…',
     working: 'Arbeite…',
@@ -275,7 +277,7 @@ const COPY = {
     title: 'Importazione sonno Apple Health',
     back: 'Indietro',
     notice:
-      'Questo prototipo locale può importare campioni sleepAnalysis passati di Apple Health. Non rileva il REM in tempo reale, non scrive in Health e non guida segnali notturni.',
+      'Importazione facoltativa degli ultimi sette giorni di sonno da Apple Health. Sola lettura, salvata su questo dispositivo. Nessun rilevamento dal vivo o segnale notturno.',
     connect: 'Collega Apple Health e importa',
     connecting: 'Importazione…',
     working: 'Elaborazione…',
@@ -397,6 +399,12 @@ export default function LucidSleepIntegrationScreen() {
   const copy = COPY[content.locale];
   const [snapshot, setSnapshot] = useState<LucidHealthKitSnapshot | null>(null);
   const [activeAction, setActiveAction] = useState<'import' | 'disable' | 'delete' | null>(null);
+  const [healthAvailable, setHealthAvailable] = useState(false);
+  useEffect(() => {
+    let active = true;
+    void getLucidHealthKitAvailability().then(value => { if (active) setHealthAvailable(value === 'available'); }).catch(() => { if (active) setHealthAvailable(false); });
+    return () => { active = false; };
+  }, []);
   const [liveStatus, setLiveStatus] = useState<LiveStatus>('idle');
 
   const close = () => closeLucidRoute(router, '/lucid/(tabs)/settings');
@@ -566,6 +574,7 @@ export default function LucidSleepIntegrationScreen() {
     ]);
   }, [activeAction, copy, snapshot, userScope]);
 
+  const diagnosticsLabel = { en: 'Development diagnostics', fr: 'Diagnostic de développement', es: 'Diagnóstico de desarrollo', de: 'Entwicklungsdiagnose', it: 'Diagnostica di sviluppo' }[content.locale];
   const statusLabel =
     visibleSnapshot?.status === 'imported'
       ? copy.imported
@@ -592,7 +601,8 @@ export default function LucidSleepIntegrationScreen() {
       <LucidButton
         label={activeAction === 'import' ? copy.connecting : copy.connect}
         icon="cloud-download"
-        disabled={busy}
+        disabled={busy || !healthAvailable}
+        disabledReason={!healthAvailable ? copy.liveUnavailable : undefined}
         onPress={() => void importSleep()}
         testID="lucid-sleep-connect"
       />
@@ -603,6 +613,8 @@ export default function LucidSleepIntegrationScreen() {
         <Text style={[styles.body, { color: palette.textSecondary }]}>
           {copy.window}: {formatWindow(visibleSnapshot?.rangeStartMs ?? null, visibleSnapshot?.rangeEndMs ?? null, content.locale)}
         </Text>
+        {__DEV__ ? (
+          <LucidDisclosure title={diagnosticsLabel} testID="lucid-health-diagnostics">
         <Text style={[styles.body, { color: palette.textSecondary }]}>
           {copy.granularity}: {copy[normalization?.granularity ?? 'unknown']}
         </Text>
@@ -642,6 +654,9 @@ export default function LucidSleepIntegrationScreen() {
             {copy[ISSUE_KEYS[issue.kind]]}
           </Text>
         ))}
+
+          </LucidDisclosure>
+        ) : null}
       </View>
 
       <LucidButton

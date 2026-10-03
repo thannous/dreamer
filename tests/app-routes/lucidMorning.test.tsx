@@ -431,7 +431,7 @@ describe('Lucid morning review form', () => {
   it('keeps honest Speak copy in every locale before the tap', () => {
     const expected = {
       en: /The first tap asks for the microphone/,
-      fr: /Le premier tap demande le micro/,
+      fr: /Le premier appui demande le micro/,
       es: /El primer toque pide el micrófono/,
       de: /Der erste Tipp fragt nach dem Mikrofon/,
       it: /Il primo tap chiede il microfono/,
