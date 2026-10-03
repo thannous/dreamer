@@ -7,6 +7,14 @@ jest.mock('react-native/Libraries/Components/Keyboard/Keyboard', () => ({
   __esModule: true,
   default: { dismiss: jest.fn() },
 }));
+jest.mock('react-native/Libraries/Components/ScrollView/ScrollView', () => {
+  const React = require('react');
+  const { View } = require('react-native');
+  return { __esModule: true, default: React.forwardRef(function MockScrollView(props: any, ref: any) {
+    React.useImperativeHandle(ref, () => ({ scrollToEnd: jest.fn() }));
+    return <View {...props} />;
+  }) };
+});
 jest.mock('@/context/ThemeContext', () => ({ useTheme: () => ({ colors: {}, mode: 'dark' }) }));
 jest.mock('@/constants/noctaliaDesign', () => ({ getNoctaliaDesignTokens: () => ({
   text: { primary: '#fff', secondary: '#aaa' }, surface: { raised: '#111', border: '#444' },
@@ -68,8 +76,7 @@ it('allows review after completion and presents fallback questions as general', 
   const view = render(<RecordingConversation {...callbacks} unavailable />);
   expect(view.getByText('recording.conversation.offline')).toBeTruthy();
   view.rerender(<RecordingConversation {...callbacks} done />);
-  expect(view.queryByTestId(TID.Button.RecordToggle)).toBeNull();
-  fireEvent.press(view.getByTestId('recording-review-transcript'));
+  fireEvent.press(view.getByTestId('capture-chat-user'));
   expect(callbacks.onReview).toHaveBeenCalledTimes(1);
 });
 

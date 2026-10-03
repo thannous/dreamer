@@ -40,6 +40,7 @@ export interface NoctaliaHeaderChip {
 
 interface NoctaliaScreenHeaderProps {
   titleKey: string;
+  prominentTitle?: boolean;
   variant?: 'standard' | 'editorial';
   includeTopInset?: boolean;
   actions?: NoctaliaHeaderAction[];
@@ -51,6 +52,7 @@ interface NoctaliaScreenHeaderProps {
 
 export const NoctaliaScreenHeader = memo(function NoctaliaScreenHeader({
   titleKey,
+  prominentTitle = false,
   variant = 'standard',
   includeTopInset = true,
   actions = [],
@@ -76,7 +78,7 @@ export const NoctaliaScreenHeader = memo(function NoctaliaScreenHeader({
   const quietIconColor = noctalia.text.secondary;
 
   return (
-    <View style={[styles.container, variant === 'editorial' && styles.editorialContainer, { paddingTop: (includeTopInset ? insets.top : 0) + ThemeLayout.spacing.sm, borderBottomColor: noctalia.surface.border }]}>
+    <View style={[styles.container, prominentTitle && styles.prominentContainer, variant === 'editorial' && styles.editorialContainer, { paddingTop: (includeTopInset ? insets.top : 0) + ThemeLayout.spacing.sm, borderBottomColor: noctalia.surface.border }]}>
       <View style={[styles.titleRow, isNarrow && styles.titleRowNarrow, stackActions && styles.titleRowStacked, wrapInlineSlot && styles.searchRowWrapped]}>
         <View style={[styles.titleBlock, stackActions && styles.titleBlockStacked,
           Boolean(inlineSlot) && (canInlineSlot
@@ -84,7 +86,7 @@ export const NoctaliaScreenHeader = memo(function NoctaliaScreenHeader({
             : { flex: 0, width: '100%', paddingRight: stackActions ? 0 : actions.length * 52 }),
         ]}>
           <Text
-            style={[styles.brand, variant === 'editorial' && styles.editorialBrand, { color: noctalia.text.primary }]}
+            style={[styles.brand, prominentTitle && styles.quietBrand, variant === 'editorial' && styles.editorialBrand, { color: noctalia.text.primary }]}
             numberOfLines={wrapTitle ? undefined : 1}
             adjustsFontSizeToFit={!wrapTitle}
             minimumFontScale={0.84}
@@ -92,8 +94,8 @@ export const NoctaliaScreenHeader = memo(function NoctaliaScreenHeader({
             Noctalia
           </Text>
           <Text
-            style={[styles.subtitle, variant === 'editorial' && styles.editorialTitle, { color: variant === 'editorial' ? noctalia.text.primary : noctalia.text.secondary }]}
-            accessibilityRole={variant === 'editorial' ? 'header' : undefined}
+            accessibilityRole={prominentTitle || variant === 'editorial' ? 'header' : undefined}
+            style={[styles.subtitle, prominentTitle && styles.prominentTitle, variant === 'editorial' && styles.editorialTitle, { color: prominentTitle || variant === 'editorial' ? noctalia.text.primary : noctalia.text.secondary }]}
             numberOfLines={wrapTitle ? undefined : 1}
             adjustsFontSizeToFit={!wrapTitle}
             minimumFontScale={0.84}
@@ -197,6 +199,14 @@ const styles = StyleSheet.create({
     gap: ThemeLayout.spacing.md,
     paddingBottom: ThemeLayout.spacing.sm,
     borderBottomWidth: StyleSheet.hairlineWidth,
+  },
+  prominentContainer: { borderBottomWidth: 0 },
+  quietBrand: { fontSize: 18, lineHeight: 24 },
+  prominentTitle: {
+    fontFamily: Fonts.fraunces.semiBold,
+    fontSize: 34,
+    lineHeight: 42,
+    opacity: 1,
   },
   titleRow: {
     flexDirection: 'row',
