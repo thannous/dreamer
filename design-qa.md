@@ -1556,3 +1556,62 @@ The user explicitly approved server deployment. Automatic review rejected the mo
 - Isolated deployment import graph typechecked; 27 route/admission/Gemini adapter tests passed, followed by six route tests after the prompt adjustment. Eight client service tests (modern and legacy Supabase hosts) and three hydration tests passed. Test TypeScript passed.
 - CI on initial PR head found a hydration test importing the new real network service (1923 tests passed, one suite failed). Fixed the test boundary with the same service mock as other route tests; this was a test integration failure, not attributed to baseline.
 - Production backend is verified independently of PR CI, merge and mobile Store release. No schema migration or app reinstall.
+
+## Journal — Carnet à marge — 2026-10-03
+
+Scope: implement the selected v6 card composition in the existing Journal. Initial local evidence below precedes the isolated PR validation. No native build or physical-device qualification.
+
+Source visual truth: `dist/journal-maquettes-20261002/carnet-image-claire-metadata-v6.png`.
+Rendered French captures: `dist/journal-maquettes-20261002/journal-implemente-clair-fr.png`, `journal-implemente-sombre-fr.png`, `journal-implemente-telephone-fr.png`.
+Full comparison: `dist/journal-maquettes-20261002/journal-comparaison-implementation.png`.
+Focused card comparison: `dist/journal-maquettes-20261002/journal-comparaison-carte.png`.
+
+Comparison state: mock existing account, French from startup, fixed synthetic capture date, actual private bright 9:16 artwork routed locally, settings drawer fully closed. The first entry uses the selected title, excerpt, type and theme. Other entries retain their mock data; separate E2E captures cover the text-only lucid/recurring/memory entry. No real account or backend is modified.
+
+Normalization: source board 1054×1492; light screen crop 500×1422, dark crop 504×1422, scaled proportionally to 390 pixels wide. Implementation 390×1109 and ordinary phone 390×867, deviceScaleFactor 1. The generated board has no physical device density. Full and focused comparisons were opened together.
+
+**Findings and fidelity**
+- Typography: existing Fraunces display and Space Grotesk UI fonts; complete two-line title, three-line image excerpt, untruncated wrapping margin labels. Slight line-break differences are P3.
+- Layout: date, favorite indicator, type, recurring/memory indications, theme and analysis/sync state are in the margin. The image frame is exactly 9:16; text-only entries have no empty media frame. The 84px margin prioritizes readable 12px labels.
+- Tokens and contrast: canonical ink/ivory/champagne themes; invariant ivory-on-ink image backing at alpha 0.86 covers all text before its 56px fade. The fade follows the text height. No global artwork tint. Theme and brand contracts pass.
+- Assets: original portrait artwork is used, with the same source and colors in both themes. The generated reference redraws some details; implementation deliberately retains the actual asset.
+- Copy/content: translated metadata uses existing classification/memory helpers. “Recurring Dream” is not repeated as a second recurrence badge. Unclassified, pending and failed analysis states remain truthful.
+- Controls: existing shared search/header and navigation remain the app's chrome; the concept board's oversized Journal heading is not introduced. Favorite symbols remain indicators, with the existing detail action working.
+- Responsive states: 320, 390, 768 and 1440px, both themes, illustrated/no-image/saved-memory journeys checked. Additional natural list items differ from the board's synthetic second entry.
+
+**Comparison history**
+- Runtime check exposed Reanimated passing an array into FlashList's web style spread. The web list now receives ordinary props; the existing native wrapper remains. The final mobile web journeys pass.
+- Early captures caught image transitions and the settings drawer closing. These mismatched captures were excluded; image decode/animation completion and drawer exit are now awaited.
+- New descendant IDs initially matched the existing card selector. They now use the separate `journal.margin/cover/text` namespace; the existing search/favorite/save journeys pass.
+- Latest combined full/focused comparison finds no blocking P0/P1/P2 issue within the implemented card scope.
+
+**Validation**
+- Six E2E journeys passed, zero retries: portrait + text-only in both themes, saved memory/reopen, save/reopen exact story, search empty/recovery, add/remove favorite.
+- App types passed; focused lint: zero errors, four existing Journal ref warnings. Generated theme parity and 196 CSS/TypeScript brand comparisons passed.
+- Existing media/brand/palette checks: 29 assertions passed. These retain coverage for signing/thumbnail fallback and CSS/native token parity that the offline browser fixtures cannot prove. No new isolation tests; brittle exact token-count assertions were removed.
+- Source HEAD `5833c3ae4b59f6147f38fc9510276cd07a7ed6b5`, dirty worktree. Tested 14-file fingerprint `6a46df7d773cd2fa6b1c14da937b46a05d042b7d6f94ab5e0b68efafef6fc434`; file hashes and private captures are in the ignored design output folder.
+- Repeatable commands, fixtures, assertions and trace paths: `dist/journal-maquettes-20261002/journal-implementation-evidence.json`.
+
+Physical iPhone/Android, native text scaling and TalkBack/VoiceOver remain unqualified. Local browser QA does not establish release-device behavior.
+
+final result: passed (local web card scope)
+
+**Isolated PR integration**
+- Base: `origin/master` at `c877d6a1158327a66ce6f799a2c4187dcb7c5709`, branch `codex/journal-carnet-a-marge`. Only Journal changes were extracted; unrelated work remains in the original checkout.
+- On this integrated patch, six browser journeys passed in 24.3s with zero retries. The settings helper follows the new Today quick-settings entry. Light portrait capture inspected: correct 9:16 frame, readable text and margin metadata.
+- Environment: Chromium, offline mock services, existing mock persona and guest, fixed light/dark dates, 320/390/768/1440px. The bright portrait is a local optional route fixture; no remote asset or private content is tracked.
+- Rerun: `E2E_WEB_PORT=8094 E2E_JOURNAL_BRIGHT_IMAGE=<local-portrait.jpeg> mise exec -- npm run test:e2e:web -- e2e/web/journal-margin.spec.ts e2e/web/journeys.spec.ts --grep 'journal keeps|saved remembered|searches, sees no match|adds and removes a favorite|finds the exact story' --workers=1`. Omit the image variable to use CI's offline fixture.
+- Assertions: portrait geometry and text bounds, translated metadata and independent lucid/recurring/memory labels, full-story navigation, responsive overflow, saved memory, search recovery and favorite toggling.
+- Repeatable artifacts in the isolated worktree: `test-results/e2e-web-junit/results.xml`, `test-results/e2e-web-report/index.html`, per-test screenshots and `trace.zip` under `test-results/e2e-web/`. All remain ignored.
+- Focused lint: zero errors, four existing Journal ref warnings; test types, generated theme parity and brand parity passed. Final committed pre-push validation and remote CI are reported in the PR.
+
+**PR CI integration correction**
+- Initial PR head `893b10a7` passed all non-web checks and 41/42 web journeys, including every new Journal test. The empty Trends journey timed out on its obsolete `Close analysis` locator: latest master replaced that analysis overlay with inline Mon rêve reading.
+- Updated the existing journey to return with `btn.navigateJournal` and assert the saved story in the visible Journal card. No app behavior or CI routing is changed. The failed run remains available in CircleCI job 2270.
+
+- Second CI head `27ba7588`: corrected Trends journey passed; 41/42 web journeys passed. The reflection revisit assertion found the contextual inline-reading dock hidden after returning to a restored scroll position; `scrollIntoViewIfNeeded` on the already visible transcript generated no scroll event. The trace shows the complete story and inline analysis. Updated that existing E2E journey to scroll further through the reading zone with a real wheel gesture before asserting the contextual continuation action. No timeout inflation, retries or app change.
+- Correction qualification: `E2E_WEB_PORT=8094 mise exec -- npm run test:e2e:web -- e2e/web/journeys.spec.ts e2e/web/trends-editorial.spec.ts --grep 'continues a reflection|empty journal keeps' --workers=1 --repeat-each=3` passed all six executions, zero retries. The test still asserts conversation preservation and the continuation CTA. Traces/JUnit remain in the worktree's ignored `test-results/` directory.
+
+**Final master integration**
+- Head `9a6d4b73` passed all remote gates, including 42/42 web journeys (10.7m, zero retries).
+- Master advanced to `c8210f63` (Explore PR #241) during CI and corrected the same obsolete Trends locator. The only integration conflict was that E2E assertion. Resolution retains master's inline-analysis assertion/capture and the Journal return/saved-story assertion. Existing Explore app changes and tests are preserved; no duplicate source changes enter the Journal PR.
