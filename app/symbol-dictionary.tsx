@@ -263,7 +263,7 @@ export default function SymbolDictionaryScreen() {
         );
       }
       if (item.type === "letter-header") {
-        return <LetterHeader letter={item.letter} countLabel={guideCopy.symbolCount(item.count)} />;
+        return <LetterHeader letter={item.letter} count={item.count} countLabel={guideCopy.symbolCount(item.count)} />;
       }
       return (
         <SymbolCard

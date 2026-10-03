@@ -8,10 +8,11 @@ import { useTheme } from "@/context/ThemeContext";
 
 interface LetterHeaderProps {
   letter: string;
-  countLabel: string;
+  count: number;
+  countLabel?: string;
 }
 
-export function LetterHeader({ letter, countLabel }: LetterHeaderProps) {
+export function LetterHeader({ letter, count, countLabel }: LetterHeaderProps) {
   const { colors, mode } = useTheme();
   const noctalia = useMemo(() => getNoctaliaDesignTokens(colors, mode), [colors, mode]);
 
@@ -60,7 +61,7 @@ export function LetterHeader({ letter, countLabel }: LetterHeaderProps) {
             fontVariant: ["tabular-nums"],
           }}
         >
-          {countLabel}
+          {countLabel ?? count}
         </Text>
       </View>
     </View>
