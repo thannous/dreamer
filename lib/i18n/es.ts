@@ -1548,6 +1548,7 @@ const translations: Record<string, string> = {
     'symbols.not_found': 'Símbolo no encontrado',
     'symbols.no_results': 'No se encontraron símbolos',
     'inspiration.ritual.steps_progress': '{completed}/{total} pasos',
+    'symbols.popular_short': 'Populares',
     'symbols.popular_title': 'Símbolos populares',
     'symbols.view_all': 'Ver todos',
     'symbols.home_card_title': 'Símbolos de sueños',

@@ -1,7 +1,7 @@
-import { LinearGradient } from "expo-linear-gradient";
 import { Stack, router, useLocalSearchParams } from "expo-router";
 import React, { useCallback, useDeferredValue, useEffect, useMemo, useState } from "react";
 import { FlatList, Pressable, ScrollView, StyleSheet, Text, View } from "react-native";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 import { AtmosphericBackground } from "@/components/inspiration/AtmosphericBackground";
 import { CategoryHeader } from "@/components/symbols/CategoryHeader";
@@ -16,8 +16,6 @@ import { useTheme } from "@/context/ThemeContext";
 import { useTranslation } from "@/hooks/useTranslation";
 import { trackProductEvent } from "@/lib/analytics";
 import { getDreamGuideCopy } from "@/lib/dreamGuideCopy";
-import { MotiView } from "@/lib/moti";
-import { TID } from "@/lib/testIDs";
 import type {
   DreamSymbol,
   SymbolCategory,
@@ -28,7 +26,6 @@ import {
   getCategoryList,
   getCategoryName,
   getPopularSymbols,
-  getSymbolIcon,
   getSymbolsByCategory,
   searchSymbols,
 } from "@/services/symbolDictionaryService";
@@ -87,15 +84,14 @@ let trackedOnboardingDictionaryDestination = false;
 
 export default function SymbolDictionaryScreen() {
   const { source } = useLocalSearchParams<{ source?: string }>();
-  const { colors, shadows, mode } = useTheme();
+  const { colors, mode } = useTheme();
+  const insets = useSafeAreaInsets();
   const { t, currentLang } = useTranslation();
   const noctalia = useMemo(() => getNoctaliaDesignTokens(colors, mode), [colors, mode]);
   // Direct assignment on purpose: it is a compile error if AppLanguage ever
   // gains a language the bundled dictionary has no content for.
   const lang: SymbolLanguage = currentLang;
   const guideCopy = getDreamGuideCopy(lang);
-  const useNativeHeaderSearch =
-    process.env.EXPO_OS === "ios" && typeof document === "undefined";
 
   useEffect(() => {
     if (source !== "onboarding" || trackedOnboardingDictionaryDestination) return;
@@ -116,10 +112,6 @@ export default function SymbolDictionaryScreen() {
   const popularSymbols = useMemo(() => getPopularSymbols(), []);
   const allSymbols = useMemo(() => getAllSymbols(), []);
   const deferredSearchQuery = useDeferredValue(searchQuery.trim());
-
-  const gradientColors = noctalia.screen.gradient;
-
-  const glassBackground = noctalia.surface.raised;
 
   const filteredSymbols = useMemo(
     () =>
@@ -271,17 +263,18 @@ export default function SymbolDictionaryScreen() {
         );
       }
       if (item.type === "letter-header") {
-        return <LetterHeader letter={item.letter} count={item.count} />;
+        return <LetterHeader letter={item.letter} countLabel={guideCopy.symbolCount(item.count)} />;
       }
       return (
         <SymbolCard
           symbol={item.symbol}
           language={lang}
           onPress={handleSymbolPress}
+          variant="row"
         />
       );
     },
-    [lang, handleSymbolPress],
+    [lang, guideCopy, handleSymbolPress],
   );
 
   const renderEmptyComponent = useCallback(
@@ -298,30 +291,6 @@ export default function SymbolDictionaryScreen() {
       </View>
     ),
     [noctalia.text.secondary, noctalia.text.tertiary, t],
-  );
-
-  const getChipStyle = useCallback(
-    (isSelected: boolean) => [
-      styles.chip,
-      {
-        backgroundColor: isSelected ? noctalia.action.primary : glassBackground,
-        borderWidth: 1,
-        borderColor: isSelected ? noctalia.action.primaryBorder : noctalia.surface.border,
-      },
-    ],
-    [glassBackground, noctalia.action.primary, noctalia.action.primaryBorder, noctalia.surface.border],
-  );
-
-  const getLetterStyle = useCallback(
-    (isSelected: boolean) => [
-      styles.letterChip,
-      {
-        backgroundColor: isSelected ? noctalia.action.primary : glassBackground,
-        borderWidth: 1,
-        borderColor: isSelected ? noctalia.action.primaryBorder : noctalia.surface.border,
-      },
-    ],
-    [glassBackground, noctalia.action.primary, noctalia.action.primaryBorder, noctalia.surface.border],
   );
 
   const handleBrowseModeChange = useCallback((nextMode: BrowseMode) => {
@@ -341,522 +310,187 @@ export default function SymbolDictionaryScreen() {
     router.back();
   }, [source]);
 
-  return (
-    <LinearGradient colors={gradientColors} style={styles.container}>
-      <AtmosphericBackground variant="subtle" />
-      <Stack.Screen
-        options={{
-          headerShown: useNativeHeaderSearch,
-          title: t("symbols.dictionary_title"),
-          headerBackButtonDisplayMode: "minimal",
-          headerSearchBarOptions: useNativeHeaderSearch
-            ? {
-                placeholder: t("symbols.search_placeholder"),
-                autoCapitalize: "none",
-                hideNavigationBar: true,
-                onChangeText: (event) =>
-                  setSearchQuery(event.nativeEvent.text),
-                onCancelButtonPress: () => setSearchQuery(""),
-              }
-            : undefined,
-        }}
+  const listHeader = (
+    <View style={[styles.listHeader, { paddingTop: insets.top + 12 }]}>
+      <View style={styles.headerRow}>
+        <Pressable
+          onPress={handleBack}
+          accessibilityRole="button"
+          accessibilityLabel={t("navigation.back")}
+          testID="symbol-dictionary-back"
+          style={({ pressed }) => [styles.backButton, pressed && styles.pressed]}
+        >
+          <IconSymbol name="chevron.left" size={23} color={noctalia.text.primary} />
+        </Pressable>
+        <Text
+          accessibilityRole="header"
+          accessibilityLabel={t("symbols.dictionary_title")}
+          style={[styles.headerTitle, { color: noctalia.text.primary }]}
+        >
+          {t("explore.symbols.title")}
+        </Text>
+        <Pressable
+          onPress={() => router.push("/dream-guides")}
+          accessibilityRole="button"
+          accessibilityLabel={guideCopy.screenTitle}
+          testID="btn.symbolDictionary.guides"
+          style={({ pressed }) => [styles.guidesLink, pressed && styles.pressed]}
+        >
+          <Text style={[styles.guidesText, { color: noctalia.accent.text }]}>
+            {t("explore.guides.title")}
+          </Text>
+        </Pressable>
+      </View>
+
+      <SearchBar
+        value={searchQuery}
+        onChangeText={setSearchQuery}
+        placeholder={t("symbols.search_placeholder")}
+        testID="symbol-search"
       />
 
-      {!useNativeHeaderSearch ? (
-        <>
-          {/* Compact page header */}
-          <MotiView
-            from={{ opacity: 0, translateY: -8 }}
-            animate={{ opacity: 1, translateY: 0 }}
-            transition={{ type: "timing", duration: 500 }}
-            style={styles.headerSection}
-          >
-            <View style={styles.headerTopRow}>
-              <Pressable
-                onPress={handleBack}
-                style={[
-                  styles.headerBackButton,
-                  shadows.sm,
-                  {
-                    backgroundColor: noctalia.surface.raised,
-                    borderColor: noctalia.surface.border,
-                  },
-                ]}
-                accessibilityRole="button"
-                accessibilityLabel={t("journal.back_button")}
-                hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}
-              >
-                <IconSymbol
-                  name="chevron.left"
-                  size={21}
-                  color={noctalia.text.secondary}
-                />
-              </Pressable>
-              <View style={styles.headerCopy}>
-                <Text style={[styles.headerTitle, { color: noctalia.text.primary }]}>
-                  {t("symbols.dictionary_title")}
-                </Text>
-              </View>
-            </View>
-          </MotiView>
-        </>
-      ) : null}
-
-      <Pressable
-        onPress={() => router.push('/dream-guides' as any)}
-        accessibilityRole="button"
-        accessibilityLabel={guideCopy.screenTitle}
-        testID="btn.symbolDictionary.guides"
-        style={({ pressed }) => [
-          styles.guidesBanner,
-          {
-            backgroundColor: noctalia.surface.raised,
-            borderColor: noctalia.surface.border,
-          },
-          pressed && styles.chipPressed,
-        ]}
-      >
-        <View style={[styles.guidesBannerIcon, { backgroundColor: noctalia.surface.soft }]}>
-          <IconSymbol name="sparkles" size={20} color={noctalia.accent.text} />
-        </View>
-        <View style={styles.guidesBannerCopy}>
-          <Text style={[styles.guidesBannerTitle, { color: noctalia.text.primary }]}>
-            {guideCopy.screenTitle}
-          </Text>
-          <Text
-            style={[styles.guidesBannerBody, { color: noctalia.text.secondary }]}
-            numberOfLines={1}
-          >
-            {guideCopy.screenSubtitle}
-          </Text>
-        </View>
-        <IconSymbol name="chevron.right" size={18} color={noctalia.text.tertiary} />
-      </Pressable>
-
-      <MotiView
-        from={{ opacity: 0, translateY: -8 }}
-        animate={{ opacity: 1, translateY: 0 }}
-        transition={{ type: "timing", duration: 500, delay: 80 }}
-        style={styles.popularSection}
-      >
-        <View style={styles.popularHeader}>
-          <Text style={[styles.popularTitle, { color: noctalia.text.primary }]}>
-            {t("symbols.popular_title")}
-          </Text>
-        </View>
-
-        <ScrollView
-          horizontal
-          showsHorizontalScrollIndicator={false}
-          contentContainerStyle={styles.popularScrollContent}
-        >
+      <View style={styles.popularRow} testID="symbol-popular">
+        <Text style={[styles.popularLabel, { color: noctalia.text.secondary }]}>
+          {t("symbols.popular_short")}
+        </Text>
+        <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={styles.popularLinks}>
           {popularSymbols.map((symbol) => {
             const content = symbol[lang] ?? symbol.en;
-            const iconName = getSymbolIcon(symbol.id, symbol.category);
-
             return (
               <Pressable
                 key={symbol.id}
                 onPress={() => handleSymbolPress(symbol.id)}
-                testID={TID.List.SymbolItem(symbol.id)}
-                style={({ pressed }) => [
-                  styles.popularCard,
-                  {
-                    backgroundColor: noctalia.surface.raised,
-                    borderColor: noctalia.surface.border,
-                  },
-                  pressed && styles.chipPressed,
-                ]}
+                accessibilityRole="button"
+                accessibilityLabel={content.name}
+                testID={`symbol.popular.${symbol.id}`}
+                style={({ pressed }) => [styles.popularLink, pressed && styles.pressed]}
               >
-                <View
-                  style={[
-                    styles.popularIconWrap,
-                    { backgroundColor: noctalia.surface.soft },
-                  ]}
-                >
-                  <IconSymbol name={iconName} size={20} color={noctalia.text.secondary} />
-                </View>
-                <Text
-                  style={[styles.popularCardTitle, { color: noctalia.text.primary }]}
-                  numberOfLines={1}
-                >
-                  {content.name}
-                </Text>
+                <Text style={[styles.popularText, { color: noctalia.accent.text }]}>{content.name}</Text>
               </Pressable>
             );
           })}
         </ScrollView>
-      </MotiView>
+      </View>
 
-      {/* Search bar + chips */}
-      <MotiView
-        from={{ opacity: 0, translateY: -12 }}
-        animate={{ opacity: 1, translateY: 0 }}
-        transition={{ type: "timing", duration: 500, delay: 100 }}
-        style={[
-          styles.searchContainer,
-          useNativeHeaderSearch && styles.searchContainerWithNativeHeader,
-        ]}
-      >
-        {!useNativeHeaderSearch ? (
-          <SearchBar
-            value={searchQuery}
-            onChangeText={setSearchQuery}
-            placeholder={t("symbols.search_placeholder")}
-          />
-        ) : null}
-
-        <View
-          style={[
-            styles.modeSwitch,
-            {
-              backgroundColor: glassBackground,
-              borderColor: noctalia.surface.border,
-            },
-          ]}
-        >
-          <Pressable
-            onPress={() => handleBrowseModeChange("alphabetical")}
-            style={({ pressed }) => [
-              styles.modeOption,
-              browseMode === "alphabetical" && {
-                backgroundColor: noctalia.action.primary,
-              },
-              pressed && styles.chipPressed,
-            ]}
-          >
-            <Text
-              style={[
-                styles.modeOptionText,
-                {
-                  color:
-                    browseMode === "alphabetical"
-                      ? noctalia.action.primaryText
-                      : noctalia.text.secondary,
-                },
-              ]}
-            >
-              {t("symbols.browse_alphabetical")}
-            </Text>
-          </Pressable>
-          <Pressable
-            onPress={() => handleBrowseModeChange("theme")}
-            style={({ pressed }) => [
-              styles.modeOption,
-              browseMode === "theme" && {
-                backgroundColor: noctalia.action.primary,
-              },
-              pressed && styles.chipPressed,
-            ]}
-          >
-            <Text
-              style={[
-                styles.modeOptionText,
-                {
-                  color:
-                    browseMode === "theme"
-                      ? noctalia.action.primaryText
-                      : noctalia.text.secondary,
-                },
-              ]}
-            >
-              {t("symbols.browse_theme")}
-            </Text>
-          </Pressable>
-        </View>
-
-        {browseMode === "theme" ? (
-          <View style={styles.chipRow}>
+      <View style={[styles.modeSwitch, { borderColor: noctalia.surface.border }]} testID="symbol-browse-modes">
+        {(["alphabetical", "theme"] as const).map((value) => {
+          const selected = browseMode === value;
+          return (
             <Pressable
-                onPress={() => setSelectedCategory(null)}
-                style={({ pressed }) => [
-                  ...getChipStyle(selectedCategory === null),
-                  pressed && styles.chipPressed,
-                ]}
+              key={value}
+              onPress={() => handleBrowseModeChange(value)}
+              accessibilityRole="button"
+              accessibilityState={{ selected }}
+              aria-pressed={selected}
+              testID={`symbol-mode-${value}`}
+              style={({ pressed }) => [styles.modeOption, pressed && styles.pressed]}
             >
-              <Text
-                style={[
-                  styles.chipText,
-                  {
-                    color:
-                      selectedCategory === null
-                        ? noctalia.action.primaryText
-                        : noctalia.text.secondary,
-                  },
-                ]}
-              >
-                {t("symbols.all_categories")}
+              <Text style={[styles.modeText, { color: selected ? noctalia.accent.text : noctalia.text.secondary }]}>
+                {t(value === "alphabetical" ? "symbols.browse_alphabetical" : "symbols.browse_theme")}
               </Text>
+              {selected ? <View style={[styles.modeUnderline, { backgroundColor: noctalia.accent.text }]} /> : null}
             </Pressable>
-            {categories.map((cat) => (
-              <Pressable
-                key={cat}
-                onPress={() =>
-                  setSelectedCategory(selectedCategory === cat ? null : cat)
-                }
-                style={({ pressed }) => [
-                  ...getChipStyle(selectedCategory === cat),
-                  pressed && styles.chipPressed,
-                ]}
-              >
-                <Text
-                  style={[
-                    styles.chipText,
-                    {
-                      color:
-                        selectedCategory === cat
-                          ? noctalia.action.primaryText
-                          : noctalia.text.secondary,
-                    },
-                  ]}
-                >
-                  {getCategoryName(cat, lang)}
-                </Text>
-              </Pressable>
-            ))}
-          </View>
-        ) : (
-          <ScrollView
-            horizontal
-            showsHorizontalScrollIndicator={false}
-            contentContainerStyle={styles.letterRow}
-          >
-            {FULL_ALPHABET.map((letter) => {
-              const hasSymbols = availableLetterSet.has(letter);
-              const isSelected = selectedLetter === letter;
-              return (
-                <Pressable
-                  key={letter}
-                  onPress={
-                    hasSymbols
-                      ? () => setSelectedLetter(isSelected ? null : letter)
-                      : undefined
-                  }
-                  disabled={!hasSymbols}
-                  style={({ pressed }) => [
-                    ...getLetterStyle(isSelected),
-                    !hasSymbols && { opacity: 0.3 },
-                    pressed && hasSymbols && styles.chipPressed,
-                  ]}
-                >
-                  <Text
-                    style={[
-                      styles.letterText,
-                      {
-                        color: isSelected
-                          ? noctalia.action.primaryText
-                          : noctalia.text.secondary,
-                      },
-                    ]}
-                  >
-                    {letter}
-                  </Text>
-                </Pressable>
-              );
-            })}
-          </ScrollView>
-        )}
-      </MotiView>
+          );
+        })}
+      </View>
 
-      {/* Symbol list */}
+      {browseMode === "theme" ? (
+        <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={styles.filterRow}>
+          {[null, ...categories].map((category) => {
+            const selected = selectedCategory === category;
+            const label = category ? getCategoryName(category, lang) : t("symbols.all_categories");
+            return (
+              <Pressable
+                key={category ?? "all"}
+                onPress={() => setSelectedCategory(selected ? null : category)}
+                accessibilityRole="button"
+                accessibilityLabel={label}
+                accessibilityState={{ selected }}
+              aria-pressed={selected}
+                testID={`symbol-category-${category ?? "all"}`}
+                style={({ pressed }) => [styles.categoryOption, { borderColor: selected ? noctalia.accent.text : "transparent" }, pressed && styles.pressed]}
+              >
+                <Text style={[styles.filterText, { color: selected ? noctalia.accent.text : noctalia.text.secondary }]}>{label}</Text>
+              </Pressable>
+            );
+          })}
+        </ScrollView>
+      ) : (
+        <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={styles.filterRow}>
+          {FULL_ALPHABET.map((letter) => {
+            const available = availableLetterSet.has(letter);
+            const selected = selectedLetter === letter;
+            return (
+              <Pressable
+                key={letter}
+                onPress={() => setSelectedLetter(selected ? null : letter)}
+                disabled={!available}
+                accessibilityRole="button"
+                accessibilityLabel={letter}
+                accessibilityState={{ selected, disabled: !available }}
+                aria-pressed={selected}
+                testID={`symbol-letter-${letter}`}
+                style={({ pressed }) => [styles.letterOption, { backgroundColor: selected ? noctalia.action.primary : "transparent" }, !available && styles.unavailable, pressed && available && styles.pressed]}
+              >
+                <Text style={[styles.filterText, { color: selected ? noctalia.action.primaryText : noctalia.text.secondary }]}>{letter}</Text>
+              </Pressable>
+            );
+          })}
+        </ScrollView>
+      )}
+    </View>
+  );
+
+  return (
+    <View style={[styles.container, { backgroundColor: noctalia.screen.background }]} testID="screen.symbolDictionary">
+      <Stack.Screen options={{ headerShown: false, title: t("symbols.dictionary_title") }} />
+      <AtmosphericBackground variant="subtle" />
       <FlatList<Row>
         testID="symbol-list"
         style={styles.list}
-        contentContainerStyle={styles.listContent}
+        contentContainerStyle={{ paddingBottom: insets.bottom + ThemeLayout.spacing.xl }}
+        contentInsetAdjustmentBehavior="never"
+        keyboardShouldPersistTaps="handled"
+        keyboardDismissMode="on-drag"
         showsVerticalScrollIndicator={false}
         data={listData}
         keyExtractor={(item) => item.id}
         renderItem={({ item }) => renderListRow(item)}
+        ListHeaderComponent={listHeader}
         ListEmptyComponent={renderEmptyComponent()}
         initialNumToRender={12}
         maxToRenderPerBatch={10}
         windowSize={5}
         removeClippedSubviews={false}
       />
-    </LinearGradient>
+    </View>
   );
 }
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    overflow: "hidden",
-    position: "relative",
-  },
-  headerSection: {
-    paddingHorizontal: ThemeLayout.spacing.md,
-    paddingTop: 38,
-    paddingBottom: 18,
-  },
-  headerTopRow: {
-    flexDirection: "row",
-    alignItems: "center",
-    gap: 14,
-  },
-  headerBackButton: {
-    width: 42,
-    height: 42,
-    borderRadius: 21,
-    borderWidth: 1,
-    justifyContent: "center",
-    alignItems: "center",
-  },
-  headerCopy: {
-    flex: 1,
-    gap: 2,
-  },
-  headerTitle: {
-    fontFamily: Fonts.fraunces.bold,
-    fontSize: 24,
-    lineHeight: 31,
-  },
-  popularSection: {
-    gap: 10,
-  },
-  guidesBanner: {
-    minHeight: 66,
-    marginHorizontal: ThemeLayout.spacing.md,
-    marginBottom: ThemeLayout.spacing.md,
-    borderRadius: 19,
-    borderCurve: "continuous",
-    borderWidth: 1,
-    paddingHorizontal: 12,
-    paddingVertical: 10,
-    flexDirection: "row",
-    alignItems: "center",
-    gap: 10,
-  },
-  guidesBannerIcon: {
-    width: 38,
-    height: 38,
-    borderRadius: 13,
-    alignItems: "center",
-    justifyContent: "center",
-  },
-  guidesBannerCopy: {
-    flex: 1,
-    gap: 2,
-  },
-  guidesBannerTitle: {
-    fontFamily: Fonts.fraunces.semiBold,
-    fontSize: 16,
-    lineHeight: 20,
-  },
-  guidesBannerBody: {
-    fontFamily: Fonts.spaceGrotesk.regular,
-    fontSize: 12,
-    lineHeight: 16,
-  },
-  popularHeader: {
-    paddingHorizontal: ThemeLayout.spacing.md,
-  },
-  popularTitle: {
-    fontFamily: Fonts.spaceGrotesk.medium,
-    fontSize: 12,
-    lineHeight: 16,
-    textTransform: "uppercase",
-  },
-  popularScrollContent: {
-    paddingHorizontal: ThemeLayout.spacing.md,
-    paddingTop: 2,
-    paddingBottom: 2,
-    gap: 8,
-  },
-  popularCard: {
-    minHeight: 52,
-    borderRadius: 16,
-    borderWidth: 1,
-    paddingVertical: 8,
-    paddingLeft: 8,
-    paddingRight: 14,
-    flexDirection: "row",
-    alignItems: "center",
-    gap: 8,
-  },
-  popularIconWrap: {
-    width: 32,
-    height: 32,
-    borderRadius: 11,
-    alignItems: "center",
-    justifyContent: "center",
-  },
-  popularCardTitle: {
-    fontFamily: Fonts.spaceGrotesk.medium,
-    fontSize: 13,
-    lineHeight: 16,
-  },
-  searchContainer: {
-    paddingHorizontal: ThemeLayout.spacing.md,
-    paddingTop: ThemeLayout.spacing.lg20,
-    paddingBottom: ThemeLayout.spacing.sm,
-    gap: 12,
-  },
-  searchContainerWithNativeHeader: {
-    paddingTop: ThemeLayout.spacing.sm,
-  },
-  modeSwitch: {
-    flexDirection: "row",
-    padding: 4,
-    borderRadius: ThemeLayout.borderRadius.full,
-    borderWidth: 1,
-    gap: ThemeLayout.spacing.xs,
-  },
-  modeOption: {
-    flex: 1,
-    paddingVertical: 6,
-    paddingHorizontal: 12,
-    borderRadius: ThemeLayout.borderRadius.full,
-    alignItems: "center",
-  },
-  modeOptionText: {
-    fontFamily: Fonts.spaceGrotesk.medium,
-    fontSize: 12,
-  },
-  chipRow: {
-    flexDirection: "row",
-    flexWrap: "wrap",
-    gap: ThemeLayout.spacing.xs,
-  },
-  chip: {
-    paddingHorizontal: 12,
-    paddingVertical: 6,
-    borderRadius: ThemeLayout.borderRadius.full,
-  },
-  chipPressed: {
-    opacity: 0.8,
-  },
-  chipText: {
-    fontFamily: Fonts.spaceGrotesk.medium,
-    fontSize: 12,
-  },
-  letterRow: {
-    gap: ThemeLayout.spacing.xs,
-    paddingVertical: ThemeLayout.spacing.xs,
-  },
-  letterChip: {
-    paddingHorizontal: 10,
-    paddingVertical: 6,
-    borderRadius: ThemeLayout.borderRadius.full,
-  },
-  letterText: {
-    fontFamily: Fonts.spaceGrotesk.medium,
-    fontSize: 12,
-  },
-  list: {
-    flex: 1,
-  },
-  listContent: {
-    paddingBottom: ThemeLayout.spacing.xl,
-  },
-  emptyState: {
-    alignItems: "center",
-    justifyContent: "center",
-    paddingVertical: 60,
-    gap: ThemeLayout.spacing.sm,
-  },
-  emptyText: {
-    fontFamily: Fonts.spaceGrotesk.regular,
-    fontSize: 15,
-    textAlign: "center",
-  },
+  container: { flex: 1, overflow: "hidden", position: "relative" },
+  list: { flex: 1 },
+  listHeader: { paddingHorizontal: 20, gap: 8, paddingBottom: 4 },
+  headerRow: { flexDirection: "row", flexWrap: "wrap", alignItems: "center", columnGap: 8, rowGap: 4, marginBottom: 8 },
+  backButton: { width: 44, minHeight: 44, alignItems: "center", justifyContent: "center", marginLeft: -12 },
+  headerTitle: { flex: 1, flexBasis: 140, minWidth: 0, fontFamily: Fonts.fraunces.bold, fontSize: 27, lineHeight: 34 },
+  guidesLink: { minHeight: 44, justifyContent: "center", maxWidth: "100%", paddingHorizontal: 4 },
+  guidesText: { fontFamily: Fonts.spaceGrotesk.medium, fontSize: 15, lineHeight: 22, flexShrink: 1 },
+  popularRow: { flexDirection: "row", alignItems: "center", gap: 14 },
+  popularLabel: { maxWidth: "42%", flexShrink: 1, fontFamily: Fonts.spaceGrotesk.regular, fontSize: 14, lineHeight: 20 },
+  popularLinks: { gap: 18 },
+  popularLink: { minHeight: 44, justifyContent: "center" },
+  popularText: { fontFamily: Fonts.spaceGrotesk.medium, fontSize: 15, lineHeight: 22 },
+  modeSwitch: { flexDirection: "row", borderBottomWidth: StyleSheet.hairlineWidth },
+  modeOption: { flex: 1, minWidth: 0, minHeight: 44, paddingVertical: 10, paddingHorizontal: 12, alignItems: "center", justifyContent: "center" },
+  modeText: { fontFamily: Fonts.spaceGrotesk.medium, fontSize: 15, lineHeight: 22, textAlign: "center" },
+  modeUnderline: { position: "absolute", bottom: 0, height: 3, width: 44, borderRadius: 2 },
+  filterRow: { gap: 4, paddingVertical: 4 },
+  letterOption: { minWidth: 44, minHeight: 44, paddingHorizontal: 10, paddingVertical: 10, borderRadius: 22, alignItems: "center", justifyContent: "center" },
+  categoryOption: { minHeight: 44, paddingHorizontal: 10, paddingVertical: 10, borderBottomWidth: 2, alignItems: "center", justifyContent: "center" },
+  filterText: { fontFamily: Fonts.spaceGrotesk.medium, fontSize: 15, lineHeight: 22 },
+  unavailable: { opacity: 0.35 },
+  pressed: { opacity: 0.78 },
+  emptyState: { alignItems: "center", paddingHorizontal: 20, paddingVertical: 48, gap: 12 },
+  emptyText: { fontFamily: Fonts.spaceGrotesk.regular, fontSize: 15, lineHeight: 22, textAlign: "center" },
 });
