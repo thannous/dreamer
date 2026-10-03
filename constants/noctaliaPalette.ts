@@ -17,6 +17,12 @@ export function getNoctaliaPalette(mode: ThemeMode) {
     line: dark ? '#514637' : 'rgba(126, 83, 49, 0.25)',
     overlay: dark ? 'rgba(0, 0, 0, 0.64)' : 'rgba(38, 27, 28, 0.44)',
     onAccent: dark ? '#382D35' : '#FFF9EF',
+    // Fixed contrast on artwork in every theme, including a pure-white image.
+    illustration: {
+      text: '#FFF9EF',
+      scrim: 'rgba(3, 4, 13, 0.86)',
+      transparent: 'rgba(3, 4, 13, 0)',
+    },
     danger: dark ? '#E6A49B' : '#873830',
     status: {
       danger: { background: dark ? '#302126' : '#E4C2AF', border: dark ? '#936D68' : '#A56959', text: dark ? '#E6A49B' : '#873830', icon: dark ? '#E6A49B' : '#873830' },
@@ -74,6 +80,7 @@ export function getNoctaliaDesignTokens(colors: ThemeColors, mode: ThemeMode) {
   return {
     screen: { background: p.background, gradient: [p.background, p.background] as const },
     cover: p,
+    illustration: p.illustration,
     text: { primary: colors.textPrimary, secondary: colors.textSecondary, tertiary: colors.textTertiary, onAccent: colors.textOnAccentSurface },
     accent: { base: colors.accent, strong: colors.accentDark, soft: colors.accentLight, text: colors.accentText },
     surface: { base: p.raised, raised: p.raised, active: p.actionTint, soft: p.surface, border: p.line, borderStrong: p.line, overlay: p.overlay },
@@ -111,6 +118,8 @@ export function getNoctaliaCSSVariables(colors: ThemeColors, mode: ThemeMode): R
     '--color-ivory-muted': t.text.secondary,
     '--color-ivory-faint': t.text.tertiary,
     '--color-ivory-disabled': t.action.disabledText,
+    '--color-illustration-text': t.illustration.text,
+    '--color-illustration-scrim': t.illustration.scrim,
     '--color-champagne': t.action.primary,
     '--color-champagne-on': t.accent.text,
     '--color-champagne-deep': t.accent.strong,

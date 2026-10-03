@@ -104,6 +104,8 @@ export const PREDEFINED_DREAMS: Omit<DreamAnalysis, 'id'>[] = [
     ],
     theme: 'calm',
     dreamType: 'Lucid Dream',
+    // A remembered recurring dream may also be lucid: these are independent labels.
+    memory: { origin: 'remembered', rememberedKind: 'recurring', recurring: true },
     imageUrl: '',
     thumbnailUrl: undefined,
     chatHistory: [],
