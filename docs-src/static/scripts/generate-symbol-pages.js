@@ -100,7 +100,8 @@ function readCatalogModifiedDate(fallbackDate) {
   const catalogPath = path.join(ROOT_DATA_DIR, 'dream-symbols.json');
   try {
     const payload = JSON.parse(fs.readFileSync(catalogPath, 'utf8'));
-    return normalizeIsoDate(payload?.meta?.lastUpdated) || fallbackDate;
+    return normalizeIsoDate(payload?.meta?.fallbackModifiedAt) ||
+      normalizeIsoDate(payload?.meta?.lastUpdated) || fallbackDate;
   } catch {
     return fallbackDate;
   }

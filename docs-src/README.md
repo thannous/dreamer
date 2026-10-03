@@ -17,6 +17,12 @@ The canonical symbol catalogs shared by the app and the site are
 copies all three into `docs/data/` after static assets, and `docs:check` verifies
 that the published copies are byte-for-byte identical to the canonical data.
 
+Symbol dates use the locale's `modifiedAt`, then the symbol's `modifiedAt`.
+For undated records, `meta.fallbackModifiedAt` preserves their existing date;
+`meta.lastUpdated` still records the latest catalog edit. Do not advance the
+fallback date when editing individual symbols. Catalogs without this optional
+field retain the `meta.lastUpdated` fallback.
+
 ## Daily Maintenance Workflow
 
 ### Preview changes live
