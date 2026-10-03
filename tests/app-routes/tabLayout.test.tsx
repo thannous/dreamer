@@ -343,7 +343,7 @@ describe('TabLayout returning guest navigation', () => {
     }));
   });
 
-  it('keeps words visible on two lines at 320 dp with default text scale', () => {
+  it('keeps compact labels visible on one line at 320 dp with default text scale', () => {
     mockPlatformOS = 'android';
     mockWindowWidth = 320;
     mockWindowHeight = 640;
@@ -354,27 +354,27 @@ describe('TabLayout returning guest navigation', () => {
 
     expect(capturedTabBarStyle).toEqual(expect.objectContaining({
       end: 8,
-      height: 102,
+      height: 86,
       paddingHorizontal: 4,
       start: 8,
     }));
 
     const labels = [
-      'nav.home',
+      'nav.home_compact',
       'nav.journal',
-      'nav.capture_dream',
-      'nav.stats',
-      'nav.explore',
+      'nav.capture_dream_compact',
+      'nav.stats_compact',
+      'nav.explore_compact',
     ].map((label) => screen.getByText(label));
-    const box = centerBox('nav.capture_dream');
+    const box = centerBox('nav.capture_dream_compact');
 
     expect(labels).toHaveLength(5);
     expect(screen.queryByText('nav.settings')).toBeNull();
     expect(box.width).toBeCloseTo(54.8, 1);
-    expect(box.height).toBe(92);
+    expect(box.height).toBe(76);
     labels.forEach((label) => {
       expect(label.getAttribute('data-max-font-size-multiplier')).toBeNull();
-      expect(label.getAttribute('data-number-of-lines')).toBe('2');
+      expect(label.getAttribute('data-number-of-lines')).toBe('1');
       expect(label.getAttribute('data-accessible')).toBe('false');
       expect(label.getAttribute('data-native-class')).toContain('w-full');
       expect(label.getAttribute('data-native-class')).toContain('shrink');

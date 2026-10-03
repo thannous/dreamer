@@ -343,7 +343,7 @@ export default function TabLayout() {
             accessibilityLabel: t('nav.home'),
           }),
           tabBarIcon: ({ focused }) => (
-            <TabBarItem icon="house" label={t(navigationLayout.largeText ? 'nav.home_compact' : 'nav.home')} focused={focused} palette={palette} geometry={geometry} />
+            <TabBarItem icon="house" label={t((navigationLayout.largeText || navigationLayout.narrow) ? 'nav.home_compact' : 'nav.home')} focused={focused} palette={palette} geometry={geometry} />
           ),
           tabBarItemStyle: getBottomNavigationItemStyle(0, navigationLayout),
         }}
@@ -384,7 +384,7 @@ export default function TabLayout() {
             />
           ),
           tabBarIcon: ({ focused }) => (
-            <AddDreamTabItem focused={focused} label={t(navigationLayout.largeText ? 'nav.capture_dream_compact' : 'nav.capture_dream')} palette={palette} geometry={geometry} />
+            <AddDreamTabItem focused={focused} label={t((navigationLayout.largeText || navigationLayout.narrow) ? 'nav.capture_dream_compact' : 'nav.capture_dream')} palette={palette} geometry={geometry} />
           ),
           tabBarItemStyle: getBottomNavigationItemStyle(2, navigationLayout),
         }}
@@ -401,7 +401,7 @@ export default function TabLayout() {
             accessibilityLabel: t('nav.stats'),
           }),
           tabBarIcon: ({ focused }) => (
-            <TabBarItem icon="chart.bar" label={t(navigationLayout.largeText ? 'nav.stats_compact' : 'nav.stats')} focused={focused} palette={palette} geometry={geometry} />
+            <TabBarItem icon="chart.bar" label={t((navigationLayout.largeText || navigationLayout.narrow) ? 'nav.stats_compact' : 'nav.stats')} focused={focused} palette={palette} geometry={geometry} />
           ),
           tabBarItemStyle: getBottomNavigationItemStyle(3, navigationLayout),
         }}
@@ -418,7 +418,7 @@ export default function TabLayout() {
             accessibilityLabel: t('nav.explore'),
           }),
           tabBarIcon: ({ focused }) => (
-            <TabBarItem icon="sparkles" label={t(navigationLayout.largeText ? 'nav.explore_compact' : 'nav.explore')} focused={focused} palette={palette} geometry={geometry} />
+            <TabBarItem icon="sparkles" label={t((navigationLayout.largeText || navigationLayout.narrow) ? 'nav.explore_compact' : 'nav.explore')} focused={focused} palette={palette} geometry={geometry} />
           ),
           tabBarItemStyle: getBottomNavigationItemStyle(4, navigationLayout),
         }}

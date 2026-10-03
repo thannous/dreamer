@@ -351,3 +351,11 @@
   letter-spacing: var(--text-overline--letter-spacing);
   text-transform: uppercase;
 }
+
+/* Browser scrollbars remain operable and inherit the active application theme.
+   The support condition mirrors Uniwind's web variant, keeping this web-only. */
+@supports selector(div > div) {
+  * {
+    scrollbar-color: var(--color-ivory-faint) var(--color-ink);
+  }
+}

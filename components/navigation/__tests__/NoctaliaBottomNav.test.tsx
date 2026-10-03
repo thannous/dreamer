@@ -269,7 +269,7 @@ describe('NoctaliaBottomNav', () => {
     expect(mockDismissTo).toHaveBeenCalledWith('/(tabs)/explore');
   });
 
-  it('keeps words visible on two lines at 320 dp with default text scale', () => {
+  it('keeps compact labels visible on one line at 320 dp with default text scale', () => {
     mockPlatformOS = 'android';
     mockWindowWidth = 320;
     mockWindowHeight = 640;
@@ -284,15 +284,15 @@ describe('NoctaliaBottomNav', () => {
 
     expect(box.start).toBe(8);
     expect(box.end).toBe(8);
-    expect(box.height).toBe(102);
+    expect(box.height).toBe(86);
     expect(barClass).toContain('px-1');
     expect(center.width).toBeCloseTo(54.8, 1);
-    expect(center.height).toBe(92);
+    expect(center.height).toBe(76);
     expect(screen.queryByTestId(TID.Tab.Settings)).toBeNull();
     expect(labels).toHaveLength(5);
     labels.forEach((label) => {
       expect(label.getAttribute('data-max-font-size-multiplier')).toBeNull();
-      expect(label.getAttribute('data-number-of-lines')).toBe('2');
+      expect(label.getAttribute('data-number-of-lines')).toBe('1');
       expect(label.getAttribute('data-accessible')).toBe('false');
       expect(label.getAttribute('data-native-class')).toContain('text-[11px]');
     });

@@ -16,8 +16,8 @@ describe('getBottomNavigationLayout', () => {
     const layout = getBottomNavigationLayout(width, 1024);
     expect(layout.labelFontSize).toBe(width < 400 ? 11 : 12);
     expect(layout.narrow).toBe(width <= 360);
-    expect(layout.labelLines).toBe(width <= 360 ? 2 : 1);
-    expect(layout.barHeight).toBe(width <= 360 ? 102 : TAB_BAR_HEIGHT);
+    expect(layout.labelLines).toBe(1);
+    expect(layout.barHeight).toBe(TAB_BAR_HEIGHT);
   });
 
   it.each([1.3, 2])('keeps large text wrapping on a 390 dp phone at scale %s', (fontScale: number) => {
@@ -81,9 +81,7 @@ describe('getBottomNavigationLayout', () => {
     expect(getBottomNavigationLayout(1200, 700).compact).toBe(false);
   });
 
-  it('stacks narrow labels on two lines at 100% text so words stay visible', () => {
-    // Astra contract: narrow implies stacked. 320/100% = lines 2, height 36, bar 102.
-    // This is the visual fix for truncated "Aujourd'hui / Tendances" — never icon-only.
+  it('uses compact translated labels on one line at narrow default scale', () => {
     expect(getBottomNavigationLayout(320, 640)).toMatchObject({
       compact: false,
       narrow: true,
@@ -91,11 +89,11 @@ describe('getBottomNavigationLayout', () => {
       fontScale: 1,
       labelFontSize: 11,
       labelLineHeight: 16,
-      labelLines: 2,
-      labelHeight: 36,
-      barHeight: 102,
+      labelLines: 1,
+      labelHeight: 20,
+      barHeight: 86,
       centerActionWidth: 54.8,
-      centerActionHeight: 92,
+      centerActionHeight: 76,
       minimumBottomInset: 14,
     });
   });

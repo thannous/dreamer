@@ -1713,3 +1713,46 @@ final result: passed (local web card scope)
 - A temporary local preview route and mock-only entry link were used because the production route is native-only. Both fixtures were removed; `app/sleep-sounds.tsx` and `app/recording.tsx` are unchanged in the final patch. No feature gate was modified.
 - At 320px with browser text enlarged to 200%, duration labels wrap and the player action stays readable and reachable by scrolling. Native text scaling and the large display title/countdown remain device qualification items; this browser simulation does not qualify them.
 - Ignored evidence: `dist/sounds-polish-20261003/` in the primary checkout, with light/dark screenshots and the narrow enlarged-text inspection. The actual iPhone delivery and CI evidence are recorded separately on the final revisions.
+
+
+## Journal, dream detail and visual dogfooding — 2026-10-03
+
+| Before | After |
+| --- | --- |
+| Failed media retained a tall gray portrait frame | Thumbnail falls back to the original; terminal media failure shows a compact text entry |
+| Date margin carried stacked classification and status; filters wrapped | Date-only margin, wrapping metadata below a bounded cover, one horizontal filter row |
+| A full-viewport illustration hid the detail title | Title and secondary information first; artwork adapts to the remaining viewport |
+| Native scroll-edge blur cut the artwork | Detail route disables the native top effect; navigation is transparent over the image and opaque over text |
+| Narrow French navigation and guide punctuation broke across lines | Existing compact navigation labels retain full accessible names; punctuation stays with the preceding word |
+| Trends called a missing native Intl constructor | Locale-scoped plural fallback preserves the average metric when Intl.PluralRules is unavailable |
+
+Scope: Journal list, Mon rêve detail, narrow shared navigation, web scrollbar theming,
+one French guide title and the Tendances crash. Separate Analyse redesign stays deferred.
+Original artwork colors, media access boundaries, accounts, persistence and analysis
+logic remain unchanged. Work is isolated from unrelated primary-checkout changes.
+
+Validation environment: offline mock services, synthetic guest/Plus data, Chromium,
+French and German, light/dark, 393×852, 320×568 and landscape, browser text enlargement
+up to 200%. An obsolete unit assertion that required wrapping CSS was removed;
+the browser journey now verifies actual filter geometry and interaction. The crash regression removes Intl.PluralRules before opening populated
+Trends; media regressions force failed thumbnail/full-image requests and verify recovery
+and navigation. Detail checks cover visible arrival metadata, full reading, editing,
+contextual action and transparent artwork/opaque reading navigation, including
+rotation without a scroll event. That rotation fixture disables browser scroll
+anchoring so it exercises geometry changes without preserving a paragraph position.
+
+Rerun: `E2E_WEB_PORT=8124 E2E_REUSE_SERVER=1 mise exec -- npm run test:e2e:web -- e2e/web/journal-margin.spec.ts e2e/web/dream-continuous-reading.spec.ts e2e/web/trends-editorial.spec.ts e2e/web/visual-overflow.spec.ts --workers=1`.
+Start the canonical mock web server on 8124 first, or omit the reuse flag. The final
+revision, file hashes, results, screenshots and traces are recorded in the ignored
+`.tmp/journal-detail-dogfood-20261003/` evidence folder.
+
+The visual pass also inspected Today, Capture, Explorer, Symbols, Guides, Settings,
+Reflection and integrated analysis. Sleep Sounds remains native-only; its guard was
+not bypassed. Browser enlargement does not qualify native Dynamic Type, and web
+checks do not qualify the physical iPhone scroll-edge effect. A device capture attempt
+failed with CoreDevice error 4016 (trusted connectivity unavailable); no native pass
+is claimed from that attempt.
+
+- Final focused qualification: 15 distinct browser journeys pass, with the filter geometry assertion and three detail journeys retested after their final corrections. Theme/brand parity, focused lint and site generation/checks pass. Existing lint warnings remain outside this patch. Final committed pre-push and remote CI are recorded on the PR.
+
+- First remote head `e4002513`: 61/64 web journeys passed. Three reflection-entry journeys reproduced locally because a complete 108px story could not satisfy the 144px visibility threshold. The correction measures the readable story itself (excluding wrapper padding), caps visibility at its actual height, and excludes the separate editing form from that measurement. The existing tests remain unchanged; no retry or timeout was added.

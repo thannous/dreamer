@@ -137,7 +137,7 @@ export function NoctaliaBottomNav({
   const items: BottomNavItem[] = [
     {
       key: 'home',
-      label: t(navigationLayout.largeText ? 'nav.home_compact' : 'nav.home'),
+      label: t((navigationLayout.largeText || navigationLayout.narrow) ? 'nav.home_compact' : 'nav.home'),
       accessibilityLabel: t('nav.home'),
       icon: 'house',
       href: '/(tabs)',
@@ -153,7 +153,7 @@ export function NoctaliaBottomNav({
     },
     {
       key: 'addDream',
-      label: t(navigationLayout.largeText ? 'nav.capture_dream_compact' : 'nav.capture_dream'),
+      label: t((navigationLayout.largeText || navigationLayout.narrow) ? 'nav.capture_dream_compact' : 'nav.capture_dream'),
       accessibilityLabel: t('nav.capture_dream_accessibility'),
       icon: addDreamIcon,
       href: '/recording',
@@ -161,7 +161,7 @@ export function NoctaliaBottomNav({
     },
     {
       key: 'stats',
-      label: t(navigationLayout.largeText ? 'nav.stats_compact' : 'nav.stats'),
+      label: t((navigationLayout.largeText || navigationLayout.narrow) ? 'nav.stats_compact' : 'nav.stats'),
       accessibilityLabel: t('nav.stats'),
       icon: 'chart.bar',
       href: '/(tabs)/statistics',
@@ -169,7 +169,7 @@ export function NoctaliaBottomNav({
     },
     {
       key: 'explore',
-      label: t(navigationLayout.largeText ? 'nav.explore_compact' : 'nav.explore'),
+      label: t((navigationLayout.largeText || navigationLayout.narrow) ? 'nav.explore_compact' : 'nav.explore'),
       accessibilityLabel: t('nav.explore'),
       icon: 'sparkles',
       // Keep the nested tab state explicit. When this bar is used from Capture,

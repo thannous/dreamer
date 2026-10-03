@@ -17,7 +17,7 @@ import { DreamAnalysis } from '@/lib/types';
 import { Image } from 'expo-image';
 import { LinearGradient } from 'expo-linear-gradient';
 import React, { memo, useCallback, useEffect, useMemo, useRef, useState } from 'react';
-import { Text, View } from 'react-native';
+import { Text, View, useWindowDimensions } from 'react-native';
 import { IconSymbol } from '@/components/ui/icon-symbol';
 
 export type DreamCardVariant = 'standard' | 'featured';
@@ -52,6 +52,8 @@ export const DreamCard = memo(function DreamCard({
   variant = 'standard',
 }: DreamCardProps) {
   const { colors, mode } = useTheme();
+  const { fontScale } = useWindowDimensions();
+  const dateMarginWidth = Math.max(60, Math.ceil(36 * Math.max(1, fontScale)) + 9);
   const noctalia = useMemo(() => getNoctaliaDesignTokens(colors, mode), [colors, mode]);
   const { t, currentLang } = useTranslation();
   const media = useDreamMedia(dream);
@@ -105,21 +107,29 @@ export const DreamCard = memo(function DreamCard({
     }
   }, [trimmedThumbnailUri, fullImageUri, useFullImage, accessScope, failureKey]);
 
-  useEffect(() => {
-    if (!useFullImage || retriedThumbnail.current === retryIdentity) return;
-    const timer = setTimeout(() => {
-      retriedThumbnail.current = retryIdentity;
-      thumbnailFailures.remove(accessScope, failureKey);
-      setUseFullImage(false);
-    }, thumbnailFailures.ttlMs);
-    return () => clearTimeout(timer);
-  }, [useFullImage, retryIdentity, accessScope, failureKey]);
-
   const preferFullImage = useFullImage || (trimmedThumbnailUri && thumbnailFailures.has(accessScope, failureKey));
   const imageUri = preferFullImage
     ? fullImageUri
     : (trimmedThumbnailUri || fullImageUri);
-  const hasImage = Boolean(dream.imageUrl || dream.thumbnailUrl);
+  // A recycled card or refreshed signed URL gets its own failure state. Keeping
+  // the account in this identity prevents a previous user's load from hiding media.
+  const imageAttemptKey = JSON.stringify([accessScope, getDreamIdentityKey(dream), imageVersion, imageUri]);
+  const [failedImageAttempt, setFailedImageAttempt] = useState<string | null>(null);
+  const [coverWidth, setCoverWidth] = useState(260);
+  const hasImage = (Boolean(imageUri) || (media.loading && Boolean(dream.imageUrl || dream.thumbnailUrl)))
+    && failedImageAttempt !== imageAttemptKey;
+
+  useEffect(() => {
+    if ((!useFullImage && failedImageAttempt !== imageAttemptKey)
+      || retriedThumbnail.current === retryIdentity) return;
+    const timer = setTimeout(() => {
+      retriedThumbnail.current = retryIdentity;
+      thumbnailFailures.remove(accessScope, failureKey);
+      setUseFullImage(false);
+      setFailedImageAttempt(null);
+    }, thumbnailFailures.ttlMs);
+    return () => clearTimeout(timer);
+  }, [useFullImage, failedImageAttempt, imageAttemptKey, retryIdentity, accessScope, failureKey]);
 
   const themeLabel = useMemo(() => getDreamThemeLabel(dream.theme, t) ?? dream.theme, [dream.theme, t]);
 
@@ -215,13 +225,14 @@ export const DreamCard = memo(function DreamCard({
     return (
       <View
         key={key}
-        className="gap-1 border-t border-line pt-3"
+        className="max-w-full flex-row items-center gap-1.5"
+        testID={testID && `journal.badge.${testID}.${i}`}
       >
         {badge.icon && (
           <IconSymbol name={badge.icon} size={14} color={getBadgeIconColor(badge.variant)} />
         )}
         {badge.label && (
-          <Text className={`font-sans text-[12px] leading-[18px] ${BADGE_TEXT_CLASS[badge.variant]}`}>
+          <Text className={`min-w-0 shrink font-sans text-[12px] leading-[18px] ${BADGE_TEXT_CLASS[badge.variant]}`}>
             {badge.label}
           </Text>
         )}
@@ -244,18 +255,14 @@ export const DreamCard = memo(function DreamCard({
   const readingText = (
     <>
       <Text
-        className={hasImage
-          ? `font-display leading-[28px] text-illustration-text ${variant === 'featured' ? 'text-[22px]' : 'text-[20px]'}`
-          : 'font-display text-[22px] leading-[28px] text-ivory'}
+        className={`font-display leading-[28px] ${hasImage ? 'text-illustration-text' : 'text-ivory'} ${variant === 'featured' ? 'text-[22px]' : 'text-[20px]'}`}
         numberOfLines={2}
       >
         {dream.title}
       </Text>
       <Text
-        className={hasImage
-          ? 'font-sans text-[15px] leading-[22px] text-illustration-text'
-          : 'font-sans text-[15px] leading-[22px] text-ivory-muted'}
-        numberOfLines={hasImage ? 3 : 4}
+        className={`font-sans text-[15px] leading-[22px] ${hasImage ? 'text-illustration-text' : 'text-ivory-muted'}`}
+        numberOfLines={hasImage ? 3 : 2}
       >
         {transcriptPreview}
       </Text>
@@ -270,7 +277,7 @@ export const DreamCard = memo(function DreamCard({
       accessibilityLabel={accessibilityLabel}
       testID={testID}
     >
-      <View className="w-[84px] shrink-0 self-stretch gap-4 border-r border-line pr-3" testID={testID && `journal.margin.${testID}`}>
+      <View className="shrink-0 self-stretch gap-3 border-r border-line pr-2" style={{ width: dateMarginWidth }} testID={testID && `journal.margin.${testID}`}>
         <View>
           <Text className="font-sans-medium text-[30px] leading-[34px] text-ivory">{dateDay}</Text>
           <Text className="font-sans text-[14px] leading-[20px] text-ivory-muted">{dateMonth}</Text>
@@ -278,32 +285,16 @@ export const DreamCard = memo(function DreamCard({
             <Text className="font-sans text-[12px] leading-[18px] text-ivory-muted">{dateYear}</Text>
           )}
         </View>
-        {isFavorite && <IconSymbol name="heart.fill" size={24} color={noctalia.accent.text} />}
-        <View className="gap-2">
-          <Text className="font-sans text-[12px] leading-[18px] text-ivory">{typeLabel}</Text>
-          {recurringLabel && (
-            <View className="gap-1">
-              <IconSymbol name="arrow.triangle.2.circlepath" size={14} color={noctalia.text.secondary} />
-              <Text className="font-sans text-[12px] leading-[18px] text-ivory-muted">{recurringLabel}</Text>
-            </View>
-          )}
-          {memoryLabel && (
-            <View className="gap-1">
-              <IconSymbol name="moon.stars.fill" size={14} color={noctalia.text.secondary} />
-              <Text className="font-sans text-[12px] leading-[18px] text-ivory-muted">{memoryLabel}</Text>
-            </View>
-          )}
-        </View>
-        {themeLabel && (
-          <View className="border-t border-line pt-3">
-            <Text className="font-sans text-[12px] leading-[18px] text-ivory-muted">{themeLabel}</Text>
-          </View>
-        )}
-        {badgeList}
+        {isFavorite && <IconSymbol name="heart.fill" size={20} color={noctalia.accent.text} />}
       </View>
-      <View className="min-w-0 flex-1">
+      <View className="min-w-0 flex-1 gap-3">
         {hasImage ? (
-          <View className="relative aspect-[9/16] w-full overflow-hidden rounded-xl bg-ink-raised" testID={testID && `journal.cover.${testID}`}>
+          <View
+            className="relative w-full overflow-hidden rounded-xl bg-ink-raised"
+            style={{ minHeight: Math.min(coverWidth, 260) }}
+            onLayout={(event) => setCoverWidth(event.nativeEvent.layout.width)}
+            testID={testID && `journal.cover.${testID}`}
+          >
             <Image
               source={imageUri ? { uri: imageUri, cacheKey: preferFullImage ? media.imageCacheKey : thumbnailCacheKey } : null}
               style={CARD_IMAGE_STYLE}
@@ -318,6 +309,10 @@ export const DreamCard = memo(function DreamCard({
                 }
                 if (!preferFullImage && fullImageUri && imageUri !== fullImageUri) {
                   setUseFullImage(true);
+                } else {
+                  // Both sources failed (or the only source failed). Do not keep
+                  // presenting the blurhash as if an illustration were available.
+                  setFailedImageAttempt(imageAttemptKey);
                 }
               }}
               placeholder={imagePlaceholder}
@@ -325,8 +320,11 @@ export const DreamCard = memo(function DreamCard({
               importantForAccessibility="no"
             />
             <View testID={testID && `journal.text.${testID}`}>
-              {/* In-flow backing covers every text line before the gradient fades. */}
-              <View className="gap-2 bg-illustration-scrim px-4 pb-3 pt-4">
+              {/* In-flow backing grows with the actual five-line text block. */}
+              <View
+                className="gap-2 bg-illustration-scrim px-4 pb-3 pt-4"
+                testID={testID && `journal.backing.${testID}`}
+              >
                 {readingText}
               </View>
               <LinearGradient
@@ -339,6 +337,23 @@ export const DreamCard = memo(function DreamCard({
         ) : (
           <View className="gap-2 pr-1" testID={testID && `journal.text.${testID}`}>{readingText}</View>
         )}
+        <View className="flex-row flex-wrap items-center gap-x-3 gap-y-1.5" testID={testID && `journal.metadata.${testID}`}>
+          <Text className="font-sans text-[12px] leading-[18px] text-ivory-muted">{typeLabel}</Text>
+          {themeLabel && <Text className="font-sans text-[12px] leading-[18px] text-ivory-muted">{themeLabel}</Text>}
+          {recurringLabel && (
+            <View className="max-w-full flex-row items-center gap-1.5">
+              <IconSymbol name="arrow.triangle.2.circlepath" size={14} color={noctalia.text.secondary} />
+              <Text className="font-sans text-[12px] leading-[18px] text-ivory-muted">{recurringLabel}</Text>
+            </View>
+          )}
+          {memoryLabel && (
+            <View className="max-w-full flex-row items-center gap-1.5">
+              <IconSymbol name="moon.stars.fill" size={14} color={noctalia.text.secondary} />
+              <Text className="font-sans text-[12px] leading-[18px] text-ivory-muted">{memoryLabel}</Text>
+            </View>
+          )}
+          {badgeList}
+        </View>
       </View>
     </PressableScale>
   );

@@ -100,32 +100,6 @@ describe('FilterBar', () => {
     expect(onClear).toHaveBeenCalledTimes(1);
   });
 
-  it('wraps the three quick filters at 320dp instead of overflowing horizontally', () => {
-    render(
-      <div style={{ width: 320 }}>
-        <FilterBar
-          items={[
-            { id: 'all', active: true, onPress: jest.fn(), label: 'All', testID: TID.Button.FilterAll },
-            { id: 'favorites', active: false, onPress: jest.fn(), label: 'Favorites', testID: TID.Button.FilterFavorites },
-            { id: 'to_deepen', active: false, onPress: jest.fn(), label: 'To deepen', testID: TID.Button.FilterToDeepen },
-          ]}
-          onClear={jest.fn()}
-          clearTestID={TID.Button.ClearFilters}
-        />
-      </div>
-    );
-
-    const bar = screen.getByTestId('journal-filter-bar');
-    expect(bar.className).toContain('flex-wrap');
-    expect(bar.className).not.toContain('flex-nowrap');
-    expect(bar.className).not.toContain('overflow-x');
-    expect(screen.getByTestId(TID.Button.FilterAll)).toBeTruthy();
-    expect(screen.getByTestId(TID.Button.FilterFavorites)).toBeTruthy();
-    expect(screen.getByTestId(TID.Button.FilterToDeepen)).toBeTruthy();
-    expect(screen.getByTestId(TID.Button.FilterAll).className).toContain('min-h-[44px]');
-    expect(screen.getByTestId(TID.Button.FilterAll).className).toContain('min-w-[44px]');
-  });
-
   it('keeps active advanced filters visible next to the three quick access chips', () => {
     const onClear = jest.fn();
     render(

@@ -37,13 +37,10 @@ export function getBottomNavigationLayout(
   const itemWidth = contentWidth / 5;
   const labelFontSize = compact || width < 400 ? 11 : 12;
   const labelLineHeight = 16;
-  // Large text uses the translated short labels (at most eight characters,
-  // five for Capture); full names remain on the accessible tab controls.
-  // Reserve wrapping height while keeping all five destinations in one row.
+  // Narrow and large-text navigation uses translated short labels; full names
+  // remain on the accessible tab controls. Only enlarged text needs wrapping room.
   const labelLines = largeText
     ? Math.max(1, Math.ceil((8 * labelFontSize * safeFontScale * 0.52) / Math.max(1, itemWidth - 2)))
-    : stackedLabels
-    ? Math.max(2, Math.ceil((11 * labelFontSize * safeFontScale * 0.65) / Math.max(1, itemWidth - 8)))
     : 1;
   const labelHeight = Math.ceil(labelLines * labelLineHeight * safeFontScale + 4);
   const centerActionWidth = largeText
