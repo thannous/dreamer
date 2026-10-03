@@ -55,6 +55,8 @@ test('an empty journal keeps honest metrics in both themes and starts its first 
   await page.getByTestId('input.dreamTranscript').fill('A short synthetic dream about a quiet garden.');
   await page.getByTestId('btn.saveDream').click();
   await expect(page.getByTestId('component.transcriptCard')).toContainText('A short synthetic dream about a quiet garden.');
+  await expect(page.getByTestId('component.dreamDetail.readingZone')).toContainText(/\S{20}/);
+  await info.attach('first-capture-inline-analysis', { body: await page.screenshot(), contentType: 'image/png' });
 });
 
 test('populated trends retain motifs, chronology and explicit or system themes', async ({ page }, info) => {

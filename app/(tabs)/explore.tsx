@@ -2,7 +2,6 @@ import { useQuickSettings } from '@/context/QuickSettingsContext';
 import { NoctaliaScreenHeader } from '@/components/NoctaliaScreenHeader';
 import { RitualPickerSheet } from '@/components/ritual/RitualPickerSheet';
 import { ScreenContainer } from '@/components/ScreenContainer';
-import { AtmosphericBackground } from '@/components/inspiration/AtmosphericBackground';
 import { IconSymbol } from '@/components/ui/icon-symbol';
 import { DESKTOP_BREAKPOINT, getBottomNavigationLayout } from '@/constants/layout';
 import { ThemeLayout } from '@/constants/journalTheme';
@@ -25,15 +24,16 @@ const TALKBACK_WINDOW_SETTLE_MS = 600;
 
 type IconName = Parameters<typeof IconSymbol>[0]['name'];
 
-type ExplorerCardProps = {
+type ExplorerRowProps = {
   icon: IconName;
   title: string;
   body: string;
   testID: string;
   onPress: () => void;
+  separator?: boolean;
 };
 
-function ExplorerCard({ icon, title, body, testID, onPress }: ExplorerCardProps) {
+function ExplorerRow({ icon, title, body, testID, onPress, separator = false }: ExplorerRowProps) {
   const { colors, mode } = useTheme();
   const noctalia = useMemo(() => getNoctaliaDesignTokens(colors, mode), [colors, mode]);
 
@@ -43,15 +43,10 @@ function ExplorerCard({ icon, title, body, testID, onPress }: ExplorerCardProps)
       testID={testID}
       accessibilityRole="button"
       accessibilityLabel={title}
-      className="min-h-[120px] flex-row items-center gap-4 rounded-[20px] border border-line bg-ink-soft p-4 active:opacity-[0.78]"
+      accessibilityHint={body}
+      className={`min-h-[88px] flex-row items-center gap-4 py-3 active:opacity-[0.78] ${separator ? 'border-b border-line' : ''}`}
     >
-      <View
-        className="h-12 w-12 shrink-0 items-center justify-center rounded-[16px] border"
-        style={{
-          backgroundColor: noctalia.surface.raised,
-          borderColor: noctalia.surface.border,
-        }}
-      >
+      <View accessible={false} className="w-8 shrink-0 items-center justify-center">
         <IconSymbol name={icon} size={24} color={noctalia.accent.text} />
       </View>
       <View className="min-w-0 flex-1 gap-1">
@@ -167,6 +162,7 @@ export default function ExploreScreen() {
   const header = (
     <NoctaliaScreenHeader
       titleKey="explore.title"
+      variant="editorial"
       actions={[
         {
           icon: 'gear',
@@ -180,7 +176,6 @@ export default function ExploreScreen() {
 
   return (
     <View className="flex-1 bg-ink" testID={TID.Screen.Explore}>
-      <AtmosphericBackground variant="subtle" />
       {!scrollHeader ? header : null}
       <ScrollView
         className="flex-1"
@@ -194,61 +189,67 @@ export default function ExploreScreen() {
       >
         {scrollHeader ? header : null}
         <ScreenContainer key="resources">
-          <View className="gap-4 px-4 pt-4">
+          <View className="gap-5 px-4 pt-3">
             <Text className="text-[15px] leading-[22px] font-sans text-ivory-muted">
               {t('explore.intro')}
             </Text>
-            <ExplorerCard
-              icon="book.closed.fill"
-              title={t('explore.symbols.title')}
-              body={t('explore.symbols.body')}
-              testID={TID.Button.ExplorerSymbols}
-              onPress={() => router.push('/symbol-dictionary')}
-            />
-            <ExplorerCard
-              icon="sparkles"
-              title={t('explore.guides.title')}
-              body={t('explore.guides.body')}
-              testID={TID.Button.ExplorerGuides}
-              onPress={() => router.push('/dream-guides')}
-            />
-            <View className="gap-4 rounded-[20px] border border-line bg-ink-soft p-4">
+            <View className="border-t border-line">
+              <ExplorerRow
+                icon="book.closed.fill"
+                title={t('explore.symbols.title')}
+                body={t('explore.symbols.body')}
+                testID={TID.Button.ExplorerSymbols}
+                onPress={() => router.push('/symbol-dictionary')}
+                separator
+              />
+              <ExplorerRow
+                icon="sparkles"
+                title={t('explore.guides.title')}
+                body={t('explore.guides.body')}
+                testID={TID.Button.ExplorerGuides}
+                onPress={() => router.push('/dream-guides')}
+                separator={sleepSoundsAvailable}
+              />
+              {sleepSoundsAvailable ? (
+                <ExplorerRow
+                  icon="speaker.wave.2.fill"
+                  title={t('explore.sleep_sounds.title')}
+                  body={t('explore.sleep_sounds.body')}
+                  testID={TID.Button.ExplorerSleepSounds}
+                  onPress={() => router.push('/sleep-sounds')}
+                />
+              ) : null}
+            </View>
+            <View className="gap-2 rounded-[20px] border border-line bg-ink-card p-4">
               <View className="flex-row items-center gap-4">
-                <View accessible={false} className="h-12 w-12 shrink-0 items-center justify-center rounded-[16px] border"
-                  style={{ backgroundColor: noctalia.surface.raised, borderColor: noctalia.surface.border }}>
-                  <IconSymbol name="moon.stars.fill" size={24} color={noctalia.accent.text} />
+                <View accessible={false} className="h-12 w-12 shrink-0 items-center justify-center rounded-full bg-ink-active">
+                  <IconSymbol name="moon.stars.fill" size={28} color={noctalia.accent.text} />
                 </View>
                 <View className="min-w-0 flex-1 gap-1">
                   <Text accessibilityRole="header" className="font-display-semibold text-[18px] leading-[24px] text-ivory">
                     {t('explore.ritual.title')}
                   </Text>
-                  <Text className="font-sans text-[14px] leading-[20px] text-ivory-muted">
-                    {t('explore.ritual.body')}
+                  <Text className="font-sans text-[15px] leading-[20px] text-ivory-muted">
+                    {t(ritual.labelKey)}
                   </Text>
                 </View>
               </View>
+              <Text className="font-sans text-[14px] leading-[20px] text-ivory-muted">
+                {t('explore.ritual.body')}
+              </Text>
               <Pressable onPress={() => router.push(`/ritual/${ritual.id}`)} accessibilityRole="button"
                 accessibilityLabel={t('explore.ritual.open', { ritual: t(ritual.labelKey) })}
                 testID={TID.Button.ExplorerRitual}
-                className="min-h-14 items-center justify-center rounded-[16px] bg-champagne px-4 py-4">
-                <Text className="text-center font-sans-bold text-[15px] text-on-champagne">
+                className="min-h-[52px] items-center justify-center rounded-[16px] bg-champagne px-4 py-3">
+                <Text className="text-center font-sans-bold text-[15px] leading-[20px] text-on-champagne">
                   {t('explore.ritual.open', { ritual: t(ritual.labelKey) })}
                 </Text>
               </Pressable>
               <Pressable ref={changeRitualRef} focusable onPress={() => setPickerVisible(true)} accessibilityRole="button"
-                testID="explorer-change-ritual" className="min-h-12 items-center justify-center rounded-[16px] border border-line px-4 py-3">
-                <Text className="text-center font-sans-medium text-[15px] text-ivory">{t('explore.ritual.change')}</Text>
+                testID="explorer-change-ritual" className="min-h-11 items-center justify-center rounded-[16px] px-4 py-2 active:opacity-[0.78]">
+                <Text className="text-center font-sans-medium text-[15px] leading-[20px] text-ivory">{t('explore.ritual.change')}</Text>
               </Pressable>
             </View>
-            {sleepSoundsAvailable ? (
-              <ExplorerCard
-                icon="speaker.wave.2.fill"
-                title={t('explore.sleep_sounds.title')}
-                body={t('explore.sleep_sounds.body')}
-                testID={TID.Button.ExplorerSleepSounds}
-                onPress={() => router.push('/sleep-sounds')}
-              />
-            ) : null}
           </View>
         </ScreenContainer>
       </ScrollView>
