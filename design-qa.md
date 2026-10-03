@@ -1698,3 +1698,18 @@ final result: passed (local web card scope)
 **Final master integration**
 - Head `9a6d4b73` passed all remote gates, including 42/42 web journeys (10.7m, zero retries).
 - Master advanced to `c8210f63` (Explore PR #241) during CI and corrected the same obsolete Trends locator. The only integration conflict was that E2E assertion. Resolution retains master's inline-analysis assertion/capture and the Journal return/saved-story assertion. Existing Explore app changes and tests are preserved; no duplicate source changes enter the Journal PR.
+
+## Sleep Sounds — return control and spacing, 2026-10-03
+
+| Before | After | Why |
+| --- | --- | --- |
+| Raised back button with a large shadow and accent icon | 44pt round control, fine border, secondary icon and pressed feedback | Matches the quiet return control used by Guides |
+| Independent 3/5/7/9/10/14/26pt gaps | Regular 4/8/12/16/24pt spacing and 20pt page margins | Gives the sections and controls a consistent rhythm |
+| Duration controls without inner text padding | Horizontal and vertical padding with a 20pt line height | Allows the labels to wrap when text is enlarged |
+
+- Scope: `components/sleep/SleepSoundsScreen.tsx` only; the Analysis lot is deferred. Audio, preferences, timer logic, native availability and existing motion are preserved.
+- Base: published `origin/master ab0f1777e8538778fb36b8cf5d6a9fe2bb6b4321`, in an isolated clean worktree. Focused lint, app types and the five existing screen/route tests passed. No new isolation tests.
+- Local rendered inspection: 390x844 light and dark; back hit target measured 44x44, 1px border, no box shadow. Selecting 45 minutes updated the countdown to `45:00`; Back returned to Capture. No actual listening/background-audio qualification is inferred.
+- A temporary local preview route and mock-only entry link were used because the production route is native-only. Both fixtures were removed; `app/sleep-sounds.tsx` and `app/recording.tsx` are unchanged in the final patch. No feature gate was modified.
+- At 320px with browser text enlarged to 200%, duration labels wrap and the player action stays readable and reachable by scrolling. Native text scaling and the large display title/countdown remain device qualification items; this browser simulation does not qualify them.
+- Ignored evidence: `dist/sounds-polish-20261003/` in the primary checkout, with light/dark screenshots and the narrow enlarged-text inspection. The actual iPhone delivery and CI evidence are recorded separately on the final revisions.

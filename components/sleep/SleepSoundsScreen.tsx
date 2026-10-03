@@ -68,7 +68,7 @@ function formatRemainingTime(totalSeconds: number): string {
 }
 
 export function SleepSoundsScreen() {
-  const { colors, mode, shadows } = useTheme();
+  const { colors, mode } = useTheme();
   const noctalia = useMemo(() => getNoctaliaDesignTokens(colors, mode), [colors, mode]);
   const { currentLang, t } = useTranslation();
   const copy = useMemo(() => getSleepSoundCopy(currentLang), [currentLang]);
@@ -144,8 +144,8 @@ export function SleepSoundsScreen() {
   }, [player]);
 
   const reducedMotion = useReducedMotion();
-  const backButtonTop = insets.top + ThemeLayout.spacing.sm;
-  const contentPaddingTop = backButtonTop + 44 + ThemeLayout.spacing.md;
+  const backButtonTop = insets.top + ThemeLayout.spacing.lg20;
+  const contentPaddingTop = backButtonTop + 44 + ThemeLayout.spacing.lg;
   const isPreparing =
     !preferencesLoaded ||
     (!player.hasStarted && (!player.isLoaded || player.isBuffering));
@@ -159,20 +159,28 @@ export function SleepSoundsScreen() {
 
   return (
     <ScrollPerfProvider isScrolling={scrollPerf.isScrolling}>
-      <View style={[styles.container, { backgroundColor: noctalia.screen.background }]}>
+      <View
+        style={[styles.container, { backgroundColor: noctalia.screen.background }]}
+        testID="screen.sleepSounds"
+      >
         <AtmosphericBackground />
 
         <Pressable
           onPress={() => router.back()}
-          style={[
+          style={({ pressed }) => [
             styles.floatingBackButton,
-            { top: backButtonTop, backgroundColor: noctalia.surface.raised },
-            shadows.lg,
+            {
+              top: backButtonTop,
+              backgroundColor: noctalia.surface.raised,
+              borderColor: noctalia.surface.border,
+            },
+            pressed && styles.pressed,
           ]}
+          testID="sleep-sounds-back"
           accessibilityRole="button"
           accessibilityLabel={t('journal.back_button')}
         >
-          <IconSymbol name="chevron.left" size={22} color={noctalia.accent.text} />
+          <IconSymbol name="chevron.left" size={21} color={noctalia.text.secondary} />
         </Pressable>
 
         <ScrollView
@@ -406,22 +414,23 @@ const styles = StyleSheet.create({
   scrollView: { flex: 1 },
   floatingBackButton: {
     position: 'absolute',
-    left: 20,
+    left: ThemeLayout.spacing.lg20,
     zIndex: 50,
     width: 44,
     height: 44,
     borderRadius: 22,
+    borderWidth: 1,
     borderCurve: 'continuous',
     alignItems: 'center',
     justifyContent: 'center',
   },
   content: {
-    paddingHorizontal: 20,
-    gap: 26,
+    paddingHorizontal: ThemeLayout.spacing.lg20,
+    gap: ThemeLayout.spacing.lg,
   },
   titleSection: {
     alignItems: 'center',
-    gap: 10,
+    gap: 12,
   },
   heroIcon: {
     width: 68,
@@ -432,6 +441,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   title: {
+    alignSelf: 'stretch',
     fontFamily: Fonts.fraunces.bold,
     fontSize: 30,
     lineHeight: 36,
@@ -451,10 +461,10 @@ const styles = StyleSheet.create({
     fontSize: 16,
     lineHeight: 22,
   },
-  soundList: { gap: 10 },
+  soundList: { gap: 12 },
   soundCard: {
     minHeight: 78,
-    padding: 14,
+    padding: ThemeLayout.spacing.md,
     borderWidth: 1,
     borderRadius: 20,
     borderCurve: 'continuous',
@@ -470,7 +480,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
   },
-  soundCopy: { flex: 1, gap: 3 },
+  soundCopy: { flex: 1, gap: ThemeLayout.spacing.xs },
   soundTitle: {
     fontFamily: Fonts.spaceGrotesk.bold,
     fontSize: 15,
@@ -482,16 +492,18 @@ const styles = StyleSheet.create({
     lineHeight: 18,
   },
   timerGroup: {
-    padding: 5,
+    padding: ThemeLayout.spacing.xs,
     borderWidth: 1,
     borderRadius: 18,
     borderCurve: 'continuous',
     flexDirection: 'row',
-    gap: 5,
+    gap: ThemeLayout.spacing.xs,
   },
   timerOption: {
     flex: 1,
     minHeight: 44,
+    paddingHorizontal: ThemeLayout.spacing.xs,
+    paddingVertical: ThemeLayout.spacing.sm,
     borderRadius: 14,
     borderCurve: 'continuous',
     alignItems: 'center',
@@ -500,13 +512,14 @@ const styles = StyleSheet.create({
   timerText: {
     fontFamily: Fonts.spaceGrotesk.bold,
     fontSize: 14,
+    lineHeight: 20,
     fontVariant: ['tabular-nums'],
   },
   playerCard: {
     padding: 24,
     borderRadius: 26,
     alignItems: 'center',
-    gap: 14,
+    gap: ThemeLayout.spacing.md,
   },
   nowPlayingLabel: {
     fontFamily: Fonts.spaceGrotesk.medium,
@@ -529,7 +542,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
-    gap: 9,
+    gap: ThemeLayout.spacing.sm,
   },
   primaryButtonText: {
     fontFamily: Fonts.spaceGrotesk.bold,
@@ -543,7 +556,7 @@ const styles = StyleSheet.create({
   },
   hints: {
     paddingHorizontal: 12,
-    gap: 7,
+    gap: ThemeLayout.spacing.sm,
   },
   hintText: {
     fontFamily: Fonts.spaceGrotesk.regular,
@@ -551,4 +564,5 @@ const styles = StyleSheet.create({
     lineHeight: 19,
     textAlign: 'center',
   },
+  pressed: { opacity: 0.76 },
 });
