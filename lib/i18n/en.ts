@@ -1604,6 +1604,7 @@ const translations: Record<string, string> = {
     'symbols.not_found': 'Symbol not found',
     'symbols.no_results': 'No symbols found',
     'inspiration.ritual.steps_progress': '{completed}/{total} steps',
+    'symbols.popular_short': 'Popular',
     'symbols.popular_title': 'Popular symbols',
     'symbols.view_all': 'View all',
     'symbols.home_card_title': 'Dream symbols',

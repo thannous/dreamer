@@ -24,8 +24,8 @@ export function CategoryHeader({ category, count, language }: CategoryHeaderProp
   return (
     <View
       style={{
-        paddingHorizontal: ThemeLayout.spacing.md,
-        paddingTop: ThemeLayout.spacing.lg,
+        paddingHorizontal: ThemeLayout.spacing.lg20,
+        paddingTop: ThemeLayout.spacing.sm,
         paddingBottom: ThemeLayout.spacing.sm,
         gap: 6,
       }}>
@@ -37,12 +37,13 @@ export function CategoryHeader({ category, count, language }: CategoryHeaderProp
         }}>
         <IconSymbol name={icon} size={18} color={noctalia.accent.text} />
         <Text
+          accessibilityRole="header"
           style={{
             flex: 1,
             fontFamily: Fonts.fraunces.medium,
-            fontSize: 16,
+            fontSize: 18,
+            lineHeight: 25,
             color: noctalia.text.primary,
-            textTransform: 'uppercase',
           }}>
           {name}
         </Text>
