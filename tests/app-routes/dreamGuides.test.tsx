@@ -73,25 +73,10 @@ jest.mock('expo-linear-gradient', () => ({
   LinearGradient: ({ children }: { children: React.ReactNode }) => <div>{children}</div>,
 }));
 
-const { default: DreamGuidesScreen } = require('@/app/dream-guides');
 const { default: DreamGuideDetailScreen } = require('@/app/dream-guide/[id]');
 
 describe('dream guide routes', () => {
-  it('lists the general and symbol guides and opens a general guide', () => {
-    render(<DreamGuidesScreen />);
-
-    expect(screen.getByText('Dream guides')).toBeTruthy();
-    expect(screen.getByText('Practical guides')).toBeTruthy();
-    expect(screen.getByText('Symbol guides')).toBeTruthy();
-
-    fireEvent.click(screen.getByTestId('dream-guide-understand-dreams'));
-
-    expect(mockPush).toHaveBeenCalledWith({
-      pathname: '/dream-guide/[id]',
-      params: { id: 'understand-dreams' },
-    });
-  });
-
+  // Directory rendering and navigation are covered by e2e/web/dream-guides.spec.ts.
   it('renders a general guide as native practical steps', () => {
     mockGuideId = 'remember-dreams';
     render(<DreamGuideDetailScreen />);

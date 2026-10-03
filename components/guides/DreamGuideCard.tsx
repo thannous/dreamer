@@ -3,7 +3,6 @@ import { StyleSheet, Text, View } from 'react-native';
 
 import { PressableScale } from '@/components/motion';
 import { IconSymbol } from '@/components/ui/icon-symbol';
-import { ThemeLayout } from '@/constants/journalTheme';
 import { getNoctaliaDesignTokens } from '@/constants/noctaliaDesign';
 import { Fonts } from '@/constants/theme';
 import { useTheme } from '@/context/ThemeContext';
@@ -15,6 +14,7 @@ interface DreamGuideCardProps {
   language: DreamGuideLanguage;
   metaLabel: string;
   onPress: (id: string) => void;
+  showSeparator?: boolean;
 }
 
 export const DreamGuideCard = memo(function DreamGuideCard({
@@ -22,6 +22,7 @@ export const DreamGuideCard = memo(function DreamGuideCard({
   language,
   metaLabel,
   onPress,
+  showSeparator = true,
 }: DreamGuideCardProps) {
   const { colors, mode } = useTheme();
   const noctalia = getNoctaliaDesignTokens(colors, mode);
@@ -32,75 +33,80 @@ export const DreamGuideCard = memo(function DreamGuideCard({
     <PressableScale
       onPress={handlePress}
       accessibilityRole="button"
-      accessibilityLabel={content.title}
+      accessibilityLabel={`${content.title}. ${metaLabel}`}
+      accessibilityHint={content.metaDescription}
       testID={`dream-guide-${guide.id}`}
-      // The card already stands 126pt tall and the list packs them 12pt apart, so the
-      // default slop would only blur the boundary between two neighbours.
+      // Adjacent reading rows already provide a generous, separate touch target.
       hitSlop={0}
       style={[
-        styles.card,
-        {
-          backgroundColor: noctalia.surface.raised,
-          borderColor: noctalia.surface.border,
-        },
+        styles.row,
+        { borderBottomColor: noctalia.surface.border, borderBottomWidth: showSeparator ? 1 : 0 },
       ]}
     >
-      <View style={[styles.iconWrap, { backgroundColor: noctalia.surface.soft }]}>
-        <IconSymbol
-          name={getDreamGuideIcon(guide.id)}
-          size={22}
-          color={noctalia.accent.text}
-        />
+      <View accessible={false} style={styles.iconWrap}>
+        <IconSymbol name={getDreamGuideIcon(guide.id)} size={24} color={noctalia.accent.text} />
       </View>
       <View style={styles.copy}>
-        <Text style={[styles.title, { color: noctalia.text.primary }]} numberOfLines={2}>
-          {content.title}
-        </Text>
-        <Text style={[styles.description, { color: noctalia.text.secondary }]} numberOfLines={2}>
+        <View style={styles.titleRow}>
+          <Text style={[styles.title, { color: noctalia.text.primary }]}>
+            {content.title}
+          </Text>
+          <View accessible={false} style={styles.chevron}>
+            <IconSymbol name="chevron.right" size={18} color={noctalia.text.tertiary} />
+          </View>
+        </View>
+        <Text style={[styles.description, { color: noctalia.text.secondary }]}>
           {content.metaDescription}
         </Text>
-        <Text style={[styles.count, { color: noctalia.accent.text }]}>{metaLabel}</Text>
+        <Text style={[styles.metadata, { color: noctalia.accent.text }]}>{metaLabel}</Text>
       </View>
-      <IconSymbol name="chevron.right" size={18} color={noctalia.text.tertiary} />
     </PressableScale>
   );
 });
 
 const styles = StyleSheet.create({
-  card: {
-    minHeight: 126,
-    borderRadius: ThemeLayout.borderRadius.lg,
-    borderCurve: 'continuous',
-    borderWidth: 1,
-    padding: ThemeLayout.spacing.md,
+  row: {
+    paddingVertical: 16,
     flexDirection: 'row',
-    alignItems: 'center',
-    gap: ThemeLayout.spacing.md,
+    alignItems: 'flex-start',
+    gap: 16,
   },
   iconWrap: {
-    width: 48,
-    height: 48,
-    borderRadius: 17,
+    width: 32,
+    minHeight: 24,
+    paddingTop: 2,
+    flexShrink: 0,
     alignItems: 'center',
-    justifyContent: 'center',
   },
   copy: {
     flex: 1,
-    gap: 4,
+    minWidth: 0,
+    gap: 6,
+  },
+  titleRow: {
+    flexDirection: 'row',
+    alignItems: 'flex-start',
+    gap: 10,
   },
   title: {
+    flex: 1,
+    minWidth: 0,
     fontFamily: Fonts.fraunces.semiBold,
     fontSize: 18,
-    lineHeight: 23,
+    lineHeight: 24,
+  },
+  chevron: {
+    paddingTop: 3,
+    flexShrink: 0,
   },
   description: {
     fontFamily: Fonts.spaceGrotesk.regular,
-    fontSize: 13,
-    lineHeight: 18,
+    fontSize: 14,
+    lineHeight: 20,
   },
-  count: {
+  metadata: {
     fontFamily: Fonts.spaceGrotesk.medium,
     fontSize: 12,
-    lineHeight: 16,
+    lineHeight: 17,
   },
 });
