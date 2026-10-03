@@ -79,6 +79,7 @@ for (const mode of ['light', 'dark'] as const) {
     await page.setViewportSize({ width: 844, height: 390 });
     await expect(image).not.toBeInViewport();
     await expect(page.getByTestId('journal.detail.navigation')).toHaveCSS('background-color', mode === 'dark' ? 'rgb(3, 4, 13)' : 'rgb(240, 228, 212)');
+    await expect(page.getByTestId('component.dreamDetail.actionDock')).toBeVisible();
     await page.screenshot({ path: info.outputPath(`dream-${mode}-rotation-reading-header.png`) });
     await page.setViewportSize({ width: 390, height: 844 });
     await page.getByTestId('btn.navigateJournal').click();

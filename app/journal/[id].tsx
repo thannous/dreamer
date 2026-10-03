@@ -488,6 +488,15 @@ const JournalDetailContent = memo(function JournalDetailContent({ dream }: { dre
   const [isKeyboardVisible, setIsKeyboardVisible] = useState(false);
   const [transcriptSectionOffset, setTranscriptSectionOffset] = useState(0);
   const readingScrollOffset = useRef(0);
+  const readingContentRef = useRef<View | null>(null);
+  const transcriptSectionRef = useRef<View | null>(null);
+  const measureTranscriptSection = useCallback(() => {
+    const content = readingContentRef.current;
+    if (!content) return;
+    transcriptSectionRef.current?.measureLayout?.(content, (_left, top) => {
+      setTranscriptSectionOffset(previous => previous === top ? previous : top);
+    });
+  }, []);
   const updateReadingChrome = useCallback((offsetY: number) => {
     const navigationMidpoint = offsetY + insets.top + 34;
     const imageTop = navigationHeight + introHeight;
@@ -501,7 +510,10 @@ const JournalDetailContent = memo(function JournalDetailContent({ dream }: { dre
   // event. Recompute chrome before paint using the latest observed offset.
   useLayoutEffect(() => {
     updateReadingChrome(readingScrollOffset.current);
-  }, [updateReadingChrome]);
+    // Web onLayout observes size, so a position-only move can leave the old
+    // story offset behind. Read its position relative to the content ancestor.
+    measureTranscriptSection();
+  }, [measureTranscriptSection, updateReadingChrome]);
   const scrollViewRef = useRef<ScrollView | null>(null);
   const lastAnalysisNoticeRef = useRef<AnalysisNotice | null>(null);
 
@@ -2470,7 +2482,7 @@ const JournalDetailContent = memo(function JournalDetailContent({ dream }: { dre
           }}
           keyboardShouldPersistTaps="handled"
         >
-          <View className="px-4 pb-6">
+          <View ref={readingContentRef} collapsable={false} onLayout={measureTranscriptSection} className="px-4 pb-6">
             <View onLayout={({ nativeEvent: { layout } }) => {
               setCoverIntroHeight(previous => previous === layout.height ? previous : layout.height);
             }}>
@@ -2512,6 +2524,8 @@ const JournalDetailContent = memo(function JournalDetailContent({ dream }: { dre
 
             {!isEditingTranscript && (
               <View
+                ref={transcriptSectionRef}
+                collapsable={false}
                 className="mt-2 mb-5"
                 onLayout={(event) => setTranscriptSectionOffset(event.nativeEvent.layout.y)}
               >
