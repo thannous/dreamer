@@ -12,9 +12,10 @@ type RecordingDraftProgressProps = {
   value: string;
   persisted?: boolean;
   compact?: boolean;
+  inlineStatus?: boolean;
 };
 
-export function RecordingDraftProgress({ value, persisted = false, compact = false }: RecordingDraftProgressProps) {
+export function RecordingDraftProgress({ value, persisted = false, compact = false, inlineStatus = false }: RecordingDraftProgressProps) {
   const { colors, mode } = useTheme();
   const { t } = useTranslation();
   const noctalia = useMemo(() => getNoctaliaDesignTokens(colors, mode), [colors, mode]);
@@ -30,7 +31,9 @@ export function RecordingDraftProgress({ value, persisted = false, compact = fal
       testID={TID.Component.RecordingDraftProgress}
     >
       {!compact ? <View style={styles.headerRow}>
-        {shouldShowHint ? (
+        {inlineStatus && savedLabel ? (
+          <Text accessibilityLiveRegion="polite" accessibilityHint={hint} style={[styles.hint, { color: noctalia.text.secondary }]}>{savedLabel}</Text>
+        ) : shouldShowHint ? (
           <Text style={[styles.hint, { color: noctalia.text.secondary }]}>
             {hint}
           </Text>
@@ -42,7 +45,7 @@ export function RecordingDraftProgress({ value, persisted = false, compact = fal
           {countLabel}
         </Text>
       </View> : null}
-      {savedLabel ? (
+      {savedLabel && !inlineStatus ? (
         <Text
           accessibilityLiveRegion="polite"
           style={[styles.saved, { color: noctalia.text.secondary }]}
@@ -57,6 +60,8 @@ export function RecordingDraftProgress({ value, persisted = false, compact = fal
 const styles = StyleSheet.create({
   container: {
     width: '100%',
+    maxWidth: 512,
+    alignSelf: 'center',
     gap: 8,
   },
   headerRow: {
@@ -68,7 +73,7 @@ const styles = StyleSheet.create({
   hint: {
     flex: 1,
     fontFamily: Fonts.spaceGrotesk.medium,
-    fontSize: 12,
+    fontSize: 13,
     lineHeight: 16,
   },
   saved: {

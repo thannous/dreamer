@@ -5,18 +5,21 @@ import { IconSymbol } from '@/components/ui/icon-symbol';
 import { getNoctaliaDesignTokens } from '@/constants/noctaliaDesign';
 import { useTheme } from '@/context/ThemeContext';
 import { useTranslation } from '@/hooks/useTranslation';
+import { Fonts } from '@/constants/theme';
 import { TID } from '@/lib/testIDs';
 import type { RecordingInputModePreference } from '@/lib/types';
 
 interface RecordingInputModeSelectProps {
   value: RecordingInputModePreference;
   disabled?: boolean;
+  locked?: boolean;
   onChange: (value: RecordingInputModePreference) => void | Promise<void>;
 }
 
 export function RecordingInputModeSelect({
   value,
   disabled = false,
+  locked = false,
   onChange,
 }: RecordingInputModeSelectProps) {
   const { colors, mode } = useTheme();
@@ -65,28 +68,28 @@ export function RecordingInputModeSelect({
                 void onChange(option.value);
               }
             }}
-            disabled={disabled}
+            disabled={disabled || locked}
             style={[
               styles.option,
               {
-                backgroundColor: isSelected ? noctalia.surface.active : 'transparent',
+                backgroundColor: isSelected && mode === 'dark' ? noctalia.action.primary : isSelected ? noctalia.surface.active : 'transparent',
                 borderColor: isSelected ? noctalia.accent.base : 'transparent',
               },
             ]}
             accessibilityRole="tab"
-            accessibilityState={{ selected: isSelected, disabled }}
+            accessibilityState={{ selected: isSelected, disabled: disabled || locked }}
             accessibilityLabel={option.label}
             testID={option.testID}
           >
             <IconSymbol
               name={option.icon}
               size={16}
-              color={isSelected ? noctalia.text.primary : noctalia.text.secondary}
+              color={isSelected && mode === 'dark' ? noctalia.action.primaryText : isSelected ? noctalia.text.primary : noctalia.text.secondary}
             />
             <Text
               style={[
                 styles.optionText,
-                { color: isSelected ? noctalia.text.primary : noctalia.text.secondary },
+                { color: isSelected && mode === 'dark' ? noctalia.action.primaryText : isSelected ? noctalia.text.primary : noctalia.text.secondary },
               ]}
               testID={TID.Text.RecordingInputMode(option.value)}
             >
@@ -127,6 +130,6 @@ const styles = StyleSheet.create({
   optionText: {
     fontSize: 15,
     lineHeight: 20,
-    fontWeight: '600',
+    fontFamily: Fonts.spaceGrotesk.medium,
   },
 });

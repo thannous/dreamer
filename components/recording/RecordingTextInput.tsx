@@ -12,6 +12,8 @@ import { IconSymbol } from '@/components/ui/icon-symbol';
 
 export interface RecordingTextInputProps {
   compact?: boolean;
+  chat?: boolean;
+  expanded?: boolean;
   layout?: 'textFirst' | 'voiceFirst';
   value: string;
   onChange: (text: string) => void;
@@ -43,6 +45,8 @@ export const RecordingTextInput = forwardRef<TextInput, RecordingTextInputProps>
   function RecordingTextInput(
     {
       compact = false,
+      chat = false,
+      expanded = false,
       value,
       layout = 'textFirst',
       onChange,
@@ -79,7 +83,7 @@ export const RecordingTextInput = forwardRef<TextInput, RecordingTextInputProps>
     );
     const hasValue = value.trim().length > 0;
     const [isFocused, setIsFocused] = useState(false);
-    const compactMinHeight = Math.max(96, 23 * fontScale + 70);
+    const compactMinHeight = chat ? Math.max(64, 24 * fontScale + 40) : Math.max(96, 23 * fontScale + 70);
     const isVoicePreparing = voiceStatus === 'preparing';
     const isVoiceFirst = layout === 'voiceFirst';
     const voiceLabel = switchToVoiceLabel || t('recording.mode.switch_to_voice') || 'Dicter mon r\u00eave';
@@ -93,8 +97,8 @@ export const RecordingTextInput = forwardRef<TextInput, RecordingTextInputProps>
       Boolean(footerActions) || (!isVoiceFirst && voiceSupported) || Boolean(onOpenDetails && hasValue) || Boolean(onClear && hasValue);
 
     const textEditor = (
-      <View style={styles.editor}>
-        {!hasValue ? (
+      <View style={[styles.editor, expanded && styles.editorExpanded, chat && styles.chatEditor]}>
+        {!hasValue && !expanded && !chat ? (
           <View
             style={[styles.placeholderIcon, compact && styles.placeholderIconCompact]}
             accessibilityElementsHidden={true}
@@ -118,6 +122,7 @@ export const RecordingTextInput = forwardRef<TextInput, RecordingTextInputProps>
               showInlineActions && styles.textInputWithInlineActionsCompact,
               { minHeight: compactMinHeight, maxHeight: undefined },
               styles.textMeasurement,
+              chat && styles.chatInput,
             ]}
             testID={`${inputTestID}-measurement`}
           >
@@ -143,8 +148,10 @@ export const RecordingTextInput = forwardRef<TextInput, RecordingTextInputProps>
             compact && styles.textInputCompact,
             compact && styles.compactInputOverlay,
             hasValue && styles.textInputWithValue,
+            expanded && [styles.textInputExpanded, { minHeight: Math.max(260, 50 * fontScale + 90) }],
             showInlineActions && styles.textInputWithInlineActions,
             compact && showInlineActions && styles.textInputWithInlineActionsCompact,
+            chat && styles.chatInput,
             {
               backgroundColor: noctalia.surface.base,
               borderColor: isFocused ? noctalia.accent.base : noctalia.surface.border,
@@ -165,7 +172,9 @@ export const RecordingTextInput = forwardRef<TextInput, RecordingTextInputProps>
           <View
             style={[
               styles.inlineActionFooter,
+              expanded && styles.inlineActionFooterExpanded,
               compact && styles.inlineActionFooterCompact,
+              chat && styles.chatActions,
               { backgroundColor: colors.backgroundCard },
             ]}
           >
@@ -344,12 +353,13 @@ export const RecordingTextInput = forwardRef<TextInput, RecordingTextInputProps>
     );
 
     return (
-      <>
+      <View style={[styles.composer, expanded && styles.composerExpanded]}>
         {instructionText ? <View
           style={[
             styles.recordingSection,
             composerLayout.narrow && styles.recordingSectionNarrow,
             compact && styles.recordingSectionCompact,
+            expanded && styles.recordingSectionExpanded,
           ]}
         >
           <Text
@@ -357,6 +367,7 @@ export const RecordingTextInput = forwardRef<TextInput, RecordingTextInputProps>
               styles.instructionText,
               composerLayout.narrow && styles.instructionTextNarrow,
               compact && styles.instructionTextCompact,
+              expanded && styles.instructionTextExpanded,
               { color: noctalia.text.secondary },
             ]}
           >
@@ -366,7 +377,7 @@ export const RecordingTextInput = forwardRef<TextInput, RecordingTextInputProps>
 
         <View
           nativeID={layout}
-          style={styles.textInputSection}
+          style={[styles.textInputSection, expanded && styles.textInputSectionExpanded]}
           testID="recording-composer"
         >
           {isVoiceFirst && voiceSupported ? expressiveVoiceControl : textEditor}
@@ -379,12 +390,30 @@ export const RecordingTextInput = forwardRef<TextInput, RecordingTextInputProps>
           ) : null}
 
         </View>
-      </>
+      </View>
     );
   }
 );
 
 const styles = StyleSheet.create({
+  chatEditor: { borderRadius: 16 },
+  chatInput: { fontFamily: Fonts.spaceGrotesk.regular, fontStyle: 'normal', fontSize: 16, lineHeight: 24, paddingLeft: 14, paddingRight: 116, paddingTop: 20, paddingBottom: 20, maxHeight: 180, borderRadius: 16 },
+  chatActions: { bottom: 8, right: 8, left: 'auto', width: 96, minHeight: 44, paddingRight: 0, paddingBottom: 0 },
+  composer: { gap: 16 },
+  composerExpanded: { flex: 1, gap: 12, width: '100%', maxWidth: 512, alignSelf: 'center' },
+  recordingSectionExpanded: { marginTop: 0, alignItems: 'flex-start' },
+  instructionTextExpanded: { fontFamily: Fonts.spaceGrotesk.regular, fontSize: 14, lineHeight: 20, textAlign: 'left' },
+  textInputSectionExpanded: { flex: 1 },
+  editorExpanded: { flex: 1, borderRadius: 16 },
+  textInputExpanded: {
+    flex: 1,
+    maxHeight: '100%',
+    borderRadius: 16,
+    paddingLeft: 20,
+    fontFamily: Fonts.spaceGrotesk.regular,
+    lineHeight: 25,
+  },
+  inlineActionFooterExpanded: { borderBottomLeftRadius: 15, borderBottomRightRadius: 15 },
   recordingSection: {
     alignItems: 'center',
     justifyContent: 'center',

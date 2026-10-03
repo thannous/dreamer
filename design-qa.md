@@ -1,3 +1,86 @@
+# Raconter — Le fil du rêve, validation dans le chat, 2026-10-02
+
+Integration owner: `codex/capture-essential`. The user approved the displayed v3 reference with “parfait on part exactement sur ça”. Local implementation and delivery, including commits/push, PR integration, required-CI-gated merge and automatic web publication, are now explicitly authorized by the user. Physical iPhone validation is delegated to the user and does not block web delivery. Existing unrelated main-checkout work is preserved.
+
+Source visual truth: `/Users/timax/Projects/noctalia/dist/raconter-maquettes-20261002/03-fil-du-reve-validation-v3.png` (1704×923; light left, dark right). Final rendered captures: `/Users/timax/Projects/noctalia/dist/capture-chat-implementation-20261002/final-light.png` and `final-dark.png`. Actual in-app browser: 390×844 CSS px, density 1. Source content crops: light (217,0)-(834,923), dark (873,0)-(1490,923), each 617×923; proportional normalization to 390×583, then 261px bottom padding for the comparison canvas. No image/type stretching. The generated reference is a wide design canvas, not a literal 390×844 device capture. Existing mobile typography and 44px touch targets therefore remain readable; the real chat fills the available height and keeps the composer/navigation at the bottom.
+
+Comparison inputs opened and inspected together: `comparison-before-dark.png`, then `comparison-light.png` / `comparison-dark.png`; focused source/actual card inputs `card-light.png` / `card-dark.png`, in the same private directory. Both final cards contain the exact source narrative and last user reply. The mock assistant uses the existing general fallback question rather than the raster's specific sensation question; older exchanges can partly cross the scroll boundary. This is actual chat history, not a fake mock question or overwritten narrator text.
+
+Findings and comparison history:
+- [P2 resolved] Initial chat composer used a second row and excessive empty height. It now uses a compact 66px single-row empty state, expands for long text, reserves the right-side controls, and keeps the prompt visible. An intermediate footer span covered the prompt; explicit width/right positioning corrected it. Final theme captures show the prompt and both controls without overlap.
+- [P2 resolved] Ready-state mode locking attenuated the selected Raconter tab. Separate mode locking retains the selected appearance while preventing a switch during review or saved confirmation.
+- [P1 resolved] After saving, a rapid second click could hit Nouveau rêve as the card changed height. The Save position now becomes a noninteractive confirmation row; Open stays in the former Edit position and New sits below the thread. The real-browser double-click journey saves exactly one narrative and retains the confirmation.
+- [P2 resolved] Editing an old exchange during a ready-card pending detail could bypass the edited narrative or clear its reply field. Existing exchanges are locked during review; the explicit card editor preserves the edited narrative and pending detail together.
+
+Five fidelity surfaces:
+- Typography: existing Fraunces heading and actual Space Grotesk families. Computed narrative/question fonts are 400 regular, 16/24; card title is 500 medium, 18/25. No fallback or rasterized text. Source normalization produces roughly 13–14px body copy; actual mobile body stays 16px and Save 52px high for readability and touch use. The increased card height is an explicit mobile adaptation, not an unexplained density claim.
+- Spacing/layout: one chronological thread, right-aligned narrator bubbles, left assistant replies, one bounded validation card, Edit and Add actions inside it, compact anchored reply field, existing five-destination navigation. The fixed review footer is removed. Both 320×640 and 640×390 journeys keep reply and Save reachable; compact landscape uses normal document scrolling. Portrait chat scrolls internally without moving the composer.
+- Colors/tokens: common canonical palette and existing native-style icon colors in both themes. Active Raconter uses champagne with its dark foreground; narrator text uses the primary text token. No champagne text or newly invented gradient. Raster color/glow variations are not substituted for the app's canonical theme.
+- Images/icons: no new raster assets are required. Real existing IconSymbol microphone, send, pencil, arrows, check, close and nav icons remain. Source gradients and icon variants are approximate; no image-derived UI or custom vector art replaces controls.
+- Copy/content: approved ready/gathered/Edit/Add-detail labels are localized in all six app languages. The assembled narrative contains only narrator words and edits; questions stay in history. An unsent detail disables Add until sent. Confirmation appears only after the existing addDream and draft-clear flow succeeds. Native keyboard, text scaling and actual dictation quality are not qualified by web evidence.
+
+Behavior and evidence: 6 focused web/mock journeys passed (24.9s), covering chat chronology, manual/automatic completion, exact edited narrative, pending detail across reload, one updated card, double press, durable mock save/readback, cleared draft, narrow/landscape access, Write behavior, themes and guest continuity/save. After the last chat-only guards/footer correction, both chat journeys passed again (7.1s); the four unaffected Write/guest journeys reuse that evidence. Traces/screenshots are in private `output/capture-chat-20261002/refined-final/` and `verified-final/`. The final in-app browser also verified typed replies, Edit, Save confirmation and New, then restored the ready reference card; console error log is empty. The deliverable stays open at `http://127.0.0.1:8092/recording` with 390×844 emulation.
+
+The existing opt-in mock persistence helper now also stores draft, language and input-mode preference, so reload journeys exercise actual asynchronous storage rather than an in-memory reset. Its existing namespaced flag is unchanged; real storage/backend schemas are untouched. Existing tests cover gaps unavailable in this browser mock (native callbacks, storage failure, quota failure and autosave generation barrier): 177 suites / 2245 tests passed, with 1 existing skipped suite/test. A final UI-only delta passed 2 suites / 34 tests; the final recording-route delta passed 1 suite / 89 tests. App/test TypeScript and explicit E2E TypeScript pass. Focused lint has 0 errors and 1 unchanged baseline recording effect warning. `git diff --check` passes. No new isolation tests were added after implementation; the browser failure model and new E2E were written before code.
+
+Repeatable server: `EXPO_PUBLIC_MOCK_PERSISTENCE=true mise exec -- npm run start:mock -- --web --port 8092`
+
+Repeatable core E2E: `E2E_WEB_PORT=8092 E2E_REUSE_SERVER=1 mise exec -- npm run test:e2e:web -- e2e/web/capture-chat.spec.ts e2e/web/capture-editor.spec.ts e2e/web/journeys.spec.ts --grep 'chat keeps|chat finishes|capture gives|capture keeps|guest keeps|guest saves' --workers=1 --output=output/capture-chat-20261002/rerun`
+
+Candidate: base/HEAD `3ae32d35bc2b405302a52754e377c2d1e00aea80` plus the local dirty source snapshot. Private `output/capture-chat-20261002/evidence.json`, `changes.patch`, archived source copies, reports and per-file hashes identify the exact implementation. Final clean `test:prepush` and final-head remote CI are required for this authorized delivery. No native build, EAS, store, production/backend deployment or physical-device qualification.
+
+Residual P3: browser textarea resize grip, native icon/raster differences, existing navigation geometry, and mock question wording. These do not obstruct the approved workflow. No actionable P0/P1/P2 remains. Checklist: exact v3 selection resolved; both themes and focused card compared; fixes recaptured; core interactions and regressions verified; evidence preserved; local preview open; Delivery authorization refreshed; unrelated WIP preserved.
+
+Finalization follow-up (2026-10-03): the approved local chat patch is reused on latest master `dde1273b455ccfb0e86d2a66fd0da4e4dd30490b`, including Explorer #241 and Guides #243. Master's newer browser color-scheme subscription and stronger inline-analysis assertion are preserved. Four focused web journeys pass (26.0s), including a new assertion that a double save leaves exactly one journal item, then the saved card opens Mon rêve, invokes the existing analysis action and displays integrated reading without the obsolete modal. The exact narrative remains editable/readable. Evidence: private `output/capture-final-20261003/first/`. Prior visual comparisons qualify unchanged card composition; fresh light/dark rendered cards are inspected again before delivery. Native microphone, text scaling, iPhone installation and physical usability remain unqualified by this agent. No EAS, store submission or device installation is part of this delivery.
+
+final result: passed
+
+---
+
+# Capturer — L’éditeur essentiel, 2026-10-02
+
+Integration owner: `codex/capture-essential`. User selected displayed concept 1. Scope: the existing Capture screen, both input modes, restrained introduction, large editor, adjacent status/count, full-width save action and synchronized system appearance on web. Implementation and delivery are authorized by the selected work package; master merge and publication remain held by automatic approval review pending confirmation in this chat. EAS, stores and physical-device qualification remain separate.
+
+Source visual truth: /Users/timax/Projects/noctalia/dist/capturer-maquettes-20261002/01-editeur-essentiel.png (1391×1131; light left, dark right). Base: `1cffb84afc351fb38d2e6af77343e5f3d20135ed`, including Today #234 and Reflection #235. No new raster assets or dependencies are needed; actual Fraunces/Space Grotesk and existing IconSymbol controls are retained.
+
+Evidence: private ignored `output/capture-essential-20261002/`; final rendered screenshots/traces in `final/`; combined `comparison-light.png`, `comparison-dark.png` and focused `actions-light.png` / `actions-dark.png`. Actual Chromium viewport: 390×844 CSS px, density 1. Source panels: 680×1131 and 681×1131, proportionally normalized to 390×649/648 and padded below to 390×844. No image or type stretching. The generated source is shorter than the requested viewport; the implemented editor deliberately uses the additional real available height rather than leaving an unrelated empty space. The same synthetic French 260-character story is used in both themes. The user requested removal of inline guest quota copy in the browser follow-up; the save-time guest-limit dialog and draft retention remain.
+
+Findings and comparison history:
+- [P2 resolved] Existing editor was 196px high; the new E2E failed before implementation. Expanded portrait editor fills the available central region with a 260px minimum.
+- [P2 resolved] First expansion retained the old 286px CSS maximum, leaving controls and count below the field. Explicit percentage maximum removes the legacy cap; the count is now within 20px of the field.
+- [P2 resolved] Landscape inline Save overlapped the editor because flex:0 used a zero basis. Intrinsic flex basis with no shrinking keeps the document and Save in normal scroll flow.
+- [P1 resolved] Auto changed CSS ground while native-style field colors stayed light after a dark system transition. The web-only color-scheme hook now subscribes to matchMedia with React useSyncExternalStore and a light SSR snapshot. Explicit overrides and live light→dark system transitions pass the real browser E2E. Native appearance code is unchanged.
+
+Required fidelity surfaces:
+- Typography/fonts: actual Fraunces 34/42 heading, quiet 18/24 brand and readable Space Grotesk 16/25 portrait narrative; compact landscape retains its existing typography. No fallback-font substitution. App-owned headings wrap for enlarged native text, but native scaling is not physically qualified.
+- Spacing/layout: quiet one-line introduction, large bounded field, 12px grouping and adjacent local status/count. Save spans reading width with a 56px minimum; existing floating five-destination navigation remains. At 320×640 and 640×390, long text remains editable and Save remains reachable by scrolling. No actionable overlap in final captures.
+- Colors/tokens: canonical ink/ivory/champagne-on palette retained. Both explicit light/dark override the opposite system mode, and Auto follows subsequent system changes. Token contrast ratios are unchanged; rendered field foreground/background are asserted.
+- Images/icons: no imagery in this screen; existing native icon system used. Microphone plus existing clear control are intentionally retained even though the concept shows only the microphone. No handcrafted or rasterized UI substitutes.
+- Copy/content: the user-requested localized “Décris ton rêve” provides the direct introduction; “Quelques mots suffisent…” remains the empty-field placeholder; exact character count and confirmed local-draft status remain. Useful voice, review, restore/error and guest states retain their logic.
+
+Final comparison: source and implementation opened together in both combined comparisons; action/detail comparison also opened. Previous P1/P2 issues are resolved. Residual P3: source raster fonts, status checkmark and nav geometry are approximate; actual fonts, existing clear control and shared footer conventions take precedence.
+
+Behavior: 4 focused web/mock journeys passed (19.2s): empty/whitespace save guard; fragment saveability; exact persisted story including paragraph breaks re-read in the normal edit UI; theme overrides and live Auto; count/editor/action geometry; long-text narrow/landscape reachability; draft preserved across Write/Tell; existing guest save and simulated analysis. Traces, HTML/JUnit and screenshots are repeatable artifacts. Mock session persistence is not native durability, microphone, production AI or real-account proof.
+
+Rerun:
+`E2E_WEB_PORT=8092 E2E_REUSE_SERVER=1 mise exec -- npm run test:e2e:web -- e2e/web/capture-editor.spec.ts e2e/web/journeys.spec.ts --grep 'capture gives|capture keeps|guest keeps|guest saves' --workers=1 --output=output/capture-essential-20261002/final`
+Server:
+`EXPO_PUBLIC_MOCK_PERSISTENCE=true mise exec -- npm run start:mock -- --web --port 8092`
+
+Validation: focused lint passes with one existing unchanged recording effect warning; explicit TypeScript 6 check of the new E2E passes. Final required app/test/Jest qualification is `test:prepush` on the clean committed candidate, then final-head required CI before merge. Source hashes and test revision/state are preserved in private evidence. No database, entitlement, quota, AI, recording permission or billing logic is modified.
+
+Implementation checklist: selected concept resolved; actual source/implementation and action comparisons inspected; P1/P2 corrected; focused observable journeys pass; no unrelated checkout changes incorporated; final clean prepush and CI remain delivery gates. Native Android/iOS, native keyboard/text scaling and microphone quality remain unqualified.
+
+Prepush follow-up: app/test types and 13 existing affected suites passed; the Footer fixture could not load the new platform icon (requireNativeViewManager unavailable in Jest). Mock only that decorative boundary and remove the obsolete exact flex-layout assertion; preserve existing save/help/disabled/accessibility and unconstrained-label assertions. No app behavior or E2E evidence changes.
+
+Browser follow-up (comments 1 and 2): remove the inline guest allowance and its display-only subscription; use the existing instruction key for “Décris ton rêve” and its five other translations. Save-time guest-limit handling remains unchanged. Remove only the obsolete inline-copy assertion from the existing guest-limit test; its alert/draft/navigation assertions remain. Updated E2E assertions were written first and failed on the previous UI. Both existing Capture journeys then passed (11.2s), including explicit/automatic themes, exact saved story, long/narrow/landscape editing and blank save guard. Trace and screenshots: private `output/capture-essential-20261002/annotations-final/`. The in-app browser confirmed the updated interface with the user’s draft preserved and no console errors. Previous 33-journey evidence applies to unchanged behavior; final clean prepush and final-head CI qualify delivery.
+
+Follow-up rerun: `E2E_WEB_PORT=8092 E2E_REUSE_SERVER=1 mise exec -- npm run test:e2e:web -- e2e/web/capture-editor.spec.ts --workers=1 --output=output/capture-essential-20261002/annotations-final`
+
+final result: passed
+
+---
+
 # Mon rêve — lecture continue
 
 final result: passed
