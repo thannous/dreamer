@@ -1754,3 +1754,5 @@ failed with CoreDevice error 4016 (trusted connectivity unavailable); no native 
 is claimed from that attempt.
 
 - Final focused qualification: 15 distinct browser journeys pass, with the filter geometry assertion and three detail journeys retested after their final corrections. Theme/brand parity, focused lint and site generation/checks pass. Existing lint warnings remain outside this patch. Final committed pre-push and remote CI are recorded on the PR.
+
+- First remote head `e4002513`: 61/64 web journeys passed. Three reflection-entry journeys reproduced locally because a complete 108px story could not satisfy the 144px visibility threshold. The correction measures the readable story itself (excluding wrapper padding), caps visibility at its actual height, and excludes the separate editing form from that measurement. The existing tests remain unchanged; no retry or timeout was added.

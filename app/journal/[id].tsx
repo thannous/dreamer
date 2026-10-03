@@ -487,25 +487,27 @@ const JournalDetailContent = memo(function JournalDetailContent({ dream }: { dre
   const [isEditingTranscript, setIsEditingTranscript] = useState(false);
   const [isKeyboardVisible, setIsKeyboardVisible] = useState(false);
   const [transcriptSectionOffset, setTranscriptSectionOffset] = useState(0);
+  const [transcriptSectionHeight, setTranscriptSectionHeight] = useState(0);
   const readingScrollOffset = useRef(0);
   const readingContentRef = useRef<View | null>(null);
   const transcriptSectionRef = useRef<View | null>(null);
   const measureTranscriptSection = useCallback(() => {
     const content = readingContentRef.current;
     if (!content) return;
-    transcriptSectionRef.current?.measureLayout?.(content, (_left, top) => {
+    transcriptSectionRef.current?.measureLayout?.(content, (_left, top, _width, height) => {
       setTranscriptSectionOffset(previous => previous === top ? previous : top);
+      setTranscriptSectionHeight(previous => previous === height ? previous : height);
     });
   }, []);
   const updateReadingChrome = useCallback((offsetY: number) => {
     const navigationMidpoint = offsetY + insets.top + 34;
     const imageTop = navigationHeight + introHeight;
     setNavigationOverImage(navigationMidpoint >= imageTop && navigationMidpoint < imageTop + coverHeight);
-    const visibleStoryHeight = Math.min(144, viewportHeight * 0.2);
+    const visibleStoryHeight = Math.min(144, viewportHeight * 0.2, transcriptSectionHeight || 144);
     const threshold = Math.max(1, navigationHeight + transcriptSectionOffset
       - viewportHeight + visibleStoryHeight);
     setReadingActionVisible(offsetY >= threshold);
-  }, [coverHeight, insets.top, introHeight, navigationHeight, transcriptSectionOffset, viewportHeight]);
+  }, [coverHeight, insets.top, introHeight, navigationHeight, transcriptSectionHeight, transcriptSectionOffset, viewportHeight]);
   // Rotation, text scaling and measured content can move artwork without a scroll
   // event. Recompute chrome before paint using the latest observed offset.
   useLayoutEffect(() => {
@@ -1682,8 +1684,11 @@ const JournalDetailContent = memo(function JournalDetailContent({ dream }: { dre
     );
   }
 
-  const renderTranscriptBody = () => (
+  const renderTranscriptBody = (measureForReading = false) => (
     <View
+      ref={measureForReading ? transcriptSectionRef : undefined}
+      collapsable={measureForReading ? false : undefined}
+      onLayout={measureForReading ? measureTranscriptSection : undefined}
       testID={TID.Component.TranscriptCard}
       className="font-sans text-[15px] leading-6"
     >
@@ -2523,15 +2528,10 @@ const JournalDetailContent = memo(function JournalDetailContent({ dream }: { dre
             <View>{renderSyncStatusCard()}</View>
 
             {!isEditingTranscript && (
-              <View
-                ref={transcriptSectionRef}
-                collapsable={false}
-                className="mt-2 mb-5"
-                onLayout={(event) => setTranscriptSectionOffset(event.nativeEvent.layout.y)}
-              >
+              <View className="mt-2 mb-5">
                 <View>
                   <View className="px-2 pb-4">
-                    {renderTranscriptBody()}
+                    {renderTranscriptBody(true)}
                   </View>
                 </View>
               </View>
