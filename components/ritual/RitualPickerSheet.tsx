@@ -115,6 +115,7 @@ export function RitualPickerSheet({
                   onPress={() => setDraft(id)}
                   disabled={saving}
                   accessibilityRole="radio"
+                  aria-checked={draft === id}
                   accessibilityState={{
                     checked: draft === id,
                     disabled: saving,
