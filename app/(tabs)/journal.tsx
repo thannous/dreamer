@@ -875,8 +875,8 @@ export default function JournalListScreen() {
         {(!(previewEligible && previewFiltersSupported) || completeness?.status === 'incomplete') &&
           <JournalCompletenessNotice status={completeness?.status} onRetry={() => { void reloadDreams(); }} />}
         {isDesktopLayout ? searchBar : null}
-        <View className="flex-row flex-wrap items-start gap-2">
-          <View className="min-w-0 flex-1 basis-[220px]">
+        <View className="flex-row items-center gap-2" testID="journal-filter-bar">
+          <View className="min-w-0 flex-1">
             <FilterBar
               items={journalFilterItems}
               onClear={handleClearFilters}
@@ -886,7 +886,7 @@ export default function JournalListScreen() {
               clearTestID={TID.Button.ClearFilters}
             />
           </View>
-          <View className="ml-auto flex-row items-center gap-2">
+          <View className="shrink-0 flex-row items-center gap-2">
             {isDesktopLayout ? <PressableScale
               onPress={openQuickSettings}
               haptic="selection"

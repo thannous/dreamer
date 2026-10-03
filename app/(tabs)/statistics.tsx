@@ -61,6 +61,17 @@ function dreamCountLabel(
   });
 }
 
+// Hermes can expose date/number formatters without Intl.PluralRules. Keep the
+// cardinal rules for the six shipped locales when that constructor is absent.
+function averageDreamCountKey(count: number, locale: string): string {
+  const singular = typeof Intl.PluralRules === 'function'
+    ? new Intl.PluralRules(locale).select(count) === 'one'
+    : locale.startsWith('fr') || locale.startsWith('pt-BR')
+      ? count >= 0 && count < 2
+      : count === 1;
+  return singular ? 'stats.legend.count_one' : 'stats.legend.count';
+}
+
 function toRankedRows<T extends string>(
   facets: DreamTrendsFacet<T>[],
   labelOf: (value: T) => string,
@@ -191,8 +202,7 @@ export default function StatisticsScreen() {
     ...(showAverage ? [{
       key: 'average',
       label: t('trends.week.average'),
-      value: t(new Intl.PluralRules(locale ?? 'en').select(week.averagePerWeek as number) === 'one'
-        ? 'stats.legend.count_one' : 'stats.legend.count', {
+      value: t(averageDreamCountKey(week.averagePerWeek as number, locale), {
         count: formatNumber(week.averagePerWeek as number, { maximumFractionDigits: 1 }),
       }),
     }] : []),
