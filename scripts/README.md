@@ -1,7 +1,8 @@
 # Project scripts
 
 Run `npm run scripts:list` for the current command catalog. Add `-- --json`
-when another tool needs structured output.
+when another tool needs structured output. The [task index](../doc_web_interne/docs/README.md)
+connects these commands to implementation paths and current runbooks.
 
 ## Command families
 
@@ -12,10 +13,42 @@ when another tool needs structured output.
 | Site | `docs:build`, `docs:check`, `docs:release-check`, `docs:deploy:*` | `docs:build` regenerates ignored local output. Cloudflare rebuilds the same output from sources; deploy commands publish externally and require explicit intent. |
 | Content | `content:*`, `validate-seo`, `generate-sitemap` | Manifest commands without `:check` and sitemap generation write generated files. |
 | SEO | `seo:gsc:export`, `seo:backlinks:check` | GSC export writes a dated external-data report; backlink check fetches the tracked public referring pages but never rewrites the CSV. |
-| Android E2E | `test:e2e:*` | Requires an emulator or device, Maestro, and the matching runtime profile. |
+| Web E2E | `test:e2e:web`, `test:e2e:web:report` | Playwright and Chromium; simulated services. See [the E2E guide](../e2e/README.md). |
+| Backend E2E | `test:e2e:backend`, `start:backend-e2e` | Disposable local backend and browser artifacts; requires a Docker-compatible runtime. See [backend qualification](../doc_web_interne/docs/e2e-backend-qualification.md). |
+| Android E2E | Other `test:e2e:*` commands | Maestro, emulator/device and matching binary/runtime profile; each flow has its own data and payment safeguards. |
+| Mobile release | `release:*` | `prepare` writes manifests; `versions:sync` writes local mirrors; `build` starts a remote EAS build and requires explicit authorization. See [the release guide](../doc_web_interne/docs/MOBILE_VERSIONING.md). |
 | Android release | `android:gates:*`, `android:release:local`, `build:apk:*` | May require ADB, a physical device, EAS credentials, or local build tooling. |
 | Subscriptions | `subscription:qa:*` | Some commands update local QA evidence; see the RevenueCat runbook before use. |
 | Backend/security | `db:contract:*`, `security:audit:*` | Database checks require an explicit local or remote connection. |
+
+## Local Android prerequisites
+
+Use the Node/Deno versions from `mise.toml` and install dependencies in the actual
+checkout. A local Android Release build also requires **JDK 17** and an Android
+SDK. `JAVA_HOME` takes precedence over Java on PATH; the runner verifies that
+executable before version synchronization, device access, prebuild or Gradle.
+A missing, incompatible or unverifiable Java stops immediately with instructions
+for setting `JAVA_HOME`. The runner does not install or switch JDKs automatically.
+
+On macOS, select an already-installed JDK 17 with
+`export JAVA_HOME="$(/usr/libexec/java_home -v 17)"`, then verify
+`"$JAVA_HOME/bin/java" -version`. On other hosts, set `JAVA_HOME` to the installed
+JDK 17 directory. `ANDROID_HOME` or `ANDROID_SDK_ROOT` locates the SDK; the shared
+`android-tooling.js` resolver also checks standard host SDK locations for ADB.
+Use `ADB_BIN` for an explicit executable and `MAESTRO_BIN` for a Maestro runner.
+Check `gh --version` before CLI-based PR operations, or use the connected GitHub
+capability. Keep absolute tool paths in local configuration.
+
+Inspect the canonical runner with:
+
+```sh
+mise exec -- npm run android:release:local -- --help
+```
+
+A build, install or Expo prebuild still needs its existing authorization. Use
+`--reuse-native-project` only when an already-generated compatible `android/`
+exists. Never run a build merely to repair tool discovery. Distribution builds
+use `release:build`; local debug-signed APKs do not qualify a Play update.
 
 ## Maintenance rules
 

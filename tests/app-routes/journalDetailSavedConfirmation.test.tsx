@@ -1016,29 +1016,21 @@ describe('journal detail saved confirmation route', () => {
     expect(screen.getByRole('alert').textContent).toContain('journal.detail.sync.retry_error');
   });
 
-  it('reveals a newly completed analysis once, but not on a revisit or failed attempt', () => {
+  it('keeps a completed analysis inline on revisit and handles a failed retry', () => {
     mockDreams = [buildDream({ analysisStatus: 'pending' })];
     const view = render(<JournalDetailScreen />);
     expect(screen.queryByTestId('analysis.reading.modal')).toBeNull();
     mockDreams = [buildDream({ analysisStatus: 'done', isAnalyzed: true, interpretation: 'Reflection' })];
     view.rerender(<JournalDetailScreen />);
-    expect(screen.getByTestId('analysis.reading.modal')).toBeTruthy();
-    fireEvent.click(screen.getByText('Close reading'));
-    view.rerender(<JournalDetailScreen />);
+    expect(screen.getByTestId(TID.Component.DreamDetailReadingZone).textContent).toContain('Reflection');
     expect(screen.queryByTestId('analysis.reading.modal')).toBeNull();
     view.unmount();
     const revisit = render(<JournalDetailScreen />);
-    expect(screen.queryByTestId('analysis.reading.modal')).toBeNull();
-    mockDreams = [buildDream({ analysisStatus: 'pending', isAnalyzed: true, interpretation: 'Old reflection' })];
-    revisit.rerender(<JournalDetailScreen />);
+    expect(screen.getByTestId(TID.Component.DreamDetailReadingZone).textContent).toContain('Reflection');
     mockDreams = [buildDream({ analysisStatus: 'failed', isAnalyzed: true, interpretation: 'Old reflection' })];
     revisit.rerender(<JournalDetailScreen />);
+    expect(screen.queryByTestId(TID.Component.DreamDetailReadingZone)).toBeNull();
     expect(screen.queryByTestId('analysis.reading.modal')).toBeNull();
-    mockDreams = [buildDream({ analysisStatus: 'pending' })];
-    revisit.rerender(<JournalDetailScreen />);
-    mockDreams = [buildDream({ analysisStatus: 'done', isAnalyzed: true, interpretation: 'New reflection' })];
-    revisit.rerender(<JournalDetailScreen />);
-    expect(screen.getByTestId('analysis.reading.modal')).toBeTruthy();
   });
 
   it('places the completed reading before optional recall', () => {
@@ -1053,19 +1045,19 @@ describe('journal detail saved confirmation route', () => {
     const caption = 'On a red bird above a forest.';
     mockDreams = [buildDream({ isAnalyzed: true, analysisStatus: 'done', interpretation: 'Reflection', shareableQuote: caption, promptVersion: 'analysis-2026-09-17.poetic1' })];
     const view = render(<JournalDetailScreen />);
-    expect(screen.getByText(`“${caption}”`)).toBeTruthy();
+    expect(screen.getByText(caption, { exact: false })).toBeTruthy();
     expect(screen.getByText('journal.detail.quote_attribution')).toBeTruthy();
     view.unmount();
     mockDreams = [buildDream({ isAnalyzed: true, analysisStatus: 'done', interpretation: 'Reflection', shareableQuote: '  ' })];
     render(<JournalDetailScreen />);
-    expect(screen.queryByText(`“${caption}”`)).toBeNull();
+    expect(screen.queryByText(caption, { exact: false })).toBeNull();
     expect(screen.queryByText('journal.detail.quote_attribution')).toBeNull();
   });
 
   it('keeps a legacy excerpt without falsely attributing it to Noctalia', () => {
     mockDreams = [buildDream({ isAnalyzed: true, analysisStatus: 'done', interpretation: 'Reflection', shareableQuote: 'I flew over a quiet city' })];
     render(<JournalDetailScreen />);
-    expect(screen.getByText('“I flew over a quiet city”')).toBeTruthy();
+    expect(screen.getByTestId(TID.Component.DreamDetailReadingZone).textContent).toContain('I flew over a quiet city');
     expect(screen.queryByText('journal.detail.quote_attribution')).toBeNull();
   });
 
@@ -1094,7 +1086,7 @@ describe('journal detail saved confirmation route', () => {
     expect(mockUpdateDream).not.toHaveBeenCalled();
   });
 
-  it.each([false, true])('keeps narrative, analysis and reflection in reading order with image=%s', (withImage: boolean) => {
+  it.each([false, true])('keeps the narrative and complete analysis in reading order with image=%s', (withImage: boolean) => {
     mockSearchParams = { id: '42' };
     mockDreams = [buildDream({
       isAnalyzed: true,
@@ -1108,17 +1100,14 @@ describe('journal detail saved confirmation route', () => {
     const narrative = screen.getByTestId(TID.Component.TranscriptCard);
     const reading = screen.getByTestId(TID.Component.DreamDetailReadingZone);
     const illustration = screen.getByTestId(TID.Component.JournalIllustration);
-    const reflection = screen.getByTestId(TID.Text.DreamDetailReflectionZone);
     const before = (first: Element, second: Element) => {
       expect(first.compareDocumentPosition(second) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy();
     };
     before(narrative, reading);
-    before(reading, screen.getByText('Lake'));
-    before(screen.getByText('Lake'), reflection);
+    expect(reading.contains(screen.getByText('Lake'))).toBe(true);
     if (withImage) before(illustration, narrative);
     else {
       before(reading, illustration);
-      before(illustration, reflection);
     }
   });
 
@@ -1203,12 +1192,14 @@ describe('journal detail saved confirmation route', () => {
     expect(recall.compareDocumentPosition(transcript) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy();
   });
 
-  it('keeps analysis as the unique primary CTA before the optional recall offer', () => {
+  it('keeps analysis as the unique primary CTA alongside the optional recall offer', () => {
     render(<JournalDetailScreen />);
 
     const analysis = screen.getByTestId(TID.Button.DreamDetailPrimaryCta);
     const recall = screen.getByTestId(TID.Component.DreamRecallOffer);
-    expect(analysis.compareDocumentPosition(recall) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy();
+    expect(screen.getAllByTestId(TID.Button.DreamDetailPrimaryCta)).toHaveLength(1);
+    expect(analysis).toBeTruthy();
+    expect(recall).toBeTruthy();
     expect(screen.getByTestId(TID.Button.DreamRecallStart)).toBeTruthy();
   });
 

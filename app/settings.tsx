@@ -22,6 +22,7 @@ import { NoctaliaScreenHeader } from '@/components/NoctaliaScreenHeader';
 import { QuotaStatusCard } from '@/components/quota/QuotaStatusCard';
 import { SubscriptionQALab } from '@/components/subscription/SubscriptionQALab';
 import { LegalSection } from '@/components/settings/LegalSection';
+import { SettingsSignOutAction } from '@/components/settings/SettingsSignOutAction';
 import { SettingsFieldGroup } from '@/components/settings/SettingsFieldGroup';
 import { IconSymbol } from '@/components/ui/icon-symbol';
 import { ThemeLayout } from '@/constants/journalTheme';
@@ -83,7 +84,7 @@ export default function SettingsScreen() {
   const { auth, section } = useLocalSearchParams<{ auth?: string; section?: string }>();
   const directAccountForm = section === 'account' && (auth === 'signin' || auth === 'signup');
   const { colors, mode } = useTheme();
-  const { returningGuestBlocked } = useAuth();
+  const { returningGuestBlocked, user } = useAuth();
   const insets = useSafeAreaInsets();
   const { t } = useTranslation();
   const noctalia = useMemo(() => getNoctaliaDesignTokens(colors, mode), [colors, mode]);
@@ -156,7 +157,7 @@ export default function SettingsScreen() {
           </View>
         </StaticFlatGlassCard>
       ) : null}
-      <EmailAuthCard isCompact={isCompactLayout} presentation="embedded" initialAccountSheetOpen={auth === 'signin'} />
+      <EmailAuthCard isCompact={isCompactLayout} presentation="embedded" showSignOut={false} initialAccountSheetOpen={auth === 'signin'} />
       <GuestRecordingQaReset />
       <GuestProdQALab />
       <VoiceLiveSpikeDebugEntry />
@@ -165,7 +166,7 @@ export default function SettingsScreen() {
 
   const quota = (
     <View className={RN_SLOT_CLASS} testID="settings-quota-rn-content">
-      <QuotaStatusCard onUpgradePress={handleOpenPaywall} presentation="embedded" />
+      <QuotaStatusCard onUpgradePress={handleOpenPaywall} presentation="embedded" showTitle={section === 'account'} />
       {showSubscriptionQaLab ? <SubscriptionQALab presentation="embedded" /> : null}
     </View>
   );
@@ -235,6 +236,7 @@ export default function SettingsScreen() {
               : undefined}
             bottomPadding={bottomPadding}
             legal={legal}
+            footer={user ? <View testID="settings-signout-footer"><SettingsSignOutAction /></View> : undefined}
             onOpenSubscription={handleOpenPaywall}
             quota={quota}
             returningGuestBlocked={returningGuestBlocked}

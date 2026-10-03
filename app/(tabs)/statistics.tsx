@@ -13,12 +13,10 @@ import {
 } from 'react-native';
 
 import { MockNavigationRail } from '@/components/dev/MockNavigationRail';
-import { AtmosphericBackground } from '@/components/inspiration/AtmosphericBackground';
 import { NoctaliaScreenHeader } from '@/components/NoctaliaScreenHeader';
 import { ScreenContainer } from '@/components/ScreenContainer';
 import { StatsEvolutionBars } from '@/components/stats/StatsEvolutionBars';
 import { StatsRankedList, type StatsRankedRow } from '@/components/stats/StatsRankedList';
-import { StatsRhythmChart } from '@/components/stats/StatsRhythmChart';
 import { DESKTOP_BREAKPOINT, getBottomNavigationLayout } from '@/constants/layout';
 import { ThemeLayout } from '@/constants/journalTheme';
 import { getNoctaliaDesignTokens } from '@/constants/noctaliaDesign';
@@ -37,16 +35,6 @@ import { TID } from '@/lib/testIDs';
 
 const COMPACT_BREAKPOINT = 360;
 
-const WEEKDAY_KEYS = [
-  'trends.week.weekday.mon',
-  'trends.week.weekday.tue',
-  'trends.week.weekday.wed',
-  'trends.week.weekday.thu',
-  'trends.week.weekday.fri',
-  'trends.week.weekday.sat',
-  'trends.week.weekday.sun',
-] as const;
-
 const NEXT_ACTION_KEYS: Record<
   DreamTrendsNextAction,
   { label: string; href: '/recording' | '/(tabs)/journal' }
@@ -57,12 +45,6 @@ const NEXT_ACTION_KEYS: Record<
   wait_for_patterns: { label: 'trends.cta.wait_for_patterns', href: '/(tabs)/journal' },
   review_patterns: { label: 'trends.cta.review_patterns', href: '/(tabs)/journal' },
 };
-
-function weekdayLabelKey(weekday: number): (typeof WEEKDAY_KEYS)[number] {
-  if (weekday === 0) return WEEKDAY_KEYS[6];
-  if (weekday >= 1 && weekday <= 6) return WEEKDAY_KEYS[weekday - 1];
-  return WEEKDAY_KEYS[0];
-}
 
 function dateFromLocalKey(dateKey: string): Date {
   const [year, month, day] = dateKey.split('-').map((part) => Number(part));
@@ -96,7 +78,7 @@ function toRankedRows<T extends string>(
 export default function StatisticsScreen() {
   const { dreams, loaded, completeness, reloadDreams } = useDreams();
   const { t } = useTranslation();
-  const { formatDate, formatNumber } = useLocaleFormatting();
+  const { formatDate, formatNumber, locale } = useLocaleFormatting();
   const { width, height, fontScale } = useWindowDimensions();
   const insets = useSafeAreaInsets();
   const { colors, mode } = useTheme();
@@ -105,7 +87,7 @@ export default function StatisticsScreen() {
 
   const compact = width < COMPACT_BREAKPOINT;
   const largeText = Number.isFinite(fontScale) && fontScale >= 1.3;
-  const stackWeekMetrics = compact || largeText;
+  const stackWeekMetrics = largeText;
   const noctalia = useMemo(() => getNoctaliaDesignTokens(colors, mode), [colors, mode]);
   const isDesktopLayout = Platform.OS === 'web' && width >= DESKTOP_BREAKPOINT;
   const navigationLayout = getBottomNavigationLayout(width, height, fontScale);
@@ -117,7 +99,12 @@ export default function StatisticsScreen() {
       + navigationLayout.minimumBottomInset
       + ThemeLayout.spacing.lg;
 
-  const trends = useMemo(() => buildDreamTrends(dreams), [dreams]);
+  const { trends, weekStart, weekEnd } = useMemo(() => {
+    const end = new Date();
+    const start = new Date(end);
+    start.setDate(start.getDate() - 6);
+    return { trends: buildDreamTrends(dreams, { now: end.getTime() }), weekStart: start, weekEnd: end };
+  }, [dreams]);
   const cta = NEXT_ACTION_KEYS[trends.evolution.nextAction];
 
   const handlePrimaryCta = useCallback(() => {
@@ -127,6 +114,7 @@ export default function StatisticsScreen() {
   const header = (
     <NoctaliaScreenHeader
       titleKey="trends.title"
+      variant="editorial"
       actions={[
         {
           icon: 'gear',
@@ -162,7 +150,6 @@ export default function StatisticsScreen() {
     );
     return (
       <View className="flex-1 bg-ink" accessible accessibilityRole="progressbar" accessibilityLabel={t('trends.loading')}>
-        <AtmosphericBackground variant="subtle" />
         {scrollHeader ? (
           <ScrollView
             className="flex-1"
@@ -187,15 +174,34 @@ export default function StatisticsScreen() {
   const patterns = trends.patterns;
   const evolution = trends.evolution;
   const showAverage = week.averagePerWeek != null;
-  const lastActivityLabel = week.lastActivityAt == null
-    ? t('trends.week.last_activity.empty')
-    : t('trends.week.last_activity.value', {
-        date: formatDate(week.lastActivityAt, { dateStyle: 'medium' }),
-      });
   const metricClassName = stackWeekMetrics
     ? 'w-full min-w-0 gap-1'
-    : 'min-w-[140px] flex-1 gap-1';
-  const sectionPad = compact ? 'p-4' : 'p-5';
+    : 'min-w-0 flex-1 gap-1';
+  const rangeLabel = t('trends.week.range', {
+    start: formatDate(weekStart, { day: 'numeric', month: 'short' }),
+    end: formatDate(weekEnd, { day: 'numeric', month: 'short', year: 'numeric' }),
+  });
+  const daysLabel = (count: number) => t(
+    count === 1 ? 'trends.week.active_days.value_one' : 'trends.week.active_days.value',
+    { count: formatNumber(count) },
+  );
+  const secondaryMetrics = [
+    { key: 'current', label: t('trends.week.streak.current'), value: daysLabel(week.streak.current) },
+    { key: 'longest', label: t('trends.week.streak.longest'), value: daysLabel(week.streak.longest) },
+    ...(showAverage ? [{
+      key: 'average',
+      label: t('trends.week.average'),
+      value: t(new Intl.PluralRules(locale ?? 'en').select(week.averagePerWeek as number) === 'one'
+        ? 'stats.legend.count_one' : 'stats.legend.count', {
+        count: formatNumber(week.averagePerWeek as number, { maximumFractionDigits: 1 }),
+      }),
+    }] : []),
+    ...(week.lastActivityAt != null ? [{
+      key: 'last',
+      label: t('trends.week.last_activity'),
+      value: formatDate(week.lastActivityAt, { dateStyle: 'medium' }),
+    }] : []),
+  ];
   const themeRows = toRankedRows(
     patterns.themes,
     (value) => getDreamThemeLabel(value, t) ?? value,
@@ -217,7 +223,6 @@ export default function StatisticsScreen() {
 
   return (
     <View className="flex-1 bg-ink">
-      <AtmosphericBackground variant="subtle" />
       {!scrollHeader ? header : null}
       <ScrollView
         className="flex-1"
@@ -230,168 +235,95 @@ export default function StatisticsScreen() {
         <ScreenContainer key="resources">
           <MockNavigationRail />
           <JournalCompletenessNotice status={completeness?.status} trends onRetry={() => { void reloadDreams(); }} />
-          <View className="gap-6 p-4">
-            <View
-              className={`gap-4 rounded-[20px] border border-line-strong bg-ink-soft ${sectionPad}`}
-              testID="trends.section.week"
-              accessible={false}
-              accessibilityRole="none"
-            >
-              <Text
-                accessibilityRole="header"
-                className="text-[20px] leading-[26px] font-display-semibold text-ivory"
-              >
-                {t('trends.section.week')}
-              </Text>
+          <View className="gap-6 px-5 pb-5 pt-2">
+            <View className="gap-4" testID="trends.section.week" accessible={false} accessibilityRole="none">
+              <View className="border-b border-line pb-4">
+                <Text accessibilityRole="header" className="text-[13px] leading-[20px] font-sans text-ivory-muted">
+                  {rangeLabel} · {t('trends.section.week')}
+                </Text>
+              </View>
               <View
-                className={stackWeekMetrics ? 'flex-col gap-3' : 'flex-row flex-wrap gap-3'}
+                className={stackWeekMetrics ? 'flex-col gap-5' : 'flex-row flex-wrap gap-6'}
                 testID={stackWeekMetrics ? 'trends.week.metrics.stacked' : 'trends.week.metrics.inline'}
               >
                 <View className={metricClassName}>
-                  <Text className="shrink text-[12px] leading-[16px] font-sans-medium text-ivory-muted">
-                    {t('trends.week.count')}
-                  </Text>
-                  <Text className="shrink text-[22px] leading-[28px] font-display-semibold text-ivory">
+                  <Text testID="trends.week.count.value" className="text-[56px] leading-[64px] font-display-semibold text-ivory">
                     {formatNumber(week.count)}
                   </Text>
+                  <Text className="shrink text-[14px] leading-[20px] font-sans text-ivory">{t('trends.week.count')}</Text>
                 </View>
-                <View className={metricClassName}>
-                  <Text className="shrink text-[12px] leading-[16px] font-sans-medium text-ivory-muted">
-                    {t('trends.week.active_days')}
+                <View className={`${metricClassName}${stackWeekMetrics ? '' : ' border-l border-line pl-5'}`}>
+                  <Text testID="trends.week.activeDays.value" className="text-[56px] leading-[64px] font-display-semibold text-ivory">
+                    {formatNumber(week.activeDays)}
                   </Text>
-                  <Text className="shrink text-[22px] leading-[28px] font-display-semibold text-ivory">
-                    {t(
-                      week.activeDays === 1
-                        ? 'trends.week.active_days.value_one'
-                        : 'trends.week.active_days.value',
-                      { count: formatNumber(week.activeDays) },
-                    )}
-                  </Text>
+                  <Text className="shrink text-[14px] leading-[20px] font-sans text-ivory">{t('trends.week.active_days')}</Text>
                 </View>
-                <View className={metricClassName}>
-                  <Text className="shrink text-[12px] leading-[16px] font-sans-medium text-ivory-muted">
-                    {t('trends.week.streak.current')}
-                  </Text>
-                  <Text className="shrink text-[22px] leading-[28px] font-display-semibold text-ivory">
-                    {formatNumber(week.streak.current)}
-                  </Text>
-                </View>
-                <View className={metricClassName}>
-                  <Text className="shrink text-[12px] leading-[16px] font-sans-medium text-ivory-muted">
-                    {t('trends.week.streak.longest')}
-                  </Text>
-                  <Text className="shrink text-[22px] leading-[28px] font-display-semibold text-ivory">
-                    {formatNumber(week.streak.longest)}
-                  </Text>
-                </View>
-                {showAverage ? (
-                  <View className={metricClassName}>
-                    <Text className="shrink text-[12px] leading-[16px] font-sans-medium text-ivory-muted">
-                      {t('trends.week.average')}
-                    </Text>
-                    <Text className="shrink text-[22px] leading-[28px] font-display-semibold text-ivory">
-                      {formatNumber(week.averagePerWeek as number, {
-                        maximumFractionDigits: 1,
-                      })}
-                    </Text>
-                  </View>
-                ) : null}
               </View>
-              <Text className="text-[14px] font-sans text-ivory-muted">
-                {lastActivityLabel}
-              </Text>
-              <StatsRhythmChart
-                compact={compact}
-                accessibilityLabel={t('trends.week.rhythm')}
-                testID="trends.week.rhythm"
-                days={week.rhythm.map((day) => ({
-                  weekday: day.weekday,
-                  count: day.count,
-                  label: t(weekdayLabelKey(day.weekday)),
-                  countLabel: dreamCountLabel(day.count, t, formatNumber),
-                }))}
-              />
             </View>
 
-            <View
-              className={`gap-4 rounded-[20px] border border-line-strong bg-ink-soft ${sectionPad}`}
-              testID="trends.section.patterns"
-              accessible={false}
-              accessibilityRole="none"
-            >
-              <Text
-                accessibilityRole="header"
-                className="text-[20px] leading-[26px] font-display-semibold text-ivory"
-              >
-                {t('trends.section.patterns')}
-              </Text>
+            <View className="gap-4" testID="trends.section.patterns" accessible={false} accessibilityRole="none">
+              <View className="gap-1">
+                <Text accessibilityRole="header" className="text-[22px] leading-[28px] font-display-semibold text-ivory">
+                  {t(themeRows.length > 0 || patterns.empty ? 'trends.patterns.themes' : 'trends.section.patterns')}
+                </Text>
+                <Text className="text-[13px] leading-[19px] font-sans text-ivory-muted">{t('trends.patterns.scope')}</Text>
+              </View>
               {patterns.empty ? (
-                <View
-                  accessible
-                  accessibilityRole="text"
-                  accessibilityLabel={t('trends.patterns.empty')}
-                >
-                  <Text className="text-[15px] font-sans text-ivory-muted">
-                    {t('trends.patterns.empty')}
-                  </Text>
+                <Text accessibilityRole="text" className="text-[15px] leading-[23px] font-sans text-ivory-muted">
+                  {t('trends.patterns.empty')}
+                </Text>
+              ) : themeRows.length > 0 ? (
+                <View className="gap-3">
+                  <StatsRankedList
+                    noctalia={noctalia}
+                    rows={themeRows}
+                    maxCount={Math.max(...themeRows.map((row) => row.count), 1)}
+                    testID="trends.patterns.themes.list"
+                  />
+                  <Text className="text-[13px] leading-[19px] font-sans text-ivory-muted">{t('trends.patterns.legend')}</Text>
                 </View>
-              ) : (
-                <View className="gap-4">
-                  {themeRows.length > 0 ? (
-                    <View className="gap-2">
-                      <Text className="text-[13px] font-sans-medium text-ivory-muted">
-                        {t('trends.patterns.themes')}
-                      </Text>
-                      <StatsRankedList
-                        noctalia={noctalia}
-                        rows={themeRows}
-                        maxCount={Math.max(...themeRows.map((row) => row.count), 1)}
-                        testID="trends.patterns.themes.list"
-                      />
-                    </View>
-                  ) : null}
+              ) : null}
+
+              <View className="mt-2 border-t border-line" testID="trends.week.details">
+                {secondaryMetrics.map((metric) => (
+                  <View key={metric.key} className="flex-row items-baseline gap-4 border-b border-line py-3">
+                    <Text className="min-w-0 flex-1 text-[14px] leading-[21px] font-sans text-ivory-muted">{metric.label}</Text>
+                    <Text className="max-w-[45%] shrink text-right text-[15px] leading-[21px] font-display-semibold text-ivory">{metric.value}</Text>
+                  </View>
+                ))}
+                {week.lastActivityAt == null ? (
+                  <Text className="pt-3 text-[14px] leading-[21px] font-sans text-ivory-muted">{t('trends.week.last_activity.empty')}</Text>
+                ) : null}
+              </View>
+
+              {!patterns.empty ? (
+                <View className="gap-6 pt-3">
                   {emotionRows.length > 0 ? (
                     <View className="gap-2">
-                      <Text className="text-[13px] font-sans-medium text-ivory-muted">
-                        {t('trends.patterns.emotions')}
-                      </Text>
-                      <StatsRankedList
-                        noctalia={noctalia}
-                        rows={emotionRows}
-                        maxCount={Math.max(...emotionRows.map((row) => row.count), 1)}
-                        testID="trends.patterns.emotions.list"
-                      />
+                      <Text accessibilityRole="header" className="text-[18px] leading-[24px] font-display-semibold text-ivory">{t('trends.patterns.emotions')}</Text>
+                      <StatsRankedList noctalia={noctalia} rows={emotionRows}
+                        maxCount={Math.max(...emotionRows.map((row) => row.count), 1)} testID="trends.patterns.emotions.list" />
                     </View>
                   ) : null}
                   {typeRows.length > 0 ? (
                     <View className="gap-2">
-                      <Text className="text-[13px] font-sans-medium text-ivory-muted">
-                        {t('trends.patterns.types')}
-                      </Text>
-                      <StatsRankedList
-                        noctalia={noctalia}
-                        rows={typeRows}
-                        maxCount={Math.max(...typeRows.map((row) => row.count), 1)}
-                        testID="trends.patterns.types.list"
-                      />
+                      <Text accessibilityRole="header" className="text-[18px] leading-[24px] font-display-semibold text-ivory">{t('trends.patterns.types')}</Text>
+                      <StatsRankedList noctalia={noctalia} rows={typeRows}
+                        maxCount={Math.max(...typeRows.map((row) => row.count), 1)} testID="trends.patterns.types.list" />
                     </View>
                   ) : null}
                   {patterns.recurrence.hasRecurrence ? (
-                    <Text className="text-[15px] font-sans text-ivory">
-                      {t(
-                        patterns.recurrence.count === 1
-                          ? 'trends.patterns.recurrence_one'
-                          : 'trends.patterns.recurrence',
-                        { count: formatNumber(patterns.recurrence.count) },
-                      )}
+                    <Text className="text-[15px] leading-[22px] font-sans text-ivory">
+                      {t(patterns.recurrence.count === 1 ? 'trends.patterns.recurrence_one' : 'trends.patterns.recurrence',
+                        { count: formatNumber(patterns.recurrence.count) })}
                     </Text>
                   ) : null}
                 </View>
-              )}
+              ) : null}
             </View>
 
             <View
-              className={`gap-4 rounded-[20px] border border-line-strong bg-ink-soft ${sectionPad}`}
+              className="gap-4 border-t border-line pt-6"
               testID="trends.section.evolution"
               accessible={false}
               accessibilityRole="none"

@@ -11,15 +11,9 @@ import { DURATION, EASING } from '@/components/motion';
 import type { NoctaliaDesignTokens } from '@/constants/noctaliaDesign';
 
 /**
- * The ranked list shipped for "Top themes": rank chip, label, count, proportional bar.
- *
- * Extracted from app/(tabs)/statistics.tsx so "Émotions dominantes" (S2) REUSES the visual
- * instead of forking it, as the phase 1 contract binds. The per-row progressbar role and its
- * accessibilityValue are the part a copy would have silently dropped; sharing the component
- * makes that structurally impossible.
- *
- * The bar is relative to `maxCount` — the top row is always 100% — NOT a share of the
- * journal. That is what Top themes does today and both callers must read the same way.
+ * Shared ranked rows for themes, emotions and dream types.
+ * Bars compare counts with `maxCount`; they are not percentages of the journal.
+ * Counts remain available through each progressbar's accessibilityValue.
  */
 
 export type StatsRankedRow = {
@@ -89,38 +83,16 @@ export const StatsRankedList = memo(function StatsRankedList({
         const barWidth = Math.round((row.count / maxCount) * 100);
         return (
           <View key={row.id}>
-            <View
-              className={`flex-row items-center py-[14px] px-1 gap-4${
-                isLast ? '' : ' border-b border-line'
-              }`}
-            >
-              <View className="w-9 h-9 rounded-full items-center justify-center bg-ink-soft">
-                <Text className="text-[16px] font-display-bold text-champagne-on">
-                  {index + 1}
-                </Text>
-              </View>
-              <View className="flex-1">
-                <Text className="text-[15px] font-sans-medium text-ivory mb-0.5">{row.label}</Text>
-                <Text className="text-[12px] font-sans text-ivory-muted mb-1.5">
-                  {row.countLabel}
-                </Text>
-                {/*
-                  The track carries a background so the bar reads as a PROPORTION rather than
-                  a bare length: without it only the filled part is drawn, and "3 dreams" and
-                  "1 dream" look like two unrelated dashes instead of a full bar next to a
-                  third of one.
-                */}
-                <View
-                  className="h-1 rounded-[2px] overflow-hidden bg-line"
-                  accessibilityRole="progressbar"
-                  accessibilityLabel={row.label}
-                  accessibilityValue={{
-                    min: 0,
-                    max: maxCount,
-                    now: row.count,
-                    text: row.countLabel,
-                  }}
-                >
+            <View className={`flex-row items-start py-2 gap-3${isLast ? '' : ' border-b border-line'}`}>
+              <Text className="w-7 pt-0.5 text-[17px] leading-[22px] font-display-semibold text-champagne-on">{index + 1}</Text>
+              <View className="min-w-0 flex-1 gap-2">
+                <View className="flex-row items-start justify-between gap-3">
+                  <Text className="min-w-0 flex-1 text-[15px] leading-[22px] font-sans-medium text-ivory">{row.label}</Text>
+                  <Text className="max-w-[45%] shrink text-right text-[14px] leading-[22px] font-sans text-ivory-muted">{row.countLabel}</Text>
+                </View>
+                <View className="h-1 rounded-[2px] overflow-hidden bg-line"
+                  accessibilityRole="progressbar" accessibilityLabel={row.label}
+                  accessibilityValue={{ min: 0, max: maxCount, now: row.count, text: row.countLabel }}>
                   <RankedBarFill percent={barWidth} />
                 </View>
               </View>

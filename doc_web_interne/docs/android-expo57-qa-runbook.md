@@ -1,15 +1,17 @@
-# Runbook QA Android — Expo 57 / versionCode 34
+# Historique de qualification Android Expo 57
 
-Ce document décrit la qualification Android reproductible de Noctalia après la
-migration Expo 57. Il sépare strictement le téléphone Google Play du device
-Test Store.
+Ce document conserve le protocole et les résultats de migration en versionCode 34.
+Les versions, comptes, gates et blocages cités ci-dessous sont historiques.
+Pour un candidat actuel, partir du [guide mobile](MOBILE_VERSIONING.md), de la
+[checklist Play](android-release-checklist.md) et du [guide E2E](../../e2e/README.md).
+Les règles actuelles d'AGENTS.md et les autorisations de la session priment sur
+ce protocole ancien ; il ne justifie pas une installation ou un effacement.
 
-> Politique active depuis le 9 août 2026 : les sections versionCode 34 ci-dessous
-> restent un historique de migration. La release courante se conclut avec un
-> seul `subscription:qa:release-smoke` à trois assertions : candidat installé
-> depuis Play, restauration du compte payant, isolation du compte gratuit. La
-> couverture complète des sept scénarios est réservée aux changements Billing
-> ou aux campagnes QA périodiques.
+La politique observée le 9 août 2026 utilisait un
+`subscription:qa:release-smoke` à trois assertions : candidat installé depuis
+Play, restauration du compte payant, isolation du compte gratuit. La couverture
+des sept scénarios était réservée aux changements Billing ou aux campagnes QA.
+La checklist actuelle décrit les gates à requalifier pour la release concernée.
 
 ## État de qualification au 12 juillet 2026
 

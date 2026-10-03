@@ -1,7 +1,7 @@
 import { getDreamRouteParams } from '@/lib/dreamRoute';
 import { router } from 'expo-router';
 import React, { memo, useCallback, useMemo } from 'react';
-import { Text, View, type ViewStyle } from 'react-native';
+import { Pressable, Text, View, type ViewStyle } from 'react-native';
 
 import { FlatGlassCard } from '@/components/inspiration/GlassCard';
 import { PressableScale } from '@/components/motion';
@@ -23,6 +23,7 @@ type Props = {
    * two entrances on one surface read as a stutter.
    */
   animateOnMount?: boolean;
+  compact?: boolean;
 };
 
 const ROW_CLASS = 'flex-row items-center gap-3 border-t-[length:hairlineWidth()] border-t-line py-3';
@@ -37,6 +38,7 @@ export const PersonalReadingCard = memo(function PersonalReadingCard({
   reading,
   nextReminderText,
   animateOnMount = true,
+  compact = false,
 }: Props) {
   const { colors, mode } = useTheme();
   const noctalia = useMemo(() => getNoctaliaDesignTokens(colors, mode), [colors, mode]);
@@ -48,7 +50,7 @@ export const PersonalReadingCard = memo(function PersonalReadingCard({
         count: reading.recurringSymbol.count,
       })
     : reading.recurringTheme
-      ? t('inspiration.reading.recurring_theme', {
+      ? t(compact ? 'inspiration.reading.compact_theme' : 'inspiration.reading.recurring_theme', {
           theme: getDreamThemeLabel(reading.recurringTheme.theme, t) ?? reading.recurringTheme.theme,
           count: reading.recurringTheme.count,
         })
@@ -116,6 +118,22 @@ export const PersonalReadingCard = memo(function PersonalReadingCard({
       onPress: undefined,
     },
   ];
+
+  if (compact) {
+    return <Pressable onPress={handleOpenRecap} accessibilityRole="button"
+      accessibilityLabel={`${t('inspiration.reading.recurring_label')}. ${recurringLabel}. ${t('inspiration.reading.recap_cta')}`}
+      testID={TID.Button.PersonalReadingRecap}
+      className="min-h-[88px] flex-row items-center gap-3 border-t border-line py-4 active:opacity-70">
+      <View className="h-10 w-10 items-center justify-center rounded-full bg-ink-active">
+        <IconSymbol name="arrow.triangle.2.circlepath" size={23} color={noctalia.accent.text} />
+      </View>
+      <View className="min-w-0 flex-1 gap-1">
+        <Text className="font-sans-medium text-[11px] uppercase tracking-[1.4px] text-ivory-muted">{t('inspiration.reading.recurring_label')}</Text>
+        <Text testID={TID.Text.PersonalReadingRecurring} className="font-sans text-[14px] leading-5 text-ivory">{recurringLabel}</Text>
+      </View>
+      <IconSymbol name="chevron.right" size={18} color={noctalia.text.tertiary} />
+    </Pressable>;
+  }
 
   return (
     <FlatGlassCard

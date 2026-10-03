@@ -10,8 +10,10 @@ There is no feature-specific palette or appearance provider.
   for props and StyleSheet consumers. `hasIllustratedCover` controls layout only.
 - Native and web sheet chrome use the same opaque `backgroundCard` surface as the
   content. Ordinary React Native modals inherit the global CSS theme on web.
-- Image geometry stays in `lib/dreamCoverLayout.ts`. White borders baked into a generated
-  illustration are image content, not theme surfaces.
+- The illustration fills the measured reading viewport. The title/date then lead into
+  the story and complete saved analysis on an opaque theme surface. The primary action
+  stays at the bottom once the reader reaches the story, and hides during editing.
+  White borders baked into a generated illustration are image content, not theme surfaces.
 - After a palette change run `npm run uniwind:types` (includes CSS generation).
   `npm run theme:check` rejects generated CSS drift; `npm run brand:check` independently
   verifies CSS/runtime contracts without executing native theme code.

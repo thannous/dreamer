@@ -646,6 +646,26 @@ function assertReusableNativeProject(
   }
 }
 
+function assertAndroidJava17(env = process.env, spawn = spawnSync) {
+  const command = env.JAVA_HOME
+    ? path.join(env.JAVA_HOME, 'bin', process.platform === 'win32' ? 'java.exe' : 'java')
+    : 'java';
+  const result = spawn(command, ['-version'], {
+    env,
+    encoding: 'utf8',
+    timeout: 10000,
+  });
+  const output = `${result.stderr || ''}\n${result.stdout || ''}`;
+  const version = output.match(/(?:openjdk|java)\s+(?:version\s+)?["']?(\d+)(?:[.\s"'+-]|$)/i);
+  if (result.error || result.status !== 0 || version?.[1] !== '17') {
+    const detected = version ? `Detected Java ${version[1]}. ` : 'Java could not be verified. ';
+    throw new Error(
+      `Java 17 is required for local Android Release builds. ${detected}` +
+      'Set JAVA_HOME to an installed JDK 17 and retry. No build preparation has started.'
+    );
+  }
+}
+
 function printHelp() {
   process.stdout.write(
     [
@@ -661,6 +681,8 @@ function printHelp() {
       '--reuse-native-project skips Expo prebuild and requires an already-generated compatible Android project.',
       '--side-by-side-qa builds a distinct Dreamer QA package that can sit beside Play.',
       '--lock-owner and --steal-lock apply only to --install on a physical phone.',
+      'Requires Java 17; JAVA_HOME takes precedence over Java on PATH.',
+      'Java is checked before version synchronization, prebuild or Gradle.',
       'Automatic dotenv loading remains disabled for every profile.',
       'This is a debug-signed emulator/device validation build. Distribution builds remain multi-ABI.',
       '',
@@ -677,6 +699,7 @@ function main() {
 
   assertProfileableBuildProfile(options.profile, options.profileable);
   assertSideBySideQaProfile(options.profile, options.sideBySideQa);
+  assertAndroidJava17(process.env);
 
   const releaseEnv = loadReleaseBuildEnv(
     ROOT,
@@ -800,6 +823,7 @@ module.exports = {
   SUPPORTED_BUILD_PROFILES,
   TESTSTORE_BUILD_PROFILE,
   TESTSTORE_ENV_OVERRIDES,
+  assertAndroidJava17,
   assertInstallableApkIdentity,
   assertProfileableBuildProfile,
   assertReusableNativeProject,

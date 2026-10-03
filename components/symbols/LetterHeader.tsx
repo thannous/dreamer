@@ -9,17 +9,18 @@ import { useTheme } from "@/context/ThemeContext";
 interface LetterHeaderProps {
   letter: string;
   count: number;
+  countLabel?: string;
 }
 
-export function LetterHeader({ letter, count }: LetterHeaderProps) {
+export function LetterHeader({ letter, count, countLabel }: LetterHeaderProps) {
   const { colors, mode } = useTheme();
   const noctalia = useMemo(() => getNoctaliaDesignTokens(colors, mode), [colors, mode]);
 
   return (
     <View
       style={{
-        paddingHorizontal: ThemeLayout.spacing.md,
-        paddingTop: ThemeLayout.spacing.lg,
+        paddingHorizontal: ThemeLayout.spacing.lg20,
+        paddingTop: ThemeLayout.spacing.sm,
         paddingBottom: ThemeLayout.spacing.sm,
         gap: 6,
       }}
@@ -33,9 +34,11 @@ export function LetterHeader({ letter, count }: LetterHeaderProps) {
       >
         <Text
           selectable
+          accessibilityRole="header"
           style={{
             fontFamily: Fonts.fraunces.bold,
-            fontSize: 18,
+            fontSize: 22,
+            lineHeight: 28,
             color: noctalia.text.primary,
           }}
         >
@@ -58,7 +61,7 @@ export function LetterHeader({ letter, count }: LetterHeaderProps) {
             fontVariant: ["tabular-nums"],
           }}
         >
-          {count}
+          {countLabel ?? count}
         </Text>
       </View>
     </View>

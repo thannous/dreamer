@@ -1,13 +1,15 @@
 # Noctalia Android Release Checklist
 
-Dernière mise à jour: 2026-08-18.
+Guide opérationnel actualisé le 2 octobre 2026. Cette checklist couvre la
+qualification Android avant Google Play Internal Testing. Le
+[guide de release mobile](MOBILE_VERSIONING.md) est l'entrée pour préparer les
+versions, construire et envoyer un build précis ; la
+[validation proportionnée](validation-proportionnee.md) choisit les contrôles
+selon le changement. Les commandes de build et d'envoi exigent leurs autorisations.
 
-Cette checklist concentre les gates Android avant Google Play Internal Testing.
-Elle complète `PRODUCTION_CONSTANTS.md` et `PRODUCTION_PREP.md`.
-
-État store courant (Play Console, 18 août 2026) : Production live **54 (3.1.0)** ;
-candidat **57** créé, pas encore envoyé pour examen. Détail :
-`noctalia-3.1.0-google-play-patch-notes.md`.
+Relire l'identité du candidat et les métadonnées Play/EAS pour chaque release.
+Les cases ci-dessous sont à requalifier ; elles ne déclarent pas l'état courant
+des services ou du Store. Le relevé du 18 août est conservé en fin de document.
 
 ## 1. Variables EAS publiques
 
@@ -16,14 +18,14 @@ Les variables `EXPO_PUBLIC_*` sont incluses dans le bundle client. Elles doivent
 du bundle JavaScript. Référence: Expo EAS Environment Variables
 <https://docs.expo.dev/eas/environment-variables/>.
 
-- [x] `EXPO_PUBLIC_PLAY_INTEGRITY_CLOUD_PROJECT_NUMBER=359653779023` visible dans `eas.json` pour `preview`, `release`, `production`, `production-apk`.
+- [ ] Vérifier `EXPO_PUBLIC_PLAY_INTEGRITY_CLOUD_PROJECT_NUMBER` dans le profil `eas.json` du candidat.
 - [ ] Confirmer dans Expo Dashboard que la même variable existe aussi dans les environnements EAS `preview` et `production`, ou conserver la valeur du profil `env` comme source de vérité.
-- [x] Confirmer via `gcloud projects list --filter='PROJECT_NUMBER=359653779023' --format=json` que `359653779023` est bien le **Project number** du projet `gen-lang-client-0336445544` / `dreamweaver` (`ACTIVE`).
+- [ ] Confirmer dans Google Cloud que le numéro désigne le projet Play Integrity attendu.
 - [ ] `EXPO_PUBLIC_GOOGLE_WEB_CLIENT_ID`
 - [ ] `EXPO_PUBLIC_GOOGLE_ANDROID_CLIENT_ID`
-- [x] `EXPO_PUBLIC_REVENUECAT_ANDROID_KEY=goog_BFWJqTqAtQUnwYisczZcZrnsanw` visible dans `.env.playstore` et `eas.json` pour `preview`, `release`, `production`, `production-apk`.
-- [x] RevenueCat Test Store séparé : `.env.teststore` et `eas build --profile revenuecat-teststore` utilisent `test_zqltcBoDiTWPWmuyXTXTbYkJPrz` avec `EXPO_PUBLIC_SUBSCRIPTION_QA_LAB=true`.
-- [x] RevenueCat Play Store app confirmée via MCP : `Noctalia (Play Store)`, package `com.tanuki75.noctalia`, produits `noctalia_plus:monthly` et `noctalia_plus:annual`.
+- [ ] Vérifier la clé publique RevenueCat Android `goog_` du profil Play du candidat.
+- [ ] Pour la QA Test Store, vérifier le profil séparé, sa clé `test_` et `EXPO_PUBLIC_SUBSCRIPTION_QA_LAB=true` selon le [guide RevenueCat](revenuecat-qa-workflow.md).
+- [ ] Vérifier dans RevenueCat le package `com.tanuki75.noctalia`, les produits et les offres du candidat.
 - [ ] `EXPO_PUBLIC_API_URL`
 - [ ] `EXPO_PUBLIC_SUPABASE_URL`
 - [ ] `EXPO_PUBLIC_SUPABASE_ANON_KEY`
@@ -36,26 +38,45 @@ du bundle JavaScript. Référence: Expo EAS Environment Variables
 - [ ] `PLAY_INTEGRITY_PACKAGE_NAME=com.tanuki75.noctalia`
 - [ ] `GUEST_SESSION_SECRET`
 
-## 3. Build et upload
+## 3. Préparation du build et envoi interne
+
+Suivre [MOBILE_VERSIONING.md](MOBILE_VERSIONING.md) depuis un checkout isolé,
+propre et actualisé. Préparer la version avec `release:plan` / `release:prepare`,
+commiter les manifests, puis exécuter les contrôles adaptés au changement. Une PR
+fonctionnelle ou d'outillage termine sa sélection de tests par `test:prepush` ;
+ne pas lui ajouter une suite complète manuelle systématique.
+
+Avant le build Android autorisé :
 
 ```bash
-npm run subscription:qa:verify-local
-npm run subscription:qa:report
-npm run android:gates:prebuild
-npx expo install --check
-npx expo-doctor
-npm run typecheck:app
-npm run lint
-npm test -- --runInBand --watch=false --no-watchman
-npx eas-cli@latest build -p android --profile production
+mise exec -- npm run subscription:qa:verify-local
+mise exec -- npm run subscription:qa:report
+mise exec -- npm run android:gates:prebuild
+mise exec -- npm run release:check -- --app noctalia
+mise exec -- npm run release:build -- --app noctalia --platform android
 ```
 
-`npm run android:gates` est un préflight non bloquant qui imprime les gates
-locales, bloquées et manuelles sans exposer les valeurs sensibles. Utiliser
-`npm run android:gates:prebuild` avant la construction. Le gate strict final
-est exécuté après l'installation du candidat depuis Play Internal Testing.
+`release:build` utilise la version EAS CLI épinglée par le dépôt et vérifie les
+sources natives/fingerprint du checkout avant le lancement distant. En cas de
+changement de dépendance ou de configuration, vérifier aussi la compatibilité
+Expo avec `npx expo install --check` et `npx expo-doctor`. Les builds APK locaux
+ont leurs [prérequis Java 17](../../scripts/README.md#local-android-prerequisites).
 
-- [ ] Uploader l'AAB signé sur Google Play Internal Testing.
+`android:gates` imprime les gates locales, bloquées et manuelles sans exposer les
+valeurs sensibles. Le gate strict final suit l'installation du candidat depuis
+Play Internal Testing.
+
+Relever l'ID du build terminé, puis vérifier l'envoi sans le déclencher :
+
+```bash
+mise exec -- node scripts/mobile-release.js submit-internal --app noctalia --platform android --id <ID_BUILD_ANDROID> --dry-run
+```
+
+Après autorisation de soumission, retirer `--dry-run`. Le runner sélectionne
+`submit.internal` ; `submit.production.android` cible la production. Un envoi
+EAS terminé ne prouve ni la disponibilité pour les testeurs ni l'installation.
+
+- [ ] Vérifier la release sur la piste Test interne et son accès aux testeurs.
 - [ ] Copier le SHA-1 Play App Signing depuis Play Console → App Integrity.
 - [ ] Ajouter ce SHA-1 au client OAuth Android dans Google Cloud Console.
 
@@ -91,3 +112,9 @@ Installer depuis la piste Internal Testing, pas en sideload.
 - [ ] Data Safety pour audio, texte/transcripts, auth, achats et analytics.
 - [ ] Screenshots Play Store réels: recording, journal, AI analysis, paywall, privacy/offline reliability.
 - [ ] Icône 512px et feature graphic 1024x500.
+
+## Relevé historique du 18 août 2026
+
+Play Console affichait Production **54 (3.1.0)** et un candidat **57** créé,
+non envoyé pour examen. Ce relevé est daté et ne décrit pas le Store actuel.
+Voir [les anciennes notes Play](noctalia-3.1.0-google-play-patch-notes.md).

@@ -170,7 +170,7 @@ env:
       id: symbol-list
     timeout: 30000
 - tapOn:
-    id: symbol.item.water
+    id: symbol.popular.water
 - extendedWaitUntil:
     visible:
       id: screen.symbolDetail

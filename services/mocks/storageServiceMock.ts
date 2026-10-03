@@ -156,7 +156,7 @@ export async function saveDreams(dreams: DreamAnalysis[]): Promise<void> {
 export async function getSavedTranscript(): Promise<string> {
   console.log('[MOCK STORAGE] getSavedTranscript called');
   try {
-    return mockStorage['gemini_dream_journal_recording_transcript'] || '';
+    return (await getMockItem('gemini_dream_journal_recording_transcript')) || '';
   } catch (error) {
     console.error('[MOCK STORAGE] Failed to retrieve transcript:', error);
     return '';
@@ -164,8 +164,8 @@ export async function getSavedTranscript(): Promise<string> {
 }
 
 export async function getRecordingDraft(): Promise<RecordingDraftReadResult> {
-  const value = mockStorage['gemini_dream_journal_recording_transcript'];
-  return value == null ? { status: 'absent' } : { status: 'loaded', value };
+  const value = await getMockItem('gemini_dream_journal_recording_transcript');
+  return value == null || value === '' ? { status: 'absent' } : { status: 'loaded', value };
 }
 
 /**
@@ -174,11 +174,8 @@ export async function getRecordingDraft(): Promise<RecordingDraftReadResult> {
 export async function saveTranscript(transcript: string): Promise<void> {
   console.log('[MOCK STORAGE] saveTranscript called with:', transcript.slice(0, 50) + '...');
   try {
-    if (transcript) {
-      mockStorage['gemini_dream_journal_recording_transcript'] = transcript;
-    } else {
-      delete mockStorage['gemini_dream_journal_recording_transcript'];
-    }
+    await setMockItem('gemini_dream_journal_recording_transcript', transcript);
+    if (!transcript) delete mockStorage['gemini_dream_journal_recording_transcript'];
     console.log('[MOCK STORAGE] Transcript saved');
   } catch (error) {
     console.error('[MOCK STORAGE] Failed to save transcript:', error);
@@ -271,7 +268,7 @@ export async function saveThemePreference(preference: ThemePreference): Promise<
 export async function getLanguagePreference(): Promise<LanguagePreference> {
   console.log('[MOCK STORAGE] getLanguagePreference called');
   try {
-    const savedPreference = mockStorage['gemini_dream_journal_language_preference'];
+    const savedPreference = await getMockItem('gemini_dream_journal_language_preference');
     if (savedPreference) {
       const preference = JSON.parse(savedPreference) as LanguagePreference;
       console.log('[MOCK STORAGE] Returning saved language preference:', preference);
@@ -290,7 +287,7 @@ export async function getLanguagePreference(): Promise<LanguagePreference> {
 export async function saveLanguagePreference(preference: LanguagePreference): Promise<void> {
   console.log('[MOCK STORAGE] saveLanguagePreference called:', preference);
   try {
-    mockStorage['gemini_dream_journal_language_preference'] = JSON.stringify(preference);
+    await setMockItem('gemini_dream_journal_language_preference', JSON.stringify(preference));
     console.log('[MOCK STORAGE] Language preference saved');
   } catch (error) {
     console.error('[MOCK STORAGE] Failed to save language preference:', error);
@@ -334,8 +331,8 @@ export async function getRecordingInputModePreference(
   try {
     const scopedKey = scopedStorageKey(RECORDING_INPUT_MODE_PREFERENCE_KEY, actorScope);
     const savedPreference =
-      mockStorage[scopedKey] ??
-      (actorScope === 'guest' ? mockStorage[RECORDING_INPUT_MODE_PREFERENCE_KEY] : undefined);
+      (await getMockItem(scopedKey)) ??
+      (actorScope === 'guest' ? await getMockItem(RECORDING_INPUT_MODE_PREFERENCE_KEY) : undefined);
     if (savedPreference) {
       const parsed = JSON.parse(savedPreference);
       if (parsed === 'text' || parsed === 'voice') {
@@ -354,8 +351,7 @@ export async function saveRecordingInputModePreference(
 ): Promise<void> {
   console.log('[MOCK STORAGE] saveRecordingInputModePreference called:', preference);
   try {
-    mockStorage[scopedStorageKey(RECORDING_INPUT_MODE_PREFERENCE_KEY, actorScope)] =
-      JSON.stringify(preference);
+    await setMockItem(scopedStorageKey(RECORDING_INPUT_MODE_PREFERENCE_KEY, actorScope), JSON.stringify(preference));
   } catch (error) {
     console.error('[MOCK STORAGE] Failed to save recording input mode preference:', error);
     throw new Error('Failed to save recording input mode preference');

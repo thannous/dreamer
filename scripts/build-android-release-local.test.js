@@ -10,6 +10,7 @@ const {
   PRODUCTION_ANDROID_PACKAGE,
   RELEASE_BUILD_PROFILE,
   TESTSTORE_BUILD_PROFILE,
+  assertAndroidJava17,
   assertInstallableApkIdentity,
   assertProfileableBuildProfile,
   assertReusableNativeProject,
@@ -36,6 +37,39 @@ const {
 } = require('./build-android-release-local');
 
 describe('build-android-release-local', () => {
+  it('checks the JAVA_HOME executable instead of a different Java on PATH', () => {
+    const env = { JAVA_HOME: '/java17', PATH: '/java25/bin' };
+    const spawn = jest.fn(() => ({ status: 0, stderr: 'openjdk version "17.0.16" 2025-07-15' }));
+    expect(() => assertAndroidJava17(env, spawn)).not.toThrow();
+    expect(spawn).toHaveBeenCalledWith(
+      path.join('/java17', 'bin', process.platform === 'win32' ? 'java.exe' : 'java'),
+      ['-version'],
+      expect.objectContaining({ env, encoding: 'utf8' })
+    );
+  });
+
+  it('accepts Java 17 reported on stdout when JAVA_HOME is unset', () => {
+    const spawn = jest.fn(() => ({ status: 0, stdout: 'java version "17.0.12"' }));
+    expect(() => assertAndroidJava17({}, spawn)).not.toThrow();
+    expect(spawn.mock.calls[0][0]).toBe('java');
+  });
+
+  it.each(['25.0.1', '21.0.8', '1.8.0_452'])(
+    'rejects incompatible Java %s before starting build preparation', (version) => {
+      const spawn = () => ({ status: 0, stderr: `openjdk version "${version}"` });
+      expect(() => assertAndroidJava17({}, spawn)).toThrow('Java 17 is required');
+    }
+  );
+
+  it.each([
+    { error: new Error('ENOENT'), status: null },
+    { status: 1, stderr: 'Unable to locate a Java Runtime' },
+    { status: null, signal: 'SIGTERM' },
+    { status: 0, stdout: 'unrecognized version output' },
+  ])('gives an actionable error when Java cannot be verified: %j', (result) => {
+    expect(() => assertAndroidJava17({}, () => result)).toThrow('JAVA_HOME');
+  });
+
   it('keeps Test Store installation emulator-only', () => {
     expect(() => assertTestStoreInstallTarget(
       TESTSTORE_BUILD_PROFILE,

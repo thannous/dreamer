@@ -3,7 +3,6 @@ import {
   ActivityIndicator,
   Alert,
   Linking,
-  Switch,
   Text,
   View,
 } from 'react-native';
@@ -12,6 +11,8 @@ import { PressableScale } from '@/components/motion';
 import { IconSymbol } from '@/components/ui/icon-symbol';
 import { getLegalLink, type LegalLinkKind } from '@/constants/legalLinks';
 import { getNoctaliaDesignTokens } from '@/constants/noctaliaDesign';
+import { SettingsSection } from './SettingsSection';
+import { SettingsToggle } from './SettingsToggle';
 import { useAnalyticsPreferenceController } from '@/components/settings/useAnalyticsPreferenceController';
 import { useAuth } from '@/context/AuthContext';
 import { useTheme } from '@/context/ThemeContext';
@@ -24,7 +25,7 @@ import {
 /** Rows are stacked edge to edge; hit slop would overlap the neighbouring row. */
 const NO_HIT_SLOP = 0;
 
-const ROW_CLASS = 'min-h-[46px] w-full flex-row items-center gap-4 border-t border-line py-2';
+const ROW_CLASS = 'min-h-[64px] w-full flex-row items-center gap-3 border-t border-line py-3';
 
 type LegalLinkRow = {
   icon: 'lock.shield' | 'doc.on.doc' | 'globe';
@@ -121,22 +122,14 @@ export function LegalSection() {
   }, [runDeletion, t]);
 
   return (
-    <View
-      className="w-full overflow-hidden rounded-[18px] border border-line-strong bg-ink-raised px-4"
-      testID="settings-section-legal"
-    >
-      <View className="min-h-12 flex-row items-center justify-between">
-        <Text className="font-display-semibold text-h2 text-ivory">
-          {t('settings.legal.sectionTitle')}
-        </Text>
-        <IconSymbol name="lock.shield" size={23} color={noctalia.accent.text} />
-      </View>
+    <SettingsSection title={t('settings.legal.sectionTitle')} testID="settings-section-legal">
       {analyticsPreference.available ? (
         <View
           accessibilityRole="switch"
           accessibilityState={{ checked: analyticsPreference.enabled === true }}
+          aria-checked={analyticsPreference.enabled === true}
           accessibilityLabel={analyticsPreference.toggleLabel}
-          className={ROW_CLASS}
+          className="min-h-[64px] w-full flex-row items-center gap-3 py-3"
           testID="settings-analytics-preference"
         >
           <IconSymbol name="chart.bar.fill" size={21} color={noctalia.accent.text} />
@@ -148,25 +141,22 @@ export function LegalSection() {
               {analyticsPreference.error ? analyticsPreference.errorMessage : analyticsPreference.description}
             </Text>
           </View>
-          <Switch
+          <SettingsToggle
             disabled={analyticsPreference.loading || analyticsPreference.saving}
-            ios_backgroundColor={noctalia.surface.soft}
             onValueChange={(next) => {
               void analyticsPreference.toggle(next);
             }}
             testID="settings-analytics-preference-switch"
-            thumbColor={noctalia.text.primary}
-            trackColor={{ false: noctalia.surface.soft, true: noctalia.accent.base }}
             value={analyticsPreference.enabled === true}
           />
         </View>
       ) : null}
-      {LEGAL_LINK_ROWS.map((row) => (
+      {LEGAL_LINK_ROWS.map((row, index) => (
         <PressableScale
           accessibilityRole="link"
           key={row.kind}
           onPress={() => openLegalLink(row.kind)}
-          className={ROW_CLASS}
+          className={index === 0 && !analyticsPreference.available ? ROW_CLASS.replace('border-t border-line', '') : ROW_CLASS}
           hitSlop={NO_HIT_SLOP}
           testID={row.testID}
         >
@@ -201,6 +191,6 @@ export function LegalSection() {
           ) : null}
         </PressableScale>
       ) : null}
-    </View>
+    </SettingsSection>
   );
 }

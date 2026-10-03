@@ -1,5 +1,5 @@
 import React, { memo, useCallback, useMemo } from 'react';
-import { Pressable, StyleSheet, Text, View } from 'react-native';
+import { Pressable, StyleSheet, Text, View, useWindowDimensions } from 'react-native';
 
 import { IconSymbol } from '@/components/ui/icon-symbol';
 import { ThemeLayout } from '@/constants/journalTheme';
@@ -13,10 +13,13 @@ interface SymbolCardProps {
   symbol: DreamSymbol;
   language: SymbolLanguage;
   onPress: (id: string) => void;
+  variant?: 'card' | 'row';
 }
 
-export const SymbolCard = memo(function SymbolCard({ symbol, language, onPress }: SymbolCardProps) {
+export const SymbolCard = memo(function SymbolCard({ symbol, language, onPress, variant = 'card' }: SymbolCardProps) {
   const { colors, mode } = useTheme();
+  const { fontScale } = useWindowDimensions();
+  const isRow = variant === 'row';
   const noctalia = getNoctaliaDesignTokens(colors, mode);
   const content = symbol[language] ?? symbol.en;
   const handlePress = useCallback(() => {
@@ -26,39 +29,41 @@ export const SymbolCard = memo(function SymbolCard({ symbol, language, onPress }
   const glassBackground = noctalia.surface.raised;
   const cardStyle = useMemo(
     () => [
-      styles.card,
+      isRow ? styles.row : styles.card,
       {
-        backgroundColor: glassBackground,
+        backgroundColor: isRow ? 'transparent' : glassBackground,
         borderColor: noctalia.surface.border,
       },
     ],
-    [glassBackground, noctalia.surface.border],
+    [glassBackground, isRow, noctalia.surface.border],
   );
   const contentStyle = useMemo(() => [styles.content, { gap: 2 }], []);
   const titleStyle = useMemo(
     () => [
       styles.title,
+      isRow && styles.rowTitle,
       {
         color: noctalia.text.primary,
       },
     ],
-    [noctalia.text.primary],
+    [isRow, noctalia.text.primary],
   );
   const descriptionStyle = useMemo(
     () => [
       styles.description,
+      isRow && styles.rowDescription,
       {
         color: noctalia.text.secondary,
       },
     ],
-    [noctalia.text.secondary],
+    [isRow, noctalia.text.secondary],
   );
   const pressableStyle = useCallback(
     ({ pressed }: { pressed: boolean }) => [
       ...cardStyle,
-      pressed && styles.cardPressed,
+      pressed && (isRow ? styles.rowPressed : styles.cardPressed),
     ],
-    [cardStyle],
+    [cardStyle, isRow],
   );
 
   return (
@@ -71,12 +76,12 @@ export const SymbolCard = memo(function SymbolCard({ symbol, language, onPress }
       <View style={contentStyle}>
         <Text
           style={titleStyle}
-          numberOfLines={1}>
+          numberOfLines={isRow ? undefined : 1}>
           {content.name}
         </Text>
         <Text
           style={descriptionStyle}
-          numberOfLines={2}>
+          numberOfLines={isRow ? (fontScale >= 1.6 ? undefined : 3) : 2}>
           {content.shortDescription}
         </Text>
       </View>
@@ -86,6 +91,17 @@ export const SymbolCard = memo(function SymbolCard({ symbol, language, onPress }
 });
 
 const styles = StyleSheet.create({
+  row: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 12,
+    paddingVertical: 16,
+    marginHorizontal: 20,
+    borderBottomWidth: StyleSheet.hairlineWidth,
+  },
+  rowTitle: { fontSize: 17, lineHeight: 24 },
+  rowDescription: { fontSize: 15, lineHeight: 22 },
+  rowPressed: { opacity: 0.78 },
   card: {
     flexDirection: 'row',
     alignItems: 'center',

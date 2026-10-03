@@ -2,6 +2,12 @@
 
 Noctalia is an Expo/React Native dream-journal app with a Supabase backend and a generated multilingual marketing site.
 
+Start with the [repository task index](doc_web_interne/docs/README.md) for feature
+entry points and current guides. Run `mise exec -- npm run scripts:list` for the
+command catalog; [scripts/README.md](scripts/README.md) explains prerequisites and effects.
+CI is in `.circleci/config.yml` and `.circleci/continue.yml`. Find filenames with
+`rg --files` before reading guessed paths; scoped search examples are in the task index.
+
 ## Structure and Sources of Truth
 
 - `app/`: Expo Router screens and layouts.
@@ -18,7 +24,8 @@ Cloudflare Pages builds `docs/` from tracked sources on `master`; verify the bra
 
 ## Subproject routing
 
-- Lucid uses the root package and `app/lucid/`, not `apps/lucid/`. Read
+- Lucid uses the root package and `app/lucid/`, not `apps/lucid/`. The standalone
+  companion router root is `routes/lucid/`, which re-exports those screens. Read
   `specs/noctalia-lucid-trainer.md` for its scope and sleep/wellbeing safeguards.
 - Meditation is a separate package at `apps/meditation/`; read its local guide
   and run its commands there. Its theme and service paths replace journal-specific paths.
@@ -28,10 +35,14 @@ Cloudflare Pages builds `docs/` from tracked sources on `master`; verify the bra
 - Do not send private project content to free third-party inference endpoints.
   Use an authorized supported model.
 
-For requested Higgsfield media, use the [media workflow policy](.agents/skills/WORKFLOW-POLICY.md)
-and the relevant skill. The [video-explainer skill](.agents/skills/higgsfield-video-explainer/SKILL.md)
-requires the live catalog for preset discovery or validation; custom-style preparation
-does not depend on it. Verify the selected model's live contract before submission.
+For requested Higgsfield media, check the host's installed skills and media workflow
+policy first. These ignored machine resources may be supplied under
+`.agents/skills/WORKFLOW-POLICY.md` and
+`.agents/skills/higgsfield-video-explainer/SKILL.md`; they are not shipped by this
+checkout. Follow the installed policy, or continue local preparation and report the
+missing resource before submitting media. The video-explainer skill requires the
+live catalog for preset discovery or validation; custom-style preparation does not
+depend on it. Verify the selected model's live contract before submission.
 
 ## Styling and Motion
 
@@ -181,10 +192,16 @@ lockfile and additionally requires `mise exec -- npm ci` in `apps/meditation`.
 - Run: `npm run start`, `npm run web`, `npm run android`, `npm run ios`.
 - Runtime modes: `npm run start:mock`, `npm run start:real`, `npm run start:teststore`, `npm run start:playstore`, `npm run start:supabase`.
 - Diagnose: `npx expo-doctor`.
+- Mobile release: follow [MOBILE_VERSIONING.md](doc_web_interne/docs/MOBILE_VERSIONING.md); use `release:build` for its local checks and pinned EAS CLI.
+- Local Android Release: Java 17 and Android SDK are required. The runner checks Java before build preparation; see [tooling prerequisites](scripts/README.md#local-android-prerequisites).
 
 Backend URL resolution uses `EXPO_PUBLIC_API_URL`, then `app.json` `expo.extra.apiUrl`; see `lib/config.ts`. Use `lib/http.ts` for network requests and its timeout/auth conventions.
 
-`.codex/environments/environment.toml` delegates the `Run`, `Run Android`, `Run Web`, and `Expo Doctor` actions to `script/build_and_run.sh`. It keeps Metro in the foreground; see `./script/build_and_run.sh --help` for other modes.
+The canonical desktop/runtime entry point is `script/build_and_run.sh`, which keeps
+Metro in the foreground. An optional local `.codex/environments/environment.toml`
+can delegate desktop Run actions to it; this checkout does not ship that file.
+Use the package scripts when it is absent. See `./script/build_and_run.sh --help`
+for supported modes.
 
 ## Validation
 

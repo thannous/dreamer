@@ -227,6 +227,11 @@ jest.doMock('@/hooks/useScrollIdle', () => ({
   }),
 }));
 
+// This route fixture isolates leaf components; real sign-out is covered by web E2E.
+jest.doMock('@/components/settings/SettingsSignOutAction', () => ({
+  SettingsSignOutAction: () => null,
+}));
+
 jest.doMock('@/components/auth/EmailAuthCard', () => ({
   EmailAuthCard: ({ initialAccountSheetOpen, presentation }: any) => { mockInitialAccountSheetOpen = initialAccountSheetOpen; return <div data-testid="email-auth-card" data-presentation={presentation} />; },
 }));
