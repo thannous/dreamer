@@ -385,6 +385,8 @@ const translations: Record<string, string> = {
     'journal.atlas.action.continue': 'Riprendi',
     'journal.card.accessibility.open': 'Apri i dettagli del sogno',
     'journal.badge.favorite': 'Preferito',
+    'journal.badge.recurring': 'Ricorrente',
+    'journal.badge.unanalyzed': 'Non analizzato',
     'journal.badge.analyzed': 'Analizzato',
     'journal.badge.explored': 'Approfondito',
     'journal.badge.sync_pending': 'Sincronizzazione',
