@@ -1,7 +1,7 @@
 {
   "meta": {
     "version": "1.0.0",
-    "lastUpdated": "2026-10-02",
+    "lastUpdated": "2026-10-03",
     "totalSymbols": 160,
     "languages": [
       "en",
@@ -5271,31 +5271,34 @@
       "it": {
         "slug": "lupo",
         "name": "Lupo",
-        "shortDescription": "Sognare lupi parla di istinto, protezione, minaccia e appartenenza. Un lupo solo può indicare intuizione o indipendenza; un branco o lupi che attaccano segnalano spesso pressione, conflitto o paura di perdere il controllo.",
+        "shortDescription": "Sognare lupi può evocare istinto, protezione, minaccia o appartenenza. Confronta un lupo che osserva, uno che attacca e un branco: il comportamento e la tua emozione contano più di un significato fisso.",
         "askYourself": [
-          "Era un lupo solo, più lupi o un branco?",
-          "Il lupo attaccava, proteggeva, inseguiva o osservava?",
-          "Quale istinto sto ignorando, o quale gruppo mi mette pressione?"
+          "Era un lupo solo, due lupi o un branco? Quanto erano vicini?",
+          "Mi osservavano, attaccavano, inseguivano o accompagnavano? Come reagivo?",
+          "Che cosa cambia se descrivo prima la scena e l’emozione, poi cerco un collegamento con la mia giornata?"
         ],
         "seoTitle": "lupo, lupi o branco",
         "faq": [
           {
             "question": "Cosa significa sognare lupi?",
-            "answer": "Sognare lupi può parlare di istinto, minaccia, protezione o appartenenza a un gruppo. Il significato cambia se i lupi attaccano, accompagnano, inseguono o appaiono come branco."
+            "answer": "Istinto, minaccia, protezione e appartenenza sono associazioni possibili, non significati universali. Osserva se i lupi attaccano, accompagnano o restano lontani, e se provi paura o calma. Il sogno non rivela le intenzioni di persone reali."
           },
           {
-            "question": "Cosa significa sognare un lupo?",
-            "answer": "Un lupo solo rappresenta spesso intuizione, indipendenza o una forza istintiva che devi ascoltare."
+            "question": "Cosa significa sognare un lupo che ti guarda?",
+            "answer": "Distingui lo sguardo da un inseguimento o un attacco. Annota distanza, movimento e tua reazione. Un lupo grigio, bianco o nero non ha un significato certo in base al colore; conta anche ciò che quel dettaglio ricorda a te."
           },
           {
             "question": "Cosa significa sognare lupi che attaccano?",
-            "answer": "Lupi che attaccano riflettono pressione, paura, conflitto o un’emozione istintiva che sembra fuori controllo."
+            "answer": "L’attacco può richiamare paura o una pressione percepita, ma anche immagini recenti. Nota che cosa facevi e come finiva la scena. Non è la prova di un nemico, di aggressività nascosta o di un’aggressione futura."
           },
           {
             "question": "Cosa significa sognare un branco di lupi?",
-            "answer": "Un branco può indicare appartenenza, lealtà e forza collettiva, ma anche pressione sociale."
+            "answer": "Puoi esplorare il rapporto con un gruppo, distinguendo sentirti accolto, accompagnato o circondato. Appartenenza e pressione sono piste possibili. Il numero dei lupi da solo non stabilisce il significato."
           }
-        ]
+        ],
+        "documentTitle": "Sognare lupi: attacco, branco o lupo che osserva",
+        "documentMetaDescription": "Sognare lupi: confronta attacco, branco, lupo solitario o che ti guarda. Scene ed esempio di diario per esplorare il sogno senza un significato fisso.",
+        "modifiedAt": "2026-10-03"
       },
       "pt": {
         "slug": "lobo",
@@ -5726,11 +5729,34 @@
       "it": {
         "slug": "incidente",
         "name": "Incidente",
-        "shortDescription": "I sogni di incidenti simboleggiano la paura di perdere il controllo, l'ansia per i cambiamenti inaspettati o un avvertimento a rallentare. Spesso riflettono stress o un senso di vulnerabilità.",
+        "shortDescription": "Sognare un incidente in auto può evocare paura, sorpresa o perdita di controllo. Guidare, essere passeggero o assistere allo scontro cambia la lettura: conta anche come finisce. Il sogno non è una previsione.",
         "askYourself": [
-          "Sento che qualcosa nella mia vita sta sfuggendo al controllo?",
-          "Sto prendendo rischi con cui non mi sento a mio agio?"
-        ]
+          "Guidavo, ero passeggero o guardavo da fuori? Che cosa potevo fare nella scena?",
+          "Ho provato paura, colpa, rabbia o sollievo? Come è finito l’incidente?",
+          "C’è un viaggio, una notizia o una decisione recente che ricorda un dettaglio del sogno?"
+        ],
+        "documentTitle": "Sognare un incidente in auto: scene e significato",
+        "documentMetaDescription": "Sognare un incidente in auto: confronta guidatore, passeggero, testimone e uscita illesa. Domande ed esempio di diario, senza interpretazioni certe.",
+        "seoTitle": "incidente in auto, testimone o uscita illesa",
+        "faq": [
+          {
+            "question": "Cosa significa sognare un incidente in macchina?",
+            "answer": "Può evocare paura, sorpresa o la sensazione di non controllare una situazione, ma può anche riprendere un viaggio o una scena recente. Il ruolo, la reazione e l’esito aiutano a formulare domande; non esiste un significato certo né una previsione di incidente."
+          },
+          {
+            "question": "Cosa significa sognare incidenti stradali altrui?",
+            "answer": "Assistere allo scontro è diverso dall’essere coinvolto: annota chi vedevi, se potevi intervenire e che cosa provavi. Una preoccupazione per qualcuno è una pista possibile, non la prova che quella persona sia in pericolo."
+          },
+          {
+            "question": "Cosa significa sognare un incidente in macchina e uscirne illesi?",
+            "answer": "La parte utile da osservare è il passaggio dalla paura al sollievo, se c’era. Uscire illesi nel sogno non garantisce protezione o successo nella vita reale: descrivi come finiva la scena e che cosa restava al risveglio."
+          },
+          {
+            "question": "Sognare di morire in un incidente è un presagio?",
+            "answer": "Il sogno non è una prova che accadrà una morte o un incidente. Puoi annotare la paura e il contesto recente senza attribuirgli un messaggio predittivo. Se gli incubi si ripetono e compromettono il sonno o la vita quotidiana, parlane con un medico."
+          }
+        ],
+        "modifiedAt": "2026-10-03"
       },
       "pt": {
         "slug": "acidente",
@@ -6633,13 +6659,34 @@
       "it": {
         "slug": "polizia",
         "name": "Polizia",
-        "shortDescription": "La polizia in sogno può mettere in primo piano regole, protezione, controllo o un conflitto sui confini. Chiedere aiuto, essere inseguito o dover assumere una responsabilità orientano la scena in modi diversi.",
-        "modifiedAt": "2026-07-24",
+        "shortDescription": "Sognare polizia o carabinieri può evocare protezione, regole o paura di essere giudicato. Chiedere aiuto, essere fermato o inseguito sono scene diverse: il ruolo degli agenti e la tua emozione contano.",
+        "modifiedAt": "2026-10-03",
         "askYourself": [
-          "Che cosa ha cambiato polizia nella scena?",
-          "Quale emozione è rimasta dopo il risveglio?"
+          "Chiedevo aiuto, venivo fermato o ero inseguito? Gli agenti che cosa dicevano o facevano?",
+          "Mi sentivo protetto, controllato, accusato o sollevato? L’emozione cambiava durante la scena?",
+          "La divisa, la casa o il dialogo ricordano un incontro, una notizia o una regola recente?"
         ],
-        "faq": []
+        "faq": [
+          {
+            "question": "Cosa significa sognare polizia o carabinieri?",
+            "answer": "Puoi esplorare associazioni con protezione, regole o giudizio, partendo dal comportamento degli agenti e dalla tua emozione. La divisa da sola non determina il significato. Il sogno non prova una colpa, un pericolo o un futuro problema legale."
+          },
+          {
+            "question": "Cosa significa sognare un carabiniere che ti parla?",
+            "answer": "Annota le parole, il tono e la tua risposta. Dare informazioni, chiedere aiuto o ricevere un ordine sono scene diverse. Non trasformare il dialogo in un messaggio certo o in un’accusa verso una persona reale."
+          },
+          {
+            "question": "Cosa significa sognare polizia o carabinieri in casa?",
+            "answer": "Conta perché entravano, chi li aveva chiamati e se ti sentivi al sicuro o invaso. Puoi riflettere su privacy e confini, ma il sogno non dimostra che la tua casa o la tua famiglia siano in pericolo."
+          },
+          {
+            "question": "Sognare di essere fermato o arrestato annuncia guai?",
+            "answer": "Non è una previsione né un’indicazione della tua situazione giuridica. Distingui un controllo da un arresto e annota paura, rabbia o sollievo. Le eventuali questioni legali reali vanno valutate sui fatti, non sui sogni."
+          }
+        ],
+        "documentTitle": "Sognare polizia e carabinieri: scene e domande",
+        "documentMetaDescription": "Sognare polizia o carabinieri: chiedere aiuto, essere fermato, inseguito o arrestato. Confronta ruolo ed emozioni senza presagi né conclusioni legali.",
+        "seoTitle": "polizia, carabinieri, controllo o aiuto"
       },
       "pt": {
         "slug": "policia",
