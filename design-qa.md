@@ -1611,3 +1611,7 @@ final result: passed (local web card scope)
 
 - Second CI head `27ba7588`: corrected Trends journey passed; 41/42 web journeys passed. The reflection revisit assertion found the contextual inline-reading dock hidden after returning to a restored scroll position; `scrollIntoViewIfNeeded` on the already visible transcript generated no scroll event. The trace shows the complete story and inline analysis. Updated that existing E2E journey to scroll further through the reading zone with a real wheel gesture before asserting the contextual continuation action. No timeout inflation, retries or app change.
 - Correction qualification: `E2E_WEB_PORT=8094 mise exec -- npm run test:e2e:web -- e2e/web/journeys.spec.ts e2e/web/trends-editorial.spec.ts --grep 'continues a reflection|empty journal keeps' --workers=1 --repeat-each=3` passed all six executions, zero retries. The test still asserts conversation preservation and the continuation CTA. Traces/JUnit remain in the worktree's ignored `test-results/` directory.
+
+**Final master integration**
+- Head `9a6d4b73` passed all remote gates, including 42/42 web journeys (10.7m, zero retries).
+- Master advanced to `c8210f63` (Explore PR #241) during CI and corrected the same obsolete Trends locator. The only integration conflict was that E2E assertion. Resolution retains master's inline-analysis assertion/capture and the Journal return/saved-story assertion. Existing Explore app changes and tests are preserved; no duplicate source changes enter the Journal PR.

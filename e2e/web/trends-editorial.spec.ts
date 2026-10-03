@@ -55,6 +55,8 @@ test('an empty journal keeps honest metrics in both themes and starts its first 
   await page.getByTestId('input.dreamTranscript').fill('A short synthetic dream about a quiet garden.');
   await page.getByTestId('btn.saveDream').click();
   await expect(page.getByTestId('component.transcriptCard')).toContainText('A short synthetic dream about a quiet garden.');
+  await expect(page.getByTestId('component.dreamDetail.readingZone')).toContainText(/\S{20}/);
+  await info.attach('first-capture-inline-analysis', { body: await page.screenshot(), contentType: 'image/png' });
   await page.getByTestId('btn.navigateJournal').click();
   await expect(page.getByTestId(/^dream\.item\.\d+$/).filter({ visible: true })).toContainText('A short synthetic dream about a quiet garden.');
 });
