@@ -1,22 +1,18 @@
-import { useSyncExternalStore } from 'react';
+import { useEffect, useState } from 'react';
+import type { ColorSchemeName } from 'react-native';
 
-const query = '(prefers-color-scheme: dark)';
+/** Keep server rendering light, then subscribe to the actual browser preference. */
+export function useColorScheme(): ColorSchemeName {
+  const [colorScheme, setColorScheme] = useState<ColorSchemeName>('light');
 
-function subscribe(onChange: () => void) {
-  const media = window.matchMedia(query);
-  media.addEventListener('change', onChange);
-  return () => media.removeEventListener('change', onChange);
-}
+  useEffect(() => {
+    if (typeof window === 'undefined' || typeof window.matchMedia !== 'function') return;
+    const query = window.matchMedia('(prefers-color-scheme: dark)');
+    const update = () => setColorScheme(query.matches ? 'dark' : 'light');
+    update();
+    query.addEventListener('change', update);
+    return () => query.removeEventListener('change', update);
+  }, []);
 
-function getSnapshot(): 'light' | 'dark' {
-  return window.matchMedia(query).matches ? 'dark' : 'light';
-}
-
-function getServerSnapshot(): 'light' {
-  return 'light';
-}
-
-/** Keep native props and CSS consumers synchronized with the browser's system theme. */
-export function useColorScheme() {
-  return useSyncExternalStore(subscribe, getSnapshot, getServerSnapshot);
+  return colorScheme;
 }
