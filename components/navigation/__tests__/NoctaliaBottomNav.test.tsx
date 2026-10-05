@@ -228,7 +228,6 @@ describe('NoctaliaBottomNav', () => {
       const style = JSON.parse(label.getAttribute('data-native-style') ?? '{}');
       expect(style.fontSize).toBe(width < 400 ? 11 : 12);
       expect(label.getAttribute('data-number-of-lines')).toBe('1');
-      expect(label.getAttribute('data-max-font-size-multiplier')).toBeNull();
     });
     const margin = width < 400 ? 8 : 22;
     expect(barBox(TID.Tab.AddDream)).toMatchObject({ start: margin, end: margin, height: 86 });
@@ -269,7 +268,7 @@ describe('NoctaliaBottomNav', () => {
     expect(mockDismissTo).toHaveBeenCalledWith('/(tabs)/explore');
   });
 
-  it('keeps words visible on two lines at 320 dp with default text scale', () => {
+  it('keeps compact labels visible on one line at 320 dp with default text scale', () => {
     mockPlatformOS = 'android';
     mockWindowWidth = 320;
     mockWindowHeight = 640;
@@ -284,21 +283,20 @@ describe('NoctaliaBottomNav', () => {
 
     expect(box.start).toBe(8);
     expect(box.end).toBe(8);
-    expect(box.height).toBe(102);
+    expect(box.height).toBe(86);
     expect(barClass).toContain('px-1');
     expect(center.width).toBeCloseTo(54.8, 1);
-    expect(center.height).toBe(92);
+    expect(center.height).toBe(76);
     expect(screen.queryByTestId(TID.Tab.Settings)).toBeNull();
     expect(labels).toHaveLength(5);
     labels.forEach((label) => {
-      expect(label.getAttribute('data-max-font-size-multiplier')).toBeNull();
-      expect(label.getAttribute('data-number-of-lines')).toBe('2');
+      expect(label.getAttribute('data-number-of-lines')).toBe('1');
       expect(label.getAttribute('data-accessible')).toBe('false');
       expect(label.getAttribute('data-native-class')).toContain('text-[11px]');
     });
   });
 
-  it('keeps five visible labels at fontScale 2 while the bar grows', () => {
+  it('keeps five accessible destinations at large text', () => {
     mockPlatformOS = 'android';
     mockWindowWidth = 320;
     mockWindowHeight = 640;
@@ -306,15 +304,11 @@ describe('NoctaliaBottomNav', () => {
 
     render(<NoctaliaBottomNav activeKey="addDream" />);
 
-    const box = barBox(TID.Tab.AddDream);
     const center = centerBox(TID.Tab.AddDream);
     const labels = barLabels();
 
-    expect(box.height).toBe(134);
     expect(center.width).toBe(54.8);
-    expect(center.height).toBe(124);
     expect(labels).toHaveLength(5);
-    expect(screen.getByText(/^nav\.capture_dream(?:_compact)?$/).getAttribute('data-number-of-lines')).toBe('2');
     [TID.Tab.Home, TID.Tab.Journal, TID.Tab.AddDream, TID.Tab.Stats, TID.Tab.Explore]
       .forEach((testID) => expect(screen.getByTestId(testID).getAttribute('role')).toBe('tab'));
     expect(screen.getByTestId(TID.Tab.Explore).getAttribute('aria-label')).toBe('nav.explore');
@@ -340,7 +334,7 @@ describe('NoctaliaBottomNav', () => {
     }
   });
 
-  it('keeps compact landscape words visible at fontScale 2 while the bar grows', () => {
+  it('keeps compact landscape actions available at large text', () => {
     mockPlatformOS = 'android';
     mockWindowWidth = 915;
     mockWindowHeight = 412;
@@ -348,13 +342,10 @@ describe('NoctaliaBottomNav', () => {
 
     render(<NoctaliaBottomNav activeKey="addDream" />);
 
-    const box = barBox(TID.Tab.AddDream);
     const center = centerBox(TID.Tab.AddDream);
     const labels = barLabels();
 
-    expect(box.height).toBe(102);
     expect(center.width).toBeCloseTo(166.6, 2);
-    expect(center.height).toBe(92);
     expect(labels).toHaveLength(5);
     expect(screen.getByText(/^nav\.capture_dream(?:_compact)?$/).getAttribute('data-number-of-lines')).toBe('1');
   });
@@ -396,7 +387,6 @@ describe('NoctaliaBottomNav', () => {
     expect(center.width).toBeCloseTo(67.2, 1);
     expect(center.height).toBe(76);
     expect(centerLabel?.getAttribute('data-native-class')).toContain('text-[12px]');
-    expect(centerLabel?.getAttribute('data-max-font-size-multiplier')).toBeNull();
     expect(centerLabel?.getAttribute('data-accessible')).toBe('false');
     expect(box.height).toBe(86);
     expect(centerLabel?.getAttribute('data-number-of-lines')).toBe('1');

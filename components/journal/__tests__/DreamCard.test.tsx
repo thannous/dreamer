@@ -36,6 +36,7 @@ jest.mock('react-native', () => {
       </button>
     ),
     StyleSheet: { create: (styles: Record<string, unknown>) => styles },
+    useWindowDimensions: () => ({ width: 390, height: 844, scale: 1, fontScale: 1 }),
     Text: ({ children, testID }: { children?: React.ReactNode; testID?: string }) => (
       <span data-testid={testID}>{children}</span>
     ),

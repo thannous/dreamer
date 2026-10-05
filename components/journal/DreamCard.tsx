@@ -5,16 +5,19 @@ import { PressableScale } from '@/components/motion';
 import { getNoctaliaDesignTokens } from '@/constants/noctaliaDesign';
 import { useTheme } from '@/context/ThemeContext';
 import { useTranslation } from '@/hooks/useTranslation';
-import { getDreamThemeLabel } from '@/lib/dreamLabels';
+import { getDreamThemeLabel, getDreamTypeLabel } from '@/lib/dreamLabels';
+import { formatLocaleDate } from '@/lib/dateUtils';
+import { getFormattingLocale } from '@/lib/locale';
 import { areDreamMemoryMetadataEqual, getDreamSyncState } from '@/lib/dreamUtils';
-import { isRememberedDream } from '@/lib/dreamFilters';
-import { isDreamAnalyzed, isDreamExplored } from '@/lib/dreamUsage';
+import { isRememberedDream, isRecurringDream } from '@/lib/dreamFilters';
+import { getDreamAnalysisState, isDreamAnalyzed, isDreamExplored } from '@/lib/dreamUsage';
 import { isMockModeEnabled } from '@/lib/env';
 import { getDreamImageVersion, getDreamThumbnailCacheKey, getDreamThumbnailUri, getImageConfig, withCacheBuster } from '@/lib/imageUtils';
 import { DreamAnalysis } from '@/lib/types';
 import { Image } from 'expo-image';
+import { LinearGradient } from 'expo-linear-gradient';
 import React, { memo, useCallback, useEffect, useMemo, useRef, useState } from 'react';
-import { Text, View } from 'react-native';
+import { Text, View, useWindowDimensions } from 'react-native';
 import { IconSymbol } from '@/components/ui/icon-symbol';
 
 export type DreamCardVariant = 'standard' | 'featured';
@@ -30,33 +33,16 @@ interface DreamCardProps {
 }
 
 
-/** expo-image is not a Uniwind component, so its fill style stays an object. */
-const CARD_IMAGE_STYLE = { width: '100%', height: '100%' } as const;
+/** Expo media components keep their geometry as native props. */
+const CARD_IMAGE_STYLE = { position: 'absolute', top: 0, left: 0, width: '100%', height: '100%' } as const;
+const SCRIM_FADE_STYLE = { height: 56, width: '100%' } as const;
 const CARD_IMAGE_PLACEHOLDER = { blurhash: 'L6PZfSi_.AyE_3t7t7R**0o#DgR4' };
 
-/** Tag colours have to resolve to a literal class so Tailwind can see them. */
-const THEME_TAG_CLASS: Record<string, string> = {
-  surreal: 'bg-tag-surreal',
-  mystical: 'bg-tag-mystical',
-  calm: 'bg-tag-calm',
-  noir: 'bg-tag-noir',
-};
-
-const BADGE_CLASS: Record<'accent' | 'secondary' | 'warning' | 'danger', string> = {
-  accent: 'bg-champagne',
-  secondary: 'bg-ink-soft',
-  warning: 'bg-warning',
-  danger: 'bg-danger',
-};
-
-const BADGE_TEXT_CLASS: Record<'accent' | 'secondary' | 'warning' | 'danger', string> = {
-  accent: 'text-on-champagne',
-  secondary: 'text-ivory',
+const BADGE_TEXT_CLASS = {
+  secondary: 'text-ivory-muted',
   warning: 'text-warning-on',
   danger: 'text-danger-on',
-};
-
-const CARD_CLASS = 'overflow-hidden rounded-md border border-continuous border-line bg-ink-raised';
+} as const;
 
 export const DreamCard = memo(function DreamCard({
   dream,
@@ -66,14 +52,18 @@ export const DreamCard = memo(function DreamCard({
   variant = 'standard',
 }: DreamCardProps) {
   const { colors, mode } = useTheme();
+  const { fontScale } = useWindowDimensions();
+  const compactTextScale = Math.min(1.3, Math.max(1, fontScale));
+  const titleTextScale = Math.min(1.4, Math.max(1, fontScale));
+  const captionStyle = { fontSize: 12 * compactTextScale, lineHeight: 18 * compactTextScale };
+  const dateMarginWidth = Math.max(60, Math.ceil(36 * compactTextScale) + 9);
   const noctalia = useMemo(() => getNoctaliaDesignTokens(colors, mode), [colors, mode]);
-  const { t } = useTranslation();
+  const { t, currentLang } = useTranslation();
   const media = useDreamMedia(dream);
   const handlePress = useCallback(() => {
     onPress(dream);
   }, [onPress, dream]);
 
-  const isFeatured = variant === 'featured';
   // Native Text still shapes long inputs behind numberOfLines. Keep enough text
   // for every card width; navigation and storage retain the complete dream.
   const transcriptPreview = useMemo(() => dream.transcript.length > 1000
@@ -120,21 +110,29 @@ export const DreamCard = memo(function DreamCard({
     }
   }, [trimmedThumbnailUri, fullImageUri, useFullImage, accessScope, failureKey]);
 
-  useEffect(() => {
-    if (!useFullImage || retriedThumbnail.current === retryIdentity) return;
-    const timer = setTimeout(() => {
-      retriedThumbnail.current = retryIdentity;
-      thumbnailFailures.remove(accessScope, failureKey);
-      setUseFullImage(false);
-    }, thumbnailFailures.ttlMs);
-    return () => clearTimeout(timer);
-  }, [useFullImage, retryIdentity, accessScope, failureKey]);
-
   const preferFullImage = useFullImage || (trimmedThumbnailUri && thumbnailFailures.has(accessScope, failureKey));
   const imageUri = preferFullImage
     ? fullImageUri
     : (trimmedThumbnailUri || fullImageUri);
-  const hasImage = Boolean(dream.imageUrl || dream.thumbnailUrl);
+  // A recycled card or refreshed signed URL gets its own failure state. Keeping
+  // the account in this identity prevents a previous user's load from hiding media.
+  const imageAttemptKey = JSON.stringify([accessScope, getDreamIdentityKey(dream), imageVersion, imageUri]);
+  const [failedImageAttempt, setFailedImageAttempt] = useState<string | null>(null);
+  const [coverWidth, setCoverWidth] = useState(260);
+  const hasImage = (Boolean(imageUri) || (media.loading && Boolean(dream.imageUrl || dream.thumbnailUrl)))
+    && failedImageAttempt !== imageAttemptKey;
+
+  useEffect(() => {
+    if ((!useFullImage && failedImageAttempt !== imageAttemptKey)
+      || retriedThumbnail.current === retryIdentity) return;
+    const timer = setTimeout(() => {
+      retriedThumbnail.current = retryIdentity;
+      thumbnailFailures.remove(accessScope, failureKey);
+      setUseFullImage(false);
+      setFailedImageAttempt(null);
+    }, thumbnailFailures.ttlMs);
+    return () => clearTimeout(timer);
+  }, [useFullImage, failedImageAttempt, imageAttemptKey, retryIdentity, accessScope, failureKey]);
 
   const themeLabel = useMemo(() => getDreamThemeLabel(dream.theme, t) ?? dream.theme, [dream.theme, t]);
 
@@ -148,27 +146,31 @@ export const DreamCard = memo(function DreamCard({
   const isExplored = isDreamExplored(dream);
   const isAnalyzed = isDreamAnalyzed(dream);
   const isRemembered = isRememberedDream(dream);
+  const isRecurring = isRecurringDream(dream);
   const isFavorite = !!dream.isFavorite;
+  const analysisState = getDreamAnalysisState(dream);
+  // Legacy unanalysed captures defaulted to Symbolic Dream without classification.
+  const dreamType = !dream.dreamType || (dream.dreamType === 'Symbolic Dream' && !isAnalyzed)
+    ? 'Unknown'
+    : dream.dreamType;
+  const typeLabel = getDreamTypeLabel(dreamType, t);
+  const locale = getFormattingLocale(currentLang ?? 'en');
+  const dateDay = formatLocaleDate(dream.id, locale, { day: 'numeric' });
+  const dateMonth = formatLocaleDate(dream.id, locale, { month: 'short' });
+  const dateYear = new Date(dream.id).getFullYear();
   const syncState = isMockModeEnabled() ? 'clean' : getDreamSyncState(dream);
 
   const badges = useMemo(() => {
     const list: {
       label?: string;
       icon?: Parameters<typeof IconSymbol>[0]['name'];
-      variant: 'accent' | 'secondary' | 'warning' | 'danger';
+      variant: keyof typeof BADGE_TEXT_CLASS;
     }[] = [];
-    if (isRemembered) {
-      list.push({
-        label: t('recording.activation_insight.signal.memory'),
-        icon: 'moon.stars.fill',
-        variant: 'secondary',
-      });
-    }
     if (isExplored) {
       list.push({
         label: t('journal.badge.explored'),
         icon: 'bubble.left.and.bubble.right.fill',
-        variant: 'accent',
+        variant: 'secondary',
       });
     }
     if (!isExplored && isAnalyzed) {
@@ -178,11 +180,14 @@ export const DreamCard = memo(function DreamCard({
         variant: 'secondary',
       });
     }
-    // Don't add favorite badge when using vertical layout — we show the heart overlay instead
-    if (isFavorite && !hasImage) {
+    if (!isAnalyzed && !isExplored) {
       list.push({
-        label: t('journal.badge.favorite'),
-        icon: 'heart.fill',
+        label: analysisState.status === 'pending'
+          ? t('journal.detail.action.pending.cta')
+          : analysisState.status === 'failed'
+            ? t('analysis_error.title')
+            : t('journal.badge.unanalyzed'),
+        icon: analysisState.status === 'pending' ? 'hourglass' : undefined,
         variant: 'secondary',
       });
     }
@@ -206,14 +211,13 @@ export const DreamCard = memo(function DreamCard({
       });
     }
     return list;
-  }, [hasImage, isAnalyzed, isExplored, isFavorite, isRemembered, syncState, t]);
+  }, [analysisState.status, isAnalyzed, isExplored, syncState, t]);
 
   const getBadgeIconColor = useCallback(
-    (variant: 'accent' | 'secondary' | 'warning' | 'danger') => {
-      if (variant === 'accent') return noctalia.action.primaryText;
+    (variant: keyof typeof BADGE_TEXT_CLASS) => {
       if (variant === 'danger') return noctalia.status.danger.text;
       if (variant === 'warning') return noctalia.status.warning.text;
-      return noctalia.text.primary;
+      return noctalia.text.secondary;
     },
     [noctalia]
   );
@@ -224,15 +228,14 @@ export const DreamCard = memo(function DreamCard({
     return (
       <View
         key={key}
-        className={`flex-row items-center gap-1 rounded-full border-continuous px-2.5 py-1 ${BADGE_CLASS[badge.variant]}`}
-        accessibilityLabel={badge.label}
-        accessible={!!badge.label}
+        className="max-w-full flex-row items-center gap-1.5"
+        testID={testID && `journal.badge.${testID}.${i}`}
       >
         {badge.icon && (
           <IconSymbol name={badge.icon} size={14} color={getBadgeIconColor(badge.variant)} />
         )}
         {badge.label && (
-          <Text className={`font-sans-medium text-[11px] ${BADGE_TEXT_CLASS[badge.variant]}`}>
+          <Text allowFontScaling={false} style={captionStyle} className={`min-w-0 shrink font-sans text-[12px] leading-[18px] ${BADGE_TEXT_CLASS[badge.variant]}`}>
             {badge.label}
           </Text>
         )}
@@ -240,111 +243,126 @@ export const DreamCard = memo(function DreamCard({
     );
   });
 
-  const themeTag = dream.theme ? (
-    <View
-      className={`rounded-full border-continuous px-2 py-1 ${
-        THEME_TAG_CLASS[dream.theme] ?? THEME_TAG_CLASS.surreal
-      }`}
-    >
-      <Text className="font-sans text-[12px] text-ivory">{themeLabel}</Text>
-    </View>
-  ) : null;
+  const recurringLabel = isRecurring && dreamType !== 'Recurring Dream'
+    ? t('journal.badge.recurring')
+    : undefined;
+  const memoryLabel = isRemembered ? t('recording.activation_insight.signal.memory') : undefined;
+  const accessibilityLabel = [
+    dream.title || t('journal.card.accessibility.open'),
+    dateLabel ?? formatLocaleDate(dream.id, locale, { day: 'numeric', month: 'long', year: 'numeric' }),
+    isFavorite ? t('journal.badge.favorite') : undefined,
+    typeLabel, recurringLabel, memoryLabel, themeLabel,
+    ...badges.map((badge) => badge.label),
+  ].filter(Boolean).join(', ');
 
-  // Vertical layout: image on top (cards with images)
-  if (hasImage) {
-    return (
-      <PressableScale
-        className={CARD_CLASS}
-        onPress={handlePress}
-        accessibilityRole="button"
-        accessibilityLabel={dream.title || t('journal.card.accessibility.open')}
-        testID={testID}
+  const readingText = (
+    <>
+      <Text
+        key={`title-${fontScale}`}
+        allowFontScaling={false}
+        style={{ fontSize: (variant === 'featured' ? 22 : 20) * titleTextScale, lineHeight: 28 * titleTextScale }}
+        className={`font-display leading-[28px] ${hasImage ? 'text-illustration-text' : 'text-ivory'} ${variant === 'featured' ? 'text-[22px]' : 'text-[20px]'}`}
+        numberOfLines={2}
       >
-        <View className={`w-full overflow-hidden ${isFeatured ? 'h-[200px]' : 'h-[160px]'}`}>
-          <Image
-            source={imageUri ? { uri: imageUri, cacheKey: preferFullImage ? media.imageCacheKey : thumbnailCacheKey } : null}
-            style={CARD_IMAGE_STYLE}
-            contentFit={imageConfig.contentFit}
-            transition={imageTransition}
-            cachePolicy={imageConfig.cachePolicy}
-            priority={imagePriority}
-            recyclingKey={imageRecyclingKey}
-            onError={() => {
-              if (!preferFullImage && trimmedThumbnailUri && trimmedThumbnailUri !== fullImageUri) {
-                thumbnailFailures.record(accessScope, failureKey);
-              }
-              if (!preferFullImage && fullImageUri && imageUri !== fullImageUri) {
-                setUseFullImage(true);
-              }
-            }}
-            placeholder={imagePlaceholder}
-          />
-          {/* Heart overlay for favorited dreams */}
-          {isFavorite && (
-            <View className="absolute right-2.5 top-2.5 h-8 w-8 items-center justify-center rounded-md border-continuous bg-ink-overlay">
-              <IconSymbol name="heart.fill" size={18} color={noctalia.accent.soft} />
-            </View>
-          )}
-        </View>
-        <View className="gap-2 p-4">
-          {dateLabel && (
-            <Text className="font-sans-medium text-[11px] uppercase text-ivory-faint">
-              {dateLabel}
-            </Text>
-          )}
-          <Text
-            className={`font-serif-bold text-ivory ${isFeatured ? 'text-[20px]' : 'text-[16px]'}`}
-            numberOfLines={isFeatured ? 2 : 1}
-          >
-            {dream.title}
-          </Text>
-          {isFeatured && dream.shareableQuote ? (
-            <Text className="min-h-[80px] font-sans italic text-body-sm text-ivory-muted" numberOfLines={4}>
-              {dream.shareableQuote}
-            </Text>
-          ) : (
-            <Text className="min-h-[80px] font-sans text-body-sm text-ivory-muted" numberOfLines={4}>
-              {transcriptPreview}
-            </Text>
-          )}
-          {(dream.theme || badges.length > 0) && (
-            <View className="flex-row flex-wrap gap-2">
-              {themeTag}
-              {badgeList}
-            </View>
-          )}
-        </View>
-      </PressableScale>
-    );
-  }
+        {dream.title}
+      </Text>
+      <Text
+        key={`preview-${fontScale}`}
+        allowFontScaling={false}
+        style={{ fontSize: 15 * compactTextScale, lineHeight: 22 * compactTextScale }}
+        className={`font-sans text-[15px] leading-[22px] ${hasImage ? 'text-illustration-text' : 'text-ivory-muted'}`}
+        numberOfLines={hasImage ? 3 : 2}
+      >
+        {transcriptPreview}
+      </Text>
+    </>
+  );
 
-  // Horizontal layout: text-only cards (no image)
   return (
     <PressableScale
-      className={CARD_CLASS}
+      className="flex-row items-start gap-3 border-t border-line pt-4"
       onPress={handlePress}
       accessibilityRole="button"
-      accessibilityLabel={dream.title || t('journal.card.accessibility.open')}
+      accessibilityLabel={accessibilityLabel}
       testID={testID}
     >
-      <View className="flex-1 justify-center gap-2 p-4">
-        {dateLabel && (
-          <Text className="font-sans-medium text-[11px] uppercase text-ivory-faint">
-            {dateLabel}
-          </Text>
-        )}
-        <Text className="font-serif-bold text-[16px] text-ivory" numberOfLines={1}>
-          {dream.title}
-        </Text>
-        <Text className="font-sans text-body-sm text-ivory-muted" numberOfLines={3}>
-          {transcriptPreview}
-        </Text>
-        {(dream.theme || badges.length > 0) && (
-          <View className="flex-row flex-wrap gap-2">
-            {themeTag}
-            {badgeList}
+      <View className="shrink-0 self-stretch gap-3 border-r border-line pr-2" style={{ width: dateMarginWidth }} testID={testID && `journal.margin.${testID}`}>
+        <View key={`date-${fontScale}`}>
+          <Text allowFontScaling={false} style={{ fontSize: 30 * compactTextScale, lineHeight: 34 * compactTextScale }} className="font-sans-medium text-[30px] leading-[34px] text-ivory">{dateDay}</Text>
+          <Text allowFontScaling={false} style={{ fontSize: 14 * compactTextScale, lineHeight: 20 * compactTextScale }} className="font-sans text-[14px] leading-[20px] text-ivory-muted">{dateMonth}</Text>
+          {dateYear !== new Date().getFullYear() && (
+            <Text allowFontScaling={false} style={captionStyle} className="font-sans text-[12px] leading-[18px] text-ivory-muted">{dateYear}</Text>
+          )}
+        </View>
+        {isFavorite && <IconSymbol name="heart.fill" size={20} color={noctalia.accent.text} />}
+      </View>
+      <View className="min-w-0 flex-1 gap-3">
+        {hasImage ? (
+          <View
+            className="relative w-full overflow-hidden rounded-xl bg-ink-raised"
+            style={{ minHeight: Math.min(coverWidth, 260) }}
+            onLayout={(event) => setCoverWidth(event.nativeEvent.layout.width)}
+            testID={testID && `journal.cover.${testID}`}
+          >
+            <Image
+              source={imageUri ? { uri: imageUri, cacheKey: preferFullImage ? media.imageCacheKey : thumbnailCacheKey } : null}
+              style={CARD_IMAGE_STYLE}
+              contentFit={imageConfig.contentFit}
+              transition={imageTransition}
+              cachePolicy={imageConfig.cachePolicy}
+              priority={imagePriority}
+              recyclingKey={imageRecyclingKey}
+              onError={() => {
+                if (!preferFullImage && trimmedThumbnailUri && trimmedThumbnailUri !== fullImageUri) {
+                  thumbnailFailures.record(accessScope, failureKey);
+                }
+                if (!preferFullImage && fullImageUri && imageUri !== fullImageUri) {
+                  setUseFullImage(true);
+                } else {
+                  // Both sources failed (or the only source failed). Do not keep
+                  // presenting the blurhash as if an illustration were available.
+                  setFailedImageAttempt(imageAttemptKey);
+                }
+              }}
+              placeholder={imagePlaceholder}
+              accessible={false}
+              importantForAccessibility="no"
+            />
+            <View testID={testID && `journal.text.${testID}`}>
+              {/* In-flow backing grows with the actual five-line text block. */}
+              <View
+                className="gap-2 bg-illustration-scrim px-4 pb-3 pt-4"
+                testID={testID && `journal.backing.${testID}`}
+              >
+                {readingText}
+              </View>
+              <LinearGradient
+                colors={[noctalia.illustration.scrim, noctalia.illustration.transparent]}
+                style={SCRIM_FADE_STYLE}
+                pointerEvents="none"
+              />
+            </View>
           </View>
+        ) : (
+          <View className="gap-2 pr-1" testID={testID && `journal.text.${testID}`}>{readingText}</View>
         )}
+        <View key={`metadata-${fontScale}`} className="flex-row flex-wrap items-center gap-x-3 gap-y-1.5" testID={testID && `journal.metadata.${testID}`}>
+          <Text allowFontScaling={false} style={captionStyle} className="font-sans text-[12px] leading-[18px] text-ivory-muted">{typeLabel}</Text>
+          {themeLabel && <Text allowFontScaling={false} style={captionStyle} className="font-sans text-[12px] leading-[18px] text-ivory-muted">{themeLabel}</Text>}
+          {recurringLabel && (
+            <View className="max-w-full flex-row items-center gap-1.5">
+              <IconSymbol name="arrow.triangle.2.circlepath" size={14} color={noctalia.text.secondary} />
+              <Text allowFontScaling={false} style={captionStyle} className="font-sans text-[12px] leading-[18px] text-ivory-muted">{recurringLabel}</Text>
+            </View>
+          )}
+          {memoryLabel && (
+            <View className="max-w-full flex-row items-center gap-1.5">
+              <IconSymbol name="moon.stars.fill" size={14} color={noctalia.text.secondary} />
+              <Text allowFontScaling={false} style={captionStyle} className="font-sans text-[12px] leading-[18px] text-ivory-muted">{memoryLabel}</Text>
+            </View>
+          )}
+          {badgeList}
+        </View>
       </View>
     </PressableScale>
   );
@@ -367,6 +385,7 @@ export const DreamCard = memo(function DreamCard({
     && prevDream.title === nextDream.title
     && prevDream.transcript === nextDream.transcript
     && prevDream.theme === nextDream.theme
+    && prevDream.dreamType === nextDream.dreamType
     && prevDream.isFavorite === nextDream.isFavorite
     && prevDream.thumbnailUrl === nextDream.thumbnailUrl
     && prevDream.imageUrl === nextDream.imageUrl
@@ -374,6 +393,7 @@ export const DreamCard = memo(function DreamCard({
     && prevDream.analysisRequestId === nextDream.analysisRequestId
     && prevDream.analyzedAt === nextDream.analyzedAt
     && prevDream.isAnalyzed === nextDream.isAnalyzed
+    && prevDream.analysisStatus === nextDream.analysisStatus
     && prevDream.explorationStartedAt === nextDream.explorationStartedAt
     && prevDream.shareableQuote === nextDream.shareableQuote
     && areDreamMemoryMetadataEqual(prevDream.memory, nextDream.memory)

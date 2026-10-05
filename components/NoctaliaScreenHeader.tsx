@@ -40,6 +40,7 @@ export interface NoctaliaHeaderChip {
 
 interface NoctaliaScreenHeaderProps {
   titleKey: string;
+  prominentTitle?: boolean;
   variant?: 'standard' | 'editorial';
   includeTopInset?: boolean;
   actions?: NoctaliaHeaderAction[];
@@ -51,6 +52,7 @@ interface NoctaliaScreenHeaderProps {
 
 export const NoctaliaScreenHeader = memo(function NoctaliaScreenHeader({
   titleKey,
+  prominentTitle = false,
   variant = 'standard',
   includeTopInset = true,
   actions = [],
@@ -63,28 +65,38 @@ export const NoctaliaScreenHeader = memo(function NoctaliaScreenHeader({
   const insets = useSafeAreaInsets();
   const { width, fontScale } = useWindowDimensions();
   const isNarrow = width < 480;
+  const titleFontScale = Math.min(fontScale, 1.4);
+  const brandFontScale = Math.min(fontScale, 1.3);
+  const brandTypography = variant === 'editorial' ? styles.editorialBrand : prominentTitle ? styles.quietBrand : styles.brand;
+  const titleTypography = variant === 'editorial' ? styles.editorialTitle : prominentTitle ? styles.prominentTitle : styles.subtitle;
   // Keep actions beside the title, including enlarged text, whenever both fit.
   const availableTitleWidth = width - (isNarrow ? 32 : 48) - actions.length * 52;
-  const stackActions = actions.length > 0 && availableTitleWidth < 110 * Math.min(fontScale, 2);
-  const inlineTitleWidth = 120 * Math.min(fontScale, 2);
-  const canInlineSlot = Boolean(inlineSlot) && availableTitleWidth - (isNarrow ? 16 : 32)
-    >= inlineTitleWidth + 140 * Math.min(fontScale, 1.5);
+  const stackActions = actions.length > 0 && availableTitleWidth < 110 * titleFontScale;
+  const inlineTitleWidth = 120 * titleFontScale;
+  // Keep mobile search full-width and stable across native text-size changes.
+  const canInlineSlot = Boolean(inlineSlot) && !isNarrow && availableTitleWidth - 32
+    >= inlineTitleWidth + 140 * titleFontScale;
   const wrapInlineSlot = Boolean(inlineSlot) && !canInlineSlot;
-  const wrapTitle = stackActions || fontScale >= 1.3;
+  const wrapTitle = stackActions || titleFontScale >= 1.3;
   const noctalia = getNoctaliaDesignTokens(colors, mode);
   const iconButtonBg = noctalia.surface.soft;
   const quietIconColor = noctalia.text.secondary;
 
   return (
-    <View style={[styles.container, variant === 'editorial' && styles.editorialContainer, { paddingTop: (includeTopInset ? insets.top : 0) + ThemeLayout.spacing.sm, borderBottomColor: noctalia.surface.border }]}>
+    <View style={[styles.container, prominentTitle && styles.prominentContainer, variant === 'editorial' && styles.editorialContainer, { paddingTop: (includeTopInset ? insets.top : 0) + ThemeLayout.spacing.sm, borderBottomColor: noctalia.surface.border }]}>
       <View style={[styles.titleRow, isNarrow && styles.titleRowNarrow, stackActions && styles.titleRowStacked, wrapInlineSlot && styles.searchRowWrapped]}>
         <View style={[styles.titleBlock, stackActions && styles.titleBlockStacked,
           Boolean(inlineSlot) && (canInlineSlot
-            ? { flex: 0, width: inlineTitleWidth }
-            : { flex: 0, width: '100%', paddingRight: stackActions ? 0 : actions.length * 52 }),
+            ? { flex: 0, flexBasis: 'auto', width: inlineTitleWidth }
+            : { flex: 0, flexBasis: 'auto', width: '100%', paddingRight: stackActions ? 0 : actions.length * 52 }),
         ]}>
           <Text
-            style={[styles.brand, variant === 'editorial' && styles.editorialBrand, { color: noctalia.text.primary }]}
+            style={[styles.brand, prominentTitle && styles.quietBrand, variant === 'editorial' && styles.editorialBrand, {
+              color: noctalia.text.primary,
+              fontSize: brandTypography.fontSize * brandFontScale,
+              lineHeight: brandTypography.lineHeight * brandFontScale,
+            }]}
+            allowFontScaling={false}
             numberOfLines={wrapTitle ? undefined : 1}
             adjustsFontSizeToFit={!wrapTitle}
             minimumFontScale={0.84}
@@ -92,8 +104,13 @@ export const NoctaliaScreenHeader = memo(function NoctaliaScreenHeader({
             Noctalia
           </Text>
           <Text
-            style={[styles.subtitle, variant === 'editorial' && styles.editorialTitle, { color: variant === 'editorial' ? noctalia.text.primary : noctalia.text.secondary }]}
-            accessibilityRole={variant === 'editorial' ? 'header' : undefined}
+            accessibilityRole={prominentTitle || variant === 'editorial' ? 'header' : undefined}
+            allowFontScaling={false}
+            style={[styles.subtitle, prominentTitle && styles.prominentTitle, variant === 'editorial' && styles.editorialTitle, {
+              color: prominentTitle || variant === 'editorial' ? noctalia.text.primary : noctalia.text.secondary,
+              fontSize: titleTypography.fontSize * titleFontScale,
+              lineHeight: titleTypography.lineHeight * titleFontScale,
+            }]}
             numberOfLines={wrapTitle ? undefined : 1}
             adjustsFontSizeToFit={!wrapTitle}
             minimumFontScale={0.84}
@@ -168,9 +185,14 @@ export const NoctaliaScreenHeader = memo(function NoctaliaScreenHeader({
                   color={chip.active ? noctalia.action.primaryText : quietIconColor}
                 />
                 <Text
+                  allowFontScaling={false}
                   style={[
                     styles.chipText,
-                    { color: chip.active ? noctalia.action.primaryText : noctalia.text.secondary },
+                    {
+                      color: chip.active ? noctalia.action.primaryText : noctalia.text.secondary,
+                      fontSize: styles.chipText.fontSize * brandFontScale,
+                      lineHeight: styles.chipText.lineHeight * brandFontScale,
+                    },
                     Platform.OS === 'web' ? webNowrapStyle : null,
                   ]}
                 >
@@ -191,12 +213,20 @@ const webNowrapStyle = { whiteSpace: 'nowrap' } as unknown as TextStyle;
 const styles = StyleSheet.create({
   editorialContainer: { borderBottomWidth: 0 },
   editorialBrand: { fontSize: 18, lineHeight: 24, marginBottom: 8 },
-  editorialTitle: { fontFamily: Fonts.fraunces.semiBold, fontSize: 36, lineHeight: 44, opacity: 1 },
+  editorialTitle: { fontFamily: Fonts.fraunces.semiBold, fontSize: 28, lineHeight: 36, opacity: 1 },
   editorialActions: { alignSelf: 'flex-start' },
   container: {
     gap: ThemeLayout.spacing.md,
     paddingBottom: ThemeLayout.spacing.sm,
     borderBottomWidth: StyleSheet.hairlineWidth,
+  },
+  prominentContainer: { borderBottomWidth: 0 },
+  quietBrand: { fontSize: 18, lineHeight: 24 },
+  prominentTitle: {
+    fontFamily: Fonts.fraunces.semiBold,
+    fontSize: 28,
+    lineHeight: 36,
+    opacity: 1,
   },
   titleRow: {
     flexDirection: 'row',
@@ -292,6 +322,7 @@ const styles = StyleSheet.create({
   chipText: {
     fontFamily: Fonts.spaceGrotesk.medium,
     fontSize: 14,
+    lineHeight: 20,
     flexGrow: 0,
     flexShrink: 0,
   },

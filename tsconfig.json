@@ -26,6 +26,7 @@
     "supabase/functions/**",
     "coverage/**",
     "dist/**",
-    "dist-dev-nossg/**"
+    "dist-dev-nossg/**",
+    "tools/e2e/**"
   ]
 }

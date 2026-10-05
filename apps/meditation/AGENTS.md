@@ -105,3 +105,21 @@ préservation du travail et verrou partagé de l'appareil restent applicables.
 Les chemins de thème et de services de ce guide sont propres à Meditation.
 Conserver le contournement des animations de layout tant qu'un cas reproductible
 n'a pas été revérifié sur les versions installées.
+
+## E2E — TesterArmy
+
+Le framework par défaut pour les nouveaux parcours est TesterArmy `e2e`, selon
+https://docs.expo.dev/guides/using-e2e/. Lire `../../tools/e2e/README.md`.
+`npm run test:testerarmy` sélectionne le web (preuve visuelle et routage seulement).
+`E2E_DEVICE=<serial-emulateur> npm run test:testerarmy:mobile -- android` vise un
+build Release installé ; utiliser `ios` avec le nom exact d'un simulateur iOS.
+Les tests natifs effacent l'état de cette app sur le simulateur dédié sélectionné.
+Conserver les parcours Maestro et leurs contrôles tant que leur remplacement n'a
+pas été exécuté avec des assertions équivalentes. Respecter les règles parentes.
+
+
+La skill officielle `agent-device` sert à l'inspection native. Utiliser
+`E2E_DEVICE=<appareil-dedie> npm run agent-device:inspect -- android` (ou `ios`)
+et `npm run agent-device:mcp -- ios` pour l'exploration, sous le même verrou
+que TesterArmy. Lire la section agent-device de `../../tools/e2e/README.md`.
+Une capture d'inspection ne qualifie ni l'audio ni un parcours E2E.

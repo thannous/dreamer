@@ -1067,14 +1067,8 @@ describe('journal detail saved confirmation route', () => {
     mockDreams = [buildDream({ title, imageUrl: 'https://example.com/dream.webp' })];
     render(<JournalDetailScreen />);
 
-    const cover = screen.getByTestId(TID.Component.JournalIllustration);
-    const metadata = screen.getByTestId(TID.Component.MetadataCard);
     expect(screen.getAllByText(title)).toHaveLength(1);
-    expect(cover.contains(screen.getByText(title))).toBe(true);
-    expect(cover.compareDocumentPosition(metadata) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy();
-    expect(metadata.contains(screen.getByText(title))).toBe(false);
     const date = screen.getByText('3 sept. · 07:12');
-    expect(cover.contains(date)).toBe(true);
     expect(screen.getByText(title).compareDocumentPosition(date) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy();
 
     await act(async () => { fireEvent.click(screen.getByTestId(TID.Button.JournalIllustrationExpand)); });

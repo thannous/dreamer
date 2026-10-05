@@ -57,9 +57,13 @@ test('an empty journal keeps honest metrics in both themes and starts its first 
   await expect(page.getByTestId('component.transcriptCard')).toContainText('A short synthetic dream about a quiet garden.');
   await expect(page.getByTestId('component.dreamDetail.readingZone')).toContainText(/\S{20}/);
   await info.attach('first-capture-inline-analysis', { body: await page.screenshot(), contentType: 'image/png' });
+  await page.getByTestId('btn.navigateJournal').click();
+  await expect(page.getByTestId(/^dream\.item\.\d+$/).filter({ visible: true })).toContainText('A short synthetic dream about a quiet garden.');
 });
 
-test('populated trends retain motifs, chronology and explicit or system themes', async ({ page }, info) => {
+test('populated trends retain motifs and themes when Intl.PluralRules is unavailable', async ({ page }, info) => {
+  // Hermes builds may provide number/date formatters without this constructor.
+  await page.addInitScript(() => Object.defineProperty(Intl, 'PluralRules', { value: undefined, configurable: true }));
   await startGuest(page);
   await page.getByTestId('tab.home').click();
   await page.getByRole('button', { name: 'Settings', exact: true }).click();
@@ -69,6 +73,7 @@ test('populated trends retain motifs, chronology and explicit or system themes',
   await openTrends(page);
   await expect(page.getByTestId('trends.week.count.value')).toHaveText('4');
   await expect(page.getByTestId('trends.week.activeDays.value')).toHaveText('4');
+  await expect(page.getByTestId('trends.week.details')).toContainText('Weekly average');
   await expect(page.getByTestId('trends.patterns.themes.list')).toBeVisible();
   await expect(page.getByTestId('trends.evolution.chart')).toBeAttached();
   await expect(page.getByTestId('trends.week.rhythm')).toHaveCount(0);

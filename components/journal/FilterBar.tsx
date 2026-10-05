@@ -4,8 +4,9 @@ import { useTheme } from '@/context/ThemeContext';
 import { useTranslation } from '@/hooks/useTranslation';
 import { getDreamThemeLabel } from '@/lib/dreamLabels';
 import type { DreamTheme, DreamType } from '@/lib/types';
-import React, { memo, useMemo } from 'react';
-import { Text, View } from 'react-native';
+import React, { memo, useCallback, useMemo, useRef, useState } from 'react';
+import { LinearGradient } from 'expo-linear-gradient';
+import { ScrollView, Text, View, useWindowDimensions } from 'react-native';
 import Svg, { Path } from 'react-native-svg';
 import { IconSymbol } from '@/components/ui/icon-symbol';
 
@@ -263,8 +264,16 @@ export const FilterBar = memo(function FilterBar({
   selectedTheme,
 }: FilterBarProps) {
   const { colors, mode } = useTheme();
+  const { fontScale } = useWindowDimensions();
+  const labelStyle = { fontSize: 14 * Math.min(1.15, Math.max(1, fontScale)), lineHeight: 20 * Math.min(1.15, Math.max(1, fontScale)) };
   const noctalia = useMemo(() => getNoctaliaDesignTokens(colors, mode), [colors, mode]);
   const { t } = useTranslation();
+  const scrollMetrics = useRef({ viewport: 0, content: 0, offset: 0 });
+  const [canScrollRight, setCanScrollRight] = useState(false);
+  const updateScrollMetrics = useCallback((next: Partial<{ viewport: number; content: number; offset: number }>) => {
+    const metrics = Object.assign(scrollMetrics.current, next);
+    setCanScrollRight(metrics.content > metrics.viewport + metrics.offset + 1);
+  }, []);
   const hasActiveFilters = items.some((item) => item.id !== 'all' && item.active);
   const dateRangeBadge = getDateRangeBadge(dateRange, t);
   const iconColor = noctalia.text.primary;
@@ -274,7 +283,22 @@ export const FilterBar = memo(function FilterBar({
     : '';
 
   return (
-    <View className="w-full flex-row flex-wrap items-center gap-2" testID="journal-filter-bar">
+    <View className="relative w-full">
+    <ScrollView
+      horizontal
+      showsHorizontalScrollIndicator={false}
+      className="w-full"
+      contentContainerClassName="flex-row items-center gap-2"
+      testID="journal-filter-scroll"
+      onLayout={({ nativeEvent: { layout } }) => updateScrollMetrics({ viewport: layout.width })}
+      onContentSizeChange={(width) => updateScrollMetrics({ content: width })}
+      onScroll={({ nativeEvent }) => updateScrollMetrics({
+        viewport: nativeEvent.layoutMeasurement.width,
+        content: nativeEvent.contentSize.width,
+        offset: nativeEvent.contentOffset.x,
+      })}
+      scrollEventThrottle={32}
+    >
         {items.map((item) => {
           const isActive = item.active;
           const color = isActive ? activeIconColor : iconColor;
@@ -293,10 +317,13 @@ export const FilterBar = memo(function FilterBar({
               accessibilityLabel={getAccessibilityLabel(item.id, t, item.accessibilityLabel)}
               testID={item.testID}
             >
-              {renderIcon(item.id, color)}
+              {!['all', 'favorites', 'to_deepen'].includes(item.id) && renderIcon(item.id, color)}
               {item.label ? (
                 <Text
-                  className={`web:whitespace-nowrap shrink-0 grow-0 font-sans-medium text-[14px] ${
+                  key={fontScale}
+                  allowFontScaling={false}
+                  style={labelStyle}
+                  className={`web:whitespace-nowrap shrink-0 grow-0 font-sans-medium text-[14px] leading-5 ${
                     isActive ? 'text-on-champagne' : 'text-ivory'
                   }`}
                 >
@@ -317,11 +344,23 @@ export const FilterBar = memo(function FilterBar({
             testID={clearTestID}
           >
             <CloseIcon size={16} color={iconColor} />
-            <Text className="shrink-0 grow-0 font-sans-medium text-[14px] text-ivory">
+            <Text key={fontScale} allowFontScaling={false} style={labelStyle} className="shrink-0 grow-0 font-sans-medium text-[14px] leading-5 text-ivory">
               {t('journal.filter.clear')}
             </Text>
           </PressableScale>
         )}
+    </ScrollView>
+    {canScrollRight && (
+      <LinearGradient
+        testID="journal-filter-overflow"
+        pointerEvents="none"
+        accessible={false}
+        colors={[`${noctalia.screen.background}00`, noctalia.screen.background]}
+        start={{ x: 0, y: 0.5 }}
+        end={{ x: 1, y: 0.5 }}
+        style={{ position: 'absolute', top: 0, bottom: 0, right: 0, width: 24 }}
+      />
+    )}
     </View>
   );
 });

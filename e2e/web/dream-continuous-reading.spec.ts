@@ -18,7 +18,7 @@ async function enter(page: Page, profile: 'plus' | 'new') {
 test.use({ viewport: { width: 390, height: 844 }, contextOptions: { reducedMotion: 'reduce' } });
 
 for (const mode of ['light', 'dark'] as const) {
-  test(`dream keeps immersive artwork and complete inline analysis in ${mode}`, async ({ page }, info) => {
+  test(`dream opens with title and metadata before adaptive artwork and complete analysis in ${mode}`, async ({ page }, info) => {
     await page.route('https://picsum.photos/**', route => route.fulfill({ path: artwork }));
     await page.emulateMedia({ colorScheme: mode === 'light' ? 'dark' : 'light' });
     await enter(page, 'plus');
@@ -46,8 +46,44 @@ for (const mode of ['light', 'dark'] as const) {
     await expect(renderedImage).toBeVisible();
     await expect.poll(() => renderedImage.evaluate(el => (el as HTMLImageElement).naturalWidth)).toBeGreaterThan(0);
     await expect(renderedImage).toHaveCSS('opacity', '1');
-    await expect.poll(async () => (await image.boundingBox())?.height ?? 0).toBeGreaterThan(750);
+    // Reopen from the list so this proves arrival, rather than a scrolled state
+    // left over from editing or generating an illustration.
+    await page.getByTestId('btn.navigateJournal').click();
+    await page.getByRole('button', { name: /L’éléphant au sommet de la grande roue/ }).click();
+    const heading = page.getByRole('heading', { name: 'L’éléphant au sommet de la grande roue', exact: true });
+    const metadata = page.getByTestId('component.metadataCard');
+    for (const viewport of [{ width: 393, height: 852 }, { width: 320, height: 568 }, { width: 844, height: 390 }]) {
+      await page.setViewportSize(viewport);
+      await expect(heading).toBeInViewport({ ratio: 1 });
+      await expect(metadata).toBeInViewport({ ratio: 1 });
+      await expect(metadata).toContainText(/\d{4}/);
+      await expect.poll(async () => (await image.boundingBox())?.height ?? 0).toBeLessThan(viewport.height);
+      await page.screenshot({ path: info.outputPath(`dream-${mode}-arrival-${viewport.width}x${viewport.height}.png`) });
+    }
+    await page.setViewportSize({ width: 320, height: 568 });
+    const enlargedText = await page.addStyleTag({ content: '[data-testid="component.metadataCard"] [role="heading"] { font-size: 42px !important; line-height: 54px !important; }' });
+    await expect(heading).toBeInViewport({ ratio: 1 });
+    await expect(metadata).toBeInViewport({ ratio: 1 });
+    await page.screenshot({ path: info.outputPath(`dream-${mode}-arrival-large-title.png`) });
+    await enlargedText.evaluate(node => node.parentNode?.removeChild(node));
+    await page.setViewportSize({ width: 390, height: 844 });
     await expect(page.getByTestId('component.dreamDetail.actionCard')).toBeHidden();
+    // Chrome over artwork stays transparent; reading text gets an opaque
+    // navigation background so its letters cannot show through the back control.
+    // Disable browser scroll anchoring to exercise native-style rotation where
+    // geometry changes without preserving the position of a reading paragraph.
+    await page.addStyleTag({ content: '[data-testid="screen.dreamDetail"] * { overflow-anchor: none; }' });
+    await image.hover();
+    await page.mouse.wheel(0, 400);
+    await expect(page.getByTestId('journal.detail.navigation')).toHaveCSS('background-color', 'rgba(0, 0, 0, 0)');
+    await page.setViewportSize({ width: 844, height: 390 });
+    await expect(image).not.toBeInViewport();
+    await expect(page.getByTestId('journal.detail.navigation')).toHaveCSS('background-color', mode === 'dark' ? 'rgb(3, 4, 13)' : 'rgb(240, 228, 212)');
+    await expect(page.getByTestId('component.dreamDetail.actionDock')).toBeVisible();
+    await page.screenshot({ path: info.outputPath(`dream-${mode}-rotation-reading-header.png`) });
+    await page.setViewportSize({ width: 390, height: 844 });
+    await page.getByTestId('btn.navigateJournal').click();
+    await page.getByRole('button', { name: /L’éléphant au sommet de la grande roue/ }).click();
     const originalSource = await renderedImage.getAttribute('src');
     await page.emulateMedia({ colorScheme: mode });
     await expect(page.getByTestId('screen.dreamDetail')).toHaveCSS('background-color', mode === 'dark' ? 'rgb(3, 4, 13)' : 'rgb(240, 228, 212)');
@@ -66,6 +102,7 @@ for (const mode of ['light', 'dark'] as const) {
     await expect(page.getByTestId('btn.editTranscript')).toBeEnabled();
     await expect(page.getByTestId('btn.editTranscript')).toContainText('Modifier');
     await analysis.scrollIntoViewIfNeeded();
+    await expect(page.getByTestId('journal.detail.navigation')).toHaveCSS('background-color', mode === 'dark' ? 'rgb(3, 4, 13)' : 'rgb(240, 228, 212)');
     await expect(action).toBeInViewport();
     await page.screenshot({ path: info.outputPath(`dream-${mode}-reading.png`) });
     await action.click();

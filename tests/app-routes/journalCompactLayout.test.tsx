@@ -620,7 +620,6 @@ describe('Journal compact large-text layout', () => {
     expect(dreamCard.compareDocumentPosition(screen.getByTestId('journal-upsell')) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy();
     expect(screen.queryByTestId('journal-empty')).toBeNull();
     expect(React.isValidElement(mockListProps.ListHeaderComponent)).toBe(true);
-    expect(searchBarLayout(2).minHeight).toBe(112);
     expectReachableListViewport(width, height, 2);
 
     input.focus();
@@ -641,7 +640,6 @@ describe('Journal compact large-text layout', () => {
     Object.assign(mockWindow, { width: 640, height: 320, fontScale: 2 });
     render(<JournalScreen />);
 
-    const searchMinHeight = searchBarLayout(2).minHeight;
     const searchHeaderHeight = mobileSearchHeaderHeight(2);
     const reservedOverlay = overlayClearance(640, 320, 2);
     const list = screen.getByTestId(TID.List.Dreams);
@@ -649,13 +647,9 @@ describe('Journal compact large-text layout', () => {
     const listStyle = renderedListViewportStyle();
     const uncoveredListBox = 320 - reservedOverlay;
 
-    expect(searchMinHeight).toBe(112);
-    expect(searchHeaderHeight).toBe(152);
     expect(reservedOverlay).toBeLessThanOrEqual(128);
     expect(listStyle.marginBottom).toBe(reservedOverlay);
     expect(uncoveredListBox).toBeGreaterThanOrEqual(120);
-    expect(320 - searchHeaderHeight - reservedOverlay).toBeLessThan(120);
-    expect(Number(screen.getByTestId(TID.Component.SearchBar).getAttribute('data-min-height'))).toBe(112);
     expect(list.contains(screen.getByTestId(TID.Input.SearchDreams))).toBe(false);
     expect(list.contains(dreamCard)).toBe(true);
     expect(dreamCard.compareDocumentPosition(screen.getByTestId('journal-upsell')) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy();

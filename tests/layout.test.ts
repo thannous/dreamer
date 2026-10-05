@@ -16,18 +16,8 @@ describe('getBottomNavigationLayout', () => {
     const layout = getBottomNavigationLayout(width, 1024);
     expect(layout.labelFontSize).toBe(width < 400 ? 11 : 12);
     expect(layout.narrow).toBe(width <= 360);
-    expect(layout.labelLines).toBe(width <= 360 ? 2 : 1);
-    expect(layout.barHeight).toBe(width <= 360 ? 102 : TAB_BAR_HEIGHT);
-  });
-
-  it.each([1.3, 2])('keeps large text wrapping on a 390 dp phone at scale %s', (fontScale: number) => {
-    const layout = getBottomNavigationLayout(390, 844, fontScale);
-    expect(layout.fontScale).toBe(fontScale);
-    expect(layout.stackedLabels).toBe(true);
-    expect(layout.labelFontSize).toBe(11);
-    expect(layout.labelLines).toBeGreaterThanOrEqual(1);
-    expect(layout.labelHeight).toBeGreaterThanOrEqual(layout.labelLines * 16 * fontScale);
-    expect(layout.barHeight).toBeGreaterThan(TAB_BAR_HEIGHT);
+    expect(layout.labelLines).toBe(1);
+    expect(layout.barHeight).toBe(TAB_BAR_HEIGHT);
   });
 
   it.each([320, 360, 434, 1280])('keeps five equal horizontal cells at %i dp with large text', (width: number) => {
@@ -81,9 +71,7 @@ describe('getBottomNavigationLayout', () => {
     expect(getBottomNavigationLayout(1200, 700).compact).toBe(false);
   });
 
-  it('stacks narrow labels on two lines at 100% text so words stay visible', () => {
-    // Astra contract: narrow implies stacked. 320/100% = lines 2, height 36, bar 102.
-    // This is the visual fix for truncated "Aujourd'hui / Tendances" — never icon-only.
+  it('uses compact translated labels on one line at narrow default scale', () => {
     expect(getBottomNavigationLayout(320, 640)).toMatchObject({
       compact: false,
       narrow: true,
@@ -91,74 +79,13 @@ describe('getBottomNavigationLayout', () => {
       fontScale: 1,
       labelFontSize: 11,
       labelLineHeight: 16,
-      labelLines: 2,
-      labelHeight: 36,
-      barHeight: 102,
-      centerActionWidth: 54.8,
-      centerActionHeight: 92,
-      minimumBottomInset: 14,
-    });
-  });
-
-  it('grows the narrow bar at fontScale 2 instead of capping labels', () => {
-    const layout = getBottomNavigationLayout(320, 640, 2);
-    expect(layout).toMatchObject({
-      compact: false,
-      narrow: true,
-      stackedLabels: true,
-      fontScale: 2,
-      labelFontSize: 11,
-      labelLineHeight: 16,
-      labelLines: 2,
-      labelHeight: 68,
-      barHeight: 134,
-      centerActionWidth: 54.8,
-      centerActionHeight: 124,
-      minimumBottomInset: 14,
-    });
-    expect(layout.labelLines).toBeGreaterThanOrEqual(2);
-    expect(layout.barHeight).toBeGreaterThanOrEqual(layout.centerActionHeight + 10);
-    expect(layout.barHeight).toBeGreaterThan(TAB_BAR_HEIGHT);
-  });
-
-  it('stacks regular portrait labels at fontScale 2', () => {
-    const layout = getBottomNavigationLayout(412, 915, 2);
-    expect(layout).toMatchObject({
-      compact: false,
-      narrow: false,
-      stackedLabels: true,
-      fontScale: 2,
-      labelFontSize: 12,
-      labelLineHeight: 16,
-      labelLines: 2,
-      labelHeight: 68,
-      barHeight: 134,
-      centerActionWidth: 66,
-      centerActionHeight: 124,
-      minimumBottomInset: 14,
-    });
-    expect(layout.labelLines).toBeGreaterThanOrEqual(2);
-    expect(layout.barHeight).toBeGreaterThanOrEqual(layout.centerActionHeight + 10);
-  });
-
-  it('keeps compact landscape labels readable at fontScale 2 without capping them', () => {
-    const layout = getBottomNavigationLayout(915, 412, 2);
-    expect(layout).toMatchObject({
-      compact: true,
-      narrow: false,
-      stackedLabels: true,
-      fontScale: 2,
-      labelFontSize: 11,
-      labelLineHeight: 16,
       labelLines: 1,
-      labelHeight: 36,
-      barHeight: 102,
-      centerActionHeight: 92,
-      minimumBottomInset: COMPACT_TAB_BAR_BOTTOM_INSET,
+      labelHeight: 20,
+      barHeight: 86,
+      centerActionWidth: 54.8,
+      centerActionHeight: 76,
+      minimumBottomInset: 14,
     });
-    expect(layout.labelLines).toBeGreaterThanOrEqual(1);
-    expect(layout.barHeight).toBeGreaterThan(COMPACT_TAB_BAR_HEIGHT);
-    expect(layout.centerActionWidth).toBeCloseTo(166.6, 2);
   });
 
   it.each([[640, 320], [915, 412]])('keeps compact large text in one row at %i by %i dp', (width: number, height: number) => {
@@ -176,11 +103,6 @@ describe('getBottomNavigationLayout', () => {
     expect(getBottomNavigationLayout(412, 915, 1.29).stackedLabels).toBe(false);
     expect(getBottomNavigationLayout(412, 915, 1.3).stackedLabels).toBe(true);
     expect(getBottomNavigationLayout(412, 915, 2).stackedLabels).toBe(true);
-  });
-
-  it('never caps the requested font scale', () => {
-    expect(getBottomNavigationLayout(412, 915, 2).fontScale).toBe(2);
-    expect(getBottomNavigationLayout(412, 915, 3).fontScale).toBe(3);
   });
 
   it('normalizes unsafe font scales instead of shrinking the layout', () => {

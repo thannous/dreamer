@@ -131,3 +131,9 @@ save, journal search, dream delete, transcript edit, favorite toggle/filter and
 reflection chat. The replacements assert the saved story, absence after deletion,
 actual filter results and assistant reply. Other native, failure/recovery, security
 and backend tests are retained; this is not a blanket removal of isolation tests.
+
+## Default framework for new journeys
+
+Use [TesterArmy E2E](../tools/e2e/README.md) for new and affected journeys across
+Dreamer, Lucid, Meditation and the marketing site. Existing suites above retain
+coverage during migration; no CI gate is replaced by a narrower smoke suite.

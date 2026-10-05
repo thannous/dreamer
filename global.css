@@ -130,6 +130,8 @@
       --color-ivory-muted: #B7AEC9;
       --color-ivory-faint: #B7AEC9;
       --color-ivory-disabled: #B7AEC9;
+      --color-illustration-text: #FFF9EF;
+      --color-illustration-scrim: rgba(3, 4, 13, 0.86);
       --color-champagne: #EAD4B4;
       --color-champagne-on: #EAD4B4;
       --color-champagne-deep: #EAD4B4;
@@ -180,6 +182,8 @@
       --color-ivory-muted: #64514F;
       --color-ivory-faint: #64514F;
       --color-ivory-disabled: #64514F;
+      --color-illustration-text: #FFF9EF;
+      --color-illustration-scrim: rgba(3, 4, 13, 0.86);
       --color-champagne: #7C4C2B;
       --color-champagne-on: #7C4C2B;
       --color-champagne-deep: #7C4C2B;
@@ -230,6 +234,8 @@
       --color-ivory-muted: #64514F;
       --color-ivory-faint: #64514F;
       --color-ivory-disabled: #64514F;
+      --color-illustration-text: #FFF9EF;
+      --color-illustration-scrim: rgba(3, 4, 13, 0.86);
       --color-champagne: #7C4C2B;
       --color-champagne-on: #7C4C2B;
       --color-champagne-deep: #7C4C2B;
@@ -280,6 +286,8 @@
       --color-ivory-muted: #B7AEC9;
       --color-ivory-faint: #B7AEC9;
       --color-ivory-disabled: #B7AEC9;
+      --color-illustration-text: #FFF9EF;
+      --color-illustration-scrim: rgba(3, 4, 13, 0.86);
       --color-champagne: #EAD4B4;
       --color-champagne-on: #EAD4B4;
       --color-champagne-deep: #EAD4B4;
@@ -342,4 +350,12 @@
   line-height: var(--text-overline--line-height);
   letter-spacing: var(--text-overline--letter-spacing);
   text-transform: uppercase;
+}
+
+/* Browser scrollbars remain operable and inherit the active application theme.
+   The support condition mirrors Uniwind's web variant, keeping this web-only. */
+@supports selector(div > div) {
+  * {
+    scrollbar-color: var(--color-ivory-faint) var(--color-ink);
+  }
 }

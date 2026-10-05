@@ -57,7 +57,7 @@ export interface DreamGuideUiCopy {
   screenTitle: string;
   screenSubtitle: string;
   dictionaryTitle: string;
-  dictionaryBody: string;
+  dictionaryBody: (count: number) => string;
   dictionaryCta: string;
   guideLabel: string;
   practicalLabel: string;

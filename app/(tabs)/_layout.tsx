@@ -7,6 +7,7 @@ import { HapticTab } from '@/components/haptic-tab';
 import { DesktopSidebar } from '@/components/navigation/DesktopSidebar';
 import { IconSymbol } from '@/components/ui/icon-symbol';
 import {
+  BOTTOM_NAVIGATION_MAX_FONT_SIZE_MULTIPLIER,
   DESKTOP_BREAKPOINT,
   getBottomNavigationLayout,
   getBottomNavigationItemStyle,
@@ -89,7 +90,8 @@ function TabBarItem({ label, icon, focused, palette, geometry }: {
         numberOfLines={geometry.labelLines}
         textBreakStrategy="simple"
         ellipsizeMode="tail"
-        adjustsFontSizeToFit={!stackedLabels}
+        adjustsFontSizeToFit
+        maxFontSizeMultiplier={BOTTOM_NAVIGATION_MAX_FONT_SIZE_MULTIPLIER}
         minimumFontScale={narrow ? 0.75 : 0.8}
       >
         {label}
@@ -174,7 +176,8 @@ function AddDreamTabItem({ label, palette, geometry, focused }: {
         numberOfLines={geometry.centerLabelLines}
         textBreakStrategy="simple"
         ellipsizeMode="tail"
-        adjustsFontSizeToFit={!stackedLabels}
+        adjustsFontSizeToFit
+        maxFontSizeMultiplier={BOTTOM_NAVIGATION_MAX_FONT_SIZE_MULTIPLIER}
         minimumFontScale={narrow ? 0.75 : 0.85}
       >
         {label}
@@ -343,7 +346,7 @@ export default function TabLayout() {
             accessibilityLabel: t('nav.home'),
           }),
           tabBarIcon: ({ focused }) => (
-            <TabBarItem icon="house" label={t(navigationLayout.largeText ? 'nav.home_compact' : 'nav.home')} focused={focused} palette={palette} geometry={geometry} />
+            <TabBarItem icon="house" label={t((navigationLayout.largeText || navigationLayout.narrow) ? 'nav.home_compact' : 'nav.home')} focused={focused} palette={palette} geometry={geometry} />
           ),
           tabBarItemStyle: getBottomNavigationItemStyle(0, navigationLayout),
         }}
@@ -384,7 +387,7 @@ export default function TabLayout() {
             />
           ),
           tabBarIcon: ({ focused }) => (
-            <AddDreamTabItem focused={focused} label={t(navigationLayout.largeText ? 'nav.capture_dream_compact' : 'nav.capture_dream')} palette={palette} geometry={geometry} />
+            <AddDreamTabItem focused={focused} label={t((navigationLayout.largeText || navigationLayout.narrow) ? 'nav.capture_dream_compact' : 'nav.capture_dream')} palette={palette} geometry={geometry} />
           ),
           tabBarItemStyle: getBottomNavigationItemStyle(2, navigationLayout),
         }}
@@ -401,7 +404,7 @@ export default function TabLayout() {
             accessibilityLabel: t('nav.stats'),
           }),
           tabBarIcon: ({ focused }) => (
-            <TabBarItem icon="chart.bar" label={t(navigationLayout.largeText ? 'nav.stats_compact' : 'nav.stats')} focused={focused} palette={palette} geometry={geometry} />
+            <TabBarItem icon="chart.bar" label={t((navigationLayout.largeText || navigationLayout.narrow) ? 'nav.stats_compact' : 'nav.stats')} focused={focused} palette={palette} geometry={geometry} />
           ),
           tabBarItemStyle: getBottomNavigationItemStyle(3, navigationLayout),
         }}
@@ -418,7 +421,7 @@ export default function TabLayout() {
             accessibilityLabel: t('nav.explore'),
           }),
           tabBarIcon: ({ focused }) => (
-            <TabBarItem icon="sparkles" label={t(navigationLayout.largeText ? 'nav.explore_compact' : 'nav.explore')} focused={focused} palette={palette} geometry={geometry} />
+            <TabBarItem icon="sparkles" label={t((navigationLayout.largeText || navigationLayout.narrow) ? 'nav.explore_compact' : 'nav.explore')} focused={focused} palette={palette} geometry={geometry} />
           ),
           tabBarItemStyle: getBottomNavigationItemStyle(4, navigationLayout),
         }}

@@ -19,7 +19,7 @@ export const PRACTICAL_DREAM_GUIDES: readonly PracticalDreamGuide[] = [
       outro: 'Treat theories as useful lenses, not final answers. Record recurring images and feelings to see which patterns matter in your own life.',
     },
     fr: {
-      title: 'Pourquoi rêvons-nous ?',
+      title: 'Pourquoi rêvons-nous\u00a0?',
       metaDescription: 'Les principales théories scientifiques sur les rêves, la mémoire, les émotions et la conscience.',
       intro: 'Le rêve reste une question scientifique ouverte. Plusieurs théories complémentaires décrivent comment le cerveau endormi pourrait traiter souvenirs, émotions et menaces possibles.',
       essentialPoints: [

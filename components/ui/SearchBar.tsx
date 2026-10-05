@@ -38,14 +38,12 @@ export function sanitizeSearchQuery(text: string) {
 }
 
 export function searchBarLayout(fontScale: number) {
-  const scale = Number.isFinite(fontScale) ? Math.max(1, fontScale) : 1;
-  const lineCount = scale >= 2 ? 2 : 1;
-  const inputMinHeight = Math.round(20 * scale) * lineCount;
+  const scale = Number.isFinite(fontScale) ? Math.min(1.3, Math.max(1, fontScale)) : 1;
+  const inputMinHeight = Math.round(20 * scale);
   const verticalPadding = Math.max(8, Math.round(8 * scale));
   return {
     inputMinHeight,
     verticalPadding,
-    lineCount,
     minHeight: Math.max(44, inputMinHeight + 2 * verticalPadding),
   };
 }
@@ -63,7 +61,7 @@ export const SearchBar = memo(forwardRef<TextInput, SearchBarProps>(function Sea
   const inputRef = useRef<TextInput>(null);
   const [isFocused, setIsFocused] = useState(false);
   const { fontScale } = useWindowDimensions();
-  const { minHeight, inputMinHeight, verticalPadding, lineCount } = useMemo(
+  const { minHeight, inputMinHeight, verticalPadding } = useMemo(
     () => searchBarLayout(fontScale),
     [fontScale],
   );
@@ -107,14 +105,16 @@ export const SearchBar = memo(forwardRef<TextInput, SearchBarProps>(function Sea
           webInputFocusResetStyle,
           {
             minHeight: inputMinHeight,
+            fontSize: 15 * Math.min(1.3, Math.max(1, fontScale)),
+            lineHeight: 20 * Math.min(1.3, Math.max(1, fontScale)),
             paddingVertical: 0,
             includeFontPadding: false,
           },
         ]}
         testID={inputTestID}
         accessibilityLabel={placeholder}
-        allowFontScaling
-        textAlignVertical={lineCount > 1 ? 'top' : 'center'}
+        allowFontScaling={false}
+        textAlignVertical="center"
         underlineColorAndroid="transparent"
         autoFocus={autoFocus}
         returnKeyType="search"

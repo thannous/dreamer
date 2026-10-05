@@ -263,3 +263,39 @@ Commit source inputs and tracked manifests, never generated `docs/`. Deployment 
 
 - Expo: https://docs.expo.dev/llms-full.txt
 - React Native: https://reactnative.dev/docs/getting-started
+
+## E2E framework preference (owner decision, 2026-10-05)
+
+Use TesterArmy `e2e` for new and affected E2E journeys across every project,
+subproject and worktree. Reference: https://docs.expo.dev/guides/using-e2e/.
+Read the official `e2e` skill and the relevant topic from the project's installed
+version before writing or running tests. Use `@e2e-dev/mobile` for native apps and
+`@e2e-dev/web` for browser apps. API/CLI-only projects need an appropriate real
+interface journey; do not invent a mobile or browser target when none exists.
+Reuse project runners, device ownership checks, fixtures and environment guards.
+Native qualification uses an identified installed Release build, one worker per
+device, and `app.open()` at each test start. Follow existing build/prebuild rules.
+Use one goal per `agent.act()` and exact assertions for critical outcomes; exact
+steps need no model. Preserve reports, failures, screenshots/traces, build/source
+identity and the exact rerun command. A stale/missing replay is not a passed check.
+Retain existing Playwright/Maestro/API coverage and required CI until equivalent
+TesterArmy journeys have passed; new tests use TesterArmy by default. Keep model
+calls within existing authorized providers and budgets, and never export private
+test content, credentials or feedback without authorization.
+
+Read `tools/e2e/README.md`. `npm run test:testerarmy` runs Dreamer web;
+`test:testerarmy:lucid`, `test:testerarmy:meditation`, and `test:testerarmy:site`
+select the other web products. For a native installed Release build use
+`E2E_DEVICE=<emulator-serial> npm run test:testerarmy:mobile -- <product> android`
+or an explicitly named iOS Simulator with `<product> ios`. Product is dreamer,
+lucid or meditation. Run setup/browser installation once through package scripts.
+Existing `test:e2e:*` scripts remain compatibility/coverage gates.
+
+
+For native inspection/exploration, use the official `agent-device` skill with
+`npm run agent-device:inspect -- <product> <android|ios>` or
+`npm run agent-device:mcp -- <product> <android|ios>`, and explicit `E2E_DEVICE`.
+Read `tools/e2e/README.md`. These reuse the test runner's installed-build checks
+and exclusive device lock; direct CLI/MCP must not bypass ownership. Inspection
+captures UI evidence without resets and does not qualify a user journey. New
+regression tests remain TesterArmy tests; do not introduce a separate `.ad` gate.

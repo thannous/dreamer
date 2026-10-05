@@ -206,7 +206,12 @@ test('Plus user continues a reflection and sees the conversation on revisit', as
   await expect(page.getByText(response, { exact: true })).toBeVisible();
   await page.getByRole('button', { name: 'Back', exact: true }).click();
   await page.getByRole('button', { name: 'Back', exact: true }).click();
-  await page.getByTestId('component.transcriptCard').scrollIntoViewIfNeeded();
+  // Returning can restore the previous scroll position without a new scroll
+  // event. Read further in the inline analysis to reveal the contextual dock.
+  const reading = page.getByTestId('component.dreamDetail.readingZone');
+  await reading.scrollIntoViewIfNeeded();
+  await reading.hover();
+  await page.mouse.wheel(0, 200);
   await expect(page.getByTestId('component.dreamDetail.actionCard')).toContainText('Continue my reflection');
 });
 

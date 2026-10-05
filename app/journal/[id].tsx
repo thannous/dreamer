@@ -277,12 +277,25 @@ const JournalDetailContent = memo(function JournalDetailContent({ dream }: { dre
   const { colors, shadows, mode } = useTheme();
   const insets = useSafeAreaInsets();
   const windowSize = useWindowDimensions();
+  const compactTextScale = Math.min(1.3, Math.max(1, windowSize.fontScale));
+  const titleTextScale = Math.min(1.4, Math.max(1, windowSize.fontScale));
+  const metadataTextStyle = { fontSize: 13 * compactTextScale, lineHeight: 18 * compactTextScale };
   const [coverViewport, setCoverViewport] = useState<{ width: number; height: number } | null>(null);
   const [readingActionVisible, setReadingActionVisible] = useState(false);
+  const [navigationOverImage, setNavigationOverImage] = useState(false);
   const [failedCoverUri, setFailedCoverUri] = useState<string | null>(null);
   const [actionDockHeight, setActionDockHeight] = useState(100);
-  const coverHeight = coverViewport?.height ?? windowSize.height;
-  const coverLayout = { imageHeight: coverHeight, captionTop: coverHeight };
+  const [coverIntroHeight, setCoverIntroHeight] = useState<number | null>(null);
+  const viewportHeight = coverViewport?.height ?? windowSize.height;
+  const navigationHeight = insets.top + 76;
+  // The heading owns its intrinsic height (including enlarged native text).
+  // Artwork uses the remaining viewport, while fullscreen retains the original.
+  const introHeight = coverIntroHeight ?? 180 * Math.min(windowSize.fontScale, 1.4);
+  const coverHeight = Math.max(96, Math.min(
+    viewportHeight * 0.62,
+    viewportHeight - navigationHeight - introHeight - insets.bottom - 24
+  ));
+  const coverLayout = { imageHeight: coverHeight };
   const noctalia = useMemo(() => getNoctaliaDesignTokens(colors, mode), [colors, mode]);
   const markdownStyles = useMemo(() => StyleSheet.create({
     transcript: { fontSize: 16, lineHeight: 26, color: noctalia.text.secondary },
@@ -477,6 +490,35 @@ const JournalDetailContent = memo(function JournalDetailContent({ dream }: { dre
   const [isEditingTranscript, setIsEditingTranscript] = useState(false);
   const [isKeyboardVisible, setIsKeyboardVisible] = useState(false);
   const [transcriptSectionOffset, setTranscriptSectionOffset] = useState(0);
+  const [transcriptSectionHeight, setTranscriptSectionHeight] = useState(0);
+  const readingScrollOffset = useRef(0);
+  const readingContentRef = useRef<View | null>(null);
+  const transcriptSectionRef = useRef<View | null>(null);
+  const measureTranscriptSection = useCallback(() => {
+    const content = readingContentRef.current;
+    if (!content) return;
+    transcriptSectionRef.current?.measureLayout?.(content, (_left, top, _width, height) => {
+      setTranscriptSectionOffset(previous => previous === top ? previous : top);
+      setTranscriptSectionHeight(previous => previous === height ? previous : height);
+    });
+  }, []);
+  const updateReadingChrome = useCallback((offsetY: number) => {
+    const navigationMidpoint = offsetY + insets.top + 34;
+    const imageTop = navigationHeight + introHeight;
+    setNavigationOverImage(navigationMidpoint >= imageTop && navigationMidpoint < imageTop + coverHeight);
+    const visibleStoryHeight = Math.min(144, viewportHeight * 0.2, transcriptSectionHeight || 144);
+    const threshold = Math.max(1, navigationHeight + transcriptSectionOffset
+      - viewportHeight + visibleStoryHeight);
+    setReadingActionVisible(offsetY >= threshold);
+  }, [coverHeight, insets.top, introHeight, navigationHeight, transcriptSectionHeight, transcriptSectionOffset, viewportHeight]);
+  // Rotation, text scaling and measured content can move artwork without a scroll
+  // event. Recompute chrome before paint using the latest observed offset.
+  useLayoutEffect(() => {
+    updateReadingChrome(readingScrollOffset.current);
+    // Web onLayout observes size, so a position-only move can leave the old
+    // story offset behind. Read its position relative to the content ancestor.
+    measureTranscriptSection();
+  }, [measureTranscriptSection, updateReadingChrome]);
   const scrollViewRef = useRef<ScrollView | null>(null);
   const lastAnalysisNoticeRef = useRef<AnalysisNotice | null>(null);
 
@@ -1645,14 +1687,17 @@ const JournalDetailContent = memo(function JournalDetailContent({ dream }: { dre
     );
   }
 
-  const renderTranscriptBody = () => (
+  const renderTranscriptBody = (measureForReading = false) => (
     <View
+      ref={measureForReading ? transcriptSectionRef : undefined}
+      collapsable={measureForReading ? false : undefined}
+      onLayout={measureForReading ? measureTranscriptSection : undefined}
       testID={TID.Component.TranscriptCard}
       className="font-sans text-[15px] leading-6"
     >
       <View className="mb-3 flex-row items-center justify-between">
         <View className="flex-1 pr-3">
-          <Text accessibilityRole="header" testID={TID.Text.DreamDetailDreamZone} className="font-sans-bold text-[18px] text-ivory">
+          <Text key={`story-heading-${windowSize.fontScale}`} allowFontScaling={false} style={{ fontSize: 18 * compactTextScale, lineHeight: 24 * compactTextScale }} accessibilityRole="header" testID={TID.Text.DreamDetailDreamZone} className="font-sans-bold text-[18px] text-ivory">
             {t('journal.original_transcript')}
           </Text>
         </View>
@@ -1675,7 +1720,7 @@ const JournalDetailContent = memo(function JournalDetailContent({ dream }: { dre
             size={18}
             color={isEditingTranscript ? noctalia.action.primaryText : noctalia.accent.text}
           />
-          <Text className={`font-sans-medium text-[13px] ${isEditingTranscript ? 'text-on-champagne' : 'text-champagne-on'}`}>{t(isEditingTranscript ? 'journal.detail.save_edit' : 'journal.detail.edit_story')}</Text>
+          <Text allowFontScaling={false} style={metadataTextStyle} className={`font-sans-medium text-[13px] ${isEditingTranscript ? 'text-on-champagne' : 'text-champagne-on'}`}>{t(isEditingTranscript ? 'journal.detail.save_edit' : 'journal.detail.edit_story')}</Text>
         </PressableScale>
       </View>
       {isEditingTranscript ? (
@@ -1731,8 +1776,7 @@ const JournalDetailContent = memo(function JournalDetailContent({ dream }: { dre
           variant === 'floating' ? 'rounded-[20px]' : '',
         ].join(' ')}
       >
-      {!hasIllustratedCover || isEditing ? (
-        <>
+      <>
           {isEditing ? (
             <TextInput
               testID={TID.Input.DreamTitle}
@@ -1747,11 +1791,11 @@ const JournalDetailContent = memo(function JournalDetailContent({ dream }: { dre
               selectionColor={noctalia.accent.base}
             />
           ) : (
-            <Text accessibilityRole="header" className="mb-2 font-display-semibold text-[28px] leading-9 text-ivory">
+            <Text key={`dream-heading-${windowSize.fontScale}`} allowFontScaling={false} style={{ fontSize: 26 * titleTextScale, lineHeight: 32 * titleTextScale }} accessibilityRole="header" className="mb-2 font-display-semibold text-[26px] leading-8 text-ivory">
               {dream.title || t('journal.detail.untitled_dream')}
             </Text>
           )}
-          <Text className="mb-5 font-sans text-[12px] leading-5 text-ivory-muted">
+          <Text key={`dream-date-${windowSize.fontScale}`} allowFontScaling={false} style={{ fontSize: 12 * compactTextScale, lineHeight: 20 * compactTextScale }} className="mb-5 font-sans text-[12px] leading-5 text-ivory-muted">
             {formatDreamDate(dream.id)} · {formatDreamTime(dream.id)}
           </Text>
           {!isEditing && hasUncategorizedDraft && initialCategorizationPending ? (
@@ -1775,21 +1819,20 @@ const JournalDetailContent = memo(function JournalDetailContent({ dream }: { dre
               </Text> : null}
             </View>
           ) : null}
-        </>
-      ) : null}
+      </>
 
       {compactMetadata ? (
         <View className="flex-row flex-wrap items-center gap-x-5 gap-y-2">
           {dream.dreamType && (analysisState.isAnalyzed || dream.dreamType !== 'Symbolic Dream') ? (
             <View className="max-w-full flex-row items-center gap-1.5">
               <IconSymbol name="moon.stars.fill" size={15} color={noctalia.accent.text} />
-              <Text className="shrink font-sans-medium text-[13px] text-ivory-muted">{dreamTypeLabel || dream.dreamType}</Text>
+              <Text key={`dream-type-${windowSize.fontScale}`} allowFontScaling={false} style={metadataTextStyle} className="shrink font-sans-medium text-[13px] text-ivory-muted">{dreamTypeLabel || dream.dreamType}</Text>
             </View>
           ) : null}
           <View className="max-w-full flex-row items-center gap-1.5">
             <IconSymbol name="paintpalette" size={15} color={noctalia.accent.text} />
             {dreamThemeLabel ? (
-              <Text className="shrink font-sans-medium text-[13px] text-ivory-muted">{dreamThemeLabel}</Text>
+              <Text key={`dream-theme-${windowSize.fontScale}`} allowFontScaling={false} style={metadataTextStyle} className="shrink font-sans-medium text-[13px] text-ivory-muted">{dreamThemeLabel}</Text>
             ) : (
               <Pressable onPress={startMetadataEditing} disabled={isAnalysisLocked} accessibilityRole="button" className="min-h-[44px] shrink justify-center">
                 <Text className="font-sans-medium text-[13px] text-champagne-on underline">{t('journal.detail.theme_placeholder')}</Text>
@@ -1880,27 +1923,6 @@ const JournalDetailContent = memo(function JournalDetailContent({ dream }: { dre
         )}
       </View>
       </>}
-
-      {!isEditing && dreamMemoryItems.length > 0 && (
-        <View className="mt-3.5 gap-2 border-t border-t-line pt-3">
-          <View className="flex-row items-center gap-2">
-            <IconSymbol name="moon.stars.fill" size={16} color={noctalia.accent.text} />
-            <Text className="font-sans-bold text-[16px] text-ivory">
-              {t('journal.detail.zone.memory')}
-            </Text>
-          </View>
-          {dreamMemoryItems.map((item) => (
-            <View key={item.key} className="gap-0.5">
-              <Text className="font-sans-medium text-[12px] leading-4 text-ivory-muted">
-                {item.label}
-              </Text>
-              <Text className="font-sans-bold text-[14px] leading-[18px] text-ivory">
-                {item.value}
-              </Text>
-            </View>
-          ))}
-        </View>
-      )}
 
       <PressableScale
         onPress={isEditing ? handleSave : startMetadataEditing}
@@ -2073,6 +2095,8 @@ const JournalDetailContent = memo(function JournalDetailContent({ dream }: { dre
         >
           <ActivityIndicator size="small" color={noctalia.accent.text} />
           <Text
+            allowFontScaling={false}
+            style={{ fontSize: 16 * compactTextScale, lineHeight: 24 * compactTextScale }}
             testID={TID.Text.DreamDetailActionTitle}
             className="flex-1 font-sans-bold text-[16px] text-ivory"
           >
@@ -2103,7 +2127,7 @@ const JournalDetailContent = memo(function JournalDetailContent({ dream }: { dre
             accessibilityHint={quotaHintLabel ?? undefined}
             className={`min-h-[52px] flex-row items-center justify-between gap-3 rounded-xl bg-champagne px-4 py-3 ${disabled ? 'opacity-75' : ''}`}>
             <IconSymbol name={detailActionCard.icon} size={20} color={noctalia.action.primaryText} />
-            <Text testID={TID.Text.DreamDetailActionTitle} className="flex-1 text-center font-sans-bold text-[16px] text-on-champagne">
+            <Text key={`continue-${windowSize.fontScale}`} allowFontScaling={false} style={{ fontSize: 16 * compactTextScale, lineHeight: 24 * compactTextScale }} testID={TID.Text.DreamDetailActionTitle} className="flex-1 text-center font-sans-bold text-[16px] text-on-champagne">
               {detailActionCard.cta}
             </Text>
             <IconSymbol name="arrow.right" size={20} color={noctalia.action.primaryText} />
@@ -2140,6 +2164,9 @@ const JournalDetailContent = memo(function JournalDetailContent({ dream }: { dre
               {detailActionCard.step}
             </Text> : null}
             <Text
+              key={`action-${windowSize.fontScale}`}
+              allowFontScaling={false}
+              style={{ fontSize: 17 * compactTextScale, lineHeight: 23 * compactTextScale }}
               className={`font-display-medium text-[17px] leading-[23px] text-ivory`}
               testID={TID.Text.DreamDetailActionTitle}
             >
@@ -2311,23 +2338,10 @@ const JournalDetailContent = memo(function JournalDetailContent({ dream }: { dre
               <LinearGradient
                 colors={noctalia.cover.gradient}
                 locations={noctalia.cover.gradientLocations}
-                className="absolute bottom-0 right-0 left-0"
-                style={{ height: Math.min(180, coverLayout.imageHeight) }}
+                style={{ position: 'absolute', bottom: 0, right: 0, left: 0, height: Math.min(180, coverLayout.imageHeight) }}
               />
             </View>
-            {/* Artwork fills the first viewport; reading sits on an opaque theme surface. */}
-            <View pointerEvents="none" style={{ height: coverLayout.captionTop }} />
-            <View
-              pointerEvents="none"
-              className="bg-ink px-6 pb-6 pt-4"
-            >
-              <Text accessibilityRole="header" className="font-display-semibold text-[28px] leading-9 text-ivory">
-                {dream.title || t('journal.detail.untitled_dream')}
-              </Text>
-              <Text className="mt-2 font-sans text-[12px] leading-5 text-ivory-muted">
-                {formatDreamDate(dream.id)} · {formatDreamTime(dream.id)}
-              </Text>
-            </View>
+            <View pointerEvents="none" style={{ height: coverLayout.imageHeight }} />
           </View>
         ) : illustrationSidecar === 'failed' ? (
           visibleIllustrationCta === 'retry' || getImageJobFailure(dream.imageJobErrorCode) ? (
@@ -2461,20 +2475,6 @@ const JournalDetailContent = memo(function JournalDetailContent({ dream }: { dre
         behavior={keyboardBehavior}
         keyboardVerticalOffset={keyboardVerticalOffset}
       >
-        <View className={`absolute top-0 left-0 right-0 z-50 px-3 pb-3 ${!hasIllustratedCover || readingActionVisible ? 'bg-ink' : ''}`}
-          style={{ paddingTop: insets.top + 12 }}>
-        <PressableScale
-          onPress={handleBackPress}
-          className="min-h-11 flex-row items-center gap-2 self-start rounded-[22px] bg-ink px-3"
-          testID={TID.Button.NavigateJournal}
-          accessibilityRole="button"
-          accessibilityLabel={t('journal.back_button')}
-          hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}
-        >
-          <IconSymbol name="chevron.left" size={22} color={noctalia.text.primary} />
-          <Text className="font-sans-medium text-[13px] text-ivory">{t('nav.journal')}</Text>
-        </PressableScale>
-        </View>
         <ScrollView
           ref={scrollViewRef}
           className="flex-1"
@@ -2484,18 +2484,44 @@ const JournalDetailContent = memo(function JournalDetailContent({ dream }: { dre
           }}
 
           contentContainerStyle={{
-            paddingTop: hasIllustratedCover ? 0 : insets.top + 76,
+            paddingTop: navigationHeight,
             paddingBottom: ((isEditing || isEditingTranscript) ? 220 : actionDockHeight + 32) + insets.bottom,
           }}
           scrollEventThrottle={32}
           onScroll={({ nativeEvent }) => {
-            const threshold = Math.max(0, coverLayout.captionTop - nativeEvent.layoutMeasurement.height * 0.5);
-            setReadingActionVisible(nativeEvent.contentOffset.y >= threshold);
+            readingScrollOffset.current = nativeEvent.contentOffset.y;
+            updateReadingChrome(nativeEvent.contentOffset.y);
           }}
           keyboardShouldPersistTaps="handled"
         >
-          <View className="px-4 pb-6">
+          <View ref={readingContentRef} collapsable={false} onLayout={measureTranscriptSection} className="px-4 pb-6">
+            <View onLayout={({ nativeEvent: { layout } }) => {
+              setCoverIntroHeight(previous => previous === layout.height ? previous : layout.height);
+            }}>
+              {!isEditing && renderMetadataCard()}
+            </View>
             {hasIllustratedCover ? renderIllustrationSection() : null}
+            {!isEditing && dreamMemoryItems.length > 0 && (
+              <View className="mx-2 mb-7 gap-2 border-t border-t-line pt-3">
+                <View className="flex-row items-center gap-2">
+                  <IconSymbol name="moon.stars.fill" size={16} color={noctalia.accent.text} />
+                  <Text className="font-sans-bold text-[16px] text-ivory">
+                    {t('journal.detail.zone.memory')}
+                  </Text>
+                </View>
+                {dreamMemoryItems.map((item) => (
+                  <View key={item.key} className="gap-0.5">
+                    <Text className="font-sans-medium text-[12px] leading-4 text-ivory-muted">
+                      {item.label}
+                    </Text>
+                    <Text className="font-sans-bold text-[14px] leading-[18px] text-ivory">
+                      {item.value}
+                    </Text>
+                  </View>
+                ))}
+              </View>
+            )}
+
             {/* Native navigation supplies the transition; frequent detail visits show sections immediately. */}
             {recallRequested ? (
               <DreamRecallAssistantCard
@@ -2506,20 +2532,13 @@ const JournalDetailContent = memo(function JournalDetailContent({ dream }: { dre
                 startRequested
               />
             ) : null}
-            <View>
-              {/* Plus metadata card */}
-              {!isEditing && renderMetadataCard()}
-            </View>
             <View>{renderSyncStatusCard()}</View>
 
             {!isEditingTranscript && (
-              <View
-                className="mt-2 mb-5"
-                onLayout={(event) => setTranscriptSectionOffset(event.nativeEvent.layout.y)}
-              >
+              <View className="mt-2 mb-5">
                 <View>
                   <View className="px-2 pb-4">
-                    {renderTranscriptBody()}
+                    {renderTranscriptBody(true)}
                   </View>
                 </View>
               </View>
@@ -2613,6 +2632,21 @@ const JournalDetailContent = memo(function JournalDetailContent({ dream }: { dre
             </View>
         </ScrollView>
 
+        <View className={`absolute top-0 left-0 right-0 z-50 px-3 pb-3 ${hasIllustratedCover && navigationOverImage ? '' : 'bg-ink'}`}
+          testID="journal.detail.navigation"
+          style={{ paddingTop: insets.top + 12 }}>
+        <PressableScale
+          onPress={handleBackPress}
+          className="min-h-11 flex-row items-center gap-2 self-start rounded-[22px] bg-ink px-3"
+          testID={TID.Button.NavigateJournal}
+          accessibilityRole="button"
+          accessibilityLabel={t('journal.back_button')}
+          hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}
+        >
+          <IconSymbol name="chevron.left" size={22} color={noctalia.text.primary} />
+          <Text key={`journal-back-${windowSize.fontScale}`} allowFontScaling={false} style={metadataTextStyle} className="font-sans-medium text-[13px] text-ivory">{t('nav.journal')}</Text>
+        </PressableScale>
+        </View>
         {!isEditing && !isEditingTranscript && (!hasIllustratedCover || readingActionVisible) ? (
           <View testID="component.dreamDetail.actionDock" className="absolute bottom-0 left-0 right-0 border-t border-line bg-ink px-6 pt-3"
             style={{ paddingBottom: Math.max(insets.bottom, 12) }}

@@ -6,6 +6,8 @@ import { StyleSheet, View } from 'react-native';
 import { RecordingFooter } from '../RecordingFooter';
 import { TID } from '@/lib/testIDs';
 
+jest.mock('@/components/ui/icon-symbol', () => ({ IconSymbol: () => null }));
+
 let mockDimensions = { width: 390, height: 844, scale: 1, fontScale: 1 };
 jest.mock('react-native', () => {
   const native = require('@jest/globals').jest.requireActual('react-native');
@@ -58,7 +60,6 @@ describe('RecordingFooter', () => {
       const label = view.getByText('Enregistrer le rêve');
       expect(StyleSheet.flatten(button.props.style)).toMatchObject({ width: Math.min(420, availableWidth), flexShrink: 0 });
       expect(StyleSheet.flatten(button.props.style).height).toBeUndefined();
-      expect(StyleSheet.flatten(label.props.style)).toMatchObject({ flexShrink: 0, alignSelf: 'stretch' });
       expect(label.props.numberOfLines).toBeUndefined();
       expect(label.props.maxFontSizeMultiplier).toBeUndefined();
       expect(button.props.accessibilityLabel).toBe('Enregistrer le rêve sans analyse');

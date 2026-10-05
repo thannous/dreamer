@@ -2,6 +2,7 @@ import { getNoctaliaDesignTokens } from '@/constants/noctaliaDesign';
 import { Fonts } from '@/constants/theme';
 import { LARGE_TEXT_FONT_SCALE } from '@/constants/layout';
 import { useTheme } from '@/context/ThemeContext';
+import { IconSymbol } from '@/components/ui/icon-symbol';
 import { TID } from '@/lib/testIDs';
 import React, { useMemo, useState } from 'react';
 import { Platform, Pressable, StyleSheet, Text, View, useWindowDimensions, type ViewStyle } from 'react-native';
@@ -28,6 +29,7 @@ export function RecordingFooter({
   const { colors, mode } = useTheme();
   const noctalia = useMemo(() => getNoctaliaDesignTokens(colors, mode), [colors, mode]);
   const { width, fontScale } = useWindowDimensions();
+  const controlFontScale = Math.min(1.3, Math.max(1, fontScale));
   const [availableWidth, setAvailableWidth] = useState(0);
   const largeText = fontScale >= LARGE_TEXT_FONT_SCALE;
 
@@ -61,9 +63,12 @@ export function RecordingFooter({
         accessibilityLabel={saveButtonAccessibilityLabel ?? saveButtonLabel}
       >
         <Text
+          key={fontScale}
+          allowFontScaling={false}
           style={[
             styles.submitButtonText,
             {
+              fontSize: 16 * controlFontScale,
               color: isSaveDisabled
                 ? colors.textTertiary
                 : noctalia.action.primaryText,
@@ -72,6 +77,9 @@ export function RecordingFooter({
         >
           {saveButtonLabel}
         </Text>
+        <View accessible={false} accessibilityElementsHidden importantForAccessibility="no-hide-descendants">
+          <IconSymbol name="arrow.right" size={20} color={isSaveDisabled ? colors.textTertiary : noctalia.action.primaryText} />
+        </View>
       </Pressable>
       {onCompleteWithHelp && helpLabel ? (
         <Pressable
@@ -83,8 +91,8 @@ export function RecordingFooter({
           testID="recording-complete-with-help"
           style={styles.helpButton}
         >
-          <Text style={[styles.helpLabel, { color: noctalia.accent.text }]}>{helpLabel}</Text>
-          {helpHint ? <Text style={[styles.helpHint, { color: noctalia.text.secondary }]}>{helpHint}</Text> : null}
+          <Text key={`help-${fontScale}`} allowFontScaling={false} style={[styles.helpLabel, { fontSize: 15 * controlFontScale, lineHeight: 21 * controlFontScale, color: noctalia.accent.text }]}>{helpLabel}</Text>
+          {helpHint ? <Text key={`hint-${fontScale}`} allowFontScaling={false} style={[styles.helpHint, { fontSize: 12 * controlFontScale, lineHeight: 17 * controlFontScale, color: noctalia.text.secondary }]}>{helpHint}</Text> : null}
         </Pressable>
       ) : null}
     </View>
@@ -99,19 +107,19 @@ const styles = StyleSheet.create({
     flexShrink: 0,
   },
   submitButton: {
-    minWidth: 260,
-    maxWidth: '100%',
+    width: '100%',
+    minWidth: 0,
+    maxWidth: 512,
     flexShrink: 0,
-    paddingVertical: 17,
-    paddingHorizontal: 34,
-    borderRadius: 22,
+    minHeight: 56,
+    paddingVertical: 16,
+    paddingHorizontal: 20,
+    borderRadius: 16,
     borderWidth: 1,
     alignItems: 'center',
     justifyContent: 'center',
-    shadowOffset: { width: 0, height: 12 },
-    shadowOpacity: 0.18,
-    shadowRadius: 24,
-    elevation: 8,
+    flexDirection: 'row',
+    gap: 12,
   },
   submitButtonDisabled: {
     ...(Platform.OS === 'web'
@@ -120,9 +128,9 @@ const styles = StyleSheet.create({
   } as ViewStyle,
   submitButtonText: {
     textAlign: 'center',
-    alignSelf: 'stretch',
-    flexShrink: 0,
-    fontSize: 18,
+    flex: 1,
+    flexShrink: 1,
+    fontSize: 16,
     fontFamily: Fonts.spaceGrotesk.bold,
   },
   helpButton: {

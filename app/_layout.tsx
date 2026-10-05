@@ -846,7 +846,7 @@ function RootLayoutNav({
             <Stack.Screen name="recording" options={{ headerShown: false, animation: 'none' }} />
             {/* Repeated Android detail transitions redraw the retained journal;
                 measured draw stalls exceed a frame. Keep this frequent route instant. */}
-            <Stack.Screen name="journal/[id]" options={{ headerShown: false, ...(Platform.OS === 'android' ? { animation: 'none' as const } : {}) }} />
+            <Stack.Screen name="journal/[id]" options={{ headerShown: false, scrollEdgeEffects: { top: 'hidden' }, ...(Platform.OS === 'android' ? { animation: 'none' as const } : {}) }} />
             <Stack.Screen name="dream-chat/[id]" options={{ headerShown: false }} />
             <Stack.Screen name="dream-categories/[id]" options={{ headerShown: false }} />
             <Stack.Screen name="symbol-dictionary" options={{ headerShown: false }} />

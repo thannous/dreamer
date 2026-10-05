@@ -40,7 +40,6 @@ import { useTranslation } from '@/hooks/useTranslation';
 import { blurActiveElement } from '@/lib/accessibility';
 import { applyFilters, getUniqueDreamTypes, getUniqueThemes, sortDreamsByDate, type JournalAnalysisStatusFilter, type JournalQuickFilter } from '@/lib/dreamFilters';
 import { getDreamTypeLabel } from '@/lib/dreamLabels';
-import { isDreamAnalyzed } from '@/lib/dreamUsage';
 import { getDreamThumbnailCacheKey, getDreamThumbnailUri, preloadImage } from '@/lib/imageUtils';
 import { trackProductEvent } from '@/lib/analytics';
 import { TID } from '@/lib/testIDs';
@@ -96,7 +95,11 @@ function getInitialKeyboardVisibility(): boolean {
   return typeof Keyboard.isVisible === 'function' ? Keyboard.isVisible() : false;
 }
 
-const AnimatedDreamList = Animated.createAnimatedComponent(FlashList<DreamAnalysis>);
+// FlashList spreads its style into a DOM view on web. Reanimated passes an array,
+// which creates numeric CSS properties; the native wrapper still handles worklets.
+const AnimatedDreamList = Platform.OS === 'web'
+  ? FlashList<DreamAnalysis>
+  : Animated.createAnimatedComponent(FlashList<DreamAnalysis>);
 
 export default function JournalListScreen() {
   const { dreams, completeness, remotePreviewAllowed, loadRemoteDreamForPreview, persistenceState, refreshState, reloadDreams, retryPersistence } = useDreams();
@@ -589,8 +592,7 @@ export default function JournalListScreen() {
   // scroll. The list itself is the thing that appeared, and it appeared with the screen.
   const renderDreamItem = useCallback(({ item, index }: ListRenderItemInfo<DreamAnalysis>) => {
     if (!item) return null;
-    const dreamTypeLabel = item.dreamType && (item.dreamType !== 'Symbolic Dream' || isDreamAnalyzed(item)) ? getDreamTypeLabel(item.dreamType, t) ?? item.dreamType : null;
-    const dateStr = formatDreamListDate(item.id) + (dreamTypeLabel ? ` • ${dreamTypeLabel}` : '');
+    const dateStr = formatDreamListDate(item.id);
     const isFirstItem = index === 0;
 
     return (
@@ -604,12 +606,11 @@ export default function JournalListScreen() {
         />
       </View>
     );
-  }, [formatDreamListDate, t, handleDreamPress]);
+  }, [formatDreamListDate, handleDreamPress]);
 
   const renderDreamItemTablet = useCallback(({ item }: ListRenderItemInfo<DreamAnalysis>) => {
     if (!item) return null;
-    const dreamTypeLabel = item.dreamType && (item.dreamType !== 'Symbolic Dream' || isDreamAnalyzed(item)) ? getDreamTypeLabel(item.dreamType, t) ?? item.dreamType : null;
-    const dateStr = formatDreamListDate(item.id) + (dreamTypeLabel ? ` • ${dreamTypeLabel}` : '');
+    const dateStr = formatDreamListDate(item.id);
 
     return (
       <View className="mb-4 flex-1 px-1">
@@ -622,44 +623,23 @@ export default function JournalListScreen() {
         />
       </View>
     );
-  }, [formatDreamListDate, t, handleDreamPress]);
+  }, [formatDreamListDate, handleDreamPress]);
 
   const renderDreamItemDesktop = useCallback(({ item, index }: ListRenderItemInfo<DreamAnalysis>) => {
     // Recycling can briefly retain an index after a filter shrinks the data array.
     if (!item) return null;
-    const hasImage = !item.imageGenerationFailed && Boolean(item.thumbnailUrl || item.imageUrl);
-    const isRecent = index < 3;
-    const isFavorite = !!item.isFavorite;
-    const isAnalyzed = isDreamAnalyzed(item);
-    const dreamTypeLabel = item.dreamType && (item.dreamType !== 'Symbolic Dream' || isDreamAnalyzed(item)) ? getDreamTypeLabel(item.dreamType, t) ?? item.dreamType : null;
-
-    const isHero = isRecent && hasImage;
-    const weightClass = isHero
-      ? 'flex-[2]'
-      : isFavorite
-        ? 'flex-[1.5]'
-        : isAnalyzed
-          ? 'flex-[1.3]'
-          : hasImage
-            ? 'flex-[1.2]'
-            : 'flex-1';
-
     return (
-      <View className={`mb-8 min-w-0 px-1 ${weightClass}`}>
-        <View className="mb-1 flex-row items-center justify-between">
-          <Text className="font-sans text-[14px] text-ivory-muted">
-            {formatDreamListDate(item.id)}
-            {dreamTypeLabel ? ` • ${dreamTypeLabel}` : ''}
-          </Text>
-        </View>
+      <View className="mb-6 min-w-0 flex-1 px-1">
         <DreamCard
           dream={item}
           onPress={handleDreamPress}
           testID={TID.List.DreamItem(item.id)}
+          dateLabel={formatDreamListDate(item.id)}
+          variant={index === 0 ? 'featured' : 'standard'}
         />
       </View>
     );
-  }, [formatDreamListDate, t, handleDreamPress]);
+  }, [formatDreamListDate, handleDreamPress]);
 
   const hasNonDefaultSort = sortOrder !== 'newest';
   const hasActiveFilter = !!(
@@ -895,8 +875,8 @@ export default function JournalListScreen() {
         {(!(previewEligible && previewFiltersSupported) || completeness?.status === 'incomplete') &&
           <JournalCompletenessNotice status={completeness?.status} onRetry={() => { void reloadDreams(); }} />}
         {isDesktopLayout ? searchBar : null}
-        <View className="flex-row flex-wrap items-start gap-2">
-          <View className="min-w-0 flex-1 basis-[220px]">
+        <View className="flex-row items-center gap-2" testID="journal-filter-bar">
+          <View className="min-w-0 flex-1">
             <FilterBar
               items={journalFilterItems}
               onClear={handleClearFilters}
@@ -906,7 +886,7 @@ export default function JournalListScreen() {
               clearTestID={TID.Button.ClearFilters}
             />
           </View>
-          <View className="ml-auto flex-row items-center gap-2">
+          <View className="shrink-0 flex-row items-center gap-2">
             {isDesktopLayout ? <PressableScale
               onPress={openQuickSettings}
               haptic="selection"
