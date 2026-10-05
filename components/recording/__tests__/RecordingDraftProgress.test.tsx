@@ -10,6 +10,7 @@ jest.mock('react-native', () => {
   const React = require('react');
 
   return {
+    useWindowDimensions: () => ({ width: 390, height: 844, scale: 1, fontScale: 1 }),
     Platform: { OS: 'web' },
     StyleSheet: {
       create: (styles: Record<string, unknown>) => styles,

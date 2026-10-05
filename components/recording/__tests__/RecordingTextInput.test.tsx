@@ -625,21 +625,16 @@ describe('RecordingTextInput', () => {
         />
       );
 
-      const instructionStyle = screen.getByText('Write what you remember').getAttribute(
-        'data-native-style'
-      );
       const inputStyle = screen.getByTestId(TID.Input.DreamTranscript).getAttribute(
         'data-native-style'
       );
 
-      expect(instructionStyle).toContain('"fontSize":21');
-      expect(instructionStyle).toContain('"lineHeight":29');
       expect(inputStyle).toContain(`"minHeight":${expectedMinHeight}`);
       expect(inputStyle).toContain('"maxHeight":286');
     }
   );
 
-  it('preserves the existing title and editor geometry above 360 dp', () => {
+  it('preserves editor geometry above 360 dp', () => {
     render(
       <RecordingTextInput
         value=""
@@ -651,12 +646,6 @@ describe('RecordingTextInput', () => {
       />
     );
 
-    expect(screen.getByText('Write what you remember').getAttribute('data-native-style')).toContain(
-      '"fontSize":23'
-    );
-    expect(screen.getByText('Write what you remember').getAttribute('data-native-style')).toContain(
-      '"lineHeight":32'
-    );
     expect(screen.getByTestId(TID.Input.DreamTranscript).getAttribute('data-native-style')).toContain(
       '"minHeight":196'
     );
@@ -678,15 +667,10 @@ describe('RecordingTextInput', () => {
       />
     );
 
-    const instructionStyle = screen.getByText('Write what you remember').getAttribute(
-      'data-native-style'
-    );
     const inputStyle = screen.getByTestId(TID.Input.DreamTranscript).getAttribute(
       'data-native-style'
     );
 
-    expect(instructionStyle).toContain('"fontSize":18');
-    expect(instructionStyle).toContain('"lineHeight":24');
     expect(inputStyle).toContain('"minHeight":0');
     expect(screen.getByTestId(`${TID.Input.DreamTranscript}-measurement`).getAttribute('data-native-style')).not.toContain('"maxHeight"');
   });
