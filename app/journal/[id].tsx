@@ -2330,8 +2330,7 @@ const JournalDetailContent = memo(function JournalDetailContent({ dream }: { dre
               <LinearGradient
                 colors={noctalia.cover.gradient}
                 locations={noctalia.cover.gradientLocations}
-                className="absolute bottom-0 right-0 left-0"
-                style={{ height: Math.min(180, coverLayout.imageHeight) }}
+                style={{ position: 'absolute', bottom: 0, right: 0, left: 0, height: Math.min(180, coverLayout.imageHeight) }}
               />
             </View>
             <View pointerEvents="none" style={{ height: coverLayout.imageHeight }} />
