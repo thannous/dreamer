@@ -9,11 +9,15 @@ import { getLucidPalette, LucidSpace, LucidType } from '@/constants/lucidTheme';
 import { useTheme } from '@/context/ThemeContext';
 import { isLucidTrainer } from '@/lib/appVariant';
 
-export function AuthBottomSheet(props: StandardBottomSheetProps) {
+type AuthBottomSheetProps = StandardBottomSheetProps & {
+  actions: NonNullable<StandardBottomSheetProps['actions']>;
+};
+
+export function AuthBottomSheet(props: AuthBottomSheetProps) {
   return isLucidTrainer ? <LucidAuthBottomSheet {...props} /> : <StandardBottomSheet {...props} />;
 }
 
-function LucidAuthBottomSheet({ visible, onClose, title, subtitle, headerIcon, children, actions, testID, titleTestID, style, snapPoints, bodyScrollEnabled = true, dismissBehavior }: StandardBottomSheetProps) {
+function LucidAuthBottomSheet({ visible, onClose, title, subtitle, headerIcon, children, actions, testID, titleTestID, style, snapPoints, bodyScrollEnabled = true, dismissBehavior }: AuthBottomSheetProps) {
   const { colors, mode } = useTheme();
   const palette = getLucidPalette(colors, mode);
   const insets = useSafeAreaInsets();
