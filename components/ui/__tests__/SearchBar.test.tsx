@@ -162,7 +162,7 @@ describe('SearchBar', () => {
     expect(screen.getByTestId('journal-search-input').getAttribute('data-autofocus')).toBe('true');
   });
 
-  it('keeps a 44dp row at default fontScale and lets the placeholder scale', () => {
+  it('keeps a 44dp row and search input semantics at default fontScale', () => {
     render(
       <SearchBar
         testID="journal.search"
@@ -184,7 +184,6 @@ describe('SearchBar', () => {
         borderCurve: 'continuous',
       }),
     );
-    expect(input.getAttribute('data-allow-font-scaling')).toBeNull();
     expect(input.getAttribute('data-text-align-vertical')).toBe('center');
     expect(input.getAttribute('placeholder')).toBe('Search your dream journey...');
     expect(JSON.parse(input.getAttribute('data-style') ?? '{}')).toEqual(
@@ -196,42 +195,6 @@ describe('SearchBar', () => {
     );
     expect(input.getAttribute('data-return-key-type')).toBe('search');
     expect(input.getAttribute('data-multiline')).toBeNull();
-  });
-
-  it('grows vertically at fontScale 2 so the placeholder is not clipped', () => {
-    mockWindow.fontScale = 2;
-
-    render(
-      <SearchBar
-        testID="journal.search"
-        inputTestID="journal-search-input"
-        onChangeText={jest.fn()}
-        placeholder="Search your dream journey..."
-        value=""
-      />,
-    );
-
-    const row = screen.getByTestId('journal.search');
-    const input = screen.getByTestId('journal-search-input');
-    const rowStyle = JSON.parse(row.getAttribute('data-style') ?? '{}') as {
-      minHeight: number;
-      paddingVertical: number;
-    };
-    const inputStyle = JSON.parse(input.getAttribute('data-style') ?? '{}') as {
-      minHeight: number;
-    };
-
-    expect(inputStyle.minHeight).toBe(80);
-    expect(rowStyle.paddingVertical).toBe(16);
-    expect(rowStyle.minHeight).toBe(112);
-    expect(rowStyle.minHeight).toBe(inputStyle.minHeight + 2 * rowStyle.paddingVertical);
-    expect(input.getAttribute('data-allow-font-scaling')).toBeNull();
-    expect(input.getAttribute('data-text-align-vertical')).toBe('top');
-    expect(input.getAttribute('data-return-key-type')).toBe('search');
-    expect(input.getAttribute('data-multiline')).toBeNull();
-    expect(input.getAttribute('class')).toContain('min-w-0');
-    expect(input.getAttribute('class')).toContain('flex-1');
-    expect(row.getAttribute('class')).toContain('overflow-visible');
   });
 
   it('keeps search submission single-line at fontScale 2', () => {

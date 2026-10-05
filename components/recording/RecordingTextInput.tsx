@@ -76,6 +76,7 @@ export const RecordingTextInput = forwardRef<TextInput, RecordingTextInputProps>
     const { colors, mode } = useTheme();
     const { t } = useTranslation();
     const { width, height, fontScale } = useWindowDimensions();
+    const controlFontScale = Math.min(1.3, Math.max(1, fontScale));
     const noctalia = useMemo(() => getNoctaliaDesignTokens(colors, mode), [colors, mode]);
     const composerLayout = useMemo(
       () => getRecordingComposerLayout(width, height, fontScale),
@@ -109,6 +110,7 @@ export const RecordingTextInput = forwardRef<TextInput, RecordingTextInputProps>
         ) : null}
         {compact ? (
           <Text
+            key={fontScale}
             // Let native text layout size the editor even while dictation disables
             // keyboard input. The editable field overlays this invisible copy.
             pointerEvents="none"
@@ -363,12 +365,14 @@ export const RecordingTextInput = forwardRef<TextInput, RecordingTextInputProps>
           ]}
         >
           <Text
+            key={`instruction-${fontScale}`}
+            allowFontScaling={false}
             style={[
               styles.instructionText,
               composerLayout.narrow && styles.instructionTextNarrow,
               compact && styles.instructionTextCompact,
               expanded && styles.instructionTextExpanded,
-              { color: noctalia.text.secondary },
+              { fontSize: (expanded ? 14 : compact ? 13 : 15) * controlFontScale, lineHeight: (expanded ? 20 : compact ? 18 : 21) * controlFontScale, color: noctalia.text.secondary },
             ]}
           >
             {instructionText}

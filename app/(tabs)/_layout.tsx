@@ -7,6 +7,7 @@ import { HapticTab } from '@/components/haptic-tab';
 import { DesktopSidebar } from '@/components/navigation/DesktopSidebar';
 import { IconSymbol } from '@/components/ui/icon-symbol';
 import {
+  BOTTOM_NAVIGATION_MAX_FONT_SIZE_MULTIPLIER,
   DESKTOP_BREAKPOINT,
   getBottomNavigationLayout,
   getBottomNavigationItemStyle,
@@ -89,7 +90,8 @@ function TabBarItem({ label, icon, focused, palette, geometry }: {
         numberOfLines={geometry.labelLines}
         textBreakStrategy="simple"
         ellipsizeMode="tail"
-        adjustsFontSizeToFit={!stackedLabels}
+        adjustsFontSizeToFit
+        maxFontSizeMultiplier={BOTTOM_NAVIGATION_MAX_FONT_SIZE_MULTIPLIER}
         minimumFontScale={narrow ? 0.75 : 0.8}
       >
         {label}
@@ -174,7 +176,8 @@ function AddDreamTabItem({ label, palette, geometry, focused }: {
         numberOfLines={geometry.centerLabelLines}
         textBreakStrategy="simple"
         ellipsizeMode="tail"
-        adjustsFontSizeToFit={!stackedLabels}
+        adjustsFontSizeToFit
+        maxFontSizeMultiplier={BOTTOM_NAVIGATION_MAX_FONT_SIZE_MULTIPLIER}
         minimumFontScale={narrow ? 0.75 : 0.85}
       >
         {label}

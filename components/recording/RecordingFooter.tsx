@@ -29,6 +29,7 @@ export function RecordingFooter({
   const { colors, mode } = useTheme();
   const noctalia = useMemo(() => getNoctaliaDesignTokens(colors, mode), [colors, mode]);
   const { width, fontScale } = useWindowDimensions();
+  const controlFontScale = Math.min(1.3, Math.max(1, fontScale));
   const [availableWidth, setAvailableWidth] = useState(0);
   const largeText = fontScale >= LARGE_TEXT_FONT_SCALE;
 
@@ -62,9 +63,12 @@ export function RecordingFooter({
         accessibilityLabel={saveButtonAccessibilityLabel ?? saveButtonLabel}
       >
         <Text
+          key={fontScale}
+          allowFontScaling={false}
           style={[
             styles.submitButtonText,
             {
+              fontSize: 16 * controlFontScale,
               color: isSaveDisabled
                 ? colors.textTertiary
                 : noctalia.action.primaryText,
@@ -87,8 +91,8 @@ export function RecordingFooter({
           testID="recording-complete-with-help"
           style={styles.helpButton}
         >
-          <Text style={[styles.helpLabel, { color: noctalia.accent.text }]}>{helpLabel}</Text>
-          {helpHint ? <Text style={[styles.helpHint, { color: noctalia.text.secondary }]}>{helpHint}</Text> : null}
+          <Text key={`help-${fontScale}`} allowFontScaling={false} style={[styles.helpLabel, { fontSize: 15 * controlFontScale, lineHeight: 21 * controlFontScale, color: noctalia.accent.text }]}>{helpLabel}</Text>
+          {helpHint ? <Text key={`hint-${fontScale}`} allowFontScaling={false} style={[styles.helpHint, { fontSize: 12 * controlFontScale, lineHeight: 17 * controlFontScale, color: noctalia.text.secondary }]}>{helpHint}</Text> : null}
         </Pressable>
       ) : null}
     </View>
