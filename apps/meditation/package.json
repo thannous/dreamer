@@ -27,7 +27,12 @@
     "release:prepare": "node ../../scripts/mobile-release.js prepare --app meditation",
     "release:check": "node ../../scripts/mobile-release.js check --app meditation",
     "release:build": "node ../../scripts/mobile-release.js build --app meditation",
-    "eas-build-pre-install": "node ../../scripts/mobile-release.js verify --app meditation"
+    "eas-build-pre-install": "node ../../scripts/mobile-release.js verify --app meditation",
+    "test:testerarmy": "node ../../tools/e2e/run.mjs meditation web",
+    "test:testerarmy:mobile": "node ../../tools/e2e/run.mjs mobile meditation",
+    "agent-device:doctor": "node ../../tools/e2e/node_modules/agent-device/bin/agent-device.mjs doctor",
+    "agent-device:inspect": "node ../../tools/e2e/run.mjs inspect meditation",
+    "agent-device:mcp": "node ../../tools/e2e/run.mjs mcp meditation"
   },
   "dependencies": {
     "@expo-google-fonts/fraunces": "^0.4.1",

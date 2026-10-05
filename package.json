@@ -203,7 +203,18 @@
     "release:versions:check": "node ./scripts/mobile-release.js check-versions",
     "eas-build-pre-install": "node ./scripts/mobile-release.js verify",
     "analytics:baseline": "node ./scripts/product-funnel-report.js",
-    "postinstall": "patch-package --error-on-fail"
+    "postinstall": "patch-package --error-on-fail",
+    "test:testerarmy:setup": "npm ci --prefix tools/e2e",
+    "test:testerarmy:browsers": "npm run browsers:install --prefix tools/e2e",
+    "test:testerarmy": "node tools/e2e/run.mjs dreamer web",
+    "test:testerarmy:lucid": "node tools/e2e/run.mjs lucid web",
+    "test:testerarmy:meditation": "node tools/e2e/run.mjs meditation web",
+    "test:testerarmy:site": "node tools/e2e/run.mjs site web",
+    "test:testerarmy:mobile": "node tools/e2e/run.mjs mobile",
+    "test:testerarmy:typecheck": "npm run typecheck --prefix tools/e2e",
+    "agent-device:doctor": "node tools/e2e/node_modules/agent-device/bin/agent-device.mjs doctor",
+    "agent-device:inspect": "node tools/e2e/run.mjs inspect",
+    "agent-device:mcp": "node tools/e2e/run.mjs mcp"
   },
   "dependencies": {
     "@expo-google-fonts/fraunces": "^0.4.1",

@@ -10,7 +10,8 @@
     "build": "node ../../scripts/docs-build.js",
     "check": "node ../../scripts/docs-check.js",
     "dev": "node ../../scripts/docs-dev.js",
-    "build:experience": "node ../../scripts/build-experience.js"
+    "build:experience": "node ../../scripts/build-experience.js",
+    "test:testerarmy": "node ../../tools/e2e/run.mjs site web"
   },
   "dependencies": {
     "esbuild": "0.28.1",
