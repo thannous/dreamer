@@ -29,6 +29,8 @@ export type BottomSheetProps = {
   backdropColor?: string;
   /** Opaque native sheet background, including the handle and safe area. */
   surfaceColor?: string;
+  /** Let the platform host alone paint the surface, including handle and safe area. */
+  transparentContent?: boolean;
   /** Test ID for E2E testing. */
   testID?: string;
   /** How users can dismiss the sheet by gesture (default: 'pan'). */
@@ -67,6 +69,7 @@ export function BottomSheet({
   className,
   backdropColor,
   surfaceColor,
+  transparentContent = false,
   testID,
   dismissBehavior = 'pan',
   showDragIndicator = true,
@@ -166,7 +169,7 @@ export function BottomSheet({
               automaticallyAdjustKeyboardInsets={Platform.OS === 'ios'}
             >
               <View
-                className={['bg-ink-solid px-6 pt-2 pb-6', className].filter(Boolean).join(' ')}
+                className={[transparentContent ? undefined : 'bg-ink-solid', 'px-6 pt-2 pb-6', className].filter(Boolean).join(' ')}
                 style={style}
               >
                 {normalizedChildren}
@@ -174,7 +177,7 @@ export function BottomSheet({
             </ScrollView>
           ) : (
             <View
-              className={['bg-ink-solid px-6 pt-2 pb-6', className, fillsViewport ? 'flex-1' : undefined]
+              className={[transparentContent ? undefined : 'bg-ink-solid', 'px-6 pt-2 pb-6', className, fillsViewport ? 'flex-1' : undefined]
                 .filter(Boolean)
                 .join(' ')}
               style={[{ maxHeight: maximumHeight }, style]}

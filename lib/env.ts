@@ -15,6 +15,7 @@ export type ExpoPublicEnvKey =
   | 'EXPO_PUBLIC_HD_ILLUSTRATIONS_ENABLED'
   | 'EXPO_PUBLIC_MOCK_MODE'
   | 'EXPO_PUBLIC_MOCK_PERSISTENCE'
+  | 'EXPO_PUBLIC_ONBOARDING_FEATURE_SHEETS_ENABLED'
   | 'EXPO_PUBLIC_PLAY_INTEGRITY_CLOUD_PROJECT_NUMBER'
   | 'EXPO_PUBLIC_PERFORMANCE_TRACING'
   | 'EXPO_PUBLIC_REFERENCE_IMAGES_ENABLED'
@@ -52,6 +53,8 @@ export function getExpoPublicEnvValue(key: ExpoPublicEnvKey): string | undefined
       return process.env.EXPO_PUBLIC_MOCK_MODE;
     case 'EXPO_PUBLIC_MOCK_PERSISTENCE':
       return process.env.EXPO_PUBLIC_MOCK_PERSISTENCE;
+    case 'EXPO_PUBLIC_ONBOARDING_FEATURE_SHEETS_ENABLED':
+      return process.env.EXPO_PUBLIC_ONBOARDING_FEATURE_SHEETS_ENABLED;
     case 'EXPO_PUBLIC_PLAY_INTEGRITY_CLOUD_PROJECT_NUMBER':
       return process.env.EXPO_PUBLIC_PLAY_INTEGRITY_CLOUD_PROJECT_NUMBER;
     case 'EXPO_PUBLIC_PERFORMANCE_TRACING':
@@ -123,4 +126,8 @@ export function isHdIllustrationsEnabled(): boolean {
 
 export function isSubscriptionQaLabEnabled(): boolean {
   return __DEV__ || (getExpoPublicEnvValue('EXPO_PUBLIC_SUBSCRIPTION_QA_LAB') ?? '').toLowerCase() === 'true';
+}
+
+export function isOnboardingFeatureSheetsEnabled(): boolean {
+  return getExpoPublicEnvValue('EXPO_PUBLIC_ONBOARDING_FEATURE_SHEETS_ENABLED') === 'true';
 }
