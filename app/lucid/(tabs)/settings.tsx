@@ -1407,7 +1407,7 @@ const styles = StyleSheet.create({
   journeySectionLabel: { fontFamily: 'SpaceGrotesk_700Bold', fontSize: LucidType.overline[0], lineHeight: LucidType.overline[1], letterSpacing: 1.1, textTransform: 'uppercase' },
   journeyChoices: { gap: 2 },
   journeyChoice: { minHeight: 52, flexDirection: 'row', alignItems: 'center', gap: LucidSpace.sm, borderBottomWidth: StyleSheet.hairlineWidth, borderRadius: LucidRadius.md, paddingHorizontal: LucidSpace.sm, paddingVertical: LucidSpace.sm },
-  journeyChoiceLabel: { flex: 1, fontFamily: 'SpaceGrotesk_600SemiBold', fontSize: LucidType.bodySm[0], lineHeight: LucidType.bodySm[1] },
+  journeyChoiceLabel: { flex: 1, fontFamily: 'SpaceGrotesk_500Medium', fontSize: LucidType.bodySm[0], lineHeight: LucidType.bodySm[1] },
   optionGrid: { flexDirection: 'row', flexWrap: 'wrap', gap: LucidSpace.sm },
   // Trois options, une ligne. À 104 de large et 9 de gouttière elles réclamaient
   // 330px pour les 320 d'un écran de 360 dp, et le sélecteur se repliait en 2+1

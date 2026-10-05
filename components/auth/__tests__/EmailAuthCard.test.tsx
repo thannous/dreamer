@@ -1,4 +1,5 @@
 /* @jest-environment jsdom */
+jest.mock('@/components/auth/AuthBottomSheet', () => ({ AuthBottomSheet: require('@/components/ui/StandardBottomSheet').StandardBottomSheet }));
 import React from 'react';
 import { act, cleanup, render, screen, fireEvent, waitFor } from '@testing-library/react';
 import { Alert } from 'react-native';

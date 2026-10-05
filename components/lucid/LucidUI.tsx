@@ -1,6 +1,6 @@
 import Ionicons from '@expo/vector-icons/Ionicons';
 import { LinearGradient } from 'expo-linear-gradient';
-import React, { type ComponentProps, type ReactNode } from 'react';
+import React, { useState, type ComponentProps, type ReactNode } from 'react';
 import {
   ActivityIndicator,
   Pressable,
@@ -27,8 +27,7 @@ type IconName = ComponentProps<typeof Ionicons>['name'];
 // Trois opacités « désactivé » cohabitaient sans token : 0,45 / 0,38 / 0,55.
 const DISABLED_OPACITY = 0.45;
 
-// La barre d'onglets flotte à `max(insets.bottom, 10)` du bas et mesure 70 de
-// haut : le contenu doit réserver de quoi passer dessous sans s'y cacher.
+// La barre d'onglets flotte à `max(insets.bottom, 10)` et mesure jusqu’à 84px : le contenu doit réserver de quoi passer dessous sans s'y cacher.
 export const LUCID_TAB_BAR_INSET = 92;
 
 export function LucidScreenHeader({
@@ -358,6 +357,27 @@ export function LucidIconTile({ icon, tone = 'accent', size = 'md' }: { icon: Ic
 }
 
 /** Surtitre. Un seul palier pour tous les libellés en capitales du module. */
+/** Optional details stay collapsed until explicitly requested. */
+export function LucidDisclosure({ title, children, testID }: { title: string; children: ReactNode; testID: string }) {
+  const [expanded, setExpanded] = useState(false);
+  const { colors, mode } = useTheme();
+  const palette = getLucidPalette(colors, mode);
+  return <View style={disclosureStyles.container} testID={testID}>
+    <Pressable accessibilityRole="button" accessibilityLabel={title} accessibilityState={{ expanded }} onPress={() => setExpanded(value => !value)} style={[disclosureStyles.action, { borderColor: palette.border }]} testID={`${testID}-toggle`}>
+      <Text style={[disclosureStyles.title, { color: palette.textSecondary }]}>{title}</Text>
+      <Ionicons name={expanded ? 'chevron-up' : 'chevron-down'} size={LucidIcon.md} color={palette.textSecondary} />
+    </Pressable>
+    {expanded ? <View style={disclosureStyles.body}>{children}</View> : null}
+  </View>;
+}
+
+const disclosureStyles = StyleSheet.create({
+  container: { gap: LucidSpace.md },
+  action: { flexDirection: 'row', alignItems: 'center', minHeight: 44, gap: LucidSpace.sm, borderTopWidth: StyleSheet.hairlineWidth, paddingTop: LucidSpace.sm },
+  title: { flex: 1, fontFamily: 'SpaceGrotesk_500Medium', fontSize: LucidType.bodySm[0], lineHeight: LucidType.bodySm[1] },
+  body: { gap: LucidSpace.sm },
+});
+
 export function LucidOverline({ text, tone = 'muted' }: { text: string; tone?: 'muted' | 'accent' | 'amber' }) {
   const { colors, mode } = useTheme();
   const palette = getLucidPalette(colors, mode);

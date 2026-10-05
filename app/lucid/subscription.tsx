@@ -159,7 +159,7 @@ export const COPY = {
     },
     fromRehearsalTitle: 'Tu as déjà répété une scène',
     fromRehearsalSubtitle:
-      'La première répétition immersive reste à toi. Les suivantes utilisent Plus, avec les compléments déjà présents dans cette version.',
+      'La première répétition immersive reste à vous. Les suivantes utilisent Plus, avec les compléments déjà présents dans cette version.',
     plansTitle: 'Choisir une formule',
     plansCaption: 'La boutique confirme le prix exact et le renouvellement avant paiement.',
     monthly: 'Mensuelle',

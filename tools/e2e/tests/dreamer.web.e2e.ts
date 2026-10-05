@@ -18,6 +18,42 @@ test('onboarding prevents an empty save and capture preserves the draft', async 
   await app.screenshot('draft-preserved');
 });
 
+test('Quick Settings changes language and theme without losing the Capture draft', async ({ app, screen, browser }) => {
+  await isolateWeb(browser, app);
+  await app.open();
+  await screen.getByTestId('btn.onboarding.intro.next').tap();
+  await screen.getByTestId('btn.onboarding.skip').tap();
+  await screen.getByTestId('btn.recording.inputMode.text', { visible: true }).tap();
+  const editor = screen.getByTestId('input.dreamTranscript', { visible: true });
+  const draft = 'Fixture : un phare bleu au-dessus d’une mer calme.';
+  await editor.fill(draft);
+  const settings = screen.getByRole('button', /^(Settings|Paramètres)$/, { visible: true });
+  await settings.tap();
+  await screen.getByTestId('quick-settings.language', { visible: true }).tap();
+  const french = screen.getByTestId('quick-settings.language.fr', { visible: true });
+  await french.tap();
+  await expect(french).toHaveAttribute('aria-checked', 'true');
+  await screen.getByTestId('quick-settings.close', { visible: true }).tap();
+  await expect(screen.getByTestId('btn.recording.inputMode.text', { visible: true })).toContainText('Écrire');
+  for (const [theme, background] of [['dark', 'rgb(20, 19, 26)'], ['light', 'rgb(245, 234, 219)']]) {
+    await settings.tap();
+    const choice = screen.getByTestId(`quick-settings.theme.${theme}`, { visible: true });
+    await choice.tap();
+    await expect(choice).toHaveAttribute('aria-checked', 'true');
+    await screen.getByTestId('quick-settings.close', { visible: true }).tap();
+    await expect.poll(() => browser.evaluate(() => {
+      const input = document.querySelector('[data-testid="input.dreamTranscript"]');
+      return input ? getComputedStyle(input).backgroundColor : null;
+    })).toBe(background);
+    await expect(editor).toHaveValue(draft);
+    await app.screenshot(`quick-settings-${theme}`);
+  }
+  await browser.reload();
+  await expect(screen.getByTestId('btn.recording.inputMode.text', { visible: true })).toContainText('Écrire');
+  await expect(editor).toHaveValue(draft);
+  await app.screenshot('quick-settings-persisted-after-reload');
+});
+
 test('the onboarding story bridges capture to understanding and exploration', {
   skip: process.env.EXPO_PUBLIC_ONBOARDING_FEATURE_SHEETS_ENABLED !== 'true'
     ? 'Feature presentations require an explicit opt-in bundle.' : false,

@@ -86,6 +86,7 @@ jest.mock('@/constants/lucidTheme', () => ({
 }));
 
 jest.mock('@/context/ThemeContext', () => ({
+  ThemeModeScope: ({ children }: { children: React.ReactNode }) => <>{children}</>,
   useTheme: () => ({ colors: {}, mode: 'light' }),
 }));
 
@@ -161,6 +162,7 @@ jest.mock('@/services/lucidTrainerNotifications', () => ({
 }));
 
 jest.mock('@/components/lucid/LucidUI', () => ({
+  LucidDisclosure: ({ children }: { children: React.ReactNode }) => <section>{children}</section>,
   // Primitives ajoutées par C4 : le double doit suivre le composant, sinon
   // l'écran rend `undefined` et la suite tombe sur « Element type is invalid ».
   LucidIconTile: () => null,

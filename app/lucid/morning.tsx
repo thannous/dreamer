@@ -98,9 +98,9 @@ const COPY = {
     title: 'Que reste-t-il ce matin ?',
     screenTitle: 'Point du matin',
     speak: 'Parler',
-    speakHint: 'Le premier tap demande le micro. L’enregistrement commence seulement si tu l’autorises. L’audio reste sur cet appareil et n’est pas synchronisé.',
+    speakHint: 'Le premier appui demande le micro. L’enregistrement commence seulement si vous l’autorisez. L’audio reste sur cet appareil et n’est pas synchronisé.',
     linkedVoice: 'Note vocale rattachée',
-    linkedVoiceHint: 'Cet enregistrement local sera rattaché quand tu enregistreras la capture du matin. Rien n’est envoyé.',
+    linkedVoiceHint: 'Cet enregistrement local sera rattaché quand vous enregistrerez la capture du matin. Rien n’est envoyé.',
     write: 'Écrire',
     writeHint: 'Notez quelques mots tant qu’ils sont encore proches.',
     nothing: 'Rien pour l’instant',
@@ -667,7 +667,7 @@ function ChoiceStep({
   return (
     <View style={styles.step}>
       <View style={styles.prompt}>
-        <LucidIconTile icon="sunny" tone="amber" size="lg" />
+        {!unsetLabel ? <LucidIconTile icon="sunny" tone="amber" size="lg" /> : null}
         <Text accessibilityRole="header" style={[styles.promptTitle, { color: palette.text }]}>{title}</Text>
       </View>
       <View accessibilityRole="radiogroup" accessibilityLabel={groupLabel} style={styles.choiceList}>
@@ -997,7 +997,6 @@ function Score({
   return (
     <View style={styles.step}>
       <View style={styles.prompt}>
-        <LucidIconTile icon="pulse" tone="accent" size="lg" />
         <Text accessibilityRole="header" style={[styles.promptTitle, { color: palette.text }]}>{title}</Text>
         <LucidPill label={value === null ? unsetLabel : `${value} / 5`} tone={value !== null && value >= 4 ? 'accent' : 'neutral'} />
       </View>
@@ -1026,8 +1025,8 @@ function Score({
 
 const styles = StyleSheet.create({
   step: { gap: LucidSpace.lg },
-  prompt: { alignItems: 'center', gap: LucidSpace.md, paddingVertical: LucidSpace.lg },
-  promptTitle: { fontFamily: 'Fraunces_500Medium', fontSize: LucidType.h2[0], lineHeight: LucidType.h2[1], textAlign: 'center' },
+  prompt: { alignItems: 'center', gap: LucidSpace.sm, paddingVertical: LucidSpace.sm },
+  promptTitle: { fontFamily: 'SpaceGrotesk_700Bold', fontSize: LucidType.h3[0], lineHeight: LucidType.h3[1], textAlign: 'center' },
   choiceList: { gap: LucidSpace.sm },
   factorList: { flexDirection: 'row', flexWrap: 'wrap', gap: LucidSpace.sm },
   fieldTitle: { fontFamily: 'SpaceGrotesk_700Bold', fontSize: LucidType.body[0], lineHeight: LucidType.body[1] },

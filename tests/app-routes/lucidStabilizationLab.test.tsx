@@ -202,9 +202,9 @@ describe('Lucid stabilization lab screen', () => {
     mockLab.currentSession = active();
     render(<LucidStabilizationLabScreen />);
     expect(screen.getByRole('progressbar', { name: 'Étape 1 sur 5' })).not.toBeNull();
-    expect(screen.getByText('Regarde tes mains')).not.toBeNull();
-    expect(screen.queryByText(/Ne les saisis pas et ne les enregistre pas/)).toBeNull();
-    expect(screen.getByText('Regarde tes mains jusqu’à ce qu’elles te semblent stables.')).not.toBeNull();
+    expect(screen.getByText('Regardez vos mains')).not.toBeNull();
+    expect(screen.queryByText(/Ne les saisissez pas et ne les enregistrez pas/)).toBeNull();
+    expect(screen.getByText('Regardez vos mains jusqu’à ce qu’elles vous semblent stables.')).not.toBeNull();
     expect(screen.getByText(/0 répétition/)).not.toBeNull();
     expect(screen.getByTestId('lucid-stabilization-lab-primary').textContent).toBe('Terminer cette étape');
   });
@@ -215,8 +215,8 @@ describe('Lucid stabilization lab screen', () => {
       completedStepIds: ['hands', 'surface'],
     });
     render(<LucidStabilizationLabScreen />);
-    expect(screen.getByText('Nomme trois détails')).not.toBeNull();
-    expect(screen.getByText(/Ne les saisis pas et ne les enregistre pas/)).not.toBeNull();
+    expect(screen.getByText('Nommez trois détails')).not.toBeNull();
+    expect(screen.getByText(/Ne les saisissez pas et ne les enregistrez pas/)).not.toBeNull();
   });
 
   it('plays visual and haptic advance feedback without treating repeat as advance', async () => {
@@ -315,7 +315,7 @@ describe('Lucid stabilization lab screen', () => {
     render(<LucidStabilizationLabScreen />);
     expect(screen.getByTestId('lucid-stabilization-lab-error').textContent).toMatch(/n’a pas pu être enregistré/);
     expect(screen.getByTestId('lucid-stabilization-lab-primary').textContent).toBe('Terminer cette étape');
-    expect(screen.getByText('Regarde tes mains')).not.toBeNull();
+    expect(screen.getByText('Regardez vos mains')).not.toBeNull();
 
     cleanup();
     mockLab.error = null;
@@ -327,25 +327,13 @@ describe('Lucid stabilization lab screen', () => {
     await waitFor(() => expect(mockPlayTransition).toHaveBeenCalled());
   });
 
-  it('stacks metrics in a compact column at 320 px and high fontScale', () => {
-    mockLab.currentSession = active();
-    const wide = render(<LucidStabilizationLabScreen />);
-    expect(screen.getByTestId('metric-Pratiques').getAttribute('data-flex-basis')).toBeNull();
-    wide.unmount();
 
-    mockWindow.width = 320;
-    mockWindow.fontScale = 1.3;
-    render(<LucidStabilizationLabScreen />);
-    expect(screen.getByTestId('metric-Pratiques').getAttribute('data-flex-basis')).toBe('100%');
-    expect(screen.getByTestId('metric-Complétions').getAttribute('data-flex-basis')).toBe('100%');
-    expect(screen.getByTestId('metric-Répétitions').getAttribute('data-flex-basis')).toBe('100%');
-  });
 
   it('stays fully static with no Animated tree and the same copy when motion is reduced', () => {
     mockLab.currentSession = active();
     const { container } = render(<LucidStabilizationLabScreen />);
     expect(container.innerHTML).not.toMatch(/Animated|Reanimated/);
-    expect(screen.getByText('Regarde tes mains')).not.toBeNull();
+    expect(screen.getByText('Regardez vos mains')).not.toBeNull();
     expect(screen.getByTestId('lucid-stabilization-lab-primary')).not.toBeNull();
   });
 

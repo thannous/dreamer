@@ -128,8 +128,8 @@ describe('Lucid Journal tab', () => {
     expect(screen.getByText('Voir les signes confirmés et les rêves sources.')).not.toBeNull();
     expect(screen.getByLabelText('Atlas des rêves. Voir les signes confirmés et les rêves sources.')).not.toBeNull();
     expect(screen.getByText('Notes vocales du matin')).not.toBeNull();
-    expect(screen.getByText('Parle une note locale du matin. Rien n’est envoyé.')).not.toBeNull();
-    expect(screen.getByLabelText('Notes vocales du matin. Parle une note locale du matin. Rien n’est envoyé.')).not.toBeNull();
+    expect(screen.getByText('Enregistrez une note locale du matin. Rien n’est envoyé.')).not.toBeNull();
+    expect(screen.getByLabelText('Notes vocales du matin. Enregistrez une note locale du matin. Rien n’est envoyé.')).not.toBeNull();
 
     fireEvent.click(screen.getByRole('button', { name: 'Ouvrir le profil' }));
     fireEvent.click(screen.getByTestId('lucid-journal-capture'));

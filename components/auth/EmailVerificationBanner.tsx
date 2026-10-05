@@ -1,3 +1,5 @@
+import { LucidRadius } from '@/constants/lucidTheme';
+import { isLucidTrainer } from '@/lib/appVariant';
 import React, { useCallback, useMemo, useState } from 'react';
 import { ActivityIndicator, Pressable, StyleSheet, Text, View } from 'react-native';
 
@@ -5,7 +7,7 @@ import { useAuth } from '@/context/AuthContext';
 import { useTheme } from '@/context/ThemeContext';
 import { useTranslation } from '@/hooks/useTranslation';
 import { ThemeLayout } from '@/constants/journalTheme';
-import { getNoctaliaDesignTokens } from '@/constants/noctaliaDesign';
+import { getAuthDesignTokens } from '@/constants/authTheme';
 import { Fonts } from '@/constants/theme';
 import { resendVerificationEmail } from '@/lib/auth';
 import { TID } from '@/lib/testIDs';
@@ -17,7 +19,7 @@ type Props = {
 const EmailVerificationBanner: React.FC<Props> = ({ isCompact = false }) => {
   const { user } = useAuth();
   const { colors, mode } = useTheme();
-  const noctalia = useMemo(() => getNoctaliaDesignTokens(colors, mode), [colors, mode]);
+  const noctalia = useMemo(() => getAuthDesignTokens(colors, mode), [colors, mode]);
   const { t } = useTranslation();
   const [status, setStatus] = useState<'idle' | 'sending' | 'success' | 'error'>('idle');
 
@@ -107,7 +109,7 @@ const EmailVerificationBanner: React.FC<Props> = ({ isCompact = false }) => {
 const styles = StyleSheet.create({
   banner: {
     borderWidth: 1,
-    borderRadius: ThemeLayout.borderRadius.md,
+    borderRadius: isLucidTrainer ? LucidRadius.lg : ThemeLayout.borderRadius.md,
     padding: ThemeLayout.spacing.md,
     marginBottom: ThemeLayout.spacing.md,
   },
@@ -124,7 +126,7 @@ const styles = StyleSheet.create({
     marginBottom: ThemeLayout.spacing.sm,
   },
   action: {
-    borderRadius: ThemeLayout.borderRadius.sm,
+    borderRadius: isLucidTrainer ? LucidRadius.lg : ThemeLayout.borderRadius.sm,
     borderWidth: 1,
     paddingVertical: ThemeLayout.spacing.xs,
     paddingHorizontal: ThemeLayout.spacing.sm,

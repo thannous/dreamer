@@ -284,10 +284,10 @@ export default function LucidRealityCheckScreen() {
       </View>
     }>
       <View style={styles.hero}>
-        <LucidGuideOrb accessibilityLabel={copy.guide} active={!saving} reduceMotion={reduceMotion} />
+        {step === 0 ? <LucidGuideOrb accessibilityLabel={copy.guide} active={!saving} reduceMotion={reduceMotion} /> : null}
         <View style={styles.guideLabel}><Ionicons name="sparkles" size={LucidIcon.sm} color={palette.accent} /><Text style={[styles.guideText, { color: palette.accent }]}>{copy.guide}</Text></View>
         <Text accessibilityRole="header" style={[styles.title, { color: palette.text }]}>{copy.title}</Text>
-        <Text style={[styles.subtitle, { color: palette.textSecondary }]}>{copy.subtitle}</Text>
+        {step === 0 ? <Text style={[styles.subtitle, { color: palette.textSecondary }]}>{copy.subtitle}</Text> : null}
       </View>
       <StepRail current={step} labels={steps} progressLabel={progressLabel} copy={copy} />
       <LucidCard accent="accent" style={styles.exerciseCard}>

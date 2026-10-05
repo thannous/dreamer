@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect, useState } from 'react';
-import { BackHandler, Keyboard, Platform, ScrollView, Text, View, useWindowDimensions } from 'react-native';
+import { BackHandler, Keyboard, Platform, Pressable as NativePressable, ScrollView, Text, View, useWindowDimensions } from 'react-native';
 import { Drawer } from 'react-native-drawer-layout';
 import { Pressable as GesturePressable } from 'react-native-gesture-handler';
 import { useReducedMotion } from 'react-native-reanimated';
@@ -25,10 +25,11 @@ import {
 type PreferenceGroup = 'theme' | 'journal' | 'language';
 type IconName = React.ComponentProps<typeof IconSymbol>['name'];
 // Native gesture hit testing follows the drawer's animated iOS transform.
-const Pressable = withUniwind(GesturePressable);
+// The web responder must still dispatch preference selections on click.
+const Pressable = Platform.OS === 'web' ? NativePressable : withUniwind(GesturePressable);
 const ROW_HIT_SLOP = { top: 8, bottom: 8, left: 12, right: 12 };
 const CHIP_HIT_SLOP = 4;
-const PRESS_RETENTION = 16;
+const PRESS_RETENTION = { top: 16, bottom: 16, left: 16, right: 16 };
 const GROUP_ICONS: Record<PreferenceGroup, IconName> = { theme: 'paintpalette', journal: 'book', language: 'globe' };
 const OPTION_ICONS: Record<string, IconName> = {
   dynamic: 'clock', auto: 'iphone', light: 'sun.max.fill', dark: 'moon.stars.fill',
@@ -54,6 +55,7 @@ function PreferenceChoices<T extends string>({ preference, id, showTitle = true 
             disabled={preference.loading || preference.saving}
             accessibilityRole="radio" accessibilityLabel={option.label}
             accessibilityState={{ checked: option.current, disabled: preference.loading || preference.saving }}
+            {...(Platform.OS === 'web' ? { 'aria-checked': option.current } : {})}
             testID={`quick-settings.${id}.${option.value}`}
             className={`min-h-12 max-w-full flex-row items-center justify-center gap-2 rounded-xl border px-4 py-3 ${option.current ? 'border-champagne-soft bg-champagne' : 'border-line bg-ink-soft'}`}>
             <IconSymbol name={id === 'language' ? 'globe' : OPTION_ICONS[option.value] ?? GROUP_ICONS[id]} size={18}

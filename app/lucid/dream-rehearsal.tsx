@@ -91,9 +91,9 @@ const COPY = {
     local: 'Enregistré sur cet appareil. Rien n’est envoyé.',
     loading: 'Chargement de cette répétition…',
     retry: 'Réessayer',
-    missingParams: 'Choisis un rêve et un signe confirmé depuis l’atlas pour commencer.',
+    missingParams: 'Choisissez un rêve et un signe confirmé depuis l’atlas pour commencer.',
     unmatched: 'Ce rêve et ce signe ne sont pas liés. Rien d’autre n’a été choisi.',
-    otherSession: 'Une autre répétition est déjà en cours. Ouvre exactement cette scène pour continuer.',
+    otherSession: 'Une autre répétition est déjà en cours. Ouvrez exactement cette scène pour continuer.',
     openCurrent: 'Ouvrir la répétition en cours',
     start: 'Commencer la scène gratuite',
     startPlus: 'Commencer la répétition',
@@ -102,21 +102,21 @@ const COPY = {
     complete: 'Terminer la répétition',
     resume: 'Reprendre',
     leave: 'Quitter et reprendre plus tard',
-    statusInterrupted: 'Laissé pour plus tard. Reprends quand tu es prêt.',
+    statusInterrupted: 'Laissé pour plus tard. Reprenez quand vous êtes prêt.',
     statusCompleted: 'Cette répétition est terminée. Seul un enregistrement local a été conservé.',
     gateTitle: 'Tu as déjà répété une scène gratuite',
     gateBody: 'La première répétition immersive reste complète et locale. Les répétitions suivantes utilisent le même droit Noctalia Plus.',
     gateUpgrade: 'Voir Noctalia Plus',
     gateEscape: 'Pas maintenant',
     checkingTitle: 'Vérification de Plus sur ce compte',
-    checkingBody: 'Aucun achat n’est supposé tant que le statut boutique est inconnu. Tu peux revérifier ou garder tous les outils gratuits.',
+    checkingBody: 'Aucun achat n’est supposé tant que le statut boutique est inconnu. Vous pouvez revérifier ou garder tous les outils gratuits.',
     checkStatus: 'Vérifier l’abonnement',
     continueFree: 'Continuer gratuitement',
     preview: 'Scène',
     emptyScene: 'Aucun titre ni extrait n’a été enregistré pour ce rêve.',
     truncated: 'Extrait raccourci',
-    recognizeHint: 'Cherche exactement ce signe dans la scène. N’en invente pas un autre.',
-    intendHint: 'Garde une intention lucide en silence. Les mots restent avec toi et ne sont pas stockés.',
+    recognizeHint: 'Cherchez exactement ce signe dans la scène. N’en inventez pas un autre.',
+    intendHint: 'Gardez une intention lucide en silence. Les mots restent avec vous et ne sont pas stockés.',
     progress: (current: number, total: number) => `Étape ${current} sur ${total}`,
     recognized: 'Signe reconnu.',
     intended: 'Intention posée.',
@@ -124,7 +124,7 @@ const COPY = {
     errors: {
       invalid_scope: 'Cette répétition n’est pas disponible pour le compte actuel.',
       invalid_metadata: 'Cette répétition n’a pas pu être mise à jour.',
-      persistence_failed: 'La répétition n’a pas pu être enregistrée sur cet appareil. Réessaie.',
+      persistence_failed: 'La répétition n’a pas pu être enregistrée sur cet appareil. Réessayez.',
       storage_full: 'Cet appareil n’a plus assez d’espace pour la répétition.',
     },
   },
@@ -566,14 +566,16 @@ export default function LucidDreamRehearsalScreen() {
           </View>
         )
       }
-      subtitle={copy.subtitle}
+      subtitle={currentForScene && currentForScene.status !== 'completed' ? undefined : copy.subtitle}
       testID="lucid-dream-rehearsal"
       title={copy.title}
       trailing={<LucidIconAction icon="close" label={copy.close} onPress={() => void close()} />}
     >
+      {!currentForScene || currentForScene.status === 'completed' ? (
       <LucidCard style={compact ? { ...styles.notice, ...styles.noticeCompact } : styles.notice} testID={compact ? "lucid-dream-rehearsal-notice-compact" : "lucid-dream-rehearsal-notice"}>
         <Text style={[styles.body, { color: palette.textSecondary }]}>{copy.local}</Text>
       </LucidCard>
+      ) : null}
 
       {loading ? (
         <Text accessibilityLiveRegion="polite" style={[styles.body, { color: palette.textSecondary }]}>
@@ -600,7 +602,7 @@ export default function LucidDreamRehearsalScreen() {
             {scene.title || copy.emptyScene}
           </Text>
           {scene.excerpt ? (
-            <Text style={[styles.body, { color: palette.textSecondary }]}>{scene.excerpt}</Text>
+            <Text numberOfLines={currentForScene && currentForScene.status !== 'completed' ? 2 : undefined} style={[styles.body, { color: palette.textSecondary }]}>{scene.excerpt}</Text>
           ) : (
             <Text style={[styles.body, { color: palette.textSecondary }]}>{copy.emptyScene}</Text>
           )}

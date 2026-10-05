@@ -93,6 +93,7 @@ jest.mock('@/context/LucidTrainerContext', () => ({
   }),
 }));
 jest.mock('@/components/lucid/LucidUI', () => ({
+  LucidDisclosure: ({ children }: { children: React.ReactNode }) => <section>{children}</section>,
   LucidScreen: ({ children, testID, title, trailing }: any) => (
     <main data-testid={testID}><h1>{title}</h1>{trailing}{children}</main>
   ),
@@ -108,6 +109,7 @@ jest.mock('@/components/lucid/LucidUI', () => ({
   ),
 }));
 jest.mock('@/services/lucidHealthKit', () => ({
+  getLucidHealthKitAvailability: jest.fn().mockResolvedValue('available'),
   requestLucidHealthKitSleepReadAuthorization: (...args: unknown[]) => mockRequestAuth(...args),
   queryLucidHealthKitSleepAnalysis: (...args: unknown[]) => mockQuery(...args),
 }));
@@ -154,11 +156,12 @@ describe('Lucid sleep integration prototype', () => {
     await waitFor(() => expect(mockLoadSnapshot).toHaveBeenCalledWith('guest'));
     expect(mockRequestAuth).not.toHaveBeenCalled();
     expect(mockQuery).not.toHaveBeenCalled();
-    expect(screen.getByText(/does not detect REM in real time/)).not.toBeNull();
+    expect(screen.getByText(/No live sleep detection or night cues/)).not.toBeNull();
   });
 
   it('connects only after the explicit CTA, then saves a local snapshot', async () => {
     render(<LucidSleepIntegrationScreen />);
+    await waitFor(() => expect(screen.getByTestId('lucid-sleep-connect').hasAttribute('disabled')).toBe(false));
     fireEvent.click(screen.getByTestId('lucid-sleep-connect'));
     await waitFor(() => expect(mockImportSnapshot).toHaveBeenCalled());
     expect(mockRequestAuth.mock.invocationCallOrder[0]).toBeLessThan(mockQuery.mock.invocationCallOrder[0]);
@@ -172,6 +175,7 @@ describe('Lucid sleep integration prototype', () => {
   it('describes an empty native query as no data or access not granted, never denied', async () => {
     mockQuery.mockResolvedValue({ status: 'empty', reason: 'ambiguous_empty' });
     render(<LucidSleepIntegrationScreen />);
+    await waitFor(() => expect(screen.getByTestId('lucid-sleep-connect').hasAttribute('disabled')).toBe(false));
     fireEvent.click(screen.getByTestId('lucid-sleep-connect'));
     await waitFor(() => expect(mockRecordEmpty).toHaveBeenCalled());
     expect(screen.getByText(/no data or access not granted/i)).not.toBeNull();
@@ -263,6 +267,7 @@ describe('Lucid sleep integration prototype', () => {
   it('keeps the previous snapshot when import persistence fails', async () => {
     mockImportSnapshot.mockRejectedValue(new Error('kv down'));
     render(<LucidSleepIntegrationScreen />);
+    await waitFor(() => expect(screen.getByTestId('lucid-sleep-connect').hasAttribute('disabled')).toBe(false));
     fireEvent.click(screen.getByTestId('lucid-sleep-connect'));
     await waitFor(() =>
       expect(screen.getByText(/The local copy could not be changed. The previous snapshot was kept./)).not.toBeNull()

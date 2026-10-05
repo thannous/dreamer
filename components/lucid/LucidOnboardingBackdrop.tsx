@@ -10,6 +10,8 @@ import {
 import Animated, { useReducedMotion, type CSSStyle } from 'react-native-reanimated';
 
 import { DURATION, EASE } from '@/components/motion/motion';
+import { getLucidPalette } from '@/constants/lucidTheme';
+import { useTheme } from '@/context/ThemeContext';
 import type { ThemeAmbience } from '@/lib/themeAmbience';
 
 const ONBOARDING_SCENES = [
@@ -95,6 +97,9 @@ export function LucidOnboardingBackdrop({
   const systemReducedMotion = useReducedMotion();
   const motionReduced = reduceMotion || systemReducedMotion;
   const ambienceStyle = AMBIENCE_STYLES[ambience];
+  const { colors, mode } = useTheme();
+  const palette = getLucidPalette(colors, mode);
+  const lightReading = ambience === 'morning' || ambience === 'light';
   const readabilityColor = step === 0
     ? ambienceStyle.introScrim
     : step === 2
@@ -145,6 +150,13 @@ export function LucidOnboardingBackdrop({
       <View
         style={[styles.readabilityScrim, { backgroundColor: readabilityColor }]}
       />
+      {lightReading ? (
+        <LinearGradient
+          colors={[`${palette.background}E8`, `${palette.background}F5`, palette.background]}
+          locations={[0, 0.25, 0.55]}
+          style={StyleSheet.absoluteFill}
+        />
+      ) : null}
     </View>
   );
 }

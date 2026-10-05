@@ -54,6 +54,8 @@ export function DateTimePicker({
   maximumDate,
   testID,
   disabled,
+  themeVariant,
+  accentColor,
   style,
 }: DateTimePickerProps) {
   const handleChange = (event: ChangeEvent<HTMLInputElement>) => {
@@ -82,7 +84,7 @@ export function DateTimePicker({
       onChange={handleChange}
       disabled={disabled}
       data-testid={testID}
-      style={style}
+      style={{ color: 'inherit', colorScheme: themeVariant, accentColor, ...style }}
     />
   );
 }

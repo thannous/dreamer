@@ -36,7 +36,7 @@ const COPY = {
     sourceFallback: 'Historical source unavailable', saved: 'Saved',
   },
   fr: {
-    eyebrow: 'Ta mémoire onirique', title: 'Signes oniriques', subtitle: 'Examine les motifs récurrents avant qu’ils influencent ton entraînement.',
+    eyebrow: 'Votre mémoire onirique', title: 'Signes oniriques', subtitle: 'Examinez les motifs récurrents avant qu’ils influencent votre entraînement.',
     close: 'Fermer', candidates: 'Motifs à examiner', confirmed: 'Confirmé', rejected: 'Écarté', pending: 'À examiner',
     frequency: (count: number) => `Vu dans ${count} rêve${count > 1 ? 's' : ''}`,
     sources: 'Rêves sources', rename: 'Nom personnel (facultatif)', confirm: 'Confirmer le signe', reject: 'Ce n’est pas un signe', reconsider: 'Réexaminer',

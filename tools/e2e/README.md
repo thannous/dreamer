@@ -22,6 +22,17 @@ Discovery starts no engine: `mise exec -- node tools/e2e/run.mjs lucid web list`
 The web products start separate local servers on ports 8096–8099; root app
 services are mocked and external requests are blocked in app tests. Meditation
 web proves routing/storage on the web only, not native audio or purchases.
+Each Expo web start clears its Metro bundle cache; Dreamer and Lucid also set
+both variant markers explicitly. Switching products must not reuse the previous
+product's embedded Expo configuration. Environment profiles and runner guards
+still apply.
+For the opt-in onboarding story, use
+`EXPO_PUBLIC_ONBOARDING_FEATURE_SHEETS_ENABLED=true mise exec -- node tools/e2e/run.mjs dreamer web run --trace`.
+The config forwards this opt-in to the app command; without it, the story test
+is explicitly skipped and does not constitute qualification of that feature.
+Dreamer also verifies that Quick Settings actually selects French and both
+themes while preserving the Capture draft and language after reload. This
+guards the web click regression from using a native gesture pressable there.
 
 Native examples (use the actual dedicated running emulator or available Simulator):
 
@@ -44,6 +55,14 @@ required intention/experience and entry to sleep settings; Meditation onboarding
 restart persistence and tabs; generated site homepage/internal navigation.
 Native counterparts are deliberately limited to installed-build checks. Add the
 affected user journey here; legacy coverage is not yet fully migrated.
+
+Lucid also checks dark time-field contrast, nondefault sleep times surviving a
+reload, full tab and shortcut labels at 320/360/390 pixels, light/dark programs,
+beginner WBTB restrictions, shared account-form validation, two morning captures
+persisted in Journal and their confirmed sign linked to both Atlas sources,
+and stabilization/SSILD pause and resume after reload. Browser locale is French
+for this suite. These mock-service browser journeys do not qualify native Lucid.
+The existing Playwright visual journey and native Maestro coverage remain.
 
 Reports, JUnit, Markdown, screenshots and browser traces are in
 `tools/e2e/.e2e/<product>-<platform>/<run>/`. `evidence.json` identifies source revision,

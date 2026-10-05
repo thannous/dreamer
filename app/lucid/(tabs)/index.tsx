@@ -693,7 +693,7 @@ export default function LucidTodayScreen() {
                 name={action.icon}
                 size={LucidIcon.md}
               />
-              <Text numberOfLines={1} style={[styles.contextLabel, { color: palette.text }]}>
+              <Text style={[styles.contextLabel, { color: palette.text }]}>
                 {action.label}
               </Text>
             </PressableScale>
@@ -856,7 +856,7 @@ const styles = StyleSheet.create({
   },
   rhythmLabel: {
     flex: 1,
-    fontFamily: 'SpaceGrotesk_600SemiBold',
+    fontFamily: 'SpaceGrotesk_500Medium',
     fontSize: LucidType.caption[0],
     lineHeight: LucidType.caption[1],
   },
@@ -879,18 +879,18 @@ const styles = StyleSheet.create({
   contextAction: {
     flex: 1,
     minWidth: 0,
-    minHeight: 56,
+    minHeight: 72,
     borderRadius: LucidRadius.lg,
     borderWidth: 1,
-    flexDirection: 'row',
+    flexDirection: 'column',
     alignItems: 'center',
     justifyContent: 'center',
-    gap: LucidSpace.sm,
+    gap: LucidSpace.xs,
     paddingHorizontal: LucidSpace.sm,
     paddingVertical: LucidSpace.sm,
   },
   contextLabel: {
-    fontFamily: 'SpaceGrotesk_600SemiBold',
+    fontFamily: 'SpaceGrotesk_500Medium',
     fontSize: LucidType.caption[0],
     lineHeight: LucidType.caption[1],
     textAlign: 'center',

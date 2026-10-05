@@ -26,7 +26,7 @@ export default {
     name: `${product}-${platform}`,
     engine: native
       ? mobile({ platform: platform as 'android' | 'ios', device, videoTouches: false })
-      : web({ viewport: { width: 390, height: 844 }, locale: 'en-US' }),
+      : web({ viewport: { width: 390, height: 844 }, locale: product === 'lucid' ? 'fr-FR' : 'en-US' }),
     app: native ? { bundleId, environment: 'test' as const } : {
       url: `http://127.0.0.1:${port}`,
       environment: 'test' as const,
@@ -35,9 +35,18 @@ export default {
         startupTimeout: 180_000, log: `.e2e/${product}-${platform}/app.log`,
       } : {
         executable: 'npm',
-        args: ['run', product === 'meditation' ? 'web' : product === 'lucid' ? 'start:lucid:mock' : 'start:mock', '--', ...(product === 'meditation' ? [] : ['--web']), '--port', String(port)],
+        args: ['run', product === 'meditation' ? 'web' : product === 'lucid' ? 'start:lucid:mock' : 'start:mock', '--', ...(product === 'meditation' ? [] : ['--web']), '--clear', '--port', String(port)],
         cwd: product === 'meditation' ? `${root}apps/meditation` : root,
-        env: { CI: '1', EXPO_PUBLIC_MOCK_MODE: 'true', EXPO_PUBLIC_MOCK_AUDIO: 'true', EXPO_PUBLIC_MOCK_PERSISTENCE: 'true' },
+        env: {
+          CI: '1', EXPO_PUBLIC_MOCK_MODE: 'true', EXPO_PUBLIC_MOCK_AUDIO: 'true', EXPO_PUBLIC_MOCK_PERSISTENCE: 'true',
+          ...(product === 'meditation' ? {} : {
+            NOCTALIA_APP_VARIANT: product === 'lucid' ? 'lucid' : 'noctalia',
+            EXPO_PUBLIC_APP_VARIANT: product === 'lucid' ? 'lucid' : 'noctalia',
+          }),
+          ...(product === 'dreamer' ? {
+            EXPO_PUBLIC_ONBOARDING_FEATURE_SHEETS_ENABLED: process.env.EXPO_PUBLIC_ONBOARDING_FEATURE_SHEETS_ENABLED === 'true' ? 'true' : 'false',
+          } : {}),
+        },
         startupTimeout: 180_000, log: `.e2e/${product}-${platform}/app.log`,
       },
     },

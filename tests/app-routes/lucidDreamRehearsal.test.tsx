@@ -263,7 +263,7 @@ describe('Lucid dream rehearsal screen', () => {
   it('rejects missing and unmatched params without choosing another dream or sign', () => {
     mockParams = {};
     const missing = render(<LucidDreamRehearsalScreen />);
-    expect(screen.getByTestId('lucid-dream-rehearsal-selection-error').textContent).toMatch(/Choisis un rêve/);
+    expect(screen.getByTestId('lucid-dream-rehearsal-selection-error').textContent).toMatch(/un rêve et un signe confirmé/);
     expect(screen.queryByTestId('lucid-dream-rehearsal-scene')).toBeNull();
     missing.unmount();
 
@@ -280,7 +280,7 @@ describe('Lucid dream rehearsal screen', () => {
 
     mockRehearsal = { ...mockRehearsal, currentSession: started() };
     rerender(<LucidDreamRehearsalScreen />);
-    expect(screen.getByText(/Cherche exactement ce signe/)).not.toBeNull();
+    expect(screen.getByText(/Cherchez exactement ce signe/)).not.toBeNull();
     fireEvent.click(screen.getByTestId('lucid-dream-rehearsal-primary'));
     await waitFor(() => expect(mockRecognize).toHaveBeenCalledWith(SIGN_ID));
 
@@ -342,10 +342,10 @@ describe('Lucid dream rehearsal screen', () => {
     expect(mockUseGuidedRitualSound).toHaveBeenCalledWith(true);
     expect(screen.getByTestId('lucid-dream-rehearsal-step-static')).not.toBeNull();
     expect(screen.queryByTestId('lucid-dream-rehearsal-step-motion')).toBeNull();
-    expect(screen.getByText(/Cherche exactement ce signe/)).not.toBeNull();
+    expect(screen.getByText(/Cherchez exactement ce signe/)).not.toBeNull();
     fireEvent.click(screen.getByTestId('lucid-dream-rehearsal-primary'));
     await waitFor(() => expect(mockRecognize).toHaveBeenCalledWith(SIGN_ID));
-    expect(screen.getByText(/Cherche exactement ce signe/)).not.toBeNull();
+    expect(screen.getByText(/Cherchez exactement ce signe/)).not.toBeNull();
 
     cleanup();
     mockRehearsal = { ...mockRehearsal, currentSession: null };
@@ -359,7 +359,7 @@ describe('Lucid dream rehearsal screen', () => {
     const motion = render(<LucidDreamRehearsalScreen />);
     expect(screen.getByTestId('lucid-dream-rehearsal-step-motion').getAttribute('data-distance')).toBe('8');
     expect(screen.queryByTestId('lucid-dream-rehearsal-step-static')).toBeNull();
-    expect(screen.getByText(/Cherche exactement ce signe/)).not.toBeNull();
+    expect(screen.getByText(/Cherchez exactement ce signe/)).not.toBeNull();
     expect(screen.getByTestId('lucid-dream-rehearsal-primary').textContent).toBe('J’ai reconnu ce signe');
     motion.unmount();
 
@@ -367,7 +367,7 @@ describe('Lucid dream rehearsal screen', () => {
     render(<LucidDreamRehearsalScreen />);
     expect(screen.getByTestId('lucid-dream-rehearsal-step-static').getAttribute('data-distance')).toBe('0');
     expect(screen.queryByTestId('lucid-dream-rehearsal-step-motion')).toBeNull();
-    expect(screen.getByText(/Cherche exactement ce signe/)).not.toBeNull();
+    expect(screen.getByText(/Cherchez exactement ce signe/)).not.toBeNull();
     expect(screen.getByTestId('lucid-dream-rehearsal-primary').textContent).toBe('J’ai reconnu ce signe');
   });
 
@@ -381,7 +381,7 @@ describe('Lucid dream rehearsal screen', () => {
       fr: {
         title: 'Répéter cette scène',
         subtitle: 'Un rêve choisi. Un signe confirmé. Une seule prochaine action.',
-        hint: 'Cherche exactement ce signe dans la scène. N’en invente pas un autre.',
+        hint: 'Cherchez exactement ce signe dans la scène. N’en inventez pas un autre.',
       },
       es: {
         title: 'Repetir esta escena',
@@ -407,7 +407,6 @@ describe('Lucid dream rehearsal screen', () => {
       render(<LucidDreamRehearsalScreen />);
       const body = screen.getByTestId('lucid-dream-rehearsal').textContent ?? '';
       expect(screen.getByRole('heading', { level: 1 }).textContent).toBe(expected[locale].title);
-      expect(screen.getByText(expected[locale].subtitle)).not.toBeNull();
       expect(screen.getByText(expected[locale].hint)).not.toBeNull();
       expect(screen.getByTestId('lucid-dream-rehearsal-primary')).not.toBeNull();
       expect(body).not.toMatch(/eyebrow|recognizeHint|intendHint|statusCompleted|copy\./);
