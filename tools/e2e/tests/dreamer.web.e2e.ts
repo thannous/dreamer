@@ -32,14 +32,14 @@ test('Quick Settings changes language and theme without losing the Capture draft
   await screen.getByTestId('quick-settings.language', { visible: true }).tap();
   const french = screen.getByTestId('quick-settings.language.fr', { visible: true });
   await french.tap();
-  await expect(french).toBeChecked();
+  await expect(french).toHaveAttribute('aria-checked', 'true');
   await screen.getByTestId('quick-settings.close', { visible: true }).tap();
   await expect(screen.getByTestId('btn.recording.inputMode.text', { visible: true })).toContainText('Écrire');
   for (const [theme, background] of [['dark', 'rgb(20, 19, 26)'], ['light', 'rgb(245, 234, 219)']]) {
     await settings.tap();
     const choice = screen.getByTestId(`quick-settings.theme.${theme}`, { visible: true });
     await choice.tap();
-    await expect(choice).toBeChecked();
+    await expect(choice).toHaveAttribute('aria-checked', 'true');
     await screen.getByTestId('quick-settings.close', { visible: true }).tap();
     await expect.poll(() => browser.evaluate(() => {
       const input = document.querySelector('[data-testid="input.dreamTranscript"]');

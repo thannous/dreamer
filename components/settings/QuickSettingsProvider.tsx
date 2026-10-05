@@ -55,6 +55,7 @@ function PreferenceChoices<T extends string>({ preference, id, showTitle = true 
             disabled={preference.loading || preference.saving}
             accessibilityRole="radio" accessibilityLabel={option.label}
             accessibilityState={{ checked: option.current, disabled: preference.loading || preference.saving }}
+            {...(Platform.OS === 'web' ? { 'aria-checked': option.current } : {})}
             testID={`quick-settings.${id}.${option.value}`}
             className={`min-h-12 max-w-full flex-row items-center justify-center gap-2 rounded-xl border px-4 py-3 ${option.current ? 'border-champagne-soft bg-champagne' : 'border-line bg-ink-soft'}`}>
             <IconSymbol name={id === 'language' ? 'globe' : OPTION_ICONS[option.value] ?? GROUP_ICONS[id]} size={18}
