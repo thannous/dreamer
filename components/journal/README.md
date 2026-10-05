@@ -16,6 +16,11 @@ There is no feature-specific palette or appearance provider.
   reading content; native iOS scroll-edge blur is disabled on this route. The primary
   action appears when the story enters the viewport and hides during editing.
   White borders baked into a generated illustration are image content, not theme surfaces.
+- Navigation, decorative headings, list previews and control labels use bounded
+  explicit font metrics. Readonly text uses matching drawing and layout sizes to
+  avoid stale native measurements during live Dynamic Type changes. Search and
+  dream editor instances remain stable so queries, selections and drafts survive
+  resizing. Dream prose and its editable field retain native font scaling.
 - After a palette change run `npm run uniwind:types` (includes CSS generation).
   `npm run theme:check` rejects generated CSS drift; `npm run brand:check` independently
   verifies CSS/runtime contracts without executing native theme code.

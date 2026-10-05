@@ -1,5 +1,5 @@
 import React, { useMemo } from 'react';
-import { StyleSheet, Text, View } from 'react-native';
+import { StyleSheet, Text, View, useWindowDimensions } from 'react-native';
 
 import { getNoctaliaDesignTokens } from '@/constants/noctaliaDesign';
 import { Fonts } from '@/constants/theme';
@@ -17,6 +17,10 @@ type RecordingDraftProgressProps = {
 
 export function RecordingDraftProgress({ value, persisted = false, compact = false, inlineStatus = false }: RecordingDraftProgressProps) {
   const { colors, mode } = useTheme();
+  const { fontScale } = useWindowDimensions();
+  const controlFontScale = Math.min(1.3, Math.max(1, fontScale));
+  const hintTypography = { fontSize: 13 * controlFontScale, lineHeight: 16 * controlFontScale };
+  const captionTypography = { fontSize: 12 * controlFontScale, lineHeight: 16 * controlFontScale };
   const { t } = useTranslation();
   const noctalia = useMemo(() => getNoctaliaDesignTokens(colors, mode), [colors, mode]);
   const progress = useMemo(() => getRecordingDraftProgress(value), [value]);
@@ -32,23 +36,27 @@ export function RecordingDraftProgress({ value, persisted = false, compact = fal
     >
       {!compact ? <View style={styles.headerRow}>
         {inlineStatus && savedLabel ? (
-          <Text accessibilityLiveRegion="polite" accessibilityHint={hint} style={[styles.hint, { color: noctalia.text.secondary }]}>{savedLabel}</Text>
+          <Text key={`status-${fontScale}`} allowFontScaling={false} accessibilityLiveRegion="polite" accessibilityHint={hint} style={[styles.hint, hintTypography, { color: noctalia.text.secondary }]}>{savedLabel}</Text>
         ) : shouldShowHint ? (
-          <Text style={[styles.hint, { color: noctalia.text.secondary }]}>
+          <Text key={`hint-${fontScale}`} allowFontScaling={false} style={[styles.hint, hintTypography, { color: noctalia.text.secondary }]}>
             {hint}
           </Text>
         ) : null}
         <Text
+          key={`count-${fontScale}`}
+          allowFontScaling={false}
           testID={TID.Component.RecordingDraftProgressCount}
-          style={[styles.count, { color: noctalia.text.secondary }]}
+          style={[styles.count, captionTypography, { color: noctalia.text.secondary }]}
         >
           {countLabel}
         </Text>
       </View> : null}
       {savedLabel && !inlineStatus ? (
         <Text
+          key={`saved-${fontScale}`}
+          allowFontScaling={false}
           accessibilityLiveRegion="polite"
-          style={[styles.saved, { color: noctalia.text.secondary }]}
+          style={[styles.saved, captionTypography, { color: noctalia.text.secondary }]}
         >
           {savedLabel}
         </Text>

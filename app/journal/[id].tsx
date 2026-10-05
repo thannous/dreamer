@@ -277,6 +277,9 @@ const JournalDetailContent = memo(function JournalDetailContent({ dream }: { dre
   const { colors, shadows, mode } = useTheme();
   const insets = useSafeAreaInsets();
   const windowSize = useWindowDimensions();
+  const compactTextScale = Math.min(1.3, Math.max(1, windowSize.fontScale));
+  const titleTextScale = Math.min(1.4, Math.max(1, windowSize.fontScale));
+  const metadataTextStyle = { fontSize: 13 * compactTextScale, lineHeight: 18 * compactTextScale };
   const [coverViewport, setCoverViewport] = useState<{ width: number; height: number } | null>(null);
   const [readingActionVisible, setReadingActionVisible] = useState(false);
   const [navigationOverImage, setNavigationOverImage] = useState(false);
@@ -287,7 +290,7 @@ const JournalDetailContent = memo(function JournalDetailContent({ dream }: { dre
   const navigationHeight = insets.top + 76;
   // The heading owns its intrinsic height (including enlarged native text).
   // Artwork uses the remaining viewport, while fullscreen retains the original.
-  const introHeight = coverIntroHeight ?? 180 * windowSize.fontScale;
+  const introHeight = coverIntroHeight ?? 180 * Math.min(windowSize.fontScale, 1.4);
   const coverHeight = Math.max(96, Math.min(
     viewportHeight * 0.62,
     viewportHeight - navigationHeight - introHeight - insets.bottom - 24
@@ -1694,7 +1697,7 @@ const JournalDetailContent = memo(function JournalDetailContent({ dream }: { dre
     >
       <View className="mb-3 flex-row items-center justify-between">
         <View className="flex-1 pr-3">
-          <Text accessibilityRole="header" testID={TID.Text.DreamDetailDreamZone} className="font-sans-bold text-[18px] text-ivory">
+          <Text key={`story-heading-${windowSize.fontScale}`} allowFontScaling={false} style={{ fontSize: 18 * compactTextScale, lineHeight: 24 * compactTextScale }} accessibilityRole="header" testID={TID.Text.DreamDetailDreamZone} className="font-sans-bold text-[18px] text-ivory">
             {t('journal.original_transcript')}
           </Text>
         </View>
@@ -1717,7 +1720,7 @@ const JournalDetailContent = memo(function JournalDetailContent({ dream }: { dre
             size={18}
             color={isEditingTranscript ? noctalia.action.primaryText : noctalia.accent.text}
           />
-          <Text className={`font-sans-medium text-[13px] ${isEditingTranscript ? 'text-on-champagne' : 'text-champagne-on'}`}>{t(isEditingTranscript ? 'journal.detail.save_edit' : 'journal.detail.edit_story')}</Text>
+          <Text allowFontScaling={false} style={metadataTextStyle} className={`font-sans-medium text-[13px] ${isEditingTranscript ? 'text-on-champagne' : 'text-champagne-on'}`}>{t(isEditingTranscript ? 'journal.detail.save_edit' : 'journal.detail.edit_story')}</Text>
         </PressableScale>
       </View>
       {isEditingTranscript ? (
@@ -1788,11 +1791,11 @@ const JournalDetailContent = memo(function JournalDetailContent({ dream }: { dre
               selectionColor={noctalia.accent.base}
             />
           ) : (
-            <Text accessibilityRole="header" className="mb-2 font-display-semibold text-[28px] leading-9 text-ivory">
+            <Text key={`dream-heading-${windowSize.fontScale}`} allowFontScaling={false} style={{ fontSize: 26 * titleTextScale, lineHeight: 32 * titleTextScale }} accessibilityRole="header" className="mb-2 font-display-semibold text-[26px] leading-8 text-ivory">
               {dream.title || t('journal.detail.untitled_dream')}
             </Text>
           )}
-          <Text className="mb-5 font-sans text-[12px] leading-5 text-ivory-muted">
+          <Text key={`dream-date-${windowSize.fontScale}`} allowFontScaling={false} style={{ fontSize: 12 * compactTextScale, lineHeight: 20 * compactTextScale }} className="mb-5 font-sans text-[12px] leading-5 text-ivory-muted">
             {formatDreamDate(dream.id)} · {formatDreamTime(dream.id)}
           </Text>
           {!isEditing && hasUncategorizedDraft && initialCategorizationPending ? (
@@ -1823,13 +1826,13 @@ const JournalDetailContent = memo(function JournalDetailContent({ dream }: { dre
           {dream.dreamType && (analysisState.isAnalyzed || dream.dreamType !== 'Symbolic Dream') ? (
             <View className="max-w-full flex-row items-center gap-1.5">
               <IconSymbol name="moon.stars.fill" size={15} color={noctalia.accent.text} />
-              <Text className="shrink font-sans-medium text-[13px] text-ivory-muted">{dreamTypeLabel || dream.dreamType}</Text>
+              <Text key={`dream-type-${windowSize.fontScale}`} allowFontScaling={false} style={metadataTextStyle} className="shrink font-sans-medium text-[13px] text-ivory-muted">{dreamTypeLabel || dream.dreamType}</Text>
             </View>
           ) : null}
           <View className="max-w-full flex-row items-center gap-1.5">
             <IconSymbol name="paintpalette" size={15} color={noctalia.accent.text} />
             {dreamThemeLabel ? (
-              <Text className="shrink font-sans-medium text-[13px] text-ivory-muted">{dreamThemeLabel}</Text>
+              <Text key={`dream-theme-${windowSize.fontScale}`} allowFontScaling={false} style={metadataTextStyle} className="shrink font-sans-medium text-[13px] text-ivory-muted">{dreamThemeLabel}</Text>
             ) : (
               <Pressable onPress={startMetadataEditing} disabled={isAnalysisLocked} accessibilityRole="button" className="min-h-[44px] shrink justify-center">
                 <Text className="font-sans-medium text-[13px] text-champagne-on underline">{t('journal.detail.theme_placeholder')}</Text>
@@ -2092,6 +2095,8 @@ const JournalDetailContent = memo(function JournalDetailContent({ dream }: { dre
         >
           <ActivityIndicator size="small" color={noctalia.accent.text} />
           <Text
+            allowFontScaling={false}
+            style={{ fontSize: 16 * compactTextScale, lineHeight: 24 * compactTextScale }}
             testID={TID.Text.DreamDetailActionTitle}
             className="flex-1 font-sans-bold text-[16px] text-ivory"
           >
@@ -2122,7 +2127,7 @@ const JournalDetailContent = memo(function JournalDetailContent({ dream }: { dre
             accessibilityHint={quotaHintLabel ?? undefined}
             className={`min-h-[52px] flex-row items-center justify-between gap-3 rounded-xl bg-champagne px-4 py-3 ${disabled ? 'opacity-75' : ''}`}>
             <IconSymbol name={detailActionCard.icon} size={20} color={noctalia.action.primaryText} />
-            <Text testID={TID.Text.DreamDetailActionTitle} className="flex-1 text-center font-sans-bold text-[16px] text-on-champagne">
+            <Text key={`continue-${windowSize.fontScale}`} allowFontScaling={false} style={{ fontSize: 16 * compactTextScale, lineHeight: 24 * compactTextScale }} testID={TID.Text.DreamDetailActionTitle} className="flex-1 text-center font-sans-bold text-[16px] text-on-champagne">
               {detailActionCard.cta}
             </Text>
             <IconSymbol name="arrow.right" size={20} color={noctalia.action.primaryText} />
@@ -2159,6 +2164,9 @@ const JournalDetailContent = memo(function JournalDetailContent({ dream }: { dre
               {detailActionCard.step}
             </Text> : null}
             <Text
+              key={`action-${windowSize.fontScale}`}
+              allowFontScaling={false}
+              style={{ fontSize: 17 * compactTextScale, lineHeight: 23 * compactTextScale }}
               className={`font-display-medium text-[17px] leading-[23px] text-ivory`}
               testID={TID.Text.DreamDetailActionTitle}
             >
@@ -2636,7 +2644,7 @@ const JournalDetailContent = memo(function JournalDetailContent({ dream }: { dre
           hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}
         >
           <IconSymbol name="chevron.left" size={22} color={noctalia.text.primary} />
-          <Text className="font-sans-medium text-[13px] text-ivory">{t('nav.journal')}</Text>
+          <Text key={`journal-back-${windowSize.fontScale}`} allowFontScaling={false} style={metadataTextStyle} className="font-sans-medium text-[13px] text-ivory">{t('nav.journal')}</Text>
         </PressableScale>
         </View>
         {!isEditing && !isEditingTranscript && (!hasIllustratedCover || readingActionVisible) ? (

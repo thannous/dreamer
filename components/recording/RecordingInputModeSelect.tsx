@@ -1,5 +1,5 @@
 import React, { useMemo } from 'react';
-import { Pressable, StyleSheet, Text, View } from 'react-native';
+import { Pressable, StyleSheet, Text, View, useWindowDimensions } from 'react-native';
 
 import { IconSymbol } from '@/components/ui/icon-symbol';
 import { getNoctaliaDesignTokens } from '@/constants/noctaliaDesign';
@@ -23,6 +23,8 @@ export function RecordingInputModeSelect({
   onChange,
 }: RecordingInputModeSelectProps) {
   const { colors, mode } = useTheme();
+  const { fontScale } = useWindowDimensions();
+  const controlFontScale = Math.min(1.3, Math.max(1, fontScale));
   const { t } = useTranslation();
   const noctalia = useMemo(() => getNoctaliaDesignTokens(colors, mode), [colors, mode]);
   const options = useMemo(
@@ -87,9 +89,11 @@ export function RecordingInputModeSelect({
               color={isSelected && mode === 'dark' ? noctalia.action.primaryText : isSelected ? noctalia.text.primary : noctalia.text.secondary}
             />
             <Text
+              key={fontScale}
+              allowFontScaling={false}
               style={[
                 styles.optionText,
-                { color: isSelected && mode === 'dark' ? noctalia.action.primaryText : isSelected ? noctalia.text.primary : noctalia.text.secondary },
+                { fontSize: 15 * controlFontScale, lineHeight: 20 * controlFontScale, color: isSelected && mode === 'dark' ? noctalia.action.primaryText : isSelected ? noctalia.text.primary : noctalia.text.secondary },
               ]}
               testID={TID.Text.RecordingInputMode(option.value)}
             >

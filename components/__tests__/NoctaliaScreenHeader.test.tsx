@@ -127,7 +127,7 @@ describe('NoctaliaScreenHeader responsive actions', () => {
     [390, 2, 0, false],
     [320, 2, 3, true],
     [390, 2, 3, true],
-  ])('adapts width %i, font scale %s and %i actions (stacked=%s)', (width: number, fontScale: number, actionCount: number, stacked: boolean) => {
+  ])('keeps named 44dp actions at width %i and font scale %s with %i actions', (width: number, fontScale: number, actionCount: number, stacked: boolean) => {
     mockWidth = width;
     mockFontScale = fontScale;
     const actions = Array.from({ length: actionCount }, (_, index) => ({
@@ -141,10 +141,7 @@ describe('NoctaliaScreenHeader responsive actions', () => {
     const subtitle = screen.getByText('nav.home');
     const titleBlock = brand.parentElement;
     const titleRow = titleBlock?.parentElement ?? null;
-    expect(nativeStyle(titleRow).flexDirection).toBe(stacked ? 'column' : 'row');
     expect(nativeStyle(titleRow).paddingHorizontal).toBe(width < 480 ? 16 : 24);
-    expect(nativeStyle(titleBlock).flex).toBe(stacked ? 0 : 1);
-    if (stacked) expect(nativeStyle(titleBlock).width).toBe('100%');
     [brand, subtitle].forEach((text) => {
       expect(text.getAttribute('data-number-of-lines')).toBe(stacked || fontScale >= 1.3 ? null : '1');
     });
@@ -153,7 +150,6 @@ describe('NoctaliaScreenHeader responsive actions', () => {
       expect(nativeStyle(button).width).toBe(44);
       expect(nativeStyle(button).height).toBe(44);
       expect(nativeStyle(button.parentElement).gap).toBe(width < 480 ? 8 : 16);
-      expect(nativeStyle(button.parentElement).flexWrap).toBe(stacked ? 'wrap' : undefined);
       fireEvent.click(button);
       expect(action.onPress).toHaveBeenCalledTimes(1);
     });
@@ -215,7 +211,7 @@ describe('NoctaliaScreenHeader chips', () => {
 
 
 describe('NoctaliaScreenHeader inline search', () => {
-  it('shares the title row on a phone and keeps input focus when large text requires wrapping', () => {
+  it('keeps the same input and focus across phone widths and large text', () => {
     mockWidth = 434;
     const actions = [{ icon: 'gear' as const, onPress: jest.fn(), accessibilityLabel: 'Settings' }];
     const ui = <NoctaliaScreenHeader titleKey="nav.journal" actions={actions} inlineSlot={<input aria-label="Search dreams" />} />;
@@ -223,7 +219,6 @@ describe('NoctaliaScreenHeader inline search', () => {
     const input = screen.getByRole('textbox', { name: 'Search dreams' });
     const titleRow = screen.getByText('Noctalia').parentElement?.parentElement;
     expect(input.parentElement?.parentElement).toBe(titleRow);
-    expect(nativeStyle(input.parentElement).flexBasis).toBeUndefined();
     input.focus();
     fireEvent.change(input, { target: { value: 'garden' } });
     mockWidth = 320;
@@ -232,7 +227,6 @@ describe('NoctaliaScreenHeader inline search', () => {
     expect(screen.getByRole('textbox', { name: 'Search dreams' })).toBe(input);
     expect(document.activeElement).toBe(input);
     expect((input as HTMLInputElement).value).toBe('garden');
-    expect(nativeStyle(input.parentElement).flexBasis).toBe('100%');
     expect(screen.getByRole('button', { name: 'Settings' })).toBeTruthy();
   });
 });

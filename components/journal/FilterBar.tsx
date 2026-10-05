@@ -6,7 +6,7 @@ import { getDreamThemeLabel } from '@/lib/dreamLabels';
 import type { DreamTheme, DreamType } from '@/lib/types';
 import React, { memo, useCallback, useMemo, useRef, useState } from 'react';
 import { LinearGradient } from 'expo-linear-gradient';
-import { ScrollView, Text, View } from 'react-native';
+import { ScrollView, Text, View, useWindowDimensions } from 'react-native';
 import Svg, { Path } from 'react-native-svg';
 import { IconSymbol } from '@/components/ui/icon-symbol';
 
@@ -264,6 +264,8 @@ export const FilterBar = memo(function FilterBar({
   selectedTheme,
 }: FilterBarProps) {
   const { colors, mode } = useTheme();
+  const { fontScale } = useWindowDimensions();
+  const labelStyle = { fontSize: 14 * Math.min(1.15, Math.max(1, fontScale)), lineHeight: 20 * Math.min(1.15, Math.max(1, fontScale)) };
   const noctalia = useMemo(() => getNoctaliaDesignTokens(colors, mode), [colors, mode]);
   const { t } = useTranslation();
   const scrollMetrics = useRef({ viewport: 0, content: 0, offset: 0 });
@@ -318,7 +320,10 @@ export const FilterBar = memo(function FilterBar({
               {!['all', 'favorites', 'to_deepen'].includes(item.id) && renderIcon(item.id, color)}
               {item.label ? (
                 <Text
-                  className={`web:whitespace-nowrap shrink-0 grow-0 font-sans-medium text-[14px] ${
+                  key={fontScale}
+                  allowFontScaling={false}
+                  style={labelStyle}
+                  className={`web:whitespace-nowrap shrink-0 grow-0 font-sans-medium text-[14px] leading-5 ${
                     isActive ? 'text-on-champagne' : 'text-ivory'
                   }`}
                 >
@@ -339,7 +344,7 @@ export const FilterBar = memo(function FilterBar({
             testID={clearTestID}
           >
             <CloseIcon size={16} color={iconColor} />
-            <Text className="shrink-0 grow-0 font-sans-medium text-[14px] text-ivory">
+            <Text key={fontScale} allowFontScaling={false} style={labelStyle} className="shrink-0 grow-0 font-sans-medium text-[14px] leading-5 text-ivory">
               {t('journal.filter.clear')}
             </Text>
           </PressableScale>
@@ -353,7 +358,7 @@ export const FilterBar = memo(function FilterBar({
         colors={[`${noctalia.screen.background}00`, noctalia.screen.background]}
         start={{ x: 0, y: 0.5 }}
         end={{ x: 1, y: 0.5 }}
-        className="absolute inset-y-0 right-0 w-6"
+        style={{ position: 'absolute', top: 0, bottom: 0, right: 0, width: 24 }}
       />
     )}
     </View>

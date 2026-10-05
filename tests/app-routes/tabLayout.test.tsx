@@ -373,7 +373,6 @@ describe('TabLayout returning guest navigation', () => {
     expect(box.width).toBeCloseTo(54.8, 1);
     expect(box.height).toBe(76);
     labels.forEach((label) => {
-      expect(label.getAttribute('data-max-font-size-multiplier')).toBeNull();
       expect(label.getAttribute('data-number-of-lines')).toBe('1');
       expect(label.getAttribute('data-accessible')).toBe('false');
       expect(label.getAttribute('data-native-class')).toContain('w-full');
@@ -381,7 +380,7 @@ describe('TabLayout returning guest navigation', () => {
     });
   });
 
-  it('keeps five visible labels at fontScale 2 while the narrow bar grows', () => {
+  it('keeps five named destinations at large text', () => {
     mockPlatformOS = 'android';
     mockWindowWidth = 320;
     mockWindowHeight = 640;
@@ -392,7 +391,6 @@ describe('TabLayout returning guest navigation', () => {
 
     expect(capturedTabBarStyle).toEqual(expect.objectContaining({
       end: 8,
-      height: 134,
       paddingHorizontal: 4,
       start: 8,
     }));
@@ -406,8 +404,6 @@ describe('TabLayout returning guest navigation', () => {
     ]).toHaveLength(5);
     const box = centerBox('nav.capture_dream_compact');
     expect(box.width).toBe(54.8);
-    expect(box.height).toBe(124);
-    expect(screen.getByText(/^nav\.capture_dream(?:_compact)?$/).getAttribute('data-number-of-lines')).toBe('2');
     expect(capturedScreens.find((s) => s.name === 'explore')?.options).toEqual(
       expect.objectContaining({ title: 'nav.explore' }),
     );
@@ -431,7 +427,7 @@ describe('TabLayout returning guest navigation', () => {
     }
   });
 
-  it('keeps compact landscape words visible at fontScale 2 while the bar grows', () => {
+  it('keeps compact landscape actions available at large text', () => {
     mockPlatformOS = 'android';
     mockWindowWidth = 915;
     mockWindowHeight = 412;
@@ -440,14 +436,10 @@ describe('TabLayout returning guest navigation', () => {
 
     render(<TabLayout />);
 
-    expect(capturedTabBarStyle).toEqual(expect.objectContaining({
-      height: 102,
-    }));
     expect(screen.getByText(/^nav\.capture_dream(?:_compact)?$/)).toBeTruthy();
     expect(screen.getByText(/^nav\.capture_dream(?:_compact)?$/).getAttribute('data-number-of-lines')).toBe('1');
     const box = centerBox('nav.capture_dream_compact');
     expect(box.width).toBeCloseTo(166.6, 2);
-    expect(box.height).toBe(92);
   });
 
   it.each([[640, 320], [915, 412]])('keeps Capture centered in one row at %i by %i dp', (width: number, height: number) => {
@@ -505,7 +497,7 @@ describe('TabLayout returning guest navigation', () => {
     view.unmount();
   });
 
-  it('widens the tab geometry at 390 dp without capping labels', () => {
+  it('widens the tab geometry at 390 dp', () => {
     mockPlatformOS = 'android';
     mockWindowWidth = 390;
     mockUseAuth.mockReturnValue({ returningGuestBlocked: false });
@@ -522,7 +514,6 @@ describe('TabLayout returning guest navigation', () => {
     expect(box.width).toBeCloseTo(67.2, 1);
     expect(box.height).toBe(76);
     expect(centerLabel.getAttribute('data-number-of-lines')).toBe('1');
-    expect(centerLabel.getAttribute('data-max-font-size-multiplier')).toBeNull();
     expect(centerLabel.getAttribute('data-accessible')).toBe('false');
   });
 });

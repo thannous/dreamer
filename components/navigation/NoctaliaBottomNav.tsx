@@ -1,5 +1,6 @@
 import { IconSymbol } from '@/components/ui/icon-symbol';
 import {
+  BOTTOM_NAVIGATION_MAX_FONT_SIZE_MULTIPLIER,
   DESKTOP_BREAKPOINT,
   getBottomNavigationLayout,
   getBottomNavigationItemStyle,
@@ -258,7 +259,8 @@ export function NoctaliaBottomNav({
                         numberOfLines={navigationLayout.centerLabelLines}
                         textBreakStrategy="simple"
                         ellipsizeMode="tail"
-                        adjustsFontSizeToFit={!navigationLayout.stackedLabels}
+                        adjustsFontSizeToFit
+                        maxFontSizeMultiplier={BOTTOM_NAVIGATION_MAX_FONT_SIZE_MULTIPLIER}
                         minimumFontScale={navigationLayout.narrow ? 0.75 : 0.85}
                       >
                         {item.label}
@@ -293,7 +295,8 @@ export function NoctaliaBottomNav({
                         numberOfLines={navigationLayout.labelLines}
                         textBreakStrategy="simple"
                         ellipsizeMode="tail"
-                        adjustsFontSizeToFit={!navigationLayout.stackedLabels}
+                        adjustsFontSizeToFit
+                        maxFontSizeMultiplier={BOTTOM_NAVIGATION_MAX_FONT_SIZE_MULTIPLIER}
                         minimumFontScale={navigationLayout.narrow ? 0.75 : 0.8}
                       >
                         {item.label}

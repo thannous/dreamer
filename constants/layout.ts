@@ -14,6 +14,7 @@ export const TAB_BAR_CONTENT_BOTTOM_PADDING = 12;
 export const NARROW_TAB_BAR_BREAKPOINT = 360;
 export const NARROW_TAB_BAR_HORIZONTAL_MARGIN = 8;
 export const LARGE_TEXT_FONT_SCALE = 1.3;
+export const BOTTOM_NAVIGATION_MAX_FONT_SIZE_MULTIPLIER = 1.3;
 
 export const isNarrowBottomNavigation = (viewportWidth: number) =>
   viewportWidth <= NARROW_TAB_BAR_BREAKPOINT;
@@ -29,27 +30,24 @@ export function getBottomNavigationLayout(
 ) {
   const compact = width > height && height < 600;
   const narrow = !compact && isNarrowBottomNavigation(width);
-  const safeFontScale = normalizeFontScale(fontScale);
-  const largeText = safeFontScale >= LARGE_TEXT_FONT_SCALE;
+  const requestedFontScale = normalizeFontScale(fontScale);
+  const safeFontScale = Math.min(requestedFontScale, BOTTOM_NAVIGATION_MAX_FONT_SIZE_MULTIPLIER);
+  const largeText = requestedFontScale >= LARGE_TEXT_FONT_SCALE;
   const stackedLabels = narrow || largeText;
   const horizontalLayout = getTabBarHorizontalLayout(width);
   const contentWidth = Math.max(0, width - horizontalLayout.start * 2 - (narrow ? 8 : 16) - 2);
   const itemWidth = contentWidth / 5;
   const labelFontSize = compact || width < 400 ? 11 : 12;
   const labelLineHeight = 16;
-  // Narrow and large-text navigation uses translated short labels; full names
-  // remain on the accessible tab controls. Only enlarged text needs wrapping room.
-  const labelLines = largeText
-    ? Math.max(1, Math.ceil((8 * labelFontSize * safeFontScale * 0.52) / Math.max(1, itemWidth - 2)))
-    : 1;
+  // Keep navigation compact while the dream itself follows the user's text size.
+  // Translated short labels stay on one line; accessible tab names remain complete.
+  const labelLines = 1;
   const labelHeight = Math.ceil(labelLines * labelLineHeight * safeFontScale + 4);
   const centerActionWidth = largeText
     ? itemWidth - 4
     : Math.min(compact ? 60 : narrow ? 64 : 72, itemWidth - 4);
   const horizontalCenter = false;
-  const centerLabelLines = largeText
-    ? Math.max(1, Math.ceil((5 * labelFontSize * safeFontScale * 0.65) / Math.max(1, centerActionWidth - 4)))
-    : labelLines;
+  const centerLabelLines = 1;
   const centerLabelHeight = Math.ceil(centerLabelLines * labelLineHeight * safeFontScale + 4);
   const rowHeight = 24 + 10 + labelHeight + 3 + 10;
   const centerActionHeight = stackedLabels

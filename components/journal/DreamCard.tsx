@@ -53,7 +53,10 @@ export const DreamCard = memo(function DreamCard({
 }: DreamCardProps) {
   const { colors, mode } = useTheme();
   const { fontScale } = useWindowDimensions();
-  const dateMarginWidth = Math.max(60, Math.ceil(36 * Math.max(1, fontScale)) + 9);
+  const compactTextScale = Math.min(1.3, Math.max(1, fontScale));
+  const titleTextScale = Math.min(1.4, Math.max(1, fontScale));
+  const captionStyle = { fontSize: 12 * compactTextScale, lineHeight: 18 * compactTextScale };
+  const dateMarginWidth = Math.max(60, Math.ceil(36 * compactTextScale) + 9);
   const noctalia = useMemo(() => getNoctaliaDesignTokens(colors, mode), [colors, mode]);
   const { t, currentLang } = useTranslation();
   const media = useDreamMedia(dream);
@@ -232,7 +235,7 @@ export const DreamCard = memo(function DreamCard({
           <IconSymbol name={badge.icon} size={14} color={getBadgeIconColor(badge.variant)} />
         )}
         {badge.label && (
-          <Text className={`min-w-0 shrink font-sans text-[12px] leading-[18px] ${BADGE_TEXT_CLASS[badge.variant]}`}>
+          <Text allowFontScaling={false} style={captionStyle} className={`min-w-0 shrink font-sans text-[12px] leading-[18px] ${BADGE_TEXT_CLASS[badge.variant]}`}>
             {badge.label}
           </Text>
         )}
@@ -255,12 +258,18 @@ export const DreamCard = memo(function DreamCard({
   const readingText = (
     <>
       <Text
+        key={`title-${fontScale}`}
+        allowFontScaling={false}
+        style={{ fontSize: (variant === 'featured' ? 22 : 20) * titleTextScale, lineHeight: 28 * titleTextScale }}
         className={`font-display leading-[28px] ${hasImage ? 'text-illustration-text' : 'text-ivory'} ${variant === 'featured' ? 'text-[22px]' : 'text-[20px]'}`}
         numberOfLines={2}
       >
         {dream.title}
       </Text>
       <Text
+        key={`preview-${fontScale}`}
+        allowFontScaling={false}
+        style={{ fontSize: 15 * compactTextScale, lineHeight: 22 * compactTextScale }}
         className={`font-sans text-[15px] leading-[22px] ${hasImage ? 'text-illustration-text' : 'text-ivory-muted'}`}
         numberOfLines={hasImage ? 3 : 2}
       >
@@ -278,11 +287,11 @@ export const DreamCard = memo(function DreamCard({
       testID={testID}
     >
       <View className="shrink-0 self-stretch gap-3 border-r border-line pr-2" style={{ width: dateMarginWidth }} testID={testID && `journal.margin.${testID}`}>
-        <View>
-          <Text className="font-sans-medium text-[30px] leading-[34px] text-ivory">{dateDay}</Text>
-          <Text className="font-sans text-[14px] leading-[20px] text-ivory-muted">{dateMonth}</Text>
+        <View key={`date-${fontScale}`}>
+          <Text allowFontScaling={false} style={{ fontSize: 30 * compactTextScale, lineHeight: 34 * compactTextScale }} className="font-sans-medium text-[30px] leading-[34px] text-ivory">{dateDay}</Text>
+          <Text allowFontScaling={false} style={{ fontSize: 14 * compactTextScale, lineHeight: 20 * compactTextScale }} className="font-sans text-[14px] leading-[20px] text-ivory-muted">{dateMonth}</Text>
           {dateYear !== new Date().getFullYear() && (
-            <Text className="font-sans text-[12px] leading-[18px] text-ivory-muted">{dateYear}</Text>
+            <Text allowFontScaling={false} style={captionStyle} className="font-sans text-[12px] leading-[18px] text-ivory-muted">{dateYear}</Text>
           )}
         </View>
         {isFavorite && <IconSymbol name="heart.fill" size={20} color={noctalia.accent.text} />}
@@ -337,19 +346,19 @@ export const DreamCard = memo(function DreamCard({
         ) : (
           <View className="gap-2 pr-1" testID={testID && `journal.text.${testID}`}>{readingText}</View>
         )}
-        <View className="flex-row flex-wrap items-center gap-x-3 gap-y-1.5" testID={testID && `journal.metadata.${testID}`}>
-          <Text className="font-sans text-[12px] leading-[18px] text-ivory-muted">{typeLabel}</Text>
-          {themeLabel && <Text className="font-sans text-[12px] leading-[18px] text-ivory-muted">{themeLabel}</Text>}
+        <View key={`metadata-${fontScale}`} className="flex-row flex-wrap items-center gap-x-3 gap-y-1.5" testID={testID && `journal.metadata.${testID}`}>
+          <Text allowFontScaling={false} style={captionStyle} className="font-sans text-[12px] leading-[18px] text-ivory-muted">{typeLabel}</Text>
+          {themeLabel && <Text allowFontScaling={false} style={captionStyle} className="font-sans text-[12px] leading-[18px] text-ivory-muted">{themeLabel}</Text>}
           {recurringLabel && (
             <View className="max-w-full flex-row items-center gap-1.5">
               <IconSymbol name="arrow.triangle.2.circlepath" size={14} color={noctalia.text.secondary} />
-              <Text className="font-sans text-[12px] leading-[18px] text-ivory-muted">{recurringLabel}</Text>
+              <Text allowFontScaling={false} style={captionStyle} className="font-sans text-[12px] leading-[18px] text-ivory-muted">{recurringLabel}</Text>
             </View>
           )}
           {memoryLabel && (
             <View className="max-w-full flex-row items-center gap-1.5">
               <IconSymbol name="moon.stars.fill" size={14} color={noctalia.text.secondary} />
-              <Text className="font-sans text-[12px] leading-[18px] text-ivory-muted">{memoryLabel}</Text>
+              <Text allowFontScaling={false} style={captionStyle} className="font-sans text-[12px] leading-[18px] text-ivory-muted">{memoryLabel}</Text>
             </View>
           )}
           {badgeList}
