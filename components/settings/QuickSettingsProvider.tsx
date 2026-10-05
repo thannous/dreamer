@@ -1,9 +1,11 @@
 import React, { useCallback, useEffect, useState } from 'react';
-import { BackHandler, Keyboard, Platform, Pressable, ScrollView, Text, View, useWindowDimensions } from 'react-native';
+import { BackHandler, Keyboard, Platform, ScrollView, Text, View, useWindowDimensions } from 'react-native';
 import { Drawer } from 'react-native-drawer-layout';
+import { Pressable as GesturePressable } from 'react-native-gesture-handler';
 import { useReducedMotion } from 'react-native-reanimated';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { router, usePathname } from 'expo-router';
+import { withUniwind } from 'uniwind';
 
 import { IconSymbol } from '@/components/ui/icon-symbol';
 import { QuickSettingsContext } from '@/context/QuickSettingsContext';
@@ -22,6 +24,11 @@ import {
 
 type PreferenceGroup = 'theme' | 'journal' | 'language';
 type IconName = React.ComponentProps<typeof IconSymbol>['name'];
+// Native gesture hit testing follows the drawer's animated iOS transform.
+const Pressable = withUniwind(GesturePressable);
+const ROW_HIT_SLOP = { top: 8, bottom: 8, left: 12, right: 12 };
+const CHIP_HIT_SLOP = 4;
+const PRESS_RETENTION = 16;
 const GROUP_ICONS: Record<PreferenceGroup, IconName> = { theme: 'paintpalette', journal: 'book', language: 'globe' };
 const OPTION_ICONS: Record<string, IconName> = {
   dynamic: 'clock', auto: 'iphone', light: 'sun.max.fill', dark: 'moon.stars.fill',
@@ -43,6 +50,7 @@ function PreferenceChoices<T extends string>({ preference, id, showTitle = true 
       <View className="flex-row flex-wrap gap-2">
         {preference.options.map((option) => (
           <Pressable key={option.value} onPress={() => void preference.select(option.value)}
+            hitSlop={CHIP_HIT_SLOP} pressRetentionOffset={PRESS_RETENTION}
             disabled={preference.loading || preference.saving}
             accessibilityRole="radio" accessibilityLabel={option.label}
             accessibilityState={{ checked: option.current, disabled: preference.loading || preference.saving }}
@@ -85,16 +93,19 @@ export function QuickSettingsContent({ onClose, onSettings, onAccount, onPlus }:
 
   return (
     <ScrollView className="flex-1 bg-ink" testID="quick-settings.drawer" accessibilityViewIsModal
+      keyboardShouldPersistTaps="handled"
       contentContainerStyle={{ paddingTop: insets.top + 16, paddingBottom: insets.bottom + 24, paddingHorizontal: 20, gap: 28 }}>
       <View className="flex-row items-center justify-between gap-3">
         <Text accessibilityRole="header" className="min-w-0 flex-1 font-display text-[24px] leading-[30px] text-ivory">{t('settings.quick.title')}</Text>
         <Pressable onPress={onClose} testID="quick-settings.close" accessibilityRole="button" accessibilityLabel={t('settings.quick.close')}
+          hitSlop={8} pressRetentionOffset={PRESS_RETENTION}
           className="h-12 w-12 items-center justify-center rounded-full bg-ink-soft">
           <IconSymbol name="xmark" size={20} color={tokens.text.primary} />
         </Pressable>
       </View>
       <View className="gap-4">
         <Pressable onPress={onAccount} disabled={authLoading} accessibilityRole="button"
+          hitSlop={ROW_HIT_SLOP} pressRetentionOffset={PRESS_RETENTION}
           accessibilityState={{ disabled: authLoading }} testID="quick-settings.profile"
           className="min-h-16 flex-row items-center gap-3">
           <View className="h-14 w-14 items-center justify-center rounded-full bg-ink-soft" accessible={false}>
@@ -111,13 +122,15 @@ export function QuickSettingsContent({ onClose, onSettings, onAccount, onPlus }:
         </Pressable>
         {!user ? (
           <Pressable onPress={onAccount} disabled={authLoading} accessibilityRole="button"
+            hitSlop={ROW_HIT_SLOP} pressRetentionOffset={PRESS_RETENTION}
             accessibilityState={{ disabled: authLoading }} testID="quick-settings.signin"
-            className="min-h-12 flex-row items-center justify-center gap-3 rounded-xl border border-line bg-ink-soft px-4 py-3">
+            className="w-full min-h-14 flex-row items-center justify-center gap-3 rounded-xl border border-line bg-ink-soft px-4 py-3">
             <IconSymbol name="person.fill" size={20} color={tokens.text.secondary} />
             <Text className="font-sans-medium text-[15px] text-ivory">{t('settings.account.button.sign_in')}</Text>
           </Pressable>
         ) : null}
         <Pressable onPress={onPlus} disabled={authLoading || subscriptionLoading} accessibilityRole="button"
+          hitSlop={ROW_HIT_SLOP} pressRetentionOffset={PRESS_RETENTION}
           accessibilityState={{ disabled: authLoading || subscriptionLoading }} testID="quick-settings.plus"
           className="min-h-16 flex-row items-center gap-3 rounded-2xl border border-champagne-soft bg-champagne px-4 py-4">
           <IconSymbol name="sparkles" size={24} color={tokens.action.primaryText} />
@@ -135,6 +148,7 @@ export function QuickSettingsContent({ onClose, onSettings, onAccount, onPlus }:
       <View className="h-px bg-line" />
       <View className="gap-3">
         <Pressable onPress={() => setShowLanguage((current) => !current)} accessibilityRole="button"
+          hitSlop={ROW_HIT_SLOP} pressRetentionOffset={PRESS_RETENTION}
           accessibilityState={{ expanded: showLanguage }} testID="quick-settings.language"
           className="min-h-12 flex-row items-center justify-between gap-3">
           <IconSymbol name="globe" size={20} color={tokens.text.secondary} />
@@ -150,6 +164,7 @@ export function QuickSettingsContent({ onClose, onSettings, onAccount, onPlus }:
       <PreferenceChoices id="journal" preference={journalLayout} />
       <View className="h-px bg-line" />
       <Pressable onPress={onSettings} testID="quick-settings.all" accessibilityRole="button"
+        hitSlop={ROW_HIT_SLOP} pressRetentionOffset={PRESS_RETENTION}
         className="min-h-14 flex-row items-center justify-between gap-3 rounded-xl bg-ink-soft px-4 py-4">
         <IconSymbol name="gear" size={20} color={tokens.text.secondary} />
         <Text className="min-w-0 flex-1 font-sans-medium text-[16px] text-ivory">{t('settings.quick.all')}</Text>
@@ -164,6 +179,8 @@ export function QuickSettingsProvider({ children, disabled = false }: React.Prop
   const [open, setOpen] = useState(false);
   const [origin, setOrigin] = useState('');
   const pathname = usePathname();
+  // The welcome owns its controls; a closed web drawer can overflow its viewport.
+  const drawerDisabled = disabled || pathname === '/onboarding';
   const { user } = useAuth();
   const reducedMotion = useReducedMotion();
   const { width } = useWindowDimensions();
@@ -171,7 +188,7 @@ export function QuickSettingsProvider({ children, disabled = false }: React.Prop
   const { t } = useTranslation();
   const tokens = getNoctaliaDesignTokens(colors, mode);
   const drawerWidth = Math.min(380, Math.max(280, width - 24));
-  const visible = open && origin === pathname && !disabled;
+  const visible = open && origin === pathname && !drawerDisabled;
   const close = useCallback(() => setOpen(false), []);
   const show = useCallback(() => {
     Keyboard.dismiss();
@@ -211,16 +228,18 @@ export function QuickSettingsProvider({ children, disabled = false }: React.Prop
           accessibilityElementsHidden={visible} importantForAccessibility={visible ? 'no-hide-descendants' : 'auto'}>
           {children}
         </View>
-        {!disabled ? (
+        {!drawerDisabled ? (
           <View className="absolute inset-0" pointerEvents={visible ? 'auto' : 'none'}>
             {reducedMotion ? (visible ? (
               <View className="absolute inset-0 flex-row justify-end">
-                <Pressable className="absolute inset-0 bg-black/40" onPress={close} accessibilityRole="button" accessibilityLabel={t('settings.quick.close')} />
+                <Pressable className="absolute inset-0 bg-black/40" style={{ right: drawerWidth }} onPress={close} accessibilityRole="button" accessibilityLabel={t('settings.quick.close')} />
                 <View style={{ width: drawerWidth }} className="h-full">{content()}</View>
               </View>
             ) : null) : (
               <Drawer open={visible} onOpen={show} onClose={close} drawerPosition="right" drawerType="front"
                 swipeEnabled={false} overlayAccessibilityLabel={t('settings.quick.close')}
+                // The backdrop must never receive a tap inside the visible drawer.
+                overlayStyle={{ right: drawerWidth }}
                 drawerStyle={{ width: drawerWidth, backgroundColor: tokens.screen.background }}
                 renderDrawerContent={content}>
                 <View className="flex-1" />

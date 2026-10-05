@@ -27,6 +27,7 @@ jest.mock('react-native', () => {
     BackHandler: { addEventListener: (_: string, fn: () => boolean) => { mockHardwareBack = fn; return { remove: jest.fn() }; } },
   };
 });
+jest.mock('react-native-gesture-handler', () => ({ Pressable: require('react-native').Pressable }));
 jest.mock('react-native-drawer-layout', () => ({ Drawer: ({ open, renderDrawerContent }: any) => open ? renderDrawerContent() : null }));
 jest.mock('react-native-reanimated', () => ({ useReducedMotion: () => mockReduced }));
 jest.mock('react-native-safe-area-context', () => ({ useSafeAreaInsets: () => ({ top: 24, bottom: 24 }) }));

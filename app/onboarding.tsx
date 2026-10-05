@@ -1,5 +1,8 @@
 import { IconSymbol } from '@/components/ui/icon-symbol';
 import { StandardBottomSheet } from '@/components/ui/StandardBottomSheet';
+import { PressableScale } from '@/components/motion/PressableScale';
+import { DURATION, EASE } from '@/components/motion/motion';
+import type { OnboardingFeature } from '@/components/onboarding/OnboardingFeatureSheet';
 import { getNoctaliaDesignTokens } from '@/constants/noctaliaDesign';
 import { DarkTheme } from '@/constants/journalTheme';
 import { Fonts } from '@/constants/theme';
@@ -7,6 +10,7 @@ import { useOnboarding } from '@/context/OnboardingContext';
 import { useTheme } from '@/context/ThemeContext';
 import { useTranslation } from '@/hooks/useTranslation';
 import { getPaywallTrigger, trackProductEvent } from '@/lib/analytics';
+import { isOnboardingFeatureSheetsEnabled } from '@/lib/env';
 import { peekReturnToPaywallTrigger } from '@/lib/navigationIntents';
 import { getAuthReturnSnapshot } from '@/lib/authReturnIntent';
 import { buildPaywallHref } from '@/lib/paywallRoute';
@@ -43,6 +47,7 @@ import {
   type ViewStyle,
 } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import Animated, { useReducedMotion, type CSSStyle } from 'react-native-reanimated';
 
 type PathDefinition = {
   id: OnboardingPath;
@@ -64,9 +69,13 @@ const PATHS: PathDefinition[] = [
 
 const SIGNALS = [
   { id: 'capture', icon: 'pencil' as const },
-  { id: 'decode', icon: 'eye.fill' as const },
-  { id: 'profile', icon: 'sparkles' as const },
-];
+  { id: 'connect', icon: 'sparkles' as const },
+  { id: 'explore', icon: 'bubble.left.and.bubble.right' as const },
+] satisfies { id: OnboardingFeature; icon: React.ComponentProps<typeof IconSymbol>['name'] }[];
+
+// Keep the disabled previews from initializing their motion/gesture modules.
+const OnboardingFeatureSheet = React.lazy(() => import('@/components/onboarding/OnboardingFeatureSheet')
+  .then((module) => ({ default: module.OnboardingFeatureSheet })));
 
 const BACKGROUND_IMAGE = require('@/assets/images/onboarding-reverie-background.webp');
 // The immersive artwork always needs its nocturnal contrast, independently of
@@ -84,6 +93,17 @@ const webTitleFocusResetStyle: TextStyle | null = process.env.EXPO_OS === 'web'
 export default function OnboardingScreen() {
   const { colors, mode } = useTheme();
   const { t } = useTranslation();
+  const featureSheetsEnabled = isOnboardingFeatureSheetsEnabled();
+  const reducedMotion = useReducedMotion();
+  const phaseEntrance = useMemo<CSSStyle<ViewStyle>>(() => ({
+    animationName: {
+      from: { opacity: 0, ...(!reducedMotion ? { transform: [{ translateY: 8 }] } : {}) },
+      to: { opacity: 1, ...(!reducedMotion ? { transform: [{ translateY: 0 }] } : {}) },
+    },
+    animationDuration: DURATION.fast,
+    animationTimingFunction: EASE.out,
+    animationFillMode: 'both',
+  }), [reducedMotion]);
   const insets = useSafeAreaInsets();
   const {
     state,
@@ -101,6 +121,9 @@ export default function OnboardingScreen() {
   const [isStepTransitioning, setIsStepTransitioning] = useState(false);
   const [failedAction, setFailedAction] = useState<FailedAction | null>(null);
   const [showPrivacySheet, setShowPrivacySheet] = useState(false);
+  const [activeFeature, setActiveFeature] = useState<OnboardingFeature | null>(null);
+  const featureTriggers = useRef<Partial<Record<OnboardingFeature, View | null>>>({});
+  const featureFocusTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
   const [analyticsEnabled, setAnalyticsEnabled] = useState(false);
   const [analyticsPreferenceLoading, setAnalyticsPreferenceLoading] = useState(false);
   const [analyticsPreferenceError, setAnalyticsPreferenceError] = useState(false);
@@ -115,6 +138,24 @@ export default function OnboardingScreen() {
   const isLeavingRef = useRef(false);
   const stepTransitionRef = useRef(false);
   const selectionVersionRef = useRef(0);
+
+  useEffect(() => () => {
+    if (featureFocusTimer.current) clearTimeout(featureFocusTimer.current);
+  }, []);
+
+  const closeFeature = () => {
+    const trigger = activeFeature ? featureTriggers.current[activeFeature] : null;
+    setActiveFeature(null);
+    if (featureFocusTimer.current) clearTimeout(featureFocusTimer.current);
+    featureFocusTimer.current = setTimeout(() => {
+      if (isLeavingRef.current || stepTransitionRef.current) return;
+      if (Platform.OS === 'web') trigger?.focus();
+      else {
+        const node = findNodeHandle(trigger ?? null);
+        if (node) AccessibilityInfo.setAccessibilityFocus(node);
+      }
+    }, Platform.OS === 'web' ? 0 : 300);
+  };
 
   useFocusEffect(useCallback(() => {
     if (Platform.OS === 'web') return;
@@ -485,6 +526,16 @@ export default function OnboardingScreen() {
               <IconSymbol name="chevron.left" size={22} color={noctalia.text.primary} />
             </Pressable>
           </View>
+          <View style={styles.stepProgress} accessible accessibilityLabel={t('onboarding.progress', { current: step === 'intro' ? 1 : 2, total: 2 })}>
+            <View accessible={false} style={styles.stepMarks}>
+              {[0, 1].map((index) => <Animated.View key={index} style={[styles.stepMark, {
+                backgroundColor: titleAccent,
+                opacity: index <= (step === 'intro' ? 0 : 1) ? 1 : 0.25,
+                transitionProperty: 'opacity', transitionDuration: DURATION.fast, transitionTimingFunction: EASE.out,
+              }]} />)}
+            </View>
+            <Text accessible={false} style={[styles.stepNumber, { color: noctalia.text.secondary }]}>{step === 'intro' ? '01' : '02'}{' / 02'}</Text>
+          </View>
           <Pressable
             accessibilityRole="button"
             onPress={() => void skip()}
@@ -528,6 +579,8 @@ export default function OnboardingScreen() {
             ]}
             testID={TID.Component.OnboardingIntro}
           >
+            <Animated.View collapsable={false} style={[styles.intro, { width: '100%' }, step === 'intro' ? phaseEntrance : { animationName: 'none' }]}>
+
             <View style={{ height: artworkSpace }} accessible={false} />
             <Text
               ref={introTitleRef}
@@ -544,18 +597,50 @@ export default function OnboardingScreen() {
               {t('onboarding.intro.subtitle')}
             </Text>
             <View style={styles.signalList} testID={TID.Component.OnboardingIntroSignals}>
-              {SIGNALS.map((signal) => (
-                <View key={signal.id} style={styles.signalRow}>
-                  <View style={[styles.signalIcon, { borderColor: titleAccent }]}>
-                    <IconSymbol name={signal.icon} size={21} color={titleAccent as ColorValue} />
-                  </View>
-                  <View style={styles.signalCopy}>
-                    <Text style={[styles.signalTitle, { color: noctalia.text.primary }]}>
-                      {t(`onboarding.intro.signal.${signal.id}.title`)}
-                    </Text>
-                  </View>
-                </View>
-              ))}
+              {SIGNALS.map((signal) => {
+                const content = (
+                  <>
+                    <View style={[styles.signalIcon, { borderColor: titleAccent }]}>
+                      <IconSymbol name={signal.icon} size={21} color={titleAccent as ColorValue} />
+                    </View>
+                    <View style={styles.signalCopy}>
+                      <Text style={[styles.signalTitle, { color: noctalia.text.primary }]}>
+                        {t(`onboarding.feature.${signal.id}.title`)}
+                      </Text>
+                      <Text style={[styles.signalBody, { color: noctalia.text.secondary }]}>
+                        {t(`onboarding.feature.${signal.id}.short`)}
+                      </Text>
+                    </View>
+                  </>
+                );
+
+                if (!featureSheetsEnabled) {
+                  return (
+                    <View key={signal.id} style={styles.signalRow} testID={`btn.onboarding.feature.${signal.id}`}>
+                      {content}
+                    </View>
+                  );
+                }
+
+                return (
+                  <PressableScale
+                    key={signal.id}
+                    ref={(node) => { featureTriggers.current[signal.id] = node; }}
+                    accessibilityRole="button"
+                    accessibilityLabel={t(`onboarding.feature.${signal.id}.title`)}
+                    accessibilityHint={t('onboarding.feature.open_hint')}
+                    onPress={() => {
+                      if (featureFocusTimer.current) clearTimeout(featureFocusTimer.current);
+                      setActiveFeature(signal.id);
+                    }}
+                    disabled={isLeaving || isStepTransitioning}
+                    style={styles.signalRow}
+                    testID={`btn.onboarding.feature.${signal.id}`}
+                  >
+                    {content}
+                  </PressableScale>
+                );
+              })}
             </View>
             <Pressable
               accessibilityRole="button"
@@ -567,6 +652,7 @@ export default function OnboardingScreen() {
                 {t('onboarding.privacy.link')}
               </Text>
             </Pressable>
+            </Animated.View>
           </View>
 
           {pathPreloaded || step === 'path' ? (
@@ -587,6 +673,8 @@ export default function OnboardingScreen() {
               ]}
               testID={TID.Component.OnboardingPath}
             >
+            <Animated.View collapsable={false} style={[styles.paths, { width: '100%' }, step === 'path' ? phaseEntrance : { animationName: 'none' }]}>
+
             <View style={{ height: artworkSpace }} accessible={false} />
             <Text
               ref={pathTitleRef}
@@ -614,6 +702,7 @@ export default function OnboardingScreen() {
                   <Pressable
                     key={path.id}
                     accessibilityRole="radio"
+                    aria-checked={selected}
                     accessibilityState={{ checked: selected }}
                     onPress={() => selectPath(path.id)}
                     style={[
@@ -625,6 +714,10 @@ export default function OnboardingScreen() {
                     ]}
                     testID={TID.Button.OnboardingPath(path.id)}
                   >
+                    <Animated.View pointerEvents="none" accessible={false} style={[StyleSheet.absoluteFill, {
+                      backgroundColor: noctalia.accent.soft, opacity: selected ? 0.1 : 0,
+                      transitionProperty: 'opacity', transitionDuration: DURATION.press, transitionTimingFunction: EASE.out,
+                    }]} />
                     <View style={[styles.pathIcon, { backgroundColor: noctalia.surface.soft }]}>
                       <IconSymbol name={path.icon} size={25} color={titleAccent as ColorValue} />
                     </View>
@@ -651,6 +744,7 @@ export default function OnboardingScreen() {
                 );
               })}
             </View>
+            </Animated.View>
             </View>
           ) : null}
         </View>
@@ -745,6 +839,12 @@ export default function OnboardingScreen() {
         </Pressable>
       </View>
 
+      {featureSheetsEnabled && activeFeature ? (
+        <React.Suspense fallback={null}>
+          <OnboardingFeatureSheet feature={activeFeature} onClose={closeFeature} onFeatureChange={setActiveFeature} />
+        </React.Suspense>
+      ) : null}
+
       {showPrivacySheet ? <StandardBottomSheet
         visible
         onClose={() => setShowPrivacySheet(false)}
@@ -814,6 +914,10 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     gap: 10,
   },
+  stepProgress: { alignItems: 'center', gap: 6, marginLeft: -20 },
+  stepMarks: { flexDirection: 'row', gap: 5 },
+  stepMark: { width: 18, height: 2, borderRadius: 1 },
+  stepNumber: { fontFamily: Fonts.spaceGrotesk.medium, fontSize: 9, lineHeight: 13, letterSpacing: 1 },
   topBarLeading: { position: 'relative', minWidth: 80, height: 44, justifyContent: 'center' },
   topBarBack: { position: 'absolute', top: 0, left: 0 },
   brand: { fontFamily: Fonts.fraunces.regular, fontSize: 26, lineHeight: 32, minWidth: 80 },
@@ -835,10 +939,11 @@ const styles = StyleSheet.create({
     textAlign: 'center',
   },
   signalList: { width: '100%', maxWidth: 420, flexDirection: 'row', justifyContent: 'space-around', gap: 8, paddingTop: 12 },
-  signalRow: { flex: 1, alignItems: 'center', gap: 10 },
+  signalRow: { flex: 1, minHeight: 96, alignItems: 'center', gap: 10, paddingVertical: 4 },
   signalIcon: { width: 48, height: 48, borderRadius: 24, borderWidth: 1, alignItems: 'center', justifyContent: 'center' },
-  signalCopy: { alignItems: 'center' },
+  signalCopy: { alignItems: 'center', gap: 3 },
   signalTitle: { fontFamily: Fonts.spaceGrotesk.regular, fontSize: 13, lineHeight: 19, textAlign: 'center' },
+  signalBody: { fontFamily: Fonts.spaceGrotesk.regular, fontSize: 10, lineHeight: 15, textAlign: 'center' },
   privacyLink: { minHeight: 44, justifyContent: 'center', paddingHorizontal: 8 },
   privacyLinkText: { fontFamily: Fonts.spaceGrotesk.medium, fontSize: 13, textDecorationLine: 'underline' },
   stepStage: { position: 'relative', alignSelf: 'stretch' },
