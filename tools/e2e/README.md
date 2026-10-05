@@ -26,6 +26,9 @@ Each Expo web start clears its Metro bundle cache; Dreamer and Lucid also set
 both variant markers explicitly. Switching products must not reuse the previous
 product's embedded Expo configuration. Environment profiles and runner guards
 still apply.
+Meditation probes Metro's `/status` endpoint during startup so repeated short
+health requests do not restart static route compilation on a cold Linux runner.
+Its test still opens the app and checks onboarding, persisted state and every tab.
 For the opt-in onboarding story, use
 `EXPO_PUBLIC_ONBOARDING_FEATURE_SHEETS_ENABLED=true mise exec -- node tools/e2e/run.mjs dreamer web run --trace`.
 The config forwards this opt-in to the app command; without it, the story test
@@ -33,6 +36,24 @@ is explicitly skipped and does not constitute qualification of that feature.
 Dreamer also verifies that Quick Settings actually selects French and both
 themes while preserving the Capture draft and language after reload. This
 guards the web click regression from using a native gesture pressable there.
+The journey opens the real Settings control, checks that preferences are
+actionable, and requires closed drawers to expose no accessible radio controls.
+It exercises the panel at 390 and 1280 pixels.
+
+## Continuous integration and SDK checks
+
+CircleCI runs the exact Dreamer and Lucid journeys in the Noctalia workflow,
+Meditation in its own workflow, and the generated site after `docs:build` and
+`docs:check`. Each job installs this package's locked dependencies and Chromium,
+uses one worker with no replay or model, and retains JUnit, reports, screenshots,
+traces and source identity under `tools/e2e/.e2e/`. Existing Playwright, backend,
+Maestro and quality checks remain required.
+
+`npm run dependencies:check` validates the installed Expo SDK's expected native
+dependencies before the app quality checks. Dreamer and Lucid share the root
+manifest. Meditation has its own manifest and check:
+`npm --prefix apps/meditation run dependencies:check`.
+Run the affected check before a local native build; CI checks both manifests.
 
 Native examples (use the actual dedicated running emulator or available Simulator):
 

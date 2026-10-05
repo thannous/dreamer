@@ -227,11 +227,13 @@ export function QuickSettingsProvider({ children, disabled = false }: React.Prop
     <QuickSettingsContext.Provider value={show}>
       <View className="flex-1">
         <View className="flex-1" pointerEvents={visible ? 'none' : 'auto'}
+          {...(Platform.OS === 'web' ? { 'aria-hidden': visible, inert: visible } : {})}
           accessibilityElementsHidden={visible} importantForAccessibility={visible ? 'no-hide-descendants' : 'auto'}>
           {children}
         </View>
         {!drawerDisabled ? (
-          <View className="absolute inset-0" pointerEvents={visible ? 'auto' : 'none'}>
+          <View className="absolute inset-0" pointerEvents={visible ? 'auto' : 'none'}
+            {...(Platform.OS === 'web' ? { 'aria-hidden': !visible, inert: !visible } : {})}>
             {reducedMotion ? (visible ? (
               <View className="absolute inset-0 flex-row justify-end">
                 <Pressable className="absolute inset-0 bg-black/40" style={{ right: drawerWidth }} onPress={close} accessibilityRole="button" accessibilityLabel={t('settings.quick.close')} />

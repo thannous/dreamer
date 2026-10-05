@@ -20,6 +20,7 @@
     "reflection:eval:models:run": "node scripts/run-reflection-evaluation.cjs --gemini38",
     "reflection:eval:followup:run": "node scripts/run-reflection-evaluation.cjs --followup",
     "boundaries:check": "node scripts/check-monorepo-boundaries.js",
+    "dependencies:check": "expo install --check",
     "start": "node ./scripts/expo-safe-runner.js start",
     "start:mock": "node ./scripts/expo-safe-runner.js --profile .env.mock start",
     "start:mock:dogfood": "EXPO_PUBLIC_MOCK_PERSISTENCE=true node ./scripts/expo-safe-runner.js --profile .env.mock start",

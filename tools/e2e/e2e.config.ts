@@ -30,6 +30,9 @@ export default {
     app: native ? { bundleId, environment: 'test' as const } : {
       url: `http://127.0.0.1:${port}`,
       environment: 'test' as const,
+      // Static Expo routes compile during the first request; probe Metro without
+      // repeatedly starting SSR bundles. app.open() and the journey verify the UI.
+      ...(product === 'meditation' ? { readyUrl: `http://127.0.0.1:${port}/status` } : {}),
       command: product === 'site' ? {
         executable: 'python3', args: ['-m', 'http.server', String(port), '--bind', '127.0.0.1', '--directory', 'docs'], cwd: root,
         startupTimeout: 180_000, log: `.e2e/${product}-${platform}/app.log`,

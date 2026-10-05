@@ -7,6 +7,7 @@
     "node": ">=24.19.0 <25"
   },
   "scripts": {
+    "dependencies:check": "expo install --check",
     "start": "expo start",
     "start:mock": "EXPO_PUBLIC_MOCK_MODE=true expo start",
     "android": "expo run:android",
