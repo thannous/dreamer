@@ -28,19 +28,32 @@ test('Quick Settings changes language and theme without losing the Capture draft
   const draft = 'Fixture : un phare bleu au-dessus d’une mer calme.';
   await editor.fill(draft);
   const settings = screen.getByRole('button', /^(Settings|Paramètres)$/, { visible: true });
+  // A closed drawer must not expose interactive preferences to assistive technology.
+  await expect(screen.getByRole('radio')).toHaveCount(0);
   await settings.tap();
+  await expect(screen.getByTestId('quick-settings.close', { visible: true })).toBeEnabled();
   await screen.getByTestId('quick-settings.language', { visible: true }).tap();
   const french = screen.getByTestId('quick-settings.language.fr', { visible: true });
   await french.tap();
   await expect(french).toHaveAttribute('aria-checked', 'true');
   await screen.getByTestId('quick-settings.close', { visible: true }).tap();
+  await expect(screen.getByRole('radio')).toHaveCount(0);
   await expect(screen.getByTestId('btn.recording.inputMode.text', { visible: true })).toContainText('Écrire');
   for (const [theme, background] of [['dark', 'rgb(20, 19, 26)'], ['light', 'rgb(245, 234, 219)']]) {
-    await settings.tap();
+    await browser.setViewport({ width: theme === 'dark' ? 390 : 1280, height: 844 });
+    // Desktop Capture returns to Today for the Settings control.
+    if (theme === 'light') {
+      await screen.getByTestId('btn.recording.home', { visible: true }).tap();
+      await screen.getByTestId('btn.header.home.settings', { visible: true }).tap();
+    } else await settings.tap();
+    await expect(screen.getByTestId('quick-settings.close', { visible: true })).toBeEnabled();
     const choice = screen.getByTestId(`quick-settings.theme.${theme}`, { visible: true });
+    await expect(choice).toBeEnabled();
     await choice.tap();
     await expect(choice).toHaveAttribute('aria-checked', 'true');
     await screen.getByTestId('quick-settings.close', { visible: true }).tap();
+    await expect(screen.getByRole('radio')).toHaveCount(0);
+    if (theme === 'light') await screen.getByTestId('btn.home.today.cta', { visible: true }).tap();
     await expect.poll(() => browser.evaluate(() => {
       const input = document.querySelector('[data-testid="input.dreamTranscript"]');
       return input ? getComputedStyle(input).backgroundColor : null;

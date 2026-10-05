@@ -94,6 +94,18 @@ commands:
           paths:
             - /home/circleci/.npm
 
+  install-testerarmy:
+    steps:
+      - run:
+          name: Install isolated locked TesterArmy dependencies
+          command: npm run test:testerarmy:setup
+      - run:
+          name: Install isolated Chromium and Linux browser dependencies
+          command: npm run browsers:install --prefix tools/e2e -- --with-deps
+      - run:
+          name: Typecheck TesterArmy journeys
+          command: npm run test:testerarmy:typecheck
+
 jobs:
   noctalia-e2e-backend:
     machine:
@@ -150,6 +162,34 @@ jobs:
           path: test-results/e2e-web
           destination: e2e-web-traces
 
+  testerarmy-web:
+    executor: node
+    parameters:
+      product:
+        type: enum
+        enum: [dreamer, lucid, meditation]
+    environment:
+      E2E_TELEMETRY_DISABLED: "1"
+      DO_NOT_TRACK: "1"
+      EXPO_PUBLIC_ONBOARDING_FEATURE_SHEETS_ENABLED: "true"
+    steps:
+      - install-root-dependencies:
+          save_cache: false
+      - when:
+          condition:
+            equal: [meditation, << parameters.product >>]
+          steps:
+            - install-meditation-dependencies
+      - install-testerarmy
+      - run:
+          name: Verify exact << parameters.product >> browser journeys
+          command: node tools/e2e/run.mjs << parameters.product >> web run --trace
+      - store_test_results:
+          path: tools/e2e/.e2e
+      - store_artifacts:
+          path: tools/e2e/.e2e
+          destination: testerarmy
+
   noctalia-quality:
     executor: node
     parameters:
@@ -170,6 +210,11 @@ jobs:
         default: false
     steps:
       - install-root-dependencies
+      - run:
+          name: Check Dreamer and Lucid Expo SDK dependency compatibility
+          environment:
+            EXPO_OFFLINE: "1"
+          command: npm run dependencies:check
       - run:
           name: Verify product import boundaries
           command: npm run boundaries:check
@@ -279,6 +324,12 @@ jobs:
     steps:
       - install-meditation-dependencies
       - run:
+          name: Check Meditation Expo SDK dependency compatibility
+          working_directory: apps/meditation
+          environment:
+            EXPO_OFFLINE: "1"
+          command: npm run dependencies:check
+      - run:
           name: Verify Meditation import boundaries
           command: node scripts/check-monorepo-boundaries.js --meditation
       - run:
@@ -333,6 +384,15 @@ jobs:
           name: Check site
           command: npm run docs:check
           no_output_timeout: 30m
+      - install-testerarmy
+      - run:
+          name: Verify the generated site through TesterArmy
+          command: npm run test:testerarmy:site
+      - store_test_results:
+          path: tools/e2e/.e2e
+      - store_artifacts:
+          path: tools/e2e/.e2e
+          destination: testerarmy-site
       # Noctalia runs the same root Jest portfolio (affected or exhaustive).
       # Keep site-only coverage, but do not execute that portfolio twice.
       - when:
@@ -476,6 +536,18 @@ workflows:
           filters:
             tags:
               only: /.*/
+      - testerarmy-web:
+          name: testerarmy-dreamer
+          product: dreamer
+          filters:
+            tags:
+              only: /.*/
+      - testerarmy-web:
+          name: testerarmy-lucid
+          product: lucid
+          filters:
+            tags:
+              only: /.*/
 
   backend-e2e:
     when:
@@ -492,6 +564,12 @@ workflows:
     when: << pipeline.parameters.run_meditation >>
     jobs:
       - meditation-quality:
+          filters:
+            tags:
+              only: /.*/
+      - testerarmy-web:
+          name: testerarmy-meditation
+          product: meditation
           filters:
             tags:
               only: /.*/
