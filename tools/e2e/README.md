@@ -26,6 +26,10 @@ Each Expo web start clears its Metro bundle cache; Dreamer and Lucid also set
 both variant markers explicitly. Switching products must not reuse the previous
 product's embedded Expo configuration. Environment profiles and runner guards
 still apply.
+For the opt-in onboarding story, use
+`EXPO_PUBLIC_ONBOARDING_FEATURE_SHEETS_ENABLED=true mise exec -- node tools/e2e/run.mjs dreamer web run --trace`.
+The config forwards this opt-in to the app command; without it, the story test
+is explicitly skipped and does not constitute qualification of that feature.
 
 Native examples (use the actual dedicated running emulator or available Simulator):
 

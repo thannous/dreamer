@@ -43,6 +43,9 @@ export default {
             NOCTALIA_APP_VARIANT: product === 'lucid' ? 'lucid' : 'noctalia',
             EXPO_PUBLIC_APP_VARIANT: product === 'lucid' ? 'lucid' : 'noctalia',
           }),
+          ...(product === 'dreamer' ? {
+            EXPO_PUBLIC_ONBOARDING_FEATURE_SHEETS_ENABLED: process.env.EXPO_PUBLIC_ONBOARDING_FEATURE_SHEETS_ENABLED === 'true' ? 'true' : 'false',
+          } : {}),
         },
         startupTimeout: 180_000, log: `.e2e/${product}-${platform}/app.log`,
       },
