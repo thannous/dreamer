@@ -22,6 +22,10 @@ Discovery starts no engine: `mise exec -- node tools/e2e/run.mjs lucid web list`
 The web products start separate local servers on ports 8096–8099; root app
 services are mocked and external requests are blocked in app tests. Meditation
 web proves routing/storage on the web only, not native audio or purchases.
+Each Expo web start clears its Metro bundle cache; Dreamer and Lucid also set
+both variant markers explicitly. Switching products must not reuse the previous
+product's embedded Expo configuration. Environment profiles and runner guards
+still apply.
 
 Native examples (use the actual dedicated running emulator or available Simulator):
 

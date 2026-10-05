@@ -35,9 +35,15 @@ export default {
         startupTimeout: 180_000, log: `.e2e/${product}-${platform}/app.log`,
       } : {
         executable: 'npm',
-        args: ['run', product === 'meditation' ? 'web' : product === 'lucid' ? 'start:lucid:mock' : 'start:mock', '--', ...(product === 'meditation' ? [] : ['--web']), '--port', String(port)],
+        args: ['run', product === 'meditation' ? 'web' : product === 'lucid' ? 'start:lucid:mock' : 'start:mock', '--', ...(product === 'meditation' ? [] : ['--web']), '--clear', '--port', String(port)],
         cwd: product === 'meditation' ? `${root}apps/meditation` : root,
-        env: { CI: '1', EXPO_PUBLIC_MOCK_MODE: 'true', EXPO_PUBLIC_MOCK_AUDIO: 'true', EXPO_PUBLIC_MOCK_PERSISTENCE: 'true' },
+        env: {
+          CI: '1', EXPO_PUBLIC_MOCK_MODE: 'true', EXPO_PUBLIC_MOCK_AUDIO: 'true', EXPO_PUBLIC_MOCK_PERSISTENCE: 'true',
+          ...(product === 'meditation' ? {} : {
+            NOCTALIA_APP_VARIANT: product === 'lucid' ? 'lucid' : 'noctalia',
+            EXPO_PUBLIC_APP_VARIANT: product === 'lucid' ? 'lucid' : 'noctalia',
+          }),
+        },
         startupTimeout: 180_000, log: `.e2e/${product}-${platform}/app.log`,
       },
     },
