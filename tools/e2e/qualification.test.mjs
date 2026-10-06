@@ -81,8 +81,8 @@ test('persistent source/test input mutation fails, declared output changes do no
 test('union uses target plus test ID and context, separates skip/exclusion and refuses uncovered required IDs', () => {
   const one = verifyReport(report(), options());
   const two = structuredClone(one); two.target = 'dreamer-ios'; two.passed = one.passed.map(p => ({ ...p, targetId: 'dreamer-ios' }));
-  assert.equal(aggregateReports([one, two], [{ testId: 'public-fixture', targetId: 'dreamer-android' }, { testId: 'public-fixture', targetId: 'dreamer-ios' }]).passed.length, 2);
-  assert.throws(() => aggregateReports([one], [{ testId: 'excluded-fixture', targetId: 'dreamer-android' }]), /UNCOVERED/);
+  assert.equal(aggregateReports([one, two], [{ testId: 'public-fixture', agent: 'default', targetId: 'dreamer-android' }, { testId: 'public-fixture', agent: 'default', targetId: 'dreamer-ios' }]).passed.length, 2);
+  assert.throws(() => aggregateReports([one], [{ testId: 'excluded-fixture', agent: 'default', targetId: 'dreamer-android' }]), /UNCOVERED/);
 });
 test('immutable receipts refuse an already used output', () => {
   const dir = mkdtempSync(join(tmpdir(), 'noctalia-output-'));
