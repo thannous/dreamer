@@ -68,7 +68,10 @@ export function createParityTest(initial: Options = {}) {
       }
     },
   });
-  return parity(title, { skip, timeout: 60_000, tags: ['historical-parity', `locale-${locale}`] }, async ({ page, app }) => {
+  // A fresh locale campaign compiles its first Expo client bundle in app.open.
+  // Linux measured 57 seconds before the body. Give the attempt the existing
+  // 180-second launch budget, retaining 30-second actions and 15-second assertions.
+  return parity(title, { skip, timeout: 180_000, tags: ['historical-parity', `locale-${locale}`] }, async ({ page, app }) => {
     const captures: string[] = [];
     const folder = join(process.env.E2E_OUTPUT!, 'parity-artifacts', `${createHash('sha256').update(title).digest('hex').slice(0, 12)}-${Date.now()}`);
     mkdirSync(folder, { recursive: true });

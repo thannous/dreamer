@@ -51,8 +51,11 @@ The original Playwright/backend/Maestro suites remain present and required.
 The public `surfaceOf()` Page/context keeps CSS, geometry, keyboard, image and
 clock checks. TesterArmy owns isolated attempts and traces; the pinned isolated
 Playwright 1.63.0 package supplies matchers only. The parity fixture preserves
-Desktop Chrome 1280x720 by default (explicit mobile overrides remain), 60-second
-tests and 15-second exact assertions from the historical config. Stable journeys
+Desktop Chrome 1280x720 by default (explicit mobile overrides remain), with
+30-second actions and 15-second exact assertions from the historical config.
+Attempts allow 180 seconds because a fresh Linux locale campaign used 57 seconds
+compiling its first client bundle before the first body; assertions and zero
+retries remain unchanged. Stable journeys
 retain their 390x844 viewport. Service workers and external real services remain
 blocked, and each case starts with `app.open()`.
 
