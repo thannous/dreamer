@@ -77,6 +77,19 @@ for (const editor of ['metadata', 'transcript'] as const) {
       }
     }
     await screen.scrollUntilVisible(button); await button.tap();
+    if (platform === 'ios' && editor === 'transcript') {
+      // Use the observed UIKit selection menu for the long multiline value.
+      // The preserved fill failure retained a suffix of the previous value.
+      await input.longPress();
+      await input.tap();
+      const selectAll = screen.getByRole('listitem', /^(Select All|Tout sélectionner)$/, { visible: true });
+      await expect(selectAll).toHaveCount(1);
+      await selectAll.tap();
+      const cut = screen.getByRole('listitem', /^(Cut|Couper)$/, { visible: true });
+      await expect(cut).toHaveCount(1);
+      await cut.tap();
+      await expect(input).toHaveValue('');
+    }
     await input.fill('E2E abandoned local draft');
     if (platform === 'ios') await screen.getByTestId('btn.journal.dismissKeyboard', { visible: true }).tap();
     else await device.dismissKeyboard();
@@ -212,13 +225,18 @@ test('Dreamer release drawer layout, backdrop and full settings actions remain u
   await app.screenshot('release-drawer-settings-destination');
 });
 
-test('Dreamer release drawer sign-in opens its account destination', async ({ app, screen }) => {
+test('Dreamer release drawer sign-in opens its account destination', async ({ app, screen, platform }) => {
   await app.open();
   await app.clearState();
   await screen.getByTestId('btn.onboarding.intro.next').tap();
   await screen.getByTestId('btn.onboarding.skip').tap();
   await screen.getByRole('button', /^(Settings|Paramètres)$/, { visible: true }).first().tap();
-  await screen.getByTestId('quick-settings.signin', { visible: true }).tap();
+  const signin = screen.getByTestId('quick-settings.signin', { visible: true });
+  if (platform === 'android') {
+    await screen.scrollUntilVisible(signin);
+    await expect(signin).toBeEnabled();
+  }
+  await signin.tap();
   await expect(screen.getByTestId('screen.account', { visible: true })).toBeVisible();
   await expect(screen.getByTestId('input.auth.email', { visible: true })).toBeVisible();
   await app.screenshot('release-drawer-account-destination');
