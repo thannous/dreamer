@@ -52,8 +52,15 @@ test('Dreamer release Quick Settings persists French and theme choices while pre
   await expect(screen.getByTestId('quick-settings.language.fr')).toHaveCount(0);
   await expect(editor).toHaveValue(draft);
   for (const theme of ['dark', 'light']) {
+    if (platform === 'android') {
+      await expect(screen.getByTestId('quick-settings.drawer', { visible: true })).toHaveCount(0);
+    }
     await settings.tap();
     const choice = screen.getByTestId(`quick-settings.theme.${theme}`, { visible: true });
+    if (platform === 'android') {
+      await screen.scrollUntilVisible(choice);
+      await expect(choice).toBeEnabled();
+    }
     await choice.tap();
     await expect(screen.getByRole('radio', theme === 'dark' ? 'Sombre' : 'Clair', { visible: true })).toBeChecked();
     await app.screenshot(`release-quick-settings-${theme}`);
