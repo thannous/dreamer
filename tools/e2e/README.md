@@ -71,7 +71,18 @@ only the selected app's state; use a dedicated disposable emulator/simulator.
 One worker and a per-device lock prevent concurrent runs of this wrapper.
 Never delete a stale lock without checking the recorded owner.
 
-Initial coverage: Dreamer onboarding/empty-save/draft mode continuity; Lucid
+Dreamer exact web coverage also exercises guest save/inline mock analysis,
+authenticated save/rename/Journal round-trip, empty-search recovery, transcript
+editing, cancelled and confirmed targeted deletion, favorite removal without
+story loss, exhausted-quota refusal without story loss, exact fixture allowance
+(Free `5 / 3`, Plus unlimited), and account Journal isolation after sign-out.
+These are real browser UI journeys with the historical mock profiles, not
+qualification of backend durability, RLS, native storage or real purchases.
+Run selections after the explicit `run` argument, for example:
+`E2E_WEB_PORT=4511 mise exec -- npm run test:testerarmy -- run --grep 'account allowance'`.
+The optional web port override is ignored for native targets.
+
+Other coverage: Dreamer onboarding/empty-save/draft mode continuity; Lucid
 required intention/experience and entry to sleep settings; Meditation onboarding,
 restart persistence and tabs; generated site homepage/internal navigation.
 Native counterparts are deliberately limited to installed-build checks. Add the

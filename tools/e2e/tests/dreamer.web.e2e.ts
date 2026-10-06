@@ -1,6 +1,167 @@
 import { test } from '@e2e-dev/web';
 import { expect } from 'e2e';
 import { isolateWeb } from '../web-fixtures';
+import type { App, Screen } from 'e2e';
+
+async function startGuest(app: App, screen: Screen) {
+  await app.open();
+  await screen.getByTestId('btn.onboarding.intro.next').tap();
+  await screen.getByTestId('btn.onboarding.skip').tap();
+  await expect(screen.getByTestId('screen.recording', { visible: true })).toBeVisible();
+}
+
+async function openSettings(screen: Screen) {
+  const home = screen.getByTestId('tab.home', { visible: true });
+  if (await home.isVisible()) await home.tap();
+  else await screen.getByTestId('btn.recording.home', { visible: true }).tap();
+  await screen.getByTestId('btn.header.home.settings', { visible: true }).tap();
+  await screen.getByTestId('quick-settings.all', { visible: true }).tap();
+}
+
+async function selectProfile(app: App, screen: Screen, profile: 'existing' | 'plus') {
+  await startGuest(app, screen);
+  await openSettings(screen);
+  await screen.getByTestId('settings-account-open-signin', { visible: true }).tap();
+  await screen.getByTestId(`btn.mockProfile.${profile}`, { visible: true }).tap();
+  await expect(screen.getByTestId('screen.recording', { visible: true })).toBeVisible();
+}
+
+async function journal(screen: Screen) {
+  const back = screen.getByTestId('btn.navigateJournal', { visible: true });
+  if (await back.isVisible()) await back.tap();
+  else {
+    if (!await screen.getByTestId('tab.journal', { visible: true }).isVisible())
+      await screen.getByTestId('btn.recording.home', { visible: true }).tap();
+    await screen.getByTestId('tab.journal', { visible: true }).tap();
+  }
+  await expect(screen.getByTestId('screen.journal', { visible: true })).toHaveCount(1);
+}
+
+async function openDream(screen: Screen, title: string) {
+  await screen.getByRole('textbox', 'Search dreams…', { visible: true }).fill(title);
+  const card = screen.getByTestId(/^dream\.item\./, { visible: true }).filter({ hasText: title });
+  await expect(card).toHaveCount(1);
+  await card.tap();
+  await expect(screen.getByTestId('component.transcriptCard', { visible: true })).toBeVisible();
+}
+
+test('guest saves the exact story and reads its simulated analysis inline', async ({ app, screen, browser }) => {
+  await isolateWeb(browser, app);
+  await startGuest(app, screen);
+  const story = 'E2E moonlit harbor with a golden lighthouse.';
+  await screen.getByTestId('input.dreamTranscript', { visible: true }).fill(story);
+  await screen.getByTestId('btn.saveDream', { visible: true }).tap();
+  await expect(screen.getByTestId('component.transcriptCard', { visible: true })).toContainText(story);
+  const reading = screen.getByTestId('component.dreamDetail.readingZone', { visible: true });
+  await expect(reading).toContainText('Analysis');
+  await expect(reading).toContainText('Symbols');
+  expect((await reading.textContent() ?? '').length).toBeGreaterThan(100);
+  await expect(screen.getByTestId('analysis.reading.modal')).toHaveCount(0);
+  await app.screenshot('guest-saved-analysis');
+});
+
+test('free user saves, renames and finds the exact story in Journal', async ({ app, screen, browser }) => {
+  await isolateWeb(browser, app);
+  await selectProfile(app, screen, 'existing');
+  const story = 'E2E sapphire lighthouse above the quiet ocean.';
+  await screen.getByTestId('input.dreamTranscript', { visible: true }).fill(story);
+  await screen.getByTestId('btn.saveDream', { visible: true }).tap();
+  await expect(screen.getByTestId('component.transcriptCard', { visible: true })).toContainText(story);
+  await screen.getByTestId('btn.editMetadata', { visible: true }).tap();
+  await screen.getByTestId('input.dreamTitle', { visible: true }).fill('E2E sapphire lighthouse');
+  await screen.getByTestId('btn.editMetadata', { visible: true }).tap();
+  await journal(screen);
+  await openDream(screen, 'E2E sapphire lighthouse');
+  await expect(screen.getByTestId('component.transcriptCard', { visible: true })).toContainText(story);
+  await app.screenshot('saved-story-found-in-journal');
+});
+
+test('free user recovers empty search, edits, cancels deletion and deletes only one dream', async ({ app, screen, browser }) => {
+  await isolateWeb(browser, app);
+  await selectProfile(app, screen, 'existing');
+  await journal(screen);
+  const search = screen.getByRole('textbox', 'Search dreams…', { visible: true });
+  await search.fill('E2E no such dream 93f82');
+  await expect(screen.getByTestId(/^dream\.item\./, { visible: true })).toHaveCount(0);
+  await openDream(screen, 'The Infinite Library');
+  const story = 'E2E revised story: the library has a blue door.';
+  await screen.getByTestId('btn.editTranscript', { visible: true }).tap();
+  await screen.getByTestId('input.dreamTranscript', { visible: true }).fill(story);
+  await screen.getByTestId('btn.editTranscript', { visible: true }).tap();
+  await expect(screen.getByTestId('component.transcriptCard', { visible: true })).toContainText(story);
+  await screen.getByTestId('btn.dream.delete', { visible: true }).tap();
+  await screen.getByRole('button', 'Cancel', { visible: true }).tap();
+  await expect(screen.getByTestId('component.transcriptCard', { visible: true })).toContainText(story);
+  await screen.getByTestId('btn.dream.delete', { visible: true }).tap();
+  await screen.getByRole('button', 'Delete', { visible: true }).tap();
+  await expect(screen.getByTestId('screen.journal', { visible: true })).toHaveCount(1);
+  await search.fill('The Infinite Library');
+  await expect(screen.getByTestId(/^dream\.item\./, { visible: true })).toHaveCount(0);
+  await search.fill('Ocean of Stars');
+  await expect(screen.getByTestId(/^dream\.item\./, { visible: true })).toHaveCount(1);
+  await app.screenshot('deletion-preserves-other-dream');
+});
+
+test('free user adds and removes a favorite without deleting its story', async ({ app, screen, browser }) => {
+  await isolateWeb(browser, app);
+  await selectProfile(app, screen, 'existing');
+  await journal(screen);
+  await openDream(screen, 'Garden in the Clouds');
+  await screen.getByTestId('btn.dream.favorite', { visible: true }).tap();
+  await journal(screen);
+  await screen.getByRole('button', 'Show favorites only', { visible: true }).tap();
+  await openDream(screen, 'Garden in the Clouds');
+  await screen.getByTestId('btn.dream.favorite', { visible: true }).tap();
+  await journal(screen);
+  await screen.getByRole('button', 'Show favorites only', { visible: true }).tap();
+  await screen.getByRole('textbox', 'Search dreams…', { visible: true }).fill('Garden in the Clouds');
+  await expect(screen.getByTestId(/^dream\.item\./, { visible: true })).toHaveCount(0);
+  await screen.getByRole('button', 'Show all dreams', { visible: true }).tap();
+  await openDream(screen, 'Garden in the Clouds');
+  await app.screenshot('favorite-removal-keeps-story');
+});
+
+test('exhausted free account keeps its story when declining the analysis offer', async ({ app, screen, browser }) => {
+  await isolateWeb(browser, app);
+  await selectProfile(app, screen, 'existing');
+  const story = 'E2E saved even when my analysis allowance is exhausted.';
+  await screen.getByTestId('input.dreamTranscript', { visible: true }).fill(story);
+  await screen.getByTestId('btn.saveDream', { visible: true }).tap();
+  await expect(screen.getByTestId('component.transcriptCard', { visible: true })).toContainText(story);
+  await screen.getByTestId('btn.dream.primaryCta', { visible: true }).tap();
+  await expect(screen.getByTestId('screen.paywall', { visible: true })).toBeVisible();
+  await screen.getByTestId('btn.paywall.close', { visible: true }).tap();
+  await expect(screen.getByTestId('component.transcriptCard', { visible: true })).toContainText(story);
+  await expect(screen.getByRole('button', 'Read the full analysis', { visible: true })).toHaveCount(0);
+  await app.screenshot('quota-decline-preserves-story');
+});
+
+for (const profile of ['existing', 'plus'] as const) {
+  test(`${profile} account allowance and sign-out preserve account isolation`, async ({ app, screen, browser }) => {
+    await isolateWeb(browser, app);
+    await selectProfile(app, screen, profile);
+    await openSettings(screen);
+    // The populated historical fixture contains exactly five completed analyses.
+    await expect(screen.getByTestId('quota.analysisValue', { visible: true })).toHaveText(profile === 'plus' ? 'Unlimited' : '5 / 3');
+    const upgrade = screen.getByRole('button', 'Upgrade to Noctalia Plus', { visible: true });
+    if (profile === 'existing') {
+      await upgrade.tap();
+      await screen.getByTestId('btn.paywall.selectMonthly', { visible: true }).tap();
+      await expect(screen.getByTestId('btn.paywall.selectMonthly', { visible: true })).toHaveAttribute('aria-checked', 'true');
+      await screen.getByTestId('btn.paywall.close', { visible: true }).tap();
+    } else await expect(upgrade).toHaveCount(0);
+    await screen.getByTestId('btn.auth.signOut', { visible: true }).tap();
+    await expect(screen.getByTestId('screen.recording', { visible: true })).toBeVisible();
+    await openSettings(screen);
+    await expect(screen.getByTestId('settings-account-open-signin', { visible: true })).toBeVisible();
+    await expect(screen.getByTestId('btn.auth.signOut')).toHaveCount(0);
+    await screen.getByTestId('settings.back', { visible: true }).tap();
+    await journal(screen);
+    await expect(screen.getByTestId('journal-first-page', { visible: true })).toBeVisible();
+    await expect(screen.getByTestId(/^dream\.item\./, { visible: true })).toHaveCount(0);
+    await app.screenshot(`${profile}-signout-isolates-journal`);
+  });
+}
 
 test('onboarding prevents an empty save and capture preserves the draft', async ({ app, screen, browser }) => {
   await isolateWeb(browser, app);

@@ -12,7 +12,9 @@ if (!products.includes(product) || !['web', 'android', 'ios'].includes(platform)
 if (product === 'site' && platform !== 'web') throw new Error('The site has no native target.');
 const native = platform !== 'web';
 const ports = { dreamer: 8096, lucid: 8097, meditation: 8098, site: 8099 };
-const port = ports[product as keyof typeof ports];
+const port = Number(!native ? process.env.E2E_WEB_PORT ?? ports[product as keyof typeof ports] : ports[product as keyof typeof ports]);
+if (!native && (!Number.isInteger(port) || port < 1 || port > 65535))
+  throw new Error('E2E_WEB_PORT must be a valid TCP port.');
 const bundles: Record<string, string> = { dreamer: 'com.tanuki75.noctalia', lucid: 'com.tanuki75.noctalia.lucid', meditation: 'com.noctalia.meditation' };
 const bundleId = bundles[product];
 const device = process.env.E2E_DEVICE;
