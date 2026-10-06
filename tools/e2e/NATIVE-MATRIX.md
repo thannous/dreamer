@@ -1,0 +1,40 @@
+# Native qualification matrix
+
+The current exact verdict is the immutable run manifest linked from the delivery
+report. This matrix describes source selection and invariants, not a pass count.
+Each selected test starts with `app.open()`, uses one worker on one disposable
+owned target, and performs exact assertions on an identified installed Release.
+
+| App | Platform | Profile | Invariants / runnable bodies | Explicit limits |
+| --- | --- | --- | --- | --- |
+| Dreamer | Android | production-apk, story OFF | Capture onboarding/empty save/mode draft, French + themes + restart, language row, drawer bounds/backdrop/settings, account destination, Plus offer closure (6) | Store error is environmental; no purchase/provider/backend proof |
+| Dreamer | iOS Simulator | mock-persistent, story ON | Same six invariants plus feature-story Capture→Explorer (7) | Synthetic account/catalogue, local storage; no real entitlement |
+| Dreamer | Android + iOS Simulator | mock-persistent, 30000ms categorization opt-in | Metadata draft and transcript draft survive same-entry background completion, exact save/Journal round-trip, another entry receives its own draft (2 per platform) | Real mock update witnessed pending before edits; no production timing claim |
+| Lucid | Android | lucid-mock | Both intention/experience required; local plan activation + restart + tabs (2) | No real cloud/account sync or native full historical browser parity |
+| Lucid | iOS Simulator | lucid-mock, signed | Same two invariants with SecureStore restart (2) | Local ad hoc signature and existing entitlements; no fallback or Store profile |
+| Meditation | Android + iOS Simulator | meditation-local | Onboarding/restart/all tabs, breathing start/pause/resume/exit, language immediate/restart, bundled session play/seek15s/resume (4 per platform) | Bundled audio/local storage; no purchase, entitlement or physical audio proof |
+| All | Physical Android + iOS | unavailable until protocol ready | No selected journey and no claimed pass | Inventory is read-only; pairing alone is insufficient |
+
+The historical browser campaign additionally checks responsive geometry, layouts,
+subscription mock scenarios, Explorer/reflection/symbols, detailed Lucid programs,
+Journal account isolation, quotas and other browser-specific cases. Those invariants
+remain in TesterArmy web/Playwright/Maestro/backend CI until native equivalents have
+passed. A platform/profile skip is a declared gap, not equivalent coverage. Screen
+pixels, timing on physical hardware, real providers, feedback and purchases need
+their own authorized work packages.
+
+## Target and build prerequisites
+
+Use the existing device protocol to inventory read-only (`adb devices -l`, bounded
+`xcrun devicectl list devices --timeout 10`). Native automation accepts only a named
+emulator or available Simulator through the repository runner. A real phone also
+needs a live connection, unlocked/trusted state, Developer Mode, app-specific data
+ownership, matching signed build/profile and explicit acquisition under that
+protocol. Do not install, erase or take a private phone from an inventory result.
+
+If no project exists, apply the repository prebuild approval rule. Existing isolated
+Lucid Android/iOS and Meditation iOS projects have prior explicit generation
+approval; keep that provenance with their native inputs. Dependency check, Java17
+for Android, Xcode/Pods for iOS, embedded JS/OTA identity, actual signing where
+SecureStore is required, and a successful canonical `release.json` precede install.
+The atomic install/hash/SDK handoff refuses a mismatch before any test begins.

@@ -15,6 +15,7 @@ export type ExpoPublicEnvKey =
   | 'EXPO_PUBLIC_HD_ILLUSTRATIONS_ENABLED'
   | 'EXPO_PUBLIC_MOCK_MODE'
   | 'EXPO_PUBLIC_MOCK_PERSISTENCE'
+  | 'EXPO_PUBLIC_MOCK_CATEGORIZATION_DELAY_MS'
   | 'EXPO_PUBLIC_ONBOARDING_FEATURE_SHEETS_ENABLED'
   | 'EXPO_PUBLIC_PLAY_INTEGRITY_CLOUD_PROJECT_NUMBER'
   | 'EXPO_PUBLIC_PERFORMANCE_TRACING'
@@ -53,6 +54,8 @@ export function getExpoPublicEnvValue(key: ExpoPublicEnvKey): string | undefined
       return process.env.EXPO_PUBLIC_MOCK_MODE;
     case 'EXPO_PUBLIC_MOCK_PERSISTENCE':
       return process.env.EXPO_PUBLIC_MOCK_PERSISTENCE;
+    case 'EXPO_PUBLIC_MOCK_CATEGORIZATION_DELAY_MS':
+      return process.env.EXPO_PUBLIC_MOCK_CATEGORIZATION_DELAY_MS;
     case 'EXPO_PUBLIC_ONBOARDING_FEATURE_SHEETS_ENABLED':
       return process.env.EXPO_PUBLIC_ONBOARDING_FEATURE_SHEETS_ENABLED;
     case 'EXPO_PUBLIC_PLAY_INTEGRITY_CLOUD_PROJECT_NUMBER':
@@ -92,6 +95,13 @@ export function isMockModeEnabled(): boolean {
 
 export function isMockDogfoodPersistenceEnabled(): boolean {
   return isMockModeEnabled() && getExpoPublicEnvValue('EXPO_PUBLIC_MOCK_PERSISTENCE') === 'true';
+}
+
+/** Identified QA Release opt-in; normal and nonpersistent profiles keep their timing. */
+export function getMockCategorizationDelayMs(): number | undefined {
+  if (!isMockDogfoodPersistenceEnabled()) return undefined;
+  const value = Number(getExpoPublicEnvValue('EXPO_PUBLIC_MOCK_CATEGORIZATION_DELAY_MS'));
+  return Number.isSafeInteger(value) && value >= 20000 && value <= 60000 ? value : undefined;
 }
 
 export function isChatDebugEnabled(): boolean {

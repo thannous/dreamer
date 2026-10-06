@@ -1801,8 +1801,8 @@ const JournalDetailContent = memo(function JournalDetailContent({ dream }: { dre
           <Text key={`dream-date-${windowSize.fontScale}`} allowFontScaling={false} style={{ fontSize: 12 * compactTextScale, lineHeight: 20 * compactTextScale }} className="mb-5 font-sans text-[12px] leading-5 text-ivory-muted">
             {formatDreamDate(dream.id)} · {formatDreamTime(dream.id)}
           </Text>
-          {!isEditing && hasUncategorizedDraft && initialCategorizationPending ? (
-            <Text className="mb-4 font-sans text-[13px] text-ivory-muted">
+          {hasUncategorizedDraft && initialCategorizationPending ? (
+            <Text testID="text.dreamMetadata.pending" accessibilityLiveRegion="polite" className="mb-4 font-sans text-[13px] text-ivory-muted">
               {t('journal.detail.metadata.loading')}
             </Text>
           ) : null}
