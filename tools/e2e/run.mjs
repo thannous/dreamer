@@ -6,7 +6,7 @@ import { homedir, tmpdir } from 'node:os';
 import { delimiter, join, resolve, basename, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { digest, sourceSnapshot, compareSnapshots, verifyReport, aggregateReports, writeOnce, preserveStatus, directoryFiles, hashFiles, createAttemptOutput, verifyEvidenceFiles, verifyNativeCleanup } from './qualification.mjs';
-import { normalizeAvdName, appInputs, nativeInputs, binaryInputs, releaseMetadata, validateReleaseReceipt, verifyInstalledRelease, installVerifiedRelease, validateBuildCommand } from './native-release.mjs';
+import { normalizeAvdName, appInputs, nativeInputs, binaryInputs, releaseMetadata, validateReleaseReceipt, verifyInstalledRelease, runWithInstallDiagnostics, validateBuildCommand } from './native-release.mjs';
 
 const cwd = fileURLToPath(new URL('.', import.meta.url));
 const root = fileURLToPath(new URL('../../', import.meta.url));
@@ -102,12 +102,15 @@ let sourceBefore;
 let release;
 let requestedSignal;
 let installedReady = false;
+let installationDiagnostics = null;
+let installHandoffStarted = false;
 let sdkLaunched = false;
 let inspectionStarted = false;
 let inspectionClosed = false;
 let mcpStarted = false;
 let resourceCleanup = 'not-started';
 const secondary = [];
+const installationErrorDetails = [];
 const startedAt = Date.now();
 const expectedOrigin = platform === 'web' ? `http://127.0.0.1:${env.E2E_WEB_PORT ?? ({ dreamer: 8096, lucid: 8097, meditation: 8098, site: 8099 }[product])}` : undefined;
 const pins = Object.fromEntries(['e2e', '@e2e-dev/web', '@e2e-dev/mobile', 'agent-device'].map(name => [name, JSON.parse(readFileSync(join(cwd, 'node_modules', name, 'package.json'), 'utf8')).version]));
@@ -251,6 +254,7 @@ async function runSdk() {
       startedAt, output, context: context(), origin: expectedOrigin, video: args.includes('--video'), trace: platform === 'web' || args.includes('--trace'), collection, repeatCount });
     writeOnce(join(output, 'qualification.json'), proof);
   }
+  return primary;
 }
 try {
   sourceBefore = sourceSnapshot(root, product);
@@ -341,7 +345,9 @@ try {
   } else {
     if (command === 'mcp') { mcpStarted = true; primary = await execute(process.execPath, [...webNodeArgs, cli, command, '--target', `${product}-${platform}`, '--max-sessions', '1'], undefined, cliEnvironment()); }
     else if (platform === 'web') await runSdk();
-    else await installVerifiedRelease({
+    else {
+      installHandoffStarted = true;
+      installationDiagnostics = await runWithInstallDiagnostics({
       install: installRelease ? async () => {
         if (platform === 'android') read('adb', ['-s', identity, 'install', '-r', release.binary.path]);
         else read('xcrun', ['simctl', 'install', identity, release.binary.path]);
@@ -350,8 +356,11 @@ try {
         writeOnce(join(output, 'installed-start.json'), verifyInstalledRelease({ receipt: release, device: identity, output, read }));
         installedReady = true;
       },
-      launch: runSdk,
-    });
+      launch: runSdk, onDiagnostic: (code, error) => {
+        secondary.push(code); installationErrorDetails.push({ code, message: error instanceof Error ? error.message.slice(0, 4096) : 'Non-Error diagnostic' });
+      },
+      });
+    }
   }
 } catch (error) {
   if (primary === 0) primary = 3;
@@ -361,7 +370,7 @@ try {
   // Every final check and lock operation is independent. Persistence failure
   // cannot prevent cleanup or replace the original SDK failure/signal.
   const attempt = (code, body) => { try { return body(); } catch { secondary.push(code); return undefined; } };
-  if (installedReady) attempt('INSTALLED_END_REFUSED', () => writeOnce(join(output, 'installed-end.json'), verifyInstalledRelease({ receipt: release, device: identity, output, read })));
+  if (installedReady || installHandoffStarted) attempt('INSTALLED_END_REFUSED', () => writeOnce(join(output, 'installed-end.json'), verifyInstalledRelease({ receipt: release, device: identity, output, read })));
   const end = attempt('SOURCE_END_REFUSED', () => sourceSnapshot(root, product));
   const stability = sourceBefore && end ? compareSnapshots(sourceBefore, end) : null;
   if (stability && (!stability.sourceStable || !stability.outputsStable)) secondary.push('SOURCE_OR_OUTPUT_CHANGED');
@@ -381,14 +390,17 @@ try {
     attempt('LOCK_OWNERSHIP', () => {
       const owner = JSON.parse(readFileSync(lock, 'utf8'));
       if (owner.pid !== process.pid || owner.product !== product || owner.device !== env.E2E_DEVICE) throw new Error('Foreign lock.');
-      if (resourceCleanup === 'unproven') return;
+      // Owner decision 2026-10-06: process completion releases this wrapper's
+      // own lock even when SDK resources remain unproven. Keep that diagnostic.
       unlinkSync(lock);
     });
   }
   attempt('MANIFEST_PERSISTENCE', () => writeOnce(join(output, 'files.json'), hashFiles(output, directoryFiles(output, '.'))));
   attempt('END_PERSISTENCE', () => writeOnce(join(output, 'end.json'), {
     finishedAt: new Date().toISOString(), primaryExitCode: requestedSignal ?? primary,
-    exitCode: preserveStatus(requestedSignal ?? primary, secondary), sdkLaunched, installedReady, stability,
+    exitCode: preserveStatus(requestedSignal ?? primary, secondary), sdkLaunched, installedReady, installationDiagnostics, installationErrorDetails, stability,
+    applicationQualified: command === 'run' && preserveStatus(requestedSignal ?? primary, secondary) === 0,
+    ownerDecision: '2026-10-06-install-hash-diagnostic-and-release-own-wrapper-lock',
     secondaryErrors: secondary, resourceCleanup, lockReleased: lock ? !existsSync(lock) : true,
   }));
   process.exitCode = preserveStatus(requestedSignal ?? primary, secondary);

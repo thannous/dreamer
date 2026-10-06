@@ -113,7 +113,7 @@ manifest. Meditation has its own manifest and check:
 `npm --prefix apps/meditation run dependencies:check`.
 Run the affected check before a local native build; CI checks both manifests.
 
-## Native Release provenance and atomic handoff
+## Native Release provenance and diagnostic handoff
 
 Use the existing native projects and the repository's build/prebuild rules.
 `run.mjs <product> <platform> build` runs the installed Expo SDK dependency check
@@ -150,8 +150,11 @@ reuse after a test-only commit; build-source and test-source revisions stay dist
 `--install-release` is opt-in and simulator/emulator-only. The existing runner
 holds the device lock, validates the receipt/source/binary, installs that binary,
 pulls and hashes the installed APK (or hashes the installed Simulator `.app`),
-and only then launches collection and SDK tests. A refusal launches zero tests.
-Without that switch, an already installed binary must pass the same hash check.
+then launches collection and SDK tests. The owner decision of2026-10-06 makes
+installation/hash failures independent diagnostics: SDK continues on the owned QA
+target, but a failed identity check cannot yield application qualification. An
+invalid/missing build receipt, incompatible profile or foreign device still refuses
+before launch. Without the install switch, the installed hash is still diagnosed.
 The installed identity is checked again after the SDK returns. No EAS, Store,
 physical install, unsigned storage fallback or model is enabled.
 
@@ -216,6 +219,9 @@ secondary errors, and intact declared/requested artifacts. A body requesting no
 media and declaring none may produce a report only. Requested missing video/trace
 is refused. Source/output/install/lock failures are independent final checks;
 primary SDK failures and SIGINT130/SIGTERM143 retain priority over secondary errors.
+After process completion the wrapper releases only its own lock, including when
+resource cleanup is failed/missing. `resourceCleanup` records that limitation and
+the final verdict remains nonqualifying; no unknown session/recorder is killed.
 `qualification.json` records SDK validation; only final `end.json` exit0 completes
 that invocation. Preserve both when reporting its verdict.
 

@@ -37,4 +37,8 @@ Lucid Android/iOS and Meditation iOS projects have prior explicit generation
 approval; keep that provenance with their native inputs. Dependency check, Java17
 for Android, Xcode/Pods for iOS, embedded JS/OTA identity, actual signing where
 SecureStore is required, and a successful canonical `release.json` precede install.
-The atomic install/hash/SDK handoff refuses a mismatch before any test begins.
+An invalid build/profile/device refuses before SDK. By owner decision2026-10-06,
+installation/hash failures become diagnostics and SDK continues on the owned QA
+target; the final application verdict remains nonqualifying. This wrapper
+releases its own lock after process completion even if cleanup is unproven,
+retaining diagnostics without taking or killing an unknown resource.

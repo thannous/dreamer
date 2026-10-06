@@ -3,7 +3,7 @@ import assert from 'node:assert/strict';
 import { mkdtempSync, mkdirSync, writeFileSync, symlinkSync, rmSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
-import { validateReleaseReceipt, installVerifiedRelease, normalizeAvdName, validateBuildCommand, nativeInputs } from './native-release.mjs';
+import { validateReleaseReceipt, runWithInstallDiagnostics, normalizeAvdName, validateBuildCommand, nativeInputs } from './native-release.mjs';
 const sha = 'a'.repeat(64);
 const receipt = () => ({ schemaVersion: 1, kind: 'noctalia-native-release', product: 'dreamer', platform: 'android',
   bundle: 'com.tanuki75.noctalia', configuration: 'Release', buildExitCode: 0, source: { revision: 'a'.repeat(40), inputDigest: sha },
@@ -30,14 +30,17 @@ test('Release source and profile fields cannot coerce array/string flags into a 
     const r = receipt(); mutate(r); assert.throws(() => validateReleaseReceipt(r, expected));
   }
 });
-test('install refusal or hash mismatch never calls the SDK handoff; success calls once after hash verification', async () => {
-  for (const failure of ['install', 'hash', null]) {
-    const actions = []; let sdk = 0;
-    const install = async () => { actions.push('install'); if (failure === 'install') throw Error('INSTALL_REFUSED'); };
-    const verifyInstalled = async () => { actions.push('hash'); if (failure === 'hash') throw Error('INSTALLED_HASH'); return { hashMatches: true }; };
-    const launch = async () => { actions.push('sdk'); sdk++; return 0; };
-    if (failure) { await assert.rejects(installVerifiedRelease({ install, verifyInstalled, launch })); assert.equal(sdk, 0); }
-    else { assert.equal(await installVerifiedRelease({ install, verifyInstalled, launch }), 0); assert.deepEqual(actions, ['install', 'hash', 'sdk']); }
+test('installation diagnostics are independent, SDK still runs, and invalid identity cannot disappear', async () => {
+  for (const failure of ['install', 'hash', 'both', null]) {
+    const actions = [], diagnostics = []; let sdk = 0;
+    const install = async () => { actions.push('install'); if (failure === 'install' || failure === 'both') throw Error('public install refusal'); };
+    const verifyInstalled = async () => { actions.push('hash'); if (failure === 'hash' || failure === 'both') throw Error('public hash refusal'); };
+    const launch = async () => { actions.push('sdk'); sdk++; return 1; };
+    const result = await runWithInstallDiagnostics({ install, verifyInstalled, launch, onDiagnostic: (code, error) => diagnostics.push({ code, reason: error.message }) });
+    assert.equal(sdk, 1); assert.equal(result.sdkResult, 1); assert.deepEqual(actions, ['install', 'hash', 'sdk']);
+    assert.equal(result.installationOk, !['install', 'both'].includes(failure)); assert.equal(result.installedIdentityOk, !['hash', 'both'].includes(failure));
+    assert.equal(diagnostics.length, failure === 'both' ? 2 : failure ? 1 : 0);
+    for (const diagnostic of diagnostics) assert.equal(diagnostic.reason, diagnostic.code === 'INSTALLATION_REFUSED' ? 'public install refusal' : 'public hash refusal');
   }
 });
 

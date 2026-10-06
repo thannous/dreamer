@@ -10,7 +10,9 @@ real native/web journeys remain the proof of successful application behaviour.
 - Requested media may be missing; a report-only body must not acquire a PNG gate.
 - A previous/foreign report, repeated ID or changed SDK/source/target may be read.
 - Artifact paths may escape output; declared size/hash may disagree with bytes.
-- An installation refusal or installed hash mismatch must launch zero SDK tests.
+- Invalid build/profile/device still refuses before SDK. Owner decision2026-10-06
+  makes installation/hash refusal diagnostic: both checks are attempted independently
+  and SDK continues, while the final application verdict stays nonqualifying.
 - Source and test inputs may change while a run executes; site outputs are distinct.
 - Unioning testId alone can collapse platforms; skips/exclusions must remain separate.
 - A second attempt must not overwrite a prior receipt.
@@ -24,3 +26,9 @@ The native concurrency profile additionally needs an isolated check: an absent,
 invalid or out-of-range delay, or a delay outside persistent mock mode, must never
 change normal categorization timing. Device journeys cannot safely exercise a real
 provider merely to prove that opt-in boundary. This control precedes that profile.
+
+Owner decision2026-10-06 supersedes the earlier installation/lock block. Release
+this wrapper's own lock after the SDK process exits even if cleanup is unproven;
+retain diagnostics and the nonqualifying verdict, never touch a foreign lock or
+kill an unknown recorder. Failed build-receipt/profile/device prerequisites remain
+refusals. The installation diagnostics control precedes this policy change.

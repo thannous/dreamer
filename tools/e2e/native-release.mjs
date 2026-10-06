@@ -103,10 +103,11 @@ export function validateReleaseReceipt(receipt, expected) {
     || (receipt.platform === 'ios' && receipt.product === 'lucid' && !receipt.binary.signed)) refusal('RELEASE_PROFILE');
   return receipt;
 }
-export async function installVerifiedRelease({ install, verifyInstalled, launch }) {
-  if (install) await install();
-  await verifyInstalled();
-  return launch();
+export async function runWithInstallDiagnostics({ install, verifyInstalled, launch, onDiagnostic }) {
+  let installationOk = true, installedIdentityOk = true;
+  try { if (install) await install(); } catch (error) { installationOk = false; onDiagnostic('INSTALLATION_REFUSED', error); }
+  try { await verifyInstalled(); } catch (error) { installedIdentityOk = false; onDiagnostic('INSTALLED_START_REFUSED', error); }
+  return { installationOk, installedIdentityOk, sdkResult: await launch() };
 }
 export function verifyInstalledRelease({ receipt, device, output, read }) {
   if (receipt.platform === 'android') {
