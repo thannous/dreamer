@@ -82,10 +82,16 @@ for (const editor of ['metadata', 'transcript'] as const) {
       // The preserved fill failure retained a suffix of the previous value.
       await input.longPress();
       await input.tap();
-      const selectAll = screen.getByRole('listitem', /^(Select All|Tout sélectionner)$/, { visible: true });
+      const selectAll = screen.getByText(/^(Select All|Tout sélectionner)$/, { visible: true });
+      if (await selectAll.count() === 0) {
+        // UIKit may paginate Select All when Paste occupies the first page.
+        const nextPage = screen.getByRole('button', /^(Next page|Page suivante)$/, { visible: true });
+        await expect(nextPage).toHaveCount(1);
+        await nextPage.tap();
+      }
       await expect(selectAll).toHaveCount(1);
       await selectAll.tap();
-      const cut = screen.getByRole('listitem', /^(Cut|Couper)$/, { visible: true });
+      const cut = screen.getByText(/^(Cut|Couper)$/, { visible: true });
       await expect(cut).toHaveCount(1);
       await cut.tap();
       await expect(input).toHaveValue('');
