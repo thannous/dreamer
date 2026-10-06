@@ -40,6 +40,51 @@ The journey opens the real Settings control, checks that preferences are
 actionable, and requires closed drawers to expose no accessible radio controls.
 It exercises the panel at 390 and 1280 pixels.
 
+## Historical Dreamer UI parity
+
+The 83 historical browser cases across 16 families run through TesterArmy with
+their exact UI assertions, including mock billing, capture/edit/chat, continuous
+reading, reflection, symbol dictionary, Explorer, settings persistence, Home,
+Trends, responsive navigation, Journal geometry and feature-sheet stories.
+The original Playwright/backend/Maestro suites remain present and required.
+
+The public `surfaceOf()` Page/context keeps CSS, geometry, keyboard, image and
+clock checks. TesterArmy owns isolated attempts and traces; the pinned isolated
+Playwright 1.63.0 package supplies matchers only. The parity fixture preserves
+Desktop Chrome 1280x720 by default (explicit mobile overrides remain), 60-second
+tests and 15-second exact assertions from the historical config. Stable journeys
+retain their 390x844 viewport. Service workers and external real services remain
+blocked, and each case starts with `app.open()`.
+
+Cases requiring French or German use actual locale contexts, including
+`navigator.language`, `Intl` and `Accept-Language`, through `E2E_WEB_LOCALE`.
+Other locale cases are skipped with the exact rerun instruction, never counted
+as passed. Four commands jointly qualify all cases:
+
+```sh
+EXPO_PUBLIC_ONBOARDING_FEATURE_SHEETS_ENABLED=true E2E_WEB_LOCALE=en-US mise exec -- node tools/e2e/run.mjs dreamer web run
+EXPO_PUBLIC_ONBOARDING_FEATURE_SHEETS_ENABLED=true E2E_WEB_LOCALE=fr-FR mise exec -- node tools/e2e/run.mjs dreamer web run --tag locale-fr-FR
+EXPO_PUBLIC_ONBOARDING_FEATURE_SHEETS_ENABLED=true E2E_WEB_LOCALE=de-DE mise exec -- node tools/e2e/run.mjs dreamer web run --tag locale-de-DE
+EXPO_PUBLIC_ONBOARDING_FEATURE_SHEETS_ENABLED=false E2E_WEB_LOCALE=en-US mise exec -- node tools/e2e/run.mjs dreamer web run --grep 'feature sheets stay disabled by default'
+```
+
+The existing Dreamer CI check runs the same four passes and retains every
+timestamped report, screenshot, trace, source/input hashes and browser-context
+artifact. Lucid, Meditation and site commands keep their existing behavior;
+locale flags apply only to web. `E2E_WEB_PORT` can select an isolated local port.
+The matcher preload applies only to the CLI/workers. Expo receives the caller's
+original `NODE_OPTIONS` value or absence; native and inspection commands receive
+no preload. No model or replay is needed for these bodies.
+
+Two historical selectors changed with responsive navigation: Today exposes a
+back button on desktop and a tab on mobile, while Journal uses its visible
+navigation ID. The reading-content assertion now requires substantive text
+across words instead of requiring one twenty-character word, which the mock
+French copy never contains. Remaining transcript, questions, symbols, state,
+geometry and action assertions are retained. This is UI/mock qualification;
+it does not prove backend interpretation, durability, purchases or native text.
+No original test is removed on the basis of these results.
+
 ## Continuous integration and SDK checks
 
 CircleCI runs the exact Dreamer and Lucid journeys in the Noctalia workflow,

@@ -184,6 +184,19 @@ jobs:
       - run:
           name: Verify exact << parameters.product >> browser journeys
           command: node tools/e2e/run.mjs << parameters.product >> web run --trace
+      - when:
+          condition:
+            equal: [dreamer, << parameters.product >>]
+          steps:
+            - run:
+                name: Verify Dreamer historical French browser context
+                command: E2E_WEB_LOCALE=fr-FR node tools/e2e/run.mjs dreamer web run --tag locale-fr-FR --trace
+            - run:
+                name: Verify Dreamer historical German browser context
+                command: E2E_WEB_LOCALE=de-DE node tools/e2e/run.mjs dreamer web run --tag locale-de-DE --trace
+            - run:
+                name: Verify Dreamer feature sheets remain disabled without opt-in
+                command: EXPO_PUBLIC_ONBOARDING_FEATURE_SHEETS_ENABLED=false E2E_WEB_LOCALE=en-US node tools/e2e/run.mjs dreamer web run --grep 'feature sheets stay disabled by default' --trace
       - store_test_results:
           path: tools/e2e/.e2e
       - store_artifacts:
