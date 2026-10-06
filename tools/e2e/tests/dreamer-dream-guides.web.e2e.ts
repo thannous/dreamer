@@ -1,6 +1,6 @@
 // Historical exact UI assertions executed under the guarded TesterArmy engine.
 import type { Locator, Page } from 'playwright/test';
-import { createParityTest, expect, type ParityInfo } from '../web-parity-fixtures';
+import { createParityTest, expect } from '../web-parity-fixtures';
 import { PRACTICAL_DREAM_GUIDES } from '../../../data/practicalDreamGuides';
 import curation from '../../../docs-src/static/data/curation-pages.json';
 import dictionary from '../../../data/dream-symbols.json';

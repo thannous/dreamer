@@ -38,7 +38,7 @@ export function createParityTest(initial: Options = {}) {
   const locale = active.locale ?? 'en-US';
   const skip = skipped || (locale !== webLocale ? `Requires the real ${locale} browser context; run E2E_WEB_LOCALE=${locale} with --tag locale-${locale}` : false);
   const parity = base.extend<{ page: Page }>({
-    page: async ({ app, browser }, use) => {
+    page: async ({ app, browser }, provide) => {
       const origin = new URL(app.baseUrl!).origin;
       const serviceRequests: string[] = [];
       await browser.route('**/*', async route => {
@@ -61,7 +61,7 @@ export function createParityTest(initial: Options = {}) {
       page.goto = (url, options) => goto.call(page, new URL(url, app.baseUrl!).href, options);
       const reducedMotion = active.reducedMotion ?? active.contextOptions?.reducedMotion;
       if (reducedMotion) await page.emulateMedia({ reducedMotion });
-      try { await use(page); }
+      try { await provide(page); }
       finally {
         page.goto = goto;
         e2eExpect.soft(serviceRequests, 'No real billing/backend request is allowed').toEqual([]);

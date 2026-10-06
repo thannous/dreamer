@@ -1,6 +1,6 @@
 // Historical exact UI assertions executed under the guarded TesterArmy engine.
 import type { Page } from 'playwright/test';
-import { createParityTest, expect, type ParityInfo } from '../web-parity-fixtures';
+import { createParityTest, expect } from '../web-parity-fixtures';
 
 const test = createParityTest({ viewport: { width: 390, height: 844 }, locale: 'fr-FR' });
 

@@ -1,7 +1,7 @@
 // Historical UI assertions, run on the public TesterArmy web surface.
 import { createParityTest, expect } from '../web-parity-fixtures';
-const test = createParityTest();
 import type { Page } from 'playwright/test';
+const test = createParityTest();
 
 test.use({ timezoneId: 'Europe/Paris' });
 
