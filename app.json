@@ -33,7 +33,7 @@
       "buildNumber": "11"
     },
     "android": {
-      "versionCode": 82,
+      "versionCode": 83,
       "adaptiveIcon": {
         "backgroundColor": "#E6F4FE",
         "foregroundImage": "./assets/images/android-icon-foreground.png",

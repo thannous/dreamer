@@ -1,6 +1,6 @@
 import type { E2EConfig } from 'e2e';
 import { mobile } from '@e2e-dev/mobile';
-import { web } from '@e2e-dev/web';
+import { webEngine } from './web-engine';
 import { fileURLToPath } from 'node:url';
 
 const root = fileURLToPath(new URL('../../', import.meta.url));
@@ -12,21 +12,28 @@ if (!products.includes(product) || !['web', 'android', 'ios'].includes(platform)
 if (product === 'site' && platform !== 'web') throw new Error('The site has no native target.');
 const native = platform !== 'web';
 const ports = { dreamer: 8096, lucid: 8097, meditation: 8098, site: 8099 };
-const port = ports[product as keyof typeof ports];
+const port = Number(!native ? process.env.E2E_WEB_PORT ?? ports[product as keyof typeof ports] : ports[product as keyof typeof ports]);
+if (!native && (!Number.isInteger(port) || port < 1 || port > 65535))
+  throw new Error('E2E_WEB_PORT must be a valid TCP port.');
 const bundles: Record<string, string> = { dreamer: 'com.tanuki75.noctalia', lucid: 'com.tanuki75.noctalia.lucid', meditation: 'com.noctalia.meditation' };
 const bundleId = bundles[product];
+// Managed app commands inherit only the runner's public environment allowlist.
+// Restore the caller's NODE_OPTIONS exactly, including its absence.
+const appNodeOptions = process.env.E2E_APP_NODE_OPTIONS_PRESENT === undefined
+  ? process.env.NODE_OPTIONS
+  : process.env.E2E_APP_NODE_OPTIONS_PRESENT === '1' ? process.env.E2E_APP_NODE_OPTIONS! : undefined;
 const device = process.env.E2E_DEVICE;
 if (native && (!device || (platform === 'android' && !/^emulator-\d+$/.test(device))))
   throw new Error('Name an explicit emulator/simulator with E2E_DEVICE; physical devices are excluded.');
 
 export default {
   projectId: `noctalia-${product}`,
-  tests: `tests/${product}.${native ? 'mobile' : 'web'}.e2e.ts`,
+  tests: product === 'dreamer' && !native ? 'tests/dreamer*.web.e2e.ts' : `tests/${product}.${native ? 'mobile' : 'web'}.e2e.ts`,
   targets: [{
     name: `${product}-${platform}`,
     engine: native
       ? mobile({ platform: platform as 'android' | 'ios', device, videoTouches: false })
-      : web({ viewport: { width: 390, height: 844 }, locale: product === 'lucid' ? 'fr-FR' : 'en-US' }),
+      : webEngine,
     app: native ? { bundleId, environment: 'test' as const } : {
       url: `http://127.0.0.1:${port}`,
       environment: 'test' as const,
@@ -41,6 +48,7 @@ export default {
         args: ['run', product === 'meditation' ? 'web' : product === 'lucid' ? 'start:lucid:mock' : 'start:mock', '--', ...(product === 'meditation' ? [] : ['--web']), '--clear', '--port', String(port)],
         cwd: product === 'meditation' ? `${root}apps/meditation` : root,
         env: {
+          ...(appNodeOptions === undefined ? {} : { NODE_OPTIONS: appNodeOptions }),
           CI: '1', EXPO_PUBLIC_MOCK_MODE: 'true', EXPO_PUBLIC_MOCK_AUDIO: 'true', EXPO_PUBLIC_MOCK_PERSISTENCE: 'true',
           ...(product === 'meditation' ? {} : {
             NOCTALIA_APP_VARIANT: product === 'lucid' ? 'lucid' : 'noctalia',
