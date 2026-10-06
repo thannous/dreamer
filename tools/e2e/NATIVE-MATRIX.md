@@ -1,14 +1,14 @@
 # Native qualification matrix
 
-The current exact verdict is the immutable run manifest linked from the delivery
-report. This matrix describes source selection and invariants, not a pass count.
+The current exact verdict is the immutable run manifest identified in the
+[current delivery report](../../doc_web_interne/docs/qa/native-retro-qualification-20261006.md). This matrix describes source selection and invariants, not a pass count.
 Each selected test starts with `app.open()`, uses one worker on one disposable
 owned target, and performs exact assertions on an identified installed Release.
 
 | App | Platform | Profile | Invariants / runnable bodies | Explicit limits |
 | --- | --- | --- | --- | --- |
 | Dreamer | Android | production-apk, story OFF | Capture onboarding/empty save/mode draft, French + themes + restart, language row, drawer bounds/backdrop/settings, account destination, Plus offer closure (6) | Store error is environmental; no purchase/provider/backend proof |
-| Dreamer | iOS Simulator | mock-persistent, story ON | Same six invariants plus feature-story Capture→Explorer (7) | Synthetic account/catalogue, local storage; no real entitlement |
+| Dreamer | Android + iOS Simulator | mock-persistent, story ON | Same six invariants plus feature-story Capture→Explorer (7 per platform) | Synthetic account/catalogue, local storage; no real entitlement |
 | Dreamer | Android + iOS Simulator | mock-persistent, 30000ms categorization opt-in | Metadata draft and transcript draft survive same-entry background completion, exact save/Journal round-trip, another entry receives its own draft (2 per platform) | Real mock update witnessed pending before edits; no production timing claim |
 | Lucid | Android | lucid-mock | Both intention/experience required; local plan activation + restart + tabs (2) | No real cloud/account sync or native full historical browser parity |
 | Lucid | iOS Simulator | lucid-mock, signed | Same two invariants with SecureStore restart (2) | Local ad hoc signature and existing entitlements; no fallback or Store profile |

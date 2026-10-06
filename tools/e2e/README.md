@@ -115,6 +115,8 @@ Run the affected check before a local native build; CI checks both manifests.
 
 ## Native Release provenance and diagnostic handoff
 
+Current delivered native evidence and retained limits: [retrospective qualification](../../doc_web_interne/docs/qa/native-retro-qualification-20261006.md). Historical reports retain their original source/build identities.
+
 Use the existing native projects and the repository's build/prebuild rules.
 `run.mjs <product> <platform> build` runs the installed Expo SDK dependency check
 and an explicit Release command descriptor, then writes an immutable `release.json`.

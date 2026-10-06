@@ -33,7 +33,8 @@ and `app.config.ts`. Meditation has its own package, lockfile and
 | --- | --- | --- |
 | Choose checks for a change | [Proportional validation](validation-proportionnee.md) | Tooling/functional PRs finish with `test:prepush` on a clean committed worktree. |
 | Web and native user journeys | [E2E guide](../../e2e/README.md) | `test:e2e:web`, `test:e2e:journeys`; the guide distinguishes simulated services and native requirements. |
-| TesterArmy Release qualification | [Native qualification, 2026-10-06](qa/native-testerarmy-qualification-20261006.md) | Dreamer, Lucid and Meditation: identified Android emulator/iOS simulator builds, exact journeys and physical-device limits. |
+| TesterArmy Release qualification | [Current native retrospective qualification](qa/native-retro-qualification-20261006.md) | Exact passed-ID union, immutable reports/build receipts, owner decisions and retained physical/Store/video limits. |
+| Historical native qualification | [Initial native qualification, 2026-10-06](qa/native-testerarmy-qualification-20261006.md) | Preserved earlier source/build proofs; not a substitute for the current candidate. |
 | Real local backend, recovery and isolation | [Backend qualification](e2e-backend-qualification.md) | `test:e2e:backend`; needs Chromium and a Docker-compatible runtime. |
 | Mobile version preparation, build and submission | [Mobile release guide](MOBILE_VERSIONING.md) | `release:plan`, `release:prepare`, `release:check`, `release:build`; build/submission require their existing authorization. |
 | EAS build counter mirrors | [Version synchronization](mobile-build-version-sync.md) | `release:versions:sync` writes local mirrors; `release:versions:check` verifies them. |
