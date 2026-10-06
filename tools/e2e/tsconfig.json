@@ -8,7 +8,12 @@
     "skipLibCheck": true,
     "types": [
       "node"
-    ]
+    ],
+    "paths": {
+      "@/*": [
+        "../../*"
+      ]
+    }
   },
   "include": [
     "*.ts",

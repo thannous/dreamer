@@ -1,5 +1,5 @@
 import { spawn, spawnSync } from 'node:child_process';
-import { existsSync, mkdirSync, openSync, closeSync, unlinkSync, writeFileSync } from 'node:fs';
+import { existsSync, readFileSync, readdirSync, mkdirSync, openSync, closeSync, unlinkSync, writeFileSync } from 'node:fs';
 import { createHash } from 'node:crypto';
 import { homedir, tmpdir } from 'node:os';
 import { delimiter, join } from 'node:path';
@@ -34,7 +34,21 @@ for (let index = 0; index < args.length; index++) {
 }
 const cli = join(cwd, 'node_modules/e2e/dist/cli/bin.js');
 if (!existsSync(cli)) throw new Error('Install with npm run test:testerarmy:setup first.');
+// Load the pinned browser matchers before the CLI installs TypeScript hooks.
+// Node arguments apply only to the web CLI, never Expo, native or inspection.
+const webNodeArgs = platform === 'web' ? ['--import', join(cwd, 'preload-web-matchers.mjs')] : [];
 const env = { ...process.env, E2E_PRODUCT: product, E2E_PLATFORM: platform, E2E_TELEMETRY_DISABLED: '1', DO_NOT_TRACK: '1' };
+function cliEnvironment() {
+  if (platform !== 'web') return env;
+  return {
+    ...env,
+    E2E_APP_NODE_OPTIONS: env.NODE_OPTIONS ?? '',
+    E2E_APP_NODE_OPTIONS_PRESENT: Object.hasOwn(env, 'NODE_OPTIONS') ? '1' : '0',
+    // Workers do not retain the CLI's execArgv. Construct this after output and
+    // PATH are set; only this process family receives the matcher preload.
+    NODE_OPTIONS: `${env.NODE_OPTIONS ?? ''} --import ${JSON.stringify(join(cwd, 'preload-web-matchers.mjs'))}`.trim(),
+  };
+}
 const sdk = env.ANDROID_HOME ?? env.ANDROID_SDK_ROOT ?? (process.platform === 'darwin' ? join(homedir(), 'Library/Android/sdk') : undefined);
 if (sdk && existsSync(sdk)) {
   env.ANDROID_HOME = env.ANDROID_SDK_ROOT = sdk;
@@ -42,7 +56,7 @@ if (sdk && existsSync(sdk)) {
 }
 if (command === 'list') {
   if (platform !== 'web' && !env.E2E_DEVICE) env.E2E_DEVICE = platform === 'android' ? 'emulator-0000' : 'iPhone Simulator';
-  const result = spawnSync(process.execPath, [cli, command, ...args], { cwd, env, stdio: 'inherit' });
+  const result = spawnSync(process.execPath, [...webNodeArgs, cli, command, ...args], { cwd, env, stdio: 'inherit' });
   if (result.error) throw result.error;
   process.exit(result.status ?? 1);
 }
@@ -55,12 +69,18 @@ function read(executable, argv, options = {}) {
   if (result.error || result.status !== 0) throw result.error ?? new Error(result.stderr || `${executable} failed`);
   return result.stdout.trim();
 }
+function webInputIdentity() {
+  const sourceFiles = ['e2e.config.ts', 'web-engine.ts', 'web-parity-fixtures.ts', 'preload-web-matchers.mjs', 'run.mjs', 'journeys.ts', 'package.json', 'package-lock.json', 'tsconfig.json',
+    ...readdirSync(join(cwd, 'tests')).filter(name => name.endsWith('.web.e2e.ts')).map(name => `tests/${name}`),
+  ].sort();
+  return Object.fromEntries(sourceFiles.map(path => [path, createHash('sha256').update(readFileSync(join(cwd, path))).digest('hex')]));
+}
 let lock;
 let fd;
 let identity;
-async function execute(executable, argv, logName) {
+async function execute(executable, argv, logName, childEnv = env) {
   const logFd = logName ? openSync(join(output, logName), 'w') : undefined;
-  const child = spawn(executable, argv, { cwd, env, stdio: logFd === undefined ? 'inherit' : ['ignore', logFd, logFd], detached: process.platform !== 'win32' });
+  const child = spawn(executable, argv, { cwd, env: childEnv, stdio: logFd === undefined ? 'inherit' : ['ignore', logFd, logFd], detached: process.platform !== 'win32' });
   const relay = signal => {
     try {
       if (process.platform === 'win32') child.kill(signal);
@@ -117,6 +137,13 @@ try {
     revision: read('git', ['rev-parse', 'HEAD']), workingTree: read('git', ['status', '--porcelain']),
     trackedDiffSha256: createHash('sha256').update(diff).digest('hex'),
     command: ['node', 'tools/e2e/run.mjs', product, platform, command, ...args],
+    ...(platform === 'web' ? {
+      webInputsSha256: webInputIdentity(),
+      webLocale: env.E2E_WEB_LOCALE ?? (product === 'lucid' ? 'fr-FR' : 'en-US'),
+      onboardingFeatureSheets: env.EXPO_PUBLIC_ONBOARDING_FEATURE_SHEETS_ENABLED === 'true',
+      playwrightVersion: JSON.parse(readFileSync(join(cwd, 'node_modules/playwright/package.json'), 'utf8')).version,
+      nodeOptionsRestored: Object.hasOwn(env, 'NODE_OPTIONS') ? 'original value' : 'absent',
+    } : {}),
     services: platform === 'web' && product !== 'site' ? 'mock services; local real UI' : 'installed binary / generated site; no automatic build',
   }, null, 2) + '\n');
   if (command === 'inspect') {
@@ -137,7 +164,7 @@ try {
     process.exitCode = status;
   } else {
     const flags = command === 'mcp' ? ['--target', `${product}-${platform}`, '--max-sessions', '1'] : args;
-    process.exitCode = await execute(process.execPath, [cli, command, ...flags]);
+    process.exitCode = await execute(process.execPath, [...webNodeArgs, cli, command, ...flags], undefined, cliEnvironment());
   }
 } finally {
   if (fd !== undefined) { closeSync(fd); unlinkSync(lock); }
