@@ -1,12 +1,13 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { mkdtempSync, writeFileSync, mkdirSync, rmSync } from 'node:fs';
+import { mkdtempSync, writeFileSync, mkdirSync, rmSync, symlinkSync, readFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { createHash } from 'node:crypto';
 import { spawnSync } from 'node:child_process';
+import { EventEmitter } from 'node:events';
 import { fileURLToPath } from 'node:url';
-import { verifyReport, preserveStatus, compareSnapshots, aggregateReports, writeOnce, createAttemptOutput, verifyEvidenceFiles, verifyNativeCleanup } from './qualification.mjs';
+import { verifyReport, preserveStatus, compareSnapshots, aggregateReports, writeOnce, createAttemptOutput, verifyEvidenceFiles, verifyNativeCleanup, campaignFailureRecord, startSdkProgress } from './qualification.mjs';
 
 const sha = value => createHash('sha256').update(value).digest('hex');
 const before = { revision: 'a'.repeat(40), files: { 'app/recording.tsx': sha('source') }, outputs: {} };
@@ -173,4 +174,42 @@ test('real Metro cache isolates compiled profiles while retaining identical inpu
     [['EXPO_ROUTER_APP_ROOT', './routes/lucid']], [['EXPO_ROUTER_IMPORT_MODE', 'lazy']],
     [['NOCTALIA_DREAMER_QA_BUILD', '1']],
   ]) assert.notEqual(seed([...profile, ...changed]), dreamer, 'a changed compiled profile cannot reuse the other profile namespace');
+});
+
+
+test('forced interruption preserves available SDK/log bytes while missing final receipts remain nonqualifying', () => {
+  const output = mkdtempSync(join(tmpdir(), 'noctalia-interrupted-control-'));
+  try {
+    const r = report(); r.run.status = 'failed'; r.run.exitCode = 130;
+    r.run.summary = { discovered: 96, selected: 96, executed: 33, passed: 32, failed: 0, interrupted: 1, flaky: 0, skipped: 63 };
+    writeFileSync(join(output, 'report.json'), JSON.stringify(r));
+    writeFileSync(join(output, 'sdk.log'), 'public interrupted SDK error retained');
+    const failure = campaignFailureRecord(output, Object.assign(new Error('untrusted error body'), { code: 'ENOENT' }));
+    assert.equal(failure.qualified, false); assert.equal(failure.sdkExitCode, 130);
+    assert.equal(failure.summary.passed, 32); assert.equal(failure.summary.interrupted, 1);
+    for (const name of ['files.json', 'end.json', 'source-end.json', 'qualification.json']) assert.ok(failure.missingProof.includes(name));
+    assert.equal(failure.retained['report.json'].sha256, sha(readFileSync(join(output, 'report.json'))));
+    assert.equal(failure.retained['sdk.log'].sha256, sha('public interrupted SDK error retained'));
+    assert.equal(JSON.stringify(failure).includes('untrusted error body'), false);
+    assert.throws(() => verifyReport(r, options({ output })), /REPORT_PROVENANCE/);
+    assert.equal(preserveStatus(130, [failure.code]), 130);
+    assert.equal(preserveStatus(1, [failure.code]), 1);
+    symlinkSync(join(output, 'report.json'), join(output, 'app.log'));
+    assert.equal(campaignFailureRecord(output, new Error('bad payload')).retained['app.log'], undefined);
+  } finally { rmSync(output, { recursive: true, force: true }); }
+});
+
+test('Circle web SDK liveness emits only elapsed time, stops on close/error and leaves disabled sinks unopened', () => {
+  const child = Object.assign(new EventEmitter(), { exitCode: null, signalCode: null });
+  const lines = []; let tick, delay, cleared = 0, time = 0, errors = 0;
+  const dependencies = { write: line => lines.push(line), now: () => time,
+    setTimer: (callback, milliseconds) => { tick = callback; delay = milliseconds; return 42; }, clearTimer: () => { cleared++; } };
+  startSdkProgress(child, { enabled: false, ...dependencies }); assert.equal(tick, undefined);
+  const stop = startSdkProgress(child, { enabled: true, ...dependencies }); assert.equal(delay, 60000);
+  time = 60000; tick(); assert.deepEqual(lines, ['E2E SDK running: elapsed=60s; log=sdk.log']);
+  child.emit('close'); tick(); stop(); assert.equal(lines.length, 1); assert.equal(cleared, 1);
+  const failingChild = Object.assign(new EventEmitter(), { exitCode: null, signalCode: null });
+  startSdkProgress(failingChild, { enabled: true, ...dependencies, write: () => { throw new Error('sink closed'); }, onError: () => { errors++; } });
+  tick(); tick(); assert.equal(errors, 1); assert.equal(cleared, 2);
+  assert.equal(preserveStatus(143, ['CI_PROGRESS_WRITE_FAILED']), 143);
 });

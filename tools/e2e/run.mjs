@@ -5,7 +5,7 @@ import { createRequire } from 'node:module';
 import { homedir, tmpdir } from 'node:os';
 import { delimiter, join, resolve, basename, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { digest, sourceSnapshot, compareSnapshots, verifyReport, aggregateReports, writeOnce, preserveStatus, directoryFiles, hashFiles, createAttemptOutput, verifyEvidenceFiles, verifyNativeCleanup } from './qualification.mjs';
+import { digest, sourceSnapshot, compareSnapshots, verifyReport, aggregateReports, writeOnce, preserveStatus, directoryFiles, hashFiles, createAttemptOutput, verifyEvidenceFiles, verifyNativeCleanup, campaignFailureRecord, startSdkProgress } from './qualification.mjs';
 import { normalizeAvdName, appInputs, nativeInputs, binaryInputs, releaseMetadata, validateReleaseReceipt, verifyInstalledRelease, runWithInstallDiagnostics, validateBuildCommand, archiveReleaseBinary } from './native-release.mjs';
 
 const cwd = fileURLToPath(new URL('.', import.meta.url));
@@ -120,6 +120,10 @@ const context = () => ({ locale: env.E2E_WEB_LOCALE ?? (product === 'lucid' ? 'f
 async function execute(executable, argv, logName, childEnv = env, workdir = cwd) {
   const logFd = logName ? openSync(join(output, logName), 'wx') : undefined;
   const child = spawn(executable, argv, { cwd: workdir, env: childEnv, stdio: logFd === undefined ? 'inherit' : ['ignore', logFd, logFd], detached: process.platform !== 'win32' });
+  const stopProgress = startSdkProgress(child, {
+    enabled: platform === 'web' && command === 'run' && logName === 'sdk.log' && env.CIRCLECI === 'true',
+    write: message => console.log(message), onError: () => secondary.push('CI_PROGRESS_WRITE_FAILED'),
+  });
   const relay = signal => {
     try {
       if (process.platform === 'win32') child.kill(signal);
@@ -137,6 +141,7 @@ async function execute(executable, argv, logName, childEnv = env, workdir = cwd)
       child.once('close', (code, signal) => resolve(requestedSignal ?? code ?? (signal === 'SIGTERM' ? 143 : signal ? 130 : 1)));
     });
   } finally {
+    stopProgress();
     process.off('SIGINT', interrupt);
     process.off('SIGTERM', terminate);
     if (logFd !== undefined) closeSync(logFd);
@@ -204,37 +209,49 @@ function collectCampaign() {
   const base = join(cwd, '.e2e', `${product}-web`);
   const reports = [];
   const required = new Map();
+  const diagnostics = [];
   for (const name of readdirSync(base)) {
     const path = join(base, name);
     if (!existsSync(join(path, 'evidence.json'))) continue;
     const evidence = JSON.parse(readFileSync(join(path, 'evidence.json'), 'utf8'));
     if (evidence.campaignId !== campaignId || evidence.command[4] !== 'run') continue;
-    verifyEvidenceFiles(path);
-    const runStart = JSON.parse(readFileSync(join(path, 'source-start.json'), 'utf8'));
-    const runEnd = JSON.parse(readFileSync(join(path, 'source-end.json'), 'utf8'));
-    if (!compareSnapshots(runStart, runEnd).sourceStable || !compareSnapshots(runStart, sourceBefore).sourceStable) throw new Error('CAMPAIGN_INPUTS_CHANGED');
-    if (evidence.origin !== expectedOrigin) throw new Error('CAMPAIGN_ORIGIN_CHANGED');
-    if (evidence.revision !== sourceBefore.revision || !existsSync(join(path, 'end.json'))) throw new Error('Campaign provenance incomplete.');
-    const end = JSON.parse(readFileSync(join(path, 'end.json'), 'utf8'));
-    if (end.exitCode !== 0 || !end.stability?.sourceStable || !end.stability.outputsStable) throw new Error('Campaign contains a refused run.');
-    const proof = JSON.parse(readFileSync(join(path, 'qualification.json'), 'utf8'));
-    if (proof.revision !== evidence.revision || !proof.passed) throw new Error('Campaign qualification missing.');
-    const report = JSON.parse(readFileSync(join(path, 'report.json'), 'utf8'));
-    const checked = verifyReport(report, { target: `${product}-web`, platform: 'web', revision: sourceBefore.revision,
-      startedAt: Date.parse(evidence.startedAt), output: path, context: evidence.context, origin: evidence.origin,
-      video: evidence.requestedMedia.video, trace: evidence.requestedMedia.trace,
-      collection: JSON.parse(readFileSync(join(path, 'collection.json'), 'utf8')), repeatCount: evidence.repeatCount });
-    if (JSON.stringify(checked) !== JSON.stringify(proof)) throw new Error('Campaign proof differs from report.');
-    reports.push(checked);
-    for (const row of report.run.results) required.set(JSON.stringify([row.targetId, row.testId, row.agent]), { targetId: row.targetId, testId: row.testId, agent: row.agent });
+    try {
+      verifyEvidenceFiles(path);
+      const runStart = JSON.parse(readFileSync(join(path, 'source-start.json'), 'utf8'));
+      const runEnd = JSON.parse(readFileSync(join(path, 'source-end.json'), 'utf8'));
+      if (!compareSnapshots(runStart, runEnd).sourceStable || !compareSnapshots(runStart, sourceBefore).sourceStable) throw new Error('CAMPAIGN_INPUTS_CHANGED');
+      if (evidence.origin !== expectedOrigin) throw new Error('CAMPAIGN_ORIGIN_CHANGED');
+      if (evidence.revision !== sourceBefore.revision || !existsSync(join(path, 'end.json'))) throw new Error('Campaign provenance incomplete.');
+      const end = JSON.parse(readFileSync(join(path, 'end.json'), 'utf8'));
+      if (end.exitCode !== 0 || !end.stability?.sourceStable || !end.stability.outputsStable) throw new Error('Campaign contains a refused run.');
+      const proof = JSON.parse(readFileSync(join(path, 'qualification.json'), 'utf8'));
+      if (proof.revision !== evidence.revision || !proof.passed) throw new Error('Campaign qualification missing.');
+      const report = JSON.parse(readFileSync(join(path, 'report.json'), 'utf8'));
+      const checked = verifyReport(report, { target: `${product}-web`, platform: 'web', revision: sourceBefore.revision,
+        startedAt: Date.parse(evidence.startedAt), output: path, context: evidence.context, origin: evidence.origin,
+        video: evidence.requestedMedia.video, trace: evidence.requestedMedia.trace,
+        collection: JSON.parse(readFileSync(join(path, 'collection.json'), 'utf8')), repeatCount: evidence.repeatCount });
+      if (JSON.stringify(checked) !== JSON.stringify(proof)) throw new Error('Campaign proof differs from report.');
+      reports.push(checked);
+      for (const row of report.run.results) required.set(JSON.stringify([row.targetId, row.testId, row.agent]), { targetId: row.targetId, testId: row.testId, agent: row.agent });
+    } catch (error) { diagnostics.push(campaignFailureRecord(path, error)); }
   }
-  if (!reports.length) throw new Error('No current campaign reports.');
+  if (!reports.length) diagnostics.push({ qualified: false, code: 'NO_CURRENT_QUALIFIED_REPORTS' });
   if (product === 'dreamer') {
     for (const [locale, featureSheets] of [['en-US', true], ['fr-FR', true], ['de-DE', true], ['en-US', false]]) {
-      if (!reports.some(proof => proof.context?.locale === locale && proof.context?.featureSheets === featureSheets)) throw new Error('Dreamer campaign context missing.');
+      if (!reports.some(proof => proof.context?.locale === locale && proof.context?.featureSheets === featureSheets)) diagnostics.push({ qualified: false, code: 'CAMPAIGN_CONTEXT_MISSING', context: { locale, featureSheets } });
     }
   }
-  writeOnce(join(output, 'campaign.json'), { campaignId, revision: sourceBefore.revision, ...aggregateReports(reports, [...required.values()]) });
+  let aggregate;
+  if (!diagnostics.length) {
+    try { aggregate = aggregateReports(reports, [...required.values()]); }
+    catch { diagnostics.push({ qualified: false, code: 'CAMPAIGN_UNION_INCOMPLETE' }); }
+  }
+  if (diagnostics.length) {
+    writeOnce(join(output, 'campaign-incomplete.json'), { schemaVersion: 1, campaignId, revision: sourceBefore.revision, qualified: false, diagnostics });
+    throw new Error('CAMPAIGN_INCOMPLETE');
+  }
+  writeOnce(join(output, 'campaign.json'), { campaignId, revision: sourceBefore.revision, ...aggregate });
 }
 async function runSdk() {
   const collectionArgs = [];

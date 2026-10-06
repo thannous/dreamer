@@ -1,7 +1,7 @@
 import { createHash } from 'node:crypto';
 import { execFileSync } from 'node:child_process';
 import { readFileSync, readdirSync, lstatSync, realpathSync, writeFileSync, mkdirSync } from 'node:fs';
-import { join, relative, sep, resolve } from 'node:path';
+import { join, relative, sep, resolve, basename } from 'node:path';
 
 export const digest = bytes => createHash('sha256').update(bytes).digest('hex');
 export function writeOnce(file, value) {
@@ -170,4 +170,43 @@ export function verifyEvidenceFiles(output) {
   const declared = JSON.parse(readFileSync(join(output, 'files.json'), 'utf8'));
   const actual = hashFiles(output, directoryFiles(output, '.').filter(file => !['files.json', 'end.json'].includes(file)));
   if (!same(declared, actual)) fail('EVIDENCE_CHANGED');
+}
+
+// This is an incomplete-evidence receipt, never a qualifying report or union.
+export function campaignFailureRecord(output, error) {
+  const required = ['evidence.json', 'source-start.json', 'source-end.json', 'collection.json', 'report.json', 'qualification.json', 'end.json', 'files.json'];
+  const retained = {}, unavailable = [];
+  for (const name of [...required, 'sdk.log', 'app.log', 'summary.md', 'junit.xml']) {
+    try {
+      const file = join(output, name), stat = lstatSync(file);
+      if (!stat.isFile() || stat.isSymbolicLink()) throw new Error('UNSAFE_FILE');
+      const bytes = readFileSync(file); retained[name] = { bytes: bytes.length, sha256: digest(bytes) };
+    } catch (cause) { unavailable.push({ file: name, code: cause.code === 'ENOENT' ? 'MISSING' : 'UNREADABLE' }); }
+  }
+  const read = name => { try { return retained[name] ? JSON.parse(readFileSync(join(output, name), 'utf8')) : null; } catch { return null; } };
+  const report = read('report.json')?.run, end = read('end.json');
+  const summaryKeys = ['discovered', 'selected', 'executed', 'passed', 'failed', 'interrupted', 'flaky', 'skipped'];
+  const summary = report?.summary && summaryKeys.every(key => Number.isSafeInteger(report.summary[key]) && report.summary[key] >= 0)
+    ? Object.fromEntries(summaryKeys.map(key => [key, report.summary[key]])) : null;
+  const exit = value => Number.isInteger(value) && value >= 0 && value <= 255 ? value : null;
+  const code = error?.code ?? error?.message;
+  return { directory: basename(output), qualified: false,
+    code: typeof code === 'string' && /^[A-Z][A-Z_]+$/.test(code) ? code : 'CAMPAIGN_VERIFICATION_FAILED',
+    missingProof: required.filter(name => !retained[name]), retained, unavailable,
+    sdkStatus: ['passed', 'failed', 'interrupted'].includes(report?.status) ? report.status : 'unknown',
+    sdkExitCode: exit(report?.exitCode), wrapperPrimaryExitCode: exit(end?.primaryExitCode), summary };
+}
+
+// Only the canonical caller enables this for its own CircleCI web SDK child.
+// No SDK/app output is forwarded, and a live process is not claimed to make progress.
+export function startSdkProgress(child, { enabled, write, onError = () => {}, now = Date.now, setTimer = setInterval, clearTimer = clearInterval }) {
+  if (!enabled) return () => {};
+  const start = now(); let stopped = false;
+  const stop = () => { if (stopped) return; stopped = true; clearTimer(timer); child.off('close', stop); };
+  const timer = setTimer(() => {
+    if (stopped || child.exitCode !== null || child.signalCode !== null) return;
+    try { write(`E2E SDK running: elapsed=${Math.max(0, Math.floor((now() - start) / 1000))}s; log=sdk.log`); }
+    catch { try { onError(); } finally { stop(); } }
+  }, 60_000);
+  timer?.unref?.(); child.once('close', stop); return stop;
 }

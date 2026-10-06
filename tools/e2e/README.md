@@ -311,3 +311,21 @@ by these inspection commands.
 
 Selection flags may narrow a run, but config, target, worker and output overrides
 are refused before device preflight. Use the explicit product/platform entry.
+
+## Interrupted CI campaign evidence
+
+CircleCI web SDK runs keep complete stdout/stderr in each immutable `sdk.log`.
+A fixed, queryless console line every60s says only that this runner's own SDK child
+is still open and its elapsed time; it does not claim test progress. It stops on
+close/finally and never forwards SDK/app content. The main CI step has a30m
+no-output fallback after a measured ten-minute cancellation (76 runnable bodies,
+approximately22min at the observed cadence); matcher/action/lifecycle/retry budgets
+are unchanged. See [CircleCI run configuration](https://circleci.com/docs/reference/configuration-reference/#run).
+
+`web collect` still requires all exact current contexts and complete finalized
+proof for qualification. After an interruption it inspects each owned campaign
+candidate independently and writes `campaign-incomplete.json` with `qualified:false`,
+missing proof files, SDK/wrapper exits and hashes of the available report/log bytes.
+It returns nonzero and never writes a qualifying `campaign.json`. The original
+reports, logs and partial media remain in the uploaded directory; an interrupted
+ZIP/video is not claimed complete. No SDK test or app is launched by collection.

@@ -37,3 +37,8 @@ refusals. The installation diagnostics control precedes this policy change.
   The real Metro config must separate relevant variant/router/mock/story inputs, retain
   identical-input cache reuse and ignore environment order/unrelated diagnostics.
   The existing installed Metro and application Release journey provide verification.
+
+- Observed Circle interruption: report/sdk.log may exist while files.json, end,
+  source-end and qualification receipts were never finalized. Preserve available
+  bytes/hashes, report the missing proof per candidate and a red campaign; never
+  count partial SDK passes or abort diagnostic packaging at the first absent file.

@@ -186,6 +186,7 @@ jobs:
       - install-testerarmy
       - run:
           name: Verify exact << parameters.product >> browser journeys
+          no_output_timeout: 30m
           command: node tools/e2e/run.mjs << parameters.product >> web run --trace
       - when:
           condition:
