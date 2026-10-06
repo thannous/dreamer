@@ -4,6 +4,36 @@ Cette règle s'applique à Journal, Lucid et Meditation. Le risque du comporteme
 modifié détermine les vérifications ; le nombre de tests n'est pas un objectif.
 Les commandes disponibles restent celles des `package.json` et des guides locaux.
 
+Le contrat fonctionnel actuel prime sur une ancienne attente de test. Les décisions
+datées et résultats antérieurs restent des faits historiques, pas des interdictions
+permanentes d'évolution. TesterArmy reste le choix par défaut pour les parcours
+nouveaux ou affectés ; les interfaces et assertions critiques sont réellement testées.
+
+## Évolution des contrats et outils
+
+Avant de reproduire un ancien rouge, identifier le résultat attendu aujourd'hui.
+Si le produit a changé, actualiser l'attente avec sa raison et un parcours ciblé,
+en conservant l'ancien résultat et son contexte. Un contre-exemple historique
+utile reste informatif ; une assertion encore pertinente reste un contrôle actuel.
+Ne pas reclasser un ancien rouge comme passé ou supprimer implicitement un check
+CI requis. Une nouvelle fonction n'attend pas une parité historique sans rapport
+avec son comportement ni la disponibilité d'un appareil physique non requis.
+
+Pour une mise à jour compatible, vérifier les peers, le loader et la documentation
+installée, isoler les dépendances et essayer un parcours représentatif avec son
+rapport/cleanup. Adopter la version épinglée quand les contrôles pertinents passent,
+sans nouvelle demande générique d'autorisation dans le même travail demandé.
+Un nouveau provider, budget, EAS/Store ou acte de publication garde sa limite propre.
+
+Les contrôles isolés servent un mode d'échec concret inaccessible au parcours
+(par exemple un receipt corrompu ou un signal). Décrire cette lacune et garder les
+contrôles qui la détectent ; l'ordre chronologique test/code n'est pas un gate.
+
+Pour le natif demandé, un projet manquant peut être généré dans le worktree isolé,
+après vérification SDK/profil, avec `prebuild --no-install` explicite de préférence.
+Ne pas régénérer le checkout primaire ou le projet d'une autre tâche. Réutiliser
+un projet et un binaire seulement si leurs inputs pertinents restent compatibles.
+
 | Changement | Vérifications attendues |
 | --- | --- |
 | Documentation, texte sans impact de mise en page ou de comportement | Relecture, liens concernés et contrôle du diff ; aucune suite applicative. |
@@ -22,6 +52,14 @@ Après un passage réussi, relancer seulement ce qu'une modification pertinente,
 un changement de dépendance/configuration, un échec ou un risque restant remet
 en question. Conserver la révision et la portée des preuves. Une correction du
 rapport ne demande pas de rejouer les tests du code inchangé.
+
+Conserver le rapport canonique, source/build/device, verdict, commande exacte et
+les logs/captures utiles au diagnostic. Les sorties restent immuables et les anciens
+rouges restent distincts ; aucune duplication complète des médias ni nouvelle
+vérification de tous leurs hashes à chaque statut/relecture. Référencer les pièces
+existantes après le contrôle canonique ; revérifier lors d'un transfert d'octets,
+d'un changement d'inputs, d'un soupçon de corruption ou d'un contrôle Release requis.
+Cette règle supprime les répétitions ad hoc, pas les gardes existantes du runner.
 
 Regrouper les corrections locales et leur relecture avant le push lorsque c'est
 possible. Éviter les pushes successifs pour chaque ajustement documentaire. Les

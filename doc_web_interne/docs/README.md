@@ -31,7 +31,7 @@ and `app.config.ts`. Meditation has its own package, lockfile and
 
 | Work | Start here | Command or prerequisite |
 | --- | --- | --- |
-| Choose checks for a change | [Proportional validation](validation-proportionnee.md) | Tooling/functional PRs finish with `test:prepush` on a clean committed worktree. |
+| Choose checks and evolve contracts/tools | [Proportional validation](validation-proportionnee.md) | Current functional expectations, compatible measured upgrades, minimal evidence; tooling/functional PRs finish with `test:prepush` on a clean committed worktree. |
 | Web and native user journeys | [E2E guide](../../e2e/README.md) | `test:e2e:web`, `test:e2e:journeys`; the guide distinguishes simulated services and native requirements. |
 | TesterArmy Release qualification | [Current native retrospective qualification](qa/native-retro-qualification-20261006.md) | Exact passed-ID union, immutable reports/build receipts, owner decisions and retained physical/Store/video limits. |
 | Historical native qualification | [Initial native qualification, 2026-10-06](qa/native-testerarmy-qualification-20261006.md) | Preserved earlier source/build proofs; not a substitute for the current candidate. |
@@ -39,7 +39,7 @@ and `app.config.ts`. Meditation has its own package, lockfile and
 | Mobile version preparation, build and submission | [Mobile release guide](MOBILE_VERSIONING.md) | `release:plan`, `release:prepare`, `release:check`, `release:build`; build/submission require their existing authorization. |
 | EAS build counter mirrors | [Version synchronization](mobile-build-version-sync.md) | `release:versions:sync` writes local mirrors; `release:versions:check` verifies them. |
 | Play candidate qualification | [Android release checklist](android-release-checklist.md) | Read the candidate's actual Play/build metadata; old store snapshots are historical evidence. |
-| Local Android build prerequisites | [Android tooling](../../scripts/README.md#local-android-prerequisites) | Java 17, Android SDK, local dependencies. `android:release:local -- --help` explains prebuild and install options. |
+| Local Android build prerequisites | [Android tooling](../../scripts/README.md#local-android-prerequisites) | Java 17, Android SDK, local dependencies; requested native QA includes necessary isolated generation. `android:release:local -- --help` explains prebuild and install options. |
 | Android performance measurement | [Performance protocol](../../scripts/android/README-performance.md) | Pilot first, use the device lock and identify the installed binary. |
 | TalkBack qualification | [Motorola protocol](qualification-talkback.md) | Pilot the measurement method and restore device settings. |
 | CI routing and jobs | [CircleCI guide](circleci-migration.md) | `.circleci/config.yml`, `.circleci/continue.yml`, `.circleci/scripts/classify-changes.sh`. |

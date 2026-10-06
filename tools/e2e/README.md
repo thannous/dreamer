@@ -10,6 +10,13 @@ Node 24.19.0 is pinned by the root mise file and satisfies e2e 0.18's
 `^22.22.3 || >=24.8.0` requirement. The runner uses e2e's bundled TypeScript
 loader; the scoped public matcher preload is unchanged.
 
+These pins describe the current package, not a permanent version ceiling. Within
+requested work, read the candidate version's installed skill/topics and peer ranges,
+update only this isolated package/lockfile, then pilot collection/loader, one relevant
+real journey and its report/cleanup. A compatible candidate may be adopted after
+its applicable checks pass without another generic permission request. Keep exact
+pins and existing provider budgets; an upgrade does not enable a provider or Jev.
+
 From the repository root:
 
 ```sh
@@ -56,7 +63,11 @@ The 83 historical browser cases across 16 families run through TesterArmy with
 their exact UI assertions, including mock billing, capture/edit/chat, continuous
 reading, reflection, symbol dictionary, Explorer, settings persistence, Home,
 Trends, responsive navigation, Journal geometry and feature-sheet stories.
-The original Playwright/backend/Maestro suites remain present and required.
+The original Playwright/backend/Maestro suites remain present; current CI still
+requires them. Their relevant functional assertions protect the current contract.
+An obsolete expectation may be revised with a recorded product reason and a
+focused current journey. Preserve the old red/pass result as history; it does not
+automatically block feature or framework adoption or permit silently bypassing CI.
 
 The public `surfaceOf()` Page/context keeps CSS, geometry, keyboard, image and
 clock checks. TesterArmy owns isolated attempts and traces; the pinned isolated
@@ -117,7 +128,12 @@ Run the affected check before a local native build; CI checks both manifests.
 
 Current delivered native evidence and retained limits: [retrospective qualification](../../doc_web_interne/docs/qa/native-retro-qualification-20261006.md). Historical reports retain their original source/build identities.
 
-Use the existing native projects and the repository's build/prebuild rules.
+Requested native implementation/QA includes necessary local generation in its
+isolated worktree after SDK/profile checks; reuse compatible existing native
+projects first and prefer explicit `prebuild --no-install` when generation is needed.
+Do not regenerate the primary or another task's project or ask for this same scope
+again. Data ownership, signing, providers/budgets, EAS/Store and publication remain
+separate boundaries. The build runner below still requires an existing native project.
 `run.mjs <product> <platform> build` runs the installed Expo SDK dependency check
 and an explicit Release command descriptor, then writes an immutable `release.json`.
 It never generates a native project or selects a phone. The descriptor accepts
@@ -202,7 +218,9 @@ Other coverage: Dreamer onboarding/empty-save/draft mode continuity; Lucid
 required intention/experience and entry to sleep settings; Meditation onboarding,
 restart persistence and tabs; generated site homepage/internal navigation.
 Native counterparts exercise the explicit invariants in [NATIVE-MATRIX.md](NATIVE-MATRIX.md)
-on identified Release builds. Browser-only assertions and legacy suites remain required.
+on identified Release builds. Browser-only assertions remain covered on the web;
+existing CI gates still apply. Native gaps are explicit limits, not automatic
+blockers for unrelated functional work or adoption.
 
 Lucid also checks dark time-field contrast, nondefault sleep times surviving a
 reload, full tab and shortcut labels at 320/360/390 pixels, light/dark programs,
@@ -223,6 +241,16 @@ build receipt and requested media. `source-start.json` / `source-end.json` retai
 path→SHA inputs without raw diffs. `installed-start.json` / `installed-end.json`
 identify the installed binary. `files.json` hashes output files written before the
 final `end.json`; these two manifest files are deliberately outside that file set.
+
+Keep one canonical output and compact handoff with source/build/device, verdict,
+exact rerun and the media needed to understand the outcome. Complete logs stay
+local when useful for diagnosis; private data is not uploaded without authorization.
+Use the existing runner and campaign collector rather than copying and fully
+rehashing the same media at every handoff/status update. Repeat integrity work
+when bytes are transferred, inputs change, corruption is suspected or a required
+release check needs it. This does not remove the runner's identity, artifact or
+final verdict checks. Optional video need not be enabled to qualify screenshot/UI
+journeys; media actually requested by a body remains required for that run.
 
 Browser fixtures may perform only their existing public `browser.route` and
 `browser.setViewport` setup before the first `app.open()`. UI actions before that
@@ -270,7 +298,10 @@ package installs neither that executor nor `ai`; exact journeys require no
 model dependency, and the upgrade does not enable a provider.
 Use a provider barrier when replay must never call a model; strict cache alone
 does not forbid a call on a cache miss. Existing Maestro, Playwright, backend and
-CI checks remain until equivalent replacement journeys pass. A listed or
+CI checks remain until an explicitly reviewed pipeline change. Still-relevant
+assertions remain until their replacement passes; obsolete historical criteria
+may be revised with their current product reason and old result preserved.
+A listed or
 typechecked test is not evidence that the user journey passed.
 
 ## agent-device inspection and live exploration
@@ -279,7 +310,8 @@ The host CLI and the official `agent-device` Codex skill are installed. This
 package uses the engine's exact `agent-device` 0.21.22 dependency through its
 local CLI. A globally installed CLI may have a different version; the guarded
 package commands use this local pin. Read its version-matched `help workflow`
-or `help debugging` for specialized work. Do not replace the pinned native engine with `@latest`.
+or `help debugging` for specialized work. Use exact compatible pins for a measured
+upgrade, not a floating `@latest` runtime or a global engine replacement.
 
 ```sh
 mise exec -- npm run agent-device:doctor

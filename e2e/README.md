@@ -1,5 +1,11 @@
 # Principal user journeys
 
+New and affected journeys use [TesterArmy](../tools/e2e/README.md) by default.
+This guide describes the retained Playwright/Maestro interfaces and their actual
+coverage. Historical expectations may be revised against the current product
+contract with a recorded reason; they do not impose an automatic adoption gate.
+Keep required CI and still-relevant assertions until their reviewed replacements pass.
+
 Playwright exercises the Expo web app in Chromium. Maestro exercises the native
 Android app on a disposable emulator. Both use the existing mock service adapters;
 screens, routing, state and user interactions are real. No production account,

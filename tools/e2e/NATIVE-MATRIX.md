@@ -18,8 +18,11 @@ owned target, and performs exact assertions on an identified installed Release.
 The historical browser campaign additionally checks responsive geometry, layouts,
 subscription mock scenarios, Explorer/reflection/symbols, detailed Lucid programs,
 Journal account isolation, quotas and other browser-specific cases. Those invariants
-remain in TesterArmy web/Playwright/Maestro/backend CI until native equivalents have
-passed. A platform/profile skip is a declared gap, not equivalent coverage. Screen
+remain covered in their relevant web/native suites; a native gap does not block an
+unrelated feature or framework adoption. Revise an obsolete expectation with its
+current product reason and preserve its historical result. Keep required CI and
+still-relevant assertions until their reviewed replacement passes. A platform/profile
+skip is a declared gap, not equivalent coverage. Screen
 pixels, timing on physical hardware, real providers, feedback and purchases need
 their own authorized work packages.
 
@@ -32,9 +35,11 @@ needs a live connection, unlocked/trusted state, Developer Mode, app-specific da
 ownership, matching signed build/profile and explicit acquisition under that
 protocol. Do not install, erase or take a private phone from an inventory result.
 
-If no project exists, apply the repository prebuild approval rule. Existing isolated
-Lucid Android/iOS and Meditation iOS projects have prior explicit generation
-approval; keep that provenance with their native inputs. Dependency check, Java17
+If no compatible project exists, requested native implementation/QA includes the
+necessary generation in its isolated worktree, after SDK/profile checks, preferably
+with `prebuild --no-install`. Do not regenerate the primary or another task's project
+or request the same permission again. Existing isolated Lucid Android/iOS and
+Meditation iOS generation provenance stays with their native inputs. Dependency check, Java17
 for Android, Xcode/Pods for iOS, embedded JS/OTA identity, actual signing where
 SecureStore is required, and a successful canonical `release.json` precede install.
 An invalid build/profile/device refuses before SDK. By owner decision2026-10-06,

@@ -68,11 +68,13 @@ npm run lint       # eslint
    Corollaire : le fond doit rester plus profond que les cartes, sinon il n'y a
    aucune séparation à voir.
 9. **Toute boucle infinie respecte `useReducedMotion()`.**
-10. **Pas d'animations de layout Reanimated** (`FadeInDown`, `Layout`, etc.) :
-    elles restent bloquées en cours de route et laissent le composant à une
-    opacité partielle. Utiliser une `SharedValue` + `withTiming`, comme le
-    souffle et le silence progressif — ou rien. Une commande parfois invisible
-    est un défaut bien pire qu'un fondu manquant.
+10. **Animations de layout : contournement actuel d'un défaut observé.** Les
+    versions précédentes de Reanimated laissaient `FadeInDown`/`Layout` à une
+    opacité partielle. Utiliser actuellement `SharedValue` + `withTiming`, comme
+    le souffle et le silence progressif. Ce choix ne fige pas les versions ou
+    possibilités futures : un pilote local sur la version installée peut lever
+    le contournement si le cas réel, l'accessibilité et les interactions passent.
+    Une commande parfois invisible reste un défaut à corriger.
 11. **Les icônes passent par `IconSymbol`**, repris tel quel de l'app journal :
     SF Symbols natifs sur iOS, MaterialIcons ailleurs via la table `MAPPING`.
     Le vocabulaire est celui des SF Symbols. Ne pas dessiner d'icônes maison :
@@ -103,8 +105,19 @@ Pour une modification documentaire, vérifier le contenu et les liens sans lance
 les suites applicatives. Les règles parentes de confidentialité, autorisation,
 préservation du travail et verrou partagé de l'appareil restent applicables.
 Les chemins de thème et de services de ce guide sont propres à Meditation.
-Conserver le contournement des animations de layout tant qu'un cas reproductible
-n'a pas été revérifié sur les versions installées.
+Un travail natif demandé inclut sa génération locale nécessaire dans un worktree
+isolé, après contrôle SDK/profil ; réutiliser le projet compatible existant avant
+un `prebuild --no-install`. Ne pas redemander une confirmation pour ce même
+périmètre. Garder un propriétaire par appareil et ne réinitialiser que l'état QA
+possédé. EAS/Store, publication, données personnelles et nouveau coût externe
+ne sont pas autorisés par cette génération locale.
+
+Le contrat fonctionnel actuel guide les attentes. Un ancien scénario ou
+contournement informe le diagnostic, sans interdire une évolution justifiée ;
+documenter le changement et conserver son ancien résultat comme historique.
+Référencer le rapport canonique et ses pièces utiles plutôt que dupliquer toutes
+les captures et leurs vérifications à chaque étape. Lire le guide parent pour
+les mises à jour compatibles de TesterArmy et la validation proportionnée.
 
 ## E2E — TesterArmy
 
@@ -114,8 +127,10 @@ https://docs.expo.dev/guides/using-e2e/. Lire `../../tools/e2e/README.md`.
 `E2E_DEVICE=<serial-emulateur> npm run test:testerarmy:mobile -- android` vise un
 build Release installé ; utiliser `ios` avec le nom exact d'un simulateur iOS.
 Les tests natifs effacent l'état de cette app sur le simulateur dédié sélectionné.
-Conserver les parcours Maestro et leurs contrôles tant que leur remplacement n'a
-pas été exécuté avec des assertions équivalentes. Respecter les règles parentes.
+Conserver les assertions Maestro encore pertinentes jusqu'à leur remplacement
+exécuté. Une attente devenue obsolète se révise avec sa raison produit et sa
+preuve actuelle ; elle ne bloque pas automatiquement l'adoption. Aucun contrôle
+CI obligatoire n'est contourné implicitement. Respecter les règles parentes.
 
 
 La skill officielle `agent-device` sert à l'inspection native. Utiliser

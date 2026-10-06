@@ -45,10 +45,15 @@ Inspect the canonical runner with:
 mise exec -- npm run android:release:local -- --help
 ```
 
-A build, install or Expo prebuild still needs its existing authorization. Use
-`--reuse-native-project` only when an already-generated compatible `android/`
-exists. Never run a build merely to repair tool discovery. Distribution builds
-use `release:build`; local debug-signed APKs do not qualify a Play update.
+Requested native implementation/QA includes its necessary local build, compatible
+installation on an owned disposable QA target and isolated Expo native generation.
+Check SDK/profile inputs first; reuse a compatible existing `android/` through
+`--reuse-native-project`, otherwise generate explicitly with `--no-install` in
+the isolated worktree and retain its input identity. Do not ask again for that
+same local scope or regenerate another task's checkout. Never run a build merely
+to repair tool discovery. Personal data, destructive installs, new providers/budgets,
+EAS and Store/publication remain separate boundaries. Distribution builds use
+`release:build`; local debug-signed APKs do not qualify a Play update.
 
 ## Maintenance rules
 

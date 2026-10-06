@@ -1,5 +1,14 @@
 # Dreamer VNext TI-429 device harness
 
+Scope notice, owner policy updated 2026-10-06: this document records the TI-429
+base-app harness and its original data-preservation contract. Its base-only and
+retired-QA statements apply to that measurement package, not every future native
+QA task. A separate current QA profile may be used through an appropriate owned
+runner without claiming TI-429/base/Play equivalence. Follow current [AGENTS](../../../AGENTS.md)
+and [proportional validation](../validation-proportionnee.md) for authorization,
+isolated generation and changed functional expectations. This notice changes no
+historical result or executable guard below.
+
 Executable matrix for TI-429. This file is a contract, not device proof.
 Unexecuted automated rows stay **blocked**. Human rows stay **manual**.
 
