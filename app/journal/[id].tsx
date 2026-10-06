@@ -1726,6 +1726,11 @@ const JournalDetailContent = memo(function JournalDetailContent({ dream }: { dre
           <Text allowFontScaling={false} style={metadataTextStyle} className={`font-sans-medium text-[13px] ${isEditingTranscript ? 'text-on-champagne' : 'text-champagne-on'}`}>{t(isEditingTranscript ? 'journal.detail.save_edit' : 'journal.detail.edit_story')}</Text>
         </PressableScale>
       </View>
+      {isEditingTranscript && hasUncategorizedDraft && initialCategorizationPending ? (
+        <Text testID="text.dreamMetadata.pending" accessibilityLiveRegion="polite" className="mb-4 font-sans text-[13px] text-ivory-muted">
+          {t('journal.detail.metadata.loading')}
+        </Text>
+      ) : null}
       {isEditingTranscript ? (
         <TextInput
           testID={TID.Input.DreamTranscript}
@@ -1801,8 +1806,8 @@ const JournalDetailContent = memo(function JournalDetailContent({ dream }: { dre
           <Text key={`dream-date-${windowSize.fontScale}`} allowFontScaling={false} style={{ fontSize: 12 * compactTextScale, lineHeight: 20 * compactTextScale }} className="mb-5 font-sans text-[12px] leading-5 text-ivory-muted">
             {formatDreamDate(dream.id)} · {formatDreamTime(dream.id)}
           </Text>
-          {!isEditing && hasUncategorizedDraft && initialCategorizationPending ? (
-            <Text className="mb-4 font-sans text-[13px] text-ivory-muted">
+          {!isEditingTranscript && hasUncategorizedDraft && initialCategorizationPending ? (
+            <Text testID="text.dreamMetadata.pending" accessibilityLiveRegion="polite" className="mb-4 font-sans text-[13px] text-ivory-muted">
               {t('journal.detail.metadata.loading')}
             </Text>
           ) : null}
@@ -2478,6 +2483,7 @@ const JournalDetailContent = memo(function JournalDetailContent({ dream }: { dre
         behavior={keyboardBehavior}
         keyboardVerticalOffset={keyboardVerticalOffset}
       >
+        <View className="flex-1">
         <ScrollView
           ref={scrollViewRef}
           className="flex-1"
@@ -2691,6 +2697,17 @@ const JournalDetailContent = memo(function JournalDetailContent({ dream }: { dre
                 )}
               </View>
             ) : null}
+            {Platform.OS === 'ios' && isKeyboardVisible ? (
+              <Pressable
+                onPress={Keyboard.dismiss}
+                testID="btn.journal.dismissKeyboard"
+                accessibilityRole="button"
+                accessibilityLabel={t('common.done')}
+                className="min-h-11 items-end justify-center self-end px-3"
+              >
+                <Text className="font-sans-medium text-[15px] text-champagne-on">{t('common.done')}</Text>
+              </Pressable>
+            ) : null}
             <View style={{ marginBottom: floatingTranscriptBottom }}>
               {renderMetadataCard('floating')}
             </View>
@@ -2701,6 +2718,17 @@ const JournalDetailContent = memo(function JournalDetailContent({ dream }: { dre
             pointerEvents="auto"
             className="absolute inset-0 justify-end bg-ink-overlay px-4 pt-6"
           >
+            {Platform.OS === 'ios' && isKeyboardVisible ? (
+              <Pressable
+                onPress={Keyboard.dismiss}
+                testID="btn.journal.dismissKeyboard"
+                accessibilityRole="button"
+                accessibilityLabel={t('common.done')}
+                className="min-h-11 items-end justify-center self-end px-3"
+              >
+                <Text className="font-sans-medium text-[15px] text-champagne-on">{t('common.done')}</Text>
+              </Pressable>
+            ) : null}
             <View
               className="mt-6 mb-7 rounded-lg border border-line bg-ink-raised px-4 pt-6 pb-4"
               style={[shadows.xl, { marginBottom: floatingTranscriptBottom }]}
@@ -2900,6 +2928,7 @@ const JournalDetailContent = memo(function JournalDetailContent({ dream }: { dre
             />
           </View>
         )}
+        </View>
       </KeyboardAvoidingView>
     </View>
   );

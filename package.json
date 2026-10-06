@@ -212,6 +212,7 @@
     "test:testerarmy:meditation": "node tools/e2e/run.mjs meditation web",
     "test:testerarmy:site": "node tools/e2e/run.mjs site web",
     "test:testerarmy:mobile": "node tools/e2e/run.mjs mobile",
+    "test:testerarmy:guards": "node --test tools/e2e/qualification.test.mjs tools/e2e/native-release.test.mjs tools/e2e/mock-profile.test.mjs",
     "test:testerarmy:typecheck": "npm run typecheck --prefix tools/e2e",
     "agent-device:doctor": "node tools/e2e/node_modules/agent-device/bin/agent-device.mjs doctor",
     "agent-device:inspect": "node tools/e2e/run.mjs inspect",

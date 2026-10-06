@@ -1,7 +1,19 @@
+const { createHash } = require('node:crypto');
 const { getDefaultConfig } = require('expo/metro-config');
 const { withUniwindConfig } = require('uniwind/metro');
 
 const config = getDefaultConfig(__dirname);
+
+// Release export may reuse Metro transforms in CI. Include every statically
+// inlined public input so Dreamer/Lucid and their mock/story profiles cannot
+// consume another profile's compiled constants. Retain the upstream cache seed;
+// only a digest is exposed, never environment values.
+const publicBuildInputs = Object.entries(process.env)
+  .filter(([key]) => ['NOCTALIA_APP_VARIANT', 'NOCTALIA_DREAMER_QA_BUILD', 'EXPO_ROUTER_APP_ROOT', 'EXPO_ROUTER_IMPORT_MODE'].includes(key) || key.startsWith('EXPO_PUBLIC_'))
+  .sort(([left], [right]) => left < right ? -1 : left > right ? 1 : 0);
+config.cacheVersion = createHash('sha256')
+  .update(JSON.stringify([config.cacheVersion, publicBuildInputs]))
+  .digest('hex');
 
 // `expo-sqlite` imports a `.wasm` asset for the web worker (wa-sqlite).
 // Expo's default Metro config doesn't include `wasm` in assetExts yet.

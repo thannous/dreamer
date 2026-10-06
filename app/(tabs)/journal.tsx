@@ -1044,7 +1044,8 @@ export default function JournalListScreen() {
           onLoad={onListLoaded}
           testID={TID.List.Dreams}
           ref={flatListRef}
-          key={mobileListKey}
+          // Like the desktop grid, discard stale web measurements after filtering.
+          key={isWeb ? `${mobileListKey}-${visibleItems.map(keyExtractor).join(',')}` : mobileListKey}
           data={visibleItems}
           onEndReached={hasMore ? loadMore : undefined}
           onEndReachedThreshold={0.5}

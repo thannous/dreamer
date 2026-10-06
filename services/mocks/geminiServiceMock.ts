@@ -4,6 +4,7 @@
  */
 
 import { getRandomImageForTheme } from '@/mock-data/assets';
+import { getMockCategorizationDelayMs } from '@/lib/env';
 import { generateAnalysisResult, generateChatResponse } from '@/mock-data/generators';
 
 import type { ChatMessage, DreamTheme, DreamType, ReferenceImageGenerationRequest } from '@/lib/types';
@@ -72,7 +73,7 @@ export async function categorizeDream(
   lang = 'en'
 ): Promise<CategorizeDreamResult> {
   console.log('[MOCK] categorizeDream called with transcript:', transcript.slice(0, 50) + '...', 'lang:', lang);
-  await delay(500 + Math.random() * 500); // 0.5-1 second
+  await delay(getMockCategorizationDelayMs() ?? (500 + Math.random() * 500)); // Normal profile: 0.5-1 second.
 
   const result = generateAnalysisResult(transcript, lang);
 

@@ -2,8 +2,10 @@
 import { createParityTest, expect } from '../web-parity-fixtures';
 import type { Page } from 'playwright/test';
 const test = createParityTest();
+const defaultFeatureTest = createParityTest();
 
 test.use({ timezoneId: 'Europe/Paris' });
+defaultFeatureTest.use({ timezoneId: 'Europe/Paris' });
 
 async function openDemo(page: Page, feature: string) {
   await page.getByTestId(`btn.onboarding.feature.${feature}`).click();
@@ -35,7 +37,7 @@ async function expectCloseButton(page: Page) {
   expect(bounds.topInset).toBeLessThan(64);
 }
 
-test.beforeEach(async ({ page }) => {
+async function openOnboarding({ page }: { page: Page }) {
   // The default dynamic theme follows local time; fix it for repeatable captures.
   await page.clock.setFixedTime(new Date('2026-10-02T12:00:00+02:00'));
   await page.setViewportSize({ width: 390, height: 844 });
@@ -43,10 +45,13 @@ test.beforeEach(async ({ page }) => {
   await expect(page.getByTestId('component.onboarding.intro')).toBeVisible();
   // The startup overlay ignores pointer events; wait until it leaves before captures or taps.
   await expect(page.getByText('NOCTALIA', { exact: true })).toHaveCount(0);
-});
+}
 
-test('feature sheets stay disabled by default while onboarding and privacy remain usable', async ({ page }, testInfo) => {
-  test.skip(process.env.EXPO_PUBLIC_ONBOARDING_FEATURE_SHEETS_ENABLED === 'true', 'The feature flag is enabled for this bundle.');
+test.beforeEach(openOnboarding);
+defaultFeatureTest.beforeEach(openOnboarding);
+// This OFF-only case is excluded during collection before an ON bundle opens.
+defaultFeatureTest.skip(process.env.EXPO_PUBLIC_ONBOARDING_FEATURE_SHEETS_ENABLED === 'true', 'The feature flag is enabled for this bundle.');
+defaultFeatureTest('feature sheets stay disabled by default while onboarding and privacy remain usable', async ({ page }, testInfo) => {
   for (const feature of ['capture', 'connect', 'explore']) {
     const signal = page.getByTestId(`btn.onboarding.feature.${feature}`);
     await expect(signal).toBeVisible();

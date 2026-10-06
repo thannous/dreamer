@@ -105,6 +105,9 @@ commands:
       - run:
           name: Typecheck TesterArmy journeys
           command: npm run test:testerarmy:typecheck
+      - run:
+          name: Verify fail-closed qualification guards without devices
+          command: npm run test:testerarmy:guards
 
 jobs:
   noctalia-e2e-backend:
@@ -183,6 +186,7 @@ jobs:
       - install-testerarmy
       - run:
           name: Verify exact << parameters.product >> browser journeys
+          no_output_timeout: 30m
           command: node tools/e2e/run.mjs << parameters.product >> web run --trace
       - when:
           condition:
@@ -197,6 +201,10 @@ jobs:
             - run:
                 name: Verify Dreamer feature sheets remain disabled without opt-in
                 command: EXPO_PUBLIC_ONBOARDING_FEATURE_SHEETS_ENABLED=false E2E_WEB_LOCALE=en-US node tools/e2e/run.mjs dreamer web run --grep 'feature sheets stay disabled by default' --trace
+      - run:
+          name: Verify the exact passed-ID union and all browser contexts
+          when: always
+          command: node tools/e2e/run.mjs << parameters.product >> web collect
       - store_test_results:
           path: tools/e2e/.e2e
       - store_artifacts:
@@ -401,6 +409,10 @@ jobs:
       - run:
           name: Verify the generated site through TesterArmy
           command: npm run test:testerarmy:site
+      - run:
+          name: Verify the generated-site passed-ID union
+          when: always
+          command: node tools/e2e/run.mjs site web collect
       - store_test_results:
           path: tools/e2e/.e2e
       - store_artifacts:

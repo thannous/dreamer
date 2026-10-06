@@ -29,9 +29,10 @@ Cloudflare Pages builds `docs/` from tracked sources on `master`; verify the bra
   `specs/noctalia-lucid-trainer.md` for its scope and sleep/wellbeing safeguards.
 - Meditation is a separate package at `apps/meditation/`; read its local guide
   and run its commands there. Its theme and service paths replace journal-specific paths.
-- The Dreamer device scope targets Dreamer VNext only. Do not widen its package
-  allowlist for Lucid or Meditation; resolve an app-specific profile before device work.
-  Missing device access does not block local work.
+- Device scope follows the current requested product and work package. The TI-429
+  VNext base-package decision applies to that historical harness, not all future QA.
+  Resolve an app-specific profile and owned data before device work; do not reuse
+  Dreamer's allowlist for Lucid or Meditation. Missing access does not block local work.
 - Do not send private project content to free third-party inference endpoints.
   Use an authorized supported model.
 
@@ -121,16 +122,21 @@ Keep execution to four gates, with detail proportional to the work:
 
 Ask only for a material unresolved product decision or an action outside the approved scope,
 including an unauthorized expense, destructive operation, or publication. Production deploys,
-store submissions, EAS builds, and device reinstallations must be explicitly included in the
-authorization; a merge that triggers production deployment also requires publication intent.
+store submissions and EAS builds must be explicitly included in the authorization;
+a merge that triggers production deployment also requires publication intent. Requested
+native implementation or QA includes the necessary local build, isolated native generation
+and compatible installation on its owned disposable QA target. It does not authorize
+overwriting a personal app, resetting unowned data, adding a provider or raising a budget.
 Continue independent authorized work while a decision is pending. These rules do not override
 tool approvals, data preservation, device safeguards, or higher-priority instructions.
 
 Avoid preventable rework: verify dependency compatibility before expensive builds, typecheck
 new or changed tests before the first push, and pilot a measurement method on one sample before
-scaling it. For device checks, verify the installed binary's version and supported entry points;
-do not assume an older Play build accepts current deep links. Before an explicitly authorized
-reinstallation, establish and verify the data backup and restoration method. Batch independent
+scaling it. For device checks, identify the installed binary and supported entry points;
+do not assume an older Play build accepts current deep links. On a personal or shared app,
+preserve data and check signature compatibility; a destructive reinstall requires its own
+authorization and a concrete preservation plan. Disposable QA app state uses its existing
+profile, without a redundant personal-data backup workflow. Batch independent
 checks and small corrections, and keep one concise evidence record for the work package.
 
 ## Delivery and QA Continuity
@@ -156,6 +162,12 @@ checks and small corrections, and keep one concise evidence record for the work 
    Reuse decisions and unchanged evidence. Keep private QA artifacts out of Git; tracked
    summaries must be redacted. These records do not grant additional action permissions.
 
+Keep evidence proportional: one canonical report and receipt with the useful failure
+log/media and exact rerun command. Reference that immutable output rather than copying
+and fully rehashing it at each review or status update. Recheck when bytes are transferred,
+inputs change, corruption is suspected or an applicable release check requires it. Current
+runner identity/artifact checks remain in use; duplicate ad hoc collectors are unnecessary.
+
 Sprint deliverables and success criteria: [four process improvements](doc_web_interne/docs/process-sprint-2026-09-28.md).
 
 ## Project Rules
@@ -165,16 +177,21 @@ Sprint deliverables and success criteria: [four process improvements](doc_web_in
   install source and verify signature/version before any install; never uninstall or clear app
   data to force an install. An older goal text mentioning a QA device does not override this
   user decision.
+  This restriction belongs to TI-429's base-app measurement scope. Other requested native
+  QA may use a separate owned app/profile through its canonical runner when data ownership
+  and signing are established; it must not claim base/Play equivalence or bypass TI-429 guards.
 - Start with `git status --short`; preserve all unrelated and pre-existing changes.
 - Read applicable local instructions and the implementation or tests needed to understand
   the requested change. Consult specialized references when the affected behavior requires
   them. Reuse established patterns and dependencies.
 - Treat `package.json` as the command source of truth; do not invent parallel wrappers.
-- Never run `expo prebuild` without explicit authorization, including when `expo run:android`
-  or `expo run:ios` would trigger it because the corresponding native directory is absent.
-  Before an authorized local build, check for `android/` or `ios/`; if the directory exists,
-  proceed with the requested build. The start modes in `script/build_and_run.sh` use
-  `expo start` and do not prebuild.
+- Requested native implementation or QA authorizes a necessary local `expo prebuild`
+  in its isolated worktree, including generation required by `expo run:android`/`run:ios`.
+  Check SDK compatibility and the app-specific profile first, reuse compatible existing
+  projects, prefer explicit `--no-install` generation, and record resulting native inputs.
+  Do not regenerate the primary checkout or another task's project. No separate confirmation
+  is needed for this same local scope; unrelated platforms, personal data, EAS/Store and
+  publication retain their boundaries. `script/build_and_run.sh` start modes do not prebuild.
 - Never run EAS builds, store submissions, production deploys, or destructive database
   commands without explicit authorization.
 - Never commit secrets or temporary logs. Every `EXPO_PUBLIC_*` value is client-visible.
@@ -205,12 +222,14 @@ for supported modes.
 
 ## Validation
 
-- Never write unit tests after you write code.
-- Highly prefer E2E tests as the sole testing mechanism. Use them to verify complex features work. At the end of E2E tests, produce a verifiable and repeatable artifact.
-- If you must test a system in isolation, first write down all the ways it could fail, then write the code.
+- Prefer real E2E journeys for functional outcomes, with exact assertions and a repeatable
+  artifact. Use a focused isolation control when it detects a concrete failure that the
+  journey cannot safely or reliably exercise; avoid tests mirroring implementation details.
+- State that failure and the E2E gap before expanding isolated coverage. Reproduce before
+  fixing when practical; test-writing chronology is not a separate permission or closure gate.
 
 For an isolation-test exception, record the failure modes and the gap in existing E2E
-coverage before implementation; write the tests before the implementation too. Keep
+coverage in the work package. Keep
 only tests that detect a concrete failure the E2E assertions would miss. Avoid
 implementation-shape checks, cosmetic copy assertions, and duplicate happy paths.
 
@@ -229,7 +248,7 @@ Choose validation by the behavior and risk changed, not by the number of files o
 | Storage, accounts, sync, payments, shared runtime or build configuration | E2E failure/recovery journeys with evidence artifacts; isolation tests for documented gaps and native checks where the risk requires them. |
 
 - Pick one appropriate focused test entry point; the commands below are alternatives, not a sequence to run in full.
-- Apply the E2E-first policy above when adding coverage; isolation tests require a documented failure model and must precede implementation.
+- Apply the E2E-first policy above when adding coverage; isolation controls require a concrete failure model, not a mandatory implementation order.
 - Once checks pass, rerun only when changed code, dependencies/configuration, a failure or an unresolved risk invalidates that evidence. A documentation-only follow-up does not invalidate code tests.
 - Consolidate local corrections and evidence before pushing when practical. Do not push each small documentation correction separately merely to trigger another CI run.
 - For functional, shared-code or tooling PRs, use `npm run test:prepush` once on the clean committed worktree as the final affected-test entry point; it replaces a guessed manual test selection. It refreshes `origin/master`, uses the CI classifier, checks applicable app/test types and root Jest, and rejects revisions modified during the run. Documentation-only and small visual changes retain the proportional validation above. It does not replace lint, native, site-build, Meditation or Edge checks required by the changed surface.
@@ -264,7 +283,7 @@ Commit source inputs and tracked manifests, never generated `docs/`. Deployment 
 - Expo: https://docs.expo.dev/llms-full.txt
 - React Native: https://reactnative.dev/docs/getting-started
 
-## E2E framework preference (owner decision, 2026-10-05)
+## E2E framework preference (owner decisions, 2026-10-05 and 2026-10-06)
 
 Use TesterArmy `e2e` for new and affected E2E journeys across every project,
 subproject and worktree. Reference: https://docs.expo.dev/guides/using-e2e/.
@@ -278,8 +297,14 @@ device, and `app.open()` at each test start. Follow existing build/prebuild rule
 Use one goal per `agent.act()` and exact assertions for critical outcomes; exact
 steps need no model. Preserve reports, failures, screenshots/traces, build/source
 identity and the exact rerun command. A stale/missing replay is not a passed check.
-Retain existing Playwright/Maestro/API coverage and required CI until equivalent
-TesterArmy journeys have passed; new tests use TesterArmy by default. Keep model
+TesterArmy remains the default. Existing coverage protects current functional contracts;
+historical counterexamples inform work but do not freeze obsolete UI or block adoption
+automatically. Preserve the old result and explain any revised expectation or retired
+criterion against the current product contract. Keep required CI until an explicit reviewed
+pipeline change; retain still-relevant Playwright/Maestro/API assertions until their
+replacement passes. A compatible framework upgrade within the requested work may be
+piloted on a representative journey, pinned and adopted after its checks pass without
+another generic permission request. Keep model
 calls within existing authorized providers and budgets, and never export private
 test content, credentials or feedback without authorization.
 

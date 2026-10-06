@@ -10,6 +10,13 @@ Node 24.19.0 is pinned by the root mise file and satisfies e2e 0.18's
 `^22.22.3 || >=24.8.0` requirement. The runner uses e2e's bundled TypeScript
 loader; the scoped public matcher preload is unchanged.
 
+These pins describe the current package, not a permanent version ceiling. Within
+requested work, read the candidate version's installed skill/topics and peer ranges,
+update only this isolated package/lockfile, then pilot collection/loader, one relevant
+real journey and its report/cleanup. A compatible candidate may be adopted after
+its applicable checks pass without another generic permission request. Keep exact
+pins and existing provider budgets; an upgrade does not enable a provider or Jev.
+
 From the repository root:
 
 ```sh
@@ -56,7 +63,11 @@ The 83 historical browser cases across 16 families run through TesterArmy with
 their exact UI assertions, including mock billing, capture/edit/chat, continuous
 reading, reflection, symbol dictionary, Explorer, settings persistence, Home,
 Trends, responsive navigation, Journal geometry and feature-sheet stories.
-The original Playwright/backend/Maestro suites remain present and required.
+The original Playwright/backend/Maestro suites remain present; current CI still
+requires them. Their relevant functional assertions protect the current contract.
+An obsolete expectation may be revised with a recorded product reason and a
+focused current journey. Preserve the old red/pass result as history; it does not
+automatically block feature or framework adoption or permit silently bypassing CI.
 
 The public `surfaceOf()` Page/context keeps CSS, geometry, keyboard, image and
 clock checks. TesterArmy owns isolated attempts and traces; the pinned isolated
@@ -113,21 +124,84 @@ manifest. Meditation has its own manifest and check:
 `npm --prefix apps/meditation run dependencies:check`.
 Run the affected check before a local native build; CI checks both manifests.
 
-Native examples (use the actual dedicated running emulator or available Simulator):
+## Native Release provenance and diagnostic handoff
+
+Current delivered native evidence and retained limits: [retrospective qualification](../../doc_web_interne/docs/qa/native-retro-qualification-20261006.md). Historical reports retain their original source/build identities.
+
+Requested native implementation/QA includes necessary local generation in its
+isolated worktree after SDK/profile checks; reuse compatible existing native
+projects first and prefer explicit `prebuild --no-install` when generation is needed.
+Do not regenerate the primary or another task's project or ask for this same scope
+again. Data ownership, signing, providers/budgets, EAS/Store and publication remain
+separate boundaries. The build runner below still requires an existing native project.
+`run.mjs <product> <platform> build` runs the installed Expo SDK dependency check
+and an explicit Release command descriptor, then writes an immutable `release.json`.
+It never generates a native project or selects a phone. The descriptor accepts
+`gradlew :app:assembleRelease`, the existing Android Release script with
+`--reuse-native-project`, or `xcodebuild -configuration Release ... build`.
+Android requires Java 17, an installed SDK and an OTA-disabled embedded bundle.
+iOS requires an existing project/Pods, an embedded JS bundle and a Simulator build.
+
+Example from an isolated checkout with an existing Android project:
 
 ```sh
-E2E_DEVICE=emulator-5554 mise exec -- npm run test:testerarmy:mobile -- dreamer android
-E2E_DEVICE='iPhone 17 Pro' mise exec -- npm run test:testerarmy:mobile -- meditation ios
+EXPO_NO_DOTENV=1 EXPO_OFFLINE=1 E2E_BUILD_PROFILE=production-apk \
+  EXPO_PUBLIC_MOCK_MODE=false EXPO_PUBLIC_MOCK_PERSISTENCE=false \
+  EXPO_PUBLIC_ONBOARDING_FEATURE_SHEETS_ENABLED=false \
+  E2E_BUILD_COMMAND='["./gradlew",":app:assembleRelease","--no-daemon"]' \
+  E2E_RELEASE_BINARY=android/app/build/outputs/apk/release/app-release.apk \
+  mise exec -- node tools/e2e/run.mjs dreamer android build
+E2E_DEVICE=emulator-5554 E2E_AVD_NAME=MyDedicatedQA \
+  E2E_RELEASE_RECEIPT=tools/e2e/.e2e/dreamer-android/BUILD_RUN/release.json \
+  mise exec -- node tools/e2e/run.mjs dreamer android run --install-release
 ```
 
-No automatic builds, prebuilds, app installs, EAS sessions or model calls occur.
-Install an app-specific Release binary first under the repository build rules.
-The wrapper checks the installed package and refuses Android Debug binaries;
-iOS Release identity must be established from the build evidence. It resolves
-iOS names to one Simulator and refuses physical-device pools. Native tests clear
-only the selected app's state; use a dedicated disposable emulator/simulator.
-One worker and a per-device lock prevent concurrent runs of this wrapper.
-Never delete a stale lock without checking the recorded owner.
+Set `JAVA_HOME` to the installed Java 17 runtime as required by the existing local
+Android build guide. Resolve `BUILD_RUN` to the exact newly printed receipt;
+there is no latest-run fallback. The receipt contains build command/exit, source
+and native-input hashes, actual version/bundle, APK SHA or complete `.app` hashes,
+profile flags, OTA identity and signing state. The identified APK or `.app` is copied into that immutable
+build output and its hash rechecked before the receipt is written, so rebuilding
+the native cache does not invalidate an earlier rerun. Partial copies never
+produce a successful receipt. Local package and CocoaPods links
+are hashed with their in-checkout destinations; foreign links/cycles are refused.
+Metro's public `cacheVersion` retains its upstream seed and includes a hash of
+all `EXPO_PUBLIC_*` inputs plus the native/router profile selectors. Release
+exports in CI can disable automatic cache resets; profiles must have separate
+transform keys even when their source files are identical. Inputs are sorted
+without locale rules, and values are never printed. See the official
+[Metro configuration](https://metrobundler.dev/docs/configuration/#cacheversion).
+
+New source inputs require a new build. Unchanged app/native input digests permit
+reuse after a test-only commit; build-source and test-source revisions stay distinct.
+
+`--install-release` is opt-in and simulator/emulator-only. The existing runner
+holds the device lock, validates the receipt/source/binary, installs that binary,
+pulls and hashes the installed APK (or hashes the installed Simulator `.app`),
+then launches collection and SDK tests. The owner decision of2026-10-06 makes
+installation/hash failures independent diagnostics: SDK continues on the owned QA
+target, but a failed identity check cannot yield application qualification. An
+invalid/missing build receipt, incompatible profile or foreign device still refuses
+before launch. Without the install switch, the installed hash is still diagnosed.
+The installed identity is checked again after the SDK returns. No EAS, Store,
+physical install, unsigned storage fallback or model is enabled.
+
+Profiles are `production-apk` (Dreamer real-service build; journeys stay offline),
+`mock-persistent` (Dreamer synthetic account/data), `lucid-mock`, and
+`meditation-local` (bundled content/audio). Load `.env.mock` or `.env.lucid.mock`
+through `E2E_BUILD_ENV_FILE`, which uses the existing profile loader and disables
+implicit dotenv mixing. Pass persistence/audio/feature flags explicitly. Lucid
+Simulator persistence journeys require the existing entitlements and ad hoc local
+signing (`CODE_SIGNING_ALLOWED=YES`, `CODE_SIGN_IDENTITY=-`); retain the signature
+verification in the receipt. This is not a Store candidate.
+
+The two Journal concurrency journeys require `mock-persistent` plus compile-time
+`EXPO_PUBLIC_MOCK_CATEGORIZATION_DELAY_MS=30000` (allowed range 20000–60000).
+The delay activates only in persistent mock mode. The real pending indicator
+must be visible before editing and remain pending after the exact draft is entered;
+its completion then precedes the unchanged-draft assertion and Journal round-trip.
+No fixed test sleep or synthetic UI action is used. Other profiles explicitly skip
+these cases; skips are not passes. See [the native coverage matrix](NATIVE-MATRIX.md).
 
 Dreamer exact web coverage also exercises guest save/inline mock analysis,
 authenticated save/rename/Journal round-trip, empty-search recovery, transcript
@@ -143,8 +217,10 @@ The optional web port override is ignored for native targets.
 Other coverage: Dreamer onboarding/empty-save/draft mode continuity; Lucid
 required intention/experience and entry to sleep settings; Meditation onboarding,
 restart persistence and tabs; generated site homepage/internal navigation.
-Native counterparts are deliberately limited to installed-build checks. Add the
-affected user journey here; legacy coverage is not yet fully migrated.
+Native counterparts exercise the explicit invariants in [NATIVE-MATRIX.md](NATIVE-MATRIX.md)
+on identified Release builds. Browser-only assertions remain covered on the web;
+existing CI gates still apply. Native gaps are explicit limits, not automatic
+blockers for unrelated functional work or adoption.
 
 Lucid also checks dark time-field contrast, nondefault sleep times surviving a
 reload, full tab and shortcut labels at 320/360/390 pixels, light/dark programs,
@@ -154,11 +230,65 @@ and stabilization/SSILD pause and resume after reload. Browser locale is French
 for this suite. These mock-service browser journeys do not qualify native Lucid.
 The existing Playwright visual journey and native Maestro coverage remain.
 
-Reports, JUnit, Markdown, screenshots and browser traces are in
-`tools/e2e/.e2e/<product>-<platform>/<run>/`. `evidence.json` identifies source revision,
-dirty tree, tracked diff digest, binary version and command. Failed checks remain
-in the report. Identify any untracked application changes in the work package;
-a binary version alone does not prove the source revision it contains.
+## Complete verdict and immutable evidence
+
+Every invocation has a fresh UUID output under
+`tools/e2e/.e2e/<product>-<platform>/<timestamp>-<pid>-<uuid>/`; collisions never
+overwrite prior evidence. `sdk.log` and each managed server's `app.log` are inside
+that output, so all locale/flag partitions are uploaded by the existing CI artifact
+step. `evidence.json` carries exact command, campaign/context, pins, test source,
+build receipt and requested media. `source-start.json` / `source-end.json` retain
+path→SHA inputs without raw diffs. `installed-start.json` / `installed-end.json`
+identify the installed binary. `files.json` hashes output files written before the
+final `end.json`; these two manifest files are deliberately outside that file set.
+
+Keep one canonical output and compact handoff with source/build/device, verdict,
+exact rerun and the media needed to understand the outcome. Complete logs stay
+local when useful for diagnosis; private data is not uploaded without authorization.
+Use the existing runner and campaign collector rather than copying and fully
+rehashing the same media at every handoff/status update. Repeat integrity work
+when bytes are transferred, inputs change, corruption is suspected or a required
+release check needs it. This does not remove the runner's identity, artifact or
+final verdict checks. Optional video need not be enabled to qualify screenshot/UI
+journeys; media actually requested by a body remains required for that run.
+
+Browser fixtures may perform only their existing public `browser.route` and
+`browser.setViewport` setup before the first `app.open()`. UI actions before that
+open are refused; native ordering stays strict. SDK exit0 alone is insufficient. A qualified run needs the exact fresh report,
+runner/engine/target/agent/source/origin, unchanged inputs, zero model use, every
+selected runnable pair passed once, native `app.open()` first, complete cleanup, no
+secondary errors, and intact declared/requested artifacts. A body requesting no
+media and declaring none may produce a report only. Requested missing video/trace
+is refused. Source/output/install/lock failures are independent final checks;
+primary SDK failures and SIGINT130/SIGTERM143 retain priority over secondary errors.
+After process completion the wrapper releases only its own lock, including when
+resource cleanup is failed/missing. `resourceCleanup` records that limitation and
+the final verdict remains nonqualifying; no unknown session/recorder is killed.
+`qualification.json` records SDK validation; only final `end.json` exit0 completes
+that invocation. Preserve both when reporting its verdict.
+
+For a browser campaign set one unique `E2E_CAMPAIGN_ID` on every invocation,
+then run `node tools/e2e/run.mjs <product> web collect`. CI uses its unique
+`CIRCLE_WORKFLOW_JOB_ID`. The collector revalidates reports, artifacts and final
+receipts and writes `campaign.json`: the actual passed union uses target/test/agent
+identity, with contexts, repeats, selected skips and exclusions kept separately.
+Dreamer requires EN/FR/DE with stories ON and EN with stories OFF. A failed or
+missing context cannot produce a complete campaign. Do not infer a union from a
+large selected count or include old unrelated reports. The current qualification
+reference is the exact immutable `campaign.json` and its command/source, not an
+old static pass count in this README.
+
+The generated site has explicit canonical outputs from `docs:build`:
+`docs-src/static/js/experience/` (including hashed chunks) and the served `docs/`
+tree. The runner snapshots their bytes separately after the canonical build;
+changes during tests fail. Source files elsewhere remain inputs. Generated tracked
+changes remain visible as dirty state; no global clean or forged clean receipt is
+used. Start/end snapshots detect persistent changes, not a transient mutation
+restored between them.
+
+`npm run test:testerarmy:guards` exercises observed failure modes with public
+synthetic fixtures, without starting an engine or device. These controls supplement
+real journeys and never establish application or physical qualification.
 
 Agent goals can be added with an authorized model provider, one goal per call
 and exact critical-outcome assertions. No provider is configured by default.
@@ -168,7 +298,10 @@ package installs neither that executor nor `ai`; exact journeys require no
 model dependency, and the upgrade does not enable a provider.
 Use a provider barrier when replay must never call a model; strict cache alone
 does not forbid a call on a cache miss. Existing Maestro, Playwright, backend and
-CI checks remain until equivalent replacement journeys pass. A listed or
+CI checks remain until an explicitly reviewed pipeline change. Still-relevant
+assertions remain until their replacement passes; obsolete historical criteria
+may be revised with their current product reason and old result preserved.
+A listed or
 typechecked test is not evidence that the user journey passed.
 
 ## agent-device inspection and live exploration
@@ -177,7 +310,8 @@ The host CLI and the official `agent-device` Codex skill are installed. This
 package uses the engine's exact `agent-device` 0.21.22 dependency through its
 local CLI. A globally installed CLI may have a different version; the guarded
 package commands use this local pin. Read its version-matched `help workflow`
-or `help debugging` for specialized work. Do not replace the pinned native engine with `@latest`.
+or `help debugging` for specialized work. Use exact compatible pins for a measured
+upgrade, not a floating `@latest` runtime or a global engine replacement.
 
 ```sh
 mise exec -- npm run agent-device:doctor
@@ -209,3 +343,21 @@ by these inspection commands.
 
 Selection flags may narrow a run, but config, target, worker and output overrides
 are refused before device preflight. Use the explicit product/platform entry.
+
+## Interrupted CI campaign evidence
+
+CircleCI web SDK runs keep complete stdout/stderr in each immutable `sdk.log`.
+A fixed, queryless console line every60s says only that this runner's own SDK child
+is still open and its elapsed time; it does not claim test progress. It stops on
+close/finally and never forwards SDK/app content. The main CI step has a30m
+no-output fallback after a measured ten-minute cancellation (76 runnable bodies,
+approximately22min at the observed cadence); matcher/action/lifecycle/retry budgets
+are unchanged. See [CircleCI run configuration](https://circleci.com/docs/reference/configuration-reference/#run).
+
+`web collect` still requires all exact current contexts and complete finalized
+proof for qualification. After an interruption it inspects each owned campaign
+candidate independently and writes `campaign-incomplete.json` with `qualified:false`,
+missing proof files, SDK/wrapper exits and hashes of the available report/log bytes.
+It returns nonzero and never writes a qualifying `campaign.json`. The original
+reports, logs and partial media remain in the uploaded directory; an interrupted
+ZIP/video is not claimed complete. No SDK test or app is launched by collection.
