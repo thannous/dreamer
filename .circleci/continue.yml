@@ -97,7 +97,7 @@ commands:
   install-testerarmy:
     steps:
       - run:
-          name: Install isolated locked TesterArmy dependencies
+          name: Install isolated locked TesterArmy e2e 0.18.0 dependencies
           command: npm run test:testerarmy:setup
       - run:
           name: Install isolated Chromium and Linux browser dependencies

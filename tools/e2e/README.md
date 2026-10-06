@@ -3,7 +3,12 @@
 Default framework for new journeys since the owner's 2026-10-05 instruction.
 Follow https://docs.expo.dev/guides/using-e2e/ and the skill bundled in this
 package's `node_modules/e2e/skills/e2e/`. Dependencies and lockfile are isolated
-from the application's Playwright version. Node is pinned by the root mise file.
+from the application's Playwright version. The locked runtime is `e2e` 0.18.0,
+`@e2e-dev/web` 0.13.0, `@e2e-dev/mobile` 0.10.0 and `agent-device` 0.21.22.
+The engine peer ranges accept e2e 0.18.0; web and matcher Playwright remain 1.63.0.
+Node 24.19.0 is pinned by the root mise file and satisfies e2e 0.18's
+`^22.22.3 || >=24.8.0` requirement. The runner uses e2e's bundled TypeScript
+loader; the scoped public matcher preload is unchanged.
 
 From the repository root:
 
@@ -97,8 +102,8 @@ No original test is removed on the basis of these results.
 
 CircleCI runs the exact Dreamer and Lucid journeys in the Noctalia workflow,
 Meditation in its own workflow, and the generated site after `docs:build` and
-`docs:check`. Each job installs this package's locked dependencies and Chromium,
-uses one worker with no replay or model, and retains JUnit, reports, screenshots,
+`docs:check`. Each job installs this package's locked e2e 0.18.0 dependencies
+and Chromium, uses one worker with no replay or model, and retains JUnit, reports, screenshots,
 traces and source identity under `tools/e2e/.e2e/`. Existing Playwright, backend,
 Maestro and quality checks remain required.
 
@@ -157,6 +162,10 @@ a binary version alone does not prove the source revision it contains.
 
 Agent goals can be added with an authorized model provider, one goal per call
 and exact critical-outcome assertions. No provider is configured by default.
+The optional `@e2e-dev/decision` / Jev setup described in the installed
+`docs/decision-models.mdx` additionally requires `ai` 7.0.128 or later. This
+package installs neither that executor nor `ai`; exact journeys require no
+model dependency, and the upgrade does not enable a provider.
 Use a provider barrier when replay must never call a model; strict cache alone
 does not forbid a call on a cache miss. Existing Maestro, Playwright, backend and
 CI checks remain until equivalent replacement journeys pass. A listed or
@@ -165,9 +174,10 @@ typechecked test is not evidence that the user journey passed.
 ## agent-device inspection and live exploration
 
 The host CLI and the official `agent-device` Codex skill are installed. This
-package uses the engine's exact `agent-device` 0.21.20 dependency; the global CLI
-is the same version. Read its version-matched `help workflow` or `help debugging`
-for specialized work. Do not replace the pinned native engine with `@latest`.
+package uses the engine's exact `agent-device` 0.21.22 dependency through its
+local CLI. A globally installed CLI may have a different version; the guarded
+package commands use this local pin. Read its version-matched `help workflow`
+or `help debugging` for specialized work. Do not replace the pinned native engine with `@latest`.
 
 ```sh
 mise exec -- npm run agent-device:doctor
