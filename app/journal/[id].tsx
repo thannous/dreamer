@@ -5,7 +5,7 @@ import { isPoeticDreamQuote } from '@/lib/dreamQuote';
 import { CaptureOriginal } from '@/components/recording/CaptureOriginal';
 import { getDreamRecallStorageId } from '@/lib/dreamRecallIdentity';
 import { getDreamRouteParams, resolveDreamRoute } from '@/lib/dreamRoute';
-import { getDreamIdentityKey } from '@/lib/dreamIdentity';
+import { getDreamIdentityKey, matchesDreamTarget } from '@/lib/dreamIdentity';
 import { isInitialDreamCategorizationPending, subscribeInitialDreamCategorization } from '@/lib/initialDreamCategorization';
 import { useDreamMedia } from '@/hooks/useDreamMedia';
 import { Toast } from '@/components/Toast';
@@ -521,6 +521,7 @@ const JournalDetailContent = memo(function JournalDetailContent({ dream }: { dre
   }, [measureTranscriptSection, updateReadingChrome]);
   const scrollViewRef = useRef<ScrollView | null>(null);
   const lastAnalysisNoticeRef = useRef<AnalysisNotice | null>(null);
+  const previousDreamRef = useRef(dream);
 
   const sortedDreamTypes = useMemo(() => {
     return sortWithSelectionFirst(DREAM_TYPES, dream?.dreamType);
@@ -537,22 +538,24 @@ const JournalDetailContent = memo(function JournalDetailContent({ dream }: { dre
   }, [analysisNotice]);
 
   useEffect(() => {
-    if (!dream) {
-      setEditableTitle('');
-      setEditableTheme('');
-      setEditableDreamType('');
-      setEditableTranscript('');
+    const changedDream = !dream || !previousDreamRef.current
+      || !matchesDreamTarget(dream, previousDreamRef.current);
+    previousDreamRef.current = dream;
+    // Background categorization/sync refreshes the same dream object. Keep
+    // active drafts until the user saves or cancels, and reset on navigation.
+    if (changedDream || !isEditing) {
+      setEditableTitle(dream?.title || '');
+      setEditableTheme(dream?.theme || '');
+      setEditableDreamType(dream?.dreamType || '');
+    }
+    if (changedDream || !isEditingTranscript) {
+      setEditableTranscript(dream?.transcript || '');
+    }
+    if (changedDream) {
       setIsEditing(false);
       setIsEditingTranscript(false);
-      return;
     }
-    setEditableTitle(dream.title || '');
-    setEditableTheme(dream.theme || '');
-    setEditableDreamType(dream.dreamType || '');
-    setEditableTranscript(dream.transcript || '');
-    setIsEditing(false);
-    setIsEditingTranscript(false);
-  }, [dream]);
+  }, [dream, isEditing, isEditingTranscript]);
 
   useEffect(() => {
     const showEvent = Platform.OS === 'ios' ? 'keyboardWillShow' : 'keyboardDidShow';
