@@ -6,7 +6,7 @@ import { homedir, tmpdir } from 'node:os';
 import { delimiter, join, resolve, basename, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { digest, sourceSnapshot, compareSnapshots, verifyReport, aggregateReports, writeOnce, preserveStatus, directoryFiles, hashFiles, createAttemptOutput, verifyEvidenceFiles, verifyNativeCleanup } from './qualification.mjs';
-import { normalizeAvdName, appInputs, nativeInputs, binaryInputs, releaseMetadata, validateReleaseReceipt, verifyInstalledRelease, runWithInstallDiagnostics, validateBuildCommand } from './native-release.mjs';
+import { normalizeAvdName, appInputs, nativeInputs, binaryInputs, releaseMetadata, validateReleaseReceipt, verifyInstalledRelease, runWithInstallDiagnostics, validateBuildCommand, archiveReleaseBinary } from './native-release.mjs';
 
 const cwd = fileURLToPath(new URL('.', import.meta.url));
 const root = fileURLToPath(new URL('../../', import.meta.url));
@@ -195,7 +195,7 @@ async function buildRelease() {
   release = { schemaVersion: 1, kind: 'noctalia-native-release', product, platform, bundle,
     configuration: 'Release', buildExitCode: 0, startedAt: new Date(startedAt).toISOString(), finishedAt: new Date().toISOString(),
     buildCommand, source, nativeInputDigest: native.digest, nativeInputs: native.files, profile,
-    binary: { ...binaryInputs(path, platform), ...metadata } };
+    binary: { ...archiveReleaseBinary(path, platform, output), ...metadata } };
   writeOnce(join(output, 'release.json'), release);
   console.log('Release receipt: ' + join(output, 'release.json'));
 }

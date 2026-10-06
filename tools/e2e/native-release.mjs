@@ -1,4 +1,4 @@
-import { existsSync, readFileSync, rmSync, lstatSync, readdirSync, realpathSync } from 'node:fs';
+import { existsSync, readFileSync, rmSync, lstatSync, readdirSync, realpathSync, copyFileSync, cpSync, mkdirSync, constants } from 'node:fs';
 import { join, resolve, basename, relative, sep } from 'node:path';
 import { digest, directoryFiles, hashFiles, sourceSnapshot } from './qualification.mjs';
 
@@ -137,4 +137,16 @@ export function validateBuildCommand(command, platform) {
   if (platform === 'android' && name === 'node' && command[1]?.endsWith('/scripts/build-android-release-local.js')
     && command.includes('--reuse-native-project')) return;
   refusal('BUILD_COMMAND_NOT_CANONICAL_RELEASE');
+}
+
+export function archiveReleaseBinary(path, platform, output) {
+  const original = binaryInputs(path, platform);
+  mkdirSync(output, { recursive: true });
+  const archived = join(output, platform === 'android' ? 'release.apk' : 'Release.app');
+  if (existsSync(archived)) refusal('BINARY_ARCHIVE_EXISTS');
+  if (platform === 'android') copyFileSync(path, archived, constants.COPYFILE_EXCL);
+  else cpSync(path, archived, { recursive: true, force: false, errorOnExist: true });
+  const retained = binaryInputs(archived, platform);
+  if (retained.sha256 !== original.sha256) refusal('BINARY_ARCHIVE_BYTES');
+  return { ...retained, originPath: original.path };
 }

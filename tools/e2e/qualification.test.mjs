@@ -129,3 +129,13 @@ test('SDK cleanup must be proven before releasing a native owner lock, even for 
   assert.throws(() => verifyNativeCleanup(null, options()));
   const foreign = report(); foreign.run.environment.runtime = 'node v22.0.0'; assert.throws(() => verifyNativeCleanup(foreign, options()), /PROVENANCE/);
 });
+
+test('web public fixture setup precedes app.open, other UI before it and every native prefix are refused', () => {
+  const r = report(); r.run.targets[0] = { id: 'dreamer-web', platform: 'web', baseOrigin: 'http://127.0.0.1:8096', engine: { name: 'web', version: '0.13.0' } };
+  for (const row of r.run.results) { row.targetId = 'dreamer-web'; row.platform = 'web'; }
+  const opts = options({ target: 'dreamer-web', platform: 'web', origin: 'http://127.0.0.1:8096' });
+  r.run.results[0].attempts[0].steps.unshift({ api: 'browser.route', status: 'passed' }, { api: 'browser.setViewport', status: 'passed' });
+  assert.equal(verifyReport(r, opts).passed.length, 1);
+  r.run.results[0].attempts[0].steps.unshift({ api: 'locator.tap', status: 'passed' }); assert.throws(() => verifyReport(r, opts), /LIFECYCLE/);
+  const native = report(); native.run.results[0].attempts[0].steps.unshift({ api: 'browser.route', status: 'passed' }); assert.throws(() => verifyReport(native, options()), /LIFECYCLE/);
+});

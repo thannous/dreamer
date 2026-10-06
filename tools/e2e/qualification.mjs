@@ -132,7 +132,9 @@ export function verifyReport(document, options) {
     const attempt = result.attempts[0];
     if (attempt.status !== 'passed' || attempt.index !== 0 || attempt.cleanup !== 'complete'
       || !Array.isArray(attempt.secondaryErrors) || attempt.secondaryErrors.length
-      || !Array.isArray(attempt.steps) || attempt.steps[0]?.api !== 'app.open'
+      || !Array.isArray(attempt.steps)
+      || (options.platform !== 'web' ? attempt.steps[0]?.api !== 'app.open'
+        : !attempt.steps.some(step => step.api === 'app.open') || attempt.steps.slice(0, attempt.steps.findIndex(step => step.api === 'app.open')).some(step => !['browser.route', 'browser.setViewport'].includes(step.api)))
       || attempt.steps.some(step => step.status === 'failed' || step.status === 'interrupted')
       || !Array.isArray(attempt.artifacts)) fail('LIFECYCLE_INCOMPLETE');
     if (options.video && !attempt.artifacts.some(a => a.kind === 'video')) fail('MEDIA_VIDEO_MISSING');

@@ -142,7 +142,10 @@ Set `JAVA_HOME` to the installed Java 17 runtime as required by the existing loc
 Android build guide. Resolve `BUILD_RUN` to the exact newly printed receipt;
 there is no latest-run fallback. The receipt contains build command/exit, source
 and native-input hashes, actual version/bundle, APK SHA or complete `.app` hashes,
-profile flags, OTA identity and signing state. Local package and CocoaPods links
+profile flags, OTA identity and signing state. The identified APK or `.app` is copied into that immutable
+build output and its hash rechecked before the receipt is written, so rebuilding
+the native cache does not invalidate an earlier rerun. Partial copies never
+produce a successful receipt. Local package and CocoaPods links
 are hashed with their in-checkout destinations; foreign links/cycles are refused.
 New source inputs require a new build. Unchanged app/native input digests permit
 reuse after a test-only commit; build-source and test-source revisions stay distinct.
@@ -212,9 +215,11 @@ path→SHA inputs without raw diffs. `installed-start.json` / `installed-end.jso
 identify the installed binary. `files.json` hashes output files written before the
 final `end.json`; these two manifest files are deliberately outside that file set.
 
-SDK exit0 alone is insufficient. A qualified run needs the exact fresh report,
+Browser fixtures may perform only their existing public `browser.route` and
+`browser.setViewport` setup before the first `app.open()`. UI actions before that
+open are refused; native ordering stays strict. SDK exit0 alone is insufficient. A qualified run needs the exact fresh report,
 runner/engine/target/agent/source/origin, unchanged inputs, zero model use, every
-selected runnable pair passed once, `app.open()` first, complete cleanup, no
+selected runnable pair passed once, native `app.open()` first, complete cleanup, no
 secondary errors, and intact declared/requested artifacts. A body requesting no
 media and declaring none may produce a report only. Requested missing video/trace
 is refused. Source/output/install/lock failures are independent final checks;

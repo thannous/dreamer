@@ -1,9 +1,9 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { mkdtempSync, mkdirSync, writeFileSync, symlinkSync, rmSync } from 'node:fs';
+import { mkdtempSync, mkdirSync, writeFileSync, readFileSync, symlinkSync, rmSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
-import { validateReleaseReceipt, runWithInstallDiagnostics, normalizeAvdName, validateBuildCommand, nativeInputs } from './native-release.mjs';
+import { validateReleaseReceipt, runWithInstallDiagnostics, normalizeAvdName, validateBuildCommand, nativeInputs, archiveReleaseBinary } from './native-release.mjs';
 const sha = 'a'.repeat(64);
 const receipt = () => ({ schemaVersion: 1, kind: 'noctalia-native-release', product: 'dreamer', platform: 'android',
   bundle: 'com.tanuki75.noctalia', configuration: 'Release', buildExitCode: 0, source: { revision: 'a'.repeat(40), inputDigest: sha },
@@ -74,4 +74,17 @@ test('read receipts obey the same bounded/profile rules as their canonical build
     r => { r.startedAt = '2100-01-01T00:00:00Z'; }, r => { r.finishedAt = 'invalid'; }]) {
     const r = receipt(); mutate(r); assert.throws(() => validateReleaseReceipt(r, expected));
   }
+});
+
+test('archived Release bytes survive a later cache rebuild, partial or existing copies never qualify', () => {
+  const root = mkdtempSync(join(tmpdir(), 'noctalia-binary-archive-'));
+  try {
+    const original = join(root, 'app-release.apk'), output = join(root, 'output'); mkdirSync(output); writeFileSync(original, 'public release APK');
+    const copy = archiveReleaseBinary(original, 'android', output); writeFileSync(original, 'different rebuild');
+    assert.equal(readFileSync(copy.path, 'utf8'), 'public release APK');
+    assert.equal(archiveReleaseBinary(original, 'android', join(root, 'second')).sha256.length, 64);
+    assert.notEqual(archiveReleaseBinary(original, 'android', join(root, 'third')).sha256, copy.sha256);
+    assert.throws(() => archiveReleaseBinary(original, 'android', output), /ARCHIVE|EEXIST/);
+    symlinkSync(original, join(root, 'foreign.apk')); assert.throws(() => archiveReleaseBinary(join(root, 'foreign.apk'), 'android', join(root, 'refused')), /SYMLINK/);
+  } finally { rmSync(root, { recursive: true, force: true }); }
 });
