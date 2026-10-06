@@ -64,8 +64,17 @@ for (const editor of ['metadata', 'transcript'] as const) {
     await expect(card).toHaveCount(1); await card.tap();
     if (editor === 'metadata') await expect(screen.getByText(draft, { visible: true })).toBeVisible();
     else {
-      const transcript = screen.getByText(draft, { visible: true });
-      await screen.scrollUntilVisible(transcript); await expect(transcript).toHaveText(draft);
+      if (platform === 'ios') {
+        // The native Markdown renderer exposes two sibling AX labels for the
+        // same story. Both must be exact, inside this single active detail.
+        const detail = screen.getByTestId('screen.dreamDetail', { visible: true });
+        await expect(detail).toHaveCount(1);
+        await expect(screen.getByTestId('component.transcriptCard', { visible: true })).toHaveCount(1);
+        await expect(detail.getByText(draft, { visible: true })).toHaveText([draft, draft]);
+      } else {
+        const transcript = screen.getByText(draft, { visible: true });
+        await screen.scrollUntilVisible(transcript); await expect(transcript).toHaveText(draft);
+      }
     }
     await screen.scrollUntilVisible(button); await button.tap();
     await input.fill('E2E abandoned local draft');
