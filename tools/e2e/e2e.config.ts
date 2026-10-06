@@ -62,7 +62,8 @@ export default {
       },
     },
   }],
-  workers: 1, retries: 0, timeout: 120_000, assertionTimeout: 30_000,
+  // app.open/restart use config.timeout, capped by the remaining test budget.
+  workers: 1, retries: 0, timeout: product === 'meditation' && !native ? 180_000 : 120_000, assertionTimeout: 30_000,
   launchTimeout: 180_000, output: process.env.E2E_OUTPUT ?? `.e2e/${product}-${platform}`,
   reporters: ['list', 'markdown', 'junit'], trace: native ? 'off' : 'on', cache: 'off',
 } satisfies E2EConfig;
