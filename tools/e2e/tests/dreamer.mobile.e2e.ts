@@ -65,12 +65,12 @@ for (const editor of ['metadata', 'transcript'] as const) {
     if (editor === 'metadata') await expect(screen.getByText(draft, { visible: true })).toBeVisible();
     else {
       if (platform === 'ios') {
-        // The native Markdown renderer exposes two sibling AX labels for the
-        // same story. Both must be exact, inside this single active detail.
+        // Scope the exact story to the single active detail, excluding AX echoes
+        // outside that scene. The scoped result must contain exactly one text.
         const detail = screen.getByTestId('screen.dreamDetail', { visible: true });
         await expect(detail).toHaveCount(1);
         await expect(screen.getByTestId('component.transcriptCard', { visible: true })).toHaveCount(1);
-        await expect(detail.getByText(draft, { visible: true })).toHaveText([draft, draft]);
+        await expect(detail.getByText(draft, { visible: true })).toHaveText([draft]);
       } else {
         const transcript = screen.getByText(draft, { visible: true });
         await screen.scrollUntilVisible(transcript); await expect(transcript).toHaveText(draft);
@@ -262,7 +262,12 @@ test('Dreamer release drawer Plus opens its offer and closes back to Capture', a
   await screen.getByTestId('btn.onboarding.intro.next').tap();
   await screen.getByTestId('btn.onboarding.skip').tap();
   await screen.getByRole('button', /^(Settings|Paramètres)$/, { visible: true }).first().tap();
-  await screen.getByTestId('quick-settings.plus', { visible: true }).tap();
+  const plus = screen.getByTestId('quick-settings.plus', { visible: true });
+  if (platform === 'android') {
+    await screen.scrollUntilVisible(plus);
+    await expect(plus).toBeEnabled();
+  }
+  await plus.tap();
   // The production emulator has no Store account; offering fetch errors surface a modal.
   const unavailable = screen.getByTestId('bottomSheet.paywall.error', { visible: true });
   if (platform === 'android' && process.env.E2E_NATIVE_MOCK_MODE !== 'true') {
