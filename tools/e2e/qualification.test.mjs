@@ -139,3 +139,12 @@ test('web public fixture setup precedes app.open, other UI before it and every n
   r.run.results[0].attempts[0].steps.unshift({ api: 'locator.tap', status: 'passed' }); assert.throws(() => verifyReport(r, opts), /LIFECYCLE/);
   const native = report(); native.run.results[0].attempts[0].steps.unshift({ api: 'browser.route', status: 'passed' }); assert.throws(() => verifyReport(native, options()), /LIFECYCLE/);
 });
+
+
+test('globally passed SDK report refuses every non-passed executed step', () => {
+  for (const status of ['blocked', 'timed-out', 'cancelled', 'failed', 'interrupted']) {
+    const r = report(); r.run.results[0].attempts[0].steps.push({ api: 'expect.toBeVisible', status });
+    assert.throws(() => verifyReport(r, options()), /LIFECYCLE/);
+  }
+  assert.equal(verifyReport(report(), options()).passed.length, 1);
+});

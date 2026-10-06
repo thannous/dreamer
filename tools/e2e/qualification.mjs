@@ -135,7 +135,7 @@ export function verifyReport(document, options) {
       || !Array.isArray(attempt.steps)
       || (options.platform !== 'web' ? attempt.steps[0]?.api !== 'app.open'
         : !attempt.steps.some(step => step.api === 'app.open') || attempt.steps.slice(0, attempt.steps.findIndex(step => step.api === 'app.open')).some(step => !['browser.route', 'browser.setViewport'].includes(step.api)))
-      || attempt.steps.some(step => step.status === 'failed' || step.status === 'interrupted')
+      || attempt.steps.some(step => step.status !== 'passed')
       || !Array.isArray(attempt.artifacts)) fail('LIFECYCLE_INCOMPLETE');
     if (options.video && !attempt.artifacts.some(a => a.kind === 'video')) fail('MEDIA_VIDEO_MISSING');
     if (options.trace && !attempt.artifacts.some(a => a.kind === 'trace')) fail('MEDIA_TRACE_MISSING');
