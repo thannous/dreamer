@@ -96,3 +96,45 @@ test('the onboarding story bridges capture to understanding and exploration', {
   await expect(screen.getByTestId('component.onboarding.intro')).toBeVisible();
   await app.screenshot('onboarding-story-complete');
 });
+
+test('Quick Settings keeps interior taps open and accepts every sign-in button edge', async ({ app, screen, browser }) => {
+  await isolateWeb(browser, app);
+  await app.open();
+  await screen.getByTestId('btn.onboarding.intro.next').tap();
+  await screen.getByTestId('btn.onboarding.skip').tap();
+  const settings = screen.getByRole('button', 'Settings', { visible: true });
+  const drawer = screen.getByTestId('quick-settings.drawer', { visible: true });
+  const signIn = screen.getByTestId('quick-settings.signin', { visible: true });
+  await settings.tap();
+  await expect(signIn).toBeEnabled();
+  const viewportWidth = await browser.evaluate(() => window.innerWidth);
+  await expect.poll(async () => {
+    const bounds = (await drawer.boundingBox())!;
+    return Math.round(bounds.x + bounds.width);
+  }).toBe(viewportWidth);
+  const panel = (await drawer.boundingBox())!;
+  const initialButton = (await signIn.boundingBox())!;
+  expect(initialButton.height).toBeGreaterThanOrEqual(56);
+  // Tap the drawer margin, away from every button's expanded hit target.
+  await screen.tapAt({ x: panel.x + 4, y: initialButton.y + initialButton.height / 2 });
+  await expect(drawer).toBeVisible();
+  await expect(signIn).toBeEnabled();
+  await app.screenshot('quick-settings-interior-tap');
+  // The exposed strip remains an explicit dismissal target.
+  await screen.tapAt({ x: panel.x / 2, y: initialButton.y });
+  await expect(screen.getByRole('radio')).toHaveCount(0);
+  for (const edge of ['left', 'right', 'bottom']) {
+    await settings.tap();
+    await expect(signIn).toBeEnabled();
+    const bounds = (await signIn.boundingBox())!;
+    const point = edge === 'left' ? { x: bounds.x + 2, y: bounds.y + bounds.height / 2 }
+      : edge === 'right' ? { x: bounds.x + bounds.width - 2, y: bounds.y + bounds.height / 2 }
+        : { x: bounds.x + bounds.width / 2, y: bounds.y + bounds.height - 2 };
+    await signIn.tap({ position: { x: point.x - bounds.x, y: point.y - bounds.y } });
+    await expect(screen.getByTestId('screen.account', { visible: true })).toBeVisible();
+    await expect(screen.getByTestId('btn.auth.signIn', { visible: true })).toBeVisible();
+    await app.screenshot(`quick-settings-signin-${edge}`);
+    await app.back();
+    await expect(screen.getByTestId('screen.recording', { visible: true })).toBeVisible();
+  }
+});

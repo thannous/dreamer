@@ -406,3 +406,44 @@ Optional rerun after installing the existing TesterArmy package/browser:
 `EXPO_PUBLIC_ONBOARDING_FEATURE_SHEETS_ENABLED=true mise exec -- npm run test:testerarmy -- --grep 'onboarding story bridges'`.
 The guarded runner preserves revision, dirty-tree digest, command, report and
 screenshots under `tools/e2e/.e2e/dreamer-web/`; no model is required.
+
+
+### TesterArmy verification and regression coverage — 2026-10-06
+
+The user authorized testing, committing and merging to the default branch.
+GitHub's default branch is master, and the earlier implementation cd81420e is
+already its ancestor. The clean app sources tested here are master 5e877ffb.
+The current change adds exact TesterArmy coverage for the reported touch-target
+journey; application code remains unchanged.
+
+- Opt-in stories and existing journeys: 3/3 passed (run 1791267361938-7339).
+  Assertions cover empty-save protection, draft preservation, language/theme
+  changes and persistence, and capture-to-understanding-to-exploration continuity.
+- The new regression journey: 1/1 passed (run 1791267611583-8951). It taps empty
+  interior drawer space, closes through the outside strip, then presses the left,
+  right and bottom sign-in button edges. Every edge opens the account/sign-in
+  form and returns to Capture. Minimum target height is checked at 56 CSS pixels.
+- A failed intermediate run 1791267514454-7829 is preserved. Its count assertion
+  included a retained hidden close button even though the screenshot and
+  accessibility tree showed the drawer closed. The final assertion uses the
+  removal of the drawer's radio controls from the accessible tree and the
+  subsequent successful reopening. No application change masked that failure.
+- App TypeScript, TesterArmy TypeScript and focused lint passed. These are real
+  Chromium journeys with mocked services and blocked external requests; no model
+  calls, account creation, credential entry or purchase occurs.
+
+Exact reruns from the repository root after package/browser setup:
+`EXPO_PUBLIC_ONBOARDING_FEATURE_SHEETS_ENABLED=true mise exec -- npm run test:testerarmy`
+and the focused regression:
+`EXPO_PUBLIC_ONBOARDING_FEATURE_SHEETS_ENABLED=true mise exec -- npm run test:testerarmy -- run --grep 'Quick Settings keeps interior'`.
+The earlier filtered rerun in this record must also include the explicit `run`
+subcommand before `--grep`.
+
+Reports, JUnit, screenshots, traces, source identities and diff digests are
+preserved locally under `.tmp/onboarding-features/validation-2026-10-06/`;
+the runner originals are under `tools/e2e/.e2e/dreamer-web/`. The final source
+hashes and delivery revision are recorded in its `verification.json`.
+
+The opt-in feature flag still defaults to false. This web evidence does not
+qualify iOS/Android native hit testing or Release motion quality. No native build,
+prebuild, installation or physical-phone test was performed in this turn.
