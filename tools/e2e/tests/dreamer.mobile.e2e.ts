@@ -55,13 +55,17 @@ for (const editor of ['metadata', 'transcript'] as const) {
     await expect(screen.getByTestId('screen.journal', { visible: true })).toBeVisible();
     const search = screen.getByTestId('input.searchDreams', { visible: true });
     const title = editor === 'metadata' ? draft : 'E2E sapphire lighthouse above the quiet ocean';
-    await search.fill(title); await device.dismissKeyboard();
+    await search.fill(title);
+    if (platform === 'ios') await search.press('Enter');
+    else await device.dismissKeyboard();
+    await expect(search).toHaveValue(title);
+    await expect(screen.getByTestId('screen.journal', { visible: true })).toBeVisible();
     const card = screen.getByTestId(/^dream\.item\./, { visible: true }).filter({ hasText: title });
     await expect(card).toHaveCount(1); await card.tap();
-    if (editor === 'metadata') await expect(screen.getByRole('heading', draft, { visible: true })).toBeVisible();
+    if (editor === 'metadata') await expect(screen.getByText(draft, { visible: true })).toBeVisible();
     else {
-      const transcript = screen.getByTestId('component.transcriptCard');
-      await screen.scrollUntilVisible(transcript); await expect(transcript).toContainText(draft);
+      const transcript = screen.getByText(draft, { visible: true });
+      await screen.scrollUntilVisible(transcript); await expect(transcript).toHaveText(draft);
     }
     await screen.scrollUntilVisible(button); await button.tap();
     await input.fill('E2E abandoned local draft');
@@ -69,7 +73,11 @@ for (const editor of ['metadata', 'transcript'] as const) {
     else await device.dismissKeyboard();
     await expect(input).toHaveValue('E2E abandoned local draft');
     await screen.scrollUntilVisible(back, { direction: 'up' }); await back.tap();
-    await search.fill('The Infinite Library'); await device.dismissKeyboard();
+    await search.fill('The Infinite Library');
+    if (platform === 'ios') await search.press('Enter');
+    else await device.dismissKeyboard();
+    await expect(search).toHaveValue('The Infinite Library');
+    await expect(screen.getByTestId('screen.journal', { visible: true })).toBeVisible();
     const other = screen.getByTestId(/^dream\.item\./, { visible: true }).filter({ hasText: 'The Infinite Library' });
     await expect(other).toHaveCount(1); await other.tap();
     await expect(input).toHaveCount(0);

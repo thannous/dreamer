@@ -1726,6 +1726,11 @@ const JournalDetailContent = memo(function JournalDetailContent({ dream }: { dre
           <Text allowFontScaling={false} style={metadataTextStyle} className={`font-sans-medium text-[13px] ${isEditingTranscript ? 'text-on-champagne' : 'text-champagne-on'}`}>{t(isEditingTranscript ? 'journal.detail.save_edit' : 'journal.detail.edit_story')}</Text>
         </PressableScale>
       </View>
+      {isEditingTranscript && hasUncategorizedDraft && initialCategorizationPending ? (
+        <Text testID="text.dreamMetadata.pending" accessibilityLiveRegion="polite" className="mb-4 font-sans text-[13px] text-ivory-muted">
+          {t('journal.detail.metadata.loading')}
+        </Text>
+      ) : null}
       {isEditingTranscript ? (
         <TextInput
           testID={TID.Input.DreamTranscript}
@@ -1801,7 +1806,7 @@ const JournalDetailContent = memo(function JournalDetailContent({ dream }: { dre
           <Text key={`dream-date-${windowSize.fontScale}`} allowFontScaling={false} style={{ fontSize: 12 * compactTextScale, lineHeight: 20 * compactTextScale }} className="mb-5 font-sans text-[12px] leading-5 text-ivory-muted">
             {formatDreamDate(dream.id)} · {formatDreamTime(dream.id)}
           </Text>
-          {hasUncategorizedDraft && initialCategorizationPending ? (
+          {!isEditingTranscript && hasUncategorizedDraft && initialCategorizationPending ? (
             <Text testID="text.dreamMetadata.pending" accessibilityLiveRegion="polite" className="mb-4 font-sans text-[13px] text-ivory-muted">
               {t('journal.detail.metadata.loading')}
             </Text>
