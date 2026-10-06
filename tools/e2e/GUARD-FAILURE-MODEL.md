@@ -32,3 +32,8 @@ this wrapper's own lock after the SDK process exits even if cleanup is unproven;
 retain diagnostics and the nonqualifying verdict, never touch a foreign lock or
 kill an unknown recorder. Failed build-receipt/profile/device prerequisites remain
 refusals. The installation diagnostics control precedes this policy change.
+
+- Observed Release crash: a Dreamer manifest loaded the statically inlined Lucid marker.
+  The real Metro config must separate relevant variant/router/mock/story inputs, retain
+  identical-input cache reuse and ignore environment order/unrelated diagnostics.
+  The existing installed Metro and application Release journey provide verification.

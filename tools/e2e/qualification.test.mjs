@@ -4,6 +4,8 @@ import { mkdtempSync, writeFileSync, mkdirSync, rmSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { createHash } from 'node:crypto';
+import { spawnSync } from 'node:child_process';
+import { fileURLToPath } from 'node:url';
 import { verifyReport, preserveStatus, compareSnapshots, aggregateReports, writeOnce, createAttemptOutput, verifyEvidenceFiles, verifyNativeCleanup } from './qualification.mjs';
 
 const sha = value => createHash('sha256').update(value).digest('hex');
@@ -15,9 +17,9 @@ function report() {
     exitCode: 0, status: 'passed', errors: [], targets: [{ id: 'dreamer-android', platform: 'android', engine: { name: 'mobile', version: '0.10.0' } }],
     summary: { discovered: 2, selected: 1, executed: 1, passed: 1, skipped: 0, failed: 0, interrupted: 0, flaky: 0 },
     environment: { runtime: `node ${process.version}` }, usage: { modelTokens: 0, maxModelCallsInStep: 0 },
-    results: [{ testId: 'public-fixture', agent: 'default', targetId: 'dreamer-android', platform: 'android', agent: 'default', selected: true, repeat: 0, status: 'passed', attempts: [
+    results: [{ testId: 'public-fixture', targetId: 'dreamer-android', platform: 'android', agent: 'default', selected: true, repeat: 0, status: 'passed', attempts: [
       { index: 0, status: 'passed', cleanup: 'complete', secondaryErrors: [], steps: [{ api: 'app.open', status: 'passed' }], artifacts: [] },
-    ] }, { testId: 'excluded-fixture', agent: 'default', targetId: 'dreamer-android', platform: 'android', agent: 'default', selected: false, repeat: 0, status: 'skipped', attempts: [] }],
+    ] }, { testId: 'excluded-fixture', targetId: 'dreamer-android', platform: 'android', agent: 'default', selected: false, repeat: 0, status: 'skipped', attempts: [] }],
   } };
 }
 function options(extra = {}) { return { target: 'dreamer-android', platform: 'android', revision: before.revision, startedAt: Date.now() - 2000, output: tmpdir(), ...extra }; }
@@ -79,8 +81,8 @@ test('persistent source/test input mutation fails, declared output changes do no
 test('union uses target plus test ID and context, separates skip/exclusion and refuses uncovered required IDs', () => {
   const one = verifyReport(report(), options());
   const two = structuredClone(one); two.target = 'dreamer-ios'; two.passed = one.passed.map(p => ({ ...p, targetId: 'dreamer-ios' }));
-  assert.equal(aggregateReports([one, two], [{ testId: 'public-fixture', agent: 'default', targetId: 'dreamer-android' }, { testId: 'public-fixture', agent: 'default', targetId: 'dreamer-ios' }]).passed.length, 2);
-  assert.throws(() => aggregateReports([one], [{ testId: 'excluded-fixture', agent: 'default', targetId: 'dreamer-android' }]), /UNCOVERED/);
+  assert.equal(aggregateReports([one, two], [{ testId: 'public-fixture', targetId: 'dreamer-android' }, { testId: 'public-fixture', targetId: 'dreamer-ios' }]).passed.length, 2);
+  assert.throws(() => aggregateReports([one], [{ testId: 'excluded-fixture', targetId: 'dreamer-android' }]), /UNCOVERED/);
 });
 test('immutable receipts refuse an already used output', () => {
   const dir = mkdtempSync(join(tmpdir(), 'noctalia-output-'));
@@ -122,7 +124,7 @@ test('campaign refuses modified or undeclared retained evidence files', () => {
   } finally { rmSync(dir, { recursive: true, force: true }); }
 });
 
-test('SDK cleanup must be proven before releasing a native owner lock, even for a red body', () => {
+test('SDK cleanup proof remains a qualification diagnostic even for a red body', () => {
   const r = report(); r.run.status = 'failed'; r.run.exitCode = 1; r.run.results[0].status = 'failed'; r.run.results[0].attempts[0].status = 'failed';
   assert.equal(verifyNativeCleanup(r, options()), true);
   r.run.results[0].attempts[0].cleanup = 'failed'; assert.throws(() => verifyNativeCleanup(r, options()), /CLEANUP/);
@@ -147,4 +149,28 @@ test('globally passed SDK report refuses every non-passed executed step', () => 
     assert.throws(() => verifyReport(r, options()), /LIFECYCLE/);
   }
   assert.equal(verifyReport(report(), options()).passed.length, 1);
+});
+
+const metroRoot = fileURLToPath(new URL('../../', import.meta.url));
+function seed(entries) {
+  const env = Object.fromEntries(Object.entries(process.env).filter(([key]) => !key.startsWith('EXPO_PUBLIC_')
+    && !['NOCTALIA_APP_VARIANT', 'NOCTALIA_DREAMER_QA_BUILD', 'EXPO_ROUTER_APP_ROOT', 'EXPO_ROUTER_IMPORT_MODE'].includes(key)));
+  const result = spawnSync(process.execPath, ['-e', "process.stdout.write(JSON.stringify(require('./metro.config.js').cacheVersion))"],
+    { cwd: metroRoot, env: { ...env, ...Object.fromEntries(entries) }, encoding: 'utf8' });
+  assert.equal(result.status, 0, 'real Metro configuration must load');
+  return JSON.parse(result.stdout);
+}
+const profile = [['NOCTALIA_APP_VARIANT', 'noctalia'], ['EXPO_PUBLIC_APP_VARIANT', 'noctalia'],
+  ['EXPO_PUBLIC_MOCK_MODE', 'true'], ['EXPO_PUBLIC_ONBOARDING_FEATURE_SHEETS_ENABLED', 'true']];
+test('real Metro cache isolates compiled profiles while retaining identical input reuse', () => {
+  const dreamer = seed(profile);
+  assert.equal(seed(profile), dreamer);
+  assert.equal(seed([...profile].reverse()), dreamer);
+  assert.equal(seed([...profile, ['UNRELATED_DIAGNOSTIC', 'public fixture']]), dreamer);
+  for (const changed of [
+    [['NOCTALIA_APP_VARIANT', 'lucid'], ['EXPO_PUBLIC_APP_VARIANT', 'lucid']],
+    [['EXPO_PUBLIC_MOCK_MODE', 'false']], [['EXPO_PUBLIC_ONBOARDING_FEATURE_SHEETS_ENABLED', 'false']],
+    [['EXPO_ROUTER_APP_ROOT', './routes/lucid']], [['EXPO_ROUTER_IMPORT_MODE', 'lazy']],
+    [['NOCTALIA_DREAMER_QA_BUILD', '1']],
+  ]) assert.notEqual(seed([...profile, ...changed]), dreamer, 'a changed compiled profile cannot reuse the other profile namespace');
 });

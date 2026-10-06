@@ -147,6 +147,13 @@ build output and its hash rechecked before the receipt is written, so rebuilding
 the native cache does not invalidate an earlier rerun. Partial copies never
 produce a successful receipt. Local package and CocoaPods links
 are hashed with their in-checkout destinations; foreign links/cycles are refused.
+Metro's public `cacheVersion` retains its upstream seed and includes a hash of
+all `EXPO_PUBLIC_*` inputs plus the native/router profile selectors. Release
+exports in CI can disable automatic cache resets; profiles must have separate
+transform keys even when their source files are identical. Inputs are sorted
+without locale rules, and values are never printed. See the official
+[Metro configuration](https://metrobundler.dev/docs/configuration/#cacheversion).
+
 New source inputs require a new build. Unchanged app/native input digests permit
 reuse after a test-only commit; build-source and test-source revisions stay distinct.
 
