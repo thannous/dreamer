@@ -2478,6 +2478,7 @@ const JournalDetailContent = memo(function JournalDetailContent({ dream }: { dre
         behavior={keyboardBehavior}
         keyboardVerticalOffset={keyboardVerticalOffset}
       >
+        <View className="flex-1">
         <ScrollView
           ref={scrollViewRef}
           className="flex-1"
@@ -2691,6 +2692,17 @@ const JournalDetailContent = memo(function JournalDetailContent({ dream }: { dre
                 )}
               </View>
             ) : null}
+            {Platform.OS === 'ios' && isKeyboardVisible ? (
+              <Pressable
+                onPress={Keyboard.dismiss}
+                testID="btn.journal.dismissKeyboard"
+                accessibilityRole="button"
+                accessibilityLabel={t('common.done')}
+                className="min-h-11 items-end justify-center self-end px-3"
+              >
+                <Text className="font-sans-medium text-[15px] text-champagne-on">{t('common.done')}</Text>
+              </Pressable>
+            ) : null}
             <View style={{ marginBottom: floatingTranscriptBottom }}>
               {renderMetadataCard('floating')}
             </View>
@@ -2701,6 +2713,17 @@ const JournalDetailContent = memo(function JournalDetailContent({ dream }: { dre
             pointerEvents="auto"
             className="absolute inset-0 justify-end bg-ink-overlay px-4 pt-6"
           >
+            {Platform.OS === 'ios' && isKeyboardVisible ? (
+              <Pressable
+                onPress={Keyboard.dismiss}
+                testID="btn.journal.dismissKeyboard"
+                accessibilityRole="button"
+                accessibilityLabel={t('common.done')}
+                className="min-h-11 items-end justify-center self-end px-3"
+              >
+                <Text className="font-sans-medium text-[15px] text-champagne-on">{t('common.done')}</Text>
+              </Pressable>
+            ) : null}
             <View
               className="mt-6 mb-7 rounded-lg border border-line bg-ink-raised px-4 pt-6 pb-4"
               style={[shadows.xl, { marginBottom: floatingTranscriptBottom }]}
@@ -2900,6 +2923,7 @@ const JournalDetailContent = memo(function JournalDetailContent({ dream }: { dre
             />
           </View>
         )}
+        </View>
       </KeyboardAvoidingView>
     </View>
   );

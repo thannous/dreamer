@@ -7,7 +7,7 @@ for (const editor of ['metadata', 'transcript'] as const) {
     tags: ['journal-concurrency'],
     skip: process.env.E2E_NATIVE_MOCK_MODE !== 'true' || Number(process.env.E2E_NATIVE_MOCK_CATEGORIZATION_MS) < 20000
       ? 'Requires an identified persistent mock Release with the bounded categorization QA opt-in.' : false,
-  }, async ({ app, screen, device }) => {
+  }, async ({ app, screen, device, platform }) => {
     await app.open();
     await app.clearState();
     await screen.getByTestId('btn.onboarding.intro.next', { visible: true }).tap();
@@ -29,21 +29,22 @@ for (const editor of ['metadata', 'transcript'] as const) {
     // The real loading indicator witnesses that the response is still pending.
     // No device clock/evaluation API, fixed sleep or injected UI control is used.
     const pending = screen.getByTestId('text.dreamMetadata.pending');
-    await screen.scrollUntilVisible(pending);
+    await expect(pending).toBeVisible();
     await expect(pending).toHaveCount(1);
     const button = screen.getByTestId(editor === 'metadata' ? 'btn.editMetadata' : 'btn.editTranscript', { visible: true });
     await screen.scrollUntilVisible(button); await button.tap();
     const input = screen.getByTestId(editor === 'metadata' ? 'input.dreamTitle' : 'input.dreamTranscript');
-    const draft = editor === 'metadata' ? 'E2E personal lighthouse title' : 'E2E revised story: the lighthouse has a blue door.';
+    const draft = editor === 'metadata' ? 'E2E personal lighthouse title' : 'E2E revised story: the lighthouse has a blue door. I climb three quiet staircases, count the windows, and see a yellow boat passing the harbour. The lamp turns slowly above me while I write down every detail before waking.';
     await input.fill(draft);
-    await device.dismissKeyboard();
+    await expect(input).toBeVisible();
+    await app.screenshot(`release-${editor}-keyboard-focus`);
+    if (platform === 'ios') await screen.getByTestId('btn.journal.dismissKeyboard', { visible: true }).tap();
+    else await device.dismissKeyboard();
     await expect(input).toHaveValue(draft);
-    await screen.scrollUntilVisible(pending, { direction: 'up' });
     await expect(pending).toBeVisible();
     // Absence from the complete tree, not just offscreen, witnesses the real
     // categorization update while this same editor remains open.
     await expect(pending).toHaveCount(0);
-    await screen.scrollUntilVisible(input);
     await expect(input).toBeVisible();
     await expect(input).toHaveValue(draft);
     await app.screenshot(`release-${editor}-draft-after-categorization`);
@@ -63,7 +64,9 @@ for (const editor of ['metadata', 'transcript'] as const) {
       await screen.scrollUntilVisible(transcript); await expect(transcript).toContainText(draft);
     }
     await screen.scrollUntilVisible(button); await button.tap();
-    await input.fill('E2E abandoned local draft'); await device.dismissKeyboard();
+    await input.fill('E2E abandoned local draft');
+    if (platform === 'ios') await screen.getByTestId('btn.journal.dismissKeyboard', { visible: true }).tap();
+    else await device.dismissKeyboard();
     await expect(input).toHaveValue('E2E abandoned local draft');
     await screen.scrollUntilVisible(back, { direction: 'up' }); await back.tap();
     await search.fill('The Infinite Library'); await device.dismissKeyboard();
