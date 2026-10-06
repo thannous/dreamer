@@ -235,7 +235,7 @@ export async function saveNotificationSettings(settings: NotificationSettings): 
 export async function getThemePreference(): Promise<ThemePreference> {
   console.log('[MOCK STORAGE] getThemePreference called');
   try {
-    const savedPreference = mockStorage['gemini_dream_journal_theme_preference'];
+    const savedPreference = await getMockItem('gemini_dream_journal_theme_preference');
     if (savedPreference) {
       const preference = JSON.parse(savedPreference) as ThemePreference;
       console.log('[MOCK STORAGE] Returning saved theme preference:', preference);
@@ -254,7 +254,7 @@ export async function getThemePreference(): Promise<ThemePreference> {
 export async function saveThemePreference(preference: ThemePreference): Promise<void> {
   console.log('[MOCK STORAGE] saveThemePreference called:', preference);
   try {
-    mockStorage['gemini_dream_journal_theme_preference'] = JSON.stringify(preference);
+    await setMockItem('gemini_dream_journal_theme_preference', JSON.stringify(preference));
     console.log('[MOCK STORAGE] Theme preference saved');
   } catch (error) {
     console.error('[MOCK STORAGE] Failed to save theme preference:', error);
