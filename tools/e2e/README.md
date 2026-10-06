@@ -29,6 +29,11 @@ still apply.
 Meditation probes Metro's `/status` endpoint during startup so repeated short
 health requests do not restart static route compilation on a cold Linux runner.
 Its test still opens the app and checks onboarding, persisted state and every tab.
+Meditation web has a 180-second test and lifecycle budget: the public `app.open()`
+and `app.restart()` methods use `config.timeout`, capped by the remaining test
+budget. A per-test timeout alone does not raise that lifecycle limit. Other
+products and native targets keep 120 seconds; action/assertion limits and retries
+remain unchanged.
 For the opt-in onboarding story, use
 `EXPO_PUBLIC_ONBOARDING_FEATURE_SHEETS_ENABLED=true mise exec -- node tools/e2e/run.mjs dreamer web run --trace`.
 The config forwards this opt-in to the app command; without it, the story test
