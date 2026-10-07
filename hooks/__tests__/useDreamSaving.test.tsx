@@ -27,6 +27,8 @@ let mockCanAnalyzeNow = true;
 let mockTier = 'free';
 
 // Mock all dependencies
+jest.mock('@/lib/aiConsent', () => ({ requestAiConsent: jest.fn(async () => true) }));
+
 jest.mock('react-native', () => ({
   Alert: {
     alert: jest.fn(),

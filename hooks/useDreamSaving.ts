@@ -7,6 +7,7 @@ import { useAuth } from '@/context/AuthContext';
 import { useDreamsData, useDreamsActions } from '@/context/DreamsContext';
 import { useQuota } from '@/hooks/useQuota';
 import { useTranslation } from '@/hooks/useTranslation';
+import { requestAiConsent } from '@/lib/aiConsent';
 import { buildDraftDream as buildDraftDreamPure } from '@/lib/dreamUtils';
 import { classifyError, GuestDreamLimitError, QuotaError, QuotaErrorCode } from '@/lib/errors';
 import type { DreamAnalysis } from '@/lib/types';
@@ -114,6 +115,9 @@ export function useDreamSaving(options: UseDreamSavingOptions = {}) {
         );
         return null;
       }
+
+      // The dream text goes to the third-party AI provider: ask once, explicitly.
+      if (!(await requestAiConsent(t))) return null;
 
       setIsPersisting(true);
       try {

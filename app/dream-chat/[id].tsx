@@ -17,6 +17,7 @@ import { useTheme } from '@/context/ThemeContext';
 import { useChatSendLock } from '@/hooks/useChatSendLock';
 import { useQuota } from '@/hooks/useQuota';
 import { useTranslation } from '@/hooks/useTranslation';
+import { requestAiConsent } from '@/lib/aiConsent';
 import { buildDisplayMessages } from '@/lib/chat/streamingDisplay';
 import { getDeviceFingerprint } from '@/lib/deviceFingerprint';
 import { QUOTAS } from '@/constants/limits';
@@ -486,6 +487,7 @@ function DreamChatContent() {
     ) => {
       const textToSend = messageText;
       if (!textToSend || !dream) return;
+      if (!(await requestAiConsent(t))) return;
       const resolvedDisplayText = displayText ?? textToSend;
       const messageMeta = resolveChatMessageMeta({
         category: options?.category,
