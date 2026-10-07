@@ -219,12 +219,13 @@ test.describe('feature sheet previews', () => {
   });
 
 
-  test('the three motion stories play once in order and hand over to their interactive examples', async ({ page }, testInfo) => {
+  test('the three motion stories advance manually in order to their interactive examples', async ({ page }, testInfo) => {
     for (const feature of ['capture', 'connect', 'explore']) {
       await page.getByTestId(`btn.onboarding.feature.${feature}`).click();
       for (const step of [0, 1, 2, 3]) {
         await expect(page.getByTestId(`component.onboarding.story.${feature}.${step}`)).toBeVisible();
         if (step === 1 || step === 3) await page.screenshot({ path: testInfo.outputPath(`story-${feature}-${step}.png`) });
+        if (step < 3) await page.getByTestId('btn.onboarding.story.next').click();
       }
       if (feature === 'capture') await expect(page.getByTestId('component.onboarding.dreamGlobe')).toBeVisible();
       if (feature === 'connect') await expect(page.getByTestId('component.onboarding.constellation.selection')).toContainText('3/3');
@@ -235,11 +236,10 @@ test.describe('feature sheet previews', () => {
     }
   });
 
-  test('a story can pause, go back, skip and replay without advancing onboarding', async ({ page }) => {
-    await page.getByTestId('btn.onboarding.feature.capture').click();
-    await page.getByTestId('btn.onboarding.story.play').click();
-    await expect(page.getByTestId('btn.onboarding.story.play')).toHaveAccessibleName('Play the story');
+  test('a story waits for the reader and supports going back, skipping and replaying', async ({ page }) => {
     await page.clock.install();
+    await page.getByTestId('btn.onboarding.feature.capture').click();
+    await expect(page.getByTestId('btn.onboarding.story.play')).toHaveCount(0);
     await page.clock.runFor(8000);
     await expect(page.getByTestId('component.onboarding.story.capture.0')).toBeVisible();
     await page.getByTestId('btn.onboarding.story.next').click();
@@ -262,7 +262,7 @@ test.describe('feature sheet previews', () => {
     await page.reload();
     for (const feature of ['capture', 'connect', 'explore']) {
       await page.getByTestId(`btn.onboarding.feature.${feature}`).click();
-      await expect(page.getByTestId('btn.onboarding.story.play')).toBeDisabled();
+      await expect(page.getByTestId('btn.onboarding.story.play')).toHaveCount(0);
       for (const step of [0, 1, 2]) {
         await expect(page.getByTestId(`component.onboarding.story.${feature}.${step}`)).toBeVisible();
         await expectCloseButton(page);
@@ -310,32 +310,16 @@ test.describe('feature sheet previews', () => {
       await page.screenshot({ path: testInfo.outputPath(`chapter-${feature}.png`) });
       await page.getByTestId('btn.onboarding.story.continue').click();
       if (feature === 'capture') {
-        await expect(page.getByText('Once your dream is saved…', { exact: true })).toBeVisible();
-        await page.getByTestId('btn.onboarding.story.next').click();
-        await expect(page.getByText('you can find the details that return…', { exact: true })).toBeVisible();
-        await page.getByTestId('btn.onboarding.story.next').click();
-        await expect(page.getByText('and discover what connects your nights.', { exact: true })).toBeVisible();
-        await page.getByTestId('btn.onboarding.story.continue').click();
+        for (const step of [0, 1, 2]) {
+          await expect(page.getByTestId(`component.onboarding.transition.${step}`)).toBeVisible();
+          await page.getByTestId('btn.onboarding.story.next').click();
+        }
       }
     }
     await expect(page.getByTestId('sheet.onboarding.feature')).toHaveCount(0);
     await expect(page.getByTestId('btn.onboarding.feature.explore')).toBeFocused();
     await page.getByTestId('btn.onboarding.intro.next').click();
     await expect(page.getByTestId('component.onboarding.path')).toBeVisible();
-  });
-
-  test('pausing preserves the time already spent in a scene when the story resumes', async ({ page }) => {
-    await page.clock.install();
-    await page.getByTestId('btn.onboarding.feature.capture').click();
-    await expect(page.getByTestId('component.onboarding.story.capture.0')).toBeVisible();
-    await page.clock.runFor(1400);
-    await page.getByTestId('btn.onboarding.story.play').click();
-    await page.clock.runFor(10000);
-    await expect(page.getByTestId('component.onboarding.story.capture.0')).toBeVisible();
-    await page.getByTestId('btn.onboarding.story.play').click();
-    await page.clock.runFor(2300);
-    await expect(page.getByTestId('component.onboarding.story.capture.1')).toBeVisible();
-    await page.getByTestId('btn.onboarding.feature.close').click();
   });
 
 });
