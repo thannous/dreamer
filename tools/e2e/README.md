@@ -268,8 +268,12 @@ the final verdict remains nonqualifying; no unknown session/recorder is killed.
 that invocation. Preserve both when reporting its verdict.
 
 For a browser campaign set one unique `E2E_CAMPAIGN_ID` on every invocation,
-then run `node tools/e2e/run.mjs <product> web collect`. CI uses its unique
-`CIRCLE_WORKFLOW_JOB_ID`. The collector revalidates reports, artifacts and final
+then run `node tools/e2e/run.mjs <product> web collect`. CI uses the pipeline ID
+plus the product. `--shard <index>/<total>` splits one context into contiguous
+slices: CircleCI runs the Dreamer en-US journeys on four containers and the other
+Dreamer contexts on two, then `testerarmy-dreamer` collects their finalized
+evidence from the workspace. A missing or failed slice leaves the union
+incomplete, so collection fails. The collector revalidates reports, artifacts and final
 receipts and writes `campaign.json`: the actual passed union uses target/test/agent
 identity, with contexts, repeats, selected skips and exclusions kept separately.
 Dreamer requires EN/FR/DE with stories ON and EN with stories OFF. A failed or
