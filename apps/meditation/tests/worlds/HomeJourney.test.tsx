@@ -365,7 +365,8 @@ describe('immersive home journey', () => {
     expect(screen.getByTestId('home.world-switcher.tide.locked')).toBeTruthy();
     expect(screen.queryByTestId('home.world-switcher.tide.owned')).toBeNull();
     expect(screen.queryByTestId('home.journey.ritual-access')).toBeNull();
-    expect(screen.getByTestId('home.journey.reason').props.numberOfLines).toBeUndefined();
+    // A world-led ritual omits the redundant recommendation paragraph.
+    expect(screen.queryByTestId('home.journey.reason')).toBeNull();
     const ritualTitle = screen.getByTestId('home.journey.ritual-title');
     expect(ritualTitle).toHaveTextContent('Bringing the breath down');
     expect(ritualTitle.props.numberOfLines).toBeUndefined();
