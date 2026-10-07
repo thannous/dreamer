@@ -216,7 +216,8 @@
     "test:testerarmy:typecheck": "npm run typecheck --prefix tools/e2e",
     "agent-device:doctor": "node tools/e2e/node_modules/agent-device/bin/agent-device.mjs doctor",
     "agent-device:inspect": "node tools/e2e/run.mjs inspect",
-    "agent-device:mcp": "node tools/e2e/run.mjs mcp"
+    "agent-device:mcp": "node tools/e2e/run.mjs mcp",
+    "symbols:illustrations:sync": "node ./scripts/sync-symbol-illustrations.js"
   },
   "dependencies": {
     "@expo-google-fonts/fraunces": "^0.4.1",

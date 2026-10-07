@@ -1,3 +1,5 @@
+import { Image } from "expo-image";
+import { LinearGradient } from "expo-linear-gradient";
 import { Stack, router, useLocalSearchParams } from "expo-router";
 import React, { useCallback, useDeferredValue, useEffect, useMemo, useState } from "react";
 import { FlatList, Pressable, ScrollView, StyleSheet, Text, View } from "react-native";
@@ -9,8 +11,9 @@ import { LetterHeader } from "@/components/symbols/LetterHeader";
 import { SymbolCard } from "@/components/symbols/SymbolCard";
 import { IconSymbol } from "@/components/ui/icon-symbol";
 import { SearchBar } from "@/components/ui/SearchBar";
-import { ThemeLayout } from "@/constants/journalTheme";
+import { DarkTheme, ThemeLayout } from "@/constants/journalTheme";
 import { getNoctaliaDesignTokens } from "@/constants/noctaliaDesign";
+import { getSymbolIllustration } from "@/constants/symbolIllustrations";
 import { Fonts } from "@/constants/theme";
 import { useTheme } from "@/context/ThemeContext";
 import { useTranslation } from "@/hooks/useTranslation";
@@ -78,6 +81,10 @@ const getSymbolLetter = (name: string) => {
   const firstChar = normalized[0]?.toUpperCase() ?? "#";
   return /[A-Z]/.test(firstChar) ? firstChar : "#";
 };
+
+// Text that sits on artwork stays ivory in both app themes.
+const ART_TEXT = getNoctaliaDesignTokens(DarkTheme, "dark").text.primary;
+const SKY_ART = require("@/assets/images/onboarding-reverie-background.webp");
 
 const FULL_ALPHABET = "ABCDEFGHIJKLMNOPQRSTUVWXYZ".split("");
 let trackedOnboardingDictionaryDestination = false;
@@ -312,6 +319,21 @@ export default function SymbolDictionaryScreen() {
 
   const listHeader = (
     <View style={[styles.listHeader, { paddingTop: insets.top + 12 }]}>
+      {mode === "dark" ? (
+        <View
+          pointerEvents="none"
+          accessible={false}
+          importantForAccessibility="no-hide-descendants"
+          style={[styles.sky, { height: insets.top + 300 }]}
+        >
+          <Image source={SKY_ART} contentFit="cover" contentPosition="top" style={StyleSheet.absoluteFill} />
+          <LinearGradient
+            colors={["rgba(3,4,13,0.35)", "rgba(3,4,13,0.55)", noctalia.screen.background]}
+            locations={[0, 0.55, 1]}
+            style={StyleSheet.absoluteFill}
+          />
+        </View>
+      ) : null}
       <View style={styles.headerRow}>
         <Pressable
           onPress={handleBack}
@@ -349,13 +371,22 @@ export default function SymbolDictionaryScreen() {
         testID="symbol-search"
       />
 
-      <View style={styles.popularRow} testID="symbol-popular">
-        <Text style={[styles.popularLabel, { color: noctalia.text.secondary }]}>
-          {t("symbols.popular_short")}
-        </Text>
-        <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={styles.popularLinks}>
+      <View style={styles.popularBlock} testID="symbol-popular">
+        <View style={styles.eyebrowRow}>
+          <View style={[styles.eyebrowRule, { backgroundColor: noctalia.accent.text }]} />
+          <Text accessibilityRole="header" style={[styles.eyebrow, { color: noctalia.accent.text }]}>
+            {t("symbols.popular_short")}
+          </Text>
+        </View>
+        <ScrollView
+          horizontal
+          showsHorizontalScrollIndicator={false}
+          contentContainerStyle={styles.popularLinks}
+          style={styles.popularScroller}
+        >
           {popularSymbols.map((symbol) => {
             const content = symbol[lang] ?? symbol.en;
+            const illustration = getSymbolIllustration(symbol.id);
             return (
               <Pressable
                 key={symbol.id}
@@ -363,9 +394,18 @@ export default function SymbolDictionaryScreen() {
                 accessibilityRole="button"
                 accessibilityLabel={content.name}
                 testID={`symbol.popular.${symbol.id}`}
-                style={({ pressed }) => [styles.popularLink, pressed && styles.pressed]}
+                style={({ pressed }) => [styles.poster, { backgroundColor: noctalia.surface.soft, borderColor: noctalia.surface.border }, pressed && styles.posterPressed]}
               >
-                <Text style={[styles.popularText, { color: noctalia.accent.text }]}>{content.name}</Text>
+                {illustration ? (
+                  <Image source={illustration} contentFit="cover" style={StyleSheet.absoluteFill} />
+                ) : null}
+                <LinearGradient
+                  pointerEvents="none"
+                  colors={["rgba(9,4,19,0)", "rgba(9,4,19,0.86)"]}
+                  locations={[0.35, 1]}
+                  style={StyleSheet.absoluteFill}
+                />
+                <Text numberOfLines={2} style={styles.posterName}>{content.name}</Text>
               </Pressable>
             );
           })}
@@ -471,16 +511,21 @@ const styles = StyleSheet.create({
   container: { flex: 1, overflow: "hidden", position: "relative" },
   list: { flex: 1 },
   listHeader: { paddingHorizontal: 20, gap: 8, paddingBottom: 4 },
+  sky: { position: "absolute", top: 0, left: 0, right: 0 },
   headerRow: { flexDirection: "row", flexWrap: "wrap", alignItems: "center", columnGap: 8, rowGap: 4, marginBottom: 8 },
   backButton: { width: 44, minHeight: 44, alignItems: "center", justifyContent: "center", marginLeft: -12 },
-  headerTitle: { flex: 1, flexBasis: 140, minWidth: 0, fontFamily: Fonts.fraunces.bold, fontSize: 27, lineHeight: 34 },
+  headerTitle: { flex: 1, flexBasis: 140, minWidth: 0, fontFamily: Fonts.fraunces.semiBold, fontSize: 34, lineHeight: 40, letterSpacing: -0.3 },
   guidesLink: { minHeight: 44, justifyContent: "center", maxWidth: "100%", paddingHorizontal: 4 },
   guidesText: { fontFamily: Fonts.spaceGrotesk.medium, fontSize: 15, lineHeight: 22, flexShrink: 1 },
-  popularRow: { flexDirection: "row", alignItems: "center", gap: 14 },
-  popularLabel: { maxWidth: "42%", flexShrink: 1, fontFamily: Fonts.spaceGrotesk.regular, fontSize: 14, lineHeight: 20 },
-  popularLinks: { gap: 18 },
-  popularLink: { minHeight: 44, justifyContent: "center" },
-  popularText: { fontFamily: Fonts.spaceGrotesk.medium, fontSize: 15, lineHeight: 22 },
+  popularBlock: { marginTop: 10, marginBottom: 6 },
+  eyebrowRow: { flexDirection: "row", alignItems: "center", gap: 10, marginBottom: 12 },
+  eyebrowRule: { width: 22, height: 1 },
+  eyebrow: { fontFamily: Fonts.spaceGrotesk.medium, fontSize: 12, lineHeight: 16, letterSpacing: 2, textTransform: "uppercase" },
+  popularScroller: { marginHorizontal: -20 },
+  popularLinks: { gap: 12, paddingHorizontal: 20 },
+  poster: { width: 128, height: 168, borderRadius: 16, borderCurve: "continuous", borderWidth: StyleSheet.hairlineWidth, overflow: "hidden", justifyContent: "flex-end", padding: 12 },
+  posterPressed: { opacity: 0.85, transform: [{ scale: 0.97 }] },
+  posterName: { fontFamily: Fonts.fraunces.medium, fontSize: 17, lineHeight: 21, color: ART_TEXT },
   modeSwitch: { flexDirection: "row", borderBottomWidth: StyleSheet.hairlineWidth },
   modeOption: { flex: 1, minWidth: 0, minHeight: 44, paddingVertical: 10, paddingHorizontal: 12, alignItems: "center", justifyContent: "center" },
   modeText: { fontFamily: Fonts.spaceGrotesk.medium, fontSize: 15, lineHeight: 22, textAlign: "center" },
