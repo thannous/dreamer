@@ -80,6 +80,9 @@ export default function ProfileTab() {
           <Rule className="self-start" />
         </View>
 
+        <Button testID="btn.history.open" variant="secondary" label={t('history.title')}
+          onPress={() => router.push('/history')} />
+
         {empty ? (
           <ArtworkGlassPanel
             appearance={world.appearance}

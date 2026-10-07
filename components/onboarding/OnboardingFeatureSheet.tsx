@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useMemo, useState } from 'react';
+import React, { useMemo, useState } from 'react';
 import { Platform, StyleSheet, Text, View, useWindowDimensions } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
@@ -10,27 +10,25 @@ import { useTranslation } from '@/hooks/useTranslation';
 import { CaptureStory } from './CaptureStory';
 import { CaptureTransition } from './CaptureTransition';
 import { DialogueStory } from './DialogueStory';
-import { FeatureStoryControls, STORY_DEMO_STEP, StoryScene, useFeatureStory } from './FeatureStory';
+import { FeatureStoryControls, STORY_DEMO_STEP, StoryScene, useFeatureStory, type FeatureStoryPlayback } from './FeatureStory';
 import { SymbolConstellation } from './SymbolConstellation';
 
 export type OnboardingFeature = 'capture' | 'connect' | 'explore';
 const CHAPTERS: OnboardingFeature[] = ['capture', 'connect', 'explore'];
 
-function FeatureNarrative({ feature, tokens, stageHeight, onDemoChange, transitioning }: {
-  feature: OnboardingFeature; tokens: NoctaliaDesignTokens; stageHeight: number; onDemoChange: (demo: boolean) => void; transitioning: boolean;
+function FeatureNarrative({ feature, tokens, stageHeight, story, transitioning }: {
+  feature: OnboardingFeature; tokens: NoctaliaDesignTokens; stageHeight: number; story: FeatureStoryPlayback; transitioning: boolean;
 }) {
   const { t } = useTranslation();
-  const story = useFeatureStory(feature);
   const [selectedDream, setSelectedDream] = useState(0);
   const demo = story.step === STORY_DEMO_STEP;
-  useEffect(() => onDemoChange(demo), [demo, onDemoChange]);
   const chapter = CHAPTERS.indexOf(feature);
   const scene = demo ? 'demo' : String(story.step);
   return <View style={styles.narrative}>
     <Text style={[styles.chapter, { color: tokens.accent.text }]}>
       {String(chapter + 1).padStart(2, '0')}{'  /  03  ·  '}{t(`onboarding.feature.${feature}.title`)}
     </Text>
-    {transitioning ? <CaptureTransition tokens={tokens} stageHeight={stageHeight} dreamIndex={selectedDream} /> : <>
+    {transitioning ? <CaptureTransition story={story} tokens={tokens} stageHeight={stageHeight} dreamIndex={selectedDream} /> : <>
     <StoryScene key={story.step} style={[styles.copy, demo && styles.demoCopy]}>
       <Text accessibilityRole="header" style={[styles.title, demo && styles.demoTitle, { color: tokens.text.primary }]}>
         {t(`onboarding.narrative.${feature}.${scene}.title`)}
@@ -40,10 +38,10 @@ function FeatureNarrative({ feature, tokens, stageHeight, onDemoChange, transiti
       </Text>
     </StoryScene>
     <View testID={`component.onboarding.preview.${feature}`}>
-      <View testID={`component.onboarding.story.${feature}.${story.step}`} onTouchStart={story.stop} onFocus={story.stop}>
+      <View testID={`component.onboarding.story.${feature}.${story.step}`}>
         {feature === 'capture' ? <CaptureStory step={story.step} reduced={story.reduced} tokens={tokens} stageHeight={stageHeight} onDreamChange={setSelectedDream} /> :
-          feature === 'connect' ? <SymbolConstellation tokens={tokens} storyStep={demo ? undefined : story.step} onInteraction={story.stop} /> :
-            <DialogueStory step={story.step} tokens={tokens} stageHeight={stageHeight} onInteraction={story.stop} />}
+          feature === 'connect' ? <SymbolConstellation tokens={tokens} storyStep={demo ? undefined : story.step} /> :
+            <DialogueStory step={story.step} tokens={tokens} stageHeight={stageHeight} />}
       </View>
     </View>
     <FeatureStoryControls story={story} tokens={tokens} />
@@ -62,29 +60,40 @@ export function OnboardingFeatureSheet({ feature, onClose, onFeatureChange }: {
   const tokens = useMemo(() => getNoctaliaDesignTokens(colors, mode), [colors, mode]);
   const sheetHeight = Math.max(160, Math.min(height * 0.8, height - insets.top - insets.bottom - 96) - 48);
   const nextChapter = CHAPTERS[CHAPTERS.indexOf(feature) + 1];
-  const [demoFeature, setDemoFeature] = useState<OnboardingFeature | null>(null);
-  const [transitionFeature, setTransitionFeature] = useState<OnboardingFeature | null>(null);
-  const transitioning = feature === 'capture' && transitionFeature === feature;
-  const updateDemo = useCallback((demo: boolean) => setDemoFeature(demo ? feature : null), [feature]);
+  const story = useFeatureStory();
+  const [transitioning, setTransitioning] = useState(false);
+  const demo = story.step === STORY_DEMO_STEP;
+  const advanceChapter = () => {
+    if (nextChapter) {
+      story.replay();
+      setTransitioning(false);
+      onFeatureChange(nextChapter);
+    } else onClose();
+  };
 
   return <StandardBottomSheet visible onClose={onClose} title={t(`onboarding.feature.${feature}.title`)} focusKey={feature}
     testID="sheet.onboarding.feature" style={{ height: sheetHeight, ...(Platform.OS === 'web' ? { width } : {}) }}
     surfaceColor={colors.backgroundCard} transparentContent
     dragIndicatorColor={tokens.text.secondary} showsVerticalScrollIndicator={false}
-    actions={demoFeature === feature ? {
-      primaryLabel: t(feature === 'capture' ? 'common.continue' : nextChapter ? `onboarding.narrative.continue.${nextChapter}` : 'onboarding.narrative.finish'),
-      primaryTestID: 'btn.onboarding.story.continue',
+    actions={{
+      primaryLabel: t(demo && feature === 'explore' ? 'onboarding.narrative.finish' : 'common.continue'),
+      primaryTestID: demo ? 'btn.onboarding.story.continue' : 'btn.onboarding.story.next',
       onPrimary: () => {
-        if (feature === 'capture' && !transitioning) setTransitionFeature(feature);
-        else if (nextChapter) { setTransitionFeature(null); onFeatureChange(nextChapter); }
-        else onClose();
+        if (transitioning) {
+          if (story.step < 2) story.next();
+          else advanceChapter();
+        } else if (!demo) story.next();
+        else if (feature === 'capture') {
+          story.replay();
+          setTransitioning(true);
+        } else advanceChapter();
       },
-    } : undefined}
+    }}
     closeButton={{ label: t('journal.detail.share_modal.close'), testID: 'btn.onboarding.feature.close' }}>
     {/* Only the narrative resets. The sheet host and its close control stay in place. */}
     <FeatureNarrative key={feature} feature={feature} tokens={tokens}
-      stageHeight={Math.max(170, Math.min(demoFeature === feature ? 270 : 310, sheetHeight - (demoFeature === feature ? 350 : 250)))}
-      onDemoChange={updateDemo} transitioning={transitioning} />
+      stageHeight={Math.max(170, Math.min(270, sheetHeight - 350))}
+      story={story} transitioning={transitioning} />
   </StandardBottomSheet>;
 }
 

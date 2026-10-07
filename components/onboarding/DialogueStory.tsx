@@ -10,13 +10,13 @@ import { Fonts } from '@/constants/theme';
 import { useTranslation } from '@/hooks/useTranslation';
 import { StoryScene, STORY_DEMO_STEP } from './FeatureStory';
 
-export function DialogueStory({ step, tokens, onInteraction, stageHeight }: {
-  step: number; tokens: NoctaliaDesignTokens; onInteraction: () => void; stageHeight: number;
+export function DialogueStory({ step, tokens, stageHeight }: {
+  step: number; tokens: NoctaliaDesignTokens; stageHeight: number;
 }) {
   const { t } = useTranslation();
   const reduced = useReducedMotion();
   const [association, setAssociation] = useState<'start' | 'home'>('start');
-  const choose = (next: 'start' | 'home') => { onInteraction(); setAssociation(next); };
+  const choose = (next: 'start' | 'home') => setAssociation(next);
   return <View style={[styles.root, { minHeight: stageHeight }]}>
     <Animated.View accessible={false} style={[styles.doorFrame, { borderColor: tokens.surface.border,
       transform: reduced ? [] : [{ scale: step === 0 ? 1 : 0.9 }],

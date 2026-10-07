@@ -121,19 +121,20 @@ export function ReminderOrbitalClock({
 
   return (
     <View className="items-center">
-      <Animated.View
+      <View
         style={[
           styles.dial,
           { borderRadius: dialSize / 2, height: dialSize, width: dialSize },
-          dialStyle,
         ]}>
-        <Image
-          accessible={false}
-          source={DIAL_ARTWORK}
-          contentFit="contain"
-          recyclingKey="onboarding-reminder-orbital-clock"
-          style={StyleSheet.absoluteFill}
-        />
+        <Animated.View style={[StyleSheet.absoluteFill, dialStyle]} pointerEvents="none">
+          <Image
+            accessible={false}
+            source={DIAL_ARTWORK}
+            contentFit="contain"
+            recyclingKey="onboarding-reminder-orbital-clock"
+            style={StyleSheet.absoluteFill}
+          />
+        </Animated.View>
 
         <View pointerEvents="box-none" style={styles.timeStack}>
           <StepButton
@@ -174,7 +175,7 @@ export function ReminderOrbitalClock({
             accessibilityLabel={`${timeLabel}, -15`}
           />
         </View>
-      </Animated.View>
+      </View>
 
       <AnimatedPressable
         testID={TID.Option.ReminderEnable}

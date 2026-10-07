@@ -5,6 +5,7 @@ import { ScopedTheme } from 'uniwind';
 
 import { NightStatusBar } from '@/components/atmosphere/NightStatusBar';
 import { Screen } from '@/components/atmosphere/Screen';
+import { OnboardingScrim } from '@/constants/theme';
 import {
   ExperienceJourney,
   type ExperienceJourneyItem,
@@ -96,7 +97,7 @@ export default function ExperienceStep() {
 
 const styles = StyleSheet.create({
   atmosphereVeil: {
-    backgroundColor: 'rgba(3, 4, 13, 0.58)',
+    backgroundColor: OnboardingScrim.experience,
   },
   journeyOffset: {
     marginTop: 20,

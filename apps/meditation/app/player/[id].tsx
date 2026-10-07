@@ -104,7 +104,7 @@ export default function PlayerScreen() {
       <WorldScene world={world} artwork="trainer" scrimStrength={1.12}>
         <View className="flex-1">
           <BackLink
-            label={t('player.close')}
+            label={t('common.back')}
             iconColor={worldColors.accentText}
             fallbackHref="/(drawer)/(tabs)"
             className="px-gutter pt-2"
@@ -125,7 +125,7 @@ export default function PlayerScreen() {
       <WorldScene world={world} artwork="trainer" scrimStrength={1.18}>
         <View className="flex-1">
           <BackLink
-            label={t('player.close')}
+            label={t('common.back')}
             iconColor={worldColors.accentText}
             fallbackHref="/(drawer)/(tabs)"
             className="px-gutter pt-2"
@@ -161,7 +161,7 @@ export default function PlayerScreen() {
           <View className="px-gutter pt-2" style={{ zIndex: 3 }}>
             <BackLink
               testID={TID.Button.PlayerClose}
-              label={t('player.close')}
+              label={t('player.minimize')}
               iconColor={worldColors.accentText}
               fallbackHref="/(drawer)/(tabs)"
             />

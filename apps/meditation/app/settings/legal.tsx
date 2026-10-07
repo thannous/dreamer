@@ -1,7 +1,7 @@
 import React from 'react';
 import { Linking, ScrollView, View } from 'react-native';
 
-import { Screen } from '@/components/atmosphere/Screen';
+import { WorldPage } from '@/components/worlds/WorldPage';
 import { SettingsGroup, SettingsRow } from '@/components/settings/SettingsRow';
 import { BackLink, Card, Rule, Text } from '@/components/ui';
 import { getLegalLink } from '@/constants/legalLinks';
@@ -13,7 +13,7 @@ export default function LegalScreen() {
   const open = (url: string) => Linking.openURL(url).catch(() => {});
 
   return (
-    <Screen variant="subtle" edges={['top']}>
+    <WorldPage edges={['top']}>
       <BackLink label={t('common.back')} className="px-gutter pt-2" />
 
       <ScrollView
@@ -44,6 +44,6 @@ export default function LegalScreen() {
           />
         </SettingsGroup>
       </ScrollView>
-    </Screen>
+    </WorldPage>
   );
 }

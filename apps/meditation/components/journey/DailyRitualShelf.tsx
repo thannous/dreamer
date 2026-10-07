@@ -3,8 +3,7 @@ import { StyleSheet, View } from 'react-native';
 
 import { ACTIVE_JOURNEY_CTA_TEST_ID } from '@/components/journey/WorldJourneyPicker';
 import { WorldPathProgress } from '@/components/journey/WorldPathProgress';
-import { ArtworkGlassPanel, Button, IconSymbol, Text } from '@/components/ui';
-import { Themes } from '@/constants/theme';
+import { ArtworkGlassPanel, Button, Text } from '@/components/ui';
 import { useTranslation } from '@/context/LanguageContext';
 import type { MeditationWorld } from '@/constants/worlds';
 import { formatQuotaResetDate, type Gate, type GateReason } from '@/lib/entitlements';
@@ -28,6 +27,7 @@ type Props = {
   onOpen: (resume: boolean) => void;
   onOpenPaywall: (reason: GateReason) => void;
   onOpenAlternative?: () => void;
+  onOpenJourney?: () => void;
 };
 
 function remainingQuotaCopy(
@@ -58,6 +58,7 @@ export function DailyRitualShelf({
   onOpen,
   onOpenPaywall,
   onOpenAlternative,
+  onOpenJourney,
 }: Props) {
   const { t, language } = useTranslation();
   const ratio = sessionProgress ? sessionProgress.positionSec / session.durationSec : 0;
@@ -114,18 +115,21 @@ export function DailyRitualShelf({
               {t('home.recommended.forYou')}
             </Text>
           ) : null}
-          {recommendationSource === 'catalogue' ? null : (
-            <WorldPathProgress world={world} progress={journeyProgress} />
-          )}
           <Text variant="h2" testID="home.journey.ritual-title">
             {title}
           </Text>
-          <View className="mt-1 flex-row flex-wrap items-center gap-2">
-            <IconSymbol name="clock" size={15} color={Themes[world.appearance].textSecondary} />
-            <Text variant="bodySm">{meta}</Text>
-            <Text variant="overline" testID="home.journey.ritual-access">
-              {accessLabel}
-            </Text>
+          <View className="flex-row flex-wrap items-center gap-x-3 gap-y-1">
+            {recommendationSource === 'catalogue' ? null : (
+              <WorldPathProgress world={world} progress={journeyProgress} sessionId={session.id} onPress={onOpenJourney} />
+            )}
+            <View className="flex-row flex-wrap items-center gap-2">
+              <Text variant="bodySm">{meta}</Text>
+              {showsPlus || blockedReason ? (
+                <Text variant="overline" testID="home.journey.ritual-access">
+                  {accessLabel}
+                </Text>
+              ) : null}
+            </View>
           </View>
           {quotaCopy ? (
             <View className="gap-1" testID="home.journey.quota">
@@ -157,7 +161,8 @@ export function DailyRitualShelf({
 
         <Button
           testID={ACTIVE_JOURNEY_CTA_TEST_ID}
-          className="mt-5"
+          className="mt-3"
+          size="md"
           label={t(ctaKey)}
           accessibilityLabel={`${t(accessibilityLead)}. ${title}. ${meta}. ${accessLabel}`}
           onPress={() => {
@@ -185,6 +190,6 @@ export function DailyRitualShelf({
 const styles = StyleSheet.create({
   content: {
     paddingHorizontal: 20,
-    paddingVertical: 20,
+    paddingVertical: 16,
   },
 });

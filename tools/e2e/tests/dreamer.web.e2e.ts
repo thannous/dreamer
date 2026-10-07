@@ -374,7 +374,7 @@ test('the onboarding story bridges capture to understanding and exploration', {
   await screen.getByTestId('btn.onboarding.story.next').tap();
   await expect(screen.getByText('and discover what connects your nights.')).toBeVisible();
   await app.screenshot('capture-story-bridge');
-  await screen.getByTestId('btn.onboarding.story.continue').tap();
+  await screen.getByTestId('btn.onboarding.story.next').tap();
   await expect(screen.getByTestId('component.onboarding.story.connect.0')).toBeVisible();
   await screen.getByTestId('btn.onboarding.story.skip').tap();
   await screen.getByTestId('btn.onboarding.story.continue').tap();

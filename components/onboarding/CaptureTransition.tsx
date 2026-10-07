@@ -9,7 +9,7 @@ import type { NoctaliaDesignTokens } from '@/constants/noctaliaDesign';
 import { Fonts } from '@/constants/theme';
 import { useTranslation } from '@/hooks/useTranslation';
 import { DreamArtwork } from './DreamGlobe';
-import { FeatureStoryControls, StoryScene, useFeatureStory } from './FeatureStory';
+import { FeatureStoryControls, StoryScene, type FeatureStoryPlayback } from './FeatureStory';
 
 const SYMBOLS = [
   { name: 'house', x: 44, y: 76, image: require('../../docs-src/static/img/starmap/house-160w.webp') },
@@ -36,15 +36,14 @@ function MemoryThread({ from, to, color, visible }: {
 }
 
 /** The chosen memory stays present while the narrative opens the next chapter. */
-export function CaptureTransition({ tokens, stageHeight, dreamIndex }: {
-  tokens: NoctaliaDesignTokens; stageHeight: number; dreamIndex: number;
+export function CaptureTransition({ story, tokens, stageHeight, dreamIndex }: {
+  story: FeatureStoryPlayback; tokens: NoctaliaDesignTokens; stageHeight: number; dreamIndex: number;
 }) {
   const { t } = useTranslation();
-  const story = useFeatureStory('captureTransition');
   const scene = Math.min(story.step, 2);
   const imageHeight = Math.min(220, stageHeight * 0.86);
 
-  return <View>
+  return <View testID={`component.onboarding.transition.${scene}`}>
     <View style={styles.copy}>
       <StoryScene key={scene}>
         <Text accessibilityLiveRegion="polite" style={[styles.sentence, { color: tokens.text.primary }]}>

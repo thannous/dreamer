@@ -57,7 +57,7 @@
   --color-ivory-muted: #4f4c63;
   --color-ivory-faint: #5c5870;
   --color-champagne: #d4a574;
-  --color-champagne-text: #9a6332;
+  --color-champagne-text: #76471f;
   --color-champagne-deep: #9a6332;
   --color-champagne-soft: #ead4b4;
   --color-champagne-on: #4a2f1b;
@@ -78,7 +78,7 @@
       --color-ivory-faint: #5c5870;
       /* `champagne` is a FILL, never a text colour — use champagne-text. */
       --color-champagne: #d4a574;
-      --color-champagne-text: #9a6332;
+      --color-champagne-text: #76471f;
       --color-champagne-deep: #9a6332;
       --color-champagne-soft: #ead4b4;
       --color-champagne-on: #4a2f1b;
