@@ -8,10 +8,12 @@ import { getNoctaliaDesignTokens } from '@/constants/noctaliaDesign';
 import { useTheme } from '@/context/ThemeContext';
 import { useTranslation } from '@/hooks/useTranslation';
 import { isMockModeEnabled } from '@/lib/env';
+import { getShowcaseLanguage } from '@/mock-data/showcaseDreams';
 import { TID } from '@/lib/testIDs';
 
 const isMockMode = isMockModeEnabled();
-const shouldShowMockRail = isMockMode && Platform.OS !== 'web';
+// Store captures (EXPO_PUBLIC_MOCK_SHOWCASE) need the real chrome only.
+const shouldShowMockRail = isMockMode && Platform.OS !== 'web' && !getShowcaseLanguage();
 
 const ITEMS = [
   { shortLabel: 'H', translationKey: 'nav.home', route: 'home', testID: TID.Button.MockNavHome, href: '/(tabs)' as const },
