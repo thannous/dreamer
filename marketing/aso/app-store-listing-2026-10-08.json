@@ -1,0 +1,46 @@
+{
+  "schema_version": 1,
+  "bundle_id": "com.tanuki75.noctalia",
+  "asc_app_id": "6805876363",
+  "status": "draft",
+  "effective_date": "2026-10-08",
+  "publication": {
+    "mode": "manual",
+    "app_store_connect_mutation_allowed": false,
+    "notes": "Texte à coller dans App Store Connect. Aucune écriture App Store Connect n'a été faite."
+  },
+  "urls": {
+    "marketing": "https://noctalia.app/",
+    "support": "https://noctalia.app/fr/",
+    "privacy_policy": {
+      "fr": "https://noctalia.app/fr/politique-confidentialite",
+      "en": "https://noctalia.app/en/privacy-policy"
+    },
+    "terms_eula": {
+      "fr": "https://noctalia.app/fr/cgu",
+      "en": "https://noctalia.app/en/terms"
+    },
+    "account_deletion": {
+      "fr": "https://noctalia.app/fr/suppression-compte",
+      "en": "https://noctalia.app/en/account-deletion"
+    }
+  },
+  "locales": {
+    "fr-FR": {
+      "name": "Noctalia : Journal de rêves",
+      "subtitle": "Symboles, émotions et motifs",
+      "promotional_text": "Nouveau : 160 symboles illustrés et une introduction repensée. Raconte un rêve en quelques mots, repère ce qui revient et relie tes nuits.",
+      "keywords": "interprétation,dictionnaire,songe,cauchemar,sommeil,lucide,carnet,nuit,signification,analyse,IA",
+      "whats_new": "• Un dictionnaire de 160 symboles, désormais illustrés comme sur noctalia.app.\n• Des fiches symboles plus lisibles : interprétation, variations, questions à te poser et symboles liés.\n• Une introduction repensée qui raconte Noctalia en trois gestes : raconter, repérer, relier.\n• Corrections d’affichage avec les grandes tailles de texte.",
+      "description": "Chaque rêve laisse une trace. Noctalia t’aide à la garder, puis à voir ce qui revient au fil des nuits.\n\nRACONTE\n• Note un rêve dès le réveil, par écrit ou avec la dictée facultative. Un fragment suffit.\n• Ajoute une illustration onirique pour garder son atmosphère.\n\nREPÈRE\n• Découvre les symboles et les émotions de chaque rêve.\n• Explore 160 symboles illustrés : interprétation, variations et questions à te poser.\n\nRELIE\n• Retrouve les thèmes qui reviennent et observe leur évolution.\n• Approfondis un rêve avec une conversation guidée qui t’ouvre des pistes de réflexion.\n\nTON ESPACE, TON RYTHME\n• Tu peux commencer sans compte. Créer un compte permet de synchroniser ton journal.\n• Tes rêves ne sont pas vendus et ne servent pas à de la publicité.\n• Noctalia propose des pistes de réflexion, jamais un diagnostic ni une prédiction. L’application ne remplace pas un avis médical ou psychologique.\n\nINTELLIGENCE ARTIFICIELLE\nLes analyses, conversations et illustrations sont produites par un service d’IA tiers (actuellement Google Gemini), auquel le texte du rêve est transmis uniquement pour fournir le service demandé.\n\nNOCTALIA PLUS\nUn abonnement facultatif débloque davantage d’analyses, de conversations et d’illustrations. Le paiement est débité sur ton compte Apple à la confirmation. L’abonnement se renouvelle automatiquement sauf annulation au moins 24 h avant la fin de la période en cours ; tu peux le gérer et l’annuler dans les réglages de ton compte Apple.\n\nConditions d’utilisation : https://noctalia.app/fr/cgu\nConfidentialité : https://noctalia.app/fr/politique-confidentialite"
+    },
+    "en-US": {
+      "name": "Noctalia: Dream Journal",
+      "subtitle": "Symbols, emotions & patterns",
+      "promotional_text": "New: 160 illustrated dream symbols and a redesigned introduction. Tell a dream in a few words, notice what returns and connect your nights.",
+      "keywords": "interpretation,dictionary,meaning,nightmare,sleep,lucid,diary,night,analysis,AI,journaling",
+      "whats_new": "• A dictionary of 160 dream symbols, now illustrated like on noctalia.app.\n• Clearer symbol pages: meaning, variations, questions to ask yourself and related symbols.\n• A redesigned introduction that tells Noctalia in three moves: tell it, notice, connect.\n• Layout fixes for large text sizes.",
+      "description": "Every dream leaves a trace. Noctalia helps you keep it, then see what returns night after night.\n\nTELL IT\n• Write a dream down when you wake, or use optional dictation. One fragment is enough.\n• Add a dreamlike illustration to keep its atmosphere.\n\nNOTICE\n• Discover the symbols and emotions in each dream.\n• Explore 160 illustrated dream symbols: meaning, variations and questions to ask yourself.\n\nCONNECT\n• Find the themes that keep returning and see how they evolve.\n• Go deeper with a guided conversation that opens paths for reflection.\n\nYOUR SPACE, YOUR PACE\n• You can start without an account. An account lets you sync your journal.\n• Your dreams are never sold or used for advertising.\n• Noctalia offers prompts for reflection, never a diagnosis or a prediction. It does not replace medical or psychological advice.\n\nARTIFICIAL INTELLIGENCE\nAnalyses, conversations and illustrations are produced by a third-party AI service (currently Google Gemini), which receives the dream text only to provide the feature you request.\n\nNOCTALIA PLUS\nAn optional subscription unlocks more analyses, conversations and illustrations. Payment is charged to your Apple Account at confirmation. The subscription renews automatically unless cancelled at least 24 hours before the end of the current period; manage or cancel it in your Apple Account settings.\n\nTerms of Use: https://noctalia.app/en/terms\nPrivacy: https://noctalia.app/en/privacy-policy"
+    }
+  }
+}
