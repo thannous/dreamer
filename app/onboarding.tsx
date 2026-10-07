@@ -3,6 +3,9 @@ import { StandardBottomSheet } from '@/components/ui/StandardBottomSheet';
 import { PressableScale } from '@/components/motion/PressableScale';
 import { DURATION, EASE } from '@/components/motion/motion';
 import type { OnboardingFeature } from '@/components/onboarding/OnboardingFeatureSheet';
+import { LoopConstellation, type LoopNode } from '@/components/onboarding/story/LoopConstellation';
+import { NightSky } from '@/components/onboarding/story/NightSky';
+import { STORY, TRAVEL, reducedDelay } from '@/components/onboarding/story/storyMotion';
 import { getNoctaliaDesignTokens } from '@/constants/noctaliaDesign';
 import { DarkTheme } from '@/constants/journalTheme';
 import { Fonts } from '@/constants/theme';
@@ -23,7 +26,6 @@ import {
 } from '@/lib/productAnalytics';
 import { TID } from '@/lib/testIDs';
 import { Asset } from 'expo-asset';
-import { Image } from 'expo-image';
 import { LinearGradient } from 'expo-linear-gradient';
 import { router, useFocusEffect } from 'expo-router';
 import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
@@ -33,7 +35,6 @@ import {
   InteractionManager,
   Platform,
   Pressable,
-  ScrollView,
   StatusBar,
   StyleSheet,
   Switch,
@@ -67,11 +68,13 @@ const PATHS: PathDefinition[] = [
   { id: 'dictionary', icon: 'book.closed.fill' },
 ];
 
+// The intro tells the product loop — tell it, notice, connect — rather than listing
+// features. Each beat keeps the id of the feature preview it opens when previews are on.
 const SIGNALS = [
-  { id: 'capture', icon: 'pencil' as const },
-  { id: 'connect', icon: 'sparkles' as const },
-  { id: 'explore', icon: 'bubble.left.and.bubble.right' as const },
-] satisfies { id: OnboardingFeature; icon: React.ComponentProps<typeof IconSymbol>['name'] }[];
+  { id: 'capture', copy: 'capture', icon: 'quote.opening' as const },
+  { id: 'connect', copy: 'decode', icon: 'sparkles' as const },
+  { id: 'explore', copy: 'profile', icon: 'arrow.triangle.2.circlepath' as const },
+] satisfies { id: OnboardingFeature; copy: string; icon: React.ComponentProps<typeof IconSymbol>['name'] }[];
 
 // Keep the disabled previews from initializing their motion/gesture modules.
 const OnboardingFeatureSheet = React.lazy(() => import('@/components/onboarding/OnboardingFeatureSheet')
@@ -95,15 +98,6 @@ export default function OnboardingScreen() {
   const { t } = useTranslation();
   const featureSheetsEnabled = isOnboardingFeatureSheetsEnabled();
   const reducedMotion = useReducedMotion();
-  const phaseEntrance = useMemo<CSSStyle<ViewStyle>>(() => ({
-    animationName: {
-      from: { opacity: 0, ...(!reducedMotion ? { transform: [{ translateY: 8 }] } : {}) },
-      to: { opacity: 1, ...(!reducedMotion ? { transform: [{ translateY: 0 }] } : {}) },
-    },
-    animationDuration: DURATION.fast,
-    animationTimingFunction: EASE.out,
-    animationFillMode: 'both',
-  }), [reducedMotion]);
   const insets = useSafeAreaInsets();
   const {
     state,
@@ -164,6 +158,55 @@ export default function OnboardingScreen() {
   }, []));
 
   const step: OnboardingStep = state.step === 'path' ? 'path' : 'intro';
+  // The first act plays once. Coming back to the intro replays a quick entrance, and a
+  // resumed session that opens on the path step never sees the arrival at all.
+  const [visitedPath, setVisitedPath] = useState(state.step === 'path');
+  // Derived from the step during render (not in an effect) so the return visit never
+  // flashes the arrival choreography for a frame.
+  if (step === 'path' && !visitedPath) setVisitedPath(true);
+  const arrival = step === 'intro' && !visitedPath;
+  const enter = (active: boolean, delay: number, travel: number): CSSStyle<ViewStyle> => {
+    if (!active) return { animationName: 'none' };
+    const scaled = arrival ? delay : delay * STORY.returnScale;
+    return {
+      animationName: {
+        from: { opacity: 0, ...(!reducedMotion ? { transform: [{ translateY: travel }] } : {}) },
+        to: { opacity: 1, ...(!reducedMotion ? { transform: [{ translateY: 0 }] } : {}) },
+      },
+      animationDuration: arrival ? STORY.arrive : STORY.enter,
+      animationDelay: reducedMotion ? reducedDelay(scaled) : scaled,
+      animationTimingFunction: EASE.out,
+      animationFillMode: 'both',
+    };
+  };
+  const introEnter = (delay: number) => enter(step === 'intro', delay, TRAVEL.arrive);
+  // One soft ring once the loop has been told: an invitation, not a nag. Never repeats.
+  const ctaInvite: CSSStyle<ViewStyle> = {
+    animationName: {
+      '0%': { opacity: 0, transform: [{ scaleX: 1 }, { scaleY: 1 }] },
+      '30%': { opacity: 0.6 },
+      '100%': { opacity: 0, transform: [{ scaleX: 1.05 }, { scaleY: 1.22 }] },
+    },
+    animationDuration: 1400,
+    animationDelay: STORY.ctaInvite,
+    animationTimingFunction: EASE.out,
+    animationFillMode: 'both',
+  };
+  // Committing pushes the camera in (NightSky); the copy recedes with it.
+  const recede: CSSStyle<ViewStyle> = {
+    opacity: isLeaving ? 0 : 1,
+    transform: [{ scale: isLeaving && !reducedMotion ? 0.97 : 1 }],
+    transitionProperty: ['opacity', 'transform'],
+    transitionDuration: STORY.plunge / 2,
+    transitionTimingFunction: EASE.out,
+  };
+  const signalNodes = useMemo<LoopNode[]>(() => SIGNALS.map((signal) => ({
+    id: signal.id,
+    icon: signal.icon,
+    title: t(`onboarding.intro.signal.${signal.copy}.title`),
+    body: t(`onboarding.intro.signal.${signal.copy}.body`),
+  })), [t]);
+  const pathEnter = (delay: number) => enter(step === 'path', delay, TRAVEL.step);
   const titleAccent = noctalia.accent.text;
   const background = noctalia.screen.background;
   const backgroundUri = Asset.fromModule(BACKGROUND_IMAGE).uri;
@@ -474,17 +517,20 @@ export default function OnboardingScreen() {
     >
       <View style={StyleSheet.absoluteFill} pointerEvents="none" accessible={false} importantForAccessibility="no-hide-descendants">
         {Platform.OS === 'web' ? (
-          <View style={[StyleSheet.absoluteFill, backgroundWebStyle]} />
+          <>
+            <View style={[StyleSheet.absoluteFill, backgroundWebStyle]} />
+            <LinearGradient
+              colors={['rgba(3,4,13,0.12)', 'rgba(3,4,13,0.08)', 'rgba(3,4,13,0.60)', 'rgba(3,4,13,0.88)']}
+              locations={[0, 0.25, 0.62, 1]}
+              style={StyleSheet.absoluteFill}
+            />
+          </>
         ) : (
-          <Image source={BACKGROUND_IMAGE} contentFit="cover" style={[StyleSheet.absoluteFill, { width: '100%', height: '100%' }]} />
+          <NightSky step={step} leaving={isLeaving} arrival={arrival} />
         )}
-        <LinearGradient
-          colors={['rgba(3,4,13,0.12)', 'rgba(3,4,13,0.08)', 'rgba(3,4,13,0.60)', 'rgba(3,4,13,0.88)']}
-          locations={[0, 0.25, 0.62, 1]}
-          style={StyleSheet.absoluteFill}
-        />
       </View>
-      <ScrollView
+      <Animated.ScrollView
+        style={recede}
         contentInsetAdjustmentBehavior="never"
         contentContainerStyle={[
           styles.content,
@@ -579,80 +625,81 @@ export default function OnboardingScreen() {
             ]}
             testID={TID.Component.OnboardingIntro}
           >
-            <Animated.View collapsable={false} style={[styles.intro, { width: '100%' }, step === 'intro' ? phaseEntrance : { animationName: 'none' }]}>
+            <View collapsable={false} style={[styles.intro, { width: '100%' }]}>
 
             <View style={{ height: artworkSpace }} accessible={false} />
-            <Text
-              ref={introTitleRef}
-              {...(process.env.EXPO_OS === 'web' ? { tabIndex: -1 as const } : {})}
-              accessible
-              accessibilityRole="header"
-              onLayout={() => handleTitleLayout('intro')}
-              style={[styles.title, webTitleFocusResetStyle, { color: noctalia.text.primary }]}
-            >
-              {t('onboarding.intro.title_lead')}{'\n'}
-              <Text style={{ color: titleAccent }}>{t('onboarding.intro.title_accent')}</Text>
-            </Text>
-            <Text style={[styles.subtitle, { color: noctalia.text.secondary }]}>
-              {t('onboarding.intro.subtitle')}
-            </Text>
-            <View style={styles.signalList} testID={TID.Component.OnboardingIntroSignals}>
-              {SIGNALS.map((signal) => {
-                const content = (
-                  <>
-                    <View style={[styles.signalIcon, { borderColor: titleAccent }]}>
-                      <IconSymbol name={signal.icon} size={21} color={titleAccent as ColorValue} />
-                    </View>
-                    <View style={styles.signalCopy}>
-                      <Text style={[styles.signalTitle, { color: noctalia.text.primary }]}>
-                        {t(`onboarding.feature.${signal.id}.title`)}
-                      </Text>
-                      <Text style={[styles.signalBody, { color: noctalia.text.secondary }]}>
-                        {t(`onboarding.feature.${signal.id}.short`)}
-                      </Text>
-                    </View>
-                  </>
-                );
-
-                if (!featureSheetsEnabled) {
-                  return (
-                    <View key={signal.id} style={styles.signalRow} testID={`btn.onboarding.feature.${signal.id}`}>
-                      {content}
-                    </View>
-                  );
-                }
-
-                return (
-                  <PressableScale
-                    key={signal.id}
-                    ref={(node) => { featureTriggers.current[signal.id] = node; }}
-                    accessibilityRole="button"
-                    accessibilityLabel={t(`onboarding.feature.${signal.id}.title`)}
-                    accessibilityHint={t('onboarding.feature.open_hint')}
-                    onPress={() => {
-                      if (featureFocusTimer.current) clearTimeout(featureFocusTimer.current);
-                      setActiveFeature(signal.id);
-                    }}
-                    disabled={isLeaving || isStepTransitioning}
-                    style={styles.signalRow}
-                    testID={`btn.onboarding.feature.${signal.id}`}
-                  >
-                    {content}
-                  </PressableScale>
-                );
-              })}
+            <View style={styles.titleBlock}>
+              <Animated.View style={introEnter(STORY.titleLead)}>
+                <Text
+                  ref={introTitleRef}
+                  {...(process.env.EXPO_OS === 'web' ? { tabIndex: -1 as const } : {})}
+                  accessible
+                  accessibilityRole="header"
+                  accessibilityLabel={`${t('onboarding.intro.title_lead')} ${t('onboarding.intro.title_accent')}`}
+                  onLayout={() => handleTitleLayout('intro')}
+                  style={[styles.title, webTitleFocusResetStyle, { color: noctalia.text.primary }]}
+                >
+                  {t('onboarding.intro.title_lead')}
+                </Text>
+              </Animated.View>
+              <Animated.View style={introEnter(STORY.titleAccent)} accessible={false} importantForAccessibility="no-hide-descendants">
+                <Text style={[styles.title, styles.titleAccent, { color: titleAccent }]}>
+                  {t('onboarding.intro.title_accent')}
+                </Text>
+              </Animated.View>
             </View>
-            <Pressable
-              accessibilityRole="button"
-              onPress={openPrivacy}
-              style={styles.privacyLink}
-              testID={TID.Button.OnboardingPrivacy}
-            >
-              <Text style={[styles.privacyLinkText, { color: titleAccent }]}>
-                {t('onboarding.privacy.link')}
+            <Animated.View style={introEnter(STORY.subtitle)}>
+              <Text style={[styles.subtitle, { color: noctalia.text.secondary }]}>
+                {t('onboarding.intro.subtitle')}
               </Text>
-            </Pressable>
             </Animated.View>
+            <Animated.View
+              style={[styles.signalList, visitedPath ? introEnter(STORY.node) : null]}
+              testID={TID.Component.OnboardingIntroSignals}
+            >
+              <LoopConstellation
+                nodes={signalNodes}
+                accent={titleAccent as string}
+                text={noctalia.text.primary as string}
+                muted={noctalia.text.secondary as string}
+                play={arrival && step === 'intro'}
+                renderNode={(node, content) => {
+                  if (!featureSheetsEnabled) {
+                    return <View testID={`btn.onboarding.feature.${node.id}`}>{content}</View>;
+                  }
+                  const feature = node.id as OnboardingFeature;
+                  return (
+                    <PressableScale
+                      ref={(handle) => { featureTriggers.current[feature] = handle; }}
+                      accessibilityRole="button"
+                      accessibilityLabel={node.title}
+                      accessibilityHint={t('onboarding.feature.open_hint')}
+                      onPress={() => {
+                        if (featureFocusTimer.current) clearTimeout(featureFocusTimer.current);
+                        setActiveFeature(feature);
+                      }}
+                      disabled={isLeaving || isStepTransitioning}
+                      testID={`btn.onboarding.feature.${node.id}`}
+                    >
+                      {content}
+                    </PressableScale>
+                  );
+                }}
+              />
+            </Animated.View>
+            <Animated.View style={introEnter(STORY.privacy)}>
+              <Pressable
+                accessibilityRole="button"
+                onPress={openPrivacy}
+                style={styles.privacyLink}
+                testID={TID.Button.OnboardingPrivacy}
+              >
+                <Text style={[styles.privacyLinkText, { color: titleAccent }]}>
+                  {t('onboarding.privacy.link')}
+                </Text>
+              </Pressable>
+            </Animated.View>
+            </View>
           </View>
 
           {pathPreloaded || step === 'path' ? (
@@ -673,78 +720,85 @@ export default function OnboardingScreen() {
               ]}
               testID={TID.Component.OnboardingPath}
             >
-            <Animated.View collapsable={false} style={[styles.paths, { width: '100%' }, step === 'path' ? phaseEntrance : { animationName: 'none' }]}>
+            <View collapsable={false} style={[styles.paths, { width: '100%' }]}>
 
             <View style={{ height: artworkSpace }} accessible={false} />
-            <Text
-              ref={pathTitleRef}
-              {...(process.env.EXPO_OS === 'web' ? { tabIndex: -1 as const } : {})}
-              accessible
-              accessibilityRole="header"
-              onLayout={() => handleTitleLayout('path')}
-              style={[styles.pathHeading, webTitleFocusResetStyle, { color: noctalia.text.primary }]}
-            >
-              {t('onboarding.path.title_lead')}{'\n'}
-              <Text style={{ color: titleAccent }}>{t('onboarding.path.title_accent')}</Text>
-            </Text>
-            <Text style={[styles.pathSubtitle, { color: noctalia.text.secondary }]}>
-              {t('onboarding.subtitle')}
-            </Text>
-            <View
-              style={[
-                styles.pathCard,
-                { backgroundColor: 'rgba(33, 25, 47, 0.78)', borderColor: noctalia.surface.borderStrong },
-              ]}
-            >
+            <View style={styles.titleBlock}>
+              <Animated.View style={pathEnter(STORY.titleLead - 200)}>
+                <Text
+                  ref={pathTitleRef}
+                  {...(process.env.EXPO_OS === 'web' ? { tabIndex: -1 as const } : {})}
+                  accessible
+                  accessibilityRole="header"
+                  accessibilityLabel={`${t('onboarding.path.title_lead')} ${t('onboarding.path.title_accent')}`}
+                  onLayout={() => handleTitleLayout('path')}
+                  style={[styles.pathHeading, webTitleFocusResetStyle, { color: noctalia.text.primary }]}
+                >
+                  {t('onboarding.path.title_lead')}
+                </Text>
+              </Animated.View>
+              <Animated.View style={pathEnter(STORY.titleLead)} accessible={false} importantForAccessibility="no-hide-descendants">
+                <Text style={[styles.pathHeading, styles.titleAccent, { color: titleAccent }]}>
+                  {t('onboarding.path.title_accent')}
+                </Text>
+              </Animated.View>
+            </View>
+            <Animated.View style={pathEnter(STORY.titleLead + 120)}>
+              <Text style={[styles.pathSubtitle, { color: noctalia.text.secondary }]}>
+                {t('onboarding.subtitle')}
+              </Text>
+            </Animated.View>
+            <View style={styles.pathList}>
               {PATHS.map((path, index) => {
                 const selected = path.id === selectedPath;
                 return (
-                  <Pressable
-                    key={path.id}
-                    accessibilityRole="radio"
-                    aria-checked={selected}
-                    accessibilityState={{ checked: selected }}
-                    onPress={() => selectPath(path.id)}
-                    style={[
-                      styles.pathRow,
-                      index < PATHS.length - 1 && {
-                        borderBottomColor: noctalia.surface.border,
-                        borderBottomWidth: StyleSheet.hairlineWidth,
-                      },
-                    ]}
-                    testID={TID.Button.OnboardingPath(path.id)}
-                  >
-                    <Animated.View pointerEvents="none" accessible={false} style={[StyleSheet.absoluteFill, {
-                      backgroundColor: noctalia.accent.soft, opacity: selected ? 0.1 : 0,
-                      transitionProperty: 'opacity', transitionDuration: DURATION.press, transitionTimingFunction: EASE.out,
-                    }]} />
-                    <View style={[styles.pathIcon, { backgroundColor: noctalia.surface.soft }]}>
-                      <IconSymbol name={path.icon} size={25} color={titleAccent as ColorValue} />
-                    </View>
-                    <View style={styles.pathCopy}>
-                      <Text style={[styles.pathTitle, { color: noctalia.text.primary }]}>
-                        {t(`onboarding.path.${path.id}.title`)}
-                      </Text>
-                      <Text style={[styles.pathBody, { color: noctalia.text.secondary }]}>
-                        {t(`onboarding.path.${path.id}.body`)}
-                      </Text>
-                    </View>
-                    <View
-                      style={[
-                        styles.radio,
-                        {
-                          backgroundColor: selected ? titleAccent : 'transparent',
-                          borderColor: selected ? titleAccent : noctalia.text.tertiary,
-                        },
+                  <Animated.View key={path.id} style={pathEnter(STORY.titleLead + 220 + index * STORY.stepStagger)}>
+                    <Pressable
+                      accessibilityRole="radio"
+                      aria-checked={selected}
+                      accessibilityState={{ checked: selected }}
+                      onPress={() => selectPath(path.id)}
+                      style={({ pressed }) => [
+                        styles.pathRow,
+                        { borderColor: noctalia.surface.border },
+                        pressed && styles.pathRowPressed,
                       ]}
+                      testID={TID.Button.OnboardingPath(path.id)}
                     >
-                      {selected ? <IconSymbol name="checkmark" size={13} color={noctalia.text.onAccent} /> : null}
-                    </View>
-                  </Pressable>
+                      <Animated.View pointerEvents="none" accessible={false} style={[StyleSheet.absoluteFill, styles.pathSelection, {
+                        borderColor: titleAccent,
+                        backgroundColor: 'rgba(234,212,180,0.10)',
+                        opacity: selected ? 1 : 0,
+                        transitionProperty: 'opacity', transitionDuration: DURATION.fast, transitionTimingFunction: EASE.out,
+                      }]} />
+                      <View style={[styles.pathIcon, { borderColor: selected ? titleAccent : noctalia.surface.border }]}>
+                        <IconSymbol name={path.icon} size={23} color={titleAccent as ColorValue} />
+                      </View>
+                      <View style={styles.pathCopy}>
+                        <Text style={[styles.pathTitle, { color: noctalia.text.primary }]}>
+                          {t(`onboarding.path.${path.id}.title`)}
+                        </Text>
+                        <Text style={[styles.pathBody, { color: noctalia.text.secondary }]}>
+                          {t(`onboarding.path.${path.id}.body`)}
+                        </Text>
+                      </View>
+                      <View
+                        style={[
+                          styles.radio,
+                          {
+                            backgroundColor: selected ? titleAccent : 'transparent',
+                            borderColor: selected ? titleAccent : noctalia.text.tertiary,
+                          },
+                        ]}
+                      >
+                        {selected ? <IconSymbol name="checkmark" size={13} color={noctalia.text.onAccent} /> : null}
+                      </View>
+                    </Pressable>
+                  </Animated.View>
                 );
               })}
             </View>
-            </Animated.View>
+            </View>
             </View>
           ) : null}
         </View>
@@ -787,7 +841,7 @@ export default function OnboardingScreen() {
             </View>
           </View>
         ) : null}
-      </ScrollView>
+      </Animated.ScrollView>
 
       <View
         onLayout={handleFooterLayout}
@@ -805,6 +859,10 @@ export default function OnboardingScreen() {
           locations={[0, 0.45, 1]}
           style={StyleSheet.absoluteFill}
         />
+        <Animated.View style={arrival ? introEnter(STORY.cta) : null}>
+        {arrival && !reducedMotion ? (
+          <Animated.View pointerEvents="none" style={[styles.ctaInvite, { borderColor: titleAccent }, ctaInvite]} />
+        ) : null}
         <Pressable
           accessibilityLabel={step === 'intro'
             ? t('onboarding.intro.cta')
@@ -837,6 +895,7 @@ export default function OnboardingScreen() {
             </View>
           )}
         </Pressable>
+        </Animated.View>
       </View>
 
       {featureSheetsEnabled && activeFeature ? (
@@ -917,7 +976,7 @@ const styles = StyleSheet.create({
   stepProgress: { alignItems: 'center', gap: 6, marginLeft: -20 },
   stepMarks: { flexDirection: 'row', gap: 5 },
   stepMark: { width: 18, height: 2, borderRadius: 1 },
-  stepNumber: { fontFamily: Fonts.spaceGrotesk.medium, fontSize: 9, lineHeight: 13, letterSpacing: 1 },
+  stepNumber: { fontFamily: Fonts.spaceGrotesk.medium, fontSize: 11, lineHeight: 14, letterSpacing: 1.5 },
   topBarLeading: { position: 'relative', minWidth: 80, height: 44, justifyContent: 'center' },
   topBarBack: { position: 'absolute', top: 0, left: 0 },
   brand: { fontFamily: Fonts.fraunces.regular, fontSize: 26, lineHeight: 32, minWidth: 80 },
@@ -938,12 +997,9 @@ const styles = StyleSheet.create({
     lineHeight: 22,
     textAlign: 'center',
   },
-  signalList: { width: '100%', maxWidth: 420, flexDirection: 'row', justifyContent: 'space-around', gap: 8, paddingTop: 12 },
-  signalRow: { flex: 1, minHeight: 96, alignItems: 'center', gap: 10, paddingVertical: 4 },
-  signalIcon: { width: 48, height: 48, borderRadius: 24, borderWidth: 1, alignItems: 'center', justifyContent: 'center' },
-  signalCopy: { alignItems: 'center', gap: 3 },
-  signalTitle: { fontFamily: Fonts.spaceGrotesk.regular, fontSize: 13, lineHeight: 19, textAlign: 'center' },
-  signalBody: { fontFamily: Fonts.spaceGrotesk.regular, fontSize: 10, lineHeight: 15, textAlign: 'center' },
+  signalList: { width: '100%', alignItems: 'center' },
+  titleBlock: { alignItems: 'center' },
+  titleAccent: { marginTop: -2 },
   privacyLink: { minHeight: 44, justifyContent: 'center', paddingHorizontal: 8 },
   privacyLinkText: { fontFamily: Fonts.spaceGrotesk.medium, fontSize: 13, textDecorationLine: 'underline' },
   stepStage: { position: 'relative', alignSelf: 'stretch' },
@@ -954,9 +1010,11 @@ const styles = StyleSheet.create({
   hiddenStep: { display: 'none' },
   pathHeading: { fontFamily: Fonts.fraunces.regular, fontSize: 34, lineHeight: 40, textAlign: 'center' },
   pathSubtitle: { fontFamily: Fonts.spaceGrotesk.regular, fontSize: 15, lineHeight: 21, textAlign: 'center' },
-  pathCard: { marginTop: 10, borderWidth: 1, borderRadius: 24, borderCurve: 'continuous', overflow: 'hidden' },
-  pathRow: { minHeight: 100, paddingHorizontal: 16, paddingVertical: 16, flexDirection: 'row', alignItems: 'center', gap: 13 },
-  pathIcon: { width: 48, height: 48, borderRadius: 24, alignItems: 'center', justifyContent: 'center' },
+  pathList: { marginTop: 10, gap: 10 },
+  pathRow: { minHeight: 88, paddingHorizontal: 16, paddingVertical: 14, flexDirection: 'row', alignItems: 'center', gap: 14, borderWidth: StyleSheet.hairlineWidth, borderRadius: 22, borderCurve: 'continuous', overflow: 'hidden', backgroundColor: 'rgba(14, 10, 26, 0.72)' },
+  pathRowPressed: { transform: [{ scale: 0.985 }] },
+  pathSelection: { borderWidth: 1, borderRadius: 22, borderCurve: 'continuous' },
+  pathIcon: { width: 46, height: 46, borderRadius: 23, borderWidth: 1, alignItems: 'center', justifyContent: 'center', backgroundColor: 'rgba(3,4,13,0.45)' },
   pathCopy: { flex: 1, gap: 4 },
   pathTitle: { fontFamily: Fonts.fraunces.medium, fontSize: 19, lineHeight: 24 },
   pathBody: { fontFamily: Fonts.spaceGrotesk.regular, fontSize: 13, lineHeight: 18 },
@@ -966,6 +1024,7 @@ const styles = StyleSheet.create({
   errorActions: { flexDirection: 'row', flexWrap: 'wrap', gap: 8 },
   errorButton: { minHeight: 44, justifyContent: 'center', borderWidth: 1, borderColor: 'transparent', borderRadius: 12, paddingHorizontal: 12 },
   errorButtonText: { fontFamily: Fonts.spaceGrotesk.bold, fontSize: 13 },
+  ctaInvite: { position: 'absolute', top: 0, left: 0, right: 0, bottom: 0, borderWidth: 1, borderRadius: 28, borderCurve: 'continuous' },
   footer: { position: 'absolute', left: 0, right: 0, bottom: 0, paddingHorizontal: 24, paddingTop: 10 },
   primaryButton: { minHeight: 56, borderRadius: 28, borderCurve: 'continuous', borderWidth: 1, flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: 12, paddingHorizontal: 18 },
   primaryContent: { flex: 1, flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: 12, paddingVertical: 14 },
