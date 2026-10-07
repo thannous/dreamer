@@ -139,6 +139,31 @@ La suite Noctalia complète restaure le cache immuable le plus récent au préfi
 qu'une baseline existe. `--allow-missing-baseline` ne sert qu'au bootstrap ; il
 ne relâche rien lorsqu'un fichier de référence est restauré.
 
+## Durée des parcours E2E
+
+Mesure du 7 octobre 2026 (statuts GitHub des PR #252 à #255) : une PR
+Noctalia attendait environ 30 min, presque entièrement sur
+`testerarmy-dreamer`, qui enchaînait dans un seul conteneur les 75 parcours
+en-US puis les contextes fr-FR, de-DE et fiches désactivées, chacun avec un
+bundle Metro froid. `noctalia-e2e-web` suivait avec environ 20 min, un seul
+worker Playwright.
+
+Les mêmes tests s'exécutent désormais en parallèle :
+
+- `testerarmy-dreamer-journeys` découpe le contexte en-US en quatre tranches
+  (`--shard`) ;
+- `testerarmy-dreamer-contexts` exécute fr-FR sur un conteneur, de-DE et
+  fiches désactivées sur un second ;
+- `testerarmy-dreamer` attache leur workspace et vérifie l'union exacte des
+  identifiants passés et les quatre contextes. Une tranche absente ou en échec
+  rend la campagne incomplète ;
+- `noctalia-e2e-web` répartit la suite Playwright sur trois conteneurs.
+
+Aucun test n'est retiré ou ignoré. Chaque conteneur paie son installation et
+son bundle froid : le temps total facturé augmente un peu, le temps d'attente
+diminue. Le workspace Dreamer transporte environ 600 Mo de traces par
+pipeline.
+
 ## Estimation CircleCI Free figée
 
 Hypothèses officielles figées au 20 août 2026 : 30 000 crédits/mois, Docker
