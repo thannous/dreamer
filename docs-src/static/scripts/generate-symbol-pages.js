@@ -1160,8 +1160,8 @@ ${renderSharedComponentStyles()}
             --cream-45: rgba(255, 247, 237, 0.45);
             --cream-35: rgba(255, 247, 237, 0.35);
             --line: rgba(255, 247, 237, 0.10);
-            --salmon: #fda481;
-            --salmon-dim: rgba(253, 164, 129, 0.72);
+            --salmon: #ead4b4;
+            --salmon-dim: rgba(234, 212, 180, 0.72);
         }
         .symbol-page a:focus-visible {
             outline: 2px solid var(--salmon);
@@ -1172,7 +1172,7 @@ ${renderSharedComponentStyles()}
         .aurora-bg {
             position: fixed; inset: 0; z-index: -1;
             background:
-                radial-gradient(58rem 38rem at 88% -12%, rgba(253, 164, 129, 0.07), transparent 62%),
+                radial-gradient(58rem 38rem at 88% -12%, rgba(234, 212, 180, 0.07), transparent 62%),
                 radial-gradient(46rem 34rem at -8% -6%, rgba(150, 122, 204, 0.09), transparent 58%),
                 #0a0512;
         }
@@ -1187,7 +1187,7 @@ ${renderSharedComponentStyles()}
             border: 1px solid rgba(255, 247, 237, 0.16);
             transition: border-color 0.25s ease, background 0.25s ease, transform 0.2s ease;
         }
-        .glass-button:hover { background: rgba(255, 247, 237, 0.08); border-color: rgba(253, 164, 129, 0.45); }
+        .glass-button:hover { background: rgba(255, 247, 237, 0.08); border-color: rgba(234, 212, 180, 0.45); }
         .glass-button:active { transform: scale(0.98); }
         .symbol-page-main {
             position: relative;
@@ -1278,7 +1278,7 @@ ${renderSharedComponentStyles()}
             color: var(--cream-88);
             transition: border-color 0.25s ease, color 0.25s ease;
         }
-        .symbol-chip--accent { color: var(--salmon); border-color: rgba(253, 164, 129, 0.45); }
+        .symbol-chip--accent { color: var(--salmon); border-color: rgba(234, 212, 180, 0.45); }
         a.symbol-chip:hover { border-color: var(--salmon); color: var(--salmon); }
         .symbol-heading {
             width: min(100%, 14ch);
@@ -1364,7 +1364,7 @@ ${renderSharedComponentStyles()}
         .symbol-meaning .prose a {
             color: var(--salmon);
             text-decoration: underline;
-            text-decoration-color: rgba(253, 164, 129, 0.35);
+            text-decoration-color: rgba(234, 212, 180, 0.35);
             text-underline-offset: 3px;
             transition: text-decoration-color 0.25s ease;
         }
@@ -1462,7 +1462,7 @@ ${renderSharedComponentStyles()}
             color: var(--cream-35);
             transition: transform 0.25s ease, color 0.25s ease;
         }
-        .symbol-link:hover { border-top-color: rgba(253, 164, 129, 0.55); }
+        .symbol-link:hover { border-top-color: rgba(234, 212, 180, 0.55); }
         .symbol-link:hover span { color: var(--cream); }
         .symbol-link:hover::after { transform: translateX(4px); color: var(--salmon); }
 
@@ -1504,10 +1504,10 @@ ${renderSharedComponentStyles()}
 
         /* Soft app CTA */
         .symbol-soft-cta {
-            border: 1px solid rgba(253, 164, 129, 0.22);
+            border: 1px solid rgba(234, 212, 180, 0.22);
             border-radius: 0.75rem;
             background:
-                radial-gradient(30rem 14rem at 12% 0%, rgba(253, 164, 129, 0.09), transparent 65%),
+                radial-gradient(30rem 14rem at 12% 0%, rgba(234, 212, 180, 0.09), transparent 65%),
                 rgba(255, 247, 237, 0.02);
             padding: clamp(1.5rem, 3vw, 2.25rem);
             margin-bottom: clamp(3rem, 6vw, 4.5rem);
@@ -1529,7 +1529,7 @@ ${renderSharedComponentStyles()}
             border: 1px solid var(--line);
             border-radius: 1rem;
             background:
-                radial-gradient(36rem 16rem at 50% -20%, rgba(253, 164, 129, 0.12), transparent 70%),
+                radial-gradient(36rem 16rem at 50% -20%, rgba(234, 212, 180, 0.12), transparent 70%),
                 rgba(255, 247, 237, 0.02);
             padding: clamp(2.5rem, 6vw, 4rem) clamp(1.5rem, 4vw, 3rem);
             text-align: center;
@@ -2237,8 +2237,8 @@ ${renderSharedComponentStyles()}
             --cream-45: rgba(255, 247, 237, 0.45);
             --cream-35: rgba(255, 247, 237, 0.35);
             --line: rgba(255, 247, 237, 0.10);
-            --salmon: #fda481;
-            --salmon-dim: rgba(253, 164, 129, 0.72);
+            --salmon: #ead4b4;
+            --salmon-dim: rgba(234, 212, 180, 0.72);
         }
         .category-page a:focus-visible {
             outline: 2px solid var(--salmon);
@@ -2249,7 +2249,7 @@ ${renderSharedComponentStyles()}
         .aurora-bg {
             position: fixed; inset: 0; z-index: -1;
             background:
-                radial-gradient(58rem 38rem at 88% -12%, rgba(253, 164, 129, 0.07), transparent 62%),
+                radial-gradient(58rem 38rem at 88% -12%, rgba(234, 212, 180, 0.07), transparent 62%),
                 radial-gradient(46rem 34rem at -8% -6%, rgba(150, 122, 204, 0.09), transparent 58%),
                 #0a0512;
         }
@@ -2264,7 +2264,7 @@ ${renderSharedComponentStyles()}
             border: 1px solid rgba(255, 247, 237, 0.16);
             transition: border-color 0.25s ease, background 0.25s ease, transform 0.2s ease;
         }
-        .glass-button:hover { background: rgba(255, 247, 237, 0.08); border-color: rgba(253, 164, 129, 0.45); }
+        .glass-button:hover { background: rgba(255, 247, 237, 0.08); border-color: rgba(234, 212, 180, 0.45); }
         .glass-button:active { transform: scale(0.98); }
 
         .symbol-breadcrumb {
@@ -2291,7 +2291,7 @@ ${renderSharedComponentStyles()}
             color: var(--cream-88);
             transition: border-color 0.25s ease, color 0.25s ease;
         }
-        .symbol-chip--accent { color: var(--salmon); border-color: rgba(253, 164, 129, 0.45); }
+        .symbol-chip--accent { color: var(--salmon); border-color: rgba(234, 212, 180, 0.45); }
         a.symbol-chip:hover { border-color: var(--salmon); color: var(--salmon); }
 
         /* Hero: left-aligned editorial copy over the contracted illustration */
@@ -2421,7 +2421,7 @@ ${renderSharedComponentStyles()}
             color: var(--cream-35);
             transition: transform 0.25s ease, color 0.25s ease;
         }
-        .guide-link:hover { border-top-color: rgba(253, 164, 129, 0.55); }
+        .guide-link:hover { border-top-color: rgba(234, 212, 180, 0.55); }
         .guide-link:hover span { color: var(--cream); }
         .guide-link:hover::after { transform: translateX(4px); color: var(--salmon); }
         .guide-link-list { border-bottom: 1px solid var(--line); }
@@ -2433,7 +2433,7 @@ ${renderSharedComponentStyles()}
             border: 1px solid var(--line);
             border-radius: 1rem;
             background:
-                radial-gradient(36rem 16rem at 50% -20%, rgba(253, 164, 129, 0.12), transparent 70%),
+                radial-gradient(36rem 16rem at 50% -20%, rgba(234, 212, 180, 0.12), transparent 70%),
                 rgba(255, 247, 237, 0.02);
             padding: clamp(2.5rem, 6vw, 4rem) clamp(1.5rem, 4vw, 3rem);
             text-align: center;
@@ -2884,8 +2884,8 @@ ${renderSharedComponentStyles()}
             --cream-45: rgba(255, 247, 237, 0.45);
             --cream-35: rgba(255, 247, 237, 0.35);
             --line: rgba(255, 247, 237, 0.10);
-            --salmon: #fda481;
-            --salmon-dim: rgba(253, 164, 129, 0.72);
+            --salmon: #ead4b4;
+            --salmon-dim: rgba(234, 212, 180, 0.72);
         }
         .curation-page a:focus-visible {
             outline: 2px solid var(--salmon);
@@ -2896,7 +2896,7 @@ ${renderSharedComponentStyles()}
         .aurora-bg {
             position: fixed; inset: 0; z-index: -1;
             background:
-                radial-gradient(58rem 38rem at 88% -12%, rgba(253, 164, 129, 0.07), transparent 62%),
+                radial-gradient(58rem 38rem at 88% -12%, rgba(234, 212, 180, 0.07), transparent 62%),
                 radial-gradient(46rem 34rem at -8% -6%, rgba(150, 122, 204, 0.09), transparent 58%),
                 #0a0512;
         }
@@ -2911,7 +2911,7 @@ ${renderSharedComponentStyles()}
             border: 1px solid rgba(255, 247, 237, 0.16);
             transition: border-color 0.25s ease, background 0.25s ease, transform 0.2s ease;
         }
-        .glass-button:hover { background: rgba(255, 247, 237, 0.08); border-color: rgba(253, 164, 129, 0.45); }
+        .glass-button:hover { background: rgba(255, 247, 237, 0.08); border-color: rgba(234, 212, 180, 0.45); }
         .glass-button:active { transform: scale(0.98); }
 
         .symbol-breadcrumb {
@@ -2938,7 +2938,7 @@ ${renderSharedComponentStyles()}
             color: var(--cream-88);
             transition: border-color 0.25s ease, color 0.25s ease;
         }
-        .symbol-chip--accent { color: var(--salmon); border-color: rgba(253, 164, 129, 0.45); }
+        .symbol-chip--accent { color: var(--salmon); border-color: rgba(234, 212, 180, 0.45); }
         a.symbol-chip:hover { border-color: var(--salmon); color: var(--salmon); }
 
         /* Hero: left-aligned editorial copy over the contracted illustration */
@@ -3055,7 +3055,7 @@ ${renderSharedComponentStyles()}
             border: 1px solid var(--line);
             border-radius: 1rem;
             background:
-                radial-gradient(36rem 16rem at 50% -20%, rgba(253, 164, 129, 0.12), transparent 70%),
+                radial-gradient(36rem 16rem at 50% -20%, rgba(234, 212, 180, 0.12), transparent 70%),
                 rgba(255, 247, 237, 0.02);
             padding: clamp(2.5rem, 6vw, 4rem) clamp(1.5rem, 4vw, 3rem);
             text-align: center;

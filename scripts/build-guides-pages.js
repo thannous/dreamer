@@ -637,7 +637,7 @@ function renderGuideHubStyles() {
         .noctalia-premium-nav-actions { justify-content: flex-end; }
         .noctalia-premium-action { display: inline-flex; }
         .noctalia-premium-download { display: inline-flex; align-items: center; justify-content: center; color: rgba(237, 225, 255, 0.86); background: rgba(255, 255, 255, 0.06); border: 1px solid rgba(255, 255, 255, 0.12); }
-        .noctalia-premium-download:hover { color: #fff; background: rgba(255, 255, 255, 0.10); border-color: rgba(253, 164, 129, 0.35); }
+        .noctalia-premium-download:hover { color: #fff; background: rgba(255, 255, 255, 0.10); border-color: rgba(234, 212, 180, 0.35); }
         #mobileMenuPanel { position: relative; z-index: 60; }
         .mobile-menu-surface {
           background: #120720 !important;
@@ -681,7 +681,7 @@ function renderGuideHubStyles() {
           pointer-events: none;
           z-index: 0;
           background:
-            radial-gradient(58rem 38rem at 88% -12%, rgba(253, 164, 129, 0.07), transparent 62%),
+            radial-gradient(58rem 38rem at 88% -12%, rgba(234, 212, 180, 0.07), transparent 62%),
             radial-gradient(46rem 34rem at -8% -6%, rgba(150, 122, 204, 0.09), transparent 58%),
             #0a0512;
         }
@@ -804,7 +804,7 @@ function renderGuideHubStyles() {
           inset: 0;
           opacity: 0.74;
           pointer-events: none;
-          background: radial-gradient(circle at 78% 20%, var(--guide-tone, rgba(253,164,129,0.26)), transparent 52%);
+          background: radial-gradient(circle at 78% 20%, var(--guide-tone, rgba(234, 212, 180,0.26)), transparent 52%);
         }
         .guides-card-title, .guides-dictionary-title {
           position: relative;
@@ -885,8 +885,8 @@ function renderGuideHubStyles() {
           width: fit-content;
           padding: 0.42rem 0.75rem;
           border-radius: 3px;
-          border: 1px solid rgba(253, 164, 129, 0.45);
-          color: #fda481;
+          border: 1px solid rgba(234, 212, 180, 0.45);
+          color: #ead4b4;
           background: transparent;
           font-size: 0.68rem;
           letter-spacing: 0.18em;
@@ -908,7 +908,7 @@ function renderGuideHubStyles() {
         }
         .guides-card:hover, .guides-dictionary-card:hover {
           transform: translateY(-2px);
-          border-color: rgba(253,164,129,0.34);
+          border-color: rgba(234, 212, 180,0.34);
         }
         .guides-card-title { margin-top: 0.75rem; font-size: clamp(1.18rem, 1.32vw, 1.62rem); }
         .guides-card-desc {
@@ -941,7 +941,7 @@ function renderGuideHubStyles() {
         }
         .guides-trust-item { display: flex; align-items: center; gap: 1rem; padding: 0 1.1rem; border-right: 1px solid rgba(255, 247, 237, 0.10); }
         .guides-trust-item:last-child { border-right: 0; }
-        .guides-trust-icon { width: 2.2rem; height: 2.2rem; flex: 0 0 auto; display: inline-flex; align-items: center; justify-content: center; color: #fda481; }
+        .guides-trust-icon { width: 2.2rem; height: 2.2rem; flex: 0 0 auto; display: inline-flex; align-items: center; justify-content: center; color: #ead4b4; }
         .guides-trust strong { display: block; color: #fff7ed; font-weight: 600; margin-bottom: 0.25rem; }
         .guides-trust span { color: rgba(255, 247, 237, 0.64); font-size: 0.86rem; line-height: 1.35; }
         .guides-depth {
@@ -1325,13 +1325,13 @@ function renderLayoutCss() {
         #categoryGridSection[hidden] { display: none !important; }
         #mobilePills, #mobileAlpha { display: none !important; }
         .cat-pill { display: inline-flex; align-items: center; gap: 6px; padding: 8px 14px; border-radius: 3px; font-size: 0.78rem; font-weight: 500; letter-spacing: 0.06em; border: 1px solid rgba(255,247,237,0.16); background: transparent; color: rgba(255,247,237,0.88); transition: all 0.2s ease; text-decoration: none; }
-        .cat-pill:hover { border-color: rgba(253,164,129,0.45); color: #fda481; }
+        .cat-pill:hover { border-color: rgba(234, 212, 180,0.45); color: #ead4b4; }
         .cat-pill .pill-dot { width: 6px; height: 6px; border-radius: 1px; flex-shrink: 0; }
         .cat-pill .pill-count { font-size: 0.7rem; opacity: 0.6; }
         #mobileAlpha { display: none !important; flex-wrap: wrap; gap: 4px; justify-content: center; margin-bottom: 1rem; }
         .mobile-alpha-link { min-width: 1.75rem; text-align: center; padding: 2px 4px; border-radius: 3px; font-size: 0.8rem; color: rgba(255,247,237,0.64); transition: color 0.2s ease; text-decoration: none; }
-        .mobile-alpha-link:hover { color: #FDA481; }
-        .mobile-alpha-link.alpha-active { color: #fff7ed !important; font-weight: 700; box-shadow: inset 0 -2px 0 #fda481; }
+        .mobile-alpha-link:hover { color: #ead4b4; }
+        .mobile-alpha-link.alpha-active { color: #fff7ed !important; font-weight: 700; box-shadow: inset 0 -2px 0 #ead4b4; }
         body.dictionary-page {
           position: relative;
           isolation: isolate;
@@ -1441,7 +1441,7 @@ function renderLayoutCss() {
           font-size: 0.72rem;
           letter-spacing: 0.14em;
           text-transform: uppercase;
-          color: #fda481;
+          color: #ead4b4;
         }
         .dictionary-reflection-guide h2 {
           margin: 0 0 0.45rem;
@@ -1455,7 +1455,7 @@ function renderLayoutCss() {
         }
         .reflection-steps {
           display: grid;
-          grid-template-columns: repeat(auto-fill, minmax(min(100%, 16rem), 1fr));
+          grid-template-columns: repeat(auto-fit, minmax(min(100%, 12.5rem), 1fr));
           gap: 0.7rem;
           margin: 0 0 1.1rem;
           padding: 0;
@@ -1475,7 +1475,7 @@ function renderLayoutCss() {
           align-items: flex-start;
           justify-content: center;
           padding-top: 0.1rem;
-          color: var(--salmon-dim, rgba(253,164,129,0.72));
+          color: var(--salmon-dim, rgba(234, 212, 180,0.72));
           font-size: 0.85rem;
           font-weight: 500;
           letter-spacing: 0.1em;
@@ -1501,9 +1501,9 @@ function renderLayoutCss() {
         .reflection-footer {
           margin: 0;
           padding: 0.7rem 0.9rem;
-          border-left: 3px solid rgba(253,164,129,0.55);
+          border-left: 3px solid rgba(234, 212, 180,0.55);
           border-radius: 0;
-          background: rgba(253,164,129,0.07);
+          background: rgba(234, 212, 180,0.07);
           font-size: 0.85rem;
           color: rgba(248,245,255,0.88);
         }
@@ -1551,7 +1551,7 @@ function renderLayoutCss() {
           border: 0;
           border-radius: 0;
           background: transparent;
-          color: rgba(253,164,129,0.9);
+          color: rgba(234, 212, 180,0.9);
           font-size: 0.76rem;
           line-height: 1.2;
           text-transform: uppercase;
@@ -1606,9 +1606,9 @@ function renderLayoutCss() {
           background: rgba(255,247,237,0.04);
         }
         .dictionary-conversion-links a {
-          color: #fda481;
+          color: #ead4b4;
           text-decoration: underline;
-          text-decoration-color: rgba(253,164,129,0.35);
+          text-decoration-color: rgba(234, 212, 180,0.35);
           text-underline-offset: 0.2em;
         }
         .dictionary-conversion-links a:hover {
@@ -1627,10 +1627,10 @@ function renderLayoutCss() {
           display: grid;
           grid-template-columns: minmax(18rem, 0.8fr) minmax(0, 1.2fr);
           gap: 1.4rem clamp(1.2rem, 3vw, 2.8rem);
-          border: 1px solid rgba(253,164,129,0.22);
+          border: 1px solid rgba(234, 212, 180,0.22);
           border-radius: 0.75rem;
           background:
-            radial-gradient(30rem 14rem at 12% 0%, rgba(253, 164, 129, 0.09), transparent 65%),
+            radial-gradient(30rem 14rem at 12% 0%, rgba(234, 212, 180, 0.09), transparent 65%),
             rgba(255, 247, 237, 0.02);
         }
         .dictionary-conversion-copy h2 {
@@ -1650,7 +1650,7 @@ function renderLayoutCss() {
           line-height: 1.55;
         }
         .dictionary-conversion-kicker {
-          color: #fda481;
+          color: #ead4b4;
           font-size: 0.72rem;
           font-weight: 800;
           letter-spacing: 0.11em;
@@ -1679,17 +1679,17 @@ function renderLayoutCss() {
         }
         .dictionary-store-cta {
           color: #0a0514;
-          background: #fda481;
+          background: #ead4b4;
         }
-        .dictionary-store-cta:hover { background: #ffb89b; }
+        .dictionary-store-cta:hover { background: #f6ebda; }
         .dictionary-details-cta {
           color: #fff7f0;
           border: 1px solid rgba(255,255,255,0.16);
           background: rgba(255,255,255,0.05);
         }
         .dictionary-details-cta:hover {
-          border-color: rgba(253,164,129,0.42);
-          background: rgba(253,164,129,0.08);
+          border-color: rgba(234, 212, 180,0.42);
+          background: rgba(234, 212, 180,0.08);
         }
         .dictionary-platform-note {
           margin: 0.75rem 0 0 !important;
@@ -1725,7 +1725,7 @@ function renderLayoutCss() {
           display: inline-flex;
           align-items: center;
           justify-content: center;
-          color: #fda481;
+          color: #ead4b4;
         }
         .dictionary-proof-item strong {
           display: block;
@@ -1783,12 +1783,12 @@ function renderLayoutCss() {
           transform: none;
         }
         .quick-browse-alpha .letter-link:hover {
-          color: #fda481 !important;
+          color: #ead4b4 !important;
           transform: none;
         }
         .quick-browse-alpha .letter-link.alpha-active {
           color: #fff7ed !important;
-          box-shadow: inset 0 -2px 0 #fda481;
+          box-shadow: inset 0 -2px 0 #ead4b4;
           transform: none;
         }
         .quick-browse-copy {
@@ -1831,7 +1831,7 @@ function renderLayoutCss() {
         }
         .category-browse-card:hover {
           transform: translateY(-2px);
-          border-color: rgba(253,164,129,0.45);
+          border-color: rgba(234, 212, 180,0.45);
           background: rgba(255,247,237,0.045);
         }
         .category-browse-icon {
@@ -1843,7 +1843,7 @@ function renderLayoutCss() {
           display: inline-flex;
           align-items: center;
           justify-content: center;
-          color: var(--salmon-dim, rgba(253,164,129,0.72));
+          color: var(--salmon-dim, rgba(234, 212, 180,0.72));
           flex-shrink: 0;
           opacity: 0.7;
           transform: translateY(-50%);
@@ -1899,7 +1899,7 @@ function renderLayoutCss() {
         }
         .symbol-card:hover {
           transform: translateY(-3px);
-          border-color: rgba(253,164,129,0.4) !important;
+          border-color: rgba(234, 212, 180,0.4) !important;
           background: rgba(255, 247, 237, 0.045);
           box-shadow: none;
         }
@@ -1968,7 +1968,7 @@ function renderLayoutCss() {
           transition: color 0.2s ease, transform 0.2s ease;
         }
         .symbol-card:hover .symbol-card-arrow {
-          color: #fda481;
+          color: #ead4b4;
           transform: translate(2px, -2px);
         }
         .symbol-card-title-link h3 {
@@ -2010,20 +2010,20 @@ function renderLayoutCss() {
           align-items: center;
           gap: 0.3rem;
           padding: 0.3rem 0.72rem;
-          border: 1px solid rgba(253,164,129,0.32);
+          border: 1px solid rgba(234, 212, 180,0.32);
           border-radius: 3px;
           background: transparent;
           font-size: 0.76rem;
           font-weight: 600;
-          color: #fda481;
+          color: #ead4b4;
           text-decoration: none;
           transition: color 0.2s ease, border-color 0.2s ease, background 0.2s ease;
         }
         .symbol-card:hover .symbol-card-cta,
         .symbol-card-cta:hover {
-          color: #ffc9b0;
-          border-color: rgba(253,164,129,0.5);
-          background: rgba(253,164,129,0.15);
+          color: #f6ebda;
+          border-color: rgba(234, 212, 180,0.5);
+          background: rgba(234, 212, 180,0.15);
         }
         .symbol-card-cta-icon {
           width: 0.8rem;
@@ -2053,7 +2053,7 @@ function renderLayoutCss() {
         #symbolsList > section > h2 {
           margin-bottom: 1rem;
           padding-bottom: 0.72rem;
-          border-bottom: 1px solid rgba(253,164,129,0.14);
+          border-bottom: 1px solid rgba(234, 212, 180,0.14);
         }
         #symbolsList > section {
           scroll-margin-top: var(--dictionary-scroll-offset, 8rem);
@@ -2120,7 +2120,7 @@ function renderLayoutCss() {
           padding: 0.9rem 1rem;
           margin-bottom: 1rem;
           border-radius: 1rem;
-          border: 1px solid rgba(253,164,129,0.12);
+          border: 1px solid rgba(234, 212, 180,0.12);
           background: rgba(18, 10, 34, 0.88);
         }
         #searchFeedback[hidden],
@@ -2137,7 +2137,7 @@ function renderLayoutCss() {
           font-size: 0.72rem;
           text-transform: uppercase;
           letter-spacing: 0.08em;
-          color: rgba(253,164,129,0.8);
+          color: rgba(234, 212, 180,0.8);
         }
         .search-feedback-text {
           color: rgba(248,245,255,0.92);
@@ -2155,8 +2155,8 @@ function renderLayoutCss() {
           transition: background 0.2s ease, border-color 0.2s ease;
         }
         .search-feedback-clear:hover {
-          background: rgba(253,164,129,0.08);
-          border-color: rgba(253,164,129,0.45);
+          background: rgba(234, 212, 180,0.08);
+          border-color: rgba(234, 212, 180,0.45);
         }
         @media (min-width: 768px) {
           .dictionary-header { margin-bottom: 0; }
@@ -2539,12 +2539,12 @@ function renderLayoutCss() {
         .sidebar-section { margin-bottom: 1.5rem; }
         .sidebar-heading { font-size: 0.7rem; text-transform: uppercase; letter-spacing: 0.1em; color: rgba(196,181,253,0.6); margin-bottom: 0.75rem; font-weight: 600; }
         .sidebar-cat-link { display: flex; align-items: center; gap: 8px; padding: 6px 10px; border-radius: 8px; font-size: 0.82rem; color: #e2daff; transition: all 0.15s ease; text-decoration: none; }
-        .sidebar-cat-link:hover { background: rgba(255,255,255,0.06); color: #fda481; }
+        .sidebar-cat-link:hover { background: rgba(255,255,255,0.06); color: #ead4b4; }
         .sidebar-cat-dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
         .sidebar-cat-count { margin-left: auto; font-size: 0.7rem; opacity: 0.5; }
         .sidebar-alpha-grid { display: flex; flex-wrap: wrap; gap: 2px; }
         .sidebar-alpha-link { min-width: 1.75rem; text-align: center; padding: 3px 4px; border-radius: 0.375rem; font-size: 0.8rem; color: rgba(196,181,253,0.75); transition: all 0.2s ease; text-decoration: none; }
-        .sidebar-alpha-link:hover { color: #FDA481; transform: scale(1.1); }
+        .sidebar-alpha-link:hover { color: #ead4b4; transform: scale(1.1); }
         .sidebar-alpha-link.alpha-active { background: white; color: #0a0514 !important; font-weight: 700; transform: scale(1.05); }
         .hero-search, .search-input {
           background: rgba(255,255,255,0.08) !important;
@@ -2556,9 +2556,9 @@ function renderLayoutCss() {
         .dictionary-hero-intro { color: rgba(255,247,237,0.82); }
         .symbol-card-desc { color: rgba(255,247,237,0.72); }
         .symbol-card-question { color: rgba(255,247,237,0.45); }
-        .symbol-card-question strong { color: #fda481; }
+        .symbol-card-question strong { color: #ead4b4; }
         .symbol-card-related { color: rgba(255,247,237,0.64); }
-        .symbol-card-related:hover { color: #fda481; text-decoration: none; }
+        .symbol-card-related:hover { color: #ead4b4; text-decoration: none; }
         .quick-browse-copy p { color: rgba(255,247,237,0.64); }
         .reflection-deck { color: rgba(255,247,237,0.72); }
         .reflection-step-question { color: rgba(255,247,237,0.88); }
@@ -2578,7 +2578,7 @@ function renderLayoutCss() {
         .dictionary-page a:focus-visible,
         .dictionary-page button:focus-visible,
         .dictionary-page summary:focus-visible {
-            outline: 2px solid #fda481;
+            outline: 2px solid #ead4b4;
             outline-offset: 3px;
             border-radius: 2px;
         }
@@ -3096,13 +3096,13 @@ ${renderViewTransitionHeadStyles()}
             --cream-45: rgba(255, 247, 237, 0.45);
             --cream-35: rgba(255, 247, 237, 0.35);
             --line: rgba(255, 247, 237, 0.10);
-            --salmon: #fda481;
-            --salmon-dim: rgba(253, 164, 129, 0.72);
+            --salmon: #ead4b4;
+            --salmon-dim: rgba(234, 212, 180, 0.72);
         }
         .aurora-bg {
             position: fixed; inset: 0; z-index: -1;
             background:
-                radial-gradient(58rem 38rem at 88% -12%, rgba(253, 164, 129, 0.07), transparent 62%),
+                radial-gradient(58rem 38rem at 88% -12%, rgba(234, 212, 180, 0.07), transparent 62%),
                 radial-gradient(46rem 34rem at -8% -6%, rgba(150, 122, 204, 0.09), transparent 58%),
                 #0a0512;
         }
@@ -3124,11 +3124,11 @@ ${renderViewTransitionHeadStyles()}
             border: 1px solid rgba(255, 247, 237, 0.16);
             transition: border-color 0.25s ease, background 0.25s ease, transform 0.2s ease;
         }
-        .glass-button:hover { background: rgba(255, 247, 237, 0.08); border-color: rgba(253, 164, 129, 0.45); }
+        .glass-button:hover { background: rgba(255, 247, 237, 0.08); border-color: rgba(234, 212, 180, 0.45); }
         .glass-button:active { transform: scale(0.98); }
         .dictionary-final-cta {
             background:
-                radial-gradient(36rem 16rem at 50% -20%, rgba(253, 164, 129, 0.12), transparent 70%),
+                radial-gradient(36rem 16rem at 50% -20%, rgba(234, 212, 180, 0.12), transparent 70%),
                 rgba(255, 247, 237, 0.02) !important;
         }
         .mobile-menu-surface {
@@ -3158,25 +3158,25 @@ ${renderViewTransitionHeadStyles()}
         .noctalia-premium-nav-actions { justify-content: flex-end; }
         .noctalia-premium-action { display: inline-flex; }
         .noctalia-premium-download { display: inline-flex; align-items: center; justify-content: center; color: rgba(237, 225, 255, 0.86); background: rgba(255, 255, 255, 0.06); border: 1px solid rgba(255, 255, 255, 0.12); }
-        .noctalia-premium-download:hover { color: #fff; background: rgba(255, 255, 255, 0.10); border-color: rgba(253, 164, 129, 0.35); }
+        .noctalia-premium-download:hover { color: #fff; background: rgba(255, 255, 255, 0.10); border-color: rgba(234, 212, 180, 0.35); }
         html, body { overflow-x: hidden; }
         .symbol-card { transition: all 0.3s ease; }
-        .symbol-card:hover { transform: translateY(-2px); border-color: rgba(253, 164, 129, 0.3); }
-        .symbol-card:focus-visible { outline: 2px solid #FDA481; outline-offset: 2px; }
+        .symbol-card:hover { transform: translateY(-2px); border-color: rgba(234, 212, 180, 0.3); }
+        .symbol-card:focus-visible { outline: 2px solid #ead4b4; outline-offset: 2px; }
         .letter-nav { scroll-behavior: smooth; }
         @media (prefers-reduced-motion: reduce) {
             .letter-nav { scroll-behavior: auto; }
         }
         .letter-link { transition: color 0.2s ease; min-width: 1.75rem; text-align: center; border-radius: 3px; padding: 2px 4px; }
-        .letter-link:hover { color: #FDA481; }
-        .letter-link.alpha-active { color: #fff7ed !important; font-weight: 700; box-shadow: inset 0 -2px 0 #fda481; }
+        .letter-link:hover { color: #ead4b4; }
+        .letter-link.alpha-active { color: #fff7ed !important; font-weight: 700; box-shadow: inset 0 -2px 0 #ead4b4; }
         body.dictionary-search-active .letter-link.alpha-active,
         body.dictionary-search-active .mobile-alpha-link.alpha-active {
             color: rgba(255,247,237,0.64) !important;
             font-weight: 500;
             box-shadow: none;
         }
-        .search-input:focus { outline: none; border-color: #FDA481; }
+        .search-input:focus { outline: none; border-color: #ead4b4; }
         /* Sticky search + alpha bar */
         .letter-link.is-empty,
         .sidebar-alpha-link.is-empty,
@@ -3229,8 +3229,8 @@ ${renderViewTransitionHeadStyles()}
           gap: 0.45rem;
           padding: 0.4rem 0.7rem;
           border-radius: 9999px;
-          background: rgba(253,164,129,0.12);
-          color: rgba(253,164,129,0.96);
+          background: rgba(234, 212, 180,0.12);
+          color: rgba(234, 212, 180,0.96);
           font-size: 0.78rem;
           line-height: 1.2;
           flex-shrink: 0;
@@ -3257,7 +3257,7 @@ ${renderViewTransitionHeadStyles()}
           transition: background 0.2s ease, color 0.2s ease;
         }
         .search-clear:hover {
-          background: rgba(253,164,129,0.18);
+          background: rgba(234, 212, 180,0.18);
           color: #fff;
         }
         .search-clear[hidden] { display: none !important; }
@@ -3269,7 +3269,7 @@ ${renderViewTransitionHeadStyles()}
         }
         body.mobile-menu-lock { overflow: hidden; touch-action: none; }
         /* Hero search */
-        .hero-search:focus { outline: none; border-color: #FDA481; }
+        .hero-search:focus { outline: none; border-color: #ead4b4; }
         .hero-search:focus-visible,
         .search-input:focus-visible,
         .mobile-alpha-link:focus-visible,
@@ -3278,7 +3278,7 @@ ${renderViewTransitionHeadStyles()}
         .dictionary-store-cta:focus-visible,
         .dictionary-details-cta:focus-visible,
         #backToTop:focus-visible {
-            outline: 2px solid #FDA481;
+            outline: 2px solid #ead4b4;
             outline-offset: 2px;
         }
         @media (max-width: 767px) {
