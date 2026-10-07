@@ -297,19 +297,19 @@
     style.id = CONSENT_STYLE_ID;
     style.textContent = `
       .noctalia-consent-panel[hidden] { display: none; }
-      .noctalia-consent-panel { position: fixed; z-index: 10000; right: 1rem; bottom: 1rem; width: min(30rem, calc(100% - 2rem)); padding: 0.85rem; border: 1px solid rgba(253, 164, 129, 0.35); border-radius: 0.9rem; background: rgba(10, 5, 20, 0.96); color: #fff7f0; box-shadow: 0 1rem 2.5rem rgba(0, 0, 0, 0.4); }
+      .noctalia-consent-panel { position: fixed; z-index: 10000; right: 1rem; bottom: 1rem; width: min(30rem, calc(100% - 2rem)); padding: 0.85rem; border: 1px solid rgba(234, 212, 180, 0.35); border-radius: 0.9rem; background: rgba(10, 5, 20, 0.96); color: #fff7f0; box-shadow: 0 1rem 2.5rem rgba(0, 0, 0, 0.4); }
       .noctalia-consent-panel h2 { margin: 0 0 0.3rem; color: #fff7f0; font-size: 1rem; line-height: 1.25; }
       .noctalia-consent-panel p { margin: 0; color: rgba(255, 247, 240, 0.82); font-size: 0.82rem; line-height: 1.4; }
-      .noctalia-consent-panel a { color: #fda481; text-decoration: underline; text-underline-offset: 0.2em; }
-      .noctalia-consent-gpc { margin-top: 0.55rem !important; color: #fda481 !important; }
+      .noctalia-consent-panel a { color: #ead4b4; text-decoration: underline; text-underline-offset: 0.2em; }
+      .noctalia-consent-gpc { margin-top: 0.55rem !important; color: #ead4b4 !important; }
       .noctalia-consent-actions { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 0.55rem; margin-top: 0.75rem; }
-      .noctalia-consent-actions button { min-height: 2.65rem; padding: 0.55rem 0.65rem; border: 1px solid rgba(253, 164, 129, 0.65); border-radius: 0.7rem; background: transparent; color: #fff7f0; font: inherit; font-size: 0.78rem; font-weight: 650; line-height: 1.25; cursor: pointer; }
-      .noctalia-consent-actions button:hover { border-color: #fda481; background: rgba(253, 164, 129, 0.1); }
+      .noctalia-consent-actions button { min-height: 2.65rem; padding: 0.55rem 0.65rem; border: 1px solid rgba(234, 212, 180, 0.65); border-radius: 0.7rem; background: transparent; color: #fff7f0; font: inherit; font-size: 0.78rem; font-weight: 650; line-height: 1.25; cursor: pointer; }
+      .noctalia-consent-actions button:hover { border-color: #ead4b4; background: rgba(234, 212, 180, 0.1); }
       .noctalia-consent-actions button:disabled { cursor: not-allowed; opacity: 0.45; }
       .noctalia-consent-actions button:focus-visible, .noctalia-consent-manage:focus-visible { outline: 3px solid #fff7f0; outline-offset: 3px; }
       .noctalia-consent-manage-wrap { display: flex; justify-content: center; margin-top: 1.25rem; }
       .noctalia-consent-manage { border: 0; padding: 0.35rem; background: transparent; color: rgba(255, 247, 240, 0.72); font: inherit; font-size: 0.8rem; text-decoration: underline; text-underline-offset: 0.2em; cursor: pointer; }
-      .noctalia-consent-manage:hover { color: #fda481; }
+      .noctalia-consent-manage:hover { color: #ead4b4; }
       @media (max-width: 520px) { .noctalia-consent-panel { right: 0.75rem; bottom: 0.75rem; width: calc(100% - 1.5rem); padding: 0.8rem; } .noctalia-consent-panel h2 { font-size: 0.95rem; } .noctalia-consent-panel p { font-size: 0.78rem; } .noctalia-consent-actions button { min-height: 2.5rem; padding: 0.5rem; font-size: 0.74rem; } }
       @media (prefers-reduced-motion: no-preference) { .noctalia-consent-panel { animation: noctalia-consent-in 180ms ease-out; } @keyframes noctalia-consent-in { from { opacity: 0; transform: translateY(0.75rem); } } }
     `;

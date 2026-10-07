@@ -9,7 +9,7 @@
   --article-cream: #fff7f0;
   --article-muted: rgba(231, 220, 255, 0.76);
   --article-soft: rgba(231, 220, 255, 0.58);
-  --article-salmon: #ffa07d;
+  --article-salmon: #ead4b4;
 }
 
 html.blog-article {
@@ -46,7 +46,7 @@ html.blog-article main::before {
   background-image:
     linear-gradient(180deg, rgba(9, 4, 18, 0.32) 0%, rgba(9, 4, 18, 0.68) 52%, #090413 100%),
     linear-gradient(90deg, rgba(7, 3, 15, 0.92) 0%, rgba(7, 3, 15, 0.36) 46%, rgba(7, 3, 15, 0.86) 100%),
-    radial-gradient(circle at 14% 20%, rgba(253, 164, 129, 0.18), transparent 24rem),
+    radial-gradient(circle at 14% 20%, rgba(234, 212, 180, 0.18), transparent 24rem),
     radial-gradient(circle at 82% 8%, rgba(167, 139, 250, 0.2), transparent 28rem),
     linear-gradient(135deg, #12051d 0%, #0a0514 48%, #140824 100%);
   background-position: center, center, 14% 20%, 82% 8%, center;
@@ -87,6 +87,7 @@ html.blog-article main > article > .glass-panel,
 html.blog-article main > article > .prose,
 html.blog-article main > article > section,
 html.blog-article main > article > aside,
+html.blog-article main > article > p,
 html.blog-article main > aside[role="note"] {
   width: min(calc(100% - (var(--article-edge) * 2)), var(--article-reading));
   margin-left: auto;
@@ -234,7 +235,7 @@ html.blog-article main > article > header a {
 }
 
 html.blog-article main > article > header h1 {
-  width: min(100%, 12.5ch);
+  width: min(100%, 17ch);
   margin: 0 auto 0 0;
   color: var(--article-cream) !important;
   font-size: clamp(3.1rem, 4.8vw, 5.8rem) !important;
@@ -407,6 +408,10 @@ html.blog-article main > article > nav.glass-panel ol {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 0.5rem 1.25rem;
+}
+
+html.blog-article main > article > nav.glass-panel ol > li {
+  margin: 0 !important;
 }
 
 html.blog-article .toc-link {
@@ -745,7 +750,7 @@ html.blog-article main > aside[role="note"] {
   }
 
   html.blog-article main > article > header[data-image-seo-hero="true"] > .article-hero-copy .article-hero-taxonomy > span {
-    color: #fda481 !important;
+    color: #ead4b4 !important;
   }
 
   html.blog-article main > article > header[data-image-seo-hero="true"] > .article-hero-copy .article-hero-taxonomy > a {
@@ -888,7 +893,7 @@ html.blog-article main > aside[role="note"] {
   }
 
   html.blog-article main > article > header[data-image-seo-hero="true"] > .article-hero-copy .article-hero-taxonomy > span {
-    color: #fda481 !important;
+    color: #ead4b4 !important;
   }
 
   html.blog-article main > article > header[data-image-seo-hero="true"] > .article-hero-copy .article-hero-taxonomy > a {

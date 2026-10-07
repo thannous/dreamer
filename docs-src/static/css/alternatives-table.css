@@ -15,7 +15,7 @@
 }
 
 .alternatives-table-region:focus-visible {
-  outline: 2px solid #fda481;
+  outline: 2px solid #ead4b4;
   outline-offset: 0.25rem;
 }
 
@@ -45,7 +45,7 @@
 }
 
 .alternatives-table-source-link {
-  color: #fda481;
+  color: #ead4b4;
   text-decoration: underline;
   text-decoration-thickness: 1px;
   text-underline-offset: 0.18em;
@@ -53,7 +53,7 @@
 
 .alternatives-table-source-link:hover,
 .alternatives-table-source-link:focus-visible {
-  color: #ffd0bd;
+  color: #f6ebda;
 }
 
 .alternatives-table-review {
