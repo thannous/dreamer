@@ -29,7 +29,7 @@
   z-index: 0;
   background:
     linear-gradient(180deg, rgba(7, 4, 16, 0.18) 0%, rgba(7, 4, 16, 0.34) 48%, #090413 92%),
-    radial-gradient(circle at 17% 18%, rgba(253, 164, 129, 0.14), transparent 20rem),
+    radial-gradient(circle at 17% 18%, rgba(234, 212, 180, 0.14), transparent 20rem),
     radial-gradient(circle at 78% 8%, rgba(196, 181, 253, 0.13), transparent 24rem),
     url('/img/hero/noctalia-observatory-bg.webp') center top / cover no-repeat,
     linear-gradient(135deg, #12051d 0%, #0a0514 45%, #130822 100%);
@@ -115,7 +115,7 @@
 .blog-premium-eyebrow {
   display: none;
   margin-bottom: 1rem;
-  color: #ffa07d;
+  color: #ead4b4;
   font-size: 0.78rem;
   font-weight: 800;
   letter-spacing: 0.12em;
@@ -172,27 +172,27 @@
   height: clamp(4.6rem, 6vw, 6.2rem);
   margin-bottom: 1.15rem;
   padding: 1.25rem;
-  border: 1px solid rgba(253, 164, 129, 0.28);
+  border: 1px solid rgba(234, 212, 180, 0.28);
   border-radius: 999px;
-  color: #ffa07d;
+  color: #ead4b4;
   background:
-    radial-gradient(circle, rgba(253, 164, 129, 0.18), transparent 58%),
+    radial-gradient(circle, rgba(234, 212, 180, 0.18), transparent 58%),
     rgba(124, 58, 237, 0.15);
   box-shadow: 0 0 42px rgba(168, 85, 247, 0.28);
 }
 
 .blog-premium-hero-panel a:hover {
   transform: translateY(-3px);
-  border-color: rgba(253, 164, 129, 0.42);
+  border-color: rgba(234, 212, 180, 0.42);
   background:
-    linear-gradient(135deg, rgba(253, 164, 129, 0.1), rgba(255, 255, 255, 0.025)),
+    linear-gradient(135deg, rgba(234, 212, 180, 0.1), rgba(255, 255, 255, 0.025)),
     rgba(20, 10, 40, 0.64);
 }
 
 .blog-premium-hero-panel span {
   display: none;
   margin-bottom: 0.25rem;
-  color: rgba(253, 164, 129, 0.78);
+  color: rgba(234, 212, 180, 0.78);
   font-size: 0.72rem;
   font-weight: 800;
   letter-spacing: 0.08em;
@@ -201,7 +201,7 @@
 
 .blog-premium-hero-panel strong {
   display: block;
-  color: #ffa07d;
+  color: #ead4b4;
   font-family: var(--font-serif, Georgia, serif);
   font-size: clamp(1.25rem, 1.55vw, 1.9rem);
   line-height: 1.35;
@@ -258,7 +258,7 @@
 
 .blog-premium-carousel-header h2::before {
   content: '✣';
-  color: #ffa07d;
+  color: #ead4b4;
   font-family: var(--font-sans, Arial, sans-serif);
   font-size: 1.25rem;
 }
@@ -307,8 +307,8 @@
 
 .blog-carousel-button:hover {
   transform: translateY(-2px);
-  border-color: rgba(253, 164, 129, 0.45);
-  background: rgba(253, 164, 129, 0.12);
+  border-color: rgba(234, 212, 180, 0.45);
+  background: rgba(234, 212, 180, 0.12);
 }
 
 .blog-premium-carousel-track {
@@ -368,7 +368,7 @@
   inset: 0;
   background:
     linear-gradient(180deg, rgba(10, 5, 20, 0.08) 0%, rgba(10, 5, 20, 0.34) 42%, rgba(10, 5, 20, 0.92) 100%),
-    radial-gradient(circle at 18% 12%, rgba(253, 164, 129, 0.16), transparent 16rem);
+    radial-gradient(circle at 18% 12%, rgba(234, 212, 180, 0.16), transparent 16rem);
 }
 
 .blog-carousel-card a:hover img {
@@ -389,9 +389,9 @@
   display: inline-flex;
   margin-bottom: 0.75rem;
   padding: 0.34rem 0.62rem;
-  border: 1px solid rgba(253, 164, 129, 0.34);
+  border: 1px solid rgba(234, 212, 180, 0.34);
   border-radius: 999px;
-  color: #ffa07d;
+  color: #ead4b4;
   background: rgba(20, 10, 40, 0.52);
   font-size: 0.72rem;
   font-weight: 800;
@@ -480,9 +480,9 @@
 
 .blog-premium-filters .filter-chip:hover,
 .blog-premium-filters .filter-chip.active {
-  border-color: rgba(253, 164, 129, 0.55);
-  background: rgba(253, 164, 129, 0.14);
-  color: #ffa07d;
+  border-color: rgba(234, 212, 180, 0.55);
+  background: rgba(234, 212, 180, 0.14);
+  color: #ead4b4;
 }
 
 .blog-premium-filters #sortButton {
@@ -494,8 +494,8 @@
 }
 
 .blog-premium-filters .sort-option.active {
-  color: #ffa07d;
-  background: rgba(253, 164, 129, 0.1);
+  color: #ead4b4;
+  background: rgba(234, 212, 180, 0.1);
 }
 
 .blog-premium-footer {
@@ -524,7 +524,7 @@
 
 .blog-premium-footer li a:hover,
 .blog-premium-footer .text-dream-salmon {
-  color: #ffa07d;
+  color: #ead4b4;
 }
 
 .blog-premium .article-card.is-hidden {
@@ -563,10 +563,10 @@
 .blog-premium [data-testid='featured-article'] {
   margin-bottom: 0;
   border-radius: 30px;
-  border-color: rgba(253, 164, 129, 0.2);
+  border-color: rgba(234, 212, 180, 0.2);
   background:
-    radial-gradient(circle at 10% 10%, rgba(253, 164, 129, 0.12), transparent 18rem),
-    linear-gradient(135deg, rgba(253, 164, 129, 0.08), transparent 34%),
+    radial-gradient(circle at 10% 10%, rgba(234, 212, 180, 0.12), transparent 18rem),
+    linear-gradient(135deg, rgba(234, 212, 180, 0.08), transparent 34%),
     rgba(20, 10, 40, 0.62);
   box-shadow: 0 28px 90px rgba(0, 0, 0, 0.28);
 }
@@ -595,9 +595,9 @@
 }
 
 .blog-premium .article-card {
-  --category-color: #ffa07d;
-  --category-border: rgba(253, 164, 129, 0.35);
-  --category-bg: rgba(253, 164, 129, 0.12);
+  --category-color: #ead4b4;
+  --category-border: rgba(234, 212, 180, 0.35);
+  --category-bg: rgba(234, 212, 180, 0.12);
   border-radius: 14px;
   min-width: 0;
   background:
@@ -727,7 +727,7 @@
 
 .blog-premium-symbols .glass-panel {
   background:
-    radial-gradient(circle at 8% 16%, rgba(253, 164, 129, 0.12), transparent 20rem),
+    radial-gradient(circle at 8% 16%, rgba(234, 212, 180, 0.12), transparent 20rem),
     radial-gradient(circle at 92% 0%, rgba(124, 58, 237, 0.18), transparent 24rem),
     rgba(20, 10, 40, 0.5);
 }
@@ -756,7 +756,7 @@
   margin-top: clamp(5rem, 8vw, 7rem);
   border-radius: 30px;
   background:
-    linear-gradient(135deg, rgba(253, 164, 129, 0.14), transparent 36%),
+    linear-gradient(135deg, rgba(234, 212, 180, 0.14), transparent 36%),
     rgba(20, 10, 40, 0.66);
 }
 
@@ -988,7 +988,7 @@
   }
 
   .blog-premium-carousel-track::-webkit-scrollbar-thumb {
-    background: rgba(253, 164, 129, 0.34);
+    background: rgba(234, 212, 180, 0.34);
     border-radius: 999px;
   }
 
@@ -1050,4 +1050,14 @@
   .blog-premium-symbols-header {
     flex-direction: column;
   }
+}
+
+/* Card meta: wrap pills before the reading time is squeezed or clipped. */
+.blog-premium .article-card .flex.items-center.mb-3 {
+  flex-wrap: wrap;
+  row-gap: 0.4rem;
+}
+
+.blog-premium .article-card .flex.items-center.mb-3 > span:not(.font-mono) {
+  white-space: nowrap;
 }

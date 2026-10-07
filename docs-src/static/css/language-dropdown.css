@@ -64,7 +64,7 @@
 .dropdown-item:hover:not(.disabled) {
   background-color: rgba(255, 255, 255, 0.1);
   color: white;
-  border-left-color: #FDA481; /* dream-salmon */
+  border-left-color: #ead4b4; /* dream-salmon */
 }
 
 /* Dropdown item active/disabled state (for future use) */
@@ -76,7 +76,7 @@
 
 /* Check icon styles */
 .dropdown-item .text-dream-salmon {
-  color: #FDA481;
+  color: #ead4b4;
 }
 
 /* Hidden check icon */
@@ -109,7 +109,7 @@
 
 /* Glass button hover enhancement */
 .glass-button:hover {
-  border-color: #FDA481; /* dream-salmon */
+  border-color: #ead4b4; /* dream-salmon */
   color: white;
 }
 
