@@ -25,6 +25,8 @@ const appNodeOptions = process.env.E2E_APP_NODE_OPTIONS_PRESENT === undefined
   ? process.env.NODE_OPTIONS
   : process.env.E2E_APP_NODE_OPTIONS_PRESENT === '1' ? process.env.E2E_APP_NODE_OPTIONS! : undefined;
 const device = process.env.E2E_DEVICE;
+// CI restores a Metro cache whose key includes every public build input (metro.config.js).
+const keepMetroCache = process.env.E2E_KEEP_METRO_CACHE === '1' && product !== 'meditation';
 if (native && (!device || (platform === 'android' && !/^emulator-\d+$/.test(device))))
   throw new Error('Name an explicit emulator/simulator with E2E_DEVICE; physical devices are excluded.');
 
@@ -47,7 +49,7 @@ export default {
         startupTimeout: 180_000, log: appLog,
       } : {
         executable: 'npm',
-        args: ['run', product === 'meditation' ? 'web' : product === 'lucid' ? 'start:lucid:mock' : 'start:mock', '--', ...(product === 'meditation' ? [] : ['--web']), '--clear', '--port', String(port)],
+        args: ['run', product === 'meditation' ? 'web' : product === 'lucid' ? 'start:lucid:mock' : 'start:mock', '--', ...(product === 'meditation' ? [] : ['--web']), ...(keepMetroCache ? [] : ['--clear']), '--port', String(port)],
         cwd: product === 'meditation' ? `${root}apps/meditation` : root,
         env: {
           ...(appNodeOptions === undefined ? {} : { NODE_OPTIONS: appNodeOptions }),

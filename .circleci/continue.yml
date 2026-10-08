@@ -148,28 +148,6 @@ jobs:
           path: test-results/e2e-backend-results.json
           destination: e2e-backend-results.json
 
-  noctalia-e2e-web:
-    executor: node
-    # One Metro worker per container; shards split the serial suite by test.
-    parallelism: 3
-    steps:
-      - install-root-dependencies:
-          save_cache: false
-      - run:
-          name: Install Chromium and browser dependencies
-          command: npx playwright install --with-deps chromium
-      - run:
-          name: Verify guest, free and Plus user journeys with isolated mock services
-          command: npm run test:e2e:web -- --shard="$((CIRCLE_NODE_INDEX + 1))/${CIRCLE_NODE_TOTAL}"
-      - store_test_results:
-          path: test-results/e2e-web-junit
-      - store_artifacts:
-          path: test-results/e2e-web-report
-          destination: e2e-web-report
-      - store_artifacts:
-          path: test-results/e2e-web
-          destination: e2e-web-traces
-
   testerarmy-web:
     executor: node
     parameters:
@@ -195,6 +173,8 @@ jobs:
       EXPO_PUBLIC_ONBOARDING_FEATURE_SHEETS_ENABLED: "true"
       # Every container of one product shares a campaign, proven once by collect.
       E2E_CAMPAIGN_ID: << pipeline.id >>-<< parameters.product >>
+      # Dreamer and Lucid reuse master's Metro transforms; meditation ignores it.
+      E2E_KEEP_METRO_CACHE: "1"
     steps:
       - install-root-dependencies:
           save_cache: false
@@ -204,6 +184,17 @@ jobs:
           steps:
             - install-meditation-dependencies
       - install-testerarmy
+      # metro.config.js keys transforms by every public build input. Master
+      # starts cold so each saved cache holds only one revision's transforms.
+      - unless:
+          condition:
+            or:
+              - equal: [meditation, << parameters.product >>]
+              - equal: [master, << pipeline.git.branch >>]
+          steps:
+            - restore_cache:
+                keys:
+                  - metro-v1-<< parameters.product >>-{{ checksum "package-lock.json" }}-
       - when:
           condition:
             equal: [primary, << parameters.contexts >>]
@@ -218,12 +209,13 @@ jobs:
           condition:
             equal: [dreamer-secondary, << parameters.contexts >>]
           steps:
-            # Container 0 runs the 19 French journeys; container 1 the two short contexts.
+            # All but the last container split the 19 French journeys; the last runs the two short contexts.
             - run:
                 name: Verify Dreamer historical French browser context
                 command: |
-                  if [[ "$CIRCLE_NODE_INDEX" == 0 ]]; then
-                    E2E_WEB_LOCALE=fr-FR node tools/e2e/run.mjs dreamer web run --tag locale-fr-FR --trace
+                  if [[ "$CIRCLE_NODE_INDEX" -lt "$((CIRCLE_NODE_TOTAL - 1))" ]]; then
+                    E2E_WEB_LOCALE=fr-FR node tools/e2e/run.mjs dreamer web run --tag locale-fr-FR \
+                      --shard "$((CIRCLE_NODE_INDEX + 1))/$((CIRCLE_NODE_TOTAL - 1))" --trace
                   fi
             - run:
                 name: Verify Dreamer historical German browser context
@@ -244,6 +236,17 @@ jobs:
                 name: Verify the exact passed-ID union and all browser contexts
                 when: always
                 command: node tools/e2e/run.mjs << parameters.product >> web collect
+      - when:
+          condition:
+            and:
+              - equal: [master, << pipeline.git.branch >>]
+              - not:
+                  equal: [meditation, << parameters.product >>]
+          steps:
+            - save_cache:
+                key: metro-v1-<< parameters.product >>-{{ checksum "package-lock.json" }}-{{ .Revision }}
+                paths:
+                  - /tmp/metro-cache
       - store_test_results:
           path: tools/e2e/.e2e
       - store_artifacts:
@@ -639,14 +642,10 @@ workflows:
           filters:
             tags:
               only: /.*/
-      - noctalia-e2e-web:
-          filters:
-            tags:
-              only: /.*/
       - testerarmy-web:
           name: testerarmy-dreamer-journeys
           product: dreamer
-          parallelism: 4
+          parallelism: 8
           collect: false
           filters:
             tags:
@@ -655,7 +654,7 @@ workflows:
           name: testerarmy-dreamer-contexts
           product: dreamer
           contexts: dreamer-secondary
-          parallelism: 2
+          parallelism: 3
           collect: false
           filters:
             tags:
