@@ -434,7 +434,8 @@ export default function LucidTodayScreen() {
   // The fallback primary action already shows the suggested plan; don't print it twice.
   const planSummaryRepeatsPrimary =
     planSummary.overline === primaryPresentation.overline &&
-    planSummary.title === primaryPresentation.title;
+    planSummary.title === primaryPresentation.title &&
+    planSummary.hint === primaryPresentation.hint;
   const contextActions: ContextAction[] = [
     {
       key: 'morning',
