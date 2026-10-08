@@ -1,8 +1,14 @@
 import { test as base, expect } from 'playwright/test';
 
 // Keep mock journeys independent of image CDNs, analytics and real payment services.
-export const test = base.extend<{ offlineServices: void }>({
-  offlineServices: [async ({ context, baseURL }, use) => {
+export const test = base.extend<{ offlineServices: void; aiConsent: 'granted' | 'ask' }>({
+  // Journeys run with the one-time AI permission already given; the consent
+  // journey itself sets `aiConsent: 'ask'` to exercise the dialog.
+  aiConsent: ['granted', { option: true }],
+  offlineServices: [async ({ context, baseURL, aiConsent }, use) => {
+    if (aiConsent === 'granted') {
+      await context.addInitScript(() => window.localStorage.setItem('noctalia.aiConsent.v1', 'granted'));
+    }
     const billingRequests: string[] = [];
     await context.route('**/*', async (route) => {
       const url = new URL(route.request().url());
