@@ -1213,7 +1213,9 @@ export default function RecordingScreen() {
   const separateFooterViewport = !keyboardVisible;
   // In short landscape windows, keep Save in the scroll document so its
   // reserved area cannot squeeze the editor out of the viewport.
-  const inlineFooter = isCompactLandscape;
+  // On desktop, Save follows the editor instead of sitting at the bottom of a
+  // tall window, far from the text it saves.
+  const inlineFooter = isCompactLandscape || (isDesktopWeb && !chatMode);
   const scrollBottomReservation = separateFooterViewport
     ? fixedFooterBottomOffset + (inlineFooter || chatMode ? 0 : footerHeight)
     : 0;
@@ -1746,18 +1748,18 @@ export default function RecordingScreen() {
             testID={TID.Screen.Recording}
             accessibilityState={{ busy: hydrationStatus === 'loading' }}
           >
-            {!isDesktopWeb ? (
+            <View style={isDesktopWeb ? styles.desktopColumn : undefined}>
               <NoctaliaScreenHeader
                 includeTopInset={false}
                 prominentTitle={!isCompactLandscape}
                 titleKey="nav.capture_dream"
-                actions={[{
+                actions={isDesktopWeb ? [] : [{
                   icon: 'gear',
                   onPress: openQuickSettings,
                   accessibilityLabel: t('nav.settings'),
                 }]}
               />
-            ) : null}
+            </View>
             <MockNavigationRail />
             <View style={mainContentStyle}>
               <View style={[styles.bodySection, isCompactLandscape && styles.bodySectionCompact, chatLayout && styles.chatBody]}>
@@ -1831,7 +1833,7 @@ export default function RecordingScreen() {
                   />
                 ) : <RecordingTextInput
                   compact={isCompactLandscape}
-                  expanded={!isCompactLandscape && !isDesktopWeb}
+                  expanded={!isCompactLandscape}
                   layout="textFirst"
                   ref={textInputRef}
                   value={transcript}
@@ -2013,6 +2015,12 @@ const styles = StyleSheet.create({
   },
   keyboardView: {
     flex: 1,
+  },
+  desktopColumn: {
+    width: '100%',
+    maxWidth: 544,
+    alignSelf: 'center',
+    paddingTop: 24,
   },
   voiceFallbackToast: {
     top: 16,
