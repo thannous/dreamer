@@ -168,8 +168,8 @@ else
       continue
     fi
     case "$path" in
-    vercel.json)
-      # Validate preview filtering; this is not a Cloudflare/site source input.
+    vercel.json|scripts/vercel-ignore-build.mjs)
+      # Validate the Vercel build filter; this is not a Cloudflare/site source input.
       run_noctalia=true
       ;;
     .circleci/scripts/classify-changes.sh|.circleci/scripts/shared-build-impact.py|.circleci/tests/*|.circleci/dependency-consumers.tsv)
