@@ -3515,29 +3515,92 @@
       "es": {
         "slug": "espejo",
         "name": "Espejo",
-        "shortDescription": "Un espejo simboliza introspección y autoimagen. Un reflejo distorsionado puede indicar una percepción alterada de ti mismo o necesidad de verte con más claridad.",
+        "shortDescription": "Soñar con un espejo suele llevarte a la imagen que tienes de ti: cómo te ves o cómo crees que te ven. Importa más el reflejo que el objeto: nítido, deformado, roto o ausente, cada uno cuenta algo distinto.",
         "askYourself": [
-          "¿Cómo me percibo a mí mismo?",
-          "¿Es realista mi autoimagen?"
-        ]
+          "¿El reflejo se parecía a mí, o había algo que no cuadraba?",
+          "¿Qué sentí al verme: curiosidad, incomodidad, miedo, alivio?",
+          "¿Hay ahora mismo una mirada, la mía o la de otros, que me pesa?"
+        ],
+        "faq": [
+          {
+            "question": "¿Qué significa soñar con un espejo?",
+            "answer": "El espejo se asocia a menudo con la imagen de uno mismo y con la mirada de los demás. Su sentido depende sobre todo del reflejo (fiel, deformado, roto o ausente) y de lo que sentiste al verlo."
+          },
+          {
+            "question": "¿Qué significa soñar con un espejo roto?",
+            "answer": "Un espejo roto puede acompañar una imagen de ti que se ha resentido, tras una crítica, un tropiezo o un cambio. No es un presagio: la superstición de los siete años de mala suerte no dice nada de tu futuro."
+          },
+          {
+            "question": "¿Qué significa no ver tu reflejo en un espejo en sueños?",
+            "answer": "No verte puede enlazar con la sensación de pasar desapercibido o de no tener claro en qué punto estás. Anota dónde estabas y quién más había: ese contexto te ayuda a elegir la pista adecuada."
+          },
+          {
+            "question": "¿Por qué mi reflejo era distinto a mí?",
+            "answer": "Un reflejo más mayor, más joven o desconocido puede escenificar un cambio en la imagen que tienes de ti, una nueva etapa o una parte de ti que miras poco. Tu reacción ante él es la pista principal."
+          }
+        ],
+        "documentMetaDescription": "Soñar con un espejo, con un espejo roto o no ver tu reflejo: qué puede decir la escena sobre tu autoimagen, con preguntas y un ejemplo de diario.",
+        "modifiedAt": "2026-10-08"
       },
       "de": {
         "slug": "spiegel",
         "name": "Spiegel",
-        "shortDescription": "Spiegel repräsentieren Selbstreflexion, Identität und wie Sie sich selbst sehen. Ein verzerrtes Spiegelbild kann auf innere Konflikte oder Selbsttäuschung hinweisen.",
+        "shortDescription": "Von einem Spiegel zu träumen führt oft zum eigenen Selbstbild: wie Sie sich sehen oder wie Sie glauben, gesehen zu werden. Wichtiger als der Spiegel ist, was er zeigt: Ein klares, verzerrtes oder fehlendes Spiegelbild erzählt jeweils etwas anderes.",
         "askYourself": [
-          "Wie sehe ich mich wirklich?",
-          "Bin ich mir selbst gegenüber ehrlich?"
-        ]
+          "Sah mein Spiegelbild aus wie ich, oder stimmte etwas nicht?",
+          "Was habe ich gefühlt, als ich mich sah: Neugier, Unbehagen, Angst, Erleichterung?",
+          "Gibt es gerade einen Blick, meinen eigenen oder den anderer, der mich belastet?"
+        ],
+        "faq": [
+          {
+            "question": "Was bedeutet es, von einem Spiegel zu träumen?",
+            "answer": "Der Spiegel wird oft mit dem Selbstbild und dem Blick anderer verbunden. Was er bedeutet, hängt vor allem vom Spiegelbild ab, ob ähnlich, verzerrt oder fehlend, und davon, was Sie beim Hinsehen gefühlt haben."
+          },
+          {
+            "question": "Was bedeutet ein zerbrochener Spiegel im Traum?",
+            "answer": "Ein zerbrochener Spiegel kann ein angeschlagenes Selbstbild begleiten, etwa nach Kritik, einem Misserfolg oder einer Veränderung. Ein Unglückszeichen ist er nicht: Der Aberglaube von den sieben Jahren Pech sagt nichts über Ihre Zukunft."
+          },
+          {
+            "question": "Was bedeutet es, sich im Traum nicht im Spiegel zu sehen?",
+            "answer": "Sich nicht zu sehen kann zu dem Gefühl passen, übersehen zu werden oder nicht mehr genau zu wissen, wo man steht. Notieren Sie, wo Sie waren und wer noch da war: Dieser Kontext hilft, die passende Spur zu finden."
+          },
+          {
+            "question": "Warum sah mein Spiegelbild anders aus als ich?",
+            "answer": "Ein älteres, jüngeres oder fremdes Spiegelbild kann einen Wandel im Selbstbild, eine neue Lebensphase oder eine Seite von Ihnen zeigen, die Sie selten betrachten. Wie Sie auf das Spiegelbild reagiert haben, ist der wichtigste Hinweis."
+          }
+        ],
+        "documentMetaDescription": "Spiegel im Traum, zerbrochen oder ohne Spiegelbild: was die Szene über Ihr Selbstbild sagen kann, mit Fragen zum Nachdenken und einem Tagebuchbeispiel.",
+        "modifiedAt": "2026-10-08"
       },
       "it": {
         "slug": "specchio",
         "name": "Specchio",
-        "shortDescription": "Gli specchi rappresentano autoriflessione, identità e come ti vedi. Un riflesso distorto può indicare conflitti interiori o autoinganno.",
+        "shortDescription": "Sognare uno specchio riporta spesso all’immagine di sé: come ti vedi, o come pensi di essere visto. Conta più il riflesso dell’oggetto: nitido, deformato, rotto o assente, racconta ogni volta una scena diversa.",
         "askYourself": [
-          "Come mi vedo veramente?",
-          "Sono onesto con me stesso?"
-        ]
+          "Il riflesso mi somigliava, o c’era qualcosa che non tornava?",
+          "Che cosa ho provato vedendomi: curiosità, imbarazzo, paura, sollievo?",
+          "C’è in questo periodo uno sguardo, il mio o quello degli altri, che mi pesa?"
+        ],
+        "faq": [
+          {
+            "question": "Che cosa significa sognare uno specchio?",
+            "answer": "Lo specchio viene spesso associato all’immagine di sé e allo sguardo degli altri. Il significato dipende soprattutto dal riflesso, fedele, deformato, rotto o assente, e da ciò che hai provato vedendolo."
+          },
+          {
+            "question": "Che cosa significa sognare uno specchio rotto?",
+            "answer": "Uno specchio rotto può accompagnare un’immagine di sé incrinata, dopo una critica, un insuccesso o un cambiamento. Non è un presagio: la superstizione dei sette anni di disgrazie non dice nulla del tuo futuro."
+          },
+          {
+            "question": "Che cosa significa non vedere il proprio riflesso in sogno?",
+            "answer": "Non vedersi può avvicinarsi alla sensazione di passare inosservati o di non sapere bene a che punto sei. Annota dove ti trovavi e chi altro c’era: il contesto aiuta a scegliere la pista giusta."
+          },
+          {
+            "question": "Perché nel sogno il mio riflesso era diverso da me?",
+            "answer": "Un riflesso più vecchio, più giovane o sconosciuto può mettere in scena un cambiamento dell’immagine di sé, una nuova fase della vita o una parte di te che guardi poco. La tua reazione è l’indizio principale."
+          }
+        ],
+        "documentMetaDescription": "Sognare uno specchio, uno specchio rotto o di non vedere il proprio riflesso: che cosa può dire la scena dell’immagine di sé, con domande ed esempio di diario.",
+        "modifiedAt": "2026-10-08"
       },
       "pt": {
         "slug": "espelho",
