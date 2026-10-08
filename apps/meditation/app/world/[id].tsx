@@ -192,16 +192,18 @@ export default function WorldPurchaseScreen() {
         testID={TID.Button.WorldPurchaseBuy}
       />
 
-      <Button
-        label={t('world.purchase.restore')}
-        labelVariant="body"
-        labelTone="muted"
-        variant="ghost"
-        size="md"
-        disabled={busy}
-        onPress={() => void handleRestore()}
-        testID={TID.Button.WorldPurchaseRestore}
-      />
+      {world.access === 'purchase' ? (
+        <Button
+          label={t('world.purchase.restore')}
+          labelVariant="body"
+          labelTone="muted"
+          variant="ghost"
+          size="md"
+          disabled={busy}
+          onPress={() => void handleRestore()}
+          testID={TID.Button.WorldPurchaseRestore}
+        />
+      ) : null}
 
       {message ? (
         <Text variant="caption" tone="muted" className="text-center">
@@ -296,17 +298,19 @@ export default function WorldPurchaseScreen() {
             ))}
           </WorldPurchaseReadableBlock>
 
-          <WorldPurchaseReadableBlock
-            appearance={world.appearance}
-            testID="world.purchase.offer-backing"
-            className="gap-2">
-            <Text variant="bodySm" tone="accent">
-              {t('world.purchase.notPlus')}
-            </Text>
-            <Text variant="caption" tone="muted">
-              {t('world.purchase.notPlus.detail', worldCopy)}
-            </Text>
-          </WorldPurchaseReadableBlock>
+          {world.access === 'purchase' ? (
+            <WorldPurchaseReadableBlock
+              appearance={world.appearance}
+              testID="world.purchase.offer-backing"
+              className="gap-2">
+              <Text variant="bodySm" tone="accent">
+                {t('world.purchase.notPlus')}
+              </Text>
+              <Text variant="caption" tone="muted">
+                {t('world.purchase.notPlus.detail', worldCopy)}
+              </Text>
+            </WorldPurchaseReadableBlock>
+          ) : null}
 
           {purchaseActions}
         </ScrollView>

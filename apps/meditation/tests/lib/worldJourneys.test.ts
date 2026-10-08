@@ -15,6 +15,9 @@ import {
 } from '@/lib/worldJourneys';
 import type { CategorySlug, SessionProgress } from '@/lib/types';
 
+// These cases cover the one-time world purchase flow, which v1 keeps off.
+jest.mock('@/constants/worldSales', () => ({ WORLD_SALES_ENABLED: true }));
+
 const DATE = '2026-08-23';
 
 function progressFor(

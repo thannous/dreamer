@@ -23,7 +23,7 @@
   "twitterImage": "https://noctalia.app/img/og/noctalia-en-1200x630.jpg",
   "twitterImageAlt": "Privacy Policy",
   "publishedTime": "",
-  "modifiedTime": "2026-09-22",
+  "modifiedTime": "2026-10-08",
   "author": "",
   "prevPath": "",
   "nextPath": "",
@@ -36,7 +36,7 @@
 }
 ---
 <h1 class="font-serif text-4xl md:text-5xl mb-6 text-dream-cream">Privacy Policy</h1>
-        <p class="text-lg text-purple-200/80 mb-10">Effective September 22, 2026</p>
+        <p class="text-lg text-purple-200/80 mb-10">Effective October 8, 2026</p>
 
         <div class="space-y-8 text-gray-300 leading-relaxed">
             <div class="p-6 rounded-2xl bg-dream-salmon/5 border border-dream-salmon/20">
@@ -66,6 +66,28 @@
                         </ul>
                     </div>
                 </div>
+            </section>
+
+            <section id="companion-apps">
+                <h2 class="text-2xl font-serif text-white mb-4 mt-8">Noctalia Lucid and Noctalia Meditation</h2>
+                <p>This policy also covers Noctalia's two companion apps, published by TiMax. Everything in this policy applies to them, with the details below.</p>
+                <h3 class="text-white font-semibold mb-2 mt-6">Noctalia Lucid</h3>
+                <ul class="list-disc pl-5 mt-2 space-y-2">
+                    <li><strong>Local by default:</strong> programs, sessions, reality checks, check-ins, notes and reminders are stored on your device and work without an account or a network.</li>
+                    <li><strong>Voice notes:</strong> they are recorded only on the device after you tap “Speak”, and are never uploaded or transcribed automatically.</li>
+                    <li><strong>Optional account and sync:</strong> if you sign in with your Noctalia account and turn on sync (off by default), your training data is synced to the Supabase database in the European Union described in section 5. You can turn sync off, delete remote data or delete your account from the app.</li>
+                    <li><strong>Exchanges with the Noctalia journal:</strong> only when you ask, Lucid can copy dream narratives from your Noctalia journal, or pass Noctalia a categorical summary of the night (technique, outcome, lucidity and recall levels), never the text of your notes.</li>
+                    <li><strong>Usage measurement:</strong> optional and off by default, limited to a few categorical events with no free text; no third-party analytics tool.</li>
+                    <li><strong>No ads, no purchases:</strong> Lucid shows no advertising, offers no in-app purchase in this version and does not read your Health data.</li>
+                    <li><strong>Export and deletion:</strong> the Data screen lets you export your data (JSON or CSV) and erase it from the device.</li>
+                </ul>
+                <h3 class="text-white font-semibold mb-2 mt-6">Noctalia Meditation</h3>
+                <ul class="list-disc pl-5 mt-2 space-y-2">
+                    <li><strong>No account, no collection:</strong> Meditation works without an account. Your preferences, goals, favorites, progress, reminders and optional profile photo stay on your device; we receive none of this data.</li>
+                    <li><strong>No usage measurement, ads or purchases:</strong> the app sends no analytics events, shows no advertising, and every world is free in this version, so no payment service is active.</li>
+                    <li><strong>Reminders and voice:</strong> reminders are notifications scheduled on the device; spoken breathing phases, if you turn them on, use your system's speech synthesis.</li>
+                    <li><strong>Deletion:</strong> “Erase my data” in the account settings deletes everything the app has stored; uninstalling it has the same effect.</li>
+                </ul>
             </section>
 
             <section>

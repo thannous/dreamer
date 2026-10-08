@@ -23,7 +23,7 @@
   "twitterImage": "https://noctalia.app/img/og/noctalia-es-1200x630.jpg",
   "twitterImageAlt": "Política de privacidad",
   "publishedTime": "",
-  "modifiedTime": "2026-09-22",
+  "modifiedTime": "2026-10-08",
   "author": "",
   "prevPath": "",
   "nextPath": "",
@@ -36,7 +36,7 @@
 }
 ---
 <h1 class="font-serif text-4xl md:text-5xl mb-6 text-dream-cream">Política de privacidad</h1>
-        <p class="text-lg text-purple-200/80 mb-10">Última actualización: 22 de septiembre de 2026</p>
+        <p class="text-lg text-purple-200/80 mb-10">Última actualización: 8 de octubre de 2026</p>
 
         <div class="space-y-8 text-gray-300 leading-relaxed">
             <div class="p-6 rounded-2xl bg-dream-salmon/5 border border-dream-salmon/20">
@@ -66,6 +66,28 @@
                         </ul>
                     </div>
                 </div>
+            </section>
+
+            <section id="companion-apps">
+                <h2 class="text-2xl font-serif text-white mb-4 mt-8">Noctalia Lucid y Noctalia Meditación</h2>
+                <p>Esta política también cubre las dos aplicaciones complementarias de Noctalia, publicadas por TiMax. Todo lo que dice esta política se aplica a ellas, con las precisiones siguientes.</p>
+                <h3 class="text-white font-semibold mb-2 mt-6">Noctalia Lucid</h3>
+                <ul class="list-disc pl-5 mt-2 space-y-2">
+                    <li><strong>Local por defecto:</strong> programas, sesiones, pruebas de realidad, balances, notas y recordatorios se guardan en tu dispositivo y funcionan sin cuenta ni red.</li>
+                    <li><strong>Notas de voz:</strong> se graban solo en el dispositivo después de pulsar «Hablar», sin envío ni transcripción automática.</li>
+                    <li><strong>Cuenta y sincronización opcionales:</strong> si inicias sesión con tu cuenta de Noctalia y activas la sincronización (desactivada por defecto), tus datos de entrenamiento se sincronizan con la base de datos Supabase en la Unión Europea descrita en la sección 5. Puedes desactivar la sincronización, eliminar los datos remotos o tu cuenta desde la aplicación.</li>
+                    <li><strong>Intercambios con el diario de Noctalia:</strong> solo cuando lo pides, Lucid puede copiar relatos desde tu diario de Noctalia o enviar a Noctalia un resumen categórico de la noche (técnica, resultado, niveles de lucidez y de recuerdo), nunca el texto de tus notas.</li>
+                    <li><strong>Medición de uso:</strong> opcional y desactivada por defecto, limitada a unos pocos eventos categóricos sin texto libre; ninguna herramienta de analítica de terceros.</li>
+                    <li><strong>Sin publicidad ni compras:</strong> Lucid no muestra publicidad, no ofrece compras integradas en esta versión y no lee tus datos de Salud.</li>
+                    <li><strong>Exportación y eliminación:</strong> la pantalla Datos permite exportar tus datos (JSON o CSV) y borrarlos del dispositivo.</li>
+                </ul>
+                <h3 class="text-white font-semibold mb-2 mt-6">Noctalia Meditación</h3>
+                <ul class="list-disc pl-5 mt-2 space-y-2">
+                    <li><strong>Sin cuenta, sin recopilación:</strong> Meditación funciona sin cuenta. Tus preferencias, objetivos, favoritos, progreso, recordatorios y tu foto de perfil opcional se quedan en tu dispositivo; no recibimos ninguno de estos datos.</li>
+                    <li><strong>Sin medición de uso, publicidad ni compras:</strong> la aplicación no envía eventos de analítica, no muestra publicidad y todos los mundos son gratuitos en esta versión, por lo que no hay ningún servicio de pago activo.</li>
+                    <li><strong>Recordatorios y voz:</strong> los recordatorios son notificaciones programadas en el dispositivo; el anuncio de las fases de respiración, si lo activas, usa la síntesis de voz de tu sistema.</li>
+                    <li><strong>Eliminación:</strong> «Borrar mis datos», en los ajustes de la cuenta, elimina todo lo que la aplicación ha guardado; desinstalarla tiene el mismo efecto.</li>
+                </ul>
             </section>
 
             <section>

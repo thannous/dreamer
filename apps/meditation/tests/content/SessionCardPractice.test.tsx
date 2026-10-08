@@ -46,8 +46,8 @@ jest.mock('@/context/SubscriptionContext', () => ({
   useSubscription: () => ({ isPlus: false }),
 }));
 
-describe('SessionCard method and guidance', () => {
-  it('shows method and guidance on every catalogue card, including TalkBack', () => {
+describe('SessionCard method', () => {
+  it('shows the method on every catalogue card, including TalkBack, without promising guidance', () => {
     expect(SESSIONS).toHaveLength(24);
 
     for (const session of SESSIONS) {
@@ -56,20 +56,16 @@ describe('SessionCard method and guidance', () => {
       const method = translate('en', 'session.method.label', {
         method: translate('en', `session.method.${practice.method}` as 'session.method.breath'),
       });
-      const guidance = translate('en', 'session.guidance.label', {
-        guidance: translate('en', `session.guidance.${practice.guidance}` as 'session.guidance.guided'),
-      });
 
       const methodLine = view.getByTestId(`practice.${session.id}.method`);
-      const guidanceLine = view.getByTestId(`practice.${session.id}.guidance`);
       expect(methodLine).toHaveTextContent(method);
-      expect(guidanceLine).toHaveTextContent(guidance);
       expect(methodLine.props.numberOfLines).toBeUndefined();
-      expect(guidanceLine.props.numberOfLines).toBeUndefined();
+      // v1 sessions are timed ambiences with no spoken guidance.
+      expect(view.queryByText(/guidance|step by step/i)).toBeNull();
 
       const label = view.getByRole('button').props.accessibilityLabel as string;
       expect(label).toContain(method);
-      expect(label).toContain(guidance);
+      expect(label).not.toMatch(/guidance/i);
       view.unmount();
     }
   });

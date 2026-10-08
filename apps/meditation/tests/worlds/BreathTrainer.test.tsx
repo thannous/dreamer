@@ -19,9 +19,10 @@ let mockReducedMotion = false;
 let mockSoundEnabled = true;
 let mockPlayerStatus = 'idle';
 let mockEngine: BreathEngine;
+let mockPatternId = 'calm';
 
 jest.mock('expo-router', () => ({
-  useLocalSearchParams: () => ({ pattern: 'calm' }),
+  useLocalSearchParams: () => ({ pattern: mockPatternId }),
   useIsFocused: () => true,
   useRouter: () => ({
     back: jest.fn(),
@@ -114,6 +115,20 @@ describe('immersive breathing trainer', () => {
     mockSpeakBreathPhase.mockClear();
     mockStopBreathVoice.mockClear();
     mockEngine = engineState();
+    mockPatternId = 'calm';
+  });
+
+  it('warns about dizziness before a rhythm with breath holds, and only then', () => {
+    mockPatternId = 'four-seven-eight';
+    const hold = render(<BreatheExercise />);
+    expect(
+      screen.getByText('Hold without forcing. If you feel dizzy, stop and breathe normally.')
+    ).toBeTruthy();
+    hold.unmount();
+
+    mockPatternId = 'calm';
+    render(<BreatheExercise />);
+    expect(screen.queryByText(/dizzy/)).toBeNull();
   });
 
   it('preserves the exercise anchors and starts from the primary action', () => {

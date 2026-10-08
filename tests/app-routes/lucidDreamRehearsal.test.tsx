@@ -132,6 +132,11 @@ jest.mock('@/context/LucidTrainerContext', () => ({
   }),
 }));
 
+// These cases cover the Plus gate that returns once Lucid sells Plus.
+jest.mock('@/lib/lucid/plusEntitlements', () => ({
+  ...jest.requireActual('@/lib/lucid/plusEntitlements'),
+  LUCID_PLUS_SALES_ENABLED: true,
+}));
 jest.mock('@/hooks/useSubscription', () => ({
   useSubscription: () => mockSubscription,
 }));
