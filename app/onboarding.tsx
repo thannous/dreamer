@@ -49,6 +49,7 @@ import {
 } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import Animated, { useReducedMotion, type CSSStyle } from 'react-native-reanimated';
+import Svg, { Defs, Ellipse, RadialGradient, Stop } from 'react-native-svg';
 
 type PathDefinition = {
   id: OnboardingPath;
@@ -200,6 +201,16 @@ export default function OnboardingScreen() {
     transitionDuration: STORY.plunge / 2,
     transitionTimingFunction: EASE.out,
   };
+  // Night to day: on leaving, the next screen's ground fades in over the scene so the
+  // handoff to Capture reads as one gesture rather than a hard cut. Navigation waits for
+  // it; reduce motion skips the wait.
+  const exitFadeStyle: CSSStyle<ViewStyle> = {
+    opacity: isLeaving ? 1 : 0,
+    transitionProperty: 'opacity',
+    transitionDuration: STORY.exitFade,
+    transitionDelay: isLeaving ? STORY.exitFadeDelay : 0,
+    transitionTimingFunction: EASE.inOut,
+  };
   const signalNodes = useMemo<LoopNode[]>(() => SIGNALS.map((signal) => ({
     id: signal.id,
     icon: signal.icon,
@@ -323,6 +334,10 @@ export default function OnboardingScreen() {
     }
   }, [transition]);
 
+  const waitForExitFade = useCallback(() => (reducedMotion
+    ? Promise.resolve()
+    : new Promise<void>((resolve) => setTimeout(resolve, STORY.exitFadeDelay + STORY.exitFade))), [reducedMotion]);
+
   const completePath = useCallback(async (path: OnboardingPath) => {
     if (isLeavingRef.current || stepTransitionRef.current) return;
     isLeavingRef.current = true;
@@ -336,6 +351,7 @@ export default function OnboardingScreen() {
         experience_version: 2,
       });
       if (authReturn) return; // Root resumes only after persistence settles.
+      await waitForExitFade();
       const pendingPaywall = peekReturnToPaywallTrigger();
       if (pendingPaywall) {
         // The user signed in from the paywall and onboarding intercepted the
@@ -354,7 +370,7 @@ export default function OnboardingScreen() {
       setIsLeaving(false);
       setFailedAction({ type: 'complete', path });
     }
-  }, [openRecording, transition]);
+  }, [openRecording, transition, waitForExitFade]);
 
   const skip = useCallback(async () => {
     if (isLeavingRef.current) return;
@@ -371,6 +387,7 @@ export default function OnboardingScreen() {
       });
       void trackProductEvent('onboarding_completed', { reason: 'skip', experience_version: 2 });
       if (authReturn) return;
+      await waitForExitFade();
       const pendingPaywall = peekReturnToPaywallTrigger();
       router.replace(pendingPaywall ? buildPaywallHref(getPaywallTrigger(pendingPaywall)) : '/recording');
     } catch {
@@ -379,7 +396,7 @@ export default function OnboardingScreen() {
       setIsLeaving(false);
       setFailedAction({ type: 'skip' });
     }
-  }, [step, transition]);
+  }, [step, transition, waitForExitFade]);
 
   const selectPath = useCallback((path: OnboardingPath) => {
     const selectionVersion = selectionVersionRef.current + 1;
@@ -602,11 +619,12 @@ export default function OnboardingScreen() {
           style={Platform.OS === 'android'
             ? [
                 styles.stepStage,
+                styles.column,
                 {
                   height: layeredStepHeight,
                 },
               ]
-            : undefined}
+            : styles.column}
         >
           <View
             collapsable={false}
@@ -628,6 +646,20 @@ export default function OnboardingScreen() {
             <View collapsable={false} style={[styles.intro, { width: '100%' }]}>
 
             <View style={{ height: artworkSpace }} accessible={false} />
+            {/* A soft dark pool behind the copy, so the subtitle and legends stay readable
+                wherever the painting's moon and clouds fall at this screen size. */}
+            <View pointerEvents="none" accessible={false} style={[styles.copyVeil, { top: artworkSpace - 70 }]}>
+              <Svg width="100%" height="100%" preserveAspectRatio="none" viewBox="0 0 100 100">
+                <Defs>
+                  <RadialGradient id="copyVeil" cx="50%" cy="50%" rx="50%" ry="50%">
+                    <Stop offset="0" stopColor="#03040D" stopOpacity="0.72" />
+                    <Stop offset="0.62" stopColor="#03040D" stopOpacity="0.45" />
+                    <Stop offset="1" stopColor="#03040D" stopOpacity="0" />
+                  </RadialGradient>
+                </Defs>
+                <Ellipse cx="50" cy="50" rx="50" ry="50" fill="url(#copyVeil)" />
+              </Svg>
+            </View>
             <View style={styles.titleBlock}>
               <Animated.View style={introEnter(STORY.titleLead)}>
                 <Text
@@ -859,7 +891,7 @@ export default function OnboardingScreen() {
           locations={[0, 0.45, 1]}
           style={StyleSheet.absoluteFill}
         />
-        <Animated.View style={arrival ? introEnter(STORY.cta) : null}>
+        <Animated.View style={[styles.column, arrival ? introEnter(STORY.cta) : null]}>
         {arrival && !reducedMotion ? (
           <Animated.View pointerEvents="none" style={[styles.ctaInvite, { borderColor: titleAccent }, ctaInvite]} />
         ) : null}
@@ -958,6 +990,12 @@ export default function OnboardingScreen() {
           )}
         </View>
       </StandardBottomSheet> : null}
+      <Animated.View
+        pointerEvents="none"
+        accessible={false}
+        importantForAccessibility="no-hide-descendants"
+        style={[StyleSheet.absoluteFill, { backgroundColor: sheetTokens.screen.background }, exitFadeStyle]}
+      />
     </View>
   );
 }
@@ -1003,6 +1041,8 @@ const styles = StyleSheet.create({
   privacyLink: { minHeight: 44, justifyContent: 'center', paddingHorizontal: 8 },
   privacyLinkText: { fontFamily: Fonts.spaceGrotesk.medium, fontSize: 13, textDecorationLine: 'underline' },
   stepStage: { position: 'relative', alignSelf: 'stretch' },
+  column: { width: '100%', maxWidth: 560, alignSelf: 'center' },
+  copyVeil: { position: 'absolute', left: -60, right: -60, height: 560 },
   stepLayer: { position: 'absolute', top: 0, left: 0, right: 0 },
   inactiveStepLayer: { opacity: 0 },
   inactiveControl: { opacity: 0 },

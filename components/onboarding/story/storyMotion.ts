@@ -49,6 +49,9 @@ export const STORY = {
   camera: 1100,
   /** Camera push when the user commits. */
   plunge: 900,
+  /** The next screen's ground fades in once the plunge is under way. */
+  exitFadeDelay: 120,
+  exitFade: 260,
 } as const;
 
 /** Vertical travel, in points. The next step waits below. */

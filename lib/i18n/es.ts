@@ -256,7 +256,7 @@ const translations: Record<string, string> = {
     'onboarding.path.analyze.body': 'Abre caminos para reflexionar.',
     'onboarding.path.analyze.kicker': 'Análisis',
     'onboarding.path.analyze.detail_title': 'Vas directo a capturar el sueño.',
-    'onboarding.path.analyze.cta': 'Contar este sueño',
+    'onboarding.path.analyze.cta': 'Contar y explorar un sueño',
     'onboarding.path.memory.title': 'Guardar un recuerdo',
     'onboarding.path.memory.body': 'Conserva un sueño que te marcó.',
     'onboarding.path.memory.kicker': 'Recuerdo',
