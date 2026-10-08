@@ -208,6 +208,7 @@ export default function SettingsScreen() {
       testID="screen.settings"
     >
       <AtmosphericBackground variant="subtle" />
+      <View className={isDesktopLayout ? 'w-full max-w-[760px] self-center' : 'w-full'}>
       <NoctaliaScreenHeader
         titleKey={returningGuestBlocked ? 'auth.returning_guest.title' : 'settings.title'}
         actions={returningGuestBlocked ? [] : [{
@@ -217,6 +218,7 @@ export default function SettingsScreen() {
           onPress: () => router.canGoBack() ? router.back() : router.replace('/'),
         }]}
       />
+      </View>
 
       {/* 760px is inline: Tailwind extracts class names statically, so it cannot
           come from a constant. */}

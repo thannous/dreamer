@@ -69,8 +69,13 @@ jest.mock('@/hooks/useTranslation', () => ({
 }));
 
 describe('RecordingDraftProgress', () => {
+  it('hides the counter while the draft is empty', () => {
+    render(<RecordingDraftProgress value="" />);
+
+    expect(screen.queryByTestId(TID.Component.RecordingDraftProgressCount)).toBeNull();
+  });
+
   it.each([
-    ['', '0 characters'],
     [' ', '1 characters'],
     [' \n\t ', '4 characters'],
     [' A blue door ', '13 characters'],

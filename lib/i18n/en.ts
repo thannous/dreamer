@@ -84,6 +84,7 @@ const translations: Record<string, string> = {
     'nav.stats': 'Trends',
     'nav.explore': 'Explore',
     'nav.settings': 'Settings',
+    'nav.sidebar_tagline': 'Dream journal',
     'explore.title': 'Explore',
     'explore.intro': 'Move through gentle ways to notice your dreams. Symbols can open possibilities, never a fixed answer.',
     'explore.symbols.title': 'Symbols',
