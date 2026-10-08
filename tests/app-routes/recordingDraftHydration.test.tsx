@@ -102,6 +102,10 @@ jest.mock('@/lib/analytics', () => ({
 }));
 jest.mock('@/lib/logger', () => ({ createScopedLogger: () => ({ debug: jest.fn(), error: jest.fn(), warn: jest.fn() }) }));
 jest.mock('@/services/geminiService', () => ({ categorizeDream: jest.fn(async () => ({})) }));
+jest.mock('@/lib/aiConsent', () => ({
+  hasAiConsent: jest.fn(async () => true),
+  requestAiConsent: jest.fn(async () => true),
+}));
 jest.mock('@/services/captureConversation', () => ({
   requestCaptureQuestion: jest.fn(async () => ({ question: 'De quoi te souviens-tu ?', done: false })),
 }));

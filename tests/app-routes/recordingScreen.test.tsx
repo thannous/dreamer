@@ -18,6 +18,7 @@ const mockAnalyzeDream = jest.fn();
 const mockAnalysisSetStep = jest.fn();
 const mockApplyDreamCategorization = jest.fn();
 const mockCategorizeDream = jest.fn();
+const mockHasAiConsent = jest.fn(async () => true);
 const mockForceStopRecording = jest.fn();
 const mockGetInputModePreference = jest.fn();
 const mockGetSavedTranscript = jest.fn(async (): Promise<string> => '');
@@ -674,6 +675,11 @@ jest.doMock('@/services/geminiService', () => ({
   generateImageWithReference: jest.fn(),
 }));
 
+jest.doMock('@/lib/aiConsent', () => ({
+  hasAiConsent: (...args: unknown[]) => mockHasAiConsent(...args),
+  requestAiConsent: jest.fn(async () => true),
+}));
+
 jest.doMock('@/services/nativeSpeechRecognition', () => {
   const actual = jest.requireActual('@/services/nativeSpeechRecognition') as typeof import('@/services/nativeSpeechRecognition');
   return {
@@ -853,6 +859,7 @@ describe('Recording screen', () => {
       analysisStatus: 'done',
     }));
     mockApplyDreamCategorization.mockResolvedValue(null);
+    mockHasAiConsent.mockResolvedValue(true);
     mockCategorizeDream.mockResolvedValue({
       dreamType: 'Symbolic Dream',
       theme: 'calm',
@@ -1587,12 +1594,36 @@ describe('Recording screen', () => {
     expect(mockAnalyzeDream).not.toHaveBeenCalled();
     expect(mockPush).not.toHaveBeenCalled();
     expect(screen.queryByTestId('first-dream-sheet')).toBeNull();
-    expect(mockCategorizeDream).toHaveBeenCalledWith('A blue room under the rain', 'fr');
+    await waitFor(() => {
+      expect(mockCategorizeDream).toHaveBeenCalledWith('A blue room under the rain', 'fr');
+    });
     const savedIdentity = getDreamIdentityKey({ ...mockAddDream.mock.calls[0][0], id: 42 });
     expect(isInitialDreamCategorizationPending(savedIdentity)).toBe(true);
     await act(async () => { resolveCategorize?.({ title: 'Rain Room', theme: 'calm', dreamType: 'Symbolic Dream' }); });
     expect(isInitialDreamCategorizationPending(savedIdentity)).toBe(false);
   });
+
+  it('saves without calling categorizeDream while AI consent is missing', async () => {
+    mockHasAiConsent.mockResolvedValue(false);
+    render(<RecordingScreen />);
+    await awaitEditorReady();
+    fireEvent.change(screen.getByTestId(TID.Input.DreamTranscript), {
+      target: { value: 'A blue room under the rain' },
+    });
+    fireEvent.click(await screen.findByTestId('recording-save'));
+
+    await waitFor(() => {
+      expect(mockAddDream).toHaveBeenCalled();
+      expect(mockReplace).toHaveBeenCalledWith({
+        pathname: '/journal/[id]',
+        params: { id: '42', saved: '1' },
+      });
+    });
+    await act(async () => { await Promise.resolve(); await Promise.resolve(); });
+    expect(mockHasAiConsent).toHaveBeenCalled();
+    expect(mockCategorizeDream).not.toHaveBeenCalled();
+  });
+
 
   it('saves once then opens the saved dream even with exhausted analysis credits', async () => {
     mockQuotaState.usage.analysis = { used: 3, limit: 3, remaining: 0 };

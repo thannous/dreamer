@@ -2,10 +2,17 @@
 import { act, renderHook } from '@testing-library/react';
 import { useCaptureConversation } from '../useCaptureConversation';
 import { requestCaptureQuestion } from '@/services/captureConversation';
+import { hasAiConsent } from '@/lib/aiConsent';
 jest.mock('@/services/captureConversation', () => ({ requestCaptureQuestion: jest.fn() }));
+jest.mock('@/lib/aiConsent', () => ({ hasAiConsent: jest.fn() }));
 const request = jest.mocked(requestCaptureQuestion);
+const consent = jest.mocked(hasAiConsent);
 const t = () => 'De quoi d’autre te souviens-tu ?';
-beforeEach(() => request.mockReset());
+beforeEach(() => {
+  request.mockReset();
+  consent.mockReset();
+  consent.mockResolvedValue(true);
+});
 
 it('requests a grounded question once per completed transcript revision', async () => {
   request.mockResolvedValue({ question: 'Que voyais-tu dans ce jardin ?', done: false });
@@ -30,7 +37,7 @@ it('discards a stale question after the draft is cleared', async () => {
   request.mockImplementation(() => new Promise(r => { resolve = r; }));
   const { result } = renderHook(() => useCaptureConversation({ language: 'fr', t }));
   let pending!: ReturnType<typeof result.current.ask>;
-  act(() => { pending = result.current.ask('Ancien rêve'); });
+  await act(async () => { pending = result.current.ask('Ancien rêve'); await Promise.resolve(); });
   act(() => result.current.reset());
   await act(async () => { resolve({ question: 'Ancienne question ?', done: false }); await pending; });
   expect(result.current).toMatchObject({ question: null, loading: false, done: false });
@@ -55,7 +62,7 @@ it('stops after three questions and discards a response when the account scope c
   let resolve!: (value: { question: string; done: boolean }) => void;
   request.mockImplementation(() => new Promise(r => { resolve = r; }));
   let pending!: ReturnType<typeof result.current.ask>;
-  act(() => { pending = result.current.ask('Un autre rêve'); });
+  await act(async () => { pending = result.current.ask('Un autre rêve'); await Promise.resolve(); });
   const signal = request.mock.calls.at(-1)![3];
   rerender({ scope: 'user-two' });
   expect(signal?.aborted).toBe(true);
@@ -103,9 +110,36 @@ it('discards a pending question when its source is edited', async () => {
   request.mockImplementation(() => new Promise(r => { resolve = r; }));
   const { result } = renderHook(() => useCaptureConversation({ language: 'fr', t }));
   let pending!: ReturnType<typeof result.current.ask>;
-  act(() => { pending = result.current.ask('Je cherchais.'); });
+  await act(async () => { pending = result.current.ask('Je cherchais.'); await Promise.resolve(); });
   act(() => result.current.invalidateSource('Je cherchais.'));
   expect(request.mock.calls[0][3]?.aborted).toBe(true);
   await act(async () => { resolve({ question: 'Que cherchais-tu ?', done: false }); await pending; });
   expect(result.current).toMatchObject({ question: null, needsDecision: true, loading: false });
+});
+
+it('never sends the transcript to the provider before AI consent and asks a local question instead', async () => {
+  consent.mockResolvedValue(false);
+  const { result } = renderHook(() => useCaptureConversation({ language: 'fr', t }));
+  await act(async () => { await result.current.ask('Un jardin.'); });
+  expect(request).not.toHaveBeenCalled();
+  expect(result.current).toMatchObject({ question: t(), loading: false, unavailable: true, done: false });
+  await act(async () => { await result.current.ask('Un jardin. Une porte.'); });
+  expect(request).not.toHaveBeenCalled();
+  consent.mockResolvedValue(true);
+  request.mockResolvedValue({ question: 'Où menait la porte ?', done: false });
+  await act(async () => { await result.current.ask('Un jardin. Une porte. Un couloir.'); });
+  expect(request).toHaveBeenCalledTimes(1);
+  expect(request.mock.calls[0][2]).toEqual([t(), t()]);
+});
+
+it('drops a local question when the draft is cleared during the consent check', async () => {
+  let resolveConsent!: (value: boolean) => void;
+  consent.mockImplementation(() => new Promise(r => { resolveConsent = r; }));
+  const { result } = renderHook(() => useCaptureConversation({ language: 'fr', t }));
+  let pending!: ReturnType<typeof result.current.ask>;
+  act(() => { pending = result.current.ask('Ancien rêve'); });
+  act(() => result.current.reset());
+  await act(async () => { resolveConsent(true); await pending; });
+  expect(request).not.toHaveBeenCalled();
+  expect(result.current).toMatchObject({ question: null, loading: false });
 });

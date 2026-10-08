@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { requestCaptureQuestion } from '@/services/captureConversation';
 import { getDreamRecallQuestion } from '@/lib/dreamRecallQuestions';
+import { hasAiConsent } from '@/lib/aiConsent';
 
 export const CAPTURE_MAX_QUESTIONS = 3;
 
@@ -87,7 +88,22 @@ export function useCaptureConversation({ language, t, scope }: Options) {
     setQuestion(null);
     setUnavailable(false);
     setDone(false);
+    const askLocally = () => {
+      // A general local question keeps capture usable, without pretending it was personalized.
+      const fallback = getDreamRecallQuestion(previous.current.length, t).text;
+      setQuestion(fallback);
+      setUnavailable(true);
+      previous.current.push(fallback);
+    };
     try {
+      // The transcript goes to the AI provider: without prior consent stay local.
+      // Never prompt here, a dialog would interrupt voice capture.
+      if (!(await hasAiConsent())) {
+        if (generation.current !== owner) return;
+        askLocally();
+        return;
+      }
+      if (generation.current !== owner || abort.signal.aborted) return;
       const result = await requestCaptureQuestion(text, language, [...previous.current], abort.signal);
       if (generation.current !== owner) return;
       setQuestion(result.question);
@@ -97,11 +113,7 @@ export function useCaptureConversation({ language, t, scope }: Options) {
       return result.done;
     } catch {
       if (generation.current !== owner) return;
-      // A general local question keeps capture usable offline, without pretending it was personalized.
-      const fallback = getDreamRecallQuestion(previous.current.length, t).text;
-      setQuestion(fallback);
-      setUnavailable(true);
-      previous.current.push(fallback);
+      askLocally();
     } finally {
       if (generation.current === owner) {
         controller.current = null;

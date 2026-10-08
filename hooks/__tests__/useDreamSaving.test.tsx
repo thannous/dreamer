@@ -11,6 +11,8 @@ const {
   mockAnalyzeDream,
   mockAddDream,
   mockApplyDreamCategorization,
+  mockHasAiConsent,
+  mockRequestAiConsent,
 } = ((factory: any) => factory())(() => ({
   mockCategorizeDream: jest.fn().mockResolvedValue({
     title: 'Test Dream',
@@ -20,6 +22,8 @@ const {
   mockAnalyzeDream: jest.fn().mockResolvedValue({ id: 1, isAnalyzed: true }),
   mockAddDream: jest.fn().mockImplementation((dream: unknown) => Promise.resolve({ ...dream as object, id: Date.now() })),
   mockApplyDreamCategorization: jest.fn().mockResolvedValue(null),
+  mockHasAiConsent: jest.fn(async () => true),
+  mockRequestAiConsent: jest.fn(async () => true),
 }));
 
 let mockCurrentUser: any = { id: 'test-user' };
@@ -27,7 +31,7 @@ let mockCanAnalyzeNow = true;
 let mockTier = 'free';
 
 // Mock all dependencies
-jest.mock('@/lib/aiConsent', () => ({ requestAiConsent: jest.fn(async () => true) }));
+jest.mock('@/lib/aiConsent', () => ({ hasAiConsent: mockHasAiConsent, requestAiConsent: mockRequestAiConsent }));
 
 jest.mock('react-native', () => ({
   Alert: {
@@ -95,6 +99,8 @@ describe('useDreamSaving', () => {
     mockCurrentUser = { id: 'test-user' };
     mockCanAnalyzeNow = true;
     mockTier = 'free';
+    mockHasAiConsent.mockResolvedValue(true);
+    mockRequestAiConsent.mockResolvedValue(true);
   });
 
   it('should initialize with isPersisting false', () => {
@@ -201,6 +207,7 @@ describe('useDreamSaving', () => {
     await act(async () => {
       await result.current.saveDream('  Bonjour le monde  ');
     });
+    await act(async () => { await Promise.resolve(); await Promise.resolve(); });
 
     expect(mockCategorizeDream).toHaveBeenCalledWith('Bonjour le monde', 'fr');
   });
@@ -222,6 +229,7 @@ describe('useDreamSaving', () => {
     await act(async () => {
       savedDream = await result.current.saveDream('Immediate save');
     });
+    await act(async () => { await Promise.resolve(); await Promise.resolve(); });
 
     expect(savedDream).not.toBeNull();
     expect(mockAddDream).toHaveBeenCalledTimes(1);
@@ -286,6 +294,7 @@ describe('useDreamSaving', () => {
     await act(async () => {
       savedDream = await result.current.saveDream('Test dream');
     });
+    await act(async () => { await Promise.resolve(); await Promise.resolve(); });
 
     expect(mockAddDream).toHaveBeenCalled();
     expect(savedDream).not.toBeNull();
@@ -341,4 +350,36 @@ describe('useDreamSaving', () => {
     expect(analyzed).toBeNull();
     expect(Alert.alert).toHaveBeenCalled();
   });
+
+  it('skips categorizeDream while AI consent is missing and still saves', async () => {
+    mockHasAiConsent.mockResolvedValue(false);
+    const { result } = renderHook(() => useDreamSaving());
+
+    let savedDream;
+    await act(async () => {
+      savedDream = await result.current.saveDream('Consent denied dream');
+    });
+    // Flush the fire-and-forget categorization check.
+    await act(async () => { await Promise.resolve(); await Promise.resolve(); });
+
+    expect(savedDream).not.toBeNull();
+    expect(mockAddDream).toHaveBeenCalledTimes(1);
+    expect(mockHasAiConsent).toHaveBeenCalled();
+    expect(mockCategorizeDream).not.toHaveBeenCalled();
+    expect(mockApplyDreamCategorization).not.toHaveBeenCalled();
+  });
+
+  it('calls categorizeDream once AI consent is already granted', async () => {
+    mockHasAiConsent.mockResolvedValue(true);
+    const { result } = renderHook(() => useDreamSaving());
+
+    await act(async () => {
+      await result.current.saveDream('Consent granted dream');
+    });
+    await act(async () => { await Promise.resolve(); await Promise.resolve(); });
+
+    expect(mockCategorizeDream).toHaveBeenCalledWith('Consent granted dream', 'fr');
+    expect(mockApplyDreamCategorization).toHaveBeenCalled();
+  });
+
 });

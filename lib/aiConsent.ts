@@ -5,9 +5,10 @@ import { Alert, Platform } from 'react-native';
  * One-time permission before a dream is shared with the third-party AI provider.
  *
  * App Review guideline 5.1.2(i) asks apps to disclose when personal data goes to a
- * third-party AI and to obtain explicit permission first. Analysis, the guided
- * conversation and illustrations all send the dream text to the provider, so each
- * entry point awaits this before calling the service. Writing and reading the journal
+ * third-party AI and to obtain explicit permission first. Analysis, quick
+ * categorization, the guided conversation and illustrations all send the dream text
+ * to the provider, so each entry point awaits this (or checks hasAiConsent for
+ * silent background work) before calling the service. Writing and reading the journal
  * never need it.
  *
  * The web E2E fixtures pre-grant this key outside the consent journey.
