@@ -1412,12 +1412,12 @@ const styles = StyleSheet.create({
   journeyChoice: { minHeight: 52, flexDirection: 'row', alignItems: 'center', gap: LucidSpace.sm, borderBottomWidth: StyleSheet.hairlineWidth, borderRadius: LucidRadius.md, paddingHorizontal: LucidSpace.sm, paddingVertical: LucidSpace.sm },
   journeyChoiceLabel: { flex: 1, fontFamily: 'SpaceGrotesk_500Medium', fontSize: LucidType.bodySm[0], lineHeight: LucidType.bodySm[1] },
   optionGrid: { flexDirection: 'row', flexWrap: 'wrap', gap: LucidSpace.sm },
-  // Trois options, une ligne. À 104 de large et 9 de gouttière elles réclamaient
-  // 330px pour les 320 d'un écran de 360 dp, et le sélecteur se repliait en 2+1
-  // dès qu'on descendait sous 370 dp. À 92 et une gouttière de 8, la rangée
-  // redescend à 292px de minimum : elle tient, et `flex: 1` rend le reste.
-  option: { minHeight: 52, minWidth: 92, flex: 1, borderRadius: LucidRadius.lg, borderWidth: 1, paddingHorizontal: LucidSpace.md, flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: LucidSpace.sm },
-  optionLabel: { fontFamily: 'SpaceGrotesk_700Bold', fontSize: LucidType.bodySm[0], lineHeight: LucidType.bodySm[1] },
+  // Quatre options, deux par rangée. Sur une seule rangée, chaque puce gardait
+  // environ 42 px pour son libellé : « Dynamique » se coupait au milieu du mot.
+  // À `flexBasis: '45%'`, deux puces par rangée laissent la place au texte, et
+  // le libellé peut encore se replier en grand corps de texte.
+  option: { minHeight: 52, flexGrow: 1, flexBasis: '45%', borderRadius: LucidRadius.lg, borderWidth: 1, paddingHorizontal: LucidSpace.md, flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: LucidSpace.sm },
+  optionLabel: { flexShrink: 1, fontFamily: 'SpaceGrotesk_700Bold', fontSize: LucidType.bodySm[0], lineHeight: LucidType.bodySm[1], textAlign: 'center' },
   counter: { minHeight: 70, flexDirection: 'row', alignItems: 'center', gap: LucidSpace.md, paddingVertical: LucidSpace.md },
   counterCopy: { flex: 1, gap: LucidSpace.xs },
   counterButtons: { flexDirection: 'row', gap: LucidSpace.xs },

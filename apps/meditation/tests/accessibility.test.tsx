@@ -93,6 +93,20 @@ describe('text scaling', () => {
     dimensions.mockRestore();
   });
 
+  it('keeps a caller line height so a larger display figure is not cropped', () => {
+    const { fontScale } = ReactNative.Dimensions.get('window');
+
+    render(
+      <Text variant="display" style={{ fontSize: 58, lineHeight: 68 }}>
+        10 min
+      </Text>
+    );
+
+    expect(ReactNative.StyleSheet.flatten(screen.getByText('10 min').props.style)).toEqual(
+      expect.objectContaining({ fontSize: 58, lineHeight: 68 * Math.min(fontScale, 2) })
+    );
+  });
+
   it('lets a session card title grow instead of clipping it to one line', () => {
     render(
       <SessionCard

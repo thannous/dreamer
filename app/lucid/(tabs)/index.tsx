@@ -426,6 +426,16 @@ export default function LucidTodayScreen() {
       icon: 'map-outline',
     };
   })();
+  const planSummary = {
+    overline: planCopy?.overline ?? `${copy.suggested} · ${recommendedProgram.title}`,
+    title: planCopy?.title ?? copy.focusTitle[plan.focus],
+    hint: planCopy?.hint ?? copy.focusHint[plan.focus],
+  };
+  // The fallback primary action already shows the suggested plan; don't print it twice.
+  const planSummaryRepeatsPrimary =
+    planSummary.overline === primaryPresentation.overline &&
+    planSummary.title === primaryPresentation.title &&
+    planSummary.hint === primaryPresentation.hint;
   const contextActions: ContextAction[] = [
     {
       key: 'morning',
@@ -532,16 +542,16 @@ export default function LucidTodayScreen() {
           </Text>
         </PressableScale>
 
-        {showPlanSummary ? (
+        {showPlanSummary && !planSummaryRepeatsPrimary ? (
           <View style={styles.planSummary} testID="lucid-today-plan">
             <Text style={[styles.overline, { color: palette.accent }]}>
-              {planCopy?.overline ?? `${copy.suggested} · ${recommendedProgram.title}`}
+              {planSummary.overline}
             </Text>
             <Text style={[styles.planSummaryTitle, { color: palette.text }]}>
-              {planCopy?.title ?? copy.focusTitle[plan.focus]}
+              {planSummary.title}
             </Text>
             <Text style={[styles.planSummaryHint, { color: palette.textSecondary }]}>
-              {planCopy?.hint ?? copy.focusHint[plan.focus]}
+              {planSummary.hint}
             </Text>
           </View>
         ) : null}
