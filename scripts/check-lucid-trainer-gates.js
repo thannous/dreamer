@@ -134,7 +134,7 @@ check('Partial companion Google configuration is rejected clearly',
 );
 
 check('Companion identity',
-  config.name === 'Noctalia Lucid Trainer' &&
+  config.name === 'Noctalia Lucid' &&
     config.slug === 'noctalia-lucid-trainer' &&
     config.scheme === 'noctalia-lucid' &&
     config.extra?.product === 'lucid-trainer',

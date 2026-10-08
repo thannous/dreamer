@@ -3,7 +3,7 @@ import type { LucidTrainerContent } from './types';
 const content = {
   locale: 'es',
   chrome: {
-    appName: 'Noctalia Lucid Trainer',
+    appName: 'Noctalia Lucid',
     tagline: 'Entrena tu atención sin descuidar el sueño.',
     tabs: { today: 'Hoy', journal: 'Diario', programs: 'Recorridos', night: 'Noche', progress: 'Insights', settings: 'Perfil' },
     common: {
@@ -12,7 +12,7 @@ const content = {
   },
   onboarding: {
     title: 'Crea una práctica de sueños lúcidos compatible con tu descanso',
-    intro: 'Lucid Trainer desarrolla la atención durante el día, la preparación al acostarte y la reflexión por la mañana. Puede haber o no un sueño lúcido: la práctica es el objetivo.',
+    intro: 'Lucid desarrolla la atención durante el día, la preparación al acostarte y la reflexión por la mañana. Puede haber o no un sueño lúcido: la práctica es el objetivo.',
     wellbeingNotice: 'Es una herramienta de bienestar y autoobservación, no una atención sanitaria. Protege primero el sueño y detén cualquier ejercicio que te cause angustia o un cansancio inusual.',
     goalTitle: '¿Qué quieres practicar?',
     goals: [
@@ -216,7 +216,7 @@ const content = {
     consentControl: 'Puedes revisar o retirar el consentimiento sin bloquear el entrenamiento sin conexión.',
   },
   settings: {
-    title: 'Ajustes', reminders: 'Recordatorios de pruebas de realidad', sleepWindow: 'Horario habitual de sueño', nightSignals: 'Señales de audio nocturnas', permissions: 'Permisos', accessibility: 'Accesibilidad y movimiento', language: 'Idioma', appearance: 'Apariencia dinámica, clara, oscura o del sistema', privacy: 'Privacidad y analíticas', dataManagement: 'Exportar y eliminar datos', subscription: 'Noctalia Plus y compras', noctaliaConnection: 'Conexión con Noctalia', scienceAndLimits: 'Ciencia y límites', help: 'Ayuda y seguridad', about: 'Acerca de Lucid Trainer',
+    title: 'Ajustes', reminders: 'Recordatorios de pruebas de realidad', sleepWindow: 'Horario habitual de sueño', nightSignals: 'Señales de audio nocturnas', permissions: 'Permisos', accessibility: 'Accesibilidad y movimiento', language: 'Idioma', appearance: 'Apariencia dinámica, clara, oscura o del sistema', privacy: 'Privacidad y analíticas', dataManagement: 'Exportar y eliminar datos', subscription: 'Noctalia Plus y compras', noctaliaConnection: 'Conexión con Noctalia', scienceAndLimits: 'Ciencia y límites', help: 'Ayuda y seguridad', about: 'Acerca de Lucid',
   },
 } as const satisfies LucidTrainerContent;
 

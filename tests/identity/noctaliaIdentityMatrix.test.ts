@@ -65,7 +65,7 @@ const EXPECTED_ROWS: readonly {
   {
     product: 'lucid',
     environment: 'production',
-    name: 'Noctalia Lucid Trainer',
+    name: 'Noctalia Lucid',
     slug: 'noctalia-lucid-trainer',
     androidApplicationId: 'com.tanuki75.noctalia.lucid',
     iosBundleIdentifier: 'com.tanuki75.noctalia.lucid',
@@ -77,7 +77,7 @@ const EXPECTED_ROWS: readonly {
   {
     product: 'lucid',
     environment: 'qa',
-    name: 'Noctalia Lucid Trainer QA',
+    name: 'Noctalia Lucid QA',
     slug: 'noctalia-lucid-trainer',
     androidApplicationId: 'com.tanuki75.noctalia.lucid.qa',
     iosBundleIdentifier: 'com.tanuki75.noctalia.lucid.qa',
@@ -89,7 +89,7 @@ const EXPECTED_ROWS: readonly {
   {
     product: 'lucid',
     environment: 'development',
-    name: 'Noctalia Lucid Trainer Dev',
+    name: 'Noctalia Lucid Dev',
     slug: 'noctalia-lucid-trainer',
     androidApplicationId: 'com.tanuki75.noctalia.lucid.dev',
     iosBundleIdentifier: 'com.tanuki75.noctalia.lucid.dev',

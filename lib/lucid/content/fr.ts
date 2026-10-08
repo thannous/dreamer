@@ -3,7 +3,7 @@ import type { LucidTrainerContent } from './types';
 const content = {
   locale: 'fr',
   chrome: {
-    appName: 'Noctalia Lucid Trainer',
+    appName: 'Noctalia Lucid',
     tagline: 'Entraînez votre attention tout en protégeant votre sommeil.',
     tabs: {
       today: 'Aujourd’hui',
@@ -29,7 +29,7 @@ const content = {
   },
   onboarding: {
     title: 'Construisez une pratique du rêve lucide compatible avec votre sommeil',
-    intro: 'Lucid Trainer développe l’attention en journée, la préparation au coucher et le bilan du matin. Un rêve lucide peut survenir ou non : la pratique est l’objectif.',
+    intro: 'Lucid développe l’attention en journée, la préparation au coucher et le bilan du matin. Un rêve lucide peut survenir ou non : la pratique est l’objectif.',
     wellbeingNotice: 'Cet outil concerne le bien-être et l’auto-observation, pas les soins. Protégez d’abord votre sommeil et arrêtez tout exercice qui provoque détresse ou fatigue inhabituelle.',
     goalTitle: 'Que souhaitez-vous entraîner ?',
     goals: [
@@ -335,7 +335,7 @@ const content = {
     consentControl: 'Le consentement peut être revu ou retiré sans bloquer l’entraînement hors ligne.',
   },
   settings: {
-    title: 'Réglages', reminders: 'Rappels des tests de réalité', sleepWindow: 'Plage de sommeil habituelle', nightSignals: 'Signaux audio nocturnes', permissions: 'Autorisations', accessibility: 'Accessibilité et animations', language: 'Langue', appearance: 'Apparence dynamique, claire, sombre ou système', privacy: 'Confidentialité et statistiques', dataManagement: 'Exporter et supprimer les données', subscription: 'Noctalia Plus et achats', noctaliaConnection: 'Connexion à Noctalia', scienceAndLimits: 'Science et limites', help: 'Aide et sécurité', about: 'À propos de Lucid Trainer',
+    title: 'Réglages', reminders: 'Rappels des tests de réalité', sleepWindow: 'Plage de sommeil habituelle', nightSignals: 'Signaux audio nocturnes', permissions: 'Autorisations', accessibility: 'Accessibilité et animations', language: 'Langue', appearance: 'Apparence dynamique, claire, sombre ou système', privacy: 'Confidentialité et statistiques', dataManagement: 'Exporter et supprimer les données', subscription: 'Noctalia Plus et achats', noctaliaConnection: 'Connexion à Noctalia', scienceAndLimits: 'Science et limites', help: 'Aide et sécurité', about: 'À propos de Lucid',
   },
 } as const satisfies LucidTrainerContent;
 

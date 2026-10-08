@@ -178,7 +178,7 @@ export const expoLucidNotificationAdapter: LucidNotificationAdapter = {
   configureChannel: async () => {
     if (Platform.OS !== 'android') return;
     await Notifications.setNotificationChannelAsync(LUCID_TRAINER_NOTIFICATION_CHANNEL_ID, {
-      name: 'Lucid Trainer reminders',
+      name: 'Lucid reminders',
       importance: Notifications.AndroidImportance.DEFAULT,
       vibrationPattern: [0, 150],
     });
@@ -188,7 +188,7 @@ export const expoLucidNotificationAdapter: LucidNotificationAdapter = {
     await Notifications.setNotificationChannelAsync(
       LUCID_NIGHT_CUE_NOTIFICATION_CHANNEL_IDS[soundId][volumeBand],
       {
-        name: `Lucid Trainer night cue — ${soundId} — ${volumeBand}`,
+        name: `Lucid night cue — ${soundId} — ${volumeBand}`,
         description: 'Optional, brief and low-intensity lucid dreaming cue.',
         importance: Notifications.AndroidImportance.DEFAULT,
         enableVibrate: false,

@@ -17,7 +17,7 @@ export async function shareLucidTrainerExport(
   const canShare = await Sharing.isAvailableAsync();
   if (canShare) {
     await Sharing.shareAsync(file.uri, {
-      dialogTitle: 'Noctalia Lucid Trainer export',
+      dialogTitle: 'Noctalia Lucid export',
       mimeType: format === 'json' ? 'application/json' : 'text/csv',
       UTI: format === 'json' ? 'public.json' : 'public.comma-separated-values-text',
     });

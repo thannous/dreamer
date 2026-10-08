@@ -145,16 +145,17 @@ export async function runLucidVisualJourney({ browser, base, output, revision, o
     await goto('/lucid/dream-atlas', 'light');
     check('Confirmed sign and dream sources reach Atlas', (await observe()).includes('jardin') && (await observe()).includes('Rêves sources'));
     await shot('22-atlas-filled');
-    for (const path of ['/lucid/morning-voice', '/lucid/permissions', '/lucid/sleep-integration']) {
+    for (const path of ['/lucid/morning-voice', '/lucid/permissions']) {
       await goto(path);
       const dom = await observe();
       check(`${path}: no technical qualification text in main UI`, !dom.includes('Ne jamais inventer') && !dom.includes('avant release') && !dom.includes('Échantillons utilisables'));
-      if (path === '/lucid/sleep-integration') {
-        const state = await tab.playwright.evaluate(() => document.querySelector('[data-testid=lucid-sleep-connect]')?.getAttribute('aria-disabled'));
-        check('Unavailable Health import stays disabled on web', state === 'true', state);
-      }
       await shot(path.split('/').pop());
     }
+    // v1 ships no Apple Health import: the route is guarded off and lands on Lucid home.
+    await goto('/lucid/sleep-integration');
+    await observe();
+    const healthScreen = await tab.playwright.evaluate(() => Boolean(document.querySelector('[data-testid=lucid-sleep-connect]')));
+    check('Health import route is unreachable in v1', !healthScreen);
     await goto('/lucid/stabilization-lab');
     await tab.playwright.getByTestId('lucid-stabilization-lab-primary').click();
     check('Stabilization starts at hands', (await observe()).includes('mains'));

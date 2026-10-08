@@ -1,5 +1,5 @@
 const LUCID_LOCAL_MICROPHONE_PERMISSION =
-  'Noctalia Lucid Trainer records a morning dream note on this device after you tap Speak. Audio stays local and is never uploaded or transcribed automatically.';
+  'Noctalia Lucid records a morning dream note on this device after you tap Speak. Audio stays local and is never uploaded or transcribed automatically.';
 
 function pluginName(plugin) {
   return Array.isArray(plugin) ? plugin[0] : plugin;

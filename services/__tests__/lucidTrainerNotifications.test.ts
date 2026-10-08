@@ -439,7 +439,7 @@ describe('lucidTrainerNotifications', () => {
         1,
         LUCID_TRAINER_NOTIFICATION_CHANNEL_ID,
         expect.objectContaining({
-          name: 'Lucid Trainer reminders',
+          name: 'Lucid reminders',
           vibrationPattern: [0, 150],
         })
       );
