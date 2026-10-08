@@ -2,7 +2,7 @@ import { useQuickSettings } from '@/context/QuickSettingsContext';
 import { JournalCompletenessNotice } from '@/components/journal/JournalCompletenessNotice';
 import { router } from 'expo-router';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import React, { useCallback, useMemo } from 'react';
+import React, { useCallback, useMemo, useState } from 'react';
 import {
   Platform,
   Pressable,
@@ -14,6 +14,7 @@ import {
 
 import { MockNavigationRail } from '@/components/dev/MockNavigationRail';
 import { NoctaliaScreenHeader } from '@/components/NoctaliaScreenHeader';
+import { NightSkyBand } from '@/components/ui/NightSkyBand';
 import { ScreenContainer } from '@/components/ScreenContainer';
 import { StatsEvolutionBars } from '@/components/stats/StatsEvolutionBars';
 import { StatsRankedList, type StatsRankedRow } from '@/components/stats/StatsRankedList';
@@ -86,6 +87,19 @@ function toRankedRows<T extends string>(
   }));
 }
 
+/** Section opening shared with the symbol sheets and noctalia.app: champagne mark, serif title. */
+function SectionHead({ title, subtitle }: { title: string; subtitle?: string }) {
+  return (
+    <View className="gap-1">
+      <View className="mb-2 h-[2px] w-7 rounded-full bg-champagne" />
+      <Text accessibilityRole="header" className="text-[25px] leading-[31px] font-display-semibold text-ivory">
+        {title}
+      </Text>
+      {subtitle ? <Text className="text-[13px] leading-[19px] font-sans text-ivory-muted">{subtitle}</Text> : null}
+    </View>
+  );
+}
+
 export default function StatisticsScreen() {
   const { dreams, loaded, completeness, reloadDreams } = useDreams();
   const { t } = useTranslation();
@@ -94,6 +108,7 @@ export default function StatisticsScreen() {
   const insets = useSafeAreaInsets();
   const { colors, mode } = useTheme();
   const openQuickSettings = useQuickSettings();
+  const [headerHeight, setHeaderHeight] = useState(insets.top + 120);
   useClearWebFocus();
 
   const compact = width < COMPACT_BREAKPOINT;
@@ -233,7 +248,12 @@ export default function StatisticsScreen() {
 
   return (
     <View className="flex-1 bg-ink">
-      {!scrollHeader ? header : null}
+      {mode === 'dark' && !scrollHeader ? (
+        // Behind the fixed header only, fading out at its edge, so the content that
+        // scrolls under the header is clipped on plain ink rather than across the sky.
+        <NightSkyBand height={headerHeight + 24} background={noctalia.screen.background} />
+      ) : null}
+      {!scrollHeader ? <View onLayout={(event) => setHeaderHeight(event.nativeEvent.layout.height)}>{header}</View> : null}
       <ScrollView
         className="flex-1"
         style={scrollHeader ? { marginBottom: navigationClearance } : undefined}
@@ -247,8 +267,9 @@ export default function StatisticsScreen() {
           <JournalCompletenessNotice status={completeness?.status} trends onRetry={() => { void reloadDreams(); }} />
           <View className="gap-6 px-5 pb-5 pt-2">
             <View className="gap-4" testID="trends.section.week" accessible={false} accessibilityRole="none">
-              <View className="border-b border-line pb-4">
-                <Text accessibilityRole="header" className="text-[13px] leading-[20px] font-sans text-ivory-muted">
+              <View className="flex-row items-start gap-3 border-b border-line pb-4">
+                <View className="mt-[9px] h-px w-[22px] bg-champagne" />
+                <Text accessibilityRole="header" className="min-w-0 shrink text-[12px] leading-[18px] font-sans-medium uppercase tracking-[1.6px] text-champagne-on">
                   {rangeLabel} · {t('trends.section.week')}
                 </Text>
               </View>
@@ -272,12 +293,10 @@ export default function StatisticsScreen() {
             </View>
 
             <View className="gap-4" testID="trends.section.patterns" accessible={false} accessibilityRole="none">
-              <View className="gap-1">
-                <Text accessibilityRole="header" className="text-[22px] leading-[28px] font-display-semibold text-ivory">
-                  {t(themeRows.length > 0 || patterns.empty ? 'trends.patterns.themes' : 'trends.section.patterns')}
-                </Text>
-                <Text className="text-[13px] leading-[19px] font-sans text-ivory-muted">{t('trends.patterns.scope')}</Text>
-              </View>
+              <SectionHead
+                title={t(themeRows.length > 0 || patterns.empty ? 'trends.patterns.themes' : 'trends.section.patterns')}
+                subtitle={t('trends.patterns.scope')}
+              />
               {patterns.empty ? (
                 <Text accessibilityRole="text" className="text-[15px] leading-[23px] font-sans text-ivory-muted">
                   {t('trends.patterns.empty')}
@@ -310,14 +329,14 @@ export default function StatisticsScreen() {
                 <View className="gap-6 pt-3">
                   {emotionRows.length > 0 ? (
                     <View className="gap-2">
-                      <Text accessibilityRole="header" className="text-[18px] leading-[24px] font-display-semibold text-ivory">{t('trends.patterns.emotions')}</Text>
+                      <Text accessibilityRole="header" className="text-[19px] leading-[25px] font-display-semibold text-ivory">{t('trends.patterns.emotions')}</Text>
                       <StatsRankedList noctalia={noctalia} rows={emotionRows}
                         maxCount={Math.max(...emotionRows.map((row) => row.count), 1)} testID="trends.patterns.emotions.list" />
                     </View>
                   ) : null}
                   {typeRows.length > 0 ? (
                     <View className="gap-2">
-                      <Text accessibilityRole="header" className="text-[18px] leading-[24px] font-display-semibold text-ivory">{t('trends.patterns.types')}</Text>
+                      <Text accessibilityRole="header" className="text-[19px] leading-[25px] font-display-semibold text-ivory">{t('trends.patterns.types')}</Text>
                       <StatsRankedList noctalia={noctalia} rows={typeRows}
                         maxCount={Math.max(...typeRows.map((row) => row.count), 1)} testID="trends.patterns.types.list" />
                     </View>
@@ -333,17 +352,12 @@ export default function StatisticsScreen() {
             </View>
 
             <View
-              className="gap-4 border-t border-line pt-6"
+              className="gap-4 border-t border-line pt-7"
               testID="trends.section.evolution"
               accessible={false}
               accessibilityRole="none"
             >
-              <Text
-                accessibilityRole="header"
-                className="text-[20px] leading-[26px] font-display-semibold text-ivory"
-              >
-                {t('trends.section.evolution')}
-              </Text>
+              <SectionHead title={t('trends.section.evolution')} />
               {evolution.days.length === 0 ? (
                 <Text className="text-[15px] font-sans text-ivory-muted">
                   {t('trends.evolution.empty')}

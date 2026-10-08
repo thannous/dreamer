@@ -1,9 +1,12 @@
 import React, { memo, useCallback, useMemo } from 'react';
 import { Pressable, StyleSheet, Text, View, useWindowDimensions } from 'react-native';
 
+import { Image } from 'expo-image';
+
 import { IconSymbol } from '@/components/ui/icon-symbol';
 import { ThemeLayout } from '@/constants/journalTheme';
 import { getNoctaliaDesignTokens } from '@/constants/noctaliaDesign';
+import { getSymbolIllustration } from '@/constants/symbolIllustrations';
 import { Fonts } from '@/constants/theme';
 import { useTheme } from '@/context/ThemeContext';
 import type { DreamSymbol, SymbolLanguage } from '@/lib/symbolTypes';
@@ -22,6 +25,7 @@ export const SymbolCard = memo(function SymbolCard({ symbol, language, onPress, 
   const isRow = variant === 'row';
   const noctalia = getNoctaliaDesignTokens(colors, mode);
   const content = symbol[language] ?? symbol.en;
+  const illustration = isRow ? getSymbolIllustration(symbol.id) : undefined;
   const handlePress = useCallback(() => {
     onPress(symbol.id);
   }, [onPress, symbol.id]);
@@ -73,6 +77,11 @@ export const SymbolCard = memo(function SymbolCard({ symbol, language, onPress, 
       accessibilityLabel={content.name}
       testID={TID.List.SymbolItem(symbol.id)}
       style={pressableStyle}>
+      {isRow ? (
+        <View style={[styles.thumb, { backgroundColor: noctalia.surface.soft }]}>
+          {illustration ? <Image source={illustration} contentFit="cover" style={StyleSheet.absoluteFill} /> : null}
+        </View>
+      ) : null}
       <View style={contentStyle}>
         <Text
           style={titleStyle}
@@ -81,7 +90,7 @@ export const SymbolCard = memo(function SymbolCard({ symbol, language, onPress, 
         </Text>
         <Text
           style={descriptionStyle}
-          numberOfLines={isRow ? (fontScale >= 1.6 ? undefined : 3) : 2}>
+          numberOfLines={isRow ? (fontScale >= 1.6 ? undefined : 2) : 2}>
           {content.shortDescription}
         </Text>
       </View>
@@ -94,13 +103,14 @@ const styles = StyleSheet.create({
   row: {
     flexDirection: 'row',
     alignItems: 'center',
-    gap: 12,
+    gap: 14,
     paddingVertical: 16,
     marginHorizontal: 20,
     borderBottomWidth: StyleSheet.hairlineWidth,
   },
-  rowTitle: { fontSize: 17, lineHeight: 24 },
-  rowDescription: { fontSize: 15, lineHeight: 22 },
+  rowTitle: { fontFamily: Fonts.fraunces.medium, fontSize: 19, lineHeight: 25 },
+  rowDescription: { fontSize: 14, lineHeight: 21 },
+  thumb: { width: 56, height: 56, borderRadius: 12, borderCurve: 'continuous', overflow: 'hidden', alignSelf: 'flex-start', marginTop: 2 },
   rowPressed: { opacity: 0.78 },
   card: {
     flexDirection: 'row',

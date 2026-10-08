@@ -49,6 +49,12 @@ test('guest saves the exact story and reads its simulated analysis inline', asyn
   await isolateWeb(browser, app);
   await startGuest(app, screen);
   const story = 'E2E moonlit harbor with a golden lighthouse.';
+  // The first analysis asks once for permission to send the dream to the AI provider.
+  const consentPrompts: string[] = [];
+  const offConsent = await browser.onDialog(async (dialog) => {
+    consentPrompts.push(dialog.message);
+    await dialog.accept();
+  });
   await screen.getByTestId('input.dreamTranscript', { visible: true }).fill(story);
   await screen.getByTestId('btn.saveDream', { visible: true }).tap();
   await expect(screen.getByTestId('component.transcriptCard', { visible: true })).toContainText(story);
@@ -57,6 +63,9 @@ test('guest saves the exact story and reads its simulated analysis inline', asyn
   await expect(reading).toContainText('Symbols');
   expect((await reading.textContent() ?? '').length).toBeGreaterThan(100);
   await expect(screen.getByTestId('analysis.reading.modal')).toHaveCount(0);
+  expect(consentPrompts).toHaveLength(1);
+  expect(consentPrompts[0]).toMatch(/third-party AI service/);
+  await offConsent();
   await app.screenshot('guest-saved-analysis');
 });
 

@@ -39,6 +39,7 @@ import { useDreamShareComposite } from '@/hooks/useDreamShareComposite';
 import { useLocaleFormatting } from '@/hooks/useLocaleFormatting';
 import { useQuota } from '@/hooks/useQuota';
 import { useTranslation } from '@/hooks/useTranslation';
+import { requestAiConsent } from '@/lib/aiConsent';
 import { blurActiveElement } from '@/lib/accessibility';
 import { buildFirstValueProperties } from '@/lib/activationAnalytics';
 import { trackProductEvent } from '@/lib/analytics';
@@ -1432,6 +1433,7 @@ const JournalDetailContent = memo(function JournalDetailContent({ dream }: { dre
           const allowed = await ensureAnalyzeAllowed();
           if (!allowed) return;
         }
+        if (!(await requestAiConsent(t))) return;
 
         const pending = onboardingState.pendingRecordingIntent;
         if (pending?.savedDreamId === dream.id && pending.phase === 'analysis_confirmation') {

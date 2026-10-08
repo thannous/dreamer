@@ -13,6 +13,8 @@ const mockPush = jest.fn();
 const mockBack = jest.fn();
 let mockGuideId = 'most-common-dream-symbols';
 
+jest.mock('expo-image', () => ({ Image: () => null }));
+
 jest.mock('expo-router', () => ({
   router: { push: mockPush, back: mockBack },
   useLocalSearchParams: () => ({ id: mockGuideId }),

@@ -7,6 +7,8 @@
 
 import type { DreamAnalysis } from '@/lib/types';
 
+import { getShowcaseDreams } from './showcaseDreams';
+
 const mockUuid = (index: number, variant = 0): string =>
   `00000000-0000-4000-8000-${String(index * 100 + variant).padStart(12, '0')}`;
 
@@ -245,7 +247,10 @@ export function getPredefinedDreamsWithTimestamps(): DreamAnalysis[] {
   const dayInMs = 24 * 60 * 60 * 1000;
   const usedTimestamps = new Set<number>();
 
-  return PREDEFINED_DREAMS.map((dream, index) => {
+  // Store captures swap the QA states for a localized, illustrated journal.
+  const source = getShowcaseDreams() ?? PREDEFINED_DREAMS;
+
+  return source.map((dream, index) => {
     // Space dreams out over the last ~30 days while keeping each timestamp unique.
     const daysAgo = index * 2 + Math.random(); // disjoint ranges avoid collisions
     let timestamp = Math.round(now - daysAgo * dayInMs);

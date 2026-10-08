@@ -38,6 +38,8 @@ let mockThemeMode: 'light' | 'dark' = 'dark';
 const mockRetryMedia = jest.fn();
 const mockShareComposite = jest.fn();
 const mockShareImageRef: { current: HTMLDivElement | null } = { current: null };
+jest.mock('@/lib/aiConsent', () => ({ requestAiConsent: jest.fn(async () => true) }));
+
 jest.mock('@/components/ui/MarkdownText', () => ({ MarkdownText: ({ children }: { children: string }) => <span>{children}</span> }));
 
 jest.mock('@/hooks/useDreamMedia', () => ({ useDreamMedia: (dream: any) => mockMedia ?? ({ imageUrl: dream?.imageUrl ?? '', thumbnailUrl: dream?.thumbnailUrl, loading: false, error: false, retry: mockRetryMedia }) }));

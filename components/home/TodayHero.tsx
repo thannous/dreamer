@@ -6,6 +6,7 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { TodayCard } from '@/components/home/TodayCard';
 import { IconSymbol } from '@/components/ui/icon-symbol';
+import { NightSkyBand } from '@/components/ui/NightSkyBand';
 import { getNoctaliaDesignTokens } from '@/constants/noctaliaDesign';
 import { useTheme } from '@/context/ThemeContext';
 import { useDreamMedia } from '@/hooks/useDreamMedia';
@@ -55,6 +56,8 @@ export function TodayHero({ state, dream, now, onPressCta, onOpenSettings }: Pro
 
   return (
     <View className="relative bg-ink">
+      {/* No dream artwork yet: the night sky keeps the opening immersive instead of flat ink. */}
+      {!hasArtwork && mode === 'dark' ? <NightSkyBand height={insets.top + 340} background={ground} /> : null}
       {immersiveArtwork ? <View className="absolute left-0 right-0 top-0 overflow-hidden"
         pointerEvents="none" accessibilityElementsHidden importantForAccessibility="no-hide-descendants"
         style={{ height: (stageHeight ?? 260) + 1 }}>
