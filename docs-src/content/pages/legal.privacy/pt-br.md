@@ -23,7 +23,7 @@
   "twitterImage": "https://noctalia.app/img/og/noctalia-en-1200x630.jpg",
   "twitterImageAlt": "Política de Privacidade",
   "publishedTime": "",
-  "modifiedTime": "2026-09-22",
+  "modifiedTime": "2026-10-08",
   "author": "",
   "prevPath": "",
   "nextPath": "",
@@ -36,7 +36,7 @@
 }
 ---
 <h1 class="font-serif text-4xl md:text-5xl mb-6 text-dream-cream">Política de Privacidade</h1>
-        <p class="text-lg text-purple-200/80 mb-10">Última atualização: 22 de setembro de 2026</p>
+        <p class="text-lg text-purple-200/80 mb-10">Última atualização: 8 de outubro de 2026</p>
         <div class="space-y-8 text-gray-300 leading-relaxed">
             <div class="p-6 rounded-2xl bg-dream-salmon/5 border border-dream-salmon/20">
                 <p class="text-dream-salmon font-medium flex gap-2 items-start">
@@ -65,6 +65,28 @@
                         </ul>
                     </div>
                 </div>
+            </section>
+
+            <section id="companion-apps">
+                <h2 class="text-2xl font-serif text-white mb-4 mt-8">Noctalia Lucid e Noctalia Meditação</h2>
+                <p>Esta política também abrange os dois aplicativos complementares do Noctalia, publicados pela TiMax. Tudo o que esta política diz se aplica a eles, com os detalhes abaixo.</p>
+                <h3 class="text-white font-semibold mb-2 mt-6">Noctalia Lucid</h3>
+                <ul class="list-disc pl-5 mt-2 space-y-2">
+                    <li><strong>Local por padrão:</strong> programas, sessões, testes de realidade, balanços, notas e lembretes ficam salvos no seu dispositivo e funcionam sem conta nem rede.</li>
+                    <li><strong>Notas de voz:</strong> são gravadas apenas no dispositivo depois que você toca em “Falar”, sem envio nem transcrição automática.</li>
+                    <li><strong>Conta e sincronização opcionais:</strong> se você entrar com sua conta Noctalia e ativar a sincronização (desativada por padrão), seus dados de treino são sincronizados com o banco de dados Supabase na União Europeia descrito na seção 5. Você pode desativar a sincronização e excluir os dados remotos ou sua conta pelo aplicativo.</li>
+                    <li><strong>Trocas com o diário Noctalia:</strong> somente quando você pede, o Lucid pode copiar relatos do seu diário Noctalia ou enviar ao Noctalia um resumo por categorias da noite (técnica, resultado, níveis de lucidez e de lembrança), nunca o texto das suas notas.</li>
+                    <li><strong>Medição de uso:</strong> opcional e desativada por padrão, limitada a poucos eventos por categorias sem texto livre; nenhuma ferramenta de análise de terceiros.</li>
+                    <li><strong>Sem anúncios nem compras:</strong> o Lucid não exibe anúncios, não oferece compras no aplicativo nesta versão e não lê seus dados de Saúde.</li>
+                    <li><strong>Exportação e exclusão:</strong> a tela Dados permite exportar seus dados (JSON ou CSV) e apagá-los do dispositivo.</li>
+                </ul>
+                <h3 class="text-white font-semibold mb-2 mt-6">Noctalia Meditação</h3>
+                <ul class="list-disc pl-5 mt-2 space-y-2">
+                    <li><strong>Sem conta, sem coleta:</strong> o Meditação funciona sem conta. Suas preferências, objetivos, favoritos, progresso, lembretes e a foto de perfil opcional ficam no seu dispositivo; não recebemos nenhum desses dados.</li>
+                    <li><strong>Sem medição de uso, anúncios ou compras:</strong> o aplicativo não envia eventos de análise, não exibe anúncios e todos os mundos são gratuitos nesta versão, portanto nenhum serviço de pagamento está ativo.</li>
+                    <li><strong>Lembretes e voz:</strong> os lembretes são notificações agendadas no dispositivo; o anúncio das fases da respiração, se você ativá-lo, usa a síntese de voz do sistema.</li>
+                    <li><strong>Exclusão:</strong> “Apagar meus dados”, nas configurações da conta, exclui tudo o que o aplicativo salvou; desinstalá-lo tem o mesmo efeito.</li>
+                </ul>
             </section>
 
             <section>

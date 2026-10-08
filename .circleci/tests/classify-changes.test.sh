@@ -79,6 +79,7 @@ release="$(parameters_json full "" true true true true true false true true fals
 fallback="$(parameters_json affected "" true true true true true false true false false false false)"
 none="$(parameters_json affected "$base_revision" false false false false false false false false false false false)"
 all_surfaces="$(parameters_json affected "$base_revision" true true true true true true false false false false false)"
+site_only="$(parameters_json affected "$base_revision" false false true false false false false false false true false)"
 
 assert_parameters "full mode" "$full" full "" "$base_revision"
 assert_parameters "release mode" "$release" release "" "$base_revision"
@@ -132,20 +133,65 @@ git -C "$test_root" reset -q --hard "$base_revision"
 git -C "$test_root" rm -q docs-src/content/reference.md
 git -C "$test_root" commit -qm "delete editorial source"
 destructive_head="$(git -C "$test_root" rev-parse HEAD)"
-assert_parameters "editorial deletion fails closed" "$all_surfaces" pr "$base_revision" "$destructive_head"
+assert_parameters "editorial deletion runs only the site" "$site_only" pr "$base_revision" "$destructive_head"
 
 git -C "$test_root" reset -q --hard "$base_revision"
 git -C "$test_root" mv docs-src/content/reference.md docs-src/content/renamed.md
 git -C "$test_root" commit -qm "rename editorial source"
 destructive_head="$(git -C "$test_root" rev-parse HEAD)"
-assert_parameters "editorial rename fails closed" "$all_surfaces" pr "$base_revision" "$destructive_head"
+assert_parameters "editorial rename runs only the site" "$site_only" pr "$base_revision" "$destructive_head"
 
 git -C "$test_root" reset -q --hard "$base_revision"
 cp "$test_root/docs-src/content/reference.md" "$test_root/docs-src/content/copied.md"
 git -C "$test_root" add docs-src/content/copied.md
 git -C "$test_root" commit -qm "copy editorial source"
 destructive_head="$(git -C "$test_root" rev-parse HEAD)"
-assert_parameters "editorial copy fails closed" "$all_surfaces" pr "$base_revision" "$destructive_head"
+assert_parameters "editorial copy runs only the site" "$site_only" pr "$base_revision" "$destructive_head"
+
+git -C "$test_root" reset -q --hard "$base_revision"
+git -C "$test_root" mv app/index.ts docs-src/content/moved.ts
+git -C "$test_root" commit -qm "move app source into the site"
+destructive_head="$(git -C "$test_root" rev-parse HEAD)"
+assert_parameters "cross-surface rename runs both sides" \
+  "$(parameters_json affected "$base_revision" true false true false false true false false false false false)" \
+  pr "$base_revision" "$destructive_head"
+
+git -C "$test_root" reset -q --hard "$base_revision"
+git -C "$test_root" rm -q app/index.ts
+mkdir -p "$test_root/app"
+ln -s ../docs-src/content/reference.md "$test_root/app/index.ts"
+git -C "$test_root" add app/index.ts
+git -C "$test_root" commit -qm "replace app source with a symlink"
+destructive_head="$(git -C "$test_root" rev-parse HEAD)"
+assert_parameters "type change fails closed" "$all_surfaces" pr "$base_revision" "$destructive_head"
+
+# A deleted dependency keeps the consumers its base-map row named.
+git -C "$test_root" reset -q --hard "$base_revision"
+mkdir -p "$test_root/.circleci" "$test_root/lib"
+printf 'lib/legacy-contract.ts\tcontract\tnoctalia edge_contracts\n' > "$test_root/.circleci/dependency-consumers.tsv"
+echo contract > "$test_root/lib/legacy-contract.ts"
+git -C "$test_root" add .circleci/dependency-consumers.tsv lib/legacy-contract.ts
+git -C "$test_root" commit -qm "add mapped contract"
+mapped_base="$(git -C "$test_root" rev-parse HEAD)"
+git -C "$test_root" rm -q lib/legacy-contract.ts
+git -C "$test_root" commit -qm "delete mapped contract"
+destructive_head="$(git -C "$test_root" rev-parse HEAD)"
+assert_parameters "deleted mapped dependency keeps base consumers" \
+  "$(parameters_json affected "$mapped_base" true false false false true true false false false false false)" \
+  pr "$mapped_base" "$destructive_head"
+
+# A head that deletes or renames the dependency map must still write parameters.
+mapless_ci="$test_root/mapless/.circleci/scripts"
+mkdir -p "$mapless_ci"
+cp "$classifier" "$repository_root/.circleci/scripts/shared-build-impact.py" "$mapless_ci/"
+git -C "$test_root" reset -q --hard "$base_revision"
+git -C "$test_root" rm -q docs-src/content/reference.md
+git -C "$test_root" commit -qm "delete editorial source without a map"
+destructive_head="$(git -C "$test_root" rev-parse HEAD)"
+repository_classifier="$classifier"
+classifier="$mapless_ci/classify-changes.sh"
+assert_parameters "missing dependency map fails closed" "$all_surfaces" pr "$base_revision" "$destructive_head"
+classifier="$repository_classifier"
 
 assert_change \
   "Noctalia app change" app/feature.ts pr \
@@ -274,6 +320,10 @@ assert_change \
 
 assert_change \
   "Noctalia tooling change" scripts/check-jest-duration-regression.test.js pr \
+  true false false false false true false false false false false
+
+assert_change \
+  "Vercel build filter validates only through Noctalia quality" scripts/vercel-ignore-build.mjs pr \
   true false false false false true false false false false false
 
 assert_change \

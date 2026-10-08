@@ -90,8 +90,14 @@ export type LucidPlusRehearsalSessionStatus =
   | 'interrupted'
   | 'completed';
 
+/**
+ * Lucid v1 launches free (owner decision, 2026-10-08): Plus is not sold, so
+ * plus_only features stay open and subscription entry points stay hidden.
+ */
+export const LUCID_PLUS_SALES_ENABLED = false;
+
 export type LucidPlusRehearsalAccess =
-  | { status: 'allowed'; reason: 'preview' | 'plus' | 'resume' }
+  | { status: 'allowed'; reason: 'preview' | 'plus' | 'resume' | 'free_launch' }
   | { status: 'checking' }
   | { status: 'upgrade_required' };
 
@@ -101,6 +107,7 @@ export type LucidPlusRehearsalAccessInput = {
   requiresAuth: boolean;
   completionCount: number;
   currentSession: { status: LucidPlusRehearsalSessionStatus } | null;
+  salesEnabled?: boolean;
 };
 
 const IN_PROGRESS_STATUSES: ReadonlySet<LucidPlusRehearsalSessionStatus> = new Set([
@@ -150,6 +157,10 @@ export function resolveLucidAdditionalDreamRehearsalAccess(
 
   if (completionCount < 1) {
     return { status: 'allowed', reason: 'preview' };
+  }
+
+  if (!(input.salesEnabled ?? LUCID_PLUS_SALES_ENABLED)) {
+    return { status: 'allowed', reason: 'free_launch' };
   }
 
   if (!input.requiresAuth && isConfirmedPlus(input.subscriptionStatus, input.loading)) {

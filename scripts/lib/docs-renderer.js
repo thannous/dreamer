@@ -34,6 +34,7 @@ const {
 } = require('./image-seo-assets');
 const { getPageIllustration } = require('./page-illustrations');
 const { renderTierInlineScript } = require('./experience-tier');
+const { LANDING_CSS_HREF } = require('./landing-stylesheet');
 
 const shellTemplate = fs.readFileSync(path.join(DOCS_SRC_DIR, 'templates', 'base.html'), 'utf8');
 const DEFAULT_SOCIAL_IMAGE = `${siteConfig.domain}/img/og/noctalia-dreamscape-v2-1200x630.jpg`;
@@ -461,10 +462,15 @@ function renderJsonLd(meta, entry, bodyHtml, preferredImage = null) {
 
 function renderStyles(meta, assetVersion, entryId = '') {
   const assets = siteConfig.assetPaths;
-  const lines = [
-    `    <link rel="stylesheet" href="${assets.stylesCss}?v=${assetVersion}">`,
-    `    <link rel="stylesheet" href="${assets.languageDropdownCss}?v=${assetVersion}">`,
-  ];
+  const lines = [`    <link rel="stylesheet" href="${assets.stylesCss}?v=${assetVersion}">`];
+
+  // Landing pages bundle their own stylesheets (language dropdown included)
+  // into one render-blocking request.
+  if (meta.layout === 'landing') {
+    lines.push(`    <link rel="stylesheet" href="${LANDING_CSS_HREF}?v=${assetVersion}">`);
+  } else {
+    lines.push(`    <link rel="stylesheet" href="${assets.languageDropdownCss}?v=${assetVersion}">`);
+  }
 
   if (meta.layout === 'blogIndex' || meta.layout === 'blogArticle') {
     lines.push(`    <link rel="stylesheet" href="${assets.blogCss}?v=${assetVersion}">`);
@@ -476,11 +482,6 @@ function renderStyles(meta, assetVersion, entryId = '') {
 
   if (meta.layout === 'blogIndex' && String(meta.mainClass || '').includes('blog-premium')) {
     lines.push(`    <link rel="stylesheet" href="/css/blog-premium.css?v=${assetVersion}">`);
-  }
-
-  if (meta.layout === 'landing') {
-    lines.push(`    <link rel="stylesheet" href="/css/observatory.css?v=${assetVersion}">`);
-    lines.push(`    <link rel="stylesheet" href="${assets.experienceCss}?v=${assetVersion}">`);
   }
 
   if (entryId === 'page.alternatives') {
@@ -615,15 +616,9 @@ function renderCommonHead(meta, entry, assetVersion, bodyHtml) {
 }
 
 function renderBeforeBody(meta) {
-  if (meta.layout === 'landing') {
-    return [
-      '    <div class="aurora-bg"></div>',
-      '    <div class="noise-overlay"></div>',
-      '    <div class="orb w-[70vw] h-[70vw] md:w-[40rem] md:h-[40rem] bg-purple-900/30 top-0 left-0 animate-float"></div>',
-      '    <div class="orb w-[90vw] h-[90vw] md:w-[50rem] md:h-[50rem] bg-blue-900/20 bottom-0 right-0 animate-float-delayed"></div>',
-    ].join('\n');
-  }
-
+  // Landing pages paint their own opaque ground (observatory.css), which fully
+  // covers the shared aurora and orbs; rendering them would only keep two
+  // infinite, invisible animations repainting every frame.
   if (meta.layout === 'blogIndex' || meta.layout === 'blogArticle') {
     return [
       '    <div class="aurora-bg"></div>',

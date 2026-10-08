@@ -19,6 +19,9 @@ import { translate } from '@/lib/i18n';
 import { calendarDays } from '@/lib/streak';
 import { TID } from '@/lib/testIDs';
 
+// These cases cover the one-time world purchase flow, which v1 keeps off.
+jest.mock('@/constants/worldSales', () => ({ WORLD_SALES_ENABLED: true }));
+
 const mockOpenDrawer = jest.fn();
 const mockPush = jest.fn();
 const mockToggle = jest.fn();
@@ -322,8 +325,8 @@ describe('TI-394 TalkBack surfaces', () => {
 
     fireEvent.press(terms);
     fireEvent.press(privacy);
-    expect(openURL).toHaveBeenNthCalledWith(1, 'https://noctalia.app/terms');
-    expect(openURL).toHaveBeenNthCalledWith(2, 'https://noctalia.app/privacy');
+    expect(openURL).toHaveBeenNthCalledWith(1, 'https://noctalia.app/en/terms/');
+    expect(openURL).toHaveBeenNthCalledWith(2, 'https://noctalia.app/en/privacy-policy/');
     openSpy.mockRestore();
   });
 

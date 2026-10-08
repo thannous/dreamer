@@ -36,14 +36,6 @@ const STEP_SECTION_SELECTOR = [
   '#come-funziona',
 ].join(',');
 
-const FEATURE_SECTION_SELECTOR = [
-  '#features',
-  '#fonctionnalites',
-  '#caracteristicas',
-  '#funktionen',
-  '#funzionalita',
-].join(',');
-
 const withSuffix = (selectorList, suffix) =>
   selectorList
     .split(',')
@@ -59,7 +51,6 @@ const HEADLINE_LEAD_MS = 450;
 const getHeroItems = () => Array.from(document.querySelectorAll('.hero-anim:not(.oh-hero-title)'));
 const getHeadline = () => document.querySelector('.oh-hero-title');
 const getRevealItems = () => Array.from(document.querySelectorAll('.reveal'));
-const getFeatureMedia = () => Array.from(document.querySelectorAll('.oh-feature-media'));
 
 const revealDreamsAfterIntro = () => {
   window.clearTimeout(window.__expIntroGateTimer);
@@ -75,7 +66,6 @@ const holdDreamsForIntro = () => {
 const showStaticState = () => {
   revealDreamsAfterIntro();
   html.classList.remove('exp-starmap');
-  getFeatureMedia().forEach((el) => el.classList.add('is-inview'));
   getHeadline()?.classList.add('is-revealed');
 
   Array.from(document.querySelectorAll('.hero-anim')).forEach((el) => {
@@ -100,6 +90,12 @@ const scheduleIdle = (callback) => {
     window.setTimeout(callback, 200);
   }
 };
+
+/** Ends the current task so input and rendering can run between setup steps. */
+const yieldToMain = () =>
+  typeof window.scheduler?.yield === 'function'
+    ? window.scheduler.yield()
+    : new Promise((resolve) => window.setTimeout(resolve, 0));
 
 /**
  * Runs `callback` only after the largest contentful paint: the WebGL layer
@@ -269,40 +265,6 @@ const initLightMotion = (heroReady) => {
 };
 
 /* ------------------------------------------------------------------ */
-/* Feature illustrations: one-shot bar entrance (full & light tiers).  */
-/* ------------------------------------------------------------------ */
-
-const initFeatureMedia = () => {
-  const media = getFeatureMedia();
-  if (!media.length) return;
-  if (!('IntersectionObserver' in window)) {
-    media.forEach((el) => el.classList.add('is-inview'));
-    return;
-  }
-
-  media.forEach((el) => {
-    // Already on screen when the layer boots: show it settled, never shrink it.
-    if (el.getBoundingClientRect().top < window.innerHeight) el.classList.add('is-inview');
-    Array.from(el.querySelectorAll('rect')).forEach((bar, index) => {
-      bar.style.transitionDelay = `${Math.min(index * 30, 540)}ms`;
-    });
-  });
-  html.classList.add('exp-motion');
-
-  const observer = new IntersectionObserver(
-    (entries, activeObserver) => {
-      entries.forEach((entry) => {
-        if (!entry.isIntersecting) return;
-        entry.target.classList.add('is-inview');
-        activeObserver.unobserve(entry.target);
-      });
-    },
-    { rootMargin: '0px 0px -15% 0px', threshold: 0.6 }
-  );
-  media.forEach((el) => observer.observe(el));
-};
-
-/* ------------------------------------------------------------------ */
 /* Full tier: GSAP scenes (ported from landing-animations.js).         */
 /* ------------------------------------------------------------------ */
 
@@ -417,7 +379,7 @@ const initGsapScenes = (gsapLib, ScrollTrigger, lenis, heroReady) => {
 
   // Card hover physics.
   gsapLib.utils
-    .toArray(`${withSuffix(FEATURE_SECTION_SELECTOR, '.glass-panel')}, .noctalia-observatory a.glass-panel`)
+    .toArray('.noctalia-observatory a.glass-panel')
     .forEach((card) => {
       card.addEventListener('mouseenter', () => {
         gsapLib.to(card, { y: -6, duration: 0.32, ease: 'power2.out' });
@@ -453,34 +415,6 @@ const initMagneticButtons = async () => {
       animate(button, { x: 0, y: 0 }, { type: 'spring', stiffness: 250, damping: 18 });
     });
   });
-};
-
-const initOrbParallax = () => {
-  if (!window.matchMedia('(pointer: fine)').matches) return;
-  const orbs = Array.from(document.querySelectorAll('.orb'));
-  if (!orbs.length) return;
-
-  let pointerFrame = 0;
-  let pointerX = 0;
-  let pointerY = 0;
-
-  document.addEventListener(
-    'mousemove',
-    (event) => {
-      pointerX = event.clientX / window.innerWidth;
-      pointerY = event.clientY / window.innerHeight;
-
-      if (pointerFrame) return;
-      pointerFrame = window.requestAnimationFrame(() => {
-        orbs.forEach((orb, index) => {
-          const speed = (index + 1) * 15;
-          orb.style.transform = `translate(${pointerX * speed}px, ${pointerY * speed}px)`;
-        });
-        pointerFrame = 0;
-      });
-    },
-    { passive: true }
-  );
 };
 
 /* ------------------------------------------------------------------ */
@@ -571,7 +505,7 @@ const initDawn = () => {
   const stops = [
     ['.oh-dreams', 0, 0.55],
     ['.oh-understand', 0.55, 0.5],
-    ['.oh-waking', 1, 0.5],
+    [STEP_SECTION_SELECTOR, 1, 0.5],
     ['.oh-remember', 0.8, 0.5],
     ['.oh-ending', 1, 0.5],
   ]
@@ -837,9 +771,9 @@ const initLightbox = (space) => {
   };
 };
 
-/* Waking: while the section is on screen the waveform breathes, the timer
- * runs and the example transcript appears word by word, once. */
-const initWaking = () => {
+/* Step 1: while the capture screen is on view the waveform breathes, the
+ * timer runs and the example transcript appears word by word, once. */
+const initCapture = () => {
   const rec = document.querySelector('.oh-rec');
   if (!rec || !('IntersectionObserver' in window)) return;
   const text = rec.querySelector('.oh-rec-text');
@@ -1143,6 +1077,15 @@ const canPlayFilm = (allowSlowConnection = false) => {
   return !window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 };
 
+const FILM_SOURCES = {
+  // The existing VP9 intro has the same framing at half the transfer size.
+  'oh-intro-video': [['webm', 'video/webm; codecs="vp9"'], ['mp4', 'video/mp4']],
+  // The loop is 8-bit 4:2:0 VP9 (profile 0): about a quarter of the H.264
+  // bytes, hardware-decoded on most devices. The exact codec string lets
+  // browsers without VP9 profile 0 pick the MP4 instead.
+  'oh-hero-loop': [['webm', 'video/webm; codecs="vp09.00.31.08"'], ['mp4', 'video/mp4']],
+};
+
 const createVideo = (base, variant, className) => {
   const video = document.createElement('video');
   video.className = className;
@@ -1155,9 +1098,7 @@ const createVideo = (base, variant, className) => {
   video.setAttribute('playsinline', '');
   video.setAttribute('tabindex', '-1');
   video.setAttribute('aria-hidden', 'true');
-  const formats = [['mp4', 'video/mp4'], ['webm', 'video/webm; codecs="vp9"']];
-  // The existing VP9 intro has the same framing at half the transfer size.
-  if (className === 'oh-intro-video') formats.reverse();
+  const formats = FILM_SOURCES[className] || [['mp4', 'video/mp4'], ['webm', 'video/webm; codecs="vp9"']];
   formats.forEach(([extension, type]) => {
     const source = document.createElement('source');
     source.src = `${base}-${variant}.${extension}`;
@@ -1508,14 +1449,20 @@ const bootEnhanced = async (currentTier, heroReady) => {
       else window.scrollTo({ top, behavior: options.immediate ? 'instant' : 'smooth' });
     });
     if (!journey) initDreamHeadings(heroReady);
-    initFeatureMedia();
+    // Each scene measures the page; one task for all of them blocks input
+    // for hundreds of milliseconds on mid-range phones.
+    await yieldToMain();
+    html.classList.add('exp-motion');
     initDawn();
     const space = initDreamSpace(journey);
     initLightbox(space);
-    initWaking();
+    await yieldToMain();
+    initCapture();
     initStarmap(journey);
+    await yieldToMain();
     initRemember();
     initEnding();
+    await yieldToMain();
 
     const { default: Lenis } = await import('lenis');
     const lenis = new Lenis({ autoRaf: true, anchors: true });
@@ -1537,7 +1484,6 @@ const bootEnhanced = async (currentTier, heroReady) => {
 
     initGsapScenes(window.gsap, window.ScrollTrigger, lenis, heroReady);
     initMagneticButtons();
-    initOrbParallax();
     await skyPromise;
   } catch {
     journey?.restore();

@@ -9,8 +9,7 @@ export const pt: Record<keyof typeof en, string> = {
 
   'welcome.tagline': 'Noctalia Meditation',
   'welcome.title': 'A calma\nantes da noite',
-  'welcome.subtitle':
-    'Sessões guiadas e respiração para desacelerar o dia e preparar seu sono.',
+  'welcome.subtitle': 'Exercícios de respiração e ambientes noturnos para desacelerar o dia e preparar seu sono.',
   'welcome.cta': 'Começar',
   'welcome.signin': 'Já tenho uma conta',
 
@@ -229,6 +228,8 @@ export const pt: Record<keyof typeof en, string> = {
   'search.filter.under': 'Menos de {count} min',
 
   'session.benefits': 'O que faz',
+
+  'session.format': 'Ambiente com temporizador, sem voz. Siga a prática no seu ritmo.',
   'session.play': 'Começar',
   'session.resume': 'Retomar',
   'session.replay': 'Praticar de novo',
@@ -258,9 +259,8 @@ export const pt: Record<keyof typeof en, string> = {
   'player.timer.none': 'Até o fim',
   'player.timer.minutes': 'Em {count} min',
   'player.timer.remaining': 'Desvanece em {time}',
-  'player.unavailable.title': 'Ainda não disponível offline',
-  'player.unavailable.subtitle':
-    'Esta sessão vem do catálogo. Conecte-se à internet uma vez e ela toca.',
+  'player.unavailable.title': 'Esta sessão não pôde começar',
+  'player.unavailable.subtitle': 'Não foi possível carregar o ambiente neste dispositivo. Feche a sessão e abra-a novamente.',
   'player.scrub': 'Posição de reprodução',
   'player.reveal': 'Mostrar os controles',
   'drawer.open': 'Abrir o menu',
@@ -289,6 +289,7 @@ export const pt: Record<keyof typeof en, string> = {
   'breathe.pattern.four-seven-eight.hint': 'A retenção longa, antes de dormir',
   'breathe.pattern.coherent.name': 'Coerência cardíaca',
   'breathe.pattern.coherent.hint': 'O ritmo em que este app respira',
+  'breathe.caution': 'Segure sem forçar. Se sentir tontura, pare e respire normalmente.',
   'breathe.phase.inhale': 'Inspire',
   'breathe.phase.hold': 'Segure',
   'breathe.phase.exhale': 'Expire',
@@ -396,9 +397,8 @@ export const pt: Record<keyof typeof en, string> = {
   'help.title': 'Ajuda',
   'help.q1': 'Preciso de uma conta?',
   'help.a1': 'Não. Tudo fica salvo no seu dispositivo, e nada é enviado para lugar nenhum.',
-  'help.q2': 'Por que algumas sessões não tocam?',
-  'help.a2':
-    'Elas vêm do catálogo. Conecte-se à internet uma vez e elas tocam, ficando disponíveis depois.',
+  'help.q2': 'Há uma voz guiando as sessões?',
+  'help.a2': 'Ainda não. Uma sessão é um ambiente com temporizador: leia a prática e siga-a no seu ritmo. Nos exercícios de respiração, as fases podem ser ditas em voz alta.',
   'help.q3': 'O áudio continua com a tela bloqueada?',
   'help.a3': 'Sim. Uma sessão que parasse ao bloquear a tela não serviria de nada.',
   'help.q4': 'Como funciona a sequência?',
@@ -412,7 +412,6 @@ export const pt: Record<keyof typeof en, string> = {
   'legal.title': 'Informações legais',
   'legal.privacy': 'Política de privacidade',
   'legal.terms': 'Termos de uso',
-  'legal.licenses': 'Licenças open source',
   'legal.data.title': 'O que coletamos',
   'legal.data.body':
     'Nada. Não há conta, nem análise de uso, nem servidor que guarde sua prática.',
@@ -462,12 +461,10 @@ export const pt: Record<keyof typeof en, string> = {
   'session.method.attention': "Treino da atenção",
   'session.method.presence': "Presença aberta",
   'session.method.reflection': "Reflexão",
-  'session.guidance.label': "Orientação: {guidance}",
-  'session.guidance.fading': "Desvanece gradualmente",
-  'session.guidance.guided': "Passo a passo",
-  'session.guidance.light': "Algumas indicações",
   'session.saved.locked': "Guardada, o Plus continua a ser necessário",
   'complete.home': "Voltar ao início",
+  'notFound.title': 'Esta página não existe',
+  'notFound.body': 'O link pode ser antigo. Sua prática espera por você no início.',
   'trainer.sound.on': "Desligar o som",
   'trainer.sound.off': "Ligar o som",
   'trainer.voice.on': "Desligar a orientação falada",

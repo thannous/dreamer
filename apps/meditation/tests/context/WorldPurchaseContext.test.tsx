@@ -6,6 +6,9 @@ import { WorldPurchaseProvider, useWorldPurchases } from '@/context/WorldPurchas
 import { StorageKey } from '@/services/storageService';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
+// These cases cover the one-time world purchase flow, which v1 keeps off.
+jest.mock('@/constants/worldSales', () => ({ WORLD_SALES_ENABLED: true }));
+
 jest.mock('react-native-purchases', () => ({
   __esModule: true,
   default: {

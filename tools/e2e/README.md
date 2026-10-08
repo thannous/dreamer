@@ -63,8 +63,11 @@ The 83 historical browser cases across 16 families run through TesterArmy with
 their exact UI assertions, including mock billing, capture/edit/chat, continuous
 reading, reflection, symbol dictionary, Explorer, settings persistence, Home,
 Trends, responsive navigation, Journal geometry and feature-sheet stories.
-The original Playwright/backend/Maestro suites remain present; current CI still
-requires them. Their relevant functional assertions protect the current contract.
+The original Playwright web suite remains for local runs. Since the owner decision
+of 2026-10-08, CI runs these 83 cases only here: every Playwright title has a
+TesterArmy counterpart, with a stricter quota assertion and one Europe/Paris
+browser timezone. Backend and Maestro suites remain required. The relevant
+functional assertions protect the current contract.
 An obsolete expectation may be revised with a recorded product reason and a
 focused current journey. Preserve the old red/pass result as history; it does not
 automatically block feature or framework adoption or permit silently bypassing CI.
@@ -115,8 +118,11 @@ CircleCI runs the exact Dreamer and Lucid journeys in the Noctalia workflow,
 Meditation in its own workflow, and the generated site after `docs:build` and
 `docs:check`. Each job installs this package's locked e2e 0.18.0 dependencies
 and Chromium, uses one worker with no replay or model, and retains JUnit, reports, screenshots,
-traces and source identity under `tools/e2e/.e2e/`. Existing Playwright, backend,
-Maestro and quality checks remain required.
+traces and source identity under `tools/e2e/.e2e/`. Existing backend, Maestro and
+quality checks remain required. `E2E_KEEP_METRO_CACHE=1` drops Metro's `--clear`
+for Dreamer and Lucid: CI restores the transforms master saved, and
+`metro.config.js` keys them by every public build input, so a profile or
+dependency change still compiles fresh. Meditation always starts cold.
 
 `npm run dependencies:check` validates the installed Expo SDK's expected native
 dependencies before the app quality checks. Dreamer and Lucid share the root
@@ -268,8 +274,12 @@ the final verdict remains nonqualifying; no unknown session/recorder is killed.
 that invocation. Preserve both when reporting its verdict.
 
 For a browser campaign set one unique `E2E_CAMPAIGN_ID` on every invocation,
-then run `node tools/e2e/run.mjs <product> web collect`. CI uses its unique
-`CIRCLE_WORKFLOW_JOB_ID`. The collector revalidates reports, artifacts and final
+then run `node tools/e2e/run.mjs <product> web collect`. CI uses the pipeline ID
+plus the product. `--shard <index>/<total>` splits one context into contiguous
+slices: CircleCI runs the Dreamer en-US journeys on eight containers, fr-FR on
+two and de-DE with stories OFF on a third, then `testerarmy-dreamer` collects their finalized
+evidence from the workspace. A missing or failed slice leaves the union
+incomplete, so collection fails. The collector revalidates reports, artifacts and final
 receipts and writes `campaign.json`: the actual passed union uses target/test/agent
 identity, with contexts, repeats, selected skips and exclusions kept separately.
 Dreamer requires EN/FR/DE with stories ON and EN with stories OFF. A failed or

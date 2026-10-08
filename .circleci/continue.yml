@@ -102,12 +102,15 @@ commands:
       - run:
           name: Install isolated Chromium and Linux browser dependencies
           command: npm run browsers:install --prefix tools/e2e -- --with-deps
+      # Tooling checks do not depend on the shard; parallel nodes run them once.
       - run:
           name: Typecheck TesterArmy journeys
-          command: npm run test:testerarmy:typecheck
+          command: |
+            if [[ "${CIRCLE_NODE_INDEX:-0}" == 0 ]]; then npm run test:testerarmy:typecheck; fi
       - run:
           name: Verify fail-closed qualification guards without devices
-          command: npm run test:testerarmy:guards
+          command: |
+            if [[ "${CIRCLE_NODE_INDEX:-0}" == 0 ]]; then npm run test:testerarmy:guards; fi
 
 jobs:
   noctalia-e2e-backend:
@@ -145,36 +148,33 @@ jobs:
           path: test-results/e2e-backend-results.json
           destination: e2e-backend-results.json
 
-  noctalia-e2e-web:
-    executor: node
-    steps:
-      - install-root-dependencies:
-          save_cache: false
-      - run:
-          name: Install Chromium and browser dependencies
-          command: npx playwright install --with-deps chromium
-      - run:
-          name: Verify guest, free and Plus user journeys with isolated mock services
-          command: npm run test:e2e:web
-      - store_test_results:
-          path: test-results/e2e-web-junit
-      - store_artifacts:
-          path: test-results/e2e-web-report
-          destination: e2e-web-report
-      - store_artifacts:
-          path: test-results/e2e-web
-          destination: e2e-web-traces
-
   testerarmy-web:
     executor: node
     parameters:
       product:
         type: enum
         enum: [dreamer, lucid, meditation]
+      parallelism:
+        type: integer
+        default: 1
+      contexts:
+        description: primary shards the default context; dreamer-secondary runs the other Dreamer contexts.
+        type: enum
+        enum: [primary, dreamer-secondary]
+        default: primary
+      collect:
+        description: Prove the campaign in this job; false hands the evidence to testerarmy-collect.
+        type: boolean
+        default: true
+    parallelism: << parameters.parallelism >>
     environment:
       E2E_TELEMETRY_DISABLED: "1"
       DO_NOT_TRACK: "1"
       EXPO_PUBLIC_ONBOARDING_FEATURE_SHEETS_ENABLED: "true"
+      # Every container of one product shares a campaign, proven once by collect.
+      E2E_CAMPAIGN_ID: << pipeline.id >>-<< parameters.product >>
+      # Dreamer and Lucid reuse master's Metro transforms; meditation ignores it.
+      E2E_KEEP_METRO_CACHE: "1"
     steps:
       - install-root-dependencies:
           save_cache: false
@@ -184,32 +184,120 @@ jobs:
           steps:
             - install-meditation-dependencies
       - install-testerarmy
-      - run:
-          name: Verify exact << parameters.product >> browser journeys
-          no_output_timeout: 30m
-          command: node tools/e2e/run.mjs << parameters.product >> web run --trace
+      # metro.config.js keys transforms by every public build input. Master
+      # starts cold so each saved cache holds only one revision's transforms.
+      - unless:
+          condition:
+            or:
+              - equal: [meditation, << parameters.product >>]
+              - equal: [master, << pipeline.git.branch >>]
+          steps:
+            - restore_cache:
+                keys:
+                  - metro-v1-<< parameters.product >>-{{ checksum "package-lock.json" }}-
       - when:
           condition:
-            equal: [dreamer, << parameters.product >>]
+            equal: [primary, << parameters.contexts >>]
           steps:
             - run:
+                name: Verify exact << parameters.product >> browser journeys
+                no_output_timeout: 30m
+                command: |
+                  node tools/e2e/run.mjs << parameters.product >> web run \
+                    --shard "$((CIRCLE_NODE_INDEX + 1))/${CIRCLE_NODE_TOTAL}" --trace
+      - when:
+          condition:
+            equal: [dreamer-secondary, << parameters.contexts >>]
+          steps:
+            # All but the last container split the 19 French journeys; the last runs the two short contexts.
+            - run:
                 name: Verify Dreamer historical French browser context
-                command: E2E_WEB_LOCALE=fr-FR node tools/e2e/run.mjs dreamer web run --tag locale-fr-FR --trace
+                command: |
+                  if [[ "$CIRCLE_NODE_INDEX" -lt "$((CIRCLE_NODE_TOTAL - 1))" ]]; then
+                    E2E_WEB_LOCALE=fr-FR node tools/e2e/run.mjs dreamer web run --tag locale-fr-FR \
+                      --shard "$((CIRCLE_NODE_INDEX + 1))/$((CIRCLE_NODE_TOTAL - 1))" --trace
+                  fi
             - run:
                 name: Verify Dreamer historical German browser context
-                command: E2E_WEB_LOCALE=de-DE node tools/e2e/run.mjs dreamer web run --tag locale-de-DE --trace
+                command: |
+                  if [[ "$CIRCLE_NODE_INDEX" == "$((CIRCLE_NODE_TOTAL - 1))" ]]; then
+                    E2E_WEB_LOCALE=de-DE node tools/e2e/run.mjs dreamer web run --tag locale-de-DE --trace
+                  fi
             - run:
                 name: Verify Dreamer feature sheets remain disabled without opt-in
-                command: EXPO_PUBLIC_ONBOARDING_FEATURE_SHEETS_ENABLED=false E2E_WEB_LOCALE=en-US node tools/e2e/run.mjs dreamer web run --grep 'feature sheets stay disabled by default' --trace
-      - run:
-          name: Verify the exact passed-ID union and all browser contexts
-          when: always
-          command: node tools/e2e/run.mjs << parameters.product >> web collect
+                command: |
+                  if [[ "$CIRCLE_NODE_INDEX" == "$((CIRCLE_NODE_TOTAL - 1))" ]]; then
+                    EXPO_PUBLIC_ONBOARDING_FEATURE_SHEETS_ENABLED=false E2E_WEB_LOCALE=en-US node tools/e2e/run.mjs dreamer web run --grep 'feature sheets stay disabled by default' --trace
+                  fi
+      - when:
+          condition: << parameters.collect >>
+          steps:
+            - run:
+                name: Verify the exact passed-ID union and all browser contexts
+                when: always
+                command: node tools/e2e/run.mjs << parameters.product >> web collect
+      # Only primary-context containers save: the kept cache then holds the default
+      # stories-on transforms, never a stories-off run.
+      - when:
+          condition:
+            and:
+              - equal: [master, << pipeline.git.branch >>]
+              - equal: [primary, << parameters.contexts >>]
+              - not:
+                  equal: [meditation, << parameters.product >>]
+          steps:
+            - save_cache:
+                key: metro-v1-<< parameters.product >>-{{ checksum "package-lock.json" }}-{{ .Revision }}
+                paths:
+                  - /tmp/metro-cache
       - store_test_results:
           path: tools/e2e/.e2e
       - store_artifacts:
           path: tools/e2e/.e2e
           destination: testerarmy
+      - unless:
+          condition: << parameters.collect >>
+          steps:
+            # Only a successful container hands its finalized evidence to the collector.
+            - persist_to_workspace:
+                root: tools/e2e
+                paths:
+                  - .e2e/<< parameters.product >>-web
+
+  testerarmy-collect:
+    docker:
+      - image: cimg/node:24.19.0
+    resource_class: small
+    parameters:
+      product:
+        type: enum
+        enum: [dreamer]
+    environment:
+      E2E_TELEMETRY_DISABLED: "1"
+      DO_NOT_TRACK: "1"
+      E2E_CAMPAIGN_ID: << pipeline.id >>-<< parameters.product >>
+    steps:
+      - checkout
+      - attach_workspace:
+          at: tools/e2e
+      - run:
+          name: Install isolated locked TesterArmy e2e 0.18.0 dependencies
+          command: npm run test:testerarmy:setup
+      - run:
+          name: Verify the exact passed-ID union and all browser contexts
+          command: node tools/e2e/run.mjs << parameters.product >> web collect
+      # The runs already stored their traces; keep only the collection receipts.
+      - run:
+          name: Select the collection receipts
+          when: always
+          command: |
+            mkdir -p /tmp/testerarmy-campaign
+            for run in tools/e2e/.e2e/<< parameters.product >>-web/*/; do
+              if grep -q '"collect"' "$run/evidence.json" 2>/dev/null; then cp -R "$run" /tmp/testerarmy-campaign/; fi
+            done
+      - store_artifacts:
+          path: /tmp/testerarmy-campaign
+          destination: testerarmy-campaign
 
   noctalia-quality:
     executor: node
@@ -557,13 +645,29 @@ workflows:
           filters:
             tags:
               only: /.*/
-      - noctalia-e2e-web:
+      - testerarmy-web:
+          name: testerarmy-dreamer-journeys
+          product: dreamer
+          parallelism: 8
+          collect: false
           filters:
             tags:
               only: /.*/
       - testerarmy-web:
+          name: testerarmy-dreamer-contexts
+          product: dreamer
+          contexts: dreamer-secondary
+          parallelism: 3
+          collect: false
+          filters:
+            tags:
+              only: /.*/
+      - testerarmy-collect:
           name: testerarmy-dreamer
           product: dreamer
+          requires:
+            - testerarmy-dreamer-journeys
+            - testerarmy-dreamer-contexts
           filters:
             tags:
               only: /.*/

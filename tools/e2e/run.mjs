@@ -39,7 +39,7 @@ if (command === 'inspect' && (platform === 'web' || args.length)) throw new Erro
 if (command === 'mcp' && args.length) throw new Error('The guarded MCP entry fixes its target and one session; pass no additional flags.');
 // Selection cannot replace the owned config, device target or evidence directory.
 const switches = new Set(['--video', '--trace', '--headed', '--debug', '--no-cache', '--strict-cache']);
-const selections = new Set(['--grep', '--grep-invert', '--repeat-each', '--tag', '--exclude-tag', '--tag-mode']);
+const selections = new Set(['--grep', '--grep-invert', '--repeat-each', '--tag', '--exclude-tag', '--tag-mode', '--shard']);
 for (let index = 0; index < args.length; index++) {
   const flag = args[index];
   if (switches.has(flag)) continue;
@@ -48,6 +48,9 @@ for (let index = 0; index < args.length; index++) {
   if (!value || value.startsWith('-')) throw new Error(`Invalid E2E value for ${flag}.`);
   if (flag === '--repeat-each' && (!/^[1-9]\d*$/.test(value) || !Number.isSafeInteger(Number(value))))
     throw new Error('Invalid E2E repeat count.');
+  // CI splits one campaign context across parallel containers; collect proves the union.
+  if (flag === '--shard' && (!/^([1-9]\d*)\/([1-9]\d*)$/.test(value) || Number(value.split('/')[0]) > Number(value.split('/')[1])))
+    throw new Error('Invalid E2E shard.');
 }
 const cli = join(cwd, 'node_modules/e2e/dist/cli/bin.js');
 if (!existsSync(cli)) throw new Error('Install with npm run test:testerarmy:setup first.');
@@ -324,7 +327,7 @@ try {
     revision: read('git', ['rev-parse', 'HEAD']), workingTree: read('git', ['status', '--porcelain']),
     trackedDiffSha256: createHash('sha256').update(diff).digest('hex'),
     command: ['node', 'tools/e2e/run.mjs', product, platform, command, ...args, ...(releaseFile ? ['--release-receipt', resolve(releaseFile)] : []), ...(installRelease ? ['--install-release'] : [])],
-    rerunEnvironment: platform === 'web' ? { E2E_WEB_LOCALE: context().locale, EXPO_PUBLIC_ONBOARDING_FEATURE_SHEETS_ENABLED: String(context().featureSheets), E2E_WEB_PORT: new URL(expectedOrigin).port } : { E2E_DEVICE: env.E2E_DEVICE ?? null, E2E_AVD_NAME: env.E2E_AVD_NAME ?? 'Pixel_9_API_37' },
+    rerunEnvironment: platform === 'web' ? { E2E_WEB_LOCALE: context().locale, EXPO_PUBLIC_ONBOARDING_FEATURE_SHEETS_ENABLED: String(context().featureSheets), E2E_WEB_PORT: new URL(expectedOrigin).port, E2E_KEEP_METRO_CACHE: env.E2E_KEEP_METRO_CACHE === '1' ? '1' : null } : { E2E_DEVICE: env.E2E_DEVICE ?? null, E2E_AVD_NAME: env.E2E_AVD_NAME ?? 'Pixel_9_API_37' },
     ...(platform === 'web' ? {
       webInputsSha256: webInputIdentity(),
       webLocale: env.E2E_WEB_LOCALE ?? (product === 'lucid' ? 'fr-FR' : 'en-US'),

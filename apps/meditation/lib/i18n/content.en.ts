@@ -15,12 +15,12 @@ export const contentEn = {
 
   'session.sleep-descent.title': "Bringing the breath down",
   'session.sleep-descent.description': "An exhale longer than the inhale, until the body understands the day is over.",
-  'session.sleep-descent.benefit.1': "Slows the heart rate",
+  'session.sleep-descent.benefit.1': 'A long, slow exhale',
   'session.sleep-descent.benefit.2': "Prepares for sleep",
   'session.sleep-descent.benefit.3': "Done lying down",
 
   'session.sleep-quick-fall.title': "Falling asleep in five",
-  'session.sleep-quick-fall.description': "Nothing to listen to, nothing to follow: a guided breath that fades as you go.",
+  'session.sleep-quick-fall.description': 'Nothing to listen to, nothing to follow: only your breath, slowing as you drift off.',
   'session.sleep-quick-fall.benefit.1': "For short nights",
   'session.sleep-quick-fall.benefit.2': "Breath and silence",
   'session.sleep-quick-fall.benefit.3': "Ends on its own",
@@ -47,7 +47,7 @@ export const contentEn = {
   'session.stress-unclench.description': "Stress lives in the jaw, the hands, the belly. We visit them one at a time.",
   'session.stress-unclench.benefit.1': "Softens the jaw",
   'session.stress-unclench.benefit.2': "Settles the belly",
-  'session.stress-unclench.benefit.3': "Works fast",
+  'session.stress-unclench.benefit.3': 'Short and simple',
 
   'session.stress-day-close.title': "Closing the day",
   'session.stress-day-close.description': "An end-of-day ritual: what is done is done, the rest can wait for tomorrow.",
@@ -87,7 +87,7 @@ export const contentEn = {
 
   'session.anxiety-ground.title': "Finding the ground",
   'session.anxiety-ground.description': "Five points of contact between body and floor. Nothing else to do.",
-  'session.anxiety-ground.benefit.1': "Works immediately",
+  'session.anxiety-ground.benefit.1': 'Quick to start',
   'session.anxiety-ground.benefit.2': "When it rises",
   'session.anxiety-ground.benefit.3': "Standing or seated",
 
@@ -100,7 +100,7 @@ export const contentEn = {
   'session.anxiety-chest.title': "Opening the chest",
   'session.anxiety-chest.description': "When the breath jams high in the chest, we bring it back down.",
   'session.anxiety-chest.benefit.1': "Blocked breathing",
-  'session.anxiety-chest.benefit.2': "Frees the diaphragm",
+  'session.anxiety-chest.benefit.2': 'Breathing into the belly',
   'session.anxiety-chest.benefit.3': "Best lying down",
 
   'session.anxiety-evening.title': "Evening anxiety",
@@ -142,7 +142,7 @@ export const contentEn = {
   'session.dream-recall.title': "Remembering on waking",
   'session.dream-recall.description': "Five minutes on waking, without moving, to keep what is still there.",
   'session.dream-recall.benefit.1': "On waking",
-  'session.dream-recall.benefit.2': "Improves recall",
+  'session.dream-recall.benefit.2': 'Holds on to the dream',
   'session.dream-recall.benefit.3': "Before getting up",
 
   'session.dream-question.title': "Asking the night a question",

@@ -61,6 +61,7 @@ describe('additional dream rehearsal access', () => {
     requiresAuth: true,
     completionCount: 0,
     currentSession: null,
+    salesEnabled: true,
   };
 
   it('allows a guest preview when no rehearsal has been completed', () => {
@@ -101,6 +102,16 @@ describe('additional dream rehearsal access', () => {
         completionCount: 1,
       })
     ).toEqual({ status: 'upgrade_required' });
+  });
+
+  it('keeps every rehearsal open when a caller omits salesEnabled while Plus is not sold', () => {
+    const { salesEnabled: _salesEnabled, ...withoutSalesFlag } = base;
+    const access = resolveLucidAdditionalDreamRehearsalAccess({
+      ...withoutSalesFlag,
+      completionCount: 3,
+    });
+    expect(access).toEqual({ status: 'allowed', reason: 'free_launch' });
+    expect(canStartLucidDreamRehearsal(access)).toBe(true);
   });
 
   it('lets Plus start after the preview', () => {

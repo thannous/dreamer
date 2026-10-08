@@ -72,9 +72,10 @@ const GUIDED_EN = {
   secondaryTechnique: 'Technique',
   reduced: 'Shortened to protect sleep',
   replacement: 'Recovery ritual tonight',
-  missingTitle: 'Prepare one personal cue first',
-  missingBody: 'MILD needs a recent journal dream and a dream sign you confirmed yourself.',
-  missingAction: 'Open dream signs',
+  genericTitle: 'First night: a general intention',
+  genericBody: 'No dream recorded yet, so tonight starts from a simple intention. Note your dream tomorrow morning and MILD will use your own sign.',
+  genericIntention: 'Next time I dream, I will recognize that I am dreaming.',
+  genericRecall: 'Recall any dream you remember, even an old one, or the last scene of your day.',
   saveAndClose: 'Save progress and close',
   saveError: 'Your progress could not be saved. Try again before closing.',
   mildDream: 'Recent dream',
@@ -107,7 +108,7 @@ const GUIDED_COPY = {
   en: GUIDED_EN,
   fr: {
     ...GUIDED_EN,
-    eyebrow: 'Intention de ce soir', start: 'Commencer le rituel', resume: 'Reprendre où je me suis arrêté', preparing: 'Préparation du rituel…', phase: 'Phase', of: 'sur', approximately: 'Environ', minutes: 'minutes', secondaryTechnique: 'Technique', reduced: 'Raccourci pour protéger le sommeil', replacement: 'Rituel de récupération ce soir', missingTitle: 'Préparez d’abord un repère personnel', missingBody: 'MILD nécessite un rêve récent du journal et un signe onirique que vous avez confirmé.', missingAction: 'Ouvrir les signes oniriques', saveAndClose: 'Enregistrer et fermer', saveError: 'Votre progression n’a pas pu être enregistrée. Réessayez avant de fermer.', mildDream: 'Rêve récent', confirmedSign: 'Signe confirmé', intentionStart: 'Si je remarque', intentionEnd: 'je reconnaîtrai que je rêve.',
+    eyebrow: 'Intention de ce soir', start: 'Commencer le rituel', resume: 'Reprendre où je me suis arrêté', preparing: 'Préparation du rituel…', phase: 'Phase', of: 'sur', approximately: 'Environ', minutes: 'minutes', secondaryTechnique: 'Technique', reduced: 'Raccourci pour protéger le sommeil', replacement: 'Rituel de récupération ce soir', genericTitle: 'Première nuit : une intention générale', genericBody: 'Aucun rêve noté pour l’instant : ce soir, on part d’une intention simple. Notez votre rêve demain matin et MILD utilisera votre propre signe.', genericIntention: 'La prochaine fois que je rêverai, je reconnaîtrai que je rêve.', genericRecall: 'Rappelez-vous un rêve, même ancien, ou la dernière scène de votre journée.', saveAndClose: 'Enregistrer et fermer', saveError: 'Votre progression n’a pas pu être enregistrée. Réessayez avant de fermer.', mildDream: 'Rêve récent', confirmedSign: 'Signe confirmé', intentionStart: 'Si je remarque', intentionEnd: 'je reconnaîtrai que je rêve.',
     objective: { remember_and_recognize: 'Reconnaître un signe familier dans votre prochain rêve.', notice_the_senses: 'Laisser la vue, l’ouïe et les sensations devenir des repères calmes.', protect_sleep: 'Relâcher la technique et protéger votre sommeil cette nuit.' },
     phases: {
       mild_intention: { title: 'Poser une intention', body: 'Laissez la phrase devenir calme, précise et crédible.' }, mild_recall: { title: 'Revenir au rêve', body: 'Rappelez la scène sans chercher encore à la modifier.' }, mild_recognize: { title: 'Reconnaître le signe', body: 'Imaginez reconnaître ce détail comme l’indice que vous rêvez.' }, mild_rehearse: { title: 'Répéter la reconnaissance', body: 'Répétez doucement l’intention en gardant la scène présente.' }, mild_release: { title: 'Laisser venir le rêve', body: 'Relâchez l’effort. Gardez seulement l’intention.' }, ssild_settle: { title: 'S’apaiser', body: 'Ne cherchez à produire aucune expérience.' }, ssild_sight: { title: 'Vue', body: 'Remarquez l’obscurité derrière vos paupières.' }, ssild_sound: { title: 'Ouïe', body: 'Remarquez le son le plus proche puis le plus lointain.' }, ssild_body: { title: 'Sensations', body: 'Remarquez le poids, la chaleur et les points de contact.' }, ssild_slow_cycle: { title: 'Un cycle lent', body: 'Vue. Ouïe. Sensations. Sans forcer.' }, ssild_release: { title: 'Relâcher', body: 'Cessez de vérifier. Laissez le sommeil continuer.' }, recovery_settle: { title: 'Rien à réussir', body: 'Ce soir, le sommeil compte plus que la pratique.' }, recovery_release: { title: 'Revenir au repos', body: 'Adoucissez le souffle et laissez partir la technique.' },
@@ -115,7 +116,7 @@ const GUIDED_COPY = {
   },
   es: {
     ...GUIDED_EN,
-    eyebrow: 'Intención de esta noche', start: 'Comenzar el ritual', resume: 'Retomar donde lo dejé', preparing: 'Preparando el ritual…', phase: 'Fase', of: 'de', approximately: 'Unos', minutes: 'minutos', secondaryTechnique: 'Técnica', reduced: 'Acortado para proteger el sueño', replacement: 'Ritual de recuperación esta noche', missingTitle: 'Prepara primero una señal personal', missingBody: 'MILD necesita un sueño reciente del diario y una señal onírica confirmada por ti.', missingAction: 'Abrir señales oníricas', saveAndClose: 'Guardar y cerrar', saveError: 'No se pudo guardar tu progreso. Inténtalo de nuevo antes de cerrar.', mildDream: 'Sueño reciente', confirmedSign: 'Señal confirmada', intentionStart: 'Si noto', intentionEnd: 'reconoceré que estoy soñando.',
+    eyebrow: 'Intención de esta noche', start: 'Comenzar el ritual', resume: 'Retomar donde lo dejé', preparing: 'Preparando el ritual…', phase: 'Fase', of: 'de', approximately: 'Unos', minutes: 'minutos', secondaryTechnique: 'Técnica', reduced: 'Acortado para proteger el sueño', replacement: 'Ritual de recuperación esta noche', genericTitle: 'Primera noche: una intención general', genericBody: 'Aún no hay ningún sueño anotado: esta noche empiezas con una intención sencilla. Anota tu sueño mañana por la mañana y MILD usará tu propia señal.', genericIntention: 'La próxima vez que sueñe, reconoceré que estoy soñando.', genericRecall: 'Recuerda cualquier sueño, aunque sea antiguo, o la última escena de tu día.', saveAndClose: 'Guardar y cerrar', saveError: 'No se pudo guardar tu progreso. Inténtalo de nuevo antes de cerrar.', mildDream: 'Sueño reciente', confirmedSign: 'Señal confirmada', intentionStart: 'Si noto', intentionEnd: 'reconoceré que estoy soñando.',
     objective: { remember_and_recognize: 'Reconoce una señal familiar dentro de tu próximo sueño.', notice_the_senses: 'Deja que vista, oído y sensaciones sean anclas tranquilas.', protect_sleep: 'Suelta la técnica y protege el sueño de esta noche.' },
     phases: {
       mild_intention: { title: 'Fija una intención', body: 'Deja que la frase sea tranquila, precisa y creíble.' }, mild_recall: { title: 'Vuelve al sueño', body: 'Recuerda la escena sin intentar cambiarla.' }, mild_recognize: { title: 'Reconoce la señal', body: 'Imagina reconocer este detalle como prueba de que sueñas.' }, mild_rehearse: { title: 'Ensaya el reconocimiento', body: 'Repite suavemente la intención con la escena presente.' }, mild_release: { title: 'Deja llegar el sueño', body: 'Suelta el esfuerzo. Conserva solo la intención.' }, ssild_settle: { title: 'Calma', body: 'No intentes producir ninguna experiencia.' }, ssild_sight: { title: 'Vista', body: 'Nota la oscuridad tras los párpados.' }, ssild_sound: { title: 'Oído', body: 'Nota el sonido más cercano y el más lejano.' }, ssild_body: { title: 'Sensación', body: 'Nota peso, calor y contacto.' }, ssild_slow_cycle: { title: 'Un ciclo lento', body: 'Vista. Oído. Sensación. Sin forzar.' }, ssild_release: { title: 'Suelta', body: 'Deja de comprobar. Permite que siga el sueño.' }, recovery_settle: { title: 'Nada que lograr', body: 'Esta noche, dormir importa más que practicar.' }, recovery_release: { title: 'Vuelve al descanso', body: 'Suaviza la respiración y suelta la técnica.' },
@@ -123,7 +124,7 @@ const GUIDED_COPY = {
   },
   de: {
     ...GUIDED_EN,
-    eyebrow: 'Absicht für heute Abend', start: 'Ritual beginnen', resume: 'An der letzten Stelle fortsetzen', preparing: 'Ritual wird vorbereitet…', phase: 'Phase', of: 'von', approximately: 'Etwa', minutes: 'Minuten', secondaryTechnique: 'Technik', reduced: 'Zum Schutz des Schlafs verkürzt', replacement: 'Heute Erholungsritual', missingTitle: 'Bereite zuerst einen persönlichen Hinweis vor', missingBody: 'MILD braucht einen aktuellen Traum und ein selbst bestätigtes Traumzeichen.', missingAction: 'Traumzeichen öffnen', saveAndClose: 'Speichern und schließen', saveError: 'Dein Fortschritt konnte nicht gespeichert werden. Versuche es vor dem Schließen erneut.', mildDream: 'Aktueller Traum', confirmedSign: 'Bestätigtes Zeichen', intentionStart: 'Wenn ich', intentionEnd: 'erkenne ich, dass ich träume.',
+    eyebrow: 'Absicht für heute Abend', start: 'Ritual beginnen', resume: 'An der letzten Stelle fortsetzen', preparing: 'Ritual wird vorbereitet…', phase: 'Phase', of: 'von', approximately: 'Etwa', minutes: 'Minuten', secondaryTechnique: 'Technik', reduced: 'Zum Schutz des Schlafs verkürzt', replacement: 'Heute Erholungsritual', genericTitle: 'Erste Nacht: eine allgemeine Absicht', genericBody: 'Noch kein Traum notiert: Heute beginnst du mit einer einfachen Absicht. Notiere morgen früh deinen Traum, dann nutzt MILD dein eigenes Zeichen.', genericIntention: 'Wenn ich das nächste Mal träume, erkenne ich, dass ich träume.', genericRecall: 'Erinnere dich an irgendeinen Traum, auch einen alten, oder an die letzte Szene deines Tages.', saveAndClose: 'Speichern und schließen', saveError: 'Dein Fortschritt konnte nicht gespeichert werden. Versuche es vor dem Schließen erneut.', mildDream: 'Aktueller Traum', confirmedSign: 'Bestätigtes Zeichen', intentionStart: 'Wenn ich', intentionEnd: 'erkenne ich, dass ich träume.',
     objective: { remember_and_recognize: 'Erkenne im nächsten Traum ein vertrautes Zeichen.', notice_the_senses: 'Lass Sehen, Hören und Empfinden zu ruhigen Ankern werden.', protect_sleep: 'Lass die Technik los und schütze heute deinen Schlaf.' },
     phases: {
       mild_intention: { title: 'Eine Absicht setzen', body: 'Lass den Satz ruhig, klar und glaubwürdig werden.' }, mild_recall: { title: 'Zum Traum zurückkehren', body: 'Erinnere die Szene, ohne sie zu verändern.' }, mild_recognize: { title: 'Das Zeichen erkennen', body: 'Stell dir vor, dieses Detail als Traumhinweis zu erkennen.' }, mild_rehearse: { title: 'Erkennen proben', body: 'Wiederhole die Absicht sanft mit der Szene vor Augen.' }, mild_release: { title: 'Den Traum kommen lassen', body: 'Lass die Anstrengung los. Behalte nur die Absicht.' }, ssild_settle: { title: 'Ankommen', body: 'Versuche keine Erfahrung zu erzeugen.' }, ssild_sight: { title: 'Sehen', body: 'Nimm die Dunkelheit hinter den Lidern wahr.' }, ssild_sound: { title: 'Hören', body: 'Nimm den nächsten und fernsten Klang wahr.' }, ssild_body: { title: 'Empfinden', body: 'Nimm Gewicht, Wärme und Kontakt wahr.' }, ssild_slow_cycle: { title: 'Ein langsamer Zyklus', body: 'Sehen. Hören. Empfinden. Ohne Druck.' }, ssild_release: { title: 'Loslassen', body: 'Hör auf zu prüfen. Lass den Schlaf weitergehen.' }, recovery_settle: { title: 'Nichts erreichen', body: 'Heute ist Schlaf wichtiger als Übung.' }, recovery_release: { title: 'Zur Ruhe zurück', body: 'Lass den Atem weich werden und die Technik gehen.' },
@@ -131,7 +132,7 @@ const GUIDED_COPY = {
   },
   it: {
     ...GUIDED_EN,
-    eyebrow: 'Intenzione di stasera', start: 'Inizia il rituale', resume: 'Riprendi da dove eri', preparing: 'Preparazione del rituale…', phase: 'Fase', of: 'di', approximately: 'Circa', minutes: 'minuti', secondaryTechnique: 'Tecnica', reduced: 'Ridotto per proteggere il sonno', replacement: 'Rituale di recupero stasera', missingTitle: 'Prepara prima un segnale personale', missingBody: 'MILD richiede un sogno recente e un segnale onirico confermato da te.', missingAction: 'Apri i segnali onirici', saveAndClose: 'Salva e chiudi', saveError: 'Non è stato possibile salvare i progressi. Riprova prima di chiudere.', mildDream: 'Sogno recente', confirmedSign: 'Segnale confermato', intentionStart: 'Se noto', intentionEnd: 'riconoscerò che sto sognando.',
+    eyebrow: 'Intenzione di stasera', start: 'Inizia il rituale', resume: 'Riprendi da dove eri', preparing: 'Preparazione del rituale…', phase: 'Fase', of: 'di', approximately: 'Circa', minutes: 'minuti', secondaryTechnique: 'Tecnica', reduced: 'Ridotto per proteggere il sonno', replacement: 'Rituale di recupero stasera', genericTitle: 'Prima notte: un’intenzione generale', genericBody: 'Nessun sogno ancora annotato: stasera parti da un’intenzione semplice. Annota il sogno domattina e MILD userà il tuo segnale personale.', genericIntention: 'La prossima volta che sogno, riconoscerò che sto sognando.', genericRecall: 'Ricorda un sogno qualsiasi, anche lontano, o l’ultima scena della tua giornata.', saveAndClose: 'Salva e chiudi', saveError: 'Non è stato possibile salvare i progressi. Riprova prima di chiudere.', mildDream: 'Sogno recente', confirmedSign: 'Segnale confermato', intentionStart: 'Se noto', intentionEnd: 'riconoscerò che sto sognando.',
     objective: { remember_and_recognize: 'Riconosci un segnale familiare nel prossimo sogno.', notice_the_senses: 'Lascia che vista, udito e sensazioni diventino ancore tranquille.', protect_sleep: 'Lascia andare la tecnica e proteggi il sonno di stanotte.' },
     phases: {
       mild_intention: { title: 'Forma un’intenzione', body: 'Lascia che la frase sia calma, precisa e credibile.' }, mild_recall: { title: 'Torna al sogno', body: 'Ricorda la scena senza provare a cambiarla.' }, mild_recognize: { title: 'Riconosci il segnale', body: 'Immagina di riconoscere questo dettaglio come prova del sogno.' }, mild_rehearse: { title: 'Prova il riconoscimento', body: 'Ripeti piano l’intenzione mantenendo viva la scena.' }, mild_release: { title: 'Lascia arrivare il sogno', body: 'Lascia lo sforzo. Conserva solo l’intenzione.' }, ssild_settle: { title: 'Calma', body: 'Non cercare di produrre alcuna esperienza.' }, ssild_sight: { title: 'Vista', body: 'Nota il buio dietro le palpebre.' }, ssild_sound: { title: 'Udito', body: 'Nota il suono più vicino e quello più lontano.' }, ssild_body: { title: 'Sensazioni', body: 'Nota peso, calore e contatto.' }, ssild_slow_cycle: { title: 'Un ciclo lento', body: 'Vista. Udito. Sensazioni. Senza forzare.' }, ssild_release: { title: 'Lascia andare', body: 'Smetti di controllare. Lascia continuare il sonno.' }, recovery_settle: { title: 'Nulla da ottenere', body: 'Stasera il sonno conta più della pratica.' }, recovery_release: { title: 'Torna al riposo', body: 'Ammorbidisci il respiro e lascia la tecnica.' },
@@ -409,7 +410,13 @@ function guidedPhaseBody(
   source: LucidMildRehearsalSource | null
 ): string {
   const base = copy.phases[phaseId].body;
-  if (!source) return base;
+  if (!source) {
+    if (phaseId === 'mild_recall') return copy.genericRecall;
+    if (phaseId === 'mild_intention' || phaseId === 'mild_rehearse') {
+      return `${base} ${copy.genericIntention}`;
+    }
+    return base;
+  }
 
   const intention = `${copy.intentionStart} ${source.signLabel}, ${copy.intentionEnd}`;
   if (phaseId === 'mild_recall') {
@@ -494,7 +501,7 @@ function GuidedRitualSession({
   );
 
   const startOrResume = useCallback(async () => {
-    if (busyRef.current || (needsMildSource && !activeDreamSource)) return;
+    if (busyRef.current) return;
     busyRef.current = true;
     setBusy(true);
     setError(null);
@@ -519,12 +526,10 @@ function GuidedRitualSession({
       setBusy(false);
     }
   }, [
-    activeDreamSource,
     copy.phases,
     copy.saveError,
     matchingProgress,
     mutationBase,
-    needsMildSource,
     plan.phases,
     playTransition,
     update,
@@ -611,21 +616,18 @@ function GuidedRitualSession({
         : plan.mode === 'reduced'
           ? copy.reduced
           : null;
-    const blockedByMissingSource = needsMildSource && !activeDreamSource;
+    const usesGenericIntention = needsMildSource && !activeDreamSource;
     return (
       <LucidScreen
         contentStyle={styles.guidedScreenContent}
         eyebrow={copy.eyebrow}
         footer={
           <LucidButton
-            icon={blockedByMissingSource ? 'shapes-outline' : 'moon-outline'}
-            label={blockedByMissingSource ? copy.missingAction : canResume ? copy.resume : copy.start}
+            icon="moon-outline"
+            label={canResume ? copy.resume : copy.start}
             loading={busy}
-            onPress={() => {
-              if (blockedByMissingSource) router.push('/lucid/dream-signs' as Href);
-              else void startOrResume();
-            }}
-            testID={blockedByMissingSource ? 'lucid-guided-open-signs' : 'lucid-guided-start'}
+            onPress={() => void startOrResume()}
+            testID="lucid-guided-start"
           />
         }
         testID="lucid-guided-intro"
@@ -656,10 +658,10 @@ function GuidedRitualSession({
             <Text style={[styles.guidedNoticeText, { color: palette.textSecondary }]}>{modeNotice}</Text>
           </View>
         ) : null}
-        {blockedByMissingSource ? (
+        {usesGenericIntention ? (
           <View style={[styles.guidedSourceCard, { backgroundColor: palette.surface, borderColor: palette.border }]}>
-            <Text accessibilityRole="header" style={[styles.guidedSourceTitle, { color: palette.text }]}>{copy.missingTitle}</Text>
-            <Text style={[styles.guidedBody, { color: palette.textSecondary }]}>{copy.missingBody}</Text>
+            <Text accessibilityRole="header" style={[styles.guidedSourceTitle, { color: palette.text }]}>{copy.genericTitle}</Text>
+            <Text style={[styles.guidedBody, { color: palette.textSecondary }]}>{copy.genericBody}</Text>
           </View>
         ) : activeDreamSource ? (
           <MildSourceCard copy={copy} palette={palette} source={activeDreamSource} />

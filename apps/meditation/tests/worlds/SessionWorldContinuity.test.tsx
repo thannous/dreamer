@@ -9,6 +9,9 @@ import { SESSION_BY_ID } from '@/content/sessions';
 import { WORLD_BY_ID as mockWorldById, type MeditationWorld, type WorldId } from '@/constants/worlds';
 import { TID } from '@/lib/testIDs';
 
+// These cases cover the one-time world purchase flow, which v1 keeps off.
+jest.mock('@/constants/worldSales', () => ({ WORLD_SALES_ENABLED: true }));
+
 const mockPush = jest.fn();
 const mockOpenPaywall = jest.fn();
 const mockToggleFavorite = jest.fn();
@@ -180,7 +183,7 @@ jest.mock('@/context/LanguageContext', () => ({
         'common.plus': 'Plus',
         'common.free': 'Free',
         'session.sleep-descent.title': 'Bringing the breath down',
-        'session.sleep-descent.benefit.1': 'Slows the heart rate',
+        'session.sleep-descent.benefit.1': 'A long, slow exhale',
         'session.sleep-descent.benefit.2': 'Prepares for sleep',
         'session.sleep-descent.benefit.3': 'Done lying down',
         'session.sleep-body-scan.title': 'The body settling',
@@ -656,7 +659,7 @@ describe('world continuity from journey into practice', () => {
 
     expect(screen.getByTestId('continuity.session.free.access')).toHaveTextContent('Free');
     expect(screen.getByTestId('continuity.session.free.access')).not.toHaveTextContent('Plus');
-    expect(screen.getByTestId('continuity.session.free.benefit.1')).toHaveTextContent('Slows the heart rate');
+    expect(screen.getByTestId('continuity.session.free.benefit.1')).toHaveTextContent('A long, slow exhale');
     expect(screen.getByTestId('continuity.session.free.benefit.2')).toHaveTextContent('Prepares for sleep');
     expect(screen.getByTestId('continuity.session.free.benefit.3')).toHaveTextContent('Done lying down');
     expect(screen.getByTestId('continuity.session.free.benefit.1').props.numberOfLines).toBeUndefined();
@@ -664,7 +667,7 @@ describe('world continuity from journey into practice', () => {
     expect(screen.getByTestId('continuity.session.free.benefit.3').props.numberOfLines).toBeUndefined();
     expect(screen.getByTestId('continuity.session.free.title').props.numberOfLines).toBeUndefined();
     expect(screen.getByRole('button').props.accessibilityLabel).toEqual(
-      expect.stringContaining('Slows the heart rate. Prepares for sleep. Done lying down. Free')
+      expect.stringContaining('A long, slow exhale. Prepares for sleep. Done lying down. Free')
     );
   });
 

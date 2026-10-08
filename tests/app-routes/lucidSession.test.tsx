@@ -262,14 +262,23 @@ describe('Lucid Trainer session', () => {
     jest.useRealTimers();
   });
 
-  it('puts the evening objective before MILD and requires a confirmed journal source', () => {
+  it('lets a new user start MILD on the first night with a general intention', async () => {
     render(<LucidSessionScreen />);
 
     expect(screen.getByRole('heading', { name: 'Recognize a familiar sign inside your next dream.' })).not.toBeNull();
     expect(screen.getByText('Technique · MILD')).not.toBeNull();
-    expect(screen.getByRole('heading', { name: 'Prepare one personal cue first' })).not.toBeNull();
-    expect(screen.getByTestId('lucid-guided-open-signs')).not.toBeNull();
-    expect(screen.queryByTestId('lucid-guided-start')).toBeNull();
+    expect(screen.getByRole('heading', { name: 'First night: a general intention' })).not.toBeNull();
+    fireEvent.click(screen.getByTestId('lucid-guided-start'));
+
+    await waitFor(() => {
+      expect(mockUpdateGuidedRitual).toHaveBeenCalledWith({
+        technique: 'mild',
+        exerciseId: 'mild-01',
+        sessionNumber: 1,
+        sessionCount: 7,
+        action: 'start',
+      });
+    });
   });
 
   it('starts MILD with the latest source-linked dream and confirmed sign', async () => {

@@ -23,7 +23,7 @@
   "twitterImage": "https://noctalia.app/img/og/noctalia-it-1200x630.jpg",
   "twitterImageAlt": "Informativa sulla privacy",
   "publishedTime": "",
-  "modifiedTime": "2026-09-22",
+  "modifiedTime": "2026-10-08",
   "author": "",
   "prevPath": "",
   "nextPath": "",
@@ -36,7 +36,7 @@
 }
 ---
 <h1 class="font-serif text-4xl md:text-5xl mb-6 text-dream-cream">Informativa sulla privacy</h1>
-<p class="text-lg text-purple-200/80 mb-10">In vigore dal 22 settembre 2026</p>
+<p class="text-lg text-purple-200/80 mb-10">In vigore dall’8 ottobre 2026</p>
 
 <div class="space-y-8 text-gray-300 leading-relaxed">
   <div class="p-6 rounded-2xl bg-dream-salmon/5 border border-dream-salmon/20">
@@ -67,6 +67,28 @@
       </div>
     </div>
   </section>
+
+            <section id="companion-apps">
+                <h2 class="text-2xl font-serif text-white mb-4 mt-8">Noctalia Lucid e Noctalia Meditazione</h2>
+                <p>Questa informativa copre anche le due app complementari di Noctalia, pubblicate da TiMax. Tutto ciò che contiene si applica anche a loro, con le precisazioni seguenti.</p>
+                <h3 class="text-white font-semibold mb-2 mt-6">Noctalia Lucid</h3>
+                <ul class="list-disc pl-5 mt-2 space-y-2">
+                    <li><strong>Locale per impostazione predefinita:</strong> programmi, sessioni, test di realtà, bilanci, note e promemoria sono salvati sul tuo dispositivo e funzionano senza account né rete.</li>
+                    <li><strong>Note vocali:</strong> vengono registrate solo sul dispositivo dopo aver toccato «Parla», senza invio né trascrizione automatica.</li>
+                    <li><strong>Account e sincronizzazione facoltativi:</strong> se accedi con il tuo account Noctalia e attivi la sincronizzazione (disattivata per impostazione predefinita), i tuoi dati di allenamento vengono sincronizzati nel database Supabase nell'Unione europea descritto nella sezione 5. Puoi disattivare la sincronizzazione ed eliminare i dati remoti o il tuo account dall'app.</li>
+                    <li><strong>Scambi con il diario Noctalia:</strong> solo su tua richiesta, Lucid può copiare racconti dal tuo diario Noctalia o trasmettere a Noctalia un riepilogo per categorie della notte (tecnica, esito, livelli di lucidità e di ricordo), mai il testo delle tue note.</li>
+                    <li><strong>Misurazione dell’utilizzo:</strong> facoltativa e disattivata per impostazione predefinita, limitata a pochi eventi per categorie senza testo libero; nessuno strumento di analisi di terze parti.</li>
+                    <li><strong>Niente pubblicità né acquisti:</strong> Lucid non mostra pubblicità, non offre acquisti in-app in questa versione e non legge i tuoi dati Salute.</li>
+                    <li><strong>Esportazione e cancellazione:</strong> la schermata Dati permette di esportare i tuoi dati (JSON o CSV) e di cancellarli dal dispositivo.</li>
+                </ul>
+                <h3 class="text-white font-semibold mb-2 mt-6">Noctalia Meditazione</h3>
+                <ul class="list-disc pl-5 mt-2 space-y-2">
+                    <li><strong>Nessun account, nessuna raccolta:</strong> Meditazione funziona senza account. Preferenze, obiettivi, preferiti, progressi, promemoria ed eventuale foto profilo restano sul tuo dispositivo; non riceviamo nessuno di questi dati.</li>
+                    <li><strong>Niente misurazione dell’utilizzo, pubblicità né acquisti:</strong> l'app non invia eventi di analisi, non mostra pubblicità e tutti i mondi sono gratuiti in questa versione, quindi nessun servizio di pagamento è attivo.</li>
+                    <li><strong>Promemoria e voce:</strong> i promemoria sono notifiche programmate sul dispositivo; l'annuncio delle fasi di respirazione, se lo attivi, usa la sintesi vocale del sistema.</li>
+                    <li><strong>Cancellazione:</strong> «Cancella i miei dati», nelle impostazioni dell'account, elimina tutto ciò che l'app ha salvato; disinstallarla ha lo stesso effetto.</li>
+                </ul>
+            </section>
 
   <section>
     <h2 class="text-2xl font-serif text-white mb-4 mt-8">1. Titolare del trattamento</h2>

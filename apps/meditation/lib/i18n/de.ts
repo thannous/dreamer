@@ -9,8 +9,7 @@ export const de: Record<keyof typeof en, string> = {
 
   'welcome.tagline': 'Noctalia Meditation',
   'welcome.title': 'Die Ruhe\nvor der Nacht',
-  'welcome.subtitle':
-    'Geführte Sitzungen und Atemübungen, um den Tag zu verlangsamen und den Schlaf vorzubereiten.',
+  'welcome.subtitle': 'Atemübungen und abendliche Klangwelten, um den Tag zu verlangsamen und den Schlaf vorzubereiten.',
   'welcome.cta': 'Beginnen',
   'welcome.signin': 'Ich habe bereits ein Konto',
 
@@ -229,6 +228,8 @@ export const de: Record<keyof typeof en, string> = {
   'search.filter.under': 'Unter {count} Min.',
 
   'session.benefits': 'Was sie bewirkt',
+
+  'session.format': 'Klangwelt mit Timer, ohne Stimme. Folge der Übung in deinem Tempo.',
   'session.play': 'Beginnen',
   'session.resume': 'Fortsetzen',
   'session.replay': 'Erneut üben',
@@ -258,9 +259,8 @@ export const de: Record<keyof typeof en, string> = {
   'player.timer.none': 'Bis zum Ende',
   'player.timer.minutes': 'In {count} Min.',
   'player.timer.remaining': 'Blendet in {time} aus',
-  'player.unavailable.title': 'Offline noch nicht verfügbar',
-  'player.unavailable.subtitle':
-    'Diese Sitzung wird aus dem Katalog gestreamt. Einmal online gehen, dann läuft sie.',
+  'player.unavailable.title': 'Diese Sitzung konnte nicht starten',
+  'player.unavailable.subtitle': 'Die Klangwelt konnte auf diesem Gerät nicht geladen werden. Schließe die Sitzung und öffne sie erneut.',
   'player.scrub': 'Wiedergabeposition',
   'player.reveal': 'Bedienelemente einblenden',
   'drawer.open': 'Menü öffnen',
@@ -289,6 +289,7 @@ export const de: Record<keyof typeof en, string> = {
   'breathe.pattern.four-seven-eight.hint': 'Das lange Halten, vor dem Schlaf',
   'breathe.pattern.coherent.name': 'Herzkohärenz',
   'breathe.pattern.coherent.hint': 'Der Rhythmus, in dem diese App atmet',
+  'breathe.caution': 'Halte ohne Anstrengung. Wenn dir schwindlig wird, hör auf und atme normal.',
   'breathe.phase.inhale': 'Einatmen',
   'breathe.phase.hold': 'Halten',
   'breathe.phase.exhale': 'Ausatmen',
@@ -396,9 +397,8 @@ export const de: Record<keyof typeof en, string> = {
   'help.title': 'Hilfe',
   'help.q1': 'Brauche ich ein Konto?',
   'help.a1': 'Nein. Alles liegt auf deinem Gerät, und nichts wird irgendwohin gesendet.',
-  'help.q2': 'Warum lassen sich manche Sitzungen nicht abspielen?',
-  'help.a2':
-    'Sie werden aus dem Katalog gestreamt. Einmal online gehen, dann laufen sie und bleiben verfügbar.',
+  'help.q2': 'Führt eine Stimme durch die Sitzungen?',
+  'help.a2': 'Noch nicht. Eine Sitzung ist eine Klangwelt mit Timer: Lies die Übung und folge ihr in deinem Tempo. Bei den Atemübungen können die Phasen laut angesagt werden.',
   'help.q3': 'Läuft der Ton bei gesperrtem Bildschirm weiter?',
   'help.a3': 'Ja. Eine Sitzung, die am Sperrbildschirm stoppt, wäre nutzlos.',
   'help.q4': 'Wie funktioniert die Serie?',
@@ -412,7 +412,6 @@ export const de: Record<keyof typeof en, string> = {
   'legal.title': 'Rechtliches',
   'legal.privacy': 'Datenschutzerklärung',
   'legal.terms': 'Nutzungsbedingungen',
-  'legal.licenses': 'Open-Source-Lizenzen',
   'legal.data.title': 'Was wir erheben',
   'legal.data.body':
     'Nichts. Es gibt kein Konto, keine Nutzungsstatistik und keinen Server, der deine Übungen speichert.',
@@ -462,12 +461,10 @@ export const de: Record<keyof typeof en, string> = {
   'session.method.attention': "Aufmerksamkeitstraining",
   'session.method.presence': "Offene Präsenz",
   'session.method.reflection': "Reflexion",
-  'session.guidance.label': "Führung: {guidance}",
-  'session.guidance.fading': "Klingt allmählich aus",
-  'session.guidance.guided': "Schritt für Schritt",
-  'session.guidance.light': "Wenige Hinweise",
   'session.saved.locked': "Gespeichert, Plus ist weiterhin nötig",
   'complete.home': "Zurück zur Startseite",
+  'notFound.title': 'Diese Seite gibt es nicht',
+  'notFound.body': 'Der Link ist vielleicht veraltet. Deine Übung wartet auf der Startseite.',
   'trainer.sound.on': "Ton aus",
   'trainer.sound.off': "Ton an",
   'trainer.voice.on': "Sprachführung aus",
