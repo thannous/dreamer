@@ -31,6 +31,7 @@ and `app.config.ts`. Meditation has its own package, lockfile and
 
 | Work | Start here | Command or prerequisite |
 | --- | --- | --- |
+| Write or rewrite site articles, symbols and guides | [Editorial charter](charte-editoriale.md) | Voice, sourcing, typography and SEO guardrails; then `docs:build` and `docs:check`. |
 | Choose checks and evolve contracts/tools | [Proportional validation](validation-proportionnee.md) | Current functional expectations, compatible measured upgrades, minimal evidence; tooling/functional PRs finish with `test:prepush` on a clean committed worktree. |
 | Web and native user journeys | [E2E guide](../../e2e/README.md) | `test:e2e:web`, `test:e2e:journeys`; the guide distinguishes simulated services and native requirements. |
 | TesterArmy Release qualification | [Current native retrospective qualification](qa/native-retro-qualification-20261006.md) | Exact passed-ID union, immutable reports/build receipts, owner decisions and retained physical/Store/video limits. |

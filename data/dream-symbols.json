@@ -1,7 +1,7 @@
 {
   "meta": {
     "version": "1.0.0",
-    "lastUpdated": "2026-10-07",
+    "lastUpdated": "2026-10-08",
     "fallbackModifiedAt": "2026-10-02",
     "totalSymbols": 160,
     "languages": [
@@ -3455,20 +3455,62 @@
       "en": {
         "slug": "mirror",
         "name": "Mirror",
-        "shortDescription": "A mirror symbolizes introspection and self-image. A distorted reflection can indicate an altered perception of yourself or a need to see yourself more clearly.",
+        "shortDescription": "Dreaming of a mirror often brings you back to self-image: how you see yourself, or how you think others see you. The reflection matters more than the object. Clear, distorted, broken or missing, each tells a different story.",
         "askYourself": [
-          "How do I perceive myself?",
-          "Is my self-image realistic?"
-        ]
+          "Did the reflection look like me, or was something off?",
+          "How did I feel seeing myself: curious, embarrassed, scared, relieved?",
+          "Is there a gaze right now, mine or someone else's, that weighs on me?"
+        ],
+        "faq": [
+          {
+            "question": "What does it mean to dream of a mirror?",
+            "answer": "A mirror is often associated with self-image and with how others see you. Its meaning depends mostly on the reflection, whether it was true to life, distorted, broken or missing, and on how you felt when you saw it."
+          },
+          {
+            "question": "What does a broken mirror mean in a dream?",
+            "answer": "A broken mirror can go with a self-image that feels shaken, after criticism, a setback or a big change. It is not an omen of bad luck: the seven-years superstition says nothing about your future."
+          },
+          {
+            "question": "What does it mean not to see your reflection in a dream?",
+            "answer": "Not seeing yourself can match a feeling of going unnoticed, or of not knowing where you stand. Note where you were and who else was there: that context helps you pick the right lead."
+          },
+          {
+            "question": "Why did my reflection look different from me?",
+            "answer": "An older, younger or unfamiliar reflection can stage a change in how you see yourself, a new stage of life, or a side of you that you rarely look at. Your reaction to it is the main clue."
+          }
+        ],
+        "documentMetaDescription": "Dreaming of a mirror, a broken mirror or not seeing your reflection: what the scene may say about self-image, with questions and a journal example.",
+        "modifiedAt": "2026-10-08"
       },
       "fr": {
         "slug": "miroir",
         "name": "Miroir",
-        "shortDescription": "Le miroir symbolise l'introspection et l'image de soi. Un reflet déformé peut indiquer une perception altérée de soi-même ou un besoin de vous voir plus clairement.",
+        "shortDescription": "Rêver d'un miroir ramène souvent à l'image de soi : comment vous vous voyez, ou comment vous pensez être vu. Le reflet compte plus que l'objet : net, déformé, brisé ou absent, il ne raconte pas la même chose.",
         "askYourself": [
-          "Comment je me perçois ?",
-          "Est-ce que mon image de moi est réaliste ?"
-        ]
+          "Le reflet me ressemblait-il, ou quelque chose clochait-il ?",
+          "Qu'ai-je ressenti en me voyant : curiosité, gêne, peur, soulagement ?",
+          "Y a-t-il en ce moment un regard, le mien ou celui des autres, qui me pèse ?"
+        ],
+        "faq": [
+          {
+            "question": "Que signifie rêver d'un miroir ?",
+            "answer": "Le miroir est souvent associé à l'image de soi et au regard des autres. Son sens dépend surtout du reflet : ressemblant, déformé, brisé ou absent, et de ce que vous avez ressenti en le voyant."
+          },
+          {
+            "question": "Que signifie rêver d'un miroir brisé ?",
+            "answer": "Un miroir brisé peut accompagner une image de soi fragilisée, après une critique, un échec ou un changement. Ce n'est pas un présage de malheur : la superstition des sept ans ne dit rien de votre avenir."
+          },
+          {
+            "question": "Que signifie ne pas voir son reflet dans un miroir en rêve ?",
+            "answer": "Ne pas se voir peut rejoindre le sentiment de passer inaperçu ou de ne plus bien savoir où l'on en est. Notez où vous étiez et qui d'autre était présent : ce contexte aide à choisir la bonne piste."
+          },
+          {
+            "question": "Pourquoi mon reflet était-il différent de moi ?",
+            "answer": "Un reflet plus âgé, plus jeune ou étranger peut mettre en scène un changement d'image de soi, une étape de vie ou une part de vous que vous regardez peu. Votre réaction face à lui est l'indice principal."
+          }
+        ],
+        "documentMetaDescription": "Rêver d'un miroir, d'un miroir brisé ou de ne pas voir son reflet : ce que la scène peut dire de l'image de soi, avec questions et exemple de journal.",
+        "modifiedAt": "2026-10-08"
       },
       "es": {
         "slug": "espejo",
