@@ -38,7 +38,7 @@ function resolve(variant, cwd) {
 }
 
 describe('resolved variant capabilities (no native files generated)', () => {
-  it('preserves Journal capture while Lucid has local microphone and read-only HealthKit', async () => {
+  it('preserves Journal capture while Lucid has local microphone and no HealthKit entitlement', async () => {
     const cwd = createIsolatedProject();
     try {
       const [lucid, journal] = await Promise.all([resolve('lucid', cwd), resolve('journal', cwd)]);
@@ -52,9 +52,9 @@ describe('resolved variant capabilities (no native files generated)', () => {
       expect(journalPlist.NSFaceIDUsageDescription).toBeTruthy();
       expect(lucidPlist.NSCameraUsageDescription).toBeUndefined();
       expect(lucidPlist.NSPhotoLibraryUsageDescription).toBeUndefined();
-      expect(lucidPlist.NSHealthShareUsageDescription).toContain('never writes');
-      expect(lucidPlist.NSHealthUpdateUsageDescription).toBeUndefined();
-      expect(lucid._internal.modResults.ios.entitlements['com.apple.developer.healthkit']).toBe(true);
+      expect(lucidPlist.NSHealthShareUsageDescription).toContain('does not read Apple Health');
+      expect(lucidPlist.NSHealthUpdateUsageDescription).toContain('never writes');
+      expect(lucid._internal.modResults.ios.entitlements['com.apple.developer.healthkit']).toBeUndefined();
       expect(journalPlist.NSCameraUsageDescription).toBeTruthy();
       expect(journalPlist.NSPhotoLibraryUsageDescription).toBeTruthy();
       expect(journalPlist.NSMicrophoneUsageDescription).toBeTruthy();

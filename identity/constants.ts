@@ -15,7 +15,7 @@ export const PRODUCTION_IDENTITIES = {
   },
   lucid: {
     product: 'lucid',
-    name: 'Noctalia Lucid Trainer',
+    name: 'Noctalia Lucid',
     slug: 'noctalia-lucid-trainer',
     androidApplicationId: 'com.tanuki75.noctalia.lucid',
     iosBundleIdentifier: 'com.tanuki75.noctalia.lucid',
