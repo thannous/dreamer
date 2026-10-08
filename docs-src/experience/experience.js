@@ -36,14 +36,6 @@ const STEP_SECTION_SELECTOR = [
   '#come-funziona',
 ].join(',');
 
-const FEATURE_SECTION_SELECTOR = [
-  '#features',
-  '#fonctionnalites',
-  '#caracteristicas',
-  '#funktionen',
-  '#funzionalita',
-].join(',');
-
 const withSuffix = (selectorList, suffix) =>
   selectorList
     .split(',')
@@ -59,7 +51,6 @@ const HEADLINE_LEAD_MS = 450;
 const getHeroItems = () => Array.from(document.querySelectorAll('.hero-anim:not(.oh-hero-title)'));
 const getHeadline = () => document.querySelector('.oh-hero-title');
 const getRevealItems = () => Array.from(document.querySelectorAll('.reveal'));
-const getFeatureMedia = () => Array.from(document.querySelectorAll('.oh-feature-media'));
 
 const revealDreamsAfterIntro = () => {
   window.clearTimeout(window.__expIntroGateTimer);
@@ -75,7 +66,6 @@ const holdDreamsForIntro = () => {
 const showStaticState = () => {
   revealDreamsAfterIntro();
   html.classList.remove('exp-starmap');
-  getFeatureMedia().forEach((el) => el.classList.add('is-inview'));
   getHeadline()?.classList.add('is-revealed');
 
   Array.from(document.querySelectorAll('.hero-anim')).forEach((el) => {
@@ -275,40 +265,6 @@ const initLightMotion = (heroReady) => {
 };
 
 /* ------------------------------------------------------------------ */
-/* Feature illustrations: one-shot bar entrance (full & light tiers).  */
-/* ------------------------------------------------------------------ */
-
-const initFeatureMedia = () => {
-  const media = getFeatureMedia();
-  if (!media.length) return;
-  if (!('IntersectionObserver' in window)) {
-    media.forEach((el) => el.classList.add('is-inview'));
-    return;
-  }
-
-  media.forEach((el) => {
-    // Already on screen when the layer boots: show it settled, never shrink it.
-    if (el.getBoundingClientRect().top < window.innerHeight) el.classList.add('is-inview');
-    Array.from(el.querySelectorAll('rect')).forEach((bar, index) => {
-      bar.style.transitionDelay = `${Math.min(index * 30, 540)}ms`;
-    });
-  });
-  html.classList.add('exp-motion');
-
-  const observer = new IntersectionObserver(
-    (entries, activeObserver) => {
-      entries.forEach((entry) => {
-        if (!entry.isIntersecting) return;
-        entry.target.classList.add('is-inview');
-        activeObserver.unobserve(entry.target);
-      });
-    },
-    { rootMargin: '0px 0px -15% 0px', threshold: 0.6 }
-  );
-  media.forEach((el) => observer.observe(el));
-};
-
-/* ------------------------------------------------------------------ */
 /* Full tier: GSAP scenes (ported from landing-animations.js).         */
 /* ------------------------------------------------------------------ */
 
@@ -423,7 +379,7 @@ const initGsapScenes = (gsapLib, ScrollTrigger, lenis, heroReady) => {
 
   // Card hover physics.
   gsapLib.utils
-    .toArray(`${withSuffix(FEATURE_SECTION_SELECTOR, '.glass-panel')}, .noctalia-observatory a.glass-panel`)
+    .toArray('.noctalia-observatory a.glass-panel')
     .forEach((card) => {
       card.addEventListener('mouseenter', () => {
         gsapLib.to(card, { y: -6, duration: 0.32, ease: 'power2.out' });
@@ -549,7 +505,7 @@ const initDawn = () => {
   const stops = [
     ['.oh-dreams', 0, 0.55],
     ['.oh-understand', 0.55, 0.5],
-    ['.oh-waking', 1, 0.5],
+    [STEP_SECTION_SELECTOR, 1, 0.5],
     ['.oh-remember', 0.8, 0.5],
     ['.oh-ending', 1, 0.5],
   ]
@@ -815,9 +771,9 @@ const initLightbox = (space) => {
   };
 };
 
-/* Waking: while the section is on screen the waveform breathes, the timer
- * runs and the example transcript appears word by word, once. */
-const initWaking = () => {
+/* Step 1: while the capture screen is on view the waveform breathes, the
+ * timer runs and the example transcript appears word by word, once. */
+const initCapture = () => {
   const rec = document.querySelector('.oh-rec');
   if (!rec || !('IntersectionObserver' in window)) return;
   const text = rec.querySelector('.oh-rec-text');
@@ -1496,12 +1452,12 @@ const bootEnhanced = async (currentTier, heroReady) => {
     // Each scene measures the page; one task for all of them blocks input
     // for hundreds of milliseconds on mid-range phones.
     await yieldToMain();
-    initFeatureMedia();
+    html.classList.add('exp-motion');
     initDawn();
     const space = initDreamSpace(journey);
     initLightbox(space);
     await yieldToMain();
-    initWaking();
+    initCapture();
     initStarmap(journey);
     await yieldToMain();
     initRemember();

@@ -278,28 +278,6 @@ html.exp-motion :is(.oh-step, .oh-profile):not(.active)::before {
 }
 
 /* ---------------------------------------------------------------- */
-/* Feature illustrations (full & light tiers).                       */
-/* The waveform and the emotion chart play once when they scroll in: */
-/* bars rise from their baseline to explain "voice" and "compare     */
-/* over time". `html.exp-motion` is only set by experience.js on the */
-/* enhanced tiers, so the static tier never sees the collapsed state.*/
-/* ---------------------------------------------------------------- */
-
-html.exp-motion .oh-feature-media rect {
-  transform-box: fill-box;
-  transform-origin: 50% 50%;
-  transition: transform 600ms cubic-bezier(0.23, 1, 0.32, 1);
-}
-
-html.exp-motion .oh-feature--d .oh-feature-media rect {
-  transform-origin: 50% 100%;
-}
-
-html.exp-motion .oh-feature-media:not(.is-inview) rect {
-  transform: scaleY(0.2);
-}
-
-/* ---------------------------------------------------------------- */
 /* Static tier: content is visible with zero JS motion.              */
 /* Specificity (0,2,1) beats `.reveal` / `.opacity-0` (0,1,0) so no  */
 /* !important is needed and scroll-driven animations can still run.  */
@@ -345,7 +323,6 @@ html.exp-static .reveal {
     animation: none;
   }
 
-  html.exp-motion .oh-feature-media rect,
   html.exp-motion :is(.oh-step, .oh-profile)::before {
     transform: none;
     transition: none;
@@ -657,7 +634,7 @@ html.oh-lightbox-open body {
   }
 }
 
-/* 02 Waking: live waveform and transcript. */
+/* Step 1: the live recording screen breathes, types and pulses. */
 html.exp-motion .oh-rec-wave span {
   animation: oh-wave 1100ms ease-in-out infinite alternate;
   animation-delay: calc(var(--i, 0) * -83ms);
@@ -690,11 +667,32 @@ html.exp-motion .oh-rec-dot {
 
 .oh-rec-word {
   opacity: 0.18;
-  transition: opacity 500ms ease;
+  transition: opacity 500ms ease, filter 700ms cubic-bezier(0.23, 1, 0.32, 1);
+}
+
+html.exp-motion .oh-rec-word:not(.is-in) {
+  filter: blur(2px);
 }
 
 .oh-rec-word.is-in {
   opacity: 1;
+}
+
+/* The stop button breathes only while the screen is on view. */
+html.exp-motion .oh-live-phone:has(.oh-rec.is-live) .oh-live-button::after {
+  animation: oh-live-ring 2200ms cubic-bezier(0.23, 1, 0.32, 1) infinite;
+}
+
+@keyframes oh-live-ring {
+  from {
+    transform: scale(1);
+    opacity: 0.55;
+  }
+
+  to {
+    transform: scale(1.45);
+    opacity: 0;
+  }
 }
 
 /* 04 Remembering: staged once. */
@@ -748,7 +746,8 @@ html.exp-motion .oh-rec-dot {
 
 @media (prefers-reduced-motion: reduce) {
   html.exp-motion .oh-rec-wave span,
-  html.exp-motion .oh-rec-dot {
+  html.exp-motion .oh-rec-dot,
+  html.exp-motion .oh-live-button::after {
     animation: none;
   }
 }
