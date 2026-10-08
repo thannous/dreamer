@@ -51,3 +51,21 @@ thread time is browser lab work, not device battery or operating-system CPU use.
 Consent remains unset; analytics are not enabled by the harness. Automated
 accessibility scores do not prove keyboard, screen-reader, animation or CTA flow
 correctness. Run functional browser QA separately for source changes.
+
+## Landing lab
+
+`landing-lab.mjs` measures the home landing with Lighthouse on the mobile and
+desktop presets, pinning hardware hints so each preset lands on the experience
+tier real devices get (light on phones, full on desktops), then samples the
+idle main-thread cost after the intro. `serve-compressed.cjs` serves `docs/`
+with Brotli and clean URLs so transfer sizes approximate a CDN.
+
+```sh
+npm install --prefix /tmp/landing-lab lighthouse@13.4.1 puppeteer-core@24
+node scripts/site-performance/serve-compressed.cjs docs 8530
+LAB_TOOLS=/tmp/landing-lab CHROME_PATH=<chrome> node scripts/site-performance/landing-lab.mjs /tmp/landing-evidence 5
+```
+
+Chromium builds without H.264 fetch an MP4 source before failing over to the
+next one; read media rows from `summary.json` before comparing transfer sizes.
+These are lab results, not production Core Web Vitals.

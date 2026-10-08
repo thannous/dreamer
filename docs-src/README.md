@@ -303,6 +303,12 @@ hash. Edit sources in `docs-src/experience/`, never the bundled output. The
 hero LCP image and `observatory.css` remain the static baseline: the sky
 canvas is an additive layer above them and must never replace them.
 
+Landing pages load two stylesheets: the shared `styles.min.css` and
+`css/landing.css`, which `docs:build` generates from `language-dropdown.css`,
+`observatory.css` and `experience.css` in that order
+(`scripts/lib/landing-stylesheet.js`). Edit those three source files, never
+the generated bundle.
+
 ## Consent-gated analytics
 
 `static/js/site-shell.js` contains the shared Microsoft Clarity consent control.

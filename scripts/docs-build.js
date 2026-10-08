@@ -14,6 +14,7 @@ const {
   staticPagesConfig,
 } = require('./lib/docs-site-config');
 const { renderManagedPage } = require('./lib/docs-renderer');
+const { writeLandingStylesheet } = require('./lib/landing-stylesheet');
 const { staticPageLanguages } = require('./lib/site-manifest');
 const {
   copyDir,
@@ -205,6 +206,7 @@ function copyStaticFiles() {
   // archived or removed maintenance tools cannot survive as stale output.
   fs.rmSync(path.join(DOCS_DIR, 'scripts'), { recursive: true, force: true });
   copyDir(path.join(DOCS_SRC_DIR, 'static'), DOCS_DIR);
+  writeLandingStylesheet(path.join(DOCS_SRC_DIR, 'static'), DOCS_DIR);
   // The app and the site share the same three canonical symbol catalogs.
   // Copy them after static assets so stale snapshots under docs-src/static/data
   // can never drive generated symbol or guide pages.
