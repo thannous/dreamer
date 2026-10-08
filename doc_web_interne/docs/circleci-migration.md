@@ -94,7 +94,10 @@ Selon le type de trigger, CircleCI peut toutefois appliquer son saut natif sur
 le push avant même d'exécuter ce classificateur. Le marqueur ne doit donc être
 utilisé que sur un diff déjà entièrement éditorial/no-code ; le routage
 automatique par chemins reste la méthode recommandée. Les suppressions,
-renommages et copies échouent fermés sur toutes les surfaces.
+renommages et copies classent l'ancien et le nouveau chemin comme une
+modification : supprimer une page `docs-src/` ne lance que le site. Un
+changement de type (fichier remplacé par un lien symbolique) ou une entrée
+non fusionnée échoue fermé sur toutes les surfaces.
 
 Les tests synthétiques couvrent Noctalia seul, Meditation seul, site no-op, Edge
 Deno seul, migration seule, documentation interne, fichiers partagés, lockfiles,

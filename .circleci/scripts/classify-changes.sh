@@ -103,7 +103,9 @@ while IFS= read -r -d '' raw_status; do
     printf '%s\n' "$path" >> "$changed_files"
   fi
 
-  if [[ "$status" != "A" && "$status" != "M" ]]; then
+  # Deleted, renamed and copied paths (both sides) are classified like edits.
+  # Type changes, unmerged and unknown entries stay fail-closed.
+  if [[ "$status" != [AMDRC] ]]; then
     unsafe_change_status=true
     echo "Git status '$raw_status' is fail-closed across every surface."
   fi

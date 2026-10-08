@@ -79,6 +79,7 @@ release="$(parameters_json full "" true true true true true false true true fals
 fallback="$(parameters_json affected "" true true true true true false true false false false false)"
 none="$(parameters_json affected "$base_revision" false false false false false false false false false false false)"
 all_surfaces="$(parameters_json affected "$base_revision" true true true true true true false false false false false)"
+site_only="$(parameters_json affected "$base_revision" false false true false false false false false false true false)"
 
 assert_parameters "full mode" "$full" full "" "$base_revision"
 assert_parameters "release mode" "$release" release "" "$base_revision"
@@ -132,20 +133,37 @@ git -C "$test_root" reset -q --hard "$base_revision"
 git -C "$test_root" rm -q docs-src/content/reference.md
 git -C "$test_root" commit -qm "delete editorial source"
 destructive_head="$(git -C "$test_root" rev-parse HEAD)"
-assert_parameters "editorial deletion fails closed" "$all_surfaces" pr "$base_revision" "$destructive_head"
+assert_parameters "editorial deletion runs only the site" "$site_only" pr "$base_revision" "$destructive_head"
 
 git -C "$test_root" reset -q --hard "$base_revision"
 git -C "$test_root" mv docs-src/content/reference.md docs-src/content/renamed.md
 git -C "$test_root" commit -qm "rename editorial source"
 destructive_head="$(git -C "$test_root" rev-parse HEAD)"
-assert_parameters "editorial rename fails closed" "$all_surfaces" pr "$base_revision" "$destructive_head"
+assert_parameters "editorial rename runs only the site" "$site_only" pr "$base_revision" "$destructive_head"
 
 git -C "$test_root" reset -q --hard "$base_revision"
 cp "$test_root/docs-src/content/reference.md" "$test_root/docs-src/content/copied.md"
 git -C "$test_root" add docs-src/content/copied.md
 git -C "$test_root" commit -qm "copy editorial source"
 destructive_head="$(git -C "$test_root" rev-parse HEAD)"
-assert_parameters "editorial copy fails closed" "$all_surfaces" pr "$base_revision" "$destructive_head"
+assert_parameters "editorial copy runs only the site" "$site_only" pr "$base_revision" "$destructive_head"
+
+git -C "$test_root" reset -q --hard "$base_revision"
+git -C "$test_root" mv app/index.ts docs-src/content/moved.ts
+git -C "$test_root" commit -qm "move app source into the site"
+destructive_head="$(git -C "$test_root" rev-parse HEAD)"
+assert_parameters "cross-surface rename runs both sides" \
+  "$(parameters_json affected "$base_revision" true false true false false true false false false false false)" \
+  pr "$base_revision" "$destructive_head"
+
+git -C "$test_root" reset -q --hard "$base_revision"
+git -C "$test_root" rm -q app/index.ts
+mkdir -p "$test_root/app"
+ln -s ../docs-src/content/reference.md "$test_root/app/index.ts"
+git -C "$test_root" add app/index.ts
+git -C "$test_root" commit -qm "replace app source with a symlink"
+destructive_head="$(git -C "$test_root" rev-parse HEAD)"
+assert_parameters "type change fails closed" "$all_surfaces" pr "$base_revision" "$destructive_head"
 
 assert_change \
   "Noctalia app change" app/feature.ts pr \
