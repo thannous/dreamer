@@ -66,7 +66,8 @@ Artifacts (ignored by Git): `test-results/e2e-web-report/` (HTML),
 source revision, dirty state, environment and fixture profiles. Open any trace with
 `mise exec -- npx playwright show-trace <trace.zip>`.
 
-CircleCI's `noctalia-e2e-web` job runs these journeys and retains results and traces.
+CircleCI runs these journeys through their TesterArmy counterparts
+(`tools/e2e/README.md`); this Playwright suite remains for local runs.
 Existing quality, native and backend gates remain in place.
 
 ## Billing without real payments
