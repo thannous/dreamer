@@ -95,7 +95,9 @@ le push avant même d'exécuter ce classificateur. Le marqueur ne doit donc êtr
 utilisé que sur un diff déjà entièrement éditorial/no-code ; le routage
 automatique par chemins reste la méthode recommandée. Les suppressions,
 renommages et copies classent l'ancien et le nouveau chemin comme une
-modification : supprimer une page `docs-src/` ne lance que le site. Un
+modification : supprimer une page `docs-src/` ne lance que le site. Les
+consommateurs partagés sont lus dans la table de la base et dans celle de la
+PR, pour qu'une ligne retirée avec son fichier route encore ce chemin. Un
 changement de type (fichier remplacé par un lien symbolique) ou une entrée
 non fusionnée échoue fermé sur toutes les surfaces.
 

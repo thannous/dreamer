@@ -165,6 +165,21 @@ git -C "$test_root" commit -qm "replace app source with a symlink"
 destructive_head="$(git -C "$test_root" rev-parse HEAD)"
 assert_parameters "type change fails closed" "$all_surfaces" pr "$base_revision" "$destructive_head"
 
+# A deleted dependency keeps the consumers its base-map row named.
+git -C "$test_root" reset -q --hard "$base_revision"
+mkdir -p "$test_root/.circleci" "$test_root/lib"
+printf 'lib/legacy-contract.ts\tcontract\tnoctalia edge_contracts\n' > "$test_root/.circleci/dependency-consumers.tsv"
+echo contract > "$test_root/lib/legacy-contract.ts"
+git -C "$test_root" add .circleci/dependency-consumers.tsv lib/legacy-contract.ts
+git -C "$test_root" commit -qm "add mapped contract"
+mapped_base="$(git -C "$test_root" rev-parse HEAD)"
+git -C "$test_root" rm -q lib/legacy-contract.ts
+git -C "$test_root" commit -qm "delete mapped contract"
+destructive_head="$(git -C "$test_root" rev-parse HEAD)"
+assert_parameters "deleted mapped dependency keeps base consumers" \
+  "$(parameters_json affected "$mapped_base" true false false false true true false false false false false)" \
+  pr "$mapped_base" "$destructive_head"
+
 # A head that deletes or renames the dependency map must still write parameters.
 mapless_ci="$test_root/mapless/.circleci/scripts"
 mkdir -p "$mapless_ci"

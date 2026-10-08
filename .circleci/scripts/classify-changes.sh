@@ -77,7 +77,8 @@ fi
 
 changed_files="$(mktemp)"
 changed_entries="$(mktemp)"
-trap 'rm -f "$changed_files" "$changed_entries"' EXIT
+base_dependency_map="$(mktemp)"
+trap 'rm -f "$changed_files" "$changed_entries" "$base_dependency_map"' EXIT
 if ! git diff --name-status -z -M -C --find-copies-harder \
   "$base_revision" "$head_revision" > "$changed_entries"; then
   echo "Unable to compute the diff; running every affected gate and the exhaustive Jest portfolio."
@@ -93,6 +94,9 @@ fi
 
 unsafe_change_status=false
 dependency_map="$(dirname "${BASH_SOURCE[0]}")/../dependency-consumers.tsv"
+# Rows removed alongside their deleted dependency still route that path.
+git show "${base_revision}:.circleci/dependency-consumers.tsv" > "$base_dependency_map" 2>/dev/null ||
+  : > "$base_dependency_map"
 while IFS= read -r -d '' raw_status; do
   status="${raw_status:0:1}"
   if [[ "$status" == "R" || "$status" == "C" ]]; then
@@ -149,7 +153,7 @@ else
       continue
     fi
     # Exact shared dependencies live in one executable map, also exercised by fixtures.
-    shared_consumers="$(awk -F '\t' -v changed="$path" '$1 == changed { print $3 }' "$dependency_map")"
+    shared_consumers="$(awk -F '\t' -v changed="$path" '$1 == changed { print $3 }' "$dependency_map" "$base_dependency_map")"
     if [[ -n "$shared_consumers" ]]; then
       for consumer in $shared_consumers; do
         case "$consumer" in
