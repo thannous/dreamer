@@ -25,7 +25,7 @@ import { Image } from 'expo-image';
 import { LinearGradient } from 'expo-linear-gradient';
 import { router, useLocalSearchParams } from 'expo-router';
 import React, { useEffect, useMemo, useRef } from 'react';
-import { Pressable, StyleSheet, Text, View, useWindowDimensions } from 'react-native';
+import { Pressable, ScrollView, StyleSheet, Text, View, useWindowDimensions } from 'react-native';
 import Animated, {
   Extrapolation,
   interpolate,
@@ -43,6 +43,10 @@ type Tokens = ReturnType<typeof getNoctaliaDesignTokens>;
 const HERO_TOKENS = getNoctaliaDesignTokens(DarkTheme, 'dark');
 const SKY_FALLBACK = require('@/assets/images/onboarding-reverie-background.webp');
 const TOP_BAR_HEIGHT = 52;
+
+/** The same colour at zero alpha, so a fade never darkens a light page. */
+const transparentOf = (color: string) =>
+  /^#[0-9a-f]{6}$/i.test(color) ? `${color}00` : 'transparent';
 
 export default function SymbolDetailScreen() {
   const { id, source } = useLocalSearchParams<{ id: string; source?: string }>();
@@ -134,6 +138,23 @@ export default function SymbolDetailScreen() {
   return (
     <ScrollPerfProvider isScrolling={scrollPerf.isScrolling}>
       <View style={[styles.screen, { backgroundColor: background }]} testID={TID.Screen.SymbolDetail}>
+        {mode === 'dark' ? (
+          // The reading column keeps the symbol's night around it instead of
+          // falling onto flat black once the hero has scrolled away.
+          <View pointerEvents="none" style={StyleSheet.absoluteFill} accessible={false} importantForAccessibility="no-hide-descendants">
+            <Image
+              source={illustration ?? SKY_FALLBACK}
+              contentFit="cover"
+              blurRadius={40}
+              style={[StyleSheet.absoluteFill, styles.backdropArt]}
+            />
+            <LinearGradient
+              colors={['rgba(3,4,13,0.42)', 'rgba(3,4,13,0.72)', 'rgba(3,4,13,0.9)']}
+              locations={[0, 0.45, 1]}
+              style={StyleSheet.absoluteFill}
+            />
+          </View>
+        ) : null}
         <Animated.ScrollView
           style={styles.scrollView}
           contentContainerStyle={{ paddingBottom: insets.bottom + 56 }}
@@ -168,7 +189,7 @@ export default function SymbolDetailScreen() {
             />
             <LinearGradient
               pointerEvents="none"
-              colors={['rgba(9,4,19,0)', background]}
+              colors={['rgba(9,4,19,0)', mode === 'dark' ? 'rgba(3,4,13,0.42)' : background]}
               style={styles.heroFade}
             />
             <View style={styles.heroCopy}>
@@ -194,18 +215,26 @@ export default function SymbolDetailScreen() {
           <View style={styles.body}>
             {paragraphs.length > 0 ? (
               <Section label={t('symbols.interpretation')} noctalia={noctalia}>
-                <MarkdownText style={[styles.prose, { color: noctalia.text.primary }]}>
-                  {paragraphs.join('\n\n')}
+                {/* The opening paragraph reads as a lead, like the site's summary;
+                    the rest stays a quieter sans so the column has a rhythm. */}
+                <MarkdownText style={[styles.proseLead, { color: noctalia.text.primary }]}>
+                  {paragraphs[0]}
                 </MarkdownText>
+                {paragraphs.length > 1 ? (
+                  <MarkdownText containerStyle={styles.proseRest} style={[styles.prose, { color: noctalia.text.secondary }]}>
+                    {paragraphs.slice(1).join('\n\n')}
+                  </MarkdownText>
+                ) : null}
               </Section>
             ) : null}
 
             {extended?.variations && extended.variations.length > 0 ? (
               <Section label={t('symbols.variations')} noctalia={noctalia}>
-                {extended.variations.map((variation) => (
+                {extended.variations.map((variation, index) => (
                   <VariationRow
                     key={`${variation.context}-${variation.meaning}`}
                     variation={variation}
+                    index={index}
                     noctalia={noctalia}
                   />
                 ))}
@@ -215,10 +244,13 @@ export default function SymbolDetailScreen() {
             {content.askYourself.length > 0 ? (
               <Section label={t('symbols.ask_yourself')} noctalia={noctalia}>
                 {content.askYourself.map((question, index) => (
-                  <View key={`${question}-${index}`} style={styles.askRow}>
-                    <Text style={[styles.askNumber, { color: noctalia.accent.text }]}>
-                      {String(index + 1).padStart(2, '0')}
-                    </Text>
+                  <View
+                    key={`${question}-${index}`}
+                    style={[
+                      styles.askRow,
+                      { borderTopColor: noctalia.surface.border },
+                    ]}
+                  >
                     <MarkdownText
                       selectable
                       containerStyle={{ flex: 1 }}
@@ -233,9 +265,16 @@ export default function SymbolDetailScreen() {
 
             {relatedSymbols.length > 0 ? (
               <Section label={t('symbols.related')} noctalia={noctalia}>
-                {relatedSymbols.map((related) => (
-                  <RelatedRow key={related.id} symbol={related} lang={lang} noctalia={noctalia} />
-                ))}
+                <ScrollView
+                  horizontal
+                  showsHorizontalScrollIndicator={false}
+                  style={styles.relatedScroller}
+                  contentContainerStyle={styles.relatedPosters}
+                >
+                  {relatedSymbols.map((related) => (
+                    <RelatedPoster key={related.id} symbol={related} lang={lang} noctalia={noctalia} />
+                  ))}
+                </ScrollView>
               </Section>
             ) : null}
           </View>
@@ -244,8 +283,14 @@ export default function SymbolDetailScreen() {
         <View pointerEvents="box-none" style={[styles.topBar, { paddingTop: insets.top, height: insets.top + TOP_BAR_HEIGHT }]}>
           <Animated.View
             pointerEvents="none"
-            style={[StyleSheet.absoluteFill, styles.topBarFill, { backgroundColor: background, borderBottomColor: noctalia.surface.border }, barStyle]}
-          />
+            style={[StyleSheet.absoluteFill, barStyle]}
+          >
+            <View style={[StyleSheet.absoluteFill, { backgroundColor: background }]} />
+            <LinearGradient
+              colors={[background, transparentOf(background)]}
+              style={styles.topBarEdge}
+            />
+          </Animated.View>
           <Pressable
             onPress={() => router.back()}
             style={({ pressed }) => [styles.backButton, pressed && styles.pressed]}
@@ -271,51 +316,77 @@ export default function SymbolDetailScreen() {
 
 function Section({ label, noctalia, children }: { label: string; noctalia: Tokens; children: React.ReactNode }) {
   return (
-    <View style={styles.section}>
-      <View style={styles.eyebrowRow}>
-        <View style={[styles.eyebrowRule, { backgroundColor: noctalia.accent.text }]} />
-        <Text accessibilityRole="header" style={[styles.eyebrow, { color: noctalia.accent.text }]}>
-          {label}
-        </Text>
-      </View>
+    <View style={[styles.section, { borderTopColor: noctalia.surface.border }]}>
+      <View style={[styles.sectionMark, { backgroundColor: noctalia.accent.text }]} />
+      <Text accessibilityRole="header" style={[styles.sectionTitle, { color: noctalia.text.primary }]}>
+        {label}
+      </Text>
       {children}
     </View>
   );
 }
 
-function VariationRow({ variation, noctalia }: { variation: SymbolVariation; noctalia: Tokens }) {
+function VariationRow({ variation, index, noctalia }: {
+  variation: SymbolVariation; index: number; noctalia: Tokens;
+}) {
   return (
-    <View style={[styles.variationRow, { borderTopColor: noctalia.surface.border }]}>
-      <Text selectable style={[styles.variationContext, { color: noctalia.text.primary }]}>
-        {variation.context}
+    <View
+      style={[
+        styles.variationRow,
+        { borderTopColor: noctalia.surface.border },
+      ]}
+    >
+      <Text style={[styles.variationNumber, { color: noctalia.accent.text }]}>
+        {String(index + 1).padStart(2, '0')}
       </Text>
-      <MarkdownText selectable style={[styles.variationMeaning, { color: noctalia.text.secondary }]}>
-        {variation.meaning}
-      </MarkdownText>
+      <View style={styles.variationCopy}>
+        <Text selectable style={[styles.variationContext, { color: noctalia.text.primary }]}>
+          {variation.context}
+        </Text>
+        <MarkdownText selectable style={[styles.variationMeaning, { color: noctalia.text.secondary }]}>
+          {variation.meaning}
+        </MarkdownText>
+      </View>
     </View>
   );
 }
 
-function RelatedRow({ symbol, lang, noctalia }: { symbol: DreamSymbol; lang: SymbolLanguage; noctalia: Tokens }) {
+function RelatedPoster({ symbol, lang, noctalia }: { symbol: DreamSymbol; lang: SymbolLanguage; noctalia: Tokens }) {
   const content = symbol[lang] ?? symbol.en;
   const illustration = getSymbolIllustration(symbol.id);
+  // Large text widens the poster so a long single word never breaks mid-word.
+  const { fontScale } = useWindowDimensions();
+  const posterWidth = Math.round(140 * Math.min(Math.max(fontScale, 1), 1.5));
   return (
     <Pressable
       onPress={() => router.replace(`/symbol-detail/${symbol.id}` as any)}
       accessibilityRole="button"
       accessibilityLabel={content.name}
-      style={({ pressed }) => [styles.relatedRow, { borderTopColor: noctalia.surface.border }, pressed && styles.pressed]}
+      style={({ pressed }) => [
+        styles.poster,
+        { width: posterWidth },
+        { backgroundColor: noctalia.surface.soft, borderColor: noctalia.surface.border },
+        pressed && styles.posterPressed,
+      ]}
     >
-      <View style={[styles.relatedThumb, { backgroundColor: noctalia.surface.soft }]}>
-        {illustration ? <Image source={illustration} contentFit="cover" style={StyleSheet.absoluteFill} /> : null}
-      </View>
-      <View style={styles.relatedCopy}>
-        <Text style={[styles.relatedName, { color: noctalia.text.primary }]}>{content.name}</Text>
-        <Text style={[styles.relatedCategory, { color: noctalia.text.tertiary }]}>
-          {getCategoryName(symbol.category, lang)}
-        </Text>
-      </View>
-      <IconSymbol name="arrow.right" size={16} color={noctalia.accent.text} />
+      {illustration ? <Image source={illustration} contentFit="cover" style={StyleSheet.absoluteFill} /> : null}
+      <LinearGradient
+        pointerEvents="none"
+        colors={['rgba(9,4,19,0)', 'rgba(9,4,19,0.88)']}
+        locations={[0.35, 1]}
+        style={StyleSheet.absoluteFill}
+      />
+      <Text style={[styles.posterCategory, { color: HERO_TOKENS.accent.text }]} numberOfLines={1}>
+        {getCategoryName(symbol.category, lang)}
+      </Text>
+      <Text
+        style={[styles.posterName, { color: HERO_TOKENS.text.primary }]}
+        numberOfLines={2}
+        adjustsFontSizeToFit
+        minimumFontScale={0.8}
+      >
+        {content.name}
+      </Text>
     </Pressable>
   );
 }
@@ -358,37 +429,28 @@ const styles = StyleSheet.create({
     textShadowOffset: { width: 0, height: 2 },
     textShadowRadius: 18,
   },
-  lede: { fontFamily: Fonts.spaceGrotesk.regular, fontSize: 16, lineHeight: 24 },
-  body: { paddingHorizontal: 24, paddingTop: 12, gap: 44 },
-  section: { gap: 4 },
-  eyebrowRow: { flexDirection: 'row', alignItems: 'center', gap: 10, marginBottom: 14 },
-  eyebrowRule: { width: 22, height: 1 },
-  eyebrow: {
-    fontFamily: Fonts.spaceGrotesk.medium,
-    fontSize: 12,
-    lineHeight: 16,
-    letterSpacing: 2,
-    textTransform: 'uppercase',
-  },
-  prose: { fontFamily: Fonts.lora.regular, fontSize: 17, lineHeight: 28 },
-  variationRow: { borderTopWidth: StyleSheet.hairlineWidth, paddingVertical: 16, gap: 6 },
-  variationContext: { fontFamily: Fonts.fraunces.medium, fontSize: 19, lineHeight: 25 },
-  variationMeaning: { fontFamily: Fonts.spaceGrotesk.regular, fontSize: 15, lineHeight: 23 },
-  askRow: { flexDirection: 'row', alignItems: 'flex-start', gap: 16, paddingVertical: 10 },
-  askNumber: { fontFamily: Fonts.fraunces.medium, fontSize: 20, lineHeight: 28, fontVariant: ['tabular-nums'] },
-  askText: { flex: 1, fontFamily: Fonts.lora.regularItalic, fontSize: 17, lineHeight: 27 },
-  relatedRow: {
-    minHeight: 76,
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 14,
-    paddingVertical: 12,
-    borderTopWidth: StyleSheet.hairlineWidth,
-  },
-  relatedThumb: { width: 52, height: 52, borderRadius: 10, borderCurve: 'continuous', overflow: 'hidden' },
-  relatedCopy: { flex: 1, gap: 2 },
-  relatedName: { fontFamily: Fonts.fraunces.medium, fontSize: 18, lineHeight: 24 },
-  relatedCategory: { fontFamily: Fonts.spaceGrotesk.regular, fontSize: 13, lineHeight: 18 },
+  lede: { fontFamily: Fonts.fraunces.regular, fontSize: 18, lineHeight: 27 },
+  body: { paddingHorizontal: 24, paddingTop: 8 },
+  backdropArt: { opacity: 0.75, transform: [{ scale: 1.2 }] },
+  section: { borderTopWidth: StyleSheet.hairlineWidth, paddingTop: 30, marginTop: 34 },
+  sectionMark: { width: 28, height: 2, borderRadius: 1, marginBottom: 14 },
+  sectionTitle: { fontFamily: Fonts.fraunces.semiBold, fontSize: 25, lineHeight: 30, letterSpacing: -0.2, marginBottom: 18 },
+  proseLead: { fontFamily: Fonts.fraunces.regular, fontSize: 19, lineHeight: 30 },
+  proseRest: { marginTop: 18 },
+  prose: { fontFamily: Fonts.spaceGrotesk.regular, fontSize: 16, lineHeight: 28 },
+  variationRow: { flexDirection: 'row', gap: 16, borderTopWidth: StyleSheet.hairlineWidth, paddingVertical: 18 },
+  variationNumber: { width: 26, paddingTop: 4, fontFamily: Fonts.spaceGrotesk.medium, fontSize: 12, lineHeight: 16, letterSpacing: 1.6, opacity: 0.8 },
+  variationCopy: { flex: 1, gap: 6 },
+  variationContext: { fontFamily: Fonts.fraunces.semiBold, fontSize: 18, lineHeight: 24 },
+  variationMeaning: { fontFamily: Fonts.spaceGrotesk.regular, fontSize: 15, lineHeight: 25 },
+  askRow: { borderTopWidth: StyleSheet.hairlineWidth, paddingVertical: 16 },
+  askText: { fontFamily: Fonts.fraunces.regular, fontSize: 18, lineHeight: 27 },
+  relatedScroller: { marginHorizontal: -24 },
+  relatedPosters: { gap: 12, paddingHorizontal: 24 },
+  poster: { width: 140, height: 184, borderRadius: 16, borderCurve: 'continuous', borderWidth: StyleSheet.hairlineWidth, overflow: 'hidden', justifyContent: 'flex-end', padding: 12, gap: 4 },
+  posterPressed: { opacity: 0.85, transform: [{ scale: 0.97 }] },
+  posterCategory: { fontFamily: Fonts.spaceGrotesk.medium, fontSize: 10, lineHeight: 13, letterSpacing: 1.6, textTransform: 'uppercase' },
+  posterName: { fontFamily: Fonts.fraunces.medium, fontSize: 18, lineHeight: 22 },
   topBar: {
     position: 'absolute',
     top: 0,
@@ -399,7 +461,7 @@ const styles = StyleSheet.create({
     gap: 8,
     paddingHorizontal: 12,
   },
-  topBarFill: { borderBottomWidth: StyleSheet.hairlineWidth },
+  topBarEdge: { position: 'absolute', left: 0, right: 0, bottom: -28, height: 28 },
   backButton: {
     width: 44,
     height: 44,
@@ -410,6 +472,6 @@ const styles = StyleSheet.create({
     borderWidth: StyleSheet.hairlineWidth,
     borderColor: 'rgba(255,247,237,0.28)',
   },
-  barTitle: { flex: 1, fontFamily: Fonts.fraunces.medium, fontSize: 18, lineHeight: 24, paddingRight: 44, textAlign: 'center' },
+  barTitle: { flex: 1, fontFamily: Fonts.fraunces.semiBold, fontSize: 19, lineHeight: 24, paddingRight: 12 },
   pressed: { opacity: 0.72 },
 });
