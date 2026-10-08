@@ -21,7 +21,7 @@ async function populatedJournal(page: Page) {
   // Select the canonical mock persona through the existing desktop QA entry.
   await page.setViewportSize({ width: 1440, height: 1000 });
   await startGuest(page);
-  await page.getByTestId('btn.recording.home').click();
+  await page.getByTestId('btn.recording.home').or(page.getByTestId('tab.home')).filter({ visible: true }).click();
   await page.getByTestId('btn.header.home.settings').click();
   await page.getByTestId('quick-settings.all').click();
   await page.getByTestId('settings-account-open-signin').click();

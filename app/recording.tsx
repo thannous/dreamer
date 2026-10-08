@@ -1166,13 +1166,6 @@ export default function RecordingScreen() {
   const isDesktopWeb = Platform.OS === 'web' && viewportWidth >= DESKTOP_BREAKPOINT;
   const chatMode = inputMode === 'voice' && !editableCapture;
   const chatLayout = chatMode && !isCompactLandscape;
-  const closeRecording = useCallback(() => {
-    if (router.canGoBack()) {
-      router.back();
-      return;
-    }
-    router.replace('/(tabs)');
-  }, []);
   const openReviewExit = useCallback(() => {
     if (!captureReview || interactionDisabled || leavingReviewRef.current) return;
     Keyboard.dismiss();
@@ -1712,9 +1705,12 @@ export default function RecordingScreen() {
           end={{ x: 1, y: 1 }}
           style={StyleSheet.absoluteFill}
         />
-        {isDesktopWeb ? (
+        {/* The desktop sidebar leads everywhere. Keep a back control only
+            while a capture review is open, so leaving still offers to keep or
+            discard that review. */}
+        {isDesktopWeb && captureReview ? (
           <Pressable
-            onPress={captureReview ? openReviewExit : closeRecording}
+            onPress={openReviewExit}
             style={[
               styles.desktopCloseButton,
               {

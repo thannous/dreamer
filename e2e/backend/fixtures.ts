@@ -33,7 +33,7 @@ export async function login(page: Page, account: Account) {
   await expect(page.getByTestId('screen.recording')).toBeVisible();
   // Continue from the completed onboarding. Reloading here races its async
   // release-notes acknowledgement and can create a modal absent on first launch.
-  await page.getByTestId('btn.recording.home').click();
+  await page.getByTestId('btn.recording.home').or(page.getByTestId('tab.home')).filter({ visible: true }).click();
   await page.getByTestId('btn.header.home.settings').click();
   await page.getByTestId('quick-settings.all').click();
   await page.getByTestId('settings-account-open-signin').click();
@@ -41,7 +41,7 @@ export async function login(page: Page, account: Account) {
   await page.getByTestId('input.auth.password').fill(account.password);
   await page.getByTestId('btn.auth.signIn').click();
   await expect(page.getByTestId('screen.recording')).toBeVisible();
-  await page.getByTestId('btn.recording.home').click();
+  await page.getByTestId('btn.recording.home').or(page.getByTestId('tab.home')).filter({ visible: true }).click();
   await page.getByTestId('btn.header.home.settings').click();
   await page.getByTestId('quick-settings.all').click();
   await expect(page.getByTestId('text.auth.email')).toContainText(account.email);
