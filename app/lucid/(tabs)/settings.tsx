@@ -19,6 +19,7 @@ import { useAuth } from '@/context/AuthContext';
 import { useLucidTrainer } from '@/context/LucidTrainerContext';
 import { useTheme } from '@/context/ThemeContext';
 import { isLucidLocalTime } from '@/lib/lucid/model';
+import { LUCID_PLUS_SALES_ENABLED } from '@/lib/lucid/plusEntitlements';
 import type {
   LucidAccessibilityPreferences,
   LucidExperienceLevel,
@@ -587,12 +588,14 @@ export default function LucidSettingsScreen() {
     icon: keyof typeof Ionicons.glyphMap;
     route: string;
   }[] = [
-    { label: copy.plan, icon: 'diamond', route: '/lucid/subscription' },
+    ...(LUCID_PLUS_SALES_ENABLED
+      ? [{ label: copy.plan, icon: 'diamond' as const, route: '/lucid/subscription' }]
+      : []),
     { label: copy.permissions, icon: 'notifications', route: '/lucid/permissions' },
     { label: copy.science, icon: 'flask', route: '/lucid/science' },
     { label: copy.privacy, icon: 'shield-checkmark', route: '/lucid/privacy' },
     { label: copy.data, icon: 'folder-open', route: '/lucid/data' },
-    { label: copy.sleepImport, icon: 'moon', route: '/lucid/sleep-integration' },
+    // Apple Health sleep import stays out of v1 until it is validated on a real iPhone.
     { label: copy.help, icon: 'help-circle', route: '/lucid/help' },
     { label: copy.about, icon: 'information-circle', route: '/lucid/about' },
   ];
