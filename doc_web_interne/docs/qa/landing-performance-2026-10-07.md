@@ -91,3 +91,67 @@ npm run docs:build
 node scripts/site-performance/serve-compressed.cjs docs 8530
 LAB_TOOLS=/tmp/landing-lab CHROME_PATH=<chrome> node scripts/site-performance/landing-lab.mjs /tmp/landing-evidence 5
 ```
+
+## Story polish — 2026-10-08
+
+Requested after the performance pass: polish the landing without a redesign,
+remove what repeats and strengthen the story after the dream journey.
+
+Diagnosis: after the star map the page said "voice, analysis, patterns"
+three times (waking, steps, features), each with screenshots of an older app
+UI (English on every locale), and the remembering chapter came after the
+resources. Changes:
+
+- Order after the journey: waking (the three steps), remembering, who it is
+  for, symbols and tool links, plans, FAQ, ending. The waking and features
+  sections are removed; step 1 now carries the waking label and a live
+  capture screen (waveform, timer, transcript written word by word).
+- Current app screens (French on `/fr/`, English elsewhere) for steps 2 and 3
+  and the ending, which now opens onto the journal.
+- Plus price line sized as a statement; the landing footer no longer squeezes
+  the brand column below 1100 px.
+- Unchanged: title, meta, canonical, structured data (FAQ text included),
+  H1, internal links, the `#how-it-works` anchors, analytics events.
+
+A `max-width: 16ch` on the price line measured as +130 ms TBT on mobile:
+most likely because a glyph-relative unit makes Chrome restyle the page on each web-font
+load. Bisected by swapping single CSS hunks in an interleaved A/B; it now
+uses `rem`.
+
+| Five-run medians, local build | Before polish (01030c9) | After polish |
+| --- | --- | --- |
+| Mobile score `/`, `/fr/` | 95, 95 | 95, 95 |
+| Mobile TBT `/`, `/fr/` | 46, 52 ms | 41, 33 ms |
+| Mobile LCP | 2.41 s | 2.41 s |
+| Desktop score, LCP | 97, 0.60 s | 98, 0.59 s |
+
+The page loads the same resources before and after (about 770 KB on mobile
+when compared run for run); the new screenshots are lazy and below the fold.
+
+Interleaved A/B on `/fr/` (same machine, same session): mobile TBT 35 → 18 ms,
+style and layout 1.58 → 1.44 s; desktop TBT 0 → 0 ms.
+
+Journey check: light and full tiers play the intro and the WebM loop, reveal
+the headline and dreams, play the ending on desktop, with no page, console or
+request errors. Screens checked at 1440×900 and 390×844 for `fr`, `de` and
+`pt-br`. Not covered: physical devices and Safari.
+
+## Journey heading and redundancy pass — 2026-10-08
+
+Reported on a phone: the analysis card covered the bottom of "Comprends leur
+sens". Measured in the light tier, the settled card overlapped the heading by
+5–50 px at 360–414 px widths in all six languages: the card used a fixed
+`top` while the heading height varies with language and wrapping. The card is
+now placed from the heading's measured height (`--oh-journey-title-height`);
+the gap is 16 px on phones and 24 px on desktop at 360×640, 375×667, 390×664,
+390×844, 414×736, 768×1024, 1280×600 and 1440×900, with the card inside the
+viewport each time.
+
+Redundant copy removed in all six languages: the "Pour les matins comme
+ceux-là" profiles (each card repeated voice capture, the journal or the
+recurring image already shown), the Plus description that repeated the Google
+Play note under the plans, and the tools lede that listed the four cards below
+it. Phones show the five latest journal rows instead of all ten titles a third
+time. Symbol links, tool links, FAQ, titles and structured data are unchanged.
+`docs:build` and `docs:check` pass; the journey check reports no errors in the
+light and full tiers. Not covered: physical devices and Safari.

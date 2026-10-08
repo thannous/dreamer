@@ -453,35 +453,11 @@
         <p class="oh-starmap-stat reveal"><span>Casa compare in 3 sogni su 10.</span> <a href="#esplora-strumenti-noctalia">Esplora cosa potrebbe significare <span aria-hidden="true">→</span></a></p>
     </section>
 
-    <!-- 1c. Waking: speak it before it fades -->
-    <section class="oh-section oh-waking" data-chapter="waking">
-        <div class="oh-waking-grid">
-            <div class="oh-waking-copy reveal">
-                <span class="oh-index" aria-hidden="true">03 · Risveglio</span>
-                <h2 class="oh-h2">Il tuo sogno, scritto o a voce</h2>
-                <p class="oh-lede">Noctalia ti aiuta a scriverlo.</p>
-                <div class="oh-rec glass-panel" aria-hidden="true">
-                    <p class="oh-rec-head"><span class="oh-rec-dot"></span>Registrazione<span class="oh-rec-time">00:14</span></p>
-                    <div class="oh-rec-wave"><span style="--h:22"></span><span style="--h:40"></span><span style="--h:64"></span><span style="--h:38"></span><span style="--h:80"></span><span style="--h:52"></span><span style="--h:90"></span><span style="--h:34"></span><span style="--h:60"></span><span style="--h:76"></span><span style="--h:44"></span><span style="--h:96"></span><span style="--h:58"></span><span style="--h:30"></span><span style="--h:70"></span><span style="--h:48"></span><span style="--h:84"></span><span style="--h:36"></span><span style="--h:62"></span><span style="--h:28"></span><span style="--h:74"></span><span style="--h:50"></span><span style="--h:88"></span><span style="--h:42"></span><span style="--h:66"></span><span style="--h:32"></span><span style="--h:56"></span><span style="--h:24"></span></div>
-                    <p class="oh-rec-text">Ero a casa di mia nonna, ma c’era una scala che non avevo mai visto. In cima, una porta blu ronzava.</p>
-                </div>
-            </div>
-            <div class="oh-waking-device reveal">
-                <div class="phone-frame oh-waking-phone">
-                    <picture>
-                        <source type="image/webp" srcset="../img/en/recording-480w.webp 480w, ../img/en/recording-800w.webp 800w" sizes="(min-width: 768px) 320px, 80vw">
-                        <source type="image/jpeg" srcset="../img/en/recording-800w.jpg 800w" sizes="(min-width: 768px) 320px, 80vw">
-                        <img src="../img/en/recording-800w.jpg" alt="Registra il tuo sogno con la voce" class="w-full h-full object-cover" width="800" height="1609" loading="lazy" decoding="async">
-                    </picture>
-                </div>
-            </div>
-        </div>
-    </section>
-
     <!-- 2. How it works (3 steps) -->
     <section id="come-funziona">
         <div class="oh-section-head reveal" data-steps-heading>
             <div>
+                <span class="oh-index" aria-hidden="true">03 · Risveglio</span>
                 <h2 class="oh-h2">Da una scena che svanisce a un racconto da rileggere</h2>
             </div>
             <p class="oh-lede">Prima cattura, finché è ancora vivido. Poi dagli un senso, quando sei ben sveglio.</p>
@@ -493,12 +469,14 @@
                 <span class="oh-step-icon"><i data-lucide="mic"></i></span>
                 <h3>Registra</h3>
                 <p>Di’ quello che resta: un luogo, un volto, una sensazione. A voce o per iscritto; potrai correggere la trascrizione in seguito.</p>
-                <div class="phone-frame" data-phone="record">
-                    <picture>
-                        <source type="image/webp" srcset="../img/en/recording-480w.webp 480w, ../img/en/recording-800w.webp 800w" sizes="(min-width: 768px) 320px, 80vw">
-                        <source type="image/jpeg" srcset="../img/en/recording-800w.jpg 800w" sizes="(min-width: 768px) 320px, 80vw">
-                        <img src="../img/en/recording-800w.jpg" alt="Registra il tuo sogno con la voce" class="w-full h-full object-cover" width="800" height="1609" loading="lazy" decoding="async">
-                    </picture>
+                <div class="phone-frame oh-live-phone" data-phone="record" aria-hidden="true">
+                    <span class="oh-live-status">09:41</span>
+                    <div class="oh-rec">
+                        <p class="oh-rec-head"><span class="oh-rec-dot"></span>Registrazione<span class="oh-rec-time">00:14</span></p>
+                        <div class="oh-rec-wave"><span style="--h:22"></span><span style="--h:40"></span><span style="--h:64"></span><span style="--h:38"></span><span style="--h:80"></span><span style="--h:52"></span><span style="--h:90"></span><span style="--h:34"></span><span style="--h:60"></span><span style="--h:76"></span><span style="--h:44"></span><span style="--h:96"></span><span style="--h:58"></span><span style="--h:30"></span><span style="--h:70"></span><span style="--h:48"></span><span style="--h:84"></span><span style="--h:36"></span><span style="--h:62"></span><span style="--h:28"></span><span style="--h:74"></span><span style="--h:50"></span><span style="--h:88"></span><span style="--h:42"></span><span style="--h:66"></span><span style="--h:32"></span><span style="--h:56"></span><span style="--h:24"></span></div>
+                        <p class="oh-rec-text">Ero a casa di mia nonna, ma c’era una scala che non avevo mai visto. In cima, una porta blu ronzava.</p>
+                    </div>
+                    <span class="oh-live-button"></span>
                 </div>
             </article>
 
@@ -509,9 +487,9 @@
                 <p>Noctalia trascrive il tuo racconto e mette in luce possibili simboli, emozioni e temi che vi ricorrono.</p>
                 <div class="phone-frame" data-phone="analyze">
                     <picture>
-                        <source type="image/webp" srcset="../img/en/analizing-480w.webp 480w, ../img/en/analizing-800w.webp 800w" sizes="(min-width: 768px) 320px, 80vw">
-                        <source type="image/jpeg" srcset="../img/en/analizing-800w.jpg 800w" sizes="(min-width: 768px) 320px, 80vw">
-                        <img src="../img/en/analizing-800w.jpg" alt="Analisi e riepilogo del sogno in Noctalia" class="w-full h-full object-cover" width="800" height="1615" loading="lazy" decoding="async">
+                        <source type="image/webp" srcset="/img/app/en/dream-480w.webp 480w, /img/app/en/dream-800w.webp 800w" sizes="(min-width: 768px) 300px, 78vw">
+                        <source type="image/jpeg" srcset="/img/app/en/dream-800w.jpg 800w" sizes="(min-width: 768px) 300px, 78vw">
+                        <img src="/img/app/en/dream-800w.jpg" alt="Analisi e riepilogo del sogno in Noctalia" class="w-full h-full object-cover" width="800" height="1639" loading="lazy" decoding="async">
                     </picture>
                 </div>
             </article>
@@ -523,106 +501,60 @@
                 <p>Fai domande di approfondimento, verifica quali associazioni si adattano davvero alla tua vita e genera un’immagine se la scena lo merita.</p>
                 <div class="phone-frame" data-phone="explore">
                     <picture>
-                        <source type="image/webp" srcset="../img/en/exploring-480w.webp 480w, ../img/en/exploring-800w.webp 800w" sizes="(min-width: 768px) 320px, 80vw">
-                        <source type="image/jpeg" srcset="../img/en/exploring-800w.jpg 800w" sizes="(min-width: 768px) 320px, 80vw">
-                        <img src="../img/en/exploring-800w.jpg" alt="Esplora intuizioni e simbolismo del tuo sogno" class="w-full h-full object-cover" width="800" height="1659" loading="lazy" decoding="async">
+                        <source type="image/webp" srcset="/img/app/en/chat-480w.webp 480w, /img/app/en/chat-800w.webp 800w" sizes="(min-width: 768px) 300px, 78vw">
+                        <source type="image/jpeg" srcset="/img/app/en/chat-800w.jpg 800w" sizes="(min-width: 768px) 300px, 78vw">
+                        <img src="/img/app/en/chat-800w.jpg" alt="Esplora intuizioni e simbolismo del tuo sogno" class="w-full h-full object-cover" width="800" height="1639" loading="lazy" decoding="async">
                     </picture>
                 </div>
             </article>
         </div>
     </section>
 
-    <!-- 3. What stays with each dream entry (Features) -->
-    <section id="funzionalita">
+    <!-- 4b. Remembering: journal, emotions over time, streak -->
+    <section id="funzionalita" class="oh-section oh-remember" data-chapter="remembering">
         <div class="oh-section-head reveal">
             <div>
-                <h2 class="oh-h2">Ciò che ogni sogno conserva</h2>
+                <span class="oh-index" aria-hidden="true">04 · Ricordare</span>
+                <h2 class="oh-h2">Le tue notti, ricordate</h2>
             </div>
-            <p class="oh-lede">Il racconto originale resta intatto. Tutto il resto è facoltativo, aggiunto solo quando un sogno lo richiede.</p>
+            <p class="oh-lede">Ogni voce entra in un diario che puoi ripercorrere. Con le settimane, Noctalia mostra quali emozioni ritornano, quanto spesso ricordi e quanto dura la tua serie.</p>
         </div>
-
-        <div class="oh-features">
-            <article class="oh-feature oh-feature--a glass-panel reveal">
-                <div class="oh-feature-top">
-                    <span class="oh-feature-num">01 · Dalla voce al testo</span>
-                    <span class="oh-feature-icon"><i data-lucide="mic"></i></span>
-                </div>
-                <div>
-                    <h3>La tua voce, trascritta</h3>
-                    <p>Sussurra una nota prima che il sogno si dissolva. Noctalia la trasforma in testo che puoi correggere: nomi, luoghi, i dettagli che contano.</p>
-                    <div class="oh-feature-media" aria-hidden="true">
-                        <svg width="180" height="36" viewBox="0 0 180 36" fill="none" xmlns="http://www.w3.org/2000/svg">
-                            <rect x="0" y="12" width="3" height="12" rx="1.5" fill="currentColor" opacity="0.45"/>
-                            <rect x="9" y="8" width="3" height="20" rx="1.5" fill="currentColor" opacity="0.7"/>
-                            <rect x="18" y="14" width="3" height="8" rx="1.5" fill="currentColor" opacity="0.4"/>
-                            <rect x="27" y="4" width="3" height="28" rx="1.5" fill="currentColor" opacity="0.85"/>
-                            <rect x="36" y="10" width="3" height="16" rx="1.5" fill="currentColor" opacity="0.6"/>
-                            <rect x="45" y="16" width="3" height="6" rx="1.5" fill="currentColor" opacity="0.35"/>
-                            <rect x="54" y="6" width="3" height="24" rx="1.5" fill="currentColor" opacity="0.75"/>
-                            <rect x="63" y="12" width="3" height="12" rx="1.5" fill="currentColor" opacity="0.5"/>
-                            <rect x="72" y="2" width="3" height="32" rx="1.5" fill="currentColor" opacity="0.9"/>
-                            <rect x="81" y="9" width="3" height="18" rx="1.5" fill="currentColor" opacity="0.6"/>
-                            <rect x="90" y="15" width="3" height="7" rx="1.5" fill="currentColor" opacity="0.4"/>
-                            <rect x="99" y="7" width="3" height="22" rx="1.5" fill="currentColor" opacity="0.7"/>
-                            <rect x="108" y="13" width="3" height="10" rx="1.5" fill="currentColor" opacity="0.45"/>
-                            <rect x="117" y="5" width="3" height="26" rx="1.5" fill="currentColor" opacity="0.8"/>
-                            <rect x="126" y="11" width="3" height="14" rx="1.5" fill="currentColor" opacity="0.55"/>
-                            <rect x="135" y="16" width="3" height="5" rx="1.5" fill="currentColor" opacity="0.35"/>
-                            <rect x="144" y="8" width="3" height="20" rx="1.5" fill="currentColor" opacity="0.65"/>
-                            <rect x="153" y="13" width="3" height="10" rx="1.5" fill="currentColor" opacity="0.45"/>
-                            <rect x="162" y="10" width="3" height="16" rx="1.5" fill="currentColor" opacity="0.55"/>
-                            <rect x="171" y="15" width="3" height="6" rx="1.5" fill="currentColor" opacity="0.35"/>
-                        </svg>
-                    </div>
-                </div>
-            </article>
-
-            <article class="oh-feature oh-feature--b glass-panel reveal">
-                <div class="oh-feature-top">
-                    <span class="oh-feature-num">02</span>
-                    <span class="oh-feature-icon"><i data-lucide="image"></i></span>
-                </div>
-                <div>
-                    <h3>Un’immagine della scena</h3>
-                    <p>Genera un’immagine per un sogno che vuoi rivedere.</p>
-                </div>
-            </article>
-
-            <article class="oh-feature oh-feature--c glass-panel reveal">
-                <div class="oh-feature-top">
-                    <span class="oh-feature-num">03</span>
-                    <span class="oh-feature-icon"><i data-lucide="brain-circuit"></i></span>
-                </div>
-                <div>
-                    <h3>Riflessione guidata</h3>
-                    <ul>
-                        <li><span><strong>Sintesi:</strong> Il sogno, condensato in un breve riassunto.</span></li>
-                        <li><span><strong>Simboli:</strong> Associazioni possibili da confrontare con il tuo contesto.</span></li>
-                        <li><span><strong>Domande di approfondimento:</strong> Continua a interrogare il tuo sogno.</span></li>
+        <div class="oh-remember-grid">
+            <div class="oh-journal glass-panel reveal">
+                <h3 class="oh-remember-h3">Diario</h3>
+                <ol class="oh-timeline">
+                        <li class="oh-timeline-item"><time>23 set</time><span class="oh-timeline-title">La scala che non c’era</span><span class="oh-emotion" data-emotion="disorientation">Disorientamento</span></li>
+                        <li class="oh-timeline-item"><time>21 set</time><span class="oh-timeline-title">In volo sopra il porto</span><span class="oh-emotion" data-emotion="joy">Gioia</span></li>
+                        <li class="oh-timeline-item"><time>18 set</time><span class="oh-timeline-title">La marea è entrata in cucina</span><span class="oh-emotion" data-emotion="serenity">Serenità</span></li>
+                        <li class="oh-timeline-item"><time>15 set</time><span class="oh-timeline-title">Inseguita in un bosco di porte</span><span class="oh-emotion" data-emotion="fear">Paura</span></li>
+                        <li class="oh-timeline-item"><time>12 set</time><span class="oh-timeline-title">I miei denti erano di vetro</span><span class="oh-emotion" data-emotion="helplessness">Impotenza</span></li>
+                        <li class="oh-timeline-item"><time>9 set</time><span class="oh-timeline-title">L’auto senza autista</span><span class="oh-emotion" data-emotion="urgency">Urgenza</span></li>
+                        <li class="oh-timeline-item"><time>5 set</time><span class="oh-timeline-title">Un gatto che conosceva il mio nome</span><span class="oh-emotion" data-emotion="tenderness">Tenerezza</span></li>
+                        <li class="oh-timeline-item"><time>30 ago</time><span class="oh-timeline-title">Fuoco sul lago ghiacciato</span><span class="oh-emotion" data-emotion="loneliness">Solitudine</span></li>
+                        <li class="oh-timeline-item"><time>24 ago</time><span class="oh-timeline-title">Cadere, poi fluttuare</span><span class="oh-emotion" data-emotion="serenity">Serenità</span></li>
+                        <li class="oh-timeline-item"><time>17 ago</time><span class="oh-timeline-title">La cagnolina che aspettava in stazione</span><span class="oh-emotion" data-emotion="grief">Dolore</span></li>
+                </ol>
+            </div>
+            <div class="oh-remember-side">
+                <figure class="oh-chart glass-panel reveal">
+                    <figcaption class="oh-remember-h3">Emozioni in sei settimane</figcaption>
+                    <svg class="oh-chart-svg" viewBox="0 0 300 140" aria-hidden="true" focusable="false"><g class="oh-chart-grid"><line x1="14" x2="286" y1="14.0" y2="14.0" /><line x1="14" x2="286" y1="42.0" y2="42.0" /><line x1="14" x2="286" y1="70.0" y2="70.0" /><line x1="14" x2="286" y1="98.0" y2="98.0" /><line x1="14" x2="286" y1="126.0" y2="126.0" /></g><g class="oh-chart-line is-fear"><path d="M14.0 58.8 L68.4 36.4 L122.8 58.8 L177.2 81.2 L231.6 81.2 L286.0 103.6" pathLength="1" /><circle cx="14.0" cy="58.8" r="3" style="--i:0" /><circle cx="68.4" cy="36.4" r="3" style="--i:1" /><circle cx="122.8" cy="58.8" r="3" style="--i:2" /><circle cx="177.2" cy="81.2" r="3" style="--i:3" /><circle cx="231.6" cy="81.2" r="3" style="--i:4" /><circle cx="286.0" cy="103.6" r="3" style="--i:5" /></g><g class="oh-chart-line is-serenity"><path d="M14.0 103.6 L68.4 103.6 L122.8 81.2 L177.2 81.2 L231.6 58.8 L286.0 36.4" pathLength="1" /><circle cx="14.0" cy="103.6" r="3" style="--i:0" /><circle cx="68.4" cy="103.6" r="3" style="--i:1" /><circle cx="122.8" cy="81.2" r="3" style="--i:2" /><circle cx="177.2" cy="81.2" r="3" style="--i:3" /><circle cx="231.6" cy="58.8" r="3" style="--i:4" /><circle cx="286.0" cy="36.4" r="3" style="--i:5" /></g></svg>
+                    <p class="oh-sr">Paura: 3 → 4 → 3 → 2 → 2 → 1 · Serenità: 1 → 1 → 2 → 2 → 3 → 4</p>
+                    <div class="oh-chart-axis" aria-hidden="true"><span>6 settimane fa</span><span>Questa settimana</span></div>
+                    <ul class="oh-chart-legend">
+                        <li class="is-fear">Paura</li>
+                        <li class="is-serenity">Serenità</li>
                     </ul>
-                </div>
-            </article>
-
-            <article class="oh-feature oh-feature--d glass-panel reveal">
-                <div class="oh-feature-top">
-                    <span class="oh-feature-num">04</span>
-                    <span class="oh-feature-icon"><i data-lucide="bar-chart-2"></i></span>
-                </div>
-                <div>
-                    <h3>Schemi di notte in notte</h3>
-                    <p>Scopri quali emozioni e temi ritornano da un racconto salvato all’altro.</p>
-                    <div class="oh-feature-media" aria-hidden="true">
-                        <svg width="200" height="72" viewBox="0 0 200 72" fill="none" xmlns="http://www.w3.org/2000/svg">
-                            <rect x="0" y="44" width="24" height="28" rx="2" fill="currentColor" opacity="0.25"/>
-                            <rect x="34" y="30" width="24" height="42" rx="2" fill="currentColor" opacity="0.45"/>
-                            <rect x="68" y="12" width="24" height="60" rx="2" fill="currentColor" opacity="0.7"/>
-                            <rect x="102" y="38" width="24" height="34" rx="2" fill="currentColor" opacity="0.35"/>
-                            <rect x="136" y="22" width="24" height="50" rx="2" fill="currentColor" opacity="0.55"/>
-                            <rect x="170" y="48" width="24" height="24" rx="2" fill="currentColor" opacity="0.25"/>
-                        </svg>
+                </figure>
+                <div class="oh-streak glass-panel reveal">
+                    <div class="oh-streak-stats">
+                        <p><span class="oh-streak-num">6</span> <span class="oh-streak-unit">notti</span><span class="oh-streak-label">Serie attuale</span></p>
+                        <p><span class="oh-streak-num">9</span> <span class="oh-streak-unit">notti</span><span class="oh-streak-label">Serie più lunga</span></p>
                     </div>
+                    <div class="oh-regularity" aria-hidden="true"><span class="is-on"></span><span class="is-on"></span><span class=""></span><span class="is-on"></span><span class="is-on"></span><span class=""></span><span class="is-on"></span><span class="is-on"></span><span class="is-on"></span><span class="is-on"></span><span class="is-on"></span><span class="is-on"></span><span class="is-on"></span><span class="is-on"></span><span class="is-on"></span><span class="is-on"></span><span class=""></span><span class="is-on"></span><span class="is-on"></span><span class=""></span><span class="is-on"></span><span class=""></span><span class="is-on"></span><span class=""></span><span class="is-on"></span><span class="is-on"></span><span class=""></span><span class="is-on"></span><span class=""></span><span class="is-on"></span><span class="is-on"></span><span class="is-on"></span><span class="is-on"></span><span class="is-on"></span><span class="is-on"></span></div>
+                    <p class="oh-regularity-caption">Mattine con un sogno registrato, ultime cinque settimane · 27/35</p>
                 </div>
-            </article>
+            </div>
         </div>
     </section>
 
@@ -716,7 +648,6 @@
             <div>
                 <h2 id="esplora-strumenti-noctalia" class="oh-h2">Trova il tuo punto di partenza</h2>
             </div>
-            <p class="oh-lede">Parti da dove sei: registrare più in fretta, riflettere con una guida, cercare un simbolo o confrontare le app per il diario dei sogni.</p>
         </div>
         <div class="oh-tools">
             <a href="/it/diario-dei-sogni-vocale" class="oh-tool glass-panel reveal">
@@ -750,80 +681,6 @@
         </div>
     </section>
 
-    <!-- 4b. Remembering: journal, emotions over time, streak -->
-    <section class="oh-section oh-remember" data-chapter="remembering">
-        <div class="oh-section-head reveal">
-            <div>
-                <span class="oh-index" aria-hidden="true">04 · Ricordare</span>
-                <h2 class="oh-h2">Le tue notti, ricordate</h2>
-            </div>
-            <p class="oh-lede">Ogni voce entra in un diario che puoi ripercorrere. Con le settimane, Noctalia mostra quali emozioni ritornano, quanto spesso ricordi e quanto dura la tua serie.</p>
-        </div>
-        <div class="oh-remember-grid">
-            <div class="oh-journal glass-panel reveal">
-                <h3 class="oh-remember-h3">Diario</h3>
-                <ol class="oh-timeline">
-                        <li class="oh-timeline-item"><time>23 set</time><span class="oh-timeline-title">La scala che non c’era</span><span class="oh-emotion" data-emotion="disorientation">Disorientamento</span></li>
-                        <li class="oh-timeline-item"><time>21 set</time><span class="oh-timeline-title">In volo sopra il porto</span><span class="oh-emotion" data-emotion="joy">Gioia</span></li>
-                        <li class="oh-timeline-item"><time>18 set</time><span class="oh-timeline-title">La marea è entrata in cucina</span><span class="oh-emotion" data-emotion="serenity">Serenità</span></li>
-                        <li class="oh-timeline-item"><time>15 set</time><span class="oh-timeline-title">Inseguita in un bosco di porte</span><span class="oh-emotion" data-emotion="fear">Paura</span></li>
-                        <li class="oh-timeline-item"><time>12 set</time><span class="oh-timeline-title">I miei denti erano di vetro</span><span class="oh-emotion" data-emotion="helplessness">Impotenza</span></li>
-                        <li class="oh-timeline-item"><time>9 set</time><span class="oh-timeline-title">L’auto senza autista</span><span class="oh-emotion" data-emotion="urgency">Urgenza</span></li>
-                        <li class="oh-timeline-item"><time>5 set</time><span class="oh-timeline-title">Un gatto che conosceva il mio nome</span><span class="oh-emotion" data-emotion="tenderness">Tenerezza</span></li>
-                        <li class="oh-timeline-item"><time>30 ago</time><span class="oh-timeline-title">Fuoco sul lago ghiacciato</span><span class="oh-emotion" data-emotion="loneliness">Solitudine</span></li>
-                        <li class="oh-timeline-item"><time>24 ago</time><span class="oh-timeline-title">Cadere, poi fluttuare</span><span class="oh-emotion" data-emotion="serenity">Serenità</span></li>
-                        <li class="oh-timeline-item"><time>17 ago</time><span class="oh-timeline-title">La cagnolina che aspettava in stazione</span><span class="oh-emotion" data-emotion="grief">Dolore</span></li>
-                </ol>
-            </div>
-            <div class="oh-remember-side">
-                <figure class="oh-chart glass-panel reveal">
-                    <figcaption class="oh-remember-h3">Emozioni in sei settimane</figcaption>
-                    <svg class="oh-chart-svg" viewBox="0 0 300 140" aria-hidden="true" focusable="false"><g class="oh-chart-grid"><line x1="14" x2="286" y1="14.0" y2="14.0" /><line x1="14" x2="286" y1="42.0" y2="42.0" /><line x1="14" x2="286" y1="70.0" y2="70.0" /><line x1="14" x2="286" y1="98.0" y2="98.0" /><line x1="14" x2="286" y1="126.0" y2="126.0" /></g><g class="oh-chart-line is-fear"><path d="M14.0 58.8 L68.4 36.4 L122.8 58.8 L177.2 81.2 L231.6 81.2 L286.0 103.6" pathLength="1" /><circle cx="14.0" cy="58.8" r="3" style="--i:0" /><circle cx="68.4" cy="36.4" r="3" style="--i:1" /><circle cx="122.8" cy="58.8" r="3" style="--i:2" /><circle cx="177.2" cy="81.2" r="3" style="--i:3" /><circle cx="231.6" cy="81.2" r="3" style="--i:4" /><circle cx="286.0" cy="103.6" r="3" style="--i:5" /></g><g class="oh-chart-line is-serenity"><path d="M14.0 103.6 L68.4 103.6 L122.8 81.2 L177.2 81.2 L231.6 58.8 L286.0 36.4" pathLength="1" /><circle cx="14.0" cy="103.6" r="3" style="--i:0" /><circle cx="68.4" cy="103.6" r="3" style="--i:1" /><circle cx="122.8" cy="81.2" r="3" style="--i:2" /><circle cx="177.2" cy="81.2" r="3" style="--i:3" /><circle cx="231.6" cy="58.8" r="3" style="--i:4" /><circle cx="286.0" cy="36.4" r="3" style="--i:5" /></g></svg>
-                    <p class="oh-sr">Paura: 3 → 4 → 3 → 2 → 2 → 1 · Serenità: 1 → 1 → 2 → 2 → 3 → 4</p>
-                    <div class="oh-chart-axis" aria-hidden="true"><span>6 settimane fa</span><span>Questa settimana</span></div>
-                    <ul class="oh-chart-legend">
-                        <li class="is-fear">Paura</li>
-                        <li class="is-serenity">Serenità</li>
-                    </ul>
-                </figure>
-                <div class="oh-streak glass-panel reveal">
-                    <div class="oh-streak-stats">
-                        <p><span class="oh-streak-num">6</span> <span class="oh-streak-unit">notti</span><span class="oh-streak-label">Serie attuale</span></p>
-                        <p><span class="oh-streak-num">9</span> <span class="oh-streak-unit">notti</span><span class="oh-streak-label">Serie più lunga</span></p>
-                    </div>
-                    <div class="oh-regularity" aria-hidden="true"><span class="is-on"></span><span class="is-on"></span><span class=""></span><span class="is-on"></span><span class="is-on"></span><span class=""></span><span class="is-on"></span><span class="is-on"></span><span class="is-on"></span><span class="is-on"></span><span class="is-on"></span><span class="is-on"></span><span class="is-on"></span><span class="is-on"></span><span class="is-on"></span><span class="is-on"></span><span class=""></span><span class="is-on"></span><span class="is-on"></span><span class=""></span><span class="is-on"></span><span class=""></span><span class="is-on"></span><span class=""></span><span class="is-on"></span><span class="is-on"></span><span class=""></span><span class="is-on"></span><span class=""></span><span class="is-on"></span><span class="is-on"></span><span class="is-on"></span><span class="is-on"></span><span class="is-on"></span><span class="is-on"></span></div>
-                    <p class="oh-regularity-caption">Mattine con un sogno registrato, ultime cinque settimane · 27/35</p>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- 5. Who is it for? (Profiles) -->
-    <section class="oh-section">
-        <div class="oh-section-head reveal">
-            <div>
-                <h2 class="oh-h2">Per mattine come queste</h2>
-            </div>
-        </div>
-        <div class="oh-profiles">
-            <div class="oh-profile reveal">
-                <span class="oh-profile-icon"><i data-lucide="search"></i></span>
-                <h3>I tuoi sogni svaniscono prima della colazione</h3>
-                <p>Trenta secondi di voce sono più semplici di un testo curato quando sei ancora mezzo addormentato.</p>
-            </div>
-            <div class="oh-profile reveal">
-                <span class="oh-profile-icon"><i data-lucide="feather"></i></span>
-                <h3>Tieni già un diario</h3>
-                <p>I sogni trovano posto accanto alle persone, alle domande e alle emozioni di cui scrivi già.</p>
-            </div>
-            <div class="oh-profile reveal">
-                <span class="oh-profile-icon"><i data-lucide="moon"></i></span>
-                <h3>Un’immagine continua a tornare</h3>
-                <p>I racconti salvati ti permettono di confrontare la scena — e ciò che hai provato — ogni volta che ritorna.</p>
-            </div>
-        </div>
-    </section>
-
     <!-- 6. Pricing / Plans -->
     <section class="oh-section">
         <div class="oh-pricing-head reveal">
@@ -851,7 +708,6 @@
                     <span class="oh-plan-tag">Piano a pagamento</span>
                     <h3>Noctalia Plus</h3>
                     <div class="oh-plan-price">Prezzo indicato su Google Play</div>
-                    <p class="oh-plan-desc">Google Play mostra l’opzione mensile o annuale disponibile per il tuo paese e il tuo account.</p>
                 </div>
                 <ul>
                     <li>Analisi dei sogni e immagini illimitate</li>
@@ -894,9 +750,9 @@
         <div class="oh-ending-portal reveal">
             <div class="phone-frame oh-ending-phone">
                     <picture>
-                        <source type="image/webp" srcset="../img/en/recording-480w.webp 480w, ../img/en/recording-800w.webp 800w" sizes="(min-width: 768px) 320px, 80vw">
-                        <source type="image/jpeg" srcset="../img/en/recording-800w.jpg 800w" sizes="(min-width: 768px) 320px, 80vw">
-                        <img src="../img/en/recording-800w.jpg" alt="Registra il tuo sogno con la voce" class="w-full h-full object-cover" width="800" height="1609" loading="lazy" decoding="async">
+                        <source type="image/webp" srcset="/img/app/en/journal-480w.webp 480w, /img/app/en/journal-800w.webp 800w" sizes="(min-width: 768px) 300px, 78vw">
+                        <source type="image/jpeg" srcset="/img/app/en/journal-800w.jpg 800w" sizes="(min-width: 768px) 300px, 78vw">
+                        <img src="/img/app/en/journal-800w.jpg" alt="Il diario dei sogni di Noctalia" class="w-full h-full object-cover" width="800" height="1639" loading="lazy" decoding="async">
                     </picture>
                 </div>
         </div>
