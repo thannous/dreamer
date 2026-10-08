@@ -39,7 +39,7 @@ import { useDreamShareComposite } from '@/hooks/useDreamShareComposite';
 import { useLocaleFormatting } from '@/hooks/useLocaleFormatting';
 import { useQuota } from '@/hooks/useQuota';
 import { useTranslation } from '@/hooks/useTranslation';
-import { requestAiConsent } from '@/lib/aiConsent';
+import { hasAiConsent, requestAiConsent } from '@/lib/aiConsent';
 import { blurActiveElement } from '@/lib/accessibility';
 import { buildFirstValueProperties } from '@/lib/activationAnalytics';
 import { trackProductEvent } from '@/lib/analytics';
@@ -391,6 +391,8 @@ const JournalDetailContent = memo(function JournalDetailContent({ dream }: { dre
   const recoverMetadata = useCallback(async () => {
     if (!dream || !needsMetadataRecovery || isInitialDreamCategorizationPending(getDreamIdentityKey(dream))
       || metadataRecoveryInFlightRef.current) return;
+    // Metadata recovery sends the dream text to the AI provider.
+    if (!(await requestAiConsent(t))) return;
     metadataRecoveryInFlightRef.current = true;
     setIsRecoveringMetadata(true);
     setMetadataRecoveryFailed(false);
@@ -404,7 +406,7 @@ const JournalDetailContent = memo(function JournalDetailContent({ dream }: { dre
       metadataRecoveryInFlightRef.current = false;
       setIsRecoveringMetadata(false);
     }
-  }, [applyDreamCategorization, dream, language, needsMetadataRecovery]);
+  }, [applyDreamCategorization, dream, language, needsMetadataRecovery, t]);
   const handleImageUpgrade = useCallback(() => {
     router.push(buildPaywallHref('image_generation'));
   }, []);
@@ -584,6 +586,12 @@ const JournalDetailContent = memo(function JournalDetailContent({ dream }: { dre
 
     (async () => {
       try {
+        // Subject detection sends dream text to Gemini: skip while consent is missing.
+        if (!(await hasAiConsent())) {
+          hasBackfilledSubjectRef.current = false;
+          return;
+        }
+        if (cancelled) return;
         const result = await categorizeDream(dream.transcript, language);
         if (!cancelled && (result.hasPerson !== undefined || result.hasAnimal !== undefined)) {
           await updateDream({
@@ -1043,6 +1051,7 @@ const JournalDetailContent = memo(function JournalDetailContent({ dream }: { dre
 
   const handleGenerateWithReference = useCallback(async () => {
     if (!dream || referenceImages.length === 0 || !canUseReference) return;
+    if (!(await requestAiConsent(t))) return;
 
     setShowReferenceSheet(false);
     setIsGeneratingWithReference(true);
@@ -1288,6 +1297,7 @@ const JournalDetailContent = memo(function JournalDetailContent({ dream }: { dre
       setImageErrorMessage(t('journal.detail.image.quota_exceeded_message'));
       return;
     }
+    if (!(await requestAiConsent(t))) return;
 
     setIsRetryingImage(true);
     try {

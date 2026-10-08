@@ -47,6 +47,7 @@ import { isMockModeEnabled } from '@/lib/env';
 import { DreamPersistenceError } from '@/lib/dreamStorageRead';
 import { getDreamIdentityKey } from '@/lib/dreamIdentity';
 import { GuestDreamLimitError } from '@/lib/errors';
+import { hasAiConsent } from '@/lib/aiConsent';
 import { trackInitialDreamCategorization } from '@/lib/initialDreamCategorization';
 import { getTranscriptionLocale } from '@/lib/locale';
 import { createScopedLogger } from '@/lib/logger';
@@ -1069,6 +1070,8 @@ export default function RecordingScreen() {
       clearAfterSuccessfulSave();
       setDraftDream(savedDream);
       void trackInitialDreamCategorization(getDreamIdentityKey(savedDream), async () => {
+        // Categorization sends dream text to Gemini: skip while AI consent is missing.
+        if (!(await hasAiConsent())) return;
         const categorization = await categorizeDream(latestTranscript, language);
         await applyDreamCategorization(savedDream.id, categorization);
       })
