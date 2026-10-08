@@ -84,6 +84,8 @@ variantes · exemple de journal fictif · ce que dit la recherche · que faire �
 « Posez-vous la question » concrètes · interprétation complète de 3 à 5 paragraphes ouverts par
 une question en gras · exemple fictif · paragraphe méthode court · variantes en phrases complètes
 · FAQ · meta dédiée de 110 à 160 caractères.
+Le paragraphe méthode est le même texte standard pour toutes les fiches d'une langue. Il doit se
+lire sans ses liens, car l'app affiche ce texte en clair : pas de « voir notre méthodologie ».
 
 **Guide** : titre · meta · introduction (la promesse et comment lire les cartes) · conclusion
 (un geste concret pour la prochaine nuit).
