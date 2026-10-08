@@ -8,7 +8,6 @@ import { execFileSync } from "node:child_process";
 // Unknown paths, missing history or any Git error always build.
 const internalPrefixes = [
   "docs/",
-  "docs-src/",
   "doc_web_interne/",
   "tools/",
   "tests/",
@@ -19,9 +18,17 @@ const internalPrefixes = [
   ".agents/",
 ];
 
+// Colocated tests (__tests__/ directories, *.test.* and *.spec.* sources) are
+// never bundled. app/ is excluded: Expo Router treats its files as routes.
+const colocatedTest = /(^|\/)__tests__\/|\.(test|spec)\.[cm]?[jt]sx?$/;
+
+// docs-src/ always builds, Markdown included: the app imports guide data and
+// onboarding artwork from docs-src/static/.
 const isInternal = (file) =>
-  file.endsWith(".md") ||
-  internalPrefixes.some((prefix) => file.startsWith(prefix));
+  !file.startsWith("docs-src/") &&
+  (file.endsWith(".md") ||
+    internalPrefixes.some((prefix) => file.startsWith(prefix)) ||
+    (!file.startsWith("app/") && colocatedTest.test(file)));
 
 const previous = process.env.VERCEL_GIT_PREVIOUS_SHA;
 const base = /^[a-f0-9]{40}$/i.test(previous ?? "") ? previous : "HEAD^";

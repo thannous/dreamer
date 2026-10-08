@@ -81,7 +81,8 @@ class BuildImpact(unittest.TestCase):
             (repo / "scripts").mkdir()
             (repo / "scripts/vercel-ignore-build.mjs").write_text((ROOT / "scripts/vercel-ignore-build.mjs").read_text())
             base = commit("app/index.ts")
-            docs = commit("doc_web_interne/x.md", "docs-src/a.html", "tests/a.test.ts", ".circleci/config.yml", "README.md", "nested/notes.md")
+            docs = commit("doc_web_interne/x.md", "tests/a.test.ts", ".circleci/config.yml", "README.md", "nested/notes.md",
+                          "components/chat/__tests__/Composer.test.tsx", "lib/format.test.ts", "services/guide.spec.tsx")
             for env_value in ["production", "", "development"]:
                 self.assertEqual(run(env_value), 0, "docs-only push via HEAD^ fallback")
                 self.assertEqual(run(env_value, base), 0, "docs-only push since last deployment")
@@ -93,7 +94,9 @@ class BuildImpact(unittest.TestCase):
             git("mv", "app/index.ts", "docs/index.ts")
             git("commit", "-qm", "move app file into docs")
             self.assertEqual(run("production"), 1, "rename out of the app must build")
-            for lookalike in ["docsx/a.ts", "tools.ts"]:
+            for lookalike in ["docsx/a.ts", "tools.ts", "docs-src/static/data/curation-pages.json",
+                              "docs-src/static/img/onboarding.webp", "docs-src/content/guide.md", "app/__tests__/route.test.tsx",
+                              "app/settings.test.tsx", "lib/test-utils.ts", "lib/testing.ts"]:
                 commit(lookalike)
                 self.assertEqual(run("production"), 1, lookalike)
             self.assertEqual(run("preview", app), 0, "previews never build")
