@@ -1416,7 +1416,7 @@ const styles = StyleSheet.create({
   // 330px pour les 320 d'un écran de 360 dp, et le sélecteur se repliait en 2+1
   // dès qu'on descendait sous 370 dp. À 92 et une gouttière de 8, la rangée
   // redescend à 292px de minimum : elle tient, et `flex: 1` rend le reste.
-  option: { minHeight: 52, minWidth: 92, flex: 1, borderRadius: LucidRadius.lg, borderWidth: 1, paddingHorizontal: LucidSpace.md, flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: LucidSpace.sm },
+  option: { minHeight: 52, flexGrow: 1, flexBasis: '45%', borderRadius: LucidRadius.lg, borderWidth: 1, paddingHorizontal: LucidSpace.md, flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: LucidSpace.sm },
   optionLabel: { fontFamily: 'SpaceGrotesk_700Bold', fontSize: LucidType.bodySm[0], lineHeight: LucidType.bodySm[1] },
   counter: { minHeight: 70, flexDirection: 'row', alignItems: 'center', gap: LucidSpace.md, paddingVertical: LucidSpace.md },
   counterCopy: { flex: 1, gap: LucidSpace.xs },

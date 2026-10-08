@@ -612,7 +612,7 @@ const styles = StyleSheet.create({
   card: { borderRadius: LucidRadius.xl, borderWidth: 1, padding: LucidSpace.lg, gap: LucidSpace.md },
   pressed: { opacity: LucidPress.opacity, transform: [{ scale: LucidPress.scale }] },
   pressedWithoutMotion: { opacity: LucidPress.opacity },
-  button: { minHeight: 52, borderRadius: LucidRadius.lg, borderWidth: 1, paddingHorizontal: LucidSpace.lg, flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: LucidSpace.sm },
+  button: { minHeight: 52, borderRadius: LucidRadius.lg, borderWidth: 1, paddingHorizontal: LucidSpace.lg, paddingVertical: LucidSpace.sm, flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: LucidSpace.sm },
   buttonImmersive: {
     minHeight: 60,
     borderRadius: LucidRadius.full,
@@ -627,7 +627,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
   },
-  buttonLabel: { fontFamily: 'SpaceGrotesk_700Bold', fontSize: LucidType.body[0], lineHeight: LucidType.body[1], textAlign: 'center' },
+  buttonLabel: { fontFamily: 'SpaceGrotesk_700Bold', fontSize: LucidType.body[0], lineHeight: LucidType.body[1], textAlign: 'center', flexShrink: 1 },
   buttonBlock: { gap: LucidSpace.sm },
   buttonReason: { fontFamily: 'SpaceGrotesk_500Medium', fontSize: LucidType.caption[0], lineHeight: LucidType.caption[1], textAlign: 'center' },
   sectionHeader: { flexDirection: 'row', alignItems: 'flex-end', justifyContent: 'space-between', gap: LucidSpace.md, marginTop: LucidSpace.lg },

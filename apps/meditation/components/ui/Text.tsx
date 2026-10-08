@@ -1,5 +1,6 @@
 import React from 'react';
 import {
+  StyleSheet,
   Text as RNText,
   type TextProps as RNTextProps,
   useWindowDimensions,
@@ -106,12 +107,14 @@ export function Text({
   const resolvedTone = tone ?? DEFAULT_TONE[variant];
   const effectiveScale =
     maxFontSizeMultiplier == null ? fontScale : Math.min(fontScale, maxFontSizeMultiplier);
+  // A caller that enlarges the font sets its own line box; the variant's would crop it.
+  const baseLineHeight = StyleSheet.flatten(style)?.lineHeight ?? LINE_HEIGHT[variant];
 
   return (
     <RNText
       className={`${VARIANT[variant]} ${TONE[resolvedTone]} ${className ?? ''}`}
       maxFontSizeMultiplier={maxFontSizeMultiplier}
-      style={[style, { lineHeight: LINE_HEIGHT[variant] * effectiveScale }]}
+      style={[style, { lineHeight: baseLineHeight * effectiveScale }]}
       {...rest}
     />
   );

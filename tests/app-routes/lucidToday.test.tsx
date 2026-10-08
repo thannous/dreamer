@@ -305,6 +305,19 @@ describe('Lucid Trainer today screen', () => {
     );
   });
 
+  it('shows the suggested plan once when choosing a program is the evening action', () => {
+    usePracticeOnboarding();
+    mockNow = Date.UTC(2026, 7, 24, 21, 30);
+
+    render(<LucidTodayScreen />);
+
+    expect(screen.getAllByText('Point de départ suggéré · MILD')).toHaveLength(1);
+    expect(screen.queryByTestId('lucid-today-plan')).toBeNull();
+    expect(screen.getByTestId('lucid-today-why')).not.toBeNull();
+    fireEvent.click(screen.getByTestId('lucid-today-primary'));
+    expect(mockPush).toHaveBeenCalledWith('/lucid/(tabs)/programs');
+  });
+
   it('suggests guided MILD when recall is sufficient for a first lucid dream', () => {
     mockOnboarding = {
       ...mockOnboarding,
