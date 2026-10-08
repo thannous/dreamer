@@ -181,7 +181,7 @@ function createLucidExpoConfig(baseExpo: ExpoConfig): ExpoConfig {
         // shared HealthKit module still autolinks, so both purpose strings stay
         // present (ITMS-90683) and describe what this version actually does.
         NSHealthShareUsageDescription:
-          'Noctalia Lucid does not read Apple Health data in this version. A future optional sleep-history import will ask for your permission first.',
+          'Noctalia Lucid does not read Apple Health data in this version.',
         NSHealthUpdateUsageDescription: 'Noctalia Lucid never writes or changes data in Apple Health.',
       },
     },
