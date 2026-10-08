@@ -10,6 +10,8 @@ const mockPush = jest.fn();
 const mockUseDreams = jest.fn();
 const mockWindow = { width: 390, height: 844, scale: 1, fontScale: 1 };
 let mockBottomInset = 0;
+jest.mock('@/components/ui/NightSkyBand', () => ({ NightSkyBand: () => null }));
+
 jest.mock('react-native-safe-area-context', () => ({
   useSafeAreaInsets: () => ({ top: 24, bottom: mockBottomInset, left: 0, right: 0 }),
 }));

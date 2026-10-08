@@ -426,9 +426,12 @@ const HomeResourcesRow = memo(function HomeResourcesRow({
       accessibilityLabel={t('home.today.resources')}
       className="gap-3"
     >
-      <Text className="font-sans-bold text-[12px] uppercase text-ivory-muted">
-        {t('home.today.resources')}
-      </Text>
+      <View className="flex-row items-start gap-3">
+        <View className="mt-[9px] h-px w-[22px] bg-champagne" />
+        <Text className="min-w-0 shrink font-sans-medium text-[12px] leading-[18px] uppercase tracking-[1.6px] text-champagne-on">
+          {t('home.today.resources')}
+        </Text>
+      </View>
       <View className="flex-row flex-wrap gap-2">
         {items.map((item) => (
           <PressableScale

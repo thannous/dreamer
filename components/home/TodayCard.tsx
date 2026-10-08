@@ -24,7 +24,7 @@ export function TodayCard({ state, onPressCta, dreamTitle }: Props) {
     : state ? t(`home.today.${state.id}.cta`) : '';
 
   return (
-    <View testID={TID.Component.HomeToday} className="bg-ink px-6 pb-4">
+    <View testID={TID.Component.HomeToday} className="px-6 pb-4">
       <Text className="mb-1 font-sans-medium text-[11px] uppercase tracking-[1.8px] text-champagne-on">
         {t(dreamTitle ? 'home.today.dream_eyebrow' : 'home.today.eyebrow')}
       </Text>
