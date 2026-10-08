@@ -323,6 +323,10 @@ assert_change \
   true false false false false true false false false false false
 
 assert_change \
+  "Vercel build filter validates only through Noctalia quality" scripts/vercel-ignore-build.mjs pr \
+  true false false false false true false false false false false
+
+assert_change \
   "Supabase control file" supabase/config.toml pr \
   false false false true true false false false false false true
 

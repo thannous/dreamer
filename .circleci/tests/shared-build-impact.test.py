@@ -51,11 +51,52 @@ class BuildImpact(unittest.TestCase):
             with self.assertRaises(ValueError):
                 impact.without_mobile_jobs(text)
 
-    def test_vercel_skips_previews_and_preserves_other_environments(self):
+    def test_vercel_skips_previews_and_filters_other_environments(self):
         command = json.loads((ROOT / "vercel.json").read_text())["ignoreCommand"]
-        for value, expected in [("production", 1), ("preview", 0), ("", 1), ("development", 1)]:
-            result = subprocess.run(["bash", "-c", command], env={**os.environ, "VERCEL_ENV": value})
-            self.assertEqual(result.returncode, expected)
+        revision = iter(range(1000))
+        with tempfile.TemporaryDirectory() as temp:
+            repo = Path(temp)
+
+            def git(*args):
+                return subprocess.check_output(["git", *args], cwd=repo, text=True).strip()
+
+            def commit(*paths):
+                for path in paths:
+                    (repo / path).parent.mkdir(parents=True, exist_ok=True)
+                    (repo / path).write_text(f"{path} {next(revision)}\n")
+                git("add", "-A")
+                git("commit", "-qm", "fixture")
+                return git("rev-parse", "HEAD")
+
+            def run(env_value, previous=None):
+                env = {key: value for key, value in os.environ.items() if not key.startswith("VERCEL_")}
+                env["VERCEL_ENV"] = env_value
+                if previous is not None:
+                    env["VERCEL_GIT_PREVIOUS_SHA"] = previous
+                return subprocess.run(["bash", "-c", command], cwd=repo, env=env, capture_output=True).returncode
+
+            git("init", "-q", "-b", "master")
+            git("config", "user.email", "ci-test@noctalia.invalid")
+            git("config", "user.name", "CI fixture")
+            (repo / "scripts").mkdir()
+            (repo / "scripts/vercel-ignore-build.mjs").write_text((ROOT / "scripts/vercel-ignore-build.mjs").read_text())
+            base = commit("app/index.ts")
+            docs = commit("doc_web_interne/x.md", "docs-src/a.html", "tests/a.test.ts", ".circleci/config.yml", "README.md", "nested/notes.md")
+            for env_value in ["production", "", "development"]:
+                self.assertEqual(run(env_value), 0, "docs-only push via HEAD^ fallback")
+                self.assertEqual(run(env_value, base), 0, "docs-only push since last deployment")
+                self.assertEqual(run(env_value, "f" * 40), 1, "unknown previous deployment must build")
+            app = commit("app/index.ts")
+            commit("docs/after.md")
+            self.assertEqual(run("production", docs), 1, "docs commit must not hide an earlier app change")
+            self.assertEqual(run("production"), 0, "HEAD^ fallback only sees the last commit")
+            git("mv", "app/index.ts", "docs/index.ts")
+            git("commit", "-qm", "move app file into docs")
+            self.assertEqual(run("production"), 1, "rename out of the app must build")
+            for lookalike in ["docsx/a.ts", "tools.ts"]:
+                commit(lookalike)
+                self.assertEqual(run("production"), 1, lookalike)
+            self.assertEqual(run("preview", app), 0, "previews never build")
 
 
 class ClassificationIntegration(unittest.TestCase):
