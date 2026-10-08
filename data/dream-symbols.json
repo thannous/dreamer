@@ -1,7 +1,7 @@
 {
   "meta": {
     "version": "1.0.0",
-    "lastUpdated": "2026-10-03",
+    "lastUpdated": "2026-10-07",
     "fallbackModifiedAt": "2026-10-02",
     "totalSymbols": 160,
     "languages": [
@@ -215,11 +215,11 @@
         "faq": [
           {
             "question": "Cosa significa sognare acqua?",
-            "answer": "Sognare acqua riguarda emozioni, memoria e vita interiore. Il significato dipende da com’era l’acqua e da come ti sentivi nel sogno."
+            "answer": "L’acqua nei sogni viene spesso associata alle emozioni, ma il significato dipende da com’era, da cosa facevi e da come ti sentivi. Parti dallo stato dell’acqua prima di cercare una lettura."
           },
           {
             "question": "Cosa significa sognare acqua pulita o limpida?",
-            "answer": "Acqua pulita o limpida può indicare chiarezza emotiva, sollievo, guarigione o una situazione che comincia a essere più comprensibile."
+            "answer": "Acqua pulita o limpida può accompagnare sollievo, calma o una situazione che comincia a essere più comprensibile. Nota se ti avvicinavi all’acqua o la osservavi da lontano."
           },
           {
             "question": "Cosa significa sognare acqua torbida o sporca?",
@@ -227,11 +227,11 @@
           },
           {
             "question": "Cosa significa sognare acqua che scorre?",
-            "answer": "Acqua che scorre parla di movimento emotivo, cambiamento e passaggio del tempo. Se il flusso è calmo, può indicare accettazione; se è forte, pressione."
+            "answer": "Acqua che scorre può richiamare cambiamento e passaggio del tempo. Un flusso calmo che segui non ha lo stesso tono di una corrente forte che ti trascina: la tua reazione orienta la lettura."
           },
           {
             "question": "Cosa significa sognare tanta acqua o acqua in casa?",
-            "answer": "Tanta acqua indica emozioni che occupano molto spazio. Se entra in casa o sale rapidamente, il sogno porta il tema nella sfera privata: sicurezza, famiglia, confini e riposo."
+            "answer": "Tanta acqua può indicare un tema che occupa molto spazio. Se entra in casa o sale, la scena tocca la sfera privata: sicurezza, famiglia, confini e riposo. Non è il presagio di un danno reale."
           }
         ],
         "softCta": {
@@ -241,7 +241,8 @@
           "button": "Prova l'app",
           "href": "https://play.google.com/store/apps/details?id=com.tanuki75.noctalia&utm_source=noctalia_site&utm_medium=symbol_page&utm_campaign=plan_a_existing_pages"
         },
-        "modifiedAt": "2026-08-23"
+        "modifiedAt": "2026-10-07",
+        "documentMetaDescription": "Sognare acqua sporca, torbida o limpida, che scorre o entra in casa: confronta scene ed emozioni con un esempio di diario, senza un significato fisso."
       },
       "pt": {
         "slug": "agua",
@@ -2689,7 +2690,8 @@
           "button": "Probar la app",
           "href": "https://play.google.com/store/apps/details?id=com.tanuki75.noctalia&utm_source=noctalia_site&utm_medium=symbol_page&utm_campaign=plan_a_existing_pages"
         },
-        "modifiedAt": "2026-07-17"
+        "modifiedAt": "2026-07-17",
+        "documentMetaDescription": "Soñar con un puente roto, sobre agua o cruzarlo: compara la escena, el ritmo y tu emoción para leer una transición o una decisión, sin un sentido fijo."
       },
       "de": {
         "slug": "bruecke",
@@ -4514,7 +4516,7 @@
       "it": {
         "slug": "ospedale",
         "name": "Ospedale",
-        "shortDescription": "Sognare un ospedale parla spesso di guarigione, vulnerabilità, preoccupazioni di salute o bisogno di accettare aiuto. Il senso cambia se sei paziente, visitatore o in attesa di una diagnosi.",
+        "shortDescription": "Sognare un ospedale può accompagnare un bisogno di cura, riposo o sostegno, oppure riprendere una visita o una notizia recente. Essere paziente, visitatore o in attesa cambia la lettura; il sogno non predice una malattia.",
         "askYourself": [
           "Ero paziente, visitatore, medico o cercavo aiuto?",
           "Il sogno sembrava un’emergenza, un’attesa, un sollievo o una paura?",
@@ -4523,22 +4525,24 @@
         "faq": [
           {
             "question": "Cosa significa sognare un ospedale?",
-            "answer": "Sognare un ospedale indica spesso che qualcosa richiede attenzione, cura o guarigione. Può riguardare la salute, ma anche stanchezza emotiva, preoccupazione per una persona cara o bisogno di supporto."
+            "answer": "Un ospedale può accompagnare stanchezza, preoccupazione per una persona cara o bisogno di sostegno, oppure riprendere una visita o una notizia recente. Non permette di diagnosticare né di prevedere una malattia."
           },
           {
             "question": "Cosa significa sognare di essere in ospedale?",
-            "answer": "Essere in ospedale in sogno richiama vulnerabilità e recupero. Può indicare che hai bisogno di riposo, aiuto o tempo per affrontare una situazione stressante."
+            "answer": "Essere ricoverati in sogno può richiamare vulnerabilità, recupero o bisogno di riposo. Il motivo del ricovero e come ti sentivi aiutano a collegare la scena a una situazione concreta."
           },
           {
             "question": "Cosa significano medici o infermieri in un sogno?",
-            "answer": "Medici e infermieri possono rappresentare guida, diagnosi o sostegno."
+            "answer": "Medici e infermieri possono richiamare una ricerca di risposte, di orientamento o di sostegno. Conta se ti rassicuravano o se ti sentivi ignorato."
           },
           {
             "question": "Cosa significano persone malate in un sogno di ospedale?",
-            "answer": "Le persone malate possono riflettere preoccupazione per gli altri o una parte del tuo benessere che stai trascurando."
+            "answer": "Le persone malate possono riflettere preoccupazione per gli altri, sovraccarico o un luogo affollato visto di recente. Il sogno non indica che qualcuno si ammalerà."
           }
         ],
-        "seoTitle": "ospedale, medici o persone malate"
+        "seoTitle": "ospedale, medici o persone malate",
+        "documentMetaDescription": "Sognare un ospedale, medici o persone malate: confronta il tuo ruolo, l’atmosfera e le emozioni della scena, con un esempio di diario e senza predizioni.",
+        "modifiedAt": "2026-10-07"
       },
       "pt": {
         "slug": "hospital",
@@ -5238,7 +5242,8 @@
           "button": "Probar la app",
           "href": "https://play.google.com/store/apps/details?id=com.tanuki75.noctalia&utm_source=noctalia_site&utm_medium=symbol_page&utm_campaign=plan_a_existing_pages"
         },
-        "modifiedAt": "2026-08-18"
+        "modifiedAt": "2026-08-18",
+        "documentMetaDescription": "Soñar con lobos: compara un lobo que observa, una manada o lobos que atacan, con preguntas y contexto emocional para leer tu sueño sin un significado fijo."
       },
       "de": {
         "slug": "wolf",
