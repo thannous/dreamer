@@ -236,10 +236,13 @@ jobs:
                 name: Verify the exact passed-ID union and all browser contexts
                 when: always
                 command: node tools/e2e/run.mjs << parameters.product >> web collect
+      # Only primary-context containers save: the kept cache then holds the default
+      # stories-on transforms, never a stories-off run.
       - when:
           condition:
             and:
               - equal: [master, << pipeline.git.branch >>]
+              - equal: [primary, << parameters.contexts >>]
               - not:
                   equal: [meditation, << parameters.product >>]
           steps:
