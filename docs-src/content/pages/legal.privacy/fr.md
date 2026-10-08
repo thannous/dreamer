@@ -23,7 +23,7 @@
   "twitterImage": "https://noctalia.app/img/og/noctalia-fr-1200x630.jpg",
   "twitterImageAlt": "Politique de Confidentialité",
   "publishedTime": "",
-  "modifiedTime": "2026-09-22",
+  "modifiedTime": "2026-10-08",
   "author": "",
   "prevPath": "",
   "nextPath": "",
@@ -36,7 +36,7 @@
 }
 ---
 <h1 class="font-serif text-4xl md:text-5xl mb-6 text-dream-cream">Politique de Confidentialité</h1>
-        <p class="text-lg text-purple-200/80 mb-10">Dernière mise à jour : 22 septembre 2026</p>
+        <p class="text-lg text-purple-200/80 mb-10">Dernière mise à jour : 8 octobre 2026</p>
         <div class="space-y-8 text-gray-300 leading-relaxed">
             <div class="p-6 rounded-2xl bg-dream-salmon/5 border border-dream-salmon/20">
                 <p class="text-dream-salmon font-medium flex gap-2 items-start">
@@ -65,6 +65,28 @@
                         </ul>
                     </div>
                 </div>
+            </section>
+
+            <section id="companion-apps">
+                <h2 class="text-2xl font-serif text-white mb-4 mt-8">Noctalia Lucid et Noctalia Méditation</h2>
+                <p>Cette politique couvre aussi les deux applications compagnons de Noctalia, éditées par TiMax. Tout ce qui précède et suit s'y applique, avec les précisions ci-dessous.</p>
+                <h3 class="text-white font-semibold mb-2 mt-6">Noctalia Lucid</h3>
+                <ul class="list-disc pl-5 mt-2 space-y-2">
+                    <li><strong>Local par défaut&nbsp;:</strong> programmes, séances, tests de réalité, bilans, notes et rappels sont stockés sur votre appareil et fonctionnent sans compte ni réseau.</li>
+                    <li><strong>Notes vocales&nbsp;:</strong> elles sont enregistrées uniquement sur l'appareil après un appui sur «&nbsp;Parler&nbsp;», sans envoi ni transcription automatique.</li>
+                    <li><strong>Compte et synchronisation facultatifs&nbsp;:</strong> si vous vous connectez avec votre compte Noctalia et activez la synchronisation (désactivée par défaut), vos données d'entraînement sont synchronisées dans la base Supabase située dans l'Union européenne décrite en section 5. Vous pouvez couper la synchronisation, supprimer les données distantes ou votre compte depuis l'application.</li>
+                    <li><strong>Échanges avec le journal Noctalia&nbsp;:</strong> uniquement à votre demande, Lucid peut copier des récits depuis votre journal Noctalia, ou transmettre à Noctalia un résumé catégoriel de la nuit (technique, issue, niveaux de lucidité et de souvenir), jamais le texte de vos notes.</li>
+                    <li><strong>Mesure d’usage&nbsp;:</strong> facultative et désactivée par défaut, limitée à quelques événements catégoriels sans aucun texte libre ; aucun outil d'analytics tiers.</li>
+                    <li><strong>Ni publicité ni achat&nbsp;:</strong> Lucid ne contient pas de publicité, ne propose pas d'achat intégré dans cette version et ne lit pas vos données Santé.</li>
+                    <li><strong>Export et suppression&nbsp;:</strong> l'écran Données permet d'exporter vos données (JSON ou CSV) et de les effacer de l'appareil.</li>
+                </ul>
+                <h3 class="text-white font-semibold mb-2 mt-6">Noctalia Méditation</h3>
+                <ul class="list-disc pl-5 mt-2 space-y-2">
+                    <li><strong>Aucun compte, aucune collecte&nbsp;:</strong> Méditation fonctionne sans compte. Vos préférences, objectifs, favoris, progression, rappels et votre éventuelle photo de profil restent sur votre appareil ; nous ne recevons aucune de ces données.</li>
+                    <li><strong>Ni mesure d’usage, ni publicité, ni achat&nbsp;:</strong> l'application n'envoie aucun événement d'analytics, ne contient pas de publicité, et tous les univers sont gratuits dans cette version : aucun service de paiement n'est activé.</li>
+                    <li><strong>Rappels et voix&nbsp;:</strong> les rappels sont des notifications programmées localement ; l'annonce des phases de respiration, si vous l'activez, utilise la synthèse vocale de votre système.</li>
+                    <li><strong>Suppression&nbsp;:</strong> «&nbsp;Effacer mes données&nbsp;», dans les réglages du compte, supprime tout ce que l'application a enregistré ; la désinstaller a le même effet.</li>
+                </ul>
             </section>
 
             <section>
