@@ -1984,8 +1984,8 @@ describe('Recording screen', () => {
     expect(screen.getByTestId('recording-mode').getAttribute('data-value')).toBe('voice');
     expect(mockStartRecording).not.toHaveBeenCalled();
     expect(mockSaveInputModePreference).not.toHaveBeenCalled();
-    fireEvent.click(screen.getByTestId(TID.Button.RecordingHome));
-    expect(mockReplace).toHaveBeenCalled();
+    // On desktop the root sidebar stays usable during a failed restore; Capture
+    // itself renders no exit control outside a review.
 
     const retry = screen.getByRole('button', { name: 'recording.draft_restore.retry' });
     act(() => {
