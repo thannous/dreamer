@@ -1,3 +1,9 @@
+/**
+ * Apple Health sleep import stays out of Lucid v1 (owner decision, 2026-10-08)
+ * until it is validated on a real iPhone; its route is unreachable while false.
+ */
+export const LUCID_HEALTH_IMPORT_ENABLED = false;
+
 export const LUCID_HK_SLEEP_ANALYSIS_IDENTIFIER =
   'HKCategoryTypeIdentifierSleepAnalysis' as const;
 

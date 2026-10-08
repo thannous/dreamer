@@ -152,7 +152,7 @@ describe('Lucid stack onboarding protection', () => {
         expect.objectContaining({ guard: true, names: ['onboarding'] }),
         expect.objectContaining({
           guard: false,
-          names: expect.arrayContaining(['(tabs)', 'dream-atlas', 'sleep-integration', 'dream-rehearsal', 'stabilization-lab', 'ssild-lab', 'morning-voice']),
+          names: expect.arrayContaining(['(tabs)', 'dream-atlas', 'dream-rehearsal', 'stabilization-lab', 'ssild-lab', 'morning-voice']),
         }),
       ])
     );
@@ -167,7 +167,6 @@ describe('Lucid stack onboarding protection', () => {
     expect(screen.getByTestId('screen-dream-signs')).toBeTruthy();
     expect(screen.getByTestId('screen-dream-atlas')).toBeTruthy();
     expect(screen.getByTestId('screen-dream-rehearsal')).toBeTruthy();
-    expect(screen.getByTestId('screen-sleep-integration')).toBeTruthy();
     expect(screen.getByTestId('screen-stabilization-lab')).toBeTruthy();
     expect(screen.getByTestId('screen-ssild-lab')).toBeTruthy();
     expect(screen.getByTestId('screen-morning-voice')).toBeTruthy();
@@ -176,8 +175,21 @@ describe('Lucid stack onboarding protection', () => {
         expect.objectContaining({ guard: false, names: ['onboarding'] }),
         expect.objectContaining({
           guard: true,
-          names: expect.arrayContaining(['(tabs)', 'dream-atlas', 'sleep-integration', 'dream-rehearsal', 'stabilization-lab', 'ssild-lab', 'morning-voice']),
+          names: expect.arrayContaining(['(tabs)', 'dream-atlas', 'dream-rehearsal', 'stabilization-lab', 'ssild-lab', 'morning-voice']),
         }),
+      ])
+    );
+  });
+
+  it('keeps the unsold plan and the Health import unreachable by deep link in v1', () => {
+    layoutHarness.onboardingStatus = 'completed';
+    render(<LucidLayout />);
+    expect(screen.queryByTestId('screen-subscription')).toBeNull();
+    expect(screen.queryByTestId('screen-sleep-integration')).toBeNull();
+    expect(capturedGuards).toEqual(
+      expect.arrayContaining([
+        { guard: false, names: ['sleep-integration'] },
+        { guard: false, names: ['subscription'] },
       ])
     );
   });
