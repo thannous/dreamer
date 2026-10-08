@@ -921,7 +921,7 @@
 
 /* Plus has no fixed price to show: its price line reads as a statement,
  * not as a figure, so it is set smaller than "Free". The width stays in rem:
- * a glyph-relative unit (ch) makes Chrome restyle the whole page each time a
+ * with a glyph-relative unit (ch) Chrome appears to restyle the page each time a
  * web font loads, which measured as ~130 ms of extra blocking on mobile. */
 .oh-plan--plus .oh-plan-price {
   font-size: 1.55rem;
