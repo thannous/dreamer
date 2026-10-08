@@ -102,3 +102,8 @@ docs-src/static/*
 !docs-src/static/data
 docs-src/static/data/*
 !docs-src/static/data/curation-pages.json
+# Onboarding stories bundle a few site illustrations directly (Metro requires them).
+!docs-src/static/img
+docs-src/static/img/*
+!docs-src/static/img/starmap
+!docs-src/static/img/dreams
