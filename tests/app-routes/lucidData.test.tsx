@@ -207,8 +207,8 @@ describe('Lucid Trainer data management', () => {
 
     render(<LucidDataScreen />);
     expect(mockState.preferences.cloudSyncEnabled).toBe(false);
-    fireEvent.click(screen.getByRole('button', { name: 'Delete trainer data' }));
-    pressAlertAction('Delete trainer data');
+    fireEvent.click(screen.getByRole('button', { name: 'Delete Lucid data' }));
+    pressAlertAction('Delete Lucid data');
 
     await waitFor(() => expect(mockResetLocalData).toHaveBeenCalledTimes(1));
     expect(order).toEqual(['cloud', 'voice', 'local']);
@@ -221,8 +221,8 @@ describe('Lucid Trainer data management', () => {
     mockDeleteLucidTrainerCloudData.mockRejectedValue(new Error('cloud unavailable'));
 
     render(<LucidDataScreen />);
-    fireEvent.click(screen.getByRole('button', { name: 'Delete trainer data' }));
-    pressAlertAction('Delete trainer data');
+    fireEvent.click(screen.getByRole('button', { name: 'Delete Lucid data' }));
+    pressAlertAction('Delete Lucid data');
 
     await waitFor(() =>
       expect(mockAlert).toHaveBeenCalledWith(
@@ -244,8 +244,8 @@ describe('Lucid Trainer data management', () => {
     });
 
     render(<LucidDataScreen />);
-    fireEvent.click(screen.getByRole('button', { name: 'Delete trainer data' }));
-    pressAlertAction('Delete trainer data');
+    fireEvent.click(screen.getByRole('button', { name: 'Delete Lucid data' }));
+    pressAlertAction('Delete Lucid data');
 
     await waitFor(() => expect(mockResetLocalData).toHaveBeenCalledTimes(1));
     expect(order).toEqual(['voice', 'local']);
@@ -418,8 +418,8 @@ describe('Lucid Trainer data management', () => {
     mockClearLucidMorningVoiceNotes.mockRejectedValue(new Error('voice clear failed'));
 
     render(<LucidDataScreen />);
-    fireEvent.click(screen.getByRole('button', { name: 'Delete trainer data' }));
-    pressAlertAction('Delete trainer data');
+    fireEvent.click(screen.getByRole('button', { name: 'Delete Lucid data' }));
+    pressAlertAction('Delete Lucid data');
 
     await waitFor(() =>
       expect(mockAlert).toHaveBeenCalledWith(
@@ -436,8 +436,8 @@ describe('Lucid Trainer data management', () => {
     mockResetLocalData.mockRejectedValue(new Error('reset failed'));
 
     render(<LucidDataScreen />);
-    fireEvent.click(screen.getByRole('button', { name: 'Delete trainer data' }));
-    pressAlertAction('Delete trainer data');
+    fireEvent.click(screen.getByRole('button', { name: 'Delete Lucid data' }));
+    pressAlertAction('Delete Lucid data');
 
     await waitFor(() =>
       expect(mockAlert).toHaveBeenCalledWith(
@@ -452,19 +452,19 @@ describe('Lucid Trainer data management', () => {
   it.each([
     [
       'en' as const,
-      'Delete trainer data',
+      'Delete Lucid data',
       'Deletion incomplete',
       'This operation could not be completed. Some data or media may already have been removed, including a cloud copy if one existed.',
-      'JSON and CSV export structured Lucid Trainer data. Audio files stay on this device and must be shared individually from Voice notes. Text notes remain included because this export is for you.',
+      'JSON and CSV export structured Lucid data. Audio files stay on this device and must be shared individually from Voice notes. Text notes remain included because this export is for you.',
       'Open Voice notes',
       'Optional account sync still excludes media. Audio files are never uploaded.',
     ],
     [
       'fr' as const,
-      'Supprimer les données Trainer',
+      'Supprimer les données Lucid',
       'Suppression incomplète',
       'L’opération n’a pas abouti. Certaines données ou certains médias peuvent déjà avoir été retirés, y compris une copie cloud s’il en existait une.',
-      'JSON et CSV exportent les données structurées de Lucid Trainer. Les fichiers audio restent locaux et doivent être partagés un par un depuis Notes vocales. Les notes textuelles restent incluses car cet export est pour vous.',
+      'JSON et CSV exportent les données structurées de Lucid. Les fichiers audio restent locaux et doivent être partagés un par un depuis Notes vocales. Les notes textuelles restent incluses car cet export est pour vous.',
       'Ouvrir les notes vocales',
       'La synchronisation facultative du compte exclut toujours les médias. Les fichiers audio ne sont jamais envoyés.',
     ],
@@ -473,25 +473,25 @@ describe('Lucid Trainer data management', () => {
       'Eliminar datos',
       'Eliminación incompleta',
       'No se pudo completar la operación. Algunos datos o archivos pueden haberse eliminado ya, incluida una copia en la nube si existía.',
-      'JSON y CSV exportan tus datos estructurados de Lucid Trainer. Los archivos de audio permanecen en este dispositivo y deben compartirse uno a uno desde Notas de voz. Las notas de texto se incluyen porque esta exportación es para ti.',
+      'JSON y CSV exportan tus datos estructurados de Lucid. Los archivos de audio permanecen en este dispositivo y deben compartirse uno a uno desde Notas de voz. Las notas de texto se incluyen porque esta exportación es para ti.',
       'Abrir notas de voz',
       'La sincronización opcional de la cuenta sigue excluyendo los medios. Los archivos de audio nunca se suben.',
     ],
     [
       'de' as const,
-      'Trainer-Daten löschen',
+      'Lucid-Daten löschen',
       'Löschen unvollständig',
       'Der Vorgang konnte nicht abgeschlossen werden. Einige Daten oder Medien wurden möglicherweise bereits entfernt, einschließlich einer Cloudkopie, falls vorhanden.',
-      'JSON und CSV exportieren deine strukturierten Lucid-Trainer-Daten. Audiodateien bleiben lokal und müssen einzeln unter Sprachnotizen geteilt werden. Textnotizen sind enthalten, weil dieser Export für dich ist.',
+      'JSON und CSV exportieren deine strukturierten Lucid-Daten. Audiodateien bleiben lokal und müssen einzeln unter Sprachnotizen geteilt werden. Textnotizen sind enthalten, weil dieser Export für dich ist.',
       'Sprachnotizen öffnen',
       'Die optionale Kontosynchronisierung schließt Medien weiterhin aus. Audiodateien werden nie hochgeladen.',
     ],
     [
       'it' as const,
-      'Elimina dati Trainer',
+      'Elimina dati Lucid',
       'Eliminazione incompleta',
       'Operazione non completata. Alcuni dati o file potrebbero essere già stati rimossi, inclusa una copia cloud se esisteva.',
-      'JSON e CSV esportano i dati strutturati di Lucid Trainer. I file audio restano su questo dispositivo e vanno condivisi uno per uno da Note vocali. Le note testuali restano incluse perché l’export è per te.',
+      'JSON e CSV esportano i dati strutturati di Lucid. I file audio restano su questo dispositivo e vanno condivisi uno per uno da Note vocali. Le note testuali restano incluse perché l’export è per te.',
       'Apri le note vocali',
       'La sincronizzazione facoltativa dell’account continua a escludere i media. I file audio non vengono mai caricati.',
     ],

@@ -1,5 +1,6 @@
 import { IconSymbol } from '@/components/ui/icon-symbol';
 import { ThemeLayout } from '@/constants/journalTheme';
+import { DESKTOP_BREAKPOINT } from '@/constants/layout';
 import { getNoctaliaDesignTokens } from '@/constants/noctaliaDesign';
 import { Fonts } from '@/constants/theme';
 import { useTheme } from '@/context/ThemeContext';
@@ -65,10 +66,14 @@ export const NoctaliaScreenHeader = memo(function NoctaliaScreenHeader({
   const insets = useSafeAreaInsets();
   const { width, fontScale } = useWindowDimensions();
   const isNarrow = width < 480;
+  // Beside the desktop sidebar the wordmark is already on screen.
+  const showBrand = !(Platform.OS === 'web' && width >= DESKTOP_BREAKPOINT);
+  // Without the wordmark above it, the page title carries the header alone.
+  const isProminent = prominentTitle || !showBrand;
   const titleFontScale = Math.min(fontScale, 1.4);
   const brandFontScale = Math.min(fontScale, 1.3);
-  const brandTypography = variant === 'editorial' ? styles.editorialBrand : prominentTitle ? styles.quietBrand : styles.brand;
-  const titleTypography = variant === 'editorial' ? styles.editorialTitle : prominentTitle ? styles.prominentTitle : styles.subtitle;
+  const brandTypography = variant === 'editorial' ? styles.editorialBrand : isProminent ? styles.quietBrand : styles.brand;
+  const titleTypography = variant === 'editorial' ? styles.editorialTitle : isProminent ? styles.prominentTitle : styles.subtitle;
   // Keep actions beside the title, including enlarged text, whenever both fit.
   const availableTitleWidth = width - (isNarrow ? 32 : 48) - actions.length * 52;
   const stackActions = actions.length > 0 && availableTitleWidth < 110 * titleFontScale;
@@ -83,15 +88,15 @@ export const NoctaliaScreenHeader = memo(function NoctaliaScreenHeader({
   const quietIconColor = noctalia.text.secondary;
 
   return (
-    <View style={[styles.container, prominentTitle && styles.prominentContainer, variant === 'editorial' && styles.editorialContainer, { paddingTop: (includeTopInset ? insets.top : 0) + ThemeLayout.spacing.sm, borderBottomColor: noctalia.surface.border }]}>
+    <View style={[styles.container, isProminent && styles.prominentContainer, variant === 'editorial' && styles.editorialContainer, { paddingTop: (includeTopInset ? insets.top : 0) + ThemeLayout.spacing.sm, borderBottomColor: noctalia.surface.border }]}>
       <View style={[styles.titleRow, isNarrow && styles.titleRowNarrow, stackActions && styles.titleRowStacked, wrapInlineSlot && styles.searchRowWrapped]}>
         <View style={[styles.titleBlock, stackActions && styles.titleBlockStacked,
           Boolean(inlineSlot) && (canInlineSlot
             ? { flex: 0, flexBasis: 'auto', width: inlineTitleWidth }
             : { flex: 0, flexBasis: 'auto', width: '100%', paddingRight: stackActions ? 0 : actions.length * 52 }),
         ]}>
-          <Text
-            style={[styles.brand, prominentTitle && styles.quietBrand, variant === 'editorial' && styles.editorialBrand, {
+          {showBrand ? <Text
+            style={[styles.brand, isProminent && styles.quietBrand, variant === 'editorial' && styles.editorialBrand, {
               color: noctalia.text.primary,
               fontSize: brandTypography.fontSize * brandFontScale,
               lineHeight: brandTypography.lineHeight * brandFontScale,
@@ -102,12 +107,12 @@ export const NoctaliaScreenHeader = memo(function NoctaliaScreenHeader({
             minimumFontScale={0.84}
           >
             Noctalia
-          </Text>
+          </Text> : null}
           <Text
-            accessibilityRole={prominentTitle || variant === 'editorial' ? 'header' : undefined}
+            accessibilityRole={isProminent || variant === 'editorial' ? 'header' : undefined}
             allowFontScaling={false}
-            style={[styles.subtitle, prominentTitle && styles.prominentTitle, variant === 'editorial' && styles.editorialTitle, {
-              color: prominentTitle || variant === 'editorial' ? noctalia.text.primary : noctalia.text.secondary,
+            style={[styles.subtitle, isProminent && styles.prominentTitle, variant === 'editorial' && styles.editorialTitle, {
+              color: isProminent || variant === 'editorial' ? noctalia.text.primary : noctalia.text.secondary,
               fontSize: titleTypography.fontSize * titleFontScale,
               lineHeight: titleTypography.lineHeight * titleFontScale,
             }]}

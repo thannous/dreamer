@@ -1371,38 +1371,15 @@ describe('Recording screen', () => {
     expect(screen.queryByTestId(TID.Button.RecordingHome)).toBeNull();
   });
 
-  it('keeps capture navigation hidden on desktop Web', () => {
+  it('leaves desktop Web navigation to the sidebar outside a capture review', () => {
     mockPlatformOS = 'web';
     mockViewportWidth = 1280;
 
     render(<RecordingScreen />);
 
+    // The root desktop shell renders the sidebar; Capture adds no second exit.
     expect(screen.queryByTestId('recording-bottom-nav')).toBeNull();
-    expect(screen.getByTestId(TID.Button.RecordingHome)).toBeTruthy();
-  });
-
-  it('returns to tabs from desktop capture when the stack cannot go back', () => {
-    mockPlatformOS = 'web';
-    mockViewportWidth = 1280;
-    mockCanGoBack.mockReturnValue(false);
-
-    render(<RecordingScreen />);
-    fireEvent.click(screen.getByTestId(TID.Button.RecordingHome));
-
-    expect(mockBack).not.toHaveBeenCalled();
-    expect(mockReplace).toHaveBeenCalledWith('/(tabs)');
-  });
-
-  it('pops capture on desktop Web when the stack can go back', () => {
-    mockPlatformOS = 'web';
-    mockViewportWidth = 1280;
-    mockCanGoBack.mockReturnValue(true);
-
-    render(<RecordingScreen />);
-    fireEvent.click(screen.getByTestId(TID.Button.RecordingHome));
-
-    expect(mockBack).toHaveBeenCalledTimes(1);
-    expect(mockReplace).not.toHaveBeenCalled();
+    expect(screen.queryByTestId(TID.Button.RecordingHome)).toBeNull();
   });
 
   it('keeps a voice failure visible until the user explicitly switches to text', async () => {
@@ -2007,8 +1984,8 @@ describe('Recording screen', () => {
     expect(screen.getByTestId('recording-mode').getAttribute('data-value')).toBe('voice');
     expect(mockStartRecording).not.toHaveBeenCalled();
     expect(mockSaveInputModePreference).not.toHaveBeenCalled();
-    fireEvent.click(screen.getByTestId(TID.Button.RecordingHome));
-    expect(mockReplace).toHaveBeenCalled();
+    // On desktop the root sidebar stays usable during a failed restore; Capture
+    // itself renders no exit control outside a review.
 
     const retry = screen.getByRole('button', { name: 'recording.draft_restore.retry' });
     act(() => {

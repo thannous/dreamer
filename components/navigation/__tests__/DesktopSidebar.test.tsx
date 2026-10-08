@@ -7,6 +7,8 @@ import { DesktopSidebar } from '@/components/navigation/DesktopSidebar';
 import { TID } from '@/lib/testIDs';
 
 const mockPush = jest.fn();
+const mockNavigate = jest.fn();
+const mockDismissTo = jest.fn();
 let mockPathname = '/journal';
 let mockReturningGuestBlocked = false;
 
@@ -47,7 +49,7 @@ jest.mock('expo-image', () => ({
 
 jest.mock('expo-router', () => ({
   usePathname: () => mockPathname,
-  useRouter: () => ({ push: mockPush }),
+  useRouter: () => ({ push: mockPush, navigate: mockNavigate, dismissTo: mockDismissTo }),
 }));
 
 jest.mock('@/components/ui/icon-symbol', () => ({
@@ -86,6 +88,8 @@ jest.mock('@/lib/appVersion', () => ({
 afterEach(() => {
   cleanup();
   mockPush.mockClear();
+  mockNavigate.mockClear();
+  mockDismissTo.mockClear();
   mockPathname = '/journal';
   mockReturningGuestBlocked = false;
 });
@@ -106,8 +110,15 @@ describe('DesktopSidebar', () => {
     expect(screen.getByRole('button', { name: 'nav.explore' }).hasAttribute('aria-current')).toBe(false);
     expect(screen.getByRole('button', { name: 'nav.settings' }).getAttribute('aria-current')).toBe('page');
     expect(document.querySelectorAll('[aria-current="page"]')).toHaveLength(1);
+    // The current destination is inert: tapping it must not stack a duplicate.
     fireEvent.click(screen.getByRole('button', { name: 'nav.settings' }));
-    expect(mockPush).toHaveBeenCalledWith('/settings');
+    expect(mockPush).not.toHaveBeenCalled();
+    expect(mockDismissTo).not.toHaveBeenCalled();
+    // From a root screen, peers dismiss back instead of growing the stack.
+    fireEvent.click(screen.getByRole('button', { name: 'nav.journal' }));
+    expect(mockDismissTo).toHaveBeenCalledWith('/(tabs)/journal');
+    fireEvent.click(screen.getByTestId(TID.Tab.AddDream));
+    expect(mockDismissTo).toHaveBeenCalledWith('/recording');
   });
 
   it('keeps Home, Journal, Capture, Stats and Explorer as primary items with a single Settings footer', () => {
@@ -124,7 +135,7 @@ describe('DesktopSidebar', () => {
     expect(mockPush).toHaveBeenCalledWith('/recording');
 
     fireEvent.click(screen.getByTestId(TID.Tab.Explore));
-    expect(mockPush).toHaveBeenCalledWith('/explore');
+    expect(mockNavigate).toHaveBeenCalledWith('/(tabs)/explore');
 
     fireEvent.click(screen.getByTestId(TID.Tab.Settings));
     expect(mockPush).toHaveBeenCalledWith('/settings');

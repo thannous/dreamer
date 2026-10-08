@@ -140,7 +140,7 @@ describe('Recording draft hydration boundary', () => {
   });
   afterEach(cleanup);
 
-  it('disables real editor, mode, microphone and save controls until restore completes, but permits exit', async () => {
+  it('disables real editor, mode, microphone and save controls until restore completes', async () => {
     const view = render(<RecordingScreen />);
     await act(async () => {});
     expect(screen.getByTestId(TID.Screen.Recording).getAttribute('aria-busy')).toBe('true');
@@ -157,8 +157,7 @@ describe('Recording draft hydration boundary', () => {
     expect(screen.queryByTestId('allow-microphone')).toBeNull();
     expect(mockAddDream).not.toHaveBeenCalled();
     expect(mockNoteInput).not.toHaveBeenCalled();
-    fireEvent.click(screen.getByTestId(TID.Button.RecordingHome));
-    expect(mockBack).toHaveBeenCalledTimes(1);
+    // Exit stays available through the desktop sidebar, which the root shell renders.
 
     act(() => {
       mockRestore('My durable dream');

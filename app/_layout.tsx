@@ -27,6 +27,7 @@ import AnimatedSplashScreen, {
   getSplashMinimumVisibleMs,
 } from '@/components/AnimatedSplashScreen';
 import { ErrorBoundary } from '@/components/ErrorBoundary';
+import { DesktopShell } from '@/components/navigation/DesktopShell';
 import { AnalysisFlightIndicator } from '@/components/analysis/AnalysisFlightIndicator';
 import { EngagementRemindersHost } from '@/components/reminders/EngagementRemindersHost';
 import { OfflineModelPromptHost } from '@/components/speech/OfflineModelPromptHost';
@@ -832,6 +833,7 @@ function RootLayoutNav({
               surface that is immediately detached; later navigation keeps the
               normal platform animation. */}
           <QuickSettingsProvider disabled={isLucidTrainer}>
+          <DesktopShell>
           <Stack
             screenOptions={{
               animation: nonCriticalStartupEnabled ? 'default' : 'none',
@@ -862,6 +864,7 @@ function RootLayoutNav({
             <Stack.Screen name="lucid" options={{ headerShown: false }} />
             <Stack.Screen name="auth/reset-password" options={{ headerShown: false }} />
           </Stack>
+          </DesktopShell>
           </QuickSettingsProvider>
           {!isLucidTrainer ? <><OfflineModelPromptHost /><EngagementRemindersHost /><AnalysisFlightIndicator /></> : null}
           {!isLucidTrainer ? <VercelAnalytics /> : null}

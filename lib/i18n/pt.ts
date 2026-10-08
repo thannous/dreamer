@@ -88,6 +88,7 @@ const translations: Record<string, string> = {
     'nav.stats': 'Tendências',
     'nav.explore': 'Explorar',
     'nav.settings': 'Ajustes',
+    'nav.sidebar_tagline': 'Diário de sonhos',
     'explore.title': 'Explorar',
     'explore.intro': 'Explore no seu ritmo formas suaves de observar seus sonhos. Os símbolos podem abrir possibilidades, nunca uma resposta fixa.',
     'explore.symbols.title': 'Símbolos',

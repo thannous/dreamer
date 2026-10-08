@@ -47,7 +47,7 @@ function LucidRouter() {
     return (
       <View style={[styles.loading, { backgroundColor: palette.background }]}>
         {loading ? <ActivityIndicator color={palette.accent} size="large" /> : null}
-        <Text style={[styles.loadingText, { color: palette.textSecondary }]}>Lucid Trainer</Text>
+        <Text style={[styles.loadingText, { color: palette.textSecondary }]}>Lucid</Text>
         {error ? <Text style={[styles.error, { color: palette.danger }]}>{error}</Text> : null}
         {!loading && error ? (
           <View style={styles.retry}>

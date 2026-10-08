@@ -4,11 +4,11 @@ import { ActivityIndicator, Platform, Text, View, ViewStyle, useWindowDimensions
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { HapticTab } from '@/components/haptic-tab';
-import { DesktopSidebar } from '@/components/navigation/DesktopSidebar';
 import { IconSymbol } from '@/components/ui/icon-symbol';
 import {
   BOTTOM_NAVIGATION_MAX_FONT_SIZE_MULTIPLIER,
   DESKTOP_BREAKPOINT,
+  DESKTOP_CONTENT_MAX_WIDTH,
   getBottomNavigationLayout,
   getBottomNavigationItemStyle,
   getTabBarHorizontalLayout,
@@ -316,7 +316,14 @@ export default function TabLayout() {
         // of times a session. `none` is also the navigator default — pinned explicitly so
         // a future default change cannot start sliding the most-used surface in the app.
         animation: 'none',
-        sceneStyle: {
+        sceneStyle: isDesktopWeb ? {
+          backgroundColor: noctalia.screen.background,
+          // The sidebar lives in the root shell. Cap tab pages at a reading
+          // width so lists and recaps do not stretch across a wide window.
+          width: '100%',
+          maxWidth: DESKTOP_CONTENT_MAX_WIDTH,
+          alignSelf: 'center',
+        } : {
           backgroundColor: noctalia.screen.background,
         },
         headerShown: false,
@@ -429,18 +436,12 @@ export default function TabLayout() {
     </Tabs>
   );
 
-  // Keep one wrapper tree across the desktop breakpoint. Switching between a
-  // sidebar layout and a direct Tabs parent remounts the navigator and resets
-  // the selected tab after a resource push or a web resize.
+  // The desktop sidebar is rendered by the root shell so Capture and Settings
+  // keep it too. Keep this wrapper stable across the breakpoint: a different
+  // parent would remount the navigator and reset the selected tab.
   return (
-    <View
-      className={isDesktopWeb ? 'flex-1 flex-row' : 'flex-1'}
-      style={{ flex: 1, backgroundColor: noctalia.screen.background }}
-    >
-      {isDesktopWeb ? <DesktopSidebar /> : null}
-      <View className="flex-1">
-        {tabs}
-      </View>
+    <View className="flex-1" style={{ flex: 1, backgroundColor: noctalia.screen.background }}>
+      {tabs}
     </View>
   );
 }

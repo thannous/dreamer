@@ -66,6 +66,7 @@ jest.mock('@/hooks/usePrefersReducedMotion', () => ({ usePrefersReducedMotion: (
 jest.mock('@/hooks/useSplashFailsafe', () => ({ useSplashFailsafe: () => false }));
 jest.mock('@/components/AnimatedSplashScreen', () => ({ __esModule: true, default: () => null, getSplashMinimumVisibleMs: () => 0 }));
 jest.mock('@/components/ErrorBoundary', () => ({ ErrorBoundary: (props: React.PropsWithChildren) => mockChildren(props) }));
+jest.mock('@/components/navigation/DesktopShell', () => ({ DesktopShell: (props: React.PropsWithChildren) => mockChildren(props) }));
 jest.mock('@/components/analysis/AnalysisFlightIndicator', () => ({ AnalysisFlightIndicator: () => <div data-testid="analysis-host" /> }));
 jest.mock('@/components/reminders/EngagementRemindersHost', () => ({ EngagementRemindersHost: () => <div data-testid="reminders-host" /> }));
 jest.mock('@/components/speech/OfflineModelPromptHost', () => ({ OfflineModelPromptHost: () => <div data-testid="speech-host" /> }));

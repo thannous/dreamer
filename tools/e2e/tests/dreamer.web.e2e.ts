@@ -213,7 +213,7 @@ test('Quick Settings changes language and theme without losing the Capture draft
     await browser.setViewport({ width: theme === 'dark' ? 390 : 1280, height: 844 });
     // Desktop Capture returns to Today for the Settings control.
     if (theme === 'light') {
-      await screen.getByTestId('btn.recording.home', { visible: true }).tap();
+      await screen.getByTestId('tab.home', { visible: true }).tap();
       await screen.getByTestId('btn.header.home.settings', { visible: true }).tap();
     } else await settings.tap();
     await expect(screen.getByTestId('quick-settings.close', { visible: true })).toBeEnabled();

@@ -5,7 +5,7 @@ import mobileVersions from './release/mobile-versions.json';
 const LUCID_APP_VERSION = mobileVersions.apps.lucid.version;
 const LUCID_EAS_PROJECT_ID = 'd210576f-5dc4-4f7a-a5e1-a407c209c3a2';
 const LUCID_MICROPHONE_PERMISSION =
-  'Noctalia Lucid Trainer records a morning dream note on this device after you tap Speak. Audio stays local and is never uploaded or transcribed automatically.';
+  'Noctalia Lucid records a morning dream note on this device after you tap Speak. Audio stays local and is never uploaded or transcribed automatically.';
 
 export const DREAMER_QA_BUILD_ENV = 'NOCTALIA_DREAMER_QA_BUILD';
 export const DREAMER_QA_ANDROID_PACKAGE = 'com.tanuki75.noctalia.qa';
@@ -158,7 +158,7 @@ function createLucidExpoConfig(baseExpo: ExpoConfig): ExpoConfig {
 
   return {
     ...baseExpo,
-    name: 'Noctalia Lucid Trainer',
+    name: 'Noctalia Lucid',
     slug: 'noctalia-lucid-trainer',
     scheme: 'noctalia-lucid',
     icon: lucidIcon,
@@ -177,6 +177,12 @@ function createLucidExpoConfig(baseExpo: ExpoConfig): ExpoConfig {
         CADisableMinimumFrameDurationOnPhone: true,
         LSApplicationQueriesSchemes: ['noctalia'],
         NSMicrophoneUsageDescription: LUCID_MICROPHONE_PERMISSION,
+        // v1 ships without the Apple Health import or its entitlement. The
+        // shared HealthKit module still autolinks, so both purpose strings stay
+        // present (ITMS-90683) and describe what this version actually does.
+        NSHealthShareUsageDescription:
+          'Noctalia Lucid does not read Apple Health data in this version.',
+        NSHealthUpdateUsageDescription: 'Noctalia Lucid never writes or changes data in Apple Health.',
       },
     },
     android: {
@@ -205,8 +211,8 @@ function createLucidExpoConfig(baseExpo: ExpoConfig): ExpoConfig {
     web: {
       ...baseExpo.web,
       favicon: lucidIcon,
-      name: 'Noctalia Lucid Trainer',
-      shortName: 'Lucid Trainer',
+      name: 'Noctalia Lucid',
+      shortName: 'Lucid',
       themeColor: '#070B18',
       backgroundColor: '#070B18',
     },
@@ -241,15 +247,6 @@ function createLucidExpoConfig(baseExpo: ExpoConfig): ExpoConfig {
         },
       ],
       ['expo-notifications', { sounds: lucidCueSounds }],
-      [
-        '@kingstinct/react-native-healthkit',
-        {
-          background: false,
-          NSHealthUpdateUsageDescription: false,
-          NSHealthShareUsageDescription:
-            'Noctalia Lucid Trainer can import your past sleep history from Apple Health on this device so you can compare it with your dream journal. It never writes Health data, detects REM in real time, or controls night cues.',
-        },
-      ],
       './plugins/withLucidNoctaliaQueries',
       ...lucidGooglePlugins,
       // google-signin still autolinks from package.json without OAuth IDs, so

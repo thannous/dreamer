@@ -34,7 +34,7 @@ export const COPY = {
     eyebrow: 'Noctalia Plus',
     title: 'One subscription, two companions',
     subtitle:
-      'Use the same Noctalia account. Lucid Trainer’s core training stays useful without Plus.',
+      'Use the same Noctalia account. Lucid’s core training stays useful without Plus.',
     active: 'Plus active',
     free: 'Free plan',
     shared: 'Shared entitlement',
@@ -124,7 +124,7 @@ export const COPY = {
     eyebrow: 'Noctalia Plus',
     title: 'Un abonnement, deux compagnons',
     subtitle:
-      'Utilisez le même compte Noctalia. Le cœur de Lucid Trainer reste utile sans Plus.',
+      'Utilisez le même compte Noctalia. Le cœur de Lucid reste utile sans Plus.',
     active: 'Plus actif',
     free: 'Formule gratuite',
     shared: 'Droit partagé',
@@ -214,7 +214,7 @@ export const COPY = {
     eyebrow: 'Noctalia Plus',
     title: 'Una suscripción, dos compañeros',
     subtitle:
-      'Usa la misma cuenta de Noctalia. El entrenamiento esencial de Lucid Trainer sigue siendo útil sin Plus.',
+      'Usa la misma cuenta de Noctalia. El entrenamiento esencial de Lucid sigue siendo útil sin Plus.',
     active: 'Plus activo',
     free: 'Plan gratuito',
     shared: 'Derecho compartido',
@@ -304,7 +304,7 @@ export const COPY = {
     eyebrow: 'Noctalia Plus',
     title: 'Ein Abo, zwei Begleiter',
     subtitle:
-      'Verwende dasselbe Noctalia-Konto. Das Kerntraining von Lucid Trainer bleibt ohne Plus nützlich.',
+      'Verwende dasselbe Noctalia-Konto. Das Kerntraining von Lucid bleibt ohne Plus nützlich.',
     active: 'Plus aktiv',
     free: 'Kostenlos',
     shared: 'Gemeinsamer Anspruch',
@@ -394,7 +394,7 @@ export const COPY = {
     eyebrow: 'Noctalia Plus',
     title: 'Un abbonamento, due compagni',
     subtitle:
-      'Usa lo stesso account Noctalia. L’allenamento essenziale di Lucid Trainer resta utile senza Plus.',
+      'Usa lo stesso account Noctalia. L’allenamento essenziale di Lucid resta utile senza Plus.',
     active: 'Plus attivo',
     free: 'Piano gratuito',
     shared: 'Diritto condiviso',

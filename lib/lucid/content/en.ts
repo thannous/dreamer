@@ -3,7 +3,7 @@ import type { LucidTrainerContent } from './types';
 const content = {
   locale: 'en',
   chrome: {
-    appName: 'Noctalia Lucid Trainer',
+    appName: 'Noctalia Lucid',
     tagline: 'Train awareness while protecting your sleep.',
     tabs: {
       today: 'Today',
@@ -29,7 +29,7 @@ const content = {
   },
   onboarding: {
     title: 'Build a lucid-dream practice that fits your sleep',
-    intro: 'Lucid Trainer develops daytime awareness, bedtime preparation and morning reflection. A lucid dream may or may not occur; the practice is the goal.',
+    intro: 'Lucid develops daytime awareness, bedtime preparation and morning reflection. A lucid dream may or may not occur; the practice is the goal.',
     wellbeingNotice: 'This is a wellbeing and self-observation tool, not medical care. Protect sleep first and stop any exercise that leaves you distressed or unusually tired.',
     goalTitle: 'What would you like to practice?',
     goals: [
@@ -335,7 +335,7 @@ const content = {
     consentControl: 'Consent can be reviewed or withdrawn without blocking offline training.',
   },
   settings: {
-    title: 'Settings', reminders: 'Reality-check reminders', sleepWindow: 'Usual sleep window', nightSignals: 'Night audio cues', permissions: 'Permissions', accessibility: 'Accessibility and motion', language: 'Language', appearance: 'Dynamic, light, dark or system appearance', privacy: 'Privacy and analytics', dataManagement: 'Export and delete data', subscription: 'Noctalia Plus and purchases', noctaliaConnection: 'Connection to Noctalia', scienceAndLimits: 'Science and limits', help: 'Help and safety', about: 'About Lucid Trainer',
+    title: 'Settings', reminders: 'Reality-check reminders', sleepWindow: 'Usual sleep window', nightSignals: 'Night audio cues', permissions: 'Permissions', accessibility: 'Accessibility and motion', language: 'Language', appearance: 'Dynamic, light, dark or system appearance', privacy: 'Privacy and analytics', dataManagement: 'Export and delete data', subscription: 'Noctalia Plus and purchases', noctaliaConnection: 'Connection to Noctalia', scienceAndLimits: 'Science and limits', help: 'Help and safety', about: 'About Lucid',
   },
 } as const satisfies LucidTrainerContent;
 

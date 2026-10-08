@@ -137,12 +137,14 @@ describe('NoctaliaScreenHeader responsive actions', () => {
     }));
     render(<NoctaliaScreenHeader titleKey="nav.home" actions={actions} />);
 
-    const brand = screen.getByText('Noctalia');
+    // On desktop web the sidebar carries the wordmark, so the header omits it.
+    const brand = screen.queryByText('Noctalia');
+    expect(brand === null).toBe(width >= 1024);
     const subtitle = screen.getByText('nav.home');
-    const titleBlock = brand.parentElement;
+    const titleBlock = subtitle.parentElement;
     const titleRow = titleBlock?.parentElement ?? null;
     expect(nativeStyle(titleRow).paddingHorizontal).toBe(width < 480 ? 16 : 24);
-    [brand, subtitle].forEach((text) => {
+    [brand, subtitle].filter((text): text is HTMLElement => text !== null).forEach((text) => {
       expect(text.getAttribute('data-number-of-lines')).toBe(stacked || fontScale >= 1.3 ? null : '1');
     });
     actions.forEach((action) => {

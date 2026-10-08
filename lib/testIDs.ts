@@ -222,6 +222,7 @@ export const TID = {
   },
   Component: {
     SearchBar: 'component.searchBar',
+    DesktopSidebar: 'component.desktopSidebar',
     EmailVerificationBanner: 'component.emailVerificationBanner',
     AuthForgotPasswordPanel: 'component.auth.forgotPasswordPanel',
     InspirationPulse: 'component.inspiration.pulse',

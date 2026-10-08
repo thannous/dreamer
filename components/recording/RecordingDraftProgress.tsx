@@ -42,14 +42,17 @@ export function RecordingDraftProgress({ value, persisted = false, compact = fal
             {hint}
           </Text>
         ) : null}
-        <Text
-          key={`count-${fontScale}`}
-          allowFontScaling={false}
-          testID={TID.Component.RecordingDraftProgressCount}
-          style={[styles.count, captionTypography, { color: noctalia.text.secondary }]}
-        >
-          {countLabel}
-        </Text>
+        {/* An empty draft needs no counter: "0 characters" reads as a warning. */}
+        {progress.charCount > 0 ? (
+          <Text
+            key={`count-${fontScale}`}
+            allowFontScaling={false}
+            testID={TID.Component.RecordingDraftProgressCount}
+            style={[styles.count, captionTypography, { color: noctalia.text.secondary }]}
+          >
+            {countLabel}
+          </Text>
+        ) : null}
       </View> : null}
       {savedLabel && !inlineStatus ? (
         <Text

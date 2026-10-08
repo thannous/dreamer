@@ -23,7 +23,7 @@ const COPY = {
   en: {
     eyebrow: 'Permissions',
     title: 'Ask only when useful',
-    subtitle: 'Lucid Trainer works without notifications. Audio playback never requires microphone access.',
+    subtitle: 'Lucid works without notifications. Audio playback never requires microphone access.',
     notifications: 'Training reminders',
     granted: 'Granted',
     denied: 'Denied',
@@ -40,7 +40,7 @@ const COPY = {
   fr: {
     eyebrow: 'Permissions',
     title: 'Demander seulement au bon moment',
-    subtitle: 'Lucid Trainer fonctionne sans notifications. L’audio ne demande jamais le microphone.',
+    subtitle: 'Lucid fonctionne sans notifications. L’audio ne demande jamais le microphone.',
     notifications: 'Rappels d’entraînement',
     granted: 'Accordée',
     denied: 'Refusée',
@@ -57,7 +57,7 @@ const COPY = {
   es: {
     eyebrow: 'Permisos',
     title: 'Pedir solo cuando sea útil',
-    subtitle: 'Lucid Trainer funciona sin notificaciones. El audio nunca necesita micrófono.',
+    subtitle: 'Lucid funciona sin notificaciones. El audio nunca necesita micrófono.',
     notifications: 'Recordatorios',
     granted: 'Concedido',
     denied: 'Denegado',
@@ -74,7 +74,7 @@ const COPY = {
   de: {
     eyebrow: 'Berechtigungen',
     title: 'Nur bei Bedarf fragen',
-    subtitle: 'Lucid Trainer funktioniert ohne Benachrichtigungen. Audio braucht kein Mikrofon.',
+    subtitle: 'Lucid funktioniert ohne Benachrichtigungen. Audio braucht kein Mikrofon.',
     notifications: 'Trainingserinnerungen',
     granted: 'Erlaubt',
     denied: 'Abgelehnt',
@@ -91,7 +91,7 @@ const COPY = {
   it: {
     eyebrow: 'Permessi',
     title: 'Chiedi solo quando utile',
-    subtitle: 'Lucid Trainer funziona senza notifiche. L’audio non richiede microfono.',
+    subtitle: 'Lucid funziona senza notifiche. L’audio non richiede microfono.',
     notifications: 'Promemoria training',
     granted: 'Concesso',
     denied: 'Negato',
