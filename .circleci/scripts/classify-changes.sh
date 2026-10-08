@@ -92,6 +92,7 @@ if [[ ! -s "$changed_entries" ]]; then
 fi
 
 unsafe_change_status=false
+dependency_map="$(dirname "${BASH_SOURCE[0]}")/../dependency-consumers.tsv"
 while IFS= read -r -d '' raw_status; do
   status="${raw_status:0:1}"
   if [[ "$status" == "R" || "$status" == "C" ]]; then
@@ -110,6 +111,12 @@ while IFS= read -r -d '' raw_status; do
     echo "Git status '$raw_status' is fail-closed across every surface."
   fi
 done < "$changed_entries"
+
+# A deleted or renamed map cannot route shared dependencies from this checkout.
+if [[ ! -f "$dependency_map" ]]; then
+  unsafe_change_status=true
+  echo "Shared dependency map is missing; failing closed across every surface."
+fi
 
 echo "Changed files:"
 cat "$changed_files"
@@ -142,7 +149,7 @@ else
       continue
     fi
     # Exact shared dependencies live in one executable map, also exercised by fixtures.
-    shared_consumers="$(awk -F '\t' -v changed="$path" '$1 == changed { print $3 }' "$(dirname "${BASH_SOURCE[0]}")/../dependency-consumers.tsv")"
+    shared_consumers="$(awk -F '\t' -v changed="$path" '$1 == changed { print $3 }' "$dependency_map")"
     if [[ -n "$shared_consumers" ]]; then
       for consumer in $shared_consumers; do
         case "$consumer" in

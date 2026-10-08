@@ -165,6 +165,19 @@ git -C "$test_root" commit -qm "replace app source with a symlink"
 destructive_head="$(git -C "$test_root" rev-parse HEAD)"
 assert_parameters "type change fails closed" "$all_surfaces" pr "$base_revision" "$destructive_head"
 
+# A head that deletes or renames the dependency map must still write parameters.
+mapless_ci="$test_root/mapless/.circleci/scripts"
+mkdir -p "$mapless_ci"
+cp "$classifier" "$repository_root/.circleci/scripts/shared-build-impact.py" "$mapless_ci/"
+git -C "$test_root" reset -q --hard "$base_revision"
+git -C "$test_root" rm -q docs-src/content/reference.md
+git -C "$test_root" commit -qm "delete editorial source without a map"
+destructive_head="$(git -C "$test_root" rev-parse HEAD)"
+repository_classifier="$classifier"
+classifier="$mapless_ci/classify-changes.sh"
+assert_parameters "missing dependency map fails closed" "$all_surfaces" pr "$base_revision" "$destructive_head"
+classifier="$repository_classifier"
+
 assert_change \
   "Noctalia app change" app/feature.ts pr \
   true false false false false true false false false false false
