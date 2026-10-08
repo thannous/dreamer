@@ -2,6 +2,7 @@ import type { ImageSourcePropType } from 'react-native';
 
 import type { BreathingPatternId } from '@/content/breathing';
 import { Atmosphere, NightTheme, PaperTheme } from '@/constants/theme';
+import { WORLD_SALES_ENABLED } from '@/constants/worldSales';
 import type { CategorySlug, SessionId } from '@/lib/types';
 
 export type WorldId =
@@ -202,7 +203,7 @@ export const WORLD_BY_ID = {
   },
   tide: {
     id: 'tide',
-    access: 'purchase',
+    access: WORLD_SALES_ENABLED ? 'purchase' : 'free',
     appearance: 'dark',
     nameKey: 'world.tide.name',
     descriptionKey: 'world.tide.description',
@@ -234,7 +235,7 @@ export const WORLD_BY_ID = {
   },
   sanctuary: {
     id: 'sanctuary',
-    access: 'purchase',
+    access: WORLD_SALES_ENABLED ? 'purchase' : 'free',
     appearance: 'dark',
     nameKey: 'world.sanctuary.name',
     descriptionKey: 'world.sanctuary.description',
@@ -266,7 +267,7 @@ export const WORLD_BY_ID = {
   },
   cloud: {
     id: 'cloud',
-    access: 'purchase',
+    access: WORLD_SALES_ENABLED ? 'purchase' : 'free',
     appearance: 'light',
     nameKey: 'world.cloud.name',
     descriptionKey: 'world.cloud.description',

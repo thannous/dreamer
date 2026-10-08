@@ -60,8 +60,9 @@ export default function SessionDetail() {
     return (
       <WorldScene world={world} artwork="trainer" scrimStrength={1.2}>
         <View className="flex-1 items-center justify-center px-gutter">
-          <Card className="w-full max-w-md">
-            <Text variant="h3">{t('search.empty.title')}</Text>
+          <Card className="w-full max-w-md gap-4">
+            <Text variant="h3">{t('notFound.title')}</Text>
+            <Button label={t('complete.home')} onPress={() => router.replace('/')} />
           </Card>
         </View>
       </WorldScene>
@@ -144,7 +145,12 @@ export default function SessionDetail() {
 
         <Card>
           <View className="gap-6">
-            <Text variant="quote">{t(`session.${session.id}.description` as TranslationKey)}</Text>
+            <View className="gap-2">
+              <Text variant="quote">{t(`session.${session.id}.description` as TranslationKey)}</Text>
+              <Text variant="caption" tone="muted" testID="session.format">
+                {t('session.format')}
+              </Text>
+            </View>
 
             <View className="gap-3">
               <Text variant="overline">{t('session.benefits')}</Text>

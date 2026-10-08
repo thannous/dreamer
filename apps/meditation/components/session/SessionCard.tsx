@@ -39,9 +39,7 @@ export function SessionCard({ session, variant = 'row', appearance, testID }: Pr
   const category = t(`category.${session.categorySlug}.name` as TranslationKey);
   const practice = getSessionPractice(session.id);
   const method = t(`session.method.${practice.method}` as TranslationKey);
-  const guidance = t(`session.guidance.${practice.guidance}` as TranslationKey);
   const methodLabel = t('session.method.label', { method });
-  const guidanceLabel = t('session.guidance.label', { guidance });
   const benefits = Array.from({ length: session.benefitCount }, (_, index) =>
     t(`session.${session.id}.benefit.${index + 1}` as TranslationKey)
   );
@@ -61,7 +59,7 @@ export function SessionCard({ session, variant = 'row', appearance, testID }: Pr
     : null;
   const durationMeta = `${t('common.minutes', { count: minutes })} · ${category}`;
   const artwork = getSessionArtwork(session.id, appearance);
-  const accessibilityLabel = [title, durationMeta, methodLabel, guidanceLabel, ...benefits, accessLabel, savedLabel]
+  const accessibilityLabel = [title, durationMeta, methodLabel, ...benefits, accessLabel, savedLabel]
     .filter(Boolean)
     .join('. ');
 
@@ -80,12 +78,6 @@ export function SessionCard({ session, variant = 'row', appearance, testID }: Pr
         tone="muted"
         testID={testID ? `${testID}.method` : undefined}>
         {methodLabel}
-      </Text>
-      <Text
-        variant="caption"
-        tone="muted"
-        testID={testID ? `${testID}.guidance` : undefined}>
-        {guidanceLabel}
       </Text>
     </View>
   );

@@ -1,6 +1,7 @@
 import { useRouter } from 'expo-router';
 import React from 'react';
 import { ScrollView, StyleSheet, View, useWindowDimensions } from 'react-native';
+import { ScopedTheme } from 'uniwind';
 
 import { Screen } from '@/components/atmosphere/Screen';
 import {
@@ -48,43 +49,46 @@ export default function ExperienceStep() {
     </View>
   );
 
+  // The veil darkens the scene in both modes, so the copy follows the dark palette.
   return (
-    <Screen variant="subtle">
-      <View pointerEvents="none" style={[StyleSheet.absoluteFill, styles.atmosphereVeil]} />
-      <View testID={TID.Screen.OnboardingExperience} className="flex-1">
-        <View className="flex-row items-center justify-between px-7 pb-2 pt-2">
-          <BackLink
-            label={t('common.back')}
-            fallbackHref="/goals"
-            testID={TID.Button.OnboardingBack}
-          />
-          <StepDots current={2} total={4} />
-        </View>
-
-        <ScrollView
-          className="flex-1"
-          contentContainerClassName="pb-2 pt-5"
-          showsVerticalScrollIndicator={false}>
-          <View className="gap-3 px-7">
-            <Text variant="h1">{t('onboarding.experience.title')}</Text>
-            <Rule className="self-start" />
-            <Text variant="bodySm">{t('onboarding.experience.subtitle')}</Text>
-          </View>
-
-          <View style={styles.journeyOffset}>
-            <ExperienceJourney
-              items={items}
-              selected={state.experience}
-              onSelect={(experience) => update({ experience })}
+    <ScopedTheme theme="dark">
+      <Screen variant="subtle">
+        <View pointerEvents="none" style={[StyleSheet.absoluteFill, styles.atmosphereVeil]} />
+        <View testID={TID.Screen.OnboardingExperience} className="flex-1">
+          <View className="flex-row items-center justify-between px-7 pb-2 pt-2">
+            <BackLink
+              label={t('common.back')}
+              fallbackHref="/goals"
+              testID={TID.Button.OnboardingBack}
             />
+            <StepDots current={2} total={4} />
           </View>
 
-          {largeText ? footer : null}
-        </ScrollView>
+          <ScrollView
+            className="flex-1"
+            contentContainerClassName="pb-2 pt-5"
+            showsVerticalScrollIndicator={false}>
+            <View className="gap-3 px-7">
+              <Text variant="h1">{t('onboarding.experience.title')}</Text>
+              <Rule className="self-start" />
+              <Text variant="bodySm">{t('onboarding.experience.subtitle')}</Text>
+            </View>
 
-        {largeText ? null : footer}
-      </View>
-    </Screen>
+            <View style={styles.journeyOffset}>
+              <ExperienceJourney
+                items={items}
+                selected={state.experience}
+                onSelect={(experience) => update({ experience })}
+              />
+            </View>
+
+            {largeText ? footer : null}
+          </ScrollView>
+
+          {largeText ? null : footer}
+        </View>
+      </Screen>
+    </ScopedTheme>
   );
 }
 

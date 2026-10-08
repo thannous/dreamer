@@ -3,47 +3,42 @@ import type { SessionId } from '@/lib/types';
 import { SESSIONS } from './sessions';
 
 /**
- * Method and guidance are editorial metadata for SessionCard, not player
- * behaviour. They are derived from the existing session descriptions, not from
- * unshipped audio scripts. Keep the vocabularies small so two Sleep cards can
- * differ without inventing a unique technique for every title.
+ * The method is editorial metadata for SessionCard, not player behaviour: it
+ * names what the listener practises during the ambience. Sessions have no
+ * spoken guidance in v1, so the card must not describe a guidance level.
  */
 export const SESSION_METHODS = ['breath', 'body', 'attention', 'presence', 'reflection'] as const;
 export type SessionMethod = (typeof SESSION_METHODS)[number];
 
-export const SESSION_GUIDANCE_LEVELS = ['fading', 'guided', 'light'] as const;
-export type SessionGuidanceLevel = (typeof SESSION_GUIDANCE_LEVELS)[number];
-
 export type SessionPracticeMeta = {
   method: SessionMethod;
-  guidance: SessionGuidanceLevel;
 };
 
 const SESSION_PRACTICE = {
-  'sleep-descent': { method: 'breath', guidance: 'guided' },
-  'sleep-quick-fall': { method: 'breath', guidance: 'fading' },
-  'sleep-body-scan': { method: 'body', guidance: 'guided' },
-  'sleep-night-return': { method: 'presence', guidance: 'light' },
-  'stress-shoulders': { method: 'body', guidance: 'guided' },
-  'stress-unclench': { method: 'body', guidance: 'guided' },
-  'stress-day-close': { method: 'reflection', guidance: 'guided' },
-  'stress-storm': { method: 'presence', guidance: 'light' },
-  'focus-morning': { method: 'attention', guidance: 'light' },
-  'focus-one-thing': { method: 'breath', guidance: 'guided' },
-  'focus-thread': { method: 'breath', guidance: 'fading' },
-  'focus-deep': { method: 'attention', guidance: 'guided' },
-  'anxiety-ground': { method: 'body', guidance: 'light' },
-  'anxiety-wave': { method: 'presence', guidance: 'guided' },
-  'anxiety-chest': { method: 'breath', guidance: 'guided' },
-  'anxiety-evening': { method: 'presence', guidance: 'light' },
-  'gratitude-three': { method: 'reflection', guidance: 'light' },
-  'gratitude-people': { method: 'reflection', guidance: 'guided' },
-  'gratitude-ordinary': { method: 'reflection', guidance: 'guided' },
-  'gratitude-year': { method: 'reflection', guidance: 'guided' },
-  'dream-threshold': { method: 'presence', guidance: 'light' },
-  'dream-recall': { method: 'reflection', guidance: 'light' },
-  'dream-question': { method: 'reflection', guidance: 'light' },
-  'dream-lucid': { method: 'attention', guidance: 'guided' },
+  'sleep-descent': { method: 'breath' },
+  'sleep-quick-fall': { method: 'breath' },
+  'sleep-body-scan': { method: 'body' },
+  'sleep-night-return': { method: 'presence' },
+  'stress-shoulders': { method: 'body' },
+  'stress-unclench': { method: 'body' },
+  'stress-day-close': { method: 'reflection' },
+  'stress-storm': { method: 'presence' },
+  'focus-morning': { method: 'attention' },
+  'focus-one-thing': { method: 'breath' },
+  'focus-thread': { method: 'breath' },
+  'focus-deep': { method: 'attention' },
+  'anxiety-ground': { method: 'body' },
+  'anxiety-wave': { method: 'presence' },
+  'anxiety-chest': { method: 'breath' },
+  'anxiety-evening': { method: 'presence' },
+  'gratitude-three': { method: 'reflection' },
+  'gratitude-people': { method: 'reflection' },
+  'gratitude-ordinary': { method: 'reflection' },
+  'gratitude-year': { method: 'reflection' },
+  'dream-threshold': { method: 'presence' },
+  'dream-recall': { method: 'reflection' },
+  'dream-question': { method: 'reflection' },
+  'dream-lucid': { method: 'attention' },
 } as const satisfies Record<string, SessionPracticeMeta>;
 
 export type CatalogueSessionId = keyof typeof SESSION_PRACTICE;
@@ -54,7 +49,7 @@ export const SESSION_PRACTICE_BY_ID: Record<CatalogueSessionId, SessionPracticeM
 export const getSessionPractice = (id: SessionId): SessionPracticeMeta => {
   const practice = SESSION_PRACTICE[id as CatalogueSessionId];
   if (!practice) {
-    throw new Error(`Missing method/guidance metadata for session ${id}`);
+    throw new Error(`Missing method metadata for session ${id}`);
   }
   return practice;
 };
@@ -64,13 +59,13 @@ export const catalogueSessionIds = (): CatalogueSessionId[] =>
 
 for (const session of SESSIONS) {
   if (!(session.id in SESSION_PRACTICE)) {
-    throw new Error(`Missing method/guidance metadata for session ${session.id}`);
+    throw new Error(`Missing method metadata for session ${session.id}`);
   }
 }
 
 const CATALOGUE_IDS = new Set(SESSIONS.map((session) => session.id));
 for (const id of Object.keys(SESSION_PRACTICE)) {
   if (!CATALOGUE_IDS.has(id)) {
-    throw new Error(`Unexpected method/guidance metadata for session ${id}`);
+    throw new Error(`Unexpected method metadata for session ${id}`);
   }
 }

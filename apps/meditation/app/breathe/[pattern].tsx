@@ -188,8 +188,13 @@ export default function BreatheExercise() {
   // and its cue. Repeating it under itself adds noise, so only show the cue
   // when the translation contributes something new.
   const worldRitual = t(`world.${world.id}.ritual` as TranslationKey);
+  // Breath holds can make some people dizzy: say so before the first cycle.
+  // The regular layout uses the cue slot; the compact one hides that slot, so
+  // it shows the same line above the controls instead.
+  const hasHold = pattern.phases.some((phase) => phase.type === 'hold');
+  const holdCaution = hasHold ? t('breathe.caution') : null;
   const phaseCue = !started
-    ? worldRitual
+    ? (holdCaution ?? worldRitual)
     : translatedCue === phaseLabel
       ? null
       : translatedCue;
@@ -276,6 +281,17 @@ export default function BreatheExercise() {
     />
   );
 
+  const compactCaution =
+    !started && holdCaution ? (
+      <Text
+        testID="breathe.caution"
+        variant="caption"
+        tone="muted"
+        className="px-gutter text-center">
+        {holdCaution}
+      </Text>
+    ) : null;
+
   return (
     <WorldScene world={world} artwork="trainer" scrimStrength={1.1} breathMotion={false}>
       <View className="flex-1 overflow-hidden">
@@ -295,6 +311,7 @@ export default function BreatheExercise() {
             bounces={false}
             keyboardShouldPersistTaps="handled">
             <View className="px-gutter">{focus}</View>
+            {compactCaution}
             {controls}
           </ScrollView>
         ) : (

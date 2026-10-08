@@ -177,7 +177,7 @@ describe('paywall commercial structure', () => {
 
     fireEvent.press(terms);
     fireEvent.press(privacy);
-    expect(openURL).toHaveBeenNthCalledWith(1, 'https://noctalia.app/terms');
-    expect(openURL).toHaveBeenNthCalledWith(2, 'https://noctalia.app/privacy');
+    expect(openURL).toHaveBeenNthCalledWith(1, 'https://noctalia.app/fr/cgu/');
+    expect(openURL).toHaveBeenNthCalledWith(2, 'https://noctalia.app/fr/politique-confidentialite/');
   });
 });
