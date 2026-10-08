@@ -511,7 +511,7 @@
     </section>
 
     <!-- 4b. Remembering: journal, emotions over time, streak -->
-    <section class="oh-section oh-remember" data-chapter="remembering">
+    <section id="fonctionnalites" class="oh-section oh-remember" data-chapter="remembering">
         <div class="oh-section-head reveal">
             <div>
                 <span class="oh-index" aria-hidden="true">04 · Se souvenir</span>
