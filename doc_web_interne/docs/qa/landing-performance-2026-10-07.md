@@ -135,3 +135,23 @@ Journey check: light and full tiers play the intro and the WebM loop, reveal
 the headline and dreams, play the ending on desktop, with no page, console or
 request errors. Screens checked at 1440×900 and 390×844 for `fr`, `de` and
 `pt-br`. Not covered: physical devices and Safari.
+
+## Journey heading and redundancy pass — 2026-10-08
+
+Reported on a phone: the analysis card covered the bottom of "Comprends leur
+sens". Measured in the light tier, the settled card overlapped the heading by
+5–50 px at 360–414 px widths in all six languages: the card used a fixed
+`top` while the heading height varies with language and wrapping. The card is
+now placed from the heading's measured height (`--oh-journey-title-height`);
+the gap is 16 px on phones and 24 px on desktop at 360×640, 375×667, 390×664,
+390×844, 414×736, 768×1024, 1280×600 and 1440×900, with the card inside the
+viewport each time.
+
+Redundant copy removed in all six languages: the "Pour les matins comme
+ceux-là" profiles (each card repeated voice capture, the journal or the
+recurring image already shown), the Plus description that repeated the Google
+Play note under the plans, and the tools lede that listed the four cards below
+it. Phones show the five latest journal rows instead of all ten titles a third
+time. Symbol links, tool links, FAQ, titles and structured data are unchanged.
+`docs:build` and `docs:check` pass; the journey check reports no errors in the
+light and full tiers. Not covered: physical devices and Safari.

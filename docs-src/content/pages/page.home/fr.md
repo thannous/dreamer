@@ -558,32 +558,6 @@
         </div>
     </section>
 
-    <!-- 5. Who is it for? (Profiles) -->
-    <section class="oh-section">
-        <div class="oh-section-head reveal">
-            <div>
-                <h2 class="oh-h2">Pour les matins comme ceux-là</h2>
-            </div>
-        </div>
-        <div class="oh-profiles">
-            <div class="oh-profile reveal">
-                <span class="oh-profile-icon"><i data-lucide="search"></i></span>
-                <h3>Vos rêves s’envolent avant le café</h3>
-                <p>Trente secondes de voix, c’est plus simple qu’un texte soigné quand on est encore à moitié endormi.</p>
-            </div>
-            <div class="oh-profile reveal">
-                <span class="oh-profile-icon"><i data-lucide="feather"></i></span>
-                <h3>Vous tenez déjà un journal</h3>
-                <p>Vos rêves trouvent leur place à côté des personnes, des questions et des émotions sur lesquelles vous écrivez déjà.</p>
-            </div>
-            <div class="oh-profile reveal">
-                <span class="oh-profile-icon"><i data-lucide="moon"></i></span>
-                <h3>Une image revient sans cesse</h3>
-                <p>Les récits enregistrés permettent de comparer la scène — et ce qu’elle vous a fait ressentir — à chaque retour.</p>
-            </div>
-        </div>
-    </section>
-
     <!-- 8. Dream Symbols Dictionary -->
     <section id="symboles">
         <div class="oh-section-head reveal">
@@ -674,7 +648,6 @@
             <div>
                 <h2 id="explorer-outils-noctalia" class="oh-h2">Trouvez votre porte d’entrée</h2>
             </div>
-            <p class="oh-lede">Partez de là où vous en êtes : une saisie plus rapide, une réflexion guidée, un symbole à chercher ou un comparatif d’applications.</p>
         </div>
         <div class="oh-tools">
             <a href="/fr/journal-de-reves-vocal" class="oh-tool glass-panel reveal">
@@ -735,7 +708,6 @@
                     <span class="oh-plan-tag">Offre payante</span>
                     <h3>Noctalia Plus</h3>
                     <div class="oh-plan-price">Prix affiché sur Google Play</div>
-                    <p class="oh-plan-desc">Google Play affiche l’option mensuelle ou annuelle disponible pour votre pays et votre compte.</p>
                 </div>
                 <ul>
                     <li>Analyses de rêves et images illimitées</li>

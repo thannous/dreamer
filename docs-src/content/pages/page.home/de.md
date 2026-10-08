@@ -558,32 +558,6 @@
         </div>
     </section>
 
-    <!-- 5. Who is it for? (Profiles) -->
-    <section class="oh-section">
-        <div class="oh-section-head reveal">
-            <div>
-                <h2 class="oh-h2">Gemacht für solche Morgen</h2>
-            </div>
-        </div>
-        <div class="oh-profiles">
-            <div class="oh-profile reveal">
-                <span class="oh-profile-icon"><i data-lucide="search"></i></span>
-                <h3>Beim Frühstück ist der Traum verflogen</h3>
-                <p>Dreißig Sekunden Sprache sind leichter als ein ausformulierter Eintrag, solange du noch halb schläfst.</p>
-            </div>
-            <div class="oh-profile reveal">
-                <span class="oh-profile-icon"><i data-lucide="feather"></i></span>
-                <h3>Du führst schon ein Tagebuch</h3>
-                <p>Deine Träume finden ihren Platz neben den Menschen, Fragen und Gefühlen, über die du ohnehin schreibst.</p>
-            </div>
-            <div class="oh-profile reveal">
-                <span class="oh-profile-icon"><i data-lucide="moon"></i></span>
-                <h3>Ein Bild kehrt immer wieder</h3>
-                <p>Gespeicherte Einträge machen es leichter, die Szene – und was sie in dir auslöst – bei jeder Wiederkehr zu vergleichen.</p>
-            </div>
-        </div>
-    </section>
-
     <!-- 8. Dream Symbols Dictionary -->
     <section id="traumsymbole">
         <div class="oh-section-head reveal">
@@ -674,7 +648,6 @@
             <div>
                 <h2 id="noctalia-werkzeuge-entdecken" class="oh-h2">Finde deinen Einstieg</h2>
             </div>
-            <p class="oh-lede">Beginne dort, wo du gerade stehst: schneller festhalten, geführt reflektieren, ein Symbol nachschlagen oder Traumtagebuch-Apps vergleichen.</p>
         </div>
         <div class="oh-tools">
             <a href="/de/traumtagebuch-spracheingabe" class="oh-tool glass-panel reveal">
@@ -735,7 +708,6 @@
                     <span class="oh-plan-tag">Bezahlabo</span>
                     <h3>Noctalia Plus</h3>
                     <div class="oh-plan-price">Preis in Google Play</div>
-                    <p class="oh-plan-desc">Google Play zeigt die monatliche oder jährliche Option, die für dein Land und dein Konto verfügbar ist.</p>
                 </div>
                 <ul>
                     <li>Unbegrenzte Traumanalysen und Bilder</li>

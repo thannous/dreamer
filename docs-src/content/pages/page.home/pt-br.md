@@ -558,32 +558,6 @@
         </div>
     </section>
 
-    <!-- 5. Who is it for? (Profiles) -->
-    <section class="oh-section">
-        <div class="oh-section-head reveal">
-            <div>
-                <h2 class="oh-h2">Para manhãs como essas</h2>
-            </div>
-        </div>
-        <div class="oh-profiles">
-            <div class="oh-profile reveal">
-                <span class="oh-profile-icon"><i data-lucide="search"></i></span>
-                <h3>Seus sonhos somem antes do café</h3>
-                <p>Trinta segundos de voz são mais fáceis do que um texto caprichado quando você ainda está meio dormindo.</p>
-            </div>
-            <div class="oh-profile reveal">
-                <span class="oh-profile-icon"><i data-lucide="feather"></i></span>
-                <h3>Você já escreve um diário</h3>
-                <p>Seus sonhos ganham lugar ao lado das pessoas, perguntas e emoções sobre as quais você já escreve.</p>
-            </div>
-            <div class="oh-profile reveal">
-                <span class="oh-profile-icon"><i data-lucide="moon"></i></span>
-                <h3>Uma imagem sempre volta</h3>
-                <p>Os relatos salvos ajudam a comparar a cena — e o que ela fez você sentir — cada vez que ela reaparece.</p>
-            </div>
-        </div>
-    </section>
-
     <!-- 8. Dream Symbols Dictionary -->
     <section id="symboles">
         <div class="oh-section-head reveal">
@@ -658,7 +632,6 @@
             <div>
                 <h2 id="explorer-outils-noctalia" class="oh-h2">Encontre seu ponto de partida</h2>
             </div>
-            <p class="oh-lede">Comece por onde você está: registrar mais rápido, refletir com um guia, procurar um símbolo ou ver a análise de sonhos no Android.</p>
         </div>
         <div class="oh-tools">
             <a href="/pt-br/diario-de-sonhos-por-voz" class="oh-tool glass-panel reveal">
@@ -719,7 +692,6 @@
                     <span class="oh-plan-tag">Plano pago</span>
                     <h3>Noctalia Plus</h3>
                     <div class="oh-plan-price">Preço exibido no Google Play</div>
-                    <p class="oh-plan-desc">O Google Play mostra a opção mensal ou anual disponível para o seu país e a sua conta.</p>
                 </div>
                 <ul>
                     <li>Análises de sonhos e imagens ilimitadas</li>

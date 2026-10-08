@@ -72,6 +72,8 @@ export function initDreamJourney(heroReady, seek = top => window.scrollTo({ top,
   const marker = document.createComment('constellation position for static fallback');
   map.before(marker);
   pin.prepend(title);
+  // The account card is placed from this height, so it never covers a wrapped heading.
+  new ResizeObserver(() => pin.style.setProperty('--oh-journey-title-height', `${title.offsetHeight}px`)).observe(title);
   pin.append(map, progress);
   const analysis = createDreamAnalysisDemo(pin, cards);
   head.classList.add('oh-journey-source');

@@ -558,32 +558,6 @@
         </div>
     </section>
 
-    <!-- 5. Who is it for? (Profiles) -->
-    <section class="oh-section">
-        <div class="oh-section-head reveal">
-            <div>
-                <h2 class="oh-h2">Made for mornings like these</h2>
-            </div>
-        </div>
-        <div class="oh-profiles">
-            <div class="oh-profile reveal">
-                <span class="oh-profile-icon"><i data-lucide="search"></i></span>
-                <h3>Your dreams are gone by breakfast</h3>
-                <p>Thirty seconds of voice is easier than a polished entry while you are still half asleep.</p>
-            </div>
-            <div class="oh-profile reveal">
-                <span class="oh-profile-icon"><i data-lucide="feather"></i></span>
-                <h3>You already keep a journal</h3>
-                <p>Dreams can sit beside the people, questions and feelings you already write about.</p>
-            </div>
-            <div class="oh-profile reveal">
-                <span class="oh-profile-icon"><i data-lucide="moon"></i></span>
-                <h3>One image keeps coming back</h3>
-                <p>Saved entries let you compare the scene — and how it made you feel — each time it returns.</p>
-            </div>
-        </div>
-    </section>
-
     <!-- 8. Dream Symbols Dictionary -->
     <section id="symbols">
         <div class="oh-section-head reveal">
@@ -674,7 +648,6 @@
             <div>
                 <h2 id="explore-noctalia-tools" class="oh-h2">Find your way in</h2>
             </div>
-            <p class="oh-lede">Start where you are: faster capture, guided reflection, a symbol to look up, or a side-by-side of dream journal apps.</p>
         </div>
         <div class="oh-tools">
             <a href="/en/voice-dream-journal" class="oh-tool glass-panel reveal">
@@ -735,7 +708,6 @@
                     <span class="oh-plan-tag">Paid plan</span>
                     <h3>Noctalia Plus</h3>
                     <div class="oh-plan-price">Price shown in Google Play</div>
-                    <p class="oh-plan-desc">Google Play shows the monthly or annual option available for your country and account.</p>
                 </div>
                 <ul>
                     <li>Unlimited dream analyses and images</li>
