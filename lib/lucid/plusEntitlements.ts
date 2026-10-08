@@ -159,7 +159,7 @@ export function resolveLucidAdditionalDreamRehearsalAccess(
     return { status: 'allowed', reason: 'preview' };
   }
 
-  if (input.salesEnabled === false) {
+  if (!(input.salesEnabled ?? LUCID_PLUS_SALES_ENABLED)) {
     return { status: 'allowed', reason: 'free_launch' };
   }
 

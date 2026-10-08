@@ -7,6 +7,8 @@ import { LucidButton } from '@/components/lucid/LucidUI';
 import { LucidTrainerProvider, useLucidTrainer } from '@/context/LucidTrainerContext';
 import { ThemeAmbienceScope, useTheme } from '@/context/ThemeContext';
 import { useLucidReducedMotion } from '@/hooks/useLucidReducedMotion';
+import { LUCID_HEALTH_IMPORT_ENABLED } from '@/lib/lucid/healthKitSleep';
+import { LUCID_PLUS_SALES_ENABLED } from '@/lib/lucid/plusEntitlements';
 import { isThemeAmbience } from '@/lib/themeAmbience';
 
 function LucidThemePreview({ children }: React.PropsWithChildren) {
@@ -79,10 +81,15 @@ function LucidRouter() {
         <Stack.Screen name="science" />
         <Stack.Screen name="privacy" />
         <Stack.Screen name="data" />
-        <Stack.Screen name="sleep-integration" />
         <Stack.Screen name="help" />
         <Stack.Screen name="about" />
         <Stack.Screen name="account" />
+      </Stack.Protected>
+      {/* v1 ships without Plus sales or Apple Health: keep deep links out too. */}
+      <Stack.Protected guard={onboardingComplete && LUCID_HEALTH_IMPORT_ENABLED}>
+        <Stack.Screen name="sleep-integration" />
+      </Stack.Protected>
+      <Stack.Protected guard={onboardingComplete && LUCID_PLUS_SALES_ENABLED}>
         <Stack.Screen name="subscription" />
       </Stack.Protected>
     </Stack>
