@@ -7,7 +7,7 @@ import { useAuth } from '@/context/AuthContext';
 import { useDreamsData, useDreamsActions } from '@/context/DreamsContext';
 import { useQuota } from '@/hooks/useQuota';
 import { useTranslation } from '@/hooks/useTranslation';
-import { requestAiConsent } from '@/lib/aiConsent';
+import { hasAiConsent, requestAiConsent } from '@/lib/aiConsent';
 import { buildDraftDream as buildDraftDreamPure } from '@/lib/dreamUtils';
 import { classifyError, GuestDreamLimitError, QuotaError, QuotaErrorCode } from '@/lib/errors';
 import type { DreamAnalysis } from '@/lib/types';
@@ -56,13 +56,19 @@ export function useDreamSaving(options: UseDreamSavingOptions = {}) {
 
         const savedDream = await addDream(dreamToSave);
         setDraftDream(savedDream);
-        void categorizeDream(trimmedTranscript, currentLang)
-          .then((categorization) => applyDreamCategorization(savedDream.id, categorization))
-          .catch((error) => {
+        // Categorization sends dream text to the AI provider: skip when consent is missing.
+        // Never block the durable save on the consent dialog or the network call.
+        void (async () => {
+          if (!(await hasAiConsent())) return;
+          try {
+            const categorization = await categorizeDream(trimmedTranscript, currentLang);
+            await applyDreamCategorization(savedDream.id, categorization);
+          } catch (error) {
             if (__DEV__) {
               console.warn('[DreamSaving] Quick categorization failed:', error);
             }
-          });
+          }
+        })();
         options.onSaveComplete?.(savedDream, preCount);
         return savedDream;
       } catch (error) {

@@ -38,7 +38,12 @@ let mockThemeMode: 'light' | 'dark' = 'dark';
 const mockRetryMedia = jest.fn();
 const mockShareComposite = jest.fn();
 const mockShareImageRef: { current: HTMLDivElement | null } = { current: null };
-jest.mock('@/lib/aiConsent', () => ({ requestAiConsent: jest.fn(async () => true) }));
+const mockHasAiConsent = jest.fn(async () => true);
+const mockRequestAiConsent = jest.fn(async () => true);
+jest.mock('@/lib/aiConsent', () => ({
+  hasAiConsent: (...args: unknown[]) => mockHasAiConsent(...args),
+  requestAiConsent: (...args: unknown[]) => mockRequestAiConsent(...args),
+}));
 
 jest.mock('@/components/ui/MarkdownText', () => ({ MarkdownText: ({ children }: { children: string }) => <span>{children}</span> }));
 
@@ -439,6 +444,10 @@ describe('journal detail saved confirmation route', () => {
     mockThemeMode = 'dark';
     mockReferenceImagesEnabled = false;
     mockCategorizeDream.mockReset();
+    mockHasAiConsent.mockReset();
+    mockHasAiConsent.mockResolvedValue(true);
+    mockRequestAiConsent.mockReset();
+    mockRequestAiConsent.mockResolvedValue(true);
     mockApplyDreamCategorization.mockClear();
     mockSetParams.mockReset();
     mockAnalyzeDream.mockReset();
@@ -574,7 +583,7 @@ describe('journal detail saved confirmation route', () => {
     mockCategorizeDream.mockReturnValueOnce(new Promise(resolve => { finish = resolve; }));
     mockDreams = [buildDream({ title: 'Old draft…', hasPerson: undefined, hasAnimal: undefined })];
     const view = render(<JournalDetailScreen />);
-    expect(mockCategorizeDream).toHaveBeenCalledTimes(1);
+    await waitFor(() => expect(mockCategorizeDream).toHaveBeenCalledTimes(1));
 
     mockDreams = [buildDream({ title: 'Generated title', theme: 'calm', hasPerson: true, hasAnimal: false })];
     view.rerender(<JournalDetailScreen />);
@@ -632,6 +641,28 @@ describe('journal detail saved confirmation route', () => {
 
     expect(mockApplyDreamCategorization).not.toHaveBeenCalled();
     expect(screen.getByText('My chosen title')).toBeTruthy();
+  });
+
+  
+  it('does not call categorizeDream for subject backfill while AI consent is missing', async () => {
+    mockReferenceImagesEnabled = true;
+    mockHasAiConsent.mockResolvedValue(false);
+    mockDreams = [buildDream({ title: 'Generated title', theme: 'calm', hasPerson: undefined, hasAnimal: undefined })];
+    render(<JournalDetailScreen />);
+    await act(async () => { await Promise.resolve(); await Promise.resolve(); });
+    expect(mockHasAiConsent).toHaveBeenCalled();
+    expect(mockCategorizeDream).not.toHaveBeenCalled();
+  });
+
+  it('does not recover metadata when the user declines AI consent', async () => {
+    mockRequestAiConsent.mockResolvedValue(false);
+    const transcript = 'A blue door above the sea.';
+    mockDreams = [buildDream({ transcript, title: transcript, theme: undefined })];
+    render(<JournalDetailScreen />);
+    await act(async () => { fireEvent.click(screen.getByTestId('dream-metadata-retry')); });
+    expect(mockRequestAiConsent).toHaveBeenCalled();
+    expect(mockCategorizeDream).not.toHaveBeenCalled();
+    expect(mockApplyDreamCategorization).not.toHaveBeenCalled();
   });
 
   it('never redirects from the detail when an exhausted quota becomes known', async () => {
