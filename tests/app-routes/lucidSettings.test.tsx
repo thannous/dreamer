@@ -194,11 +194,11 @@ describe('Lucid Trainer settings', () => {
     expect(mockPush).toHaveBeenCalledWith('/lucid/account');
   });
 
-  it('opens the isolated Apple Health sleep import prototype from resources', () => {
+  it('keeps the unsold Plus plan and the Apple Health prototype out of resources', () => {
     render(<LucidSettingsScreen />);
     fireEvent.click(screen.getByTestId('lucid-settings-resources'));
-    fireEvent.click(screen.getByRole('button', { name: 'Apple Health sleep import' }));
-    expect(mockPush).toHaveBeenCalledWith('/lucid/sleep-integration');
+    expect(screen.queryByRole('button', { name: 'Apple Health sleep import' })).toBeNull();
+    expect(screen.queryByRole('button', { name: 'Subscription' })).toBeNull();
   });
 
   it('applies and persists an explicit appearance choice', async () => {

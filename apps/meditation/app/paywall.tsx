@@ -4,6 +4,7 @@ import { Linking, Pressable, ScrollView, View, useWindowDimensions } from 'react
 
 import { Screen } from '@/components/atmosphere/Screen';
 import { BackLink, Button, Card, Rule, Text } from '@/components/ui';
+import { getLegalLink } from '@/constants/legalLinks';
 import { useTranslation } from '@/context/LanguageContext';
 import { useSubscription } from '@/context/SubscriptionContext';
 import type { GateReason } from '@/lib/entitlements';
@@ -12,8 +13,6 @@ import { TID } from '@/lib/testIDs';
 import * as subscriptions from '@/services/subscriptionService';
 
 const BENEFITS = [1, 2, 3, 4] as const;
-const TERMS_URL = 'https://noctalia.app/terms';
-const PRIVACY_URL = 'https://noctalia.app/privacy';
 const GATE_REASONS: readonly GateReason[] = [
   'premium-session',
   'monthly-quota',
@@ -101,7 +100,7 @@ function commercialTerms(
 export default function PaywallScreen() {
   const { reason } = useLocalSearchParams<{ reason?: GateReason }>();
   const router = useRouter();
-  const { t } = useTranslation();
+  const { t, language } = useTranslation();
   const { width, height, fontScale } = useWindowDimensions();
   const {
     subscriptionsEnabled = true,
@@ -207,7 +206,7 @@ export default function PaywallScreen() {
           accessibilityRole="link"
           accessibilityLabel={t('legal.terms')}
           testID="paywall.legal.terms"
-          onPress={() => Linking.openURL(TERMS_URL).catch(() => {})}
+          onPress={() => Linking.openURL(getLegalLink('termsOfUse', language)).catch(() => {})}
           className="min-h-12 min-w-12 items-center justify-center px-2 py-1 active:opacity-70">
           <Text variant="caption">{t('legal.terms')}</Text>
         </Pressable>
@@ -215,7 +214,7 @@ export default function PaywallScreen() {
           accessibilityRole="link"
           accessibilityLabel={t('legal.privacy')}
           testID="paywall.legal.privacy"
-          onPress={() => Linking.openURL(PRIVACY_URL).catch(() => {})}
+          onPress={() => Linking.openURL(getLegalLink('privacyPolicy', language)).catch(() => {})}
           className="min-h-12 min-w-12 items-center justify-center px-2 py-1 active:opacity-70">
           <Text variant="caption">{t('legal.privacy')}</Text>
         </Pressable>

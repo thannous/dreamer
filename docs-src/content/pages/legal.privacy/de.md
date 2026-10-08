@@ -23,7 +23,7 @@
   "twitterImage": "https://noctalia.app/img/og/noctalia-de-1200x630.jpg",
   "twitterImageAlt": "Datenschutzerklärung",
   "publishedTime": "",
-  "modifiedTime": "2026-09-22",
+  "modifiedTime": "2026-10-08",
   "author": "",
   "prevPath": "",
   "nextPath": "",
@@ -36,7 +36,7 @@
 }
 ---
 <h1 class="font-serif text-4xl md:text-5xl mb-6 text-dream-cream">Datenschutzerklärung</h1>
-<p class="text-lg text-purple-200/80 mb-10">Gültig ab 22. September 2026</p>
+<p class="text-lg text-purple-200/80 mb-10">Gültig ab 8. Oktober 2026</p>
 
 <div class="space-y-8 text-gray-300 leading-relaxed">
   <div class="p-6 rounded-2xl bg-dream-salmon/5 border border-dream-salmon/20">
@@ -67,6 +67,28 @@
       </div>
     </div>
   </section>
+
+            <section id="companion-apps">
+                <h2 class="text-2xl font-serif text-white mb-4 mt-8">Noctalia Lucid und Noctalia Meditation</h2>
+                <p>Diese Erklärung gilt auch für die beiden Begleit-Apps von Noctalia, herausgegeben von TiMax. Alles in dieser Erklärung gilt auch für sie, mit den folgenden Ergänzungen.</p>
+                <h3 class="text-white font-semibold mb-2 mt-6">Noctalia Lucid</h3>
+                <ul class="list-disc pl-5 mt-2 space-y-2">
+                    <li><strong>Standardmäßig lokal:</strong> Programme, Sitzungen, Realitätschecks, Rückblicke, Notizen und Erinnerungen werden auf deinem Gerät gespeichert und funktionieren ohne Konto und ohne Netzwerk.</li>
+                    <li><strong>Sprachnotizen:</strong> Sie werden nur auf dem Gerät aufgenommen, nachdem du auf „Sprechen“ tippst, und weder hochgeladen noch automatisch transkribiert.</li>
+                    <li><strong>Optionales Konto und Synchronisierung:</strong> Wenn du dich mit deinem Noctalia-Konto anmeldest und die Synchronisierung einschaltest (standardmäßig aus), werden deine Trainingsdaten mit der in Abschnitt 5 beschriebenen Supabase-Datenbank in der Europäischen Union synchronisiert. Du kannst die Synchronisierung abschalten sowie entfernte Daten oder dein Konto in der App löschen.</li>
+                    <li><strong>Austausch mit dem Noctalia-Journal:</strong> Nur auf deinen Wunsch kann Lucid Traumberichte aus deinem Noctalia-Journal kopieren oder Noctalia eine kategoriale Zusammenfassung der Nacht übergeben (Technik, Ergebnis, Luzidität und Erinnerung), nie den Text deiner Notizen.</li>
+                    <li><strong>Nutzungsmessung:</strong> Optional und standardmäßig aus, beschränkt auf wenige kategoriale Ereignisse ohne Freitext; kein Analyse-Tool von Drittanbietern.</li>
+                    <li><strong>Keine Werbung, keine Käufe:</strong> Lucid zeigt keine Werbung, bietet in dieser Version keine In-App-Käufe an und liest keine Health-Daten.</li>
+                    <li><strong>Export und Löschung:</strong> Im Bereich Daten kannst du deine Daten exportieren (JSON oder CSV) und vom Gerät löschen.</li>
+                </ul>
+                <h3 class="text-white font-semibold mb-2 mt-6">Noctalia Meditation</h3>
+                <ul class="list-disc pl-5 mt-2 space-y-2">
+                    <li><strong>Kein Konto, keine Erhebung:</strong> Meditation funktioniert ohne Konto. Deine Einstellungen, Ziele, Favoriten, Fortschritte, Erinnerungen und ein optionales Profilfoto bleiben auf deinem Gerät; wir erhalten keine dieser Daten.</li>
+                    <li><strong>Keine Nutzungsmessung, Werbung oder Käufe:</strong> Die App sendet keine Analyse-Ereignisse, zeigt keine Werbung, und alle Welten sind in dieser Version kostenlos, daher ist kein Zahlungsdienst aktiv.</li>
+                    <li><strong>Erinnerungen und Stimme:</strong> Erinnerungen sind lokal geplante Benachrichtigungen; die gesprochenen Atemphasen nutzen, wenn du sie einschaltest, die Sprachausgabe deines Systems.</li>
+                    <li><strong>Löschung:</strong> „Meine Daten löschen“ in den Kontoeinstellungen entfernt alles, was die App gespeichert hat; eine Deinstallation hat dieselbe Wirkung.</li>
+                </ul>
+            </section>
 
   <section>
     <h2 class="text-2xl font-serif text-white mb-4 mt-8">1. Verantwortlicher</h2>

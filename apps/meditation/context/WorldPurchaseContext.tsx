@@ -9,6 +9,7 @@ import React, {
 } from 'react';
 
 import { WORLD_BY_ID, type WorldId } from '@/constants/worlds';
+import { WORLD_SALES_ENABLED } from '@/constants/worldSales';
 import * as purchases from '@/services/worldPurchaseService';
 
 export const WORLD_PURCHASE_REQUEST_TIMEOUT_MS = 2_000;
@@ -60,9 +61,12 @@ function bounded<T>(request: Promise<T>): Promise<T> {
 }
 
 export const WorldPurchaseProvider: React.FC<React.PropsWithChildren> = ({ children }) => {
+  // With world sales off, nothing is for sale and the store SDK is never
+  // initialised, so the app keeps its "nothing collected" promise.
+  const initialStatus: WorldPurchaseResourceStatus = WORLD_SALES_ENABLED ? 'loading' : 'ready';
   const [ownershipStatus, setOwnershipStatus] =
-    useState<WorldPurchaseResourceStatus>('loading');
-  const [offersStatus, setOffersStatus] = useState<WorldPurchaseResourceStatus>('loading');
+    useState<WorldPurchaseResourceStatus>(initialStatus);
+  const [offersStatus, setOffersStatus] = useState<WorldPurchaseResourceStatus>(initialStatus);
   const [offers, setOffers] = useState<readonly purchases.WorldOffer[]>([]);
   const [ownedWorldIds, setOwnedWorldIds] = useState<readonly WorldId[]>([]);
   const [hasVerifiedOwnership, setHasVerifiedOwnership] = useState(false);
@@ -117,6 +121,11 @@ export const WorldPurchaseProvider: React.FC<React.PropsWithChildren> = ({ child
 
   useEffect(() => {
     mountedRef.current = true;
+    if (!WORLD_SALES_ENABLED) {
+      return () => {
+        mountedRef.current = false;
+      };
+    }
     let cancelled = false;
     const bootstrapOwnershipRequestId = ++ownershipRequestRef.current;
     const bootstrapOffersRequestId = ++offersRequestRef.current;

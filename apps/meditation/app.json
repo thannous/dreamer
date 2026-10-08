@@ -36,7 +36,11 @@
         "com.android.vending.BILLING"
       ],
       "blockedPermissions": [
-        "android.permission.RECORD_AUDIO"
+        "android.permission.RECORD_AUDIO",
+        "android.permission.CAMERA",
+        "android.permission.READ_EXTERNAL_STORAGE",
+        "android.permission.WRITE_EXTERNAL_STORAGE",
+        "android.permission.SYSTEM_ALERT_WINDOW"
       ]
     },
     "web": {
@@ -64,6 +68,14 @@
           "enableBackgroundPlayback": true,
           "microphonePermission": false,
           "recordAudioAndroid": false
+        }
+      ],
+      [
+        "expo-image-picker",
+        {
+          "photosPermission": "Noctalia Meditation lets you pick one photo as your profile picture. It stays on this device.",
+          "cameraPermission": false,
+          "microphonePermission": false
         }
       ],
       "expo-video",

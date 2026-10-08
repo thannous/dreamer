@@ -156,7 +156,7 @@ test('PR237 Lucid morning captures persist in Journal and confirmed signs reach 
   await app.screenshot('atlas-confirmed-sign');
 });
 
-test('PR237 Lucid exercises retain their pause after reload and resume; web Health stays unavailable', async fixtures => {
+test('PR237 Lucid exercises retain their pause after reload and resume; unsold Plus and Health links land home', async fixtures => {
   await completeOnboarding(fixtures);
   const { app, screen, browser } = fixtures;
   for (const lab of ['stabilization', 'ssild']) {
@@ -174,11 +174,18 @@ test('PR237 Lucid exercises retain their pause after reload and resume; web Heal
     await expect(screen.getByText(/^En pause\./, { visible: true })).toBeHidden();
     await app.screenshot(`${lab}-resumed-after-reload`);
   }
-  for (const route of ['morning-voice', 'permissions', 'sleep-integration']) {
+  for (const route of ['morning-voice', 'permissions']) {
     await app.open(`/lucid/${route}?ambience=dark`);
-    if (route === 'sleep-integration') await expect(screen.getByTestId('lucid-sleep-connect', { visible: true })).toBeDisabled();
     for (const text of ['Ne jamais inventer', 'avant release', 'Échantillons utilisables'])
       await expect(screen.getByText(text, { exact: false, visible: true })).toBeHidden();
     await app.screenshot(route);
+  }
+  // v1 sells no Plan and ships no Apple Health import: direct links land on Lucid home.
+  for (const [route, testId] of [['subscription', 'lucid-subscription-screen'], ['sleep-integration', 'lucid-sleep-connect']]) {
+    await app.open(`/lucid/${route}?ambience=dark`);
+    await expect(screen.getByRole('tab', 'Journal', { visible: true })).toBeVisible();
+    await expect.poll(() => browser.evaluate(() => location.pathname)).not.toContain(route);
+    await expect(screen.getByTestId(testId, { visible: true })).toBeHidden();
+    await app.screenshot(`${route}-redirected-home`);
   }
 });

@@ -15,12 +15,12 @@ export const contentFr = {
 
   'session.sleep-descent.title': "Descendre le souffle",
   'session.sleep-descent.description': "Une expiration plus longue que l’inspiration, jusqu’à ce que le corps comprenne que la journée est finie.",
-  'session.sleep-descent.benefit.1': "Ralentit le rythme cardiaque",
+  'session.sleep-descent.benefit.1': 'Une expiration longue et lente',
   'session.sleep-descent.benefit.2': "Prépare l’endormissement",
   'session.sleep-descent.benefit.3': "Se pratique allongé",
 
   'session.sleep-quick-fall.title': "S’endormir en cinq minutes",
-  'session.sleep-quick-fall.description': "Rien à écouter, rien à suivre : un souffle guidé qui s’efface à mesure que vous partez.",
+  'session.sleep-quick-fall.description': 'Rien à écouter, rien à suivre : seulement votre souffle, qui ralentit à mesure que vous partez.',
   'session.sleep-quick-fall.benefit.1': "Pour les nuits courtes",
   'session.sleep-quick-fall.benefit.2': "Souffle et silence",
   'session.sleep-quick-fall.benefit.3': "S’arrête toute seule",
@@ -47,7 +47,7 @@ export const contentFr = {
   'session.stress-unclench.description': "Le stress se tient dans la mâchoire, les mains, le ventre. On les visite un par un.",
   'session.stress-unclench.benefit.1': "Détend la mâchoire",
   'session.stress-unclench.benefit.2': "Calme le ventre",
-  'session.stress-unclench.benefit.3': "Effet rapide",
+  'session.stress-unclench.benefit.3': 'Court et simple',
 
   'session.stress-day-close.title': "Fermer la journée",
   'session.stress-day-close.description': "Un rituel de fin de journée : ce qui est fait est fait, le reste attendra demain.",
@@ -87,7 +87,7 @@ export const contentFr = {
 
   'session.anxiety-ground.title': "Reprendre pied",
   'session.anxiety-ground.description': "Cinq points de contact entre le corps et le sol. Rien d’autre à faire.",
-  'session.anxiety-ground.benefit.1': "Effet immédiat",
+  'session.anxiety-ground.benefit.1': 'Se lance tout de suite',
   'session.anxiety-ground.benefit.2': "En cas de montée",
   'session.anxiety-ground.benefit.3': "Debout ou assis",
 
@@ -100,7 +100,7 @@ export const contentFr = {
   'session.anxiety-chest.title': "Ouvrir la poitrine",
   'session.anxiety-chest.description': "Quand la respiration se bloque en haut du thorax, on la fait redescendre.",
   'session.anxiety-chest.benefit.1': "Respiration bloquée",
-  'session.anxiety-chest.benefit.2': "Détend le diaphragme",
+  'session.anxiety-chest.benefit.2': 'Respirer par le ventre',
   'session.anxiety-chest.benefit.3': "Allongé de préférence",
 
   'session.anxiety-evening.title': "L’anxiété du soir",
@@ -142,7 +142,7 @@ export const contentFr = {
   'session.dream-recall.title': "Se souvenir au réveil",
   'session.dream-recall.description': "Cinq minutes au réveil, sans bouger, pour retenir ce qui est encore là.",
   'session.dream-recall.benefit.1': "Au réveil",
-  'session.dream-recall.benefit.2': "Améliore le rappel",
+  'session.dream-recall.benefit.2': 'Retenir le rêve',
   'session.dream-recall.benefit.3': "Avant de se lever",
 
   'session.dream-question.title': "Poser une question à la nuit",

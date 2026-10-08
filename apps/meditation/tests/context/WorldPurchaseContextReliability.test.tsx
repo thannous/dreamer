@@ -8,6 +8,9 @@ import {
 } from '@/context/WorldPurchaseContext';
 import * as purchases from '@/services/worldPurchaseService';
 
+// These cases cover the one-time world purchase flow, which v1 keeps off.
+jest.mock('@/constants/worldSales', () => ({ WORLD_SALES_ENABLED: true }));
+
 jest.mock('@/services/worldPurchaseService', () => ({
   configure: jest.fn(),
   currentOwnership: jest.fn(),

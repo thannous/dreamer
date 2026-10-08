@@ -9,6 +9,8 @@ it.each([
   ['https://evil.example/lucid/morning', '/lucid'],
   ['noctalia-lucid://lucidity', '/lucid'],
   ['malformed', '/lucid'],
+  ['noctalia-lucid://lucid/subscription?source=notification', '/lucid'],
+  ['https://lucid.noctalia.app/lucid/sleep-integration/', '/lucid'],
 ])('resolves %s to %s', (url, target) => {
   expect(lucidStartupDestination(url, '/', false)).toBe(target);
 });

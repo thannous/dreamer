@@ -32,6 +32,7 @@ import {
 } from '@/lib/lucid/dreamRehearsal';
 import {
   canStartLucidDreamRehearsal,
+  LUCID_PLUS_SALES_ENABLED,
   resolveLucidAdditionalDreamRehearsalAccess,
 } from '@/lib/lucid/plusEntitlements';
 import { closeLucidRoute } from '@/lib/lucid/routes';
@@ -388,6 +389,7 @@ export default function LucidDreamRehearsalScreen() {
     requiresAuth: subscription.requiresAuth,
     completionCount: rehearsal.completions.length,
     currentSession: currentForScene,
+    salesEnabled: LUCID_PLUS_SALES_ENABLED,
   });
   const canStartRehearsal = canStartLucidDreamRehearsal(rehearsalAccess);
 

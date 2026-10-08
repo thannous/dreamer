@@ -3,12 +3,13 @@ import { Linking, Pressable, ScrollView, View } from 'react-native';
 
 import { Screen } from '@/components/atmosphere/Screen';
 import { BackLink, Button, IconSymbol, Rule, Text } from '@/components/ui';
+import { SUPPORT_EMAIL } from '@/constants/legalLinks';
 import { useTranslation } from '@/context/LanguageContext';
 import { useTheme } from '@/context/ThemeContext';
 import type { TranslationKey } from '@/lib/i18n';
 
 const QUESTIONS = [1, 2, 3, 4, 5] as const;
-const CONTACT = 'mailto:bonjour@noctalia.app';
+const CONTACT = `mailto:${SUPPORT_EMAIL}`;
 
 function FaqItem({ index }: { index: number }) {
   const { t } = useTranslation();

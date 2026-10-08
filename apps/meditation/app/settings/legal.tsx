@@ -4,13 +4,11 @@ import { Linking, ScrollView, View } from 'react-native';
 import { Screen } from '@/components/atmosphere/Screen';
 import { SettingsGroup, SettingsRow } from '@/components/settings/SettingsRow';
 import { BackLink, Card, Rule, Text } from '@/components/ui';
+import { getLegalLink } from '@/constants/legalLinks';
 import { useTranslation } from '@/context/LanguageContext';
 
-const PRIVACY_URL = 'https://noctalia.app/privacy';
-const TERMS_URL = 'https://noctalia.app/terms';
-
 export default function LegalScreen() {
-  const { t } = useTranslation();
+  const { t, language } = useTranslation();
 
   const open = (url: string) => Linking.openURL(url).catch(() => {});
 
@@ -36,9 +34,14 @@ export default function LegalScreen() {
         </View>
 
         <SettingsGroup title={t('legal.title')}>
-          <SettingsRow label={t('legal.privacy')} onPress={() => open(PRIVACY_URL)} />
-          <SettingsRow label={t('legal.terms')} onPress={() => open(TERMS_URL)} />
-          <SettingsRow label={t('legal.licenses')} disabled />
+          <SettingsRow
+            label={t('legal.privacy')}
+            onPress={() => open(getLegalLink('privacyPolicy', language))}
+          />
+          <SettingsRow
+            label={t('legal.terms')}
+            onPress={() => open(getLegalLink('termsOfUse', language))}
+          />
         </SettingsGroup>
       </ScrollView>
     </Screen>

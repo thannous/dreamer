@@ -209,7 +209,7 @@ describe('TI-391 access, sound and settings copy', () => {
     expect(upcomingTitle).toHaveTextContent('The threshold');
   });
 
-  it('lets Sleep session cards differ by method and guidance, not only duration', () => {
+  it('shows each Sleep session card method without promising spoken guidance', () => {
     const descent = render(
       <SessionCard session={SESSION_BY_ID['sleep-descent']} testID="layout.sleep.descent" />
     );
@@ -229,35 +229,21 @@ describe('TI-391 access, sound and settings copy', () => {
       body.getByTestId('layout.sleep.body.method'),
       night.getByTestId('layout.sleep.night.method'),
     ];
-    const guidanceLines = [
-      descent.getByTestId('layout.sleep.descent.guidance'),
-      quick.getByTestId('layout.sleep.quick.guidance'),
-      body.getByTestId('layout.sleep.body.guidance'),
-      night.getByTestId('layout.sleep.night.guidance'),
-    ];
 
     expect(methodLines[0]).toHaveTextContent('Method: Breathing');
-    expect(guidanceLines[0]).toHaveTextContent('Guidance: Step by step');
     expect(methodLines[1]).toHaveTextContent('Method: Breathing');
-    expect(guidanceLines[1]).toHaveTextContent('Guidance: Fades gradually');
     expect(methodLines[2]).toHaveTextContent('Method: Body awareness');
-    expect(guidanceLines[2]).toHaveTextContent('Guidance: Step by step');
     expect(methodLines[3]).toHaveTextContent('Method: Open presence');
-    expect(guidanceLines[3]).toHaveTextContent('Guidance: A few cues');
+    expect(descent.queryByTestId('layout.sleep.descent.guidance')).toBeNull();
 
-    const signatures = methodLines.map(
-      (line, index) => `${line.props.children}::${guidanceLines[index].props.children}`
-    );
-    expect(new Set(signatures).size).toBe(4);
-
-    for (const line of [...methodLines, ...guidanceLines]) {
+    for (const line of methodLines) {
       expect(line.props.numberOfLines).toBeUndefined();
       expect(line.props.adjustsFontSizeToFit).toBeUndefined();
     }
 
     const bodyLabel = body.getByRole('button').props.accessibilityLabel as string;
     expect(bodyLabel).toContain('Method: Body awareness');
-    expect(bodyLabel).toContain('Guidance: Step by step');
+    expect(bodyLabel).not.toContain('Guidance');
     expect(bodyLabel).toContain('Saved, but Plus is still required');
   });
 

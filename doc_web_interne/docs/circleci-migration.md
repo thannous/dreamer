@@ -94,7 +94,12 @@ Selon le type de trigger, CircleCI peut toutefois appliquer son saut natif sur
 le push avant même d'exécuter ce classificateur. Le marqueur ne doit donc être
 utilisé que sur un diff déjà entièrement éditorial/no-code ; le routage
 automatique par chemins reste la méthode recommandée. Les suppressions,
-renommages et copies échouent fermés sur toutes les surfaces.
+renommages et copies classent l'ancien et le nouveau chemin comme une
+modification : supprimer une page `docs-src/` ne lance que le site. Les
+consommateurs partagés sont lus dans la table de la base et dans celle de la
+PR, pour qu'une ligne retirée avec son fichier route encore ce chemin. Un
+changement de type (fichier remplacé par un lien symbolique) ou une entrée
+non fusionnée échoue fermé sur toutes les surfaces.
 
 Les tests synthétiques couvrent Noctalia seul, Meditation seul, site no-op, Edge
 Deno seul, migration seule, documentation interne, fichiers partagés, lockfiles,
@@ -150,17 +155,26 @@ worker Playwright.
 
 Les mêmes tests s'exécutent désormais en parallèle :
 
-- `testerarmy-dreamer-journeys` découpe le contexte en-US en quatre tranches
+- `testerarmy-dreamer-journeys` découpe le contexte en-US en huit tranches
   (`--shard`) ;
-- `testerarmy-dreamer-contexts` exécute fr-FR sur un conteneur, de-DE et
-  fiches désactivées sur un second ;
+- `testerarmy-dreamer-contexts` découpe fr-FR sur deux conteneurs, puis
+  exécute de-DE et fiches désactivées sur un troisième ;
 - `testerarmy-dreamer` attache leur workspace et vérifie l'union exacte des
   identifiants passés et les quatre contextes. Une tranche absente ou en échec
   rend la campagne incomplète ;
-- `noctalia-e2e-web` répartit la suite Playwright sur trois conteneurs.
+- Dreamer et Lucid restaurent le cache Metro sauvegardé par `master`
+  (`E2E_KEEP_METRO_CACHE=1`). `metro.config.js` intègre chaque entrée publique
+  du build à la clé : un autre profil recompile. `master` repart à froid pour
+  que le cache sauvegardé ne contienne qu'une révision.
 
-Aucun test n'est retiré ou ignoré. Chaque conteneur paie son installation et
-son bundle froid : le temps total facturé augmente un peu, le temps d'attente
+Décision du 8 octobre 2026 : le job Playwright `noctalia-e2e-web` quitte la CI.
+Ses 83 tests ont tous un équivalent TesterArmy exécuté par
+`testerarmy-dreamer` (assertion de quota plus stricte, fuseau Europe/Paris
+pour tous). La suite Playwright reste disponible en local
+(`npm run test:e2e:web`).
+
+Aucun test TesterArmy n'est retiré ou ignoré. Chaque conteneur paie son
+installation : le temps total facturé augmente un peu, le temps d'attente
 diminue. Le workspace Dreamer transporte environ 600 Mo de traces par
 pipeline.
 

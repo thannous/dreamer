@@ -16,13 +16,12 @@ export const contentIt = {
   'session.sleep-descent.title': 'Abbassare il respiro',
   'session.sleep-descent.description':
     'Un’espirazione più lunga dell’inspirazione, finché il corpo capisce che la giornata è finita.',
-  'session.sleep-descent.benefit.1': 'Rallenta il battito',
+  'session.sleep-descent.benefit.1': 'Un’espirazione lunga e lenta',
   'session.sleep-descent.benefit.2': 'Prepara l’addormentamento',
   'session.sleep-descent.benefit.3': 'Si pratica sdraiati',
 
   'session.sleep-quick-fall.title': 'Addormentarsi in cinque minuti',
-  'session.sleep-quick-fall.description':
-    'Niente da ascoltare, niente da seguire: un respiro guidato che sfuma mentre te ne vai.',
+  'session.sleep-quick-fall.description': 'Niente da ascoltare, niente da seguire: solo il tuo respiro, che rallenta mentre te ne vai.',
   'session.sleep-quick-fall.benefit.1': 'Per le notti corte',
   'session.sleep-quick-fall.benefit.2': 'Respiro e silenzio',
   'session.sleep-quick-fall.benefit.3': 'Si interrompe da sola',
@@ -53,7 +52,7 @@ export const contentIt = {
     'Lo stress si annida nella mascella, nelle mani, nel ventre. Li visitiamo uno a uno.',
   'session.stress-unclench.benefit.1': 'Rilassa la mascella',
   'session.stress-unclench.benefit.2': 'Calma il ventre',
-  'session.stress-unclench.benefit.3': 'Effetto rapido',
+  'session.stress-unclench.benefit.3': 'Breve e semplice',
 
   'session.stress-day-close.title': 'Chiudere la giornata',
   'session.stress-day-close.description':
@@ -100,7 +99,7 @@ export const contentIt = {
   'session.anxiety-ground.title': 'Ritrovare terra',
   'session.anxiety-ground.description':
     'Cinque punti di contatto tra il corpo e il suolo. Nient’altro da fare.',
-  'session.anxiety-ground.benefit.1': 'Effetto immediato',
+  'session.anxiety-ground.benefit.1': 'Si inizia subito',
   'session.anxiety-ground.benefit.2': 'Quando sale',
   'session.anxiety-ground.benefit.3': 'In piedi o seduti',
 
@@ -115,7 +114,7 @@ export const contentIt = {
   'session.anxiety-chest.description':
     'Quando il respiro si blocca in alto nel torace, lo facciamo riscendere.',
   'session.anxiety-chest.benefit.1': 'Respiro bloccato',
-  'session.anxiety-chest.benefit.2': 'Libera il diaframma',
+  'session.anxiety-chest.benefit.2': 'Respirare con la pancia',
   'session.anxiety-chest.benefit.3': 'Meglio sdraiati',
 
   'session.anxiety-evening.title': 'L’ansia della sera',
@@ -164,7 +163,7 @@ export const contentIt = {
   'session.dream-recall.description':
     'Cinque minuti al risveglio, senza muoversi, per trattenere ciò che è ancora lì.',
   'session.dream-recall.benefit.1': 'Al risveglio',
-  'session.dream-recall.benefit.2': 'Migliora il ricordo',
+  'session.dream-recall.benefit.2': 'Trattenere il sogno',
   'session.dream-recall.benefit.3': 'Prima di alzarsi',
 
   'session.dream-question.title': 'Porre una domanda alla notte',

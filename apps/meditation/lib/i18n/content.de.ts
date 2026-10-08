@@ -16,13 +16,12 @@ export const contentDe = {
   'session.sleep-descent.title': 'Den Atem senken',
   'session.sleep-descent.description':
     'Länger ausatmen als einatmen, bis der Körper versteht, dass der Tag vorbei ist.',
-  'session.sleep-descent.benefit.1': 'Senkt den Puls',
+  'session.sleep-descent.benefit.1': 'Ein langes, langsames Ausatmen',
   'session.sleep-descent.benefit.2': 'Bereitet das Einschlafen vor',
   'session.sleep-descent.benefit.3': 'Im Liegen üben',
 
   'session.sleep-quick-fall.title': 'In fünf Minuten einschlafen',
-  'session.sleep-quick-fall.description':
-    'Nichts zu hören, nichts zu verfolgen: ein geführter Atem, der verklingt, während du wegdämmerst.',
+  'session.sleep-quick-fall.description': 'Nichts zu hören, nichts zu verfolgen: nur dein Atem, der ruhiger wird, während du wegdämmerst.',
   'session.sleep-quick-fall.benefit.1': 'Für kurze Nächte',
   'session.sleep-quick-fall.benefit.2': 'Atem und Stille',
   'session.sleep-quick-fall.benefit.3': 'Endet von selbst',
@@ -53,7 +52,7 @@ export const contentDe = {
     'Stress sitzt im Kiefer, in den Händen, im Bauch. Wir besuchen sie nacheinander.',
   'session.stress-unclench.benefit.1': 'Löst den Kiefer',
   'session.stress-unclench.benefit.2': 'Beruhigt den Bauch',
-  'session.stress-unclench.benefit.3': 'Wirkt schnell',
+  'session.stress-unclench.benefit.3': 'Kurz und einfach',
 
   'session.stress-day-close.title': 'Den Tag schließen',
   'session.stress-day-close.description':
@@ -100,7 +99,7 @@ export const contentDe = {
   'session.anxiety-ground.title': 'Wieder Boden finden',
   'session.anxiety-ground.description':
     'Fünf Berührungspunkte zwischen Körper und Boden. Sonst nichts zu tun.',
-  'session.anxiety-ground.benefit.1': 'Wirkt sofort',
+  'session.anxiety-ground.benefit.1': 'Sofort startklar',
   'session.anxiety-ground.benefit.2': 'Wenn es aufsteigt',
   'session.anxiety-ground.benefit.3': 'Stehend oder sitzend',
 
@@ -115,7 +114,7 @@ export const contentDe = {
   'session.anxiety-chest.description':
     'Wenn der Atem oben im Brustkorb stecken bleibt, holen wir ihn wieder herunter.',
   'session.anxiety-chest.benefit.1': 'Blockierter Atem',
-  'session.anxiety-chest.benefit.2': 'Befreit das Zwerchfell',
+  'session.anxiety-chest.benefit.2': 'In den Bauch atmen',
   'session.anxiety-chest.benefit.3': 'Am besten im Liegen',
 
   'session.anxiety-evening.title': 'Die Angst am Abend',
@@ -164,7 +163,7 @@ export const contentDe = {
   'session.dream-recall.description':
     'Fünf Minuten beim Aufwachen, ohne sich zu bewegen, um zu behalten, was noch da ist.',
   'session.dream-recall.benefit.1': 'Beim Aufwachen',
-  'session.dream-recall.benefit.2': 'Verbessert die Erinnerung',
+  'session.dream-recall.benefit.2': 'Den Traum festhalten',
   'session.dream-recall.benefit.3': 'Vor dem Aufstehen',
 
   'session.dream-question.title': 'Der Nacht eine Frage stellen',

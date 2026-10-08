@@ -123,14 +123,14 @@ describe('Search and Profile world surfaces', () => {
 
     const prefix = TID.Option.SearchSleepDescent;
     expect(screen.getByTestId(`${prefix}.title`).props.numberOfLines).toBeUndefined();
-    expect(screen.getByTestId(`${prefix}.benefit.1`)).toHaveTextContent('Slows the heart rate');
+    expect(screen.getByTestId(`${prefix}.benefit.1`)).toHaveTextContent('A long, slow exhale');
     expect(screen.getByTestId(`${prefix}.benefit.1`).props.numberOfLines).toBeUndefined();
     expect(screen.getByTestId(`${prefix}.benefit.2`)).toHaveTextContent('Prepares for sleep');
     expect(screen.getByTestId(`${prefix}.benefit.3`)).toHaveTextContent('Done lying down');
     expect(screen.getByTestId(`${prefix}.access`)).toHaveTextContent('Free');
     expect(screen.getByTestId(`${prefix}.access`)).not.toHaveTextContent('Plus');
     expect(screen.getByTestId(prefix).props.accessibilityLabel).toEqual(
-      expect.stringContaining('Slows the heart rate. Prepares for sleep. Done lying down. Free')
+      expect.stringContaining('A long, slow exhale. Prepares for sleep. Done lying down. Free')
     );
   });
 

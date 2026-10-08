@@ -13,6 +13,9 @@ import { TID } from '@/lib/testIDs';
 import { INITIAL_LIBRARY, INITIAL_ONBOARDING } from '@/lib/types';
 import { StorageKey } from '@/services/storageService';
 
+// These cases cover the one-time world purchase flow, which v1 keeps off.
+jest.mock('@/constants/worldSales', () => ({ WORLD_SALES_ENABLED: true }));
+
 const mockPush = jest.fn();
 const mockOpenPaywall = jest.fn();
 const mockDimensions = { width: 360, height: 800, scale: 3, fontScale: 1 };

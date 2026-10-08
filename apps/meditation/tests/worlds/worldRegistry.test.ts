@@ -5,6 +5,9 @@ import {
   WORLD_IDS,
 } from '@/constants/worlds';
 
+// These cases cover the one-time world purchase flow, which v1 keeps off.
+jest.mock('@/constants/worldSales', () => ({ WORLD_SALES_ENABLED: true }));
+
 describe('meditation world registry', () => {
   it('exposes one complete entry for every public world id', () => {
     expect(Object.keys(WORLD_BY_ID).sort()).toEqual([...WORLD_IDS].sort());

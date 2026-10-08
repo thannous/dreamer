@@ -10,6 +10,9 @@ import { en as mockEn } from '@/lib/i18n/en';
 import { SHIPPED_LANGUAGES } from '@/lib/types';
 import { TID } from '@/lib/testIDs';
 
+// These cases cover the one-time world purchase flow, which v1 keeps off.
+jest.mock('@/constants/worldSales', () => ({ WORLD_SALES_ENABLED: true }));
+
 const mockBack = jest.fn();
 const mockDismissTo = jest.fn();
 const mockPurchaseWorld = jest.fn();
@@ -289,7 +292,8 @@ describe('world purchase handoff', () => {
     expect(screen.queryByText(dawn.foreignWorld)).toBeNull();
     expect(screen.getByText(dawn.soundOn)).toBeTruthy();
     expect(screen.getByText(dawn.soundHint)).toBeTruthy();
-    expect(screen.getByText(dawn.notPlusDetail)).toBeTruthy();
+    // Dawn is a free world: the one-time purchase wording belongs to paid worlds only.
+    expect(screen.queryByText(dawn.notPlusDetail)).toBeNull();
     expect(dawn.soundOn).toContain(dawn.world);
     expect(dawn.soundOn).not.toContain(dawn.foreignWorld);
     expect(dawn.notPlusDetail).toContain(dawn.world);
