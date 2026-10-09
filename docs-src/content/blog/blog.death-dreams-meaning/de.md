@@ -5,7 +5,7 @@
   "lang": "de",
   "slug": "traeume-vom-tod-bedeutung-und-interpretation",
   "title": "Todesträume: 5 verborgene Bedeutungen erklärt – Noctalia",
-  "description": "Vom Tod zu träumen ist selten wörtlich. Was symbolisiert der Tod in Träumen? Von Transformation bis Abschluss – entschlüsseln Sie Ihren Geist.",
+  "description": "Träume vom Tod, vom eigenen Sterben, von Angehörigen oder Verstorbenen: was sie bedeuten können, was sie nicht vorhersagen und was nach dem Aufwachen hilft.",
   "robots": "max-image-preview:large",
   "themeColor": "#0a0514",
   "htmlClass": "scroll-smooth blog-article",
@@ -14,23 +14,23 @@
   "mainClass": "pt-32 pb-20 px-4",
   "ogType": "article",
   "ogTitle": "Todesträume: 5 verborgene Bedeutungen erklärt – Noctalia",
-  "ogDescription": "Vom Tod zu träumen ist selten wörtlich. Was symbolisiert der Tod in Träumen? Von Transformation bis Abschluss – entschlüsseln Sie Ihren Geist.",
+  "ogDescription": "Der eigene Tod, ein geliebter Mensch, ein Verstorbener: was Todesträume widerspiegeln können, ohne Omen, und wie Sie behutsam damit umgehen.",
   "ogImage": "https://noctalia.app/img/blog/death-dreams-meaning.webp",
   "ogImageAlt": "Nebeliger Wald, der Transformation und die symbolische Bedeutung des Todes darstellt",
   "twitterCard": "summary_large_image",
   "twitterTitle": "Todesträume: 5 verborgene Bedeutungen erklärt – Noctalia",
-  "twitterDescription": "Vom Tod zu träumen ist selten wörtlich. Was symbolisiert der Tod in Träumen? Von Transformation bis Abschluss – entschlüsseln Sie Ihren Geist.",
+  "twitterDescription": "Ein Traum vom Tod sagt keinen Todesfall voraus. Was solche Träume widerspiegeln können und was danach guttut.",
   "twitterImage": "https://noctalia.app/img/blog/death-dreams-meaning.webp",
   "twitterImageAlt": "Nebeliger Wald, der Transformation und die symbolische Bedeutung des Todes darstellt",
   "publishedTime": "2025-12-11",
-  "modifiedTime": "2026-01-06",
+  "modifiedTime": "2026-10-08",
   "author": "Thanh Chau",
   "prevPath": "/de/blog/traeume-verfolgt-werden-bedeutung-und-interpretation",
   "nextPath": "/de/blog/wassertraeume-bedeutung-von-ertrinkungs-ozean-und-ueberschwemmungstraeumen",
   "preloadImage": "/img/blog/death-dreams-meaning.webp",
   "jsonLd": [
-    "{\n            \"@context\": \"https://schema.org\",\n            \"@type\": \"BlogPosting\",\n            \"headline\": \"Träume vom Tod: Bedeutung und Interpretation\",\n            \"description\": \"Was bedeutet es, vom Tod zu träumen? Entdecken Sie die symbolische Bedeutung hinter Todesträumen.\",\n            \"image\": {\n                \"@type\": \"ImageObject\",\n                \"url\": \"https://noctalia.app/img/blog/death-dreams-meaning.webp\",\n                \"width\": 1200,\n                \"height\": 630\n            },\n            \"author\": [\n                {\n                    \"@type\": \"Person\",\n                    \"@id\": \"https://noctalia.app/de/ueber-uns#person\",\n                    \"name\": \"Thanh Chau\",\n                    \"jobTitle\": \"Founder & Publication Director\",\n                    \"url\": \"https://noctalia.app/de/ueber-uns\",\n                    \"worksFor\": {\n                        \"@type\": \"Organization\",\n                        \"@id\": \"https://noctalia.app/#organization\",\n                        \"name\": \"Noctalia\",\n                        \"url\": \"https://noctalia.app\"\n                    }\n                },\n                {\n                    \"@type\": \"Organization\",\n                    \"@id\": \"https://noctalia.app/#organization\",\n                    \"name\": \"Noctalia\",\n                    \"url\": \"https://noctalia.app\",\n                    \"logo\": {\n                        \"@type\": \"ImageObject\",\n                        \"url\": \"https://noctalia.app/logo/logo_noctalia.png\"\n                    }\n                }\n            ],\n            \"publisher\": {\n                \"@type\": \"Organization\",\n                \"name\": \"Noctalia\",\n                \"url\": \"https://noctalia.app\",\n                \"logo\": {\n                    \"@type\": \"ImageObject\",\n                    \"url\": \"https://noctalia.app/logo/logo_noctalia.png\"\n                }\n            },\n            \"datePublished\": \"2025-12-11\",\n            \"dateModified\": \"2026-01-06\",\n            \"mainEntityOfPage\": {\n                \"@type\": \"WebPage\",\n                \"@id\": \"https://noctalia.app/de/blog/traeume-vom-tod-bedeutung-und-interpretation\"\n            },\n            \"inLanguage\": \"de\",\n            \"isAccessibleForFree\": true,\n            \"wordCount\": 1014,\n            \"timeRequired\": \"PT4M\",\n            \"url\": \"https://noctalia.app/de/blog/traeume-vom-tod-bedeutung-und-interpretation\"\n        }",
-    "{\n        \"@context\": \"https://schema.org\",\n        \"@type\": \"FAQPage\",\n        \"mainEntity\": [\n                {\n                        \"@type\": \"Question\",\n                        \"name\": \"Sagen Träume über den Tod den tatsächlichen Tod voraus?\",\n                        \"acceptedAnswer\": {\n                                \"@type\": \"Answer\",\n                                \"text\": \"Nein, Träume vom Tod sagen nur sehr selten den tatsächlichen Tod voraus. In der Traumsymbolik stellt der Tod typischerweise eher ein Ende, eine Transformation und einen Wandel als den buchstäblichen Tod dar. Diese Träume signalisieren oft das Ende eines Lebensabschnitts und den Beginn eines anderen.\"\n                        }\n                },\n                {\n                        \"@type\": \"Question\",\n                        \"name\": \"Warum träume ich davon, dass jemand, den ich liebe, stirbt?\",\n                        \"acceptedAnswer\": {\n                                \"@type\": \"Answer\",\n                                \"text\": \"Träume vom Sterben eines geliebten Menschen spiegeln oft die Angst wider, ihn zu verlieren, Veränderungen in Ihrer Beziehung oder Aspekte von Ihnen, die Sie mit dieser Person verbinden. Diese Träume können auch in Zeiten des Übergangs oder in der Weiterentwicklung der Beziehung auftreten.\"\n                        }\n                },\n                {\n                        \"@type\": \"Question\",\n                        \"name\": \"Was bedeutet es, vom eigenen Tod zu träumen?\",\n                        \"acceptedAnswer\": {\n                                \"@type\": \"Answer\",\n                                \"text\": \"Vom eigenen Tod zu träumen symbolisiert typischerweise eine persönliche Transformation, das Ende alter Gewohnheiten oder Denkweisen oder einen bedeutenden Lebensübergang. Es deutet oft darauf hin, dass Sie sich in einer großen persönlichen Veränderung befinden oder bereit dafür sind.\"\n                        }\n                }\n        ]\n}",
+    "{\n    \"@context\": \"https://schema.org\",\n    \"@type\": \"BlogPosting\",\n    \"headline\": \"Träume vom Tod: Bedeutung und was sie nicht vorhersagen\",\n    \"description\": \"Träume vom Tod, vom eigenen Sterben, von Angehörigen oder Verstorbenen: was sie bedeuten können, was sie nicht vorhersagen und was nach dem Aufwachen hilft.\",\n    \"image\": {\n        \"@type\": \"ImageObject\",\n        \"url\": \"https://noctalia.app/img/blog/death-dreams-meaning.webp\",\n        \"width\": 1200,\n        \"height\": 630\n    },\n    \"author\": [\n        {\n            \"@type\": \"Person\",\n            \"@id\": \"https://noctalia.app/de/ueber-uns#person\",\n            \"name\": \"Thanh Chau\",\n            \"jobTitle\": \"Founder & Publication Director\",\n            \"url\": \"https://noctalia.app/de/ueber-uns\",\n            \"worksFor\": {\n                \"@type\": \"Organization\",\n                \"@id\": \"https://noctalia.app/#organization\",\n                \"name\": \"Noctalia\",\n                \"url\": \"https://noctalia.app\"\n            }\n        },\n        {\n            \"@type\": \"Organization\",\n            \"@id\": \"https://noctalia.app/#organization\",\n            \"name\": \"Noctalia\",\n            \"url\": \"https://noctalia.app\",\n            \"logo\": {\n                \"@type\": \"ImageObject\",\n                \"url\": \"https://noctalia.app/logo/logo_noctalia.png\"\n            }\n        }\n    ],\n    \"publisher\": {\n        \"@type\": \"Organization\",\n        \"name\": \"Noctalia\",\n        \"url\": \"https://noctalia.app\",\n        \"logo\": {\n            \"@type\": \"ImageObject\",\n            \"url\": \"https://noctalia.app/logo/logo_noctalia.png\"\n        }\n    },\n    \"datePublished\": \"2025-12-11\",\n    \"dateModified\": \"2026-10-08\",\n    \"mainEntityOfPage\": {\n        \"@type\": \"WebPage\",\n        \"@id\": \"https://noctalia.app/de/blog/traeume-vom-tod-bedeutung-und-interpretation\"\n    },\n    \"inLanguage\": \"de\",\n    \"isAccessibleForFree\": true,\n    \"wordCount\": 1903,\n    \"timeRequired\": \"PT9M\",\n    \"url\": \"https://noctalia.app/de/blog/traeume-vom-tod-bedeutung-und-interpretation\"\n}",
+    "{\n    \"@context\": \"https://schema.org\",\n    \"@type\": \"FAQPage\",\n    \"mainEntity\": [\n        {\n            \"@type\": \"Question\",\n            \"name\": \"Sagen Träume vom Tod einen echten Todesfall voraus?\",\n            \"acceptedAnswer\": {\n                \"@type\": \"Answer\",\n                \"text\": \"Nein. Ein Traum kann den Tod eines Menschen nicht vorhersagen, auch nicht Ihren eigenen. Er bringt ein Gefühl, eine Sorge oder eine Erinnerung ins Bild, und wie intensiv er war, sagt nichts über die Zukunft.\"\n            }\n        },\n        {\n            \"@type\": \"Question\",\n            \"name\": \"Warum träume ich, dass ein geliebter Mensch stirbt?\",\n            \"acceptedAnswer\": {\n                \"@type\": \"Answer\",\n                \"text\": \"Oft, weil Ihnen dieser Mensch wichtig ist oder Sie sich um ihn sorgen, manchmal nach einer Nachricht oder einem Bild, das hängen geblieben ist. Über seine Gesundheit sagt der Traum nichts, und er verrät keinen verborgenen Wunsch.\"\n            }\n        },\n        {\n            \"@type\": \"Question\",\n            \"name\": \"Was bedeutet es, vom eigenen Tod zu träumen?\",\n            \"acceptedAnswer\": {\n                \"@type\": \"Answer\",\n                \"text\": \"Eine feste Bedeutung gibt es nicht, und der Traum kündigt nicht Ihren Tod an. Manchmal begleitet er das Ende eines Lebensabschnitts oder eine Sorge um die Gesundheit, manchmal einen Film oder ein Gespräch. Notieren Sie Szene und Gefühl, um zu sehen, was zu Ihnen passt.\"\n            }\n        },\n        {\n            \"@type\": \"Question\",\n            \"name\": \"Was tun, wenn ein Todestraum mit Suizidgedanken einhergeht?\",\n            \"acceptedAnswer\": {\n                \"@type\": \"Answer\",\n                \"text\": \"Bleiben Sie mit diesen Gedanken nicht allein. Sprechen Sie noch heute mit einer Ärztin oder einem Arzt, einer Psychotherapeutin oder einem Psychotherapeuten oder einem Krisendienst in Ihrem Land; Find A Helpline listet solche Angebote nach Ländern auf. In akuter Gefahr rufen Sie den Notruf.\"\n            }\n        }\n    ]\n}",
     "{\n    \"@context\": \"https://schema.org\",\n    \"@type\": \"BreadcrumbList\",\n    \"itemListElement\": [\n        {\n            \"@type\": \"ListItem\",\n            \"position\": 1,\n            \"name\": \"Startseite\",\n            \"item\": \"https://noctalia.app/de/\"\n        },\n        {\n            \"@type\": \"ListItem\",\n            \"position\": 2,\n            \"name\": \"Ressourcen\",\n            \"item\": \"https://noctalia.app/de/blog/\"\n        },\n        {\n            \"@type\": \"ListItem\",\n            \"position\": 3,\n            \"name\": \"Träume vom Tod\",\n            \"item\": \"https://noctalia.app/de/blog/traeume-vom-tod-bedeutung-und-interpretation\"\n        }\n    ]\n}"
   ],
   "activeNav": "resources"
@@ -61,13 +61,13 @@
 <a class="text-xs font-mono text-purple-200/70 border border-white/10 rounded-full px-3 py-1 hover:text-white hover:border-dream-salmon/30 transition-colors" href="traumbedeutungen-interpretation-symbole">Thema: Traumbedeutungen</a>
 <span aria-hidden="true" class="w-full sm:hidden"></span>
 <span class="text-sm text-purple-300/60">Veröffentlicht am 11. Dezember 2025</span>
-<span class="text-sm text-purple-300/60">4 Min lesen</span>
+<span class="text-sm text-purple-300/60">9 Min. Lesezeit</span>
 </div>
 <h1 class="font-serif text-3xl md:text-5xl mb-6 text-transparent bg-clip-text bg-gradient-to-b from-white via-dream-lavender to-purple-400/50 leading-tight">
-                    Träume vom Tod: Bedeutung und Interpretation
+                    Träume vom Tod: Bedeutung und was sie nicht vorhersagen
                 </h1>
 <p class="text-lg text-purple-200/80 leading-relaxed">
-                    Du wachst mit einem Ruck und klopfendem Herzen auf. In Ihrem Traum haben Sie den Tod miterlebt – vielleicht Ihren eigenen, vielleicht den Tod eines Menschen, den Sie lieben. Die Emotionen bleiben bestehen: Angst, Trauer, Verwirrung. Aber bevor die Angst Sie überwältigt, sollten Sie Folgendes wissen: Träume vom Tod gehören zu den am häufigsten missverstandenen Träumen. Weit davon entfernt, Omen zu sein, enthalten sie oft tiefgreifende Botschaften über Transformation, Veränderung und Neuanfänge.
+                    Sie wachen mit einem Kloß im Hals auf. Im Traum sind Sie selbst gestorben, oder Ihre Mutter, oder der Großvater, der vor zwei Jahren gegangen ist, saß in seiner Küche, als wäre nichts gewesen. Solche Träume hinterlassen Angst, Trauer und manchmal einen unerwarteten Trost. Sie kündigen keinen Todesfall an. Sie können sie behutsam und in Ihrem eigenen Tempo anschauen, um zu verstehen, was sie in Ihnen berühren.
                 </p>
 </header>
 <!-- Author Byline (E-E-A-T) -->
@@ -83,7 +83,7 @@
 <!-- Quick Answer (AI SEO) -->
 <section class="glass-panel rounded-2xl p-6 mb-8 border border-dream-salmon/20 bg-white/5" aria-labelledby="quick-answer-title">
     <h2 id="quick-answer-title" class="font-serif text-xl text-dream-cream mb-3">Kurzantwort</h2>
-    <p class="text-purple-100/80 leading-relaxed">Träume vom Tod sagen fast nie einen tatsächlichen Tod voraus. In der Traumpsychologie symbolisiert der Tod Transformation, Abschlüsse und Neuanfänge. Über 70 % der Menschen erleben irgendwann Todesträume. Häufige Szenarien sind der Traum vom eigenen Tod (persönliche Transformation), vom Tod eines geliebten Menschen (Verlustangst oder Beziehungsveränderungen) oder vom Tod eines Fremden (unerforschte Aspekte des eigenen Selbst). Diese Träume treten besonders häufig in großen Lebensphasen des Wandels auf.</p>
+    <p class="text-purple-100/80 leading-relaxed">Ein Traum vom Tod sagt keinen Todesfall voraus, weder Ihren eigenen noch den eines Angehörigen. Solche Träume begleiten oft die Sorge um einen Menschen, eine Zeit des Umbruchs, eine Trauer oder Bilder, die Sie kürzlich gesehen haben. Die Szene zählt: selbst sterben, einen lebenden Menschen verlieren und einem Verstorbenen begegnen sind drei verschiedene Erfahrungen. Wenn der Traum mit Gedanken an den eigenen Tod oder Suizid einhergeht, sprechen Sie noch heute mit einer Fachperson oder einem Krisendienst.</p>
 </section>
 <figure class="mb-12 rounded-2xl overflow-hidden">
 <img alt="Nebeliger Wald, der Transformation und die symbolische Bedeutung des Todes darstellt" class="w-full h-auto" fetchpriority="high" height="630" loading="eager" sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 33vw" src="../../img/blog/death-dreams-meaning.webp" srcset="../../img/blog/death-dreams-meaning-480w.webp 480w, ../../img/blog/death-dreams-meaning-800w.webp 800w, ../../img/blog/death-dreams-meaning-1200w.webp 1200w" width="1200">
@@ -93,28 +93,25 @@
 <i class="w-5 h-5 text-dream-salmon" data-lucide="list"></i> Inhaltsverzeichnis
                 </h2>
 <ol class="space-y-2 text-sm text-purple-200/70">
-<li><a class="toc-link block" href="#reassurance">1. Erstens: Keine Panik</a></li>
-<li><a class="toc-link block" href="#scenarios">2. Häufige Todestraumszenarien</a></li>
-<li><a class="toc-link block" href="#interpretations">3. Was Todesträume wirklich bedeuten</a></li>
-<li><a class="toc-link block" href="#psychology">4. Psychologische Perspektiven</a></li>
-<li><a class="toc-link block" href="#cultural">5. Kulturelle Interpretationen</a></li>
-<li><a class="toc-link block" href="#action">6. Mit Todesträumen arbeiten</a></li>
+<li><a class="toc-link block" href="#reassurance">1. Kündigt ein Traum vom Tod einen Todesfall an?</a></li>
+<li><a class="toc-link block" href="#scenarios">2. Wer ist in Ihrem Traum gestorben?</a></li>
+<li><a class="toc-link block" href="#interpretations">3. Was ein Todestraum widerspiegeln kann</a></li>
+<li><a class="toc-link block" href="#psychology">4. Was Forschung und Psychologie sagen</a></li>
+<li><a class="toc-link block" href="#cultural">5. Glaube und Familientradition: welchen Platz geben?</a></li>
+<li><a class="toc-link block" href="#action">6. Was nach einem belastenden Todestraum hilft</a></li>
 </ol>
 </nav>
 <div class="prose max-w-none text-gray-300">
-<h2 id="reassurance">Todesträume verstehen: Warum Sie nicht in Panik geraten sollten</h2>
+<h2 id="reassurance">Kündigt ein Traum vom Tod einen Todesfall an?</h2>
 <p>
-                    Lassen Sie uns den Elefanten im Raum ansprechen: <strong>Träume vom <a class="text-dream-salmon hover:underline" href="../traumsymbole/tod">Tod</a> sagen fast nie den tatsächlichen Tod voraus</strong>. Trotz jahrhundertelangem Aberglauben gibt es keinen wissenschaftlichen Beweis dafür, dass Todesträume prophetisch sind. In der Sprache der Träume ist der Tod ein Symbol – und wie die meisten Traumsymbole bedeutet es selten das, was es wörtlich darstellt.
+                    Nein. Aus einem Traum lässt sich der Tod eines Menschen nicht vorhersagen, weder Ihr eigener noch der eines Angehörigen. Ein Traum kann sich vollkommen echt anfühlen und stundenlang nachwirken. Diese Intensität sagt etwas über Ihre Gefühle, nicht über die Zukunft.
                 </p>
 <p>
-                    Todesträume sind auch außerordentlich häufig. Studien deuten darauf hin, dass <strong>über 70 % der Menschen</strong> schon einmal vom Tod geträumt haben - ihrem eigenen Tod, dem eines geliebten Menschen oder sogar eines Fremden. Sie kommen in allen Kulturen und Zeitaltern vor und erfüllen offenbar eine wichtige psychologische Funktion.
+                    Sie sind mit diesem Traum nicht allein. Er taucht oft in Zeiten der Trauer auf, wenn Sie sich um jemanden sorgen oder wenn ein Lebensabschnitt zu Ende geht. Am hilfreichsten ist es, bei der Szene selbst anzusetzen: Wer ist gestorben, wie, und was haben Sie gefühlt? Eine kurze Übersicht bietet die Seite zum Traumsymbol <a class="text-dream-salmon hover:underline" href="../traumsymbole/tod">Tod</a>.
                 </p>
-<blockquote>
-                    "In Träumen ist der Tod ein Symbol der Transformation. Der Traum zeigt Ihnen, dass etwas in Ihrem Leben zu Ende geht, damit etwas Neues beginnen kann." - Dr. Rubin Naiman, Schlaf- und Traumspezialist
-                </blockquote>
-<h2 id="scenarios">Häufige Todestraumszenarien und ihre symbolische Bedeutung</h2>
+<h2 id="scenarios">Wer ist in Ihrem Traum gestorben?</h2>
 <p>
-                    Das spezifische Szenario Ihres Todestraums liefert wichtige Hinweise auf seine Bedeutung:
+                    Diese Szenen sind keine Definitionen. Es sind Anhaltspunkte, die Sie mit Ihrem Erleben vergleichen können. Was nicht passt, dürfen Sie beiseitelassen.
                 </p>
 </div>
 <div class="grid md:grid-cols-2 gap-6 my-12">
@@ -123,10 +120,10 @@
 <div class="p-2 bg-dream-salmon/10 rounded-lg">
 <i class="w-5 h-5 text-dream-salmon" data-lucide="user"></i>
 </div>
-<h3 class="font-serif text-lg text-dream-cream">Ihr eigener Tod</h3>
+<h3 class="font-serif text-lg text-dream-cream">Der eigene Tod</h3>
 </div>
 <p class="text-sm text-gray-300">
-                        Der Traum vom eigenen Tod bedeutet normalerweise <strong>schwer persönliche Transformation</strong>. Alte Aspekte von Ihnen – Gewohnheiten, Überzeugungen, Identität – „sterben“ um Platz für das zu machen, was du wirst.
+                        Haben Sie die Szene von außen gesehen, selbst erlebt oder erst danach davon erfahren? Dieser Traum taucht manchmal auf, wenn für Sie <strong>etwas zu Ende geht</strong>: eine Stelle, eine Beziehung, ein Lebensabschnitt. Er kann auch einem Film oder einer Sorge um die eigene Gesundheit folgen.
                     </p>
 </div>
 <div class="dream-card glass-panel rounded-xl p-6 border border-transparent">
@@ -134,10 +131,10 @@
 <div class="p-2 bg-dream-salmon/10 rounded-lg">
 <i class="w-5 h-5 text-dream-salmon" data-lucide="heart"></i>
 </div>
-<h3 class="font-serif text-lg text-dream-cream">Das Sterben eines geliebten Menschen</h3>
+<h3 class="font-serif text-lg text-dream-cream">Ein geliebter Mensch stirbt</h3>
 </div>
 <p class="text-sm text-gray-300">
-                        Spiegelt oft <strong>die Angst vor dem Verlust wider.</strong> oder Veränderungen in Ihrer Beziehung. Es kann auch Eigenschaften darstellen, die Sie mit ihnen assoziieren und die sich in Ihnen selbst verändern.
+                        Oft der aufwühlendste Traum. Er kann eine <strong>echte Sorge</strong> aufgreifen oder einfach zeigen, wie wichtig Ihnen dieser Mensch ist. Über seine Gesundheit sagt er nichts, und er verrät keinen verborgenen Wunsch. Wenn es Sie beruhigt, melden Sie sich einfach bei ihm.
                     </p>
 </div>
 <div class="dream-card glass-panel rounded-xl p-6 border border-transparent">
@@ -145,10 +142,10 @@
 <div class="p-2 bg-dream-salmon/10 rounded-lg">
 <i class="w-5 h-5 text-dream-salmon" data-lucide="baby"></i>
 </div>
-<h3 class="font-serif text-lg text-dream-cream">Ein sterbendes Kind</h3>
+<h3 class="font-serif text-lg text-dream-cream">Ein Kind stirbt</h3>
 </div>
 <p class="text-sm text-gray-300">
-                        Kann das <strong>Ende der Unschuld</strong>, den Verlust kindlicher Eigenschaften oder die Sorge darüber darstellen, dass ein Projekt oder ein kreatives Unterfangen (unser „<a class="text-dream-salmon hover:underline" href="../traumsymbole/baby">Baby</a>“) nicht überlebt.
+                        Für Eltern eine der schwersten Szenen. Sie gibt oft der <strong>Angst, nicht schützen zu können</strong>, eine Gestalt, die zur Liebe dazugehört. Sie beweist nicht, dass Sie versagt haben, und kündigt keine Gefahr an. Auch ein <a class="text-dream-salmon hover:underline" href="../traumsymbole/baby">Baby</a> im Traum ist kein Urteil über Sie.
                     </p>
 </div>
 <div class="dream-card glass-panel rounded-xl p-6 border border-transparent">
@@ -156,10 +153,10 @@
 <div class="p-2 bg-dream-salmon/10 rounded-lg">
 <i class="w-5 h-5 text-dream-salmon" data-lucide="users"></i>
 </div>
-<h3 class="font-serif text-lg text-dream-cream">Ein sterbender Fremder</h3>
+<h3 class="font-serif text-lg text-dream-cream">Ein Fremder stirbt oder eine Beerdigung</h3>
 </div>
 <p class="text-sm text-gray-300">
-                        Der Fremde repräsentiert oft <strong>einen unbekannten Aspekt von Ihnen selbst</strong> - ein Potenzial, eine Eigenschaft oder einen Weg, der noch nicht erkundet wurde und möglicherweise verblasst oder Aufmerksamkeit braucht.
+                        Welche Rolle hatten Sie: beteiligt, Zeuge, Gast? Erinnert die Szene an Nachrichten, eine Serie oder eine kürzliche <a class="text-dream-salmon hover:underline" href="../traumsymbole/beerdigung">Beerdigung</a>? Ein Fremder steht <strong>nicht automatisch</strong> für einen verborgenen Teil von Ihnen. Keinen persönlichen Bezug zu finden, ist auch eine Antwort.
                     </p>
 </div>
 <div class="dream-card glass-panel rounded-xl p-6 border border-transparent">
@@ -167,10 +164,10 @@
 <div class="p-2 bg-dream-salmon/10 rounded-lg">
 <i class="w-5 h-5 text-dream-salmon" data-lucide="dog"></i>
 </div>
-<h3 class="font-serif text-lg text-dream-cream">Ein sterbendes Haustier</h3>
+<h3 class="font-serif text-lg text-dream-cream">Ein Haustier stirbt</h3>
 </div>
 <p class="text-sm text-gray-300">
-                        Haustiere symbolisieren oft <strong>bedingungslose Liebe, Treue oder Instinkte</strong>. Ihr Tod in Träumen kann darauf hindeuten, dass diese Eigenschaften vernachlässigt oder verändert werden.
+                        Achten Sie auf die Erinnerungen, die zurückkommen. Der Traum kann schlicht die <strong>Bindung an Ihr Tier</strong> widerspiegeln oder die Trauer um ein Tier, das Sie verloren haben. Ein Maßstab für Ihre Treue oder Fürsorge ist er nicht.
                     </p>
 </div>
 <div class="dream-card glass-panel rounded-xl p-6 border border-transparent">
@@ -178,111 +175,101 @@
 <div class="p-2 bg-dream-salmon/10 rounded-lg">
 <i class="w-5 h-5 text-dream-salmon" data-lucide="rotate-ccw"></i>
 </div>
-<h3 class="font-serif text-lg text-dream-cream">Jemand, der tot ist, wird lebendig</h3>
+<h3 class="font-serif text-lg text-dream-cream">Ein Verstorbener ist wieder da</h3>
 </div>
 <p class="text-sm text-gray-300">
-                        Wenn <a class="text-dream-salmon hover:underline" href="../traumsymbole/verstorbene-person">verstorbene</a> Menschen lebendig erscheinen, bedeutet das oft, dass ihre <strong>Qualitäten oder Lektionen wieder aufleben</strong>  Ihr Leben, oder Sie verarbeiten Trauer und halten ihre Erinnerung wach.
+                        Eine Großmutter, die in ihrer Küche wartet, ein Vater, der spricht wie früher. Solche Träume von <a class="text-dream-salmon hover:underline" href="../traumsymbole/verstorbene-person">Verstorbenen</a> sind in der Trauer häufig. Sie können trösten, die Sehnsucht verstärken oder beides. Sie bedeuten nicht, dass Ihre Trauer <strong>„feststeckt“</strong>.
                     </p>
 </div>
 </div>
 <div class="prose max-w-none text-gray-300">
-<h2 id="interpretations">Was Todesträume wirklich bedeuten: 6 symbolische Interpretationen</h2>
+<h2 id="interpretations">Was ein Todestraum widerspiegeln kann</h2>
 <p>
-                    Hinter den verstörenden Bildern vermitteln Todesträume normalerweise eine dieser tieferen Bedeutungen:
+                    Kein Traumlexikon kann sagen, warum gerade <em>Sie</em> diesen Traum hatten. Manche Zusammenhänge zeigen sich jedoch häufig, wenn man die Szene mit dem vergleicht, was man gerade erlebt. Verstehen Sie sie als Fragen, nicht als Antworten.
                 </p>
-<h3>1. Todesträume als Symbole der Transformation und Wiedergeburt</h3>
+<h3>Die Angst, jemanden zu verlieren</h3>
 <p>
-                    Hier ist die häufigste Interpretation. Der Tod in Träumen repräsentiert das <strong>Ende eines Kapitels und den Anfang eines anderen</strong>. Möglicherweise entwachsen Sie alten Lebensgewohnheiten, beenden einen Lebensabschnitt oder erleben tiefgreifende innere Veränderungen. Wie der Phönix muss etwas sterben, damit etwas Neues entsteht.
+                    Ein kranker Angehöriger, älter werdende Eltern, ein Kind, das weit wegzieht. Wer jemanden liebt, kennt die Angst, ihn zu verlieren, und sie kann sich nachts zeigen. Der Traum spielt diese Angst durch, er kündigt nichts an. Fragen Sie sich: Um wen mache ich mir gerade Sorgen?
                 </p>
-<h3>2. Todesträume stellen Ende und Abschluss dar</h3>
+<h3>Ein Ende oder ein Übergang</h3>
 <p>
-                    Todesträume erscheinen oft, wenn etwas in Ihrem Leben <strong>zu Ende geht</strong>  – eine Beziehung, ein Job, eine Lebenssituation oder eine Lebensphase. Der Traum hilft Ihnen, das Ende zu verarbeiten und zu akzeptieren, auch wenn Sie sich dessen nicht bewusst sind.
+                    Umzug, Trennung, Ruhestand, Kinder, die ausziehen. Wenn ein Abschnitt endet, kann der Tod zum Bild dafür werden. Das ist nur eine mögliche Lesart: Lassen Sie sie beiseite, wenn sie Ihnen nichts sagt. Zu einer Entscheidung verpflichtet sie Sie nicht.
                 </p>
-<h3>3. Todesträume spiegeln Furcht und Unruhe wider</h3>
+<h3>Trauer und die Verbindung zum Verstorbenen</h3>
 <p>
-                    Manchmal spiegeln Todesträume einfach <strong>die zugrunde liegende Angst</strong> - über Sterblichkeit, Gesundheit, den Verlust geliebter Menschen oder die Unsicherheiten des Lebens. Besonders nach einem Verlust oder während einer Krankheit können diese Träume Ihre Ängste in symbolischer Form verarbeiten.
+                    Nach einem Verlust gehört es zu den häufigsten Erfahrungen, von der verstorbenen Person zu träumen. Der Traum kann einen versäumten Abschied, ein alltägliches Gespräch oder einen alten Streit wieder aufnehmen. Halten Sie fest, was Sie berührt hat, ohne daraus eine Botschaft zu machen.
                 </p>
-<h3>4. Todesträume als Zeichen ungelöster Trauer</h3>
+<h3>Die Angst vor dem Tod selbst</h3>
 <p>
-                    Träume über verstorbene Angehörige kommen oft zum Vorschein, wenn <strong>die Trauer unverarbeitet bleibt</strong>. Der Traum bietet möglicherweise eine Gelegenheit für weitere Kontakte, letzte Gespräche oder die Verarbeitung von Gefühlen, die Sie zu Lebzeiten nicht ausdrücken konnten.
+                    Eine Krankheit, ein runder Geburtstag, der Tod eines Gleichaltrigen: Die eigene Endlichkeit beschäftigt manchmal den Kopf, und der Traum gibt ihr eine Form. Wenn diese Angst auch Ihre Tage bestimmt, sollten Sie mit jemandem darüber sprechen.
                 </p>
-<h3>5. Todesträume signalisieren die Notwendigkeit, loszulassen</h3>
+<h3>Bilder aus dem Alltag</h3>
 <p>
-                    Todesträume können signalisieren, dass es an der Zeit ist, <strong>etwas loszulassen</strong>  – alten Groll, überholte Überzeugungen, toxische Beziehungen oder vergangene Versionen Ihrer selbst. Der Traum verwendet den Tod als Metapher für die notwendige Befreiung.
+                    Ein Film, eine Nachricht, ein Gespräch beim Abendessen. Träume verarbeiten oft, was wir gesehen oder gehört haben. Manchmal ist das schon die ganze Erklärung, und das ist in Ordnung.
                 </p>
-<h3>6. Todesträume als Weckruf</h3>
-<p>
-                    Manchmal dienen Todesträume als <strong>Erinnerung an die Sterblichkeit</strong>  – nicht auf krankhafte Weise, sondern als Motivation, ein erfüllteres Leben zu führen. Sie können zum Nachdenken darüber anregen, wie Sie Ihre Zeit verbringen und ob Ihr Leben mit Ihren Werten übereinstimmt.
-                </p>
+<h3 id="traumtagebuch-beispiel">Beispiel aus einem Traumtagebuch</h3>
+<p><strong>Erfundenes Beispiel:</strong> Es zeigt, wie man einen Traum von einem Verstorbenen notiert, ohne ihm eine Bedeutung aufzuzwingen.</p>
+<ul>
+<li><strong>Traum:</strong> „Meine Großmutter, die letztes Jahr gestorben ist, hat in ihrer Küche auf mich gewartet. Sie hat mir einen Kaffee eingeschenkt und gesagt, ich solle mir keine Sorgen machen.“</li>
+<li><strong>Gefühl:</strong> „Trost während des Traums, dann große Traurigkeit beim Aufwachen.“</li>
+<li><strong>Aktueller Kontext:</strong> „Es war der Tag vor ihrem Geburtstag, und bei der Arbeit wächst mir gerade alles über den Kopf.“</li>
+<li><strong>Frage zum Aufheben:</strong> „Träume ich vor allem rund um wichtige Daten von ihr, oder wenn ich erschöpft bin?“</li>
+</ul>
+<p>Ein einzelner Eintrag beweist nichts. Wenn Sie möchten, notieren Sie einige Träume über mehrere Wochen: Erst beim gemeinsamen Nachlesen zeigt sich, was wiederkehrt. Und wenn das Schreiben zu viel Schmerz weckt, genügt ein Satz darüber, wie es Ihnen beim Aufwachen geht.</p>
 <aside class="glass-panel rounded-2xl p-6 my-8 border border-dream-salmon/20">
 <div class="flex items-start gap-4">
 <div class="p-3 bg-dream-salmon/10 rounded-xl">
 <i class="w-6 h-6 text-dream-salmon" data-lucide="sparkles"></i>
 </div>
 <div>
-<h4 class="font-serif text-lg text-dream-cream mb-2">Verstehen Sie Ihre Todesträume</h4>
-<p class="text-sm text-gray-400 mb-4">Noctalia analysiert die spezifischen Details Ihres Todestraums – wer ist gestorben, wie und welche Emotionen damit verbunden sind –, um personalisierte Einblicke in die Transformation zu geben, die Ihr Unterbewusstsein verarbeitet.</p>
+<h4 class="font-serif text-lg text-dream-cream mb-2">Den Traum festhalten, bevor er verblasst</h4>
+<p class="text-sm text-gray-400 mb-4">In Noctalia erzählen Sie Ihren Traum nach dem Aufwachen laut oder schreiben ihn auf. Er wird transkribiert und in Ihrem Tagebuch gespeichert, zusammen mit dem, was Sie gefühlt haben.</p>
 <a class="inline-flex items-center gap-2 text-sm text-dream-salmon hover:text-dream-salmonLight transition-colors" href="/de/">
-                                Probieren Sie Noctalia kostenlos aus <i class="w-4 h-4" data-lucide="arrow-right"></i>
+                                Noctalia kostenlos ausprobieren <i class="w-4 h-4" data-lucide="arrow-right"></i>
 </a>
 </div>
 </div>
 </aside>
-<h2 id="psychology">Psychologische Perspektiven auf den Tod Träume</h2>
-<h3>Freudsche Sicht auf Todesträume</h3>
+<h2 id="psychology">Was Forschung und Psychologie sagen</h2>
+<h3>Träume von Verstorbenen in der Trauer</h3>
 <p>
-                    Freud glaubte, dass Todesträume <strong>unterdrückte Feindseligkeit</strong> gegenüber der Person, die im Traum stirbt, oder unbewusste Wünsche (nicht unbedingt Todeswünsche, aber vielleicht Wünsche nach Veränderung oder Freiheit) darstellen könnten. Er sah sie auch als Ausdruck der Angst vor der eigenen Sterblichkeit.
+                    Untersucht wurden diese Träume vor allem bei Trauernden. In einer <a class="text-dream-salmon hover:underline" href="https://pubmed.ncbi.nlm.nih.gov/23449603/" rel="nofollow noopener noreferrer" target="_blank">Befragung von Wright und Kollegen</a> unter 278 trauernden Menschen gaben 58 % an, von der verstorbenen Person geträumt zu haben. Die beschriebenen Träume konnten angenehm sein oder Trost und Verstörung mischen. Das Ergebnis gilt für diese Gruppe: Es sagt nicht, was Ihr Traum bedeutet, und eignet sich nicht, um eine erschwerte Trauer zu diagnostizieren.
                 </p>
-<h3>Jungs Interpretation des Todes in Träumen</h3>
+<h3>Die Sicht von Freud und Jung</h3>
 <p>
-                    Carl Jung betrachtete den Tod in Träumen als <strong>tiefgreifende Transformation der Psyche</strong>. Der Tod stellt das Absterben des Egos in seiner begrenzten Perspektive dar, was psychologisches Wachstum und Integration ermöglicht. Es ist die notwendige Zerstörung vor der Schöpfung.
+                    In der <em>Traumdeutung</em> (1900) zählt Freud den Traum vom Tod eines geliebten Menschen zu den „typischen Träumen“. Er bringt ihn mit alten Kindheitswünschen in Verbindung, aus einem Alter, in dem „tot sein“ vor allem „nicht mehr da sein“ heißt. Die jungianische Tradition liest den Tod eher als Symbol der Wandlung: Etwas endet, damit Neues entstehen kann. Beides sind historische Deutungsrahmen, viel diskutiert, keine Aussagen über Ihre Gefühle.
                 </p>
-<h3>Existenzielle Perspektive auf Todesträume</h3>
+<h3>Warum träumen wir überhaupt?</h3>
 <p>
-                    Aus existentieller Sicht konfrontieren uns Todesträume mit dem <strong>grundlegenden menschlichen Bewusstsein der Sterblichkeit</strong>. Anstatt krankhaft zu sein, können sie uns dazu erwecken, authentischer zu leben und bewusste Entscheidungen darüber zu treffen, wie wir unsere begrenzte Zeit verbringen.
+                    Die Funktion des Träumens ist bis heute umstritten. Das NINDS, das US-Forschungsinstitut für Neurologie, weist darauf hin, dass sie nicht sicher geklärt ist. Nach Antti Revonsuos Theorie der Bedrohungssimulation dient Träumen unter anderem dazu, gefährliche Situationen gefahrlos durchzuspielen. Auch diese Hypothese ist umstritten und gibt keiner Szene eine feste Bedeutung.
                 </p>
-<h3>Moderne Forschung zur Symbolik von Todesträumen</h3>
+<h2 id="cultural">Glaube und Familientradition: welchen Platz geben?</h2>
 <p>
-                    Zeitgenössische Traumforscher vermuten, dass Todesträume uns helfen, <strong>das Konzept der Endungen einzustudieren und zu verarbeiten</strong>. Unser Gehirn nutzt möglicherweise den sicheren Raum der Träume, um Sterblichkeit, Verlust und Veränderungen ohne reale Konsequenzen zu erforschen.
+                    In vielen Familien und Traditionen haben solche Träume eine bestimmte Bedeutung: der Besuch eines Verstorbenen, ein Abschied, manchmal sogar ein Zeichen für ein langes Leben. Sie dürfen dem Traum einen Platz in Ihrer Geschichte, Ihrem Glauben oder Ihrer Erinnerung an einen Menschen geben. Diese Deutung gehört Ihnen. Sie ist kein Beleg für die Gesundheit oder die Zukunft eines anderen Menschen, und wir stellen Träume nicht als überprüfte Botschaften Verstorbener dar.
                 </p>
-<blockquote>
-                    "Das Erscheinen des Todes in Träumen bedeutet nicht unbedingt etwas Negatives. Es kann ein Hinweis darauf sein, dass Sie einen Übergang von einer Phase Ihres Lebens in eine andere vollziehen.“ - Dr. Michael Lennox, Traumpsychologe
-                </blockquote>
-<h2 id="cultural">Kulturelle Interpretationen von Todesträumen auf der ganzen Welt</h2>
+<h2 id="action">Was nach einem belastenden Todestraum hilft</h2>
+<h3>1. Langsam im Raum ankommen</h3>
 <p>
-                    Verschiedene Kulturen haben Todesträume auf unterschiedliche Weise verstanden:
+                    Machen Sie Licht, stellen Sie die Füße auf den Boden, schauen Sie sich um. Atmen Sie ruhig und lassen Sie das Ausatmen etwas länger werden. Es war ein Traum, und Sie müssen jetzt keine Schlüsse daraus ziehen.
                 </p>
-<ul>
-<li><strong>Altes Ägypten:</strong> Geglaubte Todesträume könnten Botschaften von Toten oder Einblicke in das Leben nach dem Tod sein</li>
-<li><strong>Griechische Tradition:</strong> Sah Todesträume als potenziell prophetisch an, wenn auch oft eher symbolisch als wörtlich</li>
-<li><strong>Chinesische Kultur:</strong> Der Tod in Träumen kann Glück und Langlebigkeit symbolisieren (entgegengesetzte Interpretation)</li>
-<li><strong>Indianer:</strong> Todesträume werden oft als spirituelle Reisen oder Botschaften von Vorfahren angesehen</li>
-<li><strong>Islamische Tradition:</strong> Unterschiedliche Interpretationen basierend auf dem Verstorbenen und dem emotionalen Zustand des Träumers</li>
-<li><strong>Westliche Psychologie:</strong> Ansicht von Todesträumen im Allgemeinen als Symbol für Veränderung und Transformation</li>
-</ul>
-<h2 id="action">Wie Sie Ihre Todesträume interpretieren und mit ihnen arbeiten</h2>
+<h3>2. Aufschreiben, wenn es Ihnen hilft</h3>
 <p>
-                    Wenn Sie Todesträume beunruhigen, erfahren Sie hier, wie Sie konstruktiv damit umgehen können:
+                    Trennen Sie drei Dinge: die Szene, Ihr Gefühl und das, was gerade in Ihrem Leben passiert. Sie müssen nicht jedes schmerzhafte Detail wieder aufrollen und keine Lehre daraus ziehen.
                 </p>
-<h3>1. Notieren Sie die Details Ihres Todestraums</h3>
+<h3>3. Mit einem vertrauten Menschen sprechen</h3>
 <p>
-                    Schreiben Sie alles auf: Wer ist gestorben, wie, wo und vor allem <strong>wie Sie sich gefühlt haben</strong>. Der emotionale Ton verrät oft mehr als der wörtliche Inhalt. Hattest du Angst? Friedlich? Erleichtert? Traurig?
+                    Den Traum zu erzählen, erleichtert oft. Sprechen Sie über Ihre Gefühle, ohne den Traum als Warnung darzustellen, vor allem wenn die Person selbst darin vorkam.
                 </p>
-<h3>2. Suchen Sie nach Lebensübergängen hinter Todesträumen.</h3>
+<h3>4. Wenn die Träume wiederkehren</h3>
 <p>
-                    Fragen Sie sich: <strong>Was endet oder verändert sich in meinem Leben?</strong> Neuer Job? Beziehungswechsel? Persönliches Wachstum? Umzug? Der Tod in Ihrem Traum spiegelt möglicherweise einen Übergang in die reale Welt wider.
+                    Wiederkehrende Albträume lassen sich lindern. Bei der Imagery-Rehearsal-Methode schreiben Sie im Wachzustand ein erträglicheres Ende und gehen es einige Minuten am Tag durch; unser <a class="text-dream-salmon hover:underline" href="albtraeume-ursachen-bedeutung-und-wie-man-sie-stoppen-kann">Ratgeber gegen Albträume</a> erklärt das Schritt für Schritt. Wenn Albträume häufig kommen und Ihren Schlaf oder Alltag beeinträchtigen, oder wenn ein Verlust auch nach Monaten sehr schmerzt, sprechen Sie mit Ihrer Hausärztin, Ihrem Hausarzt oder einer Psychotherapeutin bzw. einem Psychotherapeuten.
                 </p>
-<h3>3. Überlegen Sie, wer in Ihrem Todestraum gestorben ist.</h3>
+<h3 id="hilfe">5. Wenn der Traum mit Suizidgedanken einhergeht</h3>
 <p>
-                    Wenn eine bestimmte Person gestorben ist, <strong>was stellt sie für Sie dar?</strong> Welche Eigenschaften verbinden Sie mit ihr? Diese Eigenschaften verändern sich möglicherweise in dir selbst oder erfordern Aufmerksamkeit.
+                    Manchmal kommt ein Todestraum in einer Zeit, in der Sie selbst ans Sterben denken, sich als Last fühlen oder keinen Ausweg sehen. Dann ist nicht der Traum das, was gedeutet werden muss: Ihr Leid zählt, und es verdient jetzt Unterstützung.
                 </p>
-<h3>4. Ehre die Enden, die Todesträume offenbaren</h3>
 <p>
-                    Wenn der Traum ein Ende signalisiert, <strong>erkenne dieses Ende bewusst an und ehre es</strong>. Rituale, Tagebücher oder Gespräche können Ihnen helfen, die Übergänge zu verarbeiten, die Ihr Traum hervorhebt.
-                </p>
-<h3>5. Suchen Sie Unterstützung bei wiederkehrenden Todesträumen.</h3>
-<p>
-                    Wenn Todesträume häufig auftreten, sehr belastend sind oder mit Trauer oder Trauma verbunden sind, sollten Sie darüber nachdenken <strong>mit einem Therapeuten zu sprechen</strong>. Sie können Ihnen helfen, die zugrunde liegenden Emotionen sicher zu verarbeiten.
+                    <strong>Sprechen Sie noch heute mit einer Ärztin oder einem Arzt, einer Psychotherapeutin oder einem Psychotherapeuten oder einem Krisendienst in Ihrem Land.</strong> Die Seite <a class="text-dream-salmon hover:underline" href="https://findahelpline.com/" rel="nofollow noopener noreferrer" target="_blank">Find A Helpline</a> listet kostenlose Hilfetelefone nach Ländern auf. In Deutschland erreichen Sie die TelefonSeelsorge rund um die Uhr kostenlos unter 0800 111 0 111. Wenn Sie in akuter Gefahr sind, rufen Sie den Notruf und bleiben Sie nicht allein.
                 </p>
 </div>
 <!-- Symbol Guide CTA -->
@@ -292,10 +279,10 @@
 <i class="w-6 h-6 text-dream-salmon" data-lucide="sparkles"></i>
 </div>
 <div>
-<h4 class="font-serif text-lg text-dream-cream mb-2">Entdecken Sie die Symbolik des Todes</h4>
-<p class="text-sm text-gray-400 mb-3">Tauchen Sie mit unserem umfassenden Symbolführer tiefer in die Bedeutung des Todes in Träumen ein.</p>
+<h4 class="font-serif text-lg text-dream-cream mb-2">Das Traumsymbol „Tod“ kurz erklärt</h4>
+<p class="text-sm text-gray-400 mb-3">Varianten, Fragen an sich selbst und häufige Fragen im Kurzformat.</p>
 <a class="inline-flex items-center gap-2 text-dream-salmon hover:underline text-sm font-medium" href="../traumsymbole/tod">
-                            Lesen Sie regelmäßig den vollständigen Leitfaden <i class="w-4 h-4" data-lucide="arrow-right"></i>
+                            Zum Traumsymbol <i class="w-4 h-4" data-lucide="arrow-right"></i>
 </a>
 </div>
 </div>
@@ -319,14 +306,36 @@
 <div class="w-16 h-16 bg-dream-salmon/10 rounded-full flex items-center justify-center mx-auto mb-6">
 <i class="w-8 h-8 text-dream-salmon" data-lucide="sunrise"></i>
 </div>
-<h3 class="font-serif text-2xl md:text-3xl mb-4 text-dream-cream">Angst in Einsicht verwandeln</h3>
+<h3 class="font-serif text-2xl md:text-3xl mb-4 text-dream-cream">Festhalten, in Ihrem eigenen Tempo</h3>
 <p class="text-purple-200/70 mb-6 max-w-lg mx-auto">
-                    Todesträume vermitteln Botschaften über Transformation, nicht über Untergang. Zeichnen Sie Ihre Träume in Noctalia auf und lassen Sie sich von Noctalia dabei helfen, zu entschlüsseln, welche Veränderungen Ihr Unterbewusstsein verarbeitet.
+                    Halten Sie Ihre Träume in Noctalia fest, gesprochen oder geschrieben, zusammen mit Ihren Gefühlen. Später können Sie sie, wenn Sie möchten, nebeneinander lesen und sehen, was wiederkehrt.
                 </p>
 <a class="inline-flex items-center gap-2 px-8 py-4 bg-dream-salmon text-dream-dark rounded-full font-bold hover:bg-dream-salmon/90 transition-colors" href="/de/">
-                    Beginnen Sie mit der Erkundung Ihrer Träume <i class="w-5 h-5" data-lucide="arrow-right"></i>
+                    Mein Traumtagebuch beginnen <i class="w-5 h-5" data-lucide="arrow-right"></i>
 </a>
 </aside>
+<!-- FAQ Section -->
+<section class="mt-16">
+<h2 class="font-serif text-2xl text-dream-cream mb-8">Häufige Fragen</h2>
+<div class="space-y-4">
+<details class="glass-panel rounded-xl p-4 group cursor-pointer">
+<summary class="font-medium flex justify-between items-center text-dream-cream">Sagen Träume vom Tod einen echten Todesfall voraus?<i class="w-5 h-5 transition-transform group-open:rotate-180 text-dream-salmon" data-lucide="chevron-down"></i></summary>
+<p class="mt-4 text-sm text-gray-400 leading-relaxed">Nein. Ein Traum kann den Tod eines Menschen nicht vorhersagen, auch nicht Ihren eigenen. Er bringt ein Gefühl, eine Sorge oder eine Erinnerung ins Bild, und wie intensiv er war, sagt nichts über die Zukunft.</p>
+</details>
+<details class="glass-panel rounded-xl p-4 group cursor-pointer">
+<summary class="font-medium flex justify-between items-center text-dream-cream">Warum träume ich, dass ein geliebter Mensch stirbt?<i class="w-5 h-5 transition-transform group-open:rotate-180 text-dream-salmon" data-lucide="chevron-down"></i></summary>
+<p class="mt-4 text-sm text-gray-400 leading-relaxed">Oft, weil Ihnen dieser Mensch wichtig ist oder Sie sich um ihn sorgen, manchmal nach einer Nachricht oder einem Bild, das hängen geblieben ist. Über seine Gesundheit sagt der Traum nichts, und er verrät keinen verborgenen Wunsch.</p>
+</details>
+<details class="glass-panel rounded-xl p-4 group cursor-pointer">
+<summary class="font-medium flex justify-between items-center text-dream-cream">Was bedeutet es, vom eigenen Tod zu träumen?<i class="w-5 h-5 transition-transform group-open:rotate-180 text-dream-salmon" data-lucide="chevron-down"></i></summary>
+<p class="mt-4 text-sm text-gray-400 leading-relaxed">Eine feste Bedeutung gibt es nicht, und der Traum kündigt nicht Ihren Tod an. Manchmal begleitet er das Ende eines Lebensabschnitts oder eine Sorge um die Gesundheit, manchmal einen Film oder ein Gespräch. Notieren Sie Szene und Gefühl, um zu sehen, was zu Ihnen passt.</p>
+</details>
+<details class="glass-panel rounded-xl p-4 group cursor-pointer">
+<summary class="font-medium flex justify-between items-center text-dream-cream">Was tun, wenn ein Todestraum mit Suizidgedanken einhergeht?<i class="w-5 h-5 transition-transform group-open:rotate-180 text-dream-salmon" data-lucide="chevron-down"></i></summary>
+<p class="mt-4 text-sm text-gray-400 leading-relaxed">Bleiben Sie mit diesen Gedanken nicht allein. Sprechen Sie noch heute mit einer Ärztin oder einem Arzt, einer Psychotherapeutin oder einem Psychotherapeuten oder einem Krisendienst in Ihrem Land; Find A Helpline listet solche Angebote nach Ländern auf. In akuter Gefahr rufen Sie den Notruf.</p>
+</details>
+</div>
+</section>
                                                             <!-- Blog Nav Start -->
                                                             <section class="mt-12" aria-label="Artikelnavigation" data-blog-nav="">
                                                               <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -399,14 +408,15 @@
             <!-- Blog Related End -->
 <!-- Sources / Trust -->
 <section class="mt-16 glass-panel rounded-2xl p-6" id="sources">
-<h2 class="font-serif text-2xl text-dream-cream mb-4">Quellen / Weiterführende Literatur</h2>
+<h2 class="font-serif text-2xl text-dream-cream mb-4">Quellen und weiterführende Literatur</h2>
 <ul class="mt-6 space-y-2 text-sm text-gray-400">
-<li><a href="https://dictionary.apa.org/dream" rel="nofollow noopener noreferrer" target="_blank">APA Dictionary of Psychology: Dream</a></li>
-<li><a href="https://dreamresearch.net/" rel="nofollow noopener noreferrer" target="_blank">Domhoff (2003) — The scientific study of dreams</a></li>
-<li><a href="https://pubmed.ncbi.nlm.nih.gov/22024432/" rel="nofollow noopener noreferrer" target="_blank">De Gennaro et al. (2012) — Brain mechanisms of dream recall (PubMed)</a></li>
-<li><a href="https://pubmed.ncbi.nlm.nih.gov/11515147/" rel="nofollow noopener noreferrer" target="_blank">Revonsuo (2000) — Die Neuinterpretation von Träumen: Theorie der Bedrohungssimulation (PubMed)</a></li>
+<li><a href="https://pubmed.ncbi.nlm.nih.gov/23449603/" rel="nofollow noopener noreferrer" target="_blank">Wright et al. (2014), Befragung zu Träumen von Verstorbenen und Trauer (PubMed)</a></li>
+<li><a href="https://www.ninds.nih.gov/health-information/public-education/brain-basics/brain-basics-understanding-sleep" rel="nofollow noopener noreferrer" target="_blank">NINDS, „Brain Basics: Understanding Sleep“</a></li>
+<li><a href="https://www.cambridge.org/core/journals/behavioral-and-brain-sciences/article/reinterpretation-of-dreams-an-evolutionary-hypothesis-of-the-function-of-dreaming/EE0E7DB39E361540D2DDA79C262EDA7E" rel="nofollow noopener noreferrer" target="_blank">Revonsuo (2000), „The reinterpretation of dreams“, <em>Behavioral and Brain Sciences</em></a></li>
+<li><a href="https://www.nhs.uk/conditions/night-terrors/" rel="nofollow noopener noreferrer" target="_blank">NHS, „Night terrors and nightmares“: wann ärztlicher Rat sinnvoll ist</a></li>
+<li><a href="https://findahelpline.com/" rel="nofollow noopener noreferrer" target="_blank">Find A Helpline (ThroughLine), Verzeichnis von Hilfetelefonen nach Ländern</a></li>
 </ul>
-<p class="mt-6 text-xs text-purple-200/60">Zuletzt aktualisiert: 6. Januar 2026</p>
+<p class="mt-6 text-xs text-purple-200/60">Zuletzt aktualisiert: 8. Oktober 2026</p>
 </section>
 </article>
 <!-- Health Disclaimer (TI-97 E-E-A-T) -->
