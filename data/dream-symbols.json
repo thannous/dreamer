@@ -14972,58 +14972,152 @@
       "en": {
         "slug": "feet",
         "name": "Feet",
-        "shortDescription": "Feet connect you to the ground and the direction taken in a dream. Whether they carried you securely, were injured or could not move forward changes the scene’s emotional tone.",
-        "modifiedAt": "2026-07-24",
+        "shortDescription": "Bare feet on cold tiles, feet that will not move, a wound you keep looking at: in dreams, feet are often associated with your footing and the way you move forward. Their state and the ground beneath them guide the reading.",
+        "modifiedAt": "2026-10-08",
         "askYourself": [
-          "What did feet change in the scene?",
-          "Which feeling stayed with me after waking?"
+          "Were my feet bare, hurt, stuck, or carrying me easily?",
+          "What was the ground like under my feet: solid, slippery, burning, unfamiliar?",
+          "Where do I feel steady right now, and where am I unsure of my next step?"
         ],
-        "faq": []
+        "faq": [
+          {
+            "question": "What does it mean to dream about feet?",
+            "answer": "Feet are often associated with stability and with how you move forward: where you stand, the direction you take, what holds you up. Their state in the dream, bare, hurt or stuck, and how you felt narrow down the lead."
+          },
+          {
+            "question": "What does it mean to dream of walking barefoot?",
+            "answer": "Being barefoot can go with a feeling of being exposed or caught unprepared, or on the contrary with a wish for simplicity and freedom. Notice whether you felt embarrassed, cold or at ease: that is the main clue."
+          },
+          {
+            "question": "What does it mean to dream of injured or bleeding feet?",
+            "answer": "Hurt feet can match something that slows you down or makes each step costly: fatigue, a setback, a situation that wears you out. It is not a sign of illness. Where were you trying to go?"
+          },
+          {
+            "question": "Why can't I move my feet in my dreams?",
+            "answer": "Feet stuck to the ground are a common and frustrating dream scene. During REM sleep the muscles are almost completely relaxed, which is one possible explanation. The scene can also echo a sense of powerlessness, or a decision you cannot bring yourself to make."
+          }
+        ],
+        "documentMetaDescription": "Dreaming of feet, bare, injured or unable to move: what the scene may say about your footing and the way you move forward, with questions and an example."
       },
       "fr": {
         "slug": "pieds",
         "name": "Pieds",
-        "shortDescription": "Les pieds vous relient au sol et à la direction prise dans le rêve. Le fait qu’ils vous portent avec assurance, soient blessés ou ne puissent avancer modifie la tonalité émotionnelle de la scène.",
-        "modifiedAt": "2026-07-24",
+        "shortDescription": "Pieds nus sur un carrelage froid, pieds qui refusent d'avancer, une blessure que vous regardez sans cesse : en rêve, les pieds sont souvent associés à vos appuis et à votre façon d'avancer. Leur état et le sol sous vos pas guident la lecture.",
+        "modifiedAt": "2026-10-08",
         "askYourself": [
-          "Qu’est-ce que pieds a changé dans la scène ?",
-          "Quelle émotion est restée après le réveil ?"
+          "Mes pieds étaient-ils nus, blessés, bloqués, ou me portaient-ils sans effort ?",
+          "Comment était le sol sous mes pieds : ferme, glissant, brûlant, inconnu ?",
+          "Où est-ce que je me sens stable en ce moment, et où est-ce que j'hésite avant le prochain pas ?"
         ],
-        "faq": []
+        "faq": [
+          {
+            "question": "Que signifie rêver de pieds ?",
+            "answer": "Les pieds sont souvent associés à la stabilité et à la façon d'avancer : où vous vous tenez, la direction que vous prenez, ce qui vous porte. Leur état dans le rêve, nus, blessés ou bloqués, et ce que vous avez ressenti affinent la piste."
+          },
+          {
+            "question": "Que signifie rêver de marcher pieds nus ?",
+            "answer": "Être pieds nus peut accompagner le sentiment d'être exposé ou pris au dépourvu, ou au contraire une envie de simplicité et de liberté. Notez si vous aviez honte, froid ou si vous étiez à l'aise : c'est l'indice principal."
+          },
+          {
+            "question": "Que signifie rêver de pieds blessés ou qui saignent ?",
+            "answer": "Des pieds blessés peuvent rejoindre quelque chose qui vous ralentit ou rend chaque pas coûteux : fatigue, revers, situation usante. Ce n'est pas un signe de maladie. Vers quoi essayiez-vous d'aller ?"
+          },
+          {
+            "question": "Pourquoi je n'arrive pas à bouger les pieds dans mes rêves ?",
+            "answer": "Des pieds collés au sol sont une scène fréquente et frustrante. Pendant le sommeil paradoxal, les muscles sont presque entièrement relâchés, ce qui est une explication possible. La scène peut aussi faire écho à un sentiment d'impuissance ou à une décision que vous n'arrivez pas à prendre."
+          }
+        ],
+        "documentMetaDescription": "Rêver de pieds nus, blessés ou qui refusent d'avancer : ce que la scène peut dire de vos appuis et de votre façon d'avancer, avec questions et exemple."
       },
       "es": {
         "slug": "pies",
         "name": "Pies",
-        "shortDescription": "Los pies te conectan con el suelo y con la dirección tomada en el sueño. Que te sostuvieran, estuvieran heridos o no pudieran avanzar cambia el tono emocional de la escena.",
-        "modifiedAt": "2026-07-24",
+        "shortDescription": "Pies descalzos sobre baldosas frías, pies que no quieren avanzar, una herida que no dejas de mirar: en sueños, los pies se asocian a menudo con tus apoyos y con tu forma de avanzar. Su estado y el suelo que pisas orientan la lectura.",
+        "modifiedAt": "2026-10-08",
         "askYourself": [
-          "¿Qué cambió pies dentro de la escena?",
-          "¿Qué emoción siguió conmigo al despertar?"
+          "¿Mis pies estaban descalzos, heridos, atascados, o me llevaban sin esfuerzo?",
+          "¿Cómo era el suelo que pisaba: firme, resbaladizo, ardiente, desconocido?",
+          "¿Dónde me siento estable ahora mismo, y dónde dudo antes de dar el siguiente paso?"
         ],
-        "faq": []
+        "faq": [
+          {
+            "question": "¿Qué significa soñar con pies?",
+            "answer": "Los pies se asocian a menudo con la estabilidad y con tu forma de avanzar: dónde te apoyas, qué dirección tomas, qué te sostiene. Su estado en el sueño (descalzos, heridos o atascados) y lo que sentiste afinan la pista."
+          },
+          {
+            "question": "¿Qué significa soñar que vas descalzo?",
+            "answer": "Ir descalzo puede acompañar la sensación de estar expuesto o de que te han pillado sin preparación, o al contrario unas ganas de sencillez y libertad. Fíjate en si sentías vergüenza, frío o comodidad: es la pista principal."
+          },
+          {
+            "question": "¿Qué significa soñar con pies heridos o que sangran?",
+            "answer": "Unos pies heridos pueden enlazar con algo que te frena o hace que cada paso cueste: cansancio, un tropiezo, una situación que te desgasta. No es una señal de enfermedad. ¿Hacia dónde intentabas ir?"
+          },
+          {
+            "question": "¿Por qué en sueños no puedo mover los pies?",
+            "answer": "Los pies pegados al suelo son una escena frecuente y frustrante. Durante el sueño REM los músculos están casi del todo relajados, lo que es una posible explicación. La escena también puede hacer eco de una sensación de impotencia o de una decisión que no consigues tomar."
+          }
+        ],
+        "documentMetaDescription": "Soñar con pies descalzos, heridos o que no avanzan: qué puede decir la escena sobre tus apoyos y tu forma de avanzar, con preguntas y un ejemplo de diario."
       },
       "de": {
         "slug": "fusse",
         "name": "Füße",
-        "shortDescription": "Füße verbinden dich im Traum mit dem Untergrund und der eingeschlagenen Richtung. Ob sie sicher tragen, verletzt sind oder nicht vorankommen, verändert die Stimmung der Szene.",
+        "shortDescription": "Barfuß auf kalten Fliesen, Füße, die nicht vorankommen, eine Wunde, auf die Sie immer wieder schauen: Im Traum werden Füße oft mit Halt und mit der Art verbunden, wie Sie vorankommen. Ihr Zustand und der Boden unter Ihnen leiten die Deutung.",
         "askYourself": [
-          "Auf welchem Untergrund standest oder liefst du?",
-          "Waren deine Füße frei, verletzt, nackt oder schwer?",
-          "Welcher nächste Schritt fühlt sich in deinem Alltag gerade sicher oder unsicher an?"
+          "Waren meine Füße nackt, verletzt, wie festgeklebt, oder trugen sie mich mühelos?",
+          "Wie war der Boden unter meinen Füßen: fest, rutschig, heiß, fremd?",
+          "Wo stehe ich gerade sicher, und wo zögere ich vor dem nächsten Schritt?"
         ],
-        "modifiedAt": "2026-07-24",
-        "faq": []
+        "modifiedAt": "2026-10-08",
+        "faq": [
+          {
+            "question": "Was bedeutet es, von Füßen zu träumen?",
+            "answer": "Füße werden oft mit Stabilität und mit dem Vorankommen verbunden: wo Sie stehen, welche Richtung Sie einschlagen, was Sie trägt. Ihr Zustand im Traum, ob nackt, verletzt oder wie festgeklebt, und Ihr Gefühl dabei grenzen die Spur ein."
+          },
+          {
+            "question": "Was bedeutet es, im Traum barfuß zu laufen?",
+            "answer": "Barfuß zu sein kann das Gefühl begleiten, ungeschützt oder unvorbereitet zu sein, oder im Gegenteil den Wunsch nach Einfachheit und Freiheit. Achten Sie darauf, ob Sie sich geschämt, gefroren oder wohlgefühlt haben: Das ist der wichtigste Hinweis."
+          },
+          {
+            "question": "Was bedeuten verletzte oder blutende Füße im Traum?",
+            "answer": "Verletzte Füße können zu etwas passen, das Sie bremst oder jeden Schritt mühsam macht: Erschöpfung, ein Rückschlag, eine zermürbende Lage. Ein Zeichen für Krankheit sind sie nicht. Wohin wollten Sie gerade gehen?"
+          },
+          {
+            "question": "Warum kann ich im Traum meine Füße nicht bewegen?",
+            "answer": "Füße, die am Boden kleben, sind eine häufige und frustrierende Traumszene. Im REM-Schlaf sind die Muskeln fast vollständig entspannt, was eine mögliche Erklärung ist. Die Szene kann auch ein Gefühl von Ohnmacht aufgreifen oder eine Entscheidung, die Sie nicht treffen können."
+          }
+        ],
+        "documentMetaDescription": "Füße im Traum, barfuß, verletzt oder wie festgeklebt: was die Szene über Ihren Halt und Ihr Vorankommen sagen kann, mit Fragen und einem Tagebuchbeispiel."
       },
       "it": {
         "slug": "piedi",
         "name": "Piedi",
-        "shortDescription": "I piedi ti collegano al terreno e alla direzione presa nel sogno. Il fatto che ti sostenessero, fossero feriti o non riuscissero ad avanzare cambia il tono emotivo della scena.",
-        "modifiedAt": "2026-07-24",
+        "shortDescription": "Piedi nudi su piastrelle fredde, piedi che non vogliono andare avanti, una ferita che continui a guardare: in sogno i piedi vengono spesso associati ai tuoi appoggi e al modo in cui avanzi. Il loro stato e il terreno sotto i passi orientano la lettura.",
+        "modifiedAt": "2026-10-08",
         "askYourself": [
-          "Che cosa ha cambiato piedi nella scena?",
-          "Quale emozione è rimasta dopo il risveglio?"
+          "I miei piedi erano nudi, feriti, bloccati, o mi portavano senza fatica?",
+          "Com’era il terreno sotto i piedi: solido, scivoloso, bollente, sconosciuto?",
+          "Dove mi sento stabile in questo periodo, e dove esito prima del prossimo passo?"
         ],
-        "faq": []
+        "faq": [
+          {
+            "question": "Che cosa significa sognare i piedi?",
+            "answer": "I piedi vengono spesso associati alla stabilità e al modo di avanzare: dove ti appoggi, che direzione prendi, che cosa ti sostiene. Il loro stato nel sogno, nudi, feriti o bloccati, e ciò che hai provato affinano la pista."
+          },
+          {
+            "question": "Che cosa significa sognare di camminare scalzi?",
+            "answer": "Essere scalzi può accompagnare la sensazione di essere esposti o colti impreparati, o al contrario un desiderio di semplicità e libertà. Nota se provavi imbarazzo, freddo o benessere: è l’indizio principale."
+          },
+          {
+            "question": "Che cosa significa sognare piedi feriti o che sanguinano?",
+            "answer": "Piedi feriti possono avvicinarsi a qualcosa che ti rallenta o rende faticoso ogni passo: stanchezza, un intoppo, una situazione logorante. Non sono un segno di malattia. Verso dove stavi cercando di andare?"
+          },
+          {
+            "question": "Perché in sogno non riesco a muovere i piedi?",
+            "answer": "Piedi incollati al suolo sono una scena frequente e frustrante. Durante il sonno REM i muscoli sono quasi del tutto rilassati, e questa è una spiegazione possibile. La scena può anche fare eco a un senso di impotenza o a una decisione che non riesci a prendere."
+          }
+        ],
+        "documentMetaDescription": "Sognare piedi nudi, feriti o che non avanzano: che cosa può dire la scena dei tuoi appoggi e del modo in cui avanzi, con domande ed esempio di diario."
       },
       "pt": {
         "slug": "pes",
@@ -15056,58 +15150,152 @@
       "en": {
         "slug": "heart",
         "name": "Heart",
-        "shortDescription": "A visible, injured or strongly beating heart brings feelings and bodily sensation into the scene. What happened just before and who was present help frame it without implying a medical message.",
-        "modifiedAt": "2026-07-24",
+        "shortDescription": "A heart pounding hard enough to wake you, a heart you hold in your hands: in dreams, the heart is often associated with feelings, attachment and fear. The scene and your emotion guide the reading; it is not a medical sign.",
+        "modifiedAt": "2026-10-08",
         "askYourself": [
-          "What did heart change in the scene?",
-          "Which feeling stayed with me after waking?"
+          "Was the heart mine, someone else's, or an object I was holding?",
+          "Was it beating fast, hurting, broken, or calm?",
+          "Which relationship or worry is weighing on my chest right now?"
         ],
-        "faq": []
+        "faq": [
+          {
+            "question": "What does it mean to dream about a heart?",
+            "answer": "The heart is often associated with feelings, attachment and the fear of losing someone. Whose heart it was, whether it was beating, hurting or broken, and what you felt guide the reading. It is a lead, not a rule."
+          },
+          {
+            "question": "What does it mean to dream of having a heart attack?",
+            "answer": "The scene is frightening but rarely literal. It can go with stress that has been building up, or with worry about your body, and it does not predict a heart problem. If you have chest pain, breathlessness or palpitations when awake, see a doctor; sudden chest pain calls for emergency services straight away."
+          },
+          {
+            "question": "Why do I wake up with my heart racing?",
+            "answer": "Heart rate and breathing become more irregular during REM sleep, the phase most associated with vivid dreams, and a frightening dream can wake you with a pounding chest. It usually settles within minutes. If it happens often, or comes with pain or dizziness, talk to a doctor."
+          },
+          {
+            "question": "What does a broken heart mean in a dream?",
+            "answer": "A broken or wounded heart can stage grief, a breakup or a disappointment, sometimes an old one. It does not announce a separation. Ask yourself which relationship or loss was on your mind before you fell asleep."
+          }
+        ],
+        "documentMetaDescription": "Dreaming of a heart, a racing heart, a heart attack or a broken heart: what the scene may say about feelings and fear, with questions and when to see a doctor."
       },
       "fr": {
         "slug": "coeur",
         "name": "Cœur",
-        "shortDescription": "Un cœur visible, blessé ou battant très fort place les émotions et les sensations corporelles au centre. Ce qui venait de se passer et les personnes présentes situent la scène sans livrer de message médical.",
-        "modifiedAt": "2026-07-24",
+        "shortDescription": "Un cœur qui cogne au point de vous réveiller, un cœur que vous tenez entre vos mains : en rêve, le cœur est souvent associé aux sentiments, à l'attachement et à la peur. La scène et votre émotion guident la lecture ; ce n'est pas un signe médical.",
+        "modifiedAt": "2026-10-08",
         "askYourself": [
-          "Qu’est-ce que cœur a changé dans la scène ?",
-          "Quelle émotion est restée après le réveil ?"
+          "Ce cœur était-il le mien, celui d'une autre personne, ou un objet que je tenais ?",
+          "Battait-il vite, faisait-il mal, était-il brisé, ou calme ?",
+          "Quelle relation ou quelle inquiétude me serre la poitrine en ce moment ?"
         ],
-        "faq": []
+        "faq": [
+          {
+            "question": "Que signifie rêver d'un cœur ?",
+            "answer": "Le cœur est souvent associé aux sentiments, à l'attachement et à la peur de perdre quelqu'un. À qui il appartenait, s'il battait, faisait mal ou était brisé, et ce que vous avez ressenti guident la lecture. C'est une piste, pas une règle."
+          },
+          {
+            "question": "Que signifie rêver de faire une crise cardiaque ?",
+            "answer": "La scène fait peur mais elle est rarement littérale. Elle peut accompagner un stress accumulé ou une inquiétude pour votre corps, et ne prédit aucun problème cardiaque. Si vous avez, éveillé, des douleurs thoraciques, un essoufflement ou des palpitations, consultez un médecin ; une douleur brutale dans la poitrine justifie d'appeler le 15 ou le 112."
+          },
+          {
+            "question": "Pourquoi je me réveille avec le cœur qui bat très vite ?",
+            "answer": "Le rythme cardiaque et la respiration deviennent plus irréguliers pendant le sommeil paradoxal, la phase associée aux rêves les plus vifs, et un rêve effrayant peut vous réveiller le cœur battant. Cela se calme en général en quelques minutes. Si cela arrive souvent, ou avec une douleur ou un malaise, parlez-en à un médecin."
+          },
+          {
+            "question": "Que signifie un cœur brisé en rêve ?",
+            "answer": "Un cœur brisé ou blessé peut mettre en scène un deuil, une rupture ou une déception, parfois ancienne. Il n'annonce pas de séparation. Demandez-vous quelle relation ou quelle perte occupait vos pensées avant de vous endormir."
+          }
+        ],
+        "documentMetaDescription": "Rêver d'un cœur, d'un cœur qui s'emballe, d'une crise cardiaque ou d'un cœur brisé : ce que la scène peut dire des sentiments, avec questions et repères santé."
       },
       "es": {
         "slug": "corazon",
         "name": "Corazón",
-        "shortDescription": "Un corazón visible, herido o latiendo con fuerza pone en primer plano emociones y sensaciones corporales. Lo ocurrido justo antes y quién estaba allí sitúan la escena sin aportar un mensaje médico.",
-        "modifiedAt": "2026-07-24",
+        "shortDescription": "Un corazón que late tan fuerte que te despierta, un corazón que sostienes en las manos: en sueños, el corazón se asocia a menudo con los sentimientos, el apego y el miedo. La escena y tu emoción orientan la lectura; no es una señal médica.",
+        "modifiedAt": "2026-10-08",
         "askYourself": [
-          "¿Qué cambió corazón dentro de la escena?",
-          "¿Qué emoción siguió conmigo al despertar?"
+          "¿Ese corazón era mío, de otra persona, o un objeto que yo sostenía?",
+          "¿Latía deprisa, dolía, estaba roto, o tranquilo?",
+          "¿Qué relación o qué preocupación me oprime el pecho ahora mismo?"
         ],
-        "faq": []
+        "faq": [
+          {
+            "question": "¿Qué significa soñar con un corazón?",
+            "answer": "El corazón se asocia a menudo con los sentimientos, el apego y el miedo a perder a alguien. De quién era, si latía, dolía o estaba roto, y lo que sentiste orientan la lectura. Es una pista, no una regla."
+          },
+          {
+            "question": "¿Qué significa soñar que te da un infarto?",
+            "answer": "La escena asusta, pero rara vez es literal. Puede acompañar un estrés acumulado o una preocupación por tu cuerpo, y no predice ningún problema cardíaco. Si despierto tienes dolor en el pecho, falta de aire o palpitaciones, consulta a un médico; ante un dolor fuerte y repentino en el pecho, llama al 112."
+          },
+          {
+            "question": "¿Por qué me despierto con el corazón acelerado?",
+            "answer": "El ritmo cardíaco y la respiración se vuelven más irregulares durante el sueño REM, la fase asociada a los sueños más vívidos, y un sueño que asusta puede despertarte con el corazón a mil. Suele calmarse en pocos minutos. Si te pasa a menudo, o con dolor o mareo, coméntalo con tu médico."
+          },
+          {
+            "question": "¿Qué significa soñar con un corazón roto?",
+            "answer": "Un corazón roto o herido puede escenificar un duelo, una ruptura o una decepción, a veces antigua. No anuncia ninguna separación. Pregúntate qué relación o qué pérdida ocupaba tus pensamientos antes de dormirte."
+          }
+        ],
+        "documentMetaDescription": "Soñar con un corazón, con el corazón acelerado, con un infarto o con un corazón roto: qué puede decir la escena de tus sentimientos, con preguntas y pautas."
       },
       "de": {
         "slug": "herz",
         "name": "Herz",
-        "shortDescription": "Ein sichtbares, verletztes oder stark schlagendes Herz rückt Gefühle und Körperempfinden in den Mittelpunkt der Szene. Was unmittelbar davor geschah und wer dabei war, hilft dir, den Traum ohne feste Zuschreibung einzuordnen.",
+        "shortDescription": "Ein Herz, das so stark pocht, dass Sie aufwachen, ein Herz in Ihren Händen: Im Traum wird das Herz oft mit Gefühlen, Bindung und Angst verbunden. Die Szene und Ihr Gefühl leiten die Deutung; ein medizinisches Zeichen ist es nicht.",
         "askYourself": [
-          "War das Herz in deinem Körper, sichtbar vor dir oder bei jemand anderem?",
-          "Wie fühlte sich sein Schlagen oder seine Verletzung im Traum an?",
-          "Welche Beziehung oder Sorge berührt dich im Moment besonders stark?"
+          "War es mein Herz, das eines anderen Menschen oder ein Gegenstand, den ich hielt?",
+          "Schlug es schnell, tat es weh, war es gebrochen oder ruhig?",
+          "Welche Beziehung oder welche Sorge schnürt mir gerade die Brust zu?"
         ],
-        "modifiedAt": "2026-07-24",
-        "faq": []
+        "modifiedAt": "2026-10-08",
+        "faq": [
+          {
+            "question": "Was bedeutet es, von einem Herzen zu träumen?",
+            "answer": "Das Herz wird oft mit Gefühlen, Bindung und der Angst verbunden, jemanden zu verlieren. Wem es gehörte, ob es schlug, schmerzte oder gebrochen war, und was Sie gefühlt haben, leiten die Deutung. Das ist eine Spur, keine Regel."
+          },
+          {
+            "question": "Was bedeutet es, im Traum einen Herzinfarkt zu haben?",
+            "answer": "Die Szene macht Angst, ist aber selten wörtlich zu nehmen. Sie kann angestauten Stress oder Sorge um den eigenen Körper begleiten und sagt kein Herzproblem voraus. Haben Sie im Wachzustand Brustschmerzen, Atemnot oder Herzrasen, gehen Sie zum Arzt; bei plötzlichen starken Brustschmerzen rufen Sie sofort die 112."
+          },
+          {
+            "question": "Warum wache ich mit Herzrasen auf?",
+            "answer": "Herzschlag und Atmung werden im REM-Schlaf, der Phase, die mit besonders lebhaften Träumen verbunden wird, unregelmäßiger, und ein beängstigender Traum kann Sie mit pochendem Herzen wecken. Das beruhigt sich meist innerhalb weniger Minuten. Passiert es oft oder zusammen mit Schmerzen oder Schwindel, sprechen Sie mit Ihrer Ärztin oder Ihrem Arzt."
+          },
+          {
+            "question": "Was bedeutet ein gebrochenes Herz im Traum?",
+            "answer": "Ein gebrochenes oder verletztes Herz kann Trauer, eine Trennung oder eine Enttäuschung in Szene setzen, manchmal eine alte. Eine Trennung kündigt es nicht an. Fragen Sie sich, welche Beziehung oder welcher Verlust Sie vor dem Einschlafen beschäftigt hat."
+          }
+        ],
+        "documentMetaDescription": "Herz im Traum, Herzrasen, Herzinfarkt oder gebrochenes Herz: was die Szene über Gefühle und Ängste sagen kann, mit Fragen und Hinweisen zum Arztbesuch."
       },
       "it": {
         "slug": "cuore",
         "name": "Cuore",
-        "shortDescription": "Un cuore visibile, ferito o che batte forte mette al centro emozioni e sensazioni corporee. Ciò che era appena accaduto e chi era presente situano la scena senza fornire un messaggio medico.",
-        "modifiedAt": "2026-07-24",
+        "shortDescription": "Un cuore che batte così forte da svegliarti, un cuore che tieni tra le mani: in sogno il cuore viene spesso associato ai sentimenti, ai legami e alla paura. La scena e la tua emozione orientano la lettura; non è un segnale medico.",
+        "modifiedAt": "2026-10-08",
         "askYourself": [
-          "Che cosa ha cambiato cuore nella scena?",
-          "Quale emozione è rimasta dopo il risveglio?"
+          "Quel cuore era il mio, di un’altra persona, o un oggetto che tenevo in mano?",
+          "Batteva veloce, faceva male, era spezzato, o calmo?",
+          "Quale relazione o quale preoccupazione mi stringe il petto in questo periodo?"
         ],
-        "faq": []
+        "faq": [
+          {
+            "question": "Che cosa significa sognare un cuore?",
+            "answer": "Il cuore viene spesso associato ai sentimenti, ai legami e alla paura di perdere qualcuno. Di chi era, se batteva, faceva male o era spezzato, e ciò che hai provato orientano la lettura. È una pista, non una regola."
+          },
+          {
+            "question": "Che cosa significa sognare di avere un infarto?",
+            "answer": "La scena spaventa, ma raramente è letterale. Può accompagnare uno stress accumulato o una preoccupazione per il tuo corpo, e non predice alcun problema al cuore. Se da sveglio hai dolore al petto, fiato corto o palpitazioni, rivolgiti al medico; davanti a un dolore toracico forte e improvviso chiama subito il 112 o il 118."
+          },
+          {
+            "question": "Perché mi sveglio con il cuore che batte forte?",
+            "answer": "Battito e respiro diventano più irregolari durante il sonno REM, la fase associata ai sogni più vividi, e un sogno che spaventa può svegliarti con il cuore in gola. Di solito si calma in pochi minuti. Se succede spesso, o con dolore o capogiri, parlane con il medico."
+          },
+          {
+            "question": "Che cosa significa sognare un cuore spezzato?",
+            "answer": "Un cuore spezzato o ferito può mettere in scena un lutto, una rottura o una delusione, a volte lontana nel tempo. Non annuncia una separazione. Chiediti quale relazione o quale perdita occupava i tuoi pensieri prima di addormentarti."
+          }
+        ],
+        "documentMetaDescription": "Sognare un cuore, il cuore che batte forte, un infarto o un cuore spezzato: che cosa può dire la scena dei sentimenti, con domande e indicazioni utili."
       },
       "pt": {
         "slug": "coracao",
@@ -15140,58 +15328,152 @@
       "en": {
         "slug": "pregnancy-test",
         "name": "Pregnancy test",
-        "shortDescription": "A pregnancy test concentrates waiting and uncertainty into a visible result. Who awaited it and the consequences you imagined shape the scene; the dream does not predict pregnancy.",
-        "modifiedAt": "2026-07-24",
+        "shortDescription": "Two minutes in a bathroom, a test in your hand, a line that may or may not appear: in dreams, a pregnancy test often stages the wait for an answer that will change things. The result you hoped for and your reaction guide the reading.",
+        "modifiedAt": "2026-10-08",
         "askYourself": [
-          "What did pregnancy test change in the scene?",
-          "Which feeling stayed with me after waking?"
+          "What result did I see, and was it the one I hoped for or feared?",
+          "Who was with me, or who did I want to tell?",
+          "What answer or decision am I waiting for right now?"
         ],
-        "faq": []
+        "faq": [
+          {
+            "question": "What does it mean to dream of a positive pregnancy test?",
+            "answer": "A positive test is often associated with news that changes the plan: a project taking shape, a new responsibility, a turning point. Joy, shock or panic at the result tells you which lead to follow. It does not predict a pregnancy."
+          },
+          {
+            "question": "What does a negative pregnancy test mean in a dream?",
+            "answer": "A negative result can go with relief, if you feared a change, or with disappointment, if you were hoping for something to begin. Your reaction matters more than the line itself. What were you hoping for, or dreading?"
+          },
+          {
+            "question": "Does dreaming of a positive test mean I'm pregnant?",
+            "answer": "No dream can confirm or predict a pregnancy. The dream may pick up a real question, a late period or a wish, and keep working on it at night. If you have a doubt, a real test or a health professional will give you the answer."
+          },
+          {
+            "question": "What does it mean to dream of someone else's pregnancy test?",
+            "answer": "Seeing a friend's, a sister's or your partner's test can echo news about them, or a change in your relationship. The dream can also lend them your own questions. Were you happy for them, worried, or left out?"
+          }
+        ],
+        "documentMetaDescription": "Dreaming of a pregnancy test, positive or negative: what the wait and the result may say about change and decisions, with questions and a journal example."
       },
       "fr": {
         "slug": "test-de-grossesse",
         "name": "Test de grossesse",
-        "shortDescription": "Un test de grossesse concentre l’attente et l’incertitude dans un résultat visible. La personne qui l’attendait et les conséquences imaginées façonnent la scène, sans prédire une grossesse.",
-        "modifiedAt": "2026-07-24",
+        "shortDescription": "Deux minutes dans une salle de bains, un test à la main, un trait qui apparaîtra ou non : en rêve, le test de grossesse met souvent en scène l'attente d'une réponse qui changera les choses. Le résultat espéré et votre réaction guident la lecture.",
+        "modifiedAt": "2026-10-08",
         "askYourself": [
-          "Qu’est-ce que test de grossesse a changé dans la scène ?",
-          "Quelle émotion est restée après le réveil ?"
+          "Quel résultat ai-je vu, et était-ce celui que j'espérais ou que je redoutais ?",
+          "Qui était avec moi, ou à qui avais-je envie de l'annoncer ?",
+          "Quelle réponse ou quelle décision suis-je en train d'attendre en ce moment ?"
         ],
-        "faq": []
+        "faq": [
+          {
+            "question": "Que signifie rêver d'un test de grossesse positif ?",
+            "answer": "Un test positif est souvent associé à une nouvelle qui change le programme : un projet qui prend forme, une nouvelle responsabilité, un tournant. La joie, le choc ou la panique au moment du résultat indiquent la piste à suivre. Il ne prédit pas de grossesse."
+          },
+          {
+            "question": "Que signifie rêver d'un test de grossesse négatif ?",
+            "answer": "Un résultat négatif peut accompagner un soulagement, si vous redoutiez un changement, ou une déception, si vous espériez que quelque chose commence. Votre réaction compte plus que le trait. Qu'espériez-vous, ou que craigniez-vous ?"
+          },
+          {
+            "question": "Rêver d'un test positif veut-il dire que je suis enceinte ?",
+            "answer": "Aucun rêve ne confirme ni ne prédit une grossesse. Le rêve peut reprendre une vraie question, un retard de règles ou un désir, et continuer d'y travailler la nuit. En cas de doute, c'est un vrai test ou un professionnel de santé qui répondra."
+          },
+          {
+            "question": "Que signifie rêver du test de grossesse d'une autre personne ?",
+            "answer": "Voir le test d'une amie, d'une sœur ou de votre partenaire peut faire écho à une nouvelle la concernant, ou à un changement dans votre relation. Le rêve peut aussi lui prêter vos propres questions. Étiez-vous heureux pour elle, inquiet, ou mis à l'écart ?"
+          }
+        ],
+        "documentMetaDescription": "Rêver d'un test de grossesse positif ou négatif : ce que l'attente et le résultat peuvent dire d'un changement ou d'une décision, avec questions et exemple."
       },
       "es": {
         "slug": "prueba-de-embarazo",
         "name": "Prueba de embarazo",
-        "shortDescription": "Una prueba de embarazo concentra la espera y la incertidumbre en un resultado visible. Quién lo esperaba y las consecuencias que imaginabas forman la escena, sin predecir un embarazo.",
-        "modifiedAt": "2026-07-24",
+        "shortDescription": "Dos minutos en el baño, una prueba en la mano, una raya que aparecerá o no: en sueños, la prueba de embarazo suele escenificar la espera de una respuesta que lo cambiará todo. El resultado que esperabas y tu reacción orientan la lectura.",
+        "modifiedAt": "2026-10-08",
         "askYourself": [
-          "¿Qué cambió prueba de embarazo dentro de la escena?",
-          "¿Qué emoción siguió conmigo al despertar?"
+          "¿Qué resultado vi, y era el que esperaba o el que temía?",
+          "¿Quién estaba conmigo, o a quién quería contárselo?",
+          "¿Qué respuesta o qué decisión estoy esperando ahora mismo?"
         ],
-        "faq": []
+        "faq": [
+          {
+            "question": "¿Qué significa soñar con una prueba de embarazo positiva?",
+            "answer": "Una prueba positiva se asocia a menudo con una noticia que cambia los planes: un proyecto que toma forma, una nueva responsabilidad, un giro. La alegría, el susto o el pánico al ver el resultado indican qué pista seguir. No predice un embarazo."
+          },
+          {
+            "question": "¿Qué significa soñar con una prueba de embarazo negativa?",
+            "answer": "Un resultado negativo puede acompañar un alivio, si temías un cambio, o una decepción, si esperabas que algo empezara. Tu reacción cuenta más que la raya. ¿Qué esperabas, o qué temías?"
+          },
+          {
+            "question": "¿Soñar con una prueba positiva significa que estoy embarazada?",
+            "answer": "Ningún sueño confirma ni predice un embarazo. El sueño puede recoger una pregunta real, un retraso de la regla o un deseo, y seguir dándole vueltas por la noche. Si tienes dudas, una prueba de verdad o un profesional sanitario te darán la respuesta."
+          },
+          {
+            "question": "¿Qué significa soñar con la prueba de embarazo de otra persona?",
+            "answer": "Ver la prueba de una amiga, una hermana o tu pareja puede hacer eco de una noticia sobre ella, o de un cambio en vuestra relación. El sueño también puede prestarle tus propias preguntas. ¿Te alegrabas por ella, te preocupabas, o te sentías al margen?"
+          }
+        ],
+        "documentMetaDescription": "Soñar con una prueba de embarazo positiva o negativa: qué pueden decir la espera y el resultado sobre un cambio o una decisión, con preguntas y un ejemplo."
       },
       "de": {
         "slug": "schwangerschaftstest",
         "name": "Schwangerschaftstest",
-        "shortDescription": "Bei einem Schwangerschaftstest bündeln sich Warten und Unsicherheit in einem sichtbaren Ergebnis. Entscheidend kann sein, wer darauf wartet und welche Folgen du dir in diesem Moment ausmalst.",
+        "shortDescription": "Zwei Minuten im Badezimmer, ein Test in der Hand, ein Strich, der erscheint oder nicht: Im Traum setzt der Schwangerschaftstest oft das Warten auf eine Antwort in Szene, die vieles verändert. Das erhoffte Ergebnis und Ihre Reaktion leiten die Deutung.",
         "askYourself": [
-          "Welches Ergebnis zeigte der Test, und war es eindeutig?",
-          "Wer war bei dir, als du auf das Ergebnis gewartet oder den Test betrachtet hast?",
-          "Welche bevorstehende Nachricht oder Entscheidung löst gerade ähnliche Spannung aus?"
+          "Welches Ergebnis habe ich gesehen, und war es das erhoffte oder das befürchtete?",
+          "Wer war bei mir, oder wem wollte ich es erzählen?",
+          "Auf welche Antwort oder Entscheidung warte ich gerade?"
         ],
-        "modifiedAt": "2026-07-24",
-        "faq": []
+        "modifiedAt": "2026-10-08",
+        "faq": [
+          {
+            "question": "Was bedeutet ein positiver Schwangerschaftstest im Traum?",
+            "answer": "Ein positiver Test wird oft mit einer Nachricht verbunden, die Pläne verändert: ein Projekt, das Gestalt annimmt, eine neue Verantwortung, ein Wendepunkt. Freude, Schreck oder Panik beim Ergebnis zeigen, welcher Spur Sie folgen können. Eine Schwangerschaft sagt er nicht voraus."
+          },
+          {
+            "question": "Was bedeutet ein negativer Schwangerschaftstest im Traum?",
+            "answer": "Ein negatives Ergebnis kann Erleichterung begleiten, wenn Sie eine Veränderung befürchtet haben, oder Enttäuschung, wenn Sie gehofft hatten, dass etwas beginnt. Ihre Reaktion zählt mehr als der Strich. Was haben Sie erhofft, was befürchtet?"
+          },
+          {
+            "question": "Bin ich schwanger, wenn ich von einem positiven Test träume?",
+            "answer": "Kein Traum bestätigt eine Schwangerschaft oder sagt sie voraus. Der Traum kann eine echte Frage, eine ausbleibende Periode oder einen Wunsch aufgreifen und nachts weiter daran arbeiten. Im Zweifel geben ein echter Test oder eine Ärztin oder ein Arzt die Antwort."
+          },
+          {
+            "question": "Was bedeutet es, vom Schwangerschaftstest einer anderen Person zu träumen?",
+            "answer": "Den Test einer Freundin, Schwester oder Partnerin zu sehen, kann eine Nachricht über sie aufgreifen oder eine Veränderung in Ihrer Beziehung. Der Traum kann ihr auch Ihre eigenen Fragen leihen. Haben Sie sich für sie gefreut, sich gesorgt oder sich ausgeschlossen gefühlt?"
+          }
+        ],
+        "documentMetaDescription": "Schwangerschaftstest im Traum, positiv oder negativ: was Warten und Ergebnis über Veränderungen und Entscheidungen sagen können, mit Fragen und Beispiel."
       },
       "it": {
         "slug": "test-di-gravidanza",
         "name": "Test di gravidanza",
-        "shortDescription": "Un test di gravidanza concentra attesa e incertezza in un risultato visibile. Chi lo aspettava e le conseguenze che immaginavi formano la scena, senza prevedere una gravidanza.",
-        "modifiedAt": "2026-07-24",
+        "shortDescription": "Due minuti in bagno, un test in mano, una linea che comparirà oppure no: in sogno il test di gravidanza mette spesso in scena l’attesa di una risposta che cambierà le cose. Il risultato che speravi e la tua reazione orientano la lettura.",
+        "modifiedAt": "2026-10-08",
         "askYourself": [
-          "Che cosa ha cambiato test di gravidanza nella scena?",
-          "Quale emozione è rimasta dopo il risveglio?"
+          "Quale risultato ho visto, ed era quello che speravo o quello che temevo?",
+          "Chi era con me, o a chi avevo voglia di dirlo?",
+          "Quale risposta o quale decisione sto aspettando in questo periodo?"
         ],
-        "faq": []
+        "faq": [
+          {
+            "question": "Che cosa significa sognare un test di gravidanza positivo?",
+            "answer": "Un test positivo viene spesso associato a una notizia che cambia i programmi: un progetto che prende forma, una nuova responsabilità, una svolta. Gioia, shock o panico davanti al risultato indicano quale pista seguire. Non predice una gravidanza."
+          },
+          {
+            "question": "Che cosa significa sognare un test di gravidanza negativo?",
+            "answer": "Un risultato negativo può accompagnare un sollievo, se temevi un cambiamento, o una delusione, se speravi che qualcosa cominciasse. La tua reazione conta più della linea. Che cosa speravi, o che cosa temevi?"
+          },
+          {
+            "question": "Sognare un test positivo vuol dire che sono incinta?",
+            "answer": "Nessun sogno conferma o predice una gravidanza. Il sogno può riprendere una domanda reale, un ritardo del ciclo o un desiderio, e continuare a lavorarci di notte. Se hai un dubbio, la risposta arriva da un vero test o da un professionista sanitario."
+          },
+          {
+            "question": "Che cosa significa sognare il test di gravidanza di un’altra persona?",
+            "answer": "Vedere il test di un’amica, di una sorella o della tua partner può fare eco a una notizia che la riguarda, o a un cambiamento nel vostro rapporto. Il sogno può anche prestarle le tue domande. Eri felice per lei, preoccupato, o messo da parte?"
+          }
+        ],
+        "documentMetaDescription": "Sognare un test di gravidanza positivo o negativo: che cosa possono dire l’attesa e il risultato di un cambiamento o di una decisione, con domande ed esempio."
       },
       "pt": {
         "slug": "teste-de-gravidez",
@@ -15224,58 +15506,152 @@
       "en": {
         "slug": "illness",
         "name": "Illness",
-        "shortDescription": "Illness in a dream may shape a scene of worry, dependence, exhaustion or care without predicting your health. Who was ill, what help was available and what frightened you make it personal.",
-        "modifiedAt": "2026-07-24",
+        "shortDescription": "A fever that will not break, someone close suddenly very ill: in dreams, illness is often associated with worry, fatigue or the need for care. It predicts nothing about your health; who was ill and how you felt guide the reading.",
+        "modifiedAt": "2026-10-08",
         "askYourself": [
-          "What did illness change in the scene?",
-          "Which feeling stayed with me after waking?"
+          "Who was ill in the dream: me, someone close, a stranger?",
+          "Was there help, or did I feel alone with it?",
+          "Where am I tired, worried or running on empty right now?"
         ],
-        "faq": []
+        "faq": [
+          {
+            "question": "What does it mean to dream that you are sick?",
+            "answer": "Being ill in a dream is often associated with fatigue, a period when you feel fragile, or a need for rest and support. It does not predict illness. Note what you could no longer do in the dream: that is often the most useful clue."
+          },
+          {
+            "question": "What does it mean to dream that a loved one is ill?",
+            "answer": "Seeing a parent, partner or child ill often stages attachment and worry for them, sometimes a change in the relationship. It does not mean they will fall ill. Ask yourself what worries you about that person right now."
+          },
+          {
+            "question": "Can a dream warn you of an illness?",
+            "answer": "The idea is old, but no reliable evidence shows that dreams can diagnose an illness. A dream can, however, weave in what your body feels: a fever, pain or a blocked nose can color the scene. If you have symptoms when awake, see a doctor."
+          },
+          {
+            "question": "What does it mean to dream of cancer or a serious illness?",
+            "answer": "A serious diagnosis in a dream is frightening, but it is not a sign. It can echo a real worry, news about someone, or a fear that something is growing out of control. If fear of illness takes up a lot of your days, talking to a professional can help."
+          }
+        ],
+        "documentMetaDescription": "Dreaming of being sick or of a loved one's illness: what the scene may say about worry, fatigue and care, with questions and when to see a doctor."
       },
       "fr": {
         "slug": "maladie",
         "name": "Maladie",
-        "shortDescription": "La maladie peut façonner une scène d’inquiétude, de dépendance, d’épuisement ou de soin, sans rien prédire sur votre santé. La personne malade, l’aide disponible et votre peur rendent le rêve personnel.",
-        "modifiedAt": "2026-07-24",
+        "shortDescription": "Une fièvre qui ne tombe pas, un proche soudain très malade : en rêve, la maladie est souvent associée à l'inquiétude, à la fatigue ou au besoin de soin. Elle ne prédit rien de votre santé ; qui était malade et ce que vous ressentiez guident la lecture.",
+        "modifiedAt": "2026-10-08",
         "askYourself": [
-          "Qu’est-ce que maladie a changé dans la scène ?",
-          "Quelle émotion est restée après le réveil ?"
+          "Qui était malade dans le rêve : moi, un proche, un inconnu ?",
+          "Y avait-il de l'aide, ou me sentais-je seul face à ça ?",
+          "Où suis-je fatigué, inquiet ou à bout de forces en ce moment ?"
         ],
-        "faq": []
+        "faq": [
+          {
+            "question": "Que signifie rêver d'être malade ?",
+            "answer": "Être malade en rêve est souvent associé à la fatigue, à une période où l'on se sent fragile, ou à un besoin de repos et de soutien. Cela ne prédit aucune maladie. Notez ce que vous ne pouviez plus faire dans le rêve : c'est souvent l'indice le plus utile."
+          },
+          {
+            "question": "Que signifie rêver qu'un proche est malade ?",
+            "answer": "Voir un parent, un partenaire ou un enfant malade met souvent en scène l'attachement et l'inquiétude pour lui, parfois un changement dans la relation. Cela ne veut pas dire qu'il va tomber malade. Demandez-vous ce qui vous préoccupe à son sujet en ce moment."
+          },
+          {
+            "question": "Un rêve peut-il annoncer une maladie ?",
+            "answer": "L'idée est ancienne, mais aucune preuve fiable ne montre qu'un rêve permette de diagnostiquer une maladie. Un rêve peut en revanche intégrer des sensations du corps : fièvre, douleur ou nez bouché peuvent colorer la scène. Si vous avez des symptômes éveillé, consultez un médecin."
+          },
+          {
+            "question": "Que signifie rêver d'un cancer ou d'une maladie grave ?",
+            "answer": "Un diagnostic grave en rêve fait peur, mais ce n'est pas un signe. Il peut faire écho à une vraie inquiétude, à une nouvelle concernant quelqu'un, ou à la peur que quelque chose grandisse hors de contrôle. Si la peur de la maladie occupe beaucoup vos journées, en parler à un professionnel peut aider."
+          }
+        ],
+        "documentMetaDescription": "Rêver d'être malade ou qu'un proche l'est : ce que la scène peut dire de l'inquiétude, de la fatigue et du soin, avec questions et sans diagnostic."
       },
       "es": {
         "slug": "enfermedad",
         "name": "Enfermedad",
-        "shortDescription": "La enfermedad puede formar una escena de preocupación, dependencia, agotamiento o cuidado sin predecir tu salud. Quién estaba enfermo, qué ayuda había y qué te asustaba personalizan el sueño.",
-        "modifiedAt": "2026-07-24",
+        "shortDescription": "Una fiebre que no baja, alguien cercano de repente muy enfermo: en sueños, la enfermedad se asocia a menudo con la preocupación, el cansancio o la necesidad de cuidados. No predice nada sobre tu salud; quién estaba enfermo y lo que sentiste orientan la lectura.",
+        "modifiedAt": "2026-10-08",
         "askYourself": [
-          "¿Qué cambió enfermedad dentro de la escena?",
-          "¿Qué emoción siguió conmigo al despertar?"
+          "¿Quién estaba enfermo en el sueño: yo, alguien cercano, un desconocido?",
+          "¿Había ayuda, o me sentía solo frente a ello?",
+          "¿Dónde estoy cansado, preocupado o sin fuerzas ahora mismo?"
         ],
-        "faq": []
+        "faq": [
+          {
+            "question": "¿Qué significa soñar que estás enfermo?",
+            "answer": "Estar enfermo en sueños se asocia a menudo con el cansancio, una etapa en la que te sientes frágil o una necesidad de descanso y apoyo. No predice ninguna enfermedad. Anota qué ya no podías hacer en el sueño: suele ser la pista más útil."
+          },
+          {
+            "question": "¿Qué significa soñar que un ser querido está enfermo?",
+            "answer": "Ver enfermo a tu padre o tu madre, a tu pareja o a un hijo suele escenificar el apego y la preocupación por esa persona, a veces un cambio en la relación. No significa que vaya a enfermar. Pregúntate qué te preocupa de ella ahora mismo."
+          },
+          {
+            "question": "¿Puede un sueño avisar de una enfermedad?",
+            "answer": "La idea es antigua, pero ninguna prueba fiable demuestra que un sueño sirva para diagnosticar una enfermedad. Lo que sí puede hacer un sueño es incorporar sensaciones del cuerpo: la fiebre, un dolor o la nariz tapada pueden teñir la escena. Si tienes síntomas despierto, consulta a un médico."
+          },
+          {
+            "question": "¿Qué significa soñar con cáncer o con una enfermedad grave?",
+            "answer": "Un diagnóstico grave en sueños asusta, pero no es una señal. Puede hacer eco de una preocupación real, de una noticia sobre alguien o del miedo a que algo crezca sin control. Si el miedo a enfermar ocupa gran parte de tus días, hablarlo con un profesional puede ayudar."
+          }
+        ],
+        "documentMetaDescription": "Soñar que estás enfermo o que un ser querido lo está: qué puede decir la escena sobre preocupación, cansancio y cuidado, con preguntas y sin diagnósticos."
       },
       "de": {
         "slug": "krankheit",
         "name": "Krankheit",
-        "shortDescription": "Krankheit im Traum kann eine Szene von Sorge, Abhängigkeit, Erschöpfung oder Fürsorge prägen, ohne etwas über deine Gesundheit vorherzusagen. Wer krank war, welche Hilfe verfügbar war und was dir Angst machte, geben dem Bild seinen persönlichen Kontext.",
+        "shortDescription": "Fieber, das nicht sinkt, ein Angehöriger, der plötzlich schwer krank ist: Im Traum wird Krankheit oft mit Sorge, Erschöpfung oder dem Bedürfnis nach Fürsorge verbunden. Sie sagt nichts über Ihre Gesundheit voraus; wer krank war und was Sie fühlten, leiten die Deutung.",
         "askYourself": [
-          "Wer war krank, und welche Beschwerden waren im Traum sichtbar?",
-          "Gab es Hilfe, Pflege oder eine Person, die dich alleinließ?",
-          "Gibt es in deinem Alltag eine Sorge rund um Belastung oder Fürsorge, die zur Szene passen könnte?"
+          "Wer war im Traum krank: ich, ein nahestehender Mensch, ein Fremder?",
+          "Gab es Hilfe, oder war ich damit allein?",
+          "Wo bin ich gerade müde, besorgt oder am Ende meiner Kräfte?"
         ],
-        "modifiedAt": "2026-07-24",
-        "faq": []
+        "modifiedAt": "2026-10-08",
+        "faq": [
+          {
+            "question": "Was bedeutet es, im Traum krank zu sein?",
+            "answer": "Im Traum krank zu sein, wird oft mit Erschöpfung, einer verletzlichen Phase oder dem Bedürfnis nach Ruhe und Unterstützung verbunden. Eine Krankheit sagt es nicht voraus. Notieren Sie, was Sie im Traum nicht mehr tun konnten: Das ist oft der nützlichste Hinweis."
+          },
+          {
+            "question": "Was bedeutet es, wenn ein Angehöriger im Traum krank ist?",
+            "answer": "Einen Elternteil, den Partner oder ein Kind krank zu sehen, setzt oft Bindung und Sorge um diesen Menschen in Szene, manchmal auch eine Veränderung in der Beziehung. Es bedeutet nicht, dass er krank wird. Fragen Sie sich, was Sie in Bezug auf ihn gerade beschäftigt."
+          },
+          {
+            "question": "Kann ein Traum vor einer Krankheit warnen?",
+            "answer": "Die Idee ist alt, aber es gibt keine verlässlichen Belege dafür, dass sich Krankheiten mit Träumen diagnostizieren lassen. Ein Traum kann aber Körperempfindungen aufnehmen: Fieber, Schmerzen oder eine verstopfte Nase können die Szene färben. Haben Sie im Wachzustand Beschwerden, gehen Sie zum Arzt."
+          },
+          {
+            "question": "Was bedeutet es, von Krebs oder einer schweren Krankheit zu träumen?",
+            "answer": "Eine schwere Diagnose im Traum macht Angst, ist aber kein Zeichen. Sie kann eine echte Sorge aufgreifen, eine Nachricht über jemanden oder die Angst, dass etwas außer Kontrolle wächst. Nimmt die Angst vor Krankheit viel Raum in Ihrem Alltag ein, kann ein Gespräch mit einer Fachperson helfen."
+          }
+        ],
+        "documentMetaDescription": "Krankheit im Traum, selbst krank oder ein Angehöriger: was die Szene über Sorge, Erschöpfung und Fürsorge sagen kann, mit Fragen und ohne Diagnosen."
       },
       "it": {
         "slug": "malattia",
         "name": "Malattia",
-        "shortDescription": "La malattia può creare una scena di preoccupazione, dipendenza, stanchezza o cura senza prevedere la tua salute. Chi era malato, quale aiuto c’era e cosa ti spaventava rendono personale il sogno.",
-        "modifiedAt": "2026-07-24",
+        "shortDescription": "Una febbre che non scende, una persona cara all’improvviso molto malata: in sogno la malattia viene spesso associata alla preoccupazione, alla stanchezza o al bisogno di cure. Non predice nulla sulla tua salute; chi era malato e che cosa provavi orientano la lettura.",
+        "modifiedAt": "2026-10-08",
         "askYourself": [
-          "Che cosa ha cambiato malattia nella scena?",
-          "Quale emozione è rimasta dopo il risveglio?"
+          "Chi era malato nel sogno: io, una persona cara, uno sconosciuto?",
+          "C’era qualcuno ad aiutare, o mi sentivo solo?",
+          "Dove mi sento stanco, preoccupato o senza forze in questo periodo?"
         ],
-        "faq": []
+        "faq": [
+          {
+            "question": "Che cosa significa sognare di essere malati?",
+            "answer": "Essere malati in sogno viene spesso associato alla stanchezza, a un periodo in cui ti senti fragile o a un bisogno di riposo e sostegno. Non predice alcuna malattia. Annota che cosa non riuscivi più a fare nel sogno: spesso è l’indizio più utile."
+          },
+          {
+            "question": "Che cosa significa sognare una persona cara malata?",
+            "answer": "Vedere malato un genitore, il partner o un figlio mette spesso in scena il legame e la preoccupazione per quella persona, a volte un cambiamento nel rapporto. Non significa che si ammalerà. Chiediti che cosa ti preoccupa di lei in questo periodo."
+          },
+          {
+            "question": "Un sogno può avvisare di una malattia?",
+            "answer": "L’idea è antica, ma nessuna prova affidabile dimostra che un sogno possa diagnosticare una malattia. Un sogno può invece incorporare sensazioni del corpo: febbre, dolore o naso chiuso possono colorare la scena. Se hai sintomi da sveglio, rivolgiti al medico."
+          },
+          {
+            "question": "Che cosa significa sognare un tumore o una malattia grave?",
+            "answer": "Una diagnosi grave in sogno spaventa, ma non è un segno. Può fare eco a una preoccupazione reale, a una notizia su qualcuno, o alla paura che qualcosa cresca fuori controllo. Se la paura di ammalarti occupa molto le tue giornate, parlarne con un professionista può aiutare."
+          }
+        ],
+        "documentMetaDescription": "Sognare di essere malati o che una persona cara lo sia: che cosa può dire la scena di preoccupazione, stanchezza e cura, con domande e senza diagnosi."
       },
       "pt": {
         "slug": "doenca",
