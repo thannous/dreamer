@@ -271,8 +271,8 @@ then runs `docs:release-check` and uploads an allowlisted directory with
 Right before the upload it fetches and runs every check again, and must
 accept the same `HEAD`, which labels the upload. Run `npm run verify:release`
 first, from a clean checkout of the approved `master` SHA. `docs:deploy:preview`
-is not guarded, but refuses a `previewBranch` equal to `productionBranch` or to
-`master`, `main` or `production`. The token and account
+is not guarded, but accepts only the exact preview branch `preview` (compared
+byte for byte) and refuses any other value. The token and account
 id stay in the environment (`CLOUDFLARE_API_TOKEN`, `CLOUDFLARE_ACCOUNT_ID`).
 If the Cloudflare Pages project or build settings change, update
 `docs-src/config/cloudflare-pages.json` and mirror the same values in the

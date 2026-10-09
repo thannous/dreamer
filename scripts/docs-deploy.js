@@ -39,7 +39,9 @@ function loadCloudflarePagesConfig(rootDir = ROOT_DIR) {
 
   return {
     projectName: config.projectName.trim(),
-    previewBranch: config.previewBranch.trim(),
+    // Raw, not trimmed: assertPreviewBranch compares it byte for byte, so
+    // " preview" in the file is refused rather than normalised.
+    previewBranch: config.previewBranch,
     productionBranch: config.productionBranch.trim(),
     rootDirectory: config.rootDirectory.trim(),
     buildCommand: config.buildCommand.trim(),
@@ -47,25 +49,21 @@ function loadCloudflarePagesConfig(rootDir = ROOT_DIR) {
   };
 }
 
-// Branch names Cloudflare Pages could treat as production. A preview upload
-// to one of them would update noctalia.app without the production guard.
-const PRODUCTION_BRANCH_NAMES = ['master', 'main', 'production'];
-
-function normaliseBranch(branch) {
-  return String(branch ?? '').trim().toLowerCase();
-}
+// The only branch a preview may upload to, compared byte for byte: no trim,
+// no case folding, so `master`, `refs/heads/master`, `Preview` or a unicode
+// lookalike of `preview` are all refused. A preview upload to any other branch
+// could update noctalia.app without the production guard.
+const PREVIEW_BRANCH = 'preview';
 
 function assertPreviewBranch(config) {
-  const preview = normaliseBranch(config.previewBranch);
-  const forbidden = new Set([normaliseBranch(config.productionBranch), ...PRODUCTION_BRANCH_NAMES]);
-  if (!preview || forbidden.has(preview)) {
+  if (config.previewBranch !== PREVIEW_BRANCH || config.productionBranch === PREVIEW_BRANCH) {
     throw new Error(
-      `Preview refused: previewBranch "${config.previewBranch}" in ${CONFIG_PATH} is a production branch ` +
-        `(productionBranch "${config.productionBranch}", or one of ${PRODUCTION_BRANCH_NAMES.join(', ')}). ` +
+      `Preview refused: previewBranch in ${CONFIG_PATH} must be exactly "${PREVIEW_BRANCH}" and differ from productionBranch ` +
+        `(got previewBranch ${JSON.stringify(config.previewBranch)}, productionBranch ${JSON.stringify(config.productionBranch)}). ` +
         'A preview never uploads to production; publish production only with npm run docs:deploy:prod.'
     );
   }
-  return config.previewBranch;
+  return PREVIEW_BRANCH;
 }
 
 function buildWranglerDeployArgs(config, target, deployDir = 'docs', commitHash) {
