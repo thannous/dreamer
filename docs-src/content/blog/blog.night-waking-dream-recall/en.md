@@ -23,7 +23,7 @@
   "twitterImage": "https://noctalia.app/img/blog/dream-memory-hero.webp",
   "twitterImageAlt": "Dream journal lit beside the bed after waking at night",
   "publishedTime": "2026-07-08T00:00:00+02:00",
-  "modifiedTime": "2026-10-08",
+  "modifiedTime": "2026-10-09",
   "author": "Thanh Chau",
   "prevPath": "/en/blog/night-noise-sleep-dreams",
   "nextPath": "/en/blog/heat-stress-nightmares",
@@ -86,6 +86,6 @@
 <li><a href="https://www.sleepfoundation.org/noise-and-sleep" rel="nofollow noopener noreferrer" target="_blank">Sleep Foundation — Noise and sleep</a></li>
 <li><a href="https://www.who.int/europe/publications/i/item/9789289053563" rel="nofollow noopener noreferrer" target="_blank">WHO Europe — Environmental noise guidelines</a></li>
 </ul>
-<p class="mt-6 text-xs text-purple-200/60">Published July 8, 2026 · Updated October 8, 2026</p>
+<p class="mt-6 text-xs text-purple-200/60">Published July 8, 2026 · Updated October 9, 2026</p>
 </section>
 </article>

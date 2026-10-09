@@ -23,7 +23,7 @@
   "twitterImage": "https://noctalia.app/img/blog/heatwave-sleep-dreams.webp",
   "twitterImageAlt": "Personne réveillée dans une chambre chaude après un rêve pénible",
   "publishedTime": "2026-07-10T00:00:00+02:00",
-  "modifiedTime": "2026-10-08",
+  "modifiedTime": "2026-10-09",
   "author": "Thanh Chau",
   "prevPath": "/fr/blog/reveil-nocturne-rappel-reves",
   "nextPath": "/fr/blog/reves-regulation-emotions-etude-2026",
@@ -103,6 +103,6 @@
 <li><a href="https://pubmed.ncbi.nlm.nih.gov/29852917/" rel="nofollow noopener noreferrer" target="_blank">Morgenthaler et al. (2018), <em>Journal of Clinical Sleep Medicine</em> : position de l'AASM sur le trouble cauchemars</a></li>
 <li><a href="https://www.who.int/news-room/questions-and-answers/item/heatwaves-how-to-stay-cool" rel="nofollow noopener noreferrer" target="_blank">Organisation mondiale de la santé : se protéger pendant une vague de chaleur</a></li>
 </ul>
-<p class="mt-6 text-xs text-purple-200/60">Mis à jour le 8 octobre 2026</p>
+<p class="mt-6 text-xs text-purple-200/60">Mis à jour le 9 octobre 2026</p>
 </section>
 </article>

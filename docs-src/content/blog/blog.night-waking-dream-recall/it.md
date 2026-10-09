@@ -23,7 +23,7 @@
   "twitterImage": "https://noctalia.app/img/blog/dream-memory-hero.webp",
   "twitterImageAlt": "Diario dei sogni illuminato vicino al letto dopo un risveglio notturno",
   "publishedTime": "2026-07-08T00:00:00+02:00",
-  "modifiedTime": "2026-10-08",
+  "modifiedTime": "2026-10-09",
   "author": "Thanh Chau",
   "prevPath": "/it/blog/rumore-notturno-sonno-sogni",
   "nextPath": "/it/blog/incubi-caldo-stress",
@@ -86,6 +86,6 @@
 <li><a href="https://www.sleepfoundation.org/noise-and-sleep" rel="nofollow noopener noreferrer" target="_blank">Sleep Foundation — Rumore e sonno</a></li>
 <li><a href="https://www.who.int/europe/publications/i/item/9789289053563" rel="nofollow noopener noreferrer" target="_blank">OMS Europa — Linee guida sul rumore ambientale</a></li>
 </ul>
-<p class="mt-6 text-xs text-purple-200/60">Pubblicato l’8 luglio 2026 · Aggiornato l’8 ottobre 2026</p>
+<p class="mt-6 text-xs text-purple-200/60">Pubblicato l’8 luglio 2026 · Aggiornato il 9 ottobre 2026</p>
 </section>
 </article>

@@ -23,13 +23,13 @@
   "twitterImage": "https://noctalia.app/img/og/noctalia-fr-1200x630.jpg",
   "twitterImageAlt": "Rêve lucide : guides et techniques",
   "publishedTime": "",
-  "modifiedTime": "2026-10-08",
+  "modifiedTime": "2026-10-09",
   "author": "",
   "prevPath": "",
   "nextPath": "",
   "preloadImage": "",
   "jsonLd": [
-    "{\n    \"@context\": \"https://schema.org\",\n    \"@type\": \"CollectionPage\",\n    \"name\": \"Rêve lucide : guides et techniques\",\n    \"description\": \"Rêve lucide : comment débuter, repérer vos signes oniriques et pratiquer sans sacrifier votre sommeil. Guides, techniques et ce que dit la recherche.\",\n    \"inLanguage\": \"fr\",\n    \"dateModified\": \"2026-10-08\",\n    \"url\": \"https://noctalia.app/fr/blog/reve-lucide\"\n}",
+    "{\n    \"@context\": \"https://schema.org\",\n    \"@type\": \"CollectionPage\",\n    \"name\": \"Rêve lucide : guides et techniques\",\n    \"description\": \"Rêve lucide : comment débuter, repérer vos signes oniriques et pratiquer sans sacrifier votre sommeil. Guides, techniques et ce que dit la recherche.\",\n    \"inLanguage\": \"fr\",\n    \"dateModified\": \"2026-10-09\",\n    \"url\": \"https://noctalia.app/fr/blog/reve-lucide\"\n}",
     "{\n    \"@context\": \"https://schema.org\",\n    \"@type\": \"BreadcrumbList\",\n    \"itemListElement\": [\n        {\n            \"@type\": \"ListItem\",\n            \"position\": 1,\n            \"name\": \"Accueil\",\n            \"item\": \"https://noctalia.app/fr/\"\n        },\n        {\n            \"@type\": \"ListItem\",\n            \"position\": 2,\n            \"name\": \"Ressources\",\n            \"item\": \"https://noctalia.app/fr/blog/\"\n        },\n        {\n            \"@type\": \"ListItem\",\n            \"position\": 3,\n            \"name\": \"Rêve lucide\",\n            \"item\": \"https://noctalia.app/fr/blog/reve-lucide\"\n        }\n    ]\n}",
     "{\n    \"@context\": \"https://schema.org\",\n    \"@type\": \"FAQPage\",\n    \"mainEntity\": [\n        {\n            \"@type\": \"Question\",\n            \"name\": \"Le rêve lucide est-il dangereux ?\",\n            \"acceptedAnswer\": {\n                \"@type\": \"Answer\",\n                \"text\": \"Le rêve lucide est une expérience courante. La prudence porte sur les techniques : les réveils nocturnes grignotent le sommeil, et pratiquer autour du réveil peut amener paralysie du sommeil ou faux réveils. Ralentissez si vous êtes plus fatigué ou plus anxieux, et parlez-en à un médecin si des cauchemars ou des paralysies du sommeil gâchent régulièrement vos nuits, si vous vous réveillez sans savoir ce qui était réel, ou avant d’utiliser le rêve lucide pour traiter des cauchemars.\"\n            }\n        },\n        {\n            \"@type\": \"Question\",\n            \"name\": \"Combien de temps faut-il pour faire son premier rêve lucide ?\",\n            \"acceptedAnswer\": {\n                \"@type\": \"Answer\",\n                \"text\": \"Il n’existe pas de délai fiable. Certaines personnes en font un en quelques jours, d’autres après des semaines de pratique. Le souvenir des rêves passe d’abord : sans lui, vous pouvez vivre un moment lucide et l’oublier au matin.\"\n            }\n        },\n        {\n            \"@type\": \"Question\",\n            \"name\": \"Peut-on tout contrôler dans un rêve lucide ?\",\n            \"acceptedAnswer\": {\n                \"@type\": \"Answer\",\n                \"text\": \"Pas toujours. Être lucide, c’est savoir que l’on rêve ; la capacité à orienter le rêve varie beaucoup. Beaucoup de personnes parviennent à de petits changements, comme s’envoler ou se retourner, pendant que la scène garde sa propre vie.\"\n            }\n        }\n    ]\n}"
   ],
@@ -189,7 +189,7 @@ Pas toujours. Être lucide, c’est savoir que l’on rêve ; la capacité à o
 <li><a href="https://pubmed.ncbi.nlm.nih.gov/35167686/" rel="nofollow noopener noreferrer" target="_blank">Baird, Tononi et LaBerge (2022), « Lucid dreaming occurs in activated rapid eye movement sleep, not a mixture of sleep and wakefulness », <em>Sleep</em> (PubMed, en anglais)</a></li>
 <li><a href="https://www.frontiersin.org/journals/psychology/articles/10.3389/fpsyg.2020.01746/full" rel="nofollow noopener noreferrer" target="_blank">Aspy (2020), « Findings from the International Lucid Dream Induction Study », <em>Frontiers in Psychology</em> (en anglais)</a></li>
 </ul>
-<p class="mt-6 text-xs text-purple-200/60">Mis à jour le 8 octobre 2026</p>
+<p class="mt-6 text-xs text-purple-200/60">Mis à jour le 9 octobre 2026</p>
 </section>
 <!-- Related Symbols Start -->
 <section aria-label="Symboles de rêves associés" class="mt-12 mb-8">

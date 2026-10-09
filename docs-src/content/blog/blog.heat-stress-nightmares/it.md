@@ -23,7 +23,7 @@
   "twitterImage": "https://noctalia.app/img/blog/heatwave-sleep-dreams.webp",
   "twitterImageAlt": "Persona sveglia in una camera calda dopo un sogno angosciante",
   "publishedTime": "2026-07-10T00:00:00+02:00",
-  "modifiedTime": "2026-10-08",
+  "modifiedTime": "2026-10-09",
   "author": "Thanh Chau",
   "prevPath": "/it/blog/risveglio-notturno-ricordo-sogni",
   "nextPath": "/it/blog/sogni-regolazione-emozioni-studio-2026",
@@ -103,6 +103,6 @@
 <li><a href="https://pubmed.ncbi.nlm.nih.gov/29852917/" rel="nofollow noopener noreferrer" target="_blank">Morgenthaler et al. (2018), <em>Journal of Clinical Sleep Medicine</em>: posizione dell'AASM sul disturbo da incubi</a></li>
 <li><a href="https://www.who.int/news-room/questions-and-answers/item/heatwaves-how-to-stay-cool" rel="nofollow noopener noreferrer" target="_blank">Organizzazione mondiale della sanità: come proteggersi durante un'ondata di calore</a></li>
 </ul>
-<p class="mt-6 text-xs text-purple-200/60">Aggiornato l'8 ottobre 2026</p>
+<p class="mt-6 text-xs text-purple-200/60">Aggiornato il 9 ottobre 2026</p>
 </section>
 </article>

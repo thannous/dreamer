@@ -23,7 +23,7 @@
   "twitterImage": "https://noctalia.app/img/blog/dream-memory-hero.webp",
   "twitterImageAlt": "Protected dream memory fragments in nocturnal light",
   "publishedTime": "2026-06-20T00:00:00+02:00",
-  "modifiedTime": "2026-10-08",
+  "modifiedTime": "2026-10-09",
   "author": "Thanh Chau",
   "prevPath": "/en/blog/dreams-emotion-regulation-study-2026",
   "nextPath": "/en/blog/dreamlike-wakefulness-sleep",
@@ -76,6 +76,6 @@
 <li><a href="https://digital-strategy.ec.europa.eu/en/policies/regulatory-framework-ai" rel="nofollow noopener noreferrer" target="_blank">European Commission: AI Act</a></li>
 <li><a href="https://www.cnil.fr/fr/intelligence-artificielle" rel="nofollow noopener noreferrer" target="_blank">CNIL: AI and personal data (in French)</a></li>
 </ul>
-<p class="mt-6 text-xs text-purple-200/60">Updated October 8, 2026</p>
+<p class="mt-6 text-xs text-purple-200/60">Updated October 9, 2026</p>
 </section>
 </article>

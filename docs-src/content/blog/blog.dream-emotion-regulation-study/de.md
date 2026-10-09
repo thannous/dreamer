@@ -23,7 +23,7 @@
   "twitterImage": "https://noctalia.app/img/blog/dream-memory-hero.webp",
   "twitterImageAlt": "Traumfragmente wechseln vor dem Morgen von Angst zu Ruhe",
   "publishedTime": "2026-07-15T00:00:00+02:00",
-  "modifiedTime": "2026-10-08",
+  "modifiedTime": "2026-10-09",
   "author": "Thanh Chau",
   "prevPath": "/de/blog/albtraeume-hitze-stress",
   "nextPath": "/de/blog/ki-traumtagebuch-datenschutz",
@@ -51,6 +51,6 @@
 <details class="glass-panel rounded-xl p-5 border border-white/10 my-3"><summary class="font-semibold text-dream-cream cursor-pointer">Warum das Gefühl am Morgen notieren?</summary><p class="mt-3">Der Vergleich mit dem Traumgefühl zeigt Muster, die eine reine Handlungsschilderung übersieht.</p></details>
 <details class="glass-panel rounded-xl p-5 border border-white/10 my-3"><summary class="font-semibold text-dream-cream cursor-pointer">Sagt ein Albtraum etwas über meine psychische Gesundheit?</summary><p class="mt-3">Nein. Ein einzelner Traum ist keine Diagnose. Häufigkeit, Belastung und Folgen für Schlaf und Alltag zählen mehr.</p></details>
 </section>
-<section class="mt-16 glass-panel rounded-2xl p-6" id="sources"><h2 class="font-serif text-2xl text-dream-cream mb-4">Quellen</h2><ul class="mt-6 space-y-2 text-sm text-gray-400"><li><a href="https://doi.org/10.1093/sleep/zsag046" rel="nofollow noopener noreferrer" target="_blank">Baber et al. (2026), „Testing affect regulation theories of dreaming“, <em>Sleep</em>, 49(5), zsag046</a></li><li><a href="https://academic.oup.com/sleep/article/49/5/zsaf375/8653825" rel="nofollow noopener noreferrer" target="_blank">Scarpelli (2026), „Emotional regulation or just continuity?“, <em>Sleep</em>, 49(5), zsaf375</a></li><li><a href="https://news.ku.edu/news/article/study-reveals-how-dreams-affect-emotions-in-day-to-day-life" rel="nofollow noopener noreferrer" target="_blank">University of Kansas (2026), „Study reveals how dreams affect emotions in day-to-day life“ (englisch)</a></li></ul><p class="mt-6 text-xs text-purple-200/60">Aktualisiert am 8. Oktober 2026</p></section>
+<section class="mt-16 glass-panel rounded-2xl p-6" id="sources"><h2 class="font-serif text-2xl text-dream-cream mb-4">Quellen</h2><ul class="mt-6 space-y-2 text-sm text-gray-400"><li><a href="https://doi.org/10.1093/sleep/zsag046" rel="nofollow noopener noreferrer" target="_blank">Baber et al. (2026), „Testing affect regulation theories of dreaming“, <em>Sleep</em>, 49(5), zsag046</a></li><li><a href="https://academic.oup.com/sleep/article/49/5/zsaf375/8653825" rel="nofollow noopener noreferrer" target="_blank">Scarpelli (2026), „Emotional regulation or just continuity?“, <em>Sleep</em>, 49(5), zsaf375</a></li><li><a href="https://news.ku.edu/news/article/study-reveals-how-dreams-affect-emotions-in-day-to-day-life" rel="nofollow noopener noreferrer" target="_blank">University of Kansas (2026), „Study reveals how dreams affect emotions in day-to-day life“ (englisch)</a></li></ul><p class="mt-6 text-xs text-purple-200/60">Aktualisiert am 9. Oktober 2026</p></section>
 </article>
 <aside aria-label="Hinweis" class="glass-panel rounded-xl p-4 my-8 border border-purple-500/20" role="note"><p class="text-sm text-purple-200/70"><strong class="text-dream-cream">Wichtig:</strong> Dieser Artikel informiert und ersetzt keine medizinische oder psychologische Beratung.</p></aside>

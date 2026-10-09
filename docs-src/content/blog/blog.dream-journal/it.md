@@ -23,13 +23,13 @@
   "twitterImage": "https://noctalia.app/img/og/noctalia-it-1200x630.jpg",
   "twitterImageAlt": "Diario dei sogni: richiamo, metodi e routine",
   "publishedTime": "",
-  "modifiedTime": "2026-10-08",
+  "modifiedTime": "2026-10-09",
   "author": "",
   "prevPath": "",
   "nextPath": "",
   "preloadImage": "",
   "jsonLd": [
-    "{\n    \"@context\": \"https://schema.org\",\n    \"@type\": \"CollectionPage\",\n    \"name\": \"Diario dei sogni: ricordo, metodi e routine\",\n    \"description\": \"Diario dei sogni: come ricordare i sogni, cosa annotare ogni mattina, le basi del sonno REM e una routine semplice che riesci davvero a mantenere.\",\n    \"inLanguage\": \"it\",\n    \"url\": \"https://noctalia.app/it/blog/dream-journal-richiamo-metodi-e-routine\",\n    \"dateModified\": \"2026-10-08\"\n}",
+    "{\n    \"@context\": \"https://schema.org\",\n    \"@type\": \"CollectionPage\",\n    \"name\": \"Diario dei sogni: ricordo, metodi e routine\",\n    \"description\": \"Diario dei sogni: come ricordare i sogni, cosa annotare ogni mattina, le basi del sonno REM e una routine semplice che riesci davvero a mantenere.\",\n    \"inLanguage\": \"it\",\n    \"url\": \"https://noctalia.app/it/blog/dream-journal-richiamo-metodi-e-routine\",\n    \"dateModified\": \"2026-10-09\"\n}",
     "{\n    \"@context\": \"https://schema.org\",\n    \"@type\": \"BreadcrumbList\",\n    \"itemListElement\": [\n        {\n            \"@type\": \"ListItem\",\n            \"position\": 1,\n            \"name\": \"Home\",\n            \"item\": \"https://noctalia.app/it/\"\n        },\n        {\n            \"@type\": \"ListItem\",\n            \"position\": 2,\n            \"name\": \"Risorse\",\n            \"item\": \"https://noctalia.app/it/blog/\"\n        },\n        {\n            \"@type\": \"ListItem\",\n            \"position\": 3,\n            \"name\": \"Diario dei sogni\",\n            \"item\": \"https://noctalia.app/it/blog/dream-journal-richiamo-metodi-e-routine\"\n        }\n    ]\n}"
   ],
   "activeNav": "resources"

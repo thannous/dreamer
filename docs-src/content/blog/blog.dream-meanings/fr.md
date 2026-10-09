@@ -23,7 +23,7 @@
   "twitterImage": "https://noctalia.app/img/og/noctalia-fr-1200x630.jpg",
   "twitterImageAlt": "Signification des rêves : interprétation et symboles",
   "publishedTime": "",
-  "modifiedTime": "2026-10-08",
+  "modifiedTime": "2026-10-09",
   "author": "",
   "prevPath": "",
   "nextPath": "",

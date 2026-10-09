@@ -23,7 +23,7 @@
   "twitterImage": "https://noctalia.app/img/blog/rem-sleep-dreams.webp",
   "twitterImageAlt": "A sleeping person surrounded by soft dreamlike light and REM sleep waves",
   "publishedTime": "2026-05-12",
-  "modifiedTime": "2026-10-08",
+  "modifiedTime": "2026-10-09",
   "author": "Thanh Chau",
   "prevPath": "/en/blog/wearable-sleep-trackers-dreams",
   "nextPath": "/en/blog/dreams-not-random-ai-study",
@@ -133,7 +133,7 @@
 <li><a href="https://journals.plos.org/plosbiology/article?id=10.1371/journal.pbio.3003683" rel="nofollow noopener noreferrer" target="_blank">Michalak et al. (2026), “Immersive NREM2 dreaming preserves subjective sleep depth against declining sleep pressure”, PLOS Biology</a></li>
 <li><a href="https://www.imtlucca.it/en/comunicato-stampa/the-paradox-of-sleep-the-more-we-dream-the-more-rested-we-feel" rel="nofollow noopener noreferrer" target="_blank">IMT School for Advanced Studies Lucca (2026), press release: “The paradox of sleep”</a></li>
 </ul>
-<p class="mt-6 text-xs text-purple-200/60">Updated October 8, 2026</p>
+<p class="mt-6 text-xs text-purple-200/60">Updated October 9, 2026</p>
 </section>
 
 <section aria-label="Read next" class="mt-12" data-blog-related="">

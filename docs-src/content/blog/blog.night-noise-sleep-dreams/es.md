@@ -23,7 +23,7 @@
   "twitterImage": "https://noctalia.app/img/blog/sleep-day-environment-dreams.webp",
   "twitterImageAlt": "Dormitorio nocturno con ruido lejano y diario de sueños junto a la cama",
   "publishedTime": "2026-07-08T00:00:00+02:00",
-  "modifiedTime": "2026-10-08",
+  "modifiedTime": "2026-10-09",
   "author": "Thanh Chau",
   "prevPath": "/es/blog/vacaciones-sueno-suenos",
   "nextPath": "/es/blog/despertares-nocturnos-recordar-suenos",
@@ -90,6 +90,6 @@
 <li><a href="https://www.sleepfoundation.org/noise-and-sleep" rel="nofollow noopener noreferrer" target="_blank">Sleep Foundation: ruido y sueño (en inglés)</a></li>
 <li><a href="https://www.who.int/europe/publications/i/item/9789289053563" rel="nofollow noopener noreferrer" target="_blank">OMS Europa: directrices sobre ruido ambiental</a></li>
 </ul>
-<p class="mt-6 text-xs text-purple-200/60">Actualizado el 8 de octubre de 2026</p>
+<p class="mt-6 text-xs text-purple-200/60">Actualizado el 9 de octubre de 2026</p>
 </section>
 </article>

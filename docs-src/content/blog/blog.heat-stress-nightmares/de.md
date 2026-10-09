@@ -23,7 +23,7 @@
   "twitterImage": "https://noctalia.app/img/blog/heatwave-sleep-dreams.webp",
   "twitterImageAlt": "Person nach einem belastenden Traum wach in einem heißen Schlafzimmer",
   "publishedTime": "2026-07-10T00:00:00+02:00",
-  "modifiedTime": "2026-10-08",
+  "modifiedTime": "2026-10-09",
   "author": "Thanh Chau",
   "prevPath": "/de/blog/naechtliches-erwachen-traumerinnerung",
   "nextPath": "/de/blog/traeume-emotionsregulation-studie-2026",
@@ -103,6 +103,6 @@
 <li><a href="https://pubmed.ncbi.nlm.nih.gov/29852917/" rel="nofollow noopener noreferrer" target="_blank">Morgenthaler et al. (2018), <em>Journal of Clinical Sleep Medicine</em>: AASM-Position zur Albtraumstörung</a></li>
 <li><a href="https://www.who.int/news-room/questions-and-answers/item/heatwaves-how-to-stay-cool" rel="nofollow noopener noreferrer" target="_blank">Weltgesundheitsorganisation: Schutz bei Hitzewellen</a></li>
 </ul>
-<p class="mt-6 text-xs text-purple-200/60">Aktualisiert am 8. Oktober 2026</p>
+<p class="mt-6 text-xs text-purple-200/60">Aktualisiert am 9. Oktober 2026</p>
 </section>
 </article>

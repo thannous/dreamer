@@ -23,7 +23,7 @@
   "twitterImage": "https://noctalia.app/img/blog/dream-memory-hero.webp",
   "twitterImageAlt": "Geschützte Traumerinnerungen in nächtlichem Licht",
   "publishedTime": "2026-06-20T00:00:00+02:00",
-  "modifiedTime": "2026-10-08",
+  "modifiedTime": "2026-10-09",
   "author": "Thanh Chau",
   "prevPath": "/de/blog/traeume-emotionsregulation-studie-2026",
   "nextPath": "/de/blog/wachtraeumen-onirische-zustaende",
@@ -76,6 +76,6 @@
 <li><a href="https://digital-strategy.ec.europa.eu/en/policies/regulatory-framework-ai" rel="nofollow noopener noreferrer" target="_blank">Europäische Kommission: KI-Verordnung (englisch)</a></li>
 <li><a href="https://www.cnil.fr/fr/intelligence-artificielle" rel="nofollow noopener noreferrer" target="_blank">CNIL: Künstliche Intelligenz und personenbezogene Daten (französisch)</a></li>
 </ul>
-<p class="mt-6 text-xs text-purple-200/60">Aktualisiert am 8. Oktober 2026</p>
+<p class="mt-6 text-xs text-purple-200/60">Aktualisiert am 9. Oktober 2026</p>
 </section>
 </article>

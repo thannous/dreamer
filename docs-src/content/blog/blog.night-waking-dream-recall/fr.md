@@ -23,7 +23,7 @@
   "twitterImage": "https://noctalia.app/img/blog/dream-memory-hero.webp",
   "twitterImageAlt": "Carnet de rêve éclairé près du lit après un réveil nocturne",
   "publishedTime": "2026-07-08T00:00:00+02:00",
-  "modifiedTime": "2026-10-08",
+  "modifiedTime": "2026-10-09",
   "author": "Thanh Chau",
   "prevPath": "/fr/blog/bruit-nocturne-sommeil-reves",
   "nextPath": "/fr/blog/cauchemars-chaleur-stress",
@@ -86,6 +86,6 @@
 <li><a href="https://www.sleepfoundation.org/noise-and-sleep" rel="nofollow noopener noreferrer" target="_blank">Sleep Foundation — Bruit et sommeil</a></li>
 <li><a href="https://www.who.int/europe/publications/i/item/9789289053563" rel="nofollow noopener noreferrer" target="_blank">OMS Europe — Lignes directrices sur le bruit dans l’environnement</a></li>
 </ul>
-<p class="mt-6 text-xs text-purple-200/60">Publié le 8 juillet 2026 · Mis à jour le 8 octobre 2026</p>
+<p class="mt-6 text-xs text-purple-200/60">Publié le 8 juillet 2026 · Mis à jour le 9 octobre 2026</p>
 </section>
 </article>

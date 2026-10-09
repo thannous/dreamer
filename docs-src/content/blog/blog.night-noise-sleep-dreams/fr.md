@@ -23,7 +23,7 @@
   "twitterImage": "https://noctalia.app/img/blog/sleep-day-environment-dreams.webp",
   "twitterImageAlt": "Chambre nocturne avec bruit lointain et carnet de rêves posé près du lit",
   "publishedTime": "2026-07-08T00:00:00+02:00",
-  "modifiedTime": "2026-10-08",
+  "modifiedTime": "2026-10-09",
   "author": "Thanh Chau",
   "prevPath": "/fr/blog/vacances-sommeil-reves",
   "nextPath": "/fr/blog/reveil-nocturne-rappel-reves",
@@ -90,6 +90,6 @@
 <li><a href="https://www.sleepfoundation.org/noise-and-sleep" rel="nofollow noopener noreferrer" target="_blank">Sleep Foundation : bruit et sommeil (en anglais)</a></li>
 <li><a href="https://www.who.int/europe/publications/i/item/9789289053563" rel="nofollow noopener noreferrer" target="_blank">OMS Europe : lignes directrices sur le bruit dans l'environnement</a></li>
 </ul>
-<p class="mt-6 text-xs text-purple-200/60">Mis à jour le 8 octobre 2026</p>
+<p class="mt-6 text-xs text-purple-200/60">Mis à jour le 9 octobre 2026</p>
 </section>
 </article>

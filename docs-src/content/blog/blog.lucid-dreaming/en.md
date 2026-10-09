@@ -23,13 +23,13 @@
   "twitterImage": "https://noctalia.app/img/og/noctalia-en-1200x630.jpg",
   "twitterImageAlt": "Lucid Dreaming: guides & techniques",
   "publishedTime": "",
-  "modifiedTime": "2026-10-08",
+  "modifiedTime": "2026-10-09",
   "author": "",
   "prevPath": "",
   "nextPath": "",
   "preloadImage": "",
   "jsonLd": [
-    "{\n    \"@context\": \"https://schema.org\",\n    \"@type\": \"CollectionPage\",\n    \"name\": \"Lucid Dreaming: guides & techniques\",\n    \"description\": \"Lucid dreaming: how to start, find your own dream signs and practise without losing sleep. Guides, techniques and what research really says.\",\n    \"inLanguage\": \"en\",\n    \"dateModified\": \"2026-10-08\",\n    \"url\": \"https://noctalia.app/en/blog/lucid-dreaming\"\n}",
+    "{\n    \"@context\": \"https://schema.org\",\n    \"@type\": \"CollectionPage\",\n    \"name\": \"Lucid Dreaming: guides & techniques\",\n    \"description\": \"Lucid dreaming: how to start, find your own dream signs and practise without losing sleep. Guides, techniques and what research really says.\",\n    \"inLanguage\": \"en\",\n    \"dateModified\": \"2026-10-09\",\n    \"url\": \"https://noctalia.app/en/blog/lucid-dreaming\"\n}",
     "{\n    \"@context\": \"https://schema.org\",\n    \"@type\": \"BreadcrumbList\",\n    \"itemListElement\": [\n        {\n            \"@type\": \"ListItem\",\n            \"position\": 1,\n            \"name\": \"Home\",\n            \"item\": \"https://noctalia.app/\"\n        },\n        {\n            \"@type\": \"ListItem\",\n            \"position\": 2,\n            \"name\": \"Resources\",\n            \"item\": \"https://noctalia.app/en/blog/\"\n        },\n        {\n            \"@type\": \"ListItem\",\n            \"position\": 3,\n            \"name\": \"Lucid dreaming\",\n            \"item\": \"https://noctalia.app/en/blog/lucid-dreaming\"\n        }\n    ]\n}",
     "{\n    \"@context\": \"https://schema.org\",\n    \"@type\": \"FAQPage\",\n    \"mainEntity\": [\n        {\n            \"@type\": \"Question\",\n            \"name\": \"Is lucid dreaming dangerous?\",\n            \"acceptedAnswer\": {\n                \"@type\": \"Answer\",\n                \"text\": \"Lucid dreams are a common experience. The care is needed with the techniques: night alarms cut into sleep, and practising around waking can bring sleep paralysis or false awakenings. Slow down if you feel more tired or anxious, and talk to a doctor if nightmares or sleep paralysis keep spoiling your nights, if you wake up unsure what was real, or before using lucid dreaming to treat nightmares.\"\n            }\n        },\n        {\n            \"@type\": \"Question\",\n            \"name\": \"How long does it take to have a first lucid dream?\",\n            \"acceptedAnswer\": {\n                \"@type\": \"Answer\",\n                \"text\": \"There is no reliable timeline. Some people have one within a few days, others after weeks of practice. Recall comes first: if you do not remember your dreams, you may have a lucid moment and forget it by morning.\"\n            }\n        },\n        {\n            \"@type\": \"Question\",\n            \"name\": \"Can you control everything in a lucid dream?\",\n            \"acceptedAnswer\": {\n                \"@type\": \"Answer\",\n                \"text\": \"Not always. Lucidity means knowing that you are dreaming; how much you can steer the dream varies a lot. Many people manage small changes, such as flying or turning around, while the scene keeps a life of its own.\"\n            }\n        }\n    ]\n}"
   ],
@@ -189,7 +189,7 @@ Not always. Lucidity means knowing that you are dreaming; how much you can steer
 <li><a href="https://pubmed.ncbi.nlm.nih.gov/35167686/" rel="nofollow noopener noreferrer" target="_blank">Baird, Tononi and LaBerge (2022), “Lucid dreaming occurs in activated rapid eye movement sleep, not a mixture of sleep and wakefulness,” <em>Sleep</em> (PubMed)</a></li>
 <li><a href="https://www.frontiersin.org/journals/psychology/articles/10.3389/fpsyg.2020.01746/full" rel="nofollow noopener noreferrer" target="_blank">Aspy (2020), “Findings from the International Lucid Dream Induction Study,” <em>Frontiers in Psychology</em></a></li>
 </ul>
-<p class="mt-6 text-xs text-purple-200/60">Updated October 8, 2026</p>
+<p class="mt-6 text-xs text-purple-200/60">Updated October 9, 2026</p>
 </section>
 <!-- Related Symbols Start -->
 <section aria-label="Related dream symbols" class="mt-12 mb-8">

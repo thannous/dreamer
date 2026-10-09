@@ -23,7 +23,7 @@
   "twitterImage": "https://noctalia.app/img/blog/heatwave-sleep-dreams.webp",
   "twitterImageAlt": "Person awake in a hot bedroom after a distressing dream",
   "publishedTime": "2026-07-10T00:00:00+02:00",
-  "modifiedTime": "2026-10-08",
+  "modifiedTime": "2026-10-09",
   "author": "Thanh Chau",
   "prevPath": "/en/blog/night-waking-dream-recall",
   "nextPath": "/en/blog/dreams-emotion-regulation-study-2026",
@@ -103,6 +103,6 @@
 <li><a href="https://pubmed.ncbi.nlm.nih.gov/29852917/" rel="nofollow noopener noreferrer" target="_blank">Morgenthaler et al. (2018), <em>Journal of Clinical Sleep Medicine</em>: AASM position on nightmare disorder</a></li>
 <li><a href="https://www.who.int/news-room/questions-and-answers/item/heatwaves-how-to-stay-cool" rel="nofollow noopener noreferrer" target="_blank">World Health Organization: heatwaves, how to stay cool</a></li>
 </ul>
-<p class="mt-6 text-xs text-purple-200/60">Updated October 8, 2026</p>
+<p class="mt-6 text-xs text-purple-200/60">Updated October 9, 2026</p>
 </section>
 </article>

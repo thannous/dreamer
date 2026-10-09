@@ -23,7 +23,7 @@
   "twitterImage": "https://noctalia.app/img/blog/flying-dreams-meaning.webp",
   "twitterImageAlt": "Wide sky view representing the freedom and thrill of flying in dreams",
   "publishedTime": "2025-01-10",
-  "modifiedTime": "2026-10-08",
+  "modifiedTime": "2026-10-09",
   "author": "Thanh Chau",
   "prevPath": "/en/blog/falling-dreams-meaning",
   "nextPath": "/en/blog/snake-dreams-meaning",
@@ -355,7 +355,7 @@
 <li><a href="https://www.frontiersin.org/journals/psychology/articles/10.3389/fpsyg.2016.01306/full" rel="nofollow noopener noreferrer" target="_blank">Ribeiro, Gounden &amp; Quaglino (2016), "Investigating on the methodology effect when evaluating lucid dream," <em>Frontiers in Psychology</em></a></li>
 <li><a href="https://www.nhs.uk/conditions/night-terrors/" rel="nofollow noopener noreferrer" target="_blank">NHS, "Night terrors and nightmares"</a></li>
 </ul>
-<p class="mt-6 text-xs text-purple-200/60">Last updated: October 8, 2026</p>
+<p class="mt-6 text-xs text-purple-200/60">Last updated: October 9, 2026</p>
 </section>
 <!-- Blog Nav Start -->
 <section class="mt-12" aria-label="Article navigation" data-blog-nav="">

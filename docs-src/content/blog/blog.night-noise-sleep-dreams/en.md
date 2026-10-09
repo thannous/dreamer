@@ -23,7 +23,7 @@
   "twitterImage": "https://noctalia.app/img/blog/sleep-day-environment-dreams.webp",
   "twitterImageAlt": "Night bedroom with distant noise and a dream journal beside the bed",
   "publishedTime": "2026-07-08T00:00:00+02:00",
-  "modifiedTime": "2026-10-08",
+  "modifiedTime": "2026-10-09",
   "author": "Thanh Chau",
   "prevPath": "/en/blog/vacation-sleep-dreams",
   "nextPath": "/en/blog/night-waking-dream-recall",
@@ -90,6 +90,6 @@
 <li><a href="https://www.sleepfoundation.org/noise-and-sleep" rel="nofollow noopener noreferrer" target="_blank">Sleep Foundation: noise and sleep</a></li>
 <li><a href="https://www.who.int/europe/publications/i/item/9789289053563" rel="nofollow noopener noreferrer" target="_blank">WHO Europe: environmental noise guidelines</a></li>
 </ul>
-<p class="mt-6 text-xs text-purple-200/60">Updated October 8, 2026</p>
+<p class="mt-6 text-xs text-purple-200/60">Updated October 9, 2026</p>
 </section>
 </article>

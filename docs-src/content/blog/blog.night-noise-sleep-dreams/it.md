@@ -23,7 +23,7 @@
   "twitterImage": "https://noctalia.app/img/blog/sleep-day-environment-dreams.webp",
   "twitterImageAlt": "Camera notturna con rumore lontano e diario dei sogni accanto al letto",
   "publishedTime": "2026-07-08T00:00:00+02:00",
-  "modifiedTime": "2026-10-08",
+  "modifiedTime": "2026-10-09",
   "author": "Thanh Chau",
   "prevPath": "/it/blog/vacanze-sonno-sogni",
   "nextPath": "/it/blog/risveglio-notturno-ricordo-sogni",
@@ -90,6 +90,6 @@
 <li><a href="https://www.sleepfoundation.org/noise-and-sleep" rel="nofollow noopener noreferrer" target="_blank">Sleep Foundation: rumore e sonno (in inglese)</a></li>
 <li><a href="https://www.who.int/europe/publications/i/item/9789289053563" rel="nofollow noopener noreferrer" target="_blank">OMS Europa: linee guida sul rumore ambientale</a></li>
 </ul>
-<p class="mt-6 text-xs text-purple-200/60">Aggiornato l'8 ottobre 2026</p>
+<p class="mt-6 text-xs text-purple-200/60">Aggiornato il 9 ottobre 2026</p>
 </section>
 </article>

@@ -23,13 +23,13 @@
   "twitterImage": "https://noctalia.app/img/og/noctalia-fr-1200x630.jpg",
   "twitterImageAlt": "Journal de rêves : rappel, méthodes et routines",
   "publishedTime": "",
-  "modifiedTime": "2026-10-08",
+  "modifiedTime": "2026-10-09",
   "author": "",
   "prevPath": "",
   "nextPath": "",
   "preloadImage": "",
   "jsonLd": [
-    "{\n    \"@context\": \"https://schema.org\",\n    \"@type\": \"CollectionPage\",\n    \"name\": \"Journal de rêves : rappel, méthodes et routines\",\n    \"description\": \"Journal de rêves : comment se souvenir de ses rêves, quoi noter chaque matin, les bases du sommeil paradoxal et une routine simple à tenir.\",\n    \"inLanguage\": \"fr\",\n    \"url\": \"https://noctalia.app/fr/blog/journal-de-reves\",\n    \"dateModified\": \"2026-10-08\"\n}",
+    "{\n    \"@context\": \"https://schema.org\",\n    \"@type\": \"CollectionPage\",\n    \"name\": \"Journal de rêves : rappel, méthodes et routines\",\n    \"description\": \"Journal de rêves : comment se souvenir de ses rêves, quoi noter chaque matin, les bases du sommeil paradoxal et une routine simple à tenir.\",\n    \"inLanguage\": \"fr\",\n    \"url\": \"https://noctalia.app/fr/blog/journal-de-reves\",\n    \"dateModified\": \"2026-10-09\"\n}",
     "{\n    \"@context\": \"https://schema.org\",\n    \"@type\": \"BreadcrumbList\",\n    \"itemListElement\": [\n        {\n            \"@type\": \"ListItem\",\n            \"position\": 1,\n            \"name\": \"Accueil\",\n            \"item\": \"https://noctalia.app/fr/\"\n        },\n        {\n            \"@type\": \"ListItem\",\n            \"position\": 2,\n            \"name\": \"Ressources\",\n            \"item\": \"https://noctalia.app/fr/blog/\"\n        },\n        {\n            \"@type\": \"ListItem\",\n            \"position\": 3,\n            \"name\": \"Journal de rêves\",\n            \"item\": \"https://noctalia.app/fr/blog/journal-de-reves\"\n        }\n    ]\n}"
   ],
   "activeNav": "resources"

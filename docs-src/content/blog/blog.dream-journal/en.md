@@ -23,13 +23,13 @@
   "twitterImage": "https://noctalia.app/img/og/noctalia-en-1200x630.jpg",
   "twitterImageAlt": "Dream Journal: recall, methods & routines",
   "publishedTime": "",
-  "modifiedTime": "2026-10-08",
+  "modifiedTime": "2026-10-09",
   "author": "",
   "prevPath": "",
   "nextPath": "",
   "preloadImage": "",
   "jsonLd": [
-    "{\n    \"@context\": \"https://schema.org\",\n    \"@type\": \"CollectionPage\",\n    \"name\": \"Dream Journal: recall, methods & routines\",\n    \"description\": \"Dream journal hub: how to remember your dreams, what to note each morning, REM sleep basics and a simple routine you can actually keep.\",\n    \"inLanguage\": \"en\",\n    \"url\": \"https://noctalia.app/en/blog/dream-journal\",\n    \"dateModified\": \"2026-10-08\"\n}",
+    "{\n    \"@context\": \"https://schema.org\",\n    \"@type\": \"CollectionPage\",\n    \"name\": \"Dream Journal: recall, methods & routines\",\n    \"description\": \"Dream journal hub: how to remember your dreams, what to note each morning, REM sleep basics and a simple routine you can actually keep.\",\n    \"inLanguage\": \"en\",\n    \"url\": \"https://noctalia.app/en/blog/dream-journal\",\n    \"dateModified\": \"2026-10-09\"\n}",
     "{\n    \"@context\": \"https://schema.org\",\n    \"@type\": \"BreadcrumbList\",\n    \"itemListElement\": [\n        {\n            \"@type\": \"ListItem\",\n            \"position\": 1,\n            \"name\": \"Home\",\n            \"item\": \"https://noctalia.app/\"\n        },\n        {\n            \"@type\": \"ListItem\",\n            \"position\": 2,\n            \"name\": \"Resources\",\n            \"item\": \"https://noctalia.app/en/blog/\"\n        },\n        {\n            \"@type\": \"ListItem\",\n            \"position\": 3,\n            \"name\": \"Dream journal\",\n            \"item\": \"https://noctalia.app/en/blog/dream-journal\"\n        }\n    ]\n}"
   ],
   "activeNav": "resources"

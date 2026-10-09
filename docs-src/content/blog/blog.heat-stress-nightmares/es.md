@@ -23,7 +23,7 @@
   "twitterImage": "https://noctalia.app/img/blog/heatwave-sleep-dreams.webp",
   "twitterImageAlt": "Persona despierta en una habitación calurosa tras un sueño angustioso",
   "publishedTime": "2026-07-10T00:00:00+02:00",
-  "modifiedTime": "2026-10-08",
+  "modifiedTime": "2026-10-09",
   "author": "Thanh Chau",
   "prevPath": "/es/blog/despertares-nocturnos-recordar-suenos",
   "nextPath": "/es/blog/suenos-regulacion-emociones-estudio-2026",
@@ -103,6 +103,6 @@
 <li><a href="https://pubmed.ncbi.nlm.nih.gov/29852917/" rel="nofollow noopener noreferrer" target="_blank">Morgenthaler et al. (2018), <em>Journal of Clinical Sleep Medicine</em>: posición de la AASM sobre el trastorno de pesadillas</a></li>
 <li><a href="https://www.who.int/news-room/questions-and-answers/item/heatwaves-how-to-stay-cool" rel="nofollow noopener noreferrer" target="_blank">Organización Mundial de la Salud: cómo protegerse durante una ola de calor</a></li>
 </ul>
-<p class="mt-6 text-xs text-purple-200/60">Actualizado el 8 de octubre de 2026</p>
+<p class="mt-6 text-xs text-purple-200/60">Actualizado el 9 de octubre de 2026</p>
 </section>
 </article>

@@ -23,13 +23,13 @@
   "twitterImage": "https://noctalia.app/img/og/noctalia-es-1200x630.jpg",
   "twitterImageAlt": "Sueños lúcidos: guías y técnicas",
   "publishedTime": "",
-  "modifiedTime": "2026-10-08",
+  "modifiedTime": "2026-10-09",
   "author": "",
   "prevPath": "",
   "nextPath": "",
   "preloadImage": "",
   "jsonLd": [
-    "{\n    \"@context\": \"https://schema.org\",\n    \"@type\": \"CollectionPage\",\n    \"name\": \"Sueños lúcidos: guías y técnicas\",\n    \"description\": \"Sueños lúcidos: cómo empezar, detectar tus señales oníricas y practicar sin perder horas de sueño. Guías, técnicas y lo que dice la investigación.\",\n    \"inLanguage\": \"es\",\n    \"dateModified\": \"2026-10-08\",\n    \"url\": \"https://noctalia.app/es/blog/suenos-lucidos\"\n}",
+    "{\n    \"@context\": \"https://schema.org\",\n    \"@type\": \"CollectionPage\",\n    \"name\": \"Sueños lúcidos: guías y técnicas\",\n    \"description\": \"Sueños lúcidos: cómo empezar, detectar tus señales oníricas y practicar sin perder horas de sueño. Guías, técnicas y lo que dice la investigación.\",\n    \"inLanguage\": \"es\",\n    \"dateModified\": \"2026-10-09\",\n    \"url\": \"https://noctalia.app/es/blog/suenos-lucidos\"\n}",
     "{\n    \"@context\": \"https://schema.org\",\n    \"@type\": \"BreadcrumbList\",\n    \"itemListElement\": [\n        {\n            \"@type\": \"ListItem\",\n            \"position\": 1,\n            \"name\": \"Inicio\",\n            \"item\": \"https://noctalia.app/es/\"\n        },\n        {\n            \"@type\": \"ListItem\",\n            \"position\": 2,\n            \"name\": \"Recursos\",\n            \"item\": \"https://noctalia.app/es/blog/\"\n        },\n        {\n            \"@type\": \"ListItem\",\n            \"position\": 3,\n            \"name\": \"Sueños lúcidos\",\n            \"item\": \"https://noctalia.app/es/blog/suenos-lucidos\"\n        }\n    ]\n}",
     "{\n    \"@context\": \"https://schema.org\",\n    \"@type\": \"FAQPage\",\n    \"mainEntity\": [\n        {\n            \"@type\": \"Question\",\n            \"name\": \"¿Son peligrosos los sueños lúcidos?\",\n            \"acceptedAnswer\": {\n                \"@type\": \"Answer\",\n                \"text\": \"Tener sueños lúcidos es una experiencia común. La prudencia tiene que ver con las técnicas: las alarmas nocturnas restan horas de sueño, y practicar en torno al despertar puede traer parálisis del sueño o falsos despertares. Baja el ritmo si notas más cansancio o ansiedad, y consulta con un médico si las pesadillas o la parálisis del sueño te estropean las noches a menudo, si te despiertas sin saber qué fue real, o antes de usar los sueños lúcidos para tratar pesadillas.\"\n            }\n        },\n        {\n            \"@type\": \"Question\",\n            \"name\": \"¿Cuánto se tarda en tener el primer sueño lúcido?\",\n            \"acceptedAnswer\": {\n                \"@type\": \"Answer\",\n                \"text\": \"No hay un plazo fiable. Hay quien tiene uno en pocos días y quien tarda semanas de práctica. Primero va el recuerdo: si no recuerdas tus sueños, puedes tener un momento lúcido y haberlo olvidado por la mañana.\"\n            }\n        },\n        {\n            \"@type\": \"Question\",\n            \"name\": \"¿Se puede controlar todo en un sueño lúcido?\",\n            \"acceptedAnswer\": {\n                \"@type\": \"Answer\",\n                \"text\": \"No siempre. Ser lúcido es saber que estás soñando; cuánto puedes dirigir el sueño varía mucho. Mucha gente logra cambios pequeños, como echar a volar o darse la vuelta, mientras la escena sigue teniendo vida propia.\"\n            }\n        }\n    ]\n}"
   ],
@@ -189,7 +189,7 @@ No siempre. Ser lúcido es saber que estás soñando; cuánto puedes dirigir el 
 <li><a href="https://pubmed.ncbi.nlm.nih.gov/35167686/" rel="nofollow noopener noreferrer" target="_blank">Baird, Tononi y LaBerge (2022), «Lucid dreaming occurs in activated rapid eye movement sleep, not a mixture of sleep and wakefulness», <em>Sleep</em> (PubMed, en inglés)</a></li>
 <li><a href="https://www.frontiersin.org/journals/psychology/articles/10.3389/fpsyg.2020.01746/full" rel="nofollow noopener noreferrer" target="_blank">Aspy (2020), «Findings from the International Lucid Dream Induction Study», <em>Frontiers in Psychology</em> (en inglés)</a></li>
 </ul>
-<p class="mt-6 text-xs text-purple-200/60">Actualizado el 8 de octubre de 2026</p>
+<p class="mt-6 text-xs text-purple-200/60">Actualizado el 9 de octubre de 2026</p>
 </section>
 <!-- Related Symbols Start -->
 <section aria-label="Símbolos de sueños relacionados" class="mt-12 mb-8">

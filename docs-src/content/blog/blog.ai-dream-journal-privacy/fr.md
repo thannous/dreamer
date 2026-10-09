@@ -23,7 +23,7 @@
   "twitterImage": "https://noctalia.app/img/blog/dream-memory-hero.webp",
   "twitterImageAlt": "Fragments de mémoire onirique protégés dans une lumière nocturne",
   "publishedTime": "2026-06-20T00:00:00+02:00",
-  "modifiedTime": "2026-10-08",
+  "modifiedTime": "2026-10-09",
   "author": "Thanh Chau",
   "prevPath": "/fr/blog/reves-regulation-emotions-etude-2026",
   "nextPath": "/fr/blog/rever-eveille-etats-oniriques",
@@ -76,6 +76,6 @@
 <li><a href="https://digital-strategy.ec.europa.eu/en/policies/regulatory-framework-ai" rel="nofollow noopener noreferrer" target="_blank">Commission européenne : AI Act (en anglais)</a></li>
 <li><a href="https://www.cnil.fr/fr/intelligence-artificielle" rel="nofollow noopener noreferrer" target="_blank">CNIL : intelligence artificielle et données personnelles</a></li>
 </ul>
-<p class="mt-6 text-xs text-purple-200/60">Mis à jour le 8 octobre 2026</p>
+<p class="mt-6 text-xs text-purple-200/60">Mis à jour le 9 octobre 2026</p>
 </section>
 </article>

@@ -23,13 +23,13 @@
   "twitterImage": "https://noctalia.app/img/og/noctalia-es-1200x630.jpg",
   "twitterImageAlt": "Diario de sueños: recuerdo, métodos y rutinas",
   "publishedTime": "",
-  "modifiedTime": "2026-10-08",
+  "modifiedTime": "2026-10-09",
   "author": "",
   "prevPath": "",
   "nextPath": "",
   "preloadImage": "",
   "jsonLd": [
-    "{\n    \"@context\": \"https://schema.org\",\n    \"@type\": \"CollectionPage\",\n    \"name\": \"Diario de sueños: recuerdo, métodos y rutinas\",\n    \"description\": \"Diario de sueños: cómo recordar tus sueños, qué anotar cada mañana, lo básico del sueño REM y una rutina sencilla que de verdad puedas mantener.\",\n    \"inLanguage\": \"es\",\n    \"url\": \"https://noctalia.app/es/blog/diario-de-suenos\",\n    \"dateModified\": \"2026-10-08\"\n}",
+    "{\n    \"@context\": \"https://schema.org\",\n    \"@type\": \"CollectionPage\",\n    \"name\": \"Diario de sueños: recuerdo, métodos y rutinas\",\n    \"description\": \"Diario de sueños: cómo recordar tus sueños, qué anotar cada mañana, lo básico del sueño REM y una rutina sencilla que de verdad puedas mantener.\",\n    \"inLanguage\": \"es\",\n    \"url\": \"https://noctalia.app/es/blog/diario-de-suenos\",\n    \"dateModified\": \"2026-10-09\"\n}",
     "{\n    \"@context\": \"https://schema.org\",\n    \"@type\": \"BreadcrumbList\",\n    \"itemListElement\": [\n        {\n            \"@type\": \"ListItem\",\n            \"position\": 1,\n            \"name\": \"Inicio\",\n            \"item\": \"https://noctalia.app/es/\"\n        },\n        {\n            \"@type\": \"ListItem\",\n            \"position\": 2,\n            \"name\": \"Recursos\",\n            \"item\": \"https://noctalia.app/es/blog/\"\n        },\n        {\n            \"@type\": \"ListItem\",\n            \"position\": 3,\n            \"name\": \"Diario de sueños\",\n            \"item\": \"https://noctalia.app/es/blog/diario-de-suenos\"\n        }\n    ]\n}"
   ],
   "activeNav": "resources"

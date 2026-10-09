@@ -23,7 +23,7 @@
   "twitterImage": "https://noctalia.app/img/blog/sleep-day-environment-dreams.webp",
   "twitterImageAlt": "Camera da letto tranquilla in viaggio con luce morbida e diario dei sogni",
   "publishedTime": "2026-07-06T00:00:00+02:00",
-  "modifiedTime": "2026-10-08",
+  "modifiedTime": "2026-10-09",
   "author": "Thanh Chau",
   "prevPath": "/it/blog/sogni-climatici-eco-ansia",
   "nextPath": "/it/blog/rumore-notturno-sonno-sogni",
@@ -81,6 +81,6 @@
 <li><a class="text-dream-salmon hover:underline" href="https://doi.org/10.1186/1880-6805-31-14" rel="noopener noreferrer">Okamoto-Mizuno e Mizuno (2012)</a></li>
 <li><a class="text-dream-salmon hover:underline" href="https://www.nhs.uk/conditions/jet-lag/" rel="noopener noreferrer">NHS, «Jet lag»</a> (in inglese).</li>
 </ul>
-<p class="text-xs text-purple-200/60">Aggiornato l'8 ottobre 2026</p>
+<p class="text-xs text-purple-200/60">Aggiornato il 9 ottobre 2026</p>
 </section>
 </article>

@@ -23,7 +23,7 @@
   "twitterImage": "https://noctalia.app/img/blog/dream-memory-hero.webp",
   "twitterImageAlt": "Diario de sueños iluminado junto a la cama tras un despertar nocturno",
   "publishedTime": "2026-07-08T00:00:00+02:00",
-  "modifiedTime": "2026-10-08",
+  "modifiedTime": "2026-10-09",
   "author": "Thanh Chau",
   "prevPath": "/es/blog/ruido-nocturno-descanso-suenos",
   "nextPath": "/es/blog/pesadillas-calor-estres",
@@ -86,6 +86,6 @@
 <li><a href="https://www.sleepfoundation.org/noise-and-sleep" rel="nofollow noopener noreferrer" target="_blank">Sleep Foundation — Ruido y sueño</a></li>
 <li><a href="https://www.who.int/europe/publications/i/item/9789289053563" rel="nofollow noopener noreferrer" target="_blank">OMS Europa — Directrices sobre ruido ambiental</a></li>
 </ul>
-<p class="mt-6 text-xs text-purple-200/60">Publicado el 8 de julio de 2026 · Actualizado el 8 de octubre de 2026</p>
+<p class="mt-6 text-xs text-purple-200/60">Publicado el 8 de julio de 2026 · Actualizado el 9 de octubre de 2026</p>
 </section>
 </article>

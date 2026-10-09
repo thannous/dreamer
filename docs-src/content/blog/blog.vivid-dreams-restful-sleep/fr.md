@@ -23,7 +23,7 @@
   "twitterImage": "https://noctalia.app/img/blog/rem-sleep-dreams.webp",
   "twitterImageAlt": "Personne endormie entourée de lumière onirique et d'ondes de sommeil paradoxal",
   "publishedTime": "2026-05-12",
-  "modifiedTime": "2026-10-08",
+  "modifiedTime": "2026-10-09",
   "author": "Thanh Chau",
   "prevPath": "/fr/blog/traqueurs-sommeil-connectes-reves",
   "nextPath": "/fr/blog/reves-pas-aleatoires-etude-ia",
@@ -133,7 +133,7 @@
 <li><a href="https://journals.plos.org/plosbiology/article?id=10.1371/journal.pbio.3003683" rel="nofollow noopener noreferrer" target="_blank">Michalak et al. (2026), « Immersive NREM2 dreaming preserves subjective sleep depth against declining sleep pressure », PLOS Biology</a></li>
 <li><a href="https://www.imtlucca.it/en/comunicato-stampa/the-paradox-of-sleep-the-more-we-dream-the-more-rested-we-feel" rel="nofollow noopener noreferrer" target="_blank">IMT School for Advanced Studies Lucca (2026), communiqué de presse : « The paradox of sleep » (en anglais)</a></li>
 </ul>
-<p class="mt-6 text-xs text-purple-200/60">Mis à jour le 8 octobre 2026</p>
+<p class="mt-6 text-xs text-purple-200/60">Mis à jour le 9 octobre 2026</p>
 </section>
 
 <section aria-label="À lire ensuite" class="mt-12" data-blog-related="">

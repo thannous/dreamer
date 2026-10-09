@@ -23,13 +23,13 @@
   "twitterImage": "https://noctalia.app/img/og/noctalia-de-1200x630.jpg",
   "twitterImageAlt": "Traumtagebuch: Rückruf, Methoden und Routinen",
   "publishedTime": "",
-  "modifiedTime": "2026-10-08",
+  "modifiedTime": "2026-10-09",
   "author": "",
   "prevPath": "",
   "nextPath": "",
   "preloadImage": "",
   "jsonLd": [
-    "{\n    \"@context\": \"https://schema.org\",\n    \"@type\": \"CollectionPage\",\n    \"name\": \"Traumtagebuch: Erinnerung, Methoden und Routinen\",\n    \"description\": \"Traumtagebuch: wie Sie sich an Träume erinnern, was Sie morgens notieren, Grundlagen zum REM-Schlaf und eine einfache Routine zum Durchhalten.\",\n    \"inLanguage\": \"de\",\n    \"url\": \"https://noctalia.app/de/blog/traumtagebuch-erinnerung-methoden-und-routinen\",\n    \"dateModified\": \"2026-10-08\"\n}",
+    "{\n    \"@context\": \"https://schema.org\",\n    \"@type\": \"CollectionPage\",\n    \"name\": \"Traumtagebuch: Erinnerung, Methoden und Routinen\",\n    \"description\": \"Traumtagebuch: wie Sie sich an Träume erinnern, was Sie morgens notieren, Grundlagen zum REM-Schlaf und eine einfache Routine zum Durchhalten.\",\n    \"inLanguage\": \"de\",\n    \"url\": \"https://noctalia.app/de/blog/traumtagebuch-erinnerung-methoden-und-routinen\",\n    \"dateModified\": \"2026-10-09\"\n}",
     "{\n    \"@context\": \"https://schema.org\",\n    \"@type\": \"BreadcrumbList\",\n    \"itemListElement\": [\n        {\n            \"@type\": \"ListItem\",\n            \"position\": 1,\n            \"name\": \"Startseite\",\n            \"item\": \"https://noctalia.app/de/\"\n        },\n        {\n            \"@type\": \"ListItem\",\n            \"position\": 2,\n            \"name\": \"Ressourcen\",\n            \"item\": \"https://noctalia.app/de/blog/\"\n        },\n        {\n            \"@type\": \"ListItem\",\n            \"position\": 3,\n            \"name\": \"Traumtagebuch\",\n            \"item\": \"https://noctalia.app/de/blog/traumtagebuch-erinnerung-methoden-und-routinen\"\n        }\n    ]\n}"
   ],
   "activeNav": "resources"

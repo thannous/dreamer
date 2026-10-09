@@ -23,13 +23,13 @@
   "twitterImage": "https://noctalia.app/img/og/noctalia-it-1200x630.jpg",
   "twitterImageAlt": "Sogni Lucidi: guide e tecniche",
   "publishedTime": "",
-  "modifiedTime": "2026-10-08",
+  "modifiedTime": "2026-10-09",
   "author": "",
   "prevPath": "",
   "nextPath": "",
   "preloadImage": "",
   "jsonLd": [
-    "{\n    \"@context\": \"https://schema.org\",\n    \"@type\": \"CollectionPage\",\n    \"name\": \"Sogni lucidi: guide e tecniche\",\n    \"description\": \"Sogni lucidi: come iniziare, riconoscere i tuoi segnali onirici ed esercitarti senza perdere sonno. Guide, tecniche e cosa dice la ricerca.\",\n    \"inLanguage\": \"it\",\n    \"dateModified\": \"2026-10-08\",\n    \"url\": \"https://noctalia.app/it/blog/sogni-lucidi-guide-e-tecniche\"\n}",
+    "{\n    \"@context\": \"https://schema.org\",\n    \"@type\": \"CollectionPage\",\n    \"name\": \"Sogni lucidi: guide e tecniche\",\n    \"description\": \"Sogni lucidi: come iniziare, riconoscere i tuoi segnali onirici ed esercitarti senza perdere sonno. Guide, tecniche e cosa dice la ricerca.\",\n    \"inLanguage\": \"it\",\n    \"dateModified\": \"2026-10-09\",\n    \"url\": \"https://noctalia.app/it/blog/sogni-lucidi-guide-e-tecniche\"\n}",
     "{\n    \"@context\": \"https://schema.org\",\n    \"@type\": \"BreadcrumbList\",\n    \"itemListElement\": [\n        {\n            \"@type\": \"ListItem\",\n            \"position\": 1,\n            \"name\": \"Home\",\n            \"item\": \"https://noctalia.app/it/\"\n        },\n        {\n            \"@type\": \"ListItem\",\n            \"position\": 2,\n            \"name\": \"Risorse\",\n            \"item\": \"https://noctalia.app/it/blog/\"\n        },\n        {\n            \"@type\": \"ListItem\",\n            \"position\": 3,\n            \"name\": \"Sogno lucido\",\n            \"item\": \"https://noctalia.app/it/blog/sogni-lucidi-guide-e-tecniche\"\n        }\n    ]\n}",
     "{\n    \"@context\": \"https://schema.org\",\n    \"@type\": \"FAQPage\",\n    \"mainEntity\": [\n        {\n            \"@type\": \"Question\",\n            \"name\": \"I sogni lucidi sono pericolosi?\",\n            \"acceptedAnswer\": {\n                \"@type\": \"Answer\",\n                \"text\": \"I sogni lucidi sono un’esperienza comune. La prudenza riguarda le tecniche: le sveglie notturne tolgono sonno, ed esercitarsi intorno al risveglio può portare paralisi del sonno o falsi risvegli. Rallenta se ti senti più stanco o più ansioso, e parlane con un medico se incubi o paralisi del sonno ti rovinano spesso le notti, se ti svegli senza sapere cosa fosse reale, o prima di usare i sogni lucidi per trattare gli incubi.\"\n            }\n        },\n        {\n            \"@type\": \"Question\",\n            \"name\": \"Quanto tempo ci vuole per fare il primo sogno lucido?\",\n            \"acceptedAnswer\": {\n                \"@type\": \"Answer\",\n                \"text\": \"Non c’è un tempo affidabile. C’è chi ne fa uno in pochi giorni e chi dopo settimane di pratica. Prima viene il ricordo dei sogni: senza, puoi vivere un momento lucido e averlo dimenticato al mattino.\"\n            }\n        },\n        {\n            \"@type\": \"Question\",\n            \"name\": \"In un sogno lucido si può controllare tutto?\",\n            \"acceptedAnswer\": {\n                \"@type\": \"Answer\",\n                \"text\": \"Non sempre. Essere lucidi significa sapere che si sta sognando; quanto si riesce a guidare il sogno varia molto. Molte persone riescono a fare piccoli cambiamenti, come spiccare il volo o voltarsi, mentre la scena continua ad avere una vita propria.\"\n            }\n        }\n    ]\n}"
   ],
@@ -189,7 +189,7 @@ Non sempre. Essere lucidi significa sapere che si sta sognando; quanto si riesce
 <li><a href="https://pubmed.ncbi.nlm.nih.gov/35167686/" rel="nofollow noopener noreferrer" target="_blank">Baird, Tononi e LaBerge (2022), «Lucid dreaming occurs in activated rapid eye movement sleep, not a mixture of sleep and wakefulness», <em>Sleep</em> (PubMed, in inglese)</a></li>
 <li><a href="https://www.frontiersin.org/journals/psychology/articles/10.3389/fpsyg.2020.01746/full" rel="nofollow noopener noreferrer" target="_blank">Aspy (2020), «Findings from the International Lucid Dream Induction Study», <em>Frontiers in Psychology</em> (in inglese)</a></li>
 </ul>
-<p class="mt-6 text-xs text-purple-200/60">Aggiornato l’8 ottobre 2026</p>
+<p class="mt-6 text-xs text-purple-200/60">Aggiornato il 9 ottobre 2026</p>
 </section>
 <!-- Related Symbols Start -->
 <section aria-label="Simboli onirici correlati" class="mt-12 mb-8">

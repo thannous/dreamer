@@ -23,7 +23,7 @@
   "twitterImage": "https://noctalia.app/img/blog/sleep-day-environment-dreams.webp",
   "twitterImageAlt": "Nächtliches Schlafzimmer mit entferntem Lärm und einem Traumtagebuch neben dem Bett",
   "publishedTime": "2026-07-08T00:00:00+02:00",
-  "modifiedTime": "2026-10-08",
+  "modifiedTime": "2026-10-09",
   "author": "Thanh Chau",
   "prevPath": "/de/blog/urlaub-schlaf-traeume",
   "nextPath": "/de/blog/naechtliches-erwachen-traumerinnerung",
@@ -90,6 +90,6 @@
 <li><a href="https://www.sleepfoundation.org/noise-and-sleep" rel="nofollow noopener noreferrer" target="_blank">Sleep Foundation: Lärm und Schlaf (englisch)</a></li>
 <li><a href="https://www.who.int/europe/publications/i/item/9789289053563" rel="nofollow noopener noreferrer" target="_blank">WHO Europa: Leitlinien für Umgebungslärm</a></li>
 </ul>
-<p class="mt-6 text-xs text-purple-200/60">Aktualisiert am 8. Oktober 2026</p>
+<p class="mt-6 text-xs text-purple-200/60">Aktualisiert am 9. Oktober 2026</p>
 </section>
 </article>

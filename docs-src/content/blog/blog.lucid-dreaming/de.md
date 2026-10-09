@@ -23,13 +23,13 @@
   "twitterImage": "https://noctalia.app/img/og/noctalia-de-1200x630.jpg",
   "twitterImageAlt": "Klares Träumen: Anleitungen und Techniken",
   "publishedTime": "",
-  "modifiedTime": "2026-10-08",
+  "modifiedTime": "2026-10-09",
   "author": "",
   "prevPath": "",
   "nextPath": "",
   "preloadImage": "",
   "jsonLd": [
-    "{\n    \"@context\": \"https://schema.org\",\n    \"@type\": \"CollectionPage\",\n    \"name\": \"Klares Träumen: Anleitungen und Techniken\",\n    \"description\": \"Klares Träumen lernen: wie Sie anfangen, eigene Traumzeichen finden und üben, ohne Schlaf zu opfern. Anleitungen, Techniken und Forschungsstand.\",\n    \"inLanguage\": \"de\",\n    \"dateModified\": \"2026-10-08\",\n    \"url\": \"https://noctalia.app/de/blog/klares-traeumen-anleitungen-und-techniken\"\n}",
+    "{\n    \"@context\": \"https://schema.org\",\n    \"@type\": \"CollectionPage\",\n    \"name\": \"Klares Träumen: Anleitungen und Techniken\",\n    \"description\": \"Klares Träumen lernen: wie Sie anfangen, eigene Traumzeichen finden und üben, ohne Schlaf zu opfern. Anleitungen, Techniken und Forschungsstand.\",\n    \"inLanguage\": \"de\",\n    \"dateModified\": \"2026-10-09\",\n    \"url\": \"https://noctalia.app/de/blog/klares-traeumen-anleitungen-und-techniken\"\n}",
     "{\n    \"@context\": \"https://schema.org\",\n    \"@type\": \"BreadcrumbList\",\n    \"itemListElement\": [\n        {\n            \"@type\": \"ListItem\",\n            \"position\": 1,\n            \"name\": \"Startseite\",\n            \"item\": \"https://noctalia.app/de/\"\n        },\n        {\n            \"@type\": \"ListItem\",\n            \"position\": 2,\n            \"name\": \"Ressourcen\",\n            \"item\": \"https://noctalia.app/de/blog/\"\n        },\n        {\n            \"@type\": \"ListItem\",\n            \"position\": 3,\n            \"name\": \"Klares Träumen\",\n            \"item\": \"https://noctalia.app/de/blog/klares-traeumen-anleitungen-und-techniken\"\n        }\n    ]\n}",
     "{\n    \"@context\": \"https://schema.org\",\n    \"@type\": \"FAQPage\",\n    \"mainEntity\": [\n        {\n            \"@type\": \"Question\",\n            \"name\": \"Ist Klarträumen gefährlich?\",\n            \"acceptedAnswer\": {\n                \"@type\": \"Answer\",\n                \"text\": \"Klarträume sind eine verbreitete Erfahrung. Vorsicht ist bei den Techniken geboten: Nächtliche Wecker kosten Schlaf, und Übungen rund ums Aufwachen können Schlaflähmung oder falsches Erwachen mit sich bringen. Treten Sie kürzer, wenn Sie müder oder ängstlicher werden, und sprechen Sie mit einer Ärztin oder einem Arzt, wenn Albträume oder Schlaflähmungen Ihnen regelmäßig die Nächte verderben, wenn Sie aufwachen und nicht sicher sind, was real war, oder bevor Sie Klarträumen gegen Albträume einsetzen.\"\n            }\n        },\n        {\n            \"@type\": \"Question\",\n            \"name\": \"Wie lange dauert es bis zum ersten Klartraum?\",\n            \"acceptedAnswer\": {\n                \"@type\": \"Answer\",\n                \"text\": \"Einen verlässlichen Zeitrahmen gibt es nicht. Manche haben nach wenigen Tagen einen, andere erst nach Wochen der Übung. Zuerst kommt die Traumerinnerung: Ohne sie erleben Sie vielleicht einen klaren Moment und haben ihn am Morgen vergessen.\"\n            }\n        },\n        {\n            \"@type\": \"Question\",\n            \"name\": \"Kann man in einem Klartraum alles steuern?\",\n            \"acceptedAnswer\": {\n                \"@type\": \"Answer\",\n                \"text\": \"Nicht immer. Klar sein heißt, zu wissen, dass man träumt; wie stark man den Traum lenken kann, ist sehr unterschiedlich. Viele schaffen kleine Veränderungen, etwa loszufliegen oder sich umzudrehen, während die Szene ihr eigenes Leben behält.\"\n            }\n        }\n    ]\n}"
   ],
@@ -189,7 +189,7 @@ Nicht immer. Klar sein heißt, zu wissen, dass man träumt; wie stark man den Tr
 <li><a href="https://pubmed.ncbi.nlm.nih.gov/35167686/" rel="nofollow noopener noreferrer" target="_blank">Baird, Tononi und LaBerge (2022), „Lucid dreaming occurs in activated rapid eye movement sleep, not a mixture of sleep and wakefulness“, <em>Sleep</em> (PubMed, auf Englisch)</a></li>
 <li><a href="https://www.frontiersin.org/journals/psychology/articles/10.3389/fpsyg.2020.01746/full" rel="nofollow noopener noreferrer" target="_blank">Aspy (2020), „Findings from the International Lucid Dream Induction Study“, <em>Frontiers in Psychology</em> (auf Englisch)</a></li>
 </ul>
-<p class="mt-6 text-xs text-purple-200/60">Aktualisiert am 8. Oktober 2026</p>
+<p class="mt-6 text-xs text-purple-200/60">Aktualisiert am 9. Oktober 2026</p>
 </section>
 <!-- Related Symbols Start -->
 <section aria-label="Verwandte Traumsymbole" class="mt-12 mb-8">

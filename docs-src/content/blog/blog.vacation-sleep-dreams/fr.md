@@ -23,7 +23,7 @@
   "twitterImage": "https://noctalia.app/img/blog/sleep-day-environment-dreams.webp",
   "twitterImageAlt": "Chambre paisible en voyage avec lumière douce et carnet de rêves",
   "publishedTime": "2026-07-06T00:00:00+02:00",
-  "modifiedTime": "2026-10-08",
+  "modifiedTime": "2026-10-09",
   "author": "Thanh Chau",
   "prevPath": "/fr/blog/reves-climatiques-eco-anxiete",
   "nextPath": "/fr/blog/bruit-nocturne-sommeil-reves",
@@ -81,6 +81,6 @@
 <li><a class="text-dream-salmon hover:underline" href="https://doi.org/10.1186/1880-6805-31-14" rel="noopener noreferrer">Okamoto-Mizuno et Mizuno (2012)</a>, chaleur et sommeil.</li>
 <li><a class="text-dream-salmon hover:underline" href="https://www.nhs.uk/conditions/jet-lag/" rel="noopener noreferrer">NHS, « Jet lag »</a> (en anglais).</li>
 </ul>
-<p class="text-xs text-purple-200/60">Mis à jour le 8 octobre 2026</p>
+<p class="text-xs text-purple-200/60">Mis à jour le 9 octobre 2026</p>
 </section>
 </article>
