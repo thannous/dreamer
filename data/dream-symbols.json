@@ -8545,47 +8545,152 @@
       "en": {
         "slug": "rainbow",
         "name": "Rainbow",
-        "shortDescription": "Rainbows symbolize hope, transformation, and promise after difficult times. They represent the beauty that emerges after storms and the connection between heaven and earth.",
+        "shortDescription": "Dreaming of a rainbow often leaves a sense of relief, like light returning after rain. It can go with calm after a tense stretch, cautious hope or simple wonder. What came before it, and how you felt, guide the reading.",
         "askYourself": [
-          "What hope is emerging after a difficult period?",
-          "What transformation am I experiencing?"
-        ]
+          "What came just before the rainbow: rain, a storm, or nothing in particular?",
+          "Was I alone when I saw it, or did I point it out to someone?",
+          "Where am I waiting for things to clear up right now, and how would I know?"
+        ],
+        "faq": [
+          {
+            "question": "What does it mean to dream of a rainbow?",
+            "answer": "A rainbow is often associated with relief after a tense period, with hope or with wonder. It is not a sign of luck to come: the reading depends on what came before it, how clear it was and how you felt."
+          },
+          {
+            "question": "What does a double rainbow mean in a dream?",
+            "answer": "A double rainbow usually adds intensity to the scene: surprise, awe, the urge to share it. It does not promise double luck. Ask yourself what feels lighter or more beautiful than you expected right now."
+          },
+          {
+            "question": "What does a fading rainbow mean in a dream?",
+            "answer": "A rainbow that fades can match an awareness that a good moment is fragile, or a fear of watching it pass. Note whether you tried to hold on to it or let it go calmly: your reaction is the main clue."
+          },
+          {
+            "question": "What does a rainbow at night or without rain mean?",
+            "answer": "An impossible rainbow, at night, indoors or under a dry sky, underlines how strange the dream is. It can go with a pleasant surprise, or a hope that seems almost too good to be true. What did you think when you saw it?"
+          }
+        ],
+        "documentMetaDescription": "Dreaming of a rainbow, a double rainbow or one that fades: what the scene may say about relief and hope, with questions and a journal example.",
+        "modifiedAt": "2026-10-08"
       },
       "fr": {
         "slug": "arc-en-ciel",
         "name": "Arc-en-ciel",
-        "shortDescription": "Les arcs-en-ciel symbolisent l'espoir, la transformation et la promesse après des moments difficiles. Ils représentent la beauté qui émerge après les tempêtes et le lien entre le ciel et la terre.",
+        "shortDescription": "Rêver d'un arc-en-ciel laisse souvent une impression de soulagement, comme une éclaircie après la pluie. La scène peut accompagner un apaisement, un espoir prudent ou de l'émerveillement. Ce qui précédait l'arc et votre émotion guident la lecture.",
         "askYourself": [
-          "Quel espoir émerge après une période difficile ?",
-          "Quelle transformation suis-je en train de vivre ?"
-        ]
+          "Qu'y avait-il juste avant l'arc-en-ciel : de la pluie, un orage, rien de particulier ?",
+          "Étais-je seul à le voir, ou l'ai-je montré à quelqu'un ?",
+          "Où est-ce que j'attends une éclaircie en ce moment, et comment la reconnaîtrais-je ?"
+        ],
+        "faq": [
+          {
+            "question": "Que signifie rêver d'un arc-en-ciel ?",
+            "answer": "L'arc-en-ciel est souvent associé au soulagement après une période tendue, à l'espoir ou à l'émerveillement. Il n'annonce pas de chance : sa lecture dépend de ce qui le précédait, de sa netteté et de ce que vous avez ressenti."
+          },
+          {
+            "question": "Que signifie rêver d'un double arc-en-ciel ?",
+            "answer": "Un double arc-en-ciel ajoute souvent de l'intensité à la scène : surprise, émerveillement, envie de le partager. Il ne promet pas une double chance. Demandez-vous ce qui vous semble en ce moment plus léger ou plus beau que prévu."
+          },
+          {
+            "question": "Que signifie un arc-en-ciel qui disparaît en rêve ?",
+            "answer": "Un arc qui s'efface peut rejoindre la conscience qu'un bon moment est fragile, ou la peur de le voir passer. Notez si vous avez cherché à le retenir ou si vous l'avez regardé partir calmement : votre réaction est l'indice principal."
+          },
+          {
+            "question": "Que signifie rêver d'un arc-en-ciel la nuit ou sans pluie ?",
+            "answer": "Un arc-en-ciel impossible, de nuit, dans une pièce ou sous un ciel sec, souligne l'étrangeté du rêve. Il peut accompagner une bonne surprise ou un espoir qui paraît presque trop beau pour être vrai. Que pensiez-vous en le voyant ?"
+          }
+        ],
+        "documentMetaDescription": "Rêver d'un arc-en-ciel, d'un double arc ou d'un arc qui s'efface : ce que la scène peut dire du soulagement et de l'espoir, avec questions et exemple.",
+        "modifiedAt": "2026-10-08"
       },
       "es": {
         "slug": "arcoiris",
         "name": "Arcoíris",
-        "shortDescription": "Los arcoíris simbolizan esperanza, transformación y promesa después de tiempos difíciles. Representan la belleza que emerge después de las tormentas y la conexión entre cielo y tierra.",
+        "shortDescription": "Soñar con un arcoíris suele dejar una sensación de alivio, como la luz que vuelve tras la lluvia. Puede acompañar la calma tras una etapa tensa, una esperanza prudente o asombro. Lo que había antes y lo que sentiste orientan la lectura.",
         "askYourself": [
-          "¿Qué esperanza está emergiendo después de un período difícil?",
-          "¿Qué transformación estoy experimentando?"
-        ]
+          "¿Qué había justo antes del arcoíris: lluvia, una tormenta, nada en especial?",
+          "¿Estaba solo cuando lo vi, o se lo señalé a alguien?",
+          "¿Dónde estoy esperando ahora mismo que escampe, y cómo lo notaría?"
+        ],
+        "faq": [
+          {
+            "question": "¿Qué significa soñar con un arcoíris?",
+            "answer": "El arcoíris se asocia a menudo con el alivio tras una etapa tensa, con la esperanza o con el asombro. No anuncia buena suerte: su lectura depende de lo que había antes, de lo nítido que era y de lo que sentiste."
+          },
+          {
+            "question": "¿Qué significa soñar con un arcoíris doble?",
+            "answer": "Un arcoíris doble suele añadir intensidad a la escena: sorpresa, asombro, ganas de compartirlo. No promete el doble de suerte. Pregúntate qué te parece ahora mismo más ligero o más bonito de lo que esperabas."
+          },
+          {
+            "question": "¿Qué significa soñar con un arcoíris que desaparece?",
+            "answer": "Un arco que se desvanece puede enlazar con la conciencia de que un buen momento es frágil, o con el miedo a verlo pasar. Anota si intentaste retenerlo o lo miraste irse con calma: tu reacción es la pista principal."
+          },
+          {
+            "question": "¿Qué significa soñar con un arcoíris de noche o sin lluvia?",
+            "answer": "Un arcoíris imposible, de noche, dentro de una habitación o con el cielo seco, subraya lo extraño del sueño. Puede acompañar una buena sorpresa o una esperanza que parece casi demasiado bonita. ¿Qué pensaste al verlo?"
+          }
+        ],
+        "documentMetaDescription": "Soñar con un arcoíris, uno doble o uno que se desvanece: qué puede decir la escena sobre el alivio y la esperanza, con preguntas y un ejemplo de diario.",
+        "modifiedAt": "2026-10-08"
       },
       "de": {
         "slug": "regenbogen",
         "name": "Regenbogen",
-        "shortDescription": "Regenbögen symbolisieren Hoffnung, Transformation und Versprechen nach schwierigen Zeiten. Sie stehen für die Schönheit, die nach Stürmen entsteht.",
+        "shortDescription": "Ein Regenbogen im Traum hinterlässt oft Erleichterung, wie Licht nach dem Regen. Die Szene kann Ruhe nach einer angespannten Phase, vorsichtige Hoffnung oder Staunen begleiten. Was vorher geschah und was Sie fühlten, lenkt die Deutung.",
         "askYourself": [
-          "Welche Hoffnung entsteht nach einer schwierigen Zeit?",
-          "Welche Transformation erlebe ich gerade?"
-        ]
+          "Was kam unmittelbar vor dem Regenbogen: Regen, ein Gewitter, nichts Besonderes?",
+          "War ich allein, als ich ihn sah, oder habe ich ihn jemandem gezeigt?",
+          "Wo warte ich gerade darauf, dass es aufklart, und woran würde ich es merken?"
+        ],
+        "faq": [
+          {
+            "question": "Was bedeutet ein Regenbogen im Traum?",
+            "answer": "Der Regenbogen wird oft mit Erleichterung nach einer angespannten Zeit, mit Hoffnung oder mit Staunen verbunden. Er kündigt kein Glück an: Die Deutung hängt davon ab, was vorher geschah, wie deutlich er war und was Sie gefühlt haben."
+          },
+          {
+            "question": "Was bedeutet ein doppelter Regenbogen im Traum?",
+            "answer": "Ein doppelter Regenbogen verstärkt meist die Szene: Überraschung, Staunen, der Wunsch, ihn jemandem zu zeigen. Doppeltes Glück verspricht er nicht. Fragen Sie sich, was sich gerade leichter oder schöner anfühlt als erwartet."
+          },
+          {
+            "question": "Was bedeutet ein verblassender Regenbogen?",
+            "answer": "Ein Bogen, der verblasst, kann zu dem Wissen passen, dass ein schöner Moment zerbrechlich ist, oder zur Sorge, ihn vorbeiziehen zu sehen. Notieren Sie, ob Sie ihn festhalten wollten oder ruhig zusahen: Ihre Reaktion ist der wichtigste Hinweis."
+          },
+          {
+            "question": "Was bedeutet ein Regenbogen in der Nacht oder ohne Regen?",
+            "answer": "Ein unmöglicher Regenbogen, nachts, in einem Zimmer oder unter trockenem Himmel, betont das Fremde des Traums. Er kann eine schöne Überraschung begleiten oder eine Hoffnung, die fast zu schön wirkt. Was dachten Sie, als Sie ihn sahen?"
+          }
+        ],
+        "documentMetaDescription": "Regenbogen im Traum, doppelt oder verblassend: was die Szene über Erleichterung und Hoffnung sagen kann, mit Fragen zum Nachdenken und einem Beispiel.",
+        "modifiedAt": "2026-10-08"
       },
       "it": {
         "slug": "arcobaleno",
         "name": "Arcobaleno",
-        "shortDescription": "Gli arcobaleni simboleggiano speranza, trasformazione e promessa dopo tempi difficili. Rappresentano la bellezza che emerge dopo le tempeste.",
+        "shortDescription": "Sognare un arcobaleno lascia spesso una sensazione di sollievo, come la luce che torna dopo la pioggia. Può accompagnare la calma dopo un periodo teso, una speranza prudente o stupore. Ciò che c’era prima e ciò che hai provato orientano la lettura.",
         "askYourself": [
-          "Quale speranza sta emergendo dopo un periodo difficile?",
-          "Quale trasformazione sto vivendo?"
-        ]
+          "Che cosa c’era subito prima dell’arcobaleno: pioggia, un temporale, niente di particolare?",
+          "Ero da solo a vederlo, o l’ho indicato a qualcuno?",
+          "Dove sto aspettando che il cielo si schiarisca, in questo periodo, e come me ne accorgerei?"
+        ],
+        "faq": [
+          {
+            "question": "Che cosa significa sognare un arcobaleno?",
+            "answer": "L’arcobaleno viene spesso associato al sollievo dopo un periodo teso, alla speranza o allo stupore. Non annuncia fortuna: la lettura dipende da ciò che c’era prima, da quanto era nitido e da ciò che hai provato."
+          },
+          {
+            "question": "Che cosa significa sognare un doppio arcobaleno?",
+            "answer": "Un doppio arcobaleno di solito rende la scena più intensa: sorpresa, meraviglia, voglia di condividerla. Non promette una doppia fortuna. Chiediti che cosa ti sembra, in questo periodo, più leggero o più bello del previsto."
+          },
+          {
+            "question": "Che cosa significa un arcobaleno che svanisce in sogno?",
+            "answer": "Un arco che si dissolve può avvicinarsi alla consapevolezza che un bel momento è fragile, o alla paura di vederlo passare. Annota se hai cercato di trattenerlo o l’hai guardato andare via con calma: la tua reazione è l’indizio principale."
+          },
+          {
+            "question": "Che cosa significa sognare un arcobaleno di notte o senza pioggia?",
+            "answer": "Un arcobaleno impossibile, di notte, in una stanza o con il cielo asciutto, sottolinea la stranezza del sogno. Può accompagnare una bella sorpresa o una speranza che sembra quasi troppo bella per essere vera. Che cosa hai pensato vedendolo?"
+          }
+        ],
+        "documentMetaDescription": "Sognare un arcobaleno, doppio o che svanisce: che cosa può dire la scena del sollievo e della speranza, con domande ed esempio di diario dei sogni.",
+        "modifiedAt": "2026-10-08"
       },
       "pt": {
         "slug": "arco-iris",
@@ -8613,47 +8718,152 @@
       "en": {
         "slug": "storm",
         "name": "Storm",
-        "shortDescription": "Storms symbolize emotional turbulence, dramatic change, and powerful forces beyond your control. They can represent both destruction and necessary cleansing.",
+        "shortDescription": "Dreaming of a storm often puts you before something stronger than you: wind, thunder, pounding rain. It can go with mounting tension, held-back anger or sudden change. Whether you were out in it or sheltered changes the reading.",
         "askYourself": [
-          "What emotional turbulence am I experiencing?",
-          "What needs to be cleared away in my life?"
-        ]
+          "Was I caught in the storm, sheltering from it, or watching it come?",
+          "How did I react to the thunder: fear, excitement, weariness, calm?",
+          "What situation in my life feels about to break right now, or has just broken?"
+        ],
+        "faq": [
+          {
+            "question": "What does it mean to dream of a storm?",
+            "answer": "A storm is often associated with tension, strong emotions or sudden change. It does not foretell misfortune. Where you were in the scene, exposed or sheltered, and how you felt help you choose the lead that fits."
+          },
+          {
+            "question": "What does an approaching storm mean in a dream?",
+            "answer": "A sky darkening in the distance can go with a deadline or a conflict you sense coming. Note what you did as it approached: took shelter, warned someone, or simply waited."
+          },
+          {
+            "question": "What does it mean to be caught in a storm in a dream?",
+            "answer": "Being outside in wind and driving rain can match a feeling of being exposed or overwhelmed. It is not a diagnosis. Were you looking for shelter, for someone, or pushing on regardless?"
+          },
+          {
+            "question": "Why do I keep dreaming about storms?",
+            "answer": "A storm that returns can follow a tense period that drags on. Real thunder or noise during the night can also find its way into a dream. If these nightmares are damaging your sleep, talk to a doctor."
+          }
+        ],
+        "documentMetaDescription": "Dreaming of a storm, thunder or being caught in a downpour: what the sky, the wind and your shelter may say about tension, with questions and an example.",
+        "modifiedAt": "2026-10-08"
       },
       "fr": {
         "slug": "orage",
         "name": "Orage",
-        "shortDescription": "Les orages symbolisent la turbulence émotionnelle, le changement dramatique et les forces puissantes hors de votre contrôle. Ils peuvent représenter à la fois la destruction et la purification nécessaire.",
+        "shortDescription": "Rêver d'un orage vous place souvent face à plus fort que vous : vent, tonnerre, pluie battante. La scène peut accompagner une tension qui monte, une colère retenue ou un changement brusque. Être dehors ou à l'abri change la lecture.",
         "askYourself": [
-          "Quelle turbulence émotionnelle suis-je en train de vivre ?",
-          "Qu'est-ce qui doit être éliminé dans ma vie ?"
-        ]
+          "Étais-je pris dans l'orage, à l'abri, ou en train de le regarder arriver ?",
+          "Qu'ai-je ressenti face au tonnerre : peur, excitation, lassitude, calme ?",
+          "Quelle situation me paraît en ce moment sur le point d'éclater, ou vient d'éclater ?"
+        ],
+        "faq": [
+          {
+            "question": "Que signifie rêver d'un orage ?",
+            "answer": "L'orage est souvent associé aux tensions, aux émotions fortes ou aux changements brusques. Il n'annonce pas de malheur. Votre place dans la scène, exposé ou à l'abri, et ce que vous avez ressenti aident à choisir la piste qui vous parle."
+          },
+          {
+            "question": "Que signifie rêver d'un orage qui approche ?",
+            "answer": "Un ciel qui s'assombrit au loin peut accompagner une échéance ou un conflit que vous sentez venir. Notez ce que vous faisiez en le voyant arriver : vous mettre à l'abri, prévenir quelqu'un, attendre."
+          },
+          {
+            "question": "Que signifie rêver d'être pris dans une tempête ?",
+            "answer": "Être dehors sous le vent et la pluie battante peut rejoindre un sentiment d'être exposé ou dépassé. Ce n'est pas un diagnostic. Cherchiez-vous un abri, quelqu'un, ou avanciez-vous malgré tout ?"
+          },
+          {
+            "question": "Pourquoi est-ce que je rêve souvent d'orages ?",
+            "answer": "Un orage qui revient peut suivre une période tendue qui dure. Un vrai orage ou un bruit pendant la nuit peut aussi s'inviter dans un rêve. Si ces cauchemars abîment votre sommeil, parlez-en à un médecin."
+          }
+        ],
+        "documentMetaDescription": "Rêver d'un orage, d'une tempête ou du tonnerre : ce que le ciel, le vent et votre abri peuvent dire de vos tensions, avec questions et exemple de journal.",
+        "modifiedAt": "2026-10-08"
       },
       "es": {
         "slug": "tormenta",
         "name": "Tormenta",
-        "shortDescription": "Las tormentas simbolizan turbulencia emocional, cambio dramático y fuerzas poderosas fuera de tu control. Pueden representar tanto destrucción como limpieza necesaria.",
+        "shortDescription": "Soñar con una tormenta suele ponerte frente a algo más fuerte que tú: viento, truenos, lluvia que golpea. Puede acompañar una tensión que crece, un enfado contenido o un cambio brusco. Estar a la intemperie o a cubierto cambia la lectura.",
         "askYourself": [
-          "¿Qué turbulencia emocional estoy experimentando?",
-          "¿Qué necesita ser eliminado en mi vida?"
-        ]
+          "¿Me pilló la tormenta, estaba a cubierto o la veía acercarse?",
+          "¿Qué sentí con los truenos: miedo, emoción, cansancio, calma?",
+          "¿Qué situación de mi vida parece ahora a punto de estallar, o acaba de estallar?"
+        ],
+        "faq": [
+          {
+            "question": "¿Qué significa soñar con una tormenta?",
+            "answer": "La tormenta se asocia a menudo con tensiones, emociones intensas o cambios bruscos. No anuncia ninguna desgracia. Tu lugar en la escena, expuesto o a cubierto, y lo que sentiste te ayudan a elegir la pista que encaja."
+          },
+          {
+            "question": "¿Qué significa soñar con una tormenta que se acerca?",
+            "answer": "Un cielo que se oscurece a lo lejos puede acompañar un plazo o un conflicto que intuyes. Anota qué hacías mientras se acercaba: buscar refugio, avisar a alguien o simplemente esperar."
+          },
+          {
+            "question": "¿Qué significa soñar que te pilla una tormenta?",
+            "answer": "Estar fuera con viento y lluvia fuerte puede enlazar con la sensación de estar expuesto o desbordado. No es un diagnóstico. ¿Buscabas refugio, a alguien, o seguías avanzando a pesar de todo?"
+          },
+          {
+            "question": "¿Por qué sueño a menudo con tormentas?",
+            "answer": "Una tormenta que vuelve puede seguir a una etapa tensa que se alarga. Una tormenta real o un ruido durante la noche también pueden colarse en un sueño. Si estas pesadillas te estropean el descanso, consúltalo con un médico."
+          }
+        ],
+        "documentMetaDescription": "Soñar con una tormenta, truenos o un chaparrón que te pilla: qué pueden decir el cielo, el viento y tu refugio sobre tus tensiones, con preguntas y ejemplo.",
+        "modifiedAt": "2026-10-08"
       },
       "de": {
         "slug": "sturm",
         "name": "Sturm",
-        "shortDescription": "Stürme symbolisieren emotionale Turbulenzen, dramatische Veränderungen und mächtige Kräfte außerhalb Ihrer Kontrolle. Sie können sowohl Zerstörung als auch notwendige Reinigung darstellen.",
+        "shortDescription": "Ein Sturm im Traum stellt Sie vor etwas, das stärker ist als Sie: Wind, Donner, prasselnder Regen. Die Szene kann wachsende Anspannung, zurückgehaltenen Ärger oder einen plötzlichen Umbruch begleiten. Ob Sie draußen oder geschützt waren, zählt.",
         "askYourself": [
-          "Welche emotionalen Turbulenzen erlebe ich?",
-          "Was muss in meinem Leben beseitigt werden?"
-        ]
+          "War ich mitten im Sturm, in Sicherheit, oder sah ich ihn kommen?",
+          "Was habe ich beim Donner gefühlt: Angst, Aufregung, Erschöpfung, Ruhe?",
+          "Welche Lage in meinem Leben scheint gerade kurz vor dem Ausbruch, oder ist eben ausgebrochen?"
+        ],
+        "faq": [
+          {
+            "question": "Was bedeutet ein Sturm im Traum?",
+            "answer": "Ein Sturm wird oft mit Anspannung, starken Gefühlen oder plötzlichen Veränderungen verbunden. Ein Unglück kündigt er nicht an. Wo Sie in der Szene waren, ungeschützt oder in Sicherheit, und was Sie gefühlt haben, helfen bei der passenden Spur."
+          },
+          {
+            "question": "Was bedeutet ein aufziehendes Gewitter im Traum?",
+            "answer": "Ein Himmel, der sich in der Ferne verdunkelt, kann eine Frist oder einen Konflikt begleiten, den Sie kommen spüren. Notieren Sie, was Sie taten, als er näher kam: Schutz suchen, jemanden warnen oder abwarten."
+          },
+          {
+            "question": "Was bedeutet es, im Traum in einen Sturm zu geraten?",
+            "answer": "Draußen in Wind und Regen zu stehen, kann zu dem Gefühl passen, ausgeliefert oder überfordert zu sein. Eine Diagnose ist das nicht. Suchten Sie Schutz, einen Menschen, oder gingen Sie trotzdem weiter?"
+          },
+          {
+            "question": "Warum träume ich so oft von Stürmen?",
+            "answer": "Ein wiederkehrender Sturm kann einer angespannten Phase folgen, die sich hinzieht. Echter Donner oder Lärm in der Nacht kann ebenfalls in einen Traum einfließen. Stören solche Albträume Ihren Schlaf, sprechen Sie mit einer Ärztin oder einem Arzt."
+          }
+        ],
+        "documentMetaDescription": "Sturm oder Gewitter im Traum: was Himmel, Wind, Donner und Ihr Unterschlupf über Anspannung sagen können, mit Fragen zum Nachdenken und einem Beispiel.",
+        "modifiedAt": "2026-10-08"
       },
       "it": {
         "slug": "tempesta",
         "name": "Tempesta",
-        "shortDescription": "Le tempeste simboleggiano turbolenza emotiva, cambiamenti drastici e forze potenti al di fuori del tuo controllo. Possono rappresentare sia distruzione che purificazione necessaria.",
+        "shortDescription": "Sognare una tempesta ti mette davanti a qualcosa di più forte di te: vento, tuoni, pioggia battente. Può accompagnare una tensione che cresce, una rabbia trattenuta o un cambiamento improvviso. Essere allo scoperto o al riparo cambia la lettura.",
         "askYourself": [
-          "Quale turbolenza emotiva sto vivendo?",
-          "Cosa ha bisogno di essere eliminato nella mia vita?"
-        ]
+          "Ero in mezzo alla tempesta, al riparo, o la guardavo arrivare?",
+          "Che cosa ho provato sentendo i tuoni: paura, eccitazione, stanchezza, calma?",
+          "Quale situazione, in questo periodo, mi sembra sul punto di scoppiare, o è appena scoppiata?"
+        ],
+        "faq": [
+          {
+            "question": "Che cosa significa sognare una tempesta?",
+            "answer": "La tempesta viene spesso associata a tensioni, emozioni forti o cambiamenti improvvisi. Non annuncia alcuna disgrazia. Il tuo posto nella scena, esposto o al riparo, e ciò che hai provato aiutano a scegliere la pista giusta."
+          },
+          {
+            "question": "Che cosa significa sognare un temporale in arrivo?",
+            "answer": "Un cielo che si scurisce in lontananza può accompagnare una scadenza o un conflitto che senti arrivare. Annota che cosa facevi mentre si avvicinava: cercavi riparo, avvisavi qualcuno, aspettavi."
+          },
+          {
+            "question": "Che cosa significa sognare di essere sorpresi dalla tempesta?",
+            "answer": "Stare fuori sotto vento e pioggia battente può avvicinarsi alla sensazione di essere esposto o sopraffatto. Non è una diagnosi. Cercavi un riparo, qualcuno, o andavi avanti nonostante tutto?"
+          },
+          {
+            "question": "Perché sogno spesso tempeste e temporali?",
+            "answer": "Una tempesta che ritorna può seguire un periodo teso che si prolunga. Anche un vero temporale o un rumore durante la notte possono entrare in un sogno. Se questi incubi ti rovinano il sonno, parlane con il medico."
+          }
+        ],
+        "documentMetaDescription": "Sognare una tempesta, un temporale o i tuoni: che cosa possono dire cielo, vento e riparo delle tue tensioni, con domande ed esempio di diario dei sogni.",
+        "modifiedAt": "2026-10-08"
       },
       "pt": {
         "slug": "tempestade",
