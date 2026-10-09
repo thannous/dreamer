@@ -27,7 +27,7 @@ const ENGINE = fileURLToPath(new URL('./verify-local.mjs', import.meta.url));
 // sha256 of the engine shared by the five repositories. An edit to
 // scripts/verify-local.mjs in one repository alone fails here: change the
 // engine in all five at once, then update this value in all five.
-const ENGINE_SHA256 = '04f3b1cd321d4510cd6585e31f805491ce973d6caca536d98f2b7f4f1676827a';
+const ENGINE_SHA256 = 'c5c71b31f518c0fc49a8e2da0a5ed1c4fdc626799e0435ceff4fe3561cedbbbd';
 const scratch = mkdtempSync(path.join(os.tmpdir(), 'verify-local-test-'));
 after(() => rmSync(scratch, { recursive: true, force: true }));
 
@@ -540,7 +540,7 @@ describe('verify:release and the deploy guard', () => {
     assert.match(repo.lines.join('\n'), /^- Delivery checks changed: verify-local.config.mjs \(needs the owner's review\)$/m);
   });
 
-  test('proof-block also flags the repository check scripts and package.json scripts', async () => {
+  test('proof-block also flags the repository check scripts and package.json changes', async () => {
     const repo = makeRepository();
     const config = readFileSync(path.join(repo.work, 'verify-local.config.mjs'), 'utf8')
       .replace("mainBranch: 'main',", "mainBranch: 'main',\n  deliveryFiles: ['scripts/lint-changed.mjs'],");
@@ -554,26 +554,32 @@ describe('verify:release and the deploy guard', () => {
     await verify('pr', [], repo.options);
     repo.lines.length = 0;
     await proofBlock([], repo.options);
-    assert.match(repo.lines.join('\n'), /^- Delivery checks changed: scripts\/lint-changed.mjs, package.json scripts \(needs the owner's review\)$/m);
+    assert.match(repo.lines.join('\n'), /^- Delivery checks changed: scripts\/lint-changed.mjs, package.json \(needs the owner's review\)$/m);
 
-    // A workspace's scripts and a tool config count too.
+    // A workspace's scripts, tool config inside a package.json and tool config files count too.
     repo.commit('weaken more', {
       'apps/web/package.json': '{ "name": "web", "scripts": { "test": "true" } }\n',
       'apps/web/tsconfig.json': '{ "compilerOptions": { "strict": false } }\n',
       'eslint.config.mjs': 'export default [];\n',
+      'apps/mobile/package.json': '{ "name": "mobile", "jest": { "passWithNoTests": true, "testPathIgnorePatterns": [".*"] } }\n',
+      'supabase/functions/deno.json': '{ "test": { "exclude": ["api/"] } }\n',
+      'sdk/python/pyproject.toml': '[tool.pytest.ini_options]\naddopts = "--collect-only"\n',
     });
     await verify('pr', [], repo.options);
     repo.lines.length = 0;
     await proofBlock([], repo.options);
     const flagged = repo.lines.join('\n');
-    for (const item of ['apps/web/package.json scripts', 'apps/web/tsconfig.json', 'eslint.config.mjs']) {
+    for (const item of ['apps/web/package.json', 'apps/web/tsconfig.json', 'eslint.config.mjs', 'apps/mobile/package.json', 'supabase/functions/deno.json', 'sdk/python/pyproject.toml']) {
       assert.ok(flagged.includes(item), `${item} is flagged`);
     }
 
-    // A dependency bump alone (scripts unchanged) is not flagged.
+    // A dependency or version bump alone is not flagged, nor is a key reordering.
     repo.git(['checkout', '--quiet', 'main']);
     repo.git(['checkout', '--quiet', '-b', 'deps']);
-    repo.commit('bump', { 'package-lock.json': '{ "lockfileVersion": 3, "bump": 1 }\n' });
+    repo.commit('bump', {
+      'package-lock.json': '{ "lockfileVersion": 3, "bump": 1 }\n',
+      'package.json': '{ "packageManager": "npm@11.0.0", "name": "fixture", "version": "2.0.0", "dependencies": { "ext": "^1.0.0" } }\n',
+    });
     await verify('pr', [], repo.options);
     repo.lines.length = 0;
     await proofBlock([], repo.options);

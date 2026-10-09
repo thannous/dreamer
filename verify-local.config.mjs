@@ -131,6 +131,8 @@ export default {
   deliveryFiles: [
     'scripts/install-git-hooks.js',
     'scripts/run-jest-changed.js',
+    // Meditation's Jest module resolution.
+    'apps/meditation/tests/jestResolver.cjs',
   ],
   checks: [
     // ---- verify:pr, reused by verify:release when the inputs are identical.

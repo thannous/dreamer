@@ -923,9 +923,11 @@ export async function proofBlock(argv = [], { cwd = process.cwd(), env = cleanGi
   // A PR can change its own checks or hook rules: say so, for the owner's review.
   const scope = changedFiles(git, base, sha);
   const delivery = (scope?.files ?? []).filter((file) => matchesAny(file, [...DELIVERY_FILES, ...config.deliveryFiles]));
-  // Every package.json the PR changes, root and workspaces: its scripts are what the checks run.
+  // Every package.json the PR changes, root and workspaces: its scripts are
+  // what the checks run, and it can hold tool config (jest, eslintConfig,
+  // prettier, babel). Only a dependency or version change goes unflagged.
   for (const manifest of (scope?.files ?? []).filter((file) => file === 'package.json' || file.endsWith('/package.json'))) {
-    if (!manifest.includes('node_modules/') && scriptsChanged(git, scope.mergeBase, sha, manifest)) delivery.push(`${manifest} scripts`);
+    if (!manifest.includes('node_modules/') && manifestChanged(git, scope.mergeBase, sha, manifest)) delivery.push(manifest);
   }
   if (delivery.length) lines.push(`- Delivery checks changed: ${delivery.join(', ')} (needs the owner's review)`);
   log(lines.join('\n'));
@@ -934,17 +936,47 @@ export async function proofBlock(argv = [], { cwd = process.cwd(), env = cleanGi
 
 // ---------------------------------------------------------------- pre-push hook
 
-/** Whether the `scripts` of a package.json differ between two commits (the checks run them). */
-function scriptsChanged(git, from, to, manifest = 'package.json') {
-  const scripts = (rev) => {
+/** Fields of a package.json that only pick dependencies; the lockfile is in every fingerprint. */
+const MANIFEST_DEPENDENCY_FIELDS = [
+  'version',
+  'dependencies',
+  'devDependencies',
+  'peerDependencies',
+  'peerDependenciesMeta',
+  'optionalDependencies',
+  'bundleDependencies',
+  'bundledDependencies',
+];
+
+/** A JSON value with its object keys sorted, so key order alone is no change. */
+function canonicalJson(value) {
+  if (Array.isArray(value)) return `[${value.map(canonicalJson).join(',')}]`;
+  if (value && typeof value === 'object') {
+    return `{${Object.keys(value).sort().map((key) => `${JSON.stringify(key)}:${canonicalJson(value[key])}`).join(',')}}`;
+  }
+  return JSON.stringify(value);
+}
+
+/**
+ * Whether a package.json differs between two commits outside its dependency
+ * and version fields: scripts and tool config (jest, eslintConfig, prettier,
+ * babel, browserslist, workspaces) decide what the checks run. A file that
+ * cannot be parsed counts as changed.
+ */
+function manifestChanged(git, from, to, manifest = 'package.json') {
+  const fields = (rev) => {
     const text = git(['show', `${rev}:${manifest}`], { allowFailure: true });
     try {
-      return JSON.stringify(text ? JSON.parse(text).scripts ?? {} : {});
+      const json = text ? JSON.parse(text) : {};
+      for (const field of MANIFEST_DEPENDENCY_FIELDS) delete json[field];
+      return canonicalJson(json);
     } catch {
       return null;
     }
   };
-  return scripts(from) !== scripts(to);
+  const before = fields(from);
+  const after = fields(to);
+  return before === null || after === null || before !== after;
 }
 
 /**
@@ -969,6 +1001,19 @@ export const DELIVERY_FILES = [
   '**/prettier.config.*',
   '**/.prettierignore',
   '**/.eslintignore',
+  '**/.babelrc*',
+  '**/jest.setup.*',
+  '**/jest.resolver.*',
+  '**/vitest.setup.*',
+  '**/vitest.workspace.*',
+  '**/e2e*.config.*',
+  '**/pnpm-workspace.yaml',
+  '**/deno.json',
+  '**/deno.jsonc',
+  '**/pyproject.toml',
+  '**/pytest.ini',
+  '**/tox.ini',
+  '**/setup.cfg',
 ];
 
 export const DEFAULT_FORBIDDEN = [
