@@ -1,11 +1,12 @@
 import { IconSymbol } from '@/components/ui/icon-symbol';
+import { NightSkyBand } from '@/components/ui/NightSkyBand';
 import { ThemeLayout } from '@/constants/journalTheme';
 import { DESKTOP_BREAKPOINT } from '@/constants/layout';
 import { getNoctaliaDesignTokens } from '@/constants/noctaliaDesign';
 import { Fonts } from '@/constants/theme';
 import { useTheme } from '@/context/ThemeContext';
 import { useTranslation } from '@/hooks/useTranslation';
-import React, { type ReactNode, memo } from 'react';
+import React, { type ReactNode, memo, useState } from 'react';
 import {
   Platform,
   Pressable,
@@ -42,7 +43,15 @@ export interface NoctaliaHeaderChip {
 interface NoctaliaScreenHeaderProps {
   titleKey: string;
   prominentTitle?: boolean;
-  variant?: 'standard' | 'editorial';
+  /**
+   * `tab` is the shared header of the main destinations: wordmark and actions on
+   * one row, the page title below, the night sky behind it in the dark theme.
+   */
+  variant?: 'standard' | 'editorial' | 'tab';
+  /** Secondary line under the title (`tab` variant only). */
+  subtitle?: string;
+  /** Paint the night sky behind the `tab` header. Off when the screen draws its own artwork. */
+  backdrop?: boolean;
   includeTopInset?: boolean;
   actions?: NoctaliaHeaderAction[];
   chips?: NoctaliaHeaderChip[];
@@ -60,6 +69,8 @@ export const NoctaliaScreenHeader = memo(function NoctaliaScreenHeader({
   chips = [],
   slot,
   inlineSlot,
+  subtitle,
+  backdrop = true,
 }: NoctaliaScreenHeaderProps) {
   const { colors, mode } = useTheme();
   const { t } = useTranslation();
@@ -86,6 +97,89 @@ export const NoctaliaScreenHeader = memo(function NoctaliaScreenHeader({
   const noctalia = getNoctaliaDesignTokens(colors, mode);
   const iconButtonBg = noctalia.surface.soft;
   const quietIconColor = noctalia.text.secondary;
+  const [measuredHeight, setMeasuredHeight] = useState(0);
+
+  if (variant === 'tab') {
+    const tabTitleScale = Math.min(fontScale, 1.3);
+    // Same gutter as the Today hero; only the narrowest phones tighten it.
+    const horizontalPadding = width <= 360 ? ThemeLayout.spacing.md : ThemeLayout.spacing.lg;
+    return (
+      <View
+        onLayout={(event) => setMeasuredHeight(event.nativeEvent.layout.height)}
+        style={[styles.tabContainer, { paddingTop: (includeTopInset ? insets.top : 0) + ThemeLayout.spacing.md }]}
+      >
+        {backdrop && mode === 'dark' ? (
+          <NightSkyBand height={measuredHeight || insets.top + 160} background={noctalia.screen.background} />
+        ) : null}
+        <View style={[styles.tabBrandRow, { paddingHorizontal: horizontalPadding }]}>
+          {showBrand ? (
+            <View style={styles.tabBrand} accessible accessibilityLabel="Noctalia">
+              <IconSymbol name="moon.stars.fill" size={22} color={noctalia.accent.text} />
+              <Text
+                allowFontScaling={false}
+                numberOfLines={1}
+                style={[styles.tabBrandText, {
+                  color: noctalia.text.primary,
+                  fontSize: styles.tabBrandText.fontSize * brandFontScale,
+                  lineHeight: styles.tabBrandText.lineHeight * brandFontScale,
+                }]}
+              >
+                Noctalia
+              </Text>
+            </View>
+          ) : <View style={styles.tabBrand} />}
+          {actions.length > 0 ? (
+            <View style={styles.headerActions}>
+              {actions.map((action) => (
+                <Pressable
+                  key={action.accessibilityLabel}
+                  onPress={action.onPress}
+                  style={({ pressed }) => [
+                    styles.tabIconButton,
+                    { backgroundColor: action.active ? noctalia.action.primary : iconButtonBg },
+                    pressed && styles.pressed,
+                  ]}
+                  hitSlop={8}
+                  accessibilityRole="button"
+                  accessibilityLabel={action.accessibilityLabel}
+                  testID={action.testID}
+                >
+                  <IconSymbol
+                    name={action.icon}
+                    size={22}
+                    color={action.active ? noctalia.action.primaryText : noctalia.text.primary}
+                  />
+                </Pressable>
+              ))}
+            </View>
+          ) : null}
+        </View>
+        <View style={{ paddingHorizontal: horizontalPadding }}>
+          <Text
+            accessibilityRole="header"
+            allowFontScaling={false}
+            style={[styles.tabTitle, {
+              color: noctalia.text.primary,
+              fontSize: styles.tabTitle.fontSize * tabTitleScale,
+              lineHeight: styles.tabTitle.lineHeight * tabTitleScale,
+            }]}
+            numberOfLines={tabTitleScale >= 1.3 ? undefined : 1}
+            adjustsFontSizeToFit={tabTitleScale < 1.3}
+            minimumFontScale={0.8}
+          >
+            {t(titleKey)}
+          </Text>
+          {subtitle ? (
+            <Text style={[styles.tabSubtitle, { color: noctalia.text.secondary }]} maxFontSizeMultiplier={1.6}>
+              {subtitle}
+            </Text>
+          ) : null}
+        </View>
+        {inlineSlot ? <View style={{ paddingHorizontal: horizontalPadding }}>{inlineSlot}</View> : null}
+        {slot ? <View style={styles.slot}>{slot}</View> : null}
+      </View>
+    );
+  }
 
   return (
     <View style={[styles.container, isProminent && styles.prominentContainer, variant === 'editorial' && styles.editorialContainer, { paddingTop: (includeTopInset ? insets.top : 0) + ThemeLayout.spacing.sm, borderBottomColor: noctalia.surface.border }]}>
@@ -216,6 +310,47 @@ const webMaxContentStyle = { width: 'max-content' } as unknown as ViewStyle;
 const webNowrapStyle = { whiteSpace: 'nowrap' } as unknown as TextStyle;
 
 const styles = StyleSheet.create({
+  tabContainer: {
+    gap: ThemeLayout.spacing.sm,
+    paddingBottom: ThemeLayout.spacing.md,
+  },
+  tabBrandRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    gap: ThemeLayout.spacing.md,
+  },
+  tabBrand: {
+    flex: 1,
+    minWidth: 0,
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: ThemeLayout.spacing.sm,
+  },
+  tabBrandText: {
+    flexShrink: 1,
+    fontFamily: Fonts.fraunces.medium,
+    fontSize: 18,
+    lineHeight: 24,
+  },
+  tabIconButton: {
+    width: 44,
+    height: 44,
+    borderRadius: 22,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  tabTitle: {
+    fontFamily: Fonts.fraunces.semiBold,
+    fontSize: 38,
+    lineHeight: 46,
+  },
+  tabSubtitle: {
+    fontFamily: Fonts.spaceGrotesk.regular,
+    fontSize: 15,
+    lineHeight: 22,
+    marginTop: 2,
+  },
   editorialContainer: { borderBottomWidth: 0 },
   editorialBrand: { fontSize: 18, lineHeight: 24, marginBottom: 8 },
   editorialTitle: { fontFamily: Fonts.fraunces.semiBold, fontSize: 28, lineHeight: 36, opacity: 1 },

@@ -163,7 +163,7 @@ export default function ExploreScreen() {
   const header = (
     <NoctaliaScreenHeader
       titleKey="explore.title"
-      variant="editorial"
+      variant="tab"
       actions={[
         {
           icon: 'gear',
@@ -177,18 +177,17 @@ export default function ExploreScreen() {
 
   return (
     <View className="flex-1 bg-ink" testID={TID.Screen.Explore}>
-      {!scrollHeader ? header : null}
       <ScrollView
         className="flex-1"
-        // In short windows the header must scroll with the resources, and the
-        // viewport must end above navigation. The header already owns top safe
-        // area padding; avoid automatically adding that inset a second time.
+        // The header scrolls away with the resources, as on Today. In short windows
+        // the viewport must also end above navigation. The header already owns top
+        // safe-area padding; avoid automatically adding that inset a second time.
         style={scrollHeader ? { marginBottom: navigationClearance } : undefined}
-        contentInsetAdjustmentBehavior={scrollHeader ? 'never' : 'automatic'}
+        contentInsetAdjustmentBehavior="never"
         contentContainerStyle={{ paddingBottom: scrollBottomPadding }}
         showsVerticalScrollIndicator={false}
       >
-        {scrollHeader ? header : null}
+        {header}
         <ScreenContainer key="resources">
           <View className="gap-5 px-4 pt-3">
             <Text className="text-[15px] leading-[22px] font-sans text-ivory-muted">

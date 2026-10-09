@@ -6,6 +6,9 @@ import React from 'react';
 
 import { NoctaliaScreenHeader } from '@/components/NoctaliaScreenHeader';
 
+// Decorative artwork; expo-image needs a native view the test runtime does not provide.
+jest.mock('@/components/ui/NightSkyBand', () => ({ NightSkyBand: () => null }));
+
 let mockWidth = 375;
 let mockFontScale = 1;
 

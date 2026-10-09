@@ -996,6 +996,7 @@ export default function JournalListScreen() {
             >
               <NoctaliaScreenHeader
                 titleKey="nav.journal"
+                variant="tab"
                 actions={[{
                   icon: 'gear',
                   onPress: openQuickSettings,

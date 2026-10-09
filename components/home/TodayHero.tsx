@@ -1,11 +1,11 @@
 import { Image } from 'expo-image';
 import { LinearGradient } from 'expo-linear-gradient';
 import React, { useMemo, useState } from 'react';
-import { Pressable, Text, View, useWindowDimensions } from 'react-native';
+import { View, useWindowDimensions } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
+import { NoctaliaScreenHeader } from '@/components/NoctaliaScreenHeader';
 import { TodayCard } from '@/components/home/TodayCard';
-import { IconSymbol } from '@/components/ui/icon-symbol';
 import { NightSkyBand } from '@/components/ui/NightSkyBand';
 import { getNoctaliaDesignTokens } from '@/constants/noctaliaDesign';
 import { useTheme } from '@/context/ThemeContext';
@@ -69,20 +69,20 @@ export function TodayHero({ state, dream, now, onPressCta, onOpenSettings }: Pro
           style={{ position: 'absolute', left: 0, right: 0, bottom: 0, height: 110 }} />
       </View> : null}
       <View className="justify-between" style={{ minHeight: stageHeight }}>
-        <View className="px-6 pb-8" style={{ paddingTop: insets.top + 16 }}>
-          <View className="flex-row items-center justify-between gap-3">
-            <View className="min-w-0 flex-1 flex-row items-center gap-2" accessible accessibilityLabel="Noctalia">
-              <IconSymbol name="moon.stars.fill" size={22} color={tokens.accent.text} />
-              <Text className="min-w-0 shrink font-display-medium text-[18px] leading-6 text-ivory">Noctalia</Text>
-            </View>
-            <Pressable onPress={onOpenSettings} accessibilityRole="button" accessibilityLabel={t('nav.settings')}
-              testID={TID.Button.HeaderHomeSettings}
-              className="h-11 w-11 items-center justify-center rounded-full bg-ink-soft active:opacity-70">
-              <IconSymbol name="gear" size={24} color={tokens.text.primary} />
-            </Pressable>
-          </View>
-          <Text accessibilityRole="header" className="font-display-semibold text-[38px] leading-[46px] text-ivory">{t('nav.home')}</Text>
-          <Text className="mt-1 font-sans text-[15px] leading-[22px] text-ivory-muted">{dateLabel}</Text>
+        <View className="pb-4">
+          {/* The hero paints its own artwork or sky, so the shared header stays transparent. */}
+          <NoctaliaScreenHeader
+            titleKey="nav.home"
+            variant="tab"
+            subtitle={dateLabel}
+            backdrop={false}
+            actions={[{
+              icon: 'gear',
+              onPress: onOpenSettings,
+              accessibilityLabel: t('nav.settings'),
+              testID: TID.Button.HeaderHomeSettings,
+            }]}
+          />
         </View>
       </View>
       {hasArtwork && !immersiveArtwork ? <View className="mx-6 mb-6 h-[200px] overflow-hidden rounded-xl"

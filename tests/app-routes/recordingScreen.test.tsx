@@ -10,6 +10,9 @@ import { getDreamIdentityKey } from '@/lib/dreamIdentity';
 import { isInitialDreamCategorizationPending } from '@/lib/initialDreamCategorization';
 import { TID } from '@/lib/testIDs';
 
+// Decorative artwork; expo-image needs a native view the test runtime does not provide.
+jest.mock('@/components/ui/NightSkyBand', () => ({ NightSkyBand: () => null }));
+
 const mockGetGuestRecordedDreamCount = jest.fn(async () => 0);
 const mockSubscribeGuestDreamRecordingCount = jest.fn(() => () => undefined);
 const mockAddDream = jest.fn();

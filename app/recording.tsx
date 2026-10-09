@@ -5,6 +5,7 @@ import { MockNavigationRail } from '@/components/dev/MockNavigationRail';
 import { NoctaliaBottomNav } from '@/components/navigation/NoctaliaBottomNav';
 import { NoctaliaScreenHeader } from '@/components/NoctaliaScreenHeader';
 import { IconSymbol } from '@/components/ui/icon-symbol';
+import { NightSkyBand } from '@/components/ui/NightSkyBand';
 import { OfflineModelDownloadSheet } from '@/components/recording/OfflineModelDownloadSheet';
 import { RecordingFooter } from '@/components/recording/RecordingFooter';
 import { MicPermissionRationaleSheet } from '@/components/recording/RecordingSheets';
@@ -151,6 +152,7 @@ export default function RecordingScreen() {
   );
 
   const [transcript, setTranscript] = useState('');
+  const [headerHeight, setHeaderHeight] = useState(0);
   const [editableCapture, setEditableCapture] = useState<CaptureEditableDraft | null>(null);
   const [captureReviewState, setCaptureReview] = useState<CaptureReview | null>(null);
   const captureReviewRef = useRef<CaptureReview | null>(null);
@@ -1709,6 +1711,11 @@ export default function RecordingScreen() {
           end={{ x: 1, y: 1 }}
           style={StyleSheet.absoluteFill}
         />
+        {/* The scroll view starts below the status bar, so the sky is painted here to
+            reach the top edge like the other destinations. */}
+        {mode === 'dark' && !isDesktopWeb && !isCompactLandscape ? (
+          <NightSkyBand height={insets.top + (headerHeight || 140)} background={noctalia.screen.background} />
+        ) : null}
         {/* The desktop sidebar leads everywhere. Keep a back control only
             while a capture review is open, so leaving still offers to keep or
             discard that review. */}
@@ -1748,10 +1755,15 @@ export default function RecordingScreen() {
             testID={TID.Screen.Recording}
             accessibilityState={{ busy: hydrationStatus === 'loading' }}
           >
-            <View style={isDesktopWeb ? styles.desktopColumn : undefined}>
+            <View
+              style={isDesktopWeb ? styles.desktopColumn : undefined}
+              onLayout={(event) => setHeaderHeight(event.nativeEvent.layout.height)}
+            >
               <NoctaliaScreenHeader
                 includeTopInset={false}
+                backdrop={false}
                 prominentTitle={!isCompactLandscape}
+                variant={isCompactLandscape ? 'standard' : 'tab'}
                 titleKey="nav.capture_dream"
                 actions={isDesktopWeb ? [] : [{
                   icon: 'gear',

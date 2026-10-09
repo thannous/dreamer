@@ -166,7 +166,7 @@ afterEach(() => {
 });
 
 describe('ExploreScreen', () => {
-  it.each([[640, 320], [915, 412]])('scrolls the header with resources only in compact large text at %i by %i dp', async (width: number, height: number) => {
+  it.each([[640, 320], [915, 412]])('scrolls the header with resources, as on Today, at %i by %i dp', async (width: number, height: number) => {
     mockGetRitualPreference.mockResolvedValue('memory');
     mockBottomInset = 24;
     const view = render(<ExploreScreen />);
@@ -181,7 +181,7 @@ describe('ExploreScreen', () => {
       const settings = screen.getByTestId(TID.Button.HeaderExploreSettings);
       expect(screen.getAllByTestId('explorer-header')).toHaveLength(1);
       expect(screen.getAllByTestId(TID.Button.HeaderExploreSettings)).toHaveLength(1);
-      expect(scroll.contains(header)).toBe(fontScale >= 1.3);
+      expect(scroll.contains(header)).toBe(true);
       expect(scroll.contains(screen.getByTestId(TID.Button.ExplorerSymbols))).toBe(true);
       const style = JSON.parse(scroll.getAttribute('data-native-style') ?? '{}');
       const content = JSON.parse(scroll.getAttribute('data-content-style') ?? '{}');
@@ -203,7 +203,7 @@ describe('ExploreScreen', () => {
       mockWindowWidth = height;
       mockWindowHeight = width;
       view.rerender(<ExploreScreen />);
-      expect(screen.getByTestId('explorer-scroll').contains(screen.getByTestId('explorer-header'))).toBe(false);
+      expect(screen.getByTestId('explorer-scroll').contains(screen.getByTestId('explorer-header'))).toBe(true);
       expect(screen.getAllByTestId(TID.Button.HeaderExploreSettings)).toHaveLength(1);
       expect(screen.getByText('explore.ritual.open:inspiration.ritual.variant.memory')).toBeTruthy();
       expect(mockGetRitualPreference).toHaveBeenCalledTimes(1);

@@ -4,6 +4,9 @@ import { act, cleanup, fireEvent, render, screen } from '@testing-library/react'
 import { afterEach, beforeEach, describe, expect, it, jest } from '@jest/globals';
 import { TID } from '@/lib/testIDs';
 
+// Decorative artwork; expo-image needs a native view the test runtime does not provide.
+jest.mock('@/components/ui/NightSkyBand', () => ({ NightSkyBand: () => null }));
+
 let mockHydrated = false;
 let mockRestore: (value: string) => void;
 let mockPartial: (value: string) => void;
