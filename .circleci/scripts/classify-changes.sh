@@ -227,7 +227,7 @@ else
     app/*|components/*|constants/*|context/*|hooks/*|lib/*|services/*|tests/*|__mocks__/*|assets/*|mock-data/*|maestro/*|plugins/*|script/*)
       run_noctalia=true
       ;;
-    app.config.ts|app.json|eas.json|global.css|babel.config.js|eslint.config.js|jest.config.js|jest.config.*.js|jest.setup.ts|metro.config.js|tsconfig.json|tsconfig.test.json|uniwind-env.d.ts|uniwind-types.d.ts|vitest.config.mts|vitest.setup.ts|workbox-config.js)
+    app.config.ts|app.json|eas.json|global.css|babel.config.js|react-native.config.js|eslint.config.js|jest.config.js|jest.config.*.js|jest.setup.ts|metro.config.js|tsconfig.json|tsconfig.test.json|uniwind-env.d.ts|uniwind-types.d.ts|vitest.config.mts|vitest.setup.ts|workbox-config.js)
       run_noctalia=true
       ;;
     scripts/check-monorepo-boundaries*.js)
