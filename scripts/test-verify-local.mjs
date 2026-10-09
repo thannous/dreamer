@@ -1,20 +1,25 @@
 // Tests of scripts/verify-local.mjs, the engine of the common delivery rule.
-// Identical in the five repositories. Run: node --test scripts/test-verify-local.mjs
+// Each repository keeps and pins its own copy. Run: node --test scripts/test-verify-local.mjs
 
 import assert from 'node:assert/strict';
-import { spawnSync } from 'node:child_process';
+import { spawn, spawnSync } from 'node:child_process';
 import { createHash } from 'node:crypto';
-import { existsSync, lstatSync, mkdirSync, mkdtempSync, readFileSync, readlinkSync, rmSync, symlinkSync, writeFileSync } from 'node:fs';
+import { existsSync, lstatSync, mkdirSync, mkdtempSync, readdirSync, readFileSync, readlinkSync, rmSync, symlinkSync, writeFileSync } from 'node:fs';
 import os from 'node:os';
 import path from 'node:path';
 import { after, describe, test } from 'node:test';
-import { fileURLToPath } from 'node:url';
+import { fileURLToPath, pathToFileURL } from 'node:url';
 
 import {
   PROOF_FORMAT_VERSION,
   checkFingerprint,
   checkReleaseProof,
   cleanGitEnv,
+  normaliseConfig,
+  externalEvidenceIssue,
+  hasFlock,
+  hasPdeathsig,
+  loadExternalSources,
   globToRegExp,
   prePush,
   readBlobs,
@@ -24,10 +29,9 @@ import {
 } from './verify-local.mjs';
 
 const ENGINE = fileURLToPath(new URL('./verify-local.mjs', import.meta.url));
-// sha256 of the engine shared by the five repositories. An edit to
-// scripts/verify-local.mjs in one repository alone fails here: change the
-// engine in all five at once, then update this value in all five.
-const ENGINE_SHA256 = '8ac3f52e85d849fbd6f51dded779047bf5ba28267de198086c7a65dd7fcb2453';
+// The engine's sha256 is pinned in this repository's own verify-local.config.mjs
+// (export ENGINE_SHA256). No other repository is read or compared.
+const CONFIG_PATH = fileURLToPath(new URL('../verify-local.config.mjs', import.meta.url));
 const scratch = mkdtempSync(path.join(os.tmpdir(), 'verify-local-test-'));
 after(() => rmSync(scratch, { recursive: true, force: true }));
 
@@ -45,6 +49,7 @@ const CONFIG = `export default {
     { name: 'site-e2e', command: 'echo site >> "$RUN_LOG"', kinds: ['release'], targets: ['site'], specialised: true },
   ],
   hook: { maxFileBytes: 1024 * 1024, allow: ['public/*.pem'] },
+  externalSources: ['https://ci.example/run/'],
 };
 `;
 
@@ -66,6 +71,8 @@ function makeRepository() {
     GIT_COMMITTER_EMAIL: 'test@example.com',
     GIT_CONFIG_NOSYSTEM: '1',
     HOME: base,
+    // Each fixture takes its own heavy-check lock, never the machine's.
+    VERIFY_LOCAL_HEAVY_LOCK: path.join(base, 'heavy.lock'),
   };
   const git = (args, cwd = work, extra = {}) => {
     const result = spawnSync('git', args, { cwd, env: { ...env, ...extra }, encoding: 'utf8' });
@@ -101,10 +108,12 @@ function makeRepository() {
   return { base, origin, work, env, git, write, commit, runs, clearRuns, lines, options };
 }
 
-describe('shared engine', () => {
-  test('the engine is the version shared by the five repositories', () => {
+describe('engine pin', () => {
+  test('the engine matches the ENGINE_SHA256 pinned in this repository config', async () => {
+    const { ENGINE_SHA256 } = await import(pathToFileURL(CONFIG_PATH).href);
+    assert.match(ENGINE_SHA256 ?? '', /^[0-9a-f]{64}$/, 'verify-local.config.mjs exports ENGINE_SHA256');
     const actual = createHash('sha256').update(readFileSync(ENGINE)).digest('hex');
-    assert.equal(actual, ENGINE_SHA256, 'scripts/verify-local.mjs differs from the shared engine; change it in all five repositories at once and update ENGINE_SHA256');
+    assert.equal(actual, ENGINE_SHA256, 'scripts/verify-local.mjs differs from the ENGINE_SHA256 pin of verify-local.config.mjs; update the pin after a deliberate engine edit');
   });
 });
 
@@ -198,7 +207,7 @@ describe('verify:pr', () => {
     assert.equal(missing.proof.result, 'incomplete');
     assert.equal(missing.proof.checks.find((check) => check.name === 'db').result, 'unavailable');
 
-    const evidence = `https://app.circleci.com/pipelines/github/o/r/42 on ${sha}`;
+    const evidence = `owner-machine: tanuki pgTAP on ${sha}`;
     const external = await verify('pr', ['--external', `db=${evidence}`], repo.options);
     assert.equal(external.status, 0);
     const db = external.proof.checks.find((check) => check.name === 'db');
@@ -226,7 +235,7 @@ describe('verify:pr', () => {
     assert.ok(proof.checks.every((check) => check.result !== 'skipped'));
   });
 
-  test('--external only stands in for a specialised check that cannot run here, with evidence for this tree', async () => {
+  test('--external only stands in for a specialised check that cannot run here, with evidence for this head', async () => {
     const repo = makeRepository();
     repo.git(['checkout', '--quiet', '-b', 'feature']);
     const sha = repo.commit('migration', { 'db/1.sql': 'select 1;\n' });
@@ -237,30 +246,103 @@ describe('verify:pr', () => {
     const unknown = spawnSync(process.execPath, [ENGINE, 'pr', '--external', `lint=https://ci.example/1 on ${sha}`], { cwd: repo.work, env: repo.env, encoding: 'utf8' });
     assert.equal(unknown.status, 64);
 
-    // The evidence gives an https location (or owner-machine:) and names exactly one commit.
+    // Evidence must give an https location and name the verified head SHA exactly once.
     const other = repo.git(['rev-parse', 'origin/main']);
     for (const [evidence, reason] of [
-      ['https://app.circleci.com/pipelines/github/o/r/42', /exactly one commit/],
-      [`CircleCI pipeline 42 on ${sha}`, /https:\/\/ location/],
-      [`http://ci.example/run?sha=${sha}`, /plain http/],
-      [`https://ci.example/run/1 on ${tree}`, /names [0-9a-f]{40}, which is neither/],
+      [`https://app.circleci.com/pipelines/github/o/r/42 on ${sha}`, /not under an external CI source/],
+      ['https://ci.example/run/42', /does not name the verified commit/],
+      [`https://ci.example/run/42 on ${sha.slice(0, 12)}`, /does not name the verified commit/],
+      [`owner-machine: pc on ${sha.slice(0, 7)}`, /does not name the verified commit/],
+      [`owner-machine: pc on ${sha}, log https://paste.example/1`, /not under an external CI source/],
+      [`CircleCI pipeline 42 on ${sha}`, /neither starts with "owner-machine:"/],
+      [`owner laptop on ${sha}`, /neither starts with "owner-machine:"/],
+      [`http://ci.example/run?sha=${sha}`, /http:\/\/ URL/],
+      [`https://ci.example/run/1 on ${tree}`, /which is not the verified commit/],
       [`https://ci.example/run/1 on ${other}`, new RegExp(`names ${other}`)],
-      [`https://ci.example/run/1 on ${sha}, see ${other.toUpperCase()}`, /exactly one commit/],
-      [`https://ci.example/run/1 on ${sha} ${sha}`, /exactly one commit/],
+      [`https://ci.example/run/1 on ${sha}, see ${other.toUpperCase()}`, /which is not the verified commit/],
+      [`https://ci.example/run/1 on ${sha} ${sha}`, /2 times/],
     ]) {
       await assert.rejects(verify('pr', ['--force', '--external', `db=${evidence}`], repo.options), reason, evidence);
     }
 
-    // The verified commit, or a commit with the same tree (a squash), counts; so does owner-machine:.
-    assert.equal((await verify('pr', ['--force', '--external', `db=owner-machine: pgTAP on ${sha.toUpperCase()}`], repo.options)).status, 0);
+    // The head SHA counts only in lowercase, as git prints it: an uppercase head alone is refused.
+    await assert.rejects(
+      verify('pr', ['--force', '--external', `db=https://ci.example/run/2 on ${sha.toUpperCase()}`], repo.options),
+      /the verified commit in another case/,
+    );
+    await assert.rejects(
+      verify('pr', ['--force', '--external', `db=owner-machine: tanuki pgTAP on ${sha.toUpperCase()}`], repo.options),
+      /the verified commit in another case/,
+    );
+    // The lowercase head passes; a same-tree squash needs its own evidence.
+    const evidence = `https://ci.example/run/2 on ${sha}`;
+    assert.equal((await verify('pr', ['--force', '--external', `db=${evidence}`], repo.options)).status, 0);
     const squash = repo.git(['commit-tree', tree, '-p', 'origin/main', '-m', 'squash']);
-    assert.equal((await verify('pr', ['--rev', squash, '--force', '--external', `db=https://ci.example/run/2 on ${sha}`], repo.options)).status, 0);
+    await assert.rejects(
+      verify('pr', ['--rev', squash, '--force', '--external', `db=${evidence}`], repo.options),
+      /which is not the verified commit/,
+    );
+    assert.equal((await verify('pr', ['--rev', squash, '--force', '--external', `db=https://ci.example/run/3 on ${squash}`], repo.options)).status, 0);
 
     // When the check can run here, --external is refused: run it.
     await assert.rejects(
-      verify('pr', ['--force', '--external', `db=https://ci.example/run/3 on ${sha}`], { ...repo.options, env: { ...repo.env, DB_AVAILABLE: '1' } }),
+      verify('pr', ['--force', '--external', `db=https://ci.example/run/4 on ${sha}`], { ...repo.options, env: { ...repo.env, DB_AVAILABLE: '1' } }),
       /can run it/,
     );
+  });
+
+  test('evidence rule: owner-machine or a listed external CI source, and the full head SHA once', () => {
+    const sha = '0123456789abcdef0123456789abcdef01234567';
+    const other = 'aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa';
+    const listed = ['https://github.com/o/r/actions/runs/'];
+    // Default config (External CI: none): the owner machine only.
+    assert.equal(externalEvidenceIssue(null, `owner-machine: tanuki pgTAP 42 passed on ${sha}`, sha), null);
+    // The head counts only in lowercase; an uppercase or mixed-case copy is another SHA.
+    const mixed = sha.slice(0, 20) + sha.slice(20).toUpperCase();
+    assert.match(externalEvidenceIssue(null, `owner-machine: tanuki pgTAP on ${sha.toUpperCase()}`, sha) ?? '', /the verified commit in another case/);
+    assert.match(externalEvidenceIssue(null, `owner-machine: tanuki pgTAP on ${mixed}`, sha) ?? '', /the verified commit in another case/);
+    assert.match(externalEvidenceIssue(null, `https://github.com/o/r/actions/runs/7 on ${sha.toUpperCase()}`, sha, null, listed) ?? '', /the verified commit in another case/);
+    assert.match(externalEvidenceIssue(null, `owner-machine: tanuki pgTAP ${sha.toUpperCase()} on ${sha}`, sha) ?? '', /the verified commit in another case/);
+    // Exactly "owner-machine: <host> <note> on <sha>": a host token, a note, and " on <sha>" at the end.
+    for (const evidence of [
+      `owner-machine:x ${sha}`,
+      `owner-machine: tanuki ${sha}`,
+      `owner-machine: tanuki on ${sha}`,
+      `owner-machine:  tanuki pgTAP on ${sha}`,
+      `owner-machine:tanuki pgTAP on ${sha}`,
+      `owner-machine: tanuki pgTAP on ${sha} (passed)`,
+      `owner-machine: tanuki pgTAP at ${sha}`,
+      `owner-machine: tanuki pgTAP on\t${sha}`,
+    ]) {
+      assert.match(externalEvidenceIssue(null, evidence, sha) ?? '', /must read exactly "owner-machine: <host> <note> on /, evidence);
+    }
+    assert.match(externalEvidenceIssue(null, `Owner-Machine: tanuki pgTAP on ${sha}`, sha) ?? '', /neither starts with "owner-machine:"/);
+    assert.match(externalEvidenceIssue(null, `owner-machine: tanuki pgTAP on ${sha.slice(0, 39)}`, sha) ?? '', /does not name the verified commit/);
+    assert.match(externalEvidenceIssue(null, `https://github.com/o/r/actions/runs/7 on ${sha}`, sha) ?? '', /External CI: none/);
+    assert.match(externalEvidenceIssue(null, `owner laptop on ${sha}`, sha) ?? '', /neither starts with "owner-machine:"/);
+    assert.match(externalEvidenceIssue(null, `see owner-machine: pc on ${sha}`, sha) ?? '', /neither starts with "owner-machine:"/);
+    assert.match(externalEvidenceIssue(null, `owner-machine: pc on ${sha.slice(0, 12)}`, sha) ?? '', /does not name the verified commit/);
+    assert.match(externalEvidenceIssue(null, `owner-machine: pc on ${other}`, sha) ?? '', new RegExp(`names ${other}`));
+    assert.match(externalEvidenceIssue(null, `owner-machine: pc on ${sha}, mirror http://ci.example/1`, sha) ?? '', /http:\/\/ URL/);
+    // A listed source passes; any other https URL, or a lookalike prefix, does not.
+    assert.equal(externalEvidenceIssue(null, `https://github.com/o/r/actions/runs/7 on ${sha}`, sha, null, listed), null);
+    assert.match(externalEvidenceIssue(null, `https://github.com/o/r-fork/actions/runs/7 on ${sha}`, sha, null, listed) ?? '', /not under an external CI source/);
+    assert.match(externalEvidenceIssue(null, `https://ci.example/run/7 on ${sha}`, sha, null, listed) ?? '', /not under an external CI source/);
+    assert.match(externalEvidenceIssue(null, `http://github.com/o/r/actions/runs/7 on ${sha}`, sha, null, listed) ?? '', /http:\/\/ URL/);
+    assert.match(externalEvidenceIssue(null, 'https://github.com/o/r/actions/runs/7', sha, null, listed) ?? '', /does not name the verified commit/);
+    assert.match(externalEvidenceIssue(null, `https://github.com/o/r/actions/runs/7 on ${sha.slice(0, 7)}`, sha, null, listed) ?? '', /does not name the verified commit/);
+    assert.match(externalEvidenceIssue(null, `https://github.com/o/r/actions/runs/7 on ${sha}, see ${other.toUpperCase()}`, sha, null, listed) ?? '', /which is not the verified commit/);
+    assert.match(externalEvidenceIssue(null, `https://github.com/o/r/actions/runs/7 on ${sha} ${sha}`, sha, null, listed) ?? '', /2 times/);
+  });
+
+  test('externalSources must be https:// URL prefixes with a path ending in /', () => {
+    const base = { checks: [{ name: 'a', command: 'true' }] };
+    assert.deepEqual(normaliseConfig(base).externalSources, []);
+    assert.deepEqual(normaliseConfig({ ...base, externalSources: ['https://github.com/o/r/actions/runs/'] }).externalSources, ['https://github.com/o/r/actions/runs/']);
+    for (const bad of ['http://ci.example/run/', 'https://ci.example', 'https://ci.example/', 'https://ci.example/run', 'ci.example/run/', 42]) {
+      assert.throws(() => normaliseConfig({ ...base, externalSources: [bad] }), /externalSources/, String(bad));
+    }
+    assert.throws(() => normaliseConfig({ ...base, externalSources: 'https://ci.example/run/' }), /externalSources/);
   });
 
   test('external evidence is never reused by another proof', async () => {
@@ -285,6 +367,143 @@ describe('verify:pr', () => {
     assert.notEqual(checkFingerprint({ ...args, mergeBase: 'a' }), checkFingerprint({ ...args, mergeBase: 'b' }));
     const plain = { ...check, perBase: false };
     assert.equal(checkFingerprint({ ...args, check: plain, mergeBase: 'a' }), checkFingerprint({ ...args, check: plain, mergeBase: 'b' }));
+  });
+
+  test('heavy steps wait for the machine-wide lock, and a step under it does not take it again', { skip: hasFlock() ? false : 'flock is not installed here (macOS has none by default): the engine runs steps without the lock' }, async () => {
+    const repo = makeRepository();
+    repo.git(['checkout', '--quiet', '-b', 'feature']);
+    repo.commit('feature', { 'src/b.js': '1\n' });
+    const lock = repo.env.VERIFY_LOCAL_HEAVY_LOCK;
+    const hold = (seconds) => new Promise((resolve) => {
+      const holder = spawn('flock', [lock, 'sh', '-c', `echo held; exec sleep ${seconds}`], { stdio: ['ignore', 'pipe', 'ignore'], detached: true });
+      holder.stdout.once('data', () => {
+        holder.stdout.destroy();
+        holder.unref();
+        resolve(holder);
+      });
+    });
+
+    // Free lock: no wait.
+    assert.equal((await verify('pr', ['--force'], repo.options)).status, 0);
+    assert.ok(!repo.lines.some((line) => line.includes('waiting for lock')), repo.lines.join('\n'));
+
+    // Held lock: the run says it waits, then passes once the holder is done.
+    let holder = await hold(1);
+    repo.lines.length = 0;
+    const started = Date.now();
+    assert.equal((await verify('pr', ['--force'], repo.options)).status, 0);
+    assert.ok(repo.lines.some((line) => line.includes(`waiting for lock ${lock}`)), repo.lines.join('\n'));
+    assert.ok(Date.now() - started >= 500, 'the run waited for the holder');
+
+    // A run inside a step that already holds this lock does not wait for it.
+    holder = await hold(30);
+    try {
+      repo.lines.length = 0;
+      const nested = await verify('pr', ['--force'], { ...repo.options, env: { ...repo.env, VERIFY_LOCAL_HEAVY_LOCK_HELD: lock } });
+      assert.equal(nested.status, 0);
+      assert.ok(!repo.lines.some((line) => line.includes('waiting for lock')));
+    } finally {
+      process.kill(-holder.pid, 'SIGKILL');
+    }
+  });
+
+  test('the lock is free once verify exits, even if a check left a process behind', { skip: hasFlock() ? false : 'flock is not installed here (macOS has none by default): the engine runs steps without the lock' }, async () => {
+    const repo = makeRepository();
+    repo.git(['checkout', '--quiet', '-b', 'feature']);
+    const lock = repo.env.VERIFY_LOCAL_HEAVY_LOCK;
+    const pidFile = path.join(repo.work, '..', 'background.pid');
+    const config = readFileSync(path.join(repo.work, 'verify-local.config.mjs'), 'utf8');
+    repo.commit('daemon', {
+      'verify-local.config.mjs': config.replace(`command: 'echo lint >> "$RUN_LOG"'`, () => `command: 'sleep 30 > /dev/null 2>&1 & echo $! > ${pidFile}; echo lint >> "$RUN_LOG"'`),
+    });
+    try {
+      assert.equal((await verify('pr', [], repo.options)).status, 0);
+      // The next steps of the same run did not wait for the background process either.
+      assert.ok(!repo.lines.some((line) => line.includes('waiting for lock')), repo.lines.join('\n'));
+      for (let i = 0; i < 50 && !existsSync(pidFile); i += 1) await new Promise((resolve) => setTimeout(resolve, 50));
+      assert.ok(existsSync(pidFile), 'the check left a background process');
+      assert.equal(spawnSync('flock', ['--nonblock', lock, 'true']).status, 0, 'the background process does not hold the lock');
+    } finally {
+      if (existsSync(pidFile)) try { process.kill(Number(readFileSync(pidFile, 'utf8')), 'SIGKILL'); } catch {}
+    }
+  });
+
+  test('a SIGKILLed verify run leaves no process holding the lock', {
+    skip: !hasFlock() ? 'flock is not installed here: the engine runs steps without the lock'
+      : !hasPdeathsig() ? 'setpriv --pdeathsig is not available here: plain flock keeps the lock until the step ends, as the engine logs'
+      : false,
+  }, async () => {
+    const repo = makeRepository();
+    repo.git(['checkout', '--quiet', '-b', 'feature']);
+    const lock = repo.env.VERIFY_LOCAL_HEAVY_LOCK;
+    const pidFile = path.join(repo.work, '..', 'step.pid');
+    const config = readFileSync(path.join(repo.work, 'verify-local.config.mjs'), 'utf8');
+    repo.commit('slow', {
+      'verify-local.config.mjs': config.replace(`command: 'echo lint >> "$RUN_LOG"'`, () => `command: 'echo $$ > ${pidFile}; exec sleep 30'`),
+    });
+    const run = spawn(process.execPath, [ENGINE, 'pr'], { cwd: repo.work, env: repo.env, stdio: 'ignore' });
+    const wait = async (condition) => {
+      for (let i = 0; i < 200 && !condition(); i += 1) await new Promise((resolve) => setTimeout(resolve, 50));
+      return condition();
+    };
+    try {
+      assert.ok(await wait(() => existsSync(pidFile)), 'the step started');
+      assert.notEqual(spawnSync('flock', ['--nonblock', lock, 'true']).status, 0, 'the step holds the lock');
+      run.kill('SIGKILL');
+      assert.ok(await wait(() => spawnSync('flock', ['--nonblock', lock, 'true']).status === 0), 'the lock is free after the run was killed');
+    } finally {
+      run.kill('SIGKILL');
+      if (existsSync(pidFile)) try { process.kill(Number(readFileSync(pidFile, 'utf8')), 'SIGKILL'); } catch {}
+    }
+  });
+
+  test('without flock or setpriv on PATH, a step still runs, passes or fails, and the run says how it is locked', async () => {
+    // A PATH with every command of this one except the hidden ones, so the
+    // engine's own probes find them missing (as on macOS), on Linux too.
+    const pathWithout = (hidden) => {
+      const dir = mkdtempSync(path.join(scratch, 'path-'));
+      for (const entry of (process.env.PATH ?? '').split(path.delimiter).filter(Boolean)) {
+        let names = [];
+        try { names = readdirSync(entry); } catch { continue; }
+        for (const name of names) {
+          if (hidden.includes(name) || existsSync(path.join(dir, name))) continue;
+          try { symlinkSync(path.join(entry, name), path.join(dir, name)); } catch {}
+        }
+      }
+      return dir;
+    };
+    const unlocked = 'flock is not installed here: this step runs without the lock';
+    for (const hidden of [['flock', 'setpriv'], ['flock'], ['setpriv']]) {
+      const repo = makeRepository();
+      const env = { ...repo.env, PATH: pathWithout(hidden) };
+      assert.equal(hasFlock(env), !hidden.includes('flock') && hasFlock(), hidden.join(','));
+      assert.equal(hasPdeathsig(env), !hidden.includes('setpriv') && hasPdeathsig(), hidden.join(','));
+      const line = hasFlock(env) ? 'setpriv --pdeathsig is not available here' : unlocked;
+      repo.git(['checkout', '--quiet', '-b', 'feature']);
+      repo.commit('feature', { 'src/b.js': '1\n' });
+      const passed = await verify('pr', [], { ...repo.options, env });
+      assert.equal(passed.status, 0, hidden.join(','));
+      assert.ok(repo.runs().includes('lint'), 'the step ran');
+      assert.ok(repo.lines.some((entry) => entry.includes(line)), `${hidden.join(',')}: ${repo.lines.join('\n')}`);
+      repo.commit('break', { 'src/a.js': 'nope\n' });
+      const failed = await verify('pr', [], { ...repo.options, env });
+      assert.equal(failed.status, 1, hidden.join(','));
+      assert.equal(failed.proof.result, 'failed');
+    }
+  });
+
+  test('a check killed by a signal fails and is never passed', async () => {
+    const repo = makeRepository();
+    repo.git(['checkout', '--quiet', '-b', 'feature']);
+    const config = readFileSync(path.join(repo.work, 'verify-local.config.mjs'), 'utf8');
+    repo.commit('killed', { 'verify-local.config.mjs': config.replace(`command: 'echo lint >> "$RUN_LOG"'`, () => `command: 'kill -KILL $$'`) });
+    const { status, proof } = await verify('pr', [], repo.options);
+    assert.equal(status, 1);
+    assert.equal(proof.result, 'failed');
+    const lint = proof.checks.find((check) => check.name === 'lint');
+    assert.equal(lint.result, 'failed');
+    assert.match(lint.reason ?? '', /killed/);
+    assert.ok(repo.lines.some((line) => line.includes('counts as failed')), repo.lines.join('\n'));
   });
 
   test('a failed check fails the run, stops it, and is never reused', async () => {
@@ -548,6 +767,20 @@ describe('verify:release and the deploy guard', () => {
 
     writeFileSync(file, JSON.stringify(forged(PROOF_FORMAT_VERSION, 'x')));
     assert.deepEqual(checkReleaseProof({ cwd: repo.work, env: repo.env, fetch: false }).failures.map((failure) => failure.check), ['proof-external']);
+
+    // A specialised external entry is checked against the repository's own externalSources.
+    const proofWith = (external) => ({ ...forged(PROOF_FORMAT_VERSION, external), checks: [{ name: 'db', result: 'passed', external, specialised: true }] });
+    const failuresOf = (external, externalSources) => {
+      writeFileSync(file, JSON.stringify(proofWith(external)));
+      return checkReleaseProof({ cwd: repo.work, env: repo.env, fetch: false, externalSources }).failures.map((failure) => failure.check);
+    };
+    assert.deepEqual(failuresOf(`owner-machine: tanuki pgTAP on ${head}`), []);
+    assert.deepEqual(failuresOf(`owner-machine:x ${head}`), ['proof-external'], 'the deploy guard checks the owner-machine shape too');
+    assert.deepEqual(failuresOf(`owner-machine: tanuki pgTAP on ${head.toUpperCase()}`), ['proof-external'], 'an uppercase head alone is refused at deploy');
+    assert.deepEqual(failuresOf(`https://ci.example/run/1 on ${head.toUpperCase()}`, ['https://ci.example/run/']), ['proof-external'], 'an uppercase head alone is refused at deploy');
+    assert.deepEqual(failuresOf(`https://ci.example/run/1 on ${head}`), ['proof-external'], 'no listed source by default');
+    assert.deepEqual(failuresOf(`https://ci.example/run/1 on ${head}`, await loadExternalSources({ cwd: repo.work, env: repo.env })), []);
+    assert.deepEqual(failuresOf(`https://other.example/run/1 on ${head}`, ['https://ci.example/run/']), ['proof-external']);
   });
 
   test('proof-block prints the Local proof section the merge gate reads', async () => {

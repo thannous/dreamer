@@ -102,14 +102,15 @@ les mêmes entrées est réutilisé : une correction documentaire ne rejoue ni l
 types ni le lint (leurs entrées ignorent le Markdown, `doc_web_interne/`,
 `marketing/` et `specs/`), et un second `verify:pr` sur le même arbre ne rejoue
 rien. Un contrôle spécialisé impossible sur la machine (Deno absent, par
-exemple) rend la preuve `incomplete` : le lancer ailleurs (pipeline CircleCI
-manuelle, machine du propriétaire), puis relancer avec
-`--external <contrôle>="https://<preuve> sur <SHA>"`.
+exemple) rend la preuve `incomplete` : le lancer d'abord sur la machine du
+propriétaire (PC Tanuki), puis relancer avec
+`--external <contrôle>="owner-machine: <hôte> <note> on <SHA>"` ; une CI externe
+seulement si la table « External CI » de la
+[règle commune](regle-commune-livraison.md) la déclare.
 
 Ce contrôle qualifie une PR, pas une publication. Une publication, une branche
 `release` ou `release/*` et un tag exigent `npm run verify:release` sur le SHA
-exact (ou une pipeline CircleCI manuelle avec `force_full_validation: true`),
-décrit dans le [guide CircleCI](circleci-migration.md#validation-complète-locale).
+exact, décrit dans le [guide CircleCI](circleci-migration.md#validation-complète-locale).
 
 Ce contrôle remplace une sélection finale manuelle ; ne pas lui ajouter
 systématiquement `test:file`, `test:related` et la suite entière. Pendant le

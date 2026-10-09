@@ -40,6 +40,27 @@ function circleciCommands() {
 }
 
 describe('verify-local.config.mjs', () => {
+  it('flags any EAS workflow, eas.json or release guard edit as a delivery check change', () => {
+    const files = [
+      '.eas/workflows/android-release-qualification.yml',
+      '.eas/workflows/android-release-smoke.yml',
+      '.eas/workflows/e2e-test-ios.yml',
+      '.eas/workflows/new/nested.yaml',
+      'eas.json',
+      'scripts/check-android-release-ref.js',
+      'scripts/check-android-release-gates.js',
+    ];
+    const matched = JSON.parse(execFileSync(process.execPath, [
+      '--input-type=module',
+      '-e',
+      `const { globToRegExp } = await import(${JSON.stringify(pathToFileURL(path.join(ROOT, 'scripts/verify-local.mjs')).href)});
+       const globs = ${JSON.stringify(config.deliveryFiles)};
+       const files = ${JSON.stringify(files)};
+       process.stdout.write(JSON.stringify(files.filter((file) => globs.some((glob) => globToRegExp(glob).test(file)))));`,
+    ], { encoding: 'utf8' }));
+    expect(matched).toEqual(files);
+  });
+
   it('names only npm scripts that exist in the package each command runs in', () => {
     const packages = { root: scriptsOf('package.json'), meditation: scriptsOf('apps/meditation/package.json') };
     const missing = [];
