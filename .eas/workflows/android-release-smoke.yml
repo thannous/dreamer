@@ -33,6 +33,10 @@ jobs:
     name: Validate built Android versionCode
     needs: [build_android_release_smoke]
     env:
+      # appVersionSource is remote: EAS assigns the versionCode, so the expected
+      # code comes from the metadata of this exact build, never from the local
+      # app.json mirror (doc_web_interne/docs/MOBILE_VERSIONING.md).
+      EXPECTED_ANDROID_VERSION_CODE: ${{ needs.build_android_release_smoke.outputs.app_build_version }}
       BUILT_ANDROID_VERSION_CODE: ${{ needs.build_android_release_smoke.outputs.app_build_version }}
     steps:
       - uses: eas/checkout
