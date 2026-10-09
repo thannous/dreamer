@@ -39,6 +39,7 @@ function readReleaseIdentity(rootDir = ROOT, readFileSync = fs.readFileSync) {
 
 function validateReleaseRef({
   builtVersionCode = '',
+  requireBuiltVersionCode = false,
   expectedRemoteVersionCode = '',
   versionSource = 'local',
   refName = '',
@@ -66,6 +67,14 @@ function validateReleaseRef({
   }
 
   if (!['local', 'remote'].includes(versionSource)) throw new Error('Unknown appVersionSource');
+  // A job that exists to check a built versionCode sets
+  // REQUIRE_BUILT_ANDROID_VERSION_CODE=1: an empty build output (renamed,
+  // missing on a failed build) then fails instead of skipping every check below.
+  if (requireBuiltVersionCode && !String(builtVersionCode).trim()) {
+    throw new Error(
+      'REQUIRE_BUILT_ANDROID_VERSION_CODE=1 but BUILT_ANDROID_VERSION_CODE is empty: the EAS build reported no versionCode.'
+    );
+  }
   if (builtVersionCode && !/^[1-9]\d*$/.test(String(builtVersionCode))) throw new Error('Invalid built versionCode');
   if (builtVersionCode && versionSource === 'remote') {
     if (!/^[1-9]\d*$/.test(String(expectedRemoteVersionCode))) {
@@ -91,11 +100,21 @@ function validateReleaseRef({
   };
 }
 
+// '1' turns the requirement on; empty or '0' keeps it off. Any other value is
+// a typo that would silently disable the check, so it fails.
+function readRequireBuiltVersionCode(env = process.env) {
+  const value = String(env.REQUIRE_BUILT_ANDROID_VERSION_CODE || '').trim();
+  if (value === '1') return true;
+  if (value === '' || value === '0') return false;
+  throw new Error(`REQUIRE_BUILT_ANDROID_VERSION_CODE must be '1' or '0', received ${value}.`);
+}
+
 function main(env = process.env) {
   const easConfig = JSON.parse(fs.readFileSync(path.join(ROOT, 'eas.json'), 'utf8'));
   const result = validateReleaseRef({
     builtVersionCode: String(env.BUILT_ANDROID_VERSION_CODE || '').trim(),
     expectedRemoteVersionCode: String(env.EXPECTED_ANDROID_VERSION_CODE || '').trim(),
+    requireBuiltVersionCode: readRequireBuiltVersionCode(env),
     versionSource: easConfig.cli?.appVersionSource || 'local',
     refName: String(env.RELEASE_REF_NAME || '').trim(),
     refType: String(env.RELEASE_REF_TYPE || '').trim(),
@@ -118,5 +137,6 @@ if (require.main === module) {
 
 module.exports = {
   readReleaseIdentity,
+  readRequireBuiltVersionCode,
   validateReleaseRef,
 };

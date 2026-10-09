@@ -52,6 +52,17 @@ const MOBILE_VERSIONS = [
 // Deno runtime sources; the Edge tests also read supabase/migrations.
 const EDGE = ['supabase/functions/', 'supabase/lib/', 'supabase/migrations/', 'deno.lock'];
 
+// The EAS workflow contracts. These suites read .eas/workflows and eas.json as
+// files, so Jest's related-test selection (jest-changed) never picks them when
+// only a workflow changes.
+const EAS_WORKFLOWS = ['.eas/workflows/', 'eas.json', 'scripts/check-android-release-ref.js', 'scripts/check-android-release-gates.js'];
+const EAS_WORKFLOW_CONTRACTS = [
+  'npm run test:file --',
+  'scripts/android-release-smoke-workflow.test.js',
+  'scripts/check-android-release-ref.test.js',
+  'scripts/check-android-release-gates.test.js',
+].join(' ');
+
 const CI_CONTRACTS = [
   'bash .circleci/tests/classify-changes.test.sh',
   'python3 .circleci/tests/shared-build-impact.test.py',
@@ -144,6 +155,14 @@ export default {
     'tools/e2e/run.mjs',
     'scripts/verify-local-config.test.js',
     'scripts/pre-push-hook.test.js',
+    // The suites eas-workflow-contracts runs.
+    'scripts/android-release-smoke-workflow.test.js',
+    'scripts/check-android-release-ref.test.js',
+    'scripts/check-android-release-gates.test.js',
+    // The suites ci-contracts runs.
+    '.circleci/tests/classify-changes.test.sh',
+    '.circleci/tests/shared-build-impact.test.py',
+    '.circleci/tests/fallback-jest.test.sh',
   ],
   checks: [
     // ---- verify:pr, reused by verify:release when the inputs are identical.
@@ -172,6 +191,7 @@ export default {
     // ---- verify:pr, only when the commit changes that surface since origin/master.
     { name: 'site', command: 'npm run docs:build && npm run docs:check', when: SITE },
     { name: 'ci-contracts', command: CI_CONTRACTS, when: ['.circleci/'] },
+    { name: 'eas-workflow-contracts', command: EAS_WORKFLOW_CONTRACTS, when: EAS_WORKFLOWS },
     // A bad version pin fails before merge rather than at publication (offline, 0.1 s).
     { name: 'mobile-versions', command: 'node scripts/mobile-release.js verify --app all', inputs: MOBILE_VERSIONS, when: MOBILE_VERSIONS },
     { name: 'meditation', command: MEDITATION_CHECKS, when: MEDITATION, releaseAlways: true, requires: MEDITATION_DEPS },

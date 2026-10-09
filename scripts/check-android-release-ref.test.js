@@ -1,7 +1,7 @@
 'use strict';
 /* global describe, expect, it, jest */
 
-const { readReleaseIdentity, validateReleaseRef } = require('./check-android-release-ref');
+const { readReleaseIdentity, readRequireBuiltVersionCode, validateReleaseRef } = require('./check-android-release-ref');
 
 describe('Android release ref guard', () => {
   it('reads a consistent release identity', () => {
@@ -15,6 +15,70 @@ describe('Android release ref guard', () => {
       version: '2.0.2',
       versionCode: 33,
       runtimeVersionPolicy: 'fingerprint',
+    });
+  });
+
+  // The tag ref is the release tag of the identity, so only the built-code
+  // requirement is under test.
+  describe('REQUIRE_BUILT_ANDROID_VERSION_CODE', () => {
+    const releaseIdentity = { version: '3.5.0', versionCode: 74 };
+    const tagRef = { refName: 'v3.5.0', refType: 'tag', releaseIdentity };
+
+    it('fails on an empty or missing built code when the flag is on', () => {
+      for (const versionSource of ['remote', 'local']) {
+        expect(() => validateReleaseRef({ ...tagRef, versionSource, requireBuiltVersionCode: true, builtVersionCode: '' }))
+          .toThrow('BUILT_ANDROID_VERSION_CODE is empty');
+        expect(() => validateReleaseRef({ ...tagRef, versionSource, requireBuiltVersionCode: true }))
+          .toThrow('BUILT_ANDROID_VERSION_CODE is empty');
+        // An expected code alone does not stand for a checked build.
+        expect(() => validateReleaseRef({
+          ...tagRef,
+          versionSource,
+          requireBuiltVersionCode: true,
+          expectedRemoteVersionCode: '75',
+        })).toThrow('BUILT_ANDROID_VERSION_CODE is empty');
+      }
+    });
+
+    it('passes a valid built and expected pair when the flag is on', () => {
+      expect(validateReleaseRef({
+        ...tagRef,
+        versionSource: 'remote',
+        requireBuiltVersionCode: true,
+        builtVersionCode: '75',
+        expectedRemoteVersionCode: '75',
+      })).toMatchObject({ builtVersionCode: '75', versionCode: 75 });
+      expect(validateReleaseRef({ ...tagRef, requireBuiltVersionCode: true, builtVersionCode: '74' }))
+        .toMatchObject({ builtVersionCode: '74', versionCode: 74 });
+      // The flag adds a requirement; it relaxes none of the others.
+      expect(() => validateReleaseRef({
+        ...tagRef,
+        versionSource: 'remote',
+        requireBuiltVersionCode: true,
+        builtVersionCode: '75',
+        expectedRemoteVersionCode: '76',
+      })).toThrow('does not match the EAS build');
+      expect(() => validateReleaseRef({ ...tagRef, versionSource: 'remote', requireBuiltVersionCode: true, builtVersionCode: '75' }))
+        .toThrow('EXPECTED_ANDROID_VERSION_CODE');
+    });
+
+    it('keeps the current behaviour when the flag is off', () => {
+      for (const requireBuiltVersionCode of [false, undefined]) {
+        expect(validateReleaseRef({ ...tagRef, versionSource: 'remote', requireBuiltVersionCode }))
+          .toMatchObject({ builtVersionCode: '', versionCode: 74 });
+        expect(validateReleaseRef({ ...tagRef, versionSource: 'remote', requireBuiltVersionCode, expectedRemoteVersionCode: '75' }))
+          .toMatchObject({ builtVersionCode: '', versionCode: 74 });
+      }
+    });
+
+    it("reads the flag from the environment, '1' on and empty or '0' off", () => {
+      expect(readRequireBuiltVersionCode({ REQUIRE_BUILT_ANDROID_VERSION_CODE: '1' })).toBe(true);
+      expect(readRequireBuiltVersionCode({ REQUIRE_BUILT_ANDROID_VERSION_CODE: ' 1 ' })).toBe(true);
+      expect(readRequireBuiltVersionCode({ REQUIRE_BUILT_ANDROID_VERSION_CODE: '0' })).toBe(false);
+      expect(readRequireBuiltVersionCode({ REQUIRE_BUILT_ANDROID_VERSION_CODE: '' })).toBe(false);
+      expect(readRequireBuiltVersionCode({})).toBe(false);
+      // A typo must not silently turn the requirement off.
+      expect(() => readRequireBuiltVersionCode({ REQUIRE_BUILT_ANDROID_VERSION_CODE: 'true' })).toThrow("must be '1' or '0'");
     });
   });
 
