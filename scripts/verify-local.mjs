@@ -60,7 +60,9 @@ import path from 'node:path';
 import { fileURLToPath, pathToFileURL } from 'node:url';
 
 export const RULE = 'regle-commune-livraison v2';
-export const PROOF_FORMAT_VERSION = 2;
+// 3: --external is guarded (specialised, probe fails, evidence names the
+// commit or tree) and never reused; proofs written before that are ignored.
+export const PROOF_FORMAT_VERSION = 3;
 export const ENGINE_VERSION = 1;
 export const CONFIG_FILE = 'verify-local.config.mjs';
 export const PROOFS_DIR = 'verify-proofs';
@@ -278,7 +280,8 @@ function pruneProofs(dir) {
 function findReusable(proofs, fingerprint, sameTree = null) {
   for (const proof of proofs) {
     for (const check of proof.checks ?? []) {
-      if (check.fingerprint !== fingerprint || check.result !== 'passed') continue;
+      // External evidence names one commit: it is never carried to another proof.
+      if (check.fingerprint !== fingerprint || check.result !== 'passed' || check.external) continue;
       const origin = { sha: check.reusedFrom?.sha ?? proof.sha, tree: check.reusedFrom?.tree ?? proof.tree, finishedAt: proof.finishedAt };
       if (sameTree && origin.tree !== sameTree) continue;
       return origin;
@@ -559,13 +562,21 @@ function selectChecks(config, kind, targets) {
   });
 }
 
-/** Evidence names the verified commit, its tree, or a commit with that same tree. */
-export function evidenceNamesTree(git, evidence, sha, tree) {
-  for (const token of evidence.match(/\b[0-9a-f]{40}\b/g) ?? []) {
-    if (token === sha || token === tree) return true;
-    if (git(['rev-parse', '--verify', '--quiet', `${token}^{tree}`], { allowFailure: true }) === tree) return true;
+/**
+ * Why external evidence cannot stand for this commit, or null when it can:
+ * it must name the verified commit, its tree or a commit with that same tree,
+ * name no other object, and use no plain-http link.
+ */
+export function externalEvidenceIssue(git, evidence, sha, tree) {
+  if (/\bhttp:\/\//i.test(evidence)) return 'a plain http:// link is not evidence; use https://';
+  const tokens = evidence.match(/\b[0-9a-f]{40}\b/g) ?? [];
+  if (tokens.length === 0) return `the evidence must name the verified commit ${sha} or its tree ${tree}`;
+  for (const token of tokens) {
+    if (token === sha || token === tree) continue;
+    if (git(['rev-parse', '--verify', '--quiet', `${token}^{tree}`], { allowFailure: true }) === tree) continue;
+    return `the evidence names ${token}, which is neither the verified commit, its tree nor a commit with the same tree`;
   }
-  return false;
+  return null;
 }
 
 export async function verify(kind, argv = [], {
@@ -604,15 +615,21 @@ export async function verify(kind, argv = [], {
   // --external stands in for a specialised check that cannot run here, and
   // only with evidence naming the verified commit or tree.
   const selected = selectChecks(config, kind, targets);
+  // The probe runs in the main checkout, before any isolated copy exists.
+  const probes = new Map();
+  const probe = (check) => {
+    if (!probes.has(check.name)) probes.set(check.name, quiet(check.requires.command, { cwd: root, env }));
+    return probes.get(check.name);
+  };
   for (const [name, evidence] of Object.entries(options.external)) {
     const check = selected.find((candidate) => candidate.name === name);
     if (!check) throw new UsageError(`--external ${name}: no such ${kind} check.`);
     if (!check.specialised || !check.requires) {
       throw new UsageError(`--external ${name}: only a specialised check with a requires probe can come from elsewhere; run it here.`);
     }
-    if (!evidenceNamesTree(git, evidence, sha, tree)) {
-      throw new UsageError(`--external ${name}: the evidence must name the verified commit ${sha} or its tree ${tree} (a commit with the same tree also counts), for example "<run URL> on ${sha}".`);
-    }
+    const issue = externalEvidenceIssue(git, evidence, sha, tree);
+    if (issue) throw new UsageError(`--external ${name}: ${issue}, for example "<https run URL> on ${sha}".`);
+    if (probe(check)) throw new UsageError(`--external ${name}: this machine can run it (\`${check.requires.command}\` succeeds); run it here instead.`);
   }
 
   const existing = readProof(commonDir, tree);
@@ -643,8 +660,7 @@ export async function verify(kind, argv = [], {
         log(`${PREFIX} ${check.name}: reused (same inputs passed on ${reusable.sha.slice(0, 12)}).`);
         continue;
       }
-      // The probe runs in the main checkout, before any isolated copy exists.
-      if (check.requires && !quiet(check.requires.command, { cwd: root, env })) {
+      if (check.requires && !probe(check)) {
         if (options.external[check.name]) {
           results.push({ ...entry, result: 'passed', external: options.external[check.name] });
           log(`${PREFIX} ${check.name}: cannot run here, passed elsewhere (${options.external[check.name]}).`);
@@ -657,9 +673,6 @@ export async function verify(kind, argv = [], {
         continue;
       }
 
-      if (options.external[check.name]) {
-        log(`${PREFIX} ${check.name}: it can run here, so --external is ignored and the check runs.`);
-      }
       if (!worktree) {
         // Checks may keep caches (Turbo, ESLint) in the shared git directory.
         const shared = { VERIFY_LOCAL_COMMON_DIR: commonDir, VERIFY_LOCAL_ROOT: root };
@@ -760,6 +773,18 @@ export async function verify(kind, argv = [], {
 
 // ---------------------------------------------------------------- deploy guard
 
+/** Every check of checkReleaseProof, in order (deploy guards list them). */
+export const RELEASE_PROOF_CHECKS = Object.freeze([
+  'head-is-origin-main',
+  'clean-tree',
+  'proof-present',
+  'proof-kind',
+  'proof-passed',
+  'proof-matches-head',
+  'proof-target',
+  'proof-external',
+]);
+
 /**
  * Release proof a deploy of HEAD needs: HEAD is origin/<main>, the checkout is
  * clean, and a passed release proof exists for this exact commit and tree
@@ -790,6 +815,13 @@ export function checkReleaseProof({ cwd = process.cwd(), env = cleanGitEnv(), ta
     for (const target of targets) {
       if (!(proof.targets ?? []).includes(target)) failures.push({ check: 'proof-target', message: `the proof does not cover target ${target}` });
     }
+    for (const check of proof.checks ?? []) {
+      if (!check.external) continue;
+      const issue = !check.specialised
+        ? 'only a specialised check can come from elsewhere'
+        : externalEvidenceIssue(git, String(check.external), proof.sha, proof.tree);
+      if (issue) failures.push({ check: 'proof-external', message: `${check.name}: ${issue}` });
+    }
   }
   return { head, tree, proof, failures };
 }
@@ -807,8 +839,13 @@ function countChecks(proof) {
   return `${counts.run} run, ${counts.reused} reused, ${counts.skipped} out of scope${counts.external ? `, ${counts.external} external` : ''}`;
 }
 
+function externalEvidence(proof) {
+  return (proof.checks ?? []).filter((check) => check.external).map((check) => `${check.name} (${check.external})`);
+}
+
 function describeProof(proof) {
-  return `${proof.kind} proof ${proof.result} (${countChecks(proof)}) on ${proof.sha.slice(0, 12)} at ${proof.finishedAt}`;
+  const external = externalEvidence(proof);
+  return `${proof.kind} proof ${proof.result} (${countChecks(proof)}) on ${proof.sha.slice(0, 12)} at ${proof.finishedAt}${external.length ? `; external: ${external.join('; ')}` : ''}`;
 }
 
 export async function status(argv = [], { cwd = process.cwd(), env = cleanGitEnv(), log = (line) => console.log(line) } = {}) {
@@ -858,6 +895,8 @@ export async function proofBlock(argv = [], { cwd = process.cwd(), env = cleanGi
     `- Specialised checks (database, browser, mobile, corpus): run: ${specialisedRun.join(', ') || 'none'} / out of scope: ${specialisedOut.join(', ') || 'none'}${specialisedMissing.length ? ` / still needed: ${specialisedMissing.join(', ')}` : ''}`,
     `- Integration: ${integration}`,
   ];
+  const external = externalEvidence(proof);
+  if (external.length) lines.push(`- External evidence: ${external.join('; ')}`);
   // A PR can change its own checks or hook rules: say so, for the owner's review.
   const scope = changedFiles(git, base, sha);
   const delivery = (scope?.files ?? []).filter((file) => matchesAny(file, [...DELIVERY_FILES, ...config.deliveryFiles]));
@@ -922,15 +961,16 @@ export function readBlobs(root, env, entries) {
   let offset = 0;
   for (const entry of entries) {
     const newline = output.indexOf(0x0a, offset);
-    if (newline < 0) break;
-    const header = output.subarray(offset, newline).toString('utf8').split(' ');
-    const size = Number(header[2]);
-    if (header[1] === 'missing' || Number.isNaN(size)) {
-      offset = newline + 1;
-      continue;
-    }
-    blobs.push({ file: entry.file, content: output.subarray(newline + 1, newline + 1 + size).toString('utf8') });
-    offset = newline + 1 + size + 1;
+    if (newline < 0) return null;
+    // "<object> blob <size>", then the content and a newline: anything else
+    // (missing object, wrong object or type, short output) fails closed.
+    const [object, type, sizeText, extra] = output.subarray(offset, newline).toString('utf8').split(' ');
+    const size = Number(sizeText);
+    if (object !== entry.object || type !== 'blob' || extra !== undefined || !Number.isInteger(size) || size < 0) return null;
+    const end = newline + 1 + size;
+    if (end + 1 > output.length || output[end] !== 0x0a) return null;
+    blobs.push({ file: entry.file, content: output.subarray(newline + 1, end).toString('utf8') });
+    offset = end + 1;
   }
   return blobs;
 }

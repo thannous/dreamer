@@ -27,7 +27,7 @@ const ENGINE = fileURLToPath(new URL('./verify-local.mjs', import.meta.url));
 // sha256 of the engine shared by the five repositories. An edit to
 // scripts/verify-local.mjs in one repository alone fails here: change the
 // engine in all five at once, then update this value in all five.
-const ENGINE_SHA256 = '213a454526d78a4c9e64dea9c81a82d25de0754f1b1e99ae2ab8585a795db522';
+const ENGINE_SHA256 = '786d1753c729923b2dfefd5d610d7e345236a7f2f03774d7e6710e50938ba8e2';
 const scratch = mkdtempSync(path.join(os.tmpdir(), 'verify-local-test-'));
 after(() => rmSync(scratch, { recursive: true, force: true }));
 
@@ -227,12 +227,32 @@ describe('verify:pr', () => {
     const squash = repo.git(['commit-tree', tree, '-p', 'origin/main', '-m', 'squash']);
     assert.equal((await verify('pr', ['--rev', squash, '--force', '--external', `db=run on ${sha}`], repo.options)).status, 0);
 
-    // When the check can run here, it runs: --external cannot skip it.
-    repo.clearRuns();
-    const local = await verify('pr', ['--force', '--external', `db=run on ${sha}`], { ...repo.options, env: { ...repo.env, DB_AVAILABLE: '1' } });
-    assert.equal(local.status, 0);
-    assert.ok(repo.runs().includes('db'));
-    assert.equal(local.proof.checks.find((check) => check.name === 'db').external, undefined);
+    // When the check can run here, --external is refused: run it.
+    await assert.rejects(
+      verify('pr', ['--force', '--external', `db=run on ${sha}`], { ...repo.options, env: { ...repo.env, DB_AVAILABLE: '1' } }),
+      /can run it/,
+    );
+
+    // Plain http, or a second commit that is not this tree, is refused.
+    await assert.rejects(verify('pr', ['--force', '--external', `db=http://ci.example/run?sha=${sha}`], repo.options), /plain http/);
+    const other = repo.git(['rev-parse', 'origin/main']);
+    await assert.rejects(verify('pr', ['--force', '--external', `db=ran on ${other} (see ${sha})`], repo.options), new RegExp(`names ${other}`));
+  });
+
+  test('external evidence is never reused by another proof', async () => {
+    const repo = makeRepository();
+    repo.git(['checkout', '--quiet', '-b', 'feature']);
+    const sha = repo.commit('migration', { 'db/1.sql': 'select 1;\n' });
+    assert.equal((await verify('pr', ['--external', `db=https://ci.example/run/1 on ${sha}`], repo.options)).status, 0);
+    // A squash has the same tree, so every other check is reused, but not the evidence.
+    const tree = repo.git(['rev-parse', `${sha}^{tree}`]);
+    const squash = repo.git(['commit-tree', tree, '-p', 'origin/main', '-m', 'squash']);
+    const again = await verify('pr', ['--rev', squash], repo.options);
+    assert.equal(again.status, 2, 'incomplete: the evidence for the first commit is not carried over');
+    // The passed proof of the tree is kept; the incomplete run is recorded beside it.
+    const attempt = JSON.parse(readFileSync(path.join(repo.work, '.git', 'verify-proofs', `${tree}.pr-attempt.json`), 'utf8'));
+    assert.equal(attempt.sha, squash);
+    assert.equal(attempt.checks.find((check) => check.name === 'db').result, 'unavailable');
   });
 
   test('a check that picks its work from the base is reused only against the same merge base', () => {
@@ -446,6 +466,26 @@ describe('verify:release and the deploy guard', () => {
     assert.ok(checkReleaseProof({ cwd: repo.work, env: repo.env, fetch: false }).failures.some((failure) => failure.check === 'clean-tree'));
   });
 
+  test('the deploy guard refuses a forged external entry and a proof of an older format', async () => {
+    const repo = makeRepository();
+    const head = repo.git(['rev-parse', 'HEAD']);
+    const tree = repo.git(['rev-parse', 'HEAD^{tree}']);
+    const commonDir = path.join(repo.work, '.git');
+    const forged = (version, external) => ({
+      version, rule: 'regle-commune-livraison v2', kind: 'release', sha: head, tree, clean: true, result: 'passed',
+      startedAt: 'x', finishedAt: 'x', command: 'x', node: process.version, packageManager: null, targets: [],
+      checks: [{ name: 'test', result: 'passed', external, specialised: false }],
+    });
+    mkdirSync(path.join(commonDir, 'verify-proofs'), { recursive: true });
+    const file = path.join(commonDir, 'verify-proofs', `${tree}.json`);
+
+    writeFileSync(file, JSON.stringify(forged(2, 'x')));
+    assert.deepEqual(checkReleaseProof({ cwd: repo.work, env: repo.env, fetch: false }).failures.map((failure) => failure.check), ['proof-present']);
+
+    writeFileSync(file, JSON.stringify(forged(PROOF_FORMAT_VERSION, 'x')));
+    assert.deepEqual(checkReleaseProof({ cwd: repo.work, env: repo.env, fetch: false }).failures.map((failure) => failure.check), ['proof-external']);
+  });
+
   test('proof-block prints the Local proof section the merge gate reads', async () => {
     const repo = makeRepository();
     repo.git(['checkout', '--quiet', '-b', 'feature']);
@@ -596,6 +636,33 @@ describe('pre-push hook', () => {
   test('the secret scan fails closed when git cannot read the blobs', () => {
     assert.equal(readBlobs(path.join(scratch, 'no-such-repository'), cleanGitEnv(), [{ file: 'a', object: 'b'.repeat(40) }]), null);
   });
+
+  // A git whose `cat-file --batch` fails or answers short; everything else is real git.
+  function fakeGit(repo, mode) {
+    const bin = path.join(repo.base, `fake-git-${mode}`);
+    mkdirSync(bin, { recursive: true });
+    const realGit = spawnSync('sh', ['-c', 'command -v git'], { encoding: 'utf8' }).stdout.trim();
+    const batch = mode === 'fail'
+      ? 'exit 1'
+      : `"${realGit}" "$@" | head -c 60`;
+    writeFileSync(path.join(bin, 'git'), `#!/bin/sh\nif [ "$1" = cat-file ] && [ "$2" = --batch ]; then\n  ${batch}\n  exit $?\nfi\nexec "${realGit}" "$@"\n`, { mode: 0o755 });
+    return { ...repo.env, PATH: `${bin}:${process.env.PATH}` };
+  }
+
+  for (const mode of ['fail', 'short']) {
+    test(`the hook blocks a push when cat-file ${mode === 'fail' ? 'fails' : 'answers short'}`, async () => {
+      const repo = makeRepository();
+      repo.git(['checkout', '--quiet', '-b', 'feature']);
+      const fake = ['AKIA', 'ABCDEFGHIJKLMNOP'].join('');
+      const sha = repo.commit('key', { 'src/config.js': `${'// padding\n'.repeat(20)}const key = "${fake}";\n` });
+      const output = [];
+      const result = await prePush('origin', `refs/heads/feature ${sha} refs/heads/feature ${ZERO}\n`, {
+        cwd: repo.work, env: fakeGit(repo, mode), log: (line) => output.push(line), error: (line) => output.push(line),
+      });
+      assert.equal(result.status, 1, output.join('\n'));
+      assert.match(output.join('\n'), /secret scan did not run/);
+    });
+  }
 
   test('a real git push runs the hook in under 10 seconds', () => {
     const repo = makeRepository();
