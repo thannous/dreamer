@@ -12113,58 +12113,152 @@
       "en": {
         "slug": "kitchen",
         "name": "Kitchen",
-        "shortDescription": "A kitchen may make daily care, cooperation, creativity or family routines tangible. What was being prepared and the people sharing the space give the scene its personal character.",
-        "modifiedAt": "2026-07-24",
+        "shortDescription": "Dreaming of a kitchen often puts you in the room where daily care happens: cooking, feeding, tidying, sharing. What was being prepared, who was there and the state of the room matter more than any fixed meaning.",
+        "modifiedAt": "2026-10-08",
         "askYourself": [
-          "What did kitchen change in the scene?",
-          "Which feeling stayed with me after waking?"
+          "Was I cooking, eating, cleaning up or looking for something?",
+          "Who else was in the kitchen, and was the room calm or hectic?",
+          "Who am I feeding or looking after right now, and who looks after me?"
         ],
-        "faq": []
+        "faq": [
+          {
+            "question": "What does it mean to dream of a kitchen?",
+            "answer": "A kitchen is often associated with daily care, family routines and what you give to others. Its meaning depends on what you were doing there, who was with you and how the room felt: warm, chaotic, empty or unfamiliar."
+          },
+          {
+            "question": "What does it mean to dream of your childhood kitchen?",
+            "answer": "An old family kitchen can bring back habits, roles and atmospheres from home. It often appears when a current situation echoes them, such as caring for a parent or setting up your own home. Notice who was at the table."
+          },
+          {
+            "question": "What does a dirty or messy kitchen mean in a dream?",
+            "answer": "Piled-up dishes or a cluttered counter can go with a backlog of small tasks, tiredness or care that only flows one way. It says nothing about your future: ask yourself which everyday load feels heavy right now."
+          },
+          {
+            "question": "What does it mean to dream of cooking?",
+            "answer": "Cooking in a dream can stage preparation, creativity or the wish to feed others. A dish that comes together easily and one that keeps going wrong lead to different questions. Who was the meal for?"
+          }
+        ],
+        "documentMetaDescription": "Dreaming of a kitchen, of cooking or of your childhood kitchen: what the scene may say about everyday care, with questions and a journal example."
       },
       "fr": {
         "slug": "cuisine",
         "name": "Cuisine",
-        "shortDescription": "Une cuisine peut rendre tangibles le soin quotidien, la coopération, la créativité ou les habitudes familiales. Ce qui était préparé et les personnes qui partageaient l’espace donnent à la scène sa couleur personnelle.",
-        "modifiedAt": "2026-07-24",
+        "shortDescription": "Rêver d'une cuisine vous place souvent là où se joue le soin du quotidien : cuisiner, nourrir, ranger, partager. Ce qui se préparait, qui était là et l'état de la pièce comptent plus qu'un sens figé.",
+        "modifiedAt": "2026-10-08",
         "askYourself": [
-          "Qu’est-ce que cuisine a changé dans la scène ?",
-          "Quelle émotion est restée après le réveil ?"
+          "Est-ce que je cuisinais, mangeais, rangeais ou cherchais quelque chose ?",
+          "Qui d'autre était dans la cuisine, et l'ambiance était-elle calme ou agitée ?",
+          "De qui est-ce que je m'occupe en ce moment, et qui s'occupe de moi ?"
         ],
-        "faq": []
+        "faq": [
+          {
+            "question": "Que signifie rêver d'une cuisine ?",
+            "answer": "La cuisine est souvent associée au soin quotidien, aux habitudes familiales et à ce que vous donnez aux autres. Son sens dépend de ce que vous y faisiez, de qui était là et de l'ambiance : chaleureuse, chaotique, vide ou étrangère."
+          },
+          {
+            "question": "Que signifie rêver de la cuisine de son enfance ?",
+            "answer": "Une ancienne cuisine familiale peut ramener des habitudes, des rôles et une atmosphère de la maison. Elle revient souvent quand une situation actuelle leur fait écho : s'occuper d'un parent, s'installer chez soi. Regardez qui était à table."
+          },
+          {
+            "question": "Que signifie rêver d'une cuisine sale ou en désordre ?",
+            "answer": "La vaisselle qui s'empile ou un plan de travail encombré peuvent accompagner une accumulation de petites tâches, de la fatigue ou un soin qui va dans un seul sens. Ce n'est pas un présage : demandez-vous quelle charge du quotidien pèse en ce moment."
+          },
+          {
+            "question": "Que signifie rêver de faire la cuisine ?",
+            "answer": "Cuisiner en rêve peut mettre en scène une préparation, de la créativité ou l'envie de nourrir les autres. Un plat qui se fait tout seul et un plat qui rate sans cesse ne posent pas la même question. Pour qui était ce repas ?"
+          }
+        ],
+        "documentMetaDescription": "Rêver d'une cuisine, de cuisiner ou de la cuisine de son enfance : ce que la scène peut dire du soin quotidien, avec questions et exemple de journal."
       },
       "es": {
         "slug": "cocina",
         "name": "Cocina",
-        "shortDescription": "Una cocina puede hacer visibles el cuidado cotidiano, la colaboración, la creatividad o las rutinas familiares. Lo que preparabas y con quién compartías el espacio concretan la escena.",
-        "modifiedAt": "2026-07-24",
+        "shortDescription": "Soñar con una cocina suele llevarte al lugar donde se juega el cuidado de cada día: cocinar, alimentar, recoger, compartir. Lo que se preparaba, quién estaba y el estado de la cocina importan más que un significado fijo.",
+        "modifiedAt": "2026-10-08",
         "askYourself": [
-          "¿Qué cambió cocina dentro de la escena?",
-          "¿Qué emoción siguió conmigo al despertar?"
+          "¿Estaba cocinando, comiendo, recogiendo o buscando algo?",
+          "¿Quién más había en la cocina, y el ambiente era tranquilo o agitado?",
+          "¿De quién me estoy ocupando ahora mismo, y quién se ocupa de mí?"
         ],
-        "faq": []
+        "faq": [
+          {
+            "question": "¿Qué significa soñar con una cocina?",
+            "answer": "La cocina se asocia a menudo con el cuidado cotidiano, las costumbres familiares y lo que das a los demás. Su sentido depende de lo que hacías allí, de quién te acompañaba y del ambiente: cálido, caótico, vacío o extraño."
+          },
+          {
+            "question": "¿Qué significa soñar con la cocina de tu infancia?",
+            "answer": "Una antigua cocina familiar puede traer de vuelta costumbres, papeles y ambientes de casa. Suele aparecer cuando algo actual les hace eco, como cuidar de tu padre o tu madre o montar tu propia casa. Fíjate en quién estaba a la mesa."
+          },
+          {
+            "question": "¿Qué significa soñar con una cocina sucia o desordenada?",
+            "answer": "Los platos amontonados o una encimera llena de cosas pueden acompañar una acumulación de pequeñas tareas, cansancio o un cuidado que va en una sola dirección. No es un presagio: pregúntate qué carga del día a día te pesa ahora."
+          },
+          {
+            "question": "¿Qué significa soñar que cocinas?",
+            "answer": "Cocinar en sueños puede escenificar una preparación, creatividad o las ganas de alimentar a otros. Un plato que sale solo y uno que se estropea una y otra vez plantean preguntas distintas. ¿Para quién era la comida?"
+          }
+        ],
+        "documentMetaDescription": "Soñar con una cocina, con cocinar o con la cocina de tu infancia: qué puede decir la escena sobre el cuidado diario, con preguntas y un ejemplo de diario."
       },
       "de": {
         "slug": "kuche",
         "name": "Küche",
-        "shortDescription": "Spielt der Traum in einer Küche, können Versorgung, gemeinsames Arbeiten, Kreativität oder familiäre Routinen greifbar werden. Was zubereitet wurde und mit wem du den Raum geteilt hast, gibt der Szene ihren konkreten Sinn.",
+        "shortDescription": "Von einer Küche zu träumen führt oft an den Ort, an dem sich die tägliche Fürsorge abspielt: kochen, versorgen, aufräumen, teilen. Was zubereitet wurde, wer da war und wie die Küche aussah, sagt mehr als eine feste Bedeutung.",
         "askYourself": [
-          "Hast du gekocht, gegessen, aufgeräumt oder nach etwas gesucht?",
-          "Welche Menschen waren in der Küche, und wie habt ihr zusammengewirkt?",
-          "Welche alltägliche Aufgabe oder Form der Fürsorge beschäftigt dich gerade?"
+          "Habe ich gekocht, gegessen, aufgeräumt oder nach etwas gesucht?",
+          "Wer war noch in der Küche, und war die Stimmung ruhig oder hektisch?",
+          "Um wen kümmere ich mich gerade, und wer kümmert sich um mich?"
         ],
-        "faq": [],
-        "modifiedAt": "2026-07-24"
+        "faq": [
+          {
+            "question": "Was bedeutet es, von einer Küche zu träumen?",
+            "answer": "Die Küche wird oft mit täglicher Fürsorge, familiären Gewohnheiten und dem verbunden, was Sie anderen geben. Was sie bedeutet, hängt davon ab, was Sie dort taten, wer bei Ihnen war und wie sich der Raum anfühlte: warm, chaotisch, leer oder fremd."
+          },
+          {
+            "question": "Was bedeutet es, von der Küche aus der Kindheit zu träumen?",
+            "answer": "Eine alte Familienküche kann Gewohnheiten, Rollen und die Stimmung von früher zurückbringen. Sie taucht oft auf, wenn eine aktuelle Situation daran anknüpft, etwa die Sorge um ein Elternteil oder die erste eigene Wohnung. Achten Sie darauf, wer am Tisch saß."
+          },
+          {
+            "question": "Was bedeutet eine schmutzige oder unordentliche Küche im Traum?",
+            "answer": "Gestapeltes Geschirr oder eine volle Arbeitsfläche können viele liegen gebliebene kleine Aufgaben, Müdigkeit oder eine Fürsorge begleiten, die nur in eine Richtung geht. Ein Vorzeichen ist das nicht: Fragen Sie sich, welche Alltagslast gerade schwer wiegt."
+          },
+          {
+            "question": "Was bedeutet es, im Traum zu kochen?",
+            "answer": "Kochen im Traum kann Vorbereitung, Kreativität oder den Wunsch in Szene setzen, andere zu versorgen. Ein Gericht, das wie von selbst gelingt, und eines, das immer wieder misslingt, führen zu verschiedenen Fragen. Für wen war das Essen?"
+          }
+        ],
+        "modifiedAt": "2026-10-08",
+        "documentMetaDescription": "Küche im Traum: kochen, eine unordentliche Küche oder die Küche der Kindheit. Was die Szene über Fürsorge im Alltag sagen kann, mit Fragen und Beispiel."
       },
       "it": {
         "slug": "cucina",
         "name": "Cucina",
-        "shortDescription": "Una cucina può rendere tangibili la cura quotidiana, la collaborazione, la creatività o le abitudini familiari. Ciò che preparavi e le persone con cui condividevi lo spazio precisano la scena.",
-        "modifiedAt": "2026-07-24",
+        "shortDescription": "Sognare una cucina ti porta spesso nel luogo in cui si gioca la cura di ogni giorno: cucinare, nutrire, riordinare, condividere. Ciò che si preparava, chi c’era e lo stato della stanza contano più di un significato fisso.",
+        "modifiedAt": "2026-10-08",
         "askYourself": [
-          "Che cosa ha cambiato cucina nella scena?",
-          "Quale emozione è rimasta dopo il risveglio?"
+          "Stavo cucinando, mangiando, riordinando o cercando qualcosa?",
+          "Chi altro c’era in cucina, e l’atmosfera era tranquilla o agitata?",
+          "Di chi mi sto occupando in questo periodo, e chi si occupa di me?"
         ],
-        "faq": []
+        "faq": [
+          {
+            "question": "Che cosa significa sognare una cucina?",
+            "answer": "La cucina viene spesso associata alla cura quotidiana, alle abitudini di famiglia e a ciò che dai agli altri. Il significato dipende da ciò che facevi, da chi c’era con te e dall’atmosfera: calda, caotica, vuota o estranea."
+          },
+          {
+            "question": "Che cosa significa sognare la cucina della propria infanzia?",
+            "answer": "Una vecchia cucina di famiglia può riportare abitudini, ruoli e atmosfere di casa. Torna spesso quando una situazione attuale vi fa eco, come occuparsi di un genitore o mettere su casa. Guarda chi sedeva a tavola."
+          },
+          {
+            "question": "Che cosa significa sognare una cucina sporca o in disordine?",
+            "answer": "Piatti accumulati o un piano di lavoro ingombro possono accompagnare tante piccole incombenze arretrate, stanchezza o una cura che va in una sola direzione. Non è un presagio: chiediti quale carico quotidiano ti pesa in questo periodo."
+          },
+          {
+            "question": "Che cosa significa sognare di cucinare?",
+            "answer": "Cucinare in sogno può mettere in scena una preparazione, la creatività o il desiderio di nutrire gli altri. Un piatto che riesce da solo e uno che continua a non venire aprono domande diverse. Per chi era quel pasto?"
+          }
+        ],
+        "documentMetaDescription": "Sognare una cucina, di cucinare o la cucina dell’infanzia: che cosa può dire la scena della cura quotidiana, con domande ed esempio di diario."
       },
       "pt": {
         "slug": "cozinha",
@@ -12199,58 +12293,152 @@
       "en": {
         "slug": "workplace",
         "name": "Workplace",
-        "shortDescription": "A workplace dream may draw on current tasks, performance pressure, recognition or boundaries between work and private life. Compare what matched reality with what appeared strangely changed.",
-        "modifiedAt": "2026-07-24",
+        "shortDescription": "Dreaming of your workplace often brings the day's tasks into the night: a deadline, a meeting, a colleague, the feeling of being judged. Compare what matched the real place with what had changed: that gap is often the clue.",
+        "modifiedAt": "2026-10-08",
         "askYourself": [
-          "What did workplace change in the scene?",
-          "Which feeling stayed with me after waking?"
+          "Was it my real workplace, an old job, or a place I did not know?",
+          "What was I supposed to do there, and could I get it done?",
+          "Which part of my work is taking up the most space in my head right now?"
         ],
-        "faq": []
+        "faq": [
+          {
+            "question": "What does it mean to dream about your workplace?",
+            "answer": "Workplace dreams often pick up current tasks, pressure to perform, the wish for recognition or a blurred line between work and private life. Note what matched reality and what had changed: the strange details usually point to the real theme."
+          },
+          {
+            "question": "Why do I keep dreaming about work?",
+            "answer": "Dreams often draw on what filled your waking hours, so a heavy work period can follow you into sleep. Recurring work dreams can be a cue to look at your workload or your boundaries; they do not mean something is wrong with your job."
+          },
+          {
+            "question": "What does it mean to dream about an old job?",
+            "answer": "Going back to a former workplace can bring back a role, a team or a way of working you left behind. It often appears when something current echoes it, such as a new manager or a similar deadline. What felt familiar?"
+          },
+          {
+            "question": "What does it mean to dream of being late or unprepared at work?",
+            "answer": "Arriving late, missing a meeting or forgetting a presentation can match a fear of falling short or a schedule that feels too full. It does not predict a real mistake. Ask yourself who you feel judged by right now."
+          }
+        ],
+        "documentMetaDescription": "Dreaming about your workplace, an old job or being late for work: what the scene may say about pressure and boundaries, with questions and an example."
       },
       "fr": {
         "slug": "lieu-de-travail",
         "name": "Lieu de travail",
-        "shortDescription": "Le lieu de travail en rêve peut reprendre une tâche actuelle, la pression de réussir, le besoin de reconnaissance ou la frontière avec la vie privée. Comparez ce qui semblait réel à ce qui avait été transformé.",
-        "modifiedAt": "2026-07-24",
+        "shortDescription": "Rêver de son lieu de travail ramène souvent les tâches du jour dans la nuit : une échéance, une réunion, un collègue, l'impression d'être jugé. Comparez ce qui ressemblait au vrai lieu et ce qui avait changé : l'écart est souvent l'indice.",
+        "modifiedAt": "2026-10-08",
         "askYourself": [
-          "Qu’est-ce que lieu de travail a changé dans la scène ?",
-          "Quelle émotion est restée après le réveil ?"
+          "Était-ce mon vrai lieu de travail, un ancien poste, ou un endroit inconnu ?",
+          "Qu'est-ce que je devais faire là-bas, et ai-je pu le terminer ?",
+          "Quelle partie de mon travail occupe le plus de place dans ma tête en ce moment ?"
         ],
-        "faq": []
+        "faq": [
+          {
+            "question": "Que signifie rêver de son lieu de travail ?",
+            "answer": "Le rêve de travail reprend souvent des tâches en cours, la pression de réussir, le besoin de reconnaissance ou une frontière floue avec la vie privée. Notez ce qui ressemblait au réel et ce qui avait changé : les détails étranges orientent vers le vrai thème."
+          },
+          {
+            "question": "Pourquoi est-ce que je rêve souvent du travail ?",
+            "answer": "Les rêves puisent volontiers dans ce qui a rempli vos journées : une période chargée peut donc vous suivre la nuit. Des rêves de travail répétés invitent à regarder votre charge ou vos limites ; ils ne disent pas que votre poste va mal."
+          },
+          {
+            "question": "Que signifie rêver de son ancien travail ?",
+            "answer": "Retourner dans un ancien lieu de travail peut ramener un rôle, une équipe ou une façon de travailler laissés derrière vous. Ce rêve revient souvent quand une situation actuelle y fait écho : un nouveau responsable, une échéance semblable. Qu'est-ce qui vous semblait familier ?"
+          },
+          {
+            "question": "Que signifie rêver d'être en retard ou pas prêt au travail ?",
+            "answer": "Arriver en retard, rater une réunion ou oublier une présentation peut rejoindre la peur de ne pas être à la hauteur ou un agenda trop plein. Ce n'est pas l'annonce d'une erreur réelle. Demandez-vous par qui vous vous sentez jugé en ce moment."
+          }
+        ],
+        "documentMetaDescription": "Rêver de son lieu de travail, d'un ancien emploi ou d'être en retard au bureau : ce que la scène peut dire de la pression et des limites, avec questions."
       },
       "es": {
         "slug": "lugar-de-trabajo",
         "name": "Lugar de trabajo",
-        "shortDescription": "El lugar de trabajo puede recoger tareas actuales, presión por rendir, reconocimiento o límites entre empleo y vida privada. Compara lo real con aquello que aparecía extrañamente cambiado.",
-        "modifiedAt": "2026-07-24",
+        "shortDescription": "Soñar con tu lugar de trabajo suele traer a la noche las tareas del día: un plazo, una reunión, la sensación de que te juzgan. Compara lo que coincidía con el sitio real y lo que había cambiado: esa diferencia suele ser la pista.",
+        "modifiedAt": "2026-10-08",
         "askYourself": [
-          "¿Qué cambió lugar de trabajo dentro de la escena?",
-          "¿Qué emoción siguió conmigo al despertar?"
+          "¿Era mi lugar de trabajo real, un empleo anterior o un sitio desconocido?",
+          "¿Qué tenía que hacer allí, y pude terminarlo?",
+          "¿Qué parte de mi trabajo me ocupa más la cabeza ahora mismo?"
         ],
-        "faq": []
+        "faq": [
+          {
+            "question": "¿Qué significa soñar con tu lugar de trabajo?",
+            "answer": "Estos sueños suelen recoger tareas en curso, presión por rendir, ganas de reconocimiento o un límite difuso entre trabajo y vida privada. Anota qué coincidía con la realidad y qué había cambiado: los detalles extraños apuntan al tema de fondo."
+          },
+          {
+            "question": "¿Por qué sueño tanto con el trabajo?",
+            "answer": "Los sueños se alimentan a menudo de lo que llenó tus días, así que una época cargada puede seguirte por la noche. Si se repiten, pueden invitarte a mirar tu carga o tus límites; no significan que tu empleo vaya mal."
+          },
+          {
+            "question": "¿Qué significa soñar con un trabajo anterior?",
+            "answer": "Volver a un antiguo lugar de trabajo puede traer de vuelta un papel, un equipo o una forma de trabajar que dejaste atrás. Suele aparecer cuando algo actual le hace eco, como un nuevo jefe o un plazo parecido. ¿Qué te resultaba familiar?"
+          },
+          {
+            "question": "¿Qué significa soñar que llegas tarde o sin preparar al trabajo?",
+            "answer": "Llegar tarde, perderte una reunión u olvidar una presentación puede enlazar con el miedo a no estar a la altura o con una agenda demasiado llena. No anuncia ningún error real. Pregúntate quién sientes que te juzga ahora."
+          }
+        ],
+        "documentMetaDescription": "Soñar con tu lugar de trabajo, un empleo anterior o llegar tarde: qué puede decir la escena sobre la presión y los límites, con preguntas y un ejemplo."
       },
       "de": {
         "slug": "arbeitsplatz",
         "name": "Arbeitsplatz",
-        "shortDescription": "Der Arbeitsplatz im Traum kann aktuelle Aufgaben, Leistungsdruck, Anerkennung oder Grenzen zwischen Beruf und Privatleben aufgreifen. Achte darauf, was dem realen Ort entsprach und was im Traum auffällig verändert war.",
+        "shortDescription": "Vom Arbeitsplatz zu träumen holt oft die Aufgaben des Tages in die Nacht: eine Frist, ein Meeting, das Gefühl, bewertet zu werden. Vergleichen Sie, was dem echten Ort entsprach und was verändert war: Der Unterschied ist oft der Hinweis.",
         "askYourself": [
-          "Welche Aufgabe solltest du erledigen, und konntest du sie abschließen?",
-          "Wer beobachtete, unterstützte oder störte dich dabei?",
-          "Welcher Teil deiner Arbeit beansprucht momentan besonders viel Aufmerksamkeit?"
+          "War es mein echter Arbeitsplatz, eine frühere Stelle oder ein fremder Ort?",
+          "Was sollte ich dort erledigen, und konnte ich es abschließen?",
+          "Welcher Teil meiner Arbeit nimmt gerade den meisten Platz in meinem Kopf ein?"
         ],
-        "faq": [],
-        "modifiedAt": "2026-07-24"
+        "faq": [
+          {
+            "question": "Was bedeutet es, vom Arbeitsplatz zu träumen?",
+            "answer": "Solche Träume greifen oft laufende Aufgaben, Leistungsdruck, den Wunsch nach Anerkennung oder eine unscharfe Grenze zum Privatleben auf. Notieren Sie, was der Wirklichkeit entsprach und was verändert war: Die seltsamen Details führen meist zum eigentlichen Thema."
+          },
+          {
+            "question": "Warum träume ich so oft von der Arbeit?",
+            "answer": "Träume greifen gern auf das zurück, was Ihre Tage gefüllt hat, deshalb kann eine volle Arbeitsphase Sie bis in den Schlaf begleiten. Wiederkehrende Arbeitsträume laden ein, auf Belastung und Grenzen zu achten; sie bedeuten nicht, dass mit Ihrer Stelle etwas nicht stimmt."
+          },
+          {
+            "question": "Was bedeutet es, von einer früheren Arbeitsstelle zu träumen?",
+            "answer": "Die Rückkehr an einen alten Arbeitsplatz kann eine Rolle, ein Team oder eine Arbeitsweise zurückholen, die Sie hinter sich gelassen haben. Der Traum taucht oft auf, wenn etwas Aktuelles daran anknüpft, etwa eine neue Vorgesetzte. Was kam Ihnen vertraut vor?"
+          },
+          {
+            "question": "Was bedeutet es, im Traum zu spät oder unvorbereitet zur Arbeit zu kommen?",
+            "answer": "Zu spät zu kommen, ein Meeting zu verpassen oder eine Präsentation zu vergessen, kann zur Angst passen, nicht zu genügen, oder zu einem übervollen Kalender. Einen echten Fehler sagt das nicht voraus. Fragen Sie sich, von wem Sie sich gerade bewertet fühlen."
+          }
+        ],
+        "modifiedAt": "2026-10-08",
+        "documentMetaDescription": "Arbeitsplatz im Traum: der eigene Job, eine frühere Stelle oder zu spät kommen. Was die Szene über Druck und Grenzen sagen kann, mit Fragen und Beispiel."
       },
       "it": {
         "slug": "luogo-di-lavoro",
         "name": "Luogo di lavoro",
-        "shortDescription": "Il luogo di lavoro in sogno può riprendere compiti attuali, pressione sui risultati, riconoscimento o confini con la vita privata. Confronta ciò che corrispondeva alla realtà con quanto appariva trasformato.",
-        "modifiedAt": "2026-07-24",
+        "shortDescription": "Sognare il luogo di lavoro riporta spesso nella notte i compiti della giornata: una scadenza, una riunione, la sensazione di essere giudicato. Confronta ciò che corrispondeva al luogo reale con ciò che era cambiato: lo scarto è spesso l’indizio.",
+        "modifiedAt": "2026-10-08",
         "askYourself": [
-          "Che cosa ha cambiato luogo di lavoro nella scena?",
-          "Quale emozione è rimasta dopo il risveglio?"
+          "Era il mio vero luogo di lavoro, un vecchio impiego o un posto sconosciuto?",
+          "Che cosa dovevo fare lì, e sono riuscito a finirlo?",
+          "Quale parte del mio lavoro mi occupa di più la testa in questo periodo?"
         ],
-        "faq": []
+        "faq": [
+          {
+            "question": "Che cosa significa sognare il proprio luogo di lavoro?",
+            "answer": "Questi sogni riprendono spesso compiti in corso, la pressione sui risultati, il bisogno di riconoscimento o un confine sfumato con la vita privata. Annota che cosa corrispondeva alla realtà e che cosa era cambiato: i dettagli strani orientano verso il tema vero."
+          },
+          {
+            "question": "Perché sogno così spesso il lavoro?",
+            "answer": "I sogni attingono volentieri a ciò che ha riempito le tue giornate, quindi un periodo intenso può seguirti anche di notte. Sogni di lavoro ricorrenti invitano a guardare il carico o i confini; non vogliono dire che il tuo impiego vada male."
+          },
+          {
+            "question": "Che cosa significa sognare il vecchio lavoro?",
+            "answer": "Tornare in un vecchio luogo di lavoro può riportare un ruolo, una squadra o un modo di lavorare che hai lasciato. Il sogno torna spesso quando una situazione attuale vi fa eco, come un nuovo responsabile o una scadenza simile. Che cosa ti sembrava familiare?"
+          },
+          {
+            "question": "Che cosa significa sognare di arrivare tardi o impreparato al lavoro?",
+            "answer": "Arrivare tardi, perdere una riunione o dimenticare una presentazione può avvicinarsi alla paura di non essere all’altezza o a un’agenda troppo piena. Non annuncia nessun errore reale. Chiediti da chi ti senti giudicato in questo periodo."
+          }
+        ],
+        "documentMetaDescription": "Sognare il luogo di lavoro, il vecchio impiego o di arrivare tardi in ufficio: che cosa può dire la scena di pressione e confini, con domande ed esempio."
       },
       "pt": {
         "slug": "local-de-trabalho",
@@ -12283,58 +12471,152 @@
       "en": {
         "slug": "road",
         "name": "Road",
-        "shortDescription": "A road may make your current direction, a decision or obstacles to progress visible. Its route, condition and your way of traveling connect the setting to your situation.",
-        "modifiedAt": "2026-07-24",
+        "shortDescription": "Dreaming of a road often puts a question of direction in front of you: where you are heading, how fast, and what stands in the way. Whether it was straight, winding, blocked or endless, and how you traveled, matters more than a fixed meaning.",
+        "modifiedAt": "2026-10-08",
         "askYourself": [
-          "What did road change in the scene?",
-          "Which feeling stayed with me after waking?"
+          "Was the road straight, winding, blocked, or without a visible end?",
+          "Was I walking, driving, being driven, or standing at the side?",
+          "Which decision in my life right now feels like that road?"
         ],
-        "faq": []
+        "faq": [
+          {
+            "question": "What does it mean to dream of a road?",
+            "answer": "A road is often associated with direction: where you are going, at what pace, and what slows you down. Its meaning depends on its condition, on how you were traveling and on how you felt: confident, lost, rushed or calm."
+          },
+          {
+            "question": "What does a long or endless road mean in a dream?",
+            "answer": "A road that never seems to end can go with a long effort, a goal that keeps moving away, or tiredness. Notice whether the length felt peaceful or discouraging: the same image can match patience or exhaustion."
+          },
+          {
+            "question": "What does a blocked or broken road mean in a dream?",
+            "answer": "Roadworks, a fallen tree or a road that suddenly stops can stage an obstacle or a plan put on hold. It does not predict failure. Ask yourself what feels blocked right now, and whether there was a way around in the dream."
+          },
+          {
+            "question": "What does it mean to dream of a fork in the road?",
+            "answer": "Standing where the road splits often goes with a choice you are weighing. Note which way you leaned, what each road looked like and whether someone was waiting for you to decide."
+          }
+        ],
+        "documentMetaDescription": "Dreaming of a road, an endless road, a fork or a blocked road: what the scene may say about direction and choices, with questions and a journal example."
       },
       "fr": {
         "slug": "route",
         "name": "Route",
-        "shortDescription": "Une route peut rendre visibles votre direction actuelle, une décision ou des obstacles dans votre progression. Son tracé, son état et votre moyen de déplacement relient le décor à votre situation.",
-        "modifiedAt": "2026-07-24",
+        "shortDescription": "Rêver d'une route pose souvent une question de direction : où vous allez, à quel rythme, et ce qui vous barre le passage. Droite, sinueuse, barrée ou sans fin, la route et votre façon de la parcourir comptent plus qu'un sens figé.",
+        "modifiedAt": "2026-10-08",
         "askYourself": [
-          "Qu’est-ce que route a changé dans la scène ?",
-          "Quelle émotion est restée après le réveil ?"
+          "La route était-elle droite, sinueuse, barrée ou sans fin visible ?",
+          "Est-ce que je marchais, conduisais, étais conduit ou restais au bord ?",
+          "Quelle décision de ma vie actuelle ressemble à cette route ?"
         ],
-        "faq": []
+        "faq": [
+          {
+            "question": "Que signifie rêver d'une route ?",
+            "answer": "La route est souvent associée à la direction : où vous allez, à quel rythme, et ce qui vous ralentit. Son sens dépend de son état, de votre façon de la parcourir et de ce que vous ressentiez : confiance, égarement, hâte ou calme."
+          },
+          {
+            "question": "Que signifie rêver d'une route sans fin ?",
+            "answer": "Une route qui ne finit jamais peut accompagner un long effort, un objectif qui recule sans cesse ou de la fatigue. Regardez si la longueur semblait paisible ou décourageante : la même image peut rejoindre la patience ou l'épuisement."
+          },
+          {
+            "question": "Que signifie rêver d'une route barrée ou en mauvais état ?",
+            "answer": "Des travaux, un arbre tombé ou une route qui s'arrête net peuvent mettre en scène un obstacle ou un projet en pause. Ce n'est pas l'annonce d'un échec. Demandez-vous ce qui semble bloqué en ce moment, et s'il existait un détour dans le rêve."
+          },
+          {
+            "question": "Que signifie rêver d'un carrefour ou d'une route qui se sépare ?",
+            "answer": "Se tenir là où la route se divise accompagne souvent un choix que vous êtes en train de peser. Notez de quel côté vous penchiez, à quoi ressemblait chaque route, et si quelqu'un attendait votre décision."
+          }
+        ],
+        "documentMetaDescription": "Rêver d'une route sans fin, barrée ou d'un carrefour : ce que la scène peut dire de votre direction et de vos choix, avec questions et exemple de journal."
       },
       "es": {
         "slug": "carretera",
         "name": "Carretera",
-        "shortDescription": "Una carretera puede hacer visibles tu rumbo actual, una decisión o los obstáculos para avanzar. Su trazado, su estado y la forma en que te desplazabas conectan el lugar con tu situación.",
-        "modifiedAt": "2026-07-24",
+        "shortDescription": "Soñar con una carretera suele plantearte una pregunta de rumbo: hacia dónde vas, a qué ritmo y qué te corta el paso. Recta, con curvas, cortada o sin final, la carretera y tu forma de recorrerla cuentan más que un significado fijo.",
+        "modifiedAt": "2026-10-08",
         "askYourself": [
-          "¿Qué cambió carretera dentro de la escena?",
-          "¿Qué emoción siguió conmigo al despertar?"
+          "¿La carretera era recta, con curvas, estaba cortada o no tenía final a la vista?",
+          "¿Iba andando, conduciendo, de pasajero o me quedaba en el arcén?",
+          "¿Qué decisión de mi vida actual se parece a esa carretera?"
         ],
-        "faq": []
+        "faq": [
+          {
+            "question": "¿Qué significa soñar con una carretera?",
+            "answer": "La carretera se asocia a menudo con el rumbo: hacia dónde vas, a qué ritmo y qué te frena. Su sentido depende de su estado, de cómo la recorrías y de lo que sentías: seguridad, desorientación, prisa o calma."
+          },
+          {
+            "question": "¿Qué significa soñar con una carretera interminable?",
+            "answer": "Una carretera que nunca se acaba puede acompañar un esfuerzo largo, una meta que se aleja o el cansancio. Fíjate en si la distancia te resultaba tranquila o desalentadora: la misma imagen puede enlazar con la paciencia o con el agotamiento."
+          },
+          {
+            "question": "¿Qué significa soñar con una carretera cortada o en mal estado?",
+            "answer": "Unas obras, un árbol caído o una carretera que se acaba de golpe pueden escenificar un obstáculo o un plan en pausa. No anuncia ningún fracaso. Pregúntate qué sientes bloqueado ahora, y si en el sueño había un desvío."
+          },
+          {
+            "question": "¿Qué significa soñar con un cruce de caminos?",
+            "answer": "Estar donde la carretera se divide suele acompañar una decisión que estás sopesando. Anota hacia qué lado te inclinabas, cómo era cada camino y si alguien esperaba que decidieras."
+          }
+        ],
+        "documentMetaDescription": "Soñar con una carretera interminable, cortada o con un cruce: qué puede decir la escena sobre tu rumbo y tus decisiones, con preguntas y un ejemplo de diario."
       },
       "de": {
         "slug": "strasse",
         "name": "Straße",
-        "shortDescription": "Auf einer Straße im Traum können dein aktueller Weg, eine Entscheidung oder Hindernisse beim Vorankommen sichtbar werden. Verlauf, Zustand und Fortbewegungsart helfen, den Bezug zu deiner Situation zu erkennen.",
+        "shortDescription": "Von einer Straße zu träumen stellt oft eine Frage der Richtung: wohin Sie unterwegs sind, wie schnell und was Ihnen im Weg steht. Ob sie gerade, kurvig, gesperrt oder endlos war und wie Sie vorankamen, zählt mehr als eine feste Bedeutung.",
         "askYourself": [
-          "War die Straße gerade, kurvig, blockiert oder ohne erkennbares Ende?",
-          "Bist du gegangen, gefahren oder am Rand stehen geblieben?",
-          "Bei welcher Entscheidung suchst du derzeit nach Richtung oder Fortschritt?"
+          "War die Straße gerade, kurvig, gesperrt oder ohne erkennbares Ende?",
+          "Bin ich gegangen, gefahren, wurde ich gefahren oder stand ich am Rand?",
+          "Welche Entscheidung in meinem Leben gleicht gerade dieser Straße?"
         ],
-        "faq": [],
-        "modifiedAt": "2026-07-24"
+        "faq": [
+          {
+            "question": "Was bedeutet es, von einer Straße zu träumen?",
+            "answer": "Die Straße wird oft mit Richtung verbunden: wohin Sie gehen, in welchem Tempo und was Sie bremst. Was sie bedeutet, hängt von ihrem Zustand ab, davon, wie Sie unterwegs waren, und von Ihrem Gefühl: Zuversicht, Orientierungslosigkeit, Eile oder Ruhe."
+          },
+          {
+            "question": "Was bedeutet eine endlose Straße im Traum?",
+            "answer": "Eine Straße, die nie aufhört, kann eine lange Anstrengung, ein Ziel, das immer weiter rückt, oder Müdigkeit begleiten. Achten Sie darauf, ob die Länge friedlich oder entmutigend wirkte: Dasselbe Bild kann zu Geduld oder zu Erschöpfung passen."
+          },
+          {
+            "question": "Was bedeutet eine gesperrte oder kaputte Straße im Traum?",
+            "answer": "Eine Baustelle, ein umgestürzter Baum oder eine Straße, die plötzlich endet, kann ein Hindernis oder ein auf Eis gelegtes Vorhaben in Szene setzen. Ein Scheitern sagt das nicht voraus. Fragen Sie sich, was gerade blockiert wirkt und ob es im Traum eine Umleitung gab."
+          },
+          {
+            "question": "Was bedeutet eine Weggabelung im Traum?",
+            "answer": "An der Stelle zu stehen, an der sich die Straße teilt, begleitet oft eine Entscheidung, die Sie gerade abwägen. Notieren Sie, wohin Sie tendierten, wie jede Straße aussah und ob jemand auf Ihre Entscheidung wartete."
+          }
+        ],
+        "modifiedAt": "2026-10-08",
+        "documentMetaDescription": "Straße im Traum: endlos, gesperrt oder an einer Gabelung. Was die Szene über Ihre Richtung und Ihre Entscheidungen sagen kann, mit Fragen und Beispiel."
       },
       "it": {
         "slug": "strada",
         "name": "Strada",
-        "shortDescription": "Una strada può rendere visibili la tua direzione attuale, una decisione o gli ostacoli al procedere. Percorso, condizioni e modo di spostarti collegano il luogo alla tua situazione.",
-        "modifiedAt": "2026-07-24",
+        "shortDescription": "Sognare una strada pone spesso una domanda di direzione: dove stai andando, a che ritmo e che cosa ti sbarra il passo. Dritta, tortuosa, interrotta o senza fine, la strada e il modo in cui la percorrevi contano più di un significato fisso.",
+        "modifiedAt": "2026-10-08",
         "askYourself": [
-          "Che cosa ha cambiato strada nella scena?",
-          "Quale emozione è rimasta dopo il risveglio?"
+          "La strada era dritta, tortuosa, interrotta o senza una fine visibile?",
+          "Camminavo, guidavo, ero passeggero o restavo sul ciglio?",
+          "Quale decisione della mia vita di adesso somiglia a quella strada?"
         ],
-        "faq": []
+        "faq": [
+          {
+            "question": "Che cosa significa sognare una strada?",
+            "answer": "La strada viene spesso associata alla direzione: dove vai, a che ritmo e che cosa ti rallenta. Il significato dipende dalle sue condizioni, da come la percorrevi e da ciò che provavi: sicurezza, smarrimento, fretta o calma."
+          },
+          {
+            "question": "Che cosa significa sognare una strada infinita?",
+            "answer": "Una strada che non finisce mai può accompagnare un lungo sforzo, un obiettivo che si allontana o la stanchezza. Nota se la lunghezza ti sembrava serena o scoraggiante: la stessa immagine può avvicinarsi alla pazienza o allo sfinimento."
+          },
+          {
+            "question": "Che cosa significa sognare una strada interrotta o dissestata?",
+            "answer": "Lavori in corso, un albero caduto o una strada che finisce di colpo possono mettere in scena un ostacolo o un progetto in pausa. Non annunciano un fallimento. Chiediti che cosa senti bloccato in questo periodo, e se nel sogno c’era una deviazione."
+          },
+          {
+            "question": "Che cosa significa sognare un bivio?",
+            "answer": "Trovarsi dove la strada si divide accompagna spesso una scelta che stai soppesando. Annota verso quale lato pendevi, com’era ciascuna strada e se qualcuno aspettava la tua decisione."
+          }
+        ],
+        "documentMetaDescription": "Sognare una strada infinita, interrotta o un bivio: che cosa può dire la scena della tua direzione e delle tue scelte, con domande ed esempio di diario."
       },
       "pt": {
         "slug": "estrada",
@@ -12369,58 +12651,152 @@
       "en": {
         "slug": "bus",
         "name": "Bus",
-        "shortDescription": "A bus ride may highlight a shared route, fixed schedules or reliance on other people’s decisions. Boarding, getting off or being left behind gives the journey its emotional direction.",
-        "modifiedAt": "2026-07-24",
+        "shortDescription": "Dreaming of a bus often puts you on a shared route: a fixed line, a timetable, a driver you did not choose. Catching it, missing it, getting on the wrong one or not knowing where to get off each tell a different story.",
+        "modifiedAt": "2026-10-08",
         "askYourself": [
-          "What did bus change in the scene?",
-          "Which feeling stayed with me after waking?"
+          "Did I catch the bus, miss it, or get on the wrong one?",
+          "Who was driving, who sat near me, and did I know where we were going?",
+          "Where am I following a group's pace or someone else's plan right now?"
         ],
-        "faq": []
+        "faq": [
+          {
+            "question": "What does it mean to dream of a bus?",
+            "answer": "A bus is often associated with a shared route: going somewhere with others, on a fixed line and timetable, with someone else at the wheel. Its meaning depends on whether you caught it, where it was going and how you felt on board."
+          },
+          {
+            "question": "What does it mean to dream of missing the bus?",
+            "answer": "Watching the bus pull away can match a fear of being late, of missing a chance, or of falling behind a group. It predicts nothing. Ask yourself what you feel you are running after right now, and whether that timetable is really yours."
+          },
+          {
+            "question": "What does it mean to dream of taking the wrong bus?",
+            "answer": "Realizing you are on the wrong bus can go with doubt about a direction you have already taken, at work, in a relationship or in your studies. Note when you noticed and what you did next: got off, stayed on, asked for help."
+          },
+          {
+            "question": "What does a crowded or empty bus mean in a dream?",
+            "answer": "A packed bus can echo pressure, lack of space or a busy group life. An empty bus can go with solitude, or with a quiet stretch. The emotion on board says more than the number of passengers."
+          }
+        ],
+        "documentMetaDescription": "Dreaming of a bus, missing the bus or taking the wrong one: what the scene may say about shared routes and timing, with questions and a journal example."
       },
       "fr": {
         "slug": "bus",
         "name": "Bus",
-        "shortDescription": "Un trajet en bus peut mettre en avant un itinéraire partagé, des horaires imposés ou la dépendance aux décisions d’autrui. Monter, descendre ou rester sur place donne au voyage sa direction émotionnelle.",
-        "modifiedAt": "2026-07-24",
+        "shortDescription": "Rêver d'un bus vous place souvent sur un trajet partagé : une ligne fixe, des horaires, un chauffeur que vous n'avez pas choisi. Le prendre, le rater, monter dans le mauvais ou ne pas savoir où descendre raconte chaque fois autre chose.",
+        "modifiedAt": "2026-10-08",
         "askYourself": [
-          "Qu’est-ce que bus a changé dans la scène ?",
-          "Quelle émotion est restée après le réveil ?"
+          "Ai-je pris le bus, l'ai-je raté, ou suis-je monté dans le mauvais ?",
+          "Qui conduisait, qui était assis près de moi, et savais-je où nous allions ?",
+          "Où est-ce que je m'aligne en ce moment sur le rythme d'un groupe ou le plan de quelqu'un d'autre ?"
         ],
-        "faq": []
+        "faq": [
+          {
+            "question": "Que signifie rêver d'un bus ?",
+            "answer": "Le bus est souvent associé à un trajet partagé : aller quelque part avec d'autres, sur une ligne et des horaires fixes, avec quelqu'un d'autre au volant. Son sens dépend de si vous l'avez pris, d'où il allait et de ce que vous ressentiez à bord."
+          },
+          {
+            "question": "Que signifie rêver de rater le bus ?",
+            "answer": "Voir le bus partir sans vous peut rejoindre la peur d'être en retard, de laisser passer une occasion ou de décrocher d'un groupe. Ce n'est pas un présage. Demandez-vous après quoi vous courez en ce moment, et si cet horaire est vraiment le vôtre."
+          },
+          {
+            "question": "Que signifie rêver de prendre le mauvais bus ?",
+            "answer": "Comprendre qu'on est dans le mauvais bus peut accompagner un doute sur une direction déjà prise : au travail, en couple, dans vos études. Notez à quel moment vous l'avez compris et ce que vous avez fait : descendre, rester, demander de l'aide."
+          },
+          {
+            "question": "Que signifie rêver d'un bus bondé ou vide ?",
+            "answer": "Un bus bondé peut faire écho à la pression, au manque d'espace ou à une vie de groupe très chargée. Un bus vide peut accompagner la solitude, ou un moment de calme. L'émotion à bord en dit plus que le nombre de passagers."
+          }
+        ],
+        "documentMetaDescription": "Rêver d'un bus, de rater le bus ou de monter dans le mauvais : ce que la scène peut dire des trajets partagés et du rythme, avec questions et exemple."
       },
       "es": {
         "slug": "autobus",
         "name": "Autobús",
-        "shortDescription": "Un viaje en autobús puede destacar una ruta compartida, horarios fijos o dependencia de decisiones ajenas. Subir, bajar o quedarte atrás da al recorrido su dirección emocional.",
-        "modifiedAt": "2026-07-24",
+        "shortDescription": "Soñar con un autobús suele ponerte en un trayecto compartido: una línea fija, unos horarios, un conductor que no has elegido. Cogerlo, perderlo, subirte al equivocado o no saber dónde bajarte cuenta algo distinto cada vez.",
+        "modifiedAt": "2026-10-08",
         "askYourself": [
-          "¿Qué cambió autobús dentro de la escena?",
-          "¿Qué emoción siguió conmigo al despertar?"
+          "¿Cogí el autobús, lo perdí o me subí al equivocado?",
+          "¿Quién conducía, quién iba a mi lado, y sabía adónde íbamos?",
+          "¿Dónde estoy siguiendo ahora el ritmo de un grupo o el plan de otra persona?"
         ],
-        "faq": []
+        "faq": [
+          {
+            "question": "¿Qué significa soñar con un autobús?",
+            "answer": "El autobús se asocia a menudo con un trayecto compartido: ir a algún sitio con otros, con una línea y unos horarios fijos, y con otra persona al volante. Su sentido depende de si lo cogiste, de adónde iba y de lo que sentías a bordo."
+          },
+          {
+            "question": "¿Qué significa soñar que pierdes el autobús?",
+            "answer": "Ver cómo se va el autobús puede enlazar con el miedo a llegar tarde, a dejar pasar una oportunidad o a quedarte atrás respecto a un grupo. No es un presagio. Pregúntate detrás de qué corres ahora y si ese horario es de verdad el tuyo."
+          },
+          {
+            "question": "¿Qué significa soñar que te subes al autobús equivocado?",
+            "answer": "Darte cuenta de que vas en el autobús equivocado puede acompañar una duda sobre una dirección que ya tomaste: en el trabajo, en pareja, en los estudios. Anota cuándo te diste cuenta y qué hiciste: bajarte, quedarte, pedir ayuda."
+          },
+          {
+            "question": "¿Qué significa soñar con un autobús lleno o vacío?",
+            "answer": "Un autobús abarrotado puede reflejar presión, falta de espacio o una vida de grupo muy cargada. Uno vacío puede acompañar la soledad o un rato de calma. La emoción a bordo dice más que el número de pasajeros."
+          }
+        ],
+        "documentMetaDescription": "Soñar con un autobús, perder el autobús o subirte al equivocado: qué puede decir la escena sobre los trayectos compartidos, con preguntas y un ejemplo."
       },
       "de": {
         "slug": "bus",
         "name": "Bus",
-        "shortDescription": "Bei einer Busfahrt können eine gemeinsame Route, feste Zeitpläne oder deine Abhängigkeit von Entscheidungen anderer hervortreten. Ob du eingestiegen, ausgestiegen oder zurückgeblieben bist, bestimmt den Ton der Szene.",
+        "shortDescription": "Ein Bus im Traum setzt Sie oft auf eine gemeinsame Strecke: eine feste Linie, ein Fahrplan, ein Fahrer, den Sie nicht gewählt haben. Ihn erwischen, verpassen, in den falschen steigen oder den Ausstieg nicht finden: Jede Szene erzählt etwas anderes.",
         "askYourself": [
-          "Hast du den Bus erreicht, verpasst oder die falsche Linie genommen?",
-          "Wer saß neben dir, und kanntest du das Ziel?",
-          "Wo musst du dich derzeit an den Rhythmus einer Gruppe oder eines Plans anpassen?"
+          "Habe ich den Bus erwischt, verpasst, oder bin ich in den falschen gestiegen?",
+          "Wer fuhr, wer saß neben mir, und kannte ich das Ziel?",
+          "Wo richte ich mich gerade nach dem Takt einer Gruppe oder dem Plan eines anderen?"
         ],
-        "faq": [],
-        "modifiedAt": "2026-07-24"
+        "faq": [
+          {
+            "question": "Was bedeutet es, von einem Bus zu träumen?",
+            "answer": "Der Bus wird oft mit einer gemeinsamen Strecke verbunden: mit anderen unterwegs sein, auf fester Linie und nach Fahrplan, mit jemand anderem am Steuer. Was er bedeutet, hängt davon ab, ob Sie ihn erwischt haben, wohin er fuhr und wie Sie sich darin fühlten."
+          },
+          {
+            "question": "Was bedeutet es, im Traum den Bus zu verpassen?",
+            "answer": "Dem abfahrenden Bus nachzusehen, kann zur Angst passen, zu spät zu kommen, eine Gelegenheit zu verpassen oder hinter einer Gruppe zurückzubleiben. Ein Vorzeichen ist das nicht. Fragen Sie sich, wem Sie gerade hinterherlaufen und ob dieser Fahrplan wirklich Ihrer ist."
+          },
+          {
+            "question": "Was bedeutet es, im Traum in den falschen Bus zu steigen?",
+            "answer": "Zu merken, dass man im falschen Bus sitzt, kann Zweifel an einer schon eingeschlagenen Richtung begleiten, im Beruf, in der Partnerschaft oder im Studium. Notieren Sie, wann Sie es bemerkten und was Sie dann taten: aussteigen, sitzen bleiben, um Hilfe bitten."
+          },
+          {
+            "question": "Was bedeutet ein voller oder leerer Bus im Traum?",
+            "answer": "Ein überfüllter Bus kann Druck, Platzmangel oder ein sehr volles Gruppenleben aufgreifen. Ein leerer Bus kann Einsamkeit begleiten oder eine ruhige Etappe. Das Gefühl an Bord sagt mehr als die Zahl der Fahrgäste."
+          }
+        ],
+        "modifiedAt": "2026-10-08",
+        "documentMetaDescription": "Bus im Traum: den Bus verpassen, in den falschen steigen oder im vollen Bus stehen. Was die Szene über gemeinsame Wege sagen kann, mit Fragen und Beispiel."
       },
       "it": {
         "slug": "autobus",
         "name": "Autobus",
-        "shortDescription": "Un viaggio in autobus può mettere in primo piano un percorso condiviso, orari fissi o dipendenza dalle decisioni altrui. Salire, scendere o restare indietro dà al tragitto la sua direzione emotiva.",
-        "modifiedAt": "2026-07-24",
+        "shortDescription": "Sognare un autobus ti mette spesso su un tragitto condiviso: una linea fissa, degli orari, un autista che non hai scelto tu. Prenderlo, perderlo, salire su quello sbagliato o non sapere dove scendere racconta ogni volta una scena diversa.",
+        "modifiedAt": "2026-10-08",
         "askYourself": [
-          "Che cosa ha cambiato autobus nella scena?",
-          "Quale emozione è rimasta dopo il risveglio?"
+          "Ho preso l’autobus, l’ho perso o sono salito su quello sbagliato?",
+          "Chi guidava, chi era seduto vicino a me, e sapevo dove stavamo andando?",
+          "Dove sto seguendo, in questo periodo, il ritmo di un gruppo o il piano di qualcun altro?"
         ],
-        "faq": []
+        "faq": [
+          {
+            "question": "Che cosa significa sognare un autobus?",
+            "answer": "L’autobus viene spesso associato a un tragitto condiviso: andare da qualche parte con altri, con linea e orari fissi e qualcun altro alla guida. Il significato dipende dal fatto che tu l’abbia preso, da dove andava e da ciò che provavi a bordo."
+          },
+          {
+            "question": "Che cosa significa sognare di perdere l’autobus?",
+            "answer": "Vedere l’autobus che parte senza di te può avvicinarsi alla paura di arrivare tardi, di lasciarti sfuggire un’occasione o di restare indietro rispetto a un gruppo. Non è un presagio. Chiediti dietro a che cosa stai correndo e se quell’orario è davvero il tuo."
+          },
+          {
+            "question": "Che cosa significa sognare di prendere l’autobus sbagliato?",
+            "answer": "Accorgerti di essere sull’autobus sbagliato può accompagnare un dubbio su una direzione già presa: al lavoro, in coppia, negli studi. Annota quando te ne sei accorto e che cosa hai fatto: scendere, restare, chiedere aiuto."
+          },
+          {
+            "question": "Che cosa significa sognare un autobus pieno o vuoto?",
+            "answer": "Un autobus affollato può fare eco a pressione, mancanza di spazio o una vita di gruppo molto intensa. Un autobus vuoto può accompagnare la solitudine, o un momento di calma. L’emozione a bordo dice più del numero di passeggeri."
+          }
+        ],
+        "documentMetaDescription": "Sognare un autobus, di perdere l’autobus o di salire su quello sbagliato: che cosa può dire la scena dei tragitti condivisi, con domande ed esempio."
       },
       "pt": {
         "slug": "onibus",
