@@ -12,6 +12,7 @@ function setup(allowAuto = true) {
   const context = {
     HERO_SELECTOR: 'header', FILM_BASE: 'loop', canPlayFilm: manual => manual || allowAuto,
     createVideo: () => video, holdDreamsForIntro() {}, revealDreamsAfterIntro() {}, activeLenis: null,
+    hideHeroForIntro: jest.fn(), showHeroAfterIntro: jest.fn(),
     html: { lang: 'fr', classList: { contains: () => false } },
     document: {
       hidden: false, querySelector: () => ({ prepend() {}, querySelector: () => ({ append }) }), addEventListener() {},
@@ -32,10 +33,15 @@ test('autoplay rejection exposes an intro retry activated directly by the user',
   await context.init(false);
   expect(buttons).toHaveLength(1);
   expect(append).toHaveBeenCalledWith(buttons[0]);
+  expect(context.hideHeroForIntro).not.toHaveBeenCalled();
   playIntro.mockResolvedValue({ unavailable: false });
   buttons[0].events.click();
   expect(playIntro).toHaveBeenCalledTimes(2);
-  await Promise.resolve();
+  // The retry replays from ink, and the hero copy comes back after the film.
+  expect(context.hideHeroForIntro).toHaveBeenCalledTimes(1);
+  expect(context.showHeroAfterIntro).not.toHaveBeenCalled();
+  await Promise.resolve(); await Promise.resolve();
+  expect(context.showHeroAfterIntro).toHaveBeenCalledTimes(1);
 });
 test('a slow connection offers manual playback without starting an automatic download', async () => {
   const { context, buttons, playIntro } = setup(false);
