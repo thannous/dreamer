@@ -3,6 +3,7 @@ import React from 'react';
 import { ScrollView, StyleSheet, View, useWindowDimensions } from 'react-native';
 import { ScopedTheme } from 'uniwind';
 
+import { NightStatusBar } from '@/components/atmosphere/NightStatusBar';
 import { Screen } from '@/components/atmosphere/Screen';
 import {
   ExperienceJourney,
@@ -52,6 +53,7 @@ export default function ExperienceStep() {
   // The veil darkens the scene in both modes, so the copy follows the dark palette.
   return (
     <ScopedTheme theme="dark">
+      <NightStatusBar />
       <Screen variant="subtle">
         <View pointerEvents="none" style={[StyleSheet.absoluteFill, styles.atmosphereVeil]} />
         <View testID={TID.Screen.OnboardingExperience} className="flex-1">

@@ -3,6 +3,7 @@ import React, { useState } from 'react';
 import { ScrollView, StyleSheet, View, useWindowDimensions } from 'react-native';
 import { ScopedTheme } from 'uniwind';
 
+import { NightStatusBar } from '@/components/atmosphere/NightStatusBar';
 import { Screen } from '@/components/atmosphere/Screen';
 import { ReminderOrbitalClock } from '@/components/onboarding/ReminderOrbitalClock';
 import { StepDots } from '@/components/onboarding/StepDots';
@@ -109,6 +110,7 @@ export default function ReminderStep() {
 
   return (
     <ScopedTheme theme="dark">
+      <NightStatusBar />
       <Screen variant="subtle">
         <View pointerEvents="none" style={[StyleSheet.absoluteFill, styles.atmosphereVeil]} />
         <View testID={TID.Screen.OnboardingReminder} className="flex-1">
