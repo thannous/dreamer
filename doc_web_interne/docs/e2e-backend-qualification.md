@@ -63,8 +63,9 @@ source SHA, dirty-state marker, fixtures, rerun command and individual assertion
 per-test videos show the actual UI. Auth network traces are deliberately disabled
 to avoid recording passwords/JWTs. All stories and identities are synthetic.
 
-CircleCI runs this suite in a Docker-capable machine alongside existing checks,
-on app or database contract changes. Mock web journeys remain a separate fast
+A manually triggered CircleCI pipeline runs this suite in a Docker-capable machine
+alongside existing checks, on app or database contract changes; pushes and PRs do
+not trigger it, so run it locally when the change requires it. Mock web journeys remain a separate fast
 suite. Native microphone, permissions, SQLite persistence and real RevenueCat
 Test Store behavior are separate qualifications; a web pass does not prove them.
 

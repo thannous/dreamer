@@ -34,7 +34,7 @@ function classifyScript(name) {
   if (name.startsWith('security:')) return 'Security';
   if (name.startsWith('seo:')) return 'SEO';
   if (name.startsWith('build:')) return 'Builds';
-  if (name === 'lint' || name.startsWith('lint:') || name === 'test' || name.startsWith('test:') || name.startsWith('typecheck:')) return 'Quality';
+  if (name === 'lint' || name.startsWith('lint:') || name === 'test' || name.startsWith('test:') || name.startsWith('typecheck:') || name.startsWith('verify:')) return 'Quality';
   if (name === 'start' || name.startsWith('start:') || ['android', 'ios', 'web'].includes(name)) return 'Development';
   return 'Other';
 }
@@ -43,6 +43,7 @@ function scriptSafety(name) {
   if (name === 'release:build') return 'starts a remote build';
   if (name === 'release:prepare') return 'writes release manifests';
   if (name === 'release:versions:sync') return 'writes local version mirrors';
+  if (name === 'prepare') return 'writes local Git config';
   if (/^docs:deploy:/.test(name)) return 'publishes';
   if (/^(docs:(build|build-guides|dev|release-check)|generate-sitemap|content:build-manifest$|content:build-site-manifest$)/.test(name)) return 'writes generated files';
   if (/^(subscription:qa:(evidence|play-state|revenuecat-subscriber-expiry|google-play-state)|android:.*-state)$/.test(name)) return 'writes QA evidence';
