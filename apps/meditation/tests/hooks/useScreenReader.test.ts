@@ -1,4 +1,4 @@
-import { act, renderHook, waitFor } from '@testing-library/react-native';
+import { act, renderHook, waitFor } from '@testing-library/react-native-legacy';
 import { AccessibilityInfo } from 'react-native';
 
 import { useScreenReader } from '@/hooks/useScreenReader';

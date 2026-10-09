@@ -1,4 +1,5 @@
 import * as Notifications from 'expo-notifications';
+import { AndroidImportance, IosAuthorizationStatus } from 'expo-notifications';
 import { getLocales } from 'expo-localization';
 import { Platform } from 'react-native';
 
@@ -180,9 +181,9 @@ function allowsNotifications(permission: Notifications.NotificationPermissionsSt
   return (
     permission.granted ||
     permission.status === 'granted' ||
-    iosStatus === Notifications.IosAuthorizationStatus.AUTHORIZED ||
-    iosStatus === Notifications.IosAuthorizationStatus.PROVISIONAL ||
-    iosStatus === Notifications.IosAuthorizationStatus.EPHEMERAL
+    iosStatus === IosAuthorizationStatus.AUTHORIZED ||
+    iosStatus === IosAuthorizationStatus.PROVISIONAL ||
+    iosStatus === IosAuthorizationStatus.EPHEMERAL
   );
 }
 
@@ -222,7 +223,7 @@ export async function requestNotificationPermissions(): Promise<boolean> {
     const t = await getNotificationTranslator();
     await Notifications.setNotificationChannelAsync(NOTIFICATION_CHANNEL_ID, {
       name: t('notifications.channel_name'),
-      importance: Notifications.AndroidImportance.HIGH,
+      importance: AndroidImportance.HIGH,
       vibrationPattern: [0, 250, 250, 250],
       lightColor: '#FF6B6B',
     });

@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-require-imports -- Jest hoists module factories above imports. */
-import { render, screen } from '@testing-library/react-native';
+import { render, screen } from '@testing-library/react-native-legacy';
 import React from 'react';
 
 import ProfileTab from '@/app/(drawer)/(tabs)/profile';

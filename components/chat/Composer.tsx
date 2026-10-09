@@ -1,3 +1,4 @@
+import type { ViewInstance, TextInputInstance } from 'react-native';
 /**
  * Floating Composer - v0-style chat input that floats above content
  * Based on patterns from https://vercel.com/blog/how-we-built-the-v0-ios-app
@@ -88,7 +89,7 @@ type ComposerContextValue = {
   handleTextInputPress: () => void;
   handleSend: () => void;
   toggleRecording: () => void;
-  textInputRef: React.RefObject<TextInput | null>;
+  textInputRef: React.RefObject<TextInputInstance | null>;
 };
 
 const ComposerContext = createContext<ComposerContextValue | null>(null);
@@ -142,8 +143,8 @@ function Root({
   const offlineModelPromptResolveRef = useRef<(() => void) | null>(null);
   const offlineModelPromptPromiseRef = useRef<Promise<void> | null>(null);
   const offlineModelSheetVisibleRef = useRef(false);
-  const containerRef = useRef<View>(null);
-  const textInputRef = useRef<TextInput>(null);
+  const containerRef = useRef<ViewInstance>(null);
+  const textInputRef = useRef<TextInputInstance>(null);
   const localHeight = useSharedValue(0);
 
   const handleLanguagePackMissingClose = useCallback(() => {

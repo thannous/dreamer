@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-require-imports -- Jest hoists module factories above imports. */
-import { fireEvent, render, screen, waitFor } from '@testing-library/react-native';
+import { fireEvent, render, screen, waitFor } from '@testing-library/react-native-legacy';
 import React from 'react';
 import { Linking, ScrollView, StyleSheet } from 'react-native';
 
@@ -240,7 +240,7 @@ jest.mock('uniwind', () => ({
 }));
 
 function flatten(style: unknown): Record<string, unknown> {
-  return StyleSheet.flatten(style) as Record<string, unknown>;
+  return StyleSheet.flatten(style as Parameters<typeof StyleSheet.flatten>[0]) as Record<string, unknown>;
 }
 
 function meetsMinTarget(style: unknown, min = 48): boolean {
@@ -362,7 +362,8 @@ describe('TI-394 TalkBack surfaces', () => {
           search: { options: { title: 'Search', tabBarAccessibilityLabel: 'Search', tabBarButtonTestID: TID.Tab.Search } },
           profile: { options: { title: 'Profile', tabBarAccessibilityLabel: 'Profile', tabBarButtonTestID: TID.Tab.Profile } },
         } as never}
-        navigation={{ navigate, emit } as never}
+        emitter={{ emit } as never}
+        navigateToTab={navigate}
         insets={{ top: 0, right: 0, bottom: 24, left: 0 }}
       />
     );

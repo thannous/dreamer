@@ -1,3 +1,5 @@
+import type { ViewInstance } from 'react-native';
+import { scheduleIdleTask } from '@/lib/scheduleIdleTask';
 import { resolveDreamRoute, getDreamRouteParams } from '@/lib/dreamRoute';
 import { getDreamIdentityKey } from '@/lib/dreamIdentity';
 import { useDreamMedia } from '@/hooks/useDreamMedia';
@@ -52,7 +54,6 @@ import {
   ActivityIndicator,
   Alert,
   findNodeHandle,
-  InteractionManager,
   Pressable,
   StyleSheet,
   Text,
@@ -914,11 +915,11 @@ function DreamChatContent() {
     if (!targetMessageId) return null;
     return messages.find((message) => message.id === targetMessageId) ?? null;
   }, [messages, targetMessageId]);
-  const targetRetryRef = useRef<View>(null);
+  const targetRetryRef = useRef<ViewInstance>(null);
 
   useEffect(() => {
     if (!targetFailedMessage) return undefined;
-    const handle = InteractionManager.runAfterInteractions(() => {
+    const handle = scheduleIdleTask(() => {
       const node = findNodeHandle(targetRetryRef.current);
       if (node) {
         AccessibilityInfo.setAccessibilityFocus(node);

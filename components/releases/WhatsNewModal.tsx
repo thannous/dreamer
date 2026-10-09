@@ -1,3 +1,4 @@
+import type { ViewInstance } from 'react-native';
 import { BlurView } from 'expo-blur';
 import { router } from 'expo-router';
 import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
@@ -61,7 +62,7 @@ export function WhatsNewModal({ visible, onClose, onPrimary }: WhatsNewModalProp
   const { height } = useWindowDimensions();
   const prefersReducedMotion = usePrefersReducedMotion();
   const noctalia = useMemo(() => getNoctaliaDesignTokens(colors, mode), [colors, mode]);
-  const titleRef = useRef<Text | null>(null);
+  const titleRef = useRef<ViewInstance | null>(null);
   const isDark = mode === 'dark';
   const decorativeAccent = isDark ? noctalia.accent.soft : noctalia.accent.strong;
   const maxCardHeight = Math.max(300, height - insets.top - insets.bottom - 32);

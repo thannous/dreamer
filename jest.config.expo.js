@@ -1,9 +1,13 @@
 const preset = require('jest-expo/jest-preset');
+const path = require('node:path');
+const expoCore = require.resolve('expo-modules-core', { paths: [path.dirname(require.resolve('expo/package.json'))] });
 
 /** @type {import('jest').Config} */
 module.exports = {
   ...preset,
   displayName: 'expo',
+  // Preserve the Jest 29 file selection; CLI node:test .cjs files have their own runner.
+  testMatch: ['**/__tests__/**/*.[jt]s?(x)', '**/?(*.)+(spec|test).[jt]s?(x)'],
   // Keep Jest's haste map focused on application trees that actually contain tests.
   // Script tests run in the separate, transform-free Node project.
   roots: [
@@ -31,6 +35,7 @@ module.exports = {
   ),
   moduleNameMapper: {
     ...(preset.moduleNameMapper ?? {}),
+    '^expo-modules-core$': expoCore,
     '^@/(.*)$': '<rootDir>/$1',
     '^remend$': '<rootDir>/node_modules/remend/dist/index.js',
     '^mdast-util-from-markdown$': '<rootDir>/node_modules/mdast-util-from-markdown/index.js',

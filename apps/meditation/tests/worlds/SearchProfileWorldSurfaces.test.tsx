@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-require-imports -- Jest hoists module factories above imports. */
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { fireEvent, render, screen, waitFor } from '@testing-library/react-native';
+import { fireEvent, render, screen, waitFor } from '@testing-library/react-native-legacy';
 import React from 'react';
 
 import ProfileTab from '@/app/(drawer)/(tabs)/profile';

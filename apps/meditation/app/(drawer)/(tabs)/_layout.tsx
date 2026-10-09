@@ -119,7 +119,7 @@ function tabIconName(routeName: string) {
 }
 
 /** A wrapping tab bar; React Navigation's stock label is hard-coded to one line. */
-export function AccessibleTabBar({ state, descriptors, navigation, insets }: RouterTabBarProps) {
+export function AccessibleTabBar({ state, descriptors, emitter, navigateToTab, insets }: RouterTabBarProps) {
   const { colors, mode } = useChromeTheme();
   const { width, fontScale } = useWindowDimensions();
   const compact = useCompactLayout();
@@ -167,12 +167,12 @@ export function AccessibleTabBar({ state, descriptors, navigation, insets }: Rou
           const color = focused ? colors.textPrimary : colors.textTertiary;
 
           const onPress = () => {
-            const event = navigation.emit({
+            const event = emitter.emit({
               type: 'tabPress',
               target: route.key,
               canPreventDefault: true,
             });
-            if (!focused && !event.defaultPrevented) navigation.navigate(route.name, route.params);
+            if (!focused && !event.defaultPrevented) navigateToTab(route.key);
           };
 
           return (
@@ -183,7 +183,7 @@ export function AccessibleTabBar({ state, descriptors, navigation, insets }: Rou
               accessibilityState={{ selected: focused }}
               testID={options.tabBarButtonTestID}
               onPress={onPress}
-              onLongPress={() => navigation.emit({ type: 'tabLongPress', target: route.key })}
+              onLongPress={() => emitter.emit({ type: 'tabLongPress', target: route.key })}
               style={{ flex: 1, minHeight: 48, alignItems: 'center', justifyContent: 'center', overflow: 'visible' }}>
               <IconSymbol name={tabIconName(route.name)} color={color} size={iconSize} />
               <TabLabel

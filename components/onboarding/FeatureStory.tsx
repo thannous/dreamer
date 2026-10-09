@@ -81,7 +81,7 @@ export type FeatureStoryPlayback = ReturnType<typeof useFeatureStory>;
 /** A brief entrance, with the same reading order and opacity-only reduced motion. */
 export function StoryScene({ children, style, ...props }: ViewProps) {
   const reduced = useReducedMotion();
-  const animation = useMemo<CSSStyle<ViewStyle>>(() => ({
+  const animation = useMemo<CSSStyle<Pick<ViewStyle, 'opacity' | 'transform'>>>(() => ({
     animationName: {
       from: { opacity: 0, ...(!reduced ? { transform: [{ translateY: 8 }] } : {}) },
       to: { opacity: 1, ...(!reduced ? { transform: [{ translateY: 0 }] } : {}) },

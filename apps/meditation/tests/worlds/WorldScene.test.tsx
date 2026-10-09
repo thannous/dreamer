@@ -1,7 +1,7 @@
 import { Image } from 'expo-image';
 
 import { StatusBar } from 'expo-status-bar';
-import { render, screen } from '@testing-library/react-native';
+import { render, screen } from '@testing-library/react-native-legacy';
 import React from 'react';
 import { Text as RNText } from 'react-native';
 

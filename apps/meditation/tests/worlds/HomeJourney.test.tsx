@@ -1,5 +1,5 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { act, fireEvent, render, screen, waitFor, within } from '@testing-library/react-native';
+import { act, fireEvent, render, screen, waitFor, within } from '@testing-library/react-native-legacy';
 import React from 'react';
 import { ScrollView, StyleSheet, useWindowDimensions } from 'react-native';
 

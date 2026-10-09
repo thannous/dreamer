@@ -97,16 +97,16 @@ describe('docs shared components', () => {
       });
 
       const html = renderFooter(context);
-      const columns = Array.from(
+      const columns = Array.from<RegExpMatchArray>(
         html.matchAll(
           /<h5 class="font-bold mb-4 text-white">([^<]+)<\/h5>\s*<ul class="space-y-2 text-sm text-gray-500">\s*<li><a [^>]*>([^<]+)<\/a>/g
         )
       );
 
-      expect(columns).toEqual(
+      expect(columns.map(([, title, firstLink]) => ({ title, firstLink }))).toEqual(
         expect.arrayContaining([
-          expect.objectContaining({ 1: resourcesTitle, 2: blogLabel }),
-          expect.objectContaining({ 1: guidesTitle, 2: dictionaryLabel }),
+          expect.objectContaining({ title: resourcesTitle, firstLink: blogLabel }),
+          expect.objectContaining({ title: guidesTitle, firstLink: dictionaryLabel }),
         ])
       );
       expect(resourcesTitle).not.toBe(blogLabel);

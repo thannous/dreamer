@@ -1,5 +1,5 @@
 import React from 'react';
-import { render } from '@testing-library/react-native';
+import { render } from '@testing-library/react-native-legacy';
 import { describe, expect, it, jest } from '@jest/globals';
 
 import { BottomSheetPrimaryAction } from '@/components/ui/BottomSheetActions';

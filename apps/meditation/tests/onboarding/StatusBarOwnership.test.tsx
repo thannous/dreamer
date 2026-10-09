@@ -1,4 +1,4 @@
-import { act, render } from '@testing-library/react-native';
+import { act, render } from '@testing-library/react-native-legacy';
 import { StatusBar } from 'expo-status-bar';
 import React from 'react';
 

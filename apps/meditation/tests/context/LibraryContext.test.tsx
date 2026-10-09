@@ -1,5 +1,5 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { act, renderHook, waitFor } from '@testing-library/react-native';
+import { act, renderHook, waitFor } from '@testing-library/react-native-legacy';
 
 import { LibraryProvider, useLibrary, useLibraryMetadata, useLibraryCommands } from '@/context/LibraryContext';
 import { INITIAL_LIBRARY, type LibraryState } from '@/lib/types';

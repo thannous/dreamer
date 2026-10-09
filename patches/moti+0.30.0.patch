@@ -1,0 +1,14 @@
+diff --git a/node_modules/moti/build/core/types.d.ts b/node_modules/moti/build/core/types.d.ts
+index 0ee1828..019ae21 100644
+--- a/node_modules/moti/build/core/types.d.ts
++++ b/node_modules/moti/build/core/types.d.ts
+@@ -1,6 +1,7 @@
+-import type { PerspectiveTransform, RotateTransform, RotateXTransform, RotateYTransform, RotateZTransform, ScaleTransform, ScaleXTransform, ScaleYTransform, TranslateXTransform, TranslateYTransform, SkewXTransform, SkewYTransform, ImageStyle, TextStyle, ViewStyle } from 'react-native';
++import type { ImageStyle, TextStyle, ViewStyle } from 'react-native';
+ import type { SharedValue, WithDecayConfig, WithSpringConfig, WithTimingConfig, DerivedValue } from 'react-native-reanimated';
+-export type Transforms = PerspectiveTransform & RotateTransform & RotateXTransform & RotateYTransform & RotateZTransform & ScaleTransform & ScaleXTransform & ScaleYTransform & TranslateXTransform & TranslateYTransform & SkewXTransform & SkewYTransform;
++type NativeTransform = NonNullable<Exclude<NonNullable<ViewStyle['transform']>, string>[number]>;
++export type Transforms = { [Key in keyof NativeTransform]: Exclude<NativeTransform[Key], undefined> };
+ export type MotiTranformProps = Partial<Transforms> & Pick<ViewStyle, 'transform'>;
+ export type TransitionConfigWithoutRepeats = (({
+     type?: 'spring';

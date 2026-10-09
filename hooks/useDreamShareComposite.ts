@@ -1,18 +1,18 @@
 import type { DreamAnalysis } from '@/lib/types';
-import * as FileSystem from 'expo-file-system';
+import * as FileSystem from 'expo-file-system/legacy';
 import * as Sharing from 'expo-sharing';
 import { useCallback, useRef, useState } from 'react';
-import { View } from 'react-native';
+import type { ViewInstance } from 'react-native';
 import { captureRef } from 'react-native-view-shot';
 
 export interface UseDreamShareCompositeReturn {
-  shareImageRef: React.RefObject<View | null>;
+  shareImageRef: React.RefObject<ViewInstance | null>;
   shareComposite: (dream: DreamAnalysis) => Promise<void>;
   isGenerating: boolean;
 }
 
 export function useDreamShareComposite(): UseDreamShareCompositeReturn {
-  const shareImageRef = useRef<View>(null);
+  const shareImageRef = useRef<ViewInstance>(null);
   const [isGenerating, setIsGenerating] = useState<boolean>(false);
 
   const shareComposite = useCallback(async (dream: DreamAnalysis): Promise<void> => {

@@ -1,0 +1,107 @@
+diff --git a/node_modules/expo/types/react-native-web.d.ts b/node_modules/expo/types/react-native-web.d.ts
+index d615904..2d5a1c8 100644
+--- a/node_modules/expo/types/react-native-web.d.ts
++++ b/node_modules/expo/types/react-native-web.d.ts
+@@ -1,6 +1,5 @@
+ /* eslint-disable */
+ 
+-import { StyleProp } from 'react-native';
+ import * as RN from 'react-native';
+ 
+ declare module 'react-native' {
+@@ -37,18 +36,12 @@ declare module 'react-native' {
+     /** @platform web */
+     backgroundClip?: string;
+     /** @platform web */
+-    backgroundImage?: string;
+-    /** @platform web */
+     backgroundOrigin?: 'border-box' | 'content-box' | 'padding-box';
+     /** @platform web */
+-    backgroundPosition?: string;
+-    /** @platform web */
+     backgroundRepeat?: string;
+     /** @platform web */
+     backgroundSize?: string;
+     /** @platform web */
+-    boxSizing?: string;
+-    /** @platform web */
+     clip?: string;
+     /** @platform web */
+     gridAutoColumns?: string;
+@@ -101,13 +94,9 @@ declare module 'react-native' {
+     /** @platform web */
+     transitionTimingFunction?: string | Function | (string | Function)[];
+     /** @platform web */
+-    userSelect?: string;
+-    /** @platform web */
+     visibility?: string;
+     /** @platform web */
+     willChange?: string;
+-    /** @platform web */
+-    position?: 'static' | 'relative' | 'absolute' | 'fixed' | 'sticky';
+   }
+ 
+   /**
+@@ -115,7 +104,6 @@ declare module 'react-native' {
+    */
+   interface TextProps {
+     className?: string;
+-    style?: StyleProp<TextStyle>;
+     /** @platform web */
+     tabIndex?: number;
+     /** @platform web */
+@@ -148,26 +136,14 @@ declare module 'react-native' {
+     /** @platform web */
+     backgroundClip?: string;
+     /** @platform web */
+-    backgroundImage?: string;
+-    /** @platform web */
+     backgroundOrigin?: 'border-box' | 'content-box' | 'padding-box';
+     /** @platform web */
+-    backgroundPosition?: string;
+-    /** @platform web */
+     backgroundRepeat?: string;
+     /** @platform web */
+     backgroundSize?: string;
+     /** @platform web */
+-    boxShadow?: string;
+-    /** @platform web */
+-    boxSizing?: string;
+-    /** @platform web */
+     clip?: string;
+     /** @platform web */
+-    cursor?: string;
+-    /** @platform web */
+-    filter?: string;
+-    /** @platform web */
+     gridAutoColumns?: string;
+     /** @platform web */
+     gridAutoFlow?: string;
+@@ -194,8 +170,6 @@ declare module 'react-native' {
+     /** @platform web */
+     outline?: string;
+     /** @platform web */
+-    outlineColor?: string;
+-    /** @platform web */
+     overflowX?: string;
+     /** @platform web */
+     overflowY?: string;
+@@ -224,8 +198,6 @@ declare module 'react-native' {
+     /** @platform web */
+     willChange?: string;
+     /** @platform web */
+-    position?: 'static' | 'relative' | 'absolute' | 'fixed' | 'sticky';
+-    /** @platform web */
+     fontFeatureSettings?: string;
+     /** @platform web */
+     textIndent?: string;
+@@ -252,9 +224,6 @@ declare module 'react-native' {
+       | React.ReactNode
+       | ((state: PressableStateCallbackType) => React.ReactNode)
+       | undefined;
+-    style?:
+-      | RN.StyleProp<ViewStyle>
+-      | ((state: PressableStateCallbackType) => RN.StyleProp<ViewStyle>);
+   }
+ 
+   // export const Pressable: React.ForwardRefExoticComponent<

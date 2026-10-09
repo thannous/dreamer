@@ -14,10 +14,12 @@
     "**/__tests__/**/*.ts",
     "**/__tests__/**/*.tsx",
     "tests/**/*",
-    "uniwind-types.d.ts"
+    "uniwind-types.d.ts",
+    ".expo/types/noctalia-router.d.ts"
   ],
   "exclude": [
     "apps/**",
-    "supabase/functions/**"
+    "supabase/functions/**",
+    ".expo/types/router.d.ts"
   ]
 }

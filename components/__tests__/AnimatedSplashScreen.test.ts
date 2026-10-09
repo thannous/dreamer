@@ -1,5 +1,5 @@
 import React from 'react';
-import { cleanup, render } from '@testing-library/react-native';
+import { cleanup, render } from '@testing-library/react-native-legacy';
 import { afterEach, beforeEach, describe, expect, it, jest } from '@jest/globals';
 
 const mockCancelAnimation = jest.fn();

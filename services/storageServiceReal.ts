@@ -168,7 +168,7 @@ async function writeFileBackedItem(key: string, value: string): Promise<void> {
   try {
     await FileSystemLegacy.makeDirectoryAsync(FILE_STORAGE_PREFIX!, { intermediates: true });
     const file = new FileSystem.File(path);
-    file.write(value, { encoding: 'utf8' });
+    await file.write(value, { encoding: 'utf8' });
   } catch (error) {
     if (__DEV__) {
       console.warn(`Failed to write file-backed key ${key}`, error);
@@ -740,7 +740,7 @@ async function persistDataUriImage(imageUrl: string, dreamId: number): Promise<s
   try {
     await FileSystemLegacy.makeDirectoryAsync(dir, { intermediates: true });
     const file = new FileSystem.File(filePath);
-    file.write(base64, { encoding: 'base64' });
+    await file.write(base64, { encoding: 'base64' });
     return filePath;
   } catch (error) {
     if (__DEV__) {

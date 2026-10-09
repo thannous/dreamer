@@ -1,5 +1,5 @@
 import * as Haptics from 'expo-haptics';
-import { fireEvent, render, screen, waitFor } from '@testing-library/react-native';
+import { fireEvent, render, screen, waitFor } from '@testing-library/react-native-legacy';
 import React from 'react';
 import * as ReactNative from 'react-native';
 

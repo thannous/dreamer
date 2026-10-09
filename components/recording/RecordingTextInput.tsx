@@ -1,3 +1,4 @@
+import type { TextInputInstance } from 'react-native';
 import React, { forwardRef, useMemo, useState } from 'react';
 import { Pressable, StyleSheet, Text, TextInput, View, useWindowDimensions, type TextInputProps } from 'react-native';
 
@@ -41,7 +42,7 @@ export interface RecordingTextInputProps {
   onClear?: () => void;
 }
 
-export const RecordingTextInput = forwardRef<TextInput, RecordingTextInputProps>(
+export const RecordingTextInput = forwardRef<TextInputInstance, RecordingTextInputProps>(
   function RecordingTextInput(
     {
       compact = false,

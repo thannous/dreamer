@@ -6,7 +6,12 @@
       "@/*": [
         "./*"
       ]
-    }
+    },
+    "types": [
+      "react",
+      "react-native",
+      "node"
+    ]
   },
   "include": [
     "**/*.ts",
@@ -27,6 +32,7 @@
     "coverage/**",
     "dist/**",
     "dist-dev-nossg/**",
-    "tools/e2e/**"
+    "tools/e2e/**",
+    ".expo/types/router.d.ts"
   ]
 }

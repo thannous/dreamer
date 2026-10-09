@@ -1,3 +1,4 @@
+import { scheduleIdleTask } from '@/lib/scheduleIdleTask';
 import '@/global.css';
 import 'react-native-reanimated';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
@@ -18,7 +19,7 @@ import * as Notifications from 'expo-notifications';
 import { Stack, router, usePathname, useRootNavigationState, type Href } from 'expo-router';
 import * as SplashScreen from 'expo-splash-screen';
 import React, { useCallback, useEffect, useRef, useState } from 'react';
-import { InteractionManager, Linking, NativeModules, Platform } from 'react-native';
+import { Linking, NativeModules, Platform } from 'react-native';
 import { SystemBars } from 'react-native-edge-to-edge';
 import AnimatedSplashScreen, { getSplashMinimumVisibleMs } from '@/components/AnimatedSplashScreen';
 import { ErrorBoundary } from '@/components/ErrorBoundary';
@@ -269,7 +270,7 @@ function LucidRootContent() {
   useEffect(() => {
     if (!startupDestinationCommitted) return;
 
-    const task = InteractionManager.runAfterInteractions(() => {
+    const task = scheduleIdleTask(() => {
       try { initializeGoogleSignIn(); } catch (error) {
         if (__DEV__) console.warn('[LucidRootLayout] Google initialization failed', error);
       }

@@ -1,4 +1,4 @@
-import { act, renderHook, waitFor } from '@testing-library/react-native';
+import { act, renderHook, waitFor } from '@testing-library/react-native-legacy';
 import { useLocalLucidVoiceAvailability } from '../useLocalLucidVoiceAvailability';
 import { loadLocalLucidVoiceExperimentIds, subscribeLucidMorningVoiceNotes } from '@/services/lucidMorningVoiceNoteStorage';
 

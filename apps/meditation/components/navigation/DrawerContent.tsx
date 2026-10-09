@@ -71,7 +71,7 @@ export function DrawerContent({ navigation, state }: DrawerContentComponentProps
   const { mode, colors } = useChromeTheme();
   const insets = useSafeAreaInsets();
   const router = useRouter();
-  const isOpen = getDrawerStatusFromState(state) === 'open';
+  const isOpen = getDrawerStatusFromState(state, 'closed') === 'open';
 
   const go = (href: string) => {
     navigation.closeDrawer();

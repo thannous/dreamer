@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-require-imports -- Jest hoists module factories above imports. */
-import { act, render, renderHook, screen, waitFor } from '@testing-library/react-native';
+import { act, render, renderHook, screen, waitFor } from '@testing-library/react-native-legacy';
 import React from 'react';
 import { AppState } from 'react-native';
 

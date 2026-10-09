@@ -2,7 +2,7 @@ import { getApiBaseUrl } from '@/lib/config';
 import { fetchJSONWithSession } from '@/lib/apiSession';
 import { logger } from '@/lib/logger';
 import { NETWORK_REQUEST_POLICIES } from '@/lib/networkPolicy';
-import * as FileSystem from 'expo-file-system';
+import * as FileSystem from 'expo-file-system/legacy';
 import { File } from 'expo-file-system';
 import { Platform } from 'react-native';
 
