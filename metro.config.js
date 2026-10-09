@@ -36,6 +36,12 @@ config.resolver.resolveRequest = (context, moduleName, platform) => {
   if (platform !== 'web' && moduleName === '@revenuecat/purchases-js-hybrid-mappings') {
     return { type: 'empty' };
   }
+  // expo-router's native tabs import expo-symbols, whose Android build pulls the
+  // Material Symbols font (~970 KB). The app uses neither native tabs nor
+  // SymbolView on Android (icon-symbol.tsx maps onto MaterialIcons there).
+  if (platform === 'android' && moduleName === '@expo-google-fonts/material-symbols/400Regular') {
+    return { type: 'empty' };
+  }
   return (upstreamResolveRequest ?? context.resolveRequest)(context, moduleName, platform);
 };
 
