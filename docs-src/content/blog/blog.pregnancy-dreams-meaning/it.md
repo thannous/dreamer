@@ -5,7 +5,7 @@
   "lang": "it",
   "slug": "sogni-di-gravidanza-cosa-significano-anche-se-non-sei-incinta",
   "title": "Sogni di gravidanza: significati nascosti decodificati | Noctalia",
-  "description": "Non sei incinta ma sogni un bambino? Cosa simboleggiano i sogni di gravidanza, dai nuovi inizi alla creatività. Perché questi sogni ti visitano.",
+  "description": "Sognare di essere incinta, di partorire o che un’amica aspetta un bambino: cosa possono significare i sogni di gravidanza e cosa dice la ricerca.",
   "robots": "max-image-preview:large",
   "themeColor": "#0a0514",
   "htmlClass": "scroll-smooth blog-article",
@@ -14,23 +14,23 @@
   "mainClass": "pt-32 pb-20 px-4",
   "ogType": "article",
   "ogTitle": "Sogni di gravidanza: significati nascosti decodificati | Noctalia",
-  "ogDescription": "Non sei incinta ma sogni un bambino? Cosa simboleggiano i sogni di gravidanza, dai nuovi inizi alla creatività. Perché questi sogni ti visitano.",
+  "ogDescription": "Incinta in sogno ma non nella realtà? Cosa può significare il sogno e cosa dice la ricerca sui sogni durante la gravidanza.",
   "ogImage": "https://noctalia.app/img/blog/pregnancy-dreams-meaning.webp",
   "ogImageAlt": "Luce soffusa e simboli che rappresentano la crescita e i nuovi inizi",
   "twitterCard": "summary_large_image",
   "twitterTitle": "Sogni di gravidanza: significati nascosti decodificati | Noctalia",
-  "twitterDescription": "Non sei incinta ma sogni un bambino? Cosa simboleggiano i sogni di gravidanza, dai nuovi inizi alla creatività. Perché questi sogni ti visitano.",
+  "twitterDescription": "Sognare di essere incinta: cosa può raccontare il sogno e cosa annotare al risveglio.",
   "twitterImage": "https://noctalia.app/img/blog/pregnancy-dreams-meaning.webp",
   "twitterImageAlt": "Luce soffusa e simboli che rappresentano la crescita e i nuovi inizi",
   "publishedTime": "2025-12-11",
-  "modifiedTime": "2026-01-06",
+  "modifiedTime": "2026-10-08",
   "author": "Thanh Chau",
   "prevPath": "/it/blog/sogni-sul-tuo-ex-cosa-significano-veramente",
   "nextPath": "/it/blog/incubi-cause-significato-e-come-fermarli",
   "preloadImage": "/img/blog/pregnancy-dreams-meaning.webp",
   "jsonLd": [
-    "{\n            \"@context\": \"https://schema.org\",\n            \"@type\": \"BlogPosting\",\n            \"headline\": \"Sogni di gravidanza: cosa significano (anche se non sei incinta)\",\n            \"description\": \"Cosa significano i sogni di gravidanza? Scopri perché sogni una gravidanza, un parto o dei bambini.\",\n            \"image\": {\n                \"@type\": \"ImageObject\",\n                \"url\": \"https://noctalia.app/img/blog/pregnancy-dreams-meaning.webp\",\n                \"width\": 1200,\n                \"height\": 630\n            },\n            \"author\": [\n                {\n                    \"@type\": \"Person\",\n                    \"@id\": \"https://noctalia.app/it/chi-siamo#person\",\n                    \"name\": \"Thanh Chau\",\n                    \"jobTitle\": \"Founder & Publication Director\",\n                    \"url\": \"https://noctalia.app/it/chi-siamo\",\n                    \"worksFor\": {\n                        \"@type\": \"Organization\",\n                        \"@id\": \"https://noctalia.app/#organization\",\n                        \"name\": \"Noctalia\",\n                        \"url\": \"https://noctalia.app\"\n                    }\n                },\n                {\n                    \"@type\": \"Organization\",\n                    \"@id\": \"https://noctalia.app/#organization\",\n                    \"name\": \"Noctalia\",\n                    \"url\": \"https://noctalia.app\",\n                    \"logo\": {\n                        \"@type\": \"ImageObject\",\n                        \"url\": \"https://noctalia.app/logo/logo_noctalia.png\"\n                    }\n                }\n            ],\n            \"publisher\": {\n                \"@type\": \"Organization\",\n                \"name\": \"Noctalia\",\n                \"url\": \"https://noctalia.app\",\n                \"logo\": {\n                    \"@type\": \"ImageObject\",\n                    \"url\": \"https://noctalia.app/logo/logo_noctalia.png\"\n                }\n            },\n            \"datePublished\": \"2025-12-11\",\n            \"dateModified\": \"2026-01-06\",\n            \"mainEntityOfPage\": {\n                \"@type\": \"WebPage\",\n                \"@id\": \"https://noctalia.app/it/blog/sogni-di-gravidanza-cosa-significano-anche-se-non-sei-incinta\"\n            },\n            \"inLanguage\": \"it\",\n            \"isAccessibleForFree\": true,\n            \"wordCount\": 951,\n            \"timeRequired\": \"PT4M\",\n            \"url\": \"https://noctalia.app/it/blog/sogni-di-gravidanza-cosa-significano-anche-se-non-sei-incinta\"\n        }",
-    "{\n        \"@context\": \"https://schema.org\",\n        \"@type\": \"FAQPage\",\n        \"mainEntity\": [\n                {\n                        \"@type\": \"Question\",\n                        \"name\": \"Cosa significa sognare di essere incinta?\",\n                        \"acceptedAnswer\": {\n                                \"@type\": \"Answer\",\n                                \"text\": \"I sogni di gravidanza spesso simboleggiano qualcosa di nuovo che si sviluppa nella tua vita: un progetto creativo, un'idea, una relazione o una crescita personale. Rappresentano la gestazione di possibilità, non necessariamente la gravidanza letterale. Il sogno riflette qualcosa che stai coltivando e che ti stai preparando a \\\"far nascere\\\" nel mondo.\"\n                        }\n                },\n                {\n                        \"@type\": \"Question\",\n                        \"name\": \"Perché sogno la gravidanza quando non sono incinta?\",\n                        \"acceptedAnswer\": {\n                                \"@type\": \"Answer\",\n                                \"text\": \"Le persone non incinte sognano comunemente una gravidanza perché questi sogni simboleggiano la creazione, i nuovi inizi e la trasformazione. Potresti iniziare un nuovo lavoro, progetto o fase della vita. Il tuo subconscio usa le immagini della gravidanza per rappresentare tutto ciò che stai sviluppando o coltivando.\"\n                        }\n                },\n                {\n                        \"@type\": \"Question\",\n                        \"name\": \"I sogni di gravidanza predicono la gravidanza reale?\",\n                        \"acceptedAnswer\": {\n                                \"@type\": \"Answer\",\n                                \"text\": \"Mentre alcune persone riferiscono di sogni di gravidanza prima di scoprire di essere incinte, la maggior parte dei sogni di gravidanza sono simbolici piuttosto che predittivi. In genere rappresentano progetti creativi, nuovi inizi o sviluppo personale piuttosto che una gravidanza letterale.\"\n                        }\n                }\n        ]\n}",
+    "{\n    \"@context\": \"https://schema.org\",\n    \"@type\": \"BlogPosting\",\n    \"headline\": \"Sogni di gravidanza: cosa possono significare, anche se non sei incinta\",\n    \"description\": \"Sognare di essere incinta, di partorire o che un’amica aspetta un bambino: cosa possono significare i sogni di gravidanza e cosa dice la ricerca.\",\n    \"image\": {\n        \"@type\": \"ImageObject\",\n        \"url\": \"https://noctalia.app/img/blog/pregnancy-dreams-meaning.webp\",\n        \"width\": 1200,\n        \"height\": 630\n    },\n    \"author\": [\n        {\n            \"@type\": \"Person\",\n            \"@id\": \"https://noctalia.app/it/chi-siamo#person\",\n            \"name\": \"Thanh Chau\",\n            \"jobTitle\": \"Founder & Publication Director\",\n            \"url\": \"https://noctalia.app/it/chi-siamo\",\n            \"worksFor\": {\n                \"@type\": \"Organization\",\n                \"@id\": \"https://noctalia.app/#organization\",\n                \"name\": \"Noctalia\",\n                \"url\": \"https://noctalia.app\"\n            }\n        },\n        {\n            \"@type\": \"Organization\",\n            \"@id\": \"https://noctalia.app/#organization\",\n            \"name\": \"Noctalia\",\n            \"url\": \"https://noctalia.app\",\n            \"logo\": {\n                \"@type\": \"ImageObject\",\n                \"url\": \"https://noctalia.app/logo/logo_noctalia.png\"\n            }\n        }\n    ],\n    \"publisher\": {\n        \"@type\": \"Organization\",\n        \"name\": \"Noctalia\",\n        \"url\": \"https://noctalia.app\",\n        \"logo\": {\n            \"@type\": \"ImageObject\",\n            \"url\": \"https://noctalia.app/logo/logo_noctalia.png\"\n        }\n    },\n    \"datePublished\": \"2025-12-11\",\n    \"dateModified\": \"2026-10-08\",\n    \"mainEntityOfPage\": {\n        \"@type\": \"WebPage\",\n        \"@id\": \"https://noctalia.app/it/blog/sogni-di-gravidanza-cosa-significano-anche-se-non-sei-incinta\"\n    },\n    \"inLanguage\": \"it\",\n    \"isAccessibleForFree\": true,\n    \"wordCount\": 2097,\n    \"timeRequired\": \"PT10M\",\n    \"url\": \"https://noctalia.app/it/blog/sogni-di-gravidanza-cosa-significano-anche-se-non-sei-incinta\"\n}",
+    "{\n    \"@context\": \"https://schema.org\",\n    \"@type\": \"FAQPage\",\n    \"mainEntity\": [\n        {\n            \"@type\": \"Question\",\n            \"name\": \"Cosa significa sognare di essere incinta?\",\n            \"acceptedAnswer\": {\n                \"@type\": \"Answer\",\n                \"text\": \"Non c’è un significato unico. Il sogno accompagna spesso qualcosa di nuovo o che sta maturando nella tua vita: un progetto, un ruolo, una relazione, un cambiamento o la domanda se avere figli. L’emozione provata nel sogno e ciò che stai vivendo ora sono gli indizi migliori.\"\n            }\n        },\n        {\n            \"@type\": \"Question\",\n            \"name\": \"Perché sogno una gravidanza se non sono incinta?\",\n            \"acceptedAnswer\": {\n                \"@type\": \"Answer\",\n                \"text\": \"I sogni prendono le immagini da ciò che ti occupa la mente. La gravidanza è un’immagine naturale per qualcosa che richiede tempo per crescere e ti cambia la vita. Un nuovo lavoro, un progetto o una decisione sui figli possono farla tornare, che tu sia uomo o donna.\"\n            }\n        },\n        {\n            \"@type\": \"Question\",\n            \"name\": \"I sogni di gravidanza predicono una gravidanza reale?\",\n            \"acceptedAnswer\": {\n                \"@type\": \"Answer\",\n                \"text\": \"No. Un sogno non può né rilevare né annunciare una gravidanza. Se pensi di poter essere incinta, fai un test o rivolgiti al tuo medico.\"\n            }\n        },\n        {\n            \"@type\": \"Question\",\n            \"name\": \"È normale avere incubi in gravidanza?\",\n            \"acceptedAnswer\": {\n                \"@type\": \"Answer\",\n                \"text\": \"Sì, brutti sogni e incubi sono frequenti in gravidanza, soprattutto al terzo trimestre, e non predicono nulla sul bambino. Se ti rovinano il sonno, si ripetono o ti lasciano ansiosa durante il giorno, parlane con l’ostetrica o con il tuo medico.\"\n            }\n        }\n    ]\n}",
     "{\n    \"@context\": \"https://schema.org\",\n    \"@type\": \"BreadcrumbList\",\n    \"itemListElement\": [\n        {\n            \"@type\": \"ListItem\",\n            \"position\": 1,\n            \"name\": \"Home\",\n            \"item\": \"https://noctalia.app/it/\"\n        },\n        {\n            \"@type\": \"ListItem\",\n            \"position\": 2,\n            \"name\": \"Risorse\",\n            \"item\": \"https://noctalia.app/it/blog/\"\n        },\n        {\n            \"@type\": \"ListItem\",\n            \"position\": 3,\n            \"name\": \"Sogni di gravidanza\",\n            \"item\": \"https://noctalia.app/it/blog/sogni-di-gravidanza-cosa-significano-anche-se-non-sei-incinta\"\n        }\n    ]\n}"
   ],
   "activeNav": "resources"
@@ -61,13 +61,13 @@
 <a class="text-xs font-mono text-purple-200/70 border border-white/10 rounded-full px-3 py-1 hover:text-white hover:border-dream-salmon/30 transition-colors" href="significati-dei-sogni-interpretazione-e-simboli">Argomento: significati dei sogni</a>
 <span aria-hidden="true" class="w-full sm:hidden"></span>
 <span class="text-sm text-purple-300/60">Pubblicato l'11 dicembre 2025</span>
-<span class="text-sm text-purple-300/60">3 minuti di lettura</span>
+<span class="text-sm text-purple-300/60">10 minuti di lettura</span>
 </div>
 <h1 class="font-serif text-3xl md:text-5xl mb-6 text-transparent bg-clip-text bg-gradient-to-b from-white via-dream-lavender to-purple-400/50 leading-tight">
-                    Sogni di gravidanza: cosa significano (anche se non sei incinta)
+                    Sogni di gravidanza: cosa possono significare, anche se non sei incinta
                 </h1>
 <p class="text-lg text-purple-200/80 leading-relaxed">
-                    Guardi in basso e vedi una pancia gonfia. O forse sei in travaglio, stai tenendo in braccio un neonato o stai scoprendo di essere inaspettatamente incinta. Questi sogni possono sembrare profondamente significativi o profondamente confusi, soprattutto se la <a class="text-dream-salmon hover:underline" href="../simboli/gravidanza">gravidanza</a> non è nel tuo radar. I sogni di gravidanza sono tra le esperienze oniriche più simbolicamente ricche. Esploriamo ciò che il tuo subconscio sta veramente creando.
+                    La tua mano si posa su una pancia rotonda che ieri non c’era. Oppure sei in sala parto, con in braccio un neonato che sai essere tuo. Poi ti svegli: nessuna <a class="text-dream-salmon hover:underline" href="../simboli/gravidanza">gravidanza</a>, e forse nemmeno il desiderio di un figlio. Sognare di essere incinta sembra un annuncio. Più spesso mette in scena qualcosa che sta crescendo nella tua vita, o una preoccupazione al riguardo, e sono i dettagli ad aiutarti a capire quale delle due.
                 </p>
 </header>
 <!-- Author Byline (E-E-A-T) -->
@@ -83,7 +83,7 @@
 <!-- Quick Answer (AI SEO) -->
 <section class="glass-panel rounded-2xl p-6 mb-8 border border-dream-salmon/20 bg-white/5" aria-labelledby="quick-answer-title">
     <h2 id="quick-answer-title" class="font-serif text-xl text-dream-cream mb-3">Risposta rapida</h2>
-    <p class="text-purple-100/80 leading-relaxed">I sogni di gravidanza sono tra i temi onirici più comuni e si verificano indipendentemente dal sesso o dallo stato di gravidanza effettivo. Nella psicologia dei sogni, la gravidanza simboleggia creativita, nuovi inizi e crescita personale. Per chi e effettivamente in gravidanza, i cambiamenti ormonali e le alterazioni del sonno aumentano la vivacita e la frequenza dei sogni. Gli scenari più ricorrenti includono partorire (nuovi progetti o idee che emergono), essere incinta inaspettatamente (ansia per il cambiamento) o vedere qualcun altro in gravidanza (qualita che si sviluppano in quella persona o in se stessi).</p>
+    <p class="text-purple-100/80 leading-relaxed">Sognare di essere incinta non significa esserlo, e il sogno non annuncia una gravidanza. Fuori dalla gravidanza, l’immagine accompagna spesso qualcosa che comincia o che matura: un progetto, un nuovo ruolo, una relazione, un cambiamento che stai preparando, oppure la domanda se avere figli. In gravidanza, sogni intensi e incubi sono frequenti, anche perché il sonno è più spezzato. L’emozione che hai provato nel sogno è l’indizio migliore per scegliere la lettura giusta.</p>
 </section>
 <figure class="mb-12 rounded-2xl overflow-hidden">
 <img alt="Luce soffusa e simboli che rappresentano la crescita e i nuovi inizi" class="w-full h-auto" fetchpriority="high" height="630" loading="eager" sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 33vw" src="../../img/blog/pregnancy-dreams-meaning.webp" srcset="../../img/blog/pregnancy-dreams-meaning-480w.webp 480w, ../../img/blog/pregnancy-dreams-meaning-800w.webp 800w, ../../img/blog/pregnancy-dreams-meaning-1200w.webp 1200w" width="1200">
@@ -93,39 +93,36 @@
 <i class="w-5 h-5 text-dream-salmon" data-lucide="list"></i> Sommario
                 </h2>
 <ol class="space-y-2 text-sm text-purple-200/70">
-<li><a class="toc-link block" href="#symbolism">1. Il simbolismo dei sogni in gravidanza</a></li>
-<li><a class="toc-link block" href="#scenarios">2. Scenari comuni di sogni in gravidanza</a></li>
-<li><a class="toc-link block" href="#meanings">3. Cosa significano questi sogni</a></li>
-<li><a class="toc-link block" href="#who-has-them">4. Chi sogna una gravidanza</a></li>
-<li><a class="toc-link block" href="#actual-pregnancy">5. Sogni durante la gravidanza effettiva</a></li>
-<li><a class="toc-link block" href="#action">6. Lavorare con i sogni in gravidanza</a></li>
+<li><a class="toc-link block" href="#symbolism">1. Perché sogni di essere incinta se non lo sei?</a></li>
+<li><a class="toc-link block" href="#scenarios">2. Che cosa è successo nel tuo sogno?</a></li>
+<li><a class="toc-link block" href="#meanings">3. Cinque modi di leggere un sogno di gravidanza</a></li>
+<li><a class="toc-link block" href="#who-has-them">4. Chi fa sogni di gravidanza?</a></li>
+<li><a class="toc-link block" href="#actual-pregnancy">5. Sognare in gravidanza: cosa mostra la ricerca</a></li>
+<li><a class="toc-link block" href="#action">6. Cosa fare dopo un sogno di gravidanza</a></li>
 </ol>
 </nav>
 <div class="prose max-w-none text-gray-300">
-<h2 id="symbolism">Il simbolismo dei sogni in gravidanza e il loro significato</h2>
+<h2 id="symbolism">Perché sogni di essere incinta se non lo sei?</h2>
 <p>
-                    Nel simbolismo dei sogni, gravidanza raramente significa gravidanza letterale. Rappresenta invece una delle metafore più potenti che abbiamo: <strong>creazione, sviluppo e portare qualcosa di nuovo nel mondo</strong>.
-                </p>
+Un sogno raramente annuncia un fatto reale. Prende in prestito le immagini da ciò che ti occupa già la mente. Studiosi come G. William Domhoff parlano di continuità tra sogno e vita da svegli: le persone, i progetti e le preoccupazioni delle tue giornate tornano di notte, spesso ingigantiti o travestiti.
+</p>
 <p>
-                    Pensa a cosa comporta la gravidanza: coltivare qualcosa che sta crescendo, anticipando un nuovo arrivo e subendo tu stesso una trasformazione nel processo. Questi temi si applicano a innumerevoli situazioni della vita oltre all'avere un <a class="text-dream-salmon hover:underline" href="../simboli/bambino-neonato">bambino</a>.
-                </p>
-<p>
-                    Questi sogni tendono a comparire quando:
-                </p>
+La gravidanza si presta bene a questo gioco. Qualcosa cresce senza vedersi, richiede tempo, cambia il corpo e le abitudini, poi arriva, che ci si senta pronti o no. Può evocare molte cose oltre a un <a class="text-dream-salmon hover:underline" href="../simboli/bambino-neonato">neonato</a>. Questo sogno compare spesso quando:
+</p>
 <ul>
-<li><strong>Avviare un progetto creativo</strong> - un libro, un'attività commerciale, un'opera d'arte o qualsiasi attività creativa</li>
-<li><strong>Sviluppare una nuova idea</strong> - qualcosa che stai coltivando prima di condividerlo con il mondo</li>
-<li><strong>Inizio di una nuova fase della vita</strong> - cambiamento di carriera, relazione o trasformazione personale</li>
-<li><strong>Crescere personalmente</strong> - sviluppare nuovi aspetti di te stesso</li>
-<li><strong>Manifestare obiettivi</strong> - lavorare verso qualcosa che non si è ancora materializzato</li>
+<li><strong>Inizi qualcosa</strong>: un lavoro, un corso, un’attività, un trasloco</li>
+<li><strong>Porti avanti un progetto</strong> che non hai ancora mostrato a nessuno, come un libro, una candidatura o un piano</li>
+<li><strong>Ti prendi una nuova responsabilità</strong>, verso una squadra, i tuoi genitori o una casa</li>
+<li><strong>Ti chiedi se avere figli</strong>, oppure se non averne</li>
+<li><strong>Stai cambiando dentro</strong>, in un modo che non si è ancora concluso</li>
 </ul>
 <p>
-                    Al di fuori di una gravidanza reale, questa immagine può accompagnare anche un nuovo progetto, ruolo o fase della vita. Il contesto della persona conta più di qualsiasi regola simbolica fissa.
-                </p>
-<h2 id="scenarios">Scenari e interpretazioni comuni dei sogni di gravidanza</h2>
+Sono piste, non regole. Lo stesso sogno può essere gioioso per una persona e angosciante per un’altra, e non avrà lo stesso significato per entrambe.
+</p>
+<h2 id="scenarios">Che cosa è successo nel tuo sogno?</h2>
 <p>
-                    Lo scenario specifico della gravidanza fornisce indizi sul significato del sogno:
-                </p>
+Prima di cercare un significato, descrivi la scena. Queste varianti non sono definizioni: sono domande da confrontare con ciò che hai provato.
+</p>
 </div>
 <div class="grid md:grid-cols-2 gap-6 my-12">
 <div class="dream-card glass-panel rounded-xl p-6 border border-transparent">
@@ -136,158 +133,172 @@
 <h3 class="font-serif text-lg text-dream-cream">Scoprire di essere incinta</h3>
 </div>
 <p class="text-sm text-gray-300">
-                        I sogni di scoperta suggeriscono <strong>consapevolezza di un nuovo potenziale</strong> nella tua vita. Qualcosa sta iniziando a svilupparsi e lo stai riconoscendo solo ora. Presta attenzione a come ti sentivi: eccitata, spaventata, sorpresa?
-                    </p>
+Un test positivo, l’annuncio di un medico, una pancia che noti all’improvviso? Questi sogni accompagnano spesso il momento in cui capisci che <strong>qualcosa di nuovo è cominciato</strong>. Gioia, shock o paura? La prima reazione dice più della notizia stessa.
+</p>
 </div>
 <div class="dream-card glass-panel rounded-xl p-6 border border-transparent">
 <div class="flex items-center gap-3 mb-4">
 <div class="p-2 bg-dream-salmon/10 rounded-lg">
 <i class="w-5 h-5 text-dream-salmon" data-lucide="clock"></i>
 </div>
-<h3 class="font-serif text-lg text-dream-cream">Essere fortemente incinta</h3>
+<h3 class="font-serif text-lg text-dream-cream">Essere al nono mese</h3>
 </div>
 <p class="text-sm text-gray-300">
-                        Essere molto avanti nella gravidanza indica un progetto o un cambiamento che <strong>quasi pronto a manifestarsi</strong>. Qualcosa che hai sviluppato è in fase di completamento o è pronto a "nascere".
-                    </p>
+Passi pesanti, il termine ormai vicino: la scena può richiamare qualcosa di <strong>quasi pronto</strong>, o una scadenza che si avvicina. Ti sembrava il momento giusto, o avresti voluto più tempo?
+</p>
 </div>
 <div class="dream-card glass-panel rounded-xl p-6 border border-transparent">
 <div class="flex items-center gap-3 mb-4">
 <div class="p-2 bg-dream-salmon/10 rounded-lg">
 <i class="w-5 h-5 text-dream-salmon" data-lucide="activity"></i>
 </div>
-<h3 class="font-serif text-lg text-dream-cream">Dare la vita</h3>
+<h3 class="font-serif text-lg text-dream-cream">Partorire</h3>
 </div>
 <p class="text-sm text-gray-300">
-                        Il travaglio e i sogni di parto rappresentano <strong>il culmine dello sforzo</strong> : portare alla luce qualcosa che stai sviluppando. La facilità o la difficoltà del parto può riflettere il modo in cui anticipi la transizione.
-                    </p>
+Una <a class="text-dream-salmon hover:underline" href="../simboli/nascita">nascita</a> porta qualcosa alla luce. Un parto facile e uno doloroso non raccontano la stessa storia: il sogno può rispecchiare <strong>come immagini un cambiamento in arrivo</strong>. Chi c’era con te, e dove ti trovavi?
+</p>
 </div>
 <div class="dream-card glass-panel rounded-xl p-6 border border-transparent">
 <div class="flex items-center gap-3 mb-4">
 <div class="p-2 bg-dream-salmon/10 rounded-lg">
 <i class="w-5 h-5 text-dream-salmon" data-lucide="alert-triangle"></i>
 </div>
-<h3 class="font-serif text-lg text-dream-cream">Complicanze della gravidanza</h3>
+<h3 class="font-serif text-lg text-dream-cream">Complicazioni o un aborto spontaneo</h3>
 </div>
 <p class="text-sm text-gray-300">
-                        Sogni di aborto spontaneo o complicazioni possono riflettere <strong>ansia per il fallimento di un progetto</strong> o paura che qualcosa che stai coltivando non possa realizzarsi. Questi possono anche elaborare le perdite passate.
-                    </p>
+Sono sogni pesanti al risveglio. Accompagnano spesso la <strong>paura di perdere qualcosa di fragile</strong>: un progetto, una relazione, una speranza. Dopo una perdita reale possono anche riaccendere il dolore. Non predicono nulla su una gravidanza.
+</p>
 </div>
 <div class="dream-card glass-panel rounded-xl p-6 border border-transparent">
 <div class="flex items-center gap-3 mb-4">
 <div class="p-2 bg-dream-salmon/10 rounded-lg">
 <i class="w-5 h-5 text-dream-salmon" data-lucide="help-circle"></i>
 </div>
-<h3 class="font-serif text-lg text-dream-cream">Gravidanza inaspettata</h3>
+<h3 class="font-serif text-lg text-dream-cream">Una gravidanza inaspettata</h3>
 </div>
 <p class="text-sm text-gray-300">
-                        I sogni di una gravidanza non pianificata potrebbero indicare <strong>qualcosa che si sta sviluppando nella tua vita a cui non hai avviato consapevolmente</strong>. Considera cosa sta crescendo senza una tua pianificazione attiva.
-                    </p>
+Incinta senza averlo deciso, magari in una situazione impossibile? Il sogno può richiamare <strong>un cambiamento che non hai scelto</strong>, o una responsabilità arrivata troppo presto. Che cosa è cominciato nella tua vita senza chiederti il permesso?
+</p>
 </div>
 <div class="dream-card glass-panel rounded-xl p-6 border border-transparent">
 <div class="flex items-center gap-3 mb-4">
 <div class="p-2 bg-dream-salmon/10 rounded-lg">
 <i class="w-5 h-5 text-dream-salmon" data-lucide="users"></i>
 </div>
-<h3 class="font-serif text-lg text-dream-cream">Qualcun'altra incinta</h3>
+<h3 class="font-serif text-lg text-dream-cream">Un’altra persona incinta</h3>
 </div>
 <p class="text-sm text-gray-300">
-                        Sognare la gravidanza di un'altra persona può riflettere <strong>la crescita a cui stai assistendo</strong> o aspetti di te stesso rappresentati da quella persona che si stanno sviluppando.
-                    </p>
+Un’amica, tua sorella, una collega in dolce attesa? Il sogno può parlare del <strong>tuo rapporto con lei</strong>, di un cambiamento che noti in lei o di una parte di te che ti ricorda. Non è un segno che sia incinta.
+</p>
 </div>
 </div>
 <div class="prose max-w-none text-gray-300">
-<h2 id="meanings">Cosa significano i sogni in gravidanza: 5 interpretazioni chiave</h2>
-<h3>1. Gestazione creativa nei sogni di gravidanza</h3>
+<h2 id="meanings">Cinque modi di leggere un sogno di gravidanza</h2>
 <p>
-                    Il significato più comune: <strong>stai sviluppando qualcosa di creativo</strong>. Potrebbe trattarsi di arte, scrittura, musica, un'idea imprenditoriale o qualsiasi progetto che richieda di essere coltivato prima di essere pronto per essere condiviso con il mondo. La gravidanza rappresenta il periodo di incubazione.
-                </p>
-<h3>2. Trasformazione e crescita personale</h3>
+Nessun elenco può dirti perché <em>tu</em> abbia fatto questo sogno. Queste letture ricorrono spesso quando si confronta il sogno con ciò che si sta vivendo. Tieni quella che ti torna e lascia le altre.
+</p>
+<h3>1. Un progetto in gestazione</h3>
 <p>
-                    Questi sogni compaiono frequentemente durante periodi di <strong>crescita personale significativa</strong>. Sei "incinta" con una nuova versione di te stesso, sviluppando nuovi tratti, convinzioni o modi di essere che non si sono ancora completamente manifestati.
-                </p>
-<h3>3. Nuovi inizi e transizioni di vita</h3>
+La gravidanza come incubazione: un <strong>progetto che ha bisogno di tempo</strong> prima di poter essere mostrato. Se il sogno torna mentre scrivi, costruisci o prepari qualcosa, vale la pena annotare il collegamento. Quale progetto stai portando avanti in questo momento?
+</p>
+<h3>2. Un cambiamento interiore</h3>
 <p>
-                    Iniziare qualcosa di nuovo - un lavoro, una relazione, un capitolo della vita - può innescare sogni di gravidanza. Il sogno riconosce che <strong>sta cominciando qualcosa che crescerà e si svilupperà</strong> nel tempo.
-                </p>
-<h3>4. Ansia riguardo alla responsabilità nei sogni</h3>
+Alcune persone fanno questo sogno in un periodo di <strong>cambiamento personale</strong>: acquistare fiducia, lasciare un vecchio ruolo, entrare in uno nuovo. Che cosa è diverso in te rispetto a un anno fa?
+</p>
+<h3>3. Un nuovo inizio</h3>
 <p>
-                    Per alcune, i sogni di gravidanza riflettono <strong>ansia per le nuove responsabilità</strong>. Come aspettare un <a class="text-dream-salmon hover:underline" href="../simboli/bambino">bambino</a>, potresti sentire il peso di qualcosa che richiederà la tua cura e attenzione.
-                </p>
-<h3>5. Desiderio di creazione e eredità</h3>
+Un nuovo lavoro, una nuova relazione, una nuova città. Il sogno può accompagnare l’<strong>incertezza di un inizio</strong>, quando qualcosa è cominciato ma non sai ancora che cosa diventerà.
+</p>
+<h3>4. Il peso di una responsabilità</h3>
 <p>
-                    Questi sogni possono esprimere un <strong>profondo desiderio di creare qualcosa di significativo</strong> , che si tratti di una famiglia, di un lavoro artistico o di un'eredità. Potrebbero emergere quando stai riflettendo su ciò che vuoi mettere al mondo.
-                </p>
+Come l’arrivo di un <a class="text-dream-salmon hover:underline" href="../simboli/bambino">bambino</a>, un nuovo impegno chiede cura e attenzione. Se il sogno era pesante, chiediti <strong>che cosa temi di non riuscire a gestire</strong>, e se hai il sostegno che ti serve.
+</p>
+<h3>5. La questione dei figli</h3>
+<p>
+A volte la lettura più semplice è quella giusta. Se stai cercando una gravidanza, se sei in dubbio o se hai deciso di non avere figli, il sogno può semplicemente <strong>riproporre una domanda che ti sta a cuore</strong>. Non ti dice che cosa decidere, né che cosa stia facendo il tuo corpo.
+</p>
+<h3 id="esempio-diario">Esempio di diario dei sogni</h3>
+<p><strong>Esempio inventato:</strong> mostra come separare ciò che è successo nel sogno da un possibile legame con la giornata.</p>
+<ul>
+<li><strong>Sogno:</strong> «Ero incinta di otto mesi, alla mia scrivania. La mia responsabile continuava a passarmi pratiche e avevo paura che il bambino nascesse prima che finissi.»</li>
+<li><strong>Emozione:</strong> «Orgoglio all’inizio, poi panico. Mi sono svegliata con il cuore in gola.»</li>
+<li><strong>Contesto recente:</strong> «Il mese prossimo lanciamo un nuovo servizio al lavoro. Non sono incinta e non sto cercando un figlio.»</li>
+<li><strong>Domanda da tenere:</strong> «Questo sogno torna quando si avvicina una scadenza, o anche nelle settimane tranquille?»</li>
+</ul>
+<p>Un solo sogno non prova nulla. Annotando gli stessi elementi per più notti vedrai se la pista del lavoro regge o se c’è dell’altro.</p>
+<!-- CTA inline -->
 <aside class="glass-panel rounded-2xl p-6 my-8 border border-dream-salmon/20">
 <div class="flex items-start gap-4">
 <div class="p-3 bg-dream-salmon/10 rounded-xl">
 <i class="w-6 h-6 text-dream-salmon" data-lucide="sparkles"></i>
 </div>
 <div>
-<h4 class="font-serif text-lg text-dream-cream mb-2">Comprendi i tuoi sogni creativi</h4>
-<p class="text-sm text-gray-400 mb-4">Noctalia analizza i tuoi sogni di gravidanza - la fase della gravidanza, le tue emozioni e i dettagli del sogno - per rivelare ciò che stai veramente coltivando nella tua vita.</p>
+<h4 class="font-serif text-lg text-dream-cream mb-2">Annota il sogno prima che svanisca</h4>
+<p class="text-sm text-gray-400 mb-4">In Noctalia racconti il sogno a voce o lo scrivi appena sveglio. Viene trascritto e salvato nel tuo diario, e puoi rileggere i tuoi sogni di gravidanza uno accanto all’altro per vedere che cosa ritorna.</p>
 <a class="inline-flex items-center gap-2 text-sm text-dream-salmon hover:text-dream-salmonLight transition-colors" href="/it/">
-                                Prova Noctalia gratuitamente <i class="w-4 h-4" data-lucide="arrow-right"></i>
+                                Prova Noctalia gratis <i class="w-4 h-4" data-lucide="arrow-right"></i>
 </a>
 </div>
 </div>
 </aside>
-<h2 id="who-has-them">Chi ha sogni di gravidanza e Perché</h2>
-<h3>Persone di tutti i sessi sognano una gravidanza</h3>
+<h2 id="who-has-them">Chi fa sogni di gravidanza?</h2>
+<h3>Gli uomini e chiunque non possa restare incinta</h3>
 <p>
-<strong>Anche gli uomini e le persone non binarie sognano una gravidanza</strong>. Poiché questi sogni simboleggiano la creazione e lo sviluppo, non sono limitati dalla biologia. Un uomo che sogna di essere incinta potrebbe coltivare un'idea imprenditoriale o sviluppare un nuovo aspetto di se stesso.
-                </p>
-<h3>Chi non pianifica figli sogna ancora una gravidanza</h3>
+Niente, in un sogno, richiede un corpo capace di portare avanti una gravidanza. Anche un uomo può sognare di essere incinto, come qualsiasi persona, di qualunque genere. L’immagine funziona allo stesso modo: qualcosa che porti dentro, qualcosa che sta per arrivare.
+</p>
+<h3>Sognare di essere incinta senza volere figli</h3>
 <p>
-                    Le persone che non vogliono figli o non possono averli continuano a sognare una gravidanza. Il simbolismo rimane lo stesso: <strong>creazione, sviluppo e nuovi inizi</strong> non correlati alla genitorialità letterale.
-                </p>
-<h3>Le persone in transizione spesso sognano una gravidanza</h3>
+Questo sogno non rivela un desiderio nascosto di maternità. Può parlare di tutt’altro, o riprendere le domande che ti fanno le persone intorno a te. <strong>La tua reazione nel sogno</strong> dice più dell’immagine.
+</p>
+<h3>Se stai cercando un figlio</h3>
 <p>
-                    Chi cambia carriera, laureati, coloro che avviano un'impresa, persone con nuove relazioni - <strong>chiunque stia attraversando transizioni di vita significative</strong> potrebbero sperimentare sogni di gravidanza mentre il loro subconscio ne elabora lo sviluppo.
-                </p>
-<h3>Professionisti creativi e simbolismo dei sogni di gravidanza</h3>
+Quando cerchi una gravidanza, questi sogni possono essere teneri o dolorosi, soprattutto dopo un test negativo. Mostrano quanto la speranza sia presente. Non significano che la gravidanza sia iniziata, né che non arriverà: solo un test può dirtelo.
+</p>
+<h3>Dopo la perdita di una gravidanza</h3>
 <p>
-                    Scrittori, artisti, imprenditori e altri creativi spesso riportano sogni di gravidanza durante <strong>periodi creativi attivi</strong>. I sogni riflettono la gestazione del loro lavoro.
-                </p>
-<h2 id="actual-pregnancy">Sogni durante una gravidanza effettiva: cosa aspettarsi</h2>
+Dopo un aborto spontaneo o un parto difficile, i sogni di gravidanza possono tornare per un po’. Possono far parte del lutto. Se ti tolgono il sonno o ti lasciano molto turbata, parlarne con il tuo medico, con l’ostetrica o con uno psicologo può aiutare.
+</p>
+<h2 id="actual-pregnancy">Sognare in gravidanza: cosa mostra la ricerca</h2>
 <p>
-                    Se sei effettivamente incinta, i sogni assumono dimensioni aggiuntive:
-                </p>
-<h3>Maggiore ricordo dei sogni durante la gravidanza</h3>
+Se sei incinta, sogni intensi e incubi sono frequenti, secondo la <a class="text-dream-salmon hover:underline" href="https://www.sleepfoundation.org/pregnancy/how-pregnancy-affects-dreams" rel="nofollow noopener noreferrer" target="_blank">Sleep Foundation</a>. Il sonno è più spezzato, e svegliarsi nel mezzo di un sogno aiuta a ricordarlo.
+</p>
+<h3>Neonati, parto e diventare madre</h3>
 <p>
-                    Le persone incinte spesso riferiscono <strong>sogni più vividi e un ricordo migliore</strong>. I cambiamenti ormonali, l'interruzione del sonno e l'intensificazione delle emozioni contribuiscono a rendere i sogni più memorabili.
-                </p>
-<h3>Elaborazione delle ansie attraverso i sogni in gravidanza</h3>
+In uno studio di Lara-Carrasco e colleghi (2013), alcune donne al terzo trimestre hanno tenuto un diario dei sogni per due settimane. Rispetto a donne non incinte, sognavano più spesso neonati, se stesse come <a class="text-dream-salmon hover:underline" href="../simboli/madre">madri</a>, la gravidanza e il parto. I loro sogni contenevano anche più immagini inquietanti. Gli autori lo collegano al lavoro psicologico della gravidanza: immaginarsi come madre e farsi un’idea del bambino.
+</p>
+<h3>Più brutti sogni al terzo trimestre</h3>
 <p>
-                    Durante la gravidanza, i sogni elaborano frequentemente <strong>paure e ansie riguardo alla genitorialità</strong>, alla nascita e ai cambiamenti futuri. Questa è un'elaborazione emotiva normale e sana.
-                </p>
-<h3>Temi comuni nei sogni delle donne incinte</h3>
+Un secondo studio dello stesso gruppo (2014) ha rilevato che le donne al terzo trimestre ricordavano più brutti sogni e incubi rispetto alle donne non incinte. La paura del parto e i risvegli notturni più frequenti probabilmente contribuiscono. Un sogno spaventoso sul bambino non è un avvertimento sulla sua salute.
+</p>
+<h3>Dopo la nascita</h3>
 <p>
-                    Le persone incinte sognano comunemente: il sesso o l'aspetto del bambino, <strong>scenari di travaglio e parto</strong>, prendersi cura del neonato e, talvolta, scenari angoscianti che riflettono le condizioni sottostanti. ansie.
-                </p>
+Tore Nielsen e Tyna Paquette (2007) hanno confrontato donne incinte, neomamme e donne mai state incinte. I sogni sul bambino erano frequenti nei primi due gruppi. Le neomamme sognavano più spesso che il bambino fosse in pericolo, e più spesso si muovevano durante questi sogni. Molte si svegliavano ansiose o confuse, con il bisogno di controllare che il bambino stesse bene. Sapere che è comune può rendere quelle notti meno allarmanti.
+</p>
+<h3>Quando parlarne con qualcuno</h3>
 <p>
-                    Durante la gravidanza, i sogni possono riflettere preoccupazioni pratiche, aspettative ed emozioni legate al parto o alla cura del bambino. Non predicono l'andamento della gravidanza.
-                </p>
-<h2 id="action">Lavorare con i sogni in gravidanza: come interpretarli</h2>
-<h3>1. Identifica cosa si sta sviluppando nella tua vita</h3>
+Parlane con l’ostetrica, con il tuo medico o con uno psicologo se gli incubi ti impediscono di dormire, se lo stesso incubo torna di continuo, o se durante il giorno ti senti ansiosa o giù di morale. Sono segnali che meritano attenzione in gravidanza come dopo il parto, e un aiuto esiste. La nostra <a class="text-dream-salmon hover:underline" href="incubi-cause-significato-e-come-fermarli">guida agli incubi</a> descrive approcci che possono aiutare.
+</p>
+<h2 id="action">Cosa fare dopo un sogno di gravidanza</h2>
+<h3>1. Annota la scena, poi l’emozione</h3>
 <p>
-                    Chiediti: <strong>Cosa sto coltivando attualmente?</strong> Quale progetto, idea, relazione o aspetto di te è in fase di sviluppo? Il sogno potrebbe commentare questa crescita.
-                </p>
-<h3>2. Nota la fase della gravidanza nel tuo sogno</h3>
+Chi era incinta, a che mese, dov’eri, come è finita? Poi una riga su ciò che hai provato. L’emozione collega spesso il sogno alla tua giornata più chiaramente dell’immagine.
+</p>
+<h3>2. Chiediti che cosa sta crescendo nella tua vita</h3>
 <p>
-                    Gravidanza iniziale? Prossima al parto? La fase indica <strong>quanto è avanzato il tuo "progetto"</strong>. Le prime fasi suggeriscono nuovi inizi; il travaglio suggerisce che qualcosa sta per manifestarsi.
-                </p>
-<h3>3. Esamina le tue emozioni nel sogno</h3>
+<strong>Su che cosa sto lavorando, che cosa sto aspettando, che cosa mi preoccupa?</strong> Se una risposta arriva subito, annotala accanto al sogno. Se niente torna, lascia la domanda aperta per qualche notte.
+</p>
+<h3>3. Leggi lo stadio come una domanda, non come un calendario</h3>
 <p>
-                    Come ti sentivi nel sogno? <strong>Gioia, ansia, sorpresa, paura?</strong> Queste emozioni rivelano i tuoi sentimenti riguardo a ciò che si sta sviluppando nella tua vita.
-                </p>
-<h3>4. Considera il bambino nel tuo sogno di gravidanza</h3>
+Una gravidanza appena iniziata o un parto non fissano nessuna scadenza nella tua vita. Possono suggerire una domanda: questo progetto ti sembra appena nato, o in ritardo da tempo?
+</p>
+<h3>4. Guarda il bambino, se c’era</h3>
 <p>
-                    Se c'è un bambino nel sogno, com'è? <strong>Le caratteristiche del bambino</strong> potrebbero rappresentare qualità di ciò che stai creando o del "bambino" versione di un nuovo aspetto di te stesso.
-                </p>
-<h3>5. Cerca messaggi nascosti nel tuo sogno</h3>
+Il bambino era tranquillo, piangeva, era strano, l’avevi dimenticato da qualche parte? Questi dettagli possono rispecchiare ciò che provi verso quello che stai mettendo al mondo, o semplicemente i tuoi pensieri su un figlio reale.
+</p>
+<h3>5. Tieni il sogno separato dalla realtà</h3>
 <p>
-                    Cosa sembra dirti il ​​sogno? Ti incoraggia a <strong>coltivare qualcosa con più attenzione</strong>? Preparati per l'arrivo di qualcosa? Affrontare le paure legate a una nuova responsabilità?
-                </p>
+Un sogno non è un test di gravidanza. Se pensi di poter essere incinta, te lo diranno un test o il tuo medico. Se lo sei e un sogno ti preoccupa, parlane alla prossima visita invece di cercarci un presagio.
+</p>
 </div>
 <!-- Related Symbols Start -->
 <section aria-label="Simboli onirici correlati" class="mt-12 mb-8">
@@ -313,14 +324,56 @@
 <div class="w-16 h-16 bg-dream-salmon/10 rounded-full flex items-center justify-center mx-auto mb-6">
 <i class="w-8 h-8 text-dream-salmon" data-lucide="sparkle"></i>
 </div>
-<h3 class="font-serif text-2xl md:text-3xl mb-4 text-dream-cream">Scopri cosa stai creando</h3>
+<h3 class="font-serif text-2xl md:text-3xl mb-4 text-dream-cream">Un sogno è una scena. Più sogni sono una pista.</h3>
 <p class="text-purple-200/70 mb-6 max-w-lg mx-auto">
-                    I sogni di una gravidanza rivelano le forze creative all'opera nella tua vita. Registrali in Noctalia e lascia che l'analisi di Noctalia illumini ciò che il tuo subconscio sta coltivando.
+                    Conserva i tuoi sogni di gravidanza in Noctalia, insieme a ciò che hai provato e a quello che succedeva quella settimana. Rileggendoli insieme vedrai quando ritornano.
                 </p>
 <a class="inline-flex items-center gap-2 px-8 py-4 bg-dream-salmon text-dream-dark rounded-full font-bold hover:bg-dream-salmon/90 transition-colors" href="/it/">
-                    Inizia a esplorare i tuoi sogni <i class="w-5 h-5" data-lucide="arrow-right"></i>
+                    Inizia il mio diario dei sogni <i class="w-5 h-5" data-lucide="arrow-right"></i>
 </a>
 </aside>
+<!-- FAQ Section -->
+<section class="mt-16">
+<h2 class="font-serif text-2xl text-dream-cream mb-8">Domande frequenti</h2>
+<div class="space-y-4">
+<details class="glass-panel rounded-xl p-4 group cursor-pointer">
+<summary class="font-medium flex justify-between items-center text-dream-cream">
+                            Cosa significa sognare di essere incinta?
+                            <i class="w-5 h-5 transition-transform group-open:rotate-180 text-dream-salmon" data-lucide="chevron-down"></i>
+</summary>
+<p class="mt-4 text-sm text-gray-400 leading-relaxed">
+                            Non c’è un significato unico. Il sogno accompagna spesso qualcosa di nuovo o che sta maturando nella tua vita: un progetto, un ruolo, una relazione, un cambiamento o la domanda se avere figli. L’emozione provata nel sogno e ciò che stai vivendo ora sono gli indizi migliori.
+                        </p>
+</details>
+<details class="glass-panel rounded-xl p-4 group cursor-pointer">
+<summary class="font-medium flex justify-between items-center text-dream-cream">
+                            Perché sogno una gravidanza se non sono incinta?
+                            <i class="w-5 h-5 transition-transform group-open:rotate-180 text-dream-salmon" data-lucide="chevron-down"></i>
+</summary>
+<p class="mt-4 text-sm text-gray-400 leading-relaxed">
+                            I sogni prendono le immagini da ciò che ti occupa la mente. La gravidanza è un’immagine naturale per qualcosa che richiede tempo per crescere e ti cambia la vita. Un nuovo lavoro, un progetto o una decisione sui figli possono farla tornare, che tu sia uomo o donna.
+                        </p>
+</details>
+<details class="glass-panel rounded-xl p-4 group cursor-pointer">
+<summary class="font-medium flex justify-between items-center text-dream-cream">
+                            I sogni di gravidanza predicono una gravidanza reale?
+                            <i class="w-5 h-5 transition-transform group-open:rotate-180 text-dream-salmon" data-lucide="chevron-down"></i>
+</summary>
+<p class="mt-4 text-sm text-gray-400 leading-relaxed">
+                            No. Un sogno non può né rilevare né annunciare una gravidanza. Se pensi di poter essere incinta, fai un test o rivolgiti al tuo medico.
+                        </p>
+</details>
+<details class="glass-panel rounded-xl p-4 group cursor-pointer">
+<summary class="font-medium flex justify-between items-center text-dream-cream">
+                            È normale avere incubi in gravidanza?
+                            <i class="w-5 h-5 transition-transform group-open:rotate-180 text-dream-salmon" data-lucide="chevron-down"></i>
+</summary>
+<p class="mt-4 text-sm text-gray-400 leading-relaxed">
+                            Sì, brutti sogni e incubi sono frequenti in gravidanza, soprattutto al terzo trimestre, e non predicono nulla sul bambino. Se ti rovinano il sonno, si ripetono o ti lasciano ansiosa durante il giorno, parlane con l’ostetrica o con il tuo medico.
+                        </p>
+</details>
+</div>
+</section>
                                                             <!-- Blog Nav Start -->
                                                             <section class="mt-12" aria-label="Navigazione tra articoli" data-blog-nav="">
                                                               <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -341,31 +394,6 @@
                                                               </div>
                                                             </section>
                                                             <!-- Blog Nav End -->
-<!-- FAQ (from JSON-LD) -->
-            <section class="mb-10" data-faq-visible="true">
-                <h2 class="font-serif text-xl md:text-2xl text-dream-cream mb-6 flex items-center gap-3">
-                    <i data-lucide="help-circle" class="w-6 h-6 text-dream-salmon"></i>
-                    FAQ
-                </h2>
-                <div class="grid gap-4">
-
-                <div class="glass-panel rounded-2xl p-6 border border-transparent">
-                    <h3 class="font-medium text-dream-cream mb-2">Cosa significa sognare di essere incinta?</h3>
-                    <p class="text-sm text-gray-300 leading-relaxed">I sogni di gravidanza spesso simboleggiano qualcosa di nuovo che si sviluppa nella tua vita: un progetto creativo, un'idea, una relazione o una crescita personale. Rappresentano la gestazione di possibilità, non necessariamente la gravidanza letterale. Il sogno riflette qualcosa che stai coltivando e che ti stai preparando a "far nascere" nel mondo.</p>
-                </div>
-
-                <div class="glass-panel rounded-2xl p-6 border border-transparent">
-                    <h3 class="font-medium text-dream-cream mb-2">Perché sogno la gravidanza quando non sono incinta?</h3>
-                    <p class="text-sm text-gray-300 leading-relaxed">Le persone non incinte sognano comunemente una gravidanza perché questi sogni simboleggiano la creazione, i nuovi inizi e la trasformazione. Potresti iniziare un nuovo lavoro, progetto o fase della vita. Il tuo subconscio usa le immagini della gravidanza per rappresentare tutto ciò che stai sviluppando o coltivando.</p>
-                </div>
-
-                <div class="glass-panel rounded-2xl p-6 border border-transparent">
-                    <h3 class="font-medium text-dream-cream mb-2">I sogni di gravidanza predicono la gravidanza reale?</h3>
-                    <p class="text-sm text-gray-300 leading-relaxed">Mentre alcune persone riferiscono di sogni di gravidanza prima di scoprire di essere incinte, la maggior parte dei sogni di gravidanza sono simbolici piuttosto che predittivi. In genere rappresentano progetti creativi, nuovi inizi o sviluppo personale piuttosto che una gravidanza letterale.</p>
-                </div>
-                </div>
-            </section>
-
             <!-- Blog Related Start -->
             <section class="mt-12" aria-label="Continua a leggere" data-blog-related="">
               <header class="mb-6">
@@ -393,15 +421,15 @@
             <!-- Blog Related End -->
 <!-- Sources / Trust -->
 <section class="mt-16 glass-panel rounded-2xl p-6" id="sources">
-<h2 class="font-serif text-2xl text-dream-cream mb-4">Fonti / Approfondimenti</h2>
+<h2 class="font-serif text-2xl text-dream-cream mb-4">Fonti e letture</h2>
 <ul class="mt-6 space-y-2 text-sm text-gray-400">
-<li><a href="https://dictionary.apa.org/dream" rel="nofollow noopener noreferrer" target="_blank">APA Dictionary of Psychology: Dream</a></li>
-<li><a href="https://doi.org/10.1093/sleep/30.9.1162" rel="nofollow noopener noreferrer" target="_blank">Nielsen &amp; Paquette (2007) — Comportamenti associati ai sogni nelle donne in gravidanza e nel postpartum (Sleep)</a></li>
-<li><a href="https://pubmed.ncbi.nlm.nih.gov/24780135/" rel="nofollow noopener noreferrer" target="_blank">Lara-Carrasco et al. (2014) — Sogni disturbati durante il terzo trimestre di gravidanza (PubMed)</a></li>
-<li><a href="https://pubmed.ncbi.nlm.nih.gov/23986734/" rel="nofollow noopener noreferrer" target="_blank">Lara-Carrasco et al. (2013) — Rappresentazioni materne nei sogni delle donne in gravidanza (PubMed)</a></li>
-<li><a href="https://www.sleepfoundation.org/pregnancy/how-pregnancy-affects-dreams" rel="nofollow noopener noreferrer" target="_blank">Sleep Foundation — Sogni durante la gravidanza</a></li>
+<li><a href="https://pubmed.ncbi.nlm.nih.gov/23986734/" rel="nofollow noopener noreferrer" target="_blank">Lara-Carrasco et al. (2013), «Maternal representations in the dreams of pregnant women: a prospective comparative study», <em>Frontiers in Psychology</em> (PubMed)</a></li>
+<li><a href="https://pubmed.ncbi.nlm.nih.gov/24780135/" rel="nofollow noopener noreferrer" target="_blank">Lara-Carrasco et al. (2014), «Disturbed dreaming during the third trimester of pregnancy» (PubMed)</a></li>
+<li><a href="https://doi.org/10.1093/sleep/30.9.1162" rel="nofollow noopener noreferrer" target="_blank">Nielsen e Paquette (2007), «Dream-associated behaviors affecting pregnant and postpartum women», <em>Sleep</em>, 30(9)</a></li>
+<li><a href="https://www.sleepfoundation.org/pregnancy/how-pregnancy-affects-dreams" rel="nofollow noopener noreferrer" target="_blank">Sleep Foundation, «How Pregnancy Affects Dreams»</a></li>
+<li><a href="https://dreamresearch.net/" rel="nofollow noopener noreferrer" target="_blank">DreamResearch.net, G. William Domhoff</a></li>
 </ul>
-<p class="mt-6 text-xs text-purple-200/60">Ultimo aggiornamento: 6 gennaio 2026</p>
+<p class="mt-6 text-xs text-purple-200/60">Aggiornato l’8 ottobre 2026</p>
 </section>
 </article>
 <!-- Health Disclaimer (TI-97 E-E-A-T) -->
