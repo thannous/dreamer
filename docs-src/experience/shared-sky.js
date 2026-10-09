@@ -2,7 +2,7 @@
 function createSkyMotion(doc, shared, media, main, dreams) {
   const win = doc.defaultView;
   const reduced = win.matchMedia('(prefers-reduced-motion: reduce)');
-  let raf = 0, last = 0, introStart = null, intro = 0;
+  let raf = 0, last = 0;
   let scroll = 0, target = 0, height = win.innerHeight, range = 1, top = 0, end = 1;
   let onScreen = true;
   const clamp = value => Math.max(0, Math.min(1, value));
@@ -13,18 +13,13 @@ function createSkyMotion(doc, shared, media, main, dreams) {
     if (blocked()) { last = 0; return; }
     const dt = last ? Math.min(50, now - last) : 16;
     last = now;
-    let growing = false;
-    if (introStart !== null) {
-      const t = clamp((now - introStart) / 2000);
-      intro = t * t * t * (t * (6 * t - 15) + 10);
-      growing = t < 1;
-      if (!growing) { introStart = null; doc.documentElement.classList.remove('oh-sky-expanding'); }
-    }
     scroll += (target - scroll) * (1 - Math.exp(-dt / 140));
     if (Math.abs(target - scroll) < 0.0001) scroll = target;
-    const scale = 1 + 0.10 * intro + 0.18 * scroll;
+    // At rest the sky is the opening film's last frame, unscaled: only the
+    // scroll zooms it, so the handoff from the film never moves the picture.
+    const scale = 1 + 0.18 * scroll;
     media.style.transform = `translate3d(0, ${(-height * 0.04 * scroll).toFixed(2)}px, 0) scale(${scale.toFixed(5)})`;
-    if (growing || scroll !== target) schedule();
+    if (scroll !== target) schedule();
     else last = 0;
   }
   const onScroll = () => {
@@ -52,9 +47,8 @@ function createSkyMotion(doc, shared, media, main, dreams) {
   };
   const reset = () => {
     win.cancelAnimationFrame(raf);
-    raf = 0; last = 0; introStart = null; intro = 0; scroll = 0;
+    raf = 0; last = 0; scroll = 0;
     media.style.transform = 'translate3d(0, 0, 0) scale(1)';
-    doc.documentElement.classList.remove('oh-sky-expanding');
   };
   const onPreference = () => { reset(); refresh(); };
   win.addEventListener('scroll', onScroll, { passive: true });
@@ -63,14 +57,7 @@ function createSkyMotion(doc, shared, media, main, dreams) {
   doc.addEventListener('dream-dialog-change', refresh);
   reduced.addEventListener('change', onPreference);
   refresh();
-  return {
-    refresh, reset,
-    expand() {
-      if (win.__EXP_TIER__ === 'static' || reduced.matches) return;
-      introStart = win.performance.now();
-      doc.documentElement.classList.add('oh-sky-expanding'); schedule();
-    },
-  };
+  return { refresh, reset };
 }
 
 export function initSharedSky() {
@@ -97,10 +84,7 @@ export function initSharedSky() {
         if (node.classList?.contains('oh-intro-overlay')) motion.reset();
       }
       for (const node of record.removedNodes) {
-        if (node.classList?.contains('oh-intro-overlay')) {
-          if (!node.classList.contains('is-cut')) motion.expand();
-          else motion.refresh();
-        }
+        if (node.classList?.contains('oh-intro-overlay')) motion.refresh();
       }
     }
   });

@@ -102,6 +102,24 @@ html.exp-intro-pending .oh-dreams > * {
     linear-gradient(180deg, rgba(3, 4, 13, 0.2), rgba(3, 4, 13, 0.55) 56%, rgba(3, 4, 13, 0.96));
 }
 
+/* Arrival: the hero stays ink until the opening film covers the screen, so
+ * the still never flashes before the eye. On a cut or a missing film the
+ * veil fades away instead. */
+.noctalia-observatory > header::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  background: #03040d;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 600ms ease-out;
+}
+
+html.exp-intro-pending:not(.exp-intro-unveiled) .noctalia-observatory > header::after {
+  opacity: 1;
+}
+
 /* A viewport overlay, independent of the hero's height and clipping.
  * Only opacity changes during handoff, so the page never moves. */
 .oh-intro-overlay {
@@ -1139,9 +1157,6 @@ html.exp-starmap .oh-link-tip.is-running {
           transform-origin: 50% 38%;
           will-change: transform;
           background: url('/img/hero/noctalia-observatory-bg.webp') center / cover no-repeat;
-        }
-        html.oh-sky-expanding .oh-dreams > * {
-          opacity: 0 !important; visibility: hidden !important; pointer-events: none;
         }
         @media (prefers-reduced-motion: reduce) {
           .oh-sky-media { transform: none !important; will-change: auto; }

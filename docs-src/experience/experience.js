@@ -38,8 +38,13 @@ const getHeroItems = () => Array.from(document.querySelectorAll('.hero-anim:not(
 const getHeadline = () => document.querySelector('.oh-hero-title');
 const getRevealItems = () => Array.from(document.querySelectorAll('.reveal'));
 
+// The hero stays ink from first paint until the opening film covers the
+// screen, so the still never flashes before the eye.
+const unveilHero = () => html.classList.add('exp-intro-unveiled');
+
 const revealDreamsAfterIntro = () => {
   window.clearTimeout(window.__expIntroGateTimer);
+  unveilHero();
   html.classList.remove('exp-intro-pending');
 };
 
@@ -1253,6 +1258,7 @@ const playIntro = (film, loop, variant) =>
     const finish = async (cut = false, unavailable = false) => {
       if (finished) return;
       finished = true;
+      unveilHero();
       window.clearTimeout(slowStartTimer);
       window.clearTimeout(maximumTimer);
       window.clearTimeout(firstFrameTimer);
@@ -1291,6 +1297,8 @@ const playIntro = (film, loop, variant) =>
       played = true;
       window.clearTimeout(firstFrameTimer);
       overlay.classList.add('is-playing');
+      // Lift the veil once the overlay's fade-in has covered it.
+      window.setTimeout(unveilHero, 300);
       overlay.append(skip);
       prepareLoop();
     }, { once: true });
@@ -1373,7 +1381,9 @@ const initFilm = (isFull) => {
   if ('IntersectionObserver' in window) {
     new IntersectionObserver(
       (entries) => {
-        filmVisible = entries[0].isIntersecting;
+        // One batch can hold a stale entry from before the film moved into
+        // the shared sky; only the latest one describes it now.
+        filmVisible = entries[entries.length - 1].isIntersecting;
         sync();
       },
       { threshold: 0.02 }

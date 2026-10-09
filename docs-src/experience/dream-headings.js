@@ -27,7 +27,7 @@ export function initDreamHeadings(heroReady) {
   });
   const root = document.documentElement;
   const revealVisible = () => {
-    if (!ready || document.hidden || root.classList.contains('exp-intro-pending') || root.classList.contains('oh-sky-expanding')) return;
+    if (!ready || document.hidden || root.classList.contains('exp-intro-pending')) return;
     for (const target of visible) {
       if (!pending.has(target)) continue;
       target.classList.add('is-reading');

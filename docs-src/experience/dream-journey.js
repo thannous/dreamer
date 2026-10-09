@@ -122,7 +122,7 @@ export function initDreamJourney(heroReady, seek = top => window.scrollTo({ top,
     setStyle(map, 'opacity', String(blend));
     setStyle(map, 'visibility', blend > 0 ? 'visible' : 'hidden');
     if (map.inert !== !state.mapActive) map.inert = !state.mapActive;
-    const visible = ready && seen && !document.documentElement.matches('.exp-intro-pending, .oh-sky-expanding');
+    const visible = ready && seen && !document.documentElement.classList.contains('exp-intro-pending');
     if (progress.hidden !== !visible) progress.hidden = !visible;
     if (!visible) return;
     if (index === active) return;
