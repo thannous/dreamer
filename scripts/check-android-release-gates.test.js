@@ -138,9 +138,7 @@ function setupFixture({ versionCode = 33 } = {}) {
     '.eas/workflows/android-release-qualification.yml',
     [
       'on:',
-      '  push:',
-      '    tags:',
-      '      - v*',
+      '  workflow_dispatch: {}',
       'jobs:',
       '  build_android:',
       '    type: build',
@@ -359,6 +357,34 @@ describe('android release gate preflight', () => {
   it('fails prebuild when the Release build-to-smoke workflow is missing', () => {
     const root = setupFixture();
     fs.rmSync(path.join(root, '.eas/workflows/android-release-qualification.yml'));
+
+    const report = checkAndroidReleaseGates({
+      rootDir: root,
+      spawn: spawnWithTools(),
+      phase: 'prebuild',
+    });
+
+    expect(report.ok).toBe(false);
+    expect(report.checks).toEqual(
+      expect.arrayContaining([
+        expect.objectContaining({
+          status: 'fail',
+          title: 'EAS Android Release build and smoke workflow',
+        }),
+      ])
+    );
+  });
+
+  it('fails prebuild when the Release build-to-smoke workflow still starts on a tag push', () => {
+    const root = setupFixture();
+    const workflowPath = path.join(root, '.eas/workflows/android-release-qualification.yml');
+    fs.writeFileSync(
+      workflowPath,
+      fs
+        .readFileSync(workflowPath, 'utf8')
+        .replace('  workflow_dispatch: {}\n', '  workflow_dispatch: {}\n  push:\n    tags:\n      - v*\n'),
+      'utf8'
+    );
 
     const report = checkAndroidReleaseGates({
       rootDir: root,

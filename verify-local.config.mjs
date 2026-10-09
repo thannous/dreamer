@@ -96,12 +96,12 @@ const EDGE_CHECKS = [
 ].join(' && ');
 const DENO = {
   command: 'deno --version',
-  hint: 'install Deno 2.7.14 (`mise install`), or run the Edge checks in a manual CircleCI pipeline and pass --external <check>="https://<pipeline> on <SHA>"',
+  hint: 'run it on the owner machine (PC Tanuki, with Deno 2.7.14: `mise install`) and pass --external <check>="owner-machine: <host> <note> on <SHA>"; trigger a manual CircleCI pipeline only if it is listed in External CI (doc_web_interne/docs/regle-commune-livraison.md, section 13)',
 };
 
 const TESTERARMY = {
   command: 'test -d tools/e2e/node_modules/@e2e-dev/web',
-  hint: 'run `npm run test:testerarmy:setup && npm run test:testerarmy:browsers` in the main checkout, or pass --external <check>="https://<manual CircleCI pipeline> on <SHA>"',
+  hint: 'run it on the owner machine (PC Tanuki, after `npm run test:testerarmy:setup && npm run test:testerarmy:browsers` in its main checkout) and pass --external <check>="owner-machine: <host> <note> on <SHA>"; trigger a manual CircleCI pipeline only if it is listed in External CI (doc_web_interne/docs/regle-commune-livraison.md, section 13)',
 };
 
 // The four passes of tools/e2e/README.md that jointly qualify every Dreamer case.
@@ -192,7 +192,7 @@ export default {
       specialised: true,
       requires: {
         command: 'docker info',
-        hint: 'start Docker (disposable local Supabase) and install Chromium (`npx playwright install chromium`), or pass --external e2e-backend="https://<manual CircleCI pipeline> on <SHA>"',
+        hint: 'run it on the owner machine (PC Tanuki: Docker for the disposable local Supabase, Chromium via `npx playwright install chromium`) and pass --external e2e-backend="owner-machine: <host> <note> on <SHA>"; trigger a manual CircleCI pipeline only if it is listed in External CI (doc_web_interne/docs/regle-commune-livraison.md, section 13)',
       },
     },
     {

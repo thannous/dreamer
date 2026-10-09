@@ -1,10 +1,10 @@
+# Dispatch only (common delivery rule, External CI: none): a v* tag no longer
+# starts it. Run on demand with `eas workflow:run .eas/workflows/android-release-qualification.yml`
+# (on a release tag ref for the tag checks); an EAS build needs the owner's explicit go.
 name: Android Release qualification
 
 on:
   workflow_dispatch: {}
-  push:
-    tags:
-      - v*
 
 concurrency:
   cancel_in_progress: true

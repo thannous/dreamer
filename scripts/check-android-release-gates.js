@@ -736,16 +736,18 @@ function checkAndroidReleaseGates({
     releaseWorkflow.includes('type: maestro') &&
     releaseWorkflow.includes('build_id: ${{ needs.build_android.outputs.build_id }}') &&
     releaseWorkflow.includes('flow_path: maestro/release-smoke.yml') &&
-    releaseWorkflow.includes('tags:') &&
-    releaseWorkflow.includes('- v*');
+    // External CI is opt-in only: the workflow runs on dispatch, never on a
+    // push, a tag, a pull request or a schedule.
+    /^\s*workflow_dispatch:/m.test(releaseWorkflow) &&
+    !/^\s*(push|pull_request|schedule):/m.test(releaseWorkflow);
   addCheck(
     checks,
     releaseWorkflowReady ? 'pass' : 'fail',
     'EAS Android Release build and smoke workflow',
     releaseWorkflowReady
-      ? `${RELEASE_QUALIFICATION_WORKFLOW} builds production-apk and runs release-smoke.yml.`
-      : `${RELEASE_QUALIFICATION_WORKFLOW} is missing or does not chain production-apk to the Release smoke flow.`,
-    'Add a validated EAS workflow that builds production-apk and passes its build_id to maestro/release-smoke.yml.'
+      ? `${RELEASE_QUALIFICATION_WORKFLOW} builds production-apk and runs release-smoke.yml on dispatch only.`
+      : `${RELEASE_QUALIFICATION_WORKFLOW} is missing, does not chain production-apk to the Release smoke flow, or starts on something other than workflow_dispatch.`,
+    'Add a validated EAS workflow, triggered by workflow_dispatch only, that builds production-apk and passes its build_id to maestro/release-smoke.yml.'
   );
 
   const subscriptionScript = prebuild
