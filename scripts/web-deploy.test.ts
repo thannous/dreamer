@@ -58,7 +58,7 @@ describe('web-deploy production guard and clean-copy upload', () => {
   const accepted = (head = HEAD) => ({ head, tree: 'b'.repeat(40), message: `[site-publish-proof] OK: HEAD ${head}` });
 
   function deps(guardProduction: () => Promise<{ head: string; tree: string; message: string }>, overrides: Record<string, unknown> = {}) {
-    const calls: { args: string[]; cwd: string; files: string[]; contents: Record<string, string> }[] = [];
+    const calls: Call[] = [];
     return {
       calls,
       deps: {
@@ -82,7 +82,8 @@ describe('web-deploy production guard and clean-copy upload', () => {
       },
     };
   }
-  const deployCalls = (calls: { args: string[] }[]) => calls.filter((call) => call.args.includes('deploy'));
+  type Call = { args: string[]; cwd: string; files: string[]; contents: Record<string, string> };
+  const deployCalls = (calls: Call[]) => calls.filter((call) => call.args.includes('deploy'));
 
   it('a refusal runs nothing and creates no copy', async () => {
     const setup = deps(async () => {
@@ -118,7 +119,7 @@ describe('web-deploy production guard and clean-copy upload', () => {
     for (const leaked of ['untracked.txt', 'dist/x', '.env.local', '.cache/c', '.vercel/output.json', '.git']) {
       expect(files).not.toContain(leaked);
     }
-    expect(files.some((file) => file.startsWith('.git/'))).toBe(false);
+    expect(files.some((file: string) => file.startsWith('.git/'))).toBe(false);
   });
 
   it('makes the copy from the guarded SHA even when the working tree has uncommitted edits', async () => {
