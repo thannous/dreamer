@@ -2,10 +2,10 @@ import React, { useEffect, useState } from 'react';
 import { Image } from 'expo-image';
 import { StyleSheet, Text, View } from 'react-native';
 import Svg, { Line } from 'react-native-svg';
-import Animated, { ReduceMotion, useAnimatedProps, useSharedValue, withTiming } from 'react-native-reanimated';
+import Animated, { ReduceMotion, useAnimatedProps, useReducedMotion, useSharedValue, withTiming } from 'react-native-reanimated';
 
 import { PressableScale } from '@/components/motion/PressableScale';
-import { DURATION, EASING } from '@/components/motion/motion';
+import { DURATION, EASE, EASING } from '@/components/motion/motion';
 import { IconSymbol } from '@/components/ui/icon-symbol';
 import type { NoctaliaDesignTokens } from '@/constants/noctaliaDesign';
 import { Fonts } from '@/constants/theme';
@@ -42,11 +42,15 @@ function ConstellationLink({ from, to, color, selected, weight }: {
     strokeWidth={weight} opacity={selected ? 1 : 0.4} strokeDasharray={[length, length]} animatedProps={animatedProps} />;
 }
 
-export function SymbolConstellation({ tokens, storyStep, onInteraction }: {
-  tokens: NoctaliaDesignTokens; storyStep?: number; onInteraction?: () => void;
+export function SymbolConstellation({ tokens, storyStep, onInteraction, stageHeight, startAt = 0 }: {
+  tokens: NoctaliaDesignTokens; storyStep?: number; onInteraction?: () => void; stageHeight?: number;
+  /** The dream the interactive example opens on: the last one the story showed. */
+  startAt?: number;
 }) {
   const { t } = useTranslation();
-  const [current, setCurrent] = useState(0);
+  const reduced = useReducedMotion();
+  // A story slide mounts on its own scene, so it starts there rather than at the first dream.
+  const [current, setCurrent] = useState(storyStep ?? startAt);
   const [selected, setSelected] = useState<SymbolName>('house');
   const [inspecting, setInspecting] = useState(false);
   const [width, setWidth] = useState(300);
@@ -60,6 +64,9 @@ export function SymbolConstellation({ tokens, storyStep, onInteraction }: {
       setInspecting(false);
     }
   }
+  // As a story slide the map fits the stage; the interactive example keeps its full size.
+  const mapHeight = storyStep !== undefined && stageHeight ? Math.min(MAP_HEIGHT, stageHeight) : MAP_HEIGHT;
+  const mapScale = mapHeight / MAP_HEIGHT;
   const seen = DREAMS.slice(0, current + 1);
   const count = (id: SymbolName) => seen.filter((dream) => dream.symbols.includes(id)).length;
   const related = seen.flatMap((dream, index) => dream.symbols.includes(selected) ? [index] : []);
@@ -95,8 +102,8 @@ export function SymbolConstellation({ tokens, storyStep, onInteraction }: {
           ))}
         </View>
       </StoryScene> : null}
-      <View onLayout={(event) => setWidth(event.nativeEvent.layout.width)} style={[styles.map, storyStep !== undefined && styles.storyMap, { borderColor: tokens.surface.border }]}>
-        <Svg aria-hidden focusable={false} width="100%" height={MAP_HEIGHT} viewBox={`0 0 300 ${MAP_HEIGHT}`} preserveAspectRatio="none">
+      <View onLayout={(event) => setWidth(event.nativeEvent.layout.width)} style={{ height: mapHeight }}>
+        <Svg aria-hidden focusable={false} width="100%" height={mapHeight} viewBox={`0 0 300 ${MAP_HEIGHT}`} preserveAspectRatio="none">
           {seen.map((dream, index) => {
             const from = SYMBOLS.find((symbol) => symbol.id === dream.symbols[0])!;
             const to = SYMBOLS.find((symbol) => symbol.id === dream.symbols[1])!;
@@ -107,7 +114,7 @@ export function SymbolConstellation({ tokens, storyStep, onInteraction }: {
         {SYMBOLS.map((symbol) => {
           const born = count(symbol.id) > 0;
           return born ? (
-            <StoryScene key={symbol.id} style={[styles.node, { left: symbol.x / 300 * width - 27, top: symbol.y - 27 }]}>
+            <StoryScene key={symbol.id} style={[styles.node, { left: symbol.x / 300 * width - 27, top: symbol.y * mapScale - 27 }]}>
             <PressableScale
               accessibilityRole="button"
               accessibilityLabel={`${t(`onboarding.feature.constellation.symbol.${symbol.id}`)}, ${t('onboarding.feature.constellation.related', { count: count(symbol.id), total: seen.length })}`}
@@ -117,6 +124,13 @@ export function SymbolConstellation({ tokens, storyStep, onInteraction }: {
               style={styles.nodeButton}
               testID={`btn.onboarding.constellation.symbol.${symbol.id}`}
             >
+              {/* In the story, a symbol that returns breathes: the eye finds what repeats. */}
+              {storyStep !== undefined && count(symbol.id) > 1 && !reduced ? <Animated.View pointerEvents="none" style={[styles.halo, {
+                backgroundColor: tokens.accent.text,
+                animationName: { from: { opacity: 0.08, transform: [{ scale: 0.9 }] }, to: { opacity: 0.4, transform: [{ scale: 1.35 }] } },
+                animationDuration: 1600, animationDelay: 600, animationIterationCount: 'infinite', animationDirection: 'alternate',
+                animationTimingFunction: EASE.inOut, animationFillMode: 'both',
+              }]} /> : null}
               <View style={[styles.nodeImageBorder, { borderColor: selected === symbol.id ? tokens.accent.text : tokens.surface.border, borderWidth: selected === symbol.id ? 2 : 1 }]}>
                 <Image source={symbol.image} style={styles.nodeImage} contentFit="cover" />
                 {count(symbol.id) > 1 ? <View style={[styles.count, { backgroundColor: tokens.surface.base, borderColor: tokens.accent.text }]}>
@@ -129,11 +143,7 @@ export function SymbolConstellation({ tokens, storyStep, onInteraction }: {
           ) : null;
         })}
       </View>
-      {storyStep !== undefined ? <StoryScene key={current} style={styles.echo}>
-        <Text style={[styles.progress, { color: tokens.accent.text }]}>{t('onboarding.feature.constellation.progress', { current: current + 1, total: DREAMS.length })}</Text>
-        <Text style={[styles.echoTitle, { color: tokens.text.secondary }]}>{t(`onboarding.feature.constellation.dream_${current + 1}.title`)}</Text>
-      </StoryScene> : null}
-      {storyStep === undefined || inspecting ? <View style={[styles.selection, { backgroundColor: tokens.surface.soft, borderColor: tokens.surface.border }]} accessibilityLiveRegion={storyStep === undefined ? 'polite' : 'none'} testID="component.onboarding.constellation.selection">
+      {storyStep === undefined || inspecting ? <View style={[styles.selection, storyStep !== undefined && styles.selectionOverlay, { backgroundColor: storyStep !== undefined ? tokens.surface.raised : tokens.surface.soft, borderColor: tokens.surface.border }]} accessibilityLiveRegion={storyStep === undefined ? 'polite' : 'none'} testID="component.onboarding.constellation.selection">
         <Text style={[styles.selectionTitle, { color: tokens.text.primary }]}>
           {t(`onboarding.feature.constellation.symbol.${selected}`)}{' · '}{t('onboarding.feature.constellation.related', { count: related.length, total: seen.length })}
         </Text>
@@ -144,10 +154,8 @@ export function SymbolConstellation({ tokens, storyStep, onInteraction }: {
 }
 
 const styles = StyleSheet.create({
-  root: { paddingTop: 4 },
-  storyMap: { borderWidth: 1, borderRadius: 26, borderCurve: 'continuous' },
-  echo: { alignItems: 'center', gap: 6, paddingTop: 14 },
-  echoTitle: { fontFamily: Fonts.fraunces.regular, fontSize: 15, lineHeight: 21, textAlign: 'center' },
+  // Full width in a story frame too: node positions are fractions of the measured width.
+  root: { width: '100%', paddingTop: 4 },
   controls: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' },
   control: { width: 48, height: 48, alignItems: 'center', justifyContent: 'center' },
   progress: { fontFamily: Fonts.spaceGrotesk.medium, fontSize: 12, lineHeight: 18 },
@@ -157,7 +165,6 @@ const styles = StyleSheet.create({
   tags: { flexDirection: 'row', flexWrap: 'wrap', gap: 12 },
   tag: { minHeight: 48, justifyContent: 'center', paddingHorizontal: 4 },
   tagText: { fontFamily: Fonts.spaceGrotesk.medium, fontSize: 12, lineHeight: 18, textDecorationLine: 'underline' },
-  map: { height: MAP_HEIGHT },
   node: { position: 'absolute', width: 54, minHeight: 70, alignItems: 'center', gap: 5 },
   nodeButton: { alignItems: 'center', gap: 5 },
   nodeImageBorder: { width: 54, height: 54, borderRadius: 27, padding: 3 },
@@ -166,6 +173,9 @@ const styles = StyleSheet.create({
   count: { position: 'absolute', right: -6, top: -6, width: 22, height: 22, borderRadius: 11, borderWidth: 1, alignItems: 'center', justifyContent: 'center' },
   countText: { fontFamily: Fonts.spaceGrotesk.medium, fontSize: 11, lineHeight: 16 },
   selection: { borderWidth: 1, borderRadius: 14, padding: 12, gap: 5 },
+  // Over a story scene the detail floats on it instead of pushing the frame open.
+  selectionOverlay: { position: 'absolute', left: 12, right: 12, bottom: 12 },
+  halo: { position: 'absolute', top: 0, width: 54, height: 54, borderRadius: 27 },
   selectionTitle: { fontFamily: Fonts.spaceGrotesk.medium, fontSize: 12, lineHeight: 18 },
   related: { fontFamily: Fonts.spaceGrotesk.regular, fontSize: 11, lineHeight: 17 },
 });

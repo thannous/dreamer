@@ -7,10 +7,17 @@ const defaultFeatureTest = createParityTest();
 test.use({ timezoneId: 'Europe/Paris' });
 defaultFeatureTest.use({ timezoneId: 'Europe/Paris' });
 
+// Each page's button arrives once its scene has played; click() waits until it is enabled.
+async function readToExample(page: Page, feature: string) {
+  for (const step of [1, 2, 3]) {
+    await page.getByTestId('btn.onboarding.story.next').click();
+    await expect(page.getByTestId(`component.onboarding.story.${feature}.${step}`)).toBeVisible();
+  }
+}
+
 async function openDemo(page: Page, feature: string) {
   await page.getByTestId(`btn.onboarding.feature.${feature}`).click();
-  await page.getByTestId('btn.onboarding.story.skip').click();
-  await expect(page.getByTestId(`component.onboarding.story.${feature}.3`)).toBeVisible();
+  await readToExample(page, feature);
 }
 
 async function expectCloseButton(page: Page) {
@@ -198,7 +205,13 @@ test.describe('feature sheet previews', () => {
   test('the constellation accumulates symbols and shows the dreams behind a recurring motif', async ({ page }, testInfo) => {
     await openDemo(page, 'connect');
     const selection = page.getByTestId('component.onboarding.constellation.selection');
+    // The example opens where the story ended: on Saturday, with all three dreams seen.
     await page.getByTestId('btn.onboarding.constellation.symbol.house').click();
+    await expect(selection).toContainText('3/3');
+    await expect(selection).toContainText('A cat');
+    await expect(page.getByTestId('btn.onboarding.constellation.next')).toBeDisabled();
+    await page.getByTestId('btn.onboarding.constellation.previous').click();
+    await page.getByTestId('btn.onboarding.constellation.previous').click();
     await expect(selection).toContainText('1/1');
     await expect(selection).toContainText('The staircase');
     await page.getByTestId('btn.onboarding.constellation.next').click();
@@ -206,8 +219,6 @@ test.describe('feature sheet previews', () => {
     await expect(selection).toContainText('The tide');
     await page.getByTestId('btn.onboarding.constellation.next').click();
     await expect(selection).toContainText('3/3');
-    await expect(selection).toContainText('A cat');
-    await expect(page.getByTestId('btn.onboarding.constellation.next')).toBeDisabled();
     await page.getByTestId('btn.onboarding.constellation.symbol.door').click();
     await expect(selection).toContainText('1/3');
     await expect(selection).not.toContainText('The tide');
@@ -219,39 +230,48 @@ test.describe('feature sheet previews', () => {
   });
 
 
-  test('the three motion stories play once in order and hand over to their interactive examples', async ({ page }, testInfo) => {
+  test('the three stories wait for the reader and turn page by page into their interactive examples', async ({ page }, testInfo) => {
+    await page.clock.install();
     for (const feature of ['capture', 'connect', 'explore']) {
       await page.getByTestId(`btn.onboarding.feature.${feature}`).click();
-      for (const step of [0, 1, 2, 3]) {
+      await expect(page.getByTestId(`component.onboarding.story.${feature}.0`)).toBeVisible();
+      // Readers found the timed scenes too fast: nothing turns on its own any more.
+      await page.clock.runFor(10000);
+      await expect(page.getByTestId(`component.onboarding.story.${feature}.0`)).toBeVisible();
+      for (const step of [1, 2, 3]) {
+        await page.getByTestId('btn.onboarding.story.next').click();
         await expect(page.getByTestId(`component.onboarding.story.${feature}.${step}`)).toBeVisible();
         if (step === 1 || step === 3) await page.screenshot({ path: testInfo.outputPath(`story-${feature}-${step}.png`) });
+        await page.clock.runFor(5000);
       }
       if (feature === 'capture') await expect(page.getByTestId('component.onboarding.dreamGlobe')).toBeVisible();
       if (feature === 'connect') await expect(page.getByTestId('component.onboarding.constellation.selection')).toContainText('3/3');
       if (feature === 'explore') await expect(page.getByTestId('btn.onboarding.dialogue.home')).toBeVisible();
       await expectCloseButton(page);
       await page.getByTestId('btn.onboarding.feature.close').click();
+      await page.clock.runFor(50);
       await expect(page.getByTestId(`btn.onboarding.feature.${feature}`)).toBeFocused();
     }
   });
 
-  test('a story can pause, go back, skip and replay without advancing onboarding', async ({ page }) => {
+  test('a story goes forward and back, and its button waits for the scene', async ({ page }) => {
     await page.getByTestId('btn.onboarding.feature.capture').click();
-    await page.getByTestId('btn.onboarding.story.play').click();
-    await expect(page.getByTestId('btn.onboarding.story.play')).toHaveAccessibleName('Play the story');
-    await page.clock.install();
-    await page.clock.runFor(8000);
     await expect(page.getByTestId('component.onboarding.story.capture.0')).toBeVisible();
-    await page.getByTestId('btn.onboarding.story.next').click();
+    // The button names what comes next and stays inactive until the scene has told its part.
+    const next = page.getByTestId('btn.onboarding.story.next');
+    await expect(next).toBeDisabled();
+    await expect(next).toBeEnabled();
+    await expect(next).toHaveAccessibleName('And on waking?');
+    await expect(page.getByTestId('btn.onboarding.story.previous')).toHaveCount(0);
+    await next.click();
     await expect(page.getByTestId('component.onboarding.story.capture.1')).toBeVisible();
     await page.getByTestId('btn.onboarding.story.previous').click();
     await expect(page.getByTestId('component.onboarding.story.capture.0')).toBeVisible();
-    await page.getByTestId('btn.onboarding.story.skip').click();
+    await readToExample(page, 'capture');
     await expect(page.getByTestId('component.onboarding.dreamGlobe')).toBeVisible();
-    await page.getByTestId('btn.onboarding.story.replay').click();
-    await expect(page.getByTestId('component.onboarding.story.capture.0')).toBeVisible();
+    await page.getByTestId('btn.onboarding.story.previous').click();
+    await expect(page.getByTestId('component.onboarding.story.capture.2')).toBeVisible();
     await page.getByTestId('btn.onboarding.feature.close').click();
-    await page.clock.runFor(50);
     await expect(page.getByTestId('btn.onboarding.feature.capture')).toBeFocused();
     await expect(page.getByTestId('component.onboarding.intro')).toBeVisible();
   });
@@ -262,7 +282,6 @@ test.describe('feature sheet previews', () => {
     await page.reload();
     for (const feature of ['capture', 'connect', 'explore']) {
       await page.getByTestId(`btn.onboarding.feature.${feature}`).click();
-      await expect(page.getByTestId('btn.onboarding.story.play')).toBeDisabled();
       for (const step of [0, 1, 2]) {
         await expect(page.getByTestId(`component.onboarding.story.${feature}.${step}`)).toBeVisible();
         await expectCloseButton(page);
@@ -275,7 +294,7 @@ test.describe('feature sheet previews', () => {
     }
   });
 
-  test('touching the constellation stops the story before it can replace the chosen symbol', async ({ page }) => {
+  test('the waiting story never replaces the symbol the reader chose', async ({ page }) => {
     await page.getByTestId('btn.onboarding.feature.connect').click();
     await page.getByTestId('btn.onboarding.constellation.symbol.door').click();
     await page.clock.install();
@@ -304,19 +323,10 @@ test.describe('feature sheet previews', () => {
     for (const feature of ['capture', 'connect', 'explore']) {
       await expect(page.getByTestId(`component.onboarding.story.${feature}.0`)).toBeVisible();
       await expectCloseButton(page);
-      await page.getByTestId('btn.onboarding.story.skip').click();
-      await expect(page.getByTestId(`component.onboarding.story.${feature}.3`)).toBeVisible();
+      await readToExample(page, feature);
       await page.getByTestId('btn.onboarding.story.continue').scrollIntoViewIfNeeded();
       await page.screenshot({ path: testInfo.outputPath(`chapter-${feature}.png`) });
       await page.getByTestId('btn.onboarding.story.continue').click();
-      if (feature === 'capture') {
-        await expect(page.getByText('Once your dream is saved…', { exact: true })).toBeVisible();
-        await page.getByTestId('btn.onboarding.story.next').click();
-        await expect(page.getByText('you can find the details that return…', { exact: true })).toBeVisible();
-        await page.getByTestId('btn.onboarding.story.next').click();
-        await expect(page.getByText('and discover what connects your nights.', { exact: true })).toBeVisible();
-        await page.getByTestId('btn.onboarding.story.continue').click();
-      }
     }
     await expect(page.getByTestId('sheet.onboarding.feature')).toHaveCount(0);
     await expect(page.getByTestId('btn.onboarding.feature.explore')).toBeFocused();
@@ -324,17 +334,32 @@ test.describe('feature sheet previews', () => {
     await expect(page.getByTestId('component.onboarding.path')).toBeVisible();
   });
 
-  test('pausing preserves the time already spent in a scene when the story resumes', async ({ page }) => {
-    await page.clock.install();
+  test('turning a page never moves the button under the thumb', async ({ page }) => {
+    // Layout position only: offsetTop ignores the button's rise into place and the sheet's own motion.
+    const offset = (id: string) => page.evaluate((testId) => {
+      const top = (node: HTMLElement | null) => {
+        let y = 0;
+        for (let current = node; current; current = current.offsetParent as HTMLElement | null) y += current.offsetTop;
+        return y;
+      };
+      const sheet = document.querySelector<HTMLElement>('[data-testid="sheet.onboarding.feature"]');
+      const button = document.querySelector<HTMLElement>(`[data-testid="${testId}"]`);
+      return top(button) - top(sheet);
+    }, id);
     await page.getByTestId('btn.onboarding.feature.capture').click();
-    await expect(page.getByTestId('component.onboarding.story.capture.0')).toBeVisible();
-    await page.clock.runFor(1400);
-    await page.getByTestId('btn.onboarding.story.play').click();
-    await page.clock.runFor(10000);
-    await expect(page.getByTestId('component.onboarding.story.capture.0')).toBeVisible();
-    await page.getByTestId('btn.onboarding.story.play').click();
-    await page.clock.runFor(2300);
+    await expectCloseButton(page);
+    const next = page.getByTestId('btn.onboarding.story.next');
+    await expect(next).toBeEnabled();
+    const first = await offset('btn.onboarding.story.next');
+    await next.click();
     await expect(page.getByTestId('component.onboarding.story.capture.1')).toBeVisible();
+    await expect(next).toBeEnabled();
+    expect(Math.abs(await offset('btn.onboarding.story.next') - first)).toBeLessThanOrEqual(1);
+    await next.click();
+    await next.click();
+    await expect(page.getByTestId('component.onboarding.story.capture.3')).toBeVisible();
+    await expect(page.getByTestId('btn.onboarding.story.continue')).toBeEnabled();
+    expect(Math.abs(await offset('btn.onboarding.story.continue') - first)).toBeLessThanOrEqual(1);
     await page.getByTestId('btn.onboarding.feature.close').click();
   });
 
