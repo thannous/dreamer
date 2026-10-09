@@ -5,7 +5,7 @@
   "lang": "fr",
   "slug": "traqueurs-sommeil-connectes-reves",
   "title": "Traqueurs de sommeil connectés et rêves | Noctalia",
-  "description": "40 % des personnes suivent leur sommeil chaque semaine. Découvrez ce que les traqueurs mesurent et pourquoi un journal de rêves complète ces données.",
+  "description": "Traqueurs de sommeil connectés et rêves : ce que mesurent vraiment montres et bagues, leur fiabilité, et pourquoi aucun capteur ne voit vos rêves.",
   "robots": "max-image-preview:large",
   "themeColor": "#0a0514",
   "htmlClass": "scroll-smooth blog-article",
@@ -14,24 +14,24 @@
   "mainClass": "pt-32 pb-20 px-4",
   "ogType": "article",
   "ogTitle": "Traqueurs de sommeil connectés et rêves | Noctalia",
-  "ogDescription": "40 % des personnes suivent leur sommeil chaque semaine. Découvrez ce que les traqueurs mesurent et pourquoi un journal de rêves complète ces données.",
+  "ogDescription": "Ce que mesure vraiment votre montre connectée la nuit, jusqu'où croire son score, et pourquoi vos rêves restent à noter vous-même.",
   "ogImage": "https://noctalia.app/img/blog/wearable-sleep-trackers-dreams.webp",
   "ogImageAlt": "Poignet portant une montre connectée affichant des données de sommeil avec des fragments de rêves éthérés flottant au-dessus dans des tons violet et turquoise",
   "twitterCard": "summary_large_image",
   "twitterTitle": "Traqueurs de sommeil connectés et rêves | Noctalia",
-  "twitterDescription": "40 % des personnes suivent leur sommeil chaque semaine. Découvrez ce que les traqueurs mesurent et pourquoi un journal de rêves complète ces données.",
+  "twitterDescription": "Votre montre compte vos heures de sommeil. Elle ne voit aucun rêve. Ce que mesurent les traqueurs, et ce qui leur échappe.",
   "twitterImage": "https://noctalia.app/img/blog/wearable-sleep-trackers-dreams.webp",
   "twitterImageAlt": "Poignet portant une montre connectée affichant des données de sommeil avec des fragments de rêves éthérés flottant au-dessus dans des tons violet et turquoise",
   "publishedTime": "2026-03-24",
-  "modifiedTime": "2026-03-24",
+  "modifiedTime": "2026-10-08",
   "author": "Thanh Chau",
   "prevPath": "/fr/blog/sommeil-sante-priorite",
   "nextPath": "",
   "preloadImage": "/img/blog/wearable-sleep-trackers-dreams.webp",
   "jsonLd": [
-    "{\n  \"@context\": \"https://schema.org\",\n  \"@type\": \"BlogPosting\",\n  \"headline\": \"Traqueurs de sommeil connectés et rêves : ce qu'ils mesurent vs ce qu'ils manquent\",\n  \"description\": \"40 % des personnes suivent leur sommeil chaque semaine. Découvrez ce que les traqueurs mesurent et pourquoi un journal de rêves complète ces données.\",\n  \"image\": {\n    \"@type\": \"ImageObject\",\n    \"url\": \"https://noctalia.app/img/blog/wearable-sleep-trackers-dreams.webp\",\n    \"width\": 1200,\n    \"height\": 630\n  },\n  \"author\": [\n    {\n      \"@type\": \"Person\",\n      \"@id\": \"https://noctalia.app/fr/a-propos#person\",\n      \"name\": \"Thanh Chau\",\n      \"jobTitle\": \"Fondateur & Directeur de la publication\",\n      \"url\": \"https://noctalia.app/fr/a-propos\",\n      \"worksFor\": {\n        \"@type\": \"Organization\",\n        \"@id\": \"https://noctalia.app/#organization\",\n        \"name\": \"Noctalia\",\n        \"url\": \"https://noctalia.app\"\n      }\n    },\n    {\n      \"@type\": \"Organization\",\n      \"@id\": \"https://noctalia.app/#organization\",\n      \"name\": \"Noctalia\",\n      \"url\": \"https://noctalia.app\",\n      \"logo\": {\n        \"@type\": \"ImageObject\",\n        \"url\": \"https://noctalia.app/logo/logo_noctalia.png\"\n      }\n    }\n  ],\n  \"publisher\": {\n    \"@type\": \"Organization\",\n    \"name\": \"Noctalia\",\n    \"url\": \"https://noctalia.app\",\n    \"logo\": {\n      \"@type\": \"ImageObject\",\n      \"url\": \"https://noctalia.app/logo/logo_noctalia.png\"\n    }\n  },\n  \"datePublished\": \"2026-03-24\",\n  \"dateModified\": \"2026-03-24\",\n  \"mainEntityOfPage\": {\n    \"@type\": \"WebPage\",\n    \"@id\": \"https://noctalia.app/fr/blog/traqueurs-sommeil-connectes-reves\"\n  },\n  \"inLanguage\": \"fr\",\n  \"isAccessibleForFree\": true,\n  \"wordCount\": 1600,\n  \"timeRequired\": \"PT6M\",\n  \"url\": \"https://noctalia.app/fr/blog/traqueurs-sommeil-connectes-reves\"\n}",
+    "{\n    \"@context\": \"https://schema.org\",\n    \"@type\": \"BlogPosting\",\n    \"headline\": \"Traqueurs de sommeil connectés et rêves : ce qu'ils mesurent, et ce qui leur échappe\",\n    \"description\": \"Traqueurs de sommeil connectés et rêves : ce que mesurent vraiment montres et bagues, leur fiabilité, et pourquoi aucun capteur ne voit vos rêves.\",\n    \"image\": {\n        \"@type\": \"ImageObject\",\n        \"url\": \"https://noctalia.app/img/blog/wearable-sleep-trackers-dreams.webp\",\n        \"width\": 1200,\n        \"height\": 630\n    },\n    \"author\": [\n        {\n            \"@type\": \"Person\",\n            \"@id\": \"https://noctalia.app/fr/a-propos#person\",\n            \"name\": \"Thanh Chau\",\n            \"jobTitle\": \"Fondateur & Directeur de la publication\",\n            \"url\": \"https://noctalia.app/fr/a-propos\",\n            \"worksFor\": {\n                \"@type\": \"Organization\",\n                \"@id\": \"https://noctalia.app/#organization\",\n                \"name\": \"Noctalia\",\n                \"url\": \"https://noctalia.app\"\n            }\n        },\n        {\n            \"@type\": \"Organization\",\n            \"@id\": \"https://noctalia.app/#organization\",\n            \"name\": \"Noctalia\",\n            \"url\": \"https://noctalia.app\",\n            \"logo\": {\n                \"@type\": \"ImageObject\",\n                \"url\": \"https://noctalia.app/logo/logo_noctalia.png\"\n            }\n        }\n    ],\n    \"publisher\": {\n        \"@type\": \"Organization\",\n        \"name\": \"Noctalia\",\n        \"url\": \"https://noctalia.app\",\n        \"logo\": {\n            \"@type\": \"ImageObject\",\n            \"url\": \"https://noctalia.app/logo/logo_noctalia.png\"\n        }\n    },\n    \"datePublished\": \"2026-03-24\",\n    \"dateModified\": \"2026-10-08\",\n    \"mainEntityOfPage\": {\n        \"@type\": \"WebPage\",\n        \"@id\": \"https://noctalia.app/fr/blog/traqueurs-sommeil-connectes-reves\"\n    },\n    \"inLanguage\": \"fr\",\n    \"isAccessibleForFree\": true,\n    \"wordCount\": 2293,\n    \"timeRequired\": \"PT11M\",\n    \"url\": \"https://noctalia.app/fr/blog/traqueurs-sommeil-connectes-reves\"\n}",
     "{\n  \"@context\": \"https://schema.org\",\n  \"@type\": \"WebPage\",\n  \"@id\": \"https://noctalia.app/fr/blog/traqueurs-sommeil-connectes-reves\",\n  \"url\": \"https://noctalia.app/fr/blog/traqueurs-sommeil-connectes-reves\",\n  \"name\": \"Traqueurs de sommeil connectés et rêves | Noctalia\",\n  \"inLanguage\": \"fr\"\n}",
-    "{\n  \"@context\": \"https://schema.org\",\n  \"@type\": \"FAQPage\",\n  \"mainEntity\": [\n    {\n      \"@type\": \"Question\",\n      \"name\": \"Quelle est la précision des traqueurs de sommeil connectés ?\",\n      \"acceptedAnswer\": {\n        \"@type\": \"Answer\",\n        \"text\": \"Les traqueurs de sommeil connectés sont généralement précis à 80-90 % pour détecter le temps de sommeil total par rapport à la polysomnographie (la référence clinique). Cependant, leur précision chute significativement pour la détection des stades de sommeil, les études de de Zambotti et al. et Haghayegh et al. montrent seulement 50-60 % de précision pour distinguer entre sommeil léger, profond et paradoxal. Ils tendent à surestimer le temps de sommeil total et à classer par erreur l'éveil calme comme du sommeil léger.\"\n      }\n    },\n    {\n      \"@type\": \"Question\",\n      \"name\": \"Les traqueurs de sommeil peuvent-ils détecter les rêves ?\",\n      \"acceptedAnswer\": {\n        \"@type\": \"Answer\",\n        \"text\": \"Non. Les traqueurs de sommeil connectés actuels ne peuvent pas détecter les rêves. Ils peuvent tenter d'estimer les stades de sommeil paradoxal, la phase où se produisent la plupart des rêves vivaces, mais ils ne peuvent pas déterminer si un rêve se produit réellement, ce qu'il contient, ou quelle est sa charge émotionnelle. Le contenu onirique, les schémas narratifs et la qualité émotionnelle nécessitent un compte-rendu subjectif par des méthodes comme le journal de rêves.\"\n      }\n    },\n    {\n      \"@type\": \"Question\",\n      \"name\": \"Faut-il utiliser un traqueur de sommeil et un journal de rêves ensemble ?\",\n      \"acceptedAnswer\": {\n        \"@type\": \"Answer\",\n        \"text\": \"Oui, combiner les deux fournit le tableau le plus complet de votre santé du sommeil. Les traqueurs connectés fournissent des données quantitatives, temps de sommeil total, schémas de fréquence cardiaque, mouvements et stades de sommeil estimés. Le journal de rêves fournit des données qualitatives, contenu onirique, tonalité émotionnelle, thèmes narratifs et fréquence de rappel. Ensemble, ils révèlent des schémas qu'aucun des deux ne peut capturer seul.\"\n      }\n    }\n  ]\n}",
+    "{\n    \"@context\": \"https://schema.org\",\n    \"@type\": \"FAQPage\",\n    \"mainEntity\": [\n        {\n            \"@type\": \"Question\",\n            \"name\": \"Les traqueurs de sommeil connectés sont-ils fiables ?\",\n            \"acceptedAnswer\": {\n                \"@type\": \"Answer\",\n                \"text\": \"Comparés à la polysomnographie, ils détectent bien le sommeil mais comptent souvent l'éveil immobile comme du sommeil, et peuvent donc surestimer votre temps de sommeil. Leurs estimations de sommeil léger, profond et paradoxal sont inégales selon les appareils. Ils servent surtout à suivre des tendances sur plusieurs semaines.\"\n            }\n        },\n        {\n            \"@type\": \"Question\",\n            \"name\": \"Une montre connectée peut-elle détecter les rêves ?\",\n            \"acceptedAnswer\": {\n                \"@type\": \"Answer\",\n                \"text\": \"Non. Au mieux, elle estime quand vous êtes en sommeil paradoxal, le stade le plus associé aux rêves vifs. Elle ne peut pas savoir si vous avez rêvé ni ce que contenait le rêve. Seul votre récit au réveil peut le saisir.\"\n            }\n        },\n        {\n            \"@type\": \"Question\",\n            \"name\": \"Faut-il utiliser un traqueur de sommeil et un journal de rêves ensemble ?\",\n            \"acceptedAnswer\": {\n                \"@type\": \"Answer\",\n                \"text\": \"Vous pouvez, si cela vous aide. Le traqueur donne la durée, les stades estimés et le rythme cardiaque ; le journal garde le rêve, l'émotion et votre état au réveil. Comparez-les sur plusieurs semaines. Si les chiffres commencent à vous angoisser, faites une pause avec le score.\"\n            }\n        },\n        {\n            \"@type\": \"Question\",\n            \"name\": \"Un traqueur peut-il diagnostiquer une apnée du sommeil ou une insomnie ?\",\n            \"acceptedAnswer\": {\n                \"@type\": \"Answer\",\n                \"text\": \"Non. Certains appareils affichent des alertes, mais un diagnostic demande un bilan médical. Ronflements forts, pauses respiratoires, grosse somnolence dans la journée ou insomnie qui dure sont des raisons de consulter, et les données de votre traqueur peuvent appuyer l'échange.\"\n            }\n        }\n    ]\n}",
     "{\n  \"@context\": \"https://schema.org\",\n  \"@type\": \"BreadcrumbList\",\n  \"itemListElement\": [\n    {\n      \"@type\": \"ListItem\",\n      \"position\": 1,\n      \"name\": \"Accueil\",\n      \"item\": \"https://noctalia.app/fr/\"\n    },\n    {\n      \"@type\": \"ListItem\",\n      \"position\": 2,\n      \"name\": \"Ressources\",\n      \"item\": \"https://noctalia.app/fr/blog/\"\n    },\n    {\n      \"@type\": \"ListItem\",\n      \"position\": 3,\n      \"name\": \"Traqueurs de sommeil\",\n      \"item\": \"https://noctalia.app/fr/blog/traqueurs-sommeil-connectes-reves\"\n    }\n  ]\n}"
   ],
   "activeNav": "resources"
@@ -61,16 +61,16 @@
 <header class="mb-12">
 <div class="flex flex-wrap items-center gap-3 mb-6">
 <span class="text-xs font-mono text-dream-salmon border border-dream-salmon/30 rounded-full px-3 py-1 uppercase">Science</span>
-<a class="text-xs font-mono text-purple-200/70 border border-white/10 rounded-full px-3 py-1 hover:text-white hover:border-dream-salmon/30 transition-colors" href="sommeil-paradoxal-reves">Th&#232;me : Science du sommeil</a>
+<a class="text-xs font-mono text-purple-200/70 border border-white/10 rounded-full px-3 py-1 hover:text-white hover:border-dream-salmon/30 transition-colors" href="sommeil-paradoxal-reves">Thème : Science du sommeil</a>
 <span aria-hidden="true" class="w-full sm:hidden"></span>
-<span class="text-sm text-purple-300/60">Publi&#233; le 24 mars 2026</span>
-<span class="text-sm text-purple-300/60">~1600 mots &#183; 6 min de lecture</span>
+<span class="text-sm text-purple-300/60">Publié le 24 mars 2026</span>
+<span class="text-sm text-purple-300/60">11 min de lecture</span>
 </div>
 <h1 class="font-serif text-3xl md:text-5xl mb-6 text-transparent bg-clip-text bg-gradient-to-b from-white via-dream-lavender to-purple-400/50 leading-tight">
-                    Traqueurs de sommeil connect&#233;s et r&#234;ves : ce qu'ils mesurent vs ce qu'ils manquent
+                    Traqueurs de sommeil connectés et rêves : ce qu'ils mesurent, et ce qui leur échappe
                 </h1>
 <p class="text-lg text-purple-200/80 leading-relaxed">
-                    Pr&#232;s de 40 % des adultes suivent d&#233;sormais leur sommeil au moins une fois par semaine &#224; l'aide d'un objet connect&#233;. Montres et bracelets promettent des rapports d&#233;taill&#233;s, dur&#233;e totale, stades de sommeil, scores, livr&#233;s chaque matin sur votre t&#233;l&#233;phone. Mais quelle est la fiabilit&#233; r&#233;elle de ces chiffres ? Et qu'en est-il de la dimension du sommeil qu'aucun capteur ne peut atteindre : vos r&#234;ves ? Voici un regard honn&#234;te sur ce que les traqueurs mesurent vraiment, o&#249; leur pr&#233;cision s'effondre, et pourquoi associer le suivi quantitatif au journal de r&#234;ves cr&#233;e le tableau le plus complet de votre sant&#233; du sommeil.
+                    Le réveil sonne, vous attrapez votre téléphone avant même de vous lever. L'application affiche 6 h 41 de sommeil, 48 minutes de sommeil profond, un score de 72. Pourtant, ce dont vous vous souvenez, c'est d'un long rêve où vous ratiez un train, encore et encore, et le graphique n'en dit rien. Voici ce que mesure vraiment un traqueur de sommeil connecté, jusqu'où lui faire confiance, et pourquoi vos rêves restent à noter vous-même.
                 </p>
 </header>
 <!-- Author Byline (E-E-A-T) -->
@@ -80,77 +80,89 @@
 </div>
 <div>
 <span class="text-dream-cream font-medium">Thanh Chau</span>
-<span class="block text-xs text-purple-300/60">Fondateur &amp; Directeur de la publication &#183; <a class="text-dream-salmon hover:underline" href="/fr/a-propos">Notre processus &#233;ditorial</a></span>
+<span class="block text-xs text-purple-300/60">Fondateur &amp; Directeur de la publication · <a class="text-dream-salmon hover:underline" href="/fr/a-propos">Notre processus éditorial</a></span>
 </div>
 </div>
 <!-- Quick Answer (AI SEO) -->
 <section aria-labelledby="quick-answer-title" class="glass-panel rounded-2xl p-6 mb-8 border border-dream-salmon/20 bg-white/5">
-<h2 class="font-serif text-xl text-dream-cream mb-3" id="quick-answer-title">R&#233;ponse rapide</h2>
-<p class="text-purple-100/80 leading-relaxed">Les traqueurs de sommeil connect&#233;s utilisent des acc&#233;l&#233;rom&#232;tres et des capteurs optiques de fr&#233;quence cardiaque pour estimer la dur&#233;e et les stades du sommeil. Ils sont pr&#233;cis &#224; 80-90 % pour le temps de sommeil total, mais seulement &#224; 50-60 % pour la distinction entre sommeil l&#233;ger, profond et paradoxal. Ils ne peuvent pas d&#233;tecter les r&#234;ves, leur contenu ou leur qualit&#233; &#233;motionnelle. Combiner un traqueur connect&#233; (donn&#233;es quantitatives) avec un journal de r&#234;ves (donn&#233;es qualitatives) fournit le tableau le plus complet de la sant&#233; du sommeil, capturant &#224; la fois les indicateurs physiologiques et les exp&#233;riences subjectives qui d&#233;terminent le caract&#232;re r&#233;parateur de votre sommeil.</p>
+<h2 class="font-serif text-xl text-dream-cream mb-3" id="quick-answer-title">Réponse rapide</h2>
+<p class="text-purple-100/80 leading-relaxed">Montres, bracelets et bagues connectés estiment votre sommeil à partir du mouvement et du rythme cardiaque. Comparés aux mesures de laboratoire, ils repèrent bien le sommeil, mais confondent souvent l'éveil immobile avec du sommeil, et leurs stades sont peu fiables. Ils ne peuvent pas détecter un rêve, encore moins son contenu. Fiez-vous à leurs tendances sur plusieurs semaines plutôt qu'au score d'une nuit, et notez vos rêves vous-même au réveil.</p>
 </section>
 <!-- Featured Image -->
 <figure class="mb-12 rounded-2xl overflow-hidden">
-<img alt="Poignet portant une montre connect&#233;e affichant des donn&#233;es de sommeil avec des fragments de r&#234;ves &#233;th&#233;r&#233;s flottant au-dessus dans des tons violet et turquoise" class="w-full h-auto" fetchpriority="high" height="630" loading="eager" sizes="(max-width: 768px) 100vw, 1200px" src="../../img/blog/wearable-sleep-trackers-dreams.webp" srcset="../../img/blog/wearable-sleep-trackers-dreams-480w.webp 480w, ../../img/blog/wearable-sleep-trackers-dreams-800w.webp 800w, ../../img/blog/wearable-sleep-trackers-dreams-1200w.webp 1200w" width="1200">
+<img alt="Poignet portant une montre connectée affichant des données de sommeil avec des fragments de rêves éthérés flottant au-dessus dans des tons violet et turquoise" class="w-full h-auto" fetchpriority="high" height="630" loading="eager" sizes="(max-width: 768px) 100vw, 1200px" src="../../img/blog/wearable-sleep-trackers-dreams.webp" srcset="../../img/blog/wearable-sleep-trackers-dreams-480w.webp 480w, ../../img/blog/wearable-sleep-trackers-dreams-800w.webp 800w, ../../img/blog/wearable-sleep-trackers-dreams-1200w.webp 1200w" width="1200">
 </figure>
 <!-- Table of Contents -->
 <nav class="glass-panel rounded-2xl p-6 mb-12">
 <h2 class="font-serif text-lg text-dream-cream mb-4 flex items-center gap-2">
-<i class="w-5 h-5 text-dream-salmon" data-lucide="list"></i> Table des mati&#232;res
+<i class="w-5 h-5 text-dream-salmon" data-lucide="list"></i> Table des matières
                 </h2>
 <ol class="space-y-2 text-sm text-purple-200/70">
-<li><a class="toc-link block" href="#how-trackers-work">1. Comment fonctionnent les traqueurs de sommeil</a></li>
-<li><a class="toc-link block" href="#what-they-measure">2. Ce qu'ils mesurent vraiment</a></li>
-<li><a class="toc-link block" href="#accuracy">3. Pr&#233;cision et limites</a></li>
-<li><a class="toc-link block" href="#tracker-plus-journal">4. Traqueur + journal : le tableau complet</a></li>
-<li><a class="toc-link block" href="#future">5. L'avenir de la technologie du sommeil</a></li>
-<li><a class="toc-link block" href="#privacy">6. Consid&#233;rations de vie priv&#233;e</a></li>
+<li><a class="toc-link block" href="#how-trackers-work">1. Comment une montre sait-elle que vous dormez ?</a></li>
+<li><a class="toc-link block" href="#what-they-measure">2. Que valent les chiffres affichés ?</a></li>
+<li><a class="toc-link block" href="#accuracy">3. Quelle est leur fiabilité ?</a></li>
+<li><a class="toc-link block" href="#tracker-plus-journal">4. Traqueur et journal de rêves : comment utiliser les deux</a></li>
+<li><a class="toc-link block" href="#future">5. Ce qui arrive dans les technologies du sommeil</a></li>
+<li><a class="toc-link block" href="#privacy">6. Qui voit vos données de sommeil ?</a></li>
 </ol>
 </nav>
 <!-- Article Content -->
 <div class="prose max-w-none text-gray-300">
-<h2 id="how-trackers-work">Comment fonctionnent les traqueurs de sommeil</h2>
-<h3>Les capteurs &#224; l'int&#233;rieur de votre bracelet</h3>
+<h2 id="how-trackers-work">Comment une montre sait-elle que vous dormez ?</h2>
+<h3>D'abord, le mouvement</h3>
 <p>
-                    Chaque traqueur de sommeil connect&#233; repose sur une combinaison de capteurs pour inf&#233;rer ce qui se passe pendant que vous dormez. Au c&#339;ur du dispositif se trouve un <strong>acc&#233;l&#233;rom&#232;tre</strong>, un d&#233;tecteur de mouvement qui mesure les d&#233;placements en trois dimensions. L'hypoth&#232;se fondamentale est simple : moins de mouvement &#233;gale sommeil, plus de mouvement &#233;gale &#233;veil. Cette approche, connue sous le nom d'actigraphie, sert en recherche clinique depuis les ann&#233;es 1970, bien avant l'existence des objets connect&#233;s grand public. Les appareils modernes ont consid&#233;rablement affin&#233; les algorithmes, mais le principe de base reste identique.
+                    Au cœur de chaque montre, bracelet ou bague se trouve un <strong>accéléromètre</strong>, un capteur qui enregistre les mouvements dans les trois dimensions. Le raisonnement est simple : longtemps immobile, vous dormez probablement ; vous bougez, vous êtes sans doute éveillé. Les chercheurs utilisent cette méthode, l'actigraphie, depuis des décennies, bien avant l'arrivée des objets connectés.
                 </p>
 <p>
-                    Un second capteur &#233;quipe la plupart des traqueurs de g&#233;n&#233;ration actuelle : un <strong>capteur de photophl&#233;thysmographie (PPG)</strong>, qui utilise une LED verte pour mesurer le flux sanguin &#224; travers votre poignet. En d&#233;tectant des variations subtiles du volume sanguin, ce capteur estime votre fr&#233;quence cardiaque et votre variabilit&#233; de fr&#233;quence cardiaque (VFC), deux param&#232;tres qui changent de mani&#232;re pr&#233;visible selon les stades de sommeil. Pendant le sommeil profond, la fr&#233;quence cardiaque chute et devient r&#233;guli&#232;re. Pendant le <a class="text-dream-salmon hover:underline" href="sommeil-paradoxal-reves">sommeil paradoxal</a>, elle devient plus variable, plus proche des niveaux d'&#233;veil. En croisant donn&#233;es de mouvement et donn&#233;es cardiaques, l'algorithme du traqueur peut estimer le stade de sommeil en cours.
+                    Sa faiblesse est tout aussi simple. Si vous restez immobile dans le noir, bien éveillé à penser au lendemain, le capteur a peu de moyens de s'en apercevoir.
+                </p>
+<h3>Ensuite, le cœur</h3>
+<p>
+                    La plupart des appareils actuels ajoutent un capteur optique sous le boîtier, la <strong>photopléthysmographie (PPG)</strong>. Sa lumière verte suit le flux sanguin sous la peau pour estimer la fréquence cardiaque et sa variabilité (VFC). Les deux évoluent au fil de la nuit : le cœur tend à ralentir et à se régulariser en sommeil profond, et à devenir plus irrégulier pendant le <a class="text-dream-salmon hover:underline" href="sommeil-paradoxal-reves">sommeil paradoxal</a>. En croisant mouvement et signal cardiaque, l'algorithme fait une estimation du stade de sommeil.
                 </p>
 <p>
-                    Des appareils haut de gamme int&#232;grent aussi des <strong>capteurs de temp&#233;rature cutan&#233;e</strong> et des <strong>capteurs d'oxyg&#232;ne sanguin (SpO2)</strong>. La temp&#233;rature cutan&#233;e suit des sch&#233;mas circadiens : elle baisse lors de l'endormissement et remonte avant le r&#233;veil, fournissant un point de donn&#233;es suppl&#233;mentaire pour la d&#233;tection du sommeil. Les capteurs SpO2 peuvent signaler des irr&#233;gularit&#233;s respiratoires pouvant indiquer des conditions comme l'apn&#233;e du sommeil, bien que leur pr&#233;cision clinique dans les appareils grand public reste limit&#233;e. Aucun de ces capteurs ne mesure directement l'activit&#233; c&#233;r&#233;brale. Or c'est pr&#233;cis&#233;ment l'activit&#233; c&#233;r&#233;brale, mesur&#233;e par l'&#233;lectroenc&#233;phalographie (EEG), qui d&#233;finit les stades de sommeil en milieu clinique.
-                </p>
-
-<h2 id="what-they-measure">Ce qu'ils mesurent vraiment</h2>
-<h3>Temps de sommeil total et efficacit&#233; du sommeil</h3>
-<p>
-                    Tout traqueur connect&#233; excelle dans une mesure : le <strong>temps de sommeil total</strong> (TST), le nombre estim&#233; d'heures et de minutes pass&#233;es endormi. S'y rattache l'efficacit&#233; du sommeil, soit le pourcentage de temps endormi par rapport au temps au lit. Ces deux mesures proviennent principalement de l'acc&#233;l&#233;rom&#232;tre : les p&#233;riodes prolong&#233;es de mouvement minimal sont class&#233;es comme sommeil. Comme le signal de base (immobilit&#233; versus mouvement) reste relativement simple, les traqueurs estiment raisonnablement bien combien de temps vous avez dormi.
-                </p>
-<h3>Estimations des stades de sommeil</h3>
-<p>
-                    C'est dans la d&#233;tection des stades de sommeil sp&#233;cifiques que les traqueurs deviennent plus ambitieux, et plus discutables. La plupart des appareils grand public rapportent le temps pass&#233; en &#171; sommeil l&#233;ger &#187;, &#171; sommeil profond &#187; et &#171; sommeil paradoxal &#187;, des cat&#233;gories correspondant grossi&#232;rement aux stades cliniques N1/N2 (l&#233;ger), N3 (profond/lent) et REM. Pour classer chaque p&#233;riode, les algorithmes croisent variabilit&#233; de fr&#233;quence cardiaque et donn&#233;es de mouvement. Faible VFC avec mouvement minimal : sommeil profond probable. VFC plus &#233;lev&#233;e avec petits soubresauts occasionnels : sommeil paradoxal. VFC mod&#233;r&#233;e avec repositionnements : sommeil l&#233;ger.
-                </p>
-<h3>Scores de sommeil et indicateurs de pr&#233;paration</h3>
-<p>
-                    Beaucoup de plateformes g&#233;n&#232;rent d&#233;sormais un &#171; score de sommeil &#187; ou &#171; score de pr&#233;paration &#187; composite, condensant dur&#233;e du sommeil, stades estim&#233;s, tendances de fr&#233;quence cardiaque et VFC en un seul chiffre. Ces scores peuvent motiver les utilisateurs &#224; prioriser le sommeil, mais ce sont des calculs propri&#233;taires qui varient entre les marques. Un score de 85 sur une plateforme ne signifie pas la m&#234;me chose que 85 sur une autre. Les algorithmes derri&#232;re ces scores sont rarement &#233;valu&#233;s par les pairs, et chaque entreprise pond&#232;re les facteurs selon ses propres hypoth&#232;ses.
+                    Certains modèles suivent aussi la température cutanée ou l'oxygène sanguin (SpO2). Aucun de ces capteurs ne mesure l'activité du cerveau. Or, en laboratoire, les stades du sommeil se définissent à partir des ondes cérébrales enregistrées par EEG, lors d'un examen complet appelé polysomnographie (PSG).
                 </p>
 
-<h2 id="accuracy">Pr&#233;cision et limites</h2>
-<h3>Ce que la recherche montre</h3>
+<h2 id="what-they-measure">Que valent les chiffres affichés ?</h2>
+<h3>La durée de sommeil : le chiffre le plus solide</h3>
 <p>
-                    Les &#233;tudes de validation ind&#233;pendantes dressent un tableau coh&#233;rent. Une revue compl&#232;te de <strong>de Zambotti et al. (2019)</strong> a compar&#233; les objets connect&#233;s grand public &#224; la polysomnographie (PSG), la r&#233;f&#233;rence clinique qui utilise &#233;lectrodes EEG, capteurs de mouvements oculaires et moniteurs de tonus musculaire. R&#233;sultat : les traqueurs sont <strong>pr&#233;cis &#224; 80-90 % pour le temps de sommeil total</strong>, mais la pr&#233;cision tombe &#224; environ <strong>50-60 % pour la classification des stades</strong>. Ils tendent &#224; surestimer le temps de sommeil de 10 &#224; 30 minutes, surtout parce qu'ils classent l'&#233;veil calme (allong&#233; immobile mais &#233;veill&#233;) comme du sommeil l&#233;ger.
+                    Combien de temps vous avez dormi, et la part du temps passé au lit à dormir (l'efficacité du sommeil), sont les données les plus fiables de votre écran. Elles reposent surtout sur le signal immobilité contre mouvement, le plus facile à lire.
+                </p>
+<h3>Les stades : une estimation</h3>
+<p>
+                    « Léger », « profond » et « paradoxal » correspondent à peu près aux stades cliniques N1 et N2, N3 et REM. Sur un objet connecté, ils sont déduits du rythme cardiaque et du mouvement, pas mesurés. Lisez ce graphique coloré comme une esquisse probable, pas comme un enregistrement de votre cerveau.
+                </p>
+<h3>Les scores : la recette d'une marque</h3>
+<p>
+                    Un « score de sommeil » ou de « récupération » mélange durée, stades estimés, fréquence cardiaque et VFC en un seul chiffre. Chaque marque utilise sa propre formule, rarement publiée. Un 85 chez l'une ne vaut pas un 85 chez l'autre, et ce chiffre ne dit pas à quel point vous vous sentez reposé.
+                </p>
+
+<h2 id="accuracy">Quelle est leur fiabilité ?</h2>
+<h3>Ce que montre la recherche</h3>
+<p>
+                    En 2021, <strong>Chinoy et ses collègues</strong> ont comparé sept appareils grand public à la polysomnographie, en laboratoire. Tous détectaient très bien le sommeil, mais classaient souvent des moments d'éveil comme du sommeil. Leurs résultats sur les stades étaient inégaux, et les performances variaient beaucoup d'un appareil à l'autre.
                 </p>
 <p>
-                    Une revue syst&#233;matique de <strong>Haghayegh et al. (2019)</strong> aboutit &#224; des conclusions similaires avec une nuance importante : la pr&#233;cision varie entre les appareils, entre les individus, et m&#234;me entre les nuits pour une m&#234;me personne. Couleur de peau (qui affecte le signal PPG), taille du poignet, ajustement de l'appareil et variations individuelles de fr&#233;quence cardiaque influencent tous les r&#233;sultats. En pratique, les traqueurs servent bien &#224; rep&#233;rer des tendances g&#233;n&#233;rales sur des semaines et des mois, mais les donn&#233;es d'une seule nuit m&#233;ritent une bonne dose de prudence.
-                </p>
-<h3>Ce qu'ils ne peuvent fondamentalement pas faire</h3>
-<p>
-                    La limitation la plus importante est cat&#233;gorique : <strong>les traqueurs ne peuvent pas d&#233;tecter les r&#234;ves</strong>. Les r&#234;ves sont un ph&#233;nom&#232;ne subjectif et exp&#233;rientiel, survenant principalement pendant le sommeil paradoxal mais aussi pendant d'autres stades. M&#234;me un algorithme parfait de d&#233;tection du sommeil paradoxal vous indiquerait seulement que votre cerveau &#233;tait dans un &#233;tat propice au r&#234;ve. Il ne pourrait pas d&#233;terminer si un r&#234;ve s'est produit, ce qu'il contenait, quelle &#233;tait sa charge &#233;motionnelle, ou si vous vous en souviendrez. Contenu, structure narrative, qualit&#233; &#233;motionnelle et sens personnel existent enti&#232;rement hors de port&#233;e de tout capteur port&#233; au poignet.
+                    Une méta-analyse consacrée aux modèles Fitbit, menée par <strong>Haghayegh et ses collègues (2019)</strong>, va dans le même sens. Les anciens modèles, fondés sur le seul mouvement, avaient tendance à surestimer le temps de sommeil et à sous-estimer les éveils nocturnes. Les modèles récents, qui utilisent aussi le rythme cardiaque, font mieux, mais les auteurs rappellent qu'ils ne remplacent pas la polysomnographie.
                 </p>
 <p>
-                    D&#233;tecter l'endormissement pose aussi probl&#232;me : les traqueurs ne distinguent pas entre rester allong&#233; tranquillement en essayant de s'endormir et dormir v&#233;ritablement. Ils manquent les r&#233;veils nocturnes brefs si le porteur ne bouge pas. Et ils ne disent rien sur la qualit&#233; du sommeil au sens v&#233;cu : deux nuits aux m&#233;triques identiques peuvent se ressentir radicalement diff&#233;remment, l'une vous laissant repos&#233; et l'autre vous laissant dans le brouillard.
+                    Les revues du domaine, comme celle de <strong>de Zambotti et ses collègues (2019)</strong>, appellent à la prudence, surtout pour les stades. Et parce que les résultats diffèrent tant d'une étude à l'autre, Menghini et ses collègues ont proposé une méthode standard pour tester chaque nouvel appareil face à la polysomnographie. En pratique, une tendance sur plusieurs semaines en dit plus qu'une nuit isolée.
+                </p>
+<h3>Ce qu'ils ne peuvent pas faire</h3>
+<p>
+                    <strong>Aucun traqueur de sommeil connecté ne détecte les rêves.</strong> On rêve surtout en sommeil paradoxal, mais aussi pendant les autres stades. Même une détection parfaite du sommeil paradoxal indiquerait seulement que votre cerveau était dans un état propice au rêve. Elle ne dirait pas si vous avez rêvé, ce qui s'est passé, ce que vous avez ressenti, ni si vous vous en souviendrez.
+                </p>
+<h3>Quand le score empêche de dormir</h3>
+<p>
+                    En 2017, Kelly Glazer Baron et ses collègues ont décrit des patients dont la quête d'un score « parfait » avait aggravé l'insomnie. Ils ont appelé ce phénomène l'<strong>orthosomnie</strong>. Ce n'est pas un diagnostic officiel, mais c'est un signal utile. Si consulter vos chiffres chaque matin vous angoisse, ne regardez que les moyennes de la semaine, ou masquez le score quelque temps.
+                </p>
+<h3>Quand consulter</h3>
+<p>
+                    L'American Academy of Sleep Medicine estime que ces appareils grand public ne peuvent pas servir à diagnostiquer ni à traiter un trouble du sommeil, même si leurs données peuvent nourrir l'échange avec un médecin. Certaines montres affichent désormais des alertes sur de possibles troubles respiratoires ; seul un bilan médical peut les confirmer. Parlez-en à votre médecin si vous ronflez fort, si votre entourage remarque des pauses respiratoires, si vous somnolez dans la journée malgré des nuits assez longues, si l'insomnie s'installe, ou si des cauchemars fréquents abîment vos nuits.
                 </p>
 <blockquote class="border-l-4 border-dream-salmon/40 pl-4 italic text-purple-200/70 my-6">
-                    Les traqueurs de sommeil connect&#233;s sont pr&#233;cis &#224; 80-90 % pour le temps de sommeil total mais seulement &#224; 50-60 % pour la d&#233;tection des stades. Ils ne peuvent pas d&#233;tecter les r&#234;ves, leur contenu ou la qualit&#233; &#233;motionnelle de votre exp&#233;rience de sommeil., D'apr&#232;s de Zambotti et al. (2019) et Haghayegh et al. (2019)
+                    En résumé : bons pour distinguer le sommeil du mouvement, moins bons pour repérer l'éveil immobile, inégaux sur les stades, aveugles aux rêves. À lire sur des semaines, pas sur une nuit.
                 </blockquote>
 </div>
 
@@ -160,60 +172,68 @@
 <i class="w-6 h-6 text-dream-salmon" data-lucide="moon"></i>
 </div>
 <div>
-<h4 class="font-serif text-lg text-dream-cream mb-2">Comblez le vide que votre traqueur laisse derri&#232;re lui</h4>
-<p class="text-sm text-gray-400 mb-4">Noctalia capture ce qu'aucun objet connect&#233; ne peut : le contenu, les &#233;motions et le sens de vos r&#234;ves. Enregistrez par la voix chaque matin et laissez l'analyse IA r&#233;v&#233;ler des tendances dans votre vie onirique qui compl&#232;tent les donn&#233;es de votre traqueur.</p>
-<a class="inline-flex items-center gap-2 text-sm text-dream-salmon hover:text-dream-salmonLight transition-colors" href="/fr/">
-                                Commencer le suivi avec Noctalia <i class="w-4 h-4" data-lucide="arrow-right"></i>
+<h4 class="font-serif text-lg text-dream-cream mb-2">Votre montre garde les heures. Gardez le rêve.</h4>
+<p class="text-sm text-gray-400 mb-4">Dans Noctalia, racontez votre rêve à voix haute ou tapez-le dès le réveil. Il est transcrit et enregistré dans votre journal, prêt à être relu à côté de vos autres nuits.</p>
+<a class="inline-flex items-center gap-2 text-sm text-dream-salmon hover:text-dream-salmonLight transition-colors" href="/fr/journal-de-reves-vocal">
+                                Noter un rêve à la voix <i class="w-4 h-4" data-lucide="arrow-right"></i>
 </a>
 </div>
 </div>
 </aside>
 
 <div class="prose max-w-none text-gray-300">
-<h2 id="tracker-plus-journal">Traqueur + journal : le tableau complet</h2>
-<h3>Quantitatif rencontre qualitatif</h3>
+<h2 id="tracker-plus-journal">Traqueur et journal de rêves : comment utiliser les deux</h2>
+<h3>Deux types d'information</h3>
 <p>
-                    Comprendre votre sommeil au mieux ne demande pas de choisir entre traqueur connect&#233; et journal de r&#234;ves, mais d'utiliser les deux. Chacun capture une dimension diff&#233;rente de la m&#234;me exp&#233;rience. Votre traqueur fournit des <strong>donn&#233;es quantitatives</strong> : combien de temps vous avez dormi, le temps estim&#233; dans chaque stade, les sch&#233;mas de fr&#233;quence cardiaque, la fr&#233;quence des mouvements. Votre <a class="text-dream-salmon hover:underline" href="guide-journal-reves">journal de r&#234;ves</a> fournit des <strong>donn&#233;es qualitatives</strong> : contenu onirique, tonalit&#233; &#233;motionnelle, th&#232;mes narratifs, vivacit&#233; du rappel et ressenti au r&#233;veil.
+                    Votre traqueur fournit des <strong>chiffres</strong> : durée, stades estimés, rythme cardiaque, périodes agitées. Un <a class="text-dream-salmon hover:underline" href="guide-journal-reves">journal de rêves</a> garde <strong>ce que vous avez vécu</strong> : les scènes, les émotions, la netteté du souvenir, votre état au réveil. L'un ne remplace pas l'autre.
                 </p>
 <p>
-                    Ensemble, ils cr&#233;ent des corr&#233;lations qu'aucun des deux ne peut produire seul. Vous pourriez d&#233;couvrir que les nuits o&#249; votre traqueur montre des pourcentages &#233;lev&#233;s de &#171; sommeil profond &#187; correspondent syst&#233;matiquement &#224; des matins avec des r&#234;ves vivaces et narrativement riches. Ou que les nuits de sommeil fragment&#233; (mouvements fr&#233;quents d&#233;tect&#233;s) corr&#232;lent avec un contenu onirique anxieux ou un mauvais rappel. Sur des semaines et des mois, ces sch&#233;mas crois&#233;s deviennent un puissant ensemble de donn&#233;es personnelles qui r&#233;v&#232;le comment votre architecture de sommeil est li&#233;e &#224; votre vie int&#233;rieure.
+                    Le journal capte aussi ce qu'aucun capteur ne voit : un <a class="text-dream-salmon hover:underline" href="signification-reves-recurrents">rêve récurrent</a> qui revient chaque semaine, des rêves plus anxieux à l'approche d'une échéance, ou des rêves très vifs qui reviennent après quelques nuits de rattrapage, ce que les chercheurs associent au <a class="text-dream-salmon hover:underline" href="dette-sommeil-sante-reves">rebond de sommeil paradoxal après une dette de sommeil</a>.
                 </p>
-<h3>Ce que les traqueurs manquent et que les journaux capturent</h3>
+<h3>Croiser sur des semaines, pas sur une nuit</h3>
 <p>
-                    Pensez &#224; ce qu'un journal de r&#234;ves enregistre et qu'un traqueur ne capte pas : le <a class="text-dream-salmon hover:underline" href="signification-reves-recurrents">th&#232;me onirique r&#233;current</a> qui appara&#238;t chaque semaine depuis un mois. Un glissement du contenu onirique paisible vers un contenu anxieux juste avant une p&#233;riode de stress professionnel. Des r&#234;ves vivaces qui reviennent apr&#232;s am&#233;lioration de l'hygi&#232;ne du sommeil, signe de <a class="text-dream-salmon hover:underline" href="dette-sommeil-sante-reves">rebond REM</a> confirmant que votre cerveau r&#233;cup&#232;re de la dette de sommeil. Le traitement &#233;motionnel visible dans les r&#233;cits oniriques refl&#232;te votre &#233;tat psychologique plus fid&#232;lement que toute mesure de fr&#233;quence cardiaque.
+                    Les données d'une nuit étant incertaines, comparez les deux sur plusieurs semaines. Quelques questions à garder en tête : est-ce que je me souviens de plus de rêves les nuits où le traqueur note des <a class="text-dream-salmon hover:underline" href="reveil-nocturne-rappel-reves">réveils en fin de nuit</a> ? Mes rêves les plus pénibles tombent-ils les nuits courtes ? Mon « bon score » correspond-il à mon ressenti ? Les réponses seront personnelles, et c'est tout l'intérêt.
                 </p>
+<h3 id="journal-example">Exemple de journal avec traqueur</h3>
 <p>
-                    Tenir un journal de r&#234;ves permet aussi de capturer la qualit&#233; subjective du sommeil : &#224; quel point vous vous sentez repos&#233;, si vous vous &#234;tes r&#233;veill&#233; naturellement ou en sursaut, si la nuit a sembl&#233; longue ou est pass&#233;e en un instant. Ces indicateurs exp&#233;rientiels comptent &#233;norm&#233;ment pour la sant&#233; du sommeil, mais &#233;chappent aux capacit&#233;s de mesure de la technologie connect&#233;e actuelle.
+                    <strong>Exemple fictif :</strong> cette entrée montre comment garder côte à côte les données, le rêve et le contexte, sans les mélanger.
                 </p>
-
-<h2 id="future">L'avenir de la technologie du sommeil</h2>
-<h3>Bandeaux EEG et capteurs de nouvelle g&#233;n&#233;ration</h3>
+<ul>
+<li><strong>Traqueur :</strong> « 6 h 10, score 68, trois réveils, le dernier à 5 h 50. »</li>
+<li><strong>Rêve :</strong> « Je ratais un train. Chaque fois que j'arrivais sur le quai, il changeait. »</li>
+<li><strong>Émotion :</strong> « De l'agacement, puis du soulagement au réveil. »</li>
+<li><strong>Contexte récent :</strong> « Travaillé tard, café à 17 h. »</li>
+<li><strong>Question à garder :</strong> « Est-ce que je me souviens mieux de mes rêves après les nuits avec des réveils au petit matin ? »</li>
+</ul>
 <p>
-                    En technologie grand public du sommeil, l'avanc&#233;e la plus prometteuse est l'&#233;mergence des <strong>bandeaux EEG</strong>, des appareils pla&#231;ant des &#233;lectrodes sur le front pour mesurer directement l'activit&#233; &#233;lectrique c&#233;r&#233;brale pendant le sommeil. Contrairement aux traqueurs de poignet qui inf&#232;rent les stades &#224; partir du mouvement et de la fr&#233;quence cardiaque, les bandeaux EEG mesurent les m&#234;mes signaux c&#233;r&#233;braux utilis&#233;s en polysomnographie clinique, avec moins d'&#233;lectrodes. Des appareils comme le bandeau Dreem et le Muse S affichent une pr&#233;cision nettement sup&#233;rieure dans les &#233;tudes de validation, approchant 80-85 % de concordance avec la PSG clinique pour les stades individuels.
-                </p>
-<h3>Capteurs sous-matelas et sans contact</h3>
-<p>
-                    Une autre cat&#233;gorie &#233;mergente est celle des <strong>capteurs sous-matelas</strong> et des appareils radar de chevet qui suivent le sommeil sans rien porter sur le corps. Ces appareils utilisent la ballistocardiographie (d&#233;tection des vibrations corporelles induites par le battement cardiaque &#224; travers le matelas) ou le radar ultra-large bande pour surveiller les sch&#233;mas respiratoires, la fr&#233;quence cardiaque et les mouvements. Leur avantage est z&#233;ro contrainte de port, vous dormez simplement dans votre lit normalement. Leur pr&#233;cision pour la d&#233;tection des stades se situe actuellement entre les traqueurs de poignet et les bandeaux EEG, mais la technologie progresse rapidement.
-                </p>
-<h3>Analyse par IA et d&#233;tection des r&#234;ves</h3>
-<p>
-                    &#192; la fronti&#232;re de la technologie du sommeil, l'intelligence artificielle vise &#224; extraire davantage d'informations des capteurs existants. Des mod&#232;les d'apprentissage automatique entra&#238;n&#233;s sur de larges jeux de donn&#233;es polysomnographiques peuvent potentiellement am&#233;liorer la classification des stades &#224; partir de capteurs grand public. Plus sp&#233;culativement, des chercheurs explorent si les caract&#233;ristiques du sommeil paradoxal d&#233;tectables par les traqueurs (sch&#233;mas sp&#233;cifiques de VFC, mouvements oculaires rapides via capteurs faciaux, soubresauts musculaires subtils) pourraient un jour permettre une d&#233;tection approximative des r&#234;ves. D&#233;tecter qu'un r&#234;ve se produit reste n&#233;anmoins fondamentalement diff&#233;rent de comprendre son contenu. Ce dernier restera probablement l'apanage du compte-rendu subjectif dans un avenir pr&#233;visible.
+                    Une entrée ne prouve rien. Dix entrées sur un mois commencent à montrer si une tendance tient.
                 </p>
 
-<h2 id="privacy">Consid&#233;rations de vie priv&#233;e</h2>
-<h3>Les donn&#233;es de sommeil sont des donn&#233;es de sant&#233;</h3>
+<h2 id="future">Ce qui arrive dans les technologies du sommeil</h2>
+<h3>Des bandeaux qui lisent l'activité cérébrale</h3>
 <p>
-                    &#192; mesure que le suivi du sommeil se g&#233;n&#233;ralise, une question critique &#233;merge : <strong>&#224; qui appartiennent vos donn&#233;es de sommeil ?</strong> Les m&#233;triques de sommeil, particuli&#232;rement combin&#233;es avec la fr&#233;quence cardiaque, la VFC, l'oxyg&#232;ne sanguin et les donn&#233;es de localisation, constituent des informations de sant&#233; sensibles. La plupart des fabricants d'objets connect&#233;s stockent ces donn&#233;es sur des serveurs cloud, o&#249; elles sont r&#233;gies par la politique de confidentialit&#233; de l'entreprise plut&#244;t que par les r&#233;glementations de protection des donn&#233;es de sant&#233;. Ces donn&#233;es peuvent r&#233;v&#233;ler des tendances sur votre sant&#233;, vos niveaux de stress, votre emploi du temps et votre mode de vie que vous ne souhaiteriez peut-&#234;tre pas partager avec des annonceurs, des assureurs ou des employeurs.
+                    Les <strong>bandeaux EEG</strong> posent des électrodes sur le front et enregistrent directement l'activité du cerveau, le même type de signal qu'en laboratoire, avec moins d'électrodes. En principe, cela les rapproche davantage de la polysomnographie qu'un appareil au poignet. Ils sont toutefois moins confortables, et chaque modèle doit encore être validé de façon indépendante.
+                </p>
+<h3>Des capteurs qu'on ne porte pas</h3>
+<p>
+                    Capteurs sous le matelas et radars de chevet suivent la respiration, le rythme cardiaque et les mouvements sans vous toucher. Vous dormez simplement comme d'habitude. Comme les appareils au poignet, ils estiment les stades de façon indirecte.
+                </p>
+<h3>L'IA, et la limite qu'elle ne franchira pas</h3>
+<p>
+                    Les chercheurs attendent de l'apprentissage automatique, entraîné sur de grands jeux de données, qu'il affine ce que les capteurs grand public peuvent estimer, comme le décrit une revue de Perez-Pozuelo et ses collègues (2020). Même si un appareil signale un jour de façon fiable que vous êtes probablement en train de rêver, savoir <em>de quoi</em> vous rêvez dépendra toujours de ce dont vous vous souvenez et de ce que vous racontez.
+                </p>
+
+<h2 id="privacy">Qui voit vos données de sommeil ?</h2>
+<h3>Des données de santé</h3>
+<p>
+                    Rythme cardiaque, VFC, oxygène sanguin, heures de coucher et de lever en disent long sur votre santé, votre stress et votre quotidien. La plupart des marques stockent ces données sur leurs serveurs, selon leur propre politique de confidentialité. En Europe, le RGPD classe les données de santé parmi les données sensibles, mais l'usage qu'en fait chaque marque se lit dans ses conditions.
+                </p>
+<h3>Les questions à poser avant de choisir</h3>
+<p>
+                    Puis-je exporter et supprimer mes données ? Sont-elles partagées avec des tiers, et dans quel but ? Que deviennent-elles si l'entreprise est rachetée ou ferme ? Nuit après nuit, pendant des années, les données de sommeil forment un dossier d'une rare intimité.
                 </p>
 <p>
-                    Sur de nombreuses plateformes, les conditions d'utilisation accordent &#224; l'entreprise des droits larges sur les donn&#233;es de sommeil anonymis&#233;es ou agr&#233;g&#233;es : recherche, d&#233;veloppement de produits et parfois marketing. Peu d'utilisateurs lisent attentivement ces conditions, et moins encore en comprennent la port&#233;e. Si une entreprise est rachet&#233;e ou fait faillite, le sort de vos donn&#233;es accumul&#233;es devient incertain. Enregistr&#233;es chaque nuit pendant des ann&#233;es, les donn&#233;es de sommeil forment un ensemble d'une richesse et d'une intimit&#233; inhabituelles.
-                </p>
-<h3>Le cas de l'approche locale d'abord</h3>
-<p>
-                    En revanche, les journaux de r&#234;ves peuvent adopter une posture de minimisation des donn&#233;es plus lisible que beaucoup d'&#233;cosyst&#232;mes de wearables. Noctalia indique un journal h&#233;berg&#233; dans l'UE, des prestataires n&#233;cessaires pour l'IA, la transcription et les abonnements, aucune revente des donn&#233;es personnelles et pas de publicit&#233; cibl&#233;e. Ce n'est pas un journal hors ligne uniquement: la comparaison juste porte donc sur la transparence et le contr&#244;le, pas sur une promesse local-first absolue. &#192; une &#233;poque de conscience croissante des donn&#233;es, l'architecture de confidentialit&#233; de vos outils de sommeil compte autant que leur pr&#233;cision.
-                </p>
-<p>
-                    Lors de l'&#233;valuation de toute technologie de suivi du sommeil, consid&#233;rez non seulement ce qu'elle mesure mais o&#249; ces donn&#233;es vont, qui peut y acc&#233;der et ce qu'il en advient si vous cessez d'utiliser le service. Le traqueur le plus pr&#233;cis du monde apporte peu de r&#233;confort s'il cr&#233;e simultan&#233;ment un profil comportemental d&#233;taill&#233; que vous ne pouvez ni contr&#244;ler ni supprimer.
+                    Les mêmes questions valent pour un journal de rêves. Noctalia héberge les données du journal dans l'UE, fait appel aux prestataires nécessaires pour l'IA, la transcription et les abonnements, ne revend pas les données personnelles et ne fait pas de publicité ciblée. Ce n'est pas un journal uniquement hors ligne : ce qui compte, c'est la transparence et le contrôle. Le détail figure dans notre <a class="text-dream-salmon hover:underline" href="/fr/politique-confidentialite">politique de confidentialité</a>, et notre guide sur la <a class="text-dream-salmon hover:underline" href="confidentialite-ia-journal-reves">confidentialité d'un journal de rêves avec IA</a> liste les points à vérifier.
                 </p>
 </div>
 <!-- CTA Section -->
@@ -221,57 +241,69 @@
 <div class="w-16 h-16 bg-dream-salmon/10 rounded-full flex items-center justify-center mx-auto mb-6">
 <i class="w-8 h-8 text-dream-salmon" data-lucide="moon"></i>
 </div>
-<h3 class="font-serif text-2xl md:text-3xl mb-4 text-dream-cream">Compl&#233;tez le tableau que votre traqueur ne peut pas saisir</h3>
+<h3 class="font-serif text-2xl md:text-3xl mb-4 text-dream-cream">Votre traqueur compte les heures. Votre journal garde les rêves.</h3>
 <p class="text-purple-200/70 mb-6 max-w-lg mx-auto">
-                    Noctalia capture vos r&#234;ves par la voix, analyse les tendances &#233;motionnelles par IA et garde vos donn&#233;es priv&#233;es sur votre appareil. Associez-le &#224; votre traqueur pour la vision la plus compl&#232;te de votre sant&#233; du sommeil.
+                    Notez votre rêve dans Noctalia, à la voix ou par écrit, dès le réveil. Relisez vos nuits côte à côte pour voir ce qui revient.
                 </p>
 <a class="inline-flex items-center gap-2 px-8 py-4 bg-dream-salmon text-dream-dark rounded-full font-bold hover:bg-dream-salmon/90 transition-colors" href="/fr/">
-                    Commencer votre journal de r&#234;ves <i class="w-5 h-5" data-lucide="arrow-right"></i>
+                    Commencer mon journal de rêves <i class="w-5 h-5" data-lucide="arrow-right"></i>
 </a>
 </aside>
 <!-- FAQ Section -->
 <section class="mt-16">
-<h2 class="font-serif text-2xl text-dream-cream mb-8">Questions fr&#233;quentes</h2>
+<h2 class="font-serif text-2xl text-dream-cream mb-8">Questions fréquentes</h2>
 <div class="space-y-4">
 <details class="glass-panel rounded-xl p-4 group cursor-pointer">
 <summary class="font-medium flex justify-between items-center text-dream-cream">
-                            Quelle est la pr&#233;cision des traqueurs de sommeil connect&#233;s ?
+                            Les traqueurs de sommeil connectés sont-ils fiables ?
                             <i class="w-5 h-5 transition-transform group-open:rotate-180 text-dream-salmon" data-lucide="chevron-down"></i>
 </summary>
 <p class="mt-4 text-sm text-gray-400 leading-relaxed">
-                            Les traqueurs de sommeil connect&#233;s sont g&#233;n&#233;ralement pr&#233;cis &#224; 80-90 % pour d&#233;tecter le temps de sommeil total par rapport &#224; la polysomnographie (la r&#233;f&#233;rence clinique). Cependant, leur pr&#233;cision chute significativement pour la d&#233;tection des stades de sommeil, les &#233;tudes montrent seulement 50-60 % de pr&#233;cision pour distinguer entre sommeil l&#233;ger, profond et paradoxal. Ils tendent &#224; surestimer le temps de sommeil total et &#224; classer par erreur l'&#233;veil calme comme du sommeil l&#233;ger.
+                            Comparés à la polysomnographie, ils détectent bien le sommeil mais comptent souvent l'éveil immobile comme du sommeil, et peuvent donc surestimer votre temps de sommeil. Leurs estimations de sommeil léger, profond et paradoxal sont inégales selon les appareils. Ils servent surtout à suivre des tendances sur plusieurs semaines.
                         </p>
 </details>
 <details class="glass-panel rounded-xl p-4 group cursor-pointer">
 <summary class="font-medium flex justify-between items-center text-dream-cream">
-                            Les traqueurs de sommeil peuvent-ils d&#233;tecter les r&#234;ves ?
+                            Une montre connectée peut-elle détecter les rêves ?
                             <i class="w-5 h-5 transition-transform group-open:rotate-180 text-dream-salmon" data-lucide="chevron-down"></i>
 </summary>
 <p class="mt-4 text-sm text-gray-400 leading-relaxed">
-                            Non. Les traqueurs de sommeil connect&#233;s actuels ne peuvent pas d&#233;tecter les r&#234;ves. Ils peuvent tenter d'estimer les stades de <a class="text-dream-salmon hover:underline" href="sommeil-paradoxal-reves">sommeil paradoxal</a>, la phase o&#249; se produisent la plupart des r&#234;ves vivaces, mais ils ne peuvent pas d&#233;terminer si un r&#234;ve se produit r&#233;ellement, ce qu'il contient, ou quelle est sa charge &#233;motionnelle. Le contenu onirique, les sch&#233;mas narratifs et la qualit&#233; &#233;motionnelle n&#233;cessitent un compte-rendu subjectif par des m&#233;thodes comme le journal de r&#234;ves.
+                            Non. Au mieux, elle estime quand vous êtes en <a class="text-dream-salmon hover:underline" href="sommeil-paradoxal-reves">sommeil paradoxal</a>, le stade le plus associé aux rêves vifs. Elle ne peut pas savoir si vous avez rêvé ni ce que contenait le rêve. Seul votre récit au réveil peut le saisir.
                         </p>
 </details>
 <details class="glass-panel rounded-xl p-4 group cursor-pointer">
 <summary class="font-medium flex justify-between items-center text-dream-cream">
-                            Faut-il utiliser un traqueur de sommeil et un journal de r&#234;ves ensemble ?
+                            Faut-il utiliser un traqueur de sommeil et un journal de rêves ensemble ?
                             <i class="w-5 h-5 transition-transform group-open:rotate-180 text-dream-salmon" data-lucide="chevron-down"></i>
 </summary>
 <p class="mt-4 text-sm text-gray-400 leading-relaxed">
-                            Oui, combiner les deux fournit le tableau le plus complet de votre sant&#233; du sommeil. Les traqueurs connect&#233;s fournissent des donn&#233;es quantitatives, temps de sommeil total, sch&#233;mas de fr&#233;quence cardiaque, mouvements et stades de sommeil estim&#233;s. Le journal de r&#234;ves fournit des donn&#233;es qualitatives, contenu onirique, tonalit&#233; &#233;motionnelle, th&#232;mes narratifs et fr&#233;quence de rappel. Ensemble, ils r&#233;v&#232;lent des sch&#233;mas qu'aucun des deux ne peut capturer seul.
+                            Vous pouvez, si cela vous aide. Le traqueur donne la durée, les stades estimés et le rythme cardiaque ; le journal garde le rêve, l'émotion et votre état au réveil. Comparez-les sur plusieurs semaines. Si les chiffres commencent à vous angoisser, faites une pause avec le score.
+                        </p>
+</details>
+<details class="glass-panel rounded-xl p-4 group cursor-pointer">
+<summary class="font-medium flex justify-between items-center text-dream-cream">
+                            Un traqueur peut-il diagnostiquer une apnée du sommeil ou une insomnie ?
+                            <i class="w-5 h-5 transition-transform group-open:rotate-180 text-dream-salmon" data-lucide="chevron-down"></i>
+</summary>
+<p class="mt-4 text-sm text-gray-400 leading-relaxed">
+                            Non. Certains appareils affichent des alertes, mais un diagnostic demande un bilan médical. Ronflements forts, pauses respiratoires, grosse somnolence dans la journée ou insomnie qui dure sont des raisons de consulter, et les données de votre traqueur peuvent appuyer l'échange.
                         </p>
 </details>
 </div>
 </section>
 <!-- Sources / Trust -->
 <section class="mt-16 glass-panel rounded-2xl p-6" id="sources">
-<h2 class="font-serif text-2xl text-dream-cream mb-4">Sources / Lectures compl&#233;mentaires</h2>
+<h2 class="font-serif text-2xl text-dream-cream mb-4">Sources et lectures complémentaires</h2>
 <ul class="mt-6 space-y-2 text-sm text-gray-400">
-<li><a href="https://doi.org/10.1093/sleep/zsz137" rel="nofollow noopener noreferrer" target="_blank">de Zambotti et al. (2019) : Wearable sleep technology in clinical and research settings (Medicine &amp; Science in Sports &amp; Exercise)</a></li>
-<li><a href="https://doi.org/10.3390/s19194066" rel="nofollow noopener noreferrer" target="_blank">Haghayegh et al. (2019) : Accuracy of wristband Fitbit models in assessing sleep (Sensors)</a></li>
-<li><a href="https://doi.org/10.1093/sleep/zsaa170" rel="nofollow noopener noreferrer" target="_blank">Menghini et al. (2021) : A standardized framework for testing the performance of sleep-tracking technology (Sleep)</a></li>
-<li><a href="https://doi.org/10.1093/sleep/zsaa291" rel="nofollow noopener noreferrer" target="_blank">Chinoy et al. (2021) : Performance of seven consumer sleep-tracking devices compared with polysomnography (Sleep)</a></li>
+<li><a href="https://doi.org/10.1093/sleep/zsaa291" rel="nofollow noopener noreferrer" target="_blank">Chinoy et al. (2021), « Performance of seven consumer sleep-tracking devices compared with polysomnography », <em>Sleep</em>, 44(5)</a></li>
+<li><a href="https://doi.org/10.2196/16273" rel="nofollow noopener noreferrer" target="_blank">Haghayegh et al. (2019), « Accuracy of wristband Fitbit models in assessing sleep: systematic review and meta-analysis », <em>Journal of Medical Internet Research</em>, 21(11)</a></li>
+<li><a href="https://doi.org/10.1249/MSS.0000000000001947" rel="nofollow noopener noreferrer" target="_blank">de Zambotti et al. (2019), « Wearable sleep technology in clinical and research settings », <em>Medicine &amp; Science in Sports &amp; Exercise</em></a></li>
+<li><a href="https://doi.org/10.1093/sleep/zsaa170" rel="nofollow noopener noreferrer" target="_blank">Menghini et al. (2021), « A standardized framework for testing the performance of sleep-tracking technology », <em>Sleep</em>, 44(2)</a></li>
+<li><a href="https://doi.org/10.5664/jcsm.6472" rel="nofollow noopener noreferrer" target="_blank">Baron et al. (2017), « Orthosomnia: are some patients taking the quantified self too far? », <em>Journal of Clinical Sleep Medicine</em>, 13(2)</a></li>
+<li><a href="https://doi.org/10.5664/jcsm.7128" rel="nofollow noopener noreferrer" target="_blank">Khosla et al. (2018), « Consumer sleep technology: an American Academy of Sleep Medicine position statement », <em>Journal of Clinical Sleep Medicine</em>, 14(5)</a></li>
+<li><a href="https://doi.org/10.1038/s41746-020-0244-4" rel="nofollow noopener noreferrer" target="_blank">Perez-Pozuelo et al. (2020), « The future of sleep health: a data-driven revolution in sleep science and medicine », <em>npj Digital Medicine</em>, 3</a></li>
 </ul>
-<p class="mt-6 text-xs text-purple-200/60">Mis &#224; jour le 24 mars 2026</p>
+<p class="mt-6 text-xs text-purple-200/60">Mis à jour le 8 octobre 2026</p>
 </section>
 <!-- Related Symbols Start -->
 <section aria-label="Symboles de r&#234;ves associ&#233;s" class="mt-12 mb-8">
