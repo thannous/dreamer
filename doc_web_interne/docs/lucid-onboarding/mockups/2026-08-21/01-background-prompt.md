@@ -4,7 +4,7 @@
 
 - Référence visuelle : `01-practice-three-moments.png`
 - Sortie ImageGen locale : `/Users/tanuki/.codex/generated_images/01a025a3-abce-77c3-b55a-d47eb439e48a/exec-5651939b-86f8-4307-83e2-d76913ac2fb2.png`
-- Asset de production : `assets/images/lucid/onboarding/onboarding-step-1-reference.jpg`
+- Asset de production : `assets/images/lucid/onboarding/onboarding-step-1-reference.webp`
 
 ## Direction donnée à ImageGen
 

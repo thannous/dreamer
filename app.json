@@ -124,8 +124,6 @@
             "minSdkVersion": 28,
             "enableMinifyInReleaseBuilds": true,
             "enableShrinkResourcesInReleaseBuilds": true,
-            "gifEnabled": false,
-            "webpEnabled": false,
             "packagingOptions": {
               "exclude": [
                 "/org/bouncycastle/pqc/crypto/picnic/*.properties"
