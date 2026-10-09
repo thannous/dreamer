@@ -1,6 +1,11 @@
 const { createHash } = require('node:crypto');
 const { getDefaultConfig } = require('expo/metro-config');
 const { withUniwindConfig } = require('uniwind/metro');
+const {
+  RC_WEB_STUB_OPT_OUT,
+  isRevenueCatWebStubDisabled,
+  resolveNativeStub,
+} = require('./scripts/metro-native-stubs');
 
 const config = getDefaultConfig(__dirname);
 
@@ -27,20 +32,17 @@ config.resolver.blockList = [
   /apps[\\/]meditation[\\/].*/,
 ];
 
-// react-native-purchases(-ui) statically import RevenueCat's web SDK (~840 KB
-// minified) for Browser/Preview API mode, which they only enter on web, in
-// Expo Go or in the Rork sandbox. Native builds always ship the native
-// modules, so resolve the web SDK to an empty module everywhere but web.
+// Native-only empty-module stubs (RevenueCat web SDK, Android Material Symbols
+// font) live in scripts/metro-native-stubs.js. Local Expo Go can opt out of the
+// RevenueCat stub with NOCTALIA_DISABLE_RC_WEB_STUB=1 (see AGENTS.md).
 const upstreamResolveRequest = config.resolver.resolveRequest;
+if (isRevenueCatWebStubDisabled()) {
+  console.warn(`[metro] ${RC_WEB_STUB_OPT_OUT}=1: bundling the real RevenueCat web SDK for native (Expo Go only).`);
+}
 config.resolver.resolveRequest = (context, moduleName, platform) => {
-  if (platform !== 'web' && moduleName === '@revenuecat/purchases-js-hybrid-mappings') {
-    return { type: 'empty' };
-  }
-  // expo-router's native tabs import expo-symbols, whose Android build pulls the
-  // Material Symbols font (~970 KB). The app uses neither native tabs nor
-  // SymbolView on Android (icon-symbol.tsx maps onto MaterialIcons there).
-  if (platform === 'android' && moduleName === '@expo-google-fonts/material-symbols/400Regular') {
-    return { type: 'empty' };
+  const stub = resolveNativeStub(moduleName, platform);
+  if (stub) {
+    return stub;
   }
   return (upstreamResolveRequest ?? context.resolveRequest)(context, moduleName, platform);
 };
