@@ -69,29 +69,25 @@ jobs:
           parameters: /tmp/circleci-parameters.json
 
 workflows:
-  # Remote CI runs when any of these is true. Automatic webhook pushes stay off
-  # and spend no credits. The git pre-push hook (`npm run verify:fast`) is the
-  # routine gate.
+  # Remote CI runs only on demand, when any of these is true. Automatic webhook
+  # pushes stay off and spend no credits; neither a merge nor a publish waits
+  # for CircleCI. The routine proof is local: `npm run verify:pr` before merge,
+  # `npm run verify:release` before a publish (AGENTS.md).
   # - pipeline.event.name is `api` (GitHub App manual web-app or API trigger):
   #   https://circleci.com/docs/guides/orchestrate/github-trigger-event-options/
   #   The orchestration cookbook says this value is GitHub App only:
   #   https://circleci.com/docs/guides/orchestrate/orchestration-cookbook/
-  # - pipeline.trigger.type is `api` (current field for legacy GitHub OAuth,
+  # - pipeline.trigger.type is `api` (legacy GitHub OAuth manual or API trigger,
   #   slug gh/thannous/dreamer). `github_oauth` is an automatic OAuth webhook
   #   and does not match. Reference:
   #   https://circleci.com/docs/reference/variables/
-  # - pipeline.trigger_source is `api` (older spelling: `api`, `webhook`,
-  #   `scheduled_pipeline`). The same reference marks it deprecated as of
-  #   2026-08-01 and says to use pipeline.trigger.type. `webhook` and
-  #   `scheduled_pipeline` do not open the gate. The schedule guide still
-  #   shows the old value:
-  #   https://circleci.com/docs/guides/orchestrate/schedule-triggers-with-multiple-workflows/
+  #   That reference deprecates pipeline.trigger_source (2026-08-01) in favour
+  #   of pipeline.trigger.type, so the gate no longer reads it.
   # - force_full_validation is true.
   setup:
     when:
       or:
         - equal: [api, << pipeline.event.name >>]
-        - equal: [api, << pipeline.trigger_source >>]
         - equal: [api, << pipeline.trigger.type >>]
         - equal: [true, << pipeline.parameters.force_full_validation >>]
     jobs:

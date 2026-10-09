@@ -110,17 +110,17 @@ jest.mock('react-native-safe-area-context', () => ({
 
 const copy: Record<string, string> = {
   "release_notes.badge": "NOUVEAUTÉS · {version}",
-  "release_notes.title": "Noctalia 3.3 est là",
-  "release_notes.subtitle": "Une nouvelle ambiance pour raconter, contempler et explorer tes rêves.",
-  "release_notes.design.title": "Un journal plus immersif",
-  "release_notes.design.body": "Découvre le thème clair satin champagne et des illustrations agrandies jusqu’en haut de l’écran.",
-  "release_notes.capture.title": "Du souvenir au récit",
-  "release_notes.capture.body": "Relis ton récit après les questions guidées, puis choisis de l’analyser et de l’illustrer après l’avoir enregistré.",
-  "release_notes.reading.title": "Une nouvelle lecture de tes rêves",
-  "release_notes.reading.body": "Retrouve l’interprétation, les symboles et les émotions dans une lecture dédiée, avec de nouveaux types de rêves et des phrases poétiques.",
-  "release_notes.reliability.title": "Un quotidien plus fluide",
-  "release_notes.reliability.body": "Dictée, synchronisation, réglages et navigation après abonnement : plusieurs corrections facilitent ton expérience.",
-  "release_notes.primary": "Découvrir mon journal",
+  "release_notes.title": "Noctalia 3.5 est là",
+  "release_notes.subtitle": "Des symboles illustrés pour mieux lire tes rêves.",
+  "release_notes.symbols.title": "160 symboles illustrés",
+  "release_notes.symbols.body": "Le dictionnaire des symboles est désormais illustré, comme sur noctalia.app.",
+  "release_notes.symbol_pages.title": "Des fiches plus lisibles",
+  "release_notes.symbol_pages.body": "Chaque fiche présente l’interprétation, les variations, des questions à te poser et les symboles liés.",
+  "release_notes.readability.title": "Grandes tailles de texte",
+  "release_notes.readability.body": "L’affichage est corrigé quand tu utilises de grandes tailles de texte.",
+  "release_notes.lucid.title": "Lucid Trainer a déménagé",
+  "release_notes.lucid.body": "L’entraînement se trouve désormais sur lucid.noctalia.app, accessible depuis le rituel Rêve lucide. Tes anciennes séances d’entraînement ne sont plus affichées dans Noctalia.",
+  "release_notes.primary": "Explorer les symboles",
   "release_notes.later": "Plus tard",
   "release_notes.close": "Fermer les nouveautés"
 };
@@ -154,7 +154,7 @@ describe('WhatsNewModal', () => {
     mockSaveLastSeenReleaseNotesVersion.mockResolvedValue(undefined);
   });
 
-  it('renders the 3.3.0 release copy and exposes every dismissal path', () => {
+  it('renders the current release copy and exposes every dismissal path', () => {
     const onClose = jest.fn();
     const onPrimary = jest.fn();
     const view = render(
@@ -162,10 +162,15 @@ describe('WhatsNewModal', () => {
     );
 
     expect(view.getByText(`NOUVEAUTÉS · ${RELEASE_NOTES_VERSION}`)).toBeTruthy();
-    expect(view.getByText('Un journal plus immersif')).toBeTruthy();
-    expect(view.getByText('Du souvenir au récit')).toBeTruthy();
-    expect(view.getByText('Une nouvelle lecture de tes rêves')).toBeTruthy();
-    expect(view.getByText('Un quotidien plus fluide')).toBeTruthy();
+    expect(view.getByText('160 symboles illustrés')).toBeTruthy();
+    expect(view.getByText('Des fiches plus lisibles')).toBeTruthy();
+    expect(view.getByText('Grandes tailles de texte')).toBeTruthy();
+    expect(view.getByText('Lucid Trainer a déménagé')).toBeTruthy();
+    expect(
+      view.getByText(
+        'L’entraînement se trouve désormais sur lucid.noctalia.app, accessible depuis le rituel Rêve lucide. Tes anciennes séances d’entraînement ne sont plus affichées dans Noctalia.'
+      )
+    ).toBeTruthy();
 
     fireEvent.press(view.getByTestId(TID.Button.WhatsNewPrimary));
     fireEvent.press(view.getByTestId(TID.Button.WhatsNewLater));
@@ -175,14 +180,14 @@ describe('WhatsNewModal', () => {
     expect(onClose).toHaveBeenCalledTimes(2);
   });
 
-  it('shows once after onboarding and persists the version before opening the journal', async () => {
+  it('shows once after onboarding and persists the version before opening the symbol dictionary', async () => {
     const view = render(<WhatsNewModalHost ready />);
 
     await waitFor(() => expect(view.getByTestId(TID.Modal.WhatsNew)).toBeTruthy());
     fireEvent.press(view.getByTestId(TID.Button.WhatsNewPrimary));
 
     expect(mockSaveLastSeenReleaseNotesVersion).toHaveBeenCalledWith(RELEASE_NOTES_VERSION);
-    expect(mockPush).toHaveBeenCalledWith('/journal');
+    expect(mockPush).toHaveBeenCalledWith('/symbol-dictionary');
   });
 
   it('does not show during onboarding or after this release was seen', async () => {

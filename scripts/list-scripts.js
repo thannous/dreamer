@@ -40,7 +40,7 @@ function classifyScript(name) {
 }
 
 function scriptSafety(name) {
-  if (name === 'verify:fast') return 'writes generated files';
+  if (name === 'verify:pr' || name === 'verify:release') return 'writes a local proof';
   if (name === 'release:build') return 'starts a remote build';
   if (name === 'release:prepare') return 'writes release manifests';
   if (name === 'release:versions:sync') return 'writes local version mirrors';

@@ -1,98 +1,19 @@
 #!/bin/sh
-# Runs the fast local check before new commits leave this machine.
-# `npm ci` / `npm install` install it: the `prepare` script points
-# core.hooksPath at .githooks (scripts/install-git-hooks.js).
-# Agents must never bypass it with `git push --no-verify`.
-#
-# verify:fast always binds this checkout's SHA. When the CI classifier
-# selects no product surface (documentation outside site content), it skips
-# lint and lint:scripts. Site inputs still run docs:build and docs:check.
-#
-# Git passes one "<local ref> <local sha> <remote ref> <remote sha>" line per
-# pushed ref on stdin.
+# Pre-push hook of the common delivery rule v2 (AGENTS.md, "Livraison").
+# It takes a few seconds and runs no suite: forbidden files, secrets and file
+# size of what the push sends, then the proof of the pushed tree (a missing
+# proof does not block). The checks of a PR run once, before merge, with
+# `npm run verify:pr`. A branch deletion or a push with no new commit runs
+# nothing. `npm ci` / `npm install` install this hook: the `prepare` script
+# points core.hooksPath at .githooks (scripts/install-git-hooks.js).
+# Never bypass or disable it (`git push --no-verify`, core.hooksPath).
 
-check='npm run verify:fast'
-remote="${1:-origin}"
+root="$(git rev-parse --show-toplevel)" || exit 1
 
-# Git exports the repository location to hooks. Tests build fixture repositories
-# in temporary directories; with these variables set, their Git commands would
-# write into this repository instead. GIT_CONFIG_* (credentials, URL rewrites)
-# is deliberately kept.
-unset GIT_DIR GIT_WORK_TREE GIT_INDEX_FILE GIT_OBJECT_DIRECTORY \
-  GIT_ALTERNATE_OBJECT_DIRECTORIES GIT_COMMON_DIR GIT_PREFIX \
-  GIT_IMPLICIT_WORK_TREE GIT_GRAFT_FILE GIT_NO_REPLACE_OBJECTS \
-  GIT_REPLACE_REF_BASE GIT_SHALLOW_FILE
-
-is_zero() {
-  case "$1" in
-    *[!0]*) return 1 ;;
-    *) return 0 ;;
-  esac
-}
-
-head_sha="$(git rev-parse --verify -q HEAD)"
-checked=''
-elsewhere=''
-
-while read -r local_ref local_sha remote_ref remote_sha; do
-  [ -n "$local_sha" ] || continue
-  if is_zero "$local_sha"; then
-    echo "pre-push: deleting $remote_ref; nothing to check."
-    continue
-  fi
-  # Commits that neither the updated remote ref nor any tracking branch of
-  # this remote already holds. Any Git error counts as new work.
-  if ! is_zero "$remote_sha" && git cat-file -e "$remote_sha^{commit}" 2>/dev/null; then
-    new="$(git rev-list -n 1 "$local_sha" "^$remote_sha" --not --remotes="$remote" 2>/dev/null)" || new=unknown
-  else
-    new="$(git rev-list -n 1 "$local_sha" --not --remotes="$remote" 2>/dev/null)" || new=unknown
-  fi
-  if [ -z "$new" ]; then
-    echo "pre-push: $local_ref adds no commit that $remote lacks; nothing to check."
-    continue
-  fi
-  commit="$(git rev-parse --verify -q "$local_sha^{commit}")"
-  if [ -n "$commit" ] && [ "$commit" = "$head_sha" ]; then
-    checked="$commit"
-  else
-    elsewhere="$elsewhere $local_ref"
-  fi
-done
-
-if [ -z "$checked" ] && [ -z "$elsewhere" ]; then
-  echo "pre-push: nothing new to push; \`$check\` not needed."
-  exit 0
-fi
-
-if [ -n "$elsewhere" ]; then
-  echo "pre-push: \`$check\` validates the checked-out commit, but this push sends new commits from:$elsewhere" >&2
-  echo "pre-push: check out that branch (or a worktree of it) and push from there." >&2
-  exit 1
-fi
-
-if ! command -v npm >/dev/null 2>&1; then
-  echo "pre-push: npm is not on PATH; \`$check\` was not run." >&2
+if ! command -v node >/dev/null 2>&1; then
+  echo "pre-push: node is not on PATH; the push checks did not run and nothing was pushed." >&2
   echo "pre-push: run \`mise install\`, then push through \`mise exec -- git push\` (or activate mise in this shell)." >&2
   exit 1
 fi
 
-if [ ! -e node_modules/.bin/jest ] || [ ! -e node_modules/.bin/tsc ] || [ ! -e node_modules/.bin/expo ]; then
-  echo "pre-push: dependencies are not installed in this checkout; \`$check\` was not run." >&2
-  echo "pre-push: from the repository root run \`mise exec -- npm ci\`, then push again." >&2
-  exit 1
-fi
-
-branch="$(git rev-parse --abbrev-ref HEAD)"
-echo "pre-push: running \`$check\` on $checked ($branch)"
-started="$(date +%s)"
-npm run verify:fast </dev/null
-status=$?
-elapsed=$(( $(date +%s) - started ))
-
-if [ "$status" -ne 0 ]; then
-  echo "pre-push: \`$check\` FAILED (exit $status, ${elapsed}s) on $checked; nothing was pushed." >&2
-  echo "pre-push: fix it, commit, and push again. Agents never bypass this hook with --no-verify." >&2
-  exit 1
-fi
-
-echo "pre-push: \`$check\` passed on $checked in ${elapsed}s. Report it in the PR's Local proof section."
+exec node "$root/scripts/verify-local.mjs" hook "$@"

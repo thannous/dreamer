@@ -1,9 +1,11 @@
 'use strict';
 
 // npm `prepare` step: point Git at the tracked hooks in .githooks/ so every
-// checkout that installs dependencies runs the pre-push check. It never fails
-// the install: builders without a Git work tree (EAS, hosting providers) and
-// a deliberately customized core.hooksPath are left untouched.
+// checkout that installs dependencies runs the fast pre-push checks (a few
+// seconds; the PR checks run with `npm run verify:pr`). It never fails the
+// install: builders without a Git work tree (EAS, hosting providers, archives),
+// a package that is not the repository root and a deliberately customized
+// core.hooksPath are left untouched.
 
 const { spawnSync } = require('node:child_process');
 const { existsSync, readdirSync, realpathSync } = require('node:fs');
@@ -27,7 +29,7 @@ function installGitHooks() {
   if (current === HOOKS_PATH) return;
   if (current) {
     console.warn(`Git hooks: core.hooksPath is "${current}"; left unchanged. ` +
-      `Run \`git config core.hooksPath ${HOOKS_PATH}\` to enable the pre-push check.`);
+      `Run \`git config core.hooksPath ${HOOKS_PATH}\` to enable the pre-push checks.`);
     return;
   }
 
@@ -41,7 +43,8 @@ function installGitHooks() {
     console.warn(`Git hooks: could not set core.hooksPath; run \`git config core.hooksPath ${HOOKS_PATH}\`.`);
     return;
   }
-  console.log(`Git hooks: core.hooksPath=${HOOKS_PATH}; pushes now run \`npm run verify:fast\`.`);
+  console.log(`Git hooks: core.hooksPath=${HOOKS_PATH}; each push runs the fast pre-push checks ` +
+    '(forbidden files, secrets, size, proof). Run `npm run verify:pr` before asking for a merge.');
   if (legacy.length) {
     console.warn(`Git hooks: ${legacyDir} (${legacy.join(', ')}) no longer runs; move needed hooks to ${HOOKS_PATH}/.`);
   }

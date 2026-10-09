@@ -8,27 +8,29 @@ la même validation, est retiré. Le ruleset de `master` ne requiert aucun check
 
 Décision du propriétaire du 9 octobre 2026 : la CI distante ne faisait que
 rejouer ce que l'agent peut vérifier avant de pousser, et elle consommait des
-crédits (machine `ubuntu-2404`, conteneurs TesterArmy parallèles). Désormais :
+crédits (machine `ubuntu-2404`, conteneurs TesterArmy parallèles). Depuis la
+[règle commune de livraison v2](https://github.com/thannous/shapier/blob/main/docs/regle-commune-livraison.md)
+(section « Livraison » d'`AGENTS.md`) :
 
-1. **Contrôle local automatique.** Le hook versionné `.githooks/pre-push` est
-   installé par `npm ci` ou `npm install` : le script `prepare`
+1. **Push rapide.** Le hook versionné `.githooks/pre-push` est installé par
+   `npm ci` ou `npm install` : le script `prepare`
    (`scripts/install-git-hooks.js`) règle `core.hooksPath` sur `.githooks`,
-   sauf hors dépôt Git (EAS, hébergeurs) ou si un autre chemin est déjà
-   configuré. Le hook lance `npm run verify:fast` sur le commit extrait :
-   `test:prepush` (classification décrite ci-dessous, types, Jest affecté, et
-   `docs:build` plus `docs:check` quand le classificateur pose `run_site`),
-   puis `lint` et `lint:scripts`. Si le classificateur ne sélectionne aucune
-   surface produit (documentation interne, markdown de planification, `docs/`
-   généré), lint est sauté ; le SHA du commit extrait reste affiché. Le
-   contenu du site (`docs-src/`, générateurs, données symbole ou guide déjà
-   routées vers le site) n'emprunte pas ce raccourci. Le hook ne fait rien
-   pour une suppression de branche ou un push sans nouveau commit, refuse de
-   tourner sans dépendances installées en affichant la commande
-   d'installation, et affiche la commande lancée, le SHA et la durée.
-   `git push --no-verify` reste possible pour un humain ; les agents ne
-   l'utilisent jamais.
-2. **Preuve écrite.** Le modèle `.github/pull_request_template.md` demande les
-   commandes lancées, le SHA contrôlé, le résultat et ce qui reste non vérifié.
+   sauf hors dépôt Git (EAS, hébergeurs, archives) ou si un autre chemin est
+   déjà configuré. Le hook (`node scripts/verify-local.mjs hook`) dure
+   quelques secondes et ne lance aucune suite : fichiers interdits, secrets,
+   taille des fichiers envoyés, puis affichage de la preuve de l'arbre poussé
+   (une preuve absente ne bloque pas). Il ne fait rien pour une suppression
+   de branche ou un push sans nouveau commit. Les agents ne le contournent
+   jamais (`git push --no-verify`, `core.hooksPath`).
+2. **Preuve avant fusion.** `npm run verify:pr` vérifie le commit sur une
+   copie isolée (`git worktree`) : types application et tests, `lint`,
+   `lint:scripts`, tests Jest liés au diff depuis le merge-base avec
+   `origin/master`, contrats statiques Supabase et Edge, puis selon les
+   chemins changés `docs:build` et `docs:check`, les tests du classificateur,
+   Meditation et les Edge Functions sous Deno (`verify-local.config.mjs`).
+   La preuve est liée à l'arbre et un contrôle déjà réussi sur les mêmes
+   entrées est réutilisé. `node scripts/verify-local.mjs proof-block` imprime
+   la section `## Local proof` du modèle `.github/pull_request_template.md`.
    La revue passe par les commentaires de la PR.
 3. **CircleCI sur déclenchement manuel ou API uniquement.** Le workflow
    `setup` de `.circleci/config.yml` s'exécute si l'une de ces conditions est
@@ -40,15 +42,14 @@ crédits (machine `ubuntu-2404`, conteneurs TesterArmy parallèles). Désormais 
    pour l'API ou le bouton Trigger Pipeline, `github_oauth` pour un webhook
    automatique, voir les
    [valeurs de pipeline](https://circleci.com/docs/reference/variables/)) ;
-   `pipeline.trigger_source` vaut `api` (ancienne orthographe `api`, `webhook`,
-   `scheduled_pipeline`, dépréciée au 2026-08-01 au profit de
-   `pipeline.trigger.type` ; `webhook` et `scheduled_pipeline` ne lancent
-   rien) ; ou `force_full_validation` vaut `true`. Un push webhook automatique
-   ne consomme aucun crédit. `.circleci/continue.yml` est inchangé ;
+   ou `force_full_validation` vaut `true`. `pipeline.trigger_source`, déprécié
+   au 2026-08-01 au profit de `pipeline.trigger.type`, n'est plus lu. Un push
+   webhook automatique ne consomme aucun crédit, et ni la fusion ni la
+   publication n'attendent CircleCI. `.circleci/continue.yml` est inchangé ;
    `.circleci/tests/fallback-jest.test.sh` vérifie chaque combinaison.
-4. **Avant fusion**, si `master` a bougé depuis le contrôle, fusionner `master`
-   dans la branche et repousser : le hook relance le contrôle sur la nouvelle
-   tête, dont le SHA remplace celui de la preuve.
+4. **Avant fusion**, si `master` a bougé depuis la preuve, fusionner `master`
+   dans la branche et relancer `npm run verify:pr` : seuls les contrôles dont
+   les entrées ont changé sont rejoués ; mettre `## Local proof` à jour.
 
 Lancer une pipeline manuelle : application web CircleCI, page *Pipelines* du
 projet, *Trigger Pipeline*, branche de configuration et de checkout, puis
@@ -65,16 +66,21 @@ curl -X POST https://circleci.com/api/v2/project/<project-slug>/pipeline/run \
 ```
 
 Une étape de release ou de publication qui exigeait une pipeline CircleCI verte
-sur le SHA exige désormais que **la validation complète locale ait réussi sur
-ce SHA exact (ou une pipeline CircleCI manuelle avec
-`force_full_validation: true`)**. Ce choix ne prouve rien sur une machine
-vierge : le contrôle tourne dans l'installation locale de l'auteur.
+sur le SHA exige désormais que **`npm run verify:release` ait réussi sur ce SHA
+exact (ou une pipeline CircleCI manuelle avec `force_full_validation: true`,
+citée avec `--external`)**. Ce choix ne prouve rien sur une machine vierge : le
+contrôle tourne avec l'installation locale de l'auteur.
 
 ### Validation complète locale
 
-Elle reprend les commandes `run` du portefeuille `full` de
-`.circleci/continue.yml`, sur un checkout propre du SHA visé, après
-`mise exec -- npm ci` à la racine et dans `apps/meditation` :
+La commande est `npm run verify:release`, sur le commit visé (par défaut
+`HEAD`, `--rev <sha>` sinon), après `mise exec -- npm ci` à la racine et dans
+`apps/meditation`. Elle vérifie une copie isolée de ce commit, réutilise les
+contrôles de la PR dont les entrées sont identiques, reconstruit le site et
+l'app web pour ce commit, puis lance les commandes `run` du portefeuille
+`full` de `.circleci/continue.yml` (contrôles `release` de
+`verify-local.config.mjs` ; `scripts/verify-local-config.test.js` vérifie
+qu'aucune étape de ce portefeuille n'y manque) :
 
 - Noctalia : `npm run dependencies:check`, `npm run boundaries:check`,
   `node scripts/mobile-release.js verify --app all`,
@@ -92,9 +98,18 @@ Elle reprend les commandes `run` du portefeuille `full` de
   `npm run test:analysis-authorization:db` et la liste `test:file` du job
   `edge-contracts` ;
 - parcours : `npm run test:e2e:backend` et les campagnes TesterArmy Dreamer
-  (quatre passes de `tools/e2e/README.md`), Lucid et Meditation.
+  (quatre passes de `tools/e2e/README.md`), Lucid et Meditation, précédées de
+  `test:testerarmy:typecheck` et `test:testerarmy:guards` ;
+- builds livrés, refaits pour chaque commit : `npm run docs:build` et
+  `npm run docs:check` (site), `npm run build:web` (app web Vercel).
 
-`continue.yml` reste la source de vérité de cette liste.
+`continue.yml` reste la source de vérité de cette liste. Les contrôles qui
+demandent Deno (Edge), Docker (`test:e2e:backend`) ou l'installation
+TesterArmy sont déclarés avec leur prérequis : si la machine ne les a pas, la
+preuve est `incomplete` et indique la commande d'installation. Les lancer
+ailleurs (pipeline CircleCI manuelle `force_full_validation: true`, machine du
+propriétaire), puis relancer avec `--external <contrôle>=<preuve>`.
+`node scripts/verify-local.mjs status` affiche la preuve du commit.
 
 ## Architecture et frontière des responsabilités
 
@@ -147,7 +162,7 @@ Noctalia garde les deux typechecks, `lint`, `lint:scripts` et les tests liés au
 diff. Les validations complètes ajoutent `test:fast` dans le même job afin de ne
 pas refaire un second `npm ci`. Tout `docs-src/**` suivi par le classificateur,
 ainsi que les générateurs et les données partagées, lance `docs:build` et
-`docs:check` (en CI manuelle et, localement, dans `verify:fast`). Cloudflare
+`docs:check` (en CI manuelle et, localement, dans `verify:pr`). Cloudflare
 Pages reconstruit ensuite le site. Edge
 vérifie les quatre entrypoints Deno et teste `api` plus `revenuecat-webhook`.
 Les contrats DB exécutent uniquement les huit tests Node qui lisent les
@@ -205,8 +220,8 @@ générateurs `docs-src`, opt-out CI et fallback global.
 
 ## PR, master et validations complètes
 
-Ces règles s'appliquent aux pipelines déclenchées manuellement, et à
-`test:prepush` pour la sélection locale. Sur une branche, la base est le
+Ces règles s'appliquent aux pipelines déclenchées manuellement ; localement,
+`verify:pr` utilise la même base pour `test:changed`. Sur une branche, la base est le
 `merge-base` avec `origin/master`. Sur `master`, la base est
 `pipeline.git.base_revision`, soit la révision de la pipeline précédente : une
 pipeline couvrant plusieurs commits rejoue donc chaque surface affectée sur tout

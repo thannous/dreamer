@@ -16,6 +16,9 @@ The canonical symbol catalogs shared by the app and the site are
 `data/dream-symbols-extended-tier3.json`. Edit those files only. The docs build
 copies all three into `docs/data/` after static assets, and `docs:check` verifies
 that the published copies are byte-for-byte identical to the canonical data.
+It also writes `docs/content/symbols/<lang>.json`, the full interpretations the
+native app downloads per language, so a symbol edit reaches the app only once
+the site is published.
 
 Symbol dates use the locale's `modifiedAt`, then the symbol's `modifiedAt`.
 For undated records, `meta.fallbackModifiedAt` preserves their existing date;

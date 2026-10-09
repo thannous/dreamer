@@ -120,8 +120,9 @@ console.log('Continuation mapping, full-Jest guards and site coverage routing pa
 NODE
 
 # Remote CI is manual-only: a webhook pipeline must run no workflow (no credits).
-# The gate is an OR of GitHub App event.name, legacy trigger_source, current
-# trigger.type, and force_full_validation. Every combination below is evaluated.
+# The gate is an OR of GitHub App event.name, trigger.type (legacy OAuth) and
+# force_full_validation. The deprecated trigger_source is not read: it neither
+# opens nor closes the gate. Every combination below is evaluated.
 SETUP_CONFIG="$repository_root/.circleci/config.yml" node - <<'NODE'
 const fs = require('fs');
 const YAML = require('yaml');
@@ -156,8 +157,11 @@ function evaluate(condition, ctx) {
   throw new Error(`Unknown condition: ${JSON.stringify(condition)}`);
 }
 const serialized = JSON.stringify(gate);
-for (const field of [EVENT, TRIGGER_SOURCE, TRIGGER_TYPE, FORCE]) {
+for (const field of [EVENT, TRIGGER_TYPE, FORCE]) {
   if (!serialized.includes(field)) throw new Error(`Setup gate is missing ${field}`);
+}
+if (serialized.includes('trigger_source')) {
+  throw new Error('Setup gate reads the deprecated pipeline.trigger_source; use pipeline.trigger.type');
 }
 function expectRun(label, ctx, shouldRun) {
   const actual = evaluate(gate, ctx);
@@ -168,9 +172,9 @@ function expectRun(label, ctx, shouldRun) {
 expectRun('GitHub App api event', {
   eventName: 'api', triggerSource: 'webhook', triggerType: 'github_app', force: false,
 }, true);
-expectRun('legacy OAuth api via trigger_source', {
+expectRun('deprecated trigger_source alone', {
   eventName: '', triggerSource: 'api', triggerType: 'github_oauth', force: false,
-}, true);
+}, false);
 expectRun('legacy OAuth api via trigger.type', {
   eventName: '', triggerSource: '', triggerType: 'api', force: false,
 }, true);
@@ -196,7 +200,7 @@ for (const eventName of eventNames) {
     for (const triggerType of triggerTypes) {
       for (const force of [false, true]) {
         const ctx = { eventName, triggerSource, triggerType, force };
-        const shouldRun = eventName === 'api' || triggerSource === 'api' || triggerType === 'api' || force === true;
+        const shouldRun = eventName === 'api' || triggerType === 'api' || force === true;
         expectRun('combination', ctx, shouldRun);
         cases += 1;
       }
@@ -206,7 +210,7 @@ for (const eventName of eventNames) {
 if (setup.parameters?.force_full_validation?.default !== false) {
   throw new Error('force_full_validation must stay available for manual full runs');
 }
-console.log(`Setup workflow gate passed ${cases} trigger combinations. Webhook pushes stay off. Legacy OAuth api runs.`);
+console.log(`Setup workflow gate passed ${cases} trigger combinations. Webhook pushes stay off. Legacy OAuth api runs through trigger.type.`);
 NODE
 
 fixture_results="$test_root/jest-test-results"

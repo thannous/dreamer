@@ -4,16 +4,19 @@
 
 ## Local proof
 
-Remote CI does not run on push or PR. State what you ran locally on the PR head.
+<!-- Paste the output of `node scripts/verify-local.mjs proof-block` (run `npm run verify:pr` on the PR head first). Remote CI does not run on push or PR. -->
 
-- Command(s): `npm run verify:fast` (run by the pre-push hook; includes `docs:build` and `docs:check` when the classifier selects the site) <!-- plus any surface check the hook does not cover: Meditation, Edge, E2E -->
-- Commit SHA: <!-- full SHA the commands ran on -->
-- Result: <!-- passed / failed, duration, notable output or report path -->
-- Not checked: <!-- native, device or other evidence still missing, or "nothing" -->
+- Commands: `npm run verify:pr`
+- Commit SHA: `…`
+- Result: …
+- Tree (`git rev-parse <sha>^{tree}`): `…`
+- Specialised checks (database, browser, mobile, corpus): run: … / out of scope: …
+- Integration: base unchanged / base moved, checks replayed: …
 
-<!-- Optional: link a manual CircleCI pipeline (force_full_validation: true) when one was run. -->
+<!-- Not covered by verify:pr (native device, store build, real services): say what remains unchecked. Optional: link a manual CircleCI pipeline (force_full_validation: true) passed with --external. -->
 
 ## Before merge
 
-- [ ] If `master` moved since the check, `master` was merged into this branch and the check re-ran on the new head (SHA above updated).
-- [ ] Review comments are resolved or answered.
+- [ ] Not a draft; the `Commit SHA` above is the PR head.
+- [ ] If `master` moved: `master` was merged into this branch, `npm run verify:pr` re-ran (only the checks whose inputs changed run again) and the Local proof above was updated.
+- [ ] No open review thread; no conflict.

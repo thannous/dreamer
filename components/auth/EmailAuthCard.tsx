@@ -1,4 +1,3 @@
-import Ionicons from '@expo/vector-icons/Ionicons';
 import { LucidRadius } from '@/constants/lucidTheme';
 import { isLucidTrainer } from '@/lib/appVariant';
 import React, { useCallback, useEffect, useMemo, useState, type FormEvent } from 'react';
@@ -24,6 +23,7 @@ import { useTranslation } from '@/hooks/useTranslation';
 import { ThemeLayout } from '@/constants/journalTheme';
 import { getAuthDesignTokens } from '@/constants/authTheme';
 import { Fonts } from '@/constants/theme';
+import { IoniconGlyph } from '@/components/ui/IoniconGlyph';
 import { EmailVerificationPendingDialog, EmailVerificationSuccessDialog } from '@/components/auth/EmailVerificationDialog';
 import AppleSignInButton from '@/components/auth/AppleSignInButton';
 import GoogleSignInButton from '@/components/auth/GoogleSignInButton';
@@ -1103,7 +1103,7 @@ export const EmailAuthCard: React.FC<Props> = ({
           ]}
         >
           {isLucidTrainer ? (
-            <Ionicons name="person-outline" size={24} color={noctalia.accent.text} />
+            <IoniconGlyph name="person-outline" size={24} color={noctalia.accent.text} />
           ) : (
             <IconSymbol name="moon.stars.fill" size={24} color={noctalia.accent.soft} />
           )}
