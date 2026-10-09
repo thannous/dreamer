@@ -234,6 +234,15 @@ test('there is no override: no environment variable lets a refused publish throu
   });
 });
 
+test('the refusal names the publish target it guards', async () => {
+  await withRepository(async ({ env, work }) => {
+    await assert.rejects(
+      assertSitePublishProof({ root: work, gitEnv: env, label: 'the Vercel web app (dream.noctalia.app)' }),
+      /production publish of the Vercel web app \(dream\.noctalia\.app\) refused: no proof/,
+    );
+  });
+});
+
 test('the refusal message names every failure', () => {
   const message = formatRefusal({ failures: [{ check: 'clean-tree', message: 'the checkout has changes (2 paths)' }, { check: 'proof-present', message: 'no proof for tree abc' }] });
   assert.match(message, /the checkout has changes \(2 paths\); no proof for tree abc/);

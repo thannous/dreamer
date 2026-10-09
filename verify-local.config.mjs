@@ -184,6 +184,9 @@ export default {
     'docs-src/config/cloudflare-pages.json',
     'scripts/check-site-publish-proof.mjs',
     'scripts/test-check-site-publish-proof.mjs',
+    // The Vercel web app production publish (web:deploy:prod), same guard.
+    'scripts/web-deploy.js',
+    'scripts/web-deploy.test.ts',
     // The suites ci-contracts runs.
     '.circleci/tests/classify-changes.test.sh',
     '.circleci/tests/shared-build-impact.test.py',
@@ -198,10 +201,22 @@ export default {
     },
     // The production publish guard of noctalia.app (docs:deploy:prod) against
     // proofs written by this engine in scratch repositories.
+    // Also the two production publishes that await it (docs:deploy:prod,
+    // web:deploy:prod), whose tests mock the guard.
     {
       name: 'site-publish-guard',
-      command: 'node --test scripts/test-check-site-publish-proof.mjs',
-      inputs: ['scripts/check-site-publish-proof.mjs', 'scripts/test-check-site-publish-proof.mjs', 'scripts/verify-local.mjs', 'verify-local.config.mjs'],
+      command: 'node --test scripts/test-check-site-publish-proof.mjs && npm run test:file -- scripts/docs-deploy.test.ts scripts/web-deploy.test.ts',
+      inputs: [
+        'scripts/check-site-publish-proof.mjs',
+        'scripts/test-check-site-publish-proof.mjs',
+        'scripts/verify-local.mjs',
+        'verify-local.config.mjs',
+        'scripts/docs-deploy.js',
+        'scripts/docs-deploy.test.ts',
+        'scripts/web-deploy.js',
+        'scripts/web-deploy.test.ts',
+        'package.json',
+      ],
     },
     { name: 'typecheck-app', command: 'npm run typecheck:app', exclude: DOCS },
     { name: 'typecheck-tests', command: 'npm run typecheck:tests', exclude: DOCS },

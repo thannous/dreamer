@@ -73,10 +73,12 @@ export async function checkSitePublishProof({ root = defaultRoot, gitEnv, fetch 
   return { ok: failures.length === 0, head, tree, failures, proof: release.proof };
 }
 
-export function formatRefusal(result) {
+export const DEFAULT_LABEL = 'noctalia.app';
+
+export function formatRefusal(result, label = DEFAULT_LABEL) {
   const problems = result.failures.map((failure) => failure.message);
   return (
-    `${PREFIX} production publish of noctalia.app refused: ${problems.join('; ')}. `
+    `${PREFIX} production publish of ${label} refused: ${problems.join('; ')}. `
     + `A production publish uploads only the exact origin/master commit on which \`${RELEASE_COMMAND}\` passed. `
     + 'Check out master and update it (`git switch master && git pull --ff-only`), commit, stash or remove local changes, '
     + `run \`${RELEASE_COMMAND}\` (it writes the release proof of HEAD in the shared git directory; a specialised check `
@@ -95,14 +97,14 @@ export function formatAccepted(result) {
  * scripts/docs-deploy.js awaits it before any build of a production publish,
  * and again right before the upload, which must find the same HEAD.
  */
-export async function assertSitePublishProof(options = {}) {
+export async function assertSitePublishProof({ label = DEFAULT_LABEL, ...options } = {}) {
   let result;
   try {
     result = await checkSitePublishProof(options);
   } catch (error) {
-    throw new Error(`${PREFIX} production publish of noctalia.app refused: the guard could not run (${String(error?.message || error).split('\n')[0]}).`);
+    throw new Error(`${PREFIX} production publish of ${label} refused: the guard could not run (${String(error?.message || error).split('\n')[0]}).`);
   }
-  if (!result.ok) throw new Error(formatRefusal(result));
+  if (!result.ok) throw new Error(formatRefusal(result, label));
   return { head: result.head, tree: result.tree, message: formatAccepted(result) };
 }
 

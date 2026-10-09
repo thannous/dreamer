@@ -127,3 +127,6 @@ doc_web_interne/SEO_NOCTALIA_AHREF
 
 # Local generated creative assets (images, videos, storyboards, and QA sheets)
 /output/
+
+# Vercel CLI link (vercel link, npm run web:deploy:prod)
+.vercel/

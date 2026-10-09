@@ -75,6 +75,7 @@
     "docs:preview:cf": "wrangler pages dev docs",
     "docs:deploy:preview": "node ./scripts/docs-deploy.js preview",
     "docs:deploy:prod": "node ./scripts/docs-deploy.js prod",
+    "web:deploy:prod": "node ./scripts/web-deploy.js prod",
     "docs:check-links": "node ./scripts/check-docs-links.js",
     "docs:check-crosslinks": "node ./scripts/check-blog-crosslinking-plan.js",
     "social:preflight": "node ./scripts/check-social-execution-card.js",
