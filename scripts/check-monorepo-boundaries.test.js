@@ -12,7 +12,7 @@ const syntaxes = [
 test.each(syntaxes)('Lucid blocks Journal access: %s', source => {
   expect(inspect('lib/lucid/example.ts', source)).toEqual([expect.stringMatching(/lib\/lucid\/example.ts:1 -> context\/DreamsContext \[(domain-no-application|lucid-no-journal-runtime)\]/)]);
 });
-test.each(['app/lucid/example.tsx', 'context/LucidTrainerContext.tsx', 'components/lucid/example.tsx', 'hooks/useLucidExample.ts'])('Lucid consumer %s cannot access Journal', source => {
+test.each(['routes/lucid/example.tsx', 'context/LucidTrainerContext.tsx', 'components/lucid/example.tsx', 'hooks/useLucidExample.ts'])('Lucid consumer %s cannot access Journal', source => {
   expect(inspect(source, "import x from '@/services/storageService'")).toEqual([expect.stringContaining('[lucid-no-journal-runtime]')]);
 });
 test('Meditation alias belongs to its package, relative escapes are forbidden', () => {
@@ -40,7 +40,7 @@ test('shared map names existing inputs and actual shared execution consumers', (
 });
 
 test.each(["import x from '@/services/supabaseDreamService'", "export * from '../../services/supabaseDreamService'", "const x = import('@/services/supabaseDreamService')", "const x = require('../../services/supabaseDreamService')"] )('Journal remote access is forbidden: %s', text => {
-  expect(inspect('app/lucid/example.tsx', text)).toEqual([expect.stringContaining('[lucid-no-journal-runtime]')]);
+  expect(inspect('routes/lucid/example.tsx', text)).toEqual([expect.stringContaining('[lucid-no-journal-runtime]')]);
 });
 
 test('package aliases still match the resolver contract', () => {

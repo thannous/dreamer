@@ -42,6 +42,11 @@ config.resolver.resolveRequest = (context, moduleName, platform) => {
   if (platform === 'android' && moduleName === '@expo-google-fonts/material-symbols/400Regular') {
     return { type: 'empty' };
   }
+  // Only the Lucid build renders the Lucid auth sheet (`isLucidTrainer`); keep its
+  // design system out of Dreamer. app.config.ts rejects a partial Lucid variant.
+  if (process.env.NOCTALIA_APP_VARIANT !== 'lucid' && moduleName === '@/components/lucid/LucidAuthBottomSheet') {
+    return { type: 'empty' };
+  }
   return (upstreamResolveRequest ?? context.resolveRequest)(context, moduleName, platform);
 };
 

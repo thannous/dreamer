@@ -29,8 +29,9 @@ Production for the Vercel app and for https://noctalia.app is manual. A push to 
 
 ## Subproject routing
 
-- Lucid uses the root package and `app/lucid/`, not `apps/lucid/`. The standalone
-  companion router root is `routes/lucid/`, which re-exports those screens. Read
+- Lucid uses the root package, not `apps/lucid/`. Its screens live only under its
+  own Expo Router root, `routes/lucid/` (`routes/lucid/lucid/`); Dreamer's `app/`
+  no longer contains them, and its lucid ritual opens the Lucid app. Read
   `specs/noctalia-lucid-trainer.md` for its scope and sleep/wellbeing safeguards.
 - Meditation is a separate package at `apps/meditation/`; read its local guide
   and run its commands there. Its theme and service paths replace journal-specific paths.

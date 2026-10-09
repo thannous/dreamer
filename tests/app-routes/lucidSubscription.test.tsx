@@ -159,7 +159,7 @@ jest.mock('@/lib/analytics', () => ({
   trackProductEvent: (...args: unknown[]) => mockTrackProductEvent(...args),
 }));
 
-const { default: LucidSubscriptionScreen } = require('@/app/lucid/subscription');
+const { default: LucidSubscriptionScreen } = require('@/routes/lucid/lucid/subscription');
 
 function createSubscription(overrides: Record<string, unknown> = {}) {
   return {
@@ -396,7 +396,7 @@ describe('Lucid Trainer subscription', () => {
       LUCID_PLUS_PAYWALL_FREE_FEATURE_IDS,
       listLucidPlusPaywallItems,
     } = jest.requireActual('@/lib/lucid/plusEntitlements');
-    const { COPY } = jest.requireActual('@/app/lucid/subscription');
+    const { COPY } = jest.requireActual('@/routes/lucid/lucid/subscription');
     const locales = ['en', 'fr', 'es', 'de', 'it'] as const;
 
     expect(locales.every((locale) => COPY[locale])).toBe(true);

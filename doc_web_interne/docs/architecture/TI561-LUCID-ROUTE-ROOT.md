@@ -4,6 +4,8 @@ Candidate based on `3cf6e6b459647c8ade973df25b6cf45b5ce9a59a` on 2026-09-08. Sou
 
 ## Decision and compatibility
 
+> Superseded on 2026-10-09: to shrink Dreamer, the Lucid screens moved from `app/lucid/` into `routes/lucid/lucid/`, replacing the re-export adapters. Dreamer no longer bundles them; its lucid ritual opens `https://lucid.noctalia.app/lucid`. The rest of this record describes the earlier shared layout.
+
 Journal keeps `app/` and the existing root layout. Lucid selects the installed Expo Router plugin's `root: './routes/lucid'`. Explicit adapters retain every existing `app/lucid/**` screen under its `/lucid` URL, along with password recovery, both auth callbacks and the web HTML document. The Lucid entry redirects `/` to `/lucid`. Screen implementations remain shared; this is route-context separation, not a package migration or a second implementation of product screens.
 
 The custom root option is supported by the installed plugin and [Expo Router's reference](https://docs.expo.dev/versions/latest/sdk/router/), but Expo [discourages custom route directories](https://docs.expo.dev/router/reference/src-directory/). We accept this bounded tradeoff to avoid moving Journal routes or duplicating the Lucid screen tree. Router upgrades must requalify context resolution, deep links and alternating product exports. No `EXPO_ROUTER_APP_ROOT` override, patched Router dependency or CI configuration is introduced.

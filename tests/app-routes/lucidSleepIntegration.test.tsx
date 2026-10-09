@@ -121,7 +121,7 @@ jest.mock('@/services/lucidHealthKitStorage', () => ({
   deleteLucidHealthKitSnapshot: (...args: unknown[]) => mockDelete(...args),
 }));
 
-const { default: LucidSleepIntegrationScreen } = require('@/app/lucid/sleep-integration');
+const { default: LucidSleepIntegrationScreen } = require('@/routes/lucid/lucid/sleep-integration');
 const { Alert } = require('react-native');
 
 describe('Lucid sleep integration prototype', () => {

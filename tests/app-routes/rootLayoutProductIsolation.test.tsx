@@ -42,7 +42,9 @@ jest.mock('react-native-edge-to-edge', () => ({ SystemBars: () => null }));
 jest.mock('expo-font', () => ({ useFonts: () => [true, null] }));
 jest.mock('expo-localization', () => ({ useLocales: () => [{ languageCode: 'en' }] }));
 jest.mock('expo-splash-screen', () => ({ preventAutoHideAsync: jest.fn().mockResolvedValue(undefined), hideAsync: jest.fn().mockResolvedValue(undefined) }));
-jest.mock('expo-notifications', () => ({ getLastNotificationResponse: () => null, clearLastNotificationResponse: jest.fn(), addNotificationResponseReceivedListener: (listener: (response: any) => void) => { mockNotificationListener = listener; return { remove: jest.fn() }; } }));
+const mockGetScheduled = jest.fn();
+const mockCancelScheduled = jest.fn();
+jest.mock('expo-notifications', () => ({ getAllScheduledNotificationsAsync: () => mockGetScheduled(), cancelScheduledNotificationAsync: (id: string) => mockCancelScheduled(id), getLastNotificationResponse: () => null, clearLastNotificationResponse: jest.fn(), addNotificationResponseReceivedListener: (listener: (response: any) => void) => { mockNotificationListener = listener; return { remove: jest.fn() }; } }));
 jest.mock('expo-router/react-navigation', () => ({ ThemeProvider: ({ children }: React.PropsWithChildren) => <>{children}</>, DarkTheme: {}, DefaultTheme: {} }));
 jest.mock('expo-router', () => {
   const Stack = Object.assign(({ children }: React.PropsWithChildren) => <>{children}</>, {
@@ -107,6 +109,7 @@ describe('root product composition (real root and DreamsProvider)', () => {
     jest.useFakeTimers(); jest.clearAllMocks();
     mockPlatform = 'ios';
     mockReportRuntimeIdentity.mockReset();
+    mockGetScheduled.mockResolvedValue([]);
     mockPathname = '/recording'; mockSearchParams = {}; mockAuthReturn = null;
     mockOnboardingPersisting = false; mockOnboardingStatus = 'completed';
     mockOnboardingPath = null; mockPendingRecordingIntent = null; mockForeground = undefined;
@@ -127,6 +130,25 @@ describe('root product composition (real root and DreamsProvider)', () => {
     await mountStartup();
     expect(mockReportRuntimeIdentity).toHaveBeenCalledTimes(calls);
     expect(mockMark).toHaveBeenCalledWith('startup.route_committed');
+  });
+
+  // Lucid moved to its own app; reminders the in-app trainer scheduled would
+  // otherwise keep firing into a route Dreamer no longer has.
+  it.each([
+    ['android', false, ['lucid-reminder', 'lucid-cue']],
+    ['android', true, []],
+    ['web', false, []],
+  ] as const)('clears notifications left by the former in-app Lucid trainer (%s, lucid=%s)', async (platform, lucid, cancelled) => {
+    mockPlatform = platform;
+    mockLucid = lucid;
+    mockUser = null;
+    mockGetScheduled.mockResolvedValue([
+      { identifier: 'lucid-reminder', content: { data: { noctaliaNotificationOwner: 'lucid-trainer', lucidNotificationKind: 'reminder' } } },
+      { identifier: 'lucid-cue', content: { data: { noctaliaNotificationOwner: 'lucid-trainer', lucidNotificationKind: 'night_cue' } } },
+      { identifier: 'dreamer-reminder', content: { data: { url: '/recording' } } },
+    ]);
+    await mountStartup();
+    expect(mockCancelScheduled.mock.calls.map(([id]) => id)).toEqual(cancelled);
   });
 
   it('continues Android navigation when the optional diagnostic fails', async () => {

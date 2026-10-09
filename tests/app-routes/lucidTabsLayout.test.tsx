@@ -88,7 +88,7 @@ jest.mock('@/context/LucidTrainerContext', () => ({
   }),
 }));
 
-const { default: LucidTabsLayout } = require('@/app/lucid/(tabs)/_layout');
+const { default: LucidTabsLayout } = require('@/routes/lucid/lucid/(tabs)/_layout');
 
 describe('Lucid tabs layout', () => {
   it('keeps navigator and per-screen options stable across parent rerenders', () => {

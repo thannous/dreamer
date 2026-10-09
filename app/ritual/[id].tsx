@@ -1,7 +1,7 @@
 import * as Haptics from 'expo-haptics';
 import { router, useLocalSearchParams } from 'expo-router';
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
-import { Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
+import { Linking, Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
 import Animated, {
   useAnimatedStyle,
   useReducedMotion,
@@ -106,6 +106,8 @@ const RITUAL_ICONS: Record<RitualId, IconName> = {
   memory: 'lightbulb.fill',
   lucid: 'eye.fill',
 };
+
+const LUCID_TRAINER_URL = 'https://lucid.noctalia.app/lucid';
 
 const LUCID_TRAINER_BRIDGE_COPY = {
   en: {
@@ -259,8 +261,10 @@ export default function RitualDetailScreen() {
     router.push('/sleep-sounds' as any);
   }, []);
 
+  // Lucid Trainer is its own app. Its verified app link opens it when it is
+  // installed and falls back to the Lucid web app otherwise.
   const handleOpenLucidTrainer = useCallback(() => {
-    router.push('/lucid' as any);
+    void Linking.openURL(LUCID_TRAINER_URL).catch(() => undefined);
   }, []);
 
   const completedSteps = ritualProgress[ritualId] ?? {};

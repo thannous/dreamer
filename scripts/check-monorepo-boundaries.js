@@ -24,7 +24,7 @@ function inspect(source, text) {
     if (!target) return;
     let rule;
     if (source.startsWith('apps/meditation/') && !target.startsWith('apps/meditation/')) rule = 'meditation-owned-runtime';
-    if ((source.startsWith('lib/lucid/') || source.startsWith('app/lucid/') || source.startsWith('components/lucid/') || source.startsWith('hooks/useLucid') || source === 'context/LucidTrainerContext.tsx') && journal.test(target)) rule = 'lucid-no-journal-runtime';
+    if ((source.startsWith('lib/lucid/') || source.startsWith('routes/lucid/') || source.startsWith('components/lucid/') || source.startsWith('hooks/useLucid') || source === 'context/LucidTrainerContext.tsx') && journal.test(target)) rule = 'lucid-no-journal-runtime';
     if ((pure.has(source) || source.startsWith('lib/lucid/')) && /^(app|context|hooks|components)\//.test(target)) rule = 'domain-no-application';
     if (rule) errors.push(`${source}:${file.getLineAndCharacterOfPosition(node.getStart(file)).line + 1} -> ${target} [${rule}]`);
   }
@@ -48,7 +48,7 @@ function files(directory) {
 }
 
 function run() {
-  const surfaces = process.argv.includes('--meditation') ? ['apps/meditation/app', 'apps/meditation/components', 'apps/meditation/context', 'apps/meditation/hooks', 'apps/meditation/lib', 'apps/meditation/services'] : ['lib/lucid', 'app/lucid', 'components/lucid', 'context/LucidTrainerContext.tsx', 'hooks', ...pure, 'apps/meditation/app', 'apps/meditation/components', 'apps/meditation/context', 'apps/meditation/hooks', 'apps/meditation/lib', 'apps/meditation/services'];
+  const surfaces = process.argv.includes('--meditation') ? ['apps/meditation/app', 'apps/meditation/components', 'apps/meditation/context', 'apps/meditation/hooks', 'apps/meditation/lib', 'apps/meditation/services'] : ['lib/lucid', 'routes/lucid', 'components/lucid', 'context/LucidTrainerContext.tsx', 'hooks', ...pure, 'apps/meditation/app', 'apps/meditation/components', 'apps/meditation/context', 'apps/meditation/hooks', 'apps/meditation/lib', 'apps/meditation/services'];
   const sources = surfaces.flatMap(item => { const full = path.join(root, item); return fs.existsSync(full) && fs.statSync(full).isFile() ? [full] : files(full); });
   const errors = sources.flatMap(full => inspect(path.relative(root, full).split(path.sep).join('/'), fs.readFileSync(full, 'utf8')));
   if (errors.length) { console.error(errors.join('\n')); process.exitCode = 1; }

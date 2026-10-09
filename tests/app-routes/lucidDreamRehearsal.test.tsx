@@ -210,7 +210,7 @@ jest.mock('@/components/lucid/LucidUI', () => ({
   LucidProgressBar: ({ accessibilityLabel }: any) => <div role="progressbar" aria-label={accessibilityLabel} />,
 }));
 
-const { default: LucidDreamRehearsalScreen } = require('@/app/lucid/dream-rehearsal');
+const { default: LucidDreamRehearsalScreen } = require('@/routes/lucid/lucid/dream-rehearsal');
 
 describe('Lucid dream rehearsal screen', () => {
   beforeEach(() => {

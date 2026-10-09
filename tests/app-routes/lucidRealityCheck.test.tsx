@@ -112,7 +112,7 @@ const {
   default: LucidRealityCheckScreen,
   getLucidMindfulHoldTransitionDuration,
   LUCID_MINDFUL_HOLD_DURATION_MS,
-} = require('@/app/lucid/reality-check');
+} = require('@/routes/lucid/lucid/reality-check');
 
 function useAccessibleAlternative() {
   fireEvent.click(screen.getByTestId('lucid-reality-hold-alternative'));

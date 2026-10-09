@@ -143,7 +143,7 @@ jest.mock('@/context/LucidTrainerContext', () => {
   };
 });
 
-const { default: LucidTodayScreen } = require('@/app/lucid/(tabs)/index');
+const { default: LucidTodayScreen } = require('@/routes/lucid/lucid/(tabs)/index');
 
 function rememberedExperiments() {
   return [

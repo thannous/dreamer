@@ -157,7 +157,7 @@ jest.mock('@/services/lucidTrainerExport', () => ({
   shareLucidTrainerExport: (...args: unknown[]) => mockShareLucidTrainerExport(...args),
 }));
 
-const { default: LucidDataScreen } = require('@/app/lucid/data');
+const { default: LucidDataScreen } = require('@/routes/lucid/lucid/data');
 
 type AlertAction = { text?: string; onPress?: () => void };
 

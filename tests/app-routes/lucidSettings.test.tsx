@@ -160,7 +160,7 @@ jest.mock('@/services/lucidTrainerSync', () => ({
   queueLucidTrainerMutation: (mutation: unknown) => mockQueueMutation(mutation),
 }));
 
-const { default: LucidSettingsScreen } = require('@/app/lucid/(tabs)/settings');
+const { default: LucidSettingsScreen } = require('@/routes/lucid/lucid/(tabs)/settings');
 
 describe('Lucid Trainer settings', () => {
   beforeEach(() => {
