@@ -22,10 +22,18 @@
 // squash of an up-to-date branch, or a merge of a base that did not touch a
 // check's inputs, replays nothing for it.
 //
+// deps.mode 'link' links the main checkout's node_modules when the lockfile
+// is the same (workspace links point at the copy); a check with install: true
+// (a bundler that refuses links) gets a real deps.install first.
+//
 // Checks run in the isolated copy with VERIFY_LOCAL_KIND, VERIFY_LOCAL_SHA,
 // VERIFY_LOCAL_TREE, VERIFY_LOCAL_ROOT (the main checkout) and
-// VERIFY_LOCAL_COMMON_DIR (the shared git directory, for caches) set, and
-// without the GIT_* variables of a hook.
+// VERIFY_LOCAL_COMMON_DIR (the shared git directory, for caches) set, with
+// TMPDIR in a directory of their own removed with the copy, and without the
+// GIT_* variables of a hook. A `when` check runs only if its paths changed
+// since origin/<main> (a docs-only PR skips typecheck in a fresh clone). On
+// the main commit itself nothing changed: releaseAlways: true makes a release
+// run it anyway, reusing the PR's result when its inputs are the same.
 //
 // Exit codes: 0 passed, 1 failed, 2 incomplete (a required specialised check
 // could not run here; see --external), 64 usage or configuration error.
@@ -105,15 +113,16 @@ function resolveRepository(cwd, env) {
 // ---------------------------------------------------------------- config
 
 /** Load verify-local.config.mjs as committed at <rev>, so the checks match the commit. */
-export async function loadConfig(git, rev, { scratchDir = os.tmpdir() } = {}) {
+export async function loadConfig(git, rev, { scratchDir } = {}) {
   const source = git(['show', `${rev}:${CONFIG_FILE}`], { allowFailure: true });
   if (source === null) {
     throw new UsageError(`${CONFIG_FILE} is missing at ${rev}.`);
   }
   const digest = createHash('sha256').update(source).digest('hex').slice(0, 16);
-  const file = path.join(scratchDir, `verify-local-config-${digest}.mjs`);
+  const dir = scratchDir ?? path.resolve(git(['rev-parse', '--git-common-dir']), 'verify-local');
+  const file = path.join(dir, `config-${digest}.mjs`);
   if (!existsSync(file)) {
-    mkdirSync(scratchDir, { recursive: true });
+    mkdirSync(dir, { recursive: true });
     writeFileSync(file, source);
   }
   const loaded = (await import(pathToFileURL(file).href)).default;
@@ -135,10 +144,12 @@ export function normaliseConfig(raw) {
       inputs: check.inputs ?? null,
       exclude: check.exclude ?? [],
       when: check.when ?? null,
+      releaseAlways: Boolean(check.releaseAlways),
       targets: check.targets ?? null,
       perCommit: Boolean(check.perCommit),
       specialised: Boolean(check.specialised),
       requires: check.requires ?? null,
+      install: Boolean(check.install),
       env: check.env ?? {},
     };
   });
@@ -234,10 +245,10 @@ function listProofs(commonDir) {
   return proofs;
 }
 
-export function writeProof(commonDir, proof) {
+export function writeProof(commonDir, proof, name = `${proof.tree}.json`) {
   const dir = proofsDir(commonDir);
   mkdirSync(dir, { recursive: true });
-  const file = path.join(dir, `${proof.tree}.json`);
+  const file = path.join(dir, name);
   const temporary = `${file}.${process.pid}.${randomBytes(4).toString('hex')}.tmp`;
   writeFileSync(temporary, `${JSON.stringify(proof, null, 2)}\n`);
   renameSync(temporary, file);
@@ -267,7 +278,7 @@ function findReusable(proofs, fingerprint) {
 
 // ---------------------------------------------------------------- fingerprints
 
-function packageManagerOf(git, rev) {
+function packageManagerOf(git, rev, config, env) {
   const manifest = git(['show', `${rev}:package.json`], { allowFailure: true });
   let field = null;
   try {
@@ -275,7 +286,11 @@ function packageManagerOf(git, rev) {
   } catch {
     field = null;
   }
-  return field;
+  if (field) return field;
+  // No pinned version: record the one installed.
+  const name = config.deps.lockfile === 'pnpm-lock.yaml' ? 'pnpm' : config.deps.lockfile === 'yarn.lock' ? 'yarn' : 'npm';
+  const result = spawnSync(name, ['--version'], { env, encoding: 'utf8' });
+  return !result.error && result.status === 0 ? `${name}@${result.stdout.trim()}` : null;
 }
 
 function lockfileBlob(git, rev, config) {
@@ -351,8 +366,15 @@ function sameLockfile(git, root, sha, config) {
   return git(['hash-object', local]) === committed;
 }
 
-/** Package directories at <sha> whose node_modules exists in the main checkout. */
-function linkableNodeModules(files, root) {
+const LOCKFILES = ['package-lock.json', 'pnpm-lock.yaml', 'yarn.lock'];
+
+/**
+ * Package directories at <sha> whose node_modules exists in the main checkout.
+ * A nested project with its own lockfile is linked only when that lockfile is
+ * the same in the checkout.
+ */
+function linkableNodeModules(files, root, git, log) {
+  const blobs = new Map(files.map((entry) => [entry.path, entry.object]));
   const dirs = new Set(['']);
   for (const entry of files) {
     if (entry.path === 'package.json' || entry.path.endsWith('/package.json')) {
@@ -360,7 +382,20 @@ function linkableNodeModules(files, root) {
       dirs.add(path.posix.dirname(entry.path) === '.' ? '' : path.posix.dirname(entry.path));
     }
   }
-  return [...dirs].filter((dir) => existsSync(path.join(root, dir, 'node_modules')));
+  return [...dirs].filter((dir) => {
+    if (!existsSync(path.join(root, dir, 'node_modules'))) return false;
+    if (dir === '') return true;
+    for (const name of LOCKFILES) {
+      const committed = blobs.get(`${dir}/${name}`);
+      if (!committed) continue;
+      const local = path.join(root, dir, name);
+      if (!existsSync(local) || git(['hash-object', local]) !== committed) {
+        log(`${PREFIX} ${dir}/node_modules not linked: ${dir}/${name} differs from the checkout.`);
+        return false;
+      }
+    }
+    return true;
+  });
 }
 
 /**
@@ -410,6 +445,11 @@ export function prepareWorktree({ git, root, sha, files, config, env, log, workt
   const dir = path.join(base, `${path.basename(root)}-${sha.slice(0, 12)}-${randomBytes(3).toString('hex')}`);
   git(['worktree', 'prune'], { allowFailure: true });
   git(['worktree', 'add', '--detach', '--quiet', dir, sha]);
+  // Its own temporary directory, beside it: caches kept in TMPDIR (Metro,
+  // Babel) cannot serve a file built for another copy.
+  const tmp = `${dir}.tmp`;
+  mkdirSync(tmp, { recursive: true });
+  env = { ...env, TMPDIR: tmp, TMP: tmp, TEMP: tmp };
 
   for (const relative of config.deps.copy) {
     const from = path.join(root, relative);
@@ -420,19 +460,21 @@ export function prepareWorktree({ git, root, sha, files, config, env, log, workt
   }
 
   let deps = 'none';
+  let linked = [];
   const linkable = config.deps.mode === 'link' && sameLockfile(git, root, sha, config);
   if (linkable) {
-    const dirs = linkableNodeModules(files, root);
+    const dirs = linkableNodeModules(files, root, git, log);
     for (const relative of dirs) {
       linkNodeModules(path.join(root, relative, 'node_modules'), path.join(dir, relative, 'node_modules'), root, dir);
     }
+    linked = dirs;
     deps = `linked ${dirs.length} node_modules from ${root} (same ${config.deps.lockfile ?? 'lockfile'})`;
   } else if (config.deps.install) {
     const reason = config.deps.mode === 'link' ? `${config.deps.lockfile} differs from ${root}` : 'install mode';
     log(`${PREFIX} installing dependencies in the isolated copy (${reason}).`);
     const installed = runShell(config.deps.install, { cwd: dir, env, log });
     if (installed.status !== 0) {
-      return { dir, error: `dependency install failed (${config.deps.install})` };
+      return { dir, tmp, error: `dependency install failed (${config.deps.install})` };
     }
     deps = `installed with ${config.deps.install} (${Math.round(installed.durationMs / 1000)} s)`;
   }
@@ -440,14 +482,31 @@ export function prepareWorktree({ git, root, sha, files, config, env, log, workt
 
   for (const command of config.setup) {
     const result = runShell(command, { cwd: dir, env, log });
-    if (result.status !== 0) return { dir, error: `setup step failed (${command})` };
+    if (result.status !== 0) return { dir, tmp, error: `setup step failed (${command})` };
   }
-  return { dir, deps };
+  return { dir, deps, linked, tmp };
+}
+
+/** Replace linked node_modules with a real install, for a check that cannot run on links. */
+function installInWorktree(worktree, config, env, log) {
+  if (!worktree.linked?.length) return null;
+  if (!config.deps.install) return 'this check needs a real install, and deps.install is not set';
+  for (const relative of worktree.linked) {
+    // Only links live in these directories; rm never follows them.
+    rmSync(path.join(worktree.dir, relative, 'node_modules'), { recursive: true, force: true });
+  }
+  worktree.linked = [];
+  log(`${PREFIX} installing dependencies in the isolated copy (a check needs a real install).`);
+  const installed = runShell(config.deps.install, { cwd: worktree.dir, env, log });
+  if (installed.status !== 0) return `dependency install failed (${config.deps.install})`;
+  worktree.deps = `installed with ${config.deps.install} (${Math.round(installed.durationMs / 1000)} s)`;
+  return null;
 }
 
 function removeWorktree(git, dir) {
   git(['worktree', 'remove', '--force', dir], { allowFailure: true });
   rmSync(dir, { recursive: true, force: true });
+  rmSync(`${dir}.tmp`, { recursive: true, force: true });
   git(['worktree', 'prune'], { allowFailure: true });
 }
 
@@ -512,7 +571,7 @@ export async function verify(kind, argv = [], {
   const files = listTreeFiles(git, sha);
   const environment = {
     node: process.version,
-    packageManager: packageManagerOf(git, sha),
+    packageManager: packageManagerOf(git, sha, config, env),
     lockfile: lockfileBlob(git, sha, config),
   };
   const proofs = options.force ? [] : listProofs(commonDir);
@@ -531,7 +590,7 @@ export async function verify(kind, argv = [], {
       const entry = { name: check.name, command: check.command, fingerprint, specialised: check.specialised };
       if (check.targets) entry.targets = check.targets;
 
-      if (check.when) {
+      if (check.when && !(kind === 'release' && check.releaseAlways)) {
         const touched = scope ? scope.files.filter((file) => matchesAny(file, check.when)) : null;
         if (touched && touched.length === 0) {
           results.push({ ...entry, result: 'skipped', reason: `no change under ${check.when.join(', ')} since ${base.ref}` });
@@ -550,6 +609,7 @@ export async function verify(kind, argv = [], {
         log(`${PREFIX} ${check.name}: reused (same inputs passed on ${reusable.sha.slice(0, 12)}).`);
         continue;
       }
+      // The probe runs in the main checkout, before any isolated copy exists.
       if (check.requires && !quiet(check.requires.command, { cwd: root, env })) {
         incomplete = true;
         const hint = check.requires.hint ?? 'run it where it can run, then pass --external';
@@ -562,11 +622,20 @@ export async function verify(kind, argv = [], {
         // Checks may keep caches (Turbo, ESLint) in the shared git directory.
         const shared = { VERIFY_LOCAL_COMMON_DIR: commonDir, VERIFY_LOCAL_ROOT: root };
         worktree = prepareWorktree({ git, root, sha, files, config, env: { ...env, ...shared }, log, worktreeRoot });
-        worktree.env = shared;
+        worktree.env = { ...shared, TMPDIR: worktree.tmp, TMP: worktree.tmp, TEMP: worktree.tmp };
         if (worktree.error) {
           failed = true;
           results.push({ ...entry, result: 'failed', reason: worktree.error });
           log(`${PREFIX} ${worktree.error}.`);
+          break;
+        }
+      }
+      if (check.install) {
+        const installError = installInWorktree(worktree, config, { ...env, ...worktree.env }, log);
+        if (installError) {
+          failed = true;
+          results.push({ ...entry, result: 'failed', reason: installError });
+          log(`${PREFIX} ${installError}.`);
           break;
         }
       }
@@ -612,10 +681,25 @@ export async function verify(kind, argv = [], {
     checks: results,
   };
 
-  // A release proof also proves the PR; a PR run never replaces it.
-  const keepExisting = kind === 'pr' && existing?.kind === 'release' && existing.result === 'passed';
-  if (!keepExisting) {
-    if (kind === 'release' && existing?.kind === 'release' && existing.result === 'passed' && existing.sha === sha && result === 'passed') {
+  // A passed proof is never replaced by a weaker one: a run that fails or is
+  // incomplete never replaces a passed proof of the same tree, and a PR run
+  // never replaces a passed release proof (it also proves the PR). Such a run
+  // is kept beside it as <tree>.<kind>-attempt.json, so its passed checks can
+  // still be reused. A rerun that only reused this tree's own results leaves
+  // the proof as it is, with the checks that really ran.
+  const existingPassed = existing?.result === 'passed';
+  const weaker = existingPassed && (result !== 'passed' || (kind === 'pr' && existing.kind === 'release'));
+  const nothingNew = existingPassed && result === 'passed' && existing.kind === kind && existing.sha === sha
+    && (kind === 'pr' || targets.every((target) => (existing.targets ?? []).includes(target)))
+    && results.every((check) => check.result === 'skipped' || (check.reused && check.reusedFrom?.tree === tree));
+  const keepExisting = weaker || nothingNew;
+  if (weaker) {
+    writeProof(commonDir, proof, `${tree}.${kind}-attempt.json`);
+    log(`${PREFIX} the passed ${existing.kind} proof of this tree is kept; this ${kind} run (${result}) is recorded beside it.`);
+  } else if (nothingNew) {
+    log(`${PREFIX} every check had already passed on this tree; the proof is unchanged.`);
+  } else {
+    if (kind === 'release' && existing?.kind === 'release' && existingPassed && existing.sha === sha && result === 'passed') {
       proof.targets = [...new Set([...existing.targets, ...targets])].sort();
       const names = new Set(results.map((check) => check.name));
       proof.checks = [...results, ...existing.checks.filter((check) => !names.has(check.name))];
@@ -626,7 +710,7 @@ export async function verify(kind, argv = [], {
   const reused = results.filter((check) => check.reused).length;
   log(`${PREFIX} ${result}: ${ran} run, ${reused} reused, ${results.filter((check) => check.result === 'skipped').length} out of scope. Proof: ${path.join(proofsDir(commonDir), `${tree}.json`)}.`);
   if (incomplete && !failed) {
-    log(`${PREFIX} incomplete: run the unavailable checks elsewhere (manual CircleCI, owner machine), then rerun with --external <check>=<evidence>.`);
+    log(`${PREFIX} incomplete: run the unavailable checks where they can run (remote CI on demand, the owner's machine), then rerun with --external <check>=<evidence>.`);
   }
   return { status: failed ? 1 : incomplete ? 2 : 0, proof: keepExisting ? existing : proof };
 }

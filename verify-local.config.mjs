@@ -11,8 +11,10 @@
 // A check without `when` is reused by any later run whose inputs are identical
 // (a squash of an up-to-date branch reuses everything). A `when` check runs only
 // when the commit changes those paths since origin/master, like the CircleCI
-// affected portfolio; on the published master commit nothing changed, so the
-// release-only checks at the end carry the full portfolio.
+// affected portfolio; on the published master commit nothing changed, so a
+// surface a release always needs carries releaseAlways (the PR's result is
+// reused when its inputs are identical), and the release-only checks at the
+// end carry the rest of the full portfolio.
 
 // Markdown and planning documents feed no compiler and no linter.
 const DOCS = ['**/*.md', '**/*.mdx', 'doc_web_interne/**', 'marketing/**', 'specs/**'];
@@ -127,8 +129,8 @@ export default {
     // ---- verify:pr, only when the commit changes that surface since origin/master.
     { name: 'site', command: 'npm run docs:build && npm run docs:check', when: SITE },
     { name: 'ci-contracts', command: CI_CONTRACTS, when: ['.circleci/'] },
-    { name: 'meditation', command: MEDITATION_CHECKS, when: MEDITATION, requires: MEDITATION_DEPS },
-    { name: 'edge-functions', command: EDGE_CHECKS, when: EDGE, specialised: true, requires: DENO },
+    { name: 'meditation', command: MEDITATION_CHECKS, when: MEDITATION, releaseAlways: true, requires: MEDITATION_DEPS },
+    { name: 'edge-functions', command: EDGE_CHECKS, when: EDGE, releaseAlways: true, specialised: true, requires: DENO },
 
     // ---- verify:release only: the full local validation, then the delivered builds.
     {
@@ -136,8 +138,6 @@ export default {
       command: `EXPO_OFFLINE=1 npm run dependencies:check && npm run boundaries:check && node scripts/mobile-release.js verify --app all && ${CI_CONTRACTS}`,
       kinds: ['release'],
     },
-    { name: 'meditation-full', command: MEDITATION_CHECKS, kinds: ['release'], requires: MEDITATION_DEPS },
-    { name: 'edge-functions-full', command: EDGE_CHECKS, kinds: ['release'], specialised: true, requires: DENO },
     { name: 'jest-full', command: 'npm run test:fast', kinds: ['release'] },
     // noctalia.app (Cloudflare Pages) and the Vercel web app, rebuilt for the delivered commit.
     { name: 'site-build', command: 'npm run docs:build && npm run docs:check', kinds: ['release'], perCommit: true },

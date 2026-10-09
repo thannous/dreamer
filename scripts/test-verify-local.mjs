@@ -32,7 +32,9 @@ const CONFIG = `export default {
     { name: 'lint', command: 'echo lint >> "$RUN_LOG"', inputs: ['src/**'] },
     { name: 'test', command: 'echo test >> "$RUN_LOG" && grep -q ok src/a.js && test -z "$GIT_DIR"' },
     { name: 'db', command: 'echo db >> "$RUN_LOG"', when: ['db/'], specialised: true, requires: { command: 'test -n "$DB_AVAILABLE"', hint: 'start the database' } },
-    { name: 'build', command: 'echo build:$VERIFY_LOCAL_SHA >> "$RUN_LOG"', kinds: ['release'], perCommit: true },
+    { name: 'site', command: 'echo site-check >> "$RUN_LOG"', when: ['site/'], releaseAlways: true },
+    { name: 'build', command: 'echo build:$VERIFY_LOCAL_SHA >> "$RUN_LOG" && test -z "$FAIL_BUILD"', kinds: ['release'], perCommit: true },
+    { name: 'bundle', command: 'echo bundle >> "$RUN_LOG" && test ! -e node_modules/ext', kinds: ['release'], targets: ['app'], install: true },
     { name: 'site-e2e', command: 'echo site >> "$RUN_LOG"', kinds: ['release'], targets: ['site'], specialised: true },
   ],
   hook: { maxFileBytes: 1024 * 1024, allow: ['public/*.pem'] },
@@ -228,7 +230,8 @@ describe('verify:release and the deploy guard', () => {
 
     const release = await verify('release', ['--target', 'site'], repo.options);
     assert.equal(release.status, 0);
-    assert.deepEqual(repo.runs(), [`build:${head}`, 'site']);
+    // site-check was out of scope for the PR, so the release runs it once.
+    assert.deepEqual(repo.runs(), ['site-check', `build:${head}`, 'site']);
     assert.deepEqual(release.proof.targets, ['site']);
 
     // A PR run on the same tree keeps the release proof.
@@ -238,6 +241,111 @@ describe('verify:release and the deploy guard', () => {
 
     const unknown = spawnSync(process.execPath, [ENGINE, 'release', '--target', 'nope'], { cwd: repo.work, env: repo.env, encoding: 'utf8' });
     assert.equal(unknown.status, 64);
+  });
+
+  test('on the main commit, a releaseAlways check runs while a plain when check stays out of scope', async () => {
+    const repo = makeRepository();
+    const head = repo.commit('site', { 'site/index.html': '<p>ok</p>\n' });
+    repo.git(['push', '--quiet', 'origin', 'main']);
+    const { status, proof } = await verify('release', [], repo.options);
+    assert.equal(status, 0);
+    assert.equal(proof.sha, head);
+    assert.equal(proof.checks.find((check) => check.name === 'db').result, 'skipped');
+    assert.ok(repo.runs().includes('site-check'));
+    repo.clearRuns();
+    await verify('pr', ['--force'], repo.options);
+    assert.deepEqual(repo.runs(), ['lint', 'test'], 'a PR run on main has no path in scope');
+  });
+
+  test('checks get a temporary directory of their own, removed with the copy', async () => {
+    const repo = makeRepository();
+    repo.git(['checkout', '--quiet', '-b', 'feature']);
+    repo.commit('feature', { 'src/b.js': '1\n' });
+    const config = readFileSync(path.join(repo.work, 'verify-local.config.mjs'), 'utf8')
+      .replace("command: 'echo lint >> \"$RUN_LOG\"'", "command: 'echo lint:$TMPDIR >> \"$RUN_LOG\" && test -d \"$TMPDIR\"'");
+    repo.commit('tmp', { 'verify-local.config.mjs': config });
+    assert.equal((await verify('pr', [], repo.options)).status, 0);
+    const tmp = repo.runs().find((line) => line.startsWith('lint:')).slice('lint:'.length);
+    assert.ok(tmp.startsWith(path.join(repo.base, 'worktrees')), tmp);
+    assert.ok(!existsSync(tmp), 'removed with the copy');
+  });
+
+  test('a nested project is linked only when its own lockfile is unchanged', async () => {
+    const repo = makeRepository();
+    repo.git(['checkout', '--quiet', '-b', 'feature']);
+    repo.commit('nested', {
+      'apps/a/package.json': '{ "name": "a" }\n',
+      'apps/a/package-lock.json': '{ "lockfileVersion": 3, "v": 1 }\n',
+      'apps/b/package.json': '{ "name": "b" }\n',
+      'apps/b/package-lock.json': '{ "lockfileVersion": 3, "v": 1 }\n',
+    });
+    for (const app of ['a', 'b']) mkdirSync(path.join(repo.work, 'apps', app, 'node_modules', 'dep'), { recursive: true });
+    repo.write('apps/b/package-lock.json', '{ "lockfileVersion": 3, "v": 2 }\n');
+    await verify('pr', ['--keep'], repo.options);
+    const copy = repo.lines.find((line) => line.includes('isolated copy kept at')).replace(/^.*kept at /, '').replace(/\.$/, '');
+    assert.ok(existsSync(path.join(copy, 'apps', 'a', 'node_modules', 'dep')));
+    assert.ok(!existsSync(path.join(copy, 'apps', 'b', 'node_modules')));
+    assert.ok(repo.lines.some((line) => line.includes('apps/b/node_modules not linked')));
+    repo.git(['worktree', 'remove', '--force', copy]);
+  });
+
+  test('the package manager version is recorded even without a packageManager field', async () => {
+    const repo = makeRepository();
+    repo.git(['checkout', '--quiet', '-b', 'feature']);
+    repo.commit('no field', { 'package.json': '{ "name": "fixture" }\n' });
+    const { proof } = await verify('pr', [], repo.options);
+    assert.match(proof.packageManager ?? '', /^npm@\d+\./);
+  });
+
+  test('a failed or incomplete release run never replaces a passed PR proof', async () => {
+    const repo = makeRepository();
+    repo.git(['checkout', '--quiet', '-b', 'feature']);
+    const head = repo.commit('feature', { 'src/b.js': '1\n' });
+    assert.equal((await verify('pr', [], repo.options)).status, 0);
+    const failing = await verify('release', [], { ...repo.options, env: { ...repo.env, FAIL_BUILD: '1' } });
+    assert.equal(failing.status, 1);
+    const commonDir = path.join(repo.work, '.git');
+    const tree = repo.git(['rev-parse', `${head}^{tree}`]);
+    const kept = readProof(commonDir, tree);
+    assert.equal(kept.kind, 'pr');
+    assert.equal(kept.result, 'passed');
+    assert.ok(existsSync(path.join(commonDir, 'verify-proofs', `${tree}.release-attempt.json`)));
+
+    repo.clearRuns();
+    const passing = await verify('release', [], repo.options);
+    assert.equal(passing.status, 0);
+    assert.deepEqual(repo.runs(), [`build:${head}`], 'the failed build runs again, the PR checks are reused');
+    assert.equal(readProof(commonDir, tree).kind, 'release');
+  });
+
+  test('an incomplete run for one more target never replaces a passed release proof', async () => {
+    const repo = makeRepository();
+    repo.git(['checkout', '--quiet', '-b', 'feature']);
+    const head = repo.commit('feature', { 'src/b.js': '1\n' });
+    assert.equal((await verify('release', [], repo.options)).status, 0);
+    const failing = await verify('release', ['--target', 'site'], { ...repo.options, env: { ...repo.env, FAIL_BUILD: '1' } });
+    assert.equal(failing.status, 0, 'build is reused, site-e2e passes');
+    const commonDir = path.join(repo.work, '.git');
+    const tree = repo.git(['rev-parse', `${head}^{tree}`]);
+    assert.deepEqual(readProof(commonDir, tree).targets, ['site']);
+
+    // A rerun that only reuses this tree's results keeps the proof and its counts.
+    const before = readFileSync(path.join(commonDir, 'verify-proofs', `${tree}.json`), 'utf8');
+    assert.equal((await verify('release', ['--target', 'site'], repo.options)).status, 0);
+    assert.equal(readFileSync(path.join(commonDir, 'verify-proofs', `${tree}.json`), 'utf8'), before);
+  });
+
+  test('a check that needs a real install replaces the linked node_modules first', async () => {
+    const repo = makeRepository();
+    repo.git(['checkout', '--quiet', '-b', 'feature']);
+    repo.commit('feature', { 'src/b.js': '1\n' });
+    mkdirSync(path.join(repo.work, 'node_modules', 'ext'), { recursive: true });
+    const { status } = await verify('release', ['--target', 'app'], repo.options);
+    assert.equal(status, 0);
+    const runs = repo.runs();
+    assert.deepEqual(runs.slice(runs.indexOf('install')), ['install', 'bundle']);
+    assert.ok(runs.indexOf('lint') < runs.indexOf('install'), 'the other checks ran on the links');
+    assert.ok(existsSync(path.join(repo.work, 'node_modules', 'ext')), 'the main checkout keeps its packages');
   });
 
   test('a deploy needs a release proof for HEAD = origin/main; a PR proof or another commit is refused', async () => {
