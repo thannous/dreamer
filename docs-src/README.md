@@ -110,9 +110,14 @@ language.
 
 ### Preview and publish on Cloudflare Pages
 
-Production is deployed by the Cloudflare Pages Git integration from the `master`
-branch. Cloudflare checks out the tracked sources, rebuilds `docs/`, validates the
-result, then uploads that generated directory. Generated HTML is not stored in Git.
+Production of https://noctalia.app is manual. The Pages project `noctalia` is
+connected with the Cloudflare Git integration, which is a dashboard setting.
+This repository has no `wrangler.toml` and no CI job that runs
+`wrangler pages deploy`. Until Enable automatic production branch deployments
+is turned off (see Publishing to production in `AGENTS.md`), a push to `master`
+still builds and publishes the site. Generated HTML is not stored in Git.
+When a build does run, Cloudflare checks out the tracked sources, rebuilds
+`docs/`, validates the result, then uploads that generated directory.
 
 The Pages project must use these build settings:
 
@@ -129,7 +134,9 @@ dashboard aligned with that file whenever the build command, output directory,
 or branch changes.
 
 A commit on another branch may create a Cloudflare Preview deployment, but it does
-not update `noctalia.app`. A commit on `master` triggers the production build.
+not update `noctalia.app`. Leave those previews on. A commit on `master` publishes
+production only while the dashboard production auto-deploy remains on. After it
+is turned off, publish with `npm run docs:deploy:prod` from the approved SHA.
 
 Commit source changes under `docs-src/`, `data/`, and the relevant generator or
 configuration files. If `docs:build` updates a tracked manifest under `data/`,
@@ -186,7 +193,7 @@ Use the smallest preview level that answers the current question:
 | `npm run docs:dev` | Local live server | None | Default while editing. Rebuilds on source changes and resolves the site's clean URLs. |
 | `npm run docs:preview:cf` | Local Wrangler server | None | Final local check of Cloudflare Pages routing, redirects, and headers. |
 | `npm run docs:deploy:preview` | Remote Cloudflare Pages preview | Publishes a public preview | Cross-browser and click-through QA on Cloudflare before publication. |
-| `npm run docs:deploy:prod` | Production Cloudflare Pages deployment | Publishes production | Manual production fallback only, with explicit publication intent. |
+| `npm run docs:deploy:prod` | Production Cloudflare Pages deployment | Publishes production | Manual production publish after the founder or CTO decides. Requires `CLOUDFLARE_API_TOKEN` and `CLOUDFLARE_ACCOUNT_ID`. |
 
 `docs:preview:cf` serves the existing generated output, so build and validate it
 first:
@@ -252,9 +259,11 @@ when publication is explicitly requested:
 npm run docs:deploy:prod
 ```
 
-`docs:deploy:prod` is a manual fallback that runs `docs:release-check` before a
-direct upload. It does not require a Git commit, so use it only with explicit
-publication intent and record the corresponding source change in Git afterward.
+`docs:deploy:prod` is the manual production publish. It runs `docs:release-check`,
+then uploads an allowlisted directory with
+`wrangler pages deploy --project-name noctalia --branch master --commit-hash <HEAD>`.
+Run it from a clean checkout of the approved `master` SHA. The token and account
+id stay in the environment (`CLOUDFLARE_API_TOKEN`, `CLOUDFLARE_ACCOUNT_ID`).
 If the Cloudflare Pages project or build settings change, update
 `docs-src/config/cloudflare-pages.json` and mirror the same values in the
 Cloudflare dashboard.

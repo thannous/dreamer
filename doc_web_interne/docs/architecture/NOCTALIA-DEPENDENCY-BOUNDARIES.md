@@ -60,12 +60,7 @@ unknown configuration shapes and site jobs retain conservative shared validation
 `test:file` is shared with Edge contracts and is not eligible for the mobile-only exemption.
 Routing scripts/map/tests run their regression checks through Noctalia quality.
 
-The root `vercel.json` disables Git deployments for every branch except `master`
-(`git.deploymentEnabled`: `"**": false`, `"master": true`; when several patterns
-match, one `true` is enough, so `master` still deploys). Its `ignoreCommand` skips
-preview builds of the legacy web app (`npm run build:web`, output `dist`).
-Production and unknown environments retain the build. The marketing site uses its separate Cloudflare pipeline. Existing
-deployments and checks are not cancelled retroactively.
+The root `vercel.json` sets `git.deploymentEnabled` to `false` (a boolean, not a branch map). No Git branch, including `master`, creates a Vercel deployment. `ignoreCommand` remains the Ignored Build Step for a build Vercel has already started. It skips preview builds of the legacy web app (`npm run build:web`, output `dist`) and can continue production or unknown environments. It does not create a deployment. CircleCI and GitHub Actions do not run the Vercel CLI. The marketing site is Cloudflare Pages project `noctalia`. Its production auto-deploy is a dashboard Git integration, not a file in this repo. See Publishing to production in `AGENTS.md`. Existing deployments are not cancelled retroactively.
 
 - `npm run boundaries:check`
 - `node scripts/check-monorepo-boundaries.js --meditation`
