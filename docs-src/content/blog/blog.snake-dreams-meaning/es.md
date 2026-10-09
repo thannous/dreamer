@@ -5,7 +5,7 @@
   "lang": "es",
   "slug": "suenos-con-serpientes",
   "title": "Soñar con Serpientes: Significado Revelado | Noctalia",
-  "description": "¿Qué significa soñar con serpientes? Descubre el simbolismo oculto y los 7 mensajes que tu subconsciente te envía.",
+  "description": "Soñar con serpientes: ¿una mordedura, una persecución, una muda o una serpiente tranquila? De qué puede hablar la escena y qué anotar al despertar.",
   "robots": "max-image-preview:large",
   "themeColor": "#0a0514",
   "htmlClass": "scroll-smooth blog-article",
@@ -14,24 +14,24 @@
   "mainClass": "pt-32 pb-20 px-4",
   "ogType": "article",
   "ogTitle": "Soñar con Serpientes: Significado Revelado | Noctalia",
-  "ogDescription": "¿Qué significa soñar con serpientes? Descubre el simbolismo oculto y los 7 mensajes que tu subconsciente te envía.",
+  "ogDescription": "Mordedura, ataque, muda: de qué puede hablar un sueño con serpientes, sin leerlo como un presagio.",
   "ogImage": "https://noctalia.app/img/blog/snake-dreams-meaning.webp",
   "ogImageAlt": "Serpiente en la naturaleza, símbolo de sabiduría y cambio",
   "twitterCard": "summary_large_image",
   "twitterTitle": "Soñar con Serpientes: Significado Revelado | Noctalia",
-  "twitterDescription": "¿Qué significa soñar con serpientes? Descubre el simbolismo oculto y los 7 mensajes que tu subconsciente te envía.",
+  "twitterDescription": "Soñar con serpientes: de qué puede hablar la escena y qué anotar al despertar.",
   "twitterImage": "https://noctalia.app/img/blog/snake-dreams-meaning.webp",
   "twitterImageAlt": "Serpiente en la naturaleza, símbolo de sabiduría y cambio",
   "publishedTime": "2025-12-11",
-  "modifiedTime": "2026-07-09",
+  "modifiedTime": "2026-10-08",
   "author": "Thanh Chau",
   "prevPath": "/es/blog/suenos-de-volar",
   "nextPath": "/es/blog/guia-incubacion-suenos",
   "preloadImage": "/img/blog/snake-dreams-meaning.webp",
   "jsonLd": [
-    "{\n            \"@context\": \"https://schema.org\",\n            \"@type\": \"BlogPosting\",\n            \"headline\": \"Soñar con serpientes: lo que tu subconsciente realmente intenta advertirte\",\n            \"description\": \"¿Qué significa soñar con serpientes? Descubre el simbolismo oculto.\",\n            \"image\": {\n                \"@type\": \"ImageObject\",\n                \"url\": \"https://noctalia.app/img/blog/snake-dreams-meaning.webp\",\n                \"width\": 1200,\n                \"height\": 630\n            },\n            \"author\": [\n                {\n                    \"@type\": \"Person\",\n                    \"@id\": \"https://noctalia.app/es/sobre#person\",\n                    \"name\": \"Thanh Chau\",\n                    \"jobTitle\": \"Founder & Publication Director\",\n                    \"url\": \"https://noctalia.app/es/sobre\",\n                    \"worksFor\": {\n                        \"@type\": \"Organization\",\n                        \"@id\": \"https://noctalia.app/#organization\",\n                        \"name\": \"Noctalia\",\n                        \"url\": \"https://noctalia.app\"\n                    }\n                },\n                {\n                    \"@type\": \"Organization\",\n                    \"@id\": \"https://noctalia.app/#organization\",\n                    \"name\": \"Noctalia\",\n                    \"url\": \"https://noctalia.app\",\n                    \"logo\": {\n                        \"@type\": \"ImageObject\",\n                        \"url\": \"https://noctalia.app/logo/logo_noctalia.png\"\n                    }\n                }\n            ],\n            \"publisher\": {\n                \"@type\": \"Organization\",\n                \"name\": \"Noctalia\",\n                \"url\": \"https://noctalia.app\",\n                \"logo\": {\n                    \"@type\": \"ImageObject\",\n                    \"url\": \"https://noctalia.app/logo/logo_noctalia.png\"\n                }\n            },\n            \"datePublished\": \"2025-12-11\",\n            \"dateModified\": \"2026-07-09\",\n            \"mainEntityOfPage\": {\n                \"@type\": \"WebPage\",\n                \"@id\": \"https://noctalia.app/es/blog/suenos-con-serpientes\"\n            },\n            \"inLanguage\": \"es\",\n            \"isAccessibleForFree\": true,\n            \"wordCount\": 1239,\n            \"timeRequired\": \"PT5M\",\n            \"url\": \"https://noctalia.app/es/blog/suenos-con-serpientes\"\n        }",
-    "{ \"@context\": \"https://schema.org\", \"@type\": \"FAQPage\", \"mainEntity\": [ { \"@type\": \"Question\", \"name\": \"¿Qué significa soñar con serpientes?\", \"acceptedAnswer\": { \"@type\": \"Answer\", \"text\": \"Los sueños con serpientes comúnmente simbolizan transformación, miedos ocultos, sanación o sabiduría inexplorada. El significado depende del comportamiento de la serpiente, tus emociones durante el sueño y tus asociaciones personales con las serpientes.\" } }, { \"@type\": \"Question\", \"name\": \"¿Soñar con serpientes es un mal presagio?\", \"acceptedAnswer\": { \"@type\": \"Answer\", \"text\": \"No necesariamente. Aunque muchas culturas asocian las serpientes con el peligro, los sueños con serpientes a menudo simbolizan transformación positiva, sanación (como el caduceo médico) o despertar espiritual. El contexto y tus sentimientos en el sueño importan más que la serpiente misma.\" } }, { \"@type\": \"Question\", \"name\": \"¿Qué significa ser mordido por una serpiente en un sueño?\", \"acceptedAnswer\": { \"@type\": \"Answer\", \"text\": \"Ser mordido por una serpiente en un sueño a menudo representa una llamada de atención - algo en tu vida necesita atención inmediata. Puede simbolizar traición, una situación tóxica o el proceso doloroso pero necesario de transformación y sanación.\" } } ] }",
-    "{\n    \"@context\": \"https://schema.org\",\n    \"@type\": \"BreadcrumbList\",\n    \"itemListElement\": [\n        {\n            \"@type\": \"ListItem\",\n            \"position\": 1,\n            \"name\": \"Inicio\",\n            \"item\": \"https://noctalia.app/es/\"\n        },\n        {\n            \"@type\": \"ListItem\",\n            \"position\": 2,\n            \"name\": \"Recursos\",\n            \"item\": \"https://noctalia.app/es/blog/\"\n        },\n        {\n            \"@type\": \"ListItem\",\n            \"position\": 3,\n            \"name\": \"Sueños con Serpientes\",\n            \"item\": \"https://noctalia.app/es/blog/suenos-con-serpientes\"\n        }\n    ]\n}"
+    "{\n    \"@context\": \"https://schema.org\",\n    \"@type\": \"BlogPosting\",\n    \"headline\": \"Soñar con serpientes: qué puede significar una mordedura, una persecución o una muda\",\n    \"description\": \"Soñar con serpientes: ¿una mordedura, una persecución, una muda o una serpiente tranquila? De qué puede hablar la escena y qué anotar al despertar.\",\n    \"image\": {\n        \"@type\": \"ImageObject\",\n        \"url\": \"https://noctalia.app/img/blog/snake-dreams-meaning.webp\",\n        \"width\": 1200,\n        \"height\": 630\n    },\n    \"author\": [\n        {\n            \"@type\": \"Person\",\n            \"@id\": \"https://noctalia.app/es/sobre#person\",\n            \"name\": \"Thanh Chau\",\n            \"jobTitle\": \"Founder & Publication Director\",\n            \"url\": \"https://noctalia.app/es/sobre\",\n            \"worksFor\": {\n                \"@type\": \"Organization\",\n                \"@id\": \"https://noctalia.app/#organization\",\n                \"name\": \"Noctalia\",\n                \"url\": \"https://noctalia.app\"\n            }\n        },\n        {\n            \"@type\": \"Organization\",\n            \"@id\": \"https://noctalia.app/#organization\",\n            \"name\": \"Noctalia\",\n            \"url\": \"https://noctalia.app\",\n            \"logo\": {\n                \"@type\": \"ImageObject\",\n                \"url\": \"https://noctalia.app/logo/logo_noctalia.png\"\n            }\n        }\n    ],\n    \"publisher\": {\n        \"@type\": \"Organization\",\n        \"name\": \"Noctalia\",\n        \"url\": \"https://noctalia.app\",\n        \"logo\": {\n            \"@type\": \"ImageObject\",\n            \"url\": \"https://noctalia.app/logo/logo_noctalia.png\"\n        }\n    },\n    \"datePublished\": \"2025-12-11\",\n    \"dateModified\": \"2026-10-08\",\n    \"mainEntityOfPage\": {\n        \"@type\": \"WebPage\",\n        \"@id\": \"https://noctalia.app/es/blog/suenos-con-serpientes\"\n    },\n    \"inLanguage\": \"es\",\n    \"isAccessibleForFree\": true,\n    \"wordCount\": 2151,\n    \"timeRequired\": \"PT10M\",\n    \"url\": \"https://noctalia.app/es/blog/suenos-con-serpientes\"\n}",
+    "{\n    \"@context\": \"https://schema.org\",\n    \"@type\": \"FAQPage\",\n    \"mainEntity\": [\n        {\n            \"@type\": \"Question\",\n            \"name\": \"¿Qué significa soñar con serpientes?\",\n            \"acceptedAnswer\": {\n                \"@type\": \"Answer\",\n                \"text\": \"No hay un significado único. Según la escena, la serpiente suele acompañar un miedo todavía sin nombre, una desconfianza, un deseo o un cambio en marcha. Lo que hacía el animal, lo que sentiste y lo que estás viviendo son las mejores pistas.\"\n            }\n        },\n        {\n            \"@type\": \"Question\",\n            \"name\": \"¿Soñar con serpientes es un mal presagio?\",\n            \"acceptedAnswer\": {\n                \"@type\": \"Answer\",\n                \"text\": \"No. Un sueño con serpientes no predice desgracias, peligros ni traiciones. Escenifica una emoción o una preocupación actual, a menudo con imágenes que nuestra cultura asocia a la serpiente.\"\n            }\n        },\n        {\n            \"@type\": \"Question\",\n            \"name\": \"¿Qué significa soñar que te muerde una serpiente?\",\n            \"acceptedAnswer\": {\n                \"@type\": \"Answer\",\n                \"text\": \"La mordedura suele acompañar un golpe reciente: un comentario hiriente, una mala noticia, una discusión. Anota dónde fue y qué sentiste. No demuestra una traición ni dice nada de tu salud.\"\n            }\n        },\n        {\n            \"@type\": \"Question\",\n            \"name\": \"¿Soñar con una serpiente significa que alguien me traiciona?\",\n            \"acceptedAnswer\": {\n                \"@type\": \"Answer\",\n                \"text\": \"No. El sueño puede reflejar una desconfianza que sientes, pero no dice nada de las intenciones de los demás. Si te viene a la mente una persona, pregúntate en qué hechos se apoya tu impresión.\"\n            }\n        },\n        {\n            \"@type\": \"Question\",\n            \"name\": \"¿Debo preocuparme si estos sueños se repiten?\",\n            \"acceptedAnswer\": {\n                \"@type\": \"Answer\",\n                \"text\": \"Por lo general, no. Si se convierten en pesadillas frecuentes, alteran tu sueño o te dejan ansioso durante el día, coméntalo con un médico o con un especialista del sueño.\"\n            }\n        }\n    ]\n}",
+    "{\n    \"@context\": \"https://schema.org\",\n    \"@type\": \"BreadcrumbList\",\n    \"itemListElement\": [\n        {\n            \"@type\": \"ListItem\",\n            \"position\": 1,\n            \"name\": \"Inicio\",\n            \"item\": \"https://noctalia.app/es/\"\n        },\n        {\n            \"@type\": \"ListItem\",\n            \"position\": 2,\n            \"name\": \"Recursos\",\n            \"item\": \"https://noctalia.app/es/blog/\"\n        },\n        {\n            \"@type\": \"ListItem\",\n            \"position\": 3,\n            \"name\": \"Sueños con serpientes\",\n            \"item\": \"https://noctalia.app/es/blog/suenos-con-serpientes\"\n        }\n    ]\n}"
   ],
   "activeNav": "resources"
 }
@@ -43,7 +43,7 @@
 <li class="text-purple-400">/</li>
 <li itemprop="itemListElement" itemscope="" itemtype="https://schema.org/ListItem"><a class="hover:text-dream-salmon transition-colors" href="/es/blog/" itemprop="item"><span itemprop="name">Recursos</span></a><meta content="2" itemprop="position"></li>
 <li class="text-purple-400">/</li>
-<li itemprop="itemListElement" itemscope="" itemtype="https://schema.org/ListItem"><span class="text-dream-cream" itemprop="name">Sueños con Serpientes</span><meta content="3" itemprop="position"></li>
+<li itemprop="itemListElement" itemscope="" itemtype="https://schema.org/ListItem"><span class="text-dream-cream" itemprop="name">Sueños con serpientes</span><meta content="3" itemprop="position"></li>
 </ol>
 </nav>
 <header class="mb-12">
@@ -52,10 +52,14 @@
 <a class="text-xs font-mono text-purple-200/70 border border-white/10 rounded-full px-3 py-1 hover:text-white hover:border-dream-salmon/30 transition-colors" href="significado-de-suenos">Tema: Significado de sueños</a>
 <span aria-hidden="true" class="w-full sm:hidden"></span>
 <span class="text-sm text-purple-300/60">Publicado el 11 de diciembre de 2025</span>
-<span class="text-sm text-purple-300/60">5 min de lectura</span>
+<span class="text-sm text-purple-300/60">10 min de lectura</span>
 </div>
-<h1 class="font-serif text-3xl md:text-5xl mb-6 text-transparent bg-clip-text bg-gradient-to-b from-white via-dream-lavender to-purple-400/50 leading-tight">Soñar con Serpientes: Lo Que Tu Subconsciente Realmente Intenta Advertirte</h1>
-<p class="text-lg text-purple-200/80 leading-relaxed">Una serpiente se desliza por tu camino. Sus escamas brillan con una luz sobrenatural. Te quedas paralizado, con el corazón latiendo, mientras se enrosca y se alza para encontrar tu mirada. Luego despiertas. Los sueños con serpientes están entre los símbolos oníricos más poderosos y antiguos. ¿Qué intenta decirte tu inconsciente?</p>
+<h1 class="font-serif text-3xl md:text-5xl mb-6 text-transparent bg-clip-text bg-gradient-to-b from-white via-dream-lavender to-purple-400/50 leading-tight">
+                    Soñar con serpientes: qué puede significar una mordedura, una persecución o una muda
+                </h1>
+<p class="text-lg text-purple-200/80 leading-relaxed">
+                    La serpiente estaba ahí, entre la hierba o a los pies de la cama. Se acercó, te mordió o simplemente te miró, y te despertaste con la piel de gallina. Soñar con serpientes es frecuente, y este sueño no anuncia nada. Lo que cuenta es qué hacía el animal y qué sentiste tú. Así puedes leer el tuyo.
+                </p>
 </header>
 <!-- Author Byline (E-E-A-T) -->
 <div class="flex items-center gap-3 mb-8 text-sm text-purple-200/70">
@@ -73,114 +77,129 @@
 <nav class="glass-panel rounded-2xl p-6 mb-12">
 <h2 class="font-serif text-lg text-dream-cream mb-4 flex items-center gap-2"><i class="w-5 h-5 text-dream-salmon" data-lucide="list"></i> Contenido</h2>
 <ol class="space-y-2 text-sm text-purple-200/70">
-<li><a class="toc-link block" href="#simbolismo">1. El Simbolismo Ancestral de las Serpientes</a></li>
-<li><a class="toc-link block" href="#tipos">2. Tipos de Serpientes en los Sueños</a></li>
-<li><a class="toc-link block" href="#escenarios">3. Escenarios Comunes de Sueños con Serpientes</a></li>
-<li><a class="toc-link block" href="#interpretaciones">4. Las 7 Principales Interpretaciones</a></li>
-<li><a class="toc-link block" href="#psicología">5. Lo Que Dice la Psicología</a></li>
-<li><a class="toc-link block" href="#accion">6. Qué Hacer Después de un Sueño con Serpientes</a></li>
+<li><a class="toc-link block" href="#simbolismo">1. Por qué las serpientes aparecen tanto en los sueños</a></li>
+<li><a class="toc-link block" href="#tipos">2. ¿Qué serpiente viste?</a></li>
+<li><a class="toc-link block" href="#escenarios">3. ¿Qué hacía la serpiente?</a></li>
+<li><a class="toc-link block" href="#interpretaciones">4. De qué puede hablar un sueño con serpientes</a></li>
+<li><a class="toc-link block" href="#psicología">5. Qué dicen la psicología y la investigación</a></li>
+<li><a class="toc-link block" href="#accion">6. Qué hacer después de soñar con serpientes</a></li>
 </ol>
 </nav>
 <div class="prose max-w-none text-gray-300">
-<h2 id="simbolismo">Sueños con serpientes: el simbolismo ancestral</h2>
-<p>Las <a class="text-dream-salmon hover:underline" href="../simbolos/serpiente">serpientes</a> han fascinado y aterrorizado a la humanidad desde el amanecer de la conciencia. Aparecen en las mitologías más antiguas, textos religiosos y obras de arte - desde la serpiente en el Edén hasta el bastón de curación de Asclepio, desde el cabello de Medusa hasta la energía kundalini de la tradición hindú.</p>
-<p>Esa <strong>presencia universal</strong> no es coincidencia. Según los psicólogos evolutivos, estamos programados para notar las serpientes - nuestros ancestros que les prestaban atención sobrevivieron para transmitir sus genes. Esta programación primaria confiere a las serpientes un peso simbólico extraordinario en nuestros sueños.</p>
-<blockquote>"La serpiente es el símbolo más importante y complejo en la mitología de la humanidad... Representa tanto la muerte como el renacimiento, el veneno y la medicina, la destrucción y la creación." - Joseph Campbell, Mitólogo</blockquote>
-<p>A través de las culturas, las serpientes representan <strong>dualidad</strong>: mudan su piel (transformación/renacimiento), poseen veneno (peligro/sanación), se mueven entre la tierra y el inframundo (consciencia/inconsciencia). Tu sueño con serpientes aprovecha este rico reservorio simbólico.</p>
-<h2 id="tipos">Tipos de serpientes en los sueños y su significado</h2>
-<p>El tipo específico de serpiente en tu sueño añade capas de significado:</p>
+<h2 id="simbolismo">Por qué las serpientes aparecen tanto en los sueños</h2>
+<p>La <a class="text-dream-salmon hover:underline" href="../simbolos/serpiente">serpiente</a> es un animal que nuestra atención detecta muy rápido, y el miedo a las serpientes se aprende con facilidad (lo vemos más abajo). No es raro que también aparezca de noche.</p>
+<p>Las serpientes forman parte de los temas oníricos que estudian los investigadores. En una <a class="text-dream-salmon hover:underline" href="https://asdreams.org/journal/issues/asdj13-4.htm" rel="nofollow noopener noreferrer" target="_blank">encuesta sobre los sueños típicos de universitarios canadienses</a> (Nielsen, Zadra et al., 2003), serpientes e insectos formaban un mismo grupo de temas, mencionado con más frecuencia por las mujeres. Soñar con serpientes es, por tanto, habitual y no es motivo de preocupación por sí mismo.</p>
+<p>La serpiente arrastra además una historia cultural llena de contradicciones: la tentación del Edén, la vara de Asclepio como emblema de la medicina, la muda como renovación, el veneno como peligro. En español hasta hablamos de «lengua viperina». Tu sueño puede tomar algo de esas imágenes, pero tu propia relación con las serpientes pesa más: un miedo de la infancia, un reptil de un amigo, un documental que viste la noche anterior.</p>
+<h2 id="tipos">¿Qué serpiente viste?</h2>
+<p>Antes de buscar un significado, describe al animal. Estas pistas no son definiciones: son preguntas para contrastar con lo que sentiste.</p>
 </div>
 <div class="grid md:grid-cols-2 gap-6 my-12">
 <div class="dream-card glass-panel rounded-xl p-6 border border-transparent">
-<div class="flex items-center gap-3 mb-4"><div class="p-2 bg-dream-salmon/10 rounded-lg"><i class="w-5 h-5 text-dream-salmon" data-lucide="alert-triangle"></i></div><h3 class="font-serif text-lg text-dream-cream">Serpiente Venenosa</h3></div>
-<p class="text-sm text-gray-300">Cobras, víboras o serpientes de cascabel a menudo representan <strong>personas o situaciones tóxicas</strong> en tu vida. El veneno simboliza influencias dañinas que podrían "envenenar" tu bienestar.</p>
+<div class="flex items-center gap-3 mb-4"><div class="p-2 bg-dream-salmon/10 rounded-lg"><i class="w-5 h-5 text-dream-salmon" data-lucide="alert-triangle"></i></div><h3 class="font-serif text-lg text-dream-cream">Una serpiente venenosa</h3></div>
+<p class="text-sm text-gray-300">Cobra, víbora, serpiente de cascabel: el peligro es claro. La escena suele acompañar <strong>una situación que sientes dañina</strong>, o unas palabras que dolieron. ¿Dónde estás en guardia últimamente?</p>
 </div>
 <div class="dream-card glass-panel rounded-xl p-6 border border-transparent">
-<div class="flex items-center gap-3 mb-4"><div class="p-2 bg-dream-salmon/10 rounded-lg"><i class="w-5 h-5 text-dream-salmon" data-lucide="maximize"></i></div><h3 class="font-serif text-lg text-dream-cream">Gran Constrictora</h3></div>
-<p class="text-sm text-gray-300">Pitones o boas sugieren <strong>sentirte sofocado o atrapado</strong>. Algo en tu vida puede estar exprimiendo la vida de ti - un trabajo, relación u obligación.</p>
+<div class="flex items-center gap-3 mb-4"><div class="p-2 bg-dream-salmon/10 rounded-lg"><i class="w-5 h-5 text-dream-salmon" data-lucide="maximize"></i></div><h3 class="font-serif text-lg text-dream-cream">Una gran serpiente constrictora</h3></div>
+<p class="text-sm text-gray-300">Una pitón, una boa: no hay mordedura, solo una presión que aumenta. La imagen suele unirse a la <strong>sensación de asfixia</strong>: una agenda saturada, una obligación, una relación que no deja espacio. ¿Qué te quita aire ahora mismo?</p>
 </div>
 <div class="dream-card glass-panel rounded-xl p-6 border border-transparent">
-<div class="flex items-center gap-3 mb-4"><div class="p-2 bg-dream-salmon/10 rounded-lg"><i class="w-5 h-5 text-dream-salmon" data-lucide="minimize-2"></i></div><h3 class="font-serif text-lg text-dream-cream">Serpiente Pequeña o Inofensiva</h3></div>
-<p class="text-sm text-gray-300">Las culebras o serpientes pequeñas a menudo representan <strong>preocupaciones menores o molestias</strong>. También pueden simbolizar sabiduría emergente o nuevos comienzos.</p>
+<div class="flex items-center gap-3 mb-4"><div class="p-2 bg-dream-salmon/10 rounded-lg"><i class="w-5 h-5 text-dream-salmon" data-lucide="minimize-2"></i></div><h3 class="font-serif text-lg text-dream-cream">Una serpiente pequeña e inofensiva</h3></div>
+<p class="text-sm text-gray-300">Una culebrilla que pasa, sin amenaza. Puede hacer eco de <strong>una preocupación menor</strong> que te incomoda, o de simple curiosidad. Anota si te sentiste molesto, atento o indiferente.</p>
 </div>
 <div class="dream-card glass-panel rounded-xl p-6 border border-transparent">
-<div class="flex items-center gap-3 mb-4"><div class="p-2 bg-dream-salmon/10 rounded-lg"><i class="w-5 h-5 text-dream-salmon" data-lucide="palette"></i></div><h3 class="font-serif text-lg text-dream-cream">Serpiente Colorida</h3></div>
-<p class="text-sm text-gray-300">Las serpientes de colores brillantes llevan significados adicionales: <strong>verde</strong> (crecimiento, celos), <strong>negro</strong> (sombra interior, misterio), <strong>blanco</strong> (pureza, despertar espiritual), <strong>rojo</strong> (pasión, peligro).</p>
+<div class="flex items-center gap-3 mb-4"><div class="p-2 bg-dream-salmon/10 rounded-lg"><i class="w-5 h-5 text-dream-salmon" data-lucide="palette"></i></div><h3 class="font-serif text-lg text-dream-cream">Un color que llama la atención</h3></div>
+<p class="text-sm text-gray-300">Negra, verde, blanca, roja: no hay un código de colores compartido. El color vale sobre todo por <strong>lo que te evoca a ti</strong>. Apúntalo, y después la primera asociación que te venga, sin forzarla.</p>
 </div>
 <div class="dream-card glass-panel rounded-xl p-6 border border-transparent">
-<div class="flex items-center gap-3 mb-4"><div class="p-2 bg-dream-salmon/10 rounded-lg"><i class="w-5 h-5 text-dream-salmon" data-lucide="infinity"></i></div><h3 class="font-serif text-lg text-dream-cream">Serpiente de Dos Cabezas</h3></div>
-<p class="text-sm text-gray-300">Una serpiente con múltiples cabezas sugiere <strong>elecciones conflictivas o lealtades divididas</strong>. Puedes estar enfrentando una decisión donde múltiples caminos parecen igualmente atractivos o amenazantes.</p>
+<div class="flex items-center gap-3 mb-4"><div class="p-2 bg-dream-salmon/10 rounded-lg"><i class="w-5 h-5 text-dream-salmon" data-lucide="infinity"></i></div><h3 class="font-serif text-lg text-dream-cream">Una serpiente de dos cabezas</h3></div>
+<p class="text-sm text-gray-300">Dos cabezas, dos direcciones. La escena puede reflejar <strong>una duda entre dos opciones</strong> o dos lealtades. ¿Cuáles se disputan tu atención en este momento?</p>
 </div>
 <div class="dream-card glass-panel rounded-xl p-6 border border-transparent">
-<div class="flex items-center gap-3 mb-4"><div class="p-2 bg-dream-salmon/10 rounded-lg"><i class="w-5 h-5 text-dream-salmon" data-lucide="sparkles"></i></div><h3 class="font-serif text-lg text-dream-cream">Serpiente Que Habla</h3></div>
-<p class="text-sm text-gray-300">Cuando una serpiente habla, presta mucha atención. Esto representa <strong>sabiduría oculta o intuición</strong> tratando de comunicarse. El mensaje de la serpiente a menudo contiene orientación importante.</p>
+<div class="flex items-center gap-3 mb-4"><div class="p-2 bg-dream-salmon/10 rounded-lg"><i class="w-5 h-5 text-dream-salmon" data-lucide="sparkles"></i></div><h3 class="font-serif text-lg text-dream-cream">Una serpiente que habla</h3></div>
+<p class="text-sm text-gray-300">Lo que dice viene de ti, no de un oráculo. Anota la frase palabra por palabra: a menudo recoge <strong>una idea que aún no habías formulado</strong>. Es material para examinar, no un consejo que seguir.</p>
 </div>
 </div>
 <div class="prose max-w-none text-gray-300">
-<h2 id="escenarios">Escenarios comunes de sueños con serpientes e interpretación</h2>
-<p>Lo que sucede con la serpiente importa tanto como la serpiente misma:</p>
-<h3>Ser Mordido por una Serpiente</h3>
-<p>Uno de los sueños de serpientes más alarmantes. Una mordedura de serpiente típicamente representa una <strong>llamada de atención</strong> - algo demanda tu atención inmediata. Dónde te muerden importa: mano (acciones), corazón (emociones), pierna (dirección de vida). La mordedura también puede simbolizar traición por alguien cercano o una situación "tóxica" que finalmente te afecta.</p>
-<h3>Serpiente Atacando a Otra Persona</h3>
-<p>Ver una serpiente atacar a otra persona puede reflejar tu <strong>preocupación por ella</strong> o tu percepción de que está en una situación dañina. Alternativamente, podría representar <strong>agresión reprimida</strong> - tu propio "veneno" dirigido hacia alguien.</p>
-<h3>Matar una Serpiente</h3>
-<p>Matar una serpiente con éxito sugiere que estás <strong>superando una amenaza o miedo</strong>. Estás tomando control de algo que una vez te asustaba. Sin embargo, si te sientes culpable después de matarla, puedes estar suprimiendo algo que deberías aceptar.</p>
-<h3>Una Serpiente Amigable o Mascota</h3>
-<p>Las interacciones positivas con serpientes sugieren que has <strong>integrado tu sombra interior</strong> o hecho las paces con tus miedos. Una serpiente mascota indica que la sabiduría y la sanación están disponibles para ti. Este es a menudo un sueño de transformación positiva.</p>
-<h3>Serpientes Por Todas Partes</h3>
-<p>Estar rodeado de serpientes indica <strong>ansiedad abrumadora o amenazas</strong> de múltiples fuentes. Puedes sentir que los peligros acechan en todas partes. Esto a menudo aparece durante períodos de estrés intenso.</p>
-<p>A veces estos sueños ocurren en un <a class="text-dream-salmon hover:underline" href="../simbolos/bosque">bosque</a> oscuro o junto a otros símbolos de miedo como las <a class="text-dream-salmon hover:underline" href="../simbolos/arana">arañas</a>, lo que puede intensificar la amenaza.</p>
-<h3>Serpiente Mudando Piel</h3>
-<p>Ver una serpiente mudar su piel es un poderoso <strong>símbolo de transformación</strong>. Estás listo para soltar viejos patrones, creencias o identidades. El renacimiento es inminente - abraza el cambio.</p>
+<h2 id="escenarios">¿Qué hacía la serpiente?</h2>
+<p>Lo que pasa en la escena importa tanto como el animal. Estas son las situaciones más comunes y las preguntas que invitan a hacerse.</p>
+<h3>Te muerde una serpiente</h3>
+<p>Es la escena que más se recuerda. Anota dónde fue la mordedura, si dolía y qué hiciste después. Suele acompañar <strong>un golpe reciente</strong>: un comentario que escoció, una mala noticia, una discusión. No demuestra una traición ni dice nada de tu salud. Pregúntate más bien: ¿qué me ha afectado estos últimos días?</p>
+<h3>Te sigue o te persigue</h3>
+<p>Una serpiente que pasa cerca no es lo mismo que una que va detrás de ti. Si huías, la escena se parece a los <a class="text-dream-salmon hover:underline" href="../simbolos/persecucion">sueños de persecución</a>: algo que <strong>prefieres no mirar de frente</strong>. ¿Qué has ido aplazando últimamente?</p>
+<h3>Ataca a otra persona</h3>
+<p>Puede reflejar <strong>preocupación por esa persona</strong>, o impotencia ante lo que está viviendo. ¿Cuál era tu papel: mirabas, intervenías, pedías ayuda? No deduzcas intenciones ocultas, ni tuyas ni suyas.</p>
+<h3>Matas a la serpiente</h3>
+<p>El gesto suele acompañar las ganas de <strong>acabar con un miedo o un problema</strong>. La emoción posterior es la mejor pista: ¿alivio, orgullo o malestar? El sueño no certifica que la dificultad esté resuelta; muestra cómo te sitúas ante ella.</p>
+<h3>Una serpiente tranquila o familiar</h3>
+<p>La observas, la tocas y no tienes miedo. Eso lo cambia todo. La escena puede reflejar algo que estás <strong>aprendiendo a manejar</strong> poco a poco, o una atracción. También puede ser solo el tono sereno del sueño.</p>
+<h3>Serpientes por todas partes, o en casa</h3>
+<p>Una escena llena de serpientes suele hacer eco de una etapa en la que <strong>las tensiones se acumulan</strong>. Muchas serpientes no significan muchos enemigos. Dentro de una <a class="text-dream-salmon hover:underline" href="../simbolos/casa">casa</a>, la escena toca lo íntimo: tu habitación, tu familia, tu refugio.</p>
+<p>A veces estos sueños ocurren en un <a class="text-dream-salmon hover:underline" href="../simbolos/bosque">bosque</a> oscuro o mezclan otros animales temidos, como las <a class="text-dream-salmon hover:underline" href="../simbolos/arana">arañas</a>. Anota qué predominaba: el asco, el miedo o la sensación de estar rodeado.</p>
+<h3>Una serpiente que muda la piel</h3>
+<p>La muda es una imagen natural del <strong>cambio</strong>. Si estás atravesando una transición (una mudanza, un nuevo puesto, el final de una relación), el sueño puede acompañarla. No la anuncia: pone imagen a algo que ya está en marcha.</p>
+<h3 id="ejemplo-diario">Ejemplo de diario de sueños</h3>
+<p><strong>Ejemplo ficticio:</strong> muestra cómo separar lo que pasó en el sueño de un posible vínculo con tu día.</p>
+<ul>
+<li><strong>Sueño:</strong> «Había una serpiente verde enroscada debajo de mi mesa, en la oficina. Cuando quise levantarme, me mordió el tobillo.»</li>
+<li><strong>Emoción:</strong> «Más sorpresa que dolor. Al despertar, un enfado sordo.»</li>
+<li><strong>Contexto reciente:</strong> «Ayer un compañero presentó mi trabajo en una reunión sin mencionarme.»</li>
+<li><strong>Pregunta para guardar:</strong> «¿La serpiente vuelve cuando me siento apartado, o también en semanas tranquilas?»</li>
+</ul>
+<p>El sueño no dice que ese compañero sea una «víbora». Muestra lo que la situación te hizo sentir. Una sola entrada no prueba nada: los vínculos se ven al anotar los mismos elementos durante varias noches.</p>
 <aside class="glass-panel rounded-2xl p-6 my-8 border border-dream-salmon/20">
 <div class="flex items-start gap-4">
 <div class="p-3 bg-dream-salmon/10 rounded-xl"><i class="w-6 h-6 text-dream-salmon" data-lucide="sparkles"></i></div>
 <div>
-<h4 class="font-serif text-lg text-dream-cream mb-2">Decodifica tu sueño de serpiente con Noctalia</h4>
-<p class="text-sm text-gray-400 mb-4">Noctalia analiza la apariencia de la serpiente, su comportamiento, tus emociones y contexto personal para proporcionar una interpretación personalizada de tu sueño único.</p>
-<a class="inline-flex items-center gap-2 text-sm text-dream-salmon hover:text-dream-salmonLight transition-colors" href="/es/">Prueba Noctalia Gratis <i class="w-4 h-4" data-lucide="arrow-right"></i></a>
+<h4 class="font-serif text-lg text-dream-cream mb-2">Anota tu sueño con serpientes antes de que se borre</h4>
+<p class="text-sm text-gray-400 mb-4">En Noctalia, cuenta tu sueño en voz alta o escríbelo nada más despertar. Se transcribe, se guarda en tu diario y puedes releer tus sueños con serpientes uno al lado del otro.</p>
+<a class="inline-flex items-center gap-2 text-sm text-dream-salmon hover:text-dream-salmonLight transition-colors" href="/es/">Prueba Noctalia gratis <i class="w-4 h-4" data-lucide="arrow-right"></i></a>
 </div>
 </div>
 </aside>
-<h2 id="interpretaciones">Las 7 principales interpretaciones de sueños con serpientes</h2>
-<p>Aunque el contexto es primordial, aquí están los significados más comunes de los sueños con serpientes:</p>
-<h3>1. Transformación y Renovación</h3>
-<p>Es la interpretación más positiva. Como una serpiente que muda su piel, puedes estar atravesando un <strong>profundo cambio personal</strong>. Los viejos patrones se desvanecen. Tu sueño te anima a abrazar la transformación en lugar de resistirla.</p>
-<h3>2. Miedos o Amenazas Ocultas</h3>
-<p>Las serpientes pueden representar <strong>miedos acechando bajo la superficie</strong> - cosas que percibes pero no has reconocido conscientemente. Tu subconsciente te alerta del peligro, ya sea de una persona, situación o tu propio comportamiento.</p>
-<h3>3. Sanación y Medicina</h3>
-<p>Símbolo de sanación desde la antigua Grecia (el caduceo de Asclepio), la serpiente en tu sueño puede indicar que <strong>energía de sanación está actuando</strong> en tu vida, o sugerir que necesitas enfocarte en la salud - física, emocional o espiritual.</p>
-<h3>4. Sexualidad y Fuerza Vital</h3>
-<p>Freud famosamente interpretaba las serpientes como símbolos fálicos. Más allá del simple simbolismo sexual, las serpientes representan <strong>energía vital cruda y poder creativo</strong> - la fuerza kundalini en la tradición hindú. Tu sueño puede ser sobre pasión, creatividad o impulsos primarios.</p>
-<h3>5. Traición y Engaño</h3>
-<p>"Serpiente" es un término común para una persona traicionera. Tu sueño podría estar advirtiéndote sobre <strong>alguien poco confiable</strong> en tu vida. Presta atención a quién más aparece en el sueño, o a quién te recuerda la serpiente.</p>
-<h3>6. Sabiduría e Intuición</h3>
-<p>En muchas tradiciones, las serpientes simbolizan <strong>sabiduría ancestral y habilidades psíquicas</strong>. Una serpiente no amenazante puede representar tu intuición tratando de guiarte. La serpiente en tu sueño podría ser un maestro espiritual.</p>
-<h3>7. Aspectos Reprimidos del Yo</h3>
-<p>Jung veía la serpiente como representando la <strong>sombra interior</strong> - partes de tu personalidad que has rechazado o enterrado. El sueño de serpiente te invita a reconocer e integrar estos aspectos en lugar de temerlos.</p>
-<h2 id="psicología">Lo Que Dice la Psicología</h2>
-<p>Diferentes marcos psicológicos ofrecen perspectivas únicas sobre los sueños de serpientes:</p>
-<h3>Interpretación Freudiana</h3>
-<p>Sigmund Freud veía las serpientes como <strong>símbolos fálicos</strong> representando deseo sexual, ansiedad o represión. Aunque esta interpretación parece anticuada, a veces aplica - particularmente cuando el sueño tiene tonos sexuales obvios o involucra sentimientos de culpa.</p>
-<h3>Análisis Junguiano</h3>
-<p>Carl Jung veía la serpiente como un <strong>símbolo arquetípico de transformación</strong>. La serpiente nos conecta con las profundidades de nuestro inconsciente y representa el proceso de individuación - convertirnos en nuestro verdadero yo completo. Un sueño de serpiente a menudo señala crecimiento psicológico.</p>
-<h3>Teoría de Simulación de Amenazas</h3>
-<p>Investigadores modernos como Antti Revonsuo sugieren que soñamos con serpientes porque nuestro cerebro está <strong>practicando respuestas a amenazas</strong>. Durante millones de años, las serpientes fueron peligros reales. Los sueños de serpientes podrían ser simplemente tu cerebro ejecutando simulaciones de supervivencia.</p>
-<blockquote>"La serpiente en los sueños a menudo representa algo a lo que necesitamos prestar atención - no necesariamente evitar. El tono emocional del sueño nos dice si acercarnos o retirarnos." - Dr. Rubin Naiman, Investigador del Sueño</blockquote>
-<h2 id="accion">Qué Hacer Después de un Sueño con Serpientes</h2>
-<p>Los sueños de serpientes merecen atención. Aquí está cómo trabajar con ellos:</p>
-<h3>1. Registra Cada Detalle</h3>
-<p>Escribe todo inmediatamente al despertar: la apariencia de la serpiente, su comportamiento, tus emociones, el escenario, otras personas presentes. <strong>Los detalles se desvanecen rápido</strong> pero a menudo contienen significados simbólicos clave.</p>
-<h3>2. Observa Tu Respuesta Emocional</h3>
-<p>¿Estabas aterrorizado, curioso, calmado o incluso fascinado? Tu <strong>reacción emocional es crucial</strong>. Una serpiente temida sugiere ansiedad no resuelta; una interacción calmada sugiere integración o aceptación.</p>
-<h3>3. Pregúntate Qué Está "Mudando" en Tu Vida</h3>
-<p>Considera qué cambios están ocurriendo o son necesarios. ¿Estás dejando un viejo trabajo, relación, creencia o identidad? <strong>Los sueños de transformación a menudo acompañan las transiciones</strong>.</p>
-<h3>4. Identifica las "Serpientes" a Tu Alrededor</h3>
-<p>¿Alguien en tu vida está siendo engañoso o dañino? ¿Hay una situación que se siente "venenosa"? El sueño puede ser una <strong>advertencia de ser cauteloso</strong> con alguien o algo.</p>
-<h3>5. Considera Tu Salud</h3>
-<p>Dada la asociación de la serpiente con la sanación, <strong>haz un chequeo de tu cuerpo</strong>. ¿Estás ignorando preocupaciones de salud? ¿El estrés está afectando tu bienestar? La serpiente puede estar llamando la atención hacia una sanación necesaria.</p>
-<h3>6. Abraza el Simbolismo</h3>
-<p>En lugar de descartar el sueño, <strong>involúcrate activamente con él</strong>. Medita sobre la serpiente, dibújala, investiga el simbolismo de serpientes en tradiciones que resuenen contigo. A menudo, la comprensión clarifica el mensaje.</p>
+<h2 id="interpretaciones">De qué puede hablar un sueño con serpientes</h2>
+<p>Ningún diccionario de sueños puede decir con seguridad por qué <em>tú</em> soñaste con una serpiente. Pero algunos vínculos aparecen a menudo cuando se compara la escena con lo que uno está viviendo. Quédate con el que te resuene y deja los demás.</p>
+<h3>Un miedo o una tensión todavía sin nombre</h3>
+<p>Es la pista más frecuente. Una serpiente escondida en la hierba se parece a <strong>algo que notas pero aún no has mirado</strong>: un asunto pendiente, una conversación que vas aplazando. El sueño no da la alarma; pone imagen a un malestar que ya estaba ahí. ¿Qué me inquieta sin que lo haya dicho?</p>
+<h3>Desconfianza hacia alguien</h3>
+<p>Llamar «víbora» a alguien no es un halago. Si el sueño te hace pensar en una persona concreta, anótalo, junto con los demás personajes del sueño. Pero un sueño no es una prueba: refleja <strong>lo que sientes tú</strong>, no lo que hizo la otra persona. ¿Mi desconfianza se apoya en hechos recientes?</p>
+<h3>Un cambio en marcha</h3>
+<p>Como la muda, algunos sueños con serpientes acompañan <strong>una etapa de transición</strong>: una mudanza, un trabajo nuevo, una ruptura, volver a estudiar. Escenifican lo que dejas atrás. ¿Qué parte de mi vida está cambiando de piel?</p>
+<h3>Deseo y energía</h3>
+<p>La serpiente se asocia desde hace mucho a la sexualidad y a la fuerza vital. Según la escena, el sueño puede tocar <strong>el deseo, la atracción o el impulso</strong>, o la ambivalencia que despiertan: fascinación y miedo a la vez. ¿Qué me atrae y me inquieta al mismo tiempo?</p>
+<h3>El cuidado, en sentido simbólico</h3>
+<p>La vara de Asclepio recuerda que la serpiente también es un símbolo de cuidado. Si estás cuidando de ti o de alguien, la imagen puede nutrirse de eso. Pero un sueño no detecta enfermedades: <strong>una duda sobre tu salud se consulta con un médico</strong>, no con un diccionario de sueños.</p>
+<h3>Lo que mantienes a distancia</h3>
+<p>En la tradición junguiana, la serpiente suele representar una parte de uno mismo que se mantiene apartada: un enfado, una ambición, una necesidad. La escena invita entonces a preguntarte <strong>qué reacción has contenido</strong> últimamente, y por qué.</p>
+<h2 id="psicología">Qué dicen la psicología y la investigación</h2>
+<p>Los sueños con serpientes se han leído de maneras muy distintas. Estos enfoques no se excluyen entre sí, y ninguno demuestra nada sobre tu sueño en particular.</p>
+<h3>La lectura freudiana</h3>
+<p>En <em>La interpretación de los sueños</em> (1900), Freud sitúa la serpiente entre los símbolos sexuales masculinos y vincula el sueño con deseos reprimidos. Es una <strong>clave de lectura histórica</strong>, útil para entender una tradición, no un resultado científico.</p>
+<h3>La lectura junguiana</h3>
+<p>Para Jung y sus seguidores, la serpiente es una imagen antigua, presente en muchas mitologías, que suele remitir al instinto, a lo que escapa a la conciencia y a la transformación. También es un <strong>punto de vista interpretativo</strong>, no una medida.</p>
+<h3>Un miedo antiguo y bien documentado</h3>
+<p>Los estudios reunidos por los psicólogos <a class="text-dream-salmon hover:underline" href="https://doi.org/10.1111/1467-8721.01211" rel="nofollow noopener noreferrer" target="_blank">Arne Öhman y Susan Mineka (2003)</a> sugieren que el miedo a las serpientes se apoya en <strong>un sistema de alerta moldeado por la evolución</strong>: se aprende rápido, resiste al olvido y puede activarse incluso sin atención consciente. Por eso la serpiente es una figura a mano cuando un sueño escenifica una amenaza.</p>
+<h3>La simulación de amenazas</h3>
+<p>Para el investigador finlandés <a class="text-dream-salmon hover:underline" href="https://www.cambridge.org/core/journals/behavioral-and-brain-sciences/article/reinterpretation-of-dreams-an-evolutionary-hypothesis-of-the-function-of-dreaming/EE0E7DB39E361540D2DDA79C262EDA7E" rel="nofollow noopener noreferrer" target="_blank">Antti Revonsuo (2000)</a>, soñar serviría en parte para <strong>ensayar situaciones amenazantes</strong> en un entorno sin peligro. Un depredador tan antiguo como la serpiente encaja bien en ese papel. La teoría se discute, pero ayuda a entender por qué los sueños desagradables son tan frecuentes.</p>
+<h3>El vínculo con la vida despierta</h3>
+<p>El <a class="text-dream-salmon hover:underline" href="https://www.ninds.nih.gov/health-information/public-education/brain-basics/brain-basics-understanding-sleep" rel="nofollow noopener noreferrer" target="_blank">NINDS</a>, instituto estadounidense de investigación neurológica, recuerda que los acontecimientos del día se cuelan a menudo en los sueños y que el estrés hace más probables los sueños que asustan. El investigador <a class="text-dream-salmon hover:underline" href="https://dreamresearch.net/" rel="nofollow noopener noreferrer" target="_blank">G. William Domhoff</a> también insiste en la <strong>continuidad entre los sueños y las preocupaciones de la vigilia</strong>. Por eso tu contexto y lo que sentiste al despertar dicen más que la especie de la serpiente.</p>
+<h2 id="accion">Qué hacer después de soñar con serpientes</h2>
+<p>La mayoría de los sueños con serpientes no requieren nada especial. Si uno te ha dejado huella o se repiten, aquí tienes algunos pasos sencillos.</p>
+<h3>1. Anotar la escena antes que nada</h3>
+<ul>
+<li>El animal: tamaño, color, especie si la conoces</li>
+<li>Qué hacía: quieto, huyendo, siguiéndote, mordiendo</li>
+<li>El lugar y la distancia a la que estaba</li>
+<li>Lo que sentiste en el sueño y al despertar</li>
+<li>Lo que te ocupa ahora mismo, en una frase</li>
+</ul>
+<h3>2. Partir de la emoción y mirar los últimos días</h3>
+<p>Miedo, asco, curiosidad, calma: la emoción del sueño conecta con la vida despierta más a menudo que el decorado. Busca después qué se parece a la escena en tu vida actual. Si te viene a la mente una persona, tómalo como una pregunta sobre lo que sientes, no como un veredicto sobre ella.</p>
+<h3>3. Releer tus sueños durante varias noches</h3>
+<p>Una serpiente aislada dice poco. Varios sueños con serpientes, releídos con su contexto, a veces muestran cuándo vuelven: antes de una fecha límite, después de un conflicto, en una racha de cansancio.</p>
+<h3>4. Reescribir el final de un sueño que se repite</h3>
+<p>Si la misma serpiente vuelve en forma de pesadilla, imagina la escena por la noche, despierto, con otro final: la serpiente se aleja, sales de la habitación, cierras la puerta. Esta técnica, cercana al ensayo en imaginación que se usa contra las <a class="text-dream-salmon hover:underline" href="guia-pesadillas">pesadillas</a>, lleva unos minutos al día.</p>
+<h3>5. Saber cuándo consultar</h3>
+<p>Las pesadillas ocasionales no son motivo de preocupación. Si son frecuentes, alteran tu sueño, te hacen temer el momento de dormir o pesan en tu día a día, coméntalo con tu médico o con un especialista del sueño. Son los criterios que recoge, por ejemplo, la <a class="text-dream-salmon hover:underline" href="https://www.mayoclinic.org/diseases-conditions/nightmare-disorder/symptoms-causes/syc-20353515" rel="nofollow noopener noreferrer" target="_blank">Mayo Clinic</a>. Hay ayuda eficaz.</p>
 </div>
 <!-- Symbol Guide CTA -->
 <aside class="glass-panel rounded-xl p-6 my-8 border border-dream-salmon/20">
@@ -189,10 +208,10 @@
 <i class="w-6 h-6 text-dream-salmon" data-lucide="sparkles"></i>
 </div>
 <div>
-<h4 class="font-serif text-lg text-dream-cream mb-2">Explora el simbolismo de la serpiente</h4>
-<p class="text-sm text-gray-400 mb-3">Descubre el significado profundo de las serpientes en los sueños con nuestra guía completa.</p>
+<h4 class="font-serif text-lg text-dream-cream mb-2">La ficha del símbolo «serpiente»</h4>
+<p class="text-sm text-gray-400 mb-3">Variantes, preguntas para hacerte y preguntas frecuentes, en formato breve.</p>
 <a class="inline-flex items-center gap-2 text-dream-salmon hover:underline text-sm font-medium" href="../simbolos/serpiente">
-                            Leer la guía completa <i class="w-4 h-4" data-lucide="arrow-right"></i>
+                            Leer la ficha <i class="w-4 h-4" data-lucide="arrow-right"></i>
 </a>
 </div>
 </div>
@@ -214,9 +233,9 @@
 <!-- Related Symbols End -->
 <aside class="glass-panel rounded-3xl p-8 md:p-10 mt-16 text-center border border-dream-salmon/20">
 <div class="w-16 h-16 bg-dream-salmon/10 rounded-full flex items-center justify-center mx-auto mb-6"><i class="w-8 h-8 text-dream-salmon" data-lucide="eye"></i></div>
-<h3 class="font-serif text-2xl md:text-3xl mb-4 text-dream-cream">Revela el Mensaje de Tu Sueño de Serpiente</h3>
-<p class="text-purple-200/70 mb-6 max-w-lg mx-auto">Registra tus sueños de serpientes en Noctalia y recibe interpretaciones personalizadas que consideran tus símbolos únicos, emociones y contexto de vida.</p>
-<a class="inline-flex items-center gap-2 px-8 py-4 bg-dream-salmon text-dream-dark rounded-full font-bold hover:bg-dream-salmon/90 transition-colors" href="/es/">Comienza a Explorar Tus Sueños <i class="w-5 h-5" data-lucide="arrow-right"></i></a>
+<h3 class="font-serif text-2xl md:text-3xl mb-4 text-dream-cream">Una serpiente es una escena. Varias son una pista.</h3>
+<p class="text-purple-200/70 mb-6 max-w-lg mx-auto">Guarda tus sueños con serpientes en Noctalia, junto con lo que sentiste. Al releerlos juntos verás cuándo vuelven y qué los acompaña.</p>
+<a class="inline-flex items-center gap-2 px-8 py-4 bg-dream-salmon text-dream-dark rounded-full font-bold hover:bg-dream-salmon/90 transition-colors" href="/es/">Empezar mi diario de sueños <i class="w-5 h-5" data-lucide="arrow-right"></i></a>
 </aside>
                                                             <!-- Blog Nav Start -->
                                                             <section class="mt-12" aria-label="Navegación entre artículos" data-blog-nav="">
@@ -248,17 +267,27 @@
 
                 <div class="glass-panel rounded-2xl p-6 border border-transparent">
                     <h3 class="font-medium text-dream-cream mb-2">¿Qué significa soñar con serpientes?</h3>
-                    <p class="text-sm text-gray-300 leading-relaxed">Los sueños con serpientes comúnmente simbolizan transformación, miedos ocultos, sanación o sabiduría inexplorada. El significado depende del comportamiento de la serpiente, tus emociones durante el sueño y tus asociaciones personales con las serpientes.</p>
+                    <p class="text-sm text-gray-300 leading-relaxed">No hay un significado único. Según la escena, la serpiente suele acompañar un miedo todavía sin nombre, una desconfianza, un deseo o un cambio en marcha. Lo que hacía el animal, lo que sentiste y lo que estás viviendo son las mejores pistas.</p>
                 </div>
 
                 <div class="glass-panel rounded-2xl p-6 border border-transparent">
                     <h3 class="font-medium text-dream-cream mb-2">¿Soñar con serpientes es un mal presagio?</h3>
-                    <p class="text-sm text-gray-300 leading-relaxed">No necesariamente. Aunque muchas culturas asocian las serpientes con el peligro, los sueños con serpientes a menudo simbolizan transformación positiva, sanación (como el caduceo médico) o despertar espiritual. El contexto y tus sentimientos en el sueño importan más que la serpiente misma.</p>
+                    <p class="text-sm text-gray-300 leading-relaxed">No. Un sueño con serpientes no predice desgracias, peligros ni traiciones. Escenifica una emoción o una preocupación actual, a menudo con imágenes que nuestra cultura asocia a la serpiente.</p>
                 </div>
 
                 <div class="glass-panel rounded-2xl p-6 border border-transparent">
-                    <h3 class="font-medium text-dream-cream mb-2">¿Qué significa ser mordido por una serpiente en un sueño?</h3>
-                    <p class="text-sm text-gray-300 leading-relaxed">Ser mordido por una serpiente en un sueño a menudo representa una llamada de atención - algo en tu vida necesita atención inmediata. Puede simbolizar traición, una situación tóxica o el proceso doloroso pero necesario de transformación y sanación.</p>
+                    <h3 class="font-medium text-dream-cream mb-2">¿Qué significa soñar que te muerde una serpiente?</h3>
+                    <p class="text-sm text-gray-300 leading-relaxed">La mordedura suele acompañar un golpe reciente: un comentario hiriente, una mala noticia, una discusión. Anota dónde fue y qué sentiste. No demuestra una traición ni dice nada de tu salud.</p>
+                </div>
+
+                <div class="glass-panel rounded-2xl p-6 border border-transparent">
+                    <h3 class="font-medium text-dream-cream mb-2">¿Soñar con una serpiente significa que alguien me traiciona?</h3>
+                    <p class="text-sm text-gray-300 leading-relaxed">No. El sueño puede reflejar una desconfianza que sientes, pero no dice nada de las intenciones de los demás. Si te viene a la mente una persona, pregúntate en qué hechos se apoya tu impresión.</p>
+                </div>
+
+                <div class="glass-panel rounded-2xl p-6 border border-transparent">
+                    <h3 class="font-medium text-dream-cream mb-2">¿Debo preocuparme si estos sueños se repiten?</h3>
+                    <p class="text-sm text-gray-300 leading-relaxed">Por lo general, no. Si se convierten en pesadillas frecuentes, alteran tu sueño o te dejan ansioso durante el día, coméntalo con un médico o con un especialista del sueño.</p>
                 </div>
                 </div>
             </section>
