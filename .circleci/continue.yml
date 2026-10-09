@@ -414,11 +414,16 @@ jobs:
                       name: Prepare successful master timing baseline
                       command: |
                         mkdir -p artifacts/baseline
+                        # Append this run to the rolling history first: when the
+                        # restored cache predates the history file, the previous
+                        # single-run baseline seeds it before being overwritten.
+                        node ./scripts/check-jest-duration-regression.js --update-history
                         cp artifacts/jest-results.json artifacts/baseline/jest-results.json
                   - save_cache:
                       key: jest-timing-master-v1-{{ epoch }}
                       paths:
                         - artifacts/baseline/jest-results.json
+                        - artifacts/baseline/jest-timing-history.json
             - store_artifacts:
                 path: artifacts/jest-results.json
                 destination: noctalia-jest-timing/jest-results.json
