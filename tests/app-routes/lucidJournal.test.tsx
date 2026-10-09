@@ -113,7 +113,7 @@ jest.mock('@/components/lucid/LucidUI', () => ({
   ),
 }));
 
-const { default: LucidJournalScreen } = require('@/app/lucid/(tabs)/journal');
+const { default: LucidJournalScreen } = require('@/routes/lucid/lucid/(tabs)/journal');
 
 describe('Lucid Journal tab', () => {
   it('uses the real local journal and exposes profile, capture, signs, voice notes and dream routes', () => {

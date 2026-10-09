@@ -198,7 +198,7 @@ jest.mock('@/components/lucid/LucidUI', () => ({
   LucidSectionHeader: ({ action, title }: any) => <div><h2>{title}</h2>{action}</div>,
 }));
 
-const { default: LucidDreamAtlasScreen } = require('@/app/lucid/dream-atlas');
+const { default: LucidDreamAtlasScreen } = require('@/routes/lucid/lucid/dream-atlas');
 
 describe('Lucid dream atlas screen', () => {
   beforeEach(() => {

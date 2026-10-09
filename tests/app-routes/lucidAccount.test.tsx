@@ -84,7 +84,7 @@ jest.mock('@/lib/auth', () => ({
   isGoogleSignInAvailable: () => false,
 }));
 
-const { default: LucidAccountScreen } = require('@/app/lucid/account');
+const { default: LucidAccountScreen } = require('@/routes/lucid/lucid/account');
 
 describe('Lucid Trainer shared account', () => {
   beforeEach(() => {

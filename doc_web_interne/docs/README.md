@@ -21,9 +21,9 @@ for prerequisites and side effects.
 | Theme and motion | [brand token contract](architecture/NOCTALIA-BRAND-TOKEN-CONTRACT.md) | `constants/noctaliaPalette.ts`, `components/motion/`; follow AGENTS styling and motion rules |
 | Marketing pages and symbols | [site source guide](../../docs-src/README.md) | `docs-src/`, `data/`, `scripts/lib/`; [site tooling package](../../apps/site/README.md). `docs/` is generated output. |
 
-Lucid shares the root package: implementations are in `app/lucid/`, while the
-standalone companion uses `routes/lucid/` as its Expo Router root. Those routes
-re-export the implementations. See [the Lucid specification](../../specs/noctalia-lucid-trainer.md)
+Lucid shares the root package, but its screens live only under its own Expo
+Router root, `routes/lucid/` (`routes/lucid/lucid/`). Dreamer's `app/` does not
+bundle them; its lucid ritual opens the Lucid app. See [the Lucid specification](../../specs/noctalia-lucid-trainer.md)
 and `app.config.ts`. Meditation has its own package, lockfile and
 [local instructions](../../apps/meditation/AGENTS.md) under `apps/meditation/`.
 

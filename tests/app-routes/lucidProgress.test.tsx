@@ -205,7 +205,7 @@ jest.mock('@/components/lucid/LucidUI', () => ({
   ),
 }));
 
-const { default: LucidProgressScreen } = require('@/app/lucid/(tabs)/progress');
+const { default: LucidProgressScreen } = require('@/routes/lucid/lucid/(tabs)/progress');
 
 const originalExperiments = [...mockTrainerState.experiments];
 

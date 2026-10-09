@@ -6,7 +6,12 @@ import { cleanup, fireEvent, render, screen, waitFor } from '@testing-library/re
 const mockPush = jest.fn();
 let mockRitualId = 'lucid';
 
-jest.mock('react-native', () => jest.requireActual('../react-native-stub'));
+const mockOpenURL = jest.fn().mockResolvedValue(undefined);
+
+jest.mock('react-native', () => {
+  const actual = jest.requireActual('../react-native-stub');
+  return { ...actual, Linking: { ...actual.Linking, openURL: mockOpenURL } };
+});
 
 jest.mock('expo-router', () => ({
   router: { back: jest.fn(), push: mockPush },
@@ -102,7 +107,9 @@ describe('Noctalia lucid ritual bridge', () => {
 
     fireEvent.click(bridge);
 
-    expect(mockPush).toHaveBeenCalledWith('/lucid');
+    // Lucid is no longer part of Dreamer: the card hands off to the Lucid app.
+    expect(mockOpenURL).toHaveBeenCalledWith('https://lucid.noctalia.app/lucid');
+    expect(mockPush).not.toHaveBeenCalled();
   });
 
   it('does not add the Trainer bridge to another Noctalia ritual', async () => {

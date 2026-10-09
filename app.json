@@ -136,6 +136,7 @@
         }
       ],
       "./plugins/withAndroidR8Optimization",
+      "./plugins/withoutReactNativeImageDecoders",
       "./plugins/withRevenueCatTestStoreBuild",
       "./plugins/withSoftExceptionLogging",
       "expo-sqlite",

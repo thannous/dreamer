@@ -304,9 +304,12 @@ function RootLayoutNav({
     const notificationUrl = notification.request.content.data?.url;
     // Reject legacy Journal payloads before claiming a response or recording intent.
     if (isLucidTrainer && !isSafeLucidNotificationRoute(notificationUrl)) return;
+    // Lucid screens live in the Lucid app only; a reminder scheduled by the
+    // former in-app trainer must not open a route Dreamer no longer has.
+    const lucidRoute = isLucidTrainer && isSafeLucidNotificationRoute(notificationUrl);
     if (
       notificationUrl !== '/recording' &&
-      !isSafeLucidNotificationRoute(notificationUrl) &&
+      !lucidRoute &&
       !isSafeAppNotificationRoute(notificationUrl)
     ) {
       return;
@@ -325,7 +328,7 @@ function RootLayoutNav({
       return;
     }
 
-    if (isSafeLucidNotificationRoute(notificationUrl) || isSafeAppNotificationRoute(notificationUrl)) {
+    if (lucidRoute || isSafeAppNotificationRoute(notificationUrl)) {
       // In-memory pending route (Lucid screens and the weekly recap): no
       // persisted intent, the destination is consumed once navigation is ready.
       setPendingLucidNotificationUrl(notificationUrl as Href);
@@ -861,7 +864,8 @@ function RootLayoutNav({
             <Stack.Screen name="weekly-recap" options={{ headerShown: false }} />
             <Stack.Screen name="dev/voice-live-spike" options={{ headerShown: false }} />
             </Stack.Protected>
-            <Stack.Screen name="lucid" options={{ headerShown: false }} />
+            {/* Lucid screens live under routes/lucid only (Lucid's own router root). */}
+            {isLucidTrainer ? <Stack.Screen name="lucid" options={{ headerShown: false }} /> : null}
             <Stack.Screen name="auth/reset-password" options={{ headerShown: false }} />
           </Stack>
           </DesktopShell>
@@ -951,6 +955,20 @@ export default function RootLayout() {
     void import('@/lib/runtimeIdentity')
       .then(({ reportRuntimeIdentity }) => reportRuntimeIdentity())
       .catch(() => { /* Optional diagnostic unavailable; never log a raw native error. */ });
+  }, []);
+
+  useEffect(() => {
+    if (Platform.OS === 'web' || isLucidTrainer) return;
+    // Lucid moved to its own app: clear notifications the former in-app trainer
+    // scheduled, so they stop firing into a route Dreamer no longer has.
+    // Owner marker of services/lucidTrainerNotifications (reminders and night cues);
+    // inlined so Dreamer does not bundle the Lucid domain model for this cleanup.
+    void Promise.resolve()
+      .then(() => Notifications.getAllScheduledNotificationsAsync())
+      .then((scheduled) => Promise.all(scheduled
+        .filter((request) => request.content.data?.noctaliaNotificationOwner === 'lucid-trainer')
+        .map((request) => Notifications.cancelScheduledNotificationAsync(request.identifier))))
+      .catch(() => { /* Best effort; a remaining reminder only opens the app. */ });
   }, []);
 
   useEffect(() => {

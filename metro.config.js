@@ -44,6 +44,11 @@ config.resolver.resolveRequest = (context, moduleName, platform) => {
   if (stub) {
     return stub;
   }
+  // Only the Lucid build renders the Lucid auth sheet (`isLucidTrainer`); keep its
+  // design system out of Dreamer. app.config.ts rejects a partial Lucid variant.
+  if (process.env.NOCTALIA_APP_VARIANT !== 'lucid' && moduleName === '@/components/lucid/LucidAuthBottomSheet') {
+    return { type: 'empty' };
+  }
   return (upstreamResolveRequest ?? context.resolveRequest)(context, moduleName, platform);
 };
 

@@ -212,7 +212,7 @@ jest.mock('@/components/lucid/LucidUI', () => ({
   LucidPill: ({ label }: { label: string }) => <span>{label}</span>,
 }));
 
-const { default: LucidMorningScreen } = require('@/app/lucid/morning');
+const { default: LucidMorningScreen } = require('@/routes/lucid/lucid/morning');
 
 async function completeNothingPath(cueLabel = 'Unsure') {
   fireEvent.click(screen.getByTestId('lucid-morning-nothing'));

@@ -95,7 +95,7 @@ jest.mock('@/hooks/useLucidReducedMotion', () => ({
   useLucidReducedMotion: () => layoutHarness.reduceMotion,
 }));
 
-const { default: LucidLayout } = require('@/app/lucid/_layout');
+const { default: LucidLayout } = require('@/routes/lucid/lucid/_layout');
 
 function resetHarness() {
   layoutHarness.reduceMotion = false;
