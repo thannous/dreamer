@@ -5,7 +5,9 @@ Noctalia is an Expo/React Native dream-journal app with a Supabase backend and a
 Start with the [repository task index](doc_web_interne/docs/README.md) for feature
 entry points and current guides. Run `mise exec -- npm run scripts:list` for the
 command catalog; [scripts/README.md](scripts/README.md) explains prerequisites and effects.
-CI is in `.circleci/config.yml` and `.circleci/continue.yml`. Find filenames with
+Changes are proven locally: the `pre-push` hook runs `npm run verify:fast`, the PR
+records that proof, and review happens in PR comments. Remote CI (`.circleci/config.yml`,
+`.circleci/continue.yml`) runs only when triggered manually. Find filenames with
 `rg --files` before reading guessed paths; scoped search examples are in the task index.
 
 ## Structure and Sources of Truth
@@ -103,7 +105,8 @@ A direct request to implement or fix something authorizes work within that scope
 A request to prepare or audit a proposal authorizes the proposal only. An explicit
 instruction to implement an identified proposal authorizes its implementation and
 applicable delivery steps: scoped fixes, appropriate validation, correction of related
-failures, commits, PR creation, push, and merge after required CI passes. Reuse that
+failures, commits, PR creation, push, and merge after the local check passes on the
+final PR head. Reuse that
 authorization. Explicit local-only, no-push, review-before-merge, and publication
 boundaries take precedence; a production-triggering merge requires publication intent.
 
@@ -116,8 +119,8 @@ Keep execution to four gates, with detail proportional to the work:
 3. Implement and validate according to the risk table below, reusing still-valid evidence.
    Independent review, native builds, and full suites depend on risk and applicable release
    requirements; they are not mandatory for every change.
-4. Deliver within the approved scope, verify required CI on the final PR head before merge,
-   and verify the actual result at each requested delivery stage. Local checks, merge,
+4. Deliver within the approved scope, verify the local check on the final PR head before
+   merge, and verify the actual result at each requested delivery stage. Local checks, merge,
    deployment, device installation, and public availability remain distinct evidence.
 
 Ask only for a material unresolved product decision or an action outside the approved scope,
@@ -250,11 +253,14 @@ Choose validation by the behavior and risk changed, not by the number of files o
 - Pick one appropriate focused test entry point; the commands below are alternatives, not a sequence to run in full.
 - Apply the E2E-first policy above when adding coverage; isolation controls require a concrete failure model, not a mandatory implementation order.
 - Once checks pass, rerun only when changed code, dependencies/configuration, a failure or an unresolved risk invalidates that evidence. A documentation-only follow-up does not invalidate code tests.
-- Consolidate local corrections and evidence before pushing when practical. Do not push each small documentation correction separately merely to trigger another CI run.
-- For functional, shared-code or tooling PRs, use `npm run test:prepush` once on the clean committed worktree as the final affected-test entry point; it replaces a guessed manual test selection. It refreshes `origin/master`, uses the CI classifier, checks applicable app/test types and root Jest, and rejects revisions modified during the run. Documentation-only and small visual changes retain the proportional validation above. It does not replace lint, native, site-build, Meditation or Edge checks required by the changed surface.
-- `test:changed` defaults to the merge-base with the local `origin/master`; `JEST_CHANGED_SINCE=HEAD` is only an explicit working-tree delta, never proof of a committed PR. Use `test:prepush` for a fresh remote base. Preserve unrelated WIP by validating in an isolated worktree.
-- A CI watcher can finish for an older head while another task pushes. After it finishes, read the PR head and checks again; merge with `--match-head-commit <verified-sha>`. If the head changed, qualify the new head. Batch a coherent work package before pushing; coordinate ownership of a branch receiving concurrent edits.
-- Keep required CI checks intact and verify them on the final PR head. Do not bypass checks or alter CI filtering as part of a feature without a separate justified scope.
+- Consolidate local corrections and evidence before pushing when practical. Do not push each small documentation correction separately; every push reruns the local check.
+- Every push runs the tracked `.githooks/pre-push` hook, which `npm ci`/`npm install` installs (the `prepare` script sets `core.hooksPath`). It runs `npm run verify:fast` on the checked-out commit: `test:prepush` (refreshes `origin/master`, uses the CI classifier, checks applicable app/test types and root Jest, rejects a dirty tree or a revision modified during the run), then `lint` and `lint:scripts`. Push from a clean committed worktree of the branch you push. Agents never use `git push --no-verify`: fix the failure or report it as a blocker. Pushes that delete a branch or send no new commit skip the check.
+- The hook does not replace native, site-build (`docs:build`/`docs:check`), Meditation, Edge (Deno) or E2E checks required by the changed surface; run those locally as the proportional validation above requires.
+- Fill the PR template's **Local proof** (commands, commit SHA, result, what remains unchecked). Review happens in PR comments; answer them with new commits, which rerun the hook.
+- `test:changed` defaults to the merge-base with the local `origin/master`; `JEST_CHANGED_SINCE=HEAD` is only an explicit working-tree delta, never proof of a committed PR. `test:prepush` refreshes the remote base. Preserve unrelated WIP by validating in an isolated worktree.
+- Before merging, fetch `origin/master`. If it moved since the check, merge it into the branch and push: the hook reruns the check on the merged head; update the Local proof. Read the PR head again and merge with `--match-head-commit <sha-from-local-proof>`; if the head changed, qualify the new head. Batch a coherent work package before pushing; coordinate ownership of a branch receiving concurrent edits.
+- Remote CI runs only on a manual CircleCI trigger (web app "Trigger Pipeline" or API); push and PR webhooks run nothing. Release branches, tags and a validated mobile release commit, which used to get CircleCI's full portfolio, now require the full local validation on the exact SHA (or a manual CircleCI pipeline with `force_full_validation: true`); see [the CircleCI guide](doc_web_interne/docs/circleci-migration.md).
+- Keep the hook, `verify:fast`, the classifier and the CircleCI jobs intact. Do not bypass or weaken them, or alter CI filtering, as part of a feature without a separate justified scope.
 - Minor follow-up fixes need a focused delta review when relevant, not a new full review/test cycle. Reuse evidence for unchanged code and identify the revision it covers.
 - Missing native evidence stays unqualified; do not replace it with repeated unit tests or claim a mock proves persistence or production behavior.
 - For TalkBack qualification, follow [the short Motorola protocol](doc_web_interne/docs/qualification-talkback.md): validate focus/gesture/audio measurement with a short pilot before a full journey, distinguish keyboard/ADB evidence from physical gestures, and restore/re-read device settings even after failure. For a requested fix, continue from the reproduced defect to correction and the authorized retest.
@@ -300,8 +306,8 @@ identity and the exact rerun command. A stale/missing replay is not a passed che
 TesterArmy remains the default. Existing coverage protects current functional contracts;
 historical counterexamples inform work but do not freeze obsolete UI or block adoption
 automatically. Preserve the old result and explain any revised expectation or retired
-criterion against the current product contract. Keep required CI until an explicit reviewed
-pipeline change; retain still-relevant Playwright/Maestro/API assertions until their
+criterion against the current product contract. Keep the existing CI jobs and local checks
+until an explicit reviewed pipeline change; retain still-relevant Playwright/Maestro/API assertions until their
 replacement passes. A compatible framework upgrade within the requested work may be
 piloted on a representative journey, pinned and adopted after its checks pass without
 another generic permission request. Keep model
