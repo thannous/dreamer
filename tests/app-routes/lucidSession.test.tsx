@@ -219,7 +219,7 @@ jest.mock('@/context/LucidTrainerContext', () => {
   };
 });
 
-const sessionModule = require('@/app/lucid/session/[program]/[session]');
+const sessionModule = require('@/routes/lucid/lucid/session/[program]/[session]');
 const LucidSessionScreen = sessionModule.default as React.ComponentType;
 const getLucidGuidedPhaseMotion = sessionModule.getLucidGuidedPhaseMotion as (reduced: boolean) => {
   animationName: { from: { transform?: unknown }; to: { transform?: unknown } };

@@ -32,7 +32,7 @@ import {
   saveLastSeenReleaseNotesVersion,
 } from '@/services/storageService';
 
-export const RELEASE_NOTES_VERSION = '3.3.0';
+export const RELEASE_NOTES_VERSION = '3.5.0';
 
 const webTitleFocusResetStyle: TextStyle | null = process.env.EXPO_OS === 'web'
   ? ({
@@ -69,24 +69,19 @@ export function WhatsNewModal({ visible, onClose, onPrimary }: WhatsNewModalProp
   const features = useMemo<Feature[]>(
     () => [
       {
-        icon: 'photo',
-        title: t('release_notes.design.title'),
-        body: t('release_notes.design.body'),
-      },
-      {
-        icon: 'mic',
-        title: t('release_notes.capture.title'),
-        body: t('release_notes.capture.body'),
-      },
-      {
         icon: 'book.fill',
-        title: t('release_notes.reading.title'),
-        body: t('release_notes.reading.body'),
+        title: t('release_notes.symbols.title'),
+        body: t('release_notes.symbols.body'),
+      },
+      {
+        icon: 'list.bullet.rectangle.fill',
+        title: t('release_notes.symbol_pages.title'),
+        body: t('release_notes.symbol_pages.body'),
       },
       {
         icon: 'checkmark.circle.fill',
-        title: t('release_notes.reliability.title'),
-        body: t('release_notes.reliability.body'),
+        title: t('release_notes.readability.title'),
+        body: t('release_notes.readability.body'),
       },
     ],
     [t]
@@ -336,7 +331,7 @@ export function WhatsNewModalHost({ ready }: { ready: boolean }) {
 
   const handlePrimary = useCallback(() => {
     persistDismissal();
-    router.push('/journal');
+    router.push('/symbol-dictionary');
   }, [persistDismissal]);
 
   return (

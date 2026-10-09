@@ -3,7 +3,7 @@ import React from 'react';
 import { render, screen, cleanup, fireEvent } from '@testing-library/react';
 import type { LucidExperiment } from '@/lib/lucid/model';
 import { projectLucidObservations, lucidObservationSourceId } from '@/lib/lucid/observations';
-import LucidObservationScreen from '@/app/lucid/observation';
+import LucidObservationScreen from '@/routes/lucid/lucid/observation';
 
 const mockPush = jest.fn();
 const mockText = 'A long remembered scene. '.repeat(100);

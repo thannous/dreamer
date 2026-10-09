@@ -2,7 +2,7 @@ import React from 'react';
 import { Alert, FlatList } from 'react-native';
 import { act, fireEvent, render } from '@testing-library/react-native';
 import { LucidScreen } from '@/components/lucid/LucidUI';
-import LucidJournalImportScreen from '@/app/lucid/journal-import';
+import LucidJournalImportScreen from '@/routes/lucid/lucid/journal-import';
 import type { LucidJournalImportRuntimeState } from '@/services/lucidJournalImportRuntime';
 // Keep the real VirtualizedList; only replace its native scroll host in Jest.
 jest.mock('react-native/Libraries/Components/ScrollView/ScrollView', () => {

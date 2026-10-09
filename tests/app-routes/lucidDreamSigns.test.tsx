@@ -78,7 +78,7 @@ jest.mock('@/components/lucid/LucidUI', () => ({
   LucidSectionHeader: ({ action, title }: any) => <div><h2>{title}</h2>{action}</div>,
 }));
 
-const { default: LucidDreamSignsScreen } = require('@/app/lucid/dream-signs');
+const { default: LucidDreamSignsScreen } = require('@/routes/lucid/lucid/dream-signs');
 
 describe('Lucid dream signs', () => {
   beforeEach(() => {

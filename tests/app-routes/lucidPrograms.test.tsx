@@ -79,7 +79,7 @@ jest.mock('@/components/lucid/LucidUI', () => ({
   ),
 }));
 
-const { default: LucidProgramsScreen } = require('@/app/lucid/(tabs)/programs');
+const { default: LucidProgramsScreen } = require('@/routes/lucid/lucid/(tabs)/programs');
 
 function remembered() {
   return [

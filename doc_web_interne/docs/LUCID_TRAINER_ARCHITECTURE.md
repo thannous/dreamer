@@ -18,7 +18,7 @@ Noctalia remains the journal and interpretation product. Lucid Trainer stores on
 
 The first release candidate is implemented as an isolated product domain inside the existing Expo application:
 
-- `app/lucid/`: product routes and its navigation shell.
+- `routes/lucid/lucid/`: product routes and its navigation shell, under Lucid's own Expo Router root. Dreamer's `app/` does not include them (2026-10-09).
 - `components/lucid/`: native responsive UI.
 - `context/LucidTrainerContext.tsx`: hydrated local state and commands.
 - `lib/lucid/`: typed model, embedded content, progression, coaching, analytics policy, deep links, and cue planning.
@@ -29,7 +29,7 @@ This keeps the feature testable with Noctalia's established providers while avoi
 ### Runtime map
 
 ```text
-app/lucid/**
+routes/lucid/lucid/**
   -> LucidTrainerContext
        -> services/lucidTrainerStorage      local authoritative snapshot
        -> services/lucidTrainerSync         optional queued Supabase sync
@@ -38,18 +38,18 @@ app/lucid/**
   -> lib/lucid/{progress,reminders,audio}   deterministic domain rules
 
 app/ritual/[id].tsx (Noctalia lucid ritual)
-  -> /lucid                                 explicit navigation only
+  -> https://lucid.noctalia.app/lucid       opens the Lucid app (app link) or Lucid web
 
 Lucid morning handoff (explicit consent)
   -> noctalia://recording?...               installed-app path
   -> https://dream.noctalia.app/?...        public Noctalia-home fallback
 ```
 
-The Noctalia ritual bridge does not copy the journal, create an experiment, or transfer dream text. It only navigates to Trainer. The reverse handoff is separately consented and carries a bounded categorical payload: technique, outcome, lucidity band, and recall band.
+The Noctalia ritual bridge does not copy the journal, create an experiment, or transfer dream text. It only opens the Lucid app. The reverse handoff is separately consented and carries a bounded categorical payload: technique, outcome, lucidity band, and recall band.
 
 ### Navigation and UI
 
-`app/lucid/_layout.tsx` owns onboarding gating and the stack. `app/lucid/(tabs)/_layout.tsx` owns Today, Programs, Night, Progress, and Settings. Secondary screens are stack routes, while reality check and morning review are modal routes.
+`routes/lucid/lucid/_layout.tsx` owns onboarding gating and the stack. `routes/lucid/lucid/(tabs)/_layout.tsx` owns Today, Programs, Night, Progress, and Settings. Secondary screens are stack routes, while reality check and morning review are modal routes.
 
 The Lucid UI reuses the application `ThemeProvider`, but keeps product tokens in `constants/lucidTheme.ts`. The Lucid preference stores `system | light | dark`; Settings writes it both to the Trainer snapshot and the shared theme preference (`system` maps to Noctalia's `auto`) so the selection has an immediate visible effect. System text scaling and screen-reader semantics remain native. The Trainer-specific reduce-motion choice is persisted in onboarding state and must be respected by every future decorative animation.
 

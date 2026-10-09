@@ -8,6 +8,7 @@ import { Fonts } from '@/constants/theme';
 import { ScrollPerfProvider } from '@/context/ScrollPerfContext';
 import { useOnboarding } from '@/context/OnboardingContext';
 import { useTheme } from '@/context/ThemeContext';
+import { useExtendedSymbolContent } from '@/hooks/useExtendedSymbolContent';
 import { useScrollIdle } from '@/hooks/useScrollIdle';
 import { useTranslation } from '@/hooks/useTranslation';
 import { buildFirstValueProperties } from '@/lib/activationAnalytics';
@@ -16,7 +17,6 @@ import { TID } from '@/lib/testIDs';
 import type { DreamSymbol, SymbolLanguage, SymbolVariation } from '@/lib/symbolTypes';
 import {
   getCategoryName,
-  getExtendedContent,
   getRelatedSymbols,
   getSymbolById,
   parseHtmlParagraphs,
@@ -65,7 +65,7 @@ export default function SymbolDetailScreen() {
   const scrollY = useSharedValue(0);
 
   const symbol = useMemo(() => getSymbolById(id!), [id]);
-  const extended = useMemo(() => (id ? getExtendedContent(id, lang) : undefined), [id, lang]);
+  const { content: extended, status: extendedStatus } = useExtendedSymbolContent(id, lang);
   const relatedSymbols = useMemo(() => (symbol ? getRelatedSymbols(symbol) : []), [symbol]);
 
   useEffect(() => {
@@ -228,6 +228,12 @@ export default function SymbolDetailScreen() {
                     {paragraphs.slice(1).join('\n\n')}
                   </MarkdownText>
                 ) : null}
+              </Section>
+            ) : extendedStatus === 'unavailable' ? (
+              <Section label={t('symbols.interpretation')} noctalia={noctalia}>
+                <Text style={[styles.prose, { color: noctalia.text.secondary }]}>
+                  {t('symbols.interpretation_offline')}
+                </Text>
               </Section>
             ) : null}
 

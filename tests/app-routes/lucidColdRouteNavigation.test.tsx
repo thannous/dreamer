@@ -226,13 +226,13 @@ jest.mock('@/components/lucid/LucidUI', () => ({
   LucidSectionHeader: ({ title }: { title: string }) => <h2>{title}</h2>,
 }));
 
-const { default: LucidMorningScreen } = require('@/app/lucid/morning');
-const { default: LucidRealityCheckScreen } = require('@/app/lucid/reality-check');
-const { default: LucidWeeklyScreen } = require('@/app/lucid/weekly');
-const { default: LucidProgramDetailScreen } = require('@/app/lucid/program/[id]');
-const { default: LucidDataScreen } = require('@/app/lucid/data');
-const { default: LucidPermissionsScreen } = require('@/app/lucid/permissions');
-const { default: LucidSessionScreen } = require('@/app/lucid/session/[program]/[session]');
+const { default: LucidMorningScreen } = require('@/routes/lucid/lucid/morning');
+const { default: LucidRealityCheckScreen } = require('@/routes/lucid/lucid/reality-check');
+const { default: LucidWeeklyScreen } = require('@/routes/lucid/lucid/weekly');
+const { default: LucidProgramDetailScreen } = require('@/routes/lucid/lucid/program/[id]');
+const { default: LucidDataScreen } = require('@/routes/lucid/lucid/data');
+const { default: LucidPermissionsScreen } = require('@/routes/lucid/lucid/permissions');
+const { default: LucidSessionScreen } = require('@/routes/lucid/lucid/session/[program]/[session]');
 
 const coldRoutes = [
   {

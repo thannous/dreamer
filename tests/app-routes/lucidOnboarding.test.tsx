@@ -181,7 +181,7 @@ jest.mock('@/context/LucidTrainerContext', () => {
   };
 });
 
-const { default: LucidOnboardingScreen } = require('@/app/lucid/onboarding');
+const { default: LucidOnboardingScreen } = require('@/routes/lucid/lucid/onboarding');
 
 function continueOnboarding() {
   fireEvent.click(screen.getByTestId('lucid-onboarding-continue'));

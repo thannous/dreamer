@@ -193,7 +193,7 @@ jest.mock('@/components/lucid/LucidUI', () => ({
   ),
 }));
 
-const { default: LucidNightScreen } = require('@/app/lucid/(tabs)/night');
+const { default: LucidNightScreen } = require('@/routes/lucid/lucid/(tabs)/night');
 
 describe('Lucid Trainer night audio safety', () => {
   beforeEach(() => {

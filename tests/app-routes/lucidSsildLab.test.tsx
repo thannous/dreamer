@@ -225,7 +225,7 @@ jest.mock('@/components/lucid/LucidUI', () => ({
   LucidProgressBar: ({ accessibilityLabel }: any) => <div role="progressbar" aria-label={accessibilityLabel} />,
 }));
 
-const { default: LucidSsildSensoryLabScreen } = require('@/app/lucid/ssild-lab');
+const { default: LucidSsildSensoryLabScreen } = require('@/routes/lucid/lucid/ssild-lab');
 
 describe('Lucid SSILD sensory lab screen', () => {
   beforeEach(() => {

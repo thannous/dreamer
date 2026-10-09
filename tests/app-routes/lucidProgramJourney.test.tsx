@@ -219,7 +219,7 @@ jest.mock('@/components/lucid/LucidUI', () => ({
   LucidSectionHeader: ({ title }: { title: string }) => <h2>{title}</h2>,
 }));
 
-const { default: LucidProgramDetailScreen } = require('@/app/lucid/program/[id]');
+const { default: LucidProgramDetailScreen } = require('@/routes/lucid/lucid/program/[id]');
 const mildSessions = require('@/lib/lucid/content').getLucidContent('en').programs.mild.sessions;
 
 function expectBefore(left: HTMLElement, right: HTMLElement) {

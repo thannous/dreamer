@@ -197,7 +197,7 @@ jest.mock('@/components/lucid/LucidUI', () => ({
   ),
 }));
 
-const { default: LucidMorningVoiceScreen } = require('@/app/lucid/morning-voice');
+const { default: LucidMorningVoiceScreen } = require('@/routes/lucid/lucid/morning-voice');
 
 describe('Lucid morning voice notes screen', () => {
   beforeEach(() => {
