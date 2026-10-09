@@ -6,7 +6,7 @@
 
 Remote CI does not run on push or PR. State what you ran locally on the PR head.
 
-- Command(s): `npm run verify:fast` (run by the pre-push hook) <!-- plus any surface check: docs:build/docs:check, Meditation, Edge, E2E -->
+- Command(s): `npm run verify:fast` (run by the pre-push hook; includes `docs:build` and `docs:check` when the classifier selects the site) <!-- plus any surface check the hook does not cover: Meditation, Edge, E2E -->
 - Commit SHA: <!-- full SHA the commands ran on -->
 - Result: <!-- passed / failed, duration, notable output or report path -->
 - Not checked: <!-- native, device or other evidence still missing, or "nothing" -->

@@ -109,6 +109,8 @@ console.log('Continuation mapping, full-Jest guards and site coverage routing pa
 NODE
 
 # Remote CI is manual-only: a webhook pipeline must run no workflow (no credits).
+# The gate is an OR of GitHub App event.name, legacy trigger_source, current
+# trigger.type, and force_full_validation. Every combination below is evaluated.
 SETUP_CONFIG="$repository_root/.circleci/config.yml" node - <<'NODE'
 const fs = require('fs');
 const YAML = require('yaml');
@@ -118,22 +120,82 @@ const workflows = Object.keys(setup.workflows ?? {});
 if (workflows.length !== 1 || workflows[0] !== 'setup') {
   throw new Error(`The setup config must hold only the gated setup workflow: ${workflows}`);
 }
-const gate = setup.workflows.setup.when?.equal;
-if (!Array.isArray(gate) || gate.length !== 2 || !gate.includes('<< pipeline.event.name >>')) {
-  throw new Error('The setup workflow must be gated on pipeline.event.name');
+const gate = setup.workflows.setup.when;
+const EVENT = '<< pipeline.event.name >>';
+const TRIGGER_SOURCE = '<< pipeline.trigger_source >>';
+const TRIGGER_TYPE = '<< pipeline.trigger.type >>';
+const FORCE = '<< pipeline.parameters.force_full_validation >>';
+function resolve(value, ctx) {
+  if (value === EVENT) return ctx.eventName;
+  if (value === TRIGGER_SOURCE) return ctx.triggerSource;
+  if (value === TRIGGER_TYPE) return ctx.triggerType;
+  if (value === FORCE) return ctx.force;
+  return value;
 }
-const runsFor = eventName => {
-  const [left, right] = gate.map(value => (value === '<< pipeline.event.name >>' ? eventName : value));
-  return left === right;
-};
-for (const eventName of ['push', 'pull_request', 'schedule', 'custom_webhook']) {
-  if (runsFor(eventName)) throw new Error(`A ${eventName} pipeline would run CI`);
+function evaluate(condition, ctx) {
+  if (typeof condition === 'boolean') return condition;
+  if (condition === FORCE) return ctx.force;
+  if (typeof condition === 'string') throw new Error(`Unexpected string condition: ${condition}`);
+  if (condition.or) return condition.or.some(child => evaluate(child, ctx));
+  if (condition.and) return condition.and.every(child => evaluate(child, ctx));
+  if (condition.not !== undefined) return !evaluate(condition.not, ctx);
+  if (Array.isArray(condition.equal) && condition.equal.length === 2) {
+    return resolve(condition.equal[0], ctx) === resolve(condition.equal[1], ctx);
+  }
+  throw new Error(`Unknown condition: ${JSON.stringify(condition)}`);
 }
-if (!runsFor('api')) throw new Error('A manual web-app or API trigger would not run CI');
+const serialized = JSON.stringify(gate);
+for (const field of [EVENT, TRIGGER_SOURCE, TRIGGER_TYPE, FORCE]) {
+  if (!serialized.includes(field)) throw new Error(`Setup gate is missing ${field}`);
+}
+function expectRun(label, ctx, shouldRun) {
+  const actual = evaluate(gate, ctx);
+  if (actual !== shouldRun) {
+    throw new Error(`${label} ${shouldRun ? 'must run' : 'must stay off'}: ${JSON.stringify(ctx)} -> ${actual}`);
+  }
+}
+expectRun('GitHub App api event', {
+  eventName: 'api', triggerSource: 'webhook', triggerType: 'github_app', force: false,
+}, true);
+expectRun('legacy OAuth api via trigger_source', {
+  eventName: '', triggerSource: 'api', triggerType: 'github_oauth', force: false,
+}, true);
+expectRun('legacy OAuth api via trigger.type', {
+  eventName: '', triggerSource: '', triggerType: 'api', force: false,
+}, true);
+expectRun('legacy OAuth webhook', {
+  eventName: '', triggerSource: 'webhook', triggerType: 'github_oauth', force: false,
+}, false);
+expectRun('legacy OAuth push event name with webhook source', {
+  eventName: 'push', triggerSource: 'webhook', triggerType: 'github_oauth', force: false,
+}, false);
+expectRun('scheduled pipeline', {
+  eventName: 'schedule', triggerSource: 'scheduled_pipeline', triggerType: 'schedule', force: false,
+}, false);
+expectRun('force_full_validation on an OAuth webhook', {
+  eventName: '', triggerSource: 'webhook', triggerType: 'github_oauth', force: true,
+}, true);
+
+const eventNames = ['api', 'push', 'pull_request', 'schedule', 'custom_webhook', ''];
+const triggerSources = ['api', 'webhook', 'scheduled_pipeline', 'explicit', ''];
+const triggerTypes = ['api', 'github_oauth', 'github_app', 'schedule', 'webhook', ''];
+let cases = 0;
+for (const eventName of eventNames) {
+  for (const triggerSource of triggerSources) {
+    for (const triggerType of triggerTypes) {
+      for (const force of [false, true]) {
+        const ctx = { eventName, triggerSource, triggerType, force };
+        const shouldRun = eventName === 'api' || triggerSource === 'api' || triggerType === 'api' || force === true;
+        expectRun('combination', ctx, shouldRun);
+        cases += 1;
+      }
+    }
+  }
+}
 if (setup.parameters?.force_full_validation?.default !== false) {
   throw new Error('force_full_validation must stay available for manual full runs');
 }
-console.log('Setup workflow runs only for manual web-app and API triggers.');
+console.log(`Setup workflow gate passed ${cases} trigger combinations. Webhook pushes stay off. Legacy OAuth api runs.`);
 NODE
 
 fixture_results="$test_root/jest-test-results"

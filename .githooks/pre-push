@@ -4,6 +4,10 @@
 # core.hooksPath at .githooks (scripts/install-git-hooks.js).
 # Agents must never bypass it with `git push --no-verify`.
 #
+# verify:fast always binds this checkout's SHA. When the CI classifier
+# selects no product surface (documentation outside site content), it skips
+# lint and lint:scripts. Site inputs still run docs:build and docs:check.
+#
 # Git passes one "<local ref> <local sha> <remote ref> <remote sha>" line per
 # pushed ref on stdin.
 

@@ -74,7 +74,7 @@ function prepushFixture(parameters = {}) {
   return {
     env: { JEST_CHANGED_SINCE: 'HEAD' }, gitImpl,
     classifyImpl: jest.fn(() => ({ run_noctalia: true, run_changed_tests: true, run_full_tests: false, run_site: false, ...parameters })),
-    runTypesImpl: jest.fn(() => 0), runJestImpl: jest.fn(() => 0), log: jest.fn(),
+    runTypesImpl: jest.fn(() => 0), runJestImpl: jest.fn(() => 0), runNpmImpl: jest.fn(() => 0), log: jest.fn(),
   };
 }
 
@@ -116,19 +116,39 @@ describe('pre-push guard', () => {
     expect(options.gitImpl).not.toHaveBeenCalled();
   });
 
-  it('does not run application checks for internal documentation classified as a no-op', () => {
+  it('does not run application or site checks for internal documentation classified as a no-op', () => {
     const options = prepushFixture({ run_noctalia: false, run_changed_tests: false });
-    expect(runPrePush(options)).toBe(0);
+    const observed = [];
+    expect(runPrePush({ ...options, observeImpl: (parameters) => observed.push(parameters) })).toBe(0);
     expect(options.runJestImpl).not.toHaveBeenCalled();
     expect(options.runTypesImpl).not.toHaveBeenCalled();
+    expect(options.runNpmImpl).not.toHaveBeenCalled();
+    expect(observed).toEqual([options.classifyImpl.mock.results[0].value]);
     expect(options.log).toHaveBeenLastCalledWith(expect.stringContaining('Jest not applicable'));
   });
 
-  it('keeps affected tooling tests for a site-only change without app typechecks', () => {
+  it('keeps affected tooling tests and builds the site for a site-only change without app typechecks', () => {
     const options = prepushFixture({ run_noctalia: false, run_changed_tests: false, run_site: true });
     expect(runPrePush(options)).toBe(0);
     expect(options.runJestImpl).toHaveBeenCalledTimes(1);
     expect(options.runTypesImpl).not.toHaveBeenCalled();
+    expect(options.runNpmImpl.mock.calls).toEqual([['docs:build'], ['docs:check']]);
+  });
+
+  it('does not build the site after a failing test', () => {
+    const options = prepushFixture({ run_site: true });
+    options.runJestImpl.mockReturnValue(1);
+    expect(runPrePush(options)).toBe(1);
+    expect(options.runNpmImpl).not.toHaveBeenCalled();
+  });
+
+  it('stops when the site check fails and does not report success', () => {
+    const options = prepushFixture({ run_noctalia: false, run_changed_tests: false, run_site: true });
+    options.runNpmImpl.mockImplementation((command) => (command === 'docs:check' ? 3 : 0));
+    expect(runPrePush(options)).toBe(3);
+    expect(options.runNpmImpl.mock.calls).toEqual([['docs:build'], ['docs:check']]);
+    expect(options.log).not.toHaveBeenCalledWith(expect.stringContaining('tests passed'));
+    expect(options.log).not.toHaveBeenCalledWith(expect.stringContaining('Jest not applicable'));
   });
 
   it('stops on a type error before running Jest', () => {

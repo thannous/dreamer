@@ -69,16 +69,31 @@ jobs:
           parameters: /tmp/circleci-parameters.json
 
 workflows:
-  # Remote CI runs only on a manual trigger: the web app's "Trigger Pipeline"
-  # button or the API, optionally with force_full_validation: true. Push, PR and
-  # tag webhooks still create a pipeline, but it runs no workflow and spends no
-  # credits; the git pre-push hook (`npm run verify:fast`) is the routine gate.
-  # pipeline.event.name is `api` for manual web-app and API triggers, see
-  # https://circleci.com/docs/guides/orchestrate/github-trigger-event-options/
-  # (pipeline.trigger_source is deprecated).
+  # Remote CI runs when any of these is true. Automatic webhook pushes stay off
+  # and spend no credits. The git pre-push hook (`npm run verify:fast`) is the
+  # routine gate.
+  # - pipeline.event.name is `api` (GitHub App manual web-app or API trigger):
+  #   https://circleci.com/docs/guides/orchestrate/github-trigger-event-options/
+  #   The orchestration cookbook says this value is GitHub App only:
+  #   https://circleci.com/docs/guides/orchestrate/orchestration-cookbook/
+  # - pipeline.trigger.type is `api` (current field for legacy GitHub OAuth,
+  #   slug gh/thannous/dreamer). `github_oauth` is an automatic OAuth webhook
+  #   and does not match. Reference:
+  #   https://circleci.com/docs/reference/variables/
+  # - pipeline.trigger_source is `api` (older spelling: `api`, `webhook`,
+  #   `scheduled_pipeline`). The same reference marks it deprecated as of
+  #   2026-08-01 and says to use pipeline.trigger.type. `webhook` and
+  #   `scheduled_pipeline` do not open the gate. The schedule guide still
+  #   shows the old value:
+  #   https://circleci.com/docs/guides/orchestrate/schedule-triggers-with-multiple-workflows/
+  # - force_full_validation is true.
   setup:
     when:
-      equal: [api, << pipeline.event.name >>]
+      or:
+        - equal: [api, << pipeline.event.name >>]
+        - equal: [api, << pipeline.trigger_source >>]
+        - equal: [api, << pipeline.trigger.type >>]
+        - equal: [true, << pipeline.parameters.force_full_validation >>]
     jobs:
       - classify-and-continue:
           filters:

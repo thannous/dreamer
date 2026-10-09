@@ -76,18 +76,24 @@ Chaque push lance automatiquement le hook `.githooks/pre-push`, installé par
 npm run verify:fast
 ```
 
-soit `npm run test:prepush`, puis `npm run lint` et `npm run lint:scripts`.
-`test:prepush` actualise `origin/master`, calcule le même merge-base que
-CircleCI (y compris pour une PR empilée), réutilise le classificateur existant,
-puis lance les types application/tests lorsque Noctalia est concernée et la
-sélection Jest impactée. Les filtres manuels sont refusés. Une erreur de fetch,
-un arbre non committé ou une modification de HEAD/base/arbre pendant le contrôle
-invalide le résultat. Le SHA et la base contrôlés sont affichés. Pousser depuis
-un arbre propre et committé de la branche poussée ; le hook refuse un push de
-nouveaux commits d'une autre branche. Une suppression de branche ou un push
-sans nouveau commit ne lance rien. Sans dépendances installées, le hook
-s'arrête et indique la commande d'installation. Les agents n'utilisent jamais
-`git push --no-verify`.
+soit `npm run test:prepush`, puis `npm run lint` et `npm run lint:scripts`,
+avec deux écarts issus du même classificateur. Quand `run_site` est vrai
+(`docs-src/`, générateurs, données symbole ou guide déjà routées vers le
+site), `test:prepush` lance aussi `docs:build` et `docs:check` avant le
+contrôle final d'arbre propre. Quand aucune surface produit n'est
+sélectionnée (documentation hors contenu du site), lint est sauté. Dans les
+deux cas le hook affiche le SHA du commit extrait. `test:prepush` actualise
+`origin/master`, calcule le même merge-base que CircleCI (y compris pour une
+PR empilée), réutilise le classificateur existant, puis lance les types
+application/tests lorsque Noctalia est concernée et la sélection Jest
+impactée. Les filtres manuels sont refusés. Une erreur de fetch, un arbre
+non committé ou une modification de HEAD/base/arbre pendant le contrôle
+invalide le résultat. Le SHA et la base contrôlés sont affichés. Pousser
+depuis un arbre propre et committé de la branche poussée ; le hook refuse un
+push de nouveaux commits d'une autre branche. Une suppression de branche ou
+un push sans nouveau commit ne lance rien. Sans dépendances installées, le
+hook s'arrête et indique la commande d'installation. Les agents n'utilisent
+jamais `git push --no-verify`.
 
 Cette commande qualifie les pushes ordinaires de branche, pas une publication
 par tag. Les branches `release` et `release/*` sont refusées : elles exigent la
@@ -99,12 +105,13 @@ Ce contrôle remplace une sélection finale manuelle incomplète ; ne pas lui
 ajouter systématiquement `test:file`, `test:related` et la suite entière.
 Pendant le développement, les vérifications du tableau restent proportionnées ;
 le hook s'applique ensuite à chaque push, même documentaire (le classificateur
-n'y sélectionne alors aucun test applicatif). Un module partagé de traductions
+n'y sélectionne alors aucun test applicatif, et lint est sauté). Un module partagé de traductions
 peut sélectionner beaucoup de tests, car ses consommateurs sont réellement
 nombreux.
 
-Les contrôles du site généré, Meditation, Edge et appareils restent ceux
-demandés par les surfaces modifiées ; le hook ne les remplace pas. En présence
+`docs:build` et `docs:check` font partie du hook quand le classificateur
+sélectionne le site. Meditation, Edge et appareils restent ceux demandés par
+les surfaces modifiées ; le hook ne les remplace pas. En présence
 de travail sans rapport, utiliser un worktree isolé (avec ses propres
 dépendances installées), sans supprimer ni embarquer ce travail pour rendre
 l'arbre propre.
