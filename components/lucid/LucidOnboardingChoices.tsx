@@ -1,4 +1,3 @@
-import Feather from '@expo/vector-icons/Feather';
 import Ionicons from '@expo/vector-icons/Ionicons';
 import { Image } from 'expo-image';
 import React, { useEffect, type ComponentProps } from 'react';
@@ -39,7 +38,7 @@ import {
 import { useTheme } from '@/context/ThemeContext';
 import type { LucidExperienceLevel, LucidGoal } from '@/lib/lucid/model';
 
-type GoalIconName = ComponentProps<typeof Feather>['name'];
+type GoalIconName = ComponentProps<typeof Ionicons>['name'];
 type MomentKind = 'day' | 'night' | 'wake';
 
 type Choice<Id extends string> = {
@@ -49,10 +48,10 @@ type Choice<Id extends string> = {
 };
 
 const GOAL_ICONS: Record<LucidGoal, GoalIconName> = {
-  first_lucid_dream: 'eye',
-  improve_recall: 'book-open',
-  more_frequent_lucidity: 'repeat',
-  stabilize_lucidity: 'shield',
+  first_lucid_dream: 'eye-outline',
+  improve_recall: 'book-outline',
+  more_frequent_lucidity: 'repeat-outline',
+  stabilize_lucidity: 'shield-outline',
 };
 
 const GOAL_ANCHORS: Record<LucidGoal, ViewStyle> = {
@@ -127,7 +126,7 @@ export function LucidMomentPath() {
         >
           {kind === 'night' ? (
             <View style={styles.momentMoon}>
-              <Feather color={palette.accentStrong} name="moon" size={30} />
+              <Ionicons color={palette.accentStrong} name="moon-outline" size={30} />
               <Ionicons
                 color={palette.accentStrong}
                 name="sparkles-outline"
@@ -143,9 +142,9 @@ export function LucidMomentPath() {
               tintColor={palette.accentStrong}
             />
           ) : (
-            <Feather
+            <Ionicons
               color={palette.accentStrong}
-              name="sun"
+              name="sunny-outline"
               size={30}
             />
           )}
@@ -485,7 +484,7 @@ function SelectionOrb({
           },
         ]}
       >
-        <Feather
+        <Ionicons
           color={reflow
             ? selected
               ? palette.accentStrong

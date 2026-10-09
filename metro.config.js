@@ -27,6 +27,18 @@ config.resolver.blockList = [
   /apps[\\/]meditation[\\/].*/,
 ];
 
+// react-native-purchases(-ui) statically import RevenueCat's web SDK (~840 KB
+// minified) for Browser/Preview API mode, which they only enter on web, in
+// Expo Go or in the Rork sandbox. Native builds always ship the native
+// modules, so resolve the web SDK to an empty module everywhere but web.
+const upstreamResolveRequest = config.resolver.resolveRequest;
+config.resolver.resolveRequest = (context, moduleName, platform) => {
+  if (platform !== 'web' && moduleName === '@revenuecat/purchases-js-hybrid-mappings') {
+    return { type: 'empty' };
+  }
+  return (upstreamResolveRequest ?? context.resolveRequest)(context, moduleName, platform);
+};
+
 // `withUniwindConfig` must stay the outermost wrapper.
 module.exports = withUniwindConfig(config, {
   cssEntryFile: './global.css',
