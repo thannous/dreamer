@@ -129,7 +129,7 @@ export default function SymbolDetailScreen() {
 
   const content = symbol[lang] ?? symbol.en;
   const categoryName = getCategoryName(symbol.category, lang);
-  const illustration = getSymbolIllustration(symbol.id);
+  const illustration = getSymbolIllustration(symbol.id, 'hero');
   const paragraphs = extended?.fullInterpretation
     ? parseHtmlParagraphs(extended.fullInterpretation)
     : [];
@@ -175,6 +175,9 @@ export default function SymbolDetailScreen() {
             >
               <Image
                 source={illustration ?? SKY_FALLBACK}
+                // Offline before the first visit, the sheet keeps its night sky.
+                placeholder={illustration ? SKY_FALLBACK : undefined}
+                placeholderContentFit="cover"
                 contentFit="cover"
                 contentPosition={illustration ? 'center' : 'top'}
                 transition={illustration ? 200 : 0}
@@ -353,7 +356,7 @@ function VariationRow({ variation, index, noctalia }: {
 
 function RelatedPoster({ symbol, lang, noctalia }: { symbol: DreamSymbol; lang: SymbolLanguage; noctalia: Tokens }) {
   const content = symbol[lang] ?? symbol.en;
-  const illustration = getSymbolIllustration(symbol.id);
+  const illustration = getSymbolIllustration(symbol.id, 'poster');
   // Large text widens the poster so a long single word never breaks mid-word.
   const { fontScale } = useWindowDimensions();
   const posterWidth = Math.round(140 * Math.min(Math.max(fontScale, 1), 1.5));

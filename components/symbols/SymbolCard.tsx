@@ -25,7 +25,7 @@ export const SymbolCard = memo(function SymbolCard({ symbol, language, onPress, 
   const isRow = variant === 'row';
   const noctalia = getNoctaliaDesignTokens(colors, mode);
   const content = symbol[language] ?? symbol.en;
-  const illustration = isRow ? getSymbolIllustration(symbol.id) : undefined;
+  const illustration = isRow ? getSymbolIllustration(symbol.id, 'thumb') : undefined;
   const handlePress = useCallback(() => {
     onPress(symbol.id);
   }, [onPress, symbol.id]);
