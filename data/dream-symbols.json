@@ -19243,58 +19243,152 @@
       "en": {
         "slug": "hotel",
         "name": "Hotel",
-        "shortDescription": "A hotel is a temporary place shared with unfamiliar guests and structured by set routines. The room, luggage, access and reason for staying show whether the stop felt restful or disorienting.",
-        "modifiedAt": "2026-07-24",
+        "shortDescription": "Dreaming of a hotel often puts you in a place of passage: an endless corridor, a room you cannot find, a key card that will not work. Hotels are associated with transitions. What you were doing there, and how you felt, matter more than a fixed meaning.",
+        "modifiedAt": "2026-10-08",
         "askYourself": [
-          "What did hotel change in the scene?",
-          "Which feeling stayed with me after waking?"
+          "Was I there on holiday, for work, or without knowing why?",
+          "Did I find my room, or did I keep wandering the corridors?",
+          "Which part of my life feels like a temporary stop right now?"
         ],
-        "faq": []
+        "faq": [
+          {
+            "question": "What does it mean to dream about a hotel?",
+            "answer": "A hotel is often associated with places of passage: a change in progress, an in-between period, a place that is not yet yours. Whether you felt comfortable or ill at ease there guides the reading."
+          },
+          {
+            "question": "What does it mean to dream you can't find your hotel room?",
+            "answer": "Searching for your room in corridors that all look the same can match a feeling of not yet finding your place in a new situation. Note what held you up: a forgotten number, a missing floor, a key card that would not work."
+          },
+          {
+            "question": "What does a luxury hotel mean in a dream?",
+            "answer": "A luxury hotel can go with a wish for rest, recognition or a change of scene, or, on the contrary, with the discomfort of feeling out of place. How at ease you felt in the setting is the main clue."
+          },
+          {
+            "question": "Why dream of an empty or creepy hotel?",
+            "answer": "A deserted, run-down or threatening hotel plays on the unease of a place where you depend on others. The scene predicts nothing: it can echo an unsettled period. What felt temporary or unsafe to you?"
+          }
+        ],
+        "documentMetaDescription": "Dreaming of a hotel, a room you can't find or a luxury hotel: what this place of passage may say about transitions, with questions and a journal example."
       },
       "fr": {
         "slug": "hotel",
         "name": "Hôtel",
-        "shortDescription": "Un hôtel est un lieu provisoire, partagé avec des inconnus et régi par ses propres horaires. La chambre, les bagages, les accès et le motif du séjour indiquent si l’étape semblait reposante ou désorientante.",
-        "modifiedAt": "2026-07-24",
+        "shortDescription": "Rêver d'un hôtel, c'est souvent errer dans un lieu de passage : couloir sans fin, chambre introuvable, carte qui n'ouvre pas. L'hôtel est associé aux transitions. Ce que vous y faisiez et ce que vous ressentiez comptent plus qu'un sens fixe.",
+        "modifiedAt": "2026-10-08",
         "askYourself": [
-          "Qu’est-ce que hôtel a changé dans la scène ?",
-          "Quelle émotion est restée après le réveil ?"
+          "Étais-je là en vacances, pour le travail, ou sans savoir pourquoi ?",
+          "Ai-je trouvé ma chambre, ou est-ce que je tournais dans les couloirs ?",
+          "Quelle situation de ma vie ressemble en ce moment à une étape provisoire ?"
         ],
-        "faq": []
+        "faq": [
+          {
+            "question": "Que signifie rêver d'un hôtel ?",
+            "answer": "L'hôtel est souvent associé aux lieux de passage : un changement en cours, une période entre deux, une place qui n'est pas encore la vôtre. Le confort ou le malaise ressenti sur place oriente la lecture."
+          },
+          {
+            "question": "Que signifie rêver de ne pas trouver sa chambre d'hôtel ?",
+            "answer": "Chercher sa chambre dans des couloirs qui se ressemblent peut rejoindre le sentiment de ne pas encore trouver sa place dans une situation nouvelle. Notez ce qui vous retardait : numéro oublié, étage introuvable, carte refusée."
+          },
+          {
+            "question": "Que signifie rêver d'un hôtel de luxe ?",
+            "answer": "Un hôtel luxueux peut accompagner une envie de repos, de reconnaissance ou de changer de cadre, ou au contraire la gêne de ne pas se sentir à sa place. Votre aisance dans le décor est l'indice principal."
+          },
+          {
+            "question": "Pourquoi rêver d'un hôtel vide ou inquiétant ?",
+            "answer": "Un hôtel désert, délabré ou menaçant joue sur l'inquiétude d'un lieu où l'on dépend des autres. La scène n'annonce rien : elle peut faire écho à une période instable. Qu'est-ce qui vous semblait provisoire ou peu sûr ?"
+          }
+        ],
+        "documentMetaDescription": "Rêver d'un hôtel, d'une chambre introuvable ou d'un hôtel de luxe : ce que ce lieu de passage peut dire des transitions, avec questions et exemple de journal."
       },
       "es": {
         "slug": "hotel",
         "name": "Hotel",
-        "shortDescription": "Un hotel es un lugar temporal compartido con huéspedes desconocidos y rutinas establecidas. La habitación, el equipaje, el acceso y el motivo de la estancia indican si vivías la pausa con comodidad o desorientación.",
-        "modifiedAt": "2026-07-24",
+        "shortDescription": "Soñar con un hotel suele situarte en un lugar de paso: un pasillo sin fin, una habitación que no aparece, una tarjeta que no abre. El hotel se asocia con las transiciones. Lo que hacías allí y cómo te sentías cuentan más que un significado fijo.",
+        "modifiedAt": "2026-10-08",
         "askYourself": [
-          "¿Qué cambió hotel dentro de la escena?",
-          "¿Qué emoción siguió conmigo al despertar?"
+          "¿Estaba allí de vacaciones, por trabajo o sin saber por qué?",
+          "¿Encontré mi habitación, o seguía dando vueltas por los pasillos?",
+          "¿Qué parte de mi vida se parece ahora mismo a una parada provisional?"
         ],
-        "faq": []
+        "faq": [
+          {
+            "question": "¿Qué significa soñar con un hotel?",
+            "answer": "El hotel se asocia a menudo con los lugares de paso: un cambio en marcha, una etapa intermedia, un sitio que todavía no sientes tuyo. Que estuvieras a gusto o incómodo allí orienta la lectura."
+          },
+          {
+            "question": "¿Qué significa soñar que no encuentras tu habitación de hotel?",
+            "answer": "Buscar tu habitación por pasillos que se parecen todos puede enlazar con la sensación de no encontrar aún tu sitio en una situación nueva. Anota qué te retrasaba: un número olvidado, una planta que no existía, una tarjeta que no abría."
+          },
+          {
+            "question": "¿Qué significa soñar con un hotel de lujo?",
+            "answer": "Un hotel de lujo puede acompañar las ganas de descansar, de reconocimiento o de cambiar de aires, o al contrario la incomodidad de sentirte fuera de lugar. Lo a gusto que te sentías en ese ambiente es la pista principal."
+          },
+          {
+            "question": "¿Por qué soñar con un hotel vacío o inquietante?",
+            "answer": "Un hotel desierto, ruinoso o amenazante juega con la inquietud de estar en un sitio donde dependes de otros. La escena no predice nada: puede hacer eco de una etapa inestable. ¿Qué te parecía provisional o poco seguro?"
+          }
+        ],
+        "documentMetaDescription": "Soñar con un hotel, con no encontrar tu habitación o con un hotel de lujo: qué puede decir este lugar de paso sobre los cambios, con preguntas y un ejemplo."
       },
       "de": {
         "slug": "hotel",
         "name": "Hotel",
-        "shortDescription": "Ein Hotel ist im Traum ein vorübergehender Ort, den du mit fremden Gästen und festen Abläufen teilst. Zimmer, Gepäck, Zugang und der Grund deines Aufenthalts zeigen, ob sich die Zwischenstation angenehm oder orientierungslos anfühlte.",
+        "shortDescription": "Von einem Hotel zu träumen heißt oft, an einem Durchgangsort zu sein: endlose Flure, ein unauffindbares Zimmer, eine Karte, die nicht öffnet. Das Hotel wird mit Übergängen verbunden. Was Sie dort taten und fühlten, zählt mehr als eine feste Bedeutung.",
         "askYourself": [
-          "Kanntest du deine Zimmernummer, und hast du den Weg dorthin gefunden?",
-          "Welches Gepäck hattest du dabei, und wer wohnte noch im Hotel?",
-          "In welchem Lebensbereich befindest du dich gerade in einer Übergangsphase?"
+          "War ich im Urlaub, auf Dienstreise oder dort, ohne zu wissen, warum?",
+          "Habe ich mein Zimmer gefunden, oder bin ich durch die Flure geirrt?",
+          "Welcher Bereich meines Lebens fühlt sich gerade wie eine Zwischenstation an?"
         ],
-        "modifiedAt": "2026-07-24",
-        "faq": []
+        "modifiedAt": "2026-10-08",
+        "faq": [
+          {
+            "question": "Was bedeutet es, von einem Hotel zu träumen?",
+            "answer": "Das Hotel wird oft mit Durchgangsorten verbunden: einer laufenden Veränderung, einer Zwischenphase, einem Platz, der noch nicht Ihrer ist. Ob Sie sich dort wohl oder unwohl fühlten, gibt der Deutung die Richtung."
+          },
+          {
+            "question": "Was bedeutet es, im Traum sein Hotelzimmer nicht zu finden?",
+            "answer": "Das eigene Zimmer in Fluren zu suchen, die alle gleich aussehen, kann zu dem Gefühl passen, in einer neuen Situation noch nicht Ihren Platz gefunden zu haben. Notieren Sie, was Sie aufhielt: eine vergessene Nummer, ein fehlendes Stockwerk, eine Karte, die nicht öffnete."
+          },
+          {
+            "question": "Was bedeutet ein Luxushotel im Traum?",
+            "answer": "Ein Luxushotel kann den Wunsch nach Ruhe, Anerkennung oder Tapetenwechsel begleiten, oder im Gegenteil das Unbehagen, fehl am Platz zu sein. Wie wohl Sie sich in der Umgebung fühlten, ist der wichtigste Hinweis."
+          },
+          {
+            "question": "Warum träumt man von einem leeren oder unheimlichen Hotel?",
+            "answer": "Ein verlassenes, heruntergekommenes oder bedrohliches Hotel spielt mit dem Unbehagen eines Ortes, an dem man auf andere angewiesen ist. Die Szene sagt nichts voraus: Sie kann eine unruhige Phase aufgreifen. Was wirkte vorläufig oder unsicher?"
+          }
+        ],
+        "documentMetaDescription": "Im Traum ein Hotel, ein unauffindbares Zimmer oder ein Luxushotel: was dieser Durchgangsort über Übergänge sagen kann, mit Fragen und Tagebuchbeispiel."
       },
       "it": {
         "slug": "hotel",
         "name": "Hotel",
-        "shortDescription": "Un hotel è un luogo temporaneo condiviso con ospiti sconosciuti e organizzato da routine stabilite. Stanza, bagagli, accesso e motivo del soggiorno mostrano se la sosta era comoda o disorientante.",
-        "modifiedAt": "2026-07-24",
+        "shortDescription": "Sognare un hotel ti porta spesso in un luogo di passaggio: un corridoio senza fine, una camera che non trovi, una tessera che non apre. L’hotel viene associato alle transizioni. Ciò che facevi lì e come ti sentivi contano più di un significato fisso.",
+        "modifiedAt": "2026-10-08",
         "askYourself": [
-          "Che cosa ha cambiato hotel nella scena?",
-          "Quale emozione è rimasta dopo il risveglio?"
+          "Ero in vacanza, per lavoro o lì senza sapere perché?",
+          "Ho trovato la mia camera, o continuavo a girare per i corridoi?",
+          "Quale parte della mia vita somiglia, in questo periodo, a una sosta provvisoria?"
         ],
-        "faq": []
+        "faq": [
+          {
+            "question": "Che cosa significa sognare un hotel?",
+            "answer": "L’hotel viene spesso associato ai luoghi di passaggio: un cambiamento in corso, una fase intermedia, un posto che non senti ancora tuo. Che tu stessi bene o a disagio lì orienta la lettura."
+          },
+          {
+            "question": "Che cosa significa sognare di non trovare la camera d’albergo?",
+            "answer": "Cercare la tua camera in corridoi tutti uguali può avvicinarsi alla sensazione di non aver ancora trovato il tuo posto in una situazione nuova. Annota che cosa ti rallentava: un numero dimenticato, un piano che non c’era, una tessera che non apriva."
+          },
+          {
+            "question": "Che cosa significa sognare un hotel di lusso?",
+            "answer": "Un hotel di lusso può accompagnare il desiderio di riposo, di riconoscimento o di cambiare aria, oppure il disagio di sentirti fuori posto. Quanto ti sentivi a tuo agio in quell’ambiente è l’indizio principale."
+          },
+          {
+            "question": "Perché si sogna un hotel vuoto o inquietante?",
+            "answer": "Un hotel deserto, fatiscente o minaccioso gioca sul disagio di un luogo in cui dipendi dagli altri. La scena non predice nulla: può fare eco a un periodo instabile. Che cosa ti sembrava provvisorio o poco sicuro?"
+          }
+        ],
+        "documentMetaDescription": "Sognare un hotel, di non trovare la camera o un hotel di lusso: che cosa può dire questo luogo di passaggio delle transizioni, con domande ed esempio di diario."
       },
       "pt": {
         "slug": "hotel",
@@ -19329,58 +19423,152 @@
       "en": {
         "slug": "lightning",
         "name": "Lightning",
-        "shortDescription": "Lightning interrupts a dream with sudden light, thunder or an impact. What it revealed or struck, and whether you felt startled or fascinated, gives the moment its context.",
-        "modifiedAt": "2026-07-24",
+        "shortDescription": "Dreaming of lightning is a sudden moment: the sky splits, everything turns white, then the thunder. Lightning is associated with surprise, with what strikes or lights things up at once. What it showed and how you reacted matter more than a fixed meaning.",
+        "modifiedAt": "2026-10-08",
         "askYourself": [
-          "What did lightning change in the scene?",
-          "Which feeling stayed with me after waking?"
+          "Was the lightning far away, very close, or did it strike me?",
+          "What did I see in the moment everything lit up?",
+          "What has caught me off guard lately, or what do I fear will happen suddenly?"
         ],
-        "faq": []
+        "faq": [
+          {
+            "question": "What does it mean to dream about lightning?",
+            "answer": "Lightning is often associated with surprise and with things that happen all at once: news, a sudden realisation, a burst of anger. How far away it was, what it lit up and how you reacted guide the reading more than the lightning itself."
+          },
+          {
+            "question": "What does it mean to dream of being struck by lightning?",
+            "answer": "Being hit by lightning in a dream can go with a feeling of having been caught off guard, by an event, a remark or a very strong emotion. It is not an omen: note instead what happened right after the strike."
+          },
+          {
+            "question": "What does a thunderstorm with lightning mean in a dream?",
+            "answer": "A storm full of lightning often stages tension that builds and then breaks. It can match a conflict, a nervous period or anger held back. Were you sheltered, or out in the open?"
+          },
+          {
+            "question": "Why did the lightning fascinate me instead of scaring me?",
+            "answer": "Lightning watched with wonder can go with a sudden idea, a burst of energy or the pleasure of seeing things on a grand scale. The same image tells a different story with a different emotion: the feeling is your guide."
+          }
+        ],
+        "documentMetaDescription": "Dreaming of lightning, being struck by lightning or a thunderstorm: what the scene may say about surprise and tension, with questions and a journal example."
       },
       "fr": {
         "slug": "eclair",
         "name": "Éclair",
-        "shortDescription": "Un éclair interrompt le rêve par une lumière soudaine, le tonnerre ou un impact. Ce qu’il révèle ou frappe, ainsi que votre surprise ou votre fascination, donnent au moment son contexte.",
-        "modifiedAt": "2026-07-24",
+        "shortDescription": "Rêver d'un éclair, c'est un instant brutal : le ciel se fend, tout devient blanc, puis vient le tonnerre. L'éclair est associé à la surprise, à ce qui frappe ou éclaire d'un coup. Ce qu'il montrait et votre réaction comptent plus qu'un sens fixe.",
+        "modifiedAt": "2026-10-08",
         "askYourself": [
-          "Qu’est-ce que éclair a changé dans la scène ?",
-          "Quelle émotion est restée après le réveil ?"
+          "L'éclair était-il loin, tout proche, ou m'a-t-il frappé ?",
+          "Qu'ai-je vu pendant l'instant où tout s'est éclairé ?",
+          "Qu'est-ce qui m'a pris de court récemment, ou que je redoute de voir arriver d'un coup ?"
         ],
-        "faq": []
+        "faq": [
+          {
+            "question": "Que signifie rêver d'un éclair ?",
+            "answer": "L'éclair est souvent associé à la surprise et à ce qui arrive d'un coup : une nouvelle, une prise de conscience, une colère. Sa distance, ce qu'il éclairait et votre réaction orientent la lecture plus que l'éclair lui-même."
+          },
+          {
+            "question": "Que signifie rêver d'être frappé par la foudre ?",
+            "answer": "Être touché par la foudre en rêve peut accompagner le sentiment d'avoir été pris de court, par un événement, une remarque ou une émotion très forte. Ce n'est pas un présage : notez plutôt ce qui s'est passé juste après l'impact."
+          },
+          {
+            "question": "Que signifie rêver d'un orage avec des éclairs ?",
+            "answer": "Un orage chargé d'éclairs met souvent en scène une tension qui monte puis éclate. Il peut rejoindre un conflit, une période nerveuse ou une colère retenue. Étiez-vous à l'abri, ou exposé ?"
+          },
+          {
+            "question": "Pourquoi l'éclair me fascinait-il au lieu de me faire peur ?",
+            "answer": "Un éclair regardé avec émerveillement peut accompagner une idée soudaine, un élan ou le plaisir de voir les choses en grand. La même image ne raconte pas la même chose avec une autre émotion : c'est elle qui guide."
+          }
+        ],
+        "documentMetaDescription": "Rêver d'un éclair, d'être frappé par la foudre ou d'un orage : ce que la scène peut dire de la surprise et de la tension, avec questions et exemple de journal."
       },
       "es": {
         "slug": "rayo",
         "name": "Rayo",
-        "shortDescription": "Un rayo interrumpe el sueño con luz repentina, trueno o un impacto. Lo que revela o alcanza, y si te asusta o fascina, aportan el contexto de ese momento.",
-        "modifiedAt": "2026-07-24",
+        "shortDescription": "Soñar con un rayo es un instante brusco: el cielo se parte, todo se vuelve blanco y luego llega el trueno. El rayo se asocia con la sorpresa, con lo que golpea o ilumina de golpe. Lo que mostraba y tu reacción cuentan más que un significado fijo.",
+        "modifiedAt": "2026-10-08",
         "askYourself": [
-          "¿Qué cambió rayo dentro de la escena?",
-          "¿Qué emoción siguió conmigo al despertar?"
+          "¿El rayo estaba lejos, muy cerca, o me alcanzó?",
+          "¿Qué vi en el instante en que todo se iluminó?",
+          "¿Qué me ha pillado por sorpresa últimamente, o qué temo que llegue de golpe?"
         ],
-        "faq": []
+        "faq": [
+          {
+            "question": "¿Qué significa soñar con un rayo?",
+            "answer": "El rayo se asocia a menudo con la sorpresa y con lo que llega de golpe: una noticia, una toma de conciencia, un enfado. Su distancia, lo que iluminaba y tu reacción orientan la lectura más que el rayo en sí."
+          },
+          {
+            "question": "¿Qué significa soñar que te cae un rayo?",
+            "answer": "Que te alcance un rayo en sueños puede acompañar la sensación de haberte quedado sin reacción ante un hecho, un comentario o una emoción muy fuerte. No es un presagio: anota más bien qué pasó justo después del impacto."
+          },
+          {
+            "question": "¿Qué significa soñar con una tormenta de rayos?",
+            "answer": "Una tormenta cargada de rayos suele escenificar una tensión que crece y luego estalla. Puede enlazar con un conflicto, una etapa de nervios o un enfado contenido. ¿Estabas a cubierto o a la intemperie?"
+          },
+          {
+            "question": "¿Por qué el rayo me fascinaba en vez de darme miedo?",
+            "answer": "Un rayo mirado con asombro puede acompañar una idea repentina, un impulso o el gusto de ver las cosas en grande. La misma imagen no cuenta lo mismo con otra emoción: es la emoción la que guía."
+          }
+        ],
+        "documentMetaDescription": "Soñar con un rayo, con que te cae un rayo o con una tormenta: qué puede decir la escena sobre la sorpresa y la tensión, con preguntas y un ejemplo de diario."
       },
       "de": {
         "slug": "blitz",
         "name": "Blitz",
-        "shortDescription": "Ein Blitz unterbricht die Traumhandlung mit plötzlichem Licht, Donner oder einem Einschlag. Was dadurch sichtbar oder getroffen wird und ob du erschrickst oder fasziniert bist, gibt dem Moment seinen Kontext.",
+        "shortDescription": "Von einem Blitz zu träumen ist ein jäher Moment: Der Himmel reißt auf, alles wird weiß, dann kommt der Donner. Der Blitz wird mit Überraschung verbunden, mit dem, was plötzlich trifft oder erhellt. Was er zeigte und wie Sie reagierten, zählt mehr als eine feste Bedeutung.",
         "askYourself": [
-          "Wo schlug der Blitz ein, und was war im kurzen Licht zu erkennen?",
-          "Kam der Donner gleichzeitig oder erst später?",
-          "Welche plötzliche Nachricht oder Einsicht beschäftigt dich derzeit?"
+          "War der Blitz weit weg, ganz nah, oder hat er mich getroffen?",
+          "Was habe ich in dem Moment gesehen, als alles hell wurde?",
+          "Was hat mich zuletzt überrumpelt, oder was fürchte ich, das plötzlich eintreten könnte?"
         ],
-        "modifiedAt": "2026-07-24",
-        "faq": []
+        "modifiedAt": "2026-10-08",
+        "faq": [
+          {
+            "question": "Was bedeutet es, von einem Blitz zu träumen?",
+            "answer": "Der Blitz wird oft mit Überraschung verbunden und mit dem, was auf einen Schlag geschieht: eine Nachricht, eine plötzliche Erkenntnis, ein Wutausbruch. Seine Entfernung, was er erhellte und Ihre Reaktion sagen mehr als der Blitz selbst."
+          },
+          {
+            "question": "Was bedeutet es, im Traum vom Blitz getroffen zu werden?",
+            "answer": "Vom Blitz getroffen zu werden kann das Gefühl begleiten, überrumpelt worden zu sein, von einem Ereignis, einer Bemerkung oder einem sehr starken Gefühl. Ein Omen ist es nicht: Notieren Sie lieber, was direkt nach dem Einschlag geschah."
+          },
+          {
+            "question": "Was bedeutet ein Gewitter mit Blitzen im Traum?",
+            "answer": "Ein Gewitter voller Blitze setzt oft eine Spannung in Szene, die sich aufbaut und dann entlädt. Es kann zu einem Konflikt, einer angespannten Phase oder zurückgehaltener Wut passen. Waren Sie geschützt oder im Freien?"
+          },
+          {
+            "question": "Warum hat mich der Blitz fasziniert, statt mir Angst zu machen?",
+            "answer": "Ein Blitz, den man staunend betrachtet, kann eine plötzliche Idee, einen Energieschub oder die Freude am Großen begleiten. Dasselbe Bild erzählt mit einem anderen Gefühl etwas anderes: Das Gefühl gibt die Richtung vor."
+          }
+        ],
+        "documentMetaDescription": "Blitz im Traum, vom Blitz getroffen oder ein Gewitter: was die Szene über Überraschung und Anspannung sagen kann, mit Fragen und einem Tagebuchbeispiel."
       },
       "it": {
         "slug": "fulmine",
         "name": "Fulmine",
-        "shortDescription": "Un fulmine interrompe il sogno con luce improvvisa, tuono o un impatto. Ciò che rivela o colpisce, e il fatto che ti spaventi o affascini, danno contesto al momento.",
-        "modifiedAt": "2026-07-24",
+        "shortDescription": "Sognare un fulmine è un istante brusco: il cielo si spacca, tutto diventa bianco, poi arriva il tuono. Il fulmine viene associato alla sorpresa, a ciò che colpisce o illumina all’improvviso. Ciò che mostrava e la tua reazione contano più di un significato fisso.",
+        "modifiedAt": "2026-10-08",
         "askYourself": [
-          "Che cosa ha cambiato fulmine nella scena?",
-          "Quale emozione è rimasta dopo il risveglio?"
+          "Il fulmine era lontano, vicinissimo, o mi ha colpito?",
+          "Che cosa ho visto nell’istante in cui tutto si è illuminato?",
+          "Che cosa mi ha colto di sorpresa ultimamente, o che cosa temo che arrivi all’improvviso?"
         ],
-        "faq": []
+        "faq": [
+          {
+            "question": "Che cosa significa sognare un fulmine?",
+            "answer": "Il fulmine viene spesso associato alla sorpresa e a ciò che arriva tutto d’un colpo: una notizia, una presa di coscienza, una rabbia. La distanza, ciò che illuminava e la tua reazione orientano la lettura più del fulmine in sé."
+          },
+          {
+            "question": "Che cosa significa sognare di essere colpiti da un fulmine?",
+            "answer": "Essere colpiti da un fulmine in sogno può accompagnare la sensazione di essere stato preso alla sprovvista da un evento, una frase o un’emozione molto forte. Non è un presagio: annota piuttosto che cosa è successo subito dopo."
+          },
+          {
+            "question": "Che cosa significa sognare un temporale con fulmini?",
+            "answer": "Un temporale carico di fulmini mette spesso in scena una tensione che cresce e poi esplode. Può avvicinarsi a un conflitto, a un periodo di nervosismo o a una rabbia trattenuta. Eri al riparo o allo scoperto?"
+          },
+          {
+            "question": "Perché il fulmine mi affascinava invece di spaventarmi?",
+            "answer": "Un fulmine guardato con meraviglia può accompagnare un’idea improvvisa, uno slancio o il piacere di vedere le cose in grande. La stessa immagine racconta altro con un’altra emozione: è l’emozione a guidarti."
+          }
+        ],
+        "documentMetaDescription": "Sognare un fulmine, di essere colpiti da un fulmine o un temporale: che cosa può dire la scena di sorpresa e tensione, con domande ed esempio di diario."
       },
       "pt": {
         "slug": "raio",
@@ -19413,58 +19601,152 @@
       "en": {
         "slug": "snow",
         "name": "Snow",
-        "shortDescription": "Snow changes familiar paths, sounds and movement within a dream. Whether it was fresh, dirty, melting or driven by a storm determines if the landscape felt calm, strange or dangerous.",
-        "modifiedAt": "2026-07-24",
+        "shortDescription": "Dreaming of snow often means a landscape changed overnight: muffled sounds, familiar landmarks erased, footsteps sinking in. Snow is associated with calm, cold and slowing down. Its state and how you felt about it matter more than a fixed meaning.",
+        "modifiedAt": "2026-10-08",
         "askYourself": [
-          "What did snow change in the scene?",
-          "Which feeling stayed with me after waking?"
+          "Was the snow fresh and beautiful, dirty, melting or a blizzard?",
+          "Could I move forward, or was I stuck, slowed down, cut off?",
+          "What in my life feels on hold or paused right now?"
         ],
-        "faq": []
+        "faq": [
+          {
+            "question": "What does it mean to dream about snow?",
+            "answer": "Snow is often associated with calm, cold, a pause or a fresh start on a blank page. Its state (fresh, dirty, melting, a blizzard) and how you felt guide the reading more than the snow itself."
+          },
+          {
+            "question": "What does falling snow mean in a dream?",
+            "answer": "Watching snow fall can go with a moment of peace, quiet reflection, or nostalgia for childhood winters. If the snowfall grew heavier, note what it stopped you from doing."
+          },
+          {
+            "question": "What does it mean to dream of being snowed in?",
+            "answer": "Being caught in snow, with a car stuck or a road closed, can match a feeling of a frozen situation or a project slowed down. It is not an omen: ask yourself what is waiting, right now, for a thaw."
+          },
+          {
+            "question": "What does melting snow mean in a dream?",
+            "answer": "Melting snow can go with a period when things start moving again: tension easing, a relationship warming up. It can also uncover what it was hiding. What reappeared as it melted?"
+          }
+        ],
+        "documentMetaDescription": "Dreaming of snow falling, melting snow or being snowed in: what the scene may say about calm, waiting and slowing down, with questions and a journal example."
       },
       "fr": {
         "slug": "neige",
         "name": "Neige",
-        "shortDescription": "La neige transforme les chemins familiers, les sons et chaque mouvement. Fraîche, sale, fondante ou poussée par la tempête, elle rend le paysage calme, étrange ou dangereux.",
-        "modifiedAt": "2026-07-24",
+        "shortDescription": "Rêver de neige, c'est souvent un paysage changé en une nuit : bruits étouffés, repères effacés, pas qui s'enfoncent. La neige est associée au calme, au froid et à ce qui ralentit. Son état et votre émotion face à elle comptent plus qu'un sens fixe.",
+        "modifiedAt": "2026-10-08",
         "askYourself": [
-          "Qu’est-ce que neige a changé dans la scène ?",
-          "Quelle émotion est restée après le réveil ?"
+          "La neige était-elle fraîche et belle, sale, fondante ou en tempête ?",
+          "Pouvais-je avancer, ou étais-je bloqué, ralenti, isolé ?",
+          "Qu'est-ce qui, dans ma vie, semble en ce moment à l'arrêt ou en pause ?"
         ],
-        "faq": []
+        "faq": [
+          {
+            "question": "Que signifie rêver de neige ?",
+            "answer": "La neige est souvent associée au calme, au froid, à une pause ou à un nouveau départ sur une page blanche. Son état (fraîche, sale, fondante, en tempête) et ce que vous ressentiez orientent la lecture."
+          },
+          {
+            "question": "Que signifie rêver de neige qui tombe ?",
+            "answer": "Regarder la neige tomber peut accompagner un moment d'apaisement, de recueillement, ou une nostalgie des hivers de l'enfance. Si la chute s'intensifiait, notez ce qu'elle vous empêchait de faire."
+          },
+          {
+            "question": "Que signifie rêver d'être bloqué par la neige ?",
+            "answer": "Être pris dans la neige, avec une voiture coincée ou une route fermée, peut rejoindre le sentiment d'une situation figée ou d'un projet ralenti. Ce n'est pas un présage : demandez-vous ce qui attend, en ce moment, son dégel."
+          },
+          {
+            "question": "Que signifie rêver de neige qui fond ?",
+            "answer": "La neige qui fond peut accompagner une période où les choses se remettent en mouvement : une tension qui baisse, une relation qui se réchauffe. Elle laisse aussi voir ce qu'elle recouvrait. Qu'est-ce qui réapparaissait ?"
+          }
+        ],
+        "documentMetaDescription": "Rêver de neige qui tombe, de neige qui fond ou d'être bloqué par la neige : ce que la scène peut dire du calme et de l'attente, avec questions et exemple."
       },
       "es": {
         "slug": "nieve",
         "name": "Nieve",
-        "shortDescription": "La nieve transforma los caminos conocidos, los sonidos y cada movimiento. Que estuviera limpia, sucia, derritiéndose o impulsada por una tormenta vuelve el paisaje tranquilo, extraño o peligroso.",
-        "modifiedAt": "2026-07-24",
+        "shortDescription": "Soñar con nieve suele ser un paisaje cambiado en una noche: sonidos amortiguados, referencias borradas, pasos que se hunden. La nieve se asocia con la calma, el frío y lo que se ralentiza. Su estado y lo que sentiste cuentan más que un significado fijo.",
+        "modifiedAt": "2026-10-08",
         "askYourself": [
-          "¿Qué cambió nieve dentro de la escena?",
-          "¿Qué emoción siguió conmigo al despertar?"
+          "¿La nieve estaba recién caída, sucia, derritiéndose o era una ventisca?",
+          "¿Podía avanzar, o estaba bloqueado, frenado, aislado?",
+          "¿Qué hay en mi vida que ahora mismo parece detenido o en pausa?"
         ],
-        "faq": []
+        "faq": [
+          {
+            "question": "¿Qué significa soñar con nieve?",
+            "answer": "La nieve se asocia a menudo con la calma, el frío, una pausa o un nuevo comienzo sobre una página en blanco. Su estado (recién caída, sucia, derritiéndose, en ventisca) y lo que sentías orientan la lectura."
+          },
+          {
+            "question": "¿Qué significa soñar que nieva?",
+            "answer": "Ver caer la nieve puede acompañar un momento de sosiego, de recogimiento o de nostalgia de los inviernos de la infancia. Si la nevada se volvía más intensa, anota qué te impedía hacer."
+          },
+          {
+            "question": "¿Qué significa soñar que te quedas atrapado en la nieve?",
+            "answer": "Quedarte atrapado en la nieve, con el coche bloqueado o la carretera cortada, puede enlazar con la sensación de una situación congelada o de un proyecto frenado. No es un presagio: pregúntate qué espera ahora mismo su deshielo."
+          },
+          {
+            "question": "¿Qué significa soñar con nieve derritiéndose?",
+            "answer": "La nieve que se derrite puede acompañar una etapa en la que las cosas vuelven a moverse: una tensión que baja, una relación que se templa. También deja ver lo que cubría. ¿Qué reaparecía?"
+          }
+        ],
+        "documentMetaDescription": "Soñar con nieve que cae, que se derrite o que te deja atrapado: qué puede decir la escena sobre la calma y la espera, con preguntas y un ejemplo de diario."
       },
       "de": {
         "slug": "schnee",
         "name": "Schnee",
-        "shortDescription": "Schnee verändert im Traum vertraute Wege, Geräusche und jede Bewegung. Ob er frisch, schmutzig, schmelzend oder vom Sturm getrieben war, prägt, ob die Landschaft ruhig, fremd oder gefährlich wirkte.",
+        "shortDescription": "Von Schnee zu träumen heißt oft: eine über Nacht verwandelte Landschaft, gedämpfte Geräusche, verwischte Wege, Schritte, die einsinken. Schnee wird mit Ruhe, Kälte und Verlangsamung verbunden. Sein Zustand und Ihr Gefühl zählen mehr als eine feste Bedeutung.",
         "askYourself": [
-          "Wie tief war der Schnee, und konntest du dich darin fortbewegen?",
-          "War dir kalt, oder empfandest du die verschneite Umgebung als angenehm?",
-          "Welche Situation erscheint dir im Moment stillgelegt, verlangsamt oder schwer zugänglich?"
+          "War der Schnee frisch und schön, schmutzig, schmelzend oder ein Schneesturm?",
+          "Kam ich voran, oder steckte ich fest, gebremst, abgeschnitten?",
+          "Was in meinem Leben fühlt sich gerade wie angehalten oder auf Pause an?"
         ],
-        "modifiedAt": "2026-07-24",
-        "faq": []
+        "modifiedAt": "2026-10-08",
+        "faq": [
+          {
+            "question": "Was bedeutet es, von Schnee zu träumen?",
+            "answer": "Schnee wird oft mit Ruhe, Kälte, einer Pause oder einem Neuanfang auf einem leeren Blatt verbunden. Sein Zustand (frisch, schmutzig, schmelzend, im Schneesturm) und Ihr Gefühl geben der Deutung die Richtung."
+          },
+          {
+            "question": "Was bedeutet fallender Schnee im Traum?",
+            "answer": "Dem Schnee beim Fallen zuzusehen kann einen Moment der Ruhe, der Besinnung oder eine Sehnsucht nach den Wintern der Kindheit begleiten. Wurde der Schneefall dichter, notieren Sie, woran er Sie hinderte."
+          },
+          {
+            "question": "Was bedeutet es, im Traum eingeschneit zu sein?",
+            "answer": "Im Schnee festzustecken, mit blockiertem Auto oder gesperrter Straße, kann zu dem Gefühl einer erstarrten Lage oder eines gebremsten Vorhabens passen. Ein Omen ist es nicht: Fragen Sie sich, was gerade auf Tauwetter wartet."
+          },
+          {
+            "question": "Was bedeutet schmelzender Schnee im Traum?",
+            "answer": "Schmelzender Schnee kann eine Phase begleiten, in der wieder Bewegung entsteht: Eine Spannung lässt nach, eine Beziehung taut auf. Er gibt auch frei, was er bedeckt hat. Was kam darunter zum Vorschein?"
+          }
+        ],
+        "documentMetaDescription": "Schnee im Traum, fallend, schmelzend oder eingeschneit: was die Szene über Ruhe, Warten und Stillstand sagen kann, mit Fragen und einem Tagebuchbeispiel."
       },
       "it": {
         "slug": "neve",
         "name": "Neve",
-        "shortDescription": "La neve trasforma percorsi familiari, suoni e ogni movimento. Fresca, sporca, in scioglimento o spinta dalla tempesta, rende il paesaggio calmo, estraneo o pericoloso.",
-        "modifiedAt": "2026-07-24",
+        "shortDescription": "Sognare la neve significa spesso un paesaggio cambiato in una notte: suoni ovattati, riferimenti cancellati, passi che affondano. La neve viene associata alla calma, al freddo e a ciò che rallenta. Il suo stato e ciò che provavi contano più di un significato fisso.",
+        "modifiedAt": "2026-10-08",
         "askYourself": [
-          "Che cosa ha cambiato neve nella scena?",
-          "Quale emozione è rimasta dopo il risveglio?"
+          "La neve era fresca e bella, sporca, in scioglimento o una bufera?",
+          "Riuscivo ad avanzare, o ero bloccato, rallentato, isolato?",
+          "Che cosa nella mia vita sembra, in questo periodo, fermo o in pausa?"
         ],
-        "faq": []
+        "faq": [
+          {
+            "question": "Che cosa significa sognare la neve?",
+            "answer": "La neve viene spesso associata alla calma, al freddo, a una pausa o a un nuovo inizio su una pagina bianca. Il suo stato (fresca, sporca, in scioglimento, in bufera) e ciò che provavi orientano la lettura."
+          },
+          {
+            "question": "Che cosa significa sognare la neve che cade?",
+            "answer": "Guardare la neve cadere può accompagnare un momento di quiete, di raccoglimento o la nostalgia degli inverni dell’infanzia. Se la nevicata si faceva più fitta, annota che cosa ti impediva di fare."
+          },
+          {
+            "question": "Che cosa significa sognare di restare bloccati dalla neve?",
+            "answer": "Restare bloccato nella neve, con l’auto ferma o la strada chiusa, può avvicinarsi alla sensazione di una situazione congelata o di un progetto rallentato. Non è un presagio: chiediti che cosa sta aspettando, in questo periodo, il disgelo."
+          },
+          {
+            "question": "Che cosa significa sognare la neve che si scioglie?",
+            "answer": "La neve che si scioglie può accompagnare un periodo in cui le cose si rimettono in moto: una tensione che cala, una relazione che si riscalda. Lascia anche vedere ciò che copriva. Che cosa ricompariva?"
+          }
+        ],
+        "documentMetaDescription": "Sognare la neve che cade, che si scioglie o di restare bloccati: che cosa può dire la scena di calma e attesa, con domande ed esempio inventato di diario."
       },
       "pt": {
         "slug": "neve",
@@ -19497,58 +19779,152 @@
       "en": {
         "slug": "mall",
         "name": "Mall",
-        "shortDescription": "A mall may put choice, consumption and movement among many options in the foreground. Looking for one item, browsing or becoming lost in the crowd creates a different experience.",
-        "modifiedAt": "2026-07-24",
+        "shortDescription": "Dreaming of a mall often means wandering past shop windows, looking for an exit or a particular shop in the crowd. Malls are associated with choice, desire and too many options. What you were looking for, and how you felt, matter more than a fixed meaning.",
+        "modifiedAt": "2026-10-08",
         "askYourself": [
-          "What did mall change in the scene?",
-          "Which feeling stayed with me after waking?"
+          "Was I looking for something specific, or just wandering?",
+          "Did the place feel lively and pleasant, or too loud, too big?",
+          "Is there a choice I keep putting off because the options all look alike?"
         ],
-        "faq": []
+        "faq": [
+          {
+            "question": "What does it mean to dream about a mall?",
+            "answer": "A mall is often associated with choice, desire and an abundance of options. The meaning depends mostly on what you were doing there (searching, buying, browsing, getting lost) and on how you felt in the crowd."
+          },
+          {
+            "question": "What does it mean to dream of getting lost in a mall?",
+            "answer": "Going round identical walkways without finding the exit can match a feeling of being overwhelmed by too many demands or choices. Note what kept you from leaving: the crowd, the layout, closing time."
+          },
+          {
+            "question": "What does shopping mean in a dream?",
+            "answer": "Buying things with pleasure can go with a wish to treat yourself or change your image. Finding nothing, or being unable to pay, can echo a lack or a hesitation. What did you have in your hands when you left?"
+          },
+          {
+            "question": "Why dream of an empty or closed mall?",
+            "answer": "Deserted walkways, shutters down, lights off: the scene often feels strange. It can match loneliness, waiting, or an option that has closed. It predicts nothing: your emotion is the clue."
+          }
+        ],
+        "documentMetaDescription": "Dreaming of a mall, getting lost in one or finding it empty: what the scene may say about choice and desire, with questions and a fictional journal example."
       },
       "fr": {
         "slug": "centre-commercial",
         "name": "Centre commercial",
-        "shortDescription": "Un centre commercial peut mettre en avant le choix, la consommation ou le fait de circuler parmi trop de possibilités. Flâner avec curiosité, chercher un objet précis ou se perdre dans la foule produit une expérience différente.",
-        "modifiedAt": "2026-07-24",
+        "shortDescription": "Rêver d'un centre commercial, c'est souvent errer entre des vitrines, chercher une sortie ou un magasin précis dans la foule. Le lieu est associé au choix, à l'envie et au trop-plein de possibilités. Ce que vous y cherchiez compte plus qu'un sens fixe.",
+        "modifiedAt": "2026-10-08",
         "askYourself": [
-          "Qu’est-ce que centre commercial a changé dans la scène ?",
-          "Quelle émotion est restée après le réveil ?"
+          "Cherchais-je quelque chose de précis, ou est-ce que je flânais sans but ?",
+          "Le lieu me paraissait-il animé et agréable, ou trop bruyant, trop grand ?",
+          "Y a-t-il en ce moment un choix que je repousse parce que les options se ressemblent ?"
         ],
-        "faq": []
+        "faq": [
+          {
+            "question": "Que signifie rêver d'un centre commercial ?",
+            "answer": "Le centre commercial est souvent associé au choix, au désir et à l'abondance d'options. Le sens dépend surtout de ce que vous y faisiez (chercher, acheter, flâner, vous perdre) et de ce que vous ressentiez dans la foule."
+          },
+          {
+            "question": "Que signifie rêver de se perdre dans un centre commercial ?",
+            "answer": "Tourner entre des galeries qui se ressemblent sans trouver la sortie peut rejoindre le sentiment d'être dépassé par trop de sollicitations ou de choix. Notez ce qui vous empêchait de sortir : la foule, le plan, l'heure de fermeture."
+          },
+          {
+            "question": "Que signifie rêver de faire du shopping ?",
+            "answer": "Acheter avec plaisir peut accompagner une envie de se faire du bien ou de changer d'image. Ne rien trouver, ou ne pas pouvoir payer, peut faire écho à un manque ou à une hésitation. Qu'aviez-vous dans les mains en sortant ?"
+          },
+          {
+            "question": "Pourquoi rêver d'un centre commercial vide ou fermé ?",
+            "answer": "Des galeries désertes, des rideaux baissés, des lumières éteintes donnent souvent une impression étrange. La scène peut rejoindre une solitude, une attente ou une option qui s'est refermée. Elle ne prédit rien : votre émotion est l'indice."
+          }
+        ],
+        "documentMetaDescription": "Rêver d'un centre commercial, de s'y perdre ou de le trouver vide : ce que la scène peut dire du choix et du désir, avec questions et un exemple de journal."
       },
       "es": {
         "slug": "centro-comercial",
         "name": "Centro comercial",
-        "shortDescription": "Un centro comercial puede poner en primer plano las elecciones, el consumo y el desplazamiento entre muchas opciones. Buscar algo concreto, pasear o perderte entre la gente cambia la experiencia.",
-        "modifiedAt": "2026-07-24",
+        "shortDescription": "Soñar con un centro comercial suele ser deambular entre escaparates, buscar una salida o una tienda concreta entre la gente. El lugar se asocia con la elección, el deseo y el exceso de opciones. Lo que buscabas allí cuenta más que un significado fijo.",
+        "modifiedAt": "2026-10-08",
         "askYourself": [
-          "¿Qué cambió centro comercial dentro de la escena?",
-          "¿Qué emoción siguió conmigo al despertar?"
+          "¿Buscaba algo concreto, o paseaba sin rumbo?",
+          "¿El lugar me parecía animado y agradable, o demasiado ruidoso, demasiado grande?",
+          "¿Hay ahora mismo una decisión que aplazo porque todas las opciones se parecen?"
         ],
-        "faq": []
+        "faq": [
+          {
+            "question": "¿Qué significa soñar con un centro comercial?",
+            "answer": "El centro comercial se asocia a menudo con la elección, el deseo y la abundancia de opciones. El sentido depende sobre todo de lo que hacías allí (buscar, comprar, pasear, perderte) y de lo que sentías entre la gente."
+          },
+          {
+            "question": "¿Qué significa soñar que te pierdes en un centro comercial?",
+            "answer": "Dar vueltas por galerías que se parecen sin encontrar la salida puede enlazar con la sensación de estar desbordado por demasiadas exigencias u opciones. Anota qué te impedía salir: la gente, el plano, la hora de cierre."
+          },
+          {
+            "question": "¿Qué significa soñar que vas de compras?",
+            "answer": "Comprar con gusto puede acompañar las ganas de darte un capricho o de cambiar de imagen. No encontrar nada, o no poder pagar, puede hacer eco de una carencia o de una duda. ¿Qué llevabas en las manos al salir?"
+          },
+          {
+            "question": "¿Por qué soñar con un centro comercial vacío o cerrado?",
+            "answer": "Galerías desiertas, persianas bajadas, luces apagadas: la escena suele resultar extraña. Puede enlazar con soledad, espera o una opción que se ha cerrado. No predice nada: tu emoción es la pista."
+          }
+        ],
+        "documentMetaDescription": "Soñar con un centro comercial, perderte en él o encontrarlo vacío: qué puede decir la escena sobre la elección y el deseo, con preguntas y un ejemplo de diario."
       },
       "de": {
         "slug": "einkaufszentrum",
         "name": "Einkaufszentrum",
-        "shortDescription": "Im Einkaufszentrum können Auswahl, Konsum oder das Gefühl, sich zwischen vielen Möglichkeiten zu bewegen, in den Vordergrund rücken. Entscheidend ist, ob du neugierig gebummelt, etwas Bestimmtes gesucht oder dich in der Menge verloren hast.",
+        "shortDescription": "Von einem Einkaufszentrum zu träumen heißt oft, an Schaufenstern vorbeizuirren und in der Menge einen Ausgang oder ein bestimmtes Geschäft zu suchen. Der Ort wird mit Auswahl, Wünschen und zu vielen Möglichkeiten verbunden. Was Sie dort suchten, zählt mehr als eine feste Bedeutung.",
         "askYourself": [
-          "Welche Geschäfte oder Produkte haben deine Aufmerksamkeit angezogen?",
-          "Warst du allein, mit jemandem unterwegs oder von einer Menschenmenge umgeben?",
-          "Hast du etwas gefunden und gekauft oder hast du erfolglos weitergesucht?"
+          "Habe ich etwas Bestimmtes gesucht, oder bin ich ziellos gebummelt?",
+          "Wirkte der Ort lebendig und angenehm, oder zu laut, zu groß?",
+          "Gibt es gerade eine Entscheidung, die ich aufschiebe, weil sich die Möglichkeiten gleichen?"
         ],
-        "modifiedAt": "2026-07-24",
-        "faq": []
+        "modifiedAt": "2026-10-08",
+        "faq": [
+          {
+            "question": "Was bedeutet es, von einem Einkaufszentrum zu träumen?",
+            "answer": "Das Einkaufszentrum wird oft mit Auswahl, Wünschen und einem Überangebot an Möglichkeiten verbunden. Was es bedeutet, hängt vor allem davon ab, was Sie dort taten (suchen, kaufen, bummeln, sich verirren) und wie Sie sich in der Menge fühlten."
+          },
+          {
+            "question": "Was bedeutet es, sich im Traum in einem Einkaufszentrum zu verirren?",
+            "answer": "Durch gleich aussehende Gänge zu laufen, ohne den Ausgang zu finden, kann zu dem Gefühl passen, von zu vielen Anforderungen oder Möglichkeiten überfordert zu sein. Notieren Sie, was Sie am Hinausgehen hinderte: die Menge, der Plan, der Ladenschluss."
+          },
+          {
+            "question": "Was bedeutet Shoppen im Traum?",
+            "answer": "Mit Freude einzukaufen kann den Wunsch begleiten, sich etwas Gutes zu tun oder das eigene Auftreten zu verändern. Nichts zu finden oder nicht bezahlen zu können, kann einen Mangel oder ein Zögern aufgreifen. Was hatten Sie beim Hinausgehen in der Hand?"
+          },
+          {
+            "question": "Warum träumt man von einem leeren oder geschlossenen Einkaufszentrum?",
+            "answer": "Verlassene Gänge, heruntergelassene Rollgitter, ausgeschaltetes Licht: Die Szene wirkt oft seltsam. Sie kann zu Einsamkeit, Warten oder einer Möglichkeit passen, die sich geschlossen hat. Sie sagt nichts voraus: Ihr Gefühl ist der Hinweis."
+          }
+        ],
+        "documentMetaDescription": "Einkaufszentrum im Traum, darin verirrt oder menschenleer: was die Szene über Auswahl und Wünsche sagen kann, mit Fragen und einem Tagebuchbeispiel."
       },
       "it": {
         "slug": "centro-commerciale",
         "name": "Centro commerciale",
-        "shortDescription": "Un centro commerciale può mettere in primo piano scelta, consumo e movimento tra molte possibilità. Cercare qualcosa di preciso, curiosare o perdersi nella folla cambia l’esperienza.",
-        "modifiedAt": "2026-07-24",
+        "shortDescription": "Sognare un centro commerciale significa spesso vagare tra le vetrine, cercare un’uscita o un negozio preciso in mezzo alla folla. Il luogo viene associato alla scelta, al desiderio e all’eccesso di possibilità. Ciò che cercavi lì conta più di un significato fisso.",
+        "modifiedAt": "2026-10-08",
         "askYourself": [
-          "Che cosa ha cambiato centro commerciale nella scena?",
-          "Quale emozione è rimasta dopo il risveglio?"
+          "Cercavo qualcosa di preciso, o giravo senza meta?",
+          "Il luogo mi sembrava vivace e piacevole, o troppo rumoroso, troppo grande?",
+          "C’è in questo periodo una scelta che rimando perché le opzioni si somigliano?"
         ],
-        "faq": []
+        "faq": [
+          {
+            "question": "Che cosa significa sognare un centro commerciale?",
+            "answer": "Il centro commerciale viene spesso associato alla scelta, al desiderio e all’abbondanza di opzioni. Il significato dipende soprattutto da ciò che facevi lì (cercare, comprare, curiosare, perderti) e da ciò che provavi tra la folla."
+          },
+          {
+            "question": "Che cosa significa sognare di perdersi in un centro commerciale?",
+            "answer": "Girare per gallerie tutte uguali senza trovare l’uscita può avvicinarsi alla sensazione di essere sopraffatto da troppe richieste o scelte. Annota che cosa ti impediva di uscire: la folla, la piantina, l’orario di chiusura."
+          },
+          {
+            "question": "Che cosa significa sognare di fare shopping?",
+            "answer": "Comprare con piacere può accompagnare la voglia di coccolarti o di cambiare immagine. Non trovare nulla, o non riuscire a pagare, può fare eco a una mancanza o a un’esitazione. Che cosa avevi in mano all’uscita?"
+          },
+          {
+            "question": "Perché si sogna un centro commerciale vuoto o chiuso?",
+            "answer": "Gallerie deserte, saracinesche abbassate, luci spente: la scena risulta spesso strana. Può avvicinarsi a solitudine, attesa o a un’opzione che si è chiusa. Non predice nulla: la tua emozione è l’indizio."
+          }
+        ],
+        "documentMetaDescription": "Sognare un centro commerciale, di perdersi dentro o di trovarlo vuoto: che cosa può dire la scena di scelte e desideri, con domande ed esempio di diario."
       },
       "pt": {
         "slug": "shopping",
