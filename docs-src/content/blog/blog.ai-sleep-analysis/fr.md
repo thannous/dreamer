@@ -210,7 +210,7 @@ Une nuit en laboratoire du sommeil : des électrodes sur le crâne, une pince a
                 </p>
 <h3>Comment l'IA de Noctalia lit vos récits de rêves</h3>
 <p>
-                    Ici, l'IA travaille sur ce dont vous vous souvenez, pas sur des signaux cérébraux. Vous racontez votre rêve à voix haute ou par écrit, il est transcrit, et l'IA propose une lecture : symboles, émotions, liens possibles avec vos journées, questions à creuser. Chaque lecture est une piste, pas un verdict.
+                    Ici, l'IA travaille sur ce dont vous vous souvenez, pas sur des signaux cérébraux. Vous racontez votre rêve à voix haute ou par écrit, il est transcrit, et l'IA propose une lecture : symboles, émotions, liens possibles avec vos journées, questions à creuser. Cette lecture n'a lieu que si vous avez accepté le traitement par IA dans l'application. Chaque lecture est une piste, pas un verdict.
                 </p>
 <p>
                     <strong>Exemple fictif :</strong> en trois semaines, un journal réunit un <a class="text-dream-salmon hover:underline" href="../symboles/miroir">miroir</a> qui renvoie un visage un peu différent, une <a class="text-dream-salmon hover:underline" href="../symboles/cle">clé</a> qui n'ouvre plus la porte d'entrée et un <a class="text-dream-salmon hover:underline" href="../symboles/chemin">chemin</a> qui se divise dans le brouillard. Chaque entrée note aussi une humeur : malaise, puis curiosité. Relus ensemble, ces rêves posent une question plutôt qu'une réponse : qu'est-ce qui change dans ma vie en ce moment, et comment je le vis ?

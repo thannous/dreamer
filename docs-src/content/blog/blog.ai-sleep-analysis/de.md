@@ -210,7 +210,7 @@ Eine Nacht im Schlaflabor: Elektroden auf dem Kopf, ein Clip am Finger, Gurte um
                 </p>
 <h3>Wie die KI von Noctalia Ihre Traumberichte liest</h3>
 <p>
-                    Hier arbeitet die KI mit dem, woran Sie sich erinnern, nicht mit Hirnsignalen. Sie sprechen oder schreiben Ihren Traum auf, er wird transkribiert, und die KI schlägt eine Deutung vor: Symbole, Gefühle, mögliche Bezüge zu Ihrem Alltag und Fragen zum Weiterdenken. Jede Deutung ist ein Ansatz, kein Urteil.
+                    Hier arbeitet die KI mit dem, woran Sie sich erinnern, nicht mit Hirnsignalen. Sie sprechen oder schreiben Ihren Traum auf, er wird transkribiert, und die KI schlägt eine Deutung vor: Symbole, Gefühle, mögliche Bezüge zu Ihrem Alltag und Fragen zum Weiterdenken. Diese Deutung erfolgt nur, wenn Sie der KI-Verarbeitung in der App zugestimmt haben. Jede Deutung ist ein Ansatz, kein Urteil.
                 </p>
 <p>
                     <strong>Erfundenes Beispiel:</strong> In drei Wochen sammelt ein Tagebuch einen <a class="text-dream-salmon hover:underline" href="../traumsymbole/spiegel">Spiegel</a>, der ein leicht verändertes Gesicht zeigt, einen <a class="text-dream-salmon hover:underline" href="../traumsymbole/schluessel">Schlüssel</a>, der nicht mehr in die Haustür passt, und einen <a class="text-dream-salmon hover:underline" href="../traumsymbole/weg">Weg</a>, der sich im Nebel gabelt. Jeder Eintrag hält auch eine Stimmung fest: erst Unbehagen, dann Neugier. Zusammen gelesen werfen diese Träume eher eine Frage auf als eine Antwort: Was verändert sich gerade in meinem Leben, und wie geht es mir damit?
