@@ -267,6 +267,7 @@ export const TID = {
     JournalIllustration: 'component.journal.illustration',
     AnalysisStaleBanner: 'component.dreamDetail.staleBanner',
     DreamDetailActionCard: 'component.dreamDetail.actionCard',
+    SavedDreamMoment: 'component.dreamDetail.savedMoment',
     DreamDetailReadingZone: 'component.dreamDetail.readingZone',
     DreamDetailReflectionZone: 'component.dreamDetail.reflectionZone',
     FirstValueBackupCard: 'component.firstValueBackup.card',
