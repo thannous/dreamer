@@ -12,10 +12,11 @@ export function initDreamJourney(heroReady, seek = top => window.scrollTo({ top,
   const understanding = document.querySelector('.oh-understand');
   const map = understanding?.querySelector('.oh-starmap');
   if (!cards || !head || !map || !closing) return null;
-  // Preserve the gallery/analysis distance; give each account its own reading slot.
+  // A tighter night: the gallery and analysis share 2.4 screens, then each
+  // account gets half a screen of reading on the map.
   const dreamCount = map.querySelectorAll('.oh-starmap-dream').length;
-  track.style.height = `${100 + 336 + dreamCount * 90}svh`;
-  const distances = () => ({ prelude: pin.clientHeight * 3.36, map: pin.clientHeight * dreamCount * 0.9 });
+  track.style.height = `${100 + 240 + dreamCount * 50}svh`;
+  const distances = () => ({ prelude: pin.clientHeight * 2.4, map: pin.clientHeight * dreamCount * 0.5 });
   const seekProgress = (p, options) => {
     const d = distances();
     const offset = p <= 0.56 ? p / 0.56 * d.prelude : d.prelude + (p - 0.56) / 0.44 * d.map;

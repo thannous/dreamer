@@ -39,6 +39,7 @@
   --oh-light-text: #382d35;
   --oh-light-muted: #64514f;
   --oh-light-accent: #7c4c2b;
+  --oh-light-line: rgba(56, 45, 53, 0.14);
 
   --oh-ease-out: cubic-bezier(0.23, 1, 0.32, 1);
 }
@@ -99,45 +100,6 @@
 /* ---------------------------------------------------------------- */
 /* Shared primitives                                                 */
 /* ---------------------------------------------------------------- */
-
-/* Card surface: tinted glass with a top highlight, a champagne corner glow
- * and a soft drop shadow for depth. The hover glow is an opacity-only
- * overlay so it can transition cheaply. */
-.noctalia-observatory .glass-panel {
-  position: relative;
-  background:
-    radial-gradient(120% 90% at 100% 0%, rgba(234, 212, 180, 0.06), transparent 55%),
-    linear-gradient(180deg, rgba(255, 249, 239, 0.035), rgba(255, 249, 239, 0.012));
-  border: 1px solid var(--oh-line);
-  border-radius: 18px;
-  box-shadow:
-    inset 0 1px 0 rgba(255, 249, 239, 0.05),
-    0 30px 60px -40px rgba(0, 0, 0, 0.85);
-  backdrop-filter: none;
-  -webkit-backdrop-filter: none;
-  transition: border-color 200ms ease;
-}
-
-.noctalia-observatory .glass-panel::after {
-  content: '';
-  position: absolute;
-  inset: 0;
-  border-radius: inherit;
-  pointer-events: none;
-  background: radial-gradient(80% 70% at 50% 0%, rgba(234, 212, 180, 0.08), transparent 70%);
-  opacity: 0;
-  transition: opacity 200ms ease;
-}
-
-@media (hover: hover) and (pointer: fine) {
-  .noctalia-observatory .glass-panel:hover {
-    border-color: var(--oh-line-strong);
-  }
-
-  .noctalia-observatory .glass-panel:hover::after {
-    opacity: 1;
-  }
-}
 
 .noctalia-observatory .glass-button {
   background: transparent;
@@ -312,8 +274,11 @@
 
 .noctalia-observatory > header {
   position: relative;
+  display: flex;
   width: 100%;
-  padding: 9rem 1.5rem 3.5rem;
+  min-height: 100vh;
+  min-height: 100svh;
+  padding: 7.5rem clamp(1.25rem, 4vw, 3.5rem) clamp(1.75rem, 4.5vh, 3rem);
   overflow: hidden;
 }
 
@@ -341,34 +306,69 @@
   max-width: none;
 }
 
+.oh-hero-inner {
+  position: relative;
+  z-index: 10;
+  display: flex;
+  flex-direction: column;
+  margin: 0 auto;
+  text-align: left;
+}
+
+/* The title is the image of the first screen: two offset lines at poster
+ * scale, the second in champagne. */
 .oh-hero-title {
+  max-width: none;
+  margin: auto 0;
+  padding: 2rem 0 3rem;
   font-family: 'Fraunces', serif;
   font-variation-settings: 'opsz' 144;
   font-weight: 300;
-  font-size: clamp(2.9rem, 6.8vw, 6.1rem);
-  line-height: 1.02;
-  letter-spacing: -0.028em;
+  font-size: clamp(3.5rem, 10.4vw, 9.5rem);
+  line-height: 0.94;
+  letter-spacing: -0.035em;
   color: var(--oh-ivory);
-  text-wrap: balance;
-  margin: 0 auto 1.8rem;
-  max-width: 66rem;
+}
+
+.oh-hero-line {
+  display: block;
+}
+
+.oh-hero-line + .oh-hero-line {
+  padding-left: clamp(2.6rem, 13vw, 14rem);
+}
+
+/* One compound word over two lines: the hyphen is visual only. */
+.oh-hero-line--joined::after {
+  content: '-' / '';
 }
 
 .oh-hero-title .oh-accent-line {
-  display: inline;
   font-weight: 360;
   color: var(--oh-champagne-on);
   text-shadow: 0 0 48px rgba(234, 212, 180, 0.22);
 }
 
+.oh-hero-foot {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 2rem 3rem;
+}
+
+.oh-hero-intro {
+  max-width: 38rem;
+}
+
 .oh-hero-lede {
+  margin: 0 0 1.5rem;
   font-family: 'Outfit', sans-serif;
   font-weight: 300;
-  font-size: clamp(1.05rem, 1.5vw, 1.25rem);
+  font-size: clamp(1rem, 1.3vw, 1.15rem);
   line-height: 1.65;
+  max-width: 31rem;
   color: var(--oh-ivory-80);
-  max-width: 40rem;
-  margin: 0 auto 2.8rem;
   text-wrap: pretty;
 }
 
@@ -379,6 +379,33 @@
   justify-content: center;
   gap: 0.9rem 2rem;
   margin-bottom: 1.1rem;
+}
+
+.oh-hero-intro .oh-hero-cta {
+  justify-content: flex-start;
+  margin: 0;
+}
+
+.oh-hero-scroll {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1rem;
+  margin: 0;
+  font-family: 'Outfit', sans-serif;
+  font-weight: 500;
+  font-size: 0.7rem;
+  letter-spacing: 0.26em;
+  text-transform: uppercase;
+  color: var(--oh-ivory-muted);
+}
+
+.oh-hero-scroll::after {
+  content: '';
+  width: 1px;
+  height: 4.5rem;
+  background: linear-gradient(180deg, var(--oh-champagne), transparent);
+  transform-origin: top center;
 }
 
 .oh-hero-note {
@@ -396,16 +423,6 @@
   color: var(--oh-champagne);
 }
 
-.oh-hero-inner {
-  position: relative;
-  z-index: 10;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  text-align: center;
-  margin: 0 auto;
-}
-
 /* Sections without a locale id share this rhythm. */
 .oh-section {
   padding-top: clamp(6rem, 10vw, 9rem);
@@ -416,7 +433,6 @@
   position: relative;
   isolation: isolate;
   z-index: 1;
-  margin-top: -4rem;
   padding-top: calc(clamp(3rem, 5vw, 4rem) + 3rem);
 }
 
@@ -480,11 +496,6 @@
 }
 
 /* Icon sizing (lucide svgs are inlined at build time). */
-.oh-step-icon svg {
-  width: 1.45rem;
-  height: 1.45rem;
-}
-
 .oh-hero-note svg {
   width: 0.8rem;
   height: 0.8rem;
@@ -496,19 +507,9 @@
   height: 1.05rem;
 }
 
-.oh-tool-arrow svg {
-  width: 1.05rem;
-  height: 1.05rem;
-}
-
 .oh-symbol svg {
   width: 1rem;
   height: 1rem;
-}
-
-.oh-symbols-badge svg {
-  width: 0.85rem;
-  height: 0.85rem;
 }
 
 .oh-symbols-cta {
@@ -516,83 +517,90 @@
 }
 
 /* ---------------------------------------------------------------- */
-/* 2. Steps (how it works)                                           */
+/* 2. Manifesto: one sentence over the sky, then four promises       */
 /* ---------------------------------------------------------------- */
 
 .noctalia-observatory :is(#how-it-works, #comment-ca-marche, #como-funciona, #so-funktioniert-es, #come-funziona) {
-  padding-top: clamp(6rem, 10vw, 9rem);
-  padding-bottom: 2rem;
+  padding: clamp(7rem, 16vh, 12rem) clamp(1.25rem, 4vw, 3.5rem) clamp(6rem, 12vh, 9rem);
 }
 
-.oh-steps {
+.oh-manifesto-head {
+  max-width: 1240px;
+  margin: 0 auto clamp(4rem, 9vw, 7.5rem);
+}
+
+.oh-manifesto-title {
+  max-width: 17ch;
+  margin: 0;
+  font-family: 'Fraunces', serif;
+  font-variation-settings: 'opsz' 144;
+  font-weight: 300;
+  font-size: clamp(2.5rem, 5.8vw, 5.4rem);
+  line-height: 1.02;
+  letter-spacing: -0.03em;
+  color: var(--oh-ivory);
+  text-wrap: balance;
+}
+
+.oh-manifesto-head .oh-lede {
+  margin: 2rem 0 0;
+  max-width: 30rem;
+  color: var(--oh-ivory-80);
+}
+
+.oh-promises {
   display: grid;
-  grid-template-columns: 1fr;
-  gap: 4.5rem;
-  max-width: 1200px;
+  gap: 2.75rem 2.5rem;
+  max-width: 1240px;
   margin: 0 auto;
+  padding: 0;
+  list-style: none;
 }
 
-.oh-step {
+.oh-promise {
   position: relative;
-  padding-top: 2rem;
+  padding-top: 1.5rem;
 }
 
-.oh-step::before {
+.oh-promise::before {
   content: '';
   position: absolute;
   top: 0;
   left: 0;
   right: 0;
   height: 1px;
-  background: linear-gradient(90deg, var(--oh-line-strong), var(--oh-line) 45%, transparent);
+  background: linear-gradient(90deg, var(--oh-champagne), rgba(234, 212, 180, 0.12));
+  transform-origin: left center;
 }
 
-.oh-step-num {
-  display: block;
+.oh-promise h3 {
+  margin: 0 0 0.8rem;
   font-family: 'Fraunces', serif;
-  font-variation-settings: 'opsz' 144;
-  font-weight: 300;
-  font-size: 4.6rem;
-  line-height: 1;
-  color: transparent;
-  -webkit-text-stroke: 1px rgba(234, 212, 180, 0.6);
-  background: linear-gradient(180deg, rgba(234, 212, 180, 0.28), rgba(234, 212, 180, 0) 85%);
-  -webkit-background-clip: text;
-  background-clip: text;
-  margin-bottom: 1.4rem;
-  width: max-content;
-}
-
-.oh-step-icon {
-  display: flex;
-  align-items: center;
-  gap: 0.8rem;
-  color: var(--oh-champagne);
-  margin-bottom: 1.1rem;
-}
-
-.oh-step h3 {
-  font-family: 'Fraunces', serif;
-  font-weight: 360;
-  font-size: 1.6rem;
+  font-weight: 400;
+  font-size: 1.3rem;
   line-height: 1.2;
-  letter-spacing: -0.01em;
   color: var(--oh-ivory);
-  margin-bottom: 0.8rem;
 }
 
-.oh-step p {
+.oh-promise p {
+  margin: 0;
   font-family: 'Outfit', sans-serif;
   font-weight: 300;
-  font-size: 0.95rem;
+  font-size: 0.98rem;
   line-height: 1.7;
   color: var(--oh-ivory-muted);
-  max-width: 26rem;
 }
 
-.oh-step .phone-frame {
-  margin-top: 2.75rem;
-  width: min(100%, 300px);
+@media (min-width: 640px) {
+  .oh-promises {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (min-width: 1040px) {
+  .oh-promises {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
 }
 
 /* Editorial phone frame (overrides the compiled 4px border). */
@@ -607,287 +615,131 @@
     0 24px 80px -40px rgba(234, 212, 180, 0.3);
 }
 
-@media (max-width: 899px) {
-  .oh-step .phone-frame {
-    margin-left: auto;
-    margin-right: auto;
-  }
-}
-
-@media (min-width: 900px) {
-  .oh-steps {
-    grid-template-columns: repeat(3, 1fr);
-    gap: 2.75rem;
-  }
-
-  .oh-step:nth-child(2) {
-    margin-top: 4.5rem;
-  }
-
-  .oh-step:nth-child(3) {
-    margin-top: 9rem;
-  }
-}
-
 /* ---------------------------------------------------------------- */
-/* 4. Tool links (explore Noctalia tools)                            */
-/* ---------------------------------------------------------------- */
-
-.oh-tools {
-  display: grid;
-  grid-template-columns: 1fr;
-  gap: 1.25rem;
-  max-width: 1200px;
-  margin: 0 auto;
-}
-
-.oh-tool {
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-  gap: 2rem;
-  padding: 1.8rem;
-  min-height: 12rem;
-}
-
-.oh-tool h3 {
-  font-family: 'Fraunces', serif;
-  font-weight: 370;
-  font-size: 1.32rem;
-  line-height: 1.25;
-  color: var(--oh-ivory);
-  margin-bottom: 0.7rem;
-}
-
-.oh-tool p {
-  font-family: 'Outfit', sans-serif;
-  font-weight: 300;
-  font-size: 0.92rem;
-  line-height: 1.65;
-  color: var(--oh-ivory-muted);
-}
-
-.oh-tool .oh-tool-arrow {
-  align-self: flex-end;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  width: 2.4rem;
-  height: 2.4rem;
-  border-radius: 999px;
-  border: 1px solid var(--oh-line);
-  color: var(--oh-ivory-muted);
-  transition:
-    color 200ms ease,
-    border-color 200ms ease,
-    background-color 200ms ease;
-}
-
-.oh-tool .oh-tool-arrow svg {
-  transition: transform 200ms var(--oh-ease-out);
-}
-
-@media (hover: hover) and (pointer: fine) {
-  .oh-tool:hover .oh-tool-arrow {
-    color: var(--oh-on-champagne);
-    border-color: var(--oh-champagne);
-    background-color: var(--oh-champagne);
-  }
-
-  .oh-tool:hover .oh-tool-arrow svg {
-    transform: translate(2px, -2px);
-  }
-}
-
-@media (min-width: 700px) {
-  .oh-tools {
-    grid-template-columns: repeat(2, 1fr);
-  }
-}
-
-@media (min-width: 1100px) {
-  .oh-tools {
-    grid-template-columns: repeat(4, 1fr);
-  }
-}
-
-/* ---------------------------------------------------------------- */
-/* 6. Pricing                                                        */
+/* 6. Plans, on the ivory ground: hairlines instead of panels        */
 /* ---------------------------------------------------------------- */
 
 .oh-pricing {
-  position: relative;
   display: grid;
-  grid-template-columns: 1fr;
-  gap: 1.5rem;
-  max-width: 980px;
+  max-width: 1040px;
   margin: 0 auto;
-  align-items: stretch;
+  border-top: 1px solid var(--oh-light-line);
 }
 
 .oh-plan {
   display: flex;
   flex-direction: column;
-  padding: 2.4rem;
+  padding: 2.25rem 0 2.5rem;
+}
+
+.oh-plan + .oh-plan {
+  border-top: 1px solid var(--oh-light-line);
 }
 
 .oh-plan-head {
-  min-height: 11rem;
   margin-bottom: 1.75rem;
 }
 
 .oh-plan-tag {
-  display: inline-block;
+  display: block;
+  margin-bottom: 0.75rem;
   font-family: 'Outfit', sans-serif;
   font-weight: 500;
-  font-size: 0.68rem;
+  font-size: 0.66rem;
   letter-spacing: 0.22em;
   text-transform: uppercase;
-  color: var(--oh-champagne-on);
-  margin-bottom: 1.2rem;
+  color: var(--oh-light-accent);
 }
 
 .oh-plan h3 {
+  margin: 0 0 0.4rem;
   font-family: 'Fraunces', serif;
-  font-weight: 370;
-  font-size: 1.75rem;
-  line-height: 1.15;
-  margin-bottom: 0.5rem;
+  font-variation-settings: 'opsz' 144;
+  font-weight: 300;
+  font-size: 2.2rem;
+  line-height: 1.05;
+  letter-spacing: -0.02em;
+  color: var(--oh-light-text);
 }
 
 .oh-plan-price {
-  font-family: 'Fraunces', serif;
-  font-variation-settings: 'opsz' 144;
-  font-weight: 320;
-  font-size: 2.5rem;
-  line-height: 1.08;
-  letter-spacing: -0.015em;
   margin-bottom: 0.9rem;
+  font-family: 'Outfit', sans-serif;
+  font-weight: 500;
+  font-size: 1.02rem;
+  color: var(--oh-light-accent);
 }
 
 .oh-plan-desc {
+  margin: 0;
   font-family: 'Outfit', sans-serif;
   font-weight: 300;
-  font-size: 0.92rem;
+  font-size: 0.98rem;
   line-height: 1.65;
+  color: var(--oh-light-muted);
 }
 
 .oh-plan ul {
   display: grid;
-  gap: 0.85rem;
-  margin: 0 0 2.4rem;
+  gap: 0.75rem;
+  margin: 0 0 2.2rem;
+  padding: 0;
+  list-style: none;
 }
 
 .oh-plan ul li {
-  display: flex;
-  align-items: baseline;
-  gap: 0.7rem;
+  position: relative;
+  padding-left: 1.5rem;
   font-family: 'Outfit', sans-serif;
-  font-weight: 300;
-  font-size: 0.94rem;
+  font-size: 0.97rem;
   line-height: 1.55;
+  color: var(--oh-light-text);
 }
 
 .oh-plan ul li::before {
   content: '';
-  flex-shrink: 0;
-  width: 0.9rem;
+  position: absolute;
+  top: 0.75em;
+  left: 0;
+  width: 0.7rem;
   height: 1px;
-  transform: translateY(-0.28em);
-  background: currentColor;
-  opacity: 0.6;
-}
-
-.oh-plan .oh-plan-cta {
-  margin-top: auto;
-}
-
-/* Free plan: quiet tinted-glass block. */
-.oh-plan--free {
-  border: 1px solid var(--oh-line);
-  border-radius: 18px;
-  color: var(--oh-ivory);
-  background: linear-gradient(180deg, rgba(255, 249, 239, 0.03), rgba(255, 249, 239, 0.008));
-  box-shadow: inset 0 1px 0 rgba(255, 249, 239, 0.05);
-}
-
-.oh-plan--free .oh-plan-desc,
-.oh-plan--free ul li {
-  color: var(--oh-ivory-muted);
-}
-
-.oh-plan--free ul li::before {
-  background: var(--oh-champagne);
-}
-
-.oh-plan--free .oh-plan-cta {
-  display: block;
-  text-align: center;
-  padding: 0.95rem 1.5rem;
-  border: 1px solid var(--oh-line-strong);
-  border-radius: 999px;
-  color: var(--oh-ivory);
-  font-family: 'Outfit', sans-serif;
-  font-weight: 500;
-  transition:
-    border-color 200ms ease,
-    color 200ms ease,
-    transform 160ms var(--oh-ease-out);
-}
-
-.oh-plan--free .oh-plan-cta:hover {
-  border-color: var(--oh-champagne);
-  color: var(--oh-champagne-on);
-}
-
-/* Plus plan: the single light surface, in the palette's light mode. */
-.oh-plan--plus {
-  position: relative;
-  border-radius: 18px;
-  background: linear-gradient(165deg, var(--oh-ivory) 0%, var(--oh-champagne-light) 70%, #f1e2cc 100%);
-  color: var(--oh-light-text);
-  box-shadow:
-    inset 0 1px 0 rgba(255, 255, 255, 0.7),
-    0 30px 70px -45px rgba(234, 212, 180, 0.22),
-    0 30px 60px -30px rgba(0, 0, 0, 0.6);
-}
-
-/* Plus has no fixed price to show: its price line reads as a statement,
- * not as a figure, so it is set smaller than "Free". The width stays in rem:
- * with a glyph-relative unit (ch) Chrome appears to restyle the page each time a
- * web font loads, which measured as ~130 ms of extra blocking on mobile. */
-.oh-plan--plus .oh-plan-price {
-  font-size: 1.55rem;
-  line-height: 1.2;
-  max-width: 15rem;
-}
-
-.oh-plan--plus .oh-plan-tag {
-  color: var(--oh-light-accent);
-}
-
-.oh-plan--plus .oh-plan-desc,
-.oh-plan--plus ul li {
-  color: var(--oh-light-muted);
-}
-
-.oh-plan--plus ul li::before {
   background: var(--oh-light-accent);
 }
 
-.oh-plan--plus .oh-plan-cta {
-  display: block;
-  text-align: center;
-  padding: 0.95rem 1.5rem;
+.oh-plan .oh-plan-cta {
+  align-self: flex-start;
+  display: inline-flex;
+  margin-top: auto;
+  padding: 0.9rem 1.6rem;
   border-radius: 999px;
-  background: linear-gradient(180deg, #1d1b24, var(--oh-ink));
-  color: var(--oh-ivory);
   font-family: 'Outfit', sans-serif;
-  font-weight: 700;
-  box-shadow:
-    inset 0 1px 0 rgba(255, 249, 239, 0.1),
-    0 12px 28px -14px rgba(3, 4, 13, 0.7);
-  transition: transform 160ms var(--oh-ease-out);
+  font-weight: 600;
+  font-size: 0.95rem;
+  transition:
+    border-color 200ms ease,
+    background-color 200ms ease,
+    transform 160ms var(--oh-ease-out);
+}
+
+.oh-plan--free .oh-plan-cta {
+  border: 1px solid rgba(56, 45, 53, 0.32);
+  color: var(--oh-light-text);
+}
+
+.oh-plan--plus .oh-plan-cta {
+  border: 1px solid var(--oh-light-text);
+  background: var(--oh-light-text);
+  color: var(--oh-ivory);
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .oh-plan--free .oh-plan-cta:hover {
+    border-color: var(--oh-light-text);
+  }
+
+  .oh-plan--plus .oh-plan-cta:hover {
+    background: #2a2128;
+  }
 }
 
 .oh-plan .oh-plan-cta:active {
@@ -895,38 +747,41 @@
 }
 
 .oh-plan-note {
-  margin-top: 0.9rem;
+  margin: 1rem 0 0;
   font-family: 'Outfit', sans-serif;
-  font-weight: 300;
-  font-size: 0.72rem;
-  line-height: 1.5;
+  font-size: 0.8rem;
+  line-height: 1.55;
   color: var(--oh-light-muted);
 }
 
 @media (min-width: 860px) {
   .oh-pricing {
-    grid-template-columns: 1fr 1.15fr;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .oh-plan {
+    padding: 2.5rem clamp(1.5rem, 3vw, 3rem) 2.75rem 0;
+  }
+
+  .oh-plan + .oh-plan {
+    padding-left: clamp(1.5rem, 3vw, 3rem);
+    border-top: 0;
+    border-left: 1px solid var(--oh-light-line);
   }
 }
 
 /* ---------------------------------------------------------------- */
-/* 7. FAQ                                                            */
+/* 7. FAQ, on the ivory ground                                       */
 /* ---------------------------------------------------------------- */
 
 .oh-faq {
-  max-width: 780px;
+  max-width: 52rem;
   margin: 0 auto;
+  border-top: 1px solid var(--oh-light-line);
 }
 
 .oh-faq details {
-  border-top: 1px solid var(--oh-line);
-  background: transparent;
-  border-radius: 0;
-  padding: 0;
-}
-
-.oh-faq details:last-child {
-  border-bottom: 1px solid var(--oh-line);
+  border-bottom: 1px solid var(--oh-light-line);
 }
 
 .oh-faq summary {
@@ -934,15 +789,14 @@
   align-items: baseline;
   justify-content: space-between;
   gap: 1.5rem;
-  padding: 1.6rem 0.25rem;
+  padding: 1.35rem 0;
   cursor: pointer;
   list-style: none;
   font-family: 'Fraunces', serif;
-  font-weight: 350;
-  font-size: 1.28rem;
-  line-height: 1.35;
-  color: var(--oh-ivory);
-  transition: color 200ms ease;
+  font-weight: 400;
+  font-size: 1.22rem;
+  line-height: 1.3;
+  color: var(--oh-light-text);
 }
 
 .oh-faq summary::-webkit-details-marker {
@@ -952,31 +806,33 @@
 /* The same "+" rotates into a "×" so the state change reads as one object. */
 .oh-faq summary::after {
   content: '+';
-  flex-shrink: 0;
+  flex: none;
   font-family: 'Outfit', sans-serif;
   font-weight: 300;
   font-size: 1.5rem;
   line-height: 1;
-  color: var(--oh-champagne);
-  transition: transform 200ms var(--oh-ease-out);
+  color: var(--oh-light-accent);
+  transition: transform 250ms var(--oh-ease-out);
 }
 
 .oh-faq details[open] summary::after {
   transform: rotate(45deg);
 }
 
-.oh-faq summary:hover {
-  color: var(--oh-champagne-on);
+.oh-faq summary:focus-visible {
+  outline: 2px solid var(--oh-light-accent);
+  outline-offset: 4px;
+  border-radius: 4px;
 }
 
 .oh-faq details p {
-  padding: 0 0.25rem 1.8rem;
-  max-width: 40rem;
+  max-width: 44rem;
+  margin: 0 0 1.5rem;
   font-family: 'Outfit', sans-serif;
   font-weight: 300;
-  font-size: 0.95rem;
+  font-size: 1rem;
   line-height: 1.75;
-  color: var(--oh-ivory-muted);
+  color: var(--oh-light-muted);
 }
 
 @media (prefers-reduced-motion: no-preference) {
@@ -993,121 +849,127 @@
 }
 
 /* ---------------------------------------------------------------- */
-/* 8. Symbols dictionary                                             */
+/* 4. Symbols: a typographic index, every question kept visible      */
 /* ---------------------------------------------------------------- */
 
 .noctalia-observatory :is(#symboles, #symbols, #simbolos, #traumsymbole, #simboli) {
-  padding-top: clamp(6rem, 10vw, 9rem);
-  padding-bottom: 2rem;
+  padding: clamp(6rem, 10vw, 9rem) clamp(1.25rem, 4vw, 3.5rem) clamp(4rem, 7vw, 6rem);
 }
 
-.oh-symbols-badge {
-  display: flex;
-  width: max-content;
-  align-items: center;
-  gap: 0.55rem;
-  font-family: 'Outfit', sans-serif;
-  font-weight: 500;
-  font-size: 0.68rem;
-  letter-spacing: 0.22em;
-  text-transform: uppercase;
-  color: var(--oh-champagne-on);
-  border: 1px solid var(--oh-line-strong);
-  border-radius: 999px;
-  background: var(--oh-champagne-06);
-  padding: 0.5rem 0.95rem;
-  margin-bottom: 1.6rem;
+:is(#symboles, #symbols, #simbolos, #traumsymbole, #simboli) > .oh-section-head {
+  max-width: 1240px;
 }
 
 .oh-symbols {
-  position: relative;
   display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 0;
-  max-width: 1200px;
-  margin: 0 auto 3.5rem;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  column-gap: clamp(1rem, 3vw, 2.5rem);
+  max-width: 1240px;
+  margin: 0 auto 3rem;
   border-top: 1px solid var(--oh-line);
+  counter-reset: oh-symbol;
 }
 
 .oh-symbol {
   position: relative;
-  z-index: 1;
-  display: flex;
-  align-items: baseline;
-  justify-content: space-between;
-  gap: 1rem;
-  padding: 1.35rem 0.75rem;
+  display: block;
+  padding: 1.5rem 2rem 1.6rem 0;
   border-bottom: 1px solid var(--oh-line);
-  transition: background-color 200ms ease;
+  color: inherit;
+  text-decoration: none;
+  counter-increment: oh-symbol;
+}
+
+.oh-symbol::before {
+  content: counter(oh-symbol, decimal-leading-zero);
+  position: absolute;
+  top: 1.85rem;
+  right: 0;
+  font-family: 'Outfit', sans-serif;
+  font-weight: 500;
+  font-size: 0.66rem;
+  letter-spacing: 0.2em;
+  color: var(--oh-ivory-muted);
+  font-variant-numeric: tabular-nums;
 }
 
 .oh-symbol-name {
+  display: block;
   font-family: 'Fraunces', serif;
-  font-weight: 370;
-  font-size: 1.22rem;
-  line-height: 1.25;
+  font-variation-settings: 'opsz' 144;
+  font-weight: 300;
+  font-size: clamp(1.8rem, 3.3vw, 3.1rem);
+  line-height: 1;
+  letter-spacing: -0.025em;
   color: var(--oh-ivory);
-  transition: color 200ms ease;
+  transition:
+    color 200ms ease,
+    transform 300ms var(--oh-ease-out);
 }
 
 .oh-symbol-q {
   display: block;
-  margin-top: 0.35rem;
+  margin-top: 0.65rem;
   font-family: 'Outfit', sans-serif;
   font-weight: 300;
-  font-size: 0.8rem;
+  font-size: 0.86rem;
   line-height: 1.5;
   color: var(--oh-ivory-muted);
+  text-wrap: pretty;
 }
 
 .oh-symbol svg {
-  flex-shrink: 0;
+  position: absolute;
+  right: 0;
+  bottom: 1.7rem;
   color: var(--oh-champagne);
   opacity: 0;
-  transform: translate(-4px, 4px);
+  transform: translate3d(-4px, 4px, 0);
   transition:
     opacity 200ms ease,
-    transform 200ms var(--oh-ease-out);
+    transform 300ms var(--oh-ease-out);
 }
 
 @media (hover: hover) and (pointer: fine) {
-  a.oh-symbol:hover {
-    background-color: var(--oh-champagne-06);
-  }
-
   a.oh-symbol:hover .oh-symbol-name {
     color: var(--oh-champagne-on);
+    transform: translate3d(0.25rem, 0, 0);
   }
 
   a.oh-symbol:hover svg {
     opacity: 1;
-    transform: translate(0, 0);
+    transform: none;
   }
 }
 
-.oh-symbol:focus-visible svg {
+a.oh-symbol:focus-visible {
+  outline: 2px solid var(--oh-champagne);
+  outline-offset: 4px;
+  border-radius: 4px;
+}
+
+a.oh-symbol:focus-visible svg {
   opacity: 1;
   transform: none;
 }
 
-@media (min-width: 700px) {
+@media (min-width: 900px) {
   .oh-symbols {
-    grid-template-columns: repeat(4, 1fr);
+    grid-template-columns: repeat(4, minmax(0, 1fr));
   }
 }
 
 /* ---------------------------------------------------------------- */
-/* 9. Ending: eyes reopen onto the app                               */
+/* 8. Opening the eyes: back to night, the eyes reopen onto the app  */
 /* ---------------------------------------------------------------- */
 
 .noctalia-observatory .oh-ending {
   display: grid;
   gap: 3rem;
   align-items: center;
-  max-width: 1100px;
+  max-width: 1240px;
   margin: 0 auto;
-  padding-top: clamp(7rem, 12vw, 11rem);
-  padding-bottom: clamp(5rem, 8vw, 8rem);
+  padding: clamp(3rem, 6vw, 5rem) clamp(1.25rem, 4vw, 3.5rem) clamp(5rem, 8vw, 8rem);
 }
 
 .oh-ending-portal {
@@ -1117,25 +979,75 @@
 }
 
 .oh-ending-portal .phone-frame {
-  width: min(78%, 300px);
+  width: min(70%, 290px);
 }
 
 .oh-ending-copy {
   text-align: center;
 }
 
+.oh-ending-mentions {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 0.5rem 1.75rem;
+  margin: 0 0 1.75rem;
+  font-family: 'Outfit', sans-serif;
+  font-weight: 500;
+  font-size: 0.68rem;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--oh-ivory-muted);
+}
+
+.oh-ending-mentions span::before {
+  content: '';
+  display: inline-block;
+  width: 0.35rem;
+  height: 0.35rem;
+  margin-right: 0.6rem;
+  border-radius: 50%;
+  background: var(--oh-champagne);
+  vertical-align: 0.12em;
+}
+
+.oh-ending-title {
+  margin: 0;
+  font-family: 'Fraunces', serif;
+  font-variation-settings: 'opsz' 144;
+  font-weight: 300;
+  font-size: clamp(2.6rem, 6vw, 5.4rem);
+  line-height: 0.98;
+  letter-spacing: -0.03em;
+  color: var(--oh-ivory);
+  text-wrap: balance;
+}
+
+.oh-ending-title span {
+  display: block;
+}
+
+.oh-ending-title .oh-accent-line {
+  color: var(--oh-champagne-on);
+  text-shadow: 0 0 48px rgba(234, 212, 180, 0.22);
+}
+
 .oh-ending-copy .oh-lede {
-  margin: 1.25rem auto 2.2rem;
+  margin: 1.5rem auto 2.2rem;
 }
 
 @media (min-width: 900px) {
   .noctalia-observatory .oh-ending {
-    grid-template-columns: minmax(0, 1fr) minmax(0, 1.1fr);
-    gap: 4rem;
+    grid-template-columns: minmax(0, 0.8fr) minmax(0, 1.2fr);
+    gap: 5rem;
   }
 
   .oh-ending-copy {
     text-align: left;
+  }
+
+  .oh-ending-mentions {
+    justify-content: flex-start;
   }
 
   .oh-ending-copy .oh-lede {
@@ -1265,8 +1177,7 @@ body .noctalia-consent-actions button:hover {
 
 @media (max-width: 899px) {
   .noctalia-observatory > header {
-    padding-top: 6.5rem;
-    padding-bottom: 1rem;
+    padding-top: 6rem;
   }
 
   .oh-dreams {
@@ -1275,11 +1186,6 @@ body .noctalia-consent-actions button:hover {
 
   .oh-section-head {
     margin-bottom: 3rem;
-  }
-
-  .oh-plan-head {
-    min-height: 0;
-    margin-bottom: 2rem;
   }
 
   .landing-footer {
@@ -1314,6 +1220,27 @@ body .noctalia-consent-actions button:hover {
 
   .landing-footer > .grid > :first-child {
     grid-column: 1 / -1 !important;
+  }
+}
+
+@media (min-width: 900px) {
+  .oh-hero-intro .oh-hero-cta {
+    flex-wrap: nowrap;
+  }
+
+  .oh-hero-intro .oh-hero-cta > a {
+    white-space: nowrap;
+  }
+}
+
+@media (max-width: 699px) {
+  .oh-hero-foot {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .oh-hero-scroll {
+    display: none;
   }
 }
 
@@ -1626,25 +1553,437 @@ body .noctalia-consent-actions button:hover {
   opacity: 0;
 }
 
-/* 04 Remembering */
-.oh-remember-grid {
-  display: grid;
-  gap: 1.25rem;
+/* 05 Waking: the single ivory chapter, in the palette's light mode.
+ * A CSS dawn opens it, a dusk closes it; champagne is never text here. */
+.oh-day {
+  position: relative;
+  isolation: isolate;
+  padding-bottom: 30svh;
+  color: var(--oh-light-text);
 }
 
-.oh-remember-side {
-  display: grid;
-  gap: 1.25rem;
+.oh-day::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  background: linear-gradient(
+    180deg,
+    rgba(3, 4, 13, 0) 0,
+    #0b0e1f 14svh,
+    #252a45 32svh,
+    #574a5c 48svh,
+    #a48d88 62svh,
+    #e2cdb4 76svh,
+    #f8eedf 88svh,
+    var(--oh-ivory) 100svh,
+    var(--oh-ivory) calc(100% - 34svh),
+    #efe0cb calc(100% - 27svh),
+    #8f7a7c calc(100% - 18svh),
+    #2b2c45 calc(100% - 9svh),
+    rgba(3, 4, 13, 0) 100%
+  );
 }
 
-.oh-journal,
-.oh-chart,
-.oh-streak {
+.oh-day .oh-index {
+  color: var(--oh-light-accent);
+}
+
+.oh-day .oh-index::before {
+  background: linear-gradient(90deg, transparent, var(--oh-light-accent));
+}
+
+.oh-day .oh-h2 {
+  color: var(--oh-light-text);
+}
+
+.oh-day .oh-lede {
+  color: var(--oh-light-muted);
+}
+
+.oh-day .oh-btn-quiet {
+  color: var(--oh-light-text);
+}
+
+.oh-day .oh-btn-quiet svg {
+  color: var(--oh-light-accent);
+}
+
+.oh-day .oh-btn-quiet::after {
+  background: linear-gradient(90deg, var(--oh-light-accent), rgba(124, 76, 43, 0.2));
+  transform: scaleX(1);
+}
+
+.oh-day .oh-btn-quiet:hover {
+  color: var(--oh-light-accent);
+}
+
+.oh-day .oh-section {
+  padding-left: clamp(1.25rem, 4vw, 3.5rem);
+  padding-right: clamp(1.25rem, 4vw, 3.5rem);
+}
+
+.noctalia-observatory .oh-wake {
+  padding: 0 clamp(1.25rem, 4vw, 3.5rem);
+}
+
+.oh-wake-head {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  min-height: 100vh;
+  min-height: 100svh;
+  max-width: 1240px;
+  margin: 0 auto;
+  padding-bottom: clamp(1.5rem, 5vh, 3.5rem);
+}
+
+.oh-wake-title {
   margin: 0;
-  padding: 1.4rem 1.5rem;
-  border-radius: 22px;
+  font-family: 'Fraunces', serif;
+  font-variation-settings: 'opsz' 144;
+  font-weight: 300;
+  font-size: clamp(3.6rem, 13.5vw, 12.5rem);
+  line-height: 0.86;
+  letter-spacing: -0.045em;
+  color: var(--oh-light-text);
 }
 
+.oh-wake-title span {
+  display: block;
+}
+
+.oh-wake-title span + span {
+  padding-left: clamp(1.5rem, 16vw, 18rem);
+}
+
+.oh-wake-signature {
+  display: grid;
+  gap: 3rem;
+  align-items: center;
+  max-width: 1240px;
+  margin: 0 auto;
+  padding: clamp(3rem, 7vw, 6rem) 0;
+}
+
+.oh-wake-object {
+  display: flex;
+  justify-content: center;
+}
+
+.oh-wake-object .phone-frame {
+  width: min(72vw, 18rem);
+  box-shadow:
+    0 50px 90px -40px rgba(56, 45, 53, 0.55),
+    0 30px 70px -40px rgba(124, 76, 43, 0.45);
+}
+
+.oh-specs {
+  margin: 0;
+  border-bottom: 1px solid var(--oh-light-line);
+}
+
+.oh-specs > div {
+  display: grid;
+  grid-template-columns: 7.5rem minmax(0, 1fr);
+  gap: 1rem;
+  padding: 0.95rem 0;
+  border-top: 1px solid var(--oh-light-line);
+}
+
+.oh-specs dt {
+  padding-top: 0.2rem;
+  font-family: 'Outfit', sans-serif;
+  font-weight: 500;
+  font-size: 0.66rem;
+  line-height: 1.6;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--oh-light-accent);
+}
+
+.oh-specs dd {
+  margin: 0;
+  font-family: 'Outfit', sans-serif;
+  font-size: 0.98rem;
+  line-height: 1.45;
+  color: var(--oh-light-text);
+}
+
+.oh-wake-sentence {
+  margin: 0 0 1.25rem;
+  font-family: 'Fraunces', serif;
+  font-variation-settings: 'opsz' 144;
+  font-weight: 300;
+  font-size: clamp(1.8rem, 2.7vw, 2.6rem);
+  line-height: 1.1;
+  letter-spacing: -0.02em;
+  color: var(--oh-light-text);
+  text-wrap: balance;
+}
+
+.oh-wake-pitch .oh-lede {
+  margin: 0 0 1.25rem;
+}
+
+@media (max-width: 999px) {
+  .oh-wake-object {
+    order: -1;
+  }
+
+  .oh-specs {
+    order: 2;
+  }
+}
+
+@media (min-width: 1000px) {
+  .oh-wake-signature {
+    grid-template-columns: minmax(0, 1fr) minmax(16rem, 19rem) minmax(0, 1fr);
+    gap: clamp(2.5rem, 5vw, 5rem);
+  }
+}
+
+/* The app in five parts: an accordion whose open entry shows its object,
+ * kept dark on the ivory ground like the app itself. */
+.oh-features {
+  position: relative;
+  max-width: 1240px;
+  margin: 0 auto;
+  padding: clamp(2rem, 5vw, 4rem) 0;
+}
+
+.oh-feature {
+  border-top: 1px solid var(--oh-light-line);
+}
+
+.oh-feature:last-of-type {
+  border-bottom: 1px solid var(--oh-light-line);
+}
+
+.oh-feature > summary {
+  display: flex;
+  align-items: baseline;
+  gap: 1.25rem;
+  padding: 1.1rem 0;
+  cursor: pointer;
+  list-style: none;
+}
+
+.oh-feature > summary::-webkit-details-marker {
+  display: none;
+}
+
+.oh-feature > summary:focus-visible {
+  outline: 2px solid var(--oh-light-accent);
+  outline-offset: 4px;
+  border-radius: 4px;
+}
+
+.oh-feature-num {
+  min-width: 1.6rem;
+  font-family: 'Outfit', sans-serif;
+  font-weight: 500;
+  font-size: 0.68rem;
+  letter-spacing: 0.22em;
+  color: var(--oh-light-accent);
+  font-variant-numeric: tabular-nums;
+}
+
+.oh-feature-title {
+  margin: 0;
+  font-family: 'Fraunces', serif;
+  font-variation-settings: 'opsz' 144;
+  font-weight: 300;
+  font-size: clamp(1.9rem, 3.6vw, 3.3rem);
+  line-height: 1.02;
+  letter-spacing: -0.025em;
+  color: rgba(56, 45, 53, 0.4);
+  transition: color 200ms ease;
+}
+
+.oh-feature[open] .oh-feature-title {
+  color: var(--oh-light-text);
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .oh-feature > summary:hover .oh-feature-title {
+    color: var(--oh-light-text);
+  }
+}
+
+.oh-feature-body {
+  max-width: 31rem;
+  padding: 0 0 1.75rem 2.85rem;
+}
+
+.oh-feature-body p {
+  margin: 0;
+  font-family: 'Outfit', sans-serif;
+  font-weight: 300;
+  font-size: 1rem;
+  line-height: 1.7;
+  color: var(--oh-light-muted);
+}
+
+.oh-feature-body .oh-feature-links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.6rem 1.5rem;
+  margin-top: 1rem;
+}
+
+.oh-feature-links a {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  padding-bottom: 0.15rem;
+  border-bottom: 1px solid rgba(124, 76, 43, 0.35);
+  font-family: 'Outfit', sans-serif;
+  font-weight: 500;
+  font-size: 0.92rem;
+  color: var(--oh-light-text);
+  transition:
+    color 200ms ease,
+    border-color 200ms ease;
+}
+
+.oh-feature-links a:hover {
+  border-color: var(--oh-light-accent);
+  color: var(--oh-light-accent);
+}
+
+.oh-feature-links svg {
+  width: 0.9rem;
+  height: 0.9rem;
+  color: var(--oh-light-accent);
+}
+
+.oh-feature-object {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 0 1.75rem;
+  padding: 1.5rem;
+  border-radius: 24px;
+  overflow: hidden;
+  background:
+    radial-gradient(120% 80% at 50% 0%, rgba(49, 53, 79, 0.6), transparent 70%),
+    var(--oh-ink);
+  color: var(--oh-ivory);
+  box-shadow: 0 40px 80px -50px rgba(56, 45, 53, 0.65);
+}
+
+.oh-feature-object :is(.oh-journal, .oh-chart, .oh-streak) {
+  width: 100%;
+  max-width: 30rem;
+  margin: 0;
+  padding: 0;
+}
+
+.oh-feature-object .phone-frame {
+  width: 12rem;
+  flex: none;
+}
+
+/* Phones: the screenshot is cropped and fades into the panel. */
+.oh-feature-object[data-object="phone"] {
+  align-items: flex-start;
+  height: 24rem;
+  padding-bottom: 0;
+}
+
+.oh-feature-object[data-object="phone"]::after {
+  content: '';
+  position: absolute;
+  inset: auto 0 0;
+  height: 5rem;
+  background: linear-gradient(180deg, rgba(3, 4, 13, 0), var(--oh-ink));
+  pointer-events: none;
+}
+
+@media (min-width: 900px) {
+  .oh-features {
+    display: grid;
+    grid-template-columns: minmax(0, 5fr) minmax(0, 6fr);
+    column-gap: clamp(3rem, 6vw, 6rem);
+    align-content: start;
+    min-height: 42rem;
+  }
+
+  .oh-feature {
+    grid-column: 1;
+  }
+
+  .oh-feature-object {
+    position: absolute;
+    top: clamp(2rem, 5vw, 4rem);
+    right: 0;
+    bottom: clamp(2rem, 5vw, 4rem);
+    width: calc((100% - clamp(3rem, 6vw, 6rem)) * 6 / 11);
+    margin: 0;
+    padding: 2.5rem;
+  }
+
+  .oh-feature-object[data-object="phone"] {
+    align-items: center;
+    height: auto;
+    padding-bottom: 2.5rem;
+  }
+
+  .oh-feature-object[data-object="phone"]::after {
+    display: none;
+  }
+
+  .oh-feature-object .phone-frame {
+    width: auto;
+    height: 100%;
+    aspect-ratio: 800 / 1639;
+  }
+}
+
+/* A live readout, like a log line at the foot of the chapter. */
+.oh-readout {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: 1.25rem 3rem;
+  max-width: 1240px;
+  margin: 0 auto;
+  padding: 1.75rem 0 0;
+  font-family: 'Outfit', sans-serif;
+  font-size: 0.95rem;
+  color: var(--oh-light-text);
+}
+
+.oh-readout-item {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+}
+
+.oh-readout-item[hidden] {
+  display: none;
+}
+
+.oh-readout-label {
+  font-weight: 500;
+  font-size: 0.66rem;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--oh-light-accent);
+}
+
+.oh-readout-value {
+  font-variant-numeric: tabular-nums;
+}
+
+.oh-day-section .oh-pricing-head {
+  margin-bottom: 3rem;
+}
+
+/* 04 Remembering: the objects inside the waking accordion. */
 .oh-remember-h3 {
   margin: 0 0 1rem;
   color: #fff9ef;
@@ -1838,12 +2177,6 @@ body .noctalia-consent-actions button:hover {
   margin: 0.85rem 0 0;
   color: #b7aec9;
   font-size: 0.76rem;
-}
-
-@media (min-width: 900px) {
-  .oh-remember-grid {
-    grid-template-columns: minmax(0, 1.15fr) minmax(0, 1fr);
-  }
 }
 
 /* `overflow-x: hidden` turns these into scroll containers, which breaks

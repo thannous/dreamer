@@ -220,7 +220,7 @@ html.exp-intro-pending .oh-dreams > * {
 }
 
 /* ---------------------------------------------------------------- */
-/* Headline words (full & light tiers).                              */
+/* Headline letters (full & light tiers).                            */
 /* ---------------------------------------------------------------- */
 
 /* The tier is set in the head before first paint. Keep the plain title
@@ -246,35 +246,67 @@ html.exp-words .oh-hero-title.hero-anim {
   animation: none;
 }
 
+/* Letters stay inline so the title keeps its kerning; only opacity and
+ * blur change, once, as the sky appears. */
 .oh-word {
-  display: inline-block;
+  white-space: nowrap;
 }
 
-html.exp-words .oh-word {
+html.exp-words .oh-char {
   opacity: 0;
-  transform: translate3d(0, 0.18em, 0);
+  filter: blur(14px);
   transition:
-    opacity 300ms var(--oh-ease-out),
-    transform 300ms var(--oh-ease-out);
+    opacity 1100ms cubic-bezier(0.22, 0.61, 0.36, 1),
+    filter 1300ms cubic-bezier(0.22, 0.61, 0.36, 1);
 }
 
-html.exp-words .oh-hero-title.is-revealed .oh-word {
+html.exp-words .oh-hero-title.is-revealed .oh-char {
   opacity: 1;
-  transform: none;
   filter: none;
 }
 
+/* The scroll cue's line keeps descending, slowly. */
+html.exp-motion .oh-hero-scroll::after {
+  animation: oh-scroll-cue 2.8s cubic-bezier(0.22, 0.61, 0.36, 1) infinite;
+}
+
+@keyframes oh-scroll-cue {
+  0% {
+    opacity: 0;
+    transform: scaleY(0);
+  }
+  35% {
+    opacity: 1;
+    transform: scaleY(1);
+  }
+  100% {
+    opacity: 0;
+    transform: translate3d(0, 1.5rem, 0) scaleY(1);
+  }
+}
+
 /* ---------------------------------------------------------------- */
-/* Hairlines draw in with their step (enhanced tiers).               */
+/* Hairlines draw in with their promise (enhanced tiers).            */
 /* ---------------------------------------------------------------- */
 
-html.exp-motion .oh-step::before {
-  transform-origin: left center;
+html.exp-motion .oh-promise::before {
   transition: transform 1100ms cubic-bezier(0.22, 0.61, 0.36, 1) 120ms;
 }
 
-html.exp-motion .oh-step:not(.active)::before {
+html.exp-motion .oh-promise:not(.active)::before {
   transform: scaleX(0);
+}
+
+/* The open accordion entry brings its object up. */
+html.exp-motion .oh-feature[open] .oh-feature-object {
+  animation: oh-feature-in 600ms cubic-bezier(0.23, 1, 0.32, 1);
+}
+
+@keyframes oh-feature-in {
+  from {
+    opacity: 0;
+    transform: translate3d(0, 14px, 0);
+  }
 }
 
 /* ---------------------------------------------------------------- */
@@ -323,16 +355,20 @@ html.exp-static .reveal {
     animation: none;
   }
 
-  html.exp-motion .oh-step::before {
+  html.exp-motion .oh-promise::before {
     transform: none;
     transition: none;
   }
 
-  html.exp-words .oh-word {
+  html.exp-words .oh-char {
     opacity: 1;
-    transform: none;
     filter: none;
     transition: none;
+  }
+
+  html.exp-motion .oh-hero-scroll::after,
+  html.exp-motion .oh-feature[open] .oh-feature-object {
+    animation: none;
   }
 
   .oh-hero-film,
@@ -802,6 +838,55 @@ html.exp-starmap .oh-starmap-dream.is-current {
   transform: none;
 }
 
+/* The account being read is a ticket: notches at the perforation, date and
+ * emotion above it, its number stamped in the corner. */
+html.exp-starmap .oh-starmap-dreams {
+  counter-reset: oh-dream;
+}
+
+html.exp-starmap .oh-starmap-dream {
+  --oh-ticket-cut: 3.65rem;
+  position: relative;
+  padding-bottom: 1.5rem;
+  counter-increment: oh-dream;
+  -webkit-mask:
+    radial-gradient(circle 9px at 0 var(--oh-ticket-cut), #0000 98%, #000) left / 51% 100% no-repeat,
+    radial-gradient(circle 9px at 100% var(--oh-ticket-cut), #0000 98%, #000) right / 51% 100% no-repeat;
+  mask:
+    radial-gradient(circle 9px at 0 var(--oh-ticket-cut), #0000 98%, #000) left / 51% 100% no-repeat,
+    radial-gradient(circle 9px at 100% var(--oh-ticket-cut), #0000 98%, #000) right / 51% 100% no-repeat;
+}
+
+html.exp-starmap .oh-starmap-dream .oh-dream-meta {
+  margin-bottom: 0.25rem;
+  padding-bottom: 0.85rem;
+  border-bottom: 1px dashed rgba(234, 212, 180, 0.3);
+}
+
+html.exp-starmap .oh-starmap-dream .oh-starmap-text {
+  padding-right: 3.4rem;
+}
+
+html.exp-starmap .oh-starmap-dream::after {
+  content: counter(oh-dream, decimal-leading-zero);
+  position: absolute;
+  right: 1rem;
+  bottom: 0.9rem;
+  display: grid;
+  place-items: center;
+  width: 2.9rem;
+  height: 2.9rem;
+  border: 1px solid rgba(234, 212, 180, 0.5);
+  border-radius: 50%;
+  box-shadow: inset 0 0 0 3px rgba(18, 17, 27, 0.95), inset 0 0 0 4px rgba(234, 212, 180, 0.28);
+  color: var(--oh-champagne-on);
+  font-family: 'Fraunces', serif;
+  font-size: 0.95rem;
+  font-variant-numeric: tabular-nums;
+  opacity: 0.8;
+  transform: rotate(-14deg);
+}
+
 html.exp-starmap .oh-starmap-dream .oh-starmap-text {
   display: block;
 }
@@ -1002,6 +1087,7 @@ html.exp-starmap .oh-link-tip.is-running {
   }
 
   html.exp-starmap .oh-starmap-dream {
+    --oh-ticket-cut: 3.07rem;
     padding: 0.9rem 1rem 1rem;
   }
 
@@ -1229,7 +1315,7 @@ html.exp-journey.exp-starmap .oh-starmap-stage {
     aspect-ratio: auto;
   }
   html.exp-journey .oh-starmap-story { min-width: 0; }
-  html.exp-journey .oh-starmap-dream { padding: .65rem .8rem; }
+  html.exp-journey .oh-starmap-dream { --oh-ticket-cut: 3.1rem; padding: .65rem .8rem; }
   html.exp-journey .oh-starmap-text { font-size: .78rem; line-height: 1.4; }
 }
 
