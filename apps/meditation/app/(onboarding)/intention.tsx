@@ -3,6 +3,7 @@ import React, { useEffect } from 'react';
 import { ScrollView, StyleSheet, View, useWindowDimensions } from 'react-native';
 import { ScopedTheme } from 'uniwind';
 
+import { NightStatusBar } from '@/components/atmosphere/NightStatusBar';
 import { Screen } from '@/components/atmosphere/Screen';
 import { DurationLunarDial } from '@/components/onboarding/DurationLunarDial';
 import { StepDots } from '@/components/onboarding/StepDots';
@@ -42,6 +43,7 @@ export default function IntentionStep() {
 
   return (
     <ScopedTheme theme="dark">
+      <NightStatusBar />
       <Screen variant="subtle">
         <View pointerEvents="none" style={[StyleSheet.absoluteFill, styles.atmosphereVeil]} />
         <View testID={TID.Screen.OnboardingIntention} className="flex-1">

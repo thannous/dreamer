@@ -1,7 +1,6 @@
 import { Image } from 'expo-image';
 import { LinearGradient } from 'expo-linear-gradient';
-import { useIsFocused, useRouter } from 'expo-router';
-import { StatusBar } from 'expo-status-bar';
+import { useRouter } from 'expo-router';
 import React from 'react';
 import { StyleSheet, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
@@ -9,6 +8,7 @@ import { ScopedTheme } from 'uniwind';
 
 import { Beat } from '@/components/atmosphere/Beat';
 import { GrainOverlay } from '@/components/atmosphere/GrainOverlay';
+import { NightStatusBar } from '@/components/atmosphere/NightStatusBar';
 import { Button, Rule, Text } from '@/components/ui';
 import { Duration } from '@/constants/motion';
 import { useTranslation } from '@/context/LanguageContext';
@@ -35,14 +35,11 @@ export default function WelcomeScreen() {
   const router = useRouter();
   const { t } = useTranslation();
   const reducedMotion = useReducedMotion();
-  // Welcome stays mounted under the app after onboarding; an unfocused light
-  // status bar would otherwise outrank the root one on light screens.
-  const isFocused = useIsFocused();
 
   return (
     <ScopedTheme theme="dark">
       <View className="flex-1 bg-ink">
-        {isFocused ? <StatusBar style="light" /> : null}
+        <NightStatusBar />
         <Image
           accessible={false}
           source={WELCOME_PORTAL}
