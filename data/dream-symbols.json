@@ -1367,31 +1367,33 @@
       "en": {
         "slug": "house",
         "name": "House",
-        "shortDescription": "A house dream often speaks about the self, inner safety and personal history. An unknown house can reveal an unexplored part of you; a ruined house invites rebuilding or protecting what matters.",
+        "shortDescription": "Dreaming of a house often brings up home in the broad sense: safety, privacy, family, the way you live. The state of the house, the room you were in and how you felt there matter more than the building itself.",
         "askYourself": [
-          "Was the house familiar, unknown, old or ruined?",
-          "Which room was I in, and what emotion dominated?",
-          "Which part of my inner life needs more attention?"
+          "Did I know this house, or was it new to me?",
+          "Which room was I in, and what was I doing there?",
+          "Where in my life right now do I feel at home, and where not quite?"
         ],
         "seoTitle": "unknown, old or ruined house",
         "faq": [
           {
             "question": "What does it mean to dream about a house?",
-            "answer": "A house usually points to your inner world, safety, family or identity. Rooms, condition and emotion guide the interpretation."
+            "answer": "A house is often associated with safety, privacy, family or identity. It can also simply replay a place you know. The rooms, the state of the building and how you felt inside give you leads to compare with your own life."
           },
           {
             "question": "What does an unknown house mean in a dream?",
-            "answer": "An unknown house may represent a part of yourself you are discovering, a change of reference points or a new situation where you are trying to find your place."
+            "answer": "An unfamiliar house can go with a new situation where you are still finding your place: a move, a new job, a relationship. Curiosity and unease point in different directions, so note which one you felt as you walked in."
           },
           {
-            "question": "What does an old house mean in a dream?",
-            "answer": "An old house often evokes the past, family memories or old habits that still shape the present."
+            "question": "What does an old house or childhood home mean in a dream?",
+            "answer": "An old house or the home you grew up in often brings back memories, family roles or habits from the past. It does not mean something is wrong. Ask yourself what felt familiar, and what now feels too small."
           },
           {
             "question": "What does a ruined house mean in a dream?",
-            "answer": "A ruined house can suggest fatigue, lost safety or the need to rebuild a stronger emotional foundation."
+            "answer": "A ruined or crumbling house can go with tiredness, a sense of lost footing or a part of life that needs repair. It does not predict damage to your home. Note which part was broken and whether you repaired it, fled or watched."
           }
-        ]
+        ],
+        "documentMetaDescription": "Dreaming of a house, an unknown house or a ruined one: what the rooms and the state of the place may say about safety and home, with questions to ask.",
+        "modifiedAt": "2026-10-08"
       },
       "fr": {
         "slug": "maison",
@@ -1473,32 +1475,33 @@
       "de": {
         "slug": "haus",
         "name": "Haus",
-        "shortDescription": "Ein Haus im Traum kann Themen wie Sicherheit, Privatleben, Familie oder Selbstbild aufnehmen. Ob es vertraut, unbekannt, alt oder beschädigt war und welcher Raum auffiel, verändert die Deutung.",
+        "shortDescription": "Ein Haus im Traum greift oft das Zuhause im weiten Sinn auf: Sicherheit, Privatsphäre, Familie, die Art, wie Sie leben. Wichtiger als das Gebäude sind sein Zustand, der Raum, in dem Sie waren, und wie Sie sich dort gefühlt haben.",
         "askYourself": [
-          "War das Haus vertraut, unbekannt, leer, alt oder beschädigt?",
-          "Welcher Raum oder Gegenstand fiel mir besonders auf?",
-          "Welche aktuelle Frage zu Zuhause, Sicherheit oder Privatsphäre passt zu diesem Gefühl?"
+          "Kannte ich dieses Haus, oder war es mir fremd?",
+          "In welchem Raum war ich, und was habe ich dort gemacht?",
+          "Wo in meinem Leben fühle ich mich gerade zu Hause, und wo nicht ganz?"
         ],
         "seoTitle": "unbekanntes, altes oder kaputtes Haus",
         "faq": [
           {
             "question": "Was bedeutet ein Haus im Traum?",
-            "answer": "Ein Haus kann mit Sicherheit, Privatleben, Familie oder dem eigenen Selbstbild verbunden sein. Entscheidend sind Zustand, Räume, anwesende Personen und Ihr Gefühl im Traum."
+            "answer": "Ein Haus wird oft mit Sicherheit, Privatleben, Familie oder dem eigenen Selbstbild verbunden. Es kann auch einfach einen bekannten Ort wiedergeben. Räume, Zustand und Ihr Gefühl im Traum geben Hinweise, die Sie mit Ihrem Alltag vergleichen können."
           },
           {
             "question": "Was bedeutet ein unbekanntes Haus im Traum?",
-            "answer": "Ein unbekanntes Haus kann zu einer neuen Lebenssituation oder zu Seiten an Ihnen passen, die Ihnen noch wenig vertraut sind. Neugier, Angst oder Geborgenheit geben jeweils eine andere Richtung."
+            "answer": "Ein fremdes Haus kann zu einer neuen Situation passen, in der Sie Ihren Platz noch suchen: ein Umzug, eine neue Stelle, eine Beziehung. Neugier und Unbehagen weisen in verschiedene Richtungen; notieren Sie, was Sie beim Eintreten gefühlt haben."
           },
           {
             "question": "Was bedeutet ein altes Haus oder das Elternhaus im Traum?",
-            "answer": "Ein altes Haus oder das Elternhaus kann Erinnerungen, familiäre Rollen und frühere Gewohnheiten aufgreifen. Der Traum zeigt nicht automatisch ein Problem; achten Sie darauf, was sich vertraut oder einengend anfühlte."
+            "answer": "Ein altes Haus oder das Elternhaus bringt oft Erinnerungen, familiäre Rollen und frühere Gewohnheiten zurück. Das zeigt nicht automatisch ein Problem. Fragen Sie sich, was sich vertraut anfühlte und was Ihnen inzwischen zu eng ist."
           },
           {
             "question": "Was bedeutet ein kaputtes oder einstürzendes Haus im Traum?",
-            "answer": "Ein beschädigtes Haus kann Unsicherheit, Erschöpfung oder den Wunsch nach Veränderung widerspiegeln. Welche Stelle kaputt war und ob Sie reparierten, flohen oder zusahen, liefert den Kontext."
+            "answer": "Ein beschädigtes oder einstürzendes Haus kann Erschöpfung, Unsicherheit oder einen Lebensbereich begleiten, der Pflege braucht. Einen Schaden an Ihrer Wohnung sagt es nicht voraus. Wichtig ist, welche Stelle nachgab und ob Sie reparierten, flohen oder zusahen."
           }
         ],
-        "modifiedAt": "2026-07-10"
+        "modifiedAt": "2026-10-08",
+        "documentMetaDescription": "Haus im Traum, unbekannt, alt oder einstürzend: was Räume und Zustand über Sicherheit und Zuhause sagen können, mit Fragen und einem Tagebuchbeispiel."
       },
       "it": {
         "slug": "casa",
@@ -1584,86 +1587,154 @@
       "en": {
         "slug": "ocean",
         "name": "Ocean / Sea",
-        "shortDescription": "The ocean represents the collective unconscious and deep emotions. Swimming in the ocean can indicate self-exploration, while drowning suggests being overwhelmed by emotions.",
+        "shortDescription": "Dreaming of the ocean often puts you in front of something vast. It can go with freedom, strong emotions or uncertainty. The state of the sea, calm or rough, and where you were, on the shore or in the water, shape the scene.",
         "askYourself": [
-          "Am I letting myself be carried or overwhelmed by my emotions?"
-        ]
+          "Was the sea calm, rough, clear, dark or very deep?",
+          "Was I on the shore, swimming, on a boat or going under?",
+          "What in my life feels vast right now: freeing, or hard to control?"
+        ],
+        "faq": [
+          {
+            "question": "What does it mean to dream about the ocean?",
+            "answer": "The ocean is often associated with vastness, freedom, strong emotions or uncertainty. Calm or rough water, the depth, your distance from the shore and how you felt help you choose which reading fits."
+          },
+          {
+            "question": "What does a calm ocean mean in a dream?",
+            "answer": "A calm sea can go with rest, acceptance or a need for quiet. If the open water felt empty or lonely, the same scene can instead match a lack of bearings. How you felt looking at it is the main clue."
+          },
+          {
+            "question": "What do big waves or a stormy sea mean in a dream?",
+            "answer": "Huge waves and storms are often linked with stress, shifting emotions or a situation that is hard to predict. They do not foretell a disaster. Notice whether you ran, held on or watched from a safe place."
+          },
+          {
+            "question": "What does drowning or swimming in the ocean mean in a dream?",
+            "answer": "Swimming can mirror how you are handling a big task or a strong feeling, with ease or with effort. Going under can go with feeling overwhelmed. It is not a diagnosis: note whether help, a boat or the shore appeared."
+          }
+        ],
+        "documentMetaDescription": "Dreaming of the ocean, a calm sea or huge waves: what the water, the shore and your place in the scene may say about strong emotions, with questions.",
+        "modifiedAt": "2026-10-08"
       },
       "fr": {
         "slug": "mer",
         "name": "Mer / Océan",
-        "shortDescription": "La mer représente l'inconscient collectif et les émotions profondes. Nager dans la mer peut indiquer l'exploration de soi, tandis que se noyer suggère d'être submergé par les émotions.",
+        "shortDescription": "Rêver de la mer vous place souvent face à quelque chose de vaste. La scène peut accompagner un besoin de liberté, des émotions fortes ou une incertitude. L'état de l'eau et votre place, sur la plage ou dans les vagues, changent la lecture.",
         "askYourself": [
-          "Est-ce que je me laisse porter ou submerger par mes émotions ?"
-        ]
+          "La mer était-elle calme, agitée, claire, sombre ou très profonde ?",
+          "Étais-je sur le rivage, en train de nager, sur un bateau ou en train de couler ?",
+          "Qu'est-ce qui me paraît immense en ce moment : libérateur ou difficile à maîtriser ?"
+        ],
+        "faq": [
+          {
+            "question": "Que signifie rêver de la mer ?",
+            "answer": "La mer est souvent associée à l'immensité, à la liberté, aux émotions fortes ou à l'incertitude. Son état, sa profondeur, votre distance au rivage et ce que vous avez ressenti aident à choisir la piste qui vous parle."
+          },
+          {
+            "question": "Que signifie rêver d'une mer calme ?",
+            "answer": "Une mer calme peut accompagner le repos, l'apaisement ou un besoin de tranquillité. Si cette étendue vous semblait vide, la même scène peut rejoindre un sentiment de solitude ou de perte de repères."
+          },
+          {
+            "question": "Que signifie rêver d'une mer agitée ou de grosses vagues ?",
+            "answer": "Une mer déchaînée ou des vagues géantes sont souvent liées au stress, à des émotions changeantes ou à une situation difficile à prévoir. Elles n'annoncent pas de catastrophe. Notez si vous fuyiez, teniez bon ou regardiez de loin."
+          },
+          {
+            "question": "Que signifie rêver de nager dans la mer ou de s'y noyer ?",
+            "answer": "Nager peut refléter la façon dont vous faites face à une tâche ou à une émotion importante, avec aisance ou avec effort. Couler peut rejoindre un sentiment d'être dépassé. Ce n'est pas un diagnostic : notez si une aide ou le rivage apparaissait."
+          }
+        ],
+        "documentMetaDescription": "Rêver de la mer, d'une mer calme ou de vagues géantes : ce que l'eau, le rivage et votre place peuvent dire de vos émotions, avec questions et exemple.",
+        "modifiedAt": "2026-10-08"
       },
       "es": {
         "slug": "oceano",
         "name": "Océano / Mar",
-        "shortDescription": "El océano representa el inconsciente colectivo y emociones profundas. Nadar en el océano puede indicar autoexploración, mientras que ahogarse sugiere estar abrumado por emociones.",
+        "shortDescription": "Soñar con el mar o el océano suele ponerte frente a algo inmenso. La escena puede acompañar ganas de libertad, emociones intensas o incertidumbre. El estado del agua y dónde estabas, en la orilla o entre las olas, cambian la lectura.",
         "askYourself": [
-          "¿Me estoy dejando llevar o abrumar por mis emociones?"
-        ]
+          "¿El mar estaba en calma, revuelto, claro, oscuro o muy profundo?",
+          "¿Estaba en la orilla, nadando, en un barco o hundiéndome?",
+          "¿Qué me parece inmenso ahora mismo: algo que me libera o algo que no controlo?"
+        ],
+        "faq": [
+          {
+            "question": "¿Qué significa soñar con el mar o el océano?",
+            "answer": "El mar se asocia a menudo con la inmensidad, la libertad, las emociones intensas o la incertidumbre. Su estado, la profundidad, tu distancia a la orilla y lo que sentiste te ayudan a elegir la pista que encaja contigo."
+          },
+          {
+            "question": "¿Qué significa soñar con el mar en calma?",
+            "answer": "Un mar en calma puede acompañar descanso, serenidad o ganas de tranquilidad. Si esa extensión de agua te parecía vacía, la misma escena puede enlazar con la soledad o con la falta de puntos de referencia."
+          },
+          {
+            "question": "¿Qué significa soñar con el mar revuelto u olas gigantes?",
+            "answer": "Un mar embravecido u olas enormes suelen relacionarse con estrés, emociones cambiantes o una situación difícil de prever. No anuncian una catástrofe. Fíjate en si huías, resistías o mirabas desde un lugar seguro."
+          },
+          {
+            "question": "¿Qué significa soñar que nadas en el mar o que te ahogas?",
+            "answer": "Nadar puede reflejar cómo afrontas una tarea o una emoción grande, con soltura o con esfuerzo. Hundirte puede enlazar con la sensación de estar desbordado. No es un diagnóstico: anota si aparecía ayuda o la orilla."
+          }
+        ],
+        "documentMetaDescription": "Soñar con el mar en calma, revuelto o con olas gigantes: qué pueden decir el agua, la orilla y tu lugar en la escena, con preguntas y un ejemplo.",
+        "modifiedAt": "2026-10-08"
       },
       "de": {
         "slug": "meer",
         "name": "Meer / Ozean",
-        "shortDescription": "Ein Meer oder Ozean im Traum kann Weite, starke Gefühle, Freiheit oder Unsicherheit ausdrücken. Ruhige See, Sturm, Tiefe, Ufer und Ihre Nähe zum Wasser bestimmen den möglichen Sinn.",
+        "shortDescription": "Ein Meer im Traum stellt Sie oft vor etwas Weites. Die Szene kann Freiheit, starke Gefühle oder Unsicherheit begleiten. Wie das Wasser war, ruhig oder aufgewühlt, und wo Sie waren, am Ufer oder in den Wellen, verändert die Lesart.",
         "askYourself": [
-          "War das Meer ruhig, stürmisch, klar, dunkel oder außergewöhnlich tief?",
-          "Stand ich am Ufer, schwamm ich, fuhr ich auf dem Wasser oder ging ich unter?",
-          "Welche aktuelle Situation fühlt sich weit, befreiend oder schwer kontrollierbar an?"
+          "War das Meer ruhig, stürmisch, klar, dunkel oder sehr tief?",
+          "Stand ich am Ufer, schwamm ich, war ich auf einem Boot oder ging ich unter?",
+          "Was wirkt in meinem Leben gerade weit: befreiend oder schwer zu kontrollieren?"
         ],
         "seoTitle": "Meer, hohe Wellen oder darin schwimmen",
         "faq": [
           {
             "question": "Was bedeutet das Meer im Traum?",
-            "answer": "Das Meer kann mit Weite, Gefühlen, Freiheit oder Unsicherheit verbunden sein. Wetter, Wellen, Wassertiefe, Ihre Position und die Stimmung zeigen, welche Lesart am ehesten passt."
+            "answer": "Das Meer wird oft mit Weite, Freiheit, starken Gefühlen oder Unsicherheit verbunden. Zustand des Wassers, Tiefe, Ihr Abstand zum Ufer und Ihr Gefühl helfen, die passende Spur zu finden."
           },
           {
             "question": "Was bedeutet ein ruhiges Meer im Traum?",
-            "answer": "Ein ruhiges Meer kann Erholung, Akzeptanz oder das Bedürfnis nach innerer Ruhe widerspiegeln. Wenn die Weite unangenehm wirkte, kann dieselbe Szene auch Einsamkeit oder Orientierungslosigkeit ausdrücken."
+            "answer": "Ein ruhiges Meer kann Erholung, Gelassenheit oder den Wunsch nach Ruhe begleiten. Wirkte die Weite leer, kann dieselbe Szene auch zu Einsamkeit oder fehlender Orientierung passen."
           },
           {
             "question": "Was bedeuten Sturm oder hohe Wellen im Meertraum?",
-            "answer": "Sturm und hohe Wellen können zu Stress, wechselnden Gefühlen oder einer schwer planbaren Situation passen. Ihre Reaktion im Traum zeigt, ob Sie sich überfordert oder handlungsfähig fühlten."
+            "answer": "Sturm und hohe Wellen werden oft mit Stress, wechselnden Gefühlen oder einer schwer planbaren Lage verbunden. Eine Katastrophe kündigen sie nicht an. Achten Sie darauf, ob Sie flohen, standhielten oder aus sicherer Entfernung zusahen."
           },
           {
             "question": "Was bedeutet Schwimmen oder Untergehen im Meer?",
-            "answer": "Schwimmen kann den aktiven Umgang mit einer großen Aufgabe oder Gefühlslage spiegeln. Unterzugehen kann sich auf Überforderung beziehen, ist aber keine Diagnose; wichtig ist, ob Hilfe oder ein Ausweg erschien."
+            "answer": "Schwimmen kann spiegeln, wie Sie mit einer großen Aufgabe oder einem starken Gefühl umgehen, leicht oder mühsam. Untergehen kann zu Überforderung passen. Eine Diagnose ist es nicht: Notieren Sie, ob Hilfe oder das Ufer auftauchte."
           }
         ],
-        "modifiedAt": "2026-07-10"
+        "modifiedAt": "2026-10-08",
+        "documentMetaDescription": "Meer im Traum, ruhig, stürmisch oder mit hohen Wellen: was Wasser, Ufer und Ihre Position über starke Gefühle sagen können, mit Fragen und Beispiel."
       },
       "it": {
         "slug": "oceano",
         "name": "Mare / Oceano",
-        "shortDescription": "Sognare il mare o l’oceano può richiamare libertà, emozioni intense, distanza o incertezza. Acqua calma, onde alte, profondità, riva e modo di muoverti cambiano la lettura.",
+        "shortDescription": "Sognare il mare o l’oceano ti mette spesso davanti a qualcosa di immenso. La scena può accompagnare voglia di libertà, emozioni forti o incertezza. Lo stato dell’acqua e il punto in cui ti trovavi, sulla riva o tra le onde, cambiano la lettura.",
         "askYourself": [
           "Il mare era calmo, agitato, limpido, scuro o molto profondo?",
-          "Ero sulla riva, nuotavo, navigavo oppure rischiavo di affondare?",
-          "Quale situazione attuale mi sembra vasta, liberatoria o difficile da controllare?"
+          "Ero sulla riva, nuotavo, ero su una barca o stavo andando a fondo?",
+          "Che cosa mi sembra immenso in questo periodo: liberatorio o difficile da controllare?"
         ],
         "seoTitle": "il mare calmo o agitato",
         "faq": [
           {
             "question": "Cosa significa sognare il mare o l’oceano?",
-            "answer": "Il mare o l’oceano possono collegarsi a libertà, emozioni, distanza o incertezza. Il tempo, le onde, la profondità, la tua posizione e l’emozione indicano quale lettura è più adatta."
+            "answer": "Il mare viene spesso associato alla vastità, alla libertà, alle emozioni forti o all’incertezza. Lo stato dell’acqua, la profondità, la distanza dalla riva e ciò che hai provato aiutano a scegliere la pista più adatta a te."
           },
           {
             "question": "Cosa significa sognare un mare calmo?",
-            "answer": "Un mare calmo può accompagnare serenità, accettazione o bisogno di riposo. Se la distesa d’acqua ti metteva a disagio, la stessa scena può invece riflettere solitudine o mancanza di punti di riferimento."
+            "answer": "Un mare calmo può accompagnare riposo, serenità o bisogno di quiete. Se quella distesa d’acqua ti sembrava vuota, la stessa scena può avvicinarsi alla solitudine o alla mancanza di punti di riferimento."
           },
           {
             "question": "Cosa significa sognare mare agitato o onde alte?",
-            "answer": "Mare agitato e onde alte possono rispecchiare stress, emozioni mutevoli o una situazione poco prevedibile. La tua reazione mostra se ti sentivi sopraffatto oppure capace di adattarti."
+            "answer": "Mare in tempesta e onde altissime vengono spesso collegati a stress, emozioni mutevoli o una situazione difficile da prevedere. Non annunciano una catastrofe. Nota se scappavi, resistevi o guardavi da un posto sicuro."
           },
           {
             "question": "Cosa significa nuotare o affondare nell’oceano in sogno?",
-            "answer": "Nuotare può riflettere il modo in cui affronti un compito o un’emozione ampia. Affondare può richiamare sovraccarico, senza essere una diagnosi; conta se comparivano aiuto, riva o una via d’uscita."
+            "answer": "Nuotare può riflettere il modo in cui affronti un compito o un’emozione grande, con facilità o con fatica. Andare a fondo può avvicinarsi alla sensazione di essere sopraffatto. Non è una diagnosi: annota se comparivano aiuto o riva."
           }
         ],
-        "modifiedAt": "2026-08-28"
+        "modifiedAt": "2026-10-08",
+        "documentMetaDescription": "Sognare il mare calmo, agitato o onde giganti: che cosa possono dire l’acqua, la riva e la tua posizione sulle emozioni, con domande ed esempio di diario."
       },
       "pt": {
         "slug": "oceano-mar",
@@ -1693,38 +1764,122 @@
       "en": {
         "slug": "baby",
         "name": "Baby",
-        "shortDescription": "A baby symbolizes new beginnings, innocence, or a budding project. It can represent a vulnerable part of yourself that needs attention.",
+        "shortDescription": "Dreaming of a baby is often linked with something new and fragile that asks for care: a project, a relationship, a change, sometimes a real wish or worry about children. Holding it, forgetting it or hearing it cry tell different stories.",
         "askYourself": [
-          "What new project or idea am I developing?",
-          "Is there a part of me that needs care?"
-        ]
+          "Whose baby was it, and what was I doing with it?",
+          "What did I feel: tenderness, worry, panic, joy?",
+          "What new or fragile thing in my life needs my attention right now?"
+        ],
+        "faq": [
+          {
+            "question": "What does it mean to dream about a baby?",
+            "answer": "A baby is often associated with something new that needs care: a project, a relationship, a change in your life. It can also reflect a real wish, worry or situation around children. What you were doing with the baby is the main clue."
+          },
+          {
+            "question": "What does it mean to dream of forgetting a baby?",
+            "answer": "Forgetting a baby somewhere is a common and distressing scene. It can go with the fear of dropping something important when you have too much to handle. It says nothing about your ability to care for a child."
+          },
+          {
+            "question": "What does a crying baby mean in a dream?",
+            "answer": "A crying baby can echo a need that is asking for attention, yours or someone else's, or simply a real baby crying nearby in the night. Note whether you could comfort it and how you felt."
+          },
+          {
+            "question": "Does dreaming of a baby mean I am pregnant?",
+            "answer": "No. A baby dream does not predict or reveal a pregnancy. It may go with thoughts about having children, or have nothing to do with them. If you have a real question about pregnancy, a test or a health professional will answer it."
+          }
+        ],
+        "documentMetaDescription": "Dreaming of a baby, a crying baby or forgetting one: what the scene may say about something new that needs care, with questions and a journal example.",
+        "modifiedAt": "2026-10-08"
       },
       "fr": {
         "slug": "bebe",
         "name": "Bébé",
-        "shortDescription": "Le bébé symbolise un nouveau départ, l'innocence ou un projet naissant. Il peut représenter une partie vulnérable de vous-même qui a besoin d'attention.",
+        "shortDescription": "Rêver d'un bébé renvoie souvent à quelque chose de nouveau et de fragile : un projet, une relation, un changement, parfois un vrai désir ou une inquiétude autour des enfants. Le tenir, l'oublier ou l'entendre pleurer ne raconte pas la même chose.",
         "askYourself": [
-          "Quel nouveau projet ou idée suis-je en train de développer ?",
-          "Y a-t-il une partie de moi qui a besoin de soins ?"
-        ]
+          "À qui était ce bébé, et que faisais-je avec lui ?",
+          "Qu'ai-je ressenti : tendresse, inquiétude, panique, joie ?",
+          "Qu'est-ce qui est nouveau ou fragile dans ma vie et demande mon attention en ce moment ?"
+        ],
+        "faq": [
+          {
+            "question": "Que signifie rêver d'un bébé ?",
+            "answer": "Le bébé est souvent associé à quelque chose de nouveau qui demande des soins : un projet, une relation, un changement. Il peut aussi refléter un désir, une inquiétude ou une situation réelle autour des enfants. Ce que vous faisiez avec lui est l'indice principal."
+          },
+          {
+            "question": "Que signifie rêver d'oublier un bébé ?",
+            "answer": "Oublier un bébé quelque part est une scène fréquente et angoissante. Elle peut accompagner la peur de laisser tomber quelque chose d'important quand vous avez trop à porter. Elle ne dit rien de votre capacité à vous occuper d'un enfant."
+          },
+          {
+            "question": "Que signifie rêver d'un bébé qui pleure ?",
+            "answer": "Un bébé qui pleure peut faire écho à un besoin qui réclame de l'attention, le vôtre ou celui d'un proche, ou simplement à des pleurs réels entendus la nuit. Notez si vous pouviez le consoler et ce que vous ressentiez."
+          },
+          {
+            "question": "Rêver d'un bébé veut-il dire que je suis enceinte ?",
+            "answer": "Non. Un rêve de bébé ne prédit ni ne révèle une grossesse. Il peut accompagner des pensées autour d'un enfant, ou n'avoir aucun lien avec ce sujet. Pour une vraie question de grossesse, un test ou un professionnel de santé vous répondra."
+          }
+        ],
+        "documentMetaDescription": "Rêver d'un bébé, d'un bébé qui pleure ou d'oublier un bébé : ce que la scène peut dire de ce qui est nouveau et fragile, avec questions et exemple.",
+        "modifiedAt": "2026-10-08"
       },
       "es": {
         "slug": "bebe",
         "name": "Bebé",
-        "shortDescription": "Un bebé simboliza nuevos comienzos, inocencia o un proyecto naciente. Puede representar una parte vulnerable de ti mismo que necesita atención.",
+        "shortDescription": "Soñar con un bebé suele relacionarse con algo nuevo y frágil que pide cuidados: un proyecto, una relación, un cambio, a veces un deseo o una preocupación real en torno a los hijos. Tenerlo en brazos, olvidarlo u oírlo llorar no cuentan lo mismo.",
         "askYourself": [
-          "¿Qué nuevo proyecto o idea estoy desarrollando?",
-          "¿Hay una parte de mí que necesita cuidado?"
-        ]
+          "¿De quién era el bebé y qué hacía yo con él?",
+          "¿Qué sentí: ternura, preocupación, pánico, alegría?",
+          "¿Qué hay de nuevo o frágil en mi vida que ahora mismo pide mi atención?"
+        ],
+        "faq": [
+          {
+            "question": "¿Qué significa soñar con un bebé?",
+            "answer": "El bebé se asocia a menudo con algo nuevo que necesita cuidados: un proyecto, una relación, un cambio. También puede reflejar un deseo, una preocupación o una situación real en torno a los hijos. Lo que hacías con él es la pista principal."
+          },
+          {
+            "question": "¿Qué significa soñar que te olvidas de un bebé?",
+            "answer": "Olvidar a un bebé en algún sitio es una escena frecuente y angustiosa. Puede acompañar el miedo a dejar caer algo importante cuando cargas con demasiado. No dice nada de tu capacidad para cuidar de un niño."
+          },
+          {
+            "question": "¿Qué significa soñar con un bebé llorando?",
+            "answer": "Un bebé que llora puede hacer eco de una necesidad que pide atención, tuya o de alguien cercano, o simplemente de un llanto real oído por la noche. Anota si podías calmarlo y qué sentías."
+          },
+          {
+            "question": "¿Soñar con un bebé significa que estoy embarazada?",
+            "answer": "No. Un sueño con un bebé no predice ni revela un embarazo. Puede acompañar pensamientos sobre tener hijos, o no tener ninguna relación con el tema. Si tienes una duda real, una prueba o un profesional sanitario te la resolverá."
+          }
+        ],
+        "documentMetaDescription": "Soñar con un bebé, con un bebé llorando o que te olvidas de él: qué puede decir la escena sobre lo nuevo y lo frágil, con preguntas y un ejemplo.",
+        "modifiedAt": "2026-10-08"
       },
       "de": {
         "slug": "baby",
         "name": "Baby",
-        "shortDescription": "Babys symbolisieren Neuanfänge, Unschuld, Verletzlichkeit und neues Potenzial. Sie können neue Projekte, Ideen oder einen frischen Start im Leben darstellen.",
+        "shortDescription": "Ein Baby im Traum wird oft mit etwas Neuem und Zerbrechlichem verbunden: einem Projekt, einer Beziehung, einer Veränderung, manchmal einem echten Kinderwunsch oder einer Sorge. Ob Sie es hielten, vergaßen oder weinen hörten, verändert die Szene.",
         "askYourself": [
-          "Was beginnt Neues in meinem Leben?",
-          "Was braucht meine Fürsorge und Aufmerksamkeit?"
-        ]
+          "Wessen Baby war es, und was habe ich mit ihm gemacht?",
+          "Was habe ich gefühlt: Zärtlichkeit, Sorge, Panik, Freude?",
+          "Was ist in meinem Leben gerade neu oder zerbrechlich und braucht meine Aufmerksamkeit?"
+        ],
+        "faq": [
+          {
+            "question": "Was bedeutet es, von einem Baby zu träumen?",
+            "answer": "Ein Baby wird oft mit etwas Neuem verbunden, das Fürsorge braucht: ein Projekt, eine Beziehung, eine Veränderung. Es kann auch einen echten Kinderwunsch, eine Sorge oder Ihren Alltag mit Kindern aufgreifen. Was Sie mit dem Baby taten, ist der wichtigste Hinweis."
+          },
+          {
+            "question": "Was bedeutet es, im Traum ein Baby zu vergessen?",
+            "answer": "Ein Baby irgendwo zu vergessen ist eine häufige und belastende Szene. Sie kann die Angst begleiten, etwas Wichtiges fallen zu lassen, wenn zu viel auf einmal anliegt. Über Ihre Fähigkeit, für ein Kind zu sorgen, sagt sie nichts."
+          },
+          {
+            "question": "Was bedeutet ein weinendes Baby im Traum?",
+            "answer": "Ein weinendes Baby kann ein Bedürfnis aufgreifen, das Aufmerksamkeit verlangt, Ihres oder das eines nahestehenden Menschen, oder einfach echtes Weinen in der Nacht. Notieren Sie, ob Sie es beruhigen konnten und was Sie fühlten."
+          },
+          {
+            "question": "Bedeutet ein Baby im Traum, dass ich schwanger bin?",
+            "answer": "Nein. Ein Babytraum sagt keine Schwangerschaft voraus und zeigt keine an. Er kann Gedanken an ein Kind begleiten oder gar nichts damit zu tun haben. Bei einer echten Frage helfen ein Test oder Ihre Ärztin, Ihr Arzt weiter."
+          }
+        ],
+        "documentMetaDescription": "Baby im Traum, ein weinendes oder vergessenes Baby: was die Szene über Neues und Zerbrechliches sagen kann, mit Fragen und einem Tagebuchbeispiel.",
+        "modifiedAt": "2026-10-08"
       },
       "it": {
         "slug": "bambino-neonato",
@@ -1827,64 +1982,65 @@
       "es": {
         "slug": "perro",
         "name": "Perro",
-        "shortDescription": "Soñar con un perro o con varios perros no tiene un significado único. Observa si eran conocidos, cómo se comportaban y qué sentías. Una escena de ataque o mordida puede recordar un susto reciente, sin anunciar una traición ni un peligro real.",
+        "shortDescription": "Soñar con un perro puede ser tranquilizador, alegre o aterrador. Empieza por tres detalles: si lo conocías, qué hacía y cómo reaccionaste. Que te ataque o te muerda no anuncia una traición ni un peligro real; puede recordar un susto reciente.",
         "askYourself": [
-          "¿Conocía al perro y cómo se comportaba conmigo o con otras personas?",
-          "¿A quién atacaba o mordía, y qué hacía yo: huir, proteger, pedir ayuda o quedarme inmóvil?",
-          "¿Qué emoción me quedó y qué encuentro, imagen o preocupación reciente podría relacionarse con la escena?"
+          "¿Conocía al perro, y cómo se comportaba conmigo o con los demás?",
+          "¿A quién se acercaba, perseguía o mordía, y qué hacía yo?",
+          "¿Qué emoción me quedó al despertar, y he visto o vivido algo parecido hace poco?"
         ],
         "seoTitle": "perro que ataca, muerde o persigue",
         "documentTitle": "Soñar con perros que atacan y muerden",
-        "documentMetaDescription": "Qué significa soñar con perros que atacan, muerden o te persiguen. Compara quién recibe el ataque, cómo reaccionas y qué emoción sientes al despertar.",
+        "documentMetaDescription": "Soñar con perros que atacan, muerden o te siguen: qué observar en su conducta y en tu reacción, sin presagios, con preguntas y un ejemplo de diario.",
         "faq": [
           {
             "question": "¿Qué significa soñar con un perro o con varios perros?",
-            "answer": "No hay un significado único. Fíjate en si conocías a los perros, cómo se comportaban y qué sentías. La compañía, el miedo o la responsabilidad son posibles asociaciones personales; una mascota, un encuentro o una imagen reciente también pueden explicar la escena."
+            "answer": "No hay un significado único. Fíjate en si conocías a los perros, cómo se comportaban y si te sentías a gusto o amenazado. La compañía o la responsabilidad son pistas posibles; tu mascota, un encuentro o un vídeo reciente también pueden explicar la escena."
           },
           {
             "question": "¿Qué significa soñar con un perro que te ataca?",
-            "answer": "La escena puede encajar con una sensación de amenaza o con un susto reciente, sin demostrar que alguien quiera hacerte daño. Observa si el perro era conocido, si llegaba a alcanzarte y si huías, te defendías o pedías ayuda. El sueño no predice una agresión real."
+            "answer": "La escena puede encajar con un susto reciente o con una situación que vives como imprevisible, sin demostrar que alguien quiera hacerte daño. Observa si el perro llegaba a alcanzarte y si huías, te defendías o pedías ayuda. No predice una agresión real."
           },
           {
             "question": "¿Qué significa soñar con un perro que te muerde?",
-            "answer": "Una mordida no tiene una interpretación fija ni demuestra una traición. Recuerda qué ocurría antes, cómo reaccionabas y qué emoción persistió al despertar. Un recuerdo de un perro, una escena vista o una preocupación reciente pueden ofrecer contexto sin necesidad de atribuirlo a una relación."
+            "answer": "Una mordida vuelve el sueño especialmente inquietante, pero no tiene un sentido fijo ni demuestra una traición. Anota qué pasaba justo antes y si podías apartarte. La parte del cuerpo mordida tampoco tiene un significado establecido."
           },
           {
             "question": "¿Qué significa soñar que un perro muerde a otra persona o a mi hijo?",
-            "answer": "Importa quién recibía la mordida y si intentabas proteger, pedir ayuda o no podías intervenir. La escena puede conectar con una preocupación por esa persona o con una imagen reciente, pero no anuncia que vaya a sufrir un ataque. Compara lo que sentías con tu contexto actual."
+            "answer": "Importa quién recibía la mordida y si intentabas protegerlo, pedir ayuda o no podías intervenir. La escena puede conectar con una preocupación por esa persona o con una imagen reciente, pero no anuncia que vaya a sufrir un ataque."
           }
         ],
-        "modifiedAt": "2026-09-22"
+        "modifiedAt": "2026-10-08"
       },
       "de": {
         "slug": "hund",
         "name": "Hund",
-        "shortDescription": "Ein Hund im Traum kann Vertrauen, Nähe, Schutz oder Anspannung in Beziehungen aufgreifen. Ob er freundlich, verletzt, herrenlos oder aggressiv war und wie Sie reagierten, entscheidet über den Kontext.",
+        "shortDescription": "Ein Hund im Traum kann beruhigend, verspielt oder beängstigend sein. Beginnen Sie mit drei Details: ob Sie ihn kannten, was er tat und wie Sie reagierten. Ein Angriff oder Biss kündigt keinen Verrat und keine echte Gefahr an.",
         "askYourself": [
-          "War der Hund vertraut, freundlich, aggressiv, verletzt oder herrenlos?",
+          "War es mein Hund, ein bekannter Hund oder ein fremder?",
           "Hat er mich begleitet, beschützt, verfolgt, angeknurrt oder gebissen?",
-          "Welche aktuelle Beziehung löst ein ähnliches Gefühl von Vertrauen oder Vorsicht aus?"
+          "Welches Gefühl blieb nach dem Aufwachen, und habe ich kürzlich etwas Ähnliches erlebt oder gesehen?"
         ],
         "seoTitle": "Hund, Hundebiss oder Welpe",
         "faq": [
           {
             "question": "Was bedeutet ein Hund im Traum?",
-            "answer": "Ein Hund kann Vertrauen, Begleitung, Schutz oder Vorsicht in Beziehungen ausdrücken. Sein Verhalten, Ihre Verbindung zu Hunden und das Gefühl der Szene sind wichtiger als eine feste Bedeutung."
+            "answer": "Ein Hund wird oft mit Begleitung, Vertrauen und Schutz verbunden, bei gefletschten Zähnen auch mit Angst. Sein Verhalten, Ihre eigene Erfahrung mit Hunden und das Gefühl der Szene zählen mehr als eine feste Bedeutung."
           },
           {
             "question": "Was bedeutet ein aggressiver oder beißender Hund im Traum?",
-            "answer": "Ein aggressiver Hund oder Hundebiss kann Angst, einen Beziehungskonflikt oder verletztes Vertrauen widerspiegeln. Der Traum sagt keinen realen Angriff voraus; beachten Sie, wer bedroht wurde und wie Sie reagierten."
+            "answer": "Ein knurrender oder beißender Hund kann zu einem Schreck oder einer Lage passen, die Sie als unberechenbar erleben. Er beweist keinen Verrat und sagt keinen echten Angriff voraus. Achten Sie darauf, wen er bedrohte und wie Sie reagierten."
           },
           {
             "question": "Was bedeuten Welpen oder freundliche Hunde im Traum?",
-            "answer": "Ein Welpe oder freundlicher Hund kann zu Nähe, Fürsorge, spielerischem Vertrauen oder einer neuen Bindung passen. Wenn die Aufmerksamkeit anstrengend war, kann die Szene auch Verantwortung betonen."
+            "answer": "Ein Welpe oder ein freundlicher Hund kann Nähe, Fürsorge oder eine neue Bindung begleiten. War die Aufmerksamkeit anstrengend, kann dieselbe Szene auch Verantwortung oder den Wunsch nach Abgrenzung betonen."
           },
           {
             "question": "Was bedeutet ein verletzter, verlorener oder sterbender Hund im Traum?",
-            "answer": "Ein verletzter oder verlorener Hund kann Sorge um eine Bindung, Schuldgefühl oder das Bedürfnis nach Fürsorge ausdrücken. Bei einem verstorbenen eigenen Tier kann der Traum auch Erinnerungen und Trauer verarbeiten."
+            "answer": "Ein verletzter oder verlorener Hund kann Sorge um eine Bindung oder den Wunsch nach Fürsorge aufgreifen. Haben Sie selbst ein Tier verloren, kann der Traum auch Teil der Trauer sein. Eine Vorhersage ist er nicht."
           }
         ],
-        "modifiedAt": "2026-07-10"
+        "modifiedAt": "2026-10-08",
+        "documentMetaDescription": "Hund im Traum, freundlich, aggressiv oder beißend: worauf Sie bei seinem Verhalten und Ihrer Reaktion achten können, mit Fragen und Tagebuchbeispiel."
       },
       "it": {
         "slug": "cane",
