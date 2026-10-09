@@ -21391,58 +21391,152 @@
       "en": {
         "slug": "whale",
         "name": "Whale",
-        "shortDescription": "Meeting a whale may create a sense of depth, calm or being overwhelmed. Surfacing, singing, accompanying you or becoming stranded sets the scene’s emotional direction.",
-        "modifiedAt": "2026-07-24",
+        "shortDescription": "Dreaming of a whale often puts you face to face with something very large: a deep feeling, a calm strength, or a situation that dwarfs you. How close it came, whether it sang, and how you felt beside it guide the reading.",
+        "modifiedAt": "2026-10-08",
         "askYourself": [
-          "What did whale change in the scene?",
-          "Which feeling stayed with me after waking?"
+          "How close was the whale: beneath me, beside the boat, far out at sea?",
+          "Did its size calm me, fill me with awe, or frighten me?",
+          "What feels huge in my life right now, big enough to make me feel small?"
         ],
-        "faq": []
+        "faq": [
+          {
+            "question": "What does it mean to dream of a whale?",
+            "answer": "A whale is often associated with depth, quiet strength, or something larger than yourself. Its meaning depends mostly on the scene, calm or threatening, close or distant, and on how you felt beside it."
+          },
+          {
+            "question": "What does a beached whale mean in a dream?",
+            "answer": "A whale stranded on a beach can go with a sense that something important is out of its element: a stalled project, a feeling with no room left. It is not an omen. Were you trying to help it back into the water?"
+          },
+          {
+            "question": "What does it mean to swim with a whale in a dream?",
+            "answer": "Swimming near a whale can stage an encounter with something vast that means you no harm, or the dizziness of feeling tiny. How at ease you were in the water is a useful clue."
+          },
+          {
+            "question": "What does it mean to be swallowed by a whale in a dream?",
+            "answer": "Being swallowed echoes the biblical story of Jonah. In a dream, it can match a feeling of being engulfed by a situation, or a period of withdrawal before starting again. Note what was inside and whether you got out."
+          }
+        ],
+        "documentMetaDescription": "Dreaming of a whale, a beached whale or swimming with one: what the scene may say about deep feelings and scale, with questions and a journal example."
       },
       "fr": {
         "slug": "baleine",
         "name": "Baleine",
-        "shortDescription": "Rencontrer une baleine peut créer une impression de profondeur, de calme ou de dépassement. Remonter à la surface, chanter, vous accompagner ou s’échouer donne sa direction émotionnelle à la scène.",
-        "modifiedAt": "2026-07-24",
+        "shortDescription": "Rêver d'une baleine vous met souvent face à quelque chose de très grand : une émotion profonde, une force calme ou une situation qui vous dépasse. Sa distance, son chant et ce que vous avez ressenti à côté d'elle orientent la lecture.",
+        "modifiedAt": "2026-10-08",
         "askYourself": [
-          "Qu’est-ce que baleine a changé dans la scène ?",
-          "Quelle émotion est restée après le réveil ?"
+          "À quelle distance était la baleine : sous moi, le long du bateau, au large ?",
+          "Sa taille m'apaisait-elle, m'impressionnait-elle ou me faisait-elle peur ?",
+          "Qu'est-ce qui me paraît immense en ce moment, au point de me sentir tout petit ?"
         ],
-        "faq": []
+        "faq": [
+          {
+            "question": "Que signifie rêver d'une baleine ?",
+            "answer": "La baleine est souvent associée à la profondeur, à une force tranquille ou à quelque chose de plus grand que soi. Son sens dépend surtout de la scène, calme ou menaçante, proche ou lointaine, et de ce que vous avez ressenti à côté d'elle."
+          },
+          {
+            "question": "Que signifie rêver d'une baleine échouée ?",
+            "answer": "Une baleine échouée sur une plage peut accompagner l'impression qu'une chose importante est hors de son élément : un projet bloqué, une émotion qui n'a plus de place. Ce n'est pas un présage. Essayiez-vous de la remettre à l'eau ?"
+          },
+          {
+            "question": "Que signifie nager avec une baleine en rêve ?",
+            "answer": "Nager près d'une baleine peut mettre en scène une rencontre avec quelque chose de vaste qui ne vous veut pas de mal, ou le vertige de se sentir minuscule. Votre aisance dans l'eau est un indice précieux."
+          },
+          {
+            "question": "Que signifie rêver d'être avalé par une baleine ?",
+            "answer": "Être avalé rappelle le récit biblique de Jonas. En rêve, la scène peut rejoindre le sentiment d'être englouti par une situation, ou une période de retrait avant de repartir. Notez ce qu'il y avait à l'intérieur et si vous en sortiez."
+          }
+        ],
+        "documentMetaDescription": "Rêver d'une baleine, d'une baleine échouée ou de nager avec elle : ce que la scène peut dire de vos émotions profondes, avec questions et exemple de journal."
       },
       "es": {
         "slug": "ballena",
         "name": "Ballena",
-        "shortDescription": "Encontrarte con una ballena puede crear profundidad, calma o sensación de desborde. Salir a la superficie, cantar, acompañarte o quedar varada marca la dirección emocional.",
-        "modifiedAt": "2026-07-24",
+        "shortDescription": "Soñar con una ballena suele ponerte frente a algo muy grande: una emoción profunda, una fuerza tranquila o una situación que te supera. Lo cerca que estaba, si cantaba y lo que sentiste a su lado orientan la lectura.",
+        "modifiedAt": "2026-10-08",
         "askYourself": [
-          "¿Qué cambió ballena dentro de la escena?",
-          "¿Qué emoción siguió conmigo al despertar?"
+          "¿A qué distancia estaba la ballena: debajo de mí, junto al barco, mar adentro?",
+          "¿Su tamaño me tranquilizaba, me impresionaba o me daba miedo?",
+          "¿Qué me parece enorme ahora mismo, hasta el punto de hacerme sentir pequeño?"
         ],
-        "faq": []
+        "faq": [
+          {
+            "question": "¿Qué significa soñar con una ballena?",
+            "answer": "La ballena se asocia a menudo con la profundidad, con una fuerza tranquila o con algo más grande que uno mismo. Su sentido depende sobre todo de la escena (tranquila o amenazante, cerca o lejos) y de lo que sentiste a su lado."
+          },
+          {
+            "question": "¿Qué significa soñar con una ballena varada?",
+            "answer": "Una ballena varada en la playa puede acompañar la sensación de que algo importante está fuera de su elemento: un proyecto atascado, una emoción que ya no tiene sitio. No es un presagio. ¿Intentabas devolverla al agua?"
+          },
+          {
+            "question": "¿Qué significa soñar que nadas con una ballena?",
+            "answer": "Nadar junto a una ballena puede escenificar un encuentro con algo inmenso que no te quiere hacer daño, o el vértigo de sentirte diminuto. Lo cómodo que estabas en el agua es una pista valiosa."
+          },
+          {
+            "question": "¿Qué significa soñar que una ballena te traga?",
+            "answer": "Ser tragado recuerda el relato bíblico de Jonás. En sueños, la escena puede enlazar con la sensación de que una situación te engulle, o con una etapa de retiro antes de volver a empezar. Anota qué había dentro y si salías."
+          }
+        ],
+        "documentMetaDescription": "Soñar con una ballena, una ballena varada o nadar con ella: qué puede decir la escena sobre tus emociones profundas, con preguntas y un ejemplo de diario."
       },
       "de": {
         "slug": "wal",
         "name": "Wal",
-        "shortDescription": "Die Begegnung mit einem Wal kann im Traum große Tiefe, Ruhe oder ein Gefühl des Überwältigtseins auslösen. Ob er auftaucht, singt, dich begleitet oder gestrandet ist, bestimmt die emotionale Richtung der Szene.",
+        "shortDescription": "Von einem Wal zu träumen stellt Sie oft vor etwas sehr Großes: ein tiefes Gefühl, eine ruhige Kraft oder eine Lage, neben der Sie sich klein fühlen. Wie nah er war, ob er sang und was Sie neben ihm empfanden, lenkt die Deutung.",
         "askYourself": [
-          "Wie nah war der Wal dir, deinem Boot oder dem Ufer?",
-          "Hast du seinen Gesang, seinen Atem oder nur seine Bewegung wahrgenommen?",
-          "Wirkte seine Größe auf dich beruhigend, ehrfurchtgebietend oder bedrohlich?"
+          "Wie nah war der Wal: unter mir, neben dem Boot oder weit draußen?",
+          "Hat seine Größe mich beruhigt, beeindruckt oder geängstigt?",
+          "Was wirkt in meinem Leben gerade so riesig, dass ich mich klein fühle?"
         ],
-        "modifiedAt": "2026-07-24",
-        "faq": []
+        "modifiedAt": "2026-10-08",
+        "faq": [
+          {
+            "question": "Was bedeutet es, von einem Wal zu träumen?",
+            "answer": "Der Wal wird oft mit Tiefe, ruhiger Kraft oder etwas verbunden, das größer ist als man selbst. Was er bedeutet, hängt vor allem von der Szene ab, ruhig oder bedrohlich, nah oder fern, und davon, was Sie neben ihm gefühlt haben."
+          },
+          {
+            "question": "Was bedeutet ein gestrandeter Wal im Traum?",
+            "answer": "Ein gestrandeter Wal kann das Gefühl begleiten, dass etwas Wichtiges nicht in seinem Element ist: ein festgefahrenes Projekt, ein Gefühl ohne Raum. Ein Vorzeichen ist er nicht. Wollten Sie ihm zurück ins Wasser helfen?"
+          },
+          {
+            "question": "Was bedeutet es, im Traum mit einem Wal zu schwimmen?",
+            "answer": "Neben einem Wal zu schwimmen kann die Begegnung mit etwas Gewaltigem zeigen, das Ihnen nichts tut, oder das Schwindelgefühl, winzig zu sein. Wie sicher Sie sich im Wasser fühlten, ist ein wertvoller Hinweis."
+          },
+          {
+            "question": "Was bedeutet es, im Traum von einem Wal verschluckt zu werden?",
+            "answer": "Verschluckt zu werden erinnert an die biblische Geschichte von Jona. Im Traum kann die Szene zu dem Gefühl passen, von einer Lage verschlungen zu werden, oder zu einer Rückzugsphase vor einem Neuanfang. Notieren Sie, ob Sie wieder herauskamen."
+          }
+        ],
+        "documentMetaDescription": "Wal im Traum, gestrandet oder beim Schwimmen ganz nah: was die Szene über tiefe Gefühle und Größenverhältnisse sagen kann, mit Fragen und Tagebuchbeispiel."
       },
       "it": {
         "slug": "balena",
         "name": "Balena",
-        "shortDescription": "Incontrare una balena può creare un senso di profondità, calma o sopraffazione. Emergere, cantare, accompagnarti o restare arenata stabilisce la direzione emotiva della scena.",
-        "modifiedAt": "2026-07-24",
+        "shortDescription": "Sognare una balena ti mette spesso davanti a qualcosa di molto grande: un’emozione profonda, una forza tranquilla o una situazione che ti sovrasta. Quanto era vicina, se cantava e ciò che hai provato accanto a lei orientano la lettura.",
+        "modifiedAt": "2026-10-08",
         "askYourself": [
-          "Che cosa ha cambiato balena nella scena?",
-          "Quale emozione è rimasta dopo il risveglio?"
+          "Quanto era vicina la balena: sotto di me, accanto alla barca, al largo?",
+          "La sua grandezza mi calmava, mi impressionava o mi spaventava?",
+          "Che cosa mi sembra enorme in questo periodo, al punto da farmi sentire piccolo?"
         ],
-        "faq": []
+        "faq": [
+          {
+            "question": "Cosa significa sognare una balena?",
+            "answer": "La balena viene spesso associata alla profondità, a una forza tranquilla o a qualcosa più grande di te. Il significato dipende soprattutto dalla scena, calma o minacciosa, vicina o lontana, e da ciò che hai provato accanto a lei."
+          },
+          {
+            "question": "Cosa significa sognare una balena spiaggiata?",
+            "answer": "Una balena arenata sulla spiaggia può accompagnare la sensazione che qualcosa di importante sia fuori dal suo elemento: un progetto bloccato, un’emozione che non trova più spazio. Non è un presagio. Cercavi di rimetterla in acqua?"
+          },
+          {
+            "question": "Cosa significa nuotare con una balena in sogno?",
+            "answer": "Nuotare accanto a una balena può mettere in scena l’incontro con qualcosa di immenso che non ti vuole fare del male, oppure la vertigine di sentirti minuscolo. Quanto eri a tuo agio in acqua è un indizio prezioso."
+          },
+          {
+            "question": "Cosa significa sognare di essere inghiottiti da una balena?",
+            "answer": "Essere inghiottiti richiama il racconto biblico di Giona. In sogno la scena può avvicinarsi alla sensazione di essere travolto da una situazione, o a un periodo di ritiro prima di ripartire. Annota che cosa c’era dentro e se ne uscivi."
+          }
+        ],
+        "documentMetaDescription": "Sognare una balena, una balena spiaggiata o di nuotarci accanto: che cosa può dire la scena delle emozioni profonde, con domande ed esempio di diario."
       },
       "pt": {
         "slug": "baleia",
@@ -21475,58 +21569,152 @@
       "en": {
         "slug": "dolphin",
         "name": "Dolphin",
-        "shortDescription": "Swimming with a dolphin may bring play, contact, guidance or mutual help into focus. Friendly company, a rescue or unexpected aggression leads the scene in a different direction.",
-        "modifiedAt": "2026-07-24",
+        "shortDescription": "Dreaming of a dolphin often brings play, connection, or help arriving through the water. The reading depends on what it did: swim with you, guide you, rescue you or, more rarely, turn unexpectedly aggressive.",
+        "modifiedAt": "2026-10-08",
         "askYourself": [
-          "What did dolphin change in the scene?",
-          "Which feeling stayed with me after waking?"
+          "Was the dolphin alone, in a pod, free, or shut in a pool?",
+          "Did it come to me, guide me, carry me, or was I the one following it?",
+          "Where do I need lightness, closeness or a helping hand right now?"
         ],
-        "faq": []
+        "faq": [
+          {
+            "question": "What does it mean to dream of a dolphin?",
+            "answer": "A dolphin is often associated with play, closeness and mutual help. Its meaning depends on the scene: swimming together, being guided, being rescued or being pushed around do not tell the same story. How you felt on waking helps you choose."
+          },
+          {
+            "question": "What does it mean to swim with dolphins in a dream?",
+            "answer": "Swimming with dolphins can go with a need for lightness, connection or belonging to a group. If you kept up with them effortlessly, the scene may have been joyful; if you struggled, ask yourself who you are trying to keep up with."
+          },
+          {
+            "question": "What does it mean when a dolphin saves you in a dream?",
+            "answer": "Being carried back to shore by a dolphin can match the need, or the hope, for support during a hard stretch. Ancient tales, such as the story of the poet Arion, already tell of this rescue. Who is helping you now, or could?"
+          },
+          {
+            "question": "What does an aggressive or injured dolphin mean in a dream?",
+            "answer": "A dolphin that bites or shoves you is surprising, because we expect it to be friendly. The scene can echo a friendly relationship that has turned tense. An injured dolphin can go with worry about something fragile. It is not an omen."
+          }
+        ],
+        "documentMetaDescription": "Dreaming of a dolphin, swimming with dolphins or being rescued by one: play, connection, help. Questions to ask yourself and a fictional journal example."
       },
       "fr": {
         "slug": "dauphin",
         "name": "Dauphin",
-        "shortDescription": "Nager avec un dauphin peut mettre en avant le jeu, le contact, l’orientation ou l’entraide. Une compagnie amicale, un sauvetage ou une agressivité inattendue donne une autre direction à la scène.",
-        "modifiedAt": "2026-07-24",
+        "shortDescription": "Rêver d'un dauphin met souvent en scène le jeu, le lien ou une aide qui arrive par l'eau. La lecture dépend de ce qu'il faisait : nager avec vous, vous guider, vous sauver ou, plus rarement, se montrer agressif.",
+        "modifiedAt": "2026-10-08",
         "askYourself": [
-          "Qu’est-ce que dauphin a changé dans la scène ?",
-          "Quelle émotion est restée après le réveil ?"
+          "Le dauphin était-il seul, en groupe, libre ou enfermé dans un bassin ?",
+          "M'a-t-il approché, guidé, porté, ou est-ce moi qui le suivais ?",
+          "Où ai-je besoin en ce moment de légèreté, de complicité ou d'un coup de main ?"
         ],
-        "faq": []
+        "faq": [
+          {
+            "question": "Que signifie rêver d'un dauphin ?",
+            "answer": "Le dauphin est souvent associé au jeu, à la complicité et à l'entraide. Son sens dépend de la scène : nager ensemble, être guidé, être sauvé ou être bousculé ne racontent pas la même chose. Votre émotion au réveil aide à choisir la piste."
+          },
+          {
+            "question": "Que signifie nager avec des dauphins en rêve ?",
+            "answer": "Nager avec des dauphins peut accompagner un besoin de légèreté, de lien ou d'appartenance à un groupe. Si vous suiviez leur rythme sans effort, la scène était peut-être joyeuse ; si vous peiniez, demandez-vous qui vous essayez de suivre."
+          },
+          {
+            "question": "Que signifie rêver d'un dauphin qui vous sauve ?",
+            "answer": "Être ramené vers le rivage par un dauphin peut rejoindre le besoin, ou l'espoir, d'un soutien dans une période difficile. Des récits anciens, comme celui du poète Arion, racontent déjà ce sauvetage. Qui vous aide en ce moment, ou pourrait le faire ?"
+          },
+          {
+            "question": "Que signifie rêver d'un dauphin agressif ou blessé ?",
+            "answer": "Un dauphin qui mord ou bouscule surprend, parce qu'on l'attend bienveillant. La scène peut faire écho à une relation amicale devenue tendue. Un dauphin blessé peut accompagner l'inquiétude pour quelque chose de fragile. Ce n'est pas un présage."
+          }
+        ],
+        "documentMetaDescription": "Rêver d'un dauphin, nager avec des dauphins ou être sauvé par l'un d'eux : jeu, lien, entraide. Questions à se poser et exemple fictif de journal."
       },
       "es": {
         "slug": "delfin",
         "name": "Delfín",
-        "shortDescription": "Nadar con un delfín puede destacar juego, contacto, orientación o ayuda mutua. Una compañía amistosa, un rescate o una agresividad inesperada llevan la escena por caminos distintos.",
-        "modifiedAt": "2026-07-24",
+        "shortDescription": "Soñar con un delfín suele traer juego, complicidad o una ayuda que llega por el agua. La lectura depende de lo que hacía: nadar contigo, guiarte, rescatarte o, más rara vez, mostrarse agresivo sin motivo aparente.",
+        "modifiedAt": "2026-10-08",
         "askYourself": [
-          "¿Qué cambió delfín dentro de la escena?",
-          "¿Qué emoción siguió conmigo al despertar?"
+          "¿El delfín estaba solo, en grupo, libre o encerrado en una piscina?",
+          "¿Se acercó él, me guio, me llevó, o era yo quien lo seguía?",
+          "¿Dónde necesito ahora mismo ligereza, complicidad o que alguien me eche una mano?"
         ],
-        "faq": []
+        "faq": [
+          {
+            "question": "¿Qué significa soñar con un delfín?",
+            "answer": "El delfín se asocia a menudo con el juego, la complicidad y la ayuda mutua. Su sentido depende de la escena: nadar juntos, ser guiado, ser rescatado o recibir un empujón no cuentan lo mismo. Tu emoción al despertar te ayuda a elegir la pista."
+          },
+          {
+            "question": "¿Qué significa soñar que nadas con delfines?",
+            "answer": "Nadar con delfines puede acompañar una necesidad de ligereza, de vínculo o de pertenecer a un grupo. Si seguías su ritmo sin esfuerzo, la escena quizá era alegre; si te costaba, pregúntate a quién estás intentando seguir."
+          },
+          {
+            "question": "¿Qué significa soñar que un delfín te salva?",
+            "answer": "Que un delfín te lleve hasta la orilla puede enlazar con la necesidad, o la esperanza, de un apoyo en una etapa difícil. Relatos antiguos, como el del poeta Arión, ya cuentan este rescate. ¿Quién te ayuda ahora, o podría hacerlo?"
+          },
+          {
+            "question": "¿Qué significa soñar con un delfín agresivo o herido?",
+            "answer": "Un delfín que muerde o empuja sorprende, porque lo esperamos amable. La escena puede hacer eco de una relación de amistad que se ha tensado. Un delfín herido puede acompañar la preocupación por algo frágil. No es un presagio."
+          }
+        ],
+        "documentMetaDescription": "Soñar con un delfín, nadar con delfines o que uno te rescate: juego, vínculo y ayuda mutua. Preguntas para hacerte y un ejemplo ficticio de diario."
       },
       "de": {
         "slug": "delfin",
         "name": "Delfin",
-        "shortDescription": "Schwimmst du im Traum mit einem Delfin, können Spiel, Kontakt, Orientierung oder gegenseitige Hilfe in den Vordergrund rücken. Achte darauf, ob er freundlich mit dir schwamm, dich rettete oder sich unerwartet aggressiv verhielt.",
+        "shortDescription": "Von einem Delfin zu träumen bringt oft Spiel, Verbundenheit oder Hilfe ins Bild, die übers Wasser kommt. Die Deutung hängt davon ab, was er tat: mit Ihnen schwimmen, Sie führen, Sie retten oder, seltener, unerwartet aggressiv werden.",
         "askYourself": [
-          "War der Delfin allein oder mit weiteren Tieren unterwegs?",
-          "Wie klar, tief oder unruhig war das Wasser um euch herum?",
-          "Hast du mit ihm gespielt, ihn berührt oder bist du ihm gefolgt?"
+          "War der Delfin allein, in einer Gruppe, frei oder in einem Becken eingesperrt?",
+          "Kam er auf mich zu, führte er mich, trug er mich, oder bin ich ihm gefolgt?",
+          "Wo brauche ich gerade Leichtigkeit, Nähe oder eine helfende Hand?"
         ],
-        "modifiedAt": "2026-07-24",
-        "faq": []
+        "modifiedAt": "2026-10-08",
+        "faq": [
+          {
+            "question": "Was bedeutet es, von einem Delfin zu träumen?",
+            "answer": "Der Delfin wird oft mit Spiel, Nähe und gegenseitiger Hilfe verbunden. Was er bedeutet, hängt von der Szene ab: gemeinsam schwimmen, geführt, gerettet oder angerempelt werden erzählt jeweils etwas anderes. Ihr Gefühl beim Aufwachen hilft bei der Wahl."
+          },
+          {
+            "question": "Was bedeutet es, im Traum mit Delfinen zu schwimmen?",
+            "answer": "Mit Delfinen zu schwimmen kann ein Bedürfnis nach Leichtigkeit, Verbindung oder Zugehörigkeit zu einer Gruppe begleiten. Konnten Sie mühelos mithalten, war die Szene vielleicht fröhlich; fiel es Ihnen schwer, fragen Sie sich, wem Sie gerade hinterherschwimmen."
+          },
+          {
+            "question": "Was bedeutet es, im Traum von einem Delfin gerettet zu werden?",
+            "answer": "Von einem Delfin ans Ufer gebracht zu werden kann zu dem Bedürfnis, oder der Hoffnung, auf Unterstützung in einer schweren Zeit passen. Schon alte Erzählungen wie die vom Dichter Arion kennen diese Rettung. Wer hilft Ihnen gerade, oder könnte es tun?"
+          },
+          {
+            "question": "Was bedeutet ein aggressiver oder verletzter Delfin im Traum?",
+            "answer": "Ein Delfin, der beißt oder rempelt, überrascht, weil man ihn freundlich erwartet. Die Szene kann eine Freundschaft aufgreifen, die angespannt geworden ist. Ein verletzter Delfin kann die Sorge um etwas Zerbrechliches begleiten. Ein Vorzeichen ist er nicht."
+          }
+        ],
+        "documentMetaDescription": "Delfin im Traum, mit Delfinen schwimmen oder von einem gerettet werden: Spiel, Nähe, Hilfe. Fragen zum Nachdenken und ein erfundenes Tagebuchbeispiel."
       },
       "it": {
         "slug": "delfino",
         "name": "Delfino",
-        "shortDescription": "Nuotare con un delfino può mettere in primo piano gioco, contatto, orientamento o aiuto reciproco. Compagnia amichevole, salvataggio o aggressività inattesa portano la scena in direzioni diverse.",
-        "modifiedAt": "2026-07-24",
+        "shortDescription": "Sognare un delfino porta spesso in scena il gioco, la complicità o un aiuto che arriva dall’acqua. La lettura dipende da ciò che faceva: nuotare con te, guidarti, salvarti o, più di rado, mostrarsi aggressivo all’improvviso.",
+        "modifiedAt": "2026-10-08",
         "askYourself": [
-          "Che cosa ha cambiato delfino nella scena?",
-          "Quale emozione è rimasta dopo il risveglio?"
+          "Il delfino era solo, in branco, libero o chiuso in una vasca?",
+          "Si è avvicinato lui, mi ha guidato, mi ha portato, o ero io a seguirlo?",
+          "Dove ho bisogno, in questo periodo, di leggerezza, complicità o di una mano?"
         ],
-        "faq": []
+        "faq": [
+          {
+            "question": "Cosa significa sognare un delfino?",
+            "answer": "Il delfino viene spesso associato al gioco, alla complicità e all’aiuto reciproco. Il significato dipende dalla scena: nuotare insieme, essere guidati, essere salvati o essere spinti via non raccontano la stessa cosa. L’emozione al risveglio aiuta a scegliere la pista."
+          },
+          {
+            "question": "Cosa significa sognare di nuotare con i delfini?",
+            "answer": "Nuotare con i delfini può accompagnare un bisogno di leggerezza, di legame o di appartenenza a un gruppo. Se tenevi il loro ritmo senza fatica, la scena forse era gioiosa; se arrancavi, chiediti chi stai cercando di seguire."
+          },
+          {
+            "question": "Cosa significa sognare un delfino che ti salva?",
+            "answer": "Essere riportato a riva da un delfino può avvicinarsi al bisogno, o alla speranza, di un sostegno in un periodo difficile. Racconti antichi, come quello del poeta Arione, narrano già questo salvataggio. Chi ti aiuta ora, o potrebbe farlo?"
+          },
+          {
+            "question": "Cosa significa sognare un delfino aggressivo o ferito?",
+            "answer": "Un delfino che morde o spinge sorprende, perché lo immaginiamo gentile. La scena può fare eco a un’amicizia diventata tesa. Un delfino ferito può accompagnare la preoccupazione per qualcosa di fragile. Non è un presagio."
+          }
+        ],
+        "documentMetaDescription": "Sognare un delfino, nuotare con i delfini o essere salvati da uno di loro: gioco, legame, aiuto. Domande da farti ed esempio inventato di diario."
       },
       "pt": {
         "slug": "golfinho",
@@ -21559,58 +21747,152 @@
       "en": {
         "slug": "frog",
         "name": "Frog",
-        "shortDescription": "A frog moves between water and land and may introduce change or bodily discomfort into a dream. Its jump, call and location help place this particular encounter.",
-        "modifiedAt": "2026-07-24",
+        "shortDescription": "Dreaming of a frog often stages a passage: from water to land, from one form to another. Depending on whether it amused you, disgusted you or startled you, the scene can point to change, unease, or something that insists on being heard.",
+        "modifiedAt": "2026-10-08",
         "askYourself": [
-          "What did frog change in the scene?",
-          "Which feeling stayed with me after waking?"
+          "Where was the frog: in the water, in the grass, in the house, on me?",
+          "Did I feel amused, disgusted, tender or afraid?",
+          "What in my life is moving from one state to another right now?"
         ],
-        "faq": []
+        "faq": [
+          {
+            "question": "What does it mean to dream of a frog?",
+            "answer": "A frog lives between water and land and changes shape as it grows, so it is often associated with transition and transformation. Where it appeared and how you reacted, amused or disgusted, matter more than any fixed meaning."
+          },
+          {
+            "question": "What does it mean to dream of lots of frogs?",
+            "answer": "A room overrun with frogs can go with a feeling that small things are multiplying until they spill over: tasks, messages, worries. Some people think of the plagues of Egypt, but the scene does not foretell any misfortune."
+          },
+          {
+            "question": "What does it mean to kiss a frog in a dream?",
+            "answer": "The scene recalls the fairy tale of the Frog Prince. It can match the hope that a person or a situation will turn out better than it looks, or the fear of being disappointed. What were you expecting to happen?"
+          },
+          {
+            "question": "What does it mean when a frog jumps on you in a dream?",
+            "answer": "A sudden leap towards you is startling and can echo a change or a request that arrives without warning. If the touch disgusted you, note what makes you uncomfortable right now, literally or figuratively."
+          }
+        ],
+        "documentMetaDescription": "Dreaming of a frog, of many frogs or of kissing one: transition, unease or transformation. Questions to ask yourself and a fictional journal example."
       },
       "fr": {
         "slug": "grenouille",
         "name": "Grenouille",
-        "shortDescription": "Une grenouille se déplace entre l’eau et la terre et peut introduire un changement ou un malaise corporel. Son saut, son cri et le lieu où elle apparaît situent cette rencontre particulière.",
-        "modifiedAt": "2026-07-24",
+        "shortDescription": "Rêver d'une grenouille met souvent en scène un passage : de l'eau à la terre, d'une forme à une autre. Amusement, dégoût ou surprise : selon votre réaction, la scène peut parler de changement, de malaise ou de ce qui insiste pour être entendu.",
+        "modifiedAt": "2026-10-08",
         "askYourself": [
-          "Qu’est-ce que grenouille a changé dans la scène ?",
-          "Quelle émotion est restée après le réveil ?"
+          "Où était la grenouille : dans l'eau, dans l'herbe, dans la maison, sur moi ?",
+          "Ai-je ressenti de l'amusement, du dégoût, de la tendresse ou de la peur ?",
+          "Quelle situation est en train de passer d'un état à un autre dans ma vie ?"
         ],
-        "faq": []
+        "faq": [
+          {
+            "question": "Que signifie rêver d'une grenouille ?",
+            "answer": "La grenouille vit entre l'eau et la terre et change de forme en grandissant : elle est souvent associée à la transition et à la transformation. Le lieu où elle apparaît et votre réaction, amusée ou dégoûtée, comptent plus qu'un sens fixe."
+          },
+          {
+            "question": "Que signifie rêver de beaucoup de grenouilles ?",
+            "answer": "Une pièce envahie de grenouilles peut accompagner le sentiment que de petites choses se multiplient au point de déborder : tâches, messages, soucis. On pense parfois aux plaies d'Égypte, mais la scène n'annonce aucun malheur."
+          },
+          {
+            "question": "Que signifie embrasser une grenouille en rêve ?",
+            "answer": "La scène rappelle le conte du prince grenouille. Elle peut rejoindre l'espoir qu'une personne ou une situation se révèle meilleure qu'elle n'en a l'air, ou la crainte d'être déçu. Qu'attendiez-vous qu'il se passe ?"
+          },
+          {
+            "question": "Que signifie rêver d'une grenouille qui saute sur vous ?",
+            "answer": "Un saut brusque vers vous surprend et peut faire écho à un changement ou à une demande qui arrive sans prévenir. Si le contact vous a dégoûté, notez ce qui vous met mal à l'aise en ce moment, au propre comme au figuré."
+          }
+        ],
+        "documentMetaDescription": "Rêver d'une grenouille, d'en voir beaucoup ou d'en embrasser une : transition, malaise ou transformation. Questions à se poser et exemple de journal."
       },
       "es": {
         "slug": "rana",
         "name": "Rana",
-        "shortDescription": "Una rana se mueve entre el agua y la tierra y puede introducir cambio o incomodidad corporal. Su salto, su sonido y el lugar donde aparece ayudan a situar ese encuentro.",
-        "modifiedAt": "2026-07-24",
+        "shortDescription": "Soñar con una rana suele escenificar un paso: del agua a la tierra, de una forma a otra. Según te hiciera gracia, te diera asco o te sobresaltara, la escena puede hablar de cambio, de incomodidad o de algo que insiste en hacerse oír.",
+        "modifiedAt": "2026-10-08",
         "askYourself": [
-          "¿Qué cambió rana dentro de la escena?",
-          "¿Qué emoción siguió conmigo al despertar?"
+          "¿Dónde estaba la rana: en el agua, en la hierba, en casa, encima de mí?",
+          "¿Sentí gracia, asco, ternura o miedo?",
+          "¿Qué situación de mi vida está pasando ahora de un estado a otro?"
         ],
-        "faq": []
+        "faq": [
+          {
+            "question": "¿Qué significa soñar con una rana?",
+            "answer": "La rana vive entre el agua y la tierra y cambia de forma al crecer, por eso se asocia a menudo con la transición y la transformación. El lugar donde aparece y tu reacción, divertida o de asco, cuentan más que un significado fijo."
+          },
+          {
+            "question": "¿Qué significa soñar con muchas ranas?",
+            "answer": "Una habitación invadida de ranas puede acompañar la sensación de que las cosas pequeñas se multiplican hasta desbordarte: tareas, mensajes, preocupaciones. A veces se piensa en las plagas de Egipto, pero la escena no anuncia ninguna desgracia."
+          },
+          {
+            "question": "¿Qué significa soñar que besas una rana?",
+            "answer": "La escena recuerda el cuento del príncipe rana. Puede enlazar con la esperanza de que una persona o una situación resulte mejor de lo que parece, o con el miedo a llevarte una decepción. ¿Qué esperabas que pasara?"
+          },
+          {
+            "question": "¿Qué significa soñar que una rana salta encima de ti?",
+            "answer": "Un salto brusco hacia ti sobresalta y puede hacer eco de un cambio o una petición que llega sin avisar. Si el contacto te dio asco, anota qué te incomoda ahora mismo, en sentido literal o figurado."
+          }
+        ],
+        "documentMetaDescription": "Soñar con una rana, con muchas ranas o que besas una: transición, incomodidad o transformación. Preguntas para hacerte y un ejemplo de diario."
       },
       "de": {
         "slug": "frosch",
         "name": "Frosch",
-        "shortDescription": "Der Frosch bewegt sich zwischen Wasser und Land und kann im Traum Veränderung oder körperliches Unbehagen anstoßen. Sein Sprung, sein Ruf und der Ort seines Auftauchens helfen dir, die Szene persönlich einzuordnen.",
+        "shortDescription": "Von einem Frosch zu träumen zeigt oft einen Übergang: vom Wasser ans Land, von einer Gestalt in eine andere. Ob er Sie belustigt, geekelt oder erschreckt hat: Die Szene kann von Wandel, Unbehagen oder etwas erzählen, das gehört werden will.",
         "askYourself": [
-          "Saß der Frosch still, sprang er davon oder quakte er laut?",
-          "Befand er sich im Wasser, im Gras oder an einem unerwarteten Ort?",
-          "Wolltest du ihn berühren, retten, meiden oder vertreiben?"
+          "Wo war der Frosch: im Wasser, im Gras, im Haus oder auf mir?",
+          "Habe ich Belustigung, Ekel, Zärtlichkeit oder Angst gespürt?",
+          "Was in meinem Leben geht gerade von einem Zustand in einen anderen über?"
         ],
-        "modifiedAt": "2026-07-24",
-        "faq": []
+        "modifiedAt": "2026-10-08",
+        "faq": [
+          {
+            "question": "Was bedeutet es, von einem Frosch zu träumen?",
+            "answer": "Der Frosch lebt zwischen Wasser und Land und verändert beim Heranwachsen seine Gestalt, deshalb wird er oft mit Übergang und Verwandlung verbunden. Wo er auftauchte und wie Sie reagiert haben, belustigt oder angeekelt, zählt mehr als eine feste Bedeutung."
+          },
+          {
+            "question": "Was bedeutet es, von vielen Fröschen zu träumen?",
+            "answer": "Ein Raum voller Frösche kann das Gefühl begleiten, dass sich kleine Dinge vermehren, bis sie überlaufen: Aufgaben, Nachrichten, Sorgen. Manche denken an die Plagen Ägyptens, doch die Szene kündigt kein Unglück an."
+          },
+          {
+            "question": "Was bedeutet es, im Traum einen Frosch zu küssen?",
+            "answer": "Die Szene erinnert an das Märchen vom Froschkönig. Sie kann zu der Hoffnung passen, dass ein Mensch oder eine Lage sich als besser erweist, als es scheint, oder zu der Angst vor Enttäuschung. Was sollte Ihrer Erwartung nach passieren?"
+          },
+          {
+            "question": "Was bedeutet es, wenn im Traum ein Frosch auf Sie springt?",
+            "answer": "Ein plötzlicher Sprung auf Sie zu erschreckt und kann eine Veränderung oder eine Bitte aufgreifen, die ohne Vorwarnung kommt. Hat die Berührung Sie geekelt, notieren Sie, was Ihnen gerade Unbehagen bereitet, wörtlich oder im übertragenen Sinn."
+          }
+        ],
+        "documentMetaDescription": "Frosch im Traum, viele Frösche oder einen Frosch küssen: Übergang, Unbehagen oder Verwandlung. Fragen zum Nachdenken und ein Tagebuchbeispiel."
       },
       "it": {
         "slug": "rana",
         "name": "Rana",
-        "shortDescription": "Una rana si muove tra acqua e terra e può introdurre cambiamento o disagio corporeo nel sogno. Salto, verso e luogo in cui appare aiutano a situare quell’incontro.",
-        "modifiedAt": "2026-07-24",
+        "shortDescription": "Sognare una rana mette spesso in scena un passaggio: dall’acqua alla terra, da una forma all’altra. Se ti divertiva, ti disgustava o ti sorprendeva, la scena può parlare di cambiamento, di disagio o di qualcosa che vuole farsi sentire.",
+        "modifiedAt": "2026-10-08",
         "askYourself": [
-          "Che cosa ha cambiato rana nella scena?",
-          "Quale emozione è rimasta dopo il risveglio?"
+          "Dov’era la rana: nell’acqua, nell’erba, in casa, addosso a me?",
+          "Ho provato divertimento, disgusto, tenerezza o paura?",
+          "Quale situazione della mia vita sta passando da uno stato all’altro?"
         ],
-        "faq": []
+        "faq": [
+          {
+            "question": "Cosa significa sognare una rana?",
+            "answer": "La rana vive tra acqua e terra e cambia forma crescendo, per questo viene spesso associata al passaggio e alla trasformazione. Il luogo in cui compare e la tua reazione, divertita o disgustata, contano più di un significato fisso."
+          },
+          {
+            "question": "Cosa significa sognare tante rane?",
+            "answer": "Una stanza invasa dalle rane può accompagnare la sensazione che le piccole cose si moltiplichino fino a traboccare: impegni, messaggi, preoccupazioni. C’è chi pensa alle piaghe d’Egitto, ma la scena non annuncia nessuna disgrazia."
+          },
+          {
+            "question": "Cosa significa baciare una rana in sogno?",
+            "answer": "La scena richiama la fiaba del principe ranocchio. Può avvicinarsi alla speranza che una persona o una situazione si riveli migliore di come appare, o alla paura di restare deluso. Che cosa ti aspettavi che succedesse?"
+          },
+          {
+            "question": "Cosa significa sognare una rana che ti salta addosso?",
+            "answer": "Un salto improvviso verso di te fa sobbalzare e può fare eco a un cambiamento o a una richiesta che arriva senza preavviso. Se il contatto ti ha disgustato, annota che cosa ti mette a disagio in questo periodo, in senso letterale o figurato."
+          }
+        ],
+        "documentMetaDescription": "Sognare una rana, tante rane o di baciarne una: passaggio, disagio o trasformazione. Domande da farti ed esempio inventato di diario dei sogni."
       },
       "pt": {
         "slug": "sapo",
@@ -21645,58 +21927,152 @@
       "en": {
         "slug": "butterfly",
         "name": "Butterfly",
-        "shortDescription": "A butterfly may make delicate change, freedom or a fleeting moment feel present. Landing on you, flying away, being caught or having damaged wings changes the tone.",
-        "modifiedAt": "2026-07-24",
+        "shortDescription": "Dreaming of a butterfly often stages a gentle change, a sense of freedom, or a moment that will not last. What it does matters: landing on you, flying away, being trapped, or struggling on damaged wings.",
+        "modifiedAt": "2026-10-08",
         "askYourself": [
-          "What did butterfly change in the scene?",
-          "Which feeling stayed with me after waking?"
+          "Did the butterfly land on me, did I chase it, or did I only watch it?",
+          "Did its colours and the way it flew soothe me, move me or worry me?",
+          "What is changing quietly in me, or might slip away if I hold it too tight?"
         ],
-        "faq": []
+        "faq": [
+          {
+            "question": "What does it mean to dream of a butterfly?",
+            "answer": "A butterfly is often associated with transformation, lightness and things that pass quickly, because it emerges from a caterpillar and lives a short time. Its meaning depends on the scene and on your emotion: wonder, nostalgia, worry."
+          },
+          {
+            "question": "What does it mean when a butterfly lands on you in a dream?",
+            "answer": "A butterfly settling on your hand or shoulder can go with a moment of calm, attention received, or a change you are letting happen. Did you move to keep it, or let it fly off again?"
+          },
+          {
+            "question": "What does a white, black or colourful butterfly mean in a dream?",
+            "answer": "Colours follow no fixed code. A bright butterfly can go with joy or momentum; a dark one with a more serious mood. What the colour means to you personally counts for more than any dictionary."
+          },
+          {
+            "question": "What does a dead butterfly or one with damaged wings mean?",
+            "answer": "An injured butterfly can match worry about something fragile: a project, a relationship, a burst of energy. After a loss, it can also echo the memory of someone. It is not an omen."
+          }
+        ],
+        "documentMetaDescription": "Dreaming of a butterfly that lands on you, flies away or has damaged wings: change, lightness, fragility. Questions to ask and a fictional journal example."
       },
       "fr": {
         "slug": "papillon",
         "name": "Papillon",
-        "shortDescription": "Un papillon peut rendre présents un changement délicat, la liberté ou un instant fugace. Se poser sur vous, s’envoler, être capturé ou avoir les ailes abîmées modifie nettement la tonalité.",
-        "modifiedAt": "2026-07-24",
+        "shortDescription": "Rêver d'un papillon met souvent en scène un changement en douceur, une liberté retrouvée ou un instant qui ne durera pas. Ce qu'il fait compte : se poser sur vous, s'envoler, rester prisonnier ou voler avec des ailes abîmées.",
+        "modifiedAt": "2026-10-08",
         "askYourself": [
-          "Qu’est-ce que papillon a changé dans la scène ?",
-          "Quelle émotion est restée après le réveil ?"
+          "Le papillon s'est-il posé sur moi, l'ai-je poursuivi, ou l'ai-je seulement regardé ?",
+          "Ses couleurs et sa façon de voler m'ont-elles apaisé, ému ou inquiété ?",
+          "Qu'est-ce qui change doucement en moi, ou risque de m'échapper si je le serre trop ?"
         ],
-        "faq": []
+        "faq": [
+          {
+            "question": "Que signifie rêver d'un papillon ?",
+            "answer": "Le papillon est souvent associé à la transformation, à la légèreté et à ce qui passe vite, parce qu'il naît d'une chenille et vit peu de temps. Son sens dépend de la scène et de votre émotion : émerveillement, nostalgie, inquiétude."
+          },
+          {
+            "question": "Que signifie rêver d'un papillon qui se pose sur vous ?",
+            "answer": "Un papillon qui se pose sur votre main ou votre épaule peut accompagner un moment de calme, une attention reçue ou un changement que vous laissez venir. Avez-vous bougé pour le garder, ou l'avez-vous laissé repartir ?"
+          },
+          {
+            "question": "Que signifie rêver d'un papillon blanc, noir ou coloré ?",
+            "answer": "Les couleurs n'obéissent à aucun code fixe. Un papillon très coloré peut accompagner de la joie ou de l'élan ; un papillon sombre, une ambiance plus grave. Ce que la couleur vous évoque personnellement compte plus qu'un dictionnaire."
+          },
+          {
+            "question": "Que signifie rêver d'un papillon mort ou aux ailes abîmées ?",
+            "answer": "Un papillon blessé peut rejoindre l'inquiétude pour quelque chose de fragile : un projet, une relation, un élan. Après un deuil, il peut aussi faire écho au souvenir d'une personne. Ce n'est pas un présage."
+          }
+        ],
+        "documentMetaDescription": "Rêver d'un papillon qui se pose sur vous, s'envole ou a les ailes abîmées : changement, légèreté, fragilité. Questions à se poser et exemple de journal."
       },
       "es": {
         "slug": "mariposa",
         "name": "Mariposa",
-        "shortDescription": "Una mariposa puede hacer presentes un cambio delicado, la libertad o un momento fugaz. Posarse sobre ti, alejarse, quedar atrapada o tener las alas dañadas cambia el tono.",
-        "modifiedAt": "2026-07-24",
+        "shortDescription": "Soñar con una mariposa suele escenificar un cambio suave, una libertad recuperada o un instante que no va a durar. Importa lo que hace: posarse sobre ti, alejarse volando, quedar atrapada o volar con las alas dañadas.",
+        "modifiedAt": "2026-10-08",
         "askYourself": [
-          "¿Qué cambió mariposa dentro de la escena?",
-          "¿Qué emoción siguió conmigo al despertar?"
+          "¿La mariposa se posó sobre mí, la perseguí o solo la miré?",
+          "¿Sus colores y su forma de volar me calmaron, me emocionaron o me inquietaron?",
+          "¿Qué está cambiando despacio en mí, o podría escaparse si lo aprieto demasiado?"
         ],
-        "faq": []
+        "faq": [
+          {
+            "question": "¿Qué significa soñar con una mariposa?",
+            "answer": "La mariposa se asocia a menudo con la transformación, la ligereza y lo que pasa deprisa, porque nace de una oruga y vive poco tiempo. Su sentido depende de la escena y de tu emoción: asombro, nostalgia, inquietud."
+          },
+          {
+            "question": "¿Qué significa soñar que una mariposa se posa en ti?",
+            "answer": "Una mariposa que se posa en tu mano o en tu hombro puede acompañar un momento de calma, una atención recibida o un cambio que dejas llegar. ¿Te moviste para retenerla o dejaste que se fuera?"
+          },
+          {
+            "question": "¿Qué significa soñar con una mariposa blanca, negra o de colores?",
+            "answer": "Los colores no siguen un código fijo. Una mariposa muy colorida puede acompañar alegría o impulso; una oscura, un ambiente más serio. Lo que el color te evoca a ti cuenta más que cualquier diccionario."
+          },
+          {
+            "question": "¿Qué significa soñar con una mariposa muerta o con las alas rotas?",
+            "answer": "Una mariposa herida puede enlazar con la preocupación por algo frágil: un proyecto, una relación, un impulso. Tras una pérdida, también puede hacer eco del recuerdo de alguien. No es un presagio."
+          }
+        ],
+        "documentMetaDescription": "Soñar con una mariposa que se posa en ti, se aleja o tiene las alas rotas: cambio, ligereza, fragilidad. Preguntas para hacerte y un ejemplo de diario."
       },
       "de": {
         "slug": "schmetterling",
         "name": "Schmetterling",
-        "shortDescription": "Fliegt ein Schmetterling durch die Szene, können eine zarte Veränderung, Freiheit oder ein flüchtiger Moment spürbar werden. Ob er auf dir landet, davonfliegt, gefangen ist oder verletzte Flügel hat, verändert den Ton deutlich.",
+        "shortDescription": "Von einem Schmetterling zu träumen zeigt oft eine sanfte Veränderung, neue Freiheit oder einen Moment, der nicht bleibt. Wichtig ist, was er tut: auf Ihnen landen, davonfliegen, gefangen sein oder mit verletzten Flügeln fliegen.",
         "askYourself": [
-          "Welche Farben und Muster hatten seine Flügel?",
-          "Hast du den Schmetterling verfolgt, festgehalten oder frei fliegen lassen?",
-          "Wo ist er erschienen und welche Stimmung herrschte dort?"
+          "Ist der Schmetterling auf mir gelandet, habe ich ihn verfolgt oder nur beobachtet?",
+          "Haben seine Farben und sein Flug mich beruhigt, berührt oder beunruhigt?",
+          "Was verändert sich gerade leise in mir, oder könnte mir entgleiten, wenn ich es zu fest halte?"
         ],
-        "modifiedAt": "2026-07-24",
-        "faq": []
+        "modifiedAt": "2026-10-08",
+        "faq": [
+          {
+            "question": "Was bedeutet es, von einem Schmetterling zu träumen?",
+            "answer": "Der Schmetterling wird oft mit Verwandlung, Leichtigkeit und Vergänglichem verbunden, weil er aus einer Raupe schlüpft und nur kurz lebt. Was er bedeutet, hängt von der Szene und Ihrem Gefühl ab: Staunen, Wehmut, Sorge."
+          },
+          {
+            "question": "Was bedeutet es, wenn im Traum ein Schmetterling auf Ihnen landet?",
+            "answer": "Ein Schmetterling auf Hand oder Schulter kann einen ruhigen Moment begleiten, eine Zuwendung, die Sie erfahren, oder eine Veränderung, die Sie zulassen. Haben Sie sich bewegt, um ihn zu halten, oder ihn weiterfliegen lassen?"
+          },
+          {
+            "question": "Was bedeutet ein weißer, schwarzer oder bunter Schmetterling im Traum?",
+            "answer": "Farben folgen keinem festen Code. Ein bunter Schmetterling kann Freude oder Schwung begleiten, ein dunkler eine ernstere Stimmung. Was die Farbe für Sie persönlich bedeutet, zählt mehr als jedes Traumlexikon."
+          },
+          {
+            "question": "Was bedeutet ein toter Schmetterling oder einer mit verletzten Flügeln?",
+            "answer": "Ein verletzter Schmetterling kann zu der Sorge um etwas Zerbrechliches passen: ein Projekt, eine Beziehung, einen Aufbruch. Nach einem Verlust kann er auch die Erinnerung an einen Menschen aufgreifen. Ein Vorzeichen ist er nicht."
+          }
+        ],
+        "documentMetaDescription": "Schmetterling im Traum, der auf Ihnen landet, davonfliegt oder verletzt ist: Wandel, Leichtigkeit, Zerbrechlichkeit. Mit Fragen und Tagebuchbeispiel."
       },
       "it": {
         "slug": "farfalla",
         "name": "Farfalla",
-        "shortDescription": "Una farfalla può rendere presenti un cambiamento delicato, libertà o un momento fugace. Posarsi su di te, volare via, restare intrappolata o avere ali ferite cambia il tono.",
-        "modifiedAt": "2026-07-24",
+        "shortDescription": "Sognare una farfalla mette spesso in scena un cambiamento dolce, una libertà ritrovata o un istante che non durerà. Conta ciò che fa: posarsi su di te, volare via, restare intrappolata o volare con le ali rovinate.",
+        "modifiedAt": "2026-10-08",
         "askYourself": [
-          "Che cosa ha cambiato farfalla nella scena?",
-          "Quale emozione è rimasta dopo il risveglio?"
+          "La farfalla si è posata su di me, l’ho inseguita, o l’ho soltanto guardata?",
+          "I suoi colori e il suo volo mi hanno calmato, commosso o inquietato?",
+          "Che cosa sta cambiando piano in me, o rischia di sfuggirmi se lo stringo troppo?"
         ],
-        "faq": []
+        "faq": [
+          {
+            "question": "Cosa significa sognare una farfalla?",
+            "answer": "La farfalla viene spesso associata alla trasformazione, alla leggerezza e a ciò che passa in fretta, perché nasce da un bruco e vive poco. Il significato dipende dalla scena e dalla tua emozione: meraviglia, nostalgia, inquietudine."
+          },
+          {
+            "question": "Cosa significa sognare una farfalla che si posa su di te?",
+            "answer": "Una farfalla che si posa sulla tua mano o sulla spalla può accompagnare un momento di calma, un’attenzione ricevuta o un cambiamento che lasci arrivare. Ti sei mosso per trattenerla, o l’hai lasciata ripartire?"
+          },
+          {
+            "question": "Cosa significa sognare una farfalla bianca, nera o colorata?",
+            "answer": "I colori non seguono un codice fisso. Una farfalla molto colorata può accompagnare gioia o slancio; una scura, un’atmosfera più seria. Ciò che il colore evoca a te personalmente conta più di qualsiasi dizionario."
+          },
+          {
+            "question": "Cosa significa sognare una farfalla morta o con le ali rovinate?",
+            "answer": "Una farfalla ferita può avvicinarsi alla preoccupazione per qualcosa di fragile: un progetto, una relazione, uno slancio. Dopo un lutto, può anche fare eco al ricordo di una persona. Non è un presagio."
+          }
+        ],
+        "documentMetaDescription": "Sognare una farfalla che si posa su di te, vola via o ha le ali rovinate: cambiamento, leggerezza, fragilità. Domande ed esempio inventato di diario."
       },
       "pt": {
         "slug": "borboleta",
