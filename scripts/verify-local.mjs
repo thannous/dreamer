@@ -1,10 +1,12 @@
 #!/usr/bin/env node
-// Local verification engine of the common delivery rule (regle-commune-livraison v2).
-// Canonical rule: https://github.com/thannous/shapier/blob/main/docs/regle-commune-livraison.md
+// Local verification engine of the common delivery rule (regle-commune-livraison v4).
+// The rule is this repository's own copy of the common text, at the path its
+// AGENTS.md links to (and its section 13.1 names).
 //
-// This file is identical in shapier, skillcodex, clawdeals, bodylab and dreamer.
-// Each repository describes its checks in verify-local.config.mjs at its root;
-// change this engine in all five repositories at once, never in one alone.
+// The same engine file in every repository is recommended. Each repository
+// keeps its own copy, pins and verifies only that copy (ENGINE_SHA256 in its
+// verify-local.config.mjs), and describes its checks in verify-local.config.mjs
+// at its root. Nothing here reads or compares another repository.
 //
 //   node scripts/verify-local.mjs pr       [--rev <rev>] [--force] [--keep] [--external <check>=<evidence>]
 //   node scripts/verify-local.mjs release  [--rev <rev>] [--target <name>]... [--force] [--keep] [--external ...]
@@ -17,10 +19,11 @@
 // keyed by the verified git tree and written to
 // $(git rev-parse --git-common-dir)/verify-proofs/<tree>.json, shared by every
 // worktree of the clone and never committed. Each check has a fingerprint (its
-// command, its input files, Node and the package manager): a check whose
-// fingerprint already passed in any proof is reused instead of run again, so a
-// squash of an up-to-date branch, or a merge of a base that did not touch a
-// check's inputs, replays nothing for it.
+// command, its input files, Node and the package manager): for verify:pr, a
+// check whose fingerprint already passed in any proof is reused instead of run
+// again, so a merge of a base that did not touch a check's inputs replays
+// nothing for it. verify:release reuses nothing: every release check runs on
+// the delivered commit, so a publication never rests on an earlier run.
 //
 // deps.mode 'link' links the main checkout's node_modules when the lockfile
 // is the same (workspace links point at the copy); a check with install: true
@@ -30,10 +33,26 @@
 // VERIFY_LOCAL_TREE, VERIFY_LOCAL_ROOT (the main checkout) and
 // VERIFY_LOCAL_COMMON_DIR (the shared git directory, for caches) set, with
 // TMPDIR in a directory of their own removed with the copy, and without the
-// GIT_* variables of a hook. A `when` check runs only if its paths changed
-// since origin/<main> (a docs-only PR skips typecheck in a fresh clone). On
-// the main commit itself nothing changed: releaseAlways: true makes a release
-// run it anyway, reusing the PR's result when its inputs are the same.
+// GIT_* variables of a hook nor the variables that narrow what a check runs
+// (SCOPE_ENV, plus the config's stripEnv). In a PR, a `when` check runs only
+// if its paths changed since origin/<main> (a docs-only PR skips typecheck in a
+// fresh clone). A release runs every check, `when` ones included: on the main
+// commit nothing changed since origin/<main>, and a release proves the
+// delivered commit, not a diff (releaseAlways is implied).
+//
+// --external <check>=<evidence> stands in only for a specialised check whose
+// probe fails here. The evidence is "owner-machine: <host> <note> on <SHA>"
+// (a run on the owner's machine), or cites a run whose https:// URL starts
+// with one of the config's externalSources (the External CI table, section 13
+// of the repository's own delivery rule); any other https:// URL,
+// and any http:// URL, is refused. It names the full verified head SHA exactly
+// once and no other full SHA, so a squash needs its own evidence. It is stored
+// verbatim, listed by name, never reused, and checked again by the deploy
+// guard against the same config.
+//
+// Installs, setup and checks take the machine-wide lock HEAVY_LOCK (flock),
+// so verify runs on one machine wait for each other ("waiting for lock").
+// A step killed by a signal counts as failed.
 //
 // Exit codes: 0 passed, 1 failed, 2 incomplete (a required specialised check
 // could not run here; see --external), 64 usage or configuration error.
@@ -57,8 +76,10 @@ import os from 'node:os';
 import path from 'node:path';
 import { fileURLToPath, pathToFileURL } from 'node:url';
 
-export const RULE = 'regle-commune-livraison v2';
-export const PROOF_FORMAT_VERSION = 2;
+export const RULE = 'regle-commune-livraison v4';
+// 3: --external is guarded (specialised, probe fails, evidence names the
+// commit or tree) and never reused; proofs written before that are ignored.
+export const PROOF_FORMAT_VERSION = 3;
 export const ENGINE_VERSION = 1;
 export const CONFIG_FILE = 'verify-local.config.mjs';
 export const PROOFS_DIR = 'verify-proofs';
@@ -147,12 +168,22 @@ export function normaliseConfig(raw) {
       releaseAlways: Boolean(check.releaseAlways),
       targets: check.targets ?? null,
       perCommit: Boolean(check.perCommit),
+      perBase: Boolean(check.perBase),
       specialised: Boolean(check.specialised),
       requires: check.requires ?? null,
       install: Boolean(check.install),
       env: check.env ?? {},
     };
   });
+  // https:// URL prefixes of the external CI runs --external may cite, one per
+  // workflow of the External CI table (none by default: owner-machine only).
+  const externalSources = raw.externalSources ?? [];
+  if (!Array.isArray(externalSources)) throw new UsageError('externalSources must be a list of https:// URL prefixes.');
+  for (const prefix of externalSources) {
+    if (typeof prefix !== 'string' || !/^https:\/\/[^\s/]+\/\S*\/$/.test(prefix)) {
+      throw new UsageError(`externalSources: ${JSON.stringify(prefix)} must be an https:// URL prefix with a path ending in "/" (for example https://github.com/<owner>/<repo>/actions/runs/).`);
+    }
+  }
   const names = new Set();
   for (const check of checks) {
     if (names.has(check.name)) throw new UsageError(`check ${check.name} is declared twice.`);
@@ -172,6 +203,12 @@ export function normaliseConfig(raw) {
       copy: raw.deps?.copy ?? [],
     },
     setup: raw.setup ?? [],
+    // The repository's own check scripts (hook installer, lint wrappers…):
+    // changing them changes what the checks prove, like the config itself.
+    deliveryFiles: raw.deliveryFiles ?? [],
+    // Repository variables that narrow what a check runs, stripped like SCOPE_ENV.
+    stripEnv: raw.stripEnv ?? [],
+    externalSources,
     checks,
     hook: {
       forbidden: raw.hook?.forbidden ?? DEFAULT_FORBIDDEN,
@@ -229,6 +266,17 @@ export function readProof(commonDir, tree) {
   }
 }
 
+/** The format version of the proof file of a tree, whatever it is, or null. */
+function proofFileVersion(commonDir, tree) {
+  const file = path.join(proofsDir(commonDir), `${tree}.json`);
+  if (!existsSync(file)) return null;
+  try {
+    return JSON.parse(readFileSync(file, 'utf8'))?.version ?? 'unknown';
+  } catch {
+    return 'unreadable';
+  }
+}
+
 function listProofs(commonDir) {
   const dir = proofsDir(commonDir);
   if (!existsSync(dir)) return [];
@@ -268,9 +316,9 @@ function pruneProofs(dir) {
 function findReusable(proofs, fingerprint) {
   for (const proof of proofs) {
     for (const check of proof.checks ?? []) {
-      if (check.fingerprint === fingerprint && check.result === 'passed') {
-        return { sha: check.reusedFrom?.sha ?? proof.sha, tree: check.reusedFrom?.tree ?? proof.tree, finishedAt: proof.finishedAt };
-      }
+      // External evidence names one commit: it is never carried to another proof.
+      if (check.fingerprint !== fingerprint || check.result !== 'passed' || check.external) continue;
+      return { sha: check.reusedFrom?.sha ?? proof.sha, tree: check.reusedFrom?.tree ?? proof.tree, finishedAt: proof.finishedAt };
     }
   }
   return null;
@@ -298,10 +346,13 @@ function lockfileBlob(git, rev, config) {
   return git(['rev-parse', `${rev}:${config.deps.lockfile}`], { allowFailure: true });
 }
 
-export function checkFingerprint({ check, files, tree, sha, environment }) {
+export function checkFingerprint({ check, files, tree, sha, environment, mergeBase = null }) {
   const hash = createHash('sha256');
   hash.update(JSON.stringify({ engine: ENGINE_VERSION, name: check.name, command: check.command, env: check.env, environment }));
   if (check.perCommit) hash.update(`\ncommit ${sha}`);
+  // A check that picks its work from the diff against the base (affected
+  // packages, changed files) is reused only against the same merge base.
+  if (check.perBase) hash.update(`\nbase ${mergeBase ?? 'none'}`);
   if (!check.inputs && check.exclude.length === 0) {
     hash.update(`\ntree ${tree}`);
   } else {
@@ -345,12 +396,68 @@ function changedFiles(git, base, sha) {
 
 // ---------------------------------------------------------------- isolated worktree
 
+// Heavy steps (installs, builds, test suites) of every verify run on a machine
+// take one machine-wide lock, so parallel runs wait instead of thrashing it.
+// VERIFY_LOCAL_HEAVY_LOCK moves the lock file (tests); a step already under
+// the lock (the engine's own tests) runs its nested steps without retaking it.
+export const HEAVY_LOCK = '/tmp/fleet-verify-heavy.lock';
+const HEAVY_LOCK_HELD = 'VERIFY_LOCAL_HEAVY_LOCK_HELD';
+const probes = new Map();
+
+/** Whether `program args` runs and exits 0 here, cached per PATH. */
+function probeCommand(program, args, env) {
+  const key = `${program}\0${env.PATH ?? ''}`;
+  if (!probes.has(key)) {
+    const probe = spawnSync(program, args, { env, stdio: 'ignore' });
+    probes.set(key, !probe.error && probe.status === 0);
+  }
+  return probes.get(key);
+}
+
+/** Whether the util-linux `flock` command exists here (macOS has none by default). */
+export function hasFlock(env = process.env) {
+  return probeCommand('flock', ['--version'], env);
+}
+
+/** Whether `setpriv --pdeathsig` works here (Linux util-linux only). */
+export function hasPdeathsig(env = process.env) {
+  return probeCommand('setpriv', ['--pdeathsig', 'KILL', 'true'], env);
+}
+
+/**
+ * The command that holds the lock for one step. `flock -o` closes the lock
+ * before running the step, so a process the step leaves behind never holds
+ * it; only the flock process does, until the step's shell exits. Under
+ * `setpriv --pdeathsig KILL` that flock process dies with this engine, so a
+ * killed verify run (SIGKILL, OOM) frees the lock at once.
+ */
+function lockedCommand(lock, command, env) {
+  const flock = ['flock', '-o', lock, '/bin/sh', '-c', command];
+  return hasPdeathsig(env) ? ['setpriv', '--pdeathsig', 'KILL', ...flock] : flock;
+}
+
 function runShell(command, { cwd, env, log }) {
   log(`${PREFIX} $ ${command}`);
+  const lock = env.VERIFY_LOCAL_HEAVY_LOCK || HEAVY_LOCK;
   const started = Date.now();
-  const result = spawnSync(command, { cwd, env, shell: true, stdio: 'inherit' });
-  const status = result.error ? 1 : (result.status ?? 1);
-  return { status, durationMs: Date.now() - started };
+  let result;
+  if (env[HEAVY_LOCK_HELD] === lock) {
+    result = spawnSync('/bin/sh', ['-c', command], { cwd, env, stdio: 'inherit' });
+  } else if (!hasFlock(env)) {
+    log(`${PREFIX} flock is not installed here: this step runs without the lock ${lock}.`);
+    result = spawnSync('/bin/sh', ['-c', command], { cwd, env, stdio: 'inherit' });
+  } else {
+    const free = spawnSync('flock', ['--nonblock', lock, 'true'], { env, stdio: 'ignore' });
+    if (free.error || free.status !== 0) log(`${PREFIX} waiting for lock ${lock} (another heavy check runs on this machine)...`);
+    const [program, ...args] = lockedCommand(lock, command, env);
+    if (!hasPdeathsig(env)) log(`${PREFIX} setpriv --pdeathsig is not available here: if this run is killed, ${lock} stays held until the step ends.`);
+    result = spawnSync(program, args, { cwd, env: { ...env, [HEAVY_LOCK_HELD]: lock }, stdio: 'inherit' });
+  }
+  // A step killed by a signal (directly, or through flock as 128 + signal) failed.
+  const killed = result.signal ?? (result.status > 128 ? `signal ${result.status - 128}` : null);
+  if (killed) log(`${PREFIX} the step was killed (${killed}): it counts as failed.`);
+  const status = result.error || result.signal ? 1 : (result.status ?? 1);
+  return { status: status === 0 && killed ? 1 : status, durationMs: Date.now() - started, killed };
 }
 
 function quiet(command, { cwd, env }) {
@@ -545,6 +652,63 @@ function selectChecks(config, kind, targets) {
   });
 }
 
+const HEX40 = /(?<![0-9a-f])[0-9a-f]{40}(?![0-9a-f])/gi;
+
+const HTTPS_URL = /https:\/\/\S+/gi;
+const OWNER_MACHINE = /^owner-machine: \S+ \S.*? on [0-9a-f]{40}$/;
+
+/**
+ * Why external evidence cannot stand for this commit, or null when it can.
+ * `sources` is the config's externalSources: https:// URL prefixes of the
+ * external CI runs this repository accepts (none by default). The evidence
+ * starts with `owner-machine:` (a run on the owner's machine) or cites a run
+ * under a listed source; every https:// URL in it is under a listed source,
+ * and it has no http:// URL. It names the full verified head SHA exactly
+ * once, in lowercase as git prints it, with no other full SHA (any 40-hex
+ * run in any case counts as another SHA, an uppercase copy of the head too): "owner-machine: <host> <note> on <sha>". A
+ * squash with the same tree is another commit: it reruns the check or cites
+ * evidence for its own SHA.
+ */
+export function externalEvidenceIssue(_git, evidence, sha, _tree, sources = []) {
+  const text = typeof evidence === 'string' ? evidence : '';
+  const commit = String(sha);
+  const example = `"owner-machine: <host> <note> on ${commit}"`;
+  if (/http:\/\//i.test(text)) return `it contains an http:// URL; cite ${example}`;
+  const urls = text.match(HTTPS_URL) ?? [];
+  const unlisted = urls.find((url) => !sources.some((prefix) => url.startsWith(prefix)));
+  if (unlisted) {
+    return sources.length
+      ? `${unlisted} is not under an external CI source of externalSources in ${CONFIG_FILE} (${sources.join(', ')})`
+      : `${unlisted} is not accepted: externalSources in ${CONFIG_FILE} lists no external CI (External CI: none), so cite ${example}`;
+  }
+  if (!/^owner-machine:\s*\S/.test(text) && urls.length === 0) {
+    return `it neither starts with "owner-machine:" nor cites a run of a listed external CI source; cite ${example}`;
+  }
+  // Every 40-hex run, in any case, is a SHA; only the head as git prints it
+  // (lowercase) is the verified commit, compared without case folding.
+  const hashes = text.match(HEX40) ?? [];
+  const other = hashes.find((found) => found !== commit);
+  if (other) {
+    return other.toLowerCase() === commit
+      ? `it names ${other}, the verified commit in another case; cite it in lowercase as ${commit}`
+      : `it names ${other}, which is not the verified commit ${commit}`;
+  }
+  if (hashes.length === 0) return `it does not name the verified commit ${commit} in full`;
+  if (hashes.length > 1) return `it names the verified commit ${hashes.length} times; name it once`;
+  // Owner-machine evidence has exactly this shape: a host token, a free-text
+  // note, and " on <full head SHA>" at the end.
+  if (text.startsWith('owner-machine:') && !OWNER_MACHINE.test(text)) {
+    return `owner-machine evidence must read exactly ${example} (a host, a note, then " on " and the full SHA at the end)`;
+  }
+  return null;
+}
+
+/** The externalSources of the config committed at HEAD, for a deploy guard. */
+export async function loadExternalSources({ cwd = process.cwd(), env = cleanGitEnv() } = {}) {
+  const { git } = resolveRepository(cwd, env);
+  return (await loadConfig(git, 'HEAD')).externalSources;
+}
+
 export async function verify(kind, argv = [], {
   cwd = process.cwd(),
   env = cleanGitEnv(),
@@ -558,6 +722,15 @@ export async function verify(kind, argv = [], {
   const sha = git(['rev-parse', '--verify', `${options.rev}^{commit}`]);
   const tree = git(['rev-parse', `${sha}^{tree}`]);
   const config = await loadConfig(git, sha);
+  // A base for "changed since" or an affected range set by the caller would
+  // narrow what a check runs: the checks never see it. A check that needs one
+  // declares it in its own env.
+  const narrowing = [...new Set([...SCOPE_ENV, ...config.stripEnv])].filter((name) => env[name] !== undefined);
+  if (narrowing.length) {
+    env = { ...env };
+    for (const name of narrowing) delete env[name];
+    log(`${PREFIX} ignored ${narrowing.join(', ')} from the environment: they narrow what a check runs.`);
+  }
   const targets = [...new Set(options.targets)].sort();
   const knownTargets = new Set(config.checks.flatMap((check) => check.targets ?? []));
   for (const target of targets) {
@@ -574,9 +747,30 @@ export async function verify(kind, argv = [], {
     packageManager: packageManagerOf(git, sha, config, env),
     lockfile: lockfileBlob(git, sha, config),
   };
-  const proofs = options.force ? [] : listProofs(commonDir);
+  // A release reuses nothing: every release check runs on the delivered commit.
+  const proofs = options.force || kind === 'release' ? [] : listProofs(commonDir);
   const command = config.commands[kind];
   log(`${PREFIX} ${command} on ${sha} (tree ${tree.slice(0, 12)}, base ${base.ref} ${base.sha ? base.sha.slice(0, 12) : 'unknown'}).`);
+
+  // --external stands in for a specialised check that cannot run here, and
+  // only with evidence for this exact head commit. Anything else writes no proof.
+  const selected = selectChecks(config, kind, targets);
+  // The probe runs in the main checkout, before any isolated copy exists.
+  const probes = new Map();
+  const probe = (check) => {
+    if (!probes.has(check.name)) probes.set(check.name, quiet(check.requires.command, { cwd: root, env }));
+    return probes.get(check.name);
+  };
+  for (const [name, evidence] of Object.entries(options.external)) {
+    const check = selected.find((candidate) => candidate.name === name);
+    if (!check) throw new UsageError(`--external ${name}: no such ${kind} check.`);
+    if (!check.specialised || !check.requires) {
+      throw new UsageError(`--external ${name}: only a specialised check with a requires probe can come from elsewhere; run it here.`);
+    }
+    const issue = externalEvidenceIssue(git, evidence, sha, tree, config.externalSources);
+    if (issue) throw new UsageError(`--external ${name}: evidence refused, ${issue}.`);
+    if (probe(check)) throw new UsageError(`--external ${name}: this machine can run it (\`${check.requires.command}\` succeeds); run it here instead.`);
+  }
 
   const existing = readProof(commonDir, tree);
   const results = [];
@@ -585,12 +779,13 @@ export async function verify(kind, argv = [], {
   let incomplete = false;
 
   try {
-    for (const check of selectChecks(config, kind, targets)) {
-      const fingerprint = checkFingerprint({ check, files, tree, sha, environment });
+    for (const check of selected) {
+      const fingerprint = checkFingerprint({ check, files, tree, sha, environment, mergeBase: scope?.mergeBase ?? null });
       const entry = { name: check.name, command: check.command, fingerprint, specialised: check.specialised };
       if (check.targets) entry.targets = check.targets;
 
-      if (check.when && !(kind === 'release' && check.releaseAlways)) {
+      // `when` narrows a PR to the paths it changes; a release runs every check.
+      if (check.when && kind === 'pr') {
         const touched = scope ? scope.files.filter((file) => matchesAny(file, check.when)) : null;
         if (touched && touched.length === 0) {
           results.push({ ...entry, result: 'skipped', reason: `no change under ${check.when.join(', ')} since ${base.ref}` });
@@ -598,19 +793,20 @@ export async function verify(kind, argv = [], {
           continue;
         }
       }
-      if (options.external[check.name]) {
-        results.push({ ...entry, result: 'passed', external: options.external[check.name] });
-        log(`${PREFIX} ${check.name}: passed elsewhere (${options.external[check.name]}).`);
-        continue;
-      }
+      // A PR reuses a result whose inputs are identical, from any tree; a
+      // release has no proofs to reuse.
       const reusable = findReusable(proofs, fingerprint);
       if (reusable) {
         results.push({ ...entry, result: 'passed', reused: true, reusedFrom: reusable });
         log(`${PREFIX} ${check.name}: reused (same inputs passed on ${reusable.sha.slice(0, 12)}).`);
         continue;
       }
-      // The probe runs in the main checkout, before any isolated copy exists.
-      if (check.requires && !quiet(check.requires.command, { cwd: root, env })) {
+      if (check.requires && !probe(check)) {
+        if (options.external[check.name]) {
+          results.push({ ...entry, result: 'passed', external: options.external[check.name] });
+          log(`${PREFIX} ${check.name}: cannot run here, passed elsewhere (${options.external[check.name]}).`);
+          continue;
+        }
         incomplete = true;
         const hint = check.requires.hint ?? 'run it where it can run, then pass --external';
         results.push({ ...entry, result: 'unavailable', reason: `\`${check.requires.command}\` failed here: ${hint}` });
@@ -645,7 +841,7 @@ export async function verify(kind, argv = [], {
         log,
       });
       const passed = run.status === 0;
-      results.push({ ...entry, result: passed ? 'passed' : 'failed', durationMs: run.durationMs });
+      results.push({ ...entry, result: passed ? 'passed' : 'failed', durationMs: run.durationMs, ...(run.killed ? { reason: `killed (${run.killed})` } : {}) });
       log(`${PREFIX} ${check.name}: ${passed ? 'passed' : `failed (exit ${run.status})`} in ${Math.round(run.durationMs / 1000)} s.`);
       if (!passed) {
         failed = true;
@@ -669,6 +865,8 @@ export async function verify(kind, argv = [], {
     kind,
     sha,
     tree,
+    // Always true: the checks ran on the committed tree of <sha>, in an
+    // isolated copy, never on a working tree.
     clean: true,
     result,
     startedAt,
@@ -706,9 +904,10 @@ export async function verify(kind, argv = [], {
     }
     writeProof(commonDir, proof);
   }
+  const proofFile = path.join(proofsDir(commonDir), weaker ? `${tree}.${kind}-attempt.json` : `${tree}.json`);
   const ran = results.filter((check) => check.durationMs !== undefined).length;
   const reused = results.filter((check) => check.reused).length;
-  log(`${PREFIX} ${result}: ${ran} run, ${reused} reused, ${results.filter((check) => check.result === 'skipped').length} out of scope. Proof: ${path.join(proofsDir(commonDir), `${tree}.json`)}.`);
+  log(`${PREFIX} ${result}: ${ran} run, ${reused} reused, ${results.filter((check) => check.result === 'skipped').length} out of scope. Proof: ${proofFile}.`);
   if (incomplete && !failed) {
     log(`${PREFIX} incomplete: run the unavailable checks where they can run (remote CI on demand, the owner's machine), then rerun with --external <check>=<evidence>.`);
   }
@@ -717,12 +916,24 @@ export async function verify(kind, argv = [], {
 
 // ---------------------------------------------------------------- deploy guard
 
+/** Every check of checkReleaseProof, in order (deploy guards list them). */
+export const RELEASE_PROOF_CHECKS = Object.freeze([
+  'head-is-origin-main',
+  'clean-tree',
+  'proof-present',
+  'proof-kind',
+  'proof-passed',
+  'proof-matches-head',
+  'proof-target',
+  'proof-external',
+]);
+
 /**
  * Release proof a deploy of HEAD needs: HEAD is origin/<main>, the checkout is
  * clean, and a passed release proof exists for this exact commit and tree
  * (and for every requested target). Returns the list of failures.
  */
-export function checkReleaseProof({ cwd = process.cwd(), env = cleanGitEnv(), targets = [], fetch = true, mainBranch = 'main' } = {}) {
+export function checkReleaseProof({ cwd = process.cwd(), env = cleanGitEnv(), targets = [], fetch = true, mainBranch = 'main', externalSources = [] } = {}) {
   const { commonDir, git } = resolveRepository(cwd, env);
   const failures = [];
   const head = git(['rev-parse', '--verify', 'HEAD^{commit}']);
@@ -739,13 +950,26 @@ export function checkReleaseProof({ cwd = process.cwd(), env = cleanGitEnv(), ta
   const tree = git(['rev-parse', 'HEAD^{tree}']);
   const proof = readProof(commonDir, tree);
   if (!proof) {
-    failures.push({ check: 'proof-present', message: `no proof for tree ${tree}; run verify:release on HEAD` });
+    const older = proofFileVersion(commonDir, tree);
+    failures.push({
+      check: 'proof-present',
+      message: older === null
+        ? `no proof for tree ${tree}; run verify:release on HEAD`
+        : `the proof for tree ${tree} has format ${older}, older than ${PROOF_FORMAT_VERSION}; run verify:release on HEAD again`,
+    });
   } else {
     if (proof.kind !== 'release') failures.push({ check: 'proof-kind', message: `the proof is a ${proof.kind} proof; only a release proof unlocks a deploy` });
     if (proof.result !== 'passed') failures.push({ check: 'proof-passed', message: `the proof result is ${proof.result}` });
     if (proof.sha !== head) failures.push({ check: 'proof-matches-head', message: `the proof was written for ${proof.sha}, not HEAD ${head}; run verify:release on HEAD (identical checks are reused)` });
     for (const target of targets) {
       if (!(proof.targets ?? []).includes(target)) failures.push({ check: 'proof-target', message: `the proof does not cover target ${target}` });
+    }
+    for (const check of proof.checks ?? []) {
+      if (!check.external) continue;
+      const issue = !check.specialised
+        ? 'only a specialised check can come from elsewhere'
+        : externalEvidenceIssue(git, String(check.external), proof.sha, proof.tree, externalSources);
+      if (issue) failures.push({ check: 'proof-external', message: `${check.name}: ${issue}` });
     }
   }
   return { head, tree, proof, failures };
@@ -764,8 +988,13 @@ function countChecks(proof) {
   return `${counts.run} run, ${counts.reused} reused, ${counts.skipped} out of scope${counts.external ? `, ${counts.external} external` : ''}`;
 }
 
+function externalEvidence(proof) {
+  return (proof.checks ?? []).filter((check) => check.external).map((check) => `${check.name} (${check.external})`);
+}
+
 function describeProof(proof) {
-  return `${proof.kind} proof ${proof.result} (${countChecks(proof)}) on ${proof.sha.slice(0, 12)} at ${proof.finishedAt}`;
+  const external = externalEvidence(proof);
+  return `${proof.kind} proof ${proof.result} (${countChecks(proof)}) on ${proof.sha.slice(0, 12)} at ${proof.finishedAt}${external.length ? `; external: ${external.join('; ')}` : ''}`;
 }
 
 export async function status(argv = [], { cwd = process.cwd(), env = cleanGitEnv(), log = (line) => console.log(line) } = {}) {
@@ -815,11 +1044,110 @@ export async function proofBlock(argv = [], { cwd = process.cwd(), env = cleanGi
     `- Specialised checks (database, browser, mobile, corpus): run: ${specialisedRun.join(', ') || 'none'} / out of scope: ${specialisedOut.join(', ') || 'none'}${specialisedMissing.length ? ` / still needed: ${specialisedMissing.join(', ')}` : ''}`,
     `- Integration: ${integration}`,
   ];
+  const external = externalEvidence(proof);
+  if (external.length) lines.push(`- External evidence: ${external.join('; ')}`);
+  // A PR can change its own checks or hook rules: say so, for the owner's review.
+  const scope = changedFiles(git, base, sha);
+  const delivery = (scope?.files ?? []).filter((file) => matchesAny(file, [...DELIVERY_FILES, ...config.deliveryFiles]));
+  // Every package.json the PR changes, root and workspaces: its scripts are
+  // what the checks run, and it can hold tool config (jest, eslintConfig,
+  // prettier, babel). Only a dependency or version change goes unflagged.
+  for (const manifest of (scope?.files ?? []).filter((file) => file === 'package.json' || file.endsWith('/package.json'))) {
+    if (!manifest.includes('node_modules/') && manifestChanged(git, scope.mergeBase, sha, manifest)) delivery.push(manifest);
+  }
+  if (delivery.length) lines.push(`- Delivery checks changed: ${delivery.join(', ')} (needs the owner's review)`);
   log(lines.join('\n'));
   return { status: proof.result === 'passed' ? 0 : 1, proof };
 }
 
 // ---------------------------------------------------------------- pre-push hook
+
+/** Fields of a package.json that only pick dependencies; the lockfile is in every fingerprint. */
+const MANIFEST_DEPENDENCY_FIELDS = [
+  'version',
+  'dependencies',
+  'devDependencies',
+  'peerDependencies',
+  'peerDependenciesMeta',
+  'optionalDependencies',
+  'bundleDependencies',
+  'bundledDependencies',
+];
+
+/** A JSON value with its object keys sorted, so key order alone is no change. */
+function canonicalJson(value) {
+  if (Array.isArray(value)) return `[${value.map(canonicalJson).join(',')}]`;
+  if (value && typeof value === 'object') {
+    return `{${Object.keys(value).sort().map((key) => `${JSON.stringify(key)}:${canonicalJson(value[key])}`).join(',')}}`;
+  }
+  return JSON.stringify(value);
+}
+
+/**
+ * Whether a package.json differs between two commits outside its dependency
+ * and version fields: scripts and tool config (jest, eslintConfig, prettier,
+ * babel, browserslist, workspaces) decide what the checks run. A file that
+ * cannot be parsed counts as changed.
+ */
+function manifestChanged(git, from, to, manifest = 'package.json') {
+  const fields = (rev) => {
+    const text = git(['show', `${rev}:${manifest}`], { allowFailure: true });
+    try {
+      const json = text ? JSON.parse(text) : {};
+      for (const field of MANIFEST_DEPENDENCY_FIELDS) delete json[field];
+      return canonicalJson(json);
+    } catch {
+      return null;
+    }
+  };
+  const before = fields(from);
+  const after = fields(to);
+  return before === null || after === null || before !== after;
+}
+
+/**
+ * Files that define how a repository is checked; changing them needs the
+ * owner's review: the engine, its config and hook, and the configs of the
+ * tools the checks run (a weaker lint, type or test config passes more).
+ */
+export const DELIVERY_FILES = [
+  CONFIG_FILE,
+  'scripts/verify-local.mjs',
+  'scripts/test-verify-local.mjs',
+  '.githooks/**',
+  'turbo.json',
+  '**/eslint.config.*',
+  '**/.eslintrc*',
+  '**/tsconfig*.json',
+  '**/jest.config.*',
+  '**/vitest*.config.*',
+  '**/playwright*.config.*',
+  '**/babel.config.*',
+  '**/.prettierrc*',
+  '**/prettier.config.*',
+  '**/.prettierignore',
+  '**/.eslintignore',
+  '**/.babelrc*',
+  '**/jest.setup.*',
+  '**/jest.resolver.*',
+  '**/vitest.setup.*',
+  '**/vitest.workspace.*',
+  '**/e2e*.config.*',
+  '**/pnpm-workspace.yaml',
+  '**/deno.json',
+  '**/deno.jsonc',
+  '**/pyproject.toml',
+  '**/pytest.ini',
+  '**/tox.ini',
+  '**/setup.cfg',
+];
+
+/**
+ * Variables that narrow what a check runs: a "changed since" base (Jest via
+ * scripts/run-jest-changed.js), Turbo's --affected range, a CI base revision.
+ * A verify run strips them from the caller's environment.
+ */
+export const SCOPE_ENV = ['JEST_CHANGED_SINCE', 'TURBO_SCM_BASE', 'TURBO_SCM_HEAD', 'CI_BASE_REVISION', 'GITHUB_BASE_SHA'];
 
 export const DEFAULT_FORBIDDEN = [
   '**/.env',
@@ -847,26 +1175,27 @@ const SECRET_PATTERNS = [
 
 const NULL_ID = /^0+$/;
 
-/** Read many blobs with one `git cat-file --batch`. */
-function readBlobs(root, env, entries) {
+/** Read many blobs with one `git cat-file --batch`; null when git cannot. */
+export function readBlobs(root, env, entries) {
   if (entries.length === 0) return [];
   const input = `${entries.map((entry) => entry.object).join('\n')}\n`;
   const result = spawnSync('git', ['cat-file', '--batch'], { cwd: root, env, input, maxBuffer: 512 * 1024 * 1024 });
-  if (result.error || result.status !== 0) return [];
+  if (result.error || result.status !== 0) return null;
   const output = result.stdout;
   const blobs = [];
   let offset = 0;
   for (const entry of entries) {
     const newline = output.indexOf(0x0a, offset);
-    if (newline < 0) break;
-    const header = output.subarray(offset, newline).toString('utf8').split(' ');
-    const size = Number(header[2]);
-    if (header[1] === 'missing' || Number.isNaN(size)) {
-      offset = newline + 1;
-      continue;
-    }
-    blobs.push({ file: entry.file, content: output.subarray(newline + 1, newline + 1 + size).toString('utf8') });
-    offset = newline + 1 + size + 1;
+    if (newline < 0) return null;
+    // "<object> blob <size>", then the content and a newline: anything else
+    // (missing object, wrong object or type, short output) fails closed.
+    const [object, type, sizeText, extra] = output.subarray(offset, newline).toString('utf8').split(' ');
+    const size = Number(sizeText);
+    if (object !== entry.object || type !== 'blob' || extra !== undefined || !Number.isInteger(size) || size < 0) return null;
+    const end = newline + 1 + size;
+    if (end + 1 > output.length || output[end] !== 0x0a) return null;
+    blobs.push({ file: entry.file, content: output.subarray(newline + 1, end).toString('utf8') });
+    offset = end + 1;
   }
   return blobs;
 }
@@ -935,7 +1264,12 @@ export async function prePush(remote, stdinText, {
       }
       if (entry.size <= 2 * 1024 * 1024 && !matchesAny(file, config.hook.secretAllow)) toScan.push({ file, ...entry });
     }
-    for (const { file, content } of readBlobs(root, env, toScan)) {
+    const blobs = readBlobs(root, env, toScan);
+    if (blobs === null || blobs.length !== toScan.length) {
+      problems.push(`could not read the ${toScan.length} pushed files (git cat-file --batch failed), so the secret scan did not run`);
+      continue;
+    }
+    for (const { file, content } of blobs) {
       if (content.includes('\0')) continue;
       for (const { name, pattern } of SECRET_PATTERNS) {
         if (pattern.test(content)) {

@@ -8,7 +8,7 @@
 // pushed tree is reported and its absence does not block.
 
 const { spawnSync } = require('node:child_process');
-const { copyFileSync, mkdirSync, mkdtempSync, rmSync, symlinkSync, writeFileSync } = require('node:fs');
+const { copyFileSync, mkdirSync, mkdtempSync, readFileSync, rmSync, symlinkSync, writeFileSync } = require('node:fs');
 const { tmpdir } = require('node:os');
 const path = require('node:path');
 
@@ -112,8 +112,12 @@ describe('pre-push hook', () => {
     const tree = repo.git('rev-parse', `${sha}^{tree}`);
     const proofs = path.join(repo.work, '.git', 'verify-proofs');
     mkdirSync(proofs, { recursive: true });
+    // The proof format the shared engine reads (older formats are ignored).
+    const version = Number(/export const PROOF_FORMAT_VERSION = (\d+);/.exec(
+      readFileSync(path.join(__dirname, 'verify-local.mjs'), 'utf8'),
+    )[1]);
     writeFileSync(path.join(proofs, `${tree}.json`), JSON.stringify({
-      version: 2,
+      version,
       kind: 'pr',
       result: 'passed',
       sha,

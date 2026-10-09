@@ -1,7 +1,7 @@
 'use strict';
 /* global describe, expect, it, jest */
 
-const { readReleaseIdentity, validateReleaseRef } = require('./check-android-release-ref');
+const { readReleaseIdentity, readRequireBuiltVersionCode, validateReleaseRef } = require('./check-android-release-ref');
 
 describe('Android release ref guard', () => {
   it('reads a consistent release identity', () => {
@@ -15,6 +15,70 @@ describe('Android release ref guard', () => {
       version: '2.0.2',
       versionCode: 33,
       runtimeVersionPolicy: 'fingerprint',
+    });
+  });
+
+  // The tag ref is the release tag of the identity, so only the built-code
+  // requirement is under test.
+  describe('REQUIRE_BUILT_ANDROID_VERSION_CODE', () => {
+    const releaseIdentity = { version: '3.5.0', versionCode: 74 };
+    const tagRef = { refName: 'v3.5.0', refType: 'tag', releaseIdentity };
+
+    it('fails on an empty or missing built code when the flag is on', () => {
+      for (const versionSource of ['remote', 'local']) {
+        expect(() => validateReleaseRef({ ...tagRef, versionSource, requireBuiltVersionCode: true, builtVersionCode: '' }))
+          .toThrow('BUILT_ANDROID_VERSION_CODE is empty');
+        expect(() => validateReleaseRef({ ...tagRef, versionSource, requireBuiltVersionCode: true }))
+          .toThrow('BUILT_ANDROID_VERSION_CODE is empty');
+        // An expected code alone does not stand for a checked build.
+        expect(() => validateReleaseRef({
+          ...tagRef,
+          versionSource,
+          requireBuiltVersionCode: true,
+          expectedRemoteVersionCode: '75',
+        })).toThrow('BUILT_ANDROID_VERSION_CODE is empty');
+      }
+    });
+
+    it('passes a valid built and expected pair when the flag is on', () => {
+      expect(validateReleaseRef({
+        ...tagRef,
+        versionSource: 'remote',
+        requireBuiltVersionCode: true,
+        builtVersionCode: '75',
+        expectedRemoteVersionCode: '75',
+      })).toMatchObject({ builtVersionCode: '75', versionCode: 75 });
+      expect(validateReleaseRef({ ...tagRef, requireBuiltVersionCode: true, builtVersionCode: '74' }))
+        .toMatchObject({ builtVersionCode: '74', versionCode: 74 });
+      // The flag adds a requirement; it relaxes none of the others.
+      expect(() => validateReleaseRef({
+        ...tagRef,
+        versionSource: 'remote',
+        requireBuiltVersionCode: true,
+        builtVersionCode: '75',
+        expectedRemoteVersionCode: '76',
+      })).toThrow('does not match the EAS build');
+      expect(() => validateReleaseRef({ ...tagRef, versionSource: 'remote', requireBuiltVersionCode: true, builtVersionCode: '75' }))
+        .toThrow('EXPECTED_ANDROID_VERSION_CODE');
+    });
+
+    it('keeps the current behaviour when the flag is off', () => {
+      for (const requireBuiltVersionCode of [false, undefined]) {
+        expect(validateReleaseRef({ ...tagRef, versionSource: 'remote', requireBuiltVersionCode }))
+          .toMatchObject({ builtVersionCode: '', versionCode: 74 });
+        expect(validateReleaseRef({ ...tagRef, versionSource: 'remote', requireBuiltVersionCode, expectedRemoteVersionCode: '75' }))
+          .toMatchObject({ builtVersionCode: '', versionCode: 74 });
+      }
+    });
+
+    it("reads the flag from the environment, '1' on and empty or '0' off", () => {
+      expect(readRequireBuiltVersionCode({ REQUIRE_BUILT_ANDROID_VERSION_CODE: '1' })).toBe(true);
+      expect(readRequireBuiltVersionCode({ REQUIRE_BUILT_ANDROID_VERSION_CODE: ' 1 ' })).toBe(true);
+      expect(readRequireBuiltVersionCode({ REQUIRE_BUILT_ANDROID_VERSION_CODE: '0' })).toBe(false);
+      expect(readRequireBuiltVersionCode({ REQUIRE_BUILT_ANDROID_VERSION_CODE: '' })).toBe(false);
+      expect(readRequireBuiltVersionCode({})).toBe(false);
+      // A typo must not silently turn the requirement off.
+      expect(() => readRequireBuiltVersionCode({ REQUIRE_BUILT_ANDROID_VERSION_CODE: 'true' })).toThrow("must be '1' or '0'");
     });
   });
 
@@ -63,12 +127,64 @@ describe('Android release ref guard', () => {
     })).toThrow('does not match v2.0.2');
   });
 
-  it('allows a manual workflow run without a tag', () => {
-    expect(validateReleaseRef({
-      refName: '',
-      refType: '',
-      releaseIdentity: { version: '2.0.2', versionCode: 33 },
-    })).toMatchObject({ version: '2.0.2', versionCode: 33 });
+  it('fails a manual workflow run without a tag instead of skipping the check', () => {
+    const releaseIdentity = { version: '2.0.2', versionCode: 33 };
+
+    expect(() => validateReleaseRef({ refName: '', refType: '', releaseIdentity })).toThrow('No release tag given');
+    expect(() => validateReleaseRef({ releaseIdentity })).toThrow('No release tag given');
+    // A branch ref is not a tag identity.
+    expect(() => validateReleaseRef({ refName: 'master', refType: 'branch', releaseIdentity })).toThrow('not a release tag');
+  });
+
+  it('fails when EAS reports a tag ref that differs from release_tag', () => {
+    const releaseIdentity = { version: '2.0.2', versionCode: 33 };
+
+    expect(() =>
+      validateReleaseRef({ refName: 'v2.0.1', refType: 'tag', releaseTag: 'v2.0.2', releaseIdentity })
+    ).toThrow('does not match the tag ref v2.0.1');
+    expect(validateReleaseRef({ refName: 'v2.0.2', refType: 'tag', releaseTag: 'v2.0.2', releaseIdentity }).releaseTag).toBe('v2.0.2');
+  });
+
+  it('fails when EAS reports a branch or other ref beside release_tag', () => {
+    const releaseIdentity = { version: '2.0.2', versionCode: 33 };
+
+    expect(() =>
+      validateReleaseRef({ refName: 'master', refType: 'branch', releaseTag: 'v2.0.2', releaseIdentity })
+    ).toThrow('dispatch with --ref v2.0.2');
+    expect(() =>
+      validateReleaseRef({ refName: 'refs/pull/1/merge', refType: 'other', releaseTag: 'v2.0.2', releaseIdentity })
+    ).toThrow('not a release tag');
+  });
+
+  it('fails on a half-reported ref (name without type, or tag without name)', () => {
+    const releaseIdentity = { version: '2.0.2', versionCode: 33 };
+
+    expect(() => validateReleaseRef({ refName: 'v2.0.2', refType: '', releaseTag: 'v2.0.2', releaseIdentity })).toThrow(
+      'without a ref type'
+    );
+    expect(() => validateReleaseRef({ refName: '', refType: 'tag', releaseTag: 'v2.0.2', releaseIdentity })).toThrow(
+      'tag ref without a name'
+    );
+  });
+
+  it('accepts release_tag alone when EAS reports no ref (eas workflow:run context is empty)', () => {
+    const releaseIdentity = { version: '2.0.2', versionCode: 33 };
+
+    expect(validateReleaseRef({ refName: '', refType: '', releaseTag: 'v2.0.2', releaseIdentity }).releaseTag).toBe('v2.0.2');
+  });
+
+  it('checks the release_tag input of a dispatched run against app.json', () => {
+    const releaseIdentity = { version: '2.0.2', versionCode: 33 };
+
+    expect(validateReleaseRef({ releaseTag: 'v2.0.2', releaseIdentity })).toMatchObject({ releaseTag: 'v2.0.2' });
+    expect(() => validateReleaseRef({ releaseTag: 'v2.0.1', releaseIdentity })).toThrow('Release tag v2.0.1 does not match v2.0.2');
+    expect(() => validateReleaseRef({ releaseTag: '2.0.2', releaseIdentity })).toThrow('does not match v2.0.2');
+    expect(() => validateReleaseRef({
+      releaseTag: 'v2.0.2',
+      refName: 'v2.0.1',
+      refType: 'tag',
+      releaseIdentity,
+    })).toThrow('does not match the tag ref v2.0.1');
   });
 
   it('requires the EAS build output to use the app.json versionCode', () => {
@@ -76,20 +192,22 @@ describe('Android release ref guard', () => {
 
     expect(validateReleaseRef({
       builtVersionCode: '33',
+      releaseTag: 'v2.0.2',
       releaseIdentity,
     })).toMatchObject({ builtVersionCode: '33' });
     expect(() => validateReleaseRef({
       builtVersionCode: '32',
+      releaseTag: 'v2.0.2',
       releaseIdentity,
     })).toThrow('EAS build versionCode 32 does not match app.json 33');
   });
 
   it('compares remote builds with their exact EAS metadata, not the local mirror', () => {
     const releaseIdentity = { version: '3.2.0', versionCode: 68 };
-    expect(validateReleaseRef({ releaseIdentity, versionSource: 'remote', builtVersionCode: '69', expectedRemoteVersionCode: '69' }))
+    expect(validateReleaseRef({ releaseIdentity, releaseTag: 'v3.2.0', versionSource: 'remote', builtVersionCode: '69', expectedRemoteVersionCode: '69' }))
       .toMatchObject({ builtVersionCode: '69', versionCode: 69 });
-    expect(() => validateReleaseRef({ releaseIdentity, versionSource: 'remote', builtVersionCode: '69' })).toThrow('EXPECTED_ANDROID_VERSION_CODE');
-    expect(() => validateReleaseRef({ releaseIdentity, versionSource: 'remote', builtVersionCode: '69', expectedRemoteVersionCode: '70' })).toThrow('does not match the EAS build');
-    expect(() => validateReleaseRef({ releaseIdentity, versionSource: 'remote', builtVersionCode: 'NaN', expectedRemoteVersionCode: '69' })).toThrow('Invalid');
+    expect(() => validateReleaseRef({ releaseIdentity, releaseTag: 'v3.2.0', versionSource: 'remote', builtVersionCode: '69' })).toThrow('EXPECTED_ANDROID_VERSION_CODE');
+    expect(() => validateReleaseRef({ releaseIdentity, releaseTag: 'v3.2.0', versionSource: 'remote', builtVersionCode: '69', expectedRemoteVersionCode: '70' })).toThrow('does not match the EAS build');
+    expect(() => validateReleaseRef({ releaseIdentity, releaseTag: 'v3.2.0', versionSource: 'remote', builtVersionCode: 'NaN', expectedRemoteVersionCode: '69' })).toThrow('Invalid');
   });
 });
