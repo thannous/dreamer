@@ -17821,58 +17821,152 @@
       "en": {
         "slug": "shadow",
         "name": "Shadow",
-        "shortDescription": "A shadow may belong to you, be cast by someone else or move without a visible source. Its shape, distance and behavior determine whether it felt ordinary, protective or threatening.",
-        "modifiedAt": "2026-07-24",
+        "shortDescription": "A shadow following you, a dark figure at the end of a hallway: in dreams, shadows are often associated with what stays vague, or with what you would rather not look at. Where it came from, how close it was and how you felt guide the reading.",
+        "modifiedAt": "2026-10-08",
         "askYourself": [
-          "What did shadow change in the scene?",
-          "Which feeling stayed with me after waking?"
+          "Whose shadow was it: mine, someone else's, or nothing visible?",
+          "Was it coming closer, following me, or standing still?",
+          "What feels vague in my life right now, hard to put into words?"
         ],
-        "faq": []
+        "faq": [
+          {
+            "question": "What does it mean to dream of a shadow?",
+            "answer": "Shadows are often associated with what feels vague, unsettling or set aside. The meaning depends mostly on where the shadow came from, what it did and how you felt: your own shadow and a threatening figure tell different stories."
+          },
+          {
+            "question": "What does a shadow figure or shadow person in a dream mean?",
+            "answer": "A faceless dark figure can go with a diffuse worry that is hard to name. If you saw it while waking up, unable to move, it may have been sleep paralysis: frightening, but well known and usually harmless."
+          },
+          {
+            "question": "Why did my shadow move on its own?",
+            "answer": "A shadow that acts by itself can stage a side of you that you keep in check: anger, a wish, exhaustion. What it did, and what you would have liked to do, is the main clue."
+          },
+          {
+            "question": "What is the shadow in Jung's psychology?",
+            "answer": "For Carl Gustav Jung, the shadow refers to the parts of the personality a person does not recognize as their own. It is a historical framework that can prompt useful questions, not a key that tells you what your dream means."
+          }
+        ],
+        "documentMetaDescription": "Dreaming of a shadow, a dark shadow figure or your own shadow slipping away: what the scene may say about what feels vague, with questions and an example."
       },
       "fr": {
         "slug": "ombre",
         "name": "Ombre",
-        "shortDescription": "Une ombre peut suivre votre corps, appartenir à quelqu’un d’autre ou se déplacer sans source visible. Sa forme, sa distance et son comportement déterminent si elle semblait banale, protectrice ou menaçante.",
-        "modifiedAt": "2026-07-24",
+        "shortDescription": "Une ombre qui vous suit, une silhouette au bout du couloir : en rêve, l'ombre est souvent associée à ce qui reste flou, ou à ce qu'on préfère ne pas regarder. Sa source, sa distance et ce que vous avez ressenti orientent la lecture.",
+        "modifiedAt": "2026-10-08",
         "askYourself": [
-          "Qu’est-ce que ombre a changé dans la scène ?",
-          "Quelle émotion est restée après le réveil ?"
+          "À qui appartenait l'ombre : à moi, à quelqu'un, à rien de visible ?",
+          "S'approchait-elle, me suivait-elle, ou restait-elle immobile ?",
+          "Quelle situation me paraît floue en ce moment, difficile à nommer ?"
         ],
-        "faq": []
+        "faq": [
+          {
+            "question": "Que signifie rêver d'une ombre ?",
+            "answer": "L'ombre est souvent associée à ce qui reste flou, inquiétant ou mis de côté. Son sens dépend surtout de sa source, de ce qu'elle faisait et de ce que vous avez ressenti : votre propre ombre et une silhouette menaçante ne racontent pas la même chose."
+          },
+          {
+            "question": "Que signifie rêver d'une silhouette noire ou d'un homme de l'ombre ?",
+            "answer": "Une silhouette sans visage peut accompagner une inquiétude diffuse, difficile à nommer. Si vous l'avez vue au réveil, sans pouvoir bouger, il peut s'agir d'une paralysie du sommeil : un phénomène impressionnant, mais connu et en général sans gravité."
+          },
+          {
+            "question": "Pourquoi mon ombre se détachait-elle de moi ?",
+            "answer": "Une ombre qui agit seule peut mettre en scène une part de vous que vous retenez : une colère, un désir, une fatigue. Ce qu'elle faisait, et ce que vous auriez voulu faire, est l'indice principal."
+          },
+          {
+            "question": "Que représente l'ombre selon Jung ?",
+            "answer": "Chez Carl Gustav Jung, l'ombre désigne les aspects de la personnalité que l'on ne reconnaît pas comme siens. C'est une grille de lecture historique, utile pour se poser des questions, pas une clé qui donnerait le sens de votre rêve."
+          }
+        ],
+        "documentMetaDescription": "Rêver d'une ombre, d'une silhouette noire ou de son ombre qui s'échappe : ce que la scène peut dire de ce qui reste flou, avec questions et exemple."
       },
       "es": {
         "slug": "sombra",
         "name": "Sombra",
-        "shortDescription": "Una sombra puede pertenecerte, proceder de otra figura o moverse sin una fuente visible. Su forma, su distancia y su conducta indican si parecía cotidiana, protectora o inquietante.",
-        "modifiedAt": "2026-07-24",
+        "shortDescription": "Una sombra que te sigue, una silueta al fondo del pasillo: en sueños, la sombra se asocia a menudo con lo que sigue borroso o con lo que prefieres no mirar. Su origen, su distancia y lo que sentiste orientan la lectura.",
+        "modifiedAt": "2026-10-08",
         "askYourself": [
-          "¿Qué cambió sombra dentro de la escena?",
-          "¿Qué emoción siguió conmigo al despertar?"
+          "¿De quién era la sombra: mía, de otra persona, de nada visible?",
+          "¿Se acercaba, me seguía o se quedaba quieta?",
+          "¿Qué situación me resulta ahora borrosa, difícil de nombrar?"
         ],
-        "faq": []
+        "faq": [
+          {
+            "question": "¿Qué significa soñar con una sombra?",
+            "answer": "La sombra se asocia a menudo con lo que resulta borroso, inquietante o apartado. Su sentido depende sobre todo de su origen, de lo que hacía y de lo que sentiste: tu propia sombra y una silueta amenazante no cuentan lo mismo."
+          },
+          {
+            "question": "¿Qué significa soñar con una sombra negra o una figura oscura?",
+            "answer": "Una silueta sin rostro puede acompañar una preocupación difusa, difícil de nombrar. Si la viste al despertar, sin poder moverte, puede tratarse de una parálisis del sueño: impresiona, pero es un fenómeno conocido y en general benigno."
+          },
+          {
+            "question": "¿Por qué mi sombra se movía sola?",
+            "answer": "Una sombra que actúa por su cuenta puede escenificar una parte de ti que contienes: un enfado, un deseo, el cansancio. Lo que hacía, y lo que a ti te habría gustado hacer, es la pista principal."
+          },
+          {
+            "question": "¿Qué es la sombra según Jung?",
+            "answer": "Para Carl Gustav Jung, la sombra designa los aspectos de la personalidad que uno no reconoce como propios. Es un marco de lectura histórico que ayuda a hacerse preguntas, no una clave que diga qué significa tu sueño."
+          }
+        ],
+        "documentMetaDescription": "Soñar con una sombra, una figura oscura o tu propia sombra que se escapa: qué puede decir la escena sobre lo que sigue borroso, con preguntas y ejemplo."
       },
       "de": {
         "slug": "schatten",
         "name": "Schatten",
-        "shortDescription": "Im Traum kann ein Schatten zu dir gehören, von jemand anderem geworfen werden oder sich ohne erkennbare Quelle bewegen. Form, Abstand und Verhalten entscheiden, ob er beiläufig, schützend oder bedrohlich wirkt.",
+        "shortDescription": "Ein Schatten, der Ihnen folgt, eine Gestalt am Ende des Flurs: Im Traum wird der Schatten oft mit dem verbunden, was unklar bleibt oder was man lieber nicht ansieht. Seine Quelle, sein Abstand und Ihr Gefühl geben die Richtung vor.",
         "askYourself": [
-          "Wozu gehörte der Schatten, und passte seine Form zur sichtbaren Gestalt?",
-          "Folgte er dir, blieb er stehen oder verdeckte er etwas?",
-          "Welche unklare Person oder Situation beschäftigt dich gerade besonders?"
+          "Wem gehörte der Schatten: mir, jemand anderem oder nichts Sichtbarem?",
+          "Kam er näher, folgte er mir, oder blieb er stehen?",
+          "Welche Situation wirkt gerade unklar auf mich, schwer zu benennen?"
         ],
-        "modifiedAt": "2026-07-24",
-        "faq": []
+        "modifiedAt": "2026-10-08",
+        "faq": [
+          {
+            "question": "Was bedeutet es, von einem Schatten zu träumen?",
+            "answer": "Der Schatten wird oft mit dem verbunden, was unklar, beunruhigend oder beiseitegeschoben ist. Was er bedeutet, hängt vor allem von seiner Quelle, seinem Verhalten und Ihrem Gefühl ab: Der eigene Schatten und eine bedrohliche Gestalt erzählen Verschiedenes."
+          },
+          {
+            "question": "Was bedeutet eine schwarze Schattengestalt im Traum?",
+            "answer": "Eine Gestalt ohne Gesicht kann eine diffuse Sorge begleiten, die schwer zu benennen ist. Haben Sie sie beim Aufwachen gesehen, ohne sich bewegen zu können, kann es eine Schlaflähmung gewesen sein: beängstigend, aber bekannt und meist harmlos."
+          },
+          {
+            "question": "Warum hat sich mein Schatten selbstständig bewegt?",
+            "answer": "Ein Schatten, der von selbst handelt, kann eine Seite von Ihnen in Szene setzen, die Sie zurückhalten: Wut, einen Wunsch, Erschöpfung. Was er tat und was Sie selbst gern getan hätten, ist der wichtigste Hinweis."
+          },
+          {
+            "question": "Was bedeutet der Schatten bei C. G. Jung?",
+            "answer": "Bei Carl Gustav Jung bezeichnet der Schatten die Anteile der Persönlichkeit, die man nicht als eigene anerkennt. Das ist ein historisches Deutungsmodell, das zu guten Fragen anregen kann, kein Schlüssel zur Bedeutung Ihres Traums."
+          }
+        ],
+        "documentMetaDescription": "Schatten im Traum, eine dunkle Gestalt oder der eigene Schatten, der sich löst: was die Szene über Unklares sagen kann, mit Fragen und Tagebuchbeispiel."
       },
       "it": {
         "slug": "ombra",
         "name": "Ombra",
-        "shortDescription": "Un’ombra può appartenerti, essere proiettata da un’altra figura o muoversi senza una fonte visibile. Forma, distanza e comportamento indicano se appariva comune, protettiva o minacciosa.",
-        "modifiedAt": "2026-07-24",
+        "shortDescription": "Un’ombra che ti segue, una sagoma in fondo al corridoio: in sogno l’ombra viene spesso associata a ciò che resta confuso, o a ciò che preferisci non guardare. Da dove veniva, quanto era vicina e ciò che hai provato orientano la lettura.",
+        "modifiedAt": "2026-10-08",
         "askYourself": [
-          "Che cosa ha cambiato ombra nella scena?",
-          "Quale emozione è rimasta dopo il risveglio?"
+          "Di chi era l’ombra: mia, di qualcun altro, di niente di visibile?",
+          "Si avvicinava, mi seguiva o restava ferma?",
+          "Quale situazione mi sembra confusa in questo periodo, difficile da nominare?"
         ],
-        "faq": []
+        "faq": [
+          {
+            "question": "Che cosa significa sognare un’ombra?",
+            "answer": "L’ombra viene spesso associata a ciò che resta confuso, inquietante o messo da parte. Il significato dipende soprattutto da dove veniva, da che cosa faceva e da ciò che hai provato: la tua ombra e una sagoma minacciosa non raccontano la stessa cosa."
+          },
+          {
+            "question": "Che cosa significa sognare una figura nera o un uomo ombra?",
+            "answer": "Una sagoma senza volto può accompagnare una preoccupazione diffusa, difficile da nominare. Se l’hai vista al risveglio, senza riuscire a muoverti, può trattarsi di paralisi del sonno: spaventa, ma è un fenomeno noto e di solito innocuo."
+          },
+          {
+            "question": "Perché la mia ombra si muoveva da sola?",
+            "answer": "Un’ombra che agisce per conto suo può mettere in scena una parte di te che trattieni: una rabbia, un desiderio, una stanchezza. Che cosa faceva, e che cosa avresti voluto fare tu, è l’indizio principale."
+          },
+          {
+            "question": "Che cos’è l’ombra secondo Jung?",
+            "answer": "Per Carl Gustav Jung l’ombra indica gli aspetti della personalità che non si riconoscono come propri. È una chiave di lettura storica che può suggerire buone domande, non una formula che dice che cosa significa il tuo sogno."
+          }
+        ],
+        "documentMetaDescription": "Sognare un’ombra, una figura scura o la propria ombra che si stacca: che cosa può dire la scena di ciò che resta confuso, con domande ed esempio di diario."
       },
       "pt": {
         "slug": "sombra",
@@ -17907,58 +18001,152 @@
       "en": {
         "slug": "ghost",
         "name": "Ghost",
-        "shortDescription": "A ghost introduces a person or presence that seems both present and unreachable, sometimes linked to a memory. Recognizing it, speaking with it or fearing it changes the dream’s personal context.",
-        "modifiedAt": "2026-07-24",
+        "shortDescription": "A presence in the room, a pale shape, the voice of someone you lost: dreaming of a ghost often brings back what is past but not quite finished, such as grief, a memory or a relationship. Who it was and whether you were afraid change the reading.",
+        "modifiedAt": "2026-10-08",
         "askYourself": [
-          "What did ghost change in the scene?",
-          "Which feeling stayed with me after waking?"
+          "Did I recognize the ghost, or was it a nameless presence?",
+          "Did it want something: to talk, to follow me, to show me a place?",
+          "What in my life is over but not quite settled?"
         ],
-        "faq": []
+        "faq": [
+          {
+            "question": "What does it mean to dream of a ghost?",
+            "answer": "A ghost is often associated with what belongs to the past without being fully settled: grief, a memory, a relationship, an older version of yourself. Your emotion and who the ghost was guide the reading."
+          },
+          {
+            "question": "What does it mean to see the ghost of a loved one who died?",
+            "answer": "Seeing someone you lost as a ghost often goes with grief, even years later. These dreams can feel comforting or sad. They are not proof of a visit, and not a message you need to decode."
+          },
+          {
+            "question": "Is it bad to dream of a haunted house?",
+            "answer": "No. A haunted house can stage a place, a family or a period full of memories. Ask yourself which real place it looked like, and what happened there in the past."
+          },
+          {
+            "question": "Why did I feel a presence in the room as I woke up?",
+            "answer": "Sensing a presence on waking, while unable to move, is typical of sleep paralysis. It is frightening but well known. If it happens often or keeps you from sleeping, talk to a doctor."
+          }
+        ],
+        "documentMetaDescription": "Dreaming of a ghost, a loved one who died or a haunted house: what the scene may say about a past that still feels present, with questions and an example."
       },
       "fr": {
         "slug": "fantome",
         "name": "Fantôme",
-        "shortDescription": "Un fantôme introduit une présence à la fois perceptible et difficile à saisir, parfois liée à une personne ou à un souvenir. Le reconnaître, pouvoir lui parler ou en avoir peur change profondément l’expérience du rêve.",
-        "modifiedAt": "2026-07-24",
+        "shortDescription": "Une présence dans la pièce, une forme pâle, la voix d'un proche disparu : rêver d'un fantôme ramène souvent à ce qui est passé sans être tout à fait fini, un deuil, un souvenir, une relation. Qui il était et si vous aviez peur changent la lecture.",
+        "modifiedAt": "2026-10-08",
         "askYourself": [
-          "Qu’est-ce que fantôme a changé dans la scène ?",
-          "Quelle émotion est restée après le réveil ?"
+          "Ai-je reconnu le fantôme, ou était-ce une présence anonyme ?",
+          "Voulait-il quelque chose : me parler, me suivre, me montrer un lieu ?",
+          "Qu'est-ce qui, dans ma vie, est terminé sans être tout à fait réglé ?"
         ],
-        "faq": []
+        "faq": [
+          {
+            "question": "Que signifie rêver d'un fantôme ?",
+            "answer": "Le fantôme est souvent associé à ce qui appartient au passé sans être tout à fait réglé : un deuil, un souvenir, une relation, une ancienne version de vous. Votre émotion et l'identité du fantôme orientent la lecture."
+          },
+          {
+            "question": "Que signifie rêver du fantôme d'un proche décédé ?",
+            "answer": "Voir un proche disparu sous forme de fantôme accompagne souvent le deuil, même longtemps après. Ces rêves peuvent apaiser ou attrister. Ils ne prouvent pas une visite et ne sont pas un message à décoder."
+          },
+          {
+            "question": "Est-ce grave de rêver d'une maison hantée ?",
+            "answer": "Non. Une maison hantée peut mettre en scène un lieu, une famille ou une période chargés de souvenirs. Demandez-vous à quel endroit réel elle ressemblait, et ce qui s'y est passé autrefois."
+          },
+          {
+            "question": "Pourquoi ai-je senti une présence dans la chambre en me réveillant ?",
+            "answer": "Sentir une présence au réveil, sans pouvoir bouger, est typique de la paralysie du sommeil. C'est impressionnant mais connu. Si cela revient souvent ou vous empêche de dormir, parlez-en à un médecin."
+          }
+        ],
+        "documentMetaDescription": "Rêver d'un fantôme, d'un proche disparu ou d'une maison hantée : ce que la scène peut dire d'un passé encore présent, avec questions et exemple de journal."
       },
       "es": {
         "slug": "fantasma",
         "name": "Fantasma",
-        "shortDescription": "Un fantasma introduce una persona o presencia que parece estar allí y, a la vez, resulta inalcanzable. Reconocerla, hablarle o temerla cambia el contexto personal del sueño.",
-        "modifiedAt": "2026-07-24",
+        "shortDescription": "Una presencia en la habitación, una forma pálida, la voz de alguien que ya no está: soñar con un fantasma suele llevarte a lo que pasó sin terminar del todo, un duelo, un recuerdo, una relación. Quién era y si tenías miedo cambian la lectura.",
+        "modifiedAt": "2026-10-08",
         "askYourself": [
-          "¿Qué cambió fantasma dentro de la escena?",
-          "¿Qué emoción siguió conmigo al despertar?"
+          "¿Reconocí al fantasma o era una presencia sin nombre?",
+          "¿Quería algo: hablarme, seguirme, enseñarme un lugar?",
+          "¿Qué hay en mi vida que ha terminado sin quedar del todo resuelto?"
         ],
-        "faq": []
+        "faq": [
+          {
+            "question": "¿Qué significa soñar con un fantasma?",
+            "answer": "El fantasma se asocia a menudo con lo que pertenece al pasado sin estar del todo resuelto: un duelo, un recuerdo, una relación, una versión antigua de ti. Tu emoción y la identidad del fantasma orientan la lectura."
+          },
+          {
+            "question": "¿Qué significa soñar con el fantasma de un familiar fallecido?",
+            "answer": "Ver como fantasma a alguien que has perdido suele acompañar el duelo, incluso años después. Estos sueños pueden reconfortar o entristecer. No son la prueba de una visita ni un mensaje que haya que descifrar."
+          },
+          {
+            "question": "¿Es malo soñar con una casa encantada?",
+            "answer": "No. Una casa encantada puede escenificar un lugar, una familia o una época cargada de recuerdos. Pregúntate a qué sitio real se parecía y qué pasó allí en otro tiempo."
+          },
+          {
+            "question": "¿Por qué sentí una presencia en la habitación al despertar?",
+            "answer": "Sentir una presencia al despertar, sin poder moverte, es típico de la parálisis del sueño. Impresiona, pero es un fenómeno conocido. Si se repite a menudo o te impide dormir, coméntalo con un médico."
+          }
+        ],
+        "documentMetaDescription": "Soñar con un fantasma, con un familiar fallecido o con una casa encantada: qué puede decir la escena de un pasado que sigue presente, con preguntas y ejemplo."
       },
       "de": {
         "slug": "geist",
         "name": "Geist",
-        "shortDescription": "Ein Geist bringt eine Person oder Präsenz in die Szene, die zugleich anwesend und nicht greifbar ist. Ob du sie erkannt hast, mit ihr sprechen konntest oder dich vor ihr gefürchtet hast, gibt dem Traum seinen Kontext.",
+        "shortDescription": "Eine Präsenz im Zimmer, eine blasse Gestalt, die Stimme eines verstorbenen Menschen: Ein Geist im Traum führt oft zu dem, was vergangen, aber nicht abgeschlossen ist, etwa Trauer oder eine Beziehung. Wer er war und ob Sie Angst hatten, verändert die Deutung.",
         "askYourself": [
-          "An wen erinnerte dich der Geist durch Gesicht, Stimme oder Kleidung?",
-          "Was tat diese Gestalt, und konntest du mit ihr in Kontakt treten?",
-          "Welche Erinnerung oder Beziehung fühlt sich für dich noch nah oder ungeklärt an?"
+          "Habe ich den Geist erkannt, oder war es eine namenlose Präsenz?",
+          "Wollte er etwas: mit mir sprechen, mir folgen, mir einen Ort zeigen?",
+          "Was in meinem Leben ist vorbei, aber noch nicht ganz geklärt?"
         ],
-        "modifiedAt": "2026-07-24",
-        "faq": []
+        "modifiedAt": "2026-10-08",
+        "faq": [
+          {
+            "question": "Was bedeutet es, von einem Geist zu träumen?",
+            "answer": "Ein Geist wird oft mit dem verbunden, was zur Vergangenheit gehört, ohne ganz geklärt zu sein: Trauer, eine Erinnerung, eine Beziehung, eine frühere Version von Ihnen. Ihr Gefühl und die Frage, wer der Geist war, geben die Richtung vor."
+          },
+          {
+            "question": "Was bedeutet es, den Geist eines verstorbenen Angehörigen zu sehen?",
+            "answer": "Einen verlorenen Menschen als Geist zu sehen, begleitet oft die Trauer, auch Jahre später. Solche Träume können trösten oder traurig machen. Sie sind kein Beweis für einen Besuch und keine Botschaft, die man entschlüsseln muss."
+          },
+          {
+            "question": "Ist es schlimm, von einem Spukhaus zu träumen?",
+            "answer": "Nein. Ein Spukhaus kann einen Ort, eine Familie oder eine Lebensphase voller Erinnerungen in Szene setzen. Fragen Sie sich, welchem realen Ort es ähnelte und was dort früher geschah."
+          },
+          {
+            "question": "Warum habe ich beim Aufwachen eine Präsenz im Zimmer gespürt?",
+            "answer": "Beim Aufwachen eine Präsenz zu spüren, während man sich nicht bewegen kann, ist typisch für eine Schlaflähmung. Das ist beängstigend, aber bekannt. Kommt es häufig vor oder raubt es Ihnen den Schlaf, sprechen Sie mit einer Ärztin oder einem Arzt."
+          }
+        ],
+        "documentMetaDescription": "Geist im Traum, ein verstorbener Angehöriger oder ein Spukhaus: was die Szene über eine Vergangenheit sagen kann, die noch nah ist, mit Fragen und Beispiel."
       },
       "it": {
         "slug": "fantasma",
         "name": "Fantasma",
-        "shortDescription": "Un fantasma introduce una persona o presenza che sembra insieme presente e irraggiungibile, talvolta legata a un ricordo. Riconoscerla, parlarle o temerla cambia il contesto personale del sogno.",
-        "modifiedAt": "2026-07-24",
+        "shortDescription": "Una presenza nella stanza, una forma pallida, la voce di qualcuno che non c’è più: sognare un fantasma riporta spesso a ciò che è passato senza essere chiuso, un lutto, un ricordo, una relazione. Chi era e se avevi paura cambiano la lettura.",
+        "modifiedAt": "2026-10-08",
         "askYourself": [
-          "Che cosa ha cambiato fantasma nella scena?",
-          "Quale emozione è rimasta dopo il risveglio?"
+          "Ho riconosciuto il fantasma, o era una presenza senza nome?",
+          "Voleva qualcosa: parlarmi, seguirmi, mostrarmi un luogo?",
+          "Che cosa, nella mia vita, è finito senza essere del tutto risolto?"
         ],
-        "faq": []
+        "faq": [
+          {
+            "question": "Che cosa significa sognare un fantasma?",
+            "answer": "Il fantasma viene spesso associato a ciò che appartiene al passato senza essere del tutto risolto: un lutto, un ricordo, una relazione, una vecchia versione di te. L’emozione che provavi e l’identità del fantasma orientano la lettura."
+          },
+          {
+            "question": "Che cosa significa sognare il fantasma di una persona cara defunta?",
+            "answer": "Vedere come fantasma qualcuno che hai perso accompagna spesso il lutto, anche anni dopo. Questi sogni possono consolare o rattristare. Non sono la prova di una visita né un messaggio da decifrare."
+          },
+          {
+            "question": "È brutto sognare una casa infestata?",
+            "answer": "No. Una casa infestata può mettere in scena un luogo, una famiglia o un periodo carico di ricordi. Chiediti a quale luogo reale somigliava e che cosa vi è successo un tempo."
+          },
+          {
+            "question": "Perché al risveglio ho sentito una presenza nella stanza?",
+            "answer": "Sentire una presenza al risveglio, senza riuscire a muoversi, è tipico della paralisi del sonno. Spaventa, ma è un fenomeno noto. Se si ripete spesso o ti impedisce di dormire, parlane con un medico."
+          }
+        ],
+        "documentMetaDescription": "Sognare un fantasma, una persona cara defunta o una casa infestata: che cosa può dire la scena di un passato ancora presente, con domande ed esempio di diario."
       },
       "pt": {
         "slug": "fantasma",
@@ -17991,58 +18179,152 @@
       "en": {
         "slug": "demon",
         "name": "Demon",
-        "shortDescription": "A demon may appear as an intimidating figure shaped by personal, religious or cultural imagery. Its power and whether you fled, negotiated or resisted define the scene; the dream is not evidence of a supernatural presence.",
-        "modifiedAt": "2026-07-24",
+        "shortDescription": "A horned figure at the foot of the bed, a threatening voice: dreaming of a demon is often frightening. The scene can go with a fear, a sense of guilt or a temptation that feels stronger than you. It is not an omen, nor proof of any presence.",
+        "modifiedAt": "2026-10-08",
         "askYourself": [
-          "What did demon change in the scene?",
-          "Which feeling stayed with me after waking?"
+          "What did the demon look like, and where did its features come from?",
+          "What did it want from me, and did I run, fight or talk?",
+          "What feels stronger than me in my life right now?"
         ],
-        "faq": []
+        "faq": [
+          {
+            "question": "What does it mean to dream of a demon?",
+            "answer": "A demon is often associated with fear, guilt, anger or a temptation that feels stronger than you. Its features usually come from your culture or upbringing. How you reacted in the dream is the main clue."
+          },
+          {
+            "question": "Is dreaming of the devil a bad sign?",
+            "answer": "No. A dream about a demon or the devil predicts nothing and proves no supernatural presence. It stages an intense emotion, often with the images your culture links to evil."
+          },
+          {
+            "question": "Why did I see a demon when I woke up and couldn't move?",
+            "answer": "Seeing a threatening figure or feeling pressure on your chest while waking up, unable to move, is typical of sleep paralysis. It is frightening but well known. If it happens often, talk to a doctor."
+          },
+          {
+            "question": "What does fighting a demon in a dream mean?",
+            "answer": "Fighting can go with a time when you are pushing back against pressure, a habit or a fear instead of giving in. Note who was gaining the upper hand and how you felt when the fight ended."
+          }
+        ],
+        "documentMetaDescription": "Dreaming of a demon, the devil or being possessed: what the scene may say about fear or guilt, with no omen, plus questions and a journal example."
       },
       "fr": {
         "slug": "demon",
         "name": "Démon",
-        "shortDescription": "Un démon peut apparaître comme une figure intimidante nourrie d’images personnelles, religieuses ou culturelles. Son pouvoir et votre réaction — fuite, dialogue ou résistance — définissent la scène, sans prouver une présence surnaturelle.",
-        "modifiedAt": "2026-07-24",
+        "shortDescription": "Une créature cornue au pied du lit, une voix qui menace : rêver d'un démon fait souvent peur. La scène peut accompagner une peur, une culpabilité ou une tentation qui semble plus forte que vous. Ce n'est ni un présage ni la preuve d'une présence.",
+        "modifiedAt": "2026-10-08",
         "askYourself": [
-          "Qu’est-ce que démon a changé dans la scène ?",
-          "Quelle émotion est restée après le réveil ?"
+          "À quoi ressemblait le démon, et d'où venaient ses traits ?",
+          "Que voulait-il de moi, et comment ai-je réagi : fuite, lutte, dialogue ?",
+          "Qu'est-ce qui me paraît en ce moment plus fort que moi ?"
         ],
-        "faq": []
+        "faq": [
+          {
+            "question": "Que signifie rêver d'un démon ?",
+            "answer": "Le démon est souvent associé à une peur, une culpabilité, une colère ou une tentation qui paraît plus forte que soi. Ses traits viennent souvent de votre culture ou de votre éducation. Votre réaction dans le rêve est l'indice principal."
+          },
+          {
+            "question": "Est-ce un mauvais signe de rêver du diable ?",
+            "answer": "Non. Rêver d'un démon ou du diable ne prédit rien et ne prouve aucune présence surnaturelle. Le rêve met en scène une émotion intense, souvent avec les images que votre culture associe au mal."
+          },
+          {
+            "question": "Pourquoi ai-je vu un démon au réveil sans pouvoir bouger ?",
+            "answer": "Voir une créature menaçante ou sentir un poids sur la poitrine en se réveillant, sans pouvoir bouger, est typique de la paralysie du sommeil. C'est effrayant mais connu. Si cela revient souvent, parlez-en à un médecin."
+          },
+          {
+            "question": "Que signifie se battre contre un démon en rêve ?",
+            "answer": "Se battre peut accompagner un moment où vous résistez à une pression, une habitude ou une peur au lieu de la subir. Notez qui prenait le dessus et ce que vous avez ressenti à la fin du combat."
+          }
+        ],
+        "documentMetaDescription": "Rêver d'un démon, du diable ou d'être possédé : ce que la scène peut dire d'une peur ou d'une culpabilité, sans présage, avec questions et exemple."
       },
       "es": {
         "slug": "demonio",
         "name": "Demonio",
-        "shortDescription": "Un demonio puede aparecer como una figura intimidante formada por imágenes personales, religiosas o culturales. Su poder y tu reacción —huir, dialogar o resistir— definen la escena, sin demostrar una presencia sobrenatural.",
-        "modifiedAt": "2026-07-24",
+        "shortDescription": "Una criatura con cuernos a los pies de la cama, una voz que amenaza: soñar con un demonio suele dar miedo. La escena puede acompañar un temor, una culpa o una tentación que parece más fuerte que tú. No es un presagio ni la prueba de ninguna presencia.",
+        "modifiedAt": "2026-10-08",
         "askYourself": [
-          "¿Qué cambió demonio dentro de la escena?",
-          "¿Qué emoción siguió conmigo al despertar?"
+          "¿Cómo era el demonio y de dónde venían sus rasgos?",
+          "¿Qué quería de mí, y cómo reaccioné: huir, luchar, hablar?",
+          "¿Qué me parece ahora mismo más fuerte que yo?"
         ],
-        "faq": []
+        "faq": [
+          {
+            "question": "¿Qué significa soñar con un demonio?",
+            "answer": "El demonio se asocia a menudo con un miedo, una culpa, una rabia o una tentación que parece más fuerte que uno. Sus rasgos suelen venir de tu cultura o de tu educación. Tu reacción en el sueño es la pista principal."
+          },
+          {
+            "question": "¿Es mala señal soñar con el diablo?",
+            "answer": "No. Soñar con un demonio o con el diablo no predice nada ni demuestra ninguna presencia sobrenatural. Escenifica una emoción intensa, a menudo con las imágenes que tu cultura asocia al mal."
+          },
+          {
+            "question": "¿Por qué vi un demonio al despertar sin poder moverme?",
+            "answer": "Ver una figura amenazante o notar un peso en el pecho al despertar, sin poder moverte, es típico de la parálisis del sueño. Asusta, pero es un fenómeno conocido. Si se repite a menudo, coméntalo con un médico."
+          },
+          {
+            "question": "¿Qué significa luchar contra un demonio en sueños?",
+            "answer": "Luchar puede acompañar un momento en el que plantas cara a una presión, un hábito o un miedo en lugar de sufrirlo. Anota quién llevaba ventaja y qué sentiste al acabar la pelea."
+          }
+        ],
+        "documentMetaDescription": "Soñar con un demonio, con el diablo o con estar poseído: qué puede decir la escena de un miedo o una culpa, sin presagios, con preguntas y ejemplo."
       },
       "de": {
         "slug": "damon",
         "name": "Dämon",
-        "shortDescription": "Ein Dämon erscheint im Traum als einschüchternde Gestalt, deren Aussehen oft von persönlichen, religiösen oder kulturellen Bildern geprägt ist. Welche Macht sie hatte und ob du geflohen bist, mit ihr verhandelt oder Widerstand geleistet hast, bestimmt die Szene.",
+        "shortDescription": "Eine gehörnte Gestalt am Bett, eine drohende Stimme: Ein Dämon im Traum macht oft Angst. Die Szene kann eine Furcht, ein Schuldgefühl oder eine Versuchung begleiten, die stärker wirkt als Sie. Ein Omen oder Beweis für eine Präsenz ist sie nicht.",
         "askYourself": [
-          "Wie sah der Dämon aus, und woran erinnerte dich seine Gestalt?",
-          "Was verlangte oder bedrohte er, und wie hast du darauf reagiert?",
-          "Gibt es in deinem Alltag einen Konflikt, der größer wirkt, als du ihn bewältigen kannst?"
+          "Wie sah der Dämon aus, und woher kamen seine Züge?",
+          "Was wollte er von mir, und bin ich geflohen, habe ich gekämpft oder gesprochen?",
+          "Was erscheint mir in meinem Leben gerade stärker als ich?"
         ],
-        "modifiedAt": "2026-07-24",
-        "faq": []
+        "modifiedAt": "2026-10-08",
+        "faq": [
+          {
+            "question": "Was bedeutet es, von einem Dämon zu träumen?",
+            "answer": "Ein Dämon wird oft mit Angst, Schuld, Wut oder einer Versuchung verbunden, die stärker scheint als man selbst. Seine Züge stammen meist aus Kultur oder Erziehung. Wie Sie im Traum reagiert haben, ist der wichtigste Hinweis."
+          },
+          {
+            "question": "Ist es ein schlechtes Zeichen, vom Teufel zu träumen?",
+            "answer": "Nein. Ein Traum von einem Dämon oder dem Teufel sagt nichts voraus und beweist keine übernatürliche Präsenz. Er setzt ein starkes Gefühl in Szene, oft mit den Bildern, die Ihre Kultur mit dem Bösen verbindet."
+          },
+          {
+            "question": "Warum sah ich beim Aufwachen einen Dämon und konnte mich nicht bewegen?",
+            "answer": "Eine bedrohliche Gestalt zu sehen oder Druck auf der Brust zu spüren, während man beim Aufwachen wie gelähmt ist, ist typisch für eine Schlaflähmung. Das ist beängstigend, aber bekannt. Kommt es häufig vor, sprechen Sie mit einer Ärztin oder einem Arzt."
+          },
+          {
+            "question": "Was bedeutet es, im Traum gegen einen Dämon zu kämpfen?",
+            "answer": "Kämpfen kann eine Phase begleiten, in der Sie sich gegen Druck, eine Gewohnheit oder eine Angst wehren, statt sie hinzunehmen. Notieren Sie, wer die Oberhand hatte und wie Sie sich am Ende des Kampfes fühlten."
+          }
+        ],
+        "documentMetaDescription": "Dämon im Traum, der Teufel oder besessen sein: was die Szene über Angst oder Schuld sagen kann, ohne Omen, mit Fragen und einem Tagebuchbeispiel."
       },
       "it": {
         "slug": "demone",
         "name": "Demone",
-        "shortDescription": "Un demone può apparire come una figura intimidatoria plasmata da immagini personali, religiose o culturali. Il suo potere e la tua reazione — fuga, dialogo o resistenza — definiscono la scena, senza provare una presenza soprannaturale.",
-        "modifiedAt": "2026-07-24",
+        "shortDescription": "Una creatura con le corna ai piedi del letto, una voce che minaccia: sognare un demone fa spesso paura. La scena può accompagnare un timore, un senso di colpa o una tentazione che sembra più forte di te. Non è un presagio né la prova di una presenza.",
+        "modifiedAt": "2026-10-08",
         "askYourself": [
-          "Che cosa ha cambiato demone nella scena?",
-          "Quale emozione è rimasta dopo il risveglio?"
+          "Com’era il demone, e da dove venivano i suoi tratti?",
+          "Che cosa voleva da me, e come ho reagito: fuga, lotta, dialogo?",
+          "Che cosa mi sembra, in questo periodo, più forte di me?"
         ],
-        "faq": []
+        "faq": [
+          {
+            "question": "Che cosa significa sognare un demone?",
+            "answer": "Il demone viene spesso associato a una paura, a un senso di colpa, a una rabbia o a una tentazione che sembra più forte di noi. I suoi tratti vengono di solito dalla cultura o dall’educazione. La tua reazione nel sogno è l’indizio principale."
+          },
+          {
+            "question": "Sognare il diavolo è un brutto segno?",
+            "answer": "No. Sognare un demone o il diavolo non predice nulla e non dimostra alcuna presenza soprannaturale. Mette in scena un’emozione intensa, spesso con le immagini che la tua cultura associa al male."
+          },
+          {
+            "question": "Perché al risveglio ho visto un demone e non riuscivo a muovermi?",
+            "answer": "Vedere una figura minacciosa o sentire un peso sul petto al risveglio, senza riuscire a muoversi, è tipico della paralisi del sonno. Spaventa, ma è un fenomeno noto. Se si ripete spesso, parlane con un medico."
+          },
+          {
+            "question": "Che cosa significa combattere contro un demone in sogno?",
+            "answer": "Combattere può accompagnare un momento in cui resisti a una pressione, a un’abitudine o a una paura invece di subirla. Annota chi aveva la meglio e che cosa hai provato alla fine dello scontro."
+          }
+        ],
+        "documentMetaDescription": "Sognare un demone, il diavolo o di essere posseduti: che cosa può dire la scena di una paura o di un senso di colpa, senza presagi, con domande ed esempio."
       },
       "pt": {
         "slug": "demonio",
@@ -18075,58 +18357,152 @@
       "en": {
         "slug": "monster",
         "name": "Monster",
-        "shortDescription": "A monster may combine familiar features into an unknown threat or a fascinating creature. Its size, behavior, surroundings and your response show what made this particular dream figure so powerful.",
-        "modifiedAt": "2026-07-24",
+        "shortDescription": "Something huge moving in the dark, a creature under the bed: dreaming of a monster is often associated with a fear that is hard to pin down, or a problem that feels out of proportion. Its size, its behavior and your reaction say more than its looks.",
+        "modifiedAt": "2026-10-08",
         "askYourself": [
-          "What did monster change in the scene?",
-          "Which feeling stayed with me after waking?"
+          "What was the monster made of: animal, human, object, nothing I knew?",
+          "Was it chasing me, watching me, or leaving me alone?",
+          "Which problem feels bigger right now than it may really be?"
         ],
-        "faq": []
+        "faq": [
+          {
+            "question": "What does it mean to dream of a monster?",
+            "answer": "A monster is often associated with a fear that is hard to pin down, or a situation that feels out of proportion. Its looks come from your own memories and images; what it did and how you felt guide the reading."
+          },
+          {
+            "question": "What does it mean to be chased by a monster in a dream?",
+            "answer": "Being chased can go with a difficulty you keep putting off, or a fear that grows the more you avoid it. Note where you were running and what happened as the monster got closer."
+          },
+          {
+            "question": "My child dreams about monsters: should I worry?",
+            "answer": "Nightmares are common in childhood, and monsters often feature in them. Listen to the dream without brushing it aside. If nightmares are very frequent or disrupt your child's sleep, talk to their doctor."
+          },
+          {
+            "question": "What does a friendly monster in a dream mean?",
+            "answer": "A monster that protects you or becomes a friend can go with a fear you are taming, or a side of you that felt like \"too much\" finding its place. Note when its attitude changed."
+          }
+        ],
+        "documentMetaDescription": "Dreaming of a monster, being chased by one or meeting a friendly one: what the scene may say about a fear that grows, with questions and a journal example."
       },
       "fr": {
         "slug": "monstre",
         "name": "Monstre",
-        "shortDescription": "Un monstre assemble parfois des traits familiers en une créature inconnue, inquiétante ou fascinante. Sa taille, ses gestes, le décor et votre réaction aident à comprendre ce qui rendait cette présence singulière.",
-        "modifiedAt": "2026-07-24",
+        "shortDescription": "Une créature énorme dans le noir, quelque chose sous le lit : rêver d'un monstre est souvent associé à une peur qu'on n'arrive pas à cerner, ou à un problème qui paraît démesuré. Sa taille, ses gestes et votre réaction en disent plus que son apparence.",
+        "modifiedAt": "2026-10-08",
         "askYourself": [
-          "Qu’est-ce que monstre a changé dans la scène ?",
-          "Quelle émotion est restée après le réveil ?"
+          "De quoi le monstre était-il fait : animal, humain, objet, rien de connu ?",
+          "Me poursuivait-il, m'observait-il, ou me laissait-il tranquille ?",
+          "Quel problème me paraît en ce moment plus gros qu'il ne l'est peut-être ?"
         ],
-        "faq": []
+        "faq": [
+          {
+            "question": "Que signifie rêver d'un monstre ?",
+            "answer": "Le monstre est souvent associé à une peur difficile à cerner, ou à une situation qui paraît démesurée. Son apparence vient de vos souvenirs et de vos images ; ce qu'il faisait et ce que vous avez ressenti orientent la lecture."
+          },
+          {
+            "question": "Que signifie être poursuivi par un monstre ?",
+            "answer": "Être poursuivi peut accompagner une difficulté que vous repoussez, ou une peur qui grossit à mesure qu'on l'évite. Notez où vous couriez et ce qui se passait quand le monstre se rapprochait."
+          },
+          {
+            "question": "Mon enfant rêve de monstres : faut-il s'inquiéter ?",
+            "answer": "Les cauchemars sont courants chez l'enfant, et les monstres y reviennent souvent. Écoutez le rêve sans le minimiser. Si les cauchemars sont très fréquents ou perturbent son sommeil, parlez-en à son médecin."
+          },
+          {
+            "question": "Que signifie un monstre gentil dans un rêve ?",
+            "answer": "Un monstre qui protège ou devient ami peut accompagner une peur apprivoisée, ou une part de vous jugée « trop » qui trouve sa place. Notez à quel moment il a changé d'attitude."
+          }
+        ],
+        "documentMetaDescription": "Rêver d'un monstre, être poursuivi par un monstre ou en croiser un gentil : ce que la scène peut dire d'une peur qui grossit, avec questions et exemple."
       },
       "es": {
         "slug": "monstruo",
         "name": "Monstruo",
-        "shortDescription": "Un monstruo puede mezclar rasgos conocidos hasta convertirlos en una amenaza extraña. Su tamaño, su conducta, el entorno y tu reacción explican qué lo hacía aterrador o fascinante.",
-        "modifiedAt": "2026-07-24",
+        "shortDescription": "Algo enorme que se mueve en la oscuridad, una criatura debajo de la cama: soñar con un monstruo se asocia a menudo con un miedo difícil de concretar o con un problema que parece desmedido. Su tamaño, su conducta y tu reacción dicen más que su aspecto.",
+        "modifiedAt": "2026-10-08",
         "askYourself": [
-          "¿Qué cambió monstruo dentro de la escena?",
-          "¿Qué emoción siguió conmigo al despertar?"
+          "¿De qué estaba hecho el monstruo: animal, persona, objeto, nada conocido?",
+          "¿Me perseguía, me observaba o me dejaba en paz?",
+          "¿Qué problema me parece ahora más grande de lo que quizá es?"
         ],
-        "faq": []
+        "faq": [
+          {
+            "question": "¿Qué significa soñar con un monstruo?",
+            "answer": "El monstruo se asocia a menudo con un miedo difícil de concretar o con una situación que parece desmedida. Su aspecto sale de tus recuerdos y de tus imágenes; lo que hacía y lo que sentiste orientan la lectura."
+          },
+          {
+            "question": "¿Qué significa soñar que te persigue un monstruo?",
+            "answer": "Que te persiga puede acompañar una dificultad que vas aplazando, o un miedo que crece cuanto más lo evitas. Anota por dónde corrías y qué pasaba cuando el monstruo se acercaba."
+          },
+          {
+            "question": "Mi hijo sueña con monstruos: ¿debo preocuparme?",
+            "answer": "Las pesadillas son frecuentes en la infancia y los monstruos aparecen a menudo en ellas. Escucha el sueño sin quitarle importancia. Si las pesadillas son muy frecuentes o le alteran el sueño, coméntalo con su pediatra."
+          },
+          {
+            "question": "¿Qué significa soñar con un monstruo bueno?",
+            "answer": "Un monstruo que te protege o se vuelve amigo puede acompañar un miedo que vas domando, o una parte de ti que te parecía «demasiado» y encuentra su sitio. Anota en qué momento cambió de actitud."
+          }
+        ],
+        "documentMetaDescription": "Soñar con un monstruo, que te persigue un monstruo o con uno bueno: qué puede decir la escena de un miedo que crece, con preguntas y un ejemplo de diario."
       },
       "de": {
         "slug": "monster",
         "name": "Monster",
-        "shortDescription": "Monster verbinden im Traum manchmal vertraute Merkmale zu einer unbekannten Bedrohung. Größe, Verhalten, Umgebung und deine Reaktion zeigen, was diese konkrete Traumgestalt so beängstigend oder faszinierend machte.",
+        "shortDescription": "Etwas Riesiges bewegt sich im Dunkeln, ein Wesen unter dem Bett: Ein Monster im Traum wird oft mit einer Angst verbunden, die schwer zu fassen ist, oder mit einem Problem, das übergroß wirkt. Größe, Verhalten und Ihre Reaktion sagen mehr als sein Aussehen.",
         "askYourself": [
-          "Aus welchen bekannten Tieren, Menschen oder Gegenständen schien das Monster zusammengesetzt?",
-          "Hat es dich verfolgt, beobachtet oder beschützt?",
-          "Welche reale Herausforderung wirkt auf dich gerade schwer einschätzbar?"
+          "Woraus bestand das Monster: Tier, Mensch, Gegenstand, nichts Bekanntes?",
+          "Hat es mich verfolgt, beobachtet oder in Ruhe gelassen?",
+          "Welches Problem wirkt gerade größer, als es vielleicht ist?"
         ],
-        "modifiedAt": "2026-07-24",
-        "faq": []
+        "modifiedAt": "2026-10-08",
+        "faq": [
+          {
+            "question": "Was bedeutet es, von einem Monster zu träumen?",
+            "answer": "Ein Monster wird oft mit einer schwer fassbaren Angst oder einer Situation verbunden, die übergroß wirkt. Sein Aussehen stammt aus Ihren eigenen Erinnerungen und Bildern; was es tat und was Sie fühlten, gibt die Richtung vor."
+          },
+          {
+            "question": "Was bedeutet es, im Traum von einem Monster verfolgt zu werden?",
+            "answer": "Verfolgt zu werden kann eine Schwierigkeit begleiten, die Sie vor sich herschieben, oder eine Angst, die wächst, je mehr man ihr ausweicht. Notieren Sie, wohin Sie liefen und was geschah, als das Monster näher kam."
+          },
+          {
+            "question": "Mein Kind träumt von Monstern: Muss ich mir Sorgen machen?",
+            "answer": "Albträume sind bei Kindern häufig, und Monster kommen oft darin vor. Hören Sie sich den Traum an, ohne ihn kleinzureden. Sind die Albträume sehr häufig oder stören sie den Schlaf, sprechen Sie mit der Kinderärztin oder dem Kinderarzt."
+          },
+          {
+            "question": "Was bedeutet ein freundliches Monster im Traum?",
+            "answer": "Ein Monster, das Sie beschützt oder zum Freund wird, kann eine gezähmte Angst begleiten oder eine Seite von Ihnen, die Ihnen „zu viel“ schien und nun ihren Platz findet. Notieren Sie, wann es seine Haltung änderte."
+          }
+        ],
+        "documentMetaDescription": "Monster im Traum, von einem Monster verfolgt werden oder ein freundliches treffen: was die Szene über eine wachsende Angst sagen kann, mit Fragen und Beispiel."
       },
       "it": {
         "slug": "mostro",
         "name": "Mostro",
-        "shortDescription": "Un mostro può unire tratti familiari fino a trasformarli in una minaccia sconosciuta o in una creatura affascinante. Dimensioni, comportamento, ambiente e tua reazione spiegano cosa lo rendeva così intenso.",
-        "modifiedAt": "2026-07-24",
+        "shortDescription": "Qualcosa di enorme si muove al buio, una creatura sotto il letto: sognare un mostro viene spesso associato a una paura difficile da definire, o a un problema che sembra smisurato. Dimensioni, comportamento e la tua reazione dicono più del suo aspetto.",
+        "modifiedAt": "2026-10-08",
         "askYourself": [
-          "Che cosa ha cambiato mostro nella scena?",
-          "Quale emozione è rimasta dopo il risveglio?"
+          "Di che cosa era fatto il mostro: animale, persona, oggetto, niente di noto?",
+          "Mi inseguiva, mi osservava o mi lasciava in pace?",
+          "Quale problema mi sembra adesso più grande di quanto forse è?"
         ],
-        "faq": []
+        "faq": [
+          {
+            "question": "Che cosa significa sognare un mostro?",
+            "answer": "Il mostro viene spesso associato a una paura difficile da definire o a una situazione che sembra smisurata. Il suo aspetto nasce dai tuoi ricordi e dalle tue immagini; che cosa faceva e che cosa hai provato orientano la lettura."
+          },
+          {
+            "question": "Che cosa significa sognare di essere inseguiti da un mostro?",
+            "answer": "Essere inseguiti può accompagnare una difficoltà che continui a rimandare, o una paura che cresce più la eviti. Annota dove correvi e che cosa succedeva quando il mostro si avvicinava."
+          },
+          {
+            "question": "Mio figlio sogna mostri: devo preoccuparmi?",
+            "answer": "Gli incubi sono frequenti nell’infanzia e i mostri ci compaiono spesso. Ascolta il sogno senza sminuirlo. Se gli incubi sono molto frequenti o disturbano il suo sonno, parlane con il pediatra."
+          },
+          {
+            "question": "Che cosa significa sognare un mostro buono?",
+            "answer": "Un mostro che ti protegge o diventa amico può accompagnare una paura che stai addomesticando, o una parte di te che sembrava «troppo» e trova il suo posto. Annota quando ha cambiato atteggiamento."
+          }
+        ],
+        "documentMetaDescription": "Sognare un mostro, essere inseguiti da un mostro o incontrarne uno buono: che cosa può dire la scena di una paura che cresce, con domande ed esempio di diario."
       },
       "pt": {
         "slug": "monstro",
