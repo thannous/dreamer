@@ -125,7 +125,12 @@
             "enableMinifyInReleaseBuilds": true,
             "enableShrinkResourcesInReleaseBuilds": true,
             "gifEnabled": false,
-            "webpEnabled": false
+            "webpEnabled": false,
+            "packagingOptions": {
+              "exclude": [
+                "/org/bouncycastle/pqc/crypto/picnic/*.properties"
+              ]
+            }
           },
           "ios": {
             "enableSceneSupport": true
