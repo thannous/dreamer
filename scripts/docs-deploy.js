@@ -47,8 +47,29 @@ function loadCloudflarePagesConfig(rootDir = ROOT_DIR) {
   };
 }
 
+// Branch names Cloudflare Pages could treat as production. A preview upload
+// to one of them would update noctalia.app without the production guard.
+const PRODUCTION_BRANCH_NAMES = ['master', 'main', 'production'];
+
+function normaliseBranch(branch) {
+  return String(branch ?? '').trim().toLowerCase();
+}
+
+function assertPreviewBranch(config) {
+  const preview = normaliseBranch(config.previewBranch);
+  const forbidden = new Set([normaliseBranch(config.productionBranch), ...PRODUCTION_BRANCH_NAMES]);
+  if (!preview || forbidden.has(preview)) {
+    throw new Error(
+      `Preview refused: previewBranch "${config.previewBranch}" in ${CONFIG_PATH} is a production branch ` +
+        `(productionBranch "${config.productionBranch}", or one of ${PRODUCTION_BRANCH_NAMES.join(', ')}). ` +
+        'A preview never uploads to production; publish production only with npm run docs:deploy:prod.'
+    );
+  }
+  return config.previewBranch;
+}
+
 function buildWranglerDeployArgs(config, target, deployDir = 'docs', commitHash) {
-  const branch = target === 'prod' ? config.productionBranch : config.previewBranch;
+  const branch = target === 'prod' ? config.productionBranch : assertPreviewBranch(config);
   const args = [
     'wrangler',
     'pages',
@@ -137,12 +158,16 @@ async function main(argv = process.argv.slice(2), deps = {}) {
     return;
   }
 
+  let accepted = null;
   if (target === 'prod') {
     // Before anything else: a refused publish builds and uploads nothing.
-    log(await guardProduction());
+    accepted = await guardProduction();
+    log(accepted.message);
   }
 
   const config = loadConfig();
+  // A preview to a production branch is refused before any build.
+  if (target === 'preview') assertPreviewBranch(config);
 
   if (target === 'preview') {
     runCommand('npm', ['run', 'docs:build']);
@@ -157,7 +182,28 @@ async function main(argv = process.argv.slice(2), deps = {}) {
     log(
       `[docs-deploy] Clean staging: ${summary.files} runtime files, ${summary.bytes} bytes.`
     );
-    const commitHash = readHead();
+    let commitHash;
+    if (target === 'prod') {
+      // Right before the irreversible upload: fetch origin/master again and
+      // rerun every check, which must accept the same HEAD. origin/master may
+      // have moved, or HEAD or the tree changed, during docs:release-check.
+      const recheck = await guardProduction();
+      if (recheck.head !== accepted.head) {
+        throw new Error(
+          `production publish of noctalia.app refused: HEAD moved from ${accepted.head} to ${recheck.head} between the guard and the upload. There is no override.`
+        );
+      }
+      const head = readHead();
+      if (head !== accepted.head) {
+        throw new Error(
+          `production publish of noctalia.app refused: HEAD is ${head}, not the guarded ${accepted.head}. There is no override.`
+        );
+      }
+      log(recheck.message);
+      commitHash = accepted.head;
+    } else {
+      commitHash = readHead();
+    }
     const wranglerArgs = buildWranglerDeployArgs(config, target, staging.deployDir, commitHash);
     runCommand('npx', wranglerArgs);
   } finally {
@@ -173,6 +219,7 @@ if (require.main === module) {
 }
 
 module.exports = {
+  assertPreviewBranch,
   buildWranglerDeployArgs,
   loadCloudflarePagesConfig,
   main,

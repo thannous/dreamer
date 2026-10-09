@@ -90,9 +90,10 @@ export function formatAccepted(result) {
 }
 
 /**
- * The guard as one call: resolves with the accepted message, or throws an
- * Error whose message is the refusal. scripts/docs-deploy.js awaits it before
- * any build or upload of a production publish.
+ * The guard as one call: resolves with { head, tree, message } for the
+ * accepted commit, or throws an Error whose message is the refusal.
+ * scripts/docs-deploy.js awaits it before any build of a production publish,
+ * and again right before the upload, which must find the same HEAD.
  */
 export async function assertSitePublishProof(options = {}) {
   let result;
@@ -102,7 +103,7 @@ export async function assertSitePublishProof(options = {}) {
     throw new Error(`${PREFIX} production publish of noctalia.app refused: the guard could not run (${String(error?.message || error).split('\n')[0]}).`);
   }
   if (!result.ok) throw new Error(formatRefusal(result));
-  return formatAccepted(result);
+  return { head: result.head, tree: result.tree, message: formatAccepted(result) };
 }
 
 function parseRoot(argv) {
@@ -112,7 +113,7 @@ function parseRoot(argv) {
 
 async function main(argv) {
   try {
-    console.log(await assertSitePublishProof({ root: parseRoot(argv) }));
+    console.log((await assertSitePublishProof({ root: parseRoot(argv) })).message);
     return 0;
   } catch (error) {
     console.error(error.message);

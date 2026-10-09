@@ -114,7 +114,10 @@ test('a release proof of HEAD = origin/master on a clean checkout passes', async
     const result = await check();
     assert.deepEqual(result.failures, []);
     assert.equal(result.ok, true);
-    assert.match(await assertSitePublishProof({ root: work, gitEnv: env }), /OK: HEAD [0-9a-f]{40} is origin\/master/);
+    const accepted = await assertSitePublishProof({ root: work, gitEnv: env });
+    assert.equal(accepted.head, git(['rev-parse', 'HEAD']));
+    assert.equal(accepted.tree, tree);
+    assert.match(accepted.message, /OK: HEAD [0-9a-f]{40} is origin\/master/);
   });
 });
 

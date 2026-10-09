@@ -180,6 +180,8 @@ export default {
     // The noctalia.app production publish and its guard (site-publish-guard).
     'scripts/docs-deploy.js',
     'scripts/docs-deploy.test.ts',
+    // The Cloudflare Pages project, production and preview branches docs-deploy.js reads.
+    'docs-src/config/cloudflare-pages.json',
     'scripts/check-site-publish-proof.mjs',
     'scripts/test-check-site-publish-proof.mjs',
     // The suites ci-contracts runs.
@@ -199,7 +201,7 @@ export default {
     {
       name: 'site-publish-guard',
       command: 'node --test scripts/test-check-site-publish-proof.mjs',
-      inputs: ['scripts/check-site-publish-proof.mjs', 'scripts/test-check-site-publish-proof.mjs', 'scripts/verify-local.mjs'],
+      inputs: ['scripts/check-site-publish-proof.mjs', 'scripts/test-check-site-publish-proof.mjs', 'scripts/verify-local.mjs', 'verify-local.config.mjs'],
     },
     { name: 'typecheck-app', command: 'npm run typecheck:app', exclude: DOCS },
     { name: 'typecheck-tests', command: 'npm run typecheck:tests', exclude: DOCS },
