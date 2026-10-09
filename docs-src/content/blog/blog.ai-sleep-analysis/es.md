@@ -210,7 +210,7 @@ Una noche en una unidad del sueño: electrodos en la cabeza, una pinza en el ded
                 </p>
 <h3>Cómo lee la IA de Noctalia tus relatos de sueños</h3>
 <p>
-                    Aquí la IA trabaja con lo que recuerdas, no con señales cerebrales. Grabas tu sueño por voz o lo escribes, se transcribe, y la IA propone una lectura: símbolos, emociones, posibles vínculos con tus días y preguntas para profundizar. Cada lectura es una pista, no un veredicto.
+                    Aquí la IA trabaja con lo que recuerdas, no con señales cerebrales. Grabas tu sueño por voz o lo escribes, se transcribe, y la IA propone una lectura: símbolos, emociones, posibles vínculos con tus días y preguntas para profundizar. Esa lectura solo ocurre si has aceptado el tratamiento con IA en la app. Cada lectura es una pista, no un veredicto.
                 </p>
 <p>
                     <strong>Ejemplo ficticio:</strong> en tres semanas, un diario reúne un <a class="text-dream-salmon hover:underline" href="../simbolos/espejo">espejo</a> que devuelve una cara algo distinta, una <a class="text-dream-salmon hover:underline" href="../simbolos/llave">llave</a> que ya no abre la puerta de casa y un <a class="text-dream-salmon hover:underline" href="../simbolos/camino">camino</a> que se bifurca en la niebla. Cada entrada anota también un estado de ánimo: inquietud y, después, curiosidad. Leídos juntos, estos sueños plantean una pregunta más que una respuesta: ¿qué está cambiando ahora en mi vida y cómo lo estoy viviendo?

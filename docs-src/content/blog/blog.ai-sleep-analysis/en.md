@@ -210,7 +210,7 @@ A night in a sleep lab: electrodes on your scalp, a clip on your finger, belts a
                 </p>
 <h3>How Noctalia's AI reads your dream reports</h3>
 <p>
-                    Here the AI works on what you remember, not on brain signals. You record the dream by voice or in writing, it is transcribed, and the AI suggests a reading: symbols, emotions, possible links with your days, and questions to explore. Each reading is a lead, not a verdict.
+                    Here the AI works on what you remember, not on brain signals. You record the dream by voice or in writing, it is transcribed, and the AI suggests a reading: symbols, emotions, possible links with your days, and questions to explore. That reading happens only if you have agreed to AI processing in the app. Each reading is a lead, not a verdict.
                 </p>
 <p>
                     <strong>Fictional example:</strong> over three weeks, a journal collects a <a class="text-dream-salmon hover:underline" href="../symbols/mirror">mirror</a> showing a slightly different face, a <a class="text-dream-salmon hover:underline" href="../symbols/key">key</a> that no longer fits the front door, and a <a class="text-dream-salmon hover:underline" href="../symbols/path">path</a> that forks in the fog. Each entry also notes a mood: unease, then curiosity. Read together, these dreams raise a question rather than an answer: what is changing in my life right now, and how do I feel about it?
