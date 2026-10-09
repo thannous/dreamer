@@ -1715,6 +1715,7 @@ const translations: Record<string, string> = {
     'symbols.browse_alphabetical': 'A-Z',
     'symbols.interpretation': 'Interprétation',
     'symbols.variations': 'Variations courantes',
+    'symbols.interpretation_offline': 'Une première connexion à internet est nécessaire pour lire l’interprétation complète. Elle reste ensuite disponible hors ligne.',
     'symbols.ask_yourself': 'Questions à se poser',
     'symbols.related': 'Symboles associés',
     'symbols.not_found': 'Symbole introuvable',

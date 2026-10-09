@@ -15,6 +15,7 @@ const {
 } = require('./lib/docs-site-config');
 const { renderManagedPage } = require('./lib/docs-renderer');
 const { writeLandingStylesheet } = require('./lib/landing-stylesheet');
+const { buildSymbolContentByLanguage } = require('./sync-app-symbol-dictionary');
 const { staticPageLanguages } = require('./lib/site-manifest');
 const {
   copyDir,
@@ -219,6 +220,13 @@ function copyStaticFiles() {
       path.join(DATA_DIR, fileName),
       path.join(DOCS_DIR, 'data', fileName)
     );
+  }
+  // Full symbol interpretations the native app downloads per language.
+  const symbolContentDir = path.join(DOCS_DIR, 'content', 'symbols');
+  fs.rmSync(symbolContentDir, { recursive: true, force: true });
+  fs.mkdirSync(symbolContentDir, { recursive: true });
+  for (const [language, json] of Object.entries(buildSymbolContentByLanguage())) {
+    fs.writeFileSync(path.join(symbolContentDir, `${language}.json`), json);
   }
 }
 

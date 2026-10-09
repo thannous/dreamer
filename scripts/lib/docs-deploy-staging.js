@@ -11,6 +11,9 @@ const ALLOWED_ROOT_DIRECTORIES = new Set([
   // Sleep sounds the app downloads on first play (lib/sleepSounds.ts).
   'audio',
   'auth',
+  // Symbol interpretations the native app downloads per language
+  // (services/symbolExtendedContent.ts).
+  'content',
   'css',
   ...siteConfig.languages,
   'fonts',

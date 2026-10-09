@@ -1,15 +1,14 @@
 import type {
   DreamSymbol,
-  ExtendedSymbolContent,
   SymbolCategory,
   SymbolCategoryInfo,
   SymbolLanguage,
 } from '@/lib/symbolTypes';
 
-// App copies with only the fields the app reads; regenerate with
+// App copy with only the fields the app reads; regenerate with
 // `npm run symbols:dictionary:sync` after editing data/dream-symbols*.json.
+// Full interpretations load per language from services/symbolExtendedContent.
 import symbolsDataJson from '@/data/app/dream-symbols.json';
-import extendedDataJson from '@/data/app/dream-symbols-extended.json';
 
 type IconSymbolName = Parameters<typeof import('@/components/ui/icon-symbol').IconSymbol>[0]['name'];
 
@@ -18,7 +17,6 @@ const symbolsData = symbolsDataJson as {
   symbols: DreamSymbol[];
 };
 
-const extendedData = extendedDataJson as Record<string, Record<string, ExtendedSymbolContent>>;
 const ALL_SYMBOLS = symbolsData.symbols;
 const SYMBOLS_BY_ID = new Map(ALL_SYMBOLS.map((symbol) => [symbol.id, symbol]));
 const CATEGORY_LIST = Object.keys(symbolsData.categories) as SymbolCategory[];
@@ -69,13 +67,6 @@ export function getRelatedSymbols(symbol: DreamSymbol): DreamSymbol[] {
   }
 
   return related;
-}
-
-export function getExtendedContent(
-  id: string,
-  language: SymbolLanguage,
-): ExtendedSymbolContent | undefined {
-  return extendedData[id]?.[language];
 }
 
 export function getSymbolsByCategory(category: SymbolCategory): DreamSymbol[] {
