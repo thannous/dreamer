@@ -1,10 +1,17 @@
-# Dispatch only (common delivery rule, External CI: none): a v* tag no longer
-# starts it. Run on demand with `eas workflow:run .eas/workflows/android-release-smoke.yml`
-# (on a release tag ref for the tag checks); an EAS build needs the owner's explicit go.
+# Dispatch only (common delivery rule, External CI: none): no tag, push or pull
+# request starts it. Run on demand with
+# `eas workflow:run .eas/workflows/android-release-smoke.yml -F release_tag=vX.Y.Z`.
+# scripts/check-android-release-ref.js fails when release_tag is missing or does
+# not match app.json. An EAS build needs the owner's explicit go.
 name: Android Release Smoke
 
 on:
-  workflow_dispatch: {}
+  workflow_dispatch:
+    inputs:
+      release_tag:
+        type: string
+        required: true
+        description: 'Release tag vX.Y.Z; must equal v + expo.version of app.json'
 
 concurrency:
   cancel_in_progress: true
@@ -16,6 +23,7 @@ jobs:
     env:
       RELEASE_REF_NAME: ${{ github.ref_name }}
       RELEASE_REF_TYPE: ${{ github.ref_type }}
+      RELEASE_TAG: ${{ inputs.release_tag }}
     steps:
       - uses: eas/checkout
       - name: Match tag and app versions
@@ -34,6 +42,7 @@ jobs:
     needs: [build_android_release_smoke]
     env:
       BUILT_ANDROID_VERSION_CODE: ${{ needs.build_android_release_smoke.outputs.app_build_version }}
+      RELEASE_TAG: ${{ inputs.release_tag }}
     steps:
       - uses: eas/checkout
       - name: Match EAS build and app versionCode

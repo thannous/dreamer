@@ -138,8 +138,15 @@ function setupFixture({ versionCode = 33 } = {}) {
     '.eas/workflows/android-release-qualification.yml',
     [
       'on:',
-      '  workflow_dispatch: {}',
+      '  workflow_dispatch:',
+      '    inputs:',
+      '      release_tag:',
+      '        type: string',
+      '        required: true',
       'jobs:',
+      '  validate_android_release_ref:',
+      '    steps:',
+      '      - run: node ./scripts/check-android-release-ref.js',
       '  build_android:',
       '    type: build',
       '    params:',
@@ -375,16 +382,22 @@ describe('android release gate preflight', () => {
     );
   });
 
-  it('fails prebuild when the Release build-to-smoke workflow still starts on a tag push', () => {
+  const DISPATCH_HEADER = [
+    'on:',
+    '  workflow_dispatch:',
+    '    inputs:',
+    '      release_tag:',
+    '        type: string',
+    '        required: true',
+    '',
+  ].join('\n');
+
+  function expectReleaseWorkflowGateFails(transform) {
     const root = setupFixture();
     const workflowPath = path.join(root, '.eas/workflows/android-release-qualification.yml');
-    fs.writeFileSync(
-      workflowPath,
-      fs
-        .readFileSync(workflowPath, 'utf8')
-        .replace('  workflow_dispatch: {}\n', '  workflow_dispatch: {}\n  push:\n    tags:\n      - v*\n'),
-      'utf8'
-    );
+    const workflow = fs.readFileSync(workflowPath, 'utf8');
+    expect(workflow.startsWith(DISPATCH_HEADER)).toBe(true);
+    fs.writeFileSync(workflowPath, transform(workflow), 'utf8');
 
     const report = checkAndroidReleaseGates({
       rootDir: root,
@@ -401,6 +414,28 @@ describe('android release gate preflight', () => {
         }),
       ])
     );
+  }
+
+  it.each([
+    ['push tags', '  push:\n    tags:\n      - v*\n'],
+    ['pull_request', '  pull_request:\n    branches: [\'*\']\n'],
+    ['pull_request_comment', '  pull_request_comment:\n    types: [created]\n'],
+    ['pull_request_labeled', '  pull_request_labeled:\n    - Test\n'],
+    ['app_store_connect', '  app_store_connect:\n    build_upload: {}\n'],
+    ['schedule', '  schedule:\n    - cron: \'0 0 * * *\'\n'],
+    ['ref_delete', '  ref_delete:\n    tags: [v*]\n'],
+    ['an unknown trigger', '  some_future_trigger: {}\n'],
+  ])('fails prebuild when the Release workflow has %s next to workflow_dispatch', (_name, extraTrigger) => {
+    expectReleaseWorkflowGateFails((workflow) => workflow.replace(DISPATCH_HEADER, `${DISPATCH_HEADER}${extraTrigger}`));
+  });
+
+  it('fails prebuild when the Release workflow dispatch has no required release_tag input', () => {
+    expectReleaseWorkflowGateFails((workflow) => workflow.replace(DISPATCH_HEADER, 'on:\n  workflow_dispatch: {}\n'));
+    expectReleaseWorkflowGateFails((workflow) => workflow.replace('        required: true\n', '        required: false\n'));
+  });
+
+  it('fails prebuild when the Release workflow does not run the release tag check', () => {
+    expectReleaseWorkflowGateFails((workflow) => workflow.replace('      - run: node ./scripts/check-android-release-ref.js\n', '      - run: echo skipped\n'));
   });
 
   it('passes prebuild local config checks without requiring Play-installed purchase evidence', () => {

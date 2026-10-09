@@ -568,6 +568,27 @@ function checkSubscriptionQaGate(
   };
 }
 
+// External CI is opt-in only (doc_web_interne/docs/regle-commune-livraison.md,
+// section 13): the release workflow's `on:` mapping holds workflow_dispatch and
+// nothing else (no push, tag, pull_request, pull_request_comment,
+// pull_request_labeled, app_store_connect, schedule or any other trigger), and
+// the dispatch requires the release_tag input that check-android-release-ref.js
+// compares with app.json.
+function isDispatchOnlyReleaseWorkflow(workflowText) {
+  let workflow;
+  try {
+    workflow = require('yaml').parse(workflowText);
+  } catch {
+    return false;
+  }
+  const triggers = workflow && typeof workflow === 'object' ? workflow.on : undefined;
+  if (!triggers || typeof triggers !== 'object' || Array.isArray(triggers)) return false;
+  const keys = Object.keys(triggers);
+  if (keys.length !== 1 || keys[0] !== 'workflow_dispatch') return false;
+  const releaseTag = triggers.workflow_dispatch?.inputs?.release_tag;
+  return Boolean(releaseTag && releaseTag.required === true && releaseTag.type === 'string');
+}
+
 function checkAndroidReleaseGates({
   rootDir = ROOT,
   spawn = spawnSync,
@@ -736,18 +757,16 @@ function checkAndroidReleaseGates({
     releaseWorkflow.includes('type: maestro') &&
     releaseWorkflow.includes('build_id: ${{ needs.build_android.outputs.build_id }}') &&
     releaseWorkflow.includes('flow_path: maestro/release-smoke.yml') &&
-    // External CI is opt-in only: the workflow runs on dispatch, never on a
-    // push, a tag, a pull request or a schedule.
-    /^\s*workflow_dispatch:/m.test(releaseWorkflow) &&
-    !/^\s*(push|pull_request|schedule):/m.test(releaseWorkflow);
+    releaseWorkflow.includes('node ./scripts/check-android-release-ref.js') &&
+    isDispatchOnlyReleaseWorkflow(releaseWorkflow);
   addCheck(
     checks,
     releaseWorkflowReady ? 'pass' : 'fail',
     'EAS Android Release build and smoke workflow',
     releaseWorkflowReady
       ? `${RELEASE_QUALIFICATION_WORKFLOW} builds production-apk and runs release-smoke.yml on dispatch only.`
-      : `${RELEASE_QUALIFICATION_WORKFLOW} is missing, does not chain production-apk to the Release smoke flow, or starts on something other than workflow_dispatch.`,
-    'Add a validated EAS workflow, triggered by workflow_dispatch only, that builds production-apk and passes its build_id to maestro/release-smoke.yml.'
+      : `${RELEASE_QUALIFICATION_WORKFLOW} is missing, does not chain production-apk to the Release smoke flow, does not check the release tag, or has a trigger other than workflow_dispatch with a required release_tag input.`,
+    'Add a validated EAS workflow whose only trigger is workflow_dispatch with a required release_tag input, that runs scripts/check-android-release-ref.js, builds production-apk and passes its build_id to maestro/release-smoke.yml.'
   );
 
   const subscriptionScript = prebuild

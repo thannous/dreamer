@@ -1,18 +1,36 @@
-# Dispatch only (common delivery rule, External CI: none): a v* tag no longer
-# starts it. Run on demand with `eas workflow:run .eas/workflows/android-release-qualification.yml`
-# (on a release tag ref for the tag checks); an EAS build needs the owner's explicit go.
+# Dispatch only (common delivery rule, External CI: none): no tag, push or pull
+# request starts it. Run on demand with
+# `eas workflow:run .eas/workflows/android-release-qualification.yml -F release_tag=vX.Y.Z`.
+# scripts/check-android-release-ref.js fails when release_tag is missing or does
+# not match app.json. An EAS build needs the owner's explicit go.
 name: Android Release qualification
 
 on:
-  workflow_dispatch: {}
+  workflow_dispatch:
+    inputs:
+      release_tag:
+        type: string
+        required: true
+        description: 'Release tag vX.Y.Z; must equal v + expo.version of app.json'
 
 concurrency:
   cancel_in_progress: true
   group: ${{ workflow.filename }}-${{ github.ref }}
 
 jobs:
+  validate_android_release_ref:
+    name: Validate Android release identity
+    env:
+      RELEASE_TAG: ${{ inputs.release_tag }}
+    steps:
+      - uses: eas/checkout
+      - name: Match the release_tag input and app versions
+        run: node ./scripts/check-android-release-ref.js
+
   build_android:
     name: Build Android Release APK
+    needs:
+      - validate_android_release_ref
     type: build
     environment: production
     params:

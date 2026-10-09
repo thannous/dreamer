@@ -542,7 +542,8 @@ une régression du proxy de transcription bloque donc la PR avant une release.
 
 Pour une qualification de release, le workflow EAS
 `.eas/workflows/android-release-qualification.yml` est déclenchable manuellement
-seulement (`workflow_dispatch`, `eas workflow:run`) : un tag `v*` ne le lance plus,
+seulement (`workflow_dispatch`, `eas workflow:run <fichier> -F release_tag=vX.Y.Z`) : un tag `v*` ne le lance plus,
+l'entrée `release_tag` est obligatoire et `scripts/check-android-release-ref.js` échoue si elle manque ou ne vaut pas `v` + la version de `app.json`,
 et un build EAS demande le feu vert explicite du propriétaire. Il construit le profil Android `production-apk`, puis passe
 le `build_id` au job Maestro qui exécute `maestro/release-smoke.yml` sur un Pixel
 6 Play Store API 35. Le smoke ne démarre pas Metro et le job ne poursuit pas si
