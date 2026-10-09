@@ -19,6 +19,10 @@
   Content-Type: application/json
   Cache-Control: public, max-age=3600, must-revalidate
 
+# Symbol interpretations the app downloads per language
+/content/symbols/*
+  Cache-Control: public, max-age=3600, must-revalidate
+
 # Always fetch the latest deployed build version
 /version.txt
   Cache-Control: no-store
