@@ -40,6 +40,8 @@
   --oh-light-muted: #64514f;
   --oh-light-accent: #7c4c2b;
   --oh-light-line: rgba(56, 45, 53, 0.14);
+  /* Resting labels on ivory: 4.9:1, quieter than the text but still AA. */
+  --oh-light-quiet: #7a6a68;
 
   --oh-ease-out: cubic-bezier(0.23, 1, 0.32, 1);
 }
@@ -1798,7 +1800,7 @@ body .noctalia-consent-actions button:hover {
   font-size: clamp(1.9rem, 3.6vw, 3.3rem);
   line-height: 1.02;
   letter-spacing: -0.025em;
-  color: rgba(56, 45, 53, 0.4);
+  color: var(--oh-light-quiet);
   transition: color 200ms ease;
 }
 

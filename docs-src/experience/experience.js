@@ -1033,6 +1033,11 @@ const initFeatures = () => {
   const entries = Array.from(document.querySelectorAll('.oh-feature'));
   if (!entries.length) return;
   const wide = window.matchMedia('(min-width: 900px)');
+  // The wide layout always shows one feature; reopen the first one when a
+  // narrow layout left them all closed.
+  wide.addEventListener('change', () => {
+    if (wide.matches && !entries.some((entry) => entry.open)) entries[0].open = true;
+  });
   entries.forEach((entry) => {
     entry.querySelector('summary').addEventListener('click', (event) => {
       if (entry.open && wide.matches) event.preventDefault();
