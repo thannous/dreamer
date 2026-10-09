@@ -8,14 +8,16 @@
 // EXPECTED_ANDROID_VERSION_CODE from the metadata of the same EAS build; a job
 // that passed only BUILT_ANDROID_VERSION_CODE made every dispatched smoke fail.
 
+const { spawnSync } = require('node:child_process');
 const fs = require('node:fs');
 const path = require('node:path');
 const YAML = require('yaml');
 
-const { readReleaseIdentity, validateReleaseRef } = require('./check-android-release-ref');
+const { readReleaseIdentity, readRequireBuiltVersionCode, validateReleaseRef } = require('./check-android-release-ref');
 
 const ROOT = path.resolve(__dirname, '..');
 const WORKFLOW = path.join(ROOT, '.eas/workflows/android-release-smoke.yml');
+const SCRIPT = path.join(ROOT, 'scripts/check-android-release-ref.js');
 const BUILD_OUTPUT = /^\$\{\{\s*needs\.([A-Za-z0-9_]+)\.outputs\.app_build_version\s*\}\}$/;
 
 function readWorkflow() {
@@ -46,11 +48,37 @@ function resolveEnv(workflow, jobName, job, reportedCode) {
   return resolved;
 }
 
+// The literal env values of a job (no `${{ }}` expression), as the script reads them.
+function staticEnv(job) {
+  return Object.fromEntries(
+    Object.entries(job.env).filter(([, value]) => !String(value).includes('${{')).map(([key, value]) => [key, String(value)])
+  );
+}
+
+// Run the real script as the job would, with the build output resolved to
+// `reportedCode` and the release tag of the app version.
+function runScript(workflow, jobName, job, reportedCode) {
+  const tag = `v${readReleaseIdentity(ROOT).version}`;
+  return spawnSync(process.execPath, [SCRIPT], {
+    cwd: ROOT,
+    encoding: 'utf8',
+    env: {
+      PATH: process.env.PATH,
+      ...staticEnv(job),
+      ...resolveEnv(workflow, jobName, job, reportedCode),
+      RELEASE_REF_NAME: tag,
+      RELEASE_REF_TYPE: 'tag',
+      RELEASE_TAG: tag,
+    },
+  });
+}
+
 function runCheck(env, source) {
   const releaseIdentity = readReleaseIdentity(ROOT);
   return validateReleaseRef({
     builtVersionCode: env.BUILT_ANDROID_VERSION_CODE || '',
     expectedRemoteVersionCode: env.EXPECTED_ANDROID_VERSION_CODE || '',
+    requireBuiltVersionCode: readRequireBuiltVersionCode(env),
     versionSource: source,
     // The release tag of the app version, so the build check is what is tested.
     refName: `v${releaseIdentity.version}`,
@@ -74,12 +102,34 @@ describe('android-release-smoke workflow and the release ref guard', () => {
       if (source === 'remote') {
         expect(job.env.EXPECTED_ANDROID_VERSION_CODE).toBe(job.env.BUILT_ANDROID_VERSION_CODE);
       }
-      const env = resolveEnv(workflow, jobName, job, reportedCode);
+      const env = { ...staticEnv(job), ...resolveEnv(workflow, jobName, job, reportedCode) };
       expect(env.BUILT_ANDROID_VERSION_CODE).toBe(reportedCode);
       expect(runCheck(env, source)).toMatchObject({
         builtVersionCode: reportedCode,
         versionCode: source === 'remote' ? Number(reportedCode) : expect.any(Number),
       });
+    }
+  });
+
+  it('makes every build check require a built versionCode', () => {
+    for (const [, job] of versionCheckJobs(readWorkflow())) {
+      expect(job.env.REQUIRE_BUILT_ANDROID_VERSION_CODE).toBe('1');
+    }
+  });
+
+  it('fails the build check, through the real script, when the build output is empty', () => {
+    const workflow = readWorkflow();
+    const reportedCode = String(readReleaseIdentity(ROOT).versionCode + 7);
+    for (const [jobName, job] of versionCheckJobs(workflow)) {
+      const empty = runScript(workflow, jobName, job, '');
+      expect(empty.status).toBe(1);
+      expect(empty.stderr).toContain('BUILT_ANDROID_VERSION_CODE is empty');
+      expect(empty.stdout).not.toContain('identity valid');
+
+      const built = runScript(workflow, jobName, job, reportedCode);
+      expect(built.stderr).toBe('');
+      expect(built.status).toBe(0);
+      expect(built.stdout).toContain('EAS build matched');
     }
   });
 
