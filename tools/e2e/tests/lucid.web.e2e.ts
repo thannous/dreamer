@@ -70,6 +70,8 @@ test('PR237 Lucid dark time fields stay readable and the schedule survives reloa
   await completeOnboarding(fixtures, true);
   const { app, screen, browser } = fixtures;
   await app.open('/lucid/settings?ambience=dark');
+  await expect(screen.getByTestId('lucid-bedtime-input', { visible: true })).toHaveValue('21:45');
+  await expect(screen.getByTestId('lucid-wake-input', { visible: true })).toHaveValue('06:15');
   await browser.reload();
   await expect(screen.getByTestId('lucid-bedtime-input', { visible: true })).toHaveValue('21:45');
   await expect(screen.getByTestId('lucid-wake-input', { visible: true })).toHaveValue('06:15');

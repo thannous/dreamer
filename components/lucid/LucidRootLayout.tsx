@@ -48,8 +48,8 @@ const KeyboardProviderComponent: React.ComponentType<React.PropsWithChildren> =
     ? require('react-native-keyboard-controller').KeyboardProvider
     : ({ children }) => <>{children}</>;
 
-function LucidRootNavigation({ nonCriticalStartupEnabled, onStartupCommitted }: {
-  nonCriticalStartupEnabled: boolean; onStartupCommitted: () => void;
+function LucidRootNavigation({ nonCriticalStartupEnabled, onStartupCommitted, webLaunchUrl }: {
+  nonCriticalStartupEnabled: boolean; onStartupCommitted: () => void; webLaunchUrl: string | null;
 }) {
   const { mode } = useTheme();
   const { loading } = useAuth();
@@ -57,7 +57,9 @@ function LucidRootNavigation({ nonCriticalStartupEnabled, onStartupCommitted }: 
   const navigation = useRootNavigationState();
   const tracker = useRef(createNotificationResponseTracker());
   const started = useRef(false);
-  const [launchUrl, setLaunchUrl] = useState<string | null | undefined>(undefined);
+  const [launchUrl, setLaunchUrl] = useState<string | null | undefined>(
+    Platform.OS === 'web' ? webLaunchUrl : undefined
+  );
   const [notificationsReady, setNotificationsReady] = useState(false);
   const [pending, setPending] = useState<Href | null>(null);
   const [destination, setDestination] = useState<Href | null>(null);
@@ -66,9 +68,7 @@ function LucidRootNavigation({ nonCriticalStartupEnabled, onStartupCommitted }: 
 
   useEffect(() => {
     let active = true;
-    if (Platform.OS === 'web') {
-      setLaunchUrl(typeof window === 'undefined' ? null : window.location.href);
-    } else {
+    if (Platform.OS !== 'web') {
       void Linking.getInitialURL().then(
         (url) => { if (active) setLaunchUrl(url); },
         () => { if (active) setLaunchUrl(null); }
@@ -144,6 +144,10 @@ export default function LucidRootLayout() {
 }
 
 function LucidRootContent() {
+  // Capture before font/language loading mounts the navigator and its fallback route.
+  const [webLaunchUrl] = useState(() =>
+    Platform.OS === 'web' && typeof window !== 'undefined' ? window.location.href : null
+  );
   const [fontsLoaded, fontError] = useFonts({
     SpaceGrotesk_400Regular,
     SpaceGrotesk_500Medium,
@@ -303,6 +307,7 @@ function LucidRootContent() {
                   <SubscriptionProvider>
                     <StartupRouteProvider routeCommitted={startupDestinationCommitted}>
                       <LucidRootNavigation
+                        webLaunchUrl={webLaunchUrl}
                         nonCriticalStartupEnabled={startupDestinationCommitted}
                         onStartupCommitted={handleStartupCommitted}
                       />
