@@ -297,73 +297,154 @@
       "en": {
         "slug": "teeth",
         "name": "Teeth (losing teeth)",
-        "shortDescription": "Losing teeth is a very common dream. It symbolizes anxiety, fear of aging, loss of power, or concerns about appearance and self-image.",
+        "shortDescription": "Dreaming of teeth falling out often leaves you waking up worried, running your tongue over your teeth to check. The scene is often associated with self-image, speech or losing your grip. How they fell and how you felt guide the reading.",
         "askYourself": [
-          "Am I anxious about my appearance?",
-          "Am I afraid of losing something important?"
-        ]
+          "Did my teeth fall one by one or all at once, with or without pain?",
+          "How did I feel: ashamed, panicked, detached, relieved?",
+          "Where am I afraid right now of looking bad, saying the wrong thing or losing my grip?"
+        ],
+        "faq": [
+          {
+            "question": "What does it mean to dream of teeth falling out?",
+            "answer": "The scene is often associated with self-image, speech or a feeling of losing your grip. It is not a rule: how the teeth fell and how you felt guide the reading."
+          },
+          {
+            "question": "What does it mean to lose teeth without pain in a dream?",
+            "answer": "Without pain, the dream can go with a change you are going through quietly, or a worry that is still vague. Note whether you tried to hide your mouth: embarrassment in front of others is often the real lead."
+          },
+          {
+            "question": "What does it mean to dream of teeth falling out with blood?",
+            "answer": "Blood makes the scene more intense and more physical. It can go with a feeling of vulnerability or tiredness, or with something that touches you closely. It announces neither illness nor misfortune."
+          },
+          {
+            "question": "Should I worry about my health after this dream?",
+            "answer": "The dream predicts nothing about your teeth. If you wake with a clenched jaw or sensitive teeth, or have real pain, see a dentist: night-time teeth grinding can be treated."
+          }
+        ],
+        "documentMetaDescription": "Dreaming of teeth falling out, without pain or with blood: what the scene may say about self-image and speech, with questions and a fictional journal example.",
+        "modifiedAt": "2026-10-08"
       },
       "fr": {
         "slug": "dents",
         "name": "Dents (perdre ses dents)",
-        "shortDescription": "Perdre ses dents est un rêve très courant. Il symbolise l'anxiété, la peur de vieillir, la perte de pouvoir ou des préoccupations sur l'apparence et l'image de soi.",
+        "shortDescription": "Rêver de dents qui tombent laisse souvent un réveil inquiet, la langue sur les dents pour vérifier. La scène est fréquemment associée à l'image de soi, à la parole ou à une perte de prise. Comment elles tombaient et ce que vous ressentiez orientent la lecture.",
         "seoTitle": "dents qui tombent",
         "askYourself": [
-          "Suis-je anxieux à propos de mon apparence ?",
-          "Ai-je peur de perdre quelque chose d'important ?"
+          "Les dents tombaient-elles une à une, d'un coup, avec ou sans douleur ?",
+          "Qu'ai-je ressenti : honte, panique, détachement, soulagement ?",
+          "Où ai-je peur en ce moment de mal paraître, de mal dire ou de perdre prise ?"
         ],
-        "modifiedAt": "2026-07-10"
+        "modifiedAt": "2026-10-08",
+        "faq": [
+          {
+            "question": "Que signifie rêver de dents qui tombent ?",
+            "answer": "La scène est souvent associée à l'image de soi, à la parole ou au sentiment de perdre prise. Ce n'est pas une règle : la façon dont les dents tombaient et ce que vous ressentiez orientent la lecture."
+          },
+          {
+            "question": "Que signifie perdre ses dents sans douleur en rêve ?",
+            "answer": "Sans douleur, le rêve peut accompagner un changement que l'on vit sans bruit, ou une inquiétude encore floue. Notez si vous cherchiez à cacher votre bouche : la gêne devant les autres est souvent la vraie piste."
+          },
+          {
+            "question": "Que signifie rêver de dents qui tombent avec du sang ?",
+            "answer": "Le sang rend la scène plus intense et plus physique. Il peut accompagner un sentiment de vulnérabilité ou de fatigue, ou un sujet qui vous touche de près. Il n'annonce ni maladie ni malheur."
+          },
+          {
+            "question": "Faut-il s'inquiéter pour sa santé après ce rêve ?",
+            "answer": "Le rêve ne prédit rien sur vos dents. Si vous vous réveillez la mâchoire serrée, les dents sensibles, ou si vous avez une vraie douleur, parlez-en à un dentiste : le grincement nocturne des dents se prend en charge."
+          }
+        ],
+        "documentMetaDescription": "Rêver de dents qui tombent, sans douleur ou avec du sang : ce que la scène peut dire de l'image de soi et de la parole, avec questions et exemple de journal."
       },
       "es": {
         "slug": "dientes",
         "name": "Dientes (perder dientes)",
-        "shortDescription": "Perder dientes es un sueño muy común. Simboliza ansiedad, miedo al envejecimiento, pérdida de poder o preocupaciones sobre la apariencia y la autoimagen.",
+        "shortDescription": "Soñar que se te caen los dientes suele dejar un despertar inquieto, pasando la lengua por los dientes para comprobarlo. La escena se asocia a menudo con tu imagen, el habla o perder el control. Cómo caían y qué sentiste orientan la lectura.",
         "askYourself": [
-          "¿Estoy ansioso por mi apariencia?",
-          "¿Tengo miedo de perder algo importante?"
-        ]
+          "¿Los dientes caían de uno en uno o de golpe, con o sin dolor?",
+          "¿Qué sentí: vergüenza, pánico, indiferencia, alivio?",
+          "¿Dónde temo ahora mismo quedar mal, decir algo inoportuno o perder el control?"
+        ],
+        "faq": [
+          {
+            "question": "¿Qué significa soñar que se te caen los dientes?",
+            "answer": "La escena se asocia a menudo con la imagen de uno mismo, el habla o la sensación de perder el control. No es una regla: cómo caían los dientes y qué sentiste orientan la lectura."
+          },
+          {
+            "question": "¿Qué significa soñar que se caen los dientes sin dolor?",
+            "answer": "Sin dolor, el sueño puede acompañar un cambio que vives en silencio o una preocupación todavía difusa. Anota si intentabas taparte la boca: la vergüenza ante los demás suele ser la verdadera pista."
+          },
+          {
+            "question": "¿Qué significa soñar que se caen los dientes con sangre?",
+            "answer": "La sangre hace la escena más intensa y más física. Puede acompañar una sensación de vulnerabilidad o cansancio, o un tema que te toca de cerca. No anuncia ni enfermedad ni desgracia."
+          },
+          {
+            "question": "¿Debo preocuparme por mi salud después de este sueño?",
+            "answer": "El sueño no predice nada sobre tus dientes. Si te despiertas con la mandíbula apretada o los dientes sensibles, o tienes un dolor real, consulta con tu dentista: el rechinar de dientes nocturno tiene tratamiento."
+          }
+        ],
+        "documentMetaDescription": "Soñar que se te caen los dientes, sin dolor o con sangre: qué puede decir la escena sobre tu imagen y tu forma de hablar, con preguntas y un ejemplo de diario.",
+        "modifiedAt": "2026-10-08"
       },
       "de": {
         "slug": "zaehne",
         "name": "Zähne fallen aus",
-        "shortDescription": "Wenn im Traum Zähne ausfallen, geht es häufig um Unsicherheit, Selbstbild, Kontrollverlust oder Angst vor Veränderung. Details wie ohne Schmerzen, mit Blut, einzelne Zähne oder viele Zähne verändern die Deutung.",
+        "shortDescription": "Wenn im Traum Zähne ausfallen, wacht man oft beunruhigt auf und tastet mit der Zunge nach. Die Szene wird oft mit dem Selbstbild, dem Sprechen oder einem Kontrollverlust verbunden. Wie sie ausfielen und was Sie gefühlt haben, gibt die Richtung vor.",
         "askYourself": [
-          "Sind einzelne Zähne oder viele Zähne ausgefallen?",
-          "Gab es Schmerzen, Blut, Scham oder eher Erleichterung?",
-          "Wo fühle ich mich gerade verletzlich, beurteilt oder nicht mehr ganz in Kontrolle?"
+          "Sind einzelne Zähne ausgefallen oder viele auf einmal, mit oder ohne Schmerzen?",
+          "Was habe ich gefühlt: Scham, Panik, Gleichgültigkeit, Erleichterung?",
+          "Wo habe ich gerade Angst, schlecht dazustehen, das Falsche zu sagen oder die Kontrolle zu verlieren?"
         ],
         "seoTitle": "Zähne fallen aus, ohne Schmerzen oder mit Blut",
         "faq": [
           {
             "question": "Was bedeutet es, wenn im Traum Zähne ausfallen?",
-            "answer": "Zähne, die ausfallen, können Unsicherheit, Angst vor Veränderung, Kontrollverlust oder Sorgen um Aussehen und Wirkung zeigen. Es ist keine medizinische Vorhersage."
+            "answer": "Die Szene wird oft mit dem Selbstbild, dem Sprechen oder dem Gefühl verbunden, die Kontrolle zu verlieren. Das ist keine Regel: Wie die Zähne ausfielen und was Sie gefühlt haben, gibt die Richtung vor."
           },
           {
             "question": "Was bedeutet Zahnverlust ohne Schmerzen im Traum?",
-            "answer": "Ohne Schmerzen kann der Traum eher auf Veränderung, Loslassen oder eine stille Verunsicherung hinweisen, die noch nicht offen ausgesprochen ist."
+            "answer": "Ohne Schmerzen kann der Traum eine Veränderung begleiten, die still verläuft, oder eine Sorge, die noch unbestimmt ist. Notieren Sie, ob Sie Ihren Mund verbergen wollten: Scham vor anderen ist oft die eigentliche Spur."
           },
           {
             "question": "Was bedeutet Zahnverlust mit Blut im Traum?",
-            "answer": "Blut verstärkt die emotionale Ladung. Es kann auf Verletzlichkeit, Erschöpfung oder ein Thema hinweisen, das sich persönlicher und dringlicher anfühlt."
-          },
-          {
-            "question": "Was bedeuten einzelne Zähne im Vergleich zu vielen Zähnen?",
-            "answer": "Ein einzelner Zahn kann ein konkretes Thema markieren. Viele ausfallende Zähne zeigen eher Überforderung, stärkeren Kontrollverlust oder mehrere Unsicherheiten zugleich."
+            "answer": "Blut macht die Szene intensiver und körperlicher. Es kann ein Gefühl von Verletzlichkeit oder Erschöpfung begleiten oder ein Thema, das Ihnen nahegeht. Es kündigt weder Krankheit noch Unglück an."
           },
           {
             "question": "Sollte ich nach einem Zahntraum etwas Medizinisches befürchten?",
-            "answer": "Ein Traum ersetzt keine medizinische Einschätzung. Wenn du reale Schmerzen oder Sorgen hast, lass sie abklären; symbolisch geht es meist um Sicherheit, Selbstbild und Kontrolle."
+            "answer": "Der Traum sagt nichts über Ihre Zähne voraus. Wachen Sie mit verspanntem Kiefer oder empfindlichen Zähnen auf oder haben Sie echte Schmerzen, gehen Sie zur Zahnärztin oder zum Zahnarzt: Nächtliches Zähneknirschen lässt sich behandeln."
           }
-        ]
+        ],
+        "documentMetaDescription": "Zähne fallen aus im Traum, ohne Schmerzen oder mit Blut: was die Szene über Selbstbild und Sprechen sagen kann, mit Fragen und einem Tagebuchbeispiel.",
+        "modifiedAt": "2026-10-08"
       },
       "it": {
         "slug": "denti",
         "name": "Denti (perdere i denti)",
-        "shortDescription": "Perdere i denti è un sogno molto comune. Simboleggia ansia, paura dell'invecchiamento, perdita di potere o preoccupazioni riguardo all'aspetto e all'autoimmagine.",
+        "shortDescription": "Sognare denti che cadono lascia spesso un risveglio inquieto, con la lingua che passa sui denti per controllare. La scena viene associata all’immagine di sé, alla parola o al perdere la presa. Come cadevano e che cosa provavi orientano la lettura.",
         "askYourself": [
-          "Sono ansioso riguardo al mio aspetto?",
-          "Ho paura di perdere qualcosa di importante?"
-        ]
+          "I denti cadevano uno alla volta o tutti insieme, con o senza dolore?",
+          "Che cosa ho provato: vergogna, panico, distacco, sollievo?",
+          "Dove ho paura, in questo periodo, di fare brutta figura, dire la cosa sbagliata o perdere la presa?"
+        ],
+        "faq": [
+          {
+            "question": "Che cosa significa sognare denti che cadono?",
+            "answer": "La scena viene spesso associata all’immagine di sé, alla parola o alla sensazione di perdere la presa. Non è una regola: come cadevano i denti e che cosa provavi orientano la lettura."
+          },
+          {
+            "question": "Che cosa significa sognare di perdere i denti senza dolore?",
+            "answer": "Senza dolore, il sogno può accompagnare un cambiamento che vivi in silenzio o una preoccupazione ancora vaga. Annota se cercavi di coprirti la bocca: l’imbarazzo davanti agli altri è spesso la vera pista."
+          },
+          {
+            "question": "Che cosa significa sognare denti che cadono con sangue?",
+            "answer": "Il sangue rende la scena più intensa e più fisica. Può accompagnare una sensazione di vulnerabilità o stanchezza, o un tema che ti tocca da vicino. Non annuncia né malattie né disgrazie."
+          },
+          {
+            "question": "Devo preoccuparmi per la salute dopo questo sogno?",
+            "answer": "Il sogno non predice nulla sui tuoi denti. Se ti svegli con la mascella contratta o i denti sensibili, o hai un dolore reale, parlane con il dentista: il digrignamento notturno dei denti si può trattare."
+          }
+        ],
+        "documentMetaDescription": "Sognare denti che cadono, senza dolore o con sangue: che cosa può dire la scena dell’immagine di sé e della parola, con domande ed esempio inventato di diario.",
+        "modifiedAt": "2026-10-08"
       },
       "pt": {
         "slug": "dentes-perder-os-dentes",
@@ -394,72 +475,153 @@
       "en": {
         "slug": "falling",
         "name": "Falling",
-        "shortDescription": "Falling is one of the most common dreams. It symbolizes loss of control, insecurity, or fear of failure. It can also indicate a need to let go.",
+        "shortDescription": "Dreaming of falling often goes with a feeling of losing your footing: pressure, uncertainty, a situation slipping out of your hands. Where you fell from, how fast, and whether you woke with a jolt help narrow it down. It is not a premonition.",
         "askYourself": [
-          "In which area of my life do I feel out of control?",
-          "What do I need to release?"
-        ]
+          "Where was I falling from, and did anyone see me fall?",
+          "Did I wake up, land, or keep on falling?",
+          "Where in my life do I feel I am losing my footing right now?"
+        ],
+        "faq": [
+          {
+            "question": "What does it mean to dream of falling?",
+            "answer": "Falling is often associated with a loss of control or support: pressure at work, uncertainty, a change you did not choose. The scene matters: where you fell from, how fast, and how you felt on the way down."
+          },
+          {
+            "question": "Why do I wake up when I fall in a dream?",
+            "answer": "Waking with a jolt just as you drift off is common. That sudden twitch at sleep onset is called a hypnic jerk, or sleep start, and it is usually harmless. If it happens often and spoils your sleep, mention it to a doctor."
+          },
+          {
+            "question": "Does dreaming of falling mean something bad will happen?",
+            "answer": "No. A falling dream does not predict an accident or a failure. It can echo a feeling you already have, which makes it worth writing down, but it says nothing certain about your future."
+          },
+          {
+            "question": "What does it mean to fall without hitting the ground?",
+            "answer": "Falling endlessly, or landing softly, can go with a situation that feels uncertain but not dangerous, or with a change you are slowly accepting. Fear or calm during the fall is the main clue."
+          }
+        ],
+        "documentMetaDescription": "Dreaming of falling from a height, into darkness or waking with a jolt: what the scene may say about losing your footing, with questions and an example.",
+        "modifiedAt": "2026-10-08"
       },
       "fr": {
         "slug": "chute",
         "name": "Chute",
-        "shortDescription": "La chute est l'un des rêves les plus courants. Elle symbolise la perte de contrôle, l'insécurité ou la peur de l'échec. Elle peut aussi indiquer un besoin de lâcher prise.",
+        "shortDescription": "Rêver de tomber accompagne souvent l'impression de perdre pied : une pression, une incertitude, une situation qui vous échappe. D'où vous tombiez, à quelle vitesse, et si vous vous êtes réveillé en sursaut aident à préciser. Ce n'est pas une prémonition.",
         "askYourself": [
-          "Dans quel domaine de ma vie je me sens en perte de contrôle ?",
-          "Qu'est-ce que je dois lâcher ?"
-        ]
+          "D'où est-ce que je tombais, et quelqu'un m'a-t-il vu tomber ?",
+          "Me suis-je réveillé, ai-je atterri, ou ai-je continué à tomber ?",
+          "Dans quel domaine ai-je en ce moment l'impression de perdre pied ?"
+        ],
+        "faq": [
+          {
+            "question": "Que signifie rêver de tomber ?",
+            "answer": "La chute est souvent associée à une perte de contrôle ou d'appui : pression au travail, incertitude, changement que vous n'avez pas choisi. La scène compte : d'où vous tombiez, à quelle vitesse, et ce que vous ressentiez pendant la chute."
+          },
+          {
+            "question": "Pourquoi se réveille-t-on en sursaut quand on tombe en rêve ?",
+            "answer": "Se réveiller d'un coup au moment de s'endormir est courant. Cette secousse à l'endormissement s'appelle une secousse hypnique ; elle est généralement bénigne. Si elle revient souvent et gâche vos nuits, parlez-en à un médecin."
+          },
+          {
+            "question": "Rêver de chute annonce-t-il un malheur ?",
+            "answer": "Non. Un rêve de chute ne prédit ni accident ni échec. Il peut faire écho à un sentiment que vous avez déjà, ce qui le rend intéressant à noter, mais il ne dit rien de certain sur votre avenir."
+          },
+          {
+            "question": "Que signifie tomber sans jamais toucher le sol ?",
+            "answer": "Tomber sans fin, ou atterrir en douceur, peut accompagner une situation incertaine mais pas dangereuse, ou un changement que vous acceptez peu à peu. La peur ou le calme pendant la chute est l'indice principal."
+          }
+        ],
+        "documentMetaDescription": "Rêver de tomber d'une hauteur, dans le vide ou avec un réveil en sursaut : ce que la scène peut dire du sentiment de perdre pied, avec questions et exemple.",
+        "modifiedAt": "2026-10-08"
       },
       "es": {
         "slug": "caida",
         "name": "Caída",
-        "shortDescription": "Caer es uno de los sueños más comunes. Simboliza pérdida de control, inseguridad o miedo al fracaso. También puede indicar necesidad de soltar.",
+        "shortDescription": "Soñar que caes suele acompañar la sensación de perder pie: presión, incertidumbre, una situación que se te escapa. Desde dónde caías, a qué velocidad y si te despertaste de golpe ayudan a afinar la lectura. No es una premonición.",
         "askYourself": [
-          "¿En qué área de mi vida me siento fuera de control?",
-          "¿Qué necesito soltar?"
-        ]
+          "¿Desde dónde caía, y alguien me vio caer?",
+          "¿Me desperté, aterricé o seguí cayendo?",
+          "¿En qué parte de mi vida siento ahora mismo que pierdo pie?"
+        ],
+        "faq": [
+          {
+            "question": "¿Qué significa soñar que te caes?",
+            "answer": "Caer se asocia a menudo con una pérdida de control o de apoyo: presión en el trabajo, incertidumbre, un cambio que no elegiste. La escena importa: desde dónde caías, a qué velocidad y qué sentías durante la caída."
+          },
+          {
+            "question": "¿Por qué me despierto de golpe cuando sueño que caigo?",
+            "answer": "Despertarse con un sobresalto justo al dormirse es habitual. Esa sacudida al conciliar el sueño se llama mioclonía hípnica y suele ser inofensiva. Si se repite a menudo y te estropea las noches, coméntalo con un médico."
+          },
+          {
+            "question": "¿Soñar que caes es un mal presagio?",
+            "answer": "No. Un sueño de caída no predice un accidente ni un fracaso. Puede hacer eco de algo que ya sientes, y por eso vale la pena anotarlo, pero no dice nada seguro sobre tu futuro."
+          },
+          {
+            "question": "¿Qué significa caer sin llegar nunca al suelo?",
+            "answer": "Caer sin fin, o aterrizar con suavidad, puede acompañar una situación incierta pero no peligrosa, o un cambio que vas aceptando poco a poco. El miedo o la calma durante la caída es la pista principal."
+          }
+        ],
+        "documentMetaDescription": "Soñar que caes desde una altura, al vacío o despertando de golpe: qué puede decir la escena sobre la sensación de perder pie, con preguntas y un ejemplo.",
+        "modifiedAt": "2026-10-08"
       },
       "de": {
         "slug": "fallen",
         "name": "Fallen im Traum",
-        "shortDescription": "Fallen im Traum zeigt oft Kontrollverlust, Unsicherheit oder die Angst, den Halt zu verlieren. Wichtig ist, ob du endlos fällst, kurz vor dem Aufprall aufwachst oder dich fragst: was bedeutet es, im Traum zu fallen?",
+        "shortDescription": "Fallen im Traum begleitet oft das Gefühl, den Halt zu verlieren: Druck, Unsicherheit, eine Lage, die Ihnen entgleitet. Wo Sie gefallen sind, wie schnell und ob Sie mit einem Ruck aufgewacht sind, hilft bei der Deutung. Eine Vorahnung ist es nicht.",
         "askYourself": [
-          "Wo habe ich gerade das Gefühl, den Halt oder die Kontrolle zu verlieren?",
-          "Bin ich beim Fallen aufgewacht, gelandet oder weitergefallen?",
-          "Was müsste ich loslassen, damit sich die Situation weniger bedrohlich anfühlt?"
+          "Wovon bin ich gefallen, und hat mich jemand fallen sehen?",
+          "Bin ich aufgewacht, gelandet oder weitergefallen?",
+          "Wo habe ich gerade das Gefühl, den Halt oder die Kontrolle zu verlieren?"
         ],
         "seoTitle": "Fallen im Traum und Aufwachen",
         "faq": [
           {
-            "question": "Was bedeutet Fallen im Traum kurz gesagt?",
-            "answer": "Fallen im Traum kann auf Kontrollverlust, Unsicherheit, Überforderung oder Angst vor Scheitern hinweisen. Die genaue Deutung hängt davon ab, wie schnell du fällst und ob Angst, Erleichterung oder Ruhe dominiert."
-          },
-          {
-            "question": "Welche häufigen Szenen gibt es bei Fallträumen?",
-            "answer": "Typisch sind Fallen von einer Klippe, aus einem Gebäude, in Dunkelheit oder ohne sichtbaren Boden. Jede Szene zeigt anders, wo Halt, Vertrauen oder Orientierung fehlen."
+            "question": "Was bedeutet es, im Traum zu fallen?",
+            "answer": "Fallen wird oft mit dem Verlust von Kontrolle oder Halt verbunden: Druck im Beruf, Unsicherheit, eine Veränderung, die Sie nicht gewählt haben. Die Szene zählt: woher Sie fielen, wie schnell und was Sie dabei fühlten."
           },
           {
             "question": "Warum wache ich beim Fallen auf?",
-            "answer": "Viele Menschen wachen in Fallträumen abrupt auf. Symbolisch kann dieser Moment zeigen, dass ein Thema im Wachleben starke Alarmbereitschaft auslöst oder dich nicht zur Ruhe kommen lässt."
+            "answer": "Mit einem Ruck aufzuwachen, gerade beim Einschlafen, ist häufig. Dieses Zucken heißt Einschlafzuckung und ist meist harmlos. Wenn es oft vorkommt und Ihren Schlaf stört, sprechen Sie mit Ihrer Ärztin oder Ihrem Arzt."
           },
           {
-            "question": "Welche psychologische Deutung kann ein Falltraum haben?",
-            "answer": "Psychologisch kann Fallen auf Stress, Leistungsdruck, Kontrollverlust oder den Wunsch hindeuten, etwas loszulassen. Es ist keine Vorhersage, sondern ein Hinweis auf erlebte Spannung."
+            "question": "Ist ein Traum vom Fallen ein schlechtes Zeichen?",
+            "answer": "Nein. Ein Falltraum sagt weder einen Unfall noch ein Scheitern voraus. Er kann ein Gefühl aufgreifen, das Sie schon haben, und ist deshalb eine Notiz wert, aber er sagt nichts Sicheres über Ihre Zukunft."
           },
           {
-            "question": "Welche Fragen helfen nach einem Traum vom Fallen?",
-            "answer": "Notiere, wo du gefallen bist, ob jemand anwesend war, ob du aufgewacht bist und welcher Lebensbereich sich gerade unsicher anfühlt."
+            "question": "Was bedeutet es, im Traum endlos zu fallen?",
+            "answer": "Endloses Fallen oder eine sanfte Landung kann eine unsichere, aber nicht gefährliche Lage begleiten, oder eine Veränderung, die Sie nach und nach annehmen. Angst oder Ruhe während des Falls ist der wichtigste Hinweis."
           }
         ],
-        "modifiedAt": "2026-07-10"
+        "modifiedAt": "2026-10-08",
+        "documentMetaDescription": "Fallen im Traum, aus großer Höhe, ins Dunkle oder mit Aufwachen: was die Szene über das Gefühl sagen kann, den Halt zu verlieren, mit Fragen und Beispiel."
       },
       "it": {
         "slug": "cadere",
         "name": "Cadere",
-        "shortDescription": "Cadere è uno dei sogni più comuni. Simboleggia perdita di controllo, insicurezza o paura del fallimento. Può anche indicare il bisogno di lasciar andare.",
+        "shortDescription": "Sognare di cadere accompagna spesso la sensazione di perdere l’appoggio: una pressione, un’incertezza, una situazione che ti sfugge di mano. Da dove cadevi, a che velocità e se ti sei svegliato di soprassalto aiutano a capire meglio. Non è una premonizione.",
         "askYourself": [
-          "In quale area della mia vita mi sento fuori controllo?",
-          "Cosa ho bisogno di lasciar andare?"
-        ]
+          "Da dove stavo cadendo, e qualcuno mi ha visto cadere?",
+          "Mi sono svegliato, sono atterrato o ho continuato a cadere?",
+          "In quale ambito della mia vita sento di perdere l’appoggio in questo periodo?"
+        ],
+        "faq": [
+          {
+            "question": "Che cosa significa sognare di cadere?",
+            "answer": "Cadere viene spesso associato a una perdita di controllo o di sostegno: pressione al lavoro, incertezza, un cambiamento che non hai scelto. Conta la scena: da dove cadevi, a che velocità e che cosa provavi durante la caduta."
+          },
+          {
+            "question": "Perché mi sveglio di soprassalto quando sogno di cadere?",
+            "answer": "Svegliarsi con un sussulto proprio mentre ci si addormenta è comune. Quella scossa si chiama mioclono ipnico ed è di solito innocua. Se si ripete spesso e ti rovina le notti, parlane con il tuo medico."
+          },
+          {
+            "question": "Sognare di cadere è un brutto presagio?",
+            "answer": "No. Un sogno di caduta non predice un incidente né un fallimento. Può fare eco a una sensazione che hai già, e per questo vale la pena annotarlo, ma non dice nulla di certo sul tuo futuro."
+          },
+          {
+            "question": "Che cosa significa cadere senza toccare mai terra?",
+            "answer": "Cadere all’infinito, o atterrare dolcemente, può accompagnare una situazione incerta ma non pericolosa, o un cambiamento che stai accettando poco a poco. La paura o la calma durante la caduta è l’indizio principale."
+          }
+        ],
+        "documentMetaDescription": "Sognare di cadere dall’alto, nel vuoto o svegliandosi di soprassalto: che cosa può dire la scena del perdere l’appoggio, con domande ed esempio.",
+        "modifiedAt": "2026-10-08"
       },
       "pt": {
         "slug": "queda",
@@ -491,48 +653,153 @@
       "en": {
         "slug": "flying",
         "name": "Flying",
-        "shortDescription": "This quick symbol reference reads flying as freedom, perspective or difficulty overcoming an obstacle. Use the linked article for full scenarios, emotions and lucid-dream context.",
+        "shortDescription": "Dreaming of flying often goes with a sense of freedom or a wish to see things from above. How you flew tells you most: soaring with ease, struggling to stay up, or escaping something on the ground. Your mood in the air is the main clue.",
         "askYourself": [
-          "What do I need to free myself from?",
-          "What limits am I ready to transcend?"
-        ]
+          "Was flying easy, tiring, or out of my control?",
+          "What was I flying over, toward, or away from?",
+          "Where in my life would I like more room, or a view from above?"
+        ],
+        "faq": [
+          {
+            "question": "What does it mean to dream of flying?",
+            "answer": "Flying is often associated with freedom, relief or a fresh perspective on a situation. Its meaning depends on how easy the flight was, what you were flying over, and how you felt in the air."
+          },
+          {
+            "question": "Why can't I fly properly in my dream?",
+            "answer": "Struggling to take off, flying too low or sinking back down can go with effort, doubt or something holding you back. Note what stopped you: a weight, power lines, fear, someone calling from below."
+          },
+          {
+            "question": "Is a flying dream a lucid dream?",
+            "answer": "Not always. Many flying dreams happen without knowing you are dreaming. If you realised you were dreaming and chose to fly, that was a lucid dream, something some people learn to cultivate."
+          },
+          {
+            "question": "What does it mean to fly away from danger in a dream?",
+            "answer": "Taking off to get away from a threat can echo a wish to step out of a tense situation. It is neither cowardice nor a warning. Ask yourself what you were leaving behind on the ground."
+          }
+        ],
+        "documentMetaDescription": "Dreaming of flying, soaring freely, struggling to stay up or escaping danger: what the scene may say about freedom and perspective, with questions to ask.",
+        "modifiedAt": "2026-10-08"
       },
       "fr": {
         "slug": "voler",
         "name": "Voler",
-        "shortDescription": "Cette fiche rapide résume le symbole du vol : liberté, prise de hauteur ou difficulté à dépasser un obstacle. Pour comparer les scénarios, les émotions et le lien avec le rêve lucide, consultez l’article complet associé.",
+        "shortDescription": "Rêver de voler accompagne souvent un sentiment de liberté ou l'envie de voir les choses de haut. La manière de voler en dit le plus : planer sans effort, peiner à rester en l'air, fuir ce qui reste au sol. Votre humeur en vol est l'indice principal.",
         "seoTitle": "voler : fiche rapide du symbole",
         "askYourself": [
-          "De quoi ai-je besoin de me libérer ?",
-          "Quelles limites suis-je prêt à dépasser ?"
-        ]
+          "Voler était-il facile, fatigant ou impossible à maîtriser ?",
+          "Au-dessus de quoi, vers quoi ou loin de quoi est-ce que je volais ?",
+          "Dans quel domaine aimerais-je plus d'espace, ou plus de recul ?"
+        ],
+        "faq": [
+          {
+            "question": "Que signifie rêver de voler ?",
+            "answer": "Voler est souvent associé à la liberté, au soulagement ou à un nouveau regard sur une situation. Le sens dépend de la facilité du vol, de ce que vous survoliez et de ce que vous ressentiez en l'air."
+          },
+          {
+            "question": "Pourquoi n'arrive-t-on pas à bien voler en rêve ?",
+            "answer": "Peiner à décoller, voler trop bas ou retomber peut accompagner un effort, un doute ou quelque chose qui vous retient. Notez ce qui vous freinait : un poids, des fils électriques, la peur, quelqu'un resté en bas."
+          },
+          {
+            "question": "Rêver de voler, est-ce un rêve lucide ?",
+            "answer": "Pas toujours. Beaucoup de rêves de vol se font sans savoir que l'on rêve. Si vous avez compris que vous rêviez et choisi de voler, c'était un rêve lucide, une expérience que certaines personnes apprennent à cultiver."
+          },
+          {
+            "question": "Que signifie voler pour échapper à un danger ?",
+            "answer": "S'envoler pour fuir une menace peut faire écho à l'envie de sortir d'une situation tendue. Ce n'est ni de la lâcheté ni un avertissement. Demandez-vous ce que vous laissiez derrière vous, au sol."
+          }
+        ],
+        "documentMetaDescription": "Rêver de voler, planer librement, peiner à rester en l'air ou fuir un danger : ce que la scène peut dire de liberté et de recul, avec questions et exemple.",
+        "modifiedAt": "2026-10-08"
       },
       "es": {
         "slug": "volar",
         "name": "Volar",
-        "shortDescription": "Esta ficha rápida resume volar como libertad, perspectiva o dificultad para superar un obstáculo. Consulta el artículo enlazado para escenas completas, emociones y contexto de sueño lúcido.",
+        "shortDescription": "Soñar que vuelas suele acompañar una sensación de libertad o las ganas de ver las cosas desde arriba. Lo que más dice es cómo volabas: planear sin esfuerzo, costarte mantenerte en el aire, huir de algo que quedaba abajo. Tu ánimo en el aire es la pista principal.",
         "askYourself": [
-          "¿De qué necesito liberarme?",
-          "¿Qué límites estoy listo para trascender?"
-        ]
+          "¿Volar era fácil, agotador o imposible de controlar?",
+          "¿Sobre qué volaba, hacia dónde o lejos de qué?",
+          "¿En qué parte de mi vida me gustaría tener más espacio o más perspectiva?"
+        ],
+        "faq": [
+          {
+            "question": "¿Qué significa soñar que vuelas?",
+            "answer": "Volar se asocia a menudo con libertad, alivio o una nueva forma de mirar una situación. Su sentido depende de lo fácil que era el vuelo, de lo que sobrevolabas y de lo que sentías en el aire."
+          },
+          {
+            "question": "¿Por qué en sueños no consigo volar bien?",
+            "answer": "Costarte despegar, volar demasiado bajo o volver a caer puede acompañar un esfuerzo, una duda o algo que te frena. Anota qué te retenía: un peso, unos cables, el miedo, alguien que se quedaba abajo."
+          },
+          {
+            "question": "¿Soñar que vuelas es un sueño lúcido?",
+            "answer": "No siempre. Muchos sueños de volar ocurren sin saber que estás soñando. Si te diste cuenta de que soñabas y decidiste volar, fue un sueño lúcido, algo que algunas personas aprenden a cultivar."
+          },
+          {
+            "question": "¿Qué significa volar para escapar de un peligro?",
+            "answer": "Echar a volar para huir de una amenaza puede hacer eco de las ganas de salir de una situación tensa. No es cobardía ni una advertencia. Pregúntate qué dejabas atrás, en el suelo."
+          }
+        ],
+        "documentMetaDescription": "Soñar que vuelas libremente, que te cuesta mantenerte en el aire o que huyes de un peligro: qué puede decir la escena sobre libertad, con preguntas y ejemplo.",
+        "modifiedAt": "2026-10-08"
       },
       "de": {
         "slug": "fliegen",
         "name": "Fliegen",
-        "shortDescription": "Diese Kurzdeutung liest Fliegen als Freiheit, Perspektivwechsel oder Schwierigkeit, ein Hindernis zu überwinden. Der verlinkte Artikel behandelt vollständige Szenarien und luziden Kontext.",
+        "shortDescription": "Vom Fliegen zu träumen begleitet oft ein Gefühl von Freiheit oder den Wunsch, die Dinge von oben zu sehen. Am meisten verrät die Art des Fluges: müheloses Gleiten, mühsames Obenbleiben, Flucht vor etwas am Boden. Ihre Stimmung in der Luft ist der beste Hinweis.",
         "askYourself": [
-          "Von welcher Situation möchte ich mich befreien?",
-          "Wo fühle ich mich eingeschränkt?"
-        ]
+          "War das Fliegen leicht, anstrengend oder außer Kontrolle?",
+          "Worüber, wohin oder wovon weg bin ich geflogen?",
+          "Wo in meinem Leben wünsche ich mir mehr Raum oder mehr Abstand?"
+        ],
+        "faq": [
+          {
+            "question": "Was bedeutet Fliegen im Traum?",
+            "answer": "Fliegen wird oft mit Freiheit, Erleichterung oder einem neuen Blick auf eine Lage verbunden. Die Bedeutung hängt davon ab, wie leicht der Flug war, was Sie überflogen haben und wie Sie sich in der Luft fühlten."
+          },
+          {
+            "question": "Warum kann ich im Traum nicht richtig fliegen?",
+            "answer": "Wenn das Abheben schwerfällt, Sie zu tief fliegen oder wieder absinken, kann das Anstrengung, Zweifel oder etwas begleiten, das Sie zurückhält. Notieren Sie, was Sie bremste: ein Gewicht, Leitungen, Angst, jemand am Boden."
+          },
+          {
+            "question": "Ist ein Flugtraum ein Klartraum?",
+            "answer": "Nicht immer. Viele Flugträume geschehen, ohne dass man weiß, dass man träumt. Wenn Sie erkannt haben, dass Sie träumen, und dann losgeflogen sind, war es ein Klartraum, den manche Menschen gezielt üben."
+          },
+          {
+            "question": "Was bedeutet es, im Traum vor einer Gefahr davonzufliegen?",
+            "answer": "Abzuheben, um einer Bedrohung zu entkommen, kann den Wunsch aufgreifen, aus einer angespannten Lage herauszukommen. Das ist weder Feigheit noch eine Warnung. Fragen Sie sich, was Sie am Boden zurückgelassen haben."
+          }
+        ],
+        "documentMetaDescription": "Fliegen im Traum, frei schweben, mühsam oben bleiben oder vor Gefahr fliehen: was die Szene über Freiheit und Abstand sagen kann, mit Fragen und Beispiel.",
+        "modifiedAt": "2026-10-08"
       },
       "it": {
         "slug": "volare",
         "name": "Volare",
-        "shortDescription": "Questa scheda rapida riassume il volo come libertà, prospettiva o difficoltà nel superare un ostacolo. L’articolo collegato tratta scenari completi, emozioni e sogno lucido.",
+        "shortDescription": "Sognare di volare accompagna spesso un senso di libertà o il desiderio di vedere le cose dall’alto. Conta soprattutto come volavi: planare senza sforzo, faticare a restare in aria, fuggire da qualcosa rimasto a terra. Il tuo umore in volo è l’indizio principale.",
         "askYourself": [
-          "Da quale situazione vorrei liberarmi?",
-          "Dove mi sento limitato?"
-        ]
+          "Volare era facile, faticoso o fuori controllo?",
+          "Sopra che cosa, verso dove o lontano da che cosa stavo volando?",
+          "In quale ambito della mia vita vorrei più spazio, o più distacco?"
+        ],
+        "faq": [
+          {
+            "question": "Che cosa significa sognare di volare?",
+            "answer": "Volare viene spesso associato a libertà, sollievo o a un nuovo sguardo su una situazione. Il significato dipende da quanto era facile il volo, da che cosa sorvolavi e da che cosa provavi in aria."
+          },
+          {
+            "question": "Perché nei sogni non riesco a volare bene?",
+            "answer": "Faticare a decollare, volare troppo basso o ricadere può accompagnare uno sforzo, un dubbio o qualcosa che ti trattiene. Annota che cosa ti frenava: un peso, dei fili, la paura, qualcuno rimasto a terra."
+          },
+          {
+            "question": "Sognare di volare è un sogno lucido?",
+            "answer": "Non sempre. Molti sogni di volo avvengono senza sapere di sognare. Se ti sei accorto di sognare e hai scelto di volare, era un sogno lucido, un’esperienza che alcune persone imparano a coltivare."
+          },
+          {
+            "question": "Che cosa significa volare per sfuggire a un pericolo?",
+            "answer": "Prendere il volo per scappare da una minaccia può fare eco al desiderio di uscire da una situazione tesa. Non è vigliaccheria né un avvertimento. Chiediti che cosa lasciavi a terra."
+          }
+        ],
+        "documentMetaDescription": "Sognare di volare liberi, di faticare a restare in aria o di fuggire da un pericolo: che cosa può dire la scena di libertà e distacco, con domande ed esempio.",
+        "modifiedAt": "2026-10-08"
       },
       "pt": {
         "slug": "voar",
@@ -564,47 +831,152 @@
       "en": {
         "slug": "snake",
         "name": "Snake",
-        "shortDescription": "The snake is a complex symbol: transformation, wisdom, sexuality, or danger. Its meaning depends greatly on your personal relationship with snakes.",
+        "shortDescription": "Dreaming of a snake often stirs fear, fascination or both. Depending on the scene, it can go with a threat you sense, a change underway or an instinct you keep at a distance. How you feel about snakes when awake matters as much as the dream.",
         "askYourself": [
-          "Is there a transformation underway?",
-          "What does the snake personally represent to me?"
-        ]
+          "Was the snake threatening, calm, or simply there?",
+          "Where was it: on the ground, in my home, on my body?",
+          "Is there a person or a situation right now that I do not fully trust?"
+        ],
+        "faq": [
+          {
+            "question": "What does it mean to dream of a snake?",
+            "answer": "A snake is often associated with a hidden threat, a change underway or a strong instinct. The meaning depends on what it did, where it was, and how you feel about snakes in waking life, from fear to fascination."
+          },
+          {
+            "question": "What does it mean to be bitten by a snake in a dream?",
+            "answer": "A bite can go with a hurtful remark, a betrayal you fear or a situation that caught you off guard. It is not a sign of illness or misfortune. Note where you were bitten and who was nearby."
+          },
+          {
+            "question": "What does it mean to kill a snake in a dream?",
+            "answer": "Killing a snake can echo a wish to put an end to a threat or a fear. Some people wake up relieved, others uneasy: that reaction tells you whether the scene felt like a victory or a struggle."
+          },
+          {
+            "question": "What does a snake in the house mean in a dream?",
+            "answer": "A snake inside the home brings the scene close to private life: family, partner, rest. It can match a tension you sense at home, or simply replay a recent image. Which room was it in?"
+          }
+        ],
+        "documentMetaDescription": "Dreaming of a snake, a snake bite, a snake in the house or shedding its skin: what the scene may say about fear and change, with questions and an example.",
+        "modifiedAt": "2026-10-08"
       },
       "fr": {
         "slug": "serpent",
         "name": "Serpent",
-        "shortDescription": "Le serpent est un symbole complexe : transformation, sagesse, sexualité ou danger. Sa signification dépend beaucoup de votre relation personnelle avec les serpents.",
+        "shortDescription": "Rêver d'un serpent éveille souvent la peur, la fascination, ou les deux. Selon la scène, il peut accompagner une menace que vous sentez, un changement en cours ou un instinct tenu à distance. Ce que les serpents vous inspirent éveillé compte autant que le rêve.",
         "askYourself": [
-          "Y a-t-il une transformation en cours ?",
-          "Qu'est-ce que le serpent représente pour moi personnellement ?"
-        ]
+          "Le serpent était-il menaçant, calme, ou simplement là ?",
+          "Où se trouvait-il : au sol, dans la maison, sur moi ?",
+          "Y a-t-il en ce moment une personne ou une situation dont je me méfie ?"
+        ],
+        "faq": [
+          {
+            "question": "Que signifie rêver d'un serpent ?",
+            "answer": "Le serpent est souvent associé à une menace cachée, à un changement en cours ou à un instinct puissant. Le sens dépend de ce qu'il faisait, de l'endroit où il était et de ce que les serpents vous inspirent éveillé, de la peur à la fascination."
+          },
+          {
+            "question": "Que signifie être mordu par un serpent en rêve ?",
+            "answer": "Une morsure peut accompagner une parole blessante, une trahison redoutée ou une situation qui vous a pris de court. Ce n'est pas l'annonce d'une maladie ni d'un malheur. Notez où vous avez été mordu et qui était près de vous."
+          },
+          {
+            "question": "Que signifie tuer un serpent en rêve ?",
+            "answer": "Tuer un serpent peut faire écho à l'envie de mettre fin à une menace ou à une peur. Certaines personnes se réveillent soulagées, d'autres mal à l'aise : cette réaction dit si la scène ressemblait à une victoire ou à une lutte."
+          },
+          {
+            "question": "Que signifie rêver d'un serpent dans la maison ?",
+            "answer": "Un serpent à l'intérieur rapproche la scène de la vie privée : famille, couple, repos. Il peut rejoindre une tension sentie chez vous, ou simplement reprendre une image récente. Dans quelle pièce était-il ?"
+          }
+        ],
+        "documentMetaDescription": "Rêver d'un serpent, d'une morsure, d'un serpent dans la maison ou qui mue : ce que la scène peut dire de vos peurs et changements, avec questions et exemple.",
+        "modifiedAt": "2026-10-08"
       },
       "es": {
         "slug": "serpiente",
         "name": "Serpiente",
-        "shortDescription": "La serpiente es un símbolo complejo: transformación, sabiduría, sexualidad o peligro. Su significado depende mucho de tu relación personal con las serpientes.",
+        "shortDescription": "Soñar con una serpiente suele despertar miedo, fascinación o ambas cosas. Según la escena, puede acompañar una amenaza que intuyes, un cambio en marcha o un instinto que mantienes a distancia. Lo que te inspiran las serpientes despierto cuenta tanto como el sueño.",
         "askYourself": [
-          "¿Hay una transformación en curso?",
-          "¿Qué representa personalmente la serpiente para mí?"
-        ]
+          "¿La serpiente era amenazante, tranquila, o simplemente estaba ahí?",
+          "¿Dónde estaba: en el suelo, en casa, encima de mí?",
+          "¿Hay ahora mismo una persona o una situación de la que desconfío?"
+        ],
+        "faq": [
+          {
+            "question": "¿Qué significa soñar con serpientes?",
+            "answer": "La serpiente se asocia a menudo con una amenaza oculta, un cambio en marcha o un instinto fuerte. El sentido depende de lo que hacía, de dónde estaba y de lo que te inspiran las serpientes despierto, del miedo a la fascinación."
+          },
+          {
+            "question": "¿Qué significa soñar que te muerde una serpiente?",
+            "answer": "Una mordedura puede acompañar un comentario hiriente, una traición que temes o una situación que te pilló desprevenido. No anuncia una enfermedad ni una desgracia. Anota dónde te mordió y quién estaba cerca."
+          },
+          {
+            "question": "¿Qué significa soñar que matas una serpiente?",
+            "answer": "Matar una serpiente puede hacer eco de las ganas de acabar con una amenaza o con un miedo. Hay quien se despierta aliviado y quien se despierta incómodo: esa reacción dice si la escena se vivió como una victoria o como una lucha."
+          },
+          {
+            "question": "¿Qué significa soñar con una serpiente en casa?",
+            "answer": "Una serpiente dentro de casa acerca la escena a la vida privada: familia, pareja, descanso. Puede enlazar con una tensión que notas en casa, o simplemente recoger una imagen reciente. ¿En qué habitación estaba?"
+          }
+        ],
+        "documentMetaDescription": "Soñar con serpientes, con una mordedura, con una serpiente en casa o mudando la piel: qué puede decir la escena sobre tus miedos, con preguntas y un ejemplo.",
+        "modifiedAt": "2026-10-08"
       },
       "de": {
         "slug": "schlange",
         "name": "Schlange",
-        "shortDescription": "Schlangen symbolisieren Transformation, verborgene Ängste und Heilung. Sie können sowohl Gift als auch Heilmittel darstellen, je nach Traumkontext.",
+        "shortDescription": "Von einer Schlange zu träumen weckt oft Angst, Faszination oder beides. Je nach Szene kann sie eine gespürte Bedrohung begleiten, eine laufende Veränderung oder einen Instinkt, den Sie auf Abstand halten. Ihr Verhältnis zu Schlangen zählt so viel wie der Traum.",
         "askYourself": [
-          "Welche verborgenen Ängste trage ich in mir?",
-          "Welche Transformation durchlebe ich?"
-        ]
+          "War die Schlange bedrohlich, ruhig oder einfach da?",
+          "Wo war sie: am Boden, im Haus, an meinem Körper?",
+          "Gibt es gerade einen Menschen oder eine Lage, dem oder der ich nicht ganz traue?"
+        ],
+        "faq": [
+          {
+            "question": "Was bedeutet eine Schlange im Traum?",
+            "answer": "Die Schlange wird oft mit einer verborgenen Bedrohung, einer laufenden Veränderung oder einem starken Instinkt verbunden. Die Bedeutung hängt davon ab, was sie tat, wo sie war und was Schlangen im Wachleben in Ihnen auslösen, von Angst bis Faszination."
+          },
+          {
+            "question": "Was bedeutet es, im Traum von einer Schlange gebissen zu werden?",
+            "answer": "Ein Biss kann eine verletzende Bemerkung, einen befürchteten Vertrauensbruch oder eine Lage begleiten, die Sie überrumpelt hat. Er kündigt weder Krankheit noch Unglück an. Notieren Sie, wo Sie gebissen wurden und wer in der Nähe war."
+          },
+          {
+            "question": "Was bedeutet es, im Traum eine Schlange zu töten?",
+            "answer": "Eine Schlange zu töten kann den Wunsch aufgreifen, einer Bedrohung oder einer Angst ein Ende zu setzen. Manche wachen erleichtert auf, andere beklommen: Diese Reaktion zeigt, ob sich die Szene wie ein Sieg oder wie ein Kampf anfühlte."
+          },
+          {
+            "question": "Was bedeutet eine Schlange im Haus im Traum?",
+            "answer": "Eine Schlange im Haus rückt die Szene ins Private: Familie, Partnerschaft, Erholung. Sie kann eine Spannung zu Hause aufgreifen oder einfach ein aktuelles Bild verarbeiten. In welchem Raum war sie?"
+          }
+        ],
+        "documentMetaDescription": "Schlange im Traum, ein Biss, eine Schlange im Haus oder bei der Häutung: was die Szene über Ängste und Veränderungen sagen kann, mit Fragen und Beispiel.",
+        "modifiedAt": "2026-10-08"
       },
       "it": {
         "slug": "serpente",
         "name": "Serpente",
-        "shortDescription": "I serpenti simboleggiano trasformazione, paure nascoste e guarigione. Possono rappresentare sia veleno che rimedio, a seconda del contesto del sogno.",
+        "shortDescription": "Sognare un serpente suscita spesso paura, fascino o entrambi. A seconda della scena, può accompagnare una minaccia che intuisci, un cambiamento in corso o un istinto che tieni a distanza. Ciò che i serpenti ti suscitano da sveglio conta quanto il sogno.",
         "askYourself": [
-          "Quali paure nascoste porto dentro di me?",
-          "Quale trasformazione sto attraversando?"
-        ]
+          "Il serpente era minaccioso, calmo o semplicemente lì?",
+          "Dove si trovava: per terra, in casa, addosso a me?",
+          "C’è in questo periodo una persona o una situazione di cui non mi fido del tutto?"
+        ],
+        "faq": [
+          {
+            "question": "Che cosa significa sognare un serpente?",
+            "answer": "Il serpente viene spesso associato a una minaccia nascosta, a un cambiamento in corso o a un istinto forte. Il significato dipende da che cosa faceva, da dove si trovava e da ciò che i serpenti ti suscitano da sveglio, dalla paura al fascino."
+          },
+          {
+            "question": "Che cosa significa sognare di essere morso da un serpente?",
+            "answer": "Un morso può accompagnare una parola che ferisce, un tradimento temuto o una situazione che ti ha colto alla sprovvista. Non annuncia una malattia né una disgrazia. Annota dove sei stato morso e chi c’era vicino."
+          },
+          {
+            "question": "Che cosa significa sognare di uccidere un serpente?",
+            "answer": "Uccidere un serpente può fare eco al desiderio di mettere fine a una minaccia o a una paura. C’è chi si sveglia sollevato e chi a disagio: questa reazione dice se la scena somigliava a una vittoria o a una lotta."
+          },
+          {
+            "question": "Che cosa significa sognare un serpente in casa?",
+            "answer": "Un serpente dentro casa avvicina la scena alla sfera privata: famiglia, coppia, riposo. Può richiamare una tensione che senti in casa, o semplicemente riprendere un’immagine recente. In quale stanza si trovava?"
+          }
+        ],
+        "documentMetaDescription": "Sognare un serpente, un morso, un serpente in casa o che cambia pelle: che cosa può dire la scena di paure e cambiamenti, con domande ed esempio di diario.",
+        "modifiedAt": "2026-10-08"
       },
       "pt": {
         "slug": "cobra",
@@ -636,44 +1008,152 @@
       "en": {
         "slug": "death",
         "name": "Death",
-        "shortDescription": "Death in dreams rarely symbolizes literal death. It represents the end of a phase, major transformation, or the need to let go of something.",
+        "shortDescription": "Dreaming of death, your own or someone close to you, makes for a heavy morning. It is not a prediction: the scene often goes with an ending, a change or a fear of losing someone. Who died, and how you felt, guide the reading.",
         "askYourself": [
-          "What needs to \"die\" in my life so I can evolve?"
-        ]
+          "Who died in the dream, and what is my bond with that person?",
+          "How did I feel: scared, sad, calm, relieved?",
+          "What is ending or changing in my life right now?"
+        ],
+        "faq": [
+          {
+            "question": "What does it mean to dream about death?",
+            "answer": "Death in a dream is rarely literal. It is often associated with an ending, a transition or worry about someone. Who died and how you felt matter more than the image itself."
+          },
+          {
+            "question": "Is dreaming that a loved one dies a bad omen?",
+            "answer": "No. A dream does not predict a death. Seeing a loved one die can reflect attachment, fear of losing them, or a change in the relationship: a move, some distance, a recent argument."
+          },
+          {
+            "question": "What does it mean to dream of your own death?",
+            "answer": "Watching yourself die can go with a period of transition: the end of a job, a relationship or a way of living. The scene is striking, but it usually stages a change rather than a threat."
+          },
+          {
+            "question": "What if death dreams keep coming back?",
+            "answer": "Write them down to spot what repeats: people, places, periods of your life. If these nightmares damage your sleep or follow a hard loss, talk to a doctor or a therapist: effective help exists."
+          }
+        ],
+        "documentMetaDescription": "Dreaming of death, of your own death or a loved one dying: what the scene may say about endings and change, with no omens, questions and a journal example.",
+        "modifiedAt": "2026-10-08"
       },
       "fr": {
         "slug": "mort",
         "name": "Mort",
-        "shortDescription": "La mort dans les rêves symbolise rarement une mort littérale. Elle représente la fin d'une phase, une transformation majeure ou le besoin de laisser partir quelque chose.",
+        "shortDescription": "Rêver de mort, la vôtre ou celle d'un proche, laisse un réveil lourd. Ce n'est pas une prédiction : la scène accompagne souvent une fin, un changement ou la peur de perdre quelqu'un. Qui mourait, et ce que vous ressentiez, orientent la lecture.",
         "askYourself": [
-          "Qu'est-ce qui doit \"mourir\" dans ma vie pour que je puisse évoluer ?"
-        ]
+          "Qui mourait dans le rêve, et quel lien ai-je avec cette personne ?",
+          "Qu'ai-je ressenti : peur, tristesse, calme, soulagement ?",
+          "Qu'est-ce qui se termine ou change en ce moment dans ma vie ?"
+        ],
+        "faq": [
+          {
+            "question": "Que signifie rêver de mort ?",
+            "answer": "La mort en rêve est rarement à prendre au pied de la lettre. Elle est souvent associée à une fin, une transition ou une inquiétude pour quelqu'un. Qui mourait et ce que vous ressentiez comptent plus que l'image elle-même."
+          },
+          {
+            "question": "Rêver de la mort d'un proche, est-ce un mauvais présage ?",
+            "answer": "Non. Un rêve ne prédit pas un décès. Voir mourir un proche peut traduire l'attachement, la peur de le perdre ou un changement dans la relation : un départ, une distance, une dispute récente."
+          },
+          {
+            "question": "Que signifie rêver de sa propre mort ?",
+            "answer": "Assister à sa propre mort peut accompagner une période de passage : la fin d'un emploi, d'une relation ou d'une façon de vivre. La scène impressionne, mais elle met souvent en scène un changement plutôt qu'une menace."
+          },
+          {
+            "question": "Que faire si les rêves de mort reviennent souvent ?",
+            "answer": "Notez-les pour repérer ce qui revient : personnes, lieux, périodes. Si ces cauchemars abîment votre sommeil ou suivent un deuil difficile, parlez-en à un médecin ou à un psychologue : il existe des aides efficaces."
+          }
+        ],
+        "documentMetaDescription": "Rêver de mort, de sa propre mort ou de celle d'un proche : ce que la scène peut dire d'une fin ou d'un changement, sans présage, avec questions et exemple.",
+        "modifiedAt": "2026-10-08"
       },
       "es": {
         "slug": "muerte",
         "name": "Muerte",
-        "shortDescription": "La muerte en sueños raramente simboliza muerte literal. Representa el fin de una fase, transformación importante o necesidad de dejar ir algo.",
+        "shortDescription": "Soñar con la muerte, la tuya o la de alguien cercano, suele dejar un despertar pesado. No es una predicción: la escena acompaña a menudo un final, un cambio o el miedo a perder a alguien. Quién moría y qué sentiste orientan la lectura.",
         "askYourself": [
-          "¿Qué necesita \"morir\" en mi vida para poder evolucionar?"
-        ]
+          "¿Quién moría en el sueño y qué relación tengo con esa persona?",
+          "¿Qué sentí: miedo, tristeza, calma, alivio?",
+          "¿Qué está terminando o cambiando ahora mismo en mi vida?"
+        ],
+        "faq": [
+          {
+            "question": "¿Qué significa soñar con la muerte?",
+            "answer": "La muerte en sueños rara vez es literal. Se asocia a menudo con un final, una transición o la preocupación por alguien. Quién moría y qué sentiste importan más que la imagen en sí."
+          },
+          {
+            "question": "¿Soñar que muere un ser querido es un mal presagio?",
+            "answer": "No. Un sueño no predice una muerte. Ver morir a un ser querido puede reflejar el apego, el miedo a perderlo o un cambio en la relación: una mudanza, cierta distancia, una discusión reciente."
+          },
+          {
+            "question": "¿Qué significa soñar con tu propia muerte?",
+            "answer": "Verte morir puede acompañar una etapa de paso: el final de un trabajo, de una relación o de una forma de vivir. La escena impresiona, pero suele escenificar un cambio más que una amenaza."
+          },
+          {
+            "question": "¿Qué hago si los sueños de muerte se repiten?",
+            "answer": "Anótalos para ver qué se repite: personas, lugares, épocas. Si esas pesadillas te estropean el descanso o llegan tras un duelo difícil, habla con un médico o un psicólogo: existe ayuda eficaz."
+          }
+        ],
+        "documentMetaDescription": "Soñar con la muerte, con tu propia muerte o la de un ser querido: qué puede decir la escena sobre finales y cambios, sin presagios, con preguntas y un ejemplo.",
+        "modifiedAt": "2026-10-08"
       },
       "de": {
         "slug": "tod",
         "name": "Tod",
-        "shortDescription": "Tod in Träumen symbolisiert selten den tatsächlichen Tod. Er steht für Enden, große Veränderungen, Transformation und den Abschluss eines Lebenskapitels.",
+        "shortDescription": "Vom Tod zu träumen, vom eigenen oder dem eines nahestehenden Menschen, macht das Aufwachen oft schwer. Eine Vorhersage ist das nicht: Die Szene begleitet häufig ein Ende, einen Umbruch oder die Angst, jemanden zu verlieren.",
         "askYourself": [
-          "Was geht in meinem Leben zu Ende?",
-          "Welche Veränderung vermeide ich?"
-        ]
+          "Wer ist im Traum gestorben, und was verbindet mich mit dieser Person?",
+          "Was habe ich gefühlt: Angst, Trauer, Ruhe, Erleichterung?",
+          "Was geht in meinem Leben gerade zu Ende oder verändert sich?"
+        ],
+        "faq": [
+          {
+            "question": "Was bedeutet es, vom Tod zu träumen?",
+            "answer": "Der Tod im Traum ist selten wörtlich gemeint. Er wird oft mit einem Ende, einem Übergang oder der Sorge um jemanden verbunden. Wer gestorben ist und was Sie gefühlt haben, zählt mehr als das Bild selbst."
+          },
+          {
+            "question": "Ist es ein schlechtes Zeichen, vom Tod eines geliebten Menschen zu träumen?",
+            "answer": "Nein. Ein Traum sagt keinen Todesfall voraus. Den Tod eines geliebten Menschen zu sehen kann Verbundenheit, Verlustangst oder eine Veränderung in der Beziehung zeigen: einen Umzug, Abstand, einen Streit."
+          },
+          {
+            "question": "Was bedeutet es, vom eigenen Tod zu träumen?",
+            "answer": "Den eigenen Tod zu erleben kann eine Übergangsphase begleiten: das Ende einer Stelle, einer Beziehung, einer Lebensweise. Die Szene erschreckt, zeigt aber meist eher einen Wandel als eine Bedrohung."
+          },
+          {
+            "question": "Was tun, wenn Todesträume immer wiederkommen?",
+            "answer": "Schreiben Sie sie auf, um Wiederholungen zu erkennen: Personen, Orte, Lebensphasen. Stören diese Albträume Ihren Schlaf oder folgen sie auf einen schweren Verlust, sprechen Sie mit einer Ärztin oder einem Therapeuten: Es gibt wirksame Hilfe."
+          }
+        ],
+        "documentMetaDescription": "Vom Tod träumen, vom eigenen Tod oder dem eines geliebten Menschen: was die Szene über Abschied und Wandel sagen kann, ohne Omen, mit Fragen und Beispiel.",
+        "modifiedAt": "2026-10-08"
       },
       "it": {
         "slug": "morte",
         "name": "Morte",
-        "shortDescription": "La morte nei sogni raramente simboleggia la morte reale. Rappresenta finali, grandi cambiamenti, trasformazione e la chiusura di un capitolo della vita.",
+        "shortDescription": "Sognare la morte, la tua o quella di una persona cara, lascia un risveglio pesante. Non è una previsione: la scena accompagna spesso una fine, un cambiamento o la paura di perdere qualcuno. Chi moriva e che cosa provavi orientano la lettura.",
         "askYourself": [
-          "Cosa sta finendo nella mia vita?",
-          "Quale cambiamento sto evitando?"
-        ]
+          "Chi moriva nel sogno, e che legame ho con questa persona?",
+          "Che cosa ho provato: paura, tristezza, calma, sollievo?",
+          "Che cosa sta finendo o cambiando nella mia vita in questo periodo?"
+        ],
+        "faq": [
+          {
+            "question": "Che cosa significa sognare la morte?",
+            "answer": "La morte in sogno raramente va presa alla lettera. Viene spesso associata a una fine, a un passaggio o alla preoccupazione per qualcuno. Chi moriva e che cosa provavi contano più dell’immagine in sé."
+          },
+          {
+            "question": "Sognare la morte di una persona cara è un brutto presagio?",
+            "answer": "No. Un sogno non predice un decesso. Veder morire una persona cara può esprimere l’affetto, la paura di perderla o un cambiamento nella relazione: un trasloco, una distanza, una discussione recente."
+          },
+          {
+            "question": "Che cosa significa sognare la propria morte?",
+            "answer": "Vederti morire può accompagnare una fase di passaggio: la fine di un lavoro, di una relazione, di un modo di vivere. La scena colpisce, ma di solito mette in scena un cambiamento più che una minaccia."
+          },
+          {
+            "question": "Che cosa fare se i sogni di morte ritornano spesso?",
+            "answer": "Annotali per capire che cosa si ripete: persone, luoghi, periodi. Se questi incubi rovinano il sonno o arrivano dopo un lutto difficile, parlane con un medico o con uno psicologo: esistono aiuti efficaci."
+          }
+        ],
+        "documentMetaDescription": "Sognare la morte, la propria o quella di una persona cara: che cosa può dire la scena di una fine o di un cambiamento, senza presagi, con domande ed esempio.",
+        "modifiedAt": "2026-10-08"
       },
       "pt": {
         "slug": "morte",
@@ -705,76 +1185,157 @@
       "en": {
         "slug": "being-chased",
         "name": "Chase / Being Chased",
-        "shortDescription": "Being chased often symbolizes avoiding a problem or emotion. What's chasing you usually represents what you're fleeing in waking life.",
+        "shortDescription": "Being chased in a dream means running with your heart pounding and something at your back. The scene often goes with pressure or a situation you keep putting off. Who was chasing you, and whether you could get away, says more than the chase.",
         "askYourself": [
-          "What am I avoiding?",
-          "What fear am I running from?"
-        ]
+          "Who or what was chasing me, and how close was it?",
+          "Could I run or hide, or was I stuck?",
+          "What am I putting off right now, hoping it will go away?"
+        ],
+        "faq": [
+          {
+            "question": "What does it mean to dream of being chased?",
+            "answer": "Being chased is often associated with pressure, fear or a situation you keep postponing. It is not a rule: who chased you, where, and how you felt guide the reading."
+          },
+          {
+            "question": "What does it mean to be chased by someone you know?",
+            "answer": "A familiar person can stage tension with them, or a quality they stand for in your eyes. Ask what is happening between you right now, without concluding that they mean you harm."
+          },
+          {
+            "question": "Why can't I run in my dreams?",
+            "answer": "Heavy legs are a common feeling in chase dreams. They can echo a sense of helplessness; the muscle relaxation of REM sleep is also mentioned as a possible explanation."
+          },
+          {
+            "question": "Why do I keep having the same chase dream?",
+            "answer": "A chase dream that returns can go with pressure that lasts. Write down each version to see what changes. If these nightmares damage your sleep, talk to a doctor: there are approaches that reduce them."
+          }
+        ],
+        "documentMetaDescription": "Dreaming of being chased by a stranger, an animal or someone you know, or not being able to run: what the scene may say about pressure, with questions.",
+        "modifiedAt": "2026-10-08"
       },
       "fr": {
         "slug": "poursuite",
         "name": "Poursuite / Être poursuivi",
         "seoTitle": "Poursuite",
-        "shortDescription": "Être poursuivi symbolise souvent l'évitement d'un problème ou d'une émotion. Ce qui vous poursuit représente généralement ce que vous fuyez dans la vie éveillée.",
+        "shortDescription": "Être poursuivi en rêve, c'est courir le cœur battant avec quelque chose dans le dos. La scène accompagne souvent une pression ou une situation que l'on repousse. Qui vous poursuivait, et si vous pouviez fuir, en dit plus que la poursuite elle-même.",
         "askYourself": [
-          "Qu'est-ce que j'évite d'affronter ?",
-          "Quelle peur est-ce que je fuis ?"
-        ]
+          "Qui ou quoi me poursuivait, et à quelle distance ?",
+          "Pouvais-je courir, me cacher, ou étais-je bloqué ?",
+          "Qu'est-ce que je repousse en ce moment en espérant que ça passe ?"
+        ],
+        "faq": [
+          {
+            "question": "Que signifie rêver d'être poursuivi ?",
+            "answer": "La poursuite est souvent associée à une pression, une peur ou une situation que l'on remet à plus tard. Ce n'est pas une règle : qui vous poursuivait, où, et ce que vous ressentiez orientent la lecture."
+          },
+          {
+            "question": "Que signifie être poursuivi par quelqu'un que l'on connaît ?",
+            "answer": "Une personne connue peut mettre en scène une tension avec elle, ou une qualité qu'elle représente pour vous. Demandez-vous ce qui se passe entre vous en ce moment, sans conclure qu'elle vous veut du mal."
+          },
+          {
+            "question": "Pourquoi n'arrive-t-on pas à courir dans un rêve ?",
+            "answer": "Les jambes lourdes sont une sensation fréquente dans ces rêves. Elles peuvent faire écho à un sentiment d'impuissance ; on évoque aussi le relâchement musculaire du sommeil paradoxal comme explication possible."
+          },
+          {
+            "question": "Pourquoi fait-on souvent le même rêve de poursuite ?",
+            "answer": "Un rêve de poursuite qui revient peut accompagner une pression qui dure. Notez chaque version pour voir ce qui change. Si ces cauchemars abîment votre sommeil, parlez-en à un médecin : des approches existent pour les réduire."
+          }
+        ],
+        "documentMetaDescription": "Rêver d'être poursuivi par un inconnu, un animal ou un proche, ou de ne pas pouvoir courir : ce que la scène peut dire d'une pression, avec questions.",
+        "modifiedAt": "2026-10-08"
       },
       "es": {
         "slug": "persecucion",
         "name": "Persecución / Ser Perseguido",
         "seoTitle": "Persecución",
-        "shortDescription": "Ser perseguido a menudo simboliza evitar un problema o emoción. Lo que te persigue suele representar lo que estás huyendo en la vida real.",
+        "shortDescription": "Que te persigan en sueños es correr con el corazón a mil y algo pisándote los talones. La escena acompaña a menudo una presión o una situación que vas aplazando. Quién te perseguía y si podías escapar dicen más que la persecución.",
         "askYourself": [
-          "¿Qué estoy evitando?",
-          "¿De qué miedo estoy huyendo?"
-        ]
+          "¿Quién o qué me perseguía, y a qué distancia?",
+          "¿Podía correr o esconderme, o estaba bloqueado?",
+          "¿Qué estoy aplazando ahora mismo con la esperanza de que pase solo?"
+        ],
+        "faq": [
+          {
+            "question": "¿Qué significa soñar que te persiguen?",
+            "answer": "La persecución se asocia a menudo con una presión, un miedo o una situación que vas dejando para más tarde. No es una regla: quién te perseguía, dónde y qué sentiste orientan la lectura."
+          },
+          {
+            "question": "¿Qué significa que te persiga alguien que conoces?",
+            "answer": "Una persona conocida puede escenificar una tensión con ella, o una cualidad que representa para ti. Pregúntate qué pasa ahora entre vosotros, sin concluir que quiere hacerte daño."
+          },
+          {
+            "question": "¿Por qué no puedo correr en sueños?",
+            "answer": "Las piernas pesadas son una sensación frecuente en estos sueños. Pueden hacer eco de una impotencia; también se menciona la relajación muscular del sueño REM como explicación posible."
+          },
+          {
+            "question": "¿Por qué tengo siempre el mismo sueño de persecución?",
+            "answer": "Un sueño de persecución que vuelve puede acompañar una presión que dura. Anota cada versión para ver qué cambia. Si estas pesadillas te estropean el descanso, habla con un médico: hay enfoques que las reducen."
+          }
+        ],
+        "documentMetaDescription": "Soñar que te persigue un desconocido, un animal o alguien conocido, o no poder correr: qué puede decir la escena sobre la presión, con preguntas y ejemplo.",
+        "modifiedAt": "2026-10-08"
       },
       "de": {
         "slug": "verfolgung",
         "name": "Verfolgung / Verfolgt werden",
         "documentTitle": "Verfolgt werden im Traum: Bedeutung",
-        "shortDescription": "Traumdeutung verfolgt werden: Eine Verfolgung zeigt oft, dass du einem Problem, Druck oder Gefühl ausweichst. Entscheidend ist, wer dich verfolgt, ob du fliehen kannst und ob der Traum wiederkehrt.",
+        "shortDescription": "Im Traum verfolgt zu werden heißt: rennen, Herzklopfen, etwas dicht hinter sich. Die Szene begleitet oft Druck oder eine Situation, die Sie vor sich herschieben. Wer Sie verfolgt hat und ob Sie fliehen konnten, sagt mehr als die Verfolgung selbst.",
         "askYourself": [
-          "Von wem oder was werde ich verfolgt?",
-          "Konnte ich weglaufen, war ich wie gelähmt oder habe ich mich versteckt?",
-          "Welches wiederkehrende Thema möchte nach dem Aufwachen genauer angeschaut werden?"
+          "Wer oder was hat mich verfolgt, und wie nah war es?",
+          "Konnte ich weglaufen oder mich verstecken, oder war ich wie gelähmt?",
+          "Was schiebe ich gerade vor mir her, in der Hoffnung, dass es sich erledigt?"
         ],
         "seoTitle": "verfolgt werden, Flucht oder nicht weglaufen können",
         "faq": [
           {
             "question": "Was bedeutet es, im Traum verfolgt zu werden?",
-            "answer": "Verfolgt zu werden deutet oft auf Vermeidung, Druck oder Angst hin. Etwas in deinem Leben verlangt Aufmerksamkeit, auch wenn du ihm im Moment lieber ausweichen würdest."
+            "answer": "Verfolgt zu werden wird oft mit Druck, Angst oder einer Situation verbunden, die Sie aufschieben. Das ist keine Regel: Wer Sie verfolgt hat, wo und was Sie gefühlt haben, gibt die Richtung vor."
           },
           {
             "question": "Was sagt es aus, von wem ich verfolgt werde?",
-            "answer": "Die verfolgende Person oder Gestalt ist wichtig: Eine bekannte Person kann auf Beziehungsspannung hinweisen, ein Fremder auf unklare Angst, ein Tier auf Instinkt oder unkontrollierte Energie."
+            "answer": "Eine bekannte Person kann eine Spannung mit ihr in Szene setzen, ein Fremder eher einen diffusen Druck, ein Tier etwas, das sich instinktiv oder unkontrollierbar anfühlt. Ihr Gefühl dabei ist der wichtigste Hinweis."
           },
           {
             "question": "Was bedeutet es, im Traum nicht weglaufen zu können?",
-            "answer": "Nicht weglaufen zu können zeigt oft Ohnmacht, Blockade oder das Gefühl, einer Situation nicht schnell genug entkommen zu können."
+            "answer": "Schwere Beine sind in Verfolgungsträumen häufig. Sie können ein Gefühl von Ohnmacht aufgreifen; als mögliche Erklärung wird auch die Muskelentspannung im REM-Schlaf genannt."
           },
           {
             "question": "Warum kommen Verfolgungsträume wieder?",
-            "answer": "Wiederkehrende Verfolgungsträume können anzeigen, dass ein ungelöstes Thema weiter Druck macht. Ein Traumtagebuch hilft, Muster, Auslöser und Veränderungen zu erkennen."
-          },
-          {
-            "question": "Was kann ich nach dem Aufwachen notieren?",
-            "answer": "Notiere den Verfolger, den Ort, deine Fluchtmöglichkeit und das Gefühl nach dem Aufwachen. Diese Details zeigen oft, welches Thema der Traum markiert."
+            "answer": "Ein wiederkehrender Verfolgungstraum kann einen Druck begleiten, der anhält. Notieren Sie jede Version, um zu sehen, was sich ändert. Stören diese Albträume Ihren Schlaf, sprechen Sie mit einer Ärztin oder einem Arzt: Es gibt Ansätze, die sie verringern."
           }
         ],
-        "modifiedAt": "2026-08-11"
+        "modifiedAt": "2026-10-08",
+        "documentMetaDescription": "Im Traum verfolgt werden, von Fremden, Tieren oder Bekannten, oder nicht weglaufen können: was die Szene über Druck sagen kann, mit Fragen und Beispiel."
       },
       "it": {
         "slug": "inseguimento",
         "name": "Inseguimento / Essere inseguiti",
         "seoTitle": "Inseguimento",
-        "shortDescription": "Essere inseguiti indica evitamento. Qualcosa nella tua vita – un problema, un'emozione, una situazione – richiede attenzione che stai rifiutando.",
+        "shortDescription": "Essere inseguiti in sogno significa correre col cuore in gola e qualcosa alle spalle. La scena accompagna spesso una pressione o una situazione che continui a rimandare. Chi ti inseguiva e se riuscivi a scappare dicono più dell’inseguimento.",
         "askYourself": [
-          "Da cosa o da chi sto fuggendo?",
-          "Quale problema sto evitando?"
-        ]
+          "Chi o che cosa mi inseguiva, e quanto era vicino?",
+          "Riuscivo a correre o a nascondermi, o ero bloccato?",
+          "Che cosa sto rimandando in questo periodo, sperando che passi da solo?"
+        ],
+        "faq": [
+          {
+            "question": "Che cosa significa sognare di essere inseguiti?",
+            "answer": "L’inseguimento viene spesso associato a una pressione, a una paura o a una situazione che rimandi. Non è una regola: chi ti inseguiva, dove e che cosa provavi orientano la lettura."
+          },
+          {
+            "question": "Che cosa significa essere inseguiti da qualcuno che conosci?",
+            "answer": "Una persona conosciuta può mettere in scena una tensione con lei, o una qualità che rappresenta per te. Chiediti che cosa succede tra voi in questo periodo, senza concludere che voglia farti del male."
+          },
+          {
+            "question": "Perché in sogno non riesco a correre?",
+            "answer": "Le gambe pesanti sono una sensazione frequente in questi sogni. Possono fare eco a un senso di impotenza; tra le spiegazioni possibili si cita anche il rilassamento muscolare del sonno REM."
+          },
+          {
+            "question": "Perché faccio sempre lo stesso sogno di inseguimento?",
+            "answer": "Un sogno di inseguimento che ritorna può accompagnare una pressione che dura. Annota ogni versione per vedere che cosa cambia. Se questi incubi rovinano il sonno, parlane con un medico: esistono approcci che li riducono."
+          }
+        ],
+        "documentMetaDescription": "Sognare di essere inseguiti da uno sconosciuto, da un animale o da chi conosci, o di non riuscire a correre: che cosa può dire la scena, con domande ed esempio.",
+        "modifiedAt": "2026-10-08"
       },
       "pt": {
         "slug": "perseguicao-ser-perseguido",
@@ -2841,47 +3402,152 @@
       "en": {
         "slug": "moon",
         "name": "Moon",
-        "shortDescription": "The moon symbolizes femininity, intuition, and natural cycles. It also represents hidden aspects of the self and deep emotions.",
+        "shortDescription": "Dreaming of the moon often means a night of pale light, beautiful or unsettling. The moon is associated with cycles, with night and with things only half seen. Its shape, its size and how you felt looking at it matter more than a fixed meaning.",
         "askYourself": [
-          "Am I listening to my intuition?",
-          "What cycles are passing through my life?"
-        ]
+          "What was the moon like: full, crescent, huge, red, doubled?",
+          "How did I feel looking at it: wonder, calm, unease?",
+          "What in my life moves in phases, or stays half in shadow?"
+        ],
+        "faq": [
+          {
+            "question": "What does it mean to dream about the moon?",
+            "answer": "The moon is often associated with cycles, with night and with an inner life seen in half-light. Its phase, its size and how you felt when you saw it guide the reading more than the symbol itself."
+          },
+          {
+            "question": "What does a full moon mean in a dream?",
+            "answer": "A full moon can go with a moment when something becomes visible or comes to completion: a project, a feeling, a decision. It is not an omen; note instead what it lit up in the landscape."
+          },
+          {
+            "question": "What does a red moon or an eclipse mean in a dream?",
+            "answer": "A red or eclipsed moon often strikes you by its strangeness. It can go with worry, or with a sense that a familiar landmark is changing. It announces no event: your reaction is the main clue."
+          },
+          {
+            "question": "Why dream of a giant or falling moon?",
+            "answer": "A moon that is too close or falling upsets the normal order of the sky. The scene can match a feeling that something is taking up too much room or slipping out of its frame. What feels out of proportion right now?"
+          }
+        ],
+        "documentMetaDescription": "Dreaming of the moon, full, red, huge or a crescent: what the scene may say about cycles and your inner life, with questions and a fictional journal example.",
+        "modifiedAt": "2026-10-08"
       },
       "fr": {
         "slug": "lune",
         "name": "Lune",
-        "shortDescription": "La lune symbolise la féminité, l'intuition et les cycles naturels. Elle représente aussi les aspects cachés de soi et les émotions profondes.",
+        "shortDescription": "Rêver de la lune, c'est souvent une nuit de lumière pâle, belle ou inquiétante. La lune est associée aux cycles, à la nuit et à ce que l'on voit à moitié. Sa forme, sa taille et ce que vous ressentiez en la regardant comptent plus qu'un sens fixe.",
         "askYourself": [
-          "Suis-je à l'écoute de mon intuition ?",
-          "Quels cycles traversent ma vie ?"
-        ]
+          "Comment était la lune : pleine, en croissant, énorme, rouge, double ?",
+          "Qu'ai-je ressenti en la regardant : émerveillement, calme, malaise ?",
+          "Qu'est-ce qui, dans ma vie, avance par phases ou reste à moitié dans l'ombre ?"
+        ],
+        "faq": [
+          {
+            "question": "Que signifie rêver de la lune ?",
+            "answer": "La lune est souvent associée aux cycles, à la nuit et à une vie intérieure que l'on regarde à demi-jour. Sa phase, sa taille et votre émotion en la voyant orientent la lecture plus que le symbole lui-même."
+          },
+          {
+            "question": "Que signifie rêver de la pleine lune ?",
+            "answer": "Une pleine lune peut accompagner un moment où quelque chose devient visible ou arrive à son terme : un projet, une émotion, une décision. Ce n'est pas un présage : notez plutôt ce qu'elle éclairait dans le paysage."
+          },
+          {
+            "question": "Que signifie rêver d'une lune rouge ou d'une éclipse ?",
+            "answer": "Une lune rouge ou éclipsée frappe souvent par son étrangeté. Elle peut accompagner une inquiétude ou le sentiment qu'un repère familier change d'aspect. Elle n'annonce aucun événement : votre réaction est l'indice principal."
+          },
+          {
+            "question": "Pourquoi rêver d'une lune énorme ou qui tombe ?",
+            "answer": "Une lune trop proche ou qui chute bouscule l'ordre normal du ciel. La scène peut rejoindre le sentiment que quelque chose prend trop de place ou sort de son cadre. Qu'est-ce qui vous semble démesuré en ce moment ?"
+          }
+        ],
+        "documentMetaDescription": "Rêver de la lune, pleine, rouge, énorme ou en croissant : ce que la scène peut dire des cycles et de la vie intérieure, avec questions et exemple de journal.",
+        "modifiedAt": "2026-10-08"
       },
       "es": {
         "slug": "luna",
         "name": "Luna",
-        "shortDescription": "La luna simboliza feminidad, intuición y ciclos naturales. También representa aspectos ocultos del yo y emociones profundas.",
+        "shortDescription": "Soñar con la luna suele ser una noche de luz pálida, bella o inquietante. La luna se asocia con los ciclos, con la noche y con lo que solo se ve a medias. Su forma, su tamaño y lo que sentiste al mirarla cuentan más que un significado fijo.",
         "askYourself": [
-          "¿Estoy escuchando mi intuición?",
-          "¿Qué ciclos están pasando por mi vida?"
-        ]
+          "¿Cómo era la luna: llena, creciente, enorme, roja, doble?",
+          "¿Qué sentí al mirarla: asombro, calma, inquietud?",
+          "¿Qué hay en mi vida que avanza por fases o se queda a medias en la sombra?"
+        ],
+        "faq": [
+          {
+            "question": "¿Qué significa soñar con la luna?",
+            "answer": "La luna se asocia a menudo con los ciclos, con la noche y con una vida interior que se ve a media luz. Su fase, su tamaño y lo que sentiste al verla orientan la lectura más que el símbolo en sí."
+          },
+          {
+            "question": "¿Qué significa soñar con luna llena?",
+            "answer": "Una luna llena puede acompañar un momento en el que algo se hace visible o llega a su fin: un proyecto, una emoción, una decisión. No es un presagio; anota más bien qué iluminaba en el paisaje."
+          },
+          {
+            "question": "¿Qué significa soñar con una luna roja o un eclipse?",
+            "answer": "Una luna roja o eclipsada suele llamar la atención por lo extraña. Puede acompañar una preocupación o la sensación de que una referencia conocida cambia de aspecto. No anuncia nada: tu reacción es la pista principal."
+          },
+          {
+            "question": "¿Por qué soñar con una luna enorme o que se cae?",
+            "answer": "Una luna demasiado cerca o que cae rompe el orden normal del cielo. La escena puede enlazar con la sensación de que algo ocupa demasiado sitio o se sale de su marco. ¿Qué te parece desproporcionado ahora mismo?"
+          }
+        ],
+        "documentMetaDescription": "Soñar con la luna, llena, roja, enorme o creciente: qué puede decir la escena sobre los ciclos y tu vida interior, con preguntas y un ejemplo de diario.",
+        "modifiedAt": "2026-10-08"
       },
       "de": {
         "slug": "mond",
         "name": "Mond",
-        "shortDescription": "Der Mond repräsentiert Intuition, das Unbewusste und emotionale Zyklen. Seine Phasen spiegeln die natürlichen Rhythmen des Lebens und der inneren Entwicklung wider.",
+        "shortDescription": "Vom Mond zu träumen heißt oft: eine Nacht in fahlem Licht, schön oder unheimlich. Der Mond wird mit Zyklen, mit der Nacht und mit dem Halbsichtbaren verbunden. Seine Form, seine Größe und Ihr Gefühl beim Hinsehen zählen mehr als eine feste Bedeutung.",
         "askYourself": [
-          "Welchem emotionalen Zyklus befinde ich mich?",
-          "Höre ich auf meine Intuition?"
-        ]
+          "Wie sah der Mond aus: voll, als Sichel, riesig, rot, doppelt?",
+          "Was habe ich beim Hinsehen gefühlt: Staunen, Ruhe, Unbehagen?",
+          "Was in meinem Leben verläuft in Phasen oder liegt halb im Schatten?"
+        ],
+        "faq": [
+          {
+            "question": "Was bedeutet es, vom Mond zu träumen?",
+            "answer": "Der Mond wird oft mit Zyklen, mit der Nacht und mit einem Innenleben im Halbdunkel verbunden. Seine Phase, seine Größe und Ihr Gefühl beim Anblick geben mehr Hinweise als das Symbol selbst."
+          },
+          {
+            "question": "Was bedeutet Vollmond im Traum?",
+            "answer": "Ein Vollmond kann einen Moment begleiten, in dem etwas sichtbar wird oder zum Abschluss kommt: ein Projekt, ein Gefühl, eine Entscheidung. Ein Omen ist er nicht; notieren Sie lieber, was er in der Landschaft beleuchtet hat."
+          },
+          {
+            "question": "Was bedeutet ein roter Mond oder eine Mondfinsternis im Traum?",
+            "answer": "Ein roter oder verfinsterter Mond fällt meist durch seine Fremdheit auf. Er kann eine Sorge begleiten oder das Gefühl, dass sich ein vertrauter Bezugspunkt verändert. Er kündigt nichts an: Ihre Reaktion ist der wichtigste Hinweis."
+          },
+          {
+            "question": "Warum träumt man von einem riesigen oder fallenden Mond?",
+            "answer": "Ein Mond, der zu nah ist oder herabfällt, bringt die Ordnung des Himmels durcheinander. Die Szene kann zu dem Gefühl passen, dass etwas zu viel Raum einnimmt oder aus dem Rahmen fällt. Was erscheint Ihnen gerade übergroß?"
+          }
+        ],
+        "documentMetaDescription": "Vom Mond träumen, ob Vollmond, roter Mond, riesig oder als Sichel: was die Szene über Zyklen und Ihr Innenleben sagen kann, mit Fragen und Tagebuchbeispiel.",
+        "modifiedAt": "2026-10-08"
       },
       "it": {
         "slug": "luna",
         "name": "Luna",
-        "shortDescription": "La luna rappresenta l'intuizione, l'inconscio e i cicli emotivi. Le sue fasi riflettono i ritmi naturali della vita e dello sviluppo interiore.",
+        "shortDescription": "Sognare la luna significa spesso una notte di luce pallida, bella o inquietante. La luna viene associata ai cicli, alla notte e a ciò che si vede solo a metà. La sua forma, la sua grandezza e ciò che provavi guardandola contano più di un significato fisso.",
         "askYourself": [
-          "In quale ciclo emotivo mi trovo?",
-          "Sto ascoltando la mia intuizione?"
-        ]
+          "Com’era la luna: piena, crescente, enorme, rossa, doppia?",
+          "Che cosa ho provato guardandola: meraviglia, calma, disagio?",
+          "Che cosa nella mia vita procede per fasi, o resta a metà nell’ombra?"
+        ],
+        "faq": [
+          {
+            "question": "Che cosa significa sognare la luna?",
+            "answer": "La luna viene spesso associata ai cicli, alla notte e a una vita interiore vista in penombra. La fase, la grandezza e ciò che hai provato vedendola orientano la lettura più del simbolo in sé."
+          },
+          {
+            "question": "Che cosa significa sognare la luna piena?",
+            "answer": "Una luna piena può accompagnare un momento in cui qualcosa diventa visibile o arriva a compimento: un progetto, un’emozione, una decisione. Non è un presagio; annota piuttosto che cosa illuminava nel paesaggio."
+          },
+          {
+            "question": "Che cosa significa sognare una luna rossa o un’eclissi?",
+            "answer": "Una luna rossa o eclissata colpisce spesso per la sua stranezza. Può accompagnare una preoccupazione o la sensazione che un punto di riferimento familiare cambi aspetto. Non annuncia nulla: la tua reazione è l’indizio principale."
+          },
+          {
+            "question": "Perché si sogna una luna enorme o che cade?",
+            "answer": "Una luna troppo vicina o che cade sconvolge l’ordine normale del cielo. La scena può avvicinarsi alla sensazione che qualcosa occupi troppo spazio o esca dalla sua cornice. Che cosa ti sembra sproporzionato in questo periodo?"
+          }
+        ],
+        "documentMetaDescription": "Sognare la luna piena, rossa, enorme o crescente: che cosa può dire la scena dei cicli e della vita interiore, con domande ed esempio inventato di diario.",
+        "modifiedAt": "2026-10-08"
       },
       "pt": {
         "slug": "lua",
