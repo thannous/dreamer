@@ -2132,38 +2132,122 @@
       "en": {
         "slug": "cat",
         "name": "Cat",
-        "shortDescription": "Cats symbolize independence, feminine intuition, and mystery. They can represent your wild side or a situation escaping your control.",
+        "shortDescription": "Dreaming of a cat often means meeting an animal that comes and goes as it pleases. Affectionate, aloof, hissing or scratching, it can point to independence, wariness or a need for calm. Your own cat, if you have one, matters too.",
         "askYourself": [
-          "Am I listening to my intuition enough?",
-          "Do I need more independence?"
-        ]
+          "Was this my cat, a cat I know, or a stranger?",
+          "Did it come to me, ignore me or attack me?",
+          "Where would I like, right now, to come and go without explaining myself?"
+        ],
+        "faq": [
+          {
+            "question": "What does it mean to dream about a cat?",
+            "answer": "Cats are often associated with independence, curiosity and affection that cannot be forced. How the cat behaved in the dream and how you felt matter more than any fixed meaning."
+          },
+          {
+            "question": "What does a black cat mean in a dream?",
+            "answer": "A black cat foretells nothing. Depending on the country, superstition makes it bad luck or good luck. Look instead at what it was doing, and at what this cat brings to mind for you."
+          },
+          {
+            "question": "What does it mean when a cat scratches or attacks you in a dream?",
+            "answer": "A hissing or scratching cat can go with tension, wariness or a boundary that someone, or you, is defending. It does not prove that a person in your life means you harm."
+          },
+          {
+            "question": "Why do I dream about my cat?",
+            "answer": "Pets are part of daily life, and dreams often replay what matters to us. Dreaming of your cat, alive or gone, can simply carry on the attachment, the worry or the sense of loss."
+          }
+        ],
+        "documentMetaDescription": "Dreaming of a black cat, a scratching cat or your own cat: what the scene may say about independence and wariness, with questions and a journal example.",
+        "modifiedAt": "2026-10-08"
       },
       "fr": {
         "slug": "chat",
         "name": "Chat",
-        "shortDescription": "Le chat symbolise l'indépendance, l'intuition féminine et les mystères. Il peut représenter votre côté sauvage ou une situation qui échappe à votre contrôle.",
+        "shortDescription": "Rêver d'un chat, c'est souvent croiser un animal qui va et vient à sa guise. Câlin, distant, qui crache ou qui griffe, il peut rejoindre l'indépendance, la méfiance ou un besoin de calme. Votre propre chat, si vous en avez un, compte aussi.",
         "askYourself": [
-          "Suis-je assez à l'écoute de mon intuition ?",
-          "Ai-je besoin de plus d'indépendance ?"
-        ]
+          "Ce chat était-il le mien, un chat connu ou un inconnu ?",
+          "Venait-il vers moi, m'ignorait-il ou m'attaquait-il ?",
+          "Où aimerais-je, en ce moment, aller et venir sans rendre de comptes ?"
+        ],
+        "faq": [
+          {
+            "question": "Que signifie rêver d'un chat ?",
+            "answer": "Le chat est souvent associé à l'indépendance, à la curiosité et à une affection qui ne se commande pas. Son attitude dans le rêve et ce que vous ressentiez comptent plus qu'un sens fixe."
+          },
+          {
+            "question": "Que signifie rêver d'un chat noir ?",
+            "answer": "Un chat noir n'annonce rien. Selon les pays, la superstition en fait un porte-malheur ou un porte-bonheur. Regardez plutôt ce qu'il faisait, et ce que ce chat évoque pour vous."
+          },
+          {
+            "question": "Que signifie rêver d'un chat qui griffe ou qui attaque ?",
+            "answer": "Un chat qui crache ou qui griffe peut accompagner une tension, une méfiance ou une limite que quelqu'un, ou vous-même, défend. Ce n'est pas la preuve qu'une personne de votre entourage vous veut du mal."
+          },
+          {
+            "question": "Pourquoi est-ce que je rêve de mon chat ?",
+            "answer": "Les animaux de compagnie font partie du quotidien, et les rêves reprennent souvent ce qui compte pour nous. Rêver de son chat, vivant ou disparu, peut simplement prolonger l'attachement, l'inquiétude ou le manque."
+          }
+        ],
+        "documentMetaDescription": "Rêver d'un chat noir, d'un chat qui griffe ou de son propre chat : ce que la scène peut dire d'indépendance et de méfiance, avec questions et exemple.",
+        "modifiedAt": "2026-10-08"
       },
       "es": {
         "slug": "gato",
         "name": "Gato",
-        "shortDescription": "Los gatos simbolizan independencia, intuición femenina y misterio. Pueden representar tu lado salvaje o una situación que escapa a tu control.",
+        "shortDescription": "Soñar con un gato suele ser cruzarte con un animal que va y viene a su antojo. Cariñoso, distante, que bufa o que araña, puede enlazar con la independencia, la desconfianza o la necesidad de calma. Si tienes gato, el tuyo también cuenta.",
         "askYourself": [
-          "¿Estoy escuchando suficiente mi intuición?",
-          "¿Necesito más independencia?"
-        ]
+          "¿Era mi gato, un gato conocido o uno desconocido?",
+          "¿Se acercaba a mí, me ignoraba o me atacaba?",
+          "¿Dónde me gustaría ahora mismo ir y venir sin dar explicaciones?"
+        ],
+        "faq": [
+          {
+            "question": "¿Qué significa soñar con un gato?",
+            "answer": "El gato se asocia a menudo con la independencia, la curiosidad y un cariño que no se puede forzar. Cómo se comportaba en el sueño y lo que sentiste cuentan más que un significado fijo."
+          },
+          {
+            "question": "¿Qué significa soñar con un gato negro?",
+            "answer": "Un gato negro no anuncia nada. Según el país, la superstición lo convierte en señal de mala o de buena suerte. Fíjate mejor en lo que hacía y en lo que ese gato te evoca a ti."
+          },
+          {
+            "question": "¿Qué significa soñar con un gato que te ataca o te araña?",
+            "answer": "Un gato que bufa o araña puede acompañar una tensión, una desconfianza o un límite que alguien, o tú, está defendiendo. No demuestra que una persona de tu entorno quiera hacerte daño."
+          },
+          {
+            "question": "¿Por qué sueño con mi gato?",
+            "answer": "Las mascotas forman parte del día a día, y los sueños suelen recoger lo que nos importa. Soñar con tu gato, vivo o ya fallecido, puede prolongar sin más el apego, la preocupación o la añoranza."
+          }
+        ],
+        "documentMetaDescription": "Soñar con un gato negro, con un gato que araña o con tu propio gato: qué puede decir la escena sobre independencia y desconfianza, con preguntas y un ejemplo.",
+        "modifiedAt": "2026-10-08"
       },
       "de": {
         "slug": "katze",
         "name": "Katze",
-        "shortDescription": "Katzen symbolisieren Unabhängigkeit, Intuition und weibliche Energie. Sie können auch Geheimnis, Sinnlichkeit und die Notwendigkeit darstellen, Ihren Instinkten zu vertrauen.",
+        "shortDescription": "Von einer Katze zu träumen heißt oft, einem Tier zu begegnen, das kommt und geht, wie es will. Verschmust, abweisend, fauchend oder kratzend kann sie zu Unabhängigkeit, Misstrauen oder dem Wunsch nach Ruhe passen. Auch Ihre eigene Katze zählt.",
         "askYourself": [
-          "Wie verbunden bin ich mit meiner Intuition?",
-          "Brauche ich mehr Unabhängigkeit?"
-        ]
+          "War es meine Katze, eine bekannte oder eine fremde?",
+          "Kam sie zu mir, ignorierte sie mich oder griff sie mich an?",
+          "Wo möchte ich gerade kommen und gehen, ohne mich zu erklären?"
+        ],
+        "faq": [
+          {
+            "question": "Was bedeutet es, von einer Katze zu träumen?",
+            "answer": "Die Katze wird oft mit Unabhängigkeit, Neugier und einer Zuneigung verbunden, die sich nicht erzwingen lässt. Wie sie sich im Traum verhielt und was Sie fühlten, zählt mehr als eine feste Bedeutung."
+          },
+          {
+            "question": "Was bedeutet eine schwarze Katze im Traum?",
+            "answer": "Eine schwarze Katze kündigt nichts an. Je nach Land gilt sie im Aberglauben als Unglücks- oder als Glücksbringer. Achten Sie lieber darauf, was sie tat und woran diese Katze Sie erinnert."
+          },
+          {
+            "question": "Was bedeutet es, wenn eine Katze im Traum kratzt oder angreift?",
+            "answer": "Eine fauchende oder kratzende Katze kann eine Spannung, ein Misstrauen oder eine Grenze begleiten, die jemand verteidigt, vielleicht auch Sie selbst. Sie beweist nicht, dass Ihnen jemand schaden will."
+          },
+          {
+            "question": "Warum träume ich von meiner Katze?",
+            "answer": "Haustiere gehören zum Alltag, und Träume greifen oft auf, was uns wichtig ist. Von der eigenen Katze zu träumen, ob lebend oder verstorben, kann einfach Bindung, Sorge oder Vermissen fortsetzen."
+          }
+        ],
+        "documentMetaDescription": "Schwarze Katze, kratzende Katze oder die eigene Katze im Traum: was die Szene über Unabhängigkeit und Misstrauen sagen kann, mit Fragen und Beispiel.",
+        "modifiedAt": "2026-10-08"
       },
       "it": {
         "slug": "gatto",
@@ -2216,38 +2300,122 @@
       "en": {
         "slug": "spider",
         "name": "Spider",
-        "shortDescription": "Spiders often symbolize creativity, patience, and weaving one's destiny. They can also represent fears or feeling trapped.",
+        "shortDescription": "Dreaming of a spider often comes with a jolt: a creature you did not see coming, or a web you walk straight into. Depending on the scene, it can point to a fear, a trap closing slowly, or patient work. The web matters as much as the spider.",
         "askYourself": [
-          "Do I feel trapped in a situation?",
-          "Am I weaving something new?"
-        ]
+          "Was the spider spinning, waiting, or coming toward me?",
+          "How did I feel: afraid, disgusted, curious, calm?",
+          "Which situation right now feels like a web I struggle to get out of?"
+        ],
+        "faq": [
+          {
+            "question": "What does it mean to dream about spiders?",
+            "answer": "Spiders are often associated with fear and with feeling caught, but also with patience and careful building. Their size, what they were doing and how you reacted guide the reading."
+          },
+          {
+            "question": "What does a spider web mean in a dream?",
+            "answer": "A web can go with a situation that has built up bit by bit: obligations, ties, commitments. Were you caught in it, or looking at it from a distance? That difference changes the reading."
+          },
+          {
+            "question": "What does a big or black spider mean in a dream?",
+            "answer": "A huge or black spider makes the fear in the dream more visible. Its size does not measure how serious a real problem is: it mostly reflects how intensely you felt."
+          },
+          {
+            "question": "What does it mean to dream of a spider on you or a spider bite?",
+            "answer": "A spider crawling on you or biting you can match a feeling that something is getting too close: a worry, an intrusion, a demand. It is not an omen. Note where it was on your body."
+          }
+        ],
+        "documentMetaDescription": "Dreaming of spiders, webs, a black spider or a spider on you: what the scene may say about fear and feeling trapped, with questions and a journal example.",
+        "modifiedAt": "2026-10-08"
       },
       "fr": {
         "slug": "araignee",
         "name": "Araignée",
-        "shortDescription": "L'araignée symbolise souvent la créativité, la patience et le tissage de son destin. Elle peut aussi représenter des peurs ou un sentiment d'être pris au piège.",
+        "shortDescription": "Rêver d'une araignée, c'est souvent sursauter devant une bête surgie de nulle part, ou se prendre dans une toile. Elle peut rejoindre une peur, un piège qui se referme lentement ou un travail de patience. La toile compte autant que l'animal.",
         "askYourself": [
-          "Est-ce que je me sens pris au piège dans une situation ?",
-          "Suis-je en train de tisser quelque chose de nouveau ?"
-        ]
+          "L'araignée tissait-elle, attendait-elle ou venait-elle vers moi ?",
+          "Qu'ai-je ressenti : peur, dégoût, curiosité, calme ?",
+          "Quelle situation ressemble en ce moment à une toile dont j'ai du mal à sortir ?"
+        ],
+        "faq": [
+          {
+            "question": "Que signifie rêver d'araignée ?",
+            "answer": "L'araignée est souvent associée à la peur et au sentiment d'être pris au piège, mais aussi à la patience et à la construction. Sa taille, ce qu'elle faisait et votre réaction orientent la lecture."
+          },
+          {
+            "question": "Que signifie rêver d'une toile d'araignée ?",
+            "answer": "La toile peut accompagner une situation qui s'est tissée peu à peu : obligations, liens, engagements. Y étiez-vous pris, ou la regardiez-vous de loin ? La différence change la lecture."
+          },
+          {
+            "question": "Que signifie rêver d'une grosse araignée ou d'une araignée noire ?",
+            "answer": "Une araignée énorme ou noire rend la peur plus visible dans le rêve. Sa taille ne mesure pas la gravité d'un problème réel : elle dit surtout l'intensité de ce que vous avez ressenti."
+          },
+          {
+            "question": "Que signifie rêver d'une araignée sur soi ou d'une morsure d'araignée ?",
+            "answer": "Une araignée qui grimpe sur vous ou vous mord peut rejoindre le sentiment que quelque chose s'approche trop près : une inquiétude, une intrusion, une demande. Ce n'est pas un présage. Notez où elle se trouvait."
+          }
+        ],
+        "documentMetaDescription": "Rêver d'araignée, de toile, d'araignée noire ou sur soi : ce que la scène peut dire de la peur et du sentiment d'être piégé, avec questions et exemple.",
+        "modifiedAt": "2026-10-08"
       },
       "es": {
         "slug": "arana",
         "name": "Araña",
-        "shortDescription": "Las arañas suelen simbolizar creatividad, paciencia y tejer el propio destino. También pueden representar miedos o sentirse atrapado.",
+        "shortDescription": "Soñar con una araña suele traer un sobresalto: un bicho que no viste venir o una telaraña en la que te metes de lleno. Puede enlazar con un miedo, una trampa que se cierra despacio o un trabajo paciente. La telaraña cuenta tanto como la araña.",
         "askYourself": [
-          "¿Me siento atrapado en una situación?",
-          "¿Estoy tejiendo algo nuevo?"
-        ]
+          "¿La araña tejía, esperaba o venía hacia mí?",
+          "¿Qué sentí: miedo, asco, curiosidad, calma?",
+          "¿Qué situación se parece ahora mismo a una telaraña de la que me cuesta salir?"
+        ],
+        "faq": [
+          {
+            "question": "¿Qué significa soñar con arañas?",
+            "answer": "La araña se asocia a menudo con el miedo y con la sensación de estar atrapado, pero también con la paciencia y la construcción. Su tamaño, lo que hacía y tu reacción orientan la lectura."
+          },
+          {
+            "question": "¿Qué significa soñar con una telaraña?",
+            "answer": "La telaraña puede acompañar una situación que se ha ido tejiendo poco a poco: obligaciones, vínculos, compromisos. ¿Estabas atrapado en ella o la mirabas desde lejos? Esa diferencia cambia la lectura."
+          },
+          {
+            "question": "¿Qué significa soñar con una araña grande o negra?",
+            "answer": "Una araña enorme o negra hace más visible el miedo dentro del sueño. Su tamaño no mide la gravedad de un problema real: refleja sobre todo la intensidad de lo que sentiste."
+          },
+          {
+            "question": "¿Qué significa soñar con una araña encima o con una picadura de araña?",
+            "answer": "Una araña que te sube por el cuerpo o te pica puede enlazar con la sensación de que algo se acerca demasiado: una preocupación, una intrusión, una exigencia. No es un presagio. Anota dónde estaba."
+          }
+        ],
+        "documentMetaDescription": "Soñar con arañas, telarañas, una araña negra o encima de ti: qué puede decir la escena sobre el miedo y la sensación de estar atrapado, con un ejemplo.",
+        "modifiedAt": "2026-10-08"
       },
       "de": {
         "slug": "spinne",
         "name": "Spinne",
-        "shortDescription": "Spinnen symbolisieren Kreativität, Geduld und das Weben des Schicksals. Sie können auch Angst, sich gefangen zu fühlen, oder weibliche Schöpferkraft darstellen.",
+        "shortDescription": "Eine Spinne im Traum kommt oft mit einem Schreck: ein Tier, das Sie nicht kommen sahen, oder ein Netz, in das Sie hineinlaufen. Sie kann zu einer Angst passen, zu einer Falle, die sich langsam schließt, oder zu geduldiger Arbeit. Das Netz zählt so viel wie die Spinne.",
         "askYourself": [
-          "Fühle ich mich in einer Situation gefangen?",
-          "Welches Netz webe ich in meinem Leben?"
-        ]
+          "Hat die Spinne gewebt, gewartet oder kam sie auf mich zu?",
+          "Was habe ich gefühlt: Angst, Ekel, Neugier, Ruhe?",
+          "Welche Situation fühlt sich gerade wie ein Netz an, aus dem ich schwer herauskomme?"
+        ],
+        "faq": [
+          {
+            "question": "Was bedeutet es, von Spinnen zu träumen?",
+            "answer": "Spinnen werden oft mit Angst und dem Gefühl verbunden, gefangen zu sein, aber auch mit Geduld und sorgfältigem Aufbau. Ihre Größe, was sie taten und wie Sie reagierten, geben die Richtung vor."
+          },
+          {
+            "question": "Was bedeutet ein Spinnennetz im Traum?",
+            "answer": "Ein Netz kann eine Situation begleiten, die sich nach und nach gesponnen hat: Pflichten, Bindungen, Zusagen. Hingen Sie darin fest, oder sahen Sie es von Weitem? Dieser Unterschied verändert die Deutung."
+          },
+          {
+            "question": "Was bedeutet eine große oder schwarze Spinne im Traum?",
+            "answer": "Eine riesige oder schwarze Spinne macht die Angst im Traum sichtbarer. Ihre Größe misst nicht, wie ernst ein echtes Problem ist: Sie zeigt vor allem, wie stark Ihr Gefühl war."
+          },
+          {
+            "question": "Was bedeutet eine Spinne auf dem Körper oder ein Spinnenbiss im Traum?",
+            "answer": "Eine Spinne, die über Sie krabbelt oder zubeißt, kann zu dem Gefühl passen, dass Ihnen etwas zu nahe kommt: eine Sorge, ein Eindringen, eine Forderung. Ein Omen ist das nicht. Notieren Sie, wo sie saß."
+          }
+        ],
+        "documentMetaDescription": "Spinne im Traum, Spinnennetz, schwarze Spinne oder Spinne auf dem Körper: was die Szene über Angst und Gefangensein sagen kann, mit Fragen und Beispiel.",
+        "modifiedAt": "2026-10-08"
       },
       "it": {
         "slug": "ragno",
@@ -2311,118 +2479,126 @@
       "en": {
         "slug": "fire",
         "name": "Fire",
-        "shortDescription": "Dreaming of fire can signal passion, anger, transformation or urgency. Controlled fire suggests creative energy; a blaze or flames out of control point to intense emotions or change moving too fast.",
+        "shortDescription": "Dreaming of fire means seeing a flame that warms or a blaze that spreads. Fire is often associated with energy, anger, desire or fast change. What matters most: was it under control, where was it, and what was burning?",
         "askYourself": [
-          "Did the fire warm, illuminate or destroy?",
-          "Did I feel fascination, fear, anger or relief?",
-          "Which change in my life feels urgent or out of control?"
+          "Did the fire warm me, light the way or destroy?",
+          "Was it under control, or spreading faster than I could act?",
+          "What is flaring up or burning me out right now, at work or in my relationships?"
         ],
         "seoTitle": "fire, blaze or flames",
         "faq": [
           {
             "question": "What does it mean to dream about fire?",
-            "answer": "Fire in dreams can represent energy, desire, anger, transformation or purification. The meaning depends on whether the fire was useful or out of control."
+            "answer": "Fire is often associated with energy, desire, anger or change. The meaning depends mostly on its state, contained or out of control, and on how you felt when you saw it."
           },
           {
-            "question": "What does a blaze or house fire mean in a dream?",
-            "answer": "A blaze often suggests intense emotion, conflict or a situation that may consume too much energy if it is not handled."
+            "question": "What does a blaze mean in a dream?",
+            "answer": "A blaze can go with an emotion that overflows, a conflict, or a situation that eats up a lot of energy. It is not an omen: it predicts no real fire."
           },
           {
-            "question": "What do flames mean in a dream?",
-            "answer": "Flames can point to passion, creativity or anger. If they frighten you, the dream suggests emotional intensity has become difficult to contain."
+            "question": "What does it mean to dream of your house on fire?",
+            "answer": "A burning house touches private life: family, safety, what you have built. It can match an upheaval underway or a fear of losing something steady. What were you trying to save?"
           },
           {
             "question": "Is dreaming of fire positive or negative?",
-            "answer": "It can be either. A fire that warms or lights the way is different from a fire that destroys. Notice control, distance and the dominant emotion."
+            "answer": "It can be either. A fireplace that warms you tells a different story from a blaze that destroys. Notice control, distance and the emotion that dominated."
           }
-        ]
+        ],
+        "documentMetaDescription": "Dreaming of fire, a blaze or your house in flames: what the scene may say about anger, desire or change, with questions and a fictional journal example.",
+        "modifiedAt": "2026-10-08"
       },
       "fr": {
         "slug": "feu",
         "name": "Feu",
-        "shortDescription": "Rêver de feu peut indiquer passion, colère, transformation ou urgence. Un feu maîtrisé parle d’énergie créative; un incendie ou des flammes incontrôlables signalent des émotions intenses ou un changement trop rapide.",
+        "shortDescription": "Rêver de feu, c'est voir une flamme qui réchauffe ou un incendie qui gagne. Le feu est souvent associé à l'énergie, à la colère, au désir ou à un changement rapide. Ce qui compte : était-il maîtrisé, où brûlait-il, et qu'est-ce qui brûlait ?",
         "askYourself": [
-          "Le feu réchauffait-il, éclairait-il ou détruisait-il ?",
-          "Ressentais-je fascination, peur, colère ou soulagement ?",
-          "Quel changement dans ma vie semble urgent ou hors de contrôle ?"
+          "Le feu réchauffait-il, éclairait-il ou détruisait-il ?",
+          "Était-il maîtrisé, ou gagnait-il plus vite que je ne pouvais agir ?",
+          "Qu'est-ce qui s'emballe ou me consume en ce moment, au travail ou dans mes relations ?"
         ],
         "seoTitle": "feu, incendie ou flammes",
         "faq": [
           {
-            "question": "Que signifie rêver de feu ?",
-            "answer": "Rêver de feu peut représenter énergie, désir, colère, transformation ou purification. Le sens dépend du fait que le feu soit utile ou hors de contrôle."
+            "question": "Que signifie rêver de feu ?",
+            "answer": "Le feu est souvent associé à l'énergie, au désir, à la colère ou au changement. Le sens dépend surtout de son état, maîtrisé ou hors de contrôle, et de ce que vous ressentiez en le voyant."
           },
           {
-            "question": "Que signifie rêver d’un incendie ?",
-            "answer": "Un incendie indique souvent des émotions intenses, un conflit ou une situation qui risque de consommer trop d’énergie."
+            "question": "Que signifie rêver d'un incendie ?",
+            "answer": "Un incendie peut accompagner une émotion qui déborde, un conflit ou une situation qui consume beaucoup d'énergie. Ce n'est pas un présage : il ne prédit aucun incendie réel."
           },
           {
-            "question": "Que signifient les flammes en rêve ?",
-            "answer": "Les flammes peuvent parler de passion, de créativité ou de colère. Si elles font peur, l’intensité émotionnelle devient difficile à contenir."
+            "question": "Que signifie rêver de sa maison en feu ?",
+            "answer": "Une maison en flammes touche à l'intime : famille, sécurité, ce que vous avez construit. Elle peut rejoindre un bouleversement en cours ou la peur de perdre un repère. Que cherchiez-vous à sauver ?"
           },
           {
-            "question": "Rêver de feu est-il positif ou négatif ?",
-            "answer": "Cela peut être les deux. Un feu qui éclaire ou réchauffe n’a pas le même sens qu’un feu qui détruit."
+            "question": "Rêver de feu est-il positif ou négatif ?",
+            "answer": "Les deux sont possibles. Un feu de cheminée qui réchauffe ne raconte pas la même chose qu'un incendie qui détruit. Regardez le contrôle, la distance et l'émotion dominante."
           }
-        ]
+        ],
+        "documentMetaDescription": "Rêver de feu, d'incendie ou de sa maison en flammes : ce que la scène peut dire de colère, de désir ou de changement, avec questions et exemple de journal.",
+        "modifiedAt": "2026-10-08"
       },
       "es": {
         "slug": "fuego",
         "name": "Fuego",
-        "shortDescription": "Soñar con fuego puede indicar pasión, rabia, transformación o urgencia. Un fuego controlado habla de energía creativa; un incendio o llamas fuera de control señalan emociones intensas o un cambio que va demasiado rápido.",
+        "shortDescription": "Soñar con fuego es ver una llama que calienta o un incendio que avanza. El fuego se asocia a menudo con la energía, la rabia, el deseo o un cambio rápido. Lo que más cuenta: ¿estaba controlado, dónde ardía y qué se estaba quemando?",
         "askYourself": [
           "¿El fuego calentaba, iluminaba o destruía?",
-          "¿Sentía fascinación, miedo, rabia o alivio?",
-          "¿Qué cambio en mi vida parece urgente o fuera de control?"
+          "¿Estaba controlado o avanzaba más rápido de lo que yo podía reaccionar?",
+          "¿Qué se está desbocando o me está quemando ahora mismo, en el trabajo o en mis relaciones?"
         ],
         "seoTitle": "fuego, incendio o llamas",
         "faq": [
           {
             "question": "¿Qué significa soñar con fuego?",
-            "answer": "Soñar con fuego puede representar energía, deseo, rabia, transformación o purificación. El significado depende de si el fuego era útil o estaba fuera de control."
+            "answer": "El fuego se asocia a menudo con la energía, el deseo, la rabia o el cambio. El sentido depende sobre todo de su estado, controlado o desbocado, y de lo que sentiste al verlo."
           },
           {
             "question": "¿Qué significa soñar con un incendio?",
-            "answer": "Un incendio suele indicar emociones intensas, conflicto o una situación que puede consumir demasiada energía si no se maneja."
+            "answer": "Un incendio puede acompañar una emoción que se desborda, un conflicto o una situación que consume mucha energía. No es un presagio: no predice ningún incendio real."
           },
           {
-            "question": "¿Qué significan las llamas en un sueño?",
-            "answer": "Las llamas pueden hablar de pasión, creatividad o rabia. Si dan miedo, el sueño sugiere que la intensidad emocional se volvió difícil de contener."
+            "question": "¿Qué significa soñar con tu casa en llamas?",
+            "answer": "Una casa que arde toca lo íntimo: la familia, la seguridad, lo que has construido. Puede enlazar con un vuelco en marcha o con el miedo a perder un punto de apoyo. ¿Qué intentabas salvar?"
           },
           {
             "question": "¿Soñar con fuego es positivo o negativo?",
-            "answer": "Puede ser ambas cosas. Un fuego que ilumina o calienta es distinto de un incendio que destruye."
+            "answer": "Puede ser ambas cosas. Una chimenea que calienta no cuenta lo mismo que un incendio que destruye. Fíjate en el control, en la distancia y en la emoción dominante."
           }
-        ]
+        ],
+        "documentMetaDescription": "Soñar con fuego, con un incendio o con tu casa en llamas: qué puede decir la escena sobre rabia, deseo o cambio, con preguntas y un ejemplo de diario.",
+        "modifiedAt": "2026-10-08"
       },
       "de": {
         "slug": "feuer",
         "name": "Feuer",
-        "shortDescription": "Von Feuer zu träumen kann Leidenschaft, Wut, Transformation oder Dringlichkeit anzeigen. Kontrolliertes Feuer spricht für kreative Energie; ein Brand oder außer Kontrolle geratene Flammen zeigen intensive Gefühle oder zu schnellen Wandel.",
+        "shortDescription": "Von Feuer zu träumen heißt, eine wärmende Flamme zu sehen oder einen Brand, der sich ausbreitet. Feuer wird oft mit Energie, Wut, Begehren oder schnellem Wandel verbunden. Entscheidend ist: War es unter Kontrolle, wo brannte es, und was stand in Flammen?",
         "askYourself": [
           "Hat das Feuer gewärmt, erhellt oder zerstört?",
-          "Spürte ich Faszination, Angst, Wut oder Erleichterung?",
-          "Welche Veränderung in meinem Leben wirkt dringend oder außer Kontrolle?"
+          "War es unter Kontrolle, oder breitete es sich schneller aus, als ich handeln konnte?",
+          "Was lodert gerade auf oder brennt mich aus, im Beruf oder in meinen Beziehungen?"
         ],
         "seoTitle": "Feuer, Brand oder Flammen",
         "faq": [
           {
             "question": "Was bedeutet Feuer im Traum?",
-            "answer": "Feuer im Traum kann Energie, Wunsch, Wut, Transformation oder Reinigung darstellen. Die Bedeutung hängt davon ab, ob das Feuer hilfreich oder außer Kontrolle war."
+            "answer": "Feuer wird oft mit Energie, Begehren, Wut oder Veränderung verbunden. Die Bedeutung hängt vor allem davon ab, ob es gebändigt oder außer Kontrolle war, und davon, was Sie beim Anblick fühlten."
           },
           {
             "question": "Was bedeutet ein Brand im Traum?",
-            "answer": "Ein Brand deutet oft auf intensive Emotionen, Konflikt oder eine Situation hin, die zu viel Energie verbraucht."
+            "answer": "Ein Brand kann ein Gefühl begleiten, das überkocht, einen Konflikt oder eine Situation, die viel Kraft kostet. Ein Omen ist er nicht: Er sagt keinen echten Brand voraus."
           },
           {
-            "question": "Was bedeuten Flammen im Traum?",
-            "answer": "Flammen können Leidenschaft, Kreativität oder Wut zeigen. Wenn sie Angst machen, ist die emotionale Intensität schwer zu halten."
+            "question": "Was bedeutet es, wenn im Traum das eigene Haus brennt?",
+            "answer": "Ein brennendes Haus berührt das Private: Familie, Sicherheit, das, was Sie aufgebaut haben. Es kann zu einem Umbruch passen oder zu der Angst, einen Halt zu verlieren. Was wollten Sie retten?"
           },
           {
             "question": "Ist Feuer im Traum positiv oder negativ?",
-            "answer": "Beides ist möglich. Ein Feuer, das wärmt oder leuchtet, unterscheidet sich von einem Feuer, das zerstört."
+            "answer": "Beides ist möglich. Ein Kaminfeuer, das wärmt, erzählt etwas anderes als ein Brand, der zerstört. Achten Sie auf Kontrolle, Abstand und das vorherrschende Gefühl."
           }
-        ]
+        ],
+        "documentMetaDescription": "Feuer im Traum, ein Brand oder das eigene Haus in Flammen: was die Szene über Wut, Begehren oder Wandel sagen kann, mit Fragen und einem Tagebuchbeispiel.",
+        "modifiedAt": "2026-10-08"
       },
       "it": {
         "slug": "fuoco",
@@ -2515,153 +2691,157 @@
       "en": {
         "slug": "flood",
         "name": "Flood",
-        "shortDescription": "This quick symbol reference summarizes a flood as emotional overflow, stress or invaded boundaries. Use the linked water-dream guide for full house, dirty-water, sea and escape scenarios.",
+        "shortDescription": "Dreaming of a flood means watching water rise faster than you can react: under the door, in the street, up to your knees. It often goes with overload from stress, emotions or change. The state of the water and where it spreads sharpen the lead.",
         "askYourself": [
-          "Was the flood clear, dirty, rainwater or seawater?",
-          "Was water entering my house, carrying me away or letting me escape?",
-          "Which situation is overflowing in my waking life?"
+          "Was the water clear, muddy, rainwater or seawater?",
+          "Was it coming into my home, sweeping me away, or could I get out?",
+          "Which situation is overflowing right now, and where could I use a barrier?"
         ],
         "seoTitle": "flood, flooded house or dirty water",
         "faq": [
           {
             "question": "What does a flood dream mean?",
-            "answer": "A flood dream usually suggests emotions, stress or changes that feel difficult to contain. It can appear when family, work or relationship pressure becomes overwhelming."
+            "answer": "A flood is often associated with overload: stress, emotions or changes that feel hard to contain. It is not an omen. The state of the water, the place and your reaction guide the reading."
           },
           {
             "question": "What does a flooded house mean in a dream?",
-            "answer": "A flooded house suggests worries, conflicts or intense feelings entering your private space and sense of safety."
+            "answer": "A flooded house brings the scene into private life: safety, family, rest. It can match worries or tensions spilling into your space. Which room was affected, and where was the water coming in?"
           },
           {
             "question": "What does clean flood water mean in a dream?",
-            "answer": "Clean flood water may suggest emotional release, clarity or a necessary clearing after tension."
+            "answer": "Clear water can go with an emotion that is intense but readable, or even relief after a tense period. Note whether the water receded afterward, and how you felt watching it."
           },
           {
             "question": "What does dirty flood water mean in a dream?",
-            "answer": "Dirty flood water points to confusion, fatigue or mixed emotions that still need sorting."
+            "answer": "Muddy or dirty water can match confusion, fatigue or mixed emotions you cannot untangle yet. It says nothing about danger to come. What feels murky in your life right now?"
           }
-        ]
+        ],
+        "documentMetaDescription": "Dreaming of a flood, a flooded house or dirty floodwater: what the scene may say about stress and emotional overload, with questions and a journal example.",
+        "modifiedAt": "2026-10-08"
       },
       "fr": {
         "slug": "inondation",
         "name": "Inondation",
-        "shortDescription": "Cette fiche rapide résume l’inondation comme débordement émotionnel, stress ou limites envahies. Consultez le guide lié pour les scénarios complets de maison, d’eau trouble, de mer et de fuite.",
+        "shortDescription": "Rêver d'inondation, c'est voir l'eau monter plus vite qu'on ne peut réagir : sous la porte, dans la rue, jusqu'aux genoux. La scène accompagne souvent un trop-plein de stress ou d'émotions. L'état de l'eau et le lieu envahi précisent la piste.",
         "askYourself": [
-          "L’inondation était-elle d’eau claire, trouble, de pluie ou de mer ?",
-          "L’eau entrait-elle dans ma maison, m’emportait-elle ou me laissait-elle sortir ?",
-          "Quelle situation déborde dans ma vie éveillée ?"
+          "L'eau était-elle claire, trouble, de pluie ou de mer ?",
+          "Entrait-elle chez moi, m'emportait-elle, ou pouvais-je m'en sortir ?",
+          "Quelle situation déborde en ce moment, et où aurais-je besoin d'une digue ?"
         ],
         "seoTitle": "inondation, maison inondée ou eau trouble",
         "faq": [
           {
-            "question": "Que signifie rêver d’inondation ?",
-            "answer": "Rêver d’inondation indique souvent des émotions, du stress ou des changements qui semblent difficiles à contenir."
+            "question": "Que signifie rêver d'inondation ?",
+            "answer": "L'inondation est souvent associée à un trop-plein : stress, émotions ou changements qui semblent difficiles à contenir. Ce n'est pas un présage. L'état de l'eau, le lieu et votre réaction orientent la lecture."
           },
           {
-            "question": "Que signifie rêver d’une maison inondée ?",
-            "answer": "Une maison inondée suggère que des inquiétudes, conflits ou émotions intenses envahissent votre espace de sécurité."
+            "question": "Que signifie rêver d'une maison inondée ?",
+            "answer": "Une maison inondée amène la scène dans l'intime : sécurité, famille, repos. Elle peut rejoindre des soucis ou des tensions qui envahissent votre espace. Quelle pièce était touchée, et par où entrait l'eau ?"
           },
           {
-            "question": "Que signifie rêver d’une inondation d’eau claire ?",
-            "answer": "L’eau claire peut indiquer libération émotionnelle, clarté ou nettoyage nécessaire après une période de tension."
+            "question": "Que signifie rêver d'une inondation d'eau claire ?",
+            "answer": "L'eau claire peut accompagner une émotion intense mais lisible, voire un soulagement après une période tendue. Notez si l'eau se retirait ensuite, et ce que vous ressentiez en la voyant."
           },
           {
-            "question": "Que signifie rêver d’une inondation d’eau trouble ?",
-            "answer": "L’eau trouble signale confusion, fatigue ou émotions mélangées qui demandent encore à être ordonnées."
+            "question": "Que signifie rêver d'une inondation d'eau trouble ?",
+            "answer": "L'eau trouble ou boueuse peut rejoindre la confusion, la fatigue ou des émotions mêlées qu'on n'arrive pas encore à démêler. Elle n'annonce aucun danger. Qu'est-ce qui vous semble trouble en ce moment ?"
           }
-        ]
+        ],
+        "documentMetaDescription": "Rêver d'inondation, de maison inondée ou d'eau trouble : ce que la scène peut dire d'un trop-plein de stress ou d'émotions, avec questions et exemple.",
+        "modifiedAt": "2026-10-08"
       },
       "es": {
         "slug": "inundacion",
         "name": "Inundación",
-        "shortDescription": "Esta ficha rápida resume el símbolo de la inundación: desborde emocional, estrés o límites invadidos. Para interpretar escenas completas —casa inundada, agua limpia o sucia, mar y escape— consulta la guía de sueños con agua enlazada al final.",
+        "shortDescription": "Soñar con una inundación es ver el agua subir más rápido de lo que puedes reaccionar: bajo la puerta, en la calle, hasta las rodillas. Suele acompañar un desborde de estrés o de emociones. El estado del agua y el lugar que invade afinan la pista.",
         "askYourself": [
-          "¿La inundación era de agua limpia, sucia, de lluvia o de mar?",
-          "¿El agua entraba en mi casa, me arrastraba o yo lograba salir?",
-          "¿Qué situación se está desbordando en mi vida despierta?"
+          "¿El agua era limpia, sucia, de lluvia o de mar?",
+          "¿Entraba en mi casa, me arrastraba o yo lograba salir?",
+          "¿Qué situación se está desbordando ahora mismo, y dónde me vendría bien un dique?"
         ],
         "seoTitle": "inundación: ficha rápida del símbolo",
         "faq": [
           {
             "question": "¿Qué significa soñar con inundación?",
-            "answer": "Soñar con inundación suele indicar emociones, estrés o cambios que se sienten difíciles de contener. Puede aparecer cuando una situación familiar, laboral o afectiva te supera."
+            "answer": "La inundación se asocia a menudo con un desborde: estrés, emociones o cambios que cuesta contener. No es un presagio. El estado del agua, el lugar y tu reacción orientan la lectura."
           },
           {
             "question": "¿Qué significa soñar con inundación en casa?",
-            "answer": "Una casa inundada sugiere que preocupaciones, conflictos o emociones intensas están invadiendo tu espacio de seguridad e intimidad."
-          },
-          {
-            "question": "¿Qué significa soñar con inundación de agua limpia?",
-            "answer": "El agua limpia puede indicar liberación emocional, claridad o una limpieza necesaria después de un periodo de tensión."
+            "answer": "Una casa inundada lleva la escena a lo íntimo: la seguridad, la familia, el descanso. Puede enlazar con preocupaciones o tensiones que invaden tu espacio. ¿Qué habitación se inundaba y por dónde entraba el agua?"
           },
           {
             "question": "¿Qué significa soñar con inundación de agua sucia?",
-            "answer": "El agua sucia señala confusión, cansancio o emociones mezcladas que todavía necesitan orden."
+            "answer": "El agua sucia o turbia puede enlazar con la confusión, el cansancio o emociones mezcladas que aún no logras desenredar. No anuncia ningún peligro. ¿Qué te parece turbio ahora mismo?"
           },
           {
             "question": "¿Qué significa soñar con una inundación y escapar?",
-            "answer": "Escapar de una inundación sugiere que estás buscando salida, límites o ayuda ante una situación que se siente desbordada."
+            "answer": "Escapar subiendo a un piso alto, a un tejado o a una barca puede acompañar los recursos que ya estás movilizando ante una situación desbordante. Anota quién o qué te ayudó."
           }
         ],
-        "modifiedAt": "2026-07-14"
+        "modifiedAt": "2026-10-08",
+        "documentMetaDescription": "Soñar con una inundación, con tu casa inundada o con agua sucia: qué puede decir la escena sobre estrés y desborde emocional, con preguntas y un ejemplo."
       },
       "de": {
         "slug": "ueberschwemmung",
         "name": "Überschwemmung",
-        "shortDescription": "Diese Kurzdeutung fasst die Überschwemmung als emotionales Überlaufen, Stress oder verletzte Grenzen zusammen. Der verlinkte Ratgeber behandelt Haus, schmutziges Wasser, Meer und Flucht ausführlich.",
+        "shortDescription": "Bei einer Überschwemmung im Traum steigt das Wasser schneller, als Sie reagieren können: unter der Tür, auf der Straße, bis zu den Knien. Die Szene begleitet oft ein Zuviel an Stress oder Gefühlen. Das Wasser und der Ort, den es erreicht, schärfen die Spur.",
         "askYourself": [
-          "War die Überschwemmung klares, schmutziges, Regen- oder Meerwasser?",
-          "Drang Wasser ins Haus ein, riss es mich mit oder konnte ich entkommen?",
-          "Welche Situation läuft in meinem Wachleben über?"
+          "War das Wasser klar, schlammig, Regen- oder Meerwasser?",
+          "Drang es in mein Zuhause, riss es mich mit, oder konnte ich entkommen?",
+          "Welche Situation läuft gerade über, und wo bräuchte ich einen Damm?"
         ],
         "seoTitle": "Überschwemmung, überflutetes Haus oder schmutziges Wasser",
         "faq": [
           {
             "question": "Was bedeutet eine Überschwemmung im Traum?",
-            "answer": "Eine Überschwemmung deutet oft auf Emotionen, Stress oder Veränderungen hin, die sich schwer kontrollieren lassen."
+            "answer": "Eine Überschwemmung wird oft mit einem Zuviel verbunden: Stress, Gefühle oder Veränderungen, die sich schwer eindämmen lassen. Ein Omen ist sie nicht. Wasser, Ort und Ihre Reaktion geben die Richtung vor."
           },
           {
             "question": "Was bedeutet ein überflutetes Haus im Traum?",
-            "answer": "Ein überflutetes Haus zeigt Sorgen, Konflikte oder intensive Gefühle, die in den privaten Sicherheitsraum eindringen."
+            "answer": "Ein überflutetes Haus holt die Szene ins Private: Sicherheit, Familie, Ruhe. Es kann zu Sorgen oder Spannungen passen, die in Ihren Raum eindringen. Welcher Raum stand unter Wasser, und wo kam es herein?"
           },
           {
             "question": "Was bedeutet klares Wasser bei einer Überschwemmung?",
-            "answer": "Klares Wasser kann emotionale Befreiung, Klarheit oder eine nötige Reinigung nach Anspannung anzeigen."
+            "answer": "Klares Wasser kann ein Gefühl begleiten, das stark, aber verständlich ist, oder sogar Erleichterung nach einer angespannten Zeit. Notieren Sie, ob das Wasser danach zurückging."
           },
           {
             "question": "Was bedeutet schmutziges Wasser bei einer Überschwemmung?",
-            "answer": "Schmutziges Wasser zeigt Verwirrung, Müdigkeit oder gemischte Gefühle, die noch geordnet werden müssen."
+            "answer": "Schlammiges oder schmutziges Wasser kann zu Verwirrung, Müdigkeit oder gemischten Gefühlen passen, die sich noch nicht entwirren lassen. Es kündigt keine Gefahr an. Was wirkt für Sie gerade trüb?"
           }
-        ]
+        ],
+        "documentMetaDescription": "Überschwemmung im Traum, ein überflutetes Haus oder schmutziges Wasser: was die Szene über Stress und Überforderung sagen kann, mit Fragen und Beispiel.",
+        "modifiedAt": "2026-10-08"
       },
       "it": {
         "slug": "alluvione",
         "name": "Alluvione",
-        "shortDescription": "Questa scheda rapida riassume l’alluvione come trabocco emotivo, stress o confini invasi. La guida collegata tratta per intero casa, acqua sporca, mare e fuga.",
+        "shortDescription": "Sognare un’alluvione significa vedere l’acqua salire più in fretta di quanto riesci a reagire: sotto la porta, in strada, fino alle ginocchia. Accompagna spesso un troppo pieno di stress o di emozioni. Lo stato dell’acqua e il luogo invaso precisano la pista.",
         "askYourself": [
-          "L’alluvione era di acqua pulita, sporca, pioggia o mare?",
-          "L’acqua entrava in casa, mi trascinava o riuscivo a uscire?",
-          "Quale situazione sta traboccando nella mia vita da sveglio?"
+          "L’acqua era pulita, sporca, di pioggia o di mare?",
+          "Entrava in casa, mi trascinava o riuscivo a uscire?",
+          "Quale situazione sta traboccando in questo periodo, e dove mi servirebbe un argine?"
         ],
         "seoTitle": "alluvione, casa allagata o acqua sporca",
         "faq": [
           {
-            "question": "Cosa significa sognare un’alluvione?",
-            "answer": "Sognare un’alluvione indica spesso emozioni, stress o cambiamenti che sembrano difficili da contenere."
+            "question": "Che cosa significa sognare un’alluvione?",
+            "answer": "L’alluvione viene spesso associata a un troppo pieno: stress, emozioni o cambiamenti che sembrano difficili da contenere. Non è un presagio. Lo stato dell’acqua, il luogo e la tua reazione orientano la lettura."
           },
           {
-            "question": "Cosa significa sognare una casa allagata?",
-            "answer": "Una casa allagata suggerisce che preoccupazioni, conflitti o emozioni intense stanno invadendo il tuo spazio di sicurezza."
+            "question": "Che cosa significa sognare una casa allagata?",
+            "answer": "Una casa allagata porta la scena nella sfera privata: sicurezza, famiglia, riposo. Può avvicinarsi a preoccupazioni o tensioni che invadono il tuo spazio. Quale stanza era allagata, e da dove entrava l’acqua?"
           },
           {
-            "question": "Cosa significa sognare un’alluvione di acqua pulita?",
-            "answer": "L’acqua pulita può indicare liberazione emotiva, chiarezza o una pulizia necessaria dopo un periodo di tensione."
+            "question": "Che cosa significa sognare un’alluvione di acqua pulita?",
+            "answer": "L’acqua pulita può accompagnare un’emozione intensa ma leggibile, o perfino un sollievo dopo un periodo teso. Annota se poi l’acqua si ritirava, e che cosa provavi guardandola."
           },
           {
-            "question": "Cosa significa sognare un’alluvione di acqua sporca?",
-            "answer": "L’acqua sporca segnala confusione, stanchezza o emozioni mescolate che hanno ancora bisogno di ordine."
+            "question": "Che cosa significa sognare un’alluvione di acqua sporca?",
+            "answer": "L’acqua sporca o fangosa può avvicinarsi a confusione, stanchezza o emozioni mescolate che non riesci ancora a sbrogliare. Non annuncia un pericolo. Che cosa ti sembra torbido in questo periodo?"
           }
         ],
-        "modifiedAt": "2026-08-18"
+        "modifiedAt": "2026-10-08",
+        "documentMetaDescription": "Sognare un’alluvione, una casa allagata o acqua sporca: che cosa può dire la scena di stress ed emozioni che traboccano, con domande ed esempio di diario."
       },
       "pt": {
         "slug": "enchente",
