@@ -13547,58 +13547,152 @@
       "en": {
         "slug": "passport",
         "name": "Passport",
-        "shortDescription": "When a passport matters in a dream, questions of identity, belonging, access or freedom of movement may come forward. Whether it was valid, lost or inspected shapes the scene.",
-        "modifiedAt": "2026-07-24",
+        "shortDescription": "Dreaming of a passport often means a checkpoint: a border, a boarding gate, a counter. The document is linked to identity and to being allowed through. Valid, lost, expired or refused, each version tells a different story.",
+        "modifiedAt": "2026-10-08",
         "askYourself": [
-          "What did passport change in the scene?",
-          "Which feeling stayed with me after waking?"
+          "Was it my own passport, with my name and photo?",
+          "Where was I trying to go, and what stood in the way?",
+          "Where in my life do I feel I have to prove I belong right now?"
         ],
-        "faq": []
+        "faq": [
+          {
+            "question": "What does it mean to dream of a passport?",
+            "answer": "A passport is often associated with identity, belonging and permission to move from one place to another. Its meaning depends on the scene (a check, a loss, a refusal) and on how you felt in that moment."
+          },
+          {
+            "question": "What does it mean to dream of losing your passport?",
+            "answer": "Losing a passport can go with a fear of getting stuck just before an important transition: a new job, a move, a new relationship. It is not an omen. Ask yourself what you are afraid you will not be able to prove."
+          },
+          {
+            "question": "What does an expired passport mean in a dream?",
+            "answer": "An expired passport can echo a version of you that no longer fits: a role, a label, an old image. The scene invites you to look at what might need updating, without predicting anything."
+          },
+          {
+            "question": "Why do I dream about border control?",
+            "answer": "Border control stages an authority deciding whether you may pass. It can echo an ongoing evaluation, an application, an interview or a feeling of being judged. Note who was checking and how you reacted."
+          }
+        ],
+        "documentMetaDescription": "Dreaming of a lost, expired or refused passport: what the scene may say about identity and permission, with questions to ask and a journal example."
       },
       "fr": {
         "slug": "passeport",
         "name": "Passeport",
-        "shortDescription": "Quand un passeport devient important, des questions d’identité, d’appartenance, d’accès ou de liberté de mouvement peuvent apparaître. Le fait qu’il soit valide, perdu ou contrôlé façonne la scène.",
-        "modifiedAt": "2026-07-24",
+        "shortDescription": "Rêver d'un passeport, c'est souvent une scène de contrôle : à la frontière, à l'embarquement, à un guichet. Le document est associé à l'identité et au droit de passer. Valide, perdu, périmé ou refusé, il ne raconte pas la même chose.",
+        "modifiedAt": "2026-10-08",
         "askYourself": [
-          "Qu’est-ce que passeport a changé dans la scène ?",
-          "Quelle émotion est restée après le réveil ?"
+          "Le passeport était-il le mien, avec mon nom et ma photo ?",
+          "Où devais-je aller, et qu'est-ce qui m'en empêchait ?",
+          "Dans quel domaine ai-je l'impression, en ce moment, de devoir prouver que j'ai ma place ?"
         ],
-        "faq": []
+        "faq": [
+          {
+            "question": "Que signifie rêver d'un passeport ?",
+            "answer": "Le passeport est souvent associé à l'identité, à l'appartenance et à l'autorisation de passer d'un lieu à un autre. Son sens dépend de la scène (un contrôle, une perte, un refus) et de ce que vous avez ressenti à ce moment."
+          },
+          {
+            "question": "Que signifie rêver de perdre son passeport ?",
+            "answer": "Perdre son passeport peut accompagner la peur d'être bloqué juste avant un passage important : un nouveau poste, un déménagement, une nouvelle relation. Ce n'est pas un présage. Demandez-vous ce que vous craignez de ne pas pouvoir prouver."
+          },
+          {
+            "question": "Que signifie rêver d'un passeport périmé ?",
+            "answer": "Un passeport expiré peut faire écho à une version de vous qui ne correspond plus : un rôle, une étiquette, une ancienne image. La scène invite à regarder ce qui aurait besoin d'être mis à jour, sans rien annoncer."
+          },
+          {
+            "question": "Pourquoi rêve-t-on d'un contrôle à la frontière ?",
+            "answer": "Le contrôle met en scène une autorité qui décide si vous pouvez passer. Il peut rejoindre une évaluation en cours, un dossier, un entretien ou le sentiment d'être jugé. Notez qui vous contrôlait et comment vous avez réagi."
+          }
+        ],
+        "documentMetaDescription": "Rêver d'un passeport perdu, périmé ou refusé à la frontière : ce que la scène peut dire d'identité et d'autorisation, avec questions et exemple de journal."
       },
       "es": {
         "slug": "pasaporte",
         "name": "Pasaporte",
-        "shortDescription": "Cuando un pasaporte resulta importante, pueden aparecer cuestiones de identidad, pertenencia, acceso o libertad de movimiento. Que estuviera vigente, perdido o bajo control define la escena.",
-        "modifiedAt": "2026-07-24",
+        "shortDescription": "Soñar con un pasaporte suele ser una escena de control: en la frontera, en el embarque, en una ventanilla. El documento se asocia con la identidad y el permiso para pasar. Vigente, perdido, caducado o rechazado, cada uno cuenta algo distinto.",
+        "modifiedAt": "2026-10-08",
         "askYourself": [
-          "¿Qué cambió pasaporte dentro de la escena?",
-          "¿Qué emoción siguió conmigo al despertar?"
+          "¿El pasaporte era el mío, con mi nombre y mi foto?",
+          "¿Adónde quería ir y qué me lo impedía?",
+          "¿En qué ámbito siento ahora que tengo que demostrar que tengo mi sitio?"
         ],
-        "faq": []
+        "faq": [
+          {
+            "question": "¿Qué significa soñar con un pasaporte?",
+            "answer": "El pasaporte se asocia a menudo con la identidad, la pertenencia y el permiso para pasar de un lugar a otro. Su sentido depende de la escena (un control, una pérdida, un rechazo) y de lo que sentiste en ese momento."
+          },
+          {
+            "question": "¿Qué significa soñar que pierdes el pasaporte?",
+            "answer": "Perder el pasaporte puede acompañar el miedo a quedarte bloqueado justo antes de un cambio importante: un trabajo nuevo, una mudanza, una relación. No es un presagio. Pregúntate qué temes no poder demostrar."
+          },
+          {
+            "question": "¿Qué significa soñar con un pasaporte caducado?",
+            "answer": "Un pasaporte caducado puede hacer eco de una versión de ti que ya no encaja: un papel, una etiqueta, una imagen antigua. La escena invita a mirar qué necesita ponerse al día, sin anunciar nada."
+          },
+          {
+            "question": "¿Por qué sueño con un control de fronteras?",
+            "answer": "El control escenifica una autoridad que decide si puedes pasar. Puede enlazar con una evaluación en curso, una solicitud, una entrevista o la sensación de que te juzgan. Anota quién te controlaba y cómo reaccionaste."
+          }
+        ],
+        "documentMetaDescription": "Soñar con un pasaporte perdido, caducado o rechazado en la frontera: qué puede decir la escena sobre identidad y permiso, con preguntas y un ejemplo de diario."
       },
       "de": {
         "slug": "reisepass",
         "name": "Reisepass",
-        "shortDescription": "Wird ein Reisepass im Traum wichtig, stellen sich möglicherweise Fragen nach Identität, Zugehörigkeit, Zugang oder Bewegungsfreiheit. Ob das Dokument gültig, verloren oder kontrolliert wurde, prägt die Szene.",
+        "shortDescription": "Von einem Reisepass zu träumen heißt oft: eine Kontrolle, an der Grenze, am Gate, am Schalter. Der Pass wird mit Identität und der Erlaubnis zum Weitergehen verbunden. Gültig, verloren, abgelaufen oder abgelehnt erzählt er jeweils etwas anderes.",
         "askYourself": [
-          "War es dein Reisepass, und stimmten Name und Foto?",
-          "Wurde er akzeptiert, abgelehnt, gestohlen oder nicht gefunden?",
-          "Wo musst du derzeit Zugehörigkeit oder Berechtigung nachweisen?"
+          "War es mein eigener Pass, mit meinem Namen und meinem Foto?",
+          "Wohin wollte ich, und was hat mich aufgehalten?",
+          "Wo habe ich gerade das Gefühl, beweisen zu müssen, dass ich dazugehöre?"
         ],
-        "faq": [],
-        "modifiedAt": "2026-07-24"
+        "faq": [
+          {
+            "question": "Was bedeutet es, von einem Reisepass zu träumen?",
+            "answer": "Der Reisepass wird oft mit Identität, Zugehörigkeit und der Erlaubnis verbunden, von einem Ort zum anderen zu gelangen. Was er bedeutet, hängt von der Szene ab (Kontrolle, Verlust, Ablehnung) und davon, was Sie in dem Moment gefühlt haben."
+          },
+          {
+            "question": "Was bedeutet es, im Traum den Reisepass zu verlieren?",
+            "answer": "Den Pass zu verlieren kann die Sorge begleiten, kurz vor einem wichtigen Übergang festzusitzen: neue Stelle, Umzug, neue Beziehung. Ein Omen ist das nicht. Fragen Sie sich, was Sie fürchten, nicht nachweisen zu können."
+          },
+          {
+            "question": "Was bedeutet ein abgelaufener Reisepass im Traum?",
+            "answer": "Ein abgelaufener Pass kann eine Version von Ihnen aufgreifen, die nicht mehr passt: eine Rolle, ein Etikett, ein altes Bild. Die Szene lädt ein, zu prüfen, was eine Aktualisierung bräuchte, und kündigt nichts an."
+          },
+          {
+            "question": "Warum träumt man von einer Grenzkontrolle?",
+            "answer": "Die Kontrolle setzt eine Instanz in Szene, die entscheidet, ob Sie passieren dürfen. Sie kann zu einer laufenden Bewertung, einem Antrag, einem Vorstellungsgespräch oder dem Gefühl passen, beurteilt zu werden. Notieren Sie, wer kontrollierte und wie Sie reagiert haben."
+          }
+        ],
+        "modifiedAt": "2026-10-08",
+        "documentMetaDescription": "Reisepass im Traum verloren, abgelaufen oder an der Grenze abgelehnt: was die Szene über Identität und Erlaubnis sagen kann, mit Fragen und Tagebuchbeispiel."
       },
       "it": {
         "slug": "passaporto",
         "name": "Passaporto",
-        "shortDescription": "Quando un passaporto diventa importante, possono emergere questioni di identità, appartenenza, accesso o libertà di movimento. Il fatto che fosse valido, perso o controllato definisce la scena.",
-        "modifiedAt": "2026-07-24",
+        "shortDescription": "Sognare un passaporto è spesso una scena di controllo: alla frontiera, all’imbarco, a uno sportello. Il documento viene associato all’identità e al permesso di passare. Valido, perso, scaduto o respinto, non racconta la stessa cosa.",
+        "modifiedAt": "2026-10-08",
         "askYourself": [
-          "Che cosa ha cambiato passaporto nella scena?",
-          "Quale emozione è rimasta dopo il risveglio?"
+          "Il passaporto era il mio, con il mio nome e la mia foto?",
+          "Dove dovevo andare, e che cosa me lo impediva?",
+          "In quale ambito sento, in questo periodo, di dover dimostrare che ho il mio posto?"
         ],
-        "faq": []
+        "faq": [
+          {
+            "question": "Che cosa significa sognare un passaporto?",
+            "answer": "Il passaporto viene spesso associato all’identità, all’appartenenza e al permesso di passare da un luogo all’altro. Il significato dipende dalla scena (un controllo, una perdita, un rifiuto) e da ciò che hai provato in quel momento."
+          },
+          {
+            "question": "Che cosa significa sognare di perdere il passaporto?",
+            "answer": "Perdere il passaporto può accompagnare la paura di restare bloccato proprio prima di un passaggio importante: un nuovo lavoro, un trasloco, una nuova relazione. Non è un presagio. Chiediti che cosa temi di non poter dimostrare."
+          },
+          {
+            "question": "Che cosa significa sognare un passaporto scaduto?",
+            "answer": "Un passaporto scaduto può fare eco a una versione di te che non corrisponde più: un ruolo, un’etichetta, una vecchia immagine. La scena invita a guardare che cosa avrebbe bisogno di essere aggiornato, senza annunciare nulla."
+          },
+          {
+            "question": "Perché si sogna un controllo alla frontiera?",
+            "answer": "Il controllo mette in scena un’autorità che decide se puoi passare. Può avvicinarsi a una valutazione in corso, a una domanda, a un colloquio o alla sensazione di essere giudicato. Annota chi ti controllava e come hai reagito."
+          }
+        ],
+        "documentMetaDescription": "Sognare un passaporto perso, scaduto o respinto alla frontiera: che cosa può dire la scena di identità e permesso, con domande ed esempio di diario."
       },
       "pt": {
         "slug": "passaporte",
@@ -13632,58 +13726,152 @@
       "en": {
         "slug": "ring",
         "name": "Ring",
-        "shortDescription": "A ring may place a relationship, promise, commitment or personal value at the center of a dream. Who wore it and whether it was given, lost or removed matter more than a fixed meaning.",
-        "modifiedAt": "2026-07-24",
+        "shortDescription": "Dreaming of a ring often brings you back to a bond: a promise, a relationship, a family, a value you hold on to. What happens to the ring matters more than the jewel. Given, lost, too tight or taken off, each version tells a different story.",
+        "modifiedAt": "2026-10-08",
         "askYourself": [
-          "What did ring change in the scene?",
-          "Which feeling stayed with me after waking?"
+          "Who gave me this ring, or whose was it?",
+          "Was it on my finger, lost, too tight or broken?",
+          "Which commitment, kept or still to be made, is on my mind right now?"
         ],
-        "faq": []
+        "faq": [
+          {
+            "question": "What does it mean to dream of a ring?",
+            "answer": "A ring is often associated with commitment: a relationship, a promise, a family bond or a personal value. Its meaning depends on who wore it, what happened to it and how you felt about it."
+          },
+          {
+            "question": "What does it mean to dream of losing your ring or wedding band?",
+            "answer": "Losing a ring can go with a fear of letting a bond slip away or of breaking a promise. It is not an omen of a breakup. Note when you noticed it was gone and what you did next."
+          },
+          {
+            "question": "What does an engagement ring mean in a dream?",
+            "answer": "Receiving or offering an engagement ring can match a wish for commitment, a question about your relationship or a plan for two. If you hesitated in the dream, that hesitation is a valuable clue."
+          },
+          {
+            "question": "What does a tight or broken ring mean in a dream?",
+            "answer": "A ring that pinches can stage a commitment that has become narrow, an obligation that weighs on you. A broken ring can echo a promise that feels fragile. Neither predicts the end of a relationship."
+          }
+        ],
+        "documentMetaDescription": "Dreaming of a ring, losing your wedding band or getting an engagement ring: what the scene may say about commitment, with questions and a journal example."
       },
       "fr": {
         "slug": "bague",
         "name": "Bague",
-        "shortDescription": "Une bague peut placer au centre du rêve une relation, une promesse, un engagement ou une valeur personnelle. La personne qui la portait et le fait de la donner, la perdre ou la retirer comptent davantage qu’un sens figé.",
-        "modifiedAt": "2026-07-24",
+        "shortDescription": "Rêver d'une bague ramène souvent à un lien : une promesse, un couple, une famille, une valeur à laquelle vous tenez. Ce qui arrive à la bague compte plus que le bijou : offerte, perdue, trop serrée ou retirée, elle ne raconte pas la même chose.",
+        "modifiedAt": "2026-10-08",
         "askYourself": [
-          "Qu’est-ce que bague a changé dans la scène ?",
-          "Quelle émotion est restée après le réveil ?"
+          "Qui m'a donné cette bague, ou à qui appartenait-elle ?",
+          "Était-elle à mon doigt, perdue, trop serrée, cassée ?",
+          "Quel engagement, tenu ou encore à prendre, occupe mon esprit en ce moment ?"
         ],
-        "faq": []
+        "faq": [
+          {
+            "question": "Que signifie rêver d'une bague ?",
+            "answer": "La bague est souvent associée à un engagement : un couple, une promesse, un lien familial ou une valeur personnelle. Son sens dépend de qui la portait, de ce qui lui arrivait et de ce que vous avez ressenti."
+          },
+          {
+            "question": "Que signifie rêver de perdre sa bague ou son alliance ?",
+            "answer": "Perdre une bague peut accompagner la peur de laisser filer un lien ou de manquer à une promesse. Ce n'est pas un présage de rupture. Notez quand vous vous en êtes aperçu et ce que vous avez fait ensuite."
+          },
+          {
+            "question": "Que signifie rêver d'une bague de fiançailles ?",
+            "answer": "Recevoir ou offrir une bague de fiançailles peut rejoindre un désir d'engagement, une question sur votre couple ou un projet à deux. Si vous hésitiez dans le rêve, cette hésitation est un indice précieux."
+          },
+          {
+            "question": "Que signifie rêver d'une bague trop serrée ou cassée ?",
+            "answer": "Une bague qui serre peut mettre en scène un engagement devenu étroit, une obligation qui pèse. Une bague cassée peut faire écho à une promesse fragilisée. Ni l'une ni l'autre ne prédit la fin d'une relation."
+          }
+        ],
+        "documentMetaDescription": "Rêver d'une bague, de perdre son alliance ou d'une bague de fiançailles : ce que la scène peut dire de vos engagements, avec questions et exemple de journal."
       },
       "es": {
         "slug": "anillo",
         "name": "Anillo",
-        "shortDescription": "Un anillo puede situar en el centro una relación, una promesa, un compromiso o un valor personal. Quién lo llevaba y si se entregó, se perdió o se quitó importan más que un significado fijo.",
-        "modifiedAt": "2026-07-24",
+        "shortDescription": "Soñar con un anillo suele llevarte a un vínculo: una promesa, una pareja, una familia, un valor que te importa. Importa más lo que le pasa al anillo que la joya: regalado, perdido, demasiado apretado o quitado, cada uno cuenta algo distinto.",
+        "modifiedAt": "2026-10-08",
         "askYourself": [
-          "¿Qué cambió anillo dentro de la escena?",
-          "¿Qué emoción siguió conmigo al despertar?"
+          "¿Quién me dio este anillo, o de quién era?",
+          "¿Lo llevaba puesto, lo perdí, me apretaba, estaba roto?",
+          "¿Qué compromiso, cumplido o pendiente, me ronda ahora la cabeza?"
         ],
-        "faq": []
+        "faq": [
+          {
+            "question": "¿Qué significa soñar con un anillo?",
+            "answer": "El anillo se asocia a menudo con el compromiso: una pareja, una promesa, un vínculo familiar o un valor personal. Su sentido depende de quién lo llevaba, de lo que le pasaba y de lo que sentiste."
+          },
+          {
+            "question": "¿Qué significa soñar que pierdes el anillo o la alianza?",
+            "answer": "Perder un anillo puede acompañar el miedo a dejar escapar un vínculo o a faltar a una promesa. No es un presagio de ruptura. Anota cuándo te diste cuenta y qué hiciste después."
+          },
+          {
+            "question": "¿Qué significa soñar con un anillo de compromiso?",
+            "answer": "Recibir u ofrecer un anillo de compromiso puede enlazar con un deseo de compromiso, una pregunta sobre tu pareja o un proyecto en común. Si dudabas en el sueño, esa duda es una pista valiosa."
+          },
+          {
+            "question": "¿Qué significa soñar con un anillo que aprieta o se rompe?",
+            "answer": "Un anillo que aprieta puede escenificar un compromiso que se ha vuelto estrecho, una obligación que pesa. Uno roto puede hacer eco de una promesa que se ha resentido. Ninguno de los dos predice el final de una relación."
+          }
+        ],
+        "documentMetaDescription": "Soñar con un anillo, perder la alianza o recibir un anillo de compromiso: qué puede decir la escena sobre tus vínculos, con preguntas y un ejemplo de diario."
       },
       "de": {
         "slug": "ring",
         "name": "Ring",
-        "shortDescription": "Der Ring in deiner Traumszene kann eine Beziehung, ein Versprechen, eine Verpflichtung oder einen persönlichen Wert in den Mittelpunkt rücken. Wer ihn trug und was mit ihm geschah, ist wichtiger als eine pauschale Symbolbedeutung.",
+        "shortDescription": "Von einem Ring zu träumen führt oft zu einer Bindung: einem Versprechen, einer Partnerschaft, einer Familie, einem wichtigen Wert. Entscheidend ist, was mit ihm geschieht: Geschenkt, verloren, zu eng oder abgelegt erzählt er jeweils etwas anderes.",
         "askYourself": [
-          "Wer besaß oder überreichte den Ring?",
-          "Passte er, ging er verloren oder wurde er zurückgegeben?",
-          "Welche Bindung oder Zusage fühlt sich derzeit besonders bedeutsam an?"
+          "Wer hat mir diesen Ring gegeben, oder wem gehörte er?",
+          "Steckte er an meinem Finger, war er verloren, zu eng, zerbrochen?",
+          "Welche Verpflichtung, eingehalten oder noch offen, beschäftigt mich gerade?"
         ],
-        "faq": [],
-        "modifiedAt": "2026-07-24"
+        "faq": [
+          {
+            "question": "Was bedeutet es, von einem Ring zu träumen?",
+            "answer": "Der Ring wird oft mit Bindung verbunden: einer Partnerschaft, einem Versprechen, einer familiären Verbindung oder einem persönlichen Wert. Was er bedeutet, hängt davon ab, wer ihn trug, was mit ihm geschah und was Sie dabei gefühlt haben."
+          },
+          {
+            "question": "Was bedeutet es, im Traum den Ring oder Ehering zu verlieren?",
+            "answer": "Einen Ring zu verlieren kann die Sorge begleiten, eine Bindung entgleiten zu lassen oder ein Versprechen nicht zu halten. Ein Vorzeichen für eine Trennung ist das nicht. Notieren Sie, wann Sie den Verlust bemerkt haben und was Sie dann taten."
+          },
+          {
+            "question": "Was bedeutet ein Verlobungsring im Traum?",
+            "answer": "Einen Verlobungsring zu bekommen oder zu schenken kann zu einem Wunsch nach Verbindlichkeit passen, zu einer Frage an die Beziehung oder zu einem gemeinsamen Plan. Haben Sie im Traum gezögert, ist dieses Zögern ein wertvoller Hinweis."
+          },
+          {
+            "question": "Was bedeutet ein zu enger oder zerbrochener Ring im Traum?",
+            "answer": "Ein Ring, der drückt, kann eine Verpflichtung in Szene setzen, die eng geworden ist. Ein zerbrochener Ring kann ein brüchig gewordenes Versprechen aufgreifen. Keiner von beiden sagt das Ende einer Beziehung voraus."
+          }
+        ],
+        "modifiedAt": "2026-10-08",
+        "documentMetaDescription": "Ring im Traum, Ehering verloren oder Verlobungsring bekommen: was die Szene über Ihre Bindungen sagen kann, mit Fragen und einem Tagebuchbeispiel."
       },
       "it": {
         "slug": "anello",
         "name": "Anello",
-        "shortDescription": "Un anello può mettere al centro del sogno una relazione, una promessa, un impegno o un valore personale. Chi lo indossava e il fatto di donarlo, perderlo o toglierlo contano più di un significato fisso.",
-        "modifiedAt": "2026-07-24",
+        "shortDescription": "Sognare un anello riporta spesso a un legame: una promessa, una coppia, una famiglia, un valore a cui tieni. Conta più ciò che succede all’anello del gioiello: regalato, perso, troppo stretto o tolto, non racconta la stessa cosa.",
+        "modifiedAt": "2026-10-08",
         "askYourself": [
-          "Che cosa ha cambiato anello nella scena?",
-          "Quale emozione è rimasta dopo il risveglio?"
+          "Chi mi ha dato questo anello, o a chi apparteneva?",
+          "Era al mio dito, perso, troppo stretto, rotto?",
+          "Quale impegno, mantenuto o ancora da prendere, mi occupa la mente in questo periodo?"
         ],
-        "faq": []
+        "faq": [
+          {
+            "question": "Che cosa significa sognare un anello?",
+            "answer": "L’anello viene spesso associato all’impegno: una coppia, una promessa, un legame familiare o un valore personale. Il significato dipende da chi lo portava, da ciò che gli succedeva e da ciò che hai provato."
+          },
+          {
+            "question": "Che cosa significa sognare di perdere l’anello o la fede?",
+            "answer": "Perdere un anello può accompagnare la paura di lasciarti sfuggire un legame o di mancare a una promessa. Non è un presagio di rottura. Annota quando te ne sei accorto e che cosa hai fatto dopo."
+          },
+          {
+            "question": "Che cosa significa sognare un anello di fidanzamento?",
+            "answer": "Ricevere o regalare un anello di fidanzamento può avvicinarsi a un desiderio di impegno, a una domanda sulla tua coppia o a un progetto in due. Se nel sogno esitavi, quell’esitazione è un indizio prezioso."
+          },
+          {
+            "question": "Che cosa significa sognare un anello stretto o rotto?",
+            "answer": "Un anello che stringe può mettere in scena un impegno diventato stretto, un obbligo che pesa. Un anello rotto può fare eco a una promessa incrinata. Nessuno dei due predice la fine di una relazione."
+          }
+        ],
+        "documentMetaDescription": "Sognare un anello, perdere la fede o ricevere un anello di fidanzamento: che cosa può dire la scena dei tuoi legami, con domande ed esempio di diario."
       },
       "pt": {
         "slug": "anel",
@@ -13716,58 +13904,152 @@
       "en": {
         "slug": "watch",
         "name": "Watch",
-        "shortDescription": "A watch may bring time pressure, waiting, planning or the search for a workable rhythm into focus. The displayed time, whether it functioned and your reaction give the moment context.",
-        "modifiedAt": "2026-07-24",
+        "shortDescription": "Dreaming of a watch often means looking at it at the wrong moment: you are late, the time makes no sense, the hands are racing. A watch is linked to time pressing in or running out. What it showed and how you reacted matter more than the object.",
+        "modifiedAt": "2026-10-08",
         "askYourself": [
-          "What did watch change in the scene?",
-          "Which feeling stayed with me after waking?"
+          "What time did the watch show, and could I read it?",
+          "Was I late, early, or waiting for someone?",
+          "Where am I short of time, or of a rhythm that suits me, right now?"
         ],
-        "faq": []
+        "faq": [
+          {
+            "question": "What does it mean to dream of a watch?",
+            "answer": "A watch is often associated with your relationship to time: a deadline, a wait, a pace that does not suit you. Its meaning depends on what it showed, what state it was in and how you felt looking at it."
+          },
+          {
+            "question": "What does a stopped watch mean in a dream?",
+            "answer": "A stopped watch can go with a feeling that something is on hold: a stalled project, a period of grief, a wait that drags on. It is not an omen. Ask yourself what feels frozen in your life right now."
+          },
+          {
+            "question": "Why can't I read the time in my dreams?",
+            "answer": "Many dreamers report that the time changes or becomes unreadable when they look a second time. It is a common feature of dreams, not a hidden message. Some people even use it to recognize that they are dreaming."
+          },
+          {
+            "question": "What does it mean to dream of losing your watch?",
+            "answer": "Losing your watch can match a feeling of losing track of your days, or on the contrary a need to stop watching the clock. Your reaction, panic or relief, points the reading one way or the other."
+          }
+        ],
+        "documentMetaDescription": "Dreaming of a stopped or broken watch, or a time you cannot read: what the scene may say about your relationship to time, with questions and an example."
       },
       "fr": {
         "slug": "montre",
         "name": "Montre",
-        "shortDescription": "Une montre peut mettre au premier plan la pression du temps, l’attente, la planification ou la recherche d’un rythme adapté. L’heure affichée, son fonctionnement et votre réaction situent le moment.",
-        "modifiedAt": "2026-07-24",
+        "shortDescription": "Rêver d'une montre, c'est souvent la regarder au mauvais moment : vous êtes en retard, l'heure n'a pas de sens, les aiguilles s'emballent. La montre est associée au temps qui presse ou qui manque. Ce qu'elle affichait compte plus que l'objet.",
+        "modifiedAt": "2026-10-08",
         "askYourself": [
-          "Qu’est-ce que montre a changé dans la scène ?",
-          "Quelle émotion est restée après le réveil ?"
+          "Quelle heure affichait la montre, et arrivais-je à la lire ?",
+          "Étais-je en retard, en avance, ou en train d'attendre quelqu'un ?",
+          "Où est-ce que je manque de temps, ou d'un rythme qui me convient, en ce moment ?"
         ],
-        "faq": []
+        "faq": [
+          {
+            "question": "Que signifie rêver d'une montre ?",
+            "answer": "La montre est souvent associée au rapport au temps : une échéance, une attente, un rythme qui ne vous convient pas. Son sens dépend de ce qu'elle affichait, de son état et de ce que vous avez ressenti en la regardant."
+          },
+          {
+            "question": "Que signifie rêver d'une montre arrêtée ?",
+            "answer": "Une montre arrêtée peut accompagner le sentiment que quelque chose est en suspens : un projet bloqué, une période de deuil, une attente qui s'éternise. Ce n'est pas un présage. Demandez-vous ce qui, dans votre vie, semble figé."
+          },
+          {
+            "question": "Pourquoi n'arrive-t-on pas à lire l'heure en rêve ?",
+            "answer": "Beaucoup de rêveurs racontent que l'heure change ou devient illisible quand ils regardent une seconde fois. C'est un trait courant des rêves, pas un message caché. Certains s'en servent même pour reconnaître qu'ils rêvent."
+          },
+          {
+            "question": "Que signifie rêver de perdre sa montre ?",
+            "answer": "Perdre sa montre peut rejoindre l'impression de perdre le fil de ses journées, ou au contraire un besoin de lâcher l'horloge. Votre réaction, panique ou soulagement, oriente la lecture."
+          }
+        ],
+        "documentMetaDescription": "Rêver d'une montre arrêtée, cassée ou d'une heure illisible : ce que la scène peut dire de votre rapport au temps, avec questions et exemple de journal."
       },
       "es": {
         "slug": "reloj",
         "name": "Reloj",
-        "shortDescription": "Un reloj puede poner en primer plano la presión del tiempo, la espera, la planificación o la búsqueda de un ritmo adecuado. La hora, su funcionamiento y tu reacción sitúan el momento.",
-        "modifiedAt": "2026-07-24",
+        "shortDescription": "Soñar con un reloj suele ser mirarlo en el peor momento: llegas tarde, la hora no tiene sentido, las agujas se disparan. El reloj se asocia con el tiempo que aprieta o que falta. Lo que marcaba y cómo reaccionaste cuentan más que el objeto.",
+        "modifiedAt": "2026-10-08",
         "askYourself": [
-          "¿Qué cambió reloj dentro de la escena?",
-          "¿Qué emoción siguió conmigo al despertar?"
+          "¿Qué hora marcaba el reloj, y conseguía leerla?",
+          "¿Llegaba tarde, iba con tiempo o estaba esperando a alguien?",
+          "¿Dónde me falta tiempo, o un ritmo que me siente bien, ahora mismo?"
         ],
-        "faq": []
+        "faq": [
+          {
+            "question": "¿Qué significa soñar con un reloj?",
+            "answer": "El reloj se asocia a menudo con tu relación con el tiempo: un plazo, una espera, un ritmo que no te sienta bien. Su sentido depende de lo que marcaba, de su estado y de lo que sentiste al mirarlo."
+          },
+          {
+            "question": "¿Qué significa soñar con un reloj parado?",
+            "answer": "Un reloj parado puede acompañar la sensación de que algo está en pausa: un proyecto atascado, un duelo, una espera que se alarga. No es un presagio. Pregúntate qué parece congelado ahora mismo en tu vida."
+          },
+          {
+            "question": "¿Por qué no consigo leer la hora en sueños?",
+            "answer": "Muchas personas cuentan que la hora cambia o se vuelve ilegible cuando la miran por segunda vez. Es un rasgo habitual de los sueños, no un mensaje oculto. Hay quien lo usa incluso para darse cuenta de que está soñando."
+          },
+          {
+            "question": "¿Qué significa soñar que pierdes el reloj?",
+            "answer": "Perder el reloj puede enlazar con la sensación de perder el hilo de tus días o, al revés, con las ganas de dejar de mirar la hora. Tu reacción, pánico o alivio, orienta la lectura."
+          }
+        ],
+        "documentMetaDescription": "Soñar con un reloj parado, roto o con una hora que no puedes leer: qué puede decir la escena sobre tu relación con el tiempo, con preguntas y un ejemplo."
       },
       "de": {
         "slug": "uhr",
         "name": "Uhr",
-        "shortDescription": "Rückt eine Uhr im Traum in den Mittelpunkt, können Zeitdruck, Warten, Planung oder der Wunsch nach einem passenden Rhythmus spürbar werden. Angezeigte Zeit, Funktion und deine Reaktion darauf liefern den konkreten Zusammenhang.",
+        "shortDescription": "Von einer Uhr zu träumen heißt oft, im falschen Moment draufzuschauen: Sie sind zu spät, die Zeit ergibt keinen Sinn, die Zeiger rasen. Die Uhr wird mit drängender oder fehlender Zeit verbunden. Was sie anzeigte, zählt mehr als die Uhr selbst.",
         "askYourself": [
-          "Welche Zeit zeigte die Uhr, und lief sie normal?",
-          "Musstest du dich beeilen, warten oder einen Termin einhalten?",
-          "Wo empfindest du gerade Zeitdruck oder den Wunsch nach mehr Geduld?"
+          "Welche Zeit zeigte die Uhr, und konnte ich sie lesen?",
+          "War ich zu spät, zu früh oder habe ich auf jemanden gewartet?",
+          "Wo fehlt mir gerade Zeit, oder ein Rhythmus, der zu mir passt?"
         ],
-        "faq": [],
-        "modifiedAt": "2026-07-24"
+        "faq": [
+          {
+            "question": "Was bedeutet es, von einer Uhr zu träumen?",
+            "answer": "Die Uhr wird oft mit dem eigenen Verhältnis zur Zeit verbunden: einer Frist, einem Warten, einem Tempo, das nicht zu Ihnen passt. Was sie bedeutet, hängt davon ab, was sie anzeigte, in welchem Zustand sie war und was Sie beim Hinsehen gefühlt haben."
+          },
+          {
+            "question": "Was bedeutet eine stehengebliebene Uhr im Traum?",
+            "answer": "Eine stehengebliebene Uhr kann das Gefühl begleiten, dass etwas auf Eis liegt: ein festgefahrenes Projekt, eine Zeit der Trauer, ein Warten ohne Ende. Ein Omen ist sie nicht. Fragen Sie sich, was in Ihrem Leben gerade stillzustehen scheint."
+          },
+          {
+            "question": "Warum kann man im Traum die Uhrzeit nicht lesen?",
+            "answer": "Viele Menschen berichten, dass sich die Uhrzeit ändert oder unleserlich wird, wenn sie ein zweites Mal hinsehen. Das ist ein häufiges Merkmal von Träumen, keine versteckte Botschaft. Manche nutzen es sogar, um zu erkennen, dass sie träumen."
+          },
+          {
+            "question": "Was bedeutet es, im Traum die Uhr zu verlieren?",
+            "answer": "Die Uhr zu verlieren kann zu dem Gefühl passen, den Überblick über die eigenen Tage zu verlieren, oder umgekehrt zu dem Wunsch, nicht mehr ständig auf die Zeit zu schauen. Ihre Reaktion, Panik oder Erleichterung, gibt die Richtung vor."
+          }
+        ],
+        "modifiedAt": "2026-10-08",
+        "documentMetaDescription": "Uhr im Traum, stehengeblieben, kaputt oder unleserlich: was die Szene über Ihr Verhältnis zur Zeit sagen kann, mit Fragen und einem Tagebuchbeispiel."
       },
       "it": {
         "slug": "orologio",
         "name": "Orologio",
-        "shortDescription": "Un orologio può mettere in primo piano pressione del tempo, attesa, pianificazione o ricerca di un ritmo adatto. L’ora mostrata, il funzionamento e la tua reazione situano il momento.",
-        "modifiedAt": "2026-07-24",
+        "shortDescription": "Sognare un orologio significa spesso guardarlo nel momento sbagliato: sei in ritardo, l’ora non ha senso, le lancette impazziscono. L’orologio viene associato al tempo che stringe o che manca. Ciò che segnava conta più dell’oggetto.",
+        "modifiedAt": "2026-10-08",
         "askYourself": [
-          "Che cosa ha cambiato orologio nella scena?",
-          "Quale emozione è rimasta dopo il risveglio?"
+          "Che ora segnava l’orologio, e riuscivo a leggerla?",
+          "Ero in ritardo, in anticipo, o stavo aspettando qualcuno?",
+          "Dove mi manca il tempo, o un ritmo che mi somigli, in questo periodo?"
         ],
-        "faq": []
+        "faq": [
+          {
+            "question": "Che cosa significa sognare un orologio?",
+            "answer": "L’orologio viene spesso associato al rapporto con il tempo: una scadenza, un’attesa, un ritmo che non ti somiglia. Il significato dipende da ciò che segnava, dal suo stato e da ciò che hai provato guardandolo."
+          },
+          {
+            "question": "Che cosa significa sognare un orologio fermo?",
+            "answer": "Un orologio fermo può accompagnare la sensazione che qualcosa sia sospeso: un progetto bloccato, un periodo di lutto, un’attesa che non finisce. Non è un presagio. Chiediti che cosa sembra immobile nella tua vita in questo momento."
+          },
+          {
+            "question": "Perché in sogno non si riesce a leggere l’ora?",
+            "answer": "Molte persone raccontano che l’ora cambia o diventa illeggibile quando la guardano una seconda volta. È un tratto comune dei sogni, non un messaggio nascosto. C’è chi lo usa perfino per accorgersi di stare sognando."
+          },
+          {
+            "question": "Che cosa significa sognare di perdere l’orologio?",
+            "answer": "Perdere l’orologio può avvicinarsi alla sensazione di perdere il filo delle giornate o, al contrario, al bisogno di smettere di contare i minuti. La tua reazione, panico o sollievo, orienta la lettura."
+          }
+        ],
+        "documentMetaDescription": "Sognare un orologio fermo, rotto o un’ora che non riesci a leggere: che cosa può dire la scena del tuo rapporto con il tempo, con domande ed esempio di diario."
       },
       "pt": {
         "slug": "relogio",
@@ -13800,58 +14082,152 @@
       "en": {
         "slug": "book",
         "name": "Book",
-        "shortDescription": "A book may place knowledge, memories, an untold story or the search for an answer at the center of a dream. Its title, contents and whether you could read it provide the context.",
-        "modifiedAt": "2026-07-24",
+        "shortDescription": "Dreaming of a book often means holding an answer you cannot quite read. Books are linked to knowledge, memories and stories, including your own. Open, closed, unreadable or blank, each version points somewhere different.",
+        "modifiedAt": "2026-10-08",
         "askYourself": [
-          "What did book change in the scene?",
-          "Which feeling stayed with me after waking?"
+          "Could I read what was written, and what was I looking for in it?",
+          "Was this book familiar, old, a gift, or still to be written?",
+          "Which question would I like to see settled in black and white right now?"
         ],
-        "faq": []
+        "faq": [
+          {
+            "question": "What does it mean to dream of a book?",
+            "answer": "A book is often associated with knowledge, memory and the stories we tell ourselves. Its meaning depends on what you could read in it, what state it was in and how you felt holding it."
+          },
+          {
+            "question": "Why can't I read in my dreams?",
+            "answer": "Many dreamers report that text blurs or changes when they try to read it. It is a common feature of dreams, not a hidden message. The frustration you felt, though, may echo an answer you are still waiting for."
+          },
+          {
+            "question": "What does a book with blank pages mean in a dream?",
+            "answer": "Empty pages can go with a beginning, a story yet to be written, or worry about not knowing what to put there. Your emotion, curiosity or dread, tips the reading one way or the other."
+          },
+          {
+            "question": "What does it mean to dream of writing a book?",
+            "answer": "Writing a book in a dream can match a wish to shape your own story, a creative project, or a need to take back control of a narrative. Note what you were writing, if you remember."
+          }
+        ],
+        "documentMetaDescription": "Dreaming of an unreadable book, blank pages or writing a book: what the scene may say about knowledge and memory, with questions and a journal example."
       },
       "fr": {
         "slug": "livre",
         "name": "Livre",
-        "shortDescription": "Un livre peut placer au centre du rêve des connaissances, des souvenirs, une histoire non racontée ou la recherche d’une réponse. Son titre, son contenu et la possibilité de le lire fournissent le contexte.",
-        "modifiedAt": "2026-07-24",
+        "shortDescription": "Rêver d'un livre, c'est souvent tenir une réponse qu'on n'arrive pas tout à fait à lire. Le livre est associé au savoir, aux souvenirs et aux histoires, la vôtre comprise. Ouvert, fermé, illisible ou blanc, il ne raconte pas la même chose.",
+        "modifiedAt": "2026-10-08",
         "askYourself": [
-          "Qu’est-ce que livre a changé dans la scène ?",
-          "Quelle émotion est restée après le réveil ?"
+          "Pouvais-je lire ce qui était écrit, et qu'est-ce que j'y cherchais ?",
+          "Ce livre était-il connu, ancien, offert, ou encore à écrire ?",
+          "Quelle question aimerais-je voir tranchée noir sur blanc en ce moment ?"
         ],
-        "faq": []
+        "faq": [
+          {
+            "question": "Que signifie rêver d'un livre ?",
+            "answer": "Le livre est souvent associé au savoir, à la mémoire et aux histoires que l'on se raconte. Son sens dépend de ce que vous pouviez y lire, de son état et de ce que vous ressentiez en le tenant."
+          },
+          {
+            "question": "Pourquoi n'arrive-t-on pas à lire en rêve ?",
+            "answer": "Beaucoup de rêveurs racontent que le texte se brouille ou change quand ils essaient de le lire. C'est un trait courant des rêves, pas un message caché. La frustration ressentie, elle, peut rejoindre une réponse que vous attendez."
+          },
+          {
+            "question": "Que signifie rêver d'un livre aux pages blanches ?",
+            "answer": "Des pages vides peuvent accompagner un début, une histoire encore à écrire, ou l'inquiétude de ne pas savoir quoi y mettre. Votre émotion, curiosité ou angoisse, fait pencher la lecture d'un côté ou de l'autre."
+          },
+          {
+            "question": "Que signifie rêver d'écrire un livre ?",
+            "answer": "Écrire un livre en rêve peut rejoindre l'envie de mettre en forme votre propre histoire, un projet créatif, ou le besoin de reprendre la main sur un récit. Notez ce que vous écriviez, si vous vous en souvenez."
+          }
+        ],
+        "documentMetaDescription": "Rêver d'un livre illisible, aux pages blanches ou d'écrire un livre : ce que la scène peut dire de savoir et de mémoire, avec questions et exemple de journal."
       },
       "es": {
         "slug": "libro",
         "name": "Libro",
-        "shortDescription": "Un libro puede poner en el centro conocimientos, recuerdos, una historia no contada o la búsqueda de una respuesta. El título, el contenido y si lograbas leerlo aportan el contexto.",
-        "modifiedAt": "2026-07-24",
+        "shortDescription": "Soñar con un libro suele ser tener en las manos una respuesta que no consigues leer del todo. El libro se asocia con el saber, los recuerdos y las historias, también la tuya. Abierto, cerrado, ilegible o en blanco, cada uno cuenta algo distinto.",
+        "modifiedAt": "2026-10-08",
         "askYourself": [
-          "¿Qué cambió libro dentro de la escena?",
-          "¿Qué emoción siguió conmigo al despertar?"
+          "¿Podía leer lo que ponía, y qué buscaba en él?",
+          "¿Era un libro conocido, antiguo, regalado, o por escribir?",
+          "¿Qué pregunta me gustaría ver resuelta por escrito ahora mismo?"
         ],
-        "faq": []
+        "faq": [
+          {
+            "question": "¿Qué significa soñar con un libro?",
+            "answer": "El libro se asocia a menudo con el saber, la memoria y las historias que nos contamos. Su sentido depende de lo que podías leer en él, de su estado y de lo que sentiste al tenerlo en las manos."
+          },
+          {
+            "question": "¿Por qué no puedo leer en sueños?",
+            "answer": "Muchas personas cuentan que el texto se emborrona o cambia cuando intentan leerlo. Es un rasgo habitual de los sueños, no un mensaje oculto. La frustración que sentiste, en cambio, puede enlazar con una respuesta que esperas."
+          },
+          {
+            "question": "¿Qué significa soñar con un libro en blanco?",
+            "answer": "Las páginas vacías pueden acompañar un comienzo, una historia por escribir o la inquietud de no saber qué poner. Tu emoción, curiosidad o angustia, inclina la lectura hacia un lado u otro."
+          },
+          {
+            "question": "¿Qué significa soñar que escribes un libro?",
+            "answer": "Escribir un libro en sueños puede enlazar con las ganas de dar forma a tu propia historia, con un proyecto creativo o con la necesidad de recuperar el control de un relato. Anota qué escribías, si lo recuerdas."
+          }
+        ],
+        "documentMetaDescription": "Soñar con un libro ilegible, en blanco o que escribes un libro: qué puede decir la escena sobre el saber y la memoria, con preguntas y un ejemplo de diario."
       },
       "de": {
         "slug": "buch",
         "name": "Buch",
-        "shortDescription": "Bei einem Buch im Traum können Wissen, Erinnerungen, eine unerzählte Geschichte oder die Suche nach einer Antwort im Zentrum stehen. Titel, Inhalt und die Frage, ob du darin lesen konntest, geben der Szene ihren Kontext.",
+        "shortDescription": "Von einem Buch zu träumen heißt oft, eine Antwort in den Händen zu halten, die sich nicht ganz lesen lässt. Das Buch wird mit Wissen, Erinnerungen und Geschichten verbunden, auch Ihrer eigenen. Ob offen, leer oder unleserlich, zählt viel.",
         "askYourself": [
-          "War das Buch geöffnet, verschlossen, leer oder in einer bekannten Sprache geschrieben?",
-          "Konntest du Titel oder eine bestimmte Passage lesen?",
-          "Über welches Thema möchtest du gerade mehr erfahren oder Klarheit gewinnen?"
+          "Konnte ich lesen, was dort stand, und was habe ich darin gesucht?",
+          "War das Buch bekannt, alt, ein Geschenk oder noch ungeschrieben?",
+          "Welche Frage würde ich gerade gern schwarz auf weiß geklärt sehen?"
         ],
-        "faq": [],
-        "modifiedAt": "2026-07-24"
+        "faq": [
+          {
+            "question": "Was bedeutet es, von einem Buch zu träumen?",
+            "answer": "Das Buch wird oft mit Wissen, Erinnerung und den Geschichten verbunden, die wir uns erzählen. Was es bedeutet, hängt davon ab, was Sie darin lesen konnten, in welchem Zustand es war und was Sie dabei gefühlt haben."
+          },
+          {
+            "question": "Warum kann man im Traum nicht lesen?",
+            "answer": "Viele Menschen berichten, dass Text verschwimmt oder sich verändert, wenn sie ihn lesen wollen. Das ist ein häufiges Merkmal von Träumen, keine versteckte Botschaft. Der Frust, den Sie dabei gespürt haben, kann aber zu einer Antwort passen, auf die Sie warten."
+          },
+          {
+            "question": "Was bedeutet ein Buch mit leeren Seiten im Traum?",
+            "answer": "Leere Seiten können einen Anfang begleiten, eine Geschichte, die noch geschrieben werden will, oder die Sorge, nicht zu wissen, was hineingehört. Ihr Gefühl, Neugier oder Beklemmung, gibt die Richtung vor."
+          },
+          {
+            "question": "Was bedeutet es, im Traum ein Buch zu schreiben?",
+            "answer": "Im Traum ein Buch zu schreiben kann zu dem Wunsch passen, die eigene Geschichte zu gestalten, zu einem kreativen Projekt oder zu dem Bedürfnis, wieder selbst zu erzählen. Notieren Sie, was Sie geschrieben haben, falls Sie es noch wissen."
+          }
+        ],
+        "modifiedAt": "2026-10-08",
+        "documentMetaDescription": "Buch im Traum, unleserlich, mit leeren Seiten oder selbst geschrieben: was die Szene über Wissen und Erinnerung sagen kann, mit Fragen und Tagebuchbeispiel."
       },
       "it": {
         "slug": "libro",
         "name": "Libro",
-        "shortDescription": "Un libro può mettere al centro conoscenze, ricordi, una storia non raccontata o la ricerca di una risposta. Titolo, contenuto e possibilità di leggerlo forniscono il contesto.",
-        "modifiedAt": "2026-07-24",
+        "shortDescription": "Sognare un libro significa spesso tenere in mano una risposta che non si riesce a leggere del tutto. Il libro viene associato al sapere, ai ricordi e alle storie, compresa la tua. Aperto, chiuso, illeggibile o bianco, non racconta la stessa cosa.",
+        "modifiedAt": "2026-10-08",
         "askYourself": [
-          "Che cosa ha cambiato libro nella scena?",
-          "Quale emozione è rimasta dopo il risveglio?"
+          "Riuscivo a leggere ciò che c’era scritto, e che cosa ci cercavo?",
+          "Era un libro conosciuto, vecchio, regalato, o ancora da scrivere?",
+          "Quale domanda vorrei vedere risolta nero su bianco in questo periodo?"
         ],
-        "faq": []
+        "faq": [
+          {
+            "question": "Che cosa significa sognare un libro?",
+            "answer": "Il libro viene spesso associato al sapere, alla memoria e alle storie che ci raccontiamo. Il significato dipende da ciò che riuscivi a leggerci, dal suo stato e da ciò che hai provato tenendolo in mano."
+          },
+          {
+            "question": "Perché in sogno non si riesce a leggere?",
+            "answer": "Molte persone raccontano che il testo si confonde o cambia quando provano a leggerlo. È un tratto comune dei sogni, non un messaggio nascosto. La frustrazione che hai provato, invece, può avvicinarsi a una risposta che stai aspettando."
+          },
+          {
+            "question": "Che cosa significa sognare un libro con le pagine bianche?",
+            "answer": "Le pagine vuote possono accompagnare un inizio, una storia ancora da scrivere o la preoccupazione di non sapere che cosa metterci. La tua emozione, curiosità o angoscia, fa pendere la lettura da una parte o dall’altra."
+          },
+          {
+            "question": "Che cosa significa sognare di scrivere un libro?",
+            "answer": "Scrivere un libro in sogno può avvicinarsi al desiderio di dare forma alla tua storia, a un progetto creativo o al bisogno di riprendere in mano un racconto. Annota che cosa scrivevi, se te lo ricordi."
+          }
+        ],
+        "documentMetaDescription": "Sognare un libro illeggibile, con le pagine bianche o di scrivere un libro: che cosa può dire la scena di sapere e memoria, con domande ed esempio di diario."
       },
       "pt": {
         "slug": "livro",
