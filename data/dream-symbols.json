@@ -7697,47 +7697,152 @@
       "en": {
         "slug": "elevator",
         "name": "Elevator",
-        "shortDescription": "Elevators symbolize transitions, social mobility, and changes in life status. Going up suggests advancement; going down may indicate setbacks or exploring deeper levels.",
+        "shortDescription": "Dreaming of an elevator puts you in a moving box you do not fully steer. The scene is often linked to change and to how much control you feel over it: which way it went, how fast, and whether the doors opened where you meant to go.",
         "askYourself": [
-          "What transition am I experiencing?",
-          "Am I moving up or down in some area of life?"
-        ]
+          "Was the elevator going up, going down, or stuck between floors?",
+          "Who was pressing the buttons: me, someone else, or nobody?",
+          "Where in my life is something moving faster or slower than I want?"
+        ],
+        "faq": [
+          {
+            "question": "What does it mean to dream of an elevator?",
+            "answer": "An elevator is often associated with change and with how much control you feel over it. Its direction, its speed and the floor where the doors opened matter more than the elevator itself, along with how you felt inside."
+          },
+          {
+            "question": "What does it mean to dream of an elevator falling?",
+            "answer": "A falling elevator can go with a sense of losing your footing, after a setback or in a period that moves too fast. It is not a warning of an accident. The jolt can resemble the start many people feel as they drift off to sleep."
+          },
+          {
+            "question": "What does it mean to be stuck in an elevator in a dream?",
+            "answer": "Being stuck between floors can match a feeling of waiting: a decision on hold, a project that stalls, a stage of life you have left without arriving anywhere yet. Note who, if anyone, was stuck with you."
+          },
+          {
+            "question": "Why does the elevator go to the wrong floor in my dream?",
+            "answer": "Arriving at the wrong floor, or pressing buttons that do nothing, can echo a gap between what you planned and what is happening. Ask yourself where you are being taken somewhere you did not choose."
+          }
+        ],
+        "documentMetaDescription": "Dreaming of an elevator going up, falling or stuck between floors: what the scene may say about change and control, with questions and a journal example.",
+        "modifiedAt": "2026-10-08"
       },
       "fr": {
         "slug": "ascenseur",
         "name": "Ascenseur",
-        "shortDescription": "L'ascenseur symbolise les transitions, la mobilité sociale et les changements de statut dans la vie. Monter suggère une avancée ; descendre peut indiquer des revers ou l'exploration de niveaux plus profonds.",
+        "shortDescription": "Rêver d'un ascenseur, c'est se laisser porter dans une cabine qu'on ne dirige pas vraiment. La scène est souvent associée au changement et au contrôle : le sens du trajet, la vitesse et l'étage où les portes s'ouvrent comptent plus que l'appareil.",
         "askYourself": [
-          "Quelle transition est-ce que je vis ?",
-          "Est-ce que je monte ou descends dans un domaine de ma vie ?"
-        ]
+          "L'ascenseur montait-il, descendait-il, ou restait-il bloqué entre deux étages ?",
+          "Qui appuyait sur les boutons : moi, quelqu'un d'autre, personne ?",
+          "Dans quel domaine les choses vont-elles plus vite ou plus lentement que je ne le voudrais ?"
+        ],
+        "faq": [
+          {
+            "question": "Que signifie rêver d'un ascenseur ?",
+            "answer": "L'ascenseur est souvent associé au changement et au sentiment de le maîtriser, ou non. Le sens du trajet, la vitesse et l'étage d'arrivée comptent plus que l'appareil, tout comme ce que vous ressentiez dans la cabine."
+          },
+          {
+            "question": "Que signifie rêver d'un ascenseur qui tombe ?",
+            "answer": "Une chute d'ascenseur peut accompagner l'impression de perdre pied, après un revers ou dans une période qui va trop vite. Ce n'est pas l'annonce d'un accident. La secousse ressemble parfois au sursaut que beaucoup ressentent à l'endormissement."
+          },
+          {
+            "question": "Que signifie être bloqué dans un ascenseur en rêve ?",
+            "answer": "Rester coincé entre deux étages peut rejoindre un sentiment d'attente : une décision suspendue, un projet qui piétine, une étape quittée sans être encore arrivé ailleurs. Notez qui, le cas échéant, était coincé avec vous."
+          },
+          {
+            "question": "Pourquoi l'ascenseur m'emmène-t-il au mauvais étage ?",
+            "answer": "Arriver au mauvais étage, ou appuyer sur des boutons qui ne répondent pas, peut faire écho à un écart entre ce que vous aviez prévu et ce qui se passe. Demandez-vous où l'on vous emmène sans vous demander votre avis."
+          }
+        ],
+        "documentMetaDescription": "Rêver d'un ascenseur qui monte, qui tombe ou qui reste bloqué : ce que la scène peut dire du changement et du contrôle, avec questions et exemple de journal.",
+        "modifiedAt": "2026-10-08"
       },
       "es": {
         "slug": "ascensor",
         "name": "Ascensor",
-        "shortDescription": "Los ascensores simbolizan transiciones, movilidad social y cambios en el estatus de vida. Subir sugiere avance; bajar puede indicar retrocesos o exploración de niveles más profundos.",
+        "shortDescription": "Soñar con un ascensor es dejarte llevar en una cabina que no controlas del todo. La escena suele asociarse al cambio y al control: importan más la dirección, la velocidad y la planta en la que se abren las puertas que el propio ascensor.",
         "askYourself": [
-          "¿Qué transición estoy experimentando?",
-          "¿Estoy subiendo o bajando en algún área de la vida?"
-        ]
+          "¿El ascensor subía, bajaba o se quedó atascado entre dos plantas?",
+          "¿Quién pulsaba los botones: yo, otra persona o nadie?",
+          "¿En qué parte de mi vida van las cosas más rápido o más despacio de lo que quisiera?"
+        ],
+        "faq": [
+          {
+            "question": "¿Qué significa soñar con un ascensor?",
+            "answer": "El ascensor se asocia a menudo con el cambio y con la sensación de controlarlo, o no. Importan más la dirección, la velocidad y la planta de llegada que el propio ascensor, igual que lo que sentías dentro de la cabina."
+          },
+          {
+            "question": "¿Qué significa soñar con un ascensor que se cae?",
+            "answer": "Un ascensor que cae puede acompañar la sensación de perder pie, tras un tropiezo o en una época que va demasiado rápido. No anuncia un accidente. La sacudida se parece a veces al sobresalto que mucha gente nota al quedarse dormida."
+          },
+          {
+            "question": "¿Qué significa quedarse atrapado en un ascensor en sueños?",
+            "answer": "Quedarte parado entre dos plantas puede enlazar con una sensación de espera: una decisión en el aire, un proyecto que no avanza, una etapa que has dejado sin llegar todavía a otra. Anota quién estaba atrapado contigo, si había alguien."
+          },
+          {
+            "question": "¿Por qué en mi sueño el ascensor va a la planta equivocada?",
+            "answer": "Llegar a una planta que no elegiste, o pulsar botones que no responden, puede hacer eco de una distancia entre lo que tenías previsto y lo que está pasando. Pregúntate a dónde te están llevando sin consultarte."
+          }
+        ],
+        "documentMetaDescription": "Soñar con un ascensor que sube, que se cae o que se queda atascado: qué puede decir la escena sobre el cambio y el control, con preguntas y ejemplo de diario.",
+        "modifiedAt": "2026-10-08"
       },
       "de": {
         "slug": "aufzug",
         "name": "Aufzug",
-        "shortDescription": "Aufzüge symbolisieren schnelle Veränderungen im Status, Bewusstseinsebenen oder Lebenssituationen. Aufwärtsfahrten deuten auf Aufstieg hin, Abwärtsfahrten auf Abstieg oder Selbsterforschung.",
+        "shortDescription": "Im Traum Aufzug zu fahren heißt, sich von einer Kabine tragen zu lassen, die man nicht ganz selbst steuert. Die Szene wird oft mit Veränderung und Kontrolle verbunden: Richtung, Tempo und Ankunftsstockwerk sagen mehr als der Aufzug selbst.",
         "askYourself": [
-          "Erlebe ich schnelle Veränderungen?",
-          "In welche Richtung bewegt sich mein Leben?"
-        ]
+          "Fuhr der Aufzug nach oben, nach unten, oder steckte er zwischen zwei Stockwerken fest?",
+          "Wer hat die Knöpfe gedrückt: ich, jemand anderes oder niemand?",
+          "Wo geht es in meinem Leben gerade schneller oder langsamer voran, als mir lieb ist?"
+        ],
+        "faq": [
+          {
+            "question": "Was bedeutet es, von einem Aufzug zu träumen?",
+            "answer": "Der Aufzug wird oft mit Veränderung verbunden und mit der Frage, wie viel Kontrolle Sie darüber haben. Richtung, Tempo und das Stockwerk, in dem Sie ankommen, zählen mehr als der Aufzug selbst, ebenso wie Ihr Gefühl in der Kabine."
+          },
+          {
+            "question": "Was bedeutet ein abstürzender Aufzug im Traum?",
+            "answer": "Ein Absturz kann das Gefühl begleiten, den Boden unter den Füßen zu verlieren, nach einem Rückschlag oder in einer Phase, die zu schnell geht. Er kündigt keinen Unfall an. Der Ruck ähnelt manchmal dem Zucken, das viele Menschen beim Einschlafen spüren."
+          },
+          {
+            "question": "Was bedeutet es, im Traum im Aufzug stecken zu bleiben?",
+            "answer": "Zwischen zwei Stockwerken festzusitzen kann zu einem Gefühl des Wartens passen: eine Entscheidung, die aussteht, ein Projekt, das stockt, eine Lebensphase, die vorbei ist, ohne dass die nächste begonnen hat. Notieren Sie, wer mit Ihnen feststeckte."
+          },
+          {
+            "question": "Warum fährt der Aufzug im Traum ins falsche Stockwerk?",
+            "answer": "Im falschen Stockwerk anzukommen oder Knöpfe zu drücken, die nicht reagieren, kann eine Lücke zwischen Ihren Plänen und dem tatsächlichen Verlauf aufgreifen. Fragen Sie sich, wohin Sie gerade gebracht werden, ohne gefragt worden zu sein."
+          }
+        ],
+        "documentMetaDescription": "Aufzug im Traum, der nach oben fährt, abstürzt oder stecken bleibt: was die Szene über Veränderung und Kontrolle sagen kann, mit Fragen und Tagebuchbeispiel.",
+        "modifiedAt": "2026-10-08"
       },
       "it": {
         "slug": "ascensore",
         "name": "Ascensore",
-        "shortDescription": "Gli ascensori simboleggiano cambiamenti rapidi di status, livelli di coscienza o situazioni di vita. Salire indica ascesa, scendere può indicare declino o autoesplorazione.",
+        "shortDescription": "Sognare un ascensore significa lasciarti portare in una cabina che non guidi davvero. La scena viene spesso associata al cambiamento e al controllo: contano più la direzione, la velocità e il piano in cui si aprono le porte che l’ascensore in sé.",
         "askYourself": [
-          "Sto vivendo cambiamenti rapidi?",
-          "In quale direzione si sta muovendo la mia vita?"
-        ]
+          "L’ascensore saliva, scendeva o era bloccato tra due piani?",
+          "Chi premeva i pulsanti: io, qualcun altro o nessuno?",
+          "In quale ambito della mia vita le cose vanno più veloci o più lente di quanto vorrei?"
+        ],
+        "faq": [
+          {
+            "question": "Che cosa significa sognare un ascensore?",
+            "answer": "L’ascensore viene spesso associato al cambiamento e alla sensazione di controllarlo, o meno. Contano soprattutto la direzione, la velocità e il piano d’arrivo, insieme a ciò che provavi dentro la cabina."
+          },
+          {
+            "question": "Che cosa significa sognare un ascensore che precipita?",
+            "answer": "Un ascensore che precipita può accompagnare la sensazione di perdere terreno, dopo un insuccesso o in un periodo che corre troppo. Non annuncia un incidente. Lo strappo somiglia a volte al sobbalzo che molti avvertono mentre si addormentano."
+          },
+          {
+            "question": "Che cosa significa restare bloccati in ascensore in sogno?",
+            "answer": "Restare fermi tra due piani può avvicinarsi a una sensazione di attesa: una decisione sospesa, un progetto che non parte, una fase lasciata senza essere ancora arrivati altrove. Annota chi era bloccato con te, se c’era qualcuno."
+          },
+          {
+            "question": "Perché in sogno l’ascensore va al piano sbagliato?",
+            "answer": "Arrivare al piano sbagliato, o premere pulsanti che non rispondono, può fare eco a uno scarto tra ciò che avevi previsto e ciò che succede. Chiediti dove ti stanno portando senza chiederti il parere."
+          }
+        ],
+        "documentMetaDescription": "Sognare un ascensore che sale, che precipita o che si blocca: che cosa può dire la scena del cambiamento e del controllo, con domande ed esempio di diario.",
+        "modifiedAt": "2026-10-08"
       },
       "pt": {
         "slug": "elevador",
@@ -7768,47 +7873,152 @@
       "en": {
         "slug": "cliff",
         "name": "Cliff",
-        "shortDescription": "Cliffs represent major decisions, danger, or standing at the edge of significant change. They symbolize risk-taking and the fear of taking the next step.",
+        "shortDescription": "Dreaming of a cliff puts you at the edge, with the drop in full view. The scene is often linked to a decision, a risk or a change that has come close. What you did there matters most: freezing, stepping back, falling, jumping or climbing.",
         "askYourself": [
-          "What decision am I facing?",
-          "What risk am I afraid to take?"
-        ]
+          "Was I standing at the edge, falling, jumping or climbing?",
+          "What was below: sea, rocks, fog, nothing I could see?",
+          "Which decision or risk feels like a step into the void right now?"
+        ],
+        "faq": [
+          {
+            "question": "What does it mean to dream of a cliff?",
+            "answer": "A cliff is often associated with a limit: a decision, a risk, a change that is getting close. What you did at the edge, and what lay below, matter more than the cliff itself. How you felt is the main clue."
+          },
+          {
+            "question": "What does it mean to dream of falling off a cliff?",
+            "answer": "Falling can go with a feeling of losing control, or of a situation slipping away. It is not a prediction. Waking just before the impact is very common, and the idea that you would die if you hit the ground in a dream is a myth."
+          },
+          {
+            "question": "What does it mean to dream of jumping off a cliff?",
+            "answer": "Jumping on purpose is not the same scene as falling. It can match a choice made with open eyes, a leap into something new, or a wish to get out of a situation. If you have thoughts of ending your life when awake, talk to a doctor or a crisis line today."
+          },
+          {
+            "question": "What does it mean if someone pushes you off a cliff in a dream?",
+            "answer": "Being pushed puts another person at the center. The scene can echo a feeling that someone is forcing a change on you, or rushing a decision. Who pushed you, and where does your relationship with them stand right now?"
+          }
+        ],
+        "documentMetaDescription": "Dreaming of a cliff, falling off a cliff or jumping: what standing at the edge may say about a decision or a risk, with questions and a journal example.",
+        "modifiedAt": "2026-10-08"
       },
       "fr": {
         "slug": "falaise",
         "name": "Falaise",
-        "shortDescription": "Les falaises représentent des décisions majeures, le danger ou se tenir au bord d'un changement significatif. Elles symbolisent la prise de risque et la peur de faire le prochain pas.",
+        "shortDescription": "Rêver d'une falaise vous place au bord du vide, la chute sous les yeux. La scène est souvent associée à une décision, un risque ou un changement tout proche. Ce que vous y faisiez compte le plus : rester figé, reculer, tomber, sauter ou grimper.",
         "askYourself": [
-          "Quelle décision suis-je en train d'affronter ?",
-          "Quel risque ai-je peur de prendre ?"
-        ]
+          "Étais-je au bord, en train de tomber, de sauter ou de grimper ?",
+          "Qu'y avait-il en bas : la mer, des rochers, du brouillard, rien de visible ?",
+          "Quelle décision ou quel risque ressemble en ce moment à un pas dans le vide ?"
+        ],
+        "faq": [
+          {
+            "question": "Que signifie rêver d'une falaise ?",
+            "answer": "La falaise est souvent associée à une limite : une décision, un risque, un changement qui approche. Ce que vous faisiez au bord, et ce qu'il y avait en bas, comptent plus que la falaise elle-même. Votre émotion est l'indice principal."
+          },
+          {
+            "question": "Que signifie rêver de tomber d'une falaise ?",
+            "answer": "Tomber peut accompagner l'impression de perdre le contrôle ou de voir une situation vous échapper. Ce n'est pas une prédiction. Se réveiller juste avant l'impact est très fréquent, et l'idée qu'on mourrait en touchant le sol en rêve est une légende."
+          },
+          {
+            "question": "Que signifie sauter d'une falaise en rêve ?",
+            "answer": "Sauter volontairement n'est pas tomber. La scène peut rejoindre un choix fait en connaissance de cause, un saut vers du neuf ou l'envie de sortir d'une situation. Si, éveillé, vous pensez à mettre fin à vos jours, parlez-en dès aujourd'hui à un médecin ou appelez le 3114."
+          },
+          {
+            "question": "Que signifie être poussé d'une falaise en rêve ?",
+            "answer": "Être poussé place quelqu'un d'autre au centre. La scène peut faire écho au sentiment qu'on vous impose un changement, ou qu'on presse une décision. Qui vous a poussé, et où en est votre relation avec cette personne ?"
+          }
+        ],
+        "documentMetaDescription": "Rêver d'une falaise, de tomber d'une falaise ou de sauter dans le vide : ce que le bord peut dire d'une décision ou d'un risque, avec questions et exemple.",
+        "modifiedAt": "2026-10-08"
       },
       "es": {
         "slug": "acantilado",
         "name": "Acantilado",
-        "shortDescription": "Los acantilados representan decisiones importantes, peligro o estar al borde de un cambio significativo. Simbolizan tomar riesgos y el miedo a dar el siguiente paso.",
+        "shortDescription": "Soñar con un acantilado te pone al borde, con el vacío a la vista. La escena suele asociarse a una decisión, un riesgo o un cambio que se acerca. Lo que hacías allí es lo que más cuenta: quedarte quieto, retroceder, caer, saltar o trepar.",
         "askYourself": [
-          "¿Qué decisión estoy enfrentando?",
-          "¿Qué riesgo tengo miedo de tomar?"
-        ]
+          "¿Estaba en el borde, cayendo, saltando o trepando?",
+          "¿Qué había abajo: mar, rocas, niebla, nada que pudiera ver?",
+          "¿Qué decisión o qué riesgo se parece ahora mismo a un paso al vacío?"
+        ],
+        "faq": [
+          {
+            "question": "¿Qué significa soñar con un acantilado?",
+            "answer": "El acantilado se asocia a menudo con un límite: una decisión, un riesgo, un cambio que se acerca. Lo que hacías en el borde, y lo que había abajo, cuentan más que el acantilado en sí. Tu emoción es la pista principal."
+          },
+          {
+            "question": "¿Qué significa soñar que te caes por un acantilado?",
+            "answer": "Caer puede acompañar la sensación de perder el control o de que una situación se te escapa. No es una predicción. Despertarte justo antes del golpe es muy habitual, y la idea de que morirías si tocaras el suelo en sueños es un mito."
+          },
+          {
+            "question": "¿Qué significa soñar que saltas de un acantilado?",
+            "answer": "Saltar por voluntad propia no es lo mismo que caer. La escena puede enlazar con una decisión tomada con los ojos abiertos, un salto hacia algo nuevo o las ganas de salir de una situación. Si despierto piensas en quitarte la vida, habla hoy mismo con un médico o con una línea de ayuda."
+          },
+          {
+            "question": "¿Qué significa soñar que alguien te empuja por un acantilado?",
+            "answer": "Que te empujen pone a otra persona en el centro. La escena puede hacer eco de la sensación de que te imponen un cambio o te meten prisa con una decisión. ¿Quién te empujó y cómo está ahora tu relación con esa persona?"
+          }
+        ],
+        "documentMetaDescription": "Soñar con un acantilado, caer por un acantilado o saltar al vacío: qué puede decir el borde sobre una decisión o un riesgo, con preguntas y un ejemplo.",
+        "modifiedAt": "2026-10-08"
       },
       "de": {
         "slug": "klippe",
         "name": "Klippe",
-        "shortDescription": "Klippen symbolisieren Grenzpunkte, schwierige Entscheidungen und die Angst vor dem Unbekannten. Am Rand einer Klippe zu stehen deutet auf einen kritischen Wendepunkt hin.",
+        "shortDescription": "Im Traum an einer Klippe zu stehen heißt, den Abgrund vor Augen zu haben. Die Szene wird oft mit einer Entscheidung, einem Risiko oder einer nahen Veränderung verbunden. Entscheidend ist, was Sie dort taten: erstarren, fallen, springen, klettern.",
         "askYourself": [
-          "Stehe ich vor einer wichtigen Entscheidung?",
-          "Was ist der nächste Schritt, den ich wagen muss?"
-        ]
+          "Stand ich am Rand, bin ich gefallen, gesprungen oder geklettert?",
+          "Was lag unten: Meer, Felsen, Nebel, nichts Sichtbares?",
+          "Welche Entscheidung oder welches Risiko fühlt sich gerade wie ein Schritt ins Leere an?"
+        ],
+        "faq": [
+          {
+            "question": "Was bedeutet es, von einer Klippe zu träumen?",
+            "answer": "Die Klippe wird oft mit einer Grenze verbunden: einer Entscheidung, einem Risiko, einer Veränderung, die näher rückt. Was Sie am Rand getan haben und was unten lag, zählt mehr als die Klippe selbst. Ihr Gefühl ist der wichtigste Hinweis."
+          },
+          {
+            "question": "Was bedeutet es, im Traum von einer Klippe zu fallen?",
+            "answer": "Fallen kann das Gefühl begleiten, die Kontrolle zu verlieren oder dass Ihnen eine Situation entgleitet. Eine Vorhersage ist es nicht. Kurz vor dem Aufprall aufzuwachen ist sehr häufig, und die Vorstellung, man würde beim Aufprall im Traum sterben, ist ein Mythos."
+          },
+          {
+            "question": "Was bedeutet es, im Traum von einer Klippe zu springen?",
+            "answer": "Absichtlich zu springen ist etwas anderes als zu fallen. Die Szene kann zu einer bewusst getroffenen Entscheidung passen, zu einem Sprung ins Neue oder zum Wunsch, aus einer Lage herauszukommen. Denken Sie im Wachzustand daran, sich das Leben zu nehmen, sprechen Sie noch heute mit einer Ärztin, einem Arzt oder der Telefonseelsorge."
+          },
+          {
+            "question": "Was bedeutet es, im Traum von einer Klippe gestoßen zu werden?",
+            "answer": "Gestoßen zu werden rückt eine andere Person in den Mittelpunkt. Die Szene kann das Gefühl aufgreifen, dass Ihnen eine Veränderung aufgezwungen oder eine Entscheidung vorschnell abverlangt wird. Wer hat Sie gestoßen, und wie steht es gerade um Ihre Beziehung?"
+          }
+        ],
+        "documentMetaDescription": "Klippe im Traum, von einer Klippe fallen oder in den Abgrund springen: was der Rand über eine Entscheidung oder ein Risiko sagen kann, mit Fragen und Beispiel.",
+        "modifiedAt": "2026-10-08"
       },
       "it": {
         "slug": "scogliera",
         "name": "Scogliera",
-        "shortDescription": "Le scogliere simboleggiano punti limite, decisioni difficili e la paura dell'ignoto. Stare sul bordo di una scogliera indica un punto di svolta critico.",
+        "shortDescription": "Sognare una scogliera ti mette sul bordo, con il vuoto davanti. La scena viene spesso associata a una decisione, a un rischio o a un cambiamento vicino. Conta soprattutto che cosa facevi lì: restare fermo, cadere, saltare o arrampicarti.",
         "askYourself": [
-          "Mi trovo di fronte a una decisione importante?",
-          "Qual è il prossimo passo che devo osare?"
-        ]
+          "Ero sul bordo, stavo cadendo, saltando o arrampicandomi?",
+          "Che cosa c’era sotto: il mare, gli scogli, la nebbia, niente di visibile?",
+          "Quale decisione o quale rischio somiglia in questo periodo a un passo nel vuoto?"
+        ],
+        "faq": [
+          {
+            "question": "Che cosa significa sognare una scogliera?",
+            "answer": "La scogliera viene spesso associata a un limite: una decisione, un rischio, un cambiamento che si avvicina. Ciò che facevi sul bordo, e ciò che c’era sotto, contano più della scogliera in sé. La tua emozione è l’indizio principale."
+          },
+          {
+            "question": "Che cosa significa sognare di cadere da una scogliera o da un precipizio?",
+            "answer": "Cadere può accompagnare la sensazione di perdere il controllo o di vedere una situazione sfuggirti di mano. Non è una previsione. Svegliarsi poco prima dell’impatto è molto comune, e l’idea che si morirebbe toccando terra in sogno è una leggenda."
+          },
+          {
+            "question": "Che cosa significa sognare di saltare da una scogliera?",
+            "answer": "Saltare per scelta non è come cadere. La scena può avvicinarsi a una decisione presa a occhi aperti, a un salto verso qualcosa di nuovo o al desiderio di uscire da una situazione. Se da sveglio pensi di toglierti la vita, parlane oggi stesso con un medico o con un servizio di ascolto."
+          },
+          {
+            "question": "Che cosa significa sognare che qualcuno ti spinge giù da una scogliera?",
+            "answer": "Essere spinti mette un’altra persona al centro. La scena può fare eco alla sensazione che qualcuno ti imponga un cambiamento o ti metta fretta su una decisione. Chi ti ha spinto, e com’è oggi il tuo rapporto con questa persona?"
+          }
+        ],
+        "documentMetaDescription": "Sognare una scogliera, di cadere da una scogliera o di saltare nel vuoto: che cosa può dire il bordo di una decisione o di un rischio, con domande ed esempio.",
+        "modifiedAt": "2026-10-08"
       },
       "pt": {
         "slug": "penhasco",
@@ -7838,11 +8048,32 @@
       "en": {
         "slug": "lost",
         "name": "Being Lost",
-        "shortDescription": "Being lost in dreams symbolizes confusion, lack of direction, or uncertainty about life path. It often reflects feelings of being overwhelmed or disconnected from purpose.",
+        "shortDescription": "Being lost in a dream means streets you no longer recognize and a home you cannot reach. The scene is often linked to uncertainty or a period of change. Where you were lost, and whether you found your way, tell you more than the feeling alone.",
         "askYourself": [
-          "Where do I feel directionless in my life?",
-          "What guidance or clarity do I need?"
-        ]
+          "Where was I lost: a city, a building, nature, a place I should know?",
+          "Was I trying to reach somewhere specific, or just looking for a way out?",
+          "Where in my life do I not know, right now, which way to go?"
+        ],
+        "faq": [
+          {
+            "question": "What does it mean to dream of being lost?",
+            "answer": "Being lost is often associated with uncertainty: a decision you have not made, a transition, a period when your usual landmarks are gone. The place and what you were looking for matter more than being lost itself, along with how you felt."
+          },
+          {
+            "question": "What does it mean to dream you can't find your way home?",
+            "answer": "Not finding your way home can match a need for rest, safety or familiar faces, or a sense that your usual place has changed. Note what home looked like in the dream: your current one, a childhood home, or a place you do not know."
+          },
+          {
+            "question": "Why do I keep dreaming that I'm lost?",
+            "answer": "A recurring lost dream often comes back during periods of change or overload. Writing down the place and the destination each time helps you see what sets it off. If it turns into nightmares that regularly spoil your sleep, talk to a doctor."
+          },
+          {
+            "question": "What does it mean to be lost in a building or a maze in a dream?",
+            "answer": "Corridors that loop, floors that do not match, a maze with no exit: these scenes can echo a situation that feels tangled from the inside, at work or in a relationship. Ask yourself which door you kept trying."
+          }
+        ],
+        "documentMetaDescription": "Dreaming of being lost in a city, in a building or unable to find your way home: what the scene may say about uncertainty, with questions and an example.",
+        "modifiedAt": "2026-10-08"
       },
       "fr": {
         "slug": "perdu",
@@ -7860,29 +8091,92 @@
       "es": {
         "slug": "perdido",
         "name": "Estar Perdido",
-        "shortDescription": "Estar perdido en sueños simboliza confusión, falta de dirección o incertidumbre sobre el camino de vida. Refleja sentimientos de estar abrumado o desconectado del propósito.",
+        "shortDescription": "Perderte en sueños es caminar por calles que ya no reconoces y buscar una casa que no aparece. La escena suele asociarse a la incertidumbre o a una etapa de cambio. Dónde te perdías y si encontraste el camino dicen más que la sensación.",
         "askYourself": [
-          "¿Dónde me siento sin dirección en mi vida?",
-          "¿Qué guía o claridad necesito?"
-        ]
+          "¿Dónde me perdía: una ciudad, un edificio, la naturaleza, un sitio que debería conocer?",
+          "¿Intentaba llegar a un lugar concreto o solo buscaba una salida?",
+          "¿En qué parte de mi vida no sé ahora mismo hacia dónde ir?"
+        ],
+        "faq": [
+          {
+            "question": "¿Qué significa soñar que estás perdido?",
+            "answer": "Perderse se asocia a menudo con la incertidumbre: una decisión pendiente, una transición, una época en la que tus referencias habituales han desaparecido. El lugar y lo que buscabas cuentan más que el hecho de perderte, igual que lo que sentías."
+          },
+          {
+            "question": "¿Qué significa soñar que no encuentras el camino a casa?",
+            "answer": "No encontrar el camino a casa puede enlazar con una necesidad de descanso, de seguridad o de caras conocidas, o con la sensación de que tu sitio ha cambiado. Fíjate en cómo era la casa del sueño: la actual, la de tu infancia o una que no conoces."
+          },
+          {
+            "question": "¿Por qué sueño a menudo que me pierdo?",
+            "answer": "Un sueño recurrente de estar perdido suele volver en épocas de cambio o de sobrecarga. Anotar cada vez el lugar y el destino te ayuda a ver qué lo desencadena. Si se convierte en pesadillas que te estropean el descanso con frecuencia, consulta a un médico."
+          },
+          {
+            "question": "¿Qué significa perderse en un edificio o en un laberinto en sueños?",
+            "answer": "Pasillos que dan vueltas, plantas que no cuadran, un laberinto sin salida: estas escenas pueden hacer eco de una situación enrevesada vista desde dentro, en el trabajo o en una relación. Pregúntate qué puerta seguías intentando abrir."
+          }
+        ],
+        "documentMetaDescription": "Soñar que estás perdido en una ciudad, en un edificio o sin encontrar el camino a casa: qué puede decir la escena sobre la incertidumbre, con preguntas.",
+        "modifiedAt": "2026-10-08"
       },
       "de": {
         "slug": "verirrt",
         "name": "Sich verirren",
-        "shortDescription": "Sich zu verirren repräsentiert Verwirrung, fehlende Richtung und die Suche nach Sinn. Es kann darauf hinweisen, dass Sie sich von Ihren Zielen oder Ihrem wahren Selbst entfernt haben.",
+        "shortDescription": "Sich im Traum zu verirren heißt: Straßen, die man nicht mehr erkennt, ein Zuhause, das unerreichbar bleibt. Die Szene wird oft mit Unsicherheit oder Umbruch verbunden. Wo Sie sich verirrt haben und ob Sie den Weg fanden, sagt mehr als das Gefühl.",
         "askYourself": [
-          "Wo fühle ich mich orientierungslos?",
-          "Was habe ich aus den Augen verloren?"
-        ]
+          "Wo habe ich mich verirrt: in einer Stadt, einem Gebäude, der Natur, an einem Ort, den ich kennen müsste?",
+          "Wollte ich an einen bestimmten Ort, oder suchte ich nur einen Ausweg?",
+          "Wo in meinem Leben weiß ich gerade nicht, in welche Richtung es gehen soll?"
+        ],
+        "faq": [
+          {
+            "question": "Was bedeutet es, sich im Traum zu verirren?",
+            "answer": "Sich zu verirren wird oft mit Unsicherheit verbunden: einer offenen Entscheidung, einem Übergang, einer Phase, in der gewohnte Orientierungspunkte fehlen. Der Ort und das, was Sie gesucht haben, zählen mehr als das Verirren selbst, ebenso wie Ihr Gefühl."
+          },
+          {
+            "question": "Was bedeutet es, im Traum den Weg nach Hause nicht zu finden?",
+            "answer": "Den Heimweg nicht zu finden kann zu einem Bedürfnis nach Ruhe, Sicherheit oder vertrauten Menschen passen, oder zu dem Gefühl, dass sich Ihr gewohnter Platz verändert hat. Achten Sie darauf, welches Zuhause es war: das heutige, das aus der Kindheit oder ein unbekanntes."
+          },
+          {
+            "question": "Warum träume ich immer wieder, dass ich mich verirre?",
+            "answer": "Ein wiederkehrender Traum vom Verirren taucht oft in Phasen von Umbruch oder Überlastung auf. Wenn Sie jedes Mal Ort und Ziel notieren, erkennen Sie leichter, was ihn auslöst. Werden daraus Albträume, die Ihren Schlaf regelmäßig stören, sprechen Sie mit einer Ärztin oder einem Arzt."
+          },
+          {
+            "question": "Was bedeutet es, sich im Traum in einem Gebäude oder Labyrinth zu verirren?",
+            "answer": "Flure, die im Kreis führen, Stockwerke, die nicht zusammenpassen, ein Labyrinth ohne Ausgang: Solche Szenen können eine Situation aufgreifen, die sich von innen verworren anfühlt, im Beruf oder in einer Beziehung. Fragen Sie sich, an welcher Tür Sie es immer wieder versucht haben."
+          }
+        ],
+        "documentMetaDescription": "Sich im Traum verirren, in einer Stadt, einem Gebäude oder auf dem Heimweg: was die Szene über Unsicherheit sagen kann, mit Fragen und Tagebuchbeispiel.",
+        "modifiedAt": "2026-10-08"
       },
       "it": {
         "slug": "perdersi",
         "name": "Perdersi",
-        "shortDescription": "Perdersi rappresenta confusione, mancanza di direzione e la ricerca di significato. Può indicare che ti sei allontanato dai tuoi obiettivi o dal tuo vero sé.",
+        "shortDescription": "Perdersi in sogno significa camminare per strade che non riconosci più e cercare una casa che non compare. La scena viene spesso associata all’incertezza o a un cambiamento. Dove ti perdevi e se hai ritrovato la strada dicono più della sensazione.",
         "askYourself": [
-          "Dove mi sento disorientato?",
-          "Cosa ho perso di vista?"
-        ]
+          "Dove mi ero perso: in una città, in un edificio, nella natura, in un posto che avrei dovuto conoscere?",
+          "Cercavo di arrivare in un luogo preciso o cercavo solo un’uscita?",
+          "In quale ambito della mia vita, in questo periodo, non so che direzione prendere?"
+        ],
+        "faq": [
+          {
+            "question": "Che cosa significa sognare di perdersi?",
+            "answer": "Perdersi viene spesso associato all’incertezza: una decisione non ancora presa, una transizione, un periodo in cui i tuoi punti di riferimento abituali sono spariti. Il luogo e ciò che cercavi contano più del fatto di esserti perso, insieme a ciò che provavi."
+          },
+          {
+            "question": "Che cosa significa sognare di non trovare la strada di casa?",
+            "answer": "Non trovare la strada di casa può avvicinarsi a un bisogno di riposo, di sicurezza o di volti familiari, o alla sensazione che il tuo posto sia cambiato. Nota com’era la casa del sogno: quella attuale, quella dell’infanzia o una che non conosci."
+          },
+          {
+            "question": "Perché sogno spesso di perdermi?",
+            "answer": "Un sogno ricorrente in cui ti perdi torna spesso nei periodi di cambiamento o di sovraccarico. Annotare ogni volta il luogo e la destinazione aiuta a capire che cosa lo fa ripartire. Se diventa un incubo che ti rovina spesso il sonno, parlane con un medico."
+          },
+          {
+            "question": "Che cosa significa perdersi in un edificio o in un labirinto in sogno?",
+            "answer": "Corridoi che girano su se stessi, piani che non tornano, un labirinto senza uscita: queste scene possono fare eco a una situazione ingarbugliata vista da dentro, al lavoro o in una relazione. Chiediti quale porta continuavi a provare."
+          }
+        ],
+        "documentMetaDescription": "Sognare di perdersi in una città, in un edificio o di non trovare la strada di casa: che cosa può dire la scena dell’incertezza, con domande ed esempio.",
+        "modifiedAt": "2026-10-08"
       },
       "pt": {
         "slug": "estar-perdido",
@@ -8784,58 +9078,152 @@
       "en": {
         "slug": "mother",
         "name": "Mother",
-        "shortDescription": "A mother figure in a dream may bring up personal memories, care, expectations, closeness or distance. Her behavior and your feelings around her give the scene its individual context.",
-        "modifiedAt": "2026-07-24",
+        "shortDescription": "Dreaming of your mother often brings back a voice, a kitchen, a look you know by heart. The figure is commonly linked to care, expectations, closeness or distance. Her attitude in the dream, and how you felt with her, set the tone of the scene.",
+        "modifiedAt": "2026-10-08",
         "askYourself": [
-          "What did mother change in the scene?",
-          "Which feeling stayed with me after waking?"
+          "Was my mother as she is today, younger, older, or someone else entirely?",
+          "What did I feel with her: comfort, guilt, anger, longing?",
+          "What is going on right now between us, or in the care I give and receive?"
         ],
-        "faq": []
+        "faq": [
+          {
+            "question": "What does it mean to dream about your mother?",
+            "answer": "Your mother in a dream is often associated with care, expectations, protection or distance. The scene draws on your own memories, so her attitude and how you felt with her matter more than any general meaning."
+          },
+          {
+            "question": "What does it mean to dream about your mother who has died?",
+            "answer": "Dreaming of a mother who has died is common during grief, sometimes years later. The dream can bring comfort, sadness or both. Rather than a sign to decode, it often reflects the bond and what you still carry. If grief stays heavy for a long time, talking to someone can help."
+          },
+          {
+            "question": "What does it mean to dream that you argue with your mother?",
+            "answer": "An argument in a dream can echo a real tension, an old one, or a disagreement you keep to yourself. It does not mean the relationship is in danger. Ask yourself what you said in the dream that you rarely say when awake."
+          },
+          {
+            "question": "What does it mean to dream that your mother is sick or dies?",
+            "answer": "This kind of dream is upsetting, but it predicts nothing about her health. It can go with worry about an aging parent, a change in your role toward her, or a fear of separation. Note what was happening around you in the dream."
+          }
+        ],
+        "documentMetaDescription": "Dreaming of your mother, of a mother who has died or of arguing with her: what the scene may say about care and closeness, with questions and an example."
       },
       "fr": {
         "slug": "mere",
         "name": "Mère",
-        "shortDescription": "Une figure maternelle peut faire revenir des souvenirs personnels, des gestes de soin, des attentes, de la proximité ou de la distance. Son attitude et votre ressenti à ses côtés donnent à la scène son contexte propre.",
-        "modifiedAt": "2026-07-24",
+        "shortDescription": "Rêver de sa mère ramène une voix, une cuisine, un regard connu par cœur. Cette figure est souvent associée au soin, aux attentes, à la proximité ou à la distance. Son attitude, et ce que vous ressentiez près d'elle, donnent le ton de la scène.",
+        "modifiedAt": "2026-10-08",
         "askYourself": [
-          "Qu’est-ce que mère a changé dans la scène ?",
-          "Quelle émotion est restée après le réveil ?"
+          "Ma mère était-elle comme aujourd'hui, plus jeune, plus âgée, ou quelqu'un d'autre ?",
+          "Qu'ai-je ressenti avec elle : du réconfort, de la culpabilité, de la colère, du manque ?",
+          "Que se passe-t-il en ce moment entre nous, ou dans le soin que je donne et que je reçois ?"
         ],
-        "faq": []
+        "faq": [
+          {
+            "question": "Que signifie rêver de sa mère ?",
+            "answer": "La mère en rêve est souvent associée au soin, aux attentes, à la protection ou à la distance. La scène puise dans vos propres souvenirs : son attitude et ce que vous ressentiez près d'elle comptent plus qu'un sens général."
+          },
+          {
+            "question": "Que signifie rêver de sa mère décédée ?",
+            "answer": "Rêver de sa mère décédée est fréquent pendant un deuil, parfois des années après. Le rêve peut apaiser, attrister, ou les deux. Plutôt qu'un signe à décoder, il reflète souvent le lien et ce que vous portez encore. Si le deuil reste très lourd longtemps, en parler à quelqu'un peut aider."
+          },
+          {
+            "question": "Que signifie rêver de se disputer avec sa mère ?",
+            "answer": "Une dispute en rêve peut faire écho à une tension réelle, ancienne, ou à un désaccord que vous gardez pour vous. Elle ne signifie pas que la relation est menacée. Demandez-vous ce que vous avez dit dans le rêve et que vous dites rarement éveillé."
+          },
+          {
+            "question": "Que signifie rêver que sa mère est malade ou meurt ?",
+            "answer": "Ce rêve bouleverse, mais il ne prédit rien sur sa santé. Il peut accompagner l'inquiétude pour un parent qui vieillit, un changement de rôle envers elle ou une peur de la séparation. Notez ce qui se passait autour de vous dans le rêve."
+          }
+        ],
+        "documentMetaDescription": "Rêver de sa mère, de sa mère décédée ou d'une dispute avec elle : ce que la scène peut dire du lien, du soin et de la distance, avec questions et exemple."
       },
       "es": {
         "slug": "madre",
         "name": "Madre",
-        "shortDescription": "Una figura materna puede traer al sueño recuerdos personales, cuidados, expectativas, cercanía o distancia. Su actitud y lo que sentías a su lado dan a la escena su contexto particular.",
-        "modifiedAt": "2026-07-24",
+        "shortDescription": "Soñar con tu madre trae de vuelta una voz, una cocina, una mirada que conoces de memoria. Esta figura se asocia a menudo con el cuidado, las expectativas, la cercanía o la distancia. Su actitud, y lo que sentías con ella, dan el tono de la escena.",
+        "modifiedAt": "2026-10-08",
         "askYourself": [
-          "¿Qué cambió madre dentro de la escena?",
-          "¿Qué emoción siguió conmigo al despertar?"
+          "¿Mi madre era como hoy, más joven, más mayor, o alguien completamente distinto?",
+          "¿Qué sentí con ella: consuelo, culpa, rabia, añoranza?",
+          "¿Qué está pasando ahora entre ella y yo, o en el cuidado que doy y que recibo?"
         ],
-        "faq": []
+        "faq": [
+          {
+            "question": "¿Qué significa soñar con tu madre?",
+            "answer": "La madre en sueños se asocia a menudo con el cuidado, las expectativas, la protección o la distancia. La escena se alimenta de tus propios recuerdos: su actitud y lo que sentías con ella cuentan más que cualquier significado general."
+          },
+          {
+            "question": "¿Qué significa soñar con tu madre fallecida?",
+            "answer": "Soñar con una madre fallecida es frecuente durante el duelo, a veces años después. El sueño puede consolar, entristecer o ambas cosas. Más que una señal que descifrar, suele reflejar el vínculo y lo que aún llevas contigo. Si el duelo sigue pesando mucho tiempo, hablarlo con alguien puede ayudar."
+          },
+          {
+            "question": "¿Qué significa soñar que discutes con tu madre?",
+            "answer": "Una discusión en sueños puede hacer eco de una tensión real, antigua, o de un desacuerdo que te guardas. No significa que la relación esté en peligro. Pregúntate qué dijiste en el sueño que rara vez dices despierto."
+          },
+          {
+            "question": "¿Qué significa soñar que tu madre se muere o está enferma?",
+            "answer": "Es un sueño que angustia, pero no predice nada sobre su salud. Puede acompañar la preocupación por una madre que se hace mayor, un cambio en tu papel con ella o el miedo a la separación. Anota qué pasaba a tu alrededor en el sueño."
+          }
+        ],
+        "documentMetaDescription": "Soñar con tu madre, con tu madre fallecida o que discutes con ella: qué puede decir la escena sobre el cuidado y el vínculo, con preguntas y un ejemplo."
       },
       "de": {
         "slug": "mutter",
         "name": "Mutter",
-        "shortDescription": "Erscheint im Traum eine Mutterfigur, können deine eigene Mutter, Fürsorge oder eine vertraute Beziehung anklingen. Entscheidend ist, wie sie sich verhielt und ob du Nähe, Druck oder Distanz erlebt hast.",
+        "shortDescription": "Von der eigenen Mutter zu träumen bringt eine Stimme, eine Küche, einen vertrauten Blick zurück. Die Figur wird oft mit Fürsorge, Erwartungen, Nähe oder Distanz verbunden. Ihr Verhalten im Traum und Ihr Gefühl dabei geben der Szene ihren Ton.",
         "askYourself": [
-          "War es deine Mutter oder eine andere Mutterfigur?",
-          "Was tat oder sagte sie, und wie hast du darauf reagiert?",
-          "Wo erlebst du gerade eine ähnliche Mischung aus Fürsorge, Erwartung oder Abgrenzung?"
+          "War meine Mutter wie heute, jünger, älter oder ein ganz anderer Mensch?",
+          "Was habe ich bei ihr gefühlt: Trost, Schuld, Wut, Sehnsucht?",
+          "Was geschieht gerade zwischen uns, oder in der Fürsorge, die ich gebe und bekomme?"
         ],
-        "faq": [],
-        "modifiedAt": "2026-07-24"
+        "faq": [
+          {
+            "question": "Was bedeutet es, von der eigenen Mutter zu träumen?",
+            "answer": "Die Mutter im Traum wird oft mit Fürsorge, Erwartungen, Schutz oder Distanz verbunden. Die Szene schöpft aus Ihren eigenen Erinnerungen: Ihr Verhalten und Ihr Gefühl in ihrer Nähe zählen mehr als jede allgemeine Bedeutung."
+          },
+          {
+            "question": "Was bedeutet es, von der verstorbenen Mutter zu träumen?",
+            "answer": "Von der verstorbenen Mutter zu träumen ist in der Trauer häufig, manchmal noch Jahre später. Der Traum kann trösten, traurig machen oder beides. Statt eines Zeichens, das man entschlüsseln müsste, spiegelt er oft die Bindung und das, was Sie noch mit sich tragen. Bleibt die Trauer lange sehr schwer, kann ein Gespräch mit jemandem helfen."
+          },
+          {
+            "question": "Was bedeutet ein Streit mit der Mutter im Traum?",
+            "answer": "Ein Streit im Traum kann eine echte Spannung aufgreifen, eine alte, oder eine Meinungsverschiedenheit, die Sie für sich behalten. Er bedeutet nicht, dass die Beziehung in Gefahr ist. Fragen Sie sich, was Sie im Traum gesagt haben, das Sie im Wachen selten aussprechen."
+          },
+          {
+            "question": "Was bedeutet es, wenn die Mutter im Traum krank ist oder stirbt?",
+            "answer": "Ein solcher Traum erschüttert, sagt aber nichts über ihre Gesundheit voraus. Er kann die Sorge um eine älter werdende Mutter begleiten, eine veränderte Rolle Ihr gegenüber oder die Angst vor Trennung. Notieren Sie, was im Traum um Sie herum geschah."
+          }
+        ],
+        "modifiedAt": "2026-10-08",
+        "documentMetaDescription": "Von der Mutter träumen, von der verstorbenen Mutter oder einem Streit mit ihr: was die Szene über Fürsorge und Nähe sagen kann, mit Fragen und Beispiel."
       },
       "it": {
         "slug": "madre",
         "name": "Madre",
-        "shortDescription": "Una figura materna può riportare nel sogno ricordi personali, cura, aspettative, vicinanza o distanza. Il suo comportamento e ciò che provavi accanto a lei danno alla scena il suo contesto particolare.",
-        "modifiedAt": "2026-07-24",
+        "shortDescription": "Sognare tua madre riporta una voce, una cucina, uno sguardo che conosci a memoria. Questa figura viene spesso associata alla cura, alle aspettative, alla vicinanza o alla distanza. Il suo atteggiamento, e ciò che provavi con lei, danno il tono alla scena.",
+        "modifiedAt": "2026-10-08",
         "askYourself": [
-          "Che cosa ha cambiato madre nella scena?",
-          "Quale emozione è rimasta dopo il risveglio?"
+          "Mia madre era com’è oggi, più giovane, più anziana o una persona del tutto diversa?",
+          "Che cosa ho provato con lei: conforto, senso di colpa, rabbia, nostalgia?",
+          "Che cosa succede in questo periodo tra noi, o nella cura che do e che ricevo?"
         ],
-        "faq": []
+        "faq": [
+          {
+            "question": "Che cosa significa sognare la propria madre?",
+            "answer": "La madre in sogno viene spesso associata alla cura, alle aspettative, alla protezione o alla distanza. La scena attinge ai tuoi ricordi: il suo atteggiamento e ciò che provavi con lei contano più di qualsiasi significato generale."
+          },
+          {
+            "question": "Che cosa significa sognare la mamma morta?",
+            "answer": "Sognare la propria madre defunta è frequente durante il lutto, a volte anche anni dopo. Il sogno può consolare, rattristare o entrambe le cose. Più che un segno da decifrare, riflette spesso il legame e ciò che porti ancora con te. Se il lutto resta molto pesante a lungo, parlarne con qualcuno può aiutare."
+          },
+          {
+            "question": "Che cosa significa sognare di litigare con la mamma?",
+            "answer": "Un litigio in sogno può fare eco a una tensione reale, a una vecchia ferita o a un disaccordo che tieni per te. Non significa che il rapporto sia in pericolo. Chiediti che cosa hai detto nel sogno che da sveglio dici di rado."
+          },
+          {
+            "question": "Che cosa significa sognare che la mamma sta male o muore?",
+            "answer": "È un sogno che sconvolge, ma non predice nulla sulla sua salute. Può accompagnare la preoccupazione per una madre che invecchia, un cambiamento del tuo ruolo verso di lei o la paura della separazione. Annota che cosa succedeva intorno a te nel sogno."
+          }
+        ],
+        "documentMetaDescription": "Sognare la propria madre, la mamma morta o un litigio con lei: che cosa può dire la scena della cura e del legame, con domande ed esempio di diario."
       },
       "pt": {
         "slug": "mae",
