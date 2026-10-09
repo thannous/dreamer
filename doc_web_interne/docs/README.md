@@ -43,7 +43,7 @@ and `app.config.ts`. Meditation has its own package, lockfile and
 | Local Android build prerequisites | [Android tooling](../../scripts/README.md#local-android-prerequisites) | Java 17, Android SDK, local dependencies; requested native QA includes necessary isolated generation. `android:release:local -- --help` explains prebuild and install options. |
 | Android performance measurement | [Performance protocol](../../scripts/android/README-performance.md) | Pilot first, use the device lock and identify the installed binary. |
 | TalkBack qualification | [Motorola protocol](qualification-talkback.md) | Pilot the measurement method and restore device settings. |
-| CI routing and jobs | [CircleCI guide](circleci-migration.md) | Manual trigger only (web app or API, `force_full_validation`); `.circleci/config.yml`, `.circleci/continue.yml`, `.circleci/scripts/classify-changes.sh`; full local validation for releases. |
+| CI routing and jobs | [CircleCI guide](circleci-migration.md) | Manual or API trigger (`pipeline.event.name=api`, legacy OAuth `pipeline.trigger.type=api` or `pipeline.trigger_source=api`) or `force_full_validation`; webhook pushes run nothing. `.circleci/config.yml`, `.circleci/continue.yml`, `.circleci/scripts/classify-changes.sh`; full local validation for releases. |
 
 ## Find files before reading them
 

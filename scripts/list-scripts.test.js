@@ -14,6 +14,7 @@ describe('script catalog', () => {
   it('surfaces commands with side effects', () => {
     expect(scriptSafety('docs:deploy:prod')).toBe('publishes');
     expect(scriptSafety('docs:build')).toBe('writes generated files');
+    expect(scriptSafety('verify:fast')).toBe('writes generated files');
     expect(scriptSafety('android:release:local')).toBe('builds artifacts');
     expect(scriptSafety('generate-sitemap')).toBe('writes generated files');
     expect(scriptSafety('prepare')).toBe('writes local Git config');

@@ -69,15 +69,20 @@ function classify(base, head) {
   }
 }
 
-function runTypes(command) {
-  const result = spawnSync('npm', ['run', command], { stdio: 'inherit' });
+function runNpm(command, spawnSyncImpl = spawnSync) {
+  const result = spawnSyncImpl('npm', ['run', command], { stdio: 'inherit' });
   if (result.error) throw result.error;
   return Number.isInteger(result.status) ? result.status : 1;
 }
 
+function runTypes(command) {
+  return runNpm(command);
+}
+
 function runPrePush({
   argv = [], env = process.env, gitImpl = git, classifyImpl = classify,
-  runTypesImpl = runTypes, runJestImpl = runJestChanged, log = console.log,
+  runTypesImpl = runTypes, runJestImpl = runJestChanged, runNpmImpl = runNpm,
+  observeImpl, log = console.log,
 } = {}) {
   if (argv.length) throw new Error('test:prepush does not accept test filters; use test:file for a focused development check.');
   requireCleanTree(gitImpl);
@@ -110,10 +115,21 @@ function runPrePush({
   } else {
     log('No root Jest tests selected by CI classification. Other surface-specific checks still apply.');
   }
+  // The classifier's run_site flag is the site-input allowlist (docs-src,
+  // generators, symbol and guide data). Build and check before the final
+  // clean-tree read so a generated tracked file cannot hide behind the SHA.
+  if (parameters.run_site) {
+    for (const command of ['docs:build', 'docs:check']) {
+      log(`Pre-push site surface: npm run ${command}`);
+      const status = runNpmImpl(command);
+      if (status !== 0) return status;
+    }
+  }
   requireCleanTree(gitImpl);
   if (gitImpl(['rev-parse', 'HEAD']) !== head || resolveChangedSince({}, gitImpl) !== base) {
     throw new Error('HEAD or the comparison base changed during validation. Validate the final revision again.');
   }
+  if (typeof observeImpl === 'function') observeImpl(parameters);
   log(`Pre-push ${needsJest ? 'tests passed' : 'Jest not applicable'} for HEAD=${head} base=${base}. This is local evidence, not a remote CI verdict.`);
   return 0;
 }
@@ -130,4 +146,4 @@ if (require.main === module) {
   }
 }
 
-module.exports = { buildJestArgs, resolveChangedSince, runJestChanged, runPrePush };
+module.exports = { buildJestArgs, resolveChangedSince, runJestChanged, runNpm, runPrePush };

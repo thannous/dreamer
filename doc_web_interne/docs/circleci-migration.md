@@ -15,27 +15,37 @@ crédits (machine `ubuntu-2404`, conteneurs TesterArmy parallèles). Désormais 
    (`scripts/install-git-hooks.js`) règle `core.hooksPath` sur `.githooks`,
    sauf hors dépôt Git (EAS, hébergeurs) ou si un autre chemin est déjà
    configuré. Le hook lance `npm run verify:fast` sur le commit extrait :
-   `test:prepush` (classification décrite ci-dessous, types, Jest affecté),
-   puis `lint` et `lint:scripts`. Il ne fait rien pour une suppression de
-   branche ou un push sans nouveau commit, refuse de tourner sans dépendances
-   installées en affichant la commande d'installation, et affiche la commande
-   lancée, le SHA et la durée. `git push --no-verify` reste possible pour un
-   humain ; les agents ne l'utilisent jamais.
+   `test:prepush` (classification décrite ci-dessous, types, Jest affecté, et
+   `docs:build` plus `docs:check` quand le classificateur pose `run_site`),
+   puis `lint` et `lint:scripts`. Si le classificateur ne sélectionne aucune
+   surface produit (documentation interne, markdown de planification, `docs/`
+   généré), lint est sauté ; le SHA du commit extrait reste affiché. Le
+   contenu du site (`docs-src/`, générateurs, données symbole ou guide déjà
+   routées vers le site) n'emprunte pas ce raccourci. Le hook ne fait rien
+   pour une suppression de branche ou un push sans nouveau commit, refuse de
+   tourner sans dépendances installées en affichant la commande
+   d'installation, et affiche la commande lancée, le SHA et la durée.
+   `git push --no-verify` reste possible pour un humain ; les agents ne
+   l'utilisent jamais.
 2. **Preuve écrite.** Le modèle `.github/pull_request_template.md` demande les
    commandes lancées, le SHA contrôlé, le résultat et ce qui reste non vérifié.
    La revue passe par les commentaires de la PR.
-3. **CircleCI sur déclenchement manuel uniquement.** Le workflow `setup` de
-   `.circleci/config.yml` porte `when: { equal: [ api, << pipeline.event.name >> ] }`.
-   `pipeline.event.name` vaut `api` pour un déclenchement manuel depuis
-   l'application web ou par l'API
-   ([options de déclenchement GitHub](https://circleci.com/docs/guides/orchestrate/github-trigger-event-options/),
-   [valeurs de pipeline](https://circleci.com/docs/reference/variables/#pipeline-values)) ;
-   push, PR, tag et schedule donnent `push`, `pull_request` ou `schedule`. Ces
-   pipelines webhook n'exécutent donc aucun workflow et ne consomment aucun
-   crédit. `pipeline.trigger_source`, encore présent dans d'anciens exemples,
-   est déprécié par la référence au profit de `pipeline.trigger.type`.
-   `.circleci/continue.yml` est inchangé ; `.circleci/tests/fallback-jest.test.sh`
-   vérifie ce verrou.
+3. **CircleCI sur déclenchement manuel ou API uniquement.** Le workflow
+   `setup` de `.circleci/config.yml` s'exécute si l'une de ces conditions est
+   vraie : `pipeline.event.name` vaut `api` (application GitHub,
+   [options de déclenchement](https://circleci.com/docs/guides/orchestrate/github-trigger-event-options/) ;
+   le [cookbook](https://circleci.com/docs/guides/orchestrate/orchestration-cookbook/)
+   précise que cette valeur est réservée à l'application GitHub) ;
+   `pipeline.trigger.type` vaut `api` (intégration OAuth historique : `api`
+   pour l'API ou le bouton Trigger Pipeline, `github_oauth` pour un webhook
+   automatique, voir les
+   [valeurs de pipeline](https://circleci.com/docs/reference/variables/)) ;
+   `pipeline.trigger_source` vaut `api` (ancienne orthographe `api`, `webhook`,
+   `scheduled_pipeline`, dépréciée au 2026-08-01 au profit de
+   `pipeline.trigger.type` ; `webhook` et `scheduled_pipeline` ne lancent
+   rien) ; ou `force_full_validation` vaut `true`. Un push webhook automatique
+   ne consomme aucun crédit. `.circleci/continue.yml` est inchangé ;
+   `.circleci/tests/fallback-jest.test.sh` vérifie chaque combinaison.
 4. **Avant fusion**, si `master` a bougé depuis le contrôle, fusionner `master`
    dans la branche et repousser : le hook relance le contrôle sur la nouvelle
    tête, dont le SHA remplace celui de la preuve.
@@ -95,8 +105,7 @@ flowchart LR
   S --> C{Classification du diff}
   C -->|Noctalia racine| N[Types, lint, Jest ciblé + JUnit]
   C -->|apps/meditation| M[Types, lint, Jest Meditation + JUnit]
-  C -->|site SEO/vitrine seul| Z[No-op explicite]
-  C -->|générateur ou donnée partagée site| D[docs:build et docs:check]
+  C -->|docs-src, générateur ou donnée site| D[docs:build et docs:check]
   C -->|Edge runtime| E[Deno check et tests + JUnit]
   C -->|Supabase DB| B[Contrats statiques Jest + JUnit]
   C -->|documentation interne| Z[No-op explicite]
@@ -120,7 +129,7 @@ opérateur, pas un accès implicite à une base distante depuis la CI.
 | non couvert auparavant | `meditation-quality` + JSON/JUnit | `apps/meditation/**` ou outil Node global |
 | `test-fast` | suite complète dans `noctalia-quality` | tag/release ou `force_full_validation=true` seulement |
 | artifact `jest-timing` | artifact + cache `jest-timing-master-v1-` | baseline publiée seulement par un full manuel sur `master` |
-| `site-build` | `site-build` | Générateurs et données partagées du site seulement |
+| `site-build` | `site-build` | `docs-src/**`, générateurs et données partagées du site |
 | `edge-functions` | `edge-functions` | Runtime Deno et lockfile Edge |
 | contrats noyés dans Jest racine | `edge-contracts` | migrations, manifest DB et routes à contrat croisé |
 
@@ -132,9 +141,10 @@ aucun import traversant vers la racine. Son job exécute donc exclusivement
 
 Noctalia garde les deux typechecks, `lint`, `lint:scripts` et les tests liés au
 diff. Les validations complètes ajoutent `test:fast` dans le même job afin de ne
-pas refaire un second `npm ci`. Les changements purs `docs-src/**` de la vitrine
-sont laissés au build Cloudflare Pages ; les générateurs et données partagées
-gardent `docs:build` et `docs:check`. Edge
+pas refaire un second `npm ci`. Tout `docs-src/**` suivi par le classificateur,
+ainsi que les générateurs et les données partagées, lance `docs:build` et
+`docs:check` (en CI manuelle et, localement, dans `verify:fast`). Cloudflare
+Pages reconstruit ensuite le site. Edge
 vérifie les quatre entrypoints Deno et teste `api` plus `revenuecat-webhook`.
 Les contrats DB exécutent uniquement les huit tests Node qui lisent les
 migrations, le manifest ou les routes partagées. Tous les jobs de test publient
@@ -148,9 +158,10 @@ La classification est une allowlist avec repli fail-closed :
   assets et configs racine activent Noctalia, sans site ;
 - `apps/meditation/**` active seulement Meditation, y compris son package et
   son lockfile ;
-- `docs-src/` éditorial et `docs/` seuls produisent un no-op, sans install,
-  build ni tests ; `docs-src/static/scripts/**`, `docs-src/experience/**`, les
-  entrées site de `data/` et les générateurs identifiés activent le build site ;
+- `docs-src/**` (y compris le contenu éditorial), `docs-src/static/scripts/**`,
+  `docs-src/experience/**`, les entrées site de `data/` et les générateurs
+  identifiés activent le build site (`docs:build` et `docs:check`) ; `docs/`
+  généré seul produit un no-op ;
 - `supabase/functions/`, `supabase/lib/` et les lockfiles Deno activent Deno ;
 - migrations, manifest DB et tests de contrat identifiés activent seulement
   `edge-contracts` ; trois routes Edge lues directement par ces contrats
