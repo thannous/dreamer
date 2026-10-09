@@ -3,6 +3,7 @@
 
 import assert from 'node:assert/strict';
 import { spawnSync } from 'node:child_process';
+import { createHash } from 'node:crypto';
 import { existsSync, lstatSync, mkdirSync, mkdtempSync, readFileSync, readlinkSync, rmSync, symlinkSync, writeFileSync } from 'node:fs';
 import os from 'node:os';
 import path from 'node:path';
@@ -21,6 +22,10 @@ import {
 } from './verify-local.mjs';
 
 const ENGINE = fileURLToPath(new URL('./verify-local.mjs', import.meta.url));
+// sha256 of the engine shared by the five repositories. An edit to
+// scripts/verify-local.mjs in one repository alone fails here: change the
+// engine in all five at once, then update this value in all five.
+const ENGINE_SHA256 = 'fcf7d9f10b702a236c99eacdde2467cac93fe080db0bd3710e57c44568c917c1';
 const scratch = mkdtempSync(path.join(os.tmpdir(), 'verify-local-test-'));
 after(() => rmSync(scratch, { recursive: true, force: true }));
 
@@ -93,6 +98,13 @@ function makeRepository() {
   const options = { cwd: work, env, log: (line) => lines.push(line), worktreeRoot: path.join(base, 'worktrees') };
   return { base, origin, work, env, git, write, commit, runs, clearRuns, lines, options };
 }
+
+describe('shared engine', () => {
+  test('the engine is the version shared by the five repositories', () => {
+    const actual = createHash('sha256').update(readFileSync(ENGINE)).digest('hex');
+    assert.equal(actual, ENGINE_SHA256, 'scripts/verify-local.mjs differs from the shared engine; change it in all five repositories at once and update ENGINE_SHA256');
+  });
+});
 
 describe('globs', () => {
   test('** crosses directories, * does not, a trailing slash is a prefix', () => {
