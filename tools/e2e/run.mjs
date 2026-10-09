@@ -351,7 +351,12 @@ try {
       inspectionStarted = true;
       status = await execute(process.execPath, [deviceCli, 'open', bundle, '--foreground', ...target], 'open.txt');
       if (status === 0) {
-        status = await execute(process.execPath, [deviceCli, 'snapshot', '-i', ...target], 'screen.txt');
+        const logging = await execute(process.execPath, [deviceCli, 'logs', 'clear', '--restart', ...target], 'logs-start.txt');
+        if (logging === 0) {
+          status = await execute(process.execPath, [deviceCli, 'open', bundle, '--relaunch', '--foreground', ...target], 'relaunch.txt');
+          await execute(process.execPath, [deviceCli, 'logs', 'path', ...target], 'logs-path.txt');
+        }
+        if (status === 0) status = await execute(process.execPath, [deviceCli, 'snapshot', '-i', ...target], 'screen.txt');
         // A failed snapshot needs the same driver's screenshot for diagnosis.
         // Preserve its failure even when the screenshot succeeds.
         const screenshotStatus = await execute(process.execPath, [deviceCli, 'screenshot', join(output, 'screen.png'), ...target], 'screenshot.txt');
