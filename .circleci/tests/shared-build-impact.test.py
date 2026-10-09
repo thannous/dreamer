@@ -51,6 +51,18 @@ class BuildImpact(unittest.TestCase):
             with self.assertRaises(ValueError):
                 impact.without_mobile_jobs(text)
 
+    def test_git_deployments_are_disabled(self):
+        config = json.loads((ROOT / "vercel.json").read_text())
+        self.assertIs(config["git"]["deploymentEnabled"], False)
+        watched = [ROOT / ".circleci/config.yml", ROOT / ".circleci/continue.yml"]
+        github = ROOT / ".github"
+        if github.is_dir():
+            watched.extend(path for path in github.rglob("*") if path.is_file())
+        for path in watched:
+            text = path.read_text(encoding="utf-8", errors="replace")
+            for forbidden in ("vercel deploy", "vercel --prod", "wrangler pages deploy", "docs:deploy:prod"):
+                self.assertNotIn(forbidden, text, f"{path.relative_to(ROOT)} must not publish production")
+
     def test_vercel_skips_previews_and_filters_other_environments(self):
         command = json.loads((ROOT / "vercel.json").read_text())["ignoreCommand"]
         revision = iter(range(1000))

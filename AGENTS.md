@@ -25,7 +25,7 @@ pushes run nothing. Find filenames with
 - `tests/` and colocated `__tests__/`: route, integration, unit, and performance tests.
 - `doc_web_interne/docs/`: internal runbooks, QA evidence, and plans.
 
-Cloudflare Pages builds `docs/` from tracked sources on `master`; verify the branch and deployment intent before publishing.
+Production for the Vercel app and for https://noctalia.app is manual. A push to `master` is not a publish. See [Publishing to production](#publishing-to-production).
 
 ## Subproject routing
 
@@ -278,6 +278,55 @@ See [the proportional validation guide](doc_web_interne/docs/validation-proporti
 - Android: `npm run android:gates`, `npm run security:audit:mobile`, and the smallest applicable `test:e2e:*` script; `test:e2e:android:all` is not the default.
 
 Commit source inputs and tracked manifests, never generated `docs/`. Deployment commands always require explicit publication intent.
+
+## Publishing to production
+
+Production publishes are manual. They happen only when the founder or the CTO decides to publish. A Git push or merge to `master` must not deploy production by itself.
+
+Publish one `master` SHA. `verify:full` and `verify:site` are not npm scripts. The Local proof for that SHA must show `npm run verify:fast` passed. When the change includes the marketing site, the same proof must show `npm run docs:build` and `npm run docs:check` passed. `verify:fast` runs those two when the classifier selects the site. Run them explicitly when it does not. `npm run docs:deploy:prod` runs `docs:release-check` before the upload. A merge made on GitHub creates a new SHA that the pre-push hook did not check. Run the checks on that merged `master` SHA before publishing it.
+
+### Vercel (noctalia.vercel.app and dream.noctalia.app)
+
+Project `thanhs-projects-9baa3976/noctalia`. `vercel.json` sets `git.deploymentEnabled` to `false`, so no branch, including `master`, creates a Git deployment. Preview deployments from Git stop as well. `ignoreCommand` does not start a deployment. It only skips or continues a build that Vercel has already started, and Git pushes no longer start one. No GitHub Action and no CircleCI job runs the Vercel CLI. CircleCI does not run on webhook pushes, and its jobs do not publish.
+
+From a clean checkout of the approved SHA (`git rev-parse HEAD` equals that SHA), with `VERCEL_TOKEN` set. Do not commit the token.
+
+```sh
+vercel link --yes --scope thanhs-projects-9baa3976 --project noctalia
+vercel deploy --prod --yes --token "$VERCEL_TOKEN" --scope thanhs-projects-9baa3976
+```
+
+To promote an existing deployment instead of building again:
+
+```sh
+vercel promote <deployment-url-or-id> --token "$VERCEL_TOKEN" --scope thanhs-projects-9baa3976
+```
+
+### Cloudflare Pages (https://noctalia.app)
+
+Project `noctalia`. There is no `wrangler.toml` and no `pages_build_output_dir`. CircleCI and GitHub Actions do not run `wrangler pages deploy`. `docs-src/config/cloudflare-pages.json` records the build settings. A Git push does not apply that file. Production auto-deploy is the Cloudflare Pages Git integration, which is a dashboard setting. Turn it off before treating `master` as publish-on-decision:
+
+1. Open Workers & Pages and select the Pages project `noctalia`.
+2. Open Build, then edit Branch control, and turn off Enable automatic production branch deployments. The same control is labeled Settings, Builds and deployments, production branch, in older dashboard copy.
+3. Leave preview deployments on. They do not update `noctalia.app`. Set Preview branch to None only when preview builds should stop too.
+
+Until step 2 is saved, a push to `master` still publishes the site.
+
+After that, from a clean checkout of the approved SHA, set `CLOUDFLARE_API_TOKEN` (Pages edit) and `CLOUDFLARE_ACCOUNT_ID`. Do not commit either value.
+
+```sh
+npm run docs:deploy:prod
+```
+
+That runs `docs:release-check`, stages allowlisted runtime files, and uploads them with Wrangler. The command it runs is `npx wrangler pages deploy <staging> --project-name noctalia --branch master --commit-hash <HEAD>`. `--branch master` is the production branch, so the upload updates `noctalia.app`. Flags are the ones documented for `wrangler pages deploy`: `--project-name`, `--branch`, `--commit-hash`.
+
+The direct upload of the generated output, without the allowlist, is:
+
+```sh
+npx wrangler pages deploy docs --project-name noctalia --branch master --commit-hash <sha>
+```
+
+Prefer `npm run docs:deploy:prod`. It refuses internal files that a raw `docs/` upload would include. Cloudflare documents that a Git-connected Pages project can take these Wrangler uploads after automatic deployments are disabled. The project stays Git-connected. It does not become a Direct Upload-only project.
 
 ## Code and Test Conventions
 

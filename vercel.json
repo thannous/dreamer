@@ -1,10 +1,7 @@
 {
   "$schema": "https://openapi.vercel.sh/vercel.json",
   "git": {
-    "deploymentEnabled": {
-      "**": false,
-      "master": true
-    }
+    "deploymentEnabled": false
   },
   "ignoreCommand": "[ \"$VERCEL_ENV\" = preview ] && exit 0; node scripts/vercel-ignore-build.mjs",
   "headers": [

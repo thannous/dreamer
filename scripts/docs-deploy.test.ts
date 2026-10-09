@@ -75,6 +75,24 @@ describe('docs-deploy helpers', () => {
     ]);
   });
 
+  it('records the publish SHA with the documented Wrangler flags', () => {
+    const config = loadCloudflarePagesConfig(tmpRoot);
+    const sha = '0123456789abcdef0123456789abcdef01234567';
+
+    expect(buildWranglerDeployArgs(config, 'prod', '/tmp/noctalia-pages/public', sha)).toEqual([
+      'wrangler',
+      'pages',
+      'deploy',
+      '/tmp/noctalia-pages/public',
+      '--project-name',
+      'noctalia',
+      '--branch',
+      'main',
+      '--commit-hash',
+      sha,
+    ]);
+  });
+
   it('deploys an explicitly supplied clean staging directory', () => {
     const config = loadCloudflarePagesConfig(tmpRoot);
 

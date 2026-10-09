@@ -47,9 +47,9 @@ function loadCloudflarePagesConfig(rootDir = ROOT_DIR) {
   };
 }
 
-function buildWranglerDeployArgs(config, target, deployDir = 'docs') {
+function buildWranglerDeployArgs(config, target, deployDir = 'docs', commitHash) {
   const branch = target === 'prod' ? config.productionBranch : config.previewBranch;
-  return [
+  const args = [
     'wrangler',
     'pages',
     'deploy',
@@ -59,6 +59,25 @@ function buildWranglerDeployArgs(config, target, deployDir = 'docs') {
     '--branch',
     branch,
   ];
+  if (commitHash) {
+    args.push('--commit-hash', commitHash);
+  }
+  return args;
+}
+
+function readHeadCommit(rootDir = ROOT_DIR) {
+  const result = spawnSync('git', ['rev-parse', 'HEAD'], {
+    cwd: rootDir,
+    encoding: 'utf8',
+  });
+  if (result.status !== 0) {
+    throw new Error('Cloudflare publish requires a git checkout so --commit-hash can record the SHA.');
+  }
+  const hash = String(result.stdout || '').trim();
+  if (!/^[0-9a-f]{40}$/i.test(hash)) {
+    throw new Error(`Cloudflare publish requires a full 40-character commit SHA (got "${hash}").`);
+  }
+  return hash;
 }
 
 function run(command, args, options = {}) {
@@ -78,8 +97,8 @@ function printHelp() {
   console.log(`Usage: node scripts/docs-deploy.js <preview|prod>
 
 Runs the docs checks, creates a clean allowlisted staging directory, and uploads
-that runtime-only directory to Cloudflare Pages.
-Configuration lives in ${CONFIG_PATH}.`);
+that runtime-only directory to Cloudflare Pages. The upload records git HEAD
+with --commit-hash. Configuration lives in ${CONFIG_PATH}.`);
 }
 
 function parseTarget(argv = process.argv.slice(2)) {
@@ -111,7 +130,8 @@ function main() {
     console.log(
       `[docs-deploy] Clean staging: ${summary.files} runtime files, ${summary.bytes} bytes.`
     );
-    const wranglerArgs = buildWranglerDeployArgs(config, target, staging.deployDir);
+    const commitHash = readHeadCommit();
+    const wranglerArgs = buildWranglerDeployArgs(config, target, staging.deployDir, commitHash);
     run('npx', wranglerArgs);
   } finally {
     staging.cleanup();
@@ -131,4 +151,5 @@ module.exports = {
   buildWranglerDeployArgs,
   loadCloudflarePagesConfig,
   parseTarget,
+  readHeadCommit,
 };
