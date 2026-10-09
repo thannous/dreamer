@@ -18457,24 +18457,149 @@
     },
     "unable-to-speak": {
       "en": {
-        "fullInterpretation": "<p>Unable to speak can feel oddly specific in a dream, which is why it is worth taking seriously without taking it literally. It often gathers several threads at once: pressure, reaction, avoidance, release, and the way you handle a moment that demands movement.</p>\n<p>Notice whether the dream made the symbol familiar or strange. Familiar details can point toward lived memory; strange details may show that an old pattern is being seen from a new angle.</p>\n<p>The strongest clue is usually emotional. Relief, shame, fear, curiosity, irritation, or longing will narrow the meaning faster than any universal interpretation.</p>\n<p>If you record the dream in Noctalia, keep one sentence for what happened and one sentence for what it reminded you of. That small contrast often reveals the real theme.</p>",
-        "variations": []
+        "fullInterpretation": "<p><strong>You open your mouth, and nothing comes out.</strong> Or the words come out as a whisper, or no one seems to hear them. Being unable to speak in a dream is often associated with something left unsaid, or with a feeling of not being heard. That is a common lead, not a rule. Who you wanted to reach, and what you wanted to say, matter more than the silence itself.</p>\n<p><strong>Was your voice gone, or was no one listening?</strong> A voice that will not come can echo a moment when you hold back: an objection swallowed in a meeting, an apology you keep postponing. Speaking clearly while others ignore you points more toward feeling left out. If the scene turned into shouting, compare with <a class=\"text-dream-salmon hover:underline\" href=\"/en/symbols/screaming\">screaming</a>; if the trouble was in the mouth itself, teeth or tongue, see <a class=\"text-dream-salmon hover:underline\" href=\"/en/symbols/mouth\">mouth</a>.</p>\n<p><strong>Is there also a physical explanation?</strong> During REM sleep, most muscles are nearly at rest. This may partly explain why a voice feels weak or stuck in dreams, without ruling out a link with your days. If you wake up unable to speak or move for a few moments, it may be sleep paralysis: the <a class=\"text-dream-salmon hover:underline\" href=\"/en/blog/sleep-paralysis-guide\">sleep paralysis guide</a> explains it and says when to see a doctor.</p>\n<p><strong>Fictional journal example:</strong> \"I was in my parents' kitchen, trying to tell them something important. My lips were moving, but no sound came out. They just kept clearing the table.\" Scene: a message that does not get through, in a family setting. Emotion: frustration, then sadness. Possible context: a decision you have not yet shared with your family. Question: \"What am I not saying, and to whom?\"</p>\n<p><strong>Method:</strong> this page offers questions and possible associations, not a universal meaning or a prediction. It follows Noctalia's <a href=\"/en/dream-content-methodology\">content methodology</a> and is edited by <a href=\"/en/about\">Thanh Chau</a>, publication director of Noctalia.</p>",
+        "variations": [
+          {
+            "context": "A voice that will not come out",
+            "meaning": "You try to speak and nothing comes. Note whether you felt afraid, ashamed or simply blocked. The scene can echo words you hold back during the day: what were you about to say?"
+          },
+          {
+            "context": "Speaking but no one hears you",
+            "meaning": "Your voice works, yet people carry on as if you were not there. This can match a feeling of being overlooked. Who in the scene should have heard you?"
+          },
+          {
+            "context": "Unable to call for help",
+            "meaning": "Calling for help without a sound is often frightening. The scene can go with a moment when you hesitate to ask for support. Was help close by, or nowhere in sight?"
+          },
+          {
+            "context": "Losing your words in front of an audience",
+            "meaning": "Going silent during a talk, an exam or a meeting can echo pressure to perform. It does not predict that you will fail. What was at stake in front of these people?"
+          },
+          {
+            "context": "Speaking a language no one understands",
+            "meaning": "The words come out, but in a language others do not understand, or one you do not know. The scene can match a feeling of being misunderstood. With whom do you feel you are not speaking the same language?"
+          },
+          {
+            "context": "Someone stops you from speaking",
+            "meaning": "When a person or an object covers your mouth, the scene shifts from holding back to being silenced. Note who it was. Is there a situation where you feel you are not allowed to speak?"
+          }
+        ]
       },
       "fr": {
-        "fullInterpretation": "<p>Incapable de parler peut sembler très précis dans un rêve. C’est justement pour cela qu’il mérite d’être pris au sérieux sans être pris au pied de la lettre. Il rassemble souvent plusieurs fils : pression, réaction, évitement, libération et manière de gérer un moment qui exige un mouvement.</p>\n<p>Observez si le rêve rendait le symbole familier ou étrange. Le familier peut renvoyer à une mémoire vécue; l’étrange peut montrer qu’un ancien schéma est regardé autrement.</p>\n<p>L’indice le plus fort reste l’émotion : soulagement, honte, peur, curiosité, irritation ou désir. Elle réduit le champ bien plus vite qu’une interprétation universelle.</p>\n<p>Dans Noctalia, gardez une phrase pour ce qui s’est passé et une autre pour ce que cela vous a rappelé. Ce petit écart fait souvent apparaître le vrai thème.</p>",
-        "variations": []
+        "fullInterpretation": "<p><strong>Vous ouvrez la bouche, et rien ne sort.</strong> Ou les mots sortent en murmure, ou personne ne semble les entendre. Ne pas pouvoir parler en rêve est souvent associé à quelque chose de non dit, ou au sentiment de ne pas être écouté. C'est une piste fréquente, pas une règle. La personne à qui vous vouliez parler, et ce que vous vouliez lui dire, comptent plus que le silence lui-même.</p>\n<p><strong>Votre voix avait-elle disparu, ou personne n'écoutait-il ?</strong> Une voix qui ne vient pas peut faire écho à un moment où vous vous retenez : une objection ravalée en réunion, des excuses que vous repoussez. Parler clairement pendant que les autres vous ignorent renvoie plutôt au sentiment d'être mis de côté. Si la scène tournait au hurlement, rapprochez-la de la fiche <a class=\"text-dream-salmon hover:underline\" href=\"/fr/symboles/cri\">cri</a> ; si la gêne venait de la bouche elle-même, dents ou langue, voyez celle de la <a class=\"text-dream-salmon hover:underline\" href=\"/fr/symboles/bouche\">bouche</a>.</p>\n<p><strong>Y a-t-il aussi une explication physique ?</strong> Pendant le sommeil paradoxal, la plupart des muscles sont presque au repos. Cela peut expliquer en partie qu'une voix paraisse faible ou coincée en rêve, sans exclure un lien avec vos journées. Si vous vous réveillez sans pouvoir parler ni bouger pendant quelques instants, il peut s'agir d'une paralysie du sommeil : le <a class=\"text-dream-salmon hover:underline\" href=\"/fr/blog/guide-paralysie-sommeil\">guide sur la paralysie du sommeil</a> l'explique et dit quand consulter.</p>\n<p><strong>Exemple fictif de journal :</strong> « J'étais dans la cuisine de mes parents et j'essayais de leur annoncer quelque chose d'important. Mes lèvres bougeaient, mais aucun son ne sortait. Ils continuaient à débarrasser la table. » Scène : un message qui ne passe pas, dans un cadre familial. Émotion : frustration, puis tristesse. Contexte possible : une décision que vous n'avez pas encore annoncée à vos proches. Question : « Qu'est-ce que je ne dis pas, et à qui ? »</p>\n<p><strong>Méthode :</strong> cette fiche propose des questions et des associations possibles, pas un sens universel ni une prédiction. Elle suit la <a href=\"/fr/methodologie-contenus-reves\">méthodologie des contenus</a> de Noctalia, sous la responsabilité éditoriale de <a href=\"/fr/a-propos\">Thanh Chau</a>, directeur de la publication.</p>",
+        "variations": [
+          {
+            "context": "Une voix qui ne sort pas",
+            "meaning": "Vous essayez de parler et rien ne vient. Notez si vous aviez peur, honte, ou si vous étiez simplement bloqué. La scène peut faire écho à des mots que vous retenez dans la journée : qu'alliez-vous dire ?"
+          },
+          {
+            "context": "Parler sans être entendu",
+            "meaning": "Votre voix fonctionne, mais les autres continuent comme si vous n'étiez pas là. Cela peut rejoindre le sentiment d'être ignoré. Qui, dans la scène, aurait dû vous entendre ?"
+          },
+          {
+            "context": "Ne pas pouvoir appeler à l'aide",
+            "meaning": "Appeler au secours sans qu'aucun son ne sorte est souvent effrayant. La scène peut accompagner un moment où vous hésitez à demander du soutien. L'aide était-elle proche, ou introuvable ?"
+          },
+          {
+            "context": "Perdre ses mots devant un public",
+            "meaning": "Rester muet pendant un exposé, un examen ou une réunion peut faire écho à une pression de performance. Cela ne prédit pas un échec. Qu'est-ce qui se jouait devant ces personnes ?"
+          },
+          {
+            "context": "Parler une langue que personne ne comprend",
+            "meaning": "Les mots sortent, mais dans une langue que les autres ne comprennent pas, ou que vous ne connaissez pas. La scène peut rejoindre le sentiment d'être mal compris. Avec qui avez-vous l'impression de ne pas parler la même langue ?"
+          },
+          {
+            "context": "Quelqu'un vous empêche de parler",
+            "meaning": "Quand une personne ou un objet vous ferme la bouche, la scène passe de la retenue au silence imposé. Notez qui c'était. Y a-t-il une situation où vous sentez que vous n'avez pas le droit de parler ?"
+          }
+        ]
       },
       "es": {
-        "fullInterpretation": "<p>No poder hablar puede sentirse extrañamente específico en un sueño. Por eso conviene tomarlo en serio sin tomarlo de forma literal. A menudo reúne varios hilos: presión, reacción, evitación, liberación y la forma de responder a un momento que exige movimiento.</p>\n<p>Observa si el sueño volvía el símbolo familiar o extraño. Lo familiar puede apuntar a memoria vivida; lo extraño puede mostrar un patrón antiguo visto desde otro ángulo.</p>\n<p>La pista más fuerte suele ser la emoción: alivio, vergüenza, miedo, curiosidad, irritación o deseo. Eso acota el significado más rápido que cualquier interpretación universal.</p>\n<p>Si registras el sueño en Noctalia, escribe una frase sobre lo que ocurrió y otra sobre lo que te recordó. Esa pequeña diferencia suele revelar el tema real.</p>",
-        "variations": []
+        "fullInterpretation": "<p><strong>Abres la boca y no sale nada.</strong> O las palabras salen en un susurro, o nadie parece oírlas. No poder hablar en sueños se asocia a menudo con algo que no se ha dicho, o con la sensación de no ser escuchado. Es una pista frecuente, no una regla. A quién querías hablar, y qué querías decirle, cuenta más que el propio silencio.</p>\n<p><strong>¿Tu voz había desaparecido o nadie te escuchaba?</strong> Una voz que no sale puede hacer eco de un momento en el que te contienes: una objeción que te tragaste en una reunión, una disculpa que vas aplazando. Hablar con claridad mientras los demás te ignoran apunta más bien a la sensación de quedar al margen. Si la escena acababa en gritos, compárala con la ficha del <a class=\"text-dream-salmon hover:underline\" href=\"/es/simbolos/grito\">grito</a>; si el problema estaba en la propia boca, los dientes o la lengua, mira la de la <a class=\"text-dream-salmon hover:underline\" href=\"/es/simbolos/boca\">boca</a>.</p>\n<p><strong>¿Hay también una explicación física?</strong> Durante el sueño REM, la mayoría de los músculos están casi en reposo. Eso puede explicar en parte que la voz parezca débil o atascada en sueños, sin descartar un vínculo con tus días. Si te despiertas sin poder hablar ni moverte durante unos instantes, puede tratarse de una parálisis del sueño: la <a class=\"text-dream-salmon hover:underline\" href=\"/es/blog/guia-paralisis-sueno\">guía sobre la parálisis del sueño</a> la explica y dice cuándo consultar.</p>\n<p><strong>Ejemplo ficticio de diario:</strong> «Estaba en la cocina de mis padres intentando contarles algo importante. Movía los labios, pero no salía ningún sonido. Ellos seguían recogiendo la mesa». Escena: un mensaje que no llega, en un entorno familiar. Emoción: frustración y luego tristeza. Contexto posible: una decisión que todavía no has contado a tu familia. Pregunta: «¿Qué es lo que no digo, y a quién?».</p>\n<p><strong>Método:</strong> esta ficha propone preguntas y asociaciones posibles, no un significado universal ni una predicción. Sigue la <a href=\"/es/metodologia-contenido-suenos\">metodología de contenidos</a> de Noctalia, bajo la responsabilidad editorial de <a href=\"/es/sobre\">Thanh Chau</a>, director de publicación.</p>",
+        "variations": [
+          {
+            "context": "Una voz que no sale",
+            "meaning": "Intentas hablar y no sale nada. Anota si tenías miedo, vergüenza o si simplemente estabas bloqueado. La escena puede hacer eco de palabras que te callas durante el día: ¿qué ibas a decir?"
+          },
+          {
+            "context": "Hablar sin que nadie te oiga",
+            "meaning": "Tu voz funciona, pero los demás siguen como si no estuvieras. Puede enlazar con la sensación de pasar desapercibido. ¿Quién, en la escena, debería haberte oído?"
+          },
+          {
+            "context": "No poder pedir ayuda",
+            "meaning": "Pedir auxilio sin que salga ningún sonido suele asustar. La escena puede acompañar un momento en el que dudas en pedir apoyo. ¿La ayuda estaba cerca o no aparecía por ningún lado?"
+          },
+          {
+            "context": "Quedarte en blanco delante de un público",
+            "meaning": "Quedarte mudo en una exposición, un examen o una reunión puede hacer eco de la presión por rendir. No predice un fracaso. ¿Qué estaba en juego delante de esas personas?"
+          },
+          {
+            "context": "Hablar un idioma que nadie entiende",
+            "meaning": "Las palabras salen, pero en un idioma que los demás no entienden, o que tú no conoces. La escena puede enlazar con la sensación de no ser comprendido. ¿Con quién sientes que no habláis el mismo idioma?"
+          },
+          {
+            "context": "Alguien te impide hablar",
+            "meaning": "Cuando una persona o un objeto te tapa la boca, la escena pasa de contenerte a que te hagan callar. Anota quién era. ¿Hay alguna situación en la que sientes que no tienes derecho a hablar?"
+          }
+        ]
       },
       "de": {
-        "fullInterpretation": "<p>Nicht sprechen können kann im Traum seltsam präzise wirken. Genau deshalb lohnt es sich, das Bild ernst zu nehmen, ohne es wörtlich zu nehmen. Oft bündelt es mehrere Fäden: Druck, Reaktion, Vermeidung, Entlastung und den Umgang mit einem Moment, der Bewegung verlangt.</p>\n<p>Beobachten Sie, ob der Traum das Symbol vertraut oder fremd wirken ließ. Vertrautes kann auf gelebte Erinnerung zeigen; Fremdes kann ein altes Muster aus neuer Perspektive zeigen.</p>\n<p>Der stärkste Hinweis ist meist das Gefühl: Erleichterung, Scham, Angst, Neugier, Reizbarkeit oder Sehnsucht. Das grenzt die Bedeutung schneller ein als jede universelle Deutung.</p>\n<p>Wenn Sie den Traum in Noctalia festhalten, schreiben Sie einen Satz dazu, was geschah, und einen dazu, woran es Sie erinnerte. Dieser kleine Unterschied zeigt oft das eigentliche Thema.</p>",
-        "variations": []
+        "fullInterpretation": "<p><strong>Sie öffnen den Mund, und es kommt nichts heraus.</strong> Oder die Worte sind nur ein Flüstern, oder niemand scheint sie zu hören. Im Traum nicht sprechen zu können wird oft mit etwas Unausgesprochenem verbunden oder mit dem Gefühl, nicht gehört zu werden. Das ist eine häufige Spur, keine Regel. Wen Sie erreichen wollten und was Sie sagen wollten, zählt mehr als die Stille selbst.</p>\n<p><strong>War Ihre Stimme weg, oder hat niemand zugehört?</strong> Eine Stimme, die nicht kommt, kann einen Moment aufgreifen, in dem Sie sich zurückhalten: einen Einwand, den Sie in einer Besprechung heruntergeschluckt haben, eine Entschuldigung, die Sie aufschieben. Klar zu sprechen, während andere Sie übergehen, weist eher auf das Gefühl hin, außen vor zu bleiben. Wurde aus der Szene ein Schreien, lesen Sie auch die Seite <a class=\"text-dream-salmon hover:underline\" href=\"/de/traumsymbole/schreien\">Schreien</a>; lag das Problem im Mund selbst, an Zähnen oder Zunge, die Seite zum <a class=\"text-dream-salmon hover:underline\" href=\"/de/traumsymbole/mund\">Mund</a>.</p>\n<p><strong>Gibt es auch eine körperliche Erklärung?</strong> Im REM-Schlaf sind die meisten Muskeln fast völlig entspannt. Das kann zum Teil erklären, warum die Stimme im Traum schwach oder blockiert wirkt, ohne einen Bezug zu Ihrem Alltag auszuschließen. Wachen Sie auf und können einige Augenblicke weder sprechen noch sich bewegen, kann es eine Schlafparalyse sein: Der <a class=\"text-dream-salmon hover:underline\" href=\"/de/blog/schlaflaehmung-erklaert-warum-sie-sich-nicht-bewegen-koennen-und-wie-sie-sie-stoppen-koennen\">Leitfaden zur Schlafparalyse</a> erklärt sie und sagt, wann ein Arztbesuch sinnvoll ist.</p>\n<p><strong>Erfundenes Tagebuchbeispiel:</strong> „Ich stand in der Küche meiner Eltern und wollte ihnen etwas Wichtiges sagen. Meine Lippen bewegten sich, aber es kam kein Ton. Sie räumten einfach weiter den Tisch ab.“ Szene: eine Nachricht, die nicht ankommt, im Familienkreis. Gefühl: Frust, dann Traurigkeit. Möglicher Kontext: eine Entscheidung, die Sie Ihrer Familie noch nicht mitgeteilt haben. Frage: „Was sage ich nicht, und wem?“</p>\n<p><strong>Methode:</strong> Diese Seite bietet Fragen und mögliche Zusammenhänge, keine allgemeingültige Bedeutung und keine Vorhersage. Sie folgt der <a href=\"/de/methodik-trauminhalte\">Methodik für Trauminhalte</a> von Noctalia; redaktionell verantwortlich ist <a href=\"/de/ueber-uns\">Thanh Chau</a>, Publikationsleiter von Noctalia.</p>",
+        "variations": [
+          {
+            "context": "Eine Stimme, die nicht herauskommt",
+            "meaning": "Sie wollen sprechen, und es kommt nichts. Notieren Sie, ob Sie Angst hatten, sich geschämt haben oder einfach blockiert waren. Die Szene kann Worte aufgreifen, die Sie tagsüber zurückhalten: Was wollten Sie sagen?"
+          },
+          {
+            "context": "Sprechen, ohne gehört zu werden",
+            "meaning": "Ihre Stimme funktioniert, aber die anderen machen weiter, als wären Sie nicht da. Das kann zu dem Gefühl passen, übergangen zu werden. Wer in der Szene hätte Sie hören sollen?"
+          },
+          {
+            "context": "Nicht um Hilfe rufen können",
+            "meaning": "Um Hilfe zu rufen, ohne dass ein Ton herauskommt, ist oft beängstigend. Die Szene kann eine Phase begleiten, in der Sie zögern, um Unterstützung zu bitten. War Hilfe in der Nähe oder nirgends zu sehen?"
+          },
+          {
+            "context": "Vor Publikum die Worte verlieren",
+            "meaning": "Bei einem Vortrag, einer Prüfung oder einem Meeting zu verstummen, kann Leistungsdruck aufgreifen. Ein Scheitern sagt es nicht voraus. Was stand vor diesen Menschen auf dem Spiel?"
+          },
+          {
+            "context": "Eine Sprache sprechen, die niemand versteht",
+            "meaning": "Die Worte kommen, aber in einer Sprache, die die anderen nicht verstehen oder die Sie selbst nicht kennen. Die Szene kann zu dem Gefühl passen, missverstanden zu werden. Mit wem haben Sie das Gefühl, nicht dieselbe Sprache zu sprechen?"
+          },
+          {
+            "context": "Jemand hindert Sie am Sprechen",
+            "meaning": "Hält Ihnen eine Person oder ein Gegenstand den Mund zu, wird aus Zurückhaltung ein auferlegtes Schweigen. Notieren Sie, wer es war. Gibt es eine Situation, in der Sie das Gefühl haben, nicht sprechen zu dürfen?"
+          }
+        ]
       },
       "it": {
-        "fullInterpretation": "<p>Non riuscire a parlare può sembrare stranamente specifico in un sogno. Per questo vale la pena prenderlo sul serio senza prenderlo alla lettera. Spesso raccoglie più fili: pressione, reazione, evitamento, liberazione e modo di affrontare un momento che richiede movimento.</p>\n<p>Nota se il sogno rendeva il simbolo familiare o strano. Il familiare può rimandare a una memoria vissuta; lo strano può mostrare un vecchio schema visto da un’altra angolazione.</p>\n<p>L’indizio più forte è quasi sempre l’emozione: sollievo, vergogna, paura, curiosità, irritazione o desiderio. Restringe il significato più velocemente di qualsiasi interpretazione universale.</p>\n<p>Se registri il sogno in Noctalia, tieni una frase per ciò che è successo e una per ciò che ti ha ricordato. Quel piccolo contrasto spesso rivela il tema vero.</p>",
-        "variations": []
+        "fullInterpretation": "<p><strong>Apri la bocca, e non esce nulla.</strong> Oppure le parole escono in un sussurro, o nessuno sembra sentirle. Non riuscire a parlare in sogno viene spesso associato a qualcosa di non detto, o alla sensazione di non essere ascoltato. È una pista frequente, non una regola. A chi volevi parlare, e che cosa volevi dire, conta più del silenzio stesso.</p>\n<p><strong>La voce era sparita, o nessuno ascoltava?</strong> Una voce che non arriva può fare eco a un momento in cui ti trattieni: un’obiezione ingoiata durante una riunione, delle scuse che continui a rimandare. Parlare chiaramente mentre gli altri ti ignorano rimanda piuttosto alla sensazione di essere messo da parte. Se la scena finiva in un urlo, confronta la scheda su <a class=\"text-dream-salmon hover:underline\" href=\"/it/simboli/urlare\">urlare</a>; se il problema era nella bocca stessa, denti o lingua, quella sulla <a class=\"text-dream-salmon hover:underline\" href=\"/it/simboli/bocca\">bocca</a>.</p>\n<p><strong>C’è anche una spiegazione fisica?</strong> Durante il sonno REM quasi tutti i muscoli sono a riposo. Questo può spiegare in parte perché in sogno la voce sembri debole o bloccata, senza escludere un legame con le tue giornate. Se ti svegli e per qualche istante non riesci né a parlare né a muoverti, può trattarsi di una paralisi del sonno: la <a class=\"text-dream-salmon hover:underline\" href=\"/it/blog/la-paralisi-del-sonno-spiegata-perche-non-puoi-muoverti-e-come-fermarla\">guida alla paralisi del sonno</a> la spiega e dice quando rivolgersi a un medico.</p>\n<p><strong>Esempio inventato di diario:</strong> «Ero nella cucina dei miei genitori e cercavo di dire loro una cosa importante. Le labbra si muovevano, ma non usciva nessun suono. Loro continuavano a sparecchiare». Scena: un messaggio che non arriva, in famiglia. Emozione: frustrazione, poi tristezza. Contesto possibile: una decisione che non hai ancora comunicato ai tuoi. Domanda: «Che cosa non sto dicendo, e a chi?».</p>\n<p><strong>Metodo:</strong> questa scheda propone domande e associazioni possibili, non un significato universale né una previsione. Segue la <a href=\"/it/metodologia-contenuti-sogni\">metodologia dei contenuti</a> di Noctalia, sotto la responsabilità editoriale di <a href=\"/it/chi-siamo\">Thanh Chau</a>, direttore della pubblicazione.</p>",
+        "variations": [
+          {
+            "context": "Una voce che non esce",
+            "meaning": "Provi a parlare e non arriva nulla. Annota se avevi paura, vergogna o se eri semplicemente bloccato. La scena può fare eco a parole che trattieni durante il giorno: che cosa stavi per dire?"
+          },
+          {
+            "context": "Parlare senza essere sentito",
+            "meaning": "La tua voce funziona, ma gli altri vanno avanti come se non ci fossi. Può avvicinarsi alla sensazione di essere ignorato. Chi, nella scena, avrebbe dovuto sentirti?"
+          },
+          {
+            "context": "Non riuscire a chiedere aiuto",
+            "meaning": "Chiedere aiuto senza che esca alcun suono spaventa spesso. La scena può accompagnare un momento in cui esiti a chiedere sostegno. L’aiuto era vicino, o non si vedeva da nessuna parte?"
+          },
+          {
+            "context": "Restare senza parole davanti a un pubblico",
+            "meaning": "Ammutolire durante un’esposizione, un esame o una riunione può fare eco alla pressione di dover dare il massimo. Non predice un fallimento. Che cosa era in gioco davanti a quelle persone?"
+          },
+          {
+            "context": "Parlare una lingua che nessuno capisce",
+            "meaning": "Le parole escono, ma in una lingua che gli altri non capiscono, o che tu non conosci. La scena può avvicinarsi alla sensazione di non essere capito. Con chi senti di non parlare la stessa lingua?"
+          },
+          {
+            "context": "Qualcuno ti impedisce di parlare",
+            "meaning": "Quando una persona o un oggetto ti chiude la bocca, la scena passa dal trattenersi al silenzio imposto. Annota chi era. C’è una situazione in cui senti di non avere il diritto di parlare?"
+          }
+        ]
       },
       "pt": {
         "fullInterpretation": "<p>Não conseguir falar pode parecer estranhamente específico em um sonho, e é justamente por isso que vale levar isso a sério sem levar ao pé da letra. Costuma reunir vários fios ao mesmo tempo: pressão, reação, fuga, liberação e o jeito como você lida com um momento que exige movimento.</p>\n<p>Repare se o sonho tornou o símbolo familiar ou estranho. Detalhes familiares podem apontar para uma memória vivida; detalhes estranhos podem mostrar que um padrão antigo está sendo visto por um novo ângulo.</p>\n<p>A pista mais forte costuma ser emocional. Alívio, vergonha, medo, curiosidade, irritação ou saudade vão estreitar o significado mais rápido do que qualquer interpretação universal.</p>\n<p>Se você registrar o sonho no Noctalia, guarde uma frase para o que aconteceu e uma frase para o que aquilo te lembrou. Esse pequeno contraste costuma revelar o tema real.</p>",
@@ -18483,24 +18608,149 @@
     },
     "paralysis": {
       "en": {
-        "fullInterpretation": "<p>Paralysis does not need to be decoded like a secret message. In a dream it usually works more like a marker: something in the scene asks you to notice pressure, reaction, avoidance, release, and the way you handle a moment that demands movement.</p>\n<p>Start with the plain facts. Was the image close or far away, welcome or disturbing, ordinary or strangely intense? Those details keep the interpretation grounded in your dream instead of forcing a generic meaning onto it.</p>\n<p>If the symbol felt supportive, it may show a resource, desire, or memory you can lean on. If it felt tense, it may point to a pressure you have been managing too quietly.</p>\n<p>Noctalia treats this kind of symbol as a reflection prompt. Write down the scene, the emotion, and what changed after the symbol appeared; that is usually where the useful meaning begins.</p>",
-        "variations": []
+        "fullInterpretation": "<p><strong>You want to move, and your body does not answer.</strong> Your legs stay rooted, your arms will not lift, while the dream carries on around you. Paralysis in a dream is often associated with helplessness: a situation where you feel you should act but cannot. That is a common lead, not a rule. What you wanted to do in that moment is the first detail to note.</p>\n<p><strong>Inside the dream, or already awake?</strong> The difference matters. In a dream, paralysis is part of a story: a chase, a fall, a danger. In sleep paralysis, you feel awake, often in your own bed, unable to move for a few seconds or minutes, sometimes with a sense of presence. It is frightening but generally harmless; the <a class=\"text-dream-salmon hover:underline\" href=\"/en/blog/sleep-paralysis-guide\">sleep paralysis guide</a> explains it and says when to see a doctor.</p>\n<p><strong>Why does the body freeze in dreams?</strong> During REM sleep, most muscles are nearly at rest, which keeps you from acting out your dreams. This may partly explain why running or shouting feels impossible in some dreams. A link with your days remains possible: if you were frozen in front of a pursuer, compare with <a class=\"text-dream-salmon hover:underline\" href=\"/en/symbols/being-chased\">being chased</a>; if it felt more like being shut in, see <a class=\"text-dream-salmon hover:underline\" href=\"/en/symbols/trapped\">trapped</a>.</p>\n<p><strong>Fictional journal example:</strong> \"A car was coming toward me in the middle of the street. I knew I had to step aside, but my feet were stuck to the asphalt. I woke up just before it hit me.\" Scene: danger in sight, a frozen body. Emotion: panic, then relief on waking. Possible context: a work deadline getting closer while you wait for someone else's decision. Question: \"Where am I waiting instead of acting, and is it really my choice?\"</p>\n<p><strong>Method:</strong> this page offers questions and possible associations, not a universal meaning or a prediction. It follows Noctalia's <a href=\"/en/dream-content-methodology\">content methodology</a> and is edited by <a href=\"/en/about\">Thanh Chau</a>, publication director of Noctalia.</p>",
+        "variations": [
+          {
+            "context": "Frozen in front of a danger",
+            "meaning": "A car, a pursuer, a wave, and your body will not move. The scene can echo a situation where you feel you should act but cannot. What was coming toward you, and how far away was it?"
+          },
+          {
+            "context": "Legs that will not run",
+            "meaning": "You run, but your legs are heavy or stuck to the ground. This feeling is common in chase dreams. It can echo a sense of helplessness; the muscle relaxation of REM sleep is also mentioned as a possible explanation."
+          },
+          {
+            "context": "Waking up unable to move",
+            "meaning": "If you were awake, in your own bed, unable to move, it may have been sleep paralysis rather than a dream image. It is generally harmless. If it happens often or comes with heavy daytime sleepiness, mention it to a doctor."
+          },
+          {
+            "context": "Sensing a presence while paralyzed",
+            "meaning": "Feeling someone in the room during sleep paralysis is a frequently reported experience. It is frightening, but it is linked to the overlap between dream sleep and waking, not to a real visitor or an omen."
+          },
+          {
+            "context": "Only one part of the body will not respond",
+            "meaning": "Only your hands, your voice or your face were frozen? Note which part. Hands that will not move can match something you cannot do; a frozen voice, something you cannot say."
+          },
+          {
+            "context": "Seeing someone else paralyzed",
+            "meaning": "A loved one who cannot move can echo worry for them, or a feeling that they are stuck in a situation. Did you try to help, and what happened next?"
+          }
+        ]
       },
       "fr": {
-        "fullInterpretation": "<p>Paralysie n’a pas besoin d’être décodé comme un message secret. Dans un rêve, ce symbole agit plutôt comme un repère : quelque chose dans la scène vous invite à regarder pression, réaction, évitement, libération et manière de gérer un moment qui exige un mouvement.</p>\n<p>Commencez par les faits simples. Paralysie était-il proche ou lointain, rassurant ou dérangeant, banal ou étrangement intense ? Ces détails évitent de plaquer une signification toute faite sur le rêve.</p>\n<p>Si le symbole semblait aidant, il peut montrer une ressource, un désir ou un souvenir. S’il était tendu, il peut signaler une pression que vous portez en silence.</p>\n<p>Noctalia traite ce type d’image comme une piste de réflexion. Notez la scène, l’émotion et ce qui change après l’apparition de paralysie : c’est souvent là que le sens commence.</p>",
-        "variations": []
+        "fullInterpretation": "<p><strong>Vous voulez bouger, et votre corps ne répond pas.</strong> Les jambes restent plantées, les bras ne se lèvent pas, pendant que le rêve continue autour de vous. La paralysie en rêve est souvent associée à un sentiment d'impuissance : une situation où vous sentez que vous devriez agir sans y parvenir. C'est une piste fréquente, pas une règle. Ce que vous vouliez faire à ce moment-là est le premier détail à noter.</p>\n<p><strong>Dans le rêve, ou déjà réveillé ?</strong> La différence compte. Dans un rêve, la paralysie fait partie d'une histoire : une poursuite, une chute, un danger. Dans la paralysie du sommeil, vous vous sentez éveillé, souvent dans votre lit, incapable de bouger pendant quelques secondes ou minutes, parfois avec une impression de présence. C'est effrayant mais généralement sans danger ; le <a class=\"text-dream-salmon hover:underline\" href=\"/fr/blog/guide-paralysie-sommeil\">guide sur la paralysie du sommeil</a> l'explique et dit quand consulter.</p>\n<p><strong>Pourquoi le corps se fige-t-il en rêve ?</strong> Pendant le sommeil paradoxal, la plupart des muscles sont presque au repos, ce qui évite de vivre ses rêves avec le corps. Cela peut expliquer en partie qu'il soit impossible de courir ou de crier dans certains rêves. Le lien avec vos journées reste possible : si vous étiez figé face à un poursuivant, rapprochez la scène de la fiche <a class=\"text-dream-salmon hover:underline\" href=\"/fr/symboles/poursuite\">poursuite</a> ; si vous vous sentiez plutôt enfermé, voyez celle du rêve où l'on est <a class=\"text-dream-salmon hover:underline\" href=\"/fr/symboles/piege\">piégé</a>.</p>\n<p><strong>Exemple fictif de journal :</strong> « Une voiture arrivait vers moi au milieu de la rue. Je savais qu'il fallait m'écarter, mais mes pieds étaient collés au bitume. Je me suis réveillé juste avant le choc. » Scène : un danger en vue, un corps figé. Émotion : panique, puis soulagement au réveil. Contexte possible : une échéance au travail qui approche pendant que vous attendez la décision de quelqu'un d'autre. Question : « Où est-ce que j'attends au lieu d'agir, et est-ce vraiment mon choix ? »</p>\n<p><strong>Méthode :</strong> cette fiche propose des questions et des associations possibles, pas un sens universel ni une prédiction. Elle suit la <a href=\"/fr/methodologie-contenus-reves\">méthodologie des contenus</a> de Noctalia, sous la responsabilité éditoriale de <a href=\"/fr/a-propos\">Thanh Chau</a>, directeur de la publication.</p>",
+        "variations": [
+          {
+            "context": "Figé face à un danger",
+            "meaning": "Une voiture, un poursuivant, une vague, et votre corps ne bouge pas. La scène peut faire écho à une situation où vous sentez que vous devriez agir sans y parvenir. Qu'est-ce qui arrivait vers vous, et à quelle distance ?"
+          },
+          {
+            "context": "Des jambes qui ne courent pas",
+            "meaning": "Vous courez, mais vos jambes sont lourdes ou collées au sol. Cette sensation est fréquente dans les rêves de poursuite. Elle peut faire écho à un sentiment d'impuissance ; le relâchement musculaire du sommeil paradoxal est aussi cité comme explication possible."
+          },
+          {
+            "context": "Se réveiller sans pouvoir bouger",
+            "meaning": "Si vous étiez éveillé, dans votre lit, incapable de bouger, il s'agissait peut-être d'une paralysie du sommeil plutôt que d'une image de rêve. Elle est généralement sans danger. Si elle revient souvent ou s'accompagne de somnolence dans la journée, parlez-en à un médecin."
+          },
+          {
+            "context": "Sentir une présence pendant la paralysie",
+            "meaning": "Sentir quelqu'un dans la pièce pendant une paralysie du sommeil est une expérience souvent rapportée. Elle effraie, mais elle tient au chevauchement entre sommeil paradoxal et éveil, pas à un vrai visiteur ni à un présage."
+          },
+          {
+            "context": "Une seule partie du corps bloquée",
+            "meaning": "Seulement les mains, la voix ou le visage ? Notez laquelle. Des mains immobiles peuvent rejoindre quelque chose que vous ne parvenez pas à faire ; une voix bloquée, quelque chose que vous ne parvenez pas à dire."
+          },
+          {
+            "context": "Voir quelqu'un d'autre paralysé",
+            "meaning": "Un proche qui ne peut plus bouger peut faire écho à une inquiétude pour lui, ou à l'impression qu'il est coincé dans une situation. Avez-vous essayé de l'aider, et que s'est-il passé ensuite ?"
+          }
+        ]
       },
       "es": {
-        "fullInterpretation": "<p>Parálisis no necesita descifrarse como un mensaje secreto. En un sueño funciona más como una señal: algo en la escena te pide mirar presión, reacción, evitación, liberación y la forma de responder a un momento que exige movimiento.</p>\n<p>Empieza por los hechos sencillos. ¿Parálisis estaba cerca o lejos, resultaba acogedor o inquietante, normal o extrañamente intenso? Esos detalles mantienen la interpretación pegada al sueño real.</p>\n<p>Si el símbolo se sintió como apoyo, puede mostrar un recurso, un deseo o un recuerdo. Si se sintió tenso, puede señalar una presión que llevas demasiado en silencio.</p>\n<p>Noctalia trata este tipo de imagen como una pregunta de reflexión. Anota la escena, la emoción y qué cambió cuando apareció parálisis; ahí suele empezar el sentido útil.</p>",
-        "variations": []
+        "fullInterpretation": "<p><strong>Quieres moverte y tu cuerpo no responde.</strong> Las piernas se quedan clavadas, los brazos no se levantan, mientras el sueño sigue a tu alrededor. La parálisis en sueños se asocia a menudo con la impotencia: una situación en la que sientes que deberías actuar y no lo consigues. Es una pista frecuente, no una regla. Lo que querías hacer en ese momento es el primer detalle que conviene anotar.</p>\n<p><strong>¿Dentro del sueño o ya despierto?</strong> La diferencia importa. En un sueño, la parálisis forma parte de una historia: una persecución, una caída, un peligro. En la parálisis del sueño te sientes despierto, a menudo en tu cama, sin poder moverte durante unos segundos o minutos, a veces con la sensación de una presencia. Asusta, pero en general no es peligrosa; la <a class=\"text-dream-salmon hover:underline\" href=\"/es/blog/guia-paralisis-sueno\">guía sobre la parálisis del sueño</a> la explica y dice cuándo consultar.</p>\n<p><strong>¿Por qué se queda quieto el cuerpo en sueños?</strong> Durante el sueño REM, la mayoría de los músculos están casi en reposo, lo que evita que representes tus sueños con el cuerpo. Eso puede explicar en parte que en algunos sueños sea imposible correr o gritar. El vínculo con tus días sigue siendo posible: si estabas paralizado ante alguien que te perseguía, compáralo con la ficha de la <a class=\"text-dream-salmon hover:underline\" href=\"/es/simbolos/persecucion\">persecución</a>; si te sentías más bien encerrado, mira la de sentirte <a class=\"text-dream-salmon hover:underline\" href=\"/es/simbolos/atrapado\">atrapado</a>.</p>\n<p><strong>Ejemplo ficticio de diario:</strong> «Un coche venía hacia mí en medio de la calle. Sabía que tenía que apartarme, pero tenía los pies pegados al asfalto. Me desperté justo antes del golpe». Escena: un peligro a la vista, un cuerpo inmóvil. Emoción: pánico y luego alivio al despertar. Contexto posible: un plazo en el trabajo que se acerca mientras esperas la decisión de otra persona. Pregunta: «¿Dónde estoy esperando en lugar de actuar, y es de verdad decisión mía?».</p>\n<p><strong>Método:</strong> esta ficha propone preguntas y asociaciones posibles, no un significado universal ni una predicción. Sigue la <a href=\"/es/metodologia-contenido-suenos\">metodología de contenidos</a> de Noctalia, bajo la responsabilidad editorial de <a href=\"/es/sobre\">Thanh Chau</a>, director de publicación.</p>",
+        "variations": [
+          {
+            "context": "Paralizado ante un peligro",
+            "meaning": "Un coche, un perseguidor, una ola, y tu cuerpo no se mueve. La escena puede hacer eco de una situación en la que sientes que deberías actuar y no lo consigues. ¿Qué venía hacia ti y a qué distancia estaba?"
+          },
+          {
+            "context": "Piernas que no corren",
+            "meaning": "Corres, pero las piernas pesan o se quedan pegadas al suelo. Es una sensación frecuente en los sueños de persecución. Puede hacer eco de una impotencia; también se menciona la relajación muscular del sueño REM como explicación posible."
+          },
+          {
+            "context": "Despertar sin poder moverte",
+            "meaning": "Si estabas despierto, en tu cama, sin poder moverte, puede que fuera una parálisis del sueño más que una imagen onírica. En general no es peligrosa. Si se repite a menudo o va con somnolencia de día, coméntalo con un médico."
+          },
+          {
+            "context": "Sentir una presencia durante la parálisis",
+            "meaning": "Notar a alguien en la habitación durante una parálisis del sueño es una experiencia que se cuenta a menudo. Asusta, pero se relaciona con el solapamiento entre el sueño REM y la vigilia, no con una visita real ni con un presagio."
+          },
+          {
+            "context": "Una sola parte del cuerpo bloqueada",
+            "meaning": "¿Solo las manos, la voz o la cara? Anota cuál. Unas manos inmóviles pueden enlazar con algo que no consigues hacer; una voz bloqueada, con algo que no consigues decir."
+          },
+          {
+            "context": "Ver a otra persona paralizada",
+            "meaning": "Un ser querido que no puede moverse puede hacer eco de una preocupación por él, o de la impresión de que está atascado en una situación. ¿Intentaste ayudarle, y qué pasó después?"
+          }
+        ]
       },
       "de": {
-        "fullInterpretation": "<p>Lähmung muss nicht wie eine geheime Botschaft entschlüsselt werden. Im Traum wirkt das Symbol eher wie ein Hinweis: Etwas in der Szene lenkt den Blick auf Druck, Reaktion, Vermeidung, Entlastung und den Umgang mit einem Moment, der Bewegung verlangt.</p>\n<p>Beginnen Sie mit den einfachen Fakten. War Lähmung nah oder fern, angenehm oder beunruhigend, alltäglich oder ungewöhnlich intensiv? Solche Details halten die Deutung nah am tatsächlichen Traum.</p>\n<p>Wenn das Symbol unterstützend wirkte, kann es eine Ressource, einen Wunsch oder eine Erinnerung zeigen. Wenn es angespannt wirkte, kann es auf Druck hinweisen, den Sie zu still tragen.</p>\n<p>Noctalia behandelt solche Bilder als Anlass zur Reflexion. Notieren Sie Szene, Gefühl und was sich änderte, als Lähmung auftauchte; dort beginnt oft die brauchbare Bedeutung.</p>",
-        "variations": []
+        "fullInterpretation": "<p><strong>Sie wollen sich bewegen, und Ihr Körper antwortet nicht.</strong> Die Beine bleiben am Boden, die Arme heben sich nicht, während der Traum um Sie herum weitergeht. Eine Lähmung im Traum wird oft mit Ohnmacht verbunden: mit einer Situation, in der Sie handeln müssten und es nicht schaffen. Das ist eine häufige Spur, keine Regel. Was Sie in diesem Moment tun wollten, ist das erste Detail, das Sie notieren sollten.</p>\n<p><strong>Im Traum oder schon wach?</strong> Der Unterschied ist wichtig. Im Traum gehört die Lähmung zu einer Geschichte: einer Verfolgung, einem Sturz, einer Gefahr. Bei einer Schlafparalyse fühlen Sie sich wach, meist im eigenen Bett, und können sich einige Sekunden oder Minuten nicht bewegen, manchmal mit dem Gefühl einer Anwesenheit. Das ist beängstigend, aber in der Regel harmlos; der <a class=\"text-dream-salmon hover:underline\" href=\"/de/blog/schlaflaehmung-erklaert-warum-sie-sich-nicht-bewegen-koennen-und-wie-sie-sie-stoppen-koennen\">Leitfaden zur Schlafparalyse</a> erklärt das Phänomen und sagt, wann ein Arztbesuch sinnvoll ist.</p>\n<p><strong>Warum erstarrt der Körper im Traum?</strong> Im REM-Schlaf sind die meisten Muskeln fast völlig entspannt, damit Sie Ihre Träume nicht körperlich ausleben. Das kann zum Teil erklären, warum Rennen oder Schreien in manchen Träumen unmöglich ist. Ein Bezug zu Ihrem Alltag bleibt möglich: Waren Sie vor einem Verfolger erstarrt, lesen Sie auch die Seite <a class=\"text-dream-salmon hover:underline\" href=\"/de/traumsymbole/verfolgung\">Verfolgung</a>; fühlten Sie sich eher eingesperrt, die Seite <a class=\"text-dream-salmon hover:underline\" href=\"/de/traumsymbole/gefangen\">Gefangen</a>.</p>\n<p><strong>Erfundenes Tagebuchbeispiel:</strong> „Mitten auf der Straße kam ein Auto auf mich zu. Ich wusste, dass ich zur Seite gehen musste, aber meine Füße klebten am Asphalt. Kurz vor dem Aufprall bin ich aufgewacht.“ Szene: eine sichtbare Gefahr, ein erstarrter Körper. Gefühl: Panik, dann Erleichterung beim Aufwachen. Möglicher Kontext: eine Frist im Job, die näher rückt, während Sie auf die Entscheidung eines anderen warten. Frage: „Wo warte ich, statt zu handeln, und ist das wirklich meine Wahl?“</p>\n<p><strong>Methode:</strong> Diese Seite bietet Fragen und mögliche Zusammenhänge, keine allgemeingültige Bedeutung und keine Vorhersage. Sie folgt der <a href=\"/de/methodik-trauminhalte\">Methodik für Trauminhalte</a> von Noctalia; redaktionell verantwortlich ist <a href=\"/de/ueber-uns\">Thanh Chau</a>, Publikationsleiter von Noctalia.</p>",
+        "variations": [
+          {
+            "context": "Erstarrt vor einer Gefahr",
+            "meaning": "Ein Auto, ein Verfolger, eine Welle, und Ihr Körper bewegt sich nicht. Die Szene kann eine Situation aufgreifen, in der Sie handeln müssten und es nicht schaffen. Was kam auf Sie zu, und wie weit war es entfernt?"
+          },
+          {
+            "context": "Beine, die nicht rennen",
+            "meaning": "Sie laufen, aber die Beine sind schwer oder kleben am Boden. Dieses Gefühl ist in Verfolgungsträumen häufig. Es kann Ohnmacht aufgreifen; als mögliche Erklärung wird auch die Muskelentspannung im REM-Schlaf genannt."
+          },
+          {
+            "context": "Aufwachen und sich nicht bewegen können",
+            "meaning": "Waren Sie wach, im eigenen Bett, und konnten sich nicht bewegen, war es vielleicht eine Schlafparalyse und kein Traumbild. Sie ist in der Regel harmlos. Kommt sie häufig vor oder sind Sie tagsüber sehr müde, sprechen Sie mit einer Ärztin oder einem Arzt."
+          },
+          {
+            "context": "Eine Anwesenheit spüren",
+            "meaning": "Während einer Schlafparalyse jemanden im Raum zu spüren, wird oft berichtet. Es ist beängstigend, hängt aber mit der Überlappung von REM-Schlaf und Wachsein zusammen, nicht mit einem echten Besucher oder einem Omen."
+          },
+          {
+            "context": "Nur ein Körperteil gehorcht nicht",
+            "meaning": "Nur die Hände, die Stimme oder das Gesicht? Notieren Sie, welcher Teil. Unbewegliche Hände können zu etwas passen, das Sie nicht tun können; eine blockierte Stimme zu etwas, das Sie nicht sagen können."
+          },
+          {
+            "context": "Einen anderen Menschen gelähmt sehen",
+            "meaning": "Ein nahestehender Mensch, der sich nicht bewegen kann, kann Sorge um ihn aufgreifen oder den Eindruck, dass er in einer Situation feststeckt. Haben Sie versucht zu helfen, und was geschah dann?"
+          }
+        ]
       },
       "it": {
-        "fullInterpretation": "<p>Paralisi non va decifrato come un messaggio segreto. In sogno funziona più come un segnale: qualcosa nella scena ti invita a guardare pressione, reazione, evitamento, liberazione e modo di affrontare un momento che richiede movimento.</p>\n<p>Parti dai fatti semplici. Paralisi era vicino o lontano, rassicurante o disturbante, normale o stranamente intenso? Questi dettagli tengono l’interpretazione legata al sogno reale.</p>\n<p>Se il simbolo sembrava di supporto, può mostrare una risorsa, un desiderio o un ricordo. Se era teso, può indicare una pressione che stai portando troppo in silenzio.</p>\n<p>Noctalia tratta questo tipo di immagine come uno spunto di riflessione. Annota la scena, l’emozione e che cosa è cambiato quando è apparso paralisi; spesso il senso utile inizia lì.</p>",
-        "variations": []
+        "fullInterpretation": "<p><strong>Vuoi muoverti, e il corpo non risponde.</strong> Le gambe restano piantate, le braccia non si alzano, mentre il sogno continua intorno a te. La paralisi in sogno viene spesso associata all’impotenza: una situazione in cui senti che dovresti agire e non ci riesci. È una pista frequente, non una regola. Che cosa volevi fare in quel momento è il primo dettaglio da annotare.</p>\n<p><strong>Dentro il sogno, o già sveglio?</strong> La differenza conta. In un sogno la paralisi fa parte di una storia: un inseguimento, una caduta, un pericolo. Nella paralisi del sonno ti senti sveglio, spesso nel tuo letto, incapace di muoverti per qualche secondo o minuto, a volte con la sensazione di una presenza. Spaventa, ma in genere è innocua; la <a class=\"text-dream-salmon hover:underline\" href=\"/it/blog/la-paralisi-del-sonno-spiegata-perche-non-puoi-muoverti-e-come-fermarla\">guida alla paralisi del sonno</a> la spiega e dice quando rivolgersi a un medico.</p>\n<p><strong>Perché in sogno il corpo si blocca?</strong> Durante il sonno REM quasi tutti i muscoli sono a riposo, così non metti in atto i sogni con il corpo. Questo può spiegare in parte perché in certi sogni sia impossibile correre o urlare. Il legame con le tue giornate resta possibile: se eri immobile davanti a un inseguitore, confronta la scheda sull’<a class=\"text-dream-salmon hover:underline\" href=\"/it/simboli/inseguimento\">inseguimento</a>; se ti sentivi piuttosto chiuso dentro, quella sul sentirsi <a class=\"text-dream-salmon hover:underline\" href=\"/it/simboli/intrappolato\">intrappolati</a>.</p>\n<p><strong>Esempio inventato di diario:</strong> «Una macchina mi veniva incontro in mezzo alla strada. Sapevo di dovermi spostare, ma i piedi erano incollati all’asfalto. Mi sono svegliato poco prima dell’impatto». Scena: un pericolo in vista, un corpo bloccato. Emozione: panico, poi sollievo al risveglio. Contesto possibile: una scadenza di lavoro che si avvicina mentre aspetti la decisione di qualcun altro. Domanda: «Dove sto aspettando invece di agire, ed è davvero una mia scelta?».</p>\n<p><strong>Metodo:</strong> questa scheda propone domande e associazioni possibili, non un significato universale né una previsione. Segue la <a href=\"/it/metodologia-contenuti-sogni\">metodologia dei contenuti</a> di Noctalia, sotto la responsabilità editoriale di <a href=\"/it/chi-siamo\">Thanh Chau</a>, direttore della pubblicazione.</p>",
+        "variations": [
+          {
+            "context": "Immobile davanti a un pericolo",
+            "meaning": "Una macchina, un inseguitore, un’onda, e il corpo non si muove. La scena può fare eco a una situazione in cui senti che dovresti agire e non ci riesci. Che cosa ti veniva incontro, e quanto era lontano?"
+          },
+          {
+            "context": "Gambe che non corrono",
+            "meaning": "Corri, ma le gambe sono pesanti o incollate al suolo. È una sensazione frequente nei sogni di inseguimento. Può fare eco a un senso di impotenza; tra le spiegazioni possibili si cita anche il rilassamento muscolare del sonno REM."
+          },
+          {
+            "context": "Svegliarsi senza potersi muovere",
+            "meaning": "Se eri sveglio, nel tuo letto, senza riuscire a muoverti, può essere stata una paralisi del sonno più che un’immagine di sogno. In genere è innocua. Se succede spesso o si accompagna a sonnolenza di giorno, parlane con un medico."
+          },
+          {
+            "context": "Sentire una presenza durante la paralisi",
+            "meaning": "Avvertire qualcuno nella stanza durante una paralisi del sonno è un’esperienza raccontata spesso. Spaventa, ma è legata alla sovrapposizione tra sonno REM e veglia, non a una visita reale né a un presagio."
+          },
+          {
+            "context": "Una sola parte del corpo bloccata",
+            "meaning": "Solo le mani, la voce o il viso? Annota quale. Mani immobili possono avvicinarsi a qualcosa che non riesci a fare; una voce bloccata, a qualcosa che non riesci a dire."
+          },
+          {
+            "context": "Vedere qualcun altro paralizzato",
+            "meaning": "Una persona cara che non riesce a muoversi può fare eco a una preoccupazione per lei, o all’impressione che sia bloccata in una situazione. Hai provato ad aiutarla, e che cosa è successo dopo?"
+          }
+        ]
       },
       "pt": {
         "fullInterpretation": "<p>A paralisia não precisa ser decifrada como uma mensagem secreta. Em um sonho, ela costuma funcionar mais como um marcador: algo na cena pede que você repare em pressão, reação, fuga, liberação e no modo como você lida com um momento que exige movimento.</p>\n<p>Comece pelos fatos simples. A imagem estava perto ou longe, foi bem-vinda ou perturbadora, comum ou estranhamente intensa? Esses detalhes mantêm a interpretação ancorada no seu sonho, em vez de impor a ele um significado genérico.</p>\n<p>Se o símbolo trouxe uma sensação de apoio, ele pode mostrar um recurso, um desejo ou uma memória em que você pode se apoiar. Se trouxe tensão, pode apontar para uma pressão que você vem administrando em silêncio demais.</p>\n<p>A Noctalia trata esse tipo de símbolo como um convite à reflexão. Anote a cena, a emoção e o que mudou depois que o símbolo apareceu; em geral é aí que começa o significado útil.</p>",
@@ -18509,24 +18759,149 @@
     },
     "screaming": {
       "en": {
-        "fullInterpretation": "<p>When this image appears in a dream, the first question is not “what does it always mean?” but “why did my mind choose this image tonight?” The answer often sits near pressure, reaction, avoidance, release, and the way you handle a moment that demands movement.</p>\n<p>The symbol can be tender, annoying, frightening, funny, or completely ordinary. That tone matters. A calm version may suggest integration, while a threatening version may show conflict or avoidance.</p>\n<p>Look at the role it played. Did it block you, guide you, watch you, follow you, or disappear? In dreams, function is often more revealing than the object itself.</p>\n<p>Use the image as a doorway into the story, not as a verdict. A few honest notes about the setting and your body reaction will usually say more than a fixed symbol list.</p>",
-        "variations": []
+        "fullInterpretation": "<p><strong>The scream rises from your chest and fills the whole dream.</strong> Or it stays stuck in your throat, however hard you push. Screaming in a dream is often associated with a strong emotion looking for a way out: fear, anger, distress, sometimes relief. That is a common lead, not a rule. What made you scream, and whether anyone heard you, tell you more than the volume.</p>\n<p><strong>Fear, anger or a call for help?</strong> A scream of fear in front of a threat can echo a pressure you feel during your days. A scream of anger at someone you know can stage a conflict you keep quiet while awake; compare with <a class=\"text-dream-salmon hover:underline\" href=\"/en/symbols/arguing\">arguing</a>. A call for help that no one answers can match a feeling of facing something alone. A silent scream comes close to being <a class=\"text-dream-salmon hover:underline\" href=\"/en/symbols/unable-to-speak\">unable to speak</a>: the emotion is there, the voice is not.</p>\n<p><strong>And if you screamed out loud in your bed?</strong> Talking or shouting in your sleep happens and is often harmless. If you regularly scream, hit out or get up while dreaming, or if your sleep or a partner's suffers, talk to a doctor. When nightmares keep coming back and spoil your nights, the <a class=\"text-dream-salmon hover:underline\" href=\"/en/blog/stop-nightmares-guide\">guide to nightmares</a> describes approaches that can reduce them.</p>\n<p><strong>Fictional journal example:</strong> \"I was screaming at my brother in the hallway of the house we grew up in, louder and louder, and he kept smiling as if he could not hear me.\" Scene: a scream that does not reach the person it is meant for. Emotion: anger, then helplessness. Possible context: an old family disagreement that has resurfaced. Question: \"What do I want this person to finally hear?\"</p>\n<p><strong>Method:</strong> this page offers questions and possible associations, not a universal meaning or a prediction. It follows Noctalia's <a href=\"/en/dream-content-methodology\">content methodology</a> and is edited by <a href=\"/en/about\">Thanh Chau</a>, publication director of Noctalia.</p>",
+        "variations": [
+          {
+            "context": "Screaming in fear",
+            "meaning": "You scream at a threat: an intruder, an animal, a fall. The scene can echo a pressure you feel during the day. What was the threat, and did the scream change anything?"
+          },
+          {
+            "context": "Screaming in anger",
+            "meaning": "Screaming at someone, often a person you know, can stage a conflict you keep quiet while awake. Note who it was and what you were shouting. What would you like to tell them calmly?"
+          },
+          {
+            "context": "A scream that will not come out",
+            "meaning": "Your mouth opens, but no sound comes, or only a whisper. The scene comes close to being unable to speak: the emotion is there, the voice is not. Where do you feel unheard right now?"
+          },
+          {
+            "context": "Hearing someone else scream",
+            "meaning": "A scream with no visible source can match a worry or an alarm you have not yet named. If you recognized the voice, ask yourself what is happening with that person in your life."
+          },
+          {
+            "context": "Screaming for help",
+            "meaning": "Calling for help, answered or not, can go with a moment when you need support. Did someone come? The answer often tells you more than the call itself."
+          },
+          {
+            "context": "Waking up screaming",
+            "meaning": "Waking with a scream, or being told you screamed, often follows an intense nightmare. If it happens regularly, or if you hit out or get up while dreaming, talk to a doctor."
+          }
+        ]
       },
       "fr": {
-        "fullInterpretation": "<p>Quand cri apparaît dans un rêve, la bonne question n’est pas “qu’est-ce que cela veut toujours dire ?”, mais “pourquoi cette image maintenant ?”. La réponse se trouve souvent près de pression, réaction, évitement, libération et manière de gérer un moment qui exige un mouvement.</p>\n<p>Le symbole peut être tendre, agaçant, effrayant, drôle ou tout à fait ordinaire. Ce ton compte. Une version calme peut suggérer une intégration; une version menaçante peut montrer un conflit ou un évitement.</p>\n<p>Regardez son rôle : bloquait-il le passage, guidait-il, observait-il, suivait-il, disparaissait-il ? Dans les rêves, la fonction révèle souvent plus que l’objet lui-même.</p>\n<p>Utilisez l’image comme une porte d’entrée dans l’histoire, pas comme un verdict. Quelques notes sincères sur le lieu et la réaction du corps valent mieux qu’une définition fixe.</p>",
-        "variations": []
+        "fullInterpretation": "<p><strong>Le cri monte de la poitrine et remplit tout le rêve.</strong> Ou il reste coincé dans la gorge, malgré tous vos efforts. Crier en rêve est souvent associé à une émotion forte qui cherche une issue : peur, colère, détresse, parfois soulagement. C'est une piste fréquente, pas une règle. Ce qui vous a fait crier, et le fait que quelqu'un vous entende ou non, en disent plus que le volume.</p>\n<p><strong>De peur, de colère, ou pour appeler à l'aide ?</strong> Un cri de peur face à une menace peut faire écho à une pression que vous ressentez dans vos journées. Un cri de colère contre quelqu'un que vous connaissez peut mettre en scène un conflit que vous taisez éveillé ; rapprochez-le de la fiche <a class=\"text-dream-salmon hover:underline\" href=\"/fr/symboles/dispute\">dispute</a>. Un appel à l'aide sans réponse peut rejoindre le sentiment d'affronter quelque chose seul. Un cri muet est proche du rêve où l'on est <a class=\"text-dream-salmon hover:underline\" href=\"/fr/symboles/incapable-de-parler\">incapable de parler</a> : l'émotion est là, la voix non.</p>\n<p><strong>Et si vous avez crié pour de vrai dans votre lit ?</strong> Parler ou crier pendant le sommeil arrive et reste souvent sans gravité. Si vous criez, frappez ou vous levez régulièrement en rêvant, ou si votre sommeil ou celui d'un proche en souffre, parlez-en à un médecin. Quand les cauchemars reviennent et abîment vos nuits, le <a class=\"text-dream-salmon hover:underline\" href=\"/fr/blog/guide-cauchemars\">guide sur les cauchemars</a> décrit des approches qui peuvent les réduire.</p>\n<p><strong>Exemple fictif de journal :</strong> « Je hurlais sur mon frère dans le couloir de la maison de notre enfance, de plus en plus fort, et il continuait à sourire comme s'il ne m'entendait pas. » Scène : un cri qui n'atteint pas son destinataire. Émotion : colère, puis impuissance. Contexte possible : un vieux désaccord familial qui refait surface. Question : « Qu'est-ce que je voudrais que cette personne entende enfin ? »</p>\n<p><strong>Méthode :</strong> cette fiche propose des questions et des associations possibles, pas un sens universel ni une prédiction. Elle suit la <a href=\"/fr/methodologie-contenus-reves\">méthodologie des contenus</a> de Noctalia, sous la responsabilité éditoriale de <a href=\"/fr/a-propos\">Thanh Chau</a>, directeur de la publication.</p>",
+        "variations": [
+          {
+            "context": "Crier de peur",
+            "meaning": "Vous criez face à une menace : un intrus, un animal, une chute. La scène peut faire écho à une pression ressentie dans la journée. Quelle était la menace, et le cri a-t-il changé quelque chose ?"
+          },
+          {
+            "context": "Crier de colère",
+            "meaning": "Crier contre quelqu'un, souvent une personne connue, peut mettre en scène un conflit que vous taisez éveillé. Notez qui c'était et ce que vous criiez. Que voudriez-vous lui dire calmement ?"
+          },
+          {
+            "context": "Un cri qui ne sort pas",
+            "meaning": "La bouche s'ouvre, mais aucun son ne vient, ou seulement un murmure. La scène rejoint celle où l'on ne peut pas parler : l'émotion est là, la voix non. Où vous sentez-vous peu entendu en ce moment ?"
+          },
+          {
+            "context": "Entendre quelqu'un crier",
+            "meaning": "Un cri dont on ne voit pas la source peut rejoindre une inquiétude ou une alerte que vous n'avez pas encore nommée. Si vous avez reconnu la voix, demandez-vous ce qui se passe avec cette personne dans votre vie."
+          },
+          {
+            "context": "Appeler au secours",
+            "meaning": "Appeler à l'aide, avec ou sans réponse, peut accompagner un moment où vous avez besoin de soutien. Quelqu'un est-il venu ? La réponse en dit souvent plus que l'appel lui-même."
+          },
+          {
+            "context": "Se réveiller en criant",
+            "meaning": "Se réveiller en criant, ou apprendre qu'on a crié, suit souvent un cauchemar intense. Si cela arrive régulièrement, ou si vous frappez ou vous levez en rêvant, parlez-en à un médecin."
+          }
+        ]
       },
       "es": {
-        "fullInterpretation": "<p>Cuando grito aparece en un sueño, la primera pregunta no es “¿qué significa siempre?”, sino “¿por qué mi mente eligió esta imagen esta noche?”. La respuesta suele estar cerca de presión, reacción, evitación, liberación y la forma de responder a un momento que exige movimiento.</p>\n<p>El símbolo puede ser tierno, molesto, aterrador, gracioso o completamente cotidiano. Ese tono importa. Una versión tranquila puede sugerir integración; una amenazante puede mostrar conflicto o evitación.</p>\n<p>Mira el papel que cumplía. ¿Bloqueaba, guiaba, observaba, seguía o desaparecía? En los sueños, la función revela a menudo más que el objeto.</p>\n<p>Usa la imagen como entrada a la historia, no como sentencia. Unas notas honestas sobre el lugar y la reacción del cuerpo dicen más que una lista fija de símbolos.</p>",
-        "variations": []
+        "fullInterpretation": "<p><strong>El grito sube desde el pecho y llena todo el sueño.</strong> O se queda atascado en la garganta por mucho que empujes. Gritar en sueños se asocia a menudo con una emoción fuerte que busca salida: miedo, rabia, angustia, a veces alivio. Es una pista frecuente, no una regla. Qué te hizo gritar, y si alguien te oyó, dice más que el volumen.</p>\n<p><strong>¿De miedo, de rabia o pidiendo ayuda?</strong> Un grito de miedo ante una amenaza puede hacer eco de una presión que notas en tu día a día. Un grito de rabia contra alguien que conoces puede escenificar un conflicto que callas despierto; compáralo con la ficha de la <a class=\"text-dream-salmon hover:underline\" href=\"/es/simbolos/discusion\">discusión</a>. Una petición de ayuda sin respuesta puede enlazar con la sensación de enfrentarte a algo a solas. Un grito mudo se acerca al sueño de <a class=\"text-dream-salmon hover:underline\" href=\"/es/simbolos/no-poder-hablar\">no poder hablar</a>: la emoción está, la voz no.</p>\n<p><strong>¿Y si gritaste de verdad en la cama?</strong> Hablar o gritar dormido ocurre y a menudo no tiene importancia. Si gritas, golpeas o te levantas con frecuencia mientras sueñas, o si tu descanso o el de quien duerme contigo se resiente, consulta con un médico. Cuando las pesadillas vuelven y estropean tus noches, la <a class=\"text-dream-salmon hover:underline\" href=\"/es/blog/guia-pesadillas\">guía sobre pesadillas</a> describe enfoques que pueden reducirlas.</p>\n<p><strong>Ejemplo ficticio de diario:</strong> «Le gritaba a mi hermano en el pasillo de la casa donde crecimos, cada vez más fuerte, y él seguía sonriendo como si no me oyera». Escena: un grito que no llega a su destinatario. Emoción: rabia y luego impotencia. Contexto posible: un viejo desacuerdo familiar que ha vuelto a salir. Pregunta: «¿Qué quiero que esta persona oiga por fin?».</p>\n<p><strong>Método:</strong> esta ficha propone preguntas y asociaciones posibles, no un significado universal ni una predicción. Sigue la <a href=\"/es/metodologia-contenido-suenos\">metodología de contenidos</a> de Noctalia, bajo la responsabilidad editorial de <a href=\"/es/sobre\">Thanh Chau</a>, director de publicación.</p>",
+        "variations": [
+          {
+            "context": "Gritar de miedo",
+            "meaning": "Gritas ante una amenaza: un intruso, un animal, una caída. La escena puede hacer eco de una presión que notas durante el día. ¿Cuál era la amenaza, y el grito cambió algo?"
+          },
+          {
+            "context": "Gritar de rabia",
+            "meaning": "Gritarle a alguien, a menudo una persona conocida, puede escenificar un conflicto que callas despierto. Anota quién era y qué gritabas. ¿Qué te gustaría decirle con calma?"
+          },
+          {
+            "context": "Un grito que no sale",
+            "meaning": "Abres la boca, pero no sale ningún sonido, o solo un susurro. La escena se acerca a la de no poder hablar: la emoción está, la voz no. ¿Dónde sientes ahora que no te escuchan?"
+          },
+          {
+            "context": "Oír a alguien gritar",
+            "meaning": "Un grito sin origen visible puede enlazar con una preocupación o una alarma que aún no has puesto en palabras. Si reconociste la voz, pregúntate qué pasa con esa persona en tu vida."
+          },
+          {
+            "context": "Pedir auxilio a gritos",
+            "meaning": "Pedir ayuda, con o sin respuesta, puede acompañar un momento en el que necesitas apoyo. ¿Vino alguien? La respuesta suele decir más que la propia llamada."
+          },
+          {
+            "context": "Despertarte gritando",
+            "meaning": "Despertarte con un grito, o que te digan que gritaste, suele seguir a una pesadilla intensa. Si ocurre a menudo, o si golpeas o te levantas mientras sueñas, coméntalo con un médico."
+          }
+        ]
       },
       "de": {
-        "fullInterpretation": "<p>Wenn Schreien im Traum erscheint, lautet die erste Frage nicht: “Was bedeutet das immer?”, sondern: “Warum genau dieses Bild heute Nacht?” Die Antwort liegt oft in der Nähe von Druck, Reaktion, Vermeidung, Entlastung und den Umgang mit einem Moment, der Bewegung verlangt.</p>\n<p>Das Symbol kann zart, störend, beängstigend, komisch oder ganz gewöhnlich sein. Dieser Ton ist wichtig. Eine ruhige Version kann Integration zeigen, eine bedrohliche eher Konflikt oder Vermeidung.</p>\n<p>Achten Sie auf die Rolle im Traum. Hat es blockiert, geführt, beobachtet, verfolgt oder ist es verschwunden? In Träumen verrät die Funktion oft mehr als das Objekt selbst.</p>\n<p>Nutzen Sie das Bild als Einstieg in die Geschichte, nicht als Urteil. Ein paar ehrliche Notizen zu Ort und Körperreaktion sagen meist mehr als eine feste Symbolliste.</p>",
-        "variations": []
+        "fullInterpretation": "<p><strong>Der Schrei steigt aus der Brust und füllt den ganzen Traum.</strong> Oder er bleibt im Hals stecken, so sehr Sie sich auch anstrengen. Schreien im Traum wird oft mit einem starken Gefühl verbunden, das einen Ausweg sucht: Angst, Wut, Verzweiflung, manchmal Erleichterung. Das ist eine häufige Spur, keine Regel. Was Sie zum Schreien brachte und ob jemand Sie hörte, sagt mehr als die Lautstärke.</p>\n<p><strong>Aus Angst, aus Wut oder um Hilfe?</strong> Ein Angstschrei vor einer Bedrohung kann einen Druck aufgreifen, den Sie im Alltag spüren. Ein wütender Schrei gegen eine bekannte Person kann einen Konflikt in Szene setzen, den Sie im Wachleben verschweigen; lesen Sie dazu auch die Seite <a class=\"text-dream-salmon hover:underline\" href=\"/de/traumsymbole/streit\">Streit</a>. Ein Hilferuf ohne Antwort kann zu dem Gefühl passen, etwas allein bewältigen zu müssen. Ein stummer Schrei ist dem Traum nahe, in dem man <a class=\"text-dream-salmon hover:underline\" href=\"/de/traumsymbole/nicht-sprechen-konnen\">nicht sprechen kann</a>: Das Gefühl ist da, die Stimme nicht.</p>\n<p><strong>Und wenn Sie wirklich im Bett geschrien haben?</strong> Im Schlaf zu sprechen oder zu rufen kommt vor und ist oft harmlos. Schreien, schlagen oder stehen Sie beim Träumen regelmäßig auf, oder leidet Ihr Schlaf oder der einer anderen Person darunter, sprechen Sie mit einer Ärztin oder einem Arzt. Kehren Albträume immer wieder und stören Ihre Nächte, beschreibt der <a class=\"text-dream-salmon hover:underline\" href=\"/de/blog/albtraeume-ursachen-bedeutung-und-wie-man-sie-stoppen-kann\">Ratgeber zu Albträumen</a> Ansätze, die sie verringern können.</p>\n<p><strong>Erfundenes Tagebuchbeispiel:</strong> „Ich schrie meinen Bruder im Flur unseres Elternhauses an, immer lauter, und er lächelte weiter, als würde er mich nicht hören.“ Szene: ein Schrei, der sein Ziel nicht erreicht. Gefühl: Wut, dann Ohnmacht. Möglicher Kontext: ein alter Familienstreit, der wieder aufgeflammt ist. Frage: „Was soll diese Person endlich von mir hören?“</p>\n<p><strong>Methode:</strong> Diese Seite bietet Fragen und mögliche Zusammenhänge, keine allgemeingültige Bedeutung und keine Vorhersage. Sie folgt der <a href=\"/de/methodik-trauminhalte\">Methodik für Trauminhalte</a> von Noctalia; redaktionell verantwortlich ist <a href=\"/de/ueber-uns\">Thanh Chau</a>, Publikationsleiter von Noctalia.</p>",
+        "variations": [
+          {
+            "context": "Vor Angst schreien",
+            "meaning": "Sie schreien vor einer Bedrohung: einem Eindringling, einem Tier, einem Sturz. Die Szene kann einen Druck aufgreifen, den Sie tagsüber spüren. Was war die Bedrohung, und hat der Schrei etwas verändert?"
+          },
+          {
+            "context": "Vor Wut schreien",
+            "meaning": "Jemanden anzuschreien, oft eine bekannte Person, kann einen Konflikt in Szene setzen, den Sie im Wachleben verschweigen. Notieren Sie, wer es war und was Sie geschrien haben. Was würden Sie dieser Person gern in Ruhe sagen?"
+          },
+          {
+            "context": "Ein Schrei, der nicht herauskommt",
+            "meaning": "Der Mund öffnet sich, aber es kommt kein Ton, oder nur ein Flüstern. Die Szene ähnelt dem Traum, nicht sprechen zu können: Das Gefühl ist da, die Stimme nicht. Wo fühlen Sie sich gerade wenig gehört?"
+          },
+          {
+            "context": "Jemanden schreien hören",
+            "meaning": "Ein Schrei ohne sichtbare Quelle kann zu einer Sorge oder Unruhe passen, die Sie noch nicht benannt haben. Haben Sie die Stimme erkannt, fragen Sie sich, was mit dieser Person in Ihrem Leben gerade los ist."
+          },
+          {
+            "context": "Um Hilfe schreien",
+            "meaning": "Um Hilfe zu rufen, mit oder ohne Antwort, kann eine Phase begleiten, in der Sie Unterstützung brauchen. Ist jemand gekommen? Die Antwort sagt oft mehr als der Ruf selbst."
+          },
+          {
+            "context": "Schreiend aufwachen",
+            "meaning": "Mit einem Schrei aufzuwachen oder zu erfahren, dass man geschrien hat, folgt oft auf einen heftigen Albtraum. Kommt das regelmäßig vor oder schlagen oder stehen Sie beim Träumen auf, sprechen Sie mit einer Ärztin oder einem Arzt."
+          }
+        ]
       },
       "it": {
-        "fullInterpretation": "<p>Quando urlare appare in un sogno, la prima domanda non è “che cosa significa sempre?”, ma “perché la mia mente ha scelto questa immagine stanotte?”. La risposta spesso sta vicino a pressione, reazione, evitamento, liberazione e modo di affrontare un momento che richiede movimento.</p>\n<p>Il simbolo può essere tenero, fastidioso, spaventoso, buffo o del tutto ordinario. Quel tono conta. Una versione calma può suggerire integrazione; una minacciosa può mostrare conflitto o evitamento.</p>\n<p>Guarda il ruolo che aveva. Bloccava, guidava, osservava, seguiva o spariva? Nei sogni la funzione spesso rivela più dell’oggetto stesso.</p>\n<p>Usa l’immagine come ingresso nella storia, non come verdetto. Poche note sincere sul luogo e sulla reazione del corpo dicono più di una lista fissa di simboli.</p>",
-        "variations": []
+        "fullInterpretation": "<p><strong>L’urlo sale dal petto e riempie tutto il sogno.</strong> Oppure resta bloccato in gola, per quanto tu spinga. Urlare in sogno viene spesso associato a un’emozione forte che cerca una via d’uscita: paura, rabbia, angoscia, a volte sollievo. È una pista frequente, non una regola. Che cosa ti ha fatto urlare, e se qualcuno ti ha sentito, conta più del volume.</p>\n<p><strong>Per paura, per rabbia o per chiedere aiuto?</strong> Un urlo di paura davanti a una minaccia può fare eco a una pressione che senti nelle tue giornate. Un urlo di rabbia contro qualcuno che conosci può mettere in scena un conflitto che da sveglio taci; confronta la scheda sul <a class=\"text-dream-salmon hover:underline\" href=\"/it/simboli/litigio\">litigio</a>. Una richiesta di aiuto senza risposta può avvicinarsi alla sensazione di affrontare qualcosa da solo. Un urlo muto è vicino al sogno di <a class=\"text-dream-salmon hover:underline\" href=\"/it/simboli/non-riuscire-a-parlare\">non riuscire a parlare</a>: l’emozione c’è, la voce no.</p>\n<p><strong>E se hai urlato davvero nel letto?</strong> Parlare o urlare nel sonno capita e spesso non ha conseguenze. Se urli, colpisci o ti alzi spesso mentre sogni, o se il tuo sonno o quello di chi dorme con te ne risente, parlane con un medico. Quando gli incubi tornano e rovinano le tue notti, la <a class=\"text-dream-salmon hover:underline\" href=\"/it/blog/incubi-cause-significato-e-come-fermarli\">guida agli incubi</a> descrive approcci che possono ridurli.</p>\n<p><strong>Esempio inventato di diario:</strong> «Urlavo contro mio fratello nel corridoio della casa dove siamo cresciuti, sempre più forte, e lui continuava a sorridere come se non mi sentisse». Scena: un urlo che non raggiunge il destinatario. Emozione: rabbia, poi impotenza. Contesto possibile: un vecchio disaccordo familiare tornato a galla. Domanda: «Che cosa vorrei che questa persona sentisse finalmente?».</p>\n<p><strong>Metodo:</strong> questa scheda propone domande e associazioni possibili, non un significato universale né una previsione. Segue la <a href=\"/it/metodologia-contenuti-sogni\">metodologia dei contenuti</a> di Noctalia, sotto la responsabilità editoriale di <a href=\"/it/chi-siamo\">Thanh Chau</a>, direttore della pubblicazione.</p>",
+        "variations": [
+          {
+            "context": "Urlare di paura",
+            "meaning": "Urli davanti a una minaccia: un intruso, un animale, una caduta. La scena può fare eco a una pressione che senti durante il giorno. Qual era la minaccia, e l’urlo ha cambiato qualcosa?"
+          },
+          {
+            "context": "Urlare di rabbia",
+            "meaning": "Urlare contro qualcuno, spesso una persona che conosci, può mettere in scena un conflitto che da sveglio taci. Annota chi era e che cosa urlavi. Che cosa vorresti dirle con calma?"
+          },
+          {
+            "context": "Un urlo che non esce",
+            "meaning": "La bocca si apre, ma non arriva alcun suono, o solo un sussurro. La scena si avvicina a quella in cui non riesci a parlare: l’emozione c’è, la voce no. Dove ti senti poco ascoltato in questo periodo?"
+          },
+          {
+            "context": "Sentire qualcuno urlare",
+            "meaning": "Un urlo senza una fonte visibile può avvicinarsi a una preoccupazione o a un allarme che non hai ancora nominato. Se hai riconosciuto la voce, chiediti che cosa succede con quella persona nella tua vita."
+          },
+          {
+            "context": "Urlare per chiedere aiuto",
+            "meaning": "Chiedere aiuto, con o senza risposta, può accompagnare un momento in cui hai bisogno di sostegno. È arrivato qualcuno? La risposta spesso dice più della richiesta stessa."
+          },
+          {
+            "context": "Svegliarsi urlando",
+            "meaning": "Svegliarsi con un urlo, o sentirsi dire di aver urlato, segue spesso un incubo intenso. Se capita regolarmente, o se colpisci o ti alzi mentre sogni, parlane con un medico."
+          }
+        ]
       },
       "pt": {
         "fullInterpretation": "<p>Quando essa imagem aparece em um sonho, a primeira pergunta não é “o que ela sempre significa?”, e sim “por que minha mente escolheu esta imagem hoje à noite?”. A resposta costuma estar perto da pressão, da reação, da fuga, da liberação e do jeito como você lida com um momento que exige movimento.</p>\n<p>O símbolo pode ser terno, irritante, assustador, engraçado ou completamente banal. Esse tom importa. Uma versão calma pode sugerir integração, enquanto uma versão ameaçadora pode mostrar conflito ou fuga.</p>\n<p>Repare no papel que ele desempenhou. Ele bloqueou você, guiou você, observou você, seguiu você ou desapareceu? Nos sonhos, a função costuma revelar mais do que o próprio objeto.</p>\n<p>Use a imagem como uma porta de entrada para a história, não como um veredito. Algumas anotações sinceras sobre o cenário e sobre a reação do seu corpo costumam dizer mais do que qualquer lista fixa de símbolos.</p>",
@@ -18535,24 +18910,149 @@
     },
     "hiding": {
       "en": {
-        "fullInterpretation": "<p>Hiding can feel oddly specific in a dream, which is why it is worth taking seriously without taking it literally. It often gathers several threads at once: pressure, reaction, avoidance, release, and the way you handle a moment that demands movement.</p>\n<p>Notice whether the dream made the symbol familiar or strange. Familiar details can point toward lived memory; strange details may show that an old pattern is being seen from a new angle.</p>\n<p>The strongest clue is usually emotional. Relief, shame, fear, curiosity, irritation, or longing will narrow the meaning faster than any universal interpretation.</p>\n<p>If you record the dream in Noctalia, keep one sentence for what happened and one sentence for what it reminded you of. That small contrast often reveals the real theme.</p>",
-        "variations": []
+        "fullInterpretation": "<p><strong>You hold your breath behind a door and listen to the footsteps getting closer.</strong> Hiding in a dream is often associated with a wish to protect yourself, or to step away from a situation for a while. That is a common lead, not a rule. Who you were hiding from, and whether the hiding place felt safe, set the tone of the scene.</p>\n<p><strong>Hiding from whom?</strong> A threat without a face can match a diffuse pressure, hard to name. A person you know can stage a tension with them, or a side of you that you would rather they did not see. If you were also running, compare with <a class=\"text-dream-salmon hover:underline\" href=\"/en/symbols/being-chased\">being chased</a>. If you were hiding who you are rather than where you were, the <a class=\"text-dream-salmon hover:underline\" href=\"/en/symbols/mask\">mask</a> symbol may be closer.</p>\n<p><strong>A chosen refuge or a forced hideout?</strong> A hiding place you picked yourself, quiet and safe, can go with a need to catch your breath and take a step back. A cramped corner you cannot get out of tells another story, closer to feeling <a class=\"text-dream-salmon hover:underline\" href=\"/en/symbols/trapped\">trapped</a>. Being found can echo a fear of being exposed, or the relief of no longer having to pretend.</p>\n<p><strong>Fictional journal example:</strong> \"I was hiding under my desk at the office. My manager was walking between the rows, calling my name. I stayed curled up with my heart pounding, and woke up before he found me.\" Scene: a familiar place turned into a hideout. Emotion: fear mixed with shame. Possible context: an overdue report you have not mentioned yet. Question: \"What am I waiting for before I bring it up, hoping no one will notice?\"</p>\n<p><strong>Method:</strong> this page offers questions and possible associations, not a universal meaning or a prediction. It follows Noctalia's <a href=\"/en/dream-content-methodology\">content methodology</a> and is edited by <a href=\"/en/about\">Thanh Chau</a>, publication director of Noctalia.</p>",
+        "variations": [
+          {
+            "context": "Hiding from a threat",
+            "meaning": "An intruder, a monster, a figure without a face, and you hold your breath. The scene can match a pressure you would rather avoid for now. How close did the threat get?"
+          },
+          {
+            "context": "Hiding from someone you know",
+            "meaning": "Hiding from a parent, a partner or a manager can stage a tension with them, or something you would rather they did not see. What would happen if they found you?"
+          },
+          {
+            "context": "Being found",
+            "meaning": "The moment of discovery can echo a fear of being exposed, or the relief of no longer having to hide. What you felt, panic or relief, is the main clue."
+          },
+          {
+            "context": "Hiding with someone",
+            "meaning": "Sharing a hiding place changes the scene: you protect someone, or someone protects you. Who was it, and did you feel safer together?"
+          },
+          {
+            "context": "Finding nowhere to hide",
+            "meaning": "Looking for a hiding place and finding none can go with a feeling of being exposed, with no room to step back. Where are you missing a refuge right now?"
+          },
+          {
+            "context": "Hiding an object",
+            "meaning": "Hiding a letter, money or evidence moves the focus from you to a secret. What were you hiding, and from whom? The object often points to the area of life involved."
+          }
+        ]
       },
       "fr": {
-        "fullInterpretation": "<p>Se cacher peut sembler très précis dans un rêve. C’est justement pour cela qu’il mérite d’être pris au sérieux sans être pris au pied de la lettre. Il rassemble souvent plusieurs fils : pression, réaction, évitement, libération et manière de gérer un moment qui exige un mouvement.</p>\n<p>Observez si le rêve rendait le symbole familier ou étrange. Le familier peut renvoyer à une mémoire vécue; l’étrange peut montrer qu’un ancien schéma est regardé autrement.</p>\n<p>L’indice le plus fort reste l’émotion : soulagement, honte, peur, curiosité, irritation ou désir. Elle réduit le champ bien plus vite qu’une interprétation universelle.</p>\n<p>Dans Noctalia, gardez une phrase pour ce qui s’est passé et une autre pour ce que cela vous a rappelé. Ce petit écart fait souvent apparaître le vrai thème.</p>",
-        "variations": []
+        "fullInterpretation": "<p><strong>Vous retenez votre souffle derrière une porte et vous écoutez les pas qui approchent.</strong> Se cacher en rêve est souvent associé à l'envie de se protéger, ou de se mettre à l'écart d'une situation pour un temps. C'est une piste fréquente, pas une règle. De qui vous vous cachiez, et la sûreté de la cachette, donnent le ton de la scène.</p>\n<p><strong>Vous cacher de qui ?</strong> Une menace sans visage peut rejoindre une pression diffuse, difficile à nommer. Une personne connue peut mettre en scène une tension avec elle, ou une part de vous que vous préférez ne pas lui montrer. Si vous étiez aussi en train de fuir, rapprochez la scène de la fiche <a class=\"text-dream-salmon hover:underline\" href=\"/fr/symboles/poursuite\">poursuite</a>. Si vous cachiez qui vous êtes plutôt que l'endroit où vous étiez, celle du <a class=\"text-dream-salmon hover:underline\" href=\"/fr/symboles/masque\">masque</a> sera peut-être plus proche.</p>\n<p><strong>Un refuge choisi ou une cachette subie ?</strong> Une cachette choisie, calme et sûre, peut accompagner un besoin de souffler et de prendre du recul. Un recoin étroit dont vous ne pouvez plus sortir raconte autre chose, plus proche du sentiment d'être <a class=\"text-dream-salmon hover:underline\" href=\"/fr/symboles/piege\">piégé</a>. Être découvert peut faire écho à la peur d'être exposé, ou au soulagement de ne plus avoir à faire semblant.</p>\n<p><strong>Exemple fictif de journal :</strong> « Je m'étais caché sous mon bureau, au travail. Mon responsable passait entre les rangées en m'appelant. Je restais recroquevillé, le cœur battant, et je me suis réveillé avant qu'il me trouve. » Scène : un lieu familier devenu cachette. Émotion : peur mêlée de honte. Contexte possible : un dossier en retard dont vous n'avez pas encore parlé. Question : « Qu'est-ce que j'attends pour en parler, en espérant que personne ne remarque rien ? »</p>\n<p><strong>Méthode :</strong> cette fiche propose des questions et des associations possibles, pas un sens universel ni une prédiction. Elle suit la <a href=\"/fr/methodologie-contenus-reves\">méthodologie des contenus</a> de Noctalia, sous la responsabilité éditoriale de <a href=\"/fr/a-propos\">Thanh Chau</a>, directeur de la publication.</p>",
+        "variations": [
+          {
+            "context": "Se cacher d'une menace",
+            "meaning": "Un intrus, un monstre, une silhouette sans visage, et vous retenez votre souffle. La scène peut rejoindre une pression que vous préférez éviter pour l'instant. Jusqu'où la menace s'est-elle approchée ?"
+          },
+          {
+            "context": "Se cacher de quelqu'un qu'on connaît",
+            "meaning": "Se cacher d'un parent, d'un partenaire ou d'un responsable peut mettre en scène une tension avec lui, ou quelque chose que vous préférez qu'il ne voie pas. Que se passerait-il s'il vous trouvait ?"
+          },
+          {
+            "context": "Être découvert",
+            "meaning": "Le moment où l'on vous trouve peut faire écho à la peur d'être exposé, ou au soulagement de ne plus avoir à vous cacher. Ce que vous avez ressenti, panique ou soulagement, est l'indice principal."
+          },
+          {
+            "context": "Se cacher avec quelqu'un",
+            "meaning": "Partager une cachette change la scène : vous protégez quelqu'un, ou quelqu'un vous protège. Qui était-ce, et vous sentiez-vous plus en sécurité à deux ?"
+          },
+          {
+            "context": "Ne trouver aucune cachette",
+            "meaning": "Chercher où se cacher sans rien trouver peut accompagner le sentiment d'être exposé, sans possibilité de recul. Où vous manque-t-il un refuge en ce moment ?"
+          },
+          {
+            "context": "Cacher un objet",
+            "meaning": "Cacher une lettre, de l'argent ou une preuve déplace l'attention de vous vers un secret. Que cachiez-vous, et à qui ? L'objet indique souvent le domaine de vie concerné."
+          }
+        ]
       },
       "es": {
-        "fullInterpretation": "<p>Esconderse puede sentirse extrañamente específico en un sueño. Por eso conviene tomarlo en serio sin tomarlo de forma literal. A menudo reúne varios hilos: presión, reacción, evitación, liberación y la forma de responder a un momento que exige movimiento.</p>\n<p>Observa si el sueño volvía el símbolo familiar o extraño. Lo familiar puede apuntar a memoria vivida; lo extraño puede mostrar un patrón antiguo visto desde otro ángulo.</p>\n<p>La pista más fuerte suele ser la emoción: alivio, vergüenza, miedo, curiosidad, irritación o deseo. Eso acota el significado más rápido que cualquier interpretación universal.</p>\n<p>Si registras el sueño en Noctalia, escribe una frase sobre lo que ocurrió y otra sobre lo que te recordó. Esa pequeña diferencia suele revelar el tema real.</p>",
-        "variations": []
+        "fullInterpretation": "<p><strong>Contienes la respiración detrás de una puerta y escuchas los pasos que se acercan.</strong> Esconderse en sueños se asocia a menudo con las ganas de protegerte, o de apartarte de una situación por un tiempo. Es una pista frecuente, no una regla. De quién te escondías, y lo seguro que parecía el escondite, marcan el tono de la escena.</p>\n<p><strong>¿De quién te escondías?</strong> Una amenaza sin cara puede enlazar con una presión difusa, difícil de nombrar. Una persona conocida puede escenificar una tensión con ella, o una parte de ti que prefieres no enseñarle. Si además huías, compáralo con la ficha de la <a class=\"text-dream-salmon hover:underline\" href=\"/es/simbolos/persecucion\">persecución</a>. Si escondías quién eres más que dónde estabas, la de la <a class=\"text-dream-salmon hover:underline\" href=\"/es/simbolos/mascara\">máscara</a> quizá se acerque más.</p>\n<p><strong>¿Un refugio elegido o un escondite forzado?</strong> Un escondite que elegiste tú, tranquilo y seguro, puede acompañar la necesidad de tomar aire y distancia. Un rincón estrecho del que no puedes salir cuenta otra cosa, más cerca de sentirte <a class=\"text-dream-salmon hover:underline\" href=\"/es/simbolos/atrapado\">atrapado</a>. Que te descubran puede hacer eco del miedo a quedar expuesto, o del alivio de no tener que seguir fingiendo.</p>\n<p><strong>Ejemplo ficticio de diario:</strong> «Estaba escondido debajo de mi mesa en la oficina. Mi jefe pasaba entre los puestos llamándome. Yo seguía encogido, con el corazón a mil, y me desperté antes de que me encontrara». Escena: un lugar conocido convertido en escondite. Emoción: miedo mezclado con vergüenza. Contexto posible: un informe atrasado del que todavía no has dicho nada. Pregunta: «¿A qué espero para sacarlo, con la esperanza de que nadie lo note?».</p>\n<p><strong>Método:</strong> esta ficha propone preguntas y asociaciones posibles, no un significado universal ni una predicción. Sigue la <a href=\"/es/metodologia-contenido-suenos\">metodología de contenidos</a> de Noctalia, bajo la responsabilidad editorial de <a href=\"/es/sobre\">Thanh Chau</a>, director de publicación.</p>",
+        "variations": [
+          {
+            "context": "Esconderte de una amenaza",
+            "meaning": "Un intruso, un monstruo, una figura sin cara, y contienes la respiración. La escena puede enlazar con una presión que prefieres evitar por ahora. ¿Cuánto se acercó la amenaza?"
+          },
+          {
+            "context": "Esconderte de alguien conocido",
+            "meaning": "Esconderte de tu madre, de tu pareja o de tu jefe puede escenificar una tensión con esa persona, o algo que prefieres que no vea. ¿Qué pasaría si te encontrara?"
+          },
+          {
+            "context": "Que te encuentren",
+            "meaning": "El momento en que te descubren puede hacer eco del miedo a quedar expuesto, o del alivio de no tener que seguir escondido. Lo que sentiste, pánico o alivio, es la pista principal."
+          },
+          {
+            "context": "Esconderte con alguien",
+            "meaning": "Compartir escondite cambia la escena: proteges a alguien, o alguien te protege a ti. ¿Quién era, y te sentías más seguro en compañía?"
+          },
+          {
+            "context": "No encontrar dónde esconderte",
+            "meaning": "Buscar un escondite sin encontrarlo puede acompañar la sensación de estar expuesto, sin margen para tomar distancia. ¿Dónde te falta ahora un refugio?"
+          },
+          {
+            "context": "Esconder un objeto",
+            "meaning": "Esconder una carta, dinero o una prueba lleva la atención de ti a un secreto. ¿Qué escondías y de quién? El objeto suele señalar el ámbito de tu vida en juego."
+          }
+        ]
       },
       "de": {
-        "fullInterpretation": "<p>Sich verstecken kann im Traum seltsam präzise wirken. Genau deshalb lohnt es sich, das Bild ernst zu nehmen, ohne es wörtlich zu nehmen. Oft bündelt es mehrere Fäden: Druck, Reaktion, Vermeidung, Entlastung und den Umgang mit einem Moment, der Bewegung verlangt.</p>\n<p>Beobachten Sie, ob der Traum das Symbol vertraut oder fremd wirken ließ. Vertrautes kann auf gelebte Erinnerung zeigen; Fremdes kann ein altes Muster aus neuer Perspektive zeigen.</p>\n<p>Der stärkste Hinweis ist meist das Gefühl: Erleichterung, Scham, Angst, Neugier, Reizbarkeit oder Sehnsucht. Das grenzt die Bedeutung schneller ein als jede universelle Deutung.</p>\n<p>Wenn Sie den Traum in Noctalia festhalten, schreiben Sie einen Satz dazu, was geschah, und einen dazu, woran es Sie erinnerte. Dieser kleine Unterschied zeigt oft das eigentliche Thema.</p>",
-        "variations": []
+        "fullInterpretation": "<p><strong>Sie halten hinter einer Tür den Atem an und hören, wie die Schritte näher kommen.</strong> Sich im Traum zu verstecken wird oft mit dem Wunsch verbunden, sich zu schützen oder sich eine Weile aus einer Situation herauszunehmen. Das ist eine häufige Spur, keine Regel. Vor wem Sie sich versteckt haben und wie sicher das Versteck war, bestimmen den Ton der Szene.</p>\n<p><strong>Vor wem haben Sie sich versteckt?</strong> Eine Bedrohung ohne Gesicht kann zu einem diffusen, schwer benennbaren Druck passen. Eine bekannte Person kann eine Spannung mit ihr in Szene setzen oder eine Seite von Ihnen, die Sie ihr lieber nicht zeigen. Sind Sie zugleich geflohen, lesen Sie auch die Seite <a class=\"text-dream-salmon hover:underline\" href=\"/de/traumsymbole/verfolgung\">Verfolgung</a>. Haben Sie eher verborgen, wer Sie sind, als wo Sie sind, liegt die Seite zur <a class=\"text-dream-salmon hover:underline\" href=\"/de/traumsymbole/maske\">Maske</a> vielleicht näher.</p>\n<p><strong>Ein gewählter Rückzugsort oder ein erzwungenes Versteck?</strong> Ein selbst gewähltes, ruhiges und sicheres Versteck kann das Bedürfnis begleiten, durchzuatmen und Abstand zu gewinnen. Ein enger Winkel, aus dem Sie nicht mehr herauskommen, erzählt etwas anderes, näher am Gefühl, <a class=\"text-dream-salmon hover:underline\" href=\"/de/traumsymbole/gefangen\">gefangen</a> zu sein. Entdeckt zu werden kann die Angst aufgreifen, bloßgestellt zu werden, oder die Erleichterung, sich nicht länger verstellen zu müssen.</p>\n<p><strong>Erfundenes Tagebuchbeispiel:</strong> „Ich hatte mich im Büro unter meinem Schreibtisch versteckt. Mein Chef ging zwischen den Reihen hindurch und rief meinen Namen. Ich blieb zusammengekauert, mit Herzklopfen, und wachte auf, bevor er mich fand.“ Szene: ein vertrauter Ort, der zum Versteck wird. Gefühl: Angst, gemischt mit Scham. Möglicher Kontext: ein verspäteter Bericht, den Sie noch nicht angesprochen haben. Frage: „Worauf warte ich, bevor ich es anspreche, in der Hoffnung, dass niemand etwas merkt?“</p>\n<p><strong>Methode:</strong> Diese Seite bietet Fragen und mögliche Zusammenhänge, keine allgemeingültige Bedeutung und keine Vorhersage. Sie folgt der <a href=\"/de/methodik-trauminhalte\">Methodik für Trauminhalte</a> von Noctalia; redaktionell verantwortlich ist <a href=\"/de/ueber-uns\">Thanh Chau</a>, Publikationsleiter von Noctalia.</p>",
+        "variations": [
+          {
+            "context": "Sich vor einer Bedrohung verstecken",
+            "meaning": "Ein Eindringling, ein Monster, eine Gestalt ohne Gesicht, und Sie halten den Atem an. Die Szene kann zu einem Druck passen, dem Sie im Moment lieber ausweichen. Wie nah ist die Bedrohung gekommen?"
+          },
+          {
+            "context": "Sich vor einer bekannten Person verstecken",
+            "meaning": "Sich vor einem Elternteil, dem Partner oder der Chefin zu verstecken, kann eine Spannung mit dieser Person in Szene setzen oder etwas, das sie lieber nicht sehen soll. Was würde passieren, wenn sie Sie fände?"
+          },
+          {
+            "context": "Entdeckt werden",
+            "meaning": "Der Moment der Entdeckung kann die Angst aufgreifen, bloßgestellt zu werden, oder die Erleichterung, sich nicht mehr verstecken zu müssen. Was Sie gefühlt haben, Panik oder Erleichterung, ist der wichtigste Hinweis."
+          },
+          {
+            "context": "Sich mit jemandem verstecken",
+            "meaning": "Ein gemeinsames Versteck verändert die Szene: Sie beschützen jemanden, oder jemand beschützt Sie. Wer war es, und haben Sie sich zu zweit sicherer gefühlt?"
+          },
+          {
+            "context": "Kein Versteck finden",
+            "meaning": "Ein Versteck zu suchen und keines zu finden, kann das Gefühl begleiten, ausgeliefert zu sein, ohne Raum für Rückzug. Wo fehlt Ihnen gerade ein Rückzugsort?"
+          },
+          {
+            "context": "Einen Gegenstand verstecken",
+            "meaning": "Einen Brief, Geld oder ein Beweisstück zu verstecken, lenkt den Blick von Ihnen auf ein Geheimnis. Was haben Sie versteckt, und vor wem? Der Gegenstand zeigt oft, welcher Lebensbereich betroffen ist."
+          }
+        ]
       },
       "it": {
-        "fullInterpretation": "<p>Nascondersi può sembrare stranamente specifico in un sogno. Per questo vale la pena prenderlo sul serio senza prenderlo alla lettera. Spesso raccoglie più fili: pressione, reazione, evitamento, liberazione e modo di affrontare un momento che richiede movimento.</p>\n<p>Nota se il sogno rendeva il simbolo familiare o strano. Il familiare può rimandare a una memoria vissuta; lo strano può mostrare un vecchio schema visto da un’altra angolazione.</p>\n<p>L’indizio più forte è quasi sempre l’emozione: sollievo, vergogna, paura, curiosità, irritazione o desiderio. Restringe il significato più velocemente di qualsiasi interpretazione universale.</p>\n<p>Se registri il sogno in Noctalia, tieni una frase per ciò che è successo e una per ciò che ti ha ricordato. Quel piccolo contrasto spesso rivela il tema vero.</p>",
-        "variations": []
+        "fullInterpretation": "<p><strong>Trattieni il respiro dietro una porta e ascolti i passi che si avvicinano.</strong> Nascondersi in sogno viene spesso associato al desiderio di proteggersi, o di mettersi in disparte da una situazione per un po’. È una pista frequente, non una regola. Da chi ti nascondevi, e quanto il nascondiglio sembrava sicuro, danno il tono alla scena.</p>\n<p><strong>Da chi ti nascondevi?</strong> Una minaccia senza volto può avvicinarsi a una pressione diffusa, difficile da nominare. Una persona conosciuta può mettere in scena una tensione con lei, o una parte di te che preferisci non mostrarle. Se intanto stavi anche scappando, confronta la scheda sull’<a class=\"text-dream-salmon hover:underline\" href=\"/it/simboli/inseguimento\">inseguimento</a>. Se nascondevi chi sei più che dove ti trovavi, quella sulla <a class=\"text-dream-salmon hover:underline\" href=\"/it/simboli/maschera\">maschera</a> potrebbe essere più vicina.</p>\n<p><strong>Un rifugio scelto o un nascondiglio forzato?</strong> Un nascondiglio scelto da te, tranquillo e sicuro, può accompagnare il bisogno di riprendere fiato e prendere distanza. Un angolo stretto da cui non riesci più a uscire racconta altro, più vicino alla sensazione di essere <a class=\"text-dream-salmon hover:underline\" href=\"/it/simboli/intrappolato\">intrappolato</a>. Essere scoperto può fare eco alla paura di essere esposto, o al sollievo di non dover più fingere.</p>\n<p><strong>Esempio inventato di diario:</strong> «Mi ero nascosto sotto la scrivania in ufficio. Il mio responsabile passava tra le file chiamando il mio nome. Restavo rannicchiato, col cuore in gola, e mi sono svegliato prima che mi trovasse». Scena: un luogo familiare diventato nascondiglio. Emozione: paura mista a vergogna. Contesto possibile: una consegna in ritardo di cui non hai ancora parlato. Domanda: «Che cosa aspetto a dirlo, sperando che nessuno se ne accorga?».</p>\n<p><strong>Metodo:</strong> questa scheda propone domande e associazioni possibili, non un significato universale né una previsione. Segue la <a href=\"/it/metodologia-contenuti-sogni\">metodologia dei contenuti</a> di Noctalia, sotto la responsabilità editoriale di <a href=\"/it/chi-siamo\">Thanh Chau</a>, direttore della pubblicazione.</p>",
+        "variations": [
+          {
+            "context": "Nascondersi da una minaccia",
+            "meaning": "Un intruso, un mostro, una figura senza volto, e trattieni il respiro. La scena può avvicinarsi a una pressione che per ora preferisci evitare. Quanto si è avvicinata la minaccia?"
+          },
+          {
+            "context": "Nascondersi da qualcuno che conosci",
+            "meaning": "Nasconderti da un genitore, dal partner o da un capo può mettere in scena una tensione con quella persona, o qualcosa che preferisci che non veda. Che cosa succederebbe se ti trovasse?"
+          },
+          {
+            "context": "Essere scoperti",
+            "meaning": "Il momento in cui ti trovano può fare eco alla paura di essere esposto, o al sollievo di non doverti più nascondere. Ciò che hai provato, panico o sollievo, è l’indizio principale."
+          },
+          {
+            "context": "Nascondersi con qualcuno",
+            "meaning": "Condividere un nascondiglio cambia la scena: proteggi qualcuno, o qualcuno protegge te. Chi era, e ti sentivi più al sicuro in due?"
+          },
+          {
+            "context": "Non trovare un nascondiglio",
+            "meaning": "Cercare dove nasconderti senza trovare nulla può accompagnare la sensazione di essere esposto, senza margine per tirarti indietro. Dove ti manca un rifugio in questo periodo?"
+          },
+          {
+            "context": "Nascondere un oggetto",
+            "meaning": "Nascondere una lettera, dei soldi o una prova sposta l’attenzione da te a un segreto. Che cosa nascondevi, e a chi? L’oggetto indica spesso l’ambito della vita coinvolto."
+          }
+        ]
       },
       "pt": {
         "fullInterpretation": "<p>Esconder-se pode parecer estranhamente específico dentro de um sonho, e é por isso que vale levar a sério sem levar ao pé da letra. Muitas vezes esse gesto reúne vários fios ao mesmo tempo: pressão, reação, fuga, alívio e o modo como você lida com um momento que exige movimento.</p>\n<p>Repare se o sonho deixou o símbolo familiar ou estranho. Detalhes familiares podem apontar para uma lembrança vivida; detalhes estranhos podem mostrar que um padrão antigo está sendo visto de um novo ângulo.</p>\n<p>A pista mais forte costuma ser emocional. Alívio, vergonha, medo, curiosidade, irritação ou saudade vão estreitar o significado mais rápido do que qualquer interpretação universal.</p>\n<p>Se você registrar o sonho no Noctalia, reserve uma frase para o que aconteceu e outra para aquilo de que ele lembrou você. Esse pequeno contraste costuma revelar o tema de verdade.</p>",

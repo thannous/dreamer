@@ -17112,58 +17112,152 @@
       "en": {
         "slug": "unable-to-speak",
         "name": "Unable to speak",
-        "shortDescription": "Being unable to speak places the lack of words or access to your voice at the center of a dream. Who you wanted to address and how they reacted to your silence shape this blocked exchange.",
-        "modifiedAt": "2026-07-24",
+        "shortDescription": "In the dream you open your mouth and nothing comes out, or the words are too faint for anyone to hear. This scene often goes with something you are holding back, or a feeling of not being heard. Who you wanted to reach matters most.",
+        "modifiedAt": "2026-10-08",
         "askYourself": [
-          "What did unable to speak change in the scene?",
-          "Which feeling stayed with me after waking?"
+          "Who was I trying to talk to, and what did I want to say?",
+          "Was my voice gone, too faint, or was no one listening?",
+          "Is there a conversation right now that I keep putting off?"
         ],
-        "faq": []
+        "faq": [
+          {
+            "question": "What does it mean when you can't speak in a dream?",
+            "answer": "Being unable to speak is often associated with something left unsaid, or a feeling of not being heard. It is a common lead, not a rule: who you wanted to address and what you felt guide the reading."
+          },
+          {
+            "question": "Why can't I talk or scream in my dreams?",
+            "answer": "During REM sleep, most muscles are nearly at rest, which may partly explain why a voice feels weak or stuck in dreams. The scene can also echo a moment when you hold back. Both leads can be true at once."
+          },
+          {
+            "question": "What does it mean if no one hears you in a dream?",
+            "answer": "Speaking without being heard can match a feeling of being overlooked at work, at home or in a group. Note who was there and how they reacted: indifference, irritation and absence do not tell the same story."
+          },
+          {
+            "question": "What if I wake up and can't speak or move?",
+            "answer": "Waking up unable to move or speak for a few seconds or minutes may be sleep paralysis. It is frightening but generally harmless. If it happens often or comes with heavy daytime sleepiness, talk to a doctor."
+          }
+        ],
+        "documentMetaDescription": "Dreaming you can't speak, can't scream or aren't heard: what the scene may say about words held back, with questions and a fictional journal example."
       },
       "fr": {
         "slug": "incapable-de-parler",
         "name": "Incapable de parler",
-        "shortDescription": "Ne pas pouvoir parler place l’absence de mots ou de voix au cœur du rêve. La personne à qui vous vouliez vous adresser et sa réaction à votre silence révèlent la tension particulière de cet échange empêché.",
-        "modifiedAt": "2026-07-24",
+        "shortDescription": "En rêve, vous ouvrez la bouche et rien ne sort, ou les mots arrivent trop faibles pour être entendus. La scène accompagne souvent quelque chose que vous retenez, ou le sentiment de ne pas être écouté. La personne à qui vous vouliez parler compte avant tout.",
+        "modifiedAt": "2026-10-08",
         "askYourself": [
-          "Qu’est-ce que incapable de parler a changé dans la scène ?",
-          "Quelle émotion est restée après le réveil ?"
+          "À qui voulais-je parler, et qu'avais-je à lui dire ?",
+          "Ma voix avait-elle disparu, était-elle trop faible, ou personne ne m'écoutait-il ?",
+          "Y a-t-il en ce moment une conversation que je repousse ?"
         ],
-        "faq": []
+        "faq": [
+          {
+            "question": "Que signifie rêver qu'on ne peut pas parler ?",
+            "answer": "Ne pas pouvoir parler est souvent associé à quelque chose de non dit, ou au sentiment de ne pas être entendu. C'est une piste fréquente, pas une règle : la personne visée et ce que vous ressentiez orientent la lecture."
+          },
+          {
+            "question": "Pourquoi n'arrive-t-on pas à parler ou à crier en rêve ?",
+            "answer": "Pendant le sommeil paradoxal, la plupart des muscles sont presque au repos, ce qui peut expliquer en partie une voix faible ou bloquée en rêve. La scène peut aussi faire écho à un moment où vous vous retenez. Les deux pistes peuvent coexister."
+          },
+          {
+            "question": "Que signifie parler sans que personne ne vous entende en rêve ?",
+            "answer": "Parler dans le vide peut rejoindre le sentiment d'être ignoré, au travail, en famille ou dans un groupe. Notez qui était là et comment ces personnes réagissaient : indifférence, agacement et absence ne racontent pas la même chose."
+          },
+          {
+            "question": "Et si je me réveille sans pouvoir parler ni bouger ?",
+            "answer": "Se réveiller incapable de bouger ou de parler pendant quelques secondes ou minutes peut être une paralysie du sommeil. C'est effrayant mais généralement sans danger. Si cela revient souvent ou s'accompagne d'une forte somnolence dans la journée, parlez-en à un médecin."
+          }
+        ],
+        "documentMetaDescription": "Rêver de ne pas pouvoir parler, crier ou se faire entendre : ce que la scène peut dire des mots retenus, avec des questions et un exemple de journal."
       },
       "es": {
         "slug": "no-poder-hablar",
         "name": "No poder hablar",
-        "shortDescription": "No poder hablar convierte la falta de palabras o de voz en el núcleo de la escena. A quién querías dirigirte y cómo respondía a tu silencio aportan el contexto emocional.",
-        "modifiedAt": "2026-07-24",
+        "shortDescription": "En el sueño abres la boca y no sale nada, o las palabras salen tan débiles que nadie las oye. La escena suele acompañar algo que te callas, o la sensación de que no te escuchan. Lo que más cuenta es a quién querías hablar.",
+        "modifiedAt": "2026-10-08",
         "askYourself": [
-          "¿Qué cambió no poder hablar dentro de la escena?",
-          "¿Qué emoción siguió conmigo al despertar?"
+          "¿Con quién intentaba hablar y qué quería decirle?",
+          "¿Mi voz había desaparecido, era demasiado débil o nadie me escuchaba?",
+          "¿Hay ahora mismo una conversación que voy aplazando?"
         ],
-        "faq": []
+        "faq": [
+          {
+            "question": "¿Qué significa soñar que no puedes hablar?",
+            "answer": "No poder hablar se asocia a menudo con algo que no se ha dicho, o con la sensación de no ser escuchado. Es una pista frecuente, no una regla: a quién te dirigías y lo que sentías orientan la lectura."
+          },
+          {
+            "question": "¿Por qué no puedo hablar ni gritar en sueños?",
+            "answer": "Durante el sueño REM, la mayoría de los músculos están casi en reposo, lo que puede explicar en parte una voz débil o bloqueada en sueños. La escena también puede hacer eco de un momento en el que te contienes. Ambas pistas pueden convivir."
+          },
+          {
+            "question": "¿Qué significa hablar en sueños y que nadie te oiga?",
+            "answer": "Hablar sin que nadie te oiga puede enlazar con la sensación de pasar desapercibido en el trabajo, en casa o en un grupo. Anota quién estaba y cómo reaccionaba: indiferencia, fastidio o ausencia no cuentan lo mismo."
+          },
+          {
+            "question": "¿Y si me despierto sin poder hablar ni moverme?",
+            "answer": "Despertarte sin poder moverte ni hablar durante unos segundos o minutos puede ser una parálisis del sueño. Asusta, pero en general no es peligrosa. Si se repite a menudo o va acompañada de mucha somnolencia de día, consúltalo con un médico."
+          }
+        ],
+        "documentMetaDescription": "Soñar que no puedes hablar, que no puedes gritar o que nadie te oye: qué puede decir la escena sobre lo que callas, con preguntas y un ejemplo de diario."
       },
       "de": {
         "slug": "nicht-sprechen-konnen",
         "name": "Nicht sprechen können",
-        "shortDescription": "Wenn du im Traum nicht sprechen kannst, wird der fehlende Zugang zu Worten oder zur eigenen Stimme zum Mittelpunkt der Szene. Wem du etwas sagen wolltest und wie diese Person auf dein Schweigen reagierte, prägt das Erlebnis.",
+        "shortDescription": "Im Traum öffnen Sie den Mund, und nichts kommt heraus, oder die Worte sind so leise, dass niemand sie hört. Die Szene begleitet oft etwas, das Sie zurückhalten, oder das Gefühl, nicht gehört zu werden. Am wichtigsten ist, wen Sie erreichen wollten.",
         "askYourself": [
-          "Welche Worte wolltest du sagen, und an wen waren sie gerichtet?",
-          "War deine Stimme leise, blockiert oder völlig verschwunden?",
-          "In welchem aktuellen Gespräch hältst du dich zurück oder wirst nicht gehört?"
+          "Mit wem wollte ich sprechen, und was wollte ich sagen?",
+          "War meine Stimme weg, zu leise, oder hat mir einfach niemand zugehört?",
+          "Gibt es gerade ein Gespräch, das ich immer wieder aufschiebe?"
         ],
-        "modifiedAt": "2026-07-24",
-        "faq": []
+        "modifiedAt": "2026-10-08",
+        "faq": [
+          {
+            "question": "Was bedeutet es, im Traum nicht sprechen zu können?",
+            "answer": "Nicht sprechen zu können wird oft mit etwas Unausgesprochenem verbunden oder mit dem Gefühl, nicht gehört zu werden. Das ist eine häufige Spur, keine Regel: Wen Sie ansprechen wollten und was Sie gefühlt haben, gibt die Richtung vor."
+          },
+          {
+            "question": "Warum kann ich im Traum nicht sprechen oder schreien?",
+            "answer": "Im REM-Schlaf sind die meisten Muskeln fast völlig entspannt. Das kann zum Teil erklären, warum die Stimme im Traum schwach oder blockiert wirkt. Die Szene kann zugleich einen Moment aufgreifen, in dem Sie sich zurückhalten."
+          },
+          {
+            "question": "Was bedeutet es, im Traum zu sprechen, ohne gehört zu werden?",
+            "answer": "Ins Leere zu sprechen kann zu dem Gefühl passen, übergangen zu werden, im Beruf, in der Familie oder in einer Gruppe. Notieren Sie, wer da war und wie die Personen reagiert haben: Gleichgültigkeit, Ärger und Abwesenheit erzählen Verschiedenes."
+          },
+          {
+            "question": "Was ist, wenn ich aufwache und weder sprechen noch mich bewegen kann?",
+            "answer": "Beim Aufwachen einige Sekunden oder Minuten weder sprechen noch sich bewegen zu können, kann eine Schlafparalyse sein. Sie ist beängstigend, aber in der Regel harmlos. Tritt sie häufig auf oder sind Sie tagsüber sehr müde, sprechen Sie mit einer Ärztin oder einem Arzt."
+          }
+        ],
+        "documentMetaDescription": "Im Traum nicht sprechen, nicht schreien können oder nicht gehört werden: was die Szene über Zurückgehaltenes sagen kann, mit Fragen und einem Beispiel."
       },
       "it": {
         "slug": "non-riuscire-a-parlare",
         "name": "Non riuscire a parlare",
-        "shortDescription": "Non riuscire a parlare mette l’assenza di parole o l’accesso alla propria voce al centro del sogno. La persona a cui volevi rivolgerti e la sua reazione al silenzio definiscono questo scambio bloccato.",
-        "modifiedAt": "2026-07-24",
+        "shortDescription": "Nel sogno apri la bocca e non esce nulla, oppure le parole sono così deboli che nessuno le sente. La scena accompagna spesso qualcosa che trattieni, o la sensazione di non essere ascoltato. Conta soprattutto a chi volevi parlare.",
+        "modifiedAt": "2026-10-08",
         "askYourself": [
-          "Che cosa ha cambiato non riuscire a parlare nella scena?",
-          "Quale emozione è rimasta dopo il risveglio?"
+          "Con chi cercavo di parlare, e che cosa volevo dire?",
+          "La mia voce era sparita, troppo debole, o nessuno mi ascoltava?",
+          "C’è in questo periodo una conversazione che continuo a rimandare?"
         ],
-        "faq": []
+        "faq": [
+          {
+            "question": "Che cosa significa sognare di non riuscire a parlare?",
+            "answer": "Non riuscire a parlare viene spesso associato a qualcosa di non detto, o alla sensazione di non essere ascoltato. È una pista frequente, non una regola: a chi ti rivolgevi e che cosa provavi orientano la lettura."
+          },
+          {
+            "question": "Perché in sogno non riesco a parlare o a urlare?",
+            "answer": "Durante il sonno REM quasi tutti i muscoli sono a riposo, e questo può spiegare in parte una voce debole o bloccata in sogno. La scena può anche fare eco a un momento in cui ti trattieni. Le due piste possono convivere."
+          },
+          {
+            "question": "Che cosa significa parlare in sogno senza che nessuno ti senta?",
+            "answer": "Parlare nel vuoto può avvicinarsi alla sensazione di essere ignorato, al lavoro, in famiglia o in un gruppo. Annota chi c’era e come reagiva: indifferenza, fastidio e assenza non raccontano la stessa cosa."
+          },
+          {
+            "question": "E se mi sveglio e non riesco né a parlare né a muovermi?",
+            "answer": "Svegliarsi senza poter parlare né muoversi per qualche secondo o minuto può essere una paralisi del sonno. Spaventa, ma in genere è innocua. Se succede spesso o si accompagna a una forte sonnolenza di giorno, parlane con un medico."
+          }
+        ],
+        "documentMetaDescription": "Sognare di non riuscire a parlare, a urlare o di non essere sentito: che cosa può dire la scena delle parole trattenute, con domande ed esempio di diario."
       },
       "pt": {
         "slug": "nao-conseguir-falar",
@@ -17196,58 +17290,152 @@
       "en": {
         "slug": "paralysis",
         "name": "Paralysis",
-        "shortDescription": "Paralysis makes movement impossible while the dream continues around you. Your position, any immediate danger and how others responded shape whether you felt helplessness, calm or resistance.",
-        "modifiedAt": "2026-07-24",
+        "shortDescription": "In the dream your body will not respond: you want to run, move or reach out, and nothing happens. This scene often goes with a feeling of helplessness. If you were already awake and unable to move, it may have been sleep paralysis.",
+        "modifiedAt": "2026-10-08",
         "askYourself": [
-          "What did paralysis change in the scene?",
-          "Which feeling stayed with me after waking?"
+          "What did I urgently want to do when my body stopped responding?",
+          "Was I inside the dream, or already awake in my bedroom?",
+          "Where do I feel stuck right now, while something is expected of me?"
         ],
-        "faq": []
+        "faq": [
+          {
+            "question": "What does it mean to dream you are paralyzed?",
+            "answer": "Being unable to move in a dream is often associated with a feeling of helplessness, or of being stuck between two choices. What you wanted to do, and what was happening around you, guide the reading."
+          },
+          {
+            "question": "Is it a dream or sleep paralysis?",
+            "answer": "In a dream, paralysis is part of a story. In sleep paralysis, you feel awake, often in your own bed, unable to move for a few seconds or minutes, sometimes with a sense of presence. It is a sleep phenomenon rather than a dream image."
+          },
+          {
+            "question": "Why can't I move in my dreams?",
+            "answer": "During REM sleep, most muscles are nearly at rest, which keeps you from acting out your dreams. This may explain why movement feels heavy or impossible in some dreams, without ruling out a link with your waking life."
+          },
+          {
+            "question": "Is sleep paralysis dangerous?",
+            "answer": "Sleep paralysis is frightening but generally harmless. Lack of sleep and irregular schedules are often mentioned as triggers. If episodes are frequent, distressing or come with heavy daytime sleepiness, talk to a doctor."
+          }
+        ],
+        "documentMetaDescription": "Dreaming you are paralyzed or unable to move, or waking in sleep paralysis: possible readings, when to see a doctor, questions and a journal example."
       },
       "fr": {
         "slug": "paralysie",
         "name": "Paralysie",
-        "shortDescription": "La paralysie rend tout mouvement impossible alors que le rêve continue autour de vous. Votre position, le danger immédiat et la réaction des autres précisent l’impuissance, le calme ou la résistance ressentis.",
-        "modifiedAt": "2026-07-24",
+        "shortDescription": "En rêve, votre corps ne répond plus : vous voulez courir, bouger ou tendre la main, et rien ne se passe. La scène accompagne souvent un sentiment d'impuissance. Si vous étiez déjà réveillé et incapable de bouger, il peut s'agir d'une paralysie du sommeil.",
+        "modifiedAt": "2026-10-08",
         "askYourself": [
-          "Qu’est-ce que paralysie a changé dans la scène ?",
-          "Quelle émotion est restée après le réveil ?"
+          "Que voulais-je faire de toute urgence quand mon corps s'est bloqué ?",
+          "Étais-je dans le rêve, ou déjà réveillé dans ma chambre ?",
+          "Où est-ce que je me sens bloqué en ce moment, alors qu'on attend quelque chose de moi ?"
         ],
-        "faq": []
+        "faq": [
+          {
+            "question": "Que signifie rêver d'être paralysé ?",
+            "answer": "Ne pas pouvoir bouger en rêve est souvent associé à un sentiment d'impuissance, ou à l'impression d'être coincé entre deux choix. Ce que vous vouliez faire et ce qui se passait autour de vous orientent la lecture."
+          },
+          {
+            "question": "Rêve ou paralysie du sommeil : comment faire la différence ?",
+            "answer": "Dans un rêve, la paralysie fait partie d'une histoire. Dans la paralysie du sommeil, vous vous sentez éveillé, souvent dans votre lit, incapable de bouger pendant quelques secondes ou minutes, parfois avec une impression de présence. C'est un phénomène du sommeil plutôt qu'une image de rêve."
+          },
+          {
+            "question": "Pourquoi ne peut-on pas bouger dans ses rêves ?",
+            "answer": "Pendant le sommeil paradoxal, la plupart des muscles sont presque au repos, ce qui évite de vivre ses rêves avec le corps. Cela peut expliquer des mouvements lourds ou impossibles en rêve, sans exclure un lien avec vos journées."
+          },
+          {
+            "question": "La paralysie du sommeil est-elle dangereuse ?",
+            "answer": "La paralysie du sommeil est effrayante mais généralement sans danger. Le manque de sommeil et les horaires irréguliers sont souvent cités parmi les déclencheurs. Si les épisodes sont fréquents, angoissants ou s'accompagnent d'une forte somnolence dans la journée, parlez-en à un médecin."
+          }
+        ],
+        "documentMetaDescription": "Rêver d'être paralysé, de ne pas pouvoir bouger ou se réveiller en paralysie du sommeil : pistes de lecture, quand consulter, questions et exemple."
       },
       "es": {
         "slug": "paralisis",
         "name": "Parálisis",
-        "shortDescription": "La parálisis impide moverte mientras el sueño continúa a tu alrededor. Tu postura, el peligro inmediato y la reacción de los demás determinan si sentías impotencia, calma o resistencia.",
-        "modifiedAt": "2026-07-24",
+        "shortDescription": "En el sueño tu cuerpo no responde: quieres correr, moverte o alargar la mano, y no pasa nada. La escena suele acompañar una sensación de impotencia. Si ya estabas despierto y no podías moverte, puede tratarse de una parálisis del sueño.",
+        "modifiedAt": "2026-10-08",
         "askYourself": [
-          "¿Qué cambió parálisis dentro de la escena?",
-          "¿Qué emoción siguió conmigo al despertar?"
+          "¿Qué quería hacer con urgencia cuando mi cuerpo se bloqueó?",
+          "¿Estaba dentro del sueño o ya despierto en mi habitación?",
+          "¿Dónde me siento bloqueado ahora mismo, mientras se espera algo de mí?"
         ],
-        "faq": []
+        "faq": [
+          {
+            "question": "¿Qué significa soñar que estás paralizado?",
+            "answer": "No poder moverte en sueños se asocia a menudo con una sensación de impotencia, o con la impresión de estar atascado entre dos opciones. Lo que querías hacer y lo que pasaba a tu alrededor orientan la lectura."
+          },
+          {
+            "question": "¿Sueño o parálisis del sueño? ¿Cómo distinguirlos?",
+            "answer": "En un sueño, la parálisis forma parte de una historia. En la parálisis del sueño te sientes despierto, a menudo en tu cama, sin poder moverte durante unos segundos o minutos, a veces con la sensación de una presencia. Es un fenómeno del sueño más que una imagen onírica."
+          },
+          {
+            "question": "¿Por qué no puedo moverme en sueños?",
+            "answer": "Durante el sueño REM, la mayoría de los músculos están casi en reposo, lo que evita que representes tus sueños con el cuerpo. Eso puede explicar movimientos pesados o imposibles en sueños, sin descartar un vínculo con tus días."
+          },
+          {
+            "question": "¿Es peligrosa la parálisis del sueño?",
+            "answer": "La parálisis del sueño asusta, pero en general no es peligrosa. La falta de sueño y los horarios irregulares se citan a menudo como desencadenantes. Si los episodios son frecuentes, angustiosos o van con mucha somnolencia de día, consulta con un médico."
+          }
+        ],
+        "documentMetaDescription": "Soñar que estás paralizado, que no puedes moverte o despertar con parálisis del sueño: pistas de lectura, cuándo consultar, preguntas y un ejemplo."
       },
       "de": {
         "slug": "lahmung",
         "name": "Lähmung",
-        "shortDescription": "Eine Lähmung macht Bewegung unmöglich, während die Traumhandlung um dich herum weitergeht. Körperhaltung, drohende Gefahr und die Reaktion anderer prägen, ob du Hilflosigkeit, Ruhe oder Widerstand erlebt hast.",
+        "shortDescription": "Im Traum gehorcht Ihr Körper nicht mehr: Sie wollen rennen oder sich bewegen, und nichts geschieht. Die Szene begleitet oft ein Gefühl der Ohnmacht. Waren Sie schon wach und konnten sich nicht rühren, war es vielleicht eine Schlafparalyse.",
         "askYourself": [
-          "Welche Körperteile konntest du nicht bewegen, und wo befandest du dich?",
-          "Was wolltest du dringend tun, während dein Körper nicht reagierte?",
-          "Wo fühlst du dich momentan handlungsunfähig, obwohl etwas von dir erwartet wird?"
+          "Was wollte ich dringend tun, als mein Körper nicht mehr reagierte?",
+          "War ich im Traum, oder schon wach in meinem Schlafzimmer?",
+          "Wo fühle ich mich gerade blockiert, obwohl etwas von mir erwartet wird?"
         ],
-        "modifiedAt": "2026-07-24",
-        "faq": []
+        "modifiedAt": "2026-10-08",
+        "faq": [
+          {
+            "question": "Was bedeutet es, im Traum gelähmt zu sein?",
+            "answer": "Sich im Traum nicht bewegen zu können wird oft mit einem Gefühl der Ohnmacht verbunden oder mit dem Eindruck, zwischen zwei Möglichkeiten festzustecken. Was Sie tun wollten und was um Sie herum geschah, gibt die Richtung vor."
+          },
+          {
+            "question": "Traum oder Schlafparalyse: Wie unterscheide ich das?",
+            "answer": "Im Traum gehört die Lähmung zu einer Geschichte. Bei einer Schlafparalyse fühlen Sie sich wach, meist im eigenen Bett, und können sich einige Sekunden oder Minuten nicht bewegen, manchmal mit dem Gefühl einer Anwesenheit. Das ist eher ein Schlafphänomen als ein Traumbild."
+          },
+          {
+            "question": "Warum kann ich mich im Traum nicht bewegen?",
+            "answer": "Im REM-Schlaf sind die meisten Muskeln fast völlig entspannt, damit Sie Ihre Träume nicht körperlich ausleben. Das kann schwere oder unmögliche Bewegungen im Traum erklären, ohne einen Bezug zu Ihrem Alltag auszuschließen."
+          },
+          {
+            "question": "Ist eine Schlafparalyse gefährlich?",
+            "answer": "Eine Schlafparalyse ist beängstigend, aber in der Regel harmlos. Schlafmangel und unregelmäßige Schlafzeiten werden oft als Auslöser genannt. Sind die Episoden häufig oder belastend, oder sind Sie tagsüber sehr müde, sprechen Sie mit einer Ärztin oder einem Arzt."
+          }
+        ],
+        "documentMetaDescription": "Im Traum gelähmt sein, sich nicht bewegen können oder in einer Schlafparalyse aufwachen: mögliche Deutungen, wann zum Arzt, mit Fragen und Beispiel."
       },
       "it": {
         "slug": "paralisi",
         "name": "Paralisi",
-        "shortDescription": "La paralisi rende impossibile muoverti mentre il sogno continua intorno a te. Posizione, pericolo immediato e reazione degli altri definiscono se provavi impotenza, calma o resistenza.",
-        "modifiedAt": "2026-07-24",
+        "shortDescription": "Nel sogno il corpo non risponde più: vuoi correre, muoverti o allungare la mano, e non succede nulla. La scena accompagna spesso una sensazione di impotenza. Se eri già sveglio e non riuscivi a muoverti, può trattarsi di una paralisi del sonno.",
+        "modifiedAt": "2026-10-08",
         "askYourself": [
-          "Che cosa ha cambiato paralisi nella scena?",
-          "Quale emozione è rimasta dopo il risveglio?"
+          "Che cosa volevo fare con urgenza quando il corpo si è bloccato?",
+          "Ero dentro il sogno, o già sveglio nella mia camera?",
+          "Dove mi sento bloccato in questo periodo, mentre qualcuno si aspetta qualcosa da me?"
         ],
-        "faq": []
+        "faq": [
+          {
+            "question": "Che cosa significa sognare di essere paralizzati?",
+            "answer": "Non riuscire a muoversi in sogno viene spesso associato a una sensazione di impotenza, o all’impressione di essere bloccati tra due scelte. Che cosa volevi fare e che cosa succedeva intorno a te orientano la lettura."
+          },
+          {
+            "question": "Sogno o paralisi del sonno: come distinguerli?",
+            "answer": "In un sogno la paralisi fa parte di una storia. Nella paralisi del sonno ti senti sveglio, spesso nel tuo letto, incapace di muoverti per qualche secondo o minuto, a volte con la sensazione di una presenza. È un fenomeno del sonno più che un’immagine onirica."
+          },
+          {
+            "question": "Perché in sogno non riesco a muovermi?",
+            "answer": "Durante il sonno REM quasi tutti i muscoli sono a riposo, così non metti in atto i sogni con il corpo. Questo può spiegare movimenti pesanti o impossibili in sogno, senza escludere un legame con le tue giornate."
+          },
+          {
+            "question": "La paralisi del sonno è pericolosa?",
+            "answer": "La paralisi del sonno spaventa, ma in genere è innocua. La mancanza di sonno e gli orari irregolari vengono spesso citati tra i fattori scatenanti. Se gli episodi sono frequenti, angoscianti o si accompagnano a forte sonnolenza di giorno, parlane con un medico."
+          }
+        ],
+        "documentMetaDescription": "Sognare di essere paralizzati, di non riuscire a muoversi o svegliarsi in paralisi del sonno: piste di lettura, quando consultare, domande ed esempio."
       },
       "pt": {
         "slug": "paralisia",
@@ -17279,58 +17467,152 @@
       "en": {
         "slug": "screaming",
         "name": "Screaming",
-        "shortDescription": "A scream may fill the dream or go unheard despite every effort. What caused it, how it sounded and who responded reveal whether it released emotion, raised an alarm or called for help.",
-        "modifiedAt": "2026-07-24",
+        "shortDescription": "In the dream you scream with all your strength, in fear, in anger or for help, or the scream stays stuck in your throat. This scene often goes with a strong emotion looking for a way out. What made you scream and who heard you guide the reading.",
+        "modifiedAt": "2026-10-08",
         "askYourself": [
-          "What did screaming change in the scene?",
-          "Which feeling stayed with me after waking?"
+          "What made me scream: fear, anger, pain or a need for help?",
+          "Did anyone hear me, and how did they react?",
+          "Which strong feeling am I struggling to express right now?"
         ],
-        "faq": []
+        "faq": [
+          {
+            "question": "What does it mean to scream in a dream?",
+            "answer": "Screaming is often associated with a strong emotion looking for a way out: fear, anger, distress. It is a common lead, not a rule. What triggered the scream, and whether anyone heard it, guide the reading."
+          },
+          {
+            "question": "Why can't I scream in my dreams?",
+            "answer": "A scream that will not come out is common. It can echo a feeling of not being heard; the near-total muscle relaxation of REM sleep is also mentioned as a possible explanation."
+          },
+          {
+            "question": "What does it mean to hear someone else scream in a dream?",
+            "answer": "Hearing a scream without seeing where it comes from can match a worry about someone, or an alarm you have not yet identified. If you recognized the voice, ask yourself what is happening between you right now."
+          },
+          {
+            "question": "I scream out loud in my sleep: should I worry?",
+            "answer": "Talking or shouting in your sleep happens and is often harmless. If you regularly scream, hit out or get up while dreaming, or if your sleep or a partner's suffers, talk to a doctor: these signs deserve a sleep assessment."
+          }
+        ],
+        "documentMetaDescription": "Dreaming of screaming, of a scream that won't come out or of hearing someone scream: what the scene may say about strong emotions, with questions."
       },
       "fr": {
         "slug": "cri",
         "name": "Cri",
-        "shortDescription": "Un cri peut remplir tout l’espace du rêve ou rester inaudible malgré l’effort. Son déclencheur, le son produit et la réaction des personnes autour de vous précisent s’il libérait, alertait ou appelait à l’aide.",
-        "modifiedAt": "2026-07-24",
+        "shortDescription": "En rêve, vous criez de toutes vos forces, de peur, de colère ou pour appeler à l'aide, ou le cri reste coincé dans la gorge. La scène accompagne souvent une émotion forte qui cherche une issue. Ce qui vous a fait crier et qui l'a entendu comptent avant tout.",
+        "modifiedAt": "2026-10-08",
         "askYourself": [
-          "Qu’est-ce que cri a changé dans la scène ?",
-          "Quelle émotion est restée après le réveil ?"
+          "Qu'est-ce qui m'a fait crier : la peur, la colère, la douleur, un besoin d'aide ?",
+          "Quelqu'un m'a-t-il entendu, et comment a-t-il réagi ?",
+          "Quelle émotion forte ai-je du mal à exprimer en ce moment ?"
         ],
-        "faq": []
+        "faq": [
+          {
+            "question": "Que signifie crier dans un rêve ?",
+            "answer": "Crier est souvent associé à une émotion forte qui cherche une issue : peur, colère, détresse. C'est une piste fréquente, pas une règle. Ce qui a déclenché le cri, et le fait que quelqu'un l'entende ou non, orientent la lecture."
+          },
+          {
+            "question": "Pourquoi n'arrive-t-on pas à crier en rêve ?",
+            "answer": "Un cri qui ne sort pas est fréquent. Il peut faire écho au sentiment de ne pas être entendu ; le relâchement musculaire presque complet du sommeil paradoxal est aussi cité comme explication possible."
+          },
+          {
+            "question": "Que signifie entendre quelqu'un crier en rêve ?",
+            "answer": "Entendre un cri sans voir d'où il vient peut rejoindre une inquiétude pour quelqu'un, ou une alerte que vous n'avez pas encore identifiée. Si vous avez reconnu la voix, demandez-vous ce qui se passe entre vous en ce moment."
+          },
+          {
+            "question": "Je crie à voix haute en dormant : faut-il s'inquiéter ?",
+            "answer": "Parler ou crier pendant le sommeil arrive et reste souvent sans gravité. Si vous criez, frappez ou vous levez régulièrement en rêvant, ou si votre sommeil ou celui d'un proche en souffre, parlez-en à un médecin : ces signes méritent un bilan du sommeil."
+          }
+        ],
+        "documentMetaDescription": "Rêver de crier, d'un cri qui ne sort pas ou d'entendre quelqu'un hurler : ce que la scène peut dire d'une émotion forte, avec questions et exemple."
       },
       "es": {
         "slug": "grito",
         "name": "Grito",
-        "shortDescription": "Un grito puede llenar el espacio o quedar sin respuesta pese a todo tu esfuerzo. Su causa, su sonido y quién logra o no escucharlo marcan la diferencia en la escena.",
-        "modifiedAt": "2026-07-24",
+        "shortDescription": "En el sueño gritas con todas tus fuerzas, de miedo, de rabia o para pedir ayuda, o el grito se te queda atascado en la garganta. La escena suele acompañar una emoción fuerte que busca salida. Qué te hizo gritar y quién te oyó orientan la lectura.",
+        "modifiedAt": "2026-10-08",
         "askYourself": [
-          "¿Qué cambió grito dentro de la escena?",
-          "¿Qué emoción siguió conmigo al despertar?"
+          "¿Qué me hizo gritar: miedo, rabia, dolor o necesidad de ayuda?",
+          "¿Alguien me oyó, y cómo reaccionó?",
+          "¿Qué emoción fuerte me cuesta expresar ahora mismo?"
         ],
-        "faq": []
+        "faq": [
+          {
+            "question": "¿Qué significa gritar en sueños?",
+            "answer": "Gritar se asocia a menudo con una emoción fuerte que busca salida: miedo, rabia, angustia. Es una pista frecuente, no una regla. Lo que desencadenó el grito y si alguien lo oyó orientan la lectura."
+          },
+          {
+            "question": "¿Por qué no puedo gritar en sueños?",
+            "answer": "Un grito que no sale es frecuente. Puede hacer eco de la sensación de no ser escuchado; también se menciona la relajación muscular casi total del sueño REM como explicación posible."
+          },
+          {
+            "question": "¿Qué significa oír a alguien gritar en sueños?",
+            "answer": "Oír un grito sin ver de dónde viene puede enlazar con una preocupación por alguien o con una alarma que aún no has identificado. Si reconociste la voz, pregúntate qué está pasando entre vosotros ahora."
+          },
+          {
+            "question": "Grito en voz alta mientras duermo: ¿debo preocuparme?",
+            "answer": "Hablar o gritar dormido ocurre y a menudo no tiene importancia. Si gritas, golpeas o te levantas con frecuencia mientras sueñas, o si tu descanso o el de quien duerme contigo se resiente, consulta con un médico: son señales que merecen una valoración del sueño."
+          }
+        ],
+        "documentMetaDescription": "Soñar que gritas, que el grito no sale o que oyes a alguien gritar: qué puede decir la escena sobre una emoción fuerte, con preguntas y un ejemplo."
       },
       "de": {
         "slug": "schreien",
         "name": "Schreien",
-        "shortDescription": "Schreien kann im Traum laut den Raum füllen oder trotz aller Anstrengung ungehört bleiben. Was den Schrei auslöst, wie er klingt und wer darauf reagiert, macht den Unterschied.",
+        "shortDescription": "Im Traum schreien Sie aus voller Kraft, aus Angst, aus Wut oder um Hilfe, oder der Schrei bleibt im Hals stecken. Die Szene begleitet oft ein starkes Gefühl, das einen Ausweg sucht. Was Sie zum Schreien brachte und wer Sie hörte, gibt die Richtung vor.",
         "askYourself": [
-          "Hast du selbst geschrien oder die Stimme einer anderen Person gehört?",
-          "Wodurch begann das Schreien, und wurde es von jemandem bemerkt?",
-          "Welches starke Gefühl kannst du im Wachleben nur schwer ausdrücken?"
+          "Was hat mich zum Schreien gebracht: Angst, Wut, Schmerz oder der Wunsch nach Hilfe?",
+          "Hat mich jemand gehört, und wie hat diese Person reagiert?",
+          "Welches starke Gefühl kann ich im Moment nur schwer ausdrücken?"
         ],
-        "modifiedAt": "2026-07-24",
-        "faq": []
+        "modifiedAt": "2026-10-08",
+        "faq": [
+          {
+            "question": "Was bedeutet es, im Traum zu schreien?",
+            "answer": "Schreien wird oft mit einem starken Gefühl verbunden, das einen Ausweg sucht: Angst, Wut, Verzweiflung. Das ist eine häufige Spur, keine Regel. Was den Schrei ausgelöst hat und ob jemand ihn hörte, gibt die Richtung vor."
+          },
+          {
+            "question": "Warum kann ich im Traum nicht schreien?",
+            "answer": "Ein Schrei, der nicht herauskommt, ist häufig. Er kann das Gefühl aufgreifen, nicht gehört zu werden; als mögliche Erklärung wird auch die fast vollständige Muskelentspannung im REM-Schlaf genannt."
+          },
+          {
+            "question": "Was bedeutet es, im Traum jemanden schreien zu hören?",
+            "answer": "Einen Schrei zu hören, ohne zu sehen, woher er kommt, kann zu einer Sorge um jemanden passen oder zu einer Unruhe, die Sie noch nicht benennen können. Haben Sie die Stimme erkannt, fragen Sie sich, was gerade zwischen Ihnen geschieht."
+          },
+          {
+            "question": "Ich schreie im Schlaf laut: Muss ich mir Sorgen machen?",
+            "answer": "Im Schlaf zu sprechen oder zu rufen kommt vor und ist oft harmlos. Schreien, schlagen oder stehen Sie beim Träumen regelmäßig auf, oder leidet Ihr Schlaf oder der einer anderen Person darunter, sprechen Sie mit einer Ärztin oder einem Arzt: Diese Zeichen verdienen eine Schlafabklärung."
+          }
+        ],
+        "documentMetaDescription": "Im Traum schreien, nicht schreien können oder jemanden schreien hören: was die Szene über starke Gefühle sagen kann, mit Fragen und Tagebuchbeispiel."
       },
       "it": {
         "slug": "urlare",
         "name": "Urlare",
-        "shortDescription": "Un urlo può riempire lo spazio del sogno o restare inascoltato nonostante ogni sforzo. La causa, il suono e chi riesce o meno a sentirlo indicano se liberava, avvertiva o chiedeva aiuto.",
-        "modifiedAt": "2026-07-24",
+        "shortDescription": "Nel sogno urli con tutte le forze, per paura, per rabbia o per chiedere aiuto, oppure l’urlo ti resta in gola. La scena accompagna spesso un’emozione forte che cerca una via d’uscita. Contano soprattutto che cosa ti ha fatto urlare e chi ti ha sentito.",
+        "modifiedAt": "2026-10-08",
         "askYourself": [
-          "Che cosa ha cambiato urlare nella scena?",
-          "Quale emozione è rimasta dopo il risveglio?"
+          "Che cosa mi ha fatto urlare: paura, rabbia, dolore o bisogno di aiuto?",
+          "Qualcuno mi ha sentito, e come ha reagito?",
+          "Quale emozione forte faccio fatica a esprimere in questo periodo?"
         ],
-        "faq": []
+        "faq": [
+          {
+            "question": "Che cosa significa urlare in sogno?",
+            "answer": "Urlare viene spesso associato a un’emozione forte che cerca una via d’uscita: paura, rabbia, angoscia. È una pista frequente, non una regola. Che cosa ha fatto scattare l’urlo e se qualcuno l’ha sentito orientano la lettura."
+          },
+          {
+            "question": "Perché in sogno non riesco a urlare?",
+            "answer": "Un urlo che non esce è frequente. Può fare eco alla sensazione di non essere ascoltato; tra le spiegazioni possibili si cita anche il rilassamento muscolare quasi totale del sonno REM."
+          },
+          {
+            "question": "Che cosa significa sentire qualcuno urlare in sogno?",
+            "answer": "Sentire un urlo senza vedere da dove arriva può avvicinarsi a una preoccupazione per qualcuno, o a un allarme che non hai ancora riconosciuto. Se hai riconosciuto la voce, chiediti che cosa succede tra voi in questo periodo."
+          },
+          {
+            "question": "Urlo ad alta voce nel sonno: devo preoccuparmi?",
+            "answer": "Parlare o urlare nel sonno capita e spesso non ha conseguenze. Se urli, colpisci o ti alzi spesso mentre sogni, o se il tuo sonno o quello di chi dorme con te ne risente, parlane con un medico: sono segnali che meritano una valutazione del sonno."
+          }
+        ],
+        "documentMetaDescription": "Sognare di urlare, un urlo che non esce o sentire qualcuno urlare: che cosa può dire la scena di un’emozione forte, con domande ed esempio di diario."
       },
       "pt": {
         "slug": "gritar",
@@ -17362,58 +17644,152 @@
       "en": {
         "slug": "hiding",
         "name": "Hiding",
-        "shortDescription": "When hiding in a dream, notice who or what you are avoiding and whether the retreat was chosen or forced. The shelter’s safety and the risk of discovery determine much of the tension.",
-        "modifiedAt": "2026-07-24",
+        "shortDescription": "In the dream you hold your breath in a cupboard, under a bed or behind a door, hoping no one will find you. Hiding often goes with a wish to protect yourself, or to avoid a situation for a while. Who you were hiding from matters most.",
+        "modifiedAt": "2026-10-08",
         "askYourself": [
-          "What did hiding change in the scene?",
-          "Which feeling stayed with me after waking?"
+          "Who or what was I hiding from, and how close did it get?",
+          "Did I choose this hiding place, or was it the only way out?",
+          "Where am I avoiding being seen right now, for fear of a reaction?"
         ],
-        "faq": []
+        "faq": [
+          {
+            "question": "What does it mean to dream of hiding?",
+            "answer": "Hiding is often associated with a wish to protect yourself, to avoid a confrontation or to keep something out of sight. It is a common lead, not a rule: who you were hiding from and how you felt guide the reading."
+          },
+          {
+            "question": "What does it mean to hide from someone you know in a dream?",
+            "answer": "Hiding from a person you know can stage a tension with them, or a side of you that you would rather they did not see. Ask yourself what is happening between you right now, without concluding that they mean you harm."
+          },
+          {
+            "question": "What does it mean to be found in your hiding place?",
+            "answer": "Being discovered can echo a fear of being exposed, or the relief of no longer having to hide. What you felt at that moment, panic or relief, is the main clue."
+          },
+          {
+            "question": "Why do I keep dreaming that I am hiding?",
+            "answer": "A recurring hiding dream can go with a situation you have been avoiding for a while. Note each version: the hiding place and the threat sometimes change. If these nightmares spoil your sleep, talk to a doctor: there are approaches that reduce them."
+          }
+        ],
+        "documentMetaDescription": "Dreaming of hiding from someone or from danger, or of being found: what the scene may say about protection and avoidance, with questions and an example."
       },
       "fr": {
         "slug": "se-cacher",
         "name": "Se cacher",
-        "shortDescription": "Se cacher invite à regarder de qui ou de quoi vous vous protégez, et si ce retrait était choisi ou imposé. La sûreté du refuge et le risque d’être découvert déterminent le niveau de tension ressenti.",
-        "modifiedAt": "2026-07-24",
+        "shortDescription": "En rêve, vous retenez votre souffle dans un placard, sous un lit ou derrière une porte, en espérant ne pas être trouvé. Se cacher accompagne souvent l'envie de se protéger, ou d'éviter une situation pour un temps. De qui vous vous cachiez compte avant tout.",
+        "modifiedAt": "2026-10-08",
         "askYourself": [
-          "Qu’est-ce que se cacher a changé dans la scène ?",
-          "Quelle émotion est restée après le réveil ?"
+          "De qui ou de quoi me cachais-je, et jusqu'où cela s'est-il approché ?",
+          "Avais-je choisi cette cachette, ou était-ce la seule issue ?",
+          "Où est-ce que j'évite d'être vu en ce moment, par peur d'une réaction ?"
         ],
-        "faq": []
+        "faq": [
+          {
+            "question": "Que signifie rêver de se cacher ?",
+            "answer": "Se cacher est souvent associé à l'envie de se protéger, d'éviter une confrontation ou de garder quelque chose hors de vue. C'est une piste fréquente, pas une règle : de qui vous vous cachiez et ce que vous ressentiez orientent la lecture."
+          },
+          {
+            "question": "Que signifie se cacher de quelqu'un qu'on connaît en rêve ?",
+            "answer": "Se cacher d'une personne connue peut mettre en scène une tension avec elle, ou une part de vous que vous préférez ne pas lui montrer. Demandez-vous ce qui se passe entre vous en ce moment, sans conclure qu'elle vous veut du mal."
+          },
+          {
+            "question": "Que signifie être découvert dans sa cachette ?",
+            "answer": "Être trouvé peut faire écho à la peur d'être exposé, ou au soulagement de ne plus avoir à se cacher. Ce que vous avez ressenti à ce moment-là, panique ou soulagement, est l'indice principal."
+          },
+          {
+            "question": "Pourquoi je rêve souvent que je me cache ?",
+            "answer": "Un rêve de cachette qui revient peut accompagner une situation que vous évitez depuis un moment. Notez chaque version : la cachette et la menace changent parfois. Si ces cauchemars abîment votre sommeil, parlez-en à un médecin : des approches existent pour les réduire."
+          }
+        ],
+        "documentMetaDescription": "Rêver de se cacher d'un danger ou de quelqu'un, ou d'être découvert : ce que la scène peut dire du besoin de se protéger, avec questions et exemple."
       },
       "es": {
         "slug": "esconderse",
         "name": "Esconderse",
-        "shortDescription": "Al esconderte, importa de quién o de qué te ocultas y si elegiste ese refugio. La seguridad del lugar y el riesgo de que te descubran determinan buena parte de la tensión.",
-        "modifiedAt": "2026-07-24",
+        "shortDescription": "En el sueño contienes la respiración en un armario, bajo una cama o tras una puerta, esperando que no te encuentren. Esconderse suele acompañar las ganas de protegerte o de evitar algo por un tiempo. Lo que más cuenta es de quién te escondías.",
+        "modifiedAt": "2026-10-08",
         "askYourself": [
-          "¿Qué cambió esconderse dentro de la escena?",
-          "¿Qué emoción siguió conmigo al despertar?"
+          "¿De quién o de qué me escondía, y cuánto se acercó?",
+          "¿Elegí yo ese escondite, o era la única salida?",
+          "¿Dónde evito que me vean ahora mismo, por miedo a una reacción?"
         ],
-        "faq": []
+        "faq": [
+          {
+            "question": "¿Qué significa soñar que te escondes?",
+            "answer": "Esconderse se asocia a menudo con las ganas de protegerte, de evitar un enfrentamiento o de mantener algo fuera de la vista. Es una pista frecuente, no una regla: de quién te escondías y lo que sentías orientan la lectura."
+          },
+          {
+            "question": "¿Qué significa esconderse de alguien conocido en sueños?",
+            "answer": "Esconderte de una persona conocida puede escenificar una tensión con ella, o una parte de ti que prefieres no enseñarle. Pregúntate qué está pasando entre vosotros ahora, sin concluir que quiera hacerte daño."
+          },
+          {
+            "question": "¿Qué significa que te encuentren en tu escondite?",
+            "answer": "Que te descubran puede hacer eco del miedo a quedar expuesto, o del alivio de no tener que seguir escondido. Lo que sentiste en ese momento, pánico o alivio, es la pista principal."
+          },
+          {
+            "question": "¿Por qué sueño a menudo que me escondo?",
+            "answer": "Un sueño de esconderse que se repite puede acompañar una situación que llevas tiempo evitando. Anota cada versión: el escondite y la amenaza a veces cambian. Si estas pesadillas estropean tu descanso, consulta con un médico: hay enfoques que las reducen."
+          }
+        ],
+        "documentMetaDescription": "Soñar que te escondes de un peligro o de alguien, o que te encuentran: qué puede decir la escena sobre la necesidad de protegerte, con preguntas y un ejemplo."
       },
       "de": {
         "slug": "sich-verstecken",
         "name": "Sich verstecken",
-        "shortDescription": "Beim Verstecken kommt es darauf an, vor wem oder was du dich verbirgst und ob du das Versteck selbst gewählt hast. Der Schutz des Ortes und die Gefahr, entdeckt zu werden, bestimmen die Anspannung der Szene.",
+        "shortDescription": "Im Traum halten Sie in einem Schrank, unter dem Bett oder hinter einer Tür den Atem an und hoffen, unentdeckt zu bleiben. Sich zu verstecken begleitet oft den Wunsch, sich zu schützen oder einer Situation auszuweichen. Vor wem, zählt am meisten.",
         "askYourself": [
-          "Vor wem hast du dich versteckt, und was hätte beim Entdecken passieren können?",
-          "Wie sicher war dein Versteck, und konntest du es wieder verlassen?",
-          "Wo zeigst du dich derzeit nicht offen, weil du eine Reaktion fürchtest?"
+          "Vor wem oder was habe ich mich versteckt, und wie nah kam es?",
+          "Hatte ich das Versteck selbst gewählt, oder war es der einzige Ausweg?",
+          "Wo vermeide ich gerade, gesehen zu werden, weil ich eine Reaktion fürchte?"
         ],
-        "modifiedAt": "2026-07-24",
-        "faq": []
+        "modifiedAt": "2026-10-08",
+        "faq": [
+          {
+            "question": "Was bedeutet es, sich im Traum zu verstecken?",
+            "answer": "Sich zu verstecken wird oft mit dem Wunsch verbunden, sich zu schützen, einer Konfrontation auszuweichen oder etwas aus dem Blick zu halten. Das ist eine häufige Spur, keine Regel: Vor wem Sie sich versteckt haben und was Sie gefühlt haben, gibt die Richtung vor."
+          },
+          {
+            "question": "Was bedeutet es, sich im Traum vor einer bekannten Person zu verstecken?",
+            "answer": "Sich vor einer bekannten Person zu verstecken, kann eine Spannung mit ihr in Szene setzen oder eine Seite von Ihnen, die Sie ihr lieber nicht zeigen. Fragen Sie sich, was gerade zwischen Ihnen geschieht, ohne zu schließen, dass sie Ihnen schaden will."
+          },
+          {
+            "question": "Was bedeutet es, im Versteck entdeckt zu werden?",
+            "answer": "Entdeckt zu werden kann die Angst aufgreifen, bloßgestellt zu werden, oder die Erleichterung, sich nicht mehr verstecken zu müssen. Was Sie in diesem Moment gefühlt haben, Panik oder Erleichterung, ist der wichtigste Hinweis."
+          },
+          {
+            "question": "Warum träume ich immer wieder, dass ich mich verstecke?",
+            "answer": "Ein wiederkehrender Traum vom Verstecken kann eine Situation begleiten, der Sie schon länger ausweichen. Notieren Sie jede Version: Versteck und Bedrohung ändern sich manchmal. Stören diese Albträume Ihren Schlaf, sprechen Sie mit einer Ärztin oder einem Arzt: Es gibt Ansätze, die sie verringern."
+          }
+        ],
+        "documentMetaDescription": "Sich im Traum vor einer Gefahr oder einer Person verstecken oder entdeckt werden: was die Szene über das Bedürfnis nach Schutz sagen kann, mit Fragen."
       },
       "it": {
         "slug": "nascondersi",
         "name": "Nascondersi",
-        "shortDescription": "Nel nasconderti, conta da chi o da cosa ti ripari e se hai scelto tu quel rifugio. La sicurezza del luogo e il rischio di essere scoperto determinano gran parte della tensione.",
-        "modifiedAt": "2026-07-24",
+        "shortDescription": "Nel sogno trattieni il respiro dentro un armadio, sotto un letto o dietro una porta, sperando che nessuno ti trovi. Nascondersi accompagna spesso il desiderio di proteggerti o di evitare per un po’ una situazione. Conta soprattutto da chi ti nascondevi.",
+        "modifiedAt": "2026-10-08",
         "askYourself": [
-          "Che cosa ha cambiato nascondersi nella scena?",
-          "Quale emozione è rimasta dopo il risveglio?"
+          "Da chi o da che cosa mi nascondevo, e quanto si è avvicinato?",
+          "Avevo scelto io quel nascondiglio, o era l’unica via d’uscita?",
+          "Dove evito di farmi vedere in questo periodo, per paura di una reazione?"
         ],
-        "faq": []
+        "faq": [
+          {
+            "question": "Che cosa significa sognare di nascondersi?",
+            "answer": "Nascondersi viene spesso associato al desiderio di proteggersi, di evitare un confronto o di tenere qualcosa lontano dagli occhi degli altri. È una pista frequente, non una regola: da chi ti nascondevi e che cosa provavi orientano la lettura."
+          },
+          {
+            "question": "Che cosa significa nascondersi da qualcuno che conosci?",
+            "answer": "Nasconderti da una persona conosciuta può mettere in scena una tensione con lei, o una parte di te che preferisci non mostrarle. Chiediti che cosa succede tra voi in questo periodo, senza concludere che voglia farti del male."
+          },
+          {
+            "question": "Che cosa significa essere scoperti nel nascondiglio?",
+            "answer": "Essere trovati può fare eco alla paura di essere esposti, o al sollievo di non doversi più nascondere. Ciò che hai provato in quel momento, panico o sollievo, è l’indizio principale."
+          },
+          {
+            "question": "Perché sogno spesso di nascondermi?",
+            "answer": "Un sogno di nascondiglio che ritorna può accompagnare una situazione che eviti da tempo. Annota ogni versione: il nascondiglio e la minaccia a volte cambiano. Se questi incubi rovinano il sonno, parlane con un medico: esistono approcci che li riducono."
+          }
+        ],
+        "documentMetaDescription": "Sognare di nascondersi da un pericolo o da qualcuno, o di essere scoperti: che cosa può dire la scena del bisogno di proteggersi, con domande ed esempio."
       },
       "pt": {
         "slug": "esconder-se",
