@@ -5,7 +5,7 @@
   "lang": "en",
   "slug": "sleep-health-priority",
   "title": "Sleep Is Your #1 Health Lever | Noctalia",
-  "description": "An OHSU study reveals insufficient sleep outranks diet and exercise for life expectancy.",
+  "description": "Sleep as your #1 health lever? An OHSU study links short sleep to lower life expectancy, ahead of diet and exercise. What it shows, its limits, and what to do.",
   "robots": "max-image-preview:large",
   "themeColor": "#0a0514",
   "htmlClass": "scroll-smooth blog-article",
@@ -14,24 +14,24 @@
   "mainClass": "pt-32 pb-20 px-4",
   "ogType": "article",
   "ogTitle": "Sleep Is Your #1 Health Lever | Noctalia",
-  "ogDescription": "An OHSU study reveals insufficient sleep outranks diet and exercise for life expectancy.",
+  "ogDescription": "An OHSU study links short sleep to lower life expectancy, ahead of diet and exercise. What it shows, what it cannot prove, and how to protect your nights.",
   "ogImage": "https://noctalia.app/img/blog/sleep-health-priority.webp",
   "ogImageAlt": "Human silhouette with glowing brain surrounded by health indicators with sleep as the dominant element in deep blue and violet tones",
   "twitterCard": "summary_large_image",
   "twitterTitle": "Sleep Is Your #1 Health Lever | Noctalia",
-  "twitterDescription": "An OHSU study reveals insufficient sleep outranks diet and exercise for life expectancy.",
+  "twitterDescription": "Short sleep, life expectancy and your dreams: what the OHSU study shows, and what it cannot prove.",
   "twitterImage": "https://noctalia.app/img/blog/sleep-health-priority.webp",
   "twitterImageAlt": "Human silhouette with glowing brain surrounded by health indicators with sleep as the dominant element in deep blue and violet tones",
   "publishedTime": "2026-03-24",
-  "modifiedTime": "2026-03-24",
+  "modifiedTime": "2026-10-08",
   "author": "Thanh Chau",
   "prevPath": "/en/blog/spring-sleep-disruption-dreams",
   "nextPath": "/en/blog/wearable-sleep-trackers-dreams",
   "preloadImage": "/img/blog/sleep-health-priority.webp",
   "jsonLd": [
-    "{\n  \"@context\": \"https://schema.org\",\n  \"@type\": \"BlogPosting\",\n  \"headline\": \"Sleep Is Your #1 Health Lever: The OHSU Study That Changes Everything\",\n  \"description\": \"An OHSU study reveals insufficient sleep outranks diet and exercise for life expectancy.\",\n  \"image\": {\n    \"@type\": \"ImageObject\",\n    \"url\": \"https://noctalia.app/img/blog/sleep-health-priority.webp\",\n    \"width\": 1200,\n    \"height\": 630\n  },\n  \"author\": [\n    {\n      \"@type\": \"Person\",\n      \"@id\": \"https://noctalia.app/en/about#person\",\n      \"name\": \"Thanh Chau\",\n      \"jobTitle\": \"Founder & Publication Director\",\n      \"url\": \"https://noctalia.app/en/about\",\n      \"worksFor\": {\n        \"@type\": \"Organization\",\n        \"@id\": \"https://noctalia.app/#organization\",\n        \"name\": \"Noctalia\",\n        \"url\": \"https://noctalia.app\"\n      }\n    },\n    {\n      \"@type\": \"Organization\",\n      \"@id\": \"https://noctalia.app/#organization\",\n      \"name\": \"Noctalia\",\n      \"url\": \"https://noctalia.app\",\n      \"logo\": {\n        \"@type\": \"ImageObject\",\n        \"url\": \"https://noctalia.app/logo/logo_noctalia.png\"\n      }\n    }\n  ],\n  \"publisher\": {\n    \"@type\": \"Organization\",\n    \"name\": \"Noctalia\",\n    \"url\": \"https://noctalia.app\",\n    \"logo\": {\n      \"@type\": \"ImageObject\",\n      \"url\": \"https://noctalia.app/logo/logo_noctalia.png\"\n    }\n  },\n  \"datePublished\": \"2026-03-24\",\n  \"dateModified\": \"2026-03-24\",\n  \"mainEntityOfPage\": {\n    \"@type\": \"WebPage\",\n    \"@id\": \"https://noctalia.app/en/blog/sleep-health-priority\"\n  },\n  \"inLanguage\": \"en\",\n  \"isAccessibleForFree\": true,\n  \"wordCount\": 1600,\n  \"timeRequired\": \"PT6M\",\n  \"url\": \"https://noctalia.app/en/blog/sleep-health-priority\"\n}",
+    "{\n    \"@context\": \"https://schema.org\",\n    \"@type\": \"BlogPosting\",\n    \"headline\": \"Is sleep your #1 health lever? What the OHSU study really shows\",\n    \"description\": \"Sleep as your #1 health lever? An OHSU study links short sleep to lower life expectancy, ahead of diet and exercise. What it shows, its limits, and what to do.\",\n    \"image\": {\n        \"@type\": \"ImageObject\",\n        \"url\": \"https://noctalia.app/img/blog/sleep-health-priority.webp\",\n        \"width\": 1200,\n        \"height\": 630\n    },\n    \"author\": [\n        {\n            \"@type\": \"Person\",\n            \"@id\": \"https://noctalia.app/en/about#person\",\n            \"name\": \"Thanh Chau\",\n            \"jobTitle\": \"Founder & Publication Director\",\n            \"url\": \"https://noctalia.app/en/about\",\n            \"worksFor\": {\n                \"@type\": \"Organization\",\n                \"@id\": \"https://noctalia.app/#organization\",\n                \"name\": \"Noctalia\",\n                \"url\": \"https://noctalia.app\"\n            }\n        },\n        {\n            \"@type\": \"Organization\",\n            \"@id\": \"https://noctalia.app/#organization\",\n            \"name\": \"Noctalia\",\n            \"url\": \"https://noctalia.app\",\n            \"logo\": {\n                \"@type\": \"ImageObject\",\n                \"url\": \"https://noctalia.app/logo/logo_noctalia.png\"\n            }\n        }\n    ],\n    \"publisher\": {\n        \"@type\": \"Organization\",\n        \"name\": \"Noctalia\",\n        \"url\": \"https://noctalia.app\",\n        \"logo\": {\n            \"@type\": \"ImageObject\",\n            \"url\": \"https://noctalia.app/logo/logo_noctalia.png\"\n        }\n    },\n    \"datePublished\": \"2026-03-24\",\n    \"dateModified\": \"2026-10-08\",\n    \"mainEntityOfPage\": {\n        \"@type\": \"WebPage\",\n        \"@id\": \"https://noctalia.app/en/blog/sleep-health-priority\"\n    },\n    \"inLanguage\": \"en\",\n    \"isAccessibleForFree\": true,\n    \"wordCount\": 2334,\n    \"timeRequired\": \"PT11M\",\n    \"url\": \"https://noctalia.app/en/blog/sleep-health-priority\"\n}",
     "{\n  \"@context\": \"https://schema.org\",\n  \"@type\": \"WebPage\",\n  \"@id\": \"https://noctalia.app/en/blog/sleep-health-priority\",\n  \"url\": \"https://noctalia.app/en/blog/sleep-health-priority\",\n  \"name\": \"Sleep Is Your #1 Health Lever | Noctalia\",\n  \"inLanguage\": \"en\"\n}",
-    "{\n  \"@context\": \"https://schema.org\",\n  \"@type\": \"FAQPage\",\n  \"mainEntity\": [\n    {\n      \"@type\": \"Question\",\n      \"name\": \"Why is sleep more important than diet and exercise for longevity?\",\n      \"acceptedAnswer\": {\n        \"@type\": \"Answer\",\n        \"text\": \"A December 2025 study from Oregon Health & Science University, analyzing over 40 years of NHANES data, found that insufficient sleep (less than 7 hours per night) is a stronger predictor of premature mortality than lack of exercise or poor diet. Among modifiable health behaviors, only active smoking carries a higher mortality risk. Sleep affects every system in the body simultaneously, immune function, cardiovascular health, metabolic regulation, and brain maintenance, making it the single highest-leverage health behavior most people neglect.\"\n      }\n    },\n    {\n      \"@type\": \"Question\",\n      \"name\": \"How many hours of sleep do you need for optimal health?\",\n      \"acceptedAnswer\": {\n        \"@type\": \"Answer\",\n        \"text\": \"The scientific consensus, supported by the OHSU study and guidelines from the American Academy of Sleep Medicine, recommends 7 to 9 hours of sleep per night for adults. Consistently sleeping less than 7 hours is associated with increased mortality risk, impaired cognitive function, weakened immunity, and elevated risk of cardiovascular disease, diabetes, and mental health disorders.\"\n      }\n    },\n    {\n      \"@type\": \"Question\",\n      \"name\": \"Can dream changes indicate insufficient sleep?\",\n      \"acceptedAnswer\": {\n        \"@type\": \"Answer\",\n        \"text\": \"Yes. Changes in dream patterns can serve as early warning signs of sleep insufficiency. When sleep is consistently too short, the REM stages where vivid dreaming occurs are disproportionately cut. This leads to reduced dream recall. When adequate sleep returns, REM rebound produces unusually vivid or intense dreams. An increase in stress dreams, nightmares, or anxiety-themed dreams may also signal that your brain is struggling to process emotions due to insufficient REM sleep.\"\n      }\n    }\n  ]\n}",
+    "{\n    \"@context\": \"https://schema.org\",\n    \"@type\": \"FAQPage\",\n    \"mainEntity\": [\n        {\n            \"@type\": \"Question\",\n            \"name\": \"Is sleep more important than diet and exercise?\",\n            \"acceptedAnswer\": {\n                \"@type\": \"Answer\",\n                \"text\": \"In a December 2025 OHSU analysis of U.S. counties, insufficient sleep was more strongly associated with lower life expectancy than poor diet or physical inactivity; only smoking was stronger. It is a population-level correlation, not proof for an individual. The practical lesson is not to choose one over the others, but to stop treating sleep as the first thing to cut.\"\n            }\n        },\n        {\n            \"@type\": \"Question\",\n            \"name\": \"How many hours of sleep do adults need?\",\n            \"acceptedAnswer\": {\n                \"@type\": \"Answer\",\n                \"text\": \"The American Academy of Sleep Medicine and the Sleep Research Society recommend at least 7 hours on a regular basis for adults. Needs vary from person to person. If you regularly need much more than 9 hours and still feel tired, mention it to a doctor: very long sleep can also be a sign of a health problem.\"\n            }\n        },\n        {\n            \"@type\": \"Question\",\n            \"name\": \"Can dream changes show that I am not sleeping enough?\",\n            \"acceptedAnswer\": {\n                \"@type\": \"Answer\",\n                \"text\": \"They are not a test, but they can be a clue. Short nights mostly cut late REM sleep, so you may remember fewer dreams. After catch-up sleep, REM rebound can bring unusually vivid dreams. Noting your dreams alongside your bedtimes helps you see whether these changes follow your short nights.\"\n            }\n        },\n        {\n            \"@type\": \"Question\",\n            \"name\": \"When should I see a doctor about my sleep?\",\n            \"acceptedAnswer\": {\n                \"@type\": \"Answer\",\n                \"text\": \"If you wake up exhausted despite enough hours, if someone notices loud snoring or pauses in your breathing, if you struggle to stay awake during the day, if insomnia lasts for weeks, or if nightmares come back several times a week. These signs deserve a medical opinion.\"\n            }\n        }\n    ]\n}",
     "{\n  \"@context\": \"https://schema.org\",\n  \"@type\": \"BreadcrumbList\",\n  \"itemListElement\": [\n    {\n      \"@type\": \"ListItem\",\n      \"position\": 1,\n      \"name\": \"Home\",\n      \"item\": \"https://noctalia.app/\"\n    },\n    {\n      \"@type\": \"ListItem\",\n      \"position\": 2,\n      \"name\": \"Resources\",\n      \"item\": \"https://noctalia.app/en/blog/\"\n    },\n    {\n      \"@type\": \"ListItem\",\n      \"position\": 3,\n      \"name\": \"Sleep and Health\",\n      \"item\": \"https://noctalia.app/en/blog/sleep-health-priority\"\n    }\n  ]\n}"
   ],
   "activeNav": "resources"
@@ -64,13 +64,13 @@
 <a class="text-xs font-mono text-purple-200/70 border border-white/10 rounded-full px-3 py-1 hover:text-white hover:border-dream-salmon/30 transition-colors" href="rem-sleep-dreams">Topic: Sleep science</a>
 <span aria-hidden="true" class="w-full sm:hidden"></span>
 <span class="text-sm text-purple-300/60">Published March 24, 2026</span>
-<span class="text-sm text-purple-300/60">~1600 words &#183; 6 min read</span>
+<span class="text-sm text-purple-300/60">11 min read</span>
 </div>
 <h1 class="font-serif text-3xl md:text-5xl mb-6 text-transparent bg-clip-text bg-gradient-to-b from-white via-dream-lavender to-purple-400/50 leading-tight">
-                    Sleep Is Your #1 Health Lever: The OHSU Study That Changes Everything
+                    Is sleep your #1 health lever? What the OHSU study really shows
                 </h1>
 <p class="text-lg text-purple-200/80 leading-relaxed">
-                    We spend billions on supplements, gym memberships, and organic produce, yet the single most powerful health behavior most people neglect costs nothing and requires no willpower. A landmark December 2025 study from Oregon Health &amp; Science University has quantified what sleep scientists have long suspected: insufficient sleep is a stronger predictor of early death than poor diet or lack of exercise. Only active smoking is worse. Here is why sleep deserves the top spot in your health priorities, what happens inside your brain when you consistently shortchange it, and how your dreams may be sounding an alarm you have been ignoring.
+                    You ate a decent lunch, took the stairs, and now it is 11:40 p.m. and you are telling yourself one more episode will not matter. The alarm is still set for 6:30. A December 2025 study from Oregon Health &amp; Science University (OHSU) suggests that short nights weigh on health more than we tend to think: in its data, too little sleep tracked life expectancy more closely than diet or exercise did. Here is what the study measured, what it cannot prove, what short sleep does to the brain, and what your dreams can and cannot tell you.
                 </p>
 </header>
 <!-- Author Byline (E-E-A-T) -->
@@ -91,7 +91,7 @@
 <!-- Quick Answer (AI SEO) -->
 <section aria-labelledby="quick-answer-title" class="glass-panel rounded-2xl p-6 mb-8 border border-dream-salmon/20 bg-white/5">
 <h2 class="font-serif text-xl text-dream-cream mb-3" id="quick-answer-title">Quick answer</h2>
-<p class="text-purple-100/80 leading-relaxed">A December 2025 study from Oregon Health &amp; Science University (OHSU), analyzing over 40 years of NHANES data covering tens of thousands of participants, found that insufficient sleep, consistently sleeping less than 7 hours per night, is a stronger predictor of premature mortality than physical inactivity or poor diet. Among modifiable lifestyle factors, only active smoking carries a higher mortality risk. Sleep affects the brain's glymphatic waste clearance, emotional regulation through REM cycles, immune function, and cardiovascular health simultaneously, making it the single most impactful health lever available to most adults.</p>
+<p class="text-purple-100/80 leading-relaxed">In an OHSU analysis of U.S. county data from 2019 to 2025, places where more people reported sleeping under 7 hours had a lower life expectancy. That link held after accounting for diet, physical inactivity and other factors, and only smoking showed a stronger one. It is a correlation between populations, not proof about your own life span. It fits a wider body of research, though: adults are advised to sleep at least 7 hours on a regular basis. Your dreams do not measure your sleep, but noting them each morning can help you notice a run of short nights.</p>
 </section>
 <!-- Featured Image -->
 <figure class="mb-12 rounded-2xl overflow-hidden">
@@ -103,68 +103,68 @@
 <i class="w-5 h-5 text-dream-salmon" data-lucide="list"></i> Table of Contents
                 </h2>
 <ol class="space-y-2 text-sm text-purple-200/70">
-<li><a class="toc-link block" href="#ohsu-study">1. The OHSU study: sleep outranks diet and exercise</a></li>
-<li><a class="toc-link block" href="#hierarchy">2. The health hierarchy: where sleep really ranks</a></li>
-<li><a class="toc-link block" href="#brain-changes">3. What happens to your brain without enough sleep</a></li>
-<li><a class="toc-link block" href="#rem-emotions">4. REM sleep and emotional processing</a></li>
-<li><a class="toc-link block" href="#dream-warnings">5. When dreams sound the alarm</a></li>
-<li><a class="toc-link block" href="#strategies">6. A sleep-first health strategy</a></li>
+<li><a class="toc-link block" href="#ohsu-study">1. What did the OHSU study actually find?</a></li>
+<li><a class="toc-link block" href="#hierarchy">2. Does sleep really rank above diet and exercise?</a></li>
+<li><a class="toc-link block" href="#brain-changes">3. What short nights do to the brain</a></li>
+<li><a class="toc-link block" href="#rem-emotions">4. Why short nights cut into REM sleep and mood</a></li>
+<li><a class="toc-link block" href="#dream-warnings">5. Can your dreams tell you that you are short on sleep?</a></li>
+<li><a class="toc-link block" href="#strategies">6. How to put sleep first, starting tonight</a></li>
 </ol>
 </nav>
 <!-- Article Content -->
 <div class="prose max-w-none text-gray-300">
-<h2 id="ohsu-study">The OHSU Study: Sleep Outranks Diet and Exercise</h2>
+<h2 id="ohsu-study">What did the OHSU study actually find?</h2>
 <p>
-                    In December 2025, a research team at Oregon Health &amp; Science University published a study that shook the public health world. They drew on more than 40 years of data from the National Health and Nutrition Examination Survey (NHANES), one of the largest and longest-running health datasets in the United States, and systematically compared how modifiable lifestyle factors affect all-cause mortality. Smoking status, sleep duration, physical activity levels, and dietary quality all went under the microscope.
+                    The study was published in December 2025 in the journal <em>SLEEP Advances</em> by Kathryn McAuliffe, Andrew McHill and colleagues at OHSU. They did not follow individual people. They compared U.S. counties: on one side, the average life expectancy; on the other, CDC survey answers collected from 2019 to 2025, including the share of adults who report sleeping less than 7 hours a night.
                 </p>
 <p>
-                    One finding grabbed headlines: <strong>insufficient sleep, defined as consistently sleeping less than 7 hours per night, was a stronger predictor of premature death than lack of regular exercise or a poor-quality diet</strong>. Among all modifiable risk factors analyzed, only active smoking carried a higher mortality risk than chronic sleep insufficiency. And the effect was not marginal. After adjusting for age, sex, socioeconomic status, pre-existing conditions, and other confounders, the mortality risk from habitual short sleep rivaled that of well-established killers like hypertension and obesity.
+                    The result is clear in its direction. In most states, the counties where more people slept too little were also those where people lived shorter lives. The link held after the researchers accounted for smoking, diet, physical inactivity and other factors. Among the behaviors they looked at, only smoking was more strongly associated with life expectancy. Diet, exercise and loneliness came after sleep.
                 </p>
 <p>
-                    Scale and longitudinal depth made the OHSU study stand out. Unlike smaller studies that follow participants for a few years, the NHANES dataset let researchers track health outcomes over decades, capturing the slow-building consequences of chronic sleep restriction that shorter studies miss. The message was unambiguous: if you are optimizing your health but ignoring your sleep, you are addressing the footnotes while skipping the headline.
-                </p>
-
-<h2 id="hierarchy">The Health Hierarchy: Where Sleep Really Ranks</h2>
-<h3>The modifiable risk factor ranking</h3>
-<p>
-                    Combining the OHSU findings with corroborating research, a clear hierarchy of modifiable health behaviors emerges. First, do not smoke, this remains the single most damaging modifiable behavior. Second, sleep 7 to 9 hours per night consistently. Third, engage in regular physical activity. Fourth, maintain a balanced, nutrient-rich diet. Exercise and nutrition both remain essential, but this ranking corrects a longstanding blind spot in public health messaging.
-                </p>
-<p>
-                    For decades, "eat well and exercise" has dominated the health narrative. Governments, media campaigns, and wellness influencers have poured enormous energy into promoting dietary guidelines and fitness goals. Sleep, by comparison, got treated as a lifestyle luxury, something ambitious people sacrifice and disciplined people optimize away. The OHSU data challenges this framing head-on. You can eat organic produce and run marathons, but if you are averaging 5 to 6 hours of sleep per night, you are undermining the systems those healthy behaviors are designed to support.
-                </p>
-<h3>Why sleep has been overlooked</h3>
-<p>
-                    Why has sleep languished at the bottom of public health priorities? Part of it is visibility: there is no calorie count to track, no step counter to gamify, no before-and-after photo to post. Cultural stigma plays a role too, "I'll sleep when I'm dead" remains a common boast in competitive work environments. And unlike diet and exercise, sleep cannot be commercialized as easily. There is no subscription box for unconsciousness. The result is a global population that chronically undervalues the one health behavior science now places just behind not smoking.
+                    Some summaries, including an earlier version of this article, described it as decades of follow-up of individual people. That was wrong, and we have corrected it. The real design is more modest, and it limits how far the conclusion goes.
                 </p>
 
-<h2 id="brain-changes">What Happens to Your Brain Without Enough Sleep</h2>
-<h3>The glymphatic system and waste clearance</h3>
+<h2 id="hierarchy">Does sleep really rank above diet and exercise?</h2>
+<h3>What the ranking means, and what it does not</h3>
 <p>
-                    Among the most important neuroscience discoveries of the past decade is the <strong>glymphatic system</strong>, a network of channels in the brain that clears metabolic waste during sleep. First described by Nedergaard and colleagues in 2012, it works like a dishwasher for the brain, flushing out toxic byproducts including amyloid-beta, the protein implicated in Alzheimer's disease. This clearance process peaks during deep non-REM sleep and drops off sharply when sleep is cut short.
+                    The study compares populations, not people. It shows that sleep, at the scale of a county, tracks life expectancy at least as closely as diet or exercise. It does not show that sleeping 6 hours will take years off <em>your</em> life, or that you can skip the gym if you sleep well.
                 </p>
 <p>
-                    Chronic sleep deprivation does not just leave you foggy the next morning. It allows neurotoxic waste to pile up over time. A single night of restricted sleep produces measurable increases in amyloid-beta concentration in cerebrospinal fluid. Over years of habitual short sleep, this accumulation may contribute to the accelerated cognitive decline and increased Alzheimer's risk seen in chronically sleep-deprived populations. Unlike other organs, the brain cannot defer its maintenance indefinitely. Every night of insufficient sleep is a night the cleanup crew could not finish its job.
+                    The authors point out several limits. Sleep was self-reported. Shift work and sleep disorders were not measured. People who sleep very long hours were counted as sleeping enough. And illness can shorten sleep as much as short sleep can harm health. The analysis also did not test <em>why</em> sleep and life expectancy move together.
+                </p>
+<h3>What other research adds</h3>
+<p>
+                    The OHSU result does not stand alone. A 2010 meta-analysis of prospective studies by Francesco Cappuccio and colleagues found that people who habitually slept little had a higher risk of dying during follow-up. People who slept much longer than average did too, which is a reminder that more is not always better: very long sleep can be a sign of an underlying health problem.
+                </p>
+<p>
+                    That is why the guidance is a threshold rather than a contest. The American Academy of Sleep Medicine and the Sleep Research Society recommend that adults sleep <strong>7 hours or more on a regular basis</strong>. Sleep, exercise and diet work together: a day with some movement and daylight often makes the night easier, and a good night makes the next day's choices easier too.
+                </p>
+
+<h2 id="brain-changes">What short nights do to the brain</h2>
+<h3>Clearing the brain at night</h3>
+<p>
+                    In 2013, Lulu Xie, Maiken Nedergaard and colleagues showed in mice that the space between brain cells widens during sleep and that waste products, including amyloid-beta, are cleared faster. This cleaning route is called the <strong>glymphatic system</strong>. In humans, a 2019 imaging study by Nina Fultz and colleagues observed slow waves of cerebrospinal fluid moving through the brain during deep sleep. How much this matters for long-term brain health in people is still being studied, but it gives one concrete reason why sleep is not idle time.
                 </p>
 <h3>Memory consolidation and the hippocampus</h3>
 <p>
-                    Your brain also uses sleep to consolidate memories, transferring information from the hippocampus (short-term storage) to the neocortex (long-term storage). This process happens mainly during slow-wave sleep and requires intact sleep architecture. When sleep is fragmented or shortened, memory consolidation suffers. Studies by Born and Wilhelm (2012) showed that subjects who slept after learning performed far better on recall tests than those who stayed awake for the same duration. The hippocampus needs sleep to process the day's experiences, and cutting that time short leaves memories unstable and prone to decay.
+                    Sleep also helps memory. As Jan Born and Ines Wilhelm summarize in a 2012 review, during deep sleep the brain replays what was learned during the day and gradually moves it from the hippocampus toward longer-term storage in the cortex. Short or broken nights leave less time for that work.
                 </p>
-<h3>Prefrontal cortex vulnerability</h3>
+<h3>Why you may not notice the cost</h3>
 <p>
-                    Your prefrontal cortex, responsible for judgment, impulse control, planning, and complex decision-making, is disproportionately sensitive to sleep loss. Functional imaging studies show that sleep-deprived individuals exhibit reduced prefrontal activity and increased amygdala reactivity, a combination that produces poor decisions driven by heightened emotional responses. This is why sleep-deprived people often make choices they later regret: the rational brake pedal weakens while the emotional accelerator strengthens.
+                    In a 2003 laboratory study, Hans Van Dongen and colleagues limited healthy adults to 6 or 4 hours in bed for two weeks. Their attention and reaction times kept getting worse. By the end, the 6-hour group performed about as badly as people who had gone up to two nights without sleep. Yet their own sense of sleepiness rose only slightly after the first days. In other words, after a few short nights, feeling fine does not mean working at your best.
                 </p>
 
-<h2 id="rem-emotions">REM Sleep and Emotional Processing</h2>
-<h3>REM as emotional regulator</h3>
+<h2 id="rem-emotions">Why short nights cut into REM sleep and mood</h2>
+<h3>REM sleep is concentrated toward morning</h3>
 <p>
-                    <a class="text-dream-salmon hover:underline" href="rem-sleep-dreams">REM sleep</a> serves a unique function no other sleep stage replicates: it provides a neurochemically safe environment for processing emotional experiences. During REM, norepinephrine, the brain's stress chemical, drops to near zero. This lets the brain reactivate emotional memories and process them without the physiological stress response that accompanied the original experience. Walker and van der Helm (2009) described REM sleep as "overnight therapy," a period when the emotional charge of difficult experiences is gradually stripped away while the informational content stays intact.
+                    Over the night, sleep cycles change. Deep sleep dominates the first hours; <a class="text-dream-salmon hover:underline" href="rem-sleep-dreams">REM sleep</a>, the stage most linked to vivid dreams, takes up more and more of the later cycles. So when the alarm cuts a night short, it mostly cuts REM sleep.
+                </p>
+<h3>A link with emotional balance</h3>
+<p>
+                    Matthew Walker and Els van der Helm proposed in 2009 that REM sleep may help take the edge off emotional memories, because levels of noradrenaline, a chemical messenger tied to stress, are especially low during this stage. It is a hypothesis, still debated, not an established mechanism.
                 </p>
 <p>
-                    Chronically insufficient sleep hits REM stages hardest because the longest and most intense REM periods occur in the final hours of sleep, precisely the hours most people sacrifice. Losing these late-night REM cycles means losing the brain's primary mechanism for emotional regulation. Consequences compound over time: unprocessed emotions accumulate, anxiety and irritability increase, and the threshold for emotional breakdown lowers. Research by Goldstein and Walker (2014) found that a single night of sleep deprivation amplified amygdala reactivity to negative stimuli by roughly 60%, effectively returning emotional regulation to a more primitive, reactive state.
-                </p>
-<h3>Insufficient REM and mental health risk</h3>
-<p>
-                    Insufficient REM sleep and mental health disorders are now firmly linked. Reduced REM correlates with increased risk of depression, generalized anxiety disorder, and post-traumatic stress disorder. And the relationship goes beyond correlation: experimental sleep restriction studies consistently show that curtailing REM sleep produces measurable increases in negative mood, emotional reactivity, and <a class="text-dream-salmon hover:underline" href="anxiety-dreams-meaning">anxiety symptoms</a> in otherwise healthy subjects. When researchers selectively restored REM sleep through recovery protocols, emotional metrics improved in parallel.
+                    What has been observed more directly: in a 2007 brain imaging study by Seung-Schik Yoo and colleagues, people kept awake for one night showed a much stronger amygdala response to unpleasant images, with weaker links to the prefrontal areas that help regulate it. More broadly, sleep and mood affect each other in both directions: poor sleep can increase irritability and <a class="text-dream-salmon hover:underline" href="anxiety-dreams-meaning">anxiety</a>, and anxiety makes sleep harder.
                 </p>
 </div>
 
@@ -174,55 +174,59 @@
 <i class="w-6 h-6 text-dream-salmon" data-lucide="moon"></i>
 </div>
 <div>
-<h4 class="font-serif text-lg text-dream-cream mb-2">Track your dreams to monitor your sleep health</h4>
-<p class="text-sm text-gray-400 mb-4">Noctalia captures your dreams by voice each morning. Over time, changes in dream vividness, emotional tone, and recall frequency can reveal whether your sleep is truly restorative, before conventional symptoms appear.</p>
+<h4 class="font-serif text-lg text-dream-cream mb-2">Keep your nights and your dreams in one place</h4>
+<p class="text-sm text-gray-400 mb-4">In Noctalia, tell your dream out loud or type it when you wake up, along with a word about your night. It is transcribed and saved to your journal, so you can read your mornings side by side.</p>
 <a class="inline-flex items-center gap-2 text-sm text-dream-salmon hover:text-dream-salmonLight transition-colors" href="/">
-                                Start tracking with Noctalia <i class="w-4 h-4" data-lucide="arrow-right"></i>
+                                Try Noctalia for free <i class="w-4 h-4" data-lucide="arrow-right"></i>
 </a>
 </div>
 </div>
 </aside>
 
 <div class="prose max-w-none text-gray-300">
-<h2 id="dream-warnings">When Dreams Sound the Alarm</h2>
-<h3>Dream changes as early warning signs</h3>
+<h2 id="dream-warnings">Can your dreams tell you that you are short on sleep?</h2>
 <p>
-                    Your dream life is more than a nightly curiosity. It is a sensitive indicator of sleep quality and emotional health. Changes in dream patterns often appear before other symptoms of sleep insufficiency become obvious. When sleep is consistently too short, late-night REM periods, where vivid, narrative-rich dreaming occurs, are the first to go. Dream recall gradually fades: nights begin to feel dreamless, and the rich inner life that once unfolded during sleep seems to vanish. Many people interpret this as normal ("I'm just not a dreamer"), when it actually signals that their brain is not reaching the restorative REM stages it needs.
+                    Not reliably, and it is worth being clear about that. A dream is not a sleep measurement, and no study has shown that changes in dreams predict health problems. Still, a few patterns are consistent with what we know about sleep, and they are easy to notice.
                 </p>
+<h3>Fewer dreams after short nights, vivid ones after catching up</h3>
 <p>
-                    When a sleep-deprived person finally gets adequate rest, the opposite happens. <strong>REM rebound</strong> produces an explosion of unusually vivid, emotionally intense, and sometimes disturbing dreams. This is the brain catching up on deferred emotional processing, and it can feel alarming to someone accustomed to dreamless nights. But REM rebound is a healthy recovery mechanism, not a sign of something wrong. Vivid dreams returning is one of the earliest positive indicators that your brain is beginning to recover from <a class="text-dream-salmon hover:underline" href="sleep-debt-health-dreams">accumulated sleep debt</a>.
+                    Since short nights mostly cut late REM sleep, you may remember fewer dreams during a week of early alarms. When you finally sleep in, the brain tends to make up for lost REM sleep, a phenomenon called <strong>REM rebound</strong>, and dreams can come back long, intense, sometimes strange. That is usually a sign of recovery, not of a problem. Our article on <a class="text-dream-salmon hover:underline" href="sleep-debt-health-dreams">sleep debt</a> covers this in more detail.
                 </p>
-<h3>Stress dreams and nightmares as signals</h3>
+<h3>Stress dreams and nightmares</h3>
 <p>
-                    Beyond recall changes, the <em>content</em> of your dreams can signal sleep trouble. An increase in <a class="text-dream-salmon hover:underline" href="stress-dreams-work">stress dreams</a>, scenarios involving being chased, failing exams, arriving late, or losing control, often correlates with insufficient sleep duration. A rise in <a class="text-dream-salmon hover:underline" href="stop-nightmares-guide">nightmare</a> frequency may indicate that your brain's emotional processing system is overwhelmed, not getting enough REM time to work through daily stressors. These dream shifts can precede the more recognized symptoms of sleep deprivation, daytime fatigue, difficulty concentrating, mood swings, by days or even weeks. That makes dream journaling a uniquely early detection tool for sleep health problems.
+                    <a class="text-dream-salmon hover:underline" href="stress-dreams-work">Stress dreams</a> (being late, being chased, an exam you have not prepared) often come back during demanding periods, which are also the periods when people sleep less. The dream does not prove you lack sleep. It mainly reflects what is on your mind. If <a class="text-dream-salmon hover:underline" href="stop-nightmares-guide">nightmares</a> come back several times a week and spoil your nights, that deserves attention in its own right.
                 </p>
-<blockquote class="border-l-4 border-dream-salmon/40 pl-4 italic text-purple-200/70 my-6">
-                    Among modifiable health behaviors, the OHSU study found that only active smoking carries a higher mortality risk than chronically sleeping less than 7 hours per night, placing sleep ahead of both diet and exercise in the longevity hierarchy.
-                </blockquote>
-
-<h2 id="strategies">A Sleep-First Health Strategy</h2>
-<h3>Reframing sleep as a health investment</h3>
-<p>
-                    The OHSU study demands a fundamental reframe: sleep is not the absence of productivity. It is an active investment in every dimension of health. Instead of asking "how can I sleep less and still function," the evidence-based question is "how can I protect my sleep so that everything else works better?" Athletes who prioritize sleep see measurable improvements in reaction time, injury recovery, and performance. Well-rested workers outperform their sleep-deprived colleagues on every cognitive metric. Returns on sleep investment compound in every domain.
-                </p>
-<h3>Evidence-based sleep hygiene</h3>
-<p>
-                    Translating the research into practice requires consistent habits rather than dramatic interventions. These strategies, all supported by peer-reviewed evidence, form the foundation of a sleep-first health approach.
-                </p>
+<h3>A sleep and dream journal example</h3>
+<p><strong>Fictional example:</strong> it shows how to note the night and the dream side by side, without reading too much into a single entry.</p>
 <ul>
-<li><strong>Consistent schedule:</strong> Go to bed and wake up at the same time every day, including weekends. Regularity anchors your circadian rhythm and improves sleep efficiency more than any supplement.</li>
-<li><strong>Light management:</strong> Seek bright natural light within 30 minutes of waking to calibrate your circadian clock. In the evening, dim lights and eliminate screens at least 60 minutes before bed to support melatonin production.</li>
-<li><strong>Temperature optimization:</strong> Keep your bedroom cool, 18 to 19 degrees Celsius (64 to 66 degrees Fahrenheit). A warm shower before bed paradoxically cools the body and accelerates sleep onset.</li>
-<li><strong>Caffeine discipline:</strong> With a half-life of 5 to 6 hours, an afternoon coffee can still be active at bedtime. Set a personal cutoff time, ideally before 1 PM.</li>
-<li><strong>Wind-down ritual:</strong> Create a 30-minute pre-sleep routine that signals your brain to transition toward sleep. Reading, gentle stretching, or recording tomorrow's tasks can replace screen scrolling.</li>
+<li><strong>Nights:</strong> “Monday to Thursday, lights out after midnight, alarm at 6:15. Saturday, slept until 9.”</li>
+<li><strong>Dreams:</strong> “Nothing remembered during the week. Saturday, a long dream: I kept missing a train and my bag was getting heavier.”</li>
+<li><strong>Feeling:</strong> “Irritable by Thursday. Saturday's dream left me anxious, then oddly rested.”</li>
+<li><strong>Question to keep:</strong> “Do vivid dreams come back mostly after my long nights? Do I remember more when I sleep 7 hours?”</li>
+</ul>
+<p>One week proves nothing. Over a month, the same few lines show whether your dreams, your mood and your bedtimes move together.</p>
+
+<h2 id="strategies">How to put sleep first, starting tonight</h2>
+<h3>Protect a sleep window</h3>
+<p>
+                    Start from the time you have to get up, and count back at least 7 hours of sleep, plus the time you usually need to fall asleep. That gives you a bedtime. Treat it like an appointment rather than a vague intention.
+                </p>
+<h3>Habits that help</h3>
+<ul>
+<li><strong>Keep regular hours:</strong> go to bed and get up at about the same time, weekends included.</li>
+<li><strong>Get daylight in the morning:</strong> outdoor light soon after waking helps set your internal clock.</li>
+<li><strong>Dim the evening:</strong> lower the lights and put screens away for a while before bed.</li>
+<li><strong>Watch the caffeine:</strong> its effect lasts several hours, so an afternoon coffee can still delay sleep.</li>
+<li><strong>Cool, dark, quiet room:</strong> a slightly cool bedroom generally makes sleep easier.</li>
+<li><strong>A short wind-down:</strong> reading, gentle stretching or writing tomorrow's to-do list can replace scrolling.</li>
 </ul>
 <h3>When to see a doctor</h3>
 <p>
-                    If you consistently sleep 7 to 9 hours but still wake feeling unrefreshed, or if your partner reports loud snoring or breathing pauses during sleep, consult a sleep specialist. Conditions like obstructive sleep apnea, which affects an estimated 1 in 5 adults, can undermine sleep quality without shortening sleep duration, and they require medical intervention rather than lifestyle adjustments alone.
+                    Talk to a doctor or a sleep specialist if you sleep 7 to 9 hours and still wake up exhausted, if someone hears you snore loudly or stop breathing during sleep, if you struggle to stay awake during the day or at the wheel, if insomnia lasts for weeks, or if nightmares keep coming back. Sleep apnea, for example, can spoil sleep without making it shorter, and it needs medical care, not just better habits.
                 </p>
 <h3>Dream journaling as a health metric</h3>
 <p>
-                    Your <a class="text-dream-salmon hover:underline" href="dream-journal-guide">dream journal</a> can serve as an early-warning health dashboard. Regular, vivid dream recall suggests adequate REM sleep. A sustained drop in recall, or a shift toward anxious and fragmented dream content, may signal that your sleep is deteriorating before you consciously notice it. Over weeks and months, patterns in your journal can reveal correlations between sleep duration, bedtime consistency, and emotional well-being, turning subjective nightly experiences into actionable health intelligence. Tracking your dreams takes less than two minutes each morning and costs nothing, yet the window it opens into your deepest sleep stages is something no wearable can currently match.
+                    A <a class="text-dream-salmon hover:underline" href="dream-journal-guide">dream journal</a> will not measure your REM sleep. But a few lines each morning (bedtime, wake time, how you feel, a dream or “nothing remembered”) turn vague impressions into something you can reread. It takes two minutes, and over weeks it shows whether your short nights are the exception or the rule.
                 </p>
 </div>
 <!-- CTA Section -->
@@ -230,9 +234,9 @@
 <div class="w-16 h-16 bg-dream-salmon/10 rounded-full flex items-center justify-center mx-auto mb-6">
 <i class="w-8 h-8 text-dream-salmon" data-lucide="moon"></i>
 </div>
-<h3 class="font-serif text-2xl md:text-3xl mb-4 text-dream-cream">Make sleep your top health priority</h3>
+<h3 class="font-serif text-2xl md:text-3xl mb-4 text-dream-cream">See your short nights before they pile up</h3>
 <p class="text-purple-200/70 mb-6 max-w-lg mx-auto">
-                    Noctalia captures your dreams by voice each morning, tracks patterns over time, and uses AI to reveal what your dream life says about your sleep quality. Start investing in the health lever that matters most.
+                    Each morning, tell Noctalia your dream out loud or type it, and add a note about your night. Your entries are saved in one journal, so you can read them side by side and spot what keeps coming back.
                 </p>
 <a class="inline-flex items-center gap-2 px-8 py-4 bg-dream-salmon text-dream-dark rounded-full font-bold hover:bg-dream-salmon/90 transition-colors" href="/">
                     Start your dream journal <i class="w-5 h-5" data-lucide="arrow-right"></i>
@@ -240,48 +244,63 @@
 </aside>
 <!-- FAQ Section -->
 <section class="mt-16">
-<h2 class="font-serif text-2xl text-dream-cream mb-8">Frequently Asked Questions</h2>
+<h2 class="font-serif text-2xl text-dream-cream mb-8">Frequently asked questions</h2>
 <div class="space-y-4">
 <details class="glass-panel rounded-xl p-4 group cursor-pointer">
 <summary class="font-medium flex justify-between items-center text-dream-cream">
-                            Why is sleep more important than diet and exercise for longevity?
+                            Is sleep more important than diet and exercise?
                             <i class="w-5 h-5 transition-transform group-open:rotate-180 text-dream-salmon" data-lucide="chevron-down"></i>
 </summary>
 <p class="mt-4 text-sm text-gray-400 leading-relaxed">
-                            A December 2025 study from Oregon Health &amp; Science University, analyzing over 40 years of NHANES data, found that insufficient sleep (less than 7 hours per night) is a stronger predictor of premature mortality than lack of exercise or poor diet. Among modifiable health behaviors, only active smoking carries a higher mortality risk. Sleep affects every system in the body simultaneously, immune function, cardiovascular health, metabolic regulation, and brain maintenance, making it the single highest-leverage health behavior most people neglect.
+                            In a December 2025 OHSU analysis of U.S. counties, insufficient sleep was more strongly associated with lower life expectancy than poor diet or physical inactivity; only smoking was stronger. It is a population-level correlation, not proof for an individual. The practical lesson is not to choose one over the others, but to stop treating sleep as the first thing to cut.
                         </p>
 </details>
 <details class="glass-panel rounded-xl p-4 group cursor-pointer">
 <summary class="font-medium flex justify-between items-center text-dream-cream">
-                            How many hours of sleep do you need for optimal health?
+                            How many hours of sleep do adults need?
                             <i class="w-5 h-5 transition-transform group-open:rotate-180 text-dream-salmon" data-lucide="chevron-down"></i>
 </summary>
 <p class="mt-4 text-sm text-gray-400 leading-relaxed">
-                            The scientific consensus, supported by the OHSU study and guidelines from the American Academy of Sleep Medicine, recommends 7 to 9 hours of sleep per night for adults. Consistently sleeping less than 7 hours is associated with increased mortality risk, impaired cognitive function, weakened immunity, and elevated risk of cardiovascular disease, diabetes, and mental health disorders.
+                            The American Academy of Sleep Medicine and the Sleep Research Society recommend at least 7 hours on a regular basis for adults. Needs vary from person to person. If you regularly need much more than 9 hours and still feel tired, mention it to a doctor: very long sleep can also be a sign of a health problem.
                         </p>
 </details>
 <details class="glass-panel rounded-xl p-4 group cursor-pointer">
 <summary class="font-medium flex justify-between items-center text-dream-cream">
-                            Can dream changes indicate insufficient sleep?
+                            Can dream changes show that I am not sleeping enough?
                             <i class="w-5 h-5 transition-transform group-open:rotate-180 text-dream-salmon" data-lucide="chevron-down"></i>
 </summary>
 <p class="mt-4 text-sm text-gray-400 leading-relaxed">
-                            Yes. Changes in dream patterns can serve as early warning signs of sleep insufficiency. When sleep is consistently too short, the REM stages where vivid dreaming occurs are disproportionately cut. This leads to reduced dream recall. When adequate sleep returns, <a class="text-dream-salmon hover:underline" href="rem-sleep-dreams">REM rebound</a> produces unusually vivid or intense dreams. An increase in stress dreams, nightmares, or anxiety-themed dreams may also signal that your brain is struggling to process emotions due to insufficient REM sleep.
+                            They are not a test, but they can be a clue. Short nights mostly cut late REM sleep, so you may remember fewer dreams. After catch-up sleep, <a class="text-dream-salmon hover:underline" href="rem-sleep-dreams">REM rebound</a> can bring unusually vivid dreams. Noting your dreams alongside your bedtimes helps you see whether these changes follow your short nights.
+                        </p>
+</details>
+<details class="glass-panel rounded-xl p-4 group cursor-pointer">
+<summary class="font-medium flex justify-between items-center text-dream-cream">
+                            When should I see a doctor about my sleep?
+                            <i class="w-5 h-5 transition-transform group-open:rotate-180 text-dream-salmon" data-lucide="chevron-down"></i>
+</summary>
+<p class="mt-4 text-sm text-gray-400 leading-relaxed">
+                            If you wake up exhausted despite enough hours, if someone notices loud snoring or pauses in your breathing, if you struggle to stay awake during the day, if insomnia lasts for weeks, or if nightmares come back several times a week. These signs deserve a medical opinion.
                         </p>
 </details>
 </div>
 </section>
 <!-- Sources / Trust -->
 <section class="mt-16 glass-panel rounded-2xl p-6" id="sources">
-<h2 class="font-serif text-2xl text-dream-cream mb-4">Sources / Further Reading</h2>
+<h2 class="font-serif text-2xl text-dream-cream mb-4">Sources and further reading</h2>
 <ul class="mt-6 space-y-2 text-sm text-gray-400">
-<li><a href="https://www.ohsu.edu/" rel="nofollow noopener noreferrer" target="_blank">Oregon Health &amp; Science University (2025): Sleep insufficiency and all-cause mortality, NHANES longitudinal analysis</a></li>
-<li><a href="https://doi.org/10.1126/science.1241224" rel="nofollow noopener noreferrer" target="_blank">Xie et al. (2013): Sleep drives metabolite clearance from the adult brain (Science)</a></li>
-<li><a href="https://doi.org/10.1037/a0016570" rel="nofollow noopener noreferrer" target="_blank">Walker &amp; van der Helm (2009): Overnight therapy? The role of sleep in emotional brain processing (Psychological Bulletin)</a></li>
-<li><a href="https://doi.org/10.1146/annurev-clinpsy-032813-153716" rel="nofollow noopener noreferrer" target="_blank">Goldstein &amp; Walker (2014): The role of sleep in emotional brain function (Annual Review of Clinical Psychology)</a></li>
-<li><a href="https://doi.org/10.1093/sleep/33.5.585" rel="nofollow noopener noreferrer" target="_blank">Cappuccio et al. (2010): Sleep duration and all-cause mortality: a systematic review and meta-analysis (Sleep)</a></li>
+<li><a href="https://doi.org/10.1093/sleepadvances/zpaf090" rel="nofollow noopener noreferrer" target="_blank">McAuliffe, McHill et al. (2025), “Sleep insufficiency and life expectancy at the state-county level in the United States, 2019–2025”, <em>SLEEP Advances</em></a></li>
+<li><a href="https://news.ohsu.edu/2025/12/08/insufficient-sleep-associated-with-decreased-life-expectancy" rel="nofollow noopener noreferrer" target="_blank">OHSU News (2025), “Insufficient sleep associated with decreased life expectancy”</a></li>
+<li><a href="https://doi.org/10.1093/sleep/33.5.585" rel="nofollow noopener noreferrer" target="_blank">Cappuccio et al. (2010), “Sleep duration and all-cause mortality: a systematic review and meta-analysis”, <em>Sleep</em></a></li>
+<li><a href="https://doi.org/10.5664/jcsm.4758" rel="nofollow noopener noreferrer" target="_blank">Watson et al. (2015), “Recommended amount of sleep for a healthy adult”, AASM and SRS consensus statement, <em>Journal of Clinical Sleep Medicine</em></a></li>
+<li><a href="https://doi.org/10.1126/science.1241224" rel="nofollow noopener noreferrer" target="_blank">Xie et al. (2013), “Sleep drives metabolite clearance from the adult brain”, <em>Science</em></a></li>
+<li><a href="https://doi.org/10.1126/science.aax5440" rel="nofollow noopener noreferrer" target="_blank">Fultz et al. (2019), “Coupled electrophysiological, hemodynamic, and cerebrospinal fluid oscillations in human sleep”, <em>Science</em></a></li>
+<li><a href="https://doi.org/10.1007/s00426-011-0335-6" rel="nofollow noopener noreferrer" target="_blank">Born &amp; Wilhelm (2012), “System consolidation of memory during sleep”, <em>Psychological Research</em></a></li>
+<li><a href="https://doi.org/10.1093/sleep/26.2.117" rel="nofollow noopener noreferrer" target="_blank">Van Dongen et al. (2003), “The cumulative cost of additional wakefulness”, <em>Sleep</em></a></li>
+<li><a href="https://doi.org/10.1037/a0016570" rel="nofollow noopener noreferrer" target="_blank">Walker &amp; van der Helm (2009), “Overnight therapy? The role of sleep in emotional brain processing”, <em>Psychological Bulletin</em></a></li>
+<li><a href="https://doi.org/10.1016/j.cub.2007.08.007" rel="nofollow noopener noreferrer" target="_blank">Yoo et al. (2007), “The human emotional brain without sleep: a prefrontal amygdala disconnect”, <em>Current Biology</em></a></li>
+<li><a href="https://doi.org/10.1146/annurev-clinpsy-032813-153716" rel="nofollow noopener noreferrer" target="_blank">Goldstein &amp; Walker (2014), “The role of sleep in emotional brain function”, <em>Annual Review of Clinical Psychology</em></a></li>
 </ul>
-<p class="mt-6 text-xs text-purple-200/60">Last updated: March 24, 2026</p>
+<p class="mt-6 text-xs text-purple-200/60">Updated October 8, 2026</p>
 </section>
 <!-- Related Symbols Start -->
 <section aria-label="Related dream symbols" class="mt-12 mb-8">
