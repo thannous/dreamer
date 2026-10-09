@@ -15684,58 +15684,152 @@
       "en": {
         "slug": "basement",
         "name": "Basement",
-        "shortDescription": "A basement takes the dream into a secluded part of the house. Light, smell, order and a possible exit determine whether you felt curiosity, familiarity or unease there.",
-        "modifiedAt": "2026-07-24",
+        "shortDescription": "Dreaming of a basement takes you below the everyday house, among what is stored, forgotten or kept out of sight. Light, smell, clutter and whether you could find the stairs back up shape the scene more than the room itself.",
+        "modifiedAt": "2026-10-08",
         "askYourself": [
-          "What did basement change in the scene?",
-          "Which feeling stayed with me after waking?"
+          "Was the basement dark, damp, tidy, crowded or strangely familiar?",
+          "Did I go down by choice, get pushed, or end up locked in?",
+          "What have I put aside lately that I would rather not look at?"
         ],
-        "faq": []
+        "faq": [
+          {
+            "question": "What does it mean to dream about a basement?",
+            "answer": "A basement is often associated with what lies beneath daily life: stored memories, things set aside, foundations. What you found there, and whether you felt curious or uneasy, tells you more than the room itself."
+          },
+          {
+            "question": "What does a dark basement mean in a dream?",
+            "answer": "Darkness, a light switch that does not work, stairs you can no longer see: these details often go with uncertainty or a worry you have not named yet. It is not a warning. Note what you were looking for down there."
+          },
+          {
+            "question": "What does it mean to be locked in a basement in a dream?",
+            "answer": "Being shut in below can echo a feeling of being stuck, unheard or kept apart. Ask who closed the door, if anyone, and whether you called out: that detail points to the situation the dream may mirror."
+          },
+          {
+            "question": "What does a flooded basement mean in a dream?",
+            "answer": "Water rising from below can go with emotions or problems that seep in despite your efforts to keep them contained. It does not predict damage to your home. Notice whether the water was still rising when you woke."
+          }
+        ],
+        "documentMetaDescription": "Dreaming of a basement, dark, flooded or locked: what the space under the house may say about what you set aside, with questions and a journal example."
       },
       "fr": {
         "slug": "sous-sol",
         "name": "Sous-sol",
-        "shortDescription": "Un sous-sol conduit le rêve dans une partie isolée de la maison. La lumière, l’odeur, l’ordre et l’existence d’une sortie déterminent si vous y ressentiez curiosité, familiarité ou malaise.",
-        "modifiedAt": "2026-07-24",
+        "shortDescription": "Rêver d'un sous-sol ou d'une cave vous fait descendre sous la maison du quotidien, parmi ce qu'on range, oublie ou garde hors de vue. La lumière, l'odeur, le désordre et le chemin du retour vers l'escalier comptent plus que la pièce elle-même.",
+        "modifiedAt": "2026-10-08",
         "askYourself": [
-          "Qu’est-ce que sous-sol a changé dans la scène ?",
-          "Quelle émotion est restée après le réveil ?"
+          "Le sous-sol était-il sombre, humide, rangé, encombré ou étrangement familier ?",
+          "Ai-je choisi de descendre, m'y a-t-on poussé, ou m'y suis-je retrouvé enfermé ?",
+          "Qu'ai-je mis de côté ces derniers temps que je préfère ne pas regarder ?"
         ],
-        "faq": []
+        "faq": [
+          {
+            "question": "Que signifie rêver d'une cave ou d'un sous-sol ?",
+            "answer": "Le sous-sol est souvent associé à ce qui se trouve sous la vie quotidienne : souvenirs rangés, choses mises de côté, fondations. Ce que vous y avez trouvé, et votre curiosité ou votre malaise, en disent plus que la pièce elle-même."
+          },
+          {
+            "question": "Que signifie rêver d'une cave sombre ?",
+            "answer": "L'obscurité, un interrupteur qui ne marche pas, un escalier qu'on ne voit plus : ces détails accompagnent souvent une incertitude ou une inquiétude pas encore formulée. Ce n'est pas un avertissement. Notez ce que vous cherchiez en bas."
+          },
+          {
+            "question": "Que signifie être enfermé dans une cave en rêve ?",
+            "answer": "Être enfermé en bas peut faire écho au sentiment d'être bloqué, pas entendu ou tenu à l'écart. Demandez-vous qui a fermé la porte, s'il y avait quelqu'un, et si vous avez appelé : ce détail oriente vers la situation concernée."
+          },
+          {
+            "question": "Que signifie rêver d'un sous-sol inondé ?",
+            "answer": "Une eau qui monte par en dessous peut accompagner des émotions ou des soucis qui s'infiltrent malgré vos efforts pour les contenir. Le rêve ne prédit aucun dégât chez vous. Notez si l'eau montait encore au réveil."
+          }
+        ],
+        "documentMetaDescription": "Rêver d'une cave ou d'un sous-sol sombre, inondé ou fermé : ce que le lieu sous la maison peut dire de ce que vous mettez de côté, avec questions et exemple."
       },
       "es": {
         "slug": "sotano",
         "name": "Sótano",
-        "shortDescription": "Un sótano lleva la escena a una parte aislada de la casa. La luz, el olor, el orden y la posibilidad de salir determinan si sentías curiosidad, familiaridad o inquietud.",
-        "modifiedAt": "2026-07-24",
+        "shortDescription": "Soñar con un sótano te hace bajar por debajo de la casa de todos los días, entre lo que se guarda, se olvida o se mantiene fuera de la vista. La luz, el olor, el desorden y si encontrabas la escalera de vuelta cuentan más que el propio lugar.",
+        "modifiedAt": "2026-10-08",
         "askYourself": [
-          "¿Qué cambió sótano dentro de la escena?",
-          "¿Qué emoción siguió conmigo al despertar?"
+          "¿El sótano estaba oscuro, húmedo, ordenado, lleno de trastos o me resultaba familiar?",
+          "¿Bajé porque quise, me empujaron o acabé encerrado allí?",
+          "¿Qué he dejado de lado últimamente que prefiero no mirar?"
         ],
-        "faq": []
+        "faq": [
+          {
+            "question": "¿Qué significa soñar con un sótano?",
+            "answer": "El sótano se asocia a menudo con lo que queda por debajo de la vida diaria: recuerdos guardados, asuntos aparcados, cimientos. Lo que encontraste allí, y si sentiste curiosidad o inquietud, dice más que el lugar en sí."
+          },
+          {
+            "question": "¿Qué significa soñar con un sótano oscuro?",
+            "answer": "La oscuridad, un interruptor que no funciona, una escalera que ya no ves: estos detalles suelen acompañar una incertidumbre o una preocupación que aún no tiene nombre. No es una advertencia. Anota qué buscabas ahí abajo."
+          },
+          {
+            "question": "¿Qué significa soñar que estás encerrado en un sótano?",
+            "answer": "Quedarte encerrado abajo puede enlazar con la sensación de estar atascado, de que no te escuchan o de que te dejan aparte. Pregúntate quién cerró la puerta, si había alguien, y si pediste ayuda: ese detalle orienta hacia la situación."
+          },
+          {
+            "question": "¿Qué significa soñar con un sótano inundado?",
+            "answer": "El agua que sube desde abajo puede acompañar emociones o problemas que se filtran pese a tus esfuerzos por contenerlos. El sueño no predice daños en tu casa. Fíjate en si el agua seguía subiendo al despertar."
+          }
+        ],
+        "documentMetaDescription": "Soñar con un sótano oscuro, inundado o cerrado: qué puede decir ese lugar bajo la casa de lo que dejas de lado, con preguntas y un ejemplo de diario."
       },
       "de": {
         "slug": "keller",
         "name": "Keller",
-        "shortDescription": "Ein Keller führt die Traumhandlung in einen abgelegenen Teil des Hauses. Licht, Geruch, Ordnung und der mögliche Ausgang prägen, ob du dort Neugier, Vertrautheit oder Beklemmung erlebt hast.",
+        "shortDescription": "Ein Keller im Traum führt Sie unter das Alltagshaus, zu dem, was verstaut, vergessen oder aus dem Blick geräumt wurde. Licht, Geruch, Unordnung und ob Sie die Treppe nach oben wiederfanden, prägen die Szene mehr als der Raum selbst.",
         "askYourself": [
-          "Wie hell, eng, ordentlich oder zugänglich war der Keller?",
-          "Was hast du dort gefunden, und wolltest du es mitnehmen, verstecken oder zurücklassen?",
-          "Welcher wenig beachtete Bereich deines Lebens fühlt sich ähnlich an?"
+          "War der Keller dunkel, feucht, aufgeräumt, vollgestellt oder seltsam vertraut?",
+          "Bin ich freiwillig hinuntergegangen, wurde ich gestoßen oder war ich eingesperrt?",
+          "Was habe ich in letzter Zeit beiseitegeschoben, das ich lieber nicht ansehe?"
         ],
-        "modifiedAt": "2026-07-24",
-        "faq": []
+        "modifiedAt": "2026-10-08",
+        "faq": [
+          {
+            "question": "Was bedeutet es, von einem Keller zu träumen?",
+            "answer": "Der Keller wird oft mit dem verbunden, was unter dem Alltag liegt: verstaute Erinnerungen, Aufgeschobenes, das Fundament. Was Sie dort gefunden haben und ob Sie neugierig oder beklommen waren, sagt mehr als der Raum selbst."
+          },
+          {
+            "question": "Was bedeutet ein dunkler Keller im Traum?",
+            "answer": "Dunkelheit, ein Lichtschalter, der nicht funktioniert, eine Treppe, die man nicht mehr sieht: Solche Details begleiten oft Unsicherheit oder eine Sorge, die noch keinen Namen hat. Eine Warnung ist das nicht. Notieren Sie, was Sie unten gesucht haben."
+          },
+          {
+            "question": "Was bedeutet es, im Traum im Keller eingesperrt zu sein?",
+            "answer": "Unten eingeschlossen zu sein kann zu dem Gefühl passen, festzustecken, nicht gehört oder ausgeschlossen zu werden. Fragen Sie sich, wer die Tür geschlossen hat und ob Sie gerufen haben: Dieses Detail führt zur passenden Situation."
+          },
+          {
+            "question": "Was bedeutet ein überfluteter Keller im Traum?",
+            "answer": "Wasser, das von unten steigt, kann Gefühle oder Probleme begleiten, die trotz aller Mühe durchsickern. Einen Wasserschaden in Ihrem Haus sagt der Traum nicht voraus. Achten Sie darauf, ob das Wasser beim Aufwachen noch stieg."
+          }
+        ],
+        "documentMetaDescription": "Keller im Traum, dunkel, überflutet oder verschlossen: was der Raum unter dem Haus über Beiseitegeschobenes sagen kann, mit Fragen und Tagebuchbeispiel."
       },
       "it": {
         "slug": "seminterrato",
         "name": "Seminterrato",
-        "shortDescription": "Un seminterrato porta il sogno in una parte appartata della casa. Luce, odore, ordine e una possibile uscita determinano se provavi curiosità, familiarità o disagio.",
-        "modifiedAt": "2026-07-24",
+        "shortDescription": "Sognare un seminterrato o una cantina ti fa scendere sotto la casa di tutti i giorni, tra ciò che si ripone, si dimentica o si tiene fuori dalla vista. Luce, odore, disordine e la possibilità di ritrovare le scale contano più della stanza in sé.",
+        "modifiedAt": "2026-10-08",
         "askYourself": [
-          "Che cosa ha cambiato seminterrato nella scena?",
-          "Quale emozione è rimasta dopo il risveglio?"
+          "Il seminterrato era buio, umido, in ordine, pieno di cose o stranamente familiare?",
+          "Sono sceso per scelta, mi ci hanno spinto, o mi sono ritrovato chiuso dentro?",
+          "Che cosa ho messo da parte ultimamente che preferisco non guardare?"
         ],
-        "faq": []
+        "faq": [
+          {
+            "question": "Che cosa significa sognare una cantina o un seminterrato?",
+            "answer": "Il seminterrato viene spesso associato a ciò che sta sotto la vita quotidiana: ricordi riposti, cose rimandate, fondamenta. Ciò che hai trovato laggiù, e se provavi curiosità o disagio, dice più della stanza in sé."
+          },
+          {
+            "question": "Che cosa significa sognare una cantina buia?",
+            "answer": "Il buio, un interruttore che non funziona, una scala che non vedi più: questi dettagli accompagnano spesso un’incertezza o una preoccupazione ancora senza nome. Non è un avvertimento. Annota che cosa cercavi laggiù."
+          },
+          {
+            "question": "Che cosa significa sognare di essere chiuso in cantina?",
+            "answer": "Restare chiuso di sotto può avvicinarsi alla sensazione di essere bloccato, non ascoltato o messo da parte. Chiediti chi ha chiuso la porta, se c’era qualcuno, e se hai chiamato aiuto: quel dettaglio orienta verso la situazione."
+          },
+          {
+            "question": "Che cosa significa sognare una cantina allagata?",
+            "answer": "L’acqua che sale dal basso può accompagnare emozioni o problemi che filtrano nonostante i tuoi sforzi per contenerli. Il sogno non annuncia danni alla tua casa. Nota se l’acqua stava ancora salendo al risveglio."
+          }
+        ],
+        "documentMetaDescription": "Sognare una cantina o un seminterrato buio, allagato o chiuso: che cosa può dire il luogo sotto casa di ciò che metti da parte, con domande ed esempio."
       },
       "pt": {
         "slug": "porao",
@@ -15770,58 +15864,152 @@
       "en": {
         "slug": "surgery",
         "name": "Surgery",
-        "shortDescription": "Surgery places the body, trust and a deliberate intervention at the center of a dream. Being operated on, performing the procedure or only watching gives you a very different role in the scene.",
-        "modifiedAt": "2026-07-24",
+        "shortDescription": "Dreaming of surgery puts your body in someone else's hands, or theirs in yours. It often goes with trust, loss of control or a deep change. Patient, surgeon or witness: your role shapes the reading. It predicts nothing about your health.",
+        "modifiedAt": "2026-10-08",
         "askYourself": [
-          "What did surgery change in the scene?",
-          "Which feeling stayed with me after waking?"
+          "Was I on the table, holding the instruments, or watching from the side?",
+          "Did I trust the person operating, and did anyone explain what was happening?",
+          "What in my life is being cut out, repaired or changed without my full say?"
         ],
-        "faq": []
+        "faq": [
+          {
+            "question": "What does it mean to dream about surgery?",
+            "answer": "Surgery is often associated with a deliberate change, with trust and with handing over control. Your role in the scene, what was being operated on and how calm or frightened you felt help you choose the lead that fits."
+          },
+          {
+            "question": "What does it mean to dream that you are having surgery?",
+            "answer": "Being operated on can echo a period when others make decisions that affect you closely: at work, in a relationship, in your health. Notice whether you agreed to the operation and whether you trusted the team. It is not a diagnosis."
+          },
+          {
+            "question": "What does it mean to dream of performing surgery?",
+            "answer": "Holding the scalpel can go with responsibility, a need for precision or the wish to fix or remove something. Ask yourself whom you were operating on and whether you felt skilled or out of your depth."
+          },
+          {
+            "question": "I have an operation coming up. Is it normal to dream about it?",
+            "answer": "Yes, an event that worries you often finds its way into dreams. The dream does not predict how the operation will go. If the worry keeps you awake, talk it through with your surgeon or anaesthetist: they can answer concrete questions."
+          }
+        ],
+        "documentMetaDescription": "Dreaming of surgery, being operated on or holding the scalpel: what trust, control and change may mean in the scene, with questions and a journal example."
       },
       "fr": {
         "slug": "chirurgie",
         "name": "Chirurgie",
-        "shortDescription": "Une opération met en scène le corps, la confiance et une intervention qui modifie quelque chose de façon concrète. Être opéré, pratiquer l’acte ou simplement l’observer vous donne une position très différente.",
-        "modifiedAt": "2026-07-24",
+        "shortDescription": "Rêver d'une opération met votre corps entre d'autres mains, ou l'inverse. La scène accompagne souvent la confiance, la perte de contrôle ou un changement profond. Opéré, chirurgien ou témoin : votre rôle oriente la lecture, sans rien prédire de votre santé.",
+        "modifiedAt": "2026-10-08",
         "askYourself": [
-          "Qu’est-ce que chirurgie a changé dans la scène ?",
-          "Quelle émotion est restée après le réveil ?"
+          "Étais-je sur la table, aux commandes de l'opération, ou en train de regarder ?",
+          "Avais-je confiance en la personne qui opérait, et m'expliquait-on ce qui se passait ?",
+          "Qu'est-ce qui, dans ma vie, est en train d'être retiré, réparé ou changé sans mon plein accord ?"
         ],
-        "faq": []
+        "faq": [
+          {
+            "question": "Que signifie rêver de chirurgie ou d'une opération ?",
+            "answer": "L'opération est souvent associée à un changement voulu, à la confiance et au fait de céder le contrôle. Votre rôle dans la scène, la partie du corps concernée et votre calme ou votre peur aident à choisir la piste qui vous correspond."
+          },
+          {
+            "question": "Que signifie rêver de se faire opérer ?",
+            "answer": "Être opéré peut faire écho à une période où d'autres prennent des décisions qui vous touchent de près : au travail, dans le couple, pour votre santé. Notez si vous aviez accepté l'opération et si l'équipe vous inspirait confiance. Ce n'est pas un diagnostic."
+          },
+          {
+            "question": "Que signifie rêver d'opérer quelqu'un ?",
+            "answer": "Tenir le bistouri peut accompagner une responsabilité, un besoin de précision ou l'envie de réparer ou d'enlever quelque chose. Demandez-vous qui vous opériez et si vous vous sentiez compétent ou dépassé."
+          },
+          {
+            "question": "Je dois être opéré bientôt : est-ce normal d'en rêver ?",
+            "answer": "Oui, un événement qui inquiète trouve souvent sa place dans les rêves. Le rêve ne prédit pas le déroulement de l'opération. Si l'inquiétude vous empêche de dormir, parlez-en à votre chirurgien ou à l'anesthésiste : ils répondront à vos questions concrètes."
+          }
+        ],
+        "documentMetaDescription": "Rêver d'une opération, de se faire opérer ou d'opérer quelqu'un : ce que la confiance, le contrôle et le changement peuvent dire de la scène, avec exemple."
       },
       "es": {
         "slug": "cirugia",
         "name": "Cirugía",
-        "shortDescription": "Una cirugía sitúa en primer plano el cuerpo, la confianza y una intervención profunda. Ser operado, intervenir a otra persona o limitarte a observar cambia por completo tu papel.",
-        "modifiedAt": "2026-07-24",
+        "shortDescription": "Soñar con una operación pone tu cuerpo en otras manos, o al revés. La escena suele acompañar la confianza, la pérdida de control o un cambio profundo. Paciente, cirujano o testigo: tu papel orienta la lectura, sin predecir nada sobre tu salud.",
+        "modifiedAt": "2026-10-08",
         "askYourself": [
-          "¿Qué cambió cirugía dentro de la escena?",
-          "¿Qué emoción siguió conmigo al despertar?"
+          "¿Estaba en la camilla, con el bisturí en la mano o mirando desde un lado?",
+          "¿Me fiaba de quien operaba, y alguien me explicaba lo que estaba pasando?",
+          "¿Qué se está quitando, arreglando o cambiando en mi vida sin que yo lo decida del todo?"
         ],
-        "faq": []
+        "faq": [
+          {
+            "question": "¿Qué significa soñar con una cirugía u operación?",
+            "answer": "La operación se asocia a menudo con un cambio buscado, con la confianza y con ceder el control. Tu papel en la escena, la parte del cuerpo afectada y lo tranquilo o asustado que estabas te ayudan a elegir la pista adecuada."
+          },
+          {
+            "question": "¿Qué significa soñar que te operan?",
+            "answer": "Que te operen puede enlazar con una etapa en la que otros toman decisiones que te afectan de cerca: en el trabajo, en la pareja, con tu salud. Fíjate en si habías aceptado la operación y si te fiabas del equipo. No es un diagnóstico."
+          },
+          {
+            "question": "¿Qué significa soñar que operas a alguien?",
+            "answer": "Tener el bisturí en la mano puede acompañar una responsabilidad, una necesidad de precisión o las ganas de arreglar o quitar algo. Pregúntate a quién operabas y si te sentías capaz o desbordado."
+          },
+          {
+            "question": "Me van a operar pronto, ¿es normal soñar con ello?",
+            "answer": "Sí, un acontecimiento que preocupa suele colarse en los sueños. El sueño no predice cómo irá la operación. Si la preocupación no te deja dormir, coméntala con tu cirujano o con el anestesista: pueden responder a tus dudas concretas."
+          }
+        ],
+        "documentMetaDescription": "Soñar con una operación, que te operan o que operas a alguien: qué pueden decir la confianza, el control y el cambio en la escena, con un ejemplo de diario."
       },
       "de": {
         "slug": "operation",
         "name": "Operation",
-        "shortDescription": "Eine Operation stellt Körper, Vertrauen und einen Eingriff in den Mittelpunkt des Traums. Ob du selbst operiert hast, behandelt wurdest oder nur zugesehen hast, verändert deine Rolle in der Szene.",
+        "shortDescription": "Eine Operation im Traum legt Ihren Körper in fremde Hände, oder umgekehrt. Die Szene begleitet oft Vertrauen, Kontrollverlust oder eine tiefe Veränderung. Patient, Chirurg oder Zuschauer: Ihre Rolle prägt die Lesart, ohne etwas über Ihre Gesundheit vorherzusagen.",
         "askYourself": [
-          "Welche Körperstelle wurde behandelt, und wusstest du warum?",
-          "Wer führte den Eingriff durch, und konntest du dieser Person vertrauen?",
-          "Wo erlebst du gerade eine Veränderung, bei der du Kontrolle abgeben musst?"
+          "Lag ich auf dem Tisch, hielt ich das Skalpell, oder sah ich von der Seite zu?",
+          "Habe ich der Person vertraut, die operierte, und hat mir jemand erklärt, was geschah?",
+          "Was wird in meinem Leben gerade entfernt, repariert oder verändert, ohne dass ich ganz mitentscheide?"
         ],
-        "modifiedAt": "2026-07-24",
-        "faq": []
+        "modifiedAt": "2026-10-08",
+        "faq": [
+          {
+            "question": "Was bedeutet es, von einer Operation zu träumen?",
+            "answer": "Eine Operation wird oft mit einer gewollten Veränderung, mit Vertrauen und mit dem Abgeben von Kontrolle verbunden. Ihre Rolle in der Szene, der betroffene Körperteil und ob Sie ruhig oder ängstlich waren, helfen bei der Wahl der passenden Spur."
+          },
+          {
+            "question": "Was bedeutet es, im Traum operiert zu werden?",
+            "answer": "Operiert zu werden kann eine Phase aufgreifen, in der andere über Dinge entscheiden, die Sie unmittelbar betreffen: im Beruf, in der Partnerschaft, bei der Gesundheit. Hatten Sie zugestimmt, und vertrauten Sie dem Team? Eine Diagnose ist das nicht."
+          },
+          {
+            "question": "Was bedeutet es, im Traum selbst zu operieren?",
+            "answer": "Das Skalpell in der Hand kann Verantwortung, den Anspruch auf Genauigkeit oder den Wunsch begleiten, etwas zu reparieren oder zu entfernen. Fragen Sie sich, wen Sie operiert haben und ob Sie sich sicher oder überfordert fühlten."
+          },
+          {
+            "question": "Mir steht eine Operation bevor. Ist es normal, davon zu träumen?",
+            "answer": "Ja, ein Ereignis, das Sorgen macht, taucht oft in Träumen auf. Wie die Operation verläuft, sagt der Traum nicht voraus. Raubt Ihnen die Sorge den Schlaf, sprechen Sie mit dem Operations- oder Narkoseteam: Es kann Ihre konkreten Fragen beantworten."
+          }
+        ],
+        "documentMetaDescription": "Operation im Traum, selbst operiert werden oder operieren: was Vertrauen, Kontrolle und Veränderung in der Szene bedeuten können, mit Tagebuchbeispiel."
       },
       "it": {
         "slug": "intervento-chirurgico",
         "name": "Intervento chirurgico",
-        "shortDescription": "Un intervento chirurgico mette al centro del sogno corpo, fiducia e una modifica concreta. Essere operato, eseguire l’intervento o limitarti a osservare ti assegna un ruolo molto diverso nella scena.",
-        "modifiedAt": "2026-07-24",
+        "shortDescription": "Sognare un intervento chirurgico mette il tuo corpo in altre mani, o il contrario. La scena accompagna spesso fiducia, perdita di controllo o un cambiamento profondo. Paziente, chirurgo o testimone: il tuo ruolo orienta la lettura, senza predire nulla sulla tua salute.",
+        "modifiedAt": "2026-10-08",
         "askYourself": [
-          "Che cosa ha cambiato intervento chirurgico nella scena?",
-          "Quale emozione è rimasta dopo il risveglio?"
+          "Ero sul lettino, avevo il bisturi in mano o guardavo da una parte?",
+          "Mi fidavo di chi operava, e qualcuno mi spiegava che cosa stava succedendo?",
+          "Che cosa, nella mia vita, viene tolto, riparato o cambiato senza che io decida davvero?"
         ],
-        "faq": []
+        "faq": [
+          {
+            "question": "Che cosa significa sognare un intervento chirurgico?",
+            "answer": "L’operazione viene spesso associata a un cambiamento voluto, alla fiducia e al fatto di cedere il controllo. Il tuo ruolo nella scena, la parte del corpo coinvolta e quanto eri calmo o spaventato aiutano a scegliere la pista giusta."
+          },
+          {
+            "question": "Che cosa significa sognare di essere operato?",
+            "answer": "Essere operato può fare eco a un periodo in cui altri prendono decisioni che ti riguardano da vicino: al lavoro, in coppia, per la salute. Nota se avevi acconsentito all’intervento e se ti fidavi dell’équipe. Non è una diagnosi."
+          },
+          {
+            "question": "Che cosa significa sognare di operare qualcuno?",
+            "answer": "Avere il bisturi in mano può accompagnare una responsabilità, un bisogno di precisione o la voglia di riparare o eliminare qualcosa. Chiediti chi stavi operando e se ti sentivi all’altezza o sopraffatto."
+          },
+          {
+            "question": "Devo essere operato a breve: è normale sognarlo?",
+            "answer": "Sì, un evento che preoccupa entra spesso nei sogni. Il sogno non predice come andrà l’intervento. Se la preoccupazione ti toglie il sonno, parlane con il chirurgo o con l’anestesista: possono rispondere alle tue domande concrete."
+          }
+        ],
+        "documentMetaDescription": "Sognare un intervento chirurgico, di essere operato o di operare: che cosa possono dire fiducia, controllo e cambiamento nella scena, con esempio di diario."
       },
       "pt": {
         "slug": "cirurgia",
@@ -15854,58 +16042,152 @@
       "en": {
         "slug": "bleeding",
         "name": "Bleeding",
-        "shortDescription": "Bleeding makes an injury or loss immediately visible within a dream. The amount of blood, pain, cause and help available distinguish alarm, helplessness and being cared for.",
-        "modifiedAt": "2026-07-24",
+        "shortDescription": "Dreaming of bleeding makes a wound or a loss suddenly visible. It often goes with energy draining away, a hurt others can see, or a need for care. Where the blood came from, how much there was and who helped matter most.",
+        "modifiedAt": "2026-10-08",
         "askYourself": [
-          "What did bleeding change in the scene?",
-          "Which feeling stayed with me after waking?"
+          "Where was the blood coming from, and what caused the bleeding?",
+          "Did I try to stop it, and did anyone help or even notice?",
+          "What is costing me energy or attention right now without my saying so?"
         ],
-        "faq": []
+        "faq": [
+          {
+            "question": "What does it mean to dream of bleeding?",
+            "answer": "Bleeding is often associated with losing energy or resources, with a hurt that becomes visible, or with a need for care. The cause, the amount of blood and the reaction of the people around you help you pick the lead that fits."
+          },
+          {
+            "question": "What does it mean when a wound won't stop bleeding in a dream?",
+            "answer": "A bleed that keeps going despite your efforts can go with the feeling that something is draining you and that your efforts are not enough: a project, a relationship, a tiring routine. It is not a medical warning."
+          },
+          {
+            "question": "What does it mean to dream of someone else bleeding?",
+            "answer": "Seeing someone bleed can echo worry for that person, guilt if you caused the wound, or the wish to help. Note who it was and what you did: stayed, helped, or looked away. The dream says nothing about their health."
+          },
+          {
+            "question": "Is dreaming of bleeding during pregnancy a bad sign?",
+            "answer": "No. A dream does not predict a miscarriage or a complication; worries about a pregnancy often find their way into dreams. Any real bleeding during pregnancy, however, is a reason to contact your midwife, doctor or maternity unit promptly."
+          }
+        ],
+        "documentMetaDescription": "Dreaming of bleeding, a wound that won't stop or someone else bleeding: what loss, effort and care may mean in the scene, with questions and an example."
       },
       "fr": {
         "slug": "saignement",
         "name": "Saignement",
-        "shortDescription": "Un saignement rend immédiatement visibles une blessure ou une perte dans la scène. La quantité de sang, la douleur, la cause et l’aide disponible distinguent l’alarme, l’impuissance ou le fait d’être pris en charge.",
-        "modifiedAt": "2026-07-24",
+        "shortDescription": "Rêver de saigner rend soudain visibles une blessure ou une perte. La scène accompagne souvent une énergie qui s'en va, une peine que les autres voient, ou un besoin de soin. D'où venait le sang, combien, et qui vous a aidé : voilà l'essentiel.",
+        "modifiedAt": "2026-10-08",
         "askYourself": [
-          "Qu’est-ce que saignement a changé dans la scène ?",
-          "Quelle émotion est restée après le réveil ?"
+          "D'où venait le sang, et qu'est-ce qui a provoqué le saignement ?",
+          "Ai-je essayé de l'arrêter, et quelqu'un m'a-t-il aidé ou même remarqué ?",
+          "Qu'est-ce qui me coûte de l'énergie ou de l'attention en ce moment, sans que je le dise ?"
         ],
-        "faq": []
+        "faq": [
+          {
+            "question": "Que signifie rêver de saigner ?",
+            "answer": "Le saignement est souvent associé à une perte d'énergie ou de ressources, à une peine qui devient visible, ou à un besoin de soin. La cause, la quantité de sang et la réaction des personnes présentes aident à choisir la piste qui vous correspond."
+          },
+          {
+            "question": "Que signifie rêver d'une plaie qui ne s'arrête pas de saigner ?",
+            "answer": "Un saignement qui continue malgré vos efforts peut accompagner le sentiment que quelque chose vous épuise et que vos efforts ne suffisent pas : un projet, une relation, un rythme fatigant. Ce n'est pas un avertissement médical."
+          },
+          {
+            "question": "Que signifie rêver de quelqu'un qui saigne ?",
+            "answer": "Voir quelqu'un saigner peut faire écho à une inquiétude pour cette personne, à une culpabilité si vous avez causé la blessure, ou à l'envie d'aider. Notez qui c'était et ce que vous avez fait. Le rêve ne dit rien de sa santé."
+          },
+          {
+            "question": "Rêver de saigner enceinte, est-ce un mauvais signe ?",
+            "answer": "Non. Un rêve ne prédit ni fausse couche ni complication : les inquiétudes liées à la grossesse s'invitent souvent dans les rêves. En revanche, tout saignement réel pendant la grossesse justifie d'appeler rapidement votre sage-femme, votre médecin ou la maternité."
+          }
+        ],
+        "documentMetaDescription": "Rêver de saigner, d'une plaie qui ne s'arrête pas ou de quelqu'un qui saigne : ce que la perte, l'effort et le soin peuvent dire de la scène, avec exemple."
       },
       "es": {
         "slug": "sangrado",
         "name": "Sangrado",
-        "shortDescription": "Un sangrado vuelve inmediata una herida o una pérdida dentro de la escena. La cantidad, el dolor, la causa y la respuesta de los demás marcan si predominaban alarma, impotencia o cuidado.",
-        "modifiedAt": "2026-07-24",
+        "shortDescription": "Soñar que sangras hace visible de golpe una herida o una pérdida. Suele acompañar una energía que se escapa, un daño que los demás ven o una necesidad de cuidado. De dónde salía la sangre, cuánta había y quién te ayudó es lo que más cuenta.",
+        "modifiedAt": "2026-10-08",
         "askYourself": [
-          "¿Qué cambió sangrado dentro de la escena?",
-          "¿Qué emoción siguió conmigo al despertar?"
+          "¿De dónde salía la sangre, y qué provocó el sangrado?",
+          "¿Intenté pararlo, y alguien me ayudó o al menos se dio cuenta?",
+          "¿Qué me está costando energía o atención ahora mismo sin que lo diga?"
         ],
-        "faq": []
+        "faq": [
+          {
+            "question": "¿Qué significa soñar que sangras?",
+            "answer": "El sangrado se asocia a menudo con perder energía o recursos, con un daño que se hace visible o con una necesidad de cuidado. La causa, la cantidad de sangre y la reacción de quienes te rodean te ayudan a elegir la pista adecuada."
+          },
+          {
+            "question": "¿Qué significa soñar con una herida que no deja de sangrar?",
+            "answer": "Un sangrado que sigue pese a tus esfuerzos puede acompañar la sensación de que algo te desgasta y de que lo que haces no basta: un proyecto, una relación, un ritmo agotador. No es un aviso médico."
+          },
+          {
+            "question": "¿Qué significa soñar con alguien que sangra?",
+            "answer": "Ver sangrar a otra persona puede enlazar con preocupación por ella, con culpa si tú causaste la herida o con las ganas de ayudar. Anota quién era y qué hiciste. El sueño no dice nada de su salud."
+          },
+          {
+            "question": "¿Es mala señal soñar que sangras estando embarazada?",
+            "answer": "No. Un sueño no predice un aborto espontáneo ni una complicación: las preocupaciones del embarazo suelen colarse en los sueños. Eso sí, cualquier sangrado real durante el embarazo es motivo para llamar pronto a tu matrona, tu médico o urgencias de maternidad."
+          }
+        ],
+        "documentMetaDescription": "Soñar que sangras, con una herida que no para o con alguien que sangra: qué pueden decir la pérdida, el esfuerzo y el cuidado, con preguntas y un ejemplo."
       },
       "de": {
         "slug": "bluten",
         "name": "Bluten",
-        "shortDescription": "Eine Blutung macht eine Verletzung oder einen Verlust in der Szene unmittelbar sichtbar. Menge, Schmerz, Ursache und die Reaktion anderer bestimmen, ob du Alarm, Hilflosigkeit oder Versorgung erlebt hast.",
+        "shortDescription": "Im Traum zu bluten macht eine Verletzung oder einen Verlust plötzlich sichtbar. Die Szene begleitet oft schwindende Kraft, einen Schmerz, den andere sehen, oder ein Bedürfnis nach Fürsorge. Entscheidend ist, woher das Blut kam, wie viel es war und wer half.",
         "askYourself": [
           "Woher kam das Blut, und wodurch begann die Blutung?",
-          "Hast du versucht, sie zu stoppen, und wer hat dir dabei geholfen?",
-          "Welche Situation kostet dich im Alltag gerade spürbar Kraft oder Aufmerksamkeit?"
+          "Habe ich versucht, sie zu stoppen, und hat mir jemand geholfen oder es überhaupt bemerkt?",
+          "Was kostet mich gerade Kraft oder Aufmerksamkeit, ohne dass ich es ausspreche?"
         ],
-        "modifiedAt": "2026-07-24",
-        "faq": []
+        "modifiedAt": "2026-10-08",
+        "faq": [
+          {
+            "question": "Was bedeutet es, im Traum zu bluten?",
+            "answer": "Bluten wird oft mit dem Verlust von Kraft oder Reserven verbunden, mit einem Schmerz, der sichtbar wird, oder mit einem Bedürfnis nach Fürsorge. Ursache, Blutmenge und die Reaktion der Menschen um Sie herum helfen, die passende Spur zu finden."
+          },
+          {
+            "question": "Was bedeutet eine Wunde, die im Traum nicht aufhört zu bluten?",
+            "answer": "Eine Blutung, die trotz aller Mühe weitergeht, kann das Gefühl begleiten, dass Sie etwas auszehrt und Ihr Einsatz nicht reicht: ein Projekt, eine Beziehung, ein erschöpfender Alltag. Eine medizinische Warnung ist das nicht."
+          },
+          {
+            "question": "Was bedeutet es, wenn im Traum jemand anderes blutet?",
+            "answer": "Jemanden bluten zu sehen, kann Sorge um diesen Menschen aufgreifen, Schuldgefühle, wenn Sie die Wunde verursacht haben, oder den Wunsch zu helfen. Notieren Sie, wer es war und was Sie getan haben. Über seine Gesundheit sagt der Traum nichts."
+          },
+          {
+            "question": "Ist es ein schlechtes Zeichen, in der Schwangerschaft vom Bluten zu träumen?",
+            "answer": "Nein. Ein Traum sagt weder eine Fehlgeburt noch eine Komplikation voraus; Sorgen rund um die Schwangerschaft tauchen oft in Träumen auf. Jede echte Blutung in der Schwangerschaft ist aber ein Grund, zeitnah Hebamme, Frauenarztpraxis oder Klinik anzurufen."
+          }
+        ],
+        "documentMetaDescription": "Bluten im Traum, eine Wunde, die nicht aufhört, oder ein anderer Mensch blutet: was Verlust, Mühe und Fürsorge in der Szene bedeuten können, mit Beispiel."
       },
       "it": {
         "slug": "sanguinamento",
         "name": "Sanguinamento",
-        "shortDescription": "Un sanguinamento rende subito visibili una ferita o una perdita nella scena. Quantità di sangue, dolore, causa e aiuto disponibile distinguono allarme, impotenza e possibilità di ricevere cura.",
-        "modifiedAt": "2026-07-24",
+        "shortDescription": "Sognare di sanguinare rende visibili all’improvviso una ferita o una perdita. La scena accompagna spesso energie che se ne vanno, un dolore che gli altri vedono o un bisogno di cura. Contano soprattutto da dove usciva il sangue, quanto ce n’era e chi ti ha aiutato.",
+        "modifiedAt": "2026-10-08",
         "askYourself": [
-          "Che cosa ha cambiato sanguinamento nella scena?",
-          "Quale emozione è rimasta dopo il risveglio?"
+          "Da dove usciva il sangue, e che cosa ha causato il sanguinamento?",
+          "Ho cercato di fermarlo, e qualcuno mi ha aiutato o almeno se n’è accorto?",
+          "Che cosa mi sta costando energia o attenzione in questo periodo, senza che lo dica?"
         ],
-        "faq": []
+        "faq": [
+          {
+            "question": "Che cosa significa sognare di sanguinare?",
+            "answer": "Il sanguinamento viene spesso associato alla perdita di energie o di risorse, a un dolore che diventa visibile o a un bisogno di cura. La causa, la quantità di sangue e la reazione di chi ti stava intorno aiutano a scegliere la pista giusta."
+          },
+          {
+            "question": "Che cosa significa sognare una ferita che non smette di sanguinare?",
+            "answer": "Un sanguinamento che continua nonostante i tuoi sforzi può accompagnare la sensazione che qualcosa ti stia sfinendo e che ciò che fai non basti: un progetto, una relazione, un ritmo pesante. Non è un avvertimento medico."
+          },
+          {
+            "question": "Che cosa significa sognare qualcuno che sanguina?",
+            "answer": "Vedere qualcuno sanguinare può fare eco alla preoccupazione per quella persona, a un senso di colpa se hai causato tu la ferita o alla voglia di aiutare. Annota chi era e che cosa hai fatto. Il sogno non dice nulla della sua salute."
+          },
+          {
+            "question": "Sognare di sanguinare in gravidanza è un brutto segno?",
+            "answer": "No. Un sogno non predice un aborto spontaneo né una complicazione: le preoccupazioni legate alla gravidanza entrano spesso nei sogni. Qualsiasi perdita di sangue reale in gravidanza, però, è un motivo per contattare presto l’ostetrica, il ginecologo o il pronto soccorso ostetrico."
+          }
+        ],
+        "documentMetaDescription": "Sognare di sanguinare, una ferita che non si ferma o qualcuno che sanguina: che cosa possono dire perdita, fatica e cura nella scena, con domande ed esempio."
       },
       "pt": {
         "slug": "sangramento",
@@ -15938,58 +16220,152 @@
       "en": {
         "slug": "drowning",
         "name": "Drowning",
-        "shortDescription": "Drowning makes breath, strength and time feel scarce within a dream. The kind of water, available help and your attempt to surface determine the scene’s particular tension.",
-        "modifiedAt": "2026-07-24",
+        "shortDescription": "Dreaming of drowning makes air, strength and time suddenly scarce. It often goes with feeling in over your head. The kind of water, the help within reach and whether you surfaced shape the reading. It predicts no danger.",
+        "modifiedAt": "2026-10-08",
         "askYourself": [
-          "What did drowning change in the scene?",
-          "Which feeling stayed with me after waking?"
+          "Was the water clear, dark, shallow, deep, calm or rough?",
+          "Was anyone close enough to help, and did I call out?",
+          "Where do I feel I am struggling to keep my head above water right now?"
         ],
-        "faq": []
+        "faq": [
+          {
+            "question": "What does it mean to dream of drowning?",
+            "answer": "Drowning is often associated with feeling overwhelmed: obligations, emotions or demands rising faster than you can handle. The kind of water, the help nearby and whether you reached the surface help you choose the lead that fits. It does not predict an accident."
+          },
+          {
+            "question": "What does it mean to dream of someone else drowning?",
+            "answer": "Watching someone drown can echo worry for that person, a feeling of helplessness, or the sense that they are struggling without saying so. If you saved them, note how: the scene may say something about the role you play for others."
+          },
+          {
+            "question": "What does it mean to breathe underwater in a dream?",
+            "answer": "Discovering that you can breathe after all is a surprising turn. It can go with adapting to a situation you feared, or finding that it is more bearable than expected. What changed at the moment you realised it?"
+          },
+          {
+            "question": "Why do I wake up gasping after a drowning dream?",
+            "answer": "A frightening dream can leave your heart and breathing racing on waking. If it happens often, or someone notices loud snoring with pauses in your breathing, talk to a doctor: these signs can be linked to sleep apnoea, which can be treated."
+          }
+        ],
+        "documentMetaDescription": "Dreaming of drowning, saving someone or breathing underwater: what the water, the help and your struggle may say about overload, with a journal example."
       },
       "fr": {
         "slug": "noyade",
         "name": "Noyade",
-        "shortDescription": "Une noyade rend le souffle, la force et le temps soudainement rares dans le rêve. Le type d’eau, l’aide disponible et votre tentative de remonter déterminent la tension particulière de la scène.",
-        "modifiedAt": "2026-07-24",
+        "shortDescription": "Rêver de se noyer rend soudain rares le souffle, la force et le temps. La scène accompagne souvent le sentiment de ne plus avoir pied. Le type d'eau, l'aide à portée et votre retour à la surface orientent la lecture. Elle ne prédit aucun danger.",
+        "modifiedAt": "2026-10-08",
         "askYourself": [
-          "Qu’est-ce que noyade a changé dans la scène ?",
-          "Quelle émotion est restée après le réveil ?"
+          "L'eau était-elle claire, sombre, profonde, peu profonde, calme ou agitée ?",
+          "Quelqu'un était-il assez près pour m'aider, et ai-je appelé ?",
+          "Où ai-je l'impression, en ce moment, de lutter pour garder la tête hors de l'eau ?"
         ],
-        "faq": []
+        "faq": [
+          {
+            "question": "Que signifie rêver de se noyer ?",
+            "answer": "La noyade est souvent associée au sentiment d'être submergé : obligations, émotions ou demandes qui montent plus vite que vous ne pouvez y faire face. Le type d'eau, l'aide présente et votre retour à la surface aident à choisir la piste. Le rêve ne prédit aucun accident."
+          },
+          {
+            "question": "Que signifie rêver de quelqu'un qui se noie ?",
+            "answer": "Voir quelqu'un se noyer peut faire écho à une inquiétude pour cette personne, à un sentiment d'impuissance, ou à l'impression qu'elle se débat sans le dire. Si vous l'avez sauvée, notez comment : la scène parle peut-être du rôle que vous tenez auprès des autres."
+          },
+          {
+            "question": "Que signifie respirer sous l'eau en rêve ?",
+            "answer": "Découvrir qu'on peut respirer malgré tout est un retournement surprenant. Il peut accompagner une adaptation à une situation redoutée, ou la découverte qu'elle est plus supportable que prévu. Qu'est-ce qui a changé à ce moment-là ?"
+          },
+          {
+            "question": "Pourquoi je me réveille en suffoquant après un rêve de noyade ?",
+            "answer": "Un rêve effrayant peut laisser le cœur et la respiration accélérés au réveil. Si cela arrive souvent, ou si l'on vous signale de forts ronflements avec des pauses respiratoires, parlez-en à un médecin : ces signes peuvent être liés à une apnée du sommeil, qui se soigne."
+          }
+        ],
+        "documentMetaDescription": "Rêver de se noyer, de sauver quelqu'un ou de respirer sous l'eau : ce que l'eau, l'aide et votre lutte peuvent dire d'une surcharge, avec exemple de journal."
       },
       "es": {
         "slug": "ahogamiento",
         "name": "Ahogamiento",
-        "shortDescription": "Un ahogamiento vuelve escasos el aire, la fuerza y el tiempo dentro del sueño. El tipo de agua, la ayuda disponible y tu intento de salir a la superficie determinan la tensión.",
-        "modifiedAt": "2026-07-24",
+        "shortDescription": "Soñar que te ahogas vuelve escasos de golpe el aire, la fuerza y el tiempo. Suele acompañar la sensación de no hacer pie. El tipo de agua, la ayuda cercana y si saliste a flote orientan la lectura. No predice ningún peligro.",
+        "modifiedAt": "2026-10-08",
         "askYourself": [
-          "¿Qué cambió ahogamiento dentro de la escena?",
-          "¿Qué emoción siguió conmigo al despertar?"
+          "¿El agua era clara, oscura, profunda, poco profunda, tranquila o agitada?",
+          "¿Había alguien lo bastante cerca para ayudarme, y pedí ayuda?",
+          "¿Dónde siento ahora mismo que lucho por mantener la cabeza fuera del agua?"
         ],
-        "faq": []
+        "faq": [
+          {
+            "question": "¿Qué significa soñar que te ahogas?",
+            "answer": "Ahogarse se asocia a menudo con la sensación de estar desbordado: obligaciones, emociones o exigencias que suben más deprisa de lo que puedes gestionar. El tipo de agua, la ayuda cercana y si saliste a flote te ayudan a elegir la pista. No predice ningún accidente."
+          },
+          {
+            "question": "¿Qué significa soñar con alguien que se ahoga?",
+            "answer": "Ver a alguien ahogarse puede enlazar con la preocupación por esa persona, con una sensación de impotencia o con la impresión de que lo está pasando mal sin decirlo. Si la salvaste, anota cómo: la escena puede hablar del papel que tienes con los demás."
+          },
+          {
+            "question": "¿Qué significa respirar bajo el agua en sueños?",
+            "answer": "Descubrir que puedes respirar pese a todo es un giro sorprendente. Puede acompañar la adaptación a una situación temida, o darte cuenta de que es más llevadera de lo que creías. ¿Qué cambió en ese momento?"
+          },
+          {
+            "question": "¿Por qué me despierto sin aire después de soñar que me ahogo?",
+            "answer": "Un sueño angustioso puede dejar el corazón y la respiración acelerados al despertar. Si te pasa a menudo, o alguien nota que roncas fuerte con pausas al respirar, coméntalo con tu médico: pueden ser señales de apnea del sueño, que tiene tratamiento."
+          }
+        ],
+        "documentMetaDescription": "Soñar que te ahogas, que salvas a alguien o que respiras bajo el agua: qué pueden decir el agua, la ayuda y tu lucha sobre la sobrecarga, con un ejemplo."
       },
       "de": {
         "slug": "ertrinken",
         "name": "Ertrinken",
-        "shortDescription": "Beim Ertrinken werden im Traum Atem, Kraft und Zeit knapp. Die Art des Wassers, erreichbare Hilfe und dein Versuch aufzutauchen bestimmen die Spannung der Szene.",
+        "shortDescription": "Im Traum zu ertrinken macht Atem, Kraft und Zeit plötzlich knapp. Die Szene begleitet oft das Gefühl, den Boden unter den Füßen zu verlieren. Art des Wassers, erreichbare Hilfe und ob Sie auftauchten, prägen die Lesart. Eine Gefahr sagt sie nicht voraus.",
         "askYourself": [
-          "In welchem Wasser bist du untergeraten, und wie kam es dazu?",
-          "War jemand in der Nähe, und konntest du um Hilfe rufen?",
-          "Welche aktuelle Situation fühlt sich für dich ähnlich überwältigend an?"
+          "War das Wasser klar, dunkel, tief, flach, ruhig oder aufgewühlt?",
+          "War jemand nah genug, um zu helfen, und habe ich gerufen?",
+          "Wo kämpfe ich gerade darum, den Kopf über Wasser zu halten?"
         ],
-        "modifiedAt": "2026-07-24",
-        "faq": []
+        "modifiedAt": "2026-10-08",
+        "faq": [
+          {
+            "question": "Was bedeutet es, im Traum zu ertrinken?",
+            "answer": "Ertrinken wird oft mit Überforderung verbunden: Pflichten, Gefühle oder Ansprüche steigen schneller, als Sie damit umgehen können. Art des Wassers, Hilfe in der Nähe und ob Sie die Oberfläche erreichten, helfen bei der Wahl der Spur. Einen Unfall sagt der Traum nicht voraus."
+          },
+          {
+            "question": "Was bedeutet es, wenn im Traum jemand anderes ertrinkt?",
+            "answer": "Jemanden ertrinken zu sehen, kann Sorge um diesen Menschen, ein Gefühl der Hilflosigkeit oder den Eindruck aufgreifen, dass er still kämpft. Haben Sie ihn gerettet, notieren Sie, wie: Die Szene sagt vielleicht etwas über Ihre Rolle für andere."
+          },
+          {
+            "question": "Was bedeutet es, im Traum unter Wasser atmen zu können?",
+            "answer": "Zu entdecken, dass man doch atmen kann, ist eine überraschende Wendung. Sie kann das Anpassen an eine gefürchtete Situation begleiten, oder die Erfahrung, dass sie erträglicher ist als gedacht. Was hat sich in diesem Moment verändert?"
+          },
+          {
+            "question": "Warum wache ich nach einem Ertrinkungstraum nach Luft ringend auf?",
+            "answer": "Ein beängstigender Traum kann Herzschlag und Atmung beim Aufwachen beschleunigen. Passiert das oft, oder bemerkt jemand lautes Schnarchen mit Atemaussetzern, sprechen Sie mit Ihrer Ärztin oder Ihrem Arzt: Das können Anzeichen einer Schlafapnoe sein, die sich behandeln lässt."
+          }
+        ],
+        "documentMetaDescription": "Ertrinken im Traum, jemanden retten oder unter Wasser atmen: was Wasser, Hilfe und Ihr Kampf über Überforderung sagen können, mit Tagebuchbeispiel."
       },
       "it": {
         "slug": "annegamento",
         "name": "Annegamento",
-        "shortDescription": "Un annegamento rende scarsi respiro, forza e tempo nel sogno. Il tipo di acqua, l’aiuto disponibile e il tuo tentativo di tornare in superficie determinano la tensione della scena.",
-        "modifiedAt": "2026-07-24",
+        "shortDescription": "Sognare di annegare rende all’improvviso scarsi respiro, forza e tempo. La scena accompagna spesso la sensazione di non toccare più il fondo. Il tipo d’acqua, l’aiuto vicino e il ritorno in superficie orientano la lettura. Non predice alcun pericolo.",
+        "modifiedAt": "2026-10-08",
         "askYourself": [
-          "Che cosa ha cambiato annegamento nella scena?",
-          "Quale emozione è rimasta dopo il risveglio?"
+          "L’acqua era limpida, scura, profonda, bassa, calma o agitata?",
+          "C’era qualcuno abbastanza vicino da aiutarmi, e ho chiamato?",
+          "Dove sento, in questo periodo, di lottare per tenere la testa fuori dall’acqua?"
         ],
-        "faq": []
+        "faq": [
+          {
+            "question": "Che cosa significa sognare di annegare?",
+            "answer": "L’annegamento viene spesso associato alla sensazione di essere sopraffatto: impegni, emozioni o richieste che salgono più in fretta di quanto riesci a gestire. Il tipo d’acqua, l’aiuto vicino e il ritorno in superficie aiutano a scegliere la pista. Non predice alcun incidente."
+          },
+          {
+            "question": "Che cosa significa sognare qualcuno che annega?",
+            "answer": "Vedere qualcuno annegare può fare eco alla preoccupazione per quella persona, a un senso di impotenza o all’impressione che stia lottando senza dirlo. Se l’hai salvata, annota come: la scena forse parla del ruolo che hai per gli altri."
+          },
+          {
+            "question": "Che cosa significa respirare sott’acqua in sogno?",
+            "answer": "Scoprire che riesci a respirare comunque è una svolta sorprendente. Può accompagnare l’adattamento a una situazione temuta, o la scoperta che è più sopportabile del previsto. Che cosa è cambiato in quel momento?"
+          },
+          {
+            "question": "Perché mi sveglio senza fiato dopo aver sognato di annegare?",
+            "answer": "Un sogno spaventoso può lasciare cuore e respiro accelerati al risveglio. Se succede spesso, o qualcuno nota che russi forte con pause nel respiro, parlane con il medico: possono essere segnali di apnee notturne, che si possono curare."
+          }
+        ],
+        "documentMetaDescription": "Sognare di annegare, di salvare qualcuno o di respirare sott’acqua: che cosa possono dire acqua, aiuto e lotta del sentirsi sopraffatti, con esempio di diario."
       },
       "pt": {
         "slug": "afogamento",
