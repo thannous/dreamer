@@ -1,10 +1,12 @@
 #!/usr/bin/env node
-// Local verification engine of the common delivery rule (regle-commune-livraison v2).
-// Canonical rule: https://github.com/thannous/shapier/blob/main/docs/regle-commune-livraison.md
+// Local verification engine of the common delivery rule (regle-commune-livraison v4).
+// The rule is this repository's own copy of the common text, at the path its
+// AGENTS.md links to (and its section 13.1 names).
 //
-// This file is identical in shapier, skillcodex, clawdeals, bodylab and dreamer.
-// Each repository describes its checks in verify-local.config.mjs at its root;
-// change this engine in all five repositories at once, never in one alone.
+// The same engine file in every repository is recommended. Each repository
+// keeps its own copy, pins and verifies only that copy (ENGINE_SHA256 in its
+// verify-local.config.mjs), and describes its checks in verify-local.config.mjs
+// at its root. Nothing here reads or compares another repository.
 //
 //   node scripts/verify-local.mjs pr       [--rev <rev>] [--force] [--keep] [--external <check>=<evidence>]
 //   node scripts/verify-local.mjs release  [--rev <rev>] [--target <name>]... [--force] [--keep] [--external ...]
@@ -38,6 +40,20 @@
 // commit nothing changed since origin/<main>, and a release proves the
 // delivered commit, not a diff (releaseAlways is implied).
 //
+// --external <check>=<evidence> stands in only for a specialised check whose
+// probe fails here. The evidence is "owner-machine: <host> <note> on <SHA>"
+// (a run on the owner's machine), or cites a run whose https:// URL starts
+// with one of the config's externalSources (the External CI table, section 13
+// of the repository's own delivery rule); any other https:// URL,
+// and any http:// URL, is refused. It names the full verified head SHA exactly
+// once and no other full SHA, so a squash needs its own evidence. It is stored
+// verbatim, listed by name, never reused, and checked again by the deploy
+// guard against the same config.
+//
+// Installs, setup and checks take the machine-wide lock HEAVY_LOCK (flock),
+// so verify runs on one machine wait for each other ("waiting for lock").
+// A step killed by a signal counts as failed.
+//
 // Exit codes: 0 passed, 1 failed, 2 incomplete (a required specialised check
 // could not run here; see --external), 64 usage or configuration error.
 
@@ -60,7 +76,7 @@ import os from 'node:os';
 import path from 'node:path';
 import { fileURLToPath, pathToFileURL } from 'node:url';
 
-export const RULE = 'regle-commune-livraison v2';
+export const RULE = 'regle-commune-livraison v4';
 // 3: --external is guarded (specialised, probe fails, evidence names the
 // commit or tree) and never reused; proofs written before that are ignored.
 export const PROOF_FORMAT_VERSION = 3;
@@ -159,6 +175,15 @@ export function normaliseConfig(raw) {
       env: check.env ?? {},
     };
   });
+  // https:// URL prefixes of the external CI runs --external may cite, one per
+  // workflow of the External CI table (none by default: owner-machine only).
+  const externalSources = raw.externalSources ?? [];
+  if (!Array.isArray(externalSources)) throw new UsageError('externalSources must be a list of https:// URL prefixes.');
+  for (const prefix of externalSources) {
+    if (typeof prefix !== 'string' || !/^https:\/\/[^\s/]+\/\S*\/$/.test(prefix)) {
+      throw new UsageError(`externalSources: ${JSON.stringify(prefix)} must be an https:// URL prefix with a path ending in "/" (for example https://github.com/<owner>/<repo>/actions/runs/).`);
+    }
+  }
   const names = new Set();
   for (const check of checks) {
     if (names.has(check.name)) throw new UsageError(`check ${check.name} is declared twice.`);
@@ -183,6 +208,7 @@ export function normaliseConfig(raw) {
     deliveryFiles: raw.deliveryFiles ?? [],
     // Repository variables that narrow what a check runs, stripped like SCOPE_ENV.
     stripEnv: raw.stripEnv ?? [],
+    externalSources,
     checks,
     hook: {
       forbidden: raw.hook?.forbidden ?? DEFAULT_FORBIDDEN,
@@ -370,12 +396,68 @@ function changedFiles(git, base, sha) {
 
 // ---------------------------------------------------------------- isolated worktree
 
+// Heavy steps (installs, builds, test suites) of every verify run on a machine
+// take one machine-wide lock, so parallel runs wait instead of thrashing it.
+// VERIFY_LOCAL_HEAVY_LOCK moves the lock file (tests); a step already under
+// the lock (the engine's own tests) runs its nested steps without retaking it.
+export const HEAVY_LOCK = '/tmp/fleet-verify-heavy.lock';
+const HEAVY_LOCK_HELD = 'VERIFY_LOCAL_HEAVY_LOCK_HELD';
+const probes = new Map();
+
+/** Whether `program args` runs and exits 0 here, cached per PATH. */
+function probeCommand(program, args, env) {
+  const key = `${program}\0${env.PATH ?? ''}`;
+  if (!probes.has(key)) {
+    const probe = spawnSync(program, args, { env, stdio: 'ignore' });
+    probes.set(key, !probe.error && probe.status === 0);
+  }
+  return probes.get(key);
+}
+
+/** Whether the util-linux `flock` command exists here (macOS has none by default). */
+export function hasFlock(env = process.env) {
+  return probeCommand('flock', ['--version'], env);
+}
+
+/** Whether `setpriv --pdeathsig` works here (Linux util-linux only). */
+export function hasPdeathsig(env = process.env) {
+  return probeCommand('setpriv', ['--pdeathsig', 'KILL', 'true'], env);
+}
+
+/**
+ * The command that holds the lock for one step. `flock -o` closes the lock
+ * before running the step, so a process the step leaves behind never holds
+ * it; only the flock process does, until the step's shell exits. Under
+ * `setpriv --pdeathsig KILL` that flock process dies with this engine, so a
+ * killed verify run (SIGKILL, OOM) frees the lock at once.
+ */
+function lockedCommand(lock, command, env) {
+  const flock = ['flock', '-o', lock, '/bin/sh', '-c', command];
+  return hasPdeathsig(env) ? ['setpriv', '--pdeathsig', 'KILL', ...flock] : flock;
+}
+
 function runShell(command, { cwd, env, log }) {
   log(`${PREFIX} $ ${command}`);
+  const lock = env.VERIFY_LOCAL_HEAVY_LOCK || HEAVY_LOCK;
   const started = Date.now();
-  const result = spawnSync(command, { cwd, env, shell: true, stdio: 'inherit' });
-  const status = result.error ? 1 : (result.status ?? 1);
-  return { status, durationMs: Date.now() - started };
+  let result;
+  if (env[HEAVY_LOCK_HELD] === lock) {
+    result = spawnSync('/bin/sh', ['-c', command], { cwd, env, stdio: 'inherit' });
+  } else if (!hasFlock(env)) {
+    log(`${PREFIX} flock is not installed here: this step runs without the lock ${lock}.`);
+    result = spawnSync('/bin/sh', ['-c', command], { cwd, env, stdio: 'inherit' });
+  } else {
+    const free = spawnSync('flock', ['--nonblock', lock, 'true'], { env, stdio: 'ignore' });
+    if (free.error || free.status !== 0) log(`${PREFIX} waiting for lock ${lock} (another heavy check runs on this machine)...`);
+    const [program, ...args] = lockedCommand(lock, command, env);
+    if (!hasPdeathsig(env)) log(`${PREFIX} setpriv --pdeathsig is not available here: if this run is killed, ${lock} stays held until the step ends.`);
+    result = spawnSync(program, args, { cwd, env: { ...env, [HEAVY_LOCK_HELD]: lock }, stdio: 'inherit' });
+  }
+  // A step killed by a signal (directly, or through flock as 128 + signal) failed.
+  const killed = result.signal ?? (result.status > 128 ? `signal ${result.status - 128}` : null);
+  if (killed) log(`${PREFIX} the step was killed (${killed}): it counts as failed.`);
+  const status = result.error || result.signal ? 1 : (result.status ?? 1);
+  return { status: status === 0 && killed ? 1 : status, durationMs: Date.now() - started, killed };
 }
 
 function quiet(command, { cwd, env }) {
@@ -570,26 +652,61 @@ function selectChecks(config, kind, targets) {
   });
 }
 
+const HEX40 = /(?<![0-9a-f])[0-9a-f]{40}(?![0-9a-f])/gi;
+
+const HTTPS_URL = /https:\/\/\S+/gi;
+const OWNER_MACHINE = /^owner-machine: \S+ \S.*? on [0-9a-f]{40}$/;
+
 /**
- * Why external evidence cannot stand for this commit, or null when it can:
- * it gives an https:// location of the run (or starts with `owner-machine:`
- * for a run on the owner's machine), uses no plain-http link, and names
- * exactly one commit: the verified one, or a commit with the same tree.
+ * Why external evidence cannot stand for this commit, or null when it can.
+ * `sources` is the config's externalSources: https:// URL prefixes of the
+ * external CI runs this repository accepts (none by default). The evidence
+ * starts with `owner-machine:` (a run on the owner's machine) or cites a run
+ * under a listed source; every https:// URL in it is under a listed source,
+ * and it has no http:// URL. It names the full verified head SHA exactly
+ * once, in lowercase as git prints it, with no other full SHA (any 40-hex
+ * run in any case counts as another SHA, an uppercase copy of the head too): "owner-machine: <host> <note> on <sha>". A
+ * squash with the same tree is another commit: it reruns the check or cites
+ * evidence for its own SHA.
  */
-export function externalEvidenceIssue(git, evidence, sha, tree) {
-  if (/\bhttp:\/\//i.test(evidence)) return 'a plain http:// link is not evidence; use https://';
-  if (!/https:\/\/[^\s/]+/i.test(evidence) && !/^owner-machine:/.test(evidence)) {
-    return 'the evidence must give the https:// location of the run, or start with "owner-machine:" for a run on the owner\'s machine';
+export function externalEvidenceIssue(_git, evidence, sha, _tree, sources = []) {
+  const text = typeof evidence === 'string' ? evidence : '';
+  const commit = String(sha);
+  const example = `"owner-machine: <host> <note> on ${commit}"`;
+  if (/http:\/\//i.test(text)) return `it contains an http:// URL; cite ${example}`;
+  const urls = text.match(HTTPS_URL) ?? [];
+  const unlisted = urls.find((url) => !sources.some((prefix) => url.startsWith(prefix)));
+  if (unlisted) {
+    return sources.length
+      ? `${unlisted} is not under an external CI source of externalSources in ${CONFIG_FILE} (${sources.join(', ')})`
+      : `${unlisted} is not accepted: externalSources in ${CONFIG_FILE} lists no external CI (External CI: none), so cite ${example}`;
   }
-  const tokens = (evidence.match(/(?<![0-9a-f])[0-9a-f]{40}(?![0-9a-f])/gi) ?? []).map((token) => token.toLowerCase());
-  if (tokens.length !== 1) {
-    return `the evidence must name exactly one commit, the verified ${sha} or one with the same tree (it names ${tokens.length})`;
+  if (!/^owner-machine:\s*\S/.test(text) && urls.length === 0) {
+    return `it neither starts with "owner-machine:" nor cites a run of a listed external CI source; cite ${example}`;
   }
-  const [token] = tokens;
-  if (token === sha) return null;
-  const commit = git(['rev-parse', '--verify', '--quiet', `${token}^{commit}`], { allowFailure: true });
-  if (commit && git(['rev-parse', `${commit}^{tree}`], { allowFailure: true }) === tree) return null;
-  return `the evidence names ${token}, which is neither the verified commit nor a commit with the same tree`;
+  // Every 40-hex run, in any case, is a SHA; only the head as git prints it
+  // (lowercase) is the verified commit, compared without case folding.
+  const hashes = text.match(HEX40) ?? [];
+  const other = hashes.find((found) => found !== commit);
+  if (other) {
+    return other.toLowerCase() === commit
+      ? `it names ${other}, the verified commit in another case; cite it in lowercase as ${commit}`
+      : `it names ${other}, which is not the verified commit ${commit}`;
+  }
+  if (hashes.length === 0) return `it does not name the verified commit ${commit} in full`;
+  if (hashes.length > 1) return `it names the verified commit ${hashes.length} times; name it once`;
+  // Owner-machine evidence has exactly this shape: a host token, a free-text
+  // note, and " on <full head SHA>" at the end.
+  if (text.startsWith('owner-machine:') && !OWNER_MACHINE.test(text)) {
+    return `owner-machine evidence must read exactly ${example} (a host, a note, then " on " and the full SHA at the end)`;
+  }
+  return null;
+}
+
+/** The externalSources of the config committed at HEAD, for a deploy guard. */
+export async function loadExternalSources({ cwd = process.cwd(), env = cleanGitEnv() } = {}) {
+  const { git } = resolveRepository(cwd, env);
+  return (await loadConfig(git, 'HEAD')).externalSources;
 }
 
 export async function verify(kind, argv = [], {
@@ -636,7 +753,7 @@ export async function verify(kind, argv = [], {
   log(`${PREFIX} ${command} on ${sha} (tree ${tree.slice(0, 12)}, base ${base.ref} ${base.sha ? base.sha.slice(0, 12) : 'unknown'}).`);
 
   // --external stands in for a specialised check that cannot run here, and
-  // only with evidence naming the verified commit or tree.
+  // only with evidence for this exact head commit. Anything else writes no proof.
   const selected = selectChecks(config, kind, targets);
   // The probe runs in the main checkout, before any isolated copy exists.
   const probes = new Map();
@@ -650,8 +767,8 @@ export async function verify(kind, argv = [], {
     if (!check.specialised || !check.requires) {
       throw new UsageError(`--external ${name}: only a specialised check with a requires probe can come from elsewhere; run it here.`);
     }
-    const issue = externalEvidenceIssue(git, evidence, sha, tree);
-    if (issue) throw new UsageError(`--external ${name}: ${issue}; for example "https://<run URL> on ${sha}" or "owner-machine: <note> on ${sha}".`);
+    const issue = externalEvidenceIssue(git, evidence, sha, tree, config.externalSources);
+    if (issue) throw new UsageError(`--external ${name}: evidence refused, ${issue}.`);
     if (probe(check)) throw new UsageError(`--external ${name}: this machine can run it (\`${check.requires.command}\` succeeds); run it here instead.`);
   }
 
@@ -724,7 +841,7 @@ export async function verify(kind, argv = [], {
         log,
       });
       const passed = run.status === 0;
-      results.push({ ...entry, result: passed ? 'passed' : 'failed', durationMs: run.durationMs });
+      results.push({ ...entry, result: passed ? 'passed' : 'failed', durationMs: run.durationMs, ...(run.killed ? { reason: `killed (${run.killed})` } : {}) });
       log(`${PREFIX} ${check.name}: ${passed ? 'passed' : `failed (exit ${run.status})`} in ${Math.round(run.durationMs / 1000)} s.`);
       if (!passed) {
         failed = true;
@@ -816,7 +933,7 @@ export const RELEASE_PROOF_CHECKS = Object.freeze([
  * clean, and a passed release proof exists for this exact commit and tree
  * (and for every requested target). Returns the list of failures.
  */
-export function checkReleaseProof({ cwd = process.cwd(), env = cleanGitEnv(), targets = [], fetch = true, mainBranch = 'main' } = {}) {
+export function checkReleaseProof({ cwd = process.cwd(), env = cleanGitEnv(), targets = [], fetch = true, mainBranch = 'main', externalSources = [] } = {}) {
   const { commonDir, git } = resolveRepository(cwd, env);
   const failures = [];
   const head = git(['rev-parse', '--verify', 'HEAD^{commit}']);
@@ -851,7 +968,7 @@ export function checkReleaseProof({ cwd = process.cwd(), env = cleanGitEnv(), ta
       if (!check.external) continue;
       const issue = !check.specialised
         ? 'only a specialised check can come from elsewhere'
-        : externalEvidenceIssue(git, String(check.external), proof.sha, proof.tree);
+        : externalEvidenceIssue(git, String(check.external), proof.sha, proof.tree, externalSources);
       if (issue) failures.push({ check: 'proof-external', message: `${check.name}: ${issue}` });
     }
   }
