@@ -11,7 +11,7 @@ import { isInitialDreamCategorizationPending, subscribeInitialDreamCategorizatio
 import { useDreamMedia } from '@/hooks/useDreamMedia';
 import { Toast } from '@/components/Toast';
 import { DreamRecallAssistantCard } from '@/components/journal/DreamRecallAssistantCard';
-import { SavedDreamMoment } from '@/components/journal/SavedDreamMoment';
+import { SavedDreamMoment, type SavedDreamPhase } from '@/components/journal/SavedDreamMoment';
 import { DreamShareImage } from '@/components/journal/DreamShareImage';
 import { getImageJobFailure } from '@/lib/imageJobErrors';
 import { ErrorType } from '@/lib/errors';
@@ -102,6 +102,7 @@ import {
   useWindowDimensions,
   View,
 } from 'react-native';
+import { useReducedMotion } from 'react-native-reanimated';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { IconSymbol } from '@/components/ui/icon-symbol';
 
@@ -888,6 +889,42 @@ const JournalDetailContent = memo(function JournalDetailContent({ dream }: { dre
   }, [awaitingPurchasedAnalysis, canRecoverPendingAnalysis, canResumeAnalysis, dream, guestNeedsAccount, isAnalyzing, isAnalysisPending, isStalePrimaryAction, primaryAction, primaryKind, savedAnalysisAction, t, user]);
   const isAnalysisLaunchBlocked = !!dream && (isAnalysisPending || isAnalyzing);
   const isAnalysisLocked = isAnalysisLaunchBlocked || awaitingPurchasedAnalysis;
+  // Act II of the dream story follows the dream's real state: waiting while an analysis
+  // runs, then a reveal only when the reading lands while this screen watches. A dream
+  // still marked pending keeps the story waiting even after the local request settles.
+  const readingInFlight = isAnalysisLocked;
+  const [readingStory, setReadingStory] = useState<'idle' | 'waiting' | 'revealed'>('idle');
+  if (readingInFlight && readingStory !== 'waiting') {
+    setReadingStory('waiting');
+  } else if (!readingInFlight && readingStory === 'waiting') {
+    setReadingStory(showCompletedReading ? 'revealed' : 'idle');
+  }
+  const savedMomentPhase: SavedDreamPhase = readingInFlight && !showCompletedReading ? 'reading'
+    : showCompletedReading ? 'read' : 'saved';
+  const reducedMotion = useReducedMotion();
+  const readingZoneTopRef = useRef<number | null>(null);
+  const readingRevealScrolledRef = useRef(false);
+  useEffect(() => {
+    if (readingStory === 'waiting') {
+      readingRevealScrolledRef.current = false;
+      return;
+    }
+    if (readingStory !== 'revealed' || readingRevealScrolledRef.current) return;
+    // The dock resizes as the reading lands, which re-runs this effect and cancels the
+    // pending frame: only the frame that actually runs marks the reveal as handled.
+    const frame = requestAnimationFrame(() => {
+      readingRevealScrolledRef.current = true;
+      const top = readingZoneTopRef.current;
+      if (top == null) return;
+      const visibleBottom = readingScrollOffset.current + viewportHeight - actionDockHeight;
+      // The reader asked for this reading: bring it into view when it lands below the fold,
+      // never pull them back up from further down the page.
+      if (navigationHeight + top > visibleBottom - 120) {
+        scrollViewRef.current?.scrollTo({ y: Math.max(top - 12, 0), animated: !reducedMotion });
+      }
+    });
+    return () => cancelAnimationFrame(frame);
+  }, [actionDockHeight, navigationHeight, readingStory, reducedMotion, viewportHeight]);
   const isImageJobPending = illustrationSidecar === 'pending';
   const isSyncPending = dreamSyncState === 'pending';
   const isSyncFailed = dreamSyncState === 'failed';
@@ -2598,7 +2635,7 @@ const JournalDetailContent = memo(function JournalDetailContent({ dream }: { dre
           keyboardShouldPersistTaps="handled"
         >
           <View ref={readingContentRef} collapsable={false} onLayout={measureTranscriptSection} className="px-4 pb-6">
-            {showSavedMoment ? <SavedDreamMoment /> : null}
+            {showSavedMoment ? <SavedDreamMoment phase={savedMomentPhase} /> : null}
             <View onLayout={({ nativeEvent: { layout } }) => {
               setCoverIntroHeight(previous => previous === layout.height ? previous : layout.height);
             }}>
@@ -2652,7 +2689,12 @@ const JournalDetailContent = memo(function JournalDetailContent({ dream }: { dre
               {renderStaleBanner()}
             </View>
 
-            {(showCompletedReading || isAnalysisPending) ? <DreamAnalysisContent dream={dream} pending={isAnalysisPending} /> : null}
+            {(showCompletedReading || readingInFlight) ? (
+              <DreamAnalysisContent dream={dream}
+                pending={isAnalysisPending || (readingInFlight && !showCompletedReading)}
+                reveal={readingStory === 'revealed'}
+                onLayout={({ nativeEvent }) => { readingZoneTopRef.current = nativeEvent.layout.y; }} />
+            ) : null}
             {!hasIllustratedCover ? renderIllustrationSection() : null}
             {!recallRequested ? (
               <ArrivalReveal play={opensOnSavedMoment} index={2}>

@@ -1,14 +1,15 @@
 import { Image } from 'expo-image';
 import React, { useMemo } from 'react';
 import { Text, View, type StyleProp, type ViewStyle } from 'react-native';
-import Animated, { useReducedMotion, type CSSStyle } from 'react-native-reanimated';
+import Animated, { useReducedMotion } from 'react-native-reanimated';
 import Svg, { Circle, Defs, Ellipse, Path, RadialGradient, Stop } from 'react-native-svg';
 
-import { EASE } from '@/components/motion/motion';
 import { getNoctaliaDesignTokens } from '@/constants/noctaliaDesign';
 import { useTheme } from '@/context/ThemeContext';
 import { useTranslation } from '@/hooks/useTranslation';
 import { TID } from '@/lib/testIDs';
+
+import { entrance, twinkle } from './story/dreamStoryMotion';
 
 const ASTRAL_ART = require('@/assets/images/onboarding-astral-background.webp');
 
@@ -28,39 +29,29 @@ const HALO_STARS = [
   { x: 92, y: 250, r: 1.2 },
 ] as const;
 
+/** The inner orbit's stars, which take turns while the dream is read and stay lit after. */
+const READING_STARS = [-60, 0, 60, 120, 180, 240].map((degrees) => {
+  const radians = (degrees * Math.PI) / 180;
+  return { x: CENTER + 94 * Math.cos(radians), y: CENTER + 94 * Math.sin(radians) };
+});
+const READING_STAR = 5;
+
+/** Where the dream is in its story: just saved, being read, or read. */
+export type SavedDreamPhase = 'saved' | 'reading' | 'read';
+
 const sparklePath = (cx: number, cy: number, size: number) =>
   `M${cx} ${cy - size} Q${cx} ${cy} ${cx + size} ${cy} Q${cx} ${cy} ${cx} ${cy + size} ` +
   `Q${cx} ${cy} ${cx - size} ${cy} Q${cx} ${cy} ${cx} ${cy - size} Z`;
-
-type Transform = NonNullable<ViewStyle['transform']>;
-
-/** A one-time entrance. Reduced motion keeps the fade and drops the travel. */
-const entrance = (
-  travel: { from: Transform; to: Transform } | null,
-  durationMs: number,
-  delayMs: number,
-  reduced: boolean
-): CSSStyle => {
-  const moves = travel && !reduced;
-  return {
-    animationName: {
-      from: { opacity: 0, ...(moves ? { transform: travel.from } : null) },
-      to: { opacity: 1, ...(moves ? { transform: travel.to } : null) },
-    },
-    animationDuration: durationMs,
-    animationDelay: delayMs,
-    animationTimingFunction: EASE.out,
-    animationFillMode: 'both',
-  };
-};
 
 /**
  * The moment a captured dream lands in the journal: a window onto the night sky held
  * in an astrolabe, which settles into alignment once. It appears only on the arrival
  * from capture, so the motion budget of a success state is spent at most once per dream.
- * Under reduced motion the layers only fade in.
+ * While the dream is read (Act II) the inner orbit's stars take turns, and they stay lit
+ * once the reading has landed. Under reduced motion the layers only fade in and the
+ * reading stars hold still.
  */
-export function SavedDreamMoment() {
+export function SavedDreamMoment({ phase = 'saved' }: { phase?: SavedDreamPhase }) {
   const { t } = useTranslation();
   const { colors, mode } = useTheme();
   const reduced = useReducedMotion();
@@ -74,6 +65,10 @@ export function SavedDreamMoment() {
     medallion: entrance({ from: [{ scale: 0.94 }], to: [{ scale: 1 }] }, 700, 0, reduced),
     label: entrance({ from: [{ translateY: 8 }], to: [{ translateY: 0 }] }, 400, 320, reduced),
   }), [reduced]);
+  const readingStars = useMemo(
+    () => READING_STARS.map((_, index) => twinkle(index, READING_STARS.length, reduced)),
+    [reduced]
+  );
 
   return (
     <View testID={TID.Component.SavedDreamMoment} className="mb-6 items-center">
@@ -118,6 +113,18 @@ export function SavedDreamMoment() {
             <Circle cx={CENTER} cy={CENTER + 110} r={7} fill="none" stroke={accent} strokeOpacity={0.4} strokeWidth={0.75} />
             <Path d={sparklePath(CENTER, CENTER + 110, 10)} fill={accent} />
           </Svg>
+          {phase === 'saved' ? null : READING_STARS.map((star, index) => (
+            <Animated.View
+              key={index}
+              className="absolute rounded-full bg-champagne"
+              style={[{
+                left: star.x - READING_STAR / 2,
+                top: star.y - READING_STAR / 2,
+                width: READING_STAR,
+                height: READING_STAR,
+              }, phase === 'reading' ? readingStars[index] : null] as StyleProp<ViewStyle>}
+            />
+          ))}
         </Animated.View>
 
         <Animated.View
