@@ -187,6 +187,9 @@ export default {
     // The Vercel web app production publish (web:deploy:prod), same guard.
     'scripts/web-deploy.js',
     'scripts/web-deploy.test.ts',
+    // The Vercel project config the CLI deploy reads, and its ignored-build step.
+    'vercel.json',
+    'scripts/vercel-ignore-build.mjs',
     // The suites ci-contracts runs.
     '.circleci/tests/classify-changes.test.sh',
     '.circleci/tests/shared-build-impact.test.py',
@@ -216,6 +219,8 @@ export default {
         'scripts/web-deploy.js',
         'scripts/web-deploy.test.ts',
         'package.json',
+        'vercel.json',
+        'scripts/vercel-ignore-build.mjs',
       ],
     },
     { name: 'typecheck-app', command: 'npm run typecheck:app', exclude: DOCS },
