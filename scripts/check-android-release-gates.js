@@ -569,24 +569,104 @@ function checkSubscriptionQaGate(
 }
 
 // External CI is opt-in only (doc_web_interne/docs/regle-commune-livraison.md,
-// section 13): the release workflow's `on:` mapping holds workflow_dispatch and
+// section 13): every EAS workflow's `on:` mapping holds workflow_dispatch and
 // nothing else (no push, tag, pull_request, pull_request_comment,
-// pull_request_labeled, app_store_connect, schedule or any other trigger), and
-// the dispatch requires the release_tag input that check-android-release-ref.js
-// compares with app.json.
-function isDispatchOnlyReleaseWorkflow(workflowText) {
-  let workflow;
+// pull_request_labeled, app_store_connect, schedule or any other trigger). The
+// two release workflows also require the release_tag input, and pass it to a
+// job that runs check-android-release-ref.js before their build.
+const EAS_WORKFLOWS_DIR = '.eas/workflows';
+const RELEASE_REF_CHECK = 'node ./scripts/check-android-release-ref.js';
+const RELEASE_TAG_FROM_INPUT = '${{ inputs.release_tag }}';
+const RELEASE_TAG_WORKFLOWS = {
+  'android-release-qualification.yml': 'build_android',
+  'android-release-smoke.yml': 'build_android_release_smoke',
+};
+
+function parseWorkflow(workflowText) {
   try {
-    workflow = require('yaml').parse(workflowText);
+    const workflow = require('yaml').parse(workflowText);
+    return workflow && typeof workflow === 'object' && !Array.isArray(workflow) ? workflow : null;
   } catch {
-    return false;
+    return null;
   }
-  const triggers = workflow && typeof workflow === 'object' ? workflow.on : undefined;
+}
+
+function hasOnlyDispatchTrigger(workflow) {
+  const triggers = workflow?.on;
   if (!triggers || typeof triggers !== 'object' || Array.isArray(triggers)) return false;
   const keys = Object.keys(triggers);
-  if (keys.length !== 1 || keys[0] !== 'workflow_dispatch') return false;
-  const releaseTag = triggers.workflow_dispatch?.inputs?.release_tag;
+  return keys.length === 1 && keys[0] === 'workflow_dispatch';
+}
+
+function requiresReleaseTagInput(workflow) {
+  const releaseTag = workflow?.on?.workflow_dispatch?.inputs?.release_tag;
   return Boolean(releaseTag && releaseTag.required === true && releaseTag.type === 'string');
+}
+
+function jobNeeds(job) {
+  const needs = job?.needs;
+  if (typeof needs === 'string') return [needs];
+  return Array.isArray(needs) ? needs : [];
+}
+
+// Read from the parsed YAML, so a comment or a stray string never counts: a job
+// with a step that runs the release ref check, RELEASE_TAG taken from the
+// release_tag input in its env, and the build job needing that job.
+function releaseTagCheckGuardsBuild(workflow, buildJobName) {
+  const jobs = workflow?.jobs;
+  if (!jobs || typeof jobs !== 'object') return false;
+  const buildJob = jobs[buildJobName];
+  if (!buildJob || buildJob.type !== 'build') return false;
+  const refJobs = Object.entries(jobs)
+    .filter(([, job]) =>
+      job &&
+      Array.isArray(job.steps) &&
+      job.steps.some((step) => typeof step?.run === 'string' && step.run.trim() === RELEASE_REF_CHECK) &&
+      job.env?.RELEASE_TAG === RELEASE_TAG_FROM_INPUT
+    )
+    .map(([name]) => name);
+  return jobNeeds(buildJob).some((name) => refJobs.includes(name));
+}
+
+function isDispatchOnlyReleaseWorkflow(workflowText, buildJobName = 'build_android') {
+  const workflow = parseWorkflow(workflowText);
+  return Boolean(
+    workflow &&
+      hasOnlyDispatchTrigger(workflow) &&
+      requiresReleaseTagInput(workflow) &&
+      releaseTagCheckGuardsBuild(workflow, buildJobName)
+  );
+}
+
+// Every file of .eas/workflows, so a new workflow is held to the same rule.
+function checkEasWorkflowTriggers(
+  rootDir,
+  { existsSync = fs.existsSync, readFileSync = fs.readFileSync, readdirSync = fs.readdirSync } = {}
+) {
+  const dir = path.join(rootDir, EAS_WORKFLOWS_DIR);
+  const files = existsSync(dir)
+    ? readdirSync(dir).filter((name) => /\.ya?ml$/.test(name)).sort()
+    : [];
+  const problems = [];
+  for (const name of Object.keys(RELEASE_TAG_WORKFLOWS)) {
+    if (!files.includes(name)) problems.push(`${name} is missing`);
+  }
+  for (const name of files) {
+    const workflow = parseWorkflow(readFileSync(path.join(dir, name), 'utf8'));
+    if (!workflow) {
+      problems.push(`${name} is not valid YAML`);
+      continue;
+    }
+    if (!hasOnlyDispatchTrigger(workflow)) problems.push(`${name}: workflow_dispatch must be the only key under on:`);
+    const buildJobName = RELEASE_TAG_WORKFLOWS[name];
+    if (buildJobName) {
+      if (!requiresReleaseTagInput(workflow)) problems.push(`${name}: workflow_dispatch needs a required string release_tag input`);
+      if (!releaseTagCheckGuardsBuild(workflow, buildJobName)) {
+        problems.push(`${name}: ${buildJobName} must need a job that runs ${RELEASE_REF_CHECK} with RELEASE_TAG: ${RELEASE_TAG_FROM_INPUT}`);
+      }
+    }
+  }
+  return { files, problems };
 }
 
 function checkAndroidReleaseGates({
@@ -757,8 +837,7 @@ function checkAndroidReleaseGates({
     releaseWorkflow.includes('type: maestro') &&
     releaseWorkflow.includes('build_id: ${{ needs.build_android.outputs.build_id }}') &&
     releaseWorkflow.includes('flow_path: maestro/release-smoke.yml') &&
-    releaseWorkflow.includes('node ./scripts/check-android-release-ref.js') &&
-    isDispatchOnlyReleaseWorkflow(releaseWorkflow);
+    isDispatchOnlyReleaseWorkflow(releaseWorkflow, RELEASE_TAG_WORKFLOWS['android-release-qualification.yml']);
   addCheck(
     checks,
     releaseWorkflowReady ? 'pass' : 'fail',
@@ -767,6 +846,17 @@ function checkAndroidReleaseGates({
       ? `${RELEASE_QUALIFICATION_WORKFLOW} builds production-apk and runs release-smoke.yml on dispatch only.`
       : `${RELEASE_QUALIFICATION_WORKFLOW} is missing, does not chain production-apk to the Release smoke flow, does not check the release tag, or has a trigger other than workflow_dispatch with a required release_tag input.`,
     'Add a validated EAS workflow whose only trigger is workflow_dispatch with a required release_tag input, that runs scripts/check-android-release-ref.js, builds production-apk and passes its build_id to maestro/release-smoke.yml.'
+  );
+
+  const easWorkflows = checkEasWorkflowTriggers(rootDir, { existsSync, readFileSync });
+  addCheck(
+    checks,
+    easWorkflows.problems.length === 0 ? 'pass' : 'fail',
+    'EAS workflows dispatch only',
+    easWorkflows.problems.length === 0
+      ? `${easWorkflows.files.join(', ')}: workflow_dispatch only; the release workflows check release_tag before their build.`
+      : easWorkflows.problems.join('; '),
+    'Keep workflow_dispatch as the only trigger of every .eas/workflows file; the release workflows need a required release_tag input passed as RELEASE_TAG to a job running scripts/check-android-release-ref.js that their build job needs.'
   );
 
   const subscriptionScript = prebuild
@@ -977,6 +1067,7 @@ if (require.main === module) {
 
 module.exports = {
   checkAndroidReleaseGates,
+  checkEasWorkflowTriggers,
   commandExists,
   formatReport,
   getAdbDeviceVisibilityCheck,

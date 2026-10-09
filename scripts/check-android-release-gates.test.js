@@ -6,6 +6,7 @@ const { spawnSync } = require('child_process');
 
 const {
   checkAndroidReleaseGates,
+  checkEasWorkflowTriggers,
   formatReport,
   parseDotEnv,
 } = require('./check-android-release-gates');
@@ -145,9 +146,13 @@ function setupFixture({ versionCode = 33 } = {}) {
       '        required: true',
       'jobs:',
       '  validate_android_release_ref:',
+      '    env:',
+      "      RELEASE_TAG: ${{ inputs.release_tag }}",
       '    steps:',
       '      - run: node ./scripts/check-android-release-ref.js',
       '  build_android:',
+      '    needs:',
+      '      - validate_android_release_ref',
       '    type: build',
       '    params:',
       '      profile: production-apk',
@@ -159,6 +164,47 @@ function setupFixture({ versionCode = 33 } = {}) {
       '',
     ].join('\n')
   );
+  writeFile(
+    root,
+    '.eas/workflows/android-release-smoke.yml',
+    [
+      'on:',
+      '  workflow_dispatch:',
+      '    inputs:',
+      '      release_tag:',
+      '        type: string',
+      '        required: true',
+      'jobs:',
+      '  validate_android_release_ref:',
+      '    env:',
+      "      RELEASE_TAG: ${{ inputs.release_tag }}",
+      '    steps:',
+      '      - run: node ./scripts/check-android-release-ref.js',
+      '  build_android_release_smoke:',
+      '    needs: [validate_android_release_ref]',
+      '    type: build',
+      '    params:',
+      '      profile: release-smoke',
+      '',
+    ].join('\n')
+  );
+  for (const platform of ['android', 'ios']) {
+    writeFile(
+      root,
+      `.eas/workflows/e2e-test-${platform}.yml`,
+      [
+        'on:',
+        '  workflow_dispatch: {}',
+        'jobs:',
+        `  build_${platform}_for_e2e:`,
+        '    type: build',
+        '    params:',
+        `      platform: ${platform}`,
+        '      profile: e2e-test',
+        '',
+      ].join('\n')
+    );
+  }
   writeVoiceAnalysisEvidence({
     rootDir: root,
     buildIdentity: {
@@ -391,32 +437,17 @@ describe('android release gate preflight', () => {
     '        required: true',
     '',
   ].join('\n');
-
-  function expectReleaseWorkflowGateFails(transform) {
-    const root = setupFixture();
-    const workflowPath = path.join(root, '.eas/workflows/android-release-qualification.yml');
-    const workflow = fs.readFileSync(workflowPath, 'utf8');
-    expect(workflow.startsWith(DISPATCH_HEADER)).toBe(true);
-    fs.writeFileSync(workflowPath, transform(workflow), 'utf8');
-
-    const report = checkAndroidReleaseGates({
-      rootDir: root,
-      spawn: spawnWithTools(),
-      phase: 'prebuild',
-    });
-
-    expect(report.ok).toBe(false);
-    expect(report.checks).toEqual(
-      expect.arrayContaining([
-        expect.objectContaining({
-          status: 'fail',
-          title: 'EAS Android Release build and smoke workflow',
-        }),
-      ])
-    );
-  }
-
-  it.each([
+  const QUALIFICATION = 'android-release-qualification.yml';
+  const SMOKE = 'android-release-smoke.yml';
+  const REF_JOB = [
+    '  validate_android_release_ref:',
+    '    env:',
+    '      RELEASE_TAG: ${{ inputs.release_tag }}',
+    '    steps:',
+    '      - run: node ./scripts/check-android-release-ref.js',
+    '',
+  ].join('\n');
+  const EXTRA_TRIGGERS = [
     ['push tags', '  push:\n    tags:\n      - v*\n'],
     ['pull_request', '  pull_request:\n    branches: [\'*\']\n'],
     ['pull_request_comment', '  pull_request_comment:\n    types: [created]\n'],
@@ -425,17 +456,99 @@ describe('android release gate preflight', () => {
     ['schedule', '  schedule:\n    - cron: \'0 0 * * *\'\n'],
     ['ref_delete', '  ref_delete:\n    tags: [v*]\n'],
     ['an unknown trigger', '  some_future_trigger: {}\n'],
-  ])('fails prebuild when the Release workflow has %s next to workflow_dispatch', (_name, extraTrigger) => {
-    expectReleaseWorkflowGateFails((workflow) => workflow.replace(DISPATCH_HEADER, `${DISPATCH_HEADER}${extraTrigger}`));
+  ];
+
+  function gateReport(file, transform) {
+    const root = setupFixture();
+    const workflowPath = path.join(root, '.eas/workflows', file);
+    const workflow = fs.readFileSync(workflowPath, 'utf8');
+    const changed = transform(workflow);
+    expect(changed).not.toBe(workflow);
+    fs.writeFileSync(workflowPath, changed, 'utf8');
+    return checkAndroidReleaseGates({ rootDir: root, spawn: spawnWithTools(), phase: 'prebuild' });
+  }
+
+  function expectCheckFails(report, title) {
+    expect(report.ok).toBe(false);
+    expect(report.checks).toEqual(expect.arrayContaining([expect.objectContaining({ status: 'fail', title })]));
+  }
+
+  const QUALIFICATION_TITLE = 'EAS Android Release build and smoke workflow';
+  const TRIGGERS_TITLE = 'EAS workflows dispatch only';
+
+  it('passes both workflow checks on the fixture and on the real .eas/workflows', () => {
+    const report = checkAndroidReleaseGates({ rootDir: setupFixture(), spawn: spawnWithTools(), phase: 'prebuild' });
+    for (const title of [QUALIFICATION_TITLE, TRIGGERS_TITLE]) {
+      expect(report.checks).toEqual(expect.arrayContaining([expect.objectContaining({ status: 'pass', title })]));
+    }
+    const real = checkEasWorkflowTriggers(path.resolve(__dirname, '..'));
+    expect(real.problems).toEqual([]);
+    expect(real.files).toEqual(expect.arrayContaining([
+      QUALIFICATION, SMOKE, 'e2e-test-android.yml', 'e2e-test-ios.yml',
+    ]));
+  });
+
+  it.each(EXTRA_TRIGGERS)('fails prebuild when the Release workflow has %s next to workflow_dispatch', (_name, extraTrigger) => {
+    const report = gateReport(QUALIFICATION, (workflow) => workflow.replace(DISPATCH_HEADER, `${DISPATCH_HEADER}${extraTrigger}`));
+    expectCheckFails(report, QUALIFICATION_TITLE);
+    expectCheckFails(report, TRIGGERS_TITLE);
   });
 
   it('fails prebuild when the Release workflow dispatch has no required release_tag input', () => {
-    expectReleaseWorkflowGateFails((workflow) => workflow.replace(DISPATCH_HEADER, 'on:\n  workflow_dispatch: {}\n'));
-    expectReleaseWorkflowGateFails((workflow) => workflow.replace('        required: true\n', '        required: false\n'));
+    expectCheckFails(gateReport(QUALIFICATION, (w) => w.replace(DISPATCH_HEADER, 'on:\n  workflow_dispatch: {}\n')), QUALIFICATION_TITLE);
+    expectCheckFails(gateReport(QUALIFICATION, (w) => w.replace('        required: true\n', '        required: false\n')), QUALIFICATION_TITLE);
   });
 
-  it('fails prebuild when the Release workflow does not run the release tag check', () => {
-    expectReleaseWorkflowGateFails((workflow) => workflow.replace('      - run: node ./scripts/check-android-release-ref.js\n', '      - run: echo skipped\n'));
+  describe.each([
+    [QUALIFICATION, 'build_android', QUALIFICATION_TITLE],
+    [SMOKE, 'build_android_release_smoke', TRIGGERS_TITLE],
+  ])('release tag check wiring in %s', (file, buildJob, title) => {
+    it('fails when the ref check survives only as a comment', () => {
+      expectCheckFails(gateReport(file, (w) => w
+        .replace(REF_JOB, '')
+        .replace('jobs:\n', 'jobs:\n  # node ./scripts/check-android-release-ref.js\n')), title);
+    });
+
+    it('fails when the ref job is removed', () => {
+      expectCheckFails(gateReport(file, (w) => w.replace(REF_JOB, '')), title);
+    });
+
+    it('fails when RELEASE_TAG is missing', () => {
+      expectCheckFails(gateReport(file, (w) => w.replace('    env:\n      RELEASE_TAG: ${{ inputs.release_tag }}\n', '')), title);
+    });
+
+    it('fails when RELEASE_TAG is hardcoded', () => {
+      expectCheckFails(gateReport(file, (w) => w.replace('RELEASE_TAG: ${{ inputs.release_tag }}', 'RELEASE_TAG: v3.5.0')), title);
+    });
+
+    it(`fails when ${buildJob} does not need the ref job`, () => {
+      expectCheckFails(gateReport(file, (w) => w
+        .replace('    needs:\n      - validate_android_release_ref\n', '')
+        .replace('    needs: [validate_android_release_ref]\n', '')), title);
+    });
+  });
+
+  it('fails prebuild when the smoke workflow has no required release_tag input', () => {
+    expectCheckFails(gateReport(SMOKE, (w) => w.replace('        required: true\n', '        required: false\n')), TRIGGERS_TITLE);
+    expectCheckFails(gateReport(SMOKE, (w) => w.replace(DISPATCH_HEADER, 'on:\n  workflow_dispatch: {}\n')), TRIGGERS_TITLE);
+  });
+
+  describe.each([SMOKE, 'e2e-test-android.yml', 'e2e-test-ios.yml'])('dispatch-only triggers of %s', (file) => {
+    it.each(EXTRA_TRIGGERS)('fails prebuild with %s next to workflow_dispatch', (_name, extraTrigger) => {
+      expectCheckFails(gateReport(file, (w) => w.replace('  workflow_dispatch', `${extraTrigger}  workflow_dispatch`)), TRIGGERS_TITLE);
+    });
+  });
+
+  it('fails prebuild when a new EAS workflow has an automatic trigger', () => {
+    const root = setupFixture();
+    writeFile(root, '.eas/workflows/new-workflow.yml', 'on:\n  pull_request: {}\njobs: {}\n');
+    expectCheckFails(checkAndroidReleaseGates({ rootDir: root, spawn: spawnWithTools(), phase: 'prebuild' }), TRIGGERS_TITLE);
+  });
+
+  it('fails prebuild when the smoke workflow is missing', () => {
+    const root = setupFixture();
+    fs.rmSync(path.join(root, '.eas/workflows', SMOKE));
+    expectCheckFails(checkAndroidReleaseGates({ rootDir: root, spawn: spawnWithTools(), phase: 'prebuild' }), TRIGGERS_TITLE);
   });
 
   it('passes prebuild local config checks without requiring Play-installed purchase evidence', () => {

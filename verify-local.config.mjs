@@ -1,6 +1,8 @@
 // Checks of the common delivery rule v2 for this repository, read by
-// scripts/verify-local.mjs. The engine and its tests are identical in the five
-// repositories: never edit them here alone. This file is data only (no imports).
+// scripts/verify-local.mjs. The engine and its tests are this repository's own
+// copy: it pins its own ENGINE_SHA256 and verifies it locally (the same file in
+// every repository is recommended, never checked across repositories). This
+// file is data only (no imports).
 //
 //   npm run verify:pr       before a merge: the former pre-push `verify:fast`, split
 //                           into checks, plus the surfaces the PR changed.
