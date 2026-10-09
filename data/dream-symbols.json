@@ -22448,58 +22448,152 @@
       "en": {
         "slug": "crow",
         "name": "Crow",
-        "shortDescription": "A crow’s calls, flight and behavior may bring curiosity, alertness or unease into focus. Following you, carrying something or simply calling loudly gives the encounter its character.",
-        "modifiedAt": "2026-07-24",
+        "shortDescription": "Dreaming of a crow often starts with a sound or a stare: a black bird calling, watching or following you. Crows are commonly linked with unease, vigilance or curiosity. What the crow did, and how you felt, matters more than its reputation.",
+        "modifiedAt": "2026-10-08",
         "askYourself": [
-          "What did crow change in the scene?",
-          "Which feeling stayed with me after waking?"
+          "Was the crow watching me, calling, following me or carrying something?",
+          "Did I feel uneasy, curious, threatened or strangely accompanied?",
+          "Is there a situation right now where I feel watched or on alert?"
         ],
-        "faq": []
+        "faq": [
+          {
+            "question": "What does it mean to dream of a crow?",
+            "answer": "A crow is often associated with vigilance, unease or curiosity, partly because of its dark feathers and loud call. Its meaning depends mostly on what it did in the dream and on how you felt when you saw it."
+          },
+          {
+            "question": "Is a crow in a dream a bad omen?",
+            "answer": "No. Crows carry an old reputation as birds of ill omen, but a dream predicts nothing. The scene can echo a worry or a feeling of being watched; it says nothing about what will happen to you."
+          },
+          {
+            "question": "What does it mean when a crow attacks you in a dream?",
+            "answer": "An attacking crow can go with a feeling of being targeted, criticized or harassed, often in one specific area of life. Ask yourself where you feel pecked at right now: at work, in the family, online."
+          },
+          {
+            "question": "What does a flock of crows mean in a dream?",
+            "answer": "A flock, a \"murder\" of crows in English, can go with a feeling of being outnumbered, judged by a group or overwhelmed by noise. If the birds simply flew past, the scene may be closer to a change of mood than a threat."
+          }
+        ],
+        "documentMetaDescription": "Dreaming of a crow, of a crow attacking you or of a whole flock: what the scene may say about unease and vigilance, with questions and a journal example."
       },
       "fr": {
         "slug": "corbeau",
         "name": "Corbeau",
-        "shortDescription": "Les cris, le vol et le comportement d’un corbeau peuvent mettre en avant la curiosité, la vigilance ou le malaise. Vous suivre, porter un objet ou simplement crier fort donne son caractère à la rencontre.",
-        "modifiedAt": "2026-07-24",
+        "shortDescription": "Rêver d'un corbeau commence souvent par un cri ou un regard : un oiseau noir qui vous observe, croasse ou vous suit. On l'associe au malaise, à la vigilance ou à la curiosité. Ce qu'il faisait, et ce que vous ressentiez, compte plus que sa réputation.",
+        "modifiedAt": "2026-10-08",
         "askYourself": [
-          "Qu’est-ce que corbeau a changé dans la scène ?",
-          "Quelle émotion est restée après le réveil ?"
+          "Le corbeau m'observait-il, croassait-il, me suivait-il, portait-il quelque chose ?",
+          "Qu'ai-je ressenti : malaise, curiosité, menace, ou une étrange compagnie ?",
+          "Y a-t-il en ce moment une situation où je me sens observé ou sur le qui-vive ?"
         ],
-        "faq": []
+        "faq": [
+          {
+            "question": "Que signifie rêver d'un corbeau ?",
+            "answer": "Le corbeau est souvent associé à la vigilance, au malaise ou à la curiosité, en partie à cause de son plumage noir et de son cri. Son sens dépend surtout de ce qu'il faisait dans le rêve et de ce que vous avez ressenti en le voyant."
+          },
+          {
+            "question": "Rêver d'un corbeau, est-ce un mauvais présage ?",
+            "answer": "Non. Le corbeau traîne une vieille réputation d'oiseau de malheur, mais un rêve ne prédit rien. La scène peut faire écho à une inquiétude ou au sentiment d'être surveillé ; elle ne dit rien de ce qui va vous arriver."
+          },
+          {
+            "question": "Que signifie rêver d'un corbeau qui attaque ?",
+            "answer": "Un corbeau qui fond sur vous peut accompagner le sentiment d'être visé, critiqué ou harcelé, souvent dans un domaine précis. Demandez-vous où vous vous sentez « picoré » en ce moment : au travail, en famille, en ligne."
+          },
+          {
+            "question": "Que signifie rêver de plusieurs corbeaux ?",
+            "answer": "Une nuée de corbeaux peut accompagner le sentiment d'être en minorité, jugé par un groupe ou débordé par le bruit. S'ils passaient simplement au-dessus de vous, la scène tient plus du changement d'atmosphère que de la menace."
+          }
+        ],
+        "documentMetaDescription": "Rêver d'un corbeau, d'un corbeau qui attaque ou de plusieurs corbeaux : ce que la scène peut dire du malaise et de la vigilance, avec questions et exemple."
       },
       "es": {
         "slug": "cuervo",
         "name": "Cuervo",
-        "shortDescription": "Los graznidos, el vuelo y la conducta de un cuervo pueden destacar curiosidad, alerta o inquietud. Seguirte, llevar algo o limitarse a llamar con fuerza caracteriza el encuentro.",
-        "modifiedAt": "2026-07-24",
+        "shortDescription": "Soñar con un cuervo suele empezar con un graznido o una mirada: un pájaro negro que te observa, grazna o te sigue. Se asocia a menudo con la inquietud, la alerta o la curiosidad. Lo que hacía el cuervo, y lo que sentiste, cuenta más que su fama.",
+        "modifiedAt": "2026-10-08",
         "askYourself": [
-          "¿Qué cambió cuervo dentro de la escena?",
-          "¿Qué emoción siguió conmigo al despertar?"
+          "¿El cuervo me observaba, graznaba, me seguía o llevaba algo en el pico?",
+          "¿Qué sentí: inquietud, curiosidad, amenaza o una extraña compañía?",
+          "¿Hay ahora mismo una situación en la que me siento vigilado o en alerta?"
         ],
-        "faq": []
+        "faq": [
+          {
+            "question": "¿Qué significa soñar con un cuervo?",
+            "answer": "El cuervo se asocia a menudo con la alerta, la inquietud o la curiosidad, en parte por su plumaje negro y su graznido. Su sentido depende sobre todo de lo que hacía en el sueño y de lo que sentiste al verlo."
+          },
+          {
+            "question": "¿Soñar con un cuervo es de mal agüero?",
+            "answer": "No. El cuervo arrastra fama de pájaro de mal agüero, pero un sueño no predice nada. La escena puede hacer eco de una preocupación o de la sensación de que te vigilan; no dice nada de lo que te va a pasar."
+          },
+          {
+            "question": "¿Qué significa soñar que un cuervo te ataca?",
+            "answer": "Un cuervo que se lanza sobre ti puede acompañar la sensación de ser blanco de críticas o de presión, a menudo en un ámbito concreto. Pregúntate dónde te sientes picoteado ahora mismo: en el trabajo, en la familia, en redes."
+          },
+          {
+            "question": "¿Qué significa soñar con muchos cuervos?",
+            "answer": "Una bandada de cuervos puede acompañar la sensación de estar en minoría, de que un grupo te juzga o de que el ruido te desborda. Si solo pasaban volando, la escena se acerca más a un cambio de ambiente que a una amenaza."
+          }
+        ],
+        "documentMetaDescription": "Soñar con un cuervo, con un cuervo que te ataca o con muchos cuervos: qué puede decir la escena sobre la inquietud y la alerta, con preguntas y un ejemplo."
       },
       "de": {
         "slug": "krahe",
         "name": "Krähe",
-        "shortDescription": "Rufe, Flug und Verhalten einer Krähe können im Traum Neugier, Wachsamkeit oder Unruhe hervorheben. Entscheidend ist, ob sie dir folgte, etwas brachte oder nur laut auf sich aufmerksam machte.",
+        "shortDescription": "Ein Krähentraum beginnt oft mit einem Ruf oder einem Blick: ein schwarzer Vogel, der Sie beobachtet, krächzt oder Ihnen folgt. Sie wird oft mit Unbehagen, Wachsamkeit oder Neugier verbunden. Was sie tat und was Sie fühlten, zählt mehr als ihr Ruf.",
         "askYourself": [
-          "War die Krähe allein oder Teil eines Schwarms?",
-          "Hat sie gerufen, einen Gegenstand getragen oder etwas bewacht?",
-          "Bist du auf sie zugegangen, vor ihr zurückgewichen oder ihr gefolgt?"
+          "Hat die Krähe mich beobachtet, gerufen, verfolgt oder etwas getragen?",
+          "Was habe ich gefühlt: Unbehagen, Neugier, Bedrohung oder eine seltsame Gesellschaft?",
+          "Gibt es gerade eine Situation, in der ich mich beobachtet oder auf der Hut fühle?"
         ],
-        "modifiedAt": "2026-07-24",
-        "faq": []
+        "modifiedAt": "2026-10-08",
+        "faq": [
+          {
+            "question": "Was bedeutet es, von einer Krähe zu träumen?",
+            "answer": "Die Krähe wird oft mit Wachsamkeit, Unbehagen oder Neugier verbunden, auch wegen ihres schwarzen Gefieders und ihres lauten Rufs. Was sie bedeutet, hängt vor allem davon ab, was sie im Traum tat und was Sie dabei gefühlt haben."
+          },
+          {
+            "question": "Ist eine Krähe im Traum ein schlechtes Omen?",
+            "answer": "Nein. Die Krähe gilt im Volksglauben seit Langem als Unglücksvogel, aber ein Traum sagt nichts voraus. Die Szene kann eine Sorge oder das Gefühl aufgreifen, beobachtet zu werden; über Ihre Zukunft verrät sie nichts."
+          },
+          {
+            "question": "Was bedeutet es, im Traum von einer Krähe angegriffen zu werden?",
+            "answer": "Eine angreifende Krähe kann das Gefühl begleiten, ins Visier genommen, kritisiert oder bedrängt zu werden, oft in einem bestimmten Lebensbereich. Fragen Sie sich, wo Sie gerade „angepickt“ werden: im Beruf, in der Familie, im Netz."
+          },
+          {
+            "question": "Was bedeuten viele Krähen im Traum?",
+            "answer": "Ein Krähenschwarm kann zu dem Gefühl passen, in der Minderheit zu sein, von einer Gruppe beurteilt oder von Lärm überwältigt zu werden. Flogen die Vögel nur vorbei, liegt die Szene eher bei einem Stimmungswechsel als bei einer Bedrohung."
+          }
+        ],
+        "documentMetaDescription": "Krähe im Traum, ein Angriff oder ein ganzer Schwarm: was die Szene über Unbehagen und Wachsamkeit sagen kann, mit Fragen und einem Tagebuchbeispiel."
       },
       "it": {
         "slug": "corvo",
         "name": "Corvo",
-        "shortDescription": "Richiami, volo e comportamento di un corvo possono mettere in primo piano curiosità, vigilanza o inquietudine. Seguirti, portare qualcosa o gridare forte caratterizza l’incontro.",
-        "modifiedAt": "2026-07-24",
+        "shortDescription": "Sognare un corvo comincia spesso con un verso o uno sguardo: un uccello nero che ti osserva, gracchia o ti segue. Viene spesso associato a inquietudine, vigilanza o curiosità. Conta più ciò che faceva, e ciò che hai provato, della sua cattiva fama.",
+        "modifiedAt": "2026-10-08",
         "askYourself": [
-          "Che cosa ha cambiato corvo nella scena?",
-          "Quale emozione è rimasta dopo il risveglio?"
+          "Il corvo mi osservava, gracchiava, mi seguiva o portava qualcosa nel becco?",
+          "Che cosa ho provato: inquietudine, curiosità, minaccia o una strana compagnia?",
+          "C’è in questo periodo una situazione in cui mi sento osservato o in allerta?"
         ],
-        "faq": []
+        "faq": [
+          {
+            "question": "Che cosa significa sognare un corvo?",
+            "answer": "Il corvo viene spesso associato a vigilanza, inquietudine o curiosità, anche per il piumaggio nero e il verso forte. Il significato dipende soprattutto da ciò che faceva nel sogno e da ciò che hai provato vedendolo."
+          },
+          {
+            "question": "Sognare un corvo porta sfortuna?",
+            "answer": "No. Il corvo si porta dietro la fama di uccello del malaugurio, ma un sogno non predice nulla. La scena può fare eco a una preoccupazione o alla sensazione di essere osservato; non dice niente di ciò che ti succederà."
+          },
+          {
+            "question": "Che cosa significa sognare un corvo che ti attacca?",
+            "answer": "Un corvo che si avventa su di te può accompagnare la sensazione di essere preso di mira, criticato o messo sotto pressione, spesso in un ambito preciso. Chiediti dove ti senti beccato in questo periodo: al lavoro, in famiglia, online."
+          },
+          {
+            "question": "Che cosa significa sognare tanti corvi?",
+            "answer": "Uno stormo di corvi può accompagnare la sensazione di essere in minoranza, giudicato da un gruppo o sommerso dal rumore. Se passavano soltanto in volo, la scena si avvicina più a un cambio d’atmosfera che a una minaccia."
+          }
+        ],
+        "documentMetaDescription": "Sognare un corvo, un corvo che ti attacca o tanti corvi neri: che cosa può dire la scena di inquietudine e vigilanza, con domande ed esempio di diario."
       },
       "pt": {
         "slug": "corvo",
@@ -22532,58 +22626,152 @@
       "en": {
         "slug": "rose",
         "name": "Rose",
-        "shortDescription": "A rose may bring beauty, closeness, affection or vulnerability into the scene. Its color, condition and how you handled the thorns give the flower its personal meaning.",
-        "modifiedAt": "2026-07-24",
+        "shortDescription": "Dreaming of a rose often means holding something beautiful that can also prick. Roses are commonly linked with love, tenderness and vulnerability. Their color, their state, fresh or wilted, and who gave them to you shape the reading.",
+        "modifiedAt": "2026-10-08",
         "askYourself": [
-          "What did rose change in the scene?",
-          "Which feeling stayed with me after waking?"
+          "Was the rose fresh, in bud, wilted, cut or still on the bush?",
+          "Who gave it to me, or who was I giving it to?",
+          "Where in my life right now does tenderness come with a risk of getting hurt?"
         ],
-        "faq": []
+        "faq": [
+          {
+            "question": "What does it mean to dream of a rose?",
+            "answer": "A rose is often associated with love, affection, beauty and vulnerability. Its meaning depends on its color, its condition and the scene around it: a gift, a garden, a grave, a thorn in your finger."
+          },
+          {
+            "question": "What does a red rose mean in a dream?",
+            "answer": "A red rose is commonly linked with passion and romantic love, partly through the old language of flowers. In a dream, it can go with desire, with a declaration you hope for or dread, or with a relationship on your mind."
+          },
+          {
+            "question": "What does a wilted rose mean in a dream?",
+            "answer": "A wilted or dried rose can go with something that has faded: a relationship, an enthusiasm, a period of life. It predicts no breakup. Ask yourself what you have stopped tending, or what you are slowly letting go of."
+          },
+          {
+            "question": "What does it mean to be pricked by a rose thorn in a dream?",
+            "answer": "A thorn can stage the idea that closeness comes with a risk of being hurt. Note whose rose it was and how you reacted to the sting: surprised, angry, or as if you had expected it."
+          }
+        ],
+        "documentMetaDescription": "Dreaming of a rose, red, white or wilted, or of a thorn that pricks: what the scene may say about love and vulnerability, with questions to ask yourself."
       },
       "fr": {
         "slug": "rose",
         "name": "Rose",
-        "shortDescription": "Une rose peut introduire dans la scène la beauté, la proximité, l’affection ou la vulnérabilité. Sa couleur, son état et votre manière de toucher les épines lui donnent un sens personnel.",
-        "modifiedAt": "2026-07-24",
+        "shortDescription": "Rêver d'une rose, c'est souvent tenir quelque chose de beau qui peut aussi piquer. On l'associe souvent à l'amour, à la tendresse et à la vulnérabilité. Sa couleur, son état, fraîche ou fanée, et qui vous l'a offerte orientent la lecture.",
+        "modifiedAt": "2026-10-08",
         "askYourself": [
-          "Qu’est-ce que rose a changé dans la scène ?",
-          "Quelle émotion est restée après le réveil ?"
+          "La rose était-elle fraîche, en bouton, fanée, coupée ou encore sur le rosier ?",
+          "Qui me l'a offerte, ou à qui voulais-je l'offrir ?",
+          "Où, en ce moment, la tendresse vient-elle avec un risque d'être blessé ?"
         ],
-        "faq": []
+        "faq": [
+          {
+            "question": "Que signifie rêver d'une rose ?",
+            "answer": "La rose est souvent associée à l'amour, à l'affection, à la beauté et à la vulnérabilité. Son sens dépend de sa couleur, de son état et de la scène autour d'elle : un cadeau, un jardin, une tombe, une épine dans le doigt."
+          },
+          {
+            "question": "Que signifie rêver d'une rose rouge ?",
+            "answer": "La rose rouge est couramment liée à la passion et à l'amour, en partie à cause de l'ancien langage des fleurs. En rêve, elle peut accompagner un désir, une déclaration que vous espérez ou redoutez, ou une relation qui vous occupe."
+          },
+          {
+            "question": "Que signifie rêver d'une rose fanée ?",
+            "answer": "Une rose fanée ou séchée peut accompagner quelque chose qui a perdu son éclat : une relation, un enthousiasme, une période de vie. Elle n'annonce aucune rupture. Demandez-vous ce que vous avez cessé d'entretenir, ou ce que vous laissez partir."
+          },
+          {
+            "question": "Que signifie se piquer à une épine de rose en rêve ?",
+            "answer": "L'épine peut mettre en scène l'idée que la proximité comporte un risque d'être blessé. Notez à qui appartenait la rose et comment vous avez réagi à la piqûre : surprise, colère, ou comme si vous vous y attendiez."
+          }
+        ],
+        "documentMetaDescription": "Rêver d'une rose rouge, blanche ou fanée, ou d'une épine qui pique : ce que la scène peut dire de l'amour et de la vulnérabilité, avec questions à se poser."
       },
       "es": {
         "slug": "rosa",
         "name": "Rosa",
-        "shortDescription": "Una rosa puede introducir belleza, cercanía, afecto o vulnerabilidad en la escena. Su color, su estado y cómo tratabas las espinas dan a la flor un sentido personal.",
-        "modifiedAt": "2026-07-24",
+        "shortDescription": "Soñar con una rosa suele ser sostener algo bonito que también puede pinchar. La rosa se asocia a menudo con el amor, la ternura y la vulnerabilidad. Su color, su estado, fresca o marchita, y quién te la regaló orientan la lectura.",
+        "modifiedAt": "2026-10-08",
         "askYourself": [
-          "¿Qué cambió rosa dentro de la escena?",
-          "¿Qué emoción siguió conmigo al despertar?"
+          "¿La rosa estaba fresca, en capullo, marchita, cortada o aún en el rosal?",
+          "¿Quién me la dio, o a quién quería dársela yo?",
+          "¿Dónde, ahora mismo, la ternura viene con el riesgo de salir herido?"
         ],
-        "faq": []
+        "faq": [
+          {
+            "question": "¿Qué significa soñar con una rosa?",
+            "answer": "La rosa se asocia a menudo con el amor, el cariño, la belleza y la vulnerabilidad. Su sentido depende del color, de su estado y de la escena que la rodea: un regalo, un jardín, una tumba, una espina en el dedo."
+          },
+          {
+            "question": "¿Qué significa soñar con rosas rojas?",
+            "answer": "La rosa roja se relaciona sobre todo con la pasión y el amor romántico, en parte por el antiguo lenguaje de las flores. En sueños puede acompañar un deseo, una declaración que esperas o temes, o una relación que te ronda la cabeza."
+          },
+          {
+            "question": "¿Qué significa soñar con una rosa marchita?",
+            "answer": "Una rosa marchita o seca puede acompañar algo que ha perdido brillo: una relación, una ilusión, una etapa. No anuncia ninguna ruptura. Pregúntate qué has dejado de cuidar, o qué estás soltando poco a poco."
+          },
+          {
+            "question": "¿Qué significa pincharse con una espina de rosa en sueños?",
+            "answer": "La espina puede escenificar la idea de que la cercanía trae el riesgo de salir herido. Anota de quién era la rosa y cómo reaccionaste al pinchazo: con sorpresa, con enfado o como si ya lo esperaras."
+          }
+        ],
+        "documentMetaDescription": "Soñar con una rosa roja, blanca o marchita, o con una espina que pincha: qué puede decir la escena sobre el amor y la vulnerabilidad, con preguntas."
       },
       "de": {
         "slug": "rose",
         "name": "Rose",
-        "shortDescription": "Bei einer Rose im Traum können Schönheit, Nähe, Zuneigung oder Verletzlichkeit die Stimmung prägen. Farbe, Zustand und der Umgang mit den Dornen geben der Szene ihren persönlichen Sinn.",
+        "shortDescription": "Von einer Rose zu träumen heißt oft, etwas Schönes in der Hand zu halten, das auch stechen kann. Die Rose wird häufig mit Liebe, Zärtlichkeit und Verletzlichkeit verbunden. Farbe, Zustand, frisch oder verwelkt, und wer sie Ihnen gab, prägen die Deutung.",
         "askYourself": [
-          "Welche Farbe hatte die Rose und konntest du ihren Duft wahrnehmen?",
-          "War sie frisch, verwelkt, abgeschnitten oder noch am Strauch?",
-          "Hast du sie verschenkt, erhalten oder dich an ihren Dornen verletzt?"
+          "War die Rose frisch, eine Knospe, verwelkt, abgeschnitten oder noch am Strauch?",
+          "Wer hat sie mir geschenkt, oder wem wollte ich sie schenken?",
+          "Wo ist Zärtlichkeit für mich gerade mit dem Risiko verbunden, verletzt zu werden?"
         ],
-        "modifiedAt": "2026-07-24",
-        "faq": []
+        "modifiedAt": "2026-10-08",
+        "faq": [
+          {
+            "question": "Was bedeutet es, von einer Rose zu träumen?",
+            "answer": "Die Rose wird oft mit Liebe, Zuneigung, Schönheit und Verletzlichkeit verbunden. Was sie bedeutet, hängt von Farbe, Zustand und der Szene ab: ein Geschenk, ein Garten, ein Grab, ein Dorn im Finger."
+          },
+          {
+            "question": "Was bedeutet eine rote Rose im Traum?",
+            "answer": "Die rote Rose wird vor allem mit Leidenschaft und romantischer Liebe verbunden, auch durch die alte Blumensprache. Im Traum kann sie ein Verlangen begleiten, ein Geständnis, das Sie erhoffen oder fürchten, oder eine Beziehung, die Sie beschäftigt."
+          },
+          {
+            "question": "Was bedeutet eine verwelkte Rose im Traum?",
+            "answer": "Eine verwelkte oder getrocknete Rose kann etwas begleiten, das verblasst ist: eine Beziehung, eine Begeisterung, ein Lebensabschnitt. Eine Trennung kündigt sie nicht an. Fragen Sie sich, was Sie nicht mehr pflegen oder langsam loslassen."
+          },
+          {
+            "question": "Was bedeutet es, sich im Traum an einem Rosendorn zu stechen?",
+            "answer": "Der Dorn kann die Vorstellung in Szene setzen, dass Nähe mit dem Risiko verbunden ist, verletzt zu werden. Notieren Sie, wem die Rose gehörte und wie Sie auf den Stich reagiert haben: überrascht, wütend oder als hätten Sie es erwartet."
+          }
+        ],
+        "documentMetaDescription": "Rose im Traum, rot, weiß oder verwelkt, oder ein Dorn, der sticht: was die Szene über Liebe und Verletzlichkeit sagen kann, mit Fragen zum Nachdenken."
       },
       "it": {
         "slug": "rosa",
         "name": "Rosa",
-        "shortDescription": "Una rosa può introdurre nella scena bellezza, vicinanza, affetto o vulnerabilità. Colore, condizioni e modo in cui toccavi le spine danno al fiore un significato personale.",
-        "modifiedAt": "2026-07-24",
+        "shortDescription": "Sognare una rosa significa spesso tenere in mano qualcosa di bello che può anche pungere. La rosa viene spesso associata ad amore, tenerezza e vulnerabilità. Colore, stato, fresca o appassita, e chi te l’ha regalata orientano la lettura.",
+        "modifiedAt": "2026-10-08",
         "askYourself": [
-          "Che cosa ha cambiato rosa nella scena?",
-          "Quale emozione è rimasta dopo il risveglio?"
+          "La rosa era fresca, in boccio, appassita, recisa o ancora sulla pianta?",
+          "Chi me l’ha regalata, o a chi volevo regalarla io?",
+          "Dove, in questo periodo, la tenerezza arriva con il rischio di farmi male?"
         ],
-        "faq": []
+        "faq": [
+          {
+            "question": "Che cosa significa sognare una rosa?",
+            "answer": "La rosa viene spesso associata ad amore, affetto, bellezza e vulnerabilità. Il significato dipende dal colore, dallo stato e dalla scena intorno: un regalo, un giardino, una tomba, una spina nel dito."
+          },
+          {
+            "question": "Che cosa significa sognare rose rosse?",
+            "answer": "La rosa rossa è legata soprattutto alla passione e all’amore romantico, anche per via dell’antico linguaggio dei fiori. In sogno può accompagnare un desiderio, una dichiarazione che speri o temi, o una relazione che ti gira per la testa."
+          },
+          {
+            "question": "Che cosa significa sognare una rosa appassita?",
+            "answer": "Una rosa appassita o secca può accompagnare qualcosa che ha perso smalto: una relazione, un entusiasmo, una fase della vita. Non annuncia nessuna rottura. Chiediti che cosa hai smesso di curare, o che cosa stai lasciando andare piano piano."
+          },
+          {
+            "question": "Che cosa significa pungersi con una spina di rosa in sogno?",
+            "answer": "La spina può mettere in scena l’idea che la vicinanza porti con sé il rischio di farsi male. Annota di chi era la rosa e come hai reagito alla puntura: sorpresa, rabbia, o come se te lo aspettassi."
+          }
+        ],
+        "documentMetaDescription": "Sognare una rosa rossa, bianca o appassita, o una spina che punge: che cosa può dire la scena di amore e vulnerabilità, con domande da porsi."
       },
       "pt": {
         "slug": "rosa",
@@ -22616,58 +22804,152 @@
       "en": {
         "slug": "garden",
         "name": "Garden",
-        "shortDescription": "A garden’s condition and what you do there may make care, growth, order or neglect visible. Tending it, resting in it or being denied entry links the place to your current experience.",
-        "modifiedAt": "2026-07-24",
+        "shortDescription": "Dreaming of a garden often means walking through a place someone tends, or no longer tends. Gardens are often linked with care, growth and a space of your own. Whether it was in bloom, overgrown or locked, and what you did there, shapes the reading.",
+        "modifiedAt": "2026-10-08",
         "askYourself": [
-          "What did garden change in the scene?",
-          "Which feeling stayed with me after waking?"
+          "Was the garden tended, overgrown, dry, in bloom or closed off?",
+          "Was I planting, weeding, resting, searching, or kept outside the gate?",
+          "What in my life right now needs time and care to grow?"
         ],
-        "faq": []
+        "faq": [
+          {
+            "question": "What does it mean to dream of a garden?",
+            "answer": "A garden is often associated with care, growth and a space of your own. Its meaning depends on its state, tended, wild or dry, on what you were doing there and on how you felt walking through it."
+          },
+          {
+            "question": "What does a beautiful garden in bloom mean in a dream?",
+            "answer": "A garden in bloom can go with a period when efforts pay off, with rest, or with a need for calm and beauty. If it felt too perfect to touch, the scene can lean toward an ideal you feel you cannot reach."
+          },
+          {
+            "question": "What does an overgrown or neglected garden mean in a dream?",
+            "answer": "A neglected garden can go with a feeling of having let something slide: a project, your health, a relationship, your own needs. It is not a judgment. Ask yourself which corner you would tend first."
+          },
+          {
+            "question": "What does it mean to be unable to enter a garden in a dream?",
+            "answer": "A locked gate or a wall can stage a feeling of being kept out of a place, a group or a part of your own life. Note who held the key, and whether you really tried to go in."
+          }
+        ],
+        "documentMetaDescription": "Dreaming of a garden in bloom, overgrown or behind a locked gate: what the scene may say about care, growth and a space of your own, with questions."
       },
       "fr": {
         "slug": "jardin",
         "name": "Jardin",
-        "shortDescription": "L’état d’un jardin et ce que vous y faites peuvent rendre visibles le soin, la croissance, l’ordre ou la négligence. Le cultiver, vous y reposer ou ne pas pouvoir entrer relie ce lieu à votre expérience.",
-        "modifiedAt": "2026-07-24",
+        "shortDescription": "Rêver d'un jardin, c'est souvent traverser un lieu que quelqu'un entretient, ou n'entretient plus. On l'associe souvent au soin, à la croissance et à un espace à soi. Son état, fleuri, envahi ou fermé, et ce que vous y faisiez orientent la lecture.",
+        "modifiedAt": "2026-10-08",
         "askYourself": [
-          "Qu’est-ce que jardin a changé dans la scène ?",
-          "Quelle émotion est restée après le réveil ?"
+          "Le jardin était-il entretenu, envahi, sec, fleuri ou fermé ?",
+          "Est-ce que je plantais, désherbais, me reposais, cherchais, ou restais devant le portail ?",
+          "Qu'est-ce qui, dans ma vie en ce moment, demande du temps et du soin pour pousser ?"
         ],
-        "faq": []
+        "faq": [
+          {
+            "question": "Que signifie rêver d'un jardin ?",
+            "answer": "Le jardin est souvent associé au soin, à la croissance et à un espace à soi. Son sens dépend de son état, entretenu, sauvage ou desséché, de ce que vous y faisiez et de ce que vous ressentiez en le traversant."
+          },
+          {
+            "question": "Que signifie rêver d'un beau jardin fleuri ?",
+            "answer": "Un jardin en fleurs peut accompagner une période où les efforts portent leurs fruits, un besoin de repos, de calme et de beauté. S'il semblait trop parfait pour être touché, la scène peut pencher vers un idéal qui vous paraît hors d'atteinte."
+          },
+          {
+            "question": "Que signifie rêver d'un jardin à l'abandon ?",
+            "answer": "Un jardin négligé peut accompagner le sentiment d'avoir laissé filer quelque chose : un projet, votre santé, une relation, vos propres besoins. Ce n'est pas un reproche. Demandez-vous par quel coin vous commenceriez."
+          },
+          {
+            "question": "Que signifie ne pas pouvoir entrer dans un jardin en rêve ?",
+            "answer": "Un portail fermé ou un mur peut mettre en scène le sentiment d'être tenu à l'écart d'un lieu, d'un groupe ou d'une part de votre propre vie. Notez qui avait la clé, et si vous avez vraiment essayé d'entrer."
+          }
+        ],
+        "documentMetaDescription": "Rêver d'un jardin fleuri, à l'abandon ou derrière un portail fermé : ce que la scène peut dire du soin, de la croissance et d'un espace à soi."
       },
       "es": {
         "slug": "jardin",
         "name": "Jardín",
-        "shortDescription": "El estado de un jardín y lo que haces allí pueden mostrar cuidado, crecimiento, orden o abandono. Cultivarlo, descansar o no poder entrar vincula el lugar con tu experiencia actual.",
-        "modifiedAt": "2026-07-24",
+        "shortDescription": "Soñar con un jardín suele ser recorrer un lugar que alguien cuida, o que ya nadie cuida. Se asocia a menudo con el cuidado, el crecimiento y un espacio propio. Su estado, en flor, descuidado o cerrado, y lo que hacías allí orientan la lectura.",
+        "modifiedAt": "2026-10-08",
         "askYourself": [
-          "¿Qué cambió jardín dentro de la escena?",
-          "¿Qué emoción siguió conmigo al despertar?"
+          "¿El jardín estaba cuidado, descuidado, seco, en flor o cerrado?",
+          "¿Plantaba, quitaba malas hierbas, descansaba, buscaba algo o me quedaba fuera de la verja?",
+          "¿Qué hay ahora mismo en mi vida que necesita tiempo y cuidado para crecer?"
         ],
-        "faq": []
+        "faq": [
+          {
+            "question": "¿Qué significa soñar con un jardín?",
+            "answer": "El jardín se asocia a menudo con el cuidado, el crecimiento y un espacio propio. Su sentido depende de su estado, cuidado, salvaje o seco, de lo que hacías allí y de lo que sentías al recorrerlo."
+          },
+          {
+            "question": "¿Qué significa soñar con un jardín bonito y lleno de flores?",
+            "answer": "Un jardín en flor puede acompañar una etapa en la que el esfuerzo da fruto, o una necesidad de descanso, calma y belleza. Si parecía demasiado perfecto para tocarlo, la escena puede acercarse a un ideal que sientes inalcanzable."
+          },
+          {
+            "question": "¿Qué significa soñar con un jardín abandonado?",
+            "answer": "Un jardín descuidado puede acompañar la sensación de haber dejado algo de lado: un proyecto, tu salud, una relación, tus propias necesidades. No es un reproche. Pregúntate por qué rincón empezarías."
+          },
+          {
+            "question": "¿Qué significa no poder entrar en un jardín en sueños?",
+            "answer": "Una verja cerrada o un muro pueden escenificar la sensación de que te dejan fuera de un lugar, de un grupo o de una parte de tu propia vida. Anota quién tenía la llave y si de verdad intentaste entrar."
+          }
+        ],
+        "documentMetaDescription": "Soñar con un jardín en flor, abandonado o tras una verja cerrada: qué puede decir la escena sobre el cuidado, el crecimiento y un espacio propio."
       },
       "de": {
         "slug": "garten",
         "name": "Garten",
-        "shortDescription": "Wie ein Garten aussieht und was du darin tust, kann Pflege, Wachstum, Ordnung oder Vernachlässigung sichtbar machen. Ob du darin arbeitest, dich ausruhst oder keinen Zugang findest, verbindet den Ort mit deiner aktuellen Erfahrung.",
+        "shortDescription": "Von einem Garten zu träumen heißt oft, einen Ort zu durchqueren, den jemand pflegt oder nicht mehr pflegt. Der Garten wird häufig mit Fürsorge, Wachstum und einem eigenen Raum verbunden. Ob er blühte, verwildert oder verschlossen war, prägt die Deutung.",
         "askYourself": [
-          "War der Garten gepflegt, verwildert, trocken oder voller Blüten?",
-          "Welche Pflanzen, Wege oder abgegrenzten Bereiche sind dir aufgefallen?",
-          "Hast du etwas gepflanzt, gesucht oder vor einem verschlossenen Tor gestanden?"
+          "War der Garten gepflegt, verwildert, vertrocknet, voller Blüten oder verschlossen?",
+          "Habe ich gepflanzt, gejätet, mich ausgeruht, etwas gesucht oder vor dem Tor gestanden?",
+          "Was in meinem Leben braucht gerade Zeit und Pflege, um zu wachsen?"
         ],
-        "modifiedAt": "2026-07-24",
-        "faq": []
+        "modifiedAt": "2026-10-08",
+        "faq": [
+          {
+            "question": "Was bedeutet es, von einem Garten zu träumen?",
+            "answer": "Der Garten wird oft mit Fürsorge, Wachstum und einem eigenen Raum verbunden. Was er bedeutet, hängt von seinem Zustand ab, gepflegt, wild oder vertrocknet, davon, was Sie dort taten, und davon, was Sie dabei fühlten."
+          },
+          {
+            "question": "Was bedeutet ein schöner, blühender Garten im Traum?",
+            "answer": "Ein blühender Garten kann eine Phase begleiten, in der sich Mühe auszahlt, oder ein Bedürfnis nach Ruhe und Schönheit. Wirkte er zu perfekt, um ihn zu berühren, kann die Szene eher zu einem Ideal passen, das unerreichbar scheint."
+          },
+          {
+            "question": "Was bedeutet ein verwilderter Garten im Traum?",
+            "answer": "Ein vernachlässigter Garten kann das Gefühl begleiten, etwas schleifen gelassen zu haben: ein Projekt, die Gesundheit, eine Beziehung, eigene Bedürfnisse. Ein Vorwurf ist das nicht. Fragen Sie sich, mit welcher Ecke Sie anfangen würden."
+          },
+          {
+            "question": "Was bedeutet es, im Traum nicht in einen Garten hineinzukommen?",
+            "answer": "Ein verschlossenes Tor oder eine Mauer kann das Gefühl in Szene setzen, von einem Ort, einer Gruppe oder einem Teil des eigenen Lebens ausgeschlossen zu sein. Notieren Sie, wer den Schlüssel hatte und ob Sie es wirklich versucht haben."
+          }
+        ],
+        "documentMetaDescription": "Garten im Traum, blühend, verwildert oder hinter einem verschlossenen Tor: was die Szene über Fürsorge, Wachstum und einen eigenen Raum sagen kann."
       },
       "it": {
         "slug": "giardino",
         "name": "Giardino",
-        "shortDescription": "Lo stato di un giardino e ciò che vi fai possono mostrare cura, crescita, ordine o abbandono. Coltivarlo, riposarti o non riuscire a entrare collega il luogo alla tua esperienza attuale.",
-        "modifiedAt": "2026-07-24",
+        "shortDescription": "Sognare un giardino significa spesso attraversare un luogo che qualcuno cura, o che nessuno cura più. Viene spesso associato alla cura, alla crescita e a uno spazio tuo. Il suo stato, fiorito, incolto o chiuso, e ciò che vi facevi orientano la lettura.",
+        "modifiedAt": "2026-10-08",
         "askYourself": [
-          "Che cosa ha cambiato giardino nella scena?",
-          "Quale emozione è rimasta dopo il risveglio?"
+          "Il giardino era curato, incolto, secco, fiorito o chiuso?",
+          "Piantavo, strappavo erbacce, mi riposavo, cercavo qualcosa o restavo fuori dal cancello?",
+          "Che cosa, nella mia vita in questo periodo, ha bisogno di tempo e cura per crescere?"
         ],
-        "faq": []
+        "faq": [
+          {
+            "question": "Che cosa significa sognare un giardino?",
+            "answer": "Il giardino viene spesso associato alla cura, alla crescita e a uno spazio tuo. Il significato dipende dal suo stato, curato, selvatico o secco, da ciò che vi facevi e da ciò che provavi attraversandolo."
+          },
+          {
+            "question": "Che cosa significa sognare un bel giardino fiorito?",
+            "answer": "Un giardino in fiore può accompagnare un periodo in cui gli sforzi danno frutto, o un bisogno di riposo, calma e bellezza. Se sembrava troppo perfetto per toccarlo, la scena può avvicinarsi a un ideale che senti irraggiungibile."
+          },
+          {
+            "question": "Che cosa significa sognare un giardino abbandonato?",
+            "answer": "Un giardino trascurato può accompagnare la sensazione di aver lasciato andare qualcosa: un progetto, la salute, una relazione, i tuoi bisogni. Non è un rimprovero. Chiediti da quale angolo cominceresti."
+          },
+          {
+            "question": "Che cosa significa non riuscire a entrare in un giardino in sogno?",
+            "answer": "Un cancello chiuso o un muro possono mettere in scena la sensazione di essere tenuto fuori da un luogo, da un gruppo o da una parte della tua vita. Annota chi aveva la chiave, e se hai davvero provato a entrare."
+          }
+        ],
+        "documentMetaDescription": "Sognare un giardino fiorito, abbandonato o dietro un cancello chiuso: che cosa può dire la scena di cura, crescita e di uno spazio tutto tuo."
       },
       "pt": {
         "slug": "jardim",
@@ -22702,58 +22984,152 @@
       "en": {
         "slug": "desert",
         "name": "Desert",
-        "shortDescription": "A desert may make emptiness, open space, endurance or disorientation feel immediate. Weather, supplies and possible companions show whether the landscape offered freedom or imposed hardship.",
-        "modifiedAt": "2026-07-24",
+        "shortDescription": "Dreaming of a desert often means walking through heat, sand and silence, with no landmark in sight. Deserts are often linked with emptiness, endurance or a need for space. Whether you had water, a direction or company shapes the reading.",
+        "modifiedAt": "2026-10-08",
         "askYourself": [
-          "What did desert change in the scene?",
-          "Which feeling stayed with me after waking?"
+          "Was the desert scorching, cold at night, calm or swept by a sandstorm?",
+          "Did I have water, shade, a direction, or someone with me?",
+          "Where in my life right now do I feel I am crossing a long, empty stretch?"
         ],
-        "faq": []
+        "faq": [
+          {
+            "question": "What does it mean to dream of a desert?",
+            "answer": "A desert is often associated with emptiness, solitude, endurance or a need for space. Its meaning depends on the weather, on whether you had water and a direction, and on how you felt: lost, at peace, or simply tired."
+          },
+          {
+            "question": "What does it mean to be lost in a desert in a dream?",
+            "answer": "Being lost among the dunes can go with a lack of bearings, a long wait or a period with little support. Note what you were looking for, and what helped: a track, the stars, a person, your own calm."
+          },
+          {
+            "question": "What does thirst in a desert mean in a dream?",
+            "answer": "Thirst can stage a feeling of running on empty: rest, affection, recognition or meaning. Ask yourself what usually refuels you, and when you last had it. A dry throat or a warm night can also slip into the scene."
+          },
+          {
+            "question": "What does an oasis mean in a dream?",
+            "answer": "An oasis can go with relief, a resource found after a hard stretch, or a hope you hold on to. If it turned out to be a mirage, the scene can echo a disappointment, or a doubt about something that looked promising."
+          }
+        ],
+        "documentMetaDescription": "Dreaming of a desert, of being lost in the dunes or of finding an oasis: what the scene may say about emptiness, endurance and support, with questions."
       },
       "fr": {
         "slug": "desert",
         "name": "Désert",
-        "shortDescription": "Un désert peut faire ressentir l’immensité, le vide, l’endurance ou la difficulté à s’orienter. La météo, vos réserves et la présence de compagnons indiquent si ce paysage offrait de la liberté ou pesait sur vous.",
-        "modifiedAt": "2026-07-24",
+        "shortDescription": "Rêver d'un désert, c'est souvent marcher dans la chaleur, le sable et le silence, sans repère à l'horizon. On l'associe au vide, à l'endurance ou à un besoin d'espace. Avoir de l'eau, une direction ou de la compagnie change la lecture.",
+        "modifiedAt": "2026-10-08",
         "askYourself": [
-          "Qu’est-ce que désert a changé dans la scène ?",
-          "Quelle émotion est restée après le réveil ?"
+          "Le désert était-il brûlant, glacé la nuit, calme ou balayé par une tempête de sable ?",
+          "Avais-je de l'eau, de l'ombre, une direction, quelqu'un avec moi ?",
+          "Où ai-je l'impression, en ce moment, de traverser une longue étendue vide ?"
         ],
-        "faq": []
+        "faq": [
+          {
+            "question": "Que signifie rêver d'un désert ?",
+            "answer": "Le désert est souvent associé au vide, à la solitude, à l'endurance ou à un besoin d'espace. Son sens dépend du climat, de la présence d'eau et d'une direction, et de ce que vous ressentiez : perdu, apaisé, ou simplement fatigué."
+          },
+          {
+            "question": "Que signifie être perdu dans le désert en rêve ?",
+            "answer": "Se perdre entre les dunes peut accompagner un manque de repères, une longue attente ou une période où le soutien se fait rare. Notez ce que vous cherchiez, et ce qui vous aidait : une piste, les étoiles, une personne, votre propre calme."
+          },
+          {
+            "question": "Que signifie avoir soif dans le désert en rêve ?",
+            "answer": "La soif peut mettre en scène le sentiment de tourner à vide : repos, affection, reconnaissance ou sens. Demandez-vous ce qui vous ressource d'habitude, et depuis quand vous en manquez. Une gorge sèche ou une nuit chaude peuvent aussi s'inviter dans la scène."
+          },
+          {
+            "question": "Que signifie rêver d'une oasis ?",
+            "answer": "Une oasis peut accompagner un soulagement, une ressource trouvée après une période difficile, ou un espoir auquel vous tenez. Si elle se révélait être un mirage, la scène peut faire écho à une déception ou à un doute sur une promesse."
+          }
+        ],
+        "documentMetaDescription": "Rêver d'un désert, de se perdre dans les dunes ou de trouver une oasis : ce que la scène peut dire du vide, de l'endurance et du soutien, avec questions."
       },
       "es": {
         "slug": "desierto",
         "name": "Desierto",
-        "shortDescription": "Un desierto puede hacer sentir vacío, amplitud, resistencia o falta de orientación. El clima, las provisiones y la posible compañía indican si ese paisaje significaba libertad o dificultad.",
-        "modifiedAt": "2026-07-24",
+        "shortDescription": "Soñar con un desierto suele ser caminar entre calor, arena y silencio, sin ningún punto de referencia. Se asocia a menudo con el vacío, la resistencia o la necesidad de espacio. Tener agua, un rumbo o compañía cambia la lectura.",
+        "modifiedAt": "2026-10-08",
         "askYourself": [
-          "¿Qué cambió desierto dentro de la escena?",
-          "¿Qué emoción siguió conmigo al despertar?"
+          "¿El desierto era abrasador, helado de noche, tranquilo o azotado por una tormenta de arena?",
+          "¿Tenía agua, sombra, un rumbo o a alguien conmigo?",
+          "¿Dónde siento ahora mismo que estoy cruzando un tramo largo y vacío?"
         ],
-        "faq": []
+        "faq": [
+          {
+            "question": "¿Qué significa soñar con un desierto?",
+            "answer": "El desierto se asocia a menudo con el vacío, la soledad, la resistencia o la necesidad de espacio. Su sentido depende del clima, de si tenías agua y un rumbo, y de lo que sentías: perdido, en paz o simplemente cansado."
+          },
+          {
+            "question": "¿Qué significa estar perdido en el desierto en sueños?",
+            "answer": "Perderte entre las dunas puede acompañar una falta de referencias, una espera larga o una etapa con poco apoyo. Anota qué buscabas y qué te ayudaba: una huella, las estrellas, una persona, tu propia calma."
+          },
+          {
+            "question": "¿Qué significa tener sed en el desierto en sueños?",
+            "answer": "La sed puede escenificar la sensación de ir con el depósito vacío: de descanso, de cariño, de reconocimiento o de sentido. Pregúntate qué suele recargarte y cuándo lo tuviste por última vez. Una garganta seca o una noche calurosa también pueden colarse en la escena."
+          },
+          {
+            "question": "¿Qué significa soñar con un oasis?",
+            "answer": "Un oasis puede acompañar un alivio, un recurso encontrado tras un tramo difícil o una esperanza a la que te agarras. Si resultaba ser un espejismo, la escena puede hacer eco de una decepción o de una duda sobre algo que prometía."
+          }
+        ],
+        "documentMetaDescription": "Soñar con un desierto, con perderte entre las dunas o con un oasis: qué puede decir la escena sobre el vacío, la resistencia y el apoyo, con preguntas."
       },
       "de": {
         "slug": "wuste",
         "name": "Wüste",
-        "shortDescription": "In einer Wüstenlandschaft können Leere, Weite, Ausdauer oder Orientierungslosigkeit spürbar werden. Wetter, Vorräte und mögliche Begleiter zeigen, ob die Landschaft Freiheit oder Belastung bedeutete.",
+        "shortDescription": "Von einer Wüste zu träumen heißt oft, durch Hitze, Sand und Stille zu gehen, ohne Orientierungspunkt. Sie wird häufig mit Leere, Ausdauer oder dem Bedürfnis nach Weite verbunden. Ob Sie Wasser, eine Richtung oder Begleitung hatten, prägt die Deutung.",
         "askYourself": [
-          "Spielte die Szene an einem heißen Tag, in einer kalten Nacht oder während eines Sandsturms?",
-          "Hattest du Wasser, Schatten oder ein sichtbares Ziel?",
-          "Wusstest du, wohin du gingst, und war jemand bei dir?"
+          "War die Wüste glühend heiß, nachts eiskalt, ruhig oder von einem Sandsturm aufgewühlt?",
+          "Hatte ich Wasser, Schatten, eine Richtung oder jemanden bei mir?",
+          "Wo habe ich gerade das Gefühl, eine lange, leere Strecke zu durchqueren?"
         ],
-        "modifiedAt": "2026-07-24",
-        "faq": []
+        "modifiedAt": "2026-10-08",
+        "faq": [
+          {
+            "question": "Was bedeutet es, von einer Wüste zu träumen?",
+            "answer": "Die Wüste wird oft mit Leere, Einsamkeit, Ausdauer oder einem Bedürfnis nach Weite verbunden. Was sie bedeutet, hängt vom Wetter ab, davon, ob Sie Wasser und eine Richtung hatten, und davon, wie Sie sich fühlten: verloren, ruhig oder einfach müde."
+          },
+          {
+            "question": "Was bedeutet es, sich im Traum in der Wüste zu verirren?",
+            "answer": "Sich zwischen Dünen zu verirren kann fehlende Orientierung, eine lange Wartezeit oder eine Phase mit wenig Unterstützung begleiten. Notieren Sie, was Sie gesucht haben und was geholfen hat: eine Spur, die Sterne, ein Mensch, Ihre eigene Ruhe."
+          },
+          {
+            "question": "Was bedeutet Durst in der Wüste im Traum?",
+            "answer": "Durst kann das Gefühl in Szene setzen, auf Reserve zu laufen: ohne Ruhe, Zuneigung, Anerkennung oder Sinn. Fragen Sie sich, was Sie sonst auftankt und wann Sie es zuletzt hatten. Auch ein trockener Hals oder eine warme Nacht können in die Szene einfließen."
+          },
+          {
+            "question": "Was bedeutet eine Oase im Traum?",
+            "answer": "Eine Oase kann Erleichterung begleiten, eine Kraftquelle nach einer harten Strecke oder eine Hoffnung, an der Sie festhalten. Entpuppte sie sich als Fata Morgana, kann die Szene eine Enttäuschung oder einen Zweifel an etwas Vielversprechendem aufgreifen."
+          }
+        ],
+        "documentMetaDescription": "Wüste im Traum, verirrt in den Dünen oder eine Oase in Sicht: was die Szene über Leere, Ausdauer und Halt sagen kann, mit Fragen zum Nachdenken."
       },
       "it": {
         "slug": "deserto",
         "name": "Deserto",
-        "shortDescription": "Un deserto può rendere immediati vuoto, vastità, resistenza o disorientamento. Clima, provviste e possibili compagni indicano se il paesaggio offriva libertà o imponeva fatica.",
-        "modifiedAt": "2026-07-24",
+        "shortDescription": "Sognare un deserto significa spesso camminare tra caldo, sabbia e silenzio, senza un punto di riferimento all’orizzonte. Viene spesso associato a vuoto, resistenza o bisogno di spazio. Avere acqua, una direzione o compagnia cambia la lettura.",
+        "modifiedAt": "2026-10-08",
         "askYourself": [
-          "Che cosa ha cambiato deserto nella scena?",
-          "Quale emozione è rimasta dopo il risveglio?"
+          "Il deserto era rovente, gelido di notte, calmo o spazzato da una tempesta di sabbia?",
+          "Avevo acqua, ombra, una direzione o qualcuno con me?",
+          "Dove sento, in questo periodo, di attraversare un tratto lungo e vuoto?"
         ],
-        "faq": []
+        "faq": [
+          {
+            "question": "Che cosa significa sognare un deserto?",
+            "answer": "Il deserto viene spesso associato a vuoto, solitudine, resistenza o bisogno di spazio. Il significato dipende dal clima, dal fatto di avere acqua e una direzione, e da ciò che provavi: smarrimento, pace o semplice stanchezza."
+          },
+          {
+            "question": "Che cosa significa perdersi nel deserto in sogno?",
+            "answer": "Perderti tra le dune può accompagnare una mancanza di punti di riferimento, un’attesa lunga o un periodo con poco sostegno. Annota che cosa cercavi e che cosa ti aiutava: una traccia, le stelle, una persona, la tua stessa calma."
+          },
+          {
+            "question": "Che cosa significa avere sete nel deserto in sogno?",
+            "answer": "La sete può mettere in scena la sensazione di andare in riserva: di riposo, di affetto, di riconoscimento o di senso. Chiediti che cosa di solito ti ricarica, e quando l’hai avuto l’ultima volta. Anche una gola secca o una notte calda possono entrare nella scena."
+          },
+          {
+            "question": "Che cosa significa sognare un’oasi?",
+            "answer": "Un’oasi può accompagnare un sollievo, una risorsa trovata dopo un tratto difficile o una speranza a cui ti aggrappi. Se si rivelava un miraggio, la scena può fare eco a una delusione o a un dubbio su qualcosa che sembrava promettente."
+          }
+        ],
+        "documentMetaDescription": "Sognare un deserto, di perdersi tra le dune o di trovare un’oasi: che cosa può dire la scena di vuoto, resistenza e sostegno, con domande da porsi."
       },
       "pt": {
         "slug": "deserto",
