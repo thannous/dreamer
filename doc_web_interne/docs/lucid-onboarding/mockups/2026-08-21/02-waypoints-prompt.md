@@ -5,7 +5,7 @@
 - Outil : génération d’images intégrée Codex, mode édition raster.
 - Cible d’édition : `assets/images/lucid/onboarding/onboarding-step-2.jpg`.
 - Génération brute retenue : `02-waypoints-generation.png` (`853x1844`, RGB).
-- Asset applicatif optimisé : `assets/images/lucid/onboarding/onboarding-step-2-waypoints.jpg` (`853x1844`, JPEG qualité 90).
+- Asset applicatif optimisé : `assets/images/lucid/onboarding/onboarding-step-2-waypoints.webp` (`853x1844`, WebP qualité 90).
 - L’ancien décor reste conservé et n’est plus référencé par l’onboarding.
 
 ## Prompt initial

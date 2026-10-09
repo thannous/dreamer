@@ -314,7 +314,7 @@ final result: passed
 
 Source and implementation evidence:
 - Previous raster: `assets/images/lucid/onboarding/onboarding-step-2.jpg`.
-- Replacement raster: `assets/images/lucid/onboarding/onboarding-step-2-waypoints.jpg`.
+- Replacement raster: `assets/images/lucid/onboarding/onboarding-step-2-waypoints.webp`.
 - Generation provenance: `doc_web_interne/docs/lucid-onboarding/mockups/2026-08-21/02-waypoints-prompt.md`.
 - Emulator result: `doc_web_interne/docs/lucid-onboarding/mockups/2026-08-21/02-emulator-393x850-final.png`.
 - Polished emulator result: `doc_web_interne/docs/lucid-onboarding/mockups/2026-08-21/02-emulator-393x850-polished.png`.
