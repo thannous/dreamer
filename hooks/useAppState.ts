@@ -11,7 +11,7 @@ export function useAppState(
   onForeground?: () => void,
   onBackground?: () => void
 ) {
-  const appState = useRef(AppState.currentState);
+  const appState = useRef<AppStateStatus>((AppState.currentState as AppStateStatus | null) ?? 'unknown');
   const onForegroundRef = useRef(onForeground);
   const onBackgroundRef = useRef(onBackground);
 

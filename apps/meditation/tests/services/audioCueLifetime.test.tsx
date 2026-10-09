@@ -1,5 +1,5 @@
 import React from 'react';
-import { act, fireEvent, render, renderHook } from '@testing-library/react-native';
+import { act, fireEvent, render, renderHook } from '@testing-library/react-native-legacy';
 import { InteractiveBreathHalo } from '@/components/onboarding/InteractiveBreathHalo';
 import { useWorldSoundscape } from '@/hooks/useWorldSoundscape';
 import * as audio from '@/services/audioService';

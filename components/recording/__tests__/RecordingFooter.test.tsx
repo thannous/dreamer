@@ -1,5 +1,5 @@
 import React from 'react';
-import { fireEvent, render } from '@testing-library/react-native';
+import { fireEvent, render } from '@testing-library/react-native-legacy';
 import { afterEach, describe, expect, it, jest } from '@jest/globals';
 import { StyleSheet, View } from 'react-native';
 

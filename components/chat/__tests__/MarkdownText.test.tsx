@@ -1,5 +1,5 @@
 import React from 'react';
-import { act, render } from '@testing-library/react-native';
+import { act, render } from '@testing-library/react-native-legacy';
 import { Linking, Platform } from 'react-native';
 import { EnrichedMarkdownText } from 'react-native-enriched-markdown';
 import { MarkdownText } from '../MarkdownText';

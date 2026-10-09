@@ -13,7 +13,7 @@ export async function shareLucidTrainerExport(
   const stamp = new Date().toISOString().slice(0, 10);
   const file = new File(Paths.cache, `noctalia-lucid-export-${stamp}.${format}`);
   file.create({ overwrite: true, intermediates: true });
-  file.write(format === 'json' ? exportLucidTrainerJson(state) : exportLucidTrainerCsv(state));
+  await file.write(format === 'json' ? exportLucidTrainerJson(state) : exportLucidTrainerCsv(state));
   const canShare = await Sharing.isAvailableAsync();
   if (canShare) {
     await Sharing.shareAsync(file.uri, {

@@ -1,5 +1,5 @@
 import React from 'react';
-import { fireEvent, render, waitFor } from '@testing-library/react-native';
+import { fireEvent, render, waitFor } from '@testing-library/react-native-legacy';
 import { IllustrationQualityPreference } from '../IllustrationQualityPreference';
 import { getHdImageQuota } from '@/services/hdImageQuota';
 import { getIllustrationResolution, saveIllustrationResolution } from '@/services/illustrationPreferences';

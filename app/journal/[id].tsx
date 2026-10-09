@@ -1,3 +1,4 @@
+import type { ViewInstance, ScrollViewInstance } from 'react-native';
 import { getSavedAnalysisAction } from '@/lib/savedAnalysisAccess';
 import { MarkdownText } from '@/components/ui/MarkdownText';
 import { DreamAnalysisContent } from '@/components/journal/DreamAnalysisContent';
@@ -495,8 +496,8 @@ const JournalDetailContent = memo(function JournalDetailContent({ dream }: { dre
   const [transcriptSectionOffset, setTranscriptSectionOffset] = useState(0);
   const [transcriptSectionHeight, setTranscriptSectionHeight] = useState(0);
   const readingScrollOffset = useRef(0);
-  const readingContentRef = useRef<View | null>(null);
-  const transcriptSectionRef = useRef<View | null>(null);
+  const readingContentRef = useRef<ViewInstance | null>(null);
+  const transcriptSectionRef = useRef<ViewInstance | null>(null);
   const measureTranscriptSection = useCallback(() => {
     const content = readingContentRef.current;
     if (!content) return;
@@ -522,7 +523,7 @@ const JournalDetailContent = memo(function JournalDetailContent({ dream }: { dre
     // story offset behind. Read its position relative to the content ancestor.
     measureTranscriptSection();
   }, [measureTranscriptSection, updateReadingChrome]);
-  const scrollViewRef = useRef<ScrollView | null>(null);
+  const scrollViewRef = useRef<ScrollViewInstance | null>(null);
   const lastAnalysisNoticeRef = useRef<AnalysisNotice | null>(null);
   const previousDreamRef = useRef(dream);
 

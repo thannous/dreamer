@@ -19,7 +19,7 @@ export function CaptureStory({ step, reduced, tokens, stageHeight, onDreamChange
   const { t } = useTranslation();
   if (step === STORY_DEMO_STEP) return <StoryScene><DreamGlobe tokens={tokens} stageHeight={stageHeight} onSelectionChange={onDreamChange} /></StoryScene>;
   const imageHeight = Math.min(280, stageHeight - 24);
-  const figure: CSSStyle<ViewStyle> = {
+  const figure: CSSStyle<Pick<ViewStyle, 'opacity' | 'transform'>> = {
     opacity: step === 0 ? 0.24 : step === 1 ? 0.48 : 1,
     transform: reduced ? [] : [{ translateY: step === 1 ? -10 : 0 }, { scale: step === 0 ? 0.94 : step === 1 ? 0.97 : 1 }],
     transitionProperty: reduced ? ['opacity'] : ['opacity', 'transform'],

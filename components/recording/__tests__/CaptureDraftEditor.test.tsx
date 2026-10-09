@@ -1,5 +1,5 @@
 import React from 'react';
-import { fireEvent, render } from '@testing-library/react-native';
+import { fireEvent, render } from '@testing-library/react-native-legacy';
 import { CaptureDraftEditor } from '../CaptureDraftEditor';
 import { parseCaptureEditableDraft } from '@/lib/captureEditableDraft';
 

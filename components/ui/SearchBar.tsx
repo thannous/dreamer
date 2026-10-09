@@ -1,3 +1,4 @@
+import type { TextInputInstance } from 'react-native';
 import React, { forwardRef, memo, useCallback, useMemo, useRef, useState } from 'react';
 import { Platform, TextInput, View, useWindowDimensions, type TextStyle } from 'react-native';
 
@@ -48,7 +49,7 @@ export function searchBarLayout(fontScale: number) {
   };
 }
 
-export const SearchBar = memo(forwardRef<TextInput, SearchBarProps>(function SearchBar({
+export const SearchBar = memo(forwardRef<TextInputInstance, SearchBarProps>(function SearchBar({
   autoFocus = false,
   value,
   onChangeText,
@@ -58,7 +59,7 @@ export const SearchBar = memo(forwardRef<TextInput, SearchBarProps>(function Sea
 }: SearchBarProps, forwardedRef) {
   const { colors, mode } = useTheme();
   const noctalia = getNoctaliaDesignTokens(colors, mode);
-  const inputRef = useRef<TextInput>(null);
+  const inputRef = useRef<TextInputInstance>(null);
   const [isFocused, setIsFocused] = useState(false);
   const { fontScale } = useWindowDimensions();
   const { minHeight, inputMinHeight, verticalPadding } = useMemo(
@@ -68,7 +69,7 @@ export const SearchBar = memo(forwardRef<TextInput, SearchBarProps>(function Sea
   const handleChangeText = useCallback((text: string) => {
     onChangeText(sanitizeSearchQuery(text));
   }, [onChangeText]);
-  const setInputRef = useCallback((node: TextInput | null) => {
+  const setInputRef = useCallback((node: TextInputInstance | null) => {
     inputRef.current = node;
     if (typeof forwardedRef === 'function') {
       forwardedRef(node);

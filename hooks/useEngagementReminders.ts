@@ -159,7 +159,7 @@ export function useEngagementReminders(): void {
     const observedGeneration = observedLatest.generation;
 
     const decision = shouldPresentAnalysisReadyNotification({
-      appState: AppState.currentState,
+      appState: (AppState.currentState as import('react-native').AppStateStatus | null) ?? 'unknown',
       outcome: lastAnalysisOutcome,
       lastNotified: lastNotifiedAnalysisRef.current,
     });

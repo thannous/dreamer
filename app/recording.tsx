@@ -1,3 +1,4 @@
+import type { TextInputInstance } from 'react-native';
 import { markPerformance, performanceTraceId } from '@/lib/performanceTrace';
 import { RecordingDurationLabel } from '@/components/recording/RecordingDurationLabel';
 import { MockNavigationRail } from '@/components/dev/MockNavigationRail';
@@ -423,7 +424,7 @@ export default function RecordingScreen() {
     (editableCapture ?? parseCaptureEditableDraft(transcript)).sections.map(section => section.text).join('\n')),
     [captureReview, editableCapture, transcript]);
   const isSaveDisabled = !hasSaveableContent || interactionDisabled;
-  const textInputRef = useRef<TextInput | null>(null);
+  const textInputRef = useRef<TextInputInstance | null>(null);
   const scrollViewRef = useRef<React.ElementRef<typeof ScrollView> | null>(null);
   const lastInputSourceRef = useRef<RecordingInputModePreference>('text');
   const transcriptionLocale = useMemo(() => getTranscriptionLocale(language), [language]);

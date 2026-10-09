@@ -1,3 +1,4 @@
+import type { ViewInstance } from 'react-native';
 import React, { useEffect, useMemo, useRef } from 'react';
 import { Pressable, StyleSheet, Text, View } from 'react-native';
 
@@ -34,7 +35,7 @@ export function RecordingOnboardingTour({
   const { colors, mode, shadows } = useTheme();
   const { t } = useTranslation();
   const noctalia = useMemo(() => getNoctaliaDesignTokens(colors, mode), [colors, mode]);
-  const cardRef = useRef<View | null>(null);
+  const cardRef = useRef<ViewInstance | null>(null);
   const isLast = step === 2;
   const icon = inputMode === 'voice' ? 'mic' : 'pencil';
   const bodyKey = step === 0

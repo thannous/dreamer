@@ -1,6 +1,6 @@
 import React from 'react';
 import { Platform, Text, View } from 'react-native';
-import { render } from '@testing-library/react-native';
+import { render } from '@testing-library/react-native-legacy';
 import { EnrichedMarkdownText } from 'react-native-enriched-markdown';
 import { createMarkdownStyles } from '@/constants/markdownStyles';
 import { sanitizeMarkdown } from '@/lib/markdownSecurity';

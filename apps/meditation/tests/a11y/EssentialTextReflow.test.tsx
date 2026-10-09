@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-require-imports -- Jest hoists module factories above imports. */
-import { render, screen } from '@testing-library/react-native';
+import { render, screen } from '@testing-library/react-native-legacy';
 import React from 'react';
 import { StyleSheet } from 'react-native';
 
@@ -154,7 +154,7 @@ jest.mock('uniwind', () => ({
 }));
 
 function flatten(style: unknown): Record<string, unknown> {
-  return StyleSheet.flatten(style) as Record<string, unknown>;
+  return StyleSheet.flatten(style as Parameters<typeof StyleSheet.flatten>[0]) as Record<string, unknown>;
 }
 
 function meetsMinTarget(style: unknown, min = 48): boolean {

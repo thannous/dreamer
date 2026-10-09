@@ -1,6 +1,6 @@
 import React from 'react';
 import { Alert, FlatList } from 'react-native';
-import { act, fireEvent, render } from '@testing-library/react-native';
+import { act, fireEvent, render } from '@testing-library/react-native-legacy';
 import { LucidScreen } from '@/components/lucid/LucidUI';
 import LucidJournalImportScreen from '@/routes/lucid/lucid/journal-import';
 import type { LucidJournalImportRuntimeState } from '@/services/lucidJournalImportRuntime';

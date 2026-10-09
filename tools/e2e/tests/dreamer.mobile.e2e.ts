@@ -1,6 +1,11 @@
 import { test } from '@e2e-dev/mobile';
 import { expect } from 'e2e';
-import { PREDEFINED_DREAMS } from '../../../mock-data/predefinedDreams';
+// The persistent mock profile seeds this entry. Explicit expectations keep
+// Node collection independent of the app's React Native/media imports.
+const SEEDED_OTHER_DREAM = {
+  title: 'The Infinite Library',
+  transcript: 'I found myself in an enormous library with endless shelves reaching up into darkness. Books were floating around me, their pages turning on their own. I picked up a golden book that seemed to glow, and when I opened it, I could see memories from my childhood playing out on the pages like a movie.',
+};
 
 for (const editor of ['metadata', 'transcript'] as const) {
   test(`Dreamer release background categorization preserves the ${editor} draft and isolates another entry`, {
@@ -110,7 +115,7 @@ for (const editor of ['metadata', 'transcript'] as const) {
     await expect(other).toHaveCount(1); await other.tap();
     await expect(input).toHaveCount(0);
     await screen.scrollUntilVisible(button); await button.tap();
-    await expect(input).toHaveValue(editor === 'metadata' ? PREDEFINED_DREAMS[0].title : PREDEFINED_DREAMS[0].transcript);
+    await expect(input).toHaveValue(editor === 'metadata' ? SEEDED_OTHER_DREAM.title : SEEDED_OTHER_DREAM.transcript);
     await app.screenshot(`release-${editor}-other-entry-isolated`);
   });
 }
@@ -153,6 +158,10 @@ test('Dreamer release Quick Settings persists French and theme choices while pre
   await screen.getByTestId('quick-settings.language', { visible: true }).tap();
   const english = screen.getByTestId('quick-settings.language.en', { visible: true });
   await english.tap();
+  // A fresh Android target can lack the English pack as well as the French one.
+  if (platform === 'android' && await screen.getByText('Language Pack for Voice Recording', { visible: true }).count() > 0) {
+    await screen.getByRole('button', 'Cancel', { visible: true }).tap();
+  }
   await expect(screen.getByRole('radio', 'English', { visible: true })).toBeChecked();
   const french = screen.getByTestId('quick-settings.language.fr', { visible: true });
   await french.tap();

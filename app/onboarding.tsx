@@ -1,3 +1,5 @@
+import type { ViewInstance } from 'react-native';
+import { scheduleIdleTask } from '@/lib/scheduleIdleTask';
 import { IconSymbol } from '@/components/ui/icon-symbol';
 import { StandardBottomSheet } from '@/components/ui/StandardBottomSheet';
 import { PressableScale } from '@/components/motion/PressableScale';
@@ -32,7 +34,6 @@ import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import {
   AccessibilityInfo,
   ActivityIndicator,
-  InteractionManager,
   Platform,
   Pressable,
   StatusBar,
@@ -117,7 +118,7 @@ export default function OnboardingScreen() {
   const [failedAction, setFailedAction] = useState<FailedAction | null>(null);
   const [showPrivacySheet, setShowPrivacySheet] = useState(false);
   const [activeFeature, setActiveFeature] = useState<OnboardingFeature | null>(null);
-  const featureTriggers = useRef<Partial<Record<OnboardingFeature, View | null>>>({});
+  const featureTriggers = useRef<Partial<Record<OnboardingFeature, ViewInstance | null>>>({});
   const featureFocusTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
   const [analyticsEnabled, setAnalyticsEnabled] = useState(false);
   const [analyticsPreferenceLoading, setAnalyticsPreferenceLoading] = useState(false);
@@ -125,8 +126,8 @@ export default function OnboardingScreen() {
   const [footerHeight, setFooterHeight] = useState(0);
   const [pathPreloaded, setPathPreloaded] = useState(state.step === 'path');
   const [stepHeights, setStepHeights] = useState<Partial<Record<OnboardingStep, number>>>({});
-  const introTitleRef = useRef<Text | null>(null);
-  const pathTitleRef = useRef<Text | null>(null);
+  const introTitleRef = useRef<ViewInstance | null>(null);
+  const pathTitleRef = useRef<ViewInstance | null>(null);
   const startedRef = useRef(false);
   const viewedStepsRef = useRef<Set<OnboardingStep>>(new Set());
   const focusedStepRef = useRef<OnboardingStep | null>(null);
@@ -166,7 +167,7 @@ export default function OnboardingScreen() {
   // flashes the arrival choreography for a frame.
   if (step === 'path' && !visitedPath) setVisitedPath(true);
   const arrival = step === 'intro' && !visitedPath;
-  const enter = (active: boolean, delay: number, travel: number): CSSStyle<ViewStyle> => {
+  const enter = (active: boolean, delay: number, travel: number): CSSStyle<Pick<ViewStyle, 'opacity' | 'transform'>> => {
     if (!active) return { animationName: 'none' };
     const scaled = arrival ? delay : delay * STORY.returnScale;
     return {
@@ -182,7 +183,7 @@ export default function OnboardingScreen() {
   };
   const introEnter = (delay: number) => enter(step === 'intro', delay, TRAVEL.arrive);
   // One soft ring once the loop has been told: an invitation, not a nag. Never repeats.
-  const ctaInvite: CSSStyle<ViewStyle> = {
+  const ctaInvite: CSSStyle<Pick<ViewStyle, 'opacity' | 'transform'>> = {
     animationName: {
       '0%': { opacity: 0, transform: [{ scaleX: 1 }, { scaleY: 1 }] },
       '30%': { opacity: 0.6 },
@@ -194,7 +195,7 @@ export default function OnboardingScreen() {
     animationFillMode: 'both',
   };
   // Committing pushes the camera in (NightSky); the copy recedes with it.
-  const recede: CSSStyle<ViewStyle> = {
+  const recede: CSSStyle<Pick<ViewStyle, 'opacity' | 'transform'>> = {
     opacity: isLeaving ? 0 : 1,
     transform: [{ scale: isLeaving && !reducedMotion ? 0.97 : 1 }],
     transitionProperty: ['opacity', 'transform'],
@@ -204,7 +205,7 @@ export default function OnboardingScreen() {
   // Night to day: on leaving, the next screen's ground fades in over the scene so the
   // handoff to Capture reads as one gesture rather than a hard cut. Navigation waits for
   // it; reduce motion skips the wait.
-  const exitFadeStyle: CSSStyle<ViewStyle> = {
+  const exitFadeStyle: CSSStyle<Pick<ViewStyle, 'opacity' | 'transform'>> = {
     opacity: isLeaving ? 1 : 0,
     transitionProperty: 'opacity',
     transitionDuration: STORY.exitFade,
@@ -238,7 +239,7 @@ export default function OnboardingScreen() {
 
   useEffect(() => {
     if (loading || pathPreloaded || step === 'path' || isLeaving) return;
-    const task = InteractionManager.runAfterInteractions(() => {
+    const task = scheduleIdleTask(() => {
       // The screen can start leaving between scheduling and draining this task.
       // Mounting the path layer into a detaching screen makes Fabric insert a
       // subtree while `react-native-screens` re-parents the same surface.

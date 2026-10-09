@@ -1,4 +1,5 @@
 import * as Notifications from 'expo-notifications';
+import { AndroidImportance, IosAuthorizationStatus } from 'expo-notifications';
 import { Platform } from 'react-native';
 
 import { canonicalLucidJson } from '@/lib/lucid/domain';
@@ -179,7 +180,7 @@ export const expoLucidNotificationAdapter: LucidNotificationAdapter = {
     if (Platform.OS !== 'android') return;
     await Notifications.setNotificationChannelAsync(LUCID_TRAINER_NOTIFICATION_CHANNEL_ID, {
       name: 'Lucid reminders',
-      importance: Notifications.AndroidImportance.DEFAULT,
+      importance: AndroidImportance.DEFAULT,
       vibrationPattern: [0, 150],
     });
   },
@@ -190,7 +191,7 @@ export const expoLucidNotificationAdapter: LucidNotificationAdapter = {
       {
         name: `Lucid night cue — ${soundId} — ${volumeBand}`,
         description: 'Optional, brief and low-intensity lucid dreaming cue.',
-        importance: Notifications.AndroidImportance.DEFAULT,
+        importance: AndroidImportance.DEFAULT,
         enableVibrate: false,
         vibrationPattern: [0],
         showBadge: false,
@@ -212,9 +213,9 @@ function allowsNotifications(permission: Notifications.NotificationPermissionsSt
   return (
     permission.granted ||
     permission.status === 'granted' ||
-    iosStatus === Notifications.IosAuthorizationStatus.AUTHORIZED ||
-    iosStatus === Notifications.IosAuthorizationStatus.PROVISIONAL ||
-    iosStatus === Notifications.IosAuthorizationStatus.EPHEMERAL
+    iosStatus === IosAuthorizationStatus.AUTHORIZED ||
+    iosStatus === IosAuthorizationStatus.PROVISIONAL ||
+    iosStatus === IosAuthorizationStatus.EPHEMERAL
   );
 }
 

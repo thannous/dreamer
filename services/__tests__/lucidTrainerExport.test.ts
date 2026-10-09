@@ -73,4 +73,23 @@ describe('shareLucidTrainerExport', () => {
     expect(mockWrite).toHaveBeenCalledWith('record_type\r\n');
     expect(mockShareAsync).toHaveBeenCalledTimes(1);
   });
+  // Normal UI journeys cannot safely force a native file-write delay or disk error.
+  it('waits for the asynchronous file write before opening the share sheet', async () => {
+    let completeWrite!: () => void;
+    mockWrite.mockReturnValueOnce(new Promise<void>((resolve) => { completeWrite = resolve; }));
+    const exporting = shareLucidTrainerExport(state(), 'json');
+    await Promise.resolve();
+    expect(mockIsAvailableAsync).not.toHaveBeenCalled();
+    expect(mockShareAsync).not.toHaveBeenCalled();
+    completeWrite();
+    await expect(exporting).resolves.toMatchObject({ shared: true });
+    expect(mockShareAsync).toHaveBeenCalledTimes(1);
+  });
+
+  it('reports an asynchronous write failure without sharing an incomplete file', async () => {
+    mockWrite.mockRejectedValueOnce(new Error('disk full'));
+    await expect(shareLucidTrainerExport(state(), 'csv')).rejects.toThrow('disk full');
+    expect(mockShareAsync).not.toHaveBeenCalled();
+  });
+
 });

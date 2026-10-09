@@ -1,3 +1,4 @@
+import { scheduleIdleTask } from '@/lib/scheduleIdleTask';
 import '@/global.css';
 import 'react-native-reanimated';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
@@ -20,7 +21,7 @@ import * as Notifications from 'expo-notifications';
 import { Stack, router, useGlobalSearchParams, useNavigationContainerRef, usePathname, useRootNavigationState, type Href } from 'expo-router';
 import * as SplashScreen from 'expo-splash-screen';
 import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
-import { InteractionManager, Linking, LogBox, NativeModules, Platform } from 'react-native';
+import { Linking, LogBox, NativeModules, Platform } from 'react-native';
 import { SystemBars } from 'react-native-edge-to-edge';
 
 import AnimatedSplashScreen, {
@@ -495,7 +496,7 @@ function RootLayoutNav({
     if (!hasTrackedColdStart.current) {
       hasTrackedColdStart.current = true;
       if (!isLucidTrainer) {
-        InteractionManager.runAfterInteractions(() => {
+        scheduleIdleTask(() => {
           void trackProductEvent('app_session_started', { source: 'cold_start' });
         });
       }
@@ -1070,7 +1071,7 @@ export default function RootLayout() {
 
     return scheduleProductBootstrap(
       isLucidTrainer ? 'lucid' : 'journal',
-      (callback) => InteractionManager.runAfterInteractions(callback),
+      (callback) => scheduleIdleTask(callback),
       (action, error) => {
         if (__DEV__) console.warn(`[RootLayout] ${action} failed:`, error);
       }

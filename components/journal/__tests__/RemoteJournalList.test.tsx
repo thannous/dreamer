@@ -1,5 +1,5 @@
 import React from 'react';
-import { act, fireEvent, render, waitFor } from '@testing-library/react-native';
+import { act, fireEvent, render, waitFor } from '@testing-library/react-native-legacy';
 import { RemoteJournalList } from '../RemoteJournalList';
 import { useRemoteJournalList } from '@/hooks/useRemoteJournalList';
 jest.mock('react-native/Libraries/Lists/FlatList', () => {

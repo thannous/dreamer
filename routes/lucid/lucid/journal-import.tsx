@@ -306,7 +306,7 @@ export default function LucidJournalImportScreen() {
             <LucidButton label={c.delete} variant="danger" disabled={localBusy || busy} onPress={() => confirmDelete(copy.identity)} />
           </LucidCard>
         )}
-        ListFooterComponent={copies.length > 0 ? <LucidButton label={c.deleteAll} variant="danger" disabled={localBusy || busy} onPress={() => confirmDelete()} /> : null}
+        ListFooterComponent={copies.length > 0 ? <LucidButton label={c.deleteAll} variant="danger" disabled={localBusy || busy} onPress={() => confirmDelete()} /> : undefined}
       />
     </LucidScreen>
   );

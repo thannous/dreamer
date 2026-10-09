@@ -1,5 +1,5 @@
 import React from 'react';
-import { fireEvent, render } from '@testing-library/react-native';
+import { fireEvent, render } from '@testing-library/react-native-legacy';
 import { Modal } from 'react-native';
 import { AnalysisReadingModal } from '../AnalysisReadingModal';
 

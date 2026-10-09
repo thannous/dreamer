@@ -1,0 +1,52 @@
+diff --git a/node_modules/@expo/vector-icons/build/createIconSet.d.ts b/node_modules/@expo/vector-icons/build/createIconSet.d.ts
+index abd34f2..c61c050 100644
+--- a/node_modules/@expo/vector-icons/build/createIconSet.d.ts
++++ b/node_modules/@expo/vector-icons/build/createIconSet.d.ts
+@@ -1,5 +1,5 @@
+ import React, { ComponentClass } from 'react';
+-import { TextProps, TouchableHighlightProps, ViewProps, OpaqueColorValue, TextStyle, ViewStyle, ColorValue } from 'react-native';
++import { TextProps, TouchableHighlightProps, ViewProps, ColorValue, TextStyle, ViewStyle, ColorValue } from 'react-native';
+ export { DEFAULT_ICON_COLOR, DEFAULT_ICON_SIZE, } from './vendor/react-native-vector-icons/lib/create-icon-set';
+ export interface IconProps<GLYPHS extends string> extends TextProps {
+     /**
+@@ -16,21 +16,21 @@ export interface IconProps<GLYPHS extends string> extends TextProps {
+      */
+     name: GLYPHS;
+     /**
+-     * Color of the icon. Can be a string or OpaqueColorValue (returned from
++     * Color of the icon. Can be a string or ColorValue (returned from
+      * PlatformColor(..))
+      *
+      */
+-    color?: string | OpaqueColorValue;
++    color?: ColorValue;
+ }
+ export interface IconButtonProps<GLYPHS extends string> extends IconProps<GLYPHS>, ViewProps, TouchableHighlightProps {
+     /**
+      * Text and icon color
+      * Use iconStyle or nest a Text component if you need different colors.
+-     * Can be a string or OpaqueColorValue (returned from PlatformColor(..))
++     * Can be a string or ColorValue (returned from PlatformColor(..))
+      *
+      *  @default 'white'
+      */
+-    color?: string | OpaqueColorValue;
++    color?: ColorValue;
+     /**
+      * Border radius of the button
+      * Set to 0 to disable.
+@@ -52,12 +52,12 @@ export interface IconButtonProps<GLYPHS extends string> extends IconProps<GLYPHS
+      */
+     style?: ViewStyle | TextStyle;
+     /**
+-     * Background color of the button. Can be a string or OpaqueColorValue (returned from
++     * Background color of the button. Can be a string or ColorValue (returned from
+      * PlatformColor(..))
+      *
+      * @default '#007AFF'
+      */
+-    backgroundColor?: string | OpaqueColorValue;
++    backgroundColor?: ColorValue;
+ }
+ export type GlyphMap<G extends string> = {
+     [K in G]: number | string;

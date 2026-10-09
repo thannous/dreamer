@@ -1,5 +1,5 @@
 import React from 'react';
-import { act, fireEvent, render, waitFor, within } from '@testing-library/react-native';
+import { act, fireEvent, render, waitFor, within } from '@testing-library/react-native-legacy';
 import { RecordingConversation } from '../RecordingConversation';
 import { TID } from '@/lib/testIDs';
 

@@ -1,4 +1,4 @@
-import { renderHook } from '@testing-library/react-native';
+import { renderHook } from '@testing-library/react-native-legacy';
 import React from 'react';
 
 import { canAccessWorld, WORLD_BY_ID, WORLD_IDS } from '@/constants/worlds';

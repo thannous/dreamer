@@ -1,4 +1,4 @@
-import { render, screen, waitFor } from '@testing-library/react-native';
+import { render, screen, waitFor } from '@testing-library/react-native-legacy';
 import React from 'react';
 
 import RootLayout from '@/app/_layout';

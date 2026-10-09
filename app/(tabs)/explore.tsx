@@ -1,3 +1,4 @@
+import type { ViewInstance } from 'react-native';
 import { useQuickSettings } from '@/context/QuickSettingsContext';
 import { NoctaliaScreenHeader } from '@/components/NoctaliaScreenHeader';
 import { RitualPickerSheet } from '@/components/ritual/RitualPickerSheet';
@@ -72,7 +73,7 @@ export default function ExploreScreen() {
   const [selectedRitualId, setSelectedRitualId] = useState<RitualId>('starter');
   const [pickerVisible, setPickerVisible] = useState(false);
   const preferenceRevision = useRef(0);
-  const changeRitualRef = useRef<View>(null);
+  const changeRitualRef = useRef<ViewInstance>(null);
   const wasPickerVisible = useRef(false);
   const screenFocused = useRef(false);
 

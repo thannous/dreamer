@@ -1,4 +1,4 @@
-import { fireEvent, render, screen } from '@testing-library/react-native';
+import { fireEvent, render, screen } from '@testing-library/react-native-legacy';
 import React from 'react';
 
 import { Button } from '@/components/ui/Button';
