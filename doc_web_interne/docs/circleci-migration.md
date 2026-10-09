@@ -132,7 +132,7 @@ opérateur, pas un accès implicite à une base distante depuis la CI.
 | `pr-quality` | `noctalia-quality` + JSON/JUnit | Diff Noctalia racine ou entrée partagée vérifiée |
 | non couvert auparavant | `meditation-quality` + JSON/JUnit | `apps/meditation/**` ou outil Node global |
 | `test-fast` | suite complète dans `noctalia-quality` | tag/release ou `force_full_validation=true` seulement |
-| artifact `jest-timing` | artifact + cache `jest-timing-master-v1-` | baseline publiée seulement par un full manuel sur `master` |
+| artifact `jest-timing` | artifact + cache `jest-timing-master-v1-` (historique glissant) | baseline publiée seulement par un full manuel sur `master` |
 | `site-build` | `site-build` | `docs-src/**`, générateurs et données partagées du site |
 | `edge-functions` | `edge-functions` | Runtime Deno et lockfile Edge |
 | contrats noyés dans Jest racine | `edge-contracts` | migrations, manifest DB et routes à contrat croisé |
@@ -241,9 +241,14 @@ tous les jobs.
   `store_test_results` pour Tests, Insights et les tests instables.
 
 La suite Noctalia complète restaure le cache immuable le plus récent au préfixe
-`jest-timing-master-v1-`. Le budget de régression reste strict à +20 % dès
-qu'une baseline existe. `--allow-missing-baseline` ne sert qu'au bootstrap ; il
-ne relâche rien lorsqu'un fichier de référence est restauré.
+`jest-timing-master-v1-`. La baseline est la moyenne de l'historique glissant
+`artifacts/baseline/jest-timing-history.json` (les 5 derniers full `master`,
+mis à jour par `check-jest-duration-regression.js --update-history` à chaque
+publication), ce qui amortit la variance d'un runner isolé. Un cache antérieur
+à l'historique retombe sur son `jest-results.json` à run unique, qui ensemence
+l'historique à la publication suivante. Le budget de régression reste strict à
++20 % dès qu'une baseline existe. `--allow-missing-baseline` ne sert qu'au
+bootstrap ; il ne relâche rien lorsqu'une référence est restaurée.
 
 ## Durée des parcours E2E
 

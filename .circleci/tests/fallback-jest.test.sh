@@ -60,6 +60,17 @@ const publishGate = fullGate.when.steps.find(
 );
 if (!publishGate) throw new Error('timing baseline publication guard is missing');
 
+const publishRun = publishGate.when.steps.find(
+  (step) => step.run?.name === 'Prepare successful master timing baseline',
+);
+if (!publishRun?.run?.command?.includes('check-jest-duration-regression.js --update-history')) {
+  throw new Error('baseline publication does not append the run to the timing history');
+}
+const publishCache = publishGate.when.steps.find((step) => step.save_cache);
+if (!publishCache?.save_cache?.paths?.includes('artifacts/baseline/jest-timing-history.json')) {
+  throw new Error('timing history is not part of the published baseline cache');
+}
+
 // Evaluate the actual site condition across every routing combination.
 const siteGate = config.jobs['site-build'].steps.find(step => step.when);
 const siteJest = siteGate?.when.steps.find(step => step.run?.name === 'Test site tooling changed since the diff base');
