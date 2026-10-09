@@ -23540,58 +23540,152 @@
       "en": {
         "slug": "island",
         "name": "Island",
-        "shortDescription": "An island may place distance, shelter, independence or isolation within the scene. Wanting to stay or searching for a way back changes the emotional meaning of the landscape.",
-        "modifiedAt": "2026-07-24",
+        "shortDescription": "Dreaming of an island often puts distance at the center of the scene: water all around, the mainland far off. It can go with a wish for shelter and quiet, or with feeling cut off. Whether you wanted to stay or leave changes the reading.",
+        "modifiedAt": "2026-10-08",
         "askYourself": [
-          "What did island change in the scene?",
-          "Which feeling stayed with me after waking?"
+          "Did I want to stay on the island, or was I looking for a way back?",
+          "Was the island green and welcoming, or bare and empty?",
+          "Who or what feels far from me right now, by choice or not?"
         ],
-        "faq": []
+        "faq": [
+          {
+            "question": "What does it mean to dream of an island?",
+            "answer": "An island is often associated with distance: from other people, from daily pressure or from a situation. It can feel like a refuge or like isolation. How you got there and whether you wanted to leave are the main clues."
+          },
+          {
+            "question": "What does it mean to be stranded on a deserted island in a dream?",
+            "answer": "Being stranded can go with a feeling of being cut off, unheard or left to cope alone. It is not an omen. Note whether you were signalling to someone, building something or simply waiting."
+          },
+          {
+            "question": "What does a paradise island mean in a dream?",
+            "answer": "A sunny, peaceful island can reflect a need for rest, a break or more space for yourself. If the calm felt empty rather than soothing, the lead of loneliness may fit better. What were you doing there?"
+          },
+          {
+            "question": "Why do I dream that I cannot leave an island?",
+            "answer": "No boat, no bridge, too much water to swim: the scene can echo a situation where you feel stuck, or where the way out is not visible yet. Notice what was missing: a tool, a person, or the nerve to try."
+          }
+        ],
+        "documentMetaDescription": "Dreaming of an island, a deserted island or being stranded: what distance, shelter and the way back may say, with questions and a journal example."
       },
       "fr": {
         "slug": "ile",
         "name": "Île",
-        "shortDescription": "Une île peut représenter dans la scène une distance, un refuge, une autonomie ou un isolement. Votre envie d’y rester et la présence ou non d’un chemin de retour donnent au paysage sa tonalité émotionnelle.",
-        "modifiedAt": "2026-07-24",
+        "shortDescription": "Rêver d'une île met souvent la distance au centre de la scène : de l'eau tout autour, la terre ferme au loin. Le rêve peut accompagner un besoin de refuge et de calme, ou un sentiment d'isolement. Vouloir rester ou partir change la lecture.",
+        "modifiedAt": "2026-10-08",
         "askYourself": [
-          "Qu’est-ce que île a changé dans la scène ?",
-          "Quelle émotion est restée après le réveil ?"
+          "Avais-je envie de rester sur l'île, ou cherchais-je un moyen de revenir ?",
+          "L'île était-elle verte et accueillante, ou nue et déserte ?",
+          "Qui ou quoi me paraît loin en ce moment, par choix ou non ?"
         ],
-        "faq": []
+        "faq": [
+          {
+            "question": "Que signifie rêver d'une île ?",
+            "answer": "L'île est souvent associée à la distance : avec les autres, avec la pression du quotidien ou avec une situation. Elle peut ressembler à un refuge comme à un isolement. La façon dont vous y êtes arrivé et votre envie d'en partir sont les indices principaux."
+          },
+          {
+            "question": "Que signifie rêver d'être seul sur une île déserte ?",
+            "answer": "Être échoué peut accompagner le sentiment d'être coupé des autres, peu entendu ou livré à soi-même. Ce n'est pas un présage. Notez si vous faisiez des signaux, construisiez quelque chose ou attendiez simplement."
+          },
+          {
+            "question": "Que signifie rêver d'une île paradisiaque ?",
+            "answer": "Une île ensoleillée et paisible peut refléter un besoin de repos, de pause ou d'espace à vous. Si ce calme vous semblait vide plutôt qu'apaisant, la piste de la solitude est sans doute plus juste. Que faisiez-vous là-bas ?"
+          },
+          {
+            "question": "Pourquoi je rêve que je ne peux pas quitter une île ?",
+            "answer": "Pas de bateau, pas de pont, trop d'eau pour nager : la scène peut faire écho à une situation où vous vous sentez coincé, ou dont la sortie n'est pas encore visible. Notez ce qui manquait : un outil, une personne, l'élan d'essayer."
+          }
+        ],
+        "documentMetaDescription": "Rêver d'une île, d'une île déserte ou d'être bloqué sur une île : ce que la distance, le refuge et le retour peuvent dire, avec questions et exemple."
       },
       "es": {
         "slug": "isla",
         "name": "Isla",
-        "shortDescription": "Una isla puede destacar distancia, protección, autonomía o aislamiento. Querer quedarte o buscar una forma de volver cambia por completo la emoción vinculada al lugar.",
-        "modifiedAt": "2026-07-24",
+        "shortDescription": "Soñar con una isla suele poner la distancia en el centro de la escena: agua alrededor y la tierra firme a lo lejos. Puede acompañar un deseo de refugio y calma, o la sensación de estar aislado. Querer quedarte o irte cambia la lectura.",
+        "modifiedAt": "2026-10-08",
         "askYourself": [
-          "¿Qué cambió isla dentro de la escena?",
-          "¿Qué emoción siguió conmigo al despertar?"
+          "¿Quería quedarme en la isla o buscaba la forma de volver?",
+          "¿La isla era verde y acogedora, o pelada y desierta?",
+          "¿Quién o qué siento lejos ahora mismo, por elección o no?"
         ],
-        "faq": []
+        "faq": [
+          {
+            "question": "¿Qué significa soñar con una isla?",
+            "answer": "La isla se asocia a menudo con la distancia: respecto a los demás, a la presión del día a día o a una situación. Puede sentirse como refugio o como aislamiento. Cómo llegaste y si querías irte son las pistas principales."
+          },
+          {
+            "question": "¿Qué significa soñar que estás en una isla desierta?",
+            "answer": "Estar varado puede acompañar la sensación de estar desconectado, poco escuchado o de tener que arreglártelas solo. No es un presagio. Anota si hacías señales, construías algo o simplemente esperabas."
+          },
+          {
+            "question": "¿Qué significa soñar con una isla paradisíaca?",
+            "answer": "Una isla soleada y tranquila puede reflejar una necesidad de descanso, de pausa o de espacio propio. Si esa calma te parecía vacía más que reconfortante, quizá encaje mejor la pista de la soledad. ¿Qué hacías allí?"
+          },
+          {
+            "question": "¿Por qué sueño que no puedo salir de una isla?",
+            "answer": "Sin barco, sin puente, demasiada agua para nadar: la escena puede hacer eco de una situación en la que te sientes atascado o cuya salida aún no ves. Fíjate en qué faltaba: una herramienta, una persona o el empuje para intentarlo."
+          }
+        ],
+        "documentMetaDescription": "Soñar con una isla, una isla desierta o quedarte atrapado en ella: qué pueden decir la distancia, el refugio y el regreso, con preguntas y un ejemplo."
       },
       "de": {
         "slug": "insel",
         "name": "Insel",
-        "shortDescription": "Auf einer Insel können im Traum Abstand, Schutz, Selbstständigkeit oder Isolation in den Vordergrund rücken. Ob du bleiben willst oder einen Weg zurück suchst, macht den emotionalen Unterschied.",
+        "shortDescription": "Eine Insel im Traum rückt oft Abstand in den Mittelpunkt: Wasser ringsum, das Festland in der Ferne. Die Szene kann den Wunsch nach Rückzug und Ruhe begleiten oder das Gefühl, abgeschnitten zu sein. Ob Sie bleiben oder weg wollten, verändert die Lesart.",
         "askYourself": [
-          "War die Insel bewohnt, verlassen, üppig oder karg?",
-          "Gab es ein Boot, eine Brücke oder einen anderen Weg zum Festland?",
-          "Hast du dich dort sicher, frei, einsam oder gefangen gefühlt?"
+          "Wollte ich auf der Insel bleiben, oder habe ich einen Weg zurück gesucht?",
+          "War die Insel grün und einladend oder kahl und verlassen?",
+          "Wer oder was ist mir gerade fern, freiwillig oder nicht?"
         ],
-        "modifiedAt": "2026-07-24",
-        "faq": []
+        "modifiedAt": "2026-10-08",
+        "faq": [
+          {
+            "question": "Was bedeutet eine Insel im Traum?",
+            "answer": "Die Insel wird oft mit Abstand verbunden: zu anderen Menschen, zum Alltagsdruck oder zu einer bestimmten Situation. Sie kann wie ein Zufluchtsort oder wie Isolation wirken. Wie Sie dorthin kamen und ob Sie wegwollten, sind die wichtigsten Hinweise."
+          },
+          {
+            "question": "Was bedeutet es, im Traum auf einer einsamen Insel gestrandet zu sein?",
+            "answer": "Gestrandet zu sein kann zu dem Gefühl passen, abgeschnitten, ungehört oder auf sich allein gestellt zu sein. Ein Omen ist es nicht. Notieren Sie, ob Sie Zeichen gaben, etwas bauten oder einfach warteten."
+          },
+          {
+            "question": "Was bedeutet eine paradiesische Insel im Traum?",
+            "answer": "Eine sonnige, friedliche Insel kann ein Bedürfnis nach Erholung, Pause oder eigenem Raum spiegeln. Wirkte die Ruhe eher leer als wohltuend, liegt die Spur der Einsamkeit näher. Was haben Sie dort getan?"
+          },
+          {
+            "question": "Warum träume ich, dass ich eine Insel nicht verlassen kann?",
+            "answer": "Kein Boot, keine Brücke, zu viel Wasser zum Schwimmen: Die Szene kann eine Lage aufgreifen, in der Sie festsitzen oder den Ausweg noch nicht sehen. Achten Sie darauf, was fehlte: ein Werkzeug, ein Mensch oder der Mut, es zu versuchen."
+          }
+        ],
+        "documentMetaDescription": "Insel im Traum, einsam, paradiesisch oder ohne Rückweg: was Abstand, Rückzug und der Weg zurück sagen können, mit Fragen und einem Tagebuchbeispiel."
       },
       "it": {
         "slug": "isola",
         "name": "Isola",
-        "shortDescription": "Un’isola può mettere in primo piano distanza, riparo, autonomia o isolamento. Voler restare o cercare una via di ritorno cambia completamente l’emozione legata al luogo.",
-        "modifiedAt": "2026-07-24",
+        "shortDescription": "Sognare un’isola mette spesso la distanza al centro della scena: acqua tutt’intorno, la terraferma lontana. Il sogno può accompagnare un bisogno di rifugio e di calma, o la sensazione di essere tagliato fuori. Voler restare o partire cambia la lettura.",
+        "modifiedAt": "2026-10-08",
         "askYourself": [
-          "Che cosa ha cambiato isola nella scena?",
-          "Quale emozione è rimasta dopo il risveglio?"
+          "Avevo voglia di restare sull’isola, o cercavo un modo per tornare?",
+          "L’isola era verde e accogliente, o spoglia e deserta?",
+          "Chi o che cosa sento lontano in questo periodo, per scelta o no?"
         ],
-        "faq": []
+        "faq": [
+          {
+            "question": "Che cosa significa sognare un’isola?",
+            "answer": "L’isola viene spesso associata alla distanza: dagli altri, dalla pressione quotidiana o da una situazione. Può sembrare un rifugio oppure un isolamento. Il modo in cui ci sei arrivato e la voglia di andartene sono gli indizi principali."
+          },
+          {
+            "question": "Che cosa significa sognare di essere su un’isola deserta?",
+            "answer": "Essere naufrago può accompagnare la sensazione di essere tagliato fuori, poco ascoltato o costretto a cavartela da solo. Non è un presagio. Annota se facevi segnali, costruivi qualcosa o semplicemente aspettavi."
+          },
+          {
+            "question": "Che cosa significa sognare un’isola paradisiaca?",
+            "answer": "Un’isola soleggiata e tranquilla può riflettere un bisogno di riposo, di pausa o di spazio per te. Se quella calma ti sembrava vuota più che rilassante, la pista della solitudine è forse più vicina. Che cosa facevi lì?"
+          },
+          {
+            "question": "Perché sogno di non riuscire a lasciare un’isola?",
+            "answer": "Niente barca, niente ponte, troppa acqua per nuotare: la scena può fare eco a una situazione in cui ti senti bloccato o di cui non vedi ancora l’uscita. Nota che cosa mancava: uno strumento, una persona o lo slancio per provarci."
+          }
+        ],
+        "documentMetaDescription": "Sognare un’isola, un’isola deserta o di non poterla lasciare: che cosa possono dire distanza, rifugio e ritorno, con domande ed esempio di diario."
       },
       "pt": {
         "slug": "ilha",
@@ -23624,58 +23718,152 @@
       "en": {
         "slug": "cave",
         "name": "Cave",
-        "shortDescription": "Entering or seeing a cave may involve shelter, retreat, discovery or uncertainty about the unknown. The entrance, depth and available light show how accessible or threatening it felt.",
-        "modifiedAt": "2026-07-24",
+        "shortDescription": "Dreaming of a cave often brings you to a threshold between light and dark. It can feel like shelter, a retreat, or an unknown that worries you. Whether you went in willingly, how deep you went and how much you could see shape the reading.",
+        "modifiedAt": "2026-10-08",
         "askYourself": [
-          "What did cave change in the scene?",
-          "Which feeling stayed with me after waking?"
+          "Did I go into the cave by choice, or was I looking for a way out?",
+          "Was it dark and narrow, or did it open onto a wider space?",
+          "Is there something right now that I would rather keep out of sight, or that I want to explore?"
         ],
-        "faq": []
+        "faq": [
+          {
+            "question": "What does it mean to dream of a cave?",
+            "answer": "A cave is often associated with shelter, withdrawal or the unknown. The same place can feel safe or threatening. Whether you entered by choice, how deep you went and how much light there was help you choose the lead that fits."
+          },
+          {
+            "question": "What does it mean to be trapped in a cave in a dream?",
+            "answer": "Being stuck underground, with a blocked entrance or a passage too narrow, can echo a situation where you feel hemmed in with no clear exit. It is not an omen. Note what blocked you and whether light or help appeared."
+          },
+          {
+            "question": "What does it mean to hide in a cave in a dream?",
+            "answer": "Taking shelter in a cave can go with a need to protect yourself, rest or step back from pressure. Ask what you were hiding from, and whether hiding felt like relief or like waiting for something to pass."
+          },
+          {
+            "question": "What does it mean to explore a dark cave in a dream?",
+            "answer": "Moving forward in the dark can reflect curiosity about something new, or the unease of not knowing what lies ahead. Your pace and what you found at the end, a treasure, water or a dead end, are the main clues."
+          }
+        ],
+        "documentMetaDescription": "Dreaming of a cave, being trapped in one or exploring it in the dark: what shelter, depth and light may say, with questions and a journal example."
       },
       "fr": {
         "slug": "grotte",
         "name": "Grotte",
-        "shortDescription": "Entrer dans une grotte ou l’observer peut mêler refuge, retrait, découverte et incertitude face à l’inconnu. L’entrée, la profondeur et la lumière indiquent si le lieu semblait accessible ou menaçant.",
-        "modifiedAt": "2026-07-24",
+        "shortDescription": "Rêver d'une grotte vous place souvent sur un seuil, entre lumière et obscurité. La grotte peut ressembler à un abri, à un lieu de retrait ou à un inconnu qui inquiète. Y être entré de votre plein gré, la profondeur et la lumière orientent la lecture.",
+        "modifiedAt": "2026-10-08",
         "askYourself": [
-          "Qu’est-ce que grotte a changé dans la scène ?",
-          "Quelle émotion est restée après le réveil ?"
+          "Suis-je entré dans la grotte par choix, ou cherchais-je une sortie ?",
+          "Était-elle sombre et étroite, ou s'ouvrait-elle sur un espace plus vaste ?",
+          "Y a-t-il en ce moment quelque chose que je préfère garder à l'abri des regards, ou que j'ai envie d'explorer ?"
         ],
-        "faq": []
+        "faq": [
+          {
+            "question": "Que signifie rêver d'une grotte ?",
+            "answer": "La grotte est souvent associée à l'abri, au retrait ou à l'inconnu. Le même lieu peut rassurer ou inquiéter. Y être entré par choix, la profondeur atteinte et la lumière présente aident à choisir la piste qui vous parle."
+          },
+          {
+            "question": "Que signifie rêver d'être coincé dans une grotte ?",
+            "answer": "Être bloqué sous terre, par une entrée effondrée ou un passage trop étroit, peut faire écho à une situation où vous vous sentez à l'étroit, sans sortie visible. Ce n'est pas un présage. Notez ce qui vous bloquait et si une lumière ou une aide apparaissait."
+          },
+          {
+            "question": "Que signifie se cacher dans une grotte en rêve ?",
+            "answer": "S'abriter dans une grotte peut accompagner un besoin de vous protéger, de vous reposer ou de prendre du recul face à une pression. Demandez-vous de quoi vous vous cachiez, et si c'était un soulagement ou une attente."
+          },
+          {
+            "question": "Que signifie explorer une grotte sombre en rêve ?",
+            "answer": "Avancer dans le noir peut refléter la curiosité pour quelque chose de nouveau, ou le malaise de ne pas savoir ce qui vient. Votre rythme et ce que vous trouviez au bout, un trésor, de l'eau, une impasse, sont les indices principaux."
+          }
+        ],
+        "documentMetaDescription": "Rêver d'une grotte, d'y être coincé ou de l'explorer dans le noir : ce que l'abri, la profondeur et la lumière peuvent dire, avec questions et exemple."
       },
       "es": {
         "slug": "cueva",
         "name": "Cueva",
-        "shortDescription": "Entrar en una cueva o contemplarla puede combinar refugio, retiro, descubrimiento e incertidumbre ante lo desconocido. La entrada, la profundidad y la luz indican si parecía accesible o amenazante.",
-        "modifiedAt": "2026-07-24",
+        "shortDescription": "Soñar con una cueva suele situarte en un umbral entre la luz y la oscuridad. La cueva puede sentirse como refugio, como un lugar para retirarte o como algo desconocido que inquieta. Si entraste por tu cuenta, la profundidad y la luz orientan la lectura.",
+        "modifiedAt": "2026-10-08",
         "askYourself": [
-          "¿Qué cambió cueva dentro de la escena?",
-          "¿Qué emoción siguió conmigo al despertar?"
+          "¿Entré en la cueva por elección, o buscaba una salida?",
+          "¿Era oscura y estrecha, o se abría a un espacio más amplio?",
+          "¿Hay ahora mismo algo que prefiero mantener a resguardo, o que tengo ganas de explorar?"
         ],
-        "faq": []
+        "faq": [
+          {
+            "question": "¿Qué significa soñar con una cueva?",
+            "answer": "La cueva se asocia a menudo con el refugio, el retiro o lo desconocido. El mismo lugar puede tranquilizar o asustar. Si entraste por elección, hasta dónde llegaste y cuánta luz había te ayudan a elegir la pista que encaja."
+          },
+          {
+            "question": "¿Qué significa soñar que estás atrapado en una cueva?",
+            "answer": "Quedarte bajo tierra, con la entrada bloqueada o un paso demasiado estrecho, puede hacer eco de una situación en la que te sientes encerrado y sin salida clara. No es un presagio. Anota qué te bloqueaba y si aparecía luz o ayuda."
+          },
+          {
+            "question": "¿Qué significa esconderse en una cueva en sueños?",
+            "answer": "Resguardarte en una cueva puede acompañar una necesidad de protegerte, descansar o tomar distancia de una presión. Pregúntate de qué te escondías, y si esconderte era un alivio o una espera."
+          },
+          {
+            "question": "¿Qué significa explorar una cueva oscura en sueños?",
+            "answer": "Avanzar a oscuras puede reflejar curiosidad por algo nuevo o la inquietud de no saber qué viene. Tu ritmo y lo que encontraste al final, un tesoro, agua o un callejón sin salida, son las pistas principales."
+          }
+        ],
+        "documentMetaDescription": "Soñar con una cueva, quedarte atrapado o explorarla a oscuras: qué pueden decir el refugio, la profundidad y la luz, con preguntas y un ejemplo de diario."
       },
       "de": {
         "slug": "hohle",
         "name": "Höhle",
-        "shortDescription": "Beim Betreten oder Betrachten einer Höhle können Schutz, Rückzug, Entdeckung oder Unsicherheit vor dem Unbekannten eine Rolle spielen. Eingang, Tiefe und Lichtverhältnisse zeigen, wie zugänglich oder bedrohlich der Ort für dich wirkte.",
+        "shortDescription": "Eine Höhle im Traum führt Sie oft an eine Schwelle zwischen Licht und Dunkel. Sie kann wie ein Unterschlupf, ein Ort des Rückzugs oder ein beunruhigendes Unbekanntes wirken. Ob Sie freiwillig hineingingen, wie tief und wie hell es war, prägt die Lesart.",
         "askYourself": [
-          "Bist du freiwillig hineingegangen oder hast du einen Ausgang gesucht?",
-          "Was hast du im Inneren gefunden, gehört oder ertastet?",
-          "Warst du allein und wie weit konntest du sehen?"
+          "Bin ich freiwillig in die Höhle gegangen, oder habe ich einen Ausgang gesucht?",
+          "War sie dunkel und eng, oder öffnete sie sich zu einem größeren Raum?",
+          "Gibt es gerade etwas, das ich lieber vor Blicken schütze, oder das ich erkunden möchte?"
         ],
-        "modifiedAt": "2026-07-24",
-        "faq": []
+        "modifiedAt": "2026-10-08",
+        "faq": [
+          {
+            "question": "Was bedeutet eine Höhle im Traum?",
+            "answer": "Die Höhle wird oft mit Schutz, Rückzug oder dem Unbekannten verbunden. Derselbe Ort kann beruhigen oder bedrohlich wirken. Ob Sie freiwillig hineingingen, wie tief Sie kamen und wie viel Licht es gab, hilft bei der Wahl der passenden Spur."
+          },
+          {
+            "question": "Was bedeutet es, im Traum in einer Höhle eingeschlossen zu sein?",
+            "answer": "Unter der Erde festzusitzen, mit verschüttetem Eingang oder zu engem Gang, kann eine Lage aufgreifen, in der Sie sich eingeengt fühlen und keinen Ausweg sehen. Ein Omen ist es nicht. Notieren Sie, was Sie aufhielt und ob Licht oder Hilfe auftauchte."
+          },
+          {
+            "question": "Was bedeutet es, sich im Traum in einer Höhle zu verstecken?",
+            "answer": "In einer Höhle Schutz zu suchen kann den Wunsch begleiten, sich zu schützen, auszuruhen oder Abstand von Druck zu gewinnen. Fragen Sie sich, wovor Sie sich versteckten und ob das Verstecken Erleichterung war oder ein Abwarten."
+          },
+          {
+            "question": "Was bedeutet es, im Traum eine dunkle Höhle zu erkunden?",
+            "answer": "Im Dunkeln voranzugehen kann Neugier auf etwas Neues spiegeln oder das Unbehagen, nicht zu wissen, was kommt. Ihr Tempo und was Sie am Ende fanden, einen Schatz, Wasser oder eine Sackgasse, sind die wichtigsten Hinweise."
+          }
+        ],
+        "documentMetaDescription": "Höhle im Traum, darin eingeschlossen oder im Dunkeln erkundet: was Schutz, Tiefe und Licht sagen können, mit Fragen und einem Tagebuchbeispiel."
       },
       "it": {
         "slug": "grotta",
         "name": "Grotta",
-        "shortDescription": "Entrare in una grotta o osservarla può unire rifugio, ritiro, scoperta e incertezza verso l’ignoto. Ingresso, profondità e luce mostrano se il luogo appariva accessibile o minaccioso.",
-        "modifiedAt": "2026-07-24",
+        "shortDescription": "Sognare una grotta ti porta spesso su una soglia tra luce e buio. La grotta può sembrare un riparo, un luogo in cui ritirarti o un ignoto che inquieta. Se ci sei entrato per scelta, quanto in fondo sei andato e quanta luce c’era orientano la lettura.",
+        "modifiedAt": "2026-10-08",
         "askYourself": [
-          "Che cosa ha cambiato grotta nella scena?",
-          "Quale emozione è rimasta dopo il risveglio?"
+          "Sono entrato nella grotta per scelta, o cercavo un’uscita?",
+          "Era buia e stretta, o si apriva su uno spazio più ampio?",
+          "C’è in questo periodo qualcosa che preferisco tenere al riparo dagli sguardi, o che ho voglia di esplorare?"
         ],
-        "faq": []
+        "faq": [
+          {
+            "question": "Che cosa significa sognare una grotta?",
+            "answer": "La grotta viene spesso associata al riparo, al ritiro o all’ignoto. Lo stesso luogo può rassicurare o spaventare. Se ci sei entrato per scelta, fin dove sei arrivato e quanta luce c’era ti aiutano a scegliere la pista giusta."
+          },
+          {
+            "question": "Che cosa significa sognare di essere intrappolato in una grotta?",
+            "answer": "Restare bloccato sottoterra, con l’ingresso crollato o un passaggio troppo stretto, può fare eco a una situazione in cui ti senti chiuso e senza un’uscita chiara. Non è un presagio. Annota che cosa ti bloccava e se comparivano luce o aiuto."
+          },
+          {
+            "question": "Che cosa significa nascondersi in una grotta in sogno?",
+            "answer": "Ripararti in una grotta può accompagnare il bisogno di proteggerti, riposare o prendere distanza da una pressione. Chiediti da che cosa ti nascondevi, e se nasconderti era un sollievo o un’attesa."
+          },
+          {
+            "question": "Che cosa significa esplorare una grotta buia in sogno?",
+            "answer": "Avanzare al buio può riflettere curiosità per qualcosa di nuovo o il disagio di non sapere che cosa arriva. Il tuo passo e ciò che trovavi in fondo, un tesoro, dell’acqua, un vicolo cieco, sono gli indizi principali."
+          }
+        ],
+        "documentMetaDescription": "Sognare una grotta, restarci intrappolato o esplorarla al buio: che cosa possono dire riparo, profondità e luce, con domande ed esempio di diario."
       },
       "pt": {
         "slug": "caverna",
@@ -23710,58 +23898,152 @@
       "en": {
         "slug": "river",
         "name": "River",
-        "shortDescription": "A river’s current may make movement, transition or an ongoing development visible. Its direction and your position in relation to the water show whether you moved with it or resisted.",
-        "modifiedAt": "2026-07-24",
+        "shortDescription": "Dreaming of a river often puts movement in front of you: water that keeps going, with or without you. It can go with a change underway or a transition you cannot slow down. Your place, on the bank, crossing or swept along, changes the reading.",
+        "modifiedAt": "2026-10-08",
         "askYourself": [
-          "What did river change in the scene?",
-          "Which feeling stayed with me after waking?"
+          "Was I watching the river from the bank, crossing it, or being carried by it?",
+          "Was the water calm and clear, or fast and muddy?",
+          "What is moving in my life right now, and am I going along with it or resisting?"
         ],
-        "faq": []
+        "faq": [
+          {
+            "question": "What does it mean to dream of a river?",
+            "answer": "A river is often associated with movement, the passing of time or a change underway. Its pace, its clarity and your position, on the bank, in the water or crossing, help you choose the lead that fits what you felt."
+          },
+          {
+            "question": "What does it mean to be swept away by a river in a dream?",
+            "answer": "Being carried off by a strong current can echo a situation moving faster than you would like, or a decision that seems to make itself. It is not an omen. Note whether you fought the current, floated or reached the bank."
+          },
+          {
+            "question": "What does it mean to cross a river in a dream?",
+            "answer": "Crossing a river can go with a transition: a new job, a move, the end of a stage of life. Notice how you crossed, by bridge, boat, ford or swimming, and whether the far bank looked inviting."
+          },
+          {
+            "question": "What does a muddy or flooding river mean in a dream?",
+            "answer": "Murky water or a river bursting its banks is often linked to confusion, stress or a situation that feels hard to contain. It predicts no disaster. Ask yourself what in your life feels as if it is spilling over right now."
+          }
+        ],
+        "documentMetaDescription": "Dreaming of a river, crossing it or being swept away: what the current, the water and the bank may say about change, with questions and an example."
       },
       "fr": {
         "slug": "riviere",
         "name": "Rivière",
-        "shortDescription": "Le courant d’une rivière peut rendre visibles le mouvement, une transition ou une évolution en cours. Sa direction et votre position par rapport à l’eau montrent si vous suiviez le flux ou résistiez.",
-        "modifiedAt": "2026-07-24",
+        "shortDescription": "Rêver d'une rivière met souvent le mouvement sous vos yeux : une eau qui avance, avec ou sans vous. Elle peut accompagner un changement en cours ou une transition impossible à ralentir. Sur la rive, en traversée ou emporté : votre place change la lecture.",
+        "modifiedAt": "2026-10-08",
         "askYourself": [
-          "Qu’est-ce que rivière a changé dans la scène ?",
-          "Quelle émotion est restée après le réveil ?"
+          "Regardais-je la rivière depuis la rive, la traversais-je, ou m'emportait-elle ?",
+          "L'eau était-elle calme et claire, ou rapide et boueuse ?",
+          "Qu'est-ce qui bouge dans ma vie en ce moment, et est-ce que je suis le mouvement ou est-ce que je résiste ?"
         ],
-        "faq": []
+        "faq": [
+          {
+            "question": "Que signifie rêver d'une rivière ?",
+            "answer": "La rivière est souvent associée au mouvement, au temps qui passe ou à un changement en cours. Son débit, sa clarté et votre place, sur la rive, dans l'eau ou en traversée, aident à choisir la piste qui correspond à ce que vous avez ressenti."
+          },
+          {
+            "question": "Que signifie rêver d'être emporté par une rivière ?",
+            "answer": "Être entraîné par un courant fort peut faire écho à une situation qui avance plus vite que vous ne le voudriez, ou à une décision qui semble se prendre sans vous. Ce n'est pas un présage. Notez si vous luttiez, vous laissiez porter ou atteigniez la rive."
+          },
+          {
+            "question": "Que signifie traverser une rivière en rêve ?",
+            "answer": "Traverser une rivière peut accompagner une transition : un nouveau travail, un déménagement, la fin d'une étape. Regardez comment vous traversiez, par un pont, en barque, à gué ou à la nage, et si l'autre rive vous attirait."
+          },
+          {
+            "question": "Que signifie rêver d'une rivière boueuse ou en crue ?",
+            "answer": "Une eau trouble ou une rivière qui déborde est souvent liée à la confusion, au stress ou à une situation difficile à contenir. Elle n'annonce aucune catastrophe. Demandez-vous ce qui, dans votre vie, semble déborder en ce moment."
+          }
+        ],
+        "documentMetaDescription": "Rêver d'une rivière, de la traverser ou d'être emporté : ce que le courant, l'eau et la rive peuvent dire du changement, avec questions et exemple."
       },
       "es": {
         "slug": "rio",
         "name": "Río",
-        "shortDescription": "La corriente de un río puede hacer visibles el movimiento, una transición o un proceso en marcha. Su dirección y tu posición respecto al agua muestran si avanzabas con ella o te resistías.",
-        "modifiedAt": "2026-07-24",
+        "shortDescription": "Soñar con un río suele ponerte delante el movimiento: un agua que sigue su curso, contigo o sin ti. Puede acompañar un cambio en marcha o una transición que no puedes frenar. Tu lugar, en la orilla, cruzando o arrastrado, cambia la lectura.",
+        "modifiedAt": "2026-10-08",
         "askYourself": [
-          "¿Qué cambió río dentro de la escena?",
-          "¿Qué emoción siguió conmigo al despertar?"
+          "¿Miraba el río desde la orilla, lo cruzaba, o me arrastraba?",
+          "¿El agua estaba tranquila y clara, o iba rápida y turbia?",
+          "¿Qué se está moviendo en mi vida ahora mismo, y me dejo llevar o me resisto?"
         ],
-        "faq": []
+        "faq": [
+          {
+            "question": "¿Qué significa soñar con un río?",
+            "answer": "El río se asocia a menudo con el movimiento, el paso del tiempo o un cambio en marcha. Su caudal, su claridad y tu posición, en la orilla, en el agua o cruzando, te ayudan a elegir la pista que encaja con lo que sentiste."
+          },
+          {
+            "question": "¿Qué significa soñar que te arrastra la corriente de un río?",
+            "answer": "Que te lleve una corriente fuerte puede hacer eco de una situación que avanza más rápido de lo que te gustaría, o de una decisión que parece tomarse sola. No es un presagio. Anota si luchabas, te dejabas llevar o llegabas a la orilla."
+          },
+          {
+            "question": "¿Qué significa cruzar un río en sueños?",
+            "answer": "Cruzar un río puede acompañar una transición: un trabajo nuevo, una mudanza, el final de una etapa. Fíjate en cómo cruzabas, por un puente, en barca, vadeando o a nado, y en si la otra orilla te atraía."
+          },
+          {
+            "question": "¿Qué significa soñar con un río sucio o desbordado?",
+            "answer": "El agua turbia o un río que se desborda se relaciona a menudo con confusión, estrés o una situación difícil de contener. No anuncia ninguna catástrofe. Pregúntate qué sientes que se está desbordando en tu vida ahora mismo."
+          }
+        ],
+        "documentMetaDescription": "Soñar con un río, cruzarlo o que te arrastre la corriente: qué pueden decir el agua, el caudal y la orilla sobre el cambio, con preguntas y un ejemplo."
       },
       "de": {
         "slug": "fluss",
         "name": "Fluss",
-        "shortDescription": "Die Strömung eines Flusses kann im Traum Bewegung, Übergang oder den Umgang mit einer laufenden Entwicklung darstellen. Richtung und deine Position zum Wasser bestimmen, ob du mitgehst oder Widerstand spürst.",
+        "shortDescription": "Ein Fluss im Traum zeigt oft Bewegung: Wasser, das weiterfließt, mit oder ohne Sie. Die Szene kann eine Veränderung oder einen Übergang begleiten, den Sie nicht bremsen können. Ob Sie am Ufer standen, hinüberwollten oder mitgerissen wurden, verändert die Lesart.",
         "askYourself": [
-          "War der Fluss langsam, reißend, klar oder schlammig?",
-          "Standest du am Ufer, hast du ihn überquert oder wurdest du mitgerissen?",
-          "Wohin floss das Wasser und konntest du sein Ziel erkennen?"
+          "Habe ich den Fluss vom Ufer aus betrachtet, ihn überquert oder hat er mich mitgerissen?",
+          "War das Wasser ruhig und klar, oder schnell und schlammig?",
+          "Was bewegt sich gerade in meinem Leben, und gehe ich mit oder halte ich dagegen?"
         ],
-        "modifiedAt": "2026-07-24",
-        "faq": []
+        "modifiedAt": "2026-10-08",
+        "faq": [
+          {
+            "question": "Was bedeutet ein Fluss im Traum?",
+            "answer": "Der Fluss wird oft mit Bewegung, dem Lauf der Zeit oder einer laufenden Veränderung verbunden. Seine Strömung, seine Klarheit und Ihre Position, am Ufer, im Wasser oder beim Überqueren, helfen, die passende Spur zu finden."
+          },
+          {
+            "question": "Was bedeutet es, im Traum von einem Fluss mitgerissen zu werden?",
+            "answer": "Von einer starken Strömung fortgetragen zu werden kann eine Lage aufgreifen, die schneller läuft, als Ihnen lieb ist, oder eine Entscheidung, die sich wie von selbst trifft. Ein Omen ist das nicht. Notieren Sie, ob Sie kämpften, sich treiben ließen oder das Ufer erreichten."
+          },
+          {
+            "question": "Was bedeutet es, im Traum einen Fluss zu überqueren?",
+            "answer": "Einen Fluss zu überqueren kann einen Übergang begleiten: eine neue Stelle, einen Umzug, das Ende einer Lebensphase. Achten Sie darauf, wie Sie hinüberkamen, über eine Brücke, mit dem Boot, durch eine Furt oder schwimmend, und ob das andere Ufer einladend wirkte."
+          },
+          {
+            "question": "Was bedeutet ein schlammiger Fluss oder Hochwasser im Traum?",
+            "answer": "Trübes Wasser oder ein Fluss, der über die Ufer tritt, wird oft mit Verwirrung, Stress oder einer schwer einzudämmenden Lage verbunden. Eine Katastrophe kündigt er nicht an. Fragen Sie sich, was in Ihrem Leben gerade überzulaufen scheint."
+          }
+        ],
+        "documentMetaDescription": "Fluss im Traum, ihn überqueren oder mitgerissen werden: was Strömung, Wasser und Ufer über Veränderung sagen können, mit Fragen und einem Beispiel."
       },
       "it": {
         "slug": "fiume",
         "name": "Fiume",
-        "shortDescription": "La corrente di un fiume può rendere visibili movimento, transizione o un processo in corso. Direzione e tua posizione rispetto all’acqua mostrano se seguivi il flusso o opponevi resistenza.",
-        "modifiedAt": "2026-07-24",
+        "shortDescription": "Sognare un fiume ti mette spesso davanti al movimento: un’acqua che va avanti, con te o senza di te. Può accompagnare un cambiamento in corso o una transizione che non riesci a rallentare. Sulla riva, in traversata o trascinato: il tuo posto cambia la lettura.",
+        "modifiedAt": "2026-10-08",
         "askYourself": [
-          "Che cosa ha cambiato fiume nella scena?",
-          "Quale emozione è rimasta dopo il risveglio?"
+          "Guardavo il fiume dalla riva, lo attraversavo, o mi trascinava?",
+          "L’acqua era calma e limpida, o veloce e fangosa?",
+          "Che cosa si sta muovendo nella mia vita in questo periodo, e lo seguo o faccio resistenza?"
         ],
-        "faq": []
+        "faq": [
+          {
+            "question": "Che cosa significa sognare un fiume?",
+            "answer": "Il fiume viene spesso associato al movimento, al tempo che passa o a un cambiamento in corso. La corrente, la limpidezza dell’acqua e la tua posizione, sulla riva, in acqua o in traversata, aiutano a scegliere la pista più vicina a ciò che hai provato."
+          },
+          {
+            "question": "Che cosa significa sognare di essere trascinato dalla corrente di un fiume?",
+            "answer": "Essere portato via da una corrente forte può fare eco a una situazione che va più veloce di quanto vorresti, o a una decisione che sembra prendersi da sola. Non è un presagio. Annota se lottavi, ti lasciavi portare o raggiungevi la riva."
+          },
+          {
+            "question": "Che cosa significa attraversare un fiume in sogno?",
+            "answer": "Attraversare un fiume può accompagnare una transizione: un nuovo lavoro, un trasloco, la fine di una fase. Guarda come attraversavi, su un ponte, in barca, a guado o a nuoto, e se l’altra riva ti attirava."
+          },
+          {
+            "question": "Che cosa significa sognare un fiume in piena o fangoso?",
+            "answer": "Acqua torbida o un fiume che esce dagli argini vengono spesso collegati a confusione, stress o a una situazione difficile da contenere. Non annunciano alcuna catastrofe. Chiediti che cosa, nella tua vita, ti sembra traboccare in questo periodo."
+          }
+        ],
+        "documentMetaDescription": "Sognare un fiume, attraversarlo o esserne trascinato: che cosa possono dire corrente, acqua e riva sul cambiamento, con domande ed esempio di diario."
       },
       "pt": {
         "slug": "rio",
@@ -23794,58 +24076,152 @@
       "en": {
         "slug": "lake",
         "name": "Lake",
-        "shortDescription": "A lake may create calm, depth, separation or an emotional state that is hard to read. Its surface, shoreline and anything visible below give the setting its distinct character.",
-        "modifiedAt": "2026-07-24",
+        "shortDescription": "Dreaming of a lake often puts you in front of still water: a surface that reflects, a depth you cannot see. The scene can go with calm, a pause, or feelings that are hard to read. The surface, the shore and what lay beneath change the reading.",
+        "modifiedAt": "2026-10-08",
         "askYourself": [
-          "What did lake change in the scene?",
-          "Which feeling stayed with me after waking?"
+          "Was the surface smooth, rippled, frozen, or too dark to see the bottom?",
+          "Did I stay on the shore, swim, or go out on a boat?",
+          "Is there something in my life that looks calm on the surface but feels deeper underneath?"
         ],
-        "faq": []
+        "faq": [
+          {
+            "question": "What does it mean to dream of a lake?",
+            "answer": "A lake is often associated with calm, pause and depth: still water that reflects the sky and hides what lies below. Its clarity, its surface and how you felt beside it help you choose the lead that fits."
+          },
+          {
+            "question": "What does a calm, clear lake mean in a dream?",
+            "answer": "Clear, still water can go with a peaceful moment, a need to slow down or a sense of seeing things more clearly. If the stillness felt eerie rather than restful, the scene may point to something held back instead."
+          },
+          {
+            "question": "What does a dark or murky lake mean in a dream?",
+            "answer": "Water too dark to see the bottom can match uncertainty, or a feeling you sense without being able to name it. It is not an omen. Notice whether you wanted to look closer or keep your distance."
+          },
+          {
+            "question": "What does it mean to swim in a lake in a dream?",
+            "answer": "Swimming in a lake can reflect how you deal with a quiet but deep emotion, easily or with effort. Note the temperature of the water, whether you could touch the bottom and whether the shore stayed in sight."
+          }
+        ],
+        "documentMetaDescription": "Dreaming of a lake, calm, dark or frozen, or of swimming in one: what the surface, the depth and the shore may say, with questions and an example."
       },
       "fr": {
         "slug": "lac",
         "name": "Lac",
-        "shortDescription": "Un lac peut créer du calme, de la profondeur, une séparation ou un état émotionnel difficile à lire. Sa surface, ses rives et ce qui apparaît sous l’eau donnent au lieu son caractère distinct.",
-        "modifiedAt": "2026-07-24",
+        "shortDescription": "Rêver d'un lac vous place souvent face à une eau immobile : une surface qui reflète, une profondeur invisible. La scène peut accompagner du calme, une pause ou des émotions difficiles à lire. La surface, la rive et ce qu'il y avait dessous orientent la lecture.",
+        "modifiedAt": "2026-10-08",
         "askYourself": [
-          "Qu’est-ce que lac a changé dans la scène ?",
-          "Quelle émotion est restée après le réveil ?"
+          "La surface était-elle lisse, ridée, gelée, ou trop sombre pour voir le fond ?",
+          "Suis-je resté sur la rive, ai-je nagé, ou suis-je parti en barque ?",
+          "Y a-t-il dans ma vie quelque chose de calme en surface qui me paraît plus profond dessous ?"
         ],
-        "faq": []
+        "faq": [
+          {
+            "question": "Que signifie rêver d'un lac ?",
+            "answer": "Le lac est souvent associé au calme, à la pause et à la profondeur : une eau immobile qui reflète le ciel et cache ce qu'il y a dessous. Sa clarté, sa surface et ce que vous ressentiez au bord aident à choisir la piste qui vous parle."
+          },
+          {
+            "question": "Que signifie rêver d'un lac calme et clair ?",
+            "answer": "Une eau claire et immobile peut accompagner un moment paisible, un besoin de ralentir ou l'impression de voir plus clair. Si ce calme vous semblait étrange plutôt que reposant, la scène peut plutôt rejoindre quelque chose de retenu."
+          },
+          {
+            "question": "Que signifie rêver d'un lac sombre ou trouble ?",
+            "answer": "Une eau trop sombre pour voir le fond peut rejoindre une incertitude, ou une émotion que l'on sent sans pouvoir la nommer. Ce n'est pas un présage. Notez si vous vouliez regarder de plus près ou garder vos distances."
+          },
+          {
+            "question": "Que signifie nager dans un lac en rêve ?",
+            "answer": "Nager dans un lac peut refléter votre façon de faire face à une émotion calme mais profonde, avec aisance ou avec effort. Notez la température de l'eau, si vous aviez pied et si la rive restait en vue."
+          }
+        ],
+        "documentMetaDescription": "Rêver d'un lac calme, sombre ou gelé, ou d'y nager : ce que la surface, la profondeur et la rive peuvent dire, avec questions et exemple de journal."
       },
       "es": {
         "slug": "lago",
         "name": "Lago",
-        "shortDescription": "Un lago puede crear calma, profundidad, separación o un estado emocional difícil de leer. Su superficie, la orilla y lo visible bajo el agua dan al lugar su carácter propio.",
-        "modifiedAt": "2026-07-24",
+        "shortDescription": "Soñar con un lago suele situarte frente a un agua quieta: una superficie que refleja y una profundidad que no se ve. La escena puede acompañar calma, una pausa o emociones difíciles de leer. La superficie, la orilla y lo que había debajo orientan la lectura.",
+        "modifiedAt": "2026-10-08",
         "askYourself": [
-          "¿Qué cambió lago dentro de la escena?",
-          "¿Qué emoción siguió conmigo al despertar?"
+          "¿La superficie estaba lisa, rizada, helada, o tan oscura que no dejaba ver el fondo?",
+          "¿Me quedé en la orilla, nadé, o salí en barca?",
+          "¿Hay algo en mi vida que parece tranquilo por fuera y que siento más hondo por dentro?"
         ],
-        "faq": []
+        "faq": [
+          {
+            "question": "¿Qué significa soñar con un lago?",
+            "answer": "El lago se asocia a menudo con la calma, la pausa y la profundidad: un agua quieta que refleja el cielo y esconde lo que hay debajo. Su claridad, su superficie y lo que sentías en la orilla te ayudan a elegir la pista que encaja."
+          },
+          {
+            "question": "¿Qué significa soñar con un lago tranquilo y cristalino?",
+            "answer": "Un agua clara y quieta puede acompañar un momento sereno, una necesidad de ir más despacio o la sensación de ver las cosas con más claridad. Si esa calma te resultaba extraña más que reparadora, la escena puede apuntar a algo contenido."
+          },
+          {
+            "question": "¿Qué significa soñar con un lago oscuro o turbio?",
+            "answer": "Un agua demasiado oscura para ver el fondo puede enlazar con la incertidumbre, o con una emoción que intuyes sin poder nombrarla. No es un presagio. Anota si querías mirar más de cerca o mantenerte a distancia."
+          },
+          {
+            "question": "¿Qué significa nadar en un lago en sueños?",
+            "answer": "Nadar en un lago puede reflejar cómo afrontas una emoción tranquila pero profunda, con soltura o con esfuerzo. Fíjate en la temperatura del agua, en si hacías pie y en si la orilla seguía a la vista."
+          }
+        ],
+        "documentMetaDescription": "Soñar con un lago tranquilo, oscuro o helado, o nadar en él: qué pueden decir la superficie, la profundidad y la orilla, con preguntas y un ejemplo."
       },
       "de": {
         "slug": "see",
         "name": "See",
-        "shortDescription": "An einem See können im Traum Ruhe, Tiefe, Abgrenzung oder eine schwer erkennbare Gefühlslage spürbar werden. Oberfläche, Ufer und das, was darunter sichtbar war, geben der Szene ihren eigenen Charakter.",
+        "shortDescription": "Ein See im Traum stellt Sie oft vor stilles Wasser: eine Oberfläche, die spiegelt, und eine Tiefe, die man nicht sieht. Die Szene kann Ruhe, eine Pause oder schwer lesbare Gefühle begleiten. Oberfläche, Ufer und das, was darunter lag, verändern die Lesart.",
         "askYourself": [
-          "War der See klar, dunkel, spiegelglatt, stürmisch oder zugefroren?",
-          "Bist du geschwommen, am Ufer geblieben oder mit einem Boot hinausgefahren?",
-          "Was konntest du unter der Oberfläche oder am gegenüberliegenden Ufer erkennen?"
+          "War die Oberfläche glatt, gekräuselt, zugefroren oder zu dunkel, um den Grund zu sehen?",
+          "Bin ich am Ufer geblieben, geschwommen oder mit einem Boot hinausgefahren?",
+          "Gibt es in meinem Leben gerade etwas, das an der Oberfläche ruhig wirkt und darunter tiefer geht?"
         ],
-        "modifiedAt": "2026-07-24",
-        "faq": []
+        "modifiedAt": "2026-10-08",
+        "faq": [
+          {
+            "question": "Was bedeutet ein See im Traum?",
+            "answer": "Der See wird oft mit Ruhe, Innehalten und Tiefe verbunden: stilles Wasser, das den Himmel spiegelt und verbirgt, was darunter liegt. Seine Klarheit, die Oberfläche und Ihr Gefühl am Ufer helfen, die passende Spur zu finden."
+          },
+          {
+            "question": "Was bedeutet ein ruhiger, klarer See im Traum?",
+            "answer": "Klares, stilles Wasser kann einen friedlichen Moment begleiten, den Wunsch, langsamer zu werden, oder das Gefühl, klarer zu sehen. Wirkte die Stille eher unheimlich als erholsam, kann die Szene auf etwas Zurückgehaltenes hinweisen."
+          },
+          {
+            "question": "Was bedeutet ein dunkler oder trüber See im Traum?",
+            "answer": "Wasser, das zu dunkel ist, um den Grund zu sehen, kann zu Unsicherheit passen oder zu einem Gefühl, das Sie spüren, aber nicht benennen können. Ein Omen ist das nicht. Notieren Sie, ob Sie genauer hinsehen oder Abstand halten wollten."
+          },
+          {
+            "question": "Was bedeutet es, im Traum in einem See zu schwimmen?",
+            "answer": "Im See zu schwimmen kann spiegeln, wie Sie mit einem ruhigen, aber tiefen Gefühl umgehen, leicht oder mühsam. Achten Sie auf die Wassertemperatur, ob Sie Grund unter den Füßen hatten und ob das Ufer in Sicht blieb."
+          }
+        ],
+        "documentMetaDescription": "See im Traum, ruhig, dunkel oder zugefroren, oder darin schwimmen: was Oberfläche, Tiefe und Ufer sagen können, mit Fragen und einem Tagebuchbeispiel."
       },
       "it": {
         "slug": "lago",
         "name": "Lago",
-        "shortDescription": "Un lago può creare calma, profondità, separazione o uno stato emotivo difficile da leggere. Superficie, riva e ciò che appare sotto l’acqua danno al luogo il suo carattere.",
-        "modifiedAt": "2026-07-24",
+        "shortDescription": "Sognare un lago ti mette spesso davanti a un’acqua ferma: una superficie che riflette e una profondità che non si vede. La scena può accompagnare calma, una pausa o emozioni difficili da leggere. La superficie, la riva e ciò che c’era sotto orientano la lettura.",
+        "modifiedAt": "2026-10-08",
         "askYourself": [
-          "Che cosa ha cambiato lago nella scena?",
-          "Quale emozione è rimasta dopo il risveglio?"
+          "La superficie era liscia, increspata, ghiacciata, o così scura da nascondere il fondo?",
+          "Sono rimasto sulla riva, ho nuotato, o sono uscito in barca?",
+          "C’è nella mia vita qualcosa di calmo in superficie che sento più profondo sotto?"
         ],
-        "faq": []
+        "faq": [
+          {
+            "question": "Che cosa significa sognare un lago?",
+            "answer": "Il lago viene spesso associato alla calma, alla pausa e alla profondità: un’acqua ferma che riflette il cielo e nasconde ciò che c’è sotto. La limpidezza, la superficie e ciò che provavi sulla riva aiutano a scegliere la pista giusta."
+          },
+          {
+            "question": "Che cosa significa sognare un lago calmo e limpido?",
+            "answer": "Un’acqua chiara e ferma può accompagnare un momento sereno, il bisogno di rallentare o la sensazione di vedere più chiaro. Se quella calma ti sembrava strana più che riposante, la scena può avvicinarsi a qualcosa di trattenuto."
+          },
+          {
+            "question": "Che cosa significa sognare un lago scuro o torbido?",
+            "answer": "Un’acqua troppo scura per vedere il fondo può avvicinarsi all’incertezza, o a un’emozione che senti senza riuscire a nominarla. Non è un presagio. Annota se volevi guardare più da vicino o tenerti a distanza."
+          },
+          {
+            "question": "Che cosa significa nuotare in un lago in sogno?",
+            "answer": "Nuotare in un lago può riflettere il modo in cui affronti un’emozione calma ma profonda, con facilità o con fatica. Nota la temperatura dell’acqua, se toccavi il fondo e se la riva restava in vista."
+          }
+        ],
+        "documentMetaDescription": "Sognare un lago calmo, scuro o ghiacciato, o di nuotarci: che cosa possono dire superficie, profondità e riva, con domande ed esempio di diario."
       },
       "pt": {
         "slug": "lago",
