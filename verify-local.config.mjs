@@ -111,6 +111,12 @@ export default {
     copy: [],
   },
   setup: [],
+  // The scripts these checks run: changing them changes what a proof proves,
+  // so proof-block flags them for the owner's review like this file.
+  deliveryFiles: [
+    'scripts/install-git-hooks.js',
+    'scripts/run-jest-changed.js',
+  ],
   checks: [
     // ---- verify:pr, reused by verify:release when the inputs are identical.
     {

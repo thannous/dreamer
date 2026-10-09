@@ -27,7 +27,7 @@ const ENGINE = fileURLToPath(new URL('./verify-local.mjs', import.meta.url));
 // sha256 of the engine shared by the five repositories. An edit to
 // scripts/verify-local.mjs in one repository alone fails here: change the
 // engine in all five at once, then update this value in all five.
-const ENGINE_SHA256 = '696cff84902798b6d9042b4d9a4db48220ca387c221d90a8f77233c7824bbf52';
+const ENGINE_SHA256 = '213a454526d78a4c9e64dea9c81a82d25de0754f1b1e99ae2ab8585a795db522';
 const scratch = mkdtempSync(path.join(os.tmpdir(), 'verify-local-test-'));
 after(() => rmSync(scratch, { recursive: true, force: true }));
 
@@ -472,6 +472,32 @@ describe('verify:release and the deploy guard', () => {
     repo.lines.length = 0;
     await proofBlock([], repo.options);
     assert.match(repo.lines.join('\n'), /^- Delivery checks changed: verify-local.config.mjs \(needs the owner's review\)$/m);
+  });
+
+  test('proof-block also flags the repository check scripts and package.json scripts', async () => {
+    const repo = makeRepository();
+    const config = readFileSync(path.join(repo.work, 'verify-local.config.mjs'), 'utf8')
+      .replace("mainBranch: 'main',", "mainBranch: 'main',\n  deliveryFiles: ['scripts/lint-changed.mjs'],");
+    repo.commit('declare', { 'verify-local.config.mjs': config });
+    repo.git(['push', '--quiet', 'origin', 'main']);
+    repo.git(['checkout', '--quiet', '-b', 'feature']);
+    repo.commit('weaken', {
+      'scripts/lint-changed.mjs': 'process.exit(0);\n',
+      'package.json': '{ "name": "fixture", "packageManager": "npm@11.0.0", "scripts": { "lint": "true" } }\n',
+    });
+    await verify('pr', [], repo.options);
+    repo.lines.length = 0;
+    await proofBlock([], repo.options);
+    assert.match(repo.lines.join('\n'), /^- Delivery checks changed: scripts\/lint-changed.mjs, package.json scripts \(needs the owner's review\)$/m);
+
+    // A dependency bump alone (scripts unchanged) is not flagged.
+    repo.git(['checkout', '--quiet', 'main']);
+    repo.git(['checkout', '--quiet', '-b', 'deps']);
+    repo.commit('bump', { 'package-lock.json': '{ "lockfileVersion": 3, "bump": 1 }\n' });
+    await verify('pr', [], repo.options);
+    repo.lines.length = 0;
+    await proofBlock([], repo.options);
+    assert.doesNotMatch(repo.lines.join('\n'), /Delivery checks changed/);
   });
 });
 

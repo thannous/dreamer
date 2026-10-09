@@ -175,6 +175,9 @@ export function normaliseConfig(raw) {
       copy: raw.deps?.copy ?? [],
     },
     setup: raw.setup ?? [],
+    // The repository's own check scripts (hook installer, lint wrappers…):
+    // changing them changes what the checks prove, like the config itself.
+    deliveryFiles: raw.deliveryFiles ?? [],
     checks,
     hook: {
       forbidden: raw.hook?.forbidden ?? DEFAULT_FORBIDDEN,
@@ -856,13 +859,28 @@ export async function proofBlock(argv = [], { cwd = process.cwd(), env = cleanGi
     `- Integration: ${integration}`,
   ];
   // A PR can change its own checks or hook rules: say so, for the owner's review.
-  const delivery = (changedFiles(git, base, sha)?.files ?? []).filter((file) => matchesAny(file, DELIVERY_FILES));
+  const scope = changedFiles(git, base, sha);
+  const delivery = (scope?.files ?? []).filter((file) => matchesAny(file, [...DELIVERY_FILES, ...config.deliveryFiles]));
+  if (scope && scriptsChanged(git, scope.mergeBase, sha)) delivery.push('package.json scripts');
   if (delivery.length) lines.push(`- Delivery checks changed: ${delivery.join(', ')} (needs the owner's review)`);
   log(lines.join('\n'));
   return { status: proof.result === 'passed' ? 0 : 1, proof };
 }
 
 // ---------------------------------------------------------------- pre-push hook
+
+/** Whether the `scripts` of package.json differ between two commits (the checks run them). */
+function scriptsChanged(git, from, to) {
+  const scripts = (rev) => {
+    const manifest = git(['show', `${rev}:package.json`], { allowFailure: true });
+    try {
+      return JSON.stringify(manifest ? JSON.parse(manifest).scripts ?? {} : {});
+    } catch {
+      return null;
+    }
+  };
+  return scripts(from) !== scripts(to);
+}
 
 /** Files that define how a repository is checked; changing them needs the owner's review. */
 export const DELIVERY_FILES = [CONFIG_FILE, 'scripts/verify-local.mjs', 'scripts/test-verify-local.mjs', '.githooks/**'];
