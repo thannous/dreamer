@@ -61,60 +61,62 @@ existantes après le contrôle canonique ; revérifier lors d'un transfert d'oct
 d'un changement d'inputs, d'un soupçon de corruption ou d'un contrôle Release requis.
 Cette règle supprime les répétitions ad hoc, pas les gardes existantes du runner.
 
-Regrouper les corrections locales et leur relecture avant le push lorsque c'est
-possible. Éviter les pushes successifs pour chaque ajustement documentaire :
-chacun relance le contrôle local. Ce contrôle reste exigé sur le dernier commit
-de la PR : cette règle n'autorise ni son contournement ni une modification
-implicite du hook ou du pipeline.
+Regrouper les corrections locales et leur relecture avant de demander la fusion
+lorsque c'est possible. Pousser ne coûte rien : le hook ne lance aucune suite.
+`npm run verify:pr` reste exigé sur le dernier commit de la PR : cette règle
+n'autorise ni le contournement du hook ni une modification implicite des
+contrôles (`verify-local.config.mjs`) ou du pipeline.
 
-## Avant le push : même sélection que la CI
+## Pousser, puis prouver avant la fusion (règle commune v2)
 
-Chaque push lance automatiquement le hook `.githooks/pre-push`, installé par
-`npm ci`/`npm install`. Il exécute, sur le commit extrait :
+Chaque push lance le hook `.githooks/pre-push`, installé par `npm ci`/`npm install`.
+Il dure quelques secondes et ne lance aucune suite : fichiers interdits (`.env`,
+clés), secrets et taille des fichiers envoyés, puis il affiche la preuve de
+l'arbre poussé (une preuve absente ne bloque pas). Une suppression de branche ou
+un push sans nouveau commit ne lance rien. Les agents n'utilisent jamais
+`git push --no-verify`.
+
+Avant la fusion, l'auteur lance, sur la tête de la PR :
 
 ```sh
-npm run verify:fast
+git fetch origin master
+npm run verify:pr
 ```
 
-soit `npm run test:prepush`, puis `npm run lint` et `npm run lint:scripts`,
-avec deux écarts issus du même classificateur. Quand `run_site` est vrai
-(`docs-src/`, générateurs, données symbole ou guide déjà routées vers le
-site), `test:prepush` lance aussi `docs:build` et `docs:check` avant le
-contrôle final d'arbre propre. Quand aucune surface produit n'est
-sélectionnée (documentation hors contenu du site), lint est sauté. Dans les
-deux cas le hook affiche le SHA du commit extrait. `test:prepush` actualise
-`origin/master`, calcule le même merge-base que CircleCI (y compris pour une
-PR empilée), réutilise le classificateur existant, puis lance les types
-application/tests lorsque Noctalia est concernée et la sélection Jest
-impactée. Les filtres manuels sont refusés. Une erreur de fetch, un arbre
-non committé ou une modification de HEAD/base/arbre pendant le contrôle
-invalide le résultat. Le SHA et la base contrôlés sont affichés. Pousser
-depuis un arbre propre et committé de la branche poussée ; le hook refuse un
-push de nouveaux commits d'une autre branche. Une suppression de branche ou
-un push sans nouveau commit ne lance rien. Sans dépendances installées, le
-hook s'arrête et indique la commande d'installation. Les agents n'utilisent
-jamais `git push --no-verify`.
+Le contrôle porte sur une copie isolée du commit (`git worktree`, avec les
+`node_modules` du checkout principal liés) : le travail non committé n'est ni
+vérifié ni déplacé, et aucun arbre propre n'est exigé. Il lance `typecheck:app`,
+`typecheck:tests`, `lint`, `lint:scripts`, les tests Jest liés au diff depuis le
+merge-base avec `origin/master` (`test:changed`, même base que CircleCI, y
+compris pour une PR empilée), les contrats statiques Supabase et Edge, et les
+tests du moteur. Selon les chemins changés depuis `origin/master`, il ajoute
+`docs:build` et `docs:check` (site : `docs-src/`, `data/`, `scripts/`, fichiers
+de paquet), les tests du classificateur CircleCI (`.circleci/`), Meditation
+(`apps/meditation` et fichiers partagés) et les Edge Functions sous Deno
+(`supabase/functions`, `supabase/lib`, `supabase/migrations`, `deno.lock`).
+La liste exacte est dans `verify-local.config.mjs`.
 
-Cette commande qualifie les pushes ordinaires de branche, pas une publication
-par tag. Les branches `release` et `release/*` sont refusées : elles exigent la
-validation complète locale sur le SHA exact (ou une pipeline CircleCI manuelle
-avec `force_full_validation: true`), décrite dans le
-[guide CircleCI](circleci-migration.md#validation-complète-locale).
+La preuve est liée à l'arbre vérifié et écrite dans
+`$(git rev-parse --git-common-dir)/verify-proofs/`. Un contrôle déjà réussi sur
+les mêmes entrées est réutilisé : une correction documentaire ne rejoue ni les
+types ni le lint (leurs entrées ignorent le Markdown, `doc_web_interne/`,
+`marketing/` et `specs/`), et un second `verify:pr` sur le même arbre ne rejoue
+rien. Un contrôle spécialisé impossible sur la machine (Deno absent, par
+exemple) rend la preuve `incomplete` : le lancer ailleurs (pipeline CircleCI
+manuelle, machine du propriétaire), puis relancer avec
+`--external <contrôle>=<preuve>`.
 
-Ce contrôle remplace une sélection finale manuelle incomplète ; ne pas lui
-ajouter systématiquement `test:file`, `test:related` et la suite entière.
-Pendant le développement, les vérifications du tableau restent proportionnées ;
-le hook s'applique ensuite à chaque push, même documentaire (le classificateur
-n'y sélectionne alors aucun test applicatif, et lint est sauté). Un module partagé de traductions
-peut sélectionner beaucoup de tests, car ses consommateurs sont réellement
-nombreux.
+Ce contrôle qualifie une PR, pas une publication. Une publication, une branche
+`release` ou `release/*` et un tag exigent `npm run verify:release` sur le SHA
+exact (ou une pipeline CircleCI manuelle avec `force_full_validation: true`),
+décrit dans le [guide CircleCI](circleci-migration.md#validation-complète-locale).
 
-`docs:build` et `docs:check` font partie du hook quand le classificateur
-sélectionne le site. Meditation, Edge et appareils restent ceux demandés par
-les surfaces modifiées ; le hook ne les remplace pas. En présence
-de travail sans rapport, utiliser un worktree isolé (avec ses propres
-dépendances installées), sans supprimer ni embarquer ce travail pour rendre
-l'arbre propre.
+Ce contrôle remplace une sélection finale manuelle ; ne pas lui ajouter
+systématiquement `test:file`, `test:related` et la suite entière. Pendant le
+développement, les vérifications du tableau restent proportionnées. Un module
+partagé de traductions peut sélectionner beaucoup de tests, car ses
+consommateurs sont réellement nombreux. Les vérifications sur appareil restent
+celles que demandent les surfaces modifiées.
 
 Pendant le développement, `npm run test:changed` utilise le merge-base avec la
 référence **locale** `origin/master`. `JEST_CHANGED_SINCE=HEAD npm run test:changed`
@@ -128,18 +130,21 @@ Regrouper les corrections et vérifier les changements de dernière minute avant
 un push. Quand plusieurs tâches travaillent sur une même branche, garder un
 responsable de l'intégration et signaler les nouveaux commits.
 
-1. Renseigner la section **Local proof** de la PR : commandes, SHA, résultat,
-   preuves encore manquantes. Push et PR ne déclenchent pas CircleCI.
-2. Traiter les commentaires de revue par de nouveaux commits ; chaque push
-   relance le hook et met à jour la preuve.
-3. Avant fusion, `git fetch origin master`. Si `master` a bougé depuis le
-   contrôle, fusionner `origin/master` dans la branche et pousser : le hook
-   rejoue le contrôle sur la tête fusionnée.
-4. Relire `gh pr view <PR> --json headRefOid,mergeable` : la tête doit être le
-   SHA de la preuve locale, sans commentaire bloquant. Dans le périmètre de
-   fusion autorisé, utiliser
-   `gh pr merge <PR> --merge --match-head-commit <SHA vérifié>` pour éviter une
-   fusion après un push concurrent. Une nouvelle tête nécessite son propre verdict.
+1. Coller dans la section **Local proof** de la PR la sortie de
+   `node scripts/verify-local.mjs proof-block`, puis ajouter les preuves encore
+   manquantes (natif, appareil). Push et PR ne déclenchent pas CircleCI.
+2. Traiter les commentaires de revue par de nouveaux commits, puis relancer
+   `npm run verify:pr` sur la nouvelle tête et mettre la preuve à jour.
+3. Avant fusion, `git fetch origin master`. Si `master` a bougé depuis la
+   preuve, fusionner `origin/master` dans la branche, relancer
+   `npm run verify:pr` (seuls les contrôles dont les entrées ont changé
+   tournent) et mettre `## Local proof` à jour.
+4. Le CTO fusionne en squash quand la PR n'est plus en brouillon, que le
+   `Commit SHA` de la preuve est la tête de la PR
+   (`gh pr view <PR> --json headRefOid,mergeable`), sans fil ouvert ni conflit.
+   `gh pr merge <PR> --squash --match-head-commit <SHA vérifié>` évite une
+   fusion après un push concurrent. Une nouvelle tête nécessite son propre
+   verdict.
 
 Les jobs site et Noctalia conservent la même sélection Jest et la même base.
 Lorsque Noctalia exécute déjà cette sélection (ou la suite exhaustive), le job

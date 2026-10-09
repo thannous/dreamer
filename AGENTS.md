@@ -5,12 +5,12 @@ Noctalia is an Expo/React Native dream-journal app with a Supabase backend and a
 Start with the [repository task index](doc_web_interne/docs/README.md) for feature
 entry points and current guides. Run `mise exec -- npm run scripts:list` for the
 command catalog; [scripts/README.md](scripts/README.md) explains prerequisites and effects.
-Changes are proven locally: the `pre-push` hook runs `npm run verify:fast`, the PR
-records that proof, and review happens in PR comments. Remote CI (`.circleci/config.yml`,
-`.circleci/continue.yml`) runs for a manual or API trigger (GitHub App
-`pipeline.event.name=api`, legacy OAuth `pipeline.trigger.type=api` or
-`pipeline.trigger_source=api`) or when `force_full_validation` is true. Webhook
-pushes run nothing. Find filenames with
+Changes are proven locally under the [common delivery rule](#livraison--règle-commune-v2):
+`npm run verify:pr` before merge, `npm run verify:release` before a publish, and the PR
+records that proof; review happens in PR comments. Remote CI (`.circleci/config.yml`,
+`.circleci/continue.yml`) runs only for a manual or API trigger (GitHub App
+`pipeline.event.name=api`, legacy OAuth `pipeline.trigger.type=api`) or when
+`force_full_validation` is true. Webhook pushes run nothing. Find filenames with
 `rg --files` before reading guessed paths; scoped search examples are in the task index.
 
 ## Structure and Sources of Truth
@@ -109,8 +109,8 @@ A direct request to implement or fix something authorizes work within that scope
 A request to prepare or audit a proposal authorizes the proposal only. An explicit
 instruction to implement an identified proposal authorizes its implementation and
 applicable delivery steps: scoped fixes, appropriate validation, correction of related
-failures, commits, PR creation, push, and merge after the local check passes on the
-final PR head. Reuse that
+failures, commits, PR creation and push, then `npm run verify:pr` on the final PR head;
+the merge follows the [delivery rule](#livraison--règle-commune-v2). Reuse that
 authorization. Explicit local-only, no-push, review-before-merge, and publication
 boundaries take precedence; a production-triggering merge requires publication intent.
 
@@ -123,7 +123,7 @@ Keep execution to four gates, with detail proportional to the work:
 3. Implement and validate according to the risk table below, reusing still-valid evidence.
    Independent review, native builds, and full suites depend on risk and applicable release
    requirements; they are not mandatory for every change.
-4. Deliver within the approved scope, verify the local check on the final PR head before
+4. Deliver within the approved scope, run `npm run verify:pr` on the final PR head before
    merge, and verify the actual result at each requested delivery stage. Local checks, merge,
    deployment, device installation, and public availability remain distinct evidence.
 
@@ -229,6 +229,30 @@ can delegate desktop Run actions to it; this checkout does not ship that file.
 Use the package scripts when it is absent. See `./script/build_and_run.sh --help`
 for supported modes.
 
+## Livraison : règle commune v2
+
+> Push rapide ; contrôles locaux proportionnés avant fusion ; publication vérifiée pour la cible livrée ; CI distante à la demande et sans attente obligatoire.
+
+Règle canonique, identique pour shapier, skillcodex, clawdeals, bodylab et dreamer :
+[Règle commune de livraison, v2](https://github.com/thannous/shapier/blob/main/docs/regle-commune-livraison.md).
+Le moteur `scripts/verify-local.mjs` (et ses tests `scripts/test-verify-local.mjs`) est identique
+dans les cinq dépôts : ne jamais le modifier ici seul. Les contrôles de ce dépôt sont dans
+`verify-local.config.mjs`.
+
+| Moment | Commande | Effet |
+| --- | --- | --- |
+| Push | hook `.githooks/pre-push` (automatique) | quelques secondes : fichiers interdits, secrets, taille ; affiche la preuve de l'arbre poussé (absente : non bloquant) |
+| Avant fusion | `npm run verify:pr` | contrôles de la PR sur une copie isolée du commit (le travail en cours n'est ni vérifié ni touché) ; preuve liée à l'arbre, contrôles déjà réussis sur les mêmes entrées réutilisés |
+| Description de PR | `node scripts/verify-local.mjs proof-block` | imprime la section `## Local proof` à coller |
+| Avant publication | `npm run verify:release` | sur le commit `master` livré : contrôles de la PR réutilisés, validation complète locale (portefeuille complet de `.circleci/continue.yml`), site et app web reconstruits pour ce commit |
+
+- Push libre et brouillons permis ; ne jamais contourner ni désactiver le hook (`--no-verify`, `core.hooksPath`).
+- Fusion : PR hors brouillon ; le `Commit SHA` de `## Local proof` est la tête de la PR ; aucun fil ouvert ; pas de conflit ; relecture du CTO sans point bloquant. Le CTO fusionne en squash ; un relecteur ne pousse jamais sur la branche de l'auteur.
+- Base avancée : fusionner la base dans la branche, relancer `verify:pr` (seuls les contrôles dont les entrées ont changé tournent), mettre `## Local proof` à jour.
+- Publication : `verify:release` sur le commit livré de `master` (un squash d'une branche à jour réutilise les contrôles identiques ; le build et l'identité sont refaits), puis vérifier la production et noter le SHA.
+- Contrôles spécialisés : Edge Functions sous Deno (`edge-functions`, quand `supabase/functions`, `supabase/lib`, `supabase/migrations` ou `deno.lock` changent ; toujours en publication) ; base et navigateur (`e2e-backend` : Supabase local sous Docker et Chromium, en publication) ; navigateur (`testerarmy-*` : campagnes TesterArmy site, Dreamer en quatre passes, Lucid et Meditation, en publication). Meditation (`meditation`, quand `apps/meditation` ou ses fichiers partagés changent) demande `npm ci` dans `apps/meditation` du checkout principal. Quand la machine ne peut pas les lancer (pas de Deno, de Docker ou de TesterArmy), la preuve vient d'un pipeline CircleCI manuel (`force_full_validation: true`) ou de la machine du propriétaire : `--external <contrôle>=<preuve>`. Les vérifications sur appareil et les builds EAS restent hors de ces commandes (voir Delivery and QA Continuity).
+- CI distante : à la demande seulement ; elle ne conditionne ni la fusion ni la publication. Aucun aperçu automatique.
+
 ## Validation
 
 - Prefer real E2E journeys for functional outcomes, with exact assertions and a repeatable
@@ -259,14 +283,13 @@ Choose validation by the behavior and risk changed, not by the number of files o
 - Pick one appropriate focused test entry point; the commands below are alternatives, not a sequence to run in full.
 - Apply the E2E-first policy above when adding coverage; isolation controls require a concrete failure model, not a mandatory implementation order.
 - Once checks pass, rerun only when changed code, dependencies/configuration, a failure or an unresolved risk invalidates that evidence. A documentation-only follow-up does not invalidate code tests.
-- Consolidate local corrections and evidence before pushing when practical. Do not push each small documentation correction separately; every push reruns the local check.
-- Every push runs the tracked `.githooks/pre-push` hook, which `npm ci`/`npm install` installs (the `prepare` script sets `core.hooksPath`). It runs `npm run verify:fast` on the checked-out commit: `test:prepush` (refreshes `origin/master`, uses the CI classifier, checks applicable app/test types and root Jest, rejects a dirty tree or a revision modified during the run). When the classifier sets `run_site` (tracked `docs-src/`, site generators, and symbol or guide data the classifier already routes to the site), that step also runs `docs:build` and `docs:check`. Then `lint` and `lint:scripts` run, except when the classifier selects no product surface (internal docs, planning markdown, generated `docs/`): those pushes skip lint and still bind the SHA. Push from a clean committed worktree of the branch you push. Agents never use `git push --no-verify`: fix the failure or report it as a blocker. Pushes that delete a branch or send no new commit skip the check.
-- The hook does not replace Meditation, Edge (Deno), native, or E2E checks required by the changed surface; run those locally as the proportional validation above requires. Site build and check for classifier site inputs are part of `verify:fast`.
-- Fill the PR template's **Local proof** (commands, commit SHA, result, what remains unchecked). Review happens in PR comments; answer them with new commits, which rerun the hook.
-- `test:changed` defaults to the merge-base with the local `origin/master`; `JEST_CHANGED_SINCE=HEAD` is only an explicit working-tree delta, never proof of a committed PR. `test:prepush` refreshes the remote base. Preserve unrelated WIP by validating in an isolated worktree.
-- Before merging, fetch `origin/master`. If it moved since the check, merge it into the branch and push: the hook reruns the check on the merged head; update the Local proof. Read the PR head again and merge with `--match-head-commit <sha-from-local-proof>`; if the head changed, qualify the new head. Batch a coherent work package before pushing; coordinate ownership of a branch receiving concurrent edits.
-- Remote CI runs when `pipeline.event.name` is `api` (GitHub App), when `pipeline.trigger.type` or the older `pipeline.trigger_source` is `api` (legacy GitHub OAuth manual or API trigger), or when `force_full_validation` is true. Automatic webhook pushes run nothing. Release branches, tags and a validated mobile release commit, which used to get CircleCI's full portfolio, now require the full local validation on the exact SHA (or a manual CircleCI pipeline with `force_full_validation: true`); see [the CircleCI guide](doc_web_interne/docs/circleci-migration.md).
-- Keep the hook, `verify:fast`, the classifier and the CircleCI jobs intact. Do not bypass or weaken them, or alter CI filtering, as part of a feature without a separate justified scope.
+- Push freely, drafts included: the pre-push hook takes a few seconds and runs no suite. The checks run once, before merge, with `npm run verify:pr` (see [Livraison](#livraison--règle-commune-v2)). Agents never use `git push --no-verify` nor change `core.hooksPath`: fix a blocked push or report it as a blocker.
+- `npm run verify:pr` checks the committed head in an isolated copy (`git worktree`, `node_modules` linked from the main checkout), so uncommitted work is neither checked nor disturbed. It runs `typecheck:app`, `typecheck:tests`, `lint`, `lint:scripts`, the root Jest tests related to the diff (`test:changed`), the static database contracts and the engine tests. It adds `docs:build` and `docs:check` when site inputs changed (`docs-src/`, `data/`, `scripts/`, package files), the CI contract tests when `.circleci/` changed, Meditation (`apps/meditation`, shared release files) and the Edge Functions under Deno (`supabase/functions`, `supabase/lib`, `supabase/migrations`, `deno.lock`) when theirs changed. A check that already passed on the same inputs is reused (typecheck and lint ignore Markdown and `doc_web_interne/`, `marketing/`, `specs/`). Native device checks and store builds stay outside it.
+- It compares against the local `origin/master`: fetch it first. `test:changed` uses the same merge-base; `JEST_CHANGED_SINCE=HEAD` is only an explicit working-tree delta, never proof of a committed PR.
+- Paste `node scripts/verify-local.mjs proof-block` into the PR template's **Local proof**, then say what remains unchecked (native, device). Review happens in PR comments; answer them with new commits, then rerun `npm run verify:pr` on the new head before merge.
+- If `origin/master` moved since the proof, merge it into the branch, rerun `npm run verify:pr` (only the checks whose inputs changed run again) and update the Local proof. Batch a coherent work package before pushing; coordinate ownership of a branch receiving concurrent edits.
+- Remote CI runs when `pipeline.event.name` is `api` (GitHub App), when `pipeline.trigger.type` is `api` (legacy GitHub OAuth manual or API trigger), or when `force_full_validation` is true. Automatic webhook pushes run nothing, and neither a merge nor a publish waits for it. Release branches, tags and a validated mobile release commit, which used to get CircleCI's full portfolio, now require `npm run verify:release` on the exact SHA (or a manual CircleCI pipeline with `force_full_validation: true`, cited with `--external`); see [the CircleCI guide](doc_web_interne/docs/circleci-migration.md).
+- Keep the hook, `verify-local.config.mjs`, the classifier and the CircleCI jobs intact. Do not bypass or weaken them, or alter CI filtering, as part of a feature without a separate justified scope. `scripts/verify-local.mjs` and its tests are shared by five repositories: never change them here alone.
 - Minor follow-up fixes need a focused delta review when relevant, not a new full review/test cycle. Reuse evidence for unchanged code and identify the revision it covers.
 - Missing native evidence stays unqualified; do not replace it with repeated unit tests or claim a mock proves persistence or production behavior.
 - For TalkBack qualification, follow [the short Motorola protocol](doc_web_interne/docs/qualification-talkback.md): validate focus/gesture/audio measurement with a short pilot before a full journey, distinguish keyboard/ADB evidence from physical gestures, and restore/re-read device settings even after failure. For a requested fix, continue from the reproduced defect to correction and the authorized retest.
@@ -286,7 +309,7 @@ Commit source inputs and tracked manifests, never generated `docs/`. Deployment 
 
 Production publishes are manual. They happen only when the founder or the CTO decides to publish. A Git push or merge to `master` must not deploy production by itself.
 
-Publish one `master` SHA. `verify:full` and `verify:site` are not npm scripts. The Local proof for that SHA must show `npm run verify:fast` passed. When the change includes the marketing site, the same proof must show `npm run docs:build` and `npm run docs:check` passed. `verify:fast` runs those two when the classifier selects the site. Run them explicitly when it does not. `npm run docs:deploy:prod` runs `docs:release-check` before the upload. A merge made on GitHub creates a new SHA that the pre-push hook did not check. Run the checks on that merged `master` SHA before publishing it.
+Publish one `master` SHA. From a clean checkout where `HEAD` is the fetched `origin/master`, run `npm run verify:release` and publish only when it ends `passed`. It reuses every check the PR proof passed on identical inputs (a squash of an up-to-date branch has the same tree), rebuilds the site (`docs:build`, `docs:check`) and the web app (`build:web`) for this commit, and runs the full local validation; `node scripts/verify-local.mjs status` shows the proof of `HEAD`. A check this machine cannot run (Deno, Docker, TesterArmy) leaves the proof `incomplete`: run it in a manual CircleCI pipeline with `force_full_validation: true` and rerun with `--external <check>=<pipeline>`. `npm run docs:deploy:prod` then runs `docs:release-check` before the upload. After the publish, check production (health, touched pages) and record the SHA and the deployment.
 
 ### Vercel (noctalia.vercel.app and dream.noctalia.app)
 
@@ -311,7 +334,7 @@ Project `noctalia`. There is no `wrangler.toml` and no `pages_build_output_dir`.
 
 1. Open Workers & Pages and select the Pages project `noctalia`.
 2. Open Build, then edit Branch control, and turn off Enable automatic production branch deployments. The same control is labeled Settings, Builds and deployments, production branch, in older dashboard copy.
-3. Leave preview deployments on. They do not update `noctalia.app`. Set Preview branch to None only when preview builds should stop too.
+3. Set Preview branch to None as well: under the delivery rule, previews are on demand only (`npm run docs:deploy:preview`), never one per pushed branch. Preview deployments do not update `noctalia.app`.
 
 Until step 2 is saved, a push to `master` still publishes the site.
 
