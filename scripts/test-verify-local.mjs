@@ -27,7 +27,7 @@ const ENGINE = fileURLToPath(new URL('./verify-local.mjs', import.meta.url));
 // sha256 of the engine shared by the five repositories. An edit to
 // scripts/verify-local.mjs in one repository alone fails here: change the
 // engine in all five at once, then update this value in all five.
-const ENGINE_SHA256 = '3cbbbc27d722741c57def3ba6532722ea73b4e215e8ed3332da331c1d7bfdf33';
+const ENGINE_SHA256 = '0e37fe75127ddb44dfee077c6844e935c2fd93550014a91c5b3f44e7e8a7bde4';
 const scratch = mkdtempSync(path.join(os.tmpdir(), 'verify-local-test-'));
 after(() => rmSync(scratch, { recursive: true, force: true }));
 
@@ -540,6 +540,20 @@ describe('verify:release and the deploy guard', () => {
     repo.lines.length = 0;
     await proofBlock([], repo.options);
     assert.match(repo.lines.join('\n'), /^- Delivery checks changed: scripts\/lint-changed.mjs, package.json scripts \(needs the owner's review\)$/m);
+
+    // A workspace's scripts and a tool config count too.
+    repo.commit('weaken more', {
+      'apps/web/package.json': '{ "name": "web", "scripts": { "test": "true" } }\n',
+      'apps/web/tsconfig.json': '{ "compilerOptions": { "strict": false } }\n',
+      'eslint.config.mjs': 'export default [];\n',
+    });
+    await verify('pr', [], repo.options);
+    repo.lines.length = 0;
+    await proofBlock([], repo.options);
+    const flagged = repo.lines.join('\n');
+    for (const item of ['apps/web/package.json scripts', 'apps/web/tsconfig.json', 'eslint.config.mjs']) {
+      assert.ok(flagged.includes(item), `${item} is flagged`);
+    }
 
     // A dependency bump alone (scripts unchanged) is not flagged.
     repo.git(['checkout', '--quiet', 'main']);

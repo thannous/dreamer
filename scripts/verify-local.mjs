@@ -924,7 +924,10 @@ export async function proofBlock(argv = [], { cwd = process.cwd(), env = cleanGi
   // A PR can change its own checks or hook rules: say so, for the owner's review.
   const scope = changedFiles(git, base, sha);
   const delivery = (scope?.files ?? []).filter((file) => matchesAny(file, [...DELIVERY_FILES, ...config.deliveryFiles]));
-  if (scope && scriptsChanged(git, scope.mergeBase, sha)) delivery.push('package.json scripts');
+  // Every package.json the PR changes, root and workspaces: its scripts are what the checks run.
+  for (const manifest of (scope?.files ?? []).filter((file) => file === 'package.json' || file.endsWith('/package.json'))) {
+    if (!manifest.includes('node_modules/') && scriptsChanged(git, scope.mergeBase, sha, manifest)) delivery.push(`${manifest} scripts`);
+  }
   if (delivery.length) lines.push(`- Delivery checks changed: ${delivery.join(', ')} (needs the owner's review)`);
   log(lines.join('\n'));
   return { status: proof.result === 'passed' ? 0 : 1, proof };
@@ -932,12 +935,12 @@ export async function proofBlock(argv = [], { cwd = process.cwd(), env = cleanGi
 
 // ---------------------------------------------------------------- pre-push hook
 
-/** Whether the `scripts` of package.json differ between two commits (the checks run them). */
-function scriptsChanged(git, from, to) {
+/** Whether the `scripts` of a package.json differ between two commits (the checks run them). */
+function scriptsChanged(git, from, to, manifest = 'package.json') {
   const scripts = (rev) => {
-    const manifest = git(['show', `${rev}:package.json`], { allowFailure: true });
+    const text = git(['show', `${rev}:${manifest}`], { allowFailure: true });
     try {
-      return JSON.stringify(manifest ? JSON.parse(manifest).scripts ?? {} : {});
+      return JSON.stringify(text ? JSON.parse(text).scripts ?? {} : {});
     } catch {
       return null;
     }
@@ -945,8 +948,29 @@ function scriptsChanged(git, from, to) {
   return scripts(from) !== scripts(to);
 }
 
-/** Files that define how a repository is checked; changing them needs the owner's review. */
-export const DELIVERY_FILES = [CONFIG_FILE, 'scripts/verify-local.mjs', 'scripts/test-verify-local.mjs', '.githooks/**'];
+/**
+ * Files that define how a repository is checked; changing them needs the
+ * owner's review: the engine, its config and hook, and the configs of the
+ * tools the checks run (a weaker lint, type or test config passes more).
+ */
+export const DELIVERY_FILES = [
+  CONFIG_FILE,
+  'scripts/verify-local.mjs',
+  'scripts/test-verify-local.mjs',
+  '.githooks/**',
+  'turbo.json',
+  '**/eslint.config.*',
+  '**/.eslintrc*',
+  '**/tsconfig*.json',
+  '**/jest.config.*',
+  '**/vitest*.config.*',
+  '**/playwright*.config.*',
+  '**/babel.config.*',
+  '**/.prettierrc*',
+  '**/prettier.config.*',
+  '**/.prettierignore',
+  '**/.eslintignore',
+];
 
 export const DEFAULT_FORBIDDEN = [
   '**/.env',
