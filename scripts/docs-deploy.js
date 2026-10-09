@@ -39,7 +39,9 @@ function loadCloudflarePagesConfig(rootDir = ROOT_DIR) {
 
   return {
     projectName: config.projectName.trim(),
-    previewBranch: config.previewBranch.trim(),
+    // Raw, not trimmed: assertPreviewBranch compares it byte for byte, so
+    // " preview" in the file is refused rather than normalised.
+    previewBranch: config.previewBranch,
     productionBranch: config.productionBranch.trim(),
     rootDirectory: config.rootDirectory.trim(),
     buildCommand: config.buildCommand.trim(),

@@ -21,17 +21,21 @@
 // 5. Right before the deploy, the guard again: it must accept the same HEAD
 //    the copy was made from, and the link is checked again.
 // 6. `vercel deploy --prebuilt --prod` from the copy.
-// The temp dir, with the pulled env file, is removed in a finally. Every CLI
-// call names the project (--scope, --project) and runs without
-// VERCEL_PROJECT_ID / VERCEL_ORG_ID, so an ambient value for another project
-// cannot redirect it. VERCEL_TOKEN is never in argv (the CLI reads it from the
-// env). CLI output is captured and printed with the pulled env values and the
-// token redacted. Same pattern as skillcodex's scripts/deploy-production.mjs.
+// The temp dir (mode 0700 from mkdtemp), with the pulled env file, is removed
+// in a finally and by the SIGINT/SIGTERM handlers, which also stop the running
+// CLI and exit non-zero. At start, stale noctalia-vercel-* dirs left by a
+// killed run are swept (see sweepStaleCopies). Every CLI call names the
+// project (--scope, --project) and runs with an allowlisted env (see
+// vercelEnv): no ambient EXPO_PUBLIC_*, NOCTALIA_*, NODE_ENV or
+// VERCEL_PROJECT_ID / VERCEL_ORG_ID can reach `vercel build` or redirect the
+// project. VERCEL_TOKEN is never in argv (the CLI reads it from the env). CLI
+// output is captured and printed with the pulled env values and the token
+// redacted. Same pattern as skillcodex's scripts/deploy-production.mjs.
 
 const fs = require('fs');
 const os = require('os');
 const path = require('path');
-const { spawnSync } = require('child_process');
+const { spawn, spawnSync } = require('child_process');
 
 const ROOT_DIR = path.resolve(__dirname, '..');
 const VERCEL_SCOPE = 'thanhs-projects-9baa3976';
@@ -43,8 +47,44 @@ const VERCEL_ORG_ID = 'team_2wbw33JALkqNG73AvmOQO17L';
 // Pinned CLI, same version as skillcodex: a production deploy must not pick
 // up whatever `vercel` is latest on the day.
 const VERCEL_CLI = 'vercel@62.2.0';
-// Ambient variables that would select a project or team other than the flags.
-const STRIPPED_ENV = ['VERCEL_PROJECT_ID', 'VERCEL_ORG_ID'];
+// The only variables a Vercel call receives, when set. Anything else in the
+// release shell (EXPO_PUBLIC_*, NOCTALIA_*, NODE_ENV, npm_*, VERCEL_PROJECT_ID,
+// VERCEL_ORG_ID...) is dropped: `vercel build` loads the pulled production env
+// without overriding variables already set, so an ambient one would win and
+// be inlined in the production bundle.
+//   PATH          find npx, node, git and the shell the CLI spawns.
+//   HOME          npm's default cache (~/.npm) and the Vercel CLI config dir.
+//   TMPDIR        where npm and the CLI write their temp files.
+//   VERCEL_TOKEN  authentication; read from the env, never put in argv.
+//   HTTPS_PROXY, HTTP_PROXY, NO_PROXY (and lowercase), NODE_EXTRA_CA_CERTS:
+//                 only reach the registry and the Vercel API from a host that
+//                 needs a proxy or a corporate CA; none is read by the app.
+//   Windows only: SYSTEMROOT, COMSPEC, PATHEXT, USERPROFILE, APPDATA,
+//                 LOCALAPPDATA, which node, npx and cmd.exe need to start.
+// Not passed: LANG/LC_* (CLI output is English either way), npm_config_*
+// (the default cache under HOME is enough; an inherited registry or cache
+// override is exactly what this pin avoids), NODE_OPTIONS.
+const ENV_ALLOWLIST = [
+  'PATH',
+  'HOME',
+  'TMPDIR',
+  'VERCEL_TOKEN',
+  'HTTPS_PROXY',
+  'HTTP_PROXY',
+  'NO_PROXY',
+  'https_proxy',
+  'http_proxy',
+  'no_proxy',
+  'NODE_EXTRA_CA_CERTS',
+];
+const WINDOWS_ENV_ALLOWLIST = ['SYSTEMROOT', 'COMSPEC', 'PATHEXT', 'USERPROFILE', 'APPDATA', 'LOCALAPPDATA'];
+// Temp copies live in os.tmpdir() under this prefix; the owner's pid is
+// written next to the copy so a later run can tell a live run from a dead one.
+const TEMP_PREFIX = 'noctalia-vercel-';
+const OWNER_FILE = 'owner.pid';
+// A dir without a readable owner pid is swept only once older than this.
+const STALE_WITHOUT_OWNER_MS = 6 * 60 * 60 * 1000;
+const SIGNAL_EXIT_CODES = { SIGINT: 130, SIGTERM: 143 };
 const REDACTED = '[redacted]';
 // Pulled values shorter than this (true, 1, prod) are not redacted, so the
 // log stays readable; secrets are longer.
@@ -103,12 +143,63 @@ function readHeadCommit(rootDir = ROOT_DIR) {
   return hash;
 }
 
-// The child env: the caller's env without the project or team selectors, so
-// only the explicit flags choose the project. VERCEL_TOKEN stays in the env.
-function vercelEnv(env = process.env) {
-  const child = { ...env };
-  for (const name of STRIPPED_ENV) delete child[name];
+// The child env, built from ENV_ALLOWLIST only (see above).
+function vercelEnv(env = process.env, platform = process.platform) {
+  const names = platform === 'win32' ? [...ENV_ALLOWLIST, ...WINDOWS_ENV_ALLOWLIST] : ENV_ALLOWLIST;
+  const child = {};
+  for (const [name, value] of Object.entries(env)) {
+    const allowed = platform === 'win32' ? names.some((entry) => entry.toUpperCase() === name.toUpperCase()) : names.includes(name);
+    if (allowed && value !== undefined) child[name] = value;
+  }
   return child;
+}
+
+function isPidAlive(pid) {
+  try {
+    process.kill(pid, 0);
+    return true;
+  } catch (error) {
+    return error?.code === 'EPERM';
+  }
+}
+
+// Removes temp copies a killed run left behind (SIGKILL, power loss), which
+// may hold the pulled production env file. Only dirs named noctalia-vercel-*
+// directly under tempRoot, real directories (not symlinks) owned by this
+// user, are considered. One is removed when the pid in its owner.pid is not
+// alive, or, without a readable owner.pid, when it is older than 6 hours. A
+// dir whose owner pid is alive (a concurrent run) is left alone.
+function sweepStaleCopies({ tempRoot = os.tmpdir(), now = Date.now(), alive = isPidAlive } = {}) {
+  const removed = [];
+  let entries = [];
+  try {
+    entries = fs.readdirSync(tempRoot);
+  } catch {
+    return removed;
+  }
+  const uid = typeof process.getuid === 'function' ? process.getuid() : null;
+  for (const name of entries) {
+    if (!name.startsWith(TEMP_PREFIX)) continue;
+    const dir = path.join(tempRoot, name);
+    let stat;
+    try {
+      stat = fs.lstatSync(dir);
+    } catch {
+      continue;
+    }
+    if (!stat.isDirectory() || (uid !== null && stat.uid !== uid)) continue;
+    let pid = NaN;
+    try {
+      pid = Number.parseInt(fs.readFileSync(path.join(dir, OWNER_FILE), 'utf8').trim(), 10);
+    } catch {
+      // No owner file: fall back to the age rule.
+    }
+    const stale = Number.isInteger(pid) && pid > 0 ? !alive(pid) : now - stat.mtimeMs > STALE_WITHOUT_OWNER_MS;
+    if (!stale) continue;
+    fs.rmSync(dir, { recursive: true, force: true });
+    removed.push(dir);
+  }
+  return removed;
 }
 
 function projectArgs() {
@@ -166,24 +257,40 @@ function redact(text, secrets) {
   return result;
 }
 
+// Runs a CLI step without blocking the event loop, so the signal handlers can
+// run while it works. Output is captured and printed redacted once it ends.
 function run(command, args, options = {}) {
-  const { cwd = ROOT_DIR, env = process.env, write = (stream, text) => process[stream].write(text) } = options;
-  const result = spawnSync(command, args, {
-    cwd,
-    env,
-    encoding: 'utf8',
-    maxBuffer: 512 * 1024 * 1024,
-    shell: process.platform === 'win32',
-    stdio: ['ignore', 'pipe', 'pipe'],
+  const { cwd = ROOT_DIR, env = process.env, write = (stream, text) => process[stream].write(text), onChild = () => {} } = options;
+  return new Promise((resolve, reject) => {
+    let child;
+    try {
+      child = spawn(command, args, { cwd, env, shell: process.platform === 'win32', stdio: ['ignore', 'pipe', 'pipe'] });
+    } catch (error) {
+      reject(new Error(`Command failed to start: ${command} ${args.join(' ')} (${error.message})`));
+      return;
+    }
+    onChild(child);
+    const stdout = [];
+    const stderr = [];
+    child.stdout.on('data', (chunk) => stdout.push(chunk));
+    child.stderr.on('data', (chunk) => stderr.push(chunk));
+    child.on('error', (error) => {
+      onChild(null);
+      const secrets = collectSecrets(cwd === ROOT_DIR ? null : cwd, env);
+      reject(new Error(`Command failed to start: ${command} ${args.join(' ')} (${redact(error.message, secrets)})`));
+    });
+    child.on('close', (code, signal) => {
+      onChild(null);
+      // The env file may appear during this command (vercel pull): read it after.
+      const secrets = collectSecrets(cwd === ROOT_DIR ? null : cwd, env);
+      const out = Buffer.concat(stdout).toString('utf8');
+      const err = Buffer.concat(stderr).toString('utf8');
+      if (out) write('stdout', redact(out, secrets));
+      if (err) write('stderr', redact(err, secrets));
+      if (code === 0) resolve();
+      else reject(new Error(`Command failed (${signal || code}): ${command} ${args.join(' ')}`));
+    });
   });
-  // The env file may appear during this command (vercel pull): read it after.
-  const secrets = collectSecrets(cwd === ROOT_DIR ? null : cwd, env);
-  if (result.stdout) write('stdout', redact(result.stdout, secrets));
-  if (result.stderr) write('stderr', redact(result.stderr, secrets));
-  if (result.error) throw new Error(`Command failed to start: ${command} ${args.join(' ')} (${redact(result.error.message, secrets)})`);
-  if (result.status !== 0) {
-    throw new Error(`Command failed (${result.status ?? 'unknown'}): ${command} ${args.join(' ')}`);
-  }
 }
 
 function printHelp() {
@@ -195,7 +302,10 @@ clean, and \`npm run verify:release\` passed on HEAD
 (scripts/check-site-publish-proof.mjs). In a clean copy of that commit (git
 archive in a temp dir) it links the pinned project, pulls the production
 settings, builds, runs the guard again on the same HEAD, then deploys only the
-prebuilt output (\`vercel deploy --prebuilt --prod\`). The CLI is pinned
+prebuilt output (\`vercel deploy --prebuilt --prod\`). Vercel calls get an
+allowlisted env only (PATH, HOME, TMPDIR, VERCEL_TOKEN, proxy and CA
+variables). The temp copy is removed on exit, on failure and on SIGINT or
+SIGTERM; stale copies of killed runs are swept at start. The CLI is pinned
 (${VERCEL_CLI}). There is no override. Set VERCEL_TOKEN in the environment;
 never commit it.`);
 }
@@ -216,6 +326,8 @@ async function main(argv = process.argv.slice(2), deps = {}) {
     tempRoot = os.tmpdir(),
     env = process.env,
     log = console.log,
+    proc = process,
+    sweep = sweepStaleCopies,
   } = deps;
   const target = parseTarget(argv);
   if (target === 'help') {
@@ -223,19 +335,35 @@ async function main(argv = process.argv.slice(2), deps = {}) {
     return;
   }
 
+  for (const dir of sweep({ tempRoot })) log(`[web-deploy] removed a stale temp copy: ${dir}`);
+
   // Before anything else: a refused publish runs nothing.
   const accepted = await guardProduction();
   log(accepted.message);
 
-  const parentDir = fs.mkdtempSync(path.join(tempRoot, 'noctalia-vercel-'));
+  const parentDir = fs.mkdtempSync(path.join(tempRoot, TEMP_PREFIX));
+  fs.writeFileSync(path.join(parentDir, OWNER_FILE), `${proc.pid ?? process.pid}\n`);
+  let child = null;
+  const onSignal = (signal) => {
+    try {
+      if (child) child.kill('SIGTERM');
+    } catch {
+      // The child may already be gone.
+    }
+    fs.rmSync(parentDir, { recursive: true, force: true });
+    console.error(`[web-deploy] ${signal}: stopped, temp copy removed, nothing more is deployed.`);
+    proc.exit(SIGNAL_EXIT_CODES[signal] || 1);
+  };
+  const handlers = Object.keys(SIGNAL_EXIT_CODES).map((signal) => [signal, () => onSignal(signal)]);
+  for (const [signal, handler] of handlers) proc.on(signal, handler);
   try {
     const source = createCleanCopy(accepted.head, { rootDir, parentDir });
-    const options = { cwd: source, env: vercelEnv(env) };
-    runCommand('npx', buildVercelLinkArgs(), options);
+    const options = { cwd: source, env: vercelEnv(env), onChild: (running) => (child = running) };
+    await runCommand('npx', buildVercelLinkArgs(), options);
     assertProjectLink(source);
-    runCommand('npx', buildVercelPullArgs(), options);
+    await runCommand('npx', buildVercelPullArgs(), options);
     assertProjectLink(source);
-    runCommand('npx', buildVercelBuildArgs(), options);
+    await runCommand('npx', buildVercelBuildArgs(), options);
     if (!fs.existsSync(path.join(source, '.vercel', 'output', 'config.json'))) {
       throw new Error('vercel build wrote no .vercel/output/config.json in the clean copy; nothing was deployed.');
     }
@@ -254,8 +382,9 @@ async function main(argv = process.argv.slice(2), deps = {}) {
     }
     assertProjectLink(source);
     log(recheck.message);
-    runCommand('npx', buildVercelDeployArgs(accepted.head), options);
+    await runCommand('npx', buildVercelDeployArgs(accepted.head), options);
   } finally {
+    for (const [signal, handler] of handlers) proc.removeListener(signal, handler);
     fs.rmSync(parentDir, { recursive: true, force: true });
   }
 }
@@ -280,5 +409,6 @@ module.exports = {
   parseTarget,
   redact,
   run,
+  sweepStaleCopies,
   vercelEnv,
 };

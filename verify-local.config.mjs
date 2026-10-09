@@ -221,6 +221,8 @@ export default {
         'package.json',
         'vercel.json',
         'scripts/vercel-ignore-build.mjs',
+        // docs-deploy.test.ts reads the real Cloudflare Pages config.
+        'docs-src/config/cloudflare-pages.json',
       ],
     },
     { name: 'typecheck-app', command: 'npm run typecheck:app', exclude: DOCS },

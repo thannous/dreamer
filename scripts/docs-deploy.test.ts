@@ -46,6 +46,30 @@ describe('docs-deploy helpers', () => {
     });
   });
 
+  it.each([' preview', 'preview ', '\tpreview', 'preview\n'])(
+    'refuses a preview whose raw config previewBranch is %j, through the real loader, before any build',
+    async (previewBranch) => {
+      const configPath = path.join(tmpRoot, 'docs-src', 'config', 'cloudflare-pages.json');
+      const raw = JSON.parse(fs.readFileSync(configPath, 'utf8'));
+      fs.writeFileSync(configPath, JSON.stringify({ ...raw, previewBranch }), 'utf8');
+      const config = loadCloudflarePagesConfig(tmpRoot);
+      expect(config.previewBranch).toBe(previewBranch);
+      expect(() => buildWranglerDeployArgs(config, 'preview', '/tmp/x', 'a'.repeat(40))).toThrow('Preview refused');
+      const calls: string[][] = [];
+      await expect(
+        main(['preview'], {
+          loadConfig: () => loadCloudflarePagesConfig(tmpRoot),
+          runCommand: (command: string, args: string[]) => {
+            calls.push([command, ...args]);
+          },
+          createStaging: jest.fn(),
+          log: () => {},
+        })
+      ).rejects.toThrow('Preview refused');
+      expect(calls).toEqual([]);
+    }
+  );
+
   it('builds a preview Wrangler deployment command from config', () => {
     const config = loadCloudflarePagesConfig(tmpRoot);
 

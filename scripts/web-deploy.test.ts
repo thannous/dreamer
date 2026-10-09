@@ -15,8 +15,10 @@ const {
   parseTarget,
   redact,
   run,
+  sweepStaleCopies,
   vercelEnv,
 } = require('./web-deploy');
+const { EventEmitter } = require('events');
 
 const CLI = 'vercel@62.2.0';
 const PROJECT = ['--scope', 'thanhs-projects-9baa3976', '--project', 'noctalia'];
@@ -188,20 +190,49 @@ describe('web-deploy: guarded, clean copy, pinned project, prebuilt upload', () 
     expect(fs.readdirSync(tempRoot)).toEqual([]);
   });
 
-  it('strips ambient VERCEL_PROJECT_ID and VERCEL_ORG_ID pointing at another project, keeps the token in env only', async () => {
+  it('passes only allowlisted variables: ambient EXPO_PUBLIC_*, NOCTALIA_*, NODE_ENV and VERCEL_PROJECT_ID never reach any call', async () => {
     const setup = deps(async () => accepted(), {
-      env: { PATH: process.env.PATH, VERCEL_TOKEN: TOKEN, VERCEL_PROJECT_ID: 'prj_other', VERCEL_ORG_ID: 'team_other' },
+      env: {
+        PATH: '/usr/bin',
+        HOME: '/home/release',
+        TMPDIR: '/tmp',
+        VERCEL_TOKEN: TOKEN,
+        HTTPS_PROXY: 'http://proxy:3128',
+        NODE_EXTRA_CA_CERTS: '/etc/ca.pem',
+        EXPO_PUBLIC_FOO: 'local',
+        EXPO_PUBLIC_MOCK_MODE: 'true',
+        EXPO_PUBLIC_API_URL: 'http://localhost:54321',
+        NOCTALIA_X: 'x',
+        NOCTALIA_APP_VARIANT: 'lucid',
+        NODE_ENV: 'development',
+        NODE_OPTIONS: '--require /tmp/evil.js',
+        npm_config_registry: 'http://evil.example',
+        VERCEL_PROJECT_ID: 'prj_other',
+        VERCEL_ORG_ID: 'team_other',
+        LANG: 'fr_FR.UTF-8',
+      },
     });
     await main(['prod'], setup.deps);
+    expect(setup.calls.map((call) => call.args[3])).toEqual(['link', 'pull', 'build', 'deploy']);
     for (const call of setup.calls) {
-      expect(call.env.VERCEL_PROJECT_ID).toBeUndefined();
-      expect(call.env.VERCEL_ORG_ID).toBeUndefined();
-      expect(call.env.VERCEL_TOKEN).toBe(TOKEN);
+      expect(call.env).toEqual({
+        PATH: '/usr/bin',
+        HOME: '/home/release',
+        TMPDIR: '/tmp',
+        VERCEL_TOKEN: TOKEN,
+        HTTPS_PROXY: 'http://proxy:3128',
+        NODE_EXTRA_CA_CERTS: '/etc/ca.pem',
+      });
       expect(call.args).toEqual(expect.arrayContaining(PROJECT));
       expect(call.args).not.toContain('--token');
       expect(call.args.join(' ')).not.toContain(TOKEN);
     }
-    expect(vercelEnv({ VERCEL_PROJECT_ID: 'x', VERCEL_ORG_ID: 'y', VERCEL_TOKEN: 't' })).toEqual({ VERCEL_TOKEN: 't' });
+  });
+
+  it('vercelEnv keeps only the allowlist, plus the Windows essentials on win32', () => {
+    const ambient = { PATH: 'p', HOME: 'h', VERCEL_TOKEN: 't', EXPO_PUBLIC_FOO: 'f', NOCTALIA_X: 'n', VERCEL_PROJECT_ID: 'x', SystemRoot: 'C:\\Windows', APPDATA: 'a' };
+    expect(vercelEnv(ambient, 'linux')).toEqual({ PATH: 'p', HOME: 'h', VERCEL_TOKEN: 't' });
+    expect(vercelEnv(ambient, 'win32')).toEqual({ PATH: 'p', HOME: 'h', VERCEL_TOKEN: 't', SystemRoot: 'C:\\Windows', APPDATA: 'a' });
   });
 
   it.each([
@@ -273,17 +304,17 @@ describe('web-deploy: guarded, clean copy, pinned project, prebuilt upload', () 
     expect(printed).not.toContain(TOKEN);
   });
 
-  it('run() redacts pulled env values and the token from CLI output, also when the command fails', () => {
+  it('run() redacts pulled env values and the token from CLI output, also when the command fails', async () => {
     const copy = fs.mkdtempSync(path.join(tempRoot, 'copy-'));
     fs.mkdirSync(path.join(copy, '.vercel'));
     fs.writeFileSync(path.join(copy, '.vercel', '.env.production.local'), `API_SECRET="${SECRET}"\nFLAG="1"\n`);
     const written: string[] = [];
     const write = (_stream: string, text: string) => written.push(text);
     const env = { PATH: process.env.PATH, VERCEL_TOKEN: TOKEN };
-    run(process.execPath, ['-e', `console.log("value ${SECRET} token ${TOKEN} flag 1")`], { cwd: copy, env, write });
-    expect(() =>
+    await run(process.execPath, ['-e', `console.log("value ${SECRET} token ${TOKEN} flag 1")`], { cwd: copy, env, write });
+    await expect(
       run(process.execPath, ['-e', `console.error("boom ${SECRET}"); process.exit(3)`], { cwd: copy, env, write })
-    ).toThrow(/Command failed \(3\)/);
+    ).rejects.toThrow(/Command failed \(3\)/);
     const output = written.join('');
     expect(output).toContain('value [redacted] token [redacted] flag 1');
     expect(output).toContain('boom [redacted]');
@@ -291,6 +322,136 @@ describe('web-deploy: guarded, clean copy, pinned project, prebuilt upload', () 
     expect(output).not.toContain(TOKEN);
     expect(collectSecrets(copy, env)).toEqual(expect.arrayContaining([SECRET, TOKEN]));
     expect(redact(`a ${SECRET} b`, [SECRET])).toBe('a [redacted] b');
+  });
+
+  it.each([
+    ['SIGINT', 130],
+    ['SIGTERM', 143],
+  ])('on %s during the build: stops the CLI, removes the temp copy and the env file, exits %i, deploys nothing', async (signal, code) => {
+    const proc = Object.assign(new EventEmitter(), {
+      pid: process.pid,
+      exit: jest.fn((exitCode: number) => {
+        throw new Error(`exit ${exitCode}`);
+      }),
+    });
+    const child = { kill: jest.fn() };
+    const calls: Call[] = [];
+    const inner = fakeCli(calls);
+    let copyDir = '';
+    const setup = deps(async () => accepted(), {
+      proc,
+      runCommand: (command: string, args: string[], options: { cwd: string; env: Record<string, string | undefined>; onChild: (c: unknown) => void }) => {
+        inner(command, args, options);
+        if (args[2] === 'build') {
+          copyDir = options.cwd;
+          options.onChild(child);
+          expect(fs.existsSync(path.join(copyDir, '.vercel', '.env.production.local'))).toBe(true);
+          proc.emit(signal);
+        }
+      },
+    });
+    await expect(main(['prod'], setup.deps)).rejects.toThrow(`exit ${code}`);
+    expect(proc.exit).toHaveBeenCalledWith(code);
+    expect(child.kill).toHaveBeenCalledWith('SIGTERM');
+    expect(fs.existsSync(copyDir)).toBe(false);
+    expect(fs.readdirSync(tempRoot)).toEqual([]);
+    expect(calls.filter((call) => call.args[3] === 'deploy')).toEqual([]);
+    expect(proc.listenerCount('SIGINT') + proc.listenerCount('SIGTERM')).toBe(0);
+  });
+
+  it('a real SIGTERM to a running publish removes the temp copy and exits 143', async () => {
+    const script = `
+      const { main } = require(${JSON.stringify(path.join(__dirname, 'web-deploy.js'))});
+      const { run } = require(${JSON.stringify(path.join(__dirname, 'web-deploy.js'))});
+      main(['prod'], {
+        guardProduction: async () => ({ head: ${JSON.stringify(HEAD)}, tree: 'b', message: 'ok' }),
+        rootDir: ${JSON.stringify(repo)},
+        tempRoot: ${JSON.stringify(tempRoot)},
+        log: () => {},
+        runCommand: (command, args, options) => {
+          console.log('READY ' + options.cwd);
+          return run(process.execPath, ['-e', 'setTimeout(() => {}, 30000)'], options);
+        },
+      }).catch((error) => { console.error(error.message); process.exit(1); });
+    `;
+    const { spawn } = require('child_process');
+    const child = spawn(process.execPath, ['-e', script], { stdio: ['ignore', 'pipe', 'pipe'] });
+    const copy: string = await new Promise((resolve, reject) => {
+      let out = '';
+      child.stdout.on('data', (chunk: Buffer) => {
+        out += chunk.toString();
+        const match = /READY (\S+)/.exec(out);
+        if (match) resolve(match[1]);
+      });
+      child.on('exit', () => reject(new Error(`exited early: ${out}`)));
+    });
+    expect(fs.existsSync(copy)).toBe(true);
+    const exitCode = await new Promise((resolve) => {
+      child.on('exit', (codeValue: number) => resolve(codeValue));
+      child.kill('SIGTERM');
+    });
+    expect(exitCode).toBe(143);
+    expect(fs.existsSync(copy)).toBe(false);
+    expect(fs.readdirSync(tempRoot)).toEqual([]);
+  }, 20000);
+
+  it('sweeps only stale noctalia-vercel-* dirs: dead owner pid, or no owner file and older than 6 hours', () => {
+    const make = (name: string, pid?: string, ageMs = 0) => {
+      const dir = path.join(tempRoot, name);
+      fs.mkdirSync(dir);
+      fs.writeFileSync(path.join(dir, 'secret'), 'x');
+      if (pid !== undefined) fs.writeFileSync(path.join(dir, 'owner.pid'), pid);
+      const time = (Date.now() - ageMs) / 1000;
+      fs.utimesSync(dir, time, time);
+      return dir;
+    };
+    const dead = make('noctalia-vercel-dead', '999999');
+    const live = make('noctalia-vercel-live', '4242');
+    const oldNoOwner = make('noctalia-vercel-old', undefined, 7 * 60 * 60 * 1000);
+    const freshNoOwner = make('noctalia-vercel-fresh', undefined, 60 * 1000);
+    const other = make('other-tool-dir', '999999', 7 * 60 * 60 * 1000);
+    fs.writeFileSync(path.join(tempRoot, 'noctalia-vercel-file'), 'not a dir');
+    const target = make('target-dir');
+    fs.symlinkSync(target, path.join(tempRoot, 'noctalia-vercel-link'));
+    const removed = sweepStaleCopies({ tempRoot, alive: (pid: number) => pid === 4242 });
+    expect(removed.sort()).toEqual([dead, oldNoOwner].sort());
+    for (const kept of [live, freshNoOwner, other, target]) expect(fs.existsSync(kept)).toBe(true);
+    expect(fs.existsSync(path.join(tempRoot, 'noctalia-vercel-file'))).toBe(true);
+    expect(fs.existsSync(path.join(target, 'secret'))).toBe(true);
+  });
+
+  it('main sweeps stale copies before the guard, and writes its own owner pid', async () => {
+    const stale = path.join(tempRoot, 'noctalia-vercel-stale');
+    fs.mkdirSync(stale);
+    fs.writeFileSync(path.join(stale, 'owner.pid'), '999999');
+    let ownerSeen = '';
+    const calls: Call[] = [];
+    const inner = fakeCli(calls);
+    const setup = deps(async () => accepted(), {
+      sweep: (options: { tempRoot: string }) => sweepStaleCopies({ ...options, alive: () => false }),
+      runCommand: (command: string, args: string[], options: { cwd: string; env: Record<string, string | undefined> }) => {
+        if (args[2] === 'link') ownerSeen = fs.readFileSync(path.join(path.dirname(options.cwd), 'owner.pid'), 'utf8').trim();
+        inner(command, args, options);
+      },
+    });
+    await main(['prod'], setup.deps);
+    expect(fs.existsSync(stale)).toBe(false);
+    expect(ownerSeen).toBe(String(process.pid));
+    expect(setup.logs.some((line) => line.includes('removed a stale temp copy'))).toBe(true);
+  });
+
+  it('creates the temp copy with mode 0700', async () => {
+    let mode = 0;
+    const calls: Call[] = [];
+    const inner = fakeCli(calls);
+    const setup = deps(async () => accepted(), {
+      runCommand: (command: string, args: string[], options: { cwd: string; env: Record<string, string | undefined> }) => {
+        if (args[2] === 'link') mode = fs.statSync(path.dirname(options.cwd)).mode & 0o777;
+        inner(command, args, options);
+      },
+    });
+    await main(['prod'], setup.deps);
+    expect(mode).toBe(0o700);
   });
 
   it('pins the CLI and the project in every command, never --token', () => {
