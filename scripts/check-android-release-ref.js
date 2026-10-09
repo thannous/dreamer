@@ -44,13 +44,40 @@ function validateReleaseRef({
   versionSource = 'local',
   refName = '',
   refType = '',
+  releaseTag = '',
   releaseIdentity,
 }) {
-  if (refType === 'tag') {
-    const expectedTag = `v${releaseIdentity.version}`;
-    if (refName !== expectedTag) {
-      throw new Error(`Release tag ${refName || 'missing'} does not match ${expectedTag}.`);
-    }
+  // The release workflows run on workflow_dispatch only, and a dispatch from
+  // `eas workflow:run` carries an empty GitHub context: the tag comes from the
+  // required `release_tag` input (RELEASE_TAG), or from a tag ref. Without
+  // either, the check fails instead of skipping the tag comparison.
+  // When EAS does report a ref (RELEASE_REF_NAME / RELEASE_REF_TYPE), it must
+  // be the release tag itself: a branch or other ref means the source is not
+  // the tag, so the run fails rather than attributing it to release_tag.
+  if (refType && refType !== 'tag') {
+    throw new Error(
+      `The run is on the ${refType} ref ${refName || '(unnamed)'}, not a release tag: dispatch with --ref ${releaseTag || 'vX.Y.Z'}.`
+    );
+  }
+  if (!refType && refName) {
+    throw new Error(`The run reports the ref ${refName} without a ref type: cannot prove it is the release tag.`);
+  }
+  const refTag = refType === 'tag' ? refName : '';
+  if (refType === 'tag' && !refTag) {
+    throw new Error('The run reports a tag ref without a name: cannot prove it is the release tag.');
+  }
+  if (releaseTag && refTag && releaseTag !== refTag) {
+    throw new Error(`Release tag input ${releaseTag} does not match the tag ref ${refTag}.`);
+  }
+  const tag = releaseTag || refTag;
+  const expectedTag = `v${releaseIdentity.version}`;
+  if (!tag) {
+    throw new Error(
+      `No release tag given: pass the release_tag input (RELEASE_TAG=${expectedTag}) or run on the ${expectedTag} tag ref.`
+    );
+  }
+  if (tag !== expectedTag) {
+    throw new Error(`Release tag ${tag} does not match ${expectedTag}.`);
   }
 
   if (!['local', 'remote'].includes(versionSource)) throw new Error('Unknown appVersionSource');
@@ -83,6 +110,7 @@ function validateReleaseRef({
     builtVersionCode,
     refName,
     refType,
+    releaseTag: tag,
   };
 }
 
@@ -104,12 +132,11 @@ function main(env = process.env) {
     versionSource: easConfig.cli?.appVersionSource || 'local',
     refName: String(env.RELEASE_REF_NAME || '').trim(),
     refType: String(env.RELEASE_REF_TYPE || '').trim(),
+    releaseTag: String(env.RELEASE_TAG || '').trim(),
     releaseIdentity: readReleaseIdentity(),
   });
   process.stdout.write(
-    `Android release identity valid: ${result.version} (${result.versionCode})${
-      result.refType === 'tag' ? ` / ${result.refName}` : ''
-    }${result.builtVersionCode ? ' / EAS build matched' : ''}\n`
+    `Android release identity valid: ${result.version} (${result.versionCode}) / ${result.releaseTag}${result.builtVersionCode ? ' / EAS build matched' : ''}\n`
   );
 }
 

@@ -1,6 +1,8 @@
 // Checks of the common delivery rule v2 for this repository, read by
-// scripts/verify-local.mjs. The engine and its tests are identical in the five
-// repositories: never edit them here alone. This file is data only (no imports).
+// scripts/verify-local.mjs. The engine and its tests are this repository's own
+// copy: it pins its own ENGINE_SHA256 and verifies it locally (the same file in
+// every repository is recommended, never checked across repositories). This
+// file is data only (no imports).
 //
 //   npm run verify:pr       before a merge: the former pre-push `verify:fast`, split
 //                           into checks, plus the surfaces the PR changed.
@@ -107,12 +109,12 @@ const EDGE_CHECKS = [
 ].join(' && ');
 const DENO = {
   command: 'deno --version',
-  hint: 'install Deno 2.7.14 (`mise install`), or run the Edge checks in a manual CircleCI pipeline and pass --external <check>="https://<pipeline> on <SHA>"',
+  hint: 'run it on the owner machine (PC Tanuki, with Deno 2.7.14: `mise install`) and pass --external <check>="owner-machine: <host> <note> on <SHA>"; trigger a manual CircleCI pipeline only if it is listed in External CI (doc_web_interne/docs/regle-commune-livraison.md, section 13)',
 };
 
 const TESTERARMY = {
   command: 'test -d tools/e2e/node_modules/@e2e-dev/web',
-  hint: 'run `npm run test:testerarmy:setup && npm run test:testerarmy:browsers` in the main checkout, or pass --external <check>="https://<manual CircleCI pipeline> on <SHA>"',
+  hint: 'run it on the owner machine (PC Tanuki, after `npm run test:testerarmy:setup && npm run test:testerarmy:browsers` in its main checkout) and pass --external <check>="owner-machine: <host> <note> on <SHA>"; trigger a manual CircleCI pipeline only if it is listed in External CI (doc_web_interne/docs/regle-commune-livraison.md, section 13)',
 };
 
 // The four passes of tools/e2e/README.md that jointly qualify every Dreamer case.
@@ -153,7 +155,13 @@ export default {
     'tools/e2e/run.mjs',
     'scripts/verify-local-config.test.js',
     'scripts/pre-push-hook.test.js',
-    // The suites eas-workflow-contracts runs.
+    // The EAS workflows and their config: any edit needs the owner's review
+    // (the release gate only catches honest mistakes).
+    '.eas/workflows/**',
+    'eas.json',
+    // The release guards eas-workflow-contracts tests, and its suites.
+    'scripts/check-android-release-ref.js',
+    'scripts/check-android-release-gates.js',
     'scripts/android-release-smoke-workflow.test.js',
     'scripts/check-android-release-ref.test.js',
     'scripts/check-android-release-gates.test.js',
@@ -212,7 +220,7 @@ export default {
       specialised: true,
       requires: {
         command: 'docker info',
-        hint: 'start Docker (disposable local Supabase) and install Chromium (`npx playwright install chromium`), or pass --external e2e-backend="https://<manual CircleCI pipeline> on <SHA>"',
+        hint: 'run it on the owner machine (PC Tanuki: Docker for the disposable local Supabase, Chromium via `npx playwright install chromium`) and pass --external e2e-backend="owner-machine: <host> <note> on <SHA>"; trigger a manual CircleCI pipeline only if it is listed in External CI (doc_web_interne/docs/regle-commune-livraison.md, section 13)',
       },
     },
     {
