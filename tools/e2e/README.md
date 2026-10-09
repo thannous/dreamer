@@ -114,9 +114,11 @@ No original test is removed on the basis of these results.
 
 ## Continuous integration and SDK checks
 
-CircleCI runs the exact Dreamer and Lucid journeys in the Noctalia workflow,
-Meditation in its own workflow, and the generated site after `docs:build` and
-`docs:check`. Each job installs this package's locked e2e 0.18.0 dependencies
+CircleCI runs only when triggered manually (web app or API; see the
+[CircleCI guide](../../doc_web_interne/docs/circleci-migration.md)); pushes and PRs
+rely on local runs. A manual pipeline runs the exact Dreamer and Lucid journeys in
+the Noctalia workflow, Meditation in its own workflow, and the generated site after
+`docs:build` and `docs:check`. Each job installs this package's locked e2e 0.18.0 dependencies
 and Chromium, uses one worker with no replay or model, and retains JUnit, reports, screenshots,
 traces and source identity under `tools/e2e/.e2e/`. Existing backend, Maestro and
 quality checks remain required. `E2E_KEEP_METRO_CACHE=1` drops Metro's `--clear`

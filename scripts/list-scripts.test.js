@@ -8,6 +8,7 @@ describe('script catalog', () => {
     expect(classifyScript('test:e2e:smoke')).toBe('Android E2E');
     expect(classifyScript('docs:check')).toBe('Site');
     expect(classifyScript('subscription:qa:report')).toBe('Subscriptions');
+    expect(classifyScript('verify:fast')).toBe('Quality');
   });
 
   it('surfaces commands with side effects', () => {
@@ -15,6 +16,7 @@ describe('script catalog', () => {
     expect(scriptSafety('docs:build')).toBe('writes generated files');
     expect(scriptSafety('android:release:local')).toBe('builds artifacts');
     expect(scriptSafety('generate-sitemap')).toBe('writes generated files');
+    expect(scriptSafety('prepare')).toBe('writes local Git config');
   });
 
   it('separates web, backend and native E2E entry points', () => {

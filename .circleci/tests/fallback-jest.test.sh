@@ -108,6 +108,34 @@ for (const command of ['npm run docs:build', 'npm run docs:check']) {
 console.log('Continuation mapping, full-Jest guards and site coverage routing passed.');
 NODE
 
+# Remote CI is manual-only: a webhook pipeline must run no workflow (no credits).
+SETUP_CONFIG="$repository_root/.circleci/config.yml" node - <<'NODE'
+const fs = require('fs');
+const YAML = require('yaml');
+
+const setup = YAML.parse(fs.readFileSync(process.env.SETUP_CONFIG, 'utf8'));
+const workflows = Object.keys(setup.workflows ?? {});
+if (workflows.length !== 1 || workflows[0] !== 'setup') {
+  throw new Error(`The setup config must hold only the gated setup workflow: ${workflows}`);
+}
+const gate = setup.workflows.setup.when?.equal;
+if (!Array.isArray(gate) || gate.length !== 2 || !gate.includes('<< pipeline.event.name >>')) {
+  throw new Error('The setup workflow must be gated on pipeline.event.name');
+}
+const runsFor = eventName => {
+  const [left, right] = gate.map(value => (value === '<< pipeline.event.name >>' ? eventName : value));
+  return left === right;
+};
+for (const eventName of ['push', 'pull_request', 'schedule', 'custom_webhook']) {
+  if (runsFor(eventName)) throw new Error(`A ${eventName} pipeline would run CI`);
+}
+if (!runsFor('api')) throw new Error('A manual web-app or API trigger would not run CI');
+if (setup.parameters?.force_full_validation?.default !== false) {
+  throw new Error('force_full_validation must stay available for manual full runs');
+}
+console.log('Setup workflow runs only for manual web-app and API triggers.');
+NODE
+
 fixture_results="$test_root/jest-test-results"
 fixture_json="$test_root/jest-results.json"
 mkdir -p "$fixture_results"
