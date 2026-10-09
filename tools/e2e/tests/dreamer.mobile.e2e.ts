@@ -158,6 +158,10 @@ test('Dreamer release Quick Settings persists French and theme choices while pre
   await screen.getByTestId('quick-settings.language', { visible: true }).tap();
   const english = screen.getByTestId('quick-settings.language.en', { visible: true });
   await english.tap();
+  // A fresh Android target can lack the English pack as well as the French one.
+  if (platform === 'android' && await screen.getByText('Language Pack for Voice Recording', { visible: true }).count() > 0) {
+    await screen.getByRole('button', 'Cancel', { visible: true }).tap();
+  }
   await expect(screen.getByRole('radio', 'English', { visible: true })).toBeChecked();
   const french = screen.getByTestId('quick-settings.language.fr', { visible: true });
   await french.tap();
