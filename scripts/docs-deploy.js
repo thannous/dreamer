@@ -98,7 +98,11 @@ function printHelp() {
 
 Runs the docs checks, creates a clean allowlisted staging directory, and uploads
 that runtime-only directory to Cloudflare Pages. The upload records git HEAD
-with --commit-hash. Configuration lives in ${CONFIG_PATH}.`);
+with --commit-hash. Configuration lives in ${CONFIG_PATH}.
+
+prod refuses unless HEAD is the fetched origin/master, the checkout is clean,
+and \`npm run verify:release\` passed on HEAD (scripts/check-site-publish-proof.mjs).
+There is no override. preview is not guarded.`);
 }
 
 function parseTarget(argv = process.argv.slice(2)) {
@@ -108,48 +112,70 @@ function parseTarget(argv = process.argv.slice(2)) {
   throw new Error('Expected deployment target: preview or prod.');
 }
 
-function main() {
-  const target = parseTarget();
+// The production guard (scripts/check-site-publish-proof.mjs): HEAD is the
+// fetched origin/master, the checkout is clean, and a passed `release` proof
+// of `npm run verify:release` exists for HEAD. It throws the refusal. There is
+// no override. Preview uploads are not guarded.
+async function guardProductionPublish() {
+  const { assertSitePublishProof } = await import('./check-site-publish-proof.mjs');
+  return assertSitePublishProof({ root: ROOT_DIR });
+}
+
+async function main(argv = process.argv.slice(2), deps = {}) {
+  const {
+    guardProduction = guardProductionPublish,
+    runCommand = run,
+    loadConfig = loadCloudflarePagesConfig,
+    createStaging = createDeployStaging,
+    summarizeStaging = summarizeDeployStaging,
+    readHead = readHeadCommit,
+    log = console.log,
+  } = deps;
+  const target = parseTarget(argv);
   if (target === 'help') {
     printHelp();
     return;
   }
 
-  const config = loadCloudflarePagesConfig();
-
-  if (target === 'preview') {
-    run('npm', ['run', 'docs:build']);
-    run('npm', ['run', 'docs:check']);
-  } else {
-    run('npm', ['run', 'docs:release-check']);
+  if (target === 'prod') {
+    // Before anything else: a refused publish builds and uploads nothing.
+    log(await guardProduction());
   }
 
-  const staging = createDeployStaging();
+  const config = loadConfig();
+
+  if (target === 'preview') {
+    runCommand('npm', ['run', 'docs:build']);
+    runCommand('npm', ['run', 'docs:check']);
+  } else {
+    runCommand('npm', ['run', 'docs:release-check']);
+  }
+
+  const staging = createStaging();
   try {
-    const summary = summarizeDeployStaging(staging.deployDir);
-    console.log(
+    const summary = summarizeStaging(staging.deployDir);
+    log(
       `[docs-deploy] Clean staging: ${summary.files} runtime files, ${summary.bytes} bytes.`
     );
-    const commitHash = readHeadCommit();
+    const commitHash = readHead();
     const wranglerArgs = buildWranglerDeployArgs(config, target, staging.deployDir, commitHash);
-    run('npx', wranglerArgs);
+    runCommand('npx', wranglerArgs);
   } finally {
     staging.cleanup();
   }
 }
 
 if (require.main === module) {
-  try {
-    main();
-  } catch (error) {
+  main().catch((error) => {
     console.error(`[docs-deploy] Failed: ${error.message || error}`);
     process.exit(1);
-  }
+  });
 }
 
 module.exports = {
   buildWranglerDeployArgs,
   loadCloudflarePagesConfig,
+  main,
   parseTarget,
   readHeadCommit,
 };

@@ -262,10 +262,14 @@ when publication is explicitly requested:
 npm run docs:deploy:prod
 ```
 
-`docs:deploy:prod` is the manual production publish. It runs `docs:release-check`,
-then uploads an allowlisted directory with
+`docs:deploy:prod` is the manual production publish. It first runs the publish
+guard (`scripts/check-site-publish-proof.mjs`): it refuses unless `HEAD` is
+`origin/master` after `git fetch`, the checkout is clean, and
+`npm run verify:release` passed on that `master` SHA. There is no override. It
+then runs `docs:release-check` and uploads an allowlisted directory with
 `wrangler pages deploy --project-name noctalia --branch master --commit-hash <HEAD>`.
-Run it from a clean checkout of the approved `master` SHA. The token and account
+Run `npm run verify:release` first, from a clean checkout of the approved
+`master` SHA. `docs:deploy:preview` is not guarded. The token and account
 id stay in the environment (`CLOUDFLARE_API_TOKEN`, `CLOUDFLARE_ACCOUNT_ID`).
 If the Cloudflare Pages project or build settings change, update
 `docs-src/config/cloudflare-pages.json` and mirror the same values in the

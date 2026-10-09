@@ -1,8 +1,10 @@
-// Checks of the common delivery rule v2 for this repository, read by
-// scripts/verify-local.mjs. The engine and its tests are this repository's own
-// copy: it pins its own ENGINE_SHA256 and verifies it locally (the same file in
-// every repository is recommended, never checked across repositories). This
-// file is data only (no imports).
+// Checks of the common delivery rule (Version commune v5) for this repository,
+// read by scripts/verify-local.mjs. The rule is this repository's own copy,
+// doc_web_interne/docs/regle-commune-livraison.md (its section 13.1 holds what
+// is specific to dreamer). The engine and its tests are this repository's own
+// copy: each repository pins its own ENGINE_SHA256 (below) and verifies it
+// locally; an engine fix is worth porting to the others, but nothing checks
+// that across repositories. This file is data only (no imports).
 //
 //   npm run verify:pr       before a merge: the former pre-push `verify:fast`, split
 //                           into checks, plus the surfaces the PR changed.
@@ -175,6 +177,11 @@ export default {
     'scripts/android-release-smoke-workflow.test.js',
     'scripts/check-android-release-ref.test.js',
     'scripts/check-android-release-gates.test.js',
+    // The noctalia.app production publish and its guard (site-publish-guard).
+    'scripts/docs-deploy.js',
+    'scripts/docs-deploy.test.ts',
+    'scripts/check-site-publish-proof.mjs',
+    'scripts/test-check-site-publish-proof.mjs',
     // The suites ci-contracts runs.
     '.circleci/tests/classify-changes.test.sh',
     '.circleci/tests/shared-build-impact.test.py',
@@ -186,6 +193,13 @@ export default {
       name: 'verify-local-engine',
       command: 'node --test scripts/test-verify-local.mjs',
       inputs: ['scripts/verify-local.mjs', 'scripts/test-verify-local.mjs', 'verify-local.config.mjs'],
+    },
+    // The production publish guard of noctalia.app (docs:deploy:prod) against
+    // proofs written by this engine in scratch repositories.
+    {
+      name: 'site-publish-guard',
+      command: 'node --test scripts/test-check-site-publish-proof.mjs',
+      inputs: ['scripts/check-site-publish-proof.mjs', 'scripts/test-check-site-publish-proof.mjs', 'scripts/verify-local.mjs'],
     },
     { name: 'typecheck-app', command: 'npm run typecheck:app', exclude: DOCS },
     { name: 'typecheck-tests', command: 'npm run typecheck:tests', exclude: DOCS },

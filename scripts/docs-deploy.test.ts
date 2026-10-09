@@ -5,6 +5,7 @@ const path = require('path');
 const {
   buildWranglerDeployArgs,
   loadCloudflarePagesConfig,
+  main,
 } = require('./docs-deploy');
 const {
   createDeployStaging,
@@ -152,5 +153,71 @@ describe('docs-deploy helpers', () => {
     );
 
     expect(() => loadCloudflarePagesConfig(tmpRoot)).toThrow(/previewBranch/i);
+  });
+});
+
+describe('docs-deploy production guard', () => {
+  const config = {
+    projectName: 'noctalia',
+    previewBranch: 'preview',
+    productionBranch: 'master',
+    rootDirectory: '',
+    buildCommand: 'npm run docs:build && npm run docs:check',
+    buildOutputDirectory: 'docs',
+  };
+
+  function deps(guardProduction: () => Promise<string>) {
+    const calls: string[][] = [];
+    const cleanup = jest.fn();
+    return {
+      calls,
+      cleanup,
+      deps: {
+        guardProduction: jest.fn(guardProduction),
+        runCommand: (command: string, args: string[]) => {
+          calls.push([command, ...args]);
+        },
+        loadConfig: () => config,
+        createStaging: jest.fn(() => ({ deployDir: '/tmp/staging', cleanup })),
+        summarizeStaging: () => ({ files: 1, bytes: 1 }),
+        readHead: () => 'a'.repeat(40),
+        log: () => {},
+      },
+    };
+  }
+
+  it('refuses a production publish before any build or upload when the guard refuses', async () => {
+    const setup = deps(async () => {
+      throw new Error('[site-publish-proof] production publish of noctalia.app refused: no proof for tree abc. There is no override.');
+    });
+    await expect(main(['prod'], setup.deps)).rejects.toThrow('production publish of noctalia.app refused');
+    expect(setup.deps.guardProduction).toHaveBeenCalledTimes(1);
+    expect(setup.calls).toEqual([]);
+    expect(setup.deps.createStaging).not.toHaveBeenCalled();
+  });
+
+  it('publishes to the production branch only after the guard accepts', async () => {
+    const setup = deps(async () => '[site-publish-proof] OK');
+    await main(['prod'], setup.deps);
+    expect(setup.deps.guardProduction).toHaveBeenCalledTimes(1);
+    expect(setup.calls[0]).toEqual(['npm', 'run', 'docs:release-check']);
+    expect(setup.calls[1]).toEqual(expect.arrayContaining(['npx', 'wrangler', 'pages', 'deploy', '--branch', 'master']));
+    expect(setup.cleanup).toHaveBeenCalled();
+  });
+
+  it('does not guard a preview upload', async () => {
+    const setup = deps(async () => {
+      throw new Error('must not be called');
+    });
+    await main(['preview'], setup.deps);
+    expect(setup.deps.guardProduction).not.toHaveBeenCalled();
+    expect(setup.calls[setup.calls.length - 1]).toEqual(expect.arrayContaining(['npx', 'wrangler', 'pages', 'deploy', '--branch', 'preview']));
+  });
+
+  it('wires the real guard by default for prod', () => {
+    const source = fs.readFileSync(path.join(__dirname, 'docs-deploy.js'), 'utf8');
+    expect(source).toContain("await import('./check-site-publish-proof.mjs')");
+    expect(source).toContain('guardProduction = guardProductionPublish');
+    expect(source).not.toMatch(/OVERRIDE|--force|--override/);
   });
 });
