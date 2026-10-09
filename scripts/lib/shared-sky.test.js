@@ -43,11 +43,11 @@ test('keeps the sky opaque throughout the journey, fades at its end and restores
   expect(s.doc.dispatchEvent).toHaveBeenCalledTimes(2);
 });
 
-test('scroll and parallax frames reuse layout measurements and retain the opening zoom', () => {
-  const s = setup(); s.motion.expand(); s.frame(1000); s.frame(2000);
-  expect(s.media.style.transform).toContain('scale(1.10000)');
-  expect(s.classes.has('oh-sky-expanding')).toBe(false);
+test('scroll and parallax frames reuse layout measurements; at rest the sky keeps the film framing', () => {
+  const s = setup(); s.frame(1000);
+  expect(s.media.style.transform).toContain('scale(1.00000)');
   for (const y of [400, 800, 1500]) { s.scroll(y); s.frame(2100 + y); }
+  expect(s.media.style.transform).not.toContain('scale(1.00000)');
   expect(s.dreams.getBoundingClientRect).toHaveBeenCalledTimes(1);
   expect(s.main.getBoundingClientRect).toHaveBeenCalledTimes(1);
   s.motion.refresh(); expect(s.dreams.getBoundingClientRect).toHaveBeenCalledTimes(2);
