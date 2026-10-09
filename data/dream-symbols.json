@@ -3395,48 +3395,153 @@
       "en": {
         "slug": "deceased-person",
         "name": "Deceased Person",
-        "shortDescription": "Dreaming of a deceased loved one can represent grief, memories, or a message from your subconscious. It can also symbolize a part of you associated with that person.",
+        "shortDescription": "Seeing someone who has died, alive again for one scene, is among the most moving dreams there is. These dreams often go with grief, a memory or a conversation left unfinished. They predict nothing: how the meeting felt guides the reading.",
         "askYourself": [
-          "What message could this person bring me?",
-          "What did they represent to me?"
-        ]
+          "Who came back in the dream, and what was happening between us?",
+          "How did I feel when I woke up: comforted, sad, guilty, shaken?",
+          "Is there a date, a decision or a moment right now when I miss this person?"
+        ],
+        "faq": [
+          {
+            "question": "What does it mean to dream of a deceased loved one?",
+            "answer": "Dreams of someone who has died are common during grief. They often bring back the relationship, a memory or something left unsaid. Their meaning depends on the scene and on how you felt when you woke up."
+          },
+          {
+            "question": "Is a dream about a deceased person a sign or a message?",
+            "answer": "Many people experience these dreams as a visit, and that experience deserves respect. Whatever your beliefs, the dream does not predict anything. Write down what was said and what it stirred in you."
+          },
+          {
+            "question": "Why do I dream that someone who died is still alive?",
+            "answer": "Seeing them alive, as if nothing had happened, often goes with the slow pace of grief: part of you still expects them. Waking up can hurt. These dreams tend to return around anniversaries and big changes."
+          },
+          {
+            "question": "What if dreams about a deceased person upset me?",
+            "answer": "Write them down to see what comes back. If they disturb your sleep night after night, or if grief stays very heavy as the months go by, talk to a doctor or a grief counsellor: support exists."
+          }
+        ],
+        "documentMetaDescription": "Dreaming of a deceased loved one who seems alive, speaks or says goodbye: what the scene can say about grief and memory, with questions and a journal example.",
+        "modifiedAt": "2026-10-08"
       },
       "fr": {
         "slug": "defunt",
         "name": "Défunt / Personne décédée",
         "seoTitle": "Défunt",
-        "shortDescription": "Rêver d'un proche décédé peut représenter le deuil, les souvenirs ou un message de l'inconscient. Cela peut aussi symboliser une partie de vous associée à cette personne.",
+        "shortDescription": "Revoir en rêve un proche disparu, vivant le temps d'une scène, bouleverse souvent au réveil. Ces rêves accompagnent le deuil, un souvenir ou une conversation restée en suspens. Ils ne prédisent rien : ce que vous avez ressenti guide la lecture.",
         "askYourself": [
-          "Quel message cette personne pourrait-elle m'apporter ?",
-          "Qu'est-ce qu'elle représentait pour moi ?"
-        ]
+          "Qui est revenu dans le rêve, et que se passait-il entre nous ?",
+          "Qu'ai-je ressenti au réveil : apaisement, tristesse, culpabilité, malaise ?",
+          "Y a-t-il en ce moment une date, une décision ou un moment où cette personne me manque ?"
+        ],
+        "faq": [
+          {
+            "question": "Que signifie rêver d'un proche décédé ?",
+            "answer": "Rêver d'une personne disparue est fréquent pendant le deuil. Le rêve ramène souvent la relation, un souvenir ou quelque chose qui n'a pas été dit. Son sens dépend de la scène et de ce que vous avez ressenti au réveil."
+          },
+          {
+            "question": "Rêver d'un défunt, est-ce un signe ou un message ?",
+            "answer": "Beaucoup de personnes vivent ces rêves comme une visite, et cette expérience mérite le respect. Quelles que soient vos croyances, le rêve ne prédit rien. Notez ce qui a été dit et ce que cela a remué en vous."
+          },
+          {
+            "question": "Pourquoi rêver qu'une personne décédée est encore vivante ?",
+            "answer": "La voir vivante, comme si rien ne s'était passé, accompagne souvent le rythme lent du deuil : une part de vous l'attend encore. Le réveil peut faire mal. Ces rêves reviennent volontiers autour des anniversaires et des grands changements."
+          },
+          {
+            "question": "Que faire si les rêves de défunts me perturbent ?",
+            "answer": "Notez-les pour voir ce qui revient. S'ils abîment votre sommeil nuit après nuit, ou si le chagrin reste très lourd au fil des mois, parlez-en à un médecin ou à un psychologue : un accompagnement du deuil existe."
+          }
+        ],
+        "documentMetaDescription": "Rêver d'un proche décédé, vivant, qui parle ou qui dit adieu : ce que la scène peut dire du deuil et du souvenir, avec questions et exemple de journal.",
+        "modifiedAt": "2026-10-08"
       },
       "es": {
         "slug": "persona-fallecida",
         "name": "Persona Fallecida",
-        "shortDescription": "Soñar con un ser querido fallecido puede representar duelo, recuerdos o un mensaje de tu subconsciente. También puede simbolizar una parte de ti asociada con esa persona.",
+        "shortDescription": "Volver a ver en sueños a un ser querido fallecido, vivo durante una escena, suele remover mucho al despertar. Estos sueños acompañan el duelo, un recuerdo o una conversación pendiente. No predicen nada: lo que sentiste orienta la lectura.",
         "askYourself": [
-          "¿Qué mensaje podría traerme esta persona?",
-          "¿Qué representaba para mí?"
-        ]
+          "¿Quién volvió en el sueño y qué pasaba entre nosotros?",
+          "¿Qué sentí al despertar: consuelo, tristeza, culpa, inquietud?",
+          "¿Hay ahora una fecha, una decisión o un momento en que echo de menos a esa persona?"
+        ],
+        "faq": [
+          {
+            "question": "¿Qué significa soñar con un familiar fallecido?",
+            "answer": "Soñar con alguien que ha muerto es frecuente durante el duelo. El sueño suele traer de vuelta la relación, un recuerdo o algo que quedó sin decir. Su sentido depende de la escena y de lo que sentiste al despertar."
+          },
+          {
+            "question": "¿Soñar con un difunto es una señal o un mensaje?",
+            "answer": "Muchas personas viven estos sueños como una visita, y esa experiencia merece respeto. Sean cuales sean tus creencias, el sueño no predice nada. Anota lo que se dijo y lo que removió en ti."
+          },
+          {
+            "question": "¿Por qué sueño que una persona fallecida está viva?",
+            "answer": "Verla viva, como si nada hubiera pasado, suele acompañar el ritmo lento del duelo: una parte de ti todavía la espera. Despertar puede doler. Estos sueños tienden a volver en los aniversarios y en los grandes cambios."
+          },
+          {
+            "question": "¿Qué hacer si los sueños con difuntos me afectan?",
+            "answer": "Anótalos para ver qué se repite. Si te estropean el sueño noche tras noche, o si el duelo sigue pesando mucho con el paso de los meses, habla con tu médico o con un psicólogo: existe acompañamiento en el duelo."
+          }
+        ],
+        "documentMetaDescription": "Soñar con un familiar fallecido que está vivo, te habla o se despide: qué puede decir la escena sobre el duelo y el recuerdo, con preguntas y un ejemplo.",
+        "modifiedAt": "2026-10-08"
       },
       "de": {
         "slug": "verstorbene-person",
         "name": "Verstorbene Person",
-        "shortDescription": "Von Verstorbenen zu träumen spiegelt oft Trauer, ungelöste Gefühle oder den Wunsch nach Verbindung wider. Diese Träume können tröstend sein oder auf die Notwendigkeit hinweisen, loszulassen.",
+        "shortDescription": "Einen verstorbenen Menschen im Traum wiederzusehen, für eine Szene lebendig, bewegt beim Aufwachen oft sehr. Solche Träume begleiten die Trauer, eine Erinnerung oder ein unbeendetes Gespräch. Sie sagen nichts voraus: Ihr Gefühl weist den Weg.",
         "askYourself": [
-          "Welche ungelösten Gefühle habe ich gegenüber dieser Person?",
-          "Was muss ich loslassen oder akzeptieren?"
-        ]
+          "Wer ist im Traum zurückgekehrt, und was geschah zwischen uns?",
+          "Was habe ich beim Aufwachen gefühlt: Trost, Trauer, Schuld, Unruhe?",
+          "Gibt es gerade einen Jahrestag, eine Entscheidung oder einen Moment, in dem mir dieser Mensch fehlt?"
+        ],
+        "faq": [
+          {
+            "question": "Was bedeutet es, von einem Verstorbenen zu träumen?",
+            "answer": "Träume von Verstorbenen sind in der Trauer häufig. Sie bringen oft die Beziehung zurück, eine Erinnerung oder etwas, das nie ausgesprochen wurde. Was sie bedeuten, hängt von der Szene ab und davon, was Sie beim Aufwachen gefühlt haben."
+          },
+          {
+            "question": "Ist ein Traum von einem Verstorbenen ein Zeichen oder eine Botschaft?",
+            "answer": "Viele Menschen erleben solche Träume als Besuch, und diese Erfahrung verdient Respekt. Unabhängig von Ihren Überzeugungen sagt der Traum nichts voraus. Notieren Sie, was gesagt wurde und was es in Ihnen ausgelöst hat."
+          },
+          {
+            "question": "Warum träume ich, dass ein Verstorbener noch lebt?",
+            "answer": "Den Menschen lebendig zu sehen, als wäre nichts geschehen, begleitet oft das langsame Tempo der Trauer: Ein Teil von Ihnen wartet noch auf ihn. Das Aufwachen kann wehtun. Solche Träume kehren gern um Jahrestage und große Veränderungen wieder."
+          },
+          {
+            "question": "Was tun, wenn mich Träume von Verstorbenen belasten?",
+            "answer": "Schreiben Sie sie auf, um zu sehen, was wiederkehrt. Stören sie Ihren Schlaf Nacht für Nacht, oder bleibt die Trauer über Monate sehr schwer, sprechen Sie mit Ihrer Hausärztin, einem Therapeuten oder einer Trauerbegleitung: Es gibt Unterstützung."
+          }
+        ],
+        "documentMetaDescription": "Von Verstorbenen träumen, die leben, sprechen oder sich verabschieden: was die Szene über Trauer und Erinnerung sagen kann, mit Fragen und Tagebuchbeispiel.",
+        "modifiedAt": "2026-10-08"
       },
       "it": {
         "slug": "persona-defunta",
         "name": "Persona defunta",
-        "shortDescription": "Sognare persone defunte riflette spesso il lutto, sentimenti irrisolti o il desiderio di connessione. Questi sogni possono essere confortanti o indicare il bisogno di lasciar andare.",
+        "shortDescription": "Rivedere in sogno una persona cara che non c’è più, viva per una scena, lascia spesso un risveglio intenso. Questi sogni accompagnano il lutto, un ricordo o un discorso rimasto in sospeso. Non predicono nulla: conta ciò che hai provato.",
         "askYourself": [
-          "Quali sentimenti irrisolti ho verso questa persona?",
-          "Cosa ho bisogno di lasciar andare o accettare?"
-        ]
+          "Chi è tornato nel sogno, e che cosa succedeva tra noi?",
+          "Che cosa ho provato al risveglio: conforto, tristezza, senso di colpa, inquietudine?",
+          "C’è in questo periodo una data, una scelta o un momento in cui questa persona mi manca?"
+        ],
+        "faq": [
+          {
+            "question": "Che cosa significa sognare una persona defunta?",
+            "answer": "Sognare chi non c’è più è frequente durante il lutto. Il sogno riporta spesso la relazione, un ricordo o qualcosa che è rimasto non detto. Il significato dipende dalla scena e da ciò che hai provato al risveglio."
+          },
+          {
+            "question": "Sognare un defunto è un segno o un messaggio?",
+            "answer": "Molte persone vivono questi sogni come una visita, e questa esperienza merita rispetto. Qualunque siano le tue convinzioni, il sogno non predice nulla. Annota che cosa è stato detto e che cosa ha smosso in te."
+          },
+          {
+            "question": "Perché sogno che una persona defunta è ancora viva?",
+            "answer": "Vederla viva, come se nulla fosse successo, accompagna spesso il ritmo lento del lutto: una parte di te la aspetta ancora. Il risveglio può fare male. Questi sogni tendono a tornare negli anniversari e nei grandi cambiamenti."
+          },
+          {
+            "question": "Che cosa fare se i sogni sui defunti mi turbano?",
+            "answer": "Annotali per vedere che cosa ritorna. Se ti rovinano il sonno notte dopo notte, o se il dolore resta molto pesante con il passare dei mesi, parlane con il medico o con uno psicologo: esiste un sostegno per il lutto."
+          }
+        ],
+        "documentMetaDescription": "Sognare una persona defunta che è viva, parla o ti saluta: che cosa può dire la scena del lutto e del ricordo, con domande ed esempio di diario.",
+        "modifiedAt": "2026-10-08"
       },
       "pt": {
         "slug": "pessoa-falecida",
@@ -3467,47 +3572,152 @@
       "en": {
         "slug": "bird",
         "name": "Bird",
-        "shortDescription": "Birds symbolize freedom, spiritual aspiration, and higher perspectives. A caged bird can represent feeling trapped.",
+        "shortDescription": "A bird in a dream is often tied to freedom, lightness or the wish to see things from above. What it was doing matters most: flying free, caged, singing, hurt or in your hands, each scene points elsewhere. None of them is an omen.",
         "askYourself": [
-          "Do I feel free?",
-          "What are my highest aspirations?"
-        ]
+          "What was the bird doing: flying, singing, trapped, hurt, coming toward me?",
+          "Did I want to follow it, protect it, catch it or keep it away?",
+          "Where in my life right now do I feel free, and where do I feel held back?"
+        ],
+        "faq": [
+          {
+            "question": "What does it mean to dream of a bird?",
+            "answer": "A bird is often associated with freedom, lightness, ideas or news arriving. Its meaning depends on what it was doing, its species if you noticed it, and how you felt watching it."
+          },
+          {
+            "question": "What does a caged bird mean in a dream?",
+            "answer": "A caged bird can go with a feeling of being held back: by a job, a routine, a relationship or your own caution. Notice whether the cage door was open, and whether you wanted to set the bird free."
+          },
+          {
+            "question": "What does a dead or injured bird mean in a dream?",
+            "answer": "A hurt bird can echo a hope put aside, tiredness or a fragile project. It is not an omen of death or bad luck. Note what you did: try to help it, look away, feel helpless."
+          },
+          {
+            "question": "Does the type of bird matter?",
+            "answer": "It can. An owl, a crow, a dove or an eagle carry different cultural associations, but your own memories count more: the pigeons on your balcony, a bird from a childhood garden. Start from what it brings to mind for you."
+          }
+        ],
+        "documentMetaDescription": "Dreaming of a bird flying, caged, singing or hurt: what the scene may say about freedom and lightness, with questions, a journal example and no omens.",
+        "modifiedAt": "2026-10-08"
       },
       "fr": {
         "slug": "oiseau",
         "name": "Oiseau",
-        "shortDescription": "L'oiseau symbolise la liberté, l'aspiration spirituelle et les perspectives élevées. Un oiseau en cage peut représenter un sentiment d'être prisonnier.",
+        "shortDescription": "Rêver d'un oiseau évoque souvent la liberté, à la légèreté ou à l'envie de voir les choses d'en haut. Ce qu'il faisait compte le plus : libre, en cage, chantant, blessé ou dans vos mains, chaque scène oriente ailleurs. Aucune n'est un présage.",
         "askYourself": [
-          "Est-ce que je me sens libre ?",
-          "Quelles sont mes aspirations les plus élevées ?"
-        ]
+          "Que faisait l'oiseau : il volait, chantait, était enfermé, blessé, venait vers moi ?",
+          "Avais-je envie de le suivre, de le protéger, de l'attraper ou de l'éloigner ?",
+          "Où est-ce que je me sens libre en ce moment, et où est-ce que je me sens retenu ?"
+        ],
+        "faq": [
+          {
+            "question": "Que signifie rêver d'un oiseau ?",
+            "answer": "L'oiseau est souvent associé à la liberté, à la légèreté, aux idées ou à une nouvelle qui arrive. Son sens dépend de ce qu'il faisait, de son espèce si vous l'avez remarquée, et de ce que vous ressentiez en le regardant."
+          },
+          {
+            "question": "Que signifie rêver d'un oiseau en cage ?",
+            "answer": "Un oiseau en cage peut accompagner un sentiment d'être retenu : par un travail, une routine, une relation ou votre propre prudence. Regardez si la porte de la cage était ouverte, et si vous vouliez le libérer."
+          },
+          {
+            "question": "Que signifie rêver d'un oiseau mort ou blessé ?",
+            "answer": "Un oiseau blessé peut faire écho à un espoir mis de côté, à de la fatigue ou à un projet fragile. Ce n'est pas un présage de mort ni de malheur. Notez votre réaction : le soigner, détourner les yeux, vous sentir impuissant."
+          },
+          {
+            "question": "L'espèce de l'oiseau compte-t-elle ?",
+            "answer": "Elle peut compter. Un hibou, un corbeau, une colombe ou un aigle portent des associations culturelles différentes, mais vos souvenirs comptent davantage : les pigeons du balcon, un oiseau du jardin de votre enfance. Partez de ce qu'il évoque pour vous."
+          }
+        ],
+        "documentMetaDescription": "Rêver d'un oiseau qui vole, en cage, qui chante ou blessé : ce que la scène peut dire de la liberté et de la légèreté, avec questions et exemple de journal.",
+        "modifiedAt": "2026-10-08"
       },
       "es": {
         "slug": "pajaro",
         "name": "Pájaro",
-        "shortDescription": "Los pájaros simbolizan libertad, aspiración espiritual y perspectivas elevadas. Un pájaro enjaulado puede representar sentirse atrapado.",
+        "shortDescription": "Soñar con un pájaro suele evocar la libertad, la ligereza o las ganas de ver las cosas desde arriba. Cuenta sobre todo lo que hacía: libre, enjaulado, cantando, herido o en tus manos, cada escena apunta a otro lugar. Ninguna es un presagio.",
         "askYourself": [
-          "¿Me siento libre?",
-          "¿Cuáles son mis aspiraciones más elevadas?"
-        ]
+          "¿Qué hacía el pájaro: volaba, cantaba, estaba encerrado, herido, venía hacia mí?",
+          "¿Quería seguirlo, protegerlo, atraparlo o alejarlo?",
+          "¿Dónde me siento libre ahora mismo, y dónde me siento retenido?"
+        ],
+        "faq": [
+          {
+            "question": "¿Qué significa soñar con pájaros?",
+            "answer": "El pájaro se asocia a menudo con la libertad, la ligereza, las ideas o una noticia que llega. Su sentido depende de lo que hacía, de su especie si te fijaste, y de lo que sentías al mirarlo."
+          },
+          {
+            "question": "¿Qué significa soñar con un pájaro enjaulado?",
+            "answer": "Un pájaro enjaulado puede acompañar la sensación de estar retenido: por un trabajo, una rutina, una relación o tu propia prudencia. Fíjate en si la puerta de la jaula estaba abierta y en si querías liberarlo."
+          },
+          {
+            "question": "¿Qué significa soñar con un pájaro muerto o herido?",
+            "answer": "Un pájaro herido puede hacer eco de una ilusión aparcada, del cansancio o de un proyecto frágil. No es un presagio de muerte ni de mala suerte. Anota tu reacción: curarlo, apartar la mirada, sentirte impotente."
+          },
+          {
+            "question": "¿Importa la especie del pájaro?",
+            "answer": "Puede importar. Un búho, un cuervo, una paloma o un águila tienen asociaciones culturales distintas, pero tus recuerdos cuentan más: las palomas de la plaza, un pájaro del patio de tu infancia. Parte de lo que te evoca a ti."
+          }
+        ],
+        "documentMetaDescription": "Soñar con un pájaro que vuela, enjaulado, que canta o herido: qué puede decir la escena sobre la libertad y la ligereza, con preguntas y un ejemplo de diario.",
+        "modifiedAt": "2026-10-08"
       },
       "de": {
         "slug": "vogel",
         "name": "Vogel",
-        "shortDescription": "Vögel symbolisieren Freiheit, Perspektive und spirituelle Verbindung. Die Vogelart und ihr Verhalten geben Hinweise auf die spezifische Botschaft.",
+        "shortDescription": "Ein Vogel im Traum steht oft für Freiheit, Leichtigkeit oder den Wunsch, die Dinge von oben zu sehen. Entscheidend ist, was er tat: frei, im Käfig, singend, verletzt oder in Ihren Händen, jede Szene weist anderswohin. Ein Omen ist keine davon.",
         "askYourself": [
-          "Welche höhere Perspektive brauche ich?",
-          "Wo sehne ich mich nach mehr Freiheit?"
-        ]
+          "Was tat der Vogel: Flog er, sang er, war er eingesperrt, verletzt, kam er auf mich zu?",
+          "Wollte ich ihm folgen, ihn schützen, ihn fangen oder ihn verscheuchen?",
+          "Wo fühle ich mich gerade frei, und wo fühle ich mich zurückgehalten?"
+        ],
+        "faq": [
+          {
+            "question": "Was bedeutet es, von einem Vogel zu träumen?",
+            "answer": "Der Vogel wird oft mit Freiheit, Leichtigkeit, Ideen oder einer Nachricht verbunden, die unterwegs ist. Was er bedeutet, hängt davon ab, was er tat, welche Art er war, falls Sie es bemerkt haben, und was Sie beim Zusehen gefühlt haben."
+          },
+          {
+            "question": "Was bedeutet ein Vogel im Käfig im Traum?",
+            "answer": "Ein Vogel im Käfig kann das Gefühl begleiten, zurückgehalten zu werden: von einer Stelle, einer Routine, einer Beziehung oder der eigenen Vorsicht. Achten Sie darauf, ob die Käfigtür offen war und ob Sie ihn befreien wollten."
+          },
+          {
+            "question": "Was bedeutet ein toter oder verletzter Vogel im Traum?",
+            "answer": "Ein verletzter Vogel kann eine zurückgestellte Hoffnung, Müdigkeit oder ein zerbrechliches Vorhaben aufgreifen. Ein Vorzeichen für Tod oder Unglück ist er nicht. Notieren Sie Ihre Reaktion: helfen, wegsehen, sich hilflos fühlen."
+          },
+          {
+            "question": "Spielt die Vogelart eine Rolle?",
+            "answer": "Sie kann eine Rolle spielen. Eule, Krähe, Taube oder Adler tragen unterschiedliche kulturelle Bedeutungen, doch Ihre eigenen Erinnerungen zählen mehr: die Tauben auf dem Balkon, ein Vogel aus dem Garten Ihrer Kindheit. Gehen Sie von dem aus, woran er Sie erinnert."
+          }
+        ],
+        "documentMetaDescription": "Vogel im Traum, fliegend, im Käfig, singend oder verletzt: was die Szene über Freiheit und Leichtigkeit sagen kann, mit Fragen und einem Tagebuchbeispiel.",
+        "modifiedAt": "2026-10-08"
       },
       "it": {
         "slug": "uccello",
         "name": "Uccello",
-        "shortDescription": "Gli uccelli simboleggiano libertà, prospettiva e connessione spirituale. Il tipo di uccello e il suo comportamento forniscono indizi sul messaggio specifico.",
+        "shortDescription": "Sognare un uccello richiama spesso la libertà, la leggerezza o il desiderio di vedere le cose dall’alto. Conta soprattutto che cosa faceva: libero, in gabbia, che canta, ferito o tra le tue mani, ogni scena porta altrove. Nessuna è un presagio.",
         "askYourself": [
-          "Di quale prospettiva più elevata ho bisogno?",
-          "Dove desidero più libertà?"
-        ]
+          "Che cosa faceva l’uccello: volava, cantava, era chiuso, ferito, veniva verso di me?",
+          "Volevo seguirlo, proteggerlo, catturarlo o allontanarlo?",
+          "Dove mi sento libero in questo periodo, e dove mi sento trattenuto?"
+        ],
+        "faq": [
+          {
+            "question": "Che cosa significa sognare un uccello?",
+            "answer": "L’uccello viene spesso associato alla libertà, alla leggerezza, alle idee o a una notizia in arrivo. Il significato dipende da che cosa faceva, dalla specie se l’hai notata, e da ciò che provavi guardandolo."
+          },
+          {
+            "question": "Che cosa significa sognare un uccello in gabbia?",
+            "answer": "Un uccello in gabbia può accompagnare la sensazione di essere trattenuto: da un lavoro, una routine, una relazione o dalla tua stessa prudenza. Osserva se la porta della gabbia era aperta e se volevi liberarlo."
+          },
+          {
+            "question": "Che cosa significa sognare un uccello morto o ferito?",
+            "answer": "Un uccello ferito può fare eco a una speranza messa da parte, alla stanchezza o a un progetto fragile. Non è un presagio di morte né di sfortuna. Annota la tua reazione: curarlo, distogliere lo sguardo, sentirti impotente."
+          },
+          {
+            "question": "La specie dell’uccello conta?",
+            "answer": "Può contare. Un gufo, un corvo, una colomba o un’aquila hanno associazioni culturali diverse, ma i tuoi ricordi contano di più: i piccioni della piazza, un uccello del cortile della tua infanzia. Parti da ciò che evoca per te."
+          }
+        ],
+        "documentMetaDescription": "Sognare un uccello che vola, in gabbia, che canta o ferito: che cosa può dire la scena della libertà e della leggerezza, con domande ed esempio di diario.",
+        "modifiedAt": "2026-10-08"
       },
       "pt": {
         "slug": "passaro",
@@ -3537,20 +3747,62 @@
       "en": {
         "slug": "bridge",
         "name": "Bridge",
-        "shortDescription": "A bridge symbolizes transition, passage from one state to another. Crossing a bridge suggests change, while a collapsed bridge indicates obstacles.",
+        "shortDescription": "A bridge in a dream often brings up a passage: a change underway, a decision, a link between two people or two stages of life. Solid, swaying or broken, it shows how the crossing felt, not how things will turn out.",
         "askYourself": [
-          "What transition am I going through?",
-          "Am I ready to move on?"
-        ]
+          "Was I crossing the bridge, turning back, or stopping before it?",
+          "Was it solid, swaying or broken, above calm or rough water?",
+          "Which change or relationship in my life feels like a crossing right now?"
+        ],
+        "faq": [
+          {
+            "question": "What does it mean to dream of a bridge?",
+            "answer": "A bridge is often associated with a transition, a decision or a link between two sides. Its state, what lay beneath it, whether you crossed it and how you felt all shape the reading."
+          },
+          {
+            "question": "What does crossing a bridge mean in a dream?",
+            "answer": "Crossing can go with a decision you are making, or a stage you are leaving behind. Note your pace and whether someone was with you: that person may point to support, or tension, around the change."
+          },
+          {
+            "question": "What does a broken or collapsing bridge mean in a dream?",
+            "answer": "A broken bridge can echo doubts about a change, a weakened link or the feeling of having no safe way across. It does not mean the change will fail. What would help you feel on firmer ground?"
+          },
+          {
+            "question": "Why was I afraid to cross a bridge in my dream?",
+            "answer": "Fear on a bridge can mix a fear of heights with a fear of change: leaving solid ground before reaching the other side. Notice whether you turned back, waited or crossed anyway."
+          }
+        ],
+        "documentMetaDescription": "Dreaming of crossing a bridge, a broken bridge or a bridge over water: what the scene may say about change and decisions, with questions and a journal example.",
+        "modifiedAt": "2026-10-08"
       },
       "fr": {
         "slug": "pont",
         "name": "Pont",
-        "shortDescription": "Le pont symbolise une transition, un passage d'un état à un autre. Traverser un pont suggère un changement, tandis qu'un pont effondré indique des obstacles.",
+        "shortDescription": "Rêver d'un pont évoque souvent un passage : un changement en cours, une décision, un lien entre deux personnes ou deux étapes de vie. Solide, branlant ou effondré, il montre comment la traversée était vécue, pas comment elle finira.",
         "askYourself": [
-          "Quelle transition suis-je en train de vivre ?",
-          "Suis-je prêt à passer à autre chose ?"
-        ]
+          "Est-ce que je traversais le pont, faisais demi-tour ou m'arrêtais avant ?",
+          "Était-il solide, branlant ou cassé, au-dessus d'une eau calme ou agitée ?",
+          "Quel changement ou quelle relation ressemble en ce moment à une traversée ?"
+        ],
+        "faq": [
+          {
+            "question": "Que signifie rêver d'un pont ?",
+            "answer": "Le pont est souvent associé à une transition, à une décision ou à un lien entre deux rives. Son état, ce qu'il y avait dessous, le fait de le traverser ou non et ce que vous ressentiez orientent la lecture."
+          },
+          {
+            "question": "Que signifie rêver de traverser un pont ?",
+            "answer": "Traverser peut accompagner une décision en train de se prendre, ou une étape que vous laissez derrière vous. Notez votre allure et si quelqu'un vous accompagnait : cette personne peut indiquer un soutien, ou une tension, autour du changement."
+          },
+          {
+            "question": "Que signifie rêver d'un pont cassé ou qui s'effondre ?",
+            "answer": "Un pont cassé peut faire écho à des doutes sur un changement, à un lien fragilisé ou au sentiment de ne pas avoir de passage sûr. Il n'annonce pas l'échec du changement. De quoi auriez-vous besoin pour vous sentir sur un terrain plus ferme ?"
+          },
+          {
+            "question": "Pourquoi ai-je peur de traverser un pont en rêve ?",
+            "answer": "La peur sur un pont peut mêler le vertige et la peur du changement : quitter la terre ferme avant d'atteindre l'autre rive. Regardez si vous avez fait demi-tour, attendu, ou traversé malgré tout."
+          }
+        ],
+        "documentMetaDescription": "Rêver de traverser un pont, d'un pont cassé ou au-dessus de l'eau : ce que la scène peut dire d'un changement ou d'une décision, avec questions et exemple.",
+        "modifiedAt": "2026-10-08"
       },
       "es": {
         "slug": "puente",
@@ -3593,20 +3845,62 @@
       "de": {
         "slug": "bruecke",
         "name": "Brücke",
-        "shortDescription": "Brücken symbolisieren Übergänge, das Verbinden zweier Lebensphasen und das Überwinden von Hindernissen. Der Zustand der Brücke spiegelt Ihr Vertrauen in den Übergang wider.",
+        "shortDescription": "Eine Brücke im Traum steht oft für einen Übergang: einen Wandel, eine Entscheidung, eine Verbindung zwischen zwei Menschen oder Lebensphasen. Ob stabil, schwankend oder eingestürzt: Sie zeigt, wie sich der Übergang anfühlte, nicht, wie er ausgeht.",
         "askYourself": [
-          "Welchen Übergang durchlebe ich gerade?",
-          "Was verbinde ich in meinem Leben?"
-        ]
+          "Bin ich über die Brücke gegangen, umgekehrt oder davor stehen geblieben?",
+          "War sie stabil, schwankend oder kaputt, über ruhigem oder wildem Wasser?",
+          "Welche Veränderung oder Beziehung fühlt sich gerade wie eine Überquerung an?"
+        ],
+        "faq": [
+          {
+            "question": "Was bedeutet es, von einer Brücke zu träumen?",
+            "answer": "Die Brücke wird oft mit einem Übergang, einer Entscheidung oder einer Verbindung zwischen zwei Seiten verbunden. Ihr Zustand, was darunter lag, ob Sie hinübergingen und was Sie gefühlt haben, prägen die Deutung."
+          },
+          {
+            "question": "Was bedeutet es, im Traum eine Brücke zu überqueren?",
+            "answer": "Die Überquerung kann eine Entscheidung begleiten, die gerade fällt, oder eine Phase, die Sie hinter sich lassen. Notieren Sie Ihr Tempo und ob jemand dabei war: Diese Person kann auf Unterstützung oder Spannung rund um die Veränderung hinweisen."
+          },
+          {
+            "question": "Was bedeutet eine kaputte oder einstürzende Brücke im Traum?",
+            "answer": "Eine kaputte Brücke kann Zweifel an einer Veränderung aufgreifen, eine geschwächte Verbindung oder das Gefühl, keinen sicheren Weg hinüber zu haben. Sie bedeutet nicht, dass die Veränderung scheitert. Was würde Ihnen festeren Boden geben?"
+          },
+          {
+            "question": "Warum hatte ich im Traum Angst, über eine Brücke zu gehen?",
+            "answer": "Angst auf einer Brücke kann Höhenangst und Angst vor Veränderung mischen: den festen Boden verlassen, bevor das andere Ufer erreicht ist. Achten Sie darauf, ob Sie umgekehrt sind, gewartet haben oder trotzdem hinübergingen."
+          }
+        ],
+        "documentMetaDescription": "Im Traum eine Brücke überqueren, eine kaputte Brücke oder eine über Wasser: was die Szene über Wandel und Entscheidungen sagen kann, mit Fragen und Beispiel.",
+        "modifiedAt": "2026-10-08"
       },
       "it": {
         "slug": "ponte",
         "name": "Ponte",
-        "shortDescription": "I ponti simboleggiano transizioni, il collegamento tra due fasi della vita e il superamento di ostacoli. Lo stato del ponte riflette la tua fiducia nella transizione.",
+        "shortDescription": "Sognare un ponte richiama spesso un passaggio: un cambiamento in corso, una decisione, un legame tra due persone o tra due fasi della vita. Solido, traballante o crollato, mostra come hai vissuto l’attraversamento, non come andrà a finire.",
         "askYourself": [
-          "Quale transizione sto attraversando?",
-          "Cosa sto collegando nella mia vita?"
-        ]
+          "Stavo attraversando il ponte, tornavo indietro o mi fermavo prima?",
+          "Era solido, traballante o rotto, sopra un’acqua calma o agitata?",
+          "Quale cambiamento o quale relazione somiglia in questo periodo a un attraversamento?"
+        ],
+        "faq": [
+          {
+            "question": "Che cosa significa sognare un ponte?",
+            "answer": "Il ponte viene spesso associato a una transizione, a una decisione o a un legame tra due sponde. Il suo stato, ciò che c’era sotto, se lo attraversavi e che cosa provavi orientano la lettura."
+          },
+          {
+            "question": "Che cosa significa sognare di attraversare un ponte?",
+            "answer": "Attraversare può accompagnare una decisione che stai prendendo, o una fase che lasci alle spalle. Annota il tuo passo e se qualcuno era con te: quella persona può indicare un sostegno, o una tensione, intorno al cambiamento."
+          },
+          {
+            "question": "Che cosa significa sognare un ponte rotto o che crolla?",
+            "answer": "Un ponte rotto può fare eco a dubbi su un cambiamento, a un legame indebolito o alla sensazione di non avere un passaggio sicuro. Non significa che il cambiamento fallirà. Di che cosa avresti bisogno per sentirti su un terreno più solido?"
+          },
+          {
+            "question": "Perché in sogno ho paura di attraversare un ponte?",
+            "answer": "La paura su un ponte può mescolare vertigine e paura del cambiamento: lasciare la terraferma prima di raggiungere l’altra sponda. Osserva se sei tornato indietro, hai aspettato o hai attraversato comunque."
+          }
+        ],
+        "documentMetaDescription": "Sognare di attraversare un ponte, un ponte rotto o sopra l’acqua: che cosa può dire la scena di un cambiamento o di una decisione, con domande ed esempio.",
+        "modifiedAt": "2026-10-08"
       },
       "pt": {
         "slug": "ponte",
@@ -3637,48 +3931,90 @@
       "en": {
         "slug": "stairs",
         "name": "Stairs",
-        "shortDescription": "Stairs symbolize progression, social or spiritual ascension. Going up indicates growth; going down can suggest exploration of the subconscious.",
+        "shortDescription": "Stairs in a dream often stage effort and a change of level: climbing toward something, going back down, missing a step. Direction alone does not decide the meaning. Where the stairs led, their state and how you felt guide the reading.",
         "askYourself": [
-          "Am I progressing in my life?",
-          "What direction am I taking?"
-        ]
+          "Where did the stairs lead, and did I really want to get there?",
+          "Was I climbing, going down, falling, or stuck on the same landing?",
+          "Which goal or change in my life feels like these stairs right now?"
+        ],
+        "faq": [
+          {
+            "question": "What does it mean to dream of stairs?",
+            "answer": "Stairs are often associated with effort, progress or a change of level. The direction, the state of the steps and your emotion help tell apart ambition, doubt, tiredness or a loss of footing."
+          },
+          {
+            "question": "What does climbing stairs mean in a dream?",
+            "answer": "Climbing can go with effort toward a goal, or a stage you see as a step up. Climbing easily often comes with confidence; climbing out of breath or afraid can echo pressure, or doubt about where it leads."
+          },
+          {
+            "question": "What does falling down stairs mean in a dream?",
+            "answer": "A fall can echo a setback, insecurity or a fear of losing control. It does not predict an accident. If you jolted awake just as you were falling asleep, it may have been a hypnic jerk, a common startle at sleep onset."
+          },
+          {
+            "question": "What do endless or broken stairs mean?",
+            "answer": "Endless stairs often appear when a goal asks for a lot of effort and the end still feels far away. Broken or missing steps can echo a path that no longer feels safe. Note whether you kept going, rested or looked for another way."
+          }
+        ],
+        "documentMetaDescription": "Dreaming of stairs: climbing, going down, falling or endless steps. What the scene may say about effort and change, with questions and a journal example.",
+        "modifiedAt": "2026-10-08"
       },
       "fr": {
         "slug": "escalier",
         "name": "Escalier",
-        "shortDescription": "L'escalier symbolise la progression, l'ascension sociale ou spirituelle. Monter indique la croissance, descendre peut suggérer l'exploration de l'inconscient.",
+        "shortDescription": "Rêver d'un escalier met souvent en scène un effort et un changement de niveau : monter vers quelque chose, redescendre, rater une marche. La direction seule ne dit pas tout. Où menait l'escalier, son état et ce que vous ressentiez guident la lecture.",
         "askYourself": [
-          "Est-ce que je progresse dans ma vie ?",
-          "Quelle direction est-ce que je prends ?"
-        ]
+          "Où menait l'escalier, et avais-je vraiment envie d'y arriver ?",
+          "Est-ce que je montais, descendais, tombais, ou restais sur le même palier ?",
+          "Quel objectif ou quel changement ressemble en ce moment à cet escalier ?"
+        ],
+        "faq": [
+          {
+            "question": "Que signifie rêver d'un escalier ?",
+            "answer": "L'escalier est souvent associé à l'effort, à la progression ou à un changement de niveau. La direction, l'état des marches et votre émotion aident à distinguer l'ambition, le doute, la fatigue ou la perte d'appui."
+          },
+          {
+            "question": "Que signifie rêver de monter un escalier ?",
+            "answer": "Monter peut accompagner un effort vers un objectif, ou une étape vécue comme une progression. Monter facilement va souvent avec la confiance ; monter essoufflé ou inquiet peut faire écho à une pression, ou à un doute sur la destination."
+          },
+          {
+            "question": "Que signifie rêver de tomber dans un escalier ?",
+            "answer": "Une chute peut faire écho à un revers, à une insécurité ou à la peur de perdre le contrôle. Elle ne prédit pas d'accident. Si vous vous êtes réveillé en sursaut au moment de vous endormir, il peut s'agir d'une secousse hypnique, un sursaut fréquent à l'endormissement."
+          },
+          {
+            "question": "Que signifie rêver d'un escalier sans fin ou aux marches cassées ?",
+            "answer": "Un escalier sans fin apparaît souvent quand un objectif demande beaucoup d'efforts et que le bout semble encore loin. Des marches cassées ou manquantes peuvent faire écho à un chemin qui ne semble plus sûr. Notez si vous continuiez, faisiez une pause ou cherchiez un autre passage."
+          }
+        ],
+        "documentMetaDescription": "Rêver d'un escalier : monter, descendre, tomber ou des marches sans fin. Ce que la scène peut dire de l'effort et du changement, avec questions et exemple.",
+        "modifiedAt": "2026-10-08"
       },
       "es": {
         "slug": "escaleras",
         "name": "Escaleras",
-        "documentMetaDescription": "Soñar con escaleras: interpreta subir, bajar, caer, peldaños rotos o una subida difícil según el rumbo, el esfuerzo y la emoción del sueño.",
-        "shortDescription": "Soñar con escaleras suele representar avance, retroceso y cambios de etapa: subir con facilidad, bajar, caer, encontrar escalones rotos o no llegar al final puede reflejar cómo vives una meta, una transición o una pérdida de control.",
+        "documentMetaDescription": "Soñar con escaleras: subir, bajar, caer o escalones sin fin. Qué puede decir la escena sobre el esfuerzo y los cambios, con preguntas y un ejemplo de diario.",
+        "shortDescription": "Soñar con escaleras suele escenificar un esfuerzo y un cambio de nivel: subir hacia algo, volver a bajar, perder un escalón. La dirección por sí sola no decide el sentido. Adónde llevaban, su estado y lo que sentías orientan la lectura.",
         "askYourself": [
           "¿Subía, bajaba, caía o no lograba llegar al final?",
           "¿Las escaleras eran firmes, estrechas, interminables o tenían escalones rotos?",
-          "¿Qué meta o cambio de etapa se siente así en mi vida despierta?"
+          "¿Qué meta o cambio de etapa se parece ahora mismo a esas escaleras?"
         ],
         "seoTitle": "subir escaleras, bajarlas o caer",
         "faq": [
           {
             "question": "¿Qué significa soñar con escaleras?",
-            "answer": "Soñar con escaleras suele relacionarse con progreso, retroceso o un cambio de nivel en tu vida. La dirección, el estado de los escalones y la emoción del sueño ayudan a distinguir entre ambición, duda, esfuerzo y pérdida de control."
+            "answer": "Las escaleras se asocian a menudo con el esfuerzo, el avance o un cambio de nivel. La dirección, el estado de los escalones y tu emoción ayudan a distinguir entre ambición, duda, cansancio o pérdida de apoyo."
           },
           {
             "question": "¿Qué significa soñar con subir escaleras?",
-            "answer": "Subir escaleras puede reflejar esfuerzo hacia una meta, aprendizaje o una transición que percibes como ascendente. Subir con facilidad sugiere confianza; hacerlo con cansancio o miedo puede señalar presión o dudas sobre el camino."
+            "answer": "Subir puede acompañar un esfuerzo hacia una meta o una etapa que vives como un ascenso. Subir con facilidad suele ir con la confianza; subir sin aliento o con miedo puede hacer eco de una presión, o de dudas sobre adónde lleva el camino."
           },
           {
             "question": "¿Qué significa soñar con bajar o caer por unas escaleras?",
-            "answer": "Bajar puede indicar que revisas recuerdos, emociones o una situación que requiere mirar hacia dentro. Caer por las escaleras suele expresar inseguridad, un revés o temor a perder el control; no predice un accidente."
+            "answer": "Bajar puede ser una vuelta, una salida o una búsqueda; con alivio no se lee igual que con miedo. Caer puede hacer eco de un revés o del miedo a perder el control, sin predecir un accidente. Un sobresalto al dormirte puede ser una sacudida hípnica."
           },
           {
             "question": "¿Qué significan unas escaleras rotas o interminables?",
-            "answer": "Unos escalones rotos pueden representar obstáculos o una ruta que ya no parece segura. Unas escaleras interminables suelen aparecer cuando una meta exige mucho esfuerzo y el final todavía se siente lejano."
+            "answer": "Unas escaleras interminables suelen aparecer cuando una meta exige mucho esfuerzo y el final todavía se ve lejos. Los escalones rotos o que faltan pueden hacer eco de un camino que ya no parece seguro. Anota si seguías, descansabas o buscabas otra ruta."
           }
         ],
         "softCta": {
@@ -3688,16 +4024,37 @@
           "button": "Explorar el diccionario",
           "href": "/es/diccionario-de-suenos-app"
         },
-        "modifiedAt": "2026-08-20"
+        "modifiedAt": "2026-10-08"
       },
       "de": {
         "slug": "treppe",
         "name": "Treppe",
-        "shortDescription": "Treppen stehen für Aufstieg, Abstieg und persönliche Entwicklung. Hinaufsteigen deutet auf Fortschritt hin, hinuntergehen kann auf Selbsterforschung oder Rückschritte hinweisen.",
+        "shortDescription": "Eine Treppe im Traum zeigt oft Anstrengung und einen Wechsel der Ebene: hinaufsteigen, wieder hinuntergehen, eine Stufe verfehlen. Die Richtung allein sagt wenig. Wohin die Treppe führte, ihr Zustand und Ihr Gefühl weisen den Weg.",
         "askYourself": [
-          "Mache ich Fortschritte in meinem Leben?",
-          "In welche Richtung bewege ich mich?"
-        ]
+          "Wohin führte die Treppe, und wollte ich wirklich dort ankommen?",
+          "Bin ich hinaufgestiegen, hinuntergegangen, gestürzt oder auf demselben Absatz geblieben?",
+          "Welches Ziel oder welche Veränderung fühlt sich gerade an wie diese Treppe?"
+        ],
+        "faq": [
+          {
+            "question": "Was bedeutet es, von einer Treppe zu träumen?",
+            "answer": "Die Treppe wird oft mit Anstrengung, Fortschritt oder einem Wechsel der Ebene verbunden. Richtung, Zustand der Stufen und Ihr Gefühl helfen, zwischen Ehrgeiz, Zweifel, Müdigkeit und verlorenem Halt zu unterscheiden."
+          },
+          {
+            "question": "Was bedeutet es, im Traum eine Treppe hinaufzusteigen?",
+            "answer": "Hinaufsteigen kann eine Anstrengung für ein Ziel begleiten oder eine Phase, die Sie als Aufstieg erleben. Leichtes Steigen geht oft mit Zuversicht einher; atemloses oder ängstliches Steigen kann Druck aufgreifen oder Zweifel, wohin der Weg führt."
+          },
+          {
+            "question": "Was bedeutet es, im Traum die Treppe hinunterzufallen?",
+            "answer": "Ein Sturz kann einen Rückschlag, Unsicherheit oder die Angst vor Kontrollverlust aufgreifen. Einen Unfall sagt er nicht voraus. Sind Sie beim Einschlafen hochgeschreckt, war es vielleicht eine Einschlafzuckung, ein häufiges Zusammenzucken des Körpers."
+          },
+          {
+            "question": "Was bedeuten endlose oder kaputte Treppen?",
+            "answer": "Endlose Treppen tauchen oft auf, wenn ein Ziel viel Anstrengung verlangt und das Ende noch weit weg scheint. Kaputte oder fehlende Stufen können einen Weg aufgreifen, der sich nicht mehr sicher anfühlt. Notieren Sie, ob Sie weitergingen, pausierten oder einen anderen Weg suchten."
+          }
+        ],
+        "documentMetaDescription": "Treppe im Traum: hinaufsteigen, hinuntergehen, stürzen oder endlose Stufen. Was die Szene über Anstrengung und Wandel sagen kann, mit Fragen und Beispiel.",
+        "modifiedAt": "2026-10-08"
       },
       "it": {
         "slug": "scale",
