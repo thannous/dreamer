@@ -125,6 +125,12 @@ const DREAMER_PASSES = [
   "EXPO_PUBLIC_ONBOARDING_FEATURE_SHEETS_ENABLED=false E2E_WEB_LOCALE=en-US node tools/e2e/run.mjs dreamer web run --grep 'feature sheets stay disabled by default'",
 ].join(' && ');
 
+// sha256 of this repository's own copy of scripts/verify-local.mjs. The engine
+// tests compare the file with it, so an engine edit is a deliberate change of
+// this pin. No other repository is read or compared.
+export const ENGINE_SHA256 =
+  'bcb521d64c7e1cc8872784b50c8101a7614dadee19c89a395e09d04ec231d7b2';
+
 export default {
   mainBranch: 'master',
   commands: { pr: 'npm run verify:pr', release: 'npm run verify:release' },
@@ -137,6 +143,10 @@ export default {
     copy: [],
   },
   setup: [],
+  // https:// URL prefixes of the external CI runs --external may cite, one per
+  // row of the External CI table (doc_web_interne/docs/regle-commune-livraison.md,
+  // section 13.1). That table is "none" here, so only owner-machine evidence counts.
+  externalSources: [],
   // The scripts these checks run: changing them changes what a proof proves,
   // so proof-block flags them for the owner's review like this file.
   deliveryFiles: [
@@ -175,7 +185,7 @@ export default {
     {
       name: 'verify-local-engine',
       command: 'node --test scripts/test-verify-local.mjs',
-      inputs: ['scripts/verify-local.mjs', 'scripts/test-verify-local.mjs'],
+      inputs: ['scripts/verify-local.mjs', 'scripts/test-verify-local.mjs', 'verify-local.config.mjs'],
     },
     { name: 'typecheck-app', command: 'npm run typecheck:app', exclude: DOCS },
     { name: 'typecheck-tests', command: 'npm run typecheck:tests', exclude: DOCS },
