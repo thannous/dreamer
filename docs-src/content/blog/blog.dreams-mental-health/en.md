@@ -5,7 +5,7 @@
   "lang": "en",
   "slug": "dreams-mental-health",
   "title": "Dreams and Mental Health: Decode Your Mind | Noctalia",
-  "description": "Explore how anxiety, depression, and trauma shape your dreams. Learn to use dream analysis as a powerful tool for self-awareness and emotional healing support.",
+  "description": "Dreams and mental health: how anxiety, depression, stress and trauma show up at night, what research says, and when nightmares call for a professional.",
   "robots": "max-image-preview:large",
   "themeColor": "#0a0514",
   "htmlClass": "scroll-smooth blog-article",
@@ -14,25 +14,25 @@
   "mainClass": "pt-32 pb-20 px-4",
   "ogType": "article",
   "ogTitle": "Dreams and Mental Health: Decode Your Mind | Noctalia",
-  "ogDescription": "Explore how anxiety, depression, and trauma shape your dreams. Learn to use dream analysis for self-awareness.",
+  "ogDescription": "Anxiety, depression, stress and trauma all leave traces in dreams. What research says, and when to seek help.",
   "ogImage": "https://noctalia.app/img/blog/dreams-mental-health.webp",
   "ogImageAlt": "Person in peaceful contemplation of their inner mental landscape",
   "twitterCard": "summary_large_image",
   "twitterTitle": "Dreams and Mental Health: Decode Your Mind | Noctalia",
-  "twitterDescription": "Explore how anxiety, depression, and trauma shape your dreams. Learn to use dream analysis for self-awareness.",
+  "twitterDescription": "How dreams and mental health are linked, what research says, and when nightmares deserve a professional's attention.",
   "twitterImage": "https://noctalia.app/img/blog/dreams-mental-health.webp",
   "twitterImageAlt": "Person in peaceful contemplation of their inner mental landscape",
   "publishedTime": "2025-12-11",
-  "modifiedTime": "2026-01-06",
+  "modifiedTime": "2026-10-08",
   "author": "Thanh Chau",
   "prevPath": "/en/blog/dream-journal-guide",
   "nextPath": "/en/blog/why-we-dream-science",
   "preloadImage": "/img/blog/dreams-mental-health.webp",
   "jsonLd": [
-    "{\n  \"@context\": \"https://schema.org\",\n  \"@type\": \"BlogPosting\",\n  \"headline\": \"Dreams and Mental Health: How Your Sleep Reveals Your Mind\",\n  \"description\": \"Discover the connection between dreams and mental health, including how anxiety, depression, and trauma affect dreams.\",\n  \"image\": {\n    \"@type\": \"ImageObject\",\n    \"url\": \"https://noctalia.app/img/blog/dreams-mental-health.webp\",\n    \"width\": 1200,\n    \"height\": 630\n  },\n  \"author\": [\n    {\n      \"@type\": \"Person\",\n      \"@id\": \"https://noctalia.app/en/about#person\",\n      \"name\": \"Thanh Chau\",\n      \"jobTitle\": \"Founder & Publication Director\",\n      \"url\": \"https://noctalia.app/en/about\",\n      \"worksFor\": {\n        \"@type\": \"Organization\",\n        \"@id\": \"https://noctalia.app/#organization\",\n        \"name\": \"Noctalia\",\n        \"url\": \"https://noctalia.app\"\n      }\n    },\n    {\n      \"@type\": \"Organization\",\n      \"@id\": \"https://noctalia.app/#organization\",\n      \"name\": \"Noctalia\",\n      \"url\": \"https://noctalia.app\",\n      \"logo\": {\n        \"@type\": \"ImageObject\",\n        \"url\": \"https://noctalia.app/logo/logo_noctalia.png\"\n      }\n    }\n  ],\n  \"publisher\": {\n    \"@type\": \"Organization\",\n    \"name\": \"Noctalia\",\n    \"url\": \"https://noctalia.app\",\n    \"logo\": {\n      \"@type\": \"ImageObject\",\n      \"url\": \"https://noctalia.app/logo/logo_noctalia.png\"\n    }\n  },\n  \"datePublished\": \"2025-12-11\",\n  \"dateModified\": \"2026-01-06\",\n  \"mainEntityOfPage\": {\n    \"@type\": \"WebPage\",\n    \"@id\": \"https://noctalia.app/en/blog/dreams-mental-health\"\n  },\n  \"inLanguage\": \"en\",\n  \"isAccessibleForFree\": true,\n  \"wordCount\": 1465,\n  \"timeRequired\": \"PT5M\",\n  \"url\": \"https://noctalia.app/en/blog/dreams-mental-health\"\n}",
+    "{\n    \"@context\": \"https://schema.org\",\n    \"@type\": \"BlogPosting\",\n    \"headline\": \"Dreams and mental health: what your nights can (and can't) tell you\",\n    \"description\": \"Dreams and mental health: how anxiety, depression, stress and trauma show up at night, what research says, and when nightmares call for a professional.\",\n    \"image\": {\n        \"@type\": \"ImageObject\",\n        \"url\": \"https://noctalia.app/img/blog/dreams-mental-health.webp\",\n        \"width\": 1200,\n        \"height\": 630\n    },\n    \"author\": [\n        {\n            \"@type\": \"Person\",\n            \"@id\": \"https://noctalia.app/en/about#person\",\n            \"name\": \"Thanh Chau\",\n            \"jobTitle\": \"Founder & Publication Director\",\n            \"url\": \"https://noctalia.app/en/about\",\n            \"worksFor\": {\n                \"@type\": \"Organization\",\n                \"@id\": \"https://noctalia.app/#organization\",\n                \"name\": \"Noctalia\",\n                \"url\": \"https://noctalia.app\"\n            }\n        },\n        {\n            \"@type\": \"Organization\",\n            \"@id\": \"https://noctalia.app/#organization\",\n            \"name\": \"Noctalia\",\n            \"url\": \"https://noctalia.app\",\n            \"logo\": {\n                \"@type\": \"ImageObject\",\n                \"url\": \"https://noctalia.app/logo/logo_noctalia.png\"\n            }\n        }\n    ],\n    \"publisher\": {\n        \"@type\": \"Organization\",\n        \"name\": \"Noctalia\",\n        \"url\": \"https://noctalia.app\",\n        \"logo\": {\n            \"@type\": \"ImageObject\",\n            \"url\": \"https://noctalia.app/logo/logo_noctalia.png\"\n        }\n    },\n    \"datePublished\": \"2025-12-11\",\n    \"dateModified\": \"2026-10-08\",\n    \"mainEntityOfPage\": {\n        \"@type\": \"WebPage\",\n        \"@id\": \"https://noctalia.app/en/blog/dreams-mental-health\"\n    },\n    \"inLanguage\": \"en\",\n    \"isAccessibleForFree\": true,\n    \"wordCount\": 2345,\n    \"timeRequired\": \"PT11M\",\n    \"url\": \"https://noctalia.app/en/blog/dreams-mental-health\"\n}",
     "{\n  \"@context\": \"https://schema.org\",\n  \"@type\": \"WebPage\",\n  \"@id\": \"https://noctalia.app/en/blog/dreams-mental-health\",\n  \"url\": \"https://noctalia.app/en/blog/dreams-mental-health\",\n  \"name\": \"Dreams and Mental Health: Decode Your Mind | Noctalia\",\n  \"inLanguage\": \"en\"\n}",
-    "{\n  \"@context\": \"https://schema.org\",\n  \"@type\": \"FAQPage\",\n  \"mainEntity\": [\n    {\n      \"@type\": \"Question\",\n      \"name\": \"Can dreams indicate mental health problems?\",\n      \"acceptedAnswer\": {\n        \"@type\": \"Answer\",\n        \"text\": \"Yes, recurring nightmares, disturbing dream content, or significant changes in dream patterns can be indicators of mental health concerns like anxiety, depression, or PTSD. However, occasional bad dreams are normal and don't necessarily signal a problem. If dream disturbances persist and affect your daily life, consult a mental health professional.\"\n      }\n    },\n    {\n      \"@type\": \"Question\",\n      \"name\": \"How does anxiety affect dreams?\",\n      \"acceptedAnswer\": {\n        \"@type\": \"Answer\",\n        \"text\": \"Anxiety often manifests in dreams as scenarios involving being chased, falling, being unprepared for exams, or losing control. People with anxiety disorders tend to experience more frequent nightmares, more vivid dreams, and higher emotional intensity in dreams. REM sleep disruption from anxiety can also lead to fragmented dream recall.\"\n      }\n    },\n    {\n      \"@type\": \"Question\",\n      \"name\": \"Can working with dreams improve mental health?\",\n      \"acceptedAnswer\": {\n        \"@type\": \"Answer\",\n        \"text\": \"Yes, dream work can be therapeutic. Techniques like dream journaling, imagery rehearsal therapy, and dream analysis in therapy can help process emotions, identify triggers, work through trauma, and gain self-awareness. However, dream work should complement, not replace, professional mental health treatment when needed.\"\n      }\n    }\n  ]\n}",
-    "{\n  \"@context\": \"https://schema.org\",\n  \"@type\": \"BreadcrumbList\",\n  \"itemListElement\": [\n    {\n      \"@type\": \"ListItem\",\n      \"position\": 1,\n      \"name\": \"Home\",\n      \"item\": \"https://noctalia.app/\"\n    },\n    {\n      \"@type\": \"ListItem\",\n      \"position\": 2,\n      \"name\": \"Resources\",\n      \"item\": \"https://noctalia.app/en/blog/\"\n    },\n    {\n      \"@type\": \"ListItem\",\n      \"position\": 3,\n      \"name\": \"Dreams and Mental Health\",\n      \"item\": \"https://noctalia.app/en/blog/dreams-mental-health\"\n    }\n  ]\n}"
+    "{\n    \"@context\": \"https://schema.org\",\n    \"@type\": \"FAQPage\",\n    \"mainEntity\": [\n        {\n            \"@type\": \"Question\",\n            \"name\": \"Can dreams indicate mental health problems?\",\n            \"acceptedAnswer\": {\n                \"@type\": \"Answer\",\n                \"text\": \"Not on their own. Frequent nightmares, a marked change in your dreams or recurring distressing dreams can go along with anxiety, depression or PTSD. Occasional bad dreams, though, are normal. If disturbing dreams persist and affect your sleep or your days, talk to a doctor or a mental health professional.\"\n            }\n        },\n        {\n            \"@type\": \"Question\",\n            \"name\": \"How does anxiety affect dreams?\",\n            \"acceptedAnswer\": {\n                \"@type\": \"Answer\",\n                \"text\": \"Anxiety often brings dreams of being chased, falling, being unprepared for an exam or losing control. It also makes sleep lighter and awakenings more frequent, so you remember more of these dreams. They usually ease when the source of anxiety does.\"\n            }\n        },\n        {\n            \"@type\": \"Question\",\n            \"name\": \"Can working with dreams improve mental health?\",\n            \"acceptedAnswer\": {\n                \"@type\": \"Answer\",\n                \"text\": \"It can help, within limits. The American Academy of Sleep Medicine recommends imagery rehearsal therapy for chronic nightmares, and a dream journal helps you name emotions and notice patterns. Dream work complements professional care; it doesn't replace it.\"\n            }\n        },\n        {\n            \"@type\": \"Question\",\n            \"name\": \"Are nightmares a sign of PTSD?\",\n            \"acceptedAnswer\": {\n                \"@type\": \"Answer\",\n                \"text\": \"Not by themselves. Nightmares are common after a frightening event and often fade with time. When dreams about the event keep coming back for weeks, along with flashbacks, avoidance or feeling constantly on alert, it's worth talking to a professional.\"\n            }\n        }\n    ]\n}",
+    "{\n    \"@context\": \"https://schema.org\",\n    \"@type\": \"BreadcrumbList\",\n    \"itemListElement\": [\n        {\n            \"@type\": \"ListItem\",\n            \"position\": 1,\n            \"name\": \"Home\",\n            \"item\": \"https://noctalia.app/\"\n        },\n        {\n            \"@type\": \"ListItem\",\n            \"position\": 2,\n            \"name\": \"Resources\",\n            \"item\": \"https://noctalia.app/en/blog/\"\n        },\n        {\n            \"@type\": \"ListItem\",\n            \"position\": 3,\n            \"name\": \"Dreams and mental health\",\n            \"item\": \"https://noctalia.app/en/blog/dreams-mental-health\"\n        }\n    ]\n}"
   ],
   "activeNav": "resources"
 }
@@ -52,7 +52,7 @@
 </li>
 <li class="text-purple-400">/</li>
 <li itemprop="itemListElement" itemscope="" itemtype="https://schema.org/ListItem">
-<span class="text-dream-cream" itemprop="name">Dreams and Mental Health</span>
+<span class="text-dream-cream" itemprop="name">Dreams and mental health</span>
 <meta content="3" itemprop="position">
 </li>
 </ol>
@@ -60,17 +60,17 @@
 <!-- Article Header -->
 <header class="mb-12">
 <div class="flex flex-wrap items-center gap-3 mb-6">
-<span class="text-xs font-mono text-dream-salmon border border-dream-salmon/30 rounded-full px-3 py-1 uppercase">Complete Guide</span>
+<span class="text-xs font-mono text-dream-salmon border border-dream-salmon/30 rounded-full px-3 py-1 uppercase">Complete guide</span>
 <a class="text-xs font-mono text-purple-200/70 border border-white/10 rounded-full px-3 py-1 hover:text-white hover:border-dream-salmon/30 transition-colors" href="dream-meanings">Topic: Dream meanings</a>
 <span aria-hidden="true" class="w-full sm:hidden"></span>
 <span class="text-sm text-purple-300/60">Published December 11, 2025</span>
-<span class="text-sm text-purple-300/60">5 min read</span>
+<span class="text-sm text-purple-300/60">11 min read</span>
 </div>
 <h1 class="font-serif text-3xl md:text-5xl mb-6 text-transparent bg-clip-text bg-gradient-to-b from-white via-dream-lavender to-purple-400/50 leading-tight">
-                    Dreams and Mental Health: How Your Sleep Reveals Your Mind
+                    Dreams and mental health: what your nights can (and can't) tell you
                 </h1>
 <p class="text-lg text-purple-200/80 leading-relaxed">
-                    Your dreams are more than random neural firings - they're a window into your mental and emotional well-being. Research shows profound connections between dream patterns and conditions like anxiety, depression, and PTSD. Understanding this link can unlock powerful insights for healing.
+                    Three nights in a row, the same dream: you're late, the phone won't dial, and you wake up with your jaw clenched. When the days get heavy, the nights often follow. Dreams don't diagnose anything, but they can echo stress, anxiety, low mood or trauma. Here is what research says about dreams and mental health, and what to do with what you notice.
                 </p>
 </header>
 <!-- Author Byline (E-E-A-T) -->
@@ -87,7 +87,7 @@
 <!-- Quick Answer (AI SEO) -->
 <section class="glass-panel rounded-2xl p-6 mb-8 border border-dream-salmon/20 bg-white/5" aria-labelledby="quick-answer-title">
     <h2 id="quick-answer-title" class="font-serif text-xl text-dream-cream mb-3">Quick answer</h2>
-    <p class="text-purple-100/80 leading-relaxed">Explore how anxiety, depression, and trauma shape your dreams. Learn to use dream analysis as a powerful tool for self-awareness and emotional healing support.</p>
+    <p class="text-purple-100/80 leading-relaxed">Your mental state shapes your dreams, and bad nights weigh on your days in return. Anxiety often brings dreams of being chased, falling or being unprepared; depression is often described with heavier, flatter dreams; after a trauma, nightmares can replay the event. A single dream means little. Frequent nightmares that disrupt your sleep, or distress that lasts during the day, are worth raising with a professional.</p>
 </section>
 
 <!-- Editorial Review (E-E-A-T) -->
@@ -113,86 +113,76 @@
 <!-- Table of Contents -->
 <nav class="glass-panel rounded-2xl p-6 mb-12">
 <h2 class="font-serif text-lg text-dream-cream mb-4 flex items-center gap-2">
-<i class="w-5 h-5 text-dream-salmon" data-lucide="list"></i> Table of Contents
+<i class="w-5 h-5 text-dream-salmon" data-lucide="list"></i> Table of contents
                 </h2>
 <ol class="space-y-2 text-sm text-purple-200/70">
-<li><a class="toc-link block" href="#connection">1. The mind-dream connection</a></li>
-<li><a class="toc-link block" href="#anxiety-dreams">2. How anxiety shapes your dreams</a></li>
-<li><a class="toc-link block" href="#depression-dreams">3. Depression and dream patterns</a></li>
-<li><a class="toc-link block" href="#trauma-nightmares">4. Trauma, PTSD, and nightmares</a></li>
+<li><a class="toc-link block" href="#connection">1. How are dreams and mental health linked?</a></li>
+<li><a class="toc-link block" href="#anxiety-dreams">2. What anxiety does to your dreams</a></li>
+<li><a class="toc-link block" href="#depression-dreams">3. Do dreams change with depression?</a></li>
+<li><a class="toc-link block" href="#trauma-nightmares">4. Trauma, PTSD and nightmares</a></li>
 <li><a class="toc-link block" href="#stress-dreams">5. Stress and recurring dreams</a></li>
-<li><a class="toc-link block" href="#therapeutic-use">6. Dream work in therapy</a></li>
-<li><a class="toc-link block" href="#dream-journaling">7. The healing power of dream journaling</a></li>
+<li><a class="toc-link block" href="#therapeutic-use">6. How therapists work with dreams</a></li>
+<li><a class="toc-link block" href="#dream-journaling">7. Can a dream journal help?</a></li>
 <li><a class="toc-link block" href="#when-help">8. When to seek professional help</a></li>
 </ol>
 </nav>
 <!-- Article Content -->
 <div class="prose max-w-none text-gray-300">
-<h2 id="connection">Dreams and Mental Health: The Mind-Dream Connection</h2>
+<h2 id="connection">How are dreams and mental health linked?</h2>
 <p>
-                    Dreams have fascinated humanity for millennia, but only recently has science begun to uncover their deep relationship with mental health. During <strong>REM (Rapid Eye Movement) sleep</strong>, when most vivid dreaming occurs, your brain processes emotions, consolidates memories, and works through psychological challenges.
+                    Dream researchers agree on one broad point: dreams tend to draw on what occupies us while we're awake. G. William Domhoff and others describe this as <strong>continuity</strong>. The people, worries and emotions of your days often come back at night, rearranged.
                 </p>
 <p>
-                    This connection runs both ways: your mental state shapes your dreams, and paying attention to your dreams can reveal insights about your mental health. Research from the Sleep Research Society shows that people with mental health conditions often experience:
+                    The link runs both ways: when your mood or stress changes, your dreams often follow, and nights broken by bad dreams leave you more on edge the next day. A few patterns come up often during hard times:
                 </p>
 <ul>
-<li><strong>More frequent nightmares:</strong> Up to 4 times more common in those with anxiety disorders</li>
-<li><strong>Higher dream recall:</strong> Increased awareness and remembering of dreams</li>
-<li><strong>Greater emotional intensity:</strong> Dreams feel more vivid, disturbing, or overwhelming</li>
-<li><strong>Recurring themes:</strong> Persistent patterns reflecting unresolved psychological issues</li>
+<li><strong>More nightmares:</strong> occasional nightmares are normal, reported by 50% to 85% of adults according to the American Academy of Sleep Medicine (AASM). Stress, anxiety, depression and trauma make them more frequent.</li>
+<li><strong>More dreams remembered,</strong> because broken nights give more chances to catch one.</li>
+<li><strong>Stronger emotions,</strong> or on the contrary strangely flat dreams.</li>
+<li><strong>Recurring themes</strong> while a worry stays unresolved.</li>
 </ul>
 <p>
-                    Your dreams essentially serve as <strong>emotional processing laboratories</strong>. The amygdala, your brain's emotional center, shows increased activity during <a class="text-dream-salmon hover:underline" href="rem-sleep-dreams">REM sleep</a>, while the prefrontal cortex (logical reasoning) becomes less active. This creates the perfect environment for working through feelings without conscious interference.
+                    Why emotions? During <a class="text-dream-salmon hover:underline" href="rem-sleep-dreams">REM sleep</a>, when the most vivid dreams tend to happen, brain areas involved in emotion such as the amygdala are very active, while parts of the prefrontal cortex are less so. Matthew Walker and Els van der Helm proposed in 2009 that this state helps the brain keep the memory of an event while softening its emotional charge. It's a debated hypothesis, but it helps explain why hard periods show up in dreams.
                 </p>
-<h2 id="anxiety-dreams">Anxiety Dreams: How Anxiety Shapes Your Sleep</h2>
+<h2 id="anxiety-dreams">What anxiety does to your dreams</h2>
 <p>
-                    Anxiety doesn't clock out when you fall asleep - it infiltrates your dream world. People with anxiety disorders report distinctly different dream experiences compared to those without anxiety. Understanding <a class="text-dream-salmon hover:underline" href="../guides/dream-symbols-dictionary">dream symbolism</a> can help make sense of these recurring patterns.
+                    Anxiety doesn't switch off at bedtime. The dreams it brings often share the same ingredients: a threat, a lack of time, a body that won't respond. See our guide to <a class="text-dream-salmon hover:underline" href="anxiety-dreams-meaning">anxiety dreams</a> and the <a class="text-dream-salmon hover:underline" href="../guides/dream-symbols-dictionary">dream symbols dictionary</a> for individual images.
                 </p>
 <h3>Common anxiety dream themes</h3>
 <ul>
-<li><strong>Being chased:</strong> Represents avoidance of fears or problems in waking life</li>
-<li><strong>Falling or losing control:</strong> Reflects feelings of helplessness or insecurity</li>
-<li><strong>Being unprepared:</strong> Test dreams, forgetting important items, missing flights</li>
-<li><strong>Teeth falling out:</strong> Often linked to worries about appearance or loss of control</li>
-<li><strong>Being trapped or paralyzed:</strong> Mirrors feelings of being stuck in real-life situations</li>
+<li><strong>Being chased:</strong> often linked with something you'd rather avoid, such as a conversation, a decision or a fear.</li>
+<li><strong>Falling or losing control:</strong> tends to go with a sense of insecurity or helplessness.</li>
+<li><strong>Being unprepared:</strong> the exam you didn't study for, the forgotten bag, the missed flight.</li>
+<li><strong>Teeth falling out:</strong> often associated with worries about how you come across, or with a big change.</li>
+<li><strong>Being trapped or unable to move:</strong> may echo a situation in which you feel stuck.</li>
 </ul>
-<h3>Physiological effects</h3>
 <p>
-                    Anxiety affects not just dream content but also sleep architecture. Studies show that anxious individuals experience:
+                    These are among the most widely shared dreams, anxious or not: in a survey of Canadian students, being chased and falling came near the top of the list (Nielsen et al., 2003). What matters is how often a theme returns and how you feel on waking.
                 </p>
-<ul>
-<li><strong>Fragmented REM sleep:</strong> More frequent awakenings during dream periods</li>
-<li><strong>Increased cortisol:</strong> Stress hormone elevation disrupts normal dream cycles</li>
-<li><strong>Hyperarousal:</strong> The nervous system remains on alert even during sleep</li>
-<li><strong>Dream recall bias:</strong> Tendency to remember threatening or negative dreams more vividly</li>
-</ul>
-<blockquote>
-                    "My anxiety dreams are like watching a horror movie I can't turn off. I'm always running from something, but never fast enough. When I wake up, my heart is racing like the threat was real."
-                </blockquote>
-<h2 id="depression-dreams">Depression Dreams: Understanding Dream Patterns</h2>
+<h3>How anxiety affects sleep itself</h3>
 <p>
-                    Depression profoundly alters the dream landscape. While anxiety dreams tend to be intense and threatening, <strong>depression often makes dreams feel heavy, sad, or emotionally flat</strong>.
+                    Anxiety also changes the way you sleep. The body stays on alert, sleep gets lighter and awakenings more frequent. Waking during or just after a dream makes it more likely to stick, which is one reason anxious weeks feel full of bad dreams.
                 </p>
-<h3>Depression's dream signature</h3>
-<ul>
-<li><strong>Negative emotional tone:</strong> Dreams dominated by sadness, hopelessness, or emptiness</li>
-<li><strong>Social rejection themes:</strong> Being excluded, abandoned, or criticized by others</li>
-<li><strong>Passive role:</strong> Feeling powerless or observing rather than participating</li>
-<li><strong>Gray, muted environments:</strong> Less colorful and vibrant dream settings</li>
-<li><strong>Failure scenarios:</strong> Repeated experiences of falling short or disappointing others</li>
-</ul>
-<h3>REM sleep abnormalities</h3>
+<h2 id="depression-dreams">Do dreams change with depression?</h2>
 <p>
-                    Depression causes measurable changes in sleep structure that affect dreaming:
+                    Where anxiety dreams tend to be intense and threatening, people living with depression often describe dreams that feel <strong>heavy, sad or oddly flat</strong>. Some remember fewer dreams; others have more nightmares.
                 </p>
+<h3>What people often describe</h3>
 <ul>
-<li><strong>REM latency reduction:</strong> Entering REM sleep faster than normal (often under 60 minutes)</li>
-<li><strong>Increased REM density:</strong> More intense eye movements during REM periods</li>
-<li><strong>REM fragmentation:</strong> Interrupted dream periods leading to poor sleep quality</li>
-<li><strong>Early morning awakening:</strong> Waking during or after emotional dream periods</li>
+<li><strong>A sad or empty tone,</strong> sometimes without a clear story.</li>
+<li><strong>Rejection:</strong> being left out, abandoned or criticized.</li>
+<li><strong>A passive role:</strong> watching rather than acting.</li>
+<li><strong>Failure:</strong> letting people down, falling short.</li>
 </ul>
 <p>
-                    These REM abnormalities are so consistent that clinicians sometimes use them as <strong>biological markers</strong> in depression diagnosis. A 2022 study in the Journal of Affective Disorders found that analyzing dream patterns could predict depressive episodes with 78% accuracy.
+                    These are tendencies, not warning signs to look for. A sad dream doesn't mean you're depressed.
+                </p>
+<h3>Changes in REM sleep</h3>
+<p>
+                    Depression is also associated with measurable sleep changes: REM sleep often starts earlier in the night, with more intense eye movements, and early-morning awakenings are common. These changes have long been studied as possible biological markers, but they are not a diagnostic test, and no dream journal can detect depression.
+                </p>
+<p>
+                    Some medications, including certain antidepressants, can also change dreams or bring on nightmares, according to the AASM. If that happens after starting a treatment, tell your doctor rather than stopping it on your own.
                 </p>
 </div>
 <!-- Mental Health Cards -->
@@ -202,63 +192,65 @@
 <div class="p-2 bg-purple-500/20 rounded-lg">
 <i class="w-5 h-5 text-purple-300" data-lucide="brain"></i>
 </div>
-<h3 class="font-serif text-lg text-dream-cream">Anxiety Dreams</h3>
+<h3 class="font-serif text-lg text-dream-cream">Anxiety dreams</h3>
 </div>
 <p class="text-sm text-gray-300 mb-3">
-                        Characterized by threat, danger, and loss of control. Often featuring <a class="text-dream-salmon hover:underline" href="../symbols/being-chased">chase</a> scenarios, <a class="text-dream-salmon hover:underline" href="../symbols/falling">falling</a>, or being unprepared.
+                        Threat, urgency, loss of control. Often <a class="text-dream-salmon hover:underline" href="../symbols/being-chased">chase</a> scenes, <a class="text-dream-salmon hover:underline" href="../symbols/falling">falling</a>, or being caught unprepared.
                     </p>
-<p class="text-xs text-dream-salmon">High arousal, intense emotions</p>
+<p class="text-xs text-dream-salmon">Often: high arousal, abrupt awakenings</p>
 </div>
 <div class="symptom-card glass-panel rounded-xl p-6 border border-transparent">
 <div class="flex items-center gap-3 mb-4">
 <div class="p-2 bg-purple-500/20 rounded-lg">
 <i class="w-5 h-5 text-purple-300" data-lucide="cloud-rain"></i>
 </div>
-<h3 class="font-serif text-lg text-dream-cream">Depression Dreams</h3>
+<h3 class="font-serif text-lg text-dream-cream">Dreams during depression</h3>
 </div>
 <p class="text-sm text-gray-300 mb-3">
-                        Marked by sadness, rejection, and passivity. Muted colors, social exclusion, and feelings of failure.
+                        Sadness, rejection, a passive role. Some people remember fewer dreams, others have more nightmares.
                     </p>
-<p class="text-xs text-dream-salmon">Negative tone, low energy</p>
+<p class="text-xs text-dream-salmon">Often: heavy tone, little energy</p>
 </div>
 </div>
 <div class="prose max-w-none text-gray-300">
-<h2 id="trauma-nightmares">Nightmares and PTSD: How Trauma Affects Dreams</h2>
+<h2 id="trauma-nightmares">Trauma, PTSD and nightmares</h2>
 <p>
-<a class="text-dream-salmon hover:underline" href="stop-nightmares-guide">Nightmares</a> are a hallmark symptom of <strong>Post-Traumatic Stress Disorder (PTSD)</strong>, affecting 70-90% of those with the condition. Unlike normal dreams, trauma nightmares often replay the traumatic event with disturbing accuracy.
+                    After a frightening event, nightmares are common in the weeks that follow. For some people, they last. The US National Institute of Mental Health (NIMH) lists recurring memories or dreams related to the event among the re-experiencing symptoms of <strong>post-traumatic stress disorder (PTSD)</strong>. Our <a class="text-dream-salmon hover:underline" href="stop-nightmares-guide">guide to nightmares</a> covers the practical side.
                 </p>
 <h3>Types of trauma dreams</h3>
 <ul>
-<li><strong>Replicative nightmares:</strong> Direct replay of the traumatic event with little variation</li>
-<li><strong>Symbolic nightmares:</strong> Metaphorical representations of trauma themes (danger, helplessness)</li>
-<li><strong>Mixed nightmares:</strong> Combination of literal and symbolic elements</li>
+<li><strong>Replicative:</strong> the event replays almost as it happened.</li>
+<li><strong>Symbolic:</strong> the dream keeps the emotion (danger, helplessness) but changes the setting.</li>
+<li><strong>Mixed:</strong> real fragments blend with invented scenes.</li>
 </ul>
 <h3>Why trauma disrupts dreaming</h3>
 <p>
-                    Trauma alters how the brain processes threatening information during sleep:
+                    The mechanisms are still being studied: a fear system that stays over-reactive during sleep, a body that remains on alert, difficulty "unlearning" a threat once it has passed. The Walker and van der Helm hypothesis adds one explanation: if the overnight softening of emotional memories fails, the memory keeps its full charge and the nightmares return. It's a model, not a settled fact.
                 </p>
-<ul>
-<li><strong>Amygdala hyperactivity:</strong> Fear center remains overactive during REM sleep</li>
-<li><strong>Failed fear extinction:</strong> Brain unable to "unlearn" threat responses during dreams</li>
-<li><strong>Memory reconsolidation errors:</strong> Traumatic memories strengthen rather than integrate</li>
-<li><strong>Norepinephrine dysregulation:</strong> Stress chemical remains elevated during sleep</li>
-</ul>
 <p>
-                    Research by Dr. Matthew Walker at UC Berkeley shows that the brain uses <a class="text-dream-salmon hover:underline" href="rem-sleep-dreams">REM sleep</a> to <strong>strip emotional charge from memories</strong>. In healthy individuals, dreams gradually desensitize emotional reactions to past events. In PTSD, this process malfunctions, causing traumatic memories to remain raw and emotionally charged.
+                    If nightmares persist after a traumatic event, don't manage them alone with a notebook: talk to a doctor or a trauma-trained therapist. Effective treatments exist.
                 </p>
-<h2 id="stress-dreams">Stress Dreams: Why Recurring Dreams Signal Tension</h2>
+<h2 id="stress-dreams">Stress and recurring dreams</h2>
 <p>
-                    Chronic stress creates its own dream signature: <strong>recurring dreams</strong> that replay similar scenarios night after night. These repetitive dreams signal that your brain is actively working to process unresolved psychological tension.
+                    Ongoing stress often shows up as <a class="text-dream-salmon hover:underline" href="recurring-dreams-meaning">recurring dreams</a>: the same scenario, night after night, with small variations. They tend to come back while the source of tension remains, and to ease when it does.
                 </p>
 <h3>Common stress dream scenarios</h3>
 <ul>
-<li><strong>Work or school stress:</strong> Missing deadlines, forgetting presentations, arriving late</li>
-<li><strong>Relationship stress:</strong> Arguments, betrayal, or abandonment by loved ones</li>
-<li><strong>Performance anxiety:</strong> Being on stage unprepared, equipment failing during important moments</li>
-<li><strong>Loss of control:</strong> Car brakes failing, phones not working, being unable to speak</li>
+<li><strong>Work or studies:</strong> a missed deadline, a forgotten presentation, arriving late. See also our article on <a class="text-dream-salmon hover:underline" href="stress-dreams-work">work stress dreams</a>.</li>
+<li><strong>Relationships:</strong> arguments, betrayal, being left.</li>
+<li><strong>Performance:</strong> being on stage unprepared, equipment failing at the key moment.</li>
+<li><strong>Loss of control:</strong> brakes that don't respond, a phone that won't dial, a voice that won't come out.</li>
+</ul>
+<h3 id="journal-example">A dream journal example</h3>
+<p><strong>Fictional example:</strong> this entry shows how to keep the dream, the emotion and a possible link with your days apart.</p>
+<ul>
+<li><strong>Dream:</strong> "I'm back at university, it's exam day and I can't find the room. The corridors keep changing."</li>
+<li><strong>Emotion:</strong> "Panic, then shame when I realize I never went to class."</li>
+<li><strong>Recent context:</strong> "Quarterly report due Friday. Third time this month I've had this dream."</li>
+<li><strong>Question to keep:</strong> "Does it only come back before deadlines, or on quiet weeks too?"</li>
 </ul>
 <p>
-                    A 2021 study in <em>Dreaming</em> journal found that <strong>55% of recurring dreamers</strong> could identify a clear waking-life stressor corresponding to their dream theme. Addressing the stress often led to the dreams resolving naturally.
+                    One entry proves nothing. Over a few weeks, the same notes show whether the dream follows a particular kind of pressure, which you can then act on.
                 </p>
 <aside class="glass-panel rounded-2xl p-6 my-8 border border-dream-salmon/20">
 <div class="flex items-start gap-4">
@@ -266,110 +258,90 @@
 <i class="w-6 h-6 text-dream-salmon" data-lucide="book-open"></i>
 </div>
 <div>
-<h4 class="font-serif text-lg text-dream-cream mb-2">Track patterns in your dreams</h4>
-<p class="text-sm text-gray-400 mb-4">Identifying recurring themes can reveal unaddressed mental health concerns. Noctalia's <a class="text-dream-salmon hover:underline" href="dream-journal-guide">dream journal</a> helps you spot patterns over time with personalized insights and categorization.</p>
+<h4 class="font-serif text-lg text-dream-cream mb-2">See what keeps coming back</h4>
+<p class="text-sm text-gray-400 mb-4">In Noctalia, tell your dream out loud or type it when you wake up. It's transcribed and saved to your journal, so you can reread your recurring dreams side by side. Our <a class="text-dream-salmon hover:underline" href="dream-journal-guide">dream journal guide</a> explains a simple method.</p>
 <a class="inline-flex items-center gap-2 text-sm text-dream-salmon hover:text-dream-salmonLight transition-colors" href="/">
-                                Start journaling with Noctalia <i class="w-4 h-4" data-lucide="arrow-right"></i>
+                                Try Noctalia for free <i class="w-4 h-4" data-lucide="arrow-right"></i>
 </a>
 </div>
 </div>
 </aside>
-<h2 id="therapeutic-use">Dream Therapy: Using Dreams in Mental Health Treatment</h2>
+<h2 id="therapeutic-use">How therapists work with dreams</h2>
 <p>
-                    Mental health professionals increasingly recognize dreams as valuable therapeutic tools. Several evidence-based approaches harness dreams to support healing:
+                    Several therapies use dreams, and one has solid support.
                 </p>
-<h3>Imagery Rehearsal Therapy (IRT)</h3>
+<h3>Imagery rehearsal therapy (IRT)</h3>
 <p>
-                    Considered the gold standard for chronic nightmares, particularly in PTSD. Patients rewrite nightmare endings while awake, then mentally rehearse the new version. Studies show <strong>70-80% reduction in <a class="text-dream-salmon hover:underline" href="stop-nightmares-guide">nightmare frequency</a></strong> within weeks.
+                    You pick a recurring nightmare, rewrite it while awake with a different, less frightening course, then rehearse the new version in your mind for a few minutes a day. In its 2018 position paper, the AASM recommends IRT for nightmare disorder and for PTSD-related nightmares. After a trauma, it's best learned with a professional. More in our guide on <a class="text-dream-salmon hover:underline" href="stop-nightmares-guide">how to stop nightmares</a>.
                 </p>
-<h3>Dream analysis in psychotherapy</h3>
+<h3>Dreams in psychotherapy</h3>
 <p>
-                    While Freudian dream interpretation has evolved, modern therapists use dreams to:
+                    Many therapists invite patients to talk about their dreams, not to decode them like a dictionary, but to name emotions that are hard to say directly, approach a painful subject through an image, and notice change: dream content often shifts as things improve.
                 </p>
-<ul>
-<li><strong>Access unconscious material:</strong> Dreams reveal thoughts and feelings outside conscious awareness</li>
-<li><strong>Identify patterns:</strong> Recurring themes point to persistent psychological issues</li>
-<li><strong>Process emotions:</strong> Dreams provide safe space to explore difficult feelings</li>
-<li><strong>Track progress:</strong> Changing dream content reflects therapeutic growth</li>
-</ul>
-<h3>Lucid dreaming therapy</h3>
+<h3>Lucid dreaming</h3>
 <p>
-                    Teaching patients to become aware within dreams allows them to:
+                    Some approaches teach people to realize they're dreaming during a nightmare and change its course. The AASM lists this among options that may be used, with thinner evidence than for IRT. If you're curious, start with our <a class="text-dream-salmon hover:underline" href="lucid-dreaming-beginners-guide">beginner's guide</a>, and stop if it disturbs your sleep.
                 </p>
-<ul>
-<li><strong>Confront nightmare figures:</strong> Transform threatening dream characters</li>
-<li><strong>Practice new behaviors:</strong> Rehearse social situations or coping skills</li>
-<li><strong>Reduce nightmare distress:</strong> Knowledge that "it's just a dream" decreases fear</li>
-<li><strong>Gain sense of control:</strong> Empowerment in dreams generalizes to waking life</li>
-</ul>
-<h2 id="dream-journaling">Dream Journaling for Mental Health: The Healing Power</h2>
+<h2 id="dream-journaling">Can a dream journal help your mental health?</h2>
 <p>
-                    One of the most accessible and effective dream-based interventions is simply <strong>writing down your dreams</strong>. Research shows that regular dream journaling provides multiple mental health benefits:
+                    Writing down your dreams is the simplest form of dream work. It treats nothing on its own, but it can help in two ways.
                 </p>
-<h3>Emotional regulation</h3>
+<h3>Putting words to emotions</h3>
 <p>
-                    Putting dream content into words activates the prefrontal cortex, helping to process and regulate the emotions experienced in dreams. This is similar to how expressive writing helps trauma survivors.
+                    Describing a dream means naming what you felt in it. Many people find that an emotion written down feels less overwhelming than one left vague.
                 </p>
-<h3>Pattern recognition</h3>
+<h3>Spotting patterns</h3>
 <p>
-                    Over time, journaling reveals recurring themes, characters, or scenarios that point to:
+                    Over weeks, a journal shows what a single morning can't: themes that return in certain periods, links with a hard week or a short night, a nightmare that slowly fades.
                 </p>
-<ul>
-<li><strong>Unresolved conflicts:</strong> Relationship issues or internal struggles</li>
-<li><strong>Persistent worries:</strong> Anxieties that need addressing</li>
-<li><strong>Developmental themes:</strong> Personal growth opportunities</li>
-<li><strong>Triggers:</strong> Life events that impact your mental state</li>
-</ul>
-<h3>How to journal effectively</h3>
+<h3>How to keep a journal that helps</h3>
 <ol>
-<li><strong>Write immediately upon waking:</strong> Dream memories fade within 5-10 minutes</li>
-<li><strong>Record emotions first:</strong> Note how you felt before details blur</li>
-<li><strong>Include sensory details:</strong> Colors, sounds, smells make dreams more memorable</li>
-<li><strong>Note life context:</strong> What's happening in your waking life?</li>
-<li><strong>Look for themes:</strong> Review periodically to spot patterns</li>
-<li><strong>Avoid over-interpretation:</strong> Sometimes a dream is just a dream</li>
+<li><strong>Write as soon as you wake up:</strong> dreams fade fast, often within minutes.</li>
+<li><strong>Start with the emotion,</strong> before the details blur.</li>
+<li><strong>Add a few concrete details:</strong> a place, a color, a sound.</li>
+<li><strong>Note one line of context:</strong> what's going on in your life right now?</li>
+<li><strong>Reread every week or two</strong> to look for themes.</li>
+<li><strong>Don't over-interpret:</strong> sometimes a dream is just a dream.</li>
 </ol>
-<blockquote>
-                    "Keeping a dream journal helped me realize I had the same 'unprepared for the exam' dream every time I had a major deadline at work. Once I saw the pattern, I could address my perfectionism directly."
-                </blockquote>
-<h2 id="when-help">Disturbing Dreams: When to Seek Professional Help</h2>
 <p>
-                    While occasional <a class="text-dream-salmon hover:underline" href="stop-nightmares-guide">nightmares</a> are normal, certain dream patterns warrant professional mental health support:
+                    One caution: if writing down nightmares makes you more anxious or brings back a traumatic memory, stop and talk to a professional. A journal should help, not keep you stuck in a scene.
                 </p>
-<h3>Red flags requiring attention</h3>
+<h2 id="when-help">When to seek professional help</h2>
+<p>
+                    Occasional <a class="text-dream-salmon hover:underline" href="stop-nightmares-guide">nightmares</a> are normal. According to the AASM, 2% to 8% of people have nightmares that cause real sleep problems. Talk to a doctor, a sleep specialist or a mental health professional if you notice any of these signs.
+                </p>
+<h3>Signs worth taking seriously</h3>
 <ul>
-<li><strong>Frequent nightmares:</strong> More than once per week for over a month</li>
-<li><strong>Sleep avoidance:</strong> Fear of sleeping due to expected nightmares</li>
-<li><strong>Daytime impairment:</strong> Dream-related distress affecting work, relationships, or daily functioning</li>
-<li><strong>Trauma dreams:</strong> Recurring nightmares about traumatic events</li>
-<li><strong>Violent content:</strong> Dreams of harming self or others that feel disturbing</li>
-<li><strong>Sleep disruption:</strong> Waking multiple times nightly due to dreams</li>
+<li><strong>Frequent nightmares</strong> that wake you up, week after week</li>
+<li><strong>Fear of falling asleep</strong> because of the dreams</li>
+<li><strong>Daytime impact:</strong> fatigue, irritability, trouble concentrating or working</li>
+<li><strong>Nightmares that replay</strong> a traumatic event</li>
+<li><strong>Dreams of harming yourself or others</strong> that stay with you and worry you</li>
+<li><strong>Low mood, anxiety or loss of interest</strong> that lasts, with or without bad dreams</li>
 </ul>
-<h3>What to discuss with your provider</h3>
 <p>
-                    When consulting a mental health professional about dreams, come prepared with:
+                    <strong>If you have thoughts of suicide or of harming yourself, don't wait:</strong> in the US, call or text 988; elsewhere, call your local emergency number or a crisis line in your country.
                 </p>
+<h3>What to bring to the appointment</h3>
 <ul>
-<li><strong>Dream journal:</strong> Record of dream content, frequency, and emotional impact</li>
-<li><strong>Sleep patterns:</strong> Bedtime, wake time, sleep quality, and disruptions</li>
-<li><strong>Life stressors:</strong> Recent changes, challenges, or traumatic events</li>
-<li><strong>Symptom timeline:</strong> When dream problems started and any triggers</li>
-<li><strong>Other symptoms:</strong> Anxiety, depression, mood changes, or concentration issues</li>
+<li><strong>Your dream journal,</strong> or notes on content, frequency and feelings</li>
+<li><strong>Your sleep pattern</strong> and night awakenings</li>
+<li><strong>When it started,</strong> and recent stressors or changes</li>
+<li><strong>Other symptoms and any medication,</strong> since some drugs change dreams</li>
 </ul>
 <h3>Treatment options</h3>
 <p>
-                    Mental health professionals may recommend:
+                    A professional may suggest:
                 </p>
 <ul>
-<li><strong>Cognitive Behavioral Therapy (CBT):</strong> Address underlying anxiety or depression</li>
-<li><strong>Imagery Rehearsal Therapy:</strong> Specific treatment for chronic nightmares</li>
-<li><strong>EMDR:</strong> Eye Movement Desensitization and Reprocessing for trauma</li>
-<li><strong>Medication:</strong> In some cases, prazosin or other medications reduce nightmares</li>
-<li><strong>Sleep hygiene counseling:</strong> Optimize sleep environment and routines</li>
-<li><strong>Stress management:</strong> Mindfulness, relaxation techniques, lifestyle changes</li>
+<li><strong>Cognitive behavioral therapy (CBT)</strong> for underlying anxiety, depression or insomnia</li>
+<li><strong>Imagery rehearsal therapy</strong> for recurring nightmares</li>
+<li><strong>EMDR</strong> or another trauma-focused therapy after a trauma</li>
+<li><strong>Medication</strong> in some cases, such as prazosin for PTSD-related nightmares, prescribed by a doctor</li>
+<li><strong>Help with sleep and stress:</strong> regular hours, relaxation, less caffeine late in the day</li>
 </ul>
 <p>
-                    Remember: dreams are messengers, not directors. They reflect your mental state but don't determine it. With proper understanding and support, even the most disturbing dreams can become opportunities for growth and healing.
+                    Dreams reflect your state of mind; they don't decide it. Paying attention to them can be a useful first step, never a substitute for care.
                 </p>
 </div>
 <!-- CTA Section -->
@@ -377,9 +349,9 @@
 <div class="w-16 h-16 bg-dream-salmon/10 rounded-full flex items-center justify-center mx-auto mb-6">
 <i class="w-8 h-8 text-dream-salmon" data-lucide="heart"></i>
 </div>
-<h3 class="font-serif text-2xl md:text-3xl mb-4 text-dream-cream">Support your mental health through dreams</h3>
+<h3 class="font-serif text-2xl md:text-3xl mb-4 text-dream-cream">Keep track of your nights, gently</h3>
 <p class="text-purple-200/70 mb-6 max-w-lg mx-auto">
-                    Noctalia helps you track dream patterns, identify emotional themes, and gain insights into your mental well-being. Voice journaling makes it effortless to capture dreams the moment you wake.
+                    Record your dreams by voice or in writing the moment you wake up. Noctalia transcribes them and keeps them in one journal, so you can reread them, see what comes back, and have them at hand if you decide to talk to a professional.
                 </p>
 <a class="inline-flex items-center gap-2 px-8 py-4 bg-dream-salmon text-dream-dark rounded-full font-bold hover:bg-dream-salmon/90 transition-colors" href="/">
                     Start your dream journal <i class="w-5 h-5" data-lucide="arrow-right"></i>
@@ -387,7 +359,7 @@
 </aside>
 <!-- FAQ Section -->
 <section class="mt-16">
-<h2 class="font-serif text-2xl text-dream-cream mb-8">Frequently Asked Questions</h2>
+<h2 class="font-serif text-2xl text-dream-cream mb-8">Frequently asked questions</h2>
 <div class="space-y-4">
 <details class="glass-panel rounded-xl p-4 group cursor-pointer">
 <summary class="font-medium flex justify-between items-center text-dream-cream">
@@ -395,7 +367,7 @@
                             <i class="w-5 h-5 transition-transform group-open:rotate-180 text-dream-salmon" data-lucide="chevron-down"></i>
 </summary>
 <p class="mt-4 text-sm text-gray-400 leading-relaxed">
-                            Yes, <a class="text-dream-salmon hover:underline" href="stop-nightmares-guide">recurring nightmares</a>, disturbing dream content, or significant changes in dream patterns can be indicators of mental health concerns like anxiety, depression, or PTSD. However, occasional bad dreams are normal and don't necessarily signal a problem. If dream disturbances persist and affect your daily life, consult a mental health professional.
+                            Not on their own. Frequent nightmares, a marked change in your dreams or <a class="text-dream-salmon hover:underline" href="stop-nightmares-guide">recurring distressing dreams</a> can go along with anxiety, depression or PTSD. Occasional bad dreams, though, are normal. If disturbing dreams persist and affect your sleep or your days, talk to a doctor or a mental health professional.
                         </p>
 </details>
 <details class="glass-panel rounded-xl p-4 group cursor-pointer">
@@ -404,7 +376,7 @@
                             <i class="w-5 h-5 transition-transform group-open:rotate-180 text-dream-salmon" data-lucide="chevron-down"></i>
 </summary>
 <p class="mt-4 text-sm text-gray-400 leading-relaxed">
-                            Anxiety often manifests in dreams as scenarios involving being chased, falling, being unprepared for <a class="text-dream-salmon hover:underline" href="../symbols/exam">exams</a>, or losing control. People with anxiety disorders tend to experience more frequent nightmares, more vivid dreams, and higher emotional intensity in dreams. REM sleep disruption from anxiety can also lead to fragmented dream recall.
+                            Anxiety often brings dreams of being chased, falling, being unprepared for an <a class="text-dream-salmon hover:underline" href="../symbols/exam">exam</a> or losing control. It also makes sleep lighter and awakenings more frequent, so you remember more of these dreams. They usually ease when the source of anxiety does.
                         </p>
 </details>
 <details class="glass-panel rounded-xl p-4 group cursor-pointer">
@@ -413,22 +385,32 @@
                             <i class="w-5 h-5 transition-transform group-open:rotate-180 text-dream-salmon" data-lucide="chevron-down"></i>
 </summary>
 <p class="mt-4 text-sm text-gray-400 leading-relaxed">
-                            Yes, dream work can be therapeutic. Techniques like dream journaling, imagery rehearsal therapy, and dream analysis in therapy can help process emotions, identify triggers, work through trauma, and gain self-awareness. However, dream work should complement, not replace, professional mental health treatment when needed.
+                            It can help, within limits. The American Academy of Sleep Medicine recommends imagery rehearsal therapy for chronic nightmares, and a dream journal helps you name emotions and notice patterns. Dream work complements professional care; it doesn't replace it.
+                        </p>
+</details>
+<details class="glass-panel rounded-xl p-4 group cursor-pointer">
+<summary class="font-medium flex justify-between items-center text-dream-cream">
+                            Are nightmares a sign of PTSD?
+                            <i class="w-5 h-5 transition-transform group-open:rotate-180 text-dream-salmon" data-lucide="chevron-down"></i>
+</summary>
+<p class="mt-4 text-sm text-gray-400 leading-relaxed">
+                            Not by themselves. Nightmares are common after a frightening event and often fade with time. When dreams about the event keep coming back for weeks, along with flashbacks, avoidance or feeling constantly on alert, it's worth talking to a professional.
                         </p>
 </details>
 </div>
 </section>
 <!-- Sources / Trust (TI-97) -->
 <section class="mt-16 glass-panel rounded-2xl p-6" id="sources">
-<h2 class="font-serif text-2xl text-dream-cream mb-4">Sources / Further Reading</h2>
+<h2 class="font-serif text-2xl text-dream-cream mb-4">Sources and further reading</h2>
 <ul class="mt-6 space-y-2 text-sm text-gray-400">
-<li><a href="https://dictionary.apa.org/dream" rel="nofollow noopener noreferrer" target="_blank">APA Dictionary of Psychology:Dream</a></li>
-<li><a href="https://dreamresearch.net/" rel="nofollow noopener noreferrer" target="_blank">DreamResearch.net:G. William Domhoff (dream research overview)</a></li>
-<li><a href="https://www.nimh.nih.gov/health" rel="nofollow noopener noreferrer" target="_blank">NIMH:Mental Health Information</a></li>
-<li><a href="https://www.who.int/health-topics/mental-health" rel="nofollow noopener noreferrer" target="_blank">WHO:Mental health (fact sheets)</a></li>
-<li><a href="https://sleepeducation.org/sleep-disorders/nightmares/" rel="nofollow noopener noreferrer" target="_blank">AASM Sleep Education:Nightmares</a></li>
+<li><a href="https://sleepeducation.org/sleep-disorders/nightmares/" rel="nofollow noopener noreferrer" target="_blank">AASM Sleep Education, "Nightmares"</a></li>
+<li><a href="https://doi.org/10.5664/jcsm.7178" rel="nofollow noopener noreferrer" target="_blank">Morgenthaler et al. (2018), "Position Paper for the Treatment of Nightmare Disorder in Adults", <em>Journal of Clinical Sleep Medicine</em></a></li>
+<li><a href="https://doi.org/10.1037/a0016570" rel="nofollow noopener noreferrer" target="_blank">Walker &amp; van der Helm (2009), "Overnight therapy? The role of sleep in emotional brain processing", <em>Psychological Bulletin</em>, 135(5)</a></li>
+<li><a href="https://www.nimh.nih.gov/health/publications/post-traumatic-stress-disorder-ptsd" rel="nofollow noopener noreferrer" target="_blank">NIMH, "Post-Traumatic Stress Disorder"</a></li>
+<li><a href="https://asdreams.org/journal/issues/asdj13-4.htm" rel="nofollow noopener noreferrer" target="_blank">Nielsen, Zadra et al. (2003), "The Typical Dreams of Canadian University Students", <em>Dreaming</em>, 13(4)</a></li>
+<li><a href="https://dreamresearch.net/" rel="nofollow noopener noreferrer" target="_blank">DreamResearch.net, G. William Domhoff</a></li>
 </ul>
-<p class="mt-6 text-xs text-purple-200/60">Last updated: December 26, 2025</p>
+<p class="mt-6 text-xs text-purple-200/60">Last updated: October 8, 2026</p>
 </section>
 <!-- Related Symbols Start -->
 <section aria-label="Related dream symbols" class="mt-12 mb-8">
