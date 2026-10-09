@@ -573,7 +573,10 @@ function checkSubscriptionQaGate(
 // nothing else (no push, tag, pull_request, pull_request_comment,
 // pull_request_labeled, app_store_connect, schedule or any other trigger). The
 // two release workflows also require the release_tag input, and pass it to a
-// job that runs check-android-release-ref.js before their build.
+// job that runs check-android-release-ref.js before every build.
+//
+// This gate catches honest mistakes; the real control is the owner's review of
+// any .eas/workflows or eas.json change (deliveryFiles in verify-local.config.mjs).
 const EAS_WORKFLOWS_DIR = '.eas/workflows';
 const RELEASE_REF_CHECK = 'node ./scripts/check-android-release-ref.js';
 const RELEASE_TAG_FROM_INPUT = '${{ inputs.release_tag }}';
@@ -581,14 +584,55 @@ const RELEASE_TAG_WORKFLOWS = {
   'android-release-qualification.yml': 'build_android',
   'android-release-smoke.yml': 'build_android_release_smoke',
 };
+// The EAS workflow top-level keys (docs.expo.dev/eas/workflows/syntax),
+// compared by exact case, the same approach as shapier's workflow-triggers.mjs.
+const EAS_TOP_LEVEL_KEYS = ['name', 'run_name', 'on', 'jobs', 'defaults', 'concurrency'];
+// Keys that switch a job or step off or let it fail without stopping the run.
+const BYPASS_KEYS = ['if', 'continue-on-error', 'continue_on_error'];
+
+// Read the file the way any YAML reader would, failing closed where readers
+// could disagree:
+// - a `%` directive line (under `%YAML 1.1` a plain `on` is the boolean true);
+// - a top-level key outside EAS_TOP_LEVEL_KEYS, so `On`, `ON`, `yes`, `true`,
+//   any key a YAML 1.1 reader takes as a boolean, any non-string key and the
+//   `<<` merge key all fail;
+// - a duplicate key, a second document or any parse error.
+// Returns { workflow, issue }: exactly one of them is null.
+function parseWorkflowDocument(workflowText) {
+  const text = String(workflowText ?? '');
+  const directive = /^%.*$/m.exec(text);
+  if (directive) {
+    return { workflow: null, issue: `has a YAML directive (${directive[0].trim()}); remove it so every YAML reader sees the same keys` };
+  }
+  let doc;
+  try {
+    doc = require('yaml').parseDocument(text, { version: '1.2', uniqueKeys: true, merge: false, prettyErrors: false });
+  } catch (error) {
+    return { workflow: null, issue: `is not valid YAML (${String(error?.message || error).split('\n')[0]})` };
+  }
+  if (doc.errors.length > 0) return { workflow: null, issue: `is not valid YAML (${doc.errors[0].message.split('\n')[0]})` };
+  const { isMap, isScalar } = require('yaml');
+  if (!isMap(doc.contents)) return { workflow: null, issue: 'is not a YAML mapping' };
+  for (const pair of doc.contents.items) {
+    const key = pair.key;
+    if (!isScalar(key) || typeof key.value !== 'string') {
+      return {
+        workflow: null,
+        issue: `has a top-level key that is not a plain string (${String(isScalar(key) ? key.value : key)}); allowed keys: ${EAS_TOP_LEVEL_KEYS.join(', ')}`,
+      };
+    }
+    if (!EAS_TOP_LEVEL_KEYS.includes(key.value)) {
+      return {
+        workflow: null,
+        issue: `has the top-level key "${key.value}", which is not an EAS workflow key; allowed keys: ${EAS_TOP_LEVEL_KEYS.join(', ')}`,
+      };
+    }
+  }
+  return { workflow: doc.toJS(), issue: null };
+}
 
 function parseWorkflow(workflowText) {
-  try {
-    const workflow = require('yaml').parse(workflowText);
-    return workflow && typeof workflow === 'object' && !Array.isArray(workflow) ? workflow : null;
-  } catch {
-    return null;
-  }
+  return parseWorkflowDocument(workflowText).workflow;
 }
 
 function hasOnlyDispatchTrigger(workflow) {
@@ -609,23 +653,87 @@ function jobNeeds(job) {
   return Array.isArray(needs) ? needs : [];
 }
 
-// Read from the parsed YAML, so a comment or a stray string never counts: a job
-// with a step that runs the release ref check, RELEASE_TAG taken from the
-// release_tag input in its env, and the build job needing that job.
-function releaseTagCheckGuardsBuild(workflow, buildJobName) {
+// Every job this job needs, directly or through the needs of those jobs.
+function neededJobs(jobs, jobName) {
+  const seen = new Set();
+  const queue = [...jobNeeds(jobs[jobName])];
+  while (queue.length > 0) {
+    const name = queue.shift();
+    if (typeof name !== 'string' || seen.has(name)) continue;
+    seen.add(name);
+    queue.push(...jobNeeds(jobs[name]));
+  }
+  return seen;
+}
+
+function bypassKeys(node) {
+  return node && typeof node === 'object' ? BYPASS_KEYS.filter((key) => Object.hasOwn(node, key)) : [];
+}
+
+function isReleaseRefStep(step) {
+  return typeof step?.run === 'string' && step.run.trim() === RELEASE_REF_CHECK;
+}
+
+// Read from the parsed YAML, so a comment or a stray string never counts:
+// - a check job: a step that runs the release ref check, and RELEASE_TAG taken
+//   from the release_tag input in the job env;
+// - no `if` or continue-on-error (either spelling) on the check job, the check
+//   step or any build job, and no step env setting RELEASE_TAG;
+// - the named build job exists, and every `type: build` job needs a check job,
+//   directly or through needs.
+// Returns the problems, empty when the workflow is guarded.
+function releaseTagCheckProblems(workflow, buildJobName) {
   const jobs = workflow?.jobs;
-  if (!jobs || typeof jobs !== 'object') return false;
+  if (!jobs || typeof jobs !== 'object' || Array.isArray(jobs)) return ['has no jobs mapping'];
+  const problems = [];
+  const entries = Object.entries(jobs).filter(([, job]) => job && typeof job === 'object');
+
+  for (const [name, job] of entries) {
+    for (const [index, step] of (Array.isArray(job.steps) ? job.steps : []).entries()) {
+      if (step?.env && typeof step.env === 'object' && Object.hasOwn(step.env, 'RELEASE_TAG')) {
+        problems.push(`step ${index + 1} of ${name} sets RELEASE_TAG in its env; only the job env may, from ${RELEASE_TAG_FROM_INPUT}`);
+      }
+    }
+  }
+
+  const checkJobs = [];
+  for (const [name, job] of entries) {
+    const steps = Array.isArray(job.steps) ? job.steps : [];
+    const checkSteps = steps.filter(isReleaseRefStep);
+    if (checkSteps.length === 0) continue;
+    let valid = job.env?.RELEASE_TAG === RELEASE_TAG_FROM_INPUT;
+    if (!valid) problems.push(`${name} runs ${RELEASE_REF_CHECK} without RELEASE_TAG: ${RELEASE_TAG_FROM_INPUT} in its env`);
+    const jobBypass = bypassKeys(job);
+    if (jobBypass.length > 0) {
+      valid = false;
+      problems.push(`the check job ${name} must not set ${jobBypass.join(', ')}`);
+    }
+    for (const step of checkSteps) {
+      const stepBypass = bypassKeys(step);
+      if (stepBypass.length > 0) {
+        valid = false;
+        problems.push(`the ${RELEASE_REF_CHECK} step of ${name} must not set ${stepBypass.join(', ')}`);
+      }
+    }
+    if (valid) checkJobs.push(name);
+  }
+  if (checkJobs.length === 0) problems.push(`no valid job runs ${RELEASE_REF_CHECK} with RELEASE_TAG: ${RELEASE_TAG_FROM_INPUT}`);
+
   const buildJob = jobs[buildJobName];
-  if (!buildJob || buildJob.type !== 'build') return false;
-  const refJobs = Object.entries(jobs)
-    .filter(([, job]) =>
-      job &&
-      Array.isArray(job.steps) &&
-      job.steps.some((step) => typeof step?.run === 'string' && step.run.trim() === RELEASE_REF_CHECK) &&
-      job.env?.RELEASE_TAG === RELEASE_TAG_FROM_INPUT
-    )
-    .map(([name]) => name);
-  return jobNeeds(buildJob).some((name) => refJobs.includes(name));
+  if (!buildJob || buildJob.type !== 'build') problems.push(`${buildJobName} must be a type: build job`);
+  for (const [name, job] of entries.filter(([, entry]) => entry.type === 'build')) {
+    const buildBypass = bypassKeys(job);
+    if (buildBypass.length > 0) problems.push(`the build job ${name} must not set ${buildBypass.join(', ')}`);
+    const needed = neededJobs(jobs, name);
+    if (!checkJobs.some((checkJob) => needed.has(checkJob))) {
+      problems.push(`the build job ${name} must need the release ref check job (directly or through needs)`);
+    }
+  }
+  return problems;
+}
+
+function releaseTagCheckGuardsBuild(workflow, buildJobName) {
+  return releaseTagCheckProblems(workflow, buildJobName).length === 0;
 }
 
 function isDispatchOnlyReleaseWorkflow(workflowText, buildJobName = 'build_android') {
@@ -652,18 +760,16 @@ function checkEasWorkflowTriggers(
     if (!files.includes(name)) problems.push(`${name} is missing`);
   }
   for (const name of files) {
-    const workflow = parseWorkflow(readFileSync(path.join(dir, name), 'utf8'));
+    const { workflow, issue } = parseWorkflowDocument(readFileSync(path.join(dir, name), 'utf8'));
     if (!workflow) {
-      problems.push(`${name} is not valid YAML`);
+      problems.push(`${name} ${issue}`);
       continue;
     }
     if (!hasOnlyDispatchTrigger(workflow)) problems.push(`${name}: workflow_dispatch must be the only key under on:`);
     const buildJobName = RELEASE_TAG_WORKFLOWS[name];
     if (buildJobName) {
       if (!requiresReleaseTagInput(workflow)) problems.push(`${name}: workflow_dispatch needs a required string release_tag input`);
-      if (!releaseTagCheckGuardsBuild(workflow, buildJobName)) {
-        problems.push(`${name}: ${buildJobName} must need a job that runs ${RELEASE_REF_CHECK} with RELEASE_TAG: ${RELEASE_TAG_FROM_INPUT}`);
-      }
+      for (const problem of releaseTagCheckProblems(workflow, buildJobName)) problems.push(`${name}: ${problem}`);
     }
   }
   return { files, problems };

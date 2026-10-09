@@ -51,7 +51,21 @@ function validateReleaseRef({
   // `eas workflow:run` carries an empty GitHub context: the tag comes from the
   // required `release_tag` input (RELEASE_TAG), or from a tag ref. Without
   // either, the check fails instead of skipping the tag comparison.
+  // When EAS does report a ref (RELEASE_REF_NAME / RELEASE_REF_TYPE), it must
+  // be the release tag itself: a branch or other ref means the source is not
+  // the tag, so the run fails rather than attributing it to release_tag.
+  if (refType && refType !== 'tag') {
+    throw new Error(
+      `The run is on the ${refType} ref ${refName || '(unnamed)'}, not a release tag: dispatch with --ref ${releaseTag || 'vX.Y.Z'}.`
+    );
+  }
+  if (!refType && refName) {
+    throw new Error(`The run reports the ref ${refName} without a ref type: cannot prove it is the release tag.`);
+  }
   const refTag = refType === 'tag' ? refName : '';
+  if (refType === 'tag' && !refTag) {
+    throw new Error('The run reports a tag ref without a name: cannot prove it is the release tag.');
+  }
   if (releaseTag && refTag && releaseTag !== refTag) {
     throw new Error(`Release tag input ${releaseTag} does not match the tag ref ${refTag}.`);
   }

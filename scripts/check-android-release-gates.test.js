@@ -528,6 +528,132 @@ describe('android release gate preflight', () => {
     });
   });
 
+  const CHECK_STEP = '      - run: node ./scripts/check-android-release-ref.js\n';
+  const BYPASSES = [
+    ['if: ${{ false }}', 'if: ${{ false }}'],
+    ['if: false', 'if: false'],
+    ['continue-on-error', 'continue-on-error: true'],
+    ['continue_on_error', 'continue_on_error: true'],
+  ];
+  const BUILD_BYPASSES = [
+    ['if: ${{ always() }}', 'if: ${{ always() }}'],
+    ['if: false', 'if: false'],
+    ['continue-on-error', 'continue-on-error: true'],
+    ['continue_on_error', 'continue_on_error: true'],
+  ];
+
+  describe.each([
+    [QUALIFICATION, 'build_android', QUALIFICATION_TITLE],
+    [SMOKE, 'build_android_release_smoke', TRIGGERS_TITLE],
+  ])('release tag check bypasses in %s', (file, buildJob, title) => {
+    it.each(BYPASSES)('fails with %s on the check job', (_name, line) => {
+      expectCheckFails(gateReport(file, (w) => w.replace(
+        '  validate_android_release_ref:\n', `  validate_android_release_ref:\n    ${line}\n`)), title);
+    });
+
+    it.each(BYPASSES)('fails with %s on the check step', (_name, line) => {
+      expectCheckFails(gateReport(file, (w) => w.replace(CHECK_STEP, `${CHECK_STEP}        ${line}\n`)), title);
+    });
+
+    it.each(BUILD_BYPASSES)(`fails with %s on ${buildJob}`, (_name, line) => {
+      expectCheckFails(gateReport(file, (w) => w.replace(`  ${buildJob}:\n`, `  ${buildJob}:\n    ${line}\n`)), title);
+    });
+
+    it('fails when the check step overrides RELEASE_TAG in its env', () => {
+      expectCheckFails(gateReport(file, (w) => w.replace(
+        CHECK_STEP, `${CHECK_STEP}        env:\n          RELEASE_TAG: v3.5.0\n`)), title);
+    });
+
+    it('fails when another step sets RELEASE_TAG in its env', () => {
+      expectCheckFails(gateReport(file, (w) => w.replace(
+        '    steps:\n', '    steps:\n      - run: echo before\n        env:\n          RELEASE_TAG: v3.5.0\n')), title);
+    });
+
+    it('fails when a second type: build job needs nothing', () => {
+      expectCheckFails(gateReport(file, (w) =>
+        `${w}  sneaky_build:\n    type: build\n    params:\n      profile: production-apk\n`), title);
+    });
+
+    it('fails when a second type: build job needs only a job outside the check', () => {
+      expectCheckFails(gateReport(file, (w) =>
+        `${w}  setup:\n    steps:\n      - run: echo setup\n  sneaky_build:\n    needs: [setup]\n    type: build\n    params:\n      profile: production-apk\n`), title);
+    });
+
+    it('passes a second type: build job that needs the check through another job', () => {
+      const root = setupFixture();
+      const workflowPath = path.join(root, '.eas/workflows', file);
+      fs.appendFileSync(workflowPath, `  late_build:\n    needs: [${buildJob}]\n    type: build\n    params:\n      profile: production-apk\n`);
+      const report = checkAndroidReleaseGates({ rootDir: root, spawn: spawnWithTools(), phase: 'prebuild' });
+      expect(report.checks).toEqual(expect.arrayContaining([expect.objectContaining({ status: 'pass', title })]));
+    });
+  });
+
+  describe('top-level keys of an EAS workflow (YAML 1.1 booleans, non-string keys)', () => {
+    const E2E = 'e2e-test-android.yml';
+    const withTopLevel = (extra) => (w) => `${w}${extra}`;
+    const YAML11_BOOLEANS = [
+      'y', 'Y', 'yes', 'Yes', 'YES', 'n', 'N', 'no', 'No', 'NO',
+      'true', 'True', 'TRUE', 'false', 'False', 'FALSE',
+      'On', 'ON', 'off', 'Off', 'OFF',
+    ];
+
+    it.each(YAML11_BOOLEANS)('fails with a top-level %s: key holding push next to on:', (key) => {
+      const report = gateReport(E2E, withTopLevel(`${key}:\n  push: {}\n`));
+      expectCheckFails(report, TRIGGERS_TITLE);
+      expect(report.checks.find((check) => check.title === TRIGGERS_TITLE).details).toMatch(/top-level key/);
+    });
+
+    it('fails with a second plain on: key (duplicate)', () => {
+      expectCheckFails(gateReport(E2E, withTopLevel('on:\n  push: {}\n')), TRIGGERS_TITLE);
+    });
+
+    it('fails with a quoted "on" next to a plain on:', () => {
+      expectCheckFails(gateReport(E2E, withTopLevel('"on":\n  push: {}\n')), TRIGGERS_TITLE);
+    });
+
+    it.each([
+      ['a number', '1:\n  push: {}\n'],
+      ['null', '~:\n  push: {}\n'],
+      ['a flow sequence', '? [a]\n: push\n'],
+    ])('fails with a non-string top-level key (%s)', (_name, extra) => {
+      const report = gateReport(E2E, withTopLevel(extra));
+      expectCheckFails(report, TRIGGERS_TITLE);
+      expect(report.checks.find((check) => check.title === TRIGGERS_TITLE).details).toMatch(/not a plain string/);
+    });
+
+    it('fails with a %YAML 1.1 directive', () => {
+      const report = gateReport(E2E, (w) => `%YAML 1.1\n---\n${w}`);
+      expectCheckFails(report, TRIGGERS_TITLE);
+      expect(report.checks.find((check) => check.title === TRIGGERS_TITLE).details).toMatch(/YAML directive/);
+    });
+
+    it('fails with a top-level <<: merge key', () => {
+      expectCheckFails(gateReport(E2E, withTopLevel('<<: {on: {push: {}}}\n')), TRIGGERS_TITLE);
+    });
+
+    it('fails with an unknown top-level key', () => {
+      expectCheckFails(gateReport(E2E, withTopLevel('triggers:\n  push: {}\n')), TRIGGERS_TITLE);
+    });
+
+    it('fails with a second YAML document', () => {
+      expectCheckFails(gateReport(E2E, withTopLevel('---\non:\n  push: {}\n')), TRIGGERS_TITLE);
+    });
+
+    it('fails a release workflow with a yes: key holding push', () => {
+      const report = gateReport(QUALIFICATION, withTopLevel('yes:\n  push: {}\n'));
+      expectCheckFails(report, QUALIFICATION_TITLE);
+      expectCheckFails(report, TRIGGERS_TITLE);
+    });
+
+    it('passes every EAS top-level key', () => {
+      const root = setupFixture();
+      const workflowPath = path.join(root, '.eas/workflows', E2E);
+      fs.writeFileSync(workflowPath, `name: e2e\nrun_name: e2e run\ndefaults:\n  image: auto\nconcurrency:\n  cancel_in_progress: true\n  group: g\n${fs.readFileSync(workflowPath, 'utf8')}`);
+      const report = checkAndroidReleaseGates({ rootDir: root, spawn: spawnWithTools(), phase: 'prebuild' });
+      expect(report.checks).toEqual(expect.arrayContaining([expect.objectContaining({ status: 'pass', title: TRIGGERS_TITLE })]));
+    });
+  });
+
   it('fails prebuild when the smoke workflow has no required release_tag input', () => {
     expectCheckFails(gateReport(SMOKE, (w) => w.replace('        required: true\n', '        required: false\n')), TRIGGERS_TITLE);
     expectCheckFails(gateReport(SMOKE, (w) => w.replace(DISPATCH_HEADER, 'on:\n  workflow_dispatch: {}\n')), TRIGGERS_TITLE);

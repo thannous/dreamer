@@ -133,7 +133,44 @@ describe('Android release ref guard', () => {
     expect(() => validateReleaseRef({ refName: '', refType: '', releaseIdentity })).toThrow('No release tag given');
     expect(() => validateReleaseRef({ releaseIdentity })).toThrow('No release tag given');
     // A branch ref is not a tag identity.
-    expect(() => validateReleaseRef({ refName: 'master', refType: 'branch', releaseIdentity })).toThrow('No release tag given');
+    expect(() => validateReleaseRef({ refName: 'master', refType: 'branch', releaseIdentity })).toThrow('not a release tag');
+  });
+
+  it('fails when EAS reports a tag ref that differs from release_tag', () => {
+    const releaseIdentity = { version: '2.0.2', versionCode: 33 };
+
+    expect(() =>
+      validateReleaseRef({ refName: 'v2.0.1', refType: 'tag', releaseTag: 'v2.0.2', releaseIdentity })
+    ).toThrow('does not match the tag ref v2.0.1');
+    expect(validateReleaseRef({ refName: 'v2.0.2', refType: 'tag', releaseTag: 'v2.0.2', releaseIdentity }).releaseTag).toBe('v2.0.2');
+  });
+
+  it('fails when EAS reports a branch or other ref beside release_tag', () => {
+    const releaseIdentity = { version: '2.0.2', versionCode: 33 };
+
+    expect(() =>
+      validateReleaseRef({ refName: 'master', refType: 'branch', releaseTag: 'v2.0.2', releaseIdentity })
+    ).toThrow('dispatch with --ref v2.0.2');
+    expect(() =>
+      validateReleaseRef({ refName: 'refs/pull/1/merge', refType: 'other', releaseTag: 'v2.0.2', releaseIdentity })
+    ).toThrow('not a release tag');
+  });
+
+  it('fails on a half-reported ref (name without type, or tag without name)', () => {
+    const releaseIdentity = { version: '2.0.2', versionCode: 33 };
+
+    expect(() => validateReleaseRef({ refName: 'v2.0.2', refType: '', releaseTag: 'v2.0.2', releaseIdentity })).toThrow(
+      'without a ref type'
+    );
+    expect(() => validateReleaseRef({ refName: '', refType: 'tag', releaseTag: 'v2.0.2', releaseIdentity })).toThrow(
+      'tag ref without a name'
+    );
+  });
+
+  it('accepts release_tag alone when EAS reports no ref (eas workflow:run context is empty)', () => {
+    const releaseIdentity = { version: '2.0.2', versionCode: 33 };
+
+    expect(validateReleaseRef({ refName: '', refType: '', releaseTag: 'v2.0.2', releaseIdentity }).releaseTag).toBe('v2.0.2');
   });
 
   it('checks the release_tag input of a dispatched run against app.json', () => {

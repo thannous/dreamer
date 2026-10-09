@@ -1,8 +1,11 @@
 # Dispatch only (common delivery rule, External CI: none): no tag, push or pull
-# request starts it. Run on demand with
-# `eas workflow:run .eas/workflows/android-release-smoke.yml -F release_tag=vX.Y.Z`.
-# scripts/check-android-release-ref.js fails when release_tag is missing or does
-# not match app.json. An EAS build needs the owner's explicit go.
+# request starts it. Run on demand from the release tag with
+# `eas workflow:run .eas/workflows/android-release-smoke.yml --ref vX.Y.Z -F release_tag=vX.Y.Z`.
+# Without --ref the EAS CLI uploads the local directory, so release_tag would
+# only prove that the uploaded app.json has that version, not that the source
+# is the tag. scripts/check-android-release-ref.js fails when release_tag is
+# missing or does not match app.json, and when EAS reports a ref that is not
+# that tag. An EAS build needs the owner's explicit go.
 name: Android Release Smoke
 
 on:

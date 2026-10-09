@@ -155,7 +155,13 @@ export default {
     'tools/e2e/run.mjs',
     'scripts/verify-local-config.test.js',
     'scripts/pre-push-hook.test.js',
-    // The suites eas-workflow-contracts runs.
+    // The EAS workflows and their config: any edit needs the owner's review
+    // (the release gate only catches honest mistakes).
+    '.eas/workflows/**',
+    'eas.json',
+    // The release guards eas-workflow-contracts tests, and its suites.
+    'scripts/check-android-release-ref.js',
+    'scripts/check-android-release-gates.js',
     'scripts/android-release-smoke-workflow.test.js',
     'scripts/check-android-release-ref.test.js',
     'scripts/check-android-release-gates.test.js',
