@@ -15,11 +15,11 @@ import { useTheme } from '@/context/ThemeContext';
 import type { ThemeAmbience } from '@/lib/themeAmbience';
 
 const ONBOARDING_SCENES = [
-  require('@/assets/images/lucid/onboarding/onboarding-step-1-reference.jpg'),
-  require('@/assets/images/lucid/onboarding/onboarding-step-2-waypoints.jpg'),
-  require('@/assets/images/lucid/onboarding/onboarding-step-3.jpg'),
-  require('@/assets/images/lucid/onboarding/onboarding-step-4.jpg'),
-  require('@/assets/images/lucid/onboarding/onboarding-step-5.jpg'),
+  require('@/assets/images/lucid/onboarding/onboarding-step-1-reference.webp'),
+  require('@/assets/images/lucid/onboarding/onboarding-step-2-waypoints.webp'),
+  require('@/assets/images/lucid/onboarding/onboarding-step-3.webp'),
+  require('@/assets/images/lucid/onboarding/onboarding-step-4.webp'),
+  require('@/assets/images/lucid/onboarding/onboarding-step-5.webp'),
 ] as const;
 
 const PARALLAX_DISTANCE = 16;

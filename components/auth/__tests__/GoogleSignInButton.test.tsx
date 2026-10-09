@@ -83,7 +83,7 @@ jest.mock('@/hooks/useTranslation', () => ({
 jest.mock('@/components/ui/icon-symbol', () => ({
   IconSymbol: () => <span data-testid="google-icon" />,
 }));
-jest.mock('@expo/vector-icons/FontAwesome', () => ({ __esModule: true, default: () => <span data-testid="google-icon" />,
+jest.mock('@expo/vector-icons/Ionicons', () => ({ __esModule: true, default: () => <span data-testid="google-icon" />,
 }));
 
 jest.mock('@/constants/journalTheme', () => ({
