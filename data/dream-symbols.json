@@ -18533,58 +18533,152 @@
       "en": {
         "slug": "zombie",
         "name": "Zombie",
-        "shortDescription": "Zombies show people or bodies that move while seeming altered or unreachable. A single familiar person and a threatening crowd create different forms of danger and call for different responses.",
-        "modifiedAt": "2026-07-24",
+        "shortDescription": "Zombies in a dream are bodies that keep moving but no longer respond. The scene is often linked to exhaustion, life on autopilot or a pressure that keeps coming back. Who they were and what you did matter most.",
+        "modifiedAt": "2026-10-08",
         "askYourself": [
-          "What did zombie change in the scene?",
-          "Which feeling stayed with me after waking?"
+          "Did I recognise anyone among the zombies, and how had they changed?",
+          "Was I running, hiding, fighting, or trying to save someone?",
+          "Where in my days do I feel I am just going through the motions?"
         ],
-        "faq": []
+        "faq": [
+          {
+            "question": "What does it mean to dream about zombies?",
+            "answer": "Zombies are often associated with something that keeps going without life in it: exhaustion, a routine on autopilot, a relationship gone cold, or a pressure that never lets up. The meaning depends on who they were and how you reacted."
+          },
+          {
+            "question": "What does it mean to dream of a zombie apocalypse?",
+            "answer": "A world overrun by zombies can go with a sense that things around you are getting out of hand, at work, in the news or at home. It does not predict a disaster. Notice whether you were alone or part of a group."
+          },
+          {
+            "question": "What does it mean when someone you know becomes a zombie in a dream?",
+            "answer": "Seeing a familiar person turned into a zombie can stage the feeling that they have changed, grown distant or become hard to reach. It says nothing about their health. Ask yourself when you last felt you could not get through to them."
+          },
+          {
+            "question": "What does it mean to be bitten or turn into a zombie in a dream?",
+            "answer": "Being bitten can go with a fear of being swept along by a group, a mood or a way of working that is not yours. Turning into a zombie yourself often echoes tiredness: the feeling of functioning without really being there."
+          }
+        ],
+        "documentMetaDescription": "Dreaming of zombies, a zombie apocalypse or a loved one turned zombie: what the scene may say about exhaustion and pressure, with questions and an example."
       },
       "fr": {
         "slug": "zombie",
         "name": "Zombie",
-        "shortDescription": "Des zombies montrent des personnes ou des corps en mouvement qui paraissent pourtant transformés, absents ou inaccessibles. Une figure connue isolée et une foule menaçante ne racontent pas la même tension.",
-        "modifiedAt": "2026-07-24",
+        "shortDescription": "Rêver de zombies, c'est voir des corps qui avancent encore mais ne répondent plus. La scène est souvent associée à la fatigue, à une vie en pilote automatique ou à une pression qui revient sans cesse. Qui ils étaient et ce que vous avez fait comptent le plus.",
+        "modifiedAt": "2026-10-08",
         "askYourself": [
-          "Qu’est-ce que zombie a changé dans la scène ?",
-          "Quelle émotion est restée après le réveil ?"
+          "Ai-je reconnu quelqu'un parmi les zombies, et qu'est-ce qui avait changé chez lui ?",
+          "Est-ce que je fuyais, me cachais, me battais ou essayais de sauver quelqu'un ?",
+          "Dans quel domaine ai-je l'impression d'avancer sans être vraiment là ?"
         ],
-        "faq": []
+        "faq": [
+          {
+            "question": "Que signifie rêver de zombies ?",
+            "answer": "Les zombies sont souvent associés à quelque chose qui continue sans vie : la fatigue, une routine en pilote automatique, une relation refroidie ou une pression qui ne s'arrête pas. Le sens dépend de qui ils étaient et de votre réaction."
+          },
+          {
+            "question": "Que signifie rêver d'une apocalypse zombie ?",
+            "answer": "Un monde envahi de zombies peut accompagner l'impression que tout se dérègle autour de vous, au travail, dans l'actualité ou à la maison. Ce n'est pas l'annonce d'une catastrophe. Notez si vous étiez seul ou en groupe."
+          },
+          {
+            "question": "Que signifie rêver qu'un proche devient un zombie ?",
+            "answer": "Voir une personne connue transformée en zombie peut mettre en scène le sentiment qu'elle a changé, s'est éloignée ou devient difficile à atteindre. Cela ne dit rien de sa santé. Demandez-vous quand vous avez senti ce décalage."
+          },
+          {
+            "question": "Que signifie être mordu ou devenir un zombie en rêve ?",
+            "answer": "Être mordu peut rejoindre la peur d'être entraîné par un groupe, une ambiance ou une façon de faire qui n'est pas la vôtre. Devenir soi-même zombie fait souvent écho à la fatigue : fonctionner sans être vraiment présent."
+          }
+        ],
+        "documentMetaDescription": "Rêver de zombies, d'une apocalypse zombie ou d'un proche devenu zombie : ce que la scène peut dire de la fatigue et de la pression, avec questions et exemple."
       },
       "es": {
         "slug": "zombi",
         "name": "Zombi",
-        "shortDescription": "Los zombis muestran cuerpos o personas que se mueven pese a parecer transformados e inaccesibles. Que aparezca alguien conocido o una multitud modifica la amenaza y tu forma de responder.",
-        "modifiedAt": "2026-07-24",
+        "shortDescription": "Soñar con zombis es ver cuerpos que siguen avanzando pero ya no responden. La escena se asocia a menudo con el cansancio, con vivir en piloto automático o con una presión que no deja de volver. Importa sobre todo quiénes eran y qué hiciste tú.",
+        "modifiedAt": "2026-10-08",
         "askYourself": [
-          "¿Qué cambió zombi dentro de la escena?",
-          "¿Qué emoción siguió conmigo al despertar?"
+          "¿Reconocí a alguien entre los zombis, y qué había cambiado en esa persona?",
+          "¿Huía, me escondía, luchaba o intentaba salvar a alguien?",
+          "¿En qué parte de mi día a día siento que funciono sin estar presente?"
         ],
-        "faq": []
+        "faq": [
+          {
+            "question": "¿Qué significa soñar con zombis?",
+            "answer": "Los zombis se asocian a menudo con algo que sigue en marcha sin vida dentro: el cansancio, una rutina en piloto automático, una relación que se ha enfriado o una presión que no afloja. El sentido depende de quiénes eran y de cómo reaccionaste."
+          },
+          {
+            "question": "¿Qué significa soñar con un apocalipsis zombi?",
+            "answer": "Un mundo invadido por zombis puede acompañar la sensación de que todo se descontrola a tu alrededor, en el trabajo, en las noticias o en casa. No anuncia ninguna catástrofe. Fíjate en si estabas solo o con un grupo."
+          },
+          {
+            "question": "¿Qué significa soñar que alguien conocido se convierte en zombi?",
+            "answer": "Ver a una persona conocida convertida en zombi puede escenificar la sensación de que ha cambiado, se ha alejado o se ha vuelto difícil de alcanzar. No dice nada de su salud. Pregúntate cuándo notaste esa distancia por última vez."
+          },
+          {
+            "question": "¿Qué significa soñar que te muerde un zombi o que te conviertes en uno?",
+            "answer": "Que te muerdan puede enlazar con el miedo a dejarte arrastrar por un grupo, un ambiente o una forma de hacer que no es la tuya. Convertirte en zombi suele hacer eco del cansancio: funcionar sin estar presente de verdad."
+          }
+        ],
+        "documentMetaDescription": "Soñar con zombis, con un apocalipsis zombi o con alguien querido convertido en zombi: qué puede decir la escena del cansancio, con preguntas y un ejemplo."
       },
       "de": {
         "slug": "zombie",
         "name": "Zombie",
-        "shortDescription": "Zombies zeigen im Traum Menschen oder Körper, die sich bewegen und zugleich verändert oder unerreichbar wirken. Ob eine einzelne bekannte Person oder eine ganze Menge auftauchte, prägt die Bedrohung und deine Reaktion darauf.",
+        "shortDescription": "Von Zombies zu träumen heißt, Körpern zu begegnen, die sich noch bewegen, aber nicht mehr antworten. Die Szene wird oft mit Erschöpfung, einem Alltag im Autopilot oder anhaltendem Druck verbunden. Wichtig ist, wer die Zombies waren und was Sie getan haben.",
         "askYourself": [
-          "Hast du jemanden unter den Zombies erkannt, und wie hatte sich diese Person verändert?",
-          "Hast du versucht zu fliehen, dich zu verstecken oder jemanden zu retten?",
-          "Welche wiederkehrende Routine oder Gruppendynamik empfindest du derzeit als zermürbend?"
+          "Habe ich unter den Zombies jemanden erkannt, und was hatte sich an dieser Person verändert?",
+          "Bin ich geflohen, habe ich mich versteckt, gekämpft oder jemanden gerettet?",
+          "Wo in meinem Alltag habe ich das Gefühl, nur noch zu funktionieren?"
         ],
-        "modifiedAt": "2026-07-24",
-        "faq": []
+        "modifiedAt": "2026-10-08",
+        "faq": [
+          {
+            "question": "Was bedeutet es, von Zombies zu träumen?",
+            "answer": "Zombies werden oft mit etwas verbunden, das weiterläuft, ohne lebendig zu sein: Erschöpfung, eine Routine im Autopilot, eine abgekühlte Beziehung oder Druck, der nicht nachlässt. Was es bedeutet, hängt davon ab, wer die Zombies waren und wie Sie reagiert haben."
+          },
+          {
+            "question": "Was bedeutet eine Zombie-Apokalypse im Traum?",
+            "answer": "Eine von Zombies überrannte Welt kann das Gefühl begleiten, dass Ihnen rundherum etwas entgleitet, im Beruf, in den Nachrichten oder zu Hause. Eine Katastrophe kündigt sie nicht an. Achten Sie darauf, ob Sie allein oder in einer Gruppe waren."
+          },
+          {
+            "question": "Was bedeutet es, wenn ein vertrauter Mensch im Traum zum Zombie wird?",
+            "answer": "Einen bekannten Menschen als Zombie zu sehen, kann das Gefühl in Szene setzen, dass er sich verändert hat, auf Abstand gegangen ist oder schwer erreichbar wirkt. Über seine Gesundheit sagt das nichts. Fragen Sie sich, wann Sie diese Distanz zuletzt gespürt haben."
+          },
+          {
+            "question": "Was bedeutet es, im Traum gebissen zu werden oder selbst zum Zombie zu werden?",
+            "answer": "Gebissen zu werden kann zu der Sorge passen, von einer Gruppe, einer Stimmung oder einer fremden Arbeitsweise mitgerissen zu werden. Selbst zum Zombie zu werden, greift oft Müdigkeit auf: das Gefühl, zu funktionieren, ohne wirklich da zu sein."
+          }
+        ],
+        "documentMetaDescription": "Von Zombies träumen, von einer Zombie-Apokalypse oder einem Angehörigen als Zombie: was die Szene über Erschöpfung sagen kann, mit Fragen und Beispiel."
       },
       "it": {
         "slug": "zombie",
         "name": "Zombie",
-        "shortDescription": "Gli zombie mostrano persone o corpi che si muovono pur sembrando trasformati o irraggiungibili. Una sola persona conosciuta e una folla minacciosa creano pericoli e reazioni differenti.",
-        "modifiedAt": "2026-07-24",
+        "shortDescription": "Sognare zombie significa vedere corpi che continuano ad avanzare ma non rispondono più. La scena viene spesso associata alla stanchezza, a una vita col pilota automatico o a una pressione che torna sempre. Contano soprattutto chi erano e che cosa hai fatto.",
+        "modifiedAt": "2026-10-08",
         "askYourself": [
-          "Che cosa ha cambiato zombie nella scena?",
-          "Quale emozione è rimasta dopo il risveglio?"
+          "Ho riconosciuto qualcuno tra gli zombie, e che cosa era cambiato in quella persona?",
+          "Scappavo, mi nascondevo, combattevo o cercavo di salvare qualcuno?",
+          "In quale parte delle mie giornate mi sembra di andare avanti senza esserci davvero?"
         ],
-        "faq": []
+        "faq": [
+          {
+            "question": "Che cosa significa sognare zombie?",
+            "answer": "Gli zombie vengono spesso associati a qualcosa che va avanti senza vita dentro: la stanchezza, una routine col pilota automatico, un rapporto che si è raffreddato o una pressione che non molla. Il significato dipende da chi erano e da come hai reagito."
+          },
+          {
+            "question": "Che cosa significa sognare un’apocalisse zombie?",
+            "answer": "Un mondo invaso dagli zombie può accompagnare la sensazione che tutto ti sfugga di mano, al lavoro, nelle notizie o a casa. Non annuncia nessuna catastrofe. Nota se eri da solo o in un gruppo."
+          },
+          {
+            "question": "Che cosa significa sognare che una persona cara diventa uno zombie?",
+            "answer": "Vedere una persona conosciuta trasformata in zombie può mettere in scena la sensazione che sia cambiata, si sia allontanata o sia diventata difficile da raggiungere. Non dice nulla della sua salute. Chiediti quando hai sentito questa distanza l’ultima volta."
+          },
+          {
+            "question": "Che cosa significa essere morsi o diventare uno zombie in sogno?",
+            "answer": "Essere morsi può avvicinarsi alla paura di farsi trascinare da un gruppo, da un clima o da un modo di fare che non è il tuo. Diventare tu stesso uno zombie fa spesso eco alla stanchezza: funzionare senza esserci davvero."
+          }
+        ],
+        "documentMetaDescription": "Sognare zombie, un’apocalisse zombie o una persona cara trasformata: che cosa può dire la scena di stanchezza e pressione, con domande ed esempio di diario."
       },
       "pt": {
         "slug": "zumbi",
@@ -18616,58 +18710,152 @@
       "en": {
         "slug": "prison",
         "name": "Prison",
-        "shortDescription": "A prison makes rules, locked doors, surveillance and restricted movement visible. Being an inmate, visitor or guard changes your responsibility and the dream’s emotional focus.",
-        "modifiedAt": "2026-07-24",
+        "shortDescription": "Dreaming of prison often puts you behind a locked door, sometimes without knowing why. The scene is often linked to feeling judged, held back by rules or stuck in a commitment. Your role (inmate, visitor or guard) changes the story.",
+        "modifiedAt": "2026-10-08",
         "askYourself": [
-          "What did prison change in the scene?",
-          "Which feeling stayed with me after waking?"
+          "Why was I in prison, and did it feel deserved?",
+          "Was there a key, an open door, or someone waiting outside?",
+          "Which rule or commitment in my life feels tighter than it needs to be?"
         ],
-        "faq": []
+        "faq": [
+          {
+            "question": "What does it mean to dream about being in prison?",
+            "answer": "Being locked up is often associated with a feeling of having too little freedom, or of being judged. The meaning depends on why you were there, whether you accepted it, and on your role: inmate, visitor or guard."
+          },
+          {
+            "question": "What does it mean to dream of being in prison for something you did not do?",
+            "answer": "A wrongful sentence can go with a sense of injustice, of being blamed or misunderstood at work or at home. It does not mean trouble is coming. Ask yourself where you feel your side of the story is not being heard."
+          },
+          {
+            "question": "What does it mean to dream of escaping from prison?",
+            "answer": "Escaping can go with a wish to get out of a constraint, or with a step you are already preparing. How it went matters: an easy escape, a chase or guilt afterwards do not tell the same story."
+          },
+          {
+            "question": "What does it mean to visit someone in prison in a dream?",
+            "answer": "Visiting someone behind bars can stage the feeling that this person is stuck, out of reach, or paying for something. Sometimes the prisoner also stands for a part of you. Note who it was and what was said."
+          }
+        ],
+        "documentMetaDescription": "Dreaming of prison, of being locked up for nothing or escaping a cell: what the scene may say about guilt, rules and freedom, with questions and an example."
       },
       "fr": {
         "slug": "prison",
         "name": "Prison",
-        "shortDescription": "Une prison rend visibles des règles, des portes fermées, la surveillance et une liberté de mouvement réduite. Être détenu, visiteur ou gardien change votre responsabilité et le centre émotionnel du rêve.",
-        "modifiedAt": "2026-07-24",
+        "shortDescription": "Rêver de prison vous place derrière une porte verrouillée, parfois sans savoir pourquoi. On l'associe souvent au sentiment d'être jugé, freiné par des règles ou coincé dans un engagement. Votre rôle (détenu, visiteur ou gardien) change l'histoire.",
+        "modifiedAt": "2026-10-08",
         "askYourself": [
-          "Qu’est-ce que prison a changé dans la scène ?",
-          "Quelle émotion est restée après le réveil ?"
+          "Pourquoi étais-je en prison, et avais-je l'impression de le mériter ?",
+          "Y avait-il une clé, une porte ouverte ou quelqu'un qui m'attendait dehors ?",
+          "Quelle règle ou quel engagement me semble plus étroit que nécessaire en ce moment ?"
         ],
-        "faq": []
+        "faq": [
+          {
+            "question": "Que signifie rêver d'être en prison ?",
+            "answer": "Être enfermé est souvent associé au sentiment de manquer de liberté, ou d'être jugé. Le sens dépend de la raison de votre présence, de la façon dont vous l'acceptiez, et de votre rôle : détenu, visiteur ou gardien."
+          },
+          {
+            "question": "Que signifie rêver d'être emprisonné à tort ?",
+            "answer": "Une condamnation injuste peut accompagner un sentiment d'injustice, l'impression d'être accusé ou mal compris, au travail ou à la maison. Ce n'est pas l'annonce d'ennuis. Demandez-vous où votre version des faits n'est pas entendue."
+          },
+          {
+            "question": "Que signifie rêver de s'évader de prison ?",
+            "answer": "S'évader peut rejoindre l'envie de sortir d'une contrainte, ou une décision que vous préparez déjà. Le déroulé compte : une évasion facile, une poursuite ou de la culpabilité ensuite ne racontent pas la même histoire."
+          },
+          {
+            "question": "Que signifie rendre visite à quelqu'un en prison en rêve ?",
+            "answer": "Voir quelqu'un derrière les barreaux peut mettre en scène le sentiment que cette personne est coincée, hors d'atteinte ou qu'elle paie pour quelque chose. Parfois, le détenu représente aussi une part de vous. Notez qui c'était et ce qui s'est dit."
+          }
+        ],
+        "documentMetaDescription": "Rêver de prison, d'être enfermé à tort ou de s'évader : ce que la scène peut dire de la culpabilité, des règles et de la liberté, avec questions et exemple."
       },
       "es": {
         "slug": "prision",
         "name": "Prisión",
-        "shortDescription": "Una prisión hace visibles las reglas, las puertas cerradas, la vigilancia y el movimiento limitado. Ser preso, visitante o guardia cambia tu posición y el foco emocional del sueño.",
-        "modifiedAt": "2026-07-24",
+        "shortDescription": "Soñar con una prisión suele ponerte detrás de una puerta cerrada, a veces sin saber por qué. La escena se asocia a menudo con sentirte juzgado, frenado por normas o atado a un compromiso. Tu papel (preso, visitante o guardia) cambia la historia.",
+        "modifiedAt": "2026-10-08",
         "askYourself": [
-          "¿Qué cambió prisión dentro de la escena?",
-          "¿Qué emoción siguió conmigo al despertar?"
+          "¿Por qué estaba en prisión, y sentía que me lo merecía?",
+          "¿Había una llave, una puerta abierta o alguien esperándome fuera?",
+          "¿Qué norma o compromiso de mi vida me aprieta más de lo necesario?"
         ],
-        "faq": []
+        "faq": [
+          {
+            "question": "¿Qué significa soñar que estás en prisión?",
+            "answer": "Estar encerrado se asocia a menudo con la sensación de tener poca libertad o de sentirte juzgado. El sentido depende de por qué estabas allí, de si lo aceptabas y de tu papel: preso, visitante o guardia."
+          },
+          {
+            "question": "¿Qué significa soñar que te encarcelan injustamente?",
+            "answer": "Una condena injusta puede acompañar una sensación de injusticia, de que te culpan o no te entienden, en el trabajo o en casa. No anuncia problemas. Pregúntate dónde sientes que no se escucha tu versión de los hechos."
+          },
+          {
+            "question": "¿Qué significa soñar que te escapas de la cárcel?",
+            "answer": "Escapar puede enlazar con las ganas de salir de una obligación o con un paso que ya estás preparando. Importa cómo fue: una fuga fácil, una persecución o la culpa posterior no cuentan la misma historia."
+          },
+          {
+            "question": "¿Qué significa visitar a alguien en la cárcel en sueños?",
+            "answer": "Ver a alguien entre rejas puede escenificar la sensación de que esa persona está atascada, fuera de tu alcance o pagando por algo. A veces el preso representa también una parte de ti. Anota quién era y qué os dijisteis."
+          }
+        ],
+        "documentMetaDescription": "Soñar con prisión, con que te encierran sin motivo o con escapar: qué puede decir la escena de la culpa, las normas y la libertad, con preguntas y un ejemplo."
       },
       "de": {
         "slug": "gefangnis",
         "name": "Gefängnis",
-        "shortDescription": "Ein Gefängnis macht Regeln, verschlossene Türen, Überwachung und eingeschränkte Bewegung sichtbar. Ob du Häftling, Besucher oder Aufsichtsperson warst, verändert deine Rolle und den emotionalen Schwerpunkt des Traums.",
+        "shortDescription": "Ein Traum vom Gefängnis setzt Sie hinter eine verschlossene Tür, manchmal ohne Erklärung. Die Szene wird oft mit dem Gefühl verbunden, beurteilt, von Regeln gebremst oder gebunden zu sein. Ob Häftling, Besucher oder Wärter: Ihre Rolle verändert die Geschichte.",
         "askYourself": [
-          "Warum warst du im Gefängnis, und kanntest du die geltenden Regeln?",
-          "Gab es einen Schlüssel, einen offenen Ausgang oder jemanden außerhalb deiner Zelle?",
-          "Welche Grenze in deinem Alltag ist notwendig, und welche fühlt sich unnötig eng an?"
+          "Warum war ich im Gefängnis, und hatte ich das Gefühl, es verdient zu haben?",
+          "Gab es einen Schlüssel, eine offene Tür oder jemanden, der draußen wartete?",
+          "Welche Regel oder Verpflichtung in meinem Leben fühlt sich enger an als nötig?"
         ],
-        "modifiedAt": "2026-07-24",
-        "faq": []
+        "modifiedAt": "2026-10-08",
+        "faq": [
+          {
+            "question": "Was bedeutet es, im Traum im Gefängnis zu sein?",
+            "answer": "Eingesperrt zu sein wird oft mit dem Gefühl verbunden, zu wenig Freiheit zu haben oder beurteilt zu werden. Was es bedeutet, hängt davon ab, warum Sie dort waren, ob Sie es hingenommen haben und welche Rolle Sie hatten: Häftling, Besucher oder Wärter."
+          },
+          {
+            "question": "Was bedeutet es, im Traum unschuldig im Gefängnis zu sitzen?",
+            "answer": "Eine ungerechte Strafe kann ein Gefühl von Ungerechtigkeit begleiten, beschuldigt oder missverstanden zu werden, im Beruf oder zu Hause. Ärger kündigt sie nicht an. Fragen Sie sich, wo Ihre Sicht der Dinge gerade nicht gehört wird."
+          },
+          {
+            "question": "Was bedeutet es, im Traum aus dem Gefängnis auszubrechen?",
+            "answer": "Ein Ausbruch kann zu dem Wunsch passen, einer Einschränkung zu entkommen, oder zu einem Schritt, den Sie schon vorbereiten. Wie er verlief, zählt: Eine leichte Flucht, eine Verfolgung oder Schuldgefühle danach erzählen nicht dasselbe."
+          },
+          {
+            "question": "Was bedeutet es, im Traum jemanden im Gefängnis zu besuchen?",
+            "answer": "Jemanden hinter Gittern zu sehen, kann das Gefühl in Szene setzen, dass diese Person feststeckt, unerreichbar ist oder für etwas büßt. Manchmal steht der Häftling auch für einen Teil von Ihnen. Notieren Sie, wer es war und was gesagt wurde."
+          }
+        ],
+        "documentMetaDescription": "Gefängnis im Traum, unschuldig eingesperrt oder auf der Flucht: was die Szene über Schuld, Regeln und Freiheit sagen kann, mit Fragen und einem Beispiel."
       },
       "it": {
         "slug": "prigione",
         "name": "Prigione",
-        "shortDescription": "Una prigione rende visibili regole, porte chiuse, sorveglianza e movimento limitato. Essere detenuto, visitatore o guardia cambia la tua posizione e il centro emotivo del sogno.",
-        "modifiedAt": "2026-07-24",
+        "shortDescription": "Sognare una prigione ti mette spesso dietro una porta chiusa a chiave, a volte senza sapere perché. La scena viene spesso associata al sentirsi giudicati, frenati da regole o legati a un impegno. Il tuo ruolo (detenuto, visitatore o guardia) cambia la storia.",
+        "modifiedAt": "2026-10-08",
         "askYourself": [
-          "Che cosa ha cambiato prigione nella scena?",
-          "Quale emozione è rimasta dopo il risveglio?"
+          "Perché ero in prigione, e mi sembrava di meritarlo?",
+          "C’era una chiave, una porta aperta o qualcuno che mi aspettava fuori?",
+          "Quale regola o impegno della mia vita mi sta più stretto del necessario?"
         ],
-        "faq": []
+        "faq": [
+          {
+            "question": "Che cosa significa sognare di essere in prigione?",
+            "answer": "Essere rinchiusi viene spesso associato alla sensazione di avere poca libertà o di essere giudicati. Il significato dipende dal perché eri lì, da come lo vivevi e dal tuo ruolo: detenuto, visitatore o guardia."
+          },
+          {
+            "question": "Che cosa significa sognare di essere in prigione da innocente?",
+            "answer": "Una condanna ingiusta può accompagnare un senso di ingiustizia, la sensazione di essere accusato o frainteso, al lavoro o a casa. Non annuncia guai. Chiediti dove senti che la tua versione dei fatti non viene ascoltata."
+          },
+          {
+            "question": "Che cosa significa sognare di evadere di prigione?",
+            "answer": "Evadere può avvicinarsi al desiderio di uscire da un vincolo, o a un passo che stai già preparando. Conta come è andata: una fuga facile, un inseguimento o il senso di colpa dopo non raccontano la stessa storia."
+          },
+          {
+            "question": "Che cosa significa sognare di far visita a qualcuno in prigione?",
+            "answer": "Vedere qualcuno dietro le sbarre può mettere in scena la sensazione che quella persona sia bloccata, irraggiungibile o stia pagando per qualcosa. A volte il detenuto rappresenta anche una parte di te. Annota chi era e che cosa vi siete detti."
+          }
+        ],
+        "documentMetaDescription": "Sognare una prigione, di essere rinchiuso da innocente o di evadere: che cosa può dire la scena di colpa, regole e libertà, con domande ed esempio di diario."
       },
       "pt": {
         "slug": "prisao",
@@ -18700,58 +18888,152 @@
       "en": {
         "slug": "earthquake",
         "name": "Earthquake",
-        "shortDescription": "An earthquake removes reliable ground and changes a familiar setting within seconds. What collapsed, what remained standing and whom you tried to protect make the scene personal.",
-        "modifiedAt": "2026-07-24",
+        "shortDescription": "In an earthquake dream, the ground you counted on starts to move: walls crack, the floor tilts, nowhere feels safe. The scene is often linked to a change that shakes your footing. What fell, what held and whom you protected matter most.",
+        "modifiedAt": "2026-10-08",
         "askYourself": [
-          "What did earthquake change in the scene?",
-          "Which feeling stayed with me after waking?"
+          "Where was I when the shaking started, and what gave way first?",
+          "Did I take shelter, run outside, or look for someone?",
+          "What recent change has shaken my sense of stability?"
         ],
-        "faq": []
+        "faq": [
+          {
+            "question": "What does it mean to dream about an earthquake?",
+            "answer": "An earthquake is often associated with a change that shakes the ground you counted on: work, home, a relationship, your health or your plans. The meaning depends on what collapsed, what held, and what you did during the shaking."
+          },
+          {
+            "question": "Is dreaming of an earthquake a bad omen?",
+            "answer": "No. An earthquake dream does not predict a disaster or a real tremor. It stages a feeling, often instability or surprise. It is more useful to ask what in your life feels less solid than before than to wait for an event."
+          },
+          {
+            "question": "What does it mean when your house collapses in an earthquake dream?",
+            "answer": "A house that cracks or falls can go with a sense that your base is shaken: home, family, routines, money. Note which room gave way and who was inside: those details point to the area that feels fragile."
+          },
+          {
+            "question": "Why do I dream of earthquakes after living through one?",
+            "answer": "After a real earthquake, dreams that replay the shaking can return for a while and often ease with time. If they keep coming back, wake you in distress or spoil your sleep for weeks, talk to a doctor or a mental health professional."
+          }
+        ],
+        "documentMetaDescription": "Dreaming of an earthquake, a collapsing house or cracking ground: what the scene may say about change and stability, with questions and a journal example."
       },
       "fr": {
         "slug": "tremblement-de-terre",
         "name": "Tremblement de terre",
-        "shortDescription": "Un tremblement de terre retire tout sol fiable et transforme un lieu familier en quelques secondes. Ce qui s’effondre, ce qui résiste et les personnes que vous protégez rendent la scène personnelle.",
-        "modifiedAt": "2026-07-24",
+        "shortDescription": "Dans un rêve de tremblement de terre, le sol se met à bouger : les murs se fissurent, plus rien n'est sûr. La scène est souvent associée à un changement qui ébranle vos repères. Ce qui tombe, ce qui tient et qui vous protégez comptent le plus.",
+        "modifiedAt": "2026-10-08",
         "askYourself": [
-          "Qu’est-ce que tremblement de terre a changé dans la scène ?",
-          "Quelle émotion est restée après le réveil ?"
+          "Où étais-je quand la secousse a commencé, et qu'est-ce qui a cédé en premier ?",
+          "Me suis-je abrité, ai-je couru dehors ou cherché quelqu'un ?",
+          "Quel changement récent a ébranlé mon sentiment de stabilité ?"
         ],
-        "faq": []
+        "faq": [
+          {
+            "question": "Que signifie rêver d'un tremblement de terre ?",
+            "answer": "Le séisme est souvent associé à un changement qui fait bouger un sol sur lequel vous comptiez : travail, logement, relation, santé ou projets. Le sens dépend de ce qui s'est effondré, de ce qui a tenu et de ce que vous avez fait pendant la secousse."
+          },
+          {
+            "question": "Rêver d'un tremblement de terre, est-ce un mauvais présage ?",
+            "answer": "Non. Un rêve de séisme n'annonce ni catastrophe ni secousse réelle. Il met en scène une émotion, souvent l'instabilité ou la surprise. Il est plus utile de vous demander ce qui vous semble moins solide qu'avant que d'attendre un événement."
+          },
+          {
+            "question": "Que signifie rêver que sa maison s'effondre pendant un séisme ?",
+            "answer": "Une maison qui se fissure ou s'écroule peut accompagner le sentiment que votre base vacille : foyer, famille, habitudes, argent. Notez quelle pièce a cédé et qui s'y trouvait : ces détails désignent le domaine qui vous paraît fragile."
+          },
+          {
+            "question": "Pourquoi je rêve de séismes depuis que j'en ai vécu un ?",
+            "answer": "Après un vrai tremblement de terre, des rêves qui rejouent la secousse peuvent revenir un temps et s'apaisent souvent avec les semaines. S'ils persistent, vous réveillent en détresse ou abîment votre sommeil, parlez-en à un médecin ou à un psychologue."
+          }
+        ],
+        "documentMetaDescription": "Rêver d'un tremblement de terre, d'une maison qui s'effondre ou d'un sol qui s'ouvre : ce que la scène peut dire du changement, avec questions et exemple."
       },
       "es": {
         "slug": "terremoto",
         "name": "Terremoto",
-        "shortDescription": "Un terremoto elimina el suelo firme y transforma un lugar conocido en segundos. Lo que se derrumba, lo que permanece y a quién intentas proteger personalizan la escena.",
-        "modifiedAt": "2026-07-24",
+        "shortDescription": "En un sueño con un terremoto, el suelo empieza a moverse: las paredes se agrietan, ningún sitio parece seguro. La escena se asocia a menudo con un cambio que te desestabiliza. Importa qué cayó, qué aguantó y a quién protegiste.",
+        "modifiedAt": "2026-10-08",
         "askYourself": [
-          "¿Qué cambió terremoto dentro de la escena?",
-          "¿Qué emoción siguió conmigo al despertar?"
+          "¿Dónde estaba cuando empezó a temblar, y qué cedió primero?",
+          "¿Me refugié, salí corriendo o busqué a alguien?",
+          "¿Qué cambio reciente ha sacudido mi sensación de estabilidad?"
         ],
-        "faq": []
+        "faq": [
+          {
+            "question": "¿Qué significa soñar con un terremoto?",
+            "answer": "El terremoto se asocia a menudo con un cambio que mueve el suelo con el que contabas: el trabajo, la casa, una relación, la salud o tus planes. El sentido depende de lo que se derrumbó, de lo que aguantó y de lo que hiciste durante el temblor."
+          },
+          {
+            "question": "¿Soñar con un terremoto es un mal presagio?",
+            "answer": "No. Un sueño con un terremoto no anuncia ninguna catástrofe ni un temblor real. Escenifica una emoción, a menudo inestabilidad o sorpresa. Es más útil preguntarte qué te parece menos sólido que antes que esperar un acontecimiento."
+          },
+          {
+            "question": "¿Qué significa soñar que tu casa se derrumba en un terremoto?",
+            "answer": "Una casa que se agrieta o se viene abajo puede acompañar la sensación de que tu base se tambalea: el hogar, la familia, las rutinas, el dinero. Anota qué habitación cedió y quién estaba dentro: esos detalles señalan lo que sientes frágil."
+          },
+          {
+            "question": "¿Por qué sueño con terremotos desde que viví uno?",
+            "answer": "Después de un terremoto real, los sueños que repiten el temblor pueden volver durante un tiempo y suelen calmarse con las semanas. Si persisten, te despiertan angustiado o te estropean el descanso, consúltalo con un médico o un psicólogo."
+          }
+        ],
+        "documentMetaDescription": "Soñar con un terremoto, con una casa que se derrumba o con el suelo que se abre: qué puede decir la escena sobre el cambio, con preguntas y un ejemplo."
       },
       "de": {
         "slug": "erdbeben",
         "name": "Erdbeben",
-        "shortDescription": "Ein Erdbeben nimmt dir im Traum den verlässlichen Boden und verändert eine vertraute Umgebung in Sekunden. Was einstürzt, was stehen bleibt und wen du schützen willst, prägt die persönliche Bedeutung der Szene.",
+        "shortDescription": "In einem Erdbebentraum gerät der Boden ins Wanken: Wände reißen, nichts wirkt mehr sicher. Die Szene wird oft mit einer Veränderung verbunden, die Ihren Halt erschüttert. Wichtig ist, was einstürzte, was hielt und wen Sie schützten.",
         "askYourself": [
-          "Wo begann das Beben, und welche Gebäude oder Wege wurden beschädigt?",
-          "Hast du Schutz für dich selbst gesucht oder einer anderen Person geholfen?",
-          "Welche jüngste Veränderung hat dein Gefühl von Stabilität erschüttert?"
+          "Wo war ich, als das Beben begann, und was gab zuerst nach?",
+          "Habe ich Schutz gesucht, bin ich hinausgerannt oder habe ich jemanden gesucht?",
+          "Welche jüngste Veränderung hat mein Gefühl von Stabilität erschüttert?"
         ],
-        "modifiedAt": "2026-07-24",
-        "faq": []
+        "modifiedAt": "2026-10-08",
+        "faq": [
+          {
+            "question": "Was bedeutet es, von einem Erdbeben zu träumen?",
+            "answer": "Ein Erdbeben wird oft mit einer Veränderung verbunden, die den Boden ins Wanken bringt, auf den Sie gezählt haben: Beruf, Wohnung, Beziehung, Gesundheit oder Pläne. Was es bedeutet, hängt davon ab, was einstürzte, was hielt und was Sie während des Bebens getan haben."
+          },
+          {
+            "question": "Ist ein Erdbeben im Traum ein schlechtes Omen?",
+            "answer": "Nein. Ein Erdbebentraum kündigt weder eine Katastrophe noch ein echtes Beben an. Er setzt ein Gefühl in Szene, oft Unsicherheit oder Überraschung. Hilfreicher als das Warten auf ein Ereignis ist die Frage, was sich gerade weniger stabil anfühlt als früher."
+          },
+          {
+            "question": "Was bedeutet es, wenn im Traum das eigene Haus beim Erdbeben einstürzt?",
+            "answer": "Ein Haus, das Risse bekommt oder einstürzt, kann das Gefühl begleiten, dass Ihre Basis wankt: Zuhause, Familie, Gewohnheiten, Geld. Notieren Sie, welches Zimmer nachgab und wer darin war: Diese Details zeigen, welcher Bereich sich zerbrechlich anfühlt."
+          },
+          {
+            "question": "Warum träume ich von Erdbeben, seit ich eines erlebt habe?",
+            "answer": "Nach einem echten Erdbeben können Träume, die das Beben wiederholen, eine Zeit lang zurückkehren und werden mit den Wochen oft schwächer. Halten sie an, wecken Sie verstört oder stören Ihren Schlaf, sprechen Sie mit einer Ärztin, einem Arzt oder einer Psychotherapeutin."
+          }
+        ],
+        "documentMetaDescription": "Erdbeben im Traum, ein einstürzendes Haus oder Boden, der sich öffnet: was die Szene über Veränderung und Halt sagen kann, mit Fragen und einem Beispiel."
       },
       "it": {
         "slug": "terremoto",
         "name": "Terremoto",
-        "shortDescription": "Un terremoto toglie il terreno stabile e trasforma un luogo familiare in pochi secondi. Ciò che crolla, ciò che resta in piedi e chi cerchi di proteggere rendono personale la scena.",
-        "modifiedAt": "2026-07-24",
+        "shortDescription": "In un sogno di terremoto il terreno comincia a muoversi: i muri si crepano, nessun posto sembra sicuro. La scena viene spesso associata a un cambiamento che ti toglie stabilità. Contano ciò che crolla, ciò che regge e chi proteggi.",
+        "modifiedAt": "2026-10-08",
         "askYourself": [
-          "Che cosa ha cambiato terremoto nella scena?",
-          "Quale emozione è rimasta dopo il risveglio?"
+          "Dov’ero quando è cominciata la scossa, e che cosa ha ceduto per primo?",
+          "Mi sono riparato, sono corso fuori o ho cercato qualcuno?",
+          "Quale cambiamento recente ha scosso il mio senso di stabilità?"
         ],
-        "faq": []
+        "faq": [
+          {
+            "question": "Che cosa significa sognare un terremoto?",
+            "answer": "Il terremoto viene spesso associato a un cambiamento che fa tremare il terreno su cui contavi: lavoro, casa, una relazione, la salute o i tuoi progetti. Il significato dipende da ciò che è crollato, da ciò che ha retto e da ciò che hai fatto durante la scossa."
+          },
+          {
+            "question": "Sognare un terremoto è un brutto presagio?",
+            "answer": "No. Un sogno di terremoto non annuncia né una catastrofe né una scossa reale. Mette in scena un’emozione, spesso instabilità o sorpresa. È più utile chiederti che cosa ti sembra meno solido di prima che aspettare un evento."
+          },
+          {
+            "question": "Che cosa significa sognare che la propria casa crolla per un terremoto?",
+            "answer": "Una casa che si crepa o crolla può accompagnare la sensazione che la tua base vacilli: casa, famiglia, abitudini, soldi. Annota quale stanza ha ceduto e chi c’era dentro: questi dettagli indicano l’ambito che senti fragile."
+          },
+          {
+            "question": "Perché sogno terremoti da quando ne ho vissuto uno?",
+            "answer": "Dopo un terremoto reale, i sogni che ripetono la scossa possono tornare per un po’ e spesso si attenuano con le settimane. Se persistono, ti svegliano in angoscia o rovinano il tuo sonno, parlane con un medico o con uno psicologo."
+          }
+        ],
+        "documentMetaDescription": "Sognare un terremoto, una casa che crolla o il terreno che si apre: che cosa può dire la scena del cambiamento e della stabilità, con domande ed esempio."
       },
       "pt": {
         "slug": "terremoto",
@@ -18784,58 +19066,152 @@
       "en": {
         "slug": "tornado",
         "name": "Tornado",
-        "shortDescription": "A tornado approaches quickly, changes direction and may carry objects or people away. Its distance, your escape route and available shelter show how much control you experienced.",
-        "modifiedAt": "2026-07-24",
+        "shortDescription": "A tornado in a dream is often seen coming: a dark funnel on the horizon, the wind rising. The scene is often linked to a situation that moves fast and feels out of your hands. Its distance, your shelter and who was with you matter most.",
+        "modifiedAt": "2026-10-08",
         "askYourself": [
-          "What did tornado change in the scene?",
-          "Which feeling stayed with me after waking?"
+          "How close was the tornado, and was it heading for me?",
+          "Where did I take shelter, and who was with me?",
+          "Which situation in my life feels like it is moving too fast to steer?"
         ],
-        "faq": []
+        "faq": [
+          {
+            "question": "What does it mean to dream about a tornado?",
+            "answer": "A tornado is often associated with a situation that moves fast and feels beyond your control: a crisis at work, family tension, a run of decisions. The meaning depends on how close it came, what it carried away and where you sheltered."
+          },
+          {
+            "question": "What does it mean to dream of hiding from a tornado?",
+            "answer": "Taking shelter can go with a need to protect yourself or the people you love while something passes. Note where you hid and whether you felt safe there: a cellar, a bathroom and a car do not tell the same story."
+          },
+          {
+            "question": "What does it mean to dream of being caught in a tornado?",
+            "answer": "Being lifted or swept along can go with a feeling of being carried by events, with no hold on them. It does not predict an accident. Ask yourself where you feel pulled along right now, and by what."
+          },
+          {
+            "question": "Why do I keep dreaming about tornadoes?",
+            "answer": "Recurring tornado dreams can return in tense periods, when several things change at once. Write each one down with its date and context to see what they share. If they wake you in distress night after night, talk to a doctor."
+          }
+        ],
+        "documentMetaDescription": "Dreaming of a tornado, hiding from one or being swept away: what the scene may say about change and loss of control, with questions and a journal example."
       },
       "fr": {
         "slug": "tornade",
         "name": "Tornade",
-        "shortDescription": "Une tornade approche vite, change de direction et peut emporter des objets ou des personnes. Sa distance, votre voie de fuite et l’abri disponible montrent le degré de contrôle ressenti.",
-        "modifiedAt": "2026-07-24",
+        "shortDescription": "En rêve, on voit souvent la tornade arriver : un entonnoir sombre à l'horizon, le vent qui se lève. La scène est souvent associée à une situation qui va vite et vous échappe. Sa distance, votre abri et qui était avec vous comptent le plus.",
+        "modifiedAt": "2026-10-08",
         "askYourself": [
-          "Qu’est-ce que tornade a changé dans la scène ?",
-          "Quelle émotion est restée après le réveil ?"
+          "À quelle distance était la tornade, et venait-elle vers moi ?",
+          "Où me suis-je abrité, et avec qui ?",
+          "Quelle situation de ma vie va trop vite pour que je la dirige ?"
         ],
-        "faq": []
+        "faq": [
+          {
+            "question": "Que signifie rêver d'une tornade ?",
+            "answer": "La tornade est souvent associée à une situation qui va vite et vous échappe : une crise au travail, des tensions familiales, une série de décisions. Le sens dépend de sa distance, de ce qu'elle a emporté et de l'endroit où vous vous êtes abrité."
+          },
+          {
+            "question": "Que signifie rêver de se cacher d'une tornade ?",
+            "answer": "Se mettre à l'abri peut accompagner le besoin de vous protéger, ou de protéger ceux que vous aimez, le temps que quelque chose passe. Notez où vous étiez et si vous vous y sentiez en sécurité : une cave, une salle de bains ou une voiture ne racontent pas la même chose."
+          },
+          {
+            "question": "Que signifie rêver d'être emporté par une tornade ?",
+            "answer": "Être soulevé ou emporté peut rejoindre l'impression d'être porté par les événements, sans prise sur eux. Ce n'est pas l'annonce d'un accident. Demandez-vous ce qui vous entraîne en ce moment, et dans quelle direction."
+          },
+          {
+            "question": "Pourquoi je rêve souvent de tornades ?",
+            "answer": "Des rêves de tornade peuvent revenir dans les périodes tendues, quand plusieurs choses changent en même temps. Notez chacun avec sa date et son contexte pour voir ce qu'ils ont en commun. S'ils vous réveillent en détresse nuit après nuit, parlez-en à un médecin."
+          }
+        ],
+        "documentMetaDescription": "Rêver d'une tornade, de s'en cacher ou d'être emporté : ce que la scène peut dire du changement et de la perte de contrôle, avec questions et exemple."
       },
       "es": {
         "slug": "tornado",
         "name": "Tornado",
-        "shortDescription": "Un tornado se acerca deprisa, cambia de dirección y puede arrastrar objetos o personas. La distancia, tu vía de escape y el refugio disponible muestran cuánto control sentías.",
-        "modifiedAt": "2026-07-24",
+        "shortDescription": "En sueños, el tornado suele verse llegar: un embudo oscuro en el horizonte, el viento que se levanta. La escena se asocia a menudo con una situación que va deprisa y se te escapa. Importan su distancia, tu refugio y quién estaba contigo.",
+        "modifiedAt": "2026-10-08",
         "askYourself": [
-          "¿Qué cambió tornado dentro de la escena?",
-          "¿Qué emoción siguió conmigo al despertar?"
+          "¿A qué distancia estaba el tornado, y venía hacia mí?",
+          "¿Dónde me refugié, y con quién?",
+          "¿Qué situación de mi vida va demasiado rápido para poder dirigirla?"
         ],
-        "faq": []
+        "faq": [
+          {
+            "question": "¿Qué significa soñar con un tornado?",
+            "answer": "El tornado se asocia a menudo con una situación que va deprisa y se te escapa de las manos: una crisis en el trabajo, tensiones familiares, una serie de decisiones. El sentido depende de lo cerca que llegó, de lo que se llevó y de dónde te refugiaste."
+          },
+          {
+            "question": "¿Qué significa soñar que te escondes de un tornado?",
+            "answer": "Ponerte a cubierto puede acompañar la necesidad de protegerte a ti o a quienes quieres mientras algo pasa. Anota dónde te escondiste y si te sentías a salvo: un sótano, un baño o un coche no cuentan la misma historia."
+          },
+          {
+            "question": "¿Qué significa soñar que un tornado te arrastra?",
+            "answer": "Ser levantado o arrastrado puede enlazar con la sensación de que los acontecimientos te llevan sin que puedas agarrarte a nada. No anuncia ningún accidente. Pregúntate qué te está arrastrando ahora mismo, y hacia dónde."
+          },
+          {
+            "question": "¿Por qué sueño a menudo con tornados?",
+            "answer": "Los sueños con tornados pueden volver en épocas tensas, cuando cambian varias cosas a la vez. Anota cada uno con su fecha y su contexto para ver qué tienen en común. Si te despiertan angustiado noche tras noche, consúltalo con un médico."
+          }
+        ],
+        "documentMetaDescription": "Soñar con un tornado, con esconderte de él o con que te arrastra: qué puede decir la escena del cambio y la pérdida de control, con preguntas y un ejemplo."
       },
       "de": {
         "slug": "tornado",
         "name": "Tornado",
-        "shortDescription": "Ein Tornado nähert sich schnell, wechselt seine Richtung und kann Gegenstände oder Menschen mitreißen. Entfernung, Fluchtweg und vorhandener Schutz bestimmen, wie viel Kontrolle du in der Szene erlebt hast.",
+        "shortDescription": "Im Traum sieht man den Tornado oft kommen: ein dunkler Trichter am Horizont, aufkommender Wind. Die Szene wird oft mit einer Lage verbunden, die sich schnell entwickelt und Ihnen entgleitet. Wichtig sind Entfernung, Schutz und wer bei Ihnen war.",
         "askYourself": [
-          "Wie nah war der Tornado, und bewegte er sich auf dich zu oder an dir vorbei?",
-          "Welchen Schutzraum hast du gesucht, und wer war dort bei dir?",
-          "Welche unberechenbare Entwicklung versuchst du gerade im Blick zu behalten?"
+          "Wie nah war der Tornado, und bewegte er sich auf mich zu?",
+          "Wo habe ich Schutz gesucht, und wer war bei mir?",
+          "Welche Situation in meinem Leben entwickelt sich zu schnell, um sie zu steuern?"
         ],
-        "modifiedAt": "2026-07-24",
-        "faq": []
+        "modifiedAt": "2026-10-08",
+        "faq": [
+          {
+            "question": "Was bedeutet es, von einem Tornado zu träumen?",
+            "answer": "Ein Tornado wird oft mit einer Situation verbunden, die sich schnell entwickelt und Ihnen entgleitet: eine Krise im Job, Spannungen in der Familie, eine Reihe von Entscheidungen. Was er bedeutet, hängt davon ab, wie nah er kam, was er mitriss und wo Sie Schutz fanden."
+          },
+          {
+            "question": "Was bedeutet es, sich im Traum vor einem Tornado zu verstecken?",
+            "answer": "Schutz zu suchen, kann das Bedürfnis begleiten, sich selbst oder die Menschen, die Sie lieben, zu schützen, bis etwas vorüber ist. Notieren Sie, wo Sie sich versteckt haben und ob Sie sich dort sicher fühlten: Keller, Badezimmer oder Auto erzählen nicht dasselbe."
+          },
+          {
+            "question": "Was bedeutet es, im Traum von einem Tornado erfasst zu werden?",
+            "answer": "Hochgehoben oder mitgerissen zu werden, kann zu dem Gefühl passen, von den Ereignissen getragen zu werden, ohne Halt. Einen Unfall kündigt das nicht an. Fragen Sie sich, was Sie gerade mitreißt und in welche Richtung."
+          },
+          {
+            "question": "Warum träume ich immer wieder von Tornados?",
+            "answer": "Tornadoträume können in angespannten Phasen wiederkehren, wenn sich mehreres gleichzeitig verändert. Notieren Sie jeden mit Datum und Kontext, um zu sehen, was sie gemeinsam haben. Wecken sie Sie Nacht für Nacht verstört, sprechen Sie ärztlich darüber."
+          }
+        ],
+        "documentMetaDescription": "Tornado im Traum, sich vor ihm verstecken oder mitgerissen werden: was die Szene über Veränderung und Kontrollverlust sagen kann, mit Fragen und Beispiel."
       },
       "it": {
         "slug": "tornado",
         "name": "Tornado",
-        "shortDescription": "Un tornado si avvicina rapidamente, cambia direzione e può trascinare oggetti o persone. Distanza, via di fuga e riparo disponibile mostrano quanto controllo percepivi.",
-        "modifiedAt": "2026-07-24",
+        "shortDescription": "In sogno il tornado si vede spesso arrivare: un imbuto scuro all’orizzonte, il vento che si alza. La scena viene spesso associata a una situazione che corre veloce e ti sfugge di mano. Contano la distanza, il tuo riparo e chi era con te.",
+        "modifiedAt": "2026-10-08",
         "askYourself": [
-          "Che cosa ha cambiato tornado nella scena?",
-          "Quale emozione è rimasta dopo il risveglio?"
+          "Quanto era vicino il tornado, e veniva verso di me?",
+          "Dove mi sono riparato, e con chi?",
+          "Quale situazione della mia vita corre troppo veloce perché io possa guidarla?"
         ],
-        "faq": []
+        "faq": [
+          {
+            "question": "Che cosa significa sognare un tornado?",
+            "answer": "Il tornado viene spesso associato a una situazione che corre veloce e ti sfugge di mano: una crisi al lavoro, tensioni in famiglia, una serie di decisioni. Il significato dipende da quanto si è avvicinato, da che cosa ha portato via e da dove ti sei riparato."
+          },
+          {
+            "question": "Che cosa significa sognare di nascondersi da un tornado?",
+            "answer": "Metterti al riparo può accompagnare il bisogno di proteggere te stesso o le persone che ami mentre qualcosa passa. Annota dove ti sei nascosto e se ti sentivi al sicuro: una cantina, un bagno o un’auto non raccontano la stessa storia."
+          },
+          {
+            "question": "Che cosa significa sognare di essere travolti da un tornado?",
+            "answer": "Essere sollevati o trascinati può avvicinarsi alla sensazione di essere portati dagli eventi, senza appigli. Non annuncia un incidente. Chiediti che cosa ti sta trascinando in questo periodo, e in quale direzione."
+          },
+          {
+            "question": "Perché sogno spesso tornado?",
+            "answer": "I sogni di tornado possono tornare nei periodi tesi, quando cambiano più cose insieme. Annota ciascuno con la data e il contesto per vedere che cosa hanno in comune. Se ti svegliano in angoscia notte dopo notte, parlane con un medico."
+          }
+        ],
+        "documentMetaDescription": "Sognare un tornado, di nascondersi o di essere travolti: che cosa può dire la scena del cambiamento e della perdita di controllo, con domande ed esempio."
       },
       "pt": {
         "slug": "tornado",
