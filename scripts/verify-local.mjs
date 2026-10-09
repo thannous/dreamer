@@ -1,0 +1,920 @@
+#!/usr/bin/env node
+// Local verification engine of the common delivery rule (regle-commune-livraison v2).
+// Canonical rule: https://github.com/thannous/shapier/blob/main/docs/regle-commune-livraison.md
+//
+// This file is identical in shapier, skillcodex, clawdeals, bodylab and dreamer.
+// Each repository describes its checks in verify-local.config.mjs at its root;
+// change this engine in all five repositories at once, never in one alone.
+//
+//   node scripts/verify-local.mjs pr       [--rev <rev>] [--force] [--keep] [--external <check>=<evidence>]
+//   node scripts/verify-local.mjs release  [--rev <rev>] [--target <name>]... [--force] [--keep] [--external ...]
+//   node scripts/verify-local.mjs status   [--rev <rev>] [--json]
+//   node scripts/verify-local.mjs proof-block [--rev <rev>]
+//   node scripts/verify-local.mjs hook <remote> [<url>]       (pre-push hook; refs on stdin)
+//
+// pr / release check the commit <rev> (default HEAD) in an isolated git
+// worktree, so work in progress is never checked nor disturbed. The proof is
+// keyed by the verified git tree and written to
+// $(git rev-parse --git-common-dir)/verify-proofs/<tree>.json, shared by every
+// worktree of the clone and never committed. Each check has a fingerprint (its
+// command, its input files, Node and the package manager): a check whose
+// fingerprint already passed in any proof is reused instead of run again, so a
+// squash of an up-to-date branch, or a merge of a base that did not touch a
+// check's inputs, replays nothing for it.
+//
+// Checks run in the isolated copy with VERIFY_LOCAL_KIND, VERIFY_LOCAL_SHA,
+// VERIFY_LOCAL_TREE, VERIFY_LOCAL_ROOT (the main checkout) and
+// VERIFY_LOCAL_COMMON_DIR (the shared git directory, for caches) set, and
+// without the GIT_* variables of a hook.
+//
+// Exit codes: 0 passed, 1 failed, 2 incomplete (a required specialised check
+// could not run here; see --external), 64 usage or configuration error.
+
+import { spawnSync } from 'node:child_process';
+import { createHash, randomBytes } from 'node:crypto';
+import {
+  existsSync,
+  lstatSync,
+  mkdirSync,
+  readFileSync,
+  readdirSync,
+  realpathSync,
+  renameSync,
+  rmSync,
+  statSync,
+  symlinkSync,
+  writeFileSync,
+} from 'node:fs';
+import os from 'node:os';
+import path from 'node:path';
+import { fileURLToPath, pathToFileURL } from 'node:url';
+
+export const RULE = 'regle-commune-livraison v2';
+export const PROOF_FORMAT_VERSION = 2;
+export const ENGINE_VERSION = 1;
+export const CONFIG_FILE = 'verify-local.config.mjs';
+export const PROOFS_DIR = 'verify-proofs';
+const PREFIX = '[verify-local]';
+const MAX_PROOF_FILES = 300;
+
+// Variables that pin git to one repository; a check that creates its own
+// repositories (hook tests) or runs in another worktree must not inherit them.
+const GIT_ENV_KEYS = [
+  'GIT_DIR',
+  'GIT_WORK_TREE',
+  'GIT_INDEX_FILE',
+  'GIT_OBJECT_DIRECTORY',
+  'GIT_ALTERNATE_OBJECT_DIRECTORIES',
+  'GIT_COMMON_DIR',
+  'GIT_PREFIX',
+  'GIT_NAMESPACE',
+  'GIT_QUARANTINE_PATH',
+];
+
+export function cleanGitEnv(env = process.env) {
+  const result = { ...env };
+  for (const key of GIT_ENV_KEYS) delete result[key];
+  return result;
+}
+
+class UsageError extends Error {}
+
+// ---------------------------------------------------------------- git
+
+export function createGit(cwd, env = cleanGitEnv()) {
+  const run = (args, { input, allowFailure = false, maxBuffer = 256 * 1024 * 1024 } = {}) => {
+    const result = spawnSync('git', args, { cwd, env, input, encoding: 'utf8', maxBuffer });
+    const ok = !result.error && result.status === 0;
+    if (!ok && !allowFailure) {
+      const detail = result.error ? result.error.message : (result.stderr || '').trim();
+      throw new Error(`git ${args.join(' ')} failed: ${detail}`);
+    }
+    return ok ? result.stdout.replace(/\n+$/, '') : null;
+  };
+  return run;
+}
+
+function resolveRepository(cwd, env) {
+  const git = createGit(cwd, env);
+  const root = git(['rev-parse', '--show-toplevel']);
+  const rootGit = createGit(root, env);
+  const commonDir = path.resolve(root, rootGit(['rev-parse', '--git-common-dir']));
+  return { root, commonDir, git: rootGit };
+}
+
+// ---------------------------------------------------------------- config
+
+/** Load verify-local.config.mjs as committed at <rev>, so the checks match the commit. */
+export async function loadConfig(git, rev, { scratchDir = os.tmpdir() } = {}) {
+  const source = git(['show', `${rev}:${CONFIG_FILE}`], { allowFailure: true });
+  if (source === null) {
+    throw new UsageError(`${CONFIG_FILE} is missing at ${rev}.`);
+  }
+  const digest = createHash('sha256').update(source).digest('hex').slice(0, 16);
+  const file = path.join(scratchDir, `verify-local-config-${digest}.mjs`);
+  if (!existsSync(file)) {
+    mkdirSync(scratchDir, { recursive: true });
+    writeFileSync(file, source);
+  }
+  const loaded = (await import(pathToFileURL(file).href)).default;
+  return normaliseConfig(loaded);
+}
+
+export function normaliseConfig(raw) {
+  if (!raw || typeof raw !== 'object') throw new UsageError(`${CONFIG_FILE} must export a default object.`);
+  const checks = (raw.checks ?? []).map((check) => {
+    if (!check.name || !check.command) throw new UsageError('every check needs a name and a command.');
+    const kinds = check.kinds ?? ['pr', 'release'];
+    for (const kind of kinds) {
+      if (kind !== 'pr' && kind !== 'release') throw new UsageError(`check ${check.name}: unknown kind ${kind}.`);
+    }
+    return {
+      name: check.name,
+      command: check.command,
+      kinds,
+      inputs: check.inputs ?? null,
+      exclude: check.exclude ?? [],
+      when: check.when ?? null,
+      targets: check.targets ?? null,
+      perCommit: Boolean(check.perCommit),
+      specialised: Boolean(check.specialised),
+      requires: check.requires ?? null,
+      env: check.env ?? {},
+    };
+  });
+  const names = new Set();
+  for (const check of checks) {
+    if (names.has(check.name)) throw new UsageError(`check ${check.name} is declared twice.`);
+    names.add(check.name);
+    // A release proof must also prove what a PR proof proves.
+    if (check.kinds.includes('pr') && !check.kinds.includes('release')) {
+      throw new UsageError(`check ${check.name} runs for pr but not for release; release must include every pr check.`);
+    }
+  }
+  return {
+    mainBranch: raw.mainBranch ?? 'main',
+    commands: { pr: raw.commands?.pr ?? 'verify:pr', release: raw.commands?.release ?? 'verify:release' },
+    deps: {
+      mode: raw.deps?.mode ?? 'link',
+      lockfile: raw.deps?.lockfile ?? null,
+      install: raw.deps?.install ?? null,
+      copy: raw.deps?.copy ?? [],
+    },
+    setup: raw.setup ?? [],
+    checks,
+    hook: {
+      forbidden: raw.hook?.forbidden ?? DEFAULT_FORBIDDEN,
+      allow: raw.hook?.allow ?? [],
+      secretAllow: raw.hook?.secretAllow ?? [],
+      maxFileBytes: raw.hook?.maxFileBytes ?? 10 * 1024 * 1024,
+      checks: raw.hook?.checks ?? [],
+    },
+  };
+}
+
+// ---------------------------------------------------------------- globs
+
+/** Glob to RegExp: `**` crosses directories, `*` and `?` do not, a trailing `/` matches a prefix. */
+export function globToRegExp(glob) {
+  let pattern = glob.endsWith('/') ? `${glob}**` : glob;
+  let out = '';
+  for (let i = 0; i < pattern.length; i += 1) {
+    const char = pattern[i];
+    if (char === '*') {
+      if (pattern[i + 1] === '*') {
+        const slash = pattern[i + 2] === '/';
+        out += slash ? '(?:.*/)?' : '.*';
+        i += slash ? 2 : 1;
+      } else {
+        out += '[^/]*';
+      }
+    } else if (char === '?') {
+      out += '[^/]';
+    } else {
+      out += char.replace(/[.+^${}()|[\]\\]/g, '\\$&');
+    }
+  }
+  return new RegExp(`^${out}$`);
+}
+
+export function matchesAny(file, globs) {
+  return globs.some((glob) => globToRegExp(glob).test(file));
+}
+
+// ---------------------------------------------------------------- proofs
+
+export function proofsDir(commonDir) {
+  return path.join(commonDir, PROOFS_DIR);
+}
+
+export function readProof(commonDir, tree) {
+  const file = path.join(proofsDir(commonDir), `${tree}.json`);
+  if (!existsSync(file)) return null;
+  try {
+    const proof = JSON.parse(readFileSync(file, 'utf8'));
+    return proof && proof.version === PROOF_FORMAT_VERSION ? proof : null;
+  } catch {
+    return null;
+  }
+}
+
+function listProofs(commonDir) {
+  const dir = proofsDir(commonDir);
+  if (!existsSync(dir)) return [];
+  const proofs = [];
+  for (const name of readdirSync(dir)) {
+    if (!name.endsWith('.json')) continue;
+    try {
+      const proof = JSON.parse(readFileSync(path.join(dir, name), 'utf8'));
+      if (proof && proof.version === PROOF_FORMAT_VERSION) proofs.push(proof);
+    } catch {
+      // A torn or foreign file is ignored, never trusted.
+    }
+  }
+  return proofs;
+}
+
+export function writeProof(commonDir, proof) {
+  const dir = proofsDir(commonDir);
+  mkdirSync(dir, { recursive: true });
+  const file = path.join(dir, `${proof.tree}.json`);
+  const temporary = `${file}.${process.pid}.${randomBytes(4).toString('hex')}.tmp`;
+  writeFileSync(temporary, `${JSON.stringify(proof, null, 2)}\n`);
+  renameSync(temporary, file);
+  pruneProofs(dir);
+  return file;
+}
+
+function pruneProofs(dir) {
+  const files = readdirSync(dir)
+    .filter((name) => name.endsWith('.json'))
+    .map((name) => ({ name, mtime: statSync(path.join(dir, name)).mtimeMs }))
+    .sort((a, b) => b.mtime - a.mtime);
+  for (const { name } of files.slice(MAX_PROOF_FILES)) rmSync(path.join(dir, name), { force: true });
+}
+
+/** A passed result for this fingerprint in any proof of the clone. */
+function findReusable(proofs, fingerprint) {
+  for (const proof of proofs) {
+    for (const check of proof.checks ?? []) {
+      if (check.fingerprint === fingerprint && check.result === 'passed') {
+        return { sha: check.reusedFrom?.sha ?? proof.sha, tree: check.reusedFrom?.tree ?? proof.tree, finishedAt: proof.finishedAt };
+      }
+    }
+  }
+  return null;
+}
+
+// ---------------------------------------------------------------- fingerprints
+
+function packageManagerOf(git, rev) {
+  const manifest = git(['show', `${rev}:package.json`], { allowFailure: true });
+  let field = null;
+  try {
+    field = manifest ? JSON.parse(manifest).packageManager ?? null : null;
+  } catch {
+    field = null;
+  }
+  return field;
+}
+
+function lockfileBlob(git, rev, config) {
+  if (!config.deps.lockfile) return null;
+  return git(['rev-parse', `${rev}:${config.deps.lockfile}`], { allowFailure: true });
+}
+
+export function checkFingerprint({ check, files, tree, sha, environment }) {
+  const hash = createHash('sha256');
+  hash.update(JSON.stringify({ engine: ENGINE_VERSION, name: check.name, command: check.command, env: check.env, environment }));
+  if (check.perCommit) hash.update(`\ncommit ${sha}`);
+  if (!check.inputs && check.exclude.length === 0) {
+    hash.update(`\ntree ${tree}`);
+  } else {
+    const include = check.inputs ?? ['**'];
+    for (const entry of files) {
+      if (matchesAny(entry.path, include) && !matchesAny(entry.path, check.exclude)) {
+        hash.update(`\n${entry.mode} ${entry.object} ${entry.path}`);
+      }
+    }
+  }
+  return hash.digest('hex');
+}
+
+function listTreeFiles(git, sha) {
+  const output = git(['ls-tree', '-r', '--full-tree', '-z', sha]);
+  return output
+    .split('\0')
+    .filter(Boolean)
+    .map((line) => {
+      const tab = line.indexOf('\t');
+      const [mode, , object] = line.slice(0, tab).split(' ');
+      return { mode, object, path: line.slice(tab + 1) };
+    });
+}
+
+// ---------------------------------------------------------------- base and scope
+
+function resolveBase(git, config) {
+  const ref = `origin/${config.mainBranch}`;
+  const sha = git(['rev-parse', '--verify', '--quiet', `refs/remotes/${ref}^{commit}`], { allowFailure: true });
+  return sha ? { ref, sha } : { ref, sha: null };
+}
+
+function changedFiles(git, base, sha) {
+  if (!base.sha) return null;
+  const mergeBase = git(['merge-base', base.sha, sha], { allowFailure: true });
+  if (!mergeBase) return null;
+  const output = git(['diff', '--name-only', '-z', '--no-renames', mergeBase, sha]);
+  return { mergeBase, files: output.split('\0').filter(Boolean) };
+}
+
+// ---------------------------------------------------------------- isolated worktree
+
+function runShell(command, { cwd, env, log }) {
+  log(`${PREFIX} $ ${command}`);
+  const started = Date.now();
+  const result = spawnSync(command, { cwd, env, shell: true, stdio: 'inherit' });
+  const status = result.error ? 1 : (result.status ?? 1);
+  return { status, durationMs: Date.now() - started };
+}
+
+function quiet(command, { cwd, env }) {
+  const result = spawnSync(command, { cwd, env, shell: true, stdio: 'ignore' });
+  return !result.error && result.status === 0;
+}
+
+function sameLockfile(git, root, sha, config) {
+  if (!config.deps.lockfile) return true;
+  const committed = git(['rev-parse', `${sha}:${config.deps.lockfile}`], { allowFailure: true });
+  const local = path.join(root, config.deps.lockfile);
+  if (!committed || !existsSync(local)) return false;
+  return git(['hash-object', local]) === committed;
+}
+
+/** Package directories at <sha> whose node_modules exists in the main checkout. */
+function linkableNodeModules(files, root) {
+  const dirs = new Set(['']);
+  for (const entry of files) {
+    if (entry.path === 'package.json' || entry.path.endsWith('/package.json')) {
+      if (entry.path.includes('node_modules/')) continue;
+      dirs.add(path.posix.dirname(entry.path) === '.' ? '' : path.posix.dirname(entry.path));
+    }
+  }
+  return [...dirs].filter((dir) => existsSync(path.join(root, dir, 'node_modules')));
+}
+
+/**
+ * Give the isolated copy the main checkout's installed packages without
+ * copying them: node_modules becomes a real directory of links to the main
+ * checkout's entries. A workspace package link (it resolves inside the
+ * repository, outside node_modules) is pointed at the isolated copy instead,
+ * so the checks see the verified sources of every workspace package.
+ */
+export function linkNodeModules(from, to, root, copy) {
+  const realRoot = realpathSync(root);
+  const realModules = path.join(realRoot, 'node_modules');
+  mkdirSync(to, { recursive: true });
+  const linkEntry = (source, target) => {
+    let destination = source;
+    if (lstatSync(source).isSymbolicLink()) {
+      let real = null;
+      try {
+        real = realpathSync(source);
+      } catch {
+        real = null;
+      }
+      const relative = real ? path.relative(realRoot, real) : '';
+      const insideRepository = real && relative && !relative.startsWith('..') && !path.isAbsolute(relative);
+      const insideModules = real && !path.relative(realModules, real).startsWith('..');
+      if (insideRepository && !insideModules && !relative.split(path.sep).includes('node_modules')) {
+        destination = path.join(copy, relative);
+      }
+    }
+    symlinkSync(destination, target, 'dir');
+  };
+  for (const name of readdirSync(from)) {
+    const source = path.join(from, name);
+    const target = path.join(to, name);
+    if (name.startsWith('@') && lstatSync(source).isDirectory()) {
+      mkdirSync(target, { recursive: true });
+      for (const child of readdirSync(source)) linkEntry(path.join(source, child), path.join(target, child));
+    } else {
+      linkEntry(source, target);
+    }
+  }
+}
+
+export function prepareWorktree({ git, root, sha, files, config, env, log, worktreeRoot }) {
+  const base = worktreeRoot ?? path.join(os.tmpdir(), 'verify-local');
+  mkdirSync(base, { recursive: true });
+  const dir = path.join(base, `${path.basename(root)}-${sha.slice(0, 12)}-${randomBytes(3).toString('hex')}`);
+  git(['worktree', 'prune'], { allowFailure: true });
+  git(['worktree', 'add', '--detach', '--quiet', dir, sha]);
+
+  for (const relative of config.deps.copy) {
+    const from = path.join(root, relative);
+    if (existsSync(from)) {
+      mkdirSync(path.dirname(path.join(dir, relative)), { recursive: true });
+      writeFileSync(path.join(dir, relative), readFileSync(from));
+    }
+  }
+
+  let deps = 'none';
+  const linkable = config.deps.mode === 'link' && sameLockfile(git, root, sha, config);
+  if (linkable) {
+    const dirs = linkableNodeModules(files, root);
+    for (const relative of dirs) {
+      linkNodeModules(path.join(root, relative, 'node_modules'), path.join(dir, relative, 'node_modules'), root, dir);
+    }
+    deps = `linked ${dirs.length} node_modules from ${root} (same ${config.deps.lockfile ?? 'lockfile'})`;
+  } else if (config.deps.install) {
+    const reason = config.deps.mode === 'link' ? `${config.deps.lockfile} differs from ${root}` : 'install mode';
+    log(`${PREFIX} installing dependencies in the isolated copy (${reason}).`);
+    const installed = runShell(config.deps.install, { cwd: dir, env, log });
+    if (installed.status !== 0) {
+      return { dir, error: `dependency install failed (${config.deps.install})` };
+    }
+    deps = `installed with ${config.deps.install} (${Math.round(installed.durationMs / 1000)} s)`;
+  }
+  log(`${PREFIX} isolated copy ${dir}: ${deps}.`);
+
+  for (const command of config.setup) {
+    const result = runShell(command, { cwd: dir, env, log });
+    if (result.status !== 0) return { dir, error: `setup step failed (${command})` };
+  }
+  return { dir, deps };
+}
+
+function removeWorktree(git, dir) {
+  git(['worktree', 'remove', '--force', dir], { allowFailure: true });
+  rmSync(dir, { recursive: true, force: true });
+  git(['worktree', 'prune'], { allowFailure: true });
+}
+
+// ---------------------------------------------------------------- verify
+
+function parseArgs(argv) {
+  const options = { rev: 'HEAD', targets: [], external: {}, force: false, keep: false, json: false, rest: [] };
+  for (let i = 0; i < argv.length; i += 1) {
+    const arg = argv[i];
+    const value = () => {
+      if (i + 1 >= argv.length) throw new UsageError(`${arg} needs a value.`);
+      i += 1;
+      return argv[i];
+    };
+    if (arg === '--rev') options.rev = value();
+    else if (arg === '--target') options.targets.push(value());
+    else if (arg === '--external') {
+      const raw = value();
+      const equals = raw.indexOf('=');
+      if (equals <= 0 || equals === raw.length - 1) throw new UsageError('--external needs <check>=<evidence>.');
+      options.external[raw.slice(0, equals)] = raw.slice(equals + 1);
+    } else if (arg === '--force') options.force = true;
+    else if (arg === '--keep') options.keep = true;
+    else if (arg === '--json') options.json = true;
+    else if (arg === '--') continue;
+    else options.rest.push(arg);
+  }
+  return options;
+}
+
+function selectChecks(config, kind, targets) {
+  return config.checks.filter((check) => {
+    if (!check.kinds.includes(kind)) return false;
+    if (!check.targets) return true;
+    return kind === 'release' && check.targets.some((target) => targets.includes(target));
+  });
+}
+
+export async function verify(kind, argv = [], {
+  cwd = process.cwd(),
+  env = cleanGitEnv(),
+  log = (line) => console.log(line),
+  worktreeRoot,
+  now = () => new Date(),
+} = {}) {
+  const options = parseArgs(argv);
+  if (options.rest.length) throw new UsageError(`unknown argument ${options.rest[0]}.`);
+  const { root, commonDir, git } = resolveRepository(cwd, env);
+  const sha = git(['rev-parse', '--verify', `${options.rev}^{commit}`]);
+  const tree = git(['rev-parse', `${sha}^{tree}`]);
+  const config = await loadConfig(git, sha);
+  const targets = [...new Set(options.targets)].sort();
+  const knownTargets = new Set(config.checks.flatMap((check) => check.targets ?? []));
+  for (const target of targets) {
+    if (!knownTargets.has(target)) throw new UsageError(`unknown target ${target} (known: ${[...knownTargets].join(', ') || 'none'}).`);
+  }
+  if (kind === 'pr' && targets.length) throw new UsageError('--target applies to release only.');
+
+  const startedAt = now().toISOString();
+  const base = resolveBase(git, config);
+  const scope = changedFiles(git, base, sha);
+  const files = listTreeFiles(git, sha);
+  const environment = {
+    node: process.version,
+    packageManager: packageManagerOf(git, sha),
+    lockfile: lockfileBlob(git, sha, config),
+  };
+  const proofs = options.force ? [] : listProofs(commonDir);
+  const command = config.commands[kind];
+  log(`${PREFIX} ${command} on ${sha} (tree ${tree.slice(0, 12)}, base ${base.ref} ${base.sha ? base.sha.slice(0, 12) : 'unknown'}).`);
+
+  const existing = readProof(commonDir, tree);
+  const results = [];
+  let worktree = null;
+  let failed = false;
+  let incomplete = false;
+
+  try {
+    for (const check of selectChecks(config, kind, targets)) {
+      const fingerprint = checkFingerprint({ check, files, tree, sha, environment });
+      const entry = { name: check.name, command: check.command, fingerprint, specialised: check.specialised };
+      if (check.targets) entry.targets = check.targets;
+
+      if (check.when) {
+        const touched = scope ? scope.files.filter((file) => matchesAny(file, check.when)) : null;
+        if (touched && touched.length === 0) {
+          results.push({ ...entry, result: 'skipped', reason: `no change under ${check.when.join(', ')} since ${base.ref}` });
+          log(`${PREFIX} ${check.name}: out of scope (no change under ${check.when.join(', ')}).`);
+          continue;
+        }
+      }
+      if (options.external[check.name]) {
+        results.push({ ...entry, result: 'passed', external: options.external[check.name] });
+        log(`${PREFIX} ${check.name}: passed elsewhere (${options.external[check.name]}).`);
+        continue;
+      }
+      const reusable = findReusable(proofs, fingerprint);
+      if (reusable) {
+        results.push({ ...entry, result: 'passed', reused: true, reusedFrom: reusable });
+        log(`${PREFIX} ${check.name}: reused (same inputs passed on ${reusable.sha.slice(0, 12)}).`);
+        continue;
+      }
+      if (check.requires && !quiet(check.requires.command, { cwd: root, env })) {
+        incomplete = true;
+        const hint = check.requires.hint ?? 'run it where it can run, then pass --external';
+        results.push({ ...entry, result: 'unavailable', reason: `\`${check.requires.command}\` failed here: ${hint}` });
+        log(`${PREFIX} ${check.name}: cannot run here (\`${check.requires.command}\` failed). ${hint}.`);
+        continue;
+      }
+
+      if (!worktree) {
+        // Checks may keep caches (Turbo, ESLint) in the shared git directory.
+        const shared = { VERIFY_LOCAL_COMMON_DIR: commonDir, VERIFY_LOCAL_ROOT: root };
+        worktree = prepareWorktree({ git, root, sha, files, config, env: { ...env, ...shared }, log, worktreeRoot });
+        worktree.env = shared;
+        if (worktree.error) {
+          failed = true;
+          results.push({ ...entry, result: 'failed', reason: worktree.error });
+          log(`${PREFIX} ${worktree.error}.`);
+          break;
+        }
+      }
+      const run = runShell(check.command, {
+        cwd: worktree.dir,
+        env: { ...env, ...check.env, ...worktree.env, VERIFY_LOCAL_KIND: kind, VERIFY_LOCAL_SHA: sha, VERIFY_LOCAL_TREE: tree },
+        log,
+      });
+      const passed = run.status === 0;
+      results.push({ ...entry, result: passed ? 'passed' : 'failed', durationMs: run.durationMs });
+      log(`${PREFIX} ${check.name}: ${passed ? 'passed' : `failed (exit ${run.status})`} in ${Math.round(run.durationMs / 1000)} s.`);
+      if (!passed) {
+        failed = true;
+        break;
+      }
+    }
+  } finally {
+    if (worktree?.dir) {
+      if (options.keep || (failed && process.env.VERIFY_LOCAL_KEEP_FAILED === '1')) {
+        log(`${PREFIX} isolated copy kept at ${worktree.dir}.`);
+      } else {
+        removeWorktree(git, worktree.dir);
+      }
+    }
+  }
+
+  const result = failed ? 'failed' : incomplete ? 'incomplete' : 'passed';
+  const proof = {
+    version: PROOF_FORMAT_VERSION,
+    rule: RULE,
+    kind,
+    sha,
+    tree,
+    clean: true,
+    result,
+    startedAt,
+    finishedAt: now().toISOString(),
+    command,
+    node: environment.node,
+    packageManager: environment.packageManager,
+    base: { ref: base.ref, sha: base.sha, mergeBase: scope?.mergeBase ?? null },
+    targets: kind === 'release' ? targets : [],
+    checks: results,
+  };
+
+  // A release proof also proves the PR; a PR run never replaces it.
+  const keepExisting = kind === 'pr' && existing?.kind === 'release' && existing.result === 'passed';
+  if (!keepExisting) {
+    if (kind === 'release' && existing?.kind === 'release' && existing.result === 'passed' && existing.sha === sha && result === 'passed') {
+      proof.targets = [...new Set([...existing.targets, ...targets])].sort();
+      const names = new Set(results.map((check) => check.name));
+      proof.checks = [...results, ...existing.checks.filter((check) => !names.has(check.name))];
+    }
+    writeProof(commonDir, proof);
+  }
+  const ran = results.filter((check) => check.durationMs !== undefined).length;
+  const reused = results.filter((check) => check.reused).length;
+  log(`${PREFIX} ${result}: ${ran} run, ${reused} reused, ${results.filter((check) => check.result === 'skipped').length} out of scope. Proof: ${path.join(proofsDir(commonDir), `${tree}.json`)}.`);
+  if (incomplete && !failed) {
+    log(`${PREFIX} incomplete: run the unavailable checks elsewhere (manual CircleCI, owner machine), then rerun with --external <check>=<evidence>.`);
+  }
+  return { status: failed ? 1 : incomplete ? 2 : 0, proof: keepExisting ? existing : proof };
+}
+
+// ---------------------------------------------------------------- deploy guard
+
+/**
+ * Release proof a deploy of HEAD needs: HEAD is origin/<main>, the checkout is
+ * clean, and a passed release proof exists for this exact commit and tree
+ * (and for every requested target). Returns the list of failures.
+ */
+export function checkReleaseProof({ cwd = process.cwd(), env = cleanGitEnv(), targets = [], fetch = true, mainBranch = 'main' } = {}) {
+  const { commonDir, git } = resolveRepository(cwd, env);
+  const failures = [];
+  const head = git(['rev-parse', '--verify', 'HEAD^{commit}']);
+  if (fetch) {
+    if (git(['fetch', '--quiet', 'origin', `+refs/heads/${mainBranch}:refs/remotes/origin/${mainBranch}`], { allowFailure: true }) === null) {
+      failures.push({ check: 'head-is-origin-main', message: `git fetch origin ${mainBranch} failed` });
+    }
+  }
+  const main = git(['rev-parse', '--verify', '--quiet', `refs/remotes/origin/${mainBranch}^{commit}`], { allowFailure: true });
+  if (!main) failures.push({ check: 'head-is-origin-main', message: `origin/${mainBranch} does not exist in this clone` });
+  else if (main !== head) failures.push({ check: 'head-is-origin-main', message: `HEAD ${head} is not origin/${mainBranch} ${main}` });
+  const dirty = git(['status', '--porcelain=v1', '--untracked-files=all']);
+  if (dirty) failures.push({ check: 'clean-tree', message: `the checkout has changes (${dirty.split('\n').length} paths)` });
+  const tree = git(['rev-parse', 'HEAD^{tree}']);
+  const proof = readProof(commonDir, tree);
+  if (!proof) {
+    failures.push({ check: 'proof-present', message: `no proof for tree ${tree}; run verify:release on HEAD` });
+  } else {
+    if (proof.kind !== 'release') failures.push({ check: 'proof-kind', message: `the proof is a ${proof.kind} proof; only a release proof unlocks a deploy` });
+    if (proof.result !== 'passed') failures.push({ check: 'proof-passed', message: `the proof result is ${proof.result}` });
+    if (proof.sha !== head) failures.push({ check: 'proof-matches-head', message: `the proof was written for ${proof.sha}, not HEAD ${head}; run verify:release on HEAD (identical checks are reused)` });
+    for (const target of targets) {
+      if (!(proof.targets ?? []).includes(target)) failures.push({ check: 'proof-target', message: `the proof does not cover target ${target}` });
+    }
+  }
+  return { head, tree, proof, failures };
+}
+
+// ---------------------------------------------------------------- status and PR block
+
+function countChecks(proof) {
+  const counts = { run: 0, reused: 0, skipped: 0, external: 0 };
+  for (const check of proof.checks ?? []) {
+    if (check.result === 'skipped') counts.skipped += 1;
+    else if (check.external) counts.external += 1;
+    else if (check.reused) counts.reused += 1;
+    else if (check.durationMs !== undefined) counts.run += 1;
+  }
+  return `${counts.run} run, ${counts.reused} reused, ${counts.skipped} out of scope${counts.external ? `, ${counts.external} external` : ''}`;
+}
+
+function describeProof(proof) {
+  return `${proof.kind} proof ${proof.result} (${countChecks(proof)}) on ${proof.sha.slice(0, 12)} at ${proof.finishedAt}`;
+}
+
+export async function status(argv = [], { cwd = process.cwd(), env = cleanGitEnv(), log = (line) => console.log(line) } = {}) {
+  const options = parseArgs(argv);
+  const { commonDir, git } = resolveRepository(cwd, env);
+  const sha = git(['rev-parse', '--verify', `${options.rev}^{commit}`]);
+  const tree = git(['rev-parse', `${sha}^{tree}`]);
+  const proof = readProof(commonDir, tree);
+  if (options.json) log(JSON.stringify(proof, null, 2));
+  else log(proof ? `${PREFIX} tree ${tree.slice(0, 12)}: ${describeProof(proof)}.` : `${PREFIX} tree ${tree.slice(0, 12)}: no proof yet.`);
+  return { status: 0, proof };
+}
+
+export async function proofBlock(argv = [], { cwd = process.cwd(), env = cleanGitEnv(), log = (line) => console.log(line) } = {}) {
+  const options = parseArgs(argv);
+  const { commonDir, git } = resolveRepository(cwd, env);
+  const sha = git(['rev-parse', '--verify', `${options.rev}^{commit}`]);
+  const tree = git(['rev-parse', `${sha}^{tree}`]);
+  const proof = readProof(commonDir, tree);
+  if (!proof) {
+    log(`${PREFIX} no proof for tree ${tree}; run verify:pr first.`);
+    return { status: 1 };
+  }
+  const config = await loadConfig(git, sha);
+  const checks = proof.checks ?? [];
+  const specialisedRun = checks.filter((check) => check.specialised && check.result === 'passed')
+    .map((check) => (check.external ? `${check.name} (${check.external})` : check.name));
+  const specialisedOut = checks.filter((check) => check.specialised && check.result === 'skipped').map((check) => check.name);
+  const specialisedMissing = checks.filter((check) => check.specialised && check.result === 'unavailable').map((check) => check.name);
+  const base = resolveBase(git, config);
+  const replayed = checks.filter((check) => check.durationMs !== undefined).map((check) => check.name);
+  const reusedOther = checks.filter((check) => check.reused && check.reusedFrom?.tree !== tree).map((check) => check.name);
+  let integration;
+  if (proof.base?.sha && base.sha && proof.base.sha !== base.sha) {
+    integration = `base moved since the proof (${proof.base.sha.slice(0, 12)} -> ${base.sha.slice(0, 12)}): merge it and rerun ${proof.command}`;
+  } else if (reusedOther.length) {
+    integration = `base ${base.ref} ${(base.sha ?? '').slice(0, 12)}; checks replayed: ${replayed.join(', ') || 'none'}; reused from an identical earlier input: ${reusedOther.join(', ')}`;
+  } else {
+    integration = `base unchanged (${base.ref} ${(base.sha ?? '').slice(0, 12)})`;
+  }
+  const lines = [
+    '## Local proof',
+    `- Commands: \`${proof.command}\``,
+    `- Commit SHA: \`${proof.sha}\``,
+    `- Result: ${proof.result}, ${proof.kind} proof (${countChecks(proof)})`,
+    `- Tree (\`git rev-parse <sha>^{tree}\`): \`${proof.tree}\``,
+    `- Specialised checks (database, browser, mobile, corpus): run: ${specialisedRun.join(', ') || 'none'} / out of scope: ${specialisedOut.join(', ') || 'none'}${specialisedMissing.length ? ` / still needed: ${specialisedMissing.join(', ')}` : ''}`,
+    `- Integration: ${integration}`,
+  ];
+  log(lines.join('\n'));
+  return { status: proof.result === 'passed' ? 0 : 1, proof };
+}
+
+// ---------------------------------------------------------------- pre-push hook
+
+export const DEFAULT_FORBIDDEN = [
+  '**/.env',
+  '**/.env.*',
+  '**/*.pem',
+  '**/*.p12',
+  '**/*.pfx',
+  '**/*.jks',
+  '**/*.keystore',
+  '**/id_rsa',
+  '**/id_ed25519',
+  '**/service-account*.json',
+];
+const DEFAULT_ALLOWED_ENV = ['**/.env.example', '**/.env.*.example', '**/.env.sample', '**/.env.template'];
+
+const SECRET_PATTERNS = [
+  { name: 'private key', pattern: /-----BEGIN (?:RSA |EC |DSA |OPENSSH |ENCRYPTED )?PRIVATE KEY-----/ },
+  { name: 'AWS access key', pattern: /\bAKIA[0-9A-Z]{16}\b/ },
+  { name: 'GitHub token', pattern: /\b(?:ghp|gho|ghu|ghs|ghr)_[A-Za-z0-9]{36}\b|\bgithub_pat_[A-Za-z0-9_]{60,}\b/ },
+  { name: 'Slack token', pattern: /\bxox[abprs]-[A-Za-z0-9-]{10,}/ },
+  { name: 'Stripe live key', pattern: /\b(?:sk|rk)_live_[A-Za-z0-9]{20,}/ },
+  { name: 'Anthropic key', pattern: /\bsk-ant-[A-Za-z0-9_-]{20,}/ },
+  { name: 'OpenAI key', pattern: /\bsk-(?:proj-)?[A-Za-z0-9_-]{40,}/ },
+];
+
+const NULL_ID = /^0+$/;
+
+/** Read many blobs with one `git cat-file --batch`. */
+function readBlobs(root, env, entries) {
+  if (entries.length === 0) return [];
+  const input = `${entries.map((entry) => entry.object).join('\n')}\n`;
+  const result = spawnSync('git', ['cat-file', '--batch'], { cwd: root, env, input, maxBuffer: 512 * 1024 * 1024 });
+  if (result.error || result.status !== 0) return [];
+  const output = result.stdout;
+  const blobs = [];
+  let offset = 0;
+  for (const entry of entries) {
+    const newline = output.indexOf(0x0a, offset);
+    if (newline < 0) break;
+    const header = output.subarray(offset, newline).toString('utf8').split(' ');
+    const size = Number(header[2]);
+    if (header[1] === 'missing' || Number.isNaN(size)) {
+      offset = newline + 1;
+      continue;
+    }
+    blobs.push({ file: entry.file, content: output.subarray(newline + 1, newline + 1 + size).toString('utf8') });
+    offset = newline + 1 + size + 1;
+  }
+  return blobs;
+}
+
+/** Fast checks of what a push sends. Never runs a heavy suite. */
+export async function prePush(remote, stdinText, {
+  cwd = process.cwd(),
+  env = cleanGitEnv(),
+  log = (line) => console.log(line),
+  error = (line) => console.error(line),
+  now = () => Date.now(),
+} = {}) {
+  const started = now();
+  const { root, commonDir, git } = resolveRepository(cwd, env);
+  const refs = stdinText.split('\n').map((line) => line.trim().split(/\s+/)).filter((parts) => parts.length === 4);
+  const pushes = [];
+  for (const [localRef, localSha, , remoteSha] of refs) {
+    if (NULL_ID.test(localSha) || localSha === remoteSha) continue;
+    const commit = git(['rev-parse', '--verify', '--quiet', `${localSha}^{commit}`], { allowFailure: true });
+    if (!commit) continue; // a tag on a non-commit object
+    const fresh = git(['rev-list', '--max-count=1', commit, '--not', `--remotes=${remote}`], { allowFailure: true });
+    if (fresh === '') continue;
+    pushes.push({ localRef, sha: commit });
+  }
+  if (pushes.length === 0) {
+    log(`${PREFIX} pre-push: nothing new to send; no check run.`);
+    return { status: 0 };
+  }
+
+  let config = null;
+  try {
+    config = await loadConfig(git, pushes[0].sha);
+  } catch (loadError) {
+    config = normaliseConfig({});
+    log(`${PREFIX} pre-push: ${loadError.message} Default fast checks only.`);
+  }
+  const problems = [];
+  const head = git(['rev-parse', '--verify', '--quiet', 'HEAD^{commit}'], { allowFailure: true });
+
+  for (const push of pushes) {
+    // Files the new commits add or change (a merge counts against its first
+    // parent), as they stand in the pushed commit.
+    const names = git(['log', '--no-renames', '--diff-filter=AMT', '--name-only', '--format=', '-z', '-m', '--first-parent',
+      '--max-count=300', push.sha, '--not', `--remotes=${remote}`], { allowFailure: true }) ?? '';
+    const changed = new Set(names.split('\0').map((file) => file.replace(/^\n+/, '')).filter(Boolean));
+    if (changed.size === 0) continue;
+    const entries = new Map();
+    const listing = git(['ls-tree', '-r', '-l', '-z', '--full-tree', push.sha]);
+    for (const line of listing.split('\0').filter(Boolean)) {
+      const tab = line.indexOf('\t');
+      const [, type, object, size] = line.slice(0, tab).trim().split(/\s+/);
+      if (type === 'blob') entries.set(line.slice(tab + 1), { object, size: Number(size) });
+    }
+    const toScan = [];
+    for (const file of changed) {
+      const entry = entries.get(file);
+      if (!entry) continue;
+      const allowed = matchesAny(file, [...DEFAULT_ALLOWED_ENV, ...config.hook.allow]);
+      if (!allowed && matchesAny(file, config.hook.forbidden)) {
+        problems.push(`${file}: forbidden file (secrets and keys stay out of git; allow it in ${CONFIG_FILE} hook.allow if it is public)`);
+        continue;
+      }
+      if (config.hook.maxFileBytes && entry.size > config.hook.maxFileBytes) {
+        problems.push(`${file}: ${(entry.size / 1024 / 1024).toFixed(1)} MB, over the ${(config.hook.maxFileBytes / 1024 / 1024).toFixed(0)} MB limit of ${CONFIG_FILE}`);
+        continue;
+      }
+      if (entry.size <= 2 * 1024 * 1024 && !matchesAny(file, config.hook.secretAllow)) toScan.push({ file, ...entry });
+    }
+    for (const { file, content } of readBlobs(root, env, toScan)) {
+      if (content.includes('\0')) continue;
+      for (const { name, pattern } of SECRET_PATTERNS) {
+        if (pattern.test(content)) {
+          problems.push(`${file}: looks like a ${name}`);
+          break;
+        }
+      }
+    }
+  }
+
+  for (const check of config.hook.checks) {
+    if (pushes.some((push) => push.sha !== head)) {
+      log(`${PREFIX} pre-push: ${check.name} skipped (it reads the checkout, and the pushed commit is not HEAD).`);
+      continue;
+    }
+    const result = spawnSync(check.command, { cwd: root, env, shell: true, encoding: 'utf8' });
+    if (result.error || result.status !== 0) {
+      problems.push(`${check.name} failed:\n${`${result.stdout ?? ''}${result.stderr ?? ''}`.trim()}`);
+    }
+  }
+
+  for (const push of pushes) {
+    const tree = git(['rev-parse', `${push.sha}^{tree}`]);
+    const proof = readProof(commonDir, tree);
+    log(proof
+      ? `${PREFIX} pre-push: ${push.localRef} ${push.sha.slice(0, 12)}: ${describeProof(proof)}.`
+      : `${PREFIX} pre-push: ${push.localRef} ${push.sha.slice(0, 12)}: no proof yet; run ${config.commands.pr} before asking for a merge.`);
+  }
+
+  const seconds = ((now() - started) / 1000).toFixed(1);
+  if (problems.length) {
+    error(`${PREFIX} pre-push: blocked in ${seconds} s:`);
+    for (const problem of problems) error(`  - ${problem}`);
+    return { status: 1, problems };
+  }
+  log(`${PREFIX} pre-push: fast checks passed in ${seconds} s.`);
+  return { status: 0, problems };
+}
+
+// ---------------------------------------------------------------- CLI
+
+function readStdin() {
+  try {
+    return readFileSync(0, 'utf8');
+  } catch {
+    return '';
+  }
+}
+
+export async function main(argv = process.argv.slice(2)) {
+  const [mode, ...rest] = argv;
+  try {
+    if (mode === 'pr' || mode === 'release') return (await verify(mode, rest)).status;
+    if (mode === 'status') return (await status(rest)).status;
+    if (mode === 'proof-block') return (await proofBlock(rest)).status;
+    if (mode === 'hook') return (await prePush(rest[0] ?? 'origin', readStdin())).status;
+    throw new UsageError('usage: verify-local.mjs <pr|release|status|proof-block|hook> [options]');
+  } catch (caught) {
+    console.error(`${PREFIX} ${caught.message}`);
+    return caught instanceof UsageError ? 64 : 1;
+  }
+}
+
+if (process.argv[1] && path.resolve(process.argv[1]) === fileURLToPath(import.meta.url)) {
+  process.exitCode = await main();
+}

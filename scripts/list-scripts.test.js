@@ -8,13 +8,15 @@ describe('script catalog', () => {
     expect(classifyScript('test:e2e:smoke')).toBe('Android E2E');
     expect(classifyScript('docs:check')).toBe('Site');
     expect(classifyScript('subscription:qa:report')).toBe('Subscriptions');
-    expect(classifyScript('verify:fast')).toBe('Quality');
+    expect(classifyScript('verify:pr')).toBe('Quality');
+    expect(classifyScript('verify:release')).toBe('Quality');
   });
 
   it('surfaces commands with side effects', () => {
     expect(scriptSafety('docs:deploy:prod')).toBe('publishes');
     expect(scriptSafety('docs:build')).toBe('writes generated files');
-    expect(scriptSafety('verify:fast')).toBe('writes generated files');
+    expect(scriptSafety('verify:pr')).toBe('writes a local proof');
+    expect(scriptSafety('verify:release')).toBe('writes a local proof');
     expect(scriptSafety('android:release:local')).toBe('builds artifacts');
     expect(scriptSafety('generate-sitemap')).toBe('writes generated files');
     expect(scriptSafety('prepare')).toBe('writes local Git config');

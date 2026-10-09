@@ -21,8 +21,8 @@ Un délai arbitraire augmenté ne remplace pas l'événement de cycle de vie att
 ## 2. Préparer une seule fois
 
 - Lire `git status --short`, isoler le lot et préserver les autres travaux.
-- Terminer le correctif, les types/lint et `npm run test:prepush` sur le commit
-  propre. Réutiliser ces preuves si seul le rapport change.
+- Terminer le correctif, puis lancer `npm run verify:pr` sur le commit (types,
+  lint, tests liés au diff). Réutiliser ces preuves si seul le rapport change.
 - Préparer un seul candidat compatible avec le binaire ciblé. Relever source,
   version/build, installateur, runtime et updateId effectivement exécuté.
   Un bundle exporté ou un manifeste serveur ne prouve pas son chargement.

@@ -43,8 +43,9 @@ du bundle JavaScript. Référence: Expo EAS Environment Variables
 Suivre [MOBILE_VERSIONING.md](MOBILE_VERSIONING.md) depuis un checkout isolé,
 propre et actualisé. Préparer la version avec `release:plan` / `release:prepare`,
 commiter les manifests, puis exécuter les contrôles adaptés au changement. Une PR
-fonctionnelle ou d'outillage termine sa sélection de tests par `test:prepush` ;
-ne pas lui ajouter une suite complète manuelle systématique.
+fonctionnelle ou d'outillage se termine par `npm run verify:pr` sur sa tête ;
+ne pas lui ajouter une suite complète manuelle systématique. Le commit livré
+passe `npm run verify:release`.
 
 Avant le build Android autorisé :
 
