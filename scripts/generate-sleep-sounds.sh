@@ -4,7 +4,7 @@ set -euo pipefail
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 REPO_ROOT="$(cd "$SCRIPT_DIR/.." && pwd)"
-OUTPUT_DIR="$REPO_ROOT/assets/audio/sleep"
+OUTPUT_DIR="$REPO_ROOT/docs-src/static/audio/sleep"
 SAMPLE_RATE=48000
 LOOP_DURATION=300
 CROSSFADE_DURATION=10

@@ -10,6 +10,7 @@ import {
   type SleepSoundConfig,
   type SleepTimerMinutes,
 } from '@/lib/sleepSounds';
+import { ensureSleepSoundFile } from '@/services/sleepSoundFiles';
 
 const SLEEP_SOUND_VOLUME = 0.65;
 const TIMER_UPDATE_INTERVAL_MS = 500;
@@ -27,13 +28,37 @@ export function useSleepSoundPlayer({
   title,
   albumTitle,
 }: UseSleepSoundPlayerOptions) {
-  const player = useAudioPlayer(sound.source, {
+  const [resolved, setResolved] = useState<{ id: string; uri: string } | null>(null);
+  const [downloadAttempt, setDownloadAttempt] = useState(0);
+  const [failedDownload, setFailedDownload] = useState<string | null>(null);
+  const downloadKey = `${sound.id}:${downloadAttempt}`;
+  const downloadFailed = failedDownload === downloadKey;
+  const sourceUri = resolved?.id === sound.id ? resolved.uri : null;
+  const player = useAudioPlayer(sourceUri ? { uri: sourceUri } : null, {
     downloadFirst: true,
     updateInterval: 500,
   });
   const status = useAudioPlayerStatus(player);
   const [hasStarted, setHasStarted] = useState(false);
   const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    let active = true;
+    ensureSleepSoundFile(sound).then(
+      (uri) => {
+        if (active) setResolved({ id: sound.id, uri });
+      },
+      (downloadError: unknown) => {
+        if (__DEV__) {
+          console.warn('[SleepSounds] Failed to download the loop', downloadError);
+        }
+        if (active) setFailedDownload(downloadKey);
+      },
+    );
+    return () => {
+      active = false;
+    };
+  }, [downloadKey, sound]);
   const [remainingSeconds, setRemainingSeconds] = useState(durationMinutes * 60);
   const [timerRunning, setTimerRunning] = useState(false);
   const remainingMsRef = useRef(durationMinutes * 60_000);
@@ -103,7 +128,12 @@ export function useSleepSoundPlayer({
   // expo-audio intentionally exposes player controls as mutable properties.
   // eslint-disable-next-line react-hooks/immutability
   const play = useCallback(async () => {
-    if (!status.isLoaded) return;
+    if (downloadFailed) {
+      // Offline on first use: try the download again.
+      setDownloadAttempt((attempt) => attempt + 1);
+      return;
+    }
+    if (!sourceUri || !status.isLoaded) return;
 
     setError(null);
     try {
@@ -156,9 +186,11 @@ export function useSleepSoundPlayer({
   }, [
     albumTitle,
     clearLockScreen,
+    downloadFailed,
     durationMinutes,
     hasStarted,
     player,
+    sourceUri,
     status.isLoaded,
     title,
   ]);
@@ -225,9 +257,9 @@ export function useSleepSoundPlayer({
   );
 
   return {
-    error,
+    error: downloadFailed ? 'download_failed' : error,
     hasStarted,
-    isLoaded: status.isLoaded,
+    isLoaded: Boolean(sourceUri) && status.isLoaded,
     isPlaying: status.playing,
     isBuffering: status.isBuffering,
     pause,
