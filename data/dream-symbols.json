@@ -20677,58 +20677,152 @@
       "en": {
         "slug": "bear",
         "name": "Bear",
-        "shortDescription": "Seeing a bear may make strength, protection, retreat or immediate danger feel present. Its behavior and your distance from it are more informative than assigning a fixed meaning.",
-        "modifiedAt": "2026-07-24",
+        "shortDescription": "Dreaming of a bear often puts a huge, powerful animal close to you: charging, watching, asleep in its den or guarding its cubs. Bears are often linked to strength, protection and withdrawal; what it did and how near it came guide the reading.",
+        "modifiedAt": "2026-10-08",
         "askYourself": [
-          "What did bear change in the scene?",
-          "Which feeling stayed with me after waking?"
+          "Was the bear attacking, watching me, asleep, or ignoring me?",
+          "How close did it come, and what did I do: run, freeze or stand my ground?",
+          "What in my life feels this big and this hard to approach right now?"
         ],
-        "faq": []
+        "faq": [
+          {
+            "question": "What does it mean to dream of a bear?",
+            "answer": "Bears are often associated with strength, protection, solitude and rest, as in hibernation. Whether it charged, watched you or slept, and how close it came, says more than any fixed meaning."
+          },
+          {
+            "question": "What does it mean when a bear attacks you in a dream?",
+            "answer": "A bear attack can go with a pressure that feels too big to face head on: a conflict, a heavy workload, someone's anger. It predicts nothing. Note what you did, fight, flee or freeze, and who the bear reminded you of."
+          },
+          {
+            "question": "What does it mean to dream of a bear chasing you?",
+            "answer": "Being chased by a bear often goes with something you are avoiding that keeps gaining ground. Notice whether it was getting closer or falling behind, and ask yourself what you might have seen if you had turned around."
+          },
+          {
+            "question": "What does a mother bear with cubs mean in a dream?",
+            "answer": "A mother bear often stages fierce protection. Were you too close to the cubs, or were you the one protecting someone? The scene can echo a protective instinct, yours or someone else's, that feels intense right now."
+          }
+        ],
+        "documentMetaDescription": "Dreaming of a bear attacking, chasing you or asleep in its den: what the scene can say about strength, protection and retreat, with questions and an example."
       },
       "fr": {
         "slug": "ours",
         "name": "Ours",
-        "shortDescription": "Voir un ours peut rendre présents la force, la protection, le retrait ou un danger immédiat. Son comportement et la distance qui vous sépare sont plus parlants qu’une signification fixe.",
-        "modifiedAt": "2026-07-24",
+        "shortDescription": "Rêver d'un ours, c'est souvent se retrouver face à un animal énorme qui charge, observe, dort dans sa tanière ou garde ses petits. L'ours est souvent associé à la force, à la protection et au retrait ; son attitude et sa distance guident la lecture.",
+        "modifiedAt": "2026-10-08",
         "askYourself": [
-          "Qu’est-ce que ours a changé dans la scène ?",
-          "Quelle émotion est restée après le réveil ?"
+          "L'ours m'attaquait-il, m'observait-il, dormait-il ou m'ignorait-il ?",
+          "À quelle distance est-il venu, et qu'ai-je fait : fuir, me figer, tenir bon ?",
+          "Qu'est-ce qui me paraît aussi massif et difficile à approcher en ce moment ?"
         ],
-        "faq": []
+        "faq": [
+          {
+            "question": "Que signifie rêver d'un ours ?",
+            "answer": "L'ours est souvent associé à la force, à la protection, à la solitude et au repos, comme dans l'hibernation. Qu'il charge, vous observe ou dorme, et la distance qui vous séparait, en disent plus qu'un sens fixe."
+          },
+          {
+            "question": "Que signifie rêver d'être attaqué par un ours ?",
+            "answer": "Une attaque d'ours peut accompagner une pression qui semble trop grosse pour être affrontée de face : un conflit, une charge de travail, la colère de quelqu'un. Elle ne prédit rien. Notez ce que vous avez fait et à qui l'ours vous faisait penser."
+          },
+          {
+            "question": "Que signifie rêver d'un ours qui vous poursuit ?",
+            "answer": "Être poursuivi par un ours rejoint souvent quelque chose que vous évitez et qui gagne du terrain. Notez s'il se rapprochait ou s'éloignait, et demandez-vous ce que vous auriez vu en vous retournant."
+          },
+          {
+            "question": "Que signifie rêver d'une ourse et de ses petits ?",
+            "answer": "Une ourse avec ses oursons met souvent en scène une protection farouche. Étiez-vous trop près des petits, ou celui qui protégeait quelqu'un ? La scène peut faire écho à un instinct protecteur, le vôtre ou celui d'un proche, très présent en ce moment."
+          }
+        ],
+        "documentMetaDescription": "Rêver d'un ours qui attaque, qui vous poursuit ou qui dort dans sa tanière : ce que la scène peut dire de force, de protection et de retrait, avec questions."
       },
       "es": {
         "slug": "oso",
         "name": "Oso",
-        "shortDescription": "Ver un oso puede hacer presentes la fuerza, la protección, el retiro o un peligro inmediato. Su conducta y la distancia entre ambos aportan más que asignarle un significado fijo.",
-        "modifiedAt": "2026-07-24",
+        "shortDescription": "Soñar con un oso suele ponerte cerca de un animal enorme que embiste, observa, duerme en su guarida o protege a sus crías. El oso se asocia a menudo con la fuerza, la protección y el retiro; lo que hacía y lo cerca que estaba orientan la lectura.",
+        "modifiedAt": "2026-10-08",
         "askYourself": [
-          "¿Qué cambió oso dentro de la escena?",
-          "¿Qué emoción siguió conmigo al despertar?"
+          "¿El oso me atacaba, me observaba, dormía o me ignoraba?",
+          "¿Cuánto se acercó, y qué hice yo: huir, quedarme quieto o plantarle cara?",
+          "¿Qué me parece ahora mismo igual de grande y difícil de abordar?"
         ],
-        "faq": []
+        "faq": [
+          {
+            "question": "¿Qué significa soñar con un oso?",
+            "answer": "El oso se asocia a menudo con la fuerza, la protección, la soledad y el descanso, como en la hibernación. Que embistiera, te observara o durmiera, y lo cerca que estaba, dicen más que un significado fijo."
+          },
+          {
+            "question": "¿Qué significa soñar que te ataca un oso?",
+            "answer": "El ataque de un oso puede acompañar una presión que parece demasiado grande para afrontarla de frente: un conflicto, un exceso de trabajo, el enfado de alguien. No predice nada. Anota qué hiciste y a quién te recordaba el oso."
+          },
+          {
+            "question": "¿Qué significa soñar que te persigue un oso?",
+            "answer": "Que te persiga un oso suele enlazar con algo que estás evitando y que no deja de ganar terreno. Fíjate en si se acercaba o se quedaba atrás, y pregúntate qué habrías visto si te hubieras dado la vuelta."
+          },
+          {
+            "question": "¿Qué significa soñar con una osa y sus crías?",
+            "answer": "Una osa con sus oseznos suele escenificar una protección feroz. ¿Estabas demasiado cerca de las crías, o eras tú quien protegía a alguien? La escena puede reflejar un instinto protector, tuyo o de alguien cercano, muy presente ahora."
+          }
+        ],
+        "documentMetaDescription": "Soñar con un oso que te ataca, te persigue o duerme en su guarida: lo que la escena puede decir de fuerza, protección y retiro, con preguntas y un ejemplo."
       },
       "de": {
         "slug": "baer",
         "name": "Bär",
-        "shortDescription": "Beim Anblick eines Bären können im Traum Stärke, Schutz, Rückzug oder eine unmittelbare Gefahr spürbar werden. Sein Verhalten und dein Abstand zu ihm sind meist aufschlussreicher als eine feste Zuordnung.",
+        "shortDescription": "Von einem Bären zu träumen heißt oft, einem riesigen Tier nahe zu sein: Es greift an, beobachtet, schläft in der Höhle oder bewacht seine Jungen. Er wird oft mit Kraft, Schutz und Rückzug verbunden; sein Verhalten und sein Abstand leiten die Deutung.",
         "askYourself": [
-          "War der Bär wach, schlafend, verletzt oder mit Jungen unterwegs?",
-          "Wie nah ist er dir gekommen und wie hast du reagiert?",
-          "Hast du dich von ihm beschützt, verfolgt oder beobachtet gefühlt?"
+          "Hat der Bär mich angegriffen, beobachtet, geschlafen oder mich ignoriert?",
+          "Wie nah kam er, und was habe ich getan: fliehen, erstarren oder standhalten?",
+          "Was in meinem Leben wirkt gerade so groß und so schwer zugänglich?"
         ],
-        "modifiedAt": "2026-07-24",
-        "faq": []
+        "modifiedAt": "2026-10-08",
+        "faq": [
+          {
+            "question": "Was bedeutet es, von einem Bären zu träumen?",
+            "answer": "Der Bär wird oft mit Kraft, Schutz, Alleinsein und Ruhe verbunden, wie beim Winterschlaf. Ob er angriff, Sie beobachtete oder schlief, und wie nah er Ihnen kam, sagt mehr als eine feste Bedeutung."
+          },
+          {
+            "question": "Was bedeutet es, im Traum von einem Bären angegriffen zu werden?",
+            "answer": "Ein Bärenangriff kann einen Druck begleiten, der zu groß wirkt, um sich ihm direkt zu stellen: ein Konflikt, viel Arbeit, die Wut eines Menschen. Er sagt nichts voraus. Notieren Sie, wie Sie reagiert haben und an wen der Bär Sie erinnerte."
+          },
+          {
+            "question": "Was bedeutet es, im Traum von einem Bären verfolgt zu werden?",
+            "answer": "Von einem Bären verfolgt zu werden passt oft zu etwas, dem Sie ausweichen und das immer näher kommt. Achten Sie darauf, ob er aufholte oder zurückfiel, und fragen Sie sich, was Sie beim Umdrehen gesehen hätten."
+          },
+          {
+            "question": "Was bedeutet eine Bärenmutter mit Jungen im Traum?",
+            "answer": "Eine Bärin mit ihren Jungen steht oft für entschlossenen Schutz. Waren Sie den Jungen zu nahe, oder haben Sie selbst jemanden beschützt? Die Szene kann einen Beschützerinstinkt aufgreifen, Ihren oder den eines nahen Menschen."
+          }
+        ],
+        "documentMetaDescription": "Bär im Traum, der angreift, Sie verfolgt oder in seiner Höhle schläft: was die Szene über Kraft, Schutz und Rückzug sagen kann, mit Fragen und Beispiel."
       },
       "it": {
         "slug": "orso",
         "name": "Orso",
-        "shortDescription": "Vedere un orso può rendere presenti forza, protezione, ritiro o pericolo immediato. Il suo comportamento e la distanza tra voi dicono più di un significato assegnato in modo fisso.",
-        "modifiedAt": "2026-07-24",
+        "shortDescription": "Sognare un orso significa spesso trovarsi vicino a un animale enorme che carica, osserva, dorme nella tana o difende i suoi cuccioli. L’orso viene spesso associato a forza, protezione e ritiro; ciò che faceva e quanto era vicino orientano la lettura.",
+        "modifiedAt": "2026-10-08",
         "askYourself": [
-          "Che cosa ha cambiato orso nella scena?",
-          "Quale emozione è rimasta dopo il risveglio?"
+          "L’orso mi attaccava, mi osservava, dormiva o mi ignorava?",
+          "Quanto si è avvicinato, e io che cosa ho fatto: scappare, bloccarmi o tenere duro?",
+          "Che cosa mi sembra, in questo periodo, così grande e difficile da avvicinare?"
         ],
-        "faq": []
+        "faq": [
+          {
+            "question": "Cosa significa sognare un orso?",
+            "answer": "L’orso viene spesso associato a forza, protezione, solitudine e riposo, come nel letargo. Che caricasse, ti osservasse o dormisse, e quanto fosse vicino, dicono più di un significato fisso."
+          },
+          {
+            "question": "Cosa significa sognare un orso che ti attacca?",
+            "answer": "L’attacco di un orso può accompagnare una pressione che sembra troppo grande per affrontarla di petto: un conflitto, troppo lavoro, la rabbia di qualcuno. Non predice nulla. Annota come hai reagito e a chi ti faceva pensare l’orso."
+          },
+          {
+            "question": "Cosa significa sognare un orso che ti insegue?",
+            "answer": "Essere inseguiti da un orso si avvicina spesso a qualcosa che stai evitando e che continua a guadagnare terreno. Nota se si avvicinava o restava indietro, e chiediti che cosa avresti visto voltandoti."
+          },
+          {
+            "question": "Cosa significa sognare un’orsa con i cuccioli?",
+            "answer": "Un’orsa con i suoi cuccioli mette spesso in scena una protezione feroce. Eri troppo vicino ai piccoli, o eri tu a proteggere qualcuno? La scena può richiamare un istinto protettivo, tuo o di una persona vicina, molto presente in questo periodo."
+          }
+        ],
+        "documentMetaDescription": "Sognare un orso che attacca, che ti insegue o che dorme nella tana: cosa può dire la scena di forza, protezione e ritiro, con domande e un esempio di diario."
       },
       "pt": {
         "slug": "urso",
@@ -20763,58 +20857,152 @@
       "en": {
         "slug": "elephant",
         "name": "Elephant",
-        "shortDescription": "An elephant’s size may emphasize memory, connection or quiet strength. Blocking the path, leading a herd or seeking gentle contact changes your relationship to its presence.",
-        "modifiedAt": "2026-07-24",
+        "shortDescription": "Dreaming of an elephant often means standing next to something enormous, slow and calm, until it charges. Elephants are often linked to memory, family bonds and quiet strength; what it did and how you felt beside it guide the reading.",
+        "modifiedAt": "2026-10-08",
         "askYourself": [
-          "What did elephant change in the scene?",
-          "Which feeling stayed with me after waking?"
+          "Was the elephant calm, charging, alone or with its herd?",
+          "What feels too big to ignore in my life right now?",
+          "Did the elephant remind me of someone, or of something I cannot forget?"
         ],
-        "faq": []
+        "faq": [
+          {
+            "question": "What does it mean to dream of an elephant?",
+            "answer": "Elephants are often associated with memory, family ties, patience and great strength. Whether it was calm, charging, alone or in a herd, and how you felt beside it, matters more than any fixed meaning."
+          },
+          {
+            "question": "What does it mean to dream of an elephant attacking or chasing you?",
+            "answer": "A charging elephant can go with something huge that you have kept at a distance and that suddenly comes at you: a decision, a debt, a family matter. It predicts nothing. Note what set it off and where you ran."
+          },
+          {
+            "question": "What does a baby elephant mean in a dream?",
+            "answer": "A baby elephant can go with tenderness, a new beginning, or care for someone small who depends on you. Was it with its mother, or lost? That detail often points either to protection or to feeling alone."
+          },
+          {
+            "question": "What does it mean to dream of an elephant in your house?",
+            "answer": "An elephant indoors often recalls the expression “the elephant in the room”: an obvious problem nobody mentions. Ask yourself what the people around you are carefully avoiding, and whether you are doing the same."
+          }
+        ],
+        "documentMetaDescription": "Dreaming of an elephant, a baby elephant or one charging at you: what the scene can say about memory, family and strength, with questions and an example."
       },
       "fr": {
         "slug": "elephant",
         "name": "Éléphant",
-        "shortDescription": "La taille d’un éléphant peut mettre en avant la mémoire, le lien ou une force tranquille. Bloquer le chemin, guider un troupeau ou chercher un contact doux change votre relation à sa présence.",
-        "modifiedAt": "2026-07-24",
+        "shortDescription": "Rêver d'un éléphant, c'est souvent côtoyer quelque chose d'énorme, lent et paisible, jusqu'à ce qu'il charge. L'éléphant est souvent associé à la mémoire, aux liens familiaux et à une force tranquille ; son attitude et votre ressenti guident la lecture.",
+        "modifiedAt": "2026-10-08",
         "askYourself": [
-          "Qu’est-ce que éléphant a changé dans la scène ?",
-          "Quelle émotion est restée après le réveil ?"
+          "L'éléphant était-il calme, en train de charger, seul ou avec son troupeau ?",
+          "Qu'est-ce qui me paraît trop gros pour être ignoré en ce moment ?",
+          "M'a-t-il rappelé quelqu'un, ou quelque chose que je n'arrive pas à oublier ?"
         ],
-        "faq": []
+        "faq": [
+          {
+            "question": "Que signifie rêver d'un éléphant ?",
+            "answer": "L'éléphant est souvent associé à la mémoire, aux liens familiaux, à la patience et à une grande force. Qu'il soit calme, qu'il charge, seul ou en troupeau, et ce que vous ressentiez près de lui, comptent plus qu'un sens fixe."
+          },
+          {
+            "question": "Que signifie rêver d'un éléphant qui vous attaque ou vous poursuit ?",
+            "answer": "Un éléphant qui charge peut accompagner quelque chose d'énorme que vous teniez à distance et qui fonce soudain sur vous : une décision, une dette, une affaire de famille. Il ne prédit rien. Notez ce qui l'a déclenché et où vous couriez."
+          },
+          {
+            "question": "Que signifie rêver d'un bébé éléphant ?",
+            "answer": "Un éléphanteau peut accompagner la tendresse, un nouveau départ, ou le soin porté à quelqu'un de petit qui dépend de vous. Était-il avec sa mère, ou perdu ? Ce détail oriente souvent vers la protection ou vers le sentiment d'être seul."
+          },
+          {
+            "question": "Que signifie rêver d'un éléphant dans la maison ?",
+            "answer": "Un éléphant à l'intérieur peut mettre en scène un problème si gros que tout le monde le contourne sans en parler, ou la peur de tout casser, « comme un éléphant dans un magasin de porcelaine ». Qu'est-ce qui encombre la maison sans être nommé ?"
+          }
+        ],
+        "documentMetaDescription": "Rêver d'un éléphant, d'un éléphanteau ou d'un éléphant qui charge : ce que la scène peut dire de mémoire, de famille et de force, avec questions et exemple."
       },
       "es": {
         "slug": "elefante",
         "name": "Elefante",
-        "shortDescription": "El tamaño de un elefante puede destacar memoria, vínculo o fuerza tranquila. Bloquear el camino, guiar una manada o buscar un contacto suave cambia tu relación con su presencia.",
-        "modifiedAt": "2026-07-24",
+        "shortDescription": "Soñar con un elefante suele ponerte al lado de algo enorme, lento y tranquilo, hasta que embiste. El elefante se asocia a menudo con la memoria, los lazos familiares y una fuerza serena; lo que hacía y lo que sentiste a su lado orientan la lectura.",
+        "modifiedAt": "2026-10-08",
         "askYourself": [
-          "¿Qué cambió elefante dentro de la escena?",
-          "¿Qué emoción siguió conmigo al despertar?"
+          "¿El elefante estaba tranquilo, embistiendo, solo o con su manada?",
+          "¿Qué me parece ahora mismo demasiado grande para ignorarlo?",
+          "¿Me recordó a alguien, o a algo que no consigo olvidar?"
         ],
-        "faq": []
+        "faq": [
+          {
+            "question": "¿Qué significa soñar con un elefante?",
+            "answer": "El elefante se asocia a menudo con la memoria, los lazos familiares, la paciencia y una gran fuerza. Que estuviera tranquilo o embistiera, solo o en manada, y lo que sentiste a su lado, cuentan más que un significado fijo."
+          },
+          {
+            "question": "¿Qué significa soñar con un elefante que te ataca o te persigue?",
+            "answer": "Un elefante que embiste puede acompañar algo enorme que mantenías a distancia y que de pronto se te echa encima: una decisión, una deuda, un asunto familiar. No predice nada. Anota qué lo provocó y hacia dónde corrías."
+          },
+          {
+            "question": "¿Qué significa soñar con un elefante bebé?",
+            "answer": "Una cría de elefante puede acompañar la ternura, un nuevo comienzo o el cuidado de alguien pequeño que depende de ti. ¿Estaba con su madre o perdida? Ese detalle suele orientar hacia la protección o hacia la sensación de soledad."
+          },
+          {
+            "question": "¿Qué significa soñar con un elefante dentro de casa?",
+            "answer": "Un elefante en casa puede escenificar un problema tan grande que todos lo esquivan sin nombrarlo, o el miedo a romperlo todo, «como un elefante en una cacharrería». ¿Qué ocupa sitio en casa sin que nadie lo mencione?"
+          }
+        ],
+        "documentMetaDescription": "Soñar con un elefante, una cría de elefante o un elefante que embiste: lo que la escena puede decir de memoria, familia y fuerza, con preguntas y un ejemplo."
       },
       "de": {
         "slug": "elefant",
         "name": "Elefant",
-        "shortDescription": "Die Größe eines Elefanten kann im Traum Erinnerung, Verbundenheit oder ruhige Kraft betonen. Ob er den Weg versperrt, eine Herde anführt oder sanft Kontakt sucht, prägt die Bedeutung für dich.",
+        "shortDescription": "Von einem Elefanten zu träumen heißt oft, neben etwas Riesigem zu stehen, langsam und ruhig, bis es losstürmt. Der Elefant wird oft mit Gedächtnis, Familienbanden und ruhiger Kraft verbunden; was er tat und wie Sie sich fühlten, leitet die Deutung.",
         "askYourself": [
-          "War der Elefant allein oder Teil einer Herde?",
-          "Hat er dich geführt, berührt, getragen oder deinen Weg blockiert?",
-          "Welche Reaktion lösten seine Größe und Nähe bei dir aus?"
+          "War der Elefant ruhig, stürmte er los, war er allein oder mit seiner Herde?",
+          "Was ist in meinem Leben gerade zu groß, um es zu übersehen?",
+          "Hat er mich an jemanden erinnert, oder an etwas, das ich nicht vergessen kann?"
         ],
-        "modifiedAt": "2026-07-24",
-        "faq": []
+        "modifiedAt": "2026-10-08",
+        "faq": [
+          {
+            "question": "Was bedeutet es, von einem Elefanten zu träumen?",
+            "answer": "Der Elefant wird oft mit Gedächtnis, Familienbanden, Geduld und großer Kraft verbunden. Ob er ruhig war oder angriff, allein oder in der Herde, und wie Sie sich neben ihm fühlten, zählt mehr als eine feste Bedeutung."
+          },
+          {
+            "question": "Was bedeutet es, im Traum von einem Elefanten angegriffen oder verfolgt zu werden?",
+            "answer": "Ein angreifender Elefant kann etwas Riesiges begleiten, das Sie auf Abstand gehalten haben und das plötzlich auf Sie zukommt: eine Entscheidung, Schulden, eine Familiensache. Er sagt nichts voraus. Notieren Sie, was ihn auslöste."
+          },
+          {
+            "question": "Was bedeutet ein Elefantenbaby im Traum?",
+            "answer": "Ein Elefantenbaby kann Zärtlichkeit, einen Neuanfang oder die Sorge für jemanden Kleinen begleiten, der von Ihnen abhängt. War es bei seiner Mutter oder verloren? Dieses Detail weist oft eher auf Schutz oder auf Einsamkeit."
+          },
+          {
+            "question": "Was bedeutet ein Elefant im Haus im Traum?",
+            "answer": "Ein Elefant in der Wohnung kann ein Problem in Szene setzen, das so groß ist, dass alle darum herumgehen, ohne es anzusprechen, oder die Angst, „wie ein Elefant im Porzellanladen“ alles zu zerbrechen. Was füllt bei Ihnen den Raum, ohne benannt zu werden?"
+          }
+        ],
+        "documentMetaDescription": "Elefant im Traum, ein Elefantenbaby oder ein angreifender Elefant: was die Szene über Gedächtnis, Familie und Kraft sagen kann, mit Fragen und Beispiel."
       },
       "it": {
         "slug": "elefante",
         "name": "Elefante",
-        "shortDescription": "Le dimensioni di un elefante possono mettere in primo piano memoria, legame o forza tranquilla. Bloccare il cammino, guidare il branco o cercare un contatto dolce cambia il rapporto con la sua presenza.",
-        "modifiedAt": "2026-07-24",
+        "shortDescription": "Sognare un elefante vuol dire spesso stare accanto a qualcosa di enorme, lento e calmo, finché non carica. L’elefante viene spesso associato a memoria, legami familiari e forza serena; ciò che faceva e ciò che hai provato orientano la lettura.",
+        "modifiedAt": "2026-10-08",
         "askYourself": [
-          "Che cosa ha cambiato elefante nella scena?",
-          "Quale emozione è rimasta dopo il risveglio?"
+          "L’elefante era tranquillo, caricava, era solo o con il suo branco?",
+          "Che cosa mi sembra, in questo periodo, troppo grande per ignorarlo?",
+          "Mi ha ricordato qualcuno, o qualcosa che non riesco a dimenticare?"
         ],
-        "faq": []
+        "faq": [
+          {
+            "question": "Cosa significa sognare un elefante?",
+            "answer": "L’elefante viene spesso associato a memoria, legami familiari, pazienza e grande forza. Che fosse tranquillo o caricasse, solo o in branco, e ciò che provavi accanto a lui, contano più di un significato fisso."
+          },
+          {
+            "question": "Cosa significa sognare un elefante che ti attacca o ti insegue?",
+            "answer": "Un elefante che carica può accompagnare qualcosa di enorme che tenevi a distanza e che all’improvviso ti viene addosso: una decisione, un debito, una questione di famiglia. Non predice nulla. Annota che cosa l’ha scatenato."
+          },
+          {
+            "question": "Cosa significa sognare un cucciolo di elefante?",
+            "answer": "Un cucciolo di elefante può accompagnare la tenerezza, un nuovo inizio o la cura per qualcuno di piccolo che dipende da te. Era con la madre, o si era perso? Quel dettaglio orienta spesso verso la protezione o verso la solitudine."
+          },
+          {
+            "question": "Cosa significa sognare un elefante in casa?",
+            "answer": "Un elefante in casa può mettere in scena un problema così grande che tutti lo aggirano senza nominarlo, o la paura di rompere tutto, «come un elefante in una cristalleria». Che cosa occupa spazio in casa senza che nessuno ne parli?"
+          }
+        ],
+        "documentMetaDescription": "Sognare un elefante, un cucciolo di elefante o un elefante che carica: cosa può dire la scena di memoria, famiglia e forza, con domande e un esempio di diario."
       },
       "pt": {
         "slug": "elefante",
@@ -20848,58 +21036,152 @@
       "en": {
         "slug": "fish",
         "name": "Fish",
-        "shortDescription": "A fish may highlight freedom of movement, adaptation or the feeling of being caught. Swimming freely, being trapped or lying out of water changes the scene fundamentally.",
-        "modifiedAt": "2026-07-24",
+        "shortDescription": "Dreaming of a fish often shows quick, silent life under the surface: gliding through clear water, flapping on dry land, caught on a line. Fish are often linked to emotions, intuition and abundance; the water and the fish's fate guide the reading.",
+        "modifiedAt": "2026-10-08",
         "askYourself": [
-          "What did fish change in the scene?",
-          "Which feeling stayed with me after waking?"
+          "Was the fish swimming freely, caught, out of water or dead?",
+          "What was the water like: clear, murky, calm or rough?",
+          "Where do I feel like a fish out of water right now?"
         ],
-        "faq": []
+        "faq": [
+          {
+            "question": "What does it mean to dream of fish?",
+            "answer": "Fish are often associated with emotions, intuition, abundance and whatever moves below the surface. The state of the water and what happened to the fish, free, caught or dead, matter more than any fixed meaning."
+          },
+          {
+            "question": "What does a dead fish mean in a dream?",
+            "answer": "A dead fish can be unpleasant to see. It may echo an idea, a feeling or a relationship that has run out of air, or simple exhaustion. It does not announce a loss; note where you found it and how you reacted."
+          },
+          {
+            "question": "What does it mean to dream of catching a fish?",
+            "answer": "Catching a fish can go with grasping something elusive: an idea, an opportunity, an answer. A big catch may bring pride; one that slips off the hook, frustration. Note what you did with it afterwards."
+          },
+          {
+            "question": "Does dreaming of fish mean you are pregnant?",
+            "answer": "In several cultures, a popular belief links fish dreams to pregnancy. It is a tradition, not a sign: a fish in a dream says nothing about whether you are pregnant. It can still echo a wish or a worry about having a child."
+          }
+        ],
+        "documentMetaDescription": "Dreaming of fish, a dead fish or catching a fish: what the scene can say about emotions, ease and opportunities, with questions and a journal example."
       },
       "fr": {
         "slug": "poisson",
         "name": "Poisson",
-        "shortDescription": "Un poisson peut mettre en avant la liberté de mouvement, l’adaptation ou le sentiment d’être capturé. Le voir nager librement, pris au piège ou hors de l’eau transforme profondément la scène.",
-        "modifiedAt": "2026-07-24",
+        "shortDescription": "Rêver d'un poisson, c'est souvent voir une vie vive et silencieuse sous la surface : il glisse dans l'eau claire, se débat sur la berge ou mord à l'hameçon. On l'associe souvent aux émotions, à l'intuition, à l'abondance ; l'eau et son sort guident la lecture.",
+        "modifiedAt": "2026-10-08",
         "askYourself": [
-          "Qu’est-ce que poisson a changé dans la scène ?",
-          "Quelle émotion est restée après le réveil ?"
+          "Le poisson nageait-il librement, était-il pris, hors de l'eau ou mort ?",
+          "Comment était l'eau : claire, trouble, calme ou agitée ?",
+          "Où est-ce que je me sens comme un poisson hors de l'eau en ce moment ?"
         ],
-        "faq": []
+        "faq": [
+          {
+            "question": "Que signifie rêver de poisson ?",
+            "answer": "Le poisson est souvent associé aux émotions, à l'intuition, à l'abondance et à ce qui bouge sous la surface. L'état de l'eau et le sort du poisson, libre, pris ou mort, comptent plus qu'un sens fixe."
+          },
+          {
+            "question": "Que signifie rêver d'un poisson mort ?",
+            "answer": "Un poisson mort peut être désagréable à voir. Il peut faire écho à une idée, un sentiment ou une relation qui manque d'air, ou à une simple fatigue. Il n'annonce aucune perte ; notez où vous l'avez trouvé et votre réaction."
+          },
+          {
+            "question": "Que signifie rêver de pêcher un poisson ?",
+            "answer": "Attraper un poisson peut accompagner le fait de saisir quelque chose de fuyant : une idée, une occasion, une réponse. Une belle prise peut rendre fier ; celui qui se décroche laisse souvent de la frustration. Notez ce que vous en avez fait."
+          },
+          {
+            "question": "Rêver de poisson veut-il dire qu'on est enceinte ?",
+            "answer": "Dans plusieurs cultures, une croyance populaire relie les rêves de poisson à la grossesse. C'est une tradition, pas un signe : un poisson en rêve ne dit rien d'une grossesse. Il peut en revanche faire écho à un désir ou à une inquiétude autour d'un enfant."
+          }
+        ],
+        "documentMetaDescription": "Rêver de poisson, d'un poisson mort ou de pêcher un poisson : ce que la scène peut dire des émotions, de l'aisance et des occasions, avec questions et exemple."
       },
       "es": {
         "slug": "pez",
         "name": "Pez",
-        "shortDescription": "Un pez puede destacar libertad de movimiento, adaptación o sensación de estar atrapado. Verlo nadar libre, quedar capturado o estar fuera del agua transforma la escena.",
-        "modifiedAt": "2026-07-24",
+        "shortDescription": "Soñar con un pez suele mostrar una vida rápida y silenciosa bajo la superficie: se desliza en agua clara, boquea en la orilla o pica el anzuelo. Se asocia a menudo con las emociones, la intuición y la abundancia; el agua y lo que le pasa orientan la lectura.",
+        "modifiedAt": "2026-10-08",
         "askYourself": [
-          "¿Qué cambió pez dentro de la escena?",
-          "¿Qué emoción siguió conmigo al despertar?"
+          "¿El pez nadaba libre, estaba atrapado, fuera del agua o muerto?",
+          "¿Cómo era el agua: clara, turbia, tranquila o revuelta?",
+          "¿Dónde me siento ahora mismo como pez fuera del agua?"
         ],
-        "faq": []
+        "faq": [
+          {
+            "question": "¿Qué significa soñar con peces?",
+            "answer": "El pez se asocia a menudo con las emociones, la intuición, la abundancia y lo que se mueve bajo la superficie. El estado del agua y lo que le pasaba al pez, libre, atrapado o muerto, cuentan más que un significado fijo."
+          },
+          {
+            "question": "¿Qué significa soñar con peces muertos?",
+            "answer": "Un pez muerto puede resultar desagradable. Puede reflejar una idea, un sentimiento o una relación que se ha quedado sin aire, o un simple cansancio. No anuncia ninguna pérdida; anota dónde lo encontraste y cómo reaccionaste."
+          },
+          {
+            "question": "¿Qué significa soñar que pescas un pez?",
+            "answer": "Pescar un pez puede acompañar la sensación de atrapar algo escurridizo: una idea, una oportunidad, una respuesta. Una buena pieza puede dar orgullo; la que se suelta del anzuelo, frustración. Anota qué hiciste con ella."
+          },
+          {
+            "question": "¿Soñar con peces significa embarazo?",
+            "answer": "En varias culturas, una creencia popular relaciona los sueños con peces con el embarazo. Es una tradición, no una señal: un pez en sueños no dice nada de si estás embarazada. Sí puede reflejar un deseo o una preocupación sobre tener un hijo."
+          }
+        ],
+        "documentMetaDescription": "Soñar con peces, con peces muertos o con pescar: lo que la escena puede decir de emociones, comodidad y oportunidades, con preguntas y un ejemplo de diario."
       },
       "de": {
         "slug": "fisch",
         "name": "Fisch",
-        "shortDescription": "Rückt ein Fisch im Traum in den Mittelpunkt, können Bewegungsfreiheit, Anpassung oder das Gefühl des Eingefangenseins eine Rolle spielen. Ob er lebendig schwamm, gefangen war oder außerhalb des Wassers lag, verändert die Szene grundlegend.",
+        "shortDescription": "Ein Fisch im Traum zeigt oft schnelles, stilles Leben unter der Oberfläche: Er gleitet durch klares Wasser, zappelt am Ufer oder hängt am Haken. Fische werden oft mit Gefühlen, Intuition und Fülle verbunden; das Wasser und sein Schicksal leiten die Deutung.",
         "askYourself": [
-          "War das Wasser klar, trüb, ruhig oder stark bewegt?",
-          "Hast du einen einzelnen Fisch oder einen ganzen Schwarm gesehen?",
-          "Hast du den Fisch gefangen, freigelassen, gefüttert oder nur beobachtet?"
+          "Schwamm der Fisch frei, war er gefangen, auf dem Trockenen oder tot?",
+          "Wie war das Wasser: klar, trüb, ruhig oder aufgewühlt?",
+          "Wo fühle ich mich gerade wie ein Fisch auf dem Trockenen?"
         ],
-        "modifiedAt": "2026-07-24",
-        "faq": []
+        "modifiedAt": "2026-10-08",
+        "faq": [
+          {
+            "question": "Was bedeutet es, von Fischen zu träumen?",
+            "answer": "Fische werden oft mit Gefühlen, Intuition, Fülle und dem verbunden, was sich unter der Oberfläche bewegt. Der Zustand des Wassers und was mit dem Fisch geschah, frei, gefangen oder tot, zählen mehr als eine feste Bedeutung."
+          },
+          {
+            "question": "Was bedeutet ein toter Fisch im Traum?",
+            "answer": "Ein toter Fisch ist oft unangenehm anzusehen. Er kann eine Idee, ein Gefühl oder eine Beziehung aufgreifen, der die Luft ausgeht, oder schlicht Erschöpfung. Er kündigt keinen Verlust an; notieren Sie, wo Sie ihn fanden und wie Sie reagierten."
+          },
+          {
+            "question": "Was bedeutet es, im Traum einen Fisch zu fangen?",
+            "answer": "Einen Fisch zu fangen kann dazu passen, etwas Flüchtiges zu fassen zu bekommen: eine Idee, eine Gelegenheit, eine Antwort. Ein großer Fang kann stolz machen, einer, der vom Haken rutscht, frustrieren. Notieren Sie, was Sie danach mit ihm taten."
+          },
+          {
+            "question": "Bedeutet ein Traum von Fischen eine Schwangerschaft?",
+            "answer": "In mehreren Kulturen verbindet ein verbreiteter Volksglaube Fischträume mit Schwangerschaft. Das ist eine Tradition, kein Zeichen: Ein Fisch im Traum sagt nichts darüber, ob Sie schwanger sind. Er kann aber einen Kinderwunsch oder eine Sorge darum aufgreifen."
+          }
+        ],
+        "documentMetaDescription": "Fisch im Traum, ein toter Fisch oder einen Fisch fangen: was die Szene über Gefühle, Wohlbefinden und Chancen sagen kann, mit Fragen und Tagebuchbeispiel."
       },
       "it": {
         "slug": "pesce",
         "name": "Pesce",
-        "shortDescription": "Un pesce può mettere in primo piano libertà di movimento, adattamento o sensazione di essere catturato. Vederlo nuotare libero, intrappolato o fuori dall’acqua trasforma la scena.",
-        "modifiedAt": "2026-07-24",
+        "shortDescription": "Sognare un pesce mostra spesso una vita rapida e silenziosa sotto la superficie: scivola nell’acqua limpida, si dibatte sulla riva, abbocca all’amo. Viene spesso associato a emozioni, intuito e abbondanza; l’acqua e la sua sorte orientano la lettura.",
+        "modifiedAt": "2026-10-08",
         "askYourself": [
-          "Che cosa ha cambiato pesce nella scena?",
-          "Quale emozione è rimasta dopo il risveglio?"
+          "Il pesce nuotava libero, era preso, fuor d’acqua o morto?",
+          "Com’era l’acqua: limpida, torbida, calma o agitata?",
+          "Dove mi sento come un pesce fuor d’acqua in questo periodo?"
         ],
-        "faq": []
+        "faq": [
+          {
+            "question": "Cosa significa sognare un pesce?",
+            "answer": "Il pesce viene spesso associato a emozioni, intuito, abbondanza e a ciò che si muove sotto la superficie. Lo stato dell’acqua e la sorte del pesce, libero, preso o morto, contano più di un significato fisso."
+          },
+          {
+            "question": "Cosa significa sognare pesci morti?",
+            "answer": "Un pesce morto può essere sgradevole da vedere. Può richiamare un’idea, un sentimento o una relazione rimasti senz’aria, o una semplice stanchezza. Non annuncia nessuna perdita; nota dove l’hai trovato e come hai reagito."
+          },
+          {
+            "question": "Cosa significa sognare di pescare un pesce?",
+            "answer": "Pescare un pesce può accompagnare la sensazione di afferrare qualcosa di sfuggente: un’idea, un’occasione, una risposta. Una bella preda può dare orgoglio, quella che si stacca dall’amo frustrazione. Annota che cosa ne hai fatto."
+          },
+          {
+            "question": "Sognare pesci significa gravidanza?",
+            "answer": "In diverse culture una credenza popolare collega i sogni di pesci alla gravidanza. È una tradizione, non un segnale: un pesce in sogno non dice nulla sul fatto che tu sia incinta. Può però richiamare un desiderio o una preoccupazione legati all’avere un figlio."
+          }
+        ],
+        "documentMetaDescription": "Sognare un pesce, pesci morti o di pescare: cosa può dire la scena di emozioni, agio e occasioni, con domande da porsi e un esempio di diario dei sogni."
       },
       "pt": {
         "slug": "peixe",
@@ -20932,58 +21214,152 @@
       "en": {
         "slug": "shark",
         "name": "Shark",
-        "shortDescription": "A shark in the water may make a perceived threat, strong pressure or a dominant presence immediate. Attacking, passing calmly or remaining deep below creates a different scene.",
-        "modifiedAt": "2026-07-24",
+        "shortDescription": "Dreaming of a shark often starts with a fin cutting the surface, or a dark shape circling below you. Sharks are often linked to a hidden threat, a ruthless rival or fear of what you cannot see; what it did and where you were in the water guide the reading.",
+        "modifiedAt": "2026-10-08",
         "askYourself": [
-          "What did shark change in the scene?",
-          "Which feeling stayed with me after waking?"
+          "Did the shark attack, circle me, or just swim past?",
+          "Was I in deep water, near the shore, or safe on a boat?",
+          "Who or what in my life feels like it is circling me right now?"
         ],
-        "faq": []
+        "faq": [
+          {
+            "question": "What does it mean to dream of a shark?",
+            "answer": "Sharks are often associated with a hidden threat, aggressive competition or fear of the unknown. Whether it attacked, circled or swam past, and where you were in the water, matters more than any fixed meaning."
+          },
+          {
+            "question": "What does it mean to dream of a shark attack?",
+            "answer": "A shark attack can go with a pressure that comes from below, unseen until the last moment: a conflict, a harsh critic, a money worry. It predicts nothing. Note who or what the shark made you think of."
+          },
+          {
+            "question": "What does it mean when a shark circles you in a dream?",
+            "answer": "A circling shark often goes with the feeling of being watched, tested or cornered by someone waiting for a weak moment. Ask yourself where you feel exposed right now, and what getting out of the water would look like."
+          },
+          {
+            "question": "Why do I keep dreaming about sharks?",
+            "answer": "Recurring shark dreams can follow a film, a news story or a trip to the sea, or come back in stressful periods. If these nightmares wake you often or spoil your sleep, talk to a doctor: frequent nightmares can be treated."
+          }
+        ],
+        "documentMetaDescription": "Dreaming of a shark attacking, chasing or circling you: what the scene can say about hidden threats, rivalry and fear, with questions and a journal example."
       },
       "fr": {
         "slug": "requin",
         "name": "Requin",
-        "shortDescription": "Un requin dans l’eau peut rendre immédiats une menace perçue, une forte pression ou une présence dominante. Attaquer, passer calmement ou rester visible en profondeur produit une scène différente.",
-        "modifiedAt": "2026-07-24",
+        "shortDescription": "Rêver d'un requin commence souvent par un aileron qui fend la surface, ou une ombre qui tourne sous vous. Il est souvent associé à une menace cachée, à un rival sans scrupules ou à la peur de l'invisible ; son attitude et votre position guident la lecture.",
+        "modifiedAt": "2026-10-08",
         "askYourself": [
-          "Qu’est-ce que requin a changé dans la scène ?",
-          "Quelle émotion est restée après le réveil ?"
+          "Le requin m'attaquait-il, tournait-il autour de moi, ou passait-il simplement ?",
+          "Étais-je en eau profonde, près du rivage, ou à l'abri sur un bateau ?",
+          "Qui ou quoi, dans ma vie, me semble tourner autour de moi en ce moment ?"
         ],
-        "faq": []
+        "faq": [
+          {
+            "question": "Que signifie rêver d'un requin ?",
+            "answer": "Le requin est souvent associé à une menace cachée, à une concurrence agressive ou à la peur de l'inconnu. Qu'il attaque, tourne autour de vous ou passe, et l'endroit où vous étiez dans l'eau, comptent plus qu'un sens fixe."
+          },
+          {
+            "question": "Que signifie rêver d'une attaque de requin ?",
+            "answer": "Une attaque de requin peut accompagner une pression qui surgit d'en dessous, invisible jusqu'au dernier moment : un conflit, une critique dure, un souci d'argent. Elle ne prédit rien. Notez à qui ou à quoi le requin vous faisait penser."
+          },
+          {
+            "question": "Que signifie rêver d'un requin qui tourne autour de vous ?",
+            "answer": "Un requin qui tourne autour de vous rejoint souvent le sentiment d'être observé, mis à l'épreuve ou acculé par quelqu'un qui attend un moment de faiblesse. Demandez-vous où vous vous sentez exposé, et ce que serait sortir de l'eau."
+          },
+          {
+            "question": "Pourquoi est-ce que je rêve souvent de requins ?",
+            "answer": "Des rêves de requin à répétition peuvent suivre un film, une actualité ou des vacances à la mer, ou revenir dans les périodes de stress. Si ces cauchemars vous réveillent souvent ou abîment votre sommeil, parlez-en à un médecin : ils se soignent."
+          }
+        ],
+        "documentMetaDescription": "Rêver d'un requin qui attaque, vous poursuit ou tourne autour de vous : ce que la scène peut dire de menace cachée, de rivalité et de peur, avec questions."
       },
       "es": {
         "slug": "tiburon",
         "name": "Tiburón",
-        "shortDescription": "Un tiburón en el agua puede volver inmediata una amenaza percibida, una presión intensa o una presencia dominante. Atacar, pasar tranquilo o permanecer en el fondo crea escenas distintas.",
-        "modifiedAt": "2026-07-24",
+        "shortDescription": "Soñar con un tiburón suele empezar con una aleta que corta la superficie, o una sombra que gira bajo tus pies. Se asocia a menudo con una amenaza oculta, un rival sin escrúpulos o el miedo a lo invisible; lo que hacía y dónde estabas orientan la lectura.",
+        "modifiedAt": "2026-10-08",
         "askYourself": [
-          "¿Qué cambió tiburón dentro de la escena?",
-          "¿Qué emoción siguió conmigo al despertar?"
+          "¿El tiburón me atacaba, daba vueltas a mi alrededor o solo pasaba?",
+          "¿Estaba en aguas profundas, cerca de la orilla o a salvo en un barco?",
+          "¿Quién o qué siento ahora mismo que me está rondando?"
         ],
-        "faq": []
+        "faq": [
+          {
+            "question": "¿Qué significa soñar con un tiburón?",
+            "answer": "El tiburón se asocia a menudo con una amenaza oculta, una competencia agresiva o el miedo a lo desconocido. Que atacara, te rodeara o pasara de largo, y dónde estabas en el agua, cuentan más que un significado fijo."
+          },
+          {
+            "question": "¿Qué significa soñar que te ataca un tiburón?",
+            "answer": "El ataque de un tiburón puede acompañar una presión que llega desde abajo, invisible hasta el último momento: un conflicto, una crítica dura, una preocupación de dinero. No predice nada. Anota en quién o en qué te hacía pensar."
+          },
+          {
+            "question": "¿Qué significa soñar con un tiburón que da vueltas a tu alrededor?",
+            "answer": "Un tiburón que te rodea suele enlazar con la sensación de que te vigilan, te ponen a prueba o te acorralan esperando un momento de debilidad. Pregúntate dónde te sientes expuesto ahora y qué sería, para ti, salir del agua."
+          },
+          {
+            "question": "¿Por qué sueño a menudo con tiburones?",
+            "answer": "Los sueños repetidos con tiburones pueden seguir a una película, una noticia o unas vacaciones en el mar, o volver en épocas de estrés. Si estas pesadillas te despiertan a menudo o estropean tu descanso, consúltalo con un médico: tienen tratamiento."
+          }
+        ],
+        "documentMetaDescription": "Soñar con un tiburón que te ataca, te persigue o te rodea: lo que la escena puede decir de amenazas ocultas, rivalidad y miedo, con preguntas y un ejemplo."
       },
       "de": {
         "slug": "hai",
         "name": "Hai",
-        "shortDescription": "Bei einem Hai im Wasser können eine wahrgenommene Bedrohung, starker Druck oder eine dominante Präsenz spürbar werden. Entscheidend ist, ob er angriff, ruhig vorbeizog oder nur in der Tiefe zu erkennen war.",
+        "shortDescription": "Ein Traum vom Hai beginnt oft mit einer Flosse, die die Oberfläche durchschneidet, oder einem dunklen Schatten, der unter Ihnen kreist. Der Hai wird oft mit verborgener Bedrohung, skrupelloser Konkurrenz und Angst vor dem Unsichtbaren verbunden.",
         "askYourself": [
-          "Wie gut konntest du den Hai im Wasser sehen?",
-          "Hat er dich verfolgt, umkreist oder völlig ignoriert?",
-          "Konntest du entkommen, dich verteidigen oder ruhig weiterbeobachten?"
+          "Hat der Hai angegriffen, mich umkreist oder ist er nur vorbeigeschwommen?",
+          "War ich in tiefem Wasser, nah am Ufer oder sicher auf einem Boot?",
+          "Wer oder was in meinem Leben scheint mich gerade zu umkreisen?"
         ],
-        "modifiedAt": "2026-07-24",
-        "faq": []
+        "modifiedAt": "2026-10-08",
+        "faq": [
+          {
+            "question": "Was bedeutet es, von einem Hai zu träumen?",
+            "answer": "Der Hai wird oft mit einer verborgenen Bedrohung, aggressiver Konkurrenz oder Angst vor dem Unbekannten verbunden. Ob er angriff, Sie umkreiste oder vorbeizog, und wo Sie im Wasser waren, zählt mehr als eine feste Bedeutung."
+          },
+          {
+            "question": "Was bedeutet ein Haiangriff im Traum?",
+            "answer": "Ein Haiangriff kann einen Druck begleiten, der von unten kommt und bis zuletzt unsichtbar bleibt: ein Konflikt, harte Kritik, Geldsorgen. Er sagt nichts voraus. Notieren Sie, an wen oder was der Hai Sie erinnerte."
+          },
+          {
+            "question": "Was bedeutet es, wenn ein Hai Sie im Traum umkreist?",
+            "answer": "Ein kreisender Hai passt oft zu dem Gefühl, beobachtet, geprüft oder in die Enge getrieben zu werden, von jemandem, der auf einen schwachen Moment wartet. Fragen Sie sich, wo Sie sich gerade ausgesetzt fühlen und wie ein Weg aus dem Wasser aussähe."
+          },
+          {
+            "question": "Warum träume ich immer wieder von Haien?",
+            "answer": "Wiederkehrende Haiträume können auf einen Film, eine Nachricht oder einen Urlaub am Meer folgen oder in stressigen Phasen zurückkommen. Wecken Sie diese Albträume oft oder stören sie Ihren Schlaf, sprechen Sie mit einer Ärztin oder einem Arzt: Sie sind behandelbar."
+          }
+        ],
+        "documentMetaDescription": "Hai im Traum, der angreift, Sie verfolgt oder umkreist: was die Szene über verborgene Bedrohung, Rivalität und Angst sagen kann, mit Fragen und Beispiel."
       },
       "it": {
         "slug": "squalo",
         "name": "Squalo",
-        "shortDescription": "Uno squalo in acqua può rendere immediati una minaccia percepita, una forte pressione o una presenza dominante. Attaccare, passare tranquillo o restare in profondità crea scene diverse.",
-        "modifiedAt": "2026-07-24",
+        "shortDescription": "Sognare uno squalo comincia spesso con una pinna che taglia la superficie, o un’ombra che gira sotto di te. Viene spesso associato a una minaccia nascosta, a un rivale senza scrupoli o alla paura dell’invisibile; ciò che faceva e dove eri orientano la lettura.",
+        "modifiedAt": "2026-10-08",
         "askYourself": [
-          "Che cosa ha cambiato squalo nella scena?",
-          "Quale emozione è rimasta dopo il risveglio?"
+          "Lo squalo mi attaccava, mi girava intorno o passava soltanto?",
+          "Ero in acque profonde, vicino alla riva o al sicuro su una barca?",
+          "Chi o che cosa sento che mi gira intorno in questo periodo?"
         ],
-        "faq": []
+        "faq": [
+          {
+            "question": "Cosa significa sognare uno squalo?",
+            "answer": "Lo squalo viene spesso associato a una minaccia nascosta, a una concorrenza aggressiva o alla paura dell’ignoto. Che attaccasse, ti girasse intorno o passasse oltre, e dove ti trovavi in acqua, contano più di un significato fisso."
+          },
+          {
+            "question": "Cosa significa sognare di essere attaccati da uno squalo?",
+            "answer": "L’attacco di uno squalo può accompagnare una pressione che arriva dal basso, invisibile fino all’ultimo: un conflitto, una critica dura, una preoccupazione economica. Non predice nulla. Annota a chi o a che cosa ti faceva pensare."
+          },
+          {
+            "question": "Cosa significa sognare uno squalo che ti gira intorno?",
+            "answer": "Uno squalo che ti gira intorno si avvicina spesso alla sensazione di essere osservato, messo alla prova o messo all’angolo da qualcuno che aspetta un momento di debolezza. Chiediti dove ti senti esposto e che cosa vorrebbe dire uscire dall’acqua."
+          },
+          {
+            "question": "Perché sogno spesso gli squali?",
+            "answer": "I sogni ricorrenti di squali possono seguire un film, una notizia o una vacanza al mare, oppure tornare nei periodi di stress. Se questi incubi ti svegliano spesso o rovinano il sonno, parlane con un medico: si possono curare."
+          }
+        ],
+        "documentMetaDescription": "Sognare uno squalo che attacca, ti insegue o ti gira intorno: cosa può dire la scena di minacce nascoste, rivalità e paura, con domande e un esempio di diario."
       },
       "pt": {
         "slug": "tubarao",
