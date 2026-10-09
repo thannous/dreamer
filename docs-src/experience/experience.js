@@ -48,7 +48,24 @@ const revealDreamsAfterIntro = () => {
   html.classList.remove('exp-intro-pending');
 };
 
+// A replayed film starts from the same ink as the first arrival: the hero
+// copy leaves with the sky, then returns letter by letter after the film.
+const hideHeroForIntro = () => {
+  html.classList.add('exp-intro-replay');
+  getHeadline()?.classList.remove('is-revealed');
+};
+
+const showHeroAfterIntro = () => {
+  html.classList.remove('exp-intro-replay');
+  // Two frames: the collapsed letters must be committed before they transition.
+  window.requestAnimationFrame(() => {
+    window.requestAnimationFrame(() => getHeadline()?.classList.add('is-revealed'));
+  });
+};
+
 const holdDreamsForIntro = () => {
+  // Every attempt, replays included, starts behind the ink veil.
+  html.classList.remove('exp-intro-unveiled');
   html.classList.add('exp-intro-pending');
   window.clearTimeout(window.__expIntroGateTimer);
   window.__expIntroGateTimer = window.setTimeout(revealDreamsAfterIntro, 9000);
@@ -1413,9 +1430,13 @@ const initFilm = (isFull) => {
     }
     heroHeader.querySelector('.oh-hero-inner').append(retry);
   };
+  // The hero copy is on screen once the first attempt has ended.
+  let heroShown = false;
   const startIntro = () => {
     if (introPlaying) return Promise.resolve();
     retry?.remove();
+    const replay = heroShown;
+    if (replay) hideHeroForIntro();
     holdDreamsForIntro();
     introPlaying = true;
     video.pause();
@@ -1424,7 +1445,9 @@ const initFilm = (isFull) => {
     return playIntro(film, video, '1280').then((result) => {
       if (result.unavailable) showRetry();
       introPlaying = false;
+      heroShown = true;
       startLoop();
+      if (replay) showHeroAfterIntro();
     });
   };
   replayIntroOnReturn = () => {
@@ -1433,6 +1456,7 @@ const initFilm = (isFull) => {
     startIntro();
   };
   if (!canPlayFilm()) {
+    heroShown = true;
     revealDreamsAfterIntro();
     showRetry();
     return Promise.resolve();
