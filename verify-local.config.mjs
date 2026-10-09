@@ -153,6 +153,14 @@ export default {
     'tools/e2e/run.mjs',
     'scripts/verify-local-config.test.js',
     'scripts/pre-push-hook.test.js',
+    // The suites eas-workflow-contracts runs.
+    'scripts/android-release-smoke-workflow.test.js',
+    'scripts/check-android-release-ref.test.js',
+    'scripts/check-android-release-gates.test.js',
+    // The suites ci-contracts runs.
+    '.circleci/tests/classify-changes.test.sh',
+    '.circleci/tests/shared-build-impact.test.py',
+    '.circleci/tests/fallback-jest.test.sh',
   ],
   checks: [
     // ---- verify:pr, reused by verify:release when the inputs are identical.
