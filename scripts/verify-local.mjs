@@ -283,7 +283,6 @@ function pruneProofs(dir) {
   for (const { name } of files.slice(MAX_PROOF_FILES)) rmSync(path.join(dir, name), { force: true });
 }
 
-/** A passed result for this fingerprint in any proof of the clone. */
 /**
  * A passed result for this fingerprint in any proof of the clone. With
  * `sameTree`, only a result obtained on that exact tree counts.

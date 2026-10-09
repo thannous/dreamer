@@ -27,7 +27,7 @@ const ENGINE = fileURLToPath(new URL('./verify-local.mjs', import.meta.url));
 // sha256 of the engine shared by the five repositories. An edit to
 // scripts/verify-local.mjs in one repository alone fails here: change the
 // engine in all five at once, then update this value in all five.
-const ENGINE_SHA256 = '0e37fe75127ddb44dfee077c6844e935c2fd93550014a91c5b3f44e7e8a7bde4';
+const ENGINE_SHA256 = '04f3b1cd321d4510cd6585e31f805491ce973d6caca536d98f2b7f4f1676827a';
 const scratch = mkdtempSync(path.join(os.tmpdir(), 'verify-local-test-'));
 after(() => rmSync(scratch, { recursive: true, force: true }));
 
@@ -120,7 +120,7 @@ describe('globs', () => {
 });
 
 describe('verify:pr', () => {
-  test('checks the commit in an isolated copy and writes a v2 proof keyed by tree', async () => {
+  test('checks the commit in an isolated copy and writes a proof keyed by tree', async () => {
     const repo = makeRepository();
     repo.git(['checkout', '--quiet', '-b', 'feature']);
     const sha = repo.commit('feature', { 'src/b.js': 'export const b = 1;\n' });
@@ -209,6 +209,21 @@ describe('verify:pr', () => {
     const local = await verify('pr', ['--force'], { ...repo.options, env: { ...repo.env, DB_AVAILABLE: '1' } });
     assert.equal(local.status, 0);
     assert.deepEqual(repo.runs(), ['lint', 'test', 'db']);
+  });
+
+  test('without a known base, a check limited by when runs rather than being skipped', async () => {
+    const repo = makeRepository();
+    repo.git(['checkout', '--quiet', '-b', 'feature']);
+    repo.commit('feature', { 'src/b.js': '1\n' });
+    // No origin/main (a fresh clone of another remote, or a missing fetch):
+    // the changed files are unknown, so nothing is out of scope.
+    repo.git(['update-ref', '-d', 'refs/remotes/origin/main']);
+
+    const { status, proof } = await verify('pr', [], { ...repo.options, env: { ...repo.env, DB_AVAILABLE: '1' } });
+    assert.equal(status, 0);
+    assert.deepEqual(repo.runs(), ['lint', 'test', 'db', 'site-check']);
+    assert.equal(proof.base.sha, null);
+    assert.ok(proof.checks.every((check) => check.result !== 'skipped'));
   });
 
   test('--external only stands in for a specialised check that cannot run here, with evidence for this tree', async () => {
