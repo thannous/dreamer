@@ -1,8 +1,10 @@
-// Checks of the common delivery rule v2 for this repository, read by
-// scripts/verify-local.mjs. The engine and its tests are this repository's own
-// copy: it pins its own ENGINE_SHA256 and verifies it locally (the same file in
-// every repository is recommended, never checked across repositories). This
-// file is data only (no imports).
+// Checks of the common delivery rule (Version commune v5) for this repository,
+// read by scripts/verify-local.mjs. The rule is this repository's own copy,
+// doc_web_interne/docs/regle-commune-livraison.md (its section 13.1 holds what
+// is specific to dreamer). The engine and its tests are this repository's own
+// copy: each repository pins its own ENGINE_SHA256 (below) and verifies it
+// locally; an engine fix is worth porting to the others, but nothing checks
+// that across repositories. This file is data only (no imports).
 //
 //   npm run verify:pr       before a merge: the former pre-push `verify:fast`, split
 //                           into checks, plus the surfaces the PR changed.
@@ -125,6 +127,12 @@ const DREAMER_PASSES = [
   "EXPO_PUBLIC_ONBOARDING_FEATURE_SHEETS_ENABLED=false E2E_WEB_LOCALE=en-US node tools/e2e/run.mjs dreamer web run --grep 'feature sheets stay disabled by default'",
 ].join(' && ');
 
+// sha256 of this repository's own copy of scripts/verify-local.mjs. The engine
+// tests compare the file with it, so an engine edit is a deliberate change of
+// this pin. No other repository is read or compared.
+export const ENGINE_SHA256 =
+  'bcb521d64c7e1cc8872784b50c8101a7614dadee19c89a395e09d04ec231d7b2';
+
 export default {
   mainBranch: 'master',
   commands: { pr: 'npm run verify:pr', release: 'npm run verify:release' },
@@ -137,6 +145,10 @@ export default {
     copy: [],
   },
   setup: [],
+  // https:// URL prefixes of the external CI runs --external may cite, one per
+  // row of the External CI table (doc_web_interne/docs/regle-commune-livraison.md,
+  // section 13.1). That table is "none" here, so only owner-machine evidence counts.
+  externalSources: [],
   // The scripts these checks run: changing them changes what a proof proves,
   // so proof-block flags them for the owner's review like this file.
   deliveryFiles: [
@@ -165,6 +177,13 @@ export default {
     'scripts/android-release-smoke-workflow.test.js',
     'scripts/check-android-release-ref.test.js',
     'scripts/check-android-release-gates.test.js',
+    // The noctalia.app production publish and its guard (site-publish-guard).
+    'scripts/docs-deploy.js',
+    'scripts/docs-deploy.test.ts',
+    // The Cloudflare Pages project, production and preview branches docs-deploy.js reads.
+    'docs-src/config/cloudflare-pages.json',
+    'scripts/check-site-publish-proof.mjs',
+    'scripts/test-check-site-publish-proof.mjs',
     // The suites ci-contracts runs.
     '.circleci/tests/classify-changes.test.sh',
     '.circleci/tests/shared-build-impact.test.py',
@@ -175,7 +194,14 @@ export default {
     {
       name: 'verify-local-engine',
       command: 'node --test scripts/test-verify-local.mjs',
-      inputs: ['scripts/verify-local.mjs', 'scripts/test-verify-local.mjs'],
+      inputs: ['scripts/verify-local.mjs', 'scripts/test-verify-local.mjs', 'verify-local.config.mjs'],
+    },
+    // The production publish guard of noctalia.app (docs:deploy:prod) against
+    // proofs written by this engine in scratch repositories.
+    {
+      name: 'site-publish-guard',
+      command: 'node --test scripts/test-check-site-publish-proof.mjs',
+      inputs: ['scripts/check-site-publish-proof.mjs', 'scripts/test-check-site-publish-proof.mjs', 'scripts/verify-local.mjs', 'verify-local.config.mjs'],
     },
     { name: 'typecheck-app', command: 'npm run typecheck:app', exclude: DOCS },
     { name: 'typecheck-tests', command: 'npm run typecheck:tests', exclude: DOCS },
