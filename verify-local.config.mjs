@@ -4,18 +4,16 @@
 //
 //   npm run verify:pr       before a merge: the former pre-push `verify:fast`, split
 //                           into checks, plus the surfaces the PR changed.
-//   npm run verify:release  before a publish: the PR checks (reused when they passed
-//                           on the same tree) plus the full local validation of
+//   npm run verify:release  before a publish: the PR checks, run again, plus the
+//                           full local validation of
 //                           doc_web_interne/docs/circleci-migration.md.
 //
-// A check without `when` is reused by a later PR run whose inputs are identical,
-// and by a release only when it passed on the same tree (a squash of an
-// up-to-date branch reuses everything). A `when` check runs only
+// A check without `when` is reused by a later PR run whose inputs are identical;
+// a release reuses nothing. A `when` check runs only
 // when the commit changes those paths since origin/master, like the CircleCI
 // affected portfolio; on the published master commit nothing changed, so a
-// surface a release always needs carries releaseAlways (the PR's result is
-// reused when it passed on the same tree), and the release-only checks at the
-// end carry the rest of the full portfolio.
+// surface a release always needs carries releaseAlways, and the release-only
+// checks at the end carry the rest of the full portfolio.
 
 // Markdown and planning documents feed no compiler and no linter.
 const DOCS = ['**/*.md', '**/*.mdx', 'doc_web_interne/**', 'marketing/**', 'specs/**'];

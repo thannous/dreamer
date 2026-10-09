@@ -20,9 +20,8 @@
 // command, its input files, Node and the package manager): for verify:pr, a
 // check whose fingerprint already passed in any proof is reused instead of run
 // again, so a merge of a base that did not touch a check's inputs replays
-// nothing for it. verify:release reuses only results obtained on the same
-// tree (a squash of an up-to-date branch), so a publication never rests on a
-// declared input list.
+// nothing for it. verify:release reuses nothing: every release check runs on
+// the delivered commit, so a publication never rests on an earlier run.
 //
 // deps.mode 'link' links the main checkout's node_modules when the lockfile
 // is the same (workspace links point at the copy); a check with install: true
@@ -32,10 +31,11 @@
 // VERIFY_LOCAL_TREE, VERIFY_LOCAL_ROOT (the main checkout) and
 // VERIFY_LOCAL_COMMON_DIR (the shared git directory, for caches) set, with
 // TMPDIR in a directory of their own removed with the copy, and without the
-// GIT_* variables of a hook. A `when` check runs only if its paths changed
+// GIT_* variables of a hook nor the variables that narrow what a check runs
+// (SCOPE_ENV, plus the config's stripEnv). A `when` check runs only if its paths changed
 // since origin/<main> (a docs-only PR skips typecheck in a fresh clone). On
 // the main commit itself nothing changed: releaseAlways: true makes a release
-// run it anyway, reusing the PR's result when its inputs are the same.
+// run it anyway.
 //
 // Exit codes: 0 passed, 1 failed, 2 incomplete (a required specialised check
 // could not run here; see --external), 64 usage or configuration error.
@@ -180,6 +180,8 @@ export function normaliseConfig(raw) {
     // The repository's own check scripts (hook installer, lint wrappers…):
     // changing them changes what the checks prove, like the config itself.
     deliveryFiles: raw.deliveryFiles ?? [],
+    // Repository variables that narrow what a check runs, stripped like SCOPE_ENV.
+    stripEnv: raw.stripEnv ?? [],
     checks,
     hook: {
       forbidden: raw.hook?.forbidden ?? DEFAULT_FORBIDDEN,
@@ -283,18 +285,13 @@ function pruneProofs(dir) {
   for (const { name } of files.slice(MAX_PROOF_FILES)) rmSync(path.join(dir, name), { force: true });
 }
 
-/**
- * A passed result for this fingerprint in any proof of the clone. With
- * `sameTree`, only a result obtained on that exact tree counts.
- */
-function findReusable(proofs, fingerprint, sameTree = null) {
+/** A passed result for this fingerprint in any proof of the clone. */
+function findReusable(proofs, fingerprint) {
   for (const proof of proofs) {
     for (const check of proof.checks ?? []) {
       // External evidence names one commit: it is never carried to another proof.
       if (check.fingerprint !== fingerprint || check.result !== 'passed' || check.external) continue;
-      const origin = { sha: check.reusedFrom?.sha ?? proof.sha, tree: check.reusedFrom?.tree ?? proof.tree, finishedAt: proof.finishedAt };
-      if (sameTree && origin.tree !== sameTree) continue;
-      return origin;
+      return { sha: check.reusedFrom?.sha ?? proof.sha, tree: check.reusedFrom?.tree ?? proof.tree, finishedAt: proof.finishedAt };
     }
   }
   return null;
@@ -607,6 +604,15 @@ export async function verify(kind, argv = [], {
   const sha = git(['rev-parse', '--verify', `${options.rev}^{commit}`]);
   const tree = git(['rev-parse', `${sha}^{tree}`]);
   const config = await loadConfig(git, sha);
+  // A base for "changed since" or an affected range set by the caller would
+  // narrow what a check runs: the checks never see it. A check that needs one
+  // declares it in its own env.
+  const narrowing = [...new Set([...SCOPE_ENV, ...config.stripEnv])].filter((name) => env[name] !== undefined);
+  if (narrowing.length) {
+    env = { ...env };
+    for (const name of narrowing) delete env[name];
+    log(`${PREFIX} ignored ${narrowing.join(', ')} from the environment: they narrow what a check runs.`);
+  }
   const targets = [...new Set(options.targets)].sort();
   const knownTargets = new Set(config.checks.flatMap((check) => check.targets ?? []));
   for (const target of targets) {
@@ -623,7 +629,8 @@ export async function verify(kind, argv = [], {
     packageManager: packageManagerOf(git, sha, config, env),
     lockfile: lockfileBlob(git, sha, config),
   };
-  const proofs = options.force ? [] : listProofs(commonDir);
+  // A release reuses nothing: every release check runs on the delivered commit.
+  const proofs = options.force || kind === 'release' ? [] : listProofs(commonDir);
   const command = config.commands[kind];
   log(`${PREFIX} ${command} on ${sha} (tree ${tree.slice(0, 12)}, base ${base.ref} ${base.sha ? base.sha.slice(0, 12) : 'unknown'}).`);
 
@@ -667,9 +674,9 @@ export async function verify(kind, argv = [], {
           continue;
         }
       }
-      // A release reuses only results obtained on this exact tree (a squash of
-      // an up-to-date branch); a PR also reuses identical inputs from other trees.
-      const reusable = findReusable(proofs, fingerprint, kind === 'release' ? tree : null);
+      // A PR reuses a result whose inputs are identical, from any tree; a
+      // release has no proofs to reuse.
+      const reusable = findReusable(proofs, fingerprint);
       if (reusable) {
         results.push({ ...entry, result: 'passed', reused: true, reusedFrom: reusable });
         log(`${PREFIX} ${check.name}: reused (same inputs passed on ${reusable.sha.slice(0, 12)}).`);
@@ -1015,6 +1022,13 @@ export const DELIVERY_FILES = [
   '**/tox.ini',
   '**/setup.cfg',
 ];
+
+/**
+ * Variables that narrow what a check runs: a "changed since" base (Jest via
+ * scripts/run-jest-changed.js), Turbo's --affected range, a CI base revision.
+ * A verify run strips them from the caller's environment.
+ */
+export const SCOPE_ENV = ['JEST_CHANGED_SINCE', 'TURBO_SCM_BASE', 'TURBO_SCM_HEAD', 'CI_BASE_REVISION', 'GITHUB_BASE_SHA'];
 
 export const DEFAULT_FORBIDDEN = [
   '**/.env',

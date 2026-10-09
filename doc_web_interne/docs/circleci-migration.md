@@ -75,8 +75,8 @@ contrôle tourne avec l'installation locale de l'auteur.
 
 La commande est `npm run verify:release`, sur le commit visé (par défaut
 `HEAD`, `--rev <sha>` sinon), après `mise exec -- npm ci` à la racine et dans
-`apps/meditation`. Elle vérifie une copie isolée de ce commit, réutilise les
-contrôles de la PR dont les entrées sont identiques, reconstruit le site et
+`apps/meditation`. Elle vérifie une copie isolée de ce commit, relance les
+contrôles de la PR (une publication ne réutilise rien), reconstruit le site et
 l'app web pour ce commit, puis lance les commandes `run` du portefeuille
 `full` de `.circleci/continue.yml` (contrôles `release` de
 `verify-local.config.mjs` ; `scripts/verify-local-config.test.js` vérifie

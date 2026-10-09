@@ -27,7 +27,7 @@ const ENGINE = fileURLToPath(new URL('./verify-local.mjs', import.meta.url));
 // sha256 of the engine shared by the five repositories. An edit to
 // scripts/verify-local.mjs in one repository alone fails here: change the
 // engine in all five at once, then update this value in all five.
-const ENGINE_SHA256 = 'c5c71b31f518c0fc49a8e2da0a5ed1c4fdc626799e0435ceff4fe3561cedbbbd';
+const ENGINE_SHA256 = '3d6c57f7b1b64d469301da2e108a11328bcf980a54a10d4e0cc5bcf82e32f4a2';
 const scratch = mkdtempSync(path.join(os.tmpdir(), 'verify-local-test-'));
 after(() => rmSync(scratch, { recursive: true, force: true }));
 
@@ -311,10 +311,28 @@ describe('verify:pr', () => {
     });
     assert.equal(result.status, 0, result.stdout + result.stderr);
   });
+
+  test('variables that narrow what a check runs are stripped from the environment', async () => {
+    const repo = makeRepository();
+    repo.git(['checkout', '--quiet', '-b', 'feature']);
+    const config = readFileSync(path.join(repo.work, 'verify-local.config.mjs'), 'utf8')
+      .replace("mainBranch: 'main',", "mainBranch: 'main',\n  stripEnv: ['MY_SCOPE'],")
+      .replace(
+        "command: 'echo lint >> \"$RUN_LOG\"'",
+        "command: 'echo \"lint:${JEST_CHANGED_SINCE-unset}:${TURBO_SCM_HEAD-unset}:${MY_SCOPE-unset}:${TURBO_SCM_BASE-unset}\" >> \"$RUN_LOG\"', env: { TURBO_SCM_BASE: 'origin/main' }",
+      );
+    repo.commit('scope', { 'verify-local.config.mjs': config });
+    const narrowed = { JEST_CHANGED_SINCE: 'HEAD', TURBO_SCM_HEAD: 'HEAD', TURBO_SCM_BASE: 'HEAD', MY_SCOPE: 'x' };
+    const { status } = await verify('pr', [], { ...repo.options, env: { ...repo.env, ...narrowed } });
+    assert.equal(status, 0);
+    // A check's own env still applies: here it sets TURBO_SCM_BASE itself.
+    assert.ok(repo.runs().includes('lint:unset:unset:unset:origin/main'), repo.runs().join('\n'));
+    assert.ok(repo.lines.some((line) => line.includes('ignored JEST_CHANGED_SINCE, TURBO_SCM_BASE, TURBO_SCM_HEAD, MY_SCOPE from the environment')));
+  });
 });
 
 describe('verify:release and the deploy guard', () => {
-  test('release reuses identical checks, reruns per-commit ones, and covers the requested targets', async () => {
+  test('release runs every check again, even one the PR proof of the same tree passed, and covers the requested targets', async () => {
     const repo = makeRepository();
     repo.git(['checkout', '--quiet', '-b', 'feature']);
     const head = repo.commit('feature', { 'src/b.js': '1\n' });
@@ -323,8 +341,8 @@ describe('verify:release and the deploy guard', () => {
 
     const release = await verify('release', ['--target', 'site'], repo.options);
     assert.equal(release.status, 0);
-    // site-check was out of scope for the PR, so the release runs it once.
-    assert.deepEqual(repo.runs(), ['site-check', `build:${head}`, 'site']);
+    assert.deepEqual(repo.runs(), ['lint', 'test', 'site-check', `build:${head}`, 'site']);
+    assert.ok(release.proof.checks.every((check) => !check.reused), 'a release reuses nothing');
     assert.deepEqual(release.proof.targets, ['site']);
 
     // A PR run on the same tree keeps the release proof.
@@ -390,16 +408,19 @@ describe('verify:release and the deploy guard', () => {
     assert.match(proof.packageManager ?? '', /^npm@\d+\./);
   });
 
-  test('a release replays a result that only ever passed on another tree', async () => {
+  test('a release runs again a check whose identical inputs passed on another tree', async () => {
     const repo = makeRepository();
     repo.git(['checkout', '--quiet', '-b', 'feature']);
     repo.commit('feature', { 'src/b.js': '1\n' });
     assert.equal((await verify('pr', [], repo.options)).status, 0);
     repo.commit('docs', { 'docs/readme.md': '# more\n' });
     repo.clearRuns();
+    assert.equal((await verify('pr', [], repo.options)).status, 0);
+    assert.ok(!repo.runs().includes('lint'), 'a PR reuses lint: its inputs (src/**) did not change');
+    repo.clearRuns();
     const release = await verify('release', [], repo.options);
     assert.equal(release.status, 0);
-    assert.ok(repo.runs().includes('lint'), 'lint runs again: its earlier pass was on another tree');
+    assert.ok(repo.runs().includes('lint'), 'a release runs lint again');
   });
 
   test('a failed or incomplete release run never replaces a passed PR proof', async () => {
@@ -419,25 +440,27 @@ describe('verify:release and the deploy guard', () => {
     repo.clearRuns();
     const passing = await verify('release', [], repo.options);
     assert.equal(passing.status, 0);
-    assert.deepEqual(repo.runs(), [`build:${head}`], 'the failed build runs again, the PR checks are reused');
+    assert.deepEqual(repo.runs(), ['lint', 'test', 'site-check', `build:${head}`], 'every release check runs again');
     assert.equal(readProof(commonDir, tree).kind, 'release');
   });
 
-  test('an incomplete run for one more target never replaces a passed release proof', async () => {
+  test('a failed run for one more target never replaces a passed release proof', async () => {
     const repo = makeRepository();
     repo.git(['checkout', '--quiet', '-b', 'feature']);
     const head = repo.commit('feature', { 'src/b.js': '1\n' });
     assert.equal((await verify('release', [], repo.options)).status, 0);
     const failing = await verify('release', ['--target', 'site'], { ...repo.options, env: { ...repo.env, FAIL_BUILD: '1' } });
-    assert.equal(failing.status, 0, 'build is reused, site-e2e passes');
+    assert.equal(failing.status, 1, 'the build runs again and fails');
     const commonDir = path.join(repo.work, '.git');
     const tree = repo.git(['rev-parse', `${head}^{tree}`]);
-    assert.deepEqual(readProof(commonDir, tree).targets, ['site']);
+    const kept = readProof(commonDir, tree);
+    assert.equal(kept.result, 'passed');
+    assert.deepEqual(kept.targets, []);
+    assert.ok(existsSync(path.join(commonDir, 'verify-proofs', `${tree}.release-attempt.json`)));
 
-    // A rerun that only reuses this tree's results keeps the proof and its counts.
-    const before = readFileSync(path.join(commonDir, 'verify-proofs', `${tree}.json`), 'utf8');
+    // A passing run for the target extends the proof of the same commit.
     assert.equal((await verify('release', ['--target', 'site'], repo.options)).status, 0);
-    assert.equal(readFileSync(path.join(commonDir, 'verify-proofs', `${tree}.json`), 'utf8'), before);
+    assert.deepEqual(readProof(commonDir, tree).targets, ['site']);
   });
 
   test('a check that needs a real install replaces the linked node_modules first', async () => {
@@ -471,7 +494,7 @@ describe('verify:release and the deploy guard', () => {
 
     repo.clearRuns();
     assert.equal((await verify('release', [], repo.options)).status, 0);
-    assert.deepEqual(repo.runs(), [`build:${squash}`], 'only the per-commit build runs again');
+    assert.deepEqual(repo.runs(), ['lint', 'test', 'site-check', `build:${squash}`], 'every release check runs again on the delivered commit');
     assert.deepEqual(checkReleaseProof({ cwd: repo.work, env: repo.env, fetch: false }).failures, []);
     assert.deepEqual(
       checkReleaseProof({ cwd: repo.work, env: repo.env, fetch: false, targets: ['site'] }).failures.map((failure) => failure.check),
