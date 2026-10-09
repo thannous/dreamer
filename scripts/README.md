@@ -9,7 +9,7 @@ connects these commands to implementation paths and current runbooks.
 | Family | Primary commands | Side effects and prerequisites |
 | --- | --- | --- |
 | Development | `start`, `start:*`, `web`, `android`, `ios` | Runtime only. Environment profiles are loaded in memory and never copied to `.env.local`. |
-| Quality | `lint`, `lint:scripts`, `typecheck:*`, `test:*` | Read-only except normal test caches and artifacts. |
+| Quality | `lint`, `lint:scripts`, `typecheck:*`, `test:*`, `verify:fast` | Read-only except normal test caches and artifacts. `verify:fast` (`test:prepush`, `lint`, `lint:scripts`) is what the `.githooks/pre-push` hook runs; `prepare` installs that hook by setting the local `core.hooksPath`. |
 | Site | `docs:build`, `docs:check`, `docs:release-check`, `docs:deploy:*` | `docs:build` regenerates ignored local output. Cloudflare rebuilds the same output from sources; deploy commands publish externally and require explicit intent. |
 | Content | `content:*`, `validate-seo`, `generate-sitemap` | Manifest commands without `:check` and sitemap generation write generated files. |
 | SEO | `seo:gsc:export`, `seo:backlinks:check` | GSC export writes a dated external-data report; backlink check fetches the tracked public referring pages but never rewrites the CSV. |

@@ -5,7 +5,7 @@
   "lang": "es",
   "slug": "suenos-ser-perseguido",
   "title": "Soñar que te persiguen: persecución y huida | Noctalia",
-  "description": "¿Sueñas que te persiguen y huyes? Explora quién te sigue, si logras escapar y qué sientes, con escenarios y preguntas para reflexionar sin predicciones.",
+  "description": "Soñar que te persiguen: por qué es tan común, qué pueden decir el perseguidor y el final de la escena, y qué hacer cuando la pesadilla se repite.",
   "robots": "max-image-preview:large",
   "themeColor": "#0a0514",
   "htmlClass": "scroll-smooth blog-article",
@@ -14,24 +14,24 @@
   "mainClass": "pt-32 pb-20 px-4",
   "ogType": "article",
   "ogTitle": "Soñar que te persiguen: persecución y huida | Noctalia",
-  "ogDescription": "¿Sueñas que te persiguen y huyes? Explora quién te sigue, si logras escapar y qué sientes, con escenarios y preguntas para reflexionar sin predicciones.",
+  "ogDescription": "¿Quién te perseguía y cómo terminó la escena? Lo que puede reflejar un sueño de persecución y qué ayuda cuando se repite.",
   "ogImage": "https://noctalia.app/img/blog/being-chased-dreams.webp",
   "ogImageAlt": "Pasillo oscuro que ilustra la vivencia de ser perseguido",
   "twitterCard": "summary_large_image",
   "twitterTitle": "Soñar que te persiguen: persecución y huida | Noctalia",
-  "twitterDescription": "¿Sueñas que te persiguen y huyes? Explora quién te sigue, si logras escapar y qué sientes, con escenarios y preguntas para reflexionar sin predicciones.",
+  "twitterDescription": "Soñar que te persiguen: por qué pasa tan a menudo y qué puede estar señalando la huida.",
   "twitterImage": "https://noctalia.app/img/blog/being-chased-dreams.webp",
   "twitterImageAlt": "Pasillo oscuro que ilustra la vivencia de ser perseguido",
   "publishedTime": "2025-12-11",
-  "modifiedTime": "2026-09-12",
+  "modifiedTime": "2026-10-09",
   "author": "Thanh Chau",
   "prevPath": "/es/blog/suenos-premonitorios-ciencia",
   "nextPath": "/es/blog/suenos-de-muerte",
   "preloadImage": "/img/blog/being-chased-dreams.webp",
   "jsonLd": [
-    "{\n    \"@context\": \"https://schema.org\",\n    \"@type\": \"BlogPosting\",\n    \"headline\": \"Soñar que te persiguen: persecución y huida\",\n    \"description\": \"¿Sueñas que te persiguen y huyes? Explora quién te sigue, si logras escapar y qué sientes, con escenarios y preguntas para reflexionar sin predicciones.\",\n    \"image\": {\n        \"@type\": \"ImageObject\",\n        \"url\": \"https://noctalia.app/img/blog/being-chased-dreams.webp\",\n        \"width\": 1200,\n        \"height\": 630\n    },\n    \"author\": [\n        {\n            \"@type\": \"Person\",\n            \"@id\": \"https://noctalia.app/es/sobre#person\",\n            \"name\": \"Thanh Chau\",\n            \"jobTitle\": \"Founder & Publication Director\",\n            \"url\": \"https://noctalia.app/es/sobre\",\n            \"worksFor\": {\n                \"@type\": \"Organization\",\n                \"@id\": \"https://noctalia.app/#organization\",\n                \"name\": \"Noctalia\",\n                \"url\": \"https://noctalia.app\"\n            }\n        },\n        {\n            \"@type\": \"Organization\",\n            \"@id\": \"https://noctalia.app/#organization\",\n            \"name\": \"Noctalia\",\n            \"url\": \"https://noctalia.app\",\n            \"logo\": {\n                \"@type\": \"ImageObject\",\n                \"url\": \"https://noctalia.app/logo/logo_noctalia.png\"\n            }\n        }\n    ],\n    \"publisher\": {\n        \"@type\": \"Organization\",\n        \"name\": \"Noctalia\",\n        \"url\": \"https://noctalia.app\",\n        \"logo\": {\n            \"@type\": \"ImageObject\",\n            \"url\": \"https://noctalia.app/logo/logo_noctalia.png\"\n        }\n    },\n    \"datePublished\": \"2025-12-11\",\n    \"dateModified\": \"2026-09-12\",\n    \"mainEntityOfPage\": {\n        \"@type\": \"WebPage\",\n        \"@id\": \"https://noctalia.app/es/blog/suenos-ser-perseguido\"\n    },\n    \"inLanguage\": \"es\",\n    \"isAccessibleForFree\": true,\n    \"wordCount\": 1910,\n    \"timeRequired\": \"PT9M\",\n    \"url\": \"https://noctalia.app/es/blog/suenos-ser-perseguido\"\n}",
-    "{\n    \"@context\": \"https://schema.org\",\n    \"@type\": \"FAQPage\",\n    \"mainEntity\": [\n        {\n            \"@type\": \"Question\",\n            \"name\": \"¿Qué significa soñar que te persiguen?\",\n            \"acceptedAnswer\": {\n                \"@type\": \"Answer\",\n                \"text\": \"No tiene un significado único ni permite predecir un peligro. Puedes explorar quién te persigue, qué intentas hacer y qué emoción recuerdas. Relacionarlo con una preocupación actual es una asociación personal, no una conclusión demostrada por el sueño.\"\n            }\n        },\n        {\n            \"@type\": \"Question\",\n            \"name\": \"¿Qué significa soñar que una persona conocida te persigue?\",\n            \"acceptedAnswer\": {\n                \"@type\": \"Answer\",\n                \"text\": \"Su aparición no prueba un conflicto oculto ni una intención de hacerte daño. Recuerda qué ocurría y cómo te sentías dentro del sueño. Para valorar esa relación en la vida real, apóyate en hechos y conversaciones, no en el papel de esa persona en un sueño.\"\n            }\n        },\n        {\n            \"@type\": \"Question\",\n            \"name\": \"¿Por qué sueño que me persiguen y no puedo correr?\",\n            \"acceptedAnswer\": {\n                \"@type\": \"Answer\",\n                \"text\": \"El relato por sí solo no permite identificar una causa. Puedes describir si tus piernas pesaban, había obstáculos o te movías despacio, y qué sentías. Esa escena no demuestra que estés bloqueado en tu vida.\"\n            }\n        },\n        {\n            \"@type\": \"Question\",\n            \"name\": \"¿Qué hago si los sueños de persecución se repiten?\",\n            \"acceptedAnswer\": {\n                \"@type\": \"Answer\",\n                \"text\": \"Si quieres, anota cuándo ocurren y cómo afectan a tu descanso, sin forzar una interpretación. Si te despiertan repetidamente, te dan miedo a dormir o afectan a tu vida diaria, consulta con un profesional sanitario. Llevar un diario es opcional y no sustituye un tratamiento.\"\n            }\n        }\n    ]\n}",
-    "{\n    \"@context\": \"https://schema.org\",\n    \"@type\": \"BreadcrumbList\",\n    \"itemListElement\": [\n        {\n            \"@type\": \"ListItem\",\n            \"position\": 1,\n            \"name\": \"Inicio\",\n            \"item\": \"https://noctalia.app/es/\"\n        },\n        {\n            \"@type\": \"ListItem\",\n            \"position\": 2,\n            \"name\": \"Recursos\",\n            \"item\": \"https://noctalia.app/es/blog/\"\n        },\n        {\n            \"@type\": \"ListItem\",\n            \"position\": 3,\n            \"name\": \"Sueños de Ser Perseguido\",\n            \"item\": \"https://noctalia.app/es/blog/suenos-ser-perseguido\"\n        }\n    ]\n}"
+    "{\n    \"@context\": \"https://schema.org\",\n    \"@type\": \"BlogPosting\",\n    \"headline\": \"Soñar que te persiguen: por qué es tan frecuente y qué puede significar\",\n    \"description\": \"Soñar que te persiguen: por qué es tan común, qué pueden decir el perseguidor y el final de la escena, y qué hacer cuando la pesadilla se repite.\",\n    \"image\": {\n        \"@type\": \"ImageObject\",\n        \"url\": \"https://noctalia.app/img/blog/being-chased-dreams.webp\",\n        \"width\": 1200,\n        \"height\": 630\n    },\n    \"author\": [\n        {\n            \"@type\": \"Person\",\n            \"@id\": \"https://noctalia.app/es/sobre#person\",\n            \"name\": \"Thanh Chau\",\n            \"jobTitle\": \"Founder & Publication Director\",\n            \"url\": \"https://noctalia.app/es/sobre\",\n            \"worksFor\": {\n                \"@type\": \"Organization\",\n                \"@id\": \"https://noctalia.app/#organization\",\n                \"name\": \"Noctalia\",\n                \"url\": \"https://noctalia.app\"\n            }\n        },\n        {\n            \"@type\": \"Organization\",\n            \"@id\": \"https://noctalia.app/#organization\",\n            \"name\": \"Noctalia\",\n            \"url\": \"https://noctalia.app\",\n            \"logo\": {\n                \"@type\": \"ImageObject\",\n                \"url\": \"https://noctalia.app/logo/logo_noctalia.png\"\n            }\n        }\n    ],\n    \"publisher\": {\n        \"@type\": \"Organization\",\n        \"name\": \"Noctalia\",\n        \"url\": \"https://noctalia.app\",\n        \"logo\": {\n            \"@type\": \"ImageObject\",\n            \"url\": \"https://noctalia.app/logo/logo_noctalia.png\"\n        }\n    },\n    \"datePublished\": \"2025-12-11\",\n    \"dateModified\": \"2026-10-09\",\n    \"mainEntityOfPage\": {\n        \"@type\": \"WebPage\",\n        \"@id\": \"https://noctalia.app/es/blog/suenos-ser-perseguido\"\n    },\n    \"inLanguage\": \"es\",\n    \"isAccessibleForFree\": true,\n    \"wordCount\": 2379,\n    \"timeRequired\": \"PT11M\",\n    \"url\": \"https://noctalia.app/es/blog/suenos-ser-perseguido\"\n}",
+    "{\n    \"@context\": \"https://schema.org\",\n    \"@type\": \"FAQPage\",\n    \"mainEntity\": [\n        {\n            \"@type\": \"Question\",\n            \"name\": \"¿Qué significa soñar que te persiguen?\",\n            \"acceptedAnswer\": {\n                \"@type\": \"Answer\",\n                \"text\": \"No tiene un significado único. Suele acompañar una época de estrés, la presión de otras personas o algo que vas aplazando. Quién te perseguía, qué sentiste y cómo terminó la escena son las mejores pistas para encontrar la lectura que encaja contigo.\"\n            }\n        },\n        {\n            \"@type\": \"Question\",\n            \"name\": \"¿Por qué son tan comunes los sueños de persecución?\",\n            \"acceptedAnswer\": {\n                \"@type\": \"Answer\",\n                \"text\": \"En una encuesta a 1.181 universitarios canadienses, ser perseguido fue uno de los cuatro temas oníricos que mencionaron más del 60 % de los participantes. Una hipótesis plantea que soñar ensaya en parte las amenazas, y la persecución es una de las más simples. Es una idea todavía debatida.\"\n            }\n        },\n        {\n            \"@type\": \"Question\",\n            \"name\": \"¿Soñar que te persiguen anuncia algo?\",\n            \"acceptedAnswer\": {\n                \"@type\": \"Answer\",\n                \"text\": \"No. Un sueño de persecución no anuncia peligros, agresiones ni fracasos. Pone en escena una emoción o una preocupación actual, y no dice nada de las intenciones reales de quien te perseguía.\"\n            }\n        },\n        {\n            \"@type\": \"Question\",\n            \"name\": \"¿Qué hago si los sueños de persecución se repiten?\",\n            \"acceptedAnswer\": {\n                \"@type\": \"Answer\",\n                \"text\": \"Empieza por lo que te pesa durante el día y cuida tus noches. Si se repite la misma persecución, reescribir el final y ensayarlo despierto puede ayudar. Si las pesadillas aparecen varias veces por semana o estropean tu descanso, consulta con un médico o un especialista del sueño.\"\n            }\n        }\n    ]\n}",
+    "{\n    \"@context\": \"https://schema.org\",\n    \"@type\": \"BreadcrumbList\",\n    \"itemListElement\": [\n        {\n            \"@type\": \"ListItem\",\n            \"position\": 1,\n            \"name\": \"Inicio\",\n            \"item\": \"https://noctalia.app/es/\"\n        },\n        {\n            \"@type\": \"ListItem\",\n            \"position\": 2,\n            \"name\": \"Recursos\",\n            \"item\": \"https://noctalia.app/es/blog/\"\n        },\n        {\n            \"@type\": \"ListItem\",\n            \"position\": 3,\n            \"name\": \"Soñar que te persiguen\",\n            \"item\": \"https://noctalia.app/es/blog/suenos-ser-perseguido\"\n        }\n    ]\n}"
   ],
   "activeNav": "resources"
 }
@@ -51,7 +51,7 @@
 </li>
 <li class="text-purple-400">/</li>
 <li itemprop="itemListElement" itemscope="" itemtype="https://schema.org/ListItem">
-<span class="text-dream-cream" itemprop="name">Sueños de Ser Perseguido</span>
+<span class="text-dream-cream" itemprop="name">Soñar que te persiguen</span>
 <meta content="3" itemprop="position">
 </li>
 </ol>
@@ -63,13 +63,13 @@
 <a class="text-xs font-mono text-purple-200/70 border border-white/10 rounded-full px-3 py-1 hover:text-white hover:border-dream-salmon/30 transition-colors" href="significado-de-suenos">Tema: Significado de sueños</a>
 <span aria-hidden="true" class="w-full sm:hidden"></span>
 <span class="text-sm text-purple-300/60">Publicado el 11 de diciembre de 2025</span>
-<span class="text-sm text-purple-300/60">9 min de lectura</span>
+<span class="text-sm text-purple-300/60">11 min de lectura</span>
 </div>
 <h1 class="font-serif text-3xl md:text-5xl mb-6 text-transparent bg-clip-text bg-gradient-to-b from-white via-dream-lavender to-purple-400/50 leading-tight">
-                    Soñar que te persiguen: persecución y huida
+                    Soñar que te persiguen: por qué es tan frecuente y qué puede significar
                 </h1>
 <p class="text-lg text-purple-200/80 leading-relaxed">
-Corres por un pasillo, buscas dónde esconderte o notas que tus piernas no avanzan. Soñar que te persiguen puede dejarte con una sensación intensa al despertar. Para explorar un sueño de persecución y huida, empieza por lo que recuerdas: quién te seguía, qué hiciste y cómo terminó la escena.
+Pasos a tu espalda, un pasillo que no se acaba, las piernas como de plomo justo cuando tienes que correr. Te despiertas con el corazón a mil, convencido de que estaban a punto de atraparte. Soñar que te persiguen es uno de los sueños más compartidos. No predice nada, pero quién te perseguía y cómo terminó la escena merecen una mirada atenta.
 </p>
 </header>
 <!-- Author Byline (E-E-A-T) -->
@@ -86,7 +86,7 @@ Corres por un pasillo, buscas dónde esconderte o notas que tus piernas no avanz
 <!-- Quick Answer (AI SEO) -->
 <section class="glass-panel rounded-2xl p-6 mb-8 border border-dream-salmon/20 bg-white/5" aria-labelledby="quick-answer-title">
     <h2 id="quick-answer-title" class="font-serif text-xl text-dream-cream mb-3">Respuesta rápida</h2>
-    <p class="text-purple-100/80 leading-relaxed">Soñar que te persiguen no tiene un significado único ni permite predecir un peligro. Fíjate en quién te persigue, si huyes o te escondes y qué emoción recuerdas. Puedes explorar una relación con alguna preocupación actual si tiene sentido para ti, sin darla por demostrada.</p>
+    <p class="text-purple-100/80 leading-relaxed">Soñar que te persiguen es muy común y no es un aviso. Suele aparecer en épocas de estrés, de presión o cuando hay algo pendiente que vas aplazando, pero no tiene un significado único. Quién te perseguía, qué sentiste y cómo terminó la escena son tus mejores pistas. Si estas pesadillas se repiten y estropean tu descanso, consulta con un médico: existen tratamientos eficaces.</p>
 </section>
 <!-- Featured Image -->
 <figure class="mb-12 rounded-2xl overflow-hidden">
@@ -95,24 +95,33 @@ Corres por un pasillo, buscas dónde esconderte o notas que tus piernas no avanz
 <!-- Table of Contents -->
 <nav class="glass-panel rounded-2xl p-6 mb-12">
 <h2 class="font-serif text-lg text-dream-cream mb-4 flex items-center gap-2">
-<i class="w-5 h-5 text-dream-salmon" data-lucide="list"></i> Tabla de contenidos
+<i class="w-5 h-5 text-dream-salmon" data-lucide="list"></i> Índice
                 </h2>
 <ol class="space-y-2 text-sm text-purple-200/70">
-<li><a class="toc-link block" href="#prevalencia">1. Cómo explorar un sueño de persecución</a></li>
-<li><a class="toc-link block" href="#perseguidores">2. ¿Quién o qué te persigue?</a></li>
-<li><a class="toc-link block" href="#interpretaciones">3. Preguntas para relacionarlo con tu vida</a></li>
-<li><a class="toc-link block" href="#psicología">4. Qué aporta la investigación</a></li>
-<li><a class="toc-link block" href="#variaciones">5. Huir, esconderse o no poder correr</a></li>
-<li><a class="toc-link block" href="#accion">6. Qué hacer si el sueño te inquieta</a></li>
+<li><a class="toc-link block" href="#prevalencia">1. ¿Por qué es tan frecuente soñar que te persiguen?</a></li>
+<li><a class="toc-link block" href="#perseguidores">2. ¿Quién te perseguía?</a></li>
+<li><a class="toc-link block" href="#variaciones">3. ¿Cómo fue la persecución?</a></li>
+<li><a class="toc-link block" href="#interpretaciones">4. Lo que puede reflejar un sueño de persecución</a></li>
+<li><a class="toc-link block" href="#psicología">5. Lo que dicen la psicología y la investigación</a></li>
+<li><a class="toc-link block" href="#accion">6. Qué hacer si estos sueños se repiten</a></li>
 </ol>
 </nav>
 <!-- Article Content -->
 <div class="prose max-w-none text-gray-300">
-<h2 id="prevalencia">Cómo explorar un sueño de persecución</h2>
-<p>La escena de <a class="text-dream-salmon hover:underline" href="../simbolos/persecucion">ser perseguido</a> invita a preguntarse de qué se está huyendo. Esa pregunta puede servir para reflexionar, pero <strong>el sueño por sí solo no demuestra que estés evitando un problema</strong>. Tampoco permite deducir un diagnóstico o las intenciones de otra persona.</p>
-<p>Separa tres elementos al recordarlo: lo que ocurrió, lo que sentiste y las asociaciones que te vienen ahora. Por ejemplo, «corría por una calle y no encontraba la salida» describe la escena; «sentía urgencia» nombra una emoción; «me recuerda a una fecha límite» es una posible asociación. Puedes dejar esta última parte en blanco.</p>
-<h2 id="perseguidores">¿Quién o qué te persigue en el sueño?</h2>
-<p>Estos escenarios son puntos de partida para recordar detalles. No son equivalencias fijas entre un perseguidor y un significado psicológico.</p>
+<h2 id="prevalencia">¿Por qué es tan frecuente soñar que te persiguen?</h2>
+<p>
+                    Si has soñado que te perseguían, no eres ni mucho menos el único. En una encuesta a 1.181 universitarios canadienses, <a class="text-dream-salmon hover:underline" href="../simbolos/persecucion">ser perseguido</a> fue uno de los cuatro temas oníricos que mencionaron más del 60 % de los participantes, junto con caer, la escuela y el sexo (<a class="text-dream-salmon hover:underline" href="https://asdreams.org/journal/issues/asdj13-4.htm" rel="nofollow noopener noreferrer" target="_blank">Nielsen, Zadra y otros, 2003</a>). Tener este sueño no dice nada raro de ti.
+                </p>
+<p>
+                    ¿Por qué precisamente esta escena? Nadie lo sabe con certeza. Una hipótesis conocida sostiene que soñar sirve en parte para ensayar amenazas, y pocas amenazas son tan antiguas y tan simples como algo que corre detrás de ti. Volvemos a ella más abajo, porque sigue siendo una hipótesis.
+                </p>
+<p>
+                    Lo que sí se observa con más facilidad es el contexto. Mucha gente nota que estos sueños se concentran en semanas cargadas o tensas: una fecha límite, un conflicto, una decisión que no termina de tomar. Es una pista para comprobar en tus propias noches, no una regla.
+                </p>
+<h2 id="perseguidores">¿Quién te perseguía?</h2>
+<p>
+                    El perseguidor suele ser el detalle que mejor se recuerda. Estas lecturas no son definiciones: son pistas para contrastar con lo que sentiste y con lo que estás viviendo.
+                </p>
 </div>
 <!-- Dream Variations Cards -->
 <div class="grid md:grid-cols-2 gap-6 my-12">
@@ -121,22 +130,22 @@ Corres por un pasillo, buscas dónde esconderte o notas que tus piernas no avanz
 <div class="p-2 bg-dream-salmon/10 rounded-lg">
 <i class="w-5 h-5 text-dream-salmon" data-lucide="user-x"></i>
 </div>
-<h3 class="font-serif text-lg text-dream-cream">Figura desconocida</h3>
+<h3 class="font-serif text-lg text-dream-cream">Un desconocido sin rostro</h3>
 </div>
 <p class="text-sm text-gray-300">
-¿Veías su rostro o solo notabas su presencia? Anota qué hacía que la escena pareciera amenazante: la distancia, los pasos o no saber quién era. No necesitas atribuir esa figura a alguien real.
-</p>
+                        Solo viste una silueta, una presencia. Un perseguidor desconocido suele acompañar una <strong>inquietud difícil de nombrar</strong>: notas presión sin saber de dónde viene. ¿Qué lo hacía tan inquietante: su rapidez, su silencio, no saber quién era?
+                    </p>
 </div>
 <div class="dream-card glass-panel rounded-xl p-6 border border-transparent">
 <div class="flex items-center gap-3 mb-4">
 <div class="p-2 bg-dream-salmon/10 rounded-lg">
 <i class="w-5 h-5 text-dream-salmon" data-lucide="dog"></i>
 </div>
-<h3 class="font-serif text-lg text-dream-cream">Animales</h3>
+<h3 class="font-serif text-lg text-dream-cream">Un animal</h3>
 </div>
 <p class="text-sm text-gray-300">
-Si te perseguía un <a class="text-dream-salmon hover:underline" href="../simbolos/perro">perro</a> u otro animal, recuerda su tamaño, su conducta y tu propia reacción. ¿Te resultaba familiar? Tus experiencias con ese animal pueden orientar una asociación personal, sin imponerle un símbolo universal.
-</p>
+                        ¿Un <a class="text-dream-salmon hover:underline" href="../simbolos/perro">perro</a>, un <a class="text-dream-salmon hover:underline" href="../simbolos/lobo">lobo</a>, un <a class="text-dream-salmon hover:underline" href="../simbolos/oso">oso</a>? Parte de tu propia historia con ese animal. Que te persiga un animal puede reflejar una <strong>emoción intensa y difícil de contener</strong>, como la rabia o el miedo. Pero el perro que adoras no dice lo mismo que el que te mordió de pequeño.
+                    </p>
 </div>
 <div class="dream-card glass-panel rounded-xl p-6 border border-transparent">
 <div class="flex items-center gap-3 mb-4">
@@ -146,30 +155,30 @@ Si te perseguía un <a class="text-dream-salmon hover:underline" href="../simbol
 <h3 class="font-serif text-lg text-dream-cream">Alguien que conoces</h3>
 </div>
 <p class="text-sm text-gray-300">
-¿Qué recuerdas de esa persona dentro del sueño y qué emoción te dejó? Su aparición no prueba un conflicto oculto ni una intención de hacerte daño. Para valorar una relación real, apóyate en hechos de la vida despierta.
-</p>
+                        Un compañero de trabajo, tu ex, un familiar. El sueño puede reflejar una <strong>tensión o unas expectativas</strong> ligadas a esa persona, o un rasgo suyo que te incomoda. No prueba que quiera hacerte daño: valora la relación real por lo que ocurre en ella.
+                    </p>
 </div>
 <div class="dream-card glass-panel rounded-xl p-6 border border-transparent">
 <div class="flex items-center gap-3 mb-4">
 <div class="p-2 bg-dream-salmon/10 rounded-lg">
 <i class="w-5 h-5 text-dream-salmon" data-lucide="ghost"></i>
 </div>
-<h3 class="font-serif text-lg text-dream-cream">Monstruos o seres sobrenaturales</h3>
+<h3 class="font-serif text-lg text-dream-cream">Un monstruo o una criatura</h3>
 </div>
 <p class="text-sm text-gray-300">
-Describe la criatura y el ambiente sin buscar una explicación obligatoria. ¿Te recordaban a una película, una historia o una imagen reciente? La intensidad del miedo no permite medir la gravedad de un problema personal.
-</p>
+                        Un <a class="text-dream-salmon hover:underline" href="../simbolos/monstruo">monstruo</a> suele representar algo que sientes <strong>demasiado grande para ti</strong>. También puede salir directamente de una película o una serie que viste hace poco. Anota las dos cosas, y no midas la gravedad de tus problemas por lo terrible de la criatura.
+                    </p>
 </div>
 <div class="dream-card glass-panel rounded-xl p-6 border border-transparent">
 <div class="flex items-center gap-3 mb-4">
 <div class="p-2 bg-dream-salmon/10 rounded-lg">
 <i class="w-5 h-5 text-dream-salmon" data-lucide="badge"></i>
 </div>
-<h3 class="font-serif text-lg text-dream-cream">Figuras de autoridad</h3>
+<h3 class="font-serif text-lg text-dream-cream">La policía o un jefe</h3>
 </div>
 <p class="text-sm text-gray-300">
-Si te seguían policías, jefes o familiares, ¿había una orden, una acusación o solo una carrera? Puedes preguntarte por tus asociaciones con las normas o las expectativas, sin concluir que el sueño revela culpa.
-</p>
+                        Que te persiga la <a class="text-dream-salmon hover:underline" href="../simbolos/policia">policía</a>, un jefe o tus padres suele remitir a las <strong>normas, el juicio ajeno o el miedo a las consecuencias</strong>. ¿Sabías por qué huías? Sentirte culpable en el sueño no demuestra que hayas hecho nada malo.
+                    </p>
 </div>
 <div class="dream-card glass-panel rounded-xl p-6 border border-transparent">
 <div class="flex items-center gap-3 mb-4">
@@ -179,21 +188,72 @@ Si te seguían policías, jefes o familiares, ¿había una orden, una acusación
 <h3 class="font-serif text-lg text-dream-cream">Tú mismo</h3>
 </div>
 <p class="text-sm text-gray-300">
-Si reconocías a un doble tuyo, ¿en qué se parecía a ti y en qué era distinto? Explora qué te llamaba la atención. Esa imagen no obliga a interpretar que rechazas una parte de tu personalidad.
-</p>
+                        Tu doble, o una versión más joven o mayor de ti. Esta escena, menos habitual, se lee a menudo como un <strong>conflicto interno</strong>: un hábito, una decisión pasada, una parte de ti que prefieres mantener lejos. ¿En qué se diferenciaba ese otro tú de ti?
+                    </p>
 </div>
 </div>
 <div class="prose max-w-none text-gray-300">
-<h2 id="interpretaciones">Preguntas para relacionar el sueño con tu vida</h2>
-<p>Si buscas qué significa soñar con persecución y huida, prueba estas preguntas. <strong>Quédate solo con las asociaciones que reconozcas</strong>; no hace falta encontrar una causa ni un mensaje escondido.</p>
-<h3>¿Qué emoción destaca?</h3>
-<p>Puede ser miedo, frustración, enfado, curiosidad o alivio al escapar. ¿La emoción cambió durante el sueño? Describirla con tus propias palabras ayuda a distinguir experiencias que comparten una misma escena de persecución.</p>
-<h3>¿Algo de la escena te resulta familiar?</h3>
-<p>Piensa en el lugar, el ritmo o una frase del sueño. Quizá la urgencia te recuerde a un <a class="text-dream-salmon hover:underline" href="../simbolos/examen">examen</a> o a una tarea pendiente. Si no encuentras una relación, no la fuerces: una semejanza tampoco demuestra que esa situación haya causado el sueño.</p>
-<h3>¿Qué intentabas hacer y qué opciones tenías?</h3>
-<p>¿Buscabas una salida, ayuda o un escondite? ¿Alguien te acompañaba? Estas preguntas centran la reflexión en tu experiencia, en lugar de decidir de antemano que huir significa evitación o que enfrentarte al perseguidor demuestra valentía.</p>
-<h3>¿Qué se repite y qué cambia?</h3>
-<p>Si recuerdas varios sueños parecidos, compara el perseguidor, el escenario y el final. Anota también cuándo ocurrieron y cómo descansaste. Registrar una coincidencia permite observarla; no establece por sí sola una relación de causa y efecto.</p>
+<h2 id="variaciones">¿Cómo fue la persecución?</h2>
+<p>
+                    Cómo transcurre la huida importa tanto como el perseguidor. El escenario también cuenta: correr por un <a class="text-dream-salmon hover:underline" href="../simbolos/bosque">bosque</a>, huir de <a class="text-dream-salmon hover:underline" href="../simbolos/noche">noche</a> o avanzar a duras penas por el <a class="text-dream-salmon hover:underline" href="../simbolos/agua">agua</a> no son la misma escena. Apunta lo que recuerdes, sin rellenar los huecos.
+                </p>
+<h3>Quieres correr, pero las piernas no responden</h3>
+<p>
+                    Es la versión clásica: piernas pesadas, cámara lenta, un suelo que te frena. Suele ir unida a la sensación de estar <strong>atascado o sin margen</strong> en alguna situación de tu vida. Pregúntate dónde sientes que te esfuerzas mucho sin avanzar.
+                </p>
+<h3>Te escondes</h3>
+<p>
+                    ¿El escondite era seguro o esperabas que te encontraran? Un buen refugio puede reflejar una <strong>necesidad de distancia</strong> o de descanso. Uno precario puede apuntar a un problema que aplazas en vez de resolver. Solo tú puedes decir cuál encaja.
+                </p>
+<h3>Te alcanzan</h3>
+<p>
+                    Mucha gente se despierta justo en ese instante. Si el sueño continuó, lo que pasó después suele ser <strong>menos terrible que el miedo</strong> previo. Que te atrapen en un sueño no anuncia ningún fracaso ni ninguna desgracia.
+                </p>
+<h3>Te das la vuelta y le haces frente</h3>
+<p>
+                    A veces te detienes, te giras y miras. El perseguidor cambia de forma, habla o desaparece. Ese giro se asocia a menudo con una <strong>disposición a afrontar algo</strong>, pero no es una instrucción para enfrentarte a nadie en la vida real.
+                </p>
+<h3>Eres tú quien persigue</h3>
+<p>
+                    Cuando los papeles se invierten, fíjate en tu intención. ¿Querías alcanzar a alguien para hablar, recuperar algo, detenerlo? La escena puede hablar de una <strong>meta que persigues</strong> o de alguien cuya atención buscas, más a menudo que de una agresividad oculta.
+                </p>
+<h2 id="interpretaciones">Lo que puede reflejar un sueño de persecución</h2>
+<p>
+                    Ningún diccionario de sueños puede decir con certeza por qué <em>a ti</em> te persiguieron anoche. Pero algunas conexiones aparecen una y otra vez cuando la gente compara estos sueños con lo que está viviendo en ese momento.
+                </p>
+<h3>Algo que vas aplazando</h3>
+<p>
+                    Es la lectura más habitual. Una conversación difícil, un trámite pendiente, una decisión que retrasas semana tras semana: la persecución puede escenificar la sensación de que <strong>algo te está alcanzando</strong>. Pregúntate: ¿qué estoy evitando ahora mismo?
+                </p>
+<h3>Un estrés de fondo</h3>
+<p>
+                    A veces no hay nada concreto que nombrar. Una temporada tensa puede traducirse en un sueño de persecución sin mensaje particular. Entonces el sueño habla sobre todo de lo <strong>tenso que estás</strong>, y cuidar tus noches probablemente ayude más que buscar un símbolo.
+                </p>
+<h3>El miedo a no estar a la altura</h3>
+<p>
+                    Antes de un <a class="text-dream-salmon hover:underline" href="../simbolos/examen">examen</a>, una entrevista o una entrega, el perseguidor puede encarnar las <strong>consecuencias que temes</strong>. Si es tu caso, el sueño muestra sobre todo cuánto te importa el resultado, no que vaya a salir mal.
+                </p>
+<h3>Una emoción que prefieres no sentir</h3>
+<p>
+                    Tristeza, rabia, vergüenza: a veces nos mantenemos ocupados para no sentirlas. La persecución puede reflejar ese <strong>esfuerzo por ir siempre un paso por delante de una emoción</strong>. Ponerle nombre, aunque sea solo en tu diario, suele ser un primer paso.
+                </p>
+<h3>La presión de los demás</h3>
+<p>
+                    Sentirte perseguido también puede reflejar <strong>exigencias que nunca paran</strong>: un jefe que escribe por la noche, una familia muy demandante, alguien que insiste cuando ya dijiste que no. ¿Quién, en tu día a día, te hace sentir acorralado?
+                </p>
+<h3>Después de una experiencia aterradora</h3>
+<p>
+                    Tras una agresión, un accidente u otro hecho traumático, las pesadillas de persecución pueden revivir la <strong>sensación de amenaza</strong>. En ese caso, el sueño no es un símbolo que descifrar: indica que esa experiencia merece atención, y un médico o un terapeuta especializado en trauma puede ayudarte.
+                </p>
+<h3 id="ejemplo-diario">Ejemplo de diario de sueños</h3>
+<p><strong>Ejemplo ficticio:</strong> muestra cómo separar lo que pasó en el sueño de una posible relación con tu día.</p>
+<ul>
+<li><strong>Sueño:</strong> «Alguien me seguía por un aparcamiento subterráneo. No le veía la cara. Las piernas me pesaban tanto que apenas podía correr, y me desperté justo cuando me alcanzaba».</li>
+<li><strong>Emoción:</strong> «Pánico, y luego rabia por ir tan lenta».</li>
+<li><strong>Contexto reciente:</strong> «Todavía no le he contestado a mi jefa sobre el nuevo proyecto, y es para el viernes».</li>
+<li><strong>Pregunta para guardar:</strong> «¿La persecución vuelve antes de tomar decisiones, o también en noches tranquilas?».</li>
+</ul>
+<p>Una sola entrada no demuestra nada. Las conexiones se ven cuando anotas los mismos datos durante varias noches, también aquellas en las que nadie te persigue.</p>
 <!-- CTA inline -->
 <aside class="glass-panel rounded-2xl p-6 my-8 border border-dream-salmon/20">
 <div class="flex items-start gap-4">
@@ -201,41 +261,61 @@ Si reconocías a un doble tuyo, ¿en qué se parecía a ti y en qué era distint
 <i class="w-6 h-6 text-dream-salmon" data-lucide="sparkles"></i>
 </div>
 <div>
-<h4 class="font-serif text-lg text-dream-cream mb-2">Guarda los detalles de tu sueño en Noctalia</h4>
-<p class="text-sm text-gray-400 mb-4">Registra quién te seguía, qué hiciste y cómo te sentiste. Puedes volver a tus notas para explorar asociaciones personales; las interpretaciones no son diagnósticos ni predicciones.</p>
+<h4 class="font-serif text-lg text-dream-cream mb-2">Anota la persecución antes de que se borre</h4>
+<p class="text-sm text-gray-400 mb-4">En Noctalia, cuenta tu sueño en voz alta al despertar. Se transcribe y se guarda en tu diario, así puedes releer tus sueños de persecución uno al lado del otro y ver qué se repite.</p>
 <a class="inline-flex items-center gap-2 text-sm text-dream-salmon hover:text-dream-salmonLight transition-colors" href="/es/">
                                 Prueba Noctalia gratis <i class="w-4 h-4" data-lucide="arrow-right"></i>
 </a>
 </div>
 </div>
 </aside>
-<h2 id="psicología">Qué aporta la investigación sobre estos sueños</h2>
-<h3>Describir temas no equivale a descifrar un sueño</h3>
-<p>En un estudio de diarios de sueños, <a class="text-dream-salmon hover:underline" href="https://pubmed.ncbi.nlm.nih.gov/24497669/" rel="noopener noreferrer" target="_blank">Robert y Zadra (2014)</a> encontraron que la agresión física predominaba en las pesadillas y los conflictos interpersonales en los malos sueños. Aunque el miedo era la emoción principal más frecuente, también aparecían otras emociones. Estos resultados describen relatos de una muestra; no establecen qué significa tu perseguidor ni una frecuencia universal de sueños de persecución.</p>
-<h3>La simulación de amenazas es una hipótesis</h3>
-<p><a class="text-dream-salmon hover:underline" href="https://pubmed.ncbi.nlm.nih.gov/11515147/" rel="noopener noreferrer" target="_blank">Antti Revonsuo (2000)</a> propuso que soñar podría simular amenazas y ensayar respuestas ante ellas. Es una hipótesis sobre la función de los sueños, no una explicación demostrada de cada sueño de huida. No permite afirmar que un perseguidor represente una emoción reprimida o un peligro futuro.</p>
-<h2 id="variaciones">Persecución y huida: escenarios que puedes explorar</h2>
-<p>El lugar también forma parte del relato: correr por un <a class="text-dream-salmon hover:underline" href="../simbolos/bosque">bosque</a>, huir de <a class="text-dream-salmon hover:underline" href="../simbolos/noche">noche</a> o avanzar con dificultad por el <a class="text-dream-salmon hover:underline" href="../simbolos/agua">agua</a> no son escenas idénticas. Usa los detalles que recuerdes, sin rellenar los huecos.</p>
-<h3>Soñar que te persiguen y no puedes correr</h3>
-<p>Tal vez tus piernas pesen, el suelo te frene o te muevas a cámara lenta. ¿Qué impedía avanzar dentro del sueño? ¿Sentías frustración, miedo o sorpresa? Esa dificultad no demuestra que estés bloqueado en tu vida ni debe confundirse automáticamente con una experiencia de inmovilidad estando despierto.</p>
-<h3>Huir y conseguir escapar</h3>
-<p>¿Llegaste a un lugar seguro, apareció ayuda o simplemente dejaste de ver al perseguidor? Recuerda cómo terminó la escena y si sentiste alivio. Escapar en un sueño no predice que resolverás un problema ni mide tus recursos para afrontarlo.</p>
-<h3>Esconderte para que no te encuentren</h3>
-<p>¿El escondite te protegía o seguías esperando que te descubrieran? La diferencia puede ser útil para describir tu experiencia. No hace falta convertirla en un juicio sobre si evitas demasiado las dificultades.</p>
-<h3>Que el perseguidor te alcance</h3>
-<p>¿Despertaste en ese momento o el sueño continuó? Anota lo que realmente recuerdes, incluido un final incompleto. Ser atrapado no anuncia que vaya a ocurrirte algo malo ni demuestra que hayas fracasado.</p>
-<h3>Darte la vuelta y mirar al perseguidor</h3>
-<p>Si ocurrió, ¿cambió su aspecto, hubo una conversación o continuó la amenaza? Puedes explorar ese giro del relato sin tomarlo como una instrucción para enfrentarte a alguien en la vida real. No tienes que intentar controlar el sueño para entenderlo.</p>
-<h3>Ser tú quien persigue a otra persona</h3>
-<p>¿Querías alcanzarla para hablar, ayudar, recuperar algo o por una razón que no recuerdas? Parte de esa intención dentro del sueño. No se puede deducir automáticamente una ambición, una agresividad oculta o un deseo romántico.</p>
-<h2 id="accion">Qué hacer si el sueño de persecución te inquieta</h2>
-<h3>Al despertar: recuperar la calma</h3>
-<p>Date un momento para orientarte y reconocer dónde estás. Puedes encender una luz suave o hacer una pausa antes de escribir. No necesitas analizar el sueño inmediatamente ni revivir sus detalles si te resulta desagradable.</p>
-<h3>Si quieres recordarlo: una nota breve</h3>
-<p>Escribe la escena, la emoción y el final que recuerdas. Puedes añadir cómo dormiste y cualquier asociación que te surja. Si llevar un diario aumenta tu malestar, déjalo: registrar sueños es una opción, no una obligación ni un tratamiento.</p>
-<h3>Si se repite y afecta a tu descanso: pedir ayuda</h3>
-<p>Si las pesadillas te despiertan repetidamente, te dan miedo a dormir o afectan a tu día a día, consulta con un profesional sanitario. No necesitas resolver primero su supuesto significado.</p>
-<p>La <a class="text-dream-salmon hover:underline" href="https://pubmed.ncbi.nlm.nih.gov/29852917/" rel="noopener noreferrer" target="_blank">posición clínica de la AASM de 2018</a> recomienda la terapia de ensayo en imaginación para el trastorno de pesadillas y las pesadillas asociadas al estrés postraumático en adultos. Un profesional puede valorar si esta u otra intervención encaja en tu caso. No es una garantía de eliminar un sueño ni equivale a interpretar sus símbolos.</p>
+<h2 id="psicología">Lo que dicen la psicología y la investigación</h2>
+<p>
+                    Los sueños de persecución se han leído de maneras muy distintas. Estos enfoques no se excluyen entre sí, y ninguno puede demostrar qué significa tu sueño en concreto.
+                </p>
+<h3>La simulación de amenazas</h3>
+<p>
+                    El investigador finlandés <a class="text-dream-salmon hover:underline" href="https://pubmed.ncbi.nlm.nih.gov/11515147/" rel="nofollow noopener noreferrer" target="_blank">Antti Revonsuo</a> propuso en 2000 que soñar habría evolucionado en parte para <strong>ensayar situaciones amenazantes</strong> sin peligro real. Ser perseguido sería un ejemplo de manual. La teoría se discute, pero ofrece una explicación de por qué los sueños desagradables son tan frecuentes.
+                </p>
+<h3>De qué están hechas las pesadillas</h3>
+<p>
+                    Al analizar cientos de pesadillas y malos sueños anotados en diarios en casa, <a class="text-dream-salmon hover:underline" href="https://pubmed.ncbi.nlm.nih.gov/24497669/" rel="nofollow noopener noreferrer" target="_blank">Robert y Zadra (2014)</a> encontraron que la agresión física predominaba en las pesadillas y los conflictos interpersonales en los malos sueños. El miedo era la emoción más frecuente, pero ni mucho menos la única. Estos resultados describen una muestra: no dicen qué representa tu perseguidor.
+                </p>
+<h3>La sombra junguiana</h3>
+<p>
+                    En la tradición de Carl Jung, el perseguidor se interpreta a menudo como la <strong>«sombra»</strong>: las partes de nosotros mismos que rechazamos o no queremos ver. Según esta lectura, el sueño invita a mirar aquello de lo que huyes en lugar de seguir corriendo. Es un marco de interpretación, no un hallazgo científico.
+                </p>
+<h3>El peso de la emoción</h3>
+<p>
+                    Hay un punto más compartido: la emoción del sueño suele estar más cerca de la vida despierta que su escenario. Una persecución aterradora y otra casi de juego no cuentan lo mismo. Por eso Noctalia siempre te invita a anotar lo que sentiste.
+                </p>
+<h2 id="accion">Qué hacer si estos sueños se repiten</h2>
+<p>
+                    La mayoría de los sueños de persecución no requieren nada especial. Si vuelven a menudo o te despiertan, aquí tienes algunas pautas sencillas.
+                </p>
+<h3>1. Ponle nombre a lo que te pesa</h3>
+<p>
+                    Pregúntatelo sin rodeos: ¿de qué estoy huyendo ahora mismo? ¿Una conversación, una decisión, una emoción? Dar un paso pequeño y concreto sobre ese punto suele aliviar la tensión, y a veces también los sueños.
+                </p>
+<h3>2. Calma tus noches</h3>
+<ul>
+<li>Horarios regulares para acostarte y levantarte</li>
+<li>Nada de thrillers ni correos del trabajo justo antes de dormir</li>
+<li>Unos minutos de respiración lenta o una meditación breve de relajación</li>
+<li>Un dormitorio fresco, oscuro y silencioso</li>
+</ul>
+<h3>3. Reescribe el final</h3>
+<p>
+                    Si la misma persecución se repite, escríbela, cambia el final (el perseguidor se detiene, encuentras una puerta, resulta ser inofensivo) e imagina la nueva versión unos minutos al día, despierto. Es el principio de la terapia de ensayo en imaginación, que la <a class="text-dream-salmon hover:underline" href="https://pubmed.ncbi.nlm.nih.gov/29852917/" rel="nofollow noopener noreferrer" target="_blank">Academia Estadounidense de Medicina del Sueño (AASM, 2018)</a> recomienda para el trastorno de pesadillas en adultos. Nuestra <a class="text-dream-salmon hover:underline" href="guia-pesadillas">guía de pesadillas</a> la explica paso a paso.
+                </p>
+<h3>4. Prueba los sueños lúcidos</h3>
+<p>
+                    Con práctica, algunas personas aprenden a darse cuenta de que están soñando mientras sueñan. La persecución puede convertirse entonces en la señal para detenerse y darse la vuelta. Las pruebas son más débiles que para el ensayo en imaginación, pero nuestra <a class="text-dream-salmon hover:underline" href="guia-suenos-lucidos-principiantes">guía de sueños lúcidos para principiantes</a> es un buen punto de partida.
+                </p>
+<h3>5. Cuándo pedir ayuda</h3>
+<p>
+                    Si los sueños de persecución, o las pesadillas en general, se repiten varias veces por semana, te hacen temer la hora de dormir o te dejan ansioso durante el día, habla con tu médico o con un especialista del sueño. No hace falta descifrar el sueño antes de pedir ayuda.
+                </p>
 </div>
 <!-- Related Symbols Start -->
 <section aria-label="Símbolos de sueños relacionados" class="mt-12 mb-8">
@@ -258,12 +338,12 @@ Si reconocías a un doble tuyo, ¿en qué se parecía a ti y en qué era distint
 <div class="w-16 h-16 bg-dream-salmon/10 rounded-full flex items-center justify-center mx-auto mb-6">
 <i class="w-8 h-8 text-dream-salmon" data-lucide="shield"></i>
 </div>
-<h3 class="font-serif text-2xl md:text-3xl mb-4 text-dream-cream">Recuerda tu sueño, explóralo a tu ritmo</h3>
+<h3 class="font-serif text-2xl md:text-3xl mb-4 text-dream-cream">Una persecución es una escena. Diez persecuciones son una pista.</h3>
 <p class="text-purple-200/70 mb-6 max-w-lg mx-auto">
-                    Guarda tus sueños de persecución en Noctalia y vuelve a tus notas cuando quieras. Observa detalles y asociaciones personales sin buscar una explicación obligatoria.
+                    Guarda tus sueños de persecución en Noctalia, con quién te perseguía y qué sentiste. Al releerlos juntos, verás cuándo vuelven y qué suele acompañarlos.
                 </p>
 <a class="inline-flex items-center gap-2 px-8 py-4 bg-dream-salmon text-dream-dark rounded-full font-bold hover:bg-dream-salmon/90 transition-colors" href="/es/">
-                    Comienza a explorar tus sueños <i class="w-5 h-5" data-lucide="arrow-right"></i>
+                    Empezar mi diario de sueños <i class="w-5 h-5" data-lucide="arrow-right"></i>
 </a>
 </aside>
 <!-- Symbol Guide CTA -->
@@ -273,10 +353,10 @@ Si reconocías a un doble tuyo, ¿en qué se parecía a ti y en qué era distint
 <i class="w-6 h-6 text-dream-salmon" data-lucide="sparkles"></i>
 </div>
 <div>
-<h4 class="font-serif text-lg text-dream-cream mb-2">Explora el simbolismo de ser perseguido</h4>
-<p class="text-sm text-gray-400 mb-3">Consulta una síntesis del tema y otras preguntas para explorar tu experiencia de ser perseguido en sueños.</p>
+<h4 class="font-serif text-lg text-dream-cream mb-2">La ficha del símbolo «persecución»</h4>
+<p class="text-sm text-gray-400 mb-3">Variantes, preguntas para hacerte y preguntas frecuentes, en formato breve.</p>
 <a class="inline-flex items-center gap-2 text-dream-salmon hover:underline text-sm font-medium" href="../simbolos/persecucion">
-                            Leer la guía completa <i class="w-4 h-4" data-lucide="arrow-right"></i>
+                            Leer la ficha <i class="w-4 h-4" data-lucide="arrow-right"></i>
 </a>
 </div>
 </div>
@@ -287,44 +367,52 @@ Si reconocías a un doble tuyo, ¿en qué se parecía a ti y en qué era distint
 <div class="space-y-4">
 <details class="glass-panel rounded-xl p-4 group cursor-pointer">
 <summary class="font-medium flex justify-between items-center text-dream-cream">
-¿Qué significa soñar que te persiguen?
-<i class="w-5 h-5 transition-transform group-open:rotate-180 text-dream-salmon" data-lucide="chevron-down"></i>
+                            ¿Qué significa soñar que te persiguen?
+                            <i class="w-5 h-5 transition-transform group-open:rotate-180 text-dream-salmon" data-lucide="chevron-down"></i>
 </summary>
-<p class="mt-4 text-sm text-gray-400 leading-relaxed">No tiene un significado único ni permite predecir un peligro. Puedes explorar quién te persigue, qué intentas hacer y qué emoción recuerdas. Relacionarlo con una preocupación actual es una asociación personal, no una conclusión demostrada por el sueño.</p>
+<p class="mt-4 text-sm text-gray-400 leading-relaxed">
+                            No tiene un significado único. Suele acompañar una época de estrés, la presión de otras personas o algo que vas aplazando. Quién te perseguía, qué sentiste y cómo terminó la escena son las mejores pistas para encontrar la lectura que encaja contigo.
+                        </p>
 </details>
 <details class="glass-panel rounded-xl p-4 group cursor-pointer">
 <summary class="font-medium flex justify-between items-center text-dream-cream">
-¿Qué significa soñar que una persona conocida te persigue?
-<i class="w-5 h-5 transition-transform group-open:rotate-180 text-dream-salmon" data-lucide="chevron-down"></i>
+                            ¿Por qué son tan comunes los sueños de persecución?
+                            <i class="w-5 h-5 transition-transform group-open:rotate-180 text-dream-salmon" data-lucide="chevron-down"></i>
 </summary>
-<p class="mt-4 text-sm text-gray-400 leading-relaxed">Su aparición no prueba un conflicto oculto ni una intención de hacerte daño. Recuerda qué ocurría y cómo te sentías dentro del sueño. Para valorar esa relación en la vida real, apóyate en hechos y conversaciones, no en el papel de esa persona en un sueño.</p>
+<p class="mt-4 text-sm text-gray-400 leading-relaxed">
+                            En una encuesta a 1.181 universitarios canadienses, ser perseguido fue uno de los cuatro temas oníricos que mencionaron más del 60 % de los participantes. Una hipótesis plantea que soñar ensaya en parte las amenazas, y la persecución es una de las más simples. Es una idea todavía debatida.
+                        </p>
 </details>
 <details class="glass-panel rounded-xl p-4 group cursor-pointer">
 <summary class="font-medium flex justify-between items-center text-dream-cream">
-¿Por qué sueño que me persiguen y no puedo correr?
-<i class="w-5 h-5 transition-transform group-open:rotate-180 text-dream-salmon" data-lucide="chevron-down"></i>
+                            ¿Soñar que te persiguen anuncia algo?
+                            <i class="w-5 h-5 transition-transform group-open:rotate-180 text-dream-salmon" data-lucide="chevron-down"></i>
 </summary>
-<p class="mt-4 text-sm text-gray-400 leading-relaxed">El relato por sí solo no permite identificar una causa. Puedes describir si tus piernas pesaban, había obstáculos o te movías despacio, y qué sentías. Esa escena no demuestra que estés bloqueado en tu vida.</p>
+<p class="mt-4 text-sm text-gray-400 leading-relaxed">
+                            No. Un sueño de persecución no anuncia peligros, agresiones ni fracasos. Pone en escena una emoción o una preocupación actual, y no dice nada de las intenciones reales de quien te perseguía.
+                        </p>
 </details>
 <details class="glass-panel rounded-xl p-4 group cursor-pointer">
 <summary class="font-medium flex justify-between items-center text-dream-cream">
-¿Qué hago si los sueños de persecución se repiten?
-<i class="w-5 h-5 transition-transform group-open:rotate-180 text-dream-salmon" data-lucide="chevron-down"></i>
+                            ¿Qué hago si los sueños de persecución se repiten?
+                            <i class="w-5 h-5 transition-transform group-open:rotate-180 text-dream-salmon" data-lucide="chevron-down"></i>
 </summary>
-<p class="mt-4 text-sm text-gray-400 leading-relaxed">Si quieres, anota cuándo ocurren y cómo afectan a tu descanso, sin forzar una interpretación. Si te despiertan repetidamente, te dan miedo a dormir o afectan a tu vida diaria, consulta con un profesional sanitario. Llevar un diario es opcional y no sustituye un tratamiento.</p>
+<p class="mt-4 text-sm text-gray-400 leading-relaxed">
+                            Empieza por lo que te pesa durante el día y cuida tus noches. Si se repite la misma persecución, reescribir el final y ensayarlo despierto puede ayudar. Si las pesadillas aparecen varias veces por semana o estropean tu descanso, consulta con un médico o un especialista del sueño.
+                        </p>
 </details>
 </div>
 </section>
 <!-- Sources / Trust (TI-97) -->
 <section class="mt-16 glass-panel rounded-2xl p-6" id="sources">
-<h2 class="font-serif text-2xl text-dream-cream mb-4">Fuentes y límites de la interpretación</h2>
-<p class="text-sm text-gray-400">Estas fuentes sustentan los apartados de investigación y atención a las pesadillas. Las preguntas de los escenarios son propuestas de reflexión, no significados validados científicamente.</p>
+<h2 class="font-serif text-2xl text-dream-cream mb-4">Fuentes y lecturas</h2>
 <ul class="mt-6 space-y-2 text-sm text-gray-400">
-<li><a href="https://pubmed.ncbi.nlm.nih.gov/24497669/" rel="noopener noreferrer" target="_blank">Robert y Zadra (2014) — Thematic and Content Analysis of Idiopathic Nightmares and Bad Dreams</a></li>
-<li><a href="https://pubmed.ncbi.nlm.nih.gov/11515147/" rel="noopener noreferrer" target="_blank">Revonsuo (2000) — The Reinterpretation of Dreams: An Evolutionary Hypothesis of the Function of Dreaming</a></li>
-<li><a href="https://pubmed.ncbi.nlm.nih.gov/29852917/" rel="noopener noreferrer" target="_blank">Morgenthaler et al., AASM (2018) — Position Paper for the Treatment of Nightmare Disorder in Adults</a></li>
+<li><a href="https://asdreams.org/journal/issues/asdj13-4.htm" rel="nofollow noopener noreferrer" target="_blank">Nielsen, Zadra y otros (2003), «The Typical Dreams of Canadian University Students», <em>Dreaming</em>, 13(4)</a></li>
+<li><a href="https://pubmed.ncbi.nlm.nih.gov/24497669/" rel="nofollow noopener noreferrer" target="_blank">Robert y Zadra (2014), «Thematic and content analysis of idiopathic nightmares and bad dreams», <em>Sleep</em></a></li>
+<li><a href="https://pubmed.ncbi.nlm.nih.gov/11515147/" rel="nofollow noopener noreferrer" target="_blank">Revonsuo (2000), «The reinterpretation of dreams: an evolutionary hypothesis of the function of dreaming», <em>Behavioral and Brain Sciences</em></a></li>
+<li><a href="https://pubmed.ncbi.nlm.nih.gov/29852917/" rel="nofollow noopener noreferrer" target="_blank">Morgenthaler y otros (2018), «Position paper for the treatment of nightmare disorder in adults», American Academy of Sleep Medicine</a></li>
 </ul>
-<p class="mt-6 text-xs text-purple-200/60">Actualizado el 12 de septiembre de 2026</p>
+<p class="mt-6 text-xs text-purple-200/60">Actualizado el 9 de octubre de 2026</p>
 </section>
 <!-- Blog Nav Start -->
 <section class="mt-12" aria-label="Navegación entre artículos" data-blog-nav="">

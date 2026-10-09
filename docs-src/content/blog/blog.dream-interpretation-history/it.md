@@ -5,7 +5,7 @@
   "lang": "it",
   "slug": "la-storia-dell-interpretazione-dei-sogni-dagli-antichi-templi-alla-scienza-moderna",
   "title": "Interpretazione del sogno: 5.000 anni di storia | Noctalia",
-  "description": "5.000 anni di interpretazione dei sogni: dai templi egizi a Freud e alla scienza moderna. Come l'umanità ha decodificato il linguaggio onirico.",
+  "description": "La storia dell'interpretazione dei sogni: presagi mesopotamici, un manuale egizio, Aristotele, Freud, Jung e i laboratori del sonno, con fonti verificabili.",
   "robots": "max-image-preview:large",
   "themeColor": "#0a0514",
   "htmlClass": "scroll-smooth blog-article",
@@ -14,24 +14,24 @@
   "mainClass": "pt-32 pb-20 px-4",
   "ogType": "article",
   "ogTitle": "Interpretazione del sogno: 5.000 anni di storia | Noctalia",
-  "ogDescription": "5.000 anni di interpretazione dei sogni: dai templi egizi a Freud e alla scienza moderna. Come l'umanità ha decodificato il linguaggio onirico.",
+  "ogDescription": "Dal sogno di un sovrano sumero ai laboratori del sonno: 4000 anni di interpretazione dei sogni e cosa ogni epoca può ancora insegnarti.",
   "ogImage": "https://noctalia.app/img/blog/dream-interpretation-history.webp",
   "ogImageAlt": "Antico tempio sotto un cielo stellato che rappresenta la storia dei sogni",
   "twitterCard": "summary_large_image",
   "twitterTitle": "Interpretazione del sogno: 5.000 anni di storia | Noctalia",
-  "twitterDescription": "5.000 anni di interpretazione dei sogni: dai templi egizi a Freud e alla scienza moderna. Come l'umanità ha decodificato il linguaggio onirico.",
+  "twitterDescription": "4000 anni di interpretazione dei sogni: presagi, filosofi, Freud, Jung e ciò che la scienza misura davvero.",
   "twitterImage": "https://noctalia.app/img/blog/dream-interpretation-history.webp",
   "twitterImageAlt": "Antico tempio sotto un cielo stellato che rappresenta la storia dei sogni",
   "publishedTime": "2025-12-11",
-  "modifiedTime": "2026-01-06",
+  "modifiedTime": "2026-10-09",
   "author": "Thanh Chau",
   "prevPath": "/it/blog/sonno-rem-e-sogni-comprendere-il-ripristino-notturno-del-cervello",
   "nextPath": "/it/blog/sogni-stressanti-sul-lavoro-perche-il-tuo-lavoro-ti-segue-nel-sonno",
   "preloadImage": "/img/blog/dream-interpretation-history.webp",
   "jsonLd": [
-    "{\n            \"@context\": \"https://schema.org\",\n            \"@type\": \"BlogPosting\",\n            \"headline\": \"La storia dell'interpretazione dei sogni: dagli antichi templi alla scienza moderna\",\n            \"description\": \"Esplora l'evoluzione dell'interpretazione dei sogni dalle antiche civiltà alle moderne neuroscienze attraverso 5.000 anni di storia umana.\",\n            \"image\": {\n                \"@type\": \"ImageObject\",\n                \"url\": \"https://noctalia.app/img/blog/dream-interpretation-history.webp\",\n                \"width\": 1200,\n                \"height\": 630\n            },\n            \"author\": [\n                {\n                    \"@type\": \"Person\",\n                    \"@id\": \"https://noctalia.app/it/chi-siamo#person\",\n                    \"name\": \"Thanh Chau\",\n                    \"jobTitle\": \"Founder & Publication Director\",\n                    \"url\": \"https://noctalia.app/it/chi-siamo\",\n                    \"worksFor\": {\n                        \"@type\": \"Organization\",\n                        \"@id\": \"https://noctalia.app/#organization\",\n                        \"name\": \"Noctalia\",\n                        \"url\": \"https://noctalia.app\"\n                    }\n                },\n                {\n                    \"@type\": \"Organization\",\n                    \"@id\": \"https://noctalia.app/#organization\",\n                    \"name\": \"Noctalia\",\n                    \"url\": \"https://noctalia.app\",\n                    \"logo\": {\n                        \"@type\": \"ImageObject\",\n                        \"url\": \"https://noctalia.app/logo/logo_noctalia.png\"\n                    }\n                }\n            ],\n            \"publisher\": {\n                \"@type\": \"Organization\",\n                \"name\": \"Noctalia\",\n                \"url\": \"https://noctalia.app\",\n                \"logo\": {\n                    \"@type\": \"ImageObject\",\n                    \"url\": \"https://noctalia.app/logo/logo_noctalia.png\"\n                }\n            },\n            \"datePublished\": \"2025-12-11\",\n            \"dateModified\": \"2026-01-06\",\n            \"mainEntityOfPage\": {\n                \"@type\": \"WebPage\",\n                \"@id\": \"https://noctalia.app/it/blog/la-storia-dell-interpretazione-dei-sogni-dagli-antichi-templi-alla-scienza-moderna\"\n            },\n            \"inLanguage\": \"it\",\n            \"isAccessibleForFree\": true,\n            \"wordCount\": 2407,\n            \"timeRequired\": \"PT9M\",\n            \"url\": \"https://noctalia.app/it/blog/la-storia-dell-interpretazione-dei-sogni-dagli-antichi-templi-alla-scienza-moderna\"\n        }",
-    "{\n        \"@context\": \"https://schema.org\",\n        \"@type\": \"FAQPage\",\n        \"mainEntity\": [\n                {\n                        \"@type\": \"Question\",\n                        \"name\": \"Chi per primo ha interpretato i sogni?\",\n                        \"acceptedAnswer\": {\n                                \"@type\": \"Answer\",\n                                \"text\": \"Le prime interpretazioni dei sogni registrate provengono dall'antica Mesopotamia intorno al 3100 a.C. I Sumeri credevano che i sogni fossero messaggi degli dei e conservavano registrazioni dettagliate dei sogni su tavolette di argilla. Anche l'antico Egitto aveva interpreti di sogni professionisti che prestavano servizio nei templi già nel 2000 a.C.\"\n                        }\n                },\n                {\n                        \"@type\": \"Question\",\n                        \"name\": \"Freud ha inventato l'interpretazione dei sogni?\",\n                        \"acceptedAnswer\": {\n                                \"@type\": \"Answer\",\n                                \"text\": \"No, Freud non ha inventato l'interpretazione dei sogni: gli esseri umani interpretano i sogni da almeno 5.000 anni. Tuttavia, Freud rivoluzionò il campo nel 1899 con \\\"L'interpretazione dei sogni\\\", che fu il primo approccio psicologico sistematico ai sogni piuttosto che a quello soprannaturale o divino.\"\n                        }\n                },\n                {\n                        \"@type\": \"Question\",\n                        \"name\": \"In che modo le diverse culture interpretano i sogni in modo diverso?\",\n                        \"acceptedAnswer\": {\n                                \"@type\": \"Answer\",\n                                \"text\": \"L'interpretazione dei sogni varia in modo significativo tra le culture. La psicologia occidentale si concentra sulla psicologia individuale e sui desideri inconsci. Le culture indigene spesso vedono i sogni come viaggi spirituali o comunicazioni ancestrali. Le tradizioni dell’Asia orientale vedono i sogni come riflessi della salute fisica e dell’equilibrio energetico. Queste differenze culturali riflettono visioni del mondo più profonde sulla natura della coscienza e della realtà.\"\n                        }\n                }\n        ]\n}",
-    "{\n        \"@context\": \"https://schema.org\",\n        \"@type\": \"BreadcrumbList\",\n        \"itemListElement\": [\n                {\n                        \"@type\": \"ListItem\",\n                        \"position\": 1,\n                        \"name\": \"Home\",\n                        \"item\": \"https://noctalia.app/it/\"\n                },\n                {\n                        \"@type\": \"ListItem\",\n                        \"position\": 2,\n                        \"name\": \"Risorse\",\n                        \"item\": \"https://noctalia.app/it/blog/\"\n                },\n                {\n                        \"@type\": \"ListItem\",\n                        \"position\": 3,\n                        \"name\": \"Interpretazione del sogno: 5.000 anni di storia\",\n                        \"item\": \"https://noctalia.app/it/blog/la-storia-dell-interpretazione-dei-sogni-dagli-antichi-templi-alla-scienza-moderna\"\n                }\n        ]\n}"
+    "{\n    \"@context\": \"https://schema.org\",\n    \"@type\": \"BlogPosting\",\n    \"headline\": \"La storia dell'interpretazione dei sogni: dai templi antichi alla scienza moderna\",\n    \"description\": \"La storia dell'interpretazione dei sogni: presagi mesopotamici, un manuale egizio, Aristotele, Freud, Jung e i laboratori del sonno, con fonti verificabili.\",\n    \"image\": {\n        \"@type\": \"ImageObject\",\n        \"url\": \"https://noctalia.app/img/blog/dream-interpretation-history.webp\",\n        \"width\": 1200,\n        \"height\": 630\n    },\n    \"author\": [\n        {\n            \"@type\": \"Person\",\n            \"@id\": \"https://noctalia.app/it/chi-siamo#person\",\n            \"name\": \"Thanh Chau\",\n            \"jobTitle\": \"Founder & Publication Director\",\n            \"url\": \"https://noctalia.app/it/chi-siamo\",\n            \"worksFor\": {\n                \"@type\": \"Organization\",\n                \"@id\": \"https://noctalia.app/#organization\",\n                \"name\": \"Noctalia\",\n                \"url\": \"https://noctalia.app\"\n            }\n        },\n        {\n            \"@type\": \"Organization\",\n            \"@id\": \"https://noctalia.app/#organization\",\n            \"name\": \"Noctalia\",\n            \"url\": \"https://noctalia.app\",\n            \"logo\": {\n                \"@type\": \"ImageObject\",\n                \"url\": \"https://noctalia.app/logo/logo_noctalia.png\"\n            }\n        }\n    ],\n    \"publisher\": {\n        \"@type\": \"Organization\",\n        \"name\": \"Noctalia\",\n        \"url\": \"https://noctalia.app\",\n        \"logo\": {\n            \"@type\": \"ImageObject\",\n            \"url\": \"https://noctalia.app/logo/logo_noctalia.png\"\n        }\n    },\n    \"datePublished\": \"2025-12-11\",\n    \"dateModified\": \"2026-10-09\",\n    \"mainEntityOfPage\": {\n        \"@type\": \"WebPage\",\n        \"@id\": \"https://noctalia.app/it/blog/la-storia-dell-interpretazione-dei-sogni-dagli-antichi-templi-alla-scienza-moderna\"\n    },\n    \"inLanguage\": \"it\",\n    \"isAccessibleForFree\": true,\n    \"wordCount\": 2386,\n    \"timeRequired\": \"PT11M\",\n    \"url\": \"https://noctalia.app/it/blog/la-storia-dell-interpretazione-dei-sogni-dagli-antichi-templi-alla-scienza-moderna\"\n}",
+    "{\n    \"@context\": \"https://schema.org\",\n    \"@type\": \"FAQPage\",\n    \"mainEntity\": [\n        {\n            \"@type\": \"Question\",\n            \"name\": \"Chi ha interpretato i sogni per primo?\",\n            \"acceptedAnswer\": {\n                \"@type\": \"Answer\",\n                \"text\": \"Impossibile saperlo. Uno degli esempi più antichi giunti fino a noi è il cilindro A di Gudea, datato dal Louvre tra il 2120 e il 2110 a.C., che racconta un sogno in cui viene chiesto di costruire un tempio. Attesta una pratica, non la sua origine.\"\n            }\n        },\n        {\n            \"@type\": \"Question\",\n            \"name\": \"Freud ha inventato l'interpretazione dei sogni?\",\n            \"acceptedAnswer\": {\n                \"@type\": \"Answer\",\n                \"text\": \"No. Aristotele cercava già cause naturali dei sogni, e Artemidoro scrisse un manuale di interpretazione più di 1500 anni prima di lui. Freud propose nel 1899 una teoria psicologica fondata sulle associazioni del sognatore.\"\n            }\n        },\n        {\n            \"@type\": \"Question\",\n            \"name\": \"Come interpretano i sogni le diverse culture?\",\n            \"acceptedAnswer\": {\n                \"@type\": \"Answer\",\n                \"text\": \"I sogni sono stati letti come messaggi divini, presagi, segni del corpo o desideri dell'anima. Ma un testo non rappresenta mai un'intera comunità: chiediti chi ha raccolto un'interpretazione, quando e in quale contesto.\"\n            }\n        },\n        {\n            \"@type\": \"Question\",\n            \"name\": \"Cosa dice la scienza moderna sul significato dei sogni?\",\n            \"acceptedAnswer\": {\n                \"@type\": \"Answer\",\n                \"text\": \"I laboratori misurano l'attività del cervello e raccolgono resoconti di sogni, sia nel sonno REM sia fuori. I sogni attingono spesso alla vita da svegli recente, ma la ricerca non ha trovato alcun codice universale dei simboli. Il significato di un sogno resta una lettura personale, da confrontare con il tuo contesto.\"\n            }\n        }\n    ]\n}",
+    "{\n    \"@context\": \"https://schema.org\",\n    \"@type\": \"BreadcrumbList\",\n    \"itemListElement\": [\n        {\n            \"@type\": \"ListItem\",\n            \"position\": 1,\n            \"name\": \"Home\",\n            \"item\": \"https://noctalia.app/it/\"\n        },\n        {\n            \"@type\": \"ListItem\",\n            \"position\": 2,\n            \"name\": \"Risorse\",\n            \"item\": \"https://noctalia.app/it/blog/\"\n        },\n        {\n            \"@type\": \"ListItem\",\n            \"position\": 3,\n            \"name\": \"Storia dell'interpretazione dei sogni\",\n            \"item\": \"https://noctalia.app/it/blog/la-storia-dell-interpretazione-dei-sogni-dagli-antichi-templi-alla-scienza-moderna\"\n        }\n    ]\n}"
   ],
   "activeNav": "resources"
 }
@@ -63,13 +63,13 @@
 <a class="text-xs font-mono text-purple-200/70 border border-white/10 rounded-full px-3 py-1 hover:text-white hover:border-dream-salmon/30 transition-colors" href="significati-dei-sogni-interpretazione-e-simboli">Argomento: significati dei sogni</a>
 <span aria-hidden="true" class="w-full sm:hidden"></span>
 <span class="text-sm text-purple-300/60">Pubblicato l'11 dicembre 2025</span>
-<span class="text-sm text-purple-300/60">7 minuti di lettura</span>
+<span class="text-sm text-purple-300/60">11 minuti di lettura</span>
 </div>
 <h1 class="font-serif text-3xl md:text-5xl mb-6 text-transparent bg-clip-text bg-gradient-to-b from-white via-dream-lavender to-purple-400/50 leading-tight">
-                    La storia dell'interpretazione dei sogni: dagli antichi templi alla scienza moderna
+                    La storia dell'interpretazione dei sogni: dai templi antichi alla scienza moderna
                 </h1>
 <p class="text-lg text-purple-200/80 leading-relaxed">
-                    Per oltre 5.000 anni, gli esseri umani hanno cercato di decodificare il misterioso linguaggio dei sogni. Dagli antichi sacerdoti dei templi ai moderni neuroscienziati, la ricerca per comprendere le nostre visioni notturne rivela tanto sulla nostra coscienza in evoluzione quanto sul sonno stesso.
+                    Ti svegli con un'immagine che non ti lascia, denti che si sbriciolano, un serpente sulle scale, e la prima cosa che fai è cercare cosa significa. È un gesto antico: da più di 4000 anni le persone annotano i sogni e cercano di leggerli. Ecco come è cambiata l'interpretazione dei sogni, dai cilindri d'argilla ai laboratori del sonno, e cosa ogni epoca può ancora insegnarti.
                 </p>
 </header>
 <!-- Author Byline (E-E-A-T) -->
@@ -86,7 +86,7 @@
 <!-- Quick Answer (AI SEO) -->
 <section class="glass-panel rounded-2xl p-6 mb-8 border border-dream-salmon/20 bg-white/5" aria-labelledby="quick-answer-title">
     <h2 id="quick-answer-title" class="font-serif text-xl text-dream-cream mb-3">Risposta rapida</h2>
-    <p class="text-purple-100/80 leading-relaxed">5.000 anni di interpretazione dei sogni: dai templi egizi a Freud e alla scienza moderna. Come l'umanità ha decodificato il linguaggio onirico.</p>
+    <p class="text-purple-100/80 leading-relaxed">Le più antiche testimonianze scritte di interpretazione dei sogni hanno più di 4000 anni: in Mesopotamia e in Egitto il sogno era letto come un messaggio divino o un presagio. Aristotele ha cercato cause naturali, Freud e Jung ne hanno fatto materiale psicologico e dal 1953 i laboratori misurano il sonno. Questi approcci hanno convissuto più che sostituirsi, e nessuno ha prodotto un codice universale dei simboli.</p>
 </section>
 <!-- Featured Image -->
 <figure class="mb-12 rounded-2xl overflow-hidden">
@@ -98,122 +98,68 @@
 <i class="w-5 h-5 text-dream-salmon" data-lucide="list"></i> Sommario
                 </h2>
 <ol class="space-y-2 text-sm text-purple-200/70">
-<li><a class="toc-link block" href="#ancient-mesopotamia">1. Antica Mesopotamia: i primi interpreti dei sogni</a></li>
-<li><a class="toc-link block" href="#ancient-egypt">2. Antico Egitto: sogni come messaggi divini</a></li>
-<li><a class="toc-link block" href="#ancient-greece">3. Antica Grecia e Roma: sogni medici e profetici</a></li>
-<li><a class="toc-link block" href="#religious-traditions">4. Interpretazioni religiose attraverso le culture</a></li>
-<li><a class="toc-link block" href="#medieval-period">5. Prospettive medievali e rinascimentali</a></li>
-<li><a class="toc-link block" href="#freud-revolution">6. La rivoluzione di Freud: la mente inconscia</a></li>
-<li><a class="toc-link block" href="#jung-archetypes">7. Jung e l'inconscio collettivo</a></li>
-<li><a class="toc-link block" href="#modern-neuroscience">8. Neuroscienze moderne: cosa rivela la scienza</a></li>
-<li><a class="toc-link block" href="#cultural-differences">9. Differenze culturali nell'interpretazione dei sogni</a></li>
+<li><a class="toc-link block" href="#ancient-mesopotamia">1. Mesopotamia: i primi sogni scritti</a></li>
+<li><a class="toc-link block" href="#ancient-egypt">2. Egitto: un manuale dei sogni buoni e cattivi</a></li>
+<li><a class="toc-link block" href="#ancient-greece">3. Grecia: templi di guarigione, un filosofo e un manuale</a></li>
+<li><a class="toc-link block" href="#religious-traditions">4. Cosa dicono i testi religiosi sui sogni?</a></li>
+<li><a class="toc-link block" href="#medieval-period">5. Medioevo: da dove vengono i sogni?</a></li>
+<li><a class="toc-link block" href="#freud-revolution">6. Freud: il desiderio e l'inconscio</a></li>
+<li><a class="toc-link block" href="#jung-archetypes">7. Jung: sogni, miti e archetipi</a></li>
+<li><a class="toc-link block" href="#modern-neuroscience">8. Scienza moderna: cosa si può misurare?</a></li>
+<li><a class="toc-link block" href="#cultural-differences">9. Come leggere le credenze sui sogni, e i tuoi sogni</a></li>
 </ol>
 </nav>
 <!-- Article Content -->
 <div class="prose max-w-none text-gray-300">
-<h2 id="ancient-mesopotamia">Interpretazione dei sogni nell'antica Mesopotamia: i primi interpreti dei sogni</h2>
+<h2 id="ancient-mesopotamia">Mesopotamia: i primi sogni scritti</h2>
 <p>
-                    Le prime testimonianze scritte dell'interpretazione dei sogni provengono dall'antica <strong>Mesopotamia intorno al 3100 a.C.</strong>. I Sumeri, gli Assiri e i Babilonesi conservavano meticolosi registri dei sogni su tavolette di argilla, considerando i sogni messaggi del regno divino.
+                    Il <a class="text-dream-salmon hover:underline" href="https://collections.louvre.fr/en/ark:/53355/cl010124631" rel="noopener noreferrer" target="_blank">Louvre data il cilindro A di Gudea</a> tra il 2120 e il 2110 a.C. La sua iscrizione in sumerico racconta come il dio Ningirsu appaia in sogno a Gudea, sovrano di Lagash, per chiedergli di costruire un tempio. Qui il sogno non è un enigma privato: dà a un cantiere regale una garanzia divina.
                 </p>
 <p>
-                    Tra questi documenti spicca il <strong>Libro dei sogni assiri</strong>, una raccolta di presagi onirici risalenti al VII secolo a.C. Questo testo classifica i sogni e i loro significati con notevole specificità:
-                </p>
-<ul>
-<li><strong>Sogni volanti:</strong> Indica la libertà da pesi o elevazione di status</li>
-<li><strong><a class="text-dream-salmon hover:underline" href="../simboli/cadere">Sogni che cadono</a>:</strong> Avvertenza di perdita di posizione o favore divino</li>
-<li><strong>Acqua sogni:</strong> Legati alla purificazione, alla forza vitale o agli stati emotivi</li>
-<li><strong>Aspetti animali:</strong> Ogni creatura aveva un significato simbolico legato alle divinità</li>
-</ul>
-<p>
-                    Nella cultura mesopotamica, i sogni erano considerati un <strong>canale di comunicazione diretto con gli dei</strong>. I re dormivano nei templi appositamente per ricevere la guida divina attraverso i sogni, una pratica chiamata "incubazione del sogno".
-                </p>
-<blockquote>
-                    "Se un uomo vola ripetutamente nei suoi sogni, tutto ciò che possiede andrà perduto." - Libro dei sogni assiri, VII secolo a.C. circa
-                </blockquote>
-<h2 id="ancient-egypt">Interpretazione dei sogni nell'antico Egitto: i sogni come messaggi divini</h2>
-<p>
-                    Gli antichi egizi elevavano l'interpretazione dei sogni a una forma d'arte sofisticata. Nel <strong>2000 a.C.</strong>, avevano stabilito una classe professionale di interpreti di sogni che prestavano servizio nei templi e consigliavano i faraoni.
+                    Più tardi, gli eruditi compilarono lunghi elenchi di presagi onirici. Una raccolta conservata negli archivi del re assiro Assurbanipal (VII secolo a.C.) funziona spesso per giochi di parole, come mostra lo <a class="text-dream-salmon hover:underline" href="https://faculty.washington.edu/snoegel/PDFs/articles/Noegel%2045%20TGD%202006.pdf" rel="noopener noreferrer" target="_blank">studio di Scott Noegel</a>: mangiare un corvo (<em>arbu</em>) annunciava un guadagno (<em>irbu</em>), perché le due parole suonano simili. La lettura dipendeva dalla lingua, non da ciò che il sognatore aveva provato.
                 </p>
 <p>
-                    Il <strong>Papiro III di Chester Beatty</strong>, risalente a circa il 1350 a.C., è uno dei più antichi manuali di interpretazione dei sogni sopravvissuti. Questo testo contiene oltre 200 scenari onirici e i loro significati, organizzati sistematicamente:
+                    Questi documenti attestano una pratica antica. Non dicono chi abbia interpretato il primo sogno: la data di un oggetto non coincide con l'inizio di un'abitudine umana.
                 </p>
-<h3>Sogni egiziani considerati favorevoli (inchiostro bianco):</h3>
-<ul>
-<li>Vedere se stessi morti: presagiva una lunga vita</li>
-<li>Bere birra: indicava nutrimento spirituale</li>
-<li>Vedere la luna splendere: significava perdono da parte del dei</li>
-</ul>
-<h3>Sogni egiziani considerati sfavorevoli (inchiostro rosso):</h3>
-<ul>
-<li>Guardare in un pozzo profondo: significava prigionia</li>
-<li>Vedere il proprio volto in uno specchio: avvertimento di una seconda moglie</li>
-<li>Scoprirsi il didietro: previsto orfanotrofio</li>
-</ul>
+<h2 id="ancient-egypt">Egitto: un manuale dei sogni buoni e cattivi</h2>
 <p>
-                    Gli egiziani credevano che i sogni potessero essere influenzati attraverso <strong>rituali magici e incantesimi</strong>. Recitavano incantesimi prima di dormire per incoraggiare sogni profetici o allontanare <a class="text-dream-salmon hover:underline" href="incubi-cause-significato-e-come-fermarli">incubi</a>, spesso coinvolgendo il dio Bes, il protettore del sonno.
-                </p>
-<h2 id="ancient-greece">Interpretazione dei sogni nell'antica Grecia e a Roma: sogni medici e profetici</h2>
-<p>
-                    Nell'antica Grecia, i sogni venivano affrontati da <strong>prospettive sia mediche che mistiche</strong>. Nel V secolo a.C., i medici greci iniziarono a usare i sogni come strumenti diagnostici per le malattie fisiche.
+                    Il <a class="text-dream-salmon hover:underline" href="https://www.britishmuseum.org/collection/object/Y_EA10683-3" rel="noopener noreferrer" target="_blank">papiro Chester Beatty III</a>, che il British Museum data intorno al 1220 a.C., contiene un libro dei sogni in scrittura ieratica. Ogni voce segue lo stesso schema: un sogno, un verdetto, buono o cattivo, poi un significato.
                 </p>
 <p>
-<strong>Ippocrate</strong> (460-370 a.C.), il padre della medicina, scrisse che i sogni potevano rivelare squilibri negli umori del corpo. Credeva che alcune immagini oniriche indicassero condizioni di salute specifiche - ad esempio, sogni di inondazioni potrebbero suggerire un eccesso di catarro.
+                    Mangiare carne d'asino era buono: il sognatore avrebbe fatto carriera. Vedere i <a class="text-dream-salmon hover:underline" href="sogni-di-denti-che-cadono-significato-e-interpretazione">denti cadere</a>, un sogno ancora oggi frequente, era cattivo: sarebbe morta una persona a suo carico. Come in Mesopotamia, molti di questi legami si basano su giochi di parole che funzionano solo in egizio.
                 </p>
 <p>
-                    Il filosofo <strong>Aristotele</strong> (384-322 a.C.) adottò una visione più razionalista, sostenendo nella sua opera "Sui sogni" che i sogni non erano messaggi divini ma piuttosto residui mentali di esperienze quotidiane e impressioni sensoriali elaborate durante il sonno.
+                    Il manuale mostra come una società ragionava sulla notte. Non conferma le sue previsioni. Se stanotte hai sognato di perdere i denti, il papiro dice più sugli scribi egizi che su di te.
+                </p>
+<h2 id="ancient-greece">Grecia: templi di guarigione, un filosofo e un manuale</h2>
+<p>
+                    Nei santuari di Asclepio, come quello di Epidauro, i malati <a class="text-dream-salmon hover:underline" href="https://www.britannica.com/topic/Asclepius" rel="noopener noreferrer" target="_blank">dormivano nel tempio</a> sperando che il dio li guarisse in sogno. Dormire in un luogo scelto per ricevere un sogno si chiama incubazione; oggi c'è chi ne prova una versione laica, <a class="text-dream-salmon hover:underline" href="incubazione-dei-sogni-come-sognare-esattamente-cio-che-desideri-stasera">ponendosi una domanda prima di dormire</a>.
                 </p>
 <p>
-                    Eppure il testo greco più influente fu <strong>"Oneirocritica" di Artemidoro</strong> (L'interpretazione dei sogni), scritto intorno al 200 d.C. Quest'opera in cinque volumi divenne il manuale di riferimento per oltre 1.500 anni. Artemidoro classificò i sogni in due categorie:
-                </p>
-<ul>
-<li><strong>Sogni teorici:</strong> profezie dirette che si sarebbero avverate letteralmente</li>
-<li><strong>Sogni allegorici:</strong> visioni simboliche che richiedono interpretazione</li>
-</ul>
-<p>
-                    praticate anche nelle culture greca e romana <strong>tempio del sonno</strong> nei santuari curativi dedicati ad Asclepio, il dio della medicina. Le persone malate dormivano in camere sacre, sperando di ricevere sogni di guarigione o guida medica direttamente dalla divinità.
-                </p>
-<h2 id="religious-traditions">Interpretazione religiosa dei sogni attraverso le culture</h2>
-<p>
-                    Praticamente tutte le principali tradizioni religiose attribuiscono ai sogni un significato profondo, considerandoli un canale per la rivelazione divina.
-                </p>
-<h3>Interpretazione dei sogni nel giudaismo e nel cristianesimo</h3>
-<p>
-                    La Bibbia ebraica contiene oltre 20 racconti di sogni significativi. <strong>L'interpretazione di Giuseppe dei sogni del faraone</strong> (Genesi 41) stabilì un modello per la lettura profetica dei sogni. Il Talmud in seguito dichiarò: "Un sogno non interpretato è come una lettera non letta".
+                    Aristotele prende un'altra strada. Nel trattato <a class="text-dream-salmon hover:underline" href="https://classics.mit.edu/Aristotle/dreams.html" rel="noopener noreferrer" target="_blank"><em>Sui sogni</em></a>, il sogno nasce dalle tracce lasciate dalle impressioni dei sensi, che persistono quando il loro oggetto non c'è più; un'emozione forte ci fa vedere in esse più di quanto contengano. In <a class="text-dream-salmon hover:underline" href="https://classics.mit.edu/Aristotle/prophesying.html" rel="noopener noreferrer" target="_blank"><em>Sulla divinazione nel sonno</em></a> osserva che i medici prestano attenzione ai sogni come possibili segni dello stato del corpo, ma considera la maggior parte dei sogni «profetici» semplici coincidenze.
                 </p>
 <p>
-                    Nel cristianesimo, i sogni guidarono eventi cruciali: il sogno di Giuseppe sulla <a class="text-dream-salmon hover:underline" href="../simboli/gravidanza">gravidanza</a> di Maria, l'avvertimento dei Magi di non tornare da Erode e numerose visioni nel Libro dell'Apocalisse. Gli studiosi cristiani medievali discutevano se i sogni provenissero da Dio, dalla natura o dai demoni.
+                    Nel II secolo d.C., Artemidoro di Daldi scrisse l'<a class="text-dream-salmon hover:underline" href="https://it.wikipedia.org/wiki/Oneirocritica" rel="noopener noreferrer" target="_blank"><em>Oneirocritica</em></a>, un manuale in cinque libri. Distingue i sogni che si avverano così come appaiono da quelli allegorici, che vanno decifrati, ed esige che l'interprete conosca il sognatore: mestiere, salute, età, abitudini. La stessa immagine non significa la stessa cosa per tutti. Questa idea è invecchiata meglio delle sue previsioni.
                 </p>
-<h3>Interpretazione dei sogni nella tradizione islamica</h3>
+<h2 id="religious-traditions">Cosa dicono i testi religiosi sui sogni?</h2>
 <p>
-                    La tradizione islamica riconosce <strong>tre tipi di sogni</strong>: i veri sogni di Allah (ru'ya), i sogni dei propri pensieri (hulm) e i sogni di Satana. Si dice che il profeta Maometto abbia affermato che i veri sogni sono "una delle quarantasei parti della profezia".
-                </p>
-<p>
-                    <strong>Ibn Sirin</strong> (653-728 d.C.) compilò uno dei più importanti manuali di interpretazione dei sogni dell'Islam, ancora influente oggi. Le sue interpretazioni enfatizzavano il contesto personale e lo stato spirituale del sognatore.
-                </p>
-<h3>Interpretazione del sogno nell'induismo e nel buddismo</h3>
-<p>
-                    Nella tradizione indù, i sogni sono discussi in testi antichi come le <strong>Upanishad</strong>, che descrivono i sogni come uno stato di coscienza tra la veglia e il sonno profondo. La Mandukya Upanishad delinea quattro stati di coscienza, con i sogni che rappresentano un regno intermedio.
+                    Nella <a class="text-dream-salmon hover:underline" href="https://www.biblegateway.com/passage/?search=Genesis%2041&amp;version=NR2006" rel="noopener noreferrer" target="_blank">Genesi (capitolo 41)</a>, Giuseppe legge nei sogni del faraone, con le vacche e le spighe, sette anni di abbondanza seguiti da sette di carestia; il testo attribuisce l'interpretazione a Dio, e da essa nasce un piano per immagazzinare il grano. Nel <a class="text-dream-salmon hover:underline" href="https://www.biblegateway.com/passage/?search=Matthew%201%3A18-2%3A12&amp;version=NR2006" rel="noopener noreferrer" target="_blank">Vangelo di Matteo</a>, un altro Giuseppe apprende in sogno la <a class="text-dream-salmon hover:underline" href="../simboli/gravidanza">gravidanza</a> di Maria, e i magi vengono avvertiti in sogno di non tornare da Erode.
                 </p>
 <p>
-                    I testi buddisti descrivono i sogni come <strong>esperienze illusorie</strong> che dimostrano la natura della mente. Il buddismo tibetano ha sviluppato pratiche sofisticate di yoga del sogno, utilizzando <a class="text-dream-salmon hover:underline" href="guida-ai-sogni-lucidi-per-principianti-prendi-il-controllo-delle-tue-notti">sogni lucidi</a> come percorso per il risveglio spirituale e la comprensione della natura della realtà.
-                </p>
-<h2 id="medieval-period">Interpretazione del sogno nei periodi medievale e rinascimentale</h2>
-<p>
-                    Durante il <strong>Medioevo (500-1500 d.C.)</strong>, europeo L'interpretazione dei sogni era dominata dalla teologia cristiana. I sogni erano classificati come rivelazioni divine, eventi naturali derivanti dagli umori del corpo o inganni demoniaci.
+                    Il Talmud babilonese dedica ai sogni un lungo passo del trattato <a class="text-dream-salmon hover:underline" href="https://www.sefaria.org/Berakhot.55a" rel="noopener noreferrer" target="_blank">Berakhot</a>, dove a Rav Hisda è attribuito il paragone tra un sogno non interpretato e una lettera non letta. Nell'islam, un <a class="text-dream-salmon hover:underline" href="https://sunnah.com/bukhari:6987" rel="noopener noreferrer" target="_blank">hadith del Sahih al-Bukhari</a> definisce il buon sogno del credente una delle quarantasei parti della profezia, e manuali di interpretazione circolarono sotto il nome di <a class="text-dream-salmon hover:underline" href="https://en.wikipedia.org/wiki/Ibn_Sirin" rel="noopener noreferrer" target="_blank">Ibn Sirin</a> (morto nel 728), un'attribuzione che alcuni studiosi mettono in dubbio.
                 </p>
 <p>
-<strong>Tommaso d'Aquino</strong> (1225-1274) sintetizzò la filosofia aristotelica con la dottrina cristiana, sostenendo che mentre la maggior parte dei sogni deriva da cause naturali, Dio poteva occasionalmente usarli per comunicare con gli esseri umani.
+                    La <a class="text-dream-salmon hover:underline" href="https://en.wikipedia.org/wiki/Mandukya_Upanishad" rel="noopener noreferrer" target="_blank">Mandukya Upanishad</a> considera il sogno uno stato di coscienza, tra la veglia e il sonno profondo, a cui si aggiunge un quarto stato, turiya. Il buddhismo tibetano ha sviluppato uno yoga del sogno, vicino a quello che oggi chiamiamo <a class="text-dream-salmon hover:underline" href="guida-ai-sogni-lucidi-per-principianti-prendi-il-controllo-delle-tue-notti">sogno lucido</a>.
                 </p>
 <p>
-                    Il Rinascimento portò rinnovato interesse per i testi classici, in particolare per l'opera di Artemidoro. I manuali di interpretazione dei sogni divennero pubblicazioni popolari:
+                    Questi passi dicono ciò che dicono i loro testi. Non sono prove che i sogni <a class="text-dream-salmon hover:underline" href="i-sogni-possono-predire-il-futuro-la-sorprendente-scienza-dei-sogni-precognitivi">predicano il futuro</a>, né il riassunto di ciò che pensa ogni credente.
                 </p>
-<ul>
-<li><strong>Il "Commento al sogno di Scipione" di Macrobio</strong> (V secolo) fu ampiamente studiato</li>
-<li><strong>Girolamo Cardano</strong> (1501-1576) scrisse ampiamente sulla divinazione dei sogni</li>
-<li>Almanacchi popolari includevano dizionari dei sogni per la gente comune</li>
-</ul>
+<h2 id="medieval-period">Medioevo: da dove vengono i sogni?</h2>
 <p>
-                    Poi il <strong>Secolo dell'Illuminismo</strong> (1685-1815) portò scetticismo. I filosofi razionalisti liquidavano l'interpretazione dei sogni come superstizione, considerandoli rumore mentale privo di significato.
+                    Nella <a class="text-dream-salmon hover:underline" href="https://www.newadvent.org/summa/3095.htm#article6" rel="noopener noreferrer" target="_blank"><em>Summa theologiae</em> (II-II, questione 95, articolo 6)</a>, Tommaso d'Aquino si chiede se la divinazione attraverso i sogni sia illecita. La risposta dipende dalla causa. Alcuni sogni nascono dai pensieri della veglia o dallo stato del corpo, e possono servire da segni, come un medico legge i sintomi. Nel suo quadro teologico, altri possono venire da Dio o dai demoni; ciò che condanna è cercare conoscenza presso i demoni.
+                </p>
+<p>
+                    Spiegazioni naturali e religiose convivono quindi in uno stesso ragionamento. Il Medioevo non è stato solo un'epoca di fede cieca nei sogni.
                 </p>
 </div>
 <!-- Era Cards -->
@@ -223,115 +169,76 @@
 <div class="p-2 bg-purple-500/20 rounded-lg">
 <i class="w-5 h-5 text-purple-300" data-lucide="scroll"></i>
 </div>
-<h3 class="font-serif text-lg text-dream-cream">Era antica</h3>
+<h3 class="font-serif text-lg text-dream-cream">Antichità</h3>
 </div>
 <p class="text-sm text-gray-300 mb-3">
-                        I sogni erano messaggi divini che richiedevano sacerdoti del tempio e interpreti professionisti.
+                        Elenchi di presagi, un manuale egizio, Aristotele: il sogno come messaggio, segno o fenomeno naturale.
                     </p>
-<p class="text-xs text-dream-salmon">3100 a.C. - 500 d.C.</p>
+<p class="text-xs text-dream-salmon">Intorno al 2100 a.C. – II secolo d.C.</p>
 </div>
 <div class="era-card glass-panel rounded-xl p-6 border border-transparent">
 <div class="flex items-center gap-3 mb-4">
 <div class="p-2 bg-purple-500/20 rounded-lg">
 <i class="w-5 h-5 text-purple-300" data-lucide="book-open"></i>
 </div>
-<h3 class="font-serif text-lg text-dream-cream">Era religiosa</h3>
+<h3 class="font-serif text-lg text-dream-cream">Teologia medievale</h3>
 </div>
 <p class="text-sm text-gray-300 mb-3">
-                        Integrazione del sogno interpretazione con strutture teologiche e pratica spirituale.
+                        Tommaso d'Aquino classifica i sogni secondo la causa, naturale o soprannaturale.
                     </p>
-<p class="text-xs text-dream-salmon">500 d.C. - 1800 d.C.</p>
+<p class="text-xs text-dream-salmon">XIII secolo</p>
 </div>
 <div class="era-card glass-panel rounded-xl p-6 border border-transparent">
 <div class="flex items-center gap-3 mb-4">
 <div class="p-2 bg-purple-500/20 rounded-lg">
 <i class="w-5 h-5 text-purple-300" data-lucide="brain"></i>
 </div>
-<h3 class="font-serif text-lg text-dream-cream">Era scientifica</h3>
+<h3 class="font-serif text-lg text-dream-cream">Approcci moderni</h3>
 </div>
 <p class="text-sm text-gray-300 mb-3">
-                        Comprensione psicologica e neurologica che sostituisce le spiegazioni soprannaturali.
+                        La psicoanalisi interpreta, la ricerca sul sonno misura: domande vicine, prove di natura diversa.
                     </p>
-<p class="text-xs text-dream-salmon">1900 d.C. - Presente</p>
+<p class="text-xs text-dream-salmon">1900 – oggi</p>
 </div>
 </div>
 <div class="prose max-w-none text-gray-300">
-<h2 id="freud-revolution">La rivoluzione dei sogni di Freud Interpretazione: la mente inconscia</h2>
+<h2 id="freud-revolution">Freud: il desiderio e l'inconscio</h2>
 <p>
-                    Nel <strong>1899</strong>, Sigmund Freud pubblicò "Die Traumdeutung"; (L’interpretazione dei sogni), trasformando radicalmente il modo in cui la civiltà occidentale comprendeva i sogni. Questo lavoro segnò la nascita della moderna psicologia dei sogni.
+                    <a class="text-dream-salmon hover:underline" href="https://www.gutenberg.org/ebooks/66048" rel="noopener noreferrer" target="_blank"><em>L'interpretazione dei sogni</em></a> uscì nel novembre 1899, con la data del 1900. Freud sostiene che il sogno sia l'appagamento camuffato di un desiderio e presenta la sua interpretazione come una via privilegiata verso la vita psichica inconscia. Il libro si apre con una lunga rassegna degli autori precedenti: Freud non ha inventato lo studio psicologico dei sogni.
                 </p>
-<p>
-                    L'intuizione rivoluzionaria di Freud fu che i sogni non erano messaggi divini o attività cerebrale priva di significato, ma piuttosto <strong>espressioni di desideri e desideri inconsci</strong>. Secondo lui, i sogni costituiscono "la strada maestra verso l'inconscio".
-                </p>
-<h3>Concetti chiave di Freud per l'interpretazione dei sogni:</h3>
 <ul>
-<li><strong>Contenuto manifesto:</strong> La trama letterale del sogno così come viene ricordato</li>
-<li><strong>Contenuto latente:</strong> Il significato psicologico nascosto sotto la superficie</li>
-<li><strong>Lavoro onirico:</strong> Il processo di mascheramento dei desideri inconsci attraverso il simbolismo</li>
-<li><strong>Soddisfazione dei desideri:</strong> Sogni come espressioni di desideri repressi, spesso di natura sessuale</li>
+<li><strong>Contenuto manifesto:</strong> il sogno come lo ricordi e lo racconti.</li>
+<li><strong>Pensieri latenti:</strong> ciò che Freud cercava di ricostruire con l'analisi.</li>
+<li><strong>Lavoro onirico:</strong> le trasformazioni che ipotizzava tra i due, come la condensazione e lo spostamento.</li>
 </ul>
 <p>
-                    Freud sviluppò tecniche interpretative tra cui <strong>libera associazione</strong>, dove i pazienti parlavano liberamente degli elementi del sogno, rivelando connessioni inconsce. Ha anche creato un lessico simbolico, anche se ha messo in guardia contro una rigida interpretazione dei simboli, sottolineando che il simbolismo dei sogni deve essere compreso nel contesto della vita dell'individuo.
+                    Il suo metodo si basa sulle libere associazioni: il sognatore dice che cosa gli evoca ogni elemento del sogno. La teoria resta discussa e non è una tabella per decifrare qualsiasi sogno. Una parte, però, è utile a chiunque tenga un diario: le tue associazioni contano più della voce di un dizionario.
+                </p>
+<h2 id="jung-archetypes">Jung: sogni, miti e archetipi</h2>
+<p>
+                    A lungo vicino a Freud, Carl Jung ruppe con lui all'epoca di <a class="text-dream-salmon hover:underline" href="https://www.gutenberg.org/files/65903/65903-h/65903-h.htm" rel="noopener noreferrer" target="_blank"><em>Trasformazioni e simboli della libido</em></a> (1912), un libro che confronta sogni e fantasie con la mitologia.
                 </p>
 <p>
-                    Mentre molte delle teorie specifiche di Freud sono state messe in discussione, la sua intuizione fondamentale - che i sogni hanno un significato psicologico - ha rivoluzionato sia la psicologia che la cultura. I sogni sono diventati un argomento degno di indagine scientifica.
+                    In seguito descrisse un inconscio collettivo, figure ricorrenti che chiamò archetipi (l'Ombra, l'Anima e l'Animus, il Sé) e sogni che compensano un atteggiamento cosciente troppo unilaterale. Sono concetti interpretativi, non risultati di ricerca: che certe immagini si somiglino da un racconto all'altro non prova che un simbolo abbia lo stesso significato per tutti.
                 </p>
-<blockquote>
-                    "L'interpretazione dei sogni è la strada maestra verso la conoscenza delle attività inconsce della mente." - Sigmund Freud, 1899
-                </blockquote>
-<h2 id="jung-archetypes">L'interpretazione dei sogni di Carl Jung e l'inconscio collettivo</h2>
+<h2 id="modern-neuroscience">Scienza moderna: cosa si può misurare?</h2>
 <p>
-<strong>Carl Jung</strong> (1875-1961), inizialmente protetto di Freud, sviluppò un approccio radicalmente diverso all'interpretazione dei sogni che enfatizzava le dimensioni spirituali e creative.
+                    Nel 1953 <a class="text-dream-salmon hover:underline" href="https://pubmed.ncbi.nlm.nih.gov/13089671/" rel="noopener noreferrer" target="_blank">Aserinsky e Kleitman descrissero periodi ricorrenti di movimenti oculari rapidi durante il sonno</a>. Fu l'inizio dello studio in laboratorio del <a class="text-dream-salmon hover:underline" href="sonno-rem-e-sogni-comprendere-il-ripristino-notturno-del-cervello">sonno REM</a> e dei sogni. Lavori più recenti, come lo <a class="text-dream-salmon hover:underline" href="https://pubmed.ncbi.nlm.nih.gov/28394322/" rel="noopener noreferrer" target="_blank">studio di Siclari e colleghi (2017)</a>, confermano che si riferiscono sogni anche al risveglio dal sonno non REM.
                 </p>
 <p>
-                    Jung propose che, oltre all'inconscio personale descritto da Freud, gli esseri umani condividono un <strong>inconscio collettivo</strong> - un serbatoio di simboli e modelli universali che chiamò "archetipi". Questi archetipi appaiono nei sogni in tutte le culture e nel corso della storia.
+                    Nel 1977 l'<a class="text-dream-salmon hover:underline" href="https://ajp.psychiatryonline.org/doi/10.1176/ajp.134.12.1335" rel="noopener noreferrer" target="_blank">ipotesi di attivazione-sintesi</a> di Hobson e McCarley propose che il sogno nasca dallo sforzo del cervello di dare un senso all'attività prodotta durante il sonno REM. È stata molto influente ed è ancora dibattuta.
                 </p>
-<h3>Archetipi junghiani che appaiono comunemente nei sogni:</h3>
-<ul>
-<li><strong>L'Ombra:</strong> Gli aspetti oscuri e repressi della personalità</li>
-<li><strong>L'Anima/Animus:</strong> Il lato femminile negli uomini / lato maschile nelle donne</li>
-<li><strong>Il Vecchio/Donna Saggio:</strong> Rappresenta saggezza e guida</li>
-<li><strong>Il Sé:</strong> L'archetipo di completezza e integrazione</li>
-<li><strong>L'Eroe:</strong> Il viaggio per il superamento ostacoli</li>
-</ul>
+<h3>Sogni e vita da svegli</h3>
 <p>
-                    A differenza dell'enfasi di Freud sui conflitti passati e sui desideri repressi, Jung vedeva i sogni come <strong>prospettivi e compensativi</strong> - puntano verso lo sviluppo futuro e bilanciano atteggiamenti coscienti unilaterali.
+                    In uno <a class="text-dream-salmon hover:underline" href="https://pubmed.ncbi.nlm.nih.gov/12590838/" rel="noopener noreferrer" target="_blank">studio del 2003</a>, 29 partecipanti hanno annotato sogni e giornate per due settimane. Circa due terzi dei 299 resoconti (65%) contenevano elementi della vita da svegli recente, ma solo l'1-2% riproduceva un episodio reale. È uno studio, non una legge universale, ma coincide con ciò che nota chi tiene un diario: il sogno prende in prestito dalle tue giornate e le ricompone.
                 </p>
+<h3>Le funzioni del sogno restano ipotesi</h3>
 <p>
-                    Anche l'approccio di Jung è stato convalidato <strong>dimensioni spirituali e mistiche</strong> di sogni. Ha studiato l'alchimia, la mitologia e il simbolismo religioso, trovando questi stessi modelli ricorrenti nei suoi pazienti. sogni. Ciò ha reso il suo lavoro particolarmente influente nei circoli spirituali e artistici.
+                    L'<a class="text-dream-salmon hover:underline" href="https://pubmed.ncbi.nlm.nih.gov/11515147/" rel="noopener noreferrer" target="_blank">ipotesi della simulazione della minaccia</a> di Antti Revonsuo suggerisce che sognare permetta di provare situazioni minacciose, il che aiuterebbe a capire perché i sogni spiacevoli siano così frequenti. È una proposta, non la spiegazione di ogni <a class="text-dream-salmon hover:underline" href="incubi-cause-significato-e-come-fermarli">incubo</a>.
                 </p>
+<h3>Decifrare i sogni, parlare con chi sogna</h3>
 <p>
-                    Il metodo junghiano enfatizza <strong>amplificazione</strong> - esplorando le associazioni culturali, mitologiche e simboliche delle immagini dei sogni - piuttosto che la riduzione alle sole esperienze personali.
-                </p>
-<h2 id="modern-neuroscience">Neuroscienza moderna dell'interpretazione dei sogni: cosa rivela la scienza</h2>
-<p>
-                    Il La scoperta del <strong>sonno REM (Rapid Eye Movement) nel 1953</strong> da parte di Eugene Aserinsky e Nathaniel Kleitman ha aperto una nuova era della ricerca scientifica sui sogni. Per la prima volta, gli scienziati hanno potuto identificare oggettivamente quando le persone stavano sognando.
-                </p>
-<h3>Ciò che la neuroscienza moderna ha scoperto sui sogni:</h3>
-<p>
-<strong>Attività cerebrale durante i sogni:</strong> Le moderne tecniche di imaging (fMRI, scansioni PET) rivelano che il sogno coinvolge un'intensa attività nella corteccia visiva, nell'amigdala (emozioni) e nell'ippocampo (memoria), mentre la corteccia prefrontale (ragionamento logico) mostra un'attività ridotta - spiegando i sogni' spesso di natura illogica.
-                </p>
-<p>
-<strong>L'ipotesi della sintesi di attivazione</strong> (J. Allan Hobson, 1977) ha proposto che i sogni siano il risultato del tentativo del cervello di dare un senso all'attivazione neurale casuale durante <a class="text-dream-salmon hover:underline" href="sonno-rem-e-sogni-comprendere-il-ripristino-notturno-del-cervello">il sonno REM</a>. Sebbene influente, questa teoria è stata rivista: i sogni non sono del tutto casuali ma riflettono preoccupazioni durante la veglia ed elaborazione emotiva.
-                </p>
-<p>
-<strong>Consolidamento della memoria:</strong> La ricerca di Matthew Walker e altri dimostra che <a class="text-dream-salmon hover:underline" href="sonno-rem-e-sogni-comprendere-il-ripristino-notturno-del-cervello">il sonno REM</a> è fondamentale per l'elaborazione della memoria emotiva. I sogni possono aiutare a integrare nuove esperienze, elaborare emozioni e consolidare l'apprendimento.
-                </p>
-<p>
-<strong>La teoria della simulazione delle minacce</strong> (Antti Revonsuo, 2000) suggerisce che i sogni si siano evoluti come meccanismo di difesa biologica, permettendoci di provare le risposte alle minacce in un ambiente sicuro. Ciò spiega la prevalenza dei sogni ansiosi e <a class="text-dream-salmon hover:underline" href="incubi-cause-significato-e-come-fermarli">incubi</a>.
-                </p>
-<p>
-<strong>l'ipotesi della continuità</strong> mostra che il contenuto dei sogni riflette le preoccupazioni della vita da svegli. Gli studi rilevano che circa <strong>65% dei contenuti dei sogni</strong> si riferisce a recenti esperienze di veglia, preoccupazioni emotive e situazioni di vita in corso.
-                </p>
-<h3>Contemporary Dream Science Insights:</h3>
-<ul>
-<li><strong>Risoluzione dei problemi:</strong> Gli studi confermano che i sogni possono facilitare la risoluzione creativa dei problemi e l'intuizione</li>
-<li><strong>Regolazione emotiva:</strong> Il sonno REM aiuta a elaborare e ridurre la carica emotiva delle esperienze difficili</li>
-<li><strong>Ristrutturazione della rete neurale:</strong> I sogni possono riflettere la riorganizzazione delle connessioni neurali del cervello</li>
-<li><strong>Differenze individuali:</strong> La personalità, la salute mentale e le circostanze della vita influenzano fortemente il contenuto del sogno</li>
-</ul>
-<p>
-                    Moderno le neuroscienze non sminuiscono il significato dei sogni, ma fondano l'interpretazione sulla <strong>funzione cerebrale e sui processi psicologici</strong> piuttosto che su strutture soprannaturali o puramente simboliche.
+                    Nel 2013 un gruppo giapponese ha usato le immagini cerebrali per <a class="text-dream-salmon hover:underline" href="https://bicr.atr.jp/dni/en/research-projects/neural-decoding-of-visual-imagery-during-sleep/" rel="noopener noreferrer" target="_blank">prevedere grandi categorie di immagini</a> riferite da tre partecipanti all'addormentamento. In uno <a class="text-dream-salmon hover:underline" href="https://pubmed.ncbi.nlm.nih.gov/33607035/" rel="noopener noreferrer" target="_blank">studio del 2021 su 36 partecipanti</a>, i ricercatori hanno ottenuto 29 risposte corrette da sei sognatori lucidi in sonno REM. Sono dimostrazioni limitate, non macchine che leggono i sogni.
                 </p>
 <aside class="glass-panel rounded-2xl p-6 my-8 border border-dream-salmon/20">
 <div class="flex items-start gap-4">
@@ -339,60 +246,34 @@
 <i class="w-6 h-6 text-dream-salmon" data-lucide="mic"></i>
 </div>
 <div>
-<h4 class="font-serif text-lg text-dream-cream mb-2">Cattura i tuoi sogni istantaneamente</h4>
-<p class="text-sm text-gray-400 mb-4">La scienza moderna mostra che i ricordi dei sogni svaniscono entro pochi minuti dal risveglio. Noctalia ti consente di registrare vocale i tuoi sogni nel momento in cui ti svegli, conservando i dettagli per l'analisi e la riflessione.</p>
+<h4 class="font-serif text-lg text-dream-cream mb-2">Annota i tuoi sogni prima che svaniscano</h4>
+<p class="text-sm text-gray-400 mb-4">Tutti gli interpreti di questa storia sono partiti da un sogno che qualcuno ricordava. In Noctalia, racconta il tuo a voce appena sveglio: viene trascritto e salvato nel tuo diario, pronto per le tue associazioni.</p>
 <a class="inline-flex items-center gap-2 text-sm text-dream-salmon hover:text-dream-salmonLight transition-colors" href="/it/">
-                                Scopri Noctalia <i class="w-4 h-4" data-lucide="arrow-right"></i>
+                                Prova Noctalia gratis <i class="w-4 h-4" data-lucide="arrow-right"></i>
 </a>
 </div>
 </div>
 </aside>
-<h2 id="cultural-differences">Differenze culturali nell'interpretazione dei sogni nel mondo</h2>
+<h2 id="cultural-differences">Come leggere le credenze sui sogni, e i tuoi sogni</h2>
 <p>
-                    Mentre la psicologia occidentale ha dominato la ricerca accademica sui sogni, le culture di tutto il mondo mantengono <strong>approcci molto diversi</strong> per comprendere i sogni. Queste differenze rivelano variazioni fondamentali nelle visioni del mondo.
-                </p>
-<h3>Approccio individualistico occidentale all'interpretazione dei sogni</h3>
-<p>
-                    La psicologia occidentale, seguendo Freud e Jung, si concentra sui sogni come espressioni della <strong>psicologia individuale</strong> - ricordi personali, desideri, conflitti e sviluppo. Il sognatore è tipicamente l'unico autore e soggetto dei propri sogni.
-                </p>
-<h3>Interpretazione dei sogni nelle tradizioni indigene e tribali</h3>
-<p>
-                    Molte culture indigene vedono i sogni come <strong>esperienze collettive con significato sociale</strong>. Tra gli Irochesi del Nord America, i sogni importanti venivano condivisi con l'intera comunità e la tribù lavorava insieme per realizzare il messaggio del sogno.
+                    Una sola testimonianza non parla per un intero popolo. Nel XVII secolo, missionari gesuiti descrissero comunità haudenosaunee (irochesi) in cui un sogno poteva esprimere un desiderio dell'anima che gli altri aiutavano a realizzare; l'antropologo Anthony Wallace <a class="text-dream-salmon hover:underline" href="https://dreamsofantiquity.ku.de/id/eprint/70186/" rel="noopener noreferrer" target="_blank">ha analizzato questi resoconti nel 1958</a>. Restano descrizioni fatte dall'esterno.
                 </p>
 <p>
-                    Le culture aborigene australiane vedono i sogni come accesso al <strong>"Dreamtime"</strong> , una dimensione senza tempo in cui esseri ancestrali hanno plasmato il mondo. I sogni collegano gli individui alla terra, agli antenati e alla legge cosmica.
+                    Anche la traduzione può ingannare. La parola inglese <em>Dreaming</em> («Tempo del sogno»), usata per concetti degli aborigeni australiani, <a class="text-dream-salmon hover:underline" href="https://theconversation.com/dreamtime-and-the-dreaming-who-dreamed-up-these-terms-20835" rel="noopener noreferrer" target="_blank">viene da traduttori dell'Ottocento</a>. Indica la legge degli antenati e la creazione del mondo, non anzitutto i sogni notturni.
                 </p>
 <p>
-                    Il popolo Achuar dell'Ecuador pratica <strong>la condivisione quotidiana dei sogni</strong> ogni mattina. I sogni guidano le decisioni di caccia, le relazioni sociali e la direzione della comunità. Gli sciamani ricevono una formazione speciale nell'interpretazione e nella navigazione dei sogni.
+                    Lo stesso vale per i simboli: un <a class="text-dream-salmon hover:underline" href="../simboli/serpente">serpente</a>, l'<a class="text-dream-salmon hover:underline" href="../simboli/acqua">acqua</a> o il <a class="text-dream-salmon hover:underline" href="../simboli/fuoco">fuoco</a> possono ricevere significati opposti da un testo all'altro. Prima di fidarti di un'interpretazione, chiediti chi l'ha scritta, quando e se descrive una credenza, una pratica personale o un risultato di ricerca.
                 </p>
-<h3>Prospettive dell'Asia orientale sull'interpretazione dei sogni</h3>
-<p>
-                    La medicina tradizionale cinese interpreta i sogni attraverso la lente dei <strong>sistemi energetici e della salute degli organi</strong>. Diversi organi sono associati a specifiche emozioni e tipi di sogni:
-                </p>
+<h3>Tre sguardi su uno stesso sogno</h3>
+<p><strong>Esempio inventato:</strong> mostra come questa storia possa aiutarti a guardare un sogno senza decidere al posto tuo che cosa significa.</p>
 <ul>
-<li><strong>Squilibrio del fegato:</strong> Sogni di rabbia, foreste o perdita</li>
-<li><strong>Squilibrio del cuore:</strong> Sogni di <a class="text-dream-salmon hover:underline" href="../simboli/fuoco">fuoco</a>, risate o ansia</li>
-<li><strong>Squilibrio renale:</strong> Sogni di <a class="text-dream-salmon hover:underline" href="../simboli/acqua">acqua</a>, paura o <a class="text-dream-salmon hover:underline" href="../simboli/cadere">cadere</a></li>
+<li><strong>Sogno:</strong> «Mi si staccavano i denti uno dopo l'altro mentre parlavo in riunione.»</li>
+<li><strong>Emozione:</strong> «Più imbarazzo che dolore. Cercavo di coprirmi la bocca.»</li>
+<li><strong>Contesto recente:</strong> «Un colloquio di lavoro giovedì.»</li>
+<li><strong>Domanda da tenere:</strong> «Questo sogno torna prima di altri momenti in cui mi sento giudicato?»</li>
 </ul>
 <p>
-                    Nella cultura giapponese, il concetto di <strong>"yūgen"</strong> (mistero profondo) si estende ai sogni, che sono visti come esperienze estetiche che rivelano verità più profonde oltre la comprensione razionale.
-                </p>
-<h3>Sintesi multiculturale moderna dell'interpretazione dei sogni</h3>
-<p>
-                    I dreamworker contemporanei riconoscono sempre più che <strong>i metodi di interpretazione dovrebbero onorare la cultura contesto</strong>. Un <a class="text-dream-salmon hover:underline" href="../simboli/serpente">serpente</a> in un sogno potrebbe rappresentare la saggezza nella tradizione indù, il pericolo nei contesti occidentali o la guarigione nella prospettiva dei nativi americani.
-                </p>
-<p>
-                    Questa consapevolezza ha arricchito la psicologia occidentale, producendo approcci più sfumati e sensibili al contesto che riconoscono sia modelli universali che specificità culturale.
-                </p>
-<h3>Il futuro dell'interpretazione dei sogni e Scienza</h3>
-<p>
-                    Con l'avanzare delle neuroscienze, stiamo sviluppando strumenti che sembravano fantascienza: <strong>decodificare il contenuto dei sogni dalle scansioni cerebrali, inducendo specifici temi dei sogni e persino comunicando con i sognatori lucidi durante il sonno</strong>.
-                </p>
-<p>
-                    Eppure l'impulso umano di trovare un significato nei sogni persiste. Forse la lezione più profonda di questa storia di 5.000 anni: i sogni svolgono molteplici funzioni contemporaneamente. Elaborano emozioni, consolidano ricordi, simulano minacce, esprimono desideri e riflettono le nostre preoccupazioni più profonde.
-                </p>
-<p>
-                    Ciò che emerge da questa storia è un dialogo in evoluzione tra gli esseri umani e i loro mondi interiori, ogni epoca con intuizioni uniche che si basano sull'antica saggezza.
+                    Uno scriba egizio ci avrebbe visto un cattivo presagio. Freud ti avrebbe chiesto che cosa ti evocano i denti. Un ricercatore annoterebbe il legame con una preoccupazione recente. Solo tu puoi verificare quale pista ti corrisponde, e una sola annotazione non prova nulla: i collegamenti emergono annotando gli stessi elementi per più notti.
                 </p>
 </div>
 <!-- Related Symbols Start -->
@@ -422,12 +303,12 @@
 <div class="w-16 h-16 bg-dream-salmon/10 rounded-full flex items-center justify-center mx-auto mb-6">
 <i class="w-8 h-8 text-dream-salmon" data-lucide="sparkles"></i>
 </div>
-<h3 class="font-serif text-2xl md:text-3xl mb-4 text-dream-cream">Inizia oggi il viaggio dei tuoi sogni</h3>
+<h3 class="font-serif text-2xl md:text-3xl mb-4 text-dream-cream">Ogni interpretazione comincia da un sogno annotato</h3>
 <p class="text-purple-200/70 mb-6 max-w-lg mx-auto">
-                    Unisciti a migliaia di sognatori che utilizzano Noctalia per registrare, analizzare e comprendere i loro sogni. La tecnologia moderna incontra la saggezza dei sogni senza tempo.
+                    Conserva i tuoi sogni in Noctalia, a voce o per iscritto, con ciò che hai provato. Rileggendoli uno accanto all'altro vedrai cosa ritorna, e quando.
                 </p>
 <a class="inline-flex items-center gap-2 px-8 py-4 bg-dream-salmon text-dream-dark rounded-full font-bold hover:bg-dream-salmon/90 transition-colors" href="/it/">
-                    Inizia il diario dei sogni <i class="w-5 h-5" data-lucide="arrow-right"></i>
+                    Inizia il mio diario dei sogni <i class="w-5 h-5" data-lucide="arrow-right"></i>
 </a>
 </aside>
 <!-- FAQ Section -->
@@ -436,11 +317,11 @@
 <div class="space-y-4">
 <details class="glass-panel rounded-xl p-4 group cursor-pointer">
 <summary class="font-medium flex justify-between items-center text-dream-cream">
-                            Chi per primo ha interpretato i sogni?
+                            Chi ha interpretato i sogni per primo?
                             <i class="w-5 h-5 transition-transform group-open:rotate-180 text-dream-salmon" data-lucide="chevron-down"></i>
 </summary>
 <p class="mt-4 text-sm text-gray-400 leading-relaxed">
-                            Le prime interpretazioni dei sogni registrate provengono dall'antica Mesopotamia intorno al 3100 a.C. I Sumeri credevano che i sogni fossero messaggi degli dei e conservavano registrazioni dettagliate dei sogni su tavolette di argilla. Anche l'antico Egitto aveva interpreti di sogni professionisti che prestavano servizio nei templi già nel 2000 a.C.
+                            Impossibile saperlo. Uno degli esempi più antichi giunti fino a noi è il cilindro A di Gudea, datato dal Louvre tra il 2120 e il 2110 a.C., che racconta un sogno in cui viene chiesto di costruire un tempio. Attesta una pratica, non la sua origine.
                         </p>
 </details>
 <details class="glass-panel rounded-xl p-4 group cursor-pointer">
@@ -449,30 +330,58 @@
                             <i class="w-5 h-5 transition-transform group-open:rotate-180 text-dream-salmon" data-lucide="chevron-down"></i>
 </summary>
 <p class="mt-4 text-sm text-gray-400 leading-relaxed">
-                            No, Freud non ha inventato l'interpretazione dei sogni: gli esseri umani interpretano i sogni da almeno 5.000 anni. Tuttavia, Freud rivoluzionò il campo nel 1899 con "L'interpretazione dei sogni". che fu il primo approccio psicologico sistematico ai sogni piuttosto che a un approccio soprannaturale o divino.
+                            No. Aristotele cercava già cause naturali dei sogni, e Artemidoro scrisse un manuale di interpretazione più di 1500 anni prima di lui. Freud propose nel 1899 una teoria psicologica fondata sulle associazioni del sognatore.
                         </p>
 </details>
 <details class="glass-panel rounded-xl p-4 group cursor-pointer">
 <summary class="font-medium flex justify-between items-center text-dream-cream">
-                            In che modo le diverse culture interpretano i sogni in modo diverso?
+                            Come interpretano i sogni le diverse culture?
                             <i class="w-5 h-5 transition-transform group-open:rotate-180 text-dream-salmon" data-lucide="chevron-down"></i>
 </summary>
 <p class="mt-4 text-sm text-gray-400 leading-relaxed">
-                            L'interpretazione dei sogni varia in modo significativo tra le culture. La psicologia occidentale si concentra sulla psicologia individuale e sui desideri inconsci. Le culture indigene spesso vedono i sogni come viaggi spirituali o comunicazioni ancestrali. Le tradizioni dell’Asia orientale vedono i sogni come riflessi della salute fisica e dell’equilibrio energetico. Queste differenze culturali riflettono visioni del mondo più profonde sulla natura della coscienza e della realtà.
+                            I sogni sono stati letti come messaggi divini, presagi, segni del corpo o desideri dell'anima. Ma un testo non rappresenta mai un'intera comunità: chiediti chi ha raccolto un'interpretazione, quando e in quale contesto.
+                        </p>
+</details>
+<details class="glass-panel rounded-xl p-4 group cursor-pointer">
+<summary class="font-medium flex justify-between items-center text-dream-cream">
+                            Cosa dice la scienza moderna sul significato dei sogni?
+                            <i class="w-5 h-5 transition-transform group-open:rotate-180 text-dream-salmon" data-lucide="chevron-down"></i>
+</summary>
+<p class="mt-4 text-sm text-gray-400 leading-relaxed">
+                            I laboratori misurano l'attività del cervello e raccolgono resoconti di sogni, sia nel sonno REM sia fuori. I sogni attingono spesso alla vita da svegli recente, ma la ricerca non ha trovato alcun codice universale dei simboli. Il significato di un sogno resta una lettura personale, da confrontare con il tuo contesto.
                         </p>
 </details>
 </div>
 </section>
 <!-- Sources / Trust (TI-97) -->
 <section class="mt-16 glass-panel rounded-2xl p-6" id="sources">
-<h2 class="font-serif text-2xl text-dream-cream mb-4">Fonti/Approfondimenti</h2>
+<h2 class="font-serif text-2xl text-dream-cream mb-4">Fonti e approfondimenti</h2>
 <ul class="mt-6 space-y-2 text-sm text-gray-400">
-<li><a href="https://dictionary.apa.org/dream" rel="nofollow noopener noreferrer" target="_blank">Dizionario APA di psicologia - Sogno</a></li>
-<li><a href="https://dreamresearch.net/" rel="nofollow noopener noreferrer" target="_blank">DreamResearch.net — G. William Domhoff (panoramica sulla ricerca sui sogni)</a></li>
-<li><a href="https://www.sleepfoundation.org/dreams/dream-interpretation" rel="nofollow noopener noreferrer" target="_blank">Sleep Foundation - Interpretazione dei sogni (panoramica)</a></li>
-<li><a href="https://www.gutenberg.org/cache/epub/15489/pg15489-images.html" rel="nofollow noopener noreferrer" target="_blank">Freud (1900) - L'interpretazione dei sogni (dominio pubblico)</a></li>
+<li><a href="https://collections.louvre.fr/en/ark:/53355/cl010124631" rel="nofollow noopener noreferrer" target="_blank">Museo del Louvre, cilindro A di Gudea (MNB 1512)</a></li>
+<li><a href="https://faculty.washington.edu/snoegel/PDFs/articles/Noegel%2045%20TGD%202006.pdf" rel="nofollow noopener noreferrer" target="_blank">Noegel (2006), «On Puns and Divination: Egyptian Dream Exegesis from a Comparative Perspective»</a></li>
+<li><a href="https://www.britishmuseum.org/collection/object/Y_EA10683-3" rel="nofollow noopener noreferrer" target="_blank">British Museum, papiro Chester Beatty III (EA10683,3)</a></li>
+<li><a href="https://www.britannica.com/topic/Asclepius" rel="nofollow noopener noreferrer" target="_blank">Encyclopaedia Britannica, «Asclepius»</a></li>
+<li><a href="https://classics.mit.edu/Aristotle/dreams.html" rel="nofollow noopener noreferrer" target="_blank">Aristotele, <em>On Dreams</em> (traduzione inglese di J. I. Beare)</a></li>
+<li><a href="https://classics.mit.edu/Aristotle/prophesying.html" rel="nofollow noopener noreferrer" target="_blank">Aristotele, <em>On Prophesying by Dreams</em> (traduzione inglese di J. I. Beare)</a></li>
+<li><a href="https://it.wikipedia.org/wiki/Oneirocritica" rel="nofollow noopener noreferrer" target="_blank">Wikipedia, «Oneirocritica» (Artemidoro)</a></li>
+<li><a href="https://www.biblegateway.com/passage/?search=Genesis%2041&amp;version=NR2006" rel="nofollow noopener noreferrer" target="_blank">Genesi 41 (Nuova Riveduta 2006)</a> e <a href="https://www.biblegateway.com/passage/?search=Matthew%201%3A18-2%3A12&amp;version=NR2006" rel="nofollow noopener noreferrer" target="_blank">Matteo 1,18–2,12</a></li>
+<li><a href="https://www.sefaria.org/Berakhot.55a" rel="nofollow noopener noreferrer" target="_blank">Talmud babilonese, Berakhot 55a (Sefaria)</a></li>
+<li><a href="https://sunnah.com/bukhari:6987" rel="nofollow noopener noreferrer" target="_blank">Sahih al-Bukhari 6987 (Sunnah.com)</a> e <a href="https://en.wikipedia.org/wiki/Ibn_Sirin" rel="nofollow noopener noreferrer" target="_blank">Wikipedia (en), «Ibn Sirin»</a></li>
+<li><a href="https://en.wikipedia.org/wiki/Mandukya_Upanishad" rel="nofollow noopener noreferrer" target="_blank">Wikipedia (en), «Mandukya Upanishad»</a></li>
+<li><a href="https://www.newadvent.org/summa/3095.htm#article6" rel="nofollow noopener noreferrer" target="_blank">Tommaso d'Aquino, <em>Summa theologiae</em>, II-II, q. 95, a. 6 (traduzione inglese)</a></li>
+<li><a href="https://www.gutenberg.org/ebooks/66048" rel="nofollow noopener noreferrer" target="_blank">Sigmund Freud, <em>The Interpretation of Dreams</em> (traduzione inglese di A. A. Brill)</a></li>
+<li><a href="https://www.gutenberg.org/files/65903/65903-h/65903-h.htm" rel="nofollow noopener noreferrer" target="_blank">C. G. Jung, <em>Psychology of the Unconscious</em> (traduzione inglese di B. M. Hinkle, 1916)</a></li>
+<li><a href="https://pubmed.ncbi.nlm.nih.gov/13089671/" rel="nofollow noopener noreferrer" target="_blank">Aserinsky e Kleitman (1953), <em>Science</em></a></li>
+<li><a href="https://pubmed.ncbi.nlm.nih.gov/28394322/" rel="nofollow noopener noreferrer" target="_blank">Siclari et al. (2017), «The neural correlates of dreaming», <em>Nature Neuroscience</em></a></li>
+<li><a href="https://ajp.psychiatryonline.org/doi/10.1176/ajp.134.12.1335" rel="nofollow noopener noreferrer" target="_blank">Hobson e McCarley (1977), <em>American Journal of Psychiatry</em></a></li>
+<li><a href="https://pubmed.ncbi.nlm.nih.gov/12590838/" rel="nofollow noopener noreferrer" target="_blank">Fosse et al. (2003), «Dreaming and episodic memory: a functional dissociation?»</a></li>
+<li><a href="https://pubmed.ncbi.nlm.nih.gov/11515147/" rel="nofollow noopener noreferrer" target="_blank">Revonsuo (2000), «The reinterpretation of dreams», <em>Behavioral and Brain Sciences</em></a></li>
+<li><a href="https://bicr.atr.jp/dni/en/research-projects/neural-decoding-of-visual-imagery-during-sleep/" rel="nofollow noopener noreferrer" target="_blank">Horikawa et al. (2013), «Neural decoding of visual imagery during sleep», <em>Science</em></a></li>
+<li><a href="https://pubmed.ncbi.nlm.nih.gov/33607035/" rel="nofollow noopener noreferrer" target="_blank">Konkoly et al. (2021), <em>Current Biology</em></a></li>
+<li><a href="https://dreamsofantiquity.ku.de/id/eprint/70186/" rel="nofollow noopener noreferrer" target="_blank">Wallace (1958), «Dreams and the Wishes of the Soul», <em>American Anthropologist</em> (scheda bibliografica)</a></li>
+<li><a href="https://theconversation.com/dreamtime-and-the-dreaming-who-dreamed-up-these-terms-20835" rel="nofollow noopener noreferrer" target="_blank">The Conversation, «Dreamtime and the Dreaming: who dreamed up these terms?»</a></li>
 </ul>
-<p class="mt-6 text-xs text-purple-200/60">Ultimo aggiornamento: 26 dicembre 2025</p>
+<p class="mt-6 text-xs text-purple-200/60">Ultimo aggiornamento: 9 ottobre 2026</p>
 </section>
 <!-- Blog Nav Start -->
 <section class="mt-12" aria-label="Navigazione tra articoli" data-blog-nav="">

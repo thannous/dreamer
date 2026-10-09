@@ -5,7 +5,7 @@
   "lang": "es",
   "slug": "suenos-de-embarazo",
   "title": "Sueños de Embarazo: Significado Simbólico | Noctalia",
-  "description": "¿Por qué sueñas con estar embarazada? Descubre el significado simbólico, aunque no estés esperando un bebé.",
+  "description": "Soñar con estar embarazada, dar a luz o que otra persona espera un bebé: qué pueden significar los sueños de embarazo, qué dice la ciencia y qué anotar.",
   "robots": "max-image-preview:large",
   "themeColor": "#0a0514",
   "htmlClass": "scroll-smooth blog-article",
@@ -14,24 +14,24 @@
   "mainClass": "pt-32 pb-20 px-4",
   "ogType": "article",
   "ogTitle": "Sueños de Embarazo: Significado Simbólico | Noctalia",
-  "ogDescription": "¿Por qué sueñas con estar embarazada? Descubre el significado simbólico, aunque no estés esperando un bebé.",
+  "ogDescription": "¿Embarazada en sueños, pero no en la vida real? Qué puede significar el sueño y qué dice la investigación sobre los sueños durante el embarazo.",
   "ogImage": "https://noctalia.app/img/blog/pregnancy-dreams-meaning.webp",
   "ogImageAlt": "Luz suave que simboliza crecimiento y nuevos comienzos",
   "twitterCard": "summary_large_image",
   "twitterTitle": "Sueños de Embarazo: Significado Simbólico | Noctalia",
-  "twitterDescription": "¿Por qué sueñas con estar embarazada? Descubre el significado simbólico, aunque no estés esperando un bebé.",
+  "twitterDescription": "Soñar con estar embarazada: qué puede contar el sueño y qué anotar al despertar.",
   "twitterImage": "https://noctalia.app/img/blog/pregnancy-dreams-meaning.webp",
   "twitterImageAlt": "Luz suave que simboliza crecimiento y nuevos comienzos",
   "publishedTime": "2025-12-11",
-  "modifiedTime": "2026-07-09",
+  "modifiedTime": "2026-10-09",
   "author": "Thanh Chau",
   "prevPath": "/es/blog/suenos-con-ex",
   "nextPath": "/es/blog/guia-pesadillas",
   "preloadImage": "/img/blog/pregnancy-dreams-meaning.webp",
   "jsonLd": [
-    "{\n            \"@context\": \"https://schema.org\",\n            \"@type\": \"BlogPosting\",\n            \"headline\": \"Sueños de embarazo: lo que significan (aunque no estés embarazada)\",\n            \"description\": \"¿Qué significan los sueños de embarazo? Descubre por qué sueñas con estar embarazada, dar a luz o bebés.\",\n            \"image\": {\n                \"@type\": \"ImageObject\",\n                \"url\": \"https://noctalia.app/img/blog/pregnancy-dreams-meaning.webp\",\n                \"width\": 1200,\n                \"height\": 630\n            },\n            \"author\": [\n                {\n                    \"@type\": \"Person\",\n                    \"@id\": \"https://noctalia.app/es/sobre#person\",\n                    \"name\": \"Thanh Chau\",\n                    \"jobTitle\": \"Founder & Publication Director\",\n                    \"url\": \"https://noctalia.app/es/sobre\",\n                    \"worksFor\": {\n                        \"@type\": \"Organization\",\n                        \"@id\": \"https://noctalia.app/#organization\",\n                        \"name\": \"Noctalia\",\n                        \"url\": \"https://noctalia.app\"\n                    }\n                },\n                {\n                    \"@type\": \"Organization\",\n                    \"@id\": \"https://noctalia.app/#organization\",\n                    \"name\": \"Noctalia\",\n                    \"url\": \"https://noctalia.app\",\n                    \"logo\": {\n                        \"@type\": \"ImageObject\",\n                        \"url\": \"https://noctalia.app/logo/logo_noctalia.png\"\n                    }\n                }\n            ],\n            \"publisher\": {\n                \"@type\": \"Organization\",\n                \"name\": \"Noctalia\",\n                \"url\": \"https://noctalia.app\",\n                \"logo\": {\n                    \"@type\": \"ImageObject\",\n                    \"url\": \"https://noctalia.app/logo/logo_noctalia.png\"\n                }\n            },\n            \"datePublished\": \"2025-12-11\",\n            \"dateModified\": \"2026-07-09\",\n            \"mainEntityOfPage\": {\n                \"@type\": \"WebPage\",\n                \"@id\": \"https://noctalia.app/es/blog/suenos-de-embarazo\"\n            },\n            \"inLanguage\": \"es\",\n            \"isAccessibleForFree\": true,\n            \"wordCount\": 873,\n            \"timeRequired\": \"PT3M\",\n            \"url\": \"https://noctalia.app/es/blog/suenos-de-embarazo\"\n        }",
-    "{\n            \"@context\": \"https://schema.org\",\n            \"@type\": \"FAQPage\",\n            \"mainEntity\": [\n                {\n                    \"@type\": \"Question\",\n                    \"name\": \"¿Qué significa soñar con estar embarazada?\",\n                    \"acceptedAnswer\": { \"@type\": \"Answer\", \"text\": \"Los sueños de embarazo a menudo simbolizan algo nuevo que se desarrolla en tu vida - un proyecto creativo, idea, relación o crecimiento personal. Representan la gestación de posibilidades, no necesariamente un embarazo literal. El sueño refleja algo que estás nutriendo y preparando para 'dar a luz' al mundo.\" }\n                },\n                {\n                    \"@type\": \"Question\",\n                    \"name\": \"¿Por qué sueño con embarazo si no estoy embarazada?\",\n                    \"acceptedAnswer\": { \"@type\": \"Answer\", \"text\": \"Las personas no embarazadas comúnmente sueñan con embarazo porque estos sueños simbolizan creación, nuevos comienzos y transformación. Puedes estar comenzando un nuevo trabajo, proyecto o fase de vida. Tu subconsciente usa imágenes de embarazo para representar cualquier cosa que estés desarrollando o nutriendo.\" }\n                },\n                {\n                    \"@type\": \"Question\",\n                    \"name\": \"¿Los sueños de embarazo predicen un embarazo real?\",\n                    \"acceptedAnswer\": { \"@type\": \"Answer\", \"text\": \"Aunque algunas personas reportan sueños de embarazo antes de descubrir que están embarazadas, la mayoría de los sueños de embarazo son simbólicos en lugar de predictivos. Típicamente representan proyectos creativos, nuevos comienzos o desarrollo personal en lugar de un embarazo literal.\" }\n                }\n            ]\n        }",
-    "{\n    \"@context\": \"https://schema.org\",\n    \"@type\": \"BreadcrumbList\",\n    \"itemListElement\": [\n        {\n            \"@type\": \"ListItem\",\n            \"position\": 1,\n            \"name\": \"Inicio\",\n            \"item\": \"https://noctalia.app/es/\"\n        },\n        {\n            \"@type\": \"ListItem\",\n            \"position\": 2,\n            \"name\": \"Recursos\",\n            \"item\": \"https://noctalia.app/es/blog/\"\n        },\n        {\n            \"@type\": \"ListItem\",\n            \"position\": 3,\n            \"name\": \"Sueños de Embarazo\",\n            \"item\": \"https://noctalia.app/es/blog/suenos-de-embarazo\"\n        }\n    ]\n}"
+    "{\n    \"@context\": \"https://schema.org\",\n    \"@type\": \"BlogPosting\",\n    \"headline\": \"Sueños de embarazo: qué pueden significar, aunque no estés embarazada\",\n    \"description\": \"Soñar con estar embarazada, dar a luz o que otra persona espera un bebé: qué pueden significar los sueños de embarazo, qué dice la ciencia y qué anotar.\",\n    \"image\": {\n        \"@type\": \"ImageObject\",\n        \"url\": \"https://noctalia.app/img/blog/pregnancy-dreams-meaning.webp\",\n        \"width\": 1200,\n        \"height\": 630\n    },\n    \"author\": [\n        {\n            \"@type\": \"Person\",\n            \"@id\": \"https://noctalia.app/es/sobre#person\",\n            \"name\": \"Thanh Chau\",\n            \"jobTitle\": \"Founder & Publication Director\",\n            \"url\": \"https://noctalia.app/es/sobre\",\n            \"worksFor\": {\n                \"@type\": \"Organization\",\n                \"@id\": \"https://noctalia.app/#organization\",\n                \"name\": \"Noctalia\",\n                \"url\": \"https://noctalia.app\"\n            }\n        },\n        {\n            \"@type\": \"Organization\",\n            \"@id\": \"https://noctalia.app/#organization\",\n            \"name\": \"Noctalia\",\n            \"url\": \"https://noctalia.app\",\n            \"logo\": {\n                \"@type\": \"ImageObject\",\n                \"url\": \"https://noctalia.app/logo/logo_noctalia.png\"\n            }\n        }\n    ],\n    \"publisher\": {\n        \"@type\": \"Organization\",\n        \"name\": \"Noctalia\",\n        \"url\": \"https://noctalia.app\",\n        \"logo\": {\n            \"@type\": \"ImageObject\",\n            \"url\": \"https://noctalia.app/logo/logo_noctalia.png\"\n        }\n    },\n    \"datePublished\": \"2025-12-11\",\n    \"dateModified\": \"2026-10-09\",\n    \"mainEntityOfPage\": {\n        \"@type\": \"WebPage\",\n        \"@id\": \"https://noctalia.app/es/blog/suenos-de-embarazo\"\n    },\n    \"inLanguage\": \"es\",\n    \"isAccessibleForFree\": true,\n    \"wordCount\": 2276,\n    \"timeRequired\": \"PT11M\",\n    \"url\": \"https://noctalia.app/es/blog/suenos-de-embarazo\"\n}",
+    "{\n    \"@context\": \"https://schema.org\",\n    \"@type\": \"FAQPage\",\n    \"mainEntity\": [\n        {\n            \"@type\": \"Question\",\n            \"name\": \"¿Qué significa soñar con estar embarazada?\",\n            \"acceptedAnswer\": {\n                \"@type\": \"Answer\",\n                \"text\": \"No tiene un significado único. El sueño suele acompañar algo nuevo o que está madurando en tu vida: un proyecto, un papel, una relación, un cambio o la pregunta de tener hijos. La emoción del sueño y lo que estás viviendo ahora son las mejores pistas.\"\n            }\n        },\n        {\n            \"@type\": \"Question\",\n            \"name\": \"¿Por qué sueño con embarazo si no estoy embarazada?\",\n            \"acceptedAnswer\": {\n                \"@type\": \"Answer\",\n                \"text\": \"Los sueños toman sus imágenes de lo que te preocupa o te ocupa. El embarazo es una imagen natural para algo que tarda en crecer y te cambia la vida. Un trabajo nuevo, un proyecto o una decisión sobre tener hijos pueden traerla, seas hombre o mujer.\"\n            }\n        },\n        {\n            \"@type\": \"Question\",\n            \"name\": \"¿Los sueños de embarazo predicen un embarazo real?\",\n            \"acceptedAnswer\": {\n                \"@type\": \"Answer\",\n                \"text\": \"No. Un sueño no puede detectar ni anunciar un embarazo. Si crees que puedes estar embarazada, hazte un test o consulta a tu médico.\"\n            }\n        },\n        {\n            \"@type\": \"Question\",\n            \"name\": \"¿Es normal tener pesadillas durante el embarazo?\",\n            \"acceptedAnswer\": {\n                \"@type\": \"Answer\",\n                \"text\": \"Sí, los malos sueños y las pesadillas son frecuentes durante el embarazo, sobre todo en el tercer trimestre, y no predicen nada sobre el bebé. Si te quitan el sueño, se repiten o te dejan ansiosa durante el día, coméntalo con tu matrona o tu médico.\"\n            }\n        }\n    ]\n}",
+    "{\n    \"@context\": \"https://schema.org\",\n    \"@type\": \"BreadcrumbList\",\n    \"itemListElement\": [\n        {\n            \"@type\": \"ListItem\",\n            \"position\": 1,\n            \"name\": \"Inicio\",\n            \"item\": \"https://noctalia.app/es/\"\n        },\n        {\n            \"@type\": \"ListItem\",\n            \"position\": 2,\n            \"name\": \"Recursos\",\n            \"item\": \"https://noctalia.app/es/blog/\"\n        },\n        {\n            \"@type\": \"ListItem\",\n            \"position\": 3,\n            \"name\": \"Sueños de embarazo\",\n            \"item\": \"https://noctalia.app/es/blog/suenos-de-embarazo\"\n        }\n    ]\n}"
   ],
   "activeNav": "resources"
 }
@@ -50,7 +50,7 @@
 </li>
 <li class="text-purple-400">/</li>
 <li itemprop="itemListElement" itemscope="" itemtype="https://schema.org/ListItem">
-<span class="text-dream-cream" itemprop="name">Sueños de Embarazo</span>
+<span class="text-dream-cream" itemprop="name">Sueños de embarazo</span>
 <meta content="3" itemprop="position">
 </li>
 </ol>
@@ -61,13 +61,13 @@
 <a class="text-xs font-mono text-purple-200/70 border border-white/10 rounded-full px-3 py-1 hover:text-white hover:border-dream-salmon/30 transition-colors" href="significado-de-suenos">Tema: Significado de sueños</a>
 <span aria-hidden="true" class="w-full sm:hidden"></span>
 <span class="text-sm text-purple-300/60">Publicado el 11 de diciembre de 2025</span>
-<span class="text-sm text-purple-300/60">3 min de lectura</span>
+<span class="text-sm text-purple-300/60">11 min de lectura</span>
 </div>
 <h1 class="font-serif text-3xl md:text-5xl mb-6 text-transparent bg-clip-text bg-gradient-to-b from-white via-dream-lavender to-purple-400/50 leading-tight">
-                    Sueños de embarazo: lo que significan (aunque no estés embarazada)
+                    Sueños de embarazo: qué pueden significar, aunque no estés embarazada
                 </h1>
 <p class="text-lg text-purple-200/80 leading-relaxed">
-                    Miras hacia abajo y ves un vientre creciendo. O quizás estás en trabajo de parto, sosteniendo un recién nacido, o descubriendo que estás inesperadamente <a class="text-dream-salmon hover:underline" href="../simbolos/embarazo">embarazada</a>. Estos sueños pueden sentirse profundamente significativos - o muy confusos, especialmente si el embarazo no está en tus planes. Los sueños de embarazo están entre las experiencias oníricas más simbólicamente ricas. Exploremos lo que tu subconsciente está verdaderamente creando.
+                    Te pasas la mano por una barriga redonda que ayer no estaba ahí. O estás en la sala de partos, con un recién nacido en brazos que sabes que es tuyo. Luego te despiertas: no hay ningún <a class="text-dream-salmon hover:underline" href="../simbolos/embarazo">embarazo</a>, y quizá ni siquiera lo buscas. Soñar con estar embarazada parece un anuncio. Lo más habitual es que ponga en imágenes algo que está creciendo en tu vida, o una preocupación por ello, y son los detalles los que ayudan a distinguirlo.
                 </p>
 </header>
 <!-- Author Byline (E-E-A-T) -->
@@ -83,49 +83,46 @@
 <!-- Quick Answer (AI SEO) -->
 <section class="glass-panel rounded-2xl p-6 mb-8 border border-dream-salmon/20 bg-white/5" aria-labelledby="quick-answer-title">
     <h2 id="quick-answer-title" class="font-serif text-xl text-dream-cream mb-3">Respuesta rápida</h2>
-    <p class="text-purple-100/80 leading-relaxed">Los sueños de embarazo se encuentran entre los temas oníricos más comunes y ocurren independientemente del género o del estado real de embarazo. En psicología del sueño, el embarazo simboliza creatividad, nuevos comienzos y crecimiento personal. Para quienes están realmente embarazadas, los cambios hormonales y las alteraciones del sueño aumentan la intensidad y la frecuencia de los sueños. Los escenarios más habituales incluyen dar a luz (nuevos proyectos o ideas que emergen), estar embarazada inesperadamente (ansiedad ante el cambio) o que otra persona esté embarazada (cualidades que se desarrollan en esa persona o en uno mismo).</p>
+    <p class="text-purple-100/80 leading-relaxed">Soñar que estás embarazada no significa que lo estés, y el sueño no anuncia ningún embarazo. Fuera del embarazo, la imagen suele acompañar algo que empieza o que madura: un proyecto, un nuevo papel, una relación, un cambio que estás preparando o la pregunta de tener hijos. Durante el embarazo, los sueños intensos y las pesadillas son frecuentes, en parte porque se duerme de forma más entrecortada. La emoción que sentiste en el sueño es la mejor pista para elegir la lectura que encaja contigo.</p>
 </section>
 <figure class="mb-12 rounded-2xl overflow-hidden">
 <img alt="Luz suave que simboliza crecimiento y nuevos comienzos" class="w-full h-auto" fetchpriority="high" height="630" loading="eager" sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 33vw" src="../../img/blog/pregnancy-dreams-meaning.webp" srcset="../../img/blog/pregnancy-dreams-meaning-480w.webp 480w, ../../img/blog/pregnancy-dreams-meaning-800w.webp 800w, ../../img/blog/pregnancy-dreams-meaning-1200w.webp 1200w" width="1200">
 </figure>
 <nav class="glass-panel rounded-2xl p-6 mb-12">
 <h2 class="font-serif text-lg text-dream-cream mb-4 flex items-center gap-2">
-<i class="w-5 h-5 text-dream-salmon" data-lucide="list"></i> Tabla de Contenidos
+<i class="w-5 h-5 text-dream-salmon" data-lucide="list"></i> Índice de contenidos
                 </h2>
 <ol class="space-y-2 text-sm text-purple-200/70">
-<li><a class="toc-link block" href="#simbolismo">1. El simbolismo de los sueños de embarazo</a></li>
-<li><a class="toc-link block" href="#escenarios">2. Escenarios comunes de sueños de embarazo</a></li>
-<li><a class="toc-link block" href="#significados">3. Lo que estos sueños significan</a></li>
-<li><a class="toc-link block" href="#quien">4. Quién tiene sueños de embarazo</a></li>
-<li><a class="toc-link block" href="#real">5. Sueños durante un embarazo real</a></li>
-<li><a class="toc-link block" href="#accion">6. Trabajando con sueños de embarazo</a></li>
+<li><a class="toc-link block" href="#simbolismo">1. ¿Por qué sueño que estoy embarazada si no lo estoy?</a></li>
+<li><a class="toc-link block" href="#escenarios">2. ¿Qué pasó en tu sueño?</a></li>
+<li><a class="toc-link block" href="#significados">3. Cinco formas de leer un sueño de embarazo</a></li>
+<li><a class="toc-link block" href="#quien">4. ¿Quién tiene sueños de embarazo?</a></li>
+<li><a class="toc-link block" href="#real">5. Soñar durante el embarazo: lo que muestra la investigación</a></li>
+<li><a class="toc-link block" href="#accion">6. Qué hacer después de un sueño de embarazo</a></li>
 </ol>
 </nav>
 <div class="prose max-w-none text-gray-300">
-<h2 id="simbolismo">Sueños de embarazo: el simbolismo del embarazo en los sueños</h2>
+<h2 id="simbolismo">¿Por qué sueño que estoy embarazada si no lo estoy?</h2>
 <p>
-                    En el simbolismo de los sueños, el embarazo rara vez significa un embarazo literal. En cambio, representa una de las metáforas más poderosas que tenemos: <strong>creación, desarrollo y traer algo nuevo al mundo</strong>.
-                </p>
+Un sueño rara vez anuncia un hecho real. Toma prestadas sus imágenes de lo que ya te ocupa la cabeza. Investigadores como G. William Domhoff hablan de continuidad entre los sueños y la vida despierta: las personas, los planes y las preocupaciones de tus días vuelven por la noche, a menudo exagerados o disfrazados.
+</p>
 <p>
-                    Piensa en lo que implica el embarazo: nutrir algo que está creciendo, anticipar una nueva llegada, y transformarte a ti misma en el proceso. Estos temas aplican a innumerables situaciones de vida más allá de tener un <a class="text-dream-salmon hover:underline" href="../simbolos/bebe">bebé</a>.
-                </p>
-<p>
-                    Estos sueños tienden a aparecer cuando estás:
-                </p>
+El embarazo se presta muy bien a ello. Algo crece sin que se vea, lleva su tiempo, cambia el cuerpo y la rutina, y luego llega, te sientas preparada o no. Puede evocar muchas cosas además de un <a class="text-dream-salmon hover:underline" href="../simbolos/bebe">bebé</a>. Este sueño suele aparecer cuando:
+</p>
 <ul>
-<li><strong>Comenzando un proyecto creativo</strong> - un libro, negocio, obra de arte o cualquier emprendimiento creativo</li>
-<li><strong>Desarrollando una nueva idea</strong> - algo que estás nutriendo antes de compartir con el mundo</li>
-<li><strong>Iniciando una nueva fase de vida</strong> - cambio de carrera, relación o transformación personal</li>
-<li><strong>Creciendo personalmente</strong> - desarrollando nuevos aspectos de ti misma</li>
-<li><strong>Manifestando metas</strong> - trabajando hacia algo que aún no se ha materializado</li>
+<li><strong>Empiezas algo</strong>: un trabajo, un curso, un negocio, una mudanza</li>
+<li><strong>Llevas entre manos un proyecto</strong> que aún no has enseñado a nadie: un libro, una candidatura, un plan</li>
+<li><strong>Asumes una nueva responsabilidad</strong>, con un equipo, con tus padres, con tu casa</li>
+<li><strong>Te planteas tener hijos</strong>, o no tenerlos</li>
+<li><strong>Estás cambiando por dentro</strong>, de una forma que todavía no ha terminado</li>
 </ul>
 <p>
-                    Fuera de un embarazo real, esta imagen también puede acompañar un nuevo proyecto, papel o etapa de la vida. El contexto de la persona importa más que cualquier regla simbólica fija.
-                </p>
-<h2 id="escenarios">Escenarios comunes de sueños de embarazo y su significado</h2>
+Son pistas, no reglas. El mismo sueño puede ser alegre para una persona y angustioso para otra, y no significará lo mismo para las dos.
+</p>
+<h2 id="escenarios">¿Qué pasó en tu sueño?</h2>
 <p>
-                    El escenario específico de embarazo proporciona pistas sobre el significado del sueño:
-                </p>
+Antes de buscarle un sentido, describe la escena. Estas variantes no son definiciones: son preguntas para contrastar con lo que sentiste.
+</p>
 </div>
 <div class="grid md:grid-cols-2 gap-6 my-12">
 <div class="dream-card glass-panel rounded-xl p-6 border border-transparent">
@@ -136,19 +133,19 @@
 <h3 class="font-serif text-lg text-dream-cream">Descubrir que estás embarazada</h3>
 </div>
 <p class="text-sm text-gray-300">
-                        Los sueños de descubrimiento sugieren <strong>conciencia de nuevo potencial</strong> en tu vida. Algo está comenzando a desarrollarse que apenas ahora estás reconociendo. Presta atención a cómo te sentiste: ¿emocionada, asustada o sorprendida?
-                    </p>
+¿Un test positivo, la noticia de un médico, una barriga que notas de repente? Estos sueños suelen acompañar el momento en que te das cuenta de que <strong>algo nuevo ha empezado</strong>. ¿Alegría, sorpresa o miedo? Esa primera reacción dice más que la noticia en sí.
+</p>
 </div>
 <div class="dream-card glass-panel rounded-xl p-6 border border-transparent">
 <div class="flex items-center gap-3 mb-4">
 <div class="p-2 bg-dream-salmon/10 rounded-lg">
 <i class="w-5 h-5 text-dream-salmon" data-lucide="clock"></i>
 </div>
-<h3 class="font-serif text-lg text-dream-cream">Estar muy embarazada</h3>
+<h3 class="font-serif text-lg text-dream-cream">Un embarazo muy avanzado</h3>
 </div>
 <p class="text-sm text-gray-300">
-                        Estar avanzada en el embarazo indica un proyecto o cambio que está <strong>casi listo para manifestarse</strong>. Algo que has estado desarrollando se acerca a completarse o estar listo para "nacer".
-                    </p>
+Pasos pesados, la fecha de parto a la vuelta de la esquina: la escena puede reflejar algo <strong>casi listo</strong>, o un plazo que se acerca. ¿Sentías que había llegado el momento, o te habría gustado tener más tiempo?
+</p>
 </div>
 <div class="dream-card glass-panel rounded-xl p-6 border border-transparent">
 <div class="flex items-center gap-3 mb-4">
@@ -158,30 +155,30 @@
 <h3 class="font-serif text-lg text-dream-cream">Dar a luz</h3>
 </div>
 <p class="text-sm text-gray-300">
-                        Los sueños de parto representan <strong>la culminación del esfuerzo</strong> - traer algo adelante que has estado desarrollando. La facilidad o dificultad del parto puede reflejar cómo anticipas la transición.
-                    </p>
+Un <a class="text-dream-salmon hover:underline" href="../simbolos/nacimiento">nacimiento</a> saca algo a la luz. Un parto fácil y uno doloroso no cuentan la misma historia: el sueño puede reflejar <strong>cómo imaginas un cambio que se acerca</strong>. ¿Quién estaba contigo y dónde estabas?
+</p>
 </div>
 <div class="dream-card glass-panel rounded-xl p-6 border border-transparent">
 <div class="flex items-center gap-3 mb-4">
 <div class="p-2 bg-dream-salmon/10 rounded-lg">
 <i class="w-5 h-5 text-dream-salmon" data-lucide="alert-triangle"></i>
 </div>
-<h3 class="font-serif text-lg text-dream-cream">Complicaciones de embarazo</h3>
+<h3 class="font-serif text-lg text-dream-cream">Complicaciones o un aborto espontáneo</h3>
 </div>
 <p class="text-sm text-gray-300">
-                        Los sueños de aborto espontáneo o complicaciones pueden reflejar <strong>ansiedad de que un proyecto falle</strong> o miedo de que algo que estás nutriendo no llegue a buen término. También pueden procesar pérdidas pasadas.
-                    </p>
+Son sueños duros al despertar. Suelen acompañar el <strong>miedo a perder algo frágil</strong>: un proyecto, una relación, una ilusión. Tras una pérdida real, también pueden reavivar el duelo. No predicen nada sobre un embarazo.
+</p>
 </div>
 <div class="dream-card glass-panel rounded-xl p-6 border border-transparent">
 <div class="flex items-center gap-3 mb-4">
 <div class="p-2 bg-dream-salmon/10 rounded-lg">
 <i class="w-5 h-5 text-dream-salmon" data-lucide="help-circle"></i>
 </div>
-<h3 class="font-serif text-lg text-dream-cream">Embarazo inesperado</h3>
+<h3 class="font-serif text-lg text-dream-cream">Un embarazo inesperado</h3>
 </div>
 <p class="text-sm text-gray-300">
-                        Los sueños de embarazo no planificado pueden indicar <strong>algo desarrollándose en tu vida que no iniciaste conscientemente</strong>. Considera qué está creciendo sin tu planificación activa.
-                    </p>
+¿Embarazada sin haberlo buscado, a veces en una situación imposible? El sueño puede reflejar <strong>un cambio que no elegiste</strong>, o una responsabilidad que llegó antes de tiempo. ¿Qué ha empezado en tu vida sin pedirte permiso?
+</p>
 </div>
 <div class="dream-card glass-panel rounded-xl p-6 border border-transparent">
 <div class="flex items-center gap-3 mb-4">
@@ -191,103 +188,117 @@
 <h3 class="font-serif text-lg text-dream-cream">Otra persona embarazada</h3>
 </div>
 <p class="text-sm text-gray-300">
-                        Soñar con el embarazo de otra persona puede reflejar <strong>su crecimiento que estás presenciando</strong>, o aspectos de ti misma representados por esa persona que se están desarrollando.
-                    </p>
+¿Una amiga, tu hermana, una compañera de trabajo esperando un bebé? El sueño puede hablar de <strong>tu relación con ella</strong>, de un cambio que ves en ella o de una parte de ti que te recuerda. No es una señal de que esté embarazada.
+</p>
 </div>
 </div>
 <div class="prose max-w-none text-gray-300">
-<h2 id="significados">Lo que estos sueños significan</h2>
-<h3>1. Gestación creativa</h3>
+<h2 id="significados">Cinco formas de leer un sueño de embarazo</h2>
 <p>
-                    El significado más común: <strong>estás desarrollando algo creativo</strong>. Esto podría ser arte, escritura, música, una idea de negocio o cualquier proyecto que requiere ser nutrido antes de estar listo para compartir con el mundo. El embarazo representa el periodo de incubación.
-                </p>
-<h3>2. Transformación personal</h3>
+Ninguna lista puede decirte por qué <em>tú</em> has tenido este sueño. Estas lecturas aparecen a menudo cuando se compara el sueño con lo que se está viviendo. Quédate con la que te encaje y deja las demás.
+</p>
+<h3>1. Un proyecto en gestación</h3>
 <p>
-                    Estos sueños aparecen frecuentemente durante períodos de <strong>crecimiento personal significativo</strong>. Estás "embarazada" de una nueva versión de ti misma - desarrollando nuevos rasgos, creencias o formas de ser que aún no se han manifestado completamente.
-                </p>
-<h3>3. Nuevos comienzos</h3>
+El embarazo como incubación: un <strong>proyecto que necesita tiempo</strong> antes de poder enseñarse. Si el sueño vuelve mientras escribes, construyes o preparas algo, merece la pena anotar la relación. ¿Qué proyecto llevas dentro ahora mismo?
+</p>
+<h3>2. Un cambio interior</h3>
 <p>
-                    Comenzar algo nuevo - un trabajo, relación, capítulo de vida - puede desencadenar sueños de embarazo. El sueño reconoce que <strong>algo está comenzando que crecerá y se desarrollará</strong> con el tiempo.
-                </p>
-<h3>4. Ansiedad por responsabilidades</h3>
+Hay personas que tienen este sueño en una etapa de <strong>cambio personal</strong>: ganar confianza, dejar un papel antiguo, asumir uno nuevo. ¿Qué ha cambiado en ti desde hace un año?
+</p>
+<h3>3. Un nuevo comienzo</h3>
 <p>
-                    Para algunos, los sueños de embarazo reflejan <strong>ansiedad sobre nuevas responsabilidades</strong>. Al igual que al esperar un hijo, puedes sentir el peso de algo que requerira tu cuidado y atención.
-                </p>
-<h3>5. Deseo de creación</h3>
+Un trabajo nuevo, una relación nueva, una ciudad nueva. El sueño puede acompañar la <strong>incertidumbre de un comienzo</strong>, cuando algo ya ha empezado pero aún no sabes en qué se convertirá.
+</p>
+<h3>4. El peso de una responsabilidad</h3>
 <p>
-                    Estos sueños pueden expresar un <strong>deseo profundo de crear algo significativo</strong> - ya sea una familia, obra artística o legado. Pueden surgir cuando contemplas lo que quieres traer al mundo.
-                </p>
+Como la llegada de un <a class="text-dream-salmon hover:underline" href="../simbolos/nino">niño</a>, un nuevo compromiso pide cuidado y atención. Si el sueño fue pesado, pregúntate <strong>qué temes no poder sacar adelante</strong> y si cuentas con el apoyo que necesitas.
+</p>
+<h3>5. La pregunta de los hijos</h3>
+<p>
+A veces la lectura más sencilla es la correcta. Si estás buscando un embarazo, si dudas o si has decidido no tener hijos, el sueño puede simplemente <strong>repetir una pregunta que te importa</strong>. No te dice qué decidir ni qué está haciendo tu cuerpo.
+</p>
+<h3 id="ejemplo-diario">Ejemplo de diario de sueños</h3>
+<p><strong>Ejemplo ficticio:</strong> muestra cómo separar lo que pasó en el sueño de una posible relación con tu día a día.</p>
+<ul>
+<li><strong>Sueño:</strong> «Estaba embarazada de ocho meses en mi mesa de la oficina. Mi jefa no paraba de pasarme carpetas y yo tenía miedo de que el bebé llegara antes de terminar».</li>
+<li><strong>Emoción:</strong> «Orgullo al principio, luego pánico. Me desperté con el corazón a mil».</li>
+<li><strong>Contexto reciente:</strong> «El mes que viene lanzamos un servicio nuevo en el trabajo. No estoy embarazada ni lo estoy buscando».</li>
+<li><strong>Pregunta para guardar:</strong> «¿Vuelve este sueño cuando se acerca una fecha límite, o también en semanas tranquilas?».</li>
+</ul>
+<p>Una sola entrada no demuestra nada. Si anotas lo mismo durante varias noches, verás si la pista del trabajo se sostiene o si hay otra cosa detrás.</p>
+<!-- CTA inline -->
 <aside class="glass-panel rounded-2xl p-6 my-8 border border-dream-salmon/20">
 <div class="flex items-start gap-4">
 <div class="p-3 bg-dream-salmon/10 rounded-xl">
 <i class="w-6 h-6 text-dream-salmon" data-lucide="sparkles"></i>
 </div>
 <div>
-<h4 class="font-serif text-lg text-dream-cream mb-2">Entiende tus sueños creativos</h4>
-<p class="text-sm text-gray-400 mb-4">Noctalia analiza tus sueños de embarazo - la etapa del embarazo, tus emociones y detalles del sueño - para revelar lo que realmente estás nutriendo en tu vida.</p>
+<h4 class="font-serif text-lg text-dream-cream mb-2">Anota el sueño antes de que se borre</h4>
+<p class="text-sm text-gray-400 mb-4">En Noctalia, cuenta tu sueño en voz alta o escríbelo nada más despertar. Se transcribe y se guarda en tu diario, y puedes releer tus sueños de embarazo uno junto a otro para ver qué se repite.</p>
 <a class="inline-flex items-center gap-2 text-sm text-dream-salmon hover:text-dream-salmonLight transition-colors" href="/es/">
-                                Prueba Noctalia Gratis <i class="w-4 h-4" data-lucide="arrow-right"></i>
+                                Prueba Noctalia gratis <i class="w-4 h-4" data-lucide="arrow-right"></i>
 </a>
 </div>
 </div>
 </aside>
-<h2 id="quien">Quién tiene sueños de embarazo</h2>
-<h3>Personas de todos los géneros</h3>
+<h2 id="quien">¿Quién tiene sueños de embarazo?</h2>
+<h3>Los hombres y cualquier persona que no pueda quedarse embarazada</h3>
 <p>
-<strong>Los hombres y personas no binarias también tienen sueños de embarazo</strong>. Ya que estos sueños son simbólicos de creación y desarrollo, no están limitados por la biología. Un hombre soñando con estar embarazado puede estar nutriendo una idea de negocio o desarrollando un nuevo aspecto de sí mismo.
-                </p>
-<h3>Quienes no planean tener hijos</h3>
+Nada en un sueño exige un cuerpo capaz de gestar. Un hombre también puede soñar que está embarazado, igual que cualquier persona, sea cual sea su género. La imagen funciona igual: algo que llevas dentro, algo que está por llegar.
+</p>
+<h3>Soñar con estar embarazada sin querer hijos</h3>
 <p>
-                    Las personas que no quieren hijos o no pueden tenerlos aún tienen sueños de embarazo. El simbolismo permanece igual: <strong>creación, desarrollo y nuevos comienzos</strong> sin relación con la paternidad literal.
-                </p>
-<h3>Personas en transición</h3>
+Este sueño no delata un deseo oculto de tener un bebé. Puede hablar de algo muy distinto, o hacerse eco de las preguntas que te hace tu entorno. <strong>Tu reacción en el sueño</strong> dice más que la imagen.
+</p>
+<h3>Si estás buscando un embarazo</h3>
 <p>
-                    Quienes cambian de carrera, graduados, quienes inician negocios, personas en nuevas relaciones - <strong>cualquiera que atraviese transiciones de vida significativas</strong> puede experimentar sueños de embarazo mientras su subconsciente procesa el desarrollo.
-                </p>
-<h3>Profesionales creativos</h3>
+Cuando buscas un bebé, estos sueños pueden ser tiernos o dolorosos, sobre todo después de un test negativo. Muestran lo presente que está la ilusión. No significan que el embarazo haya empezado, ni que no vaya a llegar: solo un test puede decírtelo.
+</p>
+<h3>Después de una pérdida gestacional</h3>
 <p>
-                    Escritores, artistas, emprendedores y otros creativos a menudo reportan sueños de embarazo durante <strong>períodos creativos activos</strong>. Los sueños reflejan la gestación de su trabajo.
-                </p>
-<h2 id="real">Sueños durante un embarazo real</h2>
+Tras un aborto espontáneo o un parto difícil, los sueños de embarazo pueden volver durante un tiempo. Pueden formar parte del duelo. Si no te dejan dormir o te dejan angustiada, hablarlo con tu médico, tu matrona o un psicólogo puede ayudarte.
+</p>
+<h2 id="real">Soñar durante el embarazo: lo que muestra la investigación</h2>
 <p>
-                    Si realmente estás embarazada, los sueños adquieren dimensiones adicionales:
-                </p>
-<h3>Mayor recuerdo de sueños</h3>
+Si estás embarazada, los sueños intensos y las pesadillas son frecuentes, según la <a class="text-dream-salmon hover:underline" href="https://www.sleepfoundation.org/pregnancy/how-pregnancy-affects-dreams" rel="nofollow noopener noreferrer" target="_blank">Sleep Foundation</a>. Se duerme de forma más entrecortada, y despertarse en mitad de un sueño ayuda a recordarlo.
+</p>
+<h3>Bebés, parto y convertirse en madre</h3>
 <p>
-                    Las personas embarazadas a menudo reportan <strong>sueños más vívidos y mejor recuerdo</strong>. Los cambios hormonales, el sueño interrumpido y las emociones intensificadas contribuyen a sueños más memorables.
-                </p>
-<h3>Procesando ansiedades</h3>
+En un estudio de Lara-Carrasco y su equipo (2013), mujeres en el tercer trimestre llevaron un diario de sueños durante dos semanas. En comparación con mujeres no embarazadas, soñaban más a menudo con bebés, consigo mismas como <a class="text-dream-salmon hover:underline" href="../simbolos/madre">madres</a>, y con el embarazo y el parto. Sus sueños también contenían más imágenes inquietantes. Los autores lo relacionan con el trabajo psicológico del embarazo: imaginarse como madre y hacerse una imagen del bebé.
+</p>
+<h3>Más malos sueños en el tercer trimestre</h3>
 <p>
-                    Durante el embarazo, los sueños frecuentemente procesan <strong>miedos y ansiedades sobre la maternidad</strong>, el parto y los cambios por venir. Este es un procesamiento emocional normal y saludable.
-                </p>
-<h3>Temas comunes</h3>
+Un segundo estudio del mismo equipo (2014) encontró que las embarazadas en el tercer trimestre recordaban más malos sueños y pesadillas que las mujeres no embarazadas. El miedo al parto y los despertares nocturnos más frecuentes probablemente influyen. Un sueño aterrador sobre el bebé no es un aviso sobre su salud.
+</p>
+<h3>Después del parto</h3>
 <p>
-                    Las personas embarazadas comúnmente sueñan sobre: el género o apariencia del bebé, <strong>escenarios de parto</strong>, cuidar al recién nacido, y a veces escenarios angustiantes que reflejan ansiedades subyacentes.
-                </p>
+Tore Nielsen y Tyna Paquette (2007) compararon a mujeres embarazadas, madres recientes y mujeres que nunca habían estado embarazadas. Los sueños con el bebé eran frecuentes en los dos primeros grupos. Las madres recientes soñaban más a menudo que el bebé estaba en peligro, y se movían más durante esos sueños. Muchas se despertaban ansiosas o desorientadas, con la necesidad de comprobar que el bebé estaba bien. Saber que es habitual puede hacer esas noches menos alarmantes.
+</p>
+<h3>Cuándo hablarlo con alguien</h3>
 <p>
-                    Durante el embarazo, los sueños pueden reflejar preocupaciones prácticas, expectativas y emociones sobre el parto o el cuidado del bebé. No predicen cómo evolucionará un embarazo.
-                </p>
-<h2 id="accion">Trabajando con sueños de embarazo</h2>
-<h3>1. Identifica qué se está desarrollando</h3>
+Coméntalo con tu matrona, tu médico o un psicólogo si las pesadillas no te dejan dormir, si la misma pesadilla vuelve una y otra vez, o si durante el día te sientes ansiosa o decaída. Son señales que merecen atención durante el embarazo y después del parto, y hay ayuda disponible. Nuestra <a class="text-dream-salmon hover:underline" href="guia-pesadillas">guía sobre las pesadillas</a> describe enfoques que pueden ayudar.
+</p>
+<h2 id="accion">Qué hacer después de un sueño de embarazo</h2>
+<h3>1. Anota la escena y luego la emoción</h3>
 <p>
-                    Pregúntate: <strong>¿Qué estoy nutriendo actualmente?</strong> ¿Qué proyecto, idea, relación o aspecto de ti misma está en desarrollo? El sueño puede estar comentando sobre este crecimiento.
-                </p>
-<h3>2. Nota la etapa</h3>
+¿Quién estaba embarazada, de cuánto tiempo, dónde estabas, cómo terminó? Añade una línea sobre lo que sentiste. La emoción suele unir el sueño con tu día más claramente que la imagen.
+</p>
+<h3>2. Pregúntate qué está creciendo en tu vida</h3>
 <p>
-                    ¿Embarazo temprano? ¿Cerca del parto? La etapa indica <strong>qué tan avanzado está tu "proyecto"</strong>. Las etapas tempranas sugieren nuevos comienzos; el parto sugiere algo a punto de manifestarse.
-                </p>
-<h3>3. Examina tus emociones</h3>
+<strong>¿En qué estoy trabajando, qué estoy esperando, qué me preocupa?</strong> Si la respuesta llega rápido, anótala junto al sueño. Si nada encaja, deja la pregunta abierta unas cuantas noches.
+</p>
+<h3>3. Lee la etapa como una pregunta, no como un calendario</h3>
 <p>
-                    ¿Cómo te sentiste en el sueño? <strong>¿Alegría, ansiedad, sorpresa o miedo?</strong> Estas emociones revelan tus sentimientos sobre lo que se está desarrollando en tu vida.
-                </p>
-<h3>4. Considera al bebé</h3>
+Un embarazo incipiente o un parto no marcan ningún plazo en tu vida. Pueden plantearte una pregunta: ¿sientes que este proyecto acaba de empezar, o que lleva demasiado tiempo esperando?
+</p>
+<h3>4. Fíjate en el bebé, si lo había</h3>
 <p>
-                    Si hay un bebé en el sueño, ¿cómo es? <strong>Las características del bebé</strong> pueden representar cualidades de lo que estás creando o la versión "bebé" de un nuevo aspecto de ti misma.
-                </p>
-<h3>5. Busca los mensajes</h3>
+¿El bebé estaba tranquilo, lloraba, era extraño, lo habías olvidado en algún sitio? Esos detalles pueden reflejar lo que sientes ante lo que estás trayendo al mundo, o simplemente lo que piensas sobre un niño real.
+</p>
+<h3>5. Separa el sueño de la realidad</h3>
 <p>
-                    ¿Qué parece estar diciéndote el sueño? ¿Te está animando a <strong>nutrir algo con más cuidado</strong>? ¿A prepararte para la llegada de algo? ¿A abordar miedos sobre una nueva responsabilidad?
-                </p>
+Un sueño no es una prueba de embarazo. Si crees que puedes estar embarazada, un test o tu médico te lo dirán. Si lo estás y un sueño te preocupa, coméntalo en tu próxima consulta en lugar de buscarle presagios.
+</p>
 </div>
 <!-- Related Symbols Start -->
 <section aria-label="Símbolos de sueños relacionados" class="mt-12 mb-8">
@@ -313,16 +324,17 @@
 <div class="w-16 h-16 bg-dream-salmon/10 rounded-full flex items-center justify-center mx-auto mb-6">
 <i class="w-8 h-8 text-dream-salmon" data-lucide="sparkle"></i>
 </div>
-<h3 class="font-serif text-2xl md:text-3xl mb-4 text-dream-cream">Descubre lo que estás creando</h3>
+<h3 class="font-serif text-2xl md:text-3xl mb-4 text-dream-cream">Un sueño es una escena. Varios sueños son una pista.</h3>
 <p class="text-purple-200/70 mb-6 max-w-lg mx-auto">
-                    Los sueños de embarazo revelan las fuerzas creativas trabajando en tu vida. Regístralos en Noctalia y deja que el análisis de Noctalia ilumine lo que tu subconsciente está nutriendo.
+                    Guarda tus sueños de embarazo en Noctalia, junto con lo que sentiste y lo que pasaba esa semana. Al releerlos juntos, verás cuándo vuelven.
                 </p>
 <a class="inline-flex items-center gap-2 px-8 py-4 bg-dream-salmon text-dream-dark rounded-full font-bold hover:bg-dream-salmon/90 transition-colors" href="/es/">
-                    Comienza a Explorar Tus Sueños <i class="w-5 h-5" data-lucide="arrow-right"></i>
+                    Empezar mi diario de sueños <i class="w-5 h-5" data-lucide="arrow-right"></i>
 </a>
 </aside>
+<!-- FAQ Section -->
 <section class="mt-16">
-<h2 class="font-serif text-2xl text-dream-cream mb-8">Preguntas Frecuentes</h2>
+<h2 class="font-serif text-2xl text-dream-cream mb-8">Preguntas frecuentes</h2>
 <div class="space-y-4">
 <details class="glass-panel rounded-xl p-4 group cursor-pointer">
 <summary class="font-medium flex justify-between items-center text-dream-cream">
@@ -330,7 +342,7 @@
                             <i class="w-5 h-5 transition-transform group-open:rotate-180 text-dream-salmon" data-lucide="chevron-down"></i>
 </summary>
 <p class="mt-4 text-sm text-gray-400 leading-relaxed">
-                            Los sueños de embarazo a menudo simbolizan algo nuevo que se desarrolla en tu vida - un proyecto creativo, idea, relación o crecimiento personal. Representan la gestación de posibilidades, no necesariamente un embarazo literal.
+                            No tiene un significado único. El sueño suele acompañar algo nuevo o que está madurando en tu vida: un proyecto, un papel, una relación, un cambio o la pregunta de tener hijos. La emoción del sueño y lo que estás viviendo ahora son las mejores pistas.
                         </p>
 </details>
 <details class="glass-panel rounded-xl p-4 group cursor-pointer">
@@ -339,7 +351,7 @@
                             <i class="w-5 h-5 transition-transform group-open:rotate-180 text-dream-salmon" data-lucide="chevron-down"></i>
 </summary>
 <p class="mt-4 text-sm text-gray-400 leading-relaxed">
-                            Las personas no embarazadas comúnmente sueñan con embarazo porque estos sueños simbolizan creación, nuevos comienzos y transformación. Puedes estar comenzando un nuevo trabajo, proyecto o fase de vida.
+                            Los sueños toman sus imágenes de lo que te preocupa o te ocupa. El embarazo es una imagen natural para algo que tarda en crecer y te cambia la vida. Un trabajo nuevo, un proyecto o una decisión sobre tener hijos pueden traerla, seas hombre o mujer.
                         </p>
 </details>
 <details class="glass-panel rounded-xl p-4 group cursor-pointer">
@@ -348,32 +360,44 @@
                             <i class="w-5 h-5 transition-transform group-open:rotate-180 text-dream-salmon" data-lucide="chevron-down"></i>
 </summary>
 <p class="mt-4 text-sm text-gray-400 leading-relaxed">
-                            Aunque algunas personas reportan sueños de embarazo antes de descubrir que están embarazadas, la mayoría de los sueños de embarazo son simbólicos en lugar de predictivos. Típicamente representan proyectos creativos o desarrollo personal.
+                            No. Un sueño no puede detectar ni anunciar un embarazo. Si crees que puedes estar embarazada, hazte un test o consulta a tu médico.
+                        </p>
+</details>
+<details class="glass-panel rounded-xl p-4 group cursor-pointer">
+<summary class="font-medium flex justify-between items-center text-dream-cream">
+                            ¿Es normal tener pesadillas durante el embarazo?
+                            <i class="w-5 h-5 transition-transform group-open:rotate-180 text-dream-salmon" data-lucide="chevron-down"></i>
+</summary>
+<p class="mt-4 text-sm text-gray-400 leading-relaxed">
+                            Sí, los malos sueños y las pesadillas son frecuentes durante el embarazo, sobre todo en el tercer trimestre, y no predicen nada sobre el bebé. Si te quitan el sueño, se repiten o te dejan ansiosa durante el día, coméntalo con tu matrona o tu médico.
                         </p>
 </details>
 </div>
 </section>
 <!-- Sources / Trust (TI-97) -->
 <section class="mt-16 glass-panel rounded-2xl p-6" id="sources">
-<h2 class="font-serif text-2xl text-dream-cream mb-4">Fuentes / Para Ir Más Lejos</h2>
+<h2 class="font-serif text-2xl text-dream-cream mb-4">Fuentes y lecturas</h2>
 <ul class="mt-6 space-y-2 text-sm text-gray-400">
-<li><a href="https://dictionary.apa.org/dream" rel="nofollow noopener noreferrer" target="_blank">APA Dictionary of Psychology:Dream</a></li>
-<li><a href="https://dreamresearch.net/" rel="nofollow noopener noreferrer" target="_blank">DreamResearch.net:G. William Domhoff (dream research overview)</a></li>
+<li><a href="https://pubmed.ncbi.nlm.nih.gov/23986734/" rel="nofollow noopener noreferrer" target="_blank">Lara-Carrasco et al. (2013), «Maternal representations in the dreams of pregnant women: a prospective comparative study», <em>Frontiers in Psychology</em> (PubMed)</a></li>
+<li><a href="https://pubmed.ncbi.nlm.nih.gov/24780135/" rel="nofollow noopener noreferrer" target="_blank">Lara-Carrasco et al. (2014), «Disturbed dreaming during the third trimester of pregnancy» (PubMed)</a></li>
+<li><a href="https://doi.org/10.1093/sleep/30.9.1162" rel="nofollow noopener noreferrer" target="_blank">Nielsen y Paquette (2007), «Dream-associated behaviors affecting pregnant and postpartum women», <em>Sleep</em>, 30(9)</a></li>
+<li><a href="https://www.sleepfoundation.org/pregnancy/how-pregnancy-affects-dreams" rel="nofollow noopener noreferrer" target="_blank">Sleep Foundation, «How Pregnancy Affects Dreams»</a></li>
+<li><a href="https://dreamresearch.net/" rel="nofollow noopener noreferrer" target="_blank">DreamResearch.net, G. William Domhoff</a></li>
 </ul>
-<p class="mt-6 text-xs text-purple-200/60">Actualizado el 26 de diciembre de 2025</p>
+<p class="mt-6 text-xs text-purple-200/60">Actualizado el 9 de octubre de 2026</p>
 </section>
 <section class="mt-16">
-<h2 class="font-serif text-2xl text-dream-cream mb-8">Artículos Relacionados</h2>
+<h2 class="font-serif text-2xl text-dream-cream mb-8">Artículos relacionados</h2>
 <div class="grid md:grid-cols-2 gap-6">
 <a class="glass-panel rounded-xl p-6 block hover:border-dream-salmon/30 transition-colors" href="suenos-de-agua">
 <span class="text-xs text-dream-salmon uppercase mb-2 block">Interpretación</span>
-<h3 class="font-serif text-lg text-dream-cream mb-2">Significado de los Sueños de Agua</h3>
-<p class="text-sm text-gray-400">¿Qué revelan los sueños de oceano, ahogarse e inundación sobre tus emociones?</p>
+<h3 class="font-serif text-lg text-dream-cream mb-2">Significado de los sueños de agua</h3>
+<p class="text-sm text-gray-400">Mar en calma, ahogarse, inundaciones: lo que el agua de tus sueños puede reflejar de tus emociones.</p>
 </a>
 <a class="glass-panel rounded-xl p-6 block hover:border-dream-salmon/30 transition-colors" href="significado-suenos-recurrentes">
 <span class="text-xs text-dream-salmon uppercase mb-2 block">Interpretación</span>
-<h3 class="font-serif text-lg text-dream-cream mb-2">Significado de los Sueños Recurrentes</h3>
-<p class="text-sm text-gray-400">¿Por qué siempre tienes el mismo sueño? Descubre los mensajes ocultos.</p>
+<h3 class="font-serif text-lg text-dream-cream mb-2">Significado de los sueños recurrentes</h3>
+<p class="text-sm text-gray-400">Por qué vuelve el mismo sueño y cómo anotarlo para verlo con más claridad.</p>
 </a>
 </div>
 </section>

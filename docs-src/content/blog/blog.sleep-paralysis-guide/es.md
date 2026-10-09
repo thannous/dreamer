@@ -5,7 +5,7 @@
   "lang": "es",
   "slug": "guia-paralisis-sueno",
   "title": "Parálisis del Sueño: Causas, Síntomas y Soluciones | Noctalia",
-  "description": "Entiende por qué ocurre la parálisis del sueño y cómo detenerla. Técnicas probadas para prevenir episodios y dormir tranquilo.",
+  "description": "¿Te despiertas sin poder moverte y sientes una presencia? Causas de la parálisis del sueño, cómo salir de un episodio y cuándo consultar al médico.",
   "robots": "max-image-preview:large",
   "themeColor": "#0a0514",
   "htmlClass": "scroll-smooth blog-article",
@@ -14,25 +14,25 @@
   "mainClass": "pt-32 pb-20 px-4",
   "ogType": "article",
   "ogTitle": "Parálisis del Sueño: Causas, Síntomas y Soluciones | Noctalia",
-  "ogDescription": "Entiende por qué ocurre la parálisis del sueño y cómo detenerla. Técnicas probadas para prevenir episodios y dormir tranquilo.",
+  "ogDescription": "Despierto pero sin poder moverte: qué es la parálisis del sueño, por qué la presencia parece tan real y qué ayuda de verdad.",
   "ogImage": "https://noctalia.app/img/blog/sleep-paralysis-guide.webp",
   "ogImageAlt": "Habitación en penumbra que evoca la experiencia de parálisis del sueño",
   "twitterCard": "summary_large_image",
   "twitterTitle": "Parálisis del Sueño: Causas, Síntomas y Soluciones | Noctalia",
-  "twitterDescription": "Entiende por qué ocurre la parálisis del sueño y cómo detenerla. Técnicas probadas para prevenir episodios y dormir tranquilo.",
+  "twitterDescription": "La parálisis del sueño asusta, pero no es peligrosa. Qué pasa en el cerebro y qué hacer cuando no puedes moverte.",
   "twitterImage": "https://noctalia.app/img/blog/sleep-paralysis-guide.webp",
   "twitterImageAlt": "Habitación en penumbra que evoca la experiencia de parálisis del sueño",
   "publishedTime": "2025-12-11",
-  "modifiedTime": "2026-07-09",
+  "modifiedTime": "2026-10-09",
   "author": "Thanh Chau",
   "prevPath": "/es/blog/guia-pesadillas",
   "nextPath": "/es/blog/guia-diario-suenos",
   "preloadImage": "/img/blog/sleep-paralysis-guide.webp",
   "jsonLd": [
-    "{\n            \"@context\": \"https://schema.org\",\n            \"@type\": \"BlogPosting\",\n            \"headline\": \"Parálisis del sueño: por qué no puedes moverte y cómo detenerla\",\n            \"description\": \"Guía completa para entender la parálisis del sueño, sus causas y técnicas probadas para prevenir episodios.\",\n            \"image\": {\n                \"@type\": \"ImageObject\",\n                \"url\": \"https://noctalia.app/img/blog/sleep-paralysis-guide.webp\",\n                \"width\": 1200,\n                \"height\": 630\n            },\n            \"author\": [\n                {\n                    \"@type\": \"Person\",\n                    \"@id\": \"https://noctalia.app/es/sobre#person\",\n                    \"name\": \"Thanh Chau\",\n                    \"jobTitle\": \"Founder & Publication Director\",\n                    \"url\": \"https://noctalia.app/es/sobre\",\n                    \"worksFor\": {\n                        \"@type\": \"Organization\",\n                        \"@id\": \"https://noctalia.app/#organization\",\n                        \"name\": \"Noctalia\",\n                        \"url\": \"https://noctalia.app\"\n                    }\n                },\n                {\n                    \"@type\": \"Organization\",\n                    \"@id\": \"https://noctalia.app/#organization\",\n                    \"name\": \"Noctalia\",\n                    \"url\": \"https://noctalia.app\",\n                    \"logo\": {\n                        \"@type\": \"ImageObject\",\n                        \"url\": \"https://noctalia.app/logo/logo_noctalia.png\"\n                    }\n                }\n            ],\n            \"publisher\": {\n                \"@type\": \"Organization\",\n                \"name\": \"Noctalia\",\n                \"url\": \"https://noctalia.app\",\n                \"logo\": {\n                    \"@type\": \"ImageObject\",\n                    \"url\": \"https://noctalia.app/logo/logo_noctalia.png\"\n                }\n            },\n            \"datePublished\": \"2025-12-11\",\n            \"dateModified\": \"2026-07-09\",\n            \"mainEntityOfPage\": {\n                \"@type\": \"WebPage\",\n                \"@id\": \"https://noctalia.app/es/blog/guia-paralisis-sueno\"\n            },\n            \"inLanguage\": \"es\",\n            \"isAccessibleForFree\": true,\n            \"wordCount\": 1272,\n            \"timeRequired\": \"PT5M\",\n            \"url\": \"https://noctalia.app/es/blog/guia-paralisis-sueno\"\n        }",
+    "{\n    \"@context\": \"https://schema.org\",\n    \"@type\": \"BlogPosting\",\n    \"headline\": \"Parálisis del sueño: por qué no puedes moverte y cómo salir de ella\",\n    \"description\": \"¿Te despiertas sin poder moverte y sientes una presencia? Causas de la parálisis del sueño, cómo salir de un episodio y cuándo consultar al médico.\",\n    \"image\": {\n        \"@type\": \"ImageObject\",\n        \"url\": \"https://noctalia.app/img/blog/sleep-paralysis-guide.webp\",\n        \"width\": 1200,\n        \"height\": 630\n    },\n    \"author\": [\n        {\n            \"@type\": \"Person\",\n            \"@id\": \"https://noctalia.app/es/sobre#person\",\n            \"name\": \"Thanh Chau\",\n            \"jobTitle\": \"Founder & Publication Director\",\n            \"url\": \"https://noctalia.app/es/sobre\",\n            \"worksFor\": {\n                \"@type\": \"Organization\",\n                \"@id\": \"https://noctalia.app/#organization\",\n                \"name\": \"Noctalia\",\n                \"url\": \"https://noctalia.app\"\n            }\n        },\n        {\n            \"@type\": \"Organization\",\n            \"@id\": \"https://noctalia.app/#organization\",\n            \"name\": \"Noctalia\",\n            \"url\": \"https://noctalia.app\",\n            \"logo\": {\n                \"@type\": \"ImageObject\",\n                \"url\": \"https://noctalia.app/logo/logo_noctalia.png\"\n            }\n        }\n    ],\n    \"publisher\": {\n        \"@type\": \"Organization\",\n        \"name\": \"Noctalia\",\n        \"url\": \"https://noctalia.app\",\n        \"logo\": {\n            \"@type\": \"ImageObject\",\n            \"url\": \"https://noctalia.app/logo/logo_noctalia.png\"\n        }\n    },\n    \"datePublished\": \"2025-12-11\",\n    \"dateModified\": \"2026-10-09\",\n    \"mainEntityOfPage\": {\n        \"@type\": \"WebPage\",\n        \"@id\": \"https://noctalia.app/es/blog/guia-paralisis-sueno\"\n    },\n    \"inLanguage\": \"es\",\n    \"isAccessibleForFree\": true,\n    \"wordCount\": 2408,\n    \"timeRequired\": \"PT11M\",\n    \"url\": \"https://noctalia.app/es/blog/guia-paralisis-sueno\"\n}",
     "{\n    \"@context\": \"https://schema.org\",\n    \"@type\": \"WebPage\",\n    \"@id\": \"https://noctalia.app/es/blog/guia-paralisis-sueno\",\n    \"url\": \"https://noctalia.app/es/blog/guia-paralisis-sueno\",\n    \"name\": \"Parálisis del Sueño: Causas, Síntomas y Soluciones | Noctalia\",\n    \"inLanguage\": \"es\"\n}",
-    "{\n            \"@context\": \"https://schema.org\",\n            \"@type\": \"FAQPage\",\n            \"mainEntity\": [\n                { \"@type\": \"Question\", \"name\": \"¿Es peligrosa la parálisis del sueño?\", \"acceptedAnswer\": { \"@type\": \"Answer\", \"text\": \"No, la parálisis del sueño no es peligrosa. Aunque la experiencia puede ser aterradora, es una condición benigna que no causa daño físico. Los episodios típicamente duran desde unos segundos hasta dos minutos y terminan por sí solos.\" } },\n                { \"@type\": \"Question\", \"name\": \"¿Puede la parálisis del sueño causar la muerte?\", \"acceptedAnswer\": { \"@type\": \"Answer\", \"text\": \"No, la parálisis del sueño no puede causar la muerte. A pesar de la sensación aterradora de no poder respirar, tu cuerpo continúa respirando automáticamente. La sensación de presión en el pecho es una alucinación, no una restricción respiratoria real.\" } },\n                { \"@type\": \"Question\", \"name\": \"¿Cómo puedo detener la parálisis del sueño inmediatamente?\", \"acceptedAnswer\": { \"@type\": \"Answer\", \"text\": \"Para salir de la parálisis del sueño, concéntrate en mover partes pequeñas del cuerpo como tus dedos de manos o pies. Intenta moverlos o cerrar el puño. Algunas personas encuentran que concentrarse en la respiración o intentar hacer un pequeño sonido ayuda. Mantente calmado y recuerda que el episodio terminará pronto.\" } }\n            ]\n        }",
-    "{\n            \"@context\": \"https://schema.org\",\n            \"@type\": \"BreadcrumbList\",\n            \"itemListElement\": [\n                { \"@type\": \"ListItem\", \"position\": 1, \"name\": \"Inicio\", \"item\": \"https://noctalia.app/es/\" },\n                { \"@type\": \"ListItem\", \"position\": 2, \"name\": \"Recursos\", \"item\": \"https://noctalia.app/es/blog/\" },\n                { \"@type\": \"ListItem\", \"position\": 3, \"name\": \"Guía parálisis del sueño\", \"item\": \"https://noctalia.app/es/blog/guia-paralisis-sueno\" }\n            ]\n        }"
+    "{\n    \"@context\": \"https://schema.org\",\n    \"@type\": \"FAQPage\",\n    \"mainEntity\": [\n        {\n            \"@type\": \"Question\",\n            \"name\": \"¿Es peligrosa la parálisis del sueño?\",\n            \"acceptedAnswer\": {\n                \"@type\": \"Answer\",\n                \"text\": \"No. Asusta, pero no es dañina en sí misma y termina sola, normalmente en unos segundos o unos minutos. Si los episodios son frecuentes o te dan miedo a la hora de acostarte, habla con un médico.\"\n            }\n        },\n        {\n            \"@type\": \"Question\",\n            \"name\": \"¿Te puedes morir de una parálisis del sueño?\",\n            \"acceptedAnswer\": {\n                \"@type\": \"Answer\",\n                \"text\": \"No, la parálisis del sueño no puede causar la muerte. Aunque sientas el pecho aplastado, la respiración sigue funcionando sola durante todo el episodio. El peso es una sensación, no una obstrucción.\"\n            }\n        },\n        {\n            \"@type\": \"Question\",\n            \"name\": \"¿Cómo salir de una parálisis del sueño?\",\n            \"acceptedAnswer\": {\n                \"@type\": \"Answer\",\n                \"text\": \"Prueba un movimiento muy pequeño: un dedo de la mano o del pie, cerrar el puño. Respira despacio y recuerda que es pasajero. Si luchar te angustia más, haz lo contrario: deja de resistirte, céntrate en algo neutro y deja que los músculos se relajen hasta que pase.\"\n            }\n        },\n        {\n            \"@type\": \"Question\",\n            \"name\": \"¿Es real la presencia que se siente en la parálisis del sueño?\",\n            \"acceptedAnswer\": {\n                \"@type\": \"Answer\",\n                \"text\": \"No. La presencia, la figura y los pasos están entre las alucinaciones más comunes de la parálisis del sueño, descritas en muchas culturas. Vienen de imágenes del sueño que se mezclan con la vigilia, en un momento en que el cerebro está en alerta.\"\n            }\n        }\n    ]\n}",
+    "{\n    \"@context\": \"https://schema.org\",\n    \"@type\": \"BreadcrumbList\",\n    \"itemListElement\": [\n        {\n            \"@type\": \"ListItem\",\n            \"position\": 1,\n            \"name\": \"Inicio\",\n            \"item\": \"https://noctalia.app/es/\"\n        },\n        {\n            \"@type\": \"ListItem\",\n            \"position\": 2,\n            \"name\": \"Recursos\",\n            \"item\": \"https://noctalia.app/es/blog/\"\n        },\n        {\n            \"@type\": \"ListItem\",\n            \"position\": 3,\n            \"name\": \"Parálisis del sueño\",\n            \"item\": \"https://noctalia.app/es/blog/guia-paralisis-sueno\"\n        }\n    ]\n}"
   ],
   "activeNav": "resources"
 }
@@ -64,13 +64,13 @@
 <a class="text-xs font-mono text-purple-200/70 border border-white/10 rounded-full px-3 py-1 hover:text-white hover:border-dream-salmon/30 transition-colors" href="suenos-lucidos">Tema: Sueños lúcidos</a>
 <span aria-hidden="true" class="w-full sm:hidden"></span>
 <span class="text-sm text-purple-300/60">Publicado el 11 de diciembre de 2025</span>
-<span class="text-sm text-purple-300/60">5 min de lectura</span>
+<span class="text-sm text-purple-300/60">11 min de lectura</span>
 </div>
 <h1 class="font-serif text-3xl md:text-5xl mb-6 text-transparent bg-clip-text bg-gradient-to-b from-white via-dream-lavender to-purple-400/50 leading-tight">
-                    Parálisis del sueño: por qué no puedes moverte y cómo detenerla
+                    Parálisis del sueño: por qué no puedes moverte y cómo salir de ella
                 </h1>
 <p class="text-lg text-purple-200/80 leading-relaxed">
-                    Despiertas pero no puedes moverte. Una presencia oscura acecha en la habitación. Tu pecho se siente aplastado. Esto es la parálisis del sueño - un fenómeno aterrador pero inofensivo que afecta hasta al 8% de la población. Aquí está todo lo que la ciencia sabe al respecto.
+                    Abres los ojos. La habitación está ahí, pero tu cuerpo no responde. Alguien parece estar de pie junto a la cama y sientes un peso en el pecho. Es la parálisis del sueño: un fallo breve, aterrador e inofensivo entre el sueño y la vigilia. Aquí tienes qué ocurre, qué puede ayudarte en el momento y cómo hacer que los episodios sean menos frecuentes.
                 </p>
 </header>
 <!-- Author Byline (E-E-A-T) -->
@@ -87,7 +87,7 @@
 <!-- Quick Answer (AI SEO) -->
 <section class="glass-panel rounded-2xl p-6 mb-8 border border-dream-salmon/20 bg-white/5" aria-labelledby="quick-answer-title">
     <h2 id="quick-answer-title" class="font-serif text-xl text-dream-cream mb-3">Respuesta rápida</h2>
-    <p class="text-purple-100/80 leading-relaxed">Entiende por qué ocurre la parálisis del sueño y cómo detenerla. Técnicas probadas para prevenir episodios y dormir tranquilo.</p>
+    <p class="text-purple-100/80 leading-relaxed">La parálisis del sueño ocurre cuando te despiertas, o empiezas a dormirte, mientras la relajación muscular de la fase REM sigue activa. Estás consciente, pero no puedes moverte ni hablar, normalmente durante unos segundos o unos minutos. La presencia, el peso en el pecho y la sensación de flotar son imágenes del sueño que se cuelan en la vigilia. No es peligrosa. Dormir lo suficiente, con horarios regulares, y reducir el estrés hace que los episodios sean menos probables; consulta al médico si son frecuentes o si tienes mucho sueño durante el día.</p>
 </section>
 
 <!-- Editorial Review (E-E-A-T) -->
@@ -113,98 +113,86 @@
 <!-- Table of Contents -->
 <nav class="glass-panel rounded-2xl p-6 mb-12">
 <h2 class="font-serif text-lg text-dream-cream mb-4 flex items-center gap-2">
-<i class="w-5 h-5 text-dream-salmon" data-lucide="list"></i> Tabla de contenidos
+<i class="w-5 h-5 text-dream-salmon" data-lucide="list"></i> Índice
                 </h2>
 <ol class="space-y-2 text-sm text-purple-200/70">
 <li><a class="toc-link block" href="#que-es">1. ¿Qué es la parálisis del sueño?</a></li>
-<li><a class="toc-link block" href="#síntomas">2. Síntomas y experiencias</a></li>
-<li><a class="toc-link block" href="#ciencia">3. La ciencia detrás del fenómeno</a></li>
-<li><a class="toc-link block" href="#causas">4. ¿Cuáles son las causas?</a></li>
-<li><a class="toc-link block" href="#alucinaciones">5. ¿Por qué ocurren las alucinaciones?</a></li>
-<li><a class="toc-link block" href="#detener">6. ¿Cómo detener un episodio?</a></li>
-<li><a class="toc-link block" href="#prevenir">7. Estrategias de prevención</a></li>
-<li><a class="toc-link block" href="#cuando-consultar">8. ¿Cuándo consultar a un médico?</a></li>
+<li><a class="toc-link block" href="#síntomas">2. ¿Qué se siente durante un episodio?</a></li>
+<li><a class="toc-link block" href="#ciencia">3. ¿Qué pasa en el cerebro?</a></li>
+<li><a class="toc-link block" href="#causas">4. ¿Qué la hace más probable?</a></li>
+<li><a class="toc-link block" href="#alucinaciones">5. ¿Por qué la presencia, el peso y la sensación de flotar?</a></li>
+<li><a class="toc-link block" href="#detener">6. Qué hacer durante un episodio</a></li>
+<li><a class="toc-link block" href="#prevenir">7. Cómo tener menos episodios</a></li>
+<li><a class="toc-link block" href="#cuando-consultar">8. Cuándo ir al médico</a></li>
 </ol>
 </nav>
 <!-- Article Content -->
 <div class="prose max-w-none text-gray-300">
-<h2 id="que-es">¿Qué es la parálisis del sueño y por qué ocurre?</h2>
+<h2 id="que-es">¿Qué es la parálisis del sueño?</h2>
 <p>
-                    La parálisis del sueño es una incapacidad temporal para moverse o hablar que ocurre <strong>al despertar o al quedarse dormido</strong>. Durante un episodio, estás completamente consciente pero tu cuerpo permanece en el estado paralizado del sueño REM. Esta desconexión entre mente y cuerpo crea una de las experiencias más aterradoras del sueño humano.
+                    La parálisis del sueño es un momento breve, <strong>justo al despertar o justo antes de dormirte</strong>, en el que estás consciente pero no puedes moverte ni hablar. Tu mente ya ha despertado, pero tu cuerpo sigue en el estado del <a class="text-dream-salmon hover:underline" href="sueno-rem-suenos">sueño REM</a>, la fase de los sueños más vívidos, en la que la mayoría de los músculos están desactivados.
                 </p>
 <p>
-                    El fenómeno ha sido documentado a lo largo de la historia humana, a menudo atribuido a causas sobrenaturales:
+                    Es más frecuente de lo que parece. Una revisión sistemática de Sharpless y Barber, que reúne 35 estudios, estima que <strong>alrededor del 7,6 % de la población general</strong> ha tenido al menos un episodio, cifra que sube al 28,3 % entre estudiantes y al 31,9 % entre pacientes psiquiátricos.
+                </p>
+<p>
+                    Mucho antes de que alguien la midiera, muchas culturas le pusieron nombre y culpable:
                 </p>
 <ul>
-<li><strong>Europa medieval:</strong> Atribuido a demonios o "pesadillas" sentadas en el pecho</li>
-<li><strong>Japón:</strong> Llamado "kanashibari", que significa atado con metal</li>
-<li><strong>Terranova:</strong> Conocido como el síndrome de la "Vieja Bruja"</li>
-<li><strong>Brasil:</strong> Atribuido a "Pisadeira", una anciana que pisotea a los durmientes</li>
+<li><strong>En español:</strong> la propia palabra <em>pesadilla</em> viene de <em>pesada</em>, como ese peso que oprime el pecho de quien duerme.</li>
+<li><strong>México:</strong> se dice que «se te subió el muerto».</li>
+<li><strong>Cataluña:</strong> la tradición habla de la Pesanta, un ser que se sienta sobre el pecho de los durmientes.</li>
+<li><strong>Japón:</strong> <em>kanashibari</em>, literalmente «atado con metal».</li>
 </ul>
 <p>
-                    Hoy, la ciencia tiene una explicación clara para este fenómeno, y entenderlo puede ayudar a reducir el miedo asociado con los episodios.
+                    Estas historias describen la experiencia con mucha precisión, pero no demuestran que algo te visite por la noche.
                 </p>
-<h2 id="síntomas">Síntomas de la parálisis del sueño: qué se siente</h2>
+<h2 id="síntomas">¿Qué se siente durante un episodio?</h2>
 <p>
-                    Los episodios de parálisis del sueño típicamente incluyen varios síntomas distintos:
+                    Un episodio suele empezar de dos maneras. O sales de un sueño y tu cuerpo no responde, o te estás quedando dormido y notas que te «bloqueas» mientras sigues consciente.
                 </p>
-<h3>Síntomas físicos de parálisis nocturna</h3>
+<h3>En el cuerpo</h3>
 <ul>
-<li><strong>Parálisis muscular completa:</strong> Incapacidad de mover extremidades, torso o cabeza</li>
-<li><strong>Presión en el pecho:</strong> Sensación de peso en el pecho, dificultad para respirar</li>
-<li><strong>Movimiento ocular preservado:</strong> A menudo el único movimiento voluntario posible</li>
-<li><strong>Habla imposible:</strong> Incapacidad de pedir ayuda o hacer sonidos</li>
+<li><strong>No puedes moverte:</strong> ni brazos, ni piernas, ni cabeza, por mucho que lo intentes.</li>
+<li><strong>No puedes hablar</strong> ni pedir ayuda. A veces puedes mover o abrir los ojos, a veces no.</li>
+<li><strong>Sientes un peso en el pecho</strong>, como si algo presionara, y la respiración parece corta.</li>
 </ul>
-<h3>Alucinaciones durante la parálisis del sueño</h3>
+<h3>En lo que percibes</h3>
 <ul>
-<li><strong>Sensación de presencia:</strong> Sentir que alguien o algo está en la habitación</li>
-<li><strong>Alucinaciones visuales:</strong> Figuras de sombra, intrusos o entidades sobrenaturales</li>
-<li><strong>Alucinaciones auditivas:</strong> Pasos, respiración, susurros o zumbidos</li>
-<li><strong>Sensaciones fuera del cuerpo:</strong> Sensación de flotar o verse desde arriba</li>
-</ul>
-<blockquote>
-                    "Sentí algo sentarse en mi cama. No podía moverme, no podía gritar. Una figura oscura se inclinó sobre mi. Pareció una eternidad, pero probablemente fueron 30 segundos." - Testimonio común
-                </blockquote>
-<h2 id="ciencia">Neurociencia de la parálisis del sueño explicada</h2>
-<p>
-                    La parálisis del sueño ocurre durante las <strong>transiciones entre etapas del sueño</strong>, específicamente involucrando el sueño REM (movimiento ocular rápido). Esto es lo que sucede en tu cerebro:
-                </p>
-<p>
-                    Durante el sueño REM normal, tu cerebro paraliza tus músculos a través de un proceso llamado <strong>atonía REM</strong>. Esto te impide actuar tus sueños - un mecanismo de seguridad crucial. La parálisis del sueño ocurre cuando esta atonía persiste en la vigilia o comienza antes de que estés completamente dormido.
-                </p>
-<h3>Mecanismo cerebral de la atonía REM</h3>
-<ul>
-<li>El <strong>área preóptica ventrolateral</strong> falla en transicionar correctamente entre estados de sueño y vigilia</li>
-<li>Los neurotransmisores <strong>glicina y GABA</strong> continúan suprimiendo las neuronas motoras</li>
-<li>La <strong>amígdala</strong> (centro del miedo) se vuelve hiperactiva, explicando el terror</li>
-<li>La actividad del <strong>córtex prefrontal</strong> aumenta, creando conciencia durante la parálisis</li>
+<li><strong>Una presencia:</strong> alguien, o algo, está en la habitación.</li>
+<li><strong>Imágenes:</strong> una <a class="text-dream-salmon hover:underline" href="../simbolos/sombra">sombra</a> en un rincón, una figura junto a la puerta o inclinada sobre la cama.</li>
+<li><strong>Sonidos:</strong> pasos, una respiración, susurros, un zumbido.</li>
+<li><strong>Sensaciones corporales:</strong> flotar, girar, <a class="text-dream-salmon hover:underline" href="../simbolos/caida">caer</a> o verte desde arriba.</li>
 </ul>
 <p>
-                    Investigaciones de la Universidad de Waterloo encontraron que la parálisis del sueño ocurre en aproximadamente <strong>7,6 % de la población general</strong>, con tasas más altas en estudiantes (28,3 %) y pacientes psiquiátricos (31,9 %).
+                    Según la Sleep Foundation, alrededor del 75 % de los episodios incluyen alucinaciones de este tipo. Un episodio suele durar de unos segundos a varios minutos y termina solo, a veces en cuanto consigues hacer un movimiento o alguien te toca o te habla.
                 </p>
-<h2 id="causas">Causas de la parálisis del sueño: factores de riesgo</h2>
+<h2 id="ciencia">¿Qué pasa en el cerebro?</h2>
 <p>
-                    Aunque cualquiera puede experimentar parálisis del sueño, ciertos factores aumentan notablemente la probabilidad:
+                    Durante el sueño REM, el tronco del encéfalo relaja activamente casi todos los músculos del cuerpo. Esta <strong>atonía muscular</strong> evita que representes tus sueños con el cuerpo. La respiración y los movimientos de los ojos siguen funcionando.
                 </p>
-<h3>Trastornos del sueño que causan parálisis</h3>
+<p>
+                    La parálisis del sueño es un <strong>estado mixto</strong>: una parte del cerebro ya se ha despertado, mientras la atonía, y a veces las imágenes del sueño, siguen activas. Como resume el NHS, el servicio de salud británico, los músculos no responden mientras el cerebro está activo. Por qué este relevo entre sueño y vigilia falla algunas noches sigue siendo objeto de investigación.
+                </p>
+<p>
+                    Por eso parece tan real: estás lo bastante despierto para ver tu habitación y todavía lo bastante dormido para que las imágenes del sueño se superpongan a ella. Ver cosas durante un episodio no significa que te estés «volviendo loco».
+                </p>
+<h2 id="causas">¿Qué la hace más probable?</h2>
+<p>
+                    A cualquiera le puede pasar, y casi nunca hay una sola causa. Una revisión sistemática de 42 estudios, firmada por Denis, French y Gregory (2018), encontró relación con el sueño alterado, el estrés y las experiencias traumáticas, los síntomas de ansiedad, el consumo de sustancias y algunos trastornos psiquiátricos. La asociación más fuerte fue con el trastorno de estrés postraumático. Según el NHS, los antecedentes familiares también influyen.
+                </p>
+<h3>Dormir poco o a deshoras</h3>
 <ul>
-<li><strong>Privación de sueño:</strong> El desencadenante más común</li>
-<li><strong>Horarios de sueño irregulares:</strong> Trabajo por turnos, jet lag, horarios de acostarse inconsistentes</li>
-<li><strong>Dormir boca arriba:</strong> La posición supina aumenta la frecuencia de episodios</li>
-<li><strong>Narcolepsia:</strong> La parálisis del sueño es un sintoma clave de este trastorno</li>
+<li><strong>La falta de sueño</strong>, sobre todo varias noches cortas seguidas.</li>
+<li><strong>Los horarios irregulares:</strong> turnos de trabajo, jet lag, fines de semana que se alargan hasta la madrugada.</li>
+<li><strong>Dormir boca arriba</strong>, que según el NHS hace los episodios más probables.</li>
+<li><strong>Otros trastornos del sueño:</strong> insomnio, apnea del sueño y narcolepsia, de la que la parálisis del sueño es un síntoma reconocido.</li>
 </ul>
-<h3>Hábitos que provocan parálisis del sueño</h3>
+<h3>El estrés y la salud mental</h3>
 <ul>
-<li><strong>Estrés y ansiedad:</strong> Alta correlación con la frecuencia de episodios</li>
-<li><strong>Uso de sustancias:</strong> Alcohol, cafeína y ciertos medicamentos</li>
-<li><strong>Mala higiene del sueño:</strong> Uso de pantallas antes de dormir, ambiente de sueño incómodo</li>
-</ul>
-<h3>Condiciones médicas asociadas a la parálisis</h3>
-<ul>
-<li><strong>Apnea del sueño:</strong> Interrupciones de la respiración durante el sueño</li>
-<li><strong>TEPT:</strong> El estrés postraumatico aumenta la vulnerabilidad</li>
-<li><strong>Trastornos de ansiedad:</strong> Particularmente el trastorno de pánico</li>
-<li><strong>Trastorno bipolar:</strong> Asociado con patrones de sueño alterados</li>
+<li><strong>Las épocas de mucho estrés</strong> o de cambios fuertes.</li>
+<li><strong>Los trastornos de ansiedad</strong>, en especial el trastorno de pánico, y el <strong>estrés postraumático</strong>.</li>
+<li><strong>El alcohol y algunas sustancias</strong>, y también dejar de golpe el alcohol o ciertos antidepresivos, porque puede alterar el sueño REM.</li>
 </ul>
 </div>
 <!-- Symptom Cards -->
@@ -214,132 +202,132 @@
 <div class="p-2 bg-purple-500/20 rounded-lg">
 <i class="w-5 h-5 text-purple-300" data-lucide="moon"></i>
 </div>
-<h3 class="font-serif text-lg text-dream-cream">Hipnopómpica</h3>
+<h3 class="font-serif text-lg text-dream-cream">Al despertar (hipnopómpica)</h3>
 </div>
 <p class="text-sm text-gray-300 mb-3">
-                        Ocurre al despertar. El tipo más común. Tu mente despierta antes de que tu cuerpo se libere de la atonía REM.
+                        Sales de un sueño y tu mente despierta antes que tus músculos. El sueño puede parecer que continúa en la habitación, a tu alrededor.
                     </p>
-<p class="text-xs text-dream-salmon">~90 % de los episodios</p>
+<p class="text-xs text-dream-salmon">Para anotar: ¿qué estabas soñando justo antes?</p>
 </div>
 <div class="symptom-card glass-panel rounded-xl p-6 border border-transparent">
 <div class="flex items-center gap-3 mb-4">
 <div class="p-2 bg-purple-500/20 rounded-lg">
 <i class="w-5 h-5 text-purple-300" data-lucide="sunset"></i>
 </div>
-<h3 class="font-serif text-lg text-dream-cream">Hipnagógica</h3>
+<h3 class="font-serif text-lg text-dream-cream">Al dormirte (hipnagógica)</h3>
 </div>
 <p class="text-sm text-gray-300 mb-3">
-                        Ocurre al quedarse dormido. Menos común pero a menudo más intensa. La atonía REM comienza mientras aún estas consciente.
+                        Te estás quedando dormido y notas el cuerpo pesado e inmóvil mientras sigues plenamente consciente. Pueden aparecer imágenes y sonidos antes incluso de que te duermas.
                     </p>
-<p class="text-xs text-dream-salmon">~10 % de los episodios</p>
+<p class="text-xs text-dream-salmon">Para anotar: ¿cuánto habías dormido las noches anteriores?</p>
 </div>
 </div>
 <div class="prose max-w-none text-gray-300">
-<h2 id="alucinaciones">¿Por qué vemos sombras y presencias durante la parálisis?</h2>
+<h2 id="alucinaciones">¿Por qué la presencia, el peso y la sensación de flotar?</h2>
 <p>
-                    Estas alucinaciones no son aleatorias - siguen patrones predecibles explicados por la neurociencia:
+                    Las imágenes de la parálisis del sueño se parecen mucho de una persona a otra. El psicólogo J. Allan Cheyne y sus colegas las agruparon en tres familias. Sus explicaciones siguen siendo hipótesis, pero ayudan a entender lo que viviste.
                 </p>
-<h3>Sensación de presencia maligna en la habitación</h3>
+<h3>El intruso: hay alguien en la habitación</h3>
 <p>
-                    Esa sensación de una presencia amenazante resulta de la <strong>hiperactivación de tu amígdala</strong>. Normalmente, el córtex prefrontal modera las respuestas de miedo, pero durante la parálisis del sueño, esta regulación falla. Tu cerebro interpreta la parálisis como una amenaza y crea una fuente para ese peligro.
+                    Una presencia, pasos, una figura y, a menudo, un miedo intenso. Una explicación propuesta es que el sistema de detección de amenazas sigue activo durante el sueño REM. Despierto, inmóvil y en alerta, el cerebro busca el origen del peligro, y las imágenes del sueño le dan forma. Dicho de otro modo, <strong>la figura nace del miedo</strong>, no es su causa.
                 </p>
-<h3>Presión en el pecho y dificultad para respirar</h3>
+<h3>El íncubo: el peso en el pecho</h3>
 <p>
-                    Presión en el pecho y dificultad para respirar ocurren porque los músculos respiratorios (aunque siguen funcionando) se sienten restringidos. Tu cerebro interpreta esto como algo presionando hacia abajo, a menudo visualizado como una figura sentada en tu pecho.
+                    Presión, sensación de ahogo, a veces la impresión de que alguien está sentado encima de ti. En el sueño REM, la respiración depende sobre todo del diafragma, mientras los demás músculos del tórax siguen relajados. Intentar respirar hondo en ese estado puede sentirse como empujar contra un peso. <strong>Tu respiración continúa sola</strong> todo el tiempo.
                 </p>
-<h3>Sensación de flotar fuera del cuerpo</h3>
+<h3>Sensaciones corporales: flotar, caer, salir del cuerpo</h3>
 <p>
-                    Las sensaciones fuera del cuerpo y de flotación ocurren cuando el <strong>sistema vestibular</strong> del cerebro (equilibrio y conciencia espacial) envía señales conflictivas. Tu cerebro espera movimiento pero no recibe retroalimentación, creando sensaciones de flotar o dejar el cuerpo.
+                    Flotar, volar, girar, caer o verte desde arriba. Una explicación probable es un desajuste: los sistemas del equilibrio y del movimiento envían señales de desplazamiento, mientras el cuerpo inmóvil no devuelve ninguna. El resultado puede ser la sensación de salir del cuerpo.
                 </p>
+<!-- CTA inline -->
 <aside class="glass-panel rounded-2xl p-6 my-8 border border-dream-salmon/20">
 <div class="flex items-start gap-4">
 <div class="p-3 bg-dream-salmon/10 rounded-xl">
 <i class="w-6 h-6 text-dream-salmon" data-lucide="book-open"></i>
 </div>
 <div>
-<h4 class="font-serif text-lg text-dream-cream mb-2">Rastrea tus patrones de sueño</h4>
-<p class="text-sm text-gray-400 mb-4">Registrar tus sueños y experiencias de sueño puede ayudar a identificar desencadenantes de la parálisis del sueño. Noctalia facilita grabar por voz cualquier experiencia nocturna inmediatamente al despertar.</p>
+<h4 class="font-serif text-lg text-dream-cream mb-2">Anota el episodio mientras lo recuerdas</h4>
+<p class="text-sm text-gray-400 mb-4">En Noctalia, cuenta en voz alta lo que pasó en cuanto puedas: la hora, tu postura, lo que viste. Se transcribe en tu diario y puedes releer tus episodios uno al lado del otro para ver qué suele precederlos.</p>
 <a class="inline-flex items-center gap-2 text-sm text-dream-salmon hover:text-dream-salmonLight transition-colors" href="/es/">
-                                Descubre Noctalia <i class="w-4 h-4" data-lucide="arrow-right"></i>
+                                Probar Noctalia gratis <i class="w-4 h-4" data-lucide="arrow-right"></i>
 </a>
 </div>
 </div>
 </aside>
-<h2 id="detener">¿Cómo salir de la parálisis del sueño rápidamente?</h2>
+<h2 id="detener">Qué hacer durante un episodio</h2>
 <p>
-                    Cuando te encuentras en parálisis del sueño, estas técnicas pueden ayudarte a liberarte:
+                    Saber lo que está pasando ya quita parte del miedo: un episodio asusta, pero no es peligroso, y termina solo. Ninguno de estos recursos funciona para todo el mundo; quédate con lo que te sirva.
                 </p>
-<h3>Técnicas físicas para despertar del episodio</h3>
-<ol>
-<li><strong>Concéntrate en movimientos pequeños:</strong> Concéntrate en mover tus dedos de manos, pies o músculos faciales. Estos a menudo rompen la parálisis</li>
-<li><strong>Controla tu respiración:</strong> Toma respiraciones lentas y profundas. Esto activa tu sistema nervioso parasimpático</li>
-<li><strong>Intenta hacer un sonido:</strong> Intenta tararear, gruñir o hacer cualquier ruido vocal</li>
-<li><strong>Movimiento rápido de ojos:</strong> Mueve tus ojos rápidamente de un lado a otro</li>
-</ol>
-<h3>Estrategias mentales para romper la parálisis</h3>
-<ul>
-<li><strong>Mantente calmado:</strong> Recuérdate que esto es temporal e inofensivo</li>
-<li><strong>No luches:</strong> Forcejear puede prolongar el episodio y aumentar el miedo</li>
-<li><strong>Concéntrate en el exterior:</strong> Escucha los sonidos ambientales, siente la cama debajo de ti</li>
-<li><strong>Visualización:</strong> Imagínate moviéndote, levantándote, encendiendo las luces</li>
-</ul>
-<blockquote>
-                    "En el momento en que dejé de luchar y solo me concentré en mover mi dedo menique, la parálisis se rompió en segundos."
-                </blockquote>
-<h2 id="prevenir">Cómo prevenir la parálisis del sueño: 8 consejos</h2>
+<h3>1. Empieza por un movimiento muy pequeño</h3>
 <p>
-                    Aunque no puedes garantizar la prevención, estas estrategias reducen notablemente la frecuencia de episodios:
+                    En lugar de intentar incorporarte, céntrate en un dedo de la mano o del pie, o intenta cerrar el puño. La Sleep Foundation propone estos pequeños movimientos para poner fin a un episodio.
                 </p>
-<h3>Higiene del sueño para evitar episodios</h3>
-<ul>
-<li><strong>Mantén horarios de sueño consistentes:</strong> Acuéstate y despiértate a la misma hora diariamente</li>
-<li><strong>Duerme lo suficiente:</strong> Apunta a 7-9 horas por noche</li>
-<li><strong>Evita dormir boca arriba:</strong> Dormir de lado reduce significativamente los episodios</li>
-<li><strong>Crea un ambiente propicio para el sueño:</strong> Habitación fresca, oscura, tranquila</li>
-</ul>
-<h3>Cambios de hábitos para reducir la parálisis</h3>
-<ul>
-<li><strong>Reduce el estrés:</strong> Practica meditación, yoga u otras técnicas de relajación</li>
-<li><strong>Limita los estimulantes:</strong> Evita la cafeína y el alcohol cerca de la hora de dormir</li>
-<li><strong>Ejercicio regular:</strong> Pero no dentro de las 3 horas antes de dormir</li>
-<li><strong>Gestiona el tiempo de pantalla:</strong> Sin pantallas 1-2 horas antes de acostarse</li>
-</ul>
-<h3>Tratamientos para parálisis del sueño crónica</h3>
-<ul>
-<li><strong>Lleva un diario de sueño:</strong> Rastrea patrones, desencadenantes y frecuencia</li>
-<li><strong>Practica meditación de sueño:</strong> Relajación guiada antes de acostarse</li>
-<li><strong>Considera TCC-I:</strong> Terapia Cognitivo-Conductual para el Insomnio</li>
-<li><strong>Trata las condiciones subyacentes:</strong> Trata la ansiedad, depresión o trastornos del sueño</li>
-</ul>
-<h2 id="cuando-consultar">¿Cuándo ver a un especialista en trastornos del sueño?</h2>
+<h3>2. Respira despacio y ponle nombre</h3>
 <p>
-                    La parálisis del sueño es generalmente benigna, pero consulta a un profesional de salud si:
+                    Respira con calma, sin forzar una inspiración profunda: tu respiración sigue sola aunque sientas el pecho pesado. Dite por dentro: «Es una parálisis del sueño. Va a pasar». Ponerle nombre puede bajar parte del pánico, que es lo que hace que los segundos parezcan eternos.
+                </p>
+<h3>3. O al revés: deja de luchar</h3>
+<p>
+                    A algunas personas les va mejor no resistirse en absoluto. El psicólogo Baland Jalal propuso un método en cuatro pasos que llama <strong>terapia MR</strong> (meditación y relajación): reinterpretar el episodio como lo que es (benigno y pasajero), tomar distancia emocional de lo que ves, llevar la atención hacia dentro, a algo neutro o tranquilizador, y relajar los músculos. Se presentó a partir de casos clínicos y todavía no se ha evaluado en grandes ensayos.
+                </p>
+<h3>4. Después del episodio</h3>
+<ul>
+<li>Enciende una luz o levántate un minuto si temes volver a caer en él enseguida.</li>
+<li>Anota unas líneas: la hora, la postura, lo que viste y cómo terminó.</li>
+</ul>
+<h2 id="prevenir">Cómo tener menos episodios</h2>
+<p>
+                    No hay una forma garantizada de evitar la parálisis del sueño. Pero los factores que la favorecen suelen ser justo los que puedes cambiar.
+                </p>
+<h3>Cuida tu sueño</h3>
+<ul>
+<li><strong>Intenta dormir de 7 a 9 horas</strong>, lo que el NHS recomienda a los adultos.</li>
+<li><strong>Mantén horarios regulares</strong> para acostarte y levantarte, también el fin de semana.</li>
+<li><strong>Haz ejercicio con regularidad</strong>, pero no justo antes de acostarte.</li>
+<li><strong>Aligera la noche:</strong> sin cenas copiosas, alcohol ni café a última hora.</li>
+<li><strong>Deja las pantallas</strong> más o menos una hora antes de dormir.</li>
+<li><strong>Duerme de lado</strong> si tus episodios suelen ocurrir boca arriba; una almohada detrás de la espalda te evita girarte durante la noche.</li>
+<li><strong>Baja la tensión</strong> con unos minutos de respiración lenta o escribiendo lo que te ronda la cabeza.</li>
+</ul>
+<h3 id="ejemplo-diario">Lleva un registro de tus episodios</h3>
+<p><strong>Ejemplo ficticio:</strong> así puede ser una nota útil.</p>
+<ul>
+<li><strong>Noche:</strong> «Martes, 6:40, boca arriba, justo antes de que sonara la alarma. Unas cinco horas de sueño después de entregar un trabajo de madrugada».</li>
+<li><strong>Episodio:</strong> «No podía moverme durante lo que me pareció un minuto. Una figura oscura junto a la puerta, pasos».</li>
+<li><strong>Cómo terminó:</strong> «Conseguí mover el pulgar y luego volvió todo».</li>
+<li><strong>Pregunta para seguir:</strong> «¿Mis episodios llegan después de noches cortas o cuando duermo boca arriba?»</li>
+</ul>
+<p>Una sola nota no demuestra nada. Al cabo de unas semanas, estas notas muestran si los episodios siguen a noches cortas, a una postura o a épocas de estrés, y te serán útiles para llevar al médico. Nuestra <a class="text-dream-salmon hover:underline" href="guia-diario-suenos">guía del diario de sueños</a> explica cómo crear el hábito.</p>
+<h3>Si practicas los sueños lúcidos</h3>
+<p>
+                    Algunas técnicas de <a class="text-dream-salmon hover:underline" href="suenos-lucidos">sueños lúcidos</a> consisten en despertarse durante la noche y volver a dormirse sin perder la consciencia. Si notas más episodios, afloja: el sueño alterado es uno de los factores asociados a la parálisis del sueño.
+                </p>
+<h2 id="cuando-consultar">Cuándo ir al médico</h2>
+<p>
+                    Un episodio aislado no requiere atención médica. Consulta si:
                 </p>
 <ul>
-<li>Los episodios ocurren <strong>múltiples veces por semana</strong></li>
-<li>Experimentas <strong>somnolencia diurna excesiva</strong></li>
-<li>Los episodios causan <strong>ansiedad significativa o evitación del sueño</strong></li>
-<li>Tienes otros síntomas de <strong>narcolepsia</strong> (debilidad muscular súbita, sueños vívidos)</li>
-<li>La parálisis del sueño comenzó después de un <strong>trauma o cambios de medicación</strong></li>
+<li>los episodios son <strong>frecuentes</strong> y te da miedo irte a dormir;</li>
+<li>estás <strong>cansado todo el tiempo</strong> porque duermes mal;</li>
+<li>tienes <strong>mucho sueño durante el día</strong> o te duermes de golpe en momentos inoportunos;</li>
+<li>notas <strong>pérdidas bruscas de fuerza muscular</strong>, por ejemplo al reírte, que pueden ser un signo de narcolepsia;</li>
+<li>los episodios empezaron tras un <strong>trauma</strong> o vienen acompañados de <a class="text-dream-salmon hover:underline" href="guia-pesadillas">pesadillas</a> frecuentes y malestar durante el día.</li>
 </ul>
 <p>
-                    Un especialista en sueño puede recomendar una <strong>polisomnografía</strong> (estudio del sueño) para descartar narcolepsia u otros trastornos del sueño. En algunos casos, medicamentos como los ISRS pueden ayudar a reducir la frecuencia de episodios.
+                    El médico puede buscar una causa de fondo, como insomnio, apnea del sueño, narcolepsia o estrés postraumático, y tratarla. Si hace falta, te derivará a una unidad del sueño, donde pueden hacerte un estudio del sueño (<strong>polisomnografía</strong>). Según el NHS, las opciones incluyen la terapia cognitivo-conductual (TCC) o, en algunos casos, un antidepresivo en dosis bajas.
                 </p>
-<blockquote>
-                    "Entender que la parálisis del sueño es un fenómeno natural, aunque incómodo, le quitó la mayor parte de su poder sobre mí. El conocimiento es verdaderamente la mejor defensa."
-                </blockquote>
 </div>
 <!-- CTA Section -->
 <aside class="glass-panel rounded-3xl p-8 md:p-10 mt-16 text-center border border-dream-salmon/20">
 <div class="w-16 h-16 bg-dream-salmon/10 rounded-full flex items-center justify-center mx-auto mb-6">
 <i class="w-8 h-8 text-dream-salmon" data-lucide="shield"></i>
 </div>
-<h3 class="font-serif text-2xl md:text-3xl mb-4 text-dream-cream">Entiende mejor tu sueño</h3>
+<h3 class="font-serif text-2xl md:text-3xl mb-4 text-dream-cream">Un episodio es un susto. Diez, anotados, son una pista.</h3>
 <p class="text-purple-200/70 mb-6 max-w-lg mx-auto">
-                    Rastrea tus sueños y experiencias de sueño con Noctalia. La grabación por voz facilita capturar detalles inmediatamente al despertar, ayudandote a identificar patrones y desencadenantes.
+                    Guarda tus episodios y tus sueños en Noctalia, con la hora y cómo dormiste. Al releerlos juntos verás qué suele venir antes.
                 </p>
 <a class="inline-flex items-center gap-2 px-8 py-4 bg-dream-salmon text-dream-dark rounded-full font-bold hover:bg-dream-salmon/90 transition-colors" href="/es/">
-                    Descubre Noctalia <i class="w-5 h-5" data-lucide="arrow-right"></i>
+                    Empezar mi diario de sueños <i class="w-5 h-5" data-lucide="arrow-right"></i>
 </a>
 </aside>
 <!-- FAQ Section -->
@@ -352,40 +340,50 @@
                             <i class="w-5 h-5 transition-transform group-open:rotate-180 text-dream-salmon" data-lucide="chevron-down"></i>
 </summary>
 <p class="mt-4 text-sm text-gray-400 leading-relaxed">
-                            No, la parálisis del sueño no es peligrosa. Aunque la experiencia puede ser aterradora, es una condición benigna que no causa daño físico. Los episodios típicamente duran desde unos segundos hasta dos minutos y terminan por sí solos.
+                            No. Asusta, pero no es dañina en sí misma y termina sola, normalmente en unos segundos o unos minutos. Si los episodios son frecuentes o te dan miedo a la hora de acostarte, habla con un médico.
                         </p>
 </details>
 <details class="glass-panel rounded-xl p-4 group cursor-pointer">
 <summary class="font-medium flex justify-between items-center text-dream-cream">
-                            ¿Puede la parálisis del sueño causar la muerte?
+                            ¿Te puedes morir de una parálisis del sueño?
                             <i class="w-5 h-5 transition-transform group-open:rotate-180 text-dream-salmon" data-lucide="chevron-down"></i>
 </summary>
 <p class="mt-4 text-sm text-gray-400 leading-relaxed">
-                            No, la parálisis del sueño no puede causar la <a class="text-dream-salmon hover:underline" href="../simbolos/muerte">muerte</a>. A pesar de la sensación aterradora de no poder respirar, tu cuerpo continúa respirando automáticamente. La sensación de presión en el pecho es una alucinación, no una restricción respiratoria real.
+                            No, la parálisis del sueño no puede causar la <a class="text-dream-salmon hover:underline" href="../simbolos/muerte">muerte</a>. Aunque sientas el pecho aplastado, la respiración sigue funcionando sola durante todo el episodio. El peso es una sensación, no una obstrucción.
                         </p>
 </details>
 <details class="glass-panel rounded-xl p-4 group cursor-pointer">
 <summary class="font-medium flex justify-between items-center text-dream-cream">
-                            ¿Cómo puedo detener la parálisis del sueño inmediatamente?
+                            ¿Cómo salir de una parálisis del sueño?
                             <i class="w-5 h-5 transition-transform group-open:rotate-180 text-dream-salmon" data-lucide="chevron-down"></i>
 </summary>
 <p class="mt-4 text-sm text-gray-400 leading-relaxed">
-                            Para salir de la parálisis del sueño, concéntrate en mover partes pequeñas del cuerpo como tus dedos de manos o pies. Intenta moverlos o cerrar el puño. Algunas personas encuentran que concentrarse en la respiración o intentar hacer un pequeño sonido ayuda. Mantente calmado y recuerda que el episodio terminará pronto.
+                            Prueba un movimiento muy pequeño: un dedo de la mano o del pie, cerrar el puño. Respira despacio y recuerda que es pasajero. Si luchar te angustia más, haz lo contrario: deja de resistirte, céntrate en algo neutro y deja que los músculos se relajen hasta que pase.
+                        </p>
+</details>
+<details class="glass-panel rounded-xl p-4 group cursor-pointer">
+<summary class="font-medium flex justify-between items-center text-dream-cream">
+                            ¿Es real la presencia que se siente en la parálisis del sueño?
+                            <i class="w-5 h-5 transition-transform group-open:rotate-180 text-dream-salmon" data-lucide="chevron-down"></i>
+</summary>
+<p class="mt-4 text-sm text-gray-400 leading-relaxed">
+                            No. La presencia, la figura y los pasos están entre las alucinaciones más comunes de la parálisis del sueño, descritas en muchas culturas. Vienen de imágenes del sueño que se mezclan con la vigilia, en un momento en que el cerebro está en alerta.
                         </p>
 </details>
 </div>
 </section>
 <!-- Sources / Trust (TI-97) -->
 <section class="mt-16 glass-panel rounded-2xl p-6" id="sources">
-<h2 class="font-serif text-2xl text-dream-cream mb-4">Fuentes / Para Ir Más Lejos</h2>
+<h2 class="font-serif text-2xl text-dream-cream mb-4">Fuentes y lecturas</h2>
 <ul class="mt-6 space-y-2 text-sm text-gray-400">
-<li><a href="https://dictionary.apa.org/dream" rel="nofollow noopener noreferrer" target="_blank">APA Dictionary of Psychology:Dream</a></li>
-<li><a href="https://dreamresearch.net/" rel="nofollow noopener noreferrer" target="_blank">DreamResearch.net:G. William Domhoff (dream research overview)</a></li>
-<li><a href="https://www.mayoclinic.org/diseases-conditions/sleep-paralysis/symptoms-causes/syc-20352606" rel="nofollow noopener noreferrer" target="_blank">Mayo Clinic:Sleep paralysis (symptoms &amp; causes)</a></li>
-<li><a href="https://pubmed.ncbi.nlm.nih.gov/21571556/" rel="nofollow noopener noreferrer" target="_blank">Sharpless &amp; Barber (2011):Sleep paralysis prevalence (PubMed)</a></li>
-<li><a href="https://www.sleepfoundation.org/parasomnias/sleep-paralysis" rel="nofollow noopener noreferrer" target="_blank">Sleep Foundation:Sleep paralysis overview</a></li>
+<li><a href="https://pubmed.ncbi.nlm.nih.gov/21571556/" rel="nofollow noopener noreferrer" target="_blank">Sharpless y Barber (2011), «Lifetime prevalence rates of sleep paralysis: a systematic review», <em>Sleep Medicine Reviews</em></a></li>
+<li><a href="https://pubmed.ncbi.nlm.nih.gov/28735779/" rel="nofollow noopener noreferrer" target="_blank">Denis, French y Gregory (2018), «A systematic review of variables associated with sleep paralysis», <em>Sleep Medicine Reviews</em></a></li>
+<li><a href="https://pubmed.ncbi.nlm.nih.gov/10487786/" rel="nofollow noopener noreferrer" target="_blank">Cheyne, Rueffer y Newby-Clark (1999), «Hypnagogic and hypnopompic hallucinations during sleep paralysis», <em>Consciousness and Cognition</em></a></li>
+<li><a href="https://doi.org/10.3389/fpsyg.2016.00028" rel="nofollow noopener noreferrer" target="_blank">Jalal (2016), «How to make the ghosts in my bedroom disappear? Focused-attention meditation combined with muscle relaxation (MR therapy)», <em>Frontiers in Psychology</em></a></li>
+<li><a href="https://www.nhs.uk/conditions/sleep-paralysis/" rel="nofollow noopener noreferrer" target="_blank">NHS (servicio de salud británico), «Sleep paralysis»</a></li>
+<li><a href="https://www.sleepfoundation.org/parasomnias/sleep-paralysis" rel="nofollow noopener noreferrer" target="_blank">Sleep Foundation, «Sleep paralysis»</a></li>
 </ul>
-<p class="mt-6 text-xs text-purple-200/60">Actualizado el 26 de diciembre de 2025</p>
+<p class="mt-6 text-xs text-purple-200/60">Actualizado el 9 de octubre de 2026</p>
 </section>
 <!-- Related Symbols Start -->
 <section aria-label="Símbolos de sueños relacionados" class="mt-12 mb-8">

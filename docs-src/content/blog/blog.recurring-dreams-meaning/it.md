@@ -5,7 +5,7 @@
   "lang": "it",
   "slug": "significato-dei-sogni-ricorrenti-comprendere-i-loro-messaggi-nascosti",
   "title": "Sogni ricorrenti: possibili cause e cosa può aiutare | Noctalia",
-  "description": "Perché alcuni sogni possono ripetersi, quale ruolo possono avere stress e vita quotidiana e quando chiedere aiuto per incubi ricorrenti.",
+  "description": "Sogni ricorrenti: perché lo stesso sogno ritorna, cosa dice la ricerca, cosa annotare tra un episodio e l'altro e quando chiedere aiuto per gli incubi.",
   "robots": "max-image-preview:large",
   "themeColor": "#0a0514",
   "htmlClass": "scroll-smooth blog-article",
@@ -14,23 +14,23 @@
   "mainClass": "pt-32 pb-20 px-4",
   "ogType": "article",
   "ogTitle": "Sogni ricorrenti: possibili cause e cosa può aiutare | Noctalia",
-  "ogDescription": "Quali dettagli confrontare quando un sogno ritorna e quando chiedere aiuto per incubi ricorrenti.",
+  "ogDescription": "Perché lo stesso sogno ritorna, che cosa può riflettere e come farlo cambiare.",
   "ogImage": "https://noctalia.app/img/blog/recurring-dreams-meaning.webp",
   "ogImageAlt": "Motivi geometrici ripetuti nei toni del viola e del blu",
   "twitterCard": "summary_large_image",
   "twitterTitle": "Sogni ricorrenti: possibili cause e cosa può aiutare | Noctalia",
-  "twitterDescription": "Quali dettagli confrontare quando un sogno ritorna e quando chiedere aiuto.",
+  "twitterDescription": "Di nuovo lo stesso sogno? Cosa dice la ricerca e cosa annotare da una notte all'altra.",
   "twitterImage": "https://noctalia.app/img/blog/recurring-dreams-meaning.webp",
   "twitterImageAlt": "Motivi geometrici ripetuti nei toni del viola e del blu",
   "publishedTime": "2025-01-06",
-  "modifiedTime": "2026-07-18",
+  "modifiedTime": "2026-10-09",
   "author": "Thanh Chau",
   "prevPath": "/it/blog/perche-dimentichiamo-i-nostri-sogni-la-scienza-dietro-l-amnesia-onirica",
   "nextPath": "/it/blog/guida-ai-sogni-lucidi-per-principianti-prendi-il-controllo-delle-tue-notti",
   "preloadImage": "/img/blog/recurring-dreams-meaning.webp",
   "jsonLd": [
-    "{\n            \"@context\": \"https://schema.org\",\n            \"@type\": \"BlogPosting\",\n            \"headline\": \"Sogni ricorrenti: possibili cause e cosa può aiutare\",\n            \"description\": \"Perché alcuni sogni possono ripetersi, quale ruolo ha il contesto quotidiano e quando chiedere un parere professionale.\",\n            \"image\": {\n                \"@type\": \"ImageObject\",\n                \"url\": \"https://noctalia.app/img/blog/recurring-dreams-meaning.webp\",\n                \"width\": 1200,\n                \"height\": 630\n            },\n            \"author\": [\n                {\n                    \"@type\": \"Person\",\n                    \"@id\": \"https://noctalia.app/it/chi-siamo#person\",\n                    \"name\": \"Thanh Chau\",\n                    \"jobTitle\": \"Founder & Publication Director\",\n                    \"url\": \"https://noctalia.app/it/chi-siamo\",\n                    \"worksFor\": {\n                        \"@type\": \"Organization\",\n                        \"@id\": \"https://noctalia.app/#organization\",\n                        \"name\": \"Noctalia\",\n                        \"url\": \"https://noctalia.app\"\n                    }\n                },\n                {\n                    \"@type\": \"Organization\",\n                    \"@id\": \"https://noctalia.app/#organization\",\n                    \"name\": \"Noctalia\",\n                    \"url\": \"https://noctalia.app\",\n                    \"logo\": {\n                        \"@type\": \"ImageObject\",\n                        \"url\": \"https://noctalia.app/logo/logo_noctalia.png\"\n                    }\n                }\n            ],\n            \"publisher\": {\n                \"@type\": \"Organization\",\n                \"name\": \"Noctalia\",\n                \"url\": \"https://noctalia.app\",\n                \"logo\": {\n                    \"@type\": \"ImageObject\",\n                    \"url\": \"https://noctalia.app/logo/logo_noctalia.png\"\n                }\n            },\n            \"datePublished\": \"2025-01-06\",\n            \"dateModified\": \"2026-07-18\",\n            \"mainEntityOfPage\": {\n                \"@type\": \"WebPage\",\n                \"@id\": \"https://noctalia.app/it/blog/significato-dei-sogni-ricorrenti-comprendere-i-loro-messaggi-nascosti\"\n            },\n            \"inLanguage\": \"it\",\n            \"isAccessibleForFree\": true,\n            \"wordCount\": 1067,\n            \"timeRequired\": \"PT5M\",\n            \"url\": \"https://noctalia.app/it/blog/significato-dei-sogni-ricorrenti-comprendere-i-loro-messaggi-nascosti\"\n        }",
-    "{\n        \"@context\": \"https://schema.org\",\n        \"@type\": \"FAQPage\",\n        \"mainEntity\": [\n                {\n                        \"@type\": \"Question\",\n                        \"name\": \"Perché abbiamo sogni ricorrenti?\",\n                        \"acceptedAnswer\": {\n                                \"@type\": \"Answer\",\n                                \"text\": \"Stress, esperienze difficili e preoccupazioni quotidiane possono essere associati ai sogni ricorrenti. Il contenuto da solo non permette di stabilirne la causa; confronta gli episodi e il contesto dei giorni precedenti.\"\n                        }\n                },\n                {\n                        \"@type\": \"Question\",\n                        \"name\": \"I sogni ricorrenti sono pericolosi?\",\n                        \"acceptedAnswer\": {\n                                \"@type\": \"Answer\",\n                                \"text\": \"I sogni ricorrenti non sono automaticamente un segnale d’allarme. Se causano forte disagio, disturbano spesso il sonno o sono legati a un trauma noto, chiedi consiglio medico o psicologico.\"\n                        }\n                },\n                {\n                        \"@type\": \"Question\",\n                        \"name\": \"Come posso smettere di avere lo stesso sogno?\",\n                        \"acceptedAnswer\": {\n                                \"@type\": \"Answer\",\n                                \"text\": \"Nessun metodo funziona sempre per tutti i sogni ricorrenti. Per gli incubi angoscianti, l’Imagery Rehearsal Therapy può essere usata con il supporto di un professionista; un diario dei sogni aiuta anche a confrontare fattori scatenanti e cambiamenti.\"\n                        }\n                }\n        ]\n}",
+    "{\n    \"@context\": \"https://schema.org\",\n    \"@type\": \"BlogPosting\",\n    \"headline\": \"Sogni ricorrenti: perché lo stesso sogno ritorna e cosa può aiutare\",\n    \"description\": \"Sogni ricorrenti: perché lo stesso sogno ritorna, cosa dice la ricerca, cosa annotare tra un episodio e l'altro e quando chiedere aiuto per gli incubi.\",\n    \"image\": {\n        \"@type\": \"ImageObject\",\n        \"url\": \"https://noctalia.app/img/blog/recurring-dreams-meaning.webp\",\n        \"width\": 1200,\n        \"height\": 630\n    },\n    \"author\": [\n        {\n            \"@type\": \"Person\",\n            \"@id\": \"https://noctalia.app/it/chi-siamo#person\",\n            \"name\": \"Thanh Chau\",\n            \"jobTitle\": \"Founder & Publication Director\",\n            \"url\": \"https://noctalia.app/it/chi-siamo\",\n            \"worksFor\": {\n                \"@type\": \"Organization\",\n                \"@id\": \"https://noctalia.app/#organization\",\n                \"name\": \"Noctalia\",\n                \"url\": \"https://noctalia.app\"\n            }\n        },\n        {\n            \"@type\": \"Organization\",\n            \"@id\": \"https://noctalia.app/#organization\",\n            \"name\": \"Noctalia\",\n            \"url\": \"https://noctalia.app\",\n            \"logo\": {\n                \"@type\": \"ImageObject\",\n                \"url\": \"https://noctalia.app/logo/logo_noctalia.png\"\n            }\n        }\n    ],\n    \"publisher\": {\n        \"@type\": \"Organization\",\n        \"name\": \"Noctalia\",\n        \"url\": \"https://noctalia.app\",\n        \"logo\": {\n            \"@type\": \"ImageObject\",\n            \"url\": \"https://noctalia.app/logo/logo_noctalia.png\"\n        }\n    },\n    \"datePublished\": \"2025-01-06\",\n    \"dateModified\": \"2026-10-09\",\n    \"mainEntityOfPage\": {\n        \"@type\": \"WebPage\",\n        \"@id\": \"https://noctalia.app/it/blog/significato-dei-sogni-ricorrenti-comprendere-i-loro-messaggi-nascosti\"\n    },\n    \"inLanguage\": \"it\",\n    \"isAccessibleForFree\": true,\n    \"wordCount\": 1885,\n    \"timeRequired\": \"PT9M\",\n    \"url\": \"https://noctalia.app/it/blog/significato-dei-sogni-ricorrenti-comprendere-i-loro-messaggi-nascosti\"\n}",
+    "{\n    \"@context\": \"https://schema.org\",\n    \"@type\": \"FAQPage\",\n    \"mainEntity\": [\n        {\n            \"@type\": \"Question\",\n            \"name\": \"Che cosa significa un sogno ricorrente?\",\n            \"acceptedAnswer\": {\n                \"@type\": \"Answer\",\n                \"text\": \"Non ha un significato fisso. Un sogno che ritorna accompagna spesso un periodo di stress o una situazione in sospeso, e tende a diradarsi quando si risolve. Confronta gli episodi, la tua emozione e quello che vivevi il giorno prima.\"\n            }\n        },\n        {\n            \"@type\": \"Question\",\n            \"name\": \"Un sogno ricorrente è sempre un incubo?\",\n            \"acceptedAnswer\": {\n                \"@type\": \"Answer\",\n                \"text\": \"No. Può essere piacevole, neutro o angosciante: anche volare o scoprire stanze nuove sono sogni che ritornano. L'incubo è un sogno abbastanza angosciante da svegliarti.\"\n            }\n        },\n        {\n            \"@type\": \"Question\",\n            \"name\": \"Un sogno che si ripete annuncia qualcosa?\",\n            \"acceptedAnswer\": {\n                \"@type\": \"Answer\",\n                \"text\": \"No. Un sogno ricorrente non predice eventi né pericoli. Mette in scena un'emozione o una preoccupazione attuale, a volte solo una sensazione del corpo durante la notte.\"\n            }\n        },\n        {\n            \"@type\": \"Question\",\n            \"name\": \"Come smettere di fare lo stesso sogno?\",\n            \"acceptedAnswer\": {\n                \"@type\": \"Answer\",\n                \"text\": \"Non esiste un metodo garantito. Per gli incubi angoscianti l'American Academy of Sleep Medicine raccomanda l'Imagery Rehearsal Therapy. Se il tuo sonno ne risente, chiedi un parere medico.\"\n            }\n        }\n    ]\n}",
     "{\n    \"@context\": \"https://schema.org\",\n    \"@type\": \"BreadcrumbList\",\n    \"itemListElement\": [\n        {\n            \"@type\": \"ListItem\",\n            \"position\": 1,\n            \"name\": \"Home\",\n            \"item\": \"https://noctalia.app/it/\"\n        },\n        {\n            \"@type\": \"ListItem\",\n            \"position\": 2,\n            \"name\": \"Risorse\",\n            \"item\": \"https://noctalia.app/it/blog/\"\n        },\n        {\n            \"@type\": \"ListItem\",\n            \"position\": 3,\n            \"name\": \"Sogni ricorrenti\",\n            \"item\": \"https://noctalia.app/it/blog/significato-dei-sogni-ricorrenti-comprendere-i-loro-messaggi-nascosti\"\n        }\n    ]\n}"
   ],
   "activeNav": "resources"
@@ -63,13 +63,13 @@
 <a class="text-xs font-mono text-purple-200/70 border border-white/10 rounded-full px-3 py-1 hover:text-white hover:border-dream-salmon/30 transition-colors" href="significati-dei-sogni-interpretazione-e-simboli">Argomento: significati dei sogni</a>
 <span aria-hidden="true" class="w-full sm:hidden"></span>
 <span class="text-sm text-purple-300/60">Pubblicato il 6 gennaio 2025</span>
-<span class="text-sm text-purple-300/60">5 minuti di lettura</span>
+<span class="text-sm text-purple-300/60">9 minuti di lettura</span>
 </div>
 <h1 class="font-serif text-3xl md:text-5xl mb-6 text-transparent bg-clip-text bg-gradient-to-b from-white via-dream-lavender to-purple-400/50 leading-tight">
-                    Sogni ricorrenti: possibili cause e cosa può aiutare
+                    Sogni ricorrenti: perché lo stesso sogno ritorna e cosa può aiutare
                 </h1>
 <p class="text-lg text-purple-200/80 leading-relaxed">
-                    Cadere nel vuoto, arrivare in ritardo a un <a class="text-dream-salmon hover:underline" href="../simboli/esame">esame</a>, perdere i <a class="text-dream-salmon hover:underline" href="../simboli/denti">denti</a>... Quando una scena ritorna, confronta ciò che cambia tra gli episodi invece di trattarla come un messaggio in codice.
+                    Lo stesso treno che parte senza di te. Lo stesso <a class="text-dream-salmon hover:underline" href="../simboli/esame">esame</a> per cui non hai studiato niente. Riconosci la scena prima ancora di svegliarti. I sogni ricorrenti sono molto comuni e raramente preoccupanti. Per capirli, quello che cambia da una volta all'altra conta spesso più dell'ambientazione.
                 </p>
 </header>
 <!-- Author Byline (E-E-A-T) -->
@@ -86,7 +86,7 @@
 <!-- Quick Answer (AI SEO) -->
 <section class="glass-panel rounded-2xl p-6 mb-8 border border-dream-salmon/20 bg-white/5" aria-labelledby="quick-answer-title">
     <h2 id="quick-answer-title" class="font-serif text-xl text-dream-cream mb-3">Risposta rapida</h2>
-    <p class="text-purple-100/80 leading-relaxed">Un sogno ricorrente è una scena o un tema che ritorna nel tempo. Stress, esperienze difficili e preoccupazioni quotidiane possono avere un ruolo, ma il contenuto non ha un messaggio fisso. Annota che cosa cambia tra gli episodi e che cosa è successo nei giorni precedenti.</p>
+    <p class="text-purple-100/80 leading-relaxed">Un sogno ricorrente è una scena o un tema che ritorna per settimane, mesi o anche anni. Quasi due persone su tre dicono di averne avuti. Compaiono spesso nei periodi di stress o quando qualcosa resta in sospeso, e tendono a diradarsi quando la situazione si risolve. Non predicono nulla: annota che cosa si ripete, che cosa cambia e che cosa vivevi il giorno prima.</p>
 </section>
 <!-- Featured Image -->
 <figure class="mb-12 rounded-2xl overflow-hidden">
@@ -98,50 +98,34 @@
 <i class="w-5 h-5 text-dream-salmon" data-lucide="list"></i> Sommario
                 </h2>
 <ol class="space-y-2 text-sm text-purple-200/70">
-<li><a class="toc-link block" href="#definition">1. Cos'è un sogno ricorrente?</a></li>
-<li><a class="toc-link block" href="#causes">2. Perché abbiamo sogni ricorrenti?</a></li>
-<li><a class="toc-link block" href="#top10">3. Dieci motivi riportati di frequente</a></li>
-<li><a class="toc-link block" href="#interpretation">4. Come esaminare un sogno ricorrente</a></li>
-<li><a class="toc-link block" href="#stop">5. Che cosa può aiutare con gli incubi ricorrenti</a></li>
-<li><a class="toc-link block" href="#when-consult">6. Quando consultare uno specialista</a></li>
+<li><a class="toc-link block" href="#definition">1. Che cos'è un sogno ricorrente?</a></li>
+<li><a class="toc-link block" href="#causes">2. Perché lo stesso sogno ritorna?</a></li>
+<li><a class="toc-link block" href="#top10">3. Dieci scene che ritornano spesso</a></li>
+<li><a class="toc-link block" href="#interpretation">4. Come leggere il tuo sogno ricorrente</a></li>
+<li><a class="toc-link block" href="#stop">5. Come far cambiare un sogno che ritorna</a></li>
+<li><a class="toc-link block" href="#when-consult">6. Quando parlarne con un professionista</a></li>
 </ol>
 </nav>
 <!-- Article Content -->
 <div class="prose max-w-none text-gray-300">
-<h2 id="definition">Cos'è un sogno ricorrente? Comprendere i sogni ricorrenti</h2>
-<p>
-                    Un sogno ricorrente è un sogno che <strong>si ripete in modo identico o simile</strong> per un periodo prolungato, a volte settimane, mesi o addirittura anni. A differenza dei sogni ordinari che variano ogni notte, questi sogni seguono uno scenario prevedibile.
-                </p>
-<p>
-                    Spesso riprendono motivi familiari, come <a class="text-dream-salmon hover:underline" href="../simboli/cadere">cadere</a>, essere inseguiti o arrivare tardi a un esame. Il motivo isolato non stabilisce né la causa né un significato personale.
-                </p>
-<p>
-                    Questi sogni possono diventare più evidenti durante periodi di stress o transizione. Invece di attribuire loro un messaggio fisso, annota quale situazione si ripete, quale emozione provi e che cosa è cambiato di recente nella vita quotidiana.
-                </p>
-<h2 id="causes">Perché i sogni possono ripetersi?</h2>
-<p>
-                    Non esiste una spiegazione unica. Queste quattro possibilità sono domande da verificare, non diagnosi:
-                </p>
-<h3>1. Esperienze difficili</h3>
-<p>
-                    Gli incubi ricorrenti possono comparire dopo un’esperienza difficile. Il sogno da solo non permette di diagnosticare né di dimostrare un trauma.
-                </p>
-<h3>2. Stress persistente</h3>
-<p>
-                    Lavoro, relazioni o preoccupazioni economiche possono riapparire nei sogni. Verifica se gli episodi aumentano nei giorni particolarmente stressanti.
-                </p>
-<h3>3. Situazioni quotidiane ripetute</h3>
-<p>
-                    Un tragitto, una scadenza, un esame o una discussione ricorrente possono fornire materiale per scene simili senza implicare un conflitto nascosto.
-                </p>
-<h3>4. Bisogni psicologici insoddisfatti</h3>
-<p>
-                    Alcuni studi osservano associazioni tra bisogni frustrati e temi onirici valutati in modo più negativo. È una relazione statistica, non l’interpretazione di un singolo sogno.
-                </p>
-<h2 id="top10">Dieci motivi onirici riportati di frequente</h2>
-<p>
-                    Questi motivi compaiono negli studi e nei diari dei sogni, ma non formano una classifica e non hanno un significato fisso. Usa le domande seguenti per ricostruire il tuo contesto.
-                </p>
+<h2 id="definition">Che cos'è un sogno ricorrente?</h2>
+<p>Un sogno ricorrente ritorna in forma identica o molto simile per settimane, mesi o anni. L'ambientazione può cambiare, ma riconosci la situazione: cerchi un'aula, perdi una partenza, qualcuno ti segue.</p>
+<p>È frequente. Secondo i ricercatori del Laboratorio dei sogni e degli incubi di Montréal, quasi due terzi della popolazione dicono di aver avuto sogni ricorrenti. Alcuni tornano per un periodo preciso, altri accompagnano una persona fin dall'infanzia.</p>
+<p>Sogno ricorrente e incubo non sono la stessa cosa. Tornare senza paura nella casa della tua infanzia non ha niente a che vedere con lo svegliarsi terrorizzati tre notti a settimana. Nel secondo caso, la nostra <a class="text-dream-salmon hover:underline" href="incubi-cause-significato-e-come-fermarli">guida agli incubi</a> completa questo articolo.</p>
+<h2 id="causes">Perché lo stesso sogno ritorna?</h2>
+<p>Non esiste una spiegazione unica, e il contenuto di un sogno non basta mai a conoscerne la causa. La ricerca offre però alcuni punti di riferimento.</p>
+<h3>Qualcosa che pesa o resta in sospeso</h3>
+<p>I sogni ricorrenti compaiono volentieri nei periodi di stress: un conflitto, una scadenza, una relazione in bilico. Secondo i ricercatori di Montréal, tendono a smettere quando la difficoltà si risolve. È una tendenza, non una regola. Se il lavoro torna ogni notte, leggi il nostro articolo sui <a class="text-dream-salmon hover:underline" href="sogni-stressanti-sul-lavoro-perche-il-tuo-lavoro-ti-segue-nel-sonno">sogni stressanti sul lavoro</a>.</p>
+<h3>Un contenuto spesso sgradevole</h3>
+<p>La maggior parte dei sogni ricorrenti ha un tono di paura, tristezza o rabbia, e più della metà mette chi sogna in pericolo. Un gruppo del Québec li ha studiati alla luce della teoria della simulazione della minaccia, secondo cui il sogno servirebbe a provare situazioni pericolose. Ma anche volare o scoprire stanze nuove in casa sono sogni che ritornano.</p>
+<h3>Bisogni frustrati, meno benessere</h3>
+<p>In due studi (200 e poi 110 partecipanti), Netta Weinstein e colleghi hanno osservato che le persone con bisogni di autonomia, competenza e relazione frustrati a lungo riferiscono sogni dai temi più cupi. Altri lavori associano i sogni ricorrenti a un minore benessere psicologico. Sono associazioni: non dicono che cosa significa il <em>tuo</em> sogno, ma invitano a guardare che cosa ti pesa.</p>
+<h3>Dopo un evento difficile</h3>
+<p>Dopo uno shock, gli incubi possono riproporre la scena quasi identica. In questo caso serve una cura più che un'interpretazione: vedi l'ultima sezione.</p>
+<h3>E le letture classiche?</h3>
+<p>La tradizione junghiana tende a vedere in un sogno che ritorna una domanda rimasta aperta, che insiste finché non la si guarda. È una chiave di lettura, non un risultato scientifico.</p>
+<h2 id="top10">Dieci scene che ritornano spesso</h2>
+<p>Essere inseguiti, cadere e gli esami sono tra i temi onirici più condivisi nelle indagini. Queste schede non sono definizioni: indicano che cosa osservare, una pista possibile e una domanda da tenere.</p>
 </div>
 <!-- Dream Cards Grid -->
 <div class="grid md:grid-cols-2 gap-6 my-12">
@@ -151,11 +135,11 @@
 <div class="p-2 bg-dream-salmon/10 rounded-lg">
 <i class="w-5 h-5 text-dream-salmon" data-lucide="arrow-down"></i>
 </div>
-<h3 class="font-serif text-lg text-dream-cream">1. Cadute</h3>
+<h3 class="font-serif text-lg text-dream-cream">Cadere nel vuoto</h3>
 </div>
 <p class="text-sm text-gray-300">
-<strong>Domande sul contesto:</strong> Da dove cadevi e ti sei svegliato prima dell’impatto? Considera anche stress, sensazioni corporee e scene di caduta viste di recente.
-                    </p>
+                        Ti svegli prima dell'impatto? Una <a class="text-dream-salmon hover:underline" href="../simboli/cadere">caduta</a> che si ripete accompagna spesso una <strong>sensazione di perdita di controllo</strong>. Se arriva mentre ti addormenti, con un sobbalzo, spesso è una scossa ipnica: vedi i <a class="text-dream-salmon hover:underline" href="significato-dei-sogni-che-cadono-perche-sogni-di-cadere">sogni di cadere</a>.
+                        </p>
 </div>
 <!-- Dream 2 -->
 <div class="dream-card glass-panel rounded-xl p-6 border border-transparent">
@@ -163,11 +147,11 @@
 <div class="p-2 bg-dream-salmon/10 rounded-lg">
 <i class="w-5 h-5 text-dream-salmon" data-lucide="smile"></i>
 </div>
-<h3 class="font-serif text-lg text-dream-cream">2. Perdita dei denti</h3>
+<h3 class="font-serif text-lg text-dream-cream">Perdere i denti</h3>
 </div>
 <p class="text-sm text-gray-300">
-<strong>Domande sul contesto:</strong> Contavano di più dolore, imbarazzo o sorpresa? Una visita dal dentista o una sensazione fisica possono entrare nel sogno.
-                    </p>
+                        Uno studio israeliano del 2018 ha collegato questi sogni più a <strong>sensazioni ai denti al risveglio</strong> (mascella serrata, fastidio) che all'ansia. I tuoi <a class="text-dream-salmon hover:underline" href="../simboli/denti">denti</a> o la mascella erano tesi quella mattina?
+                        </p>
 </div>
 <!-- Dream 3 -->
 <div class="dream-card glass-panel rounded-xl p-6 border border-transparent">
@@ -175,11 +159,11 @@
 <div class="p-2 bg-dream-salmon/10 rounded-lg">
 <i class="w-5 h-5 text-dream-salmon" data-lucide="user-x"></i>
 </div>
-<h3 class="font-serif text-lg text-dream-cream">3. Essere nudi in pubblico</h3>
+<h3 class="font-serif text-lg text-dream-cream">Essere nudi in pubblico</h3>
 </div>
 <p class="text-sm text-gray-300">
-<strong>Domande sul contesto:</strong> Chi notava la nudità e provavi imbarazzo, indifferenza o libertà? La tua reazione cambia le letture possibili.
-                    </p>
+                        Vergogna, indifferenza o libertà? La vergogna rimanda alla <strong>paura di essere esposti o giudicati</strong>. Se nessuno notava la tua <a class="text-dream-salmon hover:underline" href="../simboli/nudita">nudità</a>, la lettura cambia.
+                        </p>
 </div>
 <!-- Dream 4 -->
 <div class="dream-card glass-panel rounded-xl p-6 border border-transparent">
@@ -187,11 +171,11 @@
 <div class="p-2 bg-dream-salmon/10 rounded-lg">
 <i class="w-5 h-5 text-dream-salmon" data-lucide="clock"></i>
 </div>
-<h3 class="font-serif text-lg text-dream-cream">4. Essere in ritardo/mancare un esame</h3>
+<h3 class="font-serif text-lg text-dream-cream">Fallire un esame o arrivare in ritardo</h3>
 </div>
 <p class="text-sm text-gray-300">
-<strong>Domande sul contesto:</strong> C’era una scadenza, un esame o una presentazione reale? Annota che cosa mancava e chi ti valutava.
-                    </p>
+                        Questi sogni tornano spesso anni dopo la scuola, quando ti senti <strong>valutato</strong>. Che cosa mancava: il tempo, la preparazione, la strada giusta? Vedi anche <a class="text-dream-salmon hover:underline" href="../simboli/essere-in-ritardo">essere in ritardo</a>.
+                        </p>
 </div>
 <!-- Dream 5 -->
 <div class="dream-card glass-panel rounded-xl p-6 border border-transparent">
@@ -199,11 +183,11 @@
 <div class="p-2 bg-dream-salmon/10 rounded-lg">
 <i class="w-5 h-5 text-dream-salmon" data-lucide="ghost"></i>
 </div>
-<h3 class="font-serif text-lg text-dream-cream">5. Essere inseguiti</h3>
+<h3 class="font-serif text-lg text-dream-cream">Essere inseguiti</h3>
 </div>
 <p class="text-sm text-gray-300">
-<strong>Domande sul contesto:</strong> Chi o che cosa ti inseguiva e trovavi riparo? Un inseguimento non dimostra che stai evitando un problema reale.
-                    </p>
+                        Chi ti inseguiva, e dove cercavi di andare? Un <a class="text-dream-salmon hover:underline" href="../simboli/inseguimento">inseguimento</a> riflette spesso <strong>una preoccupazione che si evita</strong>. Le varianti sono nei <a class="text-dream-salmon hover:underline" href="sogni-inseguiti-significato-e-interpretazione">sogni di essere inseguiti</a>.
+                        </p>
 </div>
 <!-- Dream 6 -->
 <div class="dream-card glass-panel rounded-xl p-6 border border-transparent">
@@ -211,11 +195,11 @@
 <div class="p-2 bg-dream-salmon/10 rounded-lg">
 <i class="w-5 h-5 text-dream-salmon" data-lucide="bird"></i>
 </div>
-<h3 class="font-serif text-lg text-dream-cream">6. Volare</h3>
+<h3 class="font-serif text-lg text-dream-cream">Volare</h3>
 </div>
 <p class="text-sm text-gray-300">
-<strong>Domande sul contesto:</strong> Controllavi il volo, dove volevi andare e provavi piacere o paura?
-                    </p>
+                        Un sogno ricorrente può anche essere piacevole. Un volo facile si associa più a un <strong>senso di libertà</strong>; uno faticoso, a uno sforzo che non avanza. Vedi i <a class="text-dream-salmon hover:underline" href="significato-dei-sogni-in-volo-cosa-significa-volare-nei-tuoi-sogni">sogni di volare</a>.
+                        </p>
 </div>
 <!-- Dream 7 -->
 <div class="dream-card glass-panel rounded-xl p-6 border border-transparent">
@@ -223,11 +207,11 @@
 <div class="p-2 bg-dream-salmon/10 rounded-lg">
 <i class="w-5 h-5 text-dream-salmon" data-lucide="waves"></i>
 </div>
-<h3 class="font-serif text-lg text-dream-cream">7. Annegamento/Sopraffatto dall'acqua</h3>
+<h3 class="font-serif text-lg text-dream-cream">Sommersi dall'acqua</h3>
 </div>
 <p class="text-sm text-gray-300">
-<strong>Domande sul contesto:</strong> Riuscivi a respirare, nuotare o chiedere aiuto? Considera le sensazioni corporee e le immagini recenti, oltre allo stress.
-                    </p>
+                        Riuscivi a respirare, a raggiungere la riva? L'<a class="text-dream-salmon hover:underline" href="../simboli/acqua">acqua</a> che sale accompagna spesso la <strong>sensazione di essere sopraffatti</strong>. Anche sensazioni del corpo, come caldo o naso chiuso, possono entrare nel sogno.
+                        </p>
 </div>
 <!-- Dream 8 -->
 <div class="dream-card glass-panel rounded-xl p-6 border border-transparent">
@@ -235,11 +219,11 @@
 <div class="p-2 bg-dream-salmon/10 rounded-lg">
 <i class="w-5 h-5 text-dream-salmon" data-lucide="car"></i>
 </div>
-<h3 class="font-serif text-lg text-dream-cream">8. Veicolo fuori controllo</h3>
+<h3 class="font-serif text-lg text-dream-cream">Un veicolo fuori controllo</h3>
 </div>
 <p class="text-sm text-gray-300">
-<strong>Domande sul contesto:</strong> Chi guidava, che cosa non funzionava e quale decisione dovevi prendere?
-                    </p>
+                        Chi guidava, e che cosa non rispondeva più? Un'<a class="text-dream-salmon hover:underline" href="../simboli/automobile">automobile</a> che sbanda richiama spesso la <strong>direzione che sta prendendo la tua vita</strong> e quanto senti di guidarla.
+                        </p>
 </div>
 <!-- Dream 9 -->
 <div class="dream-card glass-panel rounded-xl p-6 border border-transparent">
@@ -247,11 +231,11 @@
 <div class="p-2 bg-dream-salmon/10 rounded-lg">
 <i class="w-5 h-5 text-dream-salmon" data-lucide="home"></i>
 </div>
-<h3 class="font-serif text-lg text-dream-cream">9. Casa con stanze sconosciute</h3>
+<h3 class="font-serif text-lg text-dream-cream">Una casa con stanze sconosciute</h3>
 </div>
 <p class="text-sm text-gray-300">
-<strong>Domande sul contesto:</strong> La casa ti era familiare e che cosa c’era nelle stanze? I ricordi di edifici reali contano quanto le associazioni personali.
-                    </p>
+                        Spesso piacevole, questo sogno si associa volentieri a <strong>nuove possibilità</strong> o a una parte di te che stai riscoprendo. Che cosa c'era dietro le porte?
+                        </p>
 </div>
 <!-- Dream 10 -->
 <div class="dream-card glass-panel rounded-xl p-6 border border-transparent">
@@ -259,38 +243,36 @@
 <div class="p-2 bg-dream-salmon/10 rounded-lg">
 <i class="w-5 h-5 text-dream-salmon" data-lucide="user"></i>
 </div>
-<h3 class="font-serif text-lg text-dream-cream">10. Morte di una persona cara</h3>
+<h3 class="font-serif text-lg text-dream-cream">La morte di una persona cara</h3>
 </div>
 <p class="text-sm text-gray-300">
-<strong>Domande sul contesto:</strong> Il sogno non è una previsione. Considera la preoccupazione per quella persona, notizie recenti, paura della perdita ed emozione al risveglio.
-                    </p>
+                        Questo sogno non predice nulla. Riflette spesso <strong>affetto o preoccupazione</strong> per quella persona, o un lutto in corso. La guida ai <a class="text-dream-salmon hover:underline" href="sogni-sulla-morte-significato-e-interpretazione">sogni sulla morte</a> approfondisce.
+                        </p>
 </div>
 </div>
 <div class="prose max-w-none text-gray-300">
-<h2 id="interpretation">Come esaminare un sogno ricorrente</h2>
-<p>
-                    Un resoconto scritto aiuta a confrontare cambiamenti e possibili fattori scatenanti senza presumere che il sogno trasmetta un messaggio:
-                </p>
-<h3>1. Registra tutti i dettagli del tuo sogno ricorrente</h3>
-<p>
-                    Tieni un <a class="text-dream-salmon hover:underline" href="dream-journaling-la-guida-completa-per-registrare-le-tue-avventure-notturne">diario dei sogni</a>. Annota la scena, le <strong>emozioni, le persone, il luogo e le differenze</strong> rispetto agli episodi precedenti.
-                </p>
-<h3>2. Identifica il contesto di vita del tuo sogno ricorrente</h3>
-<p>
-                    Quando è iniziato questo sogno? Cosa stava succedendo nella tua vita in quel momento? Esiste una correlazione con eventi stressanti?
-                </p>
-<h3>3. Esplora le associazioni personali</h3>
-<p>
-                    Quali associazioni hanno quei dettagli <strong>per te personalmente</strong>? Una <a class="text-dream-salmon hover:underline" href="../simboli/casa">casa</a> può sembrare sicura a una persona e opprimente a un’altra.
-                </p>
-<h3>4. Dai un nome all’emozione principale</h3>
-<p>
-                    Provavi paura, frustrazione, tristezza o sollievo? L’emozione è un dato, non la prova di un bisogno specifico.
-                </p>
-<h3>5. Formula due spiegazioni possibili</h3>
-<p>
-                    Confronta un’associazione personale con una spiegazione più letterale tratta dalla vita quotidiana. Se nessuna delle due è adatta, lascia aperta la domanda.
-                </p>
+<h2 id="interpretation">Come leggere il tuo sogno ricorrente</h2>
+<p>Un sogno che ritorna ha un vantaggio: forma una serie. Confrontando gli episodi vedi che cosa resta fisso e che cosa si muove.</p>
+<h3>1. Annota ogni episodio, anche breve</h3>
+<p>In un <a class="text-dream-salmon hover:underline" href="dream-journaling-la-guida-completa-per-registrare-le-tue-avventure-notturne">diario dei sogni</a> segna la data, la scena, le persone, il finale e l'<strong>emozione al risveglio</strong>.</p>
+<h3>2. Nota che cosa cambia</h3>
+<p>L'ambientazione si evolve? Trovi una via d'uscita? Un sogno ricorrente che si trasforma spesso dice più del sogno stesso.</p>
+<h3>3. Collegalo alla tua agenda</h3>
+<p>Torna prima delle stesse scadenze, dopo gli stessi incontri, nelle notti troppo corte? Una data accanto a ogni episodio basta spesso a far emergere un ritmo.</p>
+<h3>4. Cerca le tue associazioni</h3>
+<p>Una <a class="text-dream-salmon hover:underline" href="../simboli/casa">casa</a> può rassicurare una persona e soffocarne un'altra. Quello che <strong>tu</strong> associ a un luogo conta più di qualsiasi dizionario.</p>
+<h3>5. Tieni due ipotesi</h3>
+<p>Una lettura personale e una spiegazione letterale (un film, una sensazione fisica, una scadenza reale). Se nessuna funziona, lascia la domanda aperta.</p>
+<h3 id="esempio-diario">Esempio di diario dei sogni</h3>
+<p><strong>Esempio di fantasia:</strong> tre ritorni dello stesso sogno, annotati nell'arco di un mese.</p>
+<ul>
+<li><strong>Sogno:</strong> «Corro verso il binario e il treno parte senza di me. Sempre la stessa stazione, che non conosco.»</li>
+<li><strong>Emozione:</strong> «Panico, poi rabbia verso me stesso.»</li>
+<li><strong>Contesto recente:</strong> «Una relazione che rimando da settimane.»</li>
+<li><strong>Che cosa è cambiato:</strong> «La terza volta sono salito al volo. Era la notte prima del giorno in cui ho finalmente consegnato la relazione.»</li>
+<li><strong>Domanda da tenere:</strong> «Il sogno torna quando rimando qualcos'altro?»</li>
+</ul>
+<p>Tre episodi non dimostrano nulla. Offrono una pista da verificare nelle settimane successive, annotando anche le notti in cui il sogno non arriva.</p>
 <!-- CTA inline -->
 <aside class="glass-panel rounded-2xl p-6 my-8 border border-dream-salmon/20">
 <div class="flex items-start gap-4">
@@ -298,48 +280,39 @@
 <i class="w-6 h-6 text-dream-salmon" data-lucide="sparkles"></i>
 </div>
 <div>
-<h4 class="font-serif text-lg text-dream-cream mb-2">Confronta i tuoi sogni ricorrenti con Noctalia</h4>
-<p class="text-sm text-gray-400 mb-4">Noctalia ti aiuta a conservare motivi, emozioni e cambiamenti tra gli episodi.</p>
+<h4 class="font-serif text-lg text-dream-cream mb-2">Scopri che cosa ritorna e che cosa cambia</h4>
+<p class="text-sm text-gray-400 mb-4">In Noctalia racconta il tuo sogno a voce o per iscritto appena sveglio. Viene trascritto, salvato nel tuo diario, e puoi rileggere gli episodi dello stesso sogno uno accanto all'altro.</p>
 <a class="inline-flex items-center gap-2 text-sm text-dream-salmon hover:text-dream-salmonLight transition-colors" href="/it/">
-                                Scopri Noctalia <i class="w-4 h-4" data-lucide="arrow-right"></i>
+                                Prova Noctalia gratis <i class="w-4 h-4" data-lucide="arrow-right"></i>
 </a>
 </div>
 </div>
 </aside>
-<h2 id="stop">Che cosa può aiutare con gli incubi ricorrenti</h2>
-<p>
-                    Queste opzioni riguardano soprattutto gli incubi ricorrenti e nessuna garantisce che il sogno scompaia:
-                </p>
-<h3>Imagery Rehearsal Therapy (IRT)</h3>
-<p>
-                    Questa terapia consiste nel riscrivere un incubo con uno sviluppo meno angosciante e ripeterlo mentalmente da svegli. Può essere usata con il supporto di un professionista; le prove riguardano gli incubi, non tutti i sogni ricorrenti.
-                </p>
-<h3>Registra i cambiamenti tra gli episodi</h3>
-<p>
-                    Annota date, intensità, finale ed eventi del giorno precedente. Questo può mostrare uno schema senza dare per certo un fattore scatenante emotivo.
-                </p>
-<h3>Esamina le fonti di stress</h3>
-<p>
-                    Se un fattore di stress concreto coincide con il sogno, affrontarlo può essere utile. Questo non dimostra che il sogno lo simboleggi né che poi scomparirà.
-                </p>
-<h3>Rilassamento per lo stress generale</h3>
-<p>
-                    Gli esercizi di rilassamento possono ridurre lo stress generale. Osserva il risultato senza presumere che modifichino il sogno.
-                </p>
-<h2 id="when-consult">Quando chiedere un parere professionale</h2>
-<p>
-                    I sogni ricorrenti sono generalmente normali, ma consulta un professionista se:
-                </p>
+<h2 id="stop">Come far cambiare un sogno che ritorna</h2>
+<p>Nessun metodo garantisce che un sogno smetta, e un sogno ricorrente piacevole non ha bisogno di farlo. Se il tuo è angosciante, ecco che cosa può aiutare.</p>
+<h3>L'Imagery Rehearsal Therapy</h3>
+<p>Da sveglio riscrivi l'incubo con un finale diverso, poi ripeti mentalmente la nuova versione per qualche minuto al giorno. L'<a class="text-dream-salmon hover:underline" href="https://doi.org/10.5664/jcsm.7178" rel="nofollow noopener noreferrer" target="_blank">American Academy of Sleep Medicine</a> la raccomanda per il disturbo da incubi, anche quando sono legati a un trauma. Un professionista può accompagnarti, soprattutto se il sogno ripropone un evento reale.</p>
+<h3>Agire su ciò che pesa</h3>
+<p>Se il sogno coincide con una fonte di stress chiara, fare un passo concreto verso di essa spesso allenta la tensione, e a volte anche le notti.</p>
+<h3>Curare il sonno</h3>
 <ul>
-<li>Il sogno provoca <strong>un notevole disagio</strong> al risveglio</li>
-<li>Interrompe cronicamente la qualità del sonno</li>
-<li>È correlato a un <strong>trauma noto</strong> (PTSD)</li>
-<li>È accompagnato da altri sintomi (ansia, depressione)</li>
-<li>Non migliora nonostante i tuoi sforzi</li>
+<li>Orari regolari per andare a letto e alzarti</li>
+<li>Un rituale tranquillo prima di dormire, schermi lontani</li>
+<li>Niente caffè al pomeriggio, poco alcol la sera</li>
 </ul>
-<p>
-                    Il medico di base può essere il primo punto di contatto e indirizzarti, se necessario, verso la psicoterapia o la medicina del sonno.
-                </p>
+<p>Anche il servizio sanitario britannico (NHS) indica una routine rilassante, un diario del sonno e la gestione dello stress tra i primi passi contro gli incubi.</p>
+<h3>Provare il sogno lucido</h3>
+<p>Una trama conosciuta può diventare un segnale: «di nuovo questo treno, sto sognando». I ricercatori la considerano una strada interessante, ancora poco studiata. La nostra <a class="text-dream-salmon hover:underline" href="guida-ai-sogni-lucidi-per-principianti-prendi-il-controllo-delle-tue-notti">guida ai sogni lucidi</a> spiega come iniziare.</p>
+<h2 id="when-consult">Quando parlarne con un professionista</h2>
+<p>I sogni ricorrenti sono quasi sempre innocui. Parlane con il tuo medico se:</p>
+<ul>
+<li>il sogno <strong>disturba spesso il tuo sonno</strong> o le tue giornate</li>
+<li>ti lascia un <strong>forte disagio</strong> al risveglio</li>
+<li>ripropone un <strong>evento traumatico</strong></li>
+<li>si accompagna ad ansia, umore basso o altri sintomi</li>
+<li>la paura di rifarlo ti porta a rimandare l'ora di andare a letto</li>
+</ul>
+<p>Il medico di famiglia può indirizzarti a un centro di medicina del sonno o a uno psicoterapeuta. Esistono trattamenti efficaci, soprattutto per gli incubi. Il nostro articolo su <a class="text-dream-salmon hover:underline" href="sogni-e-salute-mentale-come-il-tuo-sonno-rivela-la-tua-mente">sogni e salute mentale</a> spiega cosa i sogni possono dire su come stai, e cosa no.</p>
 </div>
 <!-- Related Symbols Start -->
 <section aria-label="Simboli onirici correlati" class="mt-12 mb-8">
@@ -372,12 +345,12 @@
 <div class="w-16 h-16 bg-dream-salmon/10 rounded-full flex items-center justify-center mx-auto mb-6">
 <i class="w-8 h-8 text-dream-salmon" data-lucide="repeat"></i>
 </div>
-<h3 class="font-serif text-2xl md:text-3xl mb-4 text-dream-cream">Monitora i tuoi sogni ricorrenti</h3>
+<h3 class="font-serif text-2xl md:text-3xl mb-4 text-dream-cream">Un sogno che ritorna è una serie. Tienine traccia.</h3>
 <p class="text-purple-200/70 mb-6 max-w-lg mx-auto">
-                    Noctalia riunisce motivi, emozioni e cambiamenti per confrontare gli episodi senza attribuire automaticamente un significato fisso.
+                    Annota ogni episodio in Noctalia, con quello che hai provato. Rileggendoli uno accanto all'altro vedrai che cosa si ripete e che cosa cambia.
                 </p>
 <a class="inline-flex items-center gap-2 px-8 py-4 bg-dream-salmon text-dream-dark rounded-full font-bold hover:bg-dream-salmon/90 transition-colors" href="/it/">
-                    Scopri Noctalia <i class="w-5 h-5" data-lucide="arrow-right"></i>
+                    Inizia il mio diario dei sogni <i class="w-5 h-5" data-lucide="arrow-right"></i>
 </a>
 </aside>
 <!-- FAQ Section -->
@@ -386,41 +359,56 @@
 <div class="space-y-4">
 <details class="glass-panel rounded-xl p-4 group cursor-pointer">
 <summary class="font-medium flex justify-between items-center text-dream-cream">
-                            Perché abbiamo sogni ricorrenti?
+                            Che cosa significa un sogno ricorrente?
                             <i class="w-5 h-5 transition-transform group-open:rotate-180 text-dream-salmon" data-lucide="chevron-down"></i>
 </summary>
 <p class="mt-4 text-sm text-gray-400 leading-relaxed">
-                            Stress, esperienze difficili e preoccupazioni quotidiane possono essere associati ai sogni ricorrenti. Il contenuto da solo non permette di stabilirne la causa; confronta gli episodi e il contesto dei giorni precedenti.
+                            Non ha un significato fisso. Un sogno che ritorna accompagna spesso un periodo di stress o una situazione in sospeso, e tende a diradarsi quando si risolve. Confronta gli episodi, la tua emozione e quello che vivevi il giorno prima.
                         </p>
 </details>
 <details class="glass-panel rounded-xl p-4 group cursor-pointer">
 <summary class="font-medium flex justify-between items-center text-dream-cream">
-                            I sogni ricorrenti sono pericolosi?
+                            Un sogno ricorrente è sempre un incubo?
                             <i class="w-5 h-5 transition-transform group-open:rotate-180 text-dream-salmon" data-lucide="chevron-down"></i>
 </summary>
 <p class="mt-4 text-sm text-gray-400 leading-relaxed">
-                            I sogni ricorrenti non sono automaticamente un segnale d’allarme. Se causano forte disagio, disturbano spesso il sonno o sono legati a un trauma noto, chiedi consiglio al medico o a un <a class="text-dream-salmon hover:underline" href="sogni-e-salute-mentale-come-il-tuo-sonno-rivela-la-tua-mente">professionista della salute mentale</a>.
+                            No. Può essere piacevole, neutro o angosciante: anche volare o scoprire stanze nuove sono sogni che ritornano. L'incubo è un sogno abbastanza angosciante da svegliarti.
                         </p>
 </details>
 <details class="glass-panel rounded-xl p-4 group cursor-pointer">
 <summary class="font-medium flex justify-between items-center text-dream-cream">
-                            Come posso smettere di avere lo stesso sogno?
+                            Un sogno che si ripete annuncia qualcosa?
                             <i class="w-5 h-5 transition-transform group-open:rotate-180 text-dream-salmon" data-lucide="chevron-down"></i>
 </summary>
 <p class="mt-4 text-sm text-gray-400 leading-relaxed">
-                            Nessun metodo funziona sempre per tutti i sogni ricorrenti. Per gli incubi angoscianti, l’Imagery Rehearsal Therapy può essere usata con il supporto di un professionista; un <a class="text-dream-salmon hover:underline" href="dream-journaling-la-guida-completa-per-registrare-le-tue-avventure-notturne">diario dei sogni</a> aiuta anche a confrontare fattori scatenanti e cambiamenti.
+                            No. Un sogno ricorrente non predice eventi né pericoli. Mette in scena un'emozione o una preoccupazione attuale, a volte solo una sensazione del corpo durante la notte.
+                        </p>
+</details>
+<details class="glass-panel rounded-xl p-4 group cursor-pointer">
+<summary class="font-medium flex justify-between items-center text-dream-cream">
+                            Come smettere di fare lo stesso sogno?
+                            <i class="w-5 h-5 transition-transform group-open:rotate-180 text-dream-salmon" data-lucide="chevron-down"></i>
+</summary>
+<p class="mt-4 text-sm text-gray-400 leading-relaxed">
+                            Non esiste un metodo garantito. Per gli incubi angoscianti l'American Academy of Sleep Medicine raccomanda l'Imagery Rehearsal Therapy. Se il tuo sonno ne risente, chiedi un parere medico.
                         </p>
 </details>
 </div>
 </section>
 <!-- Sources / Trust (TI-97) -->
 <section class="mt-16 glass-panel rounded-2xl p-6" id="sources">
-<h2 class="font-serif text-2xl text-dream-cream mb-4">Fonti/Approfondimenti</h2>
+<h2 class="font-serif text-2xl text-dream-cream mb-4">Fonti e approfondimenti</h2>
 <ul class="mt-6 space-y-2 text-sm text-gray-400">
-<li><a href="https://dictionary.apa.org/dream" rel="nofollow noopener noreferrer" target="_blank">Dizionario APA di psicologia - Sogno</a></li>
-<li><a href="https://dreamresearch.net/" rel="nofollow noopener noreferrer" target="_blank">DreamResearch.net — G. William Domhoff (panoramica sulla ricerca sui sogni)</a></li>
+<li><a href="https://theconversation.com/being-chased-losing-your-teeth-or-falling-down-what-science-says-about-recurring-dreams-166006" rel="nofollow noopener noreferrer" target="_blank">The Conversation, «What science says about recurring dreams»</a></li>
+<li><a href="https://asdreams.org/journal/issues/asdj13-4.htm" rel="nofollow noopener noreferrer" target="_blank">Nielsen, Zadra et al. (2003), «The Typical Dreams of Canadian University Students», <em>Dreaming</em></a></li>
+<li><a href="https://doi.org/10.1016/j.concog.2005.02.002" rel="nofollow noopener noreferrer" target="_blank">Zadra, Desjardins e Marcotte (2006), <em>Consciousness and Cognition</em></a></li>
+<li><a href="https://doi.org/10.1037/0022-3514.50.3.612" rel="nofollow noopener noreferrer" target="_blank">Brown e Donderi (1986), <em>Journal of Personality and Social Psychology</em></a></li>
+<li><a href="https://doi.org/10.1007/s11031-017-9656-0" rel="nofollow noopener noreferrer" target="_blank">Weinstein, Campbell e Vansteenkiste (2018), <em>Motivation and Emotion</em></a></li>
+<li><a href="https://doi.org/10.3389/fpsyg.2018.01812" rel="nofollow noopener noreferrer" target="_blank">Rozen e Soffer-Dudek (2018), «Dreams of Teeth Falling Out», <em>Frontiers in Psychology</em></a></li>
+<li><a href="https://doi.org/10.5664/jcsm.7178" rel="nofollow noopener noreferrer" target="_blank">AASM, Morgenthaler et al. (2018), trattamento del disturbo da incubi negli adulti, <em>Journal of Clinical Sleep Medicine</em></a></li>
+<li><a href="https://www.nhs.uk/conditions/night-terrors/" rel="nofollow noopener noreferrer" target="_blank">NHS, «Night terrors and nightmares»</a></li>
 </ul>
-<p class="mt-6 text-xs text-purple-200/60">Ultimo aggiornamento: 18 luglio 2026</p>
+<p class="mt-6 text-xs text-purple-200/60">Aggiornato il 9 ottobre 2026</p>
 </section>
 <!-- Blog Nav Start -->
 <section class="mt-12" aria-label="Navigazione tra articoli" data-blog-nav="">

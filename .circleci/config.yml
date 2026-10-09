@@ -69,7 +69,16 @@ jobs:
           parameters: /tmp/circleci-parameters.json
 
 workflows:
+  # Remote CI runs only on a manual trigger: the web app's "Trigger Pipeline"
+  # button or the API, optionally with force_full_validation: true. Push, PR and
+  # tag webhooks still create a pipeline, but it runs no workflow and spends no
+  # credits; the git pre-push hook (`npm run verify:fast`) is the routine gate.
+  # pipeline.event.name is `api` for manual web-app and API triggers, see
+  # https://circleci.com/docs/guides/orchestrate/github-trigger-event-options/
+  # (pipeline.trigger_source is deprecated).
   setup:
+    when:
+      equal: [api, << pipeline.event.name >>]
     jobs:
       - classify-and-continue:
           filters:

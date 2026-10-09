@@ -5,7 +5,7 @@
   "lang": "es",
   "slug": "controlar-suenos-resolucion-problemas",
   "title": "Controlar tus sueños para resolver problemas | Noctalia",
-  "description": "El estudio de Northwestern 2026 muestra que la TMR puede dirigir los sueños hacia problemas específicos, duplicando la tasa de resolución.",
+  "description": "Controlar tus sueños para resolver problemas: qué demostró de verdad el estudio de Northwestern (2026), sus límites y cómo probarlo en casa.",
   "robots": "max-image-preview:large",
   "themeColor": "#0a0514",
   "htmlClass": "scroll-smooth blog-article",
@@ -14,24 +14,24 @@
   "mainClass": "pt-32 pb-20 px-4",
   "ogType": "article",
   "ogTitle": "Controlar tus sueños para resolver problemas | Noctalia",
-  "ogDescription": "El estudio de Northwestern 2026 muestra que la TMR puede dirigir los sueños hacia problemas específicos, duplicando la tasa de resolución.",
+  "ogDescription": "Un sonido durante la fase REM llevó acertijos sin resolver a los sueños. ¿Ayudó a resolverlos? Lo que muestra el estudio y lo que no.",
   "ogImage": "https://noctalia.app/img/blog/dream-control-problem-solving.webp",
   "ogImageAlt": "Cerebro luminoso resolviendo puzzles durante el sueño en tonos violetas y dorados oníricos",
   "twitterCard": "summary_large_image",
   "twitterTitle": "Controlar tus sueños para resolver problemas | Noctalia",
-  "twitterDescription": "El estudio de Northwestern 2026 muestra que la TMR puede dirigir los sueños hacia problemas específicos, duplicando la tasa de resolución.",
+  "twitterDescription": "¿Se puede orientar un sueño hacia un problema? El estudio de Northwestern leído con calma, y un método sencillo para probar en casa.",
   "twitterImage": "https://noctalia.app/img/blog/dream-control-problem-solving.webp",
   "twitterImageAlt": "Cerebro luminoso resolviendo puzzles durante el sueño en tonos violetas y dorados oníricos",
   "publishedTime": "2026-03-14",
-  "modifiedTime": "2026-07-09",
+  "modifiedTime": "2026-10-09",
   "author": "Thanh Chau",
   "prevPath": "/es/blog/ia-analisis-sueno-suenos",
   "nextPath": "/es/blog/horario-verano-sueno-suenos",
   "preloadImage": "/img/blog/dream-control-problem-solving.webp",
   "jsonLd": [
-    "{\n    \"@context\": \"https://schema.org\",\n    \"@type\": \"BlogPosting\",\n    \"headline\": \"Controlar tus sueños para resolver problemas: el estudio que lo cambia todo\",\n    \"description\": \"El estudio de Northwestern 2026 muestra que la TMR puede dirigir los sueños hacia problemas específicos, duplicando la tasa de resolución.\",\n    \"image\": {\n        \"@type\": \"ImageObject\",\n        \"url\": \"https://noctalia.app/img/blog/dream-control-problem-solving.webp\",\n        \"width\": 1200,\n        \"height\": 630\n    },\n    \"author\": [\n        {\n            \"@type\": \"Person\",\n            \"@id\": \"https://noctalia.app/es/sobre#person\",\n            \"name\": \"Thanh Chau\",\n            \"jobTitle\": \"Founder & Publication Director\",\n            \"url\": \"https://noctalia.app/es/sobre\",\n            \"worksFor\": {\n                \"@type\": \"Organization\",\n                \"@id\": \"https://noctalia.app/#organization\",\n                \"name\": \"Noctalia\",\n                \"url\": \"https://noctalia.app\"\n            }\n        },\n        {\n            \"@type\": \"Organization\",\n            \"@id\": \"https://noctalia.app/#organization\",\n            \"name\": \"Noctalia\",\n            \"url\": \"https://noctalia.app\",\n            \"logo\": {\n                \"@type\": \"ImageObject\",\n                \"url\": \"https://noctalia.app/logo/logo_noctalia.png\"\n            }\n        }\n    ],\n    \"publisher\": {\n        \"@type\": \"Organization\",\n        \"name\": \"Noctalia\",\n        \"url\": \"https://noctalia.app\",\n        \"logo\": {\n            \"@type\": \"ImageObject\",\n            \"url\": \"https://noctalia.app/logo/logo_noctalia.png\"\n        }\n    },\n    \"datePublished\": \"2026-03-14\",\n    \"dateModified\": \"2026-07-09\",\n    \"mainEntityOfPage\": {\n        \"@type\": \"WebPage\",\n        \"@id\": \"https://noctalia.app/es/blog/controlar-suenos-resolucion-problemas\"\n    },\n    \"inLanguage\": \"es\",\n    \"isAccessibleForFree\": true,\n    \"wordCount\": 1600,\n    \"timeRequired\": \"PT5M\",\n    \"url\": \"https://noctalia.app/es/blog/controlar-suenos-resolucion-problemas\"\n}",
+    "{\n    \"@context\": \"https://schema.org\",\n    \"@type\": \"BlogPosting\",\n    \"headline\": \"Controlar tus sueños para resolver problemas: lo que muestra de verdad el estudio de Northwestern\",\n    \"description\": \"Controlar tus sueños para resolver problemas: qué demostró de verdad el estudio de Northwestern (2026), sus límites y cómo probarlo en casa.\",\n    \"image\": {\n        \"@type\": \"ImageObject\",\n        \"url\": \"https://noctalia.app/img/blog/dream-control-problem-solving.webp\",\n        \"width\": 1200,\n        \"height\": 630\n    },\n    \"author\": [\n        {\n            \"@type\": \"Person\",\n            \"@id\": \"https://noctalia.app/es/sobre#person\",\n            \"name\": \"Thanh Chau\",\n            \"jobTitle\": \"Founder & Publication Director\",\n            \"url\": \"https://noctalia.app/es/sobre\",\n            \"worksFor\": {\n                \"@type\": \"Organization\",\n                \"@id\": \"https://noctalia.app/#organization\",\n                \"name\": \"Noctalia\",\n                \"url\": \"https://noctalia.app\"\n            }\n        },\n        {\n            \"@type\": \"Organization\",\n            \"@id\": \"https://noctalia.app/#organization\",\n            \"name\": \"Noctalia\",\n            \"url\": \"https://noctalia.app\",\n            \"logo\": {\n                \"@type\": \"ImageObject\",\n                \"url\": \"https://noctalia.app/logo/logo_noctalia.png\"\n            }\n        }\n    ],\n    \"publisher\": {\n        \"@type\": \"Organization\",\n        \"name\": \"Noctalia\",\n        \"url\": \"https://noctalia.app\",\n        \"logo\": {\n            \"@type\": \"ImageObject\",\n            \"url\": \"https://noctalia.app/logo/logo_noctalia.png\"\n        }\n    },\n    \"datePublished\": \"2026-03-14\",\n    \"dateModified\": \"2026-10-09\",\n    \"mainEntityOfPage\": {\n        \"@type\": \"WebPage\",\n        \"@id\": \"https://noctalia.app/es/blog/controlar-suenos-resolucion-problemas\"\n    },\n    \"inLanguage\": \"es\",\n    \"isAccessibleForFree\": true,\n    \"wordCount\": 2157,\n    \"timeRequired\": \"PT10M\",\n    \"url\": \"https://noctalia.app/es/blog/controlar-suenos-resolucion-problemas\"\n}",
     "{\n    \"@context\": \"https://schema.org\",\n    \"@type\": \"WebPage\",\n    \"@id\": \"https://noctalia.app/es/blog/controlar-suenos-resolucion-problemas\",\n    \"url\": \"https://noctalia.app/es/blog/controlar-suenos-resolucion-problemas\",\n    \"name\": \"Controlar tus sueños para resolver problemas | Noctalia\",\n    \"inLanguage\": \"es\"\n}",
-    "{\n    \"@context\": \"https://schema.org\",\n    \"@type\": \"FAQPage\",\n    \"mainEntity\": [\n        {\n            \"@type\": \"Question\",\n            \"name\": \"¿Se puede realmente controlar el contenido de los sueños?\",\n            \"acceptedAnswer\": {\n                \"@type\": \"Answer\",\n                \"text\": \"Sí, los estudios sobre TMR (Reactivación Dirigida de la Memoria) demuestran que los estímulos sonoros externos durante el sueño pueden influir en el contenido onírico. El estudio de Northwestern duplicó la tasa de resolución de problemas al dirigir los sueños hacia puzzles específicos mediante sonidos asociados reproducidos durante el sueño.\"\n            }\n        },\n        {\n            \"@type\": \"Question\",\n            \"name\": \"¿Cuál es la diferencia entre la TMR y el sueño lúcido?\",\n            \"acceptedAnswer\": {\n                \"@type\": \"Answer\",\n                \"text\": \"La TMR utiliza estímulos externos durante el sueño para reactivar recuerdos sin necesitar conciencia onírica. El sueño lúcido implica la conciencia consciente dentro del estado de sueño. Ambos enfoques pueden favorecer la resolución de problemas, pero a través de mecanismos fundamentalmente diferentes.\"\n            }\n        },\n        {\n            \"@type\": \"Question\",\n            \"name\": \"¿Se puede usar esta técnica en casa?\",\n            \"acceptedAnswer\": {\n                \"@type\": \"Answer\",\n                \"text\": \"Una versión simplificada es posible: asocia un sonido distintivo con un problema en el que estés trabajando y reprodúcelo suavemente durante el sueño. Los resultados no serán tan precisos como en el laboratorio, pero el principio de la reactivación de la memoria se mantiene. Combínalo con un diario de sueños para hacer seguimiento de los resultados.\"\n            }\n        }\n    ]\n}",
+    "{\n    \"@context\": \"https://schema.org\",\n    \"@type\": \"FAQPage\",\n    \"mainEntity\": [\n        {\n            \"@type\": \"Question\",\n            \"name\": \"¿Se puede controlar de verdad el contenido de los sueños?\",\n            \"acceptedAnswer\": {\n                \"@type\": \"Answer\",\n                \"text\": \"En parte. Unos sonidos reproducidos durante el sueño REM pueden hacer que un tema aparezca más a menudo en los sueños, como observó el estudio de Northwestern (2026) con acertijos. El control total es raro, incluso para quienes tienen sueños lúcidos.\"\n            }\n        },\n        {\n            \"@type\": \"Question\",\n            \"name\": \"¿Duplicó el estudio de Northwestern la tasa de resolución?\",\n            \"acceptedAnswer\": {\n                \"@type\": \"Answer\",\n                \"text\": \"No en el conjunto del grupo: se resolvió alrededor del 30 % de los acertijos con sonido frente al 22 % de los demás, una diferencia que los autores no consideran fiable. La mejora solo aparece en quienes soñaron siguiendo las señales, en un análisis a posteriori con una muestra pequeña.\"\n            }\n        },\n        {\n            \"@type\": \"Question\",\n            \"name\": \"¿Qué diferencia hay entre la TMR y los sueños lúcidos?\",\n            \"acceptedAnswer\": {\n                \"@type\": \"Answer\",\n                \"text\": \"La TMR usa una señal externa, como un sonido, para reactivar un recuerdo durante el sueño, sin que sepas que estás soñando. Un sueño lúcido consiste en darte cuenta, dentro del sueño, de que estás soñando. El estudio de 2026 combinó ambos.\"\n            }\n        },\n        {\n            \"@type\": \"Question\",\n            \"name\": \"¿Puedo usar esta técnica en casa?\",\n            \"acceptedAnswer\": {\n                \"@type\": \"Answer\",\n                \"text\": \"Una versión simplificada, sí: escribe tu pregunta antes de dormir, asóciala a un sonido corto si quieres y apunta tus sueños nada más despertar. Si usas un sonido de noche, que sea apenas audible, y déjalo si te despierta. No esperes resultados de laboratorio: un diario de sueños te permite comprobar qué pasa de verdad.\"\n            }\n        }\n    ]\n}",
     "{\n    \"@context\": \"https://schema.org\",\n    \"@type\": \"BreadcrumbList\",\n    \"itemListElement\": [\n        {\n            \"@type\": \"ListItem\",\n            \"position\": 1,\n            \"name\": \"Inicio\",\n            \"item\": \"https://noctalia.app/es/\"\n        },\n        {\n            \"@type\": \"ListItem\",\n            \"position\": 2,\n            \"name\": \"Recursos\",\n            \"item\": \"https://noctalia.app/es/blog/\"\n        },\n        {\n            \"@type\": \"ListItem\",\n            \"position\": 3,\n            \"name\": \"Control de sueños\",\n            \"item\": \"https://noctalia.app/es/blog/controlar-suenos-resolucion-problemas\"\n        }\n    ]\n}"
   ],
   "activeNav": "resources"
@@ -63,14 +63,14 @@
 <span class="text-xs font-mono text-dream-salmon border border-dream-salmon/30 rounded-full px-3 py-1 uppercase">Ciencia</span>
 <span aria-hidden="true" class="w-full sm:hidden"></span>
 <span class="text-sm text-purple-300/60">Publicado el 14 de marzo de 2026</span>
-<span class="text-sm text-purple-300/60">5 min de lectura</span>
+<span class="text-sm text-purple-300/60">10 min de lectura</span>
 </div>
 <h1 class="font-serif text-3xl md:text-5xl mb-6 text-transparent bg-clip-text bg-gradient-to-b from-white via-dream-lavender to-purple-400/50 leading-tight">
-                    Controlar tus sueños para resolver problemas: el estudio que lo cambia todo
-                </h1>
+Controlar tus sueños para resolver problemas: lo que muestra de verdad el estudio de Northwestern
+</h1>
 <p class="text-lg text-purple-200/80 leading-relaxed">
-                    ¿Y si tus sueños pudieran ayudarte a resolver un problema que llevas días rumiando? En febrero de 2026, un equipo de Northwestern publicó un estudio que sacude nuestra comprensión del sueño creativo: reproduciendo un simple sonido durante la noche, los investigadores dirigieron el contenido de los sueños hacia un puzzle específico y duplicaron la tasa de resolución. Esto es lo que este avance significa para la ciencia del sueño y cómo podrías aprovecharlo.
-                </p>
+Te acuestas dándole vueltas a un problema y por la mañana lo ves distinto, a veces con la solución ya delante. En febrero de 2026, un equipo de Northwestern quiso comprobar si eso se puede provocar: al reproducir durante la fase REM un sonido asociado a un acertijo sin resolver, consiguió que el acertijo apareciera en los sueños. ¿Ayudó eso a resolverlo? En parte, y menos de lo que dijeron los titulares. Aquí tienes lo que muestra el estudio, lo que no, y lo que puedes probar en casa.
+</p>
 </header>
 <!-- Author Byline (E-E-A-T) -->
 <div class="flex items-center gap-3 mb-8 text-sm text-purple-200/70">
@@ -85,7 +85,7 @@
 <!-- Quick Answer (AI SEO) -->
 <section aria-labelledby="quick-answer-title" class="glass-panel rounded-2xl p-6 mb-8 border border-dream-salmon/20 bg-white/5">
 <h2 class="font-serif text-xl text-dream-cream mb-3" id="quick-answer-title">Respuesta rápida</h2>
-<p class="text-purple-100/80 leading-relaxed">Investigadores de Northwestern demostraron en 2026 que la Reactivación Dirigida de la Memoria (TMR) — reproducir un sonido asociado a un problema durante el sueño — puede dirigir el contenido onírico hacia ese problema específico y duplicar la tasa de resolución (del 20 % al 40 %). Combinado con los avances en comunicación bidireccional con soñadores lúcidos, esta investigación abre perspectivas concretas para usar los sueños como herramienta de resolución de problemas.</p>
+<p class="text-purple-100/80 leading-relaxed">No puedes controlar del todo tus sueños, pero sí orientar su tema. En el estudio de Northwestern (Konkoly et al., 2026), unos sonidos asociados a acertijos sin resolver, reproducidos durante la fase REM, hicieron que esos acertijos aparecieran más a menudo en los sueños. El efecto sobre su resolución a la mañana siguiente no fue fiable en el conjunto del grupo: solo apareció en quienes soñaron siguiendo las señales. En casa, lo más realista es la incubación de sueños junto con un diario.</p>
 </section>
 <!-- Featured Image -->
 <figure class="mb-12 rounded-2xl overflow-hidden">
@@ -94,67 +94,72 @@
 <!-- Table of Contents -->
 <nav class="glass-panel rounded-2xl p-6 mb-12">
 <h2 class="font-serif text-lg text-dream-cream mb-4 flex items-center gap-2">
-<i class="w-5 h-5 text-dream-salmon" data-lucide="list"></i> Tabla de Contenidos
-                </h2>
+<i class="w-5 h-5 text-dream-salmon" data-lucide="list"></i> Índice
+</h2>
 <ol class="space-y-2 text-sm text-purple-200/70">
-<li><a class="toc-link block" href="#northwestern">1. El experimento de Northwestern: dirigir los sueños hacia un problema</a></li>
-<li><a class="toc-link block" href="#tmr">2. Reactivación Dirigida de la Memoria (TMR): cómo funciona</a></li>
-<li><a class="toc-link block" href="#two-way">3. Comunicarse con un soñador: el avance</a></li>
-<li><a class="toc-link block" href="#history">4. Precedentes famosos</a></li>
-<li><a class="toc-link block" href="#practice">5. Técnicas prácticas inspiradas en la investigación</a></li>
-<li><a class="toc-link block" href="#limits">6. Limitaciones científicas y próximos pasos</a></li>
+<li><a class="toc-link block" href="#northwestern">1. ¿Qué probó realmente el equipo de Northwestern?</a></li>
+<li><a class="toc-link block" href="#tmr">2. ¿Cómo puede un sonido entrar en un sueño?</a></li>
+<li><a class="toc-link block" href="#two-way">3. ¿Se puede hablar con alguien que está soñando?</a></li>
+<li><a class="toc-link block" href="#history">4. Kekulé, McCartney: ¿qué valen las historias famosas?</a></li>
+<li><a class="toc-link block" href="#practice">5. Cómo probarlo en casa</a></li>
+<li><a class="toc-link block" href="#limits">6. Lo que la investigación aún no demuestra</a></li>
 </ol>
 </nav>
 <!-- Article Content -->
 <div class="prose max-w-none text-gray-300">
-<h2 id="northwestern">El experimento de Northwestern: dirigir los sueños hacia un problema</h2>
+<h2 id="northwestern">¿Qué probó realmente el equipo de Northwestern?</h2>
 <p>
-                    En febrero de 2026, el equipo de Karen Konkoly en la Universidad de Northwestern publicó en <em>Neuroscience of Consciousness</em> un estudio que recorrió inmediatamente la comunidad científica. El protocolo era elegante en su simplicidad: los participantes debían resolver un puzzle lógico por la noche y luego dormirse en un laboratorio de sueño. Durante la noche, los investigadores reproducían un sonido específico — previamente asociado al puzzle — durante las fases de <a class="text-dream-salmon hover:underline" href="sueno-rem-suenos">sueño REM</a>.
-                </p>
+Karen Konkoly, Ken Paller y sus colegas de la Universidad Northwestern (Estados Unidos) publicaron su estudio en febrero de 2026 en la revista <em>Neuroscience of Consciousness</em>. Veinte voluntarios, en su mayoría acostumbrados a tener sueños lúcidos, pasaron varias noches en un laboratorio del sueño.
+</p>
 <p>
-                    Los resultados superaron las expectativas. Los participantes expuestos al sonido vinculado al puzzle no solo soñaron más con el problema en cuestión, sino que <strong>duplicaron su tasa de resolución al despertar</strong>, pasando del 20 % (grupo control) al 40 %. Algo llamativo: los informes de sueños mostraron que el contenido onírico incorporaba directamente elementos del puzzle — símbolos de <a class="text-dream-salmon hover:underline" href="../simbolos/llave">llaves</a>, <a class="text-dream-salmon hover:underline" href="../simbolos/puerta">puertas</a> que se abren, piezas que encajan — como si el cerebro dormido trabajara activamente en el problema.
-                </p>
+Por la noche, cada participante intentaba resolver acertijos creativos (jeroglíficos, problemas con cerillas, juegos de palabras, rompecabezas espaciales), cada uno asociado a una breve banda sonora. Se dormían con cuatro acertijos sin resolver. Durante el <a class="text-dream-salmon hover:underline" href="sueno-rem-suenos">sueño REM</a>, los investigadores reproducían los sonidos de dos de ellos; los otros dos servían de comparación. Despertaban a los participantes para que contaran sus sueños y, por la mañana, volvían a intentar los acertijos.
+</p>
 <p>
-                    No es la primera vez que la ciencia explora la relación entre sueño y resolución de problemas. Pero es la primera demostración rigurosa de que se puede <strong>dirigir deliberadamente</strong> el contenido de los sueños hacia un problema específico y obtener un beneficio cognitivo medible. La diferencia con los trabajos anteriores radica en el método: la Reactivación Dirigida de la Memoria.
-                </p>
+El resultado más claro tiene que ver con los propios sueños. Los acertijos con sonido aparecían en ellos más a menudo que los demás, y 15 de los 20 participantes soñaron al menos una vez con un acertijo sin resolver. Un sonido durante el sueño puede, por tanto, <strong>orientar el tema de un sueño</strong>, al menos en parte.
+</p>
+<h3>¿Y resolvieron más acertijos?</h3>
+<p>
+Aquí es donde los titulares se precipitaron. En el conjunto del grupo, a la mañana siguiente se resolvió alrededor del 30 % de los acertijos con sonido, frente al 22 % de los demás: una diferencia que los autores no consideran fiable. Entre los 12 participantes cuyos sueños siguieron más claramente las señales, los acertijos con sonido se resolvieron más a menudo.
+</p>
+<p>
+Es alentador, pero ese resultado sale de un análisis hecho a posteriori, con un grupo pequeño. Es una pista que hay que reproducir, no la prueba de que los sueños <strong>dupliquen</strong> tu capacidad para resolver problemas.
+</p>
 
-<h2 id="tmr">Reactivación Dirigida de la Memoria (TMR): cómo funciona</h2>
-<h3>Un sonido asociado a una tarea, reproducido durante el sueño</h3>
+<h2 id="tmr">¿Cómo puede un sonido entrar en un sueño?</h2>
+<h3>El principio: reactivar un recuerdo mientras duermes</h3>
 <p>
-                    La TMR (Targeted Memory Reactivation) se basa en un principio neurocientífico sencillo: el cerebro consolida los recuerdos durante el sueño «reproduciéndolos» espontáneamente. Los investigadores descubrieron que al reproducir un estímulo sensorial — típicamente un sonido o un olor — asociado a un aprendizaje reciente, se puede <strong>amplificar selectivamente la consolidación de ese recuerdo</strong> sobre los demás.
-                </p>
+El método se llama reactivación dirigida de la memoria (TMR, por sus siglas en inglés). Parte de una observación: durante el sueño, el cerebro vuelve a reproducir recuerdos recientes. Si un sonido o un olor estaba presente mientras aprendías algo, volver a presentarlo durante el sueño puede favorecer ese recuerdo.
+</p>
 <p>
-                    En el estudio de Northwestern, cada puzzle se emparejó con un sonido distintivo durante la fase de aprendizaje. Cuando ese mismo sonido se reproducía durante el sueño REM, el cerebro reactivaba preferentemente las redes neuronales relacionadas con el puzzle. El resultado: el problema se infiltraba en los sueños y recibía un procesamiento cognitivo adicional.
-                </p>
-<h3>Qué sucede en el cerebro durante la TMR</h3>
+En un conocido estudio de 2007, Björn Rasch y sus colegas hicieron que los participantes aprendieran en presencia de un olor y luego lo difundieron de nuevo durante su sueño profundo. Recordaron mejor lo aprendido que tras una noche de control.
+</p>
+<h3>Qué cambia el estudio de 2026</h3>
 <p>
-                    Las imágenes cerebrales muestran que durante la TMR, el hipocampo (centro de la memoria) y la corteza prefrontal (razonamiento) se sincronizan de manera inusual. Esta sincronización, normalmente rara durante el sueño REM (cuando la corteza prefrontal está en gran parte desactivada), crea una ventana en la que el cerebro puede simultáneamente <strong>acceder a recuerdos y razonar de forma creativa</strong>. Paradójicamente, la conciencia despierta dificulta esta combinación, porque nuestros pensamientos conscientes siguen caminos lógicos demasiado rígidos.
-                </p>
-<h3>Diferencia con la incubación de sueños tradicional</h3>
+La mayoría de los trabajos sobre TMR se centran en el sueño profundo y la memoria. Aquí las señales se reprodujeron durante la fase REM, cuando los sueños vívidos son más frecuentes, con otro objetivo: llevar un problema sin resolver al sueño. El estudio no demuestra que los sueños REM superen a otros estados para crear. Un estudio parisino de 2021 (Lacaux et al.) apunta a otra ventana: quienes pasaban un breve rato en la primera fase del sueño descubrían con más frecuencia una regla oculta en un ejercicio de cálculo.
+</p>
+<h3>En qué se diferencia de la incubación de sueños</h3>
 <p>
-                    La <a class="text-dream-salmon hover:underline" href="guia-incubacion-suenos">incubación de sueños</a> — pensar intensamente en un problema antes de dormirse — es una técnica ancestral documentada desde la Antigüedad griega. Funciona, pero de manera impredecible. La TMR añade una palanca fisiológica: al reproducir un estímulo durante el sueño, no te limitas a esperar que el cerebro procese el tema adecuado — lo <strong>guías activamente</strong>. El estudio de Northwestern muestra que esta guía eleva la tasa de éxito de aproximadamente el 20 % al 40 %, una diferencia estadísticamente significativa.
-                </p>
+La <a class="text-dream-salmon hover:underline" href="guia-incubacion-suenos">incubación de sueños</a> es mucho más antigua: mantienes una pregunta en mente al dormirte con la esperanza de que un sueño la recoja. En 1993, la psicóloga Deirdre Barrett pidió a 76 estudiantes que incubaran un problema personal cada noche durante una semana. Alrededor de la mitad recordó un sueño que consideraba relacionado con su problema, y la mayoría de ellos creía que contenía una solución. Era su propio juicio, sin grupo de control. La TMR añade una señal externa durante la noche; la incubación solo cuenta con la intención.
+</p>
 
-<h2 id="two-way">Comunicarse con un soñador: el avance</h2>
-<h3>Experimentos multilaboratorio (Northwestern, Francia, Alemania, Países Bajos)</h3>
+<h2 id="two-way">¿Se puede hablar con alguien que está soñando?</h2>
 <p>
-                    El estudio de 2026 se enmarca en una corriente de investigación más amplia iniciada por un descubrimiento asombroso de 2021. Ese año, cuatro laboratorios independientes — Northwestern (EE. UU.), CNRS de París (Francia), Universidad de Osnabrück (Alemania) y Universidad Radboud (Países Bajos) — publicaron simultáneamente en <em>Current Biology</em> los resultados de un experimento coordinado: por primera vez, los investigadores habían <strong>logrado comunicarse en tiempo real con soñadores lúcidos</strong>.
-                </p>
-<h3>Cómo los investigadores «hablan» con los soñadores lúcidos</h3>
+El estudio de 2026 continúa un experimento publicado en 2021 en <em>Current Biology</em> por cuatro equipos: Northwestern en Estados Unidos y grupos de París (Francia), Osnabrück (Alemania) y Nimega (Universidad Radboud, Países Bajos). Su pregunta: ¿puede un soñador lúcido recibir una pregunta y responderla sin despertarse?
+</p>
 <p>
-                    Los participantes entrenados en <a class="text-dream-salmon hover:underline" href="guia-suenos-lucidos-principiantes">sueño lúcido</a> recibían estímulos durante el sueño REM — preguntas verbales, señales luminosas o secuencias táctiles. Los soñadores lúcidos podían responder desde dentro del sueño mediante movimientos oculares predefinidos o contracciones musculares faciales, detectados por electrooculografía y electromiografía. Los resultados fueron notables: los soñadores respondieron correctamente a preguntas aritméticas sencillas (como «¿8 menos 6?») y a preguntas de sí/no, con una <strong>tasa de respuestas correctas del 18 % y parcialmente correctas del 17 %</strong> — muy por encima del azar.
-                </p>
+Personas entrenadas en <a class="text-dream-salmon hover:underline" href="guia-suenos-lucidos-principiantes">sueños lúcidos</a> oían preguntas o veían destellos de luz durante la fase REM. Respondían desde el sueño con movimientos oculares acordados de antemano o pequeñas contracciones de la cara, registrados por sensores. Con 36 participantes, los equipos registraron 29 respuestas correctas, de 6 personas, a preguntas sencillas como restas.
+</p>
 <p>
-                    Estos resultados son revolucionarios porque demuestran que el cerebro soñador no es un sistema cerrado. Puede recibir información del exterior, procesarla y devolver respuestas coherentes — todo ello sin interrumpir el sueño. Combinada con la TMR, esta capacidad abre el camino a sesiones de resolución de problemas verdaderamente guiadas durante el sueño.
-                </p>
+Es poco, y la mayoría de los intentos no obtuvo una respuesta clara. Pero muestra que un cerebro que sueña puede recibir una pregunta del exterior y devolver una respuesta. También explica por qué el estudio de 2026 reclutó a soñadores lúcidos: pueden señalar lo que ocurre en el sueño mientras ocurre.
+</p>
 
-<h2 id="history">Precedentes famosos</h2>
+<h2 id="history">Kekulé, McCartney: ¿qué valen las historias famosas?</h2>
 <p>
-                    Que los sueños resuelvan problemas no es una idea nueva. Kekulé habría vislumbrado la estructura cíclica del benceno en un sueño con una serpiente mordiéndose la cola. Paul McCartney afirma haber escuchado la melodía de <em>Yesterday</em> mientras soñaba. Elias Howe atribuye a una pesadilla la inspiración para la aguja de la máquina de coser. Estas anécdotas, aunque famosas, seguían siendo eso — imposibles de verificar o reproducir. Para una exploración completa de estos precedentes, consulta nuestro artículo sobre <a class="text-dream-salmon hover:underline" href="suenos-y-creatividad">sueños y creatividad</a>.
-                </p>
+Las soluciones llegadas en sueños dan para buenas historias. El químico August Kekulé contó que una serpiente que se mordía la cola lo puso sobre la pista de la estructura en anillo del benceno. Paul McCartney ha dicho que la melodía de <em>Yesterday</em> le vino mientras dormía. A menudo se atribuye a una pesadilla la aguja de la máquina de coser de Elias Howe. Son relatos contados años después, a veces adornados, y ninguno se puede comprobar. Nuestro artículo sobre <a class="text-dream-salmon hover:underline" href="suenos-y-creatividad">sueños y creatividad</a> los analiza más a fondo.
+</p>
 <p>
-                    Lo que aporta la investigación reciente de radicalmente nuevo es la <strong>reproducibilidad</strong>. La TMR no depende del genio individual ni de un golpe de suerte: es un protocolo estandarizado que produce resultados medibles y replicables. Y es precisamente este paso de la anécdota a la ciencia lo que hace tan importante el estudio de Northwestern.
-                </p>
+Lo que aporta el laboratorio no es un milagro sino un método: comparar problemas con y sin sonido, contar los resultados, publicar los límites. Las conclusiones son más modestas que las leyendas, y más útiles.
+</p>
 </div>
 
 <aside class="glass-panel rounded-2xl p-6 my-8 border border-dream-salmon/20">
@@ -163,115 +168,131 @@
 <i class="w-6 h-6 text-dream-salmon" data-lucide="book-open"></i>
 </div>
 <div>
-<h4 class="font-serif text-lg text-dream-cream mb-2">Aprovecha tus sueños con la incubación guiada</h4>
-<p class="text-sm text-gray-400 mb-4">Noctalia te ayuda a practicar la incubación de sueños: formula tu intención antes de dormir, registra tus sueños por voz al despertar y deja que la IA identifique conexiones entre tus problemas y tu contenido onírico.</p>
-<a class="inline-flex items-center gap-2 text-sm text-dream-salmon hover:text-dream-salmonLight transition-colors" href="/es/">
-                                Empieza a incubar con Noctalia <i class="w-4 h-4" data-lucide="arrow-right"></i>
+<h4 class="font-serif text-lg text-dream-cream mb-2">Apunta el sueño antes de que el problema te arrastre</h4>
+<p class="text-sm text-gray-400 mb-4">En Noctalia, cuenta tu sueño en voz alta o escríbelo nada más despertar. Se transcribe y se guarda en tu diario: puedes releer varias noches una al lado de otra y ver si tu problema vuelve a aparecer.</p>
+<a class="inline-flex items-center gap-2 text-sm text-dream-salmon hover:text-dream-salmonLight transition-colors" href="/es/diario-de-suenos-por-voz">
+Ver cómo funciona el diario por voz <i class="w-4 h-4" data-lucide="arrow-right"></i>
 </a>
 </div>
 </div>
 </aside>
 
 <div class="prose max-w-none text-gray-300">
-<h2 id="practice">Técnicas prácticas inspiradas en la investigación</h2>
-<h3>Adaptar la TMR en casa (versión simplificada)</h3>
+<h2 id="practice">Cómo probarlo en casa</h2>
 <p>
-                    Si no tienes acceso a un laboratorio de sueño, una versión simplificada de la TMR sigue siendo accesible. El principio: crear una <strong>asociación fuerte entre un sonido y un problema</strong>, y luego aprovechar esa asociación durante el sueño. Aquí tienes una adaptación práctica en cuatro pasos:
-                </p>
+Sin laboratorio no puedes detectar la fase REM ni saber cuándo te llega un sonido. Estos pasos toman el principio de la investigación sin prometer sus resultados.
+</p>
 <ul>
-<li><strong>Elige un sonido distintivo:</strong> una melodía corta, un campanilleo o un sonido de la naturaleza que no uses habitualmente. Evita alarmas o tonos de teléfono que provoquen el despertar.</li>
-<li><strong>Trabaja en tu problema con el sonido:</strong> durante 20 a 30 minutos antes de acostarte, piensa activamente en el problema mientras reproduces el sonido en bucle a bajo volumen. Tu cerebro construirá la asociación neuronal.</li>
-<li><strong>Reproduce el sonido durante el sueño:</strong> programa el sonido a un volumen muy bajo (apenas audible) para que suene durante la segunda mitad de la noche, cuando las fases de sueño REM son más largas y propicias para soñar.</li>
-<li><strong>Anota tus sueños al despertar:</strong> usa un diario de sueños — idealmente por voz, para captar los detalles antes de que se desvanezcan. Busca conexiones entre el contenido onírico y tu problema.</li>
+<li><strong>Elige un problema real y concreto.</strong> «¿Cómo empiezo el primer capítulo?» funciona mejor que «mi carrera». El estudio de 2026 usó acertijos con una sola solución; los problemas abiertos se han estudiado mucho menos.</li>
+<li><strong>Escribe la pregunta antes de dormir.</strong> Una sola frase. Reléela, imagina la situación durante un minuto y luego suéltala. Es la incubación clásica.</li>
+<li><strong>Añade un sonido, si quieres.</strong> Pon un sonido corto y poco habitual (una campanilla, unas notas) mientras piensas en el problema por la noche. Si lo reproduces de madrugada, que sea apenas audible, y déjalo si te despierta: un sueño entrecortado cuesta más de lo que aporta.</li>
+<li><strong>Apúntalo todo al despertar, antes de mirar el móvil.</strong> La escena, la emoción, cualquier relación con el problema, aunque sea vaga. Nuestra guía para <a class="text-dream-salmon hover:underline" href="como-recordar-suenos">recordar los sueños</a> explica por qué cuentan los primeros minutos.</li>
+<li><strong>Pon la idea a prueba de día.</strong> Un sueño puede ofrecer un ángulo, no una garantía. Compruébalo despierto.</li>
 </ul>
 <p>
-                    Los resultados no serán tan espectaculares como en el laboratorio, donde los investigadores pueden apuntar con precisión a las fases de sueño REM mediante EEG. Pero el principio fundamental — <a class="text-dream-salmon hover:underline" href="como-recordar-suenos">recordar tus sueños</a> y utilizarlos como espacio de reflexión — sigue siendo válido y accesible para todos.
-                </p>
-<h3>Combinar incubación e indicios sonoros</h3>
+Si aparece una <a class="text-dream-salmon hover:underline" href="../simbolos/puerta">puerta</a>, una <a class="text-dream-salmon hover:underline" href="../simbolos/llave">llave</a>, unas <a class="text-dream-salmon hover:underline" href="../simbolos/escaleras">escaleras</a> o un <a class="text-dream-salmon hover:underline" href="../simbolos/espejo">espejo</a>, no lo leas como una respuesta en clave. Apunta más bien qué hiciste con ello: ¿se abrió la puerta?, ¿subías o bajabas? Esos detalles dicen más sobre cómo abordas el problema que cualquier lista de símbolos.
+</p>
+<h3 id="journal-example">Un ejemplo de diario</h3>
 <p>
-                    Para maximizar tus posibilidades, combina la TMR simplificada con la incubación de sueños clásica. Antes de dormirte, formula claramente tu problema como pregunta: «¿Cómo puedo resolver X?» Visualízate encontrando la solución. Luego deja que el sonido asociado trabaje durante la noche. Este doble enfoque — intencional y sensorial — involucra tanto los procesos conscientes como inconscientes de tu cerebro.
-                </p>
+<strong>Ejemplo ficticio:</strong> cómo anotar una noche de incubación sin forzar la relación.
+</p>
+<ul>
+<li><strong>Pregunta de la víspera:</strong> «¿Cómo le digo a mi equipo que el proyecto va con retraso?»</li>
+<li><strong>Sueño:</strong> «Subía cajas por una escalera estrecha. Alguien desde abajo no paraba de preguntarme qué había dentro, y yo no me atrevía a abrirlas».</li>
+<li><strong>Emoción:</strong> «Incomodidad, y luego alivio cuando dejé una caja en el suelo y la abrí».</li>
+<li><strong>Posible relación:</strong> «Quizá me asusta menos el retraso que enseñar un trabajo sin terminar».</li>
+<li><strong>Pregunta para guardar:</strong> «¿Y si enseño el trabajo en curso en lugar de esperar a que esté acabado?»</li>
+</ul>
 <p>
-                    Los sueños en los que aparecen símbolos de <a class="text-dream-salmon hover:underline" href="../simbolos/espejo">espejos</a> (reflexión, introspección), <a class="text-dream-salmon hover:underline" href="../simbolos/escaleras">escaleras</a> (progresión, etapas) o llaves (soluciones, acceso) pueden ser indicadores de que tu cerebro está procesando activamente el problema. Anótalos cuidadosamente.
-                </p>
+Una noche no demuestra nada. A lo largo de varias, anota la pregunta, la señal si la usaste, el sueño y lo que probaste al día siguiente. Si el problema tiene que ver con la salud, el trabajo o tus relaciones, comprueba cómo guarda tu diario esas notas: nuestro artículo sobre la <a class="text-dream-salmon hover:underline" href="privacidad-ia-diario-suenos">privacidad en los diarios de sueños con IA</a> te dice en qué fijarte.
+</p>
 
-<h2 id="limits">Limitaciones científicas y próximos pasos</h2>
+<h2 id="limits">Lo que la investigación aún no demuestra</h2>
 <p>
-                    Pese al entusiasmo justificado, varias limitaciones merecen atención. En primer lugar, el estudio de Northwestern utilizó <strong>puzzles lógicos de laboratorio</strong>, no problemas complejos de la vida real. Aún no se sabe si la TMR sería igual de eficaz para resolver un conflicto relacional, diseñar una estrategia empresarial o desbloquear un proyecto de escritura creativa.
-                </p>
+<strong>Una muestra pequeña y particular.</strong> Veinte personas, sobre todo soñadores lúcidos habituales. La mayoría no dormimos ni soñamos como ellos.
+</p>
 <p>
-                    En segundo lugar, la TMR requiere una <strong>temporización precisa</strong>. En el laboratorio, los sonidos se activan únicamente durante el sueño REM, identificado por EEG. En casa, esta focalización es aproximada en el mejor de los casos. Los dispositivos de seguimiento del sueño para el consumidor están mejorando, pero su precisión sigue siendo limitada en comparación con la polisomnografía clínica.
-                </p>
+<strong>Acertijos de laboratorio, no problemas de la vida.</strong> Aún no se sabe si el método ayuda ante un conflicto, una decisión profesional o un bloqueo creativo.
+</p>
 <p>
-                    En tercer lugar, los efectos individuales varían considerablemente. Algunos participantes no mostraron ninguna mejora, mientras que otros resolvieron puzzles que el grupo control nunca logró. Los factores que determinan esta variabilidad — calidad del sueño, capacidad de recuerdo onírico, rasgos de personalidad — son objeto de investigación activa.
-                </p>
+<strong>Un efecto frágil sobre la resolución.</strong> El efecto global no fue fiable, y el resultado positivo en un subgrupo procede de un análisis a posteriori. Además, los participantes conocían el objetivo del estudio, lo que puede influir en sus relatos.
+</p>
 <p>
-                    Por último, la comunicación bidireccional con los soñadores sigue limitada a <strong>soñadores lúcidos entrenados</strong>, que representan solo una fracción de la población. Las investigaciones futuras deberán determinar si técnicas similares pueden funcionar con soñadores no lúcidos, lo que las haría accesibles a un público mucho más amplio.
-                </p>
+<strong>Un ajuste aproximado en casa.</strong> Las pulseras y apps de sueño estiman las fases del sueño; no las miden como un registro de laboratorio.
+</p>
 <p>
-                    Estas limitaciones no ocultan la trayectoria. La ciencia del sueño está pasando de una disciplina descriptiva — «¿qué soñamos?» — a una intervencionista — «¿cómo podemos usar los sueños?» Y los primeros resultados son prometedores.
-                </p>
+<strong>Primero, el descanso.</strong> No conviertas tus noches en sesiones de trabajo. Si un problema no te deja dormir, si llevas semanas durmiendo mal o te despiertas angustiado, consulta a un médico antes de probar cualquier técnica con los sueños.
+</p>
+<p>
+La ciencia del sueño está pasando de «¿qué soñamos?» a «¿podemos orientar lo que soñamos?». Las primeras respuestas son interesantes, y todavía modestas.
+</p>
 </div>
 <!-- CTA Section -->
 <aside class="glass-panel rounded-3xl p-8 md:p-10 mt-16 text-center border border-dream-salmon/20">
 <div class="w-16 h-16 bg-dream-salmon/10 rounded-full flex items-center justify-center mx-auto mb-6">
 <i class="w-8 h-8 text-dream-salmon" data-lucide="lightbulb"></i>
 </div>
-<h3 class="font-serif text-2xl md:text-3xl mb-4 text-dream-cream">Transforma tus noches en sesiones de creatividad</h3>
+<h3 class="font-serif text-2xl md:text-3xl mb-4 text-dream-cream">Un problema, varias noches, un solo lugar para releerlas</h3>
 <p class="text-purple-200/70 mb-6 max-w-lg mx-auto">
-                    Noctalia te ayuda a capturar sueños por voz, identificar patrones creativos y practicar la incubación de sueños. Tu próximo momento eureka podría estar escondido en tus sueños.
-                </p>
+Guarda tus sueños en Noctalia, por voz o por escrito, con lo que sentiste. Releerlos uno al lado de otro te muestra si un problema vuelve y cómo cambia.
+</p>
 <a class="inline-flex items-center gap-2 px-8 py-4 bg-dream-salmon text-dream-dark rounded-full font-bold hover:bg-dream-salmon/90 transition-colors" href="/es/">
-                    Comienza tu diario de sueños <i class="w-5 h-5" data-lucide="arrow-right"></i>
+Empezar mi diario de sueños <i class="w-5 h-5" data-lucide="arrow-right"></i>
 </a>
 </aside>
 <!-- FAQ Section -->
 <section class="mt-16">
-<h2 class="font-serif text-2xl text-dream-cream mb-8">Preguntas Frecuentes</h2>
+<h2 class="font-serif text-2xl text-dream-cream mb-8">Preguntas frecuentes</h2>
 <div class="space-y-4">
 <details class="glass-panel rounded-xl p-4 group cursor-pointer">
 <summary class="font-medium flex justify-between items-center text-dream-cream">
-                            ¿Se puede realmente controlar el contenido de los sueños?
-                            <i class="w-5 h-5 transition-transform group-open:rotate-180 text-dream-salmon" data-lucide="chevron-down"></i>
+¿Se puede controlar de verdad el contenido de los sueños?
+<i class="w-5 h-5 transition-transform group-open:rotate-180 text-dream-salmon" data-lucide="chevron-down"></i>
 </summary>
 <p class="mt-4 text-sm text-gray-400 leading-relaxed">
-                            Sí, los estudios sobre TMR (Reactivación Dirigida de la Memoria) demuestran que los estímulos sonoros externos durante el sueño pueden influir en el contenido onírico. El estudio de Northwestern duplicó la tasa de resolución de problemas al dirigir los sueños hacia puzzles específicos mediante sonidos asociados reproducidos durante el <a class="text-dream-salmon hover:underline" href="sueno-rem-suenos">sueño REM</a>.
-                        </p>
+En parte. Unos sonidos reproducidos durante el <a class="text-dream-salmon hover:underline" href="sueno-rem-suenos">sueño REM</a> pueden hacer que un tema aparezca más a menudo en los sueños, como observó el estudio de Northwestern (2026) con acertijos. El control total es raro, incluso para quienes tienen sueños lúcidos.
+</p>
 </details>
 <details class="glass-panel rounded-xl p-4 group cursor-pointer">
 <summary class="font-medium flex justify-between items-center text-dream-cream">
-                            ¿Cuál es la diferencia entre la TMR y el sueño lúcido?
-                            <i class="w-5 h-5 transition-transform group-open:rotate-180 text-dream-salmon" data-lucide="chevron-down"></i>
+¿Duplicó el estudio de Northwestern la tasa de resolución?
+<i class="w-5 h-5 transition-transform group-open:rotate-180 text-dream-salmon" data-lucide="chevron-down"></i>
 </summary>
 <p class="mt-4 text-sm text-gray-400 leading-relaxed">
-                            La TMR utiliza estímulos externos durante el sueño para reactivar recuerdos sin necesitar conciencia onírica. El <a class="text-dream-salmon hover:underline" href="guia-suenos-lucidos-principiantes">sueño lúcido</a>, en cambio, implica la conciencia consciente dentro del estado de sueño. Ambos enfoques pueden favorecer la resolución de problemas, pero a través de mecanismos fundamentalmente diferentes.
-                        </p>
+No en el conjunto del grupo: se resolvió alrededor del 30 % de los acertijos con sonido frente al 22 % de los demás, una diferencia que los autores no consideran fiable. La mejora solo aparece en quienes soñaron siguiendo las señales, en un análisis a posteriori con una muestra pequeña.
+</p>
 </details>
 <details class="glass-panel rounded-xl p-4 group cursor-pointer">
 <summary class="font-medium flex justify-between items-center text-dream-cream">
-                            ¿Se puede usar esta técnica en casa?
-                            <i class="w-5 h-5 transition-transform group-open:rotate-180 text-dream-salmon" data-lucide="chevron-down"></i>
+¿Qué diferencia hay entre la TMR y los sueños lúcidos?
+<i class="w-5 h-5 transition-transform group-open:rotate-180 text-dream-salmon" data-lucide="chevron-down"></i>
 </summary>
 <p class="mt-4 text-sm text-gray-400 leading-relaxed">
-                            Una versión simplificada es posible: asocia un sonido distintivo con un problema en el que estés trabajando y reprodúcelo suavemente durante el sueño. Los resultados no serán tan precisos como en el laboratorio, pero el principio de la reactivación de la memoria se mantiene. Combínalo con un <a class="text-dream-salmon hover:underline" href="como-recordar-suenos">diario de sueños</a> para hacer seguimiento de los resultados.
-                        </p>
+La TMR usa una señal externa, como un sonido, para reactivar un recuerdo durante el sueño, sin que sepas que estás soñando. Un <a class="text-dream-salmon hover:underline" href="guia-suenos-lucidos-principiantes">sueño lúcido</a> consiste en darte cuenta, dentro del sueño, de que estás soñando. El estudio de 2026 combinó ambos.
+</p>
+</details>
+<details class="glass-panel rounded-xl p-4 group cursor-pointer">
+<summary class="font-medium flex justify-between items-center text-dream-cream">
+¿Puedo usar esta técnica en casa?
+<i class="w-5 h-5 transition-transform group-open:rotate-180 text-dream-salmon" data-lucide="chevron-down"></i>
+</summary>
+<p class="mt-4 text-sm text-gray-400 leading-relaxed">
+Una versión simplificada, sí: escribe tu pregunta antes de dormir, asóciala a un sonido corto si quieres y apunta tus sueños nada más despertar. Si usas un sonido de noche, que sea apenas audible, y déjalo si te despierta. No esperes resultados de laboratorio: un <a class="text-dream-salmon hover:underline" href="como-recordar-suenos">diario de sueños</a> te permite comprobar qué pasa de verdad.
+</p>
 </details>
 </div>
 </section>
-<section class="mt-16 glass-panel rounded-2xl p-6 border border-dream-salmon/20 bg-white/5">
-<h2 class="font-serif text-2xl text-dream-cream mb-4">Nota práctica de junio de 2026: documentar antes de interpretar</h2>
-<p class="text-gray-300 leading-relaxed">La TMR y el sueño lúcido solo se vuelven útiles cuando puedes comparar varias noches. Antes de buscar una “solución” definitiva, registra el problema, la señal usada, el sueño capturado y la acción probada al día siguiente. Esa trazabilidad hace que el experimento sea más honesto, seguro y útil dentro de un <a class="text-dream-salmon hover:underline" href="privacidad-ia-diario-suenos">diario de sueños asistido por IA</a>, especialmente si el tema toca trabajo, relaciones o salud.</p>
-</section>
 <!-- Sources / Trust -->
 <section class="mt-16 glass-panel rounded-2xl p-6" id="sources">
-<h2 class="font-serif text-2xl text-dream-cream mb-4">Fuentes / Para Ir Más Lejos</h2>
+<h2 class="font-serif text-2xl text-dream-cream mb-4">Fuentes y lecturas</h2>
 <ul class="mt-6 space-y-2 text-sm text-gray-400">
-<li><a href="https://doi.org/10.1093/nc/niaf067" rel="nofollow noopener noreferrer" target="_blank">Konkoly et al. (2026): Creative problem-solving after experimentally provoking dreams of unsolved puzzles during REM sleep (Neuroscience of Consciousness)</a></li>
-<li><a href="https://doi.org/10.1016/j.cub.2021.01.026" rel="nofollow noopener noreferrer" target="_blank">Konkoly et al. (2021): Real-time dialogue between experimenters and dreamers during REM sleep (Current Biology)</a></li>
-<li>Oudiette et al. (2023): Dream incubation and problem solving (Neuroscience Research)</li>
-<li><a href="https://doi.org/10.1037/h0094375" rel="nofollow noopener noreferrer" target="_blank">Barrett (1993): The "Committee of Sleep": A study of dream incubation for problem solving (Dreaming)</a></li>
+<li><a href="https://doi.org/10.1093/nc/niaf067" rel="nofollow noopener noreferrer" target="_blank">Konkoly et al. (2026), «Creative problem-solving after experimentally provoking dreams of unsolved puzzles during REM sleep», <em>Neuroscience of Consciousness</em></a></li>
+<li><a href="https://doi.org/10.1016/j.cub.2021.01.026" rel="nofollow noopener noreferrer" target="_blank">Konkoly et al. (2021), «Real-time dialogue between experimenters and dreamers during REM sleep», <em>Current Biology</em></a></li>
+<li><a href="https://doi.org/10.1126/science.1138581" rel="nofollow noopener noreferrer" target="_blank">Rasch et al. (2007), «Odor cues during slow-wave sleep prompt declarative memory consolidation», <em>Science</em></a></li>
+<li><a href="https://pmc.ncbi.nlm.nih.gov/articles/PMC8654287/" rel="nofollow noopener noreferrer" target="_blank">Lacaux et al. (2021), «Sleep onset is a creative sweet spot», <em>Science Advances</em></a></li>
+<li><a href="https://doi.org/10.1037/h0094375" rel="nofollow noopener noreferrer" target="_blank">Barrett (1993), «The committee of sleep: A study of dream incubation for problem solving», <em>Dreaming</em></a></li>
 </ul>
-<p class="mt-6 text-xs text-purple-200/60">Actualizado el 21 de junio de 2026</p>
+<p class="mt-6 text-xs text-purple-200/60">Actualizado el 9 de octubre de 2026</p>
 </section>
 <!-- Related Symbols Start -->
 <section aria-label="Símbolos de sueños relacionados" class="mt-12 mb-8">

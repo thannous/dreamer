@@ -1,4 +1,4 @@
-import Feather from '@expo/vector-icons/Feather';
+import Ionicons from '@expo/vector-icons/Ionicons';
 import React, { useMemo, useState } from 'react';
 import { Image } from 'expo-image';
 import { Pressable, ScrollView, Text, View, useWindowDimensions } from 'react-native';
@@ -47,7 +47,7 @@ export function JournalFirstPage({ bottomInset, onStartDream, onSettings }: Jour
       >
         <View className="w-full max-w-[560px] flex-1 self-center px-6">
           <View className="flex-1 gap-4 pt-8">
-            <Feather name="book-open" size={25} color={tokens.text.secondary} accessible={false} />
+            <Ionicons name="book-outline" size={25} color={tokens.text.secondary} accessible={false} />
             <Text accessibilityRole="header" className="font-display text-[28px] leading-[35px] text-ivory">
               {t('journal.first_page.title')}
             </Text>
@@ -73,7 +73,7 @@ export function JournalFirstPage({ bottomInset, onStartDream, onSettings }: Jour
               <Text className="min-w-0 flex-1 font-sans-medium text-[16px] leading-[22px] text-on-champagne">
                 {t('journal.first_page.cta')}
               </Text>
-              <Feather name="arrow-right" size={22} color={tokens.action.primaryText} />
+              <Ionicons name="arrow-forward" size={22} color={tokens.action.primaryText} />
             </Pressable>
           </View>
         </View>

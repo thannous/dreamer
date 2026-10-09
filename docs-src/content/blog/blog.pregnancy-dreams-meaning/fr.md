@@ -5,7 +5,7 @@
   "lang": "fr",
   "slug": "reves-de-grossesse",
   "title": "Rêves de grossesse : signification complète | Noctalia",
-  "description": "Que signifient les rêves de grossesse ou de bébé ? Découvrez leur symbolisme profond même si vous n'attendez pas d'enfant.",
+  "description": "Rêver d'être enceinte, d'accoucher ou qu'une proche attend un bébé : ce qu'un rêve de grossesse peut signifier, ce qu'en dit la recherche et quoi noter.",
   "robots": "max-image-preview:large",
   "themeColor": "#0a0514",
   "htmlClass": "scroll-smooth blog-article",
@@ -14,24 +14,24 @@
   "mainClass": "pt-32 pb-20 px-4",
   "ogType": "article",
   "ogTitle": "Rêves de grossesse : signification complète | Noctalia",
-  "ogDescription": "Découvrez leur symbolisme profond même sans être enceinte.",
+  "ogDescription": "Enceinte en rêve, mais pas dans la vie ? Ce que le rêve de grossesse peut signifier, et ce que la recherche dit des rêves pendant la grossesse.",
   "ogImage": "https://noctalia.app/img/blog/pregnancy-dreams-meaning.webp",
   "ogImageAlt": "Symbolisme de la renaissance et des nouveaux départs dans les rêves",
   "twitterCard": "summary_large_image",
   "twitterTitle": "Rêves de grossesse : signification complète | Noctalia",
-  "twitterDescription": "Le symbolisme profond des rêves de grossesse.",
+  "twitterDescription": "Rêver d'être enceinte : ce que le rêve peut raconter, et quoi noter au réveil.",
   "twitterImage": "https://noctalia.app/img/blog/pregnancy-dreams-meaning.webp",
   "twitterImageAlt": "Symbolisme de la renaissance et des nouveaux départs dans les rêves",
   "publishedTime": "2025-12-11",
-  "modifiedTime": "2026-01-06",
+  "modifiedTime": "2026-10-09",
   "author": "Thanh Chau",
   "prevPath": "/fr/blog/reves-ex-partenaire",
   "nextPath": "/fr/blog/guide-cauchemars",
   "preloadImage": "/img/blog/pregnancy-dreams-meaning.webp",
   "jsonLd": [
-    "{\n            \"@context\": \"https://schema.org\",\n            \"@type\": \"BlogPosting\",\n            \"headline\": \"Rêves de Grossesse : Ce Qu'ils Signifient (Même Si Vous N'Êtes Pas Enceinte)\",\n            \"description\": \"Que signifient les rêves de grossesse ? Découvrez pourquoi vous rêvez d'être enceinte, d'accoucher ou de bébés.\",\n            \"image\": {\n                \"@type\": \"ImageObject\",\n                \"url\": \"https://noctalia.app/img/blog/pregnancy-dreams-meaning.webp\",\n                \"width\": 1200,\n                \"height\": 630\n            },\n            \"author\": [\n                {\n                    \"@type\": \"Person\",\n                    \"@id\": \"https://noctalia.app/fr/a-propos#person\",\n                    \"name\": \"Thanh Chau\",\n                    \"jobTitle\": \"Founder & Publication Director\",\n                    \"url\": \"https://noctalia.app/fr/a-propos\",\n                    \"worksFor\": {\n                        \"@type\": \"Organization\",\n                        \"@id\": \"https://noctalia.app/#organization\",\n                        \"name\": \"Noctalia\",\n                        \"url\": \"https://noctalia.app\"\n                    }\n                },\n                {\n                    \"@type\": \"Organization\",\n                    \"@id\": \"https://noctalia.app/#organization\",\n                    \"name\": \"Noctalia\",\n                    \"url\": \"https://noctalia.app\",\n                    \"logo\": {\n                        \"@type\": \"ImageObject\",\n                        \"url\": \"https://noctalia.app/logo/logo_noctalia.png\"\n                    }\n                }\n            ],\n            \"publisher\": {\n                \"@type\": \"Organization\",\n                \"name\": \"Noctalia\",\n                \"url\": \"https://noctalia.app\",\n                \"logo\": {\n                    \"@type\": \"ImageObject\",\n                    \"url\": \"https://noctalia.app/logo/logo_noctalia.png\"\n                }\n            },\n            \"datePublished\": \"2025-12-11\",\n            \"dateModified\": \"2026-01-06\",\n            \"mainEntityOfPage\": {\n                \"@type\": \"WebPage\",\n                \"@id\": \"https://noctalia.app/fr/blog/reves-de-grossesse\"\n            },\n            \"inLanguage\": \"fr\",\n            \"isAccessibleForFree\": true,\n            \"wordCount\": 1049,\n            \"timeRequired\": \"PT4M\",\n            \"url\": \"https://noctalia.app/fr/blog/reves-de-grossesse\"\n        }",
-    "{\n            \"@context\": \"https://schema.org\",\n            \"@type\": \"FAQPage\",\n            \"mainEntity\": [\n                {\n                    \"@type\": \"Question\",\n                    \"name\": \"Que signifie rêver d'être enceinte ?\",\n                    \"acceptedAnswer\": { \"@type\": \"Answer\", \"text\": \"Les rêves de grossesse symbolisent souvent quelque chose de nouveau qui se développe dans votre vie - un projet créatif, une idée, une relation ou une croissance personnelle. Ils représentent la gestation des possibilités, pas nécessairement une grossesse littérale. Le rêve reflète quelque chose que vous nourrissez et préparez à 'mettre au monde'.\" }\n                },\n                {\n                    \"@type\": \"Question\",\n                    \"name\": \"Pourquoi je rêve de grossesse alors que je ne suis pas enceinte ?\",\n                    \"acceptedAnswer\": { \"@type\": \"Answer\", \"text\": \"Les personnes non enceintes rêvent couramment de grossesse car ces rêves symbolisent la création, les nouveaux départs et la transformation. Vous commencez peut-être un nouveau travail, projet ou phase de vie. Votre subconscient utilise l'imagerie de la grossesse pour représenter tout ce que vous développez ou nourrissez.\" }\n                },\n                {\n                    \"@type\": \"Question\",\n                    \"name\": \"Les rêves de grossesse prédisent-ils une vraie grossesse ?\",\n                    \"acceptedAnswer\": { \"@type\": \"Answer\", \"text\": \"Bien que certaines personnes rapportent des rêves de grossesse avant de découvrir qu'elles sont enceintes, la plupart des rêves de grossesse sont symboliques plutôt que prédictifs. Ils représentent généralement des projets créatifs, de nouveaux départs ou un développement personnel plutôt qu'une grossesse littérale.\" }\n                }\n            ]\n        }",
-    "{\n    \"@context\": \"https://schema.org\",\n    \"@type\": \"BreadcrumbList\",\n    \"itemListElement\": [\n        {\n            \"@type\": \"ListItem\",\n            \"position\": 1,\n            \"name\": \"Accueil\",\n            \"item\": \"https://noctalia.app/fr/\"\n        },\n        {\n            \"@type\": \"ListItem\",\n            \"position\": 2,\n            \"name\": \"Ressources\",\n            \"item\": \"https://noctalia.app/fr/blog/\"\n        },\n        {\n            \"@type\": \"ListItem\",\n            \"position\": 3,\n            \"name\": \"Rêves de Grossesse\",\n            \"item\": \"https://noctalia.app/fr/blog/reves-de-grossesse\"\n        }\n    ]\n}"
+    "{\n    \"@context\": \"https://schema.org\",\n    \"@type\": \"BlogPosting\",\n    \"headline\": \"Rêves de grossesse : ce qu'ils peuvent signifier, même si vous n'êtes pas enceinte\",\n    \"description\": \"Rêver d'être enceinte, d'accoucher ou qu'une proche attend un bébé : ce qu'un rêve de grossesse peut signifier, ce qu'en dit la recherche et quoi noter.\",\n    \"image\": {\n        \"@type\": \"ImageObject\",\n        \"url\": \"https://noctalia.app/img/blog/pregnancy-dreams-meaning.webp\",\n        \"width\": 1200,\n        \"height\": 630\n    },\n    \"author\": [\n        {\n            \"@type\": \"Person\",\n            \"@id\": \"https://noctalia.app/fr/a-propos#person\",\n            \"name\": \"Thanh Chau\",\n            \"jobTitle\": \"Founder & Publication Director\",\n            \"url\": \"https://noctalia.app/fr/a-propos\",\n            \"worksFor\": {\n                \"@type\": \"Organization\",\n                \"@id\": \"https://noctalia.app/#organization\",\n                \"name\": \"Noctalia\",\n                \"url\": \"https://noctalia.app\"\n            }\n        },\n        {\n            \"@type\": \"Organization\",\n            \"@id\": \"https://noctalia.app/#organization\",\n            \"name\": \"Noctalia\",\n            \"url\": \"https://noctalia.app\",\n            \"logo\": {\n                \"@type\": \"ImageObject\",\n                \"url\": \"https://noctalia.app/logo/logo_noctalia.png\"\n            }\n        }\n    ],\n    \"publisher\": {\n        \"@type\": \"Organization\",\n        \"name\": \"Noctalia\",\n        \"url\": \"https://noctalia.app\",\n        \"logo\": {\n            \"@type\": \"ImageObject\",\n            \"url\": \"https://noctalia.app/logo/logo_noctalia.png\"\n        }\n    },\n    \"datePublished\": \"2025-12-11\",\n    \"dateModified\": \"2026-10-09\",\n    \"mainEntityOfPage\": {\n        \"@type\": \"WebPage\",\n        \"@id\": \"https://noctalia.app/fr/blog/reves-de-grossesse\"\n    },\n    \"inLanguage\": \"fr\",\n    \"isAccessibleForFree\": true,\n    \"wordCount\": 2403,\n    \"timeRequired\": \"PT11M\",\n    \"url\": \"https://noctalia.app/fr/blog/reves-de-grossesse\"\n}",
+    "{\n    \"@context\": \"https://schema.org\",\n    \"@type\": \"FAQPage\",\n    \"mainEntity\": [\n        {\n            \"@type\": \"Question\",\n            \"name\": \"Que signifie rêver d'être enceinte ?\",\n            \"acceptedAnswer\": {\n                \"@type\": \"Answer\",\n                \"text\": \"Il n'y a pas de sens unique. Le rêve accompagne souvent quelque chose de nouveau ou qui mûrit dans votre vie : un projet, un rôle, une relation, un changement, ou la question d'avoir un enfant. Votre émotion dans le rêve et ce que vous vivez en ce moment sont les meilleurs indices.\"\n            }\n        },\n        {\n            \"@type\": \"Question\",\n            \"name\": \"Pourquoi je rêve de grossesse alors que je ne suis pas enceinte ?\",\n            \"acceptedAnswer\": {\n                \"@type\": \"Answer\",\n                \"text\": \"Les rêves empruntent leurs images à ce qui vous occupe. La grossesse est une image naturelle pour quelque chose qui prend du temps à grandir et change votre vie. Un nouveau poste, un projet ou une décision au sujet d'un enfant peuvent la faire revenir, que vous soyez un homme ou une femme.\"\n            }\n        },\n        {\n            \"@type\": \"Question\",\n            \"name\": \"Les rêves de grossesse prédisent-ils une vraie grossesse ?\",\n            \"acceptedAnswer\": {\n                \"@type\": \"Answer\",\n                \"text\": \"Non. Un rêve ne peut ni détecter ni annoncer une grossesse. Si vous pensez être enceinte, faites un test ou consultez un médecin.\"\n            }\n        },\n        {\n            \"@type\": \"Question\",\n            \"name\": \"Est-ce normal de faire des cauchemars pendant la grossesse ?\",\n            \"acceptedAnswer\": {\n                \"@type\": \"Answer\",\n                \"text\": \"Oui, les mauvais rêves et les cauchemars sont fréquents pendant la grossesse, surtout au troisième trimestre, et ils ne prédisent rien sur le bébé. S'ils abîment votre sommeil, reviennent sans cesse ou vous laissent anxieuse dans la journée, parlez-en à votre sage-femme ou à votre médecin.\"\n            }\n        }\n    ]\n}",
+    "{\n    \"@context\": \"https://schema.org\",\n    \"@type\": \"BreadcrumbList\",\n    \"itemListElement\": [\n        {\n            \"@type\": \"ListItem\",\n            \"position\": 1,\n            \"name\": \"Accueil\",\n            \"item\": \"https://noctalia.app/fr/\"\n        },\n        {\n            \"@type\": \"ListItem\",\n            \"position\": 2,\n            \"name\": \"Ressources\",\n            \"item\": \"https://noctalia.app/fr/blog/\"\n        },\n        {\n            \"@type\": \"ListItem\",\n            \"position\": 3,\n            \"name\": \"Rêves de grossesse\",\n            \"item\": \"https://noctalia.app/fr/blog/reves-de-grossesse\"\n        }\n    ]\n}"
   ],
   "activeNav": "resources"
 }
@@ -50,7 +50,7 @@
 </li>
 <li class="text-purple-400">/</li>
 <li itemprop="itemListElement" itemscope="" itemtype="https://schema.org/ListItem">
-<span class="text-dream-cream" itemprop="name">Rêves de Grossesse</span>
+<span class="text-dream-cream" itemprop="name">Rêves de grossesse</span>
 <meta content="3" itemprop="position">
 </li>
 </ol>
@@ -61,13 +61,13 @@
 <a class="text-xs font-mono text-purple-200/70 border border-white/10 rounded-full px-3 py-1 hover:text-white hover:border-dream-salmon/30 transition-colors" href="signification-des-reves">Thématique : Signification des rêves</a>
 <span aria-hidden="true" class="w-full sm:hidden"></span>
 <span class="text-sm text-purple-300/60">Publié le 11 décembre 2025</span>
-<span class="text-sm text-purple-300/60">4 min de lecture</span>
+<span class="text-sm text-purple-300/60">11 min de lecture</span>
 </div>
 <h1 class="font-serif text-3xl md:text-5xl mb-6 text-transparent bg-clip-text bg-gradient-to-b from-white via-dream-lavender to-purple-400/50 leading-tight">
-                    Rêves de Grossesse : Ce Qu'ils Signifient (Même Si Vous N'Êtes Pas Enceinte)
+                    Rêves de grossesse : ce qu'ils peuvent signifier, même si vous n'êtes pas enceinte
                 </h1>
 <p class="text-lg text-purple-200/80 leading-relaxed">
-                    Vous regardez vers le bas et voyez un ventre qui s'arrondit. Ou peut-être êtes-vous en travail, tenant un nouveau-né, ou découvrant que vous êtes enceinte de manière inattendue. Ces rêves peuvent sembler profondément significatifs - ou très déroutants, surtout si la <a class="text-dream-salmon hover:underline" href="../symboles/grossesse">grossesse</a> n'est pas dans vos projets. Les rêves de grossesse sont parmi les expériences oniriques les plus riches en symboles. Explorons ce que votre subconscient est vraiment en <a class="text-dream-salmon hover:underline" href="../symboles/train">train</a> de créer.
+                    Votre main se pose sur un ventre rond qui n'existait pas la veille. Ou vous êtes en salle d'accouchement, un nouveau-né dans les bras, avec la certitude qu'il est le vôtre. Puis vous vous réveillez : pas de grossesse, et parfois aucun projet d'enfant. Un rêve de <a class="text-dream-salmon hover:underline" href="../symboles/grossesse">grossesse</a> ressemble à une annonce. Le plus souvent, il met en image quelque chose qui grandit dans votre vie, ou une inquiétude à son sujet, et ce sont les détails qui permettent de faire la différence.
                 </p>
 </header>
 <!-- Author Byline (E-E-A-T) -->
@@ -82,50 +82,47 @@
 </div>
 <!-- Quick Answer (AI SEO) -->
 <section class="glass-panel rounded-2xl p-6 mb-8 border border-dream-salmon/20 bg-white/5" aria-labelledby="quick-answer-title">
-    <h2 id="quick-answer-title" class="font-serif text-xl text-dream-cream mb-3">En bref</h2>
-    <p class="text-purple-100/80 leading-relaxed">Les rêves de grossesse comptent parmi les thèmes oniriques les plus fréquents et surviennent indépendamment du sexe ou d'une grossesse réelle. En psychologie du rêve, la grossesse symbolise la créativité, les nouveaux départs et l'épanouissement personnel. Chez les personnes réellement enceintes, les changements hormonaux et les perturbations du sommeil augmentent la vivacité et la fréquence des rêves. Les scénarios les plus courants incluent accoucher (émergence de nouveaux projets ou idées), être enceinte de manière inattendue (anxiété face au changement) ou voir quelqu'un d'autre enceinte (qualités en développement chez cette personne ou en soi).</p>
+    <h2 id="quick-answer-title" class="font-serif text-xl text-dream-cream mb-3">Réponse rapide</h2>
+    <p class="text-purple-100/80 leading-relaxed">Rêver d'être enceinte ne veut pas dire que vous l'êtes, et ce rêve n'annonce pas de grossesse. En dehors d'une grossesse, l'image accompagne souvent quelque chose qui commence ou qui mûrit : un projet, un nouveau rôle, une relation, un changement que vous préparez, ou la question d'avoir un enfant. Pendant une grossesse, les rêves intenses et les cauchemars sont fréquents, notamment parce que le sommeil est plus morcelé. Votre émotion dans le rêve est le meilleur indice pour choisir la bonne piste.</p>
 </section>
 <figure class="mb-12 rounded-2xl overflow-hidden">
 <img alt="Symbolisme de la renaissance et des nouveaux départs dans les rêves" class="w-full h-auto" fetchpriority="high" height="630" loading="eager" sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 33vw" src="../../img/blog/pregnancy-dreams-meaning.webp" srcset="../../img/blog/pregnancy-dreams-meaning-480w.webp 480w, ../../img/blog/pregnancy-dreams-meaning-800w.webp 800w, ../../img/blog/pregnancy-dreams-meaning-1200w.webp 1200w" width="1200">
 </figure>
 <nav class="glass-panel rounded-2xl p-6 mb-12">
 <h2 class="font-serif text-lg text-dream-cream mb-4 flex items-center gap-2">
-<i class="w-5 h-5 text-dream-salmon" data-lucide="list"></i> Table des matières
+<i class="w-5 h-5 text-dream-salmon" data-lucide="list"></i> Sommaire
                 </h2>
 <ol class="space-y-2 text-sm text-purple-200/70">
-<li><a class="toc-link block" href="#symbolisme">1. Rêve de grossesse : symbolisme et signification profonde</a></li>
-<li><a class="toc-link block" href="#scénarios">2. Scénarios courants des rêves de grossesse et leur interprétation</a></li>
-<li><a class="toc-link block" href="#significations">3. Signification des rêves de grossesse : ce qu'ils révèlent</a></li>
-<li><a class="toc-link block" href="#qui">4. Qui fait des rêves de grossesse : tous les profils concernés</a></li>
-<li><a class="toc-link block" href="#vraie">5. Rêves de grossesse pendant une vraie grossesse</a></li>
-<li><a class="toc-link block" href="#action">6. Comment interpréter et travailler avec les rêves de grossesse</a></li>
+<li><a class="toc-link block" href="#symbolisme">1. Pourquoi rêver d'être enceinte sans l'être ?</a></li>
+<li><a class="toc-link block" href="#scénarios">2. Que s'est-il passé dans votre rêve ?</a></li>
+<li><a class="toc-link block" href="#significations">3. Cinq façons de lire un rêve de grossesse</a></li>
+<li><a class="toc-link block" href="#qui">4. Qui fait des rêves de grossesse ?</a></li>
+<li><a class="toc-link block" href="#vraie">5. Rêver pendant la grossesse : ce que montre la recherche</a></li>
+<li><a class="toc-link block" href="#action">6. Que faire après un rêve de grossesse ?</a></li>
 </ol>
 </nav>
 <div class="prose max-w-none text-gray-300">
-<h2 id="symbolisme">Rêve de grossesse : symbolisme et signification profonde</h2>
+<h2 id="symbolisme">Pourquoi rêver d'être enceinte sans l'être ?</h2>
 <p>
-                    Dans le symbolisme des rêves, la grossesse signifie rarement une grossesse littérale. Au lieu de cela, elle représente l'une des métaphores les plus puissantes que nous ayons : <strong>la création, le développement et la mise au monde de quelque chose de nouveau</strong>.
-                </p>
+Un rêve annonce rarement un événement réel. Il emprunte ses images à ce qui vous occupe déjà. Des chercheurs comme G. William Domhoff parlent de continuité entre le rêve et la vie éveillée : les personnes, les projets et les soucis de vos journées reviennent la nuit, souvent grossis ou déguisés.
+</p>
 <p>
-                    Pensez à ce qu'implique la grossesse : nourrir quelque chose qui grandit, anticiper une nouvelle arrivée, et vous transformer vous-même dans le processus. Ces thèmes s'appliquent à d'innombrables situations de vie au-delà d'avoir un <a class="text-dream-salmon hover:underline" href="../symboles/bebe">bébé</a>.
-                </p>
-<p>
-                    Ces rêves apparaissent souvent quand vous :
-                </p>
+La grossesse se prête bien à ce jeu. Quelque chose grandit sans se voir, prend du temps, transforme le corps et le quotidien, puis arrive, que l'on se sente prêt ou non. Elle peut évoquer bien d'autres choses qu'un <a class="text-dream-salmon hover:underline" href="../symboles/bebe">bébé</a>. Ce rêve apparaît souvent quand vous :
+</p>
 <ul>
-<li><strong>Démarrez un projet créatif</strong> - un livre, une entreprise, une oeuvre d'art ou toute entreprise créative</li>
-<li><strong>Développez une nouvelle idée</strong> - quelque chose que vous nourrissez avant de partager avec le monde</li>
-<li><strong>Commencez une nouvelle phase de vie</strong> - changement de carrière, relation ou transformation personnelle</li>
-<li><strong>Grandissez personnellement</strong> - développant de nouveaux aspects de vous-même</li>
-<li><strong>Manifestez des objectifs</strong> - travaillant vers quelque chose qui ne s'est pas encore matérialise</li>
+<li><strong>Commencez quelque chose</strong> : un poste, une formation, une entreprise, un déménagement</li>
+<li><strong>Portez un projet</strong> que vous n'avez encore montré à personne : un livre, une candidature, un plan</li>
+<li><strong>Prenez une nouvelle responsabilité</strong>, pour une équipe, un parent, un foyer</li>
+<li><strong>Vous posez la question d'un enfant</strong>, pour en avoir ou pour ne pas en avoir</li>
+<li><strong>Changez vous-même</strong>, d'une façon qui n'est pas encore aboutie</li>
 </ul>
 <p>
-                    En dehors d’une grossesse réelle, cette image peut aussi accompagner un nouveau projet, un nouveau rôle ou une nouvelle étape de vie. Le contexte de la personne compte davantage qu’une règle symbolique figée.
-                </p>
-<h2 id="scénarios">Scénarios courants des rêves de grossesse et leur interprétation</h2>
+Ce sont des pistes, pas des règles. Le même rêve peut être joyeux pour l'un et angoissant pour l'autre, et il ne dira pas la même chose aux deux.
+</p>
+<h2 id="scénarios">Que s'est-il passé dans votre rêve ?</h2>
 <p>
-                    Le scénario spécifique de grossesse fournit des indices sur la signification du rêve :
-                </p>
+Avant de chercher un sens, décrivez la scène. Ces variantes ne sont pas des définitions : ce sont des questions à confronter à ce que vous avez ressenti.
+</p>
 </div>
 <div class="grid md:grid-cols-2 gap-6 my-12">
 <div class="dream-card glass-panel rounded-xl p-6 border border-transparent">
@@ -133,22 +130,22 @@
 <div class="p-2 bg-dream-salmon/10 rounded-lg">
 <i class="w-5 h-5 text-dream-salmon" data-lucide="baby"></i>
 </div>
-<h3 class="font-serif text-lg text-dream-cream">Découvrir que vous êtes enceinte</h3>
+<h3 class="font-serif text-lg text-dream-cream">Apprendre que vous êtes enceinte</h3>
 </div>
 <p class="text-sm text-gray-300">
-                        Les rêves de découverte suggèrent une <strong>prise de conscience d'un nouveau potentiel</strong> dans votre vie. Quelque chose commence a se développer que vous reconnaissez seulement maintenant. Faites attention à ce que vous avez ressenti - excite, effraye, surpris ?
-                    </p>
+Un test positif, l'annonce d'un médecin, un ventre que vous remarquez soudain ? Ces rêves de découverte accompagnent souvent le moment où l'on comprend que <strong>quelque chose de nouveau a commencé</strong>. Joie, choc ou inquiétude ? Cette première réaction en dit plus que la nouvelle elle-même.
+</p>
 </div>
 <div class="dream-card glass-panel rounded-xl p-6 border border-transparent">
 <div class="flex items-center gap-3 mb-4">
 <div class="p-2 bg-dream-salmon/10 rounded-lg">
 <i class="w-5 h-5 text-dream-salmon" data-lucide="clock"></i>
 </div>
-<h3 class="font-serif text-lg text-dream-cream">Être très enceinte</h3>
+<h3 class="font-serif text-lg text-dream-cream">Être enceinte jusqu'aux yeux</h3>
 </div>
 <p class="text-sm text-gray-300">
-                        Être avancée dans la grossesse indique qu'un projet ou changement est <strong>presque prêt a se manifester</strong>. Quelque chose que vous développez approche de l'achèvement ou de la readiness à "naître".
-                    </p>
+Le pas lourd, le terme tout proche : la scène peut faire écho à quelque chose de <strong>presque prêt</strong>, ou à une échéance qui se rapproche. Le moment vous semblait-il venu, ou auriez-vous voulu plus de temps ?
+</p>
 </div>
 <div class="dream-card glass-panel rounded-xl p-6 border border-transparent">
 <div class="flex items-center gap-3 mb-4">
@@ -158,136 +155,150 @@
 <h3 class="font-serif text-lg text-dream-cream">Accoucher</h3>
 </div>
 <p class="text-sm text-gray-300">
-                        Les rêves de travail et d'accouchement représentent <strong>l'aboutissement de l'effort</strong> - mettre au monde quelque chose que vous avez développe. La facilite ou la difficulté de l'accouchement peut refléter comment vous anticipez la transition.
-                    </p>
+Une <a class="text-dream-salmon hover:underline" href="../symboles/naissance">naissance</a> fait passer quelque chose au grand jour. Un accouchement facile et un accouchement douloureux ne racontent pas la même histoire : le rêve peut refléter <strong>la façon dont vous imaginez un changement à venir</strong>. Qui était là, et où étiez-vous ?
+</p>
 </div>
 <div class="dream-card glass-panel rounded-xl p-6 border border-transparent">
 <div class="flex items-center gap-3 mb-4">
 <div class="p-2 bg-dream-salmon/10 rounded-lg">
 <i class="w-5 h-5 text-dream-salmon" data-lucide="alert-triangle"></i>
 </div>
-<h3 class="font-serif text-lg text-dream-cream">Complications de grossesse</h3>
+<h3 class="font-serif text-lg text-dream-cream">Complications ou fausse couche</h3>
 </div>
 <p class="text-sm text-gray-300">
-                        Les rêves de fausse couche ou de complications peuvent refléter <strong>l'anxiété qu'un projet échoue</strong> ou la peur que quelque chose que vous nourrissez ne se réalise pas. Ils peuvent aussi traiter des pertes passées.
-                    </p>
+Ces rêves sont durs au réveil. Ils accompagnent souvent la <strong>peur de perdre quelque chose de fragile</strong> : un projet, une relation, un espoir. Après une perte réelle, ils peuvent aussi raviver le chagrin. Ils ne prédisent rien sur une grossesse.
+</p>
 </div>
 <div class="dream-card glass-panel rounded-xl p-6 border border-transparent">
 <div class="flex items-center gap-3 mb-4">
 <div class="p-2 bg-dream-salmon/10 rounded-lg">
 <i class="w-5 h-5 text-dream-salmon" data-lucide="help-circle"></i>
 </div>
-<h3 class="font-serif text-lg text-dream-cream">Grossesse inattendue</h3>
+<h3 class="font-serif text-lg text-dream-cream">Une grossesse imprévue</h3>
 </div>
 <p class="text-sm text-gray-300">
-                        Les rêves de grossesse non planifiée peuvent indiquer <strong>quelque chose qui se développe dans votre vie que vous n'avez pas consciemment initie</strong>. Considérez ce qui grandit sans votre planification active.
-                    </p>
+Enceinte sans l'avoir prévu, parfois dans une situation impossible ? Le rêve peut faire écho à <strong>un changement que vous n'avez pas choisi</strong>, ou à une responsabilité arrivée trop tôt. Qu'est-ce qui a commencé dans votre vie sans vous demander votre avis ?
+</p>
 </div>
 <div class="dream-card glass-panel rounded-xl p-6 border border-transparent">
 <div class="flex items-center gap-3 mb-4">
 <div class="p-2 bg-dream-salmon/10 rounded-lg">
 <i class="w-5 h-5 text-dream-salmon" data-lucide="users"></i>
 </div>
-<h3 class="font-serif text-lg text-dream-cream">Quelqu'un d'autre enceinte</h3>
+<h3 class="font-serif text-lg text-dream-cream">Une autre personne enceinte</h3>
 </div>
 <p class="text-sm text-gray-300">
-                        Rêver de la grossesse d'une autre personne peut refléter <strong>sa croissance que vous observez</strong>, ou des aspects de vous-même représentes par cette personne qui se développent.
-                    </p>
+Une amie, une sœur, une collègue qui attend un bébé ? Le rêve peut parler de <strong>votre relation avec elle</strong>, d'un changement que vous percevez chez elle, ou d'une part de vous qu'elle vous rappelle. Ce n'est pas le signe qu'elle est enceinte.
+</p>
 </div>
 </div>
 <div class="prose max-w-none text-gray-300">
-<h2 id="significations">Signification des rêves de grossesse : ce qu'ils révèlent</h2>
-<h3>1. Rêve de grossesse et gestation créative</h3>
+<h2 id="significations">Cinq façons de lire un rêve de grossesse</h2>
 <p>
-                    La signification la plus courante : <strong>vous développez quelque chose de créatif</strong>. Cela pourrait être de l'art, de l'écriture, de la musique, une idée d'entreprise ou tout projet qui nécessite d'être nourri avant d'être prêt à partager avec le monde. La grossesse représente la période d'incubation.
-                </p>
-<h3>2. Rêver d'être enceinte et transformation personnelle</h3>
+Aucune liste ne peut dire pourquoi <em>vous</em> avez fait ce rêve. Ces lectures reviennent souvent quand on compare le rêve à ce que l'on vit au même moment. Gardez celle qui vous parle, laissez les autres.
+</p>
+<h3>1. Un projet en gestation</h3>
 <p>
-                    Ces rêves apparaissent souvent pendant les périodes de <strong>croissance personnelle significative</strong>. Vous êtes "enceinte" d'une nouvelle version de vous-même - développant de nouveaux traits, croyances ou façons d'être qui ne se sont pas encore pleinement manifestés.
-                </p>
-<h3>3. Rêve de grossesse et nouveaux départs</h3>
+La grossesse comme incubation : un <strong>projet qui demande du temps</strong> avant de pouvoir être montré. Si le rêve revient pendant que vous écrivez, construisez ou préparez quelque chose, le lien mérite d'être noté. Quel projet portez-vous en ce moment ?
+</p>
+<h3>2. Un changement intérieur</h3>
 <p>
-                    Commencer quelque chose de nouveau - un emploi, une relation, un chapitre de vie - peut déclencher des rêves de grossesse. Le rêve reconnaît que <strong>quelque chose commence qui va grandir et se développer</strong> au fil du temps.
-                </p>
-<h3>4. Rêver de bébé et anxiété face aux responsabilités</h3>
+Certaines personnes font ce rêve pendant une période de <strong>transformation personnelle</strong> : prendre confiance, quitter un ancien rôle, en investir un nouveau. Qu'est-ce qui a changé chez vous depuis un an ?
+</p>
+<h3>3. Un nouveau départ</h3>
 <p>
-                    Pour certains, les rêves de grossesse reflètent <strong>l'anxiété face aux nouvelles responsabilités</strong>. Comme attendre un <a class="text-dream-salmon hover:underline" href="../symboles/enfant">enfant</a>, vous pouvez ressentir le poids de quelque chose qui nécessitera vos soins et votre attention.
-                </p>
-<h3>5. Signification du rêve de grossesse et désir de création</h3>
+Un nouveau travail, une nouvelle relation, une nouvelle ville. Le rêve peut accompagner l'<strong>incertitude d'un début</strong>, quand quelque chose a commencé sans que vous sachiez encore ce que cela deviendra.
+</p>
+<h3>4. Le poids d'une responsabilité</h3>
 <p>
-                    Ces rêves peuvent exprimer un <strong>désir profond de créer quelque chose de significatif</strong> - que ce soit une famille, une oeuvre artistique ou un héritage. Ils peuvent faire surface quand vous contemplez ce que vous voulez mettre au monde.
-                </p>
+Comme l'arrivée d'un <a class="text-dream-salmon hover:underline" href="../symboles/enfant">enfant</a>, un nouvel engagement demande du soin et de l'attention. Si le rêve était lourd, demandez-vous <strong>ce que vous craignez de ne pas assumer</strong>, et si vous avez le soutien qu'il vous faut.
+</p>
+<h3>5. La question de l'enfant</h3>
+<p>
+Parfois, la lecture la plus simple est la bonne. Si vous essayez d'avoir un enfant, si vous hésitez ou si vous avez décidé de ne pas en avoir, le rêve peut tout simplement <strong>rejouer une question qui compte pour vous</strong>. Il ne vous dit pas quoi décider, ni ce que fait votre corps.
+</p>
+<h3 id="exemple-journal">Exemple de journal de rêve</h3>
+<p><strong>Exemple fictif :</strong> il montre comment séparer ce qui s'est passé dans le rêve d'un lien possible avec la journée.</p>
+<ul>
+<li><strong>Rêve :</strong> « J'étais enceinte de huit mois, à mon bureau. Ma responsable me tendait dossier sur dossier, et j'avais peur que le bébé arrive avant que j'aie fini. »</li>
+<li><strong>Émotion :</strong> « De la fierté au début, puis la panique. Réveillée le cœur battant. »</li>
+<li><strong>Contexte récent :</strong> « On lance un nouveau service au travail le mois prochain. Je ne suis pas enceinte et je n'ai pas de projet de bébé. »</li>
+<li><strong>Question à garder :</strong> « Ce rêve revient-il quand une échéance approche, ou aussi les semaines calmes ? »</li>
+</ul>
+<p>Une seule entrée ne prouve rien. En notant les mêmes éléments sur plusieurs nuits, vous verrez si la piste du travail tient, ou si autre chose se joue.</p>
+<!-- CTA inline -->
 <aside class="glass-panel rounded-2xl p-6 my-8 border border-dream-salmon/20">
 <div class="flex items-start gap-4">
 <div class="p-3 bg-dream-salmon/10 rounded-xl">
 <i class="w-6 h-6 text-dream-salmon" data-lucide="sparkles"></i>
 </div>
 <div>
-<h4 class="font-serif text-lg text-dream-cream mb-2">Comprenez vos rêves créatifs</h4>
-<p class="text-sm text-gray-400 mb-4">Noctalia analyse vos rêves de grossesse - le stade de la grossesse, vos émotions et les détails du rêve - pour révéler ce que vous nourrissez vraiment dans votre vie.</p>
+<h4 class="font-serif text-lg text-dream-cream mb-2">Notez le rêve avant qu'il ne s'efface</h4>
+<p class="text-sm text-gray-400 mb-4">Dans Noctalia, racontez votre rêve à voix haute ou écrivez-le dès le réveil. Il est transcrit, rangé dans votre journal, et vous pouvez relire vos rêves de grossesse côte à côte pour voir ce qui revient.</p>
 <a class="inline-flex items-center gap-2 text-sm text-dream-salmon hover:text-dream-salmonLight transition-colors" href="/fr/">
-                                Essayer Noctalia Gratuitement <i class="w-4 h-4" data-lucide="arrow-right"></i>
+                                Essayer Noctalia gratuitement <i class="w-4 h-4" data-lucide="arrow-right"></i>
 </a>
 </div>
 </div>
 </aside>
-<h2 id="qui">Qui fait des rêves de grossesse : tous les profils concernés</h2>
-<h3>Rêve de grossesse chez les personnes de tous genres</h3>
+<h2 id="qui">Qui fait des rêves de grossesse ?</h2>
+<h3>Les hommes, et toutes les personnes qui ne peuvent pas être enceintes</h3>
 <p>
-<strong>Les hommes et les personnes non-binaires font aussi des rêves de grossesse</strong>. Puisque ces rêves sont symboliques de création et de développement, ils ne sont pas limites par la biologie. Un homme rêvant d'être enceint peut nourrir une idée d'entreprise ou développer un nouvel aspect de lui-même.
-                </p>
+Rien, dans un rêve, n'exige un corps capable de porter un enfant. Un homme peut rêver qu'il est enceint, comme n'importe qui, quel que soit son genre. L'image fonctionne de la même façon : quelque chose que l'on porte, quelque chose qui va arriver.
+</p>
 <h3>Rêver d'être enceinte sans vouloir d'enfant</h3>
 <p>
-                    Les personnes qui ne veulent pas d'enfants ou ne peuvent pas en avoir font quand même des rêves de grossesse. Le symbolisme reste le même : <strong>création, développement et nouveaux départs</strong> sans rapport avec la parentalité littérale.
-                </p>
-<h3>Rêve de grossesse chez les personnes en transition</h3>
+Ce rêve ne trahit pas un désir caché de bébé. Il peut parler de tout autre chose, ou faire écho aux questions que l'entourage vous pose. <strong>Votre réaction dans le rêve</strong> en dit plus que l'image.
+</p>
+<h3>Quand on essaie d'avoir un enfant</h3>
 <p>
-                    Ceux qui changent de carrière, les diplômes, ceux qui créent des entreprises, les personnes dans de nouvelles relations - <strong>toute personne traversant des transitions de vie significatives</strong> peut vivre des rêves de grossesse alors que leur subconscient traite le développement.
-                </p>
-<h3>Rêves de bébé chez les professionnels créatifs</h3>
+Pendant un projet de grossesse, ces rêves peuvent être doux ou douloureux, surtout après un test négatif. Ils montrent combien l'espoir est présent. Ils ne signifient pas que la grossesse a commencé, ni qu'elle n'arrivera pas : seul un test peut vous le dire.
+</p>
+<h3>Après une perte de grossesse</h3>
 <p>
-                    Les écrivains, artistes, entrepreneurs et autres créatifs rapportent souvent des rêves de grossesse pendant les <strong>périodes créatives actives</strong>. Les rêves reflètent la gestation de leur travail.
-                </p>
-<h2 id="vraie">Rêves de grossesse pendant une vraie grossesse : signification spécifique</h2>
+Après une fausse couche ou un accouchement difficile, les rêves de grossesse peuvent revenir pendant un temps. Ils peuvent faire partie du deuil. S'ils vous empêchent de dormir ou vous laissent en détresse, en parler à votre médecin, à votre sage-femme ou à un psychologue peut aider.
+</p>
+<h2 id="vraie">Rêver pendant la grossesse : ce que montre la recherche</h2>
 <p>
-                    Si vous êtes réellement enceinte, les rêves prennent des dimensions supplémentaires :
-                </p>
-<h3>Rappel des rêves accru pendant la grossesse</h3>
+Si vous êtes enceinte, les rêves intenses et les cauchemars sont fréquents, selon la <a class="text-dream-salmon hover:underline" href="https://www.sleepfoundation.org/pregnancy/how-pregnancy-affects-dreams" rel="nofollow noopener noreferrer" target="_blank">Sleep Foundation</a>. Le sommeil est plus morcelé, et se réveiller au milieu d'un rêve aide à s'en souvenir.
+</p>
+<h3>Bébés, accouchement et devenir mère</h3>
 <p>
-                    Les personnes enceintes rapportent souvent des <strong>rêves plus vivides et un meilleur rappel</strong>. Les changements hormonaux, le sommeil interrompu et les émotions accrues contribuent tous à des rêves plus mémorables.
-                </p>
-<h3>Rêver de bébé et traitement des anxiétés maternelles</h3>
+Dans une étude de Lara-Carrasco et ses collègues (2013), des femmes au troisième trimestre ont tenu un journal de rêves pendant deux semaines. Par rapport à des femmes non enceintes, elles rêvaient plus souvent de bébés, d'elles-mêmes en <a class="text-dream-salmon hover:underline" href="../symboles/mere">mère</a>, de grossesse et d'accouchement. Leurs rêves contenaient aussi plus d'images inquiétantes. Les auteurs y voient le reflet d'un travail propre à la grossesse : se représenter en mère et se faire une image du bébé.
+</p>
+<h3>Plus de mauvais rêves au troisième trimestre</h3>
 <p>
-                    Pendant la grossesse, les rêves traitent fréquemment les <strong>peurs et anxiétés concernant la parentalité</strong>, l'accouchement et les changements à venir. C'est un traitement émotionnel normal et sain.
-                </p>
-<h3>Thèmes courants des rêves de grossesse pendant l'attente</h3>
+Une seconde étude de la même équipe (2014) montre que les femmes enceintes au troisième trimestre se souviennent de plus de mauvais rêves et de cauchemars que les femmes non enceintes. L'appréhension de l'accouchement et des réveils nocturnes plus fréquents y contribuent probablement. Un rêve effrayant au sujet du bébé n'est pas un avertissement sur sa santé.
+</p>
+<h3>Après la naissance</h3>
 <p>
-                    Les personnes enceintes rêvent couramment du : genre ou de l'apparence du bébé, de <strong>scénarios de travail et d'accouchement</strong>, de prendre soin du nouveau-né, et parfois de scénarios angoissants qui reflètent des anxiétés sous-jacentes.
-                </p>
+Tore Nielsen et Tyna Paquette (2007) ont comparé des femmes enceintes, de jeunes mères et des femmes n'ayant jamais été enceintes. Les rêves où figure le bébé étaient fréquents dans les deux premiers groupes. Les jeunes mères rêvaient plus souvent que le bébé était en danger, et bougeaient plus souvent pendant ces rêves. Beaucoup se réveillaient anxieuses ou confuses, avec le besoin d'aller vérifier que le bébé allait bien. Savoir que c'est courant peut rendre ces nuits moins alarmantes.
+</p>
+<h3>Quand en parler</h3>
 <p>
-                    Pendant la grossesse, les rêves peuvent refléter des préoccupations pratiques, des attentes et des émotions liées à l’accouchement ou aux soins du bébé. Ils ne prédisent pas le déroulement de la grossesse.
-                </p>
-<h2 id="action">Comment interpréter et travailler avec les rêves de grossesse</h2>
-<h3>1. Identifiez ce qui se développe dans votre vie</h3>
+Parlez-en à votre sage-femme, à votre médecin ou à un psychologue si les cauchemars vous empêchent de dormir, si le même cauchemar revient, ou si vous vous sentez anxieuse ou déprimée dans la journée. Ces signes méritent de l'attention pendant la grossesse comme après la naissance, et des solutions existent. Notre <a class="text-dream-salmon hover:underline" href="guide-cauchemars">guide sur les cauchemars</a> présente des approches qui peuvent aider.
+</p>
+<h2 id="action">Que faire après un rêve de grossesse ?</h2>
+<h3>1. Notez la scène, puis l'émotion</h3>
 <p>
-                    Demandez-vous : <strong>Qu'est-ce que je nourris actuellement ?</strong> Quel projet, idée, relation ou aspect de vous-même est en développement ? Le rêve peut commenter cette croissance.
-                </p>
-<h3>2. Notez le stade de la grossesse dans le rêve</h3>
+Qui était enceinte, à quel stade, où étiez-vous, comment cela s'est-il terminé ? Ajoutez une ligne sur ce que vous avez ressenti. L'émotion relie souvent le rêve à votre journée plus clairement que l'image.
+</p>
+<h3>2. Demandez-vous ce qui grandit dans votre vie</h3>
 <p>
-                    Début de grossesse ? Proche de l'accouchement ? Le stade indique <strong>ou en est votre "projet"</strong>. Les premiers stades suggèrent de nouveaux débuts ; le travail suggère quelque chose sur le point de se manifester.
-                </p>
-<h3>3. Examinez vos émotions dans le rêve de grossesse</h3>
+<strong>Sur quoi est-ce que je travaille, qu'est-ce que j'attends, qu'est-ce qui m'inquiète ?</strong> Si une réponse vient vite, notez-la à côté du rêve. Sinon, laissez la question ouverte quelques nuits.
+</p>
+<h3>3. Lisez le stade comme une question, pas comme un calendrier</h3>
 <p>
-                    Comment vous sentiez-vous dans le rêve ? <strong>Joie, anxiété, surprise, peur ?</strong> Ces émotions révèlent vos sentiments sur ce qui se développe dans votre vie.
-                </p>
-<h3>4. Considérez le bébé comme symbole</h3>
+Un début de grossesse ou un accouchement ne fixe aucune échéance dans votre vie. Ils peuvent soulever une question : ce projet vous semble-t-il tout juste commencé, ou en retard depuis longtemps ?
+</p>
+<h3>4. Regardez le bébé, s'il y en avait un</h3>
 <p>
-                    S'il y à un bébé dans le rêve, a quoi ressemble-t-il ? <strong>Les caractéristiques du bébé</strong> peuvent représenter les qualités de ce que vous créez ou la version "bébé" d'un nouvel aspect de vous-même.
-                </p>
-<h3>5. Cherchez les messages de votre rêve de grossesse</h3>
+Le bébé était-il calme, en pleurs, étrange, oublié quelque part ? Ces détails peuvent refléter ce que vous ressentez face à ce que vous mettez au monde, ou simplement vos pensées sur un enfant bien réel.
+</p>
+<h3>5. Gardez le rêve à distance de la réalité</h3>
 <p>
-                    Qu'est-ce que le rêve semble vous dire ? Vous encourage-t-il a <strong>nourrir quelque chose plus attentivement</strong> ? A vous préparer pour l'arrivée de quelque chose ? À aborder des peurs concernant une nouvelle responsabilité ?
-                </p>
+Un rêve n'est pas un test de grossesse. Si vous pensez être enceinte, un test ou votre médecin vous le diront. Si vous l'êtes et qu'un rêve vous inquiète, parlez-en lors de votre prochain rendez-vous plutôt que d'y chercher un présage.
+</p>
 </div>
 <!-- Related Symbols Start -->
 <section aria-label="Symboles de rêves associés" class="mt-12 mb-8">
@@ -313,67 +324,80 @@
 <div class="w-16 h-16 bg-dream-salmon/10 rounded-full flex items-center justify-center mx-auto mb-6">
 <i class="w-8 h-8 text-dream-salmon" data-lucide="sparkle"></i>
 </div>
-<h3 class="font-serif text-2xl md:text-3xl mb-4 text-dream-cream">Découvrez ce que vous créez</h3>
+<h3 class="font-serif text-2xl md:text-3xl mb-4 text-dream-cream">Un rêve, c'est une scène. Plusieurs rêves, c'est une piste.</h3>
 <p class="text-purple-200/70 mb-6 max-w-lg mx-auto">
-                    Les rêves de grossesse révèlent les forces créatives à l'oeuvre dans votre vie. Enregistrez-les dans Noctalia et laissez l'analyse Noctalia éclairer ce que votre subconscient nourrit.
+                    Gardez vos rêves de grossesse dans Noctalia, avec ce que vous avez ressenti et ce qui se passait cette semaine-là. En les relisant côte à côte, vous verrez quand ils reviennent.
                 </p>
 <a class="inline-flex items-center gap-2 px-8 py-4 bg-dream-salmon text-dream-dark rounded-full font-bold hover:bg-dream-salmon/90 transition-colors" href="/fr/">
-                    Commencez à Explorer Vos Rêves <i class="w-5 h-5" data-lucide="arrow-right"></i>
+                    Commencer mon journal de rêves <i class="w-5 h-5" data-lucide="arrow-right"></i>
 </a>
 </aside>
+<!-- FAQ Section -->
 <section class="mt-16">
-<h2 class="font-serif text-2xl text-dream-cream mb-8">Questions Fréquemment Posées</h2>
+<h2 class="font-serif text-2xl text-dream-cream mb-8">Questions fréquentes</h2>
 <div class="space-y-4">
 <details class="glass-panel rounded-xl p-4 group cursor-pointer">
 <summary class="font-medium flex justify-between items-center text-dream-cream">
-                            Que signifie rêver d'être enceinte ?
+                            Que signifie rêver d'être enceinte ?
                             <i class="w-5 h-5 transition-transform group-open:rotate-180 text-dream-salmon" data-lucide="chevron-down"></i>
 </summary>
 <p class="mt-4 text-sm text-gray-400 leading-relaxed">
-                            Les rêves de grossesse symbolisent souvent quelque chose de nouveau qui se développe dans votre vie - un projet créatif, une idée, une relation ou une croissance personnelle. Ils représentent la gestation des possibilités, pas nécessairement une grossesse littérale.
+                            Il n'y a pas de sens unique. Le rêve accompagne souvent quelque chose de nouveau ou qui mûrit dans votre vie : un projet, un rôle, une relation, un changement, ou la question d'avoir un enfant. Votre émotion dans le rêve et ce que vous vivez en ce moment sont les meilleurs indices.
                         </p>
 </details>
 <details class="glass-panel rounded-xl p-4 group cursor-pointer">
 <summary class="font-medium flex justify-between items-center text-dream-cream">
-                            Pourquoi je rêve de grossesse alors que je ne suis pas enceinte ?
+                            Pourquoi je rêve de grossesse alors que je ne suis pas enceinte ?
                             <i class="w-5 h-5 transition-transform group-open:rotate-180 text-dream-salmon" data-lucide="chevron-down"></i>
 </summary>
 <p class="mt-4 text-sm text-gray-400 leading-relaxed">
-                            Les personnes non enceintes rêvent couramment de grossesse car ces rêves symbolisent la création, les nouveaux départs et la transformation. Vous commencez peut-être un nouveau travail, projet ou phase de vie.
+                            Les rêves empruntent leurs images à ce qui vous occupe. La grossesse est une image naturelle pour quelque chose qui prend du temps à grandir et change votre vie. Un nouveau poste, un projet ou une décision au sujet d'un enfant peuvent la faire revenir, que vous soyez un homme ou une femme.
                         </p>
 </details>
 <details class="glass-panel rounded-xl p-4 group cursor-pointer">
 <summary class="font-medium flex justify-between items-center text-dream-cream">
-                            Les rêves de grossesse prédisent-ils une vraie grossesse ?
+                            Les rêves de grossesse prédisent-ils une vraie grossesse ?
                             <i class="w-5 h-5 transition-transform group-open:rotate-180 text-dream-salmon" data-lucide="chevron-down"></i>
 </summary>
 <p class="mt-4 text-sm text-gray-400 leading-relaxed">
-                            Bien que certaines personnes rapportent des rêves de grossesse avant de découvrir qu'elles sont enceintes, la plupart des rêves de grossesse sont symboliques plutôt que prédictifs. Ils représentent généralement des projets créatifs ou un développement personnel.
+                            Non. Un rêve ne peut ni détecter ni annoncer une grossesse. Si vous pensez être enceinte, faites un test ou consultez un médecin.
+                        </p>
+</details>
+<details class="glass-panel rounded-xl p-4 group cursor-pointer">
+<summary class="font-medium flex justify-between items-center text-dream-cream">
+                            Est-ce normal de faire des cauchemars pendant la grossesse ?
+                            <i class="w-5 h-5 transition-transform group-open:rotate-180 text-dream-salmon" data-lucide="chevron-down"></i>
+</summary>
+<p class="mt-4 text-sm text-gray-400 leading-relaxed">
+                            Oui, les mauvais rêves et les cauchemars sont fréquents pendant la grossesse, surtout au troisième trimestre, et ils ne prédisent rien sur le bébé. S'ils abîment votre sommeil, reviennent sans cesse ou vous laissent anxieuse dans la journée, parlez-en à votre sage-femme ou à votre médecin.
                         </p>
 </details>
 </div>
 </section>
 <!-- Sources / Trust (TI-97) -->
 <section class="mt-16 glass-panel rounded-2xl p-6" id="sources">
-<h2 class="font-serif text-2xl text-dream-cream mb-4">Sources / Pour aller plus loin</h2>
+<h2 class="font-serif text-2xl text-dream-cream mb-4">Sources et lectures</h2>
 <ul class="mt-6 space-y-2 text-sm text-gray-400">
-<li><a href="https://dictionary.apa.org/dream" rel="nofollow noopener noreferrer" target="_blank">APA Dictionary of Psychology — Dream</a></li>
-<li><a href="https://dreamresearch.net/" rel="nofollow noopener noreferrer" target="_blank">DreamResearch.net — G. William Domhoff (dream research overview)</a></li>
+<li><a href="https://pubmed.ncbi.nlm.nih.gov/23986734/" rel="nofollow noopener noreferrer" target="_blank">Lara-Carrasco et al. (2013), « Maternal representations in the dreams of pregnant women: a prospective comparative study », <em>Frontiers in Psychology</em> (PubMed)</a></li>
+<li><a href="https://pubmed.ncbi.nlm.nih.gov/24780135/" rel="nofollow noopener noreferrer" target="_blank">Lara-Carrasco et al. (2014), « Disturbed dreaming during the third trimester of pregnancy » (PubMed)</a></li>
+<li><a href="https://doi.org/10.1093/sleep/30.9.1162" rel="nofollow noopener noreferrer" target="_blank">Nielsen et Paquette (2007), « Dream-associated behaviors affecting pregnant and postpartum women », <em>Sleep</em>, 30(9)</a></li>
+<li><a href="https://www.sleepfoundation.org/pregnancy/how-pregnancy-affects-dreams" rel="nofollow noopener noreferrer" target="_blank">Sleep Foundation, « How Pregnancy Affects Dreams »</a></li>
+<li><a href="https://dreamresearch.net/" rel="nofollow noopener noreferrer" target="_blank">DreamResearch.net, G. William Domhoff</a></li>
 </ul>
-<p class="mt-6 text-xs text-purple-200/60">Mis à jour le 26 décembre 2025</p>
+<p class="mt-6 text-xs text-purple-200/60">Mis à jour le 9 octobre 2026</p>
 </section>
 <section class="mt-16">
-<h2 class="font-serif text-2xl text-dream-cream mb-8">Articles Connexes</h2>
+<h2 class="font-serif text-2xl text-dream-cream mb-8">Articles connexes</h2>
 <div class="grid md:grid-cols-2 gap-6">
 <a class="glass-panel rounded-xl p-6 block hover:border-dream-salmon/30 transition-colors" href="reves-eau">
 <span class="text-xs text-dream-salmon uppercase mb-2 block">Interprétation</span>
-<h3 class="font-serif text-lg text-dream-cream mb-2">Signification des Rêves d'Eau</h3>
-<p class="text-sm text-gray-400">Que révèlent les rêves d'océan, de noyade et d'inondation sur vos émotions ?</p>
+<h3 class="font-serif text-lg text-dream-cream mb-2">Signification des rêves d'eau</h3>
+<p class="text-sm text-gray-400">Mer calme, noyade, inondation : ce que l'eau de vos rêves peut refléter de vos émotions.</p>
 </a>
 <a class="glass-panel rounded-xl p-6 block hover:border-dream-salmon/30 transition-colors" href="signification-reves-recurrents">
 <span class="text-xs text-dream-salmon uppercase mb-2 block">Interprétation</span>
-<h3 class="font-serif text-lg text-dream-cream mb-2">Signification des Rêves Récurrents</h3>
-<p class="text-sm text-gray-400">Pourquoi faites-vous toujours le même rêve ? Découvrez les messages cachés.</p>
+<h3 class="font-serif text-lg text-dream-cream mb-2">Signification des rêves récurrents</h3>
+<p class="text-sm text-gray-400">Pourquoi le même rêve revient, et comment le noter pour y voir plus clair.</p>
 </a>
 </div>
 </section>

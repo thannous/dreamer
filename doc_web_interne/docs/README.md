@@ -31,7 +31,8 @@ and `app.config.ts`. Meditation has its own package, lockfile and
 
 | Work | Start here | Command or prerequisite |
 | --- | --- | --- |
-| Choose checks and evolve contracts/tools | [Proportional validation](validation-proportionnee.md) | Current functional expectations, compatible measured upgrades, minimal evidence; tooling/functional PRs finish with `test:prepush` on a clean committed worktree. |
+| Write or rewrite site articles, symbols and guides | [Editorial charter](charte-editoriale.md) | Voice, sourcing, typography and SEO guardrails; then `docs:build` and `docs:check`. |
+| Choose checks and evolve contracts/tools | [Proportional validation](validation-proportionnee.md) | Current functional expectations, compatible measured upgrades, minimal evidence; every push runs the `pre-push` hook (`verify:fast`) on a clean committed worktree and the PR records that local proof. |
 | Web and native user journeys | [E2E guide](../../e2e/README.md) | `test:e2e:web`, `test:e2e:journeys`; the guide distinguishes simulated services and native requirements. |
 | TesterArmy Release qualification | [Current native retrospective qualification](qa/native-retro-qualification-20261006.md) | Exact passed-ID union, immutable reports/build receipts, owner decisions and retained physical/Store/video limits. |
 | Historical native qualification | [Initial native qualification, 2026-10-06](qa/native-testerarmy-qualification-20261006.md) | Preserved earlier source/build proofs; not a substitute for the current candidate. |
@@ -42,7 +43,7 @@ and `app.config.ts`. Meditation has its own package, lockfile and
 | Local Android build prerequisites | [Android tooling](../../scripts/README.md#local-android-prerequisites) | Java 17, Android SDK, local dependencies; requested native QA includes necessary isolated generation. `android:release:local -- --help` explains prebuild and install options. |
 | Android performance measurement | [Performance protocol](../../scripts/android/README-performance.md) | Pilot first, use the device lock and identify the installed binary. |
 | TalkBack qualification | [Motorola protocol](qualification-talkback.md) | Pilot the measurement method and restore device settings. |
-| CI routing and jobs | [CircleCI guide](circleci-migration.md) | `.circleci/config.yml`, `.circleci/continue.yml`, `.circleci/scripts/classify-changes.sh`. |
+| CI routing and jobs | [CircleCI guide](circleci-migration.md) | Manual trigger only (web app or API, `force_full_validation`); `.circleci/config.yml`, `.circleci/continue.yml`, `.circleci/scripts/classify-changes.sh`; full local validation for releases. |
 
 ## Find files before reading them
 

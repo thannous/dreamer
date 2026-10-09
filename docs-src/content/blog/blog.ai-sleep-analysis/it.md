@@ -5,7 +5,7 @@
   "lang": "it",
   "slug": "ia-analisi-sonno-sogni",
   "title": "L'IA che analizza il tuo sonno: la rivoluzione SleepFM | Noctalia",
-  "description": "Stanford pubblica SleepFM, un'IA che predice Parkinson e tumori da una singola notte di sonno.",
+  "description": "SleepFM, l'IA di Stanford, stima il rischio di 130 malattie da una notte di sonno. Che cosa misura questa analisi del sonno con l'IA e quali sono i limiti.",
   "robots": "max-image-preview:large",
   "themeColor": "#0a0514",
   "htmlClass": "scroll-smooth blog-article",
@@ -14,24 +14,24 @@
   "mainClass": "pt-32 pb-20 px-4",
   "ogType": "article",
   "ogTitle": "L'IA che analizza il tuo sonno: la rivoluzione SleepFM | Noctalia",
-  "ogDescription": "Stanford pubblica SleepFM, un'IA che predice Parkinson e tumori da una singola notte di sonno.",
+  "ogDescription": "Una notte in laboratorio, 130 malattie ordinate per rischio. Che cosa misura davvero l'IA SleepFM di Stanford, dove si ferma e perché non legge i tuoi sogni.",
   "ogImage": "https://noctalia.app/img/blog/ai-sleep-analysis-dreams.webp",
   "ogImageAlt": "Visualizzazione futuristica di segnali cerebrali analizzati dall'intelligenza artificiale durante il sonno",
   "twitterCard": "summary_large_image",
   "twitterTitle": "L'IA che analizza il tuo sonno: la rivoluzione SleepFM | Noctalia",
-  "twitterDescription": "Stanford pubblica SleepFM, un'IA che predice Parkinson e tumori da una singola notte di sonno.",
+  "twitterDescription": "L'IA SleepFM di Stanford stima il rischio di 130 malattie da una notte di sonno. Che cosa misura, i suoi limiti e che cosa può fare l'IA con i tuoi sogni.",
   "twitterImage": "https://noctalia.app/img/blog/ai-sleep-analysis-dreams.webp",
   "twitterImageAlt": "Visualizzazione futuristica di segnali cerebrali analizzati dall'intelligenza artificiale durante il sonno",
   "publishedTime": "2026-03-12",
-  "modifiedTime": "2026-03-12",
+  "modifiedTime": "2026-10-09",
   "author": "Thanh Chau",
   "prevPath": "/it/blog/giornata-sonno-ambiente-sogni",
   "nextPath": "/it/blog/controllare-sogni-risoluzione-problemi",
   "preloadImage": "/img/blog/ai-sleep-analysis-dreams.webp",
   "jsonLd": [
-    "{\n  \"@context\": \"https://schema.org\",\n  \"@type\": \"BlogPosting\",\n  \"headline\": \"L'IA che analizza il tuo sonno: la rivoluzione SleepFM di Stanford\",\n  \"description\": \"Stanford pubblica SleepFM, un'IA che predice Parkinson e tumori da una singola notte di sonno.\",\n  \"image\": {\n    \"@type\": \"ImageObject\",\n    \"url\": \"https://noctalia.app/img/blog/ai-sleep-analysis-dreams.webp\",\n    \"width\": 1200,\n    \"height\": 630\n  },\n  \"author\": [\n    {\n      \"@type\": \"Person\",\n      \"@id\": \"https://noctalia.app/it/chi-siamo#person\",\n      \"name\": \"Thanh Chau\",\n      \"jobTitle\": \"Fondatore e Direttore della pubblicazione\",\n      \"url\": \"https://noctalia.app/it/chi-siamo\",\n      \"worksFor\": {\n        \"@type\": \"Organization\",\n        \"@id\": \"https://noctalia.app/#organization\",\n        \"name\": \"Noctalia\",\n        \"url\": \"https://noctalia.app\"\n      }\n    },\n    {\n      \"@type\": \"Organization\",\n      \"@id\": \"https://noctalia.app/#organization\",\n      \"name\": \"Noctalia\",\n      \"url\": \"https://noctalia.app\",\n      \"logo\": {\n        \"@type\": \"ImageObject\",\n        \"url\": \"https://noctalia.app/logo/logo_noctalia.png\"\n      }\n    }\n  ],\n  \"publisher\": {\n    \"@type\": \"Organization\",\n    \"name\": \"Noctalia\",\n    \"url\": \"https://noctalia.app\",\n    \"logo\": {\n      \"@type\": \"ImageObject\",\n      \"url\": \"https://noctalia.app/logo/logo_noctalia.png\"\n    }\n  },\n  \"datePublished\": \"2026-03-12\",\n  \"dateModified\": \"2026-03-12\",\n  \"mainEntityOfPage\": {\n    \"@type\": \"WebPage\",\n    \"@id\": \"https://noctalia.app/it/blog/ia-analisi-sonno-sogni\"\n  },\n  \"inLanguage\": \"it\",\n  \"isAccessibleForFree\": true,\n  \"wordCount\": 1500,\n  \"timeRequired\": \"PT5M\",\n  \"url\": \"https://noctalia.app/it/blog/ia-analisi-sonno-sogni\"\n}",
+    "{\n    \"@context\": \"https://schema.org\",\n    \"@type\": \"BlogPosting\",\n    \"headline\": \"L'IA che analizza il tuo sonno: che cosa sa fare SleepFM di Stanford, e i suoi limiti\",\n    \"description\": \"SleepFM, l'IA di Stanford, stima il rischio di 130 malattie da una notte di sonno. Che cosa misura questa analisi del sonno con l'IA e quali sono i limiti.\",\n    \"image\": {\n        \"@type\": \"ImageObject\",\n        \"url\": \"https://noctalia.app/img/blog/ai-sleep-analysis-dreams.webp\",\n        \"width\": 1200,\n        \"height\": 630\n    },\n    \"author\": [\n        {\n            \"@type\": \"Person\",\n            \"@id\": \"https://noctalia.app/it/chi-siamo#person\",\n            \"name\": \"Thanh Chau\",\n            \"jobTitle\": \"Fondatore e Direttore della pubblicazione\",\n            \"url\": \"https://noctalia.app/it/chi-siamo\",\n            \"worksFor\": {\n                \"@type\": \"Organization\",\n                \"@id\": \"https://noctalia.app/#organization\",\n                \"name\": \"Noctalia\",\n                \"url\": \"https://noctalia.app\"\n            }\n        },\n        {\n            \"@type\": \"Organization\",\n            \"@id\": \"https://noctalia.app/#organization\",\n            \"name\": \"Noctalia\",\n            \"url\": \"https://noctalia.app\",\n            \"logo\": {\n                \"@type\": \"ImageObject\",\n                \"url\": \"https://noctalia.app/logo/logo_noctalia.png\"\n            }\n        }\n    ],\n    \"publisher\": {\n        \"@type\": \"Organization\",\n        \"name\": \"Noctalia\",\n        \"url\": \"https://noctalia.app\",\n        \"logo\": {\n            \"@type\": \"ImageObject\",\n            \"url\": \"https://noctalia.app/logo/logo_noctalia.png\"\n        }\n    },\n    \"datePublished\": \"2026-03-12\",\n    \"dateModified\": \"2026-10-09\",\n    \"mainEntityOfPage\": {\n        \"@type\": \"WebPage\",\n        \"@id\": \"https://noctalia.app/it/blog/ia-analisi-sonno-sogni\"\n    },\n    \"inLanguage\": \"it\",\n    \"isAccessibleForFree\": true,\n    \"wordCount\": 2040,\n    \"timeRequired\": \"PT10M\",\n    \"url\": \"https://noctalia.app/it/blog/ia-analisi-sonno-sogni\"\n}",
     "{\n  \"@context\": \"https://schema.org\",\n  \"@type\": \"WebPage\",\n  \"@id\": \"https://noctalia.app/it/blog/ia-analisi-sonno-sogni\",\n  \"url\": \"https://noctalia.app/it/blog/ia-analisi-sonno-sogni\",\n  \"name\": \"L'IA che analizza il tuo sonno: la rivoluzione SleepFM | Noctalia\",\n  \"inLanguage\": \"it\"\n}",
-    "{\n  \"@context\": \"https://schema.org\",\n  \"@type\": \"FAQPage\",\n  \"mainEntity\": [\n    {\n      \"@type\": \"Question\",\n      \"name\": \"SleepFM può sostituire un medico nella diagnosi delle malattie?\",\n      \"acceptedAnswer\": {\n        \"@type\": \"Answer\",\n        \"text\": \"No. SleepFM è uno strumento di screening, non un dispositivo diagnostico. Identifica segnali di allarme precoce nei dati del sonno che suggeriscono un rischio maggiore di determinate malattie. Qualsiasi risultato anomalo deve essere confermato attraverso test clinici approfonditi condotti da un professionista sanitario. L'IA integra il giudizio medico ma non lo sostituisce.\"\n      }\n    },\n    {\n      \"@type\": \"Question\",\n      \"name\": \"L'IA può analizzare il contenuto dei miei sogni?\",\n      \"acceptedAnswer\": {\n        \"@type\": \"Answer\",\n        \"text\": \"Sì. I modelli di elaborazione del linguaggio naturale (NLP) possono identificare temi, emozioni e schemi ricorrenti nelle narrazioni dei sogni. Noctalia utilizza l'IA per analizzare i sogni registrati con la voce, rilevare tendenze emotive e collegare i motivi onirici alle esperienze quotidiane, il tutto in un diario dei sogni privato e sicuro.\"\n      }\n    },\n    {\n      \"@type\": \"Question\",\n      \"name\": \"I miei dati del sonno sono al sicuro con gli strumenti di IA?\",\n      \"acceptedAnswer\": {\n        \"@type\": \"Answer\",\n        \"text\": \"La sicurezza dei dati del sonno dipende dallo strumento utilizzato. Le app attente alla privacy dovrebbero crittografare i dati in transito, archiviarli in modo sicuro, dichiarare i fornitori necessari ed evitare la vendita dei dati o la pubblicità mirata. La politica privacy di Noctalia segue questo approccio; gli strumenti di ricerca come SleepFM possono anonimizzare i dati prima dell'analisi. Verifica sempre la politica sulla privacy e le certificazioni di sicurezza di qualsiasi strumento prima di condividere i tuoi dati del sonno.\"\n      }\n    }\n  ]\n}",
+    "{\n    \"@context\": \"https://schema.org\",\n    \"@type\": \"FAQPage\",\n    \"mainEntity\": [\n        {\n            \"@type\": \"Question\",\n            \"name\": \"SleepFM può sostituire un medico nella diagnosi delle malattie?\",\n            \"acceptedAnswer\": {\n                \"@type\": \"Answer\",\n                \"text\": \"No. SleepFM stima un rischio futuro a partire da registrazioni del sonno; non fa diagnosi. È un modello di ricerca, e ogni dubbio sulla tua salute passa da un medico e dagli esami abituali.\"\n            }\n        },\n        {\n            \"@type\": \"Question\",\n            \"name\": \"Posso far analizzare il mio sonno da SleepFM?\",\n            \"acceptedAnswer\": {\n                \"@type\": \"Answer\",\n                \"text\": \"Per ora no. Il modello è stato costruito su polisonnografie complete e non è offerto al pubblico. Se il tuo sonno ti preoccupa, chiedi al tuo medico se una polisonnografia ha senso nel tuo caso.\"\n            }\n        },\n        {\n            \"@type\": \"Question\",\n            \"name\": \"L'IA può analizzare il contenuto dei miei sogni?\",\n            \"acceptedAnswer\": {\n                \"@type\": \"Answer\",\n                \"text\": \"Sì, a partire da ciò che dici o scrivi. Gli strumenti di elaborazione del linguaggio riconoscono personaggi, emozioni e temi in molti racconti. In Noctalia, l'IA propone piste e domande a partire dalle voci del tuo diario dei sogni ; non può conoscere l'unico vero significato di un sogno.\"\n            }\n        },\n        {\n            \"@type\": \"Question\",\n            \"name\": \"I miei dati sul sonno e sui sogni sono al sicuro con un'IA?\",\n            \"acceptedAnswer\": {\n                \"@type\": \"Answer\",\n                \"text\": \"Dipende dallo strumento, quindi leggi la sua informativa sulla privacy prima di condividere qualcosa. Noctalia non vende dati personali, non mostra pubblicità mirata, usa l'audio solo per la trascrizione e conserva le trascrizioni nell'Unione europea, come spiega la sua informativa sulla privacy.\"\n            }\n        }\n    ]\n}",
     "{\n  \"@context\": \"https://schema.org\",\n  \"@type\": \"BreadcrumbList\",\n  \"itemListElement\": [\n    {\n      \"@type\": \"ListItem\",\n      \"position\": 1,\n      \"name\": \"Home\",\n      \"item\": \"https://noctalia.app/it/\"\n    },\n    {\n      \"@type\": \"ListItem\",\n      \"position\": 2,\n      \"name\": \"Risorse\",\n      \"item\": \"https://noctalia.app/it/blog/\"\n    },\n    {\n      \"@type\": \"ListItem\",\n      \"position\": 3,\n      \"name\": \"IA e analisi del sonno\",\n      \"item\": \"https://noctalia.app/it/blog/ia-analisi-sonno-sogni\"\n    }\n  ]\n}"
   ],
   "activeNav": "resources"
@@ -63,14 +63,14 @@
 <span class="text-xs font-mono text-dream-salmon border border-dream-salmon/30 rounded-full px-3 py-1 uppercase">Scienza</span>
 <span aria-hidden="true" class="w-full sm:hidden"></span>
 <span class="text-sm text-purple-300/60">Pubblicato il 12 marzo 2026</span>
-<span class="text-sm text-purple-300/60">~1500 parole · 5 min di lettura</span>
+<span class="text-sm text-purple-300/60">10 minuti di lettura</span>
 </div>
 <h1 class="font-serif text-3xl md:text-5xl mb-6 text-transparent bg-clip-text bg-gradient-to-b from-white via-dream-lavender to-purple-400/50 leading-tight">
-                    L'IA che analizza il tuo sonno: la rivoluzione SleepFM di Stanford
-                </h1>
+L'IA che analizza il tuo sonno: che cosa sa fare SleepFM di Stanford, e i suoi limiti
+</h1>
 <p class="text-lg text-purple-200/80 leading-relaxed">
-                    E se una sola notte di sonno bastasse a rilevare il Parkinson, un rischio cardiovascolare o certi tipi di tumore? A gennaio 2026, i ricercatori di Stanford hanno pubblicato SleepFM su <em>Nature Medicine</em>, un modello di fondazione in grado di predire oltre 100 malattie dai segnali registrati durante il sonno. Questa svolta trasforma il sonno in un vero e proprio check-up sanitario — e apre prospettive affascinanti per l'analisi dei sogni.
-                </p>
+Una notte in un laboratorio del sonno: elettrodi sulla testa, una pinza sul dito, fasce intorno al torace. Di solito quella registrazione serve a cercare un'apnea notturna, poi finisce in archivio. Un gruppo di Stanford ha mostrato che la stessa notte potrebbe contenere anche segnali precoci di malattie che compaiono anni dopo. Ecco che cosa misura davvero questa analisi del sonno con l'IA, dove si ferma e perché i tuoi sogni restano qualcosa che solo tu puoi annotare.
+</p>
 </header>
 <!-- Author Byline (E-E-A-T) -->
 <div class="flex items-center gap-3 mb-8 text-sm text-purple-200/70">
@@ -85,7 +85,7 @@
 <!-- Quick Answer (AI SEO) -->
 <section aria-labelledby="quick-answer-title" class="glass-panel rounded-2xl p-6 mb-8 border border-dream-salmon/20 bg-white/5">
 <h2 class="font-serif text-xl text-dream-cream mb-3" id="quick-answer-title">Risposta rapida</h2>
-<p class="text-purple-100/80 leading-relaxed">SleepFM, il modello di IA di Stanford pubblicato su Nature Medicine a gennaio 2026, è in grado di predire oltre 100 malattie — tra cui Parkinson, demenza e certi tumori — da una singola notte di sonno. Questa svolta apre la strada a un check-up sanitario completo eseguito mentre dormi, sollevando al contempo importanti questioni etiche sulla privacy dei dati del sonno.</p>
+<p class="text-purple-100/80 leading-relaxed">SleepFM è un modello di intelligenza artificiale di Stanford, pubblicato su Nature Medicine a gennaio 2026. Addestrato su circa 585.000 ore di registrazioni del sonno in laboratorio, stima da una sola notte il rischio di sviluppare 130 malattie, tra cui il Parkinson e la demenza. È un modello di ricerca, non un esame che puoi prenotare: non fa diagnosi e non legge i sogni. Il contenuto di un sogno arriva ancora da ciò che ricordi e annoti.</p>
 </section>
 <!-- Editorial Review (E-E-A-T) -->
 <div class="mb-8">
@@ -110,71 +110,74 @@
 <!-- Table of Contents -->
 <nav class="glass-panel rounded-2xl p-6 mb-12">
 <h2 class="font-serif text-lg text-dream-cream mb-4 flex items-center gap-2">
-<i class="w-5 h-5 text-dream-salmon" data-lucide="list"></i> Indice dei contenuti
+<i class="w-5 h-5 text-dream-salmon" data-lucide="list"></i> Indice
                 </h2>
 <ol class="space-y-2 text-sm text-purple-200/70">
-<li><a class="toc-link block" href="#sleepfm">1. SleepFM: l'IA che legge il tuo sonno come uno scanner</a></li>
-<li><a class="toc-link block" href="#how-it-works">2. Come l'IA decodifica i segnali del sonno</a></li>
-<li><a class="toc-link block" href="#predictions">3. Cosa può predire SleepFM: i numeri chiave</a></li>
-<li><a class="toc-link block" href="#dream-database">4. Il database DREAM: rivoluzione per la ricerca sui sogni</a></li>
-<li><a class="toc-link block" href="#ai-dream-analysis">5. L'IA e l'analisi del contenuto dei sogni</a></li>
-<li><a class="toc-link block" href="#future">6. Il futuro della tecnologia del sonno</a></li>
+<li><a class="toc-link block" href="#sleepfm">1. Che cos'è SleepFM?</a></li>
+<li><a class="toc-link block" href="#how-it-works">2. Come fa un'IA a leggere una notte di sonno?</a></li>
+<li><a class="toc-link block" href="#predictions">3. Che cosa può prevedere SleepFM, e con quale affidabilità?</a></li>
+<li><a class="toc-link block" href="#dream-database">4. Il database DREAM: attività cerebrale e racconti di sogni</a></li>
+<li><a class="toc-link block" href="#ai-dream-analysis">5. Che cosa può fare l'IA con i tuoi racconti di sogni?</a></li>
+<li><a class="toc-link block" href="#future">6. E adesso? Prospettive e limiti</a></li>
 </ol>
 </nav>
 <!-- Article Content -->
 <div class="prose max-w-none text-gray-300">
-<h2 id="sleepfm">SleepFM: l'IA che legge il tuo sonno come uno scanner</h2>
+<h2 id="sleepfm">Che cos'è SleepFM?</h2>
 <p>
-                    A gennaio 2026, il team del professor Emmanuel Mignot a Stanford ha scosso il mondo della medicina del sonno. Il loro articolo pubblicato su <em>Nature Medicine</em> presenta SleepFM, un modello di fondazione (<em>foundation model</em>) addestrato su dati polisonnografici di oltre 14 000 pazienti provenienti dalla Stanford Sleep Clinic e dalla coorte multietnica MESA. A differenza dei modelli classici progettati per rilevare una singola patologia, SleepFM è un modello generalista: apprende la «grammatica» del sonno e la applica alla previsione di oltre 100 malattie diverse.
+                    SleepFM nasce a Stanford, nei gruppi del medico del sonno Emmanuel Mignot e del ricercatore di scienza dei dati James Zou, insieme a partner come l'Università Tecnica della Danimarca. Lo studio, guidato da Rahul Thapa e Magnus Ruud Kjaer, è uscito il 6 gennaio 2026 su <em>Nature Medicine</em>.
                 </p>
 <p>
-                    La polisonnografia (PSG) — l'esame gold standard nel laboratorio del sonno — registra simultaneamente l'attività cerebrale (EEG), i movimenti oculari (EOG), il tono muscolare (EMG), la frequenza cardiaca e la saturazione di ossigeno. Finora, questi dati servivano principalmente a diagnosticare l'apnea notturna o la narcolessia. SleepFM dimostra che gli stessi segnali contengono informazioni predittive su malattie che si manifesteranno clinicamente solo anni dopo.
+                    Il modello ha imparato da circa <strong>585.000 ore di polisonnografia</strong>, l'esame completo del sonno fatto in laboratorio, registrate in circa 65.000 persone. Il gruppo più ampio viene dal centro di medicina del sonno di Stanford: circa 35.000 pazienti tra 2 e 96 anni, registrati tra il 1999 e il 2024. Le loro notti sono state poi collegate alle cartelle cliniche, con fino a 25 anni di follow-up.
                 </p>
 <p>
-                    Questo approccio si inserisce in una tendenza più ampia della medicina: utilizzare <strong>modelli di fondazione multimodali</strong> — simili ai grandi modelli linguistici (LLM) come GPT — ma applicati ai dati biomedici. Così come un LLM impara le strutture del linguaggio prima di applicarle a compiti specifici, SleepFM impara le strutture del sonno prima di usarle per lo screening medico.
-                </p>
-
-<h2 id="how-it-works">Come l'IA decodifica i segnali del sonno</h2>
-<h3>EEG, EOG, EMG: i dati analizzati</h3>
-<p>
-                    SleepFM elabora tre tipi di segnali registrati durante un'intera notte di sonno. L'<strong>elettroencefalogramma (EEG)</strong> cattura l'attività elettrica del cervello attraverso più elettrodi, rivelando i fusi del sonno, le onde lente e l'attività del <a class="text-dream-salmon hover:underline" href="sonno-rem-e-sogni-comprendere-il-ripristino-notturno-del-cervello">sonno REM</a>. L'<strong>elettrooculogramma (EOG)</strong> registra i movimenti rapidi degli occhi caratteristici del sonno REM — la fase in cui si verificano i nostri sogni più vividi. L'<strong>elettromiogramma (EMG)</strong> misura il tono muscolare, che scende drasticamente durante il sonno REM (l'atonia muscolare che ci impedisce di agire fisicamente i nostri sogni).
-                </p>
-<p>
-                    A partire da questi segnali grezzi, il modello costruisce rappresentazioni vettoriali ad alta dimensione — «embeddings» — che catturano microstrutture del sonno invisibili all'occhio umano. Queste rappresentazioni alimentano poi classificatori specifici per malattia.
-                </p>
-<h3>Una rete per centinaia di patologie</h3>
-<p>
-                    L'architettura di SleepFM si basa su un pre-addestramento auto-supervisionato: il modello impara prima a prevedere segmenti mancanti del segnale del sonno, costringendo la rete a comprendere la struttura temporale profonda del sonno. Questo passaggio non richiede etichette di malattia. Le rappresentazioni apprese vengono poi affinate (<em>fine-tuning</em>) per ogni compito predittivo specifico, utilizzando dataset etichettati molto più piccoli.
-                </p>
-<p>
-                    Questa strategia a due fasi spiega perché SleepFM supera i modelli addestrati end-to-end su una singola malattia: ha acquisito una comprensione fondamentale della fisiologia del sonno che si trasferisce a molteplici compiti diagnostici. È la stessa logica che rende i LLM pre-addestrati superiori ai modelli specializzati su compiti individuali.
+                    SleepFM è un <strong>modello di fondazione</strong>. Come i modelli linguistici dietro i chatbot, impara prima la struttura generale dei suoi dati, qui una notte di sonno, e poi riusa quella conoscenza per domande precise. Gli strumenti precedenti puntavano di solito a una sola malattia alla volta.
                 </p>
 
-<h2 id="predictions">Cosa può predire SleepFM: i numeri chiave</h2>
+<h2 id="how-it-works">Come fa un'IA a leggere una notte di sonno?</h2>
+<h3>Che cosa registra un laboratorio del sonno</h3>
+<p>
+                    La polisonnografia registra più segnali insieme: l'attività del cervello (<strong>EEG</strong>), i movimenti degli occhi (EOG), il tono muscolare (<strong>EMG</strong>), il ritmo del cuore (<strong>ECG</strong>), il respiro e l'ossigeno nel sangue. Insieme disegnano le fasi della notte, tra cui il <a class="text-dream-salmon hover:underline" href="sonno-rem-e-sogni-comprendere-il-ripristino-notturno-del-cervello">sonno REM</a>: gli occhi si muovono rapidi, i muscoli si rilassano e i sogni tendono a essere più vividi.
+                </p>
+<p>
+                    Finora queste registrazioni servivano soprattutto a diagnosticare l'apnea notturna o la narcolessia. La domanda di SleepFM è semplice: contengono più informazioni di quante i medici ne leggano di solito?
+                </p>
+<h3>Un solo modello per molte domande</h3>
+<p>
+                    Il modello divide ogni notte in segmenti di cinque secondi. Durante l'addestramento nasconde un tipo di segnale, per esempio il cuore, e impara a ricostruirlo dagli altri. Questa fase non richiede diagnosi: il modello impara soltanto come cervello, cuore, muscoli e respiro si muovono di solito insieme.
+                </p>
+<p>
+                    Solo dopo viene collegato alle cartelle cliniche, per vedere quali schemi di sonno precedono quali diagnosi. Secondo Stanford, la combinazione di tutti i segnali ha dato i risultati migliori. I ricercatori hanno anche notato che segnali fuori sincrono, come un cervello che sembra dormire mentre il cuore sembra sveglio, parevano associarsi a un rischio più alto.
+                </p>
+
+<h2 id="predictions">Che cosa può prevedere SleepFM, e con quale affidabilità?</h2>
+<p>
+                    Il gruppo ha testato più di 1.000 categorie di malattie. Per 130 di queste, il modello ha raggiunto un <strong>indice C</strong> di almeno 0,75. Questo indice misura una classifica: si prendono due persone e si verifica se il modello assegna il rischio più alto a quella che si ammala per prima. 0,5 corrisponde al caso, 1 a una classifica perfetta.
+                </p>
 <h3>Malattie neurodegenerative</h3>
 <p>
-                    I risultati più impressionanti di SleepFM riguardano le malattie neurodegenerative. Il modello raggiunge un <strong>C-index di 0,89 per la malattia di Parkinson</strong> e di <strong>0,85 per la demenza</strong>, prestazioni che rivalizzano con i biomarcatori ematici più avanzati. Il C-index misura la capacità discriminante di un modello: 0,5 corrisponde al caso, 1,0 a una previsione perfetta. Un punteggio di 0,89 significa che nell'89% dei casi, SleepFM classifica correttamente un paziente che svilupperà il Parkinson prima di uno che non lo svilupperà.
+                    I valori più sorprendenti riguardano il cervello: <strong>0,89 per il Parkinson</strong> e <strong>0,85 per la demenza</strong>. È coerente con quanto la medicina del sonno sapeva già. Nel disturbo comportamentale del sonno REM, la persona «mette in scena» i sogni perché la consueta paralisi muscolare non si attiva, e questo disturbo precede spesso di anni il Parkinson o malattie affini.
                 </p>
 <p>
-                    Queste prestazioni sono particolarmente notevoli perché i segni del Parkinson compaiono nel sonno <strong>anni prima dei primi sintomi motori</strong>. Il disturbo comportamentale del sonno REM (RBD) — in cui i pazienti agiscono fisicamente i loro sogni a causa di un'atonia muscolare difettosa — è un marcatore noto del rischio di Parkinson. SleepFM va oltre questo singolo marcatore rilevando pattern sottili nell'intero insieme dei segnali del sonno.
+                    SleepFM non si basa solo su questo segnale: cerca schemi più sottili nell'insieme delle registrazioni. Un buon punteggio però non è un verdetto. Un modello che ordina bene migliaia di persone può sbagliare su una sola.
                 </p>
 <h3>Malattie cardiovascolari e tumori</h3>
 <p>
-                    Oltre alla neurologia, SleepFM mostra solide capacità predittive per le malattie cardiovascolari (C-index di 0,87) e certi tipi di tumore (C-index di 0,89). L'ipotesi dei ricercatori è che le malattie sistemiche lascino impronte rilevabili nella regolazione autonoma del sonno — frequenza cardiaca, variabilità della frequenza cardiaca e micro-risvegli — molto prima di diventare clinicamente evidenti.
+                    Oltre la neurologia, Stanford riporta un indice C di 0,81 per l'infarto, 0,84 per la morte per qualsiasi causa, 0,89 per il tumore alla prostata e 0,87 per il tumore al seno. Un'ipotesi è che alcune malattie modifichino la regolazione automatica di cuore e respiro durante il sonno molto prima dei sintomi.
                 </p>
 <p>
-                    Predice anche il rischio di mortalità per tutte le cause a 5 anni con un C-index di 0,83, rendendo una notte di sonno un <strong>indicatore di salute globale</strong> paragonabile a certe batterie di esami del sangue.
+                    Questi numeri descrivono persone studiate in centri del sonno. Non dicono nulla del tuo rischio personale, e il modello non è disponibile come esame da prenotare.
                 </p>
 
-<h2 id="dream-database">Il database DREAM: rivoluzione per la ricerca sui sogni</h2>
+<h2 id="dream-database">Il database DREAM: attività cerebrale e racconti di sogni</h2>
 <p>
-                    Parallelamente ai progressi nell'IA medica, la ricerca sui sogni raggiunge una pietra miliare grazie al consorzio DREAM, i cui risultati sono stati pubblicati su <em>Nature Communications</em>. Questo progetto riunisce <strong>37 istituzioni di ricerca internazionali</strong> che hanno condiviso i loro dati polisonnografici e diari dei sogni, creando il più grande database standardizzato mai assemblato per lo studio scientifico dei sogni.
+                    La ricerca sui sogni ha un altro problema: pochi laboratori svegliano abbastanza dormienti da raccogliere dati solidi. Il database DREAM, presentato su <em>Nature Communications</em> nell'agosto 2025, mette in comune questo lavoro. La prima versione riunisce 20 set di dati, 505 partecipanti e <strong>2.643 risvegli</strong>, ciascuno con la registrazione cerebrale subito prima del risveglio e una descrizione standardizzata di ciò che la persona ha vissuto.
                 </p>
 <p>
-                    Per la prima volta, DREAM consente di incrociare i dati fisiologici del sonno (EEG, EOG, EMG) con i contenuti onirici riportati su larga scala. Ora i ricercatori possono studiare i correlati neurali dei temi onirici — ad esempio, quali pattern di attività cerebrale sono associati a sogni di <a class="text-dream-salmon hover:underline" href="../simboli/specchio">introspezione</a>, sogni di <a class="text-dream-salmon hover:underline" href="../simboli/chiave">scoperta</a>, o sogni di <a class="text-dream-salmon hover:underline" href="../simboli/sentiero">percorso</a>.
+                    Il primo risultato è modesto, ma eloquente. Dal solo EEG, un modello indovina meglio del caso se il dormiente riferirà un'esperienza, più chiaramente nel sonno REM che nelle altre fasi. Dice <em>se</em> qualcuno probabilmente stava sognando, non <em>che cosa</em> sognava.
                 </p>
 <p>
-                    Questa convergenza tra neuroscienze del sonno e scienza dei sogni apre la strada a una comprensione integrata di ciò che il nostro cervello fa durante la notte — non solo come regola le nostre funzioni vitali, ma anche <a class="text-dream-salmon hover:underline" href="perche-sogniamo-la-scienza-dietro-le-tue-avventure-notturne">perché sogniamo</a> e cosa i nostri sogni rivelano sul nostro stato mentale.
+                    Il database è aperto ai ricercatori. È un passo in più per capire <a class="text-dream-salmon hover:underline" href="perche-sogniamo-la-scienza-dietro-le-tue-avventure-notturne">perché sogniamo</a>, e un promemoria: il contenuto di un sogno arriva ancora dalle parole di chi l'ha sognato.
                 </p>
 </div>
 
@@ -184,49 +187,58 @@
 <i class="w-6 h-6 text-dream-salmon" data-lucide="book-open"></i>
 </div>
 <div>
-<h4 class="font-serif text-lg text-dream-cream mb-2">Analizza i tuoi sogni con l'IA</h4>
-<p class="text-sm text-gray-400 mb-4">Mentre la ricerca avanza sull'analisi fisiologica del sonno, puoi già esplorare i tuoi sogni con l'intelligenza artificiale. Noctalia analizza le tue narrazioni di sogni registrate con la voce, identifica i temi ricorrenti e li collega alle tue emozioni quotidiane.</p>
-<a class="inline-flex items-center gap-2 text-sm text-dream-salmon hover:text-dream-salmonLight transition-colors" href="/it/">
-                                Inizia a registrare con Noctalia <i class="w-4 h-4" data-lucide="arrow-right"></i>
+<h4 class="font-serif text-lg text-dream-cream mb-2">Conserva ciò che nessun sensore registra</h4>
+<p class="text-sm text-gray-400 mb-4">Nessun laboratorio cattura la storia del tuo sogno. In Noctalia raccontala a voce o scrivila al risveglio: viene trascritta e salvata nel tuo diario, e puoi rileggere i tuoi sogni uno accanto all'altro.</p>
+<a class="inline-flex items-center gap-2 text-sm text-dream-salmon hover:text-dream-salmonLight transition-colors" href="/it/diario-dei-sogni-vocale">
+                                Prova il diario dei sogni vocale <i class="w-4 h-4" data-lucide="arrow-right"></i>
 </a>
 </div>
 </div>
 </aside>
 
 <div class="prose max-w-none text-gray-300">
-<h2 id="ai-dream-analysis">L'IA e l'analisi del contenuto dei sogni</h2>
-<h3>Dal diario cartaceo al diario con IA</h3>
+<h2 id="ai-dream-analysis">Che cosa può fare l'IA con i tuoi racconti di sogni?</h2>
+<h3>Dalla codifica a mano all'analisi automatica</h3>
 <p>
-                    L'analisi dei sogni si è basata a lungo su metodi manuali: il sistema di codifica di Hall e Van de Castle (1966), in cui giudici umani classificano i personaggi, le interazioni e le emozioni di una narrazione onirica secondo una griglia standardizzata. Questo approccio, affidabile ma lento, limitava gli studi a poche centinaia di sogni al massimo. L'arrivo dell'elaborazione del linguaggio naturale (NLP) ha cambiato tutto.
+                    Per decenni il contenuto dei sogni è stato studiato a mano. Con il sistema di Hall e Van de Castle, pubblicato nel 1966, codificatori formati contano personaggi, interazioni ed emozioni di ogni racconto. È affidabile, ma lento.
                 </p>
 <p>
-                    I modelli NLP moderni possono analizzare migliaia di narrazioni oniriche in pochi minuti, identificando i temi emotivi dominanti, gli schemi narrativi ricorrenti e le associazioni simboliche con una precisione paragonabile ai codificatori umani addestrati. Studi recenti hanno dimostrato che i modelli linguistici possono distinguere i sogni di persone con PTSD da quelli di soggetti sani con un'accuratezza superiore all'80%, aprendo la porta allo <strong>screening dei disturbi mentali attraverso l'analisi del contenuto onirico</strong>.
-                </p>
-<h3>Come l'IA di Noctalia analizza le tue narrazioni di sogni</h3>
-<p>
-                    Mentre l'analisi dei segnali fisiologici del sonno richiede ancora attrezzature di laboratorio, l'analisi del contenuto dei sogni è accessibile a tutti fin da ora. Noctalia utilizza l'intelligenza artificiale per trasformare le tue registrazioni vocali mattutine in analisi ricche: identificazione dei temi emotivi, rilevamento dei simboli ricorrenti, monitoraggio delle tendenze nel tempo. Il <a class="text-dream-salmon hover:underline" href="dream-journaling-la-guida-completa-per-registrare-le-tue-avventure-notturne">diario dei sogni</a> diventa uno strumento di esplorazione personale alimentato dalle stesse tecnologie NLP utilizzate nella ricerca accademica.
+                    Nel 2020 alcuni ricercatori hanno creato uno strumento che applica questa griglia in automatico e lo hanno provato su circa 24.000 racconti dell'archivio DreamBank. I risultati sono in linea con l'ipotesi della continuità: i sogni tendono a prolungare preoccupazioni e relazioni della vita da svegli. Uno studio del 2026 su <a class="text-dream-salmon hover:underline" href="sogni-non-casuali-studio-ia">ciò che plasma il contenuto dei sogni</a> va nella stessa direzione.
                 </p>
 <p>
-                    Noctalia non punta a sostituire un terapeuta. Vuole rendere visibile ciò che di solito passa inosservato: gli schemi che si ripetono notte dopo notte, le correlazioni tra i tuoi sogni e gli eventi della vita da svegli, i cambiamenti emotivi che diventano evidenti solo con sufficiente distacco.
+                    Questi strumenti descrivono grandi gruppi. Non stabiliscono che cosa significhi un singolo sogno e non servono a diagnosticare nessuno.
+                </p>
+<h3>Come l'IA di Noctalia legge i tuoi racconti di sogni</h3>
+<p>
+                    Qui l'IA lavora su ciò che ricordi, non su segnali cerebrali. Registri il sogno a voce o per iscritto, viene trascritto, e l'IA propone una lettura: simboli, emozioni, possibili legami con le tue giornate e domande da approfondire. Ogni lettura è una pista, non un verdetto.
+                </p>
+<p>
+                    <strong>Esempio inventato:</strong> in tre settimane, un diario raccoglie uno <a class="text-dream-salmon hover:underline" href="../simboli/specchio">specchio</a> che rimanda un volto un po' diverso, una <a class="text-dream-salmon hover:underline" href="../simboli/chiave">chiave</a> che non apre più la porta di casa e un <a class="text-dream-salmon hover:underline" href="../simboli/sentiero">sentiero</a> che si biforca nella nebbia. Ogni voce annota anche uno stato d'animo: disagio, poi curiosità. Riletti insieme, questi sogni pongono una domanda più che una risposta: che cosa sta cambiando nella mia vita in questo momento, e come lo sto vivendo?
+                </p>
+<p>
+                    È ciò che permette un <a class="text-dream-salmon hover:underline" href="dream-journaling-la-guida-completa-per-registrare-le-tue-avventure-notturne">diario dei sogni</a>: vedere ciò che ritorna nel tempo. Noctalia non sostituisce un terapeuta, e gli incubi che disturbano a lungo il tuo sonno meritano il parere di un professionista.
                 </p>
 
-<h2 id="future">Il futuro della tecnologia del sonno</h2>
-<h3>Verso un check-up in una notte</h3>
+<h2 id="future">E adesso? Prospettive e limiti</h2>
+<h3>Un check-up in una notte?</h3>
 <p>
-                    SleepFM prefigura un futuro in cui una singola notte di sonno potrebbe fornire un check-up sanitario informativo quanto una batteria completa di esami medici. I ricercatori di Stanford stanno già lavorando all'adattamento del modello ai dati provenienti da dispositivi consumer: smartwatch, anelli per il sonno e fasce EEG portatili. Se questi adattamenti avranno successo, lo screening precoce di malattie gravi potrebbe diventare accessibile dalla propria camera da letto, senza una visita al laboratorio del sonno.
+                    Non ancora. SleepFM ha bisogno di una registrazione completa in laboratorio, con molti sensori e un tecnico. Il gruppo di Stanford vuole migliorare le previsioni, forse aggiungendo dati da dispositivi indossabili. Orologi e anelli misurano molti meno segnali e la loro precisione ha dei limiti, come spiega il nostro articolo sui <a class="text-dream-salmon hover:underline" href="tracker-sonno-wearable-sogni">tracker del sonno</a>.
                 </p>
 <p>
-                    La convergenza tra sensori indossabili, IA edge e modelli di fondazione come SleepFM delinea un futuro in cui il sonno viene analizzato ogni notte, e qualsiasi deviazione significativa dalla propria «firma del sonno» personale attiva un allarme. Combinata con l'analisi del contenuto dei sogni, questa prospettiva potrebbe offrire una visione a 360 gradi della salute fisica e mentale durante il sonno.
+                    Se un giorno strumenti simili arriveranno negli ambulatori, serviranno probabilmente come primo filtro, seguito dagli esami medici abituali.
                 </p>
 <h3>Limiti e questioni etiche</h3>
 <p>
-                    Nonostante l'entusiasmo legittimo, diversi limiti temperano le promesse di SleepFM. Il modello è stato addestrato principalmente su dati di pazienti americani inviati a un laboratorio del sonno — un bias di selezione che limita la generalizzabilità dei risultati. La validazione esterna su coorti diversificate (età, etnia, comorbilità) è ancora da completare.
+                    Gli autori stessi indicano diversi limiti. La maggior parte dei pazienti era stata inviata a un centro del sonno, quindi non rappresenta la popolazione generale. Le prestazioni calano un po' sulle registrazioni più recenti. La validazione esterna, sulla coorte statunitense Sleep Heart Health Study, ha potuto coprire solo una parte delle malattie. E il modello non sa ancora spiegare, caso per caso, su che cosa si basa una previsione.
                 </p>
 <p>
-                    Le questioni etiche sono altrettanto urgenti. Chi ha accesso a queste previsioni di salute? Le compagnie assicurative potrebbero richiedere analisi del sonno come condizione di copertura? Come gestire l'ansia di un falso positivo che indica un rischio di Parkinson in una persona sana? Il <strong>diritto di non sapere</strong> — riconosciuto in genetica — dovrà essere esteso ai dati del sonno.
+                    Poi ci sono le questioni etiche. Chi potrà vedere queste previsioni? Un'assicurazione potrebbe chiederle? Come si convive con un falso allarme sul Parkinson? Il <strong>diritto di non sapere</strong>, discusso da tempo in genetica, potrebbe dover valere anche per i dati del sonno.
                 </p>
 <p>
-                    La ricerca sul <a class="text-dream-salmon hover:underline" href="sogni-e-salute-mentale-come-il-tuo-sonno-rivela-la-tua-mente">rapporto tra sogni e salute mentale</a> e sulla <a class="text-dream-salmon hover:underline" href="sogni-e-creativita">creatività onirica</a> ci ricorda che il sonno non è solo un marcatore biologico — è un'esperienza umana fondamentale la cui sorveglianza permanente solleva questioni profonde sulla privacy e l'autonomia.
+                    La ricerca su <a class="text-dream-salmon hover:underline" href="sogni-e-salute-mentale-come-il-tuo-sonno-rivela-la-tua-mente">sogni e salute mentale</a> e su <a class="text-dream-salmon hover:underline" href="sogni-e-creativita">sogni e creatività</a> lo ricorda: il sonno non è solo un biomarcatore. È un'esperienza intima, e sorvegliarla ogni notte solleva vere domande di privacy e autonomia.
+                </p>
+<p>
+                    Nel frattempo, un consiglio pratico: se russi con pause nel respiro, hai molto sonno di giorno o qualcuno ti dice che «vivi» i sogni muovendoti, parlane con il tuo medico. Una polisonnografia è proprio l'esame pensato per questo.
                 </p>
 </div>
 <!-- CTA Section -->
@@ -234,9 +246,9 @@
 <div class="w-16 h-16 bg-dream-salmon/10 rounded-full flex items-center justify-center mx-auto mb-6">
 <i class="w-8 h-8 text-dream-salmon" data-lucide="brain"></i>
 </div>
-<h3 class="font-serif text-2xl md:text-3xl mb-4 text-dream-cream">Esplora i tuoi sogni con l'intelligenza artificiale</h3>
+<h3 class="font-serif text-2xl md:text-3xl mb-4 text-dream-cream">Nessun sensore registra i tuoi sogni. Tu sì.</h3>
 <p class="text-purple-200/70 mb-6 max-w-lg mx-auto">
-                    Noctalia utilizza l'IA per analizzare i tuoi sogni registrati con la voce, rilevare i temi ricorrenti e rivelare gli schemi nascosti della tua vita onirica.
+                    Noctalia conserva la parte della notte che solo tu ricordi. Annota il sogno a voce o per iscritto, ottieni la trascrizione e rileggi le tue voci per vedere che cosa ritorna.
                 </p>
 <a class="inline-flex items-center gap-2 px-8 py-4 bg-dream-salmon text-dream-dark rounded-full font-bold hover:bg-dream-salmon/90 transition-colors" href="/it/">
                     Inizia il tuo diario dei sogni <i class="w-5 h-5" data-lucide="arrow-right"></i>
@@ -244,7 +256,7 @@
 </aside>
 <!-- FAQ Section -->
 <section class="mt-16">
-<h2 class="font-serif text-2xl text-dream-cream mb-8">Domande Frequenti</h2>
+<h2 class="font-serif text-2xl text-dream-cream mb-8">Domande frequenti</h2>
 <div class="space-y-4">
 <details class="glass-panel rounded-xl p-4 group cursor-pointer">
 <summary class="font-medium flex justify-between items-center text-dream-cream">
@@ -252,7 +264,16 @@
                             <i class="w-5 h-5 transition-transform group-open:rotate-180 text-dream-salmon" data-lucide="chevron-down"></i>
 </summary>
 <p class="mt-4 text-sm text-gray-400 leading-relaxed">
-                            No. SleepFM è uno strumento di screening, non un dispositivo diagnostico. Identifica segnali di allarme precoce nei dati del sonno che suggeriscono un rischio maggiore di determinate malattie. Qualsiasi risultato anomalo deve essere confermato attraverso test clinici approfonditi condotti da un professionista sanitario. L'IA integra il giudizio medico ma non lo sostituisce.
+                            No. SleepFM stima un rischio futuro a partire da registrazioni del sonno; non fa diagnosi. È un modello di ricerca, e ogni dubbio sulla tua salute passa da un medico e dagli esami abituali.
+                        </p>
+</details>
+<details class="glass-panel rounded-xl p-4 group cursor-pointer">
+<summary class="font-medium flex justify-between items-center text-dream-cream">
+                            Posso far analizzare il mio sonno da SleepFM?
+                            <i class="w-5 h-5 transition-transform group-open:rotate-180 text-dream-salmon" data-lucide="chevron-down"></i>
+</summary>
+<p class="mt-4 text-sm text-gray-400 leading-relaxed">
+                            Per ora no. Il modello è stato costruito su polisonnografie complete e non è offerto al pubblico. Se il tuo sonno ti preoccupa, chiedi al tuo medico se una polisonnografia ha senso nel tuo caso.
                         </p>
 </details>
 <details class="glass-panel rounded-xl p-4 group cursor-pointer">
@@ -261,30 +282,32 @@
                             <i class="w-5 h-5 transition-transform group-open:rotate-180 text-dream-salmon" data-lucide="chevron-down"></i>
 </summary>
 <p class="mt-4 text-sm text-gray-400 leading-relaxed">
-                            Sì. I modelli di elaborazione del linguaggio naturale (NLP) possono identificare temi, emozioni e schemi ricorrenti nelle narrazioni dei sogni. Noctalia utilizza l'IA per analizzare i sogni registrati con la voce, rilevare tendenze emotive e collegare i motivi onirici alle esperienze quotidiane, il tutto in un <a class="text-dream-salmon hover:underline" href="dream-journaling-la-guida-completa-per-registrare-le-tue-avventure-notturne">diario dei sogni</a> privato e sicuro.
+                            Sì, a partire da ciò che dici o scrivi. Gli strumenti di elaborazione del linguaggio riconoscono personaggi, emozioni e temi in molti racconti. In Noctalia, l'IA propone piste e domande a partire dalle voci del tuo <a class="text-dream-salmon hover:underline" href="dream-journaling-la-guida-completa-per-registrare-le-tue-avventure-notturne">diario dei sogni</a>; non può conoscere l'unico vero significato di un sogno.
                         </p>
 </details>
 <details class="glass-panel rounded-xl p-4 group cursor-pointer">
 <summary class="font-medium flex justify-between items-center text-dream-cream">
-                            I miei dati del sonno sono al sicuro con gli strumenti di IA?
+                            I miei dati sul sonno e sui sogni sono al sicuro con un'IA?
                             <i class="w-5 h-5 transition-transform group-open:rotate-180 text-dream-salmon" data-lucide="chevron-down"></i>
 </summary>
 <p class="mt-4 text-sm text-gray-400 leading-relaxed">
-                            La sicurezza dei dati del sonno dipende dallo strumento utilizzato. Le app attente alla privacy dovrebbero crittografare i dati in transito, archiviarli in modo sicuro, dichiarare i fornitori necessari ed evitare la vendita dei dati o la pubblicità mirata. La politica privacy di Noctalia segue questo approccio; gli strumenti di ricerca come SleepFM possono anonimizzare i dati prima dell'analisi. Verifica sempre la politica sulla privacy e le certificazioni di sicurezza di qualsiasi strumento prima di condividere i tuoi dati del sonno.
+                            Dipende dallo strumento, quindi leggi la sua informativa sulla privacy prima di condividere qualcosa. Noctalia non vende dati personali, non mostra pubblicità mirata, usa l'audio solo per la trascrizione e conserva le trascrizioni nell'Unione europea, come spiega la sua <a class="text-dream-salmon hover:underline" href="/it/privacy-policy">informativa sulla privacy</a>.
                         </p>
 </details>
 </div>
 </section>
 <!-- Sources / Trust -->
 <section class="mt-16 glass-panel rounded-2xl p-6" id="sources">
-<h2 class="font-serif text-2xl text-dream-cream mb-4">Fonti / Approfondimenti</h2>
+<h2 class="font-serif text-2xl text-dream-cream mb-4">Fonti e letture</h2>
 <ul class="mt-6 space-y-2 text-sm text-gray-400">
-<li><a href="https://www.nature.com/nm/" rel="nofollow noopener noreferrer" target="_blank">Guillot et al. (2026): SleepFM — A Multi-Modal Foundation Model for Sleep Medicine (Nature Medicine)</a></li>
-<li><a href="https://www.nature.com/ncomms/" rel="nofollow noopener noreferrer" target="_blank">DREAM Consortium: A multi-institutional open-access database for sleep and dream research (Nature Communications)</a></li>
-<li><a href="https://www.sleepfoundation.org/" rel="nofollow noopener noreferrer" target="_blank">National Sleep Foundation: Comprendere il tuo sonno</a></li>
-<li><a href="https://www.inserm.fr/dossier/sommeil/" rel="nofollow noopener noreferrer" target="_blank">INSERM: Sonno — Fare luce sulla nostra attività notturna</a></li>
+<li><a href="https://www.nature.com/articles/s41591-025-04133-4" rel="nofollow noopener noreferrer" target="_blank">Thapa, Kjaer et al. (2026), «A multimodal sleep foundation model for disease prediction», <em>Nature Medicine</em>, 32, 752–762 (in inglese)</a></li>
+<li><a href="https://med.stanford.edu/news/all-news/2026/01/ai-sleep-disease.html" rel="nofollow noopener noreferrer" target="_blank">Stanford Medicine (2026), «New AI model predicts disease risk while you sleep» (in inglese)</a></li>
+<li><a href="https://www.nature.com/articles/s41467-025-61945-1" rel="nofollow noopener noreferrer" target="_blank">Wong et al. (2025), «A dream EEG and mentation database», <em>Nature Communications</em>, 16, 7495 (in inglese)</a></li>
+<li><a href="https://doi.org/10.1098/rsos.192080" rel="nofollow noopener noreferrer" target="_blank">Fogli, Aiello e Quercia (2020), «Our dreams, our selves: automatic analysis of dream reports», <em>Royal Society Open Science</em>, 7, 192080 (in inglese)</a></li>
+<li><a href="https://www.sleepfoundation.org/parasomnias/rem-sleep-behavior-disorder" rel="nofollow noopener noreferrer" target="_blank">Sleep Foundation, «REM Sleep Behavior Disorder» (in inglese)</a></li>
+<li><a href="https://www.inserm.fr/dossier/sommeil/" rel="nofollow noopener noreferrer" target="_blank">Inserm, dossier «Sommeil» (in francese)</a></li>
 </ul>
-<p class="mt-6 text-xs text-purple-200/60">Ultimo aggiornamento: 12 marzo 2026</p>
+<p class="mt-6 text-xs text-purple-200/60">Aggiornato il 9 ottobre 2026</p>
 </section>
 <!-- Related Symbols Start -->
 <section aria-label="Simboli dei sogni correlati" class="mt-12 mb-8">

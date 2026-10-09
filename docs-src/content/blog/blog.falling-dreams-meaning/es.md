@@ -5,7 +5,7 @@
   "lang": "es",
   "slug": "suenos-de-caer",
   "title": "Soñar que caes de un lugar alto: ¿qué significa? | Noctalia",
-  "description": "¿Sueñas que caes de un edificio o al vacío? Explora el contexto y las emociones del sueño y distingue la caída soñada de una sacudida al quedarte dormido.",
+  "description": "¿Sueñas que caes al vacío o desde un edificio? Sacudida hípnica o sueño de pérdida de control: causas, escenarios y qué anotar al despertar para entenderlo.",
   "robots": "max-image-preview:large",
   "themeColor": "#0a0514",
   "htmlClass": "scroll-smooth blog-article",
@@ -14,24 +14,24 @@
   "mainClass": "pt-32 pb-20 px-4",
   "ogType": "article",
   "ogTitle": "Soñar que caes de un lugar alto: ¿qué significa? | Noctalia",
-  "ogDescription": "¿Sueñas que caes de un edificio o al vacío? Explora el contexto y las emociones del sueño y distingue la caída soñada de una sacudida al quedarte dormido.",
+  "ogDescription": "¿Sacudida hípnica o sueño de pérdida de control? Por qué soñamos que caemos y qué anotar al despertar.",
   "ogImage": "https://noctalia.app/img/blog/falling-dreams-meaning.webp",
   "ogImageAlt": "Representación abstracta de la sensación de caer entre nubes",
   "twitterCard": "summary_large_image",
   "twitterTitle": "Soñar que caes de un lugar alto: ¿qué significa? | Noctalia",
-  "twitterDescription": "¿Sueñas que caes de un edificio o al vacío? Explora el contexto y las emociones del sueño y distingue la caída soñada de una sacudida al quedarte dormido.",
+  "twitterDescription": "Soñar que caes: qué ocurre en el cuerpo y qué puede contar la caída sobre tu momento actual.",
   "twitterImage": "https://noctalia.app/img/blog/falling-dreams-meaning.webp",
   "twitterImageAlt": "Representación abstracta de la sensación de caer entre nubes",
   "publishedTime": "2025-01-10",
-  "modifiedTime": "2026-09-10",
+  "modifiedTime": "2026-10-09",
   "author": "Thanh Chau",
   "prevPath": "/es/blog/suenos-dientes-caen",
   "nextPath": "/es/blog/suenos-de-volar",
   "preloadImage": "/img/blog/falling-dreams-meaning.webp",
   "jsonLd": [
-    "{\n  \"@context\": \"https://schema.org\",\n  \"@type\": \"BlogPosting\",\n  \"headline\": \"Soñar que caes de un lugar alto: ¿qué significa?\",\n  \"description\": \"¿Sueñas que caes de un edificio o al vacío? Explora el contexto y las emociones del sueño y distingue la caída soñada de una sacudida al quedarte dormido.\",\n  \"image\": {\n    \"@type\": \"ImageObject\",\n    \"url\": \"https://noctalia.app/img/blog/falling-dreams-meaning.webp\",\n    \"width\": 1200,\n    \"height\": 630\n  },\n  \"author\": [\n    {\n      \"@type\": \"Person\",\n      \"@id\": \"https://noctalia.app/es/sobre#person\",\n      \"name\": \"Thanh Chau\",\n      \"jobTitle\": \"Founder & Publication Director\",\n      \"url\": \"https://noctalia.app/es/sobre\",\n      \"worksFor\": {\n        \"@type\": \"Organization\",\n        \"@id\": \"https://noctalia.app/#organization\",\n        \"name\": \"Noctalia\",\n        \"url\": \"https://noctalia.app\"\n      }\n    },\n    {\n      \"@type\": \"Organization\",\n      \"@id\": \"https://noctalia.app/#organization\",\n      \"name\": \"Noctalia\",\n      \"url\": \"https://noctalia.app\",\n      \"logo\": {\n        \"@type\": \"ImageObject\",\n        \"url\": \"https://noctalia.app/logo/logo_noctalia.png\"\n      }\n    }\n  ],\n  \"publisher\": {\n    \"@type\": \"Organization\",\n    \"name\": \"Noctalia\",\n    \"url\": \"https://noctalia.app\",\n    \"logo\": {\n      \"@type\": \"ImageObject\",\n      \"url\": \"https://noctalia.app/logo/logo_noctalia.png\"\n    }\n  },\n  \"datePublished\": \"2025-01-10\",\n  \"dateModified\": \"2026-09-10\",\n  \"mainEntityOfPage\": {\n    \"@type\": \"WebPage\",\n    \"@id\": \"https://noctalia.app/es/blog/suenos-de-caer\"\n  },\n  \"inLanguage\": \"es\",\n  \"isAccessibleForFree\": true,\n  \"wordCount\": 1690,\n  \"timeRequired\": \"PT8M\",\n  \"url\": \"https://noctalia.app/es/blog/suenos-de-caer\"\n}",
-    "{\n  \"@context\": \"https://schema.org\",\n  \"@type\": \"FAQPage\",\n  \"mainEntity\": [\n    {\n      \"@type\": \"Question\",\n      \"name\": \"¿Qué significa soñar que caes de un lugar alto?\",\n      \"acceptedAnswer\": {\n        \"@type\": \"Answer\",\n        \"text\": \"No tiene un significado único. Puedes explorar el lugar, cómo comenzó la caída y la emoción que sentiste, y compararlos con tu contexto actual. El sueño no demuestra un miedo concreto ni predice un accidente.\"\n      }\n    },\n    {\n      \"@type\": \"Question\",\n      \"name\": \"¿Qué significa soñar que te caes de un edificio?\",\n      \"acceptedAnswer\": {\n        \"@type\": \"Answer\",\n        \"text\": \"Fíjate en si conocías el edificio, si caíste por accidente o te empujaron y si había otras personas. Esos detalles sirven para explorar asociaciones personales; no hay una equivalencia demostrada entre caer de un edificio y un problema específico.\"\n      }\n    },\n    {\n      \"@type\": \"Question\",\n      \"name\": \"¿Por qué siento que caigo y me despierto de golpe?\",\n      \"acceptedAnswer\": {\n        \"@type\": \"Answer\",\n        \"text\": \"Si la sensación aparece justo al quedarte dormido y va acompañada de un tirón muscular, podría ser una sacudida hípnica. No todo despertar después de un sueño de caída corresponde a ese fenómeno. Si los movimientos son frecuentes, intensos o alteran tu descanso, consulta a un profesional sanitario.\"\n      }\n    },\n    {\n      \"@type\": \"Question\",\n      \"name\": \"¿Cuándo conviene consultar por estos sueños?\",\n      \"acceptedAnswer\": {\n        \"@type\": \"Answer\",\n        \"text\": \"Conviene pedir orientación si las pesadillas se repiten, te hacen evitar dormir o afectan a tu descanso o a tu vida durante el día. Un diario puede ayudarte a describir lo que ocurre, pero no sustituye una evaluación clínica.\"\n      }\n    }\n  ]\n}",
-    "{\n  \"@context\": \"https://schema.org\",\n  \"@type\": \"BreadcrumbList\",\n  \"itemListElement\": [\n    {\n      \"@type\": \"ListItem\",\n      \"position\": 1,\n      \"name\": \"Inicio\",\n      \"item\": \"https://noctalia.app/es/\"\n    },\n    {\n      \"@type\": \"ListItem\",\n      \"position\": 2,\n      \"name\": \"Recursos\",\n      \"item\": \"https://noctalia.app/es/blog/\"\n    },\n    {\n      \"@type\": \"ListItem\",\n      \"position\": 3,\n      \"name\": \"Sueños de Caer\",\n      \"item\": \"https://noctalia.app/es/blog/suenos-de-caer\"\n    }\n  ]\n}"
+    "{\n    \"@context\": \"https://schema.org\",\n    \"@type\": \"BlogPosting\",\n    \"headline\": \"Soñar que caes de un lugar alto: por qué ocurre y qué puede significar\",\n    \"description\": \"¿Sueñas que caes al vacío o desde un edificio? Sacudida hípnica o sueño de pérdida de control: causas, escenarios y qué anotar al despertar para entenderlo.\",\n    \"image\": {\n        \"@type\": \"ImageObject\",\n        \"url\": \"https://noctalia.app/img/blog/falling-dreams-meaning.webp\",\n        \"width\": 1200,\n        \"height\": 630\n    },\n    \"author\": [\n        {\n            \"@type\": \"Person\",\n            \"@id\": \"https://noctalia.app/es/sobre#person\",\n            \"name\": \"Thanh Chau\",\n            \"jobTitle\": \"Founder & Publication Director\",\n            \"url\": \"https://noctalia.app/es/sobre\",\n            \"worksFor\": {\n                \"@type\": \"Organization\",\n                \"@id\": \"https://noctalia.app/#organization\",\n                \"name\": \"Noctalia\",\n                \"url\": \"https://noctalia.app\"\n            }\n        },\n        {\n            \"@type\": \"Organization\",\n            \"@id\": \"https://noctalia.app/#organization\",\n            \"name\": \"Noctalia\",\n            \"url\": \"https://noctalia.app\",\n            \"logo\": {\n                \"@type\": \"ImageObject\",\n                \"url\": \"https://noctalia.app/logo/logo_noctalia.png\"\n            }\n        }\n    ],\n    \"publisher\": {\n        \"@type\": \"Organization\",\n        \"name\": \"Noctalia\",\n        \"url\": \"https://noctalia.app\",\n        \"logo\": {\n            \"@type\": \"ImageObject\",\n            \"url\": \"https://noctalia.app/logo/logo_noctalia.png\"\n        }\n    },\n    \"datePublished\": \"2025-01-10\",\n    \"dateModified\": \"2026-10-09\",\n    \"mainEntityOfPage\": {\n        \"@type\": \"WebPage\",\n        \"@id\": \"https://noctalia.app/es/blog/suenos-de-caer\"\n    },\n    \"inLanguage\": \"es\",\n    \"isAccessibleForFree\": true,\n    \"wordCount\": 2213,\n    \"timeRequired\": \"PT11M\",\n    \"url\": \"https://noctalia.app/es/blog/suenos-de-caer\"\n}",
+    "{\n    \"@context\": \"https://schema.org\",\n    \"@type\": \"FAQPage\",\n    \"mainEntity\": [\n        {\n            \"@type\": \"Question\",\n            \"name\": \"¿Qué significa soñar que caes de un lugar alto?\",\n            \"acceptedAnswer\": {\n                \"@type\": \"Answer\",\n                \"text\": \"No tiene un significado único. Soñar que caes suele acompañar una sensación de pérdida de control, el miedo a fallar, una temporada de mucha carga o un cambio de etapa. Lo que sentiste en el sueño y lo que estás viviendo ahora son las mejores pistas para elegir la que encaja contigo.\"\n            }\n        },\n        {\n            \"@type\": \"Question\",\n            \"name\": \"¿Qué significa soñar que te caes de un edificio?\",\n            \"acceptedAnswer\": {\n                \"@type\": \"Answer\",\n                \"text\": \"Fíjate en si conocías el edificio, si resbalaste, saltaste o te empujaron, y en quién estaba cerca. A menudo la altura acompaña algo que vives como muy importante, pero no mide la gravedad de ningún problema real.\"\n            }\n        },\n        {\n            \"@type\": \"Question\",\n            \"name\": \"¿Por qué me despierto de golpe cuando sueño que caigo?\",\n            \"acceptedAnswer\": {\n                \"@type\": \"Answer\",\n                \"text\": \"Si ocurre justo al quedarte dormido, suele ser una sacudida hípnica: una contracción muscular breve y benigna, a veces con una imagen de caída. Hasta un 70 % de las personas la ha vivido, según la Sleep Foundation. La cafeína, el estrés y la falta de sueño la hacen más frecuente.\"\n            }\n        },\n        {\n            \"@type\": \"Question\",\n            \"name\": \"¿Soñar que caes anuncia algo?\",\n            \"acceptedAnswer\": {\n                \"@type\": \"Answer\",\n                \"text\": \"No. Un sueño de caída no predice un accidente ni un fracaso. Pone en escena una emoción o una preocupación del presente, o simplemente una sensación del momento de dormirte.\"\n            }\n        },\n        {\n            \"@type\": \"Question\",\n            \"name\": \"¿Debo preocuparme si estos sueños se repiten?\",\n            \"acceptedAnswer\": {\n                \"@type\": \"Answer\",\n                \"text\": \"Casi nunca. Si se repiten varias veces por semana, estropean tu descanso o te dejan con ansiedad durante el día, coméntalo con tu médico o en una unidad del sueño, igual que harías con pesadillas frecuentes.\"\n            }\n        }\n    ]\n}",
+    "{\n    \"@context\": \"https://schema.org\",\n    \"@type\": \"BreadcrumbList\",\n    \"itemListElement\": [\n        {\n            \"@type\": \"ListItem\",\n            \"position\": 1,\n            \"name\": \"Inicio\",\n            \"item\": \"https://noctalia.app/es/\"\n        },\n        {\n            \"@type\": \"ListItem\",\n            \"position\": 2,\n            \"name\": \"Recursos\",\n            \"item\": \"https://noctalia.app/es/blog/\"\n        },\n        {\n            \"@type\": \"ListItem\",\n            \"position\": 3,\n            \"name\": \"Soñar que caes\",\n            \"item\": \"https://noctalia.app/es/blog/suenos-de-caer\"\n        }\n    ]\n}"
   ],
   "activeNav": "resources"
 }
@@ -51,7 +51,7 @@
 </li>
 <li class="text-purple-400">/</li>
 <li itemprop="itemListElement" itemscope="" itemtype="https://schema.org/ListItem">
-<span class="text-dream-cream" itemprop="name">Sueños de Caer</span>
+<span class="text-dream-cream" itemprop="name">Soñar que caes</span>
 <meta content="3" itemprop="position">
 </li>
 </ol>
@@ -63,13 +63,13 @@
 <a class="text-xs font-mono text-purple-200/70 border border-white/10 rounded-full px-3 py-1 hover:text-white hover:border-dream-salmon/30 transition-colors" href="significado-de-suenos">Tema: Significado de sueños</a>
 <span aria-hidden="true" class="w-full sm:hidden"></span>
 <span class="text-sm text-purple-300/60">Publicado el 10 de enero de 2025</span>
-<span class="text-sm text-purple-300/60">8 min de lectura</span>
+<span class="text-sm text-purple-300/60">11 min de lectura</span>
 </div>
 <h1 class="font-serif text-3xl md:text-5xl mb-6 text-transparent bg-clip-text bg-gradient-to-b from-white via-dream-lavender to-purple-400/50 leading-tight">
-                    Soñar que caes de un lugar alto: ¿qué significa?
+                    Soñar que caes de un lugar alto: por qué ocurre y qué puede significar
                 </h1>
 <p class="text-lg text-purple-200/80 leading-relaxed">
-                    Soñar que caes de un edificio, un acantilado o un lugar alto puede dejarte con miedo al despertar. Para explorar la experiencia, empieza por lo que ocurrió y cómo te sentiste. Un sueño con una historia de caída y una sacudida breve al quedarte dormido son experiencias distintas; no tienen por qué compartir una explicación.
+                    El suelo desaparece, se te encoge el estómago y te despiertas de golpe, con el corazón a mil. Soñar que caes es de lo más habitual. A veces la explicación es física y tiene que ver con el momento de quedarte dormido. Otras, el sueño conecta con algo que estás viviendo. Aquí tienes cómo distinguir una cosa de la otra.
                 </p>
 </header>
 <!-- Author Byline (E-E-A-T) -->
@@ -86,7 +86,7 @@
 <!-- Quick Answer (AI SEO) -->
 <section class="glass-panel rounded-2xl p-6 mb-8 border border-dream-salmon/20 bg-white/5" aria-labelledby="quick-answer-title">
     <h2 id="quick-answer-title" class="font-serif text-xl text-dream-cream mb-3">Respuesta rápida</h2>
-    <p class="text-purple-100/80 leading-relaxed">Soñar que caes de un lugar alto no tiene un significado único ni permite predecir un accidente. Puedes preguntarte si el miedo del sueño se parece a una preocupación actual, sin asumir que esa sea su causa. Si notas una caída instantánea con un tirón muscular justo al dormirte, podría tratarse de una sacudida hípnica, un fenómeno del inicio del sueño.</p>
+    <p class="text-purple-100/80 leading-relaxed">Soñar que caes es muy frecuente y no anuncia ningún accidente. Si la caída llega justo al quedarte dormido y te despierta con un sobresalto, suele tratarse de una sacudida hípnica, un reflejo muscular benigno. Si forma parte de un sueño con escenario e historia, a menudo acompaña una sensación de pérdida de control, inseguridad o cambio. Lo que sentiste en el sueño y lo que estás viviendo ahora son las mejores pistas.</p>
 </section>
 <!-- Featured Image -->
 <figure class="mb-12 rounded-2xl overflow-hidden">
@@ -98,22 +98,27 @@
 <i class="w-5 h-5 text-dream-salmon" data-lucide="list"></i> Índice de contenidos
                 </h2>
 <ol class="space-y-2 text-sm text-purple-200/70">
-<li><a class="toc-link block" href="#science">1. Sueño de caída o sensación al dormirte</a></li>
-<li><a class="toc-link block" href="#variations">2. Caer de un edificio y otros escenarios</a></li>
-<li><a class="toc-link block" href="#meanings">3. Explorar el significado sin forzarlo</a></li>
-<li><a class="toc-link block" href="#hypnic">4. La sacudida hípnica explicada</a></li>
-<li><a class="toc-link block" href="#psychology">5. Qué puede decir la interpretación</a></li>
-<li><a class="toc-link block" href="#solutions">6. Qué hacer si te inquietan</a></li>
+<li><a class="toc-link block" href="#science">1. ¿Qué pasa cuando sueñas que caes?</a></li>
+<li><a class="toc-link block" href="#variations">2. ¿Cómo fue tu caída?</a></li>
+<li><a class="toc-link block" href="#meanings">3. Lo que puede contar un sueño de caída</a></li>
+<li><a class="toc-link block" href="#hypnic">4. La sacudida hípnica: el sobresalto al dormirte</a></li>
+<li><a class="toc-link block" href="#psychology">5. Qué dicen la psicología y la investigación</a></li>
+<li><a class="toc-link block" href="#solutions">6. ¿Qué hacer si estos sueños se repiten?</a></li>
 </ol>
 </nav>
 <!-- Article Content -->
 <div class="prose max-w-none text-gray-300">
-<h2 id="science">Sueño de caída o sensación de caer al dormirte</h2>
-<p>Conviene separar el relato de un sueño de <a class="text-dream-salmon hover:underline" href="../simbolos/caida">caída</a> de una contracción muscular al inicio del sueño. Recordar un edificio, otras personas y una secuencia de acontecimientos no basta para identificar una sacudida hípnica. Tampoco todo despertar brusco después de un sueño es una sacudida de este tipo.</p>
-<p>La investigación sobre temas oníricos recoge la caída como un tema frecuente, pero eso no establece un significado universal para cada persona. El estudio de <a href="https://journals.ub.uni-heidelberg.de/index.php/IJoDR/article/view/75878" target="_blank" rel="noopener noreferrer">Schredl (2021)</a> examina sueños típicos en Alemania; no demuestra que una altura concreta equivalga a un miedo determinado.</p>
-<p>Por separado, una <a href="https://pubmed.ncbi.nlm.nih.gov/23912581/" target="_blank" rel="noopener noreferrer">investigación sobre sacudidas hípnicas</a> las describe como fenómenos fisiológicos que pueden intensificarse y repetirse. La cifra de personas que experimentan estas sacudidas no debe usarse como porcentaje de personas que sueñan con caer.</p>
-<h2 id="variations">Soñar que caes de un edificio y otros escenarios</h2>
-<p>Los siguientes ejemplos son preguntas para explorar tu experiencia, no un diccionario que asigne un significado fijo a cada escena. Puedes descartar cualquier lectura que no encaje con tu recuerdo.</p>
+<h2 id="science">¿Qué pasa cuando sueñas que caes?</h2>
+<p>
+                    Bajo el nombre de «sueño de caída» se mezclan dos experiencias distintas. La primera es un instante: te estás quedando dormido, notas que pisas en falso y todo tu cuerpo da un respingo. La segunda es un sueño de verdad, con escenario e historia: un <a class="text-dream-salmon hover:underline" href="../simbolos/acantilado">acantilado</a>, la azotea de un edificio, un ascensor que se desploma.
+                </p>
+<p>
+                    El primer caso tiene sobre todo que ver con el cuerpo, y lo vemos más abajo. El segundo es muy común. En una encuesta a 1181 estudiantes universitarios canadienses, la <a class="text-dream-salmon hover:underline" href="../simbolos/caida">caída</a> estaba entre los cuatro temas que más del 60 % decía haber soñado, junto con la persecución, los estudios y el sexo (<a class="text-dream-salmon hover:underline" href="https://asdreams.org/journal/issues/asdj13-4.htm" rel="nofollow noopener noreferrer" target="_blank">Nielsen y colaboradores, 2003</a>). Soñar que caes no tiene nada de raro. Lo que puede decirte algo son los detalles de <em>tu</em> caída.
+                </p>
+<h2 id="variations">¿Cómo fue tu caída?</h2>
+<p>
+                    Antes de buscarle un sentido, anota la escena. Estas variantes no son definiciones: son pistas que puedes contrastar con lo que sentiste.
+                </p>
 </div>
 <!-- Dream Variations Cards -->
 <div class="grid md:grid-cols-2 gap-6 my-12">
@@ -122,10 +127,10 @@
 <div class="p-2 bg-dream-salmon/10 rounded-lg">
 <i class="w-5 h-5 text-dream-salmon" data-lucide="mountain"></i>
 </div>
-<h3 class="font-serif text-lg text-dream-cream">Caer de un edificio o lugar alto</h3>
+<h3 class="font-serif text-lg text-dream-cream">Caer de un edificio o de un lugar alto</h3>
 </div>
 <p class="text-sm text-gray-300">
-                        Si caes de un edificio, distingue si resbalaste, saltaste o alguien te empujó. ¿Reconocías el lugar? ¿Sentías miedo antes de caer? Un <a class="text-dream-salmon hover:underline" href="../simbolos/acantilado">acantilado</a> puede despertar otras asociaciones personales. Ninguna altura permite medir la gravedad de un problema real.
+                        ¿Desde dónde caías y qué había abajo? Caer desde una azotea o un acantilado suele acompañar algo que vives como <strong>muy importante</strong>: una decisión, una evaluación, un puesto que defender. ¿Resbalaste, saltaste o te empujaron?
                     </p>
 </div>
 <div class="dream-card glass-panel rounded-xl p-6 border border-transparent">
@@ -133,10 +138,10 @@
 <div class="p-2 bg-dream-salmon/10 rounded-lg">
 <i class="w-5 h-5 text-dream-salmon" data-lucide="circle-dot"></i>
 </div>
-<h3 class="font-serif text-lg text-dream-cream">Caída interminable</h3>
+<h3 class="font-serif text-lg text-dream-cream">Caer al vacío sin llegar al suelo</h3>
 </div>
 <p class="text-sm text-gray-300">
-                        Si caes al vacío sin llegar al suelo, anota qué te inquietaba: la espera, no ver el final o estar a solas. Puedes compararlo con alguna incertidumbre actual, pero también dejarlo como una imagen sin explicación personal clara.
+                        Sin suelo y sin referencias. Esta caída puede enlazar con una <strong>sensación de estar en el aire</strong>: todavía no sabes adónde te lleva una situación. Anota si fue angustioso o extrañamente tranquilo.
                     </p>
 </div>
 <div class="dream-card glass-panel rounded-xl p-6 border border-transparent">
@@ -147,7 +152,7 @@
 <h3 class="font-serif text-lg text-dream-cream">Tropezar y caer</h3>
 </div>
 <p class="text-sm text-gray-300">
-                        ¿Tropezaste ante otras personas o cuando estabas a solas? La vergüenza, la sorpresa o el dolor recordados pueden ayudarte a describir el sueño. No hace falta convertir un tropiezo en una señal de fracaso.
+                        ¿Te caíste a ras de suelo, delante de otras personas? La escena habla más a menudo de <strong>vergüenza o miedo al ridículo</strong> que de peligro. ¿Quién miraba y qué hiciste al levantarte?
                     </p>
 </div>
 <div class="dream-card glass-panel rounded-xl p-6 border border-transparent">
@@ -155,10 +160,10 @@
 <div class="p-2 bg-dream-salmon/10 rounded-lg">
 <i class="w-5 h-5 text-dream-salmon" data-lucide="hand"></i>
 </div>
-<h3 class="font-serif text-lg text-dream-cream">Ser empujado</h3>
+<h3 class="font-serif text-lg text-dream-cream">Que alguien te empuje</h3>
 </div>
 <p class="text-sm text-gray-300">
-                        Separa lo que hizo el personaje del sueño de lo que sabes de esa persona despierto. Sentirte empujado puede invitarte a pensar en tus límites, pero el sueño no demuestra una traición ni las intenciones de otra persona.
+                        Cuando alguien te empuja, la causa viene de fuera. El sueño puede hacer eco de una <strong>presión que estás soportando</strong>. ¿Reconociste a esa persona? No es una acusación contra ella, solo una pista sobre lo que te ocupa.
                     </p>
 </div>
 <div class="dream-card glass-panel rounded-xl p-6 border border-transparent">
@@ -166,10 +171,10 @@
 <div class="p-2 bg-dream-salmon/10 rounded-lg">
 <i class="w-5 h-5 text-dream-salmon" data-lucide="car"></i>
 </div>
-<h3 class="font-serif text-lg text-dream-cream">Caer en un vehículo</h3>
+<h3 class="font-serif text-lg text-dream-cream">Caer dentro de un vehículo</h3>
 </div>
 <p class="text-sm text-gray-300">
-                        En un <a class="text-dream-salmon hover:underline" href="../simbolos/coche">coche</a> o <a class="text-dream-salmon hover:underline" href="../simbolos/avion">avión</a>, fíjate en si conducías o eras pasajero y en quién te acompañaba. Relacionarlo con una sensación de control es una posibilidad personal, no una predicción sobre un viaje.
+                        Un <a class="text-dream-salmon hover:underline" href="../simbolos/coche">coche</a> que se sale por un barranco, un <a class="text-dream-salmon hover:underline" href="../simbolos/avion">avión</a> que pierde altura: la pregunta pasa a ser «¿quién conducía?». Estas escenas suelen enlazar con el <strong>rumbo que lleva tu vida</strong> y con la parte que crees controlar. No dicen nada sobre tu próximo viaje.
                     </p>
 </div>
 <div class="dream-card glass-panel rounded-xl p-6 border border-transparent">
@@ -177,22 +182,47 @@
 <div class="p-2 bg-dream-salmon/10 rounded-lg">
 <i class="w-5 h-5 text-dream-salmon" data-lucide="feather"></i>
 </div>
-<h3 class="font-serif text-lg text-dream-cream">Caída lenta y suave</h3>
+<h3 class="font-serif text-lg text-dream-cream">Caer despacio, sin miedo</h3>
 </div>
 <p class="text-sm text-gray-300">
-                        Una caída suave puede sentirse muy distinta de una pesadilla. Describe si había calma, curiosidad o alivio. No necesitas buscar una amenaza si no la sentiste, ni asumir que el sueño te está dando una instrucción.
+                        Algunas caídas se convierten en un flotar, o incluso en <a class="text-dream-salmon hover:underline" href="../simbolos/volar">volar</a>. Se asocian más bien con <strong>soltar</strong>: aceptar un cambio en lugar de pelearte con él. El mismo escenario no cuenta lo mismo si no tenías miedo.
                     </p>
 </div>
 </div>
 <div class="prose max-w-none text-gray-300">
-<h2 id="meanings">Cómo explorar el significado sin forzarlo</h2>
-<p>En lugar de decidir que caer siempre significa perder el control, prueba a separar tres cosas:</p>
+<h2 id="meanings">Lo que puede contar un sueño de caída</h2>
+<p>
+                    Ningún diccionario de sueños puede decirte con certeza por qué <em>tú</em> soñaste que caías. Lo que sí ocurre es que ciertos vínculos aparecen a menudo cuando se compara la caída con lo que la persona vive en ese momento.
+                </p>
+<h3>Una sensación de pérdida de control</h3>
+<p>
+                    Es la lectura más habitual. En una caída no puedes frenar nada. El sueño puede hacer eco de una situación en la que sientes que <strong>las cosas te pasan por encima</strong>: un contrato que no sabes si te renuevan, una relación que se tambalea, un problema de salud en tu entorno. Pregúntate: ¿qué se me escapa ahora mismo?
+                </p>
+<h3>El miedo a fallar</h3>
+<p>
+                    Estos sueños aparecen con facilidad antes de una fecha señalada: un examen, unas oposiciones, una entrevista de trabajo, hablar en público. La caída escenifica el temor a <strong>no estar a la altura</strong>. Si es tu caso, el sueño dice sobre todo cuánto te importa lo que está en juego, no que vaya a salir mal.
+                </p>
+<h3>Una temporada de cansancio o de exceso de carga</h3>
+<p>
+                    Cuando todo va demasiado deprisa, la sensación de caer puede traducir la de estar <strong>desbordado</strong>. Fíjate en si estos sueños se concentran en las semanas de más trabajo o en las noches cortas: es un dato útil, más que un símbolo.
+                </p>
+<h3>El paso de una etapa a otra</h3>
+<p>
+                    Una mudanza, un trabajo nuevo, una separación: cuando cambia el decorado de tu vida, que <strong>el suelo se hunda</strong> es una imagen casi literal. El sueño acompaña la incertidumbre del cambio, sin decir cómo terminará.
+                </p>
+<h3>La necesidad de apoyo</h3>
+<p>
+                    Nadie que te sujete, ninguna red. Si eso es lo que más te llamó la atención, piensa en el <strong>apoyo</strong> con el que cuentas: ¿en quién puedes apoyarte y se lo pides lo suficiente?
+                </p>
+<h3 id="ejemplo-diario">Ejemplo de diario de sueños</h3>
+<p><strong>Ejemplo ficticio:</strong> muestra cómo separar lo que pasó en el sueño de una posible relación con tu día a día.</p>
 <ul>
-<li><strong>Lo recordado:</strong> el lugar, cómo empezó la caída, quién estaba contigo y cómo terminó.</li>
-<li><strong>La emoción:</strong> miedo, vergüenza, impotencia, alivio o una mezcla. Si no recuerdas una emoción, no la inventes.</li>
-<li><strong>Tu contexto:</strong> una decisión, un cambio o una experiencia reciente que tú relaciones con esa escena. La semejanza no demuestra una causa.</li>
+<li><strong>Sueño:</strong> «Bajaba las escaleras de mi antiguo instituto y desaparecía un escalón. Caía durante mucho rato, sin tocar el suelo».</li>
+<li><strong>Emoción:</strong> «Pánico al principio y luego una especie de resignación. Me desperté sudando».</li>
+<li><strong>Contexto reciente:</strong> «El lunes empiezo un curso de formación y no sé si voy a poder seguir el ritmo».</li>
+<li><strong>Pregunta para guardar:</strong> «¿La caída vuelve antes de otros comienzos, o también en noches tranquilas?».</li>
 </ul>
-<p>Por ejemplo, tras una presentación difícil podrías relacionar una caída ante una multitud con sentirte expuesto. Otra persona podría asociar la misma escena a una película que vio. Ambas son asociaciones posibles; ninguna permite diagnosticar ansiedad ni descubrir un mensaje oculto con certeza.</p>
+<p>Una sola entrada no demuestra nada. Los vínculos se ven cuando anotas lo mismo durante varias noches, también aquellas en las que no caes.</p>
 <!-- CTA inline -->
 <aside class="glass-panel rounded-2xl p-6 my-8 border border-dream-salmon/20">
 <div class="flex items-start gap-4">
@@ -200,29 +230,83 @@
 <i class="w-6 h-6 text-dream-salmon" data-lucide="sparkles"></i>
 </div>
 <div>
-<h4 class="font-serif text-lg text-dream-cream mb-2">Comprende tus sueños de caída</h4>
-<p class="text-sm text-gray-400 mb-4">Anota la escena y tus emociones en Noctalia para comparar tus recuerdos con el tiempo. Las interpretaciones sirven como preguntas de reflexión, no como diagnósticos ni explicaciones demostradas.</p>
+<h4 class="font-serif text-lg text-dream-cream mb-2">Anota tu caída antes de que se borre</h4>
+<p class="text-sm text-gray-400 mb-4">En Noctalia, cuenta tu sueño en voz alta nada más despertar. Se transcribe, se guarda en tu diario y puedes releer tus sueños de caída uno al lado del otro.</p>
 <a class="inline-flex items-center gap-2 text-sm text-dream-salmon hover:text-dream-salmonLight transition-colors" href="/es/">
                                 Prueba Noctalia gratis <i class="w-4 h-4" data-lucide="arrow-right"></i>
 </a>
 </div>
 </div>
 </aside>
-<h2 id="hypnic">La sacudida hípnica: un tirón al quedarte dormido</h2>
-<p>Una sacudida hípnica es un movimiento muscular breve e involuntario durante el inicio del sueño. Puede interrumpir ese momento y acompañarse de una sensación de caída. Si te ocurrió justo al adormecerte, describe el movimiento y el momento además de la imagen que recuerdas.</p>
-<p>No es necesario explicar el fenómeno como un cerebro que intenta evitar una caída de un árbol: esa historia no establece la causa de tu experiencia. La <a href="https://pubmed.ncbi.nlm.nih.gov/26329450/" target="_blank" rel="noopener noreferrer">revisión de la literatura de 2015</a> trata las sacudidas como un fenómeno generalmente benigno, pero señala que algunas situaciones requieren valoración clínica. Un artículo no puede identificar por sí solo el tipo de movimiento que tienes.</p>
-<h2 id="psychology">Qué puede decir la interpretación psicológica</h2>
-<p>Puedes usar el sueño para hablar de preocupaciones, cambios o sensaciones de apoyo. Esto es una exploración personal. No equivale a demostrar que el sueño procede de un conflicto concreto, y una interpretación sugerida por otra persona puede no encajar contigo.</p>
-<p>También es válido no encontrar un significado. Registrar varios recuerdos permite compararlos sin convertir una sola noche en una conclusión sobre tu salud, tus relaciones o tu futuro.</p>
-<h2 id="solutions">Qué hacer si los sueños de caída te inquietan</h2>
-<h3>1. Describe antes de interpretar</h3>
-<p>Al despertar, anota unas líneas: qué pasó, qué sentiste y si hubo un tirón corporal al inicio del sueño. Puedes añadir cuándo ocurrió y si te costó volver a dormir. El registro sirve para observar, no para confirmar una explicación elegida de antemano.</p>
-<h3>2. Cuida el descanso sin perseguir el sueño</h3>
-<p>Reserva tiempo suficiente para dormir y mantén una rutina que te resulte tranquila. No necesitas interrumpir el descanso ni intentar provocar otro sueño para entenderlo. Estos hábitos no garantizan que desaparezca una escena concreta.</p>
-<h3>3. Consulta si se repite y afecta a tu vida</h3>
-<p>Si las pesadillas te hacen evitar dormir, alteran de forma persistente tu descanso o te afectan durante el día, coméntalo con un profesional sanitario. Describe también las sacudidas si son frecuentes o intensas; no asumas que cualquier movimiento nocturno es el mismo fenómeno.</p>
-<h3>4. Distingue reflexión y tratamiento</h3>
-<p>La <a href="https://pubmed.ncbi.nlm.nih.gov/29852917/" target="_blank" rel="noopener noreferrer">AASM recomienda la terapia de ensayo en imaginación</a> para el trastorno de pesadillas y las pesadillas asociadas al estrés postraumático en adultos. Es una intervención clínica; no significa que imaginar un aterrizaje seguro al acostarte vaya a «reprogramar» tu cerebro o eliminar cualquier sueño de caída. Un diario o una interpretación automática no sustituyen esa atención.</p>
+<h2 id="hypnic">La sacudida hípnica: el sobresalto al dormirte</h2>
+<p>
+                    Te estás quedando dormido, notas que pisas en falso y todo tu cuerpo da un respingo. Ese reflejo tiene nombre: <strong>sacudida hípnica</strong>, o mioclonía del sueño. Es una contracción muscular breve e involuntaria que aparece en el paso de la vigilia al sueño, a veces acompañada de una imagen fugaz de caída.
+                </p>
+<p>
+                    Es muy frecuente: hasta un 70 % de las personas la ha vivido alguna vez, según la <a class="text-dream-salmon hover:underline" href="https://www.sleepfoundation.org/sleep-faqs/hypnic-jerks" rel="nofollow noopener noreferrer" target="_blank">Sleep Foundation</a>. Su mecanismo exacto no está claro. Una hipótesis propone que el cerebro interpreta la relajación de los músculos como una caída y reacciona para «agarrarse», pero sigue siendo eso, una hipótesis.
+                </p>
+<h3>Qué la hace más frecuente</h3>
+<ul>
+<li><strong>La cafeína y la nicotina</strong>, sobre todo por la tarde y la noche</li>
+<li><strong>El estrés y la ansiedad</strong>, que hacen más agitado el momento de dormirse</li>
+<li><strong>La falta de sueño</strong></li>
+<li><strong>El ejercicio intenso</strong> poco antes de acostarte</li>
+<li><strong>Algunos medicamentos</strong>: coméntalo con tu médico si las sacudidas te molestan</li>
+</ul>
+<p>
+                    Aisladas, estas sacudidas son benignas. Si tienes movimientos repetidos durante la noche, sacudidas que también aparecen de día o te impiden dormir, consúltalo con un médico.
+                </p>
+<h2 id="psychology">Qué dicen la psicología y la investigación</h2>
+<p>
+                    Los sueños de caída se han leído de formas muy distintas. Estos enfoques no se excluyen entre sí, y ninguno sirve como prueba de lo que significa tu sueño en concreto.
+                </p>
+<h3>La lectura freudiana</h3>
+<p>
+                    En <em>La interpretación de los sueños</em> (1900), Freud incluye la caída entre los sueños típicos y la relaciona con sensaciones corporales y recuerdos de infancia, como los juegos en los que un adulto lanza a un niño por el aire o hace como que lo suelta. También la vincula con posibles deseos reprimidos. Es una lectura histórica, no un resultado científico.
+                </p>
+<h3>La lectura junguiana</h3>
+<p>
+                    La tradición junguiana suele ver en el descenso un movimiento hacia lo que uno descuida de sí mismo, o la señal de que una actitud demasiado «elevada» necesita volver a tocar tierra. También es un punto de vista interpretativo.
+                </p>
+<h3>La simulación de amenazas</h3>
+<p>
+                    Según la teoría del investigador finlandés <a class="text-dream-salmon hover:underline" href="https://www.cambridge.org/core/journals/behavioral-and-brain-sciences/article/reinterpretation-of-dreams-an-evolutionary-hypothesis-of-the-function-of-dreaming/EE0E7DB39E361540D2DDA79C262EDA7E" rel="nofollow noopener noreferrer" target="_blank">Antti Revonsuo</a>, soñar serviría en parte para <strong>ensayar situaciones de peligro</strong> en un entorno sin riesgo. La caída, una amenaza muy antigua, sería un escenario típico de ese ensayo. La teoría se sigue debatiendo, pero ayuda a entender por qué los sueños desagradables son tan frecuentes.
+                </p>
+<h3>El papel de la emoción</h3>
+<p>
+                    Hay más acuerdo en un punto: la emoción del sueño suele estar más cerca de tu vida despierta que su decorado. Una caída angustiosa y una caída tranquila no cuentan lo mismo, aunque la imagen sea idéntica. Por eso Noctalia siempre te invita a anotar lo que sentiste.
+                </p>
+<h2 id="solutions">¿Qué hacer si estos sueños se repiten?</h2>
+<p>
+                    La mayoría de los sueños de caída no requieren nada especial. Si vuelven a menudo o te despiertan, aquí tienes algunas ideas sencillas.
+                </p>
+<h3>1. Identifica lo que te preocupa ahora</h3>
+<p>
+                    Hazte la pregunta sin rodeos: ¿qué siento fuera de mi control? Trazar un pequeño plan concreto para ese punto suele aliviar la tensión, y a veces también los sueños.
+                </p>
+<h3>2. Cuida el momento de dormirte</h3>
+<ul>
+<li>Horarios regulares para acostarte y levantarte</li>
+<li>Nada de café ni bebidas energéticas por la tarde</li>
+<li>Un rato tranquilo antes de dormir, con las pantallas lejos</li>
+<li>Un dormitorio fresco, oscuro y silencioso</li>
+</ul>
+<h3>3. Vuelve al cuerpo antes de dormir</h3>
+<p>
+                    Bastan unos minutos: nota el peso de tu cuerpo sobre el colchón y alarga la espiración. Una meditación breve de relajación ayuda a empezar la noche menos en alerta.
+                </p>
+<h3>4. Cambia el final del sueño</h3>
+<p>
+                    Si una caída vuelve a menudo con la misma forma, imagínala por la noche con otro desenlace: vas más despacio, aterrizas con suavidad en el <a class="text-dream-salmon hover:underline" href="../simbolos/agua">agua</a> o sobre la hierba. Esta técnica, cercana a la terapia de ensayo en imaginación que se usa contra las <a class="text-dream-salmon hover:underline" href="guia-pesadillas">pesadillas</a>, se practica despierto, unos minutos al día.
+                </p>
+<h3>5. Prueba el sueño lúcido</h3>
+<p>
+                    Con práctica, algunas personas se dan cuenta de que están soñando mientras sueñan. La caída se convierte entonces en una señal: puedes elegir frenar, o echar a volar.
+                </p>
+<h3>6. Cuándo consultar</h3>
+<p>
+                    Si los sueños de caída, o las pesadillas en general, se repiten varias veces por semana, estropean tu descanso o te dejan con ansiedad durante el día, coméntalo con tu médico o en una unidad del sueño. Hay opciones de tratamiento.
+                </p>
 </div>
 <!-- Related Symbols Start -->
 <section aria-label="Símbolos de sueños relacionados" class="mt-12 mb-8">
@@ -244,12 +328,12 @@
 <div class="w-16 h-16 bg-dream-salmon/10 rounded-full flex items-center justify-center mx-auto mb-6">
 <i class="w-8 h-8 text-dream-salmon" data-lucide="arrow-down"></i>
 </div>
-<h3 class="font-serif text-2xl md:text-3xl mb-4 text-dream-cream">Registra tus sueños de caída</h3>
+<h3 class="font-serif text-2xl md:text-3xl mb-4 text-dream-cream">Una caída es una escena. Diez caídas son una pista.</h3>
 <p class="text-purple-200/70 mb-6 max-w-lg mx-auto">
-                    Guarda lo que recuerdas en Noctalia y vuelve a tus notas para comparar escenas y emociones. Tú decides si una interpretación te ayuda a reflexionar sobre tu experiencia.
+                    Guarda tus sueños de caída en Noctalia, junto con lo que sentiste. Al releerlos juntos, verás cuándo vuelven y qué los acompaña.
                 </p>
 <a class="inline-flex items-center gap-2 px-8 py-4 bg-dream-salmon text-dream-dark rounded-full font-bold hover:bg-dream-salmon/90 transition-colors" href="/es/">
-                    Comienza tu diario de sueños <i class="w-5 h-5" data-lucide="arrow-right"></i>
+                    Empieza tu diario de sueños <i class="w-5 h-5" data-lucide="arrow-right"></i>
 </a>
 </aside>
 <!-- Symbol Guide CTA -->
@@ -259,10 +343,10 @@
 <i class="w-6 h-6 text-dream-salmon" data-lucide="sparkles"></i>
 </div>
 <div>
-<h4 class="font-serif text-lg text-dream-cream mb-2">Explora el simbolismo de la caída</h4>
-<p class="text-sm text-gray-400 mb-3">Consulta un resumen del símbolo de la caída y posibles preguntas para tu reflexión personal.</p>
+<h4 class="font-serif text-lg text-dream-cream mb-2">La ficha del símbolo «caída»</h4>
+<p class="text-sm text-gray-400 mb-3">Las variantes, las preguntas que puedes hacerte y unas preguntas frecuentes, en formato breve.</p>
 <a class="inline-flex items-center gap-2 text-dream-salmon hover:underline text-sm font-medium" href="../simbolos/caida">
-                            Leer la guía completa <i class="w-4 h-4" data-lucide="arrow-right"></i>
+                            Leer la ficha <i class="w-4 h-4" data-lucide="arrow-right"></i>
 </a>
 </div>
 </div>
@@ -272,32 +356,63 @@
 <h2 class="font-serif text-2xl text-dream-cream mb-8">Preguntas frecuentes</h2>
 <div class="space-y-4">
 <details class="glass-panel rounded-xl p-4 group cursor-pointer">
-<summary class="font-medium flex justify-between items-center text-dream-cream">¿Qué significa soñar que caes de un lugar alto?<i class="w-5 h-5 transition-transform group-open:rotate-180 text-dream-salmon" data-lucide="chevron-down"></i></summary>
-<p class="mt-4 text-sm text-gray-400 leading-relaxed">No tiene un significado único. Puedes explorar el lugar, cómo comenzó la caída y la emoción que sentiste, y compararlos con tu contexto actual. El sueño no demuestra un miedo concreto ni predice un accidente.</p>
+<summary class="font-medium flex justify-between items-center text-dream-cream">
+                            ¿Qué significa soñar que caes de un lugar alto?
+                            <i class="w-5 h-5 transition-transform group-open:rotate-180 text-dream-salmon" data-lucide="chevron-down"></i>
+</summary>
+<p class="mt-4 text-sm text-gray-400 leading-relaxed">
+                            No tiene un significado único. Soñar que caes suele acompañar una sensación de pérdida de control, el miedo a fallar, una temporada de mucha carga o un cambio de etapa. Lo que sentiste en el sueño y lo que estás viviendo ahora son las mejores pistas para elegir la que encaja contigo.
+                        </p>
 </details>
 <details class="glass-panel rounded-xl p-4 group cursor-pointer">
-<summary class="font-medium flex justify-between items-center text-dream-cream">¿Qué significa soñar que te caes de un edificio?<i class="w-5 h-5 transition-transform group-open:rotate-180 text-dream-salmon" data-lucide="chevron-down"></i></summary>
-<p class="mt-4 text-sm text-gray-400 leading-relaxed">Fíjate en si conocías el edificio, si caíste por accidente o te empujaron y si había otras personas. Esos detalles sirven para explorar asociaciones personales; no hay una equivalencia demostrada entre caer de un edificio y un problema específico.</p>
+<summary class="font-medium flex justify-between items-center text-dream-cream">
+                            ¿Qué significa soñar que te caes de un edificio?
+                            <i class="w-5 h-5 transition-transform group-open:rotate-180 text-dream-salmon" data-lucide="chevron-down"></i>
+</summary>
+<p class="mt-4 text-sm text-gray-400 leading-relaxed">
+                            Fíjate en si conocías el edificio, si resbalaste, saltaste o te empujaron, y en quién estaba cerca. A menudo la altura acompaña algo que vives como muy importante, pero no mide la gravedad de ningún problema real.
+                        </p>
 </details>
 <details class="glass-panel rounded-xl p-4 group cursor-pointer">
-<summary class="font-medium flex justify-between items-center text-dream-cream">¿Por qué siento que caigo y me despierto de golpe?<i class="w-5 h-5 transition-transform group-open:rotate-180 text-dream-salmon" data-lucide="chevron-down"></i></summary>
-<p class="mt-4 text-sm text-gray-400 leading-relaxed">Si la sensación aparece justo al quedarte dormido y va acompañada de un tirón muscular, podría ser una sacudida hípnica. No todo despertar después de un sueño de caída corresponde a ese fenómeno. Si los movimientos son frecuentes, intensos o alteran tu descanso, consulta a un profesional sanitario.</p>
+<summary class="font-medium flex justify-between items-center text-dream-cream">
+                            ¿Por qué me despierto de golpe cuando sueño que caigo?
+                            <i class="w-5 h-5 transition-transform group-open:rotate-180 text-dream-salmon" data-lucide="chevron-down"></i>
+</summary>
+<p class="mt-4 text-sm text-gray-400 leading-relaxed">
+                            Si ocurre justo al quedarte dormido, suele ser una sacudida hípnica: una contracción muscular breve y benigna, a veces con una imagen de caída. Hasta un 70 % de las personas la ha vivido, según la Sleep Foundation. La cafeína, el estrés y la falta de sueño la hacen más frecuente.
+                        </p>
 </details>
 <details class="glass-panel rounded-xl p-4 group cursor-pointer">
-<summary class="font-medium flex justify-between items-center text-dream-cream">¿Cuándo conviene consultar por estos sueños?<i class="w-5 h-5 transition-transform group-open:rotate-180 text-dream-salmon" data-lucide="chevron-down"></i></summary>
-<p class="mt-4 text-sm text-gray-400 leading-relaxed">Conviene pedir orientación si las pesadillas se repiten, te hacen evitar dormir o afectan a tu descanso o a tu vida durante el día. Un diario puede ayudarte a describir lo que ocurre, pero no sustituye una evaluación clínica.</p>
+<summary class="font-medium flex justify-between items-center text-dream-cream">
+                            ¿Soñar que caes anuncia algo?
+                            <i class="w-5 h-5 transition-transform group-open:rotate-180 text-dream-salmon" data-lucide="chevron-down"></i>
+</summary>
+<p class="mt-4 text-sm text-gray-400 leading-relaxed">
+                            No. Un sueño de caída no predice un accidente ni un fracaso. Pone en escena una emoción o una preocupación del presente, o simplemente una sensación del momento de dormirte.
+                        </p>
+</details>
+<details class="glass-panel rounded-xl p-4 group cursor-pointer">
+<summary class="font-medium flex justify-between items-center text-dream-cream">
+                            ¿Debo preocuparme si estos sueños se repiten?
+                            <i class="w-5 h-5 transition-transform group-open:rotate-180 text-dream-salmon" data-lucide="chevron-down"></i>
+</summary>
+<p class="mt-4 text-sm text-gray-400 leading-relaxed">
+                            Casi nunca. Si se repiten varias veces por semana, estropean tu descanso o te dejan con ansiedad durante el día, coméntalo con tu médico o en una unidad del sueño, igual que harías con pesadillas frecuentes.
+                        </p>
 </details>
 </div>
 </section>
+<!-- Sources / Trust (TI-97) -->
 <section class="mt-16 glass-panel rounded-2xl p-6" id="sources">
-<h2 class="font-serif text-2xl text-dream-cream mb-4">Fuentes y límites de la interpretación</h2>
+<h2 class="font-serif text-2xl text-dream-cream mb-4">Fuentes y lecturas</h2>
 <ul class="mt-6 space-y-2 text-sm text-gray-400">
-<li><a href="https://journals.ub.uni-heidelberg.de/index.php/IJoDR/article/view/75878" rel="noopener noreferrer" target="_blank">Schredl (2021): sueños típicos de caída, persecución y parálisis en Alemania</a>. Estudia temas recordados; no asigna un significado individual a cada escena.</li>
-<li><a href="https://pubmed.ncbi.nlm.nih.gov/23912581/" rel="noopener noreferrer" target="_blank">Intensified hypnic jerks: a polysomnographic and polymyographic analysis (2013)</a>. Sacudidas hípnicas y sus variantes fisiológicas.</li>
-<li><a href="https://pubmed.ncbi.nlm.nih.gov/26329450/" rel="noopener noreferrer" target="_blank">Hypnic Jerks: A Scoping Literature Review (2015)</a>. Revisión sobre sacudidas al inicio del sueño.</li>
-<li><a href="https://pubmed.ncbi.nlm.nih.gov/29852917/" rel="noopener noreferrer" target="_blank">AASM (2018): tratamiento del trastorno de pesadillas en adultos</a>. Recomendaciones clínicas, no una explicación simbólica de la caída.</li>
+<li><a href="https://asdreams.org/journal/issues/asdj13-4.htm" rel="nofollow noopener noreferrer" target="_blank">Nielsen, Zadra et al. (2003), «The Typical Dreams of Canadian University Students», <em>Dreaming</em>, 13(4)</a></li>
+<li><a href="https://www.sleepfoundation.org/sleep-faqs/hypnic-jerks" rel="nofollow noopener noreferrer" target="_blank">Sleep Foundation, «Hypnic Jerks»</a></li>
+<li><a href="https://www.cambridge.org/core/journals/behavioral-and-brain-sciences/article/reinterpretation-of-dreams-an-evolutionary-hypothesis-of-the-function-of-dreaming/EE0E7DB39E361540D2DDA79C262EDA7E" rel="nofollow noopener noreferrer" target="_blank">Revonsuo (2000), «The reinterpretation of dreams», <em>Behavioral and Brain Sciences</em></a></li>
+<li><a href="https://dictionary.apa.org/dream" rel="nofollow noopener noreferrer" target="_blank">APA Dictionary of Psychology, «Dream»</a></li>
+<li><a href="https://dreamresearch.net/" rel="nofollow noopener noreferrer" target="_blank">DreamResearch.net, G. William Domhoff</a></li>
 </ul>
-<p class="mt-6 text-xs text-purple-200/60">Actualizado el 10 de septiembre de 2026. Las preguntas de interpretación son propuestas de reflexión, no conclusiones clínicas.</p>
+<p class="mt-6 text-xs text-purple-200/60">Actualizado el 9 de octubre de 2026</p>
 </section>
 <!-- Blog Nav Start -->
 <section class="mt-12" aria-label="Navegación entre artículos" data-blog-nav="">

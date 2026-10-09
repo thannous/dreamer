@@ -4,11 +4,94 @@
 de déploiement. Le workflow GitHub Actions `Quality`, devenu une duplication de
 la même validation, est retiré. Le ruleset de `master` ne requiert aucun check.
 
+## Modèle actuel : contrôles locaux, PR, commentaires de revue
+
+Décision du propriétaire du 9 octobre 2026 : la CI distante ne faisait que
+rejouer ce que l'agent peut vérifier avant de pousser, et elle consommait des
+crédits (machine `ubuntu-2404`, conteneurs TesterArmy parallèles). Désormais :
+
+1. **Contrôle local automatique.** Le hook versionné `.githooks/pre-push` est
+   installé par `npm ci` ou `npm install` : le script `prepare`
+   (`scripts/install-git-hooks.js`) règle `core.hooksPath` sur `.githooks`,
+   sauf hors dépôt Git (EAS, hébergeurs) ou si un autre chemin est déjà
+   configuré. Le hook lance `npm run verify:fast` sur le commit extrait :
+   `test:prepush` (classification décrite ci-dessous, types, Jest affecté),
+   puis `lint` et `lint:scripts`. Il ne fait rien pour une suppression de
+   branche ou un push sans nouveau commit, refuse de tourner sans dépendances
+   installées en affichant la commande d'installation, et affiche la commande
+   lancée, le SHA et la durée. `git push --no-verify` reste possible pour un
+   humain ; les agents ne l'utilisent jamais.
+2. **Preuve écrite.** Le modèle `.github/pull_request_template.md` demande les
+   commandes lancées, le SHA contrôlé, le résultat et ce qui reste non vérifié.
+   La revue passe par les commentaires de la PR.
+3. **CircleCI sur déclenchement manuel uniquement.** Le workflow `setup` de
+   `.circleci/config.yml` porte `when: { equal: [ api, << pipeline.event.name >> ] }`.
+   `pipeline.event.name` vaut `api` pour un déclenchement manuel depuis
+   l'application web ou par l'API
+   ([options de déclenchement GitHub](https://circleci.com/docs/guides/orchestrate/github-trigger-event-options/),
+   [valeurs de pipeline](https://circleci.com/docs/reference/variables/#pipeline-values)) ;
+   push, PR, tag et schedule donnent `push`, `pull_request` ou `schedule`. Ces
+   pipelines webhook n'exécutent donc aucun workflow et ne consomment aucun
+   crédit. `pipeline.trigger_source`, encore présent dans d'anciens exemples,
+   est déprécié par la référence au profit de `pipeline.trigger.type`.
+   `.circleci/continue.yml` est inchangé ; `.circleci/tests/fallback-jest.test.sh`
+   vérifie ce verrou.
+4. **Avant fusion**, si `master` a bougé depuis le contrôle, fusionner `master`
+   dans la branche et repousser : le hook relance le contrôle sur la nouvelle
+   tête, dont le SHA remplace celui de la preuve.
+
+Lancer une pipeline manuelle : application web CircleCI, page *Pipelines* du
+projet, *Trigger Pipeline*, branche de configuration et de checkout, puis
+*Add +* pour `force_full_validation` = `true` si une validation complète est
+voulue. Par l'API v2 (identifiant de définition dans *Project Setup*) :
+
+```sh
+curl -X POST https://circleci.com/api/v2/project/<project-slug>/pipeline/run \
+  --header "Circle-Token: $CIRCLE_TOKEN" \
+  --header "content-type: application/json" \
+  --data '{"definition_id": "<pipeline-definition-id>",
+    "config": {"branch": "<branche>"}, "checkout": {"branch": "<branche>"},
+    "parameters": {"force_full_validation": true}}'
+```
+
+Une étape de release ou de publication qui exigeait une pipeline CircleCI verte
+sur le SHA exige désormais que **la validation complète locale ait réussi sur
+ce SHA exact (ou une pipeline CircleCI manuelle avec
+`force_full_validation: true`)**. Ce choix ne prouve rien sur une machine
+vierge : le contrôle tourne dans l'installation locale de l'auteur.
+
+### Validation complète locale
+
+Elle reprend les commandes `run` du portefeuille `full` de
+`.circleci/continue.yml`, sur un checkout propre du SHA visé, après
+`mise exec -- npm ci` à la racine et dans `apps/meditation` :
+
+- Noctalia : `npm run dependencies:check`, `npm run boundaries:check`,
+  `node scripts/mobile-release.js verify --app all`,
+  `bash .circleci/tests/classify-changes.test.sh`,
+  `python3 .circleci/tests/shared-build-impact.test.py`,
+  `bash .circleci/tests/fallback-jest.test.sh`, `npm run typecheck:app`,
+  `npm run typecheck:tests`, `npm run lint`, `npm run lint:scripts`,
+  `npm run test:fast` ;
+- Meditation : `node scripts/check-monorepo-boundaries.js --meditation`, puis
+  dans `apps/meditation` `npm run dependencies:check`, `npm run typecheck`,
+  `npm run lint` et `npm test -- --ci` ;
+- site : `npm run docs:build`, `npm run docs:check`,
+  `npm run test:testerarmy:site` ;
+- Edge et contrats DB : les étapes Deno du job `edge-functions`,
+  `npm run test:analysis-authorization:db` et la liste `test:file` du job
+  `edge-contracts` ;
+- parcours : `npm run test:e2e:backend` et les campagnes TesterArmy Dreamer
+  (quatre passes de `tools/e2e/README.md`), Lucid et Meditation.
+
+`continue.yml` reste la source de vérité de cette liste.
+
 ## Architecture et frontière des responsabilités
 
 ```mermaid
 flowchart LR
-  GH[GitHub App trigger] --> S[Setup CircleCI small]
+  T[Trigger manuel : web app ou API] --> S[Setup CircleCI small]
+  GH[Push ou PR GitHub] -. aucun workflow .-> S
   S --> C{Classification du diff}
   C -->|Noctalia racine| N[Types, lint, Jest ciblé + JUnit]
   C -->|apps/meditation| M[Types, lint, Jest Meditation + JUnit]
@@ -32,7 +115,7 @@ opérateur, pas un accès implicite à une base distante depuis la CI.
 
 | Ancien job `quality.yml` | CircleCI | Déclenchement |
 | --- | --- | --- |
-| `changes` | setup `classify-and-continue` + `classify-changes.sh` | Toute pipeline, `small` |
+| `changes` | setup `classify-and-continue` + `classify-changes.sh` | Toute pipeline manuelle, `small` |
 | `pr-quality` | `noctalia-quality` + JSON/JUnit | Diff Noctalia racine ou entrée partagée vérifiée |
 | non couvert auparavant | `meditation-quality` + JSON/JUnit | `apps/meditation/**` ou outil Node global |
 | `test-fast` | suite complète dans `noctalia-quality` | tag/release ou `force_full_validation=true` seulement |
@@ -107,17 +190,20 @@ générateurs `docs-src`, opt-out CI et fallback global.
 
 ## PR, master et validations complètes
 
-Sur PR, la base est le `merge-base` avec `origin/master`. Sur un push normal à
-`master`, la base est `pipeline.git.base_revision`, soit la révision de la
-pipeline précédente : un push contenant plusieurs commits rejoue donc chaque
-surface affectée sur tout l'intervalle. Si cette base manque, n'est pas
+Ces règles s'appliquent aux pipelines déclenchées manuellement, et à
+`test:prepush` pour la sélection locale. Sur une branche, la base est le
+`merge-base` avec `origin/master`. Sur `master`, la base est
+`pipeline.git.base_revision`, soit la révision de la pipeline précédente : une
+pipeline couvrant plusieurs commits rejoue donc chaque surface affectée sur tout
+l'intervalle. Si cette base manque, n'est pas
 récupérable ou n'est pas un ancêtre du head, le classificateur échoue fermé en
 activant toutes les surfaces. Un changement Noctalia lance les tests liés au
 diff ; Meditation utilise sa petite suite autonome ; le site et Edge restent
 strictement indépendants.
 
-Le portfolio complet est réservé aux tags, aux branches `release`/`release/*`
-et au paramètre manuel `force_full_validation=true`. Si ce paramètre est lancé
+Le portfolio complet est réservé aux pipelines manuelles sur un tag ou une
+branche `release`/`release/*` et au paramètre manuel
+`force_full_validation=true`. Si ce paramètre est lancé
 sur `master`, la pipeline peut aussi publier la baseline Jest de référence ; sur
 une autre branche elle exécute le portfolio sans remplacer cette baseline.
 Aucun schedule n'est défini. Les filtres `tags: only: /.*/` sont explicites sur
@@ -204,7 +290,9 @@ réelle a approché 11 min 40.
 Un changement global affecté est volontairement plus cher, car il vérifie les
 cinq gates. Le portfolio complet ajoute aussi la suite Noctalia exhaustive mais
 reste rare par conception. `Plan Usage` et les durées CircleCI réelles doivent
-remplacer ces hypothèses avant de prendre une décision de capacité.
+remplacer ces hypothèses avant de prendre une décision de capacité. Depuis le
+9 octobre 2026, ces montants ne concernent que les pipelines déclenchées
+manuellement : une pipeline de push ou de PR n'exécute aucun job.
 
 ## Authentification requise
 
@@ -214,13 +302,15 @@ pas créer dans CircleCI `CLOUDFLARE_API_TOKEN`, `CLOUDFLARE_ACCOUNT_ID`,
 `EXPO_TOKEN`, `SUPABASE_ACCESS_TOKEN`, `SUPABASE_DB_URL`, `DATABASE_URL` ou des
 credentials de store : aucun de ces secrets n'est nécessaire aux gates locales.
 
-Le projet reste connecté via la GitHub App CircleCI avec les triggers PR,
-branche par défaut et tags. Une future branche `release/*` doit être incluse
-dans les triggers du projet. Dynamic Config doit rester activé.
+Le projet reste connecté via la GitHub App CircleCI : le déclenchement manuel
+en a besoin. Les triggers PR, branche par défaut et tags peuvent rester actifs,
+leurs pipelines n'exécutant aucun workflow ; les désactiver dans *Project
+Setup* évite aussi d'en créer. Dynamic Config doit rester activé.
 
 ## Procédure d'exploitation
 
-1. Vérifier une PR témoin par surface et un no-op de documentation interne.
+1. Vérifier qu'un push de PR crée une pipeline sans workflow, puis qu'un
+   déclenchement manuel de la même branche lance le setup et la classification.
 2. Lancer `force_full_validation=true` sur `master` pour vérifier le portfolio,
    les cinq JUnit/artifacts attendus et amorcer la baseline Noctalia.
 3. Observer les durées p50/p95 et recalculer les crédits après les changements
@@ -229,6 +319,12 @@ dans les triggers du projet. Dynamic Config doit rester activé.
    réglages CircleCI.
 
 ## Retour arrière
+
+Pour revenir à une CI automatique sur push et PR, retirer le `when` du workflow
+`setup` de `.circleci/config.yml` et l'assertion correspondante de
+`.circleci/tests/fallback-jest.test.sh` dans une PR ciblée.
+
+Bascule historique depuis GitHub Actions :
 
 1. Revert ciblé du commit de bascule pour restaurer `quality.yml`, puis attendre
    un run GitHub Actions réussi.

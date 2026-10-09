@@ -5,7 +5,7 @@
   "lang": "de",
   "slug": "fruehling-schlaf-stoerung-traeume",
   "title": "Schlafstörung im Frühling: Licht, Schlaf und Träume | Noctalia",
-  "description": "Warum längere Frühlingstage den Schlaf beeinflussen können, was das für die Traumerinnerung bedeutet und welche Gewohnheiten helfen können.",
+  "description": "Schlafstörung im Frühling: Warum helle Abende das Einschlafen verzögern, Morgenlicht früh weckt und sich die Traumerinnerung ändert – und was hilft.",
   "robots": "index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1",
   "themeColor": "#0a0514",
   "htmlClass": "scroll-smooth blog-article",
@@ -14,25 +14,25 @@
   "mainClass": "pt-32 pb-20 px-4",
   "ogType": "article",
   "ogTitle": "Schlafstörung im Frühling: Licht, Schlaf und Träume",
-  "ogDescription": "Wie längere Tage den Schlaf beeinflussen können und warum sich dadurch auch die Traumerinnerung verändern kann.",
+  "ogDescription": "Abends lange hell, morgens um halb sechs wach? Was das Frühlingslicht mit Schlaf und Träumen macht, was die Forschung zeigt und was hilft.",
   "ogImage": "https://noctalia.app/img/blog/spring-sleep-disruption-dreams.webp",
   "ogImageAlt": "Frühlingslandschaft mit Blüten und Lichtspuren in violetten und goldenen Tönen",
   "twitterCard": "summary_large_image",
   "twitterTitle": "Schlafstörung im Frühling: Licht, Schlaf und Träume",
-  "twitterDescription": "Wie längere Tage den Schlaf beeinflussen können und warum sich dadurch auch die Traumerinnerung verändern kann.",
+  "twitterDescription": "Abends lange hell, morgens um halb sechs wach? Was das Frühlingslicht mit Schlaf und Träumen macht, was die Forschung zeigt und was hilft.",
   "twitterImage": "https://noctalia.app/img/blog/spring-sleep-disruption-dreams.webp",
   "twitterImageAlt": "Frühlingslandschaft mit Blüten und Lichtspuren in violetten und goldenen Tönen",
   "publishedTime": "2026-03-24",
-  "modifiedTime": "2026-07-17",
+  "modifiedTime": "2026-10-09",
   "author": "Thanh Chau",
   "prevPath": "/de/blog/schlafschuld-gesundheit-traeume",
   "nextPath": "/de/blog/schlaf-gesundheit-prioritaet",
   "preloadImage": "/img/blog/spring-sleep-disruption-dreams.webp",
   "jsonLd": [
-    "{\"@context\":\"https://schema.org\",\"@type\":\"BlogPosting\",\"headline\":\"Schlafstörung im Frühling: Licht, Schlaf und Träume\",\"description\":\"Warum längere Frühlingstage den Schlaf beeinflussen können, was das für die Traumerinnerung bedeutet und welche Gewohnheiten helfen können.\",\"image\":{\"@type\":\"ImageObject\",\"url\":\"https://noctalia.app/img/blog/spring-sleep-disruption-dreams.webp\",\"width\":1200,\"height\":630},\"author\":[{\"@type\":\"Person\",\"@id\":\"https://noctalia.app/de/ueber-uns#person\",\"name\":\"Thanh Chau\",\"jobTitle\":\"Gründer & Publikationsleiter\",\"url\":\"https://noctalia.app/de/ueber-uns\",\"worksFor\":{\"@id\":\"https://noctalia.app/#organization\"}},{\"@type\":\"Organization\",\"@id\":\"https://noctalia.app/#organization\",\"name\":\"Noctalia\",\"url\":\"https://noctalia.app\"}],\"publisher\":{\"@type\":\"Organization\",\"@id\":\"https://noctalia.app/#organization\",\"name\":\"Noctalia\",\"url\":\"https://noctalia.app\",\"logo\":{\"@type\":\"ImageObject\",\"url\":\"https://noctalia.app/logo/logo_noctalia.png\"}},\"datePublished\":\"2026-03-24\",\"dateModified\":\"2026-07-17\",\"mainEntityOfPage\":{\"@type\":\"WebPage\",\"@id\":\"https://noctalia.app/de/blog/fruehling-schlaf-stoerung-traeume\"},\"inLanguage\":\"de\",\"isAccessibleForFree\":true,\"wordCount\":1422,\"timeRequired\":\"PT7M\",\"url\":\"https://noctalia.app/de/blog/fruehling-schlaf-stoerung-traeume\"}",
+    "{\n    \"@context\": \"https://schema.org\",\n    \"@type\": \"BlogPosting\",\n    \"headline\": \"Schlafstörung im Frühling: Wie längere Tage Schlaf und Träume verändern können\",\n    \"description\": \"Schlafstörung im Frühling: Warum helle Abende das Einschlafen verzögern, Morgenlicht früh weckt und sich die Traumerinnerung ändert – und was hilft.\",\n    \"image\": {\n        \"@type\": \"ImageObject\",\n        \"url\": \"https://noctalia.app/img/blog/spring-sleep-disruption-dreams.webp\",\n        \"width\": 1200,\n        \"height\": 630\n    },\n    \"author\": [\n        {\n            \"@type\": \"Person\",\n            \"@id\": \"https://noctalia.app/de/ueber-uns#person\",\n            \"name\": \"Thanh Chau\",\n            \"jobTitle\": \"Gründer & Publikationsleiter\",\n            \"url\": \"https://noctalia.app/de/ueber-uns\",\n            \"worksFor\": {\n                \"@id\": \"https://noctalia.app/#organization\"\n            }\n        },\n        {\n            \"@type\": \"Organization\",\n            \"@id\": \"https://noctalia.app/#organization\",\n            \"name\": \"Noctalia\",\n            \"url\": \"https://noctalia.app\"\n        }\n    ],\n    \"publisher\": {\n        \"@type\": \"Organization\",\n        \"@id\": \"https://noctalia.app/#organization\",\n        \"name\": \"Noctalia\",\n        \"url\": \"https://noctalia.app\",\n        \"logo\": {\n            \"@type\": \"ImageObject\",\n            \"url\": \"https://noctalia.app/logo/logo_noctalia.png\"\n        }\n    },\n    \"datePublished\": \"2026-03-24\",\n    \"dateModified\": \"2026-10-09\",\n    \"mainEntityOfPage\": {\n        \"@type\": \"WebPage\",\n        \"@id\": \"https://noctalia.app/de/blog/fruehling-schlaf-stoerung-traeume\"\n    },\n    \"inLanguage\": \"de\",\n    \"isAccessibleForFree\": true,\n    \"wordCount\": 1536,\n    \"timeRequired\": \"PT7M\",\n    \"url\": \"https://noctalia.app/de/blog/fruehling-schlaf-stoerung-traeume\"\n}",
     "{\"@context\":\"https://schema.org\",\"@type\":\"WebPage\",\"@id\":\"https://noctalia.app/de/blog/fruehling-schlaf-stoerung-traeume\",\"url\":\"https://noctalia.app/de/blog/fruehling-schlaf-stoerung-traeume\",\"name\":\"Schlafstörung im Frühling: Licht, Schlaf und Träume | Noctalia\",\"inLanguage\":\"de\"}",
-    "{\"@context\":\"https://schema.org\",\"@type\":\"FAQPage\",\"mainEntity\":[{\"@type\":\"Question\",\"name\":\"Warum fällt das Einschlafen im Frühling manchmal schwerer?\",\"acceptedAnswer\":{\"@type\":\"Answer\",\"text\":\"Längeres Abendlicht kann die innere Uhr später stellen und das Einschlafen erschweren. Wie stark dieser Effekt ausfällt, hängt jedoch auch von Tagesablauf, Beleuchtung, Schlafenszeit und persönlicher Lichtempfindlichkeit ab.\"}},{\"@type\":\"Question\",\"name\":\"Verändert der Frühling die Träume?\",\"acceptedAnswer\":{\"@type\":\"Answer\",\"text\":\"Dafür gibt es keine einfache Regel. Wenn Sie früher aufwachen oder unruhiger schlafen, können Sie sich anders an Träume erinnern. Inhalt und Bedeutung eines Traums lassen sich daraus nicht ableiten.\"}},{\"@type\":\"Question\",\"name\":\"Was kann beim Schlafen im Frühling helfen?\",\"acceptedAnswer\":{\"@type\":\"Answer\",\"text\":\"Hilfreich können regelmäßige Schlafzeiten, Licht am Morgen und weniger helles Licht am späten Abend sein. Bei anhaltenden Schlafproblemen oder starker Tagesmüdigkeit sollten Sie ärztlichen Rat einholen.\"}}]}",
-    "{\n  \"@context\": \"https://schema.org\",\n  \"@type\": \"BreadcrumbList\",\n  \"itemListElement\": [\n    {\n      \"@type\": \"ListItem\",\n      \"position\": 1,\n      \"name\": \"Startseite\",\n      \"item\": \"https://noctalia.app/de/\"\n    },\n    {\n      \"@type\": \"ListItem\",\n      \"position\": 2,\n      \"name\": \"Ressourcen\",\n      \"item\": \"https://noctalia.app/de/blog/\"\n    },\n    {\n      \"@type\": \"ListItem\",\n      \"position\": 3,\n      \"name\": \"Frühling und Schlaf\",\n      \"item\": \"https://noctalia.app/de/blog/fruehling-schlaf-stoerung-traeume\"\n    }\n  ]\n}"
+    "{\n    \"@context\": \"https://schema.org\",\n    \"@type\": \"FAQPage\",\n    \"mainEntity\": [\n        {\n            \"@type\": \"Question\",\n            \"name\": \"Warum schläft man im Frühling auch ohne Zeitumstellung schlechter?\",\n            \"acceptedAnswer\": {\n                \"@type\": \"Answer\",\n                \"text\": \"Nach der Tagundnachtgleiche im März werden die Tage täglich um einige Minuten länger. Helle Abende können den Melatoninanstieg und die Müdigkeit verzögern, früheres Morgenlicht kann eher wecken. Über Wochen können die Nächte so kürzer werden. Wie stark, hängt von Schlafzimmer, Gewohnheiten und Lichtempfindlichkeit ab.\"\n            }\n        },\n        {\n            \"@type\": \"Question\",\n            \"name\": \"Gibt es die Frühjahrsmüdigkeit wirklich?\",\n            \"acceptedAnswer\": {\n                \"@type\": \"Answer\",\n                \"text\": \"Viele Menschen beschreiben sie, eine medizinische Diagnose ist sie aber nicht. Kürzere Nächte, die Zeitumstellung, Pollen und volle Abende sind die üblichen Erklärungen. Müdigkeit, die wochenlang anhält, sollte ärztlich abgeklärt werden.\"\n            }\n        },\n        {\n            \"@type\": \"Question\",\n            \"name\": \"Verändert der Frühling die Träume?\",\n            \"acceptedAnswer\": {\n                \"@type\": \"Answer\",\n                \"text\": \"Vor allem die Erinnerung daran. Früheres Aufwachen, manchmal direkt aus dem REM-Schlaf, kann lebhaftere Träume im Gedächtnis lassen, kurze oder unruhige Nächte eher weniger. Frühlingsbilder können auftauchen, eine jahreszeitliche Traumsprache ist aber nicht belegt.\"\n            }\n        },\n        {\n            \"@type\": \"Question\",\n            \"name\": \"Wann sollte ich wegen Schlafproblemen im Frühling zum Arzt?\",\n            \"acceptedAnswer\": {\n                \"@type\": \"Answer\",\n                \"text\": \"Wenn der Schlaf länger als einige Wochen schlecht bleibt, Sie tagsüber kaum wach bleiben, Albträume mehrmals pro Woche auftreten oder die Stimmung sinkt. Der Frühling ist eine häufige Erklärung, aber nicht die einzige.\"\n            }\n        }\n    ]\n}",
+    "{\n    \"@context\": \"https://schema.org\",\n    \"@type\": \"BreadcrumbList\",\n    \"itemListElement\": [\n        {\n            \"@type\": \"ListItem\",\n            \"position\": 1,\n            \"name\": \"Startseite\",\n            \"item\": \"https://noctalia.app/de/\"\n        },\n        {\n            \"@type\": \"ListItem\",\n            \"position\": 2,\n            \"name\": \"Ressourcen\",\n            \"item\": \"https://noctalia.app/de/blog/\"\n        },\n        {\n            \"@type\": \"ListItem\",\n            \"position\": 3,\n            \"name\": \"Schlaf im Frühling\",\n            \"item\": \"https://noctalia.app/de/blog/fruehling-schlaf-stoerung-traeume\"\n        }\n    ]\n}"
   ],
   "activeNav": "resources"
 }
@@ -52,7 +52,7 @@
 </li>
 <li class="text-purple-400">/</li>
 <li itemprop="itemListElement" itemscope="" itemtype="https://schema.org/ListItem">
-<span class="text-dream-cream" itemprop="name">Fr&uuml;hling und Schlaf</span>
+<span class="text-dream-cream" itemprop="name">Schlaf im Frühling</span>
 <meta content="3" itemprop="position">
 </li>
 </ol>
@@ -66,10 +66,10 @@
 <span class="text-sm text-purple-300/60">7 Min. Lesezeit</span>
 </div>
 <h1 class="font-serif text-3xl md:text-5xl mb-6 text-transparent bg-clip-text bg-gradient-to-b from-white via-dream-lavender to-purple-400/50 leading-tight">
-                    Schlafst&ouml;rung im Fr&uuml;hling: Licht, Schlaf und Tr&auml;ume
+                    Schlafstörung im Frühling: Wie längere Tage Schlaf und Träume verändern können
                 </h1>
 <p class="text-lg text-purple-200/80 leading-relaxed">
-                    Abends ist es pl&ouml;tzlich l&auml;nger hell, morgens f&auml;llt das Licht fr&uuml;her ins Schlafzimmer. Manche Menschen schlafen in dieser Zeit unruhiger oder werden eher wach. Andere bemerken gar keinen Unterschied. Entscheidend ist deshalb nicht die Jahreszeit allein, sondern wie Licht, Uhrzeit, Gewohnheiten und pers&ouml;nliche Empfindlichkeit zusammenspielen.
+                    Es ist halb elf, und draußen ist es noch nicht ganz dunkel. Sie gehen später ins Bett als im Winter, und um zwanzig vor sechs fällt Licht durch die Rollladenritzen, eine halbe Stunde vor dem Wecker. Ein Traum verblasst. Die Schlafstörung im Frühling ist oft genau das: mehr Licht am Abend, früheres Licht am Morgen und eine innere Uhr, die nachziehen muss. Hier lesen Sie, was die Forschung zeigt, was das für die Traumerinnerung bedeutet und was hilft.
                 </p>
 </header>
 <!-- Author Byline (E-E-A-T) -->
@@ -90,7 +90,7 @@
 <!-- Quick Answer -->
 <section aria-labelledby="quick-answer-title" class="glass-panel rounded-2xl p-6 mb-8 border border-dream-salmon/20 bg-white/5">
 <h2 class="font-serif text-xl text-dream-cream mb-3" id="quick-answer-title">Kurze Antwort</h2>
-<p class="text-purple-100/80 leading-relaxed">L&auml;ngeres Abendlicht kann den Schlafzeitpunkt nach hinten verschieben, fr&uuml;hes Morgenlicht kann das Aufwachen beg&uuml;nstigen. Ob Sie das sp&uuml;ren, ist individuell. Regelm&auml;&szlig;ige Schlafzeiten und ein bewusster Umgang mit Licht k&ouml;nnen helfen. Ein Traumtagebuch zeigt dagegen nur, was Sie erinnert haben; es misst weder Schlafqualit&auml;t noch zirkadiane Anpassung.</p>
+<p class="text-purple-100/80 leading-relaxed">Helle Frühlingsabende können die Müdigkeit nach hinten schieben, frühes Morgenlicht kann Sie eher wecken. Kommt beides zusammen, werden die Nächte kürzer: Sie sind eine Zeit lang müder oder erinnern sich anders an Träume. Die meisten Menschen passen sich von selbst an. Tageslicht am Morgen, gedimmte Abende, eine feste Aufstehzeit und ein dunkles Schlafzimmer helfen. Bleibt der Schlaf über Wochen schlecht, sprechen Sie mit Ihrer Ärztin oder Ihrem Arzt.</p>
 </section>
 <!-- Featured Image -->
 <figure class="mb-12 rounded-2xl overflow-hidden">
@@ -102,51 +102,61 @@
 <i class="w-5 h-5 text-dream-salmon" data-lucide="list"></i> Inhaltsverzeichnis
                 </h2>
 <ol class="space-y-2 text-sm text-purple-200/70">
-<li><a class="toc-link block" href="#equinox-effect">1. Was sich im Fr&uuml;hling &auml;ndert</a></li>
-<li><a class="toc-link block" href="#melatonin">2. Abend- und Morgenlicht</a></li>
-<li><a class="toc-link block" href="#spring-fatigue">3. Fr&uuml;hjahrm&uuml;digkeit</a></li>
-<li><a class="toc-link block" href="#dream-quality">4. Tr&auml;ume und Traumerinnerung</a></li>
-<li><a class="toc-link block" href="#adaptation">5. Anpassungsstrategien</a></li>
-<li><a class="toc-link block" href="#journaling">6. Traumtagebuch w&auml;hrend des &Uuml;bergangs</a></li>
+<li><a class="toc-link block" href="#equinox-effect">1. Was ändert sich im Frühling?</a></li>
+<li><a class="toc-link block" href="#melatonin">2. Warum helle Abende das Einschlafen verschieben</a></li>
+<li><a class="toc-link block" href="#spring-fatigue">3. Gibt es die Frühjahrsmüdigkeit?</a></li>
+<li><a class="toc-link block" href="#dream-quality">4. Verändert der Frühling Ihre Träume?</a></li>
+<li><a class="toc-link block" href="#adaptation">5. Was in der Umstellungszeit hilft</a></li>
+<li><a class="toc-link block" href="#journaling">6. Traumtagebuch im Frühling</a></li>
 </ol>
 </nav>
 <!-- Article Content -->
 <div class="prose max-w-none text-gray-300">
-<h2 id="equinox-effect">Was sich im Fr&uuml;hling tats&auml;chlich &auml;ndert</h2>
+<h2 id="equinox-effect">Was ändert sich im Frühling?</h2>
 <p>
-                    Rund um die Fr&uuml;hlings-Tagundnachtgleiche sind Tag und <a class="text-dream-salmon hover:underline" href="../traumsymbole/nacht">Nacht</a> ungef&auml;hr gleich lang. Danach werden die Tage in Mitteleuropa rasch l&auml;nger. Im Alltag f&auml;llt vor allem auf, dass es zur gewohnten Schlafenszeit noch hell sein kann und morgens fr&uuml;her Licht ins Zimmer gelangt.
+                    Um den 20. März sind Tag und <a class="text-dream-salmon hover:underline" href="../traumsymbole/nacht">Nacht</a> auf der Nordhalbkugel etwa gleich lang. Danach werden die Tage in Mitteleuropa jeden Tag um einige Minuten länger. Nach wenigen Wochen gehen Sie bei einer Helligkeit ins Bett, die im Februar noch Nacht war.
                 </p>
 <p>
-                    Licht geh&ouml;rt zu den wichtigsten Zeitgebern der inneren Uhr. Spezialisierte Zellen in der Netzhaut leiten Informationen &uuml;ber Helligkeit an den Nucleus suprachiasmaticus im Gehirn weiter. Dieser stimmt Schlaf-Wach-Rhythmus und weitere tageszeitliche Abl&auml;ufe auf die Umwelt ab. Dabei z&auml;hlen Zeitpunkt, Dauer und St&auml;rke des Lichts, nicht das Kalenderdatum allein.
+                    Die innere Uhr sitzt im Nucleus suprachiasmaticus, einem kleinen Bereich des Hypothalamus, und stellt sich vor allem nach dem Licht. Spezialisierte Zellen der Netzhaut melden ihr, wann und wie hell es ist. Es zählen Zeitpunkt, Stärke und Dauer des Lichts, nicht das Kalenderdatum.
                 </p>
 <p>
-                    Das bedeutet nicht, dass jeder Mensch im Fr&uuml;hling eine Schlafst&ouml;rung entwickelt. Sommerzeit, ver&auml;nderte Tagesabl&auml;ufe, Allergien, Raumtemperatur und pers&ouml;nliche Lichtempfindlichkeit k&ouml;nnen ebenfalls eine Rolle spielen. Wer einen Zusammenhang vermutet, sollte zun&auml;chst einige Tage lang Schlafenszeit, Aufwachzeit und Lichtverh&auml;ltnisse notieren.
-                </p>
-
-<h2 id="melatonin">Abend- und Morgenlicht</h2>
-<h3>Abendlicht als St&ouml;rfaktor</h3>
-<p>
-                    Melatonin wird bei Dunkelheit vermehrt ausgesch&uuml;ttet und hilft dem K&ouml;rper, sich auf die Nacht einzustellen. Helles Licht am Abend kann diesen zeitlichen Ablauf verschieben. Im Fr&uuml;hling kommt zum Licht in Innenr&auml;umen oft noch ein sp&auml;ter Sonnenuntergang hinzu.
+                    In einer kleinen Studie am US-amerikanischen National Institute of Mental Health hielten Wehr und Kollegen 15 Freiwillige zunächst in langen Nächten (14 Stunden Dunkelheit), dann in kurzen (8 Stunden). Nach den langen Nächten dauerten Melatoninausschüttung und Schlafphase länger. Stothard und Kollegen schickten Freiwillige zum Zelten bei reinem Tageslicht: Ihre biologische Nacht war im Winter länger als im Sommer, und elektrisches Licht verschob die innere Uhr eher nach hinten.
                 </p>
 <p>
-                    Wie stark ein verl&auml;ngerter <a class="text-dream-salmon hover:underline" href="../traumsymbole/sonne">Sonnenuntergang</a> den eigenen Schlaf beeinflusst, l&auml;sst sich nicht pauschal angeben. Abstand zum Fenster, k&uuml;nstliche Beleuchtung, Bildschirmnutzung und individuelle Empfindlichkeit unterscheiden sich deutlich. Wenn das Einschlafen schwerer f&auml;llt, ist ein Vergleich hilfreich: Wie hell war es in der letzten Stunde vor dem Zubettgehen, und blieb die Schlafenszeit gleich?
-                </p>
-<h3>Morgenlicht als Taktgeber</h3>
-<p>
-                    Morgenlicht wirkt in die andere Richtung und unterst&uuml;tzt einen fr&uuml;heren Tagesbeginn. Das kann erw&uuml;nscht sein, wenn Sie morgens schwer in Gang kommen. Wer dagegen regelm&auml;&szlig;ig vor dem Wecker aufwacht, kann pr&uuml;fen, ob Verdunkelung oder eine sp&auml;tere Lichtexposition am Morgen einen Unterschied macht.
+                    Dazu kommt Ende März die <a class="text-dream-salmon hover:underline" href="zeitumstellung-schlaf-traeume">Zeitumstellung</a>. Eine Übersichtsarbeit von Harrison bringt sie mit kürzerem, unruhigerem Schlaf in den Tagen danach in Verbindung. Kantermann und Kollegen fanden, dass sich die Schlafzeit an den jahreszeitlich früheren Sonnenaufgang anpasst und die Zeitumstellung diese Anpassung stört.
                 </p>
 
-<h2 id="spring-fatigue">Fr&uuml;hjahrm&uuml;digkeit</h2>
-<h3>Ein Begriff mit vielen m&ouml;glichen Ursachen</h3>
+<h2 id="melatonin">Warum helle Abende das Einschlafen verschieben</h2>
+<h3>Abendlicht bremst das Nachtsignal</h3>
 <p>
-                    Mit &bdquo;Fr&uuml;hjahrsm&uuml;digkeit&ldquo; beschreiben Menschen meist Ersch&ouml;pfung, Schl&auml;frigkeit oder Konzentrationsprobleme zu Beginn der helleren Jahreszeit. Der Begriff bezeichnet jedoch keine einzelne, klar abgegrenzte Diagnose. Aus den Beschwerden allein l&auml;sst sich deshalb keine saisonale Ursache ableiten.
+                    Melatonin steigt am Abend an, wenn es dunkler wird, und signalisiert dem Körper die Nacht. Helles Licht bremst diesen Anstieg. Geht die <a class="text-dream-salmon hover:underline" href="../traumsymbole/sonne">Sonne</a> später unter, kann auch die Müdigkeit später kommen. In einer Laborstudie von Gooley und Kollegen unterdrückte normales Raumlicht vor dem Schlafengehen das Melatonin und verkürzte seine Ausschüttungsdauer, verglichen mit gedämpftem Licht.
+                </p>
+<h3>Morgenlicht wirkt in die andere Richtung</h3>
+<p>
+                    Frühes Licht stellt die Uhr vor und macht wach. Erreicht die Dämmerung um halb sechs Ihr Kopfkissen, kann sie die Nacht aber auch vor dem Wecker beenden. Später einschlafen, früher aufwachen: Das ist die häufigste Frühlingsklage. Wie stark Sie das spüren, hängt von Schlafzimmer, Rollläden, Tagesablauf und persönlicher Lichtempfindlichkeit ab.
+                </p>
+
+<h2 id="spring-fatigue">Gibt es die Frühjahrsmüdigkeit?</h2>
+<h3>Ein vertrautes Gefühl, keine Diagnose</h3>
+<p>
+                    Viele kennen die <strong>Frühjahrsmüdigkeit</strong>: schwere Nachmittage, wenig Konzentration, kaum Antrieb, gerade wenn das Wetter besser wird. Das Gefühl ist real, aber keine anerkannte Erkrankung mit einer einzigen Ursache, und verlässliche Zahlen zur Häufigkeit fehlen. Die verbreitete Erzählung von einer sauberen Melatonin-Serotonin-Umstellung greift zu kurz.
+                </p>
+<h3>Was dazukommen kann</h3>
+<p>
+                    Wahrscheinlicher sind alltägliche Gründe: Kürzere Nächte summieren sich zu einer <a class="text-dream-salmon hover:underline" href="schlafschuld-gesundheit-traeume">Schlafschuld</a>, die Zeitumstellung kostet eine Stunde, helle Abende verlocken zum Aufbleiben. Pollen können die Nase verstopfen und den Schlaf zerstückeln. Müdigkeit, die wochenlang anhält oder mit anderen Beschwerden einhergeht, sollte ärztlich abgeklärt werden.
+                </p>
+
+<h2 id="dream-quality">Verändert der Frühling Ihre Träume?</h2>
+<h3>Eher die Erinnerung als den Inhalt</h3>
+<p>
+                    Die <a class="text-dream-salmon hover:underline" href="rem-schlaf-und-traeume-den-naechtlichen-reset-ihres-gehirns-verstehen">REM-Phasen</a> mit den lebhaftesten Träumen werden in der zweiten Nachthälfte länger. Wer direkt aus einer REM-Phase erwacht, etwa weil früh Licht ins Zimmer fällt, hat oft einen frischen Traum im Kopf. Kurze oder zerrissene Nächte können das Gegenteil bewirken. Mehr dazu: <a class="text-dream-salmon hover:underline" href="so-erinnern-sie-sich-an-ihre-traeume-10-effektive-techniken">so erinnern Sie sich an Ihre Träume</a>.
                 </p>
 <p>
-                    Mehr Abendlicht oder ein fr&uuml;heres Erwachen k&ouml;nnen den Schlaf verk&uuml;rzen. Ebenso denkbar sind eine Zeitumstellung, ein ver&auml;nderter Tagesablauf oder schlicht mehrere kurze N&auml;chte hintereinander. Hormonelle Abl&auml;ufe spielen beim Schlaf eine Rolle, aber die verbreitete Erz&auml;hlung von einer einheitlichen Melatonin-Serotonin-Umstellung greift zu kurz.
+                    Manche träumen im Frühling also lebhafter, andere weniger. Beides ist kein Warnsignal. Nach mehreren kurzen Nächten kann der REM-Schlaf zudem intensiver zurückkommen.
                 </p>
-<h3>Weitere m&ouml;gliche Faktoren</h3>
+<h3>Frühlingsbilder im Traum</h3>
 <p>
-                    Saisonale Allergien k&ouml;nnen den Schlaf st&ouml;ren, etwa durch eine verstopfte Nase. Mildere Abende laden au&szlig;erdem dazu ein, l&auml;nger aktiv zu bleiben. Anhaltende oder ausgepr&auml;gte M&uuml;digkeit sollte trotzdem nicht vorschnell dem Fr&uuml;hling zugeschrieben werden. Wenn sie den Alltag beeintr&auml;chtigt oder weitere Beschwerden hinzukommen, ist eine &auml;rztliche Abkl&auml;rung sinnvoll.
+                    Gärten, offene Fenster, lange helle Abende: Träume greifen auf Erlebtes zurück, also können Frühlingsbilder auftauchen. Eine feste jahreszeitliche Traumsprache ist aber nicht belegt. Fallen Ihnen Licht, Sonne oder <a class="text-dream-salmon hover:underline" href="../traumsymbole/mond">Mond</a> im Traum auf, nehmen Sie sie als Spur zu Ihrem Alltag, nicht als Botschaft Ihrer inneren Uhr.
                 </p>
 </div>
 
@@ -156,60 +166,49 @@
 <i class="w-6 h-6 text-dream-salmon" data-lucide="book-open"></i>
 </div>
 <div>
-<h4 class="font-serif text-lg text-dream-cream mb-2">Notieren Sie Traum und Schlafkontext getrennt</h4>
-<p class="text-sm text-gray-400 mb-4">Mit Noctalia k&ouml;nnen Sie einen Traum direkt nach dem Aufwachen per Sprache festhalten. Erg&auml;nzen Sie bei Bedarf Schlafenszeit, fr&uuml;hes Erwachen oder helles Morgenlicht. So bleibt sichtbar, was Sie getr&auml;umt haben und unter welchen Bedingungen Sie sich daran erinnert haben.</p>
-<a class="inline-flex items-center gap-2 text-sm text-dream-salmon hover:text-dream-salmonLight transition-colors" href="/de/">
-                                Jetzt mit Noctalia aufzeichnen <i class="w-4 h-4" data-lucide="arrow-right"></i>
+<h4 class="font-serif text-lg text-dream-cream mb-2">Den Traum festhalten, bevor das Licht ihn löscht</h4>
+<p class="text-sm text-gray-400 mb-4">In Noctalia erzählen Sie Ihren Traum direkt nach dem Aufwachen. Er wird transkribiert und im Tagebuch gespeichert, und Sie können eine Zeile zu Ihrer Nacht ergänzen.</p>
+<a class="inline-flex items-center gap-2 text-sm text-dream-salmon hover:text-dream-salmonLight transition-colors" href="/de/traumtagebuch-spracheingabe">
+                                So funktioniert das Traumtagebuch per Sprache <i class="w-4 h-4" data-lucide="arrow-right"></i>
 </a>
 </div>
 </div>
 </aside>
 
 <div class="prose max-w-none text-gray-300">
-<h2 id="dream-quality">Tr&auml;ume und Traumerinnerung</h2>
-<h3>Erinnerung statt vermeintlicher Traumqualit&auml;t</h3>
+<h2 id="adaptation">Was in der Umstellungszeit hilft</h2>
+<h3>Licht am Morgen, Dämmerung am Abend</h3>
 <p>
-                    L&auml;ngere REM-Phasen treten h&auml;ufiger in der zweiten Nachth&auml;lfte auf. Ein fr&uuml;heres Aufwachen kann daher beeinflussen, an welchen Traum Sie sich erinnern. Es beweist aber weder, dass der Fr&uuml;hling den Inhalt eines Traums ver&auml;ndert, noch dass eine bestimmte Schlafphase &bdquo;verloren&ldquo; ging.
+                    Tageslicht draußen am Morgen ist das deutlichste Signal für die innere Uhr: ein Spaziergang, der Weg mit dem Rad, auch bei Wolken. Auf Morgenlicht beruht auch die Lichttherapie bei saisonaler Depression, die Terman und Terman ausgewertet haben. Sie gehört allerdings in ärztliche Begleitung. Dimmen Sie in den ein bis zwei Stunden vor dem Schlafengehen das Licht, wählen Sie warme Lampen statt Deckenlicht und legen Sie Bildschirme weg.
                 </p>
+<h3>Feste Aufstehzeit, dunkles Schlafzimmer</h3>
 <p>
-                    Auch kurze Wachmomente spielen eine Rolle. Wer direkt nach einem Traum erwacht, hat oft bessere Chancen, Einzelheiten zu behalten. Eine Nacht kann sich deshalb unruhiger anf&uuml;hlen und zugleich mehr erinnerte Traumfragmente liefern. Aus der Lebhaftigkeit eines Berichts l&auml;sst sich keine verl&auml;ssliche Aussage &uuml;ber die gesamte Schlafqualit&auml;t ableiten.
+                    Eine regelmäßige Aufstehzeit stabilisiert die Uhr mehr als eine feste Bettzeit. Die Bettzeit darf sich etwas verschieben, solange genug Schlaf bleibt. Wer mit dem ersten Licht aufwacht, kann einige Wochen lang Verdunkelungsvorhänge oder eine Schlafmaske ausprobieren.
                 </p>
-<h3>Trauminhalte bleiben pers&ouml;nlich</h3>
-<p>
-                    Bilder von Natur, Bewegung oder hellen <a class="text-dream-salmon hover:underline" href="../traumsymbole/nacht">Nachtszenen</a> k&ouml;nnen im Fr&uuml;hling auffallen. Daf&uuml;r gibt es jedoch viele naheliegende Erkl&auml;rungen: aktuelle Erlebnisse, Gespr&auml;che, Medien, Wetter oder Erwartungen an die Jahreszeit. Eine feste saisonale Symbolsprache ist daraus nicht abzuleiten.
-                </p>
-<p>
-                    Einzelne beunruhigende Tr&auml;ume sind h&auml;ufig und haben nicht automatisch eine medizinische Bedeutung. Treten Albtr&auml;ume regelm&auml;&szlig;ig auf, verursachen sie Angst vor dem Schlafen oder belasten sie den Alltag, sollten Sie professionelle Hilfe in Betracht ziehen.
-                </p>
+<h3>Weitere Gewohnheiten</h3>
+<ul>
+<li><strong>Tagsüber bewegen:</strong> Regelmäßige Bewegung fördert den Schlaf; sehr intensiver Sport spät am Abend hält manche wach</li>
+<li><strong>Kühl schlafen:</strong> Lüften und eine leichtere Decke, wenn die Nächte milder werden</li>
+<li><strong>Nachmittags weniger Koffein und abends wenig Alkohol:</strong> Beides kann das Einschlafen verzögern oder den Schlaf unruhiger machen</li>
+</ul>
 
-<h2 id="adaptation">Anpassungsstrategien</h2>
-<h3>Lichtmanagement</h3>
+<h2 id="journaling">Traumtagebuch im Frühling</h2>
+<h3>Was ein Traumtagebuch zeigt und was nicht</h3>
 <p>
-                    Licht am Morgen kann helfen, den Tagesrhythmus zu stabilisieren. Am sp&auml;ten Abend ist meist weniger helles Licht sinnvoll, besonders wenn Sie ohnehin sp&auml;t m&uuml;de werden. Wer durch den fr&uuml;hen Sonnenaufgang regelm&auml;&szlig;ig geweckt wird, kann eine bessere Verdunkelung ausprobieren. Starre Lux-, Minuten- oder Farbtemperaturvorgaben sind f&uuml;r den Alltag selten n&ouml;tig.
+                    Ein <a class="text-dream-salmon hover:underline" href="dream-journaling-der-vollstaendige-leitfaden-zum-aufzeichnen-ihrer-naechtlichen-abenteuer">Traumtagebuch</a> bewahrt Erinnerungen und macht wiederkehrende Bilder und Gefühle sichtbar. Es misst weder REM-Schlaf noch Melatonin. Notieren Sie neben dem Traum auch die Nacht: Bettzeit, Aufwachzeit, ob Licht Sie geweckt hat. Am besten direkt nach dem Aufwachen, schriftlich oder als kurze Sprachnotiz.
                 </p>
-<h3>Konsistenter Schlafrhythmus</h3>
+<h3>Ein Beispiel</h3>
+<p><strong>Fiktives Beispiel:</strong> Es zeigt, wie Sie Traum und Nacht getrennt festhalten.</p>
+<ul>
+<li><strong>Traum:</strong> „Ich war nachts in einem Garten, aber der Himmel wurde nicht dunkel. Ich suchte einen Schalter, um das Licht auszumachen.“</li>
+<li><strong>Gefühl:</strong> „Unruhig, etwas gereizt. Vor dem Wecker aufgewacht.“</li>
+<li><strong>Nacht:</strong> „Um Viertel vor zwölf ins Bett, später als sonst. Licht an den Rollläden gegen Viertel vor sechs.“</li>
+<li><strong>Frage für später:</strong> „Kommen diese hellen, unruhigen Träume in kurzen Nächten wieder oder auch in ruhigen?“</li>
+</ul>
+<p>Ein einzelner Eintrag beweist nichts. Über einige Wochen kann ein Vergleich von Februar und April ein Muster zeigen, aber keine Ursache belegen.</p>
+<h3>Wann Sie ärztlichen Rat suchen sollten</h3>
 <p>
-                    Versuchen Sie, ungef&auml;hr zur gleichen Zeit aufzustehen und ausreichend Zeit f&uuml;r Schlaf einzuplanen. Dabei muss der Tagesablauf nicht minutengenau sein. Wichtiger ist, dass helle Abende nicht unbemerkt zu immer sp&auml;teren N&auml;chten und zu wenig Schlaf f&uuml;hren.
-                </p>
-<h3>Bewegung und Temperatur</h3>
-<p>
-                    Regelm&auml;&szlig;ige Bewegung kann den Schlaf unterst&uuml;tzen. Zeitpunkt und Intensit&auml;t sollten zu Ihnen passen; nicht jeder schl&auml;ft nach abendlichem Sport schlechter. Achten Sie au&szlig;erdem auf ein Schlafzimmer, das sich ruhig, dunkel und angenehm k&uuml;hl anf&uuml;hlt, statt einer festen Temperaturzahl nachzujagen.
-                </p>
-
-<h2 id="journaling">Traumtagebuch w&auml;hrend des &Uuml;bergangs</h2>
-<h3>Was ein Traumtagebuch zeigen kann und was nicht</h3>
-<p>
-                    Ein Traumtagebuch bewahrt Erinnerungen und macht wiederkehrende Bilder oder Gef&uuml;hle leichter sichtbar. Es ist jedoch kein Messger&auml;t f&uuml;r REM-Schlaf, Melatonin oder zirkadiane Gesundheit. Wenn Sie saisonale Unterschiede beobachten m&ouml;chten, notieren Sie neben dem Traum auch Schlafenszeit, Aufwachzeit, Wachmomente und auff&auml;llige Lichtverh&auml;ltnisse.
-                </p>
-<p>
-                    Halten Sie den Traum m&ouml;glichst bald nach dem Aufwachen fest, per Text oder als kurze Sprachnotiz. Beim sp&auml;teren Vergleich sollten Sie vorsichtig bleiben: Ein Unterschied zwischen Februar und April kann interessant sein, beweist aber keine Ursache.
-                </p>
-<h3>Muster, auf die Sie achten sollten</h3>
-<p>
-                    Praktisch sind drei getrennte Angaben: Was geschah im Traum? Wie haben Sie sich dabei gef&uuml;hlt? Wie verlief die Nacht? Themen rund um <a class="text-dream-salmon hover:underline" href="../traumsymbole/mond">Licht und Dunkelheit</a> k&ouml;nnen Sie notieren, ohne sie als biologisches Signal zu deuten. Zunehmende Albtr&auml;ume zusammen mit starker Tagesm&uuml;digkeit sind ein Anlass, die Beschwerden medizinisch abkl&auml;ren zu lassen.
-                </p>
-<p>
-                    In Noctalia k&ouml;nnen Sie den Traum per Sprache festhalten und sp&auml;ter gespeicherte Eintr&auml;ge vergleichen. Automatisch vorgeschlagene Themen und Fragen sind Anregungen zur Reflexion, keine Aussage &uuml;ber Ihren Gesundheitszustand.
+                    Wenn der Schlaf länger als einige Wochen schlecht bleibt, die Tagesmüdigkeit kaum zu bekämpfen ist (besonders am Steuer), Albträume mehrmals pro Woche Ihre Nächte belasten oder die Stimmung anhaltend gedrückt ist. Der Frühling ist eine häufige Erklärung, aber nicht die einzige.
                 </p>
 </div>
 <!-- CTA Section -->
@@ -217,9 +216,9 @@
 <div class="w-16 h-16 bg-dream-salmon/10 rounded-full flex items-center justify-center mx-auto mb-6">
 <i class="w-8 h-8 text-dream-salmon" data-lucide="moon"></i>
 </div>
-<h3 class="font-serif text-2xl md:text-3xl mb-4 text-dream-cream">Den eigenen Fr&uuml;hlingsrhythmus festhalten</h3>
+<h3 class="font-serif text-2xl md:text-3xl mb-4 text-dream-cream">Frühlingsträume nebeneinander lesen</h3>
 <p class="text-purple-200/70 mb-6 max-w-lg mx-auto">
-                    Halten Sie einen Traum per Sprache fest und erg&auml;nzen Sie den Schlafkontext, solange die Erinnerung frisch ist. Sp&auml;ter k&ouml;nnen Sie Eintr&auml;ge vergleichen, ohne aus einzelnen N&auml;chten vorschnelle Schl&uuml;sse zu ziehen.
+                    Halten Sie jeden Traum direkt nach dem Aufwachen per Sprache oder schriftlich fest, mit einer Notiz zur Nacht. In Noctalia lesen Sie die Einträge später nebeneinander und sehen, was im Lauf der Jahreszeit wiederkehrt.
                 </p>
 <a class="inline-flex items-center gap-2 px-8 py-4 bg-dream-salmon text-dream-dark rounded-full font-bold hover:bg-dream-salmon/90 transition-colors" href="/de/">
                     Traumtagebuch starten <i class="w-5 h-5" data-lucide="arrow-right"></i>
@@ -227,48 +226,58 @@
 </aside>
 <!-- FAQ Section -->
 <section class="mt-16">
-<h2 class="font-serif text-2xl text-dream-cream mb-8">H&auml;ufig gestellte Fragen</h2>
+<h2 class="font-serif text-2xl text-dream-cream mb-8">Häufig gestellte Fragen</h2>
 <div class="space-y-4">
 <details class="glass-panel rounded-xl p-4 group cursor-pointer">
 <summary class="font-medium flex justify-between items-center text-dream-cream">
-                            Warum f&auml;llt das Einschlafen im Fr&uuml;hling manchmal schwerer?
+                            Warum schläft man im Frühling auch ohne Zeitumstellung schlechter?
                             <i class="w-5 h-5 transition-transform group-open:rotate-180 text-dream-salmon" data-lucide="chevron-down"></i>
 </summary>
 <p class="mt-4 text-sm text-gray-400 leading-relaxed">
-                            L&auml;ngeres Abendlicht kann die innere Uhr sp&auml;ter stellen und das Einschlafen erschweren. Wie stark dieser Effekt ausf&auml;llt, h&auml;ngt jedoch auch von Tagesablauf, Beleuchtung, Schlafenszeit und pers&ouml;nlicher Lichtempfindlichkeit ab.
+                            Nach der Tagundnachtgleiche im März werden die Tage täglich um einige Minuten länger. Helle Abende können den Melatoninanstieg und die Müdigkeit verzögern, früheres Morgenlicht kann eher wecken. Über Wochen können die Nächte so kürzer werden. Wie stark, hängt von Schlafzimmer, Gewohnheiten und Lichtempfindlichkeit ab.
                         </p>
 </details>
 <details class="glass-panel rounded-xl p-4 group cursor-pointer">
 <summary class="font-medium flex justify-between items-center text-dream-cream">
-                            Ver&auml;ndert der Fr&uuml;hling die Tr&auml;ume?
+                            Gibt es die Frühjahrsmüdigkeit wirklich?
                             <i class="w-5 h-5 transition-transform group-open:rotate-180 text-dream-salmon" data-lucide="chevron-down"></i>
 </summary>
 <p class="mt-4 text-sm text-gray-400 leading-relaxed">
-                            Daf&uuml;r gibt es keine einfache Regel. Wenn Sie fr&uuml;her aufwachen oder unruhiger schlafen, k&ouml;nnen Sie sich anders an Tr&auml;ume erinnern. Inhalt und Bedeutung eines Traums lassen sich daraus nicht ableiten.
+                            Viele Menschen beschreiben sie, eine medizinische Diagnose ist sie aber nicht. Kürzere Nächte, die Zeitumstellung, Pollen und volle Abende sind die üblichen Erklärungen. Müdigkeit, die wochenlang anhält, sollte ärztlich abgeklärt werden.
                         </p>
 </details>
 <details class="glass-panel rounded-xl p-4 group cursor-pointer">
 <summary class="font-medium flex justify-between items-center text-dream-cream">
-                            Was kann beim Schlafen im Fr&uuml;hling helfen?
+                            Verändert der Frühling die Träume?
                             <i class="w-5 h-5 transition-transform group-open:rotate-180 text-dream-salmon" data-lucide="chevron-down"></i>
 </summary>
 <p class="mt-4 text-sm text-gray-400 leading-relaxed">
-                            Hilfreich k&ouml;nnen regelm&auml;&szlig;ige Schlafzeiten, Licht am Morgen und weniger helles Licht am sp&auml;ten Abend sein. Bei anhaltenden Schlafproblemen oder starker Tagesm&uuml;digkeit sollten Sie &auml;rztlichen Rat einholen.
+                            Vor allem die Erinnerung daran. Früheres Aufwachen, manchmal direkt aus dem REM-Schlaf, kann lebhaftere Träume im Gedächtnis lassen, kurze oder unruhige Nächte eher weniger. Frühlingsbilder können auftauchen, eine jahreszeitliche Traumsprache ist aber nicht belegt.
+                        </p>
+</details>
+<details class="glass-panel rounded-xl p-4 group cursor-pointer">
+<summary class="font-medium flex justify-between items-center text-dream-cream">
+                            Wann sollte ich wegen Schlafproblemen im Frühling zum Arzt?
+                            <i class="w-5 h-5 transition-transform group-open:rotate-180 text-dream-salmon" data-lucide="chevron-down"></i>
+</summary>
+<p class="mt-4 text-sm text-gray-400 leading-relaxed">
+                            Wenn der Schlaf länger als einige Wochen schlecht bleibt, Sie tagsüber kaum wach bleiben, Albträume mehrmals pro Woche auftreten oder die Stimmung sinkt. Der Frühling ist eine häufige Erklärung, aber nicht die einzige.
                         </p>
 </details>
 </div>
 </section>
 <!-- Sources / Trust -->
 <section class="mt-16 glass-panel rounded-2xl p-6" id="sources">
-<h2 class="font-serif text-2xl text-dream-cream mb-4">Quellen / Weiterf&uuml;hrende Literatur</h2>
+<h2 class="font-serif text-2xl text-dream-cream mb-4">Quellen und weiterführende Literatur</h2>
 <ul class="mt-6 space-y-2 text-sm text-gray-400">
-<li><a href="https://doi.org/10.1152/ajpregu.1993.265.4.R846" rel="nofollow noopener noreferrer" target="_blank">Wehr et al. (1993): Conservation of photoperiod-responsive mechanisms in humans (American Journal of Physiology)</a></li>
-<li><a href="https://doi.org/10.1177/0748730419854197" rel="nofollow noopener noreferrer" target="_blank">Roenneberg et al. (2019): Why should we abolish daylight saving time? (Journal of Biological Rhythms)</a></li>
-<li><a href="https://doi.org/10.1016/j.cub.2007.10.025" rel="nofollow noopener noreferrer" target="_blank">Kantermann et al. (2007): The human circadian clock's seasonal adjustment is disrupted by daylight saving time (Current Biology)</a></li>
-<li><a href="https://doi.org/10.1111/jpi.12098" rel="nofollow noopener noreferrer" target="_blank">Stothard et al. (2017): Circadian entrainment to the natural light-dark cycle across seasons (Journal of Pineal Research)</a></li>
-<li><a href="https://doi.org/10.1016/j.smrv.2012.10.001" rel="nofollow noopener noreferrer" target="_blank">Harrison (2013): The impact of daylight saving time on sleep and related behaviours (Sleep Medicine Reviews)</a></li>
+<li><a href="https://doi.org/10.1152/ajpregu.1993.265.4.R846" rel="nofollow noopener noreferrer" target="_blank">Wehr et al. (1993): „Conservation of photoperiod-responsive mechanisms in humans“, <em>American Journal of Physiology</em></a></li>
+<li><a href="https://doi.org/10.1016/j.cub.2016.12.041" rel="nofollow noopener noreferrer" target="_blank">Stothard et al. (2017): „Circadian entrainment to the natural light-dark cycle across seasons and the weekend“, <em>Current Biology</em></a></li>
+<li><a href="https://doi.org/10.1016/j.cub.2007.10.025" rel="nofollow noopener noreferrer" target="_blank">Kantermann et al. (2007): „The human circadian clock's seasonal adjustment is disrupted by daylight saving time“, <em>Current Biology</em></a></li>
+<li><a href="https://doi.org/10.1016/j.smrv.2012.10.001" rel="nofollow noopener noreferrer" target="_blank">Harrison (2013): „The impact of daylight saving time on sleep and related behaviours“, <em>Sleep Medicine Reviews</em></a></li>
+<li><a href="https://doi.org/10.1210/jc.2010-2098" rel="nofollow noopener noreferrer" target="_blank">Gooley et al. (2011): „Exposure to room light before bedtime suppresses melatonin onset and shortens melatonin duration in humans“, <em>Journal of Clinical Endocrinology &amp; Metabolism</em></a></li>
+<li><a href="https://doi.org/10.1017/S1092852900019611" rel="nofollow noopener noreferrer" target="_blank">Terman und Terman (2005): „Light therapy for seasonal and nonseasonal depression“, <em>CNS Spectrums</em></a></li>
 </ul>
-<p class="mt-6 text-xs text-purple-200/60">Zuletzt aktualisiert: 17. Juli 2026</p>
+<p class="mt-6 text-xs text-purple-200/60">Zuletzt aktualisiert: 9. Oktober 2026</p>
 </section>
 <!-- Related Symbols Start -->
 <section aria-label="Verwandte Traumsymbole entdecken" class="mt-12 mb-8">

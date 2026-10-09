@@ -23,7 +23,7 @@ Un second passage après commit/fusion ne remonte pas la version : les changemen
 
 ## Construire la release préparée
 
-Depuis le checkout propre de la release validée, installer les dépendances **dans ce checkout** puis :
+Depuis le checkout propre de la release validée (validation complète locale réussie sur ce SHA exact, ou pipeline CircleCI manuelle avec `force_full_validation: true` ; voir le [guide CircleCI](circleci-migration.md#validation-complète-locale)), installer les dépendances **dans ce checkout** puis :
 
 ```bash
 npm ci
@@ -36,7 +36,7 @@ Pour Méditation, exécuter aussi `npm ci` dans `apps/meditation/` : ce sous-pro
 
 `release:build` vérifie que les changements mobiles ont une version préparée. Avant de lancer EAS, il calcule le fingerprint de la plateforme et refuse toute source native résolue hors du checkout. Pour Noctalia/Lucid, il vérifie aussi l'identité du package Android ou du bundle iOS ; sur iOS, il contrôle les deux mentions HealthKit dans l'`Info.plist` résolu par Expo. Une dépendance liée à un autre dossier ou un plugin qui retire une mention bloque ainsi le build localement. Cette commande requiert l'autorisation habituelle de build EAS. Elle n'effectue aucune soumission aux Stores. `release:plan`, `release:check` et `verify` ne lancent aucun build.
 
-Le hook `eas-build-pre-install` et la CI contrôlent la cohérence des versions entre registre, Expo, package et lockfile. Il refuse aussi une configuration HealthKit sans les deux mentions de base. Le hook fonctionne sans dossier `.git` ni dépendances installées sur le builder : il ne peut vérifier ni l'historique, ni le fingerprint de la machine qui a lancé EAS, ni l'`Info.plist` final. Passer directement par `eas build` contourne ces contrôles locaux ; utiliser `release:build` comme entrée de release.
+Le hook `eas-build-pre-install` et `node scripts/mobile-release.js verify --app all` (inclus dans la validation complète locale et dans une pipeline CircleCI manuelle) contrôlent la cohérence des versions entre registre, Expo, package et lockfile. Il refuse aussi une configuration HealthKit sans les deux mentions de base. Le hook fonctionne sans dossier `.git` ni dépendances installées sur le builder : il ne peut vérifier ni l'historique, ni le fingerprint de la machine qui a lancé EAS, ni l'`Info.plist` final. Passer directement par `eas build` contourne ces contrôles locaux ; utiliser `release:build` comme entrée de release.
 
 ## Envoyer en test interne
 
