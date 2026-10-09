@@ -27,7 +27,7 @@ const ENGINE = fileURLToPath(new URL('./verify-local.mjs', import.meta.url));
 // sha256 of the engine shared by the five repositories. An edit to
 // scripts/verify-local.mjs in one repository alone fails here: change the
 // engine in all five at once, then update this value in all five.
-const ENGINE_SHA256 = '786d1753c729923b2dfefd5d610d7e345236a7f2f03774d7e6710e50938ba8e2';
+const ENGINE_SHA256 = '3cbbbc27d722741c57def3ba6532722ea73b4e215e8ed3332da331c1d7bfdf33';
 const scratch = mkdtempSync(path.join(os.tmpdir(), 'verify-local-test-'));
 after(() => rmSync(scratch, { recursive: true, force: true }));
 
@@ -198,11 +198,12 @@ describe('verify:pr', () => {
     assert.equal(missing.proof.result, 'incomplete');
     assert.equal(missing.proof.checks.find((check) => check.name === 'db').result, 'unavailable');
 
-    const external = await verify('pr', ['--external', `db=CircleCI pipeline 42 on ${sha}`], repo.options);
+    const evidence = `https://app.circleci.com/pipelines/github/o/r/42 on ${sha}`;
+    const external = await verify('pr', ['--external', `db=${evidence}`], repo.options);
     assert.equal(external.status, 0);
     const db = external.proof.checks.find((check) => check.name === 'db');
     assert.equal(db.result, 'passed');
-    assert.equal(db.external, `CircleCI pipeline 42 on ${sha}`);
+    assert.equal(db.external, evidence);
 
     repo.clearRuns();
     const local = await verify('pr', ['--force'], { ...repo.options, env: { ...repo.env, DB_AVAILABLE: '1' } });
@@ -216,27 +217,35 @@ describe('verify:pr', () => {
     const sha = repo.commit('migration', { 'db/1.sql': 'select 1;\n' });
     const tree = repo.git(['rev-parse', `${sha}^{tree}`]);
 
-    await assert.rejects(verify('pr', ['--external', `lint=done on ${sha}`], repo.options), /only a specialised check/);
-    await assert.rejects(verify('pr', ['--external', 'db=CircleCI pipeline 42'], repo.options), /must name the verified commit/);
-    await assert.rejects(verify('pr', ['--external', `nope=x on ${sha}`], repo.options), /no such pr check/);
-    const unknown = spawnSync(process.execPath, [ENGINE, 'pr', '--external', `lint=x on ${sha}`], { cwd: repo.work, env: repo.env, encoding: 'utf8' });
+    await assert.rejects(verify('pr', ['--external', `lint=https://ci.example/1 on ${sha}`], repo.options), /only a specialised check/);
+    await assert.rejects(verify('pr', ['--external', `nope=https://ci.example/1 on ${sha}`], repo.options), /no such pr check/);
+    const unknown = spawnSync(process.execPath, [ENGINE, 'pr', '--external', `lint=https://ci.example/1 on ${sha}`], { cwd: repo.work, env: repo.env, encoding: 'utf8' });
     assert.equal(unknown.status, 64);
 
-    // The tree, or another commit with the same tree (a squash), also counts.
-    assert.equal((await verify('pr', ['--force', '--external', `db=owner machine, tree ${tree}`], repo.options)).status, 0);
+    // The evidence gives an https location (or owner-machine:) and names exactly one commit.
+    const other = repo.git(['rev-parse', 'origin/main']);
+    for (const [evidence, reason] of [
+      ['https://app.circleci.com/pipelines/github/o/r/42', /exactly one commit/],
+      [`CircleCI pipeline 42 on ${sha}`, /https:\/\/ location/],
+      [`http://ci.example/run?sha=${sha}`, /plain http/],
+      [`https://ci.example/run/1 on ${tree}`, /names [0-9a-f]{40}, which is neither/],
+      [`https://ci.example/run/1 on ${other}`, new RegExp(`names ${other}`)],
+      [`https://ci.example/run/1 on ${sha}, see ${other.toUpperCase()}`, /exactly one commit/],
+      [`https://ci.example/run/1 on ${sha} ${sha}`, /exactly one commit/],
+    ]) {
+      await assert.rejects(verify('pr', ['--force', '--external', `db=${evidence}`], repo.options), reason, evidence);
+    }
+
+    // The verified commit, or a commit with the same tree (a squash), counts; so does owner-machine:.
+    assert.equal((await verify('pr', ['--force', '--external', `db=owner-machine: pgTAP on ${sha.toUpperCase()}`], repo.options)).status, 0);
     const squash = repo.git(['commit-tree', tree, '-p', 'origin/main', '-m', 'squash']);
-    assert.equal((await verify('pr', ['--rev', squash, '--force', '--external', `db=run on ${sha}`], repo.options)).status, 0);
+    assert.equal((await verify('pr', ['--rev', squash, '--force', '--external', `db=https://ci.example/run/2 on ${sha}`], repo.options)).status, 0);
 
     // When the check can run here, --external is refused: run it.
     await assert.rejects(
-      verify('pr', ['--force', '--external', `db=run on ${sha}`], { ...repo.options, env: { ...repo.env, DB_AVAILABLE: '1' } }),
+      verify('pr', ['--force', '--external', `db=https://ci.example/run/3 on ${sha}`], { ...repo.options, env: { ...repo.env, DB_AVAILABLE: '1' } }),
       /can run it/,
     );
-
-    // Plain http, or a second commit that is not this tree, is refused.
-    await assert.rejects(verify('pr', ['--force', '--external', `db=http://ci.example/run?sha=${sha}`], repo.options), /plain http/);
-    const other = repo.git(['rev-parse', 'origin/main']);
-    await assert.rejects(verify('pr', ['--force', '--external', `db=ran on ${other} (see ${sha})`], repo.options), new RegExp(`names ${other}`));
   });
 
   test('external evidence is never reused by another proof', async () => {
@@ -480,7 +489,9 @@ describe('verify:release and the deploy guard', () => {
     const file = path.join(commonDir, 'verify-proofs', `${tree}.json`);
 
     writeFileSync(file, JSON.stringify(forged(2, 'x')));
-    assert.deepEqual(checkReleaseProof({ cwd: repo.work, env: repo.env, fetch: false }).failures.map((failure) => failure.check), ['proof-present']);
+    const older = checkReleaseProof({ cwd: repo.work, env: repo.env, fetch: false }).failures;
+    assert.deepEqual(older.map((failure) => failure.check), ['proof-present']);
+    assert.match(older[0].message, new RegExp(`has format 2, older than ${PROOF_FORMAT_VERSION}`));
 
     writeFileSync(file, JSON.stringify(forged(PROOF_FORMAT_VERSION, 'x')));
     assert.deepEqual(checkReleaseProof({ cwd: repo.work, env: repo.env, fetch: false }).failures.map((failure) => failure.check), ['proof-external']);

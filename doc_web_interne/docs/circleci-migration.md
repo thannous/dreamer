@@ -108,7 +108,7 @@ demandent Deno (Edge), Docker (`test:e2e:backend`) ou l'installation
 TesterArmy sont déclarés avec leur prérequis : si la machine ne les a pas, la
 preuve est `incomplete` et indique la commande d'installation. Les lancer
 ailleurs (pipeline CircleCI manuelle `force_full_validation: true`, machine du
-propriétaire), puis relancer avec `--external <contrôle>=<preuve>`.
+propriétaire), puis relancer avec `--external <contrôle>="https://<preuve> sur <SHA>"`.
 `node scripts/verify-local.mjs status` affiche la preuve du commit.
 
 ## Architecture et frontière des responsabilités

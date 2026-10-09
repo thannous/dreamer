@@ -237,6 +237,17 @@ export function readProof(commonDir, tree) {
   }
 }
 
+/** The format version of the proof file of a tree, whatever it is, or null. */
+function proofFileVersion(commonDir, tree) {
+  const file = path.join(proofsDir(commonDir), `${tree}.json`);
+  if (!existsSync(file)) return null;
+  try {
+    return JSON.parse(readFileSync(file, 'utf8'))?.version ?? 'unknown';
+  } catch {
+    return 'unreadable';
+  }
+}
+
 function listProofs(commonDir) {
   const dir = proofsDir(commonDir);
   if (!existsSync(dir)) return [];
@@ -564,19 +575,24 @@ function selectChecks(config, kind, targets) {
 
 /**
  * Why external evidence cannot stand for this commit, or null when it can:
- * it must name the verified commit, its tree or a commit with that same tree,
- * name no other object, and use no plain-http link.
+ * it gives an https:// location of the run (or starts with `owner-machine:`
+ * for a run on the owner's machine), uses no plain-http link, and names
+ * exactly one commit: the verified one, or a commit with the same tree.
  */
 export function externalEvidenceIssue(git, evidence, sha, tree) {
   if (/\bhttp:\/\//i.test(evidence)) return 'a plain http:// link is not evidence; use https://';
-  const tokens = evidence.match(/\b[0-9a-f]{40}\b/g) ?? [];
-  if (tokens.length === 0) return `the evidence must name the verified commit ${sha} or its tree ${tree}`;
-  for (const token of tokens) {
-    if (token === sha || token === tree) continue;
-    if (git(['rev-parse', '--verify', '--quiet', `${token}^{tree}`], { allowFailure: true }) === tree) continue;
-    return `the evidence names ${token}, which is neither the verified commit, its tree nor a commit with the same tree`;
+  if (!/https:\/\/[^\s/]+/i.test(evidence) && !/^owner-machine:/.test(evidence)) {
+    return 'the evidence must give the https:// location of the run, or start with "owner-machine:" for a run on the owner\'s machine';
   }
-  return null;
+  const tokens = (evidence.match(/(?<![0-9a-f])[0-9a-f]{40}(?![0-9a-f])/gi) ?? []).map((token) => token.toLowerCase());
+  if (tokens.length !== 1) {
+    return `the evidence must name exactly one commit, the verified ${sha} or one with the same tree (it names ${tokens.length})`;
+  }
+  const [token] = tokens;
+  if (token === sha) return null;
+  const commit = git(['rev-parse', '--verify', '--quiet', `${token}^{commit}`], { allowFailure: true });
+  if (commit && git(['rev-parse', `${commit}^{tree}`], { allowFailure: true }) === tree) return null;
+  return `the evidence names ${token}, which is neither the verified commit nor a commit with the same tree`;
 }
 
 export async function verify(kind, argv = [], {
@@ -628,7 +644,7 @@ export async function verify(kind, argv = [], {
       throw new UsageError(`--external ${name}: only a specialised check with a requires probe can come from elsewhere; run it here.`);
     }
     const issue = externalEvidenceIssue(git, evidence, sha, tree);
-    if (issue) throw new UsageError(`--external ${name}: ${issue}, for example "<https run URL> on ${sha}".`);
+    if (issue) throw new UsageError(`--external ${name}: ${issue}; for example "https://<run URL> on ${sha}" or "owner-machine: <note> on ${sha}".`);
     if (probe(check)) throw new UsageError(`--external ${name}: this machine can run it (\`${check.requires.command}\` succeeds); run it here instead.`);
   }
 
@@ -724,6 +740,8 @@ export async function verify(kind, argv = [], {
     kind,
     sha,
     tree,
+    // Always true: the checks ran on the committed tree of <sha>, in an
+    // isolated copy, never on a working tree.
     clean: true,
     result,
     startedAt,
@@ -807,7 +825,13 @@ export function checkReleaseProof({ cwd = process.cwd(), env = cleanGitEnv(), ta
   const tree = git(['rev-parse', 'HEAD^{tree}']);
   const proof = readProof(commonDir, tree);
   if (!proof) {
-    failures.push({ check: 'proof-present', message: `no proof for tree ${tree}; run verify:release on HEAD` });
+    const older = proofFileVersion(commonDir, tree);
+    failures.push({
+      check: 'proof-present',
+      message: older === null
+        ? `no proof for tree ${tree}; run verify:release on HEAD`
+        : `the proof for tree ${tree} has format ${older}, older than ${PROOF_FORMAT_VERSION}; run verify:release on HEAD again`,
+    });
   } else {
     if (proof.kind !== 'release') failures.push({ check: 'proof-kind', message: `the proof is a ${proof.kind} proof; only a release proof unlocks a deploy` });
     if (proof.result !== 'passed') failures.push({ check: 'proof-passed', message: `the proof result is ${proof.result}` });

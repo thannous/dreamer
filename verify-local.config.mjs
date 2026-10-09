@@ -83,12 +83,12 @@ const EDGE_CHECKS = [
 ].join(' && ');
 const DENO = {
   command: 'deno --version',
-  hint: 'install Deno 2.7.14 (`mise install`), or run the Edge checks in a manual CircleCI pipeline and pass --external <check>="<pipeline> on <SHA>"',
+  hint: 'install Deno 2.7.14 (`mise install`), or run the Edge checks in a manual CircleCI pipeline and pass --external <check>="https://<pipeline> on <SHA>"',
 };
 
 const TESTERARMY = {
   command: 'test -d tools/e2e/node_modules/@e2e-dev/web',
-  hint: 'run `npm run test:testerarmy:setup && npm run test:testerarmy:browsers` in the main checkout, or pass --external <check>="<manual CircleCI pipeline> on <SHA>"',
+  hint: 'run `npm run test:testerarmy:setup && npm run test:testerarmy:browsers` in the main checkout, or pass --external <check>="https://<manual CircleCI pipeline> on <SHA>"',
 };
 
 // The four passes of tools/e2e/README.md that jointly qualify every Dreamer case.
@@ -164,7 +164,7 @@ export default {
       specialised: true,
       requires: {
         command: 'docker info',
-        hint: 'start Docker (disposable local Supabase) and install Chromium (`npx playwright install chromium`), or pass --external e2e-backend="<manual CircleCI pipeline> on <SHA>"',
+        hint: 'start Docker (disposable local Supabase) and install Chromium (`npx playwright install chromium`), or pass --external e2e-backend="https://<manual CircleCI pipeline> on <SHA>"',
       },
     },
     {
