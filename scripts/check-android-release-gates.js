@@ -653,19 +653,6 @@ function jobNeeds(job) {
   return Array.isArray(needs) ? needs : [];
 }
 
-// Every job this job needs, directly or through the needs of those jobs.
-function neededJobs(jobs, jobName) {
-  const seen = new Set();
-  const queue = [...jobNeeds(jobs[jobName])];
-  while (queue.length > 0) {
-    const name = queue.shift();
-    if (typeof name !== 'string' || seen.has(name)) continue;
-    seen.add(name);
-    queue.push(...jobNeeds(jobs[name]));
-  }
-  return seen;
-}
-
 function bypassKeys(node) {
   return node && typeof node === 'object' ? BYPASS_KEYS.filter((key) => Object.hasOwn(node, key)) : [];
 }
@@ -679,8 +666,9 @@ function isReleaseRefStep(step) {
 //   from the release_tag input in the job env;
 // - no `if` or continue-on-error (either spelling) on the check job, the check
 //   step or any build job, and no step env setting RELEASE_TAG;
-// - the named build job exists, and every `type: build` job needs a check job,
-//   directly or through needs.
+// - the named build job exists, and every `type: build` job lists a check job
+//   directly in its own needs: no path through an intermediate job, whose
+//   `if: failure()` or `always()` could run after a failed check.
 // Returns the problems, empty when the workflow is guarded.
 function releaseTagCheckProblems(workflow, buildJobName) {
   const jobs = workflow?.jobs;
@@ -724,9 +712,9 @@ function releaseTagCheckProblems(workflow, buildJobName) {
   for (const [name, job] of entries.filter(([, entry]) => entry.type === 'build')) {
     const buildBypass = bypassKeys(job);
     if (buildBypass.length > 0) problems.push(`the build job ${name} must not set ${buildBypass.join(', ')}`);
-    const needed = neededJobs(jobs, name);
-    if (!checkJobs.some((checkJob) => needed.has(checkJob))) {
-      problems.push(`the build job ${name} must need the release ref check job (directly or through needs)`);
+    const needs = jobNeeds(job);
+    if (!checkJobs.some((checkJob) => needs.includes(checkJob))) {
+      problems.push(`the build job ${name} must list the release ref check job directly in its needs`);
     }
   }
   return problems;

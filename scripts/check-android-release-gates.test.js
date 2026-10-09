@@ -579,12 +579,16 @@ describe('android release gate preflight', () => {
         `${w}  setup:\n    steps:\n      - run: echo setup\n  sneaky_build:\n    needs: [setup]\n    type: build\n    params:\n      profile: production-apk\n`), title);
     });
 
-    it('passes a second type: build job that needs the check through another job', () => {
-      const root = setupFixture();
-      const workflowPath = path.join(root, '.eas/workflows', file);
-      fs.appendFileSync(workflowPath, `  late_build:\n    needs: [${buildJob}]\n    type: build\n    params:\n      profile: production-apk\n`);
-      const report = checkAndroidReleaseGates({ rootDir: root, spawn: spawnWithTools(), phase: 'prebuild' });
-      expect(report.checks).toEqual(expect.arrayContaining([expect.objectContaining({ status: 'pass', title })]));
+    it('fails when a second type: build job needs the check only through another job', () => {
+      expectCheckFails(gateReport(file, (w) =>
+        `${w}  late_build:\n    needs: [${buildJob}]\n    type: build\n    params:\n      profile: production-apk\n`), title);
+    });
+
+    it('fails when the build job needs the check only through an intermediate job with if: failure()', () => {
+      expectCheckFails(gateReport(file, (w) => w
+        .replace('    needs:\n      - validate_android_release_ref\n', '    needs:\n      - bridge\n')
+        .replace('    needs: [validate_android_release_ref]\n', '    needs: [bridge]\n')
+        .concat('  bridge:\n    needs: [validate_android_release_ref]\n    if: ${{ failure() }}\n    steps:\n      - run: echo bridge\n')), title);
     });
   });
 
