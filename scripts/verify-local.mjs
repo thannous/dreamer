@@ -147,6 +147,7 @@ export function normaliseConfig(raw) {
       releaseAlways: Boolean(check.releaseAlways),
       targets: check.targets ?? null,
       perCommit: Boolean(check.perCommit),
+      perBase: Boolean(check.perBase),
       specialised: Boolean(check.specialised),
       requires: check.requires ?? null,
       install: Boolean(check.install),
@@ -298,10 +299,13 @@ function lockfileBlob(git, rev, config) {
   return git(['rev-parse', `${rev}:${config.deps.lockfile}`], { allowFailure: true });
 }
 
-export function checkFingerprint({ check, files, tree, sha, environment }) {
+export function checkFingerprint({ check, files, tree, sha, environment, mergeBase = null }) {
   const hash = createHash('sha256');
   hash.update(JSON.stringify({ engine: ENGINE_VERSION, name: check.name, command: check.command, env: check.env, environment }));
   if (check.perCommit) hash.update(`\ncommit ${sha}`);
+  // A check that picks its work from the diff against the base (affected
+  // packages, changed files) is reused only against the same merge base.
+  if (check.perBase) hash.update(`\nbase ${mergeBase ?? 'none'}`);
   if (!check.inputs && check.exclude.length === 0) {
     hash.update(`\ntree ${tree}`);
   } else {
@@ -545,6 +549,15 @@ function selectChecks(config, kind, targets) {
   });
 }
 
+/** Evidence names the verified commit, its tree, or a commit with that same tree. */
+export function evidenceNamesTree(git, evidence, sha, tree) {
+  for (const token of evidence.match(/\b[0-9a-f]{40}\b/g) ?? []) {
+    if (token === sha || token === tree) return true;
+    if (git(['rev-parse', '--verify', '--quiet', `${token}^{tree}`], { allowFailure: true }) === tree) return true;
+  }
+  return false;
+}
+
 export async function verify(kind, argv = [], {
   cwd = process.cwd(),
   env = cleanGitEnv(),
@@ -578,6 +591,20 @@ export async function verify(kind, argv = [], {
   const command = config.commands[kind];
   log(`${PREFIX} ${command} on ${sha} (tree ${tree.slice(0, 12)}, base ${base.ref} ${base.sha ? base.sha.slice(0, 12) : 'unknown'}).`);
 
+  // --external stands in for a specialised check that cannot run here, and
+  // only with evidence naming the verified commit or tree.
+  const selected = selectChecks(config, kind, targets);
+  for (const [name, evidence] of Object.entries(options.external)) {
+    const check = selected.find((candidate) => candidate.name === name);
+    if (!check) throw new UsageError(`--external ${name}: no such ${kind} check.`);
+    if (!check.specialised || !check.requires) {
+      throw new UsageError(`--external ${name}: only a specialised check with a requires probe can come from elsewhere; run it here.`);
+    }
+    if (!evidenceNamesTree(git, evidence, sha, tree)) {
+      throw new UsageError(`--external ${name}: the evidence must name the verified commit ${sha} or its tree ${tree} (a commit with the same tree also counts), for example "<run URL> on ${sha}".`);
+    }
+  }
+
   const existing = readProof(commonDir, tree);
   const results = [];
   let worktree = null;
@@ -585,8 +612,8 @@ export async function verify(kind, argv = [], {
   let incomplete = false;
 
   try {
-    for (const check of selectChecks(config, kind, targets)) {
-      const fingerprint = checkFingerprint({ check, files, tree, sha, environment });
+    for (const check of selected) {
+      const fingerprint = checkFingerprint({ check, files, tree, sha, environment, mergeBase: scope?.mergeBase ?? null });
       const entry = { name: check.name, command: check.command, fingerprint, specialised: check.specialised };
       if (check.targets) entry.targets = check.targets;
 
@@ -598,11 +625,6 @@ export async function verify(kind, argv = [], {
           continue;
         }
       }
-      if (options.external[check.name]) {
-        results.push({ ...entry, result: 'passed', external: options.external[check.name] });
-        log(`${PREFIX} ${check.name}: passed elsewhere (${options.external[check.name]}).`);
-        continue;
-      }
       const reusable = findReusable(proofs, fingerprint);
       if (reusable) {
         results.push({ ...entry, result: 'passed', reused: true, reusedFrom: reusable });
@@ -611,6 +633,11 @@ export async function verify(kind, argv = [], {
       }
       // The probe runs in the main checkout, before any isolated copy exists.
       if (check.requires && !quiet(check.requires.command, { cwd: root, env })) {
+        if (options.external[check.name]) {
+          results.push({ ...entry, result: 'passed', external: options.external[check.name] });
+          log(`${PREFIX} ${check.name}: cannot run here, passed elsewhere (${options.external[check.name]}).`);
+          continue;
+        }
         incomplete = true;
         const hint = check.requires.hint ?? 'run it where it can run, then pass --external';
         results.push({ ...entry, result: 'unavailable', reason: `\`${check.requires.command}\` failed here: ${hint}` });
@@ -618,6 +645,9 @@ export async function verify(kind, argv = [], {
         continue;
       }
 
+      if (options.external[check.name]) {
+        log(`${PREFIX} ${check.name}: it can run here, so --external is ignored and the check runs.`);
+      }
       if (!worktree) {
         // Checks may keep caches (Turbo, ESLint) in the shared git directory.
         const shared = { VERIFY_LOCAL_COMMON_DIR: commonDir, VERIFY_LOCAL_ROOT: root };
@@ -706,9 +736,10 @@ export async function verify(kind, argv = [], {
     }
     writeProof(commonDir, proof);
   }
+  const proofFile = path.join(proofsDir(commonDir), weaker ? `${tree}.${kind}-attempt.json` : `${tree}.json`);
   const ran = results.filter((check) => check.durationMs !== undefined).length;
   const reused = results.filter((check) => check.reused).length;
-  log(`${PREFIX} ${result}: ${ran} run, ${reused} reused, ${results.filter((check) => check.result === 'skipped').length} out of scope. Proof: ${path.join(proofsDir(commonDir), `${tree}.json`)}.`);
+  log(`${PREFIX} ${result}: ${ran} run, ${reused} reused, ${results.filter((check) => check.result === 'skipped').length} out of scope. Proof: ${proofFile}.`);
   if (incomplete && !failed) {
     log(`${PREFIX} incomplete: run the unavailable checks where they can run (remote CI on demand, the owner's machine), then rerun with --external <check>=<evidence>.`);
   }
@@ -815,11 +846,17 @@ export async function proofBlock(argv = [], { cwd = process.cwd(), env = cleanGi
     `- Specialised checks (database, browser, mobile, corpus): run: ${specialisedRun.join(', ') || 'none'} / out of scope: ${specialisedOut.join(', ') || 'none'}${specialisedMissing.length ? ` / still needed: ${specialisedMissing.join(', ')}` : ''}`,
     `- Integration: ${integration}`,
   ];
+  // A PR can change its own checks or hook rules: say so, for the owner's review.
+  const delivery = (changedFiles(git, base, sha)?.files ?? []).filter((file) => matchesAny(file, DELIVERY_FILES));
+  if (delivery.length) lines.push(`- Delivery checks changed: ${delivery.join(', ')} (needs the owner's review)`);
   log(lines.join('\n'));
   return { status: proof.result === 'passed' ? 0 : 1, proof };
 }
 
 // ---------------------------------------------------------------- pre-push hook
+
+/** Files that define how a repository is checked; changing them needs the owner's review. */
+export const DELIVERY_FILES = [CONFIG_FILE, 'scripts/verify-local.mjs', 'scripts/test-verify-local.mjs', '.githooks/**'];
 
 export const DEFAULT_FORBIDDEN = [
   '**/.env',
@@ -847,12 +884,12 @@ const SECRET_PATTERNS = [
 
 const NULL_ID = /^0+$/;
 
-/** Read many blobs with one `git cat-file --batch`. */
-function readBlobs(root, env, entries) {
+/** Read many blobs with one `git cat-file --batch`; null when git cannot. */
+export function readBlobs(root, env, entries) {
   if (entries.length === 0) return [];
   const input = `${entries.map((entry) => entry.object).join('\n')}\n`;
   const result = spawnSync('git', ['cat-file', '--batch'], { cwd: root, env, input, maxBuffer: 512 * 1024 * 1024 });
-  if (result.error || result.status !== 0) return [];
+  if (result.error || result.status !== 0) return null;
   const output = result.stdout;
   const blobs = [];
   let offset = 0;
@@ -935,7 +972,12 @@ export async function prePush(remote, stdinText, {
       }
       if (entry.size <= 2 * 1024 * 1024 && !matchesAny(file, config.hook.secretAllow)) toScan.push({ file, ...entry });
     }
-    for (const { file, content } of readBlobs(root, env, toScan)) {
+    const blobs = readBlobs(root, env, toScan);
+    if (blobs === null || blobs.length !== toScan.length) {
+      problems.push(`could not read the ${toScan.length} pushed files (git cat-file --batch failed), so the secret scan did not run`);
+      continue;
+    }
+    for (const { file, content } of blobs) {
       if (content.includes('\0')) continue;
       for (const { name, pattern } of SECRET_PATTERNS) {
         if (pattern.test(content)) {

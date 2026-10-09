@@ -123,7 +123,8 @@ export default {
     { name: 'lint-scripts', command: 'npm run lint:scripts', exclude: DOCS },
     // Root Jest tests related to the files changed since the merge-base with
     // origin/master (scripts/run-jest-changed.js). Whole tree: tests read files.
-    { name: 'jest-changed', command: 'npm run test:changed -- --runInBand --watchman=false' },
+    // Picks its tests from the diff: reused only against the same merge base.
+    { name: 'jest-changed', perBase: true, command: 'npm run test:changed -- --runInBand --watchman=false' },
     { name: 'db-contracts', command: DB_CONTRACTS },
 
     // ---- verify:pr, only when the commit changes that surface since origin/master.
