@@ -10,7 +10,7 @@ function setup({ warmed = true, rejected = false, buffered = 2 } = {}) {
     const handlers = new Map();
     const classes = new Set();
     const el = {
-      currentTime: 0, duration: 4.2, buffered: { length: 1, start: () => 0, end: () => buffered },
+      currentTime: 0, currentSrc: '', duration: 4.2, buffered: { length: 1, start: () => 0, end: () => buffered },
       children: [], classList: { add: (...names) => names.forEach(n => classes.add(n)), remove: (...names) => names.forEach(n => classes.delete(n)), contains: n => classes.has(n) },
       append(...children) { this.children.push(...children); },
       setAttribute() {}, remove: jest.fn(), pause: jest.fn(),
