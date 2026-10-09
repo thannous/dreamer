@@ -60,7 +60,8 @@ const VERCEL_CLI = 'vercel@62.2.0';
 //                 only reach the registry and the Vercel API from a host that
 //                 needs a proxy or a corporate CA; none is read by the app.
 //   Windows only: SYSTEMROOT, COMSPEC, PATHEXT, USERPROFILE, APPDATA,
-//                 LOCALAPPDATA, which node, npx and cmd.exe need to start.
+//                 LOCALAPPDATA, which node, npx and cmd.exe need to start,
+//                 and TEMP, TMP, the temp dirs npm and node use there.
 // Not passed: LANG/LC_* (CLI output is English either way), npm_config_*
 // (the default cache under HOME is enough; an inherited registry or cache
 // override is exactly what this pin avoids), NODE_OPTIONS.
@@ -77,7 +78,7 @@ const ENV_ALLOWLIST = [
   'no_proxy',
   'NODE_EXTRA_CA_CERTS',
 ];
-const WINDOWS_ENV_ALLOWLIST = ['SYSTEMROOT', 'COMSPEC', 'PATHEXT', 'USERPROFILE', 'APPDATA', 'LOCALAPPDATA'];
+const WINDOWS_ENV_ALLOWLIST = ['SYSTEMROOT', 'COMSPEC', 'PATHEXT', 'USERPROFILE', 'APPDATA', 'LOCALAPPDATA', 'TEMP', 'TMP'];
 // Temp copies live in os.tmpdir() under this prefix; the owner's pid is
 // written next to the copy so a later run can tell a live run from a dead one.
 const TEMP_PREFIX = 'noctalia-vercel-';
@@ -226,17 +227,42 @@ function buildVercelDeployArgs(commitHash) {
 }
 
 // Values to hide from any printed output: every value of the env files
-// `vercel pull` wrote in the copy, and VERCEL_TOKEN.
-function parseEnvValues(text) {
-  const values = [];
-  for (const line of String(text).split(/\r?\n/)) {
-    const match = /^\s*(?:export\s+)?[A-Za-z_][A-Za-z0-9_]*\s*=\s*(.*)$/.exec(line);
-    if (!match) continue;
-    let value = match[1].trim();
-    if (/^(["']).*\1$/s.test(value)) value = value.slice(1, -1);
-    if (value) values.push(value, value.replace(/\\n/g, '\n'));
+// `vercel pull` wrote in the copy, and VERCEL_TOKEN. The file is parsed the
+// way `vercel build` loads it (dotenv): CRLF or CR line endings, `export`,
+// single, double or backtick quotes, inline comments, and in double quotes the
+// escapes \n and \r, which Vercel writes for newlines and carriage returns.
+const DOTENV_LINE =
+  /(?:^|^)\s*(?:export\s+)?([\w.-]+)(?:\s*=\s*?|:\s+?)(\s*'(?:\\'|[^'])*'|\s*"(?:\\"|[^"])*"|\s*`(?:\\`|[^`])*`|[^#\r\n]+)?\s*(?:#.*)?(?:$|$)/gm;
+
+function parseEnvFile(text) {
+  const parsed = {};
+  const lines = String(text).replace(/\r\n?/g, '\n');
+  let match;
+  DOTENV_LINE.lastIndex = 0;
+  while ((match = DOTENV_LINE.exec(lines)) !== null) {
+    let value = (match[2] || '').trim();
+    const quote = value[0];
+    value = value.replace(/^(['"`])([\s\S]*)\1$/m, '$2');
+    if (quote === '"') value = value.replace(/\\n/g, '\n').replace(/\\r/g, '\r');
+    parsed[match[1]] = value;
   }
-  return values;
+  return parsed;
+}
+
+// Every spelling of a value that can reach the log: the decoded value, the
+// serialized one (literal \n, \r), the value with CRLF folded to LF (as a
+// terminal or a log line splitter may print it), and each line of a
+// multi-line value (a certificate printed line by line).
+function secretForms(value) {
+  const forms = new Set([value]);
+  forms.add(value.replace(/\r/g, '\\r').replace(/\n/g, '\\n'));
+  forms.add(value.replace(/\r\n?/g, '\n'));
+  for (const line of value.split(/\r\n|\r|\n/)) forms.add(line.trim());
+  return [...forms];
+}
+
+function parseEnvValues(text) {
+  return Object.values(parseEnvFile(text)).filter(Boolean).flatMap(secretForms);
 }
 
 function collectSecrets(source, env = process.env) {
@@ -405,6 +431,7 @@ module.exports = {
   buildVercelPullArgs,
   collectSecrets,
   createCleanCopy,
+  parseEnvFile,
   main,
   parseTarget,
   redact,

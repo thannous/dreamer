@@ -12,6 +12,7 @@ const {
   buildVercelPullArgs,
   collectSecrets,
   main,
+  parseEnvFile,
   parseTarget,
   redact,
   run,
@@ -230,9 +231,9 @@ describe('web-deploy: guarded, clean copy, pinned project, prebuilt upload', () 
   });
 
   it('vercelEnv keeps only the allowlist, plus the Windows essentials on win32', () => {
-    const ambient = { PATH: 'p', HOME: 'h', VERCEL_TOKEN: 't', EXPO_PUBLIC_FOO: 'f', NOCTALIA_X: 'n', VERCEL_PROJECT_ID: 'x', SystemRoot: 'C:\\Windows', APPDATA: 'a' };
+    const ambient = { PATH: 'p', HOME: 'h', VERCEL_TOKEN: 't', EXPO_PUBLIC_FOO: 'f', NOCTALIA_X: 'n', VERCEL_PROJECT_ID: 'x', SystemRoot: 'C:\\Windows', APPDATA: 'a', TEMP: 'C:\\T', TMP: 'C:\\T' };
     expect(vercelEnv(ambient, 'linux')).toEqual({ PATH: 'p', HOME: 'h', VERCEL_TOKEN: 't' });
-    expect(vercelEnv(ambient, 'win32')).toEqual({ PATH: 'p', HOME: 'h', VERCEL_TOKEN: 't', SystemRoot: 'C:\\Windows', APPDATA: 'a' });
+    expect(vercelEnv(ambient, 'win32')).toEqual({ PATH: 'p', HOME: 'h', VERCEL_TOKEN: 't', SystemRoot: 'C:\\Windows', APPDATA: 'a', TEMP: 'C:\\T', TMP: 'C:\\T' });
   });
 
   it.each([
@@ -322,6 +323,50 @@ describe('web-deploy: guarded, clean copy, pinned project, prebuilt upload', () 
     expect(output).not.toContain(TOKEN);
     expect(collectSecrets(copy, env)).toEqual(expect.arrayContaining([SECRET, TOKEN]));
     expect(redact(`a ${SECRET} b`, [SECRET])).toBe('a [redacted] b');
+  });
+
+  it('parses the pulled env file like dotenv: CRLF lines, quotes, comments, escaped \\r\\n', () => {
+    const file = [
+      'CRLF_SECRET="crlf_secret_value_1"',
+      'export SINGLE=\'single_quoted_value\'',
+      'PLAIN=plain_value_123 # comment',
+      'CERT="-----BEGIN KEY-----\\r\\nline_one_secret_abc\\r\\n-----END KEY-----"',
+      'EMPTY=""',
+    ].join('\r\n');
+    expect(parseEnvFile(file)).toEqual({
+      CRLF_SECRET: 'crlf_secret_value_1',
+      SINGLE: 'single_quoted_value',
+      PLAIN: 'plain_value_123',
+      CERT: '-----BEGIN KEY-----\r\nline_one_secret_abc\r\n-----END KEY-----',
+      EMPTY: '',
+    });
+  });
+
+  it('redacts a CRLF env file and an escaped \\r\\n value in every printed form, with no leak in the logs', async () => {
+    const copy = fs.mkdtempSync(path.join(tempRoot, 'copy-'));
+    fs.mkdirSync(path.join(copy, '.vercel'));
+    const cert = '-----BEGIN KEY-----\r\nline_one_secret_abc\r\nline_two_secret_def\r\n-----END KEY-----';
+    const serialized = cert.replace(/\r/g, '\\r').replace(/\n/g, '\\n');
+    fs.writeFileSync(
+      path.join(copy, '.vercel', '.env.production.local'),
+      `CRLF_SECRET="crlf_secret_value_1"\r\nCERT="${serialized}"\r\nOTHER='other_secret_value'\r\n`
+    );
+    const written: string[] = [];
+    const write = (_stream: string, text: string) => written.push(text);
+    const env = { PATH: process.env.PATH, VERCEL_TOKEN: TOKEN };
+    const echo = [
+      'process.stdout.write("crlf crlf_secret_value_1\\r\\n")',
+      `process.stdout.write(${JSON.stringify(cert)} + "\\n")`,
+      `process.stdout.write(${JSON.stringify(cert.replace(/\r\n/g, '\n'))} + "\\n")`,
+      `process.stdout.write(${JSON.stringify(serialized)} + "\\n")`,
+      'process.stderr.write("other other_secret_value\\r\\n")',
+    ].join(';');
+    await run(process.execPath, ['-e', echo], { cwd: copy, env, write });
+    const output = written.join('');
+    for (const leaked of ['crlf_secret_value_1', 'line_one_secret_abc', 'line_two_secret_def', 'other_secret_value', serialized, cert]) {
+      expect(output).not.toContain(leaked);
+    }
+    expect(output).toContain('[redacted]');
   });
 
   it.each([
