@@ -1,4 +1,4 @@
-import { fireEvent, render } from '@testing-library/react-native';
+import { fireEvent, render } from '@testing-library/react-native-legacy';
 import React from 'react';
 import { StyleSheet } from 'react-native';
 

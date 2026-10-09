@@ -1,4 +1,4 @@
-import { renderHook, waitFor } from '@testing-library/react-native';
+import { renderHook, waitFor } from '@testing-library/react-native-legacy';
 import React from 'react';
 
 import { SubscriptionProvider, useSubscription } from '@/context/SubscriptionContext';

@@ -1,3 +1,4 @@
+import type { TextInputInstance } from 'react-native';
 import React, { memo, useMemo, useRef } from 'react';
 import { View, TextInput, Pressable } from 'react-native';
 import Svg, { Path } from 'react-native-svg';
@@ -36,7 +37,7 @@ export const SearchBar = memo(function SearchBar({
   const noctalia = useMemo(() => getNoctaliaDesignTokens(colors, mode), [colors, mode]);
   const { t } = useTranslation();
   const placeholderText = useMemo(() => placeholder ?? t('journal.search_placeholder'), [placeholder, t]);
-  const inputRef = useRef<TextInput>(null);
+  const inputRef = useRef<TextInputInstance>(null);
 
   return (
     <View

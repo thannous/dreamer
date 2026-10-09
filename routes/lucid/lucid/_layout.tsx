@@ -59,7 +59,7 @@ function LucidRouter() {
   }
 
   return (
-    <Stack initialRouteName={onboardingComplete ? '(tabs)' : 'onboarding'} screenOptions={stackScreenOptions}>
+    <Stack screenOptions={stackScreenOptions}>
       <Stack.Protected guard={!onboardingComplete}>
         <Stack.Screen name="onboarding" options={{ gestureEnabled: false }} />
       </Stack.Protected>

@@ -9,7 +9,7 @@ export function createMarkdownStyles(colors: ThemeColors, style: TextStyle = {},
   const base = { fontSize, color, fontFamily: style.fontFamily ?? Fonts.spaceGrotesk.regular, lineHeight: style.lineHeight ?? fontSize * 1.5, fontWeight: style.fontWeight == null ? undefined : String(style.fontWeight) };
   const heading = (scale: number) => ({ ...base, fontFamily: variant === 'reading' ? Fonts.lora.bold : Fonts.spaceGrotesk.bold, fontWeight: '700', fontSize: fontSize * scale, lineHeight: fontSize * scale * 1.35, marginTop: fontSize, marginBottom: 8 });
   return {
-    paragraph: { ...base, textAlign: style.textAlign, marginTop: 0, marginBottom: variant === 'reading' ? 20 : 10 },
+    paragraph: { ...base, textAlign: style.textAlign === 'start' ? 'left' : style.textAlign === 'end' ? 'right' : style.textAlign, marginTop: 0, marginBottom: variant === 'reading' ? 20 : 10 },
     h1: heading(1.5), h2: heading(1.3), h3: heading(1.15), h4: heading(1.05), h5: heading(1), h6: heading(1),
     strong: { color, fontFamily: Fonts.spaceGrotesk.bold, fontWeight: 'normal' },
     em: { color, fontFamily: Fonts.lora.regularItalic, fontStyle: 'normal' },

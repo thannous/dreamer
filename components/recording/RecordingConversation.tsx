@@ -1,3 +1,4 @@
+import type { ScrollViewInstance } from 'react-native';
 import { MarkdownText } from '@/components/ui/MarkdownText';
 import React, { useMemo, useRef, useState } from 'react';
 import { ActivityIndicator, Keyboard, Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
@@ -48,7 +49,7 @@ export function RecordingConversation(props: Props) {
   const tokens = useMemo(() => getNoctaliaDesignTokens(colors, mode), [colors, mode]);
   const { t } = useTranslation();
   const [switching, setSwitching] = useState(false);
-  const thread = useRef<ScrollView>(null);
+  const thread = useRef<ScrollViewInstance>(null);
   const nearBottom = useRef(true);
   const sections = useMemo(() => parseCaptureEditableDraft(props.storyTranscript).sections, [props.storyTranscript]);
   const hasStory = sections.some(section => Boolean(section.text.trim()));

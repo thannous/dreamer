@@ -1,3 +1,4 @@
+import type { ViewInstance } from 'react-native';
 import React, { useEffect, useRef } from 'react';
 import { AccessibilityInfo, findNodeHandle, ScrollView, StyleSheet, Text, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
@@ -14,7 +15,7 @@ export default function LucidAuthBottomSheet({ visible, onClose, title, subtitle
   const { colors, mode } = useTheme();
   const palette = getLucidPalette(colors, mode);
   const insets = useSafeAreaInsets();
-  const titleRef = useRef<Text | null>(null);
+  const titleRef = useRef<ViewInstance | null>(null);
   useEffect(() => {
     if (!visible) return;
     const timer = setTimeout(() => {

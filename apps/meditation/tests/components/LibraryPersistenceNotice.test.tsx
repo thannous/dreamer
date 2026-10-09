@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-require-imports -- Jest module mocks. */
-import { act, fireEvent, render, screen } from '@testing-library/react-native';
+import { act, fireEvent, render, screen } from '@testing-library/react-native-legacy';
 import React from 'react';
 
 import { LibraryPersistenceNotice } from '@/components/library/LibraryPersistenceNotice';

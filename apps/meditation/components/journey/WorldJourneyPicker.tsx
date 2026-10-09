@@ -1,8 +1,5 @@
-import * as Haptics from 'expo-haptics';
-import { Image, type ImageProps } from 'expo-image';
-import { LinearGradient } from 'expo-linear-gradient';
-import React, { useEffect, useRef } from 'react';
 import {
+  type ScrollViewInstance,
   Pressable,
   ScrollView,
   StyleSheet,
@@ -10,6 +7,10 @@ import {
   useWindowDimensions,
   type GestureResponderEvent,
 } from 'react-native';
+import * as Haptics from 'expo-haptics';
+import { Image, type ImageProps } from 'expo-image';
+import { LinearGradient } from 'expo-linear-gradient';
+import React, { useEffect, useRef } from 'react';
 import Animated from 'react-native-reanimated';
 import { ScopedTheme } from 'uniwind';
 
@@ -228,7 +229,7 @@ export function WorldJourneyPicker({
   testID,
 }: Props) {
   const { width: viewportWidth } = useWindowDimensions();
-  const scrollRef = useRef<ScrollView>(null);
+  const scrollRef = useRef<ScrollViewInstance>(null);
   const revealedInitialSelectionRef = useRef(false);
   const compact = useCompactLayout();
   const screenReader = useScreenReader();

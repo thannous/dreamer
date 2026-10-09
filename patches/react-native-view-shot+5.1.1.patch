@@ -1,0 +1,80 @@
+diff --git a/node_modules/react-native-view-shot/src/index.tsx b/node_modules/react-native-view-shot/src/index.tsx
+index a47e1c1..54df86e 100644
+--- a/node_modules/react-native-view-shot/src/index.tsx
++++ b/node_modules/react-native-view-shot/src/index.tsx
+@@ -9,6 +9,7 @@ import React, {
+ } from "react";
+ import {
+   View,
++  type ViewInstance,
+   Platform,
+   findNodeHandle,
+   StyleProp,
+@@ -200,8 +201,9 @@ interface HostElement {
+ type CaptureTarget =
+   | number
+   | React.Component
++  | ViewInstance
+   | HostElement
+-  | React.RefObject<React.Component | HostElement | null>
++  | React.RefObject<React.Component | ViewInstance | HostElement | null>
+   | null;
+ 
+ export function captureRef(
+@@ -216,7 +218,7 @@ export function captureRef(
+       "react-native-view-shot: NativeModules.RNViewShot is undefined. Make sure the library is linked on the native side.",
+     );
+   }
+-  let viewHandle: number | React.Component | HostElement | null =
++  let viewHandle: number | React.Component | ViewInstance | HostElement | null =
+     typeof view === "number"
+       ? view
+       : view && typeof view === "object" && "current" in view
+@@ -305,7 +307,7 @@ function checkCompatibleProps(props: ViewShotProperties): void {
+  * method is attached to that node for the imperative `ref.current.capture()`
+  * usage.
+  */
+-export type ViewShotRef = View & {
++export type ViewShotRef = ViewInstance & {
+   capture: () => Promise<string>;
+ };
+ 
+@@ -321,7 +323,7 @@ const ViewShotComponent = forwardRef<ViewShotRef, ViewShotProperties>(
+       style,
+     } = props;
+ 
+-    const rootRef = useRef<View | null>(null);
++    const rootRef = useRef<ViewInstance | null>(null);
+     const rafRef = useRef<number | null>(null);
+     const lastCapturedURIRef = useRef<string | null>(null);
+     const resolveFirstLayoutRef = useRef<((layout: unknown) => void) | null>(
+@@ -371,7 +373,7 @@ const ViewShotComponent = forwardRef<ViewShotRef, ViewShotProperties>(
+     );
+ 
+     const setRootRef = useCallback(
+-      (node: View | null): void => {
++      (node: ViewInstance | null): void => {
+         rootRef.current = node;
+         if (node) (node as ViewShotRef).capture = capture;
+         if (typeof ref === "function") {
+diff --git a/node_modules/react-native-view-shot/src/specs/NativeRNViewShot.ts b/node_modules/react-native-view-shot/src/specs/NativeRNViewShot.ts
+index 8615175..260a5c8 100644
+--- a/node_modules/react-native-view-shot/src/specs/NativeRNViewShot.ts
++++ b/node_modules/react-native-view-shot/src/specs/NativeRNViewShot.ts
+@@ -1,6 +1,6 @@
+ import type {TurboModule} from "react-native";
+ import {TurboModuleRegistry, NativeModules} from "react-native";
+-import {Int32, WithDefault} from "react-native/Libraries/Types/CodegenTypes";
++import type {CodegenTypes} from "react-native";
+ 
+ // Options stay `Object` (codegen → ReadableMap / NSDictionary).
+ // Narrowing here would force a coordinated change to both native module
+@@ -8,7 +8,7 @@ import {Int32, WithDefault} from "react-native/Libraries/Types/CodegenTypes";
+ export interface Spec extends TurboModule {
+   releaseCapture: (uri: string) => void;
+   captureRef: (
+-    target: WithDefault<number, -1>,
++    target: CodegenTypes.WithDefault<number, -1>,
+     withOptions: Object,
+   ) => Promise<string>;
+   captureScreen: (options: Object) => Promise<string>;

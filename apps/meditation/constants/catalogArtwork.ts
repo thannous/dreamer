@@ -1,7 +1,9 @@
-import type { ImageSourcePropType } from 'react-native';
+import type { ImageSource } from 'expo-image';
 
 import type { ThemeMode } from '@/constants/theme';
 import type { CategorySlug, SessionId } from '@/lib/types';
+
+type ImageSourcePropType = number | ImageSource;
 
 /** Generated editorial artwork bundled locally with the static catalogue. */
 export const CATEGORY_ARTWORK: Record<CategorySlug, ImageSourcePropType> = {

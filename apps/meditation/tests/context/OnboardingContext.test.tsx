@@ -1,5 +1,5 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { act, renderHook, waitFor } from '@testing-library/react-native';
+import { act, renderHook, waitFor } from '@testing-library/react-native-legacy';
 
 import { OnboardingProvider, useOnboarding } from '@/context/OnboardingContext';
 import { INITIAL_ONBOARDING, type OnboardingState } from '@/lib/types';

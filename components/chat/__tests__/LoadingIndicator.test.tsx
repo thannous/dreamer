@@ -1,5 +1,5 @@
 import React from 'react';
-import { act, render } from '@testing-library/react-native';
+import { act, render } from '@testing-library/react-native-legacy';
 import { AppState, type AppStateStatus } from 'react-native';
 import { LoadingIndicator } from '../LoadingIndicator';
 

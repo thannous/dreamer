@@ -1,5 +1,5 @@
 import * as Haptics from 'expo-haptics';
-import { act, fireEvent, render, screen, waitFor } from '@testing-library/react-native';
+import { act, fireEvent, render, screen, waitFor } from '@testing-library/react-native-legacy';
 import React from 'react';
 
 import BreathIntroStep from '@/app/(onboarding)/breath-intro';

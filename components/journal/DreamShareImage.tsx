@@ -1,3 +1,4 @@
+import type { ViewInstance } from 'react-native';
 import { isPoeticDreamQuote } from '@/lib/dreamQuote';
 import { useDreamMedia } from '@/hooks/useDreamMedia';
 import { DarkTheme } from '@/constants/journalTheme';
@@ -22,7 +23,7 @@ interface DreamShareImageProps {
  * Designed for use with react-native-view-shot captureRef.
  * Instagram 4:5 ratio: 1080x1350px
  */
-export const DreamShareImage = forwardRef<View, DreamShareImageProps>(function DreamShareImage(
+export const DreamShareImage = forwardRef<ViewInstance, DreamShareImageProps>(function DreamShareImage(
   { dream, t, resolvedMedia, onMediaReady },
   ref
 ) {

@@ -32,6 +32,9 @@ jest.mock('react-native', () => ({
 
 jest.mock('expo-file-system', () => ({
   File: MockFile,
+}));
+
+jest.mock('expo-file-system/legacy', () => ({
   readAsStringAsync: mockReadAsStringAsyncInner,
 }));
 

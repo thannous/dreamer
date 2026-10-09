@@ -1,3 +1,5 @@
+import type { ViewToken } from '@shopify/flash-list';
+import type { TextInputInstance } from 'react-native';
 import { markPerformance } from '@/lib/performanceTrace';
 import Animated, { useAnimatedScrollHandler, useAnimatedStyle, useSharedValue } from 'react-native-reanimated';
 import { useQuickSettings } from '@/context/QuickSettingsContext';
@@ -57,7 +59,6 @@ import {
   type NativeSyntheticEvent,
   type TextInput,
   View,
-  type ViewToken,
   useWindowDimensions,
 } from 'react-native';
 import { IconSymbol } from '@/components/ui/icon-symbol';
@@ -118,7 +119,7 @@ export default function JournalListScreen() {
     }
   }, []);
   const flatListRef = useRef<FlashListRef<DreamAnalysis>>(null);
-  const searchInputRef = useRef<TextInput>(null);
+  const searchInputRef = useRef<TextInputInstance>(null);
   const { width, height, fontScale } = useWindowDimensions();
   const insets = useSafeAreaInsets();
 
@@ -479,8 +480,8 @@ export default function JournalListScreen() {
   }, [filteredDreams]);
 
   interface ViewabilityInfo {
-    viewableItems: ViewToken[];
-    changed: ViewToken[];
+    viewableItems: ViewToken<DreamAnalysis>[];
+    changed: ViewToken<DreamAnalysis>[];
   }
 
   const flushPrefetch = useCallback(async () => {

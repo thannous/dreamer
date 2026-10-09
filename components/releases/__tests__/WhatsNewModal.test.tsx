@@ -1,5 +1,5 @@
 import React from 'react';
-import { fireEvent, render, waitFor } from '@testing-library/react-native';
+import { fireEvent, render, waitFor } from '@testing-library/react-native-legacy';
 import { beforeEach, describe, expect, it, jest } from '@jest/globals';
 
 import {

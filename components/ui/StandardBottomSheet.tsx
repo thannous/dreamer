@@ -1,3 +1,4 @@
+import type { ViewInstance } from 'react-native';
 import React, { useEffect, useMemo, useRef } from 'react';
 import {
   AccessibilityInfo,
@@ -149,7 +150,7 @@ export function StandardBottomSheet({
   const { colors, mode, shadows } = useTheme();
   const insets = useSafeAreaInsets();
   const noctalia = useMemo(() => getNoctaliaDesignTokens(colors, mode), [colors, mode]);
-  const titleRef = useRef<Text | null>(null);
+  const titleRef = useRef<ViewInstance | null>(null);
 
   useEffect(() => {
     if (!visible) return;

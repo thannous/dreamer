@@ -1,6 +1,6 @@
 import React from 'react';
 import { Alert, Linking } from 'react-native';
-import { cleanup, fireEvent, render, waitFor } from '@testing-library/react-native';
+import { cleanup, fireEvent, render, waitFor } from '@testing-library/react-native-legacy';
 import { afterEach, beforeEach, describe, expect, it, jest } from '@jest/globals';
 
 import { LegalSection } from '@/components/settings/LegalSection';

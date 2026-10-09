@@ -1,5 +1,5 @@
 import React from 'react';
-import { fireEvent, render, screen } from '@testing-library/react-native';
+import { fireEvent, render, screen } from '@testing-library/react-native-legacy';
 
 import { DailyReturnCard } from '@/components/profile/DailyReturnCard';
 import { SESSION_BY_ID } from '@/content/sessions';

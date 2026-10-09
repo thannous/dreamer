@@ -410,7 +410,7 @@ export default function LucidSsildSensoryLabScreen() {
   const lastAnnouncedPhaseRef = useRef<string | null>(null);
   const lastHapticPhaseRef = useRef<string | null>(null);
   const lastAudioPhaseRef = useRef<string | null>(null);
-  const appStateRef = useRef<AppStateStatus>(AppState.currentState ?? 'active');
+  const appStateRef = useRef<AppStateStatus>((AppState.currentState as AppStateStatus | null) ?? 'unknown');
   const pendingBackgroundPauseRef = useRef(false);
   const mountedRef = useRef(true);
   const session = recoveryBlocked ? null : lab.currentSession;

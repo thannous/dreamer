@@ -1,5 +1,5 @@
 import React, { createRef } from 'react';
-import { act, fireEvent, render } from '@testing-library/react-native';
+import { act, fireEvent, render } from '@testing-library/react-native-legacy';
 import { AnalysisReadingLauncher, type AnalysisReadingHandle } from '../AnalysisReadingLauncher';
 
 jest.mock('@/hooks/useTranslation', () => ({ useTranslation: () => ({ t: (key: string) => key }) }));

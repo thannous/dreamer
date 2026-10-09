@@ -1,3 +1,4 @@
+import type { ViewInstance } from 'react-native';
 import React, { useEffect, useMemo, useRef, useState } from 'react';
 import { Image } from 'expo-image';
 import { AccessibilityInfo, findNodeHandle, Platform, StyleSheet, Text, View } from 'react-native';
@@ -43,7 +44,7 @@ const DREAM_KEYS = [
   'dream.glass-teeth', 'dream.no-driver',
 ];
 
-function DreamCard({ index, rotation, width, height, onSelect, buttonRef }: { index: number; rotation: SharedValue<number>; width: number; height: number; onSelect: (index: number) => void; buttonRef: (node: View | null) => void }) {
+function DreamCard({ index, rotation, width, height, onSelect, buttonRef }: { index: number; rotation: SharedValue<number>; width: number; height: number; onSelect: (index: number) => void; buttonRef: (node: ViewInstance | null) => void }) {
   const { t } = useTranslation();
   const point = POINTS[index];
   const radius = Math.min(width * 0.32, height * 0.3, 110);
@@ -98,8 +99,8 @@ export function DreamGlobe({ tokens, stageHeight, onSelectionChange }: {
   const reducedMotion = useReducedMotion();
   const [width, setWidth] = useState(300);
   const [selected, setSelected] = useState<number | null>(null);
-  const entryTitle = useRef<Text | null>(null);
-  const cardButtons = useRef<(View | null)[]>([]);
+  const entryTitle = useRef<ViewInstance | null>(null);
+  const cardButtons = useRef<(ViewInstance | null)[]>([]);
   const previousSelection = useRef<number | null>(null);
   const rotation = useSharedValue(0.6);
   const origin = useSharedValue(0);

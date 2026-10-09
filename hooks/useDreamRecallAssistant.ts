@@ -109,7 +109,7 @@ export function useDreamRecallAssistant({
   const [snapshot, setSnapshot] = useState(() => ({ owner: session, ...newContext(dreamId) }));
   const mountedRef = useRef(true);
   const tRef = useRef(t);
-  const appStateRef = useRef<AppStateStatus>(AppState.currentState);
+  const appStateRef = useRef<AppStateStatus>((AppState.currentState as AppStateStatus | null) ?? 'unknown');
 
   const publish = useCallback((owner: SessionContext) => {
     if (mountedRef.current && activeSessionRef.current.getCurrent() === owner) {

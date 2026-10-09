@@ -1,9 +1,11 @@
-import type { ImageSourcePropType } from 'react-native';
+import type { ImageSource } from 'expo-image';
 
 import type { BreathingPatternId } from '@/content/breathing';
 import { Atmosphere, NightTheme, PaperTheme } from '@/constants/theme';
 import { WORLD_SALES_ENABLED } from '@/constants/worldSales';
 import type { CategorySlug, SessionId } from '@/lib/types';
+
+type ImageSourcePropType = number | ImageSource;
 
 export type WorldId =
   | 'constellation'

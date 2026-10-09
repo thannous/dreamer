@@ -1,4 +1,4 @@
-import { act, renderHook } from '@testing-library/react-native';
+import { act, renderHook } from '@testing-library/react-native-legacy';
 import * as Haptics from 'expo-haptics';
 
 import { PATTERN_BY_ID } from '@/content/breathing';
