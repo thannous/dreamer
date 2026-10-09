@@ -17,10 +17,12 @@
 // keyed by the verified git tree and written to
 // $(git rev-parse --git-common-dir)/verify-proofs/<tree>.json, shared by every
 // worktree of the clone and never committed. Each check has a fingerprint (its
-// command, its input files, Node and the package manager): a check whose
-// fingerprint already passed in any proof is reused instead of run again, so a
-// squash of an up-to-date branch, or a merge of a base that did not touch a
-// check's inputs, replays nothing for it.
+// command, its input files, Node and the package manager): for verify:pr, a
+// check whose fingerprint already passed in any proof is reused instead of run
+// again, so a merge of a base that did not touch a check's inputs replays
+// nothing for it. verify:release reuses only results obtained on the same
+// tree (a squash of an up-to-date branch), so a publication never rests on a
+// declared input list.
 //
 // deps.mode 'link' links the main checkout's node_modules when the lockfile
 // is the same (workspace links point at the copy); a check with install: true
@@ -266,12 +268,17 @@ function pruneProofs(dir) {
 }
 
 /** A passed result for this fingerprint in any proof of the clone. */
-function findReusable(proofs, fingerprint) {
+/**
+ * A passed result for this fingerprint in any proof of the clone. With
+ * `sameTree`, only a result obtained on that exact tree counts.
+ */
+function findReusable(proofs, fingerprint, sameTree = null) {
   for (const proof of proofs) {
     for (const check of proof.checks ?? []) {
-      if (check.fingerprint === fingerprint && check.result === 'passed') {
-        return { sha: check.reusedFrom?.sha ?? proof.sha, tree: check.reusedFrom?.tree ?? proof.tree, finishedAt: proof.finishedAt };
-      }
+      if (check.fingerprint !== fingerprint || check.result !== 'passed') continue;
+      const origin = { sha: check.reusedFrom?.sha ?? proof.sha, tree: check.reusedFrom?.tree ?? proof.tree, finishedAt: proof.finishedAt };
+      if (sameTree && origin.tree !== sameTree) continue;
+      return origin;
     }
   }
   return null;
@@ -625,7 +632,9 @@ export async function verify(kind, argv = [], {
           continue;
         }
       }
-      const reusable = findReusable(proofs, fingerprint);
+      // A release reuses only results obtained on this exact tree (a squash of
+      // an up-to-date branch); a PR also reuses identical inputs from other trees.
+      const reusable = findReusable(proofs, fingerprint, kind === 'release' ? tree : null);
       if (reusable) {
         results.push({ ...entry, result: 'passed', reused: true, reusedFrom: reusable });
         log(`${PREFIX} ${check.name}: reused (same inputs passed on ${reusable.sha.slice(0, 12)}).`);

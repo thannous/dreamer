@@ -4,16 +4,17 @@
 //
 //   npm run verify:pr       before a merge: the former pre-push `verify:fast`, split
 //                           into checks, plus the surfaces the PR changed.
-//   npm run verify:release  before a publish: the PR checks (reused when their
-//                           inputs are identical) plus the full local validation of
+//   npm run verify:release  before a publish: the PR checks (reused when they passed
+//                           on the same tree) plus the full local validation of
 //                           doc_web_interne/docs/circleci-migration.md.
 //
-// A check without `when` is reused by any later run whose inputs are identical
-// (a squash of an up-to-date branch reuses everything). A `when` check runs only
+// A check without `when` is reused by a later PR run whose inputs are identical,
+// and by a release only when it passed on the same tree (a squash of an
+// up-to-date branch reuses everything). A `when` check runs only
 // when the commit changes those paths since origin/master, like the CircleCI
 // affected portfolio; on the published master commit nothing changed, so a
 // surface a release always needs carries releaseAlways (the PR's result is
-// reused when its inputs are identical), and the release-only checks at the
+// reused when it passed on the same tree), and the release-only checks at the
 // end carry the rest of the full portfolio.
 
 // Markdown and planning documents feed no compiler and no linter.
@@ -82,12 +83,12 @@ const EDGE_CHECKS = [
 ].join(' && ');
 const DENO = {
   command: 'deno --version',
-  hint: 'install Deno 2.7.14 (`mise install`), or run the Edge checks in a manual CircleCI pipeline and pass --external <check>=<pipeline>',
+  hint: 'install Deno 2.7.14 (`mise install`), or run the Edge checks in a manual CircleCI pipeline and pass --external <check>="<pipeline> on <SHA>"',
 };
 
 const TESTERARMY = {
   command: 'test -d tools/e2e/node_modules/@e2e-dev/web',
-  hint: 'run `npm run test:testerarmy:setup && npm run test:testerarmy:browsers` in the main checkout, or pass --external <check>=<manual CircleCI pipeline>',
+  hint: 'run `npm run test:testerarmy:setup && npm run test:testerarmy:browsers` in the main checkout, or pass --external <check>="<manual CircleCI pipeline> on <SHA>"',
 };
 
 // The four passes of tools/e2e/README.md that jointly qualify every Dreamer case.
@@ -150,7 +151,7 @@ export default {
       specialised: true,
       requires: {
         command: 'docker info',
-        hint: 'start Docker (disposable local Supabase) and install Chromium (`npx playwright install chromium`), or pass --external e2e-backend=<manual CircleCI pipeline>',
+        hint: 'start Docker (disposable local Supabase) and install Chromium (`npx playwright install chromium`), or pass --external e2e-backend="<manual CircleCI pipeline> on <SHA>"',
       },
     },
     {

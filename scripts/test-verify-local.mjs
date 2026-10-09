@@ -27,7 +27,7 @@ const ENGINE = fileURLToPath(new URL('./verify-local.mjs', import.meta.url));
 // sha256 of the engine shared by the five repositories. An edit to
 // scripts/verify-local.mjs in one repository alone fails here: change the
 // engine in all five at once, then update this value in all five.
-const ENGINE_SHA256 = 'cc91ea1bfdbf5c8068b16a95b2c640688f9b93fee1d62b20a16ec2890ee85fa6';
+const ENGINE_SHA256 = '696cff84902798b6d9042b4d9a4db48220ca387c221d90a8f77233c7824bbf52';
 const scratch = mkdtempSync(path.join(os.tmpdir(), 'verify-local-test-'));
 after(() => rmSync(scratch, { recursive: true, force: true }));
 
@@ -344,6 +344,18 @@ describe('verify:release and the deploy guard', () => {
     repo.commit('no field', { 'package.json': '{ "name": "fixture" }\n' });
     const { proof } = await verify('pr', [], repo.options);
     assert.match(proof.packageManager ?? '', /^npm@\d+\./);
+  });
+
+  test('a release replays a result that only ever passed on another tree', async () => {
+    const repo = makeRepository();
+    repo.git(['checkout', '--quiet', '-b', 'feature']);
+    repo.commit('feature', { 'src/b.js': '1\n' });
+    assert.equal((await verify('pr', [], repo.options)).status, 0);
+    repo.commit('docs', { 'docs/readme.md': '# more\n' });
+    repo.clearRuns();
+    const release = await verify('release', [], repo.options);
+    assert.equal(release.status, 0);
+    assert.ok(repo.runs().includes('lint'), 'lint runs again: its earlier pass was on another tree');
   });
 
   test('a failed or incomplete release run never replaces a passed PR proof', async () => {
