@@ -7040,47 +7040,89 @@
       "en": {
         "slug": "mouth",
         "name": "Mouth",
-        "shortDescription": "The mouth represents communication, self-expression, and needs. A closed mouth can indicate difficulty expressing yourself or keeping secrets.",
+        "shortDescription": "A dream about your mouth often comes down to words: those you hold back, those that slip out, those you cannot swallow. Sealed, full, bleeding or stuck open, the mouth stages speech, and how you felt points to the lead.",
         "askYourself": [
-          "Is there something I need to say?",
-          "Am I holding back from expressing myself?"
-        ]
+          "Could I speak, or did the words get stuck?",
+          "What was in my mouth, and did I try to get it out?",
+          "Is there a conversation right now that I keep putting off?"
+        ],
+        "faq": [
+          {
+            "question": "What does it mean to dream about your mouth?",
+            "answer": "The mouth is often associated with speech, appetite and what you let in or out. Its meaning depends on the scene: whether you could speak, what was in your mouth, and how you felt about it."
+          },
+          {
+            "question": "What does it mean when you can't open your mouth in a dream?",
+            "answer": "Not being able to open your mouth or speak can go with words held back, fear of how someone will react, or a setting where you feel you have no say. Note who you were trying to talk to."
+          },
+          {
+            "question": "What does it mean to dream of something in your mouth?",
+            "answer": "Hair, glass, gum or food that will not go away often brings a choking or disgusted feeling. The scene can echo something hard to say or hard to swallow. Note what it was and whether you managed to pull it out."
+          },
+          {
+            "question": "Is a bleeding mouth in a dream a bad sign?",
+            "answer": "No, the dream predicts nothing about your health. Blood can make a painful conversation or a hurtful remark feel physical. If you often wake with jaw pain or sore teeth, see a dentist: night-time teeth grinding can be treated."
+          }
+        ],
+        "documentMetaDescription": "Dreaming about your mouth: unable to speak, something stuck in it, bleeding or kissing. What the scene may say about words held back, with a journal example.",
+        "modifiedAt": "2026-10-08"
       },
       "fr": {
         "slug": "bouche",
         "name": "Bouche",
-        "shortDescription": "La bouche représente la communication, l'expression de soi et les besoins. Une bouche fermée peut indiquer une difficulté à s'exprimer ou des secrets gardés.",
+        "shortDescription": "Rêver de sa bouche ramène souvent aux mots : ceux qu'on retient, ceux qui échappent, ceux qu'on n'avale pas. Scellée, pleine, en sang ou ouverte malgré vous, la bouche met en scène la parole ; votre ressenti oriente la lecture.",
         "askYourself": [
-          "Y a-t-il quelque chose que j'ai besoin de dire ?",
-          "Est-ce que je me retiens de m'exprimer ?"
-        ]
+          "Pouvais-je parler, ou les mots restaient-ils bloqués ?",
+          "Qu'y avait-il dans ma bouche, et ai-je essayé de l'enlever ?",
+          "Y a-t-il en ce moment une conversation que je repousse ?"
+        ],
+        "faq": [
+          {
+            "question": "Que signifie rêver de sa bouche ?",
+            "answer": "La bouche est souvent associée à la parole, à l'appétit et à ce qu'on laisse entrer ou sortir. Son sens dépend de la scène : pouviez-vous parler, qu'y avait-il dans votre bouche, et qu'avez-vous ressenti ?"
+          },
+          {
+            "question": "Que signifie rêver de ne pas pouvoir ouvrir la bouche ?",
+            "answer": "Ne pas pouvoir ouvrir la bouche ou parler peut accompagner des mots retenus, la peur d'une réaction, ou une situation où vous avez le sentiment de ne pas avoir voix au chapitre. Notez à qui vous vouliez parler."
+          },
+          {
+            "question": "Que signifie rêver d'avoir quelque chose dans la bouche ?",
+            "answer": "Cheveux, verre, chewing-gum ou nourriture qui ne part pas : la scène donne souvent une sensation d'étouffement ou de dégoût. Elle peut faire écho à quelque chose de difficile à dire ou à avaler. Notez ce que c'était."
+          },
+          {
+            "question": "Rêver d'une bouche en sang est-il un mauvais signe ?",
+            "answer": "Non, le rêve ne prédit rien sur votre santé. Le sang peut rendre physique une conversation pénible ou une remarque blessante. Si vous vous réveillez souvent la mâchoire douloureuse, parlez-en à votre dentiste : le grincement de dents nocturne se traite."
+          }
+        ],
+        "documentMetaDescription": "Rêver de sa bouche, de ne pas pouvoir parler, d'avoir quelque chose dans la bouche ou d'une bouche en sang : pistes sur les mots retenus, exemple de journal.",
+        "modifiedAt": "2026-10-08"
       },
       "es": {
         "slug": "boca",
         "name": "Boca",
-        "shortDescription": "Soñar con la boca suele hablar de comunicación, límites y necesidades: no poder hablar, tener la boca cerrada, herida o llena de algo puede reflejar palabras contenidas, incomodidad o miedo a expresarte.",
+        "shortDescription": "Soñar con la boca suele llevarte a las palabras: las que te guardas, las que se te escapan, las que no tragas. Cerrada, herida o llena de algo, la boca pone en escena tu forma de hablar, y lo que sentiste orienta la lectura.",
         "askYourself": [
-          "¿Podía hablar o sentía la boca bloqueada, herida o llena?",
-          "¿Qué intentaba decir, quitar o esconder en el sueño?",
-          "¿En qué situación me cuesta expresar una necesidad o poner un límite?"
+          "¿Podía hablar, o sentía la boca cerrada, herida o llena?",
+          "¿Qué tenía en la boca, y conseguí sacarlo?",
+          "¿Hay ahora mismo una conversación que voy aplazando?"
         ],
         "seoTitle": "boca cerrada, herida o llena de algo",
         "faq": [
           {
             "question": "¿Qué significa soñar con la boca?",
-            "answer": "Soñar con la boca suele relacionarse con comunicación, expresión, necesidades y límites. El significado cambia según si podías hablar, la boca estaba cerrada, herida o contenía algo."
+            "answer": "La boca se asocia a menudo con la palabra, el apetito y lo que dejas entrar o salir. Su sentido depende de la escena: si podías hablar, qué había en tu boca y qué sentiste."
           },
           {
             "question": "¿Qué significa soñar que no puedes abrir la boca o hablar?",
-            "answer": "No poder abrir la boca o hablar puede reflejar palabras contenidas, miedo a ser juzgado o una situación en la que no sientes espacio para expresarte."
+            "answer": "No poder abrir la boca o hablar puede acompañar palabras contenidas, miedo a la reacción de alguien o una situación en la que sientes que no tienes voz. Anota a quién intentabas hablar."
           },
           {
             "question": "¿Qué significa soñar con una herida o sangre en la boca?",
-            "answer": "Una boca herida o con sangre puede representar una conversación dolorosa, culpa por algo dicho o temor a que expresarte tenga consecuencias. No predice un problema médico."
+            "answer": "La sangre vuelve física una conversación dolorosa, un comentario hiriente o la culpa por algo dicho. No predice un problema de salud. Si te despiertas a menudo con dolor de mandíbula o de muelas, coméntalo con tu dentista."
           },
           {
             "question": "¿Qué significa soñar con algo dentro de la boca?",
-            "answer": "Tener objetos, comida, pelo u otra cosa en la boca suele señalar incomodidad, dificultad para decir lo que piensas o la necesidad de retirar algo que bloquea tu expresión."
+            "answer": "Pelo, cristales, chicle o comida que no se va suelen dar una sensación de ahogo o asco. La escena puede enlazar con algo difícil de decir o de tragar. Anota qué era y si conseguías sacarlo."
           }
         ],
         "softCta": {
@@ -7090,25 +7132,68 @@
           "button": "Probar la app",
           "href": "https://play.google.com/store/apps/details?id=com.tanuki75.noctalia&utm_source=noctalia_site&utm_medium=symbol_page&utm_campaign=plan_a_existing_pages"
         },
-        "modifiedAt": "2026-07-10"
+        "modifiedAt": "2026-10-08",
+        "documentMetaDescription": "Soñar con la boca cerrada, herida o llena de algo, o que no puedes hablar: pistas sobre las palabras contenidas, con preguntas y un ejemplo de diario."
       },
       "de": {
         "slug": "mund",
         "name": "Mund",
-        "shortDescription": "Der Mund symbolisiert Kommunikation, Ausdruck und Aufnahme. Er kann den Wunsch darstellen, gehört zu werden, oder die Schwierigkeit, sich auszudrücken.",
+        "shortDescription": "Wer vom Mund träumt, landet oft bei Worten: bei denen, die man zurückhält, die herausrutschen oder die man nicht schlucken kann. Verschlossen, voll oder blutend: Der Mund inszeniert das Sprechen, Ihr Gefühl zeigt die Spur.",
         "askYourself": [
-          "Was möchte ich sagen, aber kann es nicht?",
-          "Höre ich anderen wirklich zu?"
-        ]
+          "Konnte ich sprechen, oder blieben mir die Worte im Hals stecken?",
+          "Was hatte ich im Mund, und habe ich versucht, es loszuwerden?",
+          "Gibt es gerade ein Gespräch, das ich immer wieder aufschiebe?"
+        ],
+        "faq": [
+          {
+            "question": "Was bedeutet es, vom Mund zu träumen?",
+            "answer": "Der Mund wird oft mit Sprechen, Appetit und dem verbunden, was man hinein- oder herauslässt. Was er bedeutet, hängt von der Szene ab: ob Sie sprechen konnten, was in Ihrem Mund war und was Sie dabei gefühlt haben."
+          },
+          {
+            "question": "Was bedeutet es, im Traum den Mund nicht öffnen zu können?",
+            "answer": "Den Mund nicht öffnen oder nicht sprechen zu können kann zurückgehaltene Worte begleiten, die Angst vor einer Reaktion oder das Gefühl, nichts zu sagen zu haben. Notieren Sie, mit wem Sie sprechen wollten."
+          },
+          {
+            "question": "Was bedeutet es, im Traum etwas im Mund zu haben?",
+            "answer": "Haare, Glas, Kaugummi oder Essen, das nicht verschwindet, lösen oft ein Würge- oder Ekelgefühl aus. Die Szene kann zu etwas passen, das schwer auszusprechen oder schwer zu schlucken ist. Notieren Sie, was es war."
+          },
+          {
+            "question": "Ist ein blutender Mund im Traum ein schlechtes Zeichen?",
+            "answer": "Nein, der Traum sagt nichts über Ihre Gesundheit voraus. Blut kann ein schmerzhaftes Gespräch oder eine verletzende Bemerkung körperlich machen. Wachen Sie oft mit Kieferschmerzen auf, sprechen Sie es in der Zahnarztpraxis an: Nächtliches Zähneknirschen lässt sich behandeln."
+          }
+        ],
+        "documentMetaDescription": "Mund im Traum: nicht sprechen können, etwas im Mund, blutender Mund oder Kuss. Was die Szene über zurückgehaltene Worte sagen kann, mit Tagebuchbeispiel.",
+        "modifiedAt": "2026-10-08"
       },
       "it": {
         "slug": "bocca",
         "name": "Bocca",
-        "shortDescription": "La bocca simboleggia comunicazione, espressione e nutrimento. Può rappresentare il desiderio di essere ascoltati o la difficoltà di esprimersi.",
+        "shortDescription": "Sognare la bocca riporta spesso alle parole: quelle che trattieni, quelle che ti sfuggono, quelle che non mandi giù. Chiusa, piena o sanguinante, la bocca mette in scena il parlare, e ciò che provavi orienta la lettura.",
         "askYourself": [
-          "Cosa vorrei dire ma non riesco?",
-          "Sto davvero ascoltando gli altri?"
-        ]
+          "Riuscivo a parlare, o le parole restavano bloccate?",
+          "Che cosa avevo in bocca, e ho provato a toglierlo?",
+          "C’è in questo periodo una conversazione che continuo a rimandare?"
+        ],
+        "faq": [
+          {
+            "question": "Che cosa significa sognare la bocca?",
+            "answer": "La bocca viene spesso associata alla parola, all’appetito e a ciò che lasci entrare o uscire. Il significato dipende dalla scena: se riuscivi a parlare, che cosa avevi in bocca e che cosa provavi."
+          },
+          {
+            "question": "Che cosa significa sognare di non riuscire ad aprire la bocca?",
+            "answer": "Non riuscire ad aprire la bocca o a parlare può accompagnare parole trattenute, la paura di una reazione o la sensazione di non avere voce in capitolo. Annota a chi volevi parlare."
+          },
+          {
+            "question": "Che cosa significa sognare di avere qualcosa in bocca?",
+            "answer": "Capelli, vetri, gomma da masticare o cibo che non va via danno spesso una sensazione di soffocamento o di disgusto. La scena può richiamare qualcosa di difficile da dire o da mandare giù. Annota che cos’era."
+          },
+          {
+            "question": "Sognare la bocca che sanguina è un brutto segno?",
+            "answer": "No, il sogno non predice nulla sulla tua salute. Il sangue può rendere fisica una conversazione dolorosa o una frase che ferisce. Se ti svegli spesso con la mascella dolorante, parlane con il dentista: il digrignamento notturno si può trattare."
+          }
+        ],
+        "documentMetaDescription": "Sognare la bocca, di non riuscire a parlare, di avere qualcosa in bocca o la bocca che sanguina: piste sulle parole trattenute, con esempio di diario.",
+        "modifiedAt": "2026-10-08"
       },
       "pt": {
         "slug": "boca",
@@ -8899,60 +8984,64 @@
       "en": {
         "slug": "wolf",
         "name": "Wolf",
-        "shortDescription": "Dreaming of wolves points to instinct, protection, danger and belonging. A lone wolf can suggest independence or intuition; a pack or attacking wolves often reflects pressure, conflict or fear of losing control.",
+        "shortDescription": "Dreaming of a wolf often stirs up instinct, threat or belonging. A wolf watching from the trees, one that attacks and a pack walking beside you are different scenes: the wolf's behavior and your fear or calm say more than a fixed meaning.",
         "askYourself": [
-          "Was it one wolf, several wolves or a pack?",
-          "Was the wolf attacking, protecting, chasing or watching?",
-          "What instinct am I ignoring, or what group is pressuring me?"
+          "Was it one wolf, several wolves or a whole pack?",
+          "Was the wolf watching, following, protecting or attacking?",
+          "Where do I feel on my guard right now, or drawn to a group?"
         ],
         "seoTitle": "wolves, lone wolf or wolf attack",
         "faq": [
           {
             "question": "What does it mean to dream about wolves?",
-            "answer": "Wolves in dreams can represent instinct, threat, protection or belonging to a group. The meaning changes if the wolves attack, accompany you, chase you or appear as a pack."
+            "answer": "Wolves are often associated with instinct, threat, protection or belonging to a group. The meaning shifts with their behavior, whether they watch, follow, protect or attack, and with how you felt: afraid, calm or curious."
           },
           {
             "question": "What does a lone wolf mean in a dream?",
-            "answer": "A lone wolf often points to intuition, independence or an instinctive part of you that needs attention."
+            "answer": "A lone wolf can go with independence, distance or loneliness. Calm suggests a distance you chose; unease, a feeling of being cut off. Note whether the wolf came closer or kept its distance."
           },
           {
             "question": "What does it mean to dream of wolves attacking?",
-            "answer": "Attacking wolves can reflect pressure, fear, conflict or an instinctive emotion that feels out of control."
+            "answer": "Attacking wolves can echo fear, conflict or several pressures arriving at once. The dream does not predict a real attack or point to a hidden enemy. Compare it with a recent situation where you felt cornered."
           },
           {
             "question": "What does a pack of wolves mean in a dream?",
-            "answer": "A pack can symbolize loyalty and collective strength, but also social pressure. Your feeling in the dream is the key difference."
+            "answer": "A pack often points to a group: loyalty, support, rules or social pressure. Feeling protected by it leans toward belonging; feeling surrounded, toward tension. The number of wolves alone does not set the meaning."
           }
-        ]
+        ],
+        "documentMetaDescription": "Dreaming of wolves: a lone wolf, a pack or wolves attacking. Compare the wolf's behavior with your own fear or calm, with questions and a journal example.",
+        "modifiedAt": "2026-10-08"
       },
       "fr": {
         "slug": "loup",
         "name": "Loup",
-        "shortDescription": "Rêver de loup parle d’instinct, de protection, de menace et d’appartenance. Un loup seul peut représenter l’intuition ou l’indépendance; une meute ou des loups qui attaquent signalent souvent pression, conflit ou peur de perdre le contrôle.",
+        "shortDescription": "Rêver d'un loup réveille souvent l'instinct, la menace ou l'appartenance. Un loup qui observe, un loup qui attaque et une meute à vos côtés sont des scènes différentes : son comportement et votre peur ou votre calme orientent la lecture.",
         "askYourself": [
-          "Était-ce un loup seul, plusieurs loups ou une meute ?",
-          "Le loup attaquait-il, protégeait-il, poursuivait-il ou observait-il ?",
-          "Quel instinct est-ce que j’ignore, ou quel groupe me met sous pression ?"
+          "Était-ce un loup seul, plusieurs loups ou une meute ?",
+          "Le loup observait-il, suivait-il, protégeait-il ou attaquait-il ?",
+          "Où suis-je sur le qui-vive en ce moment, ou attiré par un groupe ?"
         ],
         "seoTitle": "loup, loups ou meute",
         "faq": [
           {
-            "question": "Que signifie rêver de loups ?",
-            "answer": "Rêver de loups peut parler d’instinct, de menace, de protection ou d’appartenance à un groupe. Le sens change si les loups attaquent, accompagnent, poursuivent ou apparaissent en meute."
+            "question": "Que signifie rêver de loups ?",
+            "answer": "Les loups sont souvent associés à l'instinct, à la menace, à la protection ou à l'appartenance à un groupe. Le sens change selon leur comportement (observer, suivre, protéger, attaquer) et selon ce que vous ressentiez : peur, calme ou curiosité."
           },
           {
-            "question": "Que signifie rêver d’un loup ?",
-            "answer": "Un seul loup représente souvent l’intuition, l’indépendance ou une force instinctive que vous devez écouter."
+            "question": "Que signifie rêver d'un loup ?",
+            "answer": "Un loup seul peut accompagner l'indépendance, la distance ou la solitude. Le calme oriente vers une distance choisie, le malaise vers le sentiment d'être coupé des autres. Notez s'il s'approchait ou gardait ses distances."
           },
           {
-            "question": "Que signifie rêver de loups qui attaquent ?",
-            "answer": "Des loups qui attaquent reflètent une pression, une peur, un conflit ou une émotion instinctive qui semble difficile à contrôler."
+            "question": "Que signifie rêver de loups qui attaquent ?",
+            "answer": "Des loups qui attaquent peuvent faire écho à une peur, à un conflit ou à plusieurs pressions à la fois. Le rêve ne prédit pas une agression réelle et ne désigne pas un ennemi caché. Rapprochez-le d'une situation récente où vous vous êtes senti acculé."
           },
           {
-            "question": "Que signifie rêver d’une meute de loups ?",
-            "answer": "Une meute peut parler d’appartenance, de loyauté et de force collective, mais aussi de pression sociale."
+            "question": "Que signifie rêver d'une meute de loups ?",
+            "answer": "Une meute parle souvent d'un groupe : loyauté, soutien, règles ou pression sociale. Vous sentir protégé par elle oriente vers l'appartenance, vous sentir encerclé vers une tension. Le nombre de loups ne fixe pas le sens à lui seul."
           }
-        ]
+        ],
+        "documentMetaDescription": "Rêver d'un loup, de loups qui attaquent ou d'une meute : comparez le comportement du loup avec votre peur ou votre calme, avec questions et exemple de journal.",
+        "modifiedAt": "2026-10-08"
       },
       "es": {
         "slug": "lobo",
@@ -8995,31 +9084,33 @@
       "de": {
         "slug": "wolf",
         "name": "Wolf",
-        "shortDescription": "Von Wölfen zu träumen spricht von Instinkt, Schutz, Gefahr und Zugehörigkeit. Ein einzelner Wolf kann Intuition oder Unabhängigkeit zeigen; ein Rudel oder angreifende Wölfe deuten oft auf Druck, Konflikt oder Kontrollverlust hin.",
+        "shortDescription": "Von einem Wolf zu träumen weckt oft Instinkt, Bedrohung oder Zugehörigkeit. Ein Wolf, der zwischen Bäumen wartet, einer, der angreift, und ein Rudel an Ihrer Seite sind verschiedene Szenen: Sein Verhalten und Ihr Gefühl zeigen die Richtung.",
         "askYourself": [
           "War es ein einzelner Wolf, mehrere Wölfe oder ein Rudel?",
-          "Hat der Wolf angegriffen, beschützt, verfolgt oder nur beobachtet?",
-          "Welchen Instinkt ignoriere ich, oder welche Gruppe setzt mich unter Druck?"
+          "Hat der Wolf beobachtet, mich begleitet, beschützt oder angegriffen?",
+          "Wo bin ich gerade auf der Hut, oder zu welcher Gruppe zieht es mich?"
         ],
         "seoTitle": "Wolf, Wölfe oder Rudel",
         "faq": [
           {
             "question": "Was bedeutet es, von Wölfen zu träumen?",
-            "answer": "Wölfe im Traum können Instinkt, Bedrohung, Schutz oder Zugehörigkeit zu einer Gruppe darstellen. Die Deutung hängt davon ab, ob sie angreifen, begleiten, verfolgen oder als Rudel erscheinen."
+            "answer": "Wölfe werden oft mit Instinkt, Bedrohung, Schutz oder Zugehörigkeit zu einer Gruppe verbunden. Die Deutung hängt von ihrem Verhalten ab, ob sie beobachten, folgen, schützen oder angreifen, und davon, ob Sie Angst, Ruhe oder Neugier spürten."
           },
           {
             "question": "Was bedeutet ein einzelner Wolf im Traum?",
-            "answer": "Ein einzelner Wolf steht oft für Intuition, Unabhängigkeit oder eine instinktive Kraft, die beachtet werden möchte."
+            "answer": "Ein einzelner Wolf kann Unabhängigkeit, Abstand oder Einsamkeit begleiten. Ruhe spricht eher für eine gewählte Distanz, Unbehagen für das Gefühl, abgeschnitten zu sein. Notieren Sie, ob er näher kam oder Abstand hielt."
           },
           {
             "question": "Was bedeuten angreifende Wölfe im Traum?",
-            "answer": "Angreifende Wölfe spiegeln Druck, Angst, Konflikt oder eine Emotion wider, die sich nicht mehr kontrollierbar anfühlt."
+            "answer": "Angreifende Wölfe können Angst, einen Konflikt oder mehrere Belastungen zugleich aufgreifen. Der Traum sagt keinen echten Angriff voraus und zeigt keinen verborgenen Feind. Vergleichen Sie ihn mit einer Lage, in der Sie sich zuletzt in die Enge getrieben fühlten."
           },
           {
             "question": "Was bedeutet ein Wolfsrudel im Traum?",
-            "answer": "Ein Rudel kann Loyalität und kollektive Stärke zeigen, aber auch sozialen Druck. Entscheidend ist, ob Sie sich geschützt oder verfolgt fühlten."
+            "answer": "Ein Rudel lenkt den Blick oft auf eine Gruppe: Loyalität, Rückhalt, Regeln oder sozialer Druck. Fühlten Sie sich geschützt, liegt Zugehörigkeit nahe; fühlten Sie sich eingekreist, eher Spannung. Die Zahl der Wölfe allein entscheidet nichts."
           }
-        ]
+        ],
+        "documentMetaDescription": "Wolf im Traum: ein einzelner Wolf, ein Rudel oder angreifende Wölfe. Vergleichen Sie sein Verhalten mit Ihrer Angst oder Ruhe, mit Fragen und Tagebuchbeispiel.",
+        "modifiedAt": "2026-10-08"
       },
       "it": {
         "slug": "lupo",
@@ -9101,47 +9192,152 @@
       "en": {
         "slug": "horse",
         "name": "Horse",
-        "shortDescription": "Horses represent freedom, power, and life's journey. They symbolize personal strength, sexual energy, and the desire to move forward in life.",
+        "shortDescription": "Dreaming of a horse often brings up drive and control: what carries you forward, and who holds the reins. A calm ride, a horse that bolts and a fall are different scenes. Who led whom, and how it felt, guide the reading.",
         "askYourself": [
-          "Where do I need more freedom in my life?",
-          "What journey am I on?"
-        ]
+          "Was I riding, walking beside the horse, watching or running from it?",
+          "Did I feel in control, carried away or thrown off?",
+          "What is pulling me faster than I want right now, or holding me back?"
+        ],
+        "faq": [
+          {
+            "question": "What does it mean to dream about a horse?",
+            "answer": "A horse is often associated with energy, drive and freedom of movement, and with the question of who is in control. The meaning depends on the scene: riding calmly, losing the reins, falling, or watching horses run free."
+          },
+          {
+            "question": "What does it mean to dream of riding a horse?",
+            "answer": "Riding with ease can go with a period when your energy and your direction line up. Struggling to stay in the saddle can echo a situation moving faster than you would like. Note where you were heading."
+          },
+          {
+            "question": "What does it mean to dream of falling off a horse?",
+            "answer": "A fall can go with a loss of control, a setback, or the fear of one. It does not predict an accident. Notice whether you got back up, who was there and how the horse reacted."
+          },
+          {
+            "question": "Does a white or black horse mean something specific?",
+            "answer": "Color has no fixed meaning. A white horse is often linked with fairy tales or lightness, a black one with mystery or strength, but your own memories of horses, films or riding lessons usually matter more."
+          }
+        ],
+        "documentMetaDescription": "Dreaming of a horse: riding, a horse that bolts, falling off, a white or black horse. What the scene may say about drive and control, with a journal example.",
+        "modifiedAt": "2026-10-08"
       },
       "fr": {
         "slug": "cheval",
         "name": "Cheval",
-        "shortDescription": "Les chevaux représentent la liberté, la puissance et le voyage de la vie. Ils symbolisent la force personnelle, l'énergie sexuelle et le désir d'avancer dans la vie.",
+        "shortDescription": "Rêver d'un cheval parle souvent d'élan et de contrôle : ce qui vous porte, et qui tient les rênes. Une balade tranquille, un cheval qui s'emballe et une chute diffèrent ; qui menait qui, et votre ressenti, orientent la lecture.",
         "askYourself": [
-          "Où ai-je besoin de plus de liberté dans ma vie ?",
-          "Quel voyage suis-je en train de faire ?"
-        ]
+          "Étais-je en selle, à côté du cheval, spectateur, ou en train de le fuir ?",
+          "Me sentais-je aux commandes, emporté ou désarçonné ?",
+          "Qu'est-ce qui m'entraîne en ce moment plus vite que je ne voudrais, ou me freine ?"
+        ],
+        "faq": [
+          {
+            "question": "Que signifie rêver d'un cheval ?",
+            "answer": "Le cheval est souvent associé à l'élan, à l'énergie et à la liberté de mouvement, et à une question : qui mène ? Son sens dépend de la scène : monter tranquillement, perdre les rênes, tomber ou regarder des chevaux courir en liberté."
+          },
+          {
+            "question": "Que signifie rêver de monter à cheval ?",
+            "answer": "Monter avec aisance peut accompagner une période où votre énergie et votre direction vont dans le même sens. Lutter pour rester en selle peut faire écho à une situation qui va plus vite que vous ne le voudriez. Notez où vous alliez."
+          },
+          {
+            "question": "Que signifie rêver de tomber de cheval ?",
+            "answer": "Une chute peut accompagner une perte de contrôle, un revers ou la peur d'en vivre un. Elle n'annonce aucun accident. Observez si vous vous êtes relevé, qui était là et comment le cheval a réagi."
+          },
+          {
+            "question": "Un cheval blanc ou noir a-t-il un sens particulier ?",
+            "answer": "La couleur n'a pas de sens fixe. Le cheval blanc évoque souvent le conte ou la légèreté, le noir le mystère ou la puissance, mais vos propres souvenirs de chevaux, de films ou d'équitation comptent en général davantage."
+          }
+        ],
+        "documentMetaDescription": "Rêver d'un cheval, de monter à cheval, d'un cheval qui s'emballe ou de tomber : ce que la scène peut dire de l'élan et du contrôle, avec exemple de journal.",
+        "modifiedAt": "2026-10-08"
       },
       "es": {
         "slug": "caballo",
         "name": "Caballo",
-        "shortDescription": "Los caballos representan libertad, poder y el viaje de la vida. Simbolizan fuerza personal, energía sexual y el deseo de avanzar en la vida.",
+        "shortDescription": "Soñar con un caballo suele hablar de impulso y de control: lo que te lleva y quién sujeta las riendas. Un paseo tranquilo, un caballo desbocado y una caída no cuentan lo mismo; quién guiaba a quién, y lo que sentiste, orientan la lectura.",
         "askYourself": [
-          "¿Dónde necesito más libertad en mi vida?",
-          "¿Qué viaje estoy haciendo?"
-        ]
+          "¿Iba montado, caminaba a su lado, lo miraba o huía de él?",
+          "¿Me sentía al mando, arrastrado o a punto de caer?",
+          "¿Qué me está llevando ahora más deprisa de lo que quiero, o me frena?"
+        ],
+        "faq": [
+          {
+            "question": "¿Qué significa soñar con un caballo?",
+            "answer": "El caballo se asocia a menudo con el impulso, la energía y la libertad de movimiento, y con la pregunta de quién manda. Su sentido depende de la escena: montar tranquilo, perder las riendas, caerte o ver caballos correr sueltos."
+          },
+          {
+            "question": "¿Qué significa soñar que montas a caballo?",
+            "answer": "Montar con soltura puede acompañar una etapa en la que tu energía y tu rumbo van en la misma dirección. Luchar por no caerte puede enlazar con una situación que va más rápido de lo que quisieras. Anota adónde ibas."
+          },
+          {
+            "question": "¿Qué significa soñar que te caes de un caballo?",
+            "answer": "Una caída puede acompañar una pérdida de control, un tropiezo o el miedo a vivirlo. No anuncia ningún accidente. Fíjate en si te levantabas, quién estaba allí y cómo reaccionaba el caballo."
+          },
+          {
+            "question": "¿Un caballo blanco o negro significa algo concreto?",
+            "answer": "El color no tiene un significado fijo. El caballo blanco suele evocar los cuentos o la ligereza, y el negro el misterio o la fuerza, pero tus propios recuerdos de caballos, películas o clases de equitación suelen pesar más."
+          }
+        ],
+        "documentMetaDescription": "Soñar con un caballo, montar a caballo, un caballo desbocado o caerte: qué puede decir la escena sobre tu impulso y el control, con un ejemplo de diario.",
+        "modifiedAt": "2026-10-08"
       },
       "de": {
         "slug": "pferd",
         "name": "Pferd",
-        "shortDescription": "Pferde repräsentieren Freiheit, Kraft und die Lebensreise. Sie symbolisieren persönliche Stärke, sexuelle Energie und den Wunsch, im Leben voranzukommen.",
+        "shortDescription": "Von einem Pferd zu träumen handelt oft von Antrieb und Kontrolle: was Sie trägt und wer die Zügel hält. Ein ruhiger Ritt, ein durchgehendes Pferd und ein Sturz erzählen Verschiedenes; wer wen führte und was Sie fühlten, zeigen die Richtung.",
         "askYourself": [
-          "Wo brauche ich mehr Freiheit in meinem Leben?",
-          "Auf welcher Reise befinde ich mich?"
-        ]
+          "Saß ich im Sattel, ging ich daneben, schaute ich zu oder floh ich?",
+          "Hatte ich die Zügel in der Hand, wurde ich mitgerissen oder abgeworfen?",
+          "Was zieht mich gerade schneller voran, als mir lieb ist, oder bremst mich?"
+        ],
+        "faq": [
+          {
+            "question": "Was bedeutet es, von einem Pferd zu träumen?",
+            "answer": "Das Pferd wird oft mit Antrieb, Energie und Bewegungsfreiheit verbunden, und mit der Frage, wer die Führung hat. Die Deutung hängt von der Szene ab: ruhig reiten, die Zügel verlieren, stürzen oder frei laufende Pferde beobachten."
+          },
+          {
+            "question": "Was bedeutet es, im Traum zu reiten?",
+            "answer": "Mühelos zu reiten kann eine Phase begleiten, in der Ihre Energie und Ihre Richtung zusammenpassen. Sich kaum im Sattel zu halten kann zu einer Lage passen, die schneller läuft, als Ihnen lieb ist. Notieren Sie, wohin Sie ritten."
+          },
+          {
+            "question": "Was bedeutet es, im Traum vom Pferd zu fallen?",
+            "answer": "Ein Sturz kann Kontrollverlust, einen Rückschlag oder die Angst davor begleiten. Einen Unfall kündigt er nicht an. Achten Sie darauf, ob Sie wieder aufstanden, wer dabei war und wie das Pferd reagierte."
+          },
+          {
+            "question": "Hat ein weißes oder schwarzes Pferd eine besondere Bedeutung?",
+            "answer": "Die Farbe hat keine feste Bedeutung. Ein Schimmel erinnert oft an Märchen oder Leichtigkeit, ein Rappe an Geheimnis oder Kraft, doch Ihre eigenen Erinnerungen an Pferde, Filme oder Reitstunden wiegen meist schwerer."
+          }
+        ],
+        "documentMetaDescription": "Pferd im Traum: reiten, durchgehendes Pferd, vom Pferd fallen, Schimmel oder Rappe. Was die Szene über Antrieb und Kontrolle sagen kann, mit Tagebuchbeispiel.",
+        "modifiedAt": "2026-10-08"
       },
       "it": {
         "slug": "cavallo",
         "name": "Cavallo",
-        "shortDescription": "I cavalli rappresentano libertà, potenza e il viaggio della vita. Simboleggiano forza personale, energia sessuale e il desiderio di andare avanti nella vita.",
+        "shortDescription": "Sognare un cavallo parla spesso di slancio e di controllo: ciò che ti porta avanti e chi tiene le redini. Una passeggiata, un cavallo imbizzarrito e una caduta sono scene diverse; chi guidava chi, e che cosa provavi, orientano la lettura.",
         "askYourself": [
-          "Dove ho bisogno di più libertà nella mia vita?",
-          "Quale viaggio sto facendo?"
-        ]
+          "Ero in sella, camminavo accanto, guardavo o scappavo dal cavallo?",
+          "Mi sentivo al comando, trascinato o sbalzato via?",
+          "Che cosa, in questo periodo, mi porta più veloce di quanto vorrei, o mi frena?"
+        ],
+        "faq": [
+          {
+            "question": "Che cosa significa sognare un cavallo?",
+            "answer": "Il cavallo viene spesso associato allo slancio, all’energia e alla libertà di movimento, e alla domanda su chi comanda. Il significato dipende dalla scena: cavalcare tranquillo, perdere le redini, cadere o guardare cavalli che corrono liberi."
+          },
+          {
+            "question": "Che cosa significa sognare di andare a cavallo?",
+            "answer": "Cavalcare con facilità può accompagnare un periodo in cui energia e direzione vanno d’accordo. Faticare a restare in sella può richiamare una situazione che corre più veloce di quanto vorresti. Annota dove eri diretto."
+          },
+          {
+            "question": "Che cosa significa sognare di cadere da cavallo?",
+            "answer": "Una caduta può accompagnare una perdita di controllo, un passo falso o la paura di viverlo. Non annuncia nessun incidente. Osserva se ti rialzavi, chi c’era e come reagiva il cavallo."
+          },
+          {
+            "question": "Un cavallo bianco o nero ha un significato particolare?",
+            "answer": "Il colore non ha un significato fisso. Il cavallo bianco richiama spesso le fiabe o la leggerezza, quello nero il mistero o la forza, ma i tuoi ricordi di cavalli, film o lezioni di equitazione di solito contano di più."
+          }
+        ],
+        "documentMetaDescription": "Sognare un cavallo, di andare a cavallo, un cavallo imbizzarrito o di cadere: che cosa può dire la scena di slancio e controllo, con esempio di diario.",
+        "modifiedAt": "2026-10-08"
       },
       "pt": {
         "slug": "cavalo",
@@ -9169,47 +9365,152 @@
       "en": {
         "slug": "ex-partner",
         "name": "Ex-Partner",
-        "shortDescription": "Dreaming of an ex-partner often represents unresolved feelings, lessons from past relationships, or aspects of yourself you associate with that person rather than literal desire to reconnect.",
+        "shortDescription": "Dreaming about an ex rarely means you want them back. The scene often reopens something unfinished: a goodbye that never happened, a time in your life, a way of being loved. What happened between you matters more than the person.",
         "askYourself": [
-          "What unresolved feelings do I still have?",
-          "What did this relationship teach me?"
-        ]
+          "What were we doing in the dream: talking, arguing, getting back together, avoiding each other?",
+          "How did I feel on waking: nostalgic, relieved, angry, guilty?",
+          "What from that time in my life is coming back right now?"
+        ],
+        "faq": [
+          {
+            "question": "What does it mean to dream about your ex?",
+            "answer": "It rarely means you want them back. An ex often stands for something unfinished, a time in your life or a way of being in a relationship. What happened between you in the dream, and how you felt, says more than the person does."
+          },
+          {
+            "question": "Why do I dream about my ex when I'm in a relationship?",
+            "answer": "It is common and it is not a betrayal. The dream may echo a comparison, an old fear stirred up by something current, or a memory set off by a date, a place or a song. Look at what is happening in your relationship now."
+          },
+          {
+            "question": "What does it mean to dream of getting back together with an ex?",
+            "answer": "Getting back together in a dream can go with nostalgia, a need for something familiar, or missing who you were back then. It is neither a prediction nor proof of hidden feelings. Note what felt good in the scene."
+          },
+          {
+            "question": "Why do I keep dreaming about my ex?",
+            "answer": "Dreams about an ex often return during changes, around anniversaries or in lonely stretches. If they bring back a painful or abusive relationship and keep disturbing your sleep, talking with a professional can help."
+          }
+        ],
+        "documentMetaDescription": "Dreaming about your ex: getting back together, arguing, seeing them with someone new. What the scene may say about unfinished feelings, with a journal example.",
+        "modifiedAt": "2026-10-08"
       },
       "fr": {
         "slug": "ex-partenaire",
         "name": "Ex-Partenaire",
-        "shortDescription": "Rêver d'un ex-partenaire représente souvent des sentiments non résolus, des leçons de relations passées ou des aspects de vous-même que vous associez à cette personne plutôt qu'un désir littéral de se reconnecter.",
+        "shortDescription": "Rêver de son ex veut rarement dire qu'on souhaite son retour. La scène rouvre souvent un inachevé : un adieu qui n'a pas eu lieu, une période de votre vie, une façon d'aimer. Ce qui se passait entre vous compte plus que la personne.",
         "askYourself": [
-          "Quels sentiments non résolus ai-je encore ?",
-          "Qu'est-ce que cette relation m'a appris ?"
-        ]
+          "Que faisions-nous dans le rêve : parler, nous disputer, nous remettre ensemble, nous éviter ?",
+          "Qu'ai-je ressenti au réveil : nostalgie, soulagement, colère, culpabilité ?",
+          "Qu'est-ce qui, de cette période de ma vie, revient en ce moment ?"
+        ],
+        "faq": [
+          {
+            "question": "Que signifie rêver de son ex ?",
+            "answer": "Cela veut rarement dire que vous souhaitez son retour. Un ex représente souvent quelque chose d'inachevé, une période de votre vie ou une manière d'être en couple. Ce qui se passait entre vous dans le rêve, et ce que vous ressentiez, en dit plus que la personne."
+          },
+          {
+            "question": "Pourquoi je rêve de mon ex alors que je suis en couple ?",
+            "answer": "C'est fréquent et ce n'est pas une trahison. Le rêve peut faire écho à une comparaison, à une vieille peur réveillée par une situation actuelle, ou à un souvenir déclenché par une date, un lieu, une chanson. Regardez ce qui se passe dans votre couple en ce moment."
+          },
+          {
+            "question": "Que signifie rêver de se remettre avec son ex ?",
+            "answer": "Se remettre ensemble en rêve peut accompagner la nostalgie, un besoin de familiarité ou le manque de la personne que vous étiez à l'époque. Ce n'est ni une prédiction ni la preuve de sentiments cachés. Notez ce qui vous faisait du bien dans la scène."
+          },
+          {
+            "question": "Pourquoi je rêve souvent de mon ex ?",
+            "answer": "Les rêves d'un ex reviennent souvent lors de changements, d'anniversaires ou de périodes de solitude. S'ils ravivent une relation douloureuse ou violente et continuent d'abîmer votre sommeil, en parler à un professionnel peut aider."
+          }
+        ],
+        "documentMetaDescription": "Rêver de son ex, de se remettre ensemble, de se disputer ou de le voir avec quelqu'un : ce que la scène peut dire de l'inachevé, avec exemple de journal.",
+        "modifiedAt": "2026-10-08"
       },
       "es": {
         "slug": "ex-pareja",
         "name": "Ex-Pareja",
-        "shortDescription": "Soñar con una ex-pareja a menudo representa sentimientos no resueltos, lecciones de relaciones pasadas o aspectos de ti mismo que asocias con esa persona en lugar de un deseo literal de reconectar.",
+        "shortDescription": "Soñar con tu ex rara vez significa que quieras volver. La escena suele reabrir algo pendiente: una despedida que no llegó, una etapa de tu vida, una forma de querer. Lo que pasaba entre los dos importa más que la persona.",
         "askYourself": [
-          "¿Qué sentimientos no resueltos todavía tengo?",
-          "¿Qué me enseñó esta relación?"
-        ]
+          "¿Qué hacíamos en el sueño: hablar, discutir, volver, evitarnos?",
+          "¿Qué sentí al despertar: nostalgia, alivio, rabia, culpa?",
+          "¿Qué de aquella etapa de mi vida está volviendo ahora?"
+        ],
+        "faq": [
+          {
+            "question": "¿Qué significa soñar con tu ex?",
+            "answer": "Rara vez significa que quieras volver. Un ex suele representar algo pendiente, una etapa de tu vida o una forma de estar en pareja. Lo que pasaba entre los dos en el sueño, y lo que sentiste, dice más que la persona."
+          },
+          {
+            "question": "¿Por qué sueño con mi ex si tengo pareja?",
+            "answer": "Es frecuente y no es una traición. El sueño puede enlazar con una comparación, con un miedo antiguo que despierta una situación actual o con un recuerdo activado por una fecha, un lugar o una canción. Fíjate en lo que pasa ahora en tu relación."
+          },
+          {
+            "question": "¿Qué significa soñar que vuelves con tu ex?",
+            "answer": "Volver en sueños puede acompañar la nostalgia, la necesidad de algo conocido o echar de menos a quien eras entonces. No es una predicción ni la prueba de sentimientos ocultos. Anota qué te hacía sentir bien en la escena."
+          },
+          {
+            "question": "¿Por qué sueño tanto con mi ex?",
+            "answer": "Los sueños con un ex suelen volver en épocas de cambio, en aniversarios o en momentos de soledad. Si reavivan una relación dolorosa o de maltrato y siguen alterando tu descanso, hablarlo con un profesional puede ayudarte."
+          }
+        ],
+        "documentMetaDescription": "Soñar con tu ex: volver, discutir o que tenga nueva pareja. Qué puede decir la escena de lo que quedó pendiente, con preguntas y un ejemplo de diario.",
+        "modifiedAt": "2026-10-08"
       },
       "de": {
         "slug": "ex-partner",
         "name": "Ex-Partner/in",
-        "shortDescription": "Von einem Ex-Partner zu träumen steht oft für ungelöste Gefühle, Lektionen aus vergangenen Beziehungen oder Aspekte Ihrer selbst, die Sie mit dieser Person verbinden.",
+        "shortDescription": "Wer vom Ex träumt, will die Person selten zurück. Die Szene öffnet oft etwas Unabgeschlossenes: einen Abschied, der nie stattfand, eine Lebensphase, eine Art zu lieben. Was zwischen Ihnen geschah, zählt mehr als die Person.",
         "askYourself": [
-          "Welche ungelösten Gefühle habe ich noch?",
-          "Was hat mich diese Beziehung gelehrt?"
-        ]
+          "Was haben wir im Traum getan: geredet, gestritten, uns versöhnt, uns gemieden?",
+          "Was habe ich beim Aufwachen gefühlt: Wehmut, Erleichterung, Wut, Schuld?",
+          "Was aus jener Lebensphase meldet sich gerade wieder?"
+        ],
+        "faq": [
+          {
+            "question": "Was bedeutet es, vom Ex zu träumen?",
+            "answer": "Meist heißt es nicht, dass Sie die Person zurückwollen. Ein Ex steht oft für etwas Unabgeschlossenes, eine Lebensphase oder eine Art, in einer Beziehung zu sein. Was im Traum zwischen Ihnen geschah und was Sie fühlten, sagt mehr als die Person."
+          },
+          {
+            "question": "Warum träume ich von meinem Ex, obwohl ich in einer Beziehung bin?",
+            "answer": "Das ist häufig und kein Verrat. Der Traum kann einen Vergleich aufgreifen, eine alte Angst, die eine aktuelle Lage geweckt hat, oder eine Erinnerung, ausgelöst durch ein Datum, einen Ort oder ein Lied. Schauen Sie, was in Ihrer Beziehung gerade geschieht."
+          },
+          {
+            "question": "Was bedeutet es, im Traum wieder mit dem Ex zusammenzukommen?",
+            "answer": "Eine Versöhnung im Traum kann Wehmut begleiten, den Wunsch nach Vertrautem oder die Sehnsucht nach der Person, die Sie damals waren. Sie ist weder Vorhersage noch Beweis verborgener Gefühle. Notieren Sie, was sich in der Szene gut anfühlte."
+          },
+          {
+            "question": "Warum träume ich immer wieder von meinem Ex?",
+            "answer": "Träume vom Ex kehren oft in Umbruchphasen, an Jahrestagen oder in einsamen Zeiten zurück. Wecken sie eine schmerzhafte oder gewaltvolle Beziehung und stören sie immer wieder Ihren Schlaf, kann ein Gespräch mit einer Fachperson helfen."
+          }
+        ],
+        "documentMetaDescription": "Vom Ex träumen: Versöhnung, Streit oder der Ex mit jemand Neuem. Was die Szene über Unabgeschlossenes sagen kann, mit Fragen und einem Tagebuchbeispiel.",
+        "modifiedAt": "2026-10-08"
       },
       "it": {
         "slug": "ex-partner",
         "name": "Ex partner",
-        "shortDescription": "Sognare un ex partner spesso rappresenta sentimenti irrisolti, lezioni da relazioni passate o aspetti di te stesso che associ a quella persona.",
+        "shortDescription": "Sognare il tuo ex raramente significa che vuoi tornarci insieme. La scena riapre spesso qualcosa di sospeso: un addio mai detto, una fase della tua vita, un modo di amare. Ciò che succedeva tra voi conta più della persona.",
         "askYourself": [
-          "Quali sentimenti irrisolti ho ancora?",
-          "Cosa mi ha insegnato questa relazione?"
-        ]
+          "Che cosa facevamo nel sogno: parlare, litigare, tornare insieme, evitarci?",
+          "Che cosa ho provato al risveglio: nostalgia, sollievo, rabbia, senso di colpa?",
+          "Che cosa di quel periodo della mia vita sta tornando adesso?"
+        ],
+        "faq": [
+          {
+            "question": "Che cosa significa sognare il proprio ex?",
+            "answer": "Raramente significa che vuoi tornarci insieme. Un ex rappresenta spesso qualcosa di sospeso, una fase della tua vita o un modo di stare in coppia. Ciò che succedeva tra voi nel sogno, e ciò che provavi, dice più della persona."
+          },
+          {
+            "question": "Perché sogno il mio ex anche se ho una relazione?",
+            "answer": "Succede spesso e non è un tradimento. Il sogno può richiamare un confronto, una vecchia paura risvegliata da una situazione attuale o un ricordo innescato da una data, un luogo, una canzone. Guarda che cosa sta succedendo ora nella tua relazione."
+          },
+          {
+            "question": "Che cosa significa sognare di tornare con l’ex?",
+            "answer": "Tornare insieme in sogno può accompagnare la nostalgia, il bisogno di qualcosa di familiare o la mancanza della persona che eri allora. Non è una previsione né la prova di sentimenti nascosti. Annota che cosa ti faceva stare bene nella scena."
+          },
+          {
+            "question": "Perché sogno spesso il mio ex?",
+            "answer": "I sogni su un ex tornano spesso nei periodi di cambiamento, negli anniversari o nei momenti di solitudine. Se riaccendono una relazione dolorosa o violenta e continuano a disturbare il sonno, parlarne con un professionista può aiutare."
+          }
+        ],
+        "documentMetaDescription": "Sognare il proprio ex: tornare insieme, litigare o vederlo con qualcun altro. Che cosa può dire la scena di ciò che è rimasto sospeso, con esempio di diario.",
+        "modifiedAt": "2026-10-08"
       },
       "pt": {
         "slug": "ex-parceiro",
