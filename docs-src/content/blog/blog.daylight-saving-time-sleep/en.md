@@ -5,7 +5,7 @@
   "lang": "en",
   "slug": "daylight-saving-time-sleep",
   "title": "Daylight Saving Time and Sleep | Noctalia",
-  "description": "Learn how daylight saving time disrupts circadian rhythm, REM sleep, dream recall and recovery, with practical adjustment tips.",
+  "description": "Daylight saving time and sleep: why the spring clock change hits harder, what it does to REM sleep and dreams, and how to adjust in a few days.",
   "robots": "max-image-preview:large",
   "themeColor": "#0a0514",
   "htmlClass": "scroll-smooth blog-article",
@@ -14,24 +14,24 @@
   "mainClass": "pt-32 pb-20 px-4",
   "ogType": "article",
   "ogTitle": "Daylight Saving Time and Sleep | Noctalia",
-  "ogDescription": "Learn how daylight saving time disrupts circadian rhythm, REM sleep, dream recall and recovery, with practical adjustment tips.",
+  "ogDescription": "Why the spring clock change hits sleep harder, what it does to REM sleep and dreams, and simple steps to adjust in a few days.",
   "ogImage": "https://noctalia.app/img/blog/daylight-saving-time-sleep-dreams.webp",
   "ogImageAlt": "Clock surrounded by disrupted sleep cycles and dream symbols in purple and amber tones",
   "twitterCard": "summary_large_image",
   "twitterTitle": "Daylight Saving Time and Sleep | Noctalia",
-  "twitterDescription": "Learn how daylight saving time disrupts circadian rhythm, REM sleep, dream recall and recovery, with practical adjustment tips.",
+  "twitterDescription": "Why the spring clock change hits sleep harder, what it does to REM sleep and dreams, and simple steps to adjust in a few days.",
   "twitterImage": "https://noctalia.app/img/blog/daylight-saving-time-sleep-dreams.webp",
   "twitterImageAlt": "Clock surrounded by disrupted sleep cycles and dream symbols in purple and amber tones",
   "publishedTime": "2026-03-17",
-  "modifiedTime": "2026-06-18",
+  "modifiedTime": "2026-10-08",
   "author": "Thanh Chau",
   "prevPath": "/en/blog/dream-control-problem-solving",
   "nextPath": "/en/blog/sleep-debt-health-dreams",
   "preloadImage": "/img/blog/daylight-saving-time-sleep-dreams.webp",
   "jsonLd": [
-    "{\n  \"@context\": \"https://schema.org\",\n  \"@type\": \"BlogPosting\",\n  \"headline\": \"Daylight Saving Time and Sleep: How the Clock Change Disrupts Your Dreams\",\n  \"description\": \"Learn how daylight saving time disrupts circadian rhythm, REM sleep, dream recall and recovery, with practical adjustment tips.\",\n  \"image\": {\n    \"@type\": \"ImageObject\",\n    \"url\": \"https://noctalia.app/img/blog/daylight-saving-time-sleep-dreams.webp\",\n    \"width\": 1200,\n    \"height\": 630\n  },\n  \"author\": [\n    {\n      \"@type\": \"Person\",\n      \"@id\": \"https://noctalia.app/en/about#person\",\n      \"name\": \"Thanh Chau\",\n      \"jobTitle\": \"Founder & Publication Director\",\n      \"url\": \"https://noctalia.app/en/about\",\n      \"worksFor\": {\n        \"@type\": \"Organization\",\n        \"@id\": \"https://noctalia.app/#organization\",\n        \"name\": \"Noctalia\",\n        \"url\": \"https://noctalia.app\"\n      }\n    },\n    {\n      \"@type\": \"Organization\",\n      \"@id\": \"https://noctalia.app/#organization\",\n      \"name\": \"Noctalia\",\n      \"url\": \"https://noctalia.app\",\n      \"logo\": {\n        \"@type\": \"ImageObject\",\n        \"url\": \"https://noctalia.app/logo/logo_noctalia.png\"\n      }\n    }\n  ],\n  \"publisher\": {\n    \"@type\": \"Organization\",\n    \"name\": \"Noctalia\",\n    \"url\": \"https://noctalia.app\",\n    \"logo\": {\n      \"@type\": \"ImageObject\",\n      \"url\": \"https://noctalia.app/logo/logo_noctalia.png\"\n    }\n  },\n  \"datePublished\": \"2026-03-17\",\n  \"dateModified\": \"2026-06-18\",\n  \"mainEntityOfPage\": {\n    \"@type\": \"WebPage\",\n    \"@id\": \"https://noctalia.app/en/blog/daylight-saving-time-sleep\"\n  },\n  \"inLanguage\": \"en\",\n  \"isAccessibleForFree\": true,\n  \"wordCount\": 1600,\n  \"timeRequired\": \"PT6M\",\n  \"url\": \"https://noctalia.app/en/blog/daylight-saving-time-sleep\"\n}",
+    "{\n    \"@context\": \"https://schema.org\",\n    \"@type\": \"BlogPosting\",\n    \"headline\": \"Daylight saving time and sleep: what the clock change does to your nights and dreams\",\n    \"description\": \"Daylight saving time and sleep: why the spring clock change hits harder, what it does to REM sleep and dreams, and how to adjust in a few days.\",\n    \"image\": {\n        \"@type\": \"ImageObject\",\n        \"url\": \"https://noctalia.app/img/blog/daylight-saving-time-sleep-dreams.webp\",\n        \"width\": 1200,\n        \"height\": 630\n    },\n    \"author\": [\n        {\n            \"@type\": \"Person\",\n            \"@id\": \"https://noctalia.app/en/about#person\",\n            \"name\": \"Thanh Chau\",\n            \"jobTitle\": \"Founder & Publication Director\",\n            \"url\": \"https://noctalia.app/en/about\",\n            \"worksFor\": {\n                \"@type\": \"Organization\",\n                \"@id\": \"https://noctalia.app/#organization\",\n                \"name\": \"Noctalia\",\n                \"url\": \"https://noctalia.app\"\n            }\n        },\n        {\n            \"@type\": \"Organization\",\n            \"@id\": \"https://noctalia.app/#organization\",\n            \"name\": \"Noctalia\",\n            \"url\": \"https://noctalia.app\",\n            \"logo\": {\n                \"@type\": \"ImageObject\",\n                \"url\": \"https://noctalia.app/logo/logo_noctalia.png\"\n            }\n        }\n    ],\n    \"publisher\": {\n        \"@type\": \"Organization\",\n        \"name\": \"Noctalia\",\n        \"url\": \"https://noctalia.app\",\n        \"logo\": {\n            \"@type\": \"ImageObject\",\n            \"url\": \"https://noctalia.app/logo/logo_noctalia.png\"\n        }\n    },\n    \"datePublished\": \"2026-03-17\",\n    \"dateModified\": \"2026-10-08\",\n    \"mainEntityOfPage\": {\n        \"@type\": \"WebPage\",\n        \"@id\": \"https://noctalia.app/en/blog/daylight-saving-time-sleep\"\n    },\n    \"inLanguage\": \"en\",\n    \"isAccessibleForFree\": true,\n    \"wordCount\": 2152,\n    \"timeRequired\": \"PT10M\",\n    \"url\": \"https://noctalia.app/en/blog/daylight-saving-time-sleep\"\n}",
     "{\n  \"@context\": \"https://schema.org\",\n  \"@type\": \"WebPage\",\n  \"@id\": \"https://noctalia.app/en/blog/daylight-saving-time-sleep\",\n  \"url\": \"https://noctalia.app/en/blog/daylight-saving-time-sleep\",\n  \"name\": \"Daylight Saving Time and Sleep | Noctalia\",\n  \"inLanguage\": \"en\"\n}",
-    "{\n  \"@context\": \"https://schema.org\",\n  \"@type\": \"FAQPage\",\n  \"mainEntity\": [\n    {\n      \"@type\": \"Question\",\n      \"name\": \"Does daylight saving time really affect sleep?\",\n      \"acceptedAnswer\": {\n        \"@type\": \"Answer\",\n        \"text\": \"Yes. The spring clock change forces a sudden one-hour phase advance on your circadian rhythm, disrupting melatonin timing and compressing REM sleep. Studies show it takes 1 to 7 days to fully adjust, with measurable effects on sleep quality, dream recall, and cardiovascular health. The Monday after the spring transition sees a 24% increase in heart attack admissions.\"\n      }\n    },\n    {\n      \"@type\": \"Question\",\n      \"name\": \"How long does it take to adjust to the time change?\",\n      \"acceptedAnswer\": {\n        \"@type\": \"Answer\",\n        \"text\": \"Most people need 1 to 3 days to adjust to the one-hour shift. However, sensitive individuals — children, the elderly, and those with sleep disorders — may need up to a week. Night owls (late chronotypes) have the hardest time with the spring-forward. Research by Kantermann et al. shows measurable circadian effects lasting up to four weeks in some individuals.\"\n      }\n    },\n    {\n      \"@type\": \"Question\",\n      \"name\": \"Can the time change affect my dreams?\",\n      \"acceptedAnswer\": {\n        \"@type\": \"Answer\",\n        \"text\": \"Absolutely. The spring clock change cuts into the final morning REM cycle — the longest and most dream-rich period of the night. This initially reduces dream recall, but during the adaptation period, REM rebound can produce unusually vivid and emotionally intense dreams. Dream content also shifts toward themes of disorientation, being late, and losing control.\"\n      }\n    }\n  ]\n}",
+    "{\n    \"@context\": \"https://schema.org\",\n    \"@type\": \"FAQPage\",\n    \"mainEntity\": [\n        {\n            \"@type\": \"Question\",\n            \"name\": \"Does daylight saving time really affect sleep?\",\n            \"acceptedAnswer\": {\n                \"@type\": \"Answer\",\n                \"text\": \"Yes, especially in spring. Research reviews show that sleep is shorter and more broken for several days, not only on the night of the change. The alarm also cuts into the end of the night, when REM sleep periods are longest.\"\n            }\n        },\n        {\n            \"@type\": \"Question\",\n            \"name\": \"How long does it take to adjust to the time change?\",\n            \"acceptedAnswer\": {\n                \"@type\": \"Answer\",\n                \"text\": \"Most people feel better within a few days to a week. Night owls adjust less easily to the spring change, and in one study their activity timing had still not fully aligned weeks later. If poor sleep lasts several weeks, talk to a doctor.\"\n            }\n        },\n        {\n            \"@type\": \"Question\",\n            \"name\": \"Can the time change affect my dreams?\",\n            \"acceptedAnswer\": {\n                \"@type\": \"Answer\",\n                \"text\": \"Indirectly, yes. A shorter end of night can mean fewer remembered dreams at first, then sometimes more vivid ones as REM sleep rebounds. This is plausible rather than proven for the clock change specifically. Themes of time and lateness may also echo the week.\"\n            }\n        },\n        {\n            \"@type\": \"Question\",\n            \"name\": \"What is the best way to prepare for the spring change?\",\n            \"acceptedAnswer\": {\n                \"@type\": \"Answer\",\n                \"text\": \"Go to bed and get up 15 to 20 minutes earlier each day for three or four days beforehand. After the change, get outdoor light soon after waking, dim the lights in the evening and stop caffeine early in the afternoon.\"\n            }\n        }\n    ]\n}",
     "{\n  \"@context\": \"https://schema.org\",\n  \"@type\": \"BreadcrumbList\",\n  \"itemListElement\": [\n    {\n      \"@type\": \"ListItem\",\n      \"position\": 1,\n      \"name\": \"Home\",\n      \"item\": \"https://noctalia.app/\"\n    },\n    {\n      \"@type\": \"ListItem\",\n      \"position\": 2,\n      \"name\": \"Resources\",\n      \"item\": \"https://noctalia.app/en/blog/\"\n    },\n    {\n      \"@type\": \"ListItem\",\n      \"position\": 3,\n      \"name\": \"Daylight Saving Time\",\n      \"item\": \"https://noctalia.app/en/blog/daylight-saving-time-sleep\"\n    }\n  ]\n}"
   ],
   "activeNav": "resources"
@@ -64,13 +64,13 @@
 <a class="text-xs font-mono text-purple-200/70 border border-white/10 rounded-full px-3 py-1 hover:text-white hover:border-dream-salmon/30 transition-colors" href="rem-sleep-dreams">Topic: Sleep science</a>
 <span aria-hidden="true" class="w-full sm:hidden"></span>
 <span class="text-sm text-purple-300/60">Published March 17, 2026</span>
-<span class="text-sm text-purple-300/60">~1600 words · 6 min read</span>
+<span class="text-sm text-purple-300/60">10 min read</span>
 </div>
 <h1 class="font-serif text-3xl md:text-5xl mb-6 text-transparent bg-clip-text bg-gradient-to-b from-white via-dream-lavender to-purple-400/50 leading-tight">
-                    Daylight Saving Time and Sleep: How the Clock Change Disrupts Your Dreams
+                    Daylight saving time and sleep: what the clock change does to your nights and dreams
                 </h1>
 <p class="text-lg text-purple-200/80 leading-relaxed">
-                    Twice a year, billions of people shift their clocks by one hour. It sounds trivial, but that single hour triggers a cascade of disruptions to your circadian rhythm, sleep architecture, and dream life. With the spring-forward approaching, now is the time to understand what happens to your body and mind -- and how to protect your sleep through the transition.
+                    It is the Monday after the clocks spring forward. The alarm says 7, your body insists it is 6, and the dream you were in, a train you had to catch, is gone the moment you sit up. Daylight saving time moves the clock by one hour, but your internal clock takes longer to follow. Here is what that hour does to your sleep and dreams, what is measured and what is still a hypothesis, and how to get through the change more gently.
                 </p>
 </header>
 <!-- Author Byline (E-E-A-T) -->
@@ -91,7 +91,7 @@
 <!-- Quick Answer (AI SEO) -->
 <section aria-labelledby="quick-answer-title" class="glass-panel rounded-2xl p-6 mb-8 border border-dream-salmon/20 bg-white/5">
 <h2 class="font-serif text-xl text-dream-cream mb-3" id="quick-answer-title">Quick answer</h2>
-<p class="text-purple-100/80 leading-relaxed">Daylight saving time forces a sudden one-hour shift on your circadian rhythm, disrupting the delicate timing of melatonin release and sleep cycles. The spring change is especially harmful: it compresses REM sleep, reduces dream recall, increases the risk of heart attacks by 24% in the following days, and can take up to a week for sensitive individuals to recover from. Gradual schedule shifting, morning light exposure, and avoiding caffeine are the most effective adaptation strategies.</p>
+<p class="text-purple-100/80 leading-relaxed">The clock jumps in one night; your body clock catches up over several days. The spring change is the harder one: sleep gets shorter and more broken, and the alarm cuts into the end of the night, when REM sleep, the stage most linked to vivid dreams, lasts longest. Expect a few groggy days, sometimes more if you are a night owl. Shifting your schedule gradually, getting morning light and keeping evenings dim are the most useful steps.</p>
 </section>
 <!-- Featured Image -->
 <figure class="mb-12 rounded-2xl overflow-hidden">
@@ -100,67 +100,67 @@
 <!-- Table of Contents -->
 <nav class="glass-panel rounded-2xl p-6 mb-12">
 <h2 class="font-serif text-lg text-dream-cream mb-4 flex items-center gap-2">
-<i class="w-5 h-5 text-dream-salmon" data-lucide="list"></i> Table of Contents
+<i class="w-5 h-5 text-dream-salmon" data-lucide="list"></i> Table of contents
                 </h2>
 <ol class="space-y-2 text-sm text-purple-200/70">
-<li><a class="toc-link block" href="#clock-change">1. What happens to your body when the clock changes</a></li>
-<li><a class="toc-link block" href="#sleep-architecture">2. How DST disrupts sleep architecture</a></li>
-<li><a class="toc-link block" href="#dream-disruption">3. The dream disruption effect</a></li>
-<li><a class="toc-link block" href="#health-risks">4. Health risks linked to the time change</a></li>
-<li><a class="toc-link block" href="#tips">5. Tips to adapt your sleep schedule</a></li>
-<li><a class="toc-link block" href="#abolish-dst">6. Should we abolish daylight saving time?</a></li>
+<li><a class="toc-link block" href="#clock-change">1. What happens in your body when the clocks change?</a></li>
+<li><a class="toc-link block" href="#sleep-architecture">2. How does the time change disturb sleep?</a></li>
+<li><a class="toc-link block" href="#dream-disruption">3. What happens to your dreams?</a></li>
+<li><a class="toc-link block" href="#health-risks">4. Is the time change bad for your health?</a></li>
+<li><a class="toc-link block" href="#tips">5. How to adjust before and after the change</a></li>
+<li><a class="toc-link block" href="#abolish-dst">6. Should we stop changing the clocks?</a></li>
 </ol>
 </nav>
 <!-- Article Content -->
 <div class="prose max-w-none text-gray-300">
-<h2 id="clock-change">What Happens to Your Body When the Clock Changes</h2>
-<h3>Your internal clock vs. the wall clock</h3>
+<h2 id="clock-change">What happens in your body when the clocks change?</h2>
+<h3>Your internal clock does not read the wall clock</h3>
 <p>
-                    Your body does not run on the time displayed on your phone. It runs on a biological <a class="text-dream-salmon hover:underline" href="../symbols/night">night</a> -- the suprachiasmatic nucleus (SCN), a tiny cluster of about 20,000 neurons in the hypothalamus. This master clock orchestrates the release of melatonin, cortisol, body temperature cycles, and the timing of every sleep stage. It synchronizes primarily through light exposure, particularly the blue wavelengths present in morning sunlight.
+                    Your body keeps its own time. A master clock in the brain, the suprachiasmatic nucleus in the hypothalamus, sets the rhythm of melatonin, body temperature and sleepiness. It resets itself every day, mainly through light, and morning light matters most.
                 </p>
 <p>
-                    When DST forces a one-hour shift, your SCN does not simply reset. It continues operating on its previous schedule while the external world suddenly demands a different one. This mismatch -- technically called <strong>circadian misalignment</strong> -- is the root cause of every downstream effect: the grogginess, the disrupted sleep, and the altered dreams that follow a clock change.
+                    When the clock on your phone jumps by an hour, that master clock does not jump with it. For a few days, social time and biological time disagree. This gap, called <strong>circadian misalignment</strong>, explains the heavy mornings and the evenings when sleep will not come.
                 </p>
+<h3>Why spring is harder than autumn</h3>
 <p>
-                    Research by Kantermann et al. (2007) showed that the human circadian clock adjusts to the spring transition far more slowly than the autumn one. While most people recover from the fall-back within a day or two, the spring-forward can leave measurable traces on sleep timing for <strong>up to four weeks</strong> in some individuals, particularly those with a late chronotype (night owls).
+                    Kantermann and colleagues (2007) followed 50 people for eight weeks around each clock change. Their sleep and activity timing adjusted readily when clocks went back in autumn, but not after the spring change, especially among <strong>night owls</strong> (late chronotypes). In a larger survey of about 55,000 people in Central Europe, the same team found that sleep timing follows the seasonal shift of dawn under standard time, but not under daylight saving time.
                 </p>
-
-<h3>The melatonin delay</h3>
+<h3>The melatonin lag</h3>
 <p>
-                    In the days following the spring clock change, your body continues producing melatonin on its old schedule. You feel sleepy later than your new bedtime requires, and you are forced to wake up before your biology is ready. The result is a form of acute sleep deprivation -- not unlike jet lag, but without the excitement of arriving somewhere new. Harrison (2013) describes this as <strong>"social jet lag,"</strong> where the conflict between biological time and social time creates a chronic low-grade stress on the body.
+                    After the spring change, your body keeps releasing melatonin on its old schedule. You are not sleepy at the new bedtime, and the alarm rings before your body is ready. It feels like a small jet lag, without the trip.
                 </p>
-
-<h2 id="sleep-architecture">How DST Disrupts Sleep Architecture</h2>
-<h3>The lost REM cycle</h3>
+<h2 id="sleep-architecture">How does the time change disturb sleep?</h2>
+<h3>Shorter nights, more broken sleep</h3>
 <p>
-                    Sleep is not a uniform block of unconsciousness. It unfolds in 90-minute cycles, each containing progressively longer periods of <a class="text-dream-salmon hover:underline" href="rem-sleep-dreams">REM sleep</a>. The richest and longest REM period occurs in the final cycle of the night -- typically between 6:00 and 7:30 AM. This is exactly the period that the spring clock change eliminates.
+                    We often picture the spring change as a single lost hour on Sunday night. A review by Harrison (2013) paints a less comfortable picture: it takes longer to fall asleep and sleep is more fragmented, so the loss <strong>adds up across at least the following week</strong>. The autumn “extra hour” is not much of a gift either: there is little evidence of extra sleep that night, and earlier waking over the next days can also mean a net loss.
                 </p>
+<h3>The end of the night, where long REM periods happen</h3>
 <p>
-                    When your alarm goes off an hour earlier than your body expects, it cuts directly into this final REM phase. You do not simply lose 60 minutes of generic sleep; you lose the <strong>most REM-dense hour of the entire night</strong>. Polysomnography studies in the days following DST transitions show a measurable reduction in total REM sleep of 15 to 25 minutes, even when total sleep time is only reduced by the expected 60 minutes.
+                    Sleep runs in successive cycles, and <a class="text-dream-salmon hover:underline" href="rem-sleep-dreams">REM sleep</a> periods get longer toward morning. When the alarm rings an hour earlier than your body expects, it is mostly this last stretch of the night that gets cut. How many minutes of REM are actually lost after the clock change has not been reliably measured, but the logic of sleep cycles makes the end of the night the most exposed part.
                 </p>
-
-<h3>Fragmented deep sleep</h3>
+<h2 id="dream-disruption">What happens to your dreams?</h2>
+<h3>Fewer dreams remembered at first</h3>
 <p>
-                    Disruption extends beyond REM. Circadian misalignment caused by DST also fragments slow-wave sleep (stages N2 and N3), the deep restorative phases where the body repairs tissue and consolidates procedural memory. Sleepers in the week following the spring change show <strong>increased sleep fragmentation</strong> -- more micro-arousals, more brief awakenings, and more transitions between sleep stages. Even when you manage to fall asleep at the "right" time, the quality of your sleep is degraded.
+                    Few studies have looked at dreams after the time change itself. What follows is reasoned from what we know about sleep, not measured on the clock change. With a shorter end of night and an abrupt alarm, many people wake with no dream at all, or with a fragment that fades within seconds. Our guide on <a class="text-dream-salmon hover:underline" href="why-we-forget-dreams">why we forget dreams</a> explains why.
                 </p>
-
-<blockquote class="border-l-4 border-dream-salmon/40 pl-4 italic text-purple-200/80 my-6">
-"The spring DST transition is essentially an enforced one-hour phase advance imposed on the entire population simultaneously -- a scenario no chronobiologist would ever recommend."
-<span class="block text-sm text-purple-300/60 mt-2 not-italic">-- Roenneberg et al., Journal of Biological Rhythms, 2019</span>
-</blockquote>
-
-<h2 id="dream-disruption">The Dream Disruption Effect</h2>
-<h3>Why your dreams change after the clocks move</h3>
+<h3>Then, sometimes, more vivid dreams</h3>
 <p>
-                    Since the spring clock change specifically targets the final morning sleep cycle -- the most dream-rich portion of the night -- its impact on dreaming is disproportionately large. With the last REM period shortened or entirely eliminated, many people notice an immediate drop in <a class="text-dream-salmon hover:underline" href="why-we-forget-dreams">dream recall</a>. You wake up with a blank slate, unable to remember whether you dreamed at all.
+                    After losing REM sleep, the body tends to make up for it on the following nights, a well-known effect called <strong>REM rebound</strong>. Some people therefore notice striking or intense dreams a few nights after the change. It is plausible, not demonstrated for the clock change specifically. Lighter, more broken sleep also means more <a class="text-dream-salmon hover:underline" href="night-waking-dream-recall">night wakings</a>, and each one is a chance to catch a dream in progress.
                 </p>
+<h3>Dreams about time and being late</h3>
 <p>
-                    But the story is more nuanced than simple dream loss. During the adaptation period (typically 3 to 7 days), the brain compensates for lost REM time by increasing <strong>REM pressure</strong> -- the biological drive to enter REM sleep. This produces what sleep researchers call <strong>REM rebound</strong>, characterized by unusually vivid, emotionally intense, and sometimes bizarre dreams. If you notice particularly striking or unsettling dreams in the week after springing forward, your brain is likely catching up on lost dream time.
+                    Dreams often borrow from what occupies us during the day. In a week spent checking the time, it would not be surprising to dream of a missed train, a clock showing an impossible hour, a <a class="text-dream-salmon hover:underline" href="../symbols/sun">sun</a> still up at midnight, a <a class="text-dream-salmon hover:underline" href="../symbols/moon">moon</a> in the wrong place or a <a class="text-dream-salmon hover:underline" href="../symbols/night">night</a> that never ends. Treat these images as echoes of the week, not as messages.
                 </p>
-
-<h3>Dream content shifts</h3>
+<h3>A dream journal entry for the change week</h3>
+<p><strong>Fictional example</strong>, to show what is worth writing down:</p>
+<ul>
+<li><strong>Night:</strong> “Clocks went forward on Sunday. Fell asleep around 12:30, alarm at 7.”</li>
+<li><strong>Dream:</strong> “I was running for a train. The station clock showed two different times.”</li>
+<li><strong>Emotion:</strong> “Rushed, then irritated.”</li>
+<li><strong>Question to keep:</strong> “Is the rush about the clock change or this week’s deadlines? Does the dream come back once I have adjusted?”</li>
+</ul>
 <p>
-                    Research on dream content following circadian disruption reveals consistent patterns. Dreamers report more themes of <strong>disorientation, being late, missing transportation, and losing control</strong> -- dream narratives that mirror the waking experience of feeling out of sync with time. The <a class="text-dream-salmon hover:underline" href="../symbols/sun">sun</a> appears more frequently in post-DST dreams, often in contexts of confusion about time of day, reflecting the brain's attempt to process the altered light-dark cycle.
+                    One entry proves nothing. Comparing the week of the change with the weeks that follow is what makes a pattern visible.
                 </p>
 </div>
 
@@ -170,74 +170,60 @@
 <i class="w-6 h-6 text-dream-salmon" data-lucide="book-open"></i>
 </div>
 <div>
-<h4 class="font-serif text-lg text-dream-cream mb-2">Track how time changes affect your dreams</h4>
-<p class="text-sm text-gray-400 mb-4">Noctalia's AI-powered dream journal lets you record dreams by voice the moment you wake. Compare your dream patterns before and after DST to see the real impact on your sleep.</p>
-<a class="inline-flex items-center gap-2 text-sm text-dream-salmon hover:text-dream-salmonLight transition-colors" href="/">
-                                Start journaling with Noctalia <i class="w-4 h-4" data-lucide="arrow-right"></i>
+<h4 class="font-serif text-lg text-dream-cream mb-2">Note your dreams during the change week</h4>
+<p class="text-sm text-gray-400 mb-4">Say your dream out loud as soon as you wake up, or type it. Noctalia transcribes it and keeps it in your journal, so you can reread the nights before and after the clock change side by side.</p>
+<a class="inline-flex items-center gap-2 text-sm text-dream-salmon hover:text-dream-salmonLight transition-colors" href="/en/voice-dream-journal">
+                                Try the voice dream journal <i class="w-4 h-4" data-lucide="arrow-right"></i>
 </a>
 </div>
 </div>
 </aside>
 
 <div class="prose max-w-none text-gray-300">
-<h2 id="health-risks">Health Risks Linked to the Time Change</h2>
-<h3>Cardiovascular impact</h3>
+<h2 id="health-risks">Is the time change bad for your health?</h2>
+<h3>Heart attacks: a shift in timing more than in numbers</h3>
 <p>
-                    DST's health consequences extend far beyond grogginess. A landmark study by Sandhu et al. (2014) published in <em>Open Heart</em> found that the Monday following the spring clock change sees a <strong>24% increase in acute myocardial infarction (heart attack) admissions</strong> compared to the average Monday. Sleep deprivation triggers a spike in cortisol, increases inflammatory markers, and raises blood pressure -- a dangerous cocktail for individuals with pre-existing cardiovascular risk.
+                    Sandhu and colleagues (2014) analysed heart attacks treated in Michigan hospitals around several clock changes. They found about <strong>24% more on the Monday after the spring change</strong> and about 21% fewer on the Tuesday after the autumn change. Yet the total over each week did not change. The authors conclude that the time change affects <em>when</em> heart attacks occur, not how many there are. That is not a reason to panic, but it is one to take the week seriously if you already have heart risk factors.
+                </p>
+<h3>Road safety, attention and mood</h3>
+<p>
+                    In the United States, the risk of fatal road crashes rises by about 6% in the week after the spring change, according to an analysis of national fatal crash data (Fritz et al., 2020). The American Academy of Sleep Medicine (AASM) also lists cardiovascular events, mood disorders and traffic accidents among the acute risks of the spring transition. In practice: drive more carefully in the first days, and if you can, avoid scheduling a major decision for Monday morning.
+                </p>
+<h3>When to talk to a doctor</h3>
+<p>
+                    The groggy feeling usually fades within a week or so. See a doctor if your sleep is still poor several weeks later, if you feel very sleepy during the day, if someone notices you snore with pauses in breathing, or if your mood drops noticeably. The same applies if <a class="text-dream-salmon hover:underline" href="stop-nightmares-guide">nightmares</a> become frequent enough to damage your sleep.
+                </p>
+<h2 id="tips">How to adjust before and after the change</h2>
+<h3>Before the change: shift gradually</h3>
+<p>
+                    Three or four days before the spring change, go to bed and get up 15 to 20 minutes earlier each day. By Sunday, most of the hour is already behind you. You can move meals earlier too: meal timing is one of the cues body clocks use, and it may help the rest of the system follow.
                 </p>
 <p>
-                    Conversely, the autumn fall-back is associated with a 21% decrease in heart attack admissions on the following Tuesday, suggesting that even one extra hour of sleep provides measurable cardiovascular protection. This stark asymmetry illustrates how sensitive the human body is to even small changes in sleep timing.
+                    In autumn, do the reverse, or simply keep your usual wake-up time and avoid sleeping in.
                 </p>
-
-<h3>Mental health and cognitive performance</h3>
+<h3>Morning light, dim evenings</h3>
 <p>
-                    Workplace accidents, traffic collisions, and emergency room visits all spike in the days following the spring change. A Swedish study found a <strong>6.7% increase in traffic accidents</strong> on the Monday after the spring transition. Cognitive performance testing reveals reduced attention, slower reaction times, and impaired decision-making for up to five days after the change.
+                    Light is the strongest signal for your internal clock. In the days after the spring change, <strong>go outside soon after waking</strong>, even on a cloudy day: daylight outdoors is far brighter than indoor lighting. In the evening, do the opposite: dim the lights and put screens away a while before your new bedtime.
                 </p>
-<p>
-                    For individuals with mood disorders, the impact can be more severe. The circadian disruption exacerbates symptoms of depression and anxiety, and studies have documented a measurable uptick in hospital admissions for depressive episodes in the week following the spring change. The <a class="text-dream-salmon hover:underline" href="../symbols/moon">moon</a>, a universal dream symbol of night and rest, appears frequently in the dreams of those affected by this circadian disruption, often in unsettling or distorted contexts.
-                </p>
-
-<h2 id="tips">Tips to Adapt Your Sleep Schedule</h2>
-<h3>Before the change: gradual shifting</h3>
-<p>
-                    Start adjusting before the clocks move -- that is the most effective strategy. Beginning four days before the spring transition, shift your bedtime and wake time 15 minutes earlier each day. By the time the clocks spring forward, your body will have already made the full one-hour adjustment gradually, sparing you the abrupt shock.
-                </p>
-<p>
-                    Apply the same principle to meals. Eating dinner 15 minutes earlier each day helps shift your peripheral circadian clocks -- the ones in your liver, gut, and pancreas -- which respond strongly to meal timing. A synchronized circadian system adjusts faster and more smoothly.
-                </p>
-
-<h3>Morning light is your most powerful tool</h3>
-<p>
-                    Light is the primary signal that resets your suprachiasmatic nucleus. In the days following the spring change, expose yourself to <strong>bright natural light within 30 minutes of waking</strong>. A 20-minute morning walk outdoors provides approximately 10,000 lux -- far more than any indoor lighting. This light exposure advances your circadian phase, telling your brain that "morning" has arrived at the new time.
-                </p>
-<p>
-                    Conversely, minimize light exposure in the evening. Dim your lights after sunset, use warm-toned bulbs (2,700K or below), and avoid screens for at least 60 minutes before your new bedtime. This combination of morning light and evening darkness creates the strongest possible signal for rapid circadian adjustment.
-                </p>
-
-<h3>Sleep hygiene essentials</h3>
+<h3>Simple habits for the transition week</h3>
 <ul>
-<li><strong>No caffeine after 2 PM:</strong> Caffeine has a half-life of 5 to 6 hours. Afternoon consumption directly competes with the earlier sleep onset you need</li>
-<li><strong>Cool your bedroom:</strong> Set your thermostat to 18-19 C (64-66 F). A cool room supports both sleep onset and REM sleep continuity</li>
-<li><strong>Avoid heavy evening meals:</strong> Large meals close to bedtime raise core body temperature and delay sleep onset</li>
-<li><strong>Skip the nap trap:</strong> While tempting, afternoon naps longer than 20 minutes will reduce your sleep drive and make the new bedtime harder to achieve</li>
-<li><strong>Keep a <a class="text-dream-salmon hover:underline" href="dream-journal-guide">dream journal</a>:</strong> Recording your dreams during the transition week reveals how your sleep architecture is recovering -- vivid dreams signal healthy REM rebound</li>
+<li><strong>Stop caffeine early:</strong> its effect lasts several hours, so an afternoon coffee works against the earlier bedtime you need</li>
+<li><strong>Keep the bedroom cool, dark and quiet:</strong> it makes falling asleep and staying asleep easier</li>
+<li><strong>Eat a light dinner, not too late:</strong> a heavy meal close to bedtime delays sleep</li>
+<li><strong>Nap short and early:</strong> a brief nap in the early afternoon is fine; a long, late one makes the new bedtime harder</li>
+<li><strong>Keep a <a class="text-dream-salmon hover:underline" href="dream-journal-guide">dream journal</a>:</strong> note your bedtime, wake time and any dream during the change week; it shows how your nights recover</li>
 </ul>
-
-<h2 id="abolish-dst">Should We Abolish Daylight Saving Time?</h2>
-<h3>The scientific consensus</h3>
+<h2 id="abolish-dst">Should we stop changing the clocks?</h2>
+<h3>What sleep scientists recommend</h3>
 <p>
-                    DST abolition has moved from a fringe topic to a mainstream debate. In 2019, Roenneberg et al. published a comprehensive position paper in the <em>Journal of Biological Rhythms</em> arguing that <strong>permanent standard time is the only option aligned with human chronobiology</strong>. Their reasoning: standard time keeps solar noon closest to clock noon, ensuring that the light-dark cycle most closely matches the biological rhythms evolved over millions of years.
+                    Sleep and circadian researchers largely agree. In a 2019 position paper for the Society for Research on Biological Rhythms, Roenneberg and colleagues argue for abolishing daylight saving time in favour of <strong>permanent standard time</strong>, which keeps clock time closer to the sun. The AASM took the same position in 2020. Permanent daylight saving time would, in their view, leave mornings dark for much of the year and make the gap between body clock and social schedule permanent.
                 </p>
-<p>
-                    In 2019, the European Parliament voted to abolish seasonal clock changes, though implementation has been repeatedly delayed by disagreements among member states about whether to adopt permanent summer time or permanent standard time. Sleep researchers are emphatic: permanent summer time would be <strong>worse than the current system</strong>, as it would impose chronic circadian misalignment -- essentially making every morning a miniature spring-forward.
-                </p>
-
 <h3>Where things stand in 2026</h3>
 <p>
-                    In the United States, the Sunshine Protection Act (proposing permanent summer time) has been reintroduced multiple times without becoming law. Meanwhile, individual states continue passing legislation to adopt permanent DST if federal law allows it. The medical and chronobiology communities continue to advocate strongly for permanent standard time, with the American Academy of Sleep Medicine, the Society for Research on Biological Rhythms, and the European Sleep Research Society all issuing formal position statements.
+                    In the European Union, Parliament voted in March 2019 to end seasonal clock changes, but member states have not agreed on a common approach, and clocks still change on the last Sunday of March and of October. In the United States, the House of Representatives passed the Sunshine Protection Act in July 2026, which would make daylight saving time permanent. As of early October 2026, the Senate had not voted on it, and sleep medicine groups still favour permanent standard time.
                 </p>
 <p>
-                    Until legislation catches up with science, the biannual clock change remains a reality. The good news is that understanding the mechanisms behind DST's impact on your sleep gives you the tools to minimize its effects. Your circadian system is resilient -- with deliberate preparation, you can navigate the transition with your sleep architecture and dream life largely intact.
+                    Until the rules change, the most useful lever is personal: prepare a few days ahead, and give yourself a week of leniency.
                 </p>
 </div>
 <!-- CTA Section -->
@@ -245,9 +231,9 @@
 <div class="w-16 h-16 bg-dream-salmon/10 rounded-full flex items-center justify-center mx-auto mb-6">
 <i class="w-8 h-8 text-dream-salmon" data-lucide="moon"></i>
 </div>
-<h3 class="font-serif text-2xl md:text-3xl mb-4 text-dream-cream">Don't let the clock change steal your dreams</h3>
+<h3 class="font-serif text-2xl md:text-3xl mb-4 text-dream-cream">Keep a record of the week the clocks change</h3>
 <p class="text-purple-200/70 mb-6 max-w-lg mx-auto">
-                    Noctalia helps you track how time changes and sleep patterns affect your dream life. Record dreams by voice, discover patterns with AI analysis, and protect your sleep through every seasonal transition.
+                    Record your dream by voice or in writing when you wake. Noctalia transcribes it and keeps it in your journal, so you can compare the nights before and after the change and see what comes back.
                 </p>
 <a class="inline-flex items-center gap-2 px-8 py-4 bg-dream-salmon text-dream-dark rounded-full font-bold hover:bg-dream-salmon/90 transition-colors" href="/">
                     Start your dream journal <i class="w-5 h-5" data-lucide="arrow-right"></i>
@@ -255,7 +241,7 @@
 </aside>
 <!-- FAQ Section -->
 <section class="mt-16">
-<h2 class="font-serif text-2xl text-dream-cream mb-8">Frequently Asked Questions</h2>
+<h2 class="font-serif text-2xl text-dream-cream mb-8">Frequently asked questions</h2>
 <div class="space-y-4">
 <details class="glass-panel rounded-xl p-4 group cursor-pointer">
 <summary class="font-medium flex justify-between items-center text-dream-cream">
@@ -263,7 +249,7 @@
                             <i class="w-5 h-5 transition-transform group-open:rotate-180 text-dream-salmon" data-lucide="chevron-down"></i>
 </summary>
 <p class="mt-4 text-sm text-gray-400 leading-relaxed">
-                            Yes. The spring clock change forces a sudden one-hour phase advance on your circadian rhythm, disrupting melatonin timing and compressing <a class="text-dream-salmon hover:underline" href="rem-sleep-dreams">REM sleep</a>. Studies show it takes 1 to 7 days to fully adjust, with measurable effects on sleep quality, dream recall, and cardiovascular health. The Monday after the spring transition sees a 24% increase in heart attack admissions.
+                            Yes, especially in spring. Research reviews show that sleep is shorter and more broken for several days, not only on the night of the change. The alarm also cuts into the end of the night, when <a class="text-dream-salmon hover:underline" href="rem-sleep-dreams">REM sleep</a> periods are longest.
                         </p>
 </details>
 <details class="glass-panel rounded-xl p-4 group cursor-pointer">
@@ -272,7 +258,7 @@
                             <i class="w-5 h-5 transition-transform group-open:rotate-180 text-dream-salmon" data-lucide="chevron-down"></i>
 </summary>
 <p class="mt-4 text-sm text-gray-400 leading-relaxed">
-                            Most people need 1 to 3 days to fully adjust to the one-hour shift. However, sensitive individuals -- children, the elderly, and those with sleep disorders -- may need up to a week. Night owls (late chronotypes) have the hardest time with the spring-forward. Research by Kantermann et al. shows measurable circadian effects lasting up to four weeks in some individuals.
+                            Most people feel better within a few days to a week. Night owls adjust less easily to the spring change, and in one study their activity timing had still not fully aligned weeks later. If poor sleep lasts several weeks, talk to a doctor.
                         </p>
 </details>
 <details class="glass-panel rounded-xl p-4 group cursor-pointer">
@@ -281,21 +267,34 @@
                             <i class="w-5 h-5 transition-transform group-open:rotate-180 text-dream-salmon" data-lucide="chevron-down"></i>
 </summary>
 <p class="mt-4 text-sm text-gray-400 leading-relaxed">
-                            Absolutely. The spring clock change cuts into the final morning REM cycle -- the longest and most dream-rich period of the night. This initially reduces <a class="text-dream-salmon hover:underline" href="why-we-forget-dreams">dream recall</a>, but during the adaptation period, REM rebound can produce unusually vivid and emotionally intense dreams. Dream content also shifts toward themes of disorientation, being late, and losing control.
+                            Indirectly, yes. A shorter end of night can mean fewer <a class="text-dream-salmon hover:underline" href="why-we-forget-dreams">remembered dreams</a> at first, then sometimes more vivid ones as REM sleep rebounds. This is plausible rather than proven for the clock change specifically. Themes of time and lateness may also echo the week.
+                        </p>
+</details>
+<details class="glass-panel rounded-xl p-4 group cursor-pointer">
+<summary class="font-medium flex justify-between items-center text-dream-cream">
+                            What is the best way to prepare for the spring change?
+                            <i class="w-5 h-5 transition-transform group-open:rotate-180 text-dream-salmon" data-lucide="chevron-down"></i>
+</summary>
+<p class="mt-4 text-sm text-gray-400 leading-relaxed">
+                            Go to bed and get up 15 to 20 minutes earlier each day for three or four days beforehand. After the change, get outdoor light soon after waking, dim the lights in the evening and stop caffeine early in the afternoon.
                         </p>
 </details>
 </div>
 </section>
 <!-- Sources / Trust -->
 <section class="mt-16 glass-panel rounded-2xl p-6" id="sources">
-<h2 class="font-serif text-2xl text-dream-cream mb-4">Sources / Further Reading</h2>
+<h2 class="font-serif text-2xl text-dream-cream mb-4">Sources and further reading</h2>
 <ul class="mt-6 space-y-2 text-sm text-gray-400">
-<li><a href="https://doi.org/10.1016/j.smrv.2012.10.001" rel="nofollow noopener noreferrer" target="_blank">Harrison (2013): The impact of daylight saving time on sleep and related behaviours -- Sleep Medicine Reviews</a></li>
-<li><a href="https://doi.org/10.1016/j.cub.2007.10.025" rel="nofollow noopener noreferrer" target="_blank">Kantermann et al. (2007): The human circadian clock's seasonal adjustment is disrupted by daylight saving time -- Current Biology</a></li>
-<li><a href="https://doi.org/10.1136/openhrt-2013-000019" rel="nofollow noopener noreferrer" target="_blank">Sandhu et al. (2014): Time change and incidence of acute myocardial infarction -- Open Heart</a></li>
-<li><a href="https://doi.org/10.1177/0748730419854197" rel="nofollow noopener noreferrer" target="_blank">Roenneberg et al. (2019): Why should we abolish daylight saving time? -- Journal of Biological Rhythms</a></li>
+<li><a href="https://doi.org/10.1016/j.smrv.2012.10.001" rel="nofollow noopener noreferrer" target="_blank">Harrison (2013): The impact of daylight saving time on sleep and related behaviours — Sleep Medicine Reviews</a></li>
+<li><a href="https://doi.org/10.1016/j.cub.2007.10.025" rel="nofollow noopener noreferrer" target="_blank">Kantermann et al. (2007): The human circadian clock’s seasonal adjustment is disrupted by daylight saving time — Current Biology</a></li>
+<li><a href="https://doi.org/10.1136/openhrt-2013-000019" rel="nofollow noopener noreferrer" target="_blank">Sandhu et al. (2014): Daylight savings time and myocardial infarction — Open Heart</a></li>
+<li><a href="https://doi.org/10.1016/j.cub.2019.12.045" rel="nofollow noopener noreferrer" target="_blank">Fritz et al. (2020): A chronobiological evaluation of the acute effects of daylight saving time on traffic accident risk — Current Biology</a></li>
+<li><a href="https://doi.org/10.5664/jcsm.8780" rel="nofollow noopener noreferrer" target="_blank">Rishi et al. (2020): Daylight saving time, an American Academy of Sleep Medicine position statement — Journal of Clinical Sleep Medicine</a></li>
+<li><a href="https://doi.org/10.1177/0748730419854197" rel="nofollow noopener noreferrer" target="_blank">Roenneberg et al. (2019): Why should we abolish daylight saving time? — Journal of Biological Rhythms</a></li>
+<li><a href="https://www.europarl.europa.eu/news/en/press-room/20190321IPR32107/parliament-backs-proposal-to-end-switch-between-summer-and-winter-time-in-2021" rel="nofollow noopener noreferrer" target="_blank">European Parliament (2019): Parliament backs proposal to end switch between summer and winter time</a></li>
+<li><a href="https://time.com/article/2026/10/07/senate-permanent-daylight-saving-time-sunshine-protection-act/" rel="nofollow noopener noreferrer" target="_blank">Time (October 2026): Most Americans want to stop changing the clocks. Here’s why senators are hesitating</a></li>
 </ul>
-<p class="mt-6 text-xs text-purple-200/60">Last updated: March 17, 2026</p>
+<p class="mt-6 text-xs text-purple-200/60">Last updated: October 8, 2026</p>
 </section>
 <!-- Related Symbols Start -->
 <section aria-label="Related dream symbols" class="mt-12 mb-8">
