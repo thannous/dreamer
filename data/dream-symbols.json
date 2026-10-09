@@ -6678,47 +6678,152 @@
       "en": {
         "slug": "school",
         "name": "School",
-        "shortDescription": "Schools in dreams often represent learning, evaluation, social anxiety, or revisiting past experiences and lessons.",
+        "shortDescription": "Dreaming of school often puts you back in a corridor you left years ago: late, lost, unprepared or simply nostalgic. The scene is often associated with feeling tested or judged today. What you were doing there matters more than the building.",
         "askYourself": [
-          "What lesson am I learning?",
-          "Am I being tested or evaluated in some way?"
-        ]
+          "Was I a pupil, a teacher, or an adult who did not belong there?",
+          "What in my life right now feels like a test I have not prepared for?",
+          "How did that school feel: stressful, shameful, familiar or nostalgic?"
+        ],
+        "faq": [
+          {
+            "question": "What does it mean to dream about school?",
+            "answer": "School is often associated with being assessed, compared or taught. The dream can echo a situation where you feel tested today, at work or at home. Your emotion and what you were doing there help you choose the right lead."
+          },
+          {
+            "question": "Why do I still dream about school as an adult?",
+            "answer": "School dreams often return long after the last exam, especially in busy or demanding periods. School is simply a familiar setting for being evaluated. It does not mean you failed anything: ask what feels like an exam in your life now."
+          },
+          {
+            "question": "What does it mean to dream you can't find your classroom?",
+            "answer": "Searching for a room you should know can go with feeling lost or behind in a new job, project or group. Note where you were trying to go and who was waiting for you: that context narrows down the lead."
+          },
+          {
+            "question": "What does it mean to dream about old classmates?",
+            "answer": "Seeing former classmates can bring back your old place in a group, a friendship or a rivalry. The dream may also follow a photo, a message or a reunion. Ask which part of that time still feels present today."
+          }
+        ],
+        "documentMetaDescription": "Dreaming of school, a classroom you can't find or old classmates: what the scene may say about feeling tested today, with questions and a journal example.",
+        "modifiedAt": "2026-10-08"
       },
       "fr": {
         "slug": "ecole",
         "name": "École",
-        "shortDescription": "L'école dans les rêves représente souvent l'apprentissage, l'évaluation, l'anxiété sociale ou la revisite d'expériences passées.",
+        "shortDescription": "Rêver d'école vous ramène souvent dans un couloir quitté depuis des années : en retard, perdu, pas prêt ou nostalgique. La scène est souvent associée au sentiment d'être évalué aujourd'hui. Ce que vous y faisiez compte plus que le bâtiment.",
         "askYourself": [
-          "Quelle leçon suis-je en train d'apprendre ?",
-          "Suis-je testé ou évalué d'une manière ou d'une autre ?"
-        ]
+          "Étais-je élève, professeur, ou adulte égaré au milieu des élèves ?",
+          "Qu'est-ce qui ressemble en ce moment à une épreuve que je n'ai pas préparée ?",
+          "Comment me sentais-je dans cette école : stressé, honteux, à ma place, nostalgique ?"
+        ],
+        "faq": [
+          {
+            "question": "Que signifie rêver de l'école ?",
+            "answer": "L'école est souvent associée au fait d'être évalué, comparé ou d'apprendre. Le rêve peut faire écho à une situation où vous vous sentez mis à l'épreuve, au travail ou en famille. L'émotion et ce que vous y faisiez aident à choisir la piste."
+          },
+          {
+            "question": "Pourquoi je rêve encore de l'école à l'âge adulte ?",
+            "answer": "Les rêves d'école reviennent souvent longtemps après les études, surtout dans les périodes chargées ou exigeantes. L'école est un décor familier pour mettre en scène l'évaluation. Cela ne veut pas dire que vous avez échoué : demandez-vous ce qui ressemble à un examen aujourd'hui."
+          },
+          {
+            "question": "Que signifie rêver de ne pas trouver sa salle de classe ?",
+            "answer": "Chercher une salle que vous devriez connaître peut accompagner le sentiment d'être perdu ou en retard dans un nouveau poste, un projet ou un groupe. Notez où vous alliez et qui vous attendait : ce contexte affine la piste."
+          },
+          {
+            "question": "Que signifie rêver d'anciens camarades de classe ?",
+            "answer": "Revoir d'anciens camarades peut faire revenir votre place dans un groupe, une amitié ou une rivalité d'autrefois. Le rêve peut aussi suivre une photo, un message ou des retrouvailles. Quelle part de cette époque vous paraît encore présente ?"
+          }
+        ],
+        "documentMetaDescription": "Rêver de l'école, de ne pas trouver sa classe ou d'anciens camarades : ce que la scène peut dire du sentiment d'être évalué, avec questions et exemple.",
+        "modifiedAt": "2026-10-08"
       },
       "es": {
         "slug": "escuela",
         "name": "Escuela",
-        "shortDescription": "La escuela en sueños representa aprendizaje, evaluación, ansiedad social o revisitar experiencias pasadas.",
+        "shortDescription": "Soñar con la escuela te devuelve a menudo a un pasillo que dejaste hace años: llegas tarde, te pierdes, no has estudiado o sientes nostalgia. La escena se asocia a menudo con sentirte evaluado hoy. Cuenta más lo que hacías allí que el edificio.",
         "askYourself": [
-          "¿Qué lección estoy aprendiendo?",
-          "¿Estoy siendo probado o evaluado de alguna manera?"
-        ]
+          "¿Era alumno, profesor, o un adulto fuera de lugar entre los alumnos?",
+          "¿Qué se parece ahora mismo a un examen que no he preparado?",
+          "¿Cómo me sentía en ese colegio: con nervios, con vergüenza, a gusto, con nostalgia?"
+        ],
+        "faq": [
+          {
+            "question": "¿Qué significa soñar con la escuela?",
+            "answer": "La escuela se asocia a menudo con ser evaluado, comparado o aprender. El sueño puede hacer eco de una situación en la que te sientes a prueba, en el trabajo o en casa. La emoción y lo que hacías allí te ayudan a elegir la pista."
+          },
+          {
+            "question": "¿Por qué sigo soñando con el colegio de adulto?",
+            "answer": "Los sueños con el colegio vuelven a menudo mucho después de terminar los estudios, sobre todo en épocas de mucha carga o exigencia. El colegio es un escenario conocido para hablar de evaluación. No significa que hayas fallado: pregúntate qué se parece hoy a un examen."
+          },
+          {
+            "question": "¿Qué significa soñar que no encuentras tu clase?",
+            "answer": "Buscar un aula que deberías conocer puede acompañar la sensación de estar perdido o ir con retraso en un trabajo, un proyecto o un grupo nuevo. Anota adónde ibas y quién te esperaba: ese contexto afina la pista."
+          },
+          {
+            "question": "¿Qué significa soñar con antiguos compañeros de clase?",
+            "answer": "Volver a ver a antiguos compañeros puede traer de vuelta tu lugar en un grupo, una amistad o una rivalidad de entonces. El sueño también puede seguir a una foto, un mensaje o un reencuentro. ¿Qué parte de aquella época sigue presente?"
+          }
+        ],
+        "documentMetaDescription": "Soñar con la escuela, con no encontrar tu clase o con antiguos compañeros: qué puede decir la escena sobre sentirte evaluado, con preguntas y un ejemplo.",
+        "modifiedAt": "2026-10-08"
       },
       "de": {
         "slug": "schule",
         "name": "Schule",
-        "shortDescription": "Schulen repräsentieren Lernen, persönliches Wachstum und Lebenslektionen. In die Schule zurückzukehren deutet auf unabgeschlossene Lektionen oder den Wunsch nach Selbstverbesserung hin.",
+        "shortDescription": "Von der Schule zu träumen führt Sie oft zurück in einen alten Flur: zu spät, verirrt, unvorbereitet oder wehmütig. Die Szene wird oft mit dem Gefühl verbunden, heute geprüft zu werden. Was Sie dort taten, zählt mehr als das Gebäude.",
         "askYourself": [
-          "Welche Lektion versuche ich zu lernen?",
-          "Welche Fähigkeiten muss ich entwickeln?"
-        ]
+          "War ich Schüler, Lehrer oder ein Erwachsener, der nicht dorthin gehörte?",
+          "Was fühlt sich gerade wie eine Prüfung an, auf die ich nicht vorbereitet bin?",
+          "Wie fühlte sich diese Schule an: stressig, beschämend, vertraut oder wehmütig?"
+        ],
+        "faq": [
+          {
+            "question": "Was bedeutet es, von der Schule zu träumen?",
+            "answer": "Die Schule wird oft damit verbunden, bewertet, verglichen oder belehrt zu werden. Der Traum kann eine Situation aufgreifen, in der Sie sich heute geprüft fühlen, im Beruf oder in der Familie. Ihr Gefühl und Ihre Rolle dort zeigen die passende Spur."
+          },
+          {
+            "question": "Warum träume ich als Erwachsener noch vom Abitur oder von der Schule?",
+            "answer": "Schulträume kehren oft lange nach dem letzten Zeugnis wieder, besonders in vollen oder fordernden Phasen. Die Schule ist einfach eine vertraute Kulisse für Bewertung. Durchgefallen sind Sie deshalb nicht: Fragen Sie sich, was sich heute wie eine Prüfung anfühlt."
+          },
+          {
+            "question": "Was bedeutet es, im Traum das Klassenzimmer nicht zu finden?",
+            "answer": "Einen Raum zu suchen, den man kennen müsste, kann das Gefühl begleiten, in einem neuen Job, Projekt oder einer Gruppe verloren oder im Rückstand zu sein. Notieren Sie, wohin Sie wollten und wer dort wartete: Dieser Kontext grenzt die Spur ein."
+          },
+          {
+            "question": "Was bedeutet es, von alten Mitschülern zu träumen?",
+            "answer": "Alte Mitschüler wiederzusehen kann Ihren früheren Platz in einer Gruppe, eine Freundschaft oder eine Rivalität zurückholen. Der Traum kann auch auf ein Foto, eine Nachricht oder ein Klassentreffen folgen. Welcher Teil dieser Zeit ist noch präsent?"
+          }
+        ],
+        "documentMetaDescription": "Schule im Traum, das Klassenzimmer nicht finden oder alte Mitschüler: was die Szene über das Gefühl sagen kann, geprüft zu werden, mit Fragen und Beispiel.",
+        "modifiedAt": "2026-10-08"
       },
       "it": {
         "slug": "scuola",
         "name": "Scuola",
-        "shortDescription": "Le scuole rappresentano apprendimento, crescita personale e lezioni di vita. Tornare a scuola suggerisce lezioni incompiute o il desiderio di miglioramento personale.",
+        "shortDescription": "Sognare la scuola ti riporta spesso in un corridoio lasciato anni fa: in ritardo, perso, impreparato o nostalgico. La scena viene spesso associata alla sensazione di essere messo alla prova oggi. Conta più ciò che facevi lì dell’edificio.",
         "askYourself": [
-          "Quale lezione sto cercando di imparare?",
-          "Quali competenze devo sviluppare?"
-        ]
+          "Ero studente, insegnante, o un adulto fuori posto tra i ragazzi?",
+          "Che cosa somiglia in questo periodo a un compito in classe che non ho preparato?",
+          "Come mi sentivo in quella scuola: in ansia, in imbarazzo, a casa, nostalgico?"
+        ],
+        "faq": [
+          {
+            "question": "Che cosa significa sognare la scuola?",
+            "answer": "La scuola viene spesso associata all’essere valutati, confrontati o al dover imparare. Il sogno può fare eco a una situazione in cui ti senti messo alla prova, al lavoro o in famiglia. L’emozione e ciò che facevi lì aiutano a scegliere la pista."
+          },
+          {
+            "question": "Perché sogno ancora la scuola o la maturità da adulto?",
+            "answer": "I sogni di scuola, e il classico sogno di dover rifare la maturità, tornano spesso molti anni dopo, soprattutto nei periodi pieni o impegnativi. La scuola è uno scenario familiare per parlare di valutazione. Chiediti che cosa somiglia oggi a un esame."
+          },
+          {
+            "question": "Che cosa significa sognare di non trovare la propria classe?",
+            "answer": "Cercare un’aula che dovresti conoscere può accompagnare la sensazione di essere perso o indietro in un nuovo lavoro, progetto o gruppo. Annota dove stavi andando e chi ti aspettava: il contesto restringe la pista."
+          },
+          {
+            "question": "Che cosa significa sognare vecchi compagni di scuola?",
+            "answer": "Rivedere i compagni di un tempo può riportare il tuo vecchio posto in un gruppo, un’amicizia o una rivalità. Il sogno può anche seguire una foto, un messaggio o una rimpatriata. Quale parte di quel periodo ti sembra ancora presente?"
+          }
+        ],
+        "documentMetaDescription": "Sognare la scuola, di non trovare la classe o vecchi compagni: che cosa può dire la scena della sensazione di essere messo alla prova, con domande ed esempio.",
+        "modifiedAt": "2026-10-08"
       },
       "pt": {
         "slug": "escola",
@@ -6746,47 +6851,152 @@
       "en": {
         "slug": "pregnancy",
         "name": "Pregnancy",
-        "shortDescription": "Pregnancy dreams symbolize creation, new projects, potential, or major life changes developing within you.",
+        "shortDescription": "Dreaming you are pregnant, or that someone else is, often has little to do with a real baby. It is often associated with something growing in you: a project, a change, a new role. If you are pregnant, these dreams are common and often vivid.",
         "askYourself": [
-          "What am I creating or developing?",
-          "What new aspect of myself is growing?"
-        ]
+          "What in my life is slowly taking shape and is not ready yet?",
+          "Did I feel joy, surprise, fear, or the sense of not being ready?",
+          "Am I thinking about having a child, or about a responsibility that is coming?"
+        ],
+        "faq": [
+          {
+            "question": "What does it mean to dream you are pregnant?",
+            "answer": "A pregnancy dream is often associated with something developing: a project, a change, a new stage of life. It does not mean you are or will be pregnant. How you felt, delighted or alarmed, tells you which lead to follow."
+          },
+          {
+            "question": "What does it mean to dream someone else is pregnant?",
+            "answer": "Seeing a friend, a sister or a colleague pregnant can echo news about her, or a change you sense in that relationship. It can also lend her your own questions. What does that person stand for in your life right now?"
+          },
+          {
+            "question": "Is it normal to have strange dreams during pregnancy?",
+            "answer": "Yes. Many pregnant people notice more vivid, intense or anxious dreams, often about the birth or the baby. Broken sleep and the worries of this period can play a part. If nightmares wreck your sleep or leave you distressed, tell your midwife or doctor."
+          },
+          {
+            "question": "Can a pregnancy dream mean I am pregnant?",
+            "answer": "No dream can confirm or predict a pregnancy. Sometimes the dream picks up a real question, a late period or a wish, and the mind keeps working on it at night. If you are unsure, a test or a health professional will answer, not the dream."
+          }
+        ],
+        "documentMetaDescription": "Dreaming you are pregnant, or that someone else is: what the scene may say about a project or change taking shape, with questions and a journal example.",
+        "modifiedAt": "2026-10-08"
       },
       "fr": {
         "slug": "grossesse",
         "name": "Grossesse",
-        "shortDescription": "Les rêves de grossesse symbolisent la création, de nouveaux projets, le potentiel ou des changements majeurs se développant en vous.",
+        "shortDescription": "Rêver d'être enceinte, ou qu'une autre l'est, a souvent peu à voir avec un vrai bébé. La scène est souvent associée à ce qui grandit en vous : un projet, un changement, un nouveau rôle. Pendant une grossesse, ces rêves sont fréquents.",
         "askYourself": [
-          "Qu'est-ce que je crée ou développe ?",
-          "Quel nouvel aspect de moi-même grandit ?"
-        ]
+          "Qu'est-ce qui prend forme lentement dans ma vie, sans être prêt encore ?",
+          "Ai-je ressenti de la joie, de la surprise, de la peur, ou l'impression de ne pas être prêt ?",
+          "Est-ce que je pense à avoir un enfant, ou à une responsabilité qui arrive ?"
+        ],
+        "faq": [
+          {
+            "question": "Que signifie rêver d'être enceinte ?",
+            "answer": "Un rêve de grossesse est souvent associé à quelque chose qui se développe : un projet, un changement, une nouvelle étape. Il ne veut pas dire que vous êtes ou serez enceinte. Ce que vous avez ressenti, joie ou inquiétude, indique la piste à suivre."
+          },
+          {
+            "question": "Que signifie rêver qu'une autre personne est enceinte ?",
+            "answer": "Voir une amie, une sœur ou une collègue enceinte peut faire écho à une nouvelle la concernant, ou à un changement dans votre relation. Le rêve peut aussi lui prêter vos propres questions. Que représente cette personne pour vous en ce moment ?"
+          },
+          {
+            "question": "Est-ce normal de faire des rêves étranges pendant la grossesse ?",
+            "answer": "Oui. Beaucoup de femmes enceintes remarquent des rêves plus vifs, plus intenses ou plus angoissants, souvent autour de l'accouchement ou du bébé. Un sommeil haché et les inquiétudes de cette période peuvent y jouer. Si les cauchemars abîment vos nuits, parlez-en à votre sage-femme ou à votre médecin."
+          },
+          {
+            "question": "Rêver de grossesse veut-il dire que je suis enceinte ?",
+            "answer": "Aucun rêve ne confirme ni ne prédit une grossesse. Parfois, le rêve reprend une vraie question, un retard de règles ou un désir, et l'esprit continue d'y travailler la nuit. En cas de doute, c'est un test ou un professionnel de santé qui répondra, pas le rêve."
+          }
+        ],
+        "documentMetaDescription": "Rêver d'être enceinte ou qu'une autre personne l'est : ce que la scène peut dire d'un projet ou d'un changement qui prend forme, avec questions et exemple.",
+        "modifiedAt": "2026-10-08"
       },
       "es": {
         "slug": "embarazo",
         "name": "Embarazo",
-        "shortDescription": "Los sueños de embarazo simbolizan creación, nuevos proyectos, potencial o cambios importantes desarrollándose.",
+        "shortDescription": "Soñar que estás embarazada, o que lo está otra persona, suele tener poco que ver con un bebé real. Se asocia a menudo con algo que crece en ti: un proyecto, un cambio, un nuevo papel. Durante el embarazo, estos sueños son frecuentes e intensos.",
         "askYourself": [
-          "¿Qué estoy creando o desarrollando?",
-          "¿Qué nuevo aspecto de mí está creciendo?"
-        ]
+          "¿Qué está tomando forma poco a poco en mi vida, sin estar listo todavía?",
+          "¿Sentí alegría, sorpresa, miedo, o la sensación de no estar preparada?",
+          "¿Estoy pensando en tener un hijo, o en una responsabilidad que se acerca?"
+        ],
+        "faq": [
+          {
+            "question": "¿Qué significa soñar que estás embarazada?",
+            "answer": "Un sueño de embarazo se asocia a menudo con algo que se está desarrollando: un proyecto, un cambio, una nueva etapa. No significa que estés o vayas a estar embarazada. Lo que sentiste, alegría o inquietud, te indica qué pista seguir."
+          },
+          {
+            "question": "¿Qué significa soñar que otra persona está embarazada?",
+            "answer": "Ver embarazada a una amiga, una hermana o una compañera puede hacer eco de una noticia sobre ella, o de un cambio que notas en vuestra relación. También puede prestarle tus propias preguntas. ¿Qué representa esa persona para ti ahora mismo?"
+          },
+          {
+            "question": "¿Es normal tener sueños raros durante el embarazo?",
+            "answer": "Sí. Muchas embarazadas notan sueños más vívidos, intensos o angustiosos, a menudo sobre el parto o el bebé. El sueño entrecortado y las preocupaciones de esta etapa pueden influir. Si las pesadillas te quitan el descanso o te angustian, coméntalo con tu matrona o tu médico."
+          },
+          {
+            "question": "¿Soñar con un embarazo significa que estoy embarazada?",
+            "answer": "Ningún sueño confirma ni predice un embarazo. A veces el sueño recoge una pregunta real, un retraso o un deseo, y la mente sigue dándole vueltas por la noche. Si tienes dudas, te responderá un test o un profesional sanitario, no el sueño."
+          }
+        ],
+        "documentMetaDescription": "Soñar que estás embarazada, o que lo está otra persona: qué puede decir la escena sobre un proyecto o un cambio que toma forma, con preguntas y un ejemplo.",
+        "modifiedAt": "2026-10-08"
       },
       "de": {
         "slug": "schwangerschaft",
         "name": "Schwangerschaft",
-        "shortDescription": "Schwangerschaft symbolisiert Kreativität, neue Ideen und die Entwicklung von etwas Neuem in Ihrem Leben. Sie kann Projekte, Beziehungen oder persönliches Wachstum darstellen.",
+        "shortDescription": "Schwangerschaftsträume haben oft wenig mit einem echten Baby zu tun. Sie werden oft mit etwas verbunden, das in Ihnen wächst: ein Projekt, ein Wandel, eine neue Rolle. Sind Sie tatsächlich schwanger, sind solche Träume häufig und lebhaft.",
         "askYourself": [
-          "Was entwickelt sich Neues in meinem Leben?",
-          "Welches kreative Projekt nähre ich?"
-        ]
+          "Was nimmt in meinem Leben gerade langsam Gestalt an und ist noch nicht fertig?",
+          "Habe ich Freude, Überraschung, Angst oder das Gefühl gespürt, nicht bereit zu sein?",
+          "Denke ich über ein Kind nach oder über eine Verantwortung, die auf mich zukommt?"
+        ],
+        "faq": [
+          {
+            "question": "Was bedeutet es, im Traum schwanger zu sein?",
+            "answer": "Ein Schwangerschaftstraum wird oft mit etwas verbunden, das sich entwickelt: ein Projekt, ein Wandel, ein neuer Lebensabschnitt. Er bedeutet nicht, dass Sie schwanger sind oder werden. Ob Sie sich freuten oder erschraken, zeigt die passende Spur."
+          },
+          {
+            "question": "Was bedeutet es, wenn im Traum eine andere Person schwanger ist?",
+            "answer": "Eine Freundin, Schwester oder Kollegin schwanger zu sehen kann eine Neuigkeit über sie aufgreifen oder einen Wandel, den Sie in der Beziehung spüren. Der Traum kann ihr auch Ihre eigenen Fragen leihen. Wofür steht diese Person gerade für Sie?"
+          },
+          {
+            "question": "Sind seltsame Träume in der Schwangerschaft normal?",
+            "answer": "Ja. Viele Schwangere bemerken lebhaftere, intensivere oder ängstliche Träume, oft rund um die Geburt oder das Baby. Unterbrochener Schlaf und die Sorgen dieser Zeit können dazu beitragen. Wenn Albträume Ihren Schlaf stören oder Sie belasten, sprechen Sie mit Ihrer Hebamme oder Ärztin."
+          },
+          {
+            "question": "Kann ein Schwangerschaftstraum bedeuten, dass ich schwanger bin?",
+            "answer": "Kein Traum kann eine Schwangerschaft bestätigen oder vorhersagen. Manchmal greift der Traum eine echte Frage, eine ausgebliebene Periode oder einen Wunsch auf, und der Kopf arbeitet nachts weiter daran. Bei Zweifeln antwortet ein Test oder eine Fachperson, nicht der Traum."
+          }
+        ],
+        "documentMetaDescription": "Im Traum schwanger sein oder eine andere schwanger sehen: was die Szene über ein Projekt oder einen Wandel sagen kann, mit Fragen und einem Tagebuchbeispiel.",
+        "modifiedAt": "2026-10-08"
       },
       "it": {
         "slug": "gravidanza",
         "name": "Gravidanza",
-        "shortDescription": "La gravidanza simboleggia creatività, nuove idee e lo sviluppo di qualcosa di nuovo nella vita. Può rappresentare progetti, relazioni o crescita personale.",
+        "shortDescription": "Sognare di essere incinta, o che lo sia un’altra persona, ha spesso poco a che fare con un bambino vero. La scena richiama spesso qualcosa che cresce in te: un progetto, un cambiamento, un nuovo ruolo. In gravidanza, questi sogni sono frequenti.",
         "askYourself": [
-          "Cosa si sta sviluppando di nuovo nella mia vita?",
-          "Quale progetto creativo sto nutrendo?"
-        ]
+          "Che cosa sta prendendo forma piano piano nella mia vita, senza essere ancora pronto?",
+          "Ho provato gioia, sorpresa, paura, o la sensazione di non essere pronta?",
+          "Sto pensando di avere un figlio, o a una responsabilità che sta arrivando?"
+        ],
+        "faq": [
+          {
+            "question": "Che cosa significa sognare di essere incinta?",
+            "answer": "Un sogno di gravidanza viene spesso associato a qualcosa che si sta sviluppando: un progetto, un cambiamento, una nuova fase. Non significa che tu sia o sarai incinta. Ciò che hai provato, gioia o inquietudine, indica la pista da seguire."
+          },
+          {
+            "question": "Che cosa significa sognare un’altra persona incinta?",
+            "answer": "Vedere incinta un’amica, una sorella o una collega può fare eco a una notizia che la riguarda, o a un cambiamento che senti nel vostro rapporto. Il sogno può anche prestarle le tue domande. Che cosa rappresenta per te quella persona in questo periodo?"
+          },
+          {
+            "question": "È normale fare sogni strani in gravidanza?",
+            "answer": "Sì. Molte donne in gravidanza notano sogni più vividi, intensi o angoscianti, spesso legati al parto o al bambino. Il sonno spezzato e le preoccupazioni di questo periodo possono contribuire. Se gli incubi ti tolgono il riposo o ti angosciano, parlane con l’ostetrica o con il medico."
+          },
+          {
+            "question": "Sognare una gravidanza significa che sono incinta?",
+            "answer": "Nessun sogno può confermare o prevedere una gravidanza. A volte il sogno riprende una domanda reale, un ritardo o un desiderio, e la mente continua a lavorarci di notte. Se hai dubbi, a rispondere sarà un test o un professionista sanitario, non il sogno."
+          }
+        ],
+        "documentMetaDescription": "Sognare di essere incinta o un’altra persona incinta: che cosa può dire la scena di un progetto o di un cambiamento che prende forma, con domande ed esempio.",
+        "modifiedAt": "2026-10-08"
       },
       "pt": {
         "slug": "gravidez",
@@ -6817,47 +7027,152 @@
       "en": {
         "slug": "swimming",
         "name": "Swimming",
-        "shortDescription": "Swimming in dreams represents navigating through emotions and life's challenges. Ease or difficulty swimming reflects your emotional coping abilities.",
+        "shortDescription": "Dreaming of swimming often shows how you are getting through something big: with ease, with effort, or against the current. It is often linked to emotions or a demanding period. The water and your stroke say more than the swim itself.",
         "askYourself": [
-          "How am I handling my emotional life?",
-          "Am I staying afloat or struggling with my feelings?"
-        ]
+          "Was I swimming easily, struggling, or just trying to stay afloat?",
+          "Where was I: a pool, a lake, a river, the open sea?",
+          "Was I heading somewhere, and what in my life feels like that stretch of water?"
+        ],
+        "faq": [
+          {
+            "question": "What does it mean to dream of swimming?",
+            "answer": "Swimming is often associated with how you are coping with emotions or a demanding situation. Ease or effort, the state of the water and where you were going help you choose the lead that fits you."
+          },
+          {
+            "question": "What does it mean to swim easily in a dream?",
+            "answer": "Gliding through clear water can go with a period when you feel at ease, or the relief of having found your rhythm. It can also simply follow a holiday or a love of swimming. Note what you were swimming towards."
+          },
+          {
+            "question": "What does it mean to struggle to swim in a dream?",
+            "answer": "Heavy arms, a shore that never gets closer: the scene often echoes fatigue or a load that feels like too much. It is not a diagnosis. Ask where you are spending a lot of energy just to keep your head above water."
+          },
+          {
+            "question": "What does it mean to swim underwater and breathe in a dream?",
+            "answer": "Breathing underwater is a dream impossibility that people often describe as calm, even joyful. It can go with feeling at ease in a situation that ought to be overwhelming. Note whether you felt wonder or unease."
+          }
+        ],
+        "documentMetaDescription": "Dreaming of swimming easily, struggling or swimming underwater: what the water and your stroke may say about a demanding period, with questions and an example.",
+        "modifiedAt": "2026-10-08"
       },
       "fr": {
         "slug": "nager",
         "name": "Nager",
-        "shortDescription": "Nager dans les rêves représente la navigation à travers les émotions et les défis de la vie. La facilité ou difficulté à nager reflète vos capacités d'adaptation émotionnelle.",
+        "shortDescription": "Rêver de nager montre souvent comment vous traversez quelque chose de grand : avec aisance, avec effort ou à contre-courant. La scène est souvent associée aux émotions ou à une période exigeante. L'eau et votre façon de nager guident la lecture.",
         "askYourself": [
-          "Comment je gère ma vie émotionnelle ?",
-          "Est-ce que je reste à flot ou je lutte avec mes sentiments ?"
-        ]
+          "Est-ce que je nageais facilement, avec peine, ou juste pour rester à flot ?",
+          "Où étais-je : une piscine, un lac, une rivière, la pleine mer ?",
+          "Allais-je quelque part, et qu'est-ce qui ressemble dans ma vie à cette étendue d'eau ?"
+        ],
+        "faq": [
+          {
+            "question": "Que signifie rêver de nager ?",
+            "answer": "Nager est souvent associé à la façon dont vous faites face à des émotions ou à une situation exigeante. L'aisance ou l'effort, l'état de l'eau et l'endroit où vous alliez aident à choisir la piste qui vous correspond."
+          },
+          {
+            "question": "Que signifie nager facilement en rêve ?",
+            "answer": "Glisser dans une eau claire peut accompagner une période où vous vous sentez à l'aise, ou le soulagement d'avoir trouvé votre rythme. Le rêve peut aussi suivre des vacances ou le simple goût de la natation. Notez vers quoi vous nagiez."
+          },
+          {
+            "question": "Que signifie avoir du mal à nager en rêve ?",
+            "answer": "Des bras lourds, une rive qui ne se rapproche jamais : la scène fait souvent écho à la fatigue ou à une charge qui semble trop lourde. Ce n'est pas un diagnostic. Demandez-vous où vous dépensez beaucoup d'énergie juste pour garder la tête hors de l'eau."
+          },
+          {
+            "question": "Que signifie nager sous l'eau et respirer en rêve ?",
+            "answer": "Respirer sous l'eau est une impossibilité du rêve que beaucoup décrivent comme calme, voire joyeuse. Elle peut accompagner une aisance inattendue dans une situation qui aurait dû vous submerger. Notez si vous ressentiez de l'émerveillement ou du malaise."
+          }
+        ],
+        "documentMetaDescription": "Rêver de nager facilement, avec peine ou sous l'eau : ce que l'eau et votre nage peuvent dire d'une période exigeante, avec questions et exemple de journal.",
+        "modifiedAt": "2026-10-08"
       },
       "es": {
         "slug": "nadar",
         "name": "Nadar",
-        "shortDescription": "Nadar en sueños representa navegar a través de emociones y desafíos de la vida. La facilidad o dificultad para nadar refleja tus capacidades de afrontamiento emocional.",
+        "shortDescription": "Soñar que nadas muestra a menudo cómo atraviesas algo grande: con soltura, con esfuerzo o contracorriente. La escena se asocia a menudo con las emociones o con una etapa exigente. El agua y tu forma de nadar dicen más que el hecho de nadar.",
         "askYourself": [
-          "¿Cómo estoy manejando mi vida emocional?",
-          "¿Me mantengo a flote o lucho con mis sentimientos?"
-        ]
+          "¿Nadaba con facilidad, con esfuerzo, o solo intentaba mantenerme a flote?",
+          "¿Dónde estaba: una piscina, un lago, un río, mar abierto?",
+          "¿Iba hacia algún sitio, y qué se parece en mi vida a esa extensión de agua?"
+        ],
+        "faq": [
+          {
+            "question": "¿Qué significa soñar que nadas?",
+            "answer": "Nadar se asocia a menudo con la forma en que afrontas emociones o una situación exigente. La soltura o el esfuerzo, el estado del agua y adónde ibas te ayudan a elegir la pista que encaja contigo."
+          },
+          {
+            "question": "¿Qué significa nadar con facilidad en sueños?",
+            "answer": "Deslizarte por un agua clara puede acompañar una etapa en la que te sientes a gusto, o el alivio de haber encontrado tu ritmo. También puede seguir a unas vacaciones o al simple gusto por nadar. Anota hacia dónde nadabas."
+          },
+          {
+            "question": "¿Qué significa soñar que te cuesta nadar?",
+            "answer": "Brazos pesados, una orilla que nunca se acerca: la escena suele hacer eco del cansancio o de una carga que parece excesiva. No es un diagnóstico. Pregúntate dónde gastas mucha energía solo para mantener la cabeza fuera del agua."
+          },
+          {
+            "question": "¿Qué significa nadar bajo el agua y respirar en sueños?",
+            "answer": "Respirar bajo el agua es una imposibilidad del sueño que mucha gente describe como tranquila, incluso alegre. Puede acompañar una soltura inesperada en una situación que debería desbordarte. Anota si sentías asombro o inquietud."
+          }
+        ],
+        "documentMetaDescription": "Soñar que nadas con facilidad, con esfuerzo o bajo el agua: qué pueden decir el agua y tu brazada sobre una etapa exigente, con preguntas y un ejemplo.",
+        "modifiedAt": "2026-10-08"
       },
       "de": {
         "slug": "schwimmen",
         "name": "Schwimmen",
-        "shortDescription": "Schwimmen repräsentiert das Navigieren durch Emotionen und das Eintauchen in das Unterbewusstsein. Leichtes Schwimmen deutet auf emotionale Kompetenz hin, Schwierigkeiten auf emotionale Herausforderungen.",
+        "shortDescription": "Schwimmen im Traum zeigt oft, wie Sie durch etwas Großes kommen: mühelos, mit Kraft oder gegen den Strom. Die Szene wird oft mit Gefühlen oder einer fordernden Phase verbunden. Das Wasser und Ihr Schwimmstil sagen mehr als das Schwimmen selbst.",
         "askYourself": [
-          "Wie gut navigiere ich durch meine Emotionen?",
-          "Fühle ich mich wohl in meiner emotionalen Tiefe?"
-        ]
+          "Bin ich leicht geschwommen, mühsam, oder habe ich mich nur über Wasser gehalten?",
+          "Wo war ich: im Schwimmbad, in einem See, einem Fluss, auf offenem Meer?",
+          "Wollte ich irgendwohin, und was in meinem Leben gleicht dieser Wasserstrecke?"
+        ],
+        "faq": [
+          {
+            "question": "Was bedeutet Schwimmen im Traum?",
+            "answer": "Schwimmen wird oft damit verbunden, wie Sie mit Gefühlen oder einer fordernden Lage umgehen. Leichtigkeit oder Mühe, der Zustand des Wassers und Ihr Ziel helfen, die Spur zu finden, die zu Ihnen passt."
+          },
+          {
+            "question": "Was bedeutet es, im Traum mühelos zu schwimmen?",
+            "answer": "Durch klares Wasser zu gleiten kann eine Phase begleiten, in der Sie sich wohlfühlen, oder die Erleichterung, Ihren Rhythmus gefunden zu haben. Der Traum kann auch auf einen Urlaub oder schlicht Freude am Schwimmen folgen. Notieren Sie, wohin Sie schwammen."
+          },
+          {
+            "question": "Was bedeutet es, im Traum kaum schwimmen zu können?",
+            "answer": "Schwere Arme, ein Ufer, das nicht näher kommt: Die Szene greift oft Erschöpfung oder eine Last auf, die zu groß wirkt. Eine Diagnose ist das nicht. Fragen Sie sich, wo Sie gerade viel Kraft brauchen, nur um den Kopf über Wasser zu halten."
+          },
+          {
+            "question": "Was bedeutet es, im Traum unter Wasser zu schwimmen und zu atmen?",
+            "answer": "Unter Wasser zu atmen ist eine Unmöglichkeit des Traums, die viele als ruhig, sogar freudig beschreiben. Sie kann eine unerwartete Leichtigkeit in einer Lage begleiten, die Sie eigentlich überfordern müsste. Notieren Sie, ob Sie Staunen oder Unbehagen spürten."
+          }
+        ],
+        "documentMetaDescription": "Im Traum mühelos, mühsam oder unter Wasser schwimmen: was Wasser und Schwimmstil über eine fordernde Phase sagen können, mit Fragen und Tagebuchbeispiel.",
+        "modifiedAt": "2026-10-08"
       },
       "it": {
         "slug": "nuotare",
         "name": "Nuotare",
-        "shortDescription": "Nuotare rappresenta il navigare attraverso le emozioni e l'immersione nel subconscio. Nuotare con facilità indica competenza emotiva, difficoltà indicano sfide emotive.",
+        "shortDescription": "Sognare di nuotare mostra spesso come stai attraversando qualcosa di grande: con facilità, con fatica o controcorrente. La scena viene spesso associata alle emozioni o a un periodo impegnativo. L’acqua e il modo di nuotare guidano la lettura.",
         "askYourself": [
-          "Quanto bene navigo attraverso le mie emozioni?",
-          "Mi sento a mio agio nella mia profondità emotiva?"
-        ]
+          "Nuotavo con facilità, con fatica, o cercavo solo di restare a galla?",
+          "Dov’ero: in piscina, in un lago, in un fiume, in mare aperto?",
+          "Stavo andando da qualche parte, e che cosa somiglia nella mia vita a quel tratto d’acqua?"
+        ],
+        "faq": [
+          {
+            "question": "Che cosa significa sognare di nuotare?",
+            "answer": "Nuotare viene spesso associato al modo in cui affronti emozioni o una situazione impegnativa. La facilità o la fatica, lo stato dell’acqua e la meta ti aiutano a scegliere la pista più adatta a te."
+          },
+          {
+            "question": "Che cosa significa nuotare facilmente in sogno?",
+            "answer": "Scivolare in un’acqua limpida può accompagnare un periodo in cui ti senti a tuo agio, o il sollievo di aver trovato il tuo ritmo. Il sogno può anche seguire una vacanza o il semplice piacere di nuotare. Annota verso che cosa nuotavi."
+          },
+          {
+            "question": "Che cosa significa sognare di fare fatica a nuotare?",
+            "answer": "Braccia pesanti, una riva che non si avvicina mai: la scena fa spesso eco alla stanchezza o a un carico che sembra eccessivo. Non è una diagnosi. Chiediti dove stai spendendo molta energia solo per tenere la testa fuori dall’acqua."
+          },
+          {
+            "question": "Che cosa significa nuotare sott’acqua e respirare in sogno?",
+            "answer": "Respirare sott’acqua è un’impossibilità del sogno che molti descrivono come calma, perfino gioiosa. Può accompagnare una facilità inattesa in una situazione che avrebbe dovuto travolgerti. Annota se provavi meraviglia o disagio."
+          }
+        ],
+        "documentMetaDescription": "Sognare di nuotare con facilità, con fatica o sott’acqua: che cosa possono dire l’acqua e la bracciata di un periodo impegnativo, con domande ed esempio.",
+        "modifiedAt": "2026-10-08"
       },
       "pt": {
         "slug": "nadar",
@@ -6888,47 +7203,152 @@
       "en": {
         "slug": "crying",
         "name": "Crying",
-        "shortDescription": "Crying in dreams often represents emotional release, healing, or unexpressed feelings seeking acknowledgment. It can be a cathartic experience.",
+        "shortDescription": "Crying in a dream can leave you waking with wet cheeks and a tight throat, or strangely lighter. The scene is often associated with a feeling that gets little room during the day: grief, fatigue, relief. Who cried, and why, guides the reading.",
         "askYourself": [
-          "What emotions am I holding back?",
-          "What needs to be released or expressed?"
-        ]
+          "Was I crying from sadness, anger, relief or joy?",
+          "Is there something I have been holding back, or not allowing myself to feel?",
+          "Who saw me cry in the dream, and how did they react?"
+        ],
+        "faq": [
+          {
+            "question": "What does it mean to cry in a dream?",
+            "answer": "Crying in a dream is often associated with an emotion that gets little room during the day: sadness, stress, relief, sometimes joy. It predicts no misfortune. The reason for the tears and how you felt on waking help you find the right lead."
+          },
+          {
+            "question": "Why do I wake up crying from a dream?",
+            "answer": "Waking with real tears happens, especially after an emotional dream or during a hard period such as grief. It usually means the dream touched something strong. If it happens often, or your mood stays low during the day, talk to a health professional."
+          },
+          {
+            "question": "What does it mean to dream of someone else crying?",
+            "answer": "Seeing a loved one cry can echo worry for that person, a tension between you, or a sadness you lend them because it is easier than feeling it yourself. Note who it was and whether you comforted them."
+          },
+          {
+            "question": "What does it mean to want to cry but not be able to in a dream?",
+            "answer": "Wanting to cry with no tears coming can go with feelings that are hard to express, or a period when you hold on just to keep going. Ask yourself where you feel you cannot let go right now."
+          }
+        ],
+        "documentMetaDescription": "Crying in a dream, waking up in tears or seeing someone else cry: what the scene may say about a held-back emotion, with questions and a journal example.",
+        "modifiedAt": "2026-10-08"
       },
       "fr": {
         "slug": "pleurer",
         "name": "Pleurer",
-        "shortDescription": "Pleurer dans les rêves représente souvent une libération émotionnelle, une guérison ou des sentiments non exprimés cherchant à être reconnus. Cela peut être une expérience cathartique.",
+        "shortDescription": "Pleurer en rêve peut vous réveiller les joues mouillées et la gorge serrée, ou étrangement soulagé. La scène est souvent associée à une émotion qui a peu de place le jour : chagrin, fatigue, soulagement. Qui pleurait et pourquoi guide la lecture.",
         "askYourself": [
-          "Quelles émotions est-ce que je retiens ?",
-          "Qu'est-ce qui a besoin d'être libéré ou exprimé ?"
-        ]
+          "Est-ce que je pleurais de tristesse, de colère, de soulagement ou de joie ?",
+          "Y a-t-il quelque chose que je retiens, ou que je ne m'autorise pas à ressentir ?",
+          "Qui me voyait pleurer dans le rêve, et comment réagissait-il ?"
+        ],
+        "faq": [
+          {
+            "question": "Que signifie pleurer dans un rêve ?",
+            "answer": "Pleurer en rêve est souvent associé à une émotion qui a peu de place dans la journée : tristesse, stress, soulagement, parfois joie. Ce n'est pas un présage. La raison des larmes et ce que vous ressentiez au réveil aident à trouver la bonne piste."
+          },
+          {
+            "question": "Pourquoi je me réveille en pleurant après un rêve ?",
+            "answer": "Se réveiller avec de vraies larmes arrive, surtout après un rêve chargé ou pendant une période difficile comme un deuil. Le rêve a souvent touché quelque chose de fort. Si cela arrive souvent, ou si votre moral reste bas dans la journée, parlez-en à un professionnel de santé."
+          },
+          {
+            "question": "Que signifie rêver de quelqu'un qui pleure ?",
+            "answer": "Voir un proche pleurer peut faire écho à de l'inquiétude pour lui, à une tension entre vous, ou à une tristesse que vous lui prêtez parce qu'elle est plus facile à regarder chez un autre. Notez qui c'était et si vous l'avez consolé."
+          },
+          {
+            "question": "Que signifie vouloir pleurer sans y arriver en rêve ?",
+            "answer": "Vouloir pleurer sans que les larmes viennent peut accompagner des émotions difficiles à exprimer, ou une période où vous tenez bon pour continuer à avancer. Demandez-vous où vous avez l'impression de ne pas pouvoir lâcher prise en ce moment."
+          }
+        ],
+        "documentMetaDescription": "Pleurer en rêve, se réveiller en larmes ou voir quelqu'un pleurer : ce que la scène peut dire d'une émotion retenue, avec questions et exemple de journal.",
+        "modifiedAt": "2026-10-08"
       },
       "es": {
         "slug": "llorar",
         "name": "Llorar",
-        "shortDescription": "Llorar en sueños representa liberación emocional, sanación o sentimientos no expresados buscando reconocimiento. Puede ser una experiencia catártica.",
+        "shortDescription": "Llorar en sueños puede despertarte con las mejillas mojadas y un nudo en la garganta, o extrañamente aliviado. Se asocia a menudo con una emoción que tiene poco sitio de día: pena, cansancio, alivio. Quién lloraba, y por qué, guía la lectura.",
         "askYourself": [
-          "¿Qué emociones estoy reprimiendo?",
-          "¿Qué necesita ser liberado o expresado?"
-        ]
+          "¿Lloraba de tristeza, de rabia, de alivio o de alegría?",
+          "¿Hay algo que estoy conteniendo, o que no me permito sentir?",
+          "¿Quién me veía llorar en el sueño, y cómo reaccionaba?"
+        ],
+        "faq": [
+          {
+            "question": "¿Qué significa llorar en sueños?",
+            "answer": "Llorar en sueños se asocia a menudo con una emoción que tiene poco sitio durante el día: tristeza, estrés, alivio, a veces alegría. No es un presagio. El motivo de las lágrimas y cómo te sentías al despertar te ayudan a encontrar la pista adecuada."
+          },
+          {
+            "question": "¿Por qué me despierto llorando después de un sueño?",
+            "answer": "Despertarte con lágrimas de verdad ocurre, sobre todo tras un sueño muy intenso o en una etapa difícil como un duelo. Suele indicar que el sueño tocó algo fuerte. Si te pasa a menudo, o tu ánimo sigue bajo durante el día, habla con un profesional sanitario."
+          },
+          {
+            "question": "¿Qué significa soñar con alguien que llora?",
+            "answer": "Ver llorar a un ser querido puede hacer eco de tu preocupación por esa persona, de una tensión entre vosotros o de una tristeza que le prestas porque es más fácil mirarla en otro. Anota quién era y si lo consolaste."
+          },
+          {
+            "question": "¿Qué significa querer llorar y no poder en sueños?",
+            "answer": "Querer llorar sin que salgan las lágrimas puede acompañar emociones difíciles de expresar, o una etapa en la que aguantas para seguir adelante. Pregúntate dónde sientes ahora mismo que no puedes soltar."
+          }
+        ],
+        "documentMetaDescription": "Llorar en sueños, despertarte llorando o ver llorar a alguien: qué puede decir la escena sobre una emoción contenida, con preguntas y un ejemplo de diario.",
+        "modifiedAt": "2026-10-08"
       },
       "de": {
         "slug": "weinen",
         "name": "Weinen",
-        "shortDescription": "Weinen in Träumen deutet auf emotionale Befreiung, unterdrückte Gefühle und die Notwendigkeit hin, Emotionen Ausdruck zu verleihen. Es kann sowohl Trauer als auch Erleichterung darstellen.",
+        "shortDescription": "Weinen im Traum endet oft mit nassen Wangen und einem Kloß im Hals, manchmal mit seltsamer Erleichterung. Es wird häufig mit einem Gefühl verbunden, das tagsüber wenig Raum hat: Trauer, Müdigkeit, Erleichterung. Wer weinte und warum, lenkt die Deutung.",
         "askYourself": [
-          "Welche Emotionen unterdrücke ich?",
-          "Was braucht emotionalen Ausdruck in meinem Leben?"
-        ]
+          "Habe ich aus Traurigkeit, Wut, Erleichterung oder Freude geweint?",
+          "Gibt es etwas, das ich zurückhalte oder mir nicht zu fühlen erlaube?",
+          "Wer hat mich im Traum weinen sehen, und wie hat diese Person reagiert?"
+        ],
+        "faq": [
+          {
+            "question": "Was bedeutet Weinen im Traum?",
+            "answer": "Weinen im Traum wird oft mit einem Gefühl verbunden, das tagsüber wenig Raum hat: Traurigkeit, Stress, Erleichterung, manchmal Freude. Ein Unglück kündigt es nicht an. Der Grund der Tränen und Ihr Gefühl beim Aufwachen helfen, die passende Spur zu finden."
+          },
+          {
+            "question": "Warum wache ich nach einem Traum weinend auf?",
+            "answer": "Mit echten Tränen aufzuwachen kommt vor, besonders nach einem bewegenden Traum oder in einer schweren Zeit wie einer Trauerphase. Meist hat der Traum etwas Starkes berührt. Passiert es oft oder bleibt Ihre Stimmung tagsüber gedrückt, sprechen Sie mit einer Ärztin oder einem Therapeuten."
+          },
+          {
+            "question": "Was bedeutet es, im Traum jemanden weinen zu sehen?",
+            "answer": "Einen nahestehenden Menschen weinen zu sehen kann Sorge um diese Person aufgreifen, eine Spannung zwischen Ihnen oder eine Traurigkeit, die Sie ihr leihen, weil sie bei anderen leichter anzusehen ist. Notieren Sie, wer es war und ob Sie getröstet haben."
+          },
+          {
+            "question": "Was bedeutet es, im Traum weinen zu wollen, aber nicht zu können?",
+            "answer": "Weinen zu wollen, ohne dass Tränen kommen, kann Gefühle begleiten, die schwer auszudrücken sind, oder eine Phase, in der Sie durchhalten, um weiterzumachen. Fragen Sie sich, wo Sie gerade das Gefühl haben, nicht loslassen zu können."
+          }
+        ],
+        "documentMetaDescription": "Weinen im Traum, weinend aufwachen oder jemanden weinen sehen: was die Szene über ein zurückgehaltenes Gefühl sagen kann, mit Fragen und Tagebuchbeispiel.",
+        "modifiedAt": "2026-10-08"
       },
       "it": {
         "slug": "piangere",
         "name": "Piangere",
-        "shortDescription": "Piangere nei sogni indica rilascio emotivo, sentimenti repressi e il bisogno di esprimere le emozioni. Può rappresentare sia dolore che sollievo.",
+        "shortDescription": "Piangere in sogno può lasciarti con le guance bagnate e un nodo in gola, o stranamente sollevato. La scena richiama spesso un’emozione che di giorno ha poco spazio: dolore, stanchezza, sollievo. Chi piangeva, e perché, orienta la lettura.",
         "askYourself": [
-          "Quali emozioni sto reprimendo?",
-          "Cosa ha bisogno di espressione emotiva nella mia vita?"
-        ]
+          "Piangevo di tristezza, di rabbia, di sollievo o di gioia?",
+          "C’è qualcosa che sto trattenendo, o che non mi permetto di sentire?",
+          "Chi mi vedeva piangere nel sogno, e come reagiva?"
+        ],
+        "faq": [
+          {
+            "question": "Che cosa significa piangere in sogno?",
+            "answer": "Piangere in sogno viene spesso associato a un’emozione che ha poco spazio durante il giorno: tristezza, stress, sollievo, a volte gioia. Non è un presagio. Il motivo delle lacrime e ciò che provavi al risveglio ti aiutano a trovare la pista giusta."
+          },
+          {
+            "question": "Perché mi sveglio piangendo dopo un sogno?",
+            "answer": "Svegliarsi con lacrime vere succede, soprattutto dopo un sogno molto intenso o in un periodo difficile come un lutto. Di solito il sogno ha toccato qualcosa di forte. Se capita spesso, o se l’umore resta basso durante il giorno, parlane con un medico o uno psicologo."
+          },
+          {
+            "question": "Che cosa significa sognare qualcuno che piange?",
+            "answer": "Vedere piangere una persona cara può fare eco alla preoccupazione per lei, a una tensione tra voi o a una tristezza che le presti perché è più facile guardarla in un altro. Annota chi era e se l’hai consolata."
+          },
+          {
+            "question": "Che cosa significa voler piangere senza riuscirci in sogno?",
+            "answer": "Voler piangere senza che arrivino le lacrime può accompagnare emozioni difficili da esprimere, o un periodo in cui tieni duro per andare avanti. Chiediti dove senti, in questo momento, di non poter lasciar andare."
+          }
+        ],
+        "documentMetaDescription": "Piangere in sogno, svegliarsi in lacrime o vedere qualcuno piangere: che cosa può dire la scena di un’emozione trattenuta, con domande ed esempio di diario.",
+        "modifiedAt": "2026-10-08"
       },
       "pt": {
         "slug": "chorar",
