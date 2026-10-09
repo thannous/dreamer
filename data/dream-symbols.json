@@ -9256,58 +9256,152 @@
       "en": {
         "slug": "father",
         "name": "Father",
-        "shortDescription": "A father figure may bring up personal memories as well as support, authority or expectations. The role he took in the scene and how you felt toward him provide the most useful context.",
-        "modifiedAt": "2026-07-24",
+        "shortDescription": "Dreaming of your father brings back a voice, a gesture, a way of standing in a doorway. The figure is often associated with support, authority, approval or distance. What he did in the scene, and how you felt near him, set the tone.",
+        "modifiedAt": "2026-10-08",
         "askYourself": [
-          "What did father change in the scene?",
-          "Which feeling stayed with me after waking?"
+          "Was my father as he is today, younger, older, or was someone else in his place?",
+          "How did I feel near him: safe, afraid of being judged, angry, missing him?",
+          "Where am I looking for approval, advice or permission right now?"
         ],
-        "faq": []
+        "faq": [
+          {
+            "question": "What does it mean to dream about your father?",
+            "answer": "A father in a dream is often associated with support, authority, expectations or distance. The scene draws on your own memories: what he did and how you felt near him matter more than any general meaning."
+          },
+          {
+            "question": "What does it mean to dream about your deceased father?",
+            "answer": "Dreaming of a father who has died is common during grief, sometimes years later. The dream can comfort, sadden, or both. Rather than a sign to decode, it often reflects the bond and what you still carry. If grief stays very heavy for a long time, talking to someone can help."
+          },
+          {
+            "question": "What does it mean to dream that your father dies?",
+            "answer": "This dream is upsetting, but it predicts nothing about his health. It can go with worry for an ageing parent, a shift in roles, or a stage where you rely on him less. Note what was happening around you in the dream."
+          },
+          {
+            "question": "What does it mean when your father is angry with you in a dream?",
+            "answer": "An angry or disappointed father can stage a fear of letting someone down, at work, in a life choice or in your own eyes. It is not a verdict on you. Whose approval were you waiting for that week?"
+          }
+        ],
+        "documentMetaDescription": "Dreaming of your father, a deceased father or a father angry with you: what the scene may say about support and approval, with questions and an example."
       },
       "fr": {
         "slug": "pere",
         "name": "Père",
-        "shortDescription": "Une figure paternelle peut renvoyer à des souvenirs personnels, mais aussi à une attente, un soutien ou une forme d’autorité. Le rôle qu’elle tenait et votre ressenti à son égard orientent une lecture prudente.",
-        "modifiedAt": "2026-07-24",
+        "shortDescription": "Rêver de son père ramène une voix, un geste, une silhouette dans l'encadrement d'une porte. Cette figure est souvent associée au soutien, à l'autorité, à l'approbation ou à la distance. Ce qu'il faisait, et votre ressenti près de lui, donnent le ton.",
+        "modifiedAt": "2026-10-08",
         "askYourself": [
-          "Qu’est-ce que père a changé dans la scène ?",
-          "Quelle émotion est restée après le réveil ?"
+          "Mon père était-il comme aujourd'hui, plus jeune, plus âgé, ou quelqu'un d'autre tenait-il son rôle ?",
+          "Qu'ai-je ressenti près de lui : de la sécurité, la peur d'être jugé, de la colère, du manque ?",
+          "Auprès de qui est-ce que je cherche en ce moment une approbation, un conseil ou une permission ?"
         ],
-        "faq": []
+        "faq": [
+          {
+            "question": "Que signifie rêver de son père ?",
+            "answer": "Le père en rêve est souvent associé au soutien, à l'autorité, aux attentes ou à la distance. La scène puise dans vos propres souvenirs : ce qu'il faisait et ce que vous ressentiez près de lui comptent plus qu'un sens général."
+          },
+          {
+            "question": "Que signifie rêver de son père décédé ?",
+            "answer": "Rêver de son père décédé est fréquent pendant un deuil, parfois des années après. Le rêve peut apaiser, attrister, ou les deux. Plutôt qu'un signe à décoder, il reflète souvent le lien et ce que vous portez encore. Si le deuil reste très lourd longtemps, en parler à quelqu'un peut aider."
+          },
+          {
+            "question": "Que signifie rêver que son père meurt ?",
+            "answer": "Ce rêve bouleverse, mais il ne prédit rien sur sa santé. Il peut accompagner l'inquiétude pour un parent qui vieillit, un changement de rôles, ou une période où vous comptez moins sur lui. Notez ce qui se passait autour de vous dans le rêve."
+          },
+          {
+            "question": "Que signifie rêver que son père est en colère contre soi ?",
+            "answer": "Un père en colère ou déçu peut mettre en scène la peur de décevoir, au travail, dans un choix de vie ou à vos propres yeux. Ce n'est pas un verdict sur vous. De qui attendiez-vous l'approbation cette semaine-là ?"
+          }
+        ],
+        "documentMetaDescription": "Rêver de son père, de son père décédé ou d'un père en colère : ce que la scène peut dire du soutien et de l'approbation, avec questions et exemple."
       },
       "es": {
         "slug": "padre",
         "name": "Padre",
-        "shortDescription": "Una figura paterna puede traer recuerdos personales y cuestiones de apoyo, autoridad o expectativas. Su papel en la escena y cómo te sentías ante él ofrecen el contexto.",
-        "modifiedAt": "2026-07-24",
+        "shortDescription": "Soñar con tu padre trae de vuelta una voz, un gesto, una silueta en el marco de la puerta. Esta figura se asocia a menudo con el apoyo, la autoridad, la aprobación o la distancia. Lo que hacía y lo que sentías a su lado marcan el tono.",
+        "modifiedAt": "2026-10-08",
         "askYourself": [
-          "¿Qué cambió padre dentro de la escena?",
-          "¿Qué emoción siguió conmigo al despertar?"
+          "¿Mi padre era como hoy, más joven, más mayor, u otra persona ocupaba su lugar?",
+          "¿Qué sentí a su lado: seguridad, miedo a que me juzgara, rabia, añoranza?",
+          "¿De quién busco ahora mismo aprobación, un consejo o un permiso?"
         ],
-        "faq": []
+        "faq": [
+          {
+            "question": "¿Qué significa soñar con tu padre?",
+            "answer": "El padre en sueños se asocia a menudo con el apoyo, la autoridad, las expectativas o la distancia. La escena se nutre de tus propios recuerdos: lo que hacía y lo que sentías a su lado cuentan más que un significado general."
+          },
+          {
+            "question": "¿Qué significa soñar con tu padre fallecido?",
+            "answer": "Soñar con un padre que ha muerto es frecuente durante el duelo, a veces años después. El sueño puede consolar, entristecer o ambas cosas. Más que una señal que descifrar, suele reflejar el vínculo y lo que aún llevas contigo. Si el duelo sigue pesando mucho durante largo tiempo, hablarlo con alguien puede ayudar."
+          },
+          {
+            "question": "¿Qué significa soñar que tu padre se muere?",
+            "answer": "Es un sueño que sacude, pero no predice nada sobre su salud. Puede acompañar la preocupación por un padre que se hace mayor, un cambio de papeles o una etapa en la que dependes menos de él. Anota qué pasaba a tu alrededor en el sueño."
+          },
+          {
+            "question": "¿Qué significa soñar que tu padre está enfadado contigo?",
+            "answer": "Un padre enfadado o decepcionado puede escenificar el miedo a fallar a alguien, en el trabajo, en una decisión de vida o ante ti mismo. No es un veredicto sobre ti. ¿De quién esperabas aprobación esa semana?"
+          }
+        ],
+        "documentMetaDescription": "Soñar con tu padre, con tu padre fallecido o con un padre enfadado: qué puede decir la escena sobre el apoyo y la aprobación, con preguntas y un ejemplo."
       },
       "de": {
         "slug": "vater",
         "name": "Vater",
-        "shortDescription": "Bei einer Vaterfigur im Traum können persönliche Erinnerungen ebenso eine Rolle spielen wie Unterstützung, Autorität oder Erwartungen. Achte darauf, welche Rolle sie in der Szene einnahm und wie du dich ihr gegenüber gefühlt hast.",
+        "shortDescription": "Vom eigenen Vater zu träumen bringt eine Stimme, eine Geste, eine Gestalt im Türrahmen zurück. Die Figur wird oft mit Rückhalt, Autorität, Anerkennung oder Distanz verbunden. Was er tat und wie Sie sich bei ihm fühlten, gibt den Ton an.",
         "askYourself": [
-          "War die Vaterfigur dir vertraut, abwesend oder verändert?",
-          "Gab sie dir Rückhalt, setzte sie dich unter Druck oder hielt sie sich zurück?",
-          "Welche aktuelle Beziehung erinnert dich an diese Dynamik?"
+          "War mein Vater wie heute, jünger, älter, oder nahm ein anderer Mensch seinen Platz ein?",
+          "Was habe ich bei ihm gefühlt: Sicherheit, Angst vor seinem Urteil, Wut, Sehnsucht?",
+          "Bei wem suche ich gerade Anerkennung, einen Rat oder eine Erlaubnis?"
         ],
-        "faq": [],
-        "modifiedAt": "2026-07-24"
+        "faq": [
+          {
+            "question": "Was bedeutet es, vom eigenen Vater zu träumen?",
+            "answer": "Der Vater im Traum wird oft mit Rückhalt, Autorität, Erwartungen oder Distanz verbunden. Die Szene schöpft aus Ihren eigenen Erinnerungen: Was er tat und wie Sie sich bei ihm fühlten, zählt mehr als jede allgemeine Bedeutung."
+          },
+          {
+            "question": "Was bedeutet es, vom verstorbenen Vater zu träumen?",
+            "answer": "Vom verstorbenen Vater zu träumen ist in der Trauer häufig, manchmal noch Jahre später. Der Traum kann trösten, traurig machen oder beides. Statt eines Zeichens, das man entschlüsseln müsste, spiegelt er oft die Bindung und das, was Sie noch mit sich tragen. Bleibt die Trauer lange sehr schwer, kann ein Gespräch mit jemandem helfen."
+          },
+          {
+            "question": "Was bedeutet es, wenn der Vater im Traum stirbt?",
+            "answer": "Ein solcher Traum erschüttert, sagt aber nichts über seine Gesundheit voraus. Er kann die Sorge um einen älter werdenden Vater begleiten, einen Rollenwechsel oder eine Phase, in der Sie weniger auf ihn angewiesen sind. Notieren Sie, was im Traum um Sie herum geschah."
+          },
+          {
+            "question": "Was bedeutet es, wenn der Vater im Traum wütend auf mich ist?",
+            "answer": "Ein wütender oder enttäuschter Vater kann die Angst in Szene setzen, jemanden zu enttäuschen: im Beruf, bei einer Lebensentscheidung oder vor sich selbst. Ein Urteil über Sie ist das nicht. Wessen Anerkennung haben Sie in dieser Woche erwartet?"
+          }
+        ],
+        "modifiedAt": "2026-10-08",
+        "documentMetaDescription": "Vom Vater träumen, vom verstorbenen Vater oder einem wütenden Vater: was die Szene über Rückhalt und Anerkennung sagen kann, mit Fragen und Beispiel."
       },
       "it": {
         "slug": "padre",
         "name": "Padre",
-        "shortDescription": "Una figura paterna può richiamare ricordi personali, sostegno, autorità o aspettative. Il ruolo che aveva nella scena e ciò che provavi nei suoi confronti offrono il contesto più utile.",
-        "modifiedAt": "2026-07-24",
+        "shortDescription": "Sognare tuo padre riporta una voce, un gesto, una sagoma sulla soglia. Questa figura viene spesso associata al sostegno, all’autorità, all’approvazione o alla distanza. Ciò che faceva, e ciò che provavi accanto a lui, danno il tono.",
+        "modifiedAt": "2026-10-08",
         "askYourself": [
-          "Che cosa ha cambiato padre nella scena?",
-          "Quale emozione è rimasta dopo il risveglio?"
+          "Mio padre era com’è oggi, più giovane, più anziano, o un’altra persona prendeva il suo posto?",
+          "Che cosa ho provato accanto a lui: sicurezza, paura del suo giudizio, rabbia, nostalgia?",
+          "Da chi cerco in questo periodo un’approvazione, un consiglio o un permesso?"
         ],
-        "faq": []
+        "faq": [
+          {
+            "question": "Che cosa significa sognare il proprio padre?",
+            "answer": "Il padre in sogno viene spesso associato al sostegno, all’autorità, alle aspettative o alla distanza. La scena attinge ai tuoi ricordi: ciò che faceva e ciò che provavi accanto a lui contano più di qualsiasi significato generale."
+          },
+          {
+            "question": "Che cosa significa sognare il papà morto?",
+            "answer": "Sognare il proprio padre defunto è frequente durante il lutto, a volte anche anni dopo. Il sogno può consolare, rattristare o entrambe le cose. Più che un segno da decifrare, riflette spesso il legame e ciò che porti ancora con te. Se il lutto resta molto pesante a lungo, parlarne con qualcuno può aiutare."
+          },
+          {
+            "question": "Che cosa significa sognare che il papà muore?",
+            "answer": "È un sogno che sconvolge, ma non predice nulla sulla sua salute. Può accompagnare la preoccupazione per un padre che invecchia, un cambio di ruoli o una fase in cui conti meno su di lui. Annota che cosa succedeva intorno a te nel sogno."
+          },
+          {
+            "question": "Che cosa significa sognare il papà arrabbiato con te?",
+            "answer": "Un padre arrabbiato o deluso può mettere in scena la paura di deludere qualcuno: al lavoro, in una scelta di vita o ai tuoi stessi occhi. Non è un giudizio su di te. Da chi aspettavi un’approvazione in quella settimana?"
+          }
+        ],
+        "documentMetaDescription": "Sognare il proprio padre, il papà morto o arrabbiato con te: che cosa può dire la scena del sostegno e dell’approvazione, con domande ed esempio di diario."
       },
       "pt": {
         "slug": "pai",
@@ -9340,58 +9434,152 @@
       "en": {
         "slug": "sibling",
         "name": "Sibling",
-        "shortDescription": "A sibling in a dream may revive shared history, closeness, rivalry or old family roles. What you did together and the mood between you indicate which thread fits the scene best.",
-        "modifiedAt": "2026-07-24",
+        "shortDescription": "Dreaming of a brother or sister often brings back a shared history: a shared bedroom, the back seat of the car, old family roles. The figure can stand for closeness, rivalry or comparison. The mood between you points to the right lead.",
+        "modifiedAt": "2026-10-08",
         "askYourself": [
-          "What did sibling change in the scene?",
-          "Which feeling stayed with me after waking?"
+          "Which brother or sister was it, and how old were we in the dream?",
+          "Were we on the same side, competing, or drifting apart?",
+          "Is a comparison, a family role or a shared decision weighing on me right now?"
         ],
-        "faq": []
+        "faq": [
+          {
+            "question": "What does it mean to dream about your brother or sister?",
+            "answer": "A sibling in a dream is often associated with shared history, closeness, rivalry or the roles you each held in the family. What you did together and the mood between you matter more than any fixed meaning."
+          },
+          {
+            "question": "What does it mean to dream about fighting with your sibling?",
+            "answer": "A fight can echo a real tension, an old rivalry, or a comparison you still feel. It does not mean the bond is broken. Note what the fight was about in the dream: it often says more than the anger itself."
+          },
+          {
+            "question": "What does it mean to dream that your brother or sister dies?",
+            "answer": "This dream is upsetting, but it predicts nothing. It can go with worry for them, a change in the relationship (a move, a new partner, a child) or the end of a period you shared. Ask what has recently shifted between you."
+          },
+          {
+            "question": "What does it mean to dream of a sibling you don't have?",
+            "answer": "An invented brother or sister can stage a part of you, a wish for an ally, or a role you play in your family or among friends. Notice their age and what they did: those details tell you what they stood for."
+          }
+        ],
+        "documentMetaDescription": "Dreaming of your brother or sister, a fight with them or a sibling you don't have: what the scene may say about family roles, with questions and an example."
       },
       "fr": {
         "slug": "frere-ou-soeur",
         "name": "Frère ou sœur",
-        "shortDescription": "Un frère ou une sœur en rêve peut ramener une histoire commune, de la complicité, une rivalité ou d’anciens rôles familiaux. Vos actions et l’atmosphère entre vous indiquent quelle piste correspond le mieux à la scène.",
-        "modifiedAt": "2026-07-24",
+        "shortDescription": "Rêver de son frère ou de sa sœur ramène souvent une histoire commune : la chambre partagée, les rôles de l'enfance. Cette figure peut évoquer la complicité, la rivalité ou la comparaison. L'ambiance entre vous oriente la lecture.",
+        "modifiedAt": "2026-10-08",
         "askYourself": [
-          "Qu’est-ce que frère ou sœur a changé dans la scène ?",
-          "Quelle émotion est restée après le réveil ?"
+          "Quel frère ou quelle sœur était-ce, et quel âge avions-nous dans le rêve ?",
+          "Étions-nous du même côté, en compétition, ou en train de nous éloigner ?",
+          "Y a-t-il en ce moment une comparaison, un rôle familial ou une décision commune qui me pèse ?"
         ],
-        "faq": []
+        "faq": [
+          {
+            "question": "Que signifie rêver de son frère ou de sa sœur ?",
+            "answer": "Un frère ou une sœur en rêve est souvent associé à une histoire commune, à la complicité, à la rivalité ou aux rôles que chacun tenait dans la famille. Ce que vous faisiez ensemble et l'ambiance entre vous comptent plus qu'un sens figé."
+          },
+          {
+            "question": "Que signifie rêver de se disputer avec son frère ou sa sœur ?",
+            "answer": "Une dispute peut faire écho à une tension réelle, à une vieille rivalité ou à une comparaison que vous ressentez encore. Elle ne veut pas dire que le lien est rompu. Notez le sujet de la dispute dans le rêve : il en dit souvent plus que la colère."
+          },
+          {
+            "question": "Que signifie rêver que son frère ou sa sœur meurt ?",
+            "answer": "Ce rêve bouleverse, mais il ne prédit rien. Il peut accompagner une inquiétude pour lui ou pour elle, un changement dans la relation (un déménagement, un couple, un enfant) ou la fin d'une période partagée. Demandez-vous ce qui a bougé récemment entre vous."
+          },
+          {
+            "question": "Que signifie rêver d'un frère ou d'une sœur qu'on n'a pas ?",
+            "answer": "Un frère ou une sœur inventé peut mettre en scène une part de vous, l'envie d'un allié, ou un rôle que vous tenez en famille ou entre amis. Observez son âge et ce qu'il faisait : ces détails disent ce qu'il représentait."
+          }
+        ],
+        "documentMetaDescription": "Rêver de son frère ou de sa sœur, d'une dispute ou d'un frère qu'on n'a pas : ce que la scène peut dire des rôles familiaux, avec questions et exemple."
       },
       "es": {
         "slug": "hermano-o-hermana",
         "name": "Hermano o hermana",
-        "shortDescription": "Soñar con un hermano o una hermana puede reactivar una historia compartida, la complicidad, la rivalidad o antiguos papeles familiares. La interacción y el ambiente entre ambos orientan la lectura.",
-        "modifiedAt": "2026-07-24",
+        "shortDescription": "Soñar con tu hermano o tu hermana suele traer de vuelta una historia compartida: la habitación común, los papeles de la infancia. La figura puede evocar complicidad, rivalidad o comparación. El ambiente entre vosotros orienta la lectura.",
+        "modifiedAt": "2026-10-08",
         "askYourself": [
-          "¿Qué cambió hermano o hermana dentro de la escena?",
-          "¿Qué emoción siguió conmigo al despertar?"
+          "¿Qué hermano o hermana era, y qué edad teníamos en el sueño?",
+          "¿Estábamos del mismo lado, compitiendo o alejándonos?",
+          "¿Hay ahora mismo una comparación, un papel familiar o una decisión común que me pesa?"
         ],
-        "faq": []
+        "faq": [
+          {
+            "question": "¿Qué significa soñar con tu hermano o tu hermana?",
+            "answer": "Un hermano o una hermana en sueños se asocia a menudo con una historia compartida, la complicidad, la rivalidad o los papeles que cada uno tenía en la familia. Lo que hacíais juntos y el ambiente entre vosotros cuentan más que un significado fijo."
+          },
+          {
+            "question": "¿Qué significa soñar que discutes con tu hermano?",
+            "answer": "Una pelea puede hacer eco de una tensión real, de una vieja rivalidad o de una comparación que todavía sientes. No significa que el vínculo esté roto. Anota el motivo de la discusión en el sueño: suele decir más que el enfado."
+          },
+          {
+            "question": "¿Qué significa soñar que tu hermano o tu hermana se muere?",
+            "answer": "Es un sueño que sacude, pero no predice nada. Puede acompañar la preocupación por él o por ella, un cambio en la relación (una mudanza, una pareja, un hijo) o el final de una etapa compartida. Pregúntate qué se ha movido entre vosotros últimamente."
+          },
+          {
+            "question": "¿Qué significa soñar con un hermano que no tienes?",
+            "answer": "Un hermano o una hermana inventados pueden escenificar una parte de ti, el deseo de tener un aliado o un papel que asumes en tu familia o con tus amigos. Fíjate en su edad y en lo que hacía: esos detalles dicen qué representaba."
+          }
+        ],
+        "documentMetaDescription": "Soñar con tu hermano o tu hermana, discutir con ellos o tener un hermano que no existe: qué puede decir la escena de los papeles familiares, con preguntas."
       },
       "de": {
         "slug": "geschwister",
         "name": "Geschwister",
-        "shortDescription": "Taucht ein Geschwisterteil im Traum auf, können gemeinsame Geschichte, Verbundenheit, Konkurrenz oder alte Familienrollen eine Rolle spielen. Welche Lesart passt, hängt von eurer Handlung und der Stimmung zwischen euch ab.",
+        "shortDescription": "Von Bruder oder Schwester zu träumen bringt oft eine gemeinsame Geschichte zurück: das geteilte Kinderzimmer, die alten Rollen. Die Figur kann für Nähe, Rivalität oder Vergleich stehen. Die Stimmung zwischen Ihnen zeigt, welche Spur passt.",
         "askYourself": [
-          "Welches Geschwister war zu sehen, und wie alt wart ihr im Traum?",
-          "Habt ihr zusammengehalten, gestritten oder euch voneinander entfernt?",
-          "Welche frühere oder heutige Familiendynamik klingt darin an?"
+          "Welches meiner Geschwister war es, und wie alt waren wir im Traum?",
+          "Standen wir auf derselben Seite, haben wir konkurriert oder uns voneinander entfernt?",
+          "Belastet mich gerade ein Vergleich, eine Familienrolle oder eine gemeinsame Entscheidung?"
         ],
-        "faq": [],
-        "modifiedAt": "2026-07-24"
+        "faq": [
+          {
+            "question": "Was bedeutet es, von Bruder oder Schwester zu träumen?",
+            "answer": "Geschwister im Traum werden oft mit gemeinsamer Geschichte, Nähe, Rivalität oder den Rollen verbunden, die jeder in der Familie hatte. Was Sie zusammen taten und die Stimmung zwischen Ihnen zählen mehr als eine feste Bedeutung."
+          },
+          {
+            "question": "Was bedeutet ein Streit mit Geschwistern im Traum?",
+            "answer": "Ein Streit kann eine echte Spannung aufgreifen, eine alte Rivalität oder einen Vergleich, den Sie noch spüren. Er bedeutet nicht, dass die Bindung zerbrochen ist. Notieren Sie, worum es im Streit ging: Das sagt oft mehr als die Wut."
+          },
+          {
+            "question": "Was bedeutet es, wenn Bruder oder Schwester im Traum stirbt?",
+            "answer": "Ein solcher Traum erschüttert, sagt aber nichts voraus. Er kann die Sorge um diese Person begleiten, eine Veränderung in der Beziehung (ein Umzug, eine Partnerschaft, ein Kind) oder das Ende einer gemeinsamen Zeit. Fragen Sie sich, was sich zuletzt zwischen Ihnen verschoben hat."
+          },
+          {
+            "question": "Was bedeutet es, von Geschwistern zu träumen, die man nicht hat?",
+            "answer": "Ein erfundener Bruder oder eine erfundene Schwester kann eine Seite von Ihnen in Szene setzen, den Wunsch nach einem Verbündeten oder eine Rolle, die Sie in der Familie oder unter Freunden übernehmen. Alter und Verhalten der Figur zeigen, wofür sie stand."
+          }
+        ],
+        "modifiedAt": "2026-10-08",
+        "documentMetaDescription": "Von Bruder oder Schwester träumen, von Streit oder von Geschwistern, die man nicht hat: was die Szene über Familienrollen sagen kann, mit Fragen und Beispiel."
       },
       "it": {
         "slug": "fratello-o-sorella",
         "name": "Fratello o sorella",
-        "shortDescription": "Un fratello o una sorella in sogno può riattivare una storia condivisa, vicinanza, rivalità o vecchi ruoli familiari. Le vostre azioni e l’atmosfera tra voi indicano quale filo si adatta meglio alla scena.",
-        "modifiedAt": "2026-07-24",
+        "shortDescription": "Sognare tuo fratello o tua sorella riporta spesso una storia condivisa: la cameretta in comune, i ruoli dell’infanzia. La figura può evocare complicità, rivalità o confronto. L’atmosfera tra voi orienta la lettura.",
+        "modifiedAt": "2026-10-08",
         "askYourself": [
-          "Che cosa ha cambiato fratello o sorella nella scena?",
-          "Quale emozione è rimasta dopo il risveglio?"
+          "Quale fratello o sorella era, e quanti anni avevamo nel sogno?",
+          "Eravamo dalla stessa parte, in competizione, o ci stavamo allontanando?",
+          "C’è in questo periodo un confronto, un ruolo familiare o una decisione comune che mi pesa?"
         ],
-        "faq": []
+        "faq": [
+          {
+            "question": "Che cosa significa sognare il proprio fratello o la propria sorella?",
+            "answer": "Un fratello o una sorella in sogno viene spesso associato a una storia condivisa, alla complicità, alla rivalità o ai ruoli che ciascuno aveva in famiglia. Ciò che facevate insieme e l’atmosfera tra voi contano più di un significato fisso."
+          },
+          {
+            "question": "Che cosa significa sognare di litigare con il proprio fratello?",
+            "answer": "Un litigio può fare eco a una tensione reale, a una vecchia rivalità o a un confronto che senti ancora. Non significa che il legame sia rotto. Annota il motivo del litigio nel sogno: spesso dice più della rabbia."
+          },
+          {
+            "question": "Che cosa significa sognare che il fratello o la sorella muore?",
+            "answer": "È un sogno che sconvolge, ma non predice nulla. Può accompagnare la preoccupazione per lui o per lei, un cambiamento nel rapporto (un trasloco, una nuova coppia, un figlio) o la fine di un periodo condiviso. Chiediti che cosa si è spostato di recente tra voi."
+          },
+          {
+            "question": "Che cosa significa sognare un fratello che non si ha?",
+            "answer": "Un fratello o una sorella inventati possono mettere in scena una parte di te, il desiderio di un alleato o un ruolo che assumi in famiglia o tra gli amici. Osserva la sua età e che cosa faceva: quei dettagli dicono che cosa rappresentava."
+          }
+        ],
+        "documentMetaDescription": "Sognare il proprio fratello o la propria sorella, un litigio o un fratello che non hai: che cosa può dire la scena dei ruoli familiari, con domande ed esempio."
       },
       "pt": {
         "slug": "irmao-ou-irma",
@@ -9426,58 +9614,152 @@
       "en": {
         "slug": "partner",
         "name": "Partner",
-        "shortDescription": "A partner in a dream may reflect the real relationship, a wish, a conflict or a boundary you are negotiating. Notice who the person was, what happened between you and how the encounter felt.",
-        "modifiedAt": "2026-07-24",
+        "shortDescription": "Dreaming of your partner can replay an ordinary evening or turn into jealousy, distance or reunion. The dream often draws on the real relationship: closeness, a conflict, a need for space. What happened between you matters most.",
+        "modifiedAt": "2026-10-08",
         "askYourself": [
-          "What did partner change in the scene?",
-          "Which feeling stayed with me after waking?"
+          "Was it my current partner, a past one, or someone I don't know?",
+          "What happened between us, and which moment do I remember most clearly?",
+          "Where do I want more closeness, clarity or space in this relationship right now?"
         ],
-        "faq": []
+        "faq": [
+          {
+            "question": "What does it mean to dream about your partner?",
+            "answer": "A partner in a dream often draws on the real relationship: closeness, a recent tension, a wish or a boundary. The scene and how you felt in it matter more than any general meaning."
+          },
+          {
+            "question": "What does it mean to dream that your partner is cheating on you?",
+            "answer": "This is a common and unsettling dream. It is not proof of anything. It can go with insecurity, a feeling of being left out, or a time when the relationship gets less room. What made you feel sidelined that week?"
+          },
+          {
+            "question": "What does it mean to dream that your partner leaves you?",
+            "answer": "A breakup in a dream can echo a fear of losing the relationship, a recent argument, or a change (a move, a new job) that shifts your balance. It predicts nothing. Notice who left, and what you did."
+          },
+          {
+            "question": "What does it mean to dream of being with someone other than your partner?",
+            "answer": "Dreaming of desire or a relationship with someone else is common and does not say you want to leave. The other person may stand for a quality, a freedom or an energy you miss. What did they have that drew you?"
+          }
+        ],
+        "documentMetaDescription": "Dreaming of your partner, of them cheating or leaving you: what the scene may say about closeness, jealousy and distance, with questions and an example."
       },
       "fr": {
         "slug": "partenaire",
         "name": "Partenaire",
-        "shortDescription": "Un partenaire en rêve peut renvoyer à la relation réelle, à un souhait, à un conflit ou à une limite en cours de négociation. La personne présente, vos gestes et l’émotion ressentie précisent la scène.",
-        "modifiedAt": "2026-07-24",
+        "shortDescription": "Rêver de son partenaire peut rejouer une soirée ordinaire ou tourner à la jalousie, à la distance, aux retrouvailles. Le rêve puise souvent dans la relation réelle : proximité, conflit, besoin d'espace. Ce qui se passait entre vous compte le plus.",
+        "modifiedAt": "2026-10-08",
         "askYourself": [
-          "Qu’est-ce que partenaire a changé dans la scène ?",
-          "Quelle émotion est restée après le réveil ?"
+          "Était-ce mon partenaire actuel, une ancienne relation, ou quelqu'un d'inconnu ?",
+          "Que s'est-il passé entre nous, et quel moment m'est resté le plus net ?",
+          "Où ai-je besoin, en ce moment, de plus de proximité, de clarté ou d'espace dans ce couple ?"
         ],
-        "faq": []
+        "faq": [
+          {
+            "question": "Que signifie rêver de son partenaire ?",
+            "answer": "Le partenaire en rêve puise souvent dans la relation réelle : la proximité, une tension récente, un souhait ou une limite. La scène et ce que vous y avez ressenti comptent plus qu'un sens général."
+          },
+          {
+            "question": "Que signifie rêver que son partenaire vous trompe ?",
+            "answer": "C'est un rêve fréquent et troublant. Ce n'est la preuve de rien. Il peut accompagner une insécurité, le sentiment d'être mis de côté, ou une période où le couple a moins de place. Qu'est-ce qui vous a fait vous sentir à l'écart cette semaine-là ?"
+          },
+          {
+            "question": "Que signifie rêver que son partenaire vous quitte ?",
+            "answer": "Une rupture en rêve peut faire écho à la peur de perdre la relation, à une dispute récente, ou à un changement (un déménagement, un nouveau travail) qui déplace l'équilibre. Elle ne prédit rien. Notez qui partait, et ce que vous faisiez."
+          },
+          {
+            "question": "Que signifie rêver d'être avec quelqu'un d'autre que son partenaire ?",
+            "answer": "Rêver de désir ou d'une relation avec une autre personne est courant et ne dit pas que vous voulez partir. Cette personne peut incarner une qualité, une liberté ou une énergie qui vous manque. Qu'avait-elle qui vous attirait ?"
+          }
+        ],
+        "documentMetaDescription": "Rêver de son partenaire, qu'il vous trompe ou vous quitte : ce que la scène peut dire de la proximité, de la jalousie et de la distance, avec questions."
       },
       "es": {
         "slug": "pareja",
         "name": "Pareja",
-        "shortDescription": "Una pareja en sueños puede remitir a la relación real, a un deseo, a un conflicto o a un límite que estás negociando. Observa quién era, qué ocurrió entre vosotros y cómo te hizo sentir el encuentro.",
-        "modifiedAt": "2026-07-24",
+        "shortDescription": "Soñar con tu pareja puede repetir una noche cualquiera o convertirse en celos, distancia o reencuentro. El sueño suele nutrirse de la relación real: la cercanía, un conflicto, la necesidad de espacio. Lo que pasó entre vosotros es lo que más cuenta.",
+        "modifiedAt": "2026-10-08",
         "askYourself": [
-          "¿Qué cambió pareja dentro de la escena?",
-          "¿Qué emoción siguió conmigo al despertar?"
+          "¿Era mi pareja actual, una relación anterior o alguien que no conozco?",
+          "¿Qué pasó entre nosotros, y qué momento recuerdo con más nitidez?",
+          "¿Dónde necesito ahora mismo más cercanía, claridad o espacio en esta relación?"
         ],
-        "faq": []
+        "faq": [
+          {
+            "question": "¿Qué significa soñar con tu pareja?",
+            "answer": "La pareja en sueños suele nutrirse de la relación real: la cercanía, una tensión reciente, un deseo o un límite. La escena y lo que sentiste en ella cuentan más que un significado general."
+          },
+          {
+            "question": "¿Qué significa soñar que tu pareja te es infiel?",
+            "answer": "Es un sueño frecuente e inquietante. No es la prueba de nada. Puede acompañar inseguridad, la sensación de quedarte al margen o una etapa en la que la relación tiene menos espacio. ¿Qué te hizo sentir apartado esa semana?"
+          },
+          {
+            "question": "¿Qué significa soñar que tu pareja te deja?",
+            "answer": "Una ruptura en sueños puede hacer eco del miedo a perder la relación, de una discusión reciente o de un cambio (una mudanza, un trabajo nuevo) que mueve el equilibrio. No predice nada. Fíjate en quién se iba y en lo que hacías tú."
+          },
+          {
+            "question": "¿Qué significa soñar que estás con otra persona que no es tu pareja?",
+            "answer": "Soñar con deseo o con una relación con otra persona es habitual y no dice que quieras irte. Esa persona puede encarnar una cualidad, una libertad o una energía que echas de menos. ¿Qué tenía que te atraía?"
+          }
+        ],
+        "documentMetaDescription": "Soñar con tu pareja, que te es infiel o que te deja: qué puede decir la escena sobre la cercanía, los celos y la distancia, con preguntas y un ejemplo."
       },
       "de": {
         "slug": "partner",
         "name": "Partner",
-        "shortDescription": "Träume mit einem Partner oder einer Partnerin können Nähe, Konflikte, Wünsche oder Grenzen innerhalb einer Beziehung spiegeln. Wichtiger als eine allgemeine Deutung sind die konkrete Person, eure Handlung und dein Gefühl dabei.",
+        "shortDescription": "Vom Partner oder der Partnerin zu träumen kann einen gewöhnlichen Abend nachspielen oder in Eifersucht und Distanz kippen. Oft schöpft der Traum aus der echten Beziehung: Nähe, Konflikt, Wunsch nach Freiraum. Was zwischen Ihnen geschah, zählt am meisten.",
         "askYourself": [
-          "War es dein aktueller Partner, eine frühere Beziehung oder eine erfundene Person?",
-          "Was geschah zwischen euch, das im Traum besonders wichtig wirkte?",
-          "Wo wünschst du dir derzeit mehr Nähe, Klarheit oder Freiraum?"
+          "War es mein jetziger Partner, eine frühere Beziehung oder jemand Unbekanntes?",
+          "Was geschah zwischen uns, und welcher Moment ist mir am deutlichsten geblieben?",
+          "Wo wünsche ich mir in dieser Beziehung gerade mehr Nähe, Klarheit oder Freiraum?"
         ],
-        "faq": [],
-        "modifiedAt": "2026-07-24"
+        "faq": [
+          {
+            "question": "Was bedeutet es, vom Partner zu träumen?",
+            "answer": "Der Partner oder die Partnerin im Traum schöpft oft aus der echten Beziehung: Nähe, eine jüngste Spannung, ein Wunsch oder eine Grenze. Die Szene und Ihr Gefühl darin zählen mehr als jede allgemeine Bedeutung."
+          },
+          {
+            "question": "Was bedeutet es, wenn der Partner im Traum fremdgeht?",
+            "answer": "Ein häufiger und verunsichernder Traum. Ein Beweis ist er nicht. Er kann Unsicherheit begleiten, das Gefühl, außen vor zu sein, oder eine Phase, in der die Beziehung wenig Raum bekommt. Was hat Ihnen in dieser Woche das Gefühl gegeben, zurückgesetzt zu werden?"
+          },
+          {
+            "question": "Was bedeutet es, wenn der Partner im Traum Schluss macht?",
+            "answer": "Eine Trennung im Traum kann die Angst aufgreifen, die Beziehung zu verlieren, einen jüngsten Streit oder eine Veränderung (ein Umzug, eine neue Stelle), die das Gleichgewicht verschiebt. Sie sagt nichts voraus. Notieren Sie, wer gegangen ist und was Sie getan haben."
+          },
+          {
+            "question": "Was bedeutet es, im Traum mit jemand anderem als dem Partner zusammen zu sein?",
+            "answer": "Von Begehren oder einer Beziehung mit einer anderen Person zu träumen ist häufig und heißt nicht, dass Sie gehen wollen. Diese Person kann für eine Eigenschaft, eine Freiheit oder eine Energie stehen, die Ihnen fehlt. Was hatte sie, das Sie angezogen hat?"
+          }
+        ],
+        "modifiedAt": "2026-10-08",
+        "documentMetaDescription": "Vom Partner träumen, vom Fremdgehen oder einer Trennung: was die Szene über Nähe, Eifersucht und Distanz sagen kann, mit Fragen und einem Tagebuchbeispiel."
       },
       "it": {
         "slug": "partner",
         "name": "Partner",
-        "shortDescription": "Un partner in sogno può richiamare la relazione reale, un desiderio, un conflitto o un confine che stai cercando di definire. Nota chi era, cosa è accaduto tra voi e come ti ha fatto sentire l’incontro.",
-        "modifiedAt": "2026-07-24",
+        "shortDescription": "Sognare il tuo partner può ripetere una sera qualunque o trasformarsi in gelosia, distanza o ritrovarsi. Il sogno attinge spesso alla relazione reale: vicinanza, un conflitto, un bisogno di spazio. Ciò che è successo tra voi conta più di tutto.",
+        "modifiedAt": "2026-10-08",
         "askYourself": [
-          "Che cosa ha cambiato partner nella scena?",
-          "Quale emozione è rimasta dopo il risveglio?"
+          "Era il mio partner attuale, una relazione passata o una persona sconosciuta?",
+          "Che cosa è successo tra noi, e quale momento ricordo più nitidamente?",
+          "Dove vorrei, in questo periodo, più vicinanza, chiarezza o spazio in questa relazione?"
         ],
-        "faq": []
+        "faq": [
+          {
+            "question": "Che cosa significa sognare il proprio partner?",
+            "answer": "Il partner in sogno attinge spesso alla relazione reale: la vicinanza, una tensione recente, un desiderio o un confine. La scena e ciò che hai provato contano più di qualsiasi significato generale."
+          },
+          {
+            "question": "Che cosa significa sognare che il partner ti tradisce?",
+            "answer": "È un sogno frequente e inquietante. Non è la prova di nulla. Può accompagnare un’insicurezza, la sensazione di essere messo da parte o un periodo in cui la coppia ha meno spazio. Che cosa ti ha fatto sentire escluso in quella settimana?"
+          },
+          {
+            "question": "Che cosa significa sognare che il partner ti lascia?",
+            "answer": "Una rottura in sogno può fare eco alla paura di perdere la relazione, a un litigio recente o a un cambiamento (un trasloco, un nuovo lavoro) che sposta l’equilibrio. Non predice nulla. Annota chi se ne andava e che cosa facevi tu."
+          },
+          {
+            "question": "Che cosa significa sognare di stare con un’altra persona?",
+            "answer": "Sognare desiderio o una relazione con un’altra persona è comune e non dice che vuoi andartene. Quella persona può incarnare una qualità, una libertà o un’energia che ti manca. Che cosa aveva che ti attirava?"
+          }
+        ],
+        "documentMetaDescription": "Sognare il proprio partner, un tradimento o una rottura: che cosa può dire la scena della vicinanza, della gelosia e della distanza, con domande ed esempio."
       },
       "pt": {
         "slug": "parceiro",
@@ -9510,58 +9792,152 @@
       "en": {
         "slug": "friend",
         "name": "Friend",
-        "shortDescription": "A friend in a dream may draw attention to the real relationship, a shared memory or a quality you associate with that person. What they did and the mood between you make the scene personal.",
-        "modifiedAt": "2026-07-24",
+        "shortDescription": "Dreaming of a friend can bring back a shared laugh, an old falling-out or someone you have not seen in years. The figure often points to the real friendship, a memory or a quality you link to that person. What they did and how you felt are the clues.",
+        "modifiedAt": "2026-10-08",
         "askYourself": [
-          "What did friend change in the scene?",
-          "Which feeling stayed with me after waking?"
+          "Which friend was it, and what connects me to them these days?",
+          "Was our contact warm, tense, distant or surprising?",
+          "Has a recent conversation, a message or a silence been on my mind?"
         ],
-        "faq": []
+        "faq": [
+          {
+            "question": "What does it mean to dream about a friend?",
+            "answer": "A friend in a dream often points to the real friendship, a shared memory, or a quality you associate with them: humor, courage, freedom. What they did and the mood between you matter more than a fixed meaning."
+          },
+          {
+            "question": "What does it mean to dream about an old friend you no longer see?",
+            "answer": "An old friend can bring back a period of your life and who you were then. The dream does not necessarily mean you should get in touch. Ask what that time had that you miss, or what was left unfinished."
+          },
+          {
+            "question": "What does it mean to dream of fighting with a friend?",
+            "answer": "A fight can echo a real tension, something you have not said, or a fear of losing their trust. It does not mean the friendship is over. What was the disagreement about in the dream?"
+          },
+          {
+            "question": "What does it mean to dream that a friend betrays you?",
+            "answer": "Betrayal in a dream can go with a doubt about loyalty, a feeling of being left out, or a friendship where you give more than you receive. It is not proof of anything. Who, in the dream, actually let you down?"
+          }
+        ],
+        "documentMetaDescription": "Dreaming of a friend, an old friend or a fight with a friend: what the scene may say about the bond and what you miss, with questions and a journal example."
       },
       "fr": {
         "slug": "ami",
         "name": "Ami",
-        "shortDescription": "La présence d’un ami peut attirer l’attention sur la relation actuelle, un souvenir partagé ou une qualité que vous lui associez. Ce qu’il faisait et l’ambiance entre vous sont les indices les plus personnels.",
-        "modifiedAt": "2026-07-24",
+        "shortDescription": "Rêver d'un ami peut ramener un fou rire, une vieille brouille ou un visage perdu de vue. Cette figure renvoie souvent à l'amitié réelle, à un souvenir ou à une qualité que vous lui associez. Ce qu'il faisait et votre ressenti sont les indices.",
+        "modifiedAt": "2026-10-08",
         "askYourself": [
-          "Qu’est-ce que ami a changé dans la scène ?",
-          "Quelle émotion est restée après le réveil ?"
+          "Quel ami était-ce, et qu'est-ce qui me relie à lui en ce moment ?",
+          "Notre échange était-il chaleureux, tendu, distant ou surprenant ?",
+          "Une conversation récente, un message ou un silence me trotte-t-il dans la tête ?"
         ],
-        "faq": []
+        "faq": [
+          {
+            "question": "Que signifie rêver d'un ami ?",
+            "answer": "Un ami en rêve renvoie souvent à l'amitié réelle, à un souvenir partagé ou à une qualité que vous lui associez : son humour, son audace, sa liberté. Ce qu'il faisait et l'ambiance entre vous comptent plus qu'un sens figé."
+          },
+          {
+            "question": "Que signifie rêver d'un ancien ami qu'on ne voit plus ?",
+            "answer": "Un ancien ami ramène souvent une période de votre vie et la personne que vous étiez alors. Le rêve ne veut pas forcément dire qu'il faut le recontacter. Demandez-vous ce que cette époque avait qui vous manque, ou ce qui est resté en suspens."
+          },
+          {
+            "question": "Que signifie rêver de se disputer avec un ami ?",
+            "answer": "Une dispute peut faire écho à une tension réelle, à quelque chose que vous n'avez pas dit, ou à la peur de perdre sa confiance. Elle ne signifie pas que l'amitié est finie. Sur quoi portait le désaccord dans le rêve ?"
+          },
+          {
+            "question": "Que signifie rêver qu'un ami vous trahit ?",
+            "answer": "Une trahison en rêve peut accompagner un doute sur une loyauté, le sentiment d'être tenu à l'écart, ou une amitié où vous donnez plus que vous ne recevez. Ce n'est la preuve de rien. Qui, dans le rêve, vous a réellement déçu ?"
+          }
+        ],
+        "documentMetaDescription": "Rêver d'un ami, d'un ancien ami ou d'une dispute avec un ami : ce que la scène peut dire du lien et de ce qui vous manque, avec questions et exemple."
       },
       "es": {
         "slug": "amigo",
         "name": "Amigo",
-        "shortDescription": "Un amigo o una amiga puede representar el vínculo real, un recuerdo común o una cualidad que asocias con esa persona. Lo que hacía y el clima entre ambos ayudan a precisar la escena.",
-        "modifiedAt": "2026-07-24",
+        "shortDescription": "Soñar con un amigo puede traer de vuelta una risa compartida, un viejo enfado o una cara que no ves desde hace años. La figura suele remitir a la amistad real, a un recuerdo o a una cualidad de esa persona. Lo que hacía y lo que sentiste son las pistas.",
+        "modifiedAt": "2026-10-08",
         "askYourself": [
-          "¿Qué cambió amigo dentro de la escena?",
-          "¿Qué emoción siguió conmigo al despertar?"
+          "¿Qué amigo o amiga era, y qué me une a esa persona últimamente?",
+          "¿Nuestro trato era cálido, tenso, distante o sorprendente?",
+          "¿Me ronda la cabeza una conversación reciente, un mensaje o un silencio?"
         ],
-        "faq": []
+        "faq": [
+          {
+            "question": "¿Qué significa soñar con un amigo?",
+            "answer": "Un amigo en sueños suele remitir a la amistad real, a un recuerdo compartido o a una cualidad que asocias con esa persona: su humor, su valentía, su libertad. Lo que hacía y el ambiente entre vosotros cuentan más que un significado fijo."
+          },
+          {
+            "question": "¿Qué significa soñar con un viejo amigo que ya no ves?",
+            "answer": "Un viejo amigo suele devolverte a una época de tu vida y a quien eras entonces. El sueño no significa necesariamente que debas escribirle. Pregúntate qué tenía aquella época que echas de menos, o qué quedó pendiente."
+          },
+          {
+            "question": "¿Qué significa soñar que discutes con un amigo?",
+            "answer": "Una pelea puede hacer eco de una tensión real, de algo que no has dicho o del miedo a perder su confianza. No significa que la amistad se haya acabado. ¿Sobre qué era el desacuerdo en el sueño?"
+          },
+          {
+            "question": "¿Qué significa soñar que un amigo te traiciona?",
+            "answer": "Una traición en sueños puede acompañar una duda sobre la lealtad, la sensación de quedarte fuera o una amistad en la que das más de lo que recibes. No es la prueba de nada. ¿Quién te falló de verdad en el sueño?"
+          }
+        ],
+        "documentMetaDescription": "Soñar con un amigo, con un viejo amigo o con una pelea con un amigo: qué puede decir la escena del vínculo y de lo que echas de menos, con preguntas."
       },
       "de": {
         "slug": "freund",
         "name": "Freund",
-        "shortDescription": "Erscheint ein Freund oder eine Freundin im Traum, stehen möglicherweise die reale Beziehung, eine gemeinsame Erinnerung oder eine auffällige Eigenschaft im Vordergrund. Betrachte deshalb, was diese Person tat und welche Stimmung zwischen euch herrschte.",
+        "shortDescription": "Von einem Freund oder einer Freundin zu träumen bringt oft ein gemeinsames Lachen, einen alten Streit oder ein lange nicht gesehenes Gesicht zurück. Die Figur verweist meist auf die echte Freundschaft, eine Erinnerung oder eine Eigenschaft dieser Person.",
         "askYourself": [
-          "Welche konkrete Person erschien, und was verbindest du gerade mit ihr?",
-          "War euer Kontakt vertraut, angespannt oder überraschend?",
-          "Gab es zuletzt ein Gespräch oder Ereignis, das die Szene erklären könnte?"
+          "Welche Person war es, und was verbindet mich gerade mit ihr?",
+          "War unser Kontakt herzlich, angespannt, distanziert oder überraschend?",
+          "Beschäftigt mich ein kürzliches Gespräch, eine Nachricht oder ein Schweigen?"
         ],
-        "faq": [],
-        "modifiedAt": "2026-07-24"
+        "faq": [
+          {
+            "question": "Was bedeutet es, von einem Freund zu träumen?",
+            "answer": "Ein Freund oder eine Freundin im Traum verweist oft auf die echte Freundschaft, eine gemeinsame Erinnerung oder eine Eigenschaft, die Sie mit dieser Person verbinden: Humor, Mut, Freiheit. Was die Person tat und die Stimmung zwischen Ihnen zählen mehr als eine feste Bedeutung."
+          },
+          {
+            "question": "Was bedeutet es, von einem alten Freund zu träumen, den man nicht mehr sieht?",
+            "answer": "Ein alter Freund bringt oft eine Phase Ihres Lebens zurück und den Menschen, der Sie damals waren. Der Traum heißt nicht unbedingt, dass Sie sich melden sollten. Fragen Sie sich, was diese Zeit hatte, das Ihnen fehlt, oder was offen geblieben ist."
+          },
+          {
+            "question": "Was bedeutet ein Streit mit einem Freund im Traum?",
+            "answer": "Ein Streit kann eine echte Spannung aufgreifen, etwas Unausgesprochenes oder die Angst, das Vertrauen dieser Person zu verlieren. Er bedeutet nicht, dass die Freundschaft vorbei ist. Worum ging es im Traum?"
+          },
+          {
+            "question": "Was bedeutet es, wenn ein Freund mich im Traum verrät?",
+            "answer": "Verrat im Traum kann einen Zweifel an Loyalität begleiten, das Gefühl, ausgeschlossen zu sein, oder eine Freundschaft, in der Sie mehr geben als bekommen. Ein Beweis ist er nicht. Wer hat Sie im Traum wirklich enttäuscht?"
+          }
+        ],
+        "modifiedAt": "2026-10-08",
+        "documentMetaDescription": "Von einem Freund träumen, von einem alten Freund oder einem Streit: was die Szene über die Freundschaft und das, was Ihnen fehlt, sagen kann, mit Fragen."
       },
       "it": {
         "slug": "amico",
         "name": "Amico",
-        "shortDescription": "Un amico o un’amica in sogno può richiamare il rapporto reale, un ricordo condiviso o una qualità che associ a quella persona. Ciò che faceva e l’atmosfera tra voi precisano la scena.",
-        "modifiedAt": "2026-07-24",
+        "shortDescription": "Sognare un amico può riportare una risata condivisa, una vecchia lite o qualcuno che non vedi da anni. La figura rimanda spesso all’amicizia reale, a un ricordo o a una qualità che associ a quella persona. Ciò che faceva e ciò che hai provato sono gli indizi.",
+        "modifiedAt": "2026-10-08",
         "askYourself": [
-          "Che cosa ha cambiato amico nella scena?",
-          "Quale emozione è rimasta dopo il risveglio?"
+          "Quale amico o amica era, e che cosa mi lega a questa persona in questo periodo?",
+          "Il nostro scambio era caloroso, teso, distante o sorprendente?",
+          "Mi gira in testa una conversazione recente, un messaggio o un silenzio?"
         ],
-        "faq": []
+        "faq": [
+          {
+            "question": "Che cosa significa sognare un amico?",
+            "answer": "Un amico in sogno rimanda spesso all’amicizia reale, a un ricordo condiviso o a una qualità che associ a quella persona: il suo umorismo, il suo coraggio, la sua libertà. Ciò che faceva e l’atmosfera tra voi contano più di un significato fisso."
+          },
+          {
+            "question": "Che cosa significa sognare un vecchio amico che non vedi più?",
+            "answer": "Un vecchio amico riporta spesso a un periodo della tua vita e a chi eri allora. Il sogno non significa per forza che devi ricontattarlo. Chiediti che cosa aveva quel periodo che ti manca, o che cosa è rimasto in sospeso."
+          },
+          {
+            "question": "Che cosa significa sognare di litigare con un amico?",
+            "answer": "Un litigio può fare eco a una tensione reale, a qualcosa che non hai detto o alla paura di perdere la sua fiducia. Non significa che l’amicizia sia finita. Su che cosa verteva il disaccordo nel sogno?"
+          },
+          {
+            "question": "Che cosa significa sognare che un amico ti tradisce?",
+            "answer": "Un tradimento in sogno può accompagnare un dubbio sulla lealtà, la sensazione di essere tagliato fuori o un’amicizia in cui dai più di quanto ricevi. Non è la prova di nulla. Chi ti ha davvero deluso nel sogno?"
+          }
+        ],
+        "documentMetaDescription": "Sognare un amico, un vecchio amico o un litigio con un amico: che cosa può dire la scena del legame e di ciò che ti manca, con domande ed esempio di diario."
       },
       "pt": {
         "slug": "amigo",
