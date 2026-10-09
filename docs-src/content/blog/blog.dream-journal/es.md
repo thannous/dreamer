@@ -5,7 +5,7 @@
   "lang": "es",
   "slug": "diario-de-suenos",
   "title": "Diario de sueños: recuerdo, métodos y rutinas | Noctalia",
-  "description": "Hub Diario de sueños: cómo recordar sueños, mejorar el recuerdo, entender el sueño REM y crear una rutina sostenible.",
+  "description": "Diario de sueños: cómo recordar tus sueños, qué anotar cada mañana, lo básico del sueño REM y una rutina sencilla que de verdad puedas mantener.",
   "robots": "index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1",
   "themeColor": "#0a0514",
   "htmlClass": "scroll-smooth blog-article",
@@ -14,22 +14,22 @@
   "mainClass": "pt-32 pb-20 px-4",
   "ogType": "website",
   "ogTitle": "Diario de sueños: recuerdo, métodos y rutinas",
-  "ogDescription": "Cómo recordar sueños y mantener un diario que funcione.",
+  "ogDescription": "Cómo recordar tus sueños y llevar un diario de sueños sin abandonarlo a la semana.",
   "ogImage": "https://noctalia.app/img/og/noctalia-es-1200x630.jpg",
   "ogImageAlt": "",
   "twitterCard": "summary_large_image",
   "twitterTitle": "Diario de sueños: recuerdo, métodos y rutinas",
-  "twitterDescription": "Cómo recordar sueños y mantener un diario que funcione.",
+  "twitterDescription": "Recuerda más sueños: una rutina sencilla al despertar y nuestras guías sobre el diario de sueños.",
   "twitterImage": "https://noctalia.app/img/og/noctalia-es-1200x630.jpg",
   "twitterImageAlt": "Diario de sueños: recuerdo, métodos y rutinas",
   "publishedTime": "",
-  "modifiedTime": "",
+  "modifiedTime": "2026-10-08",
   "author": "",
   "prevPath": "",
   "nextPath": "",
   "preloadImage": "",
   "jsonLd": [
-    "{\n            \"@context\": \"https://schema.org\",\n            \"@type\": \"CollectionPage\",\n            \"name\": \"Diario de sueños: recuerdo, métodos y rutinas\",\n            \"description\": \"Hub temático: diario de sueños, recuerdo, sueño REM y rutinas.\",\n            \"inLanguage\": \"es\",\n            \"url\": \"https://noctalia.app/es/blog/diario-de-suenos\"\n        }",
+    "{\n    \"@context\": \"https://schema.org\",\n    \"@type\": \"CollectionPage\",\n    \"name\": \"Diario de sueños: recuerdo, métodos y rutinas\",\n    \"description\": \"Diario de sueños: cómo recordar tus sueños, qué anotar cada mañana, lo básico del sueño REM y una rutina sencilla que de verdad puedas mantener.\",\n    \"inLanguage\": \"es\",\n    \"url\": \"https://noctalia.app/es/blog/diario-de-suenos\",\n    \"dateModified\": \"2026-10-08\"\n}",
     "{\n    \"@context\": \"https://schema.org\",\n    \"@type\": \"BreadcrumbList\",\n    \"itemListElement\": [\n        {\n            \"@type\": \"ListItem\",\n            \"position\": 1,\n            \"name\": \"Inicio\",\n            \"item\": \"https://noctalia.app/es/\"\n        },\n        {\n            \"@type\": \"ListItem\",\n            \"position\": 2,\n            \"name\": \"Recursos\",\n            \"item\": \"https://noctalia.app/es/blog/\"\n        },\n        {\n            \"@type\": \"ListItem\",\n            \"position\": 3,\n            \"name\": \"Diario de sueños\",\n            \"item\": \"https://noctalia.app/es/blog/diario-de-suenos\"\n        }\n    ]\n}"
   ],
   "activeNav": "resources"
@@ -65,60 +65,60 @@
                     Diario de sueños: recuerdo, métodos y rutinas
                 </h1>
 <p class="text-lg text-purple-200/80 leading-relaxed">
-                    Llevar un <a class="text-dream-salmon hover:underline" href="guia-diario-suenos">diario de sueños</a> ayuda a recordar, estructurar y explorar tus sueños. Aquí encuentras lo esencial: técnicas de recuerdo, bases del sueño REM, el <a class="text-dream-salmon hover:underline" href="../guides/diccionario-simbolos-suenos">significado de los símbolos de sueños comunes</a> y hábitos que facilitan la constancia.
+                    Suena la alarma y, durante unos segundos, el sueño sigue ahí: un pasillo, una cara, una inquietud difusa. Miras el móvil y se esfuma. Un <a class="text-dream-salmon hover:underline" href="guia-diario-suenos">diario de sueños</a> atrapa ese momento. Aquí tienes guías sobre cómo recordar, el <a class="text-dream-salmon hover:underline" href="sueno-rem-suenos">sueño REM</a>, el <a class="text-dream-salmon hover:underline" href="../guides/diccionario-simbolos-suenos">significado de los símbolos de sueños comunes</a> y una rutina sencilla.
                 </p>
 </header>
 <section class="glass-panel rounded-2xl p-6 md:p-8 mt-10 border border-dream-salmon/10" data-blog-hub-expanded="true">
-  <h2 class="font-serif text-2xl text-dream-cream mb-4">Para empezar</h2>
+  <h2 class="font-serif text-2xl text-dream-cream mb-4">Cómo empezar un diario de sueños</h2>
   <div class="prose prose-invert prose-purple max-w-none text-gray-300 leading-relaxed space-y-4">
-    <p>Si eres principiante, elige un hábito pequeño durante una semana. La constancia importa más que hacerlo todo a la vez.</p>
-    <p>Empieza con el recuerdo y luego añade una práctica. Anota lo básico: qué viste, qué sentiste y qué cambió en el sueño.</p>
-    <ul><li>Elige una guía de la lista.</li><li>Pruébala durante 7 noches.</li><li>Revisa tus notas y ajusta.</li></ul>
+    <p><strong>Respuesta rápida:</strong> anota el sueño antes de levantarte, aunque solo quede una imagen, cada mañana durante una semana. La constancia importa más que la extensión.</p>
+    <ul><li><strong>Al despertar:</strong> no te muevas y repasa el sueño.</li><li><strong>Qué anotar:</strong> lugar, personas, acción, emoción.</li><li><strong>Tras siete noches:</strong> relee y fíjate en lo que se repite.</li></ul>
+    <p>El <a class="text-dream-salmon hover:underline" href="/es/diario-de-suenos-por-voz">diario de sueños por voz para Android</a> te deja contar un sueño al despertar: se transcribe y se guarda para releerlo junto a los demás.</p>
   </div>
 </section>
 
 <section class="mt-12">
-<h2 class="font-serif text-2xl text-dream-cream mb-8">Recursos clave</h2>
+<h2 class="font-serif text-2xl text-dream-cream mb-8">Guías clave</h2>
 <div class="grid md:grid-cols-2 gap-6">
 <a class="glass-panel rounded-xl p-6 block hover:border-dream-salmon/30 transition-colors" href="guia-diario-suenos">
-<span class="text-xs text-dream-salmon uppercase mb-2 block">Guía</span>
-<h3 class="font-serif text-lg text-dream-cream mb-2">Diario de sueños: guía completa</h3>
-<p class="text-sm text-gray-400">Estructura simple para cada mañana.</p>
+<span class="text-xs text-dream-salmon uppercase mb-2 block">Para empezar</span>
+<h3 class="font-serif text-lg text-dream-cream mb-2">Cómo llevar un diario de sueños</h3>
+<p class="text-sm text-gray-400">Qué escribir cada mañana sin abandonarlo.</p>
 </a>
 <a class="glass-panel rounded-xl p-6 block hover:border-dream-salmon/30 transition-colors" href="como-recordar-suenos">
 <span class="text-xs text-dream-salmon uppercase mb-2 block">Recuerdo</span>
-<h3 class="font-serif text-lg text-dream-cream mb-2">Cómo recordar sueños</h3>
-<p class="text-sm text-gray-400">Técnicas efectivas para estabilizar la memoria.</p>
+<h3 class="font-serif text-lg text-dream-cream mb-2">Cómo recordar tus sueños</h3>
+<p class="text-sm text-gray-400">Diez técnicas para recordar más.</p>
+</a>
+<a class="glass-panel rounded-xl p-6 block hover:border-dream-salmon/30 transition-colors" href="despertares-nocturnos-recordar-suenos">
+<span class="text-xs text-dream-salmon uppercase mb-2 block">Recuerdo</span>
+<h3 class="font-serif text-lg text-dream-cream mb-2">Despertarte de madrugada</h3>
+<p class="text-sm text-gray-400">Qué anotar sin perder horas de sueño.</p>
 </a>
 <a class="glass-panel rounded-xl p-6 block hover:border-dream-salmon/30 transition-colors" href="por-que-olvidamos-suenos">
 <span class="text-xs text-dream-salmon uppercase mb-2 block">Ciencia</span>
 <h3 class="font-serif text-lg text-dream-cream mb-2">Por qué olvidamos los sueños</h3>
-<p class="text-sm text-gray-400">Lo que explican la neurociencia y el sueño.</p>
+<p class="text-sm text-gray-400">Por qué un sueño nítido se borra tan rápido.</p>
 </a>
 <a class="glass-panel rounded-xl p-6 block hover:border-dream-salmon/30 transition-colors" href="sueno-rem-suenos">
 <span class="text-xs text-dream-salmon uppercase mb-2 block">Sueño</span>
 <h3 class="font-serif text-lg text-dream-cream mb-2">Sueño REM y sueños</h3>
-<p class="text-sm text-gray-400">Comprender el REM para mejorar el recuerdo.</p>
+<p class="text-sm text-gray-400">La fase de los sueños más vívidos.</p>
 </a>
 <a class="glass-panel rounded-xl p-6 block hover:border-dream-salmon/30 transition-colors" href="por-que-sonamos-ciencia">
-<span class="text-xs text-dream-salmon uppercase mb-2 block">Sueño</span>
-<h3 class="font-serif text-lg text-dream-cream mb-2">Por qué soñamos (ciencia)</h3>
-<p class="text-sm text-gray-400">Teorías y lo que sabemos hoy.</p>
-</a>
-<a class="glass-panel rounded-xl p-6 block hover:border-dream-salmon/30 transition-colors" href="suenos-lucidos">
-<span class="text-xs text-dream-salmon uppercase mb-2 block">Siguiente</span>
-<h3 class="font-serif text-lg text-dream-cream mb-2">Sueños lúcidos</h3>
-<p class="text-sm text-gray-400">El diario es la base para la lucidez.</p>
+<span class="text-xs text-dream-salmon uppercase mb-2 block">Ciencia</span>
+<h3 class="font-serif text-lg text-dream-cream mb-2">Por qué soñamos</h3>
+<p class="text-sm text-gray-400">Las teorías y lo que respaldan los datos.</p>
 </a>
 </div>
 </section>
 <section class="mt-16">
-<h2 class="font-serif text-2xl text-dream-cream mb-8">Explorar otras temáticas</h2>
+<h2 class="font-serif text-2xl text-dream-cream mb-8">Otras temáticas</h2>
 <div class="grid md:grid-cols-2 gap-6">
 <a class="glass-panel rounded-xl p-6 block hover:border-dream-salmon/30 transition-colors" href="suenos-lucidos">
 <span class="text-xs text-dream-salmon uppercase mb-2 block">Hub</span>
 <h3 class="font-serif text-lg text-dream-cream mb-2">Sueños lúcidos</h3>
-<p class="text-sm text-gray-400">Guías, técnicas y seguridad.</p>
+<p class="text-sm text-gray-400">Tu diario muestra tus señales oníricas.</p>
 </a>
 <a class="glass-panel rounded-xl p-6 block hover:border-dream-salmon/30 transition-colors" href="significado-de-suenos">
 <span class="text-xs text-dream-salmon uppercase mb-2 block">Hub</span>
