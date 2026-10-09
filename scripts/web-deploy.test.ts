@@ -6,6 +6,7 @@ const { execFileSync } = require('child_process');
 const {
   VERCEL_ORG_ID,
   VERCEL_PROJECT_ID,
+  buildEnv,
   buildVercelBuildArgs,
   buildVercelDeployArgs,
   buildVercelLinkArgs,
@@ -16,6 +17,7 @@ const {
   parseTarget,
   redact,
   run,
+  stopProcessTree,
   sweepStaleCopies,
   vercelEnv,
 } = require('./web-deploy');
@@ -144,7 +146,7 @@ describe('web-deploy: guarded, clean copy, pinned project, prebuilt upload', () 
     expect(setup.calls.map((call) => call.args)).toEqual([
       ['npx', '--yes', CLI, 'link', '--yes', ...PROJECT],
       ['npx', '--yes', CLI, 'pull', '--yes', '--environment=production', ...PROJECT],
-      ['npx', '--yes', CLI, 'build', '--prod', '--yes', ...PROJECT],
+      ['npx', '--yes', CLI, 'build', '--prod'],
       ['npx', '--yes', CLI, 'deploy', '--prebuilt', '--prod', '--yes', ...PROJECT, '--meta', `gitCommitSha=${HEAD}`],
     ]);
     const cwds = new Set(setup.calls.map((call) => call.cwd));
@@ -215,7 +217,7 @@ describe('web-deploy: guarded, clean copy, pinned project, prebuilt upload', () 
     });
     await main(['prod'], setup.deps);
     expect(setup.calls.map((call) => call.args[3])).toEqual(['link', 'pull', 'build', 'deploy']);
-    for (const call of setup.calls) {
+    for (const call of setup.calls.filter((entry) => entry.args[3] !== 'build')) {
       expect(call.env).toEqual({
         PATH: '/usr/bin',
         HOME: '/home/release',
@@ -225,9 +227,49 @@ describe('web-deploy: guarded, clean copy, pinned project, prebuilt upload', () 
         NODE_EXTRA_CA_CERTS: '/etc/ca.pem',
       });
       expect(call.args).toEqual(expect.arrayContaining(PROJECT));
+    }
+    const [build] = setup.calls.filter((entry) => entry.args[3] === 'build');
+    expect(build.env).toEqual({
+      PATH: '/usr/bin',
+      HOME: path.join(path.dirname(build.cwd), 'build-home'),
+      TMPDIR: '/tmp',
+      HTTPS_PROXY: 'http://proxy:3128',
+      NODE_EXTRA_CA_CERTS: '/etc/ca.pem',
+      npm_config_cache: path.join('/home/release', '.npm'),
+    });
+    for (const call of setup.calls) {
       expect(call.args).not.toContain('--token');
       expect(call.args.join(' ')).not.toContain(TOKEN);
     }
+  });
+
+  it('vercel build never sees VERCEL_TOKEN or the real HOME: env assertion and a fake build that prints its env', async () => {
+    const setup = deps(async () => accepted());
+    await main(['prod'], setup.deps);
+    const byStep = Object.fromEntries(setup.calls.map((call) => [call.args[3], call.env]));
+    expect(byStep.build.VERCEL_TOKEN).toBeUndefined();
+    expect(byStep.build.HOME).not.toBe(process.env.HOME);
+    for (const step of ['link', 'pull', 'deploy']) expect(byStep[step].VERCEL_TOKEN).toBe(TOKEN);
+    expect(setup.calls.find((call) => call.args[3] === 'build')?.args).not.toEqual(expect.arrayContaining(['--project', '--scope', '--yes', 'vercel']));
+
+    // A real child with the build env, printing everything it can see.
+    const buildHome = fs.mkdtempSync(path.join(tempRoot, 'home-'));
+    const env = buildEnv({ PATH: process.env.PATH, HOME: '/home/release', VERCEL_TOKEN: TOKEN, vercel_token: TOKEN }, buildHome, 'linux');
+    const written: string[] = [];
+    await run(process.execPath, ['-e', 'console.log(JSON.stringify(process.env))'], {
+      cwd: buildHome,
+      env,
+      write: (_stream: string, text: string) => written.push(text),
+    });
+    const printed = JSON.parse(written.join(''));
+    expect(printed.VERCEL_TOKEN).toBeUndefined();
+    expect(JSON.stringify(printed)).not.toContain(TOKEN);
+    expect(printed.HOME).toBe(buildHome);
+    expect(buildEnv({ VERCEL_TOKEN: 't', Vercel_Token: 't', HOME: 'h', USERPROFILE: 'u' }, 'B', 'win32')).toEqual({
+      HOME: 'B',
+      USERPROFILE: 'B',
+      npm_config_cache: path.join('h', '.npm'),
+    });
   });
 
   it('vercelEnv keeps only the allowlist, plus the Windows essentials on win32', () => {
@@ -379,12 +421,14 @@ describe('web-deploy: guarded, clean copy, pinned project, prebuilt upload', () 
         throw new Error(`exit ${exitCode}`);
       }),
     });
-    const child = { kill: jest.fn() };
+    const child = { pid: 1234 };
+    const stopTree = jest.fn(async () => {});
     const calls: Call[] = [];
     const inner = fakeCli(calls);
     let copyDir = '';
     const setup = deps(async () => accepted(), {
       proc,
+      stopTree,
       runCommand: (command: string, args: string[], options: { cwd: string; env: Record<string, string | undefined>; onChild: (c: unknown) => void }) => {
         inner(command, args, options);
         if (args[2] === 'build') {
@@ -392,12 +436,15 @@ describe('web-deploy: guarded, clean copy, pinned project, prebuilt upload', () 
           options.onChild(child);
           expect(fs.existsSync(path.join(copyDir, '.vercel', '.env.production.local'))).toBe(true);
           proc.emit(signal);
+          // The stopped step then fails, as a killed CLI does.
+          throw new Error(`Command failed (${signal}): npx`);
         }
       },
     });
     await expect(main(['prod'], setup.deps)).rejects.toThrow(`exit ${code}`);
     expect(proc.exit).toHaveBeenCalledWith(code);
-    expect(child.kill).toHaveBeenCalledWith('SIGTERM');
+    expect(stopTree).toHaveBeenCalledTimes(1);
+    expect(stopTree).toHaveBeenCalledWith(child, { timeoutMs: 5000 });
     expect(fs.existsSync(copyDir)).toBe(false);
     expect(fs.readdirSync(tempRoot)).toEqual([]);
     expect(calls.filter((call) => call.args[3] === 'deploy')).toEqual([]);
@@ -438,6 +485,105 @@ describe('web-deploy: guarded, clean copy, pinned project, prebuilt upload', () 
     expect(exitCode).toBe(143);
     expect(fs.existsSync(copy)).toBe(false);
     expect(fs.readdirSync(tempRoot)).toEqual([]);
+  }, 20000);
+
+  const alive = (pid: number) => {
+    try {
+      process.kill(pid, 0);
+      return true;
+    } catch {
+      return false;
+    }
+  };
+  const waitFor = async (check: () => boolean, ms = 5000) => {
+    const end = Date.now() + ms;
+    while (Date.now() < end) {
+      if (check()) return true;
+      await new Promise((resolve) => setTimeout(resolve, 50));
+    }
+    return check();
+  };
+  // A fake CLI that starts a sleeping grandchild with its own stdio (so the
+  // pipes do not keep the step open), records its pid, then sleeps itself.
+  const fakeCliWithGrandchild = (pidFile: string, ignoreTerm = false) => `
+    const { spawn } = require('child_process');
+    const fs = require('fs');
+    ${ignoreTerm ? "process.on('SIGTERM', () => {});" : ''}
+    const grandchild = spawn(process.execPath, ['-e', ${JSON.stringify(`${ignoreTerm ? "process.on('SIGTERM', () => {});" : ''} setTimeout(() => {}, 60000)`)}], { stdio: 'ignore' });
+    fs.writeFileSync(${JSON.stringify(pidFile)}, String(grandchild.pid));
+    setTimeout(() => {}, 60000);
+  `;
+
+  it('a real SIGTERM during a step kills the CLI and its grandchild (whole process group), then exits 143', async () => {
+    if (process.platform === 'win32') return;
+    const pidDir = fs.mkdtempSync(path.join(os.tmpdir(), 'web-deploy-pids-'));
+    const pidFile = path.join(pidDir, 'grandchild.pid');
+    try {
+      const script = `
+        const wd = require(${JSON.stringify(path.join(__dirname, 'web-deploy.js'))});
+        wd.main(['prod'], {
+          guardProduction: async () => ({ head: ${JSON.stringify(HEAD)}, tree: 'b', message: 'ok' }),
+          rootDir: ${JSON.stringify(repo)},
+          tempRoot: ${JSON.stringify(tempRoot)},
+          log: () => {},
+          runCommand: (command, args, options) => {
+            console.log('READY ' + options.cwd);
+            return wd.run(process.execPath, ['-e', ${JSON.stringify(fakeCliWithGrandchild(pidFile))}], options);
+          },
+        }).catch((error) => { console.error(error.message); process.exit(1); });
+      `;
+      const { spawn } = require('child_process');
+      const harness = spawn(process.execPath, ['-e', script], { stdio: ['ignore', 'pipe', 'pipe'] });
+      const copy: string = await new Promise((resolve, reject) => {
+        let out = '';
+        harness.stdout.on('data', (chunk: Buffer) => {
+          out += chunk.toString();
+          const match = /READY (\S+)/.exec(out);
+          if (match) resolve(match[1]);
+        });
+        harness.on('exit', () => reject(new Error(`exited early: ${out}`)));
+      });
+      expect(await waitFor(() => fs.existsSync(pidFile) && fs.readFileSync(pidFile, 'utf8').length > 0)).toBe(true);
+      const grandchildPid = Number(fs.readFileSync(pidFile, 'utf8'));
+      expect(alive(grandchildPid)).toBe(true);
+      const exitCode = await new Promise((resolve) => {
+        harness.on('exit', (codeValue: number) => resolve(codeValue));
+        harness.kill('SIGTERM');
+      });
+      expect(exitCode).toBe(143);
+      expect(await waitFor(() => !alive(grandchildPid))).toBe(true);
+      expect(fs.existsSync(copy)).toBe(false);
+      expect(fs.readdirSync(tempRoot)).toEqual([]);
+    } finally {
+      fs.rmSync(pidDir, { recursive: true, force: true });
+    }
+  }, 30000);
+
+  it('stopProcessTree escalates to SIGKILL on the group when the CLI and its grandchild ignore SIGTERM', async () => {
+    if (process.platform === 'win32') return;
+    const pidDir = fs.mkdtempSync(path.join(os.tmpdir(), 'web-deploy-pids-'));
+    const pidFile = path.join(pidDir, 'grandchild.pid');
+    try {
+      let child: { pid: number } | null = null;
+      const running = run(process.execPath, ['-e', fakeCliWithGrandchild(pidFile, true)], {
+        cwd: pidDir,
+        env: { PATH: process.env.PATH },
+        write: () => {},
+        onChild: (value: { pid: number } | null) => {
+          if (value) child = value;
+        },
+      }).catch((error: Error) => error);
+      expect(await waitFor(() => fs.existsSync(pidFile) && fs.readFileSync(pidFile, 'utf8').length > 0)).toBe(true);
+      const grandchildPid = Number(fs.readFileSync(pidFile, 'utf8'));
+      const started = Date.now();
+      await stopProcessTree(child, { timeoutMs: 400 });
+      expect(Date.now() - started).toBeGreaterThanOrEqual(350);
+      expect(((await running) as Error).message).toMatch(/Command failed \(SIGKILL\)/);
+      expect(await waitFor(() => !alive(grandchildPid))).toBe(true);
+      expect(alive((child as unknown as { pid: number }).pid)).toBe(false);
+    } finally {
+      fs.rmSync(pidDir, { recursive: true, force: true });
+    }
   }, 20000);
 
   it('sweeps only stale noctalia-vercel-* dirs: dead owner pid, or no owner file and older than 6 hours', () => {
@@ -499,13 +645,14 @@ describe('web-deploy: guarded, clean copy, pinned project, prebuilt upload', () 
     expect(mode).toBe(0o700);
   });
 
-  it('pins the CLI and the project in every command, never --token', () => {
-    const all = [buildVercelLinkArgs(), buildVercelPullArgs(), buildVercelBuildArgs(), buildVercelDeployArgs(HEAD)];
-    for (const args of all) {
+  it('pins the CLI in every command and the project in every authenticated one, never --token', () => {
+    for (const args of [buildVercelLinkArgs(), buildVercelPullArgs(), buildVercelDeployArgs(HEAD)]) {
       expect(args[1]).toBe(CLI);
       expect(args).toEqual(expect.arrayContaining(PROJECT));
       expect(args).not.toContain('--token');
     }
+    // build resolves the project from the checked local link only.
+    expect(buildVercelBuildArgs()).toEqual(['--yes', CLI, 'build', '--prod']);
     expect(VERCEL_PROJECT_ID).toBe('prj_ehKoWHHtWwekaivfEmqCCHRbjogu');
     expect(VERCEL_ORG_ID).toBe('team_2wbw33JALkqNG73AvmOQO17L');
   });

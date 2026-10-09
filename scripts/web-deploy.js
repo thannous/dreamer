@@ -155,6 +155,52 @@ function vercelEnv(env = process.env, platform = process.platform) {
   return child;
 }
 
+// The env of `vercel build`, which runs `npm install` (every dependency's
+// lifecycle scripts) and the project build command: the allowlist without
+// VERCEL_TOKEN, and HOME pointed at an empty dir inside the temp copy, so no
+// third-party script can read the token, a `vercel login` auth file or an
+// ~/.npmrc credential from the real HOME. npm keeps its download cache
+// (package tarballs, no credentials) through npm_config_cache. The build
+// needs no auth: it reads the link and the settings `vercel pull` cached in
+// .vercel/ (vercel@62.2.0 lists build among SUBCOMMANDS_WITHOUT_TOKEN, and
+// without --project or --scope it resolves nothing remotely).
+function buildEnv(env, buildHome, platform = process.platform) {
+  const child = vercelEnv(env, platform);
+  const realHome = child.HOME;
+  for (const name of Object.keys(child)) {
+    if (name.toUpperCase() === 'VERCEL_TOKEN') delete child[name];
+  }
+  child.HOME = buildHome;
+  if (platform === 'win32') child.USERPROFILE = buildHome;
+  if (realHome) child.npm_config_cache = path.join(realHome, '.npm');
+  return child;
+}
+
+// Stops a CLI step and everything it started. POSIX: the step runs in its own
+// process group (spawned detached), so the group gets SIGTERM, then SIGKILL if
+// it has not closed within timeoutMs. Windows has no process groups: the tree
+// is ended with `taskkill /pid <pid> /T /F` (best effort, not exercised here).
+async function stopProcessTree(child, { platform = process.platform, kill = process.kill, timeoutMs = 5000 } = {}) {
+  if (!child || !child.pid || !child.closed) return;
+  const closedWithin = (ms) =>
+    Promise.race([child.closed.then(() => true), new Promise((resolve) => setTimeout(() => resolve(false), ms).unref())]);
+  const signalGroup = (signal) => {
+    if (platform === 'win32') {
+      spawnSync('taskkill', ['/pid', String(child.pid), '/T', '/F'], { stdio: 'ignore' });
+      return;
+    }
+    try {
+      kill(-child.pid, signal);
+    } catch {
+      // The group is already gone.
+    }
+  };
+  signalGroup('SIGTERM');
+  if (await closedWithin(timeoutMs)) return;
+  signalGroup('SIGKILL');
+  await closedWithin(timeoutMs);
+}
+
 function isPidAlive(pid) {
   try {
     process.kill(pid, 0);
@@ -215,8 +261,12 @@ function buildVercelPullArgs() {
   return ['--yes', VERCEL_CLI, 'pull', '--yes', '--environment=production', ...projectArgs()];
 }
 
+// No --project or --scope (they make build resolve the project through the
+// API, which needs the token) and no --yes (which would pull, also with the
+// token): build uses only the local link, checked against the pinned ids, and
+// the settings already pulled. Missing settings fail the build.
 function buildVercelBuildArgs() {
-  return ['--yes', VERCEL_CLI, 'build', '--prod', '--yes', ...projectArgs()];
+  return ['--yes', VERCEL_CLI, 'build', '--prod'];
 }
 
 function buildVercelDeployArgs(commitHash) {
@@ -290,11 +340,20 @@ function run(command, args, options = {}) {
   return new Promise((resolve, reject) => {
     let child;
     try {
-      child = spawn(command, args, { cwd, env, shell: process.platform === 'win32', stdio: ['ignore', 'pipe', 'pipe'] });
+      // Detached on POSIX: its own process group, so a signal can stop the
+      // CLI and every process it started (see stopProcessTree).
+      child = spawn(command, args, {
+        cwd,
+        env,
+        detached: process.platform !== 'win32',
+        shell: process.platform === 'win32',
+        stdio: ['ignore', 'pipe', 'pipe'],
+      });
     } catch (error) {
       reject(new Error(`Command failed to start: ${command} ${args.join(' ')} (${error.message})`));
       return;
     }
+    child.closed = new Promise((resolveClosed) => child.once('close', resolveClosed));
     onChild(child);
     const stdout = [];
     const stderr = [];
@@ -331,7 +390,8 @@ settings, builds, runs the guard again on the same HEAD, then deploys only the
 prebuilt output (\`vercel deploy --prebuilt --prod\`). Vercel calls get an
 allowlisted env only (PATH, HOME, TMPDIR, VERCEL_TOKEN, proxy and CA
 variables). The temp copy is removed on exit, on failure and on SIGINT or
-SIGTERM; stale copies of killed runs are swept at start. The CLI is pinned
+SIGTERM (after stopping the running step's whole process group); stale
+copies of killed runs are swept at start. \`vercel build\` gets no token. The CLI is pinned
 (${VERCEL_CLI}). There is no override. Set VERCEL_TOKEN in the environment;
 never commit it.`);
 }
@@ -354,6 +414,8 @@ async function main(argv = process.argv.slice(2), deps = {}) {
     log = console.log,
     proc = process,
     sweep = sweepStaleCopies,
+    stopTree = stopProcessTree,
+    killTimeoutMs = 5000,
   } = deps;
   const target = parseTarget(argv);
   if (target === 'help') {
@@ -370,26 +432,33 @@ async function main(argv = process.argv.slice(2), deps = {}) {
   const parentDir = fs.mkdtempSync(path.join(tempRoot, TEMP_PREFIX));
   fs.writeFileSync(path.join(parentDir, OWNER_FILE), `${proc.pid ?? process.pid}\n`);
   let child = null;
+  let stopping = null;
+  // On SIGINT or SIGTERM: stop the running CLI step and its whole process
+  // tree, wait for it, then remove the copy and exit 130 or 143. The main flow
+  // waits for this before its own cleanup, so the exit code is the signal's.
   const onSignal = (signal) => {
-    try {
-      if (child) child.kill('SIGTERM');
-    } catch {
-      // The child may already be gone.
-    }
-    fs.rmSync(parentDir, { recursive: true, force: true });
-    console.error(`[web-deploy] ${signal}: stopped, temp copy removed, nothing more is deployed.`);
-    proc.exit(SIGNAL_EXIT_CODES[signal] || 1);
+    if (stopping) return;
+    stopping = (async () => {
+      await stopTree(child, { timeoutMs: killTimeoutMs });
+      fs.rmSync(parentDir, { recursive: true, force: true });
+      console.error(`[web-deploy] ${signal}: the running Vercel step and its processes were stopped, temp copy removed.`);
+      proc.exit(SIGNAL_EXIT_CODES[signal] || 1);
+    })();
   };
   const handlers = Object.keys(SIGNAL_EXIT_CODES).map((signal) => [signal, () => onSignal(signal)]);
   for (const [signal, handler] of handlers) proc.on(signal, handler);
   try {
     const source = createCleanCopy(accepted.head, { rootDir, parentDir });
-    const options = { cwd: source, env: vercelEnv(env), onChild: (running) => (child = running) };
+    const onChild = (running) => (child = running);
+    const options = { cwd: source, env: vercelEnv(env), onChild };
+    const buildHome = path.join(parentDir, 'build-home');
+    fs.mkdirSync(buildHome);
+    const buildOptions = { cwd: source, env: buildEnv(env, buildHome), onChild };
     await runCommand('npx', buildVercelLinkArgs(), options);
     assertProjectLink(source);
     await runCommand('npx', buildVercelPullArgs(), options);
     assertProjectLink(source);
-    await runCommand('npx', buildVercelBuildArgs(), options);
+    await runCommand('npx', buildVercelBuildArgs(), buildOptions);
     if (!fs.existsSync(path.join(source, '.vercel', 'output', 'config.json'))) {
       throw new Error('vercel build wrote no .vercel/output/config.json in the clean copy; nothing was deployed.');
     }
@@ -410,8 +479,14 @@ async function main(argv = process.argv.slice(2), deps = {}) {
     log(recheck.message);
     await runCommand('npx', buildVercelDeployArgs(accepted.head), options);
   } finally {
-    for (const [signal, handler] of handlers) proc.removeListener(signal, handler);
-    fs.rmSync(parentDir, { recursive: true, force: true });
+    // A signal stops the step, which makes it fail: let the handler finish
+    // (it exits with the signal's code) before the ordinary cleanup.
+    try {
+      if (stopping) await stopping;
+    } finally {
+      for (const [signal, handler] of handlers) proc.removeListener(signal, handler);
+      fs.rmSync(parentDir, { recursive: true, force: true });
+    }
   }
 }
 
@@ -425,6 +500,7 @@ if (require.main === module) {
 module.exports = {
   VERCEL_ORG_ID,
   VERCEL_PROJECT_ID,
+  buildEnv,
   buildVercelBuildArgs,
   buildVercelDeployArgs,
   buildVercelLinkArgs,
@@ -436,6 +512,7 @@ module.exports = {
   parseTarget,
   redact,
   run,
+  stopProcessTree,
   sweepStaleCopies,
   vercelEnv,
 };
