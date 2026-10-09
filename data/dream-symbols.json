@@ -10306,47 +10306,152 @@
       "en": {
         "slug": "abandonment",
         "name": "Abandonment",
-        "shortDescription": "Dreaming of being abandoned reflects deep fears of rejection, loneliness, or losing important relationships. It often signals unresolved attachment issues or insecurity.",
+        "shortDescription": "Dreaming of being abandoned often leaves a hollow feeling on waking: someone walks away, the group leaves without you. It is not a prediction. The scene often goes with a fear of losing a bond, of being left out, or of not counting enough.",
         "askYourself": [
-          "Am I afraid of being left behind or rejected?",
-          "Are there relationships in my life that feel unstable?"
-        ]
+          "Who left me in the dream, and how did they leave?",
+          "What did I feel when I found myself alone: panic, sadness, anger, relief?",
+          "Is there a relationship right now where I fear being left out or let down?"
+        ],
+        "faq": [
+          {
+            "question": "What does it mean to dream of being abandoned?",
+            "answer": "Being abandoned in a dream is often associated with a fear of losing someone, of being left out or of not counting. Who left, where you were left and how you reacted matter more than the scene itself."
+          },
+          {
+            "question": "What does it mean when your partner leaves you in a dream?",
+            "answer": "It does not mean your partner is about to leave. The dream can echo a recent distance, an argument, or your own worry about the relationship. Compare what was said in the dream with what is really happening between you."
+          },
+          {
+            "question": "Why do I dream of being left behind by friends or family?",
+            "answer": "Being left behind by a group can go with a feeling of not quite belonging any more: a new job, a move, friends whose lives are changing. Note who was in the group and where they were going without you."
+          },
+          {
+            "question": "What if I am the one who abandons someone in the dream?",
+            "answer": "Walking away from someone can stage guilt about a bond you have let slide, or a need to step back from something that weighs on you. How you felt as you left, relieved or ashamed, points to the more useful lead."
+          }
+        ],
+        "documentMetaDescription": "Dreaming of being abandoned by a partner, a parent or friends: what the scene may say about attachment and fear of loss, with questions and an example.",
+        "modifiedAt": "2026-10-08"
       },
       "fr": {
         "slug": "abandon",
         "name": "Abandon",
-        "shortDescription": "Rêver d'être abandonné reflète des peurs profondes de rejet, de solitude ou de perte de relations importantes. Cela signale souvent des problèmes d'attachement non résolus ou de l'insécurité.",
+        "shortDescription": "Rêver d'être abandonné laisse souvent un vide au réveil : quelqu'un s'en va, le groupe part sans vous. Ce n'est pas une prédiction. La scène accompagne souvent la peur de perdre un lien, d'être mis à l'écart ou de ne pas compter assez.",
         "askYourself": [
-          "Ai-je peur d'être laissé pour compte ou rejeté ?",
-          "Y a-t-il des relations dans ma vie qui semblent instables ?"
-        ]
+          "Qui me laissait dans le rêve, et de quelle façon partait-il ?",
+          "Qu'ai-je ressenti en me découvrant seul : panique, tristesse, colère, soulagement ?",
+          "Y a-t-il en ce moment une relation où je crains d'être mis de côté ?"
+        ],
+        "faq": [
+          {
+            "question": "Que signifie rêver d'être abandonné ?",
+            "answer": "Être abandonné en rêve est souvent associé à la peur de perdre quelqu'un, d'être mis à l'écart ou de ne pas compter. Qui partait, où vous restiez et comment vous réagissiez comptent plus que la scène elle-même."
+          },
+          {
+            "question": "Que signifie rêver que son conjoint nous quitte ?",
+            "answer": "Ce rêve n'annonce pas une rupture. Il peut reprendre une distance récente, une dispute ou votre propre inquiétude pour le couple. Comparez ce qui se disait dans le rêve avec ce qui se passe vraiment entre vous."
+          },
+          {
+            "question": "Pourquoi je rêve que ma famille ou mes amis m'abandonnent ?",
+            "answer": "Être laissé derrière par un groupe peut accompagner le sentiment de ne plus tout à fait y avoir sa place : nouveau travail, déménagement, amis dont la vie change. Notez qui partait, et vers où."
+          },
+          {
+            "question": "Que signifie rêver d'abandonner quelqu'un ?",
+            "answer": "Partir en laissant quelqu'un peut mettre en scène une culpabilité envers un lien négligé, ou un besoin de prendre de la distance. Ce que vous ressentiez en partant, soulagement ou honte, indique la piste la plus utile."
+          }
+        ],
+        "documentMetaDescription": "Rêver d'être abandonné par son conjoint, un parent ou ses amis : ce que la scène peut dire de l'attachement et de la peur de perdre, avec questions et exemple.",
+        "modifiedAt": "2026-10-08"
       },
       "es": {
         "slug": "abandono",
         "name": "Abandono",
-        "shortDescription": "Soñar con ser abandonado refleja miedos profundos al rechazo, la soledad o la pérdida de relaciones importantes. A menudo señala problemas de apego no resueltos o inseguridad.",
+        "shortDescription": "Soñar que te abandonan suele dejar un vacío al despertar: alguien se marcha, el grupo se va sin ti. No es una predicción. La escena suele acompañar el miedo a perder un vínculo, a quedarte fuera o a no contar lo suficiente.",
         "askYourself": [
-          "¿Tengo miedo de ser dejado atrás o rechazado?",
-          "¿Hay relaciones en mi vida que se sienten inestables?"
-        ]
+          "¿Quién me dejaba en el sueño, y cómo se iba?",
+          "¿Qué sentí al verme solo: pánico, tristeza, rabia, alivio?",
+          "¿Hay ahora mismo alguna relación en la que temo quedarme al margen?"
+        ],
+        "faq": [
+          {
+            "question": "¿Qué significa soñar que te abandonan?",
+            "answer": "Que te abandonen en sueños se asocia a menudo con el miedo a perder a alguien, a quedarte fuera o a no contar. Quién se iba, dónde te quedabas y cómo reaccionabas importan más que la escena en sí."
+          },
+          {
+            "question": "¿Qué significa soñar que tu pareja te deja?",
+            "answer": "No anuncia una ruptura. Puede recoger una distancia reciente, una discusión o tu propia preocupación por la relación. Compara lo que se decía en el sueño con lo que pasa de verdad entre vosotros."
+          },
+          {
+            "question": "¿Por qué sueño que mi familia o mis amigos me abandonan?",
+            "answer": "Que un grupo se vaya sin ti puede acompañar la sensación de no encajar del todo: un trabajo nuevo, una mudanza, amigos cuya vida está cambiando. Anota quién se iba y hacia dónde."
+          },
+          {
+            "question": "¿Qué significa soñar que abandonas a alguien?",
+            "answer": "Irte y dejar a alguien atrás puede escenificar culpa por un vínculo descuidado, o la necesidad de tomar distancia. Lo que sentías al irte, alivio o vergüenza, señala la pista más útil."
+          }
+        ],
+        "documentMetaDescription": "Soñar que te abandonan tu pareja, tus padres o tus amigos: qué puede decir la escena sobre el apego y el miedo a perder, con preguntas y un ejemplo.",
+        "modifiedAt": "2026-10-08"
       },
       "de": {
         "slug": "verlassenwerden",
         "name": "Verlassenwerden",
-        "shortDescription": "Vom Verlassenwerden zu träumen spiegelt tiefe Ängste vor Ablehnung, Einsamkeit oder dem Verlust wichtiger Beziehungen wider. Es deutet oft auf ungelöste Bindungsprobleme oder Unsicherheit hin.",
+        "shortDescription": "Vom Verlassenwerden zu träumen hinterlässt oft eine Leere beim Aufwachen: Jemand geht, die Gruppe zieht ohne Sie weiter. Eine Vorhersage ist das nicht. Die Szene begleitet oft die Angst, eine Bindung zu verlieren oder nicht genug zu zählen.",
         "askYourself": [
-          "Habe ich Angst, zurückgelassen oder abgelehnt zu werden?",
-          "Gibt es Beziehungen in meinem Leben, die sich instabil anfühlen?"
-        ]
+          "Wer hat mich im Traum verlassen, und auf welche Weise?",
+          "Was habe ich gefühlt, als ich allein war: Panik, Trauer, Wut, Erleichterung?",
+          "Gibt es gerade eine Beziehung, in der ich fürchte, außen vor zu bleiben?"
+        ],
+        "faq": [
+          {
+            "question": "Was bedeutet es, vom Verlassenwerden zu träumen?",
+            "answer": "Im Traum verlassen zu werden wird oft mit der Angst verbunden, jemanden zu verlieren, ausgeschlossen zu sein oder nicht zu zählen. Wer ging, wo Sie zurückblieben und wie Sie reagiert haben, zählt mehr als die Szene selbst."
+          },
+          {
+            "question": "Was bedeutet es, wenn der Partner einen im Traum verlässt?",
+            "answer": "Der Traum kündigt keine Trennung an. Er kann eine jüngste Distanz, einen Streit oder Ihre eigene Sorge um die Beziehung aufgreifen. Vergleichen Sie, was im Traum gesagt wurde, mit dem, was zwischen Ihnen wirklich geschieht."
+          },
+          {
+            "question": "Warum träume ich, dass Familie oder Freunde mich verlassen?",
+            "answer": "Von einer Gruppe zurückgelassen zu werden kann das Gefühl begleiten, nicht mehr ganz dazuzugehören: eine neue Stelle, ein Umzug, Freunde, deren Leben sich verändert. Notieren Sie, wer ging und wohin."
+          },
+          {
+            "question": "Was bedeutet es, im Traum selbst jemanden zu verlassen?",
+            "answer": "Jemanden zurückzulassen kann Schuldgefühle wegen einer vernachlässigten Bindung zeigen oder das Bedürfnis nach Abstand. Was Sie beim Gehen gefühlt haben, Erleichterung oder Scham, weist auf die hilfreichere Spur."
+          }
+        ],
+        "documentMetaDescription": "Vom Verlassenwerden träumen, durch Partner, Eltern oder Freunde: was die Szene über Bindung und Verlustangst sagen kann, mit Fragen und einem Beispiel.",
+        "modifiedAt": "2026-10-08"
       },
       "it": {
         "slug": "abbandono",
         "name": "Abbandono",
-        "shortDescription": "Sognare di essere abbandonati riflette paure profonde di rifiuto, solitudine o perdita di relazioni importanti. Spesso segnala problemi di attaccamento irrisolti o insicurezza.",
+        "shortDescription": "Sognare di essere abbandonati lascia spesso un vuoto al risveglio: qualcuno se ne va, il gruppo parte senza di te. Non è una previsione. La scena accompagna spesso la paura di perdere un legame, di restare esclusi o di non contare abbastanza.",
         "askYourself": [
-          "Ho paura di essere lasciato indietro o rifiutato?",
-          "Ci sono relazioni nella mia vita che sembrano instabili?"
-        ]
+          "Chi mi lasciava nel sogno, e in che modo se ne andava?",
+          "Che cosa ho provato scoprendomi solo: panico, tristezza, rabbia, sollievo?",
+          "C’è in questo periodo una relazione in cui temo di essere messo da parte?"
+        ],
+        "faq": [
+          {
+            "question": "Che cosa significa sognare di essere abbandonati?",
+            "answer": "Essere abbandonati in sogno viene spesso associato alla paura di perdere qualcuno, di restare esclusi o di non contare. Chi se ne andava, dove restavi e come reagivi contano più della scena in sé."
+          },
+          {
+            "question": "Che cosa significa sognare che il partner ti lascia?",
+            "answer": "Non annuncia una rottura. Può riprendere una distanza recente, una lite o la tua preoccupazione per la coppia. Confronta ciò che si diceva nel sogno con ciò che succede davvero tra voi."
+          },
+          {
+            "question": "Perché sogno che la famiglia o gli amici mi abbandonano?",
+            "answer": "Essere lasciati indietro da un gruppo può accompagnare la sensazione di non avere più del tutto il proprio posto: un nuovo lavoro, un trasloco, amici la cui vita sta cambiando. Annota chi partiva e verso dove."
+          },
+          {
+            "question": "Che cosa significa sognare di abbandonare qualcuno?",
+            "answer": "Andarsene lasciando qualcuno può mettere in scena il senso di colpa per un legame trascurato, o il bisogno di prendere le distanze. Ciò che provavi andando via, sollievo o vergogna, indica la pista più utile."
+          }
+        ],
+        "documentMetaDescription": "Sognare di essere abbandonati dal partner, da un genitore o da amici: che cosa può dire la scena del legame e della paura di perdere, con domande ed esempio.",
+        "modifiedAt": "2026-10-08"
       },
       "pt": {
         "slug": "abandono",
@@ -10377,38 +10482,122 @@
       "en": {
         "slug": "accident",
         "name": "Accident",
-        "shortDescription": "Dreams about accidents symbolize fear of losing control, anxiety about unexpected changes, or a warning to slow down. They often reflect stress or a sense of vulnerability.",
+        "shortDescription": "Dreaming of an accident often ends with a jolt awake, heart racing: a crash, a skid, brakes that fail. It is not a warning of what will happen. The scene often goes with a feeling of losing control, or of things moving too fast.",
         "askYourself": [
-          "Do I feel like something in my life is spinning out of control?",
-          "Am I taking risks I'm not comfortable with?"
-        ]
+          "Was I driving, a passenger, or watching from outside?",
+          "What could I still do in the scene: brake, shout, get out, nothing?",
+          "Where in my life are things moving faster than I can steer them?"
+        ],
+        "faq": [
+          {
+            "question": "What does it mean to dream of a car accident?",
+            "answer": "A car accident in a dream is often associated with losing control, or with a pace that feels too fast. It can also replay a recent drive, a near miss or an image from the news. Your role in the scene and how it ended matter most."
+          },
+          {
+            "question": "Is dreaming of an accident a premonition?",
+            "answer": "No. A dream is not a way to foresee an accident. Vivid, frightening dreams stick in memory, which makes coincidences feel meaningful. Note your fear and what has been happening lately rather than reading the dream as a warning."
+          },
+          {
+            "question": "What does it mean to witness an accident in a dream?",
+            "answer": "Watching an accident happen to others can go with a feeling of helplessness, or with worry about someone close. It does not mean that person is in danger. Note who was involved and whether you could help."
+          },
+          {
+            "question": "What if I keep dreaming about accidents?",
+            "answer": "Write them down to see what repeats: vehicle, place, people, time of year. If these nightmares disturb your sleep or follow a real accident, talk to a doctor: nightmares and stress after an accident can be treated."
+          }
+        ],
+        "documentMetaDescription": "Dreaming of a car accident, witnessing a crash or walking away unhurt: what the scene may say about control and pace, with questions and a journal example.",
+        "modifiedAt": "2026-10-08"
       },
       "fr": {
         "slug": "accident",
         "name": "Accident",
-        "shortDescription": "Les rêves d'accidents symbolisent la peur de perdre le contrôle, l'anxiété face aux changements inattendus ou un avertissement de ralentir. Ils reflètent souvent le stress ou un sentiment de vulnérabilité.",
+        "shortDescription": "Rêver d'un accident finit souvent par un réveil en sursaut, le cœur battant : un choc, un dérapage, des freins qui lâchent. Ce n'est pas un avertissement. La scène accompagne souvent le sentiment de perdre le contrôle, ou que tout va trop vite.",
         "askYourself": [
-          "Ai-je l'impression que quelque chose dans ma vie m'échappe ?",
-          "Est-ce que je prends des risques qui me mettent mal à l'aise ?"
-        ]
+          "Est-ce que je conduisais, j'étais passager, ou je regardais de l'extérieur ?",
+          "Que pouvais-je encore faire dans la scène : freiner, crier, sortir, rien ?",
+          "Où, dans ma vie, les choses vont-elles plus vite que je ne peux les diriger ?"
+        ],
+        "faq": [
+          {
+            "question": "Que signifie rêver d'un accident de voiture ?",
+            "answer": "Un accident de voiture en rêve est souvent associé à une perte de contrôle, ou à un rythme qui paraît trop rapide. Il peut aussi reprendre un trajet récent, une frayeur sur la route ou une image vue aux informations. Votre rôle et l'issue comptent le plus."
+          },
+          {
+            "question": "Rêver d'un accident, est-ce un rêve prémonitoire ?",
+            "answer": "Non. Un rêve ne permet pas de prévoir un accident. Les rêves intenses et effrayants restent mieux en mémoire, ce qui donne du poids aux coïncidences. Notez plutôt votre peur et ce qui s'est passé ces derniers jours."
+          },
+          {
+            "question": "Que signifie être témoin d'un accident en rêve ?",
+            "answer": "Voir un accident arriver à d'autres peut accompagner un sentiment d'impuissance, ou une inquiétude pour un proche. Cela ne veut pas dire que cette personne est en danger. Notez qui était impliqué et si vous pouviez aider."
+          },
+          {
+            "question": "Que faire si je rêve souvent d'accidents ?",
+            "answer": "Notez-les pour voir ce qui revient : véhicule, lieu, personnes, période. Si ces cauchemars abîment votre sommeil ou suivent un accident réel, parlez-en à un médecin : les cauchemars et le stress après un accident se soignent."
+          }
+        ],
+        "documentMetaDescription": "Rêver d'un accident de voiture, d'en être témoin ou d'en sortir indemne : ce que la scène peut dire du contrôle et du rythme, avec questions et exemple.",
+        "modifiedAt": "2026-10-08"
       },
       "es": {
         "slug": "accidente",
         "name": "Accidente",
-        "shortDescription": "Los sueños con accidentes simbolizan el miedo a perder el control, la ansiedad ante cambios inesperados o una advertencia para reducir el ritmo. A menudo reflejan estrés o vulnerabilidad.",
+        "shortDescription": "Soñar con un accidente suele acabar en un despertar brusco, con el corazón a mil: un choque, un derrape, unos frenos que no responden. No es un aviso. La escena suele acompañar la sensación de perder el control o de que todo va demasiado rápido.",
         "askYourself": [
-          "¿Siento que algo en mi vida se está saliendo de control?",
-          "¿Estoy tomando riesgos con los que no me siento cómodo?"
-        ]
+          "¿Conducía yo, iba de pasajero o miraba desde fuera?",
+          "¿Qué podía hacer todavía en la escena: frenar, gritar, salir, nada?",
+          "¿En qué parte de mi vida las cosas van más rápido de lo que puedo dirigir?"
+        ],
+        "faq": [
+          {
+            "question": "¿Qué significa soñar con un accidente de coche?",
+            "answer": "Un accidente de coche en sueños se asocia a menudo con perder el control o con un ritmo que parece demasiado rápido. También puede recoger un trayecto reciente, un susto en la carretera o una imagen de las noticias. Tu papel y el desenlace son lo que más cuenta."
+          },
+          {
+            "question": "¿Soñar con un accidente es premonitorio?",
+            "answer": "No. Un sueño no permite prever un accidente. Los sueños intensos y angustiosos se recuerdan mejor, y eso da peso a las coincidencias. Anota mejor tu miedo y lo que ha pasado en los últimos días."
+          },
+          {
+            "question": "¿Qué significa ver un accidente en sueños?",
+            "answer": "Presenciar un accidente ajeno puede acompañar una sensación de impotencia o la preocupación por alguien cercano. No significa que esa persona esté en peligro. Anota quién estaba implicado y si podías ayudar."
+          },
+          {
+            "question": "¿Qué hago si sueño a menudo con accidentes?",
+            "answer": "Anótalos para ver qué se repite: vehículo, lugar, personas, época. Si estas pesadillas te quitan el sueño o llegan tras un accidente real, habla con un médico: las pesadillas y el estrés después de un accidente tienen tratamiento."
+          }
+        ],
+        "documentMetaDescription": "Soñar con un accidente de coche, presenciarlo o salir ileso: qué puede decir la escena sobre el control y el ritmo, con preguntas y un ejemplo de diario.",
+        "modifiedAt": "2026-10-08"
       },
       "de": {
         "slug": "unfall",
         "name": "Unfall",
-        "shortDescription": "Träume von Unfällen symbolisieren die Angst vor Kontrollverlust, Sorgen über unerwartete Veränderungen oder eine Warnung, langsamer zu machen. Sie spiegeln oft Stress oder ein Gefühl der Verletzlichkeit wider.",
+        "shortDescription": "Ein Unfalltraum endet oft mit jähem Aufwachen und Herzklopfen: ein Aufprall, ein Schleudern, Bremsen, die versagen. Eine Warnung ist das nicht. Die Szene begleitet oft das Gefühl, die Kontrolle zu verlieren, oder dass alles zu schnell geht.",
         "askYourself": [
-          "Habe ich das Gefühl, dass etwas in meinem Leben außer Kontrolle gerät?",
-          "Gehe ich Risiken ein, bei denen ich mich unwohl fühle?"
-        ]
+          "Bin ich gefahren, saß ich daneben, oder habe ich von außen zugesehen?",
+          "Was konnte ich in der Szene noch tun: bremsen, rufen, aussteigen, nichts?",
+          "Wo in meinem Leben geht gerade etwas schneller, als ich lenken kann?"
+        ],
+        "faq": [
+          {
+            "question": "Was bedeutet es, von einem Autounfall zu träumen?",
+            "answer": "Ein Autounfall im Traum wird oft mit Kontrollverlust oder einem zu hohen Tempo verbunden. Er kann auch eine kürzliche Fahrt, einen Schreckmoment im Verkehr oder ein Bild aus den Nachrichten aufgreifen. Ihre Rolle und der Ausgang zählen am meisten."
+          },
+          {
+            "question": "Ist ein Unfalltraum eine Vorahnung?",
+            "answer": "Nein. Ein Traum kann keinen Unfall vorhersagen. Intensive, beängstigende Träume bleiben besser im Gedächtnis, und das gibt Zufällen Gewicht. Notieren Sie lieber Ihre Angst und das, was in den letzten Tagen geschehen ist."
+          },
+          {
+            "question": "Was bedeutet es, im Traum einen Unfall zu beobachten?",
+            "answer": "Einen Unfall bei anderen mitanzusehen kann Ohnmacht oder die Sorge um einen nahestehenden Menschen begleiten. Es heißt nicht, dass diese Person in Gefahr ist. Notieren Sie, wer beteiligt war und ob Sie helfen konnten."
+          },
+          {
+            "question": "Was tun, wenn ich oft von Unfällen träume?",
+            "answer": "Schreiben Sie die Träume auf, um Wiederholungen zu erkennen: Fahrzeug, Ort, Personen, Lebensphase. Stören diese Albträume Ihren Schlaf oder folgen sie auf einen echten Unfall, sprechen Sie mit einer Ärztin oder einem Arzt: Albträume und Belastung nach einem Unfall sind behandelbar."
+          }
+        ],
+        "documentMetaDescription": "Vom Autounfall träumen, ihn beobachten oder unverletzt überstehen: was die Szene über Kontrolle und Tempo sagen kann, mit Fragen und einem Tagebuchbeispiel.",
+        "modifiedAt": "2026-10-08"
       },
       "it": {
         "slug": "incidente",
@@ -10471,47 +10660,152 @@
       "en": {
         "slug": "angel",
         "name": "Angel",
-        "shortDescription": "Angels in dreams represent guidance, protection, hope, or a spiritual message. They may appear during times of crisis to offer comfort or signal an important transition.",
+        "shortDescription": "Dreaming of an angel often leaves a strong impression: a light, a calm presence, sometimes words you still remember on waking. The scene is often associated with a need for comfort or protection, especially after a loss or in a hard period.",
         "askYourself": [
-          "Am I seeking guidance or reassurance in my life?",
-          "Is there a message or intuition I've been ignoring?"
-        ]
+          "What did the angel do: watch, speak, protect, warn, or simply stand there?",
+          "How did I feel in its presence: calm, awe, fear, comfort?",
+          "Am I going through a period where I wish someone would look after me?"
+        ],
+        "faq": [
+          {
+            "question": "What does it mean to dream of an angel?",
+            "answer": "An angel is often associated with comfort, protection or hope, and its meaning also depends on your beliefs. What it did, what it said and how you felt matter more than any fixed symbol. It is not a prediction."
+          },
+          {
+            "question": "Is an angel in a dream a message?",
+            "answer": "Some people read it as a spiritual sign, in line with their faith; that is a personal reading. Another way to look at it: the angel may put into words something you already sense. Write down what it said and see what it matches in your life."
+          },
+          {
+            "question": "What does it mean to dream of a loved one who has died as an angel?",
+            "answer": "Seeing someone who has died with wings or in a soft light often happens after a loss, and many people find it comforting. It can be part of grieving. If these dreams bring distress or keep you awake, talk to someone you trust or a professional."
+          },
+          {
+            "question": "What does a dark or fallen angel mean in a dream?",
+            "answer": "A dark angel can go with an inner conflict, a temptation, or a situation that looks good but leaves you uneasy. It is not an omen of evil. Note what made the figure threatening and what it wanted from you."
+          }
+        ],
+        "documentMetaDescription": "Dreaming of an angel, a guardian angel or a loved one as an angel: what the scene may say about a need for comfort, with questions and a journal example.",
+        "modifiedAt": "2026-10-08"
       },
       "fr": {
         "slug": "ange",
         "name": "Ange",
-        "shortDescription": "Les anges dans les rêves représentent la guidance, la protection, l'espoir ou un message spirituel. Ils peuvent apparaître en période de crise pour offrir du réconfort ou signaler une transition importante.",
+        "shortDescription": "Rêver d'un ange laisse souvent une impression forte : une lumière, une présence calme, parfois des mots dont on se souvient au réveil. La scène est souvent associée à un besoin de réconfort ou de protection, surtout après une perte.",
         "askYourself": [
-          "Est-ce que je cherche des conseils ou du réconfort dans ma vie ?",
-          "Y a-t-il un message ou une intuition que j'ignore ?"
-        ]
+          "Que faisait l'ange : veiller, parler, protéger, avertir, ou simplement être là ?",
+          "Qu'ai-je ressenti en sa présence : calme, émerveillement, peur, réconfort ?",
+          "Est-ce que je traverse une période où j'aimerais qu'on prenne soin de moi ?"
+        ],
+        "faq": [
+          {
+            "question": "Que signifie rêver d'un ange ?",
+            "answer": "L'ange est souvent associé au réconfort, à la protection ou à l'espoir, et son sens dépend aussi de vos croyances. Ce qu'il faisait, ce qu'il disait et ce que vous ressentiez comptent plus qu'un symbole figé. Ce n'est pas une prédiction."
+          },
+          {
+            "question": "Un ange en rêve, est-ce un message ?",
+            "answer": "Certaines personnes y voient un signe spirituel, en accord avec leur foi : c'est une lecture personnelle. Une autre façon de le regarder : l'ange peut formuler quelque chose que vous pressentez déjà. Notez ses mots et voyez à quoi ils font écho."
+          },
+          {
+            "question": "Que signifie rêver d'un proche décédé en ange ?",
+            "answer": "Voir une personne disparue avec des ailes ou dans une lumière douce arrive souvent après un deuil, et beaucoup trouvent ces rêves apaisants. Ils peuvent faire partie du chagrin. S'ils vous angoissent ou vous empêchent de dormir, parlez-en à un proche ou à un professionnel."
+          },
+          {
+            "question": "Que signifie rêver d'un ange noir ou déchu ?",
+            "answer": "Un ange sombre peut accompagner un conflit intérieur, une tentation, ou une situation séduisante qui vous laisse mal à l'aise. Ce n'est pas un présage. Notez ce qui rendait la figure menaçante et ce qu'elle attendait de vous."
+          }
+        ],
+        "documentMetaDescription": "Rêver d'un ange, d'un ange gardien ou d'un proche disparu en ange : ce que la scène peut dire du besoin de réconfort, avec questions et exemple de journal.",
+        "modifiedAt": "2026-10-08"
       },
       "es": {
         "slug": "angel",
         "name": "Ángel",
-        "shortDescription": "Los ángeles en los sueños representan guía, protección, esperanza o un mensaje espiritual. Pueden aparecer en tiempos de crisis para ofrecer consuelo o señalar una transición importante.",
+        "shortDescription": "Soñar con un ángel suele dejar una impresión fuerte: una luz, una presencia tranquila, a veces palabras que recuerdas al despertar. La escena se asocia a menudo con una necesidad de consuelo o protección, sobre todo tras una pérdida.",
         "askYourself": [
-          "¿Estoy buscando guía o tranquilidad en mi vida?",
-          "¿Hay algún mensaje o intuición que he estado ignorando?"
-        ]
+          "¿Qué hacía el ángel: velar, hablar, proteger, avisar, o solo estar ahí?",
+          "¿Qué sentí en su presencia: calma, asombro, miedo, consuelo?",
+          "¿Estoy pasando por una etapa en la que me gustaría que alguien me cuidara?"
+        ],
+        "faq": [
+          {
+            "question": "¿Qué significa soñar con un ángel?",
+            "answer": "El ángel se asocia a menudo con el consuelo, la protección o la esperanza, y su sentido depende también de tus creencias. Lo que hacía, lo que decía y lo que sentiste cuentan más que un símbolo fijo. No es una predicción."
+          },
+          {
+            "question": "¿Un ángel en sueños es un mensaje?",
+            "answer": "Hay quien lo lee como una señal espiritual, de acuerdo con su fe: es una lectura personal. Otra forma de verlo: el ángel puede poner en palabras algo que ya intuyes. Anota lo que decía y mira con qué conecta en tu vida."
+          },
+          {
+            "question": "¿Qué significa soñar con un ser querido fallecido convertido en ángel?",
+            "answer": "Ver a alguien que ha muerto con alas o envuelto en una luz suave es frecuente tras una pérdida, y mucha gente lo vive como un consuelo. Puede formar parte del duelo. Si te angustia o te quita el sueño, habla con alguien de confianza o con un profesional."
+          },
+          {
+            "question": "¿Qué significa soñar con un ángel oscuro o caído?",
+            "answer": "Un ángel oscuro puede acompañar un conflicto interior, una tentación o una situación atractiva que te deja inquieto. No es un presagio. Anota qué hacía amenazante a la figura y qué quería de ti."
+          }
+        ],
+        "documentMetaDescription": "Soñar con un ángel, con tu ángel de la guarda o con un ser querido fallecido: qué puede decir la escena sobre el consuelo, con preguntas y un ejemplo.",
+        "modifiedAt": "2026-10-08"
       },
       "de": {
         "slug": "engel",
         "name": "Engel",
-        "shortDescription": "Engel in Träumen stehen für Führung, Schutz, Hoffnung oder eine spirituelle Botschaft. Sie können in Krisenzeiten erscheinen, um Trost zu spenden oder einen wichtigen Übergang anzuzeigen.",
+        "shortDescription": "Ein Engel im Traum hinterlässt oft einen starken Eindruck: ein Licht, eine ruhige Gegenwart, manchmal Worte, die nachklingen. Die Szene wird oft mit einem Bedürfnis nach Trost oder Schutz verbunden, besonders nach einem Verlust.",
         "askYourself": [
-          "Suche ich nach Orientierung oder Bestätigung in meinem Leben?",
-          "Gibt es eine Botschaft oder Intuition, die ich ignoriert habe?"
-        ]
+          "Was hat der Engel getan: gewacht, gesprochen, beschützt, gewarnt, oder war er einfach da?",
+          "Was habe ich in seiner Gegenwart gefühlt: Ruhe, Ehrfurcht, Angst, Trost?",
+          "Erlebe ich gerade eine Phase, in der ich mir wünsche, dass jemand für mich sorgt?"
+        ],
+        "faq": [
+          {
+            "question": "Was bedeutet es, von einem Engel zu träumen?",
+            "answer": "Ein Engel wird oft mit Trost, Schutz oder Hoffnung verbunden, und seine Bedeutung hängt auch von Ihrem Glauben ab. Was er tat, was er sagte und was Sie gefühlt haben, zählt mehr als ein festes Symbol. Eine Vorhersage ist er nicht."
+          },
+          {
+            "question": "Ist ein Engel im Traum eine Botschaft?",
+            "answer": "Manche Menschen sehen darin ein spirituelles Zeichen, im Einklang mit ihrem Glauben: Das ist eine persönliche Deutung. Eine andere Sicht: Der Engel kann etwas aussprechen, das Sie bereits ahnen. Notieren Sie seine Worte und prüfen Sie, wozu sie passen."
+          },
+          {
+            "question": "Was bedeutet es, einen Verstorbenen als Engel zu träumen?",
+            "answer": "Einen verstorbenen Menschen mit Flügeln oder in sanftem Licht zu sehen, kommt nach einem Verlust häufig vor, und viele erleben es als tröstlich. Es kann Teil der Trauer sein. Belastet es Sie oder raubt es Ihnen den Schlaf, sprechen Sie mit einer Vertrauensperson oder einer Fachperson."
+          },
+          {
+            "question": "Was bedeutet ein dunkler oder gefallener Engel im Traum?",
+            "answer": "Ein dunkler Engel kann einen inneren Konflikt, eine Versuchung oder eine verlockende Situation begleiten, bei der Sie ein ungutes Gefühl haben. Ein Omen ist er nicht. Notieren Sie, was die Gestalt bedrohlich machte und was sie von Ihnen wollte."
+          }
+        ],
+        "documentMetaDescription": "Engel im Traum, als Schutzengel oder als verstorbener Mensch: was die Szene über das Bedürfnis nach Trost sagen kann, mit Fragen und einem Tagebuchbeispiel.",
+        "modifiedAt": "2026-10-08"
       },
       "it": {
         "slug": "angelo",
         "name": "Angelo",
-        "shortDescription": "Gli angeli nei sogni rappresentano guida, protezione, speranza o un messaggio spirituale. Possono apparire durante momenti di crisi per offrire conforto o segnalare una transizione importante.",
+        "shortDescription": "Sognare un angelo lascia spesso un’impressione forte: una luce, una presenza calma, a volte parole che ricordi ancora al risveglio. La scena viene spesso associata a un bisogno di conforto o di protezione, soprattutto dopo una perdita.",
         "askYourself": [
-          "Sto cercando una guida o rassicurazione nella mia vita?",
-          "C'è un messaggio o un'intuizione che ho ignorato?"
-        ]
+          "Che cosa faceva l’angelo: vegliava, parlava, proteggeva, avvertiva, o era solo lì?",
+          "Che cosa ho provato in sua presenza: calma, stupore, paura, conforto?",
+          "Sto attraversando un periodo in cui vorrei che qualcuno si prendesse cura di me?"
+        ],
+        "faq": [
+          {
+            "question": "Che cosa significa sognare un angelo?",
+            "answer": "L’angelo viene spesso associato al conforto, alla protezione o alla speranza, e il suo senso dipende anche dalle tue convinzioni. Ciò che faceva, ciò che diceva e ciò che hai provato contano più di un simbolo fisso. Non è una previsione."
+          },
+          {
+            "question": "Un angelo in sogno è un messaggio?",
+            "answer": "C’è chi lo legge come un segno spirituale, in accordo con la propria fede: è una lettura personale. Un altro modo di guardarlo: l’angelo può dare parole a qualcosa che già intuisci. Annota ciò che diceva e guarda a che cosa fa eco nella tua vita."
+          },
+          {
+            "question": "Che cosa significa sognare un defunto come un angelo?",
+            "answer": "Vedere una persona scomparsa con le ali o in una luce morbida capita spesso dopo un lutto, e molti lo vivono come un conforto. Può far parte del lutto. Se ti angoscia o ti toglie il sonno, parlane con una persona di fiducia o con un professionista."
+          },
+          {
+            "question": "Che cosa significa sognare un angelo nero o caduto?",
+            "answer": "Un angelo oscuro può accompagnare un conflitto interiore, una tentazione o una situazione allettante che ti lascia a disagio. Non è un presagio. Annota che cosa rendeva minacciosa la figura e che cosa voleva da te."
+          }
+        ],
+        "documentMetaDescription": "Sognare un angelo, l’angelo custode o una persona cara defunta come angelo: che cosa può dire la scena del bisogno di conforto, con domande ed esempio.",
+        "modifiedAt": "2026-10-08"
       },
       "pt": {
         "slug": "anjo",
@@ -10542,11 +10836,32 @@
       "en": {
         "slug": "arguing",
         "name": "Arguing",
-        "shortDescription": "Dreams of arguing reflect inner conflict, unresolved tension, or suppressed frustration. They often point to communication issues or unspoken disagreements in waking life.",
+        "shortDescription": "Dreaming of an argument often leaves you tense on waking, sometimes still angry at someone who did nothing. The scene can replay a real disagreement, rehearse a conversation you dread, or stage a tension you have not voiced.",
         "askYourself": [
-          "Is there an unresolved conflict I need to address?",
-          "Am I holding back words I need to say?"
-        ]
+          "Who was I arguing with, and what was the argument actually about?",
+          "Could I speak, listen or leave, or did my words fail me?",
+          "Is there a conversation I have been putting off, or one that went badly?"
+        ],
+        "faq": [
+          {
+            "question": "What does it mean to dream of arguing with someone?",
+            "answer": "An argument in a dream can replay a recent disagreement, rehearse a conversation you dread, or stage a tension you have not voiced. It does not prove hidden anger. Note the person, the topic and how you reacted."
+          },
+          {
+            "question": "What does it mean to dream of arguing with your partner?",
+            "answer": "It does not mean the relationship is in crisis. The dream can echo a recent friction, the fear of a difficult talk, or plain tiredness. Compare what was said in the dream with what is actually going on between you before drawing conclusions."
+          },
+          {
+            "question": "Why do I dream of arguing with someone I am not in conflict with?",
+            "answer": "A friend, a parent or a colleague can simply be the face the dream gives to a tension from elsewhere, or to an argument you saw recently. The topic of the argument is often a better clue than the person."
+          },
+          {
+            "question": "What does it mean if I cannot speak during an argument in a dream?",
+            "answer": "Words that will not come out are common in dreams, and frustrating. The scene can go with a situation where you feel unheard, but on its own it is not a sign of buried anger. Note what you were trying to say."
+          }
+        ],
+        "documentMetaDescription": "Dreaming of arguing with your partner, a parent or a friend: what the scene may say about tension and things left unsaid, with questions and an example.",
+        "modifiedAt": "2026-10-08"
       },
       "fr": {
         "slug": "dispute",
@@ -10580,29 +10895,92 @@
       "es": {
         "slug": "discusion",
         "name": "Discusión",
-        "shortDescription": "Los sueños de discusiones reflejan conflictos internos, tensiones no resueltas o frustración reprimida. A menudo señalan problemas de comunicación o desacuerdos no expresados en la vida real.",
+        "shortDescription": "Soñar con una discusión suele dejarte tenso al despertar, a veces todavía enfadado con alguien que no ha hecho nada. La escena puede recoger un desacuerdo real, ensayar una conversación que temes o escenificar una tensión que callas.",
         "askYourself": [
-          "¿Hay algún conflicto no resuelto que necesito abordar?",
-          "¿Estoy reteniendo palabras que necesito decir?"
-        ]
+          "¿Con quién discutía, y sobre qué era exactamente la discusión?",
+          "¿Podía hablar, escuchar o irme, o no me salían las palabras?",
+          "¿Hay una conversación que vengo aplazando, o una que salió mal?"
+        ],
+        "faq": [
+          {
+            "question": "¿Qué significa soñar que discutes con alguien?",
+            "answer": "Una discusión en sueños puede recoger un desacuerdo reciente, ensayar una conversación que temes o escenificar una tensión que no has expresado. No demuestra una rabia oculta. Anota la persona, el tema y cómo reaccionaste."
+          },
+          {
+            "question": "¿Qué significa soñar que discutes con tu pareja?",
+            "answer": "No significa que la relación esté en crisis. El sueño puede recoger un roce reciente, el miedo a una conversación difícil o simple cansancio. Compara lo que se decía en el sueño con lo que pasa de verdad entre vosotros antes de sacar conclusiones."
+          },
+          {
+            "question": "¿Por qué sueño que discuto con alguien con quien no tengo ningún conflicto?",
+            "answer": "Un amigo, tu madre o un compañero pueden ser solo la cara que el sueño pone a una tensión de otro ámbito, o a una discusión que viste hace poco. El tema de la discusión suele ser mejor pista que la persona."
+          },
+          {
+            "question": "¿Qué significa no poder hablar durante una discusión en sueños?",
+            "answer": "Que no salgan las palabras es frecuente en sueños, y frustrante. La escena puede acompañar una situación en la que no te sientes escuchado, pero por sí sola no indica rabia reprimida. Anota qué querías decir."
+          }
+        ],
+        "documentMetaDescription": "Soñar con una discusión con tu pareja, tus padres o un amigo: qué puede decir la escena sobre tensiones y cosas no dichas, con preguntas y un ejemplo.",
+        "modifiedAt": "2026-10-08"
       },
       "de": {
         "slug": "streit",
         "name": "Streit",
-        "shortDescription": "Träume von Streit spiegeln innere Konflikte, ungelöste Spannungen oder unterdrückte Frustration wider. Sie weisen oft auf Kommunikationsprobleme oder unausgesprochene Meinungsverschiedenheiten im Wachleben hin.",
+        "shortDescription": "Von einem Streit zu träumen lässt Sie oft angespannt aufwachen, manchmal noch wütend auf jemanden, der nichts getan hat. Die Szene kann einen echten Konflikt aufgreifen, ein gefürchtetes Gespräch proben oder Unausgesprochenes zeigen.",
         "askYourself": [
-          "Gibt es einen ungelösten Konflikt, den ich angehen muss?",
-          "Halte ich Worte zurück, die ich sagen müsste?"
-        ]
+          "Mit wem habe ich gestritten, und worum ging es genau?",
+          "Konnte ich sprechen, zuhören oder gehen, oder fehlten mir die Worte?",
+          "Gibt es ein Gespräch, das ich vor mir herschiebe, oder eines, das schiefging?"
+        ],
+        "faq": [
+          {
+            "question": "Was bedeutet es, im Traum mit jemandem zu streiten?",
+            "answer": "Ein Streit im Traum kann eine jüngste Meinungsverschiedenheit aufgreifen, ein gefürchtetes Gespräch proben oder eine unausgesprochene Spannung zeigen. Verdrängte Wut beweist er nicht. Notieren Sie Person, Thema und Ihre Reaktion."
+          },
+          {
+            "question": "Was bedeutet ein Streit mit dem Partner im Traum?",
+            "answer": "Er heißt nicht, dass die Beziehung in der Krise steckt. Der Traum kann eine kleine Reibung, die Angst vor einem schwierigen Gespräch oder einfach Müdigkeit aufgreifen. Vergleichen Sie das Gesagte mit dem, was zwischen Ihnen wirklich geschieht."
+          },
+          {
+            "question": "Warum träume ich von Streit mit jemandem, mit dem ich keinen Konflikt habe?",
+            "answer": "Eine Freundin, ein Elternteil oder ein Kollege kann einfach das Gesicht sein, das der Traum einer Spannung aus einem anderen Bereich gibt, oder einem Streit, den Sie kürzlich beobachtet haben. Das Thema ist oft die bessere Spur als die Person."
+          },
+          {
+            "question": "Was bedeutet es, bei einem Streit im Traum nicht sprechen zu können?",
+            "answer": "Worte, die nicht herauskommen, sind in Träumen häufig und frustrierend. Die Szene kann eine Lage begleiten, in der Sie sich nicht gehört fühlen; für sich allein zeigt sie keine verdrängte Wut. Notieren Sie, was Sie sagen wollten."
+          }
+        ],
+        "documentMetaDescription": "Vom Streit träumen, mit Partner, Eltern oder Freunden: was die Szene über Spannungen und Unausgesprochenes sagen kann, mit Fragen und einem Tagebuchbeispiel.",
+        "modifiedAt": "2026-10-08"
       },
       "it": {
         "slug": "litigio",
         "name": "Litigio",
-        "shortDescription": "I sogni di litigi riflettono conflitti interiori, tensioni irrisolte o frustrazione repressa. Spesso indicano problemi di comunicazione o disaccordi inespressi nella vita reale.",
+        "shortDescription": "Sognare un litigio ti lascia spesso teso al risveglio, a volte ancora arrabbiato con qualcuno che non ha fatto nulla. La scena può riprendere un disaccordo reale, provare una conversazione che temi o mettere in scena una tensione taciuta.",
         "askYourself": [
-          "C'è un conflitto irrisolto che devo affrontare?",
-          "Sto trattenendo parole che ho bisogno di dire?"
-        ]
+          "Con chi litigavo, e su che cosa verteva esattamente il litigio?",
+          "Riuscivo a parlare, ascoltare o andarmene, o mi mancavano le parole?",
+          "C’è una conversazione che sto rimandando, o una che è andata male?"
+        ],
+        "faq": [
+          {
+            "question": "Che cosa significa sognare di litigare con qualcuno?",
+            "answer": "Un litigio in sogno può riprendere un disaccordo recente, provare una conversazione che temi o mettere in scena una tensione non espressa. Non dimostra una rabbia nascosta. Annota la persona, l’argomento e come hai reagito."
+          },
+          {
+            "question": "Che cosa significa sognare di litigare con il partner?",
+            "answer": "Non significa che la coppia sia in crisi. Il sogno può riprendere un attrito recente, la paura di un discorso difficile o semplice stanchezza. Confronta ciò che si diceva nel sogno con ciò che succede davvero tra voi prima di trarre conclusioni."
+          },
+          {
+            "question": "Perché sogno di litigare con qualcuno con cui non ho conflitti?",
+            "answer": "Un amico, un genitore o un collega possono essere solo il volto che il sogno dà a una tensione di un altro ambito, o a una lite vista di recente. L’argomento del litigio è spesso un indizio migliore della persona."
+          },
+          {
+            "question": "Che cosa significa non riuscire a parlare durante un litigio in sogno?",
+            "answer": "Le parole che non escono sono frequenti nei sogni, e frustranti. La scena può accompagnare una situazione in cui non ti senti ascoltato, ma da sola non indica una rabbia repressa. Annota che cosa volevi dire."
+          }
+        ],
+        "documentMetaDescription": "Sognare un litigio con il partner, un genitore o un amico: che cosa può dire la scena delle tensioni e delle cose non dette, con domande ed esempio.",
+        "modifiedAt": "2026-10-08"
       },
       "pt": {
         "slug": "discussao",
@@ -10633,47 +11011,152 @@
       "en": {
         "slug": "apocalypse",
         "name": "Apocalypse",
-        "shortDescription": "Apocalypse dreams symbolize major life upheaval, the end of one chapter, or overwhelming anxiety about the future. They often represent transformation rather than literal destruction.",
+        "shortDescription": "Dreaming of the end of the world often feels vast and real: a red sky, cities falling, people running. It is not a prophecy. The scene often goes with a sense that something familiar is ending, or with worry about the news and the future.",
         "askYourself": [
-          "Am I going through a major life transition or upheaval?",
-          "Do I feel overwhelmed by forces beyond my control?"
-        ]
+          "What was ending the world: fire, water, war, an epidemic, something with no name?",
+          "Was I fleeing, hiding, helping others or watching from a distance?",
+          "What feels like it is ending or shaking right now, in my life or in the news?"
+        ],
+        "faq": [
+          {
+            "question": "What does it mean to dream of the apocalypse?",
+            "answer": "An end-of-the-world dream is often associated with a big change, the end of a chapter, or worry about the future. It is not a prophecy. What caused the end, where you were and how you reacted matter more than the scale of the disaster."
+          },
+          {
+            "question": "Are apocalypse dreams a sign that something bad will happen?",
+            "answer": "No. Dreams do not predict disasters. Frightening dreams are easier to remember, which makes coincidences feel meaningful. These dreams often follow worrying news, a stressful period or a film: note those links instead."
+          },
+          {
+            "question": "Why do I dream of the end of the world when the news is bad?",
+            "answer": "Dreams often borrow from what fills your days. Coverage of wars, epidemics or climate change can feed end-of-the-world scenes. That does not make the dream a forecast; it can show you what is weighing on you."
+          },
+          {
+            "question": "What does it mean to survive the apocalypse in a dream?",
+            "answer": "Surviving, finding shelter or starting to rebuild can go with a sense that you will get through a hard period, or with a wish to start again on new ground. Note who was with you: the survivors are often the people who matter most."
+          }
+        ],
+        "documentMetaDescription": "Dreaming of the apocalypse, the end of the world or surviving it: what the scene may say about change and worry for the future, with questions and an example.",
+        "modifiedAt": "2026-10-08"
       },
       "fr": {
         "slug": "apocalypse",
         "name": "Apocalypse",
-        "shortDescription": "Les rêves d'apocalypse symbolisent un bouleversement majeur, la fin d'un chapitre ou une anxiété écrasante face à l'avenir. Ils représentent souvent une transformation plutôt qu'une destruction littérale.",
+        "shortDescription": "Rêver de la fin du monde laisse une impression immense : un ciel rouge, des villes qui s'effondrent, des gens qui fuient. Ce n'est pas une prophétie. La scène accompagne souvent la fin d'une chose familière, ou l'inquiétude pour l'avenir.",
         "askYourself": [
-          "Est-ce que je traverse une transition ou un bouleversement majeur ?",
-          "Est-ce que je me sens submergé par des forces hors de mon contrôle ?"
-        ]
+          "Qu'est-ce qui provoquait la fin du monde : feu, eau, guerre, épidémie, autre chose ?",
+          "Est-ce que je fuyais, me cachais, aidais d'autres personnes ou regardais de loin ?",
+          "Qu'est-ce qui se termine ou vacille en ce moment, dans ma vie ou dans l'actualité ?"
+        ],
+        "faq": [
+          {
+            "question": "Que signifie rêver de l'apocalypse ?",
+            "answer": "Un rêve de fin du monde est souvent associé à un grand changement, à la fin d'un chapitre ou à l'inquiétude pour l'avenir. Ce n'est pas une prophétie. La cause de la fin, l'endroit où vous étiez et votre réaction comptent plus que l'ampleur du désastre."
+          },
+          {
+            "question": "Rêver de la fin du monde, est-ce un mauvais présage ?",
+            "answer": "Non. Les rêves ne prédisent pas les catastrophes. Les rêves effrayants se retiennent mieux, ce qui donne du poids aux coïncidences. Ces rêves suivent souvent une actualité inquiétante, une période de stress ou un film : notez plutôt ces liens."
+          },
+          {
+            "question": "Pourquoi je rêve de fin du monde quand l'actualité est dure ?",
+            "answer": "Les rêves puisent souvent dans ce qui remplit nos journées. Les images de guerre, d'épidémie ou de dérèglement climatique peuvent nourrir des scènes de fin du monde. Le rêve n'est pas une prévision ; il peut montrer ce qui vous pèse."
+          },
+          {
+            "question": "Que signifie survivre à l'apocalypse en rêve ?",
+            "answer": "Survivre, trouver un abri ou commencer à reconstruire peut accompagner le sentiment que vous traverserez une période difficile, ou l'envie de repartir sur de nouvelles bases. Notez qui était avec vous : les survivants sont souvent les personnes qui comptent."
+          }
+        ],
+        "documentMetaDescription": "Rêver de l'apocalypse, de la fin du monde ou d'y survivre : ce que la scène peut dire du changement et des peurs pour l'avenir, avec questions et exemple.",
+        "modifiedAt": "2026-10-08"
       },
       "es": {
         "slug": "apocalipsis",
         "name": "Apocalipsis",
-        "shortDescription": "Los sueños de apocalipsis simbolizan una gran transformación vital, el fin de una etapa o una ansiedad abrumadora sobre el futuro. A menudo representan transformación más que destrucción literal.",
+        "shortDescription": "Soñar con el fin del mundo deja una impresión enorme y real: un cielo rojo, ciudades que se derrumban, gente que huye. No es una profecía. La escena suele acompañar la sensación de que algo conocido se acaba, o la preocupación por el futuro.",
         "askYourself": [
-          "¿Estoy atravesando una gran transición o cambio en mi vida?",
-          "¿Me siento abrumado por fuerzas fuera de mi control?"
-        ]
+          "¿Qué acababa con el mundo: fuego, agua, guerra, una epidemia, algo sin nombre?",
+          "¿Huía, me escondía, ayudaba a otros o miraba desde lejos?",
+          "¿Qué se está acabando o tambaleando ahora mismo, en mi vida o en las noticias?"
+        ],
+        "faq": [
+          {
+            "question": "¿Qué significa soñar con el apocalipsis?",
+            "answer": "Un sueño del fin del mundo se asocia a menudo con un gran cambio, el final de una etapa o la preocupación por el futuro. No es una profecía. Lo que causaba el final, dónde estabas y cómo reaccionaste cuentan más que el tamaño del desastre."
+          },
+          {
+            "question": "¿Soñar con el fin del mundo es un mal presagio?",
+            "answer": "No. Los sueños no predicen catástrofes. Los sueños que asustan se recuerdan mejor, y eso da peso a las coincidencias. Estos sueños suelen llegar tras noticias inquietantes, una época de estrés o una película: anota mejor esos vínculos."
+          },
+          {
+            "question": "¿Por qué sueño con el fin del mundo cuando las noticias son malas?",
+            "answer": "Los sueños toman a menudo material de lo que llena tus días. Las imágenes de guerras, epidemias o cambio climático pueden alimentar escenas del fin del mundo. El sueño no es un pronóstico; puede mostrarte lo que te pesa."
+          },
+          {
+            "question": "¿Qué significa sobrevivir al apocalipsis en sueños?",
+            "answer": "Sobrevivir, encontrar refugio o empezar a reconstruir puede acompañar la sensación de que saldrás de una etapa difícil, o las ganas de empezar de nuevo. Anota quién estaba contigo: los supervivientes suelen ser las personas que más importan."
+          }
+        ],
+        "documentMetaDescription": "Soñar con el apocalipsis, el fin del mundo o sobrevivir a él: qué puede decir la escena sobre el cambio y la inquietud por el futuro, con preguntas y ejemplo.",
+        "modifiedAt": "2026-10-08"
       },
       "de": {
         "slug": "apokalypse",
         "name": "Apokalypse",
-        "shortDescription": "Apokalypse-Träume symbolisieren große Lebensumbrüche, das Ende eines Kapitels oder überwältigende Zukunftsangst. Sie stehen oft für Transformation statt wörtliche Zerstörung.",
+        "shortDescription": "Vom Weltuntergang zu träumen wirkt oft riesig und echt: ein roter Himmel, einstürzende Städte, fliehende Menschen. Eine Prophezeiung ist das nicht. Die Szene begleitet oft das Gefühl, dass etwas Vertrautes endet, oder Sorge um die Zukunft.",
         "askYourself": [
-          "Durchlebe ich gerade einen großen Lebensumbruch?",
-          "Fühle ich mich von Kräften überwältigt, die ich nicht kontrollieren kann?"
-        ]
+          "Was hat die Welt untergehen lassen: Feuer, Wasser, Krieg, eine Seuche, etwas Namenloses?",
+          "Bin ich geflohen, habe ich mich versteckt, anderen geholfen oder aus der Ferne zugesehen?",
+          "Was endet oder wankt gerade, in meinem Leben oder in den Nachrichten?"
+        ],
+        "faq": [
+          {
+            "question": "Was bedeutet es, von der Apokalypse zu träumen?",
+            "answer": "Ein Traum vom Weltuntergang wird oft mit einem großen Umbruch, dem Ende eines Kapitels oder Sorge um die Zukunft verbunden. Eine Prophezeiung ist er nicht. Was das Ende auslöste, wo Sie waren und wie Sie reagiert haben, zählt mehr als das Ausmaß der Katastrophe."
+          },
+          {
+            "question": "Ist ein Traum vom Weltuntergang ein schlechtes Zeichen?",
+            "answer": "Nein. Träume sagen keine Katastrophen voraus. Beängstigende Träume bleiben besser im Gedächtnis, und das gibt Zufällen Gewicht. Solche Träume folgen oft auf beunruhigende Nachrichten, eine stressige Phase oder einen Film: Notieren Sie lieber diese Zusammenhänge."
+          },
+          {
+            "question": "Warum träume ich vom Weltuntergang, wenn die Nachrichten schlecht sind?",
+            "answer": "Träume greifen oft auf, was unsere Tage füllt. Bilder von Kriegen, Seuchen oder dem Klimawandel können Weltuntergangsszenen nähren. Eine Vorhersage ist der Traum deshalb nicht; er kann zeigen, was Sie belastet."
+          },
+          {
+            "question": "Was bedeutet es, im Traum die Apokalypse zu überleben?",
+            "answer": "Zu überleben, Schutz zu finden oder mit dem Wiederaufbau zu beginnen, kann das Gefühl begleiten, eine schwere Zeit zu überstehen, oder den Wunsch nach einem Neuanfang. Notieren Sie, wer bei Ihnen war: Die Überlebenden sind oft die Menschen, die zählen."
+          }
+        ],
+        "documentMetaDescription": "Vom Weltuntergang träumen oder die Apokalypse überleben: was die Szene über Umbruch und Zukunftssorgen sagen kann, mit Fragen und einem Tagebuchbeispiel.",
+        "modifiedAt": "2026-10-08"
       },
       "it": {
         "slug": "apocalisse",
         "name": "Apocalisse",
-        "shortDescription": "I sogni di apocalisse simboleggiano grandi sconvolgimenti di vita, la fine di un capitolo o un'ansia travolgente per il futuro. Spesso rappresentano una trasformazione piuttosto che una distruzione letterale.",
+        "shortDescription": "Sognare la fine del mondo lascia un’impressione enorme: un cielo rosso, città che crollano, gente in fuga. Non è una profezia. La scena accompagna spesso la sensazione che qualcosa di familiare stia finendo, o la preoccupazione per il futuro.",
         "askYourself": [
-          "Sto attraversando una grande transizione o sconvolgimento di vita?",
-          "Mi sento sopraffatto da forze fuori dal mio controllo?"
-        ]
+          "Che cosa faceva finire il mondo: fuoco, acqua, guerra, un’epidemia, qualcosa senza nome?",
+          "Fuggivo, mi nascondevo, aiutavo gli altri o guardavo da lontano?",
+          "Che cosa sta finendo o vacillando in questo periodo, nella mia vita o nelle notizie?"
+        ],
+        "faq": [
+          {
+            "question": "Che cosa significa sognare l’apocalisse?",
+            "answer": "Un sogno di fine del mondo viene spesso associato a un grande cambiamento, alla fine di un capitolo o alla preoccupazione per il futuro. Non è una profezia. Che cosa causava la fine, dove ti trovavi e come reagivi contano più delle dimensioni del disastro."
+          },
+          {
+            "question": "Sognare la fine del mondo è un brutto presagio?",
+            "answer": "No. I sogni non predicono le catastrofi. I sogni che spaventano si ricordano meglio, e questo dà peso alle coincidenze. Questi sogni seguono spesso notizie inquietanti, un periodo di stress o un film: annota piuttosto questi collegamenti."
+          },
+          {
+            "question": "Perché sogno la fine del mondo quando le notizie sono brutte?",
+            "answer": "I sogni attingono spesso a ciò che riempie le nostre giornate. Le immagini di guerre, epidemie o cambiamento climatico possono alimentare scene di fine del mondo. Il sogno non è una previsione; può mostrarti che cosa ti pesa."
+          },
+          {
+            "question": "Che cosa significa sopravvivere all’apocalisse in sogno?",
+            "answer": "Sopravvivere, trovare un riparo o cominciare a ricostruire può accompagnare la sensazione che supererai un periodo difficile, o la voglia di ripartire da zero. Annota chi era con te: i sopravvissuti sono spesso le persone che contano."
+          }
+        ],
+        "documentMetaDescription": "Sognare l’apocalisse, la fine del mondo o di sopravviverle: che cosa può dire la scena del cambiamento e dei timori per il futuro, con domande ed esempio.",
+        "modifiedAt": "2026-10-08"
       },
       "pt": {
         "slug": "apocalipse",
