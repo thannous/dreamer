@@ -5781,38 +5781,122 @@
       "en": {
         "slug": "child",
         "name": "Child",
-        "shortDescription": "A child often represents your inner child, innocence, or aspects of your past. It can also symbolize a new project or a developing part of yourself.",
+        "shortDescription": "Dreaming of a child often brings up care, vulnerability or something that is just beginning: a project, a responsibility, a memory of your own childhood. Who the child was, what they were doing and how you felt matter more than a fixed meaning.",
         "askYourself": [
-          "How is my inner child?",
-          "Are there past wounds to heal?"
-        ]
+          "Did I know this child, was it a stranger, or was it me at a younger age?",
+          "Was the child playing, crying, lost, or asking me for something?",
+          "What in my life right now needs the same kind of attention?"
+        ],
+        "faq": [
+          {
+            "question": "What does it mean to dream of a child?",
+            "answer": "A child is often associated with care, vulnerability and beginnings. The meaning depends on who the child was, what was happening and how you felt: tender, worried, responsible, playful or overwhelmed."
+          },
+          {
+            "question": "What does it mean to dream of a crying child?",
+            "answer": "A crying child can go with worry, helplessness or a need that has been set aside, yours or someone else's. If you know the child in waking life, the dream may simply replay everyday concerns. It is not a warning."
+          },
+          {
+            "question": "What does it mean to dream of a lost child?",
+            "answer": "Searching for a lost child is one of the most stressful versions of this dream. It can match a fear of not being able to protect someone, or the sense that something precious is slipping away. Note whether you found the child and who helped."
+          },
+          {
+            "question": "Does dreaming of a child mean I want children?",
+            "answer": "Not necessarily. A child in a dream can stand for a project, a role or a memory as much as for a wish to become a parent. If that question is on your mind right now, the dream may echo it; otherwise, look at the scene first."
+          }
+        ],
+        "documentMetaDescription": "Dreaming of a child, a crying or lost child, or yourself as a child: what the scene may say about care and beginnings, with questions and a journal example.",
+        "modifiedAt": "2026-10-08"
       },
       "fr": {
         "slug": "enfant",
         "name": "Enfant",
-        "shortDescription": "L'enfant représente souvent votre enfant intérieur, l'innocence ou des aspects de votre passé. Il peut aussi symboliser un nouveau projet ou une partie de vous en développement.",
+        "shortDescription": "Rêver d'un enfant ramène souvent au soin, à la fragilité ou à ce qui commence : un projet, une responsabilité, un souvenir de votre propre enfance. Qui était l'enfant, ce qu'il faisait et ce que vous ressentiez comptent plus qu'un sens figé.",
         "askYourself": [
-          "Comment va mon enfant intérieur ?",
-          "Y a-t-il des blessures du passé à guérir ?"
-        ]
+          "Connaissais-je cet enfant, était-ce un inconnu, ou moi plus jeune ?",
+          "Jouait-il, pleurait-il, s'était-il perdu, me demandait-il quelque chose ?",
+          "Qu'est-ce qui, dans ma vie en ce moment, demande ce même genre d'attention ?"
+        ],
+        "faq": [
+          {
+            "question": "Que signifie rêver d'un enfant ?",
+            "answer": "L'enfant est souvent associé au soin, à la fragilité et aux débuts. Le sens dépend de qui il était, de ce qui se passait et de ce que vous ressentiez : tendresse, inquiétude, responsabilité, envie de jouer ou débordement."
+          },
+          {
+            "question": "Que signifie rêver d'un enfant qui pleure ?",
+            "answer": "Un enfant qui pleure peut accompagner une inquiétude, un sentiment d'impuissance ou un besoin mis de côté, le vôtre ou celui d'un proche. Si vous connaissez cet enfant, le rêve peut simplement reprendre des soucis du quotidien. Ce n'est pas un avertissement."
+          },
+          {
+            "question": "Que signifie rêver d'un enfant perdu ?",
+            "answer": "Chercher un enfant perdu est l'une des versions les plus éprouvantes de ce rêve. Elle peut rejoindre la peur de ne pas réussir à protéger quelqu'un, ou le sentiment que quelque chose de précieux vous échappe. Notez si vous l'avez retrouvé et qui vous a aidé."
+          },
+          {
+            "question": "Rêver d'un enfant veut-il dire que je veux un enfant ?",
+            "answer": "Pas forcément. Un enfant en rêve peut renvoyer à un projet, un rôle ou un souvenir autant qu'à un désir de devenir parent. Si cette question vous occupe en ce moment, le rêve peut lui faire écho ; sinon, regardez d'abord la scène."
+          }
+        ],
+        "documentMetaDescription": "Rêver d'un enfant, d'un enfant qui pleure, perdu, ou de soi enfant : ce que la scène peut dire du soin et des débuts, avec questions et exemple de journal.",
+        "modifiedAt": "2026-10-08"
       },
       "es": {
         "slug": "nino",
         "name": "Niño",
-        "shortDescription": "Un niño a menudo representa tu niño interior, inocencia o aspectos de tu pasado. También puede simbolizar un nuevo proyecto o una parte de ti en desarrollo.",
+        "shortDescription": "Soñar con un niño suele llevarte al cuidado, a la fragilidad o a algo que empieza: un proyecto, una responsabilidad, un recuerdo de tu propia infancia. Quién era el niño, qué hacía y qué sentiste cuentan más que un significado fijo.",
         "askYourself": [
-          "¿Cómo está mi niño interior?",
-          "¿Hay heridas del pasado que sanar?"
-        ]
+          "¿Conocía a ese niño, era un desconocido, o era yo de pequeño?",
+          "¿Jugaba, lloraba, se había perdido o me pedía algo?",
+          "¿Qué hay ahora en mi vida que pide ese mismo tipo de atención?"
+        ],
+        "faq": [
+          {
+            "question": "¿Qué significa soñar con un niño?",
+            "answer": "El niño se asocia a menudo con el cuidado, la fragilidad y los comienzos. El sentido depende de quién era, de lo que pasaba y de lo que sentiste: ternura, preocupación, responsabilidad, ganas de jugar o agobio."
+          },
+          {
+            "question": "¿Qué significa soñar con un niño llorando?",
+            "answer": "Un niño que llora puede acompañar una preocupación, una sensación de impotencia o una necesidad que has dejado de lado, tuya o de alguien cercano. Si conoces a ese niño, el sueño puede repetir sin más inquietudes del día a día. No es un aviso."
+          },
+          {
+            "question": "¿Qué significa soñar con un niño perdido?",
+            "answer": "Buscar a un niño perdido es una de las versiones más angustiosas de este sueño. Puede enlazar con el miedo a no poder proteger a alguien, o con la sensación de que algo valioso se te escapa. Anota si lo encontraste y quién te ayudó."
+          },
+          {
+            "question": "¿Soñar con un niño significa que quiero tener hijos?",
+            "answer": "No necesariamente. Un niño en sueños puede remitir a un proyecto, un papel o un recuerdo tanto como al deseo de ser madre o padre. Si esa pregunta te ronda ahora, el sueño puede hacerle eco; si no, mira primero la escena."
+          }
+        ],
+        "documentMetaDescription": "Soñar con un niño, con un niño llorando, perdido o contigo de pequeño: qué puede decir la escena sobre el cuidado y los comienzos, con preguntas y ejemplo.",
+        "modifiedAt": "2026-10-08"
       },
       "de": {
         "slug": "kind",
         "name": "Kind",
-        "shortDescription": "Kinder in Träumen repräsentieren Ihr inneres Kind, Unschuld, Verspieltheit und ungenutztes Potenzial. Sie können auf die Notwendigkeit von mehr Freude und Spontaneität hinweisen.",
+        "shortDescription": "Von einem Kind zu träumen führt oft zu Fürsorge, Verletzlichkeit oder etwas, das gerade beginnt: ein Projekt, eine Verantwortung, eine Erinnerung an die eigene Kindheit. Wer das Kind war, was es tat und was Sie fühlten, zählt mehr als eine feste Deutung.",
         "askYourself": [
-          "Wie verbunden bin ich mit meinem inneren Kind?",
-          "Was brauche ich, um mehr Freude zu empfinden?"
-        ]
+          "Kannte ich das Kind, war es fremd, oder war ich es selbst als Kind?",
+          "Hat es gespielt, geweint, sich verirrt oder mich um etwas gebeten?",
+          "Was in meinem Leben braucht gerade dieselbe Art von Aufmerksamkeit?"
+        ],
+        "faq": [
+          {
+            "question": "Was bedeutet es, von einem Kind zu träumen?",
+            "answer": "Das Kind wird oft mit Fürsorge, Verletzlichkeit und Anfängen verbunden. Was es bedeutet, hängt davon ab, wer es war, was geschah und was Sie gefühlt haben: Zärtlichkeit, Sorge, Verantwortung, Spielfreude oder Überforderung."
+          },
+          {
+            "question": "Was bedeutet ein weinendes Kind im Traum?",
+            "answer": "Ein weinendes Kind kann eine Sorge, ein Gefühl der Hilflosigkeit oder ein zurückgestelltes Bedürfnis begleiten, Ihr eigenes oder das eines nahen Menschen. Kennen Sie das Kind, greift der Traum vielleicht einfach Alltagssorgen auf. Eine Warnung ist er nicht."
+          },
+          {
+            "question": "Was bedeutet es, im Traum ein verlorenes Kind zu suchen?",
+            "answer": "Ein verlorenes Kind zu suchen gehört zu den belastendsten Varianten dieses Traums. Die Szene kann zu der Angst passen, jemanden nicht schützen zu können, oder zu dem Gefühl, dass Ihnen etwas Wertvolles entgleitet. Notieren Sie, ob Sie es gefunden haben und wer geholfen hat."
+          },
+          {
+            "question": "Heißt ein Traum von einem Kind, dass ich mir Kinder wünsche?",
+            "answer": "Nicht unbedingt. Ein Kind im Traum kann für ein Projekt, eine Rolle oder eine Erinnerung stehen, ebenso wie für einen Kinderwunsch. Beschäftigt Sie diese Frage gerade, kann der Traum sie aufgreifen; sonst schauen Sie zuerst auf die Szene."
+          }
+        ],
+        "documentMetaDescription": "Von einem Kind träumen, ob weinend, verloren oder Sie selbst als Kind: was die Szene über Fürsorge und Anfänge sagen kann, mit Fragen und Tagebuchbeispiel.",
+        "modifiedAt": "2026-10-08"
       },
       "it": {
         "slug": "bambino",
@@ -5869,10 +5953,32 @@
       "en": {
         "slug": "clothes",
         "name": "Clothes",
-        "shortDescription": "Clothes represent the image you project to the world. Inappropriate clothing can indicate feeling out of place.",
+        "shortDescription": "Dreaming of clothes often touches on how you present yourself: what you show, what you cover, and whether it suits the moment. Whose clothes they were, their condition and how comfortable you felt matter more than a fixed meaning.",
         "askYourself": [
-          "Does my public image reflect who I really am?"
-        ]
+          "Whose clothes were they, and who had chosen them?",
+          "Were they new, worn, dirty, the wrong size or wrong for the place?",
+          "Is there a situation right now where I am unsure how to show up?"
+        ],
+        "faq": [
+          {
+            "question": "What does it mean to dream about clothes?",
+            "answer": "Clothes are often associated with how you present yourself and how you feel seen. Their meaning depends on whose they were, their condition, the setting and how comfortable you felt. They can also simply echo a recent purchase or event."
+          },
+          {
+            "question": "What does it mean to dream of dirty or torn clothes?",
+            "answer": "Dirty or torn clothes can go with a feeling of being exposed, worn out or not presentable, often after a demanding stretch. They say nothing about your worth. Note whether you tried to clean, hide or change them."
+          },
+          {
+            "question": "What does it mean to dream of buying new clothes?",
+            "answer": "Choosing or buying new clothes can go with a change you are preparing for: a new job, a new role, a different way of presenting yourself. It is not a promise of success. Notice whether you felt excited, hesitant or pressured."
+          },
+          {
+            "question": "What does it mean to wear someone else's clothes in a dream?",
+            "answer": "Wearing someone else's clothes can stage borrowing a role, a style or a quality you associate with that person. Did they lend them, or did you take them? How they fitted you is often the most useful clue."
+          }
+        ],
+        "documentMetaDescription": "Dreaming of clothes that are dirty, torn, new or someone else's: what the scene may say about how you present yourself, with questions and a journal example.",
+        "modifiedAt": "2026-10-08"
       },
       "fr": {
         "slug": "vetements",
@@ -5888,28 +5994,92 @@
       "es": {
         "slug": "ropa",
         "name": "Ropa",
-        "shortDescription": "La ropa representa la imagen que proyectas al mundo. Ropa inapropiada puede indicar sentirse fuera de lugar.",
+        "shortDescription": "Soñar con ropa suele tocar la forma en que te presentas: lo que muestras, lo que tapas y si encaja con el momento. De quién era la ropa, en qué estado estaba y lo cómodo que te sentías cuentan más que un significado fijo.",
         "askYourself": [
-          "¿Mi imagen pública refleja quién soy realmente?"
-        ]
+          "¿De quién era la ropa, y quién la había elegido?",
+          "¿Era nueva, gastada, sucia, de otra talla o poco adecuada para el lugar?",
+          "¿Hay ahora alguna situación en la que no sé muy bien cómo presentarme?"
+        ],
+        "faq": [
+          {
+            "question": "¿Qué significa soñar con ropa?",
+            "answer": "La ropa se asocia a menudo con la forma en que te presentas y con cómo te sientes mirado. Su sentido depende de quién era, de su estado, del lugar y de lo cómodo que estabas. También puede repetir sin más una compra o un evento reciente."
+          },
+          {
+            "question": "¿Qué significa soñar con ropa sucia o rota?",
+            "answer": "La ropa sucia o rota puede acompañar la sensación de estar expuesto, agotado o poco presentable, a menudo después de una temporada exigente. No dice nada de tu valía. Anota si intentabas lavarla, esconderla o cambiarte."
+          },
+          {
+            "question": "¿Qué significa soñar que compras ropa nueva?",
+            "answer": "Elegir o comprar ropa nueva puede acompañar un cambio que estás preparando: un trabajo, un papel nuevo, otra forma de presentarte. No es una promesa de éxito. Fíjate en si sentías ilusión, duda o presión."
+          },
+          {
+            "question": "¿Qué significa soñar que llevas la ropa de otra persona?",
+            "answer": "Llevar la ropa de otra persona puede escenificar que tomas prestado un papel, un estilo o una cualidad que asocias con ella. ¿Te la prestó o la cogiste tú? Cómo te quedaba suele ser la pista más útil."
+          }
+        ],
+        "documentMetaDescription": "Soñar con ropa sucia, rota, nueva o de otra persona: qué puede decir la escena sobre la forma en que te presentas, con preguntas y un ejemplo de diario.",
+        "modifiedAt": "2026-10-08"
       },
       "de": {
         "slug": "kleidung",
         "name": "Kleidung",
-        "shortDescription": "Kleidung symbolisiert Identität, soziale Rollen und wie Sie sich der Welt präsentieren. Kleidungswechsel im Traum können auf Identitätstransformationen hinweisen.",
+        "shortDescription": "Von Kleidung zu träumen berührt oft die Frage, wie Sie sich zeigen: was Sie offenlegen, was Sie bedecken und ob es zum Anlass passt. Wem die Kleidung gehörte, in welchem Zustand sie war und wie wohl Sie sich fühlten, zählt mehr als eine feste Deutung.",
         "askYourself": [
-          "Welches Image zeige ich der Welt?",
-          "Fühle ich mich wohl in meiner sozialen Rolle?"
-        ]
+          "Wem gehörte die Kleidung, und wer hatte sie ausgesucht?",
+          "War sie neu, abgetragen, schmutzig, zu klein oder unpassend für den Ort?",
+          "Gibt es gerade eine Situation, in der ich nicht weiß, wie ich auftreten soll?"
+        ],
+        "faq": [
+          {
+            "question": "Was bedeutet es, von Kleidung zu träumen?",
+            "answer": "Kleidung wird oft damit verbunden, wie Sie sich zeigen und wie Sie sich gesehen fühlen. Was sie bedeutet, hängt davon ab, wem sie gehörte, in welchem Zustand sie war, wo Sie waren und wie wohl Sie sich fühlten. Sie kann auch einfach einen Einkauf oder einen Termin der letzten Tage aufgreifen."
+          },
+          {
+            "question": "Was bedeutet schmutzige oder zerrissene Kleidung im Traum?",
+            "answer": "Schmutzige oder zerrissene Kleidung kann das Gefühl begleiten, bloßgestellt, erschöpft oder nicht vorzeigbar zu sein, oft nach einer anstrengenden Zeit. Über Ihren Wert sagt sie nichts. Notieren Sie, ob Sie sie waschen, verstecken oder wechseln wollten."
+          },
+          {
+            "question": "Was bedeutet es, im Traum neue Kleidung zu kaufen?",
+            "answer": "Neue Kleidung auszusuchen oder zu kaufen kann eine Veränderung begleiten, auf die Sie sich vorbereiten: eine neue Stelle, eine neue Rolle, ein anderer Auftritt. Ein Erfolgsversprechen ist das nicht. Achten Sie darauf, ob Sie Vorfreude, Zögern oder Druck gespürt haben."
+          },
+          {
+            "question": "Was bedeutet es, im Traum die Kleidung eines anderen zu tragen?",
+            "answer": "Die Kleidung eines anderen Menschen zu tragen kann in Szene setzen, dass Sie sich eine Rolle, einen Stil oder eine Eigenschaft ausleihen, die Sie mit ihm verbinden. Hat er sie Ihnen geliehen, oder haben Sie sie genommen? Wie sie saß, ist oft der nützlichste Hinweis."
+          }
+        ],
+        "documentMetaDescription": "Von Kleidung träumen, ob schmutzig, zerrissen, neu oder geliehen: was die Szene darüber sagen kann, wie Sie sich zeigen, mit Fragen und Tagebuchbeispiel.",
+        "modifiedAt": "2026-10-08"
       },
       "it": {
         "slug": "vestiti",
         "name": "Vestiti",
-        "shortDescription": "I vestiti simboleggiano identità, ruoli sociali e come ti presenti al mondo. Cambiare vestiti nel sogno può indicare trasformazioni dell'identità.",
+        "shortDescription": "Sognare vestiti tocca spesso il modo in cui ti presenti: che cosa mostri, che cosa copri e se è adatto al momento. Di chi erano i vestiti, in che stato erano e quanto ti sentivi a tuo agio contano più di un significato fisso.",
         "askYourself": [
-          "Quale immagine mostro al mondo?",
-          "Mi sento a mio agio nel mio ruolo sociale?"
-        ]
+          "Di chi erano i vestiti, e chi li aveva scelti?",
+          "Erano nuovi, consumati, sporchi, della taglia sbagliata o fuori luogo?",
+          "C’è in questo periodo una situazione in cui non so bene come presentarmi?"
+        ],
+        "faq": [
+          {
+            "question": "Che cosa significa sognare vestiti?",
+            "answer": "I vestiti vengono spesso associati al modo in cui ti presenti e a come ti senti guardato. Il significato dipende da chi li possedeva, dal loro stato, dal luogo e da quanto ti sentivi a tuo agio. Possono anche riprendere semplicemente un acquisto o un evento recente."
+          },
+          {
+            "question": "Che cosa significa sognare vestiti sporchi o strappati?",
+            "answer": "Vestiti sporchi o strappati possono accompagnare la sensazione di essere esposto, stanco o poco presentabile, spesso dopo un periodo impegnativo. Non dicono nulla del tuo valore. Annota se cercavi di lavarli, nasconderli o cambiarti."
+          },
+          {
+            "question": "Che cosa significa sognare di comprare vestiti nuovi?",
+            "answer": "Scegliere o comprare vestiti nuovi può accompagnare un cambiamento che stai preparando: un lavoro, un ruolo nuovo, un modo diverso di presentarti. Non è una promessa di successo. Nota se provavi entusiasmo, esitazione o pressione."
+          },
+          {
+            "question": "Che cosa significa indossare i vestiti di un’altra persona in sogno?",
+            "answer": "Indossare i vestiti di qualcun altro può mettere in scena il prendere in prestito un ruolo, uno stile o una qualità che associ a quella persona. Te li aveva prestati, o li avevi presi tu? Come ti stavano è spesso l’indizio più utile."
+          }
+        ],
+        "documentMetaDescription": "Sognare vestiti sporchi, strappati, nuovi o di un’altra persona: che cosa può dire la scena del modo in cui ti presenti, con domande ed esempio di diario.",
+        "modifiedAt": "2026-10-08"
       },
       "pt": {
         "slug": "roupas",
@@ -5936,47 +6106,152 @@
       "en": {
         "slug": "path",
         "name": "Path / Road",
-        "shortDescription": "A path represents your life journey and future choices. A blocked path suggests obstacles, while a crossroads symbolizes an important decision.",
+        "shortDescription": "Dreaming of a path often puts you on foot, finding your way step by step: through woods, along a cliff, across a field. Whether it was clear, overgrown, narrow or fading, and whether you chose it, matters more than a fixed meaning.",
         "askYourself": [
-          "Am I on the right path?",
-          "Is there a decision I'm avoiding?"
-        ]
+          "Was the path clear, overgrown, narrow, or fading under my feet?",
+          "Had I chosen this path, was I following someone, or had I stumbled onto it?",
+          "Which part of my life am I finding my way through step by step right now?"
+        ],
+        "faq": [
+          {
+            "question": "What does it mean to dream of a path?",
+            "answer": "A path is often associated with direction and with the way you move forward, at your own pace. Its meaning depends on its condition, where it led, who was with you and how you felt: confident, hesitant, curious or lost."
+          },
+          {
+            "question": "What does an overgrown or blocked path mean in a dream?",
+            "answer": "A path swallowed by brambles or blocked by a fallen tree can go with an obstacle, a plan that has stalled or a next step that is hard to see. It does not predict failure. Did you push through, turn back or look for another way?"
+          },
+          {
+            "question": "What does a crossroads or a fork in the path mean in a dream?",
+            "answer": "Reaching the point where the path splits often goes with a choice you are weighing. Note what each way looked like, which one drew you, and whether anyone was there to point the way."
+          },
+          {
+            "question": "What does it mean when the path disappears in a dream?",
+            "answer": "A path that fades into grass, fog or sand can match uncertainty about the next step, or the sense of having left familiar ground. Notice whether you felt lost or free: the same scene can carry both."
+          }
+        ],
+        "documentMetaDescription": "Dreaming of a path, an overgrown trail, a crossroads or a path that vanishes: what the scene may say about how you move forward, with questions and an example.",
+        "modifiedAt": "2026-10-08"
       },
       "fr": {
         "slug": "chemin",
         "name": "Chemin / Route",
-        "shortDescription": "Le chemin représente votre parcours de vie et les choix à venir. Un chemin bloqué suggère des obstacles, tandis qu'un carrefour symbolise une décision importante.",
+        "shortDescription": "Rêver d'un chemin vous met souvent à pied, à trouver votre voie pas à pas : à travers bois, le long d'une falaise, au milieu d'un champ. Qu'il soit dégagé, envahi, étroit ou qu'il s'efface, et que vous l'ayez choisi ou non, compte plus qu'un sens figé.",
         "askYourself": [
-          "Suis-je sur le bon chemin ?",
-          "Y a-t-il une décision que j'évite ?"
-        ]
+          "Le chemin était-il dégagé, envahi, étroit, ou s'effaçait-il sous mes pas ?",
+          "L'avais-je choisi, suivais-je quelqu'un, ou étais-je tombé dessus par hasard ?",
+          "Dans quel domaine de ma vie est-ce que j'avance pas à pas en ce moment ?"
+        ],
+        "faq": [
+          {
+            "question": "Que signifie rêver d'un chemin ?",
+            "answer": "Le chemin est souvent associé à la direction et à la façon d'avancer, à son propre rythme. Son sens dépend de son état, de l'endroit où il menait, de qui vous accompagnait et de ce que vous ressentiez : assurance, hésitation, curiosité ou égarement."
+          },
+          {
+            "question": "Que signifie rêver d'un chemin bloqué ou envahi ?",
+            "answer": "Un chemin mangé par les ronces ou barré par un arbre tombé peut accompagner un obstacle, un projet à l'arrêt ou une suite difficile à voir. Il ne prédit pas un échec. Avez-vous forcé le passage, fait demi-tour ou cherché un détour ?"
+          },
+          {
+            "question": "Que signifie rêver d'un carrefour ou d'une bifurcation ?",
+            "answer": "Arriver là où le chemin se divise accompagne souvent un choix que vous êtes en train de peser. Notez à quoi ressemblait chaque voie, laquelle vous attirait, et si quelqu'un était là pour vous indiquer la direction."
+          },
+          {
+            "question": "Que signifie un chemin qui disparaît en rêve ?",
+            "answer": "Un chemin qui se perd dans l'herbe, le brouillard ou le sable peut rejoindre une incertitude sur la prochaine étape, ou le sentiment d'avoir quitté un terrain connu. Notez si vous vous sentiez perdu ou libre : la même scène peut porter les deux."
+          }
+        ],
+        "documentMetaDescription": "Rêver d'un chemin, d'un sentier envahi, d'un carrefour ou d'un chemin qui disparaît : ce que la scène peut dire de votre façon d'avancer, avec questions.",
+        "modifiedAt": "2026-10-08"
       },
       "es": {
         "slug": "camino",
         "name": "Camino",
-        "shortDescription": "Un camino representa tu viaje de vida y las elecciones futuras. Un camino bloqueado sugiere obstáculos, mientras que una encrucijada simboliza una decisión importante.",
+        "shortDescription": "Soñar con un camino suele ponerte a pie, buscando por dónde ir paso a paso: por un bosque o al borde de un barranco. Si estaba despejado, lleno de maleza, era estrecho o se borraba, y si lo elegiste tú, cuenta más que un significado fijo.",
         "askYourself": [
-          "¿Estoy en el camino correcto?",
-          "¿Hay una decisión que estoy evitando?"
-        ]
+          "¿El camino estaba despejado, lleno de maleza, era estrecho o se borraba bajo mis pies?",
+          "¿Lo había elegido yo, seguía a alguien o había ido a parar a él por casualidad?",
+          "¿En qué parte de mi vida estoy avanzando ahora paso a paso?"
+        ],
+        "faq": [
+          {
+            "question": "¿Qué significa soñar con un camino?",
+            "answer": "El camino se asocia a menudo con la dirección y con la forma de avanzar, a tu propio ritmo. Su sentido depende de su estado, de adónde llevaba, de quién te acompañaba y de lo que sentías: seguridad, duda, curiosidad o desorientación."
+          },
+          {
+            "question": "¿Qué significa soñar con un camino bloqueado o lleno de maleza?",
+            "answer": "Un camino invadido por las zarzas o cortado por un árbol caído puede acompañar un obstáculo, un proyecto parado o un siguiente paso difícil de ver. No predice un fracaso. ¿Te abriste paso, diste media vuelta o buscaste un rodeo?"
+          },
+          {
+            "question": "¿Qué significa soñar con una encrucijada o un cruce de caminos?",
+            "answer": "Llegar al punto donde el camino se divide suele acompañar una elección que estás sopesando. Anota cómo era cada camino, cuál te atraía y si había alguien para indicarte la dirección."
+          },
+          {
+            "question": "¿Qué significa soñar con un camino que desaparece?",
+            "answer": "Un camino que se pierde entre la hierba, la niebla o la arena puede enlazar con la incertidumbre sobre el siguiente paso, o con la sensación de haber dejado un terreno conocido. Fíjate en si te sentías perdido o libre: la misma escena puede llevar las dos cosas."
+          }
+        ],
+        "documentMetaDescription": "Soñar con un camino, una senda llena de maleza, una encrucijada o un camino que se borra: qué puede decir la escena sobre cómo avanzas, con preguntas y ejemplo.",
+        "modifiedAt": "2026-10-08"
       },
       "de": {
         "slug": "weg",
         "name": "Weg / Straße",
-        "shortDescription": "Wege symbolisieren Ihre Lebensreise, Entscheidungen und die Richtung, die Sie einschlagen. Gabelungen stehen für Entscheidungspunkte, blockierte Wege für Hindernisse.",
+        "shortDescription": "Von einem Weg zu träumen heißt oft, zu Fuß Schritt für Schritt die Richtung zu suchen: durch den Wald oder an einer Klippe entlang. Ob er frei, zugewachsen, schmal oder verschwunden war und ob Sie ihn gewählt haben, zählt mehr als eine feste Deutung.",
         "askYourself": [
-          "Bin ich auf dem richtigen Weg?",
-          "Welche Entscheidung steht vor mir?"
-        ]
+          "War der Weg frei, zugewachsen, schmal, oder verlor er sich unter meinen Füßen?",
+          "Hatte ich ihn gewählt, folgte ich jemandem, oder war ich zufällig auf ihn geraten?",
+          "In welchem Bereich meines Lebens taste ich mich gerade Schritt für Schritt voran?"
+        ],
+        "faq": [
+          {
+            "question": "Was bedeutet es, von einem Weg zu träumen?",
+            "answer": "Der Weg wird oft mit Richtung verbunden und mit der Art, wie Sie im eigenen Tempo vorankommen. Was er bedeutet, hängt von seinem Zustand ab, davon, wohin er führte, wer dabei war und was Sie gefühlt haben: Sicherheit, Zögern, Neugier oder Orientierungslosigkeit."
+          },
+          {
+            "question": "Was bedeutet ein zugewachsener oder versperrter Weg im Traum?",
+            "answer": "Ein Weg voller Dornen oder versperrt von einem umgestürzten Baum kann ein Hindernis begleiten, ein Vorhaben, das stockt, oder einen nächsten Schritt, der schwer zu erkennen ist. Ein Scheitern sagt er nicht voraus. Haben Sie sich durchgekämpft, umgedreht oder einen Umweg gesucht?"
+          },
+          {
+            "question": "Was bedeutet eine Weggabelung oder Kreuzung im Traum?",
+            "answer": "An eine Stelle zu kommen, an der sich der Weg teilt, begleitet oft eine Entscheidung, die Sie gerade abwägen. Notieren Sie, wie jeder Weg aussah, welcher Sie angezogen hat und ob jemand da war, der die Richtung zeigte."
+          },
+          {
+            "question": "Was bedeutet es, wenn der Weg im Traum verschwindet?",
+            "answer": "Ein Weg, der sich in Gras, Nebel oder Sand verliert, kann zu Unsicherheit über den nächsten Schritt passen oder zu dem Gefühl, vertrautes Gelände verlassen zu haben. Achten Sie darauf, ob Sie sich verloren oder frei gefühlt haben: Dieselbe Szene kann beides tragen."
+          }
+        ],
+        "documentMetaDescription": "Vom Weg träumen, ob zugewachsen, an einer Gabelung oder verschwindend: was die Szene darüber sagen kann, wie Sie vorankommen, mit Fragen und Tagebuchbeispiel.",
+        "modifiedAt": "2026-10-08"
       },
       "it": {
         "slug": "sentiero",
         "name": "Sentiero / Strada",
-        "shortDescription": "I sentieri simboleggiano il viaggio della vita, le scelte e la direzione che stai prendendo. I bivi rappresentano punti di decisione, i percorsi bloccati ostacoli.",
+        "shortDescription": "Sognare un sentiero ti mette spesso a piedi, a cercare la via passo dopo passo: in un bosco, lungo una scogliera, in mezzo a un campo. Che fosse libero, invaso dai rovi, stretto o che svanisse, e che l’avessi scelto tu, conta più di un significato fisso.",
         "askYourself": [
-          "Sono sulla strada giusta?",
-          "Quale decisione devo affrontare?"
-        ]
+          "Il sentiero era libero, invaso dai rovi, stretto, o svaniva sotto i miei passi?",
+          "L’avevo scelto io, seguivo qualcuno, o ci ero capitato per caso?",
+          "In quale parte della mia vita sto avanzando passo dopo passo in questo periodo?"
+        ],
+        "faq": [
+          {
+            "question": "Che cosa significa sognare un sentiero?",
+            "answer": "Il sentiero viene spesso associato alla direzione e al modo di andare avanti, con il proprio passo. Il significato dipende dal suo stato, da dove portava, da chi ti accompagnava e da ciò che provavi: sicurezza, esitazione, curiosità o smarrimento."
+          },
+          {
+            "question": "Che cosa significa sognare un sentiero bloccato o invaso dalla vegetazione?",
+            "answer": "Un sentiero coperto di rovi o sbarrato da un albero caduto può accompagnare un ostacolo, un progetto fermo o un passo successivo difficile da vedere. Non predice un fallimento. Ti sei fatto strada, sei tornato indietro o hai cercato una deviazione?"
+          },
+          {
+            "question": "Che cosa significa sognare un bivio?",
+            "answer": "Arrivare nel punto in cui il sentiero si divide accompagna spesso una scelta che stai soppesando. Annota com’era ciascuna via, quale ti attirava e se c’era qualcuno a indicarti la direzione."
+          },
+          {
+            "question": "Che cosa significa sognare un sentiero che scompare?",
+            "answer": "Un sentiero che si perde nell’erba, nella nebbia o nella sabbia può avvicinarsi all’incertezza sul passo successivo, o alla sensazione di aver lasciato un terreno conosciuto. Nota se ti sentivi perso o libero: la stessa scena può portare entrambe le cose."
+          }
+        ],
+        "documentMetaDescription": "Sognare un sentiero, un sentiero bloccato, un bivio o un sentiero che scompare: che cosa può dire la scena sul tuo modo di andare avanti, con domande.",
+        "modifiedAt": "2026-10-08"
       },
       "pt": {
         "slug": "caminho",
@@ -6003,47 +6278,152 @@
       "en": {
         "slug": "phone",
         "name": "Phone",
-        "shortDescription": "A phone represents communication. A phone that doesn't work can indicate difficulties connecting with others or a message you can't convey.",
+        "shortDescription": "Dreaming of a phone often puts a conversation in the spotlight: a call you cannot make, one you miss, or a voice you did not expect. Who was calling, whether the line worked and how you felt matter more than a fixed meaning.",
         "askYourself": [
-          "Is there someone I need to talk to?",
-          "Am I communicating effectively?"
-        ]
+          "Was I trying to call someone, or was someone trying to reach me?",
+          "Did the phone work, or was the screen broken, the battery dead, the number wrong?",
+          "Is there a conversation I keep putting off, or one I am waiting for?"
+        ],
+        "faq": [
+          {
+            "question": "What does it mean to dream of a phone?",
+            "answer": "A phone is often associated with contact: reaching someone, being reachable, or feeling cut off. Its meaning depends on who was on the line, whether the call went through and how you felt: relieved, anxious, frustrated or intruded upon."
+          },
+          {
+            "question": "Why do I dream that I can't make a phone call?",
+            "answer": "Misdialing, a frozen screen or a call that never connects is a very common frustration dream. It can go with a conversation that feels hard to start, or a sense of not being heard. Ask yourself whom you were trying to reach, and what you wanted to say."
+          },
+          {
+            "question": "What does it mean to dream of losing or breaking your phone?",
+            "answer": "Losing or breaking your phone can match a fear of being unreachable, cut off from your people or from information. Because phones hold so much of daily life, the dream may also simply replay a recent worry about yours. It is not a warning."
+          },
+          {
+            "question": "What does it mean to dream of a call from someone who has died?",
+            "answer": "A call from a loved one who has died can feel very real and often stays with you after waking. It can go with grief, missing their voice, or something left unsaid. It is not a message from beyond: what they said, and how you felt hearing them, is what matters."
+          }
+        ],
+        "documentMetaDescription": "Dreaming of a phone, a call that won't connect, a broken phone or a call from someone who died: what the scene may say about contact, with questions.",
+        "modifiedAt": "2026-10-08"
       },
       "fr": {
         "slug": "telephone",
         "name": "Téléphone",
-        "shortDescription": "Le téléphone représente la communication. Un téléphone qui ne fonctionne pas peut indiquer des difficultés à se connecter avec les autres ou un message que vous n'arrivez pas à transmettre.",
+        "shortDescription": "Rêver d'un téléphone met souvent une conversation au premier plan : un appel impossible à passer, un appel manqué, une voix inattendue. Qui appelait, si la ligne fonctionnait et ce que vous ressentiez comptent plus qu'un sens figé.",
         "askYourself": [
-          "Y a-t-il quelqu'un à qui je dois parler ?",
-          "Est-ce que je communique efficacement ?"
-        ]
+          "Est-ce moi qui essayais d'appeler, ou quelqu'un qui cherchait à me joindre ?",
+          "Le téléphone marchait-il, ou l'écran était-il cassé, la batterie vide, le numéro faux ?",
+          "Y a-t-il une conversation que je repousse, ou une que j'attends ?"
+        ],
+        "faq": [
+          {
+            "question": "Que signifie rêver d'un téléphone ?",
+            "answer": "Le téléphone est souvent associé au contact : joindre quelqu'un, être joignable, ou se sentir coupé des autres. Son sens dépend de qui était au bout du fil, de si l'appel aboutissait et de ce que vous ressentiez : soulagement, inquiétude, agacement ou sentiment d'intrusion."
+          },
+          {
+            "question": "Pourquoi je rêve que je n'arrive pas à téléphoner ?",
+            "answer": "Se tromper de numéro, un écran figé, un appel qui ne passe jamais : ce rêve de frustration est très courant. Il peut accompagner une conversation difficile à engager, ou le sentiment de ne pas être entendu. Demandez-vous qui vous cherchiez à joindre, et pour dire quoi."
+          },
+          {
+            "question": "Que signifie rêver de perdre ou de casser son téléphone ?",
+            "answer": "Perdre ou casser son téléphone peut rejoindre la peur d'être injoignable, coupé de ses proches ou des informations. Comme le téléphone porte une grande part du quotidien, le rêve peut aussi reprendre un souci récent à son sujet. Ce n'est pas un avertissement."
+          },
+          {
+            "question": "Que signifie recevoir l'appel d'un défunt en rêve ?",
+            "answer": "L'appel d'un proche disparu peut sembler très réel et marque souvent au réveil. Il peut accompagner le deuil, le manque de sa voix ou quelque chose resté non dit. Ce n'est pas un message de l'au-delà : ce qu'il disait, et ce que vous ressentiez en l'entendant, compte d'abord."
+          }
+        ],
+        "documentMetaDescription": "Rêver d'un téléphone, d'un appel qui ne passe pas, d'un portable cassé ou de l'appel d'un défunt : ce que la scène peut dire du lien aux autres, avec questions.",
+        "modifiedAt": "2026-10-08"
       },
       "es": {
         "slug": "telefono",
         "name": "Teléfono",
-        "shortDescription": "Un teléfono representa comunicación. Un teléfono que no funciona puede indicar dificultades para conectar con otros o un mensaje que no puedes transmitir.",
+        "shortDescription": "Soñar con un teléfono suele poner una conversación en primer plano: una llamada que no consigues hacer, una llamada perdida, una voz que no esperabas. Quién llamaba, si la línea funcionaba y lo que sentiste cuentan más que un significado fijo.",
         "askYourself": [
-          "¿Hay alguien con quien necesito hablar?",
-          "¿Estoy comunicándome eficazmente?"
-        ]
+          "¿Era yo quien intentaba llamar, o alguien intentaba localizarme?",
+          "¿El teléfono funcionaba, o tenía la pantalla rota, la batería agotada, el número equivocado?",
+          "¿Hay alguna conversación que voy aplazando, o una que estoy esperando?"
+        ],
+        "faq": [
+          {
+            "question": "¿Qué significa soñar con un teléfono?",
+            "answer": "El teléfono se asocia a menudo con el contacto: localizar a alguien, estar localizable o sentirte desconectado de los demás. Su sentido depende de quién estaba al otro lado, de si la llamada entraba y de lo que sentías: alivio, inquietud, frustración o invasión."
+          },
+          {
+            "question": "¿Por qué sueño que no puedo hacer una llamada?",
+            "answer": "Marcar mal una y otra vez, una pantalla bloqueada, una llamada que nunca entra: es un sueño de frustración muy común. Puede acompañar una conversación difícil de empezar, o la sensación de no conseguir que te escuchen. Pregúntate a quién intentabas llamar y qué querías decir."
+          },
+          {
+            "question": "¿Qué significa soñar que pierdes o rompes el móvil?",
+            "answer": "Perder o romper el móvil puede enlazar con el miedo a quedarte ilocalizable, desconectado de los tuyos o de la información. Como el móvil ocupa tanto del día a día, el sueño también puede repetir una preocupación reciente por el tuyo. No es un aviso."
+          },
+          {
+            "question": "¿Qué significa soñar con una llamada de un difunto?",
+            "answer": "La llamada de un ser querido que ha fallecido puede parecer muy real y suele quedarse contigo al despertar. Puede acompañar el duelo, la falta de su voz o algo que quedó sin decir. No es un mensaje del más allá: lo que decía y lo que sentiste al oírle es lo que cuenta."
+          }
+        ],
+        "documentMetaDescription": "Soñar con un teléfono, una llamada que no entra, un móvil roto o la llamada de un difunto: qué puede decir la escena sobre el contacto, con preguntas y ejemplo.",
+        "modifiedAt": "2026-10-08"
       },
       "de": {
         "slug": "telefon",
         "name": "Telefon",
-        "shortDescription": "Telefone repräsentieren Kommunikation und Verbindung. Ein klingelndes Telefon kann eine wichtige Botschaft andeuten, während ein nicht funktionierendes Telefon auf Kommunikationsprobleme hinweist.",
+        "shortDescription": "Von einem Telefon zu träumen rückt oft ein Gespräch in den Vordergrund: ein Anruf, der nicht klappt, ein verpasster Anruf, eine unerwartete Stimme. Wer anrief, ob die Leitung funktionierte und was Sie fühlten, zählt mehr als eine feste Deutung.",
         "askYourself": [
-          "Welche Botschaft versuche ich zu empfangen oder zu senden?",
-          "Gibt es Kommunikationsprobleme in meinem Leben?"
-        ]
+          "Wollte ich jemanden anrufen, oder versuchte jemand, mich zu erreichen?",
+          "Funktionierte das Telefon, oder war das Display kaputt, der Akku leer, die Nummer falsch?",
+          "Gibt es ein Gespräch, das ich vor mir herschiebe, oder eines, auf das ich warte?"
+        ],
+        "faq": [
+          {
+            "question": "Was bedeutet es, von einem Telefon zu träumen?",
+            "answer": "Das Telefon wird oft mit Kontakt verbunden: jemanden erreichen, erreichbar sein oder sich abgeschnitten fühlen. Was es bedeutet, hängt davon ab, wer am anderen Ende war, ob der Anruf durchkam und was Sie gefühlt haben: Erleichterung, Unruhe, Ärger oder das Gefühl, gestört zu werden."
+          },
+          {
+            "question": "Warum träume ich, dass ich nicht telefonieren kann?",
+            "answer": "Sich immer wieder zu verwählen, ein eingefrorenes Display, ein Anruf, der nie durchkommt: Dieser Frusttraum ist sehr verbreitet. Er kann ein Gespräch begleiten, das schwer anzufangen ist, oder das Gefühl, nicht gehört zu werden. Fragen Sie sich, wen Sie erreichen und was Sie sagen wollten."
+          },
+          {
+            "question": "Was bedeutet es, im Traum das Handy zu verlieren oder kaputt zu machen?",
+            "answer": "Das Handy zu verlieren oder zu zerbrechen kann zu der Angst passen, nicht erreichbar zu sein, abgeschnitten von den eigenen Leuten oder von Informationen. Weil das Handy so viel Alltag enthält, kann der Traum auch einfach eine echte Sorge darum aufgreifen. Eine Warnung ist er nicht."
+          },
+          {
+            "question": "Was bedeutet ein Anruf von einem Verstorbenen im Traum?",
+            "answer": "Ein Anruf von einem verstorbenen Menschen kann sich sehr echt anfühlen und wirkt oft lange nach. Er kann Trauer begleiten, die Sehnsucht nach der Stimme oder etwas Ungesagtes. Eine Botschaft aus dem Jenseits ist er nicht: Was gesagt wurde und was Sie beim Zuhören fühlten, zählt."
+          }
+        ],
+        "documentMetaDescription": "Vom Telefon träumen, ob ein Anruf nicht durchkommt, das Handy kaputt ist oder ein Verstorbener anruft: was die Szene über Kontakt sagen kann, mit Fragen.",
+        "modifiedAt": "2026-10-08"
       },
       "it": {
         "slug": "telefono",
         "name": "Telefono",
-        "shortDescription": "I telefoni rappresentano comunicazione e connessione. Un telefono che squilla può suggerire un messaggio importante, mentre uno che non funziona indica problemi di comunicazione.",
+        "shortDescription": "Sognare un telefono mette spesso in primo piano una conversazione: una chiamata che non riesci a fare, una chiamata persa, una voce che non ti aspettavi. Chi chiamava, se la linea funzionava e che cosa provavi contano più di un significato fisso.",
         "askYourself": [
-          "Quale messaggio sto cercando di ricevere o inviare?",
-          "Ci sono problemi di comunicazione nella mia vita?"
-        ]
+          "Ero io a cercare di chiamare, o qualcuno cercava di raggiungermi?",
+          "Il telefono funzionava, o lo schermo era rotto, la batteria scarica, il numero sbagliato?",
+          "C’è una conversazione che continuo a rimandare, o una che sto aspettando?"
+        ],
+        "faq": [
+          {
+            "question": "Che cosa significa sognare un telefono?",
+            "answer": "Il telefono viene spesso associato al contatto: raggiungere qualcuno, essere raggiungibile o sentirsi tagliati fuori. Il significato dipende da chi era dall’altra parte, dal fatto che la chiamata passasse o no e da ciò che provavi: sollievo, ansia, frustrazione o fastidio."
+          },
+          {
+            "question": "Perché sogno di non riuscire a telefonare?",
+            "answer": "Sbagliare numero di continuo, uno schermo bloccato, una chiamata che non parte mai: è un sogno di frustrazione molto comune. Può accompagnare una conversazione difficile da avviare, o la sensazione di non essere ascoltato. Chiediti chi cercavi di chiamare e che cosa volevi dire."
+          },
+          {
+            "question": "Che cosa significa sognare di perdere o rompere il cellulare?",
+            "answer": "Perdere o rompere il cellulare può avvicinarsi alla paura di essere irraggiungibile, tagliato fuori dalle persone care o dalle informazioni. Dato che il telefono contiene tanta parte della giornata, il sogno può anche riprendere una preoccupazione reale per il tuo. Non è un avvertimento."
+          },
+          {
+            "question": "Che cosa significa sognare la telefonata di un defunto?",
+            "answer": "La telefonata di una persona cara che non c’è più può sembrare molto reale e spesso resta addosso al risveglio. Può accompagnare il lutto, la mancanza della sua voce o qualcosa rimasto in sospeso. Non è un messaggio dall’aldilà: conta ciò che diceva e ciò che hai provato ascoltandola."
+          }
+        ],
+        "documentMetaDescription": "Sognare un telefono, una chiamata che non parte, un cellulare rotto o la telefonata di un defunto: che cosa può dire la scena sul contatto, con domande.",
+        "modifiedAt": "2026-10-08"
       },
       "pt": {
         "slug": "celular",
