@@ -34,6 +34,21 @@ const MEDITATION = [
   'scripts/check-brand-tokens.js',
 ];
 
+// What `node scripts/mobile-release.js verify` reads: the pins of
+// release/mobile-versions.json against the app manifests and EAS profiles.
+const MOBILE_VERSIONS = [
+  'release/',
+  'scripts/mobile-release.js',
+  'app.json',
+  'package.json',
+  'package-lock.json',
+  'eas.json',
+  'apps/meditation/app.json',
+  'apps/meditation/package.json',
+  'apps/meditation/package-lock.json',
+  'apps/meditation/eas.json',
+];
+
 // Deno runtime sources; the Edge tests also read supabase/migrations.
 const EDGE = ['supabase/functions/', 'supabase/lib/', 'supabase/migrations/', 'deno.lock'];
 
@@ -144,6 +159,8 @@ export default {
     // ---- verify:pr, only when the commit changes that surface since origin/master.
     { name: 'site', command: 'npm run docs:build && npm run docs:check', when: SITE },
     { name: 'ci-contracts', command: CI_CONTRACTS, when: ['.circleci/'] },
+    // A bad version pin fails before merge rather than at publication (offline, 0.1 s).
+    { name: 'mobile-versions', command: 'node scripts/mobile-release.js verify --app all', inputs: MOBILE_VERSIONS, when: MOBILE_VERSIONS },
     { name: 'meditation', command: MEDITATION_CHECKS, when: MEDITATION, releaseAlways: true, requires: MEDITATION_DEPS },
     { name: 'edge-functions', command: EDGE_CHECKS, when: EDGE, releaseAlways: true, specialised: true, requires: DENO },
 
