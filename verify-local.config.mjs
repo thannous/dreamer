@@ -131,6 +131,17 @@ export default {
     'scripts/run-jest-changed.js',
     // Meditation's Jest module resolution.
     'apps/meditation/tests/jestResolver.cjs',
+    // The contract checkers and runners the checks call, and the tests of
+    // this config and of the hook.
+    'scripts/check-brand-tokens.js',
+    'scripts/check-monorepo-boundaries*.js',
+    'scripts/docs-check.js',
+    'scripts/mobile-release.js',
+    'scripts/verify-analysis-authorization.mjs',
+    'scripts/run-backend-e2e.cjs',
+    'tools/e2e/run.mjs',
+    'scripts/verify-local-config.test.js',
+    'scripts/pre-push-hook.test.js',
   ],
   checks: [
     // ---- verify:pr, reused by verify:release when the inputs are identical.
