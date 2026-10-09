@@ -247,7 +247,7 @@ test.describe('feature sheet previews', () => {
     }
   });
 
-  test('a story goes forward and back, and its button waits for the scene', async ({ page }) => {
+  test('a story only moves forward, and its button waits for the scene', async ({ page }) => {
     await page.getByTestId('btn.onboarding.feature.capture').click();
     await expect(page.getByTestId('component.onboarding.story.capture.0')).toBeVisible();
     // The button names what comes next and stays inactive until the scene has told its part.
@@ -255,15 +255,11 @@ test.describe('feature sheet previews', () => {
     await expect(next).toBeDisabled();
     await expect(next).toBeEnabled();
     await expect(next).toHaveAccessibleName('And on waking?');
+    // One way through: the close button, not a back link, leaves the story.
     await expect(page.getByTestId('btn.onboarding.story.previous')).toHaveCount(0);
-    await next.click();
-    await expect(page.getByTestId('component.onboarding.story.capture.1')).toBeVisible();
-    await page.getByTestId('btn.onboarding.story.previous').click();
-    await expect(page.getByTestId('component.onboarding.story.capture.0')).toBeVisible();
     await readToExample(page, 'capture');
     await expect(page.getByTestId('component.onboarding.dreamGlobe')).toBeVisible();
-    await page.getByTestId('btn.onboarding.story.previous').click();
-    await expect(page.getByTestId('component.onboarding.story.capture.2')).toBeVisible();
+    await expect(page.getByTestId('btn.onboarding.story.previous')).toHaveCount(0);
     await page.getByTestId('btn.onboarding.feature.close').click();
     await expect(page.getByTestId('btn.onboarding.feature.capture')).toBeFocused();
     await expect(page.getByTestId('component.onboarding.intro')).toBeVisible();

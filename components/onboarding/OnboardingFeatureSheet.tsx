@@ -4,7 +4,6 @@ import Animated, { useReducedMotion } from 'react-native-reanimated';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { DURATION, EASE } from '@/components/motion/motion';
-import { PressableScale } from '@/components/motion/PressableScale';
 import { BottomSheetActions } from '@/components/ui/BottomSheetActions';
 import { StandardBottomSheet } from '@/components/ui/StandardBottomSheet';
 import { DarkTheme } from '@/constants/journalTheme';
@@ -53,7 +52,7 @@ function FeatureNarrative({ feature, tokens, stageHeight, frameHeight, onStoryCh
       <Headline text={t(`onboarding.narrative.${feature}.${scene}.title`)} lineHeight={styles.title.lineHeight}
         style={[styles.title, { color: tokens.text.primary }]} />
       {demo ? <StoryScene delay={HEADLINE_SETTLE}>
-        <Text style={[styles.body, { color: tokens.text.secondary }]}>{body}</Text>
+        <Text style={[styles.body, { color: tokens.text.secondary, textShadowColor: tokens.illustration.scrim }]}>{body}</Text>
       </StoryScene> : null}
     </View>
     <View testID={`component.onboarding.preview.${feature}`}>
@@ -70,13 +69,12 @@ function FeatureNarrative({ feature, tokens, stageHeight, frameHeight, onStoryCh
 }
 
 /**
- * The page-turning footer. The button arrives once the scene has finished telling
- * its part, and its label names what comes next. The link row keeps its height on
- * the first page, so the button never moves under the thumb.
+ * The page-turning footer: one button, always in the same place. It arrives once
+ * the scene has finished telling its part, and its label names what comes next.
+ * The story only moves forward; the close button leaves it at any time.
  */
-function StoryFooter({ label, testID, readyAt, tokens, onNext, backLabel, onBack }: {
-  label: string; testID: string; readyAt: number; tokens: NoctaliaDesignTokens;
-  onNext: () => void; backLabel: string; onBack?: () => void;
+function StoryFooter({ label, testID, readyAt, tokens, onNext }: {
+  label: string; testID: string; readyAt: number; tokens: NoctaliaDesignTokens; onNext: () => void;
 }) {
   const [ready, setReady] = useState(readyAt <= 0);
   useEffect(() => {
@@ -99,9 +97,6 @@ function StoryFooter({ label, testID, readyAt, tokens, onNext, backLabel, onBack
     >
       <StoryButton label={label} onPress={onNext} disabled={!ready} testID={testID} tokens={tokens} />
     </Animated.View>
-    {onBack ? <PressableScale accessibilityRole="button" onPress={onBack} style={styles.link} testID="btn.onboarding.story.previous">
-      <Text style={[styles.linkText, { color: tokens.text.secondary }]}>{backLabel}</Text>
-    </PressableScale> : <View accessible={false} style={styles.link} />}
   </BottomSheetActions>;
 }
 
@@ -113,7 +108,8 @@ export function OnboardingFeatureSheet({ feature, onClose, onFeatureChange }: {
   const reduced = useReducedMotion();
   const { height, width } = useWindowDimensions();
   const insets = useSafeAreaInsets();
-  const sheetHeight = Math.max(160, Math.min(height * 0.8, height - insets.top - insets.bottom - 96) - 48);
+  // Tall enough to be the night itself; the onboarding stays visible above it.
+  const sheetHeight = Math.max(160, Math.min(height * 0.86, height - insets.top - insets.bottom - 40) - 24);
   const nextChapter = CHAPTERS[CHAPTERS.indexOf(feature) + 1];
   const storyRef = useRef<FeatureStoryPlayback | null>(null);
   const [step, setStep] = useState(0);
@@ -143,14 +139,14 @@ export function OnboardingFeatureSheet({ feature, onClose, onFeatureChange }: {
         else if (nextChapter) onFeatureChange(nextChapter);
         else onClose();
       }}
-      backLabel={t('onboarding.story.back')}
-      onBack={step > 0 ? () => storyRef.current?.previous() : undefined} />}
+    />}
     closeButton={{ label: t('journal.detail.share_modal.close'), testID: 'btn.onboarding.feature.close' }}>
     {/* Only the narrative resets. The sheet host and its close control stay in place. */}
     <FeatureNarrative key={feature} feature={feature} tokens={tokens}
-      stageHeight={Math.max(170, Math.min(270, sheetHeight - 380))}
+      // The example's globe takes the room the copy and the button leave it.
+      stageHeight={Math.max(200, Math.min(420, sheetHeight - 350))}
       // Leaves room under the scene for the button's glow.
-      frameHeight={Math.max(230, Math.min(390, sheetHeight - 340))}
+      frameHeight={Math.max(230, Math.min(440, sheetHeight - 290))}
       onStoryChange={updateStory} />
   </StandardBottomSheet>;
 }
@@ -158,14 +154,13 @@ export function OnboardingFeatureSheet({ feature, onClose, onFeatureChange }: {
 const styles = StyleSheet.create({
   // Air between the scene and the footer, so captions never touch the button.
   narrative: { paddingTop: 4, paddingBottom: 20 },
-  link: { minHeight: 44, alignItems: 'center', justifyContent: 'center' },
-  linkText: { fontFamily: Fonts.spaceGrotesk.medium, fontSize: 14, lineHeight: 20 },
   // Room for the word and a two-line sentence, so the image never jumps between slides.
   copy: { alignItems: 'center', gap: 10, paddingHorizontal: 8, paddingTop: 6, paddingBottom: 18, minHeight: 132 },
   // Above a scene, the word stands alone; the sentence plays as the scene's subtitle.
   storyCopy: { minHeight: 0, paddingBottom: 14 },
   sceneSlot: { width: '100%', alignItems: 'center', paddingHorizontal: 12 },
   title: { fontFamily: Fonts.fraunces.semiBold, fontSize: 44, lineHeight: 52, textAlign: 'center' },
-  body: { fontFamily: Fonts.spaceGrotesk.regular, fontSize: 17, lineHeight: 24, textAlign: 'center', maxWidth: 300 },
+  // Shaded like the subtitles, so it stays legible over the moon.
+  body: { fontFamily: Fonts.spaceGrotesk.regular, fontSize: 17, lineHeight: 24, textAlign: 'center', maxWidth: 300, textShadowOffset: { width: 0, height: 1 }, textShadowRadius: 12 },
   note: { fontFamily: Fonts.spaceGrotesk.regular, fontSize: 11, lineHeight: 16, textAlign: 'center', paddingTop: 12, paddingBottom: 8 },
 });

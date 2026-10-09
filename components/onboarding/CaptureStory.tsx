@@ -11,7 +11,8 @@ import { DreamGlobe } from './DreamGlobe';
 import { StoryScene, STORY_DEMO_STEP } from './FeatureStory';
 import { WordReveal } from './story/StoryText';
 
-const ARTWORK = require('../../docs-src/static/img/dreams/staircase-480w.webp');
+// The 800 px painting stays sharp when the camera reaches the door.
+const ARTWORK = require('../../docs-src/static/img/dreams/staircase-800w.webp');
 const VOICE_BARS = [10, 20, 32, 24, 38, 26, 16, 10];
 /** Details of the dream that slip away on waking, each from its own place around it. */
 const FADING = [
@@ -55,7 +56,7 @@ export function CaptureStory({ step, reduced, tokens, stageHeight, onDreamChange
 }) {
   const { t } = useTranslation();
   if (step === STORY_DEMO_STEP) return <StoryScene><DreamGlobe tokens={tokens} stageHeight={stageHeight} onSelectionChange={onDreamChange} /></StoryScene>;
-  const cardHeight = Math.max(120, Math.min(190, stageHeight - 24));
+  const cardHeight = Math.max(120, Math.min(240, stageHeight - 40));
   const cardWidth = cardHeight * 0.76;
 
   if (step === 0) {

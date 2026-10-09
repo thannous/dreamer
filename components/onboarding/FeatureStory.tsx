@@ -30,7 +30,6 @@ export function useFeatureStory() {
   return {
     step, reduced, lastScene,
     next: () => seek(step + 1),
-    previous: () => seek(step - 1),
   };
 }
 
