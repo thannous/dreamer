@@ -5,7 +5,7 @@
   "lang": "it",
   "slug": "significato-dei-sogni-in-volo-cosa-significa-volare-nei-tuoi-sogni",
   "title": "Sogni volanti: svela il loro potente significato - Noctalia",
-  "description": "Volare nei sogni? Scopri cosa simboleggia il volo in termini di libertà, ambizione e controllo. Cosa rivelano i modelli di volo sulla tua vita.",
+  "description": "Sognare di volare: cosa può significare planare senza sforzo, non riuscire a decollare o volare per fuggire, e che cosa annotare al risveglio.",
   "robots": "max-image-preview:large",
   "themeColor": "#0a0514",
   "htmlClass": "scroll-smooth blog-article",
@@ -14,24 +14,24 @@
   "mainClass": "pt-32 pb-20 px-4",
   "ogType": "article",
   "ogTitle": "Sogni volanti: svela il loro potente significato - Noctalia",
-  "ogDescription": "Volare nei sogni? Scopri cosa simboleggia il volo in termini di libertà, ambizione e controllo. Cosa rivelano i modelli di volo sulla tua vita.",
+  "ogDescription": "Volo gioioso, decollo mancato o fuga nell'aria: che cosa può raccontare il tuo sogno di volo, in base a quello che hai provato.",
   "ogImage": "https://noctalia.app/img/blog/flying-dreams-meaning.webp",
   "ogImageAlt": "Ampia vista del cielo che rappresenta la libertà e l'emozione di volare nei sogni",
   "twitterCard": "summary_large_image",
   "twitterTitle": "Sogni volanti: svela il loro potente significato - Noctalia",
-  "twitterDescription": "Volare nei sogni? Scopri cosa simboleggia il volo in termini di libertà, ambizione e controllo. Cosa rivelano i modelli di volo sulla tua vita.",
+  "twitterDescription": "Sognare di volare: libertà, distacco o fatica? Dipende da come volavi.",
   "twitterImage": "https://noctalia.app/img/blog/flying-dreams-meaning.webp",
   "twitterImageAlt": "Ampia vista del cielo che rappresenta la libertà e l'emozione di volare nei sogni",
   "publishedTime": "2025-01-10",
-  "modifiedTime": "2026-01-06",
+  "modifiedTime": "2026-10-08",
   "author": "Thanh Chau",
   "prevPath": "/it/blog/significato-dei-sogni-che-cadono-perche-sogni-di-cadere",
   "nextPath": "/it/blog/sogni-sui-serpenti-cio-di-cui-il-tuo-subconscio-ti-sta-davvero-avvertendo",
   "preloadImage": "/img/blog/flying-dreams-meaning.webp",
   "jsonLd": [
-    "{\n            \"@context\": \"https://schema.org\",\n            \"@type\": \"BlogPosting\",\n            \"headline\": \"Significato dei sogni in volo: cosa significa volare nei tuoi sogni\",\n            \"description\": \"Perchè sogni di volare? Scopri la psicologia dietro i sogni di volo e cosa rivelano su di te.\",\n            \"image\": {\n                \"@type\": \"ImageObject\",\n                \"url\": \"https://noctalia.app/img/blog/flying-dreams-meaning.webp\",\n                \"width\": 1200,\n                \"height\": 630\n            },\n            \"author\": [\n                {\n                    \"@type\": \"Person\",\n                    \"@id\": \"https://noctalia.app/it/chi-siamo#person\",\n                    \"name\": \"Thanh Chau\",\n                    \"jobTitle\": \"Founder & Publication Director\",\n                    \"url\": \"https://noctalia.app/it/chi-siamo\",\n                    \"worksFor\": {\n                        \"@type\": \"Organization\",\n                        \"@id\": \"https://noctalia.app/#organization\",\n                        \"name\": \"Noctalia\",\n                        \"url\": \"https://noctalia.app\"\n                    }\n                },\n                {\n                    \"@type\": \"Organization\",\n                    \"@id\": \"https://noctalia.app/#organization\",\n                    \"name\": \"Noctalia\",\n                    \"url\": \"https://noctalia.app\",\n                    \"logo\": {\n                        \"@type\": \"ImageObject\",\n                        \"url\": \"https://noctalia.app/logo/logo_noctalia.png\"\n                    }\n                }\n            ],\n            \"publisher\": {\n                \"@type\": \"Organization\",\n                \"name\": \"Noctalia\",\n                \"url\": \"https://noctalia.app\",\n                \"logo\": {\n                    \"@type\": \"ImageObject\",\n                    \"url\": \"https://noctalia.app/logo/logo_noctalia.png\"\n                }\n            },\n            \"datePublished\": \"2025-01-10\",\n            \"dateModified\": \"2026-01-06\",\n            \"mainEntityOfPage\": {\n                \"@type\": \"WebPage\",\n                \"@id\": \"https://noctalia.app/it/blog/significato-dei-sogni-in-volo-cosa-significa-volare-nei-tuoi-sogni\"\n            },\n            \"inLanguage\": \"it\",\n            \"isAccessibleForFree\": true,\n            \"wordCount\": 1152,\n            \"timeRequired\": \"PT4M\",\n            \"url\": \"https://noctalia.app/it/blog/significato-dei-sogni-in-volo-cosa-significa-volare-nei-tuoi-sogni\"\n        }",
-    "{\n        \"@context\": \"https://schema.org\",\n        \"@type\": \"FAQPage\",\n        \"mainEntity\": [\n                {\n                        \"@type\": \"Question\",\n                        \"name\": \"Cosa significa quando sogni di volare?\",\n                        \"acceptedAnswer\": {\n                                \"@type\": \"Answer\",\n                                \"text\": \"I sogni di volo simboleggiano tipicamente la libertà, la liberazione, l’ambizione e il superamento delle sfide. Spesso si verificano quando ti senti sicuro, quando superi ostacoli o cerchi fuga dai limiti della tua vita da sveglio.\"\n                        }\n                },\n                {\n                        \"@type\": \"Question\",\n                        \"name\": \"I sogni di volare sono buoni o cattivi?\",\n                        \"acceptedAnswer\": {\n                                \"@type\": \"Answer\",\n                                \"text\": \"I sogni di volo sono generalmente considerati positivi, rappresentano la libertà, la fiducia e la trascendenza. Tuttavia, il significato dipende dalla qualità del volo: volare senza sforzo suggerisce fiducia, mentre lottare per volare può indicare ostacoli o insicurezza.\"\n                        }\n                },\n                {\n                        \"@type\": \"Question\",\n                        \"name\": \"Puoi controllare i sogni volanti?\",\n                        \"acceptedAnswer\": {\n                                \"@type\": \"Answer\",\n                                \"text\": \"Sì, i sogni di volo sono spesso associati ai sogni lucidi: essere consapevoli che stai sognando mentre sei ancora nel sogno. Con la pratica, puoi imparare a riconoscere gli stati onirici e acquisire il controllo sul tuo volo, rendendolo un passaggio verso il sogno consapevole.\"\n                        }\n                }\n        ]\n}",
-    "{\n    \"@context\": \"https://schema.org\",\n    \"@type\": \"BreadcrumbList\",\n    \"itemListElement\": [\n        {\n            \"@type\": \"ListItem\",\n            \"position\": 1,\n            \"name\": \"Home\",\n            \"item\": \"https://noctalia.app/it/\"\n        },\n        {\n            \"@type\": \"ListItem\",\n            \"position\": 2,\n            \"name\": \"Risorse\",\n            \"item\": \"https://noctalia.app/it/blog/\"\n        },\n        {\n            \"@type\": \"ListItem\",\n            \"position\": 3,\n            \"name\": \"Flying Dreams\",\n            \"item\": \"https://noctalia.app/it/blog/significato-dei-sogni-in-volo-cosa-significa-volare-nei-tuoi-sogni\"\n        }\n    ]\n}"
+    "{\n    \"@context\": \"https://schema.org\",\n    \"@type\": \"BlogPosting\",\n    \"headline\": \"Sognare di volare: il significato dipende da come volavi\",\n    \"description\": \"Sognare di volare: cosa può significare planare senza sforzo, non riuscire a decollare o volare per fuggire, e che cosa annotare al risveglio.\",\n    \"image\": {\n        \"@type\": \"ImageObject\",\n        \"url\": \"https://noctalia.app/img/blog/flying-dreams-meaning.webp\",\n        \"width\": 1200,\n        \"height\": 630\n    },\n    \"author\": [\n        {\n            \"@type\": \"Person\",\n            \"@id\": \"https://noctalia.app/it/chi-siamo#person\",\n            \"name\": \"Thanh Chau\",\n            \"jobTitle\": \"Founder & Publication Director\",\n            \"url\": \"https://noctalia.app/it/chi-siamo\",\n            \"worksFor\": {\n                \"@type\": \"Organization\",\n                \"@id\": \"https://noctalia.app/#organization\",\n                \"name\": \"Noctalia\",\n                \"url\": \"https://noctalia.app\"\n            }\n        },\n        {\n            \"@type\": \"Organization\",\n            \"@id\": \"https://noctalia.app/#organization\",\n            \"name\": \"Noctalia\",\n            \"url\": \"https://noctalia.app\",\n            \"logo\": {\n                \"@type\": \"ImageObject\",\n                \"url\": \"https://noctalia.app/logo/logo_noctalia.png\"\n            }\n        }\n    ],\n    \"publisher\": {\n        \"@type\": \"Organization\",\n        \"name\": \"Noctalia\",\n        \"url\": \"https://noctalia.app\",\n        \"logo\": {\n            \"@type\": \"ImageObject\",\n            \"url\": \"https://noctalia.app/logo/logo_noctalia.png\"\n        }\n    },\n    \"datePublished\": \"2025-01-10\",\n    \"dateModified\": \"2026-10-08\",\n    \"mainEntityOfPage\": {\n        \"@type\": \"WebPage\",\n        \"@id\": \"https://noctalia.app/it/blog/significato-dei-sogni-in-volo-cosa-significa-volare-nei-tuoi-sogni\"\n    },\n    \"inLanguage\": \"it\",\n    \"isAccessibleForFree\": true,\n    \"wordCount\": 1822,\n    \"timeRequired\": \"PT9M\",\n    \"url\": \"https://noctalia.app/it/blog/significato-dei-sogni-in-volo-cosa-significa-volare-nei-tuoi-sogni\"\n}",
+    "{\n    \"@context\": \"https://schema.org\",\n    \"@type\": \"FAQPage\",\n    \"mainEntity\": [\n        {\n            \"@type\": \"Question\",\n            \"name\": \"Che cosa significa sognare di volare?\",\n            \"acceptedAnswer\": {\n                \"@type\": \"Answer\",\n                \"text\": \"Non c'è un significato unico. Un volo facile e piacevole accompagna spesso una sensazione di libertà, sollievo o distacco; un volo faticoso si lega più spesso allo sforzo o a una situazione che non si sblocca. La tua emozione, il controllo che avevi e quello che vivi adesso sono gli indizi migliori.\"\n            }\n        },\n        {\n            \"@type\": \"Question\",\n            \"name\": \"Sognare di volare è un buon segno?\",\n            \"acceptedAnswer\": {\n                \"@type\": \"Answer\",\n                \"text\": \"Non è un presagio, né buono né cattivo: i sogni non predicono il futuro. Un volo gioioso e uno angosciante raccontano cose diverse, per questo conta più quello che hai provato che il simbolo.\"\n            }\n        },\n        {\n            \"@type\": \"Question\",\n            \"name\": \"Perché in alcuni sogni non riesco a decollare?\",\n            \"acceptedAnswer\": {\n                \"@type\": \"Answer\",\n                \"text\": \"Non è nota una causa unica. La scena può riflettere qualcosa che non si sblocca nonostante i tuoi sforzi, ma non dimostra un blocco. Annota che cosa ti tratteneva nel sogno e che cosa è successo subito prima.\"\n            }\n        },\n        {\n            \"@type\": \"Question\",\n            \"name\": \"Un sogno di volo è sempre un sogno lucido?\",\n            \"acceptedAnswer\": {\n                \"@type\": \"Answer\",\n                \"text\": \"No. Un sogno è lucido quando sai, mentre sogni, di stare sognando. Volare o guidare il volo non basta: puoi pilotare un volo senza renderti conto che è un sogno.\"\n            }\n        },\n        {\n            \"@type\": \"Question\",\n            \"name\": \"Si può provocare un sogno di volo?\",\n            \"acceptedAnswer\": {\n                \"@type\": \"Answer\",\n                \"text\": \"Niente lo garantisce. In un esperimento, un volo simulato in realtà virtuale ha reso questi sogni più frequenti subito dopo. Immaginare una scena di volo la sera e annotare i sogni al risveglio è un modo semplice per provarci.\"\n            }\n        }\n    ]\n}",
+    "{\n    \"@context\": \"https://schema.org\",\n    \"@type\": \"BreadcrumbList\",\n    \"itemListElement\": [\n        {\n            \"@type\": \"ListItem\",\n            \"position\": 1,\n            \"name\": \"Home\",\n            \"item\": \"https://noctalia.app/it/\"\n        },\n        {\n            \"@type\": \"ListItem\",\n            \"position\": 2,\n            \"name\": \"Risorse\",\n            \"item\": \"https://noctalia.app/it/blog/\"\n        },\n        {\n            \"@type\": \"ListItem\",\n            \"position\": 3,\n            \"name\": \"Sognare di volare\",\n            \"item\": \"https://noctalia.app/it/blog/significato-dei-sogni-in-volo-cosa-significa-volare-nei-tuoi-sogni\"\n        }\n    ]\n}"
   ],
   "activeNav": "resources"
 }
@@ -51,7 +51,7 @@
 </li>
 <li class="text-purple-400">/</li>
 <li itemprop="itemListElement" itemscope="" itemtype="https://schema.org/ListItem">
-<span class="text-dream-cream" itemprop="name">Flying Dreams</span>
+<span class="text-dream-cream" itemprop="name">Sognare di volare</span>
 <meta content="3" itemprop="position">
 </li>
 </ol>
@@ -63,13 +63,13 @@
 <a class="text-xs font-mono text-purple-200/70 border border-white/10 rounded-full px-3 py-1 hover:text-white hover:border-dream-salmon/30 transition-colors" href="significati-dei-sogni-interpretazione-e-simboli">Argomento: significati dei sogni</a>
 <span aria-hidden="true" class="w-full sm:hidden"></span>
 <span class="text-sm text-purple-300/60">Pubblicato il 10 gennaio 2025</span>
-<span class="text-sm text-purple-300/60">4 minuti di lettura</span>
+<span class="text-sm text-purple-300/60">9 minuti di lettura</span>
 </div>
 <h1 class="font-serif text-3xl md:text-5xl mb-6 text-transparent bg-clip-text bg-gradient-to-b from-white via-dream-lavender to-purple-400/50 leading-tight">
-                    Significato dei sogni in volo: cosa significa volare nei tuoi sogni
+                    Sognare di volare: il significato dipende da come volavi
                 </h1>
 <p class="text-lg text-purple-200/80 leading-relaxed">
-                    Il vento tra i capelli. Il mondo che si restringe sotto. Un esaltante senso di libertà mentre voli sopra tetti e nuvole. I sogni di volo sono tra i sogni più memorabili ed emotivamente potenti che sperimentiamo. Ma cosa significano realmente?
+                    Una piccola spinta e il suolo si allontana. I tetti scorrono sotto di te, l'aria ti sostiene. Oppure agiti le braccia senza riuscire a salire più in alto dei lampioni. Sognare di volare può essere il sogno più bello della settimana o uno dei più frustranti. Il significato dipende meno dal fatto di volare che da come volavi e da cosa hai provato.
                 </p>
 </header>
 <!-- Author Byline (E-E-A-T) -->
@@ -86,7 +86,7 @@
 <!-- Quick Answer (AI SEO) -->
 <section class="glass-panel rounded-2xl p-6 mb-8 border border-dream-salmon/20 bg-white/5" aria-labelledby="quick-answer-title">
     <h2 id="quick-answer-title" class="font-serif text-xl text-dream-cream mb-3">Risposta rapida</h2>
-    <p class="text-purple-100/80 leading-relaxed">Volare nei sogni? Scopri cosa simboleggia il volo in termini di libertà, ambizione e controllo. Cosa rivelano i modelli di volo sulla tua vita.</p>
+    <p class="text-purple-100/80 leading-relaxed">Sognare di volare non ha un significato universale. Un volo facile e gioioso accompagna spesso una sensazione di libertà, sollievo o distacco. Non riuscire a decollare o perdere quota si lega più spesso alla fatica, al dubbio o a una situazione che non si sblocca. Se voli per fuggire, conta soprattutto ciò che ti inseguiva. La tua emozione, il controllo che avevi e quello che stai vivendo adesso sono gli indizi migliori. E volare non basta a rendere un sogno lucido.</p>
 </section>
 <!-- Featured Image -->
 <figure class="mb-12 rounded-2xl overflow-hidden">
@@ -98,32 +98,29 @@
 <i class="w-5 h-5 text-dream-salmon" data-lucide="list"></i> Sommario
                 </h2>
 <ol class="space-y-2 text-sm text-purple-200/70">
-<li><a class="toc-link block" href="#why">1. Perché sogniamo di volare?</a></li>
-<li><a class="toc-link block" href="#types">2. Tipi di sogni volanti</a></li>
-<li><a class="toc-link block" href="#meanings">3. Le 6 interpretazioni principali</a></li>
-<li><a class="toc-link block" href="#emotions">4. In che modo la qualità del volo influisce sul significato</a></li>
-<li><a class="toc-link block" href="#lucid">5. Sogni volanti e sogni lucidi</a></li>
-<li><a class="toc-link block" href="#induce">6. Come avere più sogni di volo</a></li>
+<li><a class="toc-link block" href="#why">1. Perché si sogna di volare?</a></li>
+<li><a class="toc-link block" href="#types">2. Come volavi?</a></li>
+<li><a class="toc-link block" href="#meanings">3. Che cosa può raccontare un sogno di volo</a></li>
+<li><a class="toc-link block" href="#emotions">4. Gioia, paura, frustrazione: cosa cambia l'emozione</a></li>
+<li><a class="toc-link block" href="#lucid">5. Volare in sogno vuol dire fare un sogno lucido?</a></li>
+<li><a class="toc-link block" href="#induce">6. Si può sognare di volare più spesso?</a></li>
 </ol>
 </nav>
 <!-- Article Content -->
 <div class="prose max-w-none text-gray-300">
-<h2 id="why">Perché sogniamo di volare? La scienza spiegata</h2>
+<h2 id="why">Perché si sogna di volare?</h2>
 <p>
-<a class="text-dream-salmon hover:underline" href="../simboli/volare">Volare</a> i sogni si verificano in circa <strong>33% dei sognatori</strong> e sono uno dei temi onirici più segnalati in tutte le culture e periodi di tempo. Le antiche civiltà dalla Grecia alla Cina documentarono i sogni di volo, spesso attribuendoli a messaggi divini o viaggi spirituali.
+                    Nessuno sa spiegare con precisione come il cervello produca quella sensazione di assenza di peso. Si sa però che si può sognare in diverse fasi del sonno e che i sogni più vividi, quelli in cui ti muovi dentro una scena intera, avvengono soprattutto durante il <strong><a class="text-dream-salmon hover:underline" href="sonno-rem-e-sogni-comprendere-il-ripristino-notturno-del-cervello">sonno REM</a></strong>.
                 </p>
 <p>
-                    Da un punto di vista neurologico, i sogni di volo si verificano tipicamente durante <strong><a class="text-dream-salmon hover:underline" href="sonno-rem-e-sogni-comprendere-il-ripristino-notturno-del-cervello">il sonno REM</a></strong> quando la corteccia motoria del cervello è attiva ma il corpo è paralizzato. Questa disconnessione tra l'attività mentale e l'immobilità fisica può creare la sensazione di assenza di gravità e movimento.
+                    Il tema in sé è stato studiato. Il ricercatore tedesco Michael Schredl ed Edgar Piel hanno misurato quante persone ricordano di aver sognato di <a class="text-dream-salmon hover:underline" href="../simboli/volare">volare</a> in ampi campioni rappresentativi della popolazione tedesca. In un altro lavoro, Schredl ha contato i voli nel diario di diverse migliaia di sogni di una sola persona. Queste ricerche descrivono quanto spesso si vola in sogno e in che forma. Nessuna attribuisce al volo un significato fisso.
                 </p>
 <p>
-                    Per alcune persone, volare in sogno è associato alla libertà, alla fiducia o al sollievo dai vincoli della vita da svegli. Questa interpretazione non è universale e dipende dall’emozione e dal contesto del sogno.
+                    Una cosa è più assodata: ciò che vivi di giorno può alimentare il sogno. Un viaggio in aereo, un film o un videogioco a volte forniscono la materia prima del volo, prima di qualsiasi lettura simbolica.
                 </p>
+<h2 id="types">Come volavi?</h2>
 <p>
-                    A differenza dei sogni più comuni (cadere, <a class="text-dream-salmon hover:underline" href="../simboli/inseguimento">essere inseguiti</a>), i sogni di volo sono prevalentemente <strong>esperienze positive</strong>. Gli studi dimostrano che le persone che sognano di volare spesso riferiscono sentimenti di gioia, euforia e empowerment al risveglio.
-                </p>
-<h2 id="types">Tipi di sogni in volo e cosa rivelano</h2>
-<p>
-                    Il modo in cui voli nel tuo sogno fornisce importanti indizi sul suo significato:
+                    Prima di cercare un significato, annota la scena. Queste varianti non sono definizioni: sono piste da confrontare con quello che hai provato.
                 </p>
 </div>
 <!-- Dream Variations Cards -->
@@ -133,10 +130,10 @@
 <div class="p-2 bg-dream-salmon/10 rounded-lg">
 <i class="w-5 h-5 text-dream-salmon" data-lucide="bird"></i>
 </div>
-<h3 class="font-serif text-lg text-dream-cream">Librarsi senza sforzo</h3>
+<h3 class="font-serif text-lg text-dream-cream">Planare senza sforzo</h3>
 </div>
 <p class="text-sm text-gray-300">
-                        Scivolare facilmente nell'aria senza sforzo suggerisce <strong>fiducia e libertà</strong>. Ti trovi in ​​un periodo della vita in cui le cose sembrano facili e le possibilità sembrano infinite.
+                        Plani, viri, scegli dove atterrare. Questo volo accompagna spesso un momento di <strong>sollievo o di agio</strong>: una pressione che si allenta, un periodo in cui le cose vanno meglio. Chiediti che cosa ti pesa meno oggi rispetto a un mese fa.
                     </p>
 </div>
 <div class="dream-card glass-panel rounded-xl p-6 border border-transparent">
@@ -144,10 +141,10 @@
 <div class="p-2 bg-dream-salmon/10 rounded-lg">
 <i class="w-5 h-5 text-dream-salmon" data-lucide="wind"></i>
 </div>
-<h3 class="font-serif text-lg text-dream-cream">Lotta per rimanere in volo</h3>
+<h3 class="font-serif text-lg text-dream-cream">Non riuscire a decollare</h3>
 </div>
 <p class="text-sm text-gray-300">
-                        La difficoltà a mantenere il volo indica <strong>ostacoli o insicurezza</strong>. Qualcosa ti impedisce di raggiungere il tuo pieno potenziale.
+                        Salti, sbatti le braccia e ricadi dopo pochi metri. Questo sogno si lega spesso a <strong>qualcosa che non si sblocca</strong>, per quanto tu ti impegni. Annota che cosa ti tratteneva: il peso, il vento, la stanchezza o la paura.
                     </p>
 </div>
 <div class="dream-card glass-panel rounded-xl p-6 border border-transparent">
@@ -155,10 +152,10 @@
 <div class="p-2 bg-dream-salmon/10 rounded-lg">
 <i class="w-5 h-5 text-dream-salmon" data-lucide="cloud"></i>
 </div>
-<h3 class="font-serif text-lg text-dream-cream">Volare in alto</h3>
+<h3 class="font-serif text-lg text-dream-cream">Volare molto in alto</h3>
 </div>
 <p class="text-sm text-gray-300">
-                        Librarsi a grandi altezze rappresenta <strong>grandi ambizioni</strong> e il desiderio di acquisire prospettiva. Stai guardando la vita da un punto di vista più elevato.
+                        L'altezza può dare <strong>distacco</strong>, o vertigine. Che cosa vedevi sotto di te, e ti sentivi al sicuro? Un volo alto e sereno non racconta la stessa cosa di un volo alto e inquieto.
                     </p>
 </div>
 <div class="dream-card glass-panel rounded-xl p-6 border border-transparent">
@@ -166,21 +163,10 @@
 <div class="p-2 bg-dream-salmon/10 rounded-lg">
 <i class="w-5 h-5 text-dream-salmon" data-lucide="home"></i>
 </div>
-<h3 class="font-serif text-lg text-dream-cream">Volo basso</h3>
+<h3 class="font-serif text-lg text-dream-cream">Volare raso terra</h3>
 </div>
 <p class="text-sm text-gray-300">
-                        Volare vicino al suolo suggerisce <strong>prudenza o praticità</strong>. Desideri la libertà ma non sei pronto a lasciare andare completamente la sicurezza.
-                    </p>
-</div>
-<div class="dream-card glass-panel rounded-xl p-6 border border-transparent">
-<div class="flex items-center gap-3 mb-4">
-<div class="p-2 bg-dream-salmon/10 rounded-lg">
-<i class="w-5 h-5 text-dream-salmon" data-lucide="rotate-3d"></i>
-</div>
-<h3 class="font-serif text-lg text-dream-cream">Volo acrobatico</h3>
-</div>
-<p class="text-sm text-gray-300">
-                        Eseguire acrobazie e manovre indica <strong>giocosità e creatività</strong>. Ti stai godendo la vita ed esprimi te stesso liberamente.
+                        Sfiori auto, siepi, le teste dei passanti. Può essere un gioco, una forma di <strong>prudenza</strong> o la sensazione di non poter salire di più. Era una scelta o un limite?
                     </p>
 </div>
 <div class="dream-card glass-panel rounded-xl p-6 border border-transparent">
@@ -191,38 +177,48 @@
 <h3 class="font-serif text-lg text-dream-cream">Volare per fuggire</h3>
 </div>
 <p class="text-sm text-gray-300">
-                        Usare il volo per sfuggire al pericolo suggerisce che stai <strong>evitando qualcosa</strong> nella vita da sveglio. Volare diventa un meccanismo di coping.
+                        Quando il volo è una via d'uscita, al centro del sogno c'è spesso l'<a class="text-dream-salmon hover:underline" href="../simboli/inseguimento">inseguimento</a>. Chi o che cosa ti seguiva, e in volo eri davvero al sicuro? La scena può riflettere un <strong>bisogno di distanza</strong> da una pressione, senza dimostrare che stai evitando un problema.
+                    </p>
+</div>
+<div class="dream-card glass-panel rounded-xl p-6 border border-transparent">
+<div class="flex items-center gap-3 mb-4">
+<div class="p-2 bg-dream-salmon/10 rounded-lg">
+<i class="w-5 h-5 text-dream-salmon" data-lucide="arrow-down"></i>
+</div>
+<h3 class="font-serif text-lg text-dream-cream">Perdere quota o cadere</h3>
+</div>
+<p class="text-sm text-gray-300">
+                        Il volo si inceppa, scendi tuo malgrado e alla fine cadi. La domanda diventa quella del <strong>controllo</strong>: in quale momento hai sentito che ti sfuggiva? Se la caduta occupa tutto il sogno, l'articolo sui <a class="text-dream-salmon hover:underline" href="significato-dei-sogni-che-cadono-perche-sogni-di-cadere">sogni di cadere</a> completa questa lettura.
                     </p>
 </div>
 </div>
 <div class="prose max-w-none text-gray-300">
-<h2 id="meanings">Le 6 principali interpretazioni dei sogni di volo</h2>
+<h2 id="meanings">Che cosa può raccontare un sogno di volo</h2>
 <p>
-                    I sogni di volo possono avere molteplici significati a seconda del contesto di vita:
+                    Nessun dizionario dei sogni può dirti con certezza perché <em>tu</em> hai sognato di volare. Alcuni legami però tornano spesso quando si confronta il volo con ciò che la persona sta vivendo in quel periodo.
                 </p>
-<h3>1. Sogni volanti che simboleggiano libertà e liberazione</h3>
+<h3>Libertà o sollievo</h3>
 <p>
-                    Di gran lunga la lettura più frequente. Volare significa <strong>liberarsi dai limiti</strong>, siano essi fisici, emotivi o sociali. Potresti fuggire da situazioni restrittive, relazioni tossiche o confini autoimposti. Il tuo sogno celebra quel desiderio di indipendenza.
+                    È la lettura più nota e regge soprattutto quando il volo era piacevole e sceglievi tu la direzione. Cerca un cambiamento concreto: una decisione presa, un peso che si alleggerisce. Se non ne trovi, non forzare il legame.
                 </p>
-<h3>2. Sogni di volo che rappresentano ambizione e successo</h3>
+<h3>Il bisogno di prendere distanza</h3>
 <p>
-                    Volare verso l'alto spesso simboleggia <strong>l'ascesa a nuove vette</strong> nella tua carriera, crescita personale o status sociale. Il sogno può verificarsi quando persegui obiettivi ambiziosi o ti senti sicuro delle tue capacità. Stai letteralmente "raggiungendo il cielo".
+                    Sorvolare un luogo conosciuto significa vederlo per intero. Il sogno può accompagnare un periodo in cui cerchi una <strong>visione d'insieme</strong> su una situazione troppo vicina. Quale luogo sorvolavi, e che cosa ti preoccupa di quel posto?
                 </p>
-<h3>3. Sogni in volo e acquisizione di nuove prospettive</h3>
+<h3>Ambizione, o sentirsi osservati</h3>
 <p>
-                    Dall'alto, tutto sembra diverso. I sogni di volo possono indicare la necessità di <strong>fare un passo indietro e vedere il quadro più ampio</strong>. Forse sei troppo preso dai dettagli e hai bisogno di una visione dall'alto della tua situazione.
+                    Salire in fretta e molto in alto può legarsi a un progetto a cui tieni o a un ruolo nuovo. Se qualcuno ti guardava, forse la questione è piuttosto la <strong>visibilità</strong>: ti piaceva o ti metteva in soggezione?
                 </p>
-<h3>4. Sogni volanti che indicano controllo e potere</h3>
+<h3 id="esempio-diario">Esempio di diario dei sogni</h3>
+<p><strong>Esempio inventato:</strong> mostra come tenere separato ciò che è successo nel sogno da un possibile legame con la tua giornata.</p>
+<ul>
+<li><strong>Sogno:</strong> «Decollavo dal parcheggio dell'ufficio e sorvolavo la città. Sopra la stazione non riuscivo più a salire: sfioravo i cavi dell'alta tensione.»</li>
+<li><strong>Emozione:</strong> «Euforia all'inizio, poi un nodo al petto.»</li>
+<li><strong>Contesto recente:</strong> «Ho appena ottenuto il lavoro che volevo. La prima riunione del team è martedì.»</li>
+<li><strong>Domanda da tenere:</strong> «Perdo quota anche in altri sogni, prima di altri inizi?»</li>
+</ul>
 <p>
-                    Controllare la traiettoria di volo rappresenta <strong>padroneggiare la tua vita</strong>. A differenza dei <a class="text-dream-salmon hover:underline" href="../simboli/cadere">cadere</a> sogni in cui sei impotente, volare ti mette al comando. Il sogno può riflettere una ritrovata fiducia o il desiderio di prendere in mano il proprio destino.
-                </p>
-<h3>5. Sogni volanti come trascendenza spirituale</h3>
-<p>
-                    Molte tradizioni spirituali vedono i sogni volanti come <strong>viaggi dell'anima</strong> o connessioni con una coscienza superiore. Che tu sia religioso o meno, volare può significare trascendere le preoccupazioni quotidiane e toccare qualcosa più grande di te stesso.
-                </p>
-<h3>6. Sogni volanti ed evasione</h3>
-<p>
-                    Non tutte le interpretazioni sono puramente positive. I sogni di volo a volte indicano un <strong>desiderio di sfuggire alla realtà</strong>. Se la vita da sveglio ti sembra opprimente, il tuo subconscio crea un'uscita, sollevandoti letteralmente dai tuoi problemi.
+                    Una sola annotazione non dimostra nulla. I legami diventano visibili quando annoti gli stessi elementi per diverse notti, anche quelle in cui non voli.
                 </p>
 <!-- CTA inline -->
 <aside class="glass-panel rounded-2xl p-6 my-8 border border-dream-salmon/20">
@@ -231,80 +227,47 @@
 <i class="w-6 h-6 text-dream-salmon" data-lucide="sparkles"></i>
 </div>
 <div>
-<h4 class="font-serif text-lg text-dream-cream mb-2">Registra i tuoi sogni di volo</h4>
-<p class="text-sm text-gray-400 mb-4">Noctalia ti aiuta a catturare la magia dei sogni di volo e a capire cosa rivelano sulle tue aspirazioni e sul tuo stato emotivo.</p>
+<h4 class="font-serif text-lg text-dream-cream mb-2">Annota il volo prima che svanisca</h4>
+<p class="text-sm text-gray-400 mb-4">Con Noctalia racconti il sogno a voce appena sveglio. Viene trascritto e salvato nel tuo diario, così puoi rileggere i tuoi sogni di volo uno accanto all'altro.</p>
 <a class="inline-flex items-center gap-2 text-sm text-dream-salmon hover:text-dream-salmonLight transition-colors" href="/it/">
-                                Prova Noctalia gratuitamente <i class="w-4 h-4" data-lucide="arrow-right"></i>
+                                Prova Noctalia gratis <i class="w-4 h-4" data-lucide="arrow-right"></i>
 </a>
 </div>
 </div>
 </aside>
-<h2 id="emotions">In che modo la qualità del volo influisce sul significato dei sogni di volo</h2>
+<h2 id="emotions">Gioia, paura, frustrazione: cosa cambia l'emozione</h2>
 <p>
-                    Presta attenzione a come volare <strong>sensazioni</strong> nei tuoi sogni - le emozioni sono importanti quanto l'azione:
+                    Due persone possono sorvolare in sogno la stessa città e svegliarsi con impressioni opposte. L'emozione è spesso più vicina alla vita da svegli di quanto lo sia lo scenario.
                 </p>
-<h3>Sogni di volo gioiosi ed esilaranti</h3>
+<ul>
+<li><strong>Gioia o sollievo:</strong> che cosa la faceva nascere, esattamente? Prendere quota, scegliere la rotta, lasciarsi alle spalle un pericolo?</li>
+<li><strong>Paura:</strong> può venire dall'altezza, dall'idea di cadere o da un volo che non guidavi tu. Cercane prima la causa dentro la scena, prima di darle un senso più ampio.</li>
+<li><strong>Frustrazione:</strong> se non riuscivi a salire, che cosa te lo impediva e come reagivi?</li>
+</ul>
 <p>
-                    La pura gioia durante il volo è un segno meraviglioso. Indica <strong>libertà emotiva</strong>, flusso creativo e allineamento con i tuoi veri desideri. Sei in armonia con te stesso.
+                    L'emozione può anche cambiare a metà volo. Individua il momento della svolta: una perdita di quota, l'arrivo di qualcuno, un paesaggio sconosciuto.
                 </p>
-<h3>Sogni di volo paurosi o ansiosi</h3>
+<h2 id="lucid">Volare in sogno vuol dire fare un sogno lucido?</h2>
 <p>
-                    La paura durante il volo suggerisce <strong>ansia di successo</strong> - stai ottenendo qualcosa ma sei preoccupato per la responsabilità o la visibilità che ne deriva. La "Sindrome dell'impostore" spesso si manifesta in questo modo.
-                </p>
-<h3>Sogni di volo frustranti e potenziale bloccato</h3>
-<p>
-                    Se vuoi volare ma non riesci a guadagnare quota o continui a perdere altezza, stai riscontrando <strong>potenziale bloccato</strong>. Qualcosa, interno o esterno, ti impedisce di raggiungere i tuoi obiettivi.
-                </p>
-<h3>Sogni di volo controllati e incontrollabili</h3>
-<p>
-<strong>Volo controllato</strong> = fiducia nella tua direzione. <strong>Volo incontrollabile</strong> = la vita ti sta portando in posti che non hai scelto. La differenza riflette quanta libertà d'azione provi nella vita da sveglio.
-                </p>
-<h2 id="lucid">La connessione tra sogni volanti e sogni lucidi</h2>
-<p>
-                    I sogni volanti hanno una relazione speciale con <strong><a class="text-dream-salmon hover:underline" href="guida-ai-sogni-lucidi-per-principianti-prendi-il-controllo-delle-tue-notti">sogni lucidi</a></strong> - lo stato di essere consapevoli che stai sognando mentre sei ancora nel sogno. Ecco perché:
-                </p>
-<h3>Volare nei sogni come fattore di lucidità</h3>
-<p>
-                    Volare è semplicemente impossibile nella realtà, il che lo rende un ottimo <strong>controllo della realtà</strong>. Quando ti ritrovi a volare, qualcosa nel tuo cervello potrebbe riconoscere "questo non è possibile" - innescando la lucidità.
-                </p>
-<h3>Volare come obiettivo comune del sogno lucido</h3>
-<p>
-                    Volare è una delle <strong>attività più popolari</strong> che i sognatori lucidi vogliono sperimentare. Una volta che ti rendi conto che stai sognando, prendere il volo diventa la massima espressione del controllo dei sogni.
-                </p>
-<h3>Migliorare il volo dei sogni attraverso la pratica della lucidità</h3>
-<p>
-                    I sognatori lucidi spesso riferiscono che le loro capacità di volo <strong>migliorano con la pratica</strong>. Ciò che inizia come un volo librato imbarazzante può evolversi in un volo librato in stile superman man mano che padroneggi il controllo dei sogni.
+                    Non per forza. Un sogno è lucido quando sai, mentre sogni, di stare sognando. Guidare il volo è un'altra cosa. Uno studio francese su studenti universitari (Ribeiro, Gounden e Quaglino, 2016) ha chiesto separatamente della consapevolezza di sognare e del controllo del sogno, e le due cose non coincidevano del tutto.
                 </p>
 <p>
-                    I sognatori lucidi descrivono spesso il volo come un’esperienza vivida e liberatoria, ma le esperienze variano e non dimostrano un significato psicologico universale.
+                    Puoi quindi pilotare un volo senza accorgerti che stai sognando, oppure saperlo e non riuscire comunque a decollare. Nel diario annota le due cose a parte: «sapevo di sognare» e «sceglievo dove andare». Se il volo torna spesso nei tuoi sogni, può diventare un segnale per chiederti «sto sognando?». La <strong><a class="text-dream-salmon hover:underline" href="guida-ai-sogni-lucidi-per-principianti-prendi-il-controllo-delle-tue-notti">guida ai sogni lucidi per principianti</a></strong> spiega questo approccio.
                 </p>
-<h2 id="induce">Come avere più sogni di volo: 6 tecniche comprovate</h2>
+<h2 id="induce">Si può sognare di volare più spesso?</h2>
 <p>
-                    Se vuoi sperimentare più sogni di volo, prova queste tecniche:
+                    Nessun metodo lo garantisce, ma un esperimento canadese offre un indizio. Picard-Deland e colleghi (2020) hanno fatto volare 137 partecipanti in una simulazione in realtà virtuale. Prima dell'esperimento, l'1,7% dei sogni annotati a casa conteneva un volo. In un pisolino in laboratorio dopo la simulazione si è arrivati al 7,1%, e a oltre il 10% la prima notte successiva a casa.
                 </p>
-<h3>1. Visualizzazione pre-sonno per sogni di volo</h3>
 <p>
-                    Prima di addormentarti, <strong>immagina vividamente di volare</strong>. Immagina la sensazione del vento, la vista dall'alto, la sensazione di assenza di gravità. Il tuo subconscio potrebbe incorporare queste immagini nei tuoi sogni.
+                    Questo dimostra che un'esperienza forte della giornata può entrare nei sogni. Non dimostra che il volo abbia un unico significato, né che valga la pena disturbare il sonno per ottenerlo. Se vuoi provare a modo tuo:
                 </p>
-<h3>2. Esercitati a verificare la realtà per volare nei sogni</h3>
+<ul>
+<li>La sera immagina una scena precisa: un luogo familiare, il decollo, una virata, l'atterraggio.</li>
+<li>Al risveglio scrivi subito nel tuo <a class="text-dream-salmon hover:underline" href="dream-journaling-la-guida-completa-per-registrare-le-tue-avventure-notturne">diario dei sogni</a>, senza correggere: decollo, percorso, arrivo, emozione. Contano anche le notti senza volo.</li>
+<li>Non mettere sveglie in più e non accorciare le notti per un tema onirico.</li>
+</ul>
 <p>
-                    Durante il giorno, chiediti <strong>"Sto sognando?"</strong> Guarda le tue mani, prova a spingere il dito attraverso il palmo. Questa abitudine può portare nei sogni, innescando la lucidità e consentendo il volo.
-                </p>
-<h3>3. Conserva un <a class="text-dream-salmon hover:underline" href="dream-journaling-la-guida-completa-per-registrare-le-tue-avventure-notturne">Diario dei sogni</a> per tenere traccia dei sogni di volo</h3>
-<p>
-                    Registrare i tuoi sogni aumenta <strong>il ricordo e la consapevolezza dei sogni</strong>. Maggiore è l'attenzione che presti ai sogni, maggiore è la probabilità che ricordi i sogni di volo e alla fine li controlli.
-                </p>
-<h3>4. Tecnica MILD per indurre sogni volanti</h3>
-<p>
-                    Mentre ti addormenti, ripeti: <strong>"La prossima volta che sto sognando, realizzerò che sto sognando e volerò."</strong> Questa induzione mnemonica dei sogni lucidi pianta un'intenzione che può innescare il volo lucido.
-                </p>
-<h3>5. Consume Flying Media to Trigger Flying Dreams</h3>
-<p>
-                    Guarda film, leggi libri o gioca a giochi sul volo. <strong>Esporre la tua mente</strong> a immagini di volo aumenta la possibilità che il tuo subconscio generi scenari di volo.
-                </p>
-<h3>6. Affronta i limiti della vita da sveglio per incoraggiare i sogni di volo</h3>
-<p>
-                    I sogni di volo spesso nascono quando ci sentiamo liberi e potenziati. <strong>Lavora nelle aree</strong> dove ti senti intrappolato o limitato: man mano che acquisisci libertà nella vita, i sogni di volo possono naturalmente aumentare.
+                    Se il volo si trasforma spesso in incubo, con cadute o inseguimenti, e questi sogni ti rovinano il sonno o ti lasciano in ansia durante il giorno, parlane con il tuo medico. La guida sugli <a class="text-dream-salmon hover:underline" href="incubi-cause-significato-e-come-fermarli">incubi</a> propone anche qualche modo per calmarli.
                 </p>
 </div>
 <!-- Related Symbols Start -->
@@ -327,12 +290,12 @@
 <div class="w-16 h-16 bg-dream-salmon/10 rounded-full flex items-center justify-center mx-auto mb-6">
 <i class="w-8 h-8 text-dream-salmon" data-lucide="plane"></i>
 </div>
-<h3 class="font-serif text-2xl md:text-3xl mb-4 text-dream-cream">Cattura i tuoi sogni in volo</h3>
+<h3 class="font-serif text-2xl md:text-3xl mb-4 text-dream-cream">Un volo è una scena. Tanti voli diventano una pista.</h3>
 <p class="text-purple-200/70 mb-6 max-w-lg mx-auto">
-                    Non lasciare che la magia dei sogni in volo svanisca con il mattino. Registrali in Noctalia e scopri schemi su quando e perché la tua mente prende il volo.
+                    Conserva i tuoi sogni di volo in Noctalia insieme a quello che hai provato. Rileggendoli insieme vedrai quando ritornano e che cosa li accompagna.
                 </p>
 <a class="inline-flex items-center gap-2 px-8 py-4 bg-dream-salmon text-dream-dark rounded-full font-bold hover:bg-dream-salmon/90 transition-colors" href="/it/">
-                    Inizia il diario dei sogni <i class="w-5 h-5" data-lucide="arrow-right"></i>
+                    Inizia il tuo diario dei sogni <i class="w-5 h-5" data-lucide="arrow-right"></i>
 </a>
 </aside>
 <!-- Symbol Guide CTA -->
@@ -342,10 +305,10 @@
 <i class="w-6 h-6 text-dream-salmon" data-lucide="sparkles"></i>
 </div>
 <div>
-<h4 class="font-serif text-lg text-dream-cream mb-2">Esplora il simbolismo del volo</h4>
-<p class="text-sm text-gray-400 mb-3">Immergiti più a fondo nel significato del volo nei sogni con la nostra guida completa ai simboli.</p>
+<h4 class="font-serif text-lg text-dream-cream mb-2">La scheda del simbolo «volare»</h4>
+<p class="text-sm text-gray-400 mb-3">Varianti, domande da farti e domande frequenti, in formato breve.</p>
 <a class="inline-flex items-center gap-2 text-dream-salmon hover:underline text-sm font-medium" href="../simboli/volare">
-                            Leggi la guida completa <i class="w-4 h-4" data-lucide="arrow-right"></i>
+                            Leggi la scheda <i class="w-4 h-4" data-lucide="arrow-right"></i>
 </a>
 </div>
 </div>
@@ -356,41 +319,63 @@
 <div class="space-y-4">
 <details class="glass-panel rounded-xl p-4 group cursor-pointer">
 <summary class="font-medium flex justify-between items-center text-dream-cream">
-                            Cosa significa quando sogni di volare?
+                            Che cosa significa sognare di volare?
                             <i class="w-5 h-5 transition-transform group-open:rotate-180 text-dream-salmon" data-lucide="chevron-down"></i>
 </summary>
 <p class="mt-4 text-sm text-gray-400 leading-relaxed">
-                            I sogni di volo simboleggiano tipicamente la libertà, la liberazione, l’ambizione e il superamento delle sfide. Spesso si verificano quando ti senti sicuro, quando superi ostacoli o cerchi fuga dai limiti della tua vita da sveglio.
+                            Non c'è un significato unico. Un volo facile e piacevole accompagna spesso una sensazione di libertà, sollievo o distacco; un volo faticoso si lega più spesso allo sforzo o a una situazione che non si sblocca. La tua emozione, il controllo che avevi e quello che vivi adesso sono gli indizi migliori.
                         </p>
 </details>
 <details class="glass-panel rounded-xl p-4 group cursor-pointer">
 <summary class="font-medium flex justify-between items-center text-dream-cream">
-                            I sogni di volare sono buoni o cattivi?
+                            Sognare di volare è un buon segno?
                             <i class="w-5 h-5 transition-transform group-open:rotate-180 text-dream-salmon" data-lucide="chevron-down"></i>
 </summary>
 <p class="mt-4 text-sm text-gray-400 leading-relaxed">
-                            I sogni di volo sono generalmente considerati positivi, rappresentano la libertà, la fiducia e la trascendenza. Tuttavia, il significato dipende dalla qualità del volo: volare senza sforzo suggerisce fiducia, mentre lottare per volare può indicare ostacoli o insicurezza.
+                            Non è un presagio, né buono né cattivo: i sogni non predicono il futuro. Un volo gioioso e uno angosciante raccontano cose diverse, per questo conta più quello che hai provato che il simbolo.
                         </p>
 </details>
 <details class="glass-panel rounded-xl p-4 group cursor-pointer">
 <summary class="font-medium flex justify-between items-center text-dream-cream">
-                            Puoi controllare i sogni volanti?
+                            Perché in alcuni sogni non riesco a decollare?
                             <i class="w-5 h-5 transition-transform group-open:rotate-180 text-dream-salmon" data-lucide="chevron-down"></i>
 </summary>
 <p class="mt-4 text-sm text-gray-400 leading-relaxed">
-                            Sì, i sogni di volare sono spesso associati a <a class="text-dream-salmon hover:underline" href="guida-ai-sogni-lucidi-per-principianti-prendi-il-controllo-delle-tue-notti">sogni lucidi</a> - essere consapevoli che stai sognando mentre sei ancora nel sogno. Con la pratica, puoi imparare a riconoscere gli stati onirici e acquisire il controllo del tuo volo, rendendolo un passaggio verso il sogno consapevole.
+                            Non è nota una causa unica. La scena può riflettere qualcosa che non si sblocca nonostante i tuoi sforzi, ma non dimostra un blocco. Annota che cosa ti tratteneva nel sogno e che cosa è successo subito prima.
+                        </p>
+</details>
+<details class="glass-panel rounded-xl p-4 group cursor-pointer">
+<summary class="font-medium flex justify-between items-center text-dream-cream">
+                            Un sogno di volo è sempre un sogno lucido?
+                            <i class="w-5 h-5 transition-transform group-open:rotate-180 text-dream-salmon" data-lucide="chevron-down"></i>
+</summary>
+<p class="mt-4 text-sm text-gray-400 leading-relaxed">
+                            No. Un sogno è lucido quando sai, mentre sogni, di stare sognando. Volare o guidare il volo non basta: puoi pilotare un volo senza renderti conto che è un sogno.
+                        </p>
+</details>
+<details class="glass-panel rounded-xl p-4 group cursor-pointer">
+<summary class="font-medium flex justify-between items-center text-dream-cream">
+                            Si può provocare un sogno di volo?
+                            <i class="w-5 h-5 transition-transform group-open:rotate-180 text-dream-salmon" data-lucide="chevron-down"></i>
+</summary>
+<p class="mt-4 text-sm text-gray-400 leading-relaxed">
+                            Niente lo garantisce. In un esperimento, un volo simulato in realtà virtuale ha reso questi sogni più frequenti subito dopo. Immaginare una scena di volo la sera e annotare i sogni al risveglio è un modo semplice per provarci.
                         </p>
 </details>
 </div>
 </section>
 <!-- Sources / Trust (TI-97) -->
 <section class="mt-16 glass-panel rounded-2xl p-6" id="sources">
-<h2 class="font-serif text-2xl text-dream-cream mb-4">Fonti/Approfondimenti</h2>
+<h2 class="font-serif text-2xl text-dream-cream mb-4">Fonti e approfondimenti</h2>
 <ul class="mt-6 space-y-2 text-sm text-gray-400">
-<li><a href="https://dictionary.apa.org/dream" rel="nofollow noopener noreferrer" target="_blank">Dizionario APA di psicologia - Sogno</a></li>
-<li><a href="https://dreamresearch.net/" rel="nofollow noopener noreferrer" target="_blank">DreamResearch.net — G. William Domhoff (panoramica sulla ricerca sui sogni)</a></li>
+<li><a href="https://www.ninds.nih.gov/health-information/public-education/brain-basics/brain-basics-understanding-sleep" rel="nofollow noopener noreferrer" target="_blank">NINDS, «Brain Basics: Understanding Sleep»</a></li>
+<li><a href="https://pubmed.ncbi.nlm.nih.gov/18065090/" rel="nofollow noopener noreferrer" target="_blank">Schredl e Piel (2007), «Prevalence of flying dreams», <em>Perceptual and Motor Skills</em></a></li>
+<li><a href="https://journals.ub.uni-heidelberg.de/index.php/IJoDR/article/view/9077" rel="nofollow noopener noreferrer" target="_blank">Schredl (2011), «Frequency and nature of flying dreams in a long dream series», <em>International Journal of Dream Research</em></a></li>
+<li><a href="https://www.sciencedirect.com/science/article/abs/pii/S1053810019304994" rel="nofollow noopener noreferrer" target="_blank">Picard-Deland et al. (2020), «Flying dreams stimulated by an immersive virtual reality task», <em>Consciousness and Cognition</em></a></li>
+<li><a href="https://www.frontiersin.org/journals/psychology/articles/10.3389/fpsyg.2016.01306/full" rel="nofollow noopener noreferrer" target="_blank">Ribeiro, Gounden e Quaglino (2016), «Investigating on the methodology effect when evaluating lucid dream», <em>Frontiers in Psychology</em></a></li>
+<li><a href="https://www.nhs.uk/conditions/night-terrors/" rel="nofollow noopener noreferrer" target="_blank">NHS, «Night terrors and nightmares»</a></li>
 </ul>
-<p class="mt-6 text-xs text-purple-200/60">Ultimo aggiornamento: 26 dicembre 2025</p>
+<p class="mt-6 text-xs text-purple-200/60">Ultimo aggiornamento: 8 ottobre 2026</p>
 </section>
 <!-- Blog Nav Start -->
 <section class="mt-12" aria-label="Navigazione tra articoli" data-blog-nav="">
