@@ -5,7 +5,7 @@
   "lang": "es",
   "slug": "guia-incubacion-suenos",
   "title": "Incubación de Sueños: Programa Tus Sueños Hoy | Noctalia",
-  "description": "Descubre el arte ancestral de programar tus sueños. Técnicas probadas para resolver problemas y encontrar creatividad durmiendo.",
+  "description": "Incubación de sueños: elige una pregunta antes de dormir y anota al despertar lo que recuerdes. Método en 6 pasos, qué dice la ciencia y sus límites.",
   "robots": "max-image-preview:large",
   "themeColor": "#0a0514",
   "htmlClass": "scroll-smooth blog-article",
@@ -14,36 +14,36 @@
   "mainClass": "pt-32 pb-20 px-4",
   "ogType": "article",
   "ogTitle": "Incubación de Sueños: Programa Tus Sueños Hoy | Noctalia",
-  "ogDescription": "Descubre el arte ancestral de programar tus sueños. Técnicas probadas para resolver problemas y encontrar creatividad durmiendo.",
+  "ogDescription": "Elige una pregunta antes de dormir y anota tu sueño al despertar: cómo funciona la incubación de sueños, qué muestra la investigación y qué no promete.",
   "ogImage": "https://noctalia.app/img/blog/dream-incubation-guide.webp",
   "ogImageAlt": "Dormitorio tranquilo preparado para la práctica de incubación",
   "twitterCard": "summary_large_image",
   "twitterTitle": "Incubación de Sueños: Programa Tus Sueños Hoy | Noctalia",
-  "twitterDescription": "Descubre el arte ancestral de programar tus sueños. Técnicas probadas para resolver problemas y encontrar creatividad durmiendo.",
+  "twitterDescription": "Una rutina de incubación de sueños en 6 pasos para esta noche, el estudio de Barrett y por qué ningún método encarga un sueño.",
   "twitterImage": "https://noctalia.app/img/blog/dream-incubation-guide.webp",
   "twitterImageAlt": "Dormitorio tranquilo preparado para la práctica de incubación",
   "publishedTime": "2025-12-11",
-  "modifiedTime": "2026-07-09",
+  "modifiedTime": "2026-10-08",
   "author": "Thanh Chau",
   "prevPath": "/es/blog/suenos-con-serpientes",
   "nextPath": "/es/blog/suenos-premonitorios-ciencia",
   "preloadImage": "/img/blog/dream-incubation-guide.webp",
   "jsonLd": [
-    "{\n            \"@context\": \"https://schema.org\",\n            \"@type\": \"BlogPosting\",\n            \"headline\": \"Incubación de Sueños: Cómo Soñar Exactamente con lo que Quieras Esta Noche\",\n            \"description\": \"Aprende el arte ancestral de la incubación de sueños y programa tus sueños.\",\n            \"image\": {\n                \"@type\": \"ImageObject\",\n                \"url\": \"https://noctalia.app/img/blog/dream-incubation-guide.webp\",\n                \"width\": 1200,\n                \"height\": 630\n            },\n            \"author\": [\n                {\n                    \"@type\": \"Person\",\n                    \"@id\": \"https://noctalia.app/es/sobre#person\",\n                    \"name\": \"Thanh Chau\",\n                    \"jobTitle\": \"Founder & Publication Director\",\n                    \"url\": \"https://noctalia.app/es/sobre\",\n                    \"worksFor\": {\n                        \"@type\": \"Organization\",\n                        \"@id\": \"https://noctalia.app/#organization\",\n                        \"name\": \"Noctalia\",\n                        \"url\": \"https://noctalia.app\"\n                    }\n                },\n                {\n                    \"@type\": \"Organization\",\n                    \"@id\": \"https://noctalia.app/#organization\",\n                    \"name\": \"Noctalia\",\n                    \"url\": \"https://noctalia.app\",\n                    \"logo\": {\n                        \"@type\": \"ImageObject\",\n                        \"url\": \"https://noctalia.app/logo/logo_noctalia.png\"\n                    }\n                }\n            ],\n            \"publisher\": {\n                \"@type\": \"Organization\",\n                \"name\": \"Noctalia\",\n                \"url\": \"https://noctalia.app\",\n                \"logo\": {\n                    \"@type\": \"ImageObject\",\n                    \"url\": \"https://noctalia.app/logo/logo_noctalia.png\"\n                }\n            },\n            \"datePublished\": \"2025-12-11\",\n            \"dateModified\": \"2026-07-09\",\n            \"mainEntityOfPage\": {\n                \"@type\": \"WebPage\",\n                \"@id\": \"https://noctalia.app/es/blog/guia-incubacion-suenos\"\n            },\n            \"inLanguage\": \"es\",\n            \"isAccessibleForFree\": true,\n            \"wordCount\": 1038,\n            \"timeRequired\": \"PT4M\",\n            \"url\": \"https://noctalia.app/es/blog/guia-incubacion-suenos\"\n        }",
-    "{ \"@context\": \"https://schema.org\", \"@type\": \"FAQPage\", \"mainEntity\": [ { \"@type\": \"Question\", \"name\": \"¿Qué es la incubación de sueños?\", \"acceptedAnswer\": { \"@type\": \"Answer\", \"text\": \"La incubación de sueños es la práctica de programar tus sueños antes de dormir para explorar temas específicos, resolver problemas o recibir inspiración creativa. Es una técnica ancestral usada en culturas de todo el mundo durante miles de años y validada por la investigación moderna del sueño.\" } }, { \"@type\": \"Question\", \"name\": \"¿La incubación de sueños realmente funciona?\", \"acceptedAnswer\": { \"@type\": \"Answer\", \"text\": \"Sí, la investigación muestra que la incubación de sueños es efectiva. Estudios de la Dra. Deirdre Barrett en Harvard encontraron que aproximadamente el 50% de los participantes que intentaron soñar sobre un problema específico tuvieron sueños abordándolo, y el 25% encontró soluciones en sus sueños.\" } }, { \"@type\": \"Question\", \"name\": \"¿Cuánto tiempo toma incubar un sueño exitosamente?\", \"acceptedAnswer\": { \"@type\": \"Answer\", \"text\": \"La mayoría de las personas ve resultados dentro de 1-7 noches de práctica constante. Algunos experimentan éxito la primera noche, mientras que otros necesitan más tiempo para entrenar su subconsciente. La persistencia y mantener un diario de sueños mejora significativamente las tasas de éxito.\" } } ] }",
-    "{\n    \"@context\": \"https://schema.org\",\n    \"@type\": \"BreadcrumbList\",\n    \"itemListElement\": [\n        {\n            \"@type\": \"ListItem\",\n            \"position\": 1,\n            \"name\": \"Inicio\",\n            \"item\": \"https://noctalia.app/es/\"\n        },\n        {\n            \"@type\": \"ListItem\",\n            \"position\": 2,\n            \"name\": \"Recursos\",\n            \"item\": \"https://noctalia.app/es/blog/\"\n        },\n        {\n            \"@type\": \"ListItem\",\n            \"position\": 3,\n            \"name\": \"Incubación de Sueños\",\n            \"item\": \"https://noctalia.app/es/blog/guia-incubacion-suenos\"\n        }\n    ]\n}"
+    "{\n    \"@context\": \"https://schema.org\",\n    \"@type\": \"BlogPosting\",\n    \"headline\": \"Incubación de sueños: cómo pedir un sueño esta noche y qué esperar\",\n    \"description\": \"Incubación de sueños: elige una pregunta antes de dormir y anota al despertar lo que recuerdes. Método en 6 pasos, qué dice la ciencia y sus límites.\",\n    \"image\": {\n        \"@type\": \"ImageObject\",\n        \"url\": \"https://noctalia.app/img/blog/dream-incubation-guide.webp\",\n        \"width\": 1200,\n        \"height\": 630\n    },\n    \"author\": [\n        {\n            \"@type\": \"Person\",\n            \"@id\": \"https://noctalia.app/es/sobre#person\",\n            \"name\": \"Thanh Chau\",\n            \"jobTitle\": \"Founder & Publication Director\",\n            \"url\": \"https://noctalia.app/es/sobre\",\n            \"worksFor\": {\n                \"@type\": \"Organization\",\n                \"@id\": \"https://noctalia.app/#organization\",\n                \"name\": \"Noctalia\",\n                \"url\": \"https://noctalia.app\"\n            }\n        },\n        {\n            \"@type\": \"Organization\",\n            \"@id\": \"https://noctalia.app/#organization\",\n            \"name\": \"Noctalia\",\n            \"url\": \"https://noctalia.app\",\n            \"logo\": {\n                \"@type\": \"ImageObject\",\n                \"url\": \"https://noctalia.app/logo/logo_noctalia.png\"\n            }\n        }\n    ],\n    \"publisher\": {\n        \"@type\": \"Organization\",\n        \"name\": \"Noctalia\",\n        \"url\": \"https://noctalia.app\",\n        \"logo\": {\n            \"@type\": \"ImageObject\",\n            \"url\": \"https://noctalia.app/logo/logo_noctalia.png\"\n        }\n    },\n    \"datePublished\": \"2025-12-11\",\n    \"dateModified\": \"2026-10-08\",\n    \"mainEntityOfPage\": {\n        \"@type\": \"WebPage\",\n        \"@id\": \"https://noctalia.app/es/blog/guia-incubacion-suenos\"\n    },\n    \"inLanguage\": \"es\",\n    \"isAccessibleForFree\": true,\n    \"wordCount\": 1818,\n    \"timeRequired\": \"PT9M\",\n    \"url\": \"https://noctalia.app/es/blog/guia-incubacion-suenos\"\n}",
+    "{\n    \"@context\": \"https://schema.org\",\n    \"@type\": \"FAQPage\",\n    \"mainEntity\": [\n        {\n            \"@type\": \"Question\",\n            \"name\": \"¿Qué es la incubación de sueños?\",\n            \"acceptedAnswer\": {\n                \"@type\": \"Answer\",\n                \"text\": \"Es elegir una pregunta o un tema antes de dormir, tenerlo presente al dormirte y anotar al despertar lo que recuerdes. La intención puede influir en lo que sueñas, pero no dicta un guion concreto.\"\n            }\n        },\n        {\n            \"@type\": \"Question\",\n            \"name\": \"¿La incubación de sueños funciona de verdad?\",\n            \"acceptedAnswer\": {\n                \"@type\": \"Answer\",\n                \"text\": \"A veces. En el estudio de Deirdre Barrett (1993), cerca de la mitad de 76 estudiantes soñó con su problema en una semana, y unos jueces vieron una solución en alrededor de una cuarta parte de los casos. No hubo grupo de control: son un orden de magnitud, no una promesa.\"\n            }\n        },\n        {\n            \"@type\": \"Question\",\n            \"name\": \"¿Cuánto tiempo se tarda en incubar un sueño?\",\n            \"acceptedAnswer\": {\n                \"@type\": \"Answer\",\n                \"text\": \"No hay un plazo fijo. Prueba alrededor de una semana sin recortar horas de sueño y anota también los fragmentos y las noches sin recuerdo. Un diario de sueños te ayuda a valorar si te aporta algo.\"\n            }\n        },\n        {\n            \"@type\": \"Question\",\n            \"name\": \"¿Incubar un sueño es lo mismo que tener un sueño lúcido?\",\n            \"acceptedAnswer\": {\n                \"@type\": \"Answer\",\n                \"text\": \"No. En un sueño lúcido sabes que estás soñando. La incubación solo fija un tema antes de dormir. Se pueden combinar, pero incubar no exige ser consciente dentro del sueño.\"\n            }\n        }\n    ]\n}",
+    "{\n    \"@context\": \"https://schema.org\",\n    \"@type\": \"BreadcrumbList\",\n    \"itemListElement\": [\n        {\n            \"@type\": \"ListItem\",\n            \"position\": 1,\n            \"name\": \"Inicio\",\n            \"item\": \"https://noctalia.app/es/\"\n        },\n        {\n            \"@type\": \"ListItem\",\n            \"position\": 2,\n            \"name\": \"Recursos\",\n            \"item\": \"https://noctalia.app/es/blog/\"\n        },\n        {\n            \"@type\": \"ListItem\",\n            \"position\": 3,\n            \"name\": \"Incubación de sueños\",\n            \"item\": \"https://noctalia.app/es/blog/guia-incubacion-suenos\"\n        }\n    ]\n}"
   ],
   "activeNav": "resources"
 }
 ---
 <article class="max-w-5xl mx-auto">
-<nav aria-label="Breadcrumb" class="text-sm text-purple-200/60 mb-8">
+<nav aria-label="Ruta de navegación" class="text-sm text-purple-200/60 mb-8">
 <ol class="flex items-center gap-2 flex-wrap" itemscope="" itemtype="https://schema.org/BreadcrumbList">
 <li itemprop="itemListElement" itemscope="" itemtype="https://schema.org/ListItem"><a class="hover:text-dream-salmon transition-colors" href="/es/" itemprop="item"><span itemprop="name">Inicio</span></a><meta content="1" itemprop="position"></li>
 <li class="text-purple-400">/</li>
 <li itemprop="itemListElement" itemscope="" itemtype="https://schema.org/ListItem"><a class="hover:text-dream-salmon transition-colors" href="/es/blog/" itemprop="item"><span itemprop="name">Recursos</span></a><meta content="2" itemprop="position"></li>
 <li class="text-purple-400">/</li>
-<li itemprop="itemListElement" itemscope="" itemtype="https://schema.org/ListItem"><span class="text-dream-cream" itemprop="name">Incubación de Sueños</span><meta content="3" itemprop="position"></li>
+<li itemprop="itemListElement" itemscope="" itemtype="https://schema.org/ListItem"><span class="text-dream-cream" itemprop="name">Incubación de sueños</span><meta content="3" itemprop="position"></li>
 </ol>
 </nav>
 <header class="mb-12">
@@ -52,10 +52,10 @@
 <a class="text-xs font-mono text-purple-200/70 border border-white/10 rounded-full px-3 py-1 hover:text-white hover:border-dream-salmon/30 transition-colors" href="suenos-lucidos">Tema: Sueños lúcidos</a>
 <span aria-hidden="true" class="w-full sm:hidden"></span>
 <span class="text-sm text-purple-300/60">Publicado el 11 de diciembre de 2025</span>
-<span class="text-sm text-purple-300/60">4 min de lectura</span>
+<span class="text-sm text-purple-300/60">9 min de lectura</span>
 </div>
-<h1 class="font-serif text-3xl md:text-5xl mb-6 text-transparent bg-clip-text bg-gradient-to-b from-white via-dream-lavender to-purple-400/50 leading-tight">Incubación de Sueños: Cómo Soñar Exactamente con lo que Quieras Esta Noche</h1>
-<p class="text-lg text-purple-200/80 leading-relaxed">¿Y si pudieras elegir con qué soñar? ¿Y si pudieras pedirle a tu mente dormida que resuelva un problema, despierte la creatividad o revele insights ocultos? Esto no es fantasía - es incubación de sueños, una práctica ancestral ahora respaldada por la ciencia moderna. Esta noche, puedes comenzar a programar tus sueños.</p>
+<h1 class="font-serif text-3xl md:text-5xl mb-6 text-transparent bg-clip-text bg-gradient-to-b from-white via-dream-lavender to-purple-400/50 leading-tight">Incubación de sueños: cómo pedir un sueño esta noche y qué esperar</h1>
+<p class="text-lg text-purple-200/80 leading-relaxed">Son las once de la noche y una pregunta te persigue desde por la mañana: aceptar la oferta o no. Apagas la luz y piensas: «A lo mejor lo sueño». Esa intuición tiene nombre: incubación de sueños. No sirve para encargar un sueño, pero puede inclinar lo que recuerdas al despertar. Así puedes probarla esta noche, y esto es lo que dice la investigación.</p>
 </header>
 <!-- Author Byline (E-E-A-T) -->
 <div class="flex items-center gap-3 mb-8 text-sm text-purple-200/70">
@@ -67,116 +67,157 @@
         <span class="block text-xs text-purple-300/60">Fundador y Director de publicación · <a href="/es/sobre" class="text-dream-salmon hover:underline">Nuestro proceso editorial</a></span>
     </div>
 </div>
+
+<!-- Quick Answer (AI SEO) -->
+<section class="glass-panel rounded-2xl p-6 mb-8 border border-dream-salmon/20 bg-white/5" aria-labelledby="quick-answer-title">
+    <h2 id="quick-answer-title" class="font-serif text-xl text-dream-cream mb-3">Respuesta rápida</h2>
+    <p class="text-purple-100/80 leading-relaxed">La incubación de sueños consiste en elegir una pregunta o un tema antes de dormir, tenerlo presente al quedarte dormido y anotar al despertar todo lo que recuerdes. En un estudio clásico de Deirdre Barrett, cerca de la mitad de los estudiantes que lo intentaron durante una semana soñaron con su problema, y unos jueces vieron una solución en alrededor de una cuarta parte de los casos. No garantiza ningún sueño concreto y nunca debería quitarte horas de sueño.</p>
+</section>
 <figure class="mb-12 rounded-2xl overflow-hidden">
 <img alt="Dormitorio tranquilo preparado para la práctica de incubación" class="w-full h-auto" fetchpriority="high" height="630" loading="eager" sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 33vw" src="../../img/blog/dream-incubation-guide.webp" srcset="../../img/blog/dream-incubation-guide-480w.webp 480w, ../../img/blog/dream-incubation-guide-800w.webp 800w, ../../img/blog/dream-incubation-guide-1200w.webp 1200w" width="1200">
 </figure>
 <nav class="glass-panel rounded-2xl p-6 mb-12">
 <h2 class="font-serif text-lg text-dream-cream mb-4 flex items-center gap-2"><i class="w-5 h-5 text-dream-salmon" data-lucide="list"></i> Contenido</h2>
 <ol class="space-y-2 text-sm text-purple-200/70">
-<li><a class="toc-link block" href="#que-es">1. ¿Qué es la Incubación de Sueños?</a></li>
-<li><a class="toc-link block" href="#historia">2. Raíces Ancestrales, Ciencia Moderna</a></li>
-<li><a class="toc-link block" href="#como-funciona">3. Cómo Funciona la Incubación</a></li>
-<li><a class="toc-link block" href="#tecnica">4. La Técnica de 6 Pasos</a></li>
-<li><a class="toc-link block" href="#usos">5. Usos Poderosos de la Incubación</a></li>
-<li><a class="toc-link block" href="#consejos">6. Consejos Avanzados para el Éxito</a></li>
+<li><a class="toc-link block" href="#que-es">1. ¿Qué es la incubación de sueños?</a></li>
+<li><a class="toc-link block" href="#historia">2. ¿De dónde viene esta práctica?</a></li>
+<li><a class="toc-link block" href="#como-funciona">3. ¿Qué muestra de verdad la investigación?</a></li>
+<li><a class="toc-link block" href="#tecnica">4. Cómo probarla esta noche, en 6 pasos</a></li>
+<li><a class="toc-link block" href="#usos">5. ¿Sobre qué puedes preguntar a tus sueños?</a></li>
+<li><a class="toc-link block" href="#consejos">6. Consejos prácticos y límites</a></li>
 </ol>
 </nav>
 <div class="prose max-w-none text-gray-300">
-<h2 id="que-es">¿Qué es la incubación de sueños y cómo funciona?</h2>
-<p>La incubación de sueños es la práctica de <strong>sembrar intencionalmente tus sueños</strong> antes de dormir. Al concentrarte en una pregunta específica, tema o experiencia deseada mientras te duermes, guías a tu mente soñadora a explorar ese tema durante la noche.</p>
-<p>A diferencia de los <a class="text-dream-salmon hover:underline" href="guia-suenos-lucidos-principiantes">sueños lúcidos</a>, donde te vuelves consciente de que estás soñando y tomas el control, la incubación de sueños trabaja <strong>con tu inconsciente</strong> en lugar de intentar dominarlo. Esencialmente le estás dando una tarea o dirección a tu cerebro dormido, luego lo dejas trabajar a su manera misteriosa.</p>
-<blockquote>"El proceso de incubación de sueños es como plantar una semilla en tierra fértil. Tú proporcionas la intención; tu inconsciente proporciona la sabiduría." - Dra. Deirdre Barrett, Universidad de Harvard</blockquote>
-<p>Piensa en ello como <strong>enviar un mensaje a tu futuro yo soñador</strong>. Escribes una carta antes de dormir; tu yo soñador la lee y responde con imágenes, emociones e insights que emergen de las profundidades de tu inconsciente.</p>
-<h2 id="historia">Historia de la incubación de sueños: de Grecia a hoy</h2>
-<p>La incubación de sueños no es una invención new-age - es una de las prácticas espirituales más antiguas de la humanidad.</p>
-<h3>Templos de sueños en la Grecia Antigua</h3>
-<p>Los griegos construyeron más de 300 <strong>"Asclepieia"</strong> - templos dedicados a los sueños de sanación. Los peregrinos enfermos se sometían a rituales de purificación, hacían ofrendas, luego dormían en cámaras sagradas esperando visiones de sanación de Asclepio, el dios de la medicina. Muchos peregrinos reportaban curaciones.</p>
-<h3>Rituales de sueño en el Antiguo Egipto</h3>
-<p>Los egipcios practicaban el sueño "Serapeum" - pasando noches en templos para recibir mensajes divinos a través de los sueños. Los <strong>intérpretes de sueños</strong> ocupaban posiciones importantes en la sociedad, y varios faraones tomaron decisiones importantes basadas en sueños incubados.</p>
-<h3>Tradiciones oníricas de pueblos indígenas</h3>
-<p>Desde las búsquedas de visión nativas americanas hasta las prácticas aborígenes del tiempo del sueño, el <strong>sueño intencional</strong> aparece en prácticamente todas las culturas indígenas. Estas tradiciones entendían algo que la ciencia moderna solo ahora está confirmando.</p>
-<h3>Estudios científicos sobre incubación de sueños</h3>
-<p>Los estudios contemporáneos validan lo que los antiguos sabían. La investigadora de Harvard Dra. Deirdre Barrett encontró que cuando los participantes se concentraban en problemas específicos antes de dormir, <strong>aproximadamente el 50% tuvo sueños sobre el problema, y el 25% soñó soluciones</strong>. La mente soñadora resulta ser altamente receptiva a la intención.</p>
-<h2 id="como-funciona">La ciencia detrás de programar tus sueños</h2>
-<p>¿Por qué concentrarse en algo antes de dormir influye en tus sueños? Varios mecanismos están en juego:</p>
+<h2 id="que-es">¿Qué es la incubación de sueños?</h2>
+<p>La incubación de sueños consiste en <strong>elegir un tema antes de dormir</strong> y fijarte en lo que vuelve por la mañana. Puede ser una pregunta, un problema, una persona o una imagen. Puede aparecer tal cual, de forma indirecta o no aparecer.</p>
+<p>No es lo mismo que los <a class="text-dream-salmon hover:underline" href="guia-suenos-lucidos-principiantes">sueños lúcidos</a>. En un sueño lúcido te das cuenta de que estás soñando. En la incubación solo fijas el tema de antemano y luego lo comparas con el sueño que de verdad recuerdas.</p>
+<p>Tómala como <strong>un pequeño experimento personal</strong>: anota una pregunta, protege tu descanso y registra los aciertos, los fallos y las noches sin recuerdo.</p>
+<h2 id="historia">¿De dónde viene esta práctica?</h2>
+<p>La idea es muy antigua. En la Grecia clásica, los santuarios de Asclepio, dios de la medicina, acogían a enfermos que iban a dormir allí. En Epidauro, el más conocido, la UNESCO describe un procedimiento de curación basado en un sueño inducido, llamado <em>enkoimesis</em>.</p>
+<p>Estos ritos muestran cuánto se esperaba de los sueños. No demuestran que esos sueños curaran a nadie.</p>
+<h2 id="como-funciona">¿Qué muestra de verdad la investigación?</h2>
+<p>El estudio más citado es de Deirdre Barrett, psicóloga de la Facultad de Medicina de Harvard, publicado en 1993. Setenta y seis estudiantes eligieron un problema y siguieron cada noche, durante una semana, unas pautas de incubación. <strong>Cerca de la mitad recordó un sueño relacionado con su problema</strong>. Jueces independientes vieron una solución en alrededor de una cuarta parte de los casos. Los problemas personales se «resolvían» más que los académicos.</p>
+<p>Los límites importan: eran estudiantes de un curso sobre sueños, sin grupo de control. Más recientemente, un equipo del MIT probó en laboratorio una «incubación dirigida»: un dispositivo reproduce una consigna hablada cuando la persona se adormece durante una siesta. En su estudio de 2023, las siestas en las que el tema entró en el sueño fueron seguidas de mejores resultados en tareas creativas ligadas a ese tema. Prometedor, pero lejos de una noche normal.</p>
+<p>¿Por qué funcionaría? Algunos mecanismos plausibles, ninguno del todo demostrado:</p>
 </div>
 <div class="grid md:grid-cols-2 gap-6 my-12">
 <div class="dream-card glass-panel rounded-xl p-6 border border-transparent">
-<div class="flex items-center gap-3 mb-4"><div class="p-2 bg-dream-salmon/10 rounded-lg"><i class="w-5 h-5 text-dream-salmon" data-lucide="brain"></i></div><h3 class="font-serif text-lg text-dream-cream">Consolidación de Memoria</h3></div>
-<p class="text-sm text-gray-300">Durante el sueño, tu cerebro procesa y consolida las experiencias del día. Al <strong>hacer de tu intención un recuerdo reciente</strong>, aumentas las posibilidades de que sea procesada durante el sueño.</p>
+<div class="flex items-center gap-3 mb-4"><div class="p-2 bg-dream-salmon/10 rounded-lg"><i class="w-5 h-5 text-dream-salmon" data-lucide="brain"></i></div><h3 class="font-serif text-lg text-dream-cream">Recuerdos recientes</h3></div>
+<p class="text-sm text-gray-300">Los sueños suelen tomar material de lo vivido hace poco. Una pregunta trabajada antes de acostarte se convierte en <strong>una de esas huellas recientes</strong>.</p>
 </div>
 <div class="dream-card glass-panel rounded-xl p-6 border border-transparent">
-<div class="flex items-center gap-3 mb-4"><div class="p-2 bg-dream-salmon/10 rounded-lg"><i class="w-5 h-5 text-dream-salmon" data-lucide="git-branch"></i></div><h3 class="font-serif text-lg text-dream-cream">Redes Asociativas</h3></div>
-<p class="text-sm text-gray-300">Los sueños extraen de redes neuronales recientemente activadas. Al <strong>pensar profundamente sobre un tema</strong>, activas recuerdos, conceptos y asociaciones relacionadas que luego aparecen en los sueños.</p>
+<div class="flex items-center gap-3 mb-4"><div class="p-2 bg-dream-salmon/10 rounded-lg"><i class="w-5 h-5 text-dream-salmon" data-lucide="git-branch"></i></div><h3 class="font-serif text-lg text-dream-cream">Asociaciones</h3></div>
+<p class="text-sm text-gray-300">Pensar en un tema despierta recuerdos ligados a él. Algunos pueden <strong>reaparecer en el sueño</strong>, entre muchos elementos sin relación.</p>
 </div>
 <div class="dream-card glass-panel rounded-xl p-6 border border-transparent">
-<div class="flex items-center gap-3 mb-4"><div class="p-2 bg-dream-salmon/10 rounded-lg"><i class="w-5 h-5 text-dream-salmon" data-lucide="shuffle"></i></div><h3 class="font-serif text-lg text-dream-cream">Resolución Inconsciente</h3></div>
-<p class="text-sm text-gray-300">Tu cerebro soñador hace conexiones que tu mente despierta pierde. <strong>Libre de restricciones lógicas</strong>, puede abordar problemas desde ángulos completamente nuevos.</p>
+<div class="flex items-center gap-3 mb-4"><div class="p-2 bg-dream-salmon/10 rounded-lg"><i class="w-5 h-5 text-dream-salmon" data-lucide="shuffle"></i></div><h3 class="font-serif text-lg text-dream-cream">Combinaciones inesperadas</h3></div>
+<p class="text-sm text-gray-300">El sueño junta lo que el pensamiento despierto separa. Eso puede <strong>sugerir otro enfoque</strong>, que conviene comprobar ya despierto.</p>
 </div>
 <div class="dream-card glass-panel rounded-xl p-6 border border-transparent">
-<div class="flex items-center gap-3 mb-4"><div class="p-2 bg-dream-salmon/10 rounded-lg"><i class="w-5 h-5 text-dream-salmon" data-lucide="target"></i></div><h3 class="font-serif text-lg text-dream-cream">Efecto de Cebado</h3></div>
-<p class="text-sm text-gray-300">Como cebar una bomba, tu enfoque pre-sueño <strong>establece la dirección</strong> del contenido onírico. Los últimos pensamientos antes de dormir tienen influencia desproporcionada en el material de los sueños.</p>
+<div class="flex items-center gap-3 mb-4"><div class="p-2 bg-dream-salmon/10 rounded-lg"><i class="w-5 h-5 text-dream-salmon" data-lucide="target"></i></div><h3 class="font-serif text-lg text-dream-cream">La atención al dormirse</h3></div>
+<p class="text-sm text-gray-300">Al quedarte dormido, los pensamientos se vuelven imágenes. Un tema presente en ese momento <strong>puede orientarlas un poco</strong>, sin escribir el guion.</p>
 </div>
 </div>
 <div class="prose max-w-none text-gray-300">
-<h2 id="tecnica">Técnica de incubación de sueños paso a paso</h2>
-<p>Sigue este método probado para comenzar a incubar tus sueños esta noche:</p>
+<h2 id="tecnica">Cómo probarla esta noche, en 6 pasos</h2>
+<p>Usa estos pasos como una rutina de observación, no como una receta con resultado garantizado. Ninguno debe acortar tu noche.</p>
 </div>
 <div class="space-y-6 my-12">
-<div class="glass-panel rounded-xl p-6"><div class="flex gap-4"><div class="step-number">1</div><div><h3 class="font-serif text-lg text-dream-cream mb-2">Elige Tu Intención</h3><p class="text-sm text-gray-300">Selecciona una pregunta, problema o tema específico. Sé preciso - <strong>"Muéstrame cómo mejorar mi relación con María"</strong> funciona mejor que "sueños sobre amor". Escribe tu intención como una solicitud clara en presente.</p></div></div></div>
-<div class="glass-panel rounded-xl p-6"><div class="flex gap-4"><div class="step-number">2</div><div><h3 class="font-serif text-lg text-dream-cream mb-2">Crea Tu Ritual Pre-Sueño</h3><p class="text-sm text-gray-300">Pasa 10-15 minutos antes de acostarte enfocado en tu intención. <strong>Revisa materiales relevantes</strong>, mira fotos, escribe sobre el tema o simplemente medita en él. Esto ceba tus redes neuronales.</p></div></div></div>
-<div class="glass-panel rounded-xl p-6"><div class="flex gap-4"><div class="step-number">3</div><div><h3 class="font-serif text-lg text-dream-cream mb-2">Formula Tu Solicitud</h3><p class="text-sm text-gray-300">Mientras te duermes, <strong>repite tu intención como un suave mantra</strong>. Usa frases como: "Esta noche voy a soñar con..." o "En mis sueños, muéstrame..." Que sea tu último pensamiento consciente.</p></div></div></div>
-<div class="glass-panel rounded-xl p-6"><div class="flex gap-4"><div class="step-number">4</div><div><h3 class="font-serif text-lg text-dream-cream mb-2">Visualiza el Sueño</h3><p class="text-sm text-gray-300">Imagínate en un sueño encontrando tu tema. <strong>Verte recibiendo respuestas</strong>. Visualiza despertar con claridad e insight. Esto crea una plantilla para tu mente soñadora.</p></div></div></div>
-<div class="glass-panel rounded-xl p-6"><div class="flex gap-4"><div class="step-number">5</div><div><h3 class="font-serif text-lg text-dream-cream mb-2">Captura los Sueños Inmediatamente</h3><p class="text-sm text-gray-300">Mantén un diario o Noctalia listo junto a tu cama. <strong>Registra tus sueños en el momento que despiertes</strong> - incluso en medio de la noche. Los sueños se desvanecen en minutos. Captura todo, incluso fragmentos.</p></div></div></div>
-<div class="glass-panel rounded-xl p-6"><div class="flex gap-4"><div class="step-number">6</div><div><h3 class="font-serif text-lg text-dream-cream mb-2">Reflexiona e Interpreta</h3><p class="text-sm text-gray-300">Revisa tu sueño con tu intención en mente. <strong>Busca conexiones simbólicas</strong>, no solo respuestas literales. El sueño puede abordar tu pregunta de maneras inesperadas y metafóricas.</p></div></div></div>
+<div class="glass-panel rounded-xl p-6"><div class="flex gap-4"><div class="step-number">1</div><div><h3 class="font-serif text-lg text-dream-cream mb-2">Elige una pregunta sencilla</h3><p class="text-sm text-gray-300">Un solo tema por noche, formulado de forma abierta. <strong>«¿Qué me despierta este proyecto?»</strong> funciona mejor que «Dame la respuesta». Escríbela en papel o en el móvil.</p></div></div></div>
+<div class="glass-panel rounded-xl p-6"><div class="flex gap-4"><div class="step-number">2</div><div><h3 class="font-serif text-lg text-dream-cream mb-2">Dedícale unos minutos</h3><p class="text-sm text-gray-300">Relee tus notas, mira una foto relacionada o escribe unas líneas. <strong>Que sea breve</strong>, para no retrasar la hora de acostarte.</p></div></div></div>
+<div class="glass-panel rounded-xl p-6"><div class="flex gap-4"><div class="step-number">3</div><div><h3 class="font-serif text-lg text-dream-cream mb-2">Repite una intención abierta</h3><p class="text-sm text-gray-300">Mientras te duermes, repite una frase flexible como <strong>«Si este tema aparece esta noche, quiero recordarlo»</strong>. Deja sitio a otro sueño, o a ningún recuerdo.</p></div></div></div>
+<div class="glass-panel rounded-xl p-6"><div class="flex gap-4"><div class="step-number">4</div><div><h3 class="font-serif text-lg text-dream-cream mb-2">Imagínate recordando</h3><p class="text-sm text-gray-300">En lugar de guionizar el sueño, imagínate al despertar <strong>cogiendo tu diario</strong>. Así ensayas el paso que depende de ti: el recuerdo.</p></div></div></div>
+<div class="glass-panel rounded-xl p-6"><div class="flex gap-4"><div class="step-number">5</div><div><h3 class="font-serif text-lg text-dream-cream mb-2">Anota al despertar</h3><p class="text-sm text-gray-300">Ten una libreta o Noctalia junto a la cama. En tu próximo despertar natural, <strong>anota lo que recuerdes antes de levantarte</strong>, aunque sea un fragmento o una emoción. El recuerdo de un sueño se borra rápido.</p></div></div></div>
+<div class="glass-panel rounded-xl p-6"><div class="flex gap-4"><div class="step-number">6</div><div><h3 class="font-serif text-lg text-dream-cream mb-2">Compara la pregunta y el sueño</h3><p class="text-sm text-gray-300">Relee tu nota con la pregunta en mente. <strong>Separa lo que soñaste de los vínculos que añades después</strong>, y acepta que algunas noches no haya coincidencia.</p></div></div></div>
 </div>
 <div class="prose max-w-none text-gray-300">
+<h3 id="ejemplo-diario">Ejemplo de diario de sueños</h3>
+<p><strong>Ejemplo ficticio:</strong> muestra cómo separar el sueño, su lectura y la pregunta.</p>
+<ul>
+<li><strong>Pregunta, la noche anterior:</strong> «¿Cómo le digo a mi equipo que dejo el proyecto?»</li>
+<li><strong>Sueño:</strong> «Estaba en un andén. El <a class="text-dream-salmon hover:underline" href="../simbolos/tren">tren</a> iba a salir y yo llevaba las mochilas de mis compañeros. Intentaba devolvérselas».</li>
+<li><strong>Emoción:</strong> «Vergüenza, y luego alivio cuando alguien cogió una».</li>
+<li><strong>Vínculo posible:</strong> «Quizá las mochilas son las tareas que me da miedo dejar a medias».</li>
+<li><strong>Pregunta para guardar:</strong> «¿Qué tengo que traspasar antes de irme?»</li>
+</ul>
+<p>El sueño no respondió al pie de la letra: señaló una preocupación sobre la que puedes actuar.</p>
 <aside class="glass-panel rounded-2xl p-6 my-8 border border-dream-salmon/20">
 <div class="flex items-start gap-4">
 <div class="p-3 bg-dream-salmon/10 rounded-xl"><i class="w-6 h-6 text-dream-salmon" data-lucide="sparkles"></i></div>
 <div>
-<h4 class="font-serif text-lg text-dream-cream mb-2">Rastrea Tu Viaje de Incubación de Sueños</h4>
-<p class="text-sm text-gray-400 mb-4">Noctalia te ayuda a registrar tus intenciones, capturar sueños instantáneamente al despertar y usar Noctalia para descubrir patrones y significados a través de tu práctica de incubación.</p>
-<a class="inline-flex items-center gap-2 text-sm text-dream-salmon hover:text-dream-salmonLight transition-colors" href="/es/">Comienza Gratis Esta Noche <i class="w-4 h-4" data-lucide="arrow-right"></i></a>
+<h4 class="font-serif text-lg text-dream-cream mb-2">Atrapa el sueño antes de despejarte</h4>
+<p class="text-sm text-gray-400 mb-4">En Noctalia, cuenta tu sueño en voz alta nada más despertar y añade la pregunta elegida. Se transcribe y se guarda en tu diario, para releer una semana de intentos uno al lado del otro.</p>
+<a class="inline-flex items-center gap-2 text-sm text-dream-salmon hover:text-dream-salmonLight transition-colors" href="/es/diario-de-suenos-por-voz">Probar el diario por voz <i class="w-4 h-4" data-lucide="arrow-right"></i></a>
 </div>
 </div>
 </aside>
-<h2 id="usos">Para qué sirve la incubación de sueños</h2>
-<p>¿Qué puedes lograr con la incubación de sueños? Sus aplicaciones abarcan campos sorprendentes:</p>
-<h3>Resolver problemas mientras duermes</h3>
-<p>Resolver problemas es la aplicación más estudiada. Científicos, inventores y artistas han usado sueños incubados para descifrar problemas complejos. <strong>Elias Howe</strong> famosamente soñó la solución para la aguja de la máquina de coser; <strong>Dmitri Mendeléyev</strong> vio la tabla periódica en un sueño. Tu cerebro procesa problemas diferentemente mientras sueña, a menudo encontrando soluciones que tu mente despierta perdió.</p>
-<h3>Encontrar inspiración creativa en sueños</h3>
-<p>¿Necesitas ideas para un proyecto, historia u obra de arte? <strong>Incuba sueños sobre tu desafío creativo</strong>. Mary Shelley concibió Frankenstein a partir de un sueño. Paul McCartney escuchó "Yesterday" en un sueño. Salvador Dalí pintaba sus sueños directamente. Los sueños acceden a una fuente de imágenes y narrativa que tu mente consciente no puede alcanzar.</p>
-<h3>Sueños para sanar emociones y trauma</h3>
-<p>¿Procesando emociones difíciles, duelo o trauma pasado? <strong>Invita sueños de sanación</strong>. Pide soñar con liberar el dolor, encontrar paz u obtener perspectiva sobre experiencias difíciles. Muchas personas encuentran que el sueño intencional acelera el procesamiento emocional.</p>
-<h3>Usar sueños para tomar decisiones</h3>
-<p>¿Enfrentando una decisión difícil? <strong>Pide orientación a tus sueños</strong>. Fórmulalo así: "Muéstrame el camino a seguir" o "Ayúdame a entender lo que realmente quiero." Tu mente soñadora tiene acceso a tus valores y deseos más profundos.</p>
-<h3>Comprender relaciones a través de sueños</h3>
-<p>¿Tratando de entender mejor a alguien? <strong>Incuba sueños sobre esa relación</strong>. Los sueños pueden revelar dinámicas que no has reconocido conscientemente, o sugerir nuevos enfoques para desafíos interpersonales.</p>
-<h3>Mejorar habilidades practicando en sueños</h3>
-<p>Atletas y músicos usan el ensayo en sueños para mejorar el rendimiento. <strong>Visualízate practicando tu habilidad</strong> mientras te duermes. Estudios muestran que el ensayo mental durante los sueños puede mejorar las habilidades físicas.</p>
-<h2 id="consejos">Consejos para incubar sueños con éxito</h2>
-<p>Aumenta tu tasa de éxito en incubación de sueños con estas estrategias probadas:</p>
-<h3>Horario de sueño regular para mejor recuerdo</h3>
-<p><strong>Patrones de sueño regulares potencian el recuerdo de sueños</strong>. Acuéstate y despierta a horas consistentes. Tus ciclos REM - cuando ocurren los sueños más vívidos - se vuelven más predecibles y accesibles.</p>
-<h3>Sustancias que afectan la viveza de los sueños</h3>
-<p>Ambas sustancias <strong>suprimen el <a class="text-dream-salmon hover:underline" href="sueno-rem-suenos">sueño REM</a></strong>, reduciendo la viveza y el recuerdo de sueños. Para mejores resultados, evítalos al menos 4-6 horas antes de dormir cuando practiques incubación de sueños.</p>
-<h3>Objetos físicos para reforzar la intención</h3>
-<p>Coloca un objeto relacionado con tu intención cerca de tu cama o bajo tu almohada. Este <strong>recordatorio físico</strong> refuerza tu intención y puede aparecer simbólicamente en los sueños.</p>
-<h3>Técnica WBTB para sueños más vívidos</h3>
-<p>Pon una alarma para 4-5 horas después de dormirte. Cuando despiertes, <strong>pasa 15-30 minutos revisando tu intención</strong>, luego vuelve a dormir. Esta interrupción a menudo produce sueños más vívidos y memorables.</p>
-<h3>Cuánto tiempo tarda en funcionar la incubación</h3>
-<p>No esperes resultados la primera noche. <strong>Date una semana de práctica constante</strong>. Tu subconsciente está aprendiendo a responder a tus intenciones. La persistencia da frutos.</p>
-<h3>Interpretar símbolos en sueños incubados</h3>
-<p>Los sueños rara vez responden literalmente. Si preguntas sobre una decisión de carrera, podrías soñar con barcos navegando o construyendo puentes. <strong>Aprende tu lenguaje onírico personal</strong> - los símbolos y metáforas que tu inconsciente usa.</p>
-<blockquote>"La incubación de sueños es una habilidad que mejora con la práctica. Cuanto más dialogues con tus sueños, más receptivos se vuelven." - Robert Moss, Maestro de Sueños</blockquote>
+<h2 id="usos">¿Sobre qué puedes preguntar a tus sueños?</h2>
+<p>La práctica te da sobre todo material para releer. Así puedes usarla sin pedirle demasiado.</p>
+<h3>Un problema atascado</h3>
+<p>Es el uso más estudiado. Un sueño puede <strong>sugerir otro enfoque</strong>: tómalo como una pista y contrasta cualquier decisión real con información fiable. Más en <a class="text-dream-salmon hover:underline" href="controlar-suenos-resolucion-problemas">sueños y resolución de problemas</a>.</p>
+<h3>Un proyecto creativo</h3>
+<p>Para un relato, una canción o un dibujo, un diario de sueños se convierte en una <strong>reserva de imágenes y escenas</strong>. Las historias de inventos nacidos en sueños circulan mucho, pero suelen contarse a posteriori y son difíciles de verificar. El beneficio real es más modesto: materia prima. Lee también <a class="text-dream-salmon hover:underline" href="suenos-y-creatividad">sueños y creatividad</a>.</p>
+<h3>Una emoción que quieres mirar</h3>
+<p>Puedes elegir un sentimiento o una situación como tema. Un sueño no es un diagnóstico ni un tratamiento. Ante un duelo, un trauma o <a class="text-dream-salmon hover:underline" href="guia-pesadillas">pesadillas frecuentes</a>, lo adecuado es la ayuda de un profesional.</p>
+<h3>Una decisión</h3>
+<p>Anota los criterios que te importan. El sueño puede <strong>reflejar una reacción emocional</strong> ante una opción: un dato más, nunca el veredicto.</p>
+<h3>Una relación o una habilidad</h3>
+<p>Una relación como tema te ayuda a notar <strong>tus propias emociones</strong>, no lo que piensa la otra persona. Soñar con una habilidad no sustituye la práctica real ni el descanso.</p>
+<h2 id="consejos">Consejos prácticos y límites</h2>
+<h3>Horarios regulares</h3>
+<p>Acostarte y levantarte a horas parecidas hace tus noches más previsibles y suele facilitar el recuerdo. Nuestra guía para <a class="text-dream-salmon hover:underline" href="como-recordar-suenos">recordar tus sueños</a> tiene más ideas.</p>
+<h3>Cuidado con el alcohol</h3>
+<p>El alcohol reduce el <a class="text-dream-salmon hover:underline" href="sueno-rem-suenos">sueño REM</a>, la fase más asociada a los sueños vívidos. No empieces, dejes ni cambies ninguna sustancia o medicamento por esta práctica sin consejo médico.</p>
+<h3>Un objeto como recordatorio</h3>
+<p>Un objeto ligado a tu tema, junto a la libreta, sirve sobre todo para <strong>recordarte que escribas</strong>: la pregunta por la noche, el sueño por la mañana.</p>
+<h3>Despertarse y volver a dormir, solo si duermes bien</h3>
+<p>Hay quien se despierta un rato al final de la noche (técnica WBTB), relee su pregunta y vuelve a dormirse. Interrumpe el sueño a propósito: evítala si tienes insomnio o falta de sueño, y déjala si estás más cansado durante el día.</p>
+<h3>Date una semana</h3>
+<p>En el estudio de Barrett, los participantes lo intentaban cada noche durante una semana. Haz lo mismo sin presión y luego <strong>relee tus notas en conjunto</strong>.</p>
+<h3>Lee las imágenes con flexibilidad</h3>
+<p>Los sueños rara vez responden de forma literal. Una pregunta sobre tu carrera puede volver como un <a class="text-dream-salmon hover:underline" href="../simbolos/puente">puente</a> o un barco. Describe primero la escena y la emoción, y luego pregúntate qué te evocan ahora.</p>
+<p>Si intentar orientar tus sueños empeora tus noches, o si las pesadillas te despiertan varias veces por semana, para y consulta con un médico o un especialista del sueño.</p>
 </div>
 <aside class="glass-panel rounded-3xl p-8 md:p-10 mt-16 text-center border border-dream-salmon/20">
 <div class="w-16 h-16 bg-dream-salmon/10 rounded-full flex items-center justify-center mx-auto mb-6"><i class="w-8 h-8 text-dream-salmon" data-lucide="moon-star"></i></div>
-<h3 class="font-serif text-2xl md:text-3xl mb-4 text-dream-cream">Comienza a Programar Tus Sueños Esta Noche</h3>
-<p class="text-purple-200/70 mb-6 max-w-lg mx-auto">Usa Noctalia para establecer intenciones de sueño, capturar tus sueños instantáneamente y descubrir patrones a través de tu práctica de incubación con insights de Noctalia.</p>
-<a class="inline-flex items-center gap-2 px-8 py-4 bg-dream-salmon text-dream-dark rounded-full font-bold hover:bg-dream-salmon/90 transition-colors" href="/es/">Comienza Tu Viaje Onírico <i class="w-5 h-5" data-lucide="arrow-right"></i></a>
+<h3 class="font-serif text-2xl md:text-3xl mb-4 text-dream-cream">Una noche es un intento. Una semana, un experimento.</h3>
+<p class="text-purple-200/70 mb-6 max-w-lg mx-auto">Guarda cada pregunta y cada sueño en Noctalia, por voz o por escrito. Reléelos juntos al final de la semana para ver qué volvió y qué no.</p>
+<a class="inline-flex items-center gap-2 px-8 py-4 bg-dream-salmon text-dream-dark rounded-full font-bold hover:bg-dream-salmon/90 transition-colors" href="/es/">Empezar mi diario de sueños <i class="w-5 h-5" data-lucide="arrow-right"></i></a>
 </aside>
+<!-- FAQ Section -->
+<section class="mt-16">
+<h2 class="font-serif text-2xl text-dream-cream mb-8">Preguntas frecuentes</h2>
+<div class="space-y-4">
+<details class="glass-panel rounded-xl p-4 group cursor-pointer">
+<summary class="font-medium flex justify-between items-center text-dream-cream">¿Qué es la incubación de sueños?<i class="w-5 h-5 transition-transform group-open:rotate-180 text-dream-salmon" data-lucide="chevron-down"></i></summary>
+<p class="mt-4 text-sm text-gray-400 leading-relaxed">Es elegir una pregunta o un tema antes de dormir, tenerlo presente al dormirte y anotar al despertar lo que recuerdes. La intención puede influir en lo que sueñas, pero no dicta un guion concreto.</p>
+</details>
+<details class="glass-panel rounded-xl p-4 group cursor-pointer">
+<summary class="font-medium flex justify-between items-center text-dream-cream">¿La incubación de sueños funciona de verdad?<i class="w-5 h-5 transition-transform group-open:rotate-180 text-dream-salmon" data-lucide="chevron-down"></i></summary>
+<p class="mt-4 text-sm text-gray-400 leading-relaxed">A veces. En el estudio de Deirdre Barrett (1993), cerca de la mitad de 76 estudiantes soñó con su problema en una semana, y unos jueces vieron una solución en alrededor de una cuarta parte de los casos. No hubo grupo de control: son un orden de magnitud, no una promesa.</p>
+</details>
+<details class="glass-panel rounded-xl p-4 group cursor-pointer">
+<summary class="font-medium flex justify-between items-center text-dream-cream">¿Cuánto tiempo se tarda en incubar un sueño?<i class="w-5 h-5 transition-transform group-open:rotate-180 text-dream-salmon" data-lucide="chevron-down"></i></summary>
+<p class="mt-4 text-sm text-gray-400 leading-relaxed">No hay un plazo fijo. Prueba alrededor de una semana sin recortar horas de sueño y anota también los fragmentos y las noches sin recuerdo. Un <a class="text-dream-salmon hover:underline" href="guia-diario-suenos">diario de sueños</a> te ayuda a valorar si te aporta algo.</p>
+</details>
+<details class="glass-panel rounded-xl p-4 group cursor-pointer">
+<summary class="font-medium flex justify-between items-center text-dream-cream">¿Incubar un sueño es lo mismo que tener un sueño lúcido?<i class="w-5 h-5 transition-transform group-open:rotate-180 text-dream-salmon" data-lucide="chevron-down"></i></summary>
+<p class="mt-4 text-sm text-gray-400 leading-relaxed">No. En un sueño lúcido sabes que estás soñando. La incubación solo fija un tema antes de dormir. Se pueden combinar, pero incubar no exige ser consciente dentro del sueño.</p>
+</details>
+</div>
+</section>
+<!-- Sources / Trust (TI-97) -->
+<section class="mt-16 glass-panel rounded-2xl p-6" id="sources">
+<h2 class="font-serif text-2xl text-dream-cream mb-4">Fuentes y lecturas</h2>
+<ul class="mt-6 space-y-2 text-sm text-gray-400">
+<li><a href="https://asdreams.org/journal/articles/barrett3-2.htm" rel="nofollow noopener noreferrer" target="_blank">Barrett (1993), «The “Committee of Sleep”: A Study of Dream Incubation for Problem Solving», <em>Dreaming</em>, 3(2)</a></li>
+<li><a href="https://www.media.mit.edu/publications/targeted-dream-incubation-at-sleep-onset-increases-post-sleep-creative-performance/" rel="nofollow noopener noreferrer" target="_blank">Horowitz, Esfahany et al. (2023), «Targeted dream incubation at sleep onset increases post-sleep creative performance», <em>Scientific Reports</em>, 13:7319</a></li>
+<li><a href="https://whc.unesco.org/es/list/491" rel="nofollow noopener noreferrer" target="_blank">UNESCO, Centro del Patrimonio Mundial, «Santuario de Esculapio en Epidauro»</a></li>
+<li><a href="https://www.sleepfoundation.org/nutrition/alcohol-and-sleep" rel="nofollow noopener noreferrer" target="_blank">Sleep Foundation, «Alcohol and Sleep»</a></li>
+<li><a href="https://www.sleepfoundation.org/dreams/lucid-dreams" rel="nofollow noopener noreferrer" target="_blank">Sleep Foundation, «Lucid Dreaming» (técnicas y pérdida de sueño)</a></li>
+</ul>
+<p class="mt-6 text-xs text-purple-200/60">Actualizado el 8 de octubre de 2026</p>
+</section>
 <!-- Related Symbols Start -->
 <section aria-label="Símbolos de sueños relacionados" class="mt-12 mb-8">
 <h2 class="font-serif text-xl mb-4 text-dream-cream flex items-center gap-2">
@@ -212,26 +253,6 @@
                                                               </div>
                                                             </section>
                                                             <!-- Blog Nav End -->
-<!-- FAQ (from JSON-LD) -->
-            <section class="mb-10" data-faq-visible="true">
-                <h2 class="font-serif text-xl md:text-2xl text-dream-cream mb-6 flex items-center gap-3">
-                    <i data-lucide="help-circle" class="w-6 h-6 text-dream-salmon"></i>
-                    Preguntas frecuentes
-                </h2>
-                <div class="grid gap-4">
-
-                <div class="glass-panel rounded-2xl p-6 border border-transparent">
-                    <h3 class="font-medium text-dream-cream mb-2">¿La incubación de sueños realmente funciona?</h3>
-                    <p class="text-sm text-gray-300 leading-relaxed">Sí, la investigación muestra que la incubación de sueños es efectiva. Estudios de la Dra. Deirdre Barrett en Harvard encontraron que aproximadamente el 50% de los participantes que intentaron soñar sobre un problema específico tuvieron sueños abordándolo, y el 25% encontró soluciones en sus sueños.</p>
-                </div>
-
-                <div class="glass-panel rounded-2xl p-6 border border-transparent">
-                    <h3 class="font-medium text-dream-cream mb-2">¿Cuánto tiempo toma incubar un sueño exitosamente?</h3>
-                    <p class="text-sm text-gray-300 leading-relaxed">La mayoría de las personas ve resultados dentro de 1-7 noches de práctica constante. Algunos experimentan éxito la primera noche, mientras que otros necesitan más tiempo para entrenar su subconsciente. La persistencia y mantener un diario de sueños mejora significativamente las tasas de éxito.</p>
-                </div>
-                </div>
-            </section>
-
             <!-- Blog Related Start -->
             <section class="mt-12" aria-label="Para seguir leyendo" data-blog-related="">
               <header class="mb-6">
