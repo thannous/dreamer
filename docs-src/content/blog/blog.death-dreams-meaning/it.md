@@ -356,31 +356,6 @@
                                                               </div>
                                                             </section>
                                                             <!-- Blog Nav End -->
-<!-- FAQ (from JSON-LD) -->
-            <section class="mb-10" data-faq-visible="true">
-                <h2 class="font-serif text-xl md:text-2xl text-dream-cream mb-6 flex items-center gap-3">
-                    <i data-lucide="help-circle" class="w-6 h-6 text-dream-salmon"></i>
-                    FAQ
-                </h2>
-                <div class="grid gap-4">
-
-                <div class="glass-panel rounded-2xl p-6 border border-transparent">
-                    <h3 class="font-medium text-dream-cream mb-2">I sogni sulla morte predicono la morte reale?</h3>
-                    <p class="text-sm text-gray-300 leading-relaxed">No, i sogni sulla morte molto raramente predicono la morte effettiva. Nel simbolismo onirico, la morte rappresenta tipicamente la fine, la trasformazione e il cambiamento piuttosto che la morte letterale. Questi sogni spesso segnalano la fine di una fase della vita e l’inizio di un’altra.</p>
-                </div>
-
-                <div class="glass-panel rounded-2xl p-6 border border-transparent">
-                    <h3 class="font-medium text-dream-cream mb-2">Perchè sogno che qualcuno che amo muore?</h3>
-                    <p class="text-sm text-gray-300 leading-relaxed">I sogni sulla morte di una persona cara spesso riflettono la paura di perderla, cambiamenti nella tua relazione o aspetti di te stesso che associ a quella persona. Questi sogni possono apparire anche durante periodi di transizione o quando la relazione è in evoluzione.</p>
-                </div>
-
-                <div class="glass-panel rounded-2xl p-6 border border-transparent">
-                    <h3 class="font-medium text-dream-cream mb-2">Cosa significa sognare la propria morte?</h3>
-                    <p class="text-sm text-gray-300 leading-relaxed">Sognare la propria morte simboleggia tipicamente la trasformazione personale, la fine di vecchie abitudini o modi di pensare o una transizione significativa nella vita. Spesso indica che stai attraversando o sei pronto per un importante cambiamento personale.</p>
-                </div>
-                </div>
-            </section>
-
             <!-- Blog Related Start -->
             <section class="mt-12" aria-label="Continua a leggere" data-blog-related="">
               <header class="mb-6">
