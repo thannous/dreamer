@@ -110,13 +110,17 @@ flowchart LR
   C -->|Supabase DB| B[Contrats statiques Jest + JUnit]
   C -->|documentation interne| Z[No-op explicite]
   S -->|tag, release ou force_full_validation| F[Portfolio complet]
-  GH -. master .-> CF[Cloudflare Pages Git integration]
+  GH -. master, tant que le dashboard autorise le build auto .-> CF[Cloudflare Pages Git integration]
   GH -. build mobile autorisé séparément .-> EA[EAS]
 ```
 
 CircleCI ne contient aucune commande `wrangler pages deploy`, `docs:deploy:*`,
-`eas build`, `eas submit`, migration Supabase ou publication. Cloudflare Pages
-reste responsable du site et EAS des builds mobiles. Les contrôles DB sont
+`eas build`, `eas submit`, migration Supabase ou publication. Le site
+(`noctalia.app`, projet Pages `noctalia`) est encore publié par l'intégration
+Git du dashboard tant que *Enable automatic production branch deployments*
+n'est pas coupé. Ce dépôt ne porte pas ce réglage. La publication manuelle est
+décrite dans `AGENTS.md` (Publishing to production). EAS reste le chemin des
+builds mobiles. Les contrôles DB sont
 statiques : `db:contract:check` nécessite une base et reste une validation
 opérateur, pas un accès implicite à une base distante depuis la CI.
 
