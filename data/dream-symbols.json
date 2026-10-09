@@ -4502,47 +4502,152 @@
       "en": {
         "slug": "sun",
         "name": "Sun",
-        "shortDescription": "The sun symbolizes consciousness, vital energy, and optimism. It represents clarity, truth, and spiritual illumination.",
+        "shortDescription": "Dreaming of the sun often puts you in a scene full of light: a warm afternoon, a blinding sky, a sunset. The sun is commonly associated with energy, warmth and seeing clearly. How its light felt on you matters more than a fixed meaning.",
         "askYourself": [
-          "What gives me energy?",
-          "What truth do I need to see?"
-        ]
+          "Where was the sun: rising, high overhead, setting or hidden?",
+          "Did its light feel warm, soothing, blinding or burning?",
+          "What in my life feels lit up right now, or a little too exposed?"
+        ],
+        "faq": [
+          {
+            "question": "What does it mean to dream about the sun?",
+            "answer": "The sun is often associated with energy, warmth and seeing clearly. The reading depends on the scene: a gentle sun, a burning one and a setting one do not stage the same thing, and how you felt is the main clue."
+          },
+          {
+            "question": "What does a sunrise or a sunset mean in a dream?",
+            "answer": "A sunrise can go with a beginning, or with relief after a hard stretch; a sunset with an ending, a pause or a slower pace. Neither is a prediction: notice whether you watched calmly or wanted the light to stay."
+          },
+          {
+            "question": "What does an eclipse or a hidden sun mean in a dream?",
+            "answer": "A sun that is eclipsed or behind clouds can go with tiredness, worry or a sense that something is hard to see. It announces nothing. What dimmed the light, and how did the scene end?"
+          },
+          {
+            "question": "Why dream of a burning or scorching sun?",
+            "answer": "A scorching sun can match a feeling of being overexposed, under pressure or running low on energy. Sometimes the cause is simpler: a hot bedroom can slip into a dream. Note whether you looked for shade."
+          }
+        ],
+        "documentMetaDescription": "Dreaming of the sun, a sunrise, a sunset or an eclipse: what the light in the scene may say about your energy and clarity, with questions and a journal example.",
+        "modifiedAt": "2026-10-08"
       },
       "fr": {
         "slug": "soleil",
         "name": "Soleil",
-        "shortDescription": "Le soleil symbolise la conscience, l'énergie vitale et l'optimisme. Il représente la clarté, la vérité et l'illumination spirituelle.",
+        "shortDescription": "Rêver du soleil, c'est souvent une scène baignée de lumière : après-midi chaud, ciel aveuglant, coucher de soleil. Il est souvent associé à l'énergie, à la chaleur et au fait d'y voir clair. Ce que sa lumière vous faisait ressentir compte plus qu'un sens fixe.",
         "askYourself": [
-          "Qu'est-ce qui m'apporte de l'énergie ?",
-          "Quelle vérité ai-je besoin de voir ?"
-        ]
+          "Où était le soleil : levant, au zénith, couchant ou caché ?",
+          "Sa lumière était-elle douce, apaisante, aveuglante ou brûlante ?",
+          "Qu'est-ce qui, dans ma vie, est en pleine lumière en ce moment, ou un peu trop exposé ?"
+        ],
+        "faq": [
+          {
+            "question": "Que signifie rêver du soleil ?",
+            "answer": "Le soleil est souvent associé à l'énergie, à la chaleur et au fait d'y voir clair. La lecture dépend de la scène : un soleil doux, brûlant ou couchant ne raconte pas la même chose, et votre ressenti est l'indice principal."
+          },
+          {
+            "question": "Que signifie rêver d'un lever ou d'un coucher de soleil ?",
+            "answer": "Un lever de soleil peut accompagner un début, ou un soulagement après une période difficile ; un coucher de soleil, une fin, une pause ou un ralentissement. Ce n'est pas une prédiction : notez si vous regardiez calmement ou si vous vouliez retenir la lumière."
+          },
+          {
+            "question": "Que signifie rêver d'une éclipse ou d'un soleil caché ?",
+            "answer": "Un soleil éclipsé ou voilé par les nuages peut accompagner la fatigue, une inquiétude ou le sentiment d'y voir moins clair. Il n'annonce rien. Qu'est-ce qui a voilé la lumière, et comment la scène s'est-elle terminée ?"
+          },
+          {
+            "question": "Pourquoi rêver d'un soleil brûlant ?",
+            "answer": "Un soleil écrasant peut rejoindre le sentiment d'être trop exposé, sous pression ou à court d'énergie. L'explication est parfois plus simple : une chambre trop chaude peut se glisser dans le rêve. Notez si vous cherchiez de l'ombre."
+          }
+        ],
+        "documentMetaDescription": "Rêver du soleil, d'un lever, d'un coucher de soleil ou d'une éclipse : ce que la lumière peut dire de votre énergie, avec questions et exemple de journal.",
+        "modifiedAt": "2026-10-08"
       },
       "es": {
         "slug": "sol",
         "name": "Sol",
-        "shortDescription": "El sol simboliza consciencia, energía vital y optimismo. Representa claridad, verdad e iluminación espiritual.",
+        "shortDescription": "Soñar con el sol suele ser una escena llena de luz: una tarde de calor, un cielo que deslumbra, un atardecer. Se asocia a menudo con la energía, el calor y la claridad. Lo que te hacía sentir su luz cuenta más que un significado fijo.",
         "askYourself": [
-          "¿Qué me da energía?",
-          "¿Qué verdad necesito ver?"
-        ]
+          "¿Dónde estaba el sol: saliendo, en lo alto, poniéndose u oculto?",
+          "¿Su luz era suave, reconfortante, cegadora o abrasadora?",
+          "¿Qué hay en mi vida que ahora mismo está a plena luz, o demasiado expuesto?"
+        ],
+        "faq": [
+          {
+            "question": "¿Qué significa soñar con el sol?",
+            "answer": "El sol se asocia a menudo con la energía, el calor y el hecho de ver las cosas claras. La lectura depende de la escena: un sol suave, uno abrasador y uno que se pone no cuentan lo mismo, y lo que sentiste es la pista principal."
+          },
+          {
+            "question": "¿Qué significa soñar con un amanecer o una puesta de sol?",
+            "answer": "Un amanecer puede acompañar un comienzo, o un alivio tras una etapa dura; una puesta de sol, un final, una pausa o un ritmo más lento. Ninguno es una predicción: fíjate en si mirabas con calma o querías que la luz no se fuera."
+          },
+          {
+            "question": "¿Qué significa soñar con un eclipse o con el sol tapado?",
+            "answer": "Un sol eclipsado o escondido tras las nubes puede acompañar cansancio, preocupación o la sensación de que algo cuesta verlo. No anuncia nada. ¿Qué tapó la luz y cómo terminó la escena?"
+          },
+          {
+            "question": "¿Por qué soñar con un sol abrasador?",
+            "answer": "Un sol que quema puede enlazar con la sensación de estar demasiado expuesto, bajo presión o con poca energía. A veces la causa es más sencilla: una habitación demasiado caliente puede colarse en el sueño. Anota si buscabas sombra."
+          }
+        ],
+        "documentMetaDescription": "Soñar con el sol, un amanecer, una puesta de sol o un eclipse: qué puede decir la luz de la escena sobre tu energía, con preguntas y un ejemplo de diario.",
+        "modifiedAt": "2026-10-08"
       },
       "de": {
         "slug": "sonne",
         "name": "Sonne",
-        "shortDescription": "Die Sonne symbolisiert Vitalität, Klarheit, Bewusstsein und Lebensenergie. Sie steht für Erleuchtung, Wahrheit und die Kraft, die alle Dinge nährt.",
+        "shortDescription": "Von der Sonne zu träumen heißt oft: eine Szene voller Licht, ein warmer Nachmittag, ein blendender Himmel, ein Abendrot. Die Sonne wird häufig mit Energie, Wärme und Klarheit verbunden. Wie sich ihr Licht anfühlte, zählt mehr als eine feste Bedeutung.",
         "askYourself": [
-          "Was bringt Licht und Klarheit in mein Leben?",
-          "Wo finde ich Energie und Vitalität?"
-        ]
+          "Wo stand die Sonne: Ging sie auf, stand sie hoch, ging sie unter oder war sie verdeckt?",
+          "War ihr Licht warm, wohltuend, blendend oder brennend?",
+          "Was in meinem Leben steht gerade im hellen Licht, oder ist ein wenig zu sehr ausgeleuchtet?"
+        ],
+        "faq": [
+          {
+            "question": "Was bedeutet es, von der Sonne zu träumen?",
+            "answer": "Die Sonne wird oft mit Energie, Wärme und Klarheit verbunden. Wie sie zu lesen ist, hängt von der Szene ab: Eine sanfte, eine sengende und eine untergehende Sonne erzählen nicht dasselbe, und Ihr Gefühl ist der wichtigste Hinweis."
+          },
+          {
+            "question": "Was bedeutet ein Sonnenaufgang oder Sonnenuntergang im Traum?",
+            "answer": "Ein Sonnenaufgang kann einen Anfang begleiten oder Erleichterung nach einer schweren Zeit, ein Sonnenuntergang einen Abschluss, eine Pause oder ein langsameres Tempo. Beides ist keine Vorhersage: Achten Sie darauf, ob Sie ruhig zugesehen haben oder das Licht festhalten wollten."
+          },
+          {
+            "question": "Was bedeutet eine Sonnenfinsternis oder verdeckte Sonne im Traum?",
+            "answer": "Eine verfinsterte oder hinter Wolken verborgene Sonne kann Müdigkeit, Sorge oder das Gefühl begleiten, etwas nicht mehr klar zu sehen. Sie kündigt nichts an. Was hat das Licht verdunkelt, und wie endete die Szene?"
+          },
+          {
+            "question": "Warum träumt man von einer brennenden, heißen Sonne?",
+            "answer": "Eine sengende Sonne kann zu dem Gefühl passen, zu sehr im Rampenlicht zu stehen, unter Druck zu sein oder kaum noch Energie zu haben. Manchmal ist der Grund einfacher: Ein überhitztes Schlafzimmer kann in den Traum einfließen. Notieren Sie, ob Sie Schatten gesucht haben."
+          }
+        ],
+        "documentMetaDescription": "Sonne im Traum, Sonnenaufgang, Sonnenuntergang oder Finsternis: was das Licht der Szene über Ihre Energie sagen kann, mit Fragen und Tagebuchbeispiel.",
+        "modifiedAt": "2026-10-08"
       },
       "it": {
         "slug": "sole",
         "name": "Sole",
-        "shortDescription": "Il sole simboleggia vitalità, chiarezza, coscienza ed energia vitale. Rappresenta illuminazione, verità e il potere che nutre tutte le cose.",
+        "shortDescription": "Sognare il sole significa spesso una scena piena di luce: un pomeriggio caldo, un cielo che abbaglia, un tramonto. Viene associato all’energia, al calore e al vederci chiaro. Conta più ciò che la sua luce ti faceva provare di un significato fisso.",
         "askYourself": [
-          "Cosa porta luce e chiarezza nella mia vita?",
-          "Dove trovo energia e vitalità?"
-        ]
+          "Dov’era il sole: sorgeva, era alto, tramontava o era nascosto?",
+          "La sua luce era dolce, rassicurante, accecante o bruciante?",
+          "Che cosa, nella mia vita, è in piena luce in questo periodo, o un po’ troppo esposto?"
+        ],
+        "faq": [
+          {
+            "question": "Che cosa significa sognare il sole?",
+            "answer": "Il sole viene spesso associato all’energia, al calore e al vederci chiaro. La lettura dipende dalla scena: un sole dolce, uno cocente e uno che tramonta non raccontano la stessa cosa, e ciò che provavi è l’indizio principale."
+          },
+          {
+            "question": "Che cosa significa sognare l’alba o il tramonto?",
+            "answer": "L’alba può accompagnare un inizio, o un sollievo dopo un periodo duro; il tramonto una fine, una pausa o un ritmo più lento. Nessuno dei due è una previsione: nota se guardavi con calma o se volevi trattenere la luce."
+          },
+          {
+            "question": "Che cosa significa sognare un’eclissi o il sole coperto?",
+            "answer": "Un sole eclissato o nascosto dalle nuvole può accompagnare stanchezza, preoccupazione o la sensazione di non vederci bene. Non annuncia nulla. Che cosa ha oscurato la luce, e come è finita la scena?"
+          },
+          {
+            "question": "Perché si sogna un sole cocente?",
+            "answer": "Un sole che brucia può avvicinarsi alla sensazione di essere troppo esposto, sotto pressione o a corto di energie. A volte la causa è più semplice: una camera troppo calda può entrare nel sogno. Annota se cercavi l’ombra."
+          }
+        ],
+        "documentMetaDescription": "Sognare il sole, l’alba, il tramonto o un’eclissi: che cosa può dire la luce della scena sulla tua energia, con domande ed esempio di diario.",
+        "modifiedAt": "2026-10-08"
       },
       "pt": {
         "slug": "sol",
@@ -4569,38 +4674,122 @@
       "en": {
         "slug": "rain",
         "name": "Rain",
-        "shortDescription": "Rain can symbolize purification, renewal, or sadness. A gentle rain suggests healing, while a storm indicates intense emotions.",
+        "shortDescription": "Dreaming of rain often starts with a sound or a feeling on your skin: a drizzle, a downpour, a window streaming with water. Rain is commonly associated with sadness, relief or renewal. Whether you were soaked or sheltered changes the scene.",
         "askYourself": [
-          "Do I need to let my emotions flow?",
-          "What renewal is possible?"
-        ]
+          "Was the rain light, warm, cold, heavy or endless?",
+          "Was I caught in it, sheltered from it, or did I welcome it?",
+          "What has been building up lately, and what would bring relief?"
+        ],
+        "faq": [
+          {
+            "question": "What does it mean to dream about rain?",
+            "answer": "Rain is often associated with feelings that come out, with relief after tension or with a fresh start. The kind of rain, where you were and how you felt matter more than the symbol: a warm shower and a cold downpour are not the same scene."
+          },
+          {
+            "question": "What does heavy rain or a downpour mean in a dream?",
+            "answer": "A downpour can go with strong feelings, a busy period or a situation that feels hard to contain. It does not foretell a disaster. Notice whether you found shelter, kept walking or simply let it soak you."
+          },
+          {
+            "question": "What does it mean to watch the rain from inside in a dream?",
+            "answer": "Watching rain through a window can go with keeping a feeling at a safe distance, or with a quiet moment of rest. Ask yourself whether you felt cosy, cut off or impatient to go out."
+          },
+          {
+            "question": "What does rain inside the house mean in a dream?",
+            "answer": "Rain falling indoors, or a leaking roof, brings the scene into your private space: home, family, rest. It can echo something that gets in despite your efforts. It is not a warning of real damage; note which rooms it reached."
+          }
+        ],
+        "documentMetaDescription": "Dreaming of rain, a downpour, rain indoors or rain seen from a window: what the scene may say about tension and relief, with questions and a journal example.",
+        "modifiedAt": "2026-10-08"
       },
       "fr": {
         "slug": "pluie",
         "name": "Pluie",
-        "shortDescription": "La pluie peut symboliser la purification, le renouveau ou la tristesse. Une pluie douce suggère la guérison, tandis qu'un orage indique des émotions intenses.",
+        "shortDescription": "Rêver de pluie commence souvent par un bruit ou une sensation : une bruine, une averse, une vitre qui ruisselle. La pluie est souvent associée à la tristesse, au soulagement ou au renouveau. Être trempé ou à l'abri ne raconte pas la même scène.",
         "askYourself": [
-          "Ai-je besoin de laisser couler mes émotions ?",
-          "Quel renouveau est possible ?"
-        ]
+          "La pluie était-elle fine, tiède, froide, battante ou sans fin ?",
+          "Étais-je surpris par elle, à l'abri, ou est-ce que je l'accueillais ?",
+          "Qu'est-ce qui s'accumule en ce moment, et qu'est-ce qui me soulagerait ?"
+        ],
+        "faq": [
+          {
+            "question": "Que signifie rêver de pluie ?",
+            "answer": "La pluie est souvent associée aux émotions qui sortent, au soulagement après une tension ou à un nouveau départ. Le type de pluie, l'endroit où vous étiez et votre ressenti comptent plus que le symbole : une averse tiède et un déluge glacé ne racontent pas la même chose."
+          },
+          {
+            "question": "Que signifie rêver d'une forte pluie ou d'une averse ?",
+            "answer": "Une averse peut accompagner des émotions fortes, une période chargée ou une situation difficile à contenir. Elle n'annonce aucune catastrophe. Notez si vous avez trouvé un abri, continué à marcher ou simplement laissé la pluie vous tremper."
+          },
+          {
+            "question": "Que signifie regarder la pluie de l'intérieur en rêve ?",
+            "answer": "Regarder la pluie derrière une vitre peut accompagner le besoin de garder une émotion à distance, ou un moment de repos au calme. Demandez-vous si vous vous sentiez bien au chaud, coupé du monde ou pressé de sortir."
+          },
+          {
+            "question": "Que signifie rêver de pluie dans la maison ?",
+            "answer": "Une pluie qui tombe à l'intérieur, ou un toit qui fuit, amène la scène dans votre espace privé : foyer, famille, repos. Elle peut faire écho à quelque chose qui entre malgré vos efforts. Ce n'est pas l'annonce d'un dégât réel : notez quelles pièces étaient touchées."
+          }
+        ],
+        "documentMetaDescription": "Rêver de pluie, d'une averse, de pluie dans la maison ou derrière une vitre : ce que la scène peut dire de vos tensions, avec questions et exemple de journal.",
+        "modifiedAt": "2026-10-08"
       },
       "es": {
         "slug": "lluvia",
         "name": "Lluvia",
-        "shortDescription": "La lluvia puede simbolizar purificación, renovación o tristeza. Una lluvia suave sugiere sanación, mientras que una tormenta indica emociones intensas.",
+        "shortDescription": "Soñar con lluvia suele empezar por un sonido o una sensación en la piel: una llovizna, un chaparrón, un cristal que chorrea. La lluvia se asocia a menudo con la tristeza, el alivio o la renovación. Empaparte o estar a cubierto no cuenta la misma escena.",
         "askYourself": [
-          "¿Necesito dejar fluir mis emociones?",
-          "¿Qué renovación es posible?"
-        ]
+          "¿La lluvia era fina, templada, fría, torrencial o interminable?",
+          "¿Me pilló por sorpresa, estaba a cubierto o la recibía con gusto?",
+          "¿Qué se ha ido acumulando últimamente, y qué me aliviaría?"
+        ],
+        "faq": [
+          {
+            "question": "¿Qué significa soñar con lluvia?",
+            "answer": "La lluvia se asocia a menudo con emociones que salen, con el alivio tras una tensión o con un nuevo comienzo. El tipo de lluvia, dónde estabas y lo que sentiste cuentan más que el símbolo: un chubasco templado y un aguacero helado no son la misma escena."
+          },
+          {
+            "question": "¿Qué significa soñar con lluvia fuerte o un aguacero?",
+            "answer": "Un aguacero puede acompañar emociones intensas, una época muy cargada o una situación difícil de contener. No anuncia ninguna desgracia. Fíjate en si encontraste refugio, seguiste caminando o te dejaste empapar."
+          },
+          {
+            "question": "¿Qué significa ver llover desde dentro en un sueño?",
+            "answer": "Mirar la lluvia tras una ventana puede acompañar la necesidad de mantener una emoción a distancia, o un momento de descanso tranquilo. Pregúntate si te sentías a gusto, aislado o con ganas de salir."
+          },
+          {
+            "question": "¿Qué significa soñar con lluvia dentro de casa?",
+            "answer": "Una lluvia que cae dentro o un techo con goteras llevan la escena a tu espacio privado: el hogar, la familia, el descanso. Puede hacer eco de algo que entra pese a tus esfuerzos. No anuncia un daño real; anota qué habitaciones alcanzaba."
+          }
+        ],
+        "documentMetaDescription": "Soñar con lluvia, con un aguacero, con lluvia dentro de casa o tras una ventana: qué puede decir la escena de tus tensiones, con preguntas y ejemplo de diario.",
+        "modifiedAt": "2026-10-08"
       },
       "de": {
         "slug": "regen",
         "name": "Regen",
-        "shortDescription": "Regen symbolisiert emotionale Befreiung, Reinigung und Erneuerung. Sanfter Regen kann beruhigend sein, während Starkregen auf emotionale Überwältigung hinweisen kann.",
+        "shortDescription": "Von Regen zu träumen beginnt oft mit einem Geräusch oder einem Gefühl auf der Haut: Nieselregen, ein Wolkenbruch, eine nasse Scheibe. Regen wird oft mit Traurigkeit, Erleichterung oder Erneuerung verbunden. Ob Sie nass wurden oder im Trockenen waren, verändert die Szene.",
         "askYourself": [
-          "Welche Emotionen brauchen Ausdruck?",
-          "Was muss in meinem Leben gereinigt oder erneuert werden?"
-        ]
+          "War der Regen fein, lau, kalt, heftig oder endlos?",
+          "Hat er mich überrascht, war ich geschützt, oder habe ich ihn begrüßt?",
+          "Was hat sich in letzter Zeit aufgestaut, und was würde mich erleichtern?"
+        ],
+        "faq": [
+          {
+            "question": "Was bedeutet es, von Regen zu träumen?",
+            "answer": "Regen wird oft mit Gefühlen verbunden, die herauswollen, mit Erleichterung nach einer Anspannung oder mit einem Neuanfang. Art des Regens, Ort und Ihr Gefühl zählen mehr als das Symbol: Ein lauer Schauer und ein eisiger Wolkenbruch sind nicht dieselbe Szene."
+          },
+          {
+            "question": "Was bedeutet starker Regen oder ein Wolkenbruch im Traum?",
+            "answer": "Ein Wolkenbruch kann starke Gefühle, eine volle, anstrengende Phase oder eine schwer zu bändigende Lage begleiten. Er kündigt kein Unglück an. Achten Sie darauf, ob Sie Schutz gefunden haben, weitergegangen sind oder sich einfach nass regnen ließen."
+          },
+          {
+            "question": "Was bedeutet es, im Traum den Regen von drinnen zu beobachten?",
+            "answer": "Den Regen hinter einer Scheibe zu beobachten kann das Bedürfnis begleiten, ein Gefühl auf Abstand zu halten, oder einen ruhigen Moment der Erholung. Fragen Sie sich, ob Sie sich geborgen, abgeschnitten oder ungeduldig gefühlt haben."
+          },
+          {
+            "question": "Was bedeutet Regen im Haus im Traum?",
+            "answer": "Regen, der drinnen fällt, oder ein undichtes Dach holen die Szene in Ihren privaten Raum: Zuhause, Familie, Ruhe. Sie kann etwas aufgreifen, das trotz Ihrer Mühe eindringt. Eine Warnung vor echten Schäden ist das nicht; notieren Sie, welche Räume betroffen waren."
+          }
+        ],
+        "documentMetaDescription": "Regen im Traum, Wolkenbruch, Regen im Haus oder hinter der Scheibe: was die Szene über Anspannung und Erleichterung sagen kann, mit Fragen und Beispiel.",
+        "modifiedAt": "2026-10-08"
       },
       "it": {
         "slug": "pioggia",
@@ -4658,110 +4847,155 @@
       "en": {
         "slug": "forest",
         "name": "Forest",
-        "shortDescription": "A forest in a dream can represent uncertainty, exploration, privacy, growth, or feeling overwhelmed. Its meaning depends on whether the forest felt dark or green, whether you were lost, and what was happening in your waking life.",
+        "shortDescription": "Dreaming of a forest often means walking among trees where light and paths change everything. A forest is commonly associated with the unknown, retreat or growth. Whether it felt dark or green, and whether you were lost, shapes the reading.",
         "askYourself": [
-          "What did the forest look and feel like — dark, green, dense, welcoming, or threatening?",
+          "Was the forest dark, green, dense, open, welcoming or threatening?",
           "Was I lost, exploring, hiding, or following a path?",
-          "What situation in my waking life feels uncertain, private, or ready for growth?"
+          "What situation right now asks me to move forward without seeing everything?"
         ],
         "faq": [
           {
             "question": "What does a forest represent in a dream?",
-            "answer": "A forest can represent uncertainty, exploration, privacy, growth, or a situation that feels complex. There is no universal meaning, so consider the forest's condition, your emotions, and what you were doing in the dream."
+            "answer": "A forest is often associated with the unknown, with retreat and with growth. There is no universal meaning: the light, the paths, what you were doing and how you felt tell you which lead fits your dream."
           },
           {
             "question": "What does a dark forest mean in a dream?",
-            "answer": "A dark forest can reflect uncertainty, fear, limited information, or difficulty seeing a way forward. If you felt curious rather than afraid, it may instead point to exploring something unfamiliar."
+            "answer": "A dark forest can go with uncertainty, fear or a situation where you lack information. If you felt curious rather than afraid, the same darkness can go with exploring something new. Your emotion makes the difference."
           },
           {
             "question": "What does a green forest mean in a dream?",
-            "answer": "A green forest can suggest growth, vitality, restoration, or a need for space and calm. The meaning changes with the atmosphere: a peaceful green forest feels different from one that is dense or difficult to cross."
+            "answer": "A green, sunlit forest can go with rest, vitality or a need for space and calm. If the growth felt stifling, the scene can lean toward overload instead. Notice whether you could breathe and move freely."
           },
           {
             "question": "What does being lost in a forest mean in a dream?",
-            "answer": "Being lost in a forest can mirror confusion, too many choices, or a lack of direction, but it can also accompany exploration and change. Notice whether you found a path, asked for help, or felt safe, because those details add context."
+            "answer": "Being lost can match hesitation, too many choices or a lack of bearings. It does not mean there is no way out: finding a path, following a light or asking for help all change the reading."
           }
         ],
-        "modifiedAt": "2026-07-23"
+        "modifiedAt": "2026-10-08",
+        "documentMetaDescription": "Dreaming of a forest, dark or green, or of being lost among the trees: what the scene may say about uncertainty and your bearings, with questions to ask."
       },
       "fr": {
         "slug": "foret",
         "name": "Forêt",
-        "shortDescription": "Rêver d’une forêt peut évoquer l’incertitude, l’exploration, le besoin de calme ou une situation difficile à lire. Une forêt sombre, verte ou sans chemin ne raconte pas la même chose selon votre émotion.",
+        "shortDescription": "Rêver d'une forêt, c'est souvent marcher entre des arbres où la lumière et les chemins changent tout. La forêt est souvent associée à l'inconnu, au retrait ou à la croissance. Sombre ou verte, avec ou sans chemin, elle ne raconte pas la même chose.",
         "askYourself": [
-          "La forêt était-elle sombre, verte, dense, accueillante ou inquiétante ?",
-          "Étais-je perdu, caché, en promenade ou guidé par un chemin ?",
-          "Quelle situation actuelle me demande d’avancer sans tout voir clairement ?"
+          "La forêt était-elle sombre, verte, dense, ouverte, accueillante ou inquiétante ?",
+          "Étais-je perdu, en exploration, caché, ou sur un chemin ?",
+          "Quelle situation me demande en ce moment d'avancer sans tout voir clairement ?"
         ],
         "seoTitle": "forêt sombre, verte ou se perdre",
         "documentTitle": "Rêver de forêt sombre, verte ou sans chemin",
         "faq": [
           {
-            "question": "Que signifie rêver d’une forêt ?",
-            "answer": "Une forêt peut correspondre à une période d’exploration, d’incertitude, de retrait ou de croissance. Sa lumière, ses chemins, votre action et votre émotion donnent une lecture plus juste qu’un sens universel."
+            "question": "Que signifie rêver d'une forêt ?",
+            "answer": "La forêt est souvent associée à l'inconnu, au retrait et à la croissance. Il n'existe pas de sens universel : la lumière, les chemins, ce que vous faisiez et votre émotion indiquent quelle piste correspond à votre rêve."
           },
           {
-            "question": "Que signifie rêver d’une forêt sombre ?",
-            "answer": "Une forêt sombre peut faire écho à la peur, au manque d’informations ou à une situation dont l’issue reste floue. Si vous étiez curieux plutôt qu’inquiet, elle peut aussi accompagner une découverte."
+            "question": "Que signifie rêver d'une forêt sombre ?",
+            "answer": "Une forêt sombre peut accompagner l'incertitude, la peur ou une situation où il vous manque des informations. Si vous étiez curieux plutôt qu'inquiet, la même obscurité peut rejoindre l'exploration d'une nouveauté. Votre émotion fait la différence."
           },
           {
-            "question": "Que signifie rêver d’une forêt verte ?",
-            "answer": "Une forêt verte peut suggérer vitalité, repos, renouveau ou besoin de nature. Une ambiance paisible oriente vers la récupération; une végétation étouffante peut plutôt évoquer la surcharge."
+            "question": "Que signifie rêver d'une forêt verte ?",
+            "answer": "Une forêt verte et lumineuse peut accompagner le repos, la vitalité ou un besoin d'espace et de calme. Si la végétation vous étouffait, la scène penche plutôt vers la surcharge. Notez si vous pouviez respirer et avancer librement."
           },
           {
-            "question": "Que signifie se perdre dans une forêt en rêve ?",
-            "answer": "Se perdre peut refléter une hésitation, trop de choix ou l’absence de repères. Le fait de retrouver un chemin, de demander de l’aide ou de rester calme change nettement l’interprétation."
+            "question": "Que signifie se perdre dans une forêt en rêve ?",
+            "answer": "Se perdre peut rejoindre une hésitation, trop de choix ou l'absence de repères. Cela ne veut pas dire qu'il n'y a pas d'issue : trouver un sentier, suivre une lumière ou demander de l'aide change la lecture."
           }
         ],
-        "modifiedAt": "2026-07-23"
+        "modifiedAt": "2026-10-08",
+        "documentMetaDescription": "Rêver d'une forêt sombre ou verte, ou de s'y perdre : ce que la scène peut dire de l'incertitude et de vos repères, avec questions et exemple de journal."
       },
       "es": {
         "slug": "bosque",
         "name": "Bosque",
-        "shortDescription": "Soñar con un bosque puede reflejar incertidumbre, exploración, necesidad de refugio o crecimiento. Un bosque oscuro, verde o sin sendero cambia de sentido según lo que hacías y sentías.",
+        "shortDescription": "Soñar con un bosque suele ser caminar entre árboles donde la luz y los senderos lo cambian todo. El bosque se asocia a menudo con lo desconocido, el refugio o el crecimiento. Oscuro o verde, con o sin sendero, no cuenta lo mismo.",
         "askYourself": [
-          "¿El bosque era oscuro, verde, denso, acogedor o amenazante?",
-          "¿Estaba perdido, escondido, explorando o siguiendo un sendero?",
-          "¿Qué situación actual me obliga a avanzar sin verlo todo claro?"
+          "¿El bosque era oscuro, verde, denso, abierto, acogedor o amenazante?",
+          "¿Estaba perdido, explorando, escondido o siguiendo un sendero?",
+          "¿Qué situación me pide ahora avanzar sin verlo todo claro?"
         ],
         "seoTitle": "bosque oscuro, verde o perderse",
         "faq": [
           {
             "question": "¿Qué significa soñar con un bosque?",
-            "answer": "Un bosque puede relacionarse con una etapa de exploración, incertidumbre, refugio o crecimiento. La luz, los caminos, tu acción y la emoción ofrecen más contexto que una interpretación universal."
+            "answer": "El bosque se asocia a menudo con lo desconocido, el refugio y el crecimiento. No hay un significado universal: la luz, los senderos, lo que hacías y lo que sentías indican qué pista encaja con tu sueño."
           },
           {
             "question": "¿Qué significa soñar con un bosque oscuro?",
-            "answer": "Un bosque oscuro puede reflejar miedo, falta de información o una situación cuyo desenlace no ves claro. Si sentías curiosidad en vez de peligro, también puede acompañar un descubrimiento."
+            "answer": "Un bosque oscuro puede acompañar incertidumbre, miedo o una situación en la que te falta información. Si sentías curiosidad en vez de inquietud, esa misma oscuridad puede enlazar con explorar algo nuevo. Tu emoción marca la diferencia."
           },
           {
             "question": "¿Qué significa soñar con un bosque verde?",
-            "answer": "Un bosque verde puede sugerir vitalidad, descanso, renovación o necesidad de contacto con la naturaleza. Si la vegetación te agobiaba, en cambio, podría reflejar saturación."
+            "answer": "Un bosque verde y luminoso puede acompañar descanso, vitalidad o necesidad de espacio y calma. Si la vegetación te agobiaba, la escena se acerca más a la saturación. Fíjate en si podías respirar y avanzar con libertad."
           },
           {
             "question": "¿Qué significa perderse en un bosque en un sueño?",
-            "answer": "Perderse puede reflejar dudas, demasiadas opciones o falta de referencias. Encontrar un sendero, pedir ayuda o mantener la calma cambia la lectura y puede mostrar recursos disponibles."
+            "answer": "Perderse puede enlazar con dudas, demasiadas opciones o falta de referencias. No significa que no haya salida: encontrar un sendero, seguir una luz o pedir ayuda cambia la lectura."
           }
         ],
-        "modifiedAt": "2026-07-23"
+        "modifiedAt": "2026-10-08",
+        "documentMetaDescription": "Soñar con un bosque oscuro o verde, o con perderte en él: qué puede decir la escena sobre la incertidumbre y tus referencias, con preguntas y ejemplo de diario."
       },
       "de": {
         "slug": "wald",
         "name": "Wald",
-        "shortDescription": "Wälder repräsentieren das Unbewusste, Geheimnis und die Reise der Selbsterforschung. Sie können sowohl Verwirrung als auch Wachstum und Entdeckung symbolisieren.",
+        "shortDescription": "Von einem Wald zu träumen heißt oft, zwischen Bäumen zu gehen, wo Licht und Wege alles verändern. Der Wald wird häufig mit dem Unbekannten, mit Rückzug oder mit Wachstum verbunden. Dunkel oder grün, mit oder ohne Weg: Er erzählt nicht dasselbe.",
         "askYourself": [
-          "Welche unbekannten Teile meiner Psyche erkunde ich?",
-          "Fühle ich mich in einer Situation verloren?"
-        ]
+          "War der Wald dunkel, grün, dicht, licht, einladend oder bedrohlich?",
+          "Hatte ich mich verirrt, war ich auf Erkundung, versteckt oder auf einem Weg?",
+          "Welche Lage verlangt gerade von mir, weiterzugehen, ohne alles klar zu sehen?"
+        ],
+        "faq": [
+          {
+            "question": "Was bedeutet ein Wald im Traum?",
+            "answer": "Der Wald wird oft mit dem Unbekannten, mit Rückzug und mit Wachstum verbunden. Eine allgemeingültige Bedeutung gibt es nicht: Licht, Wege, Ihr Tun und Ihr Gefühl zeigen, welche Spur zu Ihrem Traum passt."
+          },
+          {
+            "question": "Was bedeutet ein dunkler Wald im Traum?",
+            "answer": "Ein dunkler Wald kann Unsicherheit, Angst oder eine Lage begleiten, in der Ihnen Informationen fehlen. Waren Sie eher neugierig als ängstlich, kann dieselbe Dunkelheit zum Erkunden von etwas Neuem passen. Ihr Gefühl macht den Unterschied."
+          },
+          {
+            "question": "Was bedeutet ein grüner Wald im Traum?",
+            "answer": "Ein grüner, lichtdurchfluteter Wald kann Erholung, Lebenskraft oder das Bedürfnis nach Raum und Ruhe begleiten. Wirkte das Grün erdrückend, neigt die Szene eher zur Überlastung. Achten Sie darauf, ob Sie frei atmen und gehen konnten."
+          },
+          {
+            "question": "Was bedeutet es, sich im Traum im Wald zu verirren?",
+            "answer": "Sich zu verirren kann zu Unentschlossenheit, zu vielen Möglichkeiten oder fehlender Orientierung passen. Es heißt nicht, dass es keinen Ausweg gibt: Einen Pfad finden, einem Licht folgen oder um Hilfe bitten verändert die Lesart."
+          }
+        ],
+        "documentMetaDescription": "Wald im Traum, dunkel oder grün, oder sich darin verirren: was die Szene über Unsicherheit und Orientierung sagen kann, mit Fragen und Tagebuchbeispiel.",
+        "modifiedAt": "2026-10-08"
       },
       "it": {
         "slug": "foresta",
         "name": "Foresta",
-        "shortDescription": "Le foreste rappresentano l'inconscio, il mistero e il viaggio di autoesplorazione. Possono simboleggiare sia confusione che crescita e scoperta.",
+        "shortDescription": "Sognare una foresta significa spesso camminare tra alberi dove la luce e i sentieri cambiano tutto. La foresta viene spesso associata all’ignoto, al ritiro o alla crescita. Buia o verde, con o senza sentiero, non racconta la stessa cosa.",
         "askYourself": [
-          "Quali parti sconosciute della mia psiche sto esplorando?",
-          "Mi sento perso in qualche situazione?"
-        ]
+          "La foresta era buia, verde, fitta, aperta, accogliente o minacciosa?",
+          "Mi ero perso, stavo esplorando, mi nascondevo o seguivo un sentiero?",
+          "Quale situazione mi chiede in questo periodo di andare avanti senza vedere tutto chiaro?"
+        ],
+        "faq": [
+          {
+            "question": "Che cosa significa sognare una foresta?",
+            "answer": "La foresta viene spesso associata all’ignoto, al ritiro e alla crescita. Non c’è un significato universale: la luce, i sentieri, ciò che facevi e ciò che provavi indicano quale pista si adatta al tuo sogno."
+          },
+          {
+            "question": "Che cosa significa sognare una foresta buia?",
+            "answer": "Una foresta buia può accompagnare incertezza, paura o una situazione in cui ti mancano informazioni. Se provavi curiosità più che inquietudine, lo stesso buio può avvicinarsi all’esplorazione di qualcosa di nuovo. È la tua emozione a fare la differenza."
+          },
+          {
+            "question": "Che cosa significa sognare una foresta verde?",
+            "answer": "Una foresta verde e luminosa può accompagnare riposo, vitalità o il bisogno di spazio e di calma. Se la vegetazione ti soffocava, la scena si avvicina piuttosto al sovraccarico. Nota se riuscivi a respirare e a muoverti liberamente."
+          },
+          {
+            "question": "Che cosa significa perdersi in una foresta in sogno?",
+            "answer": "Perdersi può avvicinarsi a un’esitazione, a troppe scelte o alla mancanza di punti di riferimento. Non significa che non ci sia via d’uscita: trovare un sentiero, seguire una luce o chiedere aiuto cambia la lettura."
+          }
+        ],
+        "documentMetaDescription": "Sognare una foresta buia o verde, o di perdersi tra gli alberi: che cosa può dire dell’incertezza e dell’orientamento, con domande ed esempio di diario.",
+        "modifiedAt": "2026-10-08"
       },
       "pt": {
         "slug": "floresta",
@@ -4812,20 +5046,62 @@
       "en": {
         "slug": "tree",
         "name": "Tree",
-        "shortDescription": "A tree symbolizes personal growth, family roots, and the cycle of life. A dead tree can represent the end of a phase or a need for renewal.",
+        "shortDescription": "Dreaming of a tree often fixes your eye on one living shape: a huge oak, a bare trunk, branches you climb. A tree is commonly associated with growth, roots and the time things take. Its health and what you did with it shape the reading.",
         "askYourself": [
-          "Am I well grounded in my life?",
-          "What part of me needs to grow?"
-        ]
+          "What was the tree like: tall, young, bare, heavy with fruit, fallen?",
+          "Was I looking at it, climbing it, sheltering under it or cutting it down?",
+          "What in my life is slowly growing, or needs firmer roots?"
+        ],
+        "faq": [
+          {
+            "question": "What does it mean to dream about a tree?",
+            "answer": "A tree is often associated with growth, roots, family and the time things take. Its state, healthy, bare, fallen or full of fruit, and what you did with it guide the reading more than a fixed meaning."
+          },
+          {
+            "question": "What does a dead or fallen tree mean in a dream?",
+            "answer": "A dead or fallen tree can go with an ending, a loss of energy or something that has run its course. It is not an omen of death or illness. Notice what was left around it: a gap, more light, new shoots."
+          },
+          {
+            "question": "What do tree roots mean in a dream?",
+            "answer": "Visible roots can bring the scene back to foundations: family, origins, the place you come from or what keeps you steady. Deep roots can go with stability; torn or exposed roots, with feeling uprooted."
+          },
+          {
+            "question": "What does climbing a tree mean in a dream?",
+            "answer": "Climbing can go with ambition, a wish for a wider view or a slow, steady effort. How high you got and how you felt up there, proud, dizzy or stuck, matter more than the climb itself."
+          }
+        ],
+        "documentMetaDescription": "Dreaming of a tree, its roots, a dead or fallen tree or climbing one: what the scene may say about growth and foundations, with questions and a journal example.",
+        "modifiedAt": "2026-10-08"
       },
       "fr": {
         "slug": "arbre",
         "name": "Arbre",
-        "shortDescription": "L'arbre symbolise la croissance personnelle, les racines familiales et le cycle de la vie. Un arbre mort peut représenter la fin d'une phase ou un besoin de renouveau.",
+        "shortDescription": "Rêver d'un arbre fixe souvent le regard sur une seule forme vivante : un chêne immense, un tronc nu, des branches où l'on grimpe. L'arbre est souvent associé à la croissance, aux racines et au temps long. Son état et ce que vous en faisiez orientent la lecture.",
         "askYourself": [
-          "Suis-je bien ancré dans ma vie ?",
-          "Quelle partie de moi a besoin de croître ?"
-        ]
+          "Comment était l'arbre : grand, jeune, dénudé, chargé de fruits, tombé ?",
+          "Est-ce que je le regardais, j'y grimpais, je m'abritais dessous ou je le coupais ?",
+          "Qu'est-ce qui pousse lentement dans ma vie, ou aurait besoin de racines plus solides ?"
+        ],
+        "faq": [
+          {
+            "question": "Que signifie rêver d'un arbre ?",
+            "answer": "L'arbre est souvent associé à la croissance, aux racines, à la famille et au temps que prennent les choses. Son état, en pleine santé, dénudé, tombé ou couvert de fruits, et ce que vous en faisiez orientent la lecture plus qu'un sens fixe."
+          },
+          {
+            "question": "Que signifie rêver d'un arbre mort ou tombé ?",
+            "answer": "Un arbre mort ou tombé peut accompagner une fin, une baisse d'énergie ou quelque chose qui a fait son temps. Ce n'est pas un présage de mort ni de maladie. Regardez ce qui restait autour : un vide, plus de lumière, de jeunes pousses."
+          },
+          {
+            "question": "Que signifient les racines d'un arbre en rêve ?",
+            "answer": "Des racines visibles ramènent souvent la scène aux fondations : la famille, les origines, le lieu d'où l'on vient ou ce qui vous tient debout. Des racines profondes peuvent accompagner la stabilité ; arrachées ou à nu, le sentiment d'être déraciné."
+          },
+          {
+            "question": "Que signifie grimper à un arbre en rêve ?",
+            "answer": "Grimper peut accompagner l'ambition, l'envie de prendre de la hauteur ou un effort patient. La hauteur atteinte et ce que vous ressentiez là-haut, fierté, vertige ou blocage, comptent plus que l'ascension elle-même."
+          }
+        ],
+        "documentMetaDescription": "Rêver d'un arbre, de ses racines, d'un arbre mort ou tombé, ou d'y grimper : ce que la scène peut dire de la croissance, avec questions et exemple de journal.",
+        "modifiedAt": "2026-10-08"
       },
       "es": {
         "slug": "arbol",
@@ -4873,20 +5149,62 @@
       "de": {
         "slug": "baum",
         "name": "Baum",
-        "shortDescription": "Bäume symbolisieren Wachstum, Stärke und Verbindung. Ihre Wurzeln stehen für Ihre Grundlagen, der Stamm für Ihre Stärke und die Äste für Ihre Ambitionen.",
+        "shortDescription": "Von einem Baum zu träumen lenkt den Blick oft auf eine einzige lebende Gestalt: eine mächtige Eiche, einen kahlen Stamm, Äste, auf die man klettert. Der Baum wird häufig mit Wachstum, Wurzeln und langer Zeit verbunden. Sein Zustand und Ihr Tun prägen die Lesart.",
         "askYourself": [
-          "Wie stark sind meine Wurzeln und Grundlagen?",
-          "Wachse ich in die richtige Richtung?"
-        ]
+          "Wie sah der Baum aus: hoch, jung, kahl, voller Früchte, umgestürzt?",
+          "Habe ich ihn angesehen, bin ich hinaufgeklettert, habe ich unter ihm Schutz gesucht oder ihn gefällt?",
+          "Was wächst in meinem Leben gerade langsam heran, oder bräuchte festere Wurzeln?"
+        ],
+        "faq": [
+          {
+            "question": "Was bedeutet es, von einem Baum zu träumen?",
+            "answer": "Der Baum wird oft mit Wachstum, Wurzeln, Familie und der Zeit verbunden, die Dinge brauchen. Sein Zustand, gesund, kahl, umgestürzt oder voller Früchte, und was Sie mit ihm getan haben, sagen mehr als eine feste Bedeutung."
+          },
+          {
+            "question": "Was bedeutet ein toter oder umgestürzter Baum im Traum?",
+            "answer": "Ein toter oder umgestürzter Baum kann einen Abschluss, nachlassende Kraft oder etwas begleiten, das sich überlebt hat. Er ist kein Vorzeichen für Tod oder Krankheit. Achten Sie darauf, was um ihn herum blieb: eine Lücke, mehr Licht, junge Triebe."
+          },
+          {
+            "question": "Was bedeuten Baumwurzeln im Traum?",
+            "answer": "Sichtbare Wurzeln führen die Szene oft zu den Grundlagen zurück: Familie, Herkunft, der Ort, aus dem Sie kommen, oder das, was Sie trägt. Tiefe Wurzeln können Stabilität begleiten, freigelegte oder ausgerissene das Gefühl, entwurzelt zu sein."
+          },
+          {
+            "question": "Was bedeutet es, im Traum auf einen Baum zu klettern?",
+            "answer": "Klettern kann Ehrgeiz, den Wunsch nach Überblick oder eine geduldige Anstrengung begleiten. Wie hoch Sie kamen und wie Sie sich oben fühlten, stolz, schwindlig oder festsitzend, zählt mehr als das Klettern selbst."
+          }
+        ],
+        "documentMetaDescription": "Baum im Traum, Wurzeln, ein toter oder umgestürzter Baum oder Klettern: was die Szene über Wachstum und Halt sagen kann, mit Fragen und Tagebuchbeispiel.",
+        "modifiedAt": "2026-10-08"
       },
       "it": {
         "slug": "albero",
         "name": "Albero",
-        "shortDescription": "Gli alberi simboleggiano crescita, forza e connessione. Le radici rappresentano le tue fondamenta, il tronco la tua forza e i rami le tue ambizioni.",
+        "shortDescription": "Sognare un albero fissa spesso lo sguardo su un’unica forma viva: una quercia enorme, un tronco spoglio, rami su cui ti arrampichi. L’albero viene spesso associato alla crescita, alle radici e ai tempi lunghi. Il suo stato e ciò che ci facevi orientano la lettura.",
         "askYourself": [
-          "Quanto sono forti le mie radici e fondamenta?",
-          "Sto crescendo nella direzione giusta?"
-        ]
+          "Com’era l’albero: alto, giovane, spoglio, carico di frutti, caduto?",
+          "Lo guardavo, mi ci arrampicavo, mi riparavo sotto o lo stavo tagliando?",
+          "Che cosa sta crescendo lentamente nella mia vita, o avrebbe bisogno di radici più salde?"
+        ],
+        "faq": [
+          {
+            "question": "Che cosa significa sognare un albero?",
+            "answer": "L’albero viene spesso associato alla crescita, alle radici, alla famiglia e al tempo che servono alle cose. Il suo stato, sano, spoglio, caduto o carico di frutti, e ciò che ci facevi orientano la lettura più di un significato fisso."
+          },
+          {
+            "question": "Che cosa significa sognare un albero morto o caduto?",
+            "answer": "Un albero morto o caduto può accompagnare una fine, un calo di energia o qualcosa che ha fatto il suo tempo. Non è un presagio di morte né di malattia. Guarda che cosa restava intorno: un vuoto, più luce, nuovi germogli."
+          },
+          {
+            "question": "Che cosa significano le radici di un albero in sogno?",
+            "answer": "Radici in vista riportano spesso la scena alle fondamenta: la famiglia, le origini, il luogo da cui vieni o ciò che ti tiene in piedi. Radici profonde possono accompagnare la stabilità; scoperte o strappate, la sensazione di essere sradicato."
+          },
+          {
+            "question": "Che cosa significa arrampicarsi su un albero in sogno?",
+            "answer": "Arrampicarsi può accompagnare l’ambizione, il desiderio di guardare più lontano o uno sforzo paziente. L’altezza raggiunta e ciò che provavi lassù, orgoglio, vertigine o blocco, contano più della salita in sé."
+          }
+        ],
+        "documentMetaDescription": "Sognare un albero, le sue radici, un albero morto o caduto, o di arrampicarti: che cosa può dire della crescita, con domande ed esempio di diario.",
+        "modifiedAt": "2026-10-08"
       },
       "pt": {
         "slug": "arvore",
