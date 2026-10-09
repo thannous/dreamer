@@ -23,7 +23,13 @@ test('an open dream preserves native touch and wheel scrolling while the backgro
     const { default: Lenis } = await import('lenis');
     lenis = new Lenis({ autoResize: false, autoRaf: false });
     const source = fs.readFileSync(path.join(__dirname, '../../docs-src/experience/experience.js'), 'utf8');
-    const lightbox = source.slice(source.indexOf('const initLightbox ='), source.indexOf('/* Waking:'));
+    // Stop at the next function. The old end marker was the Waking comment,
+    // removed when that section became initCapture. A missing marker used to
+    // slice through later code that closes over `tier`.
+    const start = source.indexOf('const initLightbox =');
+    const end = source.indexOf('const initCapture =');
+    if (start < 0 || end <= start) throw new Error('dream lightbox fixture could not slice initLightbox');
+    const lightbox = source.slice(start, end);
     const init = new Function('document', 'window', 'Image', 'Event', 'activeLenis', 'EASE_FILM', `${lightbox}; return initLightbox;`)(
       dom.window.document, dom.window, dom.window.Image, dom.window.Event, lenis, 'ease'
     );
