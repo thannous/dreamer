@@ -2896,135 +2896,159 @@
       "en": {
         "slug": "car",
         "name": "Car",
-        "shortDescription": "A car represents control over your life. Being in the driver's seat indicates control; being a passenger can suggest someone else is directing your life.",
+        "shortDescription": "Dreaming of a car often puts you on the road with a question of control: who is driving, how fast, and where to. Your seat, the state of the car and how you felt on the way matter more than any fixed meaning.",
         "askYourself": [
-          "Am I in control of my life?",
-          "Who is directing my trajectory?"
-        ]
+          "Was I driving, sitting in the passenger seat, or watching from outside?",
+          "Did the car run smoothly, break down, lose its brakes or crash?",
+          "Which decision or change in my life feels like that drive right now?"
+        ],
+        "faq": [
+          {
+            "question": "What does it mean to dream about a car?",
+            "answer": "A car is often associated with how you move forward: your pace, your direction and who makes the decisions. Who was driving, the state of the car and how you felt on the way tell you which lead to follow."
+          },
+          {
+            "question": "What does it mean to dream that you are driving?",
+            "answer": "Driving can go with a period when you are the one making the choices. A smooth ride may match confidence; fog, heavy traffic or too much speed can echo a decision or a responsibility that feels heavy."
+          },
+          {
+            "question": "What does it mean to be a passenger in a dream?",
+            "answer": "Being driven can reflect trust, a shared decision or the feeling that you have little say. Note who was at the wheel and whether you felt safe: those two details usually separate the readings."
+          },
+          {
+            "question": "What does a car breaking down or crashing mean in a dream?",
+            "answer": "A breakdown can match tiredness, a delay or a plan that needs fixing. A crash can stage a fear of losing control or of two goals colliding. Neither one predicts a real accident."
+          }
+        ],
+        "documentMetaDescription": "Dreaming of driving a car, being a passenger, losing your brakes or crashing: what the scene may say about control, with questions and a journal example.",
+        "modifiedAt": "2026-10-08"
       },
       "fr": {
         "slug": "voiture",
         "name": "Voiture",
-        "shortDescription": "Rêver d’une voiture peut refléter votre manière d’avancer, de choisir une direction ou de partager le contrôle. Votre place, l’état du véhicule et l’émotion ressentie comptent davantage qu’une signification fixe.",
+        "shortDescription": "Rêver de voiture vous met souvent sur la route avec une question de contrôle : qui conduit, à quelle vitesse, vers où. Votre place, l'état du véhicule et ce que vous ressentiez pendant le trajet comptent plus qu'un sens fixe.",
         "askYourself": [
-          "Étais-je au volant, passager ou à l’extérieur de la voiture ?",
-          "La voiture avançait-elle bien, tombait-elle en panne ou risquait-elle un accident ?",
-          "Quelle décision ou quel changement actuel ressemble au trajet du rêve ?"
+          "Étais-je au volant, passager ou à l'extérieur de la voiture ?",
+          "La voiture roulait-elle bien, tombait-elle en panne, perdait-elle ses freins ?",
+          "Quelle décision ou quel changement actuel ressemble à ce trajet ?"
         ],
         "seoTitle": "voiture, conduite ou panne",
         "documentTitle": "Rêver de voiture : conduite, panne ou accident",
         "faq": [
           {
-            "question": "Que signifie rêver d’une voiture ?",
-            "answer": "Une voiture peut évoquer votre autonomie, votre direction ou votre rythme de vie. Pour préciser la lecture, observez qui conduisait, l’état du véhicule, la destination et votre émotion."
+            "question": "Que signifie rêver d'une voiture ?",
+            "answer": "La voiture est souvent associée à la façon dont vous avancez : votre rythme, votre direction, et qui prend les décisions. Qui conduisait, l'état du véhicule et votre émotion pendant le trajet orientent la lecture."
           },
           {
-            "question": "Que signifie conduire une voiture dans un rêve ?",
-            "answer": "Conduire peut refléter le sentiment de choisir votre route. Une conduite fluide peut accompagner la confiance, tandis qu’une conduite difficile peut faire écho à une décision ou à une responsabilité pesante."
+            "question": "Que signifie conduire une voiture dans un rêve ?",
+            "answer": "Conduire peut accompagner une période où c'est vous qui faites les choix. Une conduite fluide peut rejoindre la confiance ; le brouillard, les bouchons ou une vitesse excessive peuvent faire écho à une décision qui pèse."
           },
           {
-            "question": "Que signifie être passager d’une voiture en rêve ?",
-            "answer": "Être passager peut suggérer que vous faites confiance à quelqu’un, que vous acceptez de ne pas tout diriger ou que vous manquez de marge de manœuvre. L’identité du conducteur apporte le contexte essentiel."
+            "question": "Que signifie être passager d'une voiture en rêve ?",
+            "answer": "Être passager peut refléter la confiance, une décision partagée ou le sentiment d'avoir peu de prise. Notez qui tenait le volant et si vous vous sentiez en sécurité : ces deux détails départagent les pistes."
           },
           {
-            "question": "Que signifie rêver d’une voiture en panne ou accidentée ?",
-            "answer": "Une panne peut correspondre à un ralentissement, un manque d’énergie ou un plan à revoir. Un accident peut traduire la crainte d’une perte de contrôle ou d’un conflit, sans annoncer un événement réel."
+            "question": "Que signifie rêver d'une voiture en panne ou accidentée ?",
+            "answer": "Une panne peut rejoindre la fatigue, un retard ou un projet à remettre en état. Un accident peut mettre en scène la peur de perdre le contrôle ou deux objectifs qui se heurtent. Aucun des deux n'annonce un accident réel."
           }
         ],
-        "modifiedAt": "2026-07-10"
+        "modifiedAt": "2026-10-08",
+        "documentMetaDescription": "Rêver de voiture : conduire, être passager, perdre ses freins ou avoir un accident. Ce que la scène peut dire du contrôle, avec questions et exemple."
       },
       "es": {
         "slug": "coche",
         "name": "Coche",
         "documentTitle": "Soñar con coche o carro: significado y escenarios",
-        "documentMetaDescription": "Soñar con coche o carro: compara conducir, perder el coche, viajar de pasajero, averías y accidentes según la emoción y el contexto del sueño.",
-        "shortDescription": "Soñar con un coche puede reflejar cómo avanzas, tomas decisiones o compartes el control. Quién conduce, el estado del vehículo, el destino y la emoción orientan el significado.",
+        "documentMetaDescription": "Soñar con coche o carro: conducir, ir de pasajero, quedarte sin frenos o chocar. Qué puede decir la escena sobre el control, con preguntas y un ejemplo.",
+        "shortDescription": "Soñar con un coche suele ponerte en la carretera con una pregunta de control: quién conduce, a qué velocidad y hacia dónde. Tu sitio en el coche, su estado y lo que sentías en el trayecto pesan más que un significado fijo.",
         "askYourself": [
           "¿Conducía yo, iba de copiloto o miraba el coche desde fuera?",
-          "¿El coche avanzaba bien, se averiaba, iba sin frenos o sufría un accidente?",
+          "¿El coche avanzaba bien, se averiaba, se quedaba sin frenos o chocaba?",
           "¿Qué decisión o cambio actual se parece a ese trayecto?"
         ],
         "seoTitle": "coche, conducir o perder el control",
         "faq": [
           {
             "question": "¿Qué significa soñar con un coche?",
-            "answer": "Un coche puede relacionarse con autonomía, dirección y ritmo personal. La lectura cambia según quién conduce, adónde vais, cómo funciona el vehículo y qué sentías."
+            "answer": "El coche se asocia a menudo con la forma en que avanzas: tu ritmo, tu dirección y quién toma las decisiones. Quién conducía, el estado del vehículo y lo que sentías en el trayecto orientan la lectura."
           },
           {
             "question": "¿Qué significa soñar que conduces un coche?",
-            "answer": "Conducir puede reflejar que tomas decisiones o asumes responsabilidad. Si el trayecto era tranquilo puede acompañar confianza; si resultaba difícil, puede señalar dudas o presión ante una elección."
+            "answer": "Conducir puede acompañar una etapa en la que las decisiones las tomas tú. Un trayecto tranquilo puede ir con la confianza; la niebla, un atasco o el exceso de velocidad pueden reflejar una decisión que pesa."
           },
           {
             "question": "¿Qué significa ir de pasajero en un coche?",
-            "answer": "Ir de pasajero puede indicar confianza en otra persona, una decisión compartida o la sensación de tener poco margen. Fíjate en quién conducía y si te sentías seguro."
+            "answer": "Ir de pasajero puede reflejar confianza, una decisión compartida o la sensación de tener poco margen. Fíjate en quién llevaba el volante y si te sentías seguro: esos dos detalles separan las lecturas."
           },
           {
             "question": "¿Qué significa soñar con un coche averiado o un accidente?",
-            "answer": "Una avería puede reflejar cansancio, retrasos o un plan que necesita ajustes. Un accidente puede expresar miedo a perder el control o a que dos objetivos choquen, pero no predice un accidente real."
+            "answer": "Una avería puede enlazar con cansancio, un retraso o un plan que hay que arreglar. Un accidente puede escenificar el miedo a perder el control o dos objetivos que chocan. Ninguno de los dos predice un accidente real."
           }
         ],
-        "modifiedAt": "2026-07-10"
+        "modifiedAt": "2026-10-08"
       },
       "de": {
         "slug": "auto",
         "name": "Auto",
-        "shortDescription": "Ein Auto im Traum kann zeigen, wie Sie Entscheidungen, Tempo und Eigenständigkeit erleben. Ob Sie fahren oder mitfahren, der Zustand des Wagens und das Gefühl unterwegs geben den entscheidenden Kontext.",
+        "shortDescription": "Ein Auto im Traum stellt oft eine Frage der Kontrolle: Wer fährt, wie schnell und wohin? Ob Sie am Steuer saßen oder mitfuhren, in welchem Zustand der Wagen war und wie sich die Fahrt anfühlte, sagt mehr als eine feste Deutung.",
         "askYourself": [
           "Saß ich am Steuer, war ich Beifahrer oder stand ich neben dem Auto?",
-          "Fuhr der Wagen sicher, hatte er eine Panne oder geriet er außer Kontrolle?",
-          "Welche aktuelle Entscheidung fühlt sich wie diese Fahrt an?"
+          "Fuhr der Wagen ruhig, hatte er eine Panne, versagten die Bremsen?",
+          "Welche aktuelle Entscheidung oder Veränderung fühlt sich wie diese Fahrt an?"
         ],
         "seoTitle": "Auto fahren, Panne oder Unfall",
         "faq": [
           {
             "question": "Was bedeutet ein Auto im Traum?",
-            "answer": "Ein Auto kann für Selbstständigkeit, Richtung oder persönliches Tempo stehen. Wer fuhr, wohin die Fahrt ging, wie der Wagen aussah und wie Sie sich fühlten, bestimmt die mögliche Deutung."
+            "answer": "Das Auto wird oft damit verbunden, wie Sie vorankommen: Ihr Tempo, Ihre Richtung und wer die Entscheidungen trifft. Wer fuhr, wie der Wagen aussah und wie Sie sich unterwegs fühlten, zeigt, welcher Spur Sie folgen können."
           },
           {
             "question": "Was bedeutet es, im Traum selbst Auto zu fahren?",
-            "answer": "Selbst zu fahren kann das Gefühl widerspiegeln, Entscheidungen aktiv zu treffen. Eine ruhige Fahrt kann zu Zuversicht passen; schwieriges Fahren eher zu Druck, Zweifel oder hoher Verantwortung."
+            "answer": "Selbst zu fahren kann eine Phase begleiten, in der Sie die Entscheidungen treffen. Eine ruhige Fahrt passt eher zu Zuversicht; Nebel, Stau oder zu hohes Tempo eher zu einer Entscheidung, die schwer wiegt."
           },
           {
             "question": "Was bedeutet es, im Traum Beifahrer zu sein?",
-            "answer": "Als Beifahrer vertrauen Sie möglicherweise jemandem, teilen Verantwortung oder erleben wenig Einfluss. Wichtig ist, wer gefahren ist und ob die Situation sicher oder unangenehm wirkte."
+            "answer": "Mitzufahren kann Vertrauen, eine geteilte Entscheidung oder das Gefühl ausdrücken, wenig Einfluss zu haben. Achten Sie darauf, wer am Steuer saß und ob Sie sich sicher fühlten: Diese beiden Details trennen die Lesarten."
           },
           {
             "question": "Was bedeuten Autopanne oder Autounfall im Traum?",
-            "answer": "Eine Panne kann auf Erschöpfung, Verzögerung oder einen Plan mit Reparaturbedarf hinweisen. Ein Unfall kann Angst vor Kontrollverlust oder einem Konflikt ausdrücken, sagt aber kein reales Ereignis voraus."
+            "answer": "Eine Panne kann zu Erschöpfung, einer Verzögerung oder einem Plan passen, der repariert werden muss. Ein Unfall kann die Angst vor Kontrollverlust oder einen Zielkonflikt in Szene setzen. Keines von beiden sagt einen echten Unfall voraus."
           }
         ],
-        "modifiedAt": "2026-07-10"
+        "modifiedAt": "2026-10-08",
+        "documentMetaDescription": "Auto im Traum: selbst fahren, Beifahrer sein, Bremsen versagen oder ein Unfall. Was die Szene über Kontrolle sagen kann, mit Fragen und einem Tagebuchbeispiel."
       },
       "it": {
         "slug": "automobile",
         "name": "Automobile",
         "documentTitle": "Sognare un’automobile: significato e scenari",
-        "shortDescription": "Sognare un’automobile può riflettere il modo in cui procedi, scegli una direzione o condividi il controllo. Chi guida, le condizioni dell’auto, la destinazione e l’emozione chiariscono il contesto.",
+        "shortDescription": "Sognare un’automobile ti mette spesso per strada con una domanda di controllo: chi guida, a che velocità e verso dove. Il tuo posto in auto, le sue condizioni e ciò che provavi durante il viaggio contano più di un significato fisso.",
         "askYourself": [
-          "Ero alla guida, passeggero o osservavo l’automobile da fuori?",
-          "L’auto funzionava bene, era guasta, senza freni o coinvolta in un incidente?",
-          "Quale scelta o cambiamento attuale assomiglia a quel viaggio?"
+          "Ero alla guida, passeggero o guardavo l’auto da fuori?",
+          "L’auto andava bene, si guastava, restava senza freni o faceva un incidente?",
+          "Quale scelta o cambiamento di questo periodo assomiglia a quel viaggio?"
         ],
         "seoTitle": "automobile, guida o perdita di controllo",
         "faq": [
           {
             "question": "Cosa significa sognare un’automobile?",
-            "answer": "Un’automobile può richiamare autonomia, direzione e ritmo personale. Il significato cambia in base a chi guidava, alla meta, allo stato del veicolo e a come ti sentivi."
+            "answer": "L’automobile viene spesso associata al modo in cui vai avanti: il tuo ritmo, la tua direzione e chi prende le decisioni. Chi guidava, lo stato dell’auto e ciò che provavi durante il viaggio orientano la lettura."
           },
           {
             "question": "Cosa significa sognare di guidare un’automobile?",
-            "answer": "Guidare può riflettere decisioni attive e responsabilità. Una guida tranquilla può accompagnare sicurezza; una guida difficile può rispecchiare dubbi o pressione davanti a una scelta."
+            "answer": "Guidare può accompagnare un periodo in cui le scelte le fai tu. Una guida tranquilla può andare con la fiducia; nebbia, traffico o troppa velocità possono fare eco a una decisione che pesa."
           },
           {
             "question": "Cosa significa essere passeggero in auto in un sogno?",
-            "answer": "Essere passeggero può indicare fiducia in qualcuno, responsabilità condivisa o poco margine di scelta. Conta soprattutto chi guidava e se il viaggio ti faceva sentire al sicuro."
+            "answer": "Essere passeggero può riflettere fiducia, una decisione condivisa o la sensazione di avere poco margine. Nota chi era al volante e se ti sentivi al sicuro: sono i due dettagli che distinguono le letture."
           },
           {
             "question": "Cosa significa sognare un’auto guasta o un incidente?",
-            "answer": "Un guasto può riflettere stanchezza, ritardi o un progetto da rivedere. Un incidente può esprimere paura di perdere il controllo o di vedere due obiettivi scontrarsi, senza prevedere eventi reali."
+            "answer": "Un guasto può avvicinarsi a stanchezza, ritardi o un progetto da sistemare. Un incidente può mettere in scena la paura di perdere il controllo o due obiettivi che si scontrano. Nessuno dei due prevede un incidente reale."
           }
         ],
-        "modifiedAt": "2026-08-11"
+        "modifiedAt": "2026-10-08",
+        "documentMetaDescription": "Sognare un’automobile: guidare, essere passeggero, restare senza freni o fare un incidente. Che cosa può dire la scena del controllo, con domande ed esempio."
       },
       "pt": {
         "slug": "carro",
@@ -3083,32 +3107,34 @@
       "fr": {
         "slug": "porte",
         "name": "Porte",
-        "shortDescription": "Rêver de porte parle d’opportunités, de décisions et de limites. Ouvrir une porte fermée suggère dépasser un blocage; une porte ouverte peut indiquer accès ou vulnérabilité; une porte qui ne s’ouvre pas signale une décision en attente.",
+        "shortDescription": "Rêver d'une porte vous place devant un seuil : entrer, sortir, attendre ou empêcher quelqu'un de passer. Ouverte, fermée, bloquée ou impossible à ouvrir, elle prend son sens avec le lieu, votre geste et ce que vous ressentiez.",
         "askYourself": [
-          "La porte était-elle ouverte, fermée, bloquée ou cassée ?",
-          "Essayais-je de l’ouvrir, de la fermer ou de la franchir ?",
-          "Quelle décision, limite ou opportunité apparaît maintenant dans ma vie ?"
+          "La porte était-elle ouverte, fermée à clé, bloquée ou cassée ?",
+          "Voulais-je entrer, sortir, la fermer ou voir ce qu'il y avait derrière ?",
+          "Quelle décision, limite ou attente ressemble à ce seuil en ce moment ?"
         ],
         "seoTitle": "porte ouverte, fermée ou bloquée",
         "documentTitle": "Rêver de porte ouverte, fermée ou bloquée",
         "faq": [
           {
-            "question": "Que signifie rêver de portes ?",
-            "answer": "Les portes en rêve sont liées aux opportunités, aux décisions et aux transitions. Le sens dépend du fait que la porte soit ouverte, fermée, bloquée ou franchie."
+            "question": "Que signifie rêver de portes ?",
+            "answer": "La porte est souvent associée aux passages, aux décisions et aux limites. Son sens dépend de son état, du lieu où elle se trouvait, de ce que vous vouliez faire et de ce que vous avez ressenti en vous en approchant."
           },
           {
-            "question": "Que signifie ouvrir une porte fermée en rêve ?",
-            "answer": "Ouvrir une porte fermée indique que vous essayez de dépasser un blocage, d’accéder à une opportunité ou de résoudre quelque chose qui semblait inaccessible."
+            "question": "Que signifie ouvrir une porte fermée en rêve ?",
+            "answer": "Ouvrir une porte fermée peut accompagner l'envie de dépasser un blocage ou d'accéder à quelque chose. Notez ce que vous attendiez derrière et ce que vous avez trouvé : l'écart entre les deux est souvent la vraie piste."
           },
           {
-            "question": "Que signifie rêver d’une porte d’entrée ouverte ?",
-            "answer": "Une porte d’entrée ouverte peut signaler vulnérabilité, confiance, exposition ou ouverture émotionnelle."
+            "question": "Que signifie rêver d'une porte d'entrée ouverte ?",
+            "answer": "Une porte d'entrée ouverte peut paraître accueillante ou inquiétante. Demandez-vous à qui appartenait la maison, qui pouvait entrer et si vous vouliez la refermer. La scène n'annonce aucune intrusion."
           },
           {
-            "question": "Que signifie une porte impossible à ouvrir ?",
-            "answer": "Elle montre souvent frustration, peur du rejet ou opportunité qui demande préparation, patience ou clé symbolique."
+            "question": "Que signifie une porte impossible à ouvrir ?",
+            "answer": "Une porte qui résiste peut faire écho à une frustration, une attente ou un obstacle actuel. Regardez ce qui bloquait : une serrure, un objet, quelqu'un de l'autre côté. Ce n'est pas le signe d'une occasion manquée."
           }
-        ]
+        ],
+        "documentMetaDescription": "Rêver de porte ouverte, fermée, bloquée ou impossible à ouvrir : ce que le seuil peut dire de vos décisions et limites, avec questions et exemple de journal.",
+        "modifiedAt": "2026-10-08"
       },
       "es": {
         "slug": "puerta",
@@ -3154,65 +3180,64 @@
       "de": {
         "slug": "tuer",
         "name": "Tür",
-        "shortDescription": "Traumdeutung Tür: Eine Tür im Traum spricht von Übergängen, Entscheidungen und Grenzen. Eine Tür lässt sich nicht öffnen oder schließen, eine Türklingel oder ein Schloss zeigen, wie zugänglich der nächste Schritt wirkt.",
+        "shortDescription": "Eine Tür im Traum stellt Sie an eine Schwelle: hinein, hinaus, warten oder jemanden draußen lassen. Ob sie offen oder verschlossen war, ob sie sich nicht öffnen oder schließen ließ, deuten Sie am besten zusammen mit Ort, Handlung und Gefühl.",
         "askYourself": [
-          "War die Tür offen, geschlossen, blockiert, verschlossen oder kaputt?",
-          "Wollte ich sie öffnen, schließen, abschließen oder hindurchgehen?",
-          "Welche Grenze, Entscheidung oder Chance zeigt sich gerade in meinem Leben?"
+          "War die Tür offen, geschlossen, verschlossen, blockiert oder kaputt?",
+          "Wollte ich hinein, hinaus, sie abschließen oder sehen, was dahinter lag?",
+          "Welche Entscheidung, Grenze oder Wartezeit fühlt sich gerade wie diese Schwelle an?"
         ],
         "seoTitle": "Tür lässt sich nicht öffnen oder schließen",
         "faq": [
           {
             "question": "Was bedeutet eine Tür im Traum?",
-            "answer": "Türen im Traum hängen meist mit Chancen, Entscheidungen, Grenzen und Übergängen zusammen. Die Deutung hängt davon ab, ob die Tür offen, geschlossen, blockiert oder überschritten wurde."
+            "answer": "Eine Tür wird oft mit Übergängen, Entscheidungen und Grenzen verbunden. Was sie bedeuten kann, hängt von ihrem Zustand ab, vom Ort, von dem, was Sie tun wollten, und davon, wie Sie sich an der Schwelle gefühlt haben."
           },
           {
             "question": "Was bedeutet Tür öffnen oder schließen im Traum?",
-            "answer": "Eine Tür zu öffnen zeigt den Wunsch nach Zugang, Lösung oder Neubeginn. Eine Tür zu schließen kann Schutz, Abgrenzung oder das Ende einer Phase bedeuten."
+            "answer": "Eine Tür zu öffnen kann den Wunsch nach Zugang oder einem nächsten Schritt begleiten, eine Tür zu schließen eher Schutz oder Abgrenzung. Achten Sie darauf, was Sie dahinter erwartet und was Sie tatsächlich gefunden haben."
           },
           {
             "question": "Was bedeutet eine Tür, die sich nicht öffnen lässt?",
-            "answer": "Eine Tür, die sich nicht öffnen lässt, zeigt oft Frustration, Angst vor Ablehnung oder eine Chance, die Vorbereitung, Geduld oder einen symbolischen Schlüssel braucht."
+            "answer": "Eine Tür, die nicht aufgeht, kann zu Frustration, einer Wartezeit oder einem aktuellen Hindernis passen. Schauen Sie, was blockierte: ein Schloss, ein Gegenstand, jemand auf der anderen Seite. Eine verpasste Chance beweist sie nicht."
           },
           {
             "question": "Was bedeuten Türklingel oder Türschloss im Traum?",
-            "answer": "Eine Türklingel kann auf Einladung, Kontakt oder eine Nachricht hinweisen. Ein Türschloss betont Zugang, Schutz, Geheimnisse oder die Frage, wer eintreten darf."
-          },
-          {
-            "question": "Warum stehen Türen für Übergänge und Grenzen?",
-            "answer": "Türen trennen Innen und Außen, Bekanntes und Unbekanntes. Im Traum zeigen sie deshalb oft, wo du dich öffnest, schützt oder vor einem Wechsel stehst."
+            "answer": "Eine Türklingel bringt Kontakt ins Spiel: Wer will herein, und wollten Sie öffnen? Ein Schloss stellt die Frage nach Zugang und Schutz. Oft genügt auch eine reale Quelle, etwa ein klemmendes Schloss oder ein erwarteter Besuch."
           }
-        ]
+        ],
+        "documentMetaDescription": "Traumdeutung Tür: offen, verschlossen, lässt sich nicht öffnen oder schließen, Türklingel. Was die Schwelle zeigen kann, mit Fragen und Tagebuchbeispiel.",
+        "modifiedAt": "2026-10-08"
       },
       "it": {
         "slug": "porta",
         "name": "Porta",
-        "shortDescription": "Sognare una porta può riguardare una scelta, un passaggio o un confine personale. Il fatto che sia aperta, chiusa, bloccata o che appartenga a casa tua cambia il senso della scena insieme alla tua reazione.",
+        "shortDescription": "Sognare una porta ti mette davanti a una soglia: entrare, uscire, aspettare o tenere fuori qualcuno. Aperta, chiusa, bloccata o di casa tua, prende senso insieme al luogo, al tuo gesto e a ciò che hai provato.",
         "askYourself": [
-          "La porta era aperta, chiusa, bloccata, rotta o apparteneva a casa mia?",
-          "Cercavo di aprirla, chiuderla, attraversarla o proteggerla?",
-          "Quale scelta, opportunità o limite attuale assomiglia a quella soglia?"
+          "La porta era aperta, chiusa a chiave, bloccata, rotta o apparteneva a casa mia?",
+          "Volevo entrare, uscire, chiuderla o vedere che cosa c’era dietro?",
+          "Quale scelta, limite o attesa di questo periodo assomiglia a quella soglia?"
         ],
         "faq": [
           {
             "question": "Cosa significa sognare una porta?",
-            "answer": "Una porta può richiamare una scelta, una transizione, un’opportunità o un confine. Lo stato della porta, il luogo, l’azione e l’emozione aiutano a capire quale lettura si adatta meglio alla scena."
+            "answer": "La porta viene spesso associata ai passaggi, alle scelte e ai confini. Il senso dipende dal suo stato, dal luogo, da che cosa volevi fare e da ciò che hai provato avvicinandoti alla soglia."
           },
           {
             "question": "Cosa significa sognare la porta di casa aperta?",
-            "answer": "La porta di casa aperta può riflettere fiducia, disponibilità oppure la sensazione che la tua sfera privata sia esposta. Il fatto che ti sentissi tranquillo o in pericolo cambia la lettura."
+            "answer": "La porta di casa aperta può sembrare accogliente o inquietante. Chiediti chi poteva entrare e se volevi richiuderla: fiducia e sfera privata esposta sono due letture diverse. La scena non annuncia nessuna intrusione."
           },
           {
             "question": "Cosa significa sognare una porta che si apre?",
-            "answer": "Una porta che si apre può accompagnare una possibilità, un permesso o una soluzione. Se non volevi attraversarla, può invece mettere in luce esitazione davanti al cambiamento."
+            "answer": "Una porta che si apre può accompagnare una possibilità, un permesso o una soluzione. Se si apriva da sola o non volevi attraversarla, nota che cosa è apparso dietro e come hai reagito: è lì la pista."
           },
           {
             "question": "Cosa significa sognare una porta chiusa o bloccata?",
-            "answer": "Una porta chiusa o bloccata può riflettere un limite, un ritardo o una decisione ancora irrisolta. Cercare una chiave, forzare la porta o tornare indietro mostra come affronti l’ostacolo."
+            "answer": "Una porta chiusa o bloccata può fare eco a un limite, a un’attesa o a una decisione ancora sospesa. Cercare una chiave, forzarla o tornare indietro mostra come affronti l’ostacolo. Non è il segno di un’occasione persa."
           }
         ],
         "seoTitle": "porta aperta o chiusa",
-        "modifiedAt": "2026-07-17"
+        "modifiedAt": "2026-10-08",
+        "documentMetaDescription": "Sognare una porta aperta, chiusa, bloccata o di casa tua: che cosa può dire la soglia delle tue scelte e dei tuoi confini, con domande ed esempio di diario."
       },
       "pt": {
         "slug": "porta",
@@ -3261,47 +3286,152 @@
       "en": {
         "slug": "exam",
         "name": "Exam / Test",
-        "shortDescription": "Dreaming of an exam, especially failing one, symbolizes anxiety about evaluation, perfectionism, or impostor syndrome. This is a very common dream among adults.",
+        "shortDescription": "Dreaming of an exam often means turning over a paper you can't answer, or realising the test started without you. The scene is often associated with feeling evaluated, and the detail that went wrong is the best clue.",
         "askYourself": [
-          "Am I afraid of not measuring up?",
-          "In what area do I feel judged?"
-        ]
+          "What went wrong: unprepared, late, a blank page, the wrong room, or did it go well?",
+          "How did I feel when I woke up: panic, shame, relief, nothing much?",
+          "Where do I feel tested or judged right now: at work, at home, by myself?"
+        ],
+        "faq": [
+          {
+            "question": "What does it mean to dream about an exam?",
+            "answer": "An exam dream is often associated with feeling evaluated: at work, in a relationship or by your own standards. What went wrong in the dream, and how you felt, point to where that pressure sits right now."
+          },
+          {
+            "question": "Why do I still dream about exams years after school?",
+            "answer": "Many adults keep having exam dreams long after their last test. School gave most of us a vivid model of being judged, and the dream may borrow that setting when a current situation feels like an evaluation."
+          },
+          {
+            "question": "What does it mean to dream you didn't study for an exam?",
+            "answer": "Being unprepared often stages a fear of being caught off guard before a deadline or a challenge. It does not show that you are actually unprepared in waking life. Note the subject: it may point to the area that feels exposed."
+          },
+          {
+            "question": "Does failing an exam in a dream mean I will fail?",
+            "answer": "No. In a study of medical students in Paris (Arnulf and colleagues, 2014), passing or failing in the dream had no link with the real grade, and students who had dreamed about the exam tended to score slightly better."
+          }
+        ],
+        "documentMetaDescription": "Dreaming of an exam: being unprepared, late, failing or facing a blank page. What the scene may say about feeling evaluated, with questions and an example.",
+        "modifiedAt": "2026-10-08"
       },
       "fr": {
         "slug": "examen",
         "name": "Examen / Test",
-        "shortDescription": "Rêver d'un examen, surtout raté, symbolise l'anxiété face à l'évaluation, le perfectionnisme ou le syndrome de l'imposteur. C'est un rêve très courant chez les adultes.",
+        "shortDescription": "Rêver d'examen, c'est souvent retourner la copie sans reconnaître une seule question, ou découvrir que l'épreuve a commencé sans vous. La scène est souvent associée au sentiment d'être évalué ; ce qui tourne mal est le meilleur indice.",
         "askYourself": [
-          "Ai-je peur de ne pas être à la hauteur ?",
-          "Dans quel domaine je me sens jugé ?"
-        ]
+          "Qu'est-ce qui clochait : pas révisé, en retard, page blanche, mauvaise salle, ou tout allait bien ?",
+          "Qu'ai-je ressenti au réveil : panique, honte, soulagement, presque rien ?",
+          "Où ai-je l'impression de passer une épreuve en ce moment : au travail, à la maison, face à moi-même ?"
+        ],
+        "faq": [
+          {
+            "question": "Que signifie rêver d'un examen ?",
+            "answer": "Un rêve d'examen est souvent associé au sentiment d'être évalué : au travail, dans une relation ou face à vos propres exigences. Ce qui tournait mal dans le rêve et votre émotion indiquent où se situe cette pression en ce moment."
+          },
+          {
+            "question": "Pourquoi rêve-t-on encore d'examens des années après l'école ?",
+            "answer": "Beaucoup d'adultes font ce rêve longtemps après leur dernier examen. L'école a donné à la plupart d'entre nous un modèle très net de l'évaluation, et le rêve peut reprendre ce décor quand une situation actuelle ressemble à une épreuve."
+          },
+          {
+            "question": "Que signifie rêver de ne pas avoir révisé ?",
+            "answer": "Ne pas avoir révisé met souvent en scène la peur d'être pris au dépourvu avant une échéance ou un défi. Cela ne montre pas que vous êtes réellement mal préparé. Notez la matière : elle peut désigner le domaine qui vous semble exposé."
+          },
+          {
+            "question": "Rêver d'échouer à un examen annonce-t-il un échec ?",
+            "answer": "Non. Dans une étude menée auprès d'étudiants en médecine parisiens (Arnulf et coll., 2014), réussir ou échouer en rêve n'avait aucun lien avec la note réelle, et ceux qui avaient rêvé du concours obtenaient plutôt de meilleures notes."
+          }
+        ],
+        "documentMetaDescription": "Rêver d'examen : pas révisé, en retard, échec ou page blanche. Ce que la scène peut dire du sentiment d'être évalué, avec questions et exemple de journal.",
+        "modifiedAt": "2026-10-08"
       },
       "es": {
         "slug": "examen",
         "name": "Examen / Prueba",
-        "shortDescription": "Soñar con un examen, especialmente suspenderlo, simboliza ansiedad sobre la evaluación, perfeccionismo o síndrome del impostor. Este es un sueño muy común entre adultos.",
+        "shortDescription": "Soñar con un examen suele ser dar la vuelta a la hoja y no reconocer ni una pregunta, o descubrir que la prueba empezó sin ti. Se asocia a menudo con sentirse evaluado, y lo que sale mal es el mejor indicio.",
         "askYourself": [
-          "¿Tengo miedo de no estar a la altura?",
-          "¿En qué área me siento juzgado?"
-        ]
+          "¿Qué fallaba: no había estudiado, llegaba tarde, hoja en blanco, aula equivocada, o todo iba bien?",
+          "¿Qué sentí al despertar: pánico, vergüenza, alivio, casi nada?",
+          "¿Dónde siento ahora que me ponen a prueba: en el trabajo, en casa, ante mí mismo?"
+        ],
+        "faq": [
+          {
+            "question": "¿Qué significa soñar con un examen?",
+            "answer": "Un sueño de examen se asocia a menudo con sentirse evaluado: en el trabajo, en una relación o ante tus propias exigencias. Lo que salía mal en el sueño y lo que sentías indican dónde está ahora esa presión."
+          },
+          {
+            "question": "¿Por qué sigo soñando con exámenes años después de terminar los estudios?",
+            "answer": "Muchos adultos tienen este sueño mucho después de su último examen. El colegio nos dejó a casi todos un modelo muy claro de lo que es ser evaluado, y el sueño puede recuperar ese escenario cuando una situación actual se parece a una prueba."
+          },
+          {
+            "question": "¿Qué significa soñar que no has estudiado para un examen?",
+            "answer": "No haber estudiado escenifica a menudo el miedo a que te pillen desprevenido ante un plazo o un reto. No demuestra que lo estés de verdad. Fíjate en la asignatura: puede señalar el terreno que sientes más expuesto."
+          },
+          {
+            "question": "¿Soñar que suspendes un examen significa que vas a suspender?",
+            "answer": "No. En un estudio con estudiantes de medicina de París (Arnulf y colaboradores, 2014), aprobar o suspender en sueños no tenía ninguna relación con la nota real, y quienes habían soñado con el examen tendían incluso a sacar notas algo mejores."
+          }
+        ],
+        "documentMetaDescription": "Soñar con un examen: no haber estudiado, llegar tarde, suspender o la hoja en blanco. Qué puede decir la escena, con preguntas y un ejemplo de diario.",
+        "modifiedAt": "2026-10-08"
       },
       "de": {
         "slug": "pruefung",
         "name": "Prüfung / Test",
-        "shortDescription": "Prüfungsträume spiegeln Leistungsangst, Angst vor Bewertung und den Druck wider, Erwartungen zu erfüllen. Sie treten häufig in Stressphasen auf.",
+        "shortDescription": "In einem Prüfungstraum drehen Sie das Blatt um und erkennen keine Frage, oder die Prüfung hat längst ohne Sie begonnen. Die Szene wird oft mit dem Gefühl verbunden, bewertet zu werden; was schiefging, ist der beste Hinweis.",
         "askYourself": [
-          "In welchem Bereich fühle ich mich beurteilt?",
-          "Habe ich Angst zu versagen?"
-        ]
+          "Was lief schief: nicht gelernt, zu spät, leeres Blatt, falscher Raum, oder lief alles gut?",
+          "Was habe ich beim Aufwachen gefühlt: Panik, Scham, Erleichterung, kaum etwas?",
+          "Wo fühle ich mich gerade geprüft oder beurteilt: im Beruf, zu Hause, von mir selbst?"
+        ],
+        "faq": [
+          {
+            "question": "Was bedeutet ein Prüfungstraum?",
+            "answer": "Ein Prüfungstraum wird oft mit dem Gefühl verbunden, bewertet zu werden: im Beruf, in einer Beziehung oder an den eigenen Ansprüchen. Was im Traum schiefging und wie Sie sich fühlten, zeigt, wo dieser Druck gerade sitzt."
+          },
+          {
+            "question": "Warum träume ich Jahre nach der Schule noch von Prüfungen?",
+            "answer": "Viele Erwachsene haben diesen Traum lange nach ihrer letzten Prüfung. Die Schule hat den meisten ein sehr klares Bild davon gegeben, was Bewertung heißt, und der Traum kann diese Kulisse aufgreifen, wenn sich eine aktuelle Lage wie eine Prüfung anfühlt."
+          },
+          {
+            "question": "Was bedeutet es, im Traum nicht gelernt zu haben?",
+            "answer": "Unvorbereitet zu sein setzt oft die Angst in Szene, vor einer Frist oder Herausforderung überrumpelt zu werden. Es zeigt nicht, dass Sie tatsächlich unvorbereitet sind. Achten Sie auf das Fach: Es kann auf den Bereich deuten, der sich ungeschützt anfühlt."
+          },
+          {
+            "question": "Bedeutet Durchfallen im Traum, dass ich wirklich durchfalle?",
+            "answer": "Nein. In einer Studie mit Pariser Medizinstudierenden (Arnulf und Kollegen, 2014) hing Bestehen oder Durchfallen im Traum nicht mit der echten Note zusammen, und wer von der Prüfung geträumt hatte, schnitt eher etwas besser ab."
+          }
+        ],
+        "documentMetaDescription": "Prüfungstraum: nicht gelernt, zu spät, durchgefallen oder vor einem leeren Blatt. Was die Szene über das Gefühl sagen kann, bewertet zu werden, mit Fragen.",
+        "modifiedAt": "2026-10-08"
       },
       "it": {
         "slug": "esame",
         "name": "Esame / Test",
-        "shortDescription": "I sogni d'esame riflettono ansia da prestazione, paura del giudizio e la pressione di soddisfare le aspettative. Sono comuni durante periodi di stress.",
+        "shortDescription": "Sognare un esame vuol dire spesso girare il foglio senza riconoscere una domanda, o scoprire che la prova è cominciata senza di te. Viene spesso associato alla sensazione di essere valutati: ciò che va storto è l’indizio migliore.",
         "askYourself": [
-          "In quale ambito mi sento giudicato?",
-          "Ho paura di fallire?"
-        ]
+          "Che cosa non andava: non avevo studiato, ero in ritardo, foglio bianco, aula sbagliata, o andava tutto bene?",
+          "Che cosa ho provato al risveglio: panico, vergogna, sollievo, quasi niente?",
+          "Dove mi sento messo alla prova in questo periodo: al lavoro, a casa, davanti a me stesso?"
+        ],
+        "faq": [
+          {
+            "question": "Cosa significa sognare un esame?",
+            "answer": "Un sogno d’esame viene spesso associato alla sensazione di essere valutati: al lavoro, in una relazione o davanti alle tue stesse aspettative. Che cosa andava storto nel sogno e che cosa provavi indicano dove si trova oggi quella pressione."
+          },
+          {
+            "question": "Perché sogno ancora esami anni dopo la scuola?",
+            "answer": "Molti adulti sognano la maturità o un esame universitario a lungo dopo l’ultimo voto. La scuola ha dato a quasi tutti un modello molto chiaro di che cosa significa essere giudicati, e il sogno può riprendere quello scenario quando una situazione attuale somiglia a una prova."
+          },
+          {
+            "question": "Cosa significa sognare di non aver studiato per un esame?",
+            "answer": "Non aver studiato mette spesso in scena la paura di essere colti impreparati davanti a una scadenza o a una sfida. Non dimostra che tu lo sia davvero. Nota la materia: può indicare l’ambito che senti più esposto."
+          },
+          {
+            "question": "Sognare di essere bocciati a un esame significa che andrà male?",
+            "answer": "No. In uno studio su studenti di medicina parigini (Arnulf e colleghi, 2014), essere promossi o bocciati in sogno non aveva alcun legame con il voto reale, e chi aveva sognato l’esame tendeva anzi a ottenere voti un po’ migliori."
+          }
+        ],
+        "documentMetaDescription": "Sognare un esame: non aver studiato, arrivare in ritardo, essere bocciati o il foglio bianco. Che cosa può dire la scena, con domande ed esempio di diario.",
+        "modifiedAt": "2026-10-08"
       },
       "pt": {
         "slug": "prova-exame",
@@ -3328,47 +3458,152 @@
       "en": {
         "slug": "nudity",
         "name": "Nudity",
-        "shortDescription": "Being naked in public symbolizes vulnerability, fear of judgment, or feeling exposed. This is a very common dream related to social anxiety.",
+        "shortDescription": "Dreaming of being naked often starts with a jolt: you are at work or in the street, with nothing on. The scene is often associated with feeling exposed or judged; how others reacted and how you felt matter most.",
         "askYourself": [
-          "Am I afraid of being judged?",
-          "Is there something I'm hiding from others?"
-        ]
+          "Where was I, and who could see me?",
+          "Did people stare, laugh, or not notice at all?",
+          "Where do I feel exposed right now, or afraid that something will show?"
+        ],
+        "faq": [
+          {
+            "question": "What does it mean to dream of being naked in public?",
+            "answer": "Being naked in public is often associated with vulnerability, fear of judgment or feeling exposed. The setting, the people around you and how they reacted point to which lead fits. It is a common dream, not a sign that something is wrong."
+          },
+          {
+            "question": "What does it mean if no one notices you are naked?",
+            "answer": "If you were mortified and nobody reacted, the dream can stage a gap between how exposed you feel and how much others actually notice. Ask yourself whether a current worry about being seen is louder inside than outside."
+          },
+          {
+            "question": "What does it mean to feel comfortable being naked in a dream?",
+            "answer": "Being at ease can go with self-acceptance, relief or the wish to stop pretending. It is the same image as the embarrassing version, with the opposite feeling, which is why the emotion is the main clue."
+          },
+          {
+            "question": "Why do I keep dreaming that I can't find my clothes?",
+            "answer": "Searching for clothes can go with feeling unprepared, or with the sense that a role or a protection is missing at the wrong moment. If the dream returns, note where it happens each time: the setting often repeats."
+          }
+        ],
+        "documentMetaDescription": "Dreaming of being naked in public, unnoticed or unable to find your clothes: what the scene may say about feeling exposed, with questions and an example.",
+        "modifiedAt": "2026-10-08"
       },
       "fr": {
         "slug": "nudite",
         "name": "Nudité",
-        "shortDescription": "Être nu en public symbolise la vulnérabilité, la peur du jugement ou le sentiment d'être exposé. C'est un rêve très courant lié à l'anxiété sociale.",
+        "shortDescription": "Rêver d'être nu commence souvent par un choc : au travail ou dans la rue, vous n'avez rien sur vous. La scène est souvent associée au sentiment d'être exposé ou jugé ; la réaction des autres et votre émotion comptent le plus.",
         "askYourself": [
-          "Ai-je peur d'être jugé ?",
-          "Y a-t-il quelque chose que je cache aux autres ?"
-        ]
+          "Où étais-je, et qui pouvait me voir ?",
+          "Les autres me regardaient-ils, riaient-ils, ou ne remarquaient-ils rien ?",
+          "Où ai-je peur, en ce moment, d'être exposé ou que quelque chose se voie ?"
+        ],
+        "faq": [
+          {
+            "question": "Que signifie rêver d'être nu en public ?",
+            "answer": "Être nu en public est souvent associé à la vulnérabilité, à la peur du jugement ou au sentiment d'être exposé. Le lieu, les personnes présentes et leurs réactions orientent la lecture. C'est un rêve courant, pas le signe que quelque chose ne va pas."
+          },
+          {
+            "question": "Que signifie être nu en rêve sans que personne ne le remarque ?",
+            "answer": "Si vous étiez mortifié et que personne ne réagissait, le rêve peut mettre en scène un écart entre ce que vous ressentez et ce que les autres voient vraiment. Demandez-vous si une inquiétude actuelle est plus forte en vous qu'autour de vous."
+          },
+          {
+            "question": "Que signifie être à l'aise nu dans un rêve ?",
+            "answer": "Être à l'aise peut accompagner l'acceptation de soi, un soulagement ou l'envie d'arrêter de jouer un rôle. C'est la même image que dans la version gênante, avec l'émotion inverse : c'est pourquoi l'émotion est l'indice principal."
+          },
+          {
+            "question": "Pourquoi je rêve souvent que je ne trouve pas mes vêtements ?",
+            "answer": "Chercher ses vêtements peut accompagner le sentiment de ne pas être prêt, ou celui qu'un rôle ou une protection manque au mauvais moment. Si le rêve revient, notez le lieu à chaque fois : il se répète souvent."
+          }
+        ],
+        "documentMetaDescription": "Rêver d'être nu en public, sans que personne ne le remarque ou sans trouver ses vêtements : ce que la scène peut dire, avec questions et exemple de journal.",
+        "modifiedAt": "2026-10-08"
       },
       "es": {
         "slug": "desnudez",
         "name": "Desnudez",
-        "shortDescription": "Estar desnudo en público simboliza vulnerabilidad, miedo al juicio o sentirse expuesto. Este es un sueño muy común relacionado con la ansiedad social.",
+        "shortDescription": "Soñar que estás desnudo suele empezar con un sobresalto: en el trabajo o en la calle, no llevas nada encima. Se asocia a menudo con sentirse expuesto o juzgado; la reacción de los demás y lo que sentías son las mejores pistas.",
         "askYourself": [
-          "¿Tengo miedo de ser juzgado?",
-          "¿Hay algo que estoy ocultando a los demás?"
-        ]
+          "¿Dónde estaba, y quién podía verme?",
+          "¿Los demás me miraban, se reían o no notaban nada?",
+          "¿Dónde temo ahora mismo quedar expuesto o que algo se note?"
+        ],
+        "faq": [
+          {
+            "question": "¿Qué significa soñar que estás desnudo en público?",
+            "answer": "Estar desnudo en público se asocia a menudo con vulnerabilidad, miedo al juicio o sensación de exposición. El lugar, las personas presentes y su reacción orientan la lectura. Es un sueño frecuente, no una señal de que algo vaya mal."
+          },
+          {
+            "question": "¿Qué significa estar desnudo en sueños y que nadie lo note?",
+            "answer": "Si tú lo pasabas fatal y nadie reaccionaba, el sueño puede escenificar la distancia entre lo expuesto que te sientes y lo que los demás ven de verdad. Pregúntate si una preocupación actual suena más fuerte dentro de ti que fuera."
+          },
+          {
+            "question": "¿Qué significa sentirte cómodo desnudo en un sueño?",
+            "answer": "Estar a gusto puede acompañar la aceptación de ti, un alivio o las ganas de dejar de aparentar. Es la misma imagen que la versión incómoda con la emoción contraria: por eso la emoción es la pista principal."
+          },
+          {
+            "question": "¿Por qué sueño a menudo que no encuentro mi ropa?",
+            "answer": "Buscar la ropa puede acompañar la sensación de no estar preparado, o de que falta un papel o una protección en el peor momento. Si el sueño vuelve, anota el lugar cada vez: suele repetirse."
+          }
+        ],
+        "documentMetaDescription": "Soñar que estás desnudo en público, que nadie lo nota o que no encuentras tu ropa: qué puede decir la escena sobre la mirada ajena, con preguntas y un ejemplo.",
+        "modifiedAt": "2026-10-08"
       },
       "de": {
         "slug": "nacktheit",
         "name": "Nacktheit",
-        "shortDescription": "Nacktheit in Träumen symbolisiert Verletzlichkeit, Authentizität und die Angst, entblößt oder beurteilt zu werden. Sie kann auch Befreiung und Selbstakzeptanz darstellen.",
+        "shortDescription": "Nackt im Traum beginnt oft mit einem Schreck: Sie sind bei der Arbeit oder auf der Straße und haben nichts an. Die Szene wird oft mit Bloßstellung oder Bewertung verbunden; entscheidend sind die Reaktion der anderen und Ihr Gefühl.",
         "askYourself": [
-          "Wo fühle ich mich verletzlich oder entblößt?",
-          "Was verberge ich vor anderen?"
-        ]
+          "Wo war ich, und wer konnte mich sehen?",
+          "Haben die anderen gestarrt, gelacht oder gar nichts bemerkt?",
+          "Wo habe ich gerade Angst, bloßgestellt zu werden oder dass etwas sichtbar wird?"
+        ],
+        "faq": [
+          {
+            "question": "Was bedeutet es, im Traum nackt in der Öffentlichkeit zu sein?",
+            "answer": "Nacktheit in der Öffentlichkeit wird oft mit Verletzlichkeit, Angst vor Bewertung oder dem Gefühl verbunden, bloßgestellt zu sein. Ort, anwesende Personen und ihre Reaktion zeigen, welche Spur passt. Es ist ein häufiger Traum, kein Zeichen, dass etwas nicht stimmt."
+          },
+          {
+            "question": "Was bedeutet es, nackt zu sein, ohne dass es jemand bemerkt?",
+            "answer": "Waren Sie peinlich berührt, während niemand reagierte, kann der Traum eine Lücke zwischen Ihrem Gefühl und dem zeigen, was andere tatsächlich sehen. Fragen Sie sich, ob eine aktuelle Sorge innen lauter ist als außen."
+          },
+          {
+            "question": "Was bedeutet es, sich im Traum nackt wohlzufühlen?",
+            "answer": "Sich wohlzufühlen kann Selbstakzeptanz, Erleichterung oder den Wunsch begleiten, sich nicht mehr zu verstellen. Es ist dasselbe Bild wie in der peinlichen Version, mit dem umgekehrten Gefühl: Deshalb ist das Gefühl der wichtigste Hinweis."
+          },
+          {
+            "question": "Warum träume ich oft, dass ich keine Kleidung finde?",
+            "answer": "Kleidung zu suchen kann das Gefühl begleiten, unvorbereitet zu sein, oder dass eine Rolle oder ein Schutz im falschen Moment fehlt. Kehrt der Traum wieder, notieren Sie jedes Mal den Ort: Er wiederholt sich oft."
+          }
+        ],
+        "documentMetaDescription": "Nackt im Traum, in der Öffentlichkeit, unbemerkt oder ohne Kleidung zu finden: was die Szene über den Blick der anderen sagen kann, mit Fragen und Beispiel.",
+        "modifiedAt": "2026-10-08"
       },
       "it": {
         "slug": "nudita",
         "name": "Nudità",
-        "shortDescription": "La nudità nei sogni simboleggia vulnerabilità, autenticità e la paura di essere esposti o giudicati. Può anche rappresentare liberazione e accettazione di sé.",
+        "shortDescription": "Sognare di essere nudi comincia spesso con un sussulto: sei al lavoro o per strada, senza niente addosso. La scena viene spesso associata al sentirsi esposti o giudicati; contano soprattutto la reazione degli altri e ciò che provavi.",
         "askYourself": [
-          "Dove mi sento vulnerabile o esposto?",
-          "Cosa nascondo agli altri?"
-        ]
+          "Dov’ero, e chi poteva vedermi?",
+          "Gli altri mi fissavano, ridevano o non si accorgevano di nulla?",
+          "Dove ho paura, in questo periodo, di essere esposto o che qualcosa si veda?"
+        ],
+        "faq": [
+          {
+            "question": "Cosa significa sognare di essere nudi in pubblico?",
+            "answer": "Essere nudi in pubblico viene spesso associato a vulnerabilità, paura del giudizio o sensazione di essere esposti. Il luogo, le persone presenti e la loro reazione orientano la lettura. È un sogno frequente, non il segno che qualcosa non va."
+          },
+          {
+            "question": "Cosa significa essere nudi in sogno senza che nessuno se ne accorga?",
+            "answer": "Se tu eri mortificato e nessuno reagiva, il sogno può mettere in scena uno scarto tra quanto ti senti esposto e quanto gli altri guardano davvero. Chiediti se una preoccupazione di questo periodo è più forte dentro di te che fuori."
+          },
+          {
+            "question": "Cosa significa sentirsi a proprio agio nudi in un sogno?",
+            "answer": "Stare a proprio agio può accompagnare l’accettazione di sé, un sollievo o la voglia di smettere di fingere. È la stessa immagine della versione imbarazzante con l’emozione opposta: per questo l’emozione è l’indizio principale."
+          },
+          {
+            "question": "Perché sogno spesso di non trovare i vestiti?",
+            "answer": "Cercare i vestiti può accompagnare la sensazione di non essere pronti, o che un ruolo o una protezione manchino nel momento sbagliato. Se il sogno ritorna, annota ogni volta il luogo: spesso si ripete."
+          }
+        ],
+        "documentMetaDescription": "Sognare di essere nudi in pubblico, senza che nessuno se ne accorga o senza trovare i vestiti: che cosa può dire la scena dello sguardo altrui, con domande.",
+        "modifiedAt": "2026-10-08"
       },
       "pt": {
         "slug": "nudez",
