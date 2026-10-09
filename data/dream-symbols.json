@@ -6765,47 +6765,152 @@
       "en": {
         "slug": "plane",
         "name": "Plane",
-        "shortDescription": "A plane represents high ambitions, desire to escape, or a journey of transformation. A crashing plane can indicate fear of failure.",
+        "shortDescription": "Dreaming of a plane often leaves you in mid-air: a take-off, a cabin shaking through turbulence, a runway coming up too fast. The plane is often linked to big changes and to how much control you feel you have. How the flight went matters most.",
         "askYourself": [
-          "What are my long-term goals?",
-          "Do I need to gain perspective?"
-        ]
+          "Was I a passenger, the pilot, or watching from the ground?",
+          "How did the flight feel: smooth, shaky, out of control?",
+          "What big move or project is taking off, or stalling, in my life right now?"
+        ],
+        "faq": [
+          {
+            "question": "What does it mean to dream about a plane?",
+            "answer": "A plane is often associated with big changes, projects that take off and the distance you put between yourself and daily life. How the flight went, and your role on board, guide the reading more than the plane itself."
+          },
+          {
+            "question": "What does it mean to dream of a plane crash?",
+            "answer": "A plane crash is a frightening scene, but it predicts no accident. It can go with the fear that an ambitious plan will fail, or with a feeling that things are moving faster than you can steer. If these dreams keep returning and spoil your sleep, talk to a doctor."
+          },
+          {
+            "question": "What does turbulence mean in a dream?",
+            "answer": "Turbulence can match a bumpy stretch in a change you have already started: the trip goes on, just not smoothly. Note what you did while the cabin shook: holding on, panicking or staying calm."
+          },
+          {
+            "question": "Why do I dream of missing a flight?",
+            "answer": "Missing a flight is often linked to time pressure or to the fear of letting a chance go by. What made you late, and where the plane was going, help you see which part of your life the scene echoes."
+          }
+        ],
+        "documentMetaDescription": "Dreaming of a plane, a crash, turbulence or a missed flight: what the scene may say about change and control, with questions and a journal example.",
+        "modifiedAt": "2026-10-08"
       },
       "fr": {
         "slug": "avion",
         "name": "Avion",
-        "shortDescription": "L'avion représente les ambitions élevées, le désir de s'échapper ou un voyage de transformation. Un avion qui s'écrase peut indiquer une peur de l'échec.",
+        "shortDescription": "Rêver d'un avion, c'est souvent être entre ciel et terre : un décollage, des turbulences, une piste qui approche trop vite. L'avion est souvent associé aux grands changements et au contrôle que l'on croit avoir. Le déroulé du vol compte plus que l'appareil.",
         "askYourself": [
-          "Quels sont mes objectifs à long terme ?",
-          "Est-ce que j'ai besoin de prendre de la hauteur ?"
-        ]
+          "Étais-je passager, pilote, ou regardais-je l'avion depuis le sol ?",
+          "Comment était le vol : calme, secoué, hors de contrôle ?",
+          "Quel grand changement ou projet décolle, ou cale, dans ma vie en ce moment ?"
+        ],
+        "faq": [
+          {
+            "question": "Que signifie rêver d'un avion ?",
+            "answer": "L'avion est souvent associé aux grands changements, aux projets qui décollent et à la distance que l'on prend avec le quotidien. Le déroulé du vol et votre place à bord orientent la lecture plus que l'appareil lui-même."
+          },
+          {
+            "question": "Que signifie rêver d'un crash d'avion ?",
+            "answer": "Un crash d'avion effraie, mais il n'annonce aucun accident. Il peut accompagner la peur qu'un projet ambitieux échoue, ou le sentiment que les choses vont plus vite que vous. Si ces rêves reviennent souvent et abîment votre sommeil, parlez-en à un médecin."
+          },
+          {
+            "question": "Que signifient des turbulences en rêve ?",
+            "answer": "Les turbulences peuvent rejoindre une période agitée au milieu d'un changement déjà engagé : le voyage continue, mais pas en douceur. Notez ce que vous faisiez pendant les secousses : vous accrocher, paniquer, rester calme."
+          },
+          {
+            "question": "Pourquoi rêver de rater son avion ?",
+            "answer": "Rater un avion est souvent lié à la pression du temps ou à la peur de laisser passer une occasion. Ce qui vous a retardé et la destination prévue aident à voir quel domaine de votre vie la scène rejoint."
+          }
+        ],
+        "documentMetaDescription": "Rêver d'un avion, d'un crash, de turbulences ou d'un vol raté : ce que la scène peut dire du changement et du contrôle, avec questions et exemple de journal.",
+        "modifiedAt": "2026-10-08"
       },
       "es": {
         "slug": "avion",
         "name": "Avión",
-        "shortDescription": "Un avión representa ambiciones elevadas, deseo de escapar o un viaje de transformación. Un avión que se estrella puede indicar miedo al fracaso.",
+        "shortDescription": "Soñar con un avión suele dejarte entre el cielo y el suelo: un despegue, turbulencias, una pista que se acerca demasiado rápido. El avión se asocia a menudo con los grandes cambios y con el control que crees tener. Importa más cómo fue el vuelo.",
         "askYourself": [
-          "¿Cuáles son mis metas a largo plazo?",
-          "¿Necesito ganar perspectiva?"
-        ]
+          "¿Iba como pasajero, pilotaba o miraba el avión desde el suelo?",
+          "¿Cómo fue el vuelo: tranquilo, movido, fuera de control?",
+          "¿Qué gran cambio o proyecto está despegando, o atascándose, en mi vida ahora mismo?"
+        ],
+        "faq": [
+          {
+            "question": "¿Qué significa soñar con un avión?",
+            "answer": "El avión se asocia a menudo con los grandes cambios, con los proyectos que despegan y con la distancia que tomas respecto al día a día. Cómo fue el vuelo y tu lugar a bordo orientan la lectura más que el aparato en sí."
+          },
+          {
+            "question": "¿Qué significa soñar con un avión que se estrella?",
+            "answer": "Un accidente de avión en sueños asusta, pero no anuncia ningún accidente real. Puede acompañar el miedo a que un proyecto ambicioso fracase, o la sensación de que todo va más rápido que tú. Si estos sueños se repiten y te estropean el descanso, coméntalo con un médico."
+          },
+          {
+            "question": "¿Qué significan las turbulencias en un sueño?",
+            "answer": "Las turbulencias pueden enlazar con una etapa movida dentro de un cambio que ya has empezado: el viaje sigue, pero no con suavidad. Anota qué hacías durante las sacudidas: agarrarte, entrar en pánico, mantener la calma."
+          },
+          {
+            "question": "¿Por qué sueño que pierdo un vuelo?",
+            "answer": "Perder un vuelo suele relacionarse con la presión del tiempo o con el miedo a dejar pasar una oportunidad. Lo que te retrasó y el destino previsto te ayudan a ver con qué parte de tu vida enlaza la escena."
+          }
+        ],
+        "documentMetaDescription": "Soñar con un avión, un accidente, turbulencias o un vuelo perdido: qué puede decir la escena sobre el cambio y el control, con preguntas y ejemplo de diario.",
+        "modifiedAt": "2026-10-08"
       },
       "de": {
         "slug": "flugzeug",
         "name": "Flugzeug",
-        "shortDescription": "Flugzeuge symbolisieren Ambitionen, Lebensziele und den Wunsch, sich über aktuelle Umstände zu erheben. Abstürze können Angst vor Misserfolg bei wichtigen Unternehmungen darstellen.",
+        "shortDescription": "Von einem Flugzeug zu träumen heißt oft, zwischen Himmel und Boden zu hängen: ein Start, Turbulenzen, eine Landebahn, die zu schnell näher kommt. Das Flugzeug wird oft mit großen Veränderungen und dem Gefühl von Kontrolle verbunden. Wie der Flug verlief, zählt am meisten.",
         "askYourself": [
-          "Welche großen Ambitionen verfolge ich?",
-          "Habe ich Angst, bei einem wichtigen Projekt zu scheitern?"
-        ]
+          "War ich Passagier, Pilot, oder habe ich das Flugzeug vom Boden aus gesehen?",
+          "Wie war der Flug: ruhig, unruhig, außer Kontrolle?",
+          "Welche große Veränderung oder welches Projekt hebt gerade ab oder gerät ins Stocken?"
+        ],
+        "faq": [
+          {
+            "question": "Was bedeutet es, von einem Flugzeug zu träumen?",
+            "answer": "Das Flugzeug wird oft mit großen Veränderungen verbunden, mit Projekten, die abheben, und mit Abstand zum Alltag. Wie der Flug verlief und welchen Platz Sie an Bord hatten, sagt mehr als die Maschine selbst."
+          },
+          {
+            "question": "Was bedeutet ein Flugzeugabsturz im Traum?",
+            "answer": "Ein Absturz ist eine erschreckende Szene, kündigt aber kein Unglück an. Er kann die Angst begleiten, dass ein ehrgeiziger Plan scheitert, oder das Gefühl, dass alles schneller geht, als Sie steuern können. Kehren solche Träume oft wieder und stören Ihren Schlaf, sprechen Sie mit einer Ärztin oder einem Arzt."
+          },
+          {
+            "question": "Was bedeuten Turbulenzen im Traum?",
+            "answer": "Turbulenzen können zu einer holprigen Phase in einer Veränderung passen, die schon begonnen hat: Die Reise geht weiter, nur nicht ruhig. Notieren Sie, was Sie während des Rüttelns getan haben: sich festhalten, in Panik geraten, ruhig bleiben."
+          },
+          {
+            "question": "Warum träume ich davon, einen Flug zu verpassen?",
+            "answer": "Einen Flug zu verpassen hängt oft mit Zeitdruck oder der Angst zusammen, eine Chance verstreichen zu lassen. Was Sie aufgehalten hat und wohin die Reise gehen sollte, zeigt, welchen Lebensbereich die Szene berührt."
+          }
+        ],
+        "documentMetaDescription": "Flugzeug im Traum, Absturz, Turbulenzen oder verpasster Flug: was die Szene über Veränderung und Kontrolle sagen kann, mit Fragen und Tagebuchbeispiel.",
+        "modifiedAt": "2026-10-08"
       },
       "it": {
         "slug": "aereo",
         "name": "Aereo",
-        "shortDescription": "Gli aerei simboleggiano ambizioni, obiettivi di vita e il desiderio di elevarsi al di sopra delle circostanze attuali. Gli incidenti possono rappresentare la paura di fallire in imprese importanti.",
+        "shortDescription": "Sognare un aereo significa spesso restare sospesi tra cielo e terra: un decollo, le turbolenze, una pista che si avvicina troppo in fretta. L’aereo viene spesso associato ai grandi cambiamenti e al controllo che pensi di avere. Conta più com’è andato il volo.",
         "askYourself": [
-          "Quali grandi ambizioni sto perseguendo?",
-          "Ho paura di fallire in un progetto importante?"
-        ]
+          "Ero passeggero, pilota, o guardavo l’aereo da terra?",
+          "Com’era il volo: tranquillo, agitato, fuori controllo?",
+          "Quale grande cambiamento o progetto sta decollando, o si sta inceppando, nella mia vita in questo periodo?"
+        ],
+        "faq": [
+          {
+            "question": "Che cosa significa sognare un aereo?",
+            "answer": "L’aereo viene spesso associato ai grandi cambiamenti, ai progetti che decollano e alla distanza che prendi dalla vita di tutti i giorni. Com’è andato il volo e il tuo posto a bordo orientano la lettura più del velivolo in sé."
+          },
+          {
+            "question": "Che cosa significa sognare un aereo che precipita?",
+            "answer": "Un incidente aereo in sogno spaventa, ma non annuncia alcuna disgrazia. Può accompagnare la paura che un progetto ambizioso fallisca, o la sensazione che tutto vada più veloce di te. Se questi sogni tornano spesso e rovinano il sonno, parlane con un medico."
+          },
+          {
+            "question": "Che cosa significano le turbolenze in sogno?",
+            "answer": "Le turbolenze possono avvicinarsi a una fase movimentata dentro un cambiamento già avviato: il viaggio continua, ma non in modo dolce. Annota che cosa facevi durante gli scossoni: aggrapparti, andare nel panico, restare calmo."
+          },
+          {
+            "question": "Perché sogno di perdere l’aereo?",
+            "answer": "Perdere l’aereo è spesso legato alla pressione del tempo o alla paura di lasciarsi sfuggire un’occasione. Che cosa ti ha fatto ritardare e dove eri diretto ti aiutano a capire quale ambito della tua vita tocca la scena."
+          }
+        ],
+        "documentMetaDescription": "Sognare un aereo, un incidente aereo, le turbolenze o di perdere il volo: che cosa può dire la scena del cambiamento e del controllo, con domande ed esempio.",
+        "modifiedAt": "2026-10-08"
       },
       "pt": {
         "slug": "aviao",
@@ -6837,47 +6942,152 @@
       "en": {
         "slug": "train",
         "name": "Train",
-        "shortDescription": "A train symbolizes life's journey and its trajectory. Missing a train can indicate a missed opportunity or fear of not meeting your goals on time.",
+        "shortDescription": "Dreaming of a train often means being carried along a track: a smooth ride, the wrong carriage, a platform where nothing arrives. The train is often linked to the direction your life is taking, and to how much you choose it. Where it was going matters most.",
         "askYourself": [
-          "Am I on the right track?",
-          "Am I afraid of missing something?"
-        ]
+          "Was I on board, on the platform, or watching the train go by?",
+          "Did I know where the train was going, and did I want to go there?",
+          "Where in my life do I feel carried along rather than choosing the route?"
+        ],
+        "faq": [
+          {
+            "question": "What does it mean to dream about a train?",
+            "answer": "A train is often associated with the direction your life is taking: a route already laid out, a pace you do not set, other people traveling alongside you. Whether you knew the destination, and wanted it, guides the reading."
+          },
+          {
+            "question": "What does it mean to be on the wrong train in a dream?",
+            "answer": "Boarding the wrong train can match a doubt about a choice already made: a course of study, a job, a relationship heading somewhere you are not sure of. Note when you realized it, and whether you tried to get off."
+          },
+          {
+            "question": "What does a train derailing mean in a dream?",
+            "answer": "A derailment is a frightening scene, but it predicts no accident. It can go with a plan knocked off course, or a routine that suddenly stops working. What was happening on board just before the train left the tracks?"
+          },
+          {
+            "question": "What does it mean to dream of waiting at a train station?",
+            "answer": "Waiting on a platform often echoes an in-between period: between two jobs, two homes, two stages of life. A train that never comes can match a hope that keeps being put off. Did you know which train you were waiting for?"
+          }
+        ],
+        "documentMetaDescription": "Dreaming of a train, the wrong train, a derailment or a station: what the scene may say about the direction of your life, with questions and a journal example.",
+        "modifiedAt": "2026-10-08"
       },
       "fr": {
         "slug": "train",
         "name": "Train",
-        "shortDescription": "Le train symbolise le voyage de la vie et sa trajectoire. Rater un train peut indiquer une opportunité manquée ou la peur de ne pas être à l'heure dans vos objectifs.",
+        "shortDescription": "Rêver d'un train, c'est souvent être emporté sur des rails : un trajet paisible, le mauvais wagon, un quai où rien n'arrive. Le train est souvent associé à la direction que prend votre vie, et à la part que vous en choisissez. Sa destination compte le plus.",
         "askYourself": [
-          "Suis-je sur la bonne trajectoire ?",
-          "Ai-je peur de rater quelque chose ?"
-        ]
+          "Étais-je à bord, sur le quai, ou regardais-je le train passer ?",
+          "Savais-je où allait ce train, et avais-je envie d'y aller ?",
+          "Dans quel domaine de ma vie ai-je l'impression d'être emporté plutôt que de choisir la route ?"
+        ],
+        "faq": [
+          {
+            "question": "Que signifie rêver d'un train ?",
+            "answer": "Le train est souvent associé à la direction que prend votre vie : un trajet déjà tracé, un rythme que vous ne fixez pas, d'autres voyageurs à vos côtés. Savoir où il allait, et si vous vouliez y aller, oriente la lecture."
+          },
+          {
+            "question": "Que signifie se tromper de train en rêve ?",
+            "answer": "Monter dans le mauvais train peut rejoindre un doute sur un choix déjà fait : des études, un poste, une relation qui va vers un endroit dont vous n'êtes pas sûr. Notez à quel moment vous l'avez compris et si vous avez essayé de descendre."
+          },
+          {
+            "question": "Que signifie rêver d'un train qui déraille ?",
+            "answer": "Un déraillement fait peur, mais il n'annonce aucun accident. Il peut accompagner un projet qui sort de sa trajectoire, ou une routine qui cesse brusquement de fonctionner. Que se passait-il à bord juste avant ?"
+          },
+          {
+            "question": "Que signifie attendre un train dans une gare en rêve ?",
+            "answer": "Attendre sur un quai rejoint souvent une période d'entre-deux : entre deux emplois, deux logements, deux étapes de vie. Un train qui n'arrive jamais peut faire écho à un espoir sans cesse repoussé. Saviez-vous quel train vous attendiez ?"
+          }
+        ],
+        "documentMetaDescription": "Rêver d'un train, du mauvais train, d'un déraillement ou d'une gare : ce que la scène peut dire de votre direction de vie, avec questions et exemple de journal.",
+        "modifiedAt": "2026-10-08"
       },
       "es": {
         "slug": "tren",
         "name": "Tren",
-        "shortDescription": "Un tren simboliza el viaje de la vida y su trayectoria. Perder un tren puede indicar una oportunidad perdida o miedo a no cumplir tus objetivos a tiempo.",
+        "shortDescription": "Soñar con un tren suele ser dejarse llevar sobre unas vías: un trayecto tranquilo, el vagón equivocado, un andén donde no llega nada. El tren se asocia a menudo con el rumbo que toma tu vida y con cuánto lo eliges tú. Importa sobre todo adónde iba.",
         "askYourself": [
-          "¿Estoy en el camino correcto?",
-          "¿Tengo miedo de perderme algo?"
-        ]
+          "¿Iba a bordo, esperaba en el andén o veía pasar el tren?",
+          "¿Sabía adónde iba ese tren, y quería ir allí?",
+          "¿En qué parte de mi vida siento que me llevan en lugar de elegir la ruta?"
+        ],
+        "faq": [
+          {
+            "question": "¿Qué significa soñar con un tren?",
+            "answer": "El tren se asocia a menudo con el rumbo que toma tu vida: un trayecto ya trazado, un ritmo que no marcas tú, otros viajeros a tu lado. Saber adónde iba, y si querías ir allí, orienta la lectura."
+          },
+          {
+            "question": "¿Qué significa subirse al tren equivocado en un sueño?",
+            "answer": "Subir al tren equivocado puede enlazar con una duda sobre una decisión ya tomada: unos estudios, un trabajo, una relación que va hacia un lugar del que no estás seguro. Anota cuándo te diste cuenta y si intentaste bajarte."
+          },
+          {
+            "question": "¿Qué significa soñar con un tren que descarrila?",
+            "answer": "Un descarrilamiento asusta, pero no anuncia ningún accidente. Puede acompañar un proyecto que se sale de su trayectoria o una rutina que de pronto deja de funcionar. ¿Qué pasaba a bordo justo antes?"
+          },
+          {
+            "question": "¿Qué significa soñar que esperas en una estación de tren?",
+            "answer": "Esperar en un andén suele enlazar con una etapa de transición: entre dos trabajos, dos casas, dos fases de la vida. Un tren que nunca llega puede hacer eco de una esperanza que se aplaza una y otra vez. ¿Sabías qué tren esperabas?"
+          }
+        ],
+        "documentMetaDescription": "Soñar con un tren, el tren equivocado, un descarrilamiento o una estación: qué puede decir la escena sobre tu rumbo, con preguntas y un ejemplo de diario.",
+        "modifiedAt": "2026-10-08"
       },
       "de": {
         "slug": "zug",
         "name": "Zug",
-        "shortDescription": "Züge repräsentieren den Lebensweg, Schicksal und vorbestimmte Richtungen. Einen Zug zu verpassen kann verpasste Gelegenheiten symbolisieren, während Zugfahrten den Fortschritt auf Ihrem Lebensweg darstellen.",
+        "shortDescription": "Von einem Zug zu träumen heißt oft, auf Schienen mitgenommen zu werden: eine ruhige Fahrt, der falsche Wagen, ein Bahnsteig, an dem nichts ankommt. Der Zug wird oft mit der Richtung Ihres Lebens verbunden. Wohin er fuhr und ob Sie dorthin wollten, zählt am meisten.",
         "askYourself": [
-          "Folge ich meinem vorbestimmten Weg?",
-          "Habe ich Angst, eine wichtige Gelegenheit zu verpassen?"
-        ]
+          "War ich im Zug, auf dem Bahnsteig, oder habe ich ihn vorbeifahren sehen?",
+          "Wusste ich, wohin der Zug fuhr, und wollte ich dorthin?",
+          "Wo in meinem Leben fühle ich mich eher mitgenommen, als dass ich die Strecke selbst wähle?"
+        ],
+        "faq": [
+          {
+            "question": "Was bedeutet es, von einem Zug zu träumen?",
+            "answer": "Der Zug wird oft mit der Richtung verbunden, die Ihr Leben nimmt: eine vorgezeichnete Strecke, ein Takt, den Sie nicht bestimmen, andere Reisende neben Ihnen. Ob Sie das Ziel kannten und dorthin wollten, gibt die meisten Hinweise."
+          },
+          {
+            "question": "Was bedeutet es, im Traum im falschen Zug zu sitzen?",
+            "answer": "Im falschen Zug zu sitzen kann zu einem Zweifel an einer schon getroffenen Entscheidung passen: ein Studium, eine Stelle, eine Beziehung, bei deren Richtung Sie unsicher sind. Notieren Sie, wann Sie es bemerkt haben und ob Sie aussteigen wollten."
+          },
+          {
+            "question": "Was bedeutet ein entgleisender Zug im Traum?",
+            "answer": "Eine Entgleisung macht Angst, kündigt aber kein Unglück an. Sie kann einen Plan begleiten, der aus der Bahn geraten ist, oder eine Routine, die plötzlich nicht mehr funktioniert. Was geschah im Zug kurz davor?"
+          },
+          {
+            "question": "Was bedeutet es, im Traum am Bahnhof zu warten?",
+            "answer": "Auf dem Bahnsteig zu warten passt oft zu einer Zwischenzeit: zwischen zwei Stellen, zwei Wohnungen, zwei Lebensphasen. Ein Zug, der nie kommt, kann eine Hoffnung aufgreifen, die immer wieder vertagt wird. Wussten Sie, auf welchen Zug Sie warteten?"
+          }
+        ],
+        "documentMetaDescription": "Zug im Traum, falscher Zug, Entgleisung oder Warten am Bahnhof: was die Szene über die Richtung Ihres Lebens sagen kann, mit Fragen und Tagebuchbeispiel.",
+        "modifiedAt": "2026-10-08"
       },
       "it": {
         "slug": "treno",
         "name": "Treno",
-        "shortDescription": "I treni rappresentano il percorso di vita, il destino e le direzioni predeterminate. Perdere un treno può simboleggiare opportunità mancate, mentre viaggiare in treno rappresenta il progresso nel percorso di vita.",
+        "shortDescription": "Sognare un treno significa spesso lasciarsi portare sui binari: un viaggio tranquillo, la carrozza sbagliata, una stazione dove non arriva nulla. Il treno viene spesso associato alla direzione che prende la tua vita. Conta soprattutto dove andava.",
         "askYourself": [
-          "Sto seguendo il mio percorso predestinato?",
-          "Ho paura di perdere un'opportunità importante?"
-        ]
+          "Ero a bordo, al binario o guardavo passare il treno?",
+          "Sapevo dove andava quel treno, e volevo andarci?",
+          "In quale ambito della mia vita mi sento trasportato, invece di scegliere la strada?"
+        ],
+        "faq": [
+          {
+            "question": "Che cosa significa sognare un treno?",
+            "answer": "Il treno viene spesso associato alla direzione che prende la tua vita: un percorso già tracciato, un ritmo che non decidi tu, altri viaggiatori accanto a te. Sapere dove andava, e se volevi andarci, orienta la lettura."
+          },
+          {
+            "question": "Che cosa significa sognare di prendere il treno sbagliato?",
+            "answer": "Salire sul treno sbagliato può avvicinarsi a un dubbio su una scelta già fatta: un percorso di studi, un lavoro, una relazione che va verso un posto di cui non sei sicuro. Annota quando te ne sei accorto e se hai provato a scendere."
+          },
+          {
+            "question": "Che cosa significa sognare un treno che deraglia?",
+            "answer": "Un deragliamento spaventa, ma non annuncia alcun incidente. Può accompagnare un progetto uscito dai binari o un’abitudine che all’improvviso smette di funzionare. Che cosa succedeva a bordo subito prima?"
+          },
+          {
+            "question": "Che cosa significa sognare di aspettare un treno in stazione?",
+            "answer": "Aspettare al binario si avvicina spesso a una fase di passaggio: tra due lavori, due case, due fasi della vita. Un treno che non arriva mai può fare eco a una speranza rimandata di continuo. Sapevi quale treno stavi aspettando?"
+          }
+        ],
+        "documentMetaDescription": "Sognare un treno, il treno sbagliato, un deragliamento o una stazione: che cosa può dire la scena del tuo percorso, con domande ed esempio di diario.",
+        "modifiedAt": "2026-10-08"
       },
       "pt": {
         "slug": "trem",
@@ -6905,47 +7115,152 @@
       "en": {
         "slug": "night",
         "name": "Night / Darkness",
-        "shortDescription": "Night represents the unknown, hidden fears, or the subconscious. It can also symbolize a period of uncertainty or introspection.",
+        "shortDescription": "Dreaming of night or darkness often means not seeing well: a street with no lights, a switch that does nothing, a sky full of stars. Darkness is often linked to the unknown, to what you cannot yet make out. Whether it frightened or soothed you matters most.",
         "askYourself": [
-          "What am I not seeing clearly?",
-          "What fears are hidden within me?"
-        ]
+          "Was the darkness frightening, calm, or simply strange?",
+          "Was there any light: the moon, a window, a phone, a distant streetlamp?",
+          "What in my life feels unclear right now, something I cannot yet make out?"
+        ],
+        "faq": [
+          {
+            "question": "What does it mean to dream about night or darkness?",
+            "answer": "Night is often associated with the unknown, with what you cannot see yet, and also with rest. Whether the darkness felt threatening or peaceful, and whether any light was present, guide the reading more than the night itself."
+          },
+          {
+            "question": "Why do I dream that the lights won't turn on?",
+            "answer": "A switch that does nothing is a common dream scene. It can match a feeling of having no grip on a situation, or of lacking the information to see clearly. Note where you were and what you were trying to find."
+          },
+          {
+            "question": "What does fear of the dark mean in a dream?",
+            "answer": "Being afraid of the dark in a dream can go with a worry you cannot name yet, or bring back a childhood fear during a tense period. If dark, frightening dreams come back often and spoil your sleep, a doctor can help."
+          },
+          {
+            "question": "Is dreaming of night a bad sign?",
+            "answer": "No. A dream set at night announces nothing. Many night dreams are calm: a starry sky, a quiet walk, a feeling of rest. The emotion you wake up with is a better clue than the darkness itself."
+          }
+        ],
+        "documentMetaDescription": "Dreaming of night or darkness, a dark street, lights that won't turn on, a starry sky: what the scene may say, with questions and a fictional journal example.",
+        "modifiedAt": "2026-10-08"
       },
       "fr": {
         "slug": "nuit",
         "name": "Nuit / Obscurité",
-        "shortDescription": "La nuit représente l'inconnu, les peurs cachées ou l'inconscient. Elle peut aussi symboliser une période d'incertitude ou d'introspection.",
+        "shortDescription": "Rêver de la nuit ou de l'obscurité, c'est souvent ne plus bien voir : une rue sans lumière, un interrupteur qui ne répond pas, un ciel étoilé. Le noir est souvent associé à l'inconnu, à ce que l'on ne distingue pas encore. Votre émotion, peur ou calme, compte le plus.",
         "askYourself": [
-          "Qu'est-ce que je ne vois pas clairement ?",
-          "Quelles peurs sont cachées en moi ?"
-        ]
+          "Le noir m'effrayait-il, me calmait-il, ou était-il seulement étrange ?",
+          "Y avait-il une lumière : la lune, une fenêtre, un écran, un lampadaire au loin ?",
+          "Qu'est-ce qui, dans ma vie, me paraît flou en ce moment, que je ne distingue pas encore ?"
+        ],
+        "faq": [
+          {
+            "question": "Que signifie rêver de la nuit ou de l'obscurité ?",
+            "answer": "La nuit est souvent associée à l'inconnu, à ce que l'on ne voit pas encore, mais aussi au repos. Le caractère menaçant ou paisible du noir, et la présence d'une lumière, orientent la lecture plus que la nuit elle-même."
+          },
+          {
+            "question": "Pourquoi rêver que la lumière ne s'allume pas ?",
+            "answer": "L'interrupteur qui ne répond pas est une scène de rêve fréquente. Elle peut rejoindre le sentiment de ne pas avoir prise sur une situation, ou de manquer d'informations pour y voir clair. Notez où vous étiez et ce que vous cherchiez."
+          },
+          {
+            "question": "Que signifie avoir peur du noir en rêve ?",
+            "answer": "Avoir peur du noir en rêve peut accompagner une inquiétude que vous n'arrivez pas encore à nommer, ou réveiller une peur d'enfance pendant une période tendue. Si ces rêves reviennent souvent et abîment votre sommeil, un médecin peut vous aider."
+          },
+          {
+            "question": "Rêver de la nuit, est-ce mauvais signe ?",
+            "answer": "Non. Un rêve qui se passe la nuit n'annonce rien. Beaucoup de rêves nocturnes sont paisibles : un ciel étoilé, une promenade tranquille, une sensation de repos. L'émotion du réveil est un meilleur indice que l'obscurité."
+          }
+        ],
+        "documentMetaDescription": "Rêver de la nuit, du noir, d'une lumière qui ne s'allume pas ou d'un ciel étoilé : ce que la scène peut dire, avec questions et exemple de journal.",
+        "modifiedAt": "2026-10-08"
       },
       "es": {
         "slug": "noche",
         "name": "Noche / Oscuridad",
-        "shortDescription": "La noche representa lo desconocido, miedos ocultos o el subconsciente. También puede simbolizar un período de incertidumbre o introspección.",
+        "shortDescription": "Soñar con la noche o la oscuridad suele ser no ver bien: una calle sin farolas, un interruptor que no responde, un cielo estrellado. La oscuridad se asocia a menudo con lo desconocido, con lo que aún no distingues. Importa sobre todo si te asustó o te calmó.",
         "askYourself": [
-          "¿Qué no estoy viendo con claridad?",
-          "¿Qué miedos están ocultos dentro de mí?"
-        ]
+          "¿La oscuridad me daba miedo, me calmaba o solo me resultaba extraña?",
+          "¿Había alguna luz: la luna, una ventana, una pantalla, una farola a lo lejos?",
+          "¿Qué hay en mi vida que ahora mismo me parece borroso, que todavía no distingo?"
+        ],
+        "faq": [
+          {
+            "question": "¿Qué significa soñar con la noche o la oscuridad?",
+            "answer": "La noche se asocia a menudo con lo desconocido, con lo que aún no ves, pero también con el descanso. Si la oscuridad era amenazante o tranquila, y si había alguna luz, orienta la lectura más que la noche en sí."
+          },
+          {
+            "question": "¿Por qué sueño que la luz no se enciende?",
+            "answer": "El interruptor que no funciona es una escena frecuente en los sueños. Puede enlazar con la sensación de no tener control sobre una situación, o de que te falta información para ver claro. Anota dónde estabas y qué buscabas."
+          },
+          {
+            "question": "¿Qué significa tener miedo a la oscuridad en un sueño?",
+            "answer": "Tener miedo a la oscuridad en sueños puede acompañar una preocupación que todavía no sabes nombrar, o despertar un miedo de la infancia en una etapa tensa. Si estos sueños se repiten y te estropean el descanso, un médico puede ayudarte."
+          },
+          {
+            "question": "¿Soñar con la noche es mala señal?",
+            "answer": "No. Un sueño que ocurre de noche no anuncia nada. Muchos sueños nocturnos son tranquilos: un cielo estrellado, un paseo sereno, una sensación de descanso. La emoción con la que te despiertas es mejor pista que la oscuridad."
+          }
+        ],
+        "documentMetaDescription": "Soñar con la noche, la oscuridad, una luz que no se enciende o un cielo estrellado: qué puede decir la escena, con preguntas y un ejemplo de diario.",
+        "modifiedAt": "2026-10-08"
       },
       "de": {
         "slug": "nacht",
         "name": "Nacht / Dunkelheit",
-        "shortDescription": "Nacht und Dunkelheit symbolisieren das Unbekannte, verborgene Wahrheiten und das Unterbewusstsein. Sie können sowohl Angst als auch Ruhe, Geheimnis und innere Erforschung darstellen.",
+        "shortDescription": "Von Nacht oder Dunkelheit zu träumen heißt oft, nicht richtig zu sehen: eine Straße ohne Laternen, ein Schalter, der nicht reagiert, ein Sternenhimmel. Dunkelheit wird oft mit dem Unbekannten verbunden. Ob sie Ihnen Angst machte oder Sie beruhigte, zählt am meisten.",
         "askYourself": [
-          "Was liegt im Verborgenen, das ich nicht sehen kann?",
-          "Welche Ängste habe ich vor dem Unbekannten?"
-        ]
+          "Hat mir die Dunkelheit Angst gemacht, mich beruhigt, oder war sie nur seltsam?",
+          "Gab es ein Licht: den Mond, ein Fenster, einen Bildschirm, eine Laterne in der Ferne?",
+          "Was in meinem Leben wirkt gerade unscharf, etwas, das ich noch nicht erkennen kann?"
+        ],
+        "faq": [
+          {
+            "question": "Was bedeutet es, von Nacht oder Dunkelheit zu träumen?",
+            "answer": "Die Nacht wird oft mit dem Unbekannten verbunden, mit dem, was Sie noch nicht sehen, aber auch mit Ruhe. Ob die Dunkelheit bedrohlich oder friedlich wirkte und ob es ein Licht gab, sagt mehr als die Nacht selbst."
+          },
+          {
+            "question": "Warum träume ich, dass das Licht nicht angeht?",
+            "answer": "Ein Lichtschalter, der nicht funktioniert, ist eine häufige Traumszene. Sie kann zu dem Gefühl passen, eine Situation nicht im Griff zu haben oder zu wenig zu wissen, um klar zu sehen. Notieren Sie, wo Sie waren und was Sie gesucht haben."
+          },
+          {
+            "question": "Was bedeutet Angst vor der Dunkelheit im Traum?",
+            "answer": "Angst vor der Dunkelheit im Traum kann eine Sorge begleiten, die Sie noch nicht benennen können, oder in einer angespannten Zeit eine Kindheitsangst wecken. Kehren solche Träume oft wieder und stören Ihren Schlaf, kann eine Ärztin oder ein Arzt helfen."
+          },
+          {
+            "question": "Ist ein Traum von der Nacht ein schlechtes Zeichen?",
+            "answer": "Nein. Ein Traum, der nachts spielt, kündigt nichts an. Viele nächtliche Träume sind ruhig: ein Sternenhimmel, ein stiller Spaziergang, ein Gefühl von Erholung. Das Gefühl beim Aufwachen ist ein besserer Hinweis als die Dunkelheit."
+          }
+        ],
+        "documentMetaDescription": "Nacht und Dunkelheit im Traum, eine dunkle Straße, Licht, das nicht angeht, ein Sternenhimmel: was die Szene sagen kann, mit Fragen und Tagebuchbeispiel.",
+        "modifiedAt": "2026-10-08"
       },
       "it": {
         "slug": "notte",
         "name": "Notte / Oscurità",
-        "shortDescription": "La notte e l'oscurità simboleggiano l'ignoto, verità nascoste e il subconscio. Possono rappresentare sia paura che quiete, mistero ed esplorazione interiore.",
+        "shortDescription": "Sognare la notte o il buio significa spesso non vedere bene: una strada senza lampioni, un interruttore che non risponde, un cielo stellato. Il buio viene spesso associato all’ignoto, a ciò che non distingui ancora. Conta soprattutto se ti ha spaventato o calmato.",
         "askYourself": [
-          "Cosa si nasconde nel buio che non riesco a vedere?",
-          "Quali paure ho dell'ignoto?"
-        ]
+          "Il buio mi spaventava, mi calmava o era solo strano?",
+          "C’era una luce: la luna, una finestra, uno schermo, un lampione lontano?",
+          "Che cosa nella mia vita mi sembra confuso in questo periodo, qualcosa che non riesco ancora a distinguere?"
+        ],
+        "faq": [
+          {
+            "question": "Che cosa significa sognare la notte o il buio?",
+            "answer": "La notte viene spesso associata all’ignoto, a ciò che non vedi ancora, ma anche al riposo. Se il buio era minaccioso o tranquillo, e se c’era una luce, orienta la lettura più della notte in sé."
+          },
+          {
+            "question": "Perché sogno che la luce non si accende?",
+            "answer": "L’interruttore che non funziona è una scena frequente nei sogni. Può avvicinarsi alla sensazione di non avere presa su una situazione, o di non avere abbastanza informazioni per vederci chiaro. Annota dove ti trovavi e che cosa cercavi."
+          },
+          {
+            "question": "Che cosa significa avere paura del buio in sogno?",
+            "answer": "Avere paura del buio in sogno può accompagnare una preoccupazione che non sai ancora nominare, o risvegliare una paura dell’infanzia in un periodo teso. Se questi sogni tornano spesso e rovinano il sonno, un medico può aiutarti."
+          },
+          {
+            "question": "Sognare la notte è un brutto segno?",
+            "answer": "No. Un sogno ambientato di notte non annuncia nulla. Molti sogni notturni sono tranquilli: un cielo stellato, una passeggiata serena, una sensazione di riposo. L’emozione al risveglio è un indizio migliore del buio."
+          }
+        ],
+        "documentMetaDescription": "Sognare la notte, il buio, una luce che non si accende o un cielo stellato: che cosa può dire la scena, con domande ed esempio inventato di diario.",
+        "modifiedAt": "2026-10-08"
       },
       "pt": {
         "slug": "noite-escuridao",
@@ -6973,47 +7288,152 @@
       "en": {
         "slug": "key",
         "name": "Key",
-        "shortDescription": "A key symbolizes access, solutions, and new opportunities. Losing a key can indicate feeling blocked or having lost an opportunity.",
+        "shortDescription": "Dreaming of a key often comes down to a gesture: turning it in a lock, searching every pocket, finding one you have never seen. The key is often linked to access, to what you can open or keep closed. Whether it fitted, and what it opened, matters most.",
         "askYourself": [
-          "What door am I ready to open?",
-          "What solution am I missing?"
-        ]
+          "Did the key fit, and what did it open or fail to open?",
+          "Was it my key, someone else's, or one I had never seen?",
+          "What in my life feels locked right now, or what am I keeping under lock and key?"
+        ],
+        "faq": [
+          {
+            "question": "What does it mean to dream about a key?",
+            "answer": "A key is often associated with access: to a place, a person, a solution, or something you keep private. Whether it fitted, who gave it to you and what lay behind the door guide the reading more than the key itself."
+          },
+          {
+            "question": "What does it mean to lose your keys in a dream?",
+            "answer": "Losing your keys can match a feeling of being locked out of something: a home, a role, a relationship. It can also simply echo a hectic period. It is not a warning; note where you were and what you could no longer open."
+          },
+          {
+            "question": "What does a key that doesn't fit mean in a dream?",
+            "answer": "A key that will not turn can go with an approach that no longer works, or with a place where you no longer feel you belong. Did you keep trying, force the lock, or look for another way in?"
+          },
+          {
+            "question": "What does it mean to be given a key in a dream?",
+            "answer": "Receiving a key can echo trust, a new responsibility or access to something new: a home, a job, someone's private life. Who gave it to you, and how you felt taking it, are the main clues."
+          }
+        ],
+        "documentMetaDescription": "Dreaming of a key, lost keys, a key that won't fit or one you are given: what the scene may say about access and secrets, with questions and a journal example.",
+        "modifiedAt": "2026-10-08"
       },
       "fr": {
         "slug": "cle",
         "name": "Clé",
-        "shortDescription": "La clé symbolise l'accès, les solutions et les nouvelles opportunités. Perdre une clé peut indiquer un sentiment d'être bloqué ou d'avoir perdu une opportunité.",
+        "shortDescription": "Rêver d'une clé tient souvent à un geste : la tourner dans une serrure, fouiller ses poches, en trouver une inconnue. La clé est souvent associée à l'accès, à ce que l'on peut ouvrir ou garder fermé. Qu'elle entre ou non, et ce qu'elle ouvre, compte le plus.",
         "askYourself": [
-          "Quelle porte suis-je prêt à ouvrir ?",
-          "Quelle solution me manque ?"
-        ]
+          "La clé entrait-elle dans la serrure, et qu'ouvrait-elle, ou n'ouvrait-elle pas ?",
+          "Était-ce ma clé, celle de quelqu'un d'autre, ou une clé inconnue ?",
+          "Qu'est-ce qui, dans ma vie, me semble fermé en ce moment, ou que je garde sous clé ?"
+        ],
+        "faq": [
+          {
+            "question": "Que signifie rêver d'une clé ?",
+            "answer": "La clé est souvent associée à l'accès : à un lieu, à une personne, à une solution ou à ce que vous gardez pour vous. Qu'elle entre ou non, qui vous l'a donnée et ce qu'il y avait derrière la porte orientent la lecture plus que la clé elle-même."
+          },
+          {
+            "question": "Que signifie perdre ses clés en rêve ?",
+            "answer": "Perdre ses clés peut rejoindre le sentiment d'être exclu de quelque chose : un logement, un rôle, une relation. Cela peut aussi refléter, plus simplement, une période agitée. Ce n'est pas un avertissement : notez où vous étiez et ce que vous ne pouviez plus ouvrir."
+          },
+          {
+            "question": "Que signifie une clé qui ne rentre pas dans la serrure ?",
+            "answer": "Une clé qui ne tourne pas peut accompagner une méthode qui ne marche plus, ou un lieu où vous ne vous sentez plus à votre place. Avez-vous insisté, forcé la serrure, ou cherché une autre entrée ?"
+          },
+          {
+            "question": "Que signifie recevoir une clé en rêve ?",
+            "answer": "Recevoir une clé peut faire écho à une marque de confiance, une nouvelle responsabilité ou l'accès à quelque chose de neuf : un logement, un poste, l'intimité de quelqu'un. Qui vous l'a donnée, et ce que vous avez ressenti, sont les indices principaux."
+          }
+        ],
+        "documentMetaDescription": "Rêver d'une clé, de clés perdues ou d'une clé qui ne rentre pas : ce que la scène peut dire de l'accès et des secrets, avec questions et exemple de journal.",
+        "modifiedAt": "2026-10-08"
       },
       "es": {
         "slug": "llave",
         "name": "Llave",
-        "shortDescription": "Una llave simboliza acceso, soluciones y nuevas oportunidades. Perder una llave puede indicar sentirse bloqueado o haber perdido una oportunidad.",
+        "shortDescription": "Soñar con una llave suele reducirse a un gesto: girarla en una cerradura, rebuscar en todos los bolsillos, encontrar una que nunca habías visto. La llave se asocia a menudo con el acceso, con lo que puedes abrir o mantener cerrado. Importa si encajaba y qué abría.",
         "askYourself": [
-          "¿Qué puerta estoy listo para abrir?",
-          "¿Qué solución me falta?"
-        ]
+          "¿La llave encajaba, y qué abría o no conseguía abrir?",
+          "¿Era mi llave, la de otra persona o una que no conocía?",
+          "¿Qué hay en mi vida que ahora mismo me parece cerrado, o que guardo bajo llave?"
+        ],
+        "faq": [
+          {
+            "question": "¿Qué significa soñar con una llave?",
+            "answer": "La llave se asocia a menudo con el acceso: a un lugar, a una persona, a una solución o a algo que guardas para ti. Si encajaba, quién te la dio y qué había detrás de la puerta orientan la lectura más que la llave en sí."
+          },
+          {
+            "question": "¿Qué significa soñar que pierdes las llaves?",
+            "answer": "Perder las llaves puede enlazar con la sensación de quedarte fuera de algo: una casa, un papel, una relación. También puede reflejar sin más una etapa ajetreada. No es un aviso: anota dónde estabas y qué ya no podías abrir."
+          },
+          {
+            "question": "¿Qué significa soñar con una llave que no entra en la cerradura?",
+            "answer": "Una llave que no gira puede acompañar una forma de hacer que ya no funciona, o un lugar en el que ya no te sientes en tu sitio. ¿Insististe, forzaste la cerradura o buscaste otra entrada?"
+          },
+          {
+            "question": "¿Qué significa que te den una llave en un sueño?",
+            "answer": "Recibir una llave puede hacer eco de una muestra de confianza, una nueva responsabilidad o el acceso a algo nuevo: una casa, un trabajo, la intimidad de alguien. Quién te la dio y lo que sentiste al tomarla son las pistas principales."
+          }
+        ],
+        "documentMetaDescription": "Soñar con una llave, perder las llaves o una llave que no entra: qué puede decir la escena sobre el acceso y los secretos, con preguntas y un ejemplo de diario.",
+        "modifiedAt": "2026-10-08"
       },
       "de": {
         "slug": "schluessel",
         "name": "Schlüssel",
-        "shortDescription": "Schlüssel symbolisieren Lösungen, Zugang und das Erschließen neuer Möglichkeiten. Einen Schlüssel zu finden deutet auf eine bevorstehende Entdeckung hin, ihn zu verlieren auf verpasste Chancen.",
+        "shortDescription": "Von einem Schlüssel zu träumen hängt oft an einer Geste: ihn im Schloss drehen, alle Taschen durchsuchen, einen fremden finden. Der Schlüssel wird oft mit Zugang verbunden, mit dem, was Sie öffnen oder verschlossen halten. Ob er passte, zählt am meisten.",
         "askYourself": [
-          "Welche Lösung suche ich?",
-          "Was versuche ich zu erschließen oder zu entdecken?"
-        ]
+          "Passte der Schlüssel, und was hat er geöffnet oder nicht geöffnet?",
+          "War es mein Schlüssel, der eines anderen oder ein unbekannter?",
+          "Was in meinem Leben wirkt gerade verschlossen, oder was halte ich unter Verschluss?"
+        ],
+        "faq": [
+          {
+            "question": "Was bedeutet es, von einem Schlüssel zu träumen?",
+            "answer": "Der Schlüssel wird oft mit Zugang verbunden: zu einem Ort, einem Menschen, einer Lösung oder zu etwas, das Sie für sich behalten. Ob er passte, wer ihn Ihnen gab und was hinter der Tür lag, sagt mehr als der Schlüssel selbst."
+          },
+          {
+            "question": "Was bedeutet es, im Traum den Schlüssel zu verlieren?",
+            "answer": "Den Schlüssel zu verlieren kann zu dem Gefühl passen, von etwas ausgeschlossen zu sein: einer Wohnung, einer Rolle, einer Beziehung. Es kann auch schlicht eine hektische Phase aufgreifen. Eine Warnung ist es nicht: Notieren Sie, wo Sie waren und was Sie nicht mehr öffnen konnten."
+          },
+          {
+            "question": "Was bedeutet ein Schlüssel, der nicht passt?",
+            "answer": "Ein Schlüssel, der sich nicht drehen lässt, kann einen Ansatz begleiten, der nicht mehr funktioniert, oder einen Ort, an dem Sie sich nicht mehr zugehörig fühlen. Haben Sie es weiter versucht, das Schloss aufgebrochen oder einen anderen Eingang gesucht?"
+          },
+          {
+            "question": "Was bedeutet es, im Traum einen Schlüssel zu bekommen?",
+            "answer": "Einen Schlüssel zu bekommen kann Vertrauen, eine neue Verantwortung oder Zugang zu etwas Neuem aufgreifen: einer Wohnung, einer Stelle, dem Privatleben eines Menschen. Wer ihn Ihnen gab und wie Sie sich dabei fühlten, sind die wichtigsten Hinweise."
+          }
+        ],
+        "documentMetaDescription": "Schlüssel im Traum, verloren, unpassend oder geschenkt: was die Szene über Zugang und Geheimnisse sagen kann, mit Fragen zum Nachdenken und Tagebuchbeispiel.",
+        "modifiedAt": "2026-10-08"
       },
       "it": {
         "slug": "chiave",
         "name": "Chiave",
-        "shortDescription": "Le chiavi simboleggiano soluzioni, accesso e l'apertura di nuove possibilità. Trovare una chiave suggerisce una scoperta imminente, perderla indica opportunità mancate.",
+        "shortDescription": "Sognare una chiave si riduce spesso a un gesto: girarla nella serratura, frugare in tutte le tasche, trovarne una mai vista prima. La chiave viene spesso associata all’accesso, a ciò che puoi aprire o tenere chiuso. Conta soprattutto se entrava e che cosa apriva.",
         "askYourself": [
-          "Quale soluzione sto cercando?",
-          "Cosa sto cercando di aprire o scoprire?"
-        ]
+          "La chiave entrava nella serratura, e che cosa apriva o non riusciva ad aprire?",
+          "Era la mia chiave, quella di qualcun altro o una chiave sconosciuta?",
+          "Che cosa nella mia vita mi sembra chiuso in questo periodo, o che cosa tengo sotto chiave?"
+        ],
+        "faq": [
+          {
+            "question": "Che cosa significa sognare una chiave?",
+            "answer": "La chiave viene spesso associata all’accesso: a un luogo, a una persona, a una soluzione o a qualcosa che tieni per te. Se entrava, chi te l’ha data e che cosa c’era dietro la porta orientano la lettura più della chiave in sé."
+          },
+          {
+            "question": "Che cosa significa sognare di perdere le chiavi?",
+            "answer": "Perdere le chiavi può avvicinarsi alla sensazione di essere tagliato fuori da qualcosa: una casa, un ruolo, una relazione. Può anche riflettere semplicemente un periodo frenetico. Non è un avvertimento: annota dove ti trovavi e che cosa non riuscivi più ad aprire."
+          },
+          {
+            "question": "Che cosa significa sognare una chiave che non entra nella serratura?",
+            "answer": "Una chiave che non gira può accompagnare un metodo che non funziona più, o un luogo in cui non ti senti più al tuo posto. Hai insistito, forzato la serratura o cercato un’altra entrata?"
+          },
+          {
+            "question": "Che cosa significa ricevere una chiave in sogno?",
+            "answer": "Ricevere una chiave può fare eco a un segno di fiducia, a una nuova responsabilità o all’accesso a qualcosa di nuovo: una casa, un lavoro, l’intimità di qualcuno. Chi te l’ha data e che cosa hai provato prendendola sono gli indizi principali."
+          }
+        ],
+        "documentMetaDescription": "Sognare una chiave, di perdere le chiavi o una chiave che non entra: che cosa può dire la scena di accesso e segreti, con domande ed esempio di diario.",
+        "modifiedAt": "2026-10-08"
       },
       "pt": {
         "slug": "chave",
