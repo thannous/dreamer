@@ -1436,15 +1436,16 @@ const JournalDetailContent = memo(function JournalDetailContent({ dream }: { dre
   const runAnalyze = useCallback(
     async (replaceImage: boolean, skipAllowanceCheck = false) => {
       if (!dream || isAnalysisLaunchBlocked || analysisLaunchInFlightRef.current) return;
-      // Lock synchronously, including the asynchronous quota check.
+      // Lock synchronously, including the asynchronous quota check and consent.
       analysisLaunchInFlightRef.current = true;
-      setIsAnalyzing(true);
       try {
         if (!skipAllowanceCheck && !isResumableAnalysisRequest(dream)) {
           const allowed = await ensureAnalyzeAllowed();
           if (!allowed) return;
         }
         if (!(await requestAiConsent(t))) return;
+        // Only now is anything being analysed: never show progress behind the consent prompt.
+        setIsAnalyzing(true);
 
         const pending = onboardingState.pendingRecordingIntent;
         if (pending?.savedDreamId === dream.id && pending.phase === 'analysis_confirmation') {
@@ -2077,7 +2078,8 @@ const JournalDetailContent = memo(function JournalDetailContent({ dream }: { dre
     );
   };
 
-  const analysisAccessLabel = visiblePrimaryAction !== 'analyze' || isPrimaryActionBusy || canResumeAnalysis || guestNeedsAccount || savedAnalysisAction === 'upgrade' ? null
+  // While allowances load, keep the regular card so it does not reflow under the user's thumb.
+  const analysisAccessLabel = visiblePrimaryAction !== 'analyze' || quotaLoading || isPrimaryActionBusy || canResumeAnalysis || guestNeedsAccount || savedAnalysisAction === 'upgrade' ? null
     : quotaHint.kind === 'unknown' ? t('journal.detail.check_analysis')
       : quotaHint.kind === 'remaining' && quotaHint.remaining <= 0
         ? t('journal.detail.analysis_options') : null;

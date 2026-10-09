@@ -553,6 +553,32 @@ describe('journal detail saved confirmation route', () => {
     expect(mockTransitionOnboarding).not.toHaveBeenCalled();
   });
 
+  // Web E2E cannot observe this: the browser's confirm() blocks the page while it is open.
+  it('shows no analysis in progress while AI consent is still being asked', async () => {
+    let answer: (granted: boolean) => void = () => {};
+    mockRequestAiConsent.mockImplementationOnce(() => new Promise<boolean>((resolve) => { answer = resolve; }));
+    render(<JournalDetailScreen />);
+    await act(async () => { fireEvent.click(screen.getByTestId(TID.Button.DreamDetailPrimaryCta)); });
+    expect(mockRequestAiConsent).toHaveBeenCalledTimes(1);
+    expect(screen.queryByText('loading.analyzing')).toBeNull();
+    await act(async () => { answer(false); });
+    expect(mockAnalyzeDream).not.toHaveBeenCalled();
+    expect(screen.queryByText('loading.analyzing')).toBeNull();
+    expect(screen.getByTestId(TID.Button.DreamDetailPrimaryCta)).toBeTruthy();
+  });
+
+  it('keeps the analysis offer in place while allowances load', () => {
+    mockQuotaLoading = true;
+    mockQuotaUsage = undefined;
+    const view = render(<JournalDetailScreen />);
+    const loadingMessage = screen.getByTestId(TID.Text.DreamDetailActionMessage).textContent;
+    expect(screen.getByTestId(TID.Button.DreamDetailPrimaryCta).textContent).not.toContain('journal.detail.check_analysis');
+    mockQuotaLoading = false;
+    mockQuotaUsage = { analysis: { used: 1, limit: 3, remaining: 2 } };
+    view.rerender(<JournalDetailScreen />);
+    expect(screen.getByTestId(TID.Text.DreamDetailActionMessage).textContent).toBe(loadingMessage);
+  });
+
   it('does not start a second categorization for a saved guest dream', () => {
     mockUser = null;
     mockTier = 'guest';
