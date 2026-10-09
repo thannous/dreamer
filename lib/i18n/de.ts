@@ -1067,6 +1067,8 @@ const translations: Record<string, string> = {
     'release_notes.symbol_pages.body': "Jede Seite zeigt Deutung, Varianten, Fragen an dich selbst und verwandte Symbole.",
     'release_notes.readability.title': "Große Schriftgrößen",
     'release_notes.readability.body': "Die Darstellung bei großen Schriftgrößen ist korrigiert.",
+    'release_notes.lucid.title': "Lucid Trainer ist umgezogen",
+    'release_notes.lucid.body': "Das Training findest du jetzt auf lucid.noctalia.app, verlinkt im Ritual Klartraum. Frühere Trainingseinheiten werden in Noctalia nicht mehr angezeigt.",
     'release_notes.primary': "Symbole erkunden",
     'release_notes.later': 'Später',
     'release_notes.close': 'Neuheiten schließen',

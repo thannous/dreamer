@@ -83,6 +83,11 @@ export function WhatsNewModal({ visible, onClose, onPrimary }: WhatsNewModalProp
         title: t('release_notes.readability.title'),
         body: t('release_notes.readability.body'),
       },
+      {
+        icon: 'eye.fill',
+        title: t('release_notes.lucid.title'),
+        body: t('release_notes.lucid.body'),
+      },
     ],
     [t]
   );

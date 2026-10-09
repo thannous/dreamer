@@ -1067,6 +1067,8 @@ const translations: Record<string, string> = {
     'release_notes.symbol_pages.body': "Each page shows the meaning, variations, questions to ask yourself and related symbols.",
     'release_notes.readability.title': "Large text sizes",
     'release_notes.readability.body': "Layouts are fixed for large text sizes.",
+    'release_notes.lucid.title': "Lucid Trainer has moved",
+    'release_notes.lucid.body': "The trainer now lives at lucid.noctalia.app, linked from the Lucid dream ritual. Past trainer sessions are no longer shown in Noctalia.",
     'release_notes.primary': "Explore symbols",
     'release_notes.later': 'Later',
     'release_notes.close': "Close what's new",
