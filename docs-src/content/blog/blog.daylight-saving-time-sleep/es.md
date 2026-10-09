@@ -5,7 +5,7 @@
   "lang": "es",
   "slug": "horario-verano-sueno-suenos",
   "title": "Cambio de hora y sueño: efectos en los sueños | Noctalia",
-  "description": "El cambio de hora altera tu ritmo circadiano, la arquitectura del sueño y tus sueños.",
+  "description": "Cambio de hora y sueño: por qué el horario de verano cuesta más, qué pasa con el sueño REM y tus sueños, y cómo adaptarte en pocos días.",
   "robots": "max-image-preview:large",
   "themeColor": "#0a0514",
   "htmlClass": "scroll-smooth blog-article",
@@ -14,24 +14,24 @@
   "mainClass": "pt-32 pb-20 px-4",
   "ogType": "article",
   "ogTitle": "Cambio de hora y sueño: efectos en los sueños | Noctalia",
-  "ogDescription": "El cambio de hora altera tu ritmo circadiano, la arquitectura del sueño y tus sueños.",
+  "ogDescription": "Por qué el cambio al horario de verano pesa más sobre el sueño, qué cambia en tus sueños y cómo adaptarte en pocos días.",
   "ogImage": "https://noctalia.app/img/blog/daylight-saving-time-sleep-dreams.webp",
   "ogImageAlt": "Reloj rodeado de ciclos de sueño alterados y símbolos oníricos en tonos violetas y ámbar",
   "twitterCard": "summary_large_image",
   "twitterTitle": "Cambio de hora y sueño: efectos en los sueños | Noctalia",
-  "twitterDescription": "El cambio de hora altera tu ritmo circadiano, la arquitectura del sueño y tus sueños.",
+  "twitterDescription": "Por qué el cambio al horario de verano pesa más sobre el sueño, qué cambia en tus sueños y cómo adaptarte en pocos días.",
   "twitterImage": "https://noctalia.app/img/blog/daylight-saving-time-sleep-dreams.webp",
   "twitterImageAlt": "Reloj rodeado de ciclos de sueño alterados y símbolos oníricos en tonos violetas y ámbar",
   "publishedTime": "2026-03-17",
-  "modifiedTime": "2026-07-09",
+  "modifiedTime": "2026-10-09",
   "author": "Thanh Chau",
   "prevPath": "/es/blog/controlar-suenos-resolucion-problemas",
   "nextPath": "/es/blog/deuda-sueno-salud-suenos",
   "preloadImage": "/img/blog/daylight-saving-time-sleep-dreams.webp",
   "jsonLd": [
-    "{\n    \"@context\": \"https://schema.org\",\n    \"@type\": \"BlogPosting\",\n    \"headline\": \"Cambio de hora y sueño: cómo el horario de verano altera tus sueños\",\n    \"description\": \"El cambio de hora altera tu ritmo circadiano, la arquitectura del sueño y tus sueños.\",\n    \"image\": {\n        \"@type\": \"ImageObject\",\n        \"url\": \"https://noctalia.app/img/blog/daylight-saving-time-sleep-dreams.webp\",\n        \"width\": 1200,\n        \"height\": 630\n    },\n    \"author\": [\n        {\n            \"@type\": \"Person\",\n            \"@id\": \"https://noctalia.app/es/sobre#person\",\n            \"name\": \"Thanh Chau\",\n            \"jobTitle\": \"Founder & Publication Director\",\n            \"url\": \"https://noctalia.app/es/sobre\",\n            \"worksFor\": {\n                \"@type\": \"Organization\",\n                \"@id\": \"https://noctalia.app/#organization\",\n                \"name\": \"Noctalia\",\n                \"url\": \"https://noctalia.app\"\n            }\n        },\n        {\n            \"@type\": \"Organization\",\n            \"@id\": \"https://noctalia.app/#organization\",\n            \"name\": \"Noctalia\",\n            \"url\": \"https://noctalia.app\",\n            \"logo\": {\n                \"@type\": \"ImageObject\",\n                \"url\": \"https://noctalia.app/logo/logo_noctalia.png\"\n            }\n        }\n    ],\n    \"publisher\": {\n        \"@type\": \"Organization\",\n        \"name\": \"Noctalia\",\n        \"url\": \"https://noctalia.app\",\n        \"logo\": {\n            \"@type\": \"ImageObject\",\n            \"url\": \"https://noctalia.app/logo/logo_noctalia.png\"\n        }\n    },\n    \"datePublished\": \"2026-03-17\",\n    \"dateModified\": \"2026-07-09\",\n    \"mainEntityOfPage\": {\n        \"@type\": \"WebPage\",\n        \"@id\": \"https://noctalia.app/es/blog/horario-verano-sueno-suenos\"\n    },\n    \"inLanguage\": \"es\",\n    \"isAccessibleForFree\": true,\n    \"wordCount\": 1600,\n    \"timeRequired\": \"PT6M\",\n    \"url\": \"https://noctalia.app/es/blog/horario-verano-sueno-suenos\"\n}",
+    "{\n    \"@context\": \"https://schema.org\",\n    \"@type\": \"BlogPosting\",\n    \"headline\": \"Cambio de hora y sueño: lo que el horario de verano hace con tus noches y tus sueños\",\n    \"description\": \"Cambio de hora y sueño: por qué el horario de verano cuesta más, qué pasa con el sueño REM y tus sueños, y cómo adaptarte en pocos días.\",\n    \"image\": {\n        \"@type\": \"ImageObject\",\n        \"url\": \"https://noctalia.app/img/blog/daylight-saving-time-sleep-dreams.webp\",\n        \"width\": 1200,\n        \"height\": 630\n    },\n    \"author\": [\n        {\n            \"@type\": \"Person\",\n            \"@id\": \"https://noctalia.app/es/sobre#person\",\n            \"name\": \"Thanh Chau\",\n            \"jobTitle\": \"Founder & Publication Director\",\n            \"url\": \"https://noctalia.app/es/sobre\",\n            \"worksFor\": {\n                \"@type\": \"Organization\",\n                \"@id\": \"https://noctalia.app/#organization\",\n                \"name\": \"Noctalia\",\n                \"url\": \"https://noctalia.app\"\n            }\n        },\n        {\n            \"@type\": \"Organization\",\n            \"@id\": \"https://noctalia.app/#organization\",\n            \"name\": \"Noctalia\",\n            \"url\": \"https://noctalia.app\",\n            \"logo\": {\n                \"@type\": \"ImageObject\",\n                \"url\": \"https://noctalia.app/logo/logo_noctalia.png\"\n            }\n        }\n    ],\n    \"publisher\": {\n        \"@type\": \"Organization\",\n        \"name\": \"Noctalia\",\n        \"url\": \"https://noctalia.app\",\n        \"logo\": {\n            \"@type\": \"ImageObject\",\n            \"url\": \"https://noctalia.app/logo/logo_noctalia.png\"\n        }\n    },\n    \"datePublished\": \"2026-03-17\",\n    \"dateModified\": \"2026-10-09\",\n    \"mainEntityOfPage\": {\n        \"@type\": \"WebPage\",\n        \"@id\": \"https://noctalia.app/es/blog/horario-verano-sueno-suenos\"\n    },\n    \"inLanguage\": \"es\",\n    \"isAccessibleForFree\": true,\n    \"wordCount\": 2382,\n    \"timeRequired\": \"PT11M\",\n    \"url\": \"https://noctalia.app/es/blog/horario-verano-sueno-suenos\"\n}",
     "{\n    \"@context\": \"https://schema.org\",\n    \"@type\": \"WebPage\",\n    \"@id\": \"https://noctalia.app/es/blog/horario-verano-sueno-suenos\",\n    \"url\": \"https://noctalia.app/es/blog/horario-verano-sueno-suenos\",\n    \"name\": \"Cambio de hora y sueño: efectos en los sueños | Noctalia\",\n    \"inLanguage\": \"es\"\n}",
-    "{\n    \"@context\": \"https://schema.org\",\n    \"@type\": \"FAQPage\",\n    \"mainEntity\": [\n        {\n            \"@type\": \"Question\",\n            \"name\": \"¿El cambio de hora realmente afecta al sueño?\",\n            \"acceptedAnswer\": {\n                \"@type\": \"Answer\",\n                \"text\": \"Sí. El cambio de hora fuerza un desplazamiento abrupto de una hora en tu ritmo circadiano, alterando la producción de melatonina y la organización de los ciclos de sueño. El adelanto de primavera es especialmente perjudicial: comprime el sueño REM, reduce el recuerdo de los sueños y aumenta el riesgo de infarto un 24 % en los días siguientes. Las personas sensibles pueden tardar hasta una semana en adaptarse completamente.\"\n            }\n        },\n        {\n            \"@type\": \"Question\",\n            \"name\": \"¿Cuánto tiempo se tarda en adaptarse al cambio horario?\",\n            \"acceptedAnswer\": {\n                \"@type\": \"Answer\",\n                \"text\": \"La mayoría de las personas necesitan entre 1 y 3 días para adaptarse al cambio de una hora. Sin embargo, las personas sensibles — niños, ancianos y quienes padecen trastornos del sueño — pueden necesitar hasta una semana. Este desfase se debe a la inercia del ritmo circadiano: tu reloj interno, regido por el núcleo supraquiasmático, se resiste a los cambios bruscos y necesita tiempo para resincronizarse con las señales de luz externas.\"\n            }\n        },\n        {\n            \"@type\": \"Question\",\n            \"name\": \"¿El cambio de hora puede afectar a mis sueños?\",\n            \"acceptedAnswer\": {\n                \"@type\": \"Answer\",\n                \"text\": \"Sí. El adelanto de primavera recorta o elimina el último periodo REM de la noche, el más largo y rico en sueños. Esto reduce el recuerdo de los sueños en los días siguientes. Paradójicamente, durante el periodo de adaptación, algunas personas experimentan sueños inusualmente vívidos o extraños, un fenómeno conocido como rebote REM: el cerebro compensa el sueño REM perdido.\"\n            }\n        }\n    ]\n}",
+    "{\n    \"@context\": \"https://schema.org\",\n    \"@type\": \"FAQPage\",\n    \"mainEntity\": [\n        {\n            \"@type\": \"Question\",\n            \"name\": \"¿El cambio de hora afecta de verdad al sueño?\",\n            \"acceptedAnswer\": {\n                \"@type\": \"Answer\",\n                \"text\": \"Sí, sobre todo en primavera. Las revisiones científicas muestran un sueño más corto y más fragmentado durante varios días, no solo la noche del cambio. La alarma recorta además el final de la noche, cuando los periodos de sueño REM son más largos.\"\n            }\n        },\n        {\n            \"@type\": \"Question\",\n            \"name\": \"¿Cuánto se tarda en adaptarse al cambio de hora?\",\n            \"acceptedAnswer\": {\n                \"@type\": \"Answer\",\n                \"text\": \"La mayoría de la gente se encuentra mejor en unos días o una semana. Los noctámbulos se adaptan peor al cambio de primavera: en un estudio, sus horarios de actividad seguían sin ajustarse semanas después. Si duermes mal durante varias semanas, consulta con un médico.\"\n            }\n        },\n        {\n            \"@type\": \"Question\",\n            \"name\": \"¿El cambio de hora puede afectar a mis sueños?\",\n            \"acceptedAnswer\": {\n                \"@type\": \"Answer\",\n                \"text\": \"Indirectamente, sí. Un final de noche más corto puede reducir al principio los sueños que recuerdas y, después, dar paso a sueños más intensos cuando el REM rebota. Es plausible, más que demostrado, para el cambio de hora. Los temas de prisa o de relojes también pueden hacer eco de la semana.\"\n            }\n        },\n        {\n            \"@type\": \"Question\",\n            \"name\": \"¿Cómo prepararse para el cambio al horario de verano?\",\n            \"acceptedAnswer\": {\n                \"@type\": \"Answer\",\n                \"text\": \"Acuéstate y levántate entre 15 y 20 minutos antes cada día durante los tres o cuatro días previos. Después del cambio, sal a la luz del día poco después de despertarte, baja la luz por la noche y deja la cafeína a primera hora de la tarde.\"\n            }\n        }\n    ]\n}",
     "{\n    \"@context\": \"https://schema.org\",\n    \"@type\": \"BreadcrumbList\",\n    \"itemListElement\": [\n        {\n            \"@type\": \"ListItem\",\n            \"position\": 1,\n            \"name\": \"Inicio\",\n            \"item\": \"https://noctalia.app/es/\"\n        },\n        {\n            \"@type\": \"ListItem\",\n            \"position\": 2,\n            \"name\": \"Recursos\",\n            \"item\": \"https://noctalia.app/es/blog/\"\n        },\n        {\n            \"@type\": \"ListItem\",\n            \"position\": 3,\n            \"name\": \"Cambio de hora\",\n            \"item\": \"https://noctalia.app/es/blog/horario-verano-sueno-suenos\"\n        }\n    ]\n}"
   ],
   "activeNav": "resources"
@@ -64,14 +64,14 @@
 <a class="text-xs font-mono text-purple-200/70 border border-white/10 rounded-full px-3 py-1 hover:text-white hover:border-dream-salmon/30 transition-colors" href="sueno-rem-suenos">Tema: Ciencia del sue&ntilde;o</a>
 <span aria-hidden="true" class="w-full sm:hidden"></span>
 <span class="text-sm text-purple-300/60">Publicado el 17 de marzo de 2026</span>
-<span class="text-sm text-purple-300/60">~1600 palabras &middot; 6 min de lectura</span>
+<span class="text-sm text-purple-300/60">11 min de lectura</span>
 </div>
 <h1 class="font-serif text-3xl md:text-5xl mb-6 text-transparent bg-clip-text bg-gradient-to-b from-white via-dream-lavender to-purple-400/50 leading-tight">
-                    Cambio de hora y sue&ntilde;o: c&oacute;mo el horario de verano altera tus sue&ntilde;os
-                </h1>
+Cambio de hora y sueño: lo que el horario de verano hace con tus noches y tus sueños
+</h1>
 <p class="text-lg text-purple-200/80 leading-relaxed">
-                    Dos veces al a&ntilde;o, miles de millones de personas adelantan o atrasan sus relojes una hora. Parece trivial, pero esa &uacute;nica hora desencadena una cascada de alteraciones en tu ritmo circadiano, la arquitectura del sue&ntilde;o y tu vida on&iacute;rica. Con Estados Unidos adelantando la hora el 8 de marzo y Europa el 29 de marzo, es el momento de entender qu&eacute; le sucede a tu cuerpo y tu mente &mdash; y c&oacute;mo proteger tu sue&ntilde;o.
-                </p>
+Es lunes, el primero tras adelantar los relojes. La alarma marca las 7, tu cuerpo insiste en que son las 6 y el sueño en el que estabas, un tren que no podías perder, se esfuma en cuanto te incorporas. El cambio de hora mueve el reloj una hora en una sola noche; tu reloj interno tarda varios días en seguirlo. Aquí tienes lo que esa hora le hace a tu descanso y a tus sueños, qué está medido y qué sigue siendo una hipótesis, y cómo pasar el cambio con más suavidad.
+</p>
 </header>
 <!-- Author Byline (E-E-A-T) -->
 <div class="flex items-center gap-3 mb-8 text-sm text-purple-200/70">
@@ -80,7 +80,7 @@
 </div>
 <div>
 <span class="text-dream-cream font-medium">Thanh Chau</span>
-<span class="block text-xs text-purple-300/60">Founder &amp; Publication Director &middot; <a class="text-dream-salmon hover:underline" href="/es/sobre">Sobre nuestro proceso editorial</a></span>
+<span class="block text-xs text-purple-300/60">Fundador y director de publicación &middot; <a class="text-dream-salmon hover:underline" href="/es/sobre">Sobre nuestro proceso editorial</a></span>
 </div>
 </div>
 <!-- Editorial Review (E-E-A-T) -->
@@ -101,8 +101,8 @@
 </div>
 <!-- Quick Answer (AI SEO) -->
 <section aria-labelledby="quick-answer-title" class="glass-panel rounded-2xl p-6 mb-8 border border-dream-salmon/20 bg-white/5">
-<h2 class="font-serif text-xl text-dream-cream mb-3" id="quick-answer-title">Respuesta r&aacute;pida</h2>
-<p class="text-purple-100/80 leading-relaxed">El cambio al horario de verano fuerza un desplazamiento abrupto de una hora en tu ritmo circadiano, alterando la producci&oacute;n de melatonina y los ciclos de sue&ntilde;o. El adelanto de primavera es especialmente da&ntilde;ino: comprime el sue&ntilde;o REM, reduce el recuerdo de los sue&ntilde;os, aumenta el riesgo de infarto en un 24 % en los d&iacute;as posteriores y puede tardar hasta una semana en desaparecer en personas sensibles. Ajustar gradualmente el horario, exponerse a la luz matutina y evitar la cafe&iacute;na son las estrategias de adaptaci&oacute;n m&aacute;s eficaces.</p>
+<h2 class="font-serif text-xl text-dream-cream mb-3" id="quick-answer-title">Respuesta rápida</h2>
+<p class="text-purple-100/80 leading-relaxed">La hora oficial cambia en una noche; tu reloj biológico se pone al día en varios días. El cambio de primavera es el más duro: el sueño se acorta y se fragmenta, y la alarma recorta el final de la noche, cuando el sueño REM, la fase más ligada a los sueños vívidos, dura más. Cuenta con unos días de cansancio, algo más si eres de los que trasnochan. Ajustar el horario poco a poco, buscar luz por la mañana y bajar la luz por la noche es lo que más ayuda.</p>
 </section>
 <!-- Featured Image -->
 <figure class="mb-12 rounded-2xl overflow-hidden">
@@ -111,88 +111,81 @@
 <!-- Table of Contents -->
 <nav class="glass-panel rounded-2xl p-6 mb-12">
 <h2 class="font-serif text-lg text-dream-cream mb-4 flex items-center gap-2">
-<i class="w-5 h-5 text-dream-salmon" data-lucide="list"></i> Tabla de contenidos
-                </h2>
+<i class="w-5 h-5 text-dream-salmon" data-lucide="list"></i> Índice
+</h2>
 <ol class="space-y-2 text-sm text-purple-200/70">
-<li><a class="toc-link block" href="#clock-change">1. Qu&eacute; le ocurre a tu cuerpo cuando cambia la hora</a></li>
-<li><a class="toc-link block" href="#sleep-architecture">2. C&oacute;mo el cambio horario altera la arquitectura del sue&ntilde;o</a></li>
-<li><a class="toc-link block" href="#dream-disruption">3. El efecto sobre los sue&ntilde;os</a></li>
-<li><a class="toc-link block" href="#health-risks">4. Riesgos para la salud asociados al cambio de hora</a></li>
-<li><a class="toc-link block" href="#tips">5. Consejos para adaptar tu horario de sue&ntilde;o</a></li>
-<li><a class="toc-link block" href="#abolish-dst">6. &iquest;Deber&iacute;amos abolir el cambio de hora?</a></li>
+<li><a class="toc-link block" href="#clock-change">1. ¿Qué pasa en tu cuerpo cuando cambia la hora?</a></li>
+<li><a class="toc-link block" href="#sleep-architecture">2. ¿Cómo altera el cambio de hora el sueño?</a></li>
+<li><a class="toc-link block" href="#dream-disruption">3. ¿Y qué pasa con tus sueños?</a></li>
+<li><a class="toc-link block" href="#health-risks">4. ¿El cambio de hora es malo para la salud?</a></li>
+<li><a class="toc-link block" href="#tips">5. Cómo adaptarte antes y después del cambio</a></li>
+<li><a class="toc-link block" href="#abolish-dst">6. ¿Deberíamos dejar de cambiar la hora?</a></li>
 </ol>
 </nav>
 <!-- Article Content -->
 <div class="prose max-w-none text-gray-300">
-<h2 id="clock-change">Qu&eacute; le ocurre a tu cuerpo cuando cambia la hora</h2>
-<h3>Tu reloj interno frente al reloj de pared</h3>
+<h2 id="clock-change">¿Qué pasa en tu cuerpo cuando cambia la hora?</h2>
+<h3>Tu reloj interno no mira la hora del móvil</h3>
 <p>
-                    Tu cuerpo no se rige por la hora que muestra tu tel&eacute;fono. Funciona seg&uacute;n un <a class="text-dream-salmon hover:underline" href="../simbolos/noche">noche</a> biol&oacute;gico &mdash; el n&uacute;cleo supraquiasm&aacute;tico (NSQ), un diminuto grupo de unas 20.000 neuronas situado en el hipot&aacute;lamo. Este reloj maestro orquesta la liberaci&oacute;n de melatonina, cortisol, los ciclos de temperatura corporal y la temporizaci&oacute;n de cada fase del sue&ntilde;o. Se sincroniza principalmente a trav&eacute;s de la exposici&oacute;n a la luz, en particular las longitudes de onda azules presentes en la luz solar matutina.
-                </p>
+Tu cuerpo lleva su propia hora. Un reloj central situado en el hipotálamo, el núcleo supraquiasmático, marca el ritmo de la melatonina, de la temperatura corporal y de las ganas de dormir. Se reajusta cada día sobre todo gracias a la luz, y la de la mañana es la que más cuenta.
+</p>
 <p>
-                    Cuando el cambio de hora fuerza un desplazamiento de una hora, tu NSQ no se resetea sin m&aacute;s. Sigue operando seg&uacute;n su horario anterior mientras el mundo externo exige uno diferente. Esta discrepancia &mdash; denominada t&eacute;cnicamente <strong>desalineaci&oacute;n circadiana</strong> &mdash; es la causa ra&iacute;z de todos los efectos secundarios: la somnolencia, el sue&ntilde;o alterado y los sue&ntilde;os modificados que siguen a un cambio de hora.
-                </p>
+Cuando la hora del móvil da un salto, ese reloj no salta con ella. Durante unos días, la hora social y la biológica no coinciden. Ese desfase, llamado <strong>desalineación circadiana</strong>, explica las mañanas espesas y las noches en las que el sueño no llega.
+</p>
+<h3>Por qué la primavera cuesta más que el otoño</h3>
 <p>
-                    La investigaci&oacute;n de Kantermann et al. (2007) demostr&oacute; que el reloj circadiano humano se ajusta a la transici&oacute;n de primavera mucho m&aacute;s lentamente que a la de oto&ntilde;o. Mientras la mayor&iacute;a de las personas se recuperan del atraso oto&ntilde;al en uno o dos d&iacute;as, el adelanto primaveral puede dejar huellas mensurables en los horarios de sue&ntilde;o durante <strong>hasta cuatro semanas</strong> en algunos individuos, especialmente aquellos con cronotipo tard&iacute;o (los llamados b&uacute;hos nocturnos).
-                </p>
-
+Kantermann y sus colegas (2007) siguieron a 50 personas durante ocho semanas en torno a cada cambio de hora. Sus horarios de sueño y actividad se ajustaron sin problema al cambio de otoño, pero no al de primavera, sobre todo en los <strong>noctámbulos</strong> (cronotipos tardíos). En una encuesta más amplia, con unas 55.000 personas de Europa central, el mismo equipo observó que el horario de sueño sigue el avance estacional del amanecer con el horario estándar, pero no con el de verano.
+</p>
 <h3>El retraso de la melatonina</h3>
 <p>
-                    En los d&iacute;as posteriores al adelanto de primavera, tu cuerpo contin&uacute;a produciendo melatonina seg&uacute;n su antiguo horario. Sientes sue&ntilde;o m&aacute;s tarde de lo que tu nueva hora de acostarte requiere, y te ves obligado a despertarte antes de que tu biolog&iacute;a est&eacute; preparada. El resultado es una forma de privaci&oacute;n aguda de sue&ntilde;o &mdash; similar al jet lag, pero sin la emoci&oacute;n de llegar a un lugar nuevo. Harrison (2013) describe este fen&oacute;meno como <strong>&laquo;jet lag social&raquo;</strong>, donde el conflicto entre el tiempo biol&oacute;gico y el tiempo social genera un estr&eacute;s cr&oacute;nico de bajo grado en el organismo.
-                </p>
-
-<h2 id="sleep-architecture">C&oacute;mo el cambio horario altera la arquitectura del sue&ntilde;o</h2>
-<h3>El ciclo REM perdido</h3>
+Tras el cambio de primavera, tu cuerpo sigue liberando melatonina con el horario antiguo. No tienes sueño a la nueva hora de acostarte y la alarma suena antes de que tu organismo esté listo. Se parece a un pequeño jet lag, pero sin viaje.
+</p>
+<h2 id="sleep-architecture">¿Cómo altera el cambio de hora el sueño?</h2>
+<h3>Noches más cortas y más entrecortadas</h3>
 <p>
-                    El sue&ntilde;o no es un bloque uniforme de inconsciencia. Se desarrolla en ciclos de 90 minutos, cada uno con periodos progresivamente m&aacute;s largos de <a class="text-dream-salmon hover:underline" href="sueno-rem-suenos">sue&ntilde;o REM</a>. El periodo REM m&aacute;s largo y rico se produce en el &uacute;ltimo ciclo de la noche, t&iacute;picamente entre las 6:00 y las 7:30 de la ma&ntilde;ana. Este es exactamente el periodo que el adelanto de primavera elimina.
-                </p>
+Solemos imaginar el cambio de primavera como una sola hora perdida la madrugada del domingo, cuando a las 2 pasan a ser las 3. Una revisión de Harrison (2013) pinta un cuadro menos cómodo: cuesta más conciliar el sueño y este se fragmenta más, de modo que la pérdida <strong>se acumula al menos durante la semana siguiente</strong>. La «hora extra» del otoño tampoco es un gran regalo: apenas hay pruebas de que se duerma más esa noche, y madrugar antes los días siguientes también puede acabar en pérdida.
+</p>
+<h3>El final de la noche, donde el REM se alarga</h3>
 <p>
-                    Cuando tu alarma suena una hora antes de lo que tu cuerpo espera, corta directamente esta &uacute;ltima fase REM. No pierdes simplemente 60 minutos de sue&ntilde;o gen&eacute;rico; pierdes la <strong>hora con mayor densidad de sue&ntilde;o REM de toda la noche</strong>. Los estudios polisomnogr&aacute;ficos realizados en los d&iacute;as posteriores a la transici&oacute;n horaria han mostrado una reducci&oacute;n mensurable del sue&ntilde;o REM total de 15 a 25 minutos, incluso cuando el tiempo total de sue&ntilde;o solo se reduce en los 60 minutos esperados.
-                </p>
-
-<h3>Sue&ntilde;o profundo fragmentado</h3>
+El sueño avanza en ciclos sucesivos y los periodos de <a class="text-dream-salmon hover:underline" href="sueno-rem-suenos">sueño REM</a> se alargan hacia la mañana. Cuando la alarma suena una hora antes de lo que espera tu cuerpo, lo que se recorta es sobre todo ese último tramo. Cuántos minutos de REM se pierden realmente tras el cambio de hora no se ha medido de forma fiable, pero la lógica de los ciclos convierte el final de la noche en la parte más expuesta.
+</p>
+<h2 id="dream-disruption">¿Y qué pasa con tus sueños?</h2>
+<h3>Primero, menos sueños recordados</h3>
 <p>
-                    Esta alteraci&oacute;n va m&aacute;s all&aacute; del REM. La desalineaci&oacute;n circadiana causada por el cambio de hora tambi&eacute;n fragmenta el sue&ntilde;o de ondas lentas (fases N2 y N3), las fases profundas restauradoras donde el cuerpo repara tejidos y consolida la memoria procedimental. Las personas que duermen durante la semana posterior al adelanto de primavera muestran <strong>mayor fragmentaci&oacute;n del sue&ntilde;o</strong> &mdash; m&aacute;s microdespertares, m&aacute;s despertares breves y m&aacute;s transiciones entre fases. Esta fragmentaci&oacute;n significa que, incluso cuando logras dormirte a la hora &laquo;correcta&raquo;, la calidad de tu sue&ntilde;o est&aacute; degradada.
-                </p>
-
-<blockquote class="border-l-4 border-dream-salmon/40 pl-4 italic text-purple-200/80 my-6">
-&laquo;La transici&oacute;n al horario de verano es esencialmente un avance de fase de una hora impuesto a toda la poblaci&oacute;n simult&aacute;neamente &mdash; un escenario que ning&uacute;n cronobio&oacute;logo recomendar&iacute;a jam&aacute;s.&raquo;
-<span class="block text-sm text-purple-300/60 mt-2 not-italic">&mdash; Roenneberg et al., Journal of Biological Rhythms, 2019</span>
-</blockquote>
-
-<h2 id="dream-disruption">El efecto sobre los sue&ntilde;os</h2>
-<h3>Por qu&eacute; tus sue&ntilde;os cambian despu&eacute;s del cambio de hora</h3>
+Pocos estudios han analizado los sueños justo después del cambio de hora. Lo que sigue se deduce de lo que sabemos sobre el sueño, no se ha medido en el cambio de hora en sí. Con un final de noche más corto y un despertar brusco, mucha gente se levanta sin ningún sueño en la cabeza, o con un fragmento que se borra en segundos. Nuestra guía para <a class="text-dream-salmon hover:underline" href="como-recordar-suenos">recordar tus sueños</a> explica cómo retenerlo.
+</p>
+<h3>Después, a veces, sueños más intensos</h3>
 <p>
-                    Dado que el adelanto de primavera apunta espec&iacute;ficamente al &uacute;ltimo ciclo de sue&ntilde;o matutino &mdash; la porci&oacute;n m&aacute;s rica en sue&ntilde;os de la noche &mdash;, su impacto sobre la actividad on&iacute;rica es desproporcionadamente grande. Con el &uacute;ltimo periodo REM acortado o completamente eliminado, muchas personas notan una ca&iacute;da inmediata en el <a class="text-dream-salmon hover:underline" href="como-recordar-suenos">recuerdo de los sue&ntilde;os</a>. Te despiertas en blanco, incapaz de recordar si so&ntilde;aste.
-                </p>
+Tras perder sueño REM, el organismo tiende a recuperarlo en las noches siguientes: es el <strong>rebote REM</strong>, un efecto bien conocido. Por eso algunas personas notan sueños llamativos o intensos unas noches después del cambio. Es plausible, no está demostrado para el cambio de hora en concreto. Un sueño más ligero también multiplica los <a class="text-dream-salmon hover:underline" href="despertares-nocturnos-recordar-suenos">despertares nocturnos</a>, y cada uno es una ocasión de pillar un sueño a medias.
+</p>
+<h3>Sueños de llegar tarde y de relojes</h3>
 <p>
-                    Pero la historia es m&aacute;s compleja que una simple p&eacute;rdida de sue&ntilde;os. Durante el periodo de adaptaci&oacute;n (normalmente de 3 a 7 d&iacute;as), el cerebro parece compensar el tiempo REM perdido aumentando la <strong>presi&oacute;n REM</strong> &mdash; el impulso biol&oacute;gico de entrar en sue&ntilde;o REM. Esto puede producir lo que los investigadores del sue&ntilde;o llaman <strong>rebote REM</strong>, caracterizado por sue&ntilde;os inusualmente v&iacute;vidos, emocionalmente intensos y a veces extra&ntilde;os. Si notas sue&ntilde;os particularmente llamativos o inquietantes en la semana posterior al adelanto, tu cerebro probablemente est&aacute; recuperando el tiempo de sue&ntilde;o perdido.
-                </p>
-
-<h3>Cambios en el contenido de los sue&ntilde;os</h3>
+Los sueños suelen tomar prestado lo que nos ocupa durante el día. Una semana mirando el reloj puede traer un tren perdido, un reloj que marca una hora imposible, un <a class="text-dream-salmon hover:underline" href="../simbolos/sol">sol</a> todavía alto a medianoche, una <a class="text-dream-salmon hover:underline" href="../simbolos/luna">luna</a> fuera de sitio o una <a class="text-dream-salmon hover:underline" href="../simbolos/noche">noche</a> que no termina. Tómalas como ecos de la semana, no como mensajes.
+</p>
+<h3>Un ejemplo de diario para la semana del cambio</h3>
+<p><strong>Ejemplo ficticio</strong>, para mostrar qué merece la pena anotar:</p>
+<ul>
+<li><strong>Noche:</strong> «Cambio de hora el domingo. Me dormí hacia las 0:30, alarma a las 7.»</li>
+<li><strong>Sueño:</strong> «Corría para coger un tren. El reloj de la estación marcaba dos horas distintas.»</li>
+<li><strong>Emoción:</strong> «Prisa, y luego fastidio.»</li>
+<li><strong>Pregunta para guardar:</strong> «¿Esta prisa viene del cambio de hora o de las entregas de esta semana? ¿Vuelve el sueño cuando ya me haya adaptado?»</li>
+</ul>
 <p>
-                    La investigaci&oacute;n sobre el contenido on&iacute;rico tras la alteraci&oacute;n circadiana revela patrones consistentes. Los so&ntilde;adores reportan m&aacute;s temas de <strong>desorientaci&oacute;n, llegar tarde, perder el transporte y perder el control</strong> &mdash; narrativas on&iacute;ricas que reflejan la experiencia despierta de sentirse desfasado con el tiempo. El <a class="text-dream-salmon hover:underline" href="../simbolos/sol">sol</a> aparece con mayor frecuencia en los sue&ntilde;os posteriores al cambio de hora, a menudo en contextos de confusi&oacute;n sobre la hora del d&iacute;a, reflejando el intento del cerebro de procesar el ciclo luz-oscuridad alterado.
-                </p>
+Una sola entrada no prueba nada. Comparar la semana del cambio con las siguientes es lo que hace visible un patrón.
+</p>
+<h2 id="health-risks">¿El cambio de hora es malo para la salud?</h2>
+<h3>Infartos: cambia el momento más que el número</h3>
 <p>
-                    Estos cambios de contenido no son aleatorios. El cerebro so&ntilde;ador utiliza los mismos circuitos neuronales que procesan la percepci&oacute;n temporal durante la vigilia. Cuando tu sentido del tiempo est&aacute; alterado, tus sue&ntilde;os reflejan esa confusi&oacute;n &mdash; se convierten en un espacio de procesamiento del estr&eacute;s circadiano que experimenta tu cuerpo.
-                </p>
-
-<h2 id="health-risks">Riesgos para la salud asociados al cambio de hora</h2>
-<h3>Impacto cardiovascular</h3>
+Sandhu y sus colegas (2014) analizaron los infartos atendidos en hospitales de Michigan en torno a varios cambios de hora. Observaron alrededor de un <strong>24 % más de infartos el lunes posterior al cambio de primavera</strong> y alrededor de un 21 % menos el martes posterior al de otoño. Pero el total de cada semana no variaba. Los autores concluyen que el cambio de hora influye en <em>cuándo</em> se producen los infartos, no en cuántos hay. No es motivo de alarma, pero sí para cuidar esa semana si ya tienes factores de riesgo cardiaco.
+</p>
+<h3>Tráfico, atención y estado de ánimo</h3>
 <p>
-                    Las consecuencias sanitarias del cambio de hora van mucho m&aacute;s all&aacute; de la somnolencia. Un estudio referente de Sandhu et al. (2014) publicado en <em>Open Heart</em> demostr&oacute; que el lunes siguiente al adelanto de primavera registra un <strong>aumento del 24 % en las admisiones por infarto agudo de miocardio</strong> respecto al lunes promedio. La privaci&oacute;n de sue&ntilde;o provoca un pico de cortisol, eleva los marcadores inflamatorios y aumenta la presi&oacute;n arterial &mdash; un c&oacute;ctel peligroso para personas con riesgo cardiovascular preexistente.
-                </p>
+En Estados Unidos, el riesgo de accidente de tráfico mortal aumenta alrededor de un 6 % la semana siguiente al cambio de primavera, según un análisis de los datos nacionales (Fritz et al., 2020). La Academia Americana de Medicina del Sueño (AASM) cita además los eventos cardiovasculares, los trastornos del estado de ánimo y los accidentes de tráfico entre los riesgos agudos de esta transición. En la práctica: conduce con más cuidado los primeros días y, si puedes, no dejes una decisión importante para el lunes por la mañana.
+</p>
+<h3>Cuándo consultar</h3>
 <p>
-                    Por el contrario, el atraso oto&ntilde;al se asocia con una disminuci&oacute;n del 21 % en las admisiones por infarto el martes siguiente, lo que sugiere que incluso una hora extra de sue&ntilde;o proporciona una protecci&oacute;n cardiovascular mensurable. Esta asimetr&iacute;a ilustra con claridad lo sensible que es el cuerpo humano incluso a peque&ntilde;os cambios en los horarios de sue&ntilde;o.
-                </p>
-
-<h3>Salud mental y rendimiento cognitivo</h3>
-<p>
-                    Accidentes laborales, colisiones de tr&aacute;fico y visitas a urgencias tambi&eacute;n aumentan en los d&iacute;as posteriores al adelanto de primavera. Un estudio sueco document&oacute; un <strong>aumento del 6,7 % en accidentes de tr&aacute;fico</strong> el lunes posterior a la transici&oacute;n primaveral. Las pruebas de rendimiento cognitivo revelan una atenci&oacute;n reducida, tiempos de reacci&oacute;n m&aacute;s lentos y una toma de decisiones deteriorada durante hasta cinco d&iacute;as despu&eacute;s del cambio.
-                </p>
-<p>
-                    Para las personas con trastornos del estado de &aacute;nimo, el impacto puede ser m&aacute;s severo. La alteraci&oacute;n circadiana agrava los s&iacute;ntomas de depresi&oacute;n y ansiedad, y los estudios han documentado un aumento medible en las hospitalizaciones por episodios depresivos en la semana posterior al adelanto de primavera. La <a class="text-dream-salmon hover:underline" href="../simbolos/noche">noche</a>, ya un momento vulnerable para quienes padecen problemas de salud mental, se vuelve a&uacute;n m&aacute;s dif&iacute;cil cuando el reloj roba una hora de sue&ntilde;o reparador.
-                </p>
+El cansancio suele pasar en una semana más o menos. Consulta con un médico si sigues durmiendo mal varias semanas después, si tienes mucho sueño durante el día, si alguien nota que roncas con pausas al respirar o si tu ánimo baja claramente. También si las <a class="text-dream-salmon hover:underline" href="guia-pesadillas">pesadillas</a> se vuelven tan frecuentes que estropean tus noches.
+</p>
 </div>
 
 <aside class="glass-panel rounded-2xl p-6 my-8 border border-dream-salmon/20">
@@ -201,70 +194,60 @@
 <i class="w-6 h-6 text-dream-salmon" data-lucide="book-open"></i>
 </div>
 <div>
-<h4 class="font-serif text-lg text-dream-cream mb-2">Observa c&oacute;mo el cambio de hora afecta a tus sue&ntilde;os</h4>
-<p class="text-sm text-gray-400 mb-4">El diario de sue&ntilde;os con IA de Noctalia te permite grabar tus sue&ntilde;os por voz en cuanto despiertas. Compara tus patrones on&iacute;ricos antes y despu&eacute;s del cambio de hora para ver el impacto real en tu sue&ntilde;o.</p>
-<a class="inline-flex items-center gap-2 text-sm text-dream-salmon hover:text-dream-salmonLight transition-colors" href="/es/">
-                                Empieza a registrar con Noctalia <i class="w-4 h-4" data-lucide="arrow-right"></i>
+<h4 class="font-serif text-lg text-dream-cream mb-2">Anota tus sueños durante la semana del cambio</h4>
+<p class="text-sm text-gray-400 mb-4">Cuenta tu sueño en voz alta nada más despertar, o escríbelo. Noctalia lo transcribe y lo guarda en tu diario, para que puedas releer una junto a otra las noches de antes y de después del cambio de hora.</p>
+<a class="inline-flex items-center gap-2 text-sm text-dream-salmon hover:text-dream-salmonLight transition-colors" href="/es/diario-de-suenos-por-voz">
+Probar el diario de sueños por voz <i class="w-4 h-4" data-lucide="arrow-right"></i>
 </a>
 </div>
 </div>
 </aside>
 
 <div class="prose max-w-none text-gray-300">
-<h2 id="tips">Consejos para adaptar tu horario de sue&ntilde;o</h2>
-<h3>Antes del cambio: ajuste gradual</h3>
+<h2 id="tips">Cómo adaptarte antes y después del cambio</h2>
+<h3>Antes del cambio: poco a poco</h3>
 <p>
-                    Empieza a ajustarte antes de que cambien los relojes: es la estrategia m&aacute;s eficaz. Comenzando cuatro d&iacute;as antes de la transici&oacute;n de primavera, adelanta tu hora de acostarte y de despertarte 15 minutos cada d&iacute;a. Para cuando los relojes se adelanten, tu cuerpo ya habr&aacute; completado el ajuste de una hora de forma gradual, evit&aacute;ndote el choque brusco.
-                </p>
+Tres o cuatro días antes del cambio de primavera, acuéstate y levántate entre 15 y 20 minutos antes cada día. Cuando llegue el domingo, la mayor parte de la hora ya estará hecha. También puedes adelantar las comidas: sus horarios son una de las señales que usan los relojes del cuerpo, y eso puede ayudar a que todo el sistema siga el ritmo.
+</p>
 <p>
-                    Aplica el mismo principio a las comidas. Cenar 15 minutos antes cada d&iacute;a ayuda a desplazar los relojes circadianos perif&eacute;ricos &mdash; los del h&iacute;gado, el intestino y el p&aacute;ncreas &mdash;, que responden fuertemente a los horarios de comida. Un sistema circadiano sincronizado se adapta m&aacute;s r&aacute;pido y con mayor suavidad.
-                </p>
-
-<h3>La luz matutina es tu herramienta m&aacute;s poderosa</h3>
+En otoño, haz lo contrario, o simplemente mantén tu hora habitual de levantarte y evita quedarte en la cama hasta tarde.
+</p>
+<h3>Luz por la mañana, penumbra por la noche</h3>
 <p>
-                    La luz es la se&ntilde;al principal que resetea tu n&uacute;cleo supraquiasm&aacute;tico. En los d&iacute;as posteriores al adelanto de primavera, exp&oacute;nte a <strong>luz natural intensa durante los 30 minutos siguientes al despertar</strong>. Un paseo matutino de 20 minutos al aire libre proporciona aproximadamente 10.000 lux &mdash; mucho m&aacute;s que cualquier iluminaci&oacute;n interior. Esta exposici&oacute;n lum&iacute;nica avanza tu fase circadiana, indicando a tu cerebro que la &laquo;ma&ntilde;ana&raquo; ha llegado en el nuevo horario.
-                </p>
-<p>
-                    A la inversa, minimiza la exposici&oacute;n a la luz por la noche. Aten&uacute;a las luces despu&eacute;s del atardecer, usa bombillas de tono c&aacute;lido (2.700K o inferior) y evita las pantallas durante al menos 60 minutos antes de tu nueva hora de acostarte. Esta combinaci&oacute;n de luz matutina y oscuridad vespertina crea la se&ntilde;al m&aacute;s potente posible para un ajuste circadiano r&aacute;pido.
-                </p>
-
-<h3>Fundamentos de la higiene del sue&ntilde;o</h3>
+La luz es la señal más potente para tu reloj interno. En los días posteriores al cambio de primavera, <strong>sal a la calle poco después de despertarte</strong>, aunque esté nublado: la luz del día en el exterior es mucho más intensa que la de interior. Por la noche, al revés: baja las luces y aparta las pantallas un rato antes de tu nueva hora de acostarte.
+</p>
+<h3>Hábitos sencillos para esa semana</h3>
 <ul>
-<li><strong>Sin cafe&iacute;na despu&eacute;s de las 14:00:</strong> la cafe&iacute;na tiene una vida media de 5 a 6 horas. El consumo por la tarde compite directamente con la conciliaci&oacute;n del sue&ntilde;o m&aacute;s temprana que necesitas</li>
-<li><strong>Enfr&iacute;a tu dormitorio:</strong> ajusta el termostato a 18-19 &deg;C. Una habitaci&oacute;n fresca favorece tanto la conciliaci&oacute;n del sue&ntilde;o como la continuidad del REM</li>
-<li><strong>Evita las cenas copiosas:</strong> las comidas abundantes cerca de la hora de acostarse elevan la temperatura corporal central y retrasan la conciliaci&oacute;n del sue&ntilde;o</li>
-<li><strong>Evita la trampa de la siesta:</strong> aunque resulte tentador, las siestas vespertinas de m&aacute;s de 20 minutos reducir&aacute;n tu impulso de sue&ntilde;o y dificultar&aacute;n alcanzar la nueva hora de acostarte</li>
-<li><strong>Lleva un <a class="text-dream-salmon hover:underline" href="guia-diario-suenos">diario de sue&ntilde;os</a>:</strong> registrar tus sue&ntilde;os durante la semana de transici&oacute;n revela c&oacute;mo se est&aacute; recuperando tu arquitectura del sue&ntilde;o &mdash; sue&ntilde;os v&iacute;vidos indican un rebote REM saludable</li>
+<li><strong>Deja la cafeína pronto:</strong> su efecto dura varias horas, así que el café de la tarde juega en contra de acostarte antes</li>
+<li><strong>Mantén el dormitorio fresco, oscuro y silencioso:</strong> facilita dormirte y no despertarte</li>
+<li><strong>Cena ligero y no muy tarde:</strong> una cena copiosa justo antes de dormir retrasa el sueño</li>
+<li><strong>Siesta corta y temprana:</strong> una siesta breve después de comer está bien; una larga y tardía complica la nueva hora de acostarte</li>
+<li><strong>Lleva un <a class="text-dream-salmon hover:underline" href="guia-diario-suenos">diario de sueños</a>:</strong> anota la hora de acostarte, la de levantarte y el sueño, si lo hubo, durante la semana del cambio; verás cómo se recuperan tus noches</li>
 </ul>
-
-<h2 id="abolish-dst">&iquest;Deber&iacute;amos abolir el cambio de hora?</h2>
-<h3>El consenso cient&iacute;fico</h3>
+<h2 id="abolish-dst">¿Deberíamos dejar de cambiar la hora?</h2>
+<h3>Lo que recomiendan los expertos en sueño</h3>
 <p>
-                    Abolir el cambio de hora ha pasado de ser un tema marginal a ocupar la primera plana. En 2019, Roenneberg et al. publicaron un art&iacute;culo de posici&oacute;n exhaustivo en el <em>Journal of Biological Rhythms</em> argumentando que <strong>el horario est&aacute;ndar permanente es la &uacute;nica opci&oacute;n alineada con la cronobiolog&iacute;a humana</strong>. Su razonamiento: el horario est&aacute;ndar mantiene el mediod&iacute;a solar lo m&aacute;s cercano posible al mediod&iacute;a del reloj, asegurando que el ciclo luz-oscuridad se ajuste al m&aacute;ximo a los ritmos biol&oacute;gicos evolucionados durante millones de a&ntilde;os.
-                </p>
+Los investigadores del sueño y de la cronobiología coinciden en gran medida. En un documento de posición publicado en 2019 para la Society for Research on Biological Rhythms, Roenneberg y sus colegas defienden suprimir el horario de verano en favor de un <strong>horario estándar permanente</strong> (el de invierno), más cercano a la hora solar. La AASM adoptó la misma postura en 2020. Un horario de verano permanente, según ellos, dejaría las mañanas a oscuras buena parte del año y haría permanente el desfase entre el reloj biológico y los horarios sociales.
+</p>
+<h3>La situación en 2026</h3>
 <p>
-                    En 2019, el Parlamento Europeo vot&oacute; abolir los cambios estacionales de hora, aunque la implementaci&oacute;n se ha retrasado repetidamente por los desacuerdos entre los estados miembros sobre si adoptar horario de verano permanente u horario est&aacute;ndar permanente. Los investigadores del sue&ntilde;o son enf&aacute;ticos: el horario de verano permanente ser&iacute;a <strong>peor que el sistema actual</strong>, ya que impondr&iacute;a una desalineaci&oacute;n circadiana cr&oacute;nica &mdash; haciendo esencialmente que cada ma&ntilde;ana fuera un mini adelanto de primavera.
-                </p>
-
-<h3>La situaci&oacute;n en 2026</h3>
+En la Unión Europea, el Parlamento votó en marzo de 2019 acabar con los cambios de hora estacionales, pero los Estados miembros no se han puesto de acuerdo. En octubre de 2025, el Gobierno español propuso en el Consejo de la UE retomar esa medida; aun así, en España se sigue cambiando la hora el último domingo de marzo y el último domingo de octubre. En Estados Unidos, la Cámara de Representantes aprobó en julio de 2026 la Sunshine Protection Act, que haría permanente el horario de verano; a principios de octubre de 2026, el Senado no la había votado.
+</p>
 <p>
-                    En Estados Unidos, la Ley de Protecci&oacute;n del Sol (que propone el horario de verano permanente) ha sido reintroducida m&uacute;ltiples veces sin convertirse en ley. Mientras tanto, estados individuales est&aacute;n aprobando legislaci&oacute;n para adoptar el horario de verano permanente si la ley federal lo permite. La comunidad m&eacute;dica y cronobiol&oacute;gica sigue abogando firmemente por el horario est&aacute;ndar permanente, con la Academia Americana de Medicina del Sue&ntilde;o, la Sociedad para la Investigaci&oacute;n de Ritmos Biol&oacute;gicos y la Sociedad Europea de Investigaci&oacute;n del Sue&ntilde;o emitiendo declaraciones de posici&oacute;n formales.
-                </p>
-<p>
-                    Hasta que la legislaci&oacute;n alcance a la ciencia, el cambio bianual de hora sigue siendo una realidad. La buena noticia es que comprender los mecanismos detr&aacute;s del impacto del cambio de hora en tu sue&ntilde;o te da las herramientas para minimizar sus efectos. Tu sistema circadiano es resiliente &mdash; con una preparaci&oacute;n deliberada, puedes atravesar la transici&oacute;n manteniendo tu arquitectura del sue&ntilde;o y tu vida on&iacute;rica pr&aacute;cticamente intactas.
-                </p>
+Mientras tanto, la palanca más útil es personal: prepara el cambio unos días antes y date una semana de margen.
+</p>
 </div>
 <!-- CTA Section -->
 <aside class="glass-panel rounded-3xl p-8 md:p-10 mt-16 text-center border border-dream-salmon/20">
 <div class="w-16 h-16 bg-dream-salmon/10 rounded-full flex items-center justify-center mx-auto mb-6">
 <i class="w-8 h-8 text-dream-salmon" data-lucide="moon"></i>
 </div>
-<h3 class="font-serif text-2xl md:text-3xl mb-4 text-dream-cream">No dejes que el cambio de hora te robe los sue&ntilde;os</h3>
+<h3 class="font-serif text-2xl md:text-3xl mb-4 text-dream-cream">Guarda un registro de la semana del cambio de hora</h3>
 <p class="text-purple-200/70 mb-6 max-w-lg mx-auto">
-                    Noctalia te ayuda a rastrear c&oacute;mo los cambios de hora y los patrones de sue&ntilde;o afectan tu vida on&iacute;rica. Graba sue&ntilde;os por voz, descubre patrones con an&aacute;lisis de IA y protege tu sue&ntilde;o en cada transici&oacute;n estacional.
-                </p>
+Anota tu sueño por voz o por escrito al despertar. Noctalia lo transcribe y lo guarda en tu diario, para comparar las noches de antes y de después del cambio y ver qué se repite.
+</p>
 <a class="inline-flex items-center gap-2 px-8 py-4 bg-dream-salmon text-dream-dark rounded-full font-bold hover:bg-dream-salmon/90 transition-colors" href="/es/">
-                    Comenzar tu diario de sue&ntilde;os <i class="w-5 h-5" data-lucide="arrow-right"></i>
+Empezar mi diario de sueños <i class="w-5 h-5" data-lucide="arrow-right"></i>
 </a>
 </aside>
 <!-- FAQ Section -->
@@ -273,43 +256,57 @@
 <div class="space-y-4">
 <details class="glass-panel rounded-xl p-4 group cursor-pointer">
 <summary class="font-medium flex justify-between items-center text-dream-cream">
-                            &iquest;El cambio de hora realmente afecta al sue&ntilde;o?
-                            <i class="w-5 h-5 transition-transform group-open:rotate-180 text-dream-salmon" data-lucide="chevron-down"></i>
+¿El cambio de hora afecta de verdad al sueño?
+<i class="w-5 h-5 transition-transform group-open:rotate-180 text-dream-salmon" data-lucide="chevron-down"></i>
 </summary>
 <p class="mt-4 text-sm text-gray-400 leading-relaxed">
-                            S&iacute;. El cambio de hora fuerza un desplazamiento abrupto de una hora en tu ritmo circadiano, alterando la producci&oacute;n de melatonina y la organizaci&oacute;n de los ciclos de sue&ntilde;o. El adelanto de primavera es especialmente perjudicial: comprime el <a class="text-dream-salmon hover:underline" href="sueno-rem-suenos">sue&ntilde;o REM</a>, reduce el recuerdo de los sue&ntilde;os y aumenta el riesgo de infarto un 24 % en los d&iacute;as siguientes. Las personas sensibles &mdash; ni&ntilde;os, ancianos y quienes padecen trastornos del sue&ntilde;o &mdash; pueden tardar hasta una semana en adaptarse.
-                        </p>
+Sí, sobre todo en primavera. Las revisiones científicas muestran un sueño más corto y más fragmentado durante varios días, no solo la noche del cambio. La alarma recorta además el final de la noche, cuando los periodos de <a class="text-dream-salmon hover:underline" href="sueno-rem-suenos">sueño REM</a> son más largos.
+</p>
 </details>
 <details class="glass-panel rounded-xl p-4 group cursor-pointer">
 <summary class="font-medium flex justify-between items-center text-dream-cream">
-                            &iquest;Cu&aacute;nto tiempo se tarda en adaptarse al cambio horario?
-                            <i class="w-5 h-5 transition-transform group-open:rotate-180 text-dream-salmon" data-lucide="chevron-down"></i>
+¿Cuánto se tarda en adaptarse al cambio de hora?
+<i class="w-5 h-5 transition-transform group-open:rotate-180 text-dream-salmon" data-lucide="chevron-down"></i>
 </summary>
 <p class="mt-4 text-sm text-gray-400 leading-relaxed">
-                            La mayor&iacute;a de las personas necesitan entre 1 y 3 d&iacute;as para adaptarse al cambio de una hora. Sin embargo, las personas sensibles &mdash; ni&ntilde;os, ancianos y quienes padecen trastornos del sue&ntilde;o &mdash; pueden necesitar hasta una semana. Este desfase se debe a la inercia del ritmo circadiano: tu reloj interno, regido por el n&uacute;cleo supraquiasm&aacute;tico, se resiste a los cambios bruscos y necesita tiempo para resincronizarse con las se&ntilde;ales lum&iacute;nicas externas. Los cronotipos tard&iacute;os (los b&uacute;hos nocturnos) son quienes m&aacute;s dificultades tienen con el adelanto de primavera.
-                        </p>
+La mayoría de la gente se encuentra mejor en unos días o una semana. Los noctámbulos se adaptan peor al cambio de primavera: en un estudio, sus horarios de actividad seguían sin ajustarse semanas después. Si duermes mal durante varias semanas, consulta con un médico.
+</p>
 </details>
 <details class="glass-panel rounded-xl p-4 group cursor-pointer">
 <summary class="font-medium flex justify-between items-center text-dream-cream">
-                            &iquest;El cambio de hora puede afectar a mis sue&ntilde;os?
-                            <i class="w-5 h-5 transition-transform group-open:rotate-180 text-dream-salmon" data-lucide="chevron-down"></i>
+¿El cambio de hora puede afectar a mis sueños?
+<i class="w-5 h-5 transition-transform group-open:rotate-180 text-dream-salmon" data-lucide="chevron-down"></i>
 </summary>
 <p class="mt-4 text-sm text-gray-400 leading-relaxed">
-                            S&iacute;. El adelanto de primavera recorta o elimina el &uacute;ltimo periodo REM de la noche &mdash; el m&aacute;s largo y rico en sue&ntilde;os v&iacute;vidos. Esto reduce el recuerdo on&iacute;rico en los d&iacute;as posteriores. Parad&oacute;jicamente, durante el periodo de adaptaci&oacute;n, algunas personas experimentan sue&ntilde;os inusualmente v&iacute;vidos o extra&ntilde;os, un fen&oacute;meno conocido como rebote REM: el cerebro compensa el sue&ntilde;o REM perdido intensificando las fases on&iacute;ricas.
-                        </p>
+Indirectamente, sí. Un final de noche más corto puede reducir al principio los <a class="text-dream-salmon hover:underline" href="como-recordar-suenos">sueños que recuerdas</a> y, después, dar paso a sueños más intensos cuando el REM rebota. Es plausible, más que demostrado, para el cambio de hora. Los temas de prisa o de relojes también pueden hacer eco de la semana.
+</p>
+</details>
+<details class="glass-panel rounded-xl p-4 group cursor-pointer">
+<summary class="font-medium flex justify-between items-center text-dream-cream">
+¿Cómo prepararse para el cambio al horario de verano?
+<i class="w-5 h-5 transition-transform group-open:rotate-180 text-dream-salmon" data-lucide="chevron-down"></i>
+</summary>
+<p class="mt-4 text-sm text-gray-400 leading-relaxed">
+Acuéstate y levántate entre 15 y 20 minutos antes cada día durante los tres o cuatro días previos. Después del cambio, sal a la luz del día poco después de despertarte, baja la luz por la noche y deja la cafeína a primera hora de la tarde.
+</p>
 </details>
 </div>
 </section>
 <!-- Sources / Trust -->
 <section class="mt-16 glass-panel rounded-2xl p-6" id="sources">
-<h2 class="font-serif text-2xl text-dream-cream mb-4">Fuentes / Lecturas adicionales</h2>
+<h2 class="font-serif text-2xl text-dream-cream mb-4">Fuentes y lecturas adicionales</h2>
 <ul class="mt-6 space-y-2 text-sm text-gray-400">
-<li><a href="https://doi.org/10.1016/j.smrv.2012.10.001" rel="nofollow noopener noreferrer" target="_blank">Harrison (2013): The impact of daylight saving time on sleep and related behaviours &mdash; Sleep Medicine Reviews</a></li>
-<li><a href="https://doi.org/10.1016/j.cub.2007.10.025" rel="nofollow noopener noreferrer" target="_blank">Kantermann et al. (2007): The human circadian clock's seasonal adjustment is disrupted by daylight saving time &mdash; Current Biology</a></li>
-<li><a href="https://doi.org/10.1136/openhrt-2013-000019" rel="nofollow noopener noreferrer" target="_blank">Sandhu et al. (2014): Time change and incidence of acute myocardial infarction &mdash; Open Heart</a></li>
-<li><a href="https://doi.org/10.1177/0748730419854197" rel="nofollow noopener noreferrer" target="_blank">Roenneberg et al. (2019): Why should we abolish daylight saving time? &mdash; Journal of Biological Rhythms</a></li>
+<li><a href="https://doi.org/10.1016/j.smrv.2012.10.001" rel="nofollow noopener noreferrer" target="_blank">Harrison (2013): The impact of daylight saving time on sleep and related behaviours — Sleep Medicine Reviews</a></li>
+<li><a href="https://doi.org/10.1016/j.cub.2007.10.025" rel="nofollow noopener noreferrer" target="_blank">Kantermann et al. (2007): The human circadian clock’s seasonal adjustment is disrupted by daylight saving time — Current Biology</a></li>
+<li><a href="https://doi.org/10.1136/openhrt-2013-000019" rel="nofollow noopener noreferrer" target="_blank">Sandhu et al. (2014): Daylight savings time and myocardial infarction — Open Heart</a></li>
+<li><a href="https://doi.org/10.1016/j.cub.2019.12.045" rel="nofollow noopener noreferrer" target="_blank">Fritz et al. (2020): A chronobiological evaluation of the acute effects of daylight saving time on traffic accident risk — Current Biology</a></li>
+<li><a href="https://doi.org/10.5664/jcsm.8780" rel="nofollow noopener noreferrer" target="_blank">Rishi et al. (2020): Daylight saving time, an American Academy of Sleep Medicine position statement — Journal of Clinical Sleep Medicine</a></li>
+<li><a href="https://doi.org/10.1177/0748730419854197" rel="nofollow noopener noreferrer" target="_blank">Roenneberg et al. (2019): Why should we abolish daylight saving time? — Journal of Biological Rhythms</a></li>
+<li><a href="https://www.europarl.europa.eu/news/en/press-room/20190321IPR32107/parliament-backs-proposal-to-end-switch-between-summer-and-winter-time-in-2021" rel="nofollow noopener noreferrer" target="_blank">Parlamento Europeo (2019): voto a favor de acabar con el cambio de hora estacional (en inglés)</a></li>
+<li><a href="https://www.majorcadailybulletin.com/news/local/2025/10/20/137415/spain-wants-end-putting-clocks-back-and-forward-the-european-union.html" rel="nofollow noopener noreferrer" target="_blank">Majorca Daily Bulletin (octubre de 2025): la propuesta del Gobierno español en la UE (en inglés)</a></li>
+<li><a href="https://time.com/article/2026/10/07/senate-permanent-daylight-saving-time-sunshine-protection-act/" rel="nofollow noopener noreferrer" target="_blank">Time (octubre de 2026): la Sunshine Protection Act y el Senado de EE. UU. (en inglés)</a></li>
 </ul>
-<p class="mt-6 text-xs text-purple-200/60">&Uacute;ltima actualizaci&oacute;n: 17 de marzo de 2026</p>
+<p class="mt-6 text-xs text-purple-200/60">Última actualización: 9 de octubre de 2026</p>
 </section>
 <!-- Related Symbols Start -->
 <section aria-label="S&iacute;mbolos de sue&ntilde;os relacionados" class="mt-12 mb-8">

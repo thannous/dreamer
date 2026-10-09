@@ -5,7 +5,7 @@
   "lang": "fr",
   "slug": "reves-dents-qui-tombent",
   "title": "Dents qui tombent en rêve : 7 significations cachées | Noctalia",
-  "description": "Pourquoi rêvez-vous de perdre vos dents ? Découvrez les 7 interprétations les plus courantes et les messages de votre subconscient.",
+  "description": "Rêver que ses dents tombent : tension de la mâchoire, peur du regard des autres ou changement ? 7 pistes, les variantes et ce que dit la recherche.",
   "robots": "max-image-preview:large",
   "themeColor": "#0a0514",
   "htmlClass": "scroll-smooth blog-article",
@@ -14,24 +14,24 @@
   "mainClass": "pt-32 pb-20 px-4",
   "ogType": "article",
   "ogTitle": "Dents qui tombent en rêve : 7 significations cachées | Noctalia",
-  "ogDescription": "Les 7 interprétations les plus courantes et leurs messages.",
+  "ogDescription": "Dents qui tombent en rêve : 7 pistes d'interprétation, ce que dit la recherche et quoi noter au réveil.",
   "ogImage": "https://noctalia.app/img/blog/teeth-falling-out-dreams.webp",
   "ogImageAlt": "Illustration métaphorique du stress et de la perte de contrôle",
   "twitterCard": "summary_large_image",
   "twitterTitle": "Dents qui tombent en rêve : 7 significations cachées | Noctalia",
-  "twitterDescription": "Les 7 significations des rêves de dents qui tombent.",
+  "twitterDescription": "Rêver de perdre ses dents : ni présage ni diagnostic, mais des détails à regarder de près.",
   "twitterImage": "https://noctalia.app/img/blog/teeth-falling-out-dreams.webp",
   "twitterImageAlt": "Illustration métaphorique du stress et de la perte de contrôle",
   "publishedTime": "2025-01-10",
-  "modifiedTime": "2026-01-06",
+  "modifiedTime": "2026-10-09",
   "author": "Thanh Chau",
   "prevPath": "/fr/blog/guide-reve-lucide-debutant",
   "nextPath": "/fr/blog/reves-de-chute",
   "preloadImage": "/img/blog/teeth-falling-out-dreams.webp",
   "jsonLd": [
-    "{\n            \"@context\": \"https://schema.org\",\n            \"@type\": \"BlogPosting\",\n            \"headline\": \"Rêves de Dents Qui Tombent : Signification et Interprétation\",\n            \"description\": \"Pourquoi rêvez-vous de perdre vos dents ? Découvrez les interprétations les plus courantes de ce rêve universel.\",\n            \"image\": {\n                \"@type\": \"ImageObject\",\n                \"url\": \"https://noctalia.app/img/blog/teeth-falling-out-dreams.webp\",\n                \"width\": 1200,\n                \"height\": 630\n            },\n            \"author\": [\n                {\n                    \"@type\": \"Person\",\n                    \"@id\": \"https://noctalia.app/fr/a-propos#person\",\n                    \"name\": \"Thanh Chau\",\n                    \"jobTitle\": \"Founder & Publication Director\",\n                    \"url\": \"https://noctalia.app/fr/a-propos\",\n                    \"worksFor\": {\n                        \"@type\": \"Organization\",\n                        \"@id\": \"https://noctalia.app/#organization\",\n                        \"name\": \"Noctalia\",\n                        \"url\": \"https://noctalia.app\"\n                    }\n                },\n                {\n                    \"@type\": \"Organization\",\n                    \"@id\": \"https://noctalia.app/#organization\",\n                    \"name\": \"Noctalia\",\n                    \"url\": \"https://noctalia.app\",\n                    \"logo\": {\n                        \"@type\": \"ImageObject\",\n                        \"url\": \"https://noctalia.app/logo/logo_noctalia.png\"\n                    }\n                }\n            ],\n            \"publisher\": {\n                \"@type\": \"Organization\",\n                \"name\": \"Noctalia\",\n                \"url\": \"https://noctalia.app\",\n                \"logo\": {\n                    \"@type\": \"ImageObject\",\n                    \"url\": \"https://noctalia.app/logo/logo_noctalia.png\"\n                }\n            },\n            \"datePublished\": \"2025-01-10\",\n            \"dateModified\": \"2026-01-06\",\n            \"mainEntityOfPage\": {\n                \"@type\": \"WebPage\",\n                \"@id\": \"https://noctalia.app/fr/blog/reves-dents-qui-tombent\"\n            },\n            \"inLanguage\": \"fr\",\n            \"isAccessibleForFree\": true,\n            \"wordCount\": 1138,\n            \"timeRequired\": \"PT4M\",\n            \"url\": \"https://noctalia.app/fr/blog/reves-dents-qui-tombent\"\n        }",
-    "{\n            \"@context\": \"https://schema.org\",\n            \"@type\": \"FAQPage\",\n            \"mainEntity\": [\n                {\n                    \"@type\": \"Question\",\n                    \"name\": \"Que signifie rêver que ses dents tombent ?\",\n                    \"acceptedAnswer\": {\n                        \"@type\": \"Answer\",\n                        \"text\": \"Les rêves de dents qui tombent symbolisent généralement l'anxiété liée à l'apparence, la peur du vieillissement, la perte de contrôle, des problèmes de communication ou des transitions de vie importantes. La signification spécifique dépend de votre contexte personnel et des émotions ressenties pendant le rêve.\"\n                    }\n                },\n                {\n                    \"@type\": \"Question\",\n                    \"name\": \"Les rêves de dents qui tombent sont-ils courants ?\",\n                    \"acceptedAnswer\": {\n                        \"@type\": \"Answer\",\n                        \"text\": \"Oui, les rêves de dents qui tombent font partie des thèmes oniriques les plus courants dans le monde. Des études montrent qu'environ 39% des adultes ont vécu ce rêve au moins une fois. Il apparaît dans toutes les cultures et tous les groupes d'âge.\"\n                    }\n                },\n                {\n                    \"@type\": \"Question\",\n                    \"name\": \"Les rêves de dents prédisent-ils des problèmes de santé ?\",\n                    \"acceptedAnswer\": {\n                        \"@type\": \"Answer\",\n                        \"text\": \"Aucune preuve scientifique ne soutient l'idée que les rêves de dents prédisent des problèmes de santé. Cependant, ces rêves peuvent refléter un stress sous-jacent, de l'anxiété ou des préoccupations concernant votre bien-être qui méritent d'être abordées dans la vie éveillée.\"\n                    }\n                }\n            ]\n        }",
-    "{\n    \"@context\": \"https://schema.org\",\n    \"@type\": \"BreadcrumbList\",\n    \"itemListElement\": [\n        {\n            \"@type\": \"ListItem\",\n            \"position\": 1,\n            \"name\": \"Accueil\",\n            \"item\": \"https://noctalia.app/fr/\"\n        },\n        {\n            \"@type\": \"ListItem\",\n            \"position\": 2,\n            \"name\": \"Ressources\",\n            \"item\": \"https://noctalia.app/fr/blog/\"\n        },\n        {\n            \"@type\": \"ListItem\",\n            \"position\": 3,\n            \"name\": \"Rêves de Dents Qui Tombent\",\n            \"item\": \"https://noctalia.app/fr/blog/reves-dents-qui-tombent\"\n        }\n    ]\n}"
+    "{\n    \"@context\": \"https://schema.org\",\n    \"@type\": \"BlogPosting\",\n    \"headline\": \"Rêves de dents qui tombent : 7 pistes pour comprendre ce rêve\",\n    \"description\": \"Rêver que ses dents tombent : tension de la mâchoire, peur du regard des autres ou changement ? 7 pistes, les variantes et ce que dit la recherche.\",\n    \"image\": {\n        \"@type\": \"ImageObject\",\n        \"url\": \"https://noctalia.app/img/blog/teeth-falling-out-dreams.webp\",\n        \"width\": 1200,\n        \"height\": 630\n    },\n    \"author\": [\n        {\n            \"@type\": \"Person\",\n            \"@id\": \"https://noctalia.app/fr/a-propos#person\",\n            \"name\": \"Thanh Chau\",\n            \"jobTitle\": \"Founder & Publication Director\",\n            \"url\": \"https://noctalia.app/fr/a-propos\",\n            \"worksFor\": {\n                \"@type\": \"Organization\",\n                \"@id\": \"https://noctalia.app/#organization\",\n                \"name\": \"Noctalia\",\n                \"url\": \"https://noctalia.app\"\n            }\n        },\n        {\n            \"@type\": \"Organization\",\n            \"@id\": \"https://noctalia.app/#organization\",\n            \"name\": \"Noctalia\",\n            \"url\": \"https://noctalia.app\",\n            \"logo\": {\n                \"@type\": \"ImageObject\",\n                \"url\": \"https://noctalia.app/logo/logo_noctalia.png\"\n            }\n        }\n    ],\n    \"publisher\": {\n        \"@type\": \"Organization\",\n        \"name\": \"Noctalia\",\n        \"url\": \"https://noctalia.app\",\n        \"logo\": {\n            \"@type\": \"ImageObject\",\n            \"url\": \"https://noctalia.app/logo/logo_noctalia.png\"\n        }\n    },\n    \"datePublished\": \"2025-01-10\",\n    \"dateModified\": \"2026-10-09\",\n    \"mainEntityOfPage\": {\n        \"@type\": \"WebPage\",\n        \"@id\": \"https://noctalia.app/fr/blog/reves-dents-qui-tombent\"\n    },\n    \"inLanguage\": \"fr\",\n    \"isAccessibleForFree\": true,\n    \"wordCount\": 2229,\n    \"timeRequired\": \"PT11M\",\n    \"url\": \"https://noctalia.app/fr/blog/reves-dents-qui-tombent\"\n}",
+    "{\n    \"@context\": \"https://schema.org\",\n    \"@type\": \"FAQPage\",\n    \"mainEntity\": [\n        {\n            \"@type\": \"Question\",\n            \"name\": \"Que signifie rêver que ses dents tombent ?\",\n            \"acceptedAnswer\": {\n                \"@type\": \"Answer\",\n                \"text\": \"Il n'y a pas de sens unique. Ce rêve accompagne souvent une inquiétude sur l'image que l'on donne, un sentiment de perte de contrôle, une difficulté à dire quelque chose ou une période de changement. Il peut aussi reprendre une sensation dentaire réelle. Votre émotion et votre contexte aident à faire le tri.\"\n            }\n        },\n        {\n            \"@type\": \"Question\",\n            \"name\": \"Ce rêve est-il fréquent ?\",\n            \"acceptedAnswer\": {\n                \"@type\": \"Answer\",\n                \"text\": \"Oui. Dans une enquête de Calvin Yu (2012), 39 % des répondants disaient l'avoir déjà fait au moins une fois, et environ 16 % le décrivaient comme récurrent.\"\n            }\n        },\n        {\n            \"@type\": \"Question\",\n            \"name\": \"Rêver de perdre ses dents annonce-t-il un décès ou une maladie ?\",\n            \"acceptedAnswer\": {\n                \"@type\": \"Answer\",\n                \"text\": \"Non. Cette croyance est ancienne et répandue, mais un rêve ne prédit ni un deuil ni une maladie. Il met en scène une préoccupation présente ou une sensation du corps endormi.\"\n            }\n        },\n        {\n            \"@type\": \"Question\",\n            \"name\": \"Ce rêve veut-il dire que je grince des dents ?\",\n            \"acceptedAnswer\": {\n                \"@type\": \"Answer\",\n                \"text\": \"Pas forcément. Une étude de 2018 a relevé un lien avec des tensions dentaires ressenties au réveil, mais pas avec le grincement déclaré. Si vous avez mal aux dents ou à la mâchoire le matin, parlez-en à un dentiste.\"\n            }\n        },\n        {\n            \"@type\": \"Question\",\n            \"name\": \"Faut-il s'inquiéter si ce rêve revient souvent ?\",\n            \"acceptedAnswer\": {\n                \"@type\": \"Answer\",\n                \"text\": \"Le plus souvent, non. S'il revient plusieurs fois par semaine, abîme votre sommeil ou vous laisse anxieux la journée, parlez-en à un médecin, comme pour des cauchemars fréquents.\"\n            }\n        }\n    ]\n}",
+    "{\n    \"@context\": \"https://schema.org\",\n    \"@type\": \"BreadcrumbList\",\n    \"itemListElement\": [\n        {\n            \"@type\": \"ListItem\",\n            \"position\": 1,\n            \"name\": \"Accueil\",\n            \"item\": \"https://noctalia.app/fr/\"\n        },\n        {\n            \"@type\": \"ListItem\",\n            \"position\": 2,\n            \"name\": \"Ressources\",\n            \"item\": \"https://noctalia.app/fr/blog/\"\n        },\n        {\n            \"@type\": \"ListItem\",\n            \"position\": 3,\n            \"name\": \"Rêves de dents qui tombent\",\n            \"item\": \"https://noctalia.app/fr/blog/reves-dents-qui-tombent\"\n        }\n    ]\n}"
   ],
   "activeNav": "resources"
 }
@@ -51,7 +51,7 @@
 </li>
 <li class="text-purple-400">/</li>
 <li itemprop="itemListElement" itemscope="" itemtype="https://schema.org/ListItem">
-<span class="text-dream-cream" itemprop="name">Rêves de Dents Qui Tombent</span>
+<span class="text-dream-cream" itemprop="name">Rêves de dents qui tombent</span>
 <meta content="3" itemprop="position">
 </li>
 </ol>
@@ -63,13 +63,13 @@
 <a class="text-xs font-mono text-purple-200/70 border border-white/10 rounded-full px-3 py-1 hover:text-white hover:border-dream-salmon/30 transition-colors" href="signification-des-reves">Thématique : Signification des rêves</a>
 <span aria-hidden="true" class="w-full sm:hidden"></span>
 <span class="text-sm text-purple-300/60">Publié le 10 janvier 2025</span>
-<span class="text-sm text-purple-300/60">4 min de lecture</span>
+<span class="text-sm text-purple-300/60">11 min de lecture</span>
 </div>
 <h1 class="font-serif text-3xl md:text-5xl mb-6 text-transparent bg-clip-text bg-gradient-to-b from-white via-dream-lavender to-purple-400/50 leading-tight">
-                    Rêves de Dents Qui Tombent : Signification et Interprétation
+                    Rêves de dents qui tombent : 7 pistes pour comprendre ce rêve
                 </h1>
 <p class="text-lg text-purple-200/80 leading-relaxed">
-                    Vous vous réveillez, paniqué, votre main se portant instinctivement à votre <a class="text-dream-salmon hover:underline" href="../symboles/bouche">bouche</a>. Vos dents sont toujours là. Pourtant, quelques instants auparavant, elles s'effritaient, tombant une à une dans vos mains. Ce rêve troublant est l'une des expériences humaines les plus universelles. Explorons ce que votre subconscient essaie de vous dire.
+                    Une dent bouge sous la langue, puis une autre, et vous finissez par les recracher dans votre main. Vous vous réveillez la main sur la <a class="text-dream-salmon hover:underline" href="../symboles/bouche">bouche</a> : tout est en place. Le rêve de dents qui tombent est l'un des plus marquants, et l'un des plus partagés. Il n'a pas de sens caché unique, mais ses détails méritent qu'on s'y arrête.
                 </p>
 </header>
 <!-- Author Byline (E-E-A-T) -->
@@ -86,7 +86,7 @@
 <!-- Quick Answer (AI SEO) -->
 <section class="glass-panel rounded-2xl p-6 mb-8 border border-dream-salmon/20 bg-white/5" aria-labelledby="quick-answer-title">
     <h2 id="quick-answer-title" class="font-serif text-xl text-dream-cream mb-3">Réponse rapide</h2>
-    <p class="text-purple-100/80 leading-relaxed">Pourquoi rêvez-vous de perdre vos dents ? Découvrez les 7 interprétations les plus courantes et les messages de votre subconscient.</p>
+    <p class="text-purple-100/80 leading-relaxed">Rêver que ses dents tombent est fréquent et n'annonce rien, ni maladie ni deuil. Une étude de 2018 l'associe surtout à des tensions dentaires ressenties au réveil, pas à un niveau de stress plus élevé. Dans la vie éveillée, ce rêve accompagne souvent une inquiétude sur l'image que l'on donne, une perte de contrôle ou un changement. Vos détails et votre émotion aident à choisir la bonne piste.</p>
 </section>
 <!-- Featured Image -->
 <figure class="mb-12 rounded-2xl overflow-hidden">
@@ -95,33 +95,30 @@
 <!-- Table of Contents -->
 <nav class="glass-panel rounded-2xl p-6 mb-12">
 <h2 class="font-serif text-lg text-dream-cream mb-4 flex items-center gap-2">
-<i class="w-5 h-5 text-dream-salmon" data-lucide="list"></i> Table des matières
-                </h2>
+<i class="w-5 h-5 text-dream-salmon" data-lucide="list"></i> Sommaire
+</h2>
 <ol class="space-y-2 text-sm text-purple-200/70">
-<li><a class="toc-link block" href="#prevalence">1. Rêve de dents qui tombent : fréquence et statistiques</a></li>
-<li><a class="toc-link block" href="#variations">2. Types de rêves de dents qui tombent et leurs variations</a></li>
-<li><a class="toc-link block" href="#interpretations">3. Les 7 significations du rêve de dents qui tombent</a></li>
-<li><a class="toc-link block" href="#psychologie">4. Psychologie du rêve de dents qui tombent</a></li>
-<li><a class="toc-link block" href="#culturel">5. Interprétation culturelle des rêves de dents qui tombent</a></li>
-<li><a class="toc-link block" href="#action">6. Que faire après un rêve de dents qui tombent</a></li>
+<li><a class="toc-link block" href="#prevalence">1. Rêver que ses dents tombent, est-ce courant ?</a></li>
+<li><a class="toc-link block" href="#variations">2. Comment vos dents tombaient-elles ?</a></li>
+<li><a class="toc-link block" href="#interpretations">3. Sept pistes pour lire ce rêve</a></li>
+<li><a class="toc-link block" href="#psychologie">4. Ce que dit la recherche, et ce qu'en disaient Freud et Jung</a></li>
+<li><a class="toc-link block" href="#culturel">5. Un présage de deuil ? Ce que racontent les traditions</a></li>
+<li><a class="toc-link block" href="#action">6. Que faire après un rêve de dents qui tombent ?</a></li>
 </ol>
 </nav>
 <!-- Article Content -->
 <div class="prose max-w-none text-gray-300">
-<h2 id="prevalence">Rêve de dents qui tombent : fréquence et statistiques</h2>
+<h2 id="prevalence">Rêver que ses dents tombent, est-ce courant ?</h2>
 <p>
-                    Les rêves de <a class="text-dream-salmon hover:underline" href="../symboles/dents">dents qui tombent</a> figurent parmi les <strong>5 rêves les plus signalés dans le monde</strong>. Une étude publiée dans <a href="https://www.frontiersin.org/journals/psychology" rel="nofollow noopener noreferrer" target="_blank">Frontiers in Psychology</a> a révélé qu'environ 39% des adultes ont vécu ce rêve au moins une fois dans leur vie.
-                </p>
+Oui. Dans une enquête du chercheur Calvin Yu (2012), citée par <a class="text-dream-salmon hover:underline" href="https://www.frontiersin.org/journals/psychology/articles/10.3389/fpsyg.2018.01812/full" rel="nofollow noopener noreferrer" target="_blank">Rozen et Soffer-Dudek</a>, 39 % des répondants disaient avoir déjà rêvé que leurs <a class="text-dream-salmon hover:underline" href="../symboles/dents">dents tombaient</a>, et environ 16 % décrivaient ce rêve comme récurrent. Ces chiffres viennent d'un échantillon précis : ils montrent que le thème est courant, pas qu'il touche une part fixe de la population mondiale.
+</p>
 <p>
-                    Ce qui rend ce rêve particulièrement fascinant, c'est son <strong>universalité à travers les cultures</strong>. Que vous soyez à Tokyo, Paris ou New York, les humains partagent cette étrange expérience nocturne. Les textes anciens d'Égypte, de Grèce et de Chine documentent tous des interprétations des rêves de dents, suggérant qu'ils intriguent l'humanité depuis des millénaires.
-                </p>
-<blockquote>
-                    « L'universalité des rêves de dents suggère qu'ils puisent dans quelque chose de fondamental dans l'expérience humaine - nos peurs, nos vulnérabilités, notre sens de soi. » - Dr Antonio Zadra, Chercheur en Rêves
-                </blockquote>
-<h2 id="variations">Types de rêves de dents qui tombent et leurs variations</h2>
+Ce rêve traverse aussi les siècles : on le trouve déjà dans les manuels antiques d'interprétation des songes. Mais sa fréquence ne dit pas ce qu'il signifie pour <em>vous</em>. Pour cela, il faut revenir à la scène.
+</p>
+<h2 id="variations">Comment vos dents tombaient-elles ?</h2>
 <p>
-                    Tous les rêves de dents ne sont pas identiques. Le scénario spécifique fournit souvent des indices sur sa signification :
-                </p>
+Avant de chercher un sens, décrivez ce qui s'est passé. Ces variantes ne sont pas des définitions : ce sont des pistes à confronter à ce que vous avez ressenti.
+</p>
 </div>
 <!-- Dream Variations Cards -->
 <div class="grid md:grid-cols-2 gap-6 my-12">
@@ -130,101 +127,115 @@
 <div class="p-2 bg-dream-salmon/10 rounded-lg">
 <i class="w-5 h-5 text-dream-salmon" data-lucide="hand"></i>
 </div>
-<h3 class="font-serif text-lg text-dream-cream">Dents qui s'Effritent</h3>
+<h3 class="font-serif text-lg text-dream-cream">Des dents qui s'effritent</h3>
 </div>
 <p class="text-sm text-gray-300">
-                        Les dents qui s'effritent ou se brisent en morceaux sont souvent liées à une <strong>perte progressive de contrôle</strong> ou à une situation qui se détériore lentement dans votre vie éveillée.
-                    </p>
+Des morceaux dans la bouche, une dent qui se brise sous la pression ? L'image d'une usure lente peut faire écho à une situation qui <strong>se dégrade peu à peu</strong>. Notez aussi ce que vous mâchiez : un détail concret aide souvent plus qu'un symbole.
+</p>
 </div>
 <div class="dream-card glass-panel rounded-xl p-6 border border-transparent">
 <div class="flex items-center gap-3 mb-4">
 <div class="p-2 bg-dream-salmon/10 rounded-lg">
 <i class="w-5 h-5 text-dream-salmon" data-lucide="droplets"></i>
 </div>
-<h3 class="font-serif text-lg text-dream-cream">Dents qui Tombent avec du Sang</h3>
+<h3 class="font-serif text-lg text-dream-cream">Des dents qui tombent avec du sang</h3>
 </div>
 <p class="text-sm text-gray-300">
-                        Le <a class="text-dream-salmon hover:underline" href="../symboles/sang">sang</a> ajoute de l'intensité au rêve. Cette variation pointe souvent vers une <strong>douleur émotionnelle</strong> ou une situation qui semble profondément personnelle et blessante.
-                    </p>
+Le <a class="text-dream-salmon hover:underline" href="../symboles/sang">sang</a> rend la scène plus crue. Il accompagne souvent une <strong>émotion vive</strong> : une blessure, une colère, une honte. Il n'annonce ni maladie ni deuil. Si vos gencives saignent vraiment au réveil, la question est pour le dentiste, pas pour le rêve.
+</p>
 </div>
 <div class="dream-card glass-panel rounded-xl p-6 border border-transparent">
 <div class="flex items-center gap-3 mb-4">
 <div class="p-2 bg-dream-salmon/10 rounded-lg">
 <i class="w-5 h-5 text-dream-salmon" data-lucide="rotate-ccw"></i>
 </div>
-<h3 class="font-serif text-lg text-dream-cream">Dents qui Bougent</h3>
+<h3 class="font-serif text-lg text-dream-cream">Des dents qui bougent</h3>
 </div>
 <p class="text-sm text-gray-300">
-                        Des dents qui bougent mais ne sont pas encore tombées suggèrent une <strong>anxiété anticipatoire</strong> - vous sentez que quelque chose est sur le point de changer ou de mal tourner.
-                    </p>
+Elles tiennent encore, mais à peine, et vous les testiez du bout de la langue ? Cette attente peut rejoindre une <strong>inquiétude en suspens</strong> : un résultat, une décision, une réponse qui tarde.
+</p>
 </div>
 <div class="dream-card glass-panel rounded-xl p-6 border border-transparent">
 <div class="flex items-center gap-3 mb-4">
 <div class="p-2 bg-dream-salmon/10 rounded-lg">
 <i class="w-5 h-5 text-dream-salmon" data-lucide="users"></i>
 </div>
-<h3 class="font-serif text-lg text-dream-cream">Dents qui Tombent en Public</h3>
+<h3 class="font-serif text-lg text-dream-cream">Perdre ses dents en public</h3>
 </div>
 <p class="text-sm text-gray-300">
-                        Quand d'autres sont témoins de la <a class="text-dream-salmon hover:underline" href="../symboles/chute">chute</a> de vos dents, cela reflète généralement une <strong>peur de l'embarras</strong> ou une préoccupation concernant la façon dont les autres vous perçoivent.
-                    </p>
+Quelqu'un assistait à la <a class="text-dream-salmon hover:underline" href="../symboles/chute">chute</a> de vos dents ? La scène parle souvent de <strong>gêne ou de peur du jugement</strong>. Qui était là, et cherchiez-vous à cacher votre bouche ?
+</p>
 </div>
 <div class="dream-card glass-panel rounded-xl p-6 border border-transparent">
 <div class="flex items-center gap-3 mb-4">
 <div class="p-2 bg-dream-salmon/10 rounded-lg">
 <i class="w-5 h-5 text-dream-salmon" data-lucide="sparkles"></i>
 </div>
-<h3 class="font-serif text-lg text-dream-cream">Cracher des Dents</h3>
+<h3 class="font-serif text-lg text-dream-cream">Cracher ses dents</h3>
 </div>
 <p class="text-sm text-gray-300">
-                        Cracher activement des dents peut indiquer que vous <strong>libérez quelque chose</strong> - lâcher prise sur des mots non dits ou des émotions retenues.
-                    </p>
+Vous les recrachiez par poignées, presque soulagé ? Certaines personnes y associent des <strong>mots retenus</strong> qui finissent par sortir. D'autres n'y voient que du dégoût. Votre réaction compte plus que l'image.
+</p>
 </div>
 <div class="dream-card glass-panel rounded-xl p-6 border border-transparent">
 <div class="flex items-center gap-3 mb-4">
 <div class="p-2 bg-dream-salmon/10 rounded-lg">
 <i class="w-5 h-5 text-dream-salmon" data-lucide="plus"></i>
 </div>
-<h3 class="font-serif text-lg text-dream-cream">Nouvelles Dents qui Poussent</h3>
+<h3 class="font-serif text-lg text-dream-cream">De nouvelles dents qui poussent</h3>
 </div>
 <p class="text-sm text-gray-300">
-                        Une variation positive ! De nouvelles dents qui poussent symbolisent souvent le <strong>renouveau, la croissance</strong> ou l'entrée dans une nouvelle phase de vie avec une confiance renouvelée.
-                    </p>
+Une dent tombe, une autre la remplace. Cette version est souvent vécue comme <strong>rassurante</strong> et peut se rapprocher d'un nouveau départ. Notez si la repousse vous semblait naturelle ou étrange.
+</p>
 </div>
 </div>
 <div class="prose max-w-none text-gray-300">
-<h2 id="interpretations">Les 7 significations du rêve de dents qui tombent</h2>
+<h2 id="interpretations">Sept pistes pour lire ce rêve</h2>
 <p>
-                    L'interprétation des rêves est profondément personnelle, mais voici les significations les plus communément acceptées pour les rêves de dents qui tombent :
-                </p>
-<h3>1. Dents qui tombent et anxiété liée à l'apparence</h3>
+Aucune liste ne peut dire pourquoi <em>vous</em> avez fait ce rêve. Voici les liens qui reviennent le plus souvent quand on compare la scène à la vie éveillée. Gardez ceux qui vous parlent, laissez les autres.
+</p>
+<h3>1. L'image que vous donnez</h3>
 <p>
-                    Nos dents sont au cœur de notre sourire et de la façon dont nous nous présentons. Perdre ses dents en rêve reflète souvent des <strong>préoccupations concernant l'attractivité</strong> ou la façon dont les autres nous voient. Cette interprétation est particulièrement pertinente si vous traversez des changements qui affectent votre apparence ou votre image de soi.
-                </p>
-<h3>2. Perdre ses dents en rêve et peur du vieillissement</h3>
+Les dents sont au premier plan du sourire. Les perdre en rêve peut rejoindre une <strong>inquiétude sur votre apparence</strong> ou sur le regard des autres, par exemple avant un rendez-vous, une photo ou une prise de parole. À qui vouliez-vous faire bonne impression ces jours-ci ?
+</p>
+<h3>2. Le temps qui passe</h3>
 <p>
-                    Perdre ses dents est une partie naturelle du vieillissement, rendant ce rêve courant chez ceux qui sont <strong>anxieux face au fait de vieillir</strong>. Les anniversaires marquants, les changements physiques ou le fait de voir ses parents vieillir peuvent déclencher ces rêves.
-                </p>
-<h3>3. Rêve de dents et perte de pouvoir ou de contrôle</h3>
+Perdre ses dents évoque l'âge. Un anniversaire rond, un parent qui vieillit, un corps qui change peuvent remettre cette image en scène et réveiller une <strong>peur de vieillir</strong>. Le vieillissement vous occupe-t-il en ce moment, pour vous ou pour un proche ?
+</p>
+<h3>3. Une perte de prise</h3>
 <p>
-                    Nos dents représentent la force - nous les utilisons pour mordre, déchirer et nous affirmer. Quand elles tombent dans les rêves, cela symbolise souvent le <strong>sentiment d'impuissance</strong> dans une situation. Faites-vous face à quelque chose où vous sentez que vous n'avez aucun contrôle ?
-                </p>
-<h3>4. Dents qui tombent et problèmes de communication</h3>
+On mord, on mâche, on serre les dents pour tenir bon. Quand elles lâchent, le rêve peut faire écho à un <strong>sentiment d'impuissance</strong>. Sur quelle situation avez-vous l'impression de ne plus avoir prise ?
+</p>
+<h3>4. Des mots qui ne sortent pas</h3>
 <p>
-                    Nous avons besoin de nos dents pour parler clairement. Ce rêve peut indiquer une <strong>difficulté à vous exprimer</strong> - peut-être que vous retenez des mots, que vous avez du mal à communiquer ou que vous craignez de dire la mauvaise chose.
-                </p>
-<h3>5. Perdre ses dents en rêve lors de transitions de vie</h3>
+Sans dents, on parle mal. Le rêve peut rejoindre une <strong>difficulté à dire quelque chose</strong> : une conversation repoussée, une phrase regrettée, une opinion gardée pour soi. Qu'est-ce que vous n'arrivez pas à dire, ou avez-vous dit de travers ?
+</p>
+<h3>5. Un passage d'une étape à une autre</h3>
 <p>
-                    Comme un <a class="text-dream-salmon hover:underline" href="../symboles/enfant">enfant</a> qui perd ses dents de lait avant que les dents définitives ne poussent, ce rêve peut signaler une <strong>transformation</strong>. Nouveau travail, changements relationnels, déménagement - toute transition majeure peut déclencher des rêves de dents alors que vous vous débarrassez de votre ancien moi.
-                </p>
-<h3>6. Rêve de dents qui tombent et préoccupations financières</h3>
+Pour un <a class="text-dream-salmon hover:underline" href="../symboles/enfant">enfant</a>, perdre ses dents de lait marque une étape. Adulte, un nouveau travail, une séparation ou un déménagement peuvent réveiller cette image de <strong>transition</strong>. Le rêve accompagne le changement ; il ne dit pas comment il se terminera.
+</p>
+<h3>6. Une inquiétude matérielle</h3>
 <p>
-                    Dans certaines interprétations, les dents représentent la richesse (pensez à « mettre son <a class="text-dream-salmon hover:underline" href="../symboles/argent">argent</a> là où est sa bouche »). Les rêves de perte de dents peuvent refléter une <strong>anxiété financière</strong> ou la peur de perdre la sécurité matérielle.
-                </p>
-<h3>7. Signification des dents qui tombent et anxiété santé</h3>
+Plusieurs traditions populaires associent les dents à ce que l'on possède. Si ce rêve survient pendant une période de <strong>soucis d'<a class="text-dream-salmon hover:underline" href="../symboles/argent">argent</a></strong>, le lien mérite d'être noté, sans en faire une règle.
+</p>
+<h3>7. Votre bouche, tout simplement</h3>
 <p>
-                    Parfois, l'explication la plus simple s'applique : vous êtes <strong>inquiet pour votre santé</strong>. Cela peut être la santé dentaire spécifiquement, ou des préoccupations générales concernant le bien-être physique.
-                </p>
+Parfois, l'explication la plus simple est la bonne : une dent sensible, une mâchoire crispée, un rendez-vous chez le dentiste qui approche. Le rêve peut reprendre une <strong>préoccupation de santé bien réelle</strong>, ou une sensation du corps endormi. C'est d'ailleurs la piste que la recherche soutient le mieux, comme on le verra plus bas.
+</p>
+<h3 id="exemple-journal">Exemple de journal de rêve</h3>
+<p>
+<strong>Exemple fictif :</strong> il montre comment séparer la scène, l'émotion et un lien possible avec la journée.
+</p>
+<ul>
+<li><strong>Rêve :</strong> « J'étais en réunion, je voulais répondre et deux dents sont tombées sur la table. Personne ne semblait le remarquer. »</li>
+<li><strong>Émotion :</strong> « De la honte, puis de la panique en passant la langue sur les trous. »</li>
+<li><strong>Au réveil :</strong> « Mâchoire serrée, un peu douloureuse à gauche. »</li>
+<li><strong>Contexte récent :</strong> « Une présentation importante jeudi. Je serre souvent les dents quand je me concentre. »</li>
+<li><strong>Question à garder :</strong> « Ce rêve revient-il les nuits où je me réveille la mâchoire tendue, ou seulement avant les échéances ? »</li>
+</ul>
+<p>
+Une seule entrée ne prouve rien. En notant les mêmes rubriques sur plusieurs nuits, vous verrez si la piste du corps, celle de la pression ou une autre se confirme.
+</p>
 <!-- CTA inline -->
 <aside class="glass-panel rounded-2xl p-6 my-8 border border-dream-salmon/20">
 <div class="flex items-start gap-4">
@@ -232,71 +243,68 @@
 <i class="w-6 h-6 text-dream-salmon" data-lucide="sparkles"></i>
 </div>
 <div>
-<h4 class="font-serif text-lg text-dream-cream mb-2">Décryptez vos rêves de dents avec Noctalia</h4>
-<p class="text-sm text-gray-400 mb-4">Noctalia analyse les détails spécifiques de votre rêve - du type de dent aux émotions ressenties - pour fournir des interprétations personnalisées.</p>
+<h4 class="font-serif text-lg text-dream-cream mb-2">Notez votre rêve avant qu'il ne s'efface</h4>
+<p class="text-sm text-gray-400 mb-4">Dans Noctalia, racontez votre rêve à voix haute ou par écrit dès le réveil. Il est transcrit et rangé dans votre journal, et vous pouvez relire vos rêves de dents côte à côte pour voir ce qui revient.</p>
 <a class="inline-flex items-center gap-2 text-sm text-dream-salmon hover:text-dream-salmonLight transition-colors" href="/fr/">
-                                Essayer Noctalia Gratuitement <i class="w-4 h-4" data-lucide="arrow-right"></i>
+Essayer Noctalia gratuitement <i class="w-4 h-4" data-lucide="arrow-right"></i>
 </a>
 </div>
 </div>
 </aside>
-<h2 id="psychologie">Psychologie du rêve de dents qui tombent</h2>
+<h2 id="psychologie">Ce que dit la recherche, et ce qu'en disaient Freud et Jung</h2>
 <p>
-                    La psychologie moderne offre plusieurs cadres pour comprendre les rêves de dents :
-                </p>
-<h3>Freud et le rêve de dents qui tombent</h3>
+Deux registres se mélangent souvent sur ce sujet : ce qui a été mesuré, et les grilles de lecture historiques. Mieux vaut les séparer.
+</p>
+<h3>Une piste corporelle, soutenue par une étude</h3>
 <p>
-                    Sigmund Freud associait les rêves de dents à l'<strong>anxiété sexuelle et à la répression</strong>. Il voyait les dents comme des symboles d'agression et leur perte comme une peur de la castration ou de l'inadéquation sexuelle. Bien que cette vision soit considérée comme dépassée, elle a ouvert la voie à l'idée que les rêves portent des significations cachées.
-                </p>
-<h3>Jung et la signification des dents qui tombent</h3>
+En 2018, Naama Rozen et Nirit Soffer-Dudek ont interrogé 210 étudiants sur leurs rêves et leurs sensations au réveil. Les rêves de dents étaient liés à des <strong>tensions dans les dents au réveil</strong>. Ils n'étaient pas liés au niveau de détresse psychologique mesuré, contrairement à d'autres rêves typiques comme les rêves de chute. Ils n'étaient pas non plus liés à la question sur le grincement des dents.
+</p>
 <p>
-                    Carl Jung voyait les rêves de dents comme des symboles de <strong>renaissance et de transformation</strong>. Perdre ses dents représente l'abandon d'anciens aspects de l'identité pour faire place à la croissance personnelle. Le rêve devient un signe positif de développement psychologique.
-                </p>
-<h3>Recherche moderne sur les rêves de dents</h3>
+C'est une étude préliminaire, fondée sur des questionnaires : elle ne prouve pas que la tension provoque le rêve, ni que le rêve trahit un bruxisme. Elle invite surtout à se méfier de l'idée qu'un rêve de dents signale forcément du stress.
+</p>
+<h3>La lecture freudienne</h3>
 <p>
-                    Des études récentes suggèrent que les rêves de dents pourraient être liés à des <strong>sensations physiques pendant le sommeil</strong>. Le bruxisme, la tension de la mâchoire ou même l'irritation dentaire peuvent déclencher des rêves sur les dents. Une étude de 2018 a mis en évidence une corrélation entre la tension dentaire pendant le sommeil et la fréquence de ces rêves.
-                </p>
-<blockquote>
-                    « Bien que les rêves de dents semblent profondément symboliques, nous ne devons pas écarter la possibilité qu'ils reflètent simplement des sensations physiques de notre corps endormi. » - Dr Calvin Yu, Chercheur sur le Sommeil
-                </blockquote>
-<h2 id="culturel">Interprétation culturelle des rêves de dents qui tombent</h2>
+Dans <em>L'Interprétation du rêve</em> (1900), Freud consacre plusieurs passages aux rêves de dents et les rattache à des désirs sexuels refoulés. Cette lecture a marqué l'histoire de la psychanalyse, mais c'est une grille d'interprétation historique, pas un résultat scientifique.
+</p>
+<h3>La lecture jungienne</h3>
 <p>
-                    Différentes cultures ont interprété les rêves de dents de façons fascinantes :
-                </p>
-<ul>
-<li><strong>Grèce Antique :</strong> Croyait que les rêves de dents prédisaient la maladie ou la mort d'un membre de la famille</li>
-<li><strong>Tradition Chinoise :</strong> Le voyait comme un signe de mensonge ou de malhonnêteté</li>
-<li><strong>Interprétation Islamique :</strong> Associé à la longévité et à la prospérité familiale</li>
-<li><strong>Folklore Occidental :</strong> Souvent lié à recevoir de l'argent ou des nouvelles</li>
-<li><strong>Cultures Amérindiennes :</strong> Vu comme l'émergence de la sagesse ou des transitions de vie</li>
-</ul>
+La tradition jungienne voit plus volontiers dans la perte des dents une étape de transformation : une part de l'ancien moi se détache pour laisser place à autre chose. C'est un point de vue interprétatif, utile s'il vous parle, sans valeur de preuve.
+</p>
+<h2 id="culturel">Un présage de deuil ? Ce que racontent les traditions</h2>
 <p>
-                    Ces interprétations variées nous rappellent que le <strong>contexte et la signification personnelle comptent le plus</strong>. Qu'est-ce qui résonne avec votre situation de vie ?
-                </p>
-<h2 id="action">Que faire après un rêve de dents qui tombent</h2>
+Au IIe siècle, l'<em>Onirocritique</em> d'Artémidore, un manuel grec d'interprétation des songes, associait déjà les dents aux membres de la maisonnée : en perdre une annonçait la perte d'un proche ou d'un bien. L'idée a traversé les siècles. Dans beaucoup de familles, en Europe comme ailleurs, on dit encore que rêver de perdre ses dents annonce un décès.
+</p>
 <p>
-                    Si les rêves de dents sont récurrents ou troublants, voici comment travailler avec eux :
-                </p>
-<h3>1. Enregistrez les détails de votre rêve de dents</h3>
+Ces croyances font partie de l'histoire du rêve, pas de sa science. Aucune étude n'a montré qu'un rêve de dents prédit une mort, une maladie ou une rentrée d'argent. Si vous les avez entendues enfant, notez-le quand même : elles expliquent parfois pourquoi ce rêve vous fait si peur.
+</p>
+<h2 id="action">Que faire après un rêve de dents qui tombent ?</h2>
 <p>
-                    Notez tout ce dont vous vous souvenez immédiatement au réveil. Notez quelles dents sont tombées, comment vous vous sentiez, qui était présent et tout autre symbole. <strong>Les détails révèlent des schémas</strong>.
-                </p>
-<h3>2. Analysez votre vie éveillée après ce rêve</h3>
+La plupart de ces rêves ne demandent rien de particulier. S'ils reviennent ou vous troublent, voici des gestes simples.
+</p>
+<h3>1. Noter la scène, et votre bouche</h3>
 <p>
-                    Demandez-vous : Qu'est-ce qui cause du stress en ce moment ? Suis-je confronté à une décision majeure ? Est-ce que je me sens impuissant quelque part dans ma vie ? Est-ce que je retiens des mots importants ?
-                </p>
-<h3>3. Traitez l'anxiété liée aux rêves de dents</h3>
+Dès le réveil, notez quelles dents tombaient, comment, qui était là et ce que vous ressentiez. Ajoutez une ligne sur votre corps : mâchoire serrée, dent sensible, ou rien du tout. Notre <a class="text-dream-salmon hover:underline" href="guide-journal-reves">guide du journal de rêves</a> propose une méthode simple.
+</p>
+<h3>2. Regarder la période que vous traversez</h3>
 <p>
-                    Si le rêve reflète une anxiété générale, attaquez-la directement. Les <strong>techniques de gestion du stress</strong> - méditation, exercice, thérapie - peuvent réduire l'intensité et la fréquence des rêves.
-                </p>
-<h3>4. Santé dentaire et rêves de dents qui tombent</h3>
+Qu'est-ce qui me préoccupe en ce moment ? Ai-je une échéance, une décision ou une conversation en attente ? Est-ce que je me sens jugé quelque part ? Si une réponse s'impose, c'est une piste, pas une preuve.
+</p>
+<h3>3. Faire vérifier ses dents si le corps parle aussi</h3>
 <p>
-                    Parfois, la réponse évidente est correcte. Si vous grincez des dents la nuit ou avez des préoccupations dentaires, les traiter peut réduire ces rêves.
-                </p>
-<h3>5. Rêve lucide pour transformer le rêve de dents</h3>
+Selon le <a class="text-dream-salmon hover:underline" href="https://www.nidcr.nih.gov/health-info/bruxism" rel="nofollow noopener noreferrer" target="_blank">NIDCR</a>, l'institut américain de recherche dentaire, des dents douloureuses ou sensibles, usées ou abîmées, et une mâchoire fatiguée ou crispée font partie des signes possibles du <strong>bruxisme</strong>. Seul un dentiste peut le confirmer, à partir de vos symptômes et d'un examen, pas d'un rêve.
+</p>
+<h3>4. Détendre la mâchoire le soir</h3>
 <p>
-                    Apprenez à reconnaître quand vous rêvez. Une fois lucide, vous pouvez <strong>changer le récit du rêve</strong> - peut-être faire pousser de nouvelles dents plus fortes au lieu de les perdre.
-                </p>
+Si ces rêves suivent les périodes chargées, offrez-vous quelques minutes calmes avant de dormir : écrans éloignés, expiration lente, mâchoire relâchée, langue posée derrière les dents du haut.
+</p>
+<h3>5. Réécrire la fin du rêve</h3>
+<p>
+Si le même rêve revient, imaginez-le le soir avec une autre issue : vos dents tiennent, ou de nouvelles poussent. Cette technique, proche de celle utilisée contre les <a class="text-dream-salmon hover:underline" href="guide-cauchemars">cauchemars</a>, se pratique éveillé. Avec de l'entraînement, le <a class="text-dream-salmon hover:underline" href="guide-reve-lucide-debutant">rêve lucide</a> permet parfois de changer la scène pendant le rêve lui-même.
+</p>
+<h3>6. Savoir quand consulter</h3>
+<p>
+Si ces rêves, ou des cauchemars en général, reviennent plusieurs fois par semaine, abîment votre sommeil ou vous laissent anxieux la journée, parlez-en à votre médecin. Pour une douleur dentaire réelle, voyez un dentiste.
+</p>
 </div>
 <!-- Related Symbols Start -->
 <section aria-label="Symboles de rêves associés" class="mt-12 mb-8">
@@ -318,12 +326,12 @@
 <div class="w-16 h-16 bg-dream-salmon/10 rounded-full flex items-center justify-center mx-auto mb-6">
 <i class="w-8 h-8 text-dream-salmon" data-lucide="scan-face"></i>
 </div>
-<h3 class="font-serif text-2xl md:text-3xl mb-4 text-dream-cream">Comprenez Vos Rêves</h3>
+<h3 class="font-serif text-2xl md:text-3xl mb-4 text-dream-cream">Un rêve de dents, c'est une scène. Plusieurs, c'est une piste.</h3>
 <p class="text-purple-200/70 mb-6 max-w-lg mx-auto">
-                    Enregistrez vos rêves de dents dans Noctalia et recevez des interprétations personnalisées qui tiennent compte de votre contexte de vie unique et des schémas récurrents.
-                </p>
+Gardez vos rêves de dents dans Noctalia, avec ce que vous avez ressenti et ce que vous viviez. En les relisant ensemble, vous verrez quand ils reviennent et ce qui les accompagne.
+</p>
 <a class="inline-flex items-center gap-2 px-8 py-4 bg-dream-salmon text-dream-dark rounded-full font-bold hover:bg-dream-salmon/90 transition-colors" href="/fr/">
-                    Commencez à Explorer Vos Rêves <i class="w-5 h-5" data-lucide="arrow-right"></i>
+Commencer mon journal de rêves <i class="w-5 h-5" data-lucide="arrow-right"></i>
 </a>
 </aside>
 <!-- Symbol Guide CTA -->
@@ -333,55 +341,75 @@
 <i class="w-6 h-6 text-dream-salmon" data-lucide="sparkles"></i>
 </div>
 <div>
-<h4 class="font-serif text-lg text-dream-cream mb-2">Explorez la symbolique des dents</h4>
-<p class="text-sm text-gray-400 mb-3">Plongez dans notre guide complet sur la signification des dents dans les rêves.</p>
+<h4 class="font-serif text-lg text-dream-cream mb-2">La fiche du symbole « dents »</h4>
+<p class="text-sm text-gray-400 mb-3">Les variantes, les questions à se poser et une FAQ, en format court.</p>
 <a class="inline-flex items-center gap-2 text-dream-salmon hover:underline text-sm font-medium" href="../symboles/dents">
-                            Lire le guide complet <i class="w-4 h-4" data-lucide="arrow-right"></i>
+Lire la fiche <i class="w-4 h-4" data-lucide="arrow-right"></i>
 </a>
 </div>
 </div>
 </aside>
 <!-- FAQ Section -->
 <section class="mt-16">
-<h2 class="font-serif text-2xl text-dream-cream mb-8">Questions Fréquemment Posées</h2>
+<h2 class="font-serif text-2xl text-dream-cream mb-8">Questions fréquentes</h2>
 <div class="space-y-4">
 <details class="glass-panel rounded-xl p-4 group cursor-pointer">
 <summary class="font-medium flex justify-between items-center text-dream-cream">
-                            Que signifie rêver que ses dents tombent ?
-                            <i class="w-5 h-5 transition-transform group-open:rotate-180 text-dream-salmon" data-lucide="chevron-down"></i>
+Que signifie rêver que ses dents tombent ?
+<i class="w-5 h-5 transition-transform group-open:rotate-180 text-dream-salmon" data-lucide="chevron-down"></i>
 </summary>
 <p class="mt-4 text-sm text-gray-400 leading-relaxed">
-                            Les rêves de dents qui tombent symbolisent généralement l'anxiété liée à l'apparence, la peur du vieillissement, la perte de contrôle, des problèmes de communication ou des transitions de vie importantes. La signification spécifique dépend de votre contexte personnel et des émotions ressenties pendant le rêve.
-                        </p>
+Il n'y a pas de sens unique. Ce rêve accompagne souvent une inquiétude sur l'image que l'on donne, un sentiment de perte de contrôle, une difficulté à dire quelque chose ou une période de changement. Il peut aussi reprendre une sensation dentaire réelle. Votre émotion et votre contexte aident à faire le tri.
+</p>
 </details>
 <details class="glass-panel rounded-xl p-4 group cursor-pointer">
 <summary class="font-medium flex justify-between items-center text-dream-cream">
-                            Les rêves de dents qui tombent sont-ils courants ?
-                            <i class="w-5 h-5 transition-transform group-open:rotate-180 text-dream-salmon" data-lucide="chevron-down"></i>
+Ce rêve est-il fréquent ?
+<i class="w-5 h-5 transition-transform group-open:rotate-180 text-dream-salmon" data-lucide="chevron-down"></i>
 </summary>
 <p class="mt-4 text-sm text-gray-400 leading-relaxed">
-                            Oui, les rêves de dents qui tombent font partie des thèmes oniriques les plus courants dans le monde. Des études montrent qu'environ 39% des adultes ont vécu ce rêve au moins une fois. Il apparaît dans toutes les cultures et tous les groupes d'âge.
-                        </p>
+Oui. Dans une enquête de Calvin Yu (2012), 39 % des répondants disaient l'avoir déjà fait au moins une fois, et environ 16 % le décrivaient comme récurrent.
+</p>
 </details>
 <details class="glass-panel rounded-xl p-4 group cursor-pointer">
 <summary class="font-medium flex justify-between items-center text-dream-cream">
-                            Les rêves de dents prédisent-ils des problèmes de santé ?
-                            <i class="w-5 h-5 transition-transform group-open:rotate-180 text-dream-salmon" data-lucide="chevron-down"></i>
+Rêver de perdre ses dents annonce-t-il un décès ou une maladie ?
+<i class="w-5 h-5 transition-transform group-open:rotate-180 text-dream-salmon" data-lucide="chevron-down"></i>
 </summary>
 <p class="mt-4 text-sm text-gray-400 leading-relaxed">
-                            Aucune preuve scientifique ne soutient l'idée que les rêves de dents prédisent des problèmes de santé. Cependant, ces rêves peuvent refléter un stress sous-jacent, de l'anxiété ou des préoccupations concernant votre bien-être qui méritent d'être abordées dans la vie éveillée.
-                        </p>
+Non. Cette croyance est ancienne et répandue, mais un rêve ne prédit ni un deuil ni une maladie. Il met en scène une préoccupation présente ou une sensation du corps endormi.
+</p>
+</details>
+<details class="glass-panel rounded-xl p-4 group cursor-pointer">
+<summary class="font-medium flex justify-between items-center text-dream-cream">
+Ce rêve veut-il dire que je grince des dents ?
+<i class="w-5 h-5 transition-transform group-open:rotate-180 text-dream-salmon" data-lucide="chevron-down"></i>
+</summary>
+<p class="mt-4 text-sm text-gray-400 leading-relaxed">
+Pas forcément. Une étude de 2018 a relevé un lien avec des tensions dentaires ressenties au réveil, mais pas avec le grincement déclaré. Si vous avez mal aux dents ou à la mâchoire le matin, parlez-en à un dentiste.
+</p>
+</details>
+<details class="glass-panel rounded-xl p-4 group cursor-pointer">
+<summary class="font-medium flex justify-between items-center text-dream-cream">
+Faut-il s'inquiéter si ce rêve revient souvent ?
+<i class="w-5 h-5 transition-transform group-open:rotate-180 text-dream-salmon" data-lucide="chevron-down"></i>
+</summary>
+<p class="mt-4 text-sm text-gray-400 leading-relaxed">
+Le plus souvent, non. S'il revient plusieurs fois par semaine, abîme votre sommeil ou vous laisse anxieux la journée, parlez-en à un médecin, comme pour des cauchemars fréquents.
+</p>
 </details>
 </div>
 </section>
 <!-- Sources / Trust (TI-97) -->
 <section class="mt-16 glass-panel rounded-2xl p-6" id="sources">
-<h2 class="font-serif text-2xl text-dream-cream mb-4">Sources / Pour aller plus loin</h2>
+<h2 class="font-serif text-2xl text-dream-cream mb-4">Sources et lectures</h2>
 <ul class="mt-6 space-y-2 text-sm text-gray-400">
-<li><a href="https://dictionary.apa.org/dream" rel="nofollow noopener noreferrer" target="_blank">APA Dictionary of Psychology — Dream</a></li>
-<li><a href="https://dreamresearch.net/" rel="nofollow noopener noreferrer" target="_blank">DreamResearch.net — G. William Domhoff (dream research overview)</a></li>
+<li><a href="https://www.frontiersin.org/journals/psychology/articles/10.3389/fpsyg.2018.01812/full" rel="nofollow noopener noreferrer" target="_blank">Rozen et Soffer-Dudek (2018), « Dreams of Teeth Falling Out: An Empirical Investigation of Physiological and Psychological Correlates », <em>Frontiers in Psychology</em>, 9:1812</a></li>
+<li><a href="https://www.nidcr.nih.gov/health-info/bruxism" rel="nofollow noopener noreferrer" target="_blank">National Institute of Dental and Craniofacial Research (NIDCR), « Bruxism »</a></li>
+<li><a href="https://dictionary.apa.org/dream" rel="nofollow noopener noreferrer" target="_blank">APA Dictionary of Psychology, « Dream »</a></li>
+<li><a href="https://dreamresearch.net/" rel="nofollow noopener noreferrer" target="_blank">DreamResearch.net, G. William Domhoff</a></li>
 </ul>
-<p class="mt-6 text-xs text-purple-200/60">Mis à jour le 26 décembre 2025</p>
+<p class="mt-6 text-xs text-purple-200/60">Mis à jour le 9 octobre 2026</p>
 </section>
 <!-- Blog Nav Start -->
 <section class="mt-12" aria-label="Navigation entre articles" data-blog-nav="">

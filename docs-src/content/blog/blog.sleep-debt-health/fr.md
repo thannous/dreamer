@@ -5,7 +5,7 @@
   "lang": "fr",
   "slug": "dette-sommeil-sante-reves",
   "title": "Dette de sommeil : effets sur santé et rêves | Noctalia",
-  "description": "La dette de sommeil s'accumule silencieusement et perturbe le sommeil paradoxal, le rappel onirique et la santé à long terme.",
+  "description": "La dette de sommeil s'accumule sans bruit. Ses effets sur la santé et les rêves, pourquoi la grasse matinée ne suffit pas, et comment récupérer vraiment.",
   "robots": "max-image-preview:large",
   "themeColor": "#0a0514",
   "htmlClass": "scroll-smooth blog-article",
@@ -14,24 +14,24 @@
   "mainClass": "pt-32 pb-20 px-4",
   "ogType": "article",
   "ogTitle": "Dette de sommeil : effets sur santé et rêves | Noctalia",
-  "ogDescription": "La dette de sommeil s'accumule silencieusement et perturbe le sommeil paradoxal, le rappel onirique et la santé à long terme.",
+  "ogDescription": "La dette de sommeil s'accumule sans bruit. Ses effets sur la santé et les rêves, pourquoi la grasse matinée ne suffit pas, et comment récupérer vraiment.",
   "ogImage": "https://noctalia.app/img/blog/sleep-debt-health-dreams.webp",
   "ogImageAlt": "Silhouette épuisée entourée de symboles de dette de sommeil accumulée dans des tons bleu profond et violet",
   "twitterCard": "summary_large_image",
   "twitterTitle": "Dette de sommeil : effets sur santé et rêves | Noctalia",
-  "twitterDescription": "La dette de sommeil s'accumule silencieusement et perturbe le sommeil paradoxal, le rappel onirique et la santé à long terme.",
+  "twitterDescription": "La dette de sommeil s'accumule sans bruit. Ses effets sur la santé et les rêves, pourquoi la grasse matinée ne suffit pas, et comment récupérer vraiment.",
   "twitterImage": "https://noctalia.app/img/blog/sleep-debt-health-dreams.webp",
   "twitterImageAlt": "Silhouette épuisée entourée de symboles de dette de sommeil accumulée dans des tons bleu profond et violet",
   "publishedTime": "2026-03-17",
-  "modifiedTime": "2026-03-17",
+  "modifiedTime": "2026-10-09",
   "author": "Thanh Chau",
   "prevPath": "/fr/blog/heure-ete-sommeil-reves",
   "nextPath": "/fr/blog/perturbation-sommeil-printemps-reves",
   "preloadImage": "/img/blog/sleep-debt-health-dreams.webp",
   "jsonLd": [
-    "{\n  \"@context\": \"https://schema.org\",\n  \"@type\": \"BlogPosting\",\n  \"headline\": \"Dette de sommeil : comment la privation chronique affecte votre santé et vos rêves\",\n  \"description\": \"La dette de sommeil s'accumule silencieusement et perturbe le sommeil paradoxal, le rappel onirique et la santé à long terme.\",\n  \"image\": {\n    \"@type\": \"ImageObject\",\n    \"url\": \"https://noctalia.app/img/blog/sleep-debt-health-dreams.webp\",\n    \"width\": 1200,\n    \"height\": 630\n  },\n  \"author\": [\n    {\n      \"@type\": \"Person\",\n      \"@id\": \"https://noctalia.app/fr/a-propos#person\",\n      \"name\": \"Thanh Chau\",\n      \"jobTitle\": \"Fondateur & Directeur de la publication\",\n      \"url\": \"https://noctalia.app/fr/a-propos\",\n      \"worksFor\": {\n        \"@type\": \"Organization\",\n        \"@id\": \"https://noctalia.app/#organization\",\n        \"name\": \"Noctalia\",\n        \"url\": \"https://noctalia.app\"\n      }\n    },\n    {\n      \"@type\": \"Organization\",\n      \"@id\": \"https://noctalia.app/#organization\",\n      \"name\": \"Noctalia\",\n      \"url\": \"https://noctalia.app\",\n      \"logo\": {\n        \"@type\": \"ImageObject\",\n        \"url\": \"https://noctalia.app/logo/logo_noctalia.png\"\n      }\n    }\n  ],\n  \"publisher\": {\n    \"@type\": \"Organization\",\n    \"name\": \"Noctalia\",\n    \"url\": \"https://noctalia.app\",\n    \"logo\": {\n      \"@type\": \"ImageObject\",\n      \"url\": \"https://noctalia.app/logo/logo_noctalia.png\"\n    }\n  },\n  \"datePublished\": \"2026-03-17\",\n  \"dateModified\": \"2026-03-17\",\n  \"mainEntityOfPage\": {\n    \"@type\": \"WebPage\",\n    \"@id\": \"https://noctalia.app/fr/blog/dette-sommeil-sante-reves\"\n  },\n  \"inLanguage\": \"fr\",\n  \"isAccessibleForFree\": true,\n  \"wordCount\": 1600,\n  \"timeRequired\": \"PT6M\",\n  \"url\": \"https://noctalia.app/fr/blog/dette-sommeil-sante-reves\"\n}",
+    "{\n    \"@context\": \"https://schema.org\",\n    \"@type\": \"BlogPosting\",\n    \"headline\": \"Dette de sommeil : comment la privation chronique affecte votre santé et vos rêves\",\n    \"description\": \"La dette de sommeil s'accumule sans bruit. Ses effets sur la santé et les rêves, pourquoi la grasse matinée ne suffit pas, et comment récupérer vraiment.\",\n    \"image\": {\n        \"@type\": \"ImageObject\",\n        \"url\": \"https://noctalia.app/img/blog/sleep-debt-health-dreams.webp\",\n        \"width\": 1200,\n        \"height\": 630\n    },\n    \"author\": [\n        {\n            \"@type\": \"Person\",\n            \"@id\": \"https://noctalia.app/fr/a-propos#person\",\n            \"name\": \"Thanh Chau\",\n            \"jobTitle\": \"Fondateur & Directeur de la publication\",\n            \"url\": \"https://noctalia.app/fr/a-propos\",\n            \"worksFor\": {\n                \"@type\": \"Organization\",\n                \"@id\": \"https://noctalia.app/#organization\",\n                \"name\": \"Noctalia\",\n                \"url\": \"https://noctalia.app\"\n            }\n        },\n        {\n            \"@type\": \"Organization\",\n            \"@id\": \"https://noctalia.app/#organization\",\n            \"name\": \"Noctalia\",\n            \"url\": \"https://noctalia.app\",\n            \"logo\": {\n                \"@type\": \"ImageObject\",\n                \"url\": \"https://noctalia.app/logo/logo_noctalia.png\"\n            }\n        }\n    ],\n    \"publisher\": {\n        \"@type\": \"Organization\",\n        \"name\": \"Noctalia\",\n        \"url\": \"https://noctalia.app\",\n        \"logo\": {\n            \"@type\": \"ImageObject\",\n            \"url\": \"https://noctalia.app/logo/logo_noctalia.png\"\n        }\n    },\n    \"datePublished\": \"2026-03-17\",\n    \"dateModified\": \"2026-10-09\",\n    \"mainEntityOfPage\": {\n        \"@type\": \"WebPage\",\n        \"@id\": \"https://noctalia.app/fr/blog/dette-sommeil-sante-reves\"\n    },\n    \"inLanguage\": \"fr\",\n    \"isAccessibleForFree\": true,\n    \"wordCount\": 2443,\n    \"timeRequired\": \"PT12M\",\n    \"url\": \"https://noctalia.app/fr/blog/dette-sommeil-sante-reves\"\n}",
     "{\n  \"@context\": \"https://schema.org\",\n  \"@type\": \"WebPage\",\n  \"@id\": \"https://noctalia.app/fr/blog/dette-sommeil-sante-reves\",\n  \"url\": \"https://noctalia.app/fr/blog/dette-sommeil-sante-reves\",\n  \"name\": \"Dette de sommeil : effets sur santé et rêves | Noctalia\",\n  \"inLanguage\": \"fr\"\n}",
-    "{\n  \"@context\": \"https://schema.org\",\n  \"@type\": \"FAQPage\",\n  \"mainEntity\": [\n    {\n      \"@type\": \"Question\",\n      \"name\": \"Qu'est-ce que la dette de sommeil et comment s'accumule-t-elle ?\",\n      \"acceptedAnswer\": {\n        \"@type\": \"Answer\",\n        \"text\": \"La dette de sommeil est la différence cumulative entre le sommeil dont votre corps a besoin et celui que vous obtenez réellement. Si vous avez besoin de 8 heures mais n'en dormez que 6, vous accumulez 2 heures de dette par nuit. Sur une semaine de travail, cela représente un déficit de 10 heures. Les recherches de Van Dongen et al. montrent qu'après deux semaines à 6 heures par nuit, les déficits cognitifs égalent ceux d'une personne éveillée depuis 48 heures consécutives -- pourtant les sujets remarquent à peine le déclin.\"\n      }\n    },\n    {\n      \"@type\": \"Question\",\n      \"name\": \"Peut-on rattraper le sommeil perdu pendant le week-end ?\",\n      \"acceptedAnswer\": {\n        \"@type\": \"Answer\",\n        \"text\": \"Le rattrapage du week-end n'offre qu'une récupération partielle. Bien que dormir davantage le week-end améliore temporairement la vigilance et l'humeur, les recherches montrent que cela ne peut pas inverser complètement les perturbations métaboliques, hormonales et cognitives accumulées durant la semaine. Dormir tard le week-end crée aussi un décalage horaire social qui déstabilise votre rythme circadien et rend les lundis matins encore plus difficiles.\"\n      }\n    },\n    {\n      \"@type\": \"Question\",\n      \"name\": \"Comment le manque de sommeil affecte-t-il les rêves ?\",\n      \"acceptedAnswer\": {\n        \"@type\": \"Answer\",\n        \"text\": \"La privation de sommeil déclenche un phénomène appelé rebond REM. Lorsque vous dormez enfin suffisamment, votre cerveau entre en sommeil paradoxal plus rapidement et y reste plus longtemps, produisant des rêves inhabituellement vivaces, chargés d'émotions et parfois déroutants. Pendant la période de privation elle-même, le rappel onirique diminue car les plus longues phases de sommeil paradoxal -- en fin de nuit -- sont les premières sacrifiées lorsque le sommeil est écourté.\"\n      }\n    }\n  ]\n}",
+    "{\n    \"@context\": \"https://schema.org\",\n    \"@type\": \"FAQPage\",\n    \"mainEntity\": [\n        {\n            \"@type\": \"Question\",\n            \"name\": \"Qu'est-ce que la dette de sommeil et comment s'accumule-t-elle ?\",\n            \"acceptedAnswer\": {\n                \"@type\": \"Answer\",\n                \"text\": \"C'est l'écart entre le sommeil dont vous avez besoin et celui que vous obtenez, additionné nuit après nuit. Si vous avez besoin de 8 heures et en dormez 6, il vous en manque 2 par nuit, soit 10 sur une semaine de travail. Au bout de quelques jours, on ne se sent souvent pas plus fatigué, alors que l'attention continue de baisser.\"\n            }\n        },\n        {\n            \"@type\": \"Question\",\n            \"name\": \"Peut-on rattraper le sommeil perdu pendant le week-end ?\",\n            \"acceptedAnswer\": {\n                \"@type\": \"Answer\",\n                \"text\": \"En partie seulement. Une grasse matinée soulage la somnolence un moment, mais dans une étude de 2019, le sommeil de récupération du week-end n'a pas empêché les effets métaboliques des nuits courtes de la semaine. Des nuits régulières, un peu plus longues, avec une heure de lever stable, sont plus efficaces.\"\n            }\n        },\n        {\n            \"@type\": \"Question\",\n            \"name\": \"Comment le manque de sommeil affecte-t-il les rêves ?\",\n            \"acceptedAnswer\": {\n                \"@type\": \"Answer\",\n                \"text\": \"Pendant que la dette grossit, un réveil matinal coupe les derniers cycles de sommeil paradoxal, les plus riches en rêves : vous vous en souvenez moins. Quand vous rattrapez, le rebond de sommeil paradoxal apporte souvent des rêves très vivaces et chargés en émotions. C'est en général un signe de récupération, pas un avertissement.\"\n            }\n        },\n        {\n            \"@type\": \"Question\",\n            \"name\": \"Quand consulter pour une fatigue qui dure ?\",\n            \"acceptedAnswer\": {\n                \"@type\": \"Answer\",\n                \"text\": \"Si vous dormez assez d'heures et vous réveillez quand même épuisé, si l'on remarque de forts ronflements ou des pauses respiratoires pendant votre sommeil, si vous vous endormez au volant, ou si l'insomnie dure depuis des semaines. Ces signes peuvent révéler un trouble du sommeil qui se soigne.\"\n            }\n        }\n    ]\n}",
     "{\n  \"@context\": \"https://schema.org\",\n  \"@type\": \"BreadcrumbList\",\n  \"itemListElement\": [\n    {\n      \"@type\": \"ListItem\",\n      \"position\": 1,\n      \"name\": \"Accueil\",\n      \"item\": \"https://noctalia.app/fr/\"\n    },\n    {\n      \"@type\": \"ListItem\",\n      \"position\": 2,\n      \"name\": \"Ressources\",\n      \"item\": \"https://noctalia.app/fr/blog/\"\n    },\n    {\n      \"@type\": \"ListItem\",\n      \"position\": 3,\n      \"name\": \"Dette de sommeil\",\n      \"item\": \"https://noctalia.app/fr/blog/dette-sommeil-sante-reves\"\n    }\n  ]\n}"
   ],
   "activeNav": "resources"
@@ -61,17 +61,17 @@
 <header class="mb-12">
 <div class="flex flex-wrap items-center gap-3 mb-6">
 <span class="text-xs font-mono text-dream-salmon border border-dream-salmon/30 rounded-full px-3 py-1 uppercase">Sant&#233;</span>
-<a class="text-xs font-mono text-purple-200/70 border border-white/10 rounded-full px-3 py-1 hover:text-white hover:border-dream-salmon/30 transition-colors" href="sommeil-paradoxal-reves">Th&#232;me : Science du sommeil</a>
+<a class="text-xs font-mono text-purple-200/70 border border-white/10 rounded-full px-3 py-1 hover:text-white hover:border-dream-salmon/30 transition-colors" href="sommeil-paradoxal-reves">Thème : Science du sommeil</a>
 <span aria-hidden="true" class="w-full sm:hidden"></span>
 <span class="text-sm text-purple-300/60">Publi&#233; le 17 mars 2026</span>
-<span class="text-sm text-purple-300/60">~1600 mots &#183; 6 min de lecture</span>
+<span class="text-sm text-purple-300/60">12 min de lecture</span>
 </div>
 <h1 class="font-serif text-3xl md:text-5xl mb-6 text-transparent bg-clip-text bg-gradient-to-b from-white via-dream-lavender to-purple-400/50 leading-tight">
-                    Dette de sommeil : comment la privation chronique affecte votre sant&#233; et vos r&#234;ves
-                </h1>
+Dette de sommeil : comment la privation chronique affecte votre santé et vos rêves
+</h1>
 <p class="text-lg text-purple-200/80 leading-relaxed">
-                    Vous ne la sentez peut-&#234;tre pas apr&#232;s une seule nuit &#233;court&#233;e, mais la dette de sommeil est l'une des menaces sanitaires les plus insidieuses de la vie moderne. Comme une dette financi&#232;re, elle accumule des int&#233;r&#234;ts -- sauf que la monnaie est votre performance cognitive, votre stabilit&#233; &#233;motionnelle et la richesse de votre vie onirique. Voici ce que la science r&#233;v&#232;le sur le co&#251;t cach&#233; du sommeil perdu, comment il transforme vos r&#234;ves par le ph&#233;nom&#232;ne saisissant du rebond REM, et ce que vous pouvez r&#233;alistement faire pour r&#233;cup&#233;rer.
-                </p>
+Le réveil sonne après six heures de sommeil, encore une fois. Mercredi, vous vous sentez étrangement bien, comme si le corps s'était habitué. Puis samedi, vous dormez jusqu'à 10 h et vous vous réveillez d'un rêve si vivace qu'il vous suit toute la matinée. C'est la dette de sommeil à l'œuvre : les nuits courtes s'additionnent, vous cessez de les sentir, et vos rêves font partie des premières choses qui changent quand vous rattrapez enfin. Voici ce que la recherche montre de ses effets sur la santé, et ce qui aide vraiment.
+</p>
 </header>
 <!-- Author Byline (E-E-A-T) -->
 <div class="flex items-center gap-3 mb-8 text-sm text-purple-200/70">
@@ -86,12 +86,12 @@
 <!-- Health Notice -->
 <div class="glass-panel rounded-xl p-4 mb-8 border border-amber-400/20 bg-amber-400/5 text-sm text-purple-200/70 flex items-start gap-3">
 <i class="w-5 h-5 text-amber-400 shrink-0 mt-0.5" data-lucide="shield-alert"></i>
-<p>Cet article est fourni &#224; titre informatif uniquement et ne constitue pas un avis m&#233;dical. Consultez un professionnel de sant&#233; pour toute pr&#233;occupation li&#233;e au sommeil.</p>
+<p>Cet article est fourni à titre informatif et ne remplace pas un avis médical. Consultez un professionnel de santé pour toute question sur votre sommeil.</p>
 </div>
 <!-- Quick Answer (AI SEO) -->
 <section aria-labelledby="quick-answer-title" class="glass-panel rounded-2xl p-6 mb-8 border border-dream-salmon/20 bg-white/5">
 <h2 class="font-serif text-xl text-dream-cream mb-3" id="quick-answer-title">R&#233;ponse rapide</h2>
-<p class="text-purple-100/80 leading-relaxed">La dette de sommeil est l'&#233;cart cumulatif entre le sommeil dont vous avez besoin et celui que vous obtenez r&#233;ellement. La privation chronique -- dormir r&#233;guli&#232;rement moins de 7 heures par nuit -- alt&#232;re la m&#233;moire, affaiblit l'immunit&#233;, augmente le risque cardiovasculaire et modifie profond&#233;ment votre vie onirique. Lorsque vous r&#233;cup&#233;rez enfin du sommeil, votre cerveau d&#233;clenche un &#171; rebond REM &#187;, vous inondant de r&#234;ves inhabituellement vivaces et intenses pour compenser les cycles manqu&#233;s. La r&#233;cup&#233;ration compl&#232;te d'une dette chronique prend plus d'un simple week-end et n&#233;cessite des habitudes de sommeil soutenues et r&#233;guli&#232;res.</p>
+<p class="text-purple-100/80 leading-relaxed">La dette de sommeil est l'écart entre le sommeil dont vous avez besoin (7 heures ou plus pour la plupart des adultes) et celui que vous obtenez. Accumulée sur des semaines, elle émousse l'attention et l'humeur, et le manque de sommeil est associé à des problèmes cardiaques, métaboliques et immunitaires. Vous vous souvenez souvent de moins de rêves pendant qu'elle grossit, puis de rêves très vivaces quand vous rattrapez : c'est le rebond de sommeil paradoxal. La grasse matinée aide un peu ; des nuits régulières, un peu plus longues, aident davantage.</p>
 </section>
 <!-- Featured Image -->
 <figure class="mb-12 rounded-2xl overflow-hidden">
@@ -100,61 +100,66 @@
 <!-- Table of Contents -->
 <nav class="glass-panel rounded-2xl p-6 mb-12">
 <h2 class="font-serif text-lg text-dream-cream mb-4 flex items-center gap-2">
-<i class="w-5 h-5 text-dream-salmon" data-lucide="list"></i> Table des mati&#232;res
-                </h2>
+<i class="w-5 h-5 text-dream-salmon" data-lucide="list"></i> Sommaire
+</h2>
 <ol class="space-y-2 text-sm text-purple-200/70">
-<li><a class="toc-link block" href="#what-is-sleep-debt">1. Qu'est-ce que la dette de sommeil ?</a></li>
-<li><a class="toc-link block" href="#science">2. La science derri&#232;re l'accumulation de la dette</a></li>
-<li><a class="toc-link block" href="#dreams">3. Comment la dette de sommeil affecte vos r&#234;ves</a></li>
-<li><a class="toc-link block" href="#health">4. Cons&#233;quences sur la sant&#233; de la privation chronique</a></li>
-<li><a class="toc-link block" href="#repay">5. Peut-on vraiment rembourser sa dette de sommeil ?</a></li>
-<li><a class="toc-link block" href="#strategies">6. Strat&#233;gies de pr&#233;vention pour un sommeil sain</a></li>
+<li><a class="toc-link block" href="#what-is-sleep-debt">1. Qu'est-ce que la dette de sommeil, et pourquoi ne la sent-on pas ?</a></li>
+<li><a class="toc-link block" href="#science">2. Comment la dette de sommeil s'accumule-t-elle ?</a></li>
+<li><a class="toc-link block" href="#dreams">3. Que deviennent vos rêves ?</a></li>
+<li><a class="toc-link block" href="#health">4. Quels effets sur la santé ?</a></li>
+<li><a class="toc-link block" href="#repay">5. Peut-on rembourser sa dette de sommeil ?</a></li>
+<li><a class="toc-link block" href="#strategies">6. Comment éviter que la dette de sommeil se reforme</a></li>
 </ol>
 </nav>
 <!-- Article Content -->
 <div class="prose max-w-none text-gray-300">
-<h2 id="what-is-sleep-debt">Qu'est-ce que la dette de sommeil ?</h2>
+<h2 id="what-is-sleep-debt">Qu'est-ce que la dette de sommeil, et pourquoi ne la sent-on pas ?</h2>
 <p>
-                    La dette de sommeil -- parfois appel&#233;e d&#233;ficit de sommeil -- est la diff&#233;rence entre la quantit&#233; de sommeil dont votre corps a besoin et celle que vous obtenez r&#233;ellement. Si votre besoin biologique est de 8 heures et que vous n'en dormez que 6, vous accumulez 2 heures de dette cette nuit-l&#224;. Sur une semaine de travail de cinq nuits identiques, cela repr&#233;sente un d&#233;ficit de 10 heures. William Dement, chercheur en sommeil, a pass&#233; des d&#233;cennies &#224; Stanford &#224; d&#233;montrer que cette dette n'est pas une simple m&#233;taphore : elle a des cons&#233;quences mesurables et cumulatives sur chaque syst&#232;me du corps.
-                </p>
+La dette de sommeil, ou déficit de sommeil, est l'écart entre le sommeil dont votre corps a besoin et celui qu'il obtient vraiment. Les besoins varient d'une personne à l'autre, mais l'Académie américaine de médecine du sommeil et la Sleep Research Society recommandent aux adultes de dormir régulièrement 7 heures ou plus par nuit. Si vous avez besoin de 8 heures et n'en dormez que 6, il vous en manque 2. Cinq nuits comme celle-là, et vous avez 10 heures de retard, soit à peu près une nuit entière.
+</p>
 <p>
-                    Sa discr&#233;tion rend la dette de sommeil particuli&#232;rement dangereuse. Apr&#232;s quelques jours de sommeil restreint, la plupart des gens cessent de <em>se sentir</em> de plus en plus fatigu&#233;s -- ils s'adaptent subjectivement, m&#234;me si leurs performances objectives continuent de se d&#233;t&#233;riorer. Une &#233;tude de r&#233;f&#233;rence de Van Dongen et al. (2003) a r&#233;v&#233;l&#233; que les sujets dormant 6 heures par nuit pendant deux semaines pr&#233;sentaient des d&#233;ficits cognitifs &#233;quivalents &#224; ceux d'une personne <strong>&#233;veill&#233;e depuis 48 heures cons&#233;cutives</strong>. Pourtant, ils &#233;valuaient leur propre somnolence comme seulement mod&#233;r&#233;ment &#233;lev&#233;e. La dette &#233;tait r&#233;elle ; la conscience de celle-ci ne l'&#233;tait pas.
-                </p>
+Le piège, c'est que cette dette se cache. Dans une étude de laboratoire bien connue, des volontaires dont le sommeil était limité à 6 heures ou moins pendant deux semaines ont fini par avoir des trous d'attention comparables à ceux observés après une à deux nuits blanches. Pourtant, ils se disaient à peine plus somnolents. Leurs performances continuaient de baisser ; leur sensation de fatigue, elle, se stabilisait.
+</p>
 <p>
-                    Cet &#233;cart entre l'alt&#233;ration per&#231;ue et r&#233;elle est ce qui fait de la dette de sommeil une crise de sant&#233; publique. Conduite somnolente, erreurs m&#233;dicales, accidents du travail -- nombre d'entre eux proviennent de personnes qui croient sinc&#232;rement fonctionner normalement tout en portant un d&#233;ficit de sommeil significatif.
-                </p>
-
-<h2 id="science">La science derri&#232;re l'accumulation de la dette de sommeil</h2>
-<h3>Comment la dette de sommeil s'accumule</h3>
+C'est pour cela que la somnolence au volant ou les erreurs au travail touchent souvent des personnes qui se sentent sincèrement en forme. Après des semaines de nuits courtes, votre ressenti n'est plus un bon indicateur de votre fatigue réelle.
+</p>
+<h2 id="science">Comment la dette de sommeil s'accumule-t-elle ?</h2>
+<h3>Deux mécanismes règlent votre sommeil</h3>
 <p>
-                    Deux syst&#232;mes interagissent pour r&#233;guler le sommeil : l'horloge circadienne (votre rythme interne sur 24 heures) et la pression hom&#233;ostatique (le besoin de dormir qui s'intensifie &#224; mesure que vous restez &#233;veill&#233;). Lorsque vous &#233;courtez votre sommeil, la pression hom&#233;ostatique se reporte sur le jour suivant. Sur plusieurs nuits, cette pression se cumule. Votre cerveau tente de compenser en entrant plus rapidement dans les stades de sommeil profond, mais l'architecture globale du sommeil se d&#233;forme -- en particulier les phases tardives de <a class="text-dream-salmon hover:underline" href="sommeil-paradoxal-reves">sommeil paradoxal</a> essentielles &#224; la r&#233;gulation &#233;motionnelle et &#224; la consolidation de la m&#233;moire.
-                </p>
+La pression de sommeil augmente à mesure que vous restez éveillé et se dissipe pendant que vous dormez. Votre horloge interne, elle, décide des moments où vous vous sentez alerte ou somnolent. Écourtez une nuit, et une partie de cette pression se reporte sur le lendemain. Nuit après nuit, elle s'additionne.
+</p>
 <p>
-                    Kitamura et al. (2016) ont tent&#233; de quantifier la dur&#233;e optimale de sommeil individuelle en pla&#231;ant des sujets dans un environnement sans rep&#232;res temporels avec une possibilit&#233; de sommeil illimit&#233;e pendant plusieurs jours. R&#233;sultat : la dur&#233;e &#171; optimale &#187; moyenne &#233;tait de 8 heures 25 minutes -- pr&#232;s d'une heure de plus que ce que la plupart des adultes des nations industrialis&#233;es d&#233;clarent dormir. Cet &#233;cart entre l'optimal et le r&#233;el repr&#233;sente la dette de sommeil de base port&#233;e par une grande partie de la population.
-                </p>
-<h3>Dette aigu&#235; versus dette chronique</h3>
+De combien avons-nous vraiment besoin ? Dans une petite étude japonaise, de jeunes hommes ont pu rester au lit bien plus longtemps que d'habitude plusieurs nuits de suite. Leur sommeil s'est peu à peu stabilisé autour de 8 h 25 en moyenne, environ une heure de plus que ce qu'ils dormaient normalement. Les auteurs parlent de « dette de sommeil potentielle » : beaucoup d'entre nous en porteraient une sans s'en rendre compte.
+</p>
+<h3>Une nuit blanche ou des semaines de nuits courtes</h3>
 <p>
-                    La dette de sommeil aigu&#235; -- rester debout toute la nuit pour une deadline ou un vol -- est spectaculaire mais relativement facile &#224; r&#233;sorber. Une ou deux nuits de sommeil prolong&#233; peuvent largement effacer le d&#233;ficit. La dette chronique est une tout autre affaire. Lorsque vous dormez r&#233;guli&#232;rement 60 &#224; 90 minutes de moins que n&#233;cessaire par nuit pendant des semaines ou des mois, les effets se cumulent d'une mani&#232;re qu'une seule nuit de r&#233;cup&#233;ration ne peut inverser. Banks et Dinges (2007) ont d&#233;montr&#233; que la restriction partielle chronique du sommeil produit des <strong>d&#233;ficits cognitifs durables</strong> qui s'accumulent lin&#233;airement et montrent une r&#233;cup&#233;ration incompl&#232;te m&#234;me apr&#232;s plusieurs nuits de sommeil prolong&#233;.
-                </p>
-<blockquote class="border-l-4 border-dream-salmon/40 pl-4 italic text-purple-200/70 my-6">
-                    Apr&#232;s deux semaines &#224; 6 heures de sommeil par nuit, la performance cognitive chute au niveau d'une personne totalement priv&#233;e de sommeil depuis 48 heures -- pourtant les sujets remarquent &#224; peine le d&#233;clin. -- Van Dongen et al., Sleep (2003)
-                </blockquote>
-
-<h2 id="dreams">Comment la dette de sommeil affecte vos r&#234;ves</h2>
-<h3>Le ph&#233;nom&#232;ne du rebond REM</h3>
+Une nuit blanche pour un dossier ou un vol matinal secoue, mais se récupère assez facilement : une ou deux nuits plus longues suffisent en général. La dette chronique est différente. Quand vous dormez environ une heure de moins que nécessaire, semaine après semaine, les effets s'empilent. Les synthèses des études de restriction de sommeil montrent que les déficits s'accumulent et que quelques nuits de récupération ne ramènent pas toujours les performances à leur niveau de départ.
+</p>
+<h2 id="dreams">Que deviennent vos rêves ?</h2>
+<h3>Pendant que la dette grossit : moins de rêves en mémoire</h3>
 <p>
-                    Pour les passionn&#233;s de r&#234;ves, la cons&#233;quence la plus fascinante de la dette de sommeil est le <strong>rebond REM</strong>. En conditions normales, le sommeil paradoxal repr&#233;sente environ 20 &#224; 25 % du temps de sommeil total, concentr&#233; dans les derniers cycles. Lorsque vous &#234;tes en d&#233;ficit de sommeil, votre cerveau priorise le sommeil lent profond (stades 3-4) pour la restauration physique, et le sommeil paradoxal est sacrifi&#233;. Mais lorsque le sommeil de r&#233;cup&#233;ration arrive enfin, le cerveau compense de mani&#232;re spectaculaire : il entre en sommeil paradoxal plus t&#244;t, y reste plus longtemps et produit des &#233;pisodes d'une intensit&#233; inhabituelle.
-                </p>
+Le <a class="text-dream-salmon hover:underline" href="sommeil-paradoxal-reves">sommeil paradoxal</a>, la phase la plus associée aux rêves vivaces, s'allonge au fil de la nuit. Un réveil matinal ampute d'abord ces derniers cycles, les plus riches en rêves. Ajoutez un lever pressé, sans un instant pour y repenser, et il n'est pas étonnant que les personnes en manque de sommeil disent « ne plus rêver ». Le plus souvent, elles perdent la partie de la nuit où les rêves sont les plus riches, et les quelques secondes nécessaires pour <a class="text-dream-salmon hover:underline" href="comment-se-souvenir-de-ses-reves">s'en souvenir</a>.
+</p>
+<h3>Quand vous rattrapez : le rebond de sommeil paradoxal</h3>
 <p>
-                    Qu'est-ce que cela donne concr&#232;tement ? Des r&#234;ves pendant le rebond REM souvent d&#233;crits comme exceptionnellement vivaces, charg&#233;s d'&#233;motions et parfois &#233;tranges ou d&#233;rangeants. Ceux qui r&#233;cup&#232;rent d'une dette de sommeil rapportent fr&#233;quemment des r&#234;ves d'<a class="text-dream-salmon hover:underline" href="../symboles/nuit">obscurit&#233;</a>, de poursuites ou de <a class="text-dream-salmon hover:underline" href="../symboles/lune">transformation</a> -- comme si le cerveau traitait le stress accumul&#233; et les &#233;motions non r&#233;solues qu'il n'a pas pu g&#233;rer pendant la p&#233;riode de d&#233;ficit. Ce n'est pas pathologique ; c'est le m&#233;canisme naturel de r&#233;cup&#233;ration de votre cerveau &#224; l'&#339;uvre.
-                </p>
-<h3>Rappel onirique et privation de sommeil</h3>
+Après une période de manque, le cerveau tend à entrer plus tôt en sommeil paradoxal lors des nuits de récupération, et à y rester plus longtemps. C'est le <strong>rebond de sommeil paradoxal</strong>, souvent appelé rebond REM. Beaucoup de gens remarquent alors des rêves particulièrement vivaces, chargés en émotions ou étranges : les premières nuits de vacances, ou une longue grasse matinée après une semaine éprouvante.
+</p>
 <p>
-                    Votre capacit&#233; &#224; <a class="text-dream-salmon hover:underline" href="comment-se-souvenir-de-ses-reves">vous souvenir de vos r&#234;ves</a> souffre aussi de la dette de sommeil. Lorsque le sommeil est fragment&#233; ou &#233;court&#233;, les derni&#232;res p&#233;riodes de sommeil paradoxal -- les plus longues et les plus riches en r&#234;ves -- sont les premi&#232;res &#224; &#234;tre sacrifi&#233;es. M&#234;me lorsque des r&#234;ves surviennent pendant des nuits raccourcies, les processus de consolidation qui transf&#232;rent les souvenirs oniriques en rappel accessible sont alt&#233;r&#233;s. Paradoxalement, de nombreuses personnes en d&#233;ficit de sommeil croient qu'elles &#171; ne r&#234;vent plus &#187;, alors qu'en r&#233;alit&#233; elles n'atteignent tout simplement pas les stades de sommeil paradoxal o&#249; les r&#234;ves vivaces se produisent.
-                </p>
+Quel que soit le décor, une poursuite, une rue plongée dans la <a class="text-dream-salmon hover:underline" href="../symboles/nuit">nuit</a> ou éclairée par la <a class="text-dream-salmon hover:underline" href="../symboles/lune">lune</a>, l'intensité en dit souvent plus sur votre nuit que sur le symbole. Une vague de rêves vivaces après des nuits courtes est en général le signe que le sommeil se rattrape, pas un avertissement. Si ces rêves tournent aux cauchemars fréquents qui vous réveillent, consultez notre <a class="text-dream-salmon hover:underline" href="guide-cauchemars">guide pour apaiser les cauchemars</a>.
+</p>
+<h3 id="exemple-journal">Exemple de journal sommeil et rêves</h3>
 <p>
-                    Lorsque ces personnes dorment enfin suffisamment, le retour soudain de r&#234;ves vivaces et m&#233;morables par le rebond REM peut sembler alarmant. Comprendre qu'il s'agit d'un processus de r&#233;cup&#233;ration normal -- et non le signe d'un probl&#232;me -- peut &#234;tre rassurant. Un rappel onirique riche qui revient est d'ailleurs l'un des premiers indicateurs que votre cerveau commence &#224; r&#233;cup&#233;rer de la dette de sommeil accumul&#233;e.
-                </p>
+<strong>Exemple fictif :</strong> il montre comment noter vos nuits et vos rêves côte à côte.
+</p>
+<ul>
+<li><strong>Nuits :</strong> « Du lundi au jeudi, extinction vers 1 h, réveil à 6 h 45. Vendredi, couché à 22 h, levé à 9 h 30. »</li>
+<li><strong>Rêves :</strong> « En semaine, rien, ou une image floue. Samedi, un long rêve : je courais dans une gare, de nuit, et je ratais tous les trains. »</li>
+<li><strong>Émotion :</strong> « Stressé dans le rêve, soulagé au réveil. »</li>
+<li><strong>Question à garder :</strong> « Mes rêves les plus vivaces arrivent-ils après mes semaines les plus courtes ? »</li>
+</ul>
+<p>
+Une seule entrée ne prouve rien. Sur un mois, les heures de coucher notées à côté des rêves peuvent montrer si vos nuits intenses suivent vos nuits courtes.
+</p>
 </div>
 
 <aside class="glass-panel rounded-2xl p-6 my-8 border border-dream-salmon/20">
@@ -163,130 +168,135 @@
 <i class="w-6 h-6 text-dream-salmon" data-lucide="moon"></i>
 </div>
 <div>
-<h4 class="font-serif text-lg text-dream-cream mb-2">Suivez vos habitudes de sommeil et l'&#233;volution de vos r&#234;ves</h4>
-<p class="text-sm text-gray-400 mb-4">Capturez vos r&#234;ves par la voix chaque matin avec Noctalia. Au fil du temps, rep&#233;rez les corr&#233;lations entre vos habitudes de sommeil et l'intensit&#233; de vos r&#234;ves -- un premier pas concret pour identifier et combattre la dette de sommeil.</p>
-<a class="inline-flex items-center gap-2 text-sm text-dream-salmon hover:text-dream-salmonLight transition-colors" href="/fr/">
-                                Commencer le suivi avec Noctalia <i class="w-4 h-4" data-lucide="arrow-right"></i>
+<h4 class="font-serif text-lg text-dream-cream mb-2">Vos nuits et vos rêves au même endroit</h4>
+<p class="text-sm text-gray-400 mb-4">Dans Noctalia, racontez votre rêve à voix haute au réveil et ajoutez une ligne sur votre nuit. Il est transcrit et rangé dans votre journal : vous pouvez relire vos semaines côte à côte.</p>
+<a class="inline-flex items-center gap-2 text-sm text-dream-salmon hover:text-dream-salmonLight transition-colors" href="/fr/journal-de-reves-vocal">
+Voir comment marche le journal vocal <i class="w-4 h-4" data-lucide="arrow-right"></i>
 </a>
 </div>
 </div>
 </aside>
 
 <div class="prose max-w-none text-gray-300">
-<h2 id="health">Cons&#233;quences sur la sant&#233; de la privation chronique</h2>
-<h3>Impact cognitif et &#233;motionnel</h3>
+<h2 id="health">Quels effets sur la santé ?</h2>
+<h3>Attention, humeur et jugement</h3>
 <p>
-                    Au-del&#224; d'une simple sensation de brouillard, la privation chronique d&#233;grade de mani&#232;re mesurable la m&#233;moire de travail, l'attention, la prise de d&#233;cision et la r&#233;solution cr&#233;ative de probl&#232;mes. Votre cortex pr&#233;frontal -- responsable des fonctions ex&#233;cutives -- est particuli&#232;rement vuln&#233;rable. En parall&#232;le, l'amygdale (le syst&#232;me d'alarme &#233;motionnel du cerveau) devient hyperr&#233;active en cas de manque de sommeil, produisant des r&#233;ponses &#233;motionnelles exag&#233;r&#233;es &#224; des stimuli neutres. Un raisonnement alt&#233;r&#233; coupl&#233; &#224; une &#233;motivit&#233; accrue explique pourquoi les personnes en d&#233;ficit de sommeil sont plus sujettes &#224; l'<a class="text-dream-salmon hover:underline" href="reves-anxiete-signification">anxi&#233;t&#233;</a>, &#224; l'irritabilit&#233; et aux mauvais jugements.
-                </p>
-<h3>Cons&#233;quences sur la sant&#233; physique</h3>
+L'attention, la mémoire de travail et le temps de réaction sont souvent les premiers touchés. Les émotions s'emballent aussi : les petits agacements prennent plus de place, la patience s'use. Le lien avec l'<a class="text-dream-salmon hover:underline" href="reves-anxiete-signification">anxiété</a> et la déprime va dans les deux sens : le manque de sommeil les aggrave, et elles rendent le sommeil plus difficile.
+</p>
+<h3>Cœur, métabolisme et immunité</h3>
 <p>
-                    Sur le plan syst&#233;mique, les effets de la privation chronique de sommeil sont pr&#233;occupants. Une m&#233;ta-analyse de Cappuccio et al. (2010) a examin&#233; les donn&#233;es de plus de 1,3 million de participants et a constat&#233; que dormir moins de 6 heures par nuit &#233;tait associ&#233; &#224; une <strong>augmentation de 12 % du risque de mortalit&#233; toutes causes confondues</strong>. Plusieurs m&#233;canismes interconnect&#233;s expliquent ce risque :
-                </p>
+Une méta-analyse de 16 études portant sur plus de 1,3 million de personnes a trouvé que les petits dormeurs avaient un risque de décès supérieur de 12 % pendant le suivi, par rapport aux personnes dormant 7 à 8 heures. Les grands dormeurs avaient eux aussi un risque plus élevé : ce sont des associations, pas la preuve que les nuits courtes causent ces décès. D'autres travaux vont dans le même sens :
+</p>
 <ul>
-<li><strong>Syst&#232;me cardiovasculaire :</strong> Le manque chronique de sommeil &#233;l&#232;ve la pression art&#233;rielle, augmente les marqueurs inflammatoires (prot&#233;ine C-r&#233;active, interleukine-6) et acc&#233;l&#232;re l'ath&#233;roscl&#233;rose. Le risque d'infarctus et d'AVC grimpe nettement.</li>
-<li><strong>Sant&#233; m&#233;tabolique :</strong> La privation de sommeil perturbe le m&#233;tabolisme du glucose et la sensibilit&#233; &#224; l'insuline, augmentant le risque de diab&#232;te de type 2. Elle &#233;l&#232;ve aussi la ghr&#233;line (hormone de la faim) et supprime la leptine (hormone de la sati&#233;t&#233;), favorisant la prise de poids.</li>
-<li><strong>Fonction immunitaire :</strong> M&#234;me une restriction mod&#233;r&#233;e du sommeil r&#233;duit l'activit&#233; des cellules tueuses naturelles et la production d'anticorps en r&#233;ponse &#224; la vaccination. La dette de sommeil chronique maintient le syst&#232;me immunitaire dans un &#233;tat d'inflammation de bas grade.</li>
-<li><strong>Sant&#233; mentale :</strong> La relation entre dette de sommeil et d&#233;pression est bidirectionnelle : un mauvais sommeil augmente le risque de d&#233;pression, et la d&#233;pression perturbe le sommeil. La privation chronique augmente &#233;galement le risque de troubles anxieux et de sentiments de d&#233;sespoir.</li>
+<li><strong>Cœur :</strong> des nuits régulièrement courtes sont associées à une tension artérielle et à un risque cardiovasculaire plus élevés.</li>
+<li><strong>Métabolisme :</strong> en laboratoire, la restriction de sommeil diminue la sensibilité à l'insuline et peut augmenter l'appétit.</li>
+<li><strong>Immunité :</strong> dans une étude où des volontaires étaient exposés à un virus du rhume, ceux qui dormaient habituellement moins de 7 heures avaient environ trois fois plus de risques de l'attraper que ceux qui dormaient 8 heures ou plus.</li>
+<li><strong>Santé mentale :</strong> le manque chronique de sommeil va de pair avec un risque accru de dépression et d'anxiété.</li>
 </ul>
-<blockquote class="border-l-4 border-dream-salmon/40 pl-4 italic text-purple-200/70 my-6">
-                    Dormir moins de 6 heures par nuit est associ&#233; &#224; une augmentation de 12 % du risque de mortalit&#233; toutes causes confondues, d'apr&#232;s les donn&#233;es de 1,3 million de participants &#224; travers 16 &#233;tudes. -- Cappuccio et al., Sleep (2010)
-                </blockquote>
-
-<h2 id="repay">Peut-on vraiment rembourser sa dette de sommeil ?</h2>
-<h3>Le mythe du rattrapage du week-end</h3>
+<h3>Quand consulter</h3>
 <p>
-                    Faire la grasse matin&#233;e le week-end -- la strat&#233;gie la plus r&#233;pandue -- n'offre qu'un soulagement partiel. Dormir davantage le samedi et le dimanche peut temporairement restaurer la vigilance et l'humeur, mais les recherches montrent que cela ne peut pas inverser compl&#232;tement les perturbations m&#233;taboliques et hormonales caus&#233;es par une semaine de sommeil insuffisant. Pire, d&#233;caler radicalement son horaire de sommeil le week-end cr&#233;e ce que les chercheurs appellent le &#171; d&#233;calage horaire social &#187;, qui d&#233;stabilise le rythme circadien et rend les lundis matins encore plus p&#233;nibles.
-                </p>
+Parlez-en à un médecin si vous dormez assez d'heures mais vous réveillez épuisé, si votre partenaire remarque des ronflements forts, des suffocations ou des pauses respiratoires, si vous vous endormez au volant, ou si l'insomnie vous tient éveillé la plupart des nuits pendant des semaines. Un trouble du sommeil comme l'apnée du sommeil peut creuser une dette qu'aucune nuit plus longue ne comblera.
+</p>
+<h2 id="repay">Peut-on rembourser sa dette de sommeil ?</h2>
+<h3>Ce que la grasse matinée change, et ce qu'elle ne change pas</h3>
 <p>
-                    Une &#233;tude de 2019 publi&#233;e dans <em>Current Biology</em> a r&#233;v&#233;l&#233; que les participants qui dormaient davantage le week-end apr&#232;s une semaine de nuits de 5 heures montraient une certaine r&#233;cup&#233;ration cognitive, mais leurs marqueurs m&#233;taboliques -- sensibilit&#233; &#224; l'insuline, apport calorique, prise de poids -- &#233;taient tout aussi perturb&#233;s que chez ceux qui n'avaient eu aucun sommeil de r&#233;cup&#233;ration. Les syst&#232;mes m&#233;taboliques du corps, semble-t-il, n&#233;cessitent une r&#233;paration plus constante que ce que le sentiment subjectif de vigilance du cerveau sugg&#232;re.
-                </p>
-<h3>&#192; quoi ressemble une vraie r&#233;cup&#233;ration</h3>
+Dormir plus le week-end soulage la somnolence pour un temps. Cela n'efface pas tout. Dans une étude de laboratoire publiée en 2019, des adultes limités à environ 5 heures par nuit en semaine pouvaient ensuite dormir autant qu'ils le voulaient le week-end. Ce sommeil de récupération n'a pas empêché la baisse de sensibilité à l'insuline observée avec les nuits courtes. De grands écarts d'horaires entre la semaine et le week-end, ce qu'on appelle le « décalage horaire social », peuvent aussi rendre le lundi matin plus difficile.
+</p>
+<h3>À quoi ressemble une vraie récupération</h3>
 <p>
-                    R&#233;cup&#233;rer d'une dette aigu&#235; est simple : quelques nuits de sommeil prolong&#233; (9-10 heures) peuvent largement restaurer les performances cognitives. Mais la dette chronique -- accumul&#233;e sur des semaines ou des mois -- suit une trajectoire diff&#233;rente. Kitamura et al. (2016) ont constat&#233; que les sujets plac&#233;s en conditions de sommeil illimit&#233; n&#233;cessitaient <strong>plusieurs jours cons&#233;cutifs</strong> de sommeil prolong&#233; avant que leurs indicateurs de performance ne se normalisent pleinement. Le cerveau et le corps ont besoin d'un sommeil soutenu et r&#233;gulier -- pas d'une seule session marathon -- pour &#233;ponger l'arri&#233;r&#233;.
-                </p>
+Après une mauvaise nuit, une ou deux nuits plus longues suffisent en général. Pour une dette accumulée sur des semaines, misez sur la régularité plutôt que sur l'exploit : avancez l'heure du coucher par petites étapes, gardez la même heure de lever et laissez-vous plusieurs semaines. Attendez-vous à des rêves vivaces en chemin : c'est souvent le rebond de sommeil paradoxal.
+</p>
+<h2 id="strategies">Comment éviter que la dette de sommeil se reforme</h2>
+<h3>Garder la même heure de lever</h3>
 <p>
-                    Concr&#232;tement, cela signifie que le meilleur &#171; plan de remboursement &#187; pour une dette chronique n'est pas des sessions de rattrapage spectaculaires, mais plut&#244;t un retour progressif &#224; un sommeil nocturne ad&#233;quat. Ajouter 30 &#224; 60 minutes &#224; votre dur&#233;e habituelle de sommeil sur plusieurs semaines permet au corps de r&#233;cup&#233;rer sans perturber la stabilit&#233; circadienne. Pendant cette p&#233;riode de r&#233;cup&#233;ration, attendez-vous au rebond REM : vos r&#234;ves deviendront probablement plus vivaces et &#233;motionnellement intenses &#224; mesure que votre cerveau rattrape le traitement manqu&#233;.
-                </p>
-
-<h2 id="strategies">Strat&#233;gies de pr&#233;vention pour un sommeil sain</h2>
-<h3>&#201;tablir un horaire de sommeil r&#233;gulier</h3>
-<p>
-                    Contre la dette de sommeil, la r&#233;gularit&#233; est l'arme la plus efficace. Se coucher et se r&#233;veiller &#224; la m&#234;me heure chaque jour -- y compris le week-end -- renforce votre rythme circadien et maximise l'efficacit&#233; du sommeil. Les recherches montrent syst&#233;matiquement que la r&#233;gularit&#233; compte plus que la dur&#233;e totale : une personne dormant 7,5 heures &#224; heures fixes surpasse une personne alternant entre 6 et 9 heures.
-                </p>
-<h3>Optimiser votre environnement de sommeil</h3>
-<p>
-                    De petits changements environnementaux peuvent am&#233;liorer notablement la qualit&#233; du sommeil. Maintenez votre chambre fra&#238;che (18-19 degr&#233;s Celsius), sombre et calme. &#201;liminez les &#233;crans au moins 60 minutes avant le coucher, car la lumi&#232;re bleue supprime la production de m&#233;latonine et retarde l'endormissement. Voici quelques ajustements fond&#233;s sur des preuves :
-                </p>
+Se lever à peu près à la même heure chaque jour, week-end compris, stabilise votre horloge interne et facilite l'endormissement le soir. La lumière du jour peu après le réveil aide à ancrer ce rythme.
+</p>
+<h3>Préparer la soirée et la chambre</h3>
 <ul>
-<li><strong>Contr&#244;le de la lumi&#232;re :</strong> Utilisez des rideaux occultants et diminuez les &#233;clairages aux tons chauds dans l'heure pr&#233;c&#233;dant le sommeil. L'exposition &#224; la lumi&#232;re matinale, inversement, aide &#224; ancrer votre horloge circadienne.</li>
-<li><strong>R&#233;gulation de la temp&#233;rature :</strong> Une l&#233;g&#232;re baisse de la temp&#233;rature corporelle signale au cerveau d'initier le sommeil. Une chambre fra&#238;che et une douche chaude avant le coucher (qui, paradoxalement, refroidit le corps ensuite) peuvent acc&#233;l&#233;rer l'endormissement.</li>
-<li><strong>Gestion du bruit :</strong> Un bruit blanc ou des sons de la nature constants peuvent masquer les bruits environnementaux perturbateurs sans fragmenter l'architecture du sommeil.</li>
-<li><strong>Horaire de la caf&#233;ine :</strong> La caf&#233;ine a une demi-vie de 5 &#224; 6 heures. Un caf&#233; &#224; 15 h signifie qu'environ la moiti&#233; de la caf&#233;ine est encore active &#224; 21 h. Fixez-vous une heure limite personnelle, id&#233;alement avant le d&#233;but de l'apr&#232;s-midi.</li>
+<li><strong>Lumière :</strong> baissez l'éclairage dans l'heure qui précède le coucher et occultez les lampadaires de la rue. Les écrans lumineux tard le soir peuvent retarder l'endormissement.</li>
+<li><strong>Température :</strong> une chambre fraîche aide. Une douche tiède avant de dormir aussi, car le corps se refroidit ensuite.</li>
+<li><strong>Bruit :</strong> si la circulation ou les voisins vous réveillent, des bouchons d'oreille ou un fond sonore régulier peuvent aider. Voir notre article sur le <a class="text-dream-salmon hover:underline" href="bruit-nocturne-sommeil-reves">bruit nocturne, le sommeil et les rêves</a>.</li>
+<li><strong>Caféine :</strong> elle reste plusieurs heures dans l'organisme. Fixez-vous une heure limite en début d'après-midi.</li>
 </ul>
-<h3>Le journal de r&#234;ves comme indicateur de sant&#233; du sommeil</h3>
+<h3>Faire une sieste quand les nuits courtes sont inévitables</h3>
 <p>
-                    Vos r&#234;ves sont un barom&#232;tre &#233;tonnamment fiable de votre sant&#233; du sommeil. Un rappel onirique r&#233;gulier et vivace sugg&#232;re que vous atteignez un sommeil paradoxal ad&#233;quat. Une chute soudaine du rappel, ou une p&#233;riode de nuits semblant sans r&#234;ves, peut signaler que la dette de sommeil s'installe. Inversement, une explosion de r&#234;ves intenses et vivaces apr&#232;s une p&#233;riode de mauvais sommeil est un signe classique de rebond REM -- votre cerveau vous signalant qu'il rattrape son retard.
-                </p>
+Jeunes parents, travailleurs postés : on ne peut pas toujours protéger ses nuits. Une courte sieste en début d'après-midi peut rendre un peu de vigilance. Une sieste longue ou tardive risque davantage de vous laisser groggy et de retarder l'endormissement le soir.
+</p>
+<h3>Le journal de rêves, un indice et non un test</h3>
 <p>
-                    Tenir un <a class="text-dream-salmon hover:underline" href="guide-journal-reves">journal de r&#234;ves</a> cr&#233;e un registre objectif de ces tendances. Sur des semaines et des mois, vous pouvez corr&#233;ler la richesse onirique avec la dur&#233;e du sommeil, la r&#233;gularit&#233; du coucher et les facteurs de mode de vie -- transformant vos r&#234;ves nocturnes en donn&#233;es de sant&#233; exploitables.
-                </p>
+Les rêves ne sont pas une mesure médicale. Mais un <a class="text-dream-salmon hover:underline" href="guide-journal-reves">journal de rêves</a> où vous notez aussi vos heures de coucher peut faire apparaître des tendances : des semaines presque sans souvenirs de rêves, puis une vague de rêves vivaces après une grasse matinée. C'est une information utile pour ajuster vos habitudes, et pour votre médecin si vous le consultez.
+</p>
 </div>
 <!-- CTA Section -->
 <aside class="glass-panel rounded-3xl p-8 md:p-10 mt-16 text-center border border-dream-salmon/20">
 <div class="w-16 h-16 bg-dream-salmon/10 rounded-full flex items-center justify-center mx-auto mb-6">
 <i class="w-8 h-8 text-dream-salmon" data-lucide="moon"></i>
 </div>
-<h3 class="font-serif text-2xl md:text-3xl mb-4 text-dream-cream">Vos r&#234;ves r&#233;v&#232;lent votre sant&#233; du sommeil</h3>
+<h3 class="font-serif text-2xl md:text-3xl mb-4 text-dream-cream">Nuits courtes, rêves intenses : voyez le lien par vous-même</h3>
 <p class="text-purple-200/70 mb-6 max-w-lg mx-auto">
-                    Enregistrez vos r&#234;ves par la voix chaque matin, suivez les tendances au fil du temps et laissez l'IA vous aider &#224; comprendre ce que votre vie onirique dit de votre sommeil. R&#233;cup&#233;rez vos nuits, un r&#234;ve &#224; la fois.
-                </p>
+Notez vos rêves dans Noctalia chaque matin, à la voix ou par écrit, avec un mot sur votre nuit. En relisant vos semaines côte à côte, vous verrez quand les rêves vivaces apparaissent et ce qui les précède.
+</p>
 <a class="inline-flex items-center gap-2 px-8 py-4 bg-dream-salmon text-dream-dark rounded-full font-bold hover:bg-dream-salmon/90 transition-colors" href="/fr/">
-                    Commencer votre journal de r&#234;ves <i class="w-5 h-5" data-lucide="arrow-right"></i>
+Commencer mon journal de rêves <i class="w-5 h-5" data-lucide="arrow-right"></i>
 </a>
 </aside>
 <!-- FAQ Section -->
 <section class="mt-16">
-<h2 class="font-serif text-2xl text-dream-cream mb-8">Questions fr&#233;quentes</h2>
+<h2 class="font-serif text-2xl text-dream-cream mb-8">Questions fréquentes</h2>
 <div class="space-y-4">
 <details class="glass-panel rounded-xl p-4 group cursor-pointer">
 <summary class="font-medium flex justify-between items-center text-dream-cream">
-                            Qu'est-ce que la dette de sommeil et comment s'accumule-t-elle ?
-                            <i class="w-5 h-5 transition-transform group-open:rotate-180 text-dream-salmon" data-lucide="chevron-down"></i>
+Qu'est-ce que la dette de sommeil et comment s'accumule-t-elle ?
+<i class="w-5 h-5 transition-transform group-open:rotate-180 text-dream-salmon" data-lucide="chevron-down"></i>
 </summary>
 <p class="mt-4 text-sm text-gray-400 leading-relaxed">
-                            La dette de sommeil est la diff&#233;rence cumulative entre le sommeil dont votre corps a besoin et celui que vous obtenez r&#233;ellement. Si vous avez besoin de 8 heures mais n'en dormez que 6, vous accumulez 2 heures de dette par nuit. Sur une semaine de travail, cela repr&#233;sente un d&#233;ficit de 10 heures. Les recherches montrent qu'apr&#232;s seulement deux semaines &#224; 6 heures par nuit, les d&#233;ficits cognitifs &#233;galent ceux d'une personne &#233;veill&#233;e depuis 48 heures -- pourtant les sujets remarquent &#224; peine le d&#233;clin.
-                        </p>
+C'est l'écart entre le sommeil dont vous avez besoin et celui que vous obtenez, additionné nuit après nuit. Si vous avez besoin de 8 heures et en dormez 6, il vous en manque 2 par nuit, soit 10 sur une semaine de travail. Au bout de quelques jours, on ne se sent souvent pas plus fatigué, alors que l'attention continue de baisser.
+</p>
 </details>
 <details class="glass-panel rounded-xl p-4 group cursor-pointer">
 <summary class="font-medium flex justify-between items-center text-dream-cream">
-                            Peut-on rattraper le sommeil perdu pendant le week-end ?
-                            <i class="w-5 h-5 transition-transform group-open:rotate-180 text-dream-salmon" data-lucide="chevron-down"></i>
+Peut-on rattraper le sommeil perdu pendant le week-end ?
+<i class="w-5 h-5 transition-transform group-open:rotate-180 text-dream-salmon" data-lucide="chevron-down"></i>
 </summary>
 <p class="mt-4 text-sm text-gray-400 leading-relaxed">
-                            Le rattrapage du week-end n'offre qu'une r&#233;cup&#233;ration partielle. Bien que dormir davantage le week-end am&#233;liore temporairement la vigilance et l'humeur, les recherches montrent que cela ne peut pas inverser compl&#232;tement les perturbations m&#233;taboliques, hormonales et cognitives accumul&#233;es durant la semaine. Dormir tard le week-end cr&#233;e aussi un &#171; d&#233;calage horaire social &#187; qui d&#233;stabilise votre rythme circadien et rend les lundis matins encore plus difficiles.
-                        </p>
+En partie seulement. Une grasse matinée soulage la somnolence un moment, mais dans une étude de 2019, le sommeil de récupération du week-end n'a pas empêché les effets métaboliques des nuits courtes de la semaine. Des nuits régulières, un peu plus longues, avec une heure de lever stable, sont plus efficaces.
+</p>
 </details>
 <details class="glass-panel rounded-xl p-4 group cursor-pointer">
 <summary class="font-medium flex justify-between items-center text-dream-cream">
-                            Comment le manque de sommeil affecte-t-il les r&#234;ves ?
-                            <i class="w-5 h-5 transition-transform group-open:rotate-180 text-dream-salmon" data-lucide="chevron-down"></i>
+Comment le manque de sommeil affecte-t-il les rêves ?
+<i class="w-5 h-5 transition-transform group-open:rotate-180 text-dream-salmon" data-lucide="chevron-down"></i>
 </summary>
 <p class="mt-4 text-sm text-gray-400 leading-relaxed">
-                            La privation de sommeil d&#233;clenche un ph&#233;nom&#232;ne appel&#233; <a class="text-dream-salmon hover:underline" href="sommeil-paradoxal-reves">rebond REM</a>. Lorsque vous dormez enfin suffisamment, votre cerveau entre en sommeil paradoxal plus rapidement et y reste plus longtemps, produisant des r&#234;ves inhabituellement vivaces, charg&#233;s d'&#233;motions et parfois d&#233;routants. Pendant la p&#233;riode de privation elle-m&#234;me, le rappel onirique diminue car les plus longues phases de sommeil paradoxal sont les premi&#232;res sacrifi&#233;es lorsque le sommeil est &#233;court&#233;.
-                        </p>
+Pendant que la dette grossit, un réveil matinal coupe les derniers cycles de <a class="text-dream-salmon hover:underline" href="sommeil-paradoxal-reves">sommeil paradoxal</a>, les plus riches en rêves : vous vous en souvenez moins. Quand vous rattrapez, le rebond de sommeil paradoxal apporte souvent des rêves très vivaces et chargés en émotions. C'est en général un signe de récupération, pas un avertissement.
+</p>
+</details>
+<details class="glass-panel rounded-xl p-4 group cursor-pointer">
+<summary class="font-medium flex justify-between items-center text-dream-cream">
+Quand consulter pour une fatigue qui dure ?
+<i class="w-5 h-5 transition-transform group-open:rotate-180 text-dream-salmon" data-lucide="chevron-down"></i>
+</summary>
+<p class="mt-4 text-sm text-gray-400 leading-relaxed">
+Si vous dormez assez d'heures et vous réveillez quand même épuisé, si l'on remarque de forts ronflements ou des pauses respiratoires pendant votre sommeil, si vous vous endormez au volant, ou si l'insomnie dure depuis des semaines. Ces signes peuvent révéler un trouble du sommeil qui se soigne.
+</p>
 </details>
 </div>
 </section>
 <!-- Sources / Trust -->
 <section class="mt-16 glass-panel rounded-2xl p-6" id="sources">
-<h2 class="font-serif text-2xl text-dream-cream mb-4">Sources / Lectures compl&#233;mentaires</h2>
+<h2 class="font-serif text-2xl text-dream-cream mb-4">Sources et lectures</h2>
 <ul class="mt-6 space-y-2 text-sm text-gray-400">
-<li><a href="https://doi.org/10.1093/sleep/26.2.117" rel="nofollow noopener noreferrer" target="_blank">Van Dongen et al. (2003) : The cumulative cost of additional wakefulness: dose-response effects on neurobehavioral functions and sleep physiology (Sleep)</a></li>
-<li><a href="https://doi.org/10.1093/sleep/33.5.585" rel="nofollow noopener noreferrer" target="_blank">Cappuccio et al. (2010) : Sleep duration and all-cause mortality: a systematic review and meta-analysis (Sleep)</a></li>
-<li><a href="https://doi.org/10.5664/jcsm.26918" rel="nofollow noopener noreferrer" target="_blank">Banks &amp; Dinges (2007) : Behavioral and physiological consequences of sleep restriction (Journal of Clinical Sleep Medicine)</a></li>
-<li><a href="https://doi.org/10.1038/srep35812" rel="nofollow noopener noreferrer" target="_blank">Kitamura et al. (2016) : Estimating individual optimal sleep duration and potential sleep debt (Scientific Reports)</a></li>
+<li><a href="https://doi.org/10.5664/jcsm.4758" rel="nofollow noopener noreferrer" target="_blank">Watson et al. (2015), « Recommended Amount of Sleep for a Healthy Adult: A Joint Consensus Statement of the American Academy of Sleep Medicine and Sleep Research Society », <em>Journal of Clinical Sleep Medicine</em></a></li>
+<li><a href="https://doi.org/10.1093/sleep/26.2.117" rel="nofollow noopener noreferrer" target="_blank">Van Dongen et al. (2003), « The cumulative cost of additional wakefulness: dose-response effects on neurobehavioral functions and sleep physiology from chronic sleep restriction and total sleep deprivation », <em>Sleep</em></a></li>
+<li><a href="https://doi.org/10.1038/srep35812" rel="nofollow noopener noreferrer" target="_blank">Kitamura et al. (2016), « Estimating individual optimal sleep duration and potential sleep debt », <em>Scientific Reports</em></a></li>
+<li><a href="https://doi.org/10.5664/jcsm.26918" rel="nofollow noopener noreferrer" target="_blank">Banks et Dinges (2007), « Behavioral and physiological consequences of sleep restriction », <em>Journal of Clinical Sleep Medicine</em></a></li>
+<li><a href="https://doi.org/10.1093/sleep/33.5.585" rel="nofollow noopener noreferrer" target="_blank">Cappuccio et al. (2010), « Sleep duration and all-cause mortality: a systematic review and meta-analysis of prospective studies », <em>Sleep</em></a></li>
+<li><a href="https://pubmed.ncbi.nlm.nih.gov/19139325/" rel="nofollow noopener noreferrer" target="_blank">Cohen et al. (2009), « Sleep habits and susceptibility to the common cold », <em>Archives of Internal Medicine</em></a></li>
+<li><a href="https://doi.org/10.1016/j.cub.2019.01.069" rel="nofollow noopener noreferrer" target="_blank">Depner et al. (2019), « Ad libitum weekend recovery sleep fails to prevent metabolic dysregulation during a repeating pattern of insufficient sleep and weekend recovery sleep », <em>Current Biology</em></a></li>
+<li><a href="https://www.inserm.fr/dossier/sommeil/" rel="nofollow noopener noreferrer" target="_blank">Inserm, dossier « Sommeil »</a></li>
+<li><a href="https://www.nhlbi.nih.gov/health/sleep-apnea/symptoms" rel="nofollow noopener noreferrer" target="_blank">National Heart, Lung, and Blood Institute (NHLBI), « Sleep Apnea: Symptoms »</a></li>
 </ul>
-<p class="mt-6 text-xs text-purple-200/60">Mis &#224; jour le 17 mars 2026</p>
+<p class="mt-6 text-xs text-purple-200/60">Mis à jour le 9 octobre 2026</p>
 </section>
 <!-- Related Symbols Start -->
 <section aria-label="Symboles de r&#234;ves associ&#233;s" class="mt-12 mb-8">

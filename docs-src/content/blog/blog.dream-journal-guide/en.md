@@ -5,7 +5,7 @@
   "lang": "en",
   "slug": "dream-journal-guide",
   "title": "Dream journal: a simple method to start tonight | Noctalia",
-  "description": "How to keep a dream journal, what to write after waking, and how to improve recall without turning mornings into a chore.",
+  "description": "How to keep a dream journal: what to write after waking, a 60-second template, a sample entry and simple habits that help you remember more dreams.",
   "robots": "max-image-preview:large",
   "themeColor": "#0a0514",
   "htmlClass": "scroll-smooth blog-article",
@@ -14,25 +14,25 @@
   "mainClass": "pt-32 pb-20 px-4",
   "ogType": "article",
   "ogTitle": "Dream journal: a simple method to start tonight | Noctalia",
-  "ogDescription": "What to write in a dream journal and how to improve dream recall without making mornings heavy.",
+  "ogDescription": "A 60-second template, a sample entry and simple habits to start a dream journal tonight and remember more of your dreams.",
   "ogImage": "https://noctalia.app/img/blog/dream-journal-guide.webp",
   "ogImageAlt": "Open dream journal with a pen on a wooden bedside table",
   "twitterCard": "summary_large_image",
   "twitterTitle": "Dream journal: start tonight with a simple method | Noctalia",
-  "twitterDescription": "What to write after waking and how to improve dream recall.",
+  "twitterDescription": "What to write after waking, and how to remember more of your dreams.",
   "twitterImage": "https://noctalia.app/img/blog/dream-journal-guide.webp",
   "twitterImageAlt": "Open dream journal with a pen on a wooden bedside table",
   "publishedTime": "2025-12-11",
-  "modifiedTime": "2026-09-01",
+  "modifiedTime": "2026-10-09",
   "author": "Thanh Chau",
   "prevPath": "/en/blog/sleep-paralysis-guide",
   "nextPath": "/en/blog/dreams-mental-health",
   "preloadImage": "/img/blog/dream-journal-guide.webp",
   "jsonLd": [
-    "{\n  \"@context\": \"https://schema.org\",\n  \"@type\": \"BlogPosting\",\n  \"headline\": \"Dream journal: a simple method to start tonight\",\n  \"description\": \"How to keep a dream journal, what to write after waking, and how to improve recall without turning mornings into a chore.\",\n  \"image\": {\n    \"@type\": \"ImageObject\",\n    \"url\": \"https://noctalia.app/img/blog/dream-journal-guide.webp\",\n    \"width\": 1200,\n    \"height\": 630\n  },\n  \"author\": [\n    {\n      \"@type\": \"Person\",\n      \"@id\": \"https://noctalia.app/en/about#person\",\n      \"name\": \"Thanh Chau\",\n      \"jobTitle\": \"Founder & Publication Director\",\n      \"url\": \"https://noctalia.app/en/about\",\n      \"worksFor\": {\n        \"@type\": \"Organization\",\n        \"@id\": \"https://noctalia.app/#organization\",\n        \"name\": \"Noctalia\",\n        \"url\": \"https://noctalia.app\"\n      }\n    },\n    {\n      \"@type\": \"Organization\",\n      \"@id\": \"https://noctalia.app/#organization\",\n      \"name\": \"Noctalia\",\n      \"url\": \"https://noctalia.app\",\n      \"logo\": {\n        \"@type\": \"ImageObject\",\n        \"url\": \"https://noctalia.app/logo/logo_noctalia.png\"\n      }\n    }\n  ],\n  \"publisher\": {\n    \"@type\": \"Organization\",\n    \"name\": \"Noctalia\",\n    \"url\": \"https://noctalia.app\",\n    \"logo\": {\n      \"@type\": \"ImageObject\",\n      \"url\": \"https://noctalia.app/logo/logo_noctalia.png\"\n    }\n  },\n  \"datePublished\": \"2025-12-11\",\n  \"dateModified\": \"2026-09-01\",\n  \"mainEntityOfPage\": {\n    \"@type\": \"WebPage\",\n    \"@id\": \"https://noctalia.app/en/blog/dream-journal-guide\"\n  },\n  \"inLanguage\": \"en\",\n  \"isAccessibleForFree\": true,\n  \"wordCount\": 1156,\n  \"timeRequired\": \"PT4M\",\n  \"url\": \"https://noctalia.app/en/blog/dream-journal-guide\"\n}",
-    "{\n  \"@context\": \"https://schema.org\",\n  \"@type\": \"FAQPage\",\n  \"mainEntity\": [\n    {\n      \"@type\": \"Question\",\n      \"name\": \"How do I start a dream journal?\",\n      \"acceptedAnswer\": {\n        \"@type\": \"Answer\",\n        \"text\": \"Keep your journal or phone beside the bed, set an intention before sleep, wake slowly, and record fragments before you analyze anything.\"\n      }\n    },\n    {\n      \"@type\": \"Question\",\n      \"name\": \"What should I write in a dream journal?\",\n      \"acceptedAnswer\": {\n        \"@type\": \"Answer\",\n        \"text\": \"Write the scene, emotion, people, symbols, colors, body sensations and any waking-life connection. Even a few words are useful.\"\n      }\n    },\n    {\n      \"@type\": \"Question\",\n      \"name\": \"How long does it take to improve dream recall?\",\n      \"acceptedAnswer\": {\n        \"@type\": \"Answer\",\n        \"text\": \"Most people notice better recall after one to two weeks of consistent recording, especially when they write immediately after waking.\"\n      }\n    },\n    {\n      \"@type\": \"Question\",\n      \"name\": \"What if I cannot remember any dreams?\",\n      \"acceptedAnswer\": {\n        \"@type\": \"Answer\",\n        \"text\": \"Write “no dream remembered” and one waking feeling. This keeps the habit active and trains the mind to treat dreams as worth remembering.\"\n      }\n    }\n  ]\n}",
-    "{\n  \"@context\": \"https://schema.org\",\n  \"@type\": \"HowTo\",\n  \"name\": \"How to Start a Dream Journal\",\n  \"description\": \"A simple four-step routine to record dreams before they fade.\",\n  \"step\": [\n    {\n      \"@type\": \"HowToStep\",\n      \"name\": \"Prepare before sleep\",\n      \"text\": \"Place your notebook or phone within arm’s reach and set the intention to remember one detail.\"\n    },\n    {\n      \"@type\": \"HowToStep\",\n      \"name\": \"Wake up slowly\",\n      \"text\": \"Stay still for a few seconds and let images, places or feelings return before moving.\"\n    },\n    {\n      \"@type\": \"HowToStep\",\n      \"name\": \"Record fragments first\",\n      \"text\": \"Capture keywords, emotions and symbols immediately, even if the dream is incomplete.\"\n    },\n    {\n      \"@type\": \"HowToStep\",\n      \"name\": \"Add meaning later\",\n      \"text\": \"After the memory is saved, add context, questions and possible waking-life links.\"\n    }\n  ]\n}",
-    "{\n  \"@context\": \"https://schema.org\",\n  \"@type\": \"BreadcrumbList\",\n  \"itemListElement\": [\n    {\n      \"@type\": \"ListItem\",\n      \"position\": 1,\n      \"name\": \"Home\",\n      \"item\": \"https://noctalia.app/\"\n    },\n    {\n      \"@type\": \"ListItem\",\n      \"position\": 2,\n      \"name\": \"Resources\",\n      \"item\": \"https://noctalia.app/en/blog/\"\n    },\n    {\n      \"@type\": \"ListItem\",\n      \"position\": 3,\n      \"name\": \"Dream Journal Guide\",\n      \"item\": \"https://noctalia.app/en/blog/dream-journal-guide\"\n    }\n  ]\n}"
+    "{\n    \"@context\": \"https://schema.org\",\n    \"@type\": \"BlogPosting\",\n    \"headline\": \"Dream journal: a simple method to start tonight\",\n    \"description\": \"How to keep a dream journal: what to write after waking, a 60-second template, a sample entry and simple habits that help you remember more dreams.\",\n    \"image\": {\n        \"@type\": \"ImageObject\",\n        \"url\": \"https://noctalia.app/img/blog/dream-journal-guide.webp\",\n        \"width\": 1200,\n        \"height\": 630\n    },\n    \"author\": [\n        {\n            \"@type\": \"Person\",\n            \"@id\": \"https://noctalia.app/en/about#person\",\n            \"name\": \"Thanh Chau\",\n            \"jobTitle\": \"Founder & Publication Director\",\n            \"url\": \"https://noctalia.app/en/about\",\n            \"worksFor\": {\n                \"@type\": \"Organization\",\n                \"@id\": \"https://noctalia.app/#organization\",\n                \"name\": \"Noctalia\",\n                \"url\": \"https://noctalia.app\"\n            }\n        },\n        {\n            \"@type\": \"Organization\",\n            \"@id\": \"https://noctalia.app/#organization\",\n            \"name\": \"Noctalia\",\n            \"url\": \"https://noctalia.app\",\n            \"logo\": {\n                \"@type\": \"ImageObject\",\n                \"url\": \"https://noctalia.app/logo/logo_noctalia.png\"\n            }\n        }\n    ],\n    \"publisher\": {\n        \"@type\": \"Organization\",\n        \"name\": \"Noctalia\",\n        \"url\": \"https://noctalia.app\",\n        \"logo\": {\n            \"@type\": \"ImageObject\",\n            \"url\": \"https://noctalia.app/logo/logo_noctalia.png\"\n        }\n    },\n    \"datePublished\": \"2025-12-11\",\n    \"dateModified\": \"2026-10-09\",\n    \"mainEntityOfPage\": {\n        \"@type\": \"WebPage\",\n        \"@id\": \"https://noctalia.app/en/blog/dream-journal-guide\"\n    },\n    \"inLanguage\": \"en\",\n    \"isAccessibleForFree\": true,\n    \"wordCount\": 2169,\n    \"timeRequired\": \"PT10M\",\n    \"url\": \"https://noctalia.app/en/blog/dream-journal-guide\"\n}",
+    "{\n    \"@context\": \"https://schema.org\",\n    \"@type\": \"FAQPage\",\n    \"mainEntity\": [\n        {\n            \"@type\": \"Question\",\n            \"name\": \"How do I start a dream journal?\",\n            \"acceptedAnswer\": {\n                \"@type\": \"Answer\",\n                \"text\": \"Keep a notebook or your phone within reach. When you wake up, before you get up or check messages, note where you were, what you felt and the image that stayed. A fragment counts as an entry.\"\n            }\n        },\n        {\n            \"@type\": \"Question\",\n            \"name\": \"What should I write in a dream journal?\",\n            \"acceptedAnswer\": {\n                \"@type\": \"Answer\",\n                \"text\": \"The date, what happened, the main emotion, the people and the place. Add words, colors or body sensations if they come back, and keep any interpretation apart from the dream itself.\"\n            }\n        },\n        {\n            \"@type\": \"Question\",\n            \"name\": \"How long does it take to improve dream recall?\",\n            \"acceptedAnswer\": {\n                \"@type\": \"Answer\",\n                \"text\": \"There is no fixed timeframe. Research suggests that keeping a morning log can increase recall in itself, but how much and how fast varies from person to person.\"\n            }\n        },\n        {\n            \"@type\": \"Question\",\n            \"name\": \"What if I can't remember any dreams?\",\n            \"acceptedAnswer\": {\n                \"@type\": \"Answer\",\n                \"text\": \"Write “no dream remembered” and how you feel on waking, without inventing a scene. Not remembering doesn't mean you didn't dream: recall varies a lot between people and from week to week.\"\n            }\n        },\n        {\n            \"@type\": \"Question\",\n            \"name\": \"Should I write my dream journal or record it by voice?\",\n            \"acceptedAnswer\": {\n                \"@type\": \"Answer\",\n                \"text\": \"Use whichever you will keep doing. Voice is fastest when you are barely awake; writing by hand can slow you down usefully. Many people combine a voice note with a written reread later.\"\n            }\n        }\n    ]\n}",
+    "{\n    \"@context\": \"https://schema.org\",\n    \"@type\": \"HowTo\",\n    \"name\": \"How to start a dream journal\",\n    \"description\": \"A simple routine to note your dreams before they fade.\",\n    \"step\": [\n        {\n            \"@type\": \"HowToStep\",\n            \"name\": \"Prepare before sleep\",\n            \"text\": \"Put a notebook or your phone within reach, write the date and calmly set the intention to remember a dream.\"\n        },\n        {\n            \"@type\": \"HowToStep\",\n            \"name\": \"Wake up slowly\",\n            \"text\": \"Stay still for a few seconds and let images, places or feelings come back before you move or check your messages.\"\n        },\n        {\n            \"@type\": \"HowToStep\",\n            \"name\": \"Note fragments first\",\n            \"text\": \"Write or say where you were, what you felt and the image that stayed, even if the dream is incomplete.\"\n        },\n        {\n            \"@type\": \"HowToStep\",\n            \"name\": \"Reread later\",\n            \"text\": \"Once a week, reread your entries side by side and note what comes back, keeping interpretations as questions.\"\n        }\n    ]\n}",
+    "{\n    \"@context\": \"https://schema.org\",\n    \"@type\": \"BreadcrumbList\",\n    \"itemListElement\": [\n        {\n            \"@type\": \"ListItem\",\n            \"position\": 1,\n            \"name\": \"Home\",\n            \"item\": \"https://noctalia.app/\"\n        },\n        {\n            \"@type\": \"ListItem\",\n            \"position\": 2,\n            \"name\": \"Resources\",\n            \"item\": \"https://noctalia.app/en/blog/\"\n        },\n        {\n            \"@type\": \"ListItem\",\n            \"position\": 3,\n            \"name\": \"Dream journal guide\",\n            \"item\": \"https://noctalia.app/en/blog/dream-journal-guide\"\n        }\n    ]\n}"
   ],
   "activeNav": "resources"
 }
@@ -52,7 +52,7 @@
 </li>
 <li class="text-purple-400">/</li>
 <li itemprop="itemListElement" itemscope="" itemtype="https://schema.org/ListItem">
-<span class="text-dream-cream" itemprop="name">Dream Journal Guide</span>
+<span class="text-dream-cream" itemprop="name">Dream journal guide</span>
 <meta content="3" itemprop="position">
 </li>
 </ol>
@@ -60,17 +60,17 @@
 <!-- Article Header -->
 <header class="mb-12">
 <div class="flex flex-wrap items-center gap-3 mb-6">
-<span class="text-xs font-mono text-dream-salmon border border-dream-salmon/30 rounded-full px-3 py-1 uppercase">Complete Guide</span>
+<span class="text-xs font-mono text-dream-salmon border border-dream-salmon/30 rounded-full px-3 py-1 uppercase">Complete guide</span>
 <a class="text-xs font-mono text-purple-200/70 border border-white/10 rounded-full px-3 py-1 hover:text-white hover:border-dream-salmon/30 transition-colors" href="dream-journal">Topic: Dream journaling</a>
 <span aria-hidden="true" class="w-full sm:hidden"></span>
 <span class="text-sm text-purple-300/60">Published December 11, 2025</span>
-<span class="text-sm text-purple-300/60">4 min read</span>
+<span class="text-sm text-purple-300/60">10 min read</span>
 </div>
 <h1 class="font-serif text-3xl md:text-5xl mb-6 text-transparent bg-clip-text bg-gradient-to-b from-white via-dream-lavender to-purple-400/50 leading-tight">
                     Dream journal: a simple method to start tonight
                 </h1>
 <p class="text-lg text-purple-200/80 leading-relaxed">
-                    A dream journal captures dream images before they disappear: place, emotion, people, strange phrase, body sensation on waking. You do not need three pages every morning. A voice note, five keywords and one emotion are enough to train recall and spot recurring patterns.
+                    You wake up with a whole scene still there: a corridor, a familiar voice, a feeling you can't name. By the time the alarm is off, half of it has gone. A dream journal is how you keep it. A few words, the main emotion and one question are enough to start tonight, and to see over the weeks what comes back.
                 </p>
 </header>
 <!-- Author Byline (E-E-A-T) -->
@@ -87,18 +87,18 @@
 <!-- Quick Answer (AI SEO) -->
 <section class="glass-panel rounded-2xl p-6 mb-8 border border-dream-salmon/20 bg-white/5" aria-labelledby="quick-answer-title">
     <h2 id="quick-answer-title" class="font-serif text-xl text-dream-cream mb-3">Quick answer</h2>
-    <p class="text-purple-100/80 leading-relaxed">To start a dream journal, write the date, three details, the dominant emotion and one question. Do it within two minutes of waking, before checking your phone. Consistency matters more than length.</p>
+    <p class="text-purple-100/80 leading-relaxed">Keep a notebook or your phone within reach. When you wake up, before you get out of bed or read a message, note four things: where you were, what you felt, the image that stayed and one question. A fragment counts. Writing most mornings matters more than writing a lot, and interpretation can wait until the dream is safely on the page.</p>
 </section>
 <!-- GSC SEO Update: dream journal template -->
 <section class="glass-panel rounded-2xl p-6 mb-10 border border-white/10 bg-white/5">
-    <h2 class="font-serif text-2xl text-dream-cream mb-4">60-second dream journal template</h2>
+    <h2 class="font-serif text-2xl text-dream-cream mb-4">A 60-second dream journal template</h2>
     <div class="grid md:grid-cols-2 gap-4 text-sm text-gray-300">
-        <div class="glass-panel rounded-xl p-4"><h3 class="text-dream-cream font-medium mb-2">1. The setting</h3><p>Where were you? House, school, road, hospital, forest, unknown place.</p></div>
-        <div class="glass-panel rounded-xl p-4"><h3 class="text-dream-cream font-medium mb-2">2. The emotion</h3><p>Write the raw feeling: fear, calm, shame, curiosity, relief.</p></div>
-        <div class="glass-panel rounded-xl p-4"><h3 class="text-dream-cream font-medium mb-2">3. The symbol</h3><p>Choose the image that stayed: water, door, dog, house, falling, a person.</p></div>
-        <div class="glass-panel rounded-xl p-4"><h3 class="text-dream-cream font-medium mb-2">4. The question</h3><p>Ask: “What does this resemble in my waking life?”</p></div>
+        <div class="glass-panel rounded-xl p-4"><h3 class="text-dream-cream font-medium mb-2">1. The setting</h3><p>Where were you? A house, a school, a road, a station, somewhere you've never been.</p></div>
+        <div class="glass-panel rounded-xl p-4"><h3 class="text-dream-cream font-medium mb-2">2. The emotion</h3><p>Name the raw feeling, even if it doesn't match the scene: fear, calm, shame, curiosity, relief.</p></div>
+        <div class="glass-panel rounded-xl p-4"><h3 class="text-dream-cream font-medium mb-2">3. The image</h3><p>Pick the detail that stayed with you: water, a door, a dog, a staircase, a face.</p></div>
+        <div class="glass-panel rounded-xl p-4"><h3 class="text-dream-cream font-medium mb-2">4. The question</h3><p>Optional: “Does this remind me of anything from yesterday?”</p></div>
     </div>
-    <p class="text-sm text-purple-200/70 mt-4">After recording the raw memory, use the <a class="text-dream-salmon hover:underline" href="/en/voice-dream-journal">voice dream journal</a> for fast capture, then compare nearby meanings in the <a class="text-dream-salmon hover:underline" href="/en/guides/dream-symbols-dictionary">dream symbols dictionary</a> or explore the entry with the <a class="text-dream-salmon hover:underline" href="/en/ai-dream-interpretation-app">AI dream interpretation app</a>.</p>
+    <p class="text-sm text-purple-200/70 mt-4">Sixty seconds is a guide, not a deadline. Half asleep, the <a class="text-dream-salmon hover:underline" href="/en/voice-dream-journal">voice dream journal</a> lets you say it out loud. Later, the <a class="text-dream-salmon hover:underline" href="/en/guides/dream-symbols-dictionary">dream symbols dictionary</a> and the <a class="text-dream-salmon hover:underline" href="/en/ai-dream-interpretation-app">AI dream interpretation app</a> suggest possible readings. Neither decides what your dream means.</p>
 </section>
 <!-- Featured Image -->
 
@@ -108,115 +108,68 @@
 <!-- Table of Contents -->
 <nav class="glass-panel rounded-2xl p-6 mb-12">
 <h2 class="font-serif text-lg text-dream-cream mb-4 flex items-center gap-2">
-<i class="w-5 h-5 text-dream-salmon" data-lucide="list"></i> Table of Contents
+<i class="w-5 h-5 text-dream-salmon" data-lucide="list"></i> Table of contents
                 </h2>
 <ol class="space-y-2 text-sm text-purple-200/70">
-<li><a class="toc-link block" href="#why-journal">1. Why keep a dream journal?</a></li>
-<li><a class="toc-link block" href="#science">2. The science of dream memory</a></li>
-<li><a class="toc-link block" href="#getting-started">3. Getting started</a></li>
-<li><a class="toc-link block" href="#what-to-record">4. What to record</a></li>
-<li><a class="toc-link block" href="#techniques">5. Techniques to boost recall</a></li>
-<li><a class="toc-link block" href="#formats">6. Journal formats</a></li>
-<li><a class="toc-link block" href="#analysis">7. Analyzing your dreams</a></li>
-<li><a class="toc-link block" href="#common-mistakes">8. Common mistakes to avoid</a></li>
+<li><a class="toc-link block" href="#why-journal">1. What is a dream journal for?</a></li>
+<li><a class="toc-link block" href="#science">2. What research says about dream recall</a></li>
+<li><a class="toc-link block" href="#getting-started">3. How to start tonight</a></li>
+<li><a class="toc-link block" href="#what-to-record">4. What to write in your dream journal</a></li>
+<li><a class="toc-link block" href="#techniques">5. How to remember more in the morning</a></li>
+<li><a class="toc-link block" href="#formats">6. Notebook, voice, app or sketches?</a></li>
+<li><a class="toc-link block" href="#analysis">7. How to reread your journal</a></li>
+<li><a class="toc-link block" href="#common-mistakes">8. Common mistakes, and when to see a doctor</a></li>
 </ol>
 </nav>
 <!-- Article Content -->
-
-<!-- GSC Visible FAQ -->
-
-<!-- GSC Visible FAQ -->
-<section class="glass-panel rounded-2xl p-6 my-10 border border-white/10">
-<h2 class="font-serif text-2xl text-dream-cream mb-4">Frequently asked questions</h2>
-<div class="grid gap-4">
-<div class="glass-panel rounded-xl p-5 border border-white/10">
-<h3 class="font-serif text-lg text-dream-cream mb-2">How do I start a dream journal?</h3>
-<p class="text-sm text-gray-300 leading-relaxed">Keep your journal or phone beside the bed, set an intention before sleep, wake slowly, and record fragments before you analyze anything.</p>
-</div>
-
-<div class="glass-panel rounded-xl p-5 border border-white/10">
-<h3 class="font-serif text-lg text-dream-cream mb-2">What should I write in a dream journal?</h3>
-<p class="text-sm text-gray-300 leading-relaxed">Write the scene, emotion, people, symbols, colors, body sensations and any waking-life connection. Even a few words are useful.</p>
-</div>
-
-<div class="glass-panel rounded-xl p-5 border border-white/10">
-<h3 class="font-serif text-lg text-dream-cream mb-2">How long does it take to improve dream recall?</h3>
-<p class="text-sm text-gray-300 leading-relaxed">Most people notice better recall after one to two weeks of consistent recording, especially when they write immediately after waking.</p>
-</div>
-
-<div class="glass-panel rounded-xl p-5 border border-white/10">
-<h3 class="font-serif text-lg text-dream-cream mb-2">What if I cannot remember any dreams?</h3>
-<p class="text-sm text-gray-300 leading-relaxed">Write “no dream remembered” and one waking feeling. This keeps the habit active and trains the mind to treat dreams as worth remembering.</p>
-</div>
-</div>
-</section>
-
 <div class="prose max-w-none text-gray-300">
-<h2 id="why-journal">Why Keep a Dream Journal for Better Sleep?</h2>
+<h2 id="why-journal">What is a dream journal for?</h2>
 <p>
-                    Dream journaling isn't just for lucid dreamers or psychology enthusiasts. It's a <strong>powerful tool for self-discovery</strong> that anyone can benefit from. Here's why millions of people around the world maintain dream journals:
+                    A dream journal keeps what you would otherwise lose within minutes of waking, and lets you compare dreams instead of relying on memory. People keep one out of curiosity, for writing or drawing material, to prepare for <a class="text-dream-salmon hover:underline" href="lucid-dreaming-beginners-guide">lucid dreaming</a>, or to see what comes back.
                 </p>
-<h3>Dream Journaling for Personal Growth</h3>
+<h3>What you can notice over time</h3>
 <ul>
-<li><strong>Process emotions:</strong> Dreams often reflect unprocessed feelings and experiences</li>
-<li><strong>Identify patterns:</strong> Recurring themes reveal ongoing concerns or interests</li>
-<li><strong>Problem solving:</strong> Your subconscious works on challenges while you sleep</li>
-<li><strong>Self-awareness:</strong> Understand your fears, desires, and hidden thoughts</li>
+<li><strong>Recurring scenes:</strong> the same places, people or situations</li>
+<li><strong>Emotions:</strong> a feeling that returns more often than any image</li>
+<li><strong>Links with your days:</strong> a deadline, a move, a tense conversation</li>
+<li><strong>Dream signs:</strong> personal clues that lucid dreamers learn to spot</li>
 </ul>
-<h3>Practical Benefits of Recording Dreams</h3>
+<h3>What it won't do</h3>
+<p>
+                    A journal is not a test or a treatment. One entry proves nothing, and a recurring image does not hide a fixed message. Its value comes from regular observation, with what you remember kept apart from what you think it means.
+                </p>
+<h2 id="science">What research says about dream recall</h2>
+<h3>Why dreams fade so fast</h3>
+<p>
+                    In sleep labs, people who say they rarely dream usually report a dream when woken during <strong><a class="text-dream-salmon hover:underline" href="rem-sleep-dreams">REM sleep</a></strong>. What varies is recall. Work by Perrine Ruby's team at Inserm, in Lyon, suggests the sleeping brain stores new memories poorly: a dream seems to need a brief moment of wakefulness to be kept. Frequent recallers also wake up more during the night.
+                </p>
+<p>
+                    On waking, the dream is within reach for a moment, then your attention moves to the alarm or the day ahead and it slips away. Reviews such as De Gennaro and colleagues (2012) link recall to the sleep stage you wake from. Timing varies between people, so treat any precise “five-minute rule” with caution.
+                </p>
+<h3>Does keeping a journal actually help?</h3>
+<p>
+                    Probably, yes. In a 2015 review, Aspy and colleagues found that people report more dreams in a morning logbook than when they estimate their recall afterwards, and that keeping a log seems to increase recall in itself. No study promises a number of dreams per night or a fixed timeframe. For the full picture, read <a class="text-dream-salmon hover:underline" href="why-we-forget-dreams">why we forget our dreams</a>.
+                </p>
+<h2 id="getting-started">How to start a dream journal tonight</h2>
+<p>
+                    Two minutes of setup: make noting a dream easier than not noting it.
+                </p>
+<h3>Step 1: choose a method you'll actually use</h3>
 <ul>
-<li><strong>Improved memory:</strong> Training dream recall strengthens overall memory</li>
-<li><strong>Better sleep awareness:</strong> Notice patterns affecting sleep quality</li>
-<li><strong>Creative inspiration:</strong> Dreams are an endless source of ideas</li>
-<li><strong>Lucid dreaming foundation:</strong> Essential first step for dream control</li>
+<li><strong>Voice:</strong> the fastest when your eyes are barely open</li>
+<li><strong>Paper:</strong> writing by hand slows some people down in a useful way</li>
+<li><strong>An app:</strong> easier to search, tag and reread side by side</li>
+<li><strong>A mix:</strong> a voice note in bed, a few written lines over breakfast</li>
 </ul>
-<p>
-                    A dream journal can support recall and help a person notice recurring themes over time. Its value comes from consistent observation rather than from revealing a single hidden meaning.
-                </p>
-<h2 id="science">The Science of Dream Memory and Recall</h2>
-<p>
-                    Understanding why dreams fade so quickly helps you capture them more effectively. Here's what happens in your brain:
-                </p>
-<h3>Why We Forget Dreams After Waking Up</h3>
-<p>
-                    Dreams occur primarily during <strong><a class="text-dream-salmon hover:underline" href="rem-sleep-dreams">REM sleep</a></strong>, when your hippocampus (memory center) is less active than during waking hours. This reduced activity means dreams aren't consolidated into long-term memory the same way waking experiences are.
-                </p>
-<p>
-                    Upon waking:
-                </p>
+<h3>Step 2: get your bedside ready</h3>
 <ul>
-<li><strong>Norepinephrine levels</strong> surge, shifting your brain into "awake mode" and pushing dream content aside</li>
-<li><strong>New sensory input</strong> immediately begins overwriting dream memories</li>
-<li><strong>The prefrontal cortex</strong> activates logical thinking, which can "dismiss" illogical dream content</li>
+<li>Notebook and a working pen, or your phone, <strong>within arm's reach</strong></li>
+<li>On a phone, open the journal directly so notifications don't grab you first</li>
+<li>Write the date before bed, so the morning entry only needs the dream</li>
 </ul>
-<h3>The 5-Minute Window to Capture Dreams</h3>
+<h3>Step 3: set a simple intention</h3>
 <p>
-                    Research shows that <strong>within 5 minutes of waking</strong>, 50% of dream content is forgotten. After 10 minutes, up to 90% is gone. This is why capturing dreams immediately upon waking is crucial.
-                </p>
-<p>
-                    The good news? <strong>Dream recall is trainable</strong>. Studies show that consistent journaling increases dream recall from an average of 0.5 dreams per night to 2-4 dreams within weeks.
-                </p>
-<h2 id="getting-started">How to Start a Dream Journal Tonight</h2>
-<p>
-                    Starting a dream journal is simple, but doing it effectively requires the right setup:
-                </p>
-<h3>Step 1: Choose Your Dream Recording Method</h3>
-<ul>
-<li><strong>Voice recording:</strong> Fastest method, ideal for capturing details before they fade</li>
-<li><strong>Physical journal:</strong> Many find handwriting helps processing and memory</li>
-<li><strong>Digital app:</strong> Searchable, organized, with features like tagging</li>
-<li><strong>Combination:</strong> Voice record immediately, transcribe later</li>
-</ul>
-<h3>Step 2: Set Up Your Bedside Journal Space</h3>
-<ul>
-<li>Place your journal/phone <strong>within arm's reach</strong> of your bed</li>
-<li>If using a pen, ensure it works (test it nightly)</li>
-<li>Consider a <strong>dim light</strong> or backlit device to avoid fully waking</li>
-<li>Keep the recording barrier as low as possible</li>
-</ul>
-<h3>Step 3: Set Your Dream Recall Intention</h3>
-<p>
-                    Before sleep, tell yourself: <strong>"I will remember my dreams."</strong> This simple intention-setting has been shown to measurably improve dream recall. Visualize yourself waking up and recording your dreams.
+                    As you settle down, tell yourself calmly that you'd like to remember a dream tomorrow, and picture yourself reaching for the journal. Don't make it a challenge: a restful night matters more than a full page.
                 </p>
 <aside class="glass-panel rounded-2xl p-6 my-8 border border-dream-salmon/20">
 <div class="flex items-start gap-4">
@@ -224,42 +177,46 @@
 <i class="w-6 h-6 text-dream-salmon" data-lucide="mic"></i>
 </div>
 <div>
-<h4 class="font-serif text-lg text-dream-cream mb-2">The easiest way to journal</h4>
-<p class="text-sm text-gray-400 mb-4">Noctalia lets you capture dreams with your voice the moment you wake up, then save the transcript, symbols and AI reflection in one Android journal.</p>
+<h4 class="font-serif text-lg text-dream-cream mb-2">Say it before it fades</h4>
+<p class="text-sm text-gray-400 mb-4">In Noctalia, you tell your dream out loud the moment you wake up. It is transcribed and saved in your journal, ready to reread when you are properly awake.</p>
 <a class="inline-flex items-center gap-2 text-sm text-dream-salmon hover:text-dream-salmonLight transition-colors" href="/en/voice-dream-journal">
                                 See the voice dream journal <i class="w-4 h-4" data-lucide="arrow-right"></i>
 </a>
 </div>
 </div>
 </aside>
-<h2 id="what-to-record">What to Write in Your Dream Journal</h2>
+<h2 id="what-to-record">What to write in your dream journal</h2>
 <p>
-                    A comprehensive dream entry captures more than just the story. Here's what to include:
+                    A useful entry keeps what you remember apart from what you think it means. Use the same headings every time: rereading gets much easier.
                 </p>
-<h3>Essential Dream Journal Entry Elements</h3>
+<h3>The essentials</h3>
 <ul>
-<li><strong>Date and time:</strong> Track patterns in when vivid dreams occur</li>
-<li><strong>Narrative:</strong> The story of what happened, in present tense</li>
-<li><strong>Emotions:</strong> How you felt during and after the dream</li>
-<li><strong>Characters:</strong> Who appeared - real people, strangers, yourself</li>
-<li><strong>Settings:</strong> Where it took place - familiar, strange, specific locations</li>
+<li><strong>Date</strong>, and roughly when you woke up</li>
+<li><strong>What happened</strong>, in your own words</li>
+<li><strong>Emotion</strong> in the dream and on waking, which can differ</li>
+<li><strong>People and place:</strong> known, unknown or invented</li>
 </ul>
-<h3>Additional Dream Details to Record</h3>
+<h3>Details worth adding if they come back</h3>
 <ul>
-<li><strong>Colors:</strong> Vivid colors often carry significance</li>
-<li><strong>Symbols:</strong> Objects, animals, or recurring elements - consult our <a class="text-dream-salmon hover:underline" href="../guides/dream-symbols-dictionary">dream symbols dictionary</a> to decode common motifs</li>
-<li><strong>Dialogue:</strong> Any words spoken or heard</li>
-<li><strong>Physical sensations:</strong> Touch, temperature, movement</li>
-<li><strong>Lucidity level:</strong> Were you aware you were dreaming?</li>
-</ul>
-<h3>Context Notes for Dream Analysis</h3>
-<ul>
-<li><strong>Sleep quality:</strong> How well did you sleep?</li>
-<li><strong>Waking life connections:</strong> Events from the previous day</li>
-<li><strong>Dream signs:</strong> Elements that could indicate dreaming</li>
+<li><strong>Words:</strong> a sentence spoken or heard</li>
+<li><strong>Sensations:</strong> a color, a sound, cold, falling</li>
+<li><strong>Objects</strong> that stood out, to compare later with the <a class="text-dream-salmon hover:underline" href="../guides/dream-symbols-dictionary">dream symbols dictionary</a></li>
+<li><strong>Lucidity:</strong> did you know you were dreaming?</li>
 </ul>
 <p>
-                    If meetings, deadlines or colleagues recur, compare those entries with the waking-life questions in our guide to <a class="text-dream-salmon hover:underline" href="stress-dreams-work">dreaming about work</a>.
+                    Add a line of context if you like: how you slept, what was on your mind the day before. If meetings or deadlines keep turning up, compare those entries with our guide to <a class="text-dream-salmon hover:underline" href="stress-dreams-work">dreaming about work</a>.
+                </p>
+<h3>A fictional example entry</h3>
+<p><strong>Fictional example:</strong> a few lines are enough.</p>
+<ul>
+<li><strong>Date:</strong> March 12, alarm at 6:45</li>
+<li><strong>Dream:</strong> “A house I don't know. Some doors are locked. I'm looking for a key, but I'm not scared.”</li>
+<li><strong>Emotion:</strong> “Curious, a bit tense. Calm on waking.”</li>
+<li><strong>Context:</strong> “Second week at the new job.”</li>
+<li><strong>Question:</strong> “Does the locked house come back on other weeks?”</li>
+</ul>
+<p>
+                    The entry does not decide what the <a class="text-dream-salmon hover:underline" href="../symbols/house">house</a> means. That can wait until you have several entries to compare.
                 </p>
 </div>
 <!-- Tip Cards -->
@@ -269,10 +226,10 @@
 <div class="p-2 bg-purple-500/20 rounded-lg">
 <i class="w-5 h-5 text-purple-300" data-lucide="clock"></i>
 </div>
-<h3 class="font-serif text-lg text-dream-cream">Record immediately</h3>
+<h3 class="font-serif text-lg text-dream-cream">Note it before you move</h3>
 </div>
 <p class="text-sm text-gray-300 mb-3">
-                        Don't wait even one minute. Start recording the moment you wake, even before opening your eyes if possible.
+                        Capture the dream before you get up, check the time or open a message.
                     </p>
 </div>
 <div class="tip-card glass-panel rounded-xl p-6 border border-transparent">
@@ -280,10 +237,10 @@
 <div class="p-2 bg-purple-500/20 rounded-lg">
 <i class="w-5 h-5 text-purple-300" data-lucide="feather"></i>
 </div>
-<h3 class="font-serif text-lg text-dream-cream">Write in present tense</h3>
+<h3 class="font-serif text-lg text-dream-cream">Present tense, if it helps</h3>
 </div>
 <p class="text-sm text-gray-300 mb-3">
-                        "I'm walking through a forest" keeps you connected to the dream experience more than past tense.
+                        “I'm walking through a forest” keeps the scene vivid. If the past tense comes more naturally, use it.
                     </p>
 </div>
 <div class="tip-card glass-panel rounded-xl p-6 border border-transparent">
@@ -291,10 +248,10 @@
 <div class="p-2 bg-purple-500/20 rounded-lg">
 <i class="w-5 h-5 text-purple-300" data-lucide="puzzle"></i>
 </div>
-<h3 class="font-serif text-lg text-dream-cream">Record fragments</h3>
+<h3 class="font-serif text-lg text-dream-cream">Keep the fragments</h3>
 </div>
 <p class="text-sm text-gray-300 mb-3">
-                        Even a single image, feeling, or word is worth recording. Fragments often trigger fuller memories.
+                        One image or one feeling is a real entry. Writing it down often brings back a little more.
                     </p>
 </div>
 <div class="tip-card glass-panel rounded-xl p-6 border border-transparent">
@@ -302,141 +259,149 @@
 <div class="p-2 bg-purple-500/20 rounded-lg">
 <i class="w-5 h-5 text-purple-300" data-lucide="tag"></i>
 </div>
-<h3 class="font-serif text-lg text-dream-cream">Title your dreams</h3>
+<h3 class="font-serif text-lg text-dream-cream">Give it a title</h3>
 </div>
 <p class="text-sm text-gray-300 mb-3">
-                        A memorable title makes dreams easier to recall and reference later. Be creative!
+                        A short title, such as “The locked house”, makes an entry easy to find and compare.
                     </p>
 </div>
 </div>
 <div class="prose max-w-none text-gray-300">
-<h2 id="techniques">Techniques to Boost Dream Recall Fast</h2>
+<h2 id="techniques">How to remember more of your dreams in the morning</h2>
 <p>
-	                    If you're struggling to remember dreams, these proven techniques can dramatically improve recall. For a dedicated walkthrough, read <a class="text-dream-salmon hover:underline" href="why-we-forget-dreams">how to remember dreams</a>:
-	                </p>
-<h3>Wake-Up Strategies for Dream Memory</h3>
+                    If your mornings come up empty, these habits help. For more, read <a class="text-dream-salmon hover:underline" href="how-to-remember-dreams">how to remember your dreams</a>.
+                </p>
+<h3>In the first minute</h3>
 <ol>
-<li><strong>Stay still:</strong> Don't move when you wake up. Movement signals your brain to shift focus</li>
-<li><strong>Keep eyes closed:</strong> Visual input overwrites dream memories</li>
-<li><strong>Retrace the dream:</strong> Work backwards from the last thing you remember</li>
-<li><strong>Change positions:</strong> Sometimes returning to your sleep position triggers recall</li>
+<li><strong>Stay still</strong> with your eyes closed: moving tends to cut the thread</li>
+<li><strong>Work backwards</strong> from the last image: what happened just before?</li>
+<li><strong>Note a keyword first</strong>, then fill in the rest</li>
 </ol>
-<h3>Optimize Your Sleep Schedule for Dreams</h3>
+<h3>Protect your sleep</h3>
 <ul>
-<li><strong>Set intention alarms:</strong> Wake up 5-6 hours into sleep (during REM)</li>
-<li><strong>Practice WBTB:</strong> Wake up, record, go back to sleep</li>
-<li><strong>Sleep longer:</strong> More sleep = more REM = more dreams to remember</li>
-<li><strong>Consistent schedule:</strong> Regular sleep patterns improve dream clarity</li>
+<li><strong>Sleep long enough:</strong> the longest REM periods come toward the end of the night</li>
+<li><strong>Go easy on alcohol in the evening:</strong> it reduces REM sleep early in the night and fragments the second half</li>
+<li><strong>Choose a gentle alarm</strong>, or wake naturally on days off</li>
 </ul>
-<h3>Pre-Sleep Practices for Better Dreams</h3>
+<p>
+                    Avoid extra alarms just to collect dreams: broken sleep has a cost. If you wake in the night anyway, a short note is fine; if writing keeps you awake, choose sleep. See our article on <a class="text-dream-salmon hover:underline" href="night-waking-dream-recall">night waking and dream recall</a>.
+                </p>
+<h3>Before falling asleep</h3>
+<p>
+                    Reread one or two recent entries, set the intention without pressure, and leave the journal open with the date already written.
+                </p>
+<h2 id="formats">Notebook, voice, app or sketches: which format suits you?</h2>
+<p>
+                    The best format is the one you can manage half awake. You can switch along the way.
+                </p>
+<h3>Free writing</h3>
+<p>
+                    Everything as it comes. Good at catching a dream's atmosphere, harder to compare later.
+                </p>
+<h3>A short template</h3>
+<p>
+                    The same headings every morning: date, scene, emotion, image, question. Ideal for seeing what comes back.
+                </p>
+<h3>Sketches</h3>
+<p>
+                    A floor plan, a creature, a rough map. A drawing can hold what words miss.
+                </p>
+<h3>Voice notes and apps</h3>
+<p>
+                    Speaking takes seconds and works in the dark. An app adds search and tags, and lets you reread dreams side by side. Check names and odd words in any transcript.
+                </p>
+<h2 id="analysis">How to reread your dream journal</h2>
+<p>
+                    Meaning, if there is any, tends to appear when several dreams sit side by side. Reread once a week or so, without hurrying.
+                </p>
+<h3>Look for what comes back</h3>
 <ul>
-<li><strong>Review previous dreams:</strong> Reading old entries before sleep primes your brain</li>
-<li><strong>Visualization:</strong> Picture yourself recording dreams upon waking</li>
-<li><strong>Avoid alcohol and cannabis:</strong> Both suppress REM sleep</li>
-<li><strong>Meditation:</strong> Increases dream vividness and recall</li>
+<li><strong>Places:</strong> the same house, school or road</li>
+<li><strong>Situations:</strong> being chased, being late, searching</li>
+<li><strong>People:</strong> who appears most, and in what role</li>
+<li><strong>Emotions:</strong> which feeling dominates, and on which nights</li>
 </ul>
-<h2 id="formats">Best Dream Journal Formats and Templates</h2>
+<h3>Start from your own associations</h3>
 <p>
-                    Your journal format should match your style and goals:
+                    Before opening a dictionary, ask: <strong>“What does this image make me think of?”</strong> A snake can frighten one person and remind another of a pet. Researchers such as G. William Domhoff have found that dreams often reflect waking concerns and relationships, so your context matters more than a fixed definition.
                 </p>
-<h3>Stream of Consciousness Dream Writing</h3>
-<p>
-                    Write everything as it comes, without structure. Best for capturing raw dream content quickly.
-                </p>
-<h3>Structured Dream Journal Template</h3>
-<p>
-                    Use consistent categories: Date, Dream Title, Narrative, Emotions, Symbols, Interpretation. Ideal for pattern analysis.
-                </p>
-<h3>Illustrated Dream Journal with Sketches</h3>
-<p>
-                    Include sketches of dream scenes, characters, or symbols. Especially powerful for visual dreamers.
-                </p>
-<h3>Digital Dream Journal Apps and Tools</h3>
-<p>
-                    Apps with tagging, search, and analysis features. Best for finding patterns across hundreds of entries.
-                </p>
-<h2 id="analysis">How to Analyze Your Dream Journal</h2>
-<p>
-                    Recording is just the first step. To extract meaning, try these analysis approaches:
-                </p>
-<h3>Pattern Recognition in Dream Analysis</h3>
+<h3>Link it to your days, carefully</h3>
 <ul>
-<li>Note <strong>recurring symbols</strong> - what appears again and again?</li>
-<li>Track <strong>common themes</strong> - being chased, flying, water, etc.</li>
-<li>Identify <strong>dream characters</strong> - who shows up most often?</li>
-<li>Map <strong>emotional patterns</strong> - what feelings dominate your dreams?</li>
+<li>What happened the day before that might connect?</li>
+<li>What am I worried about, or looking forward to?</li>
+<li>When else have I felt what I felt in this dream?</li>
 </ul>
-<h3>Personal Dream Symbol Interpretation</h3>
 <p>
-                    Rather than using generic dream dictionaries, ask yourself: <strong>"What does this symbol mean to me?"</strong> A snake might represent fear for one person and transformation for another.
+                    A match is a lead, not proof: keep it as a question. When the same dream keeps returning, our article on <a class="text-dream-salmon hover:underline" href="recurring-dreams-meaning">recurring dreams</a> can help.
                 </p>
-<h3>Connecting Dreams to Waking Life Events</h3>
+<h2 id="common-mistakes">Common dream journal mistakes to avoid</h2>
+<h3>Checking your phone first</h3>
 <p>
-                    Dreams often process recent experiences. Ask:
+                    The dream rarely survives the screen. Note first, read messages after.
                 </p>
-<ul>
-<li>What happened yesterday that might connect?</li>
-<li>What am I worried about or excited for?</li>
-<li>What did this dream make me feel, and when else have I felt that?</li>
-</ul>
-<h2 id="common-mistakes">Common Dream Journaling Mistakes to Avoid</h2>
-<h3>Waiting Too Long to Record Dreams</h3>
+<h3>Filling in the gaps</h3>
 <p>
-                    Even 5 minutes of delay can erase most dream content. Record first, then get coffee.
+                    When part of a scene is missing, leave it missing. Write “I don't know how I got there” rather than inventing a tidy link.
                 </p>
-<h3>Dismissing Mundane or Boring Dreams</h3>
+<h3>Skipping the “boring” dreams</h3>
 <p>
-                    Every dream matters. Mundane dreams still reveal patterns and build recall strength.
+                    A dull supermarket dream still trains recall, and may belong to a pattern.
                 </p>
-<h3>Inconsistent Dream Journaling Habits</h3>
+<h3>Turning it into a duty</h3>
 <p>
-                    Dream recall is a skill that atrophies quickly. Even recording "no dreams remembered" keeps the habit alive.
+                    Missing a few days changes nothing. On empty mornings, “no dream remembered” keeps the habit going. You can stop rereading any entry that upsets you.
                 </p>
-<h3>Over-Interpreting Every Dream Symbol</h3>
+<h3>Over-interpreting every symbol</h3>
 <p>
-                    Not every dream is deeply meaningful. Sometimes a dog is just a dog. Focus on patterns over time.
+                    Sometimes a dog is just a dog. Look for patterns over weeks, not a hidden message in each night.
                 </p>
-<h3>Using Only One Recording Method</h3>
+<h3>When to talk to a doctor</h3>
 <p>
-                    If writing feels like too much effort half-asleep, try voice recording. Remove all friction from the process.
+                    A journal does not replace medical advice. If nightmares come back several times a week, disturb your sleep or leave you anxious during the day, or if you act out your dreams at night, talk to a doctor or a sleep specialist. Your entries can help you describe what is happening.
                 </p>
-<blockquote>
-                    "The dream journal is a bridge between two worlds - the unconscious and conscious mind. Cross it daily, and both sides flourish."
-                </blockquote>
 </div>
 <!-- CTA Section -->
 <aside class="glass-panel rounded-3xl p-8 md:p-10 mt-16 text-center border border-dream-salmon/20">
 <div class="w-16 h-16 bg-dream-salmon/10 rounded-full flex items-center justify-center mx-auto mb-6">
 <i class="w-8 h-8 text-dream-salmon" data-lucide="book-open"></i>
 </div>
-<h3 class="font-serif text-2xl md:text-3xl mb-4 text-dream-cream">Start your dream journal today</h3>
+<h3 class="font-serif text-2xl md:text-3xl mb-4 text-dream-cream">Catch tomorrow's dream before it fades</h3>
 <p class="text-purple-200/70 mb-6 max-w-lg mx-auto">
-                    Noctalia makes dream journaling easier on Android. Wake up, tap record, speak the dream, then revisit the transcript with symbols, moods and AI reflection.
+                    With Noctalia, speak or type your dream as soon as you wake up. It stays in one journal, so you can reread your dreams side by side and spot what comes back.
                 </p>
-<a class="inline-flex items-center gap-2 px-8 py-4 bg-dream-salmon text-dream-dark rounded-full font-bold hover:bg-dream-salmon/90 transition-colors" href="/en/ai-dream-interpretation-app">
-                    Explore AI dream interpretation <i class="w-5 h-5" data-lucide="arrow-right"></i>
+<a class="inline-flex items-center gap-2 px-8 py-4 bg-dream-salmon text-dream-dark rounded-full font-bold hover:bg-dream-salmon/90 transition-colors" href="/">
+                    Start my dream journal <i class="w-5 h-5" data-lucide="arrow-right"></i>
 </a>
 </aside>
 <!-- FAQ Section -->
 <section class="mt-16">
-<h2 class="font-serif text-2xl text-dream-cream mb-8">Frequently Asked Questions</h2>
+<h2 class="font-serif text-2xl text-dream-cream mb-8">Frequently asked questions</h2>
 <div class="space-y-4">
+<details class="glass-panel rounded-xl p-4 group cursor-pointer">
+<summary class="font-medium flex justify-between items-center text-dream-cream">
+                            How do I start a dream journal?
+                            <i class="w-5 h-5 transition-transform group-open:rotate-180 text-dream-salmon" data-lucide="chevron-down"></i>
+</summary>
+<p class="mt-4 text-sm text-gray-400 leading-relaxed">
+                            Keep a notebook or your phone within reach. When you wake up, before you get up or check messages, note where you were, what you felt and the image that stayed. A fragment counts as an entry.
+                        </p>
+</details>
+<details class="glass-panel rounded-xl p-4 group cursor-pointer">
+<summary class="font-medium flex justify-between items-center text-dream-cream">
+                            What should I write in a dream journal?
+                            <i class="w-5 h-5 transition-transform group-open:rotate-180 text-dream-salmon" data-lucide="chevron-down"></i>
+</summary>
+<p class="mt-4 text-sm text-gray-400 leading-relaxed">
+                            The date, what happened, the main emotion, the people and the place. Add words, colors or body sensations if they come back, and keep any interpretation apart from the dream itself.
+                        </p>
+</details>
 <details class="glass-panel rounded-xl p-4 group cursor-pointer">
 <summary class="font-medium flex justify-between items-center text-dream-cream">
                             How long does it take to improve dream recall?
                             <i class="w-5 h-5 transition-transform group-open:rotate-180 text-dream-salmon" data-lucide="chevron-down"></i>
 </summary>
 <p class="mt-4 text-sm text-gray-400 leading-relaxed">
-                            Most people notice significant improvement in dream recall within 1-2 weeks of consistent journaling. After a month, you may remember 2-4 dreams per night compared to occasionally remembering fragments before starting.
-                        </p>
-</details>
-<details class="glass-panel rounded-xl p-4 group cursor-pointer">
-<summary class="font-medium flex justify-between items-center text-dream-cream">
-                            Should I write or type my dream journal?
-                            <i class="w-5 h-5 transition-transform group-open:rotate-180 text-dream-salmon" data-lucide="chevron-down"></i>
-</summary>
-<p class="mt-4 text-sm text-gray-400 leading-relaxed">
-                            Both methods work, but voice recording is often best for capturing dreams immediately upon waking. Writing by hand can deepen processing, while typing is faster. The key is choosing a method you'll actually use consistently.
+                            There is no fixed timeframe. Research suggests that keeping a morning log can increase recall in itself, but how much and how fast varies from person to person.
                         </p>
 </details>
 <details class="glass-panel rounded-xl p-4 group cursor-pointer">
@@ -445,21 +410,33 @@
                             <i class="w-5 h-5 transition-transform group-open:rotate-180 text-dream-salmon" data-lucide="chevron-down"></i>
 </summary>
 <p class="mt-4 text-sm text-gray-400 leading-relaxed">
-                            Start by writing "I don't remember my dreams" each morning - this signals intent to your brain. Set an intention before sleep, wake up slowly without moving, and try waking up during REM cycles (about 90 minutes after falling asleep, then every 90 minutes).
+                            Write “no dream remembered” and how you feel on waking, without inventing a scene. Not remembering doesn't mean you didn't dream: recall varies a lot between people and from week to week.
+                        </p>
+</details>
+<details class="glass-panel rounded-xl p-4 group cursor-pointer">
+<summary class="font-medium flex justify-between items-center text-dream-cream">
+                            Should I write my dream journal or record it by voice?
+                            <i class="w-5 h-5 transition-transform group-open:rotate-180 text-dream-salmon" data-lucide="chevron-down"></i>
+</summary>
+<p class="mt-4 text-sm text-gray-400 leading-relaxed">
+                            Use whichever you will keep doing. Voice is fastest when you are barely awake; writing by hand can slow you down usefully. Many people combine a voice note with a written reread later.
                         </p>
 </details>
 </div>
 </section>
 <!-- Sources / Trust (TI-97) -->
 <section class="mt-16 glass-panel rounded-2xl p-6" id="sources">
-<h2 class="font-serif text-2xl text-dream-cream mb-4">Sources / Further Reading</h2>
+<h2 class="font-serif text-2xl text-dream-cream mb-4">Sources and further reading</h2>
 <ul class="mt-6 space-y-2 text-sm text-gray-400">
-<li><a href="https://dictionary.apa.org/dream" rel="nofollow noopener noreferrer" target="_blank">APA Dictionary of Psychology:Dream</a></li>
-<li><a href="https://dreamresearch.net/" rel="nofollow noopener noreferrer" target="_blank">DreamResearch.net:G. William Domhoff (dream research overview)</a></li>
-<li><a href="https://dictionary.apa.org/memory" rel="nofollow noopener noreferrer" target="_blank">APA Dictionary:Memory</a></li>
-<li><a href="https://pubmed.ncbi.nlm.nih.gov/22024432/" rel="nofollow noopener noreferrer" target="_blank">De Gennaro et al. (2012):Brain mechanisms of dream recall (review, PubMed)</a></li>
+<li><a href="https://pubmed.ncbi.nlm.nih.gov/25725324/" rel="nofollow noopener noreferrer" target="_blank">Aspy et al. (2015), "Is dream recall underestimated by retrospective measures and enhanced by keeping a logbook? A review," <em>Consciousness and Cognition</em></a></li>
+<li><a href="https://presse.inserm.fr/en/why-does-the-brain-remember-dreams/53057/" rel="nofollow noopener noreferrer" target="_blank">Inserm (2014), "Why does the brain remember dreams?" (press release on the work of Perrine Ruby's team)</a></li>
+<li><a href="https://pubmed.ncbi.nlm.nih.gov/22024432/" rel="nofollow noopener noreferrer" target="_blank">De Gennaro et al. (2012), "How we remember the stuff that dreams are made of," <em>Behavioural Brain Research</em></a></li>
+<li><a href="https://www.sleepfoundation.org/stages-of-sleep" rel="nofollow noopener noreferrer" target="_blank">Sleep Foundation, "Stages of Sleep"</a></li>
+<li><a href="https://www.sleepfoundation.org/nutrition/alcohol-and-sleep" rel="nofollow noopener noreferrer" target="_blank">Sleep Foundation, "Alcohol and Sleep"</a></li>
+<li><a href="https://www.sleepfoundation.org/nightmares" rel="nofollow noopener noreferrer" target="_blank">Sleep Foundation, "Nightmares"</a></li>
+<li><a href="https://dreamresearch.net/" rel="nofollow noopener noreferrer" target="_blank">DreamResearch.net, G. William Domhoff</a></li>
 </ul>
-<p class="mt-6 text-xs text-purple-200/60">Last updated: September 1, 2026</p>
+<p class="mt-6 text-xs text-purple-200/60">Updated October 9, 2026</p>
 </section>
 <!-- Related Symbols Start -->
 <section aria-label="Related dream symbols" class="mt-12 mb-8">

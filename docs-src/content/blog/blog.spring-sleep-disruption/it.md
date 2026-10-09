@@ -5,7 +5,7 @@
   "lang": "it",
   "slug": "disturbo-sonno-primavera-sogni",
   "title": "Sonno in primavera: effetti delle giornate lunghe | Noctalia",
-  "description": "Le giornate più lunghe della primavera sopprimono la melatonina, perturbano il ritmo circadiano e alterano i sogni.",
+  "description": "Disturbo del sonno in primavera: perché le sere chiare ritardano il sonno, l'alba ti sveglia presto e cambia il ricordo dei sogni, e cosa puoi fare.",
   "robots": "max-image-preview:large",
   "themeColor": "#0a0514",
   "htmlClass": "scroll-smooth blog-article",
@@ -14,24 +14,24 @@
   "mainClass": "pt-32 pb-20 px-4",
   "ogType": "article",
   "ogTitle": "Sonno in primavera: effetti delle giornate lunghe | Noctalia",
-  "ogDescription": "Le giornate più lunghe della primavera sopprimono la melatonina, perturbano il ritmo circadiano e alterano i sogni.",
+  "ogDescription": "Ancora chiaro alle nove di sera, sveglio alle cinque e mezza? Cosa cambia la primavera nel sonno e nei sogni, cosa dice la ricerca, cosa aiuta.",
   "ogImage": "https://noctalia.app/img/blog/spring-sleep-disruption-dreams.webp",
   "ogImageAlt": "Paesaggio primaverile onirico con fiori in fiore e onde luminose circadiane alterate in toni viola e dorati",
   "twitterCard": "summary_large_image",
   "twitterTitle": "Sonno in primavera: effetti delle giornate lunghe | Noctalia",
-  "twitterDescription": "Le giornate più lunghe della primavera sopprimono la melatonina, perturbano il ritmo circadiano e alterano i sogni.",
+  "twitterDescription": "Ancora chiaro alle nove di sera, sveglio alle cinque e mezza? Cosa cambia la primavera nel sonno e nei sogni, cosa dice la ricerca, cosa aiuta.",
   "twitterImage": "https://noctalia.app/img/blog/spring-sleep-disruption-dreams.webp",
   "twitterImageAlt": "Paesaggio primaverile onirico con fiori in fiore e onde luminose circadiane alterate in toni viola e dorati",
   "publishedTime": "2026-03-24",
-  "modifiedTime": "2026-03-24",
+  "modifiedTime": "2026-10-09",
   "author": "Thanh Chau",
   "prevPath": "/it/blog/debito-sonno-salute-sogni",
   "nextPath": "/it/blog/sonno-salute-priorita",
   "preloadImage": "/img/blog/spring-sleep-disruption-dreams.webp",
   "jsonLd": [
-    "{\n  \"@context\": \"https://schema.org\",\n  \"@type\": \"BlogPosting\",\n  \"headline\": \"Disturbo del sonno in primavera: come le giornate più lunghe alterano il sonno e i sogni\",\n  \"description\": \"Le giornate più lunghe della primavera sopprimono la melatonina, perturbano il ritmo circadiano e alterano i sogni. Scopri l'effetto equinozio e come adattare il sonno.\",\n  \"image\": {\n    \"@type\": \"ImageObject\",\n    \"url\": \"https://noctalia.app/img/blog/spring-sleep-disruption-dreams.webp\",\n    \"width\": 1200,\n    \"height\": 630\n  },\n  \"author\": [\n    {\n      \"@type\": \"Person\",\n      \"@id\": \"https://noctalia.app/it/chi-siamo#person\",\n      \"name\": \"Thanh Chau\",\n      \"jobTitle\": \"Fondatore e Direttore della pubblicazione\",\n      \"url\": \"https://noctalia.app/it/chi-siamo\",\n      \"worksFor\": {\n        \"@type\": \"Organization\",\n        \"@id\": \"https://noctalia.app/#organization\",\n        \"name\": \"Noctalia\",\n        \"url\": \"https://noctalia.app\"\n      }\n    },\n    {\n      \"@type\": \"Organization\",\n      \"@id\": \"https://noctalia.app/#organization\",\n      \"name\": \"Noctalia\",\n      \"url\": \"https://noctalia.app\",\n      \"logo\": {\n        \"@type\": \"ImageObject\",\n        \"url\": \"https://noctalia.app/logo/logo_noctalia.png\"\n      }\n    }\n  ],\n  \"publisher\": {\n    \"@type\": \"Organization\",\n    \"name\": \"Noctalia\",\n    \"url\": \"https://noctalia.app\",\n    \"logo\": {\n      \"@type\": \"ImageObject\",\n      \"url\": \"https://noctalia.app/logo/logo_noctalia.png\"\n    }\n  },\n  \"datePublished\": \"2026-03-24\",\n  \"dateModified\": \"2026-03-24\",\n  \"mainEntityOfPage\": {\n    \"@type\": \"WebPage\",\n    \"@id\": \"https://noctalia.app/it/blog/disturbo-sonno-primavera-sogni\"\n  },\n  \"inLanguage\": \"it\",\n  \"isAccessibleForFree\": true,\n  \"wordCount\": 1600,\n  \"timeRequired\": \"PT6M\",\n  \"url\": \"https://noctalia.app/it/blog/disturbo-sonno-primavera-sogni\"\n}",
+    "{\n    \"@context\": \"https://schema.org\",\n    \"@type\": \"BlogPosting\",\n    \"headline\": \"Disturbo del sonno in primavera: come le giornate più lunghe cambiano il riposo e i sogni\",\n    \"description\": \"Disturbo del sonno in primavera: perché le sere chiare ritardano il sonno, l'alba ti sveglia presto e cambia il ricordo dei sogni, e cosa puoi fare.\",\n    \"image\": {\n        \"@type\": \"ImageObject\",\n        \"url\": \"https://noctalia.app/img/blog/spring-sleep-disruption-dreams.webp\",\n        \"width\": 1200,\n        \"height\": 630\n    },\n    \"author\": [\n        {\n            \"@type\": \"Person\",\n            \"@id\": \"https://noctalia.app/it/chi-siamo#person\",\n            \"name\": \"Thanh Chau\",\n            \"jobTitle\": \"Fondatore e Direttore della pubblicazione\",\n            \"url\": \"https://noctalia.app/it/chi-siamo\",\n            \"worksFor\": {\n                \"@type\": \"Organization\",\n                \"@id\": \"https://noctalia.app/#organization\",\n                \"name\": \"Noctalia\",\n                \"url\": \"https://noctalia.app\"\n            }\n        },\n        {\n            \"@type\": \"Organization\",\n            \"@id\": \"https://noctalia.app/#organization\",\n            \"name\": \"Noctalia\",\n            \"url\": \"https://noctalia.app\",\n            \"logo\": {\n                \"@type\": \"ImageObject\",\n                \"url\": \"https://noctalia.app/logo/logo_noctalia.png\"\n            }\n        }\n    ],\n    \"publisher\": {\n        \"@type\": \"Organization\",\n        \"name\": \"Noctalia\",\n        \"url\": \"https://noctalia.app\",\n        \"logo\": {\n            \"@type\": \"ImageObject\",\n            \"url\": \"https://noctalia.app/logo/logo_noctalia.png\"\n        }\n    },\n    \"datePublished\": \"2026-03-24\",\n    \"dateModified\": \"2026-10-09\",\n    \"mainEntityOfPage\": {\n        \"@type\": \"WebPage\",\n        \"@id\": \"https://noctalia.app/it/blog/disturbo-sonno-primavera-sogni\"\n    },\n    \"inLanguage\": \"it\",\n    \"isAccessibleForFree\": true,\n    \"wordCount\": 2133,\n    \"timeRequired\": \"PT10M\",\n    \"url\": \"https://noctalia.app/it/blog/disturbo-sonno-primavera-sogni\"\n}",
     "{\n  \"@context\": \"https://schema.org\",\n  \"@type\": \"WebPage\",\n  \"@id\": \"https://noctalia.app/it/blog/disturbo-sonno-primavera-sogni\",\n  \"url\": \"https://noctalia.app/it/blog/disturbo-sonno-primavera-sogni\",\n  \"name\": \"Disturbo del sonno in primavera: come le giornate più lunghe alterano il sonno e i sogni | Noctalia\",\n  \"inLanguage\": \"it\"\n}",
-    "{\n  \"@context\": \"https://schema.org\",\n  \"@type\": \"FAQPage\",\n  \"mainEntity\": [\n    {\n      \"@type\": \"Question\",\n      \"name\": \"Perché in primavera è più difficile addormentarsi?\",\n      \"acceptedAnswer\": {\n        \"@type\": \"Answer\",\n        \"text\": \"In primavera, il rapido aumento del fotoperiodo ritarda la secrezione di melatonina prolungando l'esposizione alla luce serale. Il nucleo soprachiasmatico ha bisogno di tempo per ricalibrarsi, creando uno sfasamento tra l'orologio biologico e il ciclo luce-buio. Questo disallineamento provoca difficoltà ad addormentarsi, risvegli più precoci e la stanchezza primaverile che colpisce 1 europeo su 3.\"\n      }\n    },\n    {\n      \"@type\": \"Question\",\n      \"name\": \"La primavera cambia la qualità dei sogni?\",\n      \"acceptedAnswer\": {\n        \"@type\": \"Answer\",\n        \"text\": \"Sì. I cambiamenti nell'architettura del sonno durante la primavera — in particolare la redistribuzione del sonno REM — alterano l'esperienza onirica. Molte persone riferiscono sogni più vividi e emotivamente intensi durante la transizione primaverile, spesso con temi legati alla luce, al movimento e alla trasformazione, riflettendo la ricalibrazione circadiana del cervello.\"\n      }\n    },\n    {\n      \"@type\": \"Question\",\n      \"name\": \"Quali strategie aiutano ad adattare il sonno al cambio di stagione?\",\n      \"acceptedAnswer\": {\n        \"@type\": \"Answer\",\n        \"text\": \"Le strategie più efficaci includono la gestione dell'esposizione alla luce (luce mattutina intensa, oscurità serale), il mantenimento di un orario di sonno costante, l'esercizio fisico al mattino o nel primo pomeriggio, e la tenuta di un diario dei sogni per rilevare come la transizione stagionale influenza il riposo e la vita onirica.\"\n      }\n    }\n  ]\n}",
+    "{\n    \"@context\": \"https://schema.org\",\n    \"@type\": \"FAQPage\",\n    \"mainEntity\": [\n        {\n            \"@type\": \"Question\",\n            \"name\": \"Perché in primavera si dorme peggio, anche senza cambio d'ora?\",\n            \"acceptedAnswer\": {\n                \"@type\": \"Answer\",\n                \"text\": \"Dopo l'equinozio di marzo, le giornate guadagnano qualche minuto ogni giorno. Le sere più luminose possono ritardare la salita della melatonina e la voglia di dormire, mentre l'alba più precoce può svegliarti prima. Nel giro di qualche settimana le notti possono accorciarsi. Quanto lo senti dipende dalla camera, dalle abitudini e dalla sensibilità alla luce.\"\n            }\n        },\n        {\n            \"@type\": \"Question\",\n            \"name\": \"La stanchezza primaverile esiste davvero?\",\n            \"acceptedAnswer\": {\n                \"@type\": \"Answer\",\n                \"text\": \"Molte persone la descrivono, ma non è una diagnosi medica. Notti più corte, ora legale, pollini e serate piene sono le spiegazioni più comuni. Una stanchezza che dura settimane merita un parere medico.\"\n            }\n        },\n        {\n            \"@type\": \"Question\",\n            \"name\": \"La primavera cambia i sogni?\",\n            \"acceptedAnswer\": {\n                \"@type\": \"Answer\",\n                \"text\": \"Soprattutto attraverso il ricordo. Svegliarsi prima, a volte proprio all'uscita dal sonno REM, può lasciare in mente sogni più vividi, mentre le notti corte o interrotte ne lasciano meno. Possono comparire immagini primaverili, perché i sogni attingono ai giorni recenti, ma non è stato dimostrato un linguaggio onirico stagionale.\"\n            }\n        },\n        {\n            \"@type\": \"Question\",\n            \"name\": \"Quando rivolgersi al medico per i disturbi del sonno in primavera?\",\n            \"acceptedAnswer\": {\n                \"@type\": \"Answer\",\n                \"text\": \"Se dormi male da più di qualche settimana, se di giorno fai fatica a restare sveglio, se gli incubi tornano più volte a settimana o se l'umore cala. La primavera è una spiegazione frequente, non l'unica.\"\n            }\n        }\n    ]\n}",
     "{\n  \"@context\": \"https://schema.org\",\n  \"@type\": \"BreadcrumbList\",\n  \"itemListElement\": [\n    {\n      \"@type\": \"ListItem\",\n      \"position\": 1,\n      \"name\": \"Home\",\n      \"item\": \"https://noctalia.app/it/\"\n    },\n    {\n      \"@type\": \"ListItem\",\n      \"position\": 2,\n      \"name\": \"Risorse\",\n      \"item\": \"https://noctalia.app/it/blog/\"\n    },\n    {\n      \"@type\": \"ListItem\",\n      \"position\": 3,\n      \"name\": \"Sonno in primavera\",\n      \"item\": \"https://noctalia.app/it/blog/disturbo-sonno-primavera-sogni\"\n    }\n  ]\n}"
   ],
   "activeNav": "resources"
@@ -63,13 +63,13 @@
 <span class="text-xs font-mono text-dream-salmon border border-dream-salmon/30 rounded-full px-3 py-1 uppercase">Salute</span>
 <span aria-hidden="true" class="w-full sm:hidden"></span>
 <span class="text-sm text-purple-300/60">Pubblicato il 24 marzo 2026</span>
-<span class="text-sm text-purple-300/60">~1600 parole &middot; 6 min di lettura</span>
+<span class="text-sm text-purple-300/60">10 minuti di lettura</span>
 </div>
 <h1 class="font-serif text-3xl md:text-5xl mb-6 text-transparent bg-clip-text bg-gradient-to-b from-white via-dream-lavender to-purple-400/50 leading-tight">
-                    Disturbo del sonno in primavera: come le giornate pi&ugrave; lunghe alterano il sonno e i sogni
+                    Disturbo del sonno in primavera: come le giornate più lunghe cambiano il riposo e i sogni
                 </h1>
 <p class="text-lg text-purple-200/80 leading-relaxed">
-                    Pi&ugrave; luce, temperature pi&ugrave; miti, una sensazione diffusa di rinnovamento: la primavera promette energia. Eppure, per milioni di persone la transizione primaverile significa notti pi&ugrave; difficili, una stanchezza inspiegabile e sogni che cambiano carattere. Giornate pi&ugrave; lunghe innescano una cascata di adattamenti biologici che il vostro orologio interno ha bisogno di tempo per elaborare. Qui scoprirete come l'equinozio di primavera influenza il sonno, perch&eacute; la melatonina entra in conflitto con la nuova luce e come i sogni riflettono questa trasformazione stagionale.
+                    Sono le dieci e mezza di sera e il cielo non è ancora buio. Vai a letto più tardi che d'inverno e, alle sei meno venti, la luce filtra dalle tapparelle, mezz'ora prima della sveglia. Un sogno svanisce. Il disturbo del sonno in primavera spesso è proprio questo: più luce la sera, più presto la mattina e un orologio interno che deve adeguarsi. Ecco cosa mostra la ricerca, cosa cambia nel ricordo dei sogni e cosa aiuta.
                 </p>
 </header>
 <!-- Author Byline (E-E-A-T) -->
@@ -90,7 +90,7 @@
 <!-- Quick Answer (AI SEO) -->
 <section aria-labelledby="quick-answer-title" class="glass-panel rounded-2xl p-6 mb-8 border border-dream-salmon/20 bg-white/5">
 <h2 class="font-serif text-xl text-dream-cream mb-3" id="quick-answer-title">Risposta rapida</h2>
-<p class="text-purple-100/80 leading-relaxed">La primavera allunga le giornate in modo brusco, sopprimendo la melatonina serale e costringendo il nucleo soprachiasmatico, il vostro orologio biologico centrale, a ricalibrarsi. Questo sfasamento genera la stanchezza primaverile (che colpisce 1 europeo su 3), altera l'architettura del sonno e modifica l'intensit&agrave; e il contenuto dei sogni. Gestire l'esposizione alla luce, mantenere un orario costante e registrare i sogni sono le chiavi per attraversare questa transizione senza perdere qualit&agrave; del riposo.</p>
+<p class="text-purple-100/80 leading-relaxed">In primavera le sere più luminose possono ritardare la voglia di dormire, e l'alba più precoce può svegliarti prima. Se le due cose si sommano, le notti si accorciano: un po' di stanchezza e sogni che ricordi in modo diverso, per qualche tempo. Quasi tutti si adattano da soli. Aiutano la luce naturale al mattino, luci soffuse la sera, un orario di risveglio fisso e una camera ben buia. Se dormi male per settimane o ne risente la giornata, parlane con il medico.</p>
 </section>
 <!-- Featured Image -->
 <figure class="mb-12 rounded-2xl overflow-hidden">
@@ -99,59 +99,79 @@
 <!-- Table of Contents -->
 <nav class="glass-panel rounded-2xl p-6 mb-12">
 <h2 class="font-serif text-lg text-dream-cream mb-4 flex items-center gap-2">
-<i class="w-5 h-5 text-dream-salmon" data-lucide="list"></i> Sommario
+<i class="w-5 h-5 text-dream-salmon" data-lucide="list"></i> Indice
                 </h2>
 <ol class="space-y-2 text-sm text-purple-200/70">
-<li><a class="toc-link block" href="#equinox-effect">1. L'effetto equinozio</a></li>
-<li><a class="toc-link block" href="#melatonin">2. Melatonina sotto pressione</a></li>
-<li><a class="toc-link block" href="#spring-fatigue">3. La stanchezza primaverile</a></li>
-<li><a class="toc-link block" href="#dream-quality">4. La qualit&agrave; dei sogni in primavera</a></li>
-<li><a class="toc-link block" href="#adaptation">5. Strategie di adattamento</a></li>
-<li><a class="toc-link block" href="#journaling">6. Il diario dei sogni durante la transizione</a></li>
+<li><a class="toc-link block" href="#equinox-effect">1. Cosa cambia in primavera?</a></li>
+<li><a class="toc-link block" href="#melatonin">2. Perché le sere chiare spostano l'ora di andare a letto</a></li>
+<li><a class="toc-link block" href="#spring-fatigue">3. La stanchezza primaverile esiste?</a></li>
+<li><a class="toc-link block" href="#dream-quality">4. La primavera cambia i tuoi sogni?</a></li>
+<li><a class="toc-link block" href="#adaptation">5. Cosa aiuta durante la transizione</a></li>
+<li><a class="toc-link block" href="#journaling">6. Tenere un diario dei sogni in primavera</a></li>
 </ol>
 </nav>
 <!-- Article Content -->
 <div class="prose max-w-none text-gray-300">
-<h2 id="equinox-effect">L'effetto equinozio</h2>
+<h2 id="equinox-effect">Cosa cambia in primavera?</h2>
+<h3>Giornate che si allungano in fretta dopo l'equinozio</h3>
 <p>
-                    All'equinozio di primavera, giorno e <a class="text-dream-salmon hover:underline" href="../simboli/notte">notte</a> hanno approssimativamente la stessa durata. Decisivo non &egrave; per&ograve; quell'istante di equilibrio, bens&igrave; ci&ograve; che viene dopo: un aumento accelerato del fotoperiodo che, alle latitudini medie europee, aggiunge tra 3 e 4 minuti di luce ogni giorno. In appena sei settimane, la giornata si allunga di oltre due ore.
+                    Intorno al 20 marzo, nell'emisfero nord, il giorno e la <a class="text-dream-salmon hover:underline" href="../simboli/notte">notte</a> durano più o meno lo stesso. Da lì in poi, alle nostre latitudini, le giornate guadagnano qualche minuto ogni giorno. In poche settimane vai a letto con una luce che a febbraio era già notte fonda, e l'alba arriva ben prima di molte sveglie.
                 </p>
 <p>
-                    Per il cervello, questo cambiamento non &egrave; affatto graduale. Il nucleo soprachiasmatico (NSC), l'orologio maestro situato nell'ipotalamo, dipende dal segnale luminoso per sincronizzare i ritmi circadiani con il ciclo di 24 ore. Quando il fotoperiodo cambia alla velocit&agrave; della transizione primaverile, il NSC deve ricalibrarsi. Riceve informazioni dalle cellule ganglionari retiniche intrinsecamente fotosensibili &mdash; neuroni specializzati che rilevano la luce ambientale e la trasmettono direttamente all'orologio biologico. Questo processo di adattamento non &egrave; istantaneo.
+                    Il tuo orologio interno se ne accorge. Si trova in una piccola zona dell'ipotalamo, il nucleo soprachiasmatico, e si regola soprattutto sulla luce. Cellule specializzate della retina gli dicono quando e quanto è chiaro. Contano il momento, l'intensità e la durata della luce, non la data sul calendario.
+                </p>
+<h3>Cosa ha misurato la ricerca</h3>
+<p>
+                    In un piccolo studio del National Institute of Mental Health statunitense, Wehr e colleghi hanno tenuto 15 volontari prima con notti lunghe (14 ore di buio), poi con notti corte (8 ore). Dopo le notti lunghe, sia la secrezione notturna di melatonina sia il periodo di sonno duravano di più. L'orologio umano, quindi, risponde ancora alla lunghezza del giorno.
                 </p>
 <p>
-                    Studi dimostrano che il NSC impiega da 1 a 3 settimane per ricalibrarsi al nuovo fotoperiodo. Durante quel periodo, il corpo funziona con un orologio leggermente sfasato rispetto ai segnali ambientali &mdash; una forma sottile di jet lag stagionale. Il risultato: difficolt&agrave; ad addormentarsi, risvegli precoci e una stanchezza diurna che sembra contraddire l'energia che la primavera dovrebbe portare.
+                    Gli studi sul campo vanno nella stessa direzione. Quando Stothard e colleghi hanno portato dei volontari in campeggio, con la sola luce naturale, la loro notte biologica era più lunga d'inverno che d'estate, e l'illuminazione elettrica moderna tendeva a spostare il loro orologio più tardi. La vita reale sta nel mezzo: luce primaverile, più lampade e schermi.
                 </p>
-
-<h2 id="melatonin">Melatonina sotto pressione</h2>
-<h3>La luce serale come perturbatore</h3>
+<h3>Non è la stessa cosa del cambio d'ora</h3>
 <p>
-                    Estremamente sensibile alla luce, la melatonina &egrave; l'ormone che segnala al corpo l'ora di dormire. Normalmente la ghiandola pineale inizia a secernerla 1-2 ore prima dell'orario abituale di addormentamento, quando la luce ambientale diminuisce. In inverno, il tramonto precoce permette a questo processo di avviarsi senza interferenze. In primavera, per&ograve;, i tramonti si spostano progressivamente in avanti, e la luce serale penetra nelle ore in cui la melatonina dovrebbe cominciare a salire.
-                </p>
-<p>
-                    Studi sul fotoperiodo lo confermano: anche un'esposizione moderata alla luce serale &mdash; l'equivalente di un tramonto prolungato del <a class="text-dream-salmon hover:underline" href="../simboli/sole">sole</a> che inonda la casa &mdash; pu&ograve; sopprimere la produzione di melatonina del 50 % o pi&ugrave;. Il corpo riceve il segnale &laquo;&egrave; ancora giorno&raquo; quando voi avete bisogno che sia notte. Ne risulta una maggiore latenza del sonno: ci vuole pi&ugrave; tempo per addormentarsi, nonostante la stessa stanchezza dell'inverno.
-                </p>
-<h3>La luce mattutina come anticipatore</h3>
-<p>
-                    Luce serale ritarda l'orologio, luce mattutina lo anticipa. L'<a class="text-dream-salmon hover:underline" href="../simboli/sole">alba</a> primaverile pi&ugrave; precoce invia un segnale potente al NSC: &laquo;il giorno &egrave; iniziato&raquo;. Sopprime la melatonina residua e attiva le vie di allerta del cortisolo. Chi dorme con tende leggere o camere orientate a est si sveglia spesso 30-60 minuti prima della sveglia, senza aver completato il ciclo di sonno. Una doppia pressione: ci si addormenta pi&ugrave; tardi e ci si sveglia prima.
+                    Il <a class="text-dream-salmon hover:underline" href="ora-legale-sonno-sogni">passaggio all'ora legale</a>, l'ultima domenica di marzo, sposta l'orario di colpo, in una notte. Una revisione di Harrison lo associa a un sonno più breve e più frammentato nei giorni successivi. L'allungamento delle giornate è più lento, ma si somma nel corso delle settimane, e le due cose cadono nello stesso mese. Kantermann e colleghi hanno osservato che l'orario del sonno segue l'anticipo stagionale dell'alba, e che il cambio d'ora interrompe questo adattamento.
                 </p>
 
-<blockquote class="border-l-4 border-dream-salmon/40 pl-4 italic text-purple-200/80 my-6">
-&laquo;Il fotoperiodo primaverile accorcia la finestra della melatonina da entrambi i lati: la luce serale ne ritarda l'inizio e la luce mattutina ne anticipa la soppressione. Il risultato &egrave; una compressione della notte biologica.&raquo;
-<span class="block text-sm text-purple-300/60 mt-2 not-italic">&mdash; Wehr et al., Archives of General Psychiatry</span>
-</blockquote>
+<h2 id="melatonin">Perché le sere chiare spostano l'ora di andare a letto</h2>
+<h3>La luce della sera ritarda il segnale della notte</h3>
+<p>
+                    La melatonina sale quando la luce cala la sera e segnala all'organismo che la notte è iniziata. Una luce intensa in quel momento la frena. Se il <a class="text-dream-salmon hover:underline" href="../simboli/sole">sole</a> tramonta più tardi, anche il segnale può arrivare più tardi, e semplicemente non hai sonno alla solita ora.
+                </p>
+<p>
+                    La luce di casa si aggiunge. In uno studio di laboratorio, Gooley e colleghi hanno visto che la normale luce di una stanza, nelle ore prima di andare a letto, frenava la melatonina e ne accorciava la durata di secrezione, rispetto a una luce soffusa. In primavera, un salotto ben illuminato e lo schermo del telefono si aggiungono a un tramonto tardivo.
+                </p>
+<h3>La luce del mattino tira dall'altra parte</h3>
+<p>
+                    La luce del primo mattino anticipa l'orologio e ti aiuta a sentirti sveglio. È utile se fai fatica a carburare. Ma se l'alba raggiunge il cuscino alle cinque e mezza, può anche chiudere la notte prima della sveglia. Addormentarsi più tardi, svegliarsi prima: è la lamentela più comune in primavera.
+                </p>
+<p>
+                    Quanto lo senti dipende dalla camera, dalle tapparelle, dai tuoi orari e dalla tua sensibilità alla luce. C'è chi non nota nulla.
+                </p>
 
-<h2 id="spring-fatigue">La stanchezza primaverile</h2>
-<h3>Un fenomeno riconosciuto dalla scienza</h3>
+<h2 id="spring-fatigue">La stanchezza primaverile esiste?</h2>
+<h3>Una sensazione nota, non una diagnosi</h3>
 <p>
-                    Nella medicina centroeuropea, la <em>Fr&uuml;hjahrm&uuml;digkeit</em> (stanchezza primaverile) &egrave; un concetto ben consolidato. Colpisce circa 1 europeo su 3, manifestandosi come stanchezza persistente, irritabilit&agrave;, difficolt&agrave; di concentrazione e sonnolenza diurna nelle settimane successive all'equinozio. Non si tratta di semplice pigrizia: &egrave; una conseguenza fisiologica diretta della ricalibrazione circadiana.
+                    In Italia si parla di <strong>stanchezza primaverile</strong> o astenia primaverile; in tedesco c'è persino una parola, <em>Frühjahrsmüdigkeit</em>. Molti descrivono pomeriggi pesanti, poca concentrazione o mancanza di energia proprio quando il tempo migliora. La sensazione è reale per chi la vive, ma non è una malattia riconosciuta con una causa unica, e mancano dati affidabili su quante persone ne soffrano.
                 </p>
 <p>
-                    Alla base c'&egrave; una cascata ormonale. Durante l'inverno, il corpo mantiene livelli relativamente elevati di melatonina diurna e moderati di serotonina. Con l'arrivo della primavera, questa proporzione si inverte rapidamente: la serotonina aumenta, stimolata dalla luce, ma il sistema ha bisogno di settimane per adattare la produzione di melatonina al suo nuovo schema stagionale. Nel frattempo, l'organismo opera in uno stato di transizione ormonale che consuma energia e riduce l'efficienza del sonno.
+                    Le spiegazioni più probabili sono ordinarie. Le notti più corte si sommano in un <a class="text-dream-salmon hover:underline" href="debito-sonno-salute-sogni">debito di sonno</a>. L'ora legale toglie un'ora. Le sere lunghe invitano a restare fuori. L'idea di uno scambio netto tra melatonina e serotonina all'uscita dall'inverno è una semplificazione che la ricerca non conferma in questa forma.
                 </p>
-<h3>Fattori aggravanti</h3>
+<h3>Cosa può aggiungersi</h3>
 <p>
-                    Ad acuire la stanchezza primaverile intervengono fattori che spesso passano inosservati. Variazioni di temperatura attivano la vasodilatazione periferica, abbassando leggermente la pressione arteriosa e favorendo la sonnolenza. Allergie stagionali, coincidenti con la fioritura, aggiungono infiammazione sistemica e frammentazione del sonno per la congestione nasale. E chi sfrutta le serate luminose per attivit&agrave; all'aperto rischia di ritardare ulteriormente l'orario di addormentamento, ampliando il debito di sonno.
+                    La stagione dei pollini può chiudere il naso e spezzettare il sonno. Le notti più miti possono rendere la camera troppo calda. Serate più piene, sport, uscite: tutto questo rosicchia ore alla notte. Una stanchezza che dura settimane, o che arriva con altri sintomi, non va attribuita alla primavera per principio: merita un parere medico.
+                </p>
+
+<h2 id="dream-quality">La primavera cambia i tuoi sogni?</h2>
+<h3>Il ricordo, più del contenuto</h3>
+<p>
+                    Il <a class="text-dream-salmon hover:underline" href="sonno-rem-e-sogni-comprendere-il-ripristino-notturno-del-cervello">sonno REM</a>, la fase dei sogni più vividi, si allunga nella seconda metà della notte. Il modo in cui la notte finisce influisce quindi su ciò che ricordi. Svegliarti proprio all'uscita di una fase REM, per esempio quando la luce ti sveglia presto, spesso lascia un sogno fresco in mente. Una notte corta o interrotta può avere l'effetto opposto. Per approfondire: <a class="text-dream-salmon hover:underline" href="come-ricordare-i-tuoi-sogni-10-tecniche-efficaci">come ricordare i tuoi sogni</a>.
+                </p>
+<p>
+                    Per questo alcune persone raccontano sogni più intensi all'inizio della primavera, e altre meno. Nessuna delle due cose segnala un problema. Dopo diverse notti brevi, il sonno REM può anche tornare con più forza, e i sogni possono sembrare più intensi per un po'.
+                </p>
+<h3>La primavera nei tuoi sogni</h3>
+<p>
+                    Giardini, finestre aperte, lunghe sere luminose: i sogni attingono a ciò che hai vissuto di recente, quindi possono comparire immagini primaverili. Nessuno studio solido dimostra però un linguaggio onirico legato alla stagione. Se nel sogno ti colpiscono la luce, il sole o la <a class="text-dream-salmon hover:underline" href="../simboli/luna">luna</a>, prendili come piste da confrontare con le tue giornate, non come messaggi sul tuo orologio biologico.
                 </p>
 </div>
 
@@ -161,60 +181,58 @@
 <i class="w-6 h-6 text-dream-salmon" data-lucide="book-open"></i>
 </div>
 <div>
-<h4 class="font-serif text-lg text-dream-cream mb-2">Osserva come la primavera trasforma i tuoi sogni</h4>
-<p class="text-sm text-gray-400 mb-4">Con Noctalia puoi registrare i tuoi sogni con la voce appena ti svegli e confrontare i tuoi schemi onirici settimana dopo settimana. Scopri se la transizione primaverile sta alterando la tua vita onirica.</p>
-<a class="inline-flex items-center gap-2 text-sm text-dream-salmon hover:text-dream-salmonLight transition-colors" href="/it/">
-                                Inizia a registrare con Noctalia <i class="w-4 h-4" data-lucide="arrow-right"></i>
+<h4 class="font-serif text-lg text-dream-cream mb-2">Annota il sogno prima che la luce lo cancelli</h4>
+<p class="text-sm text-gray-400 mb-4">Con Noctalia racconti il tuo sogno a voce appena sveglio. Viene trascritto e salvato nel diario, e puoi aggiungere una riga sulla tua notte.</p>
+<a class="inline-flex items-center gap-2 text-sm text-dream-salmon hover:text-dream-salmonLight transition-colors" href="/it/diario-dei-sogni-vocale">
+                                Guarda come funziona il diario vocale <i class="w-4 h-4" data-lucide="arrow-right"></i>
 </a>
 </div>
 </div>
 </aside>
 
 <div class="prose max-w-none text-gray-300">
-<h2 id="dream-quality">La qualit&agrave; dei sogni in primavera</h2>
-<h3>Redistribuzione del sonno REM</h3>
+<h2 id="adaptation">Cosa aiuta durante la transizione</h2>
+<h3>Prendere luce naturale presto</h3>
 <p>
-                    Comprimere la notte biologica altera direttamente l'architettura del sonno. I periodi di sonno REM pi&ugrave; lunghi e pi&ugrave; ricchi di sogni vividi si concentrano nell'ultimo terzo della notte &mdash; proprio le ore che l'alba prematura tende a tagliare. Se la luce mattutina vi sveglia prima che l'ultimo ciclo REM si sia completato, perdete la porzione di sonno con la maggiore densit&agrave; onirica.
+                    La luce all'aperto del mattino è il segnale più chiaro che puoi dare al tuo orologio. Una passeggiata, il caffè sul balcone, andare al lavoro a piedi o in bici: tutto conta, anche con le nuvole, perché la luce esterna è molto più forte di quella di quasi tutti gli interni. È anche il principio della terapia della luce per la depressione stagionale, esaminata da Terman e Terman, ma quel trattamento va seguito da un medico, non improvvisato.
                 </p>
+<h3>Abbassare le luci la sera</h3>
 <p>
-                    Ma il cervello non rinuncia ai suoi sogni senza combattere. Come accade con la privazione di sonno, la perdita di REM primaverile pu&ograve; innescare un <strong>rimbalzo REM compensatorio</strong>: il cervello intensifica le fasi REM rimanenti, producendo in meno tempo sogni pi&ugrave; densi, pi&ugrave; vividi e pi&ugrave; carichi emotivamente. Ecco perch&eacute; molte persone riferiscono sogni particolarmente intensi all'inizio della primavera.
+                    Nell'ora o nelle due ore prima di andare a letto, abbassa le luci, preferisci lampade calde al lampadario e metti via gli schermi o riducine la luminosità. Se il sole della sera entra in camera, abbassa presto le tapparelle.
                 </p>
-<h3>Schemi stagionali nel contenuto onirico</h3>
+<h3>Tenere fisso l'orario di risveglio</h3>
 <p>
-                    Ricerche sugli schemi onirici stagionali rivelano che i sogni primaverili contengono pi&ugrave; immagini di movimento, trasformazione e natura rispetto a quelli delle altre stagioni. Temi di rinascita, crescita e cambiamento compaiono con maggiore frequenza &mdash; un possibile riflesso della risposta del cervello ai segnali ambientali di rinnovamento. Perfino le <a class="text-dream-salmon hover:underline" href="../simboli/notte">scene notturne</a> nei sogni primaverili appaiono pi&ugrave; luminose, come se l'aumento della luce diurna filtrasse nel paesaggio onirico.
+                    Alzarti più o meno alla stessa ora stabilizza l'orologio più di un orario fisso per coricarti. Se le sere chiare ti tengono sveglio, lascia che l'ora di andare a letto si sposti un po', ma proteggi abbastanza ore di sonno. Attenzione ai fine settimana: fare molto tardi e poi dormire fino a mezzogiorno complica l'adattamento.
                 </p>
+<h3>Fare buio in camera all'alba</h3>
 <p>
-                    Se durante questa transizione sperimentate sogni perturbanti, sappiate che l'intensificazione onirica &egrave; una risposta normale del cervello alla ricalibrazione circadiana. Non indica un problema di salute mentale, ma un sistema di sonno che si sta adattando attivamente al nuovo fotoperiodo.
+                    Se ti svegli con le prime luci, prova tende oscuranti, tapparelle abbassate del tutto o una mascherina per qualche settimana. È uno dei rimedi più semplici ai risvegli precoci di primavera e inizio estate.
                 </p>
+<h3>Altre abitudini da controllare</h3>
+<ul>
+<li><strong>Muoverti di giorno:</strong> l'attività regolare aiuta a dormire; uno sforzo molto intenso a tarda sera tiene sveglie alcune persone</li>
+<li><strong>Tenere fresca la camera:</strong> quando le notti si fanno miti, arieggia e passa a un piumone più leggero</li>
+<li><strong>Limitare il caffè al pomeriggio:</strong> si somma al ritardo già causato dalle sere chiare</li>
+<li><strong>Fare attenzione all'alcol:</strong> può rendere il sonno più leggero e interrotto nella seconda metà della notte</li>
+</ul>
 
-<h2 id="adaptation">Strategie di adattamento</h2>
-<h3>Gestione della luce</h3>
+<h2 id="journaling">Tenere un diario dei sogni in primavera</h2>
+<h3>Cosa può mostrare un diario, e cosa no</h3>
 <p>
-                    Il vostro alleato pi&ugrave; potente per facilitare la transizione primaverile &egrave; la luce. Al mattino, esponetevi a <strong>luce naturale intensa per 20-30 minuti dopo il risveglio</strong>. Una passeggiata mattutina fornisce circa 10.000 lux &mdash; il segnale pi&ugrave; forte per anticipare la fase circadiana e sincronizzare l'orologio con il nuovo fotoperiodo. Di sera, fate il contrario: abbassate le luci 90 minuti prima di coricarvi, usate lampadine a luce calda (2.700K o meno) e installate tende oscuranti contro la luce dell'alba.
+                    Un <a class="text-dream-salmon hover:underline" href="dream-journaling-la-guida-completa-per-registrare-le-tue-avventure-notturne">diario dei sogni</a> conserva ciò che ricordi e rende più visibili immagini ed emozioni che ritornano. Non misura il sonno REM, né la melatonina, né la salute del tuo orologio interno. Per confrontare le stagioni, annota la notte accanto al sogno: ora in cui sei andato a letto, ora del risveglio, se ti ha svegliato la luce, quanto ti senti riposato. Fallo appena sveglio, per iscritto o con una breve nota vocale.
                 </p>
-<h3>Orario di sonno costante</h3>
+<h3>Un esempio di diario</h3>
+<p><strong>Esempio di fantasia:</strong> mostra come tenere separati il sogno e la notte.</p>
+<ul>
+<li><strong>Sogno:</strong> «Ero in un giardino di notte, ma il cielo non diventava buio. Cercavo un interruttore per spegnere la luce.»</li>
+<li><strong>Emozione:</strong> «Agitato, un po' irritato. Sveglio prima che suonasse la sveglia.»</li>
+<li><strong>Notte:</strong> «A letto alle dodici meno un quarto, più tardi del solito. Luce alle tapparelle verso le sei meno un quarto.»</li>
+<li><strong>Domanda da tenere:</strong> «Questi sogni agitati e luminosi tornano nelle notti corte, o anche in quelle tranquille?»</li>
+</ul>
+<p>Una sola annotazione non dimostra nulla. Nel giro di qualche settimana, confrontare febbraio e aprile può far emergere una tendenza, senza provare una causa.</p>
+<h3>Quando rivolgersi al medico</h3>
 <p>
-                    Resistete alla tentazione di andare a letto molto pi&ugrave; tardi solo perch&eacute; c'&egrave; ancora luce. Mantenere un orario di addormentamento e risveglio costante &mdash; compresi i fine settimana &mdash; &egrave; la base di un adattamento graduale. Dovete modificare il vostro orario? Fatelo con incrementi di 15 minuti al giorno, non all'improvviso. Il NSC si adatta meglio a cambiamenti piccoli e progressivi piuttosto che a salti bruschi.
-                </p>
-<h3>Esercizio fisico e temperatura</h3>
-<p>
-                    Muovetevi con moderazione al mattino o nel primo pomeriggio &mdash; rafforza il segnale circadiano diurno e migliora la pressione omeostatica del sonno per la notte. Evitate l'esercizio intenso nelle 3-4 ore precedenti il momento di coricarvi: innalza la temperatura corporea centrale e ritarda l'addormentamento. Anche la temperatura della camera da letto resta fondamentale: mantenete l'ambiente tra 18 e 20 &deg;C, anche quando le notti primaverili si fanno pi&ugrave; miti.
-                </p>
-
-<h2 id="journaling">Il diario dei sogni durante la transizione</h2>
-<h3>Un barometro del vostro adattamento circadiano</h3>
-<p>
-                    Durante la transizione primaverile, tenere un diario dei sogni va oltre l'autoconoscenza: &egrave; uno strumento per monitorare la vostra salute circadiana. Cambiamenti nella vividezza, nell'emozionalit&agrave; e nel contenuto dei sogni riflettono direttamente come il cervello sta elaborando il nuovo fotoperiodo. Se l'intensit&agrave; onirica aumenta improvvisamente, pu&ograve; indicare un rimbalzo REM &mdash; un segnale che il sonno viene compresso dalla nuova luce.
-                </p>
-<p>
-                    Registrate i sogni con la voce appena svegli, prima che i dettagli svaniscano: catturerete sfumature che un registro scritto serale perderebbe. Confrontate poi gli schemi onirici di febbraio con quelli di aprile &mdash; riconoscerete l'impronta esatta della transizione stagionale nella vostra architettura del sonno.
-                </p>
-<h3>Schemi da osservare</h3>
-<p>
-                    Quando registrate i sogni primaverili, prestate attenzione a tre aspetti: la frequenza dei sogni vividi (un marcatore della pressione REM), i temi legati alla <a class="text-dream-salmon hover:underline" href="../simboli/luna">luce e all'oscurit&agrave;</a> (che riflettono la sensibilit&agrave; circadiana) e l'intensit&agrave; emotiva generale (che pu&ograve; elevarsi durante la ricalibrazione). Rilevate sogni sempre pi&ugrave; perturbanti accompagnati da stanchezza diurna? Rafforzate l'igiene del sonno o consultate un professionista.
-                </p>
-<p>
-                    Noctalia facilita questo monitoraggio: registrate i sogni con la voce appena svegli. L'analisi con IA identifica temi ricorrenti e cambiamenti emotivi nel corso delle settimane, trasformandovi in osservatori consapevoli della vostra transizione stagionale.
+                    Parlane con il medico se dormi male da più di qualche settimana, se di giorno fai fatica a restare sveglio (soprattutto alla guida), se gli incubi tornano più volte a settimana e ti rovinano le notti, o se l'umore resta a lungo basso. La primavera è una spiegazione frequente, non l'unica.
                 </p>
 </div>
 <!-- CTA Section -->
@@ -222,9 +240,9 @@
 <div class="w-16 h-16 bg-dream-salmon/10 rounded-full flex items-center justify-center mx-auto mb-6">
 <i class="w-8 h-8 text-dream-salmon" data-lucide="moon"></i>
 </div>
-<h3 class="font-serif text-2xl md:text-3xl mb-4 text-dream-cream">Attraversa la primavera con il sonno intatto</h3>
+<h3 class="font-serif text-2xl md:text-3xl mb-4 text-dream-cream">Rileggi i tuoi sogni di primavera uno accanto all'altro</h3>
 <p class="text-purple-200/70 mb-6 max-w-lg mx-auto">
-                    Noctalia ti aiuta a registrare, analizzare e comprendere come ogni stagione trasforma la tua vita onirica. Registra i sogni con la voce, rileva schemi stagionali e adatta il tuo riposo con dati reali.
+                    Annota ogni sogno a voce o per iscritto appena sveglio, con una nota sulla notte. In Noctalia puoi rileggerli insieme e vedere cosa ritorna mentre la stagione cambia.
                 </p>
 <a class="inline-flex items-center gap-2 px-8 py-4 bg-dream-salmon text-dream-dark rounded-full font-bold hover:bg-dream-salmon/90 transition-colors" href="/it/">
                     Inizia il tuo diario dei sogni <i class="w-5 h-5" data-lucide="arrow-right"></i>
@@ -236,44 +254,54 @@
 <div class="space-y-4">
 <details class="glass-panel rounded-xl p-4 group cursor-pointer">
 <summary class="font-medium flex justify-between items-center text-dream-cream">
-                            Perch&eacute; in primavera &egrave; pi&ugrave; difficile addormentarsi?
+                            Perché in primavera si dorme peggio, anche senza cambio d'ora?
                             <i class="w-5 h-5 transition-transform group-open:rotate-180 text-dream-salmon" data-lucide="chevron-down"></i>
 </summary>
 <p class="mt-4 text-sm text-gray-400 leading-relaxed">
-                            In primavera, il rapido aumento del fotoperiodo ritarda la secrezione di melatonina prolungando l'esposizione alla luce serale. Il nucleo soprachiasmatico ha bisogno di tempo per ricalibrarsi, creando uno sfasamento tra l'orologio biologico e il ciclo luce-buio. Questo disallineamento provoca difficolt&agrave; ad addormentarsi, risvegli pi&ugrave; precoci e la stanchezza primaverile che colpisce 1 europeo su 3.
+                            Dopo l'equinozio di marzo, le giornate guadagnano qualche minuto ogni giorno. Le sere più luminose possono ritardare la salita della melatonina e la voglia di dormire, mentre l'alba più precoce può svegliarti prima. Nel giro di qualche settimana le notti possono accorciarsi. Quanto lo senti dipende dalla camera, dalle abitudini e dalla sensibilità alla luce.
                         </p>
 </details>
 <details class="glass-panel rounded-xl p-4 group cursor-pointer">
 <summary class="font-medium flex justify-between items-center text-dream-cream">
-                            La primavera cambia la qualit&agrave; dei sogni?
+                            La stanchezza primaverile esiste davvero?
                             <i class="w-5 h-5 transition-transform group-open:rotate-180 text-dream-salmon" data-lucide="chevron-down"></i>
 </summary>
 <p class="mt-4 text-sm text-gray-400 leading-relaxed">
-                            S&igrave;. I cambiamenti nell'architettura del sonno durante la primavera, in particolare la redistribuzione del sonno REM, alterano l'esperienza onirica. Molte persone riferiscono sogni pi&ugrave; vividi e emotivamente intensi durante la transizione primaverile, spesso con temi legati alla luce, al movimento e alla trasformazione, riflettendo la ricalibrazione circadiana del cervello.
+                            Molte persone la descrivono, ma non è una diagnosi medica. Notti più corte, ora legale, pollini e serate piene sono le spiegazioni più comuni. Una stanchezza che dura settimane merita un parere medico.
                         </p>
 </details>
 <details class="glass-panel rounded-xl p-4 group cursor-pointer">
 <summary class="font-medium flex justify-between items-center text-dream-cream">
-                            Quali strategie aiutano ad adattare il sonno al cambio di stagione?
+                            La primavera cambia i sogni?
                             <i class="w-5 h-5 transition-transform group-open:rotate-180 text-dream-salmon" data-lucide="chevron-down"></i>
 </summary>
 <p class="mt-4 text-sm text-gray-400 leading-relaxed">
-                            Le strategie pi&ugrave; efficaci includono la gestione dell'esposizione alla luce (luce mattutina intensa, oscurit&agrave; serale), il mantenimento di un orario di sonno costante, l'esercizio fisico al mattino o nel primo pomeriggio, e la tenuta di un diario dei sogni per rilevare come la transizione stagionale influenza il riposo e la vita onirica.
+                            Soprattutto attraverso il ricordo. Svegliarsi prima, a volte proprio all'uscita dal sonno REM, può lasciare in mente sogni più vividi, mentre le notti corte o interrotte ne lasciano meno. Possono comparire immagini primaverili, perché i sogni attingono ai giorni recenti, ma non è stato dimostrato un linguaggio onirico stagionale.
+                        </p>
+</details>
+<details class="glass-panel rounded-xl p-4 group cursor-pointer">
+<summary class="font-medium flex justify-between items-center text-dream-cream">
+                            Quando rivolgersi al medico per i disturbi del sonno in primavera?
+                            <i class="w-5 h-5 transition-transform group-open:rotate-180 text-dream-salmon" data-lucide="chevron-down"></i>
+</summary>
+<p class="mt-4 text-sm text-gray-400 leading-relaxed">
+                            Se dormi male da più di qualche settimana, se di giorno fai fatica a restare sveglio, se gli incubi tornano più volte a settimana o se l'umore cala. La primavera è una spiegazione frequente, non l'unica.
                         </p>
 </details>
 </div>
 </section>
 <!-- Sources / Trust -->
 <section class="mt-16 glass-panel rounded-2xl p-6" id="sources">
-<h2 class="font-serif text-2xl text-dream-cream mb-4">Fonti / Letture consigliate</h2>
+<h2 class="font-serif text-2xl text-dream-cream mb-4">Fonti e letture</h2>
 <ul class="mt-6 space-y-2 text-sm text-gray-400">
-<li><a href="https://doi.org/10.1152/ajpregu.1993.265.4.R846" rel="nofollow noopener noreferrer" target="_blank">Wehr et al. (1993): Conservation of photoperiod-responsive mechanisms in humans (American Journal of Physiology)</a></li>
-<li><a href="https://doi.org/10.1177/0748730419854197" rel="nofollow noopener noreferrer" target="_blank">Roenneberg et al. (2019): Why should we abolish daylight saving time? (Journal of Biological Rhythms)</a></li>
-<li><a href="https://doi.org/10.1016/j.cub.2007.10.025" rel="nofollow noopener noreferrer" target="_blank">Kantermann et al. (2007): The human circadian clock's seasonal adjustment is disrupted by daylight saving time (Current Biology)</a></li>
-<li><a href="https://doi.org/10.1111/jpi.12098" rel="nofollow noopener noreferrer" target="_blank">Stothard et al. (2017): Circadian entrainment to the natural light-dark cycle across seasons (Journal of Pineal Research)</a></li>
-<li><a href="https://doi.org/10.1016/j.smrv.2012.10.001" rel="nofollow noopener noreferrer" target="_blank">Harrison (2013): The impact of daylight saving time on sleep and related behaviours (Sleep Medicine Reviews)</a></li>
+<li><a href="https://doi.org/10.1152/ajpregu.1993.265.4.R846" rel="nofollow noopener noreferrer" target="_blank">Wehr et al. (1993), «Conservation of photoperiod-responsive mechanisms in humans», <em>American Journal of Physiology</em></a></li>
+<li><a href="https://doi.org/10.1016/j.cub.2016.12.041" rel="nofollow noopener noreferrer" target="_blank">Stothard et al. (2017), «Circadian entrainment to the natural light-dark cycle across seasons and the weekend», <em>Current Biology</em></a></li>
+<li><a href="https://doi.org/10.1016/j.cub.2007.10.025" rel="nofollow noopener noreferrer" target="_blank">Kantermann et al. (2007), «The human circadian clock's seasonal adjustment is disrupted by daylight saving time», <em>Current Biology</em></a></li>
+<li><a href="https://doi.org/10.1016/j.smrv.2012.10.001" rel="nofollow noopener noreferrer" target="_blank">Harrison (2013), «The impact of daylight saving time on sleep and related behaviours», <em>Sleep Medicine Reviews</em></a></li>
+<li><a href="https://doi.org/10.1210/jc.2010-2098" rel="nofollow noopener noreferrer" target="_blank">Gooley et al. (2011), «Exposure to room light before bedtime suppresses melatonin onset and shortens melatonin duration in humans», <em>Journal of Clinical Endocrinology &amp; Metabolism</em></a></li>
+<li><a href="https://doi.org/10.1017/S1092852900019611" rel="nofollow noopener noreferrer" target="_blank">Terman e Terman (2005), «Light therapy for seasonal and nonseasonal depression», <em>CNS Spectrums</em></a></li>
 </ul>
-<p class="mt-6 text-xs text-purple-200/60">Ultimo aggiornamento: 24 marzo 2026</p>
+<p class="mt-6 text-xs text-purple-200/60">Aggiornato il 9 ottobre 2026</p>
 </section>
 <!-- Related Symbols Start -->
 <section aria-label="Esplora i simboli correlati" class="mt-12 mb-8">

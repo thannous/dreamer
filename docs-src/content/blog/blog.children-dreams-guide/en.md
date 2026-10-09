@@ -5,7 +5,7 @@
   "lang": "en",
   "slug": "children-dreams-guide",
   "title": "Children's Dreams: What Kids Dream About and How to Help | Noctalia",
-  "description": "Understand what children dream about at every age, why kids have nightmares, and how parents can help children develop a healthy relationship with dreaming.",
+  "description": "What do children dream about at each age? Nightmare or night terror, what helps at bedtime and when to see a doctor: a calm guide to children's dreams.",
   "robots": "max-image-preview:large",
   "themeColor": "#0a0514",
   "htmlClass": "scroll-smooth blog-article",
@@ -14,25 +14,25 @@
   "mainClass": "pt-32 pb-20 px-4",
   "ogType": "article",
   "ogTitle": "Children's Dreams: What Kids Dream About and How to Help | Noctalia",
-  "ogDescription": "Understand what children dream about at every age, why kids have nightmares, and how parents can help children develop a healthy relationship with dreaming.",
+  "ogDescription": "What kids dream about at each age, how to tell a nightmare from a night terror, and what really helps at bedtime.",
   "ogImage": "https://noctalia.app/img/blog/children-dreams-guide.webp",
   "ogImageAlt": "Peaceful child sleeping surrounded by gentle dreamlike imagery in soft purple and blue tones",
   "twitterCard": "summary_large_image",
   "twitterTitle": "Children's Dreams: What Kids Dream About and How to Help | Noctalia",
-  "twitterDescription": "Understand what children dream about at every age, why kids have nightmares, and how parents can help children develop a healthy relationship with dreaming.",
+  "twitterDescription": "Children's dreams by age, nightmares vs night terrors, and what actually helps at night and the next morning.",
   "twitterImage": "https://noctalia.app/img/blog/children-dreams-guide.webp",
   "twitterImageAlt": "Peaceful child sleeping surrounded by gentle dreamlike imagery in soft purple and blue tones",
   "publishedTime": "2026-03-06",
-  "modifiedTime": "2026-03-06",
+  "modifiedTime": "2026-10-09",
   "author": "Thanh Chau",
   "prevPath": "/en/blog/anxiety-dreams-meaning",
   "nextPath": "/en/blog/sleep-day-environment-dreams",
   "preloadImage": "/img/blog/children-dreams-guide.webp",
   "jsonLd": [
-    "{\n  \"@context\": \"https://schema.org\",\n  \"@type\": \"BlogPosting\",\n  \"headline\": \"Children's Dreams: What Kids Dream About and How to Help\",\n  \"description\": \"Understand what children dream about at every age, why kids have nightmares, and how parents can help children develop a healthy relationship with dreaming.\",\n  \"image\": {\n    \"@type\": \"ImageObject\",\n    \"url\": \"https://noctalia.app/img/blog/children-dreams-guide.webp\",\n    \"width\": 1200,\n    \"height\": 630\n  },\n  \"author\": [\n    {\n      \"@type\": \"Person\",\n      \"@id\": \"https://noctalia.app/en/about#person\",\n      \"name\": \"Thanh Chau\",\n      \"jobTitle\": \"Founder & Publication Director\",\n      \"url\": \"https://noctalia.app/en/about\",\n      \"worksFor\": {\n        \"@type\": \"Organization\",\n        \"@id\": \"https://noctalia.app/#organization\",\n        \"name\": \"Noctalia\",\n        \"url\": \"https://noctalia.app\"\n      }\n    },\n    {\n      \"@type\": \"Organization\",\n      \"@id\": \"https://noctalia.app/#organization\",\n      \"name\": \"Noctalia\",\n      \"url\": \"https://noctalia.app\",\n      \"logo\": {\n        \"@type\": \"ImageObject\",\n        \"url\": \"https://noctalia.app/logo/logo_noctalia.png\"\n      }\n    }\n  ],\n  \"publisher\": {\n    \"@type\": \"Organization\",\n    \"name\": \"Noctalia\",\n    \"url\": \"https://noctalia.app\",\n    \"logo\": {\n      \"@type\": \"ImageObject\",\n      \"url\": \"https://noctalia.app/logo/logo_noctalia.png\"\n    }\n  },\n  \"datePublished\": \"2026-03-06\",\n  \"dateModified\": \"2026-03-06\",\n  \"mainEntityOfPage\": {\n    \"@type\": \"WebPage\",\n    \"@id\": \"https://noctalia.app/en/blog/children-dreams-guide\"\n  },\n  \"inLanguage\": \"en\",\n  \"isAccessibleForFree\": true,\n  \"wordCount\": 1800,\n  \"timeRequired\": \"PT5M\",\n  \"url\": \"https://noctalia.app/en/blog/children-dreams-guide\"\n}",
+    "{\n    \"@context\": \"https://schema.org\",\n    \"@type\": \"BlogPosting\",\n    \"headline\": \"Children's dreams: what kids dream about and how to help\",\n    \"description\": \"What do children dream about at each age? Nightmare or night terror, what helps at bedtime and when to see a doctor: a calm guide to children's dreams.\",\n    \"image\": {\n        \"@type\": \"ImageObject\",\n        \"url\": \"https://noctalia.app/img/blog/children-dreams-guide.webp\",\n        \"width\": 1200,\n        \"height\": 630\n    },\n    \"author\": [\n        {\n            \"@type\": \"Person\",\n            \"@id\": \"https://noctalia.app/en/about#person\",\n            \"name\": \"Thanh Chau\",\n            \"jobTitle\": \"Founder & Publication Director\",\n            \"url\": \"https://noctalia.app/en/about\",\n            \"worksFor\": {\n                \"@type\": \"Organization\",\n                \"@id\": \"https://noctalia.app/#organization\",\n                \"name\": \"Noctalia\",\n                \"url\": \"https://noctalia.app\"\n            }\n        },\n        {\n            \"@type\": \"Organization\",\n            \"@id\": \"https://noctalia.app/#organization\",\n            \"name\": \"Noctalia\",\n            \"url\": \"https://noctalia.app\",\n            \"logo\": {\n                \"@type\": \"ImageObject\",\n                \"url\": \"https://noctalia.app/logo/logo_noctalia.png\"\n            }\n        }\n    ],\n    \"publisher\": {\n        \"@type\": \"Organization\",\n        \"name\": \"Noctalia\",\n        \"url\": \"https://noctalia.app\",\n        \"logo\": {\n            \"@type\": \"ImageObject\",\n            \"url\": \"https://noctalia.app/logo/logo_noctalia.png\"\n        }\n    },\n    \"datePublished\": \"2026-03-06\",\n    \"dateModified\": \"2026-10-09\",\n    \"mainEntityOfPage\": {\n        \"@type\": \"WebPage\",\n        \"@id\": \"https://noctalia.app/en/blog/children-dreams-guide\"\n    },\n    \"inLanguage\": \"en\",\n    \"isAccessibleForFree\": true,\n    \"wordCount\": 2442,\n    \"timeRequired\": \"PT12M\",\n    \"url\": \"https://noctalia.app/en/blog/children-dreams-guide\"\n}",
     "{\n  \"@context\": \"https://schema.org\",\n  \"@type\": \"WebPage\",\n  \"@id\": \"https://noctalia.app/en/blog/children-dreams-guide\",\n  \"url\": \"https://noctalia.app/en/blog/children-dreams-guide\",\n  \"name\": \"Children's Dreams: What Kids Dream About and How to Help | Noctalia\",\n  \"inLanguage\": \"en\"\n}",
-    "{\n  \"@context\": \"https://schema.org\",\n  \"@type\": \"FAQPage\",\n  \"mainEntity\": [\n    {\n      \"@type\": \"Question\",\n      \"name\": \"At what age do children start dreaming?\",\n      \"acceptedAnswer\": {\n        \"@type\": \"Answer\",\n        \"text\": \"REM sleep begins as early as 28 weeks in utero, suggesting some form of neural activity resembling dreaming occurs before birth. Children begin reporting dreams around age 3-5, though these are typically static images rather than narratives. By age 5-7, dreams become more structured with characters and storylines. Research by David Foulkes found that young children's dream reports are simpler and shorter than adults', gradually increasing in complexity as cognitive abilities develop.\"\n      }\n    },\n    {\n      \"@type\": \"Question\",\n      \"name\": \"What is the difference between nightmares and night terrors?\",\n      \"acceptedAnswer\": {\n        \"@type\": \"Answer\",\n        \"text\": \"Nightmares occur during REM sleep, typically in the second half of the night. Children wake up, remember the dream, and can describe what frightened them. Night terrors occur during deep non-REM sleep, usually 1-3 hours after falling asleep. Children may scream, thrash, or sit up with eyes open but are not truly awake and have no memory of the episode. Night terrors are most common between ages 3-8 and are generally harmless, though frightening for parents to witness.\"\n      }\n    },\n    {\n      \"@type\": \"Question\",\n      \"name\": \"How can I help my child who has frequent nightmares?\",\n      \"acceptedAnswer\": {\n        \"@type\": \"Answer\",\n        \"text\": \"Establish a calming bedtime routine, validate your child's feelings without dismissing their fears, and try dream rescripting for children over 5 - where the child reimagines the scary dream with a positive ending while awake. Limit exposure to frightening media, provide a comfort object, and ensure adequate sleep duration. If nightmares persist for more than one month, cause significant daytime anxiety, or follow a traumatic event, consult a pediatrician or child psychologist.\"\n      }\n    }\n  ]\n}",
-    "{\n  \"@context\": \"https://schema.org\",\n  \"@type\": \"BreadcrumbList\",\n  \"itemListElement\": [\n    {\n      \"@type\": \"ListItem\",\n      \"position\": 1,\n      \"name\": \"Home\",\n      \"item\": \"https://noctalia.app/\"\n    },\n    {\n      \"@type\": \"ListItem\",\n      \"position\": 2,\n      \"name\": \"Resources\",\n      \"item\": \"https://noctalia.app/en/blog/\"\n    },\n    {\n      \"@type\": \"ListItem\",\n      \"position\": 3,\n      \"name\": \"Children's Dreams Guide\",\n      \"item\": \"https://noctalia.app/en/blog/children-dreams-guide\"\n    }\n  ]\n}"
+    "{\n    \"@context\": \"https://schema.org\",\n    \"@type\": \"FAQPage\",\n    \"mainEntity\": [\n        {\n            \"@type\": \"Question\",\n            \"name\": \"At what age do children start dreaming?\",\n            \"acceptedAnswer\": {\n                \"@type\": \"Answer\",\n                \"text\": \"Babies spend a lot of time in REM sleep, but nobody can know what they experience before they can talk. Children start telling dreams during the preschool years, often as a short scene or a single image. Reports become real stories, with the child as a character, during primary school.\"\n            }\n        },\n        {\n            \"@type\": \"Question\",\n            \"name\": \"What is the difference between a nightmare and a night terror?\",\n            \"acceptedAnswer\": {\n                \"@type\": \"Answer\",\n                \"text\": \"A nightmare is a frightening dream during REM sleep, often late in the night: the child wakes up, remembers it and looks for comfort. A night terror comes out of deep sleep, usually early in the night: the child screams or thrashes without really waking and remembers nothing the next morning.\"\n            }\n        },\n        {\n            \"@type\": \"Question\",\n            \"name\": \"Should I wake my child during a night terror?\",\n            \"acceptedAnswer\": {\n                \"@type\": \"Answer\",\n                \"text\": \"No. Stay calm and close, make sure your child can't get hurt, and let the episode pass. Trying to wake them can add to the confusion. If episodes are frequent or dangerous, talk to your doctor.\"\n            }\n        },\n        {\n            \"@type\": \"Question\",\n            \"name\": \"How can I help my child who has frequent nightmares?\",\n            \"acceptedAnswer\": {\n                \"@type\": \"Answer\",\n                \"text\": \"Comfort first and talk the next day. Keep bedtime calm and regular, and avoid frightening content in the evening. From about age 5, you can invent a new ending for the dream together during the day. If nightmares last for weeks, follow a frightening event or affect daily life, see your pediatrician.\"\n            }\n        }\n    ]\n}",
+    "{\n    \"@context\": \"https://schema.org\",\n    \"@type\": \"BreadcrumbList\",\n    \"itemListElement\": [\n        {\n            \"@type\": \"ListItem\",\n            \"position\": 1,\n            \"name\": \"Home\",\n            \"item\": \"https://noctalia.app/\"\n        },\n        {\n            \"@type\": \"ListItem\",\n            \"position\": 2,\n            \"name\": \"Resources\",\n            \"item\": \"https://noctalia.app/en/blog/\"\n        },\n        {\n            \"@type\": \"ListItem\",\n            \"position\": 3,\n            \"name\": \"Children's dreams guide\",\n            \"item\": \"https://noctalia.app/en/blog/children-dreams-guide\"\n        }\n    ]\n}"
   ],
   "activeNav": "resources"
 }
@@ -52,7 +52,7 @@
 </li>
 <li class="text-purple-400">/</li>
 <li itemprop="itemListElement" itemscope="" itemtype="https://schema.org/ListItem">
-<span class="text-dream-cream" itemprop="name">Children's Dreams Guide</span>
+<span class="text-dream-cream" itemprop="name">Children's dreams guide</span>
 <meta content="3" itemprop="position">
 </li>
 </ol>
@@ -60,17 +60,17 @@
 <!-- Article Header -->
 <header class="mb-12">
 <div class="flex flex-wrap items-center gap-3 mb-6">
-<span class="text-xs font-mono text-dream-salmon border border-dream-salmon/30 rounded-full px-3 py-1 uppercase">Complete Guide</span>
+<span class="text-xs font-mono text-dream-salmon border border-dream-salmon/30 rounded-full px-3 py-1 uppercase">Parent guide</span>
 <a class="text-xs font-mono text-purple-200/70 border border-white/10 rounded-full px-3 py-1 hover:text-white hover:border-dream-salmon/30 transition-colors" href="dream-meanings">Topic: Dream meanings</a>
 <span aria-hidden="true" class="w-full sm:hidden"></span>
 <span class="text-sm text-purple-300/60">Published March 6, 2026</span>
-<span class="text-sm text-purple-300/60">5 min read</span>
+<span class="text-sm text-purple-300/60">12 min read</span>
 </div>
 <h1 class="font-serif text-3xl md:text-5xl mb-6 text-transparent bg-clip-text bg-gradient-to-b from-white via-dream-lavender to-purple-400/50 leading-tight">
-                    Children's Dreams: What Kids Dream About and How to Help
+                    Children's dreams: what kids dream about and how to help
                 </h1>
 <p class="text-lg text-purple-200/80 leading-relaxed">
-                    Your child wakes up crying, saying a monster chased them through a dark forest. Or they excitedly describe flying over a rainbow with their pet dog. Children's dreams are vivid, emotionally intense, and different from adult dreams. Understanding how kids dream at every age gives you the tools to support them through nightmares and nurture a lifelong healthy relationship with sleep.
+                    It is two in the morning and your child is standing by your bed, cheeks wet, saying a wolf was in the hallway. A few days later, the same child tells you, beaming, about riding a giant dog over the rooftops. Children's dreams can be vivid, strange and very real to them. This guide explains what kids tend to dream about at each age, how to tell a nightmare from a night terror, and what actually helps, at night and the next day.
                 </p>
 </header>
 <!-- Author Byline (E-E-A-T) -->
@@ -86,7 +86,7 @@
 <!-- Quick Answer (AI SEO) -->
 <section aria-labelledby="quick-answer-title" class="glass-panel rounded-2xl p-6 mb-8 border border-dream-salmon/20 bg-white/5">
 <h2 class="font-serif text-xl text-dream-cream mb-3" id="quick-answer-title">Quick answer</h2>
-<p class="text-purple-100/80 leading-relaxed">Children dream more vividly and more often than adults because they spend more time in REM sleep. Before age 5, dreams tend to be static and short. By age 7, dreams become narrative with characters. Parents can help by normalizing dreams, teaching coping strategies like dream rescripting, and establishing calming bedtime routines.</p>
+<p class="text-purple-100/80 leading-relaxed">Children start telling dreams during the preschool years. Early reports are short, often a single image or an animal; stories with a beginning, an end and the child as a character usually come later, in primary school. Bad dreams are common and usually pass. After a nightmare, comfort first and talk the next day. During a night terror, stay close and don't try to wake your child. See a doctor if sleep problems last or affect daily life.</p>
 </section>
 <!-- Editorial Review (E-E-A-T) -->
 <div class="mb-8">
@@ -111,94 +111,93 @@
 <!-- Table of Contents -->
 <nav class="glass-panel rounded-2xl p-6 mb-12">
 <h2 class="font-serif text-lg text-dream-cream mb-4 flex items-center gap-2">
-<i class="w-5 h-5 text-dream-salmon" data-lucide="list"></i> Table of Contents
+<i class="w-5 h-5 text-dream-salmon" data-lucide="list"></i> Table of contents
                 </h2>
 <ol class="space-y-2 text-sm text-purple-200/70">
-<li><a class="toc-link block" href="#dreams-by-age">1. How children's dreams change with age</a></li>
+<li><a class="toc-link block" href="#dreams-by-age">1. How do children's dreams change with age?</a></li>
 <li><a class="toc-link block" href="#what-children-dream">2. What do children dream about?</a></li>
-<li><a class="toc-link block" href="#nightmares-vs-terrors">3. Why children have nightmares and night terrors</a></li>
-<li><a class="toc-link block" href="#helping-children">4. How to help a child who has bad dreams</a></li>
-<li><a class="toc-link block" href="#journaling-for-kids">5. Dream journaling for children</a></li>
-<li><a class="toc-link block" href="#when-to-consult">6. When to consult a professional</a></li>
+<li><a class="toc-link block" href="#nightmares-vs-terrors">3. Nightmare or night terror: what's the difference?</a></li>
+<li><a class="toc-link block" href="#helping-children">4. How can you help a child after a bad dream?</a></li>
+<li><a class="toc-link block" href="#journaling-for-kids">5. Can children keep a dream journal?</a></li>
+<li><a class="toc-link block" href="#when-to-consult">6. When should you see a professional?</a></li>
 </ol>
 </nav>
 <!-- Article Content -->
 <div class="prose max-w-none text-gray-300">
-<h2 id="dreams-by-age">How Children's Dreams Change with Age</h2>
+<h2 id="dreams-by-age">How do children's dreams change with age?</h2>
 <p>
-                    Children are not simply small adults when it comes to dreaming. Pioneering research by psychologist David Foulkes, published in his landmark 1982 book <em>Children's Dreams</em>, revealed that the dreaming mind develops in stages, closely mirroring cognitive and emotional growth. Understanding these stages helps parents set realistic expectations about what their child experiences at night.
+                    Children don't dream like small adults. Over several years, psychologist David Foulkes followed children in a sleep laboratory, waking them during the night to ask what was going on in their heads. His book <em>Children's Dreams</em> (1982) describes dream reports that grow along with language, memory and imagination.
                 </p>
 <p>
-                    One of the most important facts about children's sleep is that they spend significantly more time in <a class="text-dream-salmon hover:underline" href="rem-sleep-dreams">REM sleep</a> than adults. Newborns spend roughly 50% of their sleep time in REM, compared to just 20-25% in adults. This percentage gradually decreases throughout childhood, but it means that young children have far more opportunities for dreaming.
+                    Sleep changes too. Babies spend a much larger share of their sleep in <a class="text-dream-salmon hover:underline" href="rem-sleep-dreams">REM sleep</a> than adults: up to about half, against roughly a fifth in adulthood, according to the Sleep Foundation. That share falls during childhood. It still tells us nothing about what a baby experiences: before a child can talk, nobody can say whether or what they dream.
                 </p>
 <table class="w-full text-sm text-left text-gray-300 my-6">
 <thead class="text-xs uppercase text-dream-cream border-b border-white/10">
 <tr>
-<th class="py-3 px-4">Age Range</th>
-<th class="py-3 px-4">REM Sleep %</th>
-<th class="py-3 px-4">Dream Characteristics</th>
+<th class="py-3 px-4">Age</th>
+<th class="py-3 px-4">What dream reports tend to look like</th>
 </tr>
 </thead>
 <tbody class="divide-y divide-white/5">
-<tr><td class="py-3 px-4 font-medium">0-2 years</td><td class="py-3 px-4">~50%</td><td class="py-3 px-4">REM activity present; no verbal reports possible</td></tr>
-<tr><td class="py-3 px-4 font-medium">3-5 years</td><td class="py-3 px-4">~30-35%</td><td class="py-3 px-4">Static images, short scenes, often featuring animals</td></tr>
-<tr><td class="py-3 px-4 font-medium">5-7 years</td><td class="py-3 px-4">~25-30%</td><td class="py-3 px-4">Narrative dreams emerge with characters and sequences</td></tr>
-<tr><td class="py-3 px-4 font-medium">8-12 years</td><td class="py-3 px-4">~20-25%</td><td class="py-3 px-4">Complex plots, social interactions, the dreamer becomes an active participant</td></tr>
-<tr><td class="py-3 px-4 font-medium">Teens</td><td class="py-3 px-4">~20%</td><td class="py-3 px-4">Adult-like dreams with abstract themes, identity exploration, and emotional depth</td></tr>
+<tr><td class="py-3 px-4 font-medium">0–2 years</td><td class="py-3 px-4">No report possible; lots of REM sleep, but its content is unknown</td></tr>
+<tr><td class="py-3 px-4 font-medium">3–5 years</td><td class="py-3 px-4">Short reports, often a single image: an animal, a familiar place</td></tr>
+<tr><td class="py-3 px-4 font-medium">5–7 years</td><td class="py-3 px-4">More characters and actions; the child starts to appear in the story</td></tr>
+<tr><td class="py-3 px-4 font-medium">8–12 years</td><td class="py-3 px-4">Longer plots, friends and school, the child as an active character</td></tr>
+<tr><td class="py-3 px-4 font-medium">Teenagers</td><td class="py-3 px-4">Close to adult dreams: relationships, identity, everyday worries</td></tr>
 </tbody>
 </table>
 <p>
-                    Foulkes's laboratory studies found that children under five rarely reported dreams when woken from REM sleep, and when they did, the reports were brief and static - a snapshot of an animal or a familiar place rather than a story. It is not until around age seven that children consistently describe dreams with a beginning, middle, and end, featuring themselves as active characters within the narrative.
+                    In Foulkes's studies, children under five rarely reported a dream when woken, and their reports were brief and static: an animal, a place, hardly any action. Dreams with a beginning, a middle and an end, in which the child acts, became common only around seven. These are averages observed in a lab, not milestones to check off. Each child puts dreams into words at their own pace.
                 </p>
 
-<h2 id="what-children-dream">What Do Children Dream About?</h2>
+<h2 id="what-children-dream">What do children dream about?</h2>
 <p>
-                    What children dream about shifts dramatically as they grow. While adults often <a class="text-dream-salmon hover:underline" href="stress-dreams-work">dream about work</a>, relationships, and daily concerns, younger children inhabit a different dreamscape, populated by the things that matter most in their world.
+                    Dreams draw on what fills the day. Adults may <a class="text-dream-salmon hover:underline" href="stress-dreams-work">dream about work</a>; children dream about the people, animals and places that make up their world. The age groups below describe common tendencies, not rules.
                 </p>
-<h3>Ages 3-5: Animals and familiar settings</h3>
+<h3>Ages 3–5: animals and familiar places</h3>
 <p>
-                    Toddlers and preschoolers dream predominantly about <strong>animals</strong> - a finding consistent across cultures. Dogs, cats, bears, and fantastical creatures appear far more frequently in young children's dreams than in adult dreams. These dreams are often set in familiar places like <a class="text-dream-salmon hover:underline" href="../symbols/house">the family home</a> or a <a class="text-dream-salmon hover:underline" href="../symbols/forest">forest</a>. Foulkes noted that the dreamer rarely appears as an active character at this age; instead, the child watches events unfold as a passive observer.
+                    Animals are a hallmark of young children's dream reports: a <a class="text-dream-salmon hover:underline" href="../symbols/dog">dog</a>, a cat, a bear, sometimes an invented creature. Scenes often take place at <a class="text-dream-salmon hover:underline" href="../symbols/house">home</a> or in a <a class="text-dream-salmon hover:underline" href="../symbols/forest">forest</a> straight out of a picture book. In Foulkes's observations, the child at this age watches more than acts.
                 </p>
-<h3>Ages 5-7: Fantasy figures and emerging narratives</h3>
+<h3>Ages 5–7: fantasy figures and first stories</h3>
 <p>
-                    As imagination flourishes, dreams begin to include fairy-tale characters, superheroes, and magical scenarios. Children at this age start to appear in their own dreams, performing actions and interacting with others. The emotional range of dreams also expands - joy, surprise, and fear become more distinct elements within dream reports.
+                    Superheroes, witches and talking animals join the cast. The child begins to do things in the dream and to describe feelings: joy, surprise, fear. A dream can now be told as a small story, even if it jumps from one scene to another.
                 </p>
-<h3>Ages 8-12: Social worlds and school life</h3>
+<h3>Ages 8–12: friends and school life</h3>
 <p>
-                    School-age children dream increasingly about <strong>social situations</strong>: friendships, conflicts with peers, teachers, and <a class="text-dream-salmon hover:underline" href="../symbols/school">school</a> scenarios. Dreams about being chased, falling, or being embarrassed in public become more common during this period, mirroring the growing importance of social standing and performance anxiety in a child's life.
+                    Friendships, a falling-out with a classmate, a teacher, a test at <a class="text-dream-salmon hover:underline" href="../symbols/school">school</a>: the social world takes up more room. Being chased, falling or feeling embarrassed in front of others also appear. These scenes echo what matters at that age. They are not proof of a hidden problem.
                 </p>
 <p>
-                    When these dreams cluster around a new term, our guide to <a class="text-dream-salmon hover:underline" href="back-to-school-nightmares-children">back-to-school nightmares in children</a> helps parents distinguish a bad dream from a nightmare or night terror.
+                    If these dreams cluster around a new school year, our guide to <a class="text-dream-salmon hover:underline" href="back-to-school-nightmares-children">back-to-school nightmares in children</a> covers that period in detail.
                 </p>
-<h3>Teenagers: Identity and emotion</h3>
+<h3>Teenagers: identity and emotions</h3>
 <p>
-                    Adolescent dreams resemble adult dreams in their complexity. Themes of identity, romantic relationships, body image, and future aspirations dominate. Teens also experience more <a class="text-dream-salmon hover:underline" href="stop-nightmares-guide">nightmares</a> during periods of hormonal change and academic pressure. Understanding <a class="text-dream-salmon hover:underline" href="why-we-dream-science">why we dream</a> can help teenagers make sense of the emotional intensity they experience during sleep.
+                    Teen dreams look a lot like adult dreams: relationships, body image, the future, alongside completely ordinary or absurd scenes. Stressful periods can bring more <a class="text-dream-salmon hover:underline" href="stop-nightmares-guide">nightmares</a>. If your teenager is curious, our article on <a class="text-dream-salmon hover:underline" href="why-we-dream-science">why we dream</a> sets out the main theories. An open conversation helps more than a quick reading of symbols.
                 </p>
 
-<h2 id="nightmares-vs-terrors">Why Children Have Nightmares and Night Terrors</h2>
+<h2 id="nightmares-vs-terrors">Nightmare or night terror: what's the difference?</h2>
 <p>
-                    Bad dreams are a normal part of childhood development, but they can be deeply distressing for both children and parents. It is crucial to understand the difference between nightmares and night terrors, because they require very different responses.
+                    Your child screams in the night. Is it a nightmare or a night terror? From the outside, the two can look alike. They happen in different stages of sleep, though, and call for different responses.
                 </p>
-<h3>Nightmares: REM sleep disruptions</h3>
+<h3>Nightmares: a frightening dream in REM sleep</h3>
 <p>
-                    Nightmares are frightening dreams that occur during <a class="text-dream-salmon hover:underline" href="rem-sleep-dreams">REM sleep</a>, typically in the second half of the night when REM periods are longest. The child wakes up fully, remembers the dream, and can usually describe what scared them. Research by Mindell and Owens in <em>A Clinical Guide to Pediatric Sleep</em> (2015) found that <strong>37% of children aged 3-6 experience frequent nightmares</strong>, making them one of the most common sleep complaints in early childhood.
+                    A nightmare is a frightening dream that occurs during <a class="text-dream-salmon hover:underline" href="rem-sleep-dreams">REM sleep</a>, more often in the second half of the night. The child wakes up, remembers the dream and can usually tell you what scared them. Pediatric sleep references, such as Mindell and Owens's clinical guide, list bad dreams among the most common sleep complaints in childhood. Most are temporary.
                 </p>
 <p>
-                    Common nightmare triggers in children include:
+                    Common triggers in children include:
                 </p>
 <ul>
-<li><strong>Scary media:</strong> Movies, TV shows, video games, or stories with frightening content</li>
-<li><strong>Stress and change:</strong> Starting school, moving house, parental conflict, or the arrival of a new sibling</li>
-<li><strong>Overtiredness:</strong> Insufficient sleep paradoxically increases REM intensity and nightmare frequency</li>
-<li><strong>Illness and fever:</strong> Physical discomfort and elevated body temperature can intensify dreams</li>
-<li><strong>Developmental leaps:</strong> Periods of rapid cognitive growth often coincide with more vivid dreaming</li>
+<li><strong>Frightening content:</strong> a film, a game, a story or the news overheard in the evening</li>
+<li><strong>Change and stress:</strong> starting school, moving house, tension at home, a new baby</li>
+<li><strong>Too little sleep:</strong> an overtired child often sleeps more restlessly</li>
+<li><strong>Illness and fever:</strong> they can come with stranger, more intense dreams</li>
+<li><strong>A worrying event:</strong> something seen or heard during the day that hasn't been talked about yet</li>
 </ul>
-<h3>Night terrors: Deep sleep events</h3>
+<h3>Night terrors: a partial waking from deep sleep</h3>
 <p>
-                    Night terrors are different from nightmares. They occur during <strong>deep non-REM sleep</strong>, usually 1-3 hours after the child falls asleep. During a night terror, a child may scream, thrash, sit up with eyes wide open, or even walk around - but they are not truly awake and will have <strong>no memory of the episode</strong> the next morning. Night terrors peak between ages 3-8 and affect roughly 1-6% of children.
+                    A night terror happens during <strong>deep non-REM sleep</strong>, usually in the first hours after falling asleep. The child may scream, thrash, sit up with eyes wide open or even get out of bed, but is not really awake and usually <strong>remembers nothing</strong> in the morning. According to the NHS, night terrors are most common in young children and tend to fade as they grow.
                 </p>
 <p>
-                    Emotional disturbance does not cause night terrors. They happen when the brain has difficulty transitioning smoothly between deep sleep stages. Factors like sleep deprivation, irregular sleep schedules, and fever can trigger them. The most important thing parents can do during a night terror is <strong>stay calm and keep the child safe</strong> without trying to wake them, as waking a child during a night terror can increase confusion and prolong the episode. This is very different from <a class="text-dream-salmon hover:underline" href="sleep-paralysis-guide">sleep paralysis</a>, which occurs during REM transitions in older children and adults.
+                    They are not a sign of emotional disturbance. Lack of sleep, irregular bedtimes and fever can make them more likely. During an episode, <strong>stay calm, keep your child safe and wait</strong>: trying to wake them can add to the confusion. Night terrors are also different from <a class="text-dream-salmon hover:underline" href="sleep-paralysis-guide">sleep paralysis</a>, which is linked to REM sleep and more often reported by teenagers and adults.
                 </p>
 </div>
 <!-- Dream Type Cards -->
@@ -211,9 +210,9 @@
 <h3 class="font-serif text-lg text-dream-cream">Nightmares</h3>
 </div>
 <p class="text-sm text-gray-300 mb-3">
-                        Occur in REM sleep (second half of night). Child wakes fully, remembers the dream, and seeks comfort. Most common ages 3-6.
+                        Usually in the second half of the night, during REM sleep. Your child wakes fully, remembers the dream and looks for comfort.
                     </p>
-<p class="text-xs text-dream-salmon">High frequency in young children, moderate distress</p>
+<p class="text-xs text-dream-salmon">What helps: comfort now, talk tomorrow</p>
 </div>
 <div class="symptom-card glass-panel rounded-xl p-6 border border-transparent">
 <div class="flex items-center gap-3 mb-4">
@@ -223,39 +222,39 @@
 <h3 class="font-serif text-lg text-dream-cream">Night terrors</h3>
 </div>
 <p class="text-sm text-gray-300 mb-3">
-                        Occur in deep NREM sleep (1-3h after falling asleep). Child appears awake but is not. No memory next morning. Peak ages 3-8.
+                        Usually in the first hours of sleep, out of deep non-REM sleep. Your child seems awake but isn't, and remembers nothing the next morning.
                     </p>
-<p class="text-xs text-dream-salmon">Lower frequency, high distress for parents</p>
+<p class="text-xs text-dream-salmon">What helps: stay close, don't wake them</p>
 </div>
 </div>
 <div class="prose max-w-none text-gray-300">
-<h2 id="helping-children">How to Help a Child Who Has Bad Dreams</h2>
+<h2 id="helping-children">How can you help a child after a bad dream?</h2>
 <p>
-                    When your child comes to you after a nightmare, your response matters enormously. How you handle these moments shapes not only their relationship with sleep but also their emotional resilience and ability to process difficult feelings.
+                    In the middle of the night, your child needs safety, not explanations. A calm voice, a little light if needed and a short sentence are often enough. The dream itself can wait until morning.
                 </p>
-<h3>Validate their feelings</h3>
+<h3>Take the fear seriously</h3>
 <p>
-                    Never dismiss a child's dream fear with phrases like "it was just a dream" or "there's nothing to be afraid of." For a child, the fear is <strong>real and present</strong>. Instead, acknowledge their feelings: "That sounds really scary. I understand why you're upset. You're safe now, and I'm here with you." This emotional validation is the foundation of healthy dream processing.
+                    “It was only a dream” is true, but a child can hear “your fear doesn't count.” Name what is happening instead: “That was scary. You're awake now, and I'm here.” Then ask whether they want to tell you about it, without insisting.
                 </p>
-<h3>Dream rescripting (ages 5+)</h3>
+<h3>Change the ending together (from about age 5)</h3>
 <p>
-                    Dream rescripting is a technique adapted from adult Imagery Rehearsal Therapy that works remarkably well with children. During the daytime - never right after a nightmare - ask your child to <strong>retell the scary dream, then together create a new ending</strong> where they feel powerful and safe. The monster becomes friendly. The child discovers they can fly. The dark forest leads to a beautiful garden. Research shows that practicing this new version while awake can actually change the dream content in subsequent nights.
+                    During the day, never right after a nightmare, suggest a game: retell the dream and <strong>invent a new ending</strong>. The wolf becomes a guard dog, help arrives, the dark forest leads back home. Drawing the new version works well too. The idea comes from imagery rehearsal therapy, which has good support for adults with frequent nightmares; studies in children are fewer. If the nightmares follow a frightening event, talk to a professional first.
                 </p>
-<h3>Establish a calming bedtime routine</h3>
+<h3>A calm, predictable bedtime</h3>
 <ul>
-<li><strong>Consistent timing:</strong> Put children to bed and wake them at the same time every day, including weekends</li>
-<li><strong>Wind-down period:</strong> 30-45 minutes of calm activities before sleep - reading, gentle conversation, soft music</li>
-<li><strong>Screen-free zone:</strong> No screens for at least one hour before bedtime; blue light suppresses melatonin and stimulating content increases nightmare risk</li>
-<li><strong>Comfort objects:</strong> A favorite stuffed animal or blanket provides security and a transitional object between waking and sleeping</li>
-<li><strong>Nightlight if needed:</strong> A dim, warm-colored nightlight can reduce fear of the dark without disrupting sleep quality</li>
+<li><strong>Regular times:</strong> bed and wake-up at about the same time every day, weekends included</li>
+<li><strong>A wind-down:</strong> a story, a chat or quiet music, in the same order every night</li>
+<li><strong>Calm evenings:</strong> no frightening films, games or news just before bed, and notice what stays with your child</li>
+<li><strong>A comfort object:</strong> a favorite soft toy or blanket that “keeps watch”</li>
+<li><strong>A night light if it reassures:</strong> dim and warm, and check that your child actually sleeps better with it</li>
 </ul>
-<h3>Limit frightening media</h3>
+<h3>Choose evening stories and screens with care</h3>
 <p>
-                    Children's brains process scary imagery differently from adults. What seems mildly intense to an adult can be genuinely terrifying for a 4-year-old. Be mindful of TV shows, movies, news content, and even storybooks. The American Academy of Pediatrics recommends <strong>no screen media for children under 2</strong> and careful content curation for older children, especially in the hours before bed.
+                    Children react very differently to the same film or book. What feels mild to an adult can frighten a four-year-old for days. If a story keeps coming back at bedtime, swap it for something calmer. One nightmare does not prove that a particular show was the cause.
                 </p>
-<h3>Use a "dream catcher" or protective ritual</h3>
+<h3>A small reassuring ritual</h3>
 <p>
-                    Young children respond powerfully to symbolic protection. Hanging a dream catcher, spraying "monster spray" (water in a labeled bottle), or creating a bedtime affirmation like "my room is safe and full of good dreams" can give children a genuine sense of control over their dream world.
+                    Many young children like a bedtime ritual: a dream catcher made together, a flashlight by the bed, a sentence said every night (“My room is safe”). Pick one that gives your child a sense of control without confirming that the monster is real. A “monster spray” reassures some children and convinces others that there is something to fight.
                 </p>
 
 <aside class="glass-panel rounded-2xl p-6 my-8 border border-dream-salmon/20">
@@ -264,45 +263,54 @@
 <i class="w-6 h-6 text-dream-salmon" data-lucide="book-open"></i>
 </div>
 <div>
-<h4 class="font-serif text-lg text-dream-cream mb-2">Start a family dream journal</h4>
-<p class="text-sm text-gray-400 mb-4">Recording your family's dreams together transforms nighttime fears into morning conversations. Noctalia's voice-first <a class="text-dream-salmon hover:underline" href="dream-journal-guide">dream journal</a> makes it easy to capture dreams the moment anyone wakes up, building a family practice of dream awareness and emotional sharing.</p>
+<h4 class="font-serif text-lg text-dream-cream mb-2">Keep the dreams your child wants to share</h4>
+<p class="text-sm text-gray-400 mb-4">When your child enjoys telling a dream, record it by voice in Noctalia in the morning. It is transcribed and saved in your <a class="text-dream-salmon hover:underline" href="dream-journal-guide">dream journal</a>, and you can illustrate it to look at together. Only note what your child agrees to share.</p>
 <a class="inline-flex items-center gap-2 text-sm text-dream-salmon hover:text-dream-salmonLight transition-colors" href="/">
-                                Start journaling with Noctalia <i class="w-4 h-4" data-lucide="arrow-right"></i>
+                                Try Noctalia for free <i class="w-4 h-4" data-lucide="arrow-right"></i>
 </a>
 </div>
 </div>
 </aside>
 
-<h2 id="journaling-for-kids">Dream Journaling for Children</h2>
+<h2 id="journaling-for-kids">Can children keep a dream journal?</h2>
 <p>
-                    Dream journaling works for children too, not just adults. Adapted to a child's age and abilities, it becomes a powerful tool for emotional development, creativity, and self-awareness. Make it age-appropriate and fun - never a chore.
+                    Yes, if they enjoy it. A dream journal can become a family ritual. It is neither therapy nor homework: let your child decide what to tell, draw or keep private.
                 </p>
-<h3>Ages 3-5: Drawing dreams</h3>
+<h3>Ages 3–5: drawing the dream</h3>
 <p>
-                    Young children cannot write but they can draw. Keep crayons and paper by the bed and encourage them to <strong>draw what they saw in their dream</strong> first thing in the morning. Ask open-ended questions: "What colors did you see? Who was in your dream? How did you feel?" This builds vocabulary around emotions and helps externalize dream content. For a complete approach, see our <a class="text-dream-salmon hover:underline" href="dream-journal-guide">dream journaling guide</a>.
+                    Leave paper and crayons by the bed. In the morning, ask open questions: “What did you see? Who was there? How did you feel?” They help a child find words for emotions. “I don't want to tell” is a fine answer too. Our <a class="text-dream-salmon hover:underline" href="dream-journal-guide">dream journal guide</a> has more ideas.
                 </p>
-<h3>Ages 6-9: Storytelling and simple writing</h3>
+<h3>Ages 6–9: telling and writing</h3>
 <p>
-                    At this age, children can dictate their dreams to a parent or write simple accounts. A dedicated "dream notebook" with their name on it gives the practice a sense of importance. Encourage them to give each dream a title and rate how it made them feel using emoji-like faces (happy, scared, confused, excited).
+                    Your child can dictate the dream, draw it or write a few lines. A notebook with their name on the cover gives the ritual some weight. A title and a little face for the feeling (happy, scared, puzzled) are enough. Ask before reading or sharing an entry.
                 </p>
-<h3>Ages 10+: Independent journaling</h3>
+<h3>Ages 10 and up: a journal of their own</h3>
 <p>
-                    Older children and teens can maintain their own dream journals. This is especially valuable during pre-adolescence and adolescence, when dreams become more emotionally complex and can serve as a window into feelings the child might not express directly. Learning <a class="text-dream-salmon hover:underline" href="why-we-forget-dreams">how to remember dreams</a> becomes increasingly useful at this age.
+                    Older children and teenagers can keep their own journal, on paper or on a phone. Don't read it without permission, and agree together on how digital notes are protected. Understanding <a class="text-dream-salmon hover:underline" href="why-we-forget-dreams">why dreams fade on waking</a> helps them remember more.
                 </p>
+<h3>Example of a family journal entry</h3>
+<p><strong>Fictional example:</strong> it shows how a parent can note a dream without interpreting it for the child.</p>
+<ul>
+<li><strong>Dream (Maya, 6):</strong> “A big dog was following me in the playground. Then it lay down next to me.”</li>
+<li><strong>Feeling:</strong> “Scared at first, then fine.”</li>
+<li><strong>Recent context:</strong> new class this week, she doesn't know anyone yet.</li>
+<li><strong>Question to keep:</strong> does the playground come back in other dreams, and does the dog stay friendly?</li>
+</ul>
+<p>One entry proves nothing. Over a few weeks, you may notice whether some scenes return with certain days, and the dreams give you an easy way into a conversation.</p>
 
-<h2 id="when-to-consult">When to Consult a Professional</h2>
+<h2 id="when-to-consult">When should you see a professional?</h2>
 <p>
-                    Most childhood nightmares are a normal developmental phase that children outgrow. However, certain patterns warrant professional evaluation:
+                    Most childhood nightmares are a passing phase. Talk to your pediatrician or family doctor if you notice:
                 </p>
 <ul>
-<li><strong>Persistent nightmares lasting more than one month:</strong> Especially if they follow a consistent theme or seem to worsen over time</li>
-<li><strong>Daytime anxiety linked to sleep:</strong> If the child develops a fear of bedtime, refuses to sleep alone, or shows anxiety throughout the day related to nighttime fears</li>
-<li><strong>Frequent night terrors:</strong> While generally harmless, night terrors that occur multiple times per week or involve dangerous behavior (leaving the house, injuring themselves) should be evaluated</li>
-<li><strong>Post-traumatic nightmares:</strong> Nightmares that begin after a traumatic event (accident, loss, abuse, witnessing violence) require specialized attention</li>
-<li><strong>Sleep disruption affecting daily life:</strong> If poor sleep quality is impacting the child's school performance, mood, behavior, or physical health</li>
+<li><strong>Frequent or worsening nightmares:</strong> especially if they go on for several weeks</li>
+<li><strong>Fear of bedtime:</strong> your child refuses to sleep alone or worries about the night during the day</li>
+<li><strong>Frequent or risky night terrors:</strong> several times a week, or with dangerous behavior such as leaving the room or getting hurt</li>
+<li><strong>Nightmares after a frightening event:</strong> an accident, a loss, violence witnessed or suffered</li>
+<li><strong>Effects on the day:</strong> tiredness, mood or behavior changes, or difficulties at school linked to poor sleep</li>
 </ul>
 <p>
-                    A pediatrician, child psychologist, or pediatric sleep specialist can assess whether the nightmares are within normal range or indicate an underlying issue. Cognitive Behavioral Therapy for children (CBT-C) and age-adapted Imagery Rehearsal Therapy have strong evidence for reducing nightmare frequency in children.
+                    A doctor, child psychologist or sleep specialist can look at the whole picture: sleep schedule, stress, possible physical causes. The right approach depends on the child's age and situation. If you think your child is in danger or experiencing violence, seek help right away.
                 </p>
 </div>
 <!-- CTA Section -->
@@ -310,17 +318,17 @@
 <div class="w-16 h-16 bg-dream-salmon/10 rounded-full flex items-center justify-center mx-auto mb-6">
 <i class="w-8 h-8 text-dream-salmon" data-lucide="moon"></i>
 </div>
-<h3 class="font-serif text-2xl md:text-3xl mb-4 text-dream-cream">Help your family understand their dreams</h3>
+<h3 class="font-serif text-2xl md:text-3xl mb-4 text-dream-cream">Note the dream before breakfast wipes it away</h3>
 <p class="text-purple-200/70 mb-6 max-w-lg mx-auto">
-                    Noctalia makes family dream journaling simple. Capture dreams by voice the moment you wake, spot patterns across the whole family, and turn nighttime fears into morning conversations.
+                    With Noctalia, record a dream by voice as soon as you wake up. It is transcribed and saved in your journal, and you can reread entries side by side to see what comes back. A journal does not replace medical advice.
                 </p>
 <a class="inline-flex items-center gap-2 px-8 py-4 bg-dream-salmon text-dream-dark rounded-full font-bold hover:bg-dream-salmon/90 transition-colors" href="/">
-                    Start your dream journal <i class="w-5 h-5" data-lucide="arrow-right"></i>
+                    Start my dream journal <i class="w-5 h-5" data-lucide="arrow-right"></i>
 </a>
 </aside>
 <!-- FAQ Section -->
 <section class="mt-16">
-<h2 class="font-serif text-2xl text-dream-cream mb-8">Frequently Asked Questions</h2>
+<h2 class="font-serif text-2xl text-dream-cream mb-8">Frequently asked questions</h2>
 <div class="space-y-4">
 <details class="glass-panel rounded-xl p-4 group cursor-pointer">
 <summary class="font-medium flex justify-between items-center text-dream-cream">
@@ -328,16 +336,25 @@
                             <i class="w-5 h-5 transition-transform group-open:rotate-180 text-dream-salmon" data-lucide="chevron-down"></i>
 </summary>
 <p class="mt-4 text-sm text-gray-400 leading-relaxed">
-                            REM sleep begins as early as 28 weeks in utero, suggesting some form of neural activity resembling dreaming occurs before birth. Children begin reporting dreams around age 3-5, though these are typically static images rather than narratives. By age 5-7, dreams become more structured with characters and storylines. Research by David Foulkes found that young children's dream reports are simpler and shorter than adults', gradually increasing in complexity as cognitive abilities develop.
+                            Babies spend a lot of time in REM sleep, but nobody can know what they experience before they can talk. Children start telling dreams during the preschool years, often as a short scene or a single image. Reports become real stories, with the child as a character, during primary school.
                         </p>
 </details>
 <details class="glass-panel rounded-xl p-4 group cursor-pointer">
 <summary class="font-medium flex justify-between items-center text-dream-cream">
-                            What is the difference between nightmares and night terrors?
+                            What is the difference between a nightmare and a night terror?
                             <i class="w-5 h-5 transition-transform group-open:rotate-180 text-dream-salmon" data-lucide="chevron-down"></i>
 </summary>
 <p class="mt-4 text-sm text-gray-400 leading-relaxed">
-                            Nightmares occur during <a class="text-dream-salmon hover:underline" href="rem-sleep-dreams">REM sleep</a>, typically in the second half of the night. Children wake up, remember the dream, and can describe what frightened them. Night terrors occur during deep non-REM sleep, usually 1-3 hours after falling asleep. Children may scream, thrash, or sit up with eyes open but are not truly awake and have no memory of the episode. Night terrors are most common between ages 3-8 and are generally harmless, though frightening for parents to witness.
+                            A nightmare is a frightening dream during <a class="text-dream-salmon hover:underline" href="rem-sleep-dreams">REM sleep</a>, often late in the night: the child wakes up, remembers it and looks for comfort. A night terror comes out of deep sleep, usually early in the night: the child screams or thrashes without really waking and remembers nothing the next morning.
+                        </p>
+</details>
+<details class="glass-panel rounded-xl p-4 group cursor-pointer">
+<summary class="font-medium flex justify-between items-center text-dream-cream">
+                            Should I wake my child during a night terror?
+                            <i class="w-5 h-5 transition-transform group-open:rotate-180 text-dream-salmon" data-lucide="chevron-down"></i>
+</summary>
+<p class="mt-4 text-sm text-gray-400 leading-relaxed">
+                            No. Stay calm and close, make sure your child can't get hurt, and let the episode pass. Trying to wake them can add to the confusion. If episodes are frequent or dangerous, talk to your doctor.
                         </p>
 </details>
 <details class="glass-panel rounded-xl p-4 group cursor-pointer">
@@ -346,22 +363,24 @@
                             <i class="w-5 h-5 transition-transform group-open:rotate-180 text-dream-salmon" data-lucide="chevron-down"></i>
 </summary>
 <p class="mt-4 text-sm text-gray-400 leading-relaxed">
-                            Establish a calming bedtime routine, validate your child's feelings without dismissing their fears, and try dream rescripting for children over 5 - where the child reimagines the scary dream with a positive ending while awake. Limit exposure to frightening media, provide a comfort object, and ensure adequate sleep duration. If nightmares persist for more than one month, cause significant daytime anxiety, or follow a traumatic event, consult a pediatrician or child psychologist.
+                            Comfort first and talk the next day. Keep bedtime calm and regular, and avoid frightening content in the evening. From about age 5, you can invent a new ending for the dream together during the day. If nightmares last for weeks, follow a frightening event or affect daily life, see your pediatrician.
                         </p>
 </details>
 </div>
 </section>
 <!-- Sources / Trust -->
 <section class="mt-16 glass-panel rounded-2xl p-6" id="sources">
-<h2 class="font-serif text-2xl text-dream-cream mb-4">Sources / Further Reading</h2>
+<h2 class="font-serif text-2xl text-dream-cream mb-4">Sources and further reading</h2>
 <ul class="mt-6 space-y-2 text-sm text-gray-400">
-<li><a href="https://psycnet.apa.org/record/1982-22836-000" rel="nofollow noopener noreferrer" target="_blank">Foulkes, D. (1982): Children's Dreams - Academic Press</a></li>
-<li><a href="https://books.google.com/books?vid=ISBN9781451193008" rel="nofollow noopener noreferrer" target="_blank">Mindell & Owens (2015): A Clinical Guide to Pediatric Sleep - Lippincott</a></li>
-<li><a href="https://www.aap.org/en/patient-care/sleep-issues/" rel="nofollow noopener noreferrer" target="_blank">AAP (American Academy of Pediatrics): Sleep and Children</a></li>
-<li><a href="https://www.sleepfoundation.org/children-and-sleep" rel="nofollow noopener noreferrer" target="_blank">Sleep Foundation: Children and Sleep</a></li>
-<li><a href="https://www.nimh.nih.gov/health/topics/child-and-adolescent-mental-health" rel="nofollow noopener noreferrer" target="_blank">NIMH: Children's Mental Health</a></li>
+<li><a href="https://psycnet.apa.org/record/1982-22836-000" rel="nofollow noopener noreferrer" target="_blank">Foulkes, D. (1982), <em>Children's Dreams: Longitudinal Studies</em></a></li>
+<li><a href="https://books.google.com/books?vid=ISBN9781451193008" rel="nofollow noopener noreferrer" target="_blank">Mindell and Owens (2015), <em>A Clinical Guide to Pediatric Sleep</em>, Lippincott</a></li>
+<li><a href="https://www.sleepfoundation.org/stages-of-sleep" rel="nofollow noopener noreferrer" target="_blank">Sleep Foundation, “Stages of Sleep”</a></li>
+<li><a href="https://www.sleepfoundation.org/children-and-sleep" rel="nofollow noopener noreferrer" target="_blank">Sleep Foundation, “Children and Sleep”</a></li>
+<li><a href="https://www.nhs.uk/conditions/night-terrors/" rel="nofollow noopener noreferrer" target="_blank">NHS, “Night terrors and nightmares”</a></li>
+<li><a href="https://pubmed.ncbi.nlm.nih.gov/29852917/" rel="nofollow noopener noreferrer" target="_blank">Morgenthaler et al. (2018), “Position paper for the treatment of nightmare disorder in adults”, <em>Journal of Clinical Sleep Medicine</em></a></li>
+<li><a href="https://www.mayoclinic.org/diseases-conditions/nightmare-disorder/symptoms-causes/syc-20353515" rel="nofollow noopener noreferrer" target="_blank">Mayo Clinic, “Nightmare disorder”</a></li>
 </ul>
-<p class="mt-6 text-xs text-purple-200/60">Last updated: March 6, 2026</p>
+<p class="mt-6 text-xs text-purple-200/60">Last updated: October 9, 2026</p>
 </section>
 <!-- Related Symbols Start -->
 <section aria-label="Related dream symbols" class="mt-12 mb-8">

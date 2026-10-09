@@ -5,7 +5,7 @@
   "lang": "it",
   "slug": "giornata-sonno-ambiente-sogni",
   "title": "Giornata del Sonno 2026: ambiente e riposo | Noctalia",
-  "description": "La Giornata Nazionale del Sonno 2026 mette in luce l'impatto dell'ambiente sul riposo.",
+  "description": "Giornata del Sonno 2026: luce, rumore e caldo in camera. Come influiscono sul riposo e sui sogni, cosa dice la ricerca e cosa cambiare già stasera.",
   "robots": "max-image-preview:large",
   "themeColor": "#0a0514",
   "htmlClass": "scroll-smooth blog-article",
@@ -14,24 +14,24 @@
   "mainClass": "pt-32 pb-20 px-4",
   "ogType": "article",
   "ogTitle": "Giornata del Sonno 2026: ambiente e riposo | Noctalia",
-  "ogDescription": "La Giornata Nazionale del Sonno 2026 mette in luce l'impatto dell'ambiente sul riposo.",
+  "ogDescription": "Luce, rumore, temperatura: come la camera da letto influisce sul sonno e sui sogni, cosa dice la ricerca e cosa cambiare stasera.",
   "ogImage": "https://noctalia.app/img/blog/sleep-day-environment-dreams.webp",
   "ogImageAlt": "Camera da letto serena immersa in una luce soffusa che illustra l'ambiente ideale per il sonno e i sogni",
   "twitterCard": "summary_large_image",
   "twitterTitle": "Giornata del Sonno 2026: ambiente e riposo | Noctalia",
-  "twitterDescription": "La Giornata Nazionale del Sonno 2026 mette in luce l'impatto dell'ambiente sul riposo.",
+  "twitterDescription": "Luce, rumore, caldo: cosa cambia la tua camera nelle tue notti e nei sogni che ricordi.",
   "twitterImage": "https://noctalia.app/img/blog/sleep-day-environment-dreams.webp",
   "twitterImageAlt": "Camera da letto serena immersa in una luce soffusa che illustra l'ambiente ideale per il sonno e i sogni",
   "publishedTime": "2026-03-10",
-  "modifiedTime": "2026-07-06",
+  "modifiedTime": "2026-10-09",
   "author": "Thanh Chau",
   "prevPath": "/it/blog/guida-sogni-bambini",
   "nextPath": "/it/blog/ia-analisi-sonno-sogni",
   "preloadImage": "/img/blog/sleep-day-environment-dreams.webp",
   "jsonLd": [
-    "{\n  \"@context\": \"https://schema.org\",\n  \"@type\": \"BlogPosting\",\n  \"headline\": \"Giornata del Sonno 2026: come il tuo ambiente trasforma i tuoi sogni\",\n  \"description\": \"La Giornata Nazionale del Sonno 2026 mette in luce l'impatto dell'ambiente sul riposo.\",\n  \"image\": {\n    \"@type\": \"ImageObject\",\n    \"url\": \"https://noctalia.app/img/blog/sleep-day-environment-dreams.webp\",\n    \"width\": 1200,\n    \"height\": 630\n  },\n  \"author\": [\n    {\n      \"@type\": \"Person\",\n      \"@id\": \"https://noctalia.app/it/chi-siamo#person\",\n      \"name\": \"Thanh Chau\",\n      \"jobTitle\": \"Fondatore e Direttore della pubblicazione\",\n      \"url\": \"https://noctalia.app/it/chi-siamo\",\n      \"worksFor\": {\n        \"@type\": \"Organization\",\n        \"@id\": \"https://noctalia.app/#organization\",\n        \"name\": \"Noctalia\",\n        \"url\": \"https://noctalia.app\"\n      }\n    },\n    {\n      \"@type\": \"Organization\",\n      \"@id\": \"https://noctalia.app/#organization\",\n      \"name\": \"Noctalia\",\n      \"url\": \"https://noctalia.app\",\n      \"logo\": {\n        \"@type\": \"ImageObject\",\n        \"url\": \"https://noctalia.app/logo/logo_noctalia.png\"\n      }\n    }\n  ],\n  \"publisher\": {\n    \"@type\": \"Organization\",\n    \"name\": \"Noctalia\",\n    \"url\": \"https://noctalia.app\",\n    \"logo\": {\n      \"@type\": \"ImageObject\",\n      \"url\": \"https://noctalia.app/logo/logo_noctalia.png\"\n    }\n  },\n  \"datePublished\": \"2026-03-10\",\n  \"dateModified\": \"2026-07-06\",\n  \"mainEntityOfPage\": {\n    \"@type\": \"WebPage\",\n    \"@id\": \"https://noctalia.app/it/blog/giornata-sonno-ambiente-sogni\"\n  },\n  \"inLanguage\": \"it\",\n  \"isAccessibleForFree\": true,\n  \"wordCount\": 1600,\n  \"timeRequired\": \"PT5M\",\n  \"url\": \"https://noctalia.app/it/blog/giornata-sonno-ambiente-sogni\"\n}",
+    "{\n    \"@context\": \"https://schema.org\",\n    \"@type\": \"BlogPosting\",\n    \"headline\": \"Giornata del Sonno 2026: come la tua camera influisce sui tuoi sogni\",\n    \"description\": \"Giornata del Sonno 2026: luce, rumore e caldo in camera. Come influiscono sul riposo e sui sogni, cosa dice la ricerca e cosa cambiare già stasera.\",\n    \"image\": {\n        \"@type\": \"ImageObject\",\n        \"url\": \"https://noctalia.app/img/blog/sleep-day-environment-dreams.webp\",\n        \"width\": 1200,\n        \"height\": 630\n    },\n    \"author\": [\n        {\n            \"@type\": \"Person\",\n            \"@id\": \"https://noctalia.app/it/chi-siamo#person\",\n            \"name\": \"Thanh Chau\",\n            \"jobTitle\": \"Fondatore e Direttore della pubblicazione\",\n            \"url\": \"https://noctalia.app/it/chi-siamo\",\n            \"worksFor\": {\n                \"@type\": \"Organization\",\n                \"@id\": \"https://noctalia.app/#organization\",\n                \"name\": \"Noctalia\",\n                \"url\": \"https://noctalia.app\"\n            }\n        },\n        {\n            \"@type\": \"Organization\",\n            \"@id\": \"https://noctalia.app/#organization\",\n            \"name\": \"Noctalia\",\n            \"url\": \"https://noctalia.app\",\n            \"logo\": {\n                \"@type\": \"ImageObject\",\n                \"url\": \"https://noctalia.app/logo/logo_noctalia.png\"\n            }\n        }\n    ],\n    \"publisher\": {\n        \"@type\": \"Organization\",\n        \"name\": \"Noctalia\",\n        \"url\": \"https://noctalia.app\",\n        \"logo\": {\n            \"@type\": \"ImageObject\",\n            \"url\": \"https://noctalia.app/logo/logo_noctalia.png\"\n        }\n    },\n    \"datePublished\": \"2026-03-10\",\n    \"dateModified\": \"2026-10-09\",\n    \"mainEntityOfPage\": {\n        \"@type\": \"WebPage\",\n        \"@id\": \"https://noctalia.app/it/blog/giornata-sonno-ambiente-sogni\"\n    },\n    \"inLanguage\": \"it\",\n    \"isAccessibleForFree\": true,\n    \"wordCount\": 2181,\n    \"timeRequired\": \"PT10M\",\n    \"url\": \"https://noctalia.app/it/blog/giornata-sonno-ambiente-sogni\"\n}",
     "{\n  \"@context\": \"https://schema.org\",\n  \"@type\": \"WebPage\",\n  \"@id\": \"https://noctalia.app/it/blog/giornata-sonno-ambiente-sogni\",\n  \"url\": \"https://noctalia.app/it/blog/giornata-sonno-ambiente-sogni\",\n  \"name\": \"Giornata del Sonno 2026: ambiente e riposo | Noctalia\",\n  \"inLanguage\": \"it\"\n}",
-    "{\n  \"@context\": \"https://schema.org\",\n  \"@type\": \"FAQPage\",\n  \"mainEntity\": [\n    {\n      \"@type\": \"Question\",\n      \"name\": \"Come influisce la luce sulla qualità dei miei sogni?\",\n      \"acceptedAnswer\": {\n        \"@type\": \"Answer\",\n        \"text\": \"La luce artificiale, in particolare la luce blu degli schermi, sopprime la produzione di melatonina e ritarda l'addormentamento. Questo riduce la durata del sonno REM, la fase in cui si verificano i sogni più vividi. L'esposizione a luce intensa la sera può accorciare le fasi di sogno di 20-30 minuti, rendendo i sogni meno ricchi e più difficili da ricordare. Per preservare la qualità dei sogni, spegni gli schermi almeno 60 minuti prima di coricarti e usa tende oscuranti.\"\n      }\n    },\n    {\n      \"@type\": \"Question\",\n      \"name\": \"Qual è la temperatura ideale per sognare bene?\",\n      \"acceptedAnswer\": {\n        \"@type\": \"Answer\",\n        \"text\": \"La temperatura ideale per un sonno favorevole ai sogni è tra 18 e 19 °C. A questa temperatura, il corpo può effettuare la termoregolazione necessaria durante il sonno REM senza perturbazioni. Una stanza troppo calda (sopra i 24 °C) frammenta il sonno REM e produce sogni più ansiosi, mentre una stanza troppo fredda può causare risvegli notturni che interrompono i cicli onirici.\"\n      }\n    },\n    {\n      \"@type\": \"Question\",\n      \"name\": \"I rumori esterni possono integrarsi nei miei sogni?\",\n      \"acceptedAnswer\": {\n        \"@type\": \"Answer\",\n        \"text\": \"Sì, il cervello continua a elaborare i suoni durante il sonno. Gli studi mostrano che gli stimoli uditivi esterni — un allarme, il suono della pioggia, una conversazione — possono essere incorporati nella narrativa onirica in tempo reale. Il cervello interpreta questi suoni attraverso il filtro del racconto del sogno in corso, trasformandoli in elementi coerenti con la storia. Il rumore bianco costante, al contrario, tende a mascherare i suoni intrusivi e a stabilizzare il sonno REM.\"\n      }\n    }\n  ]\n}",
+    "{\n    \"@context\": \"https://schema.org\",\n    \"@type\": \"FAQPage\",\n    \"mainEntity\": [\n        {\n            \"@type\": \"Question\",\n            \"name\": \"La luce in camera influisce sui sogni?\",\n            \"acceptedAnswer\": {\n                \"@type\": \"Answer\",\n                \"text\": \"In modo indiretto. La luce della sera ritarda la melatonina e può spostare in avanti l'addormentamento, accorciando la fine della notte, dove il sonno REM dura di più. La luce durante la notte può anche provocare brevi risvegli. Abbassare le luci nell'ultima ora e tenere la camera al buio è un buon inizio.\"\n            }\n        },\n        {\n            \"@type\": \"Question\",\n            \"name\": \"Qual è la temperatura migliore in camera per dormire e sognare?\",\n            \"acceptedAnswer\": {\n                \"@type\": \"Answer\",\n                \"text\": \"La Sleep Foundation consiglia circa 18 °C. Nel sonno REM il corpo gestisce peggio il caldo, quindi una stanza calda e umida moltiplica i risvegli. Non esiste una «temperatura dei sogni»: l'obiettivo è una camera fresca e stabile, con coperte che puoi regolare.\"\n            }\n        },\n        {\n            \"@type\": \"Question\",\n            \"name\": \"Un rumore può finire nel mio sogno?\",\n            \"acceptedAnswer\": {\n                \"@type\": \"Answer\",\n                \"text\": \"Sì, a volte: un allarme può diventare una sirena, la pioggia una tempesta. Non succede sempre, e il suono di solito ritorna trasformato. Il rumore provoca anche brevi risvegli, che aiutano a ricordare più frammenti di sogni.\"\n            }\n        },\n        {\n            \"@type\": \"Question\",\n            \"name\": \"Il rumore bianco aiuta a dormire meglio?\",\n            \"acceptedAnswer\": {\n                \"@type\": \"Answer\",\n                \"text\": \"Può coprire i rumori improvvisi, e a molti piace. Ma una revisione sistematica del 2021 ha giudicato di qualità molto bassa le prove che il rumore continuo migliori il sonno. Provalo a basso volume e tienilo solo se ti svegli più riposato.\"\n            }\n        }\n    ]\n}",
     "{\n  \"@context\": \"https://schema.org\",\n  \"@type\": \"BreadcrumbList\",\n  \"itemListElement\": [\n    {\n      \"@type\": \"ListItem\",\n      \"position\": 1,\n      \"name\": \"Home\",\n      \"item\": \"https://noctalia.app/it/\"\n    },\n    {\n      \"@type\": \"ListItem\",\n      \"position\": 2,\n      \"name\": \"Risorse\",\n      \"item\": \"https://noctalia.app/it/blog/\"\n    },\n    {\n      \"@type\": \"ListItem\",\n      \"position\": 3,\n      \"name\": \"Giornata del Sonno 2026\",\n      \"item\": \"https://noctalia.app/it/blog/giornata-sonno-ambiente-sogni\"\n    }\n  ]\n}"
   ],
   "activeNav": "resources"
@@ -64,13 +64,13 @@
 <a class="text-xs font-mono text-purple-200/70 border border-white/10 rounded-full px-3 py-1 hover:text-white hover:border-dream-salmon/30 transition-colors" href="sonno-rem-e-sogni-comprendere-il-ripristino-notturno-del-cervello">Argomento: Scienza del sonno</a>
 <span aria-hidden="true" class="w-full sm:hidden"></span>
 <span class="text-sm text-purple-300/60">Pubblicato il 10 marzo 2026</span>
-<span class="text-sm text-purple-300/60">~1600 parole · 5 min di lettura</span>
+<span class="text-sm text-purple-300/60">10 minuti di lettura</span>
 </div>
 <h1 class="font-serif text-3xl md:text-5xl mb-6 text-transparent bg-clip-text bg-gradient-to-b from-white via-dream-lavender to-purple-400/50 leading-tight">
-                    Giornata del Sonno 2026: come il tuo ambiente trasforma i tuoi sogni
+                    Giornata del Sonno 2026: come la tua camera influisce sui tuoi sogni
                 </h1>
 <p class="text-lg text-purple-200/80 leading-relaxed">
-                    Il 13 marzo 2026, la Giornata Nazionale del Sonno punta i riflettori sul tema «Sonno e Ambiente». Oltre alla qualità del materasso, è l'intero spazio notturno — luce, rumore, temperatura, stagione — a scolpire ogni notte la materia dei tuoi sogni. Ecco cosa ci insegna la scienza su questa relazione intima e come sfruttarla a tuo vantaggio.
+                    Sono le tre di notte. La luce del lampione filtra sotto la tenda, passa un motorino, il piumone all'improvviso è troppo caldo. Al risveglio ti resta un inseguimento in una città in fiamme, oppure niente. La tua camera non scrive i tuoi sogni, ma cambia il modo in cui dormi, quante volte ti svegli e cosa ricordi. Era questo il punto della Giornata del Sonno 2026: il sonno come specchio dei nostri ritmi e degli ambienti in cui viviamo.
                 </p>
 </header>
 <!-- Author Byline (E-E-A-T) -->
@@ -86,7 +86,7 @@
 <!-- Quick Answer (AI SEO) -->
 <section aria-labelledby="quick-answer-title" class="glass-panel rounded-2xl p-6 mb-8 border border-dream-salmon/20 bg-white/5">
 <h2 class="font-serif text-xl text-dream-cream mb-3" id="quick-answer-title">Risposta rapida</h2>
-<p class="text-purple-100/80 leading-relaxed">L'ambiente in cui dormi influenza direttamente la qualità e il contenuto dei tuoi sogni. La luce artificiale sopprime la melatonina e riduce il sonno REM, il rumore esterno può integrarsi nei tuoi scenari onirici, e la temperatura della camera modifica la vivacità dei sogni. Una camera fresca (18-19 °C), buia e silenziosa è la chiave per sogni più ricchi.</p>
+<p class="text-purple-100/80 leading-relaxed">La camera agisce sui sogni soprattutto in modo indiretto. La luce della sera ritarda la melatonina, il caldo e il rumore provocano brevi risvegli che cambiano quali sogni ricordi e con quale tono. Un suono o un odore a volte possono entrare in un sogno. Una stanza buia, silenziosa e fresca (intorno ai 18 °C) non programma i tuoi sogni, ma protegge il sonno in cui nascono.</p>
 </section>
 <!-- Editorial Review (E-E-A-T) -->
 <div class="mb-8">
@@ -111,88 +111,88 @@
 <!-- Table of Contents -->
 <nav class="glass-panel rounded-2xl p-6 mb-12">
 <h2 class="font-serif text-lg text-dream-cream mb-4 flex items-center gap-2">
-<i class="w-5 h-5 text-dream-salmon" data-lucide="list"></i> Indice dei contenuti
+<i class="w-5 h-5 text-dream-salmon" data-lucide="list"></i> Indice
                 </h2>
 <ol class="space-y-2 text-sm text-purple-200/70">
-<li><a class="toc-link block" href="#journee-sommeil">1. Giornata Nazionale del Sonno 2026: il tema dell'anno</a></li>
-<li><a class="toc-link block" href="#light">2. Luce e inquinamento luminoso: come disturbano i tuoi sogni</a></li>
-<li><a class="toc-link block" href="#noise">3. Rumore e contenuto onirico</a></li>
-<li><a class="toc-link block" href="#temperature">4. Temperatura e vivacità dei sogni</a></li>
-<li><a class="toc-link block" href="#seasons">5. Cambiamenti stagionali e schemi onirici</a></li>
-<li><a class="toc-link block" href="#optimize">6. Ottimizza il tuo ambiente per sognare meglio</a></li>
+<li><a class="toc-link block" href="#journee-sommeil">1. Di cosa ha parlato la Giornata del Sonno 2026?</a></li>
+<li><a class="toc-link block" href="#light">2. Come influisce la luce sui tuoi sogni?</a></li>
+<li><a class="toc-link block" href="#noise">3. Il rumore può entrare in un sogno?</a></li>
+<li><a class="toc-link block" href="#temperature">4. La temperatura della camera cambia i sogni?</a></li>
+<li><a class="toc-link block" href="#seasons">5. Si sogna diversamente a seconda della stagione?</a></li>
+<li><a class="toc-link block" href="#optimize">6. Cosa cambiare in camera già stasera</a></li>
 </ol>
 </nav>
 <!-- Article Content -->
 <div class="prose max-w-none text-gray-300">
-<h2 id="journee-sommeil">Giornata Nazionale del Sonno 2026: il tema dell'anno</h2>
+<h2 id="journee-sommeil">Di cosa ha parlato la Giornata del Sonno 2026?</h2>
 <p>
-                    Ogni anno dal 2000, la Giornata Nazionale del Sonno sensibilizza sull'importanza del riposo notturno. Nel 2026, l'evento organizzato dall'INSV (Istituto Nazionale Francese del Sonno e della Vigilanza) e dalla Rete Morphée si terrà <strong>venerdì 13 marzo</strong>, con il tema centrale «Sonno e Ambiente». Conferenze si svolgeranno presso la Cité des sciences et de l'industrie di Parigi, esplorando come il nostro ambiente di vita plasma le nostre notti.
+                    <strong>Venerdì 13 marzo 2026</strong> si è celebrata la Giornata mondiale del sonno. Lo stesso giorno, in Francia, l'Istituto nazionale del sonno e della vigilanza (INSV) ha organizzato la sua 26ª giornata del sonno, con un tema che presentava il sonno come pilastro della salute e specchio dei nostri ritmi e ambienti di vita. Oltre 60 centri del sonno francesi hanno aperto le porte al pubblico.
                 </p>
 <p>
-                    Questo tempismo non potrebbe essere migliore. Le ricerche degli ultimi vent'anni hanno dimostrato che l'ambiente fisico — luce, suono, temperatura, qualità dell'aria — non si limita a influenzare la facilità di addormentamento o la profondità del sonno. Modifica direttamente la durata, l'intensità e il contenuto dei sogni. Il <a class="text-dream-salmon hover:underline" href="sonno-rem-e-sogni-comprendere-il-ripristino-notturno-del-cervello">sonno REM</a>, la fase in cui si verificano i sogni più vividi, è particolarmente sensibile alle condizioni ambientali.
+                    L'indagine INSV pubblicata per l'occasione (OpinionWay, dicembre 2025, 1006 persone tra i 18 e i 65 anni in Francia) porta il tema dentro la camera da letto: il <strong>36%</strong> dice di essere disturbato dal rumore di notte, il <strong>58%</strong> dorme con lo smartphone acceso in camera e l'<strong>81%</strong> afferma che le ultime ondate di calore hanno disturbato il suo sonno.
                 </p>
 <p>
-                    In questo articolo, esploriamo i quattro principali fattori ambientali che trasformano la tua vita onirica e offriamo un piano d'azione concreto per ottimizzare la tua camera da letto — non solo per dormire meglio, ma per sognare meglio.
-                </p>
-
-<h2 id="light">Luce e inquinamento luminoso: come disturbano i tuoi sogni</h2>
-<h3>Illuminazione artificiale e melatonina</h3>
-<p>
-                    La melatonina, l'ormone che segnala al corpo che è ora di dormire, è estremamente sensibile alla luce. Un'esposizione a soli 100 lux (equivalenti a una lampada da scrivania) la sera può sopprimere la produzione di melatonina del <strong>50 % e ritardare il suo picco di 90 minuti</strong> (Cho et al., 2015). Questo spostamento non rende solo più difficile addormentarsi — comprime le fasi di sonno REM che si verificano principalmente nell'ultima parte della notte.
-                </p>
-<p>
-                    Meno sonno REM significa meno tempo per sognare. E i sogni che si verificano all'interno di un sonno REM accorciato tendono a essere più frammentati, meno complessi narrativamente e più difficili da ricordare al risveglio. Se ti chiedi perché non <a class="text-dream-salmon hover:underline" href="come-ricordare-i-tuoi-sogni-10-tecniche-efficaci">ricordi i tuoi sogni</a>, la luce nella tua camera è un sospettato principale.
-                </p>
-<h3>Schermi prima di dormire: impatto sul sonno REM</h3>
-<p>
-                    La luce blu emessa da smartphone, tablet e computer è particolarmente problematica. La sua lunghezza d'onda (450-490 nm) è la più efficace nel sopprimere la melatonina. Uno studio della Harvard Medical School ha mostrato che i partecipanti che usavano tablet prima di dormire sperimentavano <strong>20 minuti in meno di sonno REM</strong> rispetto a chi leggeva un libro cartaceo. Venti minuti di sogni in meno ogni notte equivalgono a perdere un intero ciclo onirico.
-                </p>
-<p>
-                    Lampioni, insegne luminose o persino una luce notturna possono anche infiltrarsi durante il sonno. Il cervello, anche addormentato, rileva le variazioni di luce attraverso le palpebre chiuse, il che può alterare il contenuto dei sogni — i sognatori esposti alla luce riportano più scenari esterni e diurni, con temi legati alla <a class="text-dream-salmon hover:underline" href="../simboli/luna">luna</a> o alle stelle curiosamente assenti.
+                    Questi dati riguardano il sonno, non i sogni. Il legame passa dal <a class="text-dream-salmon hover:underline" href="sonno-rem-e-sogni-comprendere-il-ripristino-notturno-del-cervello">sonno REM</a>, la fase dopo la quale si riferiscono più spesso sogni vividi e con una trama, e dai risvegli, che decidono cosa ricordi. Qui sotto separiamo ciò che è stato misurato da ciò che è solo plausibile.
                 </p>
 
-<h2 id="noise">Rumore e contenuto onirico</h2>
-<h3>Suoni intrecciati nei sogni</h3>
+<h2 id="light">Come influisce la luce sui tuoi sogni?</h2>
+<h3>La luce della sera ritarda la melatonina</h3>
 <p>
-                    Il cervello non silenzia il suo input audio quando dormi. Durante il sonno REM, la corteccia uditiva rimane parzialmente attiva, permettendo ai suoni esterni di infiltrarsi nei sogni. Ricerche pionieristiche del neurologo tedesco Boris Stuck hanno dimostrato che <strong>gli stimoli uditivi presentati durante il sonno REM vengono incorporati nella narrativa onirica nel 50-60 % dei casi</strong>. L'allarme di un'auto può diventare una sirena nel tuo sogno; il suono della pioggia sulle finestre si trasforma in una <a class="text-dream-salmon hover:underline" href="../simboli/tempesta">tempesta</a> onirica.
+                    La melatonina aiuta il corpo a capire che è arrivata la notte, e la luce la frena. In uno studio su 116 giovani adulti, la normale luce di una stanza (meno di 200 lux) nelle ore prima di dormire ha ritardato l'inizio della melatonina in quasi tutti i partecipanti e ne ha accorciato la secrezione di circa 90 minuti (Gooley et al., 2011).
                 </p>
 <p>
-                    Affascinante, certo, ma a doppio taglio. I suoni intrusivi — traffico, vicini rumorosi, lavori — non si limitano a disturbare la continuità del sonno: introducono elementi di stress nella narrativa onirica, trasformando un sogno neutro in uno scenario ansioso o persino in un <a class="text-dream-salmon hover:underline" href="incubi-cause-significato-e-come-fermarli">incubo</a>. Gli studi di Cho et al. (2015) hanno confermato che chi dorme in ambienti rumorosi riporta <strong>il doppio dei sogni a contenuto negativo</strong> rispetto a chi dorme in ambienti tranquilli.
+                    Se ti addormenti più tardi ma la sveglia suona alla stessa ora, la notte viene tagliata alla fine, dove le fasi REM sono più lunghe. Questo non significa per forza ricordare meno sogni: il ricordo dipende molto da come e quando ti svegli. Se ti chiedi <a class="text-dream-salmon hover:underline" href="come-ricordare-i-tuoi-sogni-10-tecniche-efficaci">come ricordare i tuoi sogni</a>, guarda le tue mattine oltre che le tue lampade.
                 </p>
-<h3>Rumore bianco vs. silenzio</h3>
+<h3>Schermi prima di dormire: cosa ha mostrato uno studio di laboratorio</h3>
 <p>
-                    Quando il silenzio completo è impossibile (ambiente urbano, ad esempio), il rumore bianco o rosa offre un'alternativa efficace. Questi suoni costanti e regolari mascherano i rumori intrusivi senza introdurre nuovi elementi narrativi nei sogni. Uno studio pubblicato su <em>Sleep Medicine Reviews</em> ha rivelato che il rumore rosa (una versione leggermente attenuata del rumore bianco, simile al suono di una cascata lontana) migliora la continuità del sonno REM e aumenta la <strong>ricchezza descrittiva dei sogni riportati del 25 %</strong>. La <a class="text-dream-salmon hover:underline" href="../simboli/notte">notte</a> ideale non è necessariamente silenziosa — è stabile.
-                </p>
-
-<h2 id="temperature">Temperatura e vivacità dei sogni</h2>
-<h3>Termoregolazione durante il sonno REM</h3>
-<p>
-                    Durante il sonno REM, il corpo perde temporaneamente la capacità di regolare la temperatura — un fenomeno unico chiamato <strong>poichilotermia transitoria</strong>. In pratica, il corpo smette di tremare e di sudare durante questa fase. Ciò significa che la temperatura ambientale agisce direttamente sulla temperatura corporea durante i sogni, senza che il corpo possa compensare.
+                    In uno studio di Harvard, 12 adulti hanno letto per diverse sere di seguito su un tablet luminoso o su carta. Dopo il tablet ci mettevano di più ad addormentarsi, producevano meno melatonina, avevano l'orologio interno spostato in avanti, un po' meno sonno REM e si sentivano meno vigili la mattina dopo (Chang et al., 2015). È uno studio piccolo, con letture lunghe a piena luminosità: un motivo per abbassare lo schermo, non per allarmarsi per un messaggio letto a letto.
                 </p>
 <p>
-                    I lavori di Okamoto-Mizuno e Mizuno (2012) hanno mostrato che una stanza troppo calda (sopra i 24 °C) provoca micro-risvegli che frammentano il sonno REM e producono sogni più brevi, più caotici e più carichi emotivamente. Al contrario, una stanza troppo fredda (sotto i 16 °C) può provocare risvegli completi che interrompono i cicli onirici.
-                </p>
-<h3>La temperatura ideale: 18-19 °C</h3>
-<p>
-                    La scienza converge su un intervallo ottimale di <strong>18-19 °C</strong> per la camera da letto. A questa temperatura, il sonno REM si svolge senza perturbazioni termiche, i cicli onirici raggiungono la loro durata massima (le fasi REM del primo mattino possono durare da 45 a 60 minuti) e i sogni riportati sono più lunghi, più dettagliati e più coerenti narrativamente. La tua <a class="text-dream-salmon hover:underline" href="../simboli/casa">casa</a>, e in particolare la tua camera da letto, è la prima leva su cui agire per trasformare le tue notti.
-                </p>
-<p>
-                    Consiglio pratico: se non puoi controllare con precisione la temperatura della tua camera, opta per strati di biancheria da letto che puoi regolare durante la notte. Il corpo ha bisogno di raffreddarsi leggermente per entrare nel sonno REM; poi la temperatura ambientale deve rimanere stabile per mantenere questa fase.
+                    La luce può raggiungerti anche più tardi: un lampione, il telefono che si illumina, una <a class="text-dream-salmon hover:underline" href="../simboli/luna">luna</a> luminosa dietro una tenda sottile. Se ti sveglia per un attimo, puoi riemergere a metà di un sogno e conservarne un frammento.
                 </p>
 
-<h2 id="seasons">Cambiamenti stagionali e schemi onirici</h2>
-<h3>Equinozio di primavera e allungamento delle fasi REM</h3>
+<h2 id="noise">Il rumore può entrare in un sogno?</h2>
+<h3>Quando un suono o un odore entrano nel sogno</h3>
 <p>
-                    La Giornata del Sonno 2026 cade pochi giorni prima dell'equinozio di primavera (20 marzo), e non è un caso. I giorni che si allungano modificano il timing della secrezione di melatonina, ritardando leggermente l'ora naturale di addormentamento e, di conseguenza, <strong>allungando le fasi di sonno REM del mattino</strong>.
+                    Il cervello addormentato continua a sorvegliare i suoni. A volte l'allarme di un'auto diventa una sirena nel sogno, o la pioggia sul vetro una <a class="text-dream-salmon hover:underline" href="../simboli/tempesta">tempesta</a>. Non succede sempre, e il suono di solito ritorna trasformato.
                 </p>
 <p>
-                    Studi longitudinali condotti in laboratori del sonno scandinavi hanno rivelato che i partecipanti riportano sogni <strong>più lunghi del 30 % e più vividi in primavera</strong> rispetto al pieno inverno. Questo fenomeno si spiega con la combinazione di due fattori: l'allungamento naturale del sonno REM mattutino e l'aumento della luminosità che stimola la corteccia visiva anche attraverso le palpebre chiuse.
+                    L'olfatto offre un esempio più chiaro. In uno studio tedesco di un gruppo che comprendeva Michael Schredl e Boris Stuck, 15 donne sono state esposte a odori durante il sonno REM: al profumo di rosa seguivano sogni più piacevoli, all'odore di uova marce sogni più spiacevoli, ma quasi nessuna ha sognato un odore (Schredl et al., 2009). Nel sogno entra spesso una tonalità emotiva più che lo stimolo in sé.
                 </p>
 <p>
-                    L'autunno, con le sue giornate che si accorciano, produce l'effetto opposto: sogni più brevi ma spesso tematicamente più cupi. I ricercatori della Rete Morphée notano che le consultazioni per incubi aumentano del <strong>15-20 % tra ottobre e dicembre</strong>, in coincidenza con la diminuzione dell'esposizione alla luce naturale e i primi cali di temperatura.
+                    Il rumore agisce anche attraverso i risvegli. Più microrisvegli significano più occasioni di trattenere frammenti, e dopo una notte rumorosa può sembrare una serie di <a class="text-dream-salmon hover:underline" href="incubi-cause-significato-e-come-fermarli">incubi</a>.
+                </p>
+<h3>Rumore bianco o silenzio?</h3>
+<p>
+                    Un suono costante (ventilatore, rumore bianco o rosa) può coprire i picchi improvvisi, come una porta che sbatte o un clacson. Piace a molti, ma una revisione sistematica del 2021 ha giudicato di qualità molto bassa le prove che il rumore continuo migliori il sonno (Riedy et al., 2021). Provalo a basso volume e giudica da come ti senti al risveglio. Una buona <a class="text-dream-salmon hover:underline" href="../simboli/notte">notte</a> non deve per forza essere silenziosa; aiuta soprattutto che sia prevedibile.
+                </p>
+
+<h2 id="temperature">La temperatura della camera cambia i sogni?</h2>
+<h3>Nel sonno REM il corpo gestisce peggio il caldo</h3>
+<p>
+                    Durante il sonno REM la regolazione della temperatura è ridotta: la sudorazione parte più tardi e diminuisce, e non si osservano brividi. La revisione di Okamoto-Mizuno e Mizuno (2012) descrive inoltre come il caldo, soprattutto umido, aumenti la veglia e riduca il sonno REM e quello profondo. Con una normale biancheria da letto, il caldo disturba il sonno più del fresco.
                 </p>
 <p>
-                    In vacanza questi fattori cambiano spesso insieme: un altro letto, rumori sconosciuti, luce meno controllata, caldo e orari più flessibili. Per collegare i sogni al contesto senza ridurli alla stanza, leggi la guida su <a class="text-dream-salmon hover:underline" href="vacanze-sonno-sogni">vacanze, sonno e sogni</a>.
+                    Una notte calda quindi non «crea» da sola sogni angoscianti. Frammenta il sonno, e una notte frammentata lascia più brandelli di sogni, a volte intensi. Il nostro articolo su <a class="text-dream-salmon hover:underline" href="ondata-calore-sonno-sogni">ondate di calore, sonno e sogni</a> lo spiega nel dettaglio.
+                </p>
+<h3>Quale temperatura scegliere?</h3>
+<p>
+                    La Sleep Foundation consiglia una camera <strong>intorno ai 18 °C</strong>. Prendilo come punto di partenza: piumone, pigiama e la persona accanto a te cambiano il calore sotto le coperte. Nessuno studio dimostra che un grado preciso renda i sogni «più ricchi»; ciò che è documentato è che una stanza fresca e stabile riduce i risvegli.
+                </p>
+<p>
+                    D'estate tutta la <a class="text-dream-salmon hover:underline" href="../simboli/casa">casa</a> accumula il calore della giornata. Chiudere le persiane quando il sole batte sulle finestre e arieggiare di notte spesso aiuta più di qualsiasi accessorio.
+                </p>
+
+<h2 id="seasons">Si sogna diversamente a seconda della stagione?</h2>
+<h3>Luce di primavera, mattine più precoci</h3>
+<p>
+                    La Giornata del Sonno cade una settimana prima dell'equinozio di primavera. Quando le giornate si allungano, la luce del mattino arriva prima e può svegliarti nelle ultime ore della notte, ricche di sonno REM. A fine marzo, il passaggio all'ora legale toglie inoltre un'ora di sonno per qualche giorno. Ne parliamo nell'articolo sul <a class="text-dream-salmon hover:underline" href="disturbo-sonno-primavera-sogni">sonno disturbato in primavera</a>.
+                </p>
+<p>
+                    Non ci sono dati solidi che i sogni siano sistematicamente più lunghi in primavera o più cupi in autunno. Se noti un cambiamento con la stagione, annotalo insieme all'ora in cui vai a letto, a quella del risveglio e alla luce della stanza.
+                </p>
+<p>
+                    In vacanza questi fattori cambiano spesso tutti insieme: un altro letto, rumori sconosciuti, luce meno controllata, caldo e orari più liberi. Per collegare i sogni al contesto senza ridurli alla camera, leggi la guida <a class="text-dream-salmon hover:underline" href="vacanze-sonno-sogni">vacanze, sonno e sogni</a>.
                 </p>
 </div>
 
@@ -202,105 +202,129 @@
 <i class="w-6 h-6 text-dream-salmon" data-lucide="book-open"></i>
 </div>
 <div>
-<h4 class="font-serif text-lg text-dream-cream mb-2">Osserva come il tuo ambiente trasforma i tuoi sogni</h4>
-<p class="text-sm text-gray-400 mb-4">Il diario dei sogni di Noctalia, basato sull'intelligenza artificiale, ti permette di registrare i sogni con la voce nel momento in cui ti svegli. Identifica le correlazioni tra le condizioni della tua camera e la ricchezza dei tuoi sogni nel tempo.</p>
-<a class="inline-flex items-center gap-2 text-sm text-dream-salmon hover:text-dream-salmonLight transition-colors" href="/it/">
-                                Inizia a registrare con Noctalia <i class="w-4 h-4" data-lucide="arrow-right"></i>
+<h4 class="font-serif text-lg text-dream-cream mb-2">Annota la notte insieme al sogno</h4>
+<p class="text-sm text-gray-400 mb-4">Con Noctalia puoi registrare il sogno a voce appena sveglio e aggiungere una riga sulla notte: caldo, rumore, luce. Rileggendo le note una accanto all'altra, vedi se certi sogni tornano dopo certe notti.</p>
+<a class="inline-flex items-center gap-2 text-sm text-dream-salmon hover:text-dream-salmonLight transition-colors" href="/it/diario-dei-sogni-vocale">
+                                Prova il diario dei sogni vocale <i class="w-4 h-4" data-lucide="arrow-right"></i>
 </a>
 </div>
 </div>
 </aside>
 
 <div class="prose max-w-none text-gray-300">
-<h2 id="optimize">Ottimizza il tuo ambiente per sognare meglio</h2>
+<h2 id="optimize">Cosa cambiare in camera già stasera</h2>
 <p>
-                    Non puoi controllare i tuoi sogni, ma puoi controllare le condizioni che li favoriscono. Ecco una checklist concreta, supportata dalla scienza, per trasformare la tua camera da letto in un santuario onirico.
+                    Non scegli i tuoi sogni, ma puoi proteggere il sonno in cui nascono. Parti da ciò che ti disturba di più, cambia una cosa alla volta e dalle una settimana.
                 </p>
 <h3>Luce</h3>
 <ul>
-<li><strong>Tende oscuranti:</strong> Investi in tende opache o una maschera per dormire di qualità. L'oscurità completa consente una produzione ottimale di melatonina</li>
-<li><strong>Coprifuoco digitale:</strong> Spegni tutti gli schermi almeno 60 minuti prima di coricarti. Usa la modalità "notte" se devi usare il telefono di sera</li>
-<li><strong>Illuminazione ambrata:</strong> Sostituisci le lampadine della camera con opzioni a luce calda (2.700 K o inferiore). La luce ambrata non sopprime la melatonina</li>
-<li><strong>Elimina i LED:</strong> Copri le spie luminose dei dispositivi elettronici (router, caricatore, sveglia digitale)</li>
+<li><strong>Buio:</strong> tende oscuranti o una mascherina comoda, soprattutto se un lampione o il sole del mattino arrivano fino al letto.</li>
+<li><strong>L'ultima ora:</strong> abbassa le luci e scegli lampadine a luce calda. Riduci la luminosità dello schermo o metti via il telefono prima.</li>
+<li><strong>Il telefono:</strong> caricalo lontano dal letto, a faccia in giù o in un'altra stanza, così le notifiche non illuminano la camera.</li>
+<li><strong>Le piccole luci:</strong> copri i led di caricabatterie, modem e sveglia.</li>
 </ul>
 <h3>Rumore</h3>
 <ul>
-<li><strong>Rumore bianco o rosa:</strong> Usa un dispositivo o un'app per il rumore bianco per mascherare i suoni intrusivi. Il rumore rosa è spesso preferito per la sua qualità più naturale</li>
-<li><strong>Tappi per le orecchie:</strong> Se il tuo ambiente è particolarmente rumoroso, i tappi in schiuma o silicone riducono il rumore di 20-30 dB</li>
-<li><strong>Doppi vetri:</strong> Se vivi in zona urbana, i doppi o tripli vetri sono un investimento a lungo termine per la qualità del tuo sonno REM</li>
+<li><strong>Riconosci il rumore:</strong> un ronzio continuo e i picchi improvvisi non si affrontano allo stesso modo.</li>
+<li><strong>Tappi per le orecchie:</strong> in schiuma o silicone, inseriti bene, contro vicini, traffico o un partner che russa.</li>
+<li><strong>Un suono costante:</strong> un ventilatore o un rumore bianco a basso volume possono coprire i picchi. Tienilo solo se ti svegli più riposato.</li>
+<li><strong>Il lato tranquillo:</strong> se puoi, dormi nella stanza che non dà sulla strada.</li>
 </ul>
 <h3>Temperatura</h3>
 <ul>
-<li><strong>Termostato a 18-19 °C:</strong> Regola la temperatura della camera un'ora prima di coricarti perché sia stabilizzata al momento dell'addormentamento</li>
-<li><strong>Biancheria da letto adattabile:</strong> Preferisci più strati leggeri a un piumone pesante. Potrai regolare la copertura durante la notte</li>
-<li><strong>Ventilazione:</strong> Arieggia la camera per 15 minuti prima di coricarti, anche in inverno. L'aria fresca e rinnovata favorisce un addormentamento più rapido</li>
+<li><strong>Intorno ai 18 °C:</strong> abbassa il riscaldamento o arieggia prima di dormire, così la camera è già fresca quando ti corichi.</li>
+<li><strong>Strati:</strong> più coperte leggere invece di un piumone pesante, per regolarti durante la notte.</li>
+<li><strong>Con il caldo:</strong> persiane chiuse di giorno, corrente d'aria di notte, lenzuola di cotone leggero.</li>
 </ul>
-<h3>Ambiente generale</h3>
+<h3>Tieni un diario della camera e dei sogni</h3>
+<p>
+                    Lo strumento più utile resta un semplice <a class="text-dream-salmon hover:underline" href="dream-journaling-la-guida-completa-per-registrare-le-tue-avventure-notturne">diario dei sogni</a> con una riga in più sulla notte. Esempio inventato, per mostrare il formato:
+                </p>
 <ul>
-<li><strong>Piante:</strong> Alcune piante (lavanda, gelsomino) emettono composti che, secondo studi preliminari, favoriscono un sonno REM più stabile</li>
-<li><strong>Ordine:</strong> Uno spazio ordinato riduce la stimolazione visiva inconscia e l'ansia associata, favorendo sogni più tranquilli</li>
-<li><strong>Tieni un <a class="text-dream-salmon hover:underline" href="dream-journaling-la-guida-completa-per-registrare-le-tue-avventure-notturne">diario dei sogni</a>:</strong> Annota i tuoi sogni E le condizioni della tua camera (temperatura, rumore, luce). Dopo qualche settimana, le correlazioni appariranno chiaramente</li>
+<li><strong>Sogno:</strong> «Un terremoto in un palazzo sconosciuto. Cercavo le scale.»</li>
+<li><strong>Emozione:</strong> «Urgenza, poi sollievo al risveglio.»</li>
+<li><strong>La notte:</strong> «Finestra aperta, 27 °C, il camion della spazzatura verso le cinque.»</li>
+<li><strong>Domanda da tenere:</strong> «I miei sogni più agitati tornano nelle notti calde o rumorose, oppure con qualcos'altro?»</li>
 </ul>
+<p>
+                    Dopo qualche settimana vedrai se emerge un legame oppure no. Entrambe le risposte sono utili.
+                </p>
+<p>
+                    <strong>Quando rivolgersi a un medico:</strong> se dormi male da diverse settimane nonostante una camera tranquilla, se qualcuno nota che russi forte o fai pause nel respiro, se hai molto sonno durante il giorno o se gli incubi rovinano spesso le tue notti, parlane con un medico. La camera non è sempre la causa.
+                </p>
 </div>
 <!-- CTA Section -->
 <aside class="glass-panel rounded-3xl p-8 md:p-10 mt-16 text-center border border-dream-salmon/20">
 <div class="w-16 h-16 bg-dream-salmon/10 rounded-full flex items-center justify-center mx-auto mb-6">
 <i class="w-8 h-8 text-dream-salmon" data-lucide="moon"></i>
 </div>
-<h3 class="font-serif text-2xl md:text-3xl mb-4 text-dream-cream">Trasforma la tua camera in un santuario onirico</h3>
+<h3 class="font-serif text-2xl md:text-3xl mb-4 text-dream-cream">Una notte è un indizio. Un mese di note mostra una tendenza.</h3>
 <p class="text-purple-200/70 mb-6 max-w-lg mx-auto">
-                    Noctalia ti aiuta a tracciare l'impatto del tuo ambiente sui sogni. Registra i sogni con la voce, scopri gli schemi e ottimizza le tue notti con l'analisi IA.
+                    Annota i tuoi sogni a voce o per iscritto appena sveglio, aggiungi le condizioni della notte e rileggili uno accanto all'altro per vedere cosa ritorna.
                 </p>
 <a class="inline-flex items-center gap-2 px-8 py-4 bg-dream-salmon text-dream-dark rounded-full font-bold hover:bg-dream-salmon/90 transition-colors" href="/it/">
-                    Inizia il tuo diario dei sogni <i class="w-5 h-5" data-lucide="arrow-right"></i>
+                    Inizia il mio diario dei sogni <i class="w-5 h-5" data-lucide="arrow-right"></i>
 </a>
 </aside>
 <!-- FAQ Section -->
 <section class="mt-16">
-<h2 class="font-serif text-2xl text-dream-cream mb-8">Domande Frequenti</h2>
+<h2 class="font-serif text-2xl text-dream-cream mb-8">Domande frequenti</h2>
 <div class="space-y-4">
 <details class="glass-panel rounded-xl p-4 group cursor-pointer">
 <summary class="font-medium flex justify-between items-center text-dream-cream">
-                            Come influisce la luce sulla qualità dei miei sogni?
+                            La luce in camera influisce sui sogni?
                             <i class="w-5 h-5 transition-transform group-open:rotate-180 text-dream-salmon" data-lucide="chevron-down"></i>
 </summary>
 <p class="mt-4 text-sm text-gray-400 leading-relaxed">
-                            La luce artificiale, in particolare la luce blu degli schermi, sopprime la produzione di melatonina e ritarda l'addormentamento. Questo riduce la durata del <a class="text-dream-salmon hover:underline" href="sonno-rem-e-sogni-comprendere-il-ripristino-notturno-del-cervello">sonno REM</a>, la fase in cui si verificano i sogni più vividi. L'esposizione a luce intensa la sera può accorciare le fasi di sogno di 20-30 minuti. Per preservare i sogni, spegni gli schermi almeno 60 minuti prima di coricarti e usa tende oscuranti.
+                            In modo indiretto. La luce della sera ritarda la melatonina e può spostare in avanti l'addormentamento, accorciando la fine della notte, dove il <a class="text-dream-salmon hover:underline" href="sonno-rem-e-sogni-comprendere-il-ripristino-notturno-del-cervello">sonno REM</a> dura di più. La luce durante la notte può anche provocare brevi risvegli. Abbassare le luci nell'ultima ora e tenere la camera al buio è un buon inizio.
                         </p>
 </details>
 <details class="glass-panel rounded-xl p-4 group cursor-pointer">
 <summary class="font-medium flex justify-between items-center text-dream-cream">
-                            Qual è la temperatura ideale per sognare bene?
+                            Qual è la temperatura migliore in camera per dormire e sognare?
                             <i class="w-5 h-5 transition-transform group-open:rotate-180 text-dream-salmon" data-lucide="chevron-down"></i>
 </summary>
 <p class="mt-4 text-sm text-gray-400 leading-relaxed">
-                            La temperatura ideale è tra 18 e 19 °C. A questa temperatura, il corpo può effettuare la termoregolazione necessaria durante il sonno REM senza perturbazioni. Una stanza troppo calda (sopra i 24 °C) frammenta il sonno REM e produce sogni più ansiosi, mentre una stanza troppo fredda può causare risvegli che interrompono i cicli onirici.
+                            La Sleep Foundation consiglia circa 18 °C. Nel sonno REM il corpo gestisce peggio il caldo, quindi una stanza calda e umida moltiplica i risvegli. Non esiste una «temperatura dei sogni»: l'obiettivo è una camera fresca e stabile, con coperte che puoi regolare.
                         </p>
 </details>
 <details class="glass-panel rounded-xl p-4 group cursor-pointer">
 <summary class="font-medium flex justify-between items-center text-dream-cream">
-                            I rumori esterni possono integrarsi nei miei sogni?
+                            Un rumore può finire nel mio sogno?
                             <i class="w-5 h-5 transition-transform group-open:rotate-180 text-dream-salmon" data-lucide="chevron-down"></i>
 </summary>
 <p class="mt-4 text-sm text-gray-400 leading-relaxed">
-                            Sì, il cervello continua a elaborare i suoni durante il sonno. Gli studi mostrano che gli stimoli uditivi esterni — un allarme, la pioggia, una conversazione — possono essere incorporati nella narrativa onirica in tempo reale. Il rumore bianco costante, al contrario, tende a mascherare i suoni intrusivi e a stabilizzare il sonno REM, favorendo sogni più ricchi e coerenti.
+                            Sì, a volte: un allarme può diventare una sirena, la pioggia una tempesta. Non succede sempre, e il suono di solito ritorna trasformato. Il rumore provoca anche brevi risvegli, che aiutano a ricordare più frammenti di sogni.
+                        </p>
+</details>
+<details class="glass-panel rounded-xl p-4 group cursor-pointer">
+<summary class="font-medium flex justify-between items-center text-dream-cream">
+                            Il rumore bianco aiuta a dormire meglio?
+                            <i class="w-5 h-5 transition-transform group-open:rotate-180 text-dream-salmon" data-lucide="chevron-down"></i>
+</summary>
+<p class="mt-4 text-sm text-gray-400 leading-relaxed">
+                            Può coprire i rumori improvvisi, e a molti piace. Ma una revisione sistematica del 2021 ha giudicato di qualità molto bassa le prove che il rumore continuo migliori il sonno. Provalo a basso volume e tienilo solo se ti svegli più riposato.
                         </p>
 </details>
 </div>
 </section>
 <!-- July catch-up backlink: sleep-env-to-noise -->
-<section class="glass-panel rounded-2xl p-6 my-8 border border-dream-salmon/20"><h2 class="font-serif text-2xl text-dream-cream mb-3">Da leggere: rumore notturno</h2><p>Se l’ambiente cambia soprattutto attraverso i suoni, la guida <a class="text-dream-salmon hover:underline" href="rumore-notturno-sonno-sogni">rumore notturno, sonno e sogni</a> aiuta a separare microrisvegli, rumore reale e scene oniriche più memorabili.</p></section>
+<section class="glass-panel rounded-2xl p-6 my-8 border border-dream-salmon/20"><h2 class="font-serif text-2xl text-dream-cream mb-3">Da leggere anche: rumore notturno</h2><p>Se le tue notti cambiano soprattutto per i suoni, la guida <a class="text-dream-salmon hover:underline" href="rumore-notturno-sonno-sogni">rumore notturno, sonno e sogni</a> ti aiuta a distinguere microrisvegli, rumori reali e scene di sogno che ricordi.</p></section>
 <!-- Sources / Trust -->
 <section class="mt-16 glass-panel rounded-2xl p-6" id="sources">
-<h2 class="font-serif text-2xl text-dream-cream mb-4">Fonti / Approfondimenti</h2>
+<h2 class="font-serif text-2xl text-dream-cream mb-4">Fonti e approfondimenti</h2>
 <ul class="mt-6 space-y-2 text-sm text-gray-400">
-<li><a href="https://institut-sommeil-vigilance.org/journee-du-sommeil/" rel="nofollow noopener noreferrer" target="_blank">INSV (Istituto Nazionale del Sonno e della Vigilanza) — Giornata del Sonno 2026</a></li>
-<li><a href="https://www.reseau-morphee.fr/" rel="nofollow noopener noreferrer" target="_blank">Rete Morphée — Sonno e ambiente</a></li>
-<li><a href="https://pubmed.ncbi.nlm.nih.gov/26375320/" rel="nofollow noopener noreferrer" target="_blank">Cho et al. (2015): Effects of artificial light at night on human health — Chronobiology International</a></li>
-<li><a href="https://pubmed.ncbi.nlm.nih.gov/22738673/" rel="nofollow noopener noreferrer" target="_blank">Okamoto-Mizuno & Mizuno (2012): Effects of thermal environment on sleep and circadian rhythm — Journal of Physiological Anthropology</a></li>
-<li><a href="https://www.sleepfoundation.org/bedroom-environment" rel="nofollow noopener noreferrer" target="_blank">Sleep Foundation: Bedroom Environment</a></li>
+<li><a href="https://institut-sommeil-vigilance.org/wp-content/uploads/2026/03/CP-INSV-JS-2026.pdf" rel="nofollow noopener noreferrer" target="_blank">INSV (2026), comunicato stampa e indagine della Journée du sommeil 2026 (in francese)</a></li>
+<li><a href="https://worldsleepday.org/" rel="nofollow noopener noreferrer" target="_blank">World Sleep Day (Giornata mondiale del sonno, in inglese)</a></li>
+<li><a href="https://doi.org/10.1210/jc.2010-2098" rel="nofollow noopener noreferrer" target="_blank">Gooley et al. (2011), «Exposure to room light before bedtime suppresses melatonin onset and shortens melatonin duration in humans», <em>Journal of Clinical Endocrinology &amp; Metabolism</em></a></li>
+<li><a href="https://doi.org/10.1073/pnas.1418490112" rel="nofollow noopener noreferrer" target="_blank">Chang et al. (2015), «Evening use of light-emitting eReaders negatively affects sleep, circadian timing, and next-morning alertness», <em>PNAS</em></a></li>
+<li><a href="https://pubmed.ncbi.nlm.nih.gov/19552703/" rel="nofollow noopener noreferrer" target="_blank">Schredl et al. (2009), «Information processing during sleep: the effect of olfactory stimuli on dream content and dream emotions», <em>Journal of Sleep Research</em></a></li>
+<li><a href="https://doi.org/10.1016/j.smrv.2020.101385" rel="nofollow noopener noreferrer" target="_blank">Riedy et al. (2021), «Noise as a sleep aid: A systematic review», <em>Sleep Medicine Reviews</em></a></li>
+<li><a href="https://doi.org/10.1186/1880-6805-31-14" rel="nofollow noopener noreferrer" target="_blank">Okamoto-Mizuno e Mizuno (2012), «Effects of thermal environment on sleep and circadian rhythm», <em>Journal of Physiological Anthropology</em></a></li>
+<li><a href="https://www.sleepfoundation.org/bedroom-environment/best-temperature-for-sleep" rel="nofollow noopener noreferrer" target="_blank">Sleep Foundation, «Best temperature for sleep» (in inglese)</a></li>
+<li><a href="https://www.sleepfoundation.org/bedroom-environment" rel="nofollow noopener noreferrer" target="_blank">Sleep Foundation, «Bedroom environment» (in inglese)</a></li>
 </ul>
-<p class="mt-6 text-xs text-purple-200/60">Ultimo aggiornamento: 10 marzo 2026</p>
+<p class="mt-6 text-xs text-purple-200/60">Aggiornato il 9 ottobre 2026</p>
 </section>
 <!-- Related Symbols Start -->
 <section aria-label="Simboli dei sogni correlati" class="mt-12 mb-8">

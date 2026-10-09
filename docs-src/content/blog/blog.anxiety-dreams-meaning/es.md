@@ -5,7 +5,7 @@
   "lang": "es",
   "slug": "suenos-de-ansiedad-significado",
   "title": "Sueños de ansiedad: por qué los tienes y cómo detenerlos | Noctalia",
-  "description": "Descubre por qué ocurren los sueños de ansiedad, qué significan los escenarios más comunes y técnicas respaldadas por la ciencia para dormir más tranquilo.",
+  "description": "Sueños de ansiedad: por qué la preocupación te sigue de noche, qué pueden reflejar llegar tarde, perderte o suspender, y qué hacer para dormir más tranquilo.",
   "robots": "max-image-preview:large",
   "themeColor": "#0a0514",
   "htmlClass": "scroll-smooth blog-article",
@@ -14,24 +14,24 @@
   "mainClass": "pt-32 pb-20 px-4",
   "ogType": "article",
   "ogTitle": "Sueños de ansiedad: por qué los tienes y cómo detenerlos | Noctalia",
-  "ogDescription": "Descubre por qué ocurren los sueños de ansiedad, qué significan los escenarios más comunes y técnicas respaldadas por la ciencia para dormir más tranquilo.",
+  "ogDescription": "Por qué la preocupación te sigue mientras duermes, qué pueden reflejar los sueños de ansiedad y pasos sencillos para noches más tranquilas.",
   "ogImage": "https://noctalia.app/img/blog/anxiety-dreams-meaning.webp",
   "ogImageAlt": "Representación abstracta de la ansiedad en los sueños con tonos violetas y azul oscuro arremolinados",
   "twitterCard": "summary_large_image",
   "twitterTitle": "Sueños de ansiedad: por qué los tienes y cómo detenerlos | Noctalia",
-  "twitterDescription": "Descubre por qué ocurren los sueños de ansiedad, qué significan los escenarios más comunes y técnicas respaldadas por la ciencia para dormir más tranquilo.",
+  "twitterDescription": "Por qué la preocupación te sigue mientras duermes, qué pueden reflejar los sueños de ansiedad y pasos sencillos para noches más tranquilas.",
   "twitterImage": "https://noctalia.app/img/blog/anxiety-dreams-meaning.webp",
   "twitterImageAlt": "Representación abstracta de la ansiedad en los sueños con tonos violetas y azul oscuro arremolinados",
   "publishedTime": "2026-03-06",
-  "modifiedTime": "2026-07-09",
+  "modifiedTime": "2026-10-09",
   "author": "Thanh Chau",
   "prevPath": "/es/blog/suenos-y-creatividad",
   "nextPath": "/es/blog/guia-suenos-ninos",
   "preloadImage": "/img/blog/anxiety-dreams-meaning.webp",
   "jsonLd": [
-    "{\n            \"@context\": \"https://schema.org\",\n            \"@type\": \"BlogPosting\",\n            \"headline\": \"Sueños de ansiedad: por qué los tienes y cómo detenerlos\",\n            \"description\": \"Descubre por qué ocurren los sueños de ansiedad, qué significan los escenarios más comunes y técnicas respaldadas por la ciencia para dormir más tranquilo.\",\n            \"image\": {\n                \"@type\": \"ImageObject\",\n                \"url\": \"https://noctalia.app/img/blog/anxiety-dreams-meaning.webp\",\n                \"width\": 1200,\n                \"height\": 630\n            },\n            \"author\": [\n                {\n                    \"@type\": \"Person\",\n                    \"@id\": \"https://noctalia.app/es/sobre#person\",\n                    \"name\": \"Thanh Chau\",\n                    \"jobTitle\": \"Founder & Publication Director\",\n                    \"url\": \"https://noctalia.app/es/sobre\",\n                    \"worksFor\": {\n                        \"@type\": \"Organization\",\n                        \"@id\": \"https://noctalia.app/#organization\",\n                        \"name\": \"Noctalia\",\n                        \"url\": \"https://noctalia.app\"\n                    }\n                },\n                {\n                    \"@type\": \"Organization\",\n                    \"@id\": \"https://noctalia.app/#organization\",\n                    \"name\": \"Noctalia\",\n                    \"url\": \"https://noctalia.app\",\n                    \"logo\": {\n                        \"@type\": \"ImageObject\",\n                        \"url\": \"https://noctalia.app/logo/logo_noctalia.png\"\n                    }\n                }\n            ],\n            \"publisher\": {\n                \"@type\": \"Organization\",\n                \"name\": \"Noctalia\",\n                \"url\": \"https://noctalia.app\",\n                \"logo\": {\n                    \"@type\": \"ImageObject\",\n                    \"url\": \"https://noctalia.app/logo/logo_noctalia.png\"\n                }\n            },\n            \"datePublished\": \"2026-03-06\",\n            \"dateModified\": \"2026-07-09\",\n            \"mainEntityOfPage\": {\n                \"@type\": \"WebPage\",\n                \"@id\": \"https://noctalia.app/es/blog/suenos-de-ansiedad-significado\"\n            },\n            \"inLanguage\": \"es\",\n            \"isAccessibleForFree\": true,\n            \"wordCount\": 1800,\n            \"timeRequired\": \"PT5M\",\n            \"url\": \"https://noctalia.app/es/blog/suenos-de-ansiedad-significado\"\n        }",
+    "{\n    \"@context\": \"https://schema.org\",\n    \"@type\": \"BlogPosting\",\n    \"headline\": \"Sueños de ansiedad: por qué los tienes y qué ayuda de verdad\",\n    \"description\": \"Sueños de ansiedad: por qué la preocupación te sigue de noche, qué pueden reflejar llegar tarde, perderte o suspender, y qué hacer para dormir más tranquilo.\",\n    \"image\": {\n        \"@type\": \"ImageObject\",\n        \"url\": \"https://noctalia.app/img/blog/anxiety-dreams-meaning.webp\",\n        \"width\": 1200,\n        \"height\": 630\n    },\n    \"author\": [\n        {\n            \"@type\": \"Person\",\n            \"@id\": \"https://noctalia.app/es/sobre#person\",\n            \"name\": \"Thanh Chau\",\n            \"jobTitle\": \"Founder & Publication Director\",\n            \"url\": \"https://noctalia.app/es/sobre\",\n            \"worksFor\": {\n                \"@type\": \"Organization\",\n                \"@id\": \"https://noctalia.app/#organization\",\n                \"name\": \"Noctalia\",\n                \"url\": \"https://noctalia.app\"\n            }\n        },\n        {\n            \"@type\": \"Organization\",\n            \"@id\": \"https://noctalia.app/#organization\",\n            \"name\": \"Noctalia\",\n            \"url\": \"https://noctalia.app\",\n            \"logo\": {\n                \"@type\": \"ImageObject\",\n                \"url\": \"https://noctalia.app/logo/logo_noctalia.png\"\n            }\n        }\n    ],\n    \"publisher\": {\n        \"@type\": \"Organization\",\n        \"name\": \"Noctalia\",\n        \"url\": \"https://noctalia.app\",\n        \"logo\": {\n            \"@type\": \"ImageObject\",\n            \"url\": \"https://noctalia.app/logo/logo_noctalia.png\"\n        }\n    },\n    \"datePublished\": \"2026-03-06\",\n    \"dateModified\": \"2026-10-09\",\n    \"mainEntityOfPage\": {\n        \"@type\": \"WebPage\",\n        \"@id\": \"https://noctalia.app/es/blog/suenos-de-ansiedad-significado\"\n    },\n    \"inLanguage\": \"es\",\n    \"isAccessibleForFree\": true,\n    \"wordCount\": 2748,\n    \"timeRequired\": \"PT13M\",\n    \"url\": \"https://noctalia.app/es/blog/suenos-de-ansiedad-significado\"\n}",
     "{\n    \"@context\": \"https://schema.org\",\n    \"@type\": \"WebPage\",\n    \"@id\": \"https://noctalia.app/es/blog/suenos-de-ansiedad-significado\",\n    \"url\": \"https://noctalia.app/es/blog/suenos-de-ansiedad-significado\",\n    \"name\": \"Sueños de ansiedad: por qué los tienes y cómo detenerlos | Noctalia\",\n    \"inLanguage\": \"es\"\n}",
-    "{\n            \"@context\": \"https://schema.org\",\n            \"@type\": \"FAQPage\",\n            \"mainEntity\": [\n                { \"@type\": \"Question\", \"name\": \"¿Cuál es la diferencia entre sueños de ansiedad y pesadillas?\", \"acceptedAnswer\": { \"@type\": \"Answer\", \"text\": \"Las pesadillas suelen implicar un peligro inmediato e intenso que a menudo te despierta sobresaltado. Los sueños de ansiedad, en cambio, se caracterizan por una sensación generalizada de inquietud, impotencia o aprensión sin una amenaza directa para la vida. Puedes sentirte perdido, no preparado o incapaz de actuar, en lugar de huir activamente de un peligro. Ambos ocurren principalmente durante el sueño REM, pero los sueños de ansiedad dejan una preocupación persistente en vez de un terror agudo.\" } },\n                { \"@type\": \"Question\", \"name\": \"¿Los sueños de ansiedad son señal de un trastorno de ansiedad?\", \"acceptedAnswer\": { \"@type\": \"Answer\", \"text\": \"No necesariamente. Los sueños de ansiedad ocasionales son una parte normal del procesamiento del estrés por parte del cerebro. Sin embargo, si ocurren frecuentemente, alteran tu sueño la mayoría de las noches y se acompañan de síntomas diurnos como preocupación persistente, inquietud o dificultad para concentrarse, pueden estar asociados con un trastorno de ansiedad generalizada (TAG) o TEPT. Considera consultar a un profesional de salud mental si los sueños ansiosos impactan significativamente tu vida diaria.\" } },\n                { \"@type\": \"Question\", \"name\": \"¿Los medicamentos pueden causar sueños de ansiedad?\", \"acceptedAnswer\": { \"@type\": \"Answer\", \"text\": \"Sí, ciertos medicamentos pueden aumentar la frecuencia o intensidad de los sueños de ansiedad. Los ISRS (inhibidores selectivos de la recaptación de serotonina), los betabloqueantes y algunos antihipertensivos son conocidos por alterar el contenido onírico. Además, la abstinencia de benzodiazepinas, alcohol o cannabis puede desencadenar sueños ansiosos y vívidos debido al rebote REM. Nunca dejes ni ajustes la medicación sin consultar a tu médico.\" } }\n            ]\n        }",
+    "{\n    \"@context\": \"https://schema.org\",\n    \"@type\": \"FAQPage\",\n    \"mainEntity\": [\n        {\n            \"@type\": \"Question\",\n            \"name\": \"¿Qué diferencia hay entre un sueño de ansiedad y una pesadilla?\",\n            \"acceptedAnswer\": {\n                \"@type\": \"Answer\",\n                \"text\": \"La pesadilla presenta una amenaza clara, un miedo intenso y suele despertarte. El sueño de ansiedad es más difuso: llegas tarde, te pierdes, no estás preparado o no puedes actuar, y te despiertas inquieto más que aterrado. La frontera es borrosa, y ambos ocurren sobre todo durante el sueño REM.\"\n            }\n        },\n        {\n            \"@type\": \"Question\",\n            \"name\": \"¿Los sueños de ansiedad son señal de un trastorno de ansiedad?\",\n            \"acceptedAnswer\": {\n                \"@type\": \"Answer\",\n                \"text\": \"No por sí solos. Los sueños de ansiedad ocasionales son comunes, sobre todo en épocas de estrés. Si son frecuentes y van acompañados de preocupación persistente, ataques de pánico, miedo a acostarte o dificultades claras durante el día, conviene hablarlo con un médico o un profesional de salud mental.\"\n            }\n        },\n        {\n            \"@type\": \"Question\",\n            \"name\": \"¿Un medicamento puede provocar sueños de ansiedad?\",\n            \"acceptedAnswer\": {\n                \"@type\": \"Answer\",\n                \"text\": \"Sí, es posible. Fármacos que actúan sobre el sistema nervioso, como ciertos antidepresivos o betabloqueantes, pueden cambiar los sueños, y dejar un medicamento que reduce el sueño REM puede hacerlos más vívidos durante un tiempo. Si notas un cambio al empezar, dejar o ajustar un tratamiento, díselo a tu médico. No lo modifiques nunca por tu cuenta.\"\n            }\n        },\n        {\n            \"@type\": \"Question\",\n            \"name\": \"¿Cómo dejar de tener sueños de ansiedad?\",\n            \"acceptedAnswer\": {\n                \"@type\": \"Answer\",\n                \"text\": \"No se pueden eliminar del todo, pero sí hacerlos menos frecuentes: horarios de sueño regulares, menos alcohol por la noche, apuntar las preocupaciones con un siguiente paso concreto y unos minutos de relajación antes de acostarte. Para un sueño que se repite, la terapia de ensayo en imaginación puede ayudar. Si alteran tu descanso más de una vez por semana, consulta a un médico.\"\n            }\n        },\n        {\n            \"@type\": \"Question\",\n            \"name\": \"¿Un sueño de ansiedad anuncia que va a pasar algo malo?\",\n            \"acceptedAnswer\": {\n                \"@type\": \"Answer\",\n                \"text\": \"No. Soñar que suspendes un examen o que pierdes un tren no significa que vaya a ocurrir. Estos sueños reflejan una preocupación actual, una época de mucha carga o simplemente una mala noche, no el futuro.\"\n            }\n        }\n    ]\n}",
     "{\n            \"@context\": \"https://schema.org\",\n            \"@type\": \"BreadcrumbList\",\n            \"itemListElement\": [\n                { \"@type\": \"ListItem\", \"position\": 1, \"name\": \"Inicio\", \"item\": \"https://noctalia.app/es/\" },\n                { \"@type\": \"ListItem\", \"position\": 2, \"name\": \"Recursos\", \"item\": \"https://noctalia.app/es/blog/\" },\n                { \"@type\": \"ListItem\", \"position\": 3, \"name\": \"Sueños de ansiedad\", \"item\": \"https://noctalia.app/es/blog/suenos-de-ansiedad-significado\" }\n            ]\n        }"
   ],
   "activeNav": "resources"
@@ -60,17 +60,17 @@
 <!-- Article Header -->
 <header class="mb-12">
 <div class="flex flex-wrap items-center gap-3 mb-6">
-<span class="text-xs font-mono text-dream-salmon border border-dream-salmon/30 rounded-full px-3 py-1 uppercase">Guía Completa</span>
+<span class="text-xs font-mono text-dream-salmon border border-dream-salmon/30 rounded-full px-3 py-1 uppercase">Guía completa</span>
 <a class="text-xs font-mono text-purple-200/70 border border-white/10 rounded-full px-3 py-1 hover:text-white hover:border-dream-salmon/30 transition-colors" href="significado-de-suenos">Tema: Significado de sueños</a>
 <span aria-hidden="true" class="w-full sm:hidden"></span>
 <span class="text-sm text-purple-300/60">Publicado el 6 de marzo de 2026</span>
-<span class="text-sm text-purple-300/60">5 min de lectura</span>
+<span class="text-sm text-purple-300/60">13 min de lectura</span>
 </div>
 <h1 class="font-serif text-3xl md:text-5xl mb-6 text-transparent bg-clip-text bg-gradient-to-b from-white via-dream-lavender to-purple-400/50 leading-tight">
-                    Sueños de ansiedad: por qué los tienes y cómo detenerlos
+                    Sueños de ansiedad: por qué los tienes y qué ayuda de verdad
                 </h1>
 <p class="text-lg text-purple-200/80 leading-relaxed">
-                    Repasas mentalmente la lista de tareas del día siguiente, finalmente te quedas dormido, y pasas la noche vagando por un laberinto interminable o descubriendo que olvidaste estudiar para un examen que ni sabías que existía. Los sueños de ansiedad afectan a casi todos, pero siguen siendo una de las experiencias nocturnas más incomprendidas. Aquí tienes la ciencia que los explica y lo que puedes hacer esta noche.
+                    Vuelves a estar en el instituto, delante de un examen que no has estudiado, o corres por el andén mientras el tren se aleja. No pasa nada realmente peligroso y, aun así, te despiertas tenso, con la preocupación todavía en el pecho. Los sueños de ansiedad son frecuentes. Casi siempre reflejan lo que te pesa, no anuncian nada. Esto es lo que se sabe de ellos y lo que puedes probar esta misma noche.
                 </p>
 </header>
 <!-- Author Byline (E-E-A-T) -->
@@ -86,7 +86,7 @@
 <!-- Quick Answer (AI SEO) -->
 <section aria-labelledby="quick-answer-title" class="glass-panel rounded-2xl p-6 mb-8 border border-dream-salmon/20 bg-white/5">
 <h2 class="font-serif text-xl text-dream-cream mb-3" id="quick-answer-title">Respuesta rápida</h2>
-<p class="text-purple-100/80 leading-relaxed">Los sueños de ansiedad son la forma en que tu cerebro procesa las preocupaciones no resueltas durante el sueño. A diferencia de las pesadillas, se caracterizan por un malestar difuso - no estar preparado, perder el control, llegar tarde - en lugar de un peligro inmediato. Técnicas cognitivas, higiene del sueño y el diario de sueños pueden reducir significativamente su frecuencia.</p>
+<p class="text-purple-100/80 leading-relaxed">Un sueño de ansiedad está marcado por la preocupación, el malestar o la impotencia más que por el terror: llegar tarde, no estar preparado, perderse, no poder hablar. Son habituales y suelen aumentar con el estrés o cuando duermes mal. No predicen nada. Una noche más tranquila, apuntar lo que te preocupa y anotar tus sueños pueden ayudar. Si alteran tu descanso más de una vez por semana, consúltalo con un médico.</p>
 </section>
 <!-- Editorial Review (E-E-A-T) -->
 <div class="mb-8">
@@ -111,106 +111,115 @@
 <!-- Table of Contents -->
 <nav class="glass-panel rounded-2xl p-6 mb-12">
 <h2 class="font-serif text-lg text-dream-cream mb-4 flex items-center gap-2">
-<i class="w-5 h-5 text-dream-salmon" data-lucide="list"></i> Tabla de Contenidos
+<i class="w-5 h-5 text-dream-salmon" data-lucide="list"></i> Índice
                 </h2>
 <ol class="space-y-2 text-sm text-purple-200/70">
-<li><a class="toc-link block" href="#what-are-anxiety-dreams">1. Qué son los sueños de ansiedad y en qué se diferencian de las pesadillas</a></li>
-<li><a class="toc-link block" href="#common-scenarios">2. Los 8 escenarios más comunes de sueños de ansiedad</a></li>
-<li><a class="toc-link block" href="#why-anxiety-dreams">3. Por qué tu cerebro produce sueños de ansiedad</a></li>
-<li><a class="toc-link block" href="#mental-health">4. Sueños de ansiedad y salud mental</a></li>
-<li><a class="toc-link block" href="#reduce-anxiety-dreams">5. Técnicas probadas para reducir los sueños de ansiedad</a></li>
-<li><a class="toc-link block" href="#seek-help">6. Cuándo buscar ayuda profesional</a></li>
+<li><a class="toc-link block" href="#what-are-anxiety-dreams">1. ¿Sueño de ansiedad o pesadilla? La diferencia</a></li>
+<li><a class="toc-link block" href="#common-scenarios">2. ¿Qué sueño de ansiedad has tenido?</a></li>
+<li><a class="toc-link block" href="#why-anxiety-dreams">3. ¿Por qué la preocupación te sigue al dormir?</a></li>
+<li><a class="toc-link block" href="#mental-health">4. Cuando estos sueños apuntan a algo más</a></li>
+<li><a class="toc-link block" href="#reduce-anxiety-dreams">5. ¿Qué puedes hacer desde esta noche?</a></li>
+<li><a class="toc-link block" href="#seek-help">6. Cuándo pedir ayuda profesional</a></li>
 </ol>
 </nav>
 <!-- Article Content -->
 <div class="prose max-w-none text-gray-300">
-<h2 id="what-are-anxiety-dreams">Qué son los sueños de ansiedad y en qué se diferencian de las pesadillas</h2>
+<h2 id="what-are-anxiety-dreams">¿Sueño de ansiedad o pesadilla? La diferencia</h2>
 <p>
-                    Los sueños de ansiedad son una categoría de sueños perturbadores caracterizados por sentimientos de preocupación, impotencia, vergüenza o aprensión, en lugar de miedo directo. Mientras que las <a class="text-dream-salmon hover:underline" href="guia-pesadillas">pesadillas</a> suelen implicar un peligro inmediato - ser perseguido por un depredador, caer desde un precipicio o sufrir daño físico - los sueños de ansiedad generan un malestar más sutil y generalizado. Puedes encontrarte incapaz de marcar un número de teléfono, perpetuamente tarde para un evento importante, o desnudo ante una multitud sin recordar cómo llegaste allí.
+                    «Sueño de ansiedad» (o sueño de angustia) es una expresión de uso común, no un diagnóstico. Describe un sueño dominado por la preocupación, la vergüenza o la impotencia: no consigues marcar un número, llegas tarde una y otra vez a la reunión, descubres que vas en pijama a la oficina.
                 </p>
 <p>
-                    La distinción importa porque las dos experiencias activan circuitos emocionales diferentes. Las pesadillas disparan la respuesta de miedo agudo y a menudo te despiertan bruscamente. Los sueños de ansiedad tienden a mantenerte atrapado en su narrativa, dando vueltas por escenarios de inadecuación o pérdida de control sin alcanzar nunca un climax claro. Te despiertas agotado y preocupado en lugar de aterrorizado.
+                    La <a class="text-dream-salmon hover:underline" href="guia-pesadillas">pesadilla</a> suele ser más intensa. La amenaza es clara, el miedo llega a un pico y a menudo te despierta. El sueño de ansiedad es más difuso: la tensión se alarga sin desenlace y te despiertas agotado o inquieto, más que aterrado.
                 </p>
 <p>
-                    Las investigaciones del neurocientífico finlandés Antti Revonsuo y estudios posteriores han revelado que <strong>hasta el 77 % del contenido onírico implica emociones negativas</strong>, siendo la ansiedad la emoción más frecuentemente reportada en los sueños. Esto no es un fallo del cerebro dormido, sino una característica, como exploraremos a continuación.
+                    La frontera entre ambos es borrosa, y la etiqueta importa menos que el efecto. ¿Te despertó el sueño? ¿Te acompañó el malestar durante el día? Esas dos preguntas dicen más sobre qué hacer que cualquier definición.
                 </p>
-
-<h2 id="common-scenarios">Los 8 escenarios más comunes de sueños de ansiedad</h2>
+<h2 id="common-scenarios">¿Qué sueño de ansiedad has tenido?</h2>
 <p>
-                    Aunque los detalles varían de persona a persona, ciertos temas ansiosos aparecen en todas las culturas con una regularidad notable. Si reconoces el tuyo, estás lejos de ser el único.
+                    Algunas escenas se repiten en mucha gente. En una encuesta a 1181 estudiantes universitarios canadienses, ser perseguido, caer y la escuela estaban entre los temas que mencionaron más del 60 % de los participantes; llegar tarde o suspender un examen también figuraban en la lista de sueños típicos. Si reconoces el tuyo, no eres el único.
                 </p>
-<h3>1. Llegar tarde o perderse un evento importante</h3>
 <p>
-                    Corres por pasillos o estás atrapado en el tráfico, viendo cómo el reloj pasa de largo la hora a la que debías llegar. Este sueño refleja un miedo profundo a <strong>no cumplir las expectativas</strong>, propias o ajenas. Es especialmente frecuente en periodos de sobrecarga.
+                    Son pistas, no definiciones. Compáralas con lo que sentiste en el sueño y con lo que estás viviendo ahora.
+                </p>
+<h3>1. Llegar tarde o perderte algo importante</h3>
+<p>
+                    Corres por pasillos o estás atrapado en un atasco mientras el reloj avanza. Este sueño aparece a menudo con una agenda desbordada o con el miedo a <strong>fallar a alguien</strong>. Pregúntate: ¿qué estoy intentando encajar ahora mismo, y para quién?
                 </p>
 <h3>2. Estar <a class="text-dream-salmon hover:underline" href="../simbolos/perdido">perdido</a> o no encontrar el camino</h3>
 <p>
-                    Los lugares familiares se convierten en laberintos. Las calles que deberían llevar a casa se transforman en callejones sin salida. Este escenario surge cuando te sientes desorientado en la vida real: inseguro de tu carrera, tu relación o una decisión importante.
+                    Calles conocidas se convierten en un laberinto y el camino a casa siempre acaba en un callejón sin salida. La escena puede reflejar una etapa de <strong>incertidumbre</strong>: una decisión, un trabajo, una relación. Fíjate en si sentías pánico o simplemente explorabas.
                 </p>
-<h3>3. <a class="text-dream-salmon hover:underline" href="../simbolos/examen">Examen</a> para el que no estudiaste</h3>
+<h3>3. Un <a class="text-dream-salmon hover:underline" href="../simbolos/examen">examen</a> que no has preparado</h3>
 <p>
-                    Uno de los sueños de ansiedad más universales, el examen sin preparar persiste mucho después de dejar la escuela. Representa el miedo a <strong>ser evaluado y encontrado insuficiente</strong>, un sentimiento que se traslada fácilmente a las evaluaciones laborales o al escrutinio social.
+                    Muchos adultos siguen soñando con la selectividad décadas después. Este sueño suele acompañar situaciones en las que te sientes <strong>evaluado</strong>: una revisión en el trabajo, un puesto nuevo, una comida familiar. Habla más de lo mucho que te importa lo que está en juego que de cómo va a salir.
                 </p>
-<h3>4. Desnudez en público</h3>
+<h3>4. Estar desnudo en público</h3>
 <p>
-                    De repente te das cuenta de que estás desnudo en un lugar público, y nadie parece notarlo o, peor, todos lo notan. Los sueños de desnudez simbolizan <strong>vulnerabilidad y exposición</strong>, el miedo a que los demás vean tu verdadero yo con todos sus defectos.
+                    De repente te das cuenta de que no llevas ropa, y o nadie lo nota o todo el mundo te mira. Lo habitual es que domine la vergüenza, ligada al miedo a <strong>quedar expuesto</strong>. Si te sentías libre en vez de avergonzado, la pista probablemente sea otra.
                 </p>
-<h3>5. <a class="text-dream-salmon hover:underline" href="suenos-dientes-caen">Dientes que se caen</a></h3>
+<h3>5. <a class="text-dream-salmon hover:underline" href="suenos-dientes-caen">Se te caen los dientes</a></h3>
 <p>
-                    Tus dientes se desmoronan, se aflojan o se caen uno a uno. Este sueño está vinculado a preocupaciones sobre la <strong>apariencia, el envejecimiento y la pérdida de control</strong>. Algunos investigadores también lo conectan con sentimientos de impotencia en la comunicación: la incapacidad de «hacerse oír».
+                    Los dientes se desmoronan o se aflojan uno a uno. Este sueño se asocia a menudo con preocupaciones por la <strong>imagen, el paso del tiempo o la pérdida de control</strong>. Una visita reciente al dentista o apretar la mandíbula por la noche también pueden alimentarlo: no descartes lo físico.
                 </p>
-<h3>6. Ser <a class="text-dream-salmon hover:underline" href="../simbolos/persecucion">perseguido</a></h3>
+<h3>6. <a class="text-dream-salmon hover:underline" href="../simbolos/persecucion">Ser perseguido</a></h3>
 <p>
-                    Aunque ser perseguido puede cruzar al territorio de la pesadilla, muchos sueños de persecución son más ansiosos que aterradores. Corres pero las piernas pesan; el perseguidor nunca te alcanza del todo pero tampoco se queda atrás. Esto representa la <strong>evitación de un problema</strong> o una emoción que te niegas a confrontar.
+                    Las piernas te pesan y quien te persigue nunca llega a alcanzarte. Muchos sueños de persecución son más angustiosos que aterradores. Pueden reflejar algo que prefieres <strong>no afrontar todavía</strong>. ¿Quién o qué iba detrás de ti? ¿Qué habría pasado si te hubieras dado la vuelta?
                 </p>
 <h3>7. <a class="text-dream-salmon hover:underline" href="../simbolos/caida">Caer</a></h3>
 <p>
-                    Los <a class="text-dream-salmon hover:underline" href="suenos-de-caer">sueños de caer</a> capturan la sensación de perder pie, tanto literal como metafóricamente. Se intensifican durante periodos de <strong>inseguridad o cambio repentino</strong>: un nuevo empleo, una ruptura o inestabilidad financiera.
+                    Los <a class="text-dream-salmon hover:underline" href="suenos-de-caer">sueños de caer</a> suelen acompañar la sensación de <strong>perder pie</strong> durante un cambio o una etapa de inseguridad. Si la caída te despierta de golpe justo al dormirte, puede tratarse simplemente de una sacudida hípnica, un espasmo muscular inofensivo.
                 </p>
-<h3>8. Incapacidad de hablar o gritar</h3>
+<h3>8. No poder hablar ni gritar</h3>
 <p>
-                    Abres la boca y no sale nada, o tu voz queda reducida a un susurro que nadie escucha. Este sueño señala <strong>frustración por no ser escuchado</strong> o la sensación de que tus opiniones no importan en una situación determinada.
+                    Abres la boca y no sale ningún sonido. Esta escena se relaciona a menudo con la sensación de <strong>no ser escuchado</strong> o de callarte algo. ¿Hay alguna conversación que vas aplazando?
                 </p>
-
-<h2 id="why-anxiety-dreams">Por qué tu cerebro produce sueños de ansiedad</h2>
+<h3 id="ejemplo-diario">Ejemplo de diario de sueños</h3>
+<p><strong>Ejemplo ficticio:</strong> muestra cómo separar lo que pasó en el sueño de una posible relación con tus días.</p>
+<ul>
+<li><strong>Sueño:</strong> «Estaba en la estación, el tren salía y no encontraba el billete. El andén se alargaba a cada paso».</li>
+<li><strong>Emoción:</strong> «Un pánico que iba subiendo y, al despertar, una sensación de peso».</li>
+<li><strong>Contexto reciente:</strong> «Tengo que entregar un proyecto el viernes y este mes no he dicho que no a nada».</li>
+<li><strong>Pregunta para seguir:</strong> «¿Vuelven estos sueños de papeles perdidos antes de cada entrega, o también en semanas tranquilas?».</li>
+</ul>
+<p>Una sola entrada no demuestra nada. Al anotar los mismos datos durante varias noches, también las tranquilas, es cuando los vínculos se hacen visibles.</p>
+<h2 id="why-anxiety-dreams">¿Por qué la preocupación te sigue al dormir?</h2>
 <p>
-                    Los sueños de ansiedad no son fallos aleatorios. Cumplen funciones neurológicas y evolutivas identificables que los investigadores llevan décadas mapeando.
+                    Nadie puede decir con certeza por qué <em>tú</em> tuviste tal sueño tal noche. La investigación ofrece varias explicaciones. No se excluyen entre sí, y ninguna descifra un sueño concreto.
                 </p>
-<h3>Teoría de la simulación de amenazas</h3>
+<h3>Los sueños suelen recoger las preocupaciones del día</h3>
 <p>
-                    En su influyente artículo de 2000 publicado en <em>Behavioral and Brain Sciences</em>, Antti Revonsuo argumentó que el sueño evoluciónó principalmente como un <strong>mecanismo de simulación de amenazas</strong>. Al ensayar escenarios peligrosos o estresantes durante el sueño, nuestros ancestros ganaban una ventaja de supervivencia: estaban mejor preparados para enfrentar amenazas reales durante el día. En la vida moderna, los tigres de dientes de sable han sido reemplazados por plazos incumplidos, vergüenza social y ansiedad financiera, así que nuestro cerebro soñador simula eso en su lugar.
+                    El estrés y el sueño se influyen mutuamente. Según la Sleep Foundation, la ansiedad puede favorecer los sueños inquietantes, y darle vueltas a las cosas antes de dormir podría hacer los sueños más vívidos. Por eso los sueños de ansiedad se concentran en épocas de exámenes, mudanzas, mucho trabajo o conflictos.
                 </p>
-<h3>Cortisol y la conexión con la amígdala</h3>
+<h3>La hipótesis de la simulación de amenazas</h3>
 <p>
-                    Cuando te acuestas ansioso, tu eje hipotalámico-pituitario-adrenal (HPA) permanece activado, inundando tu organismo de cortisol. Durante el sueño REM, la amígdala (el sistema de alarma emocional del cerebro) se vuelve <strong>hiperactiva</strong> mientras que la corteza prefrontal (pensamiento racional y regulación emocional) se apaga. Este cóctel neuroquímico crea las condiciones perfectas para sueños cargados de emoción donde la ansiedad se expresa sin el freno de la lógica.
+                    El investigador finlandés Antti Revonsuo propuso en 2000 que soñar podría haber evolucionado en parte para <strong>ensayar situaciones amenazantes</strong> en un entorno seguro. Las «amenazas» de hoy serían los plazos o el juicio de los demás, no los depredadores. Es una teoría discutida, pero ayuda a entender por qué los sueños desagradables son tan frecuentes.
                 </p>
-<h3>Procesamiento emocional durante el sueño REM</h3>
+<h3>El trabajo emocional del sueño REM</h3>
 <p>
-                    Las investigaciones del neurocientífico Matthew Walker en UC Berkeley han demostrado que el sueño REM actúa como una forma de <strong>terapia nocturna</strong>. Tu cerebro despoja a los recuerdos difíciles de su carga emocional al reproducirlos sin las hormonas de estrés acompañantes. Cuando este sistema está sobrecargado por ansiedad crónica, el procesamiento queda incompleto. El contenido ansioso se desborda entonces en sueños vívidos que se sienten inquietantemente reales.
+                    Matthew Walker y Els van der Helm han propuesto que el <a class="text-dream-salmon hover:underline" href="sueno-rem-suenos">sueño REM</a> ayudaría a suavizar la carga emocional de los recuerdos. En esta fase, regiones ligadas a la emoción como la amígdala están activas, mientras que la noradrenalina, un mensajero químico asociado al estrés, está en niveles bajos. Su idea de «terapia nocturna» es una hipótesis: no demuestra que un sueño intenso indique algo «sin procesar».
                 </p>
 <p>
-                    Por eso los <a class="text-dream-salmon hover:underline" href="significado-suenos-recurrentes">sueños recurrentes</a> con el mismo tema ansioso suelen indicar un problema emocional no resuelto. El cerebro regresa una y otra vez al mismo material porque no ha terminado de procesarlo.
+                    Si el mismo tema angustioso se repite, nuestro artículo sobre los <a class="text-dream-salmon hover:underline" href="significado-suenos-recurrentes">sueños recurrentes</a> puede servirte. Un sueño que vuelve remite más a menudo a una preocupación que dura que a un mensaje oculto.
                 </p>
-
-<h2 id="mental-health">Sueños de ansiedad y salud mental</h2>
+<h2 id="mental-health">Cuando estos sueños apuntan a algo más</h2>
 <p>
-                    Si bien los sueños de ansiedad ocasionales son completamente normales, su frecuencia e intensidad pueden servir como barómetro de tu <a class="text-dream-salmon hover:underline" href="suenos-salud-mental">salud mental</a>.
+                    Un sueño de ansiedad de vez en cuando es algo normal. Pero sueños frecuentes e intensos, unidos a dificultades durante el día, merecen más atención, como explicamos en nuestra guía sobre <a class="text-dream-salmon hover:underline" href="suenos-salud-mental">sueños y salud mental</a>.
                 </p>
-<h3>Trastorno de ansiedad generalizada (TAG)</h3>
+<h3>Ansiedad generalizada</h3>
 <p>
-                    Las personas con TAG reportan tasas notablemente más altas de sueños ansiosos. La preocupación persistente que caracteriza al TAG no se apaga al acostarse: los sigue al sueño, produciendo sueños saturados de los mismos temas de incertidumbre y catástrofe que dominan sus pensamientos durante la vigilia.
+                    En el trastorno de ansiedad generalizada, la preocupación es persistente y difícil de controlar, y los problemas de sueño están entre los síntomas frecuentes, según el NIMH estadounidense. Los sueños angustiosos pueden formar parte de ese cuadro. Pero un sueño por sí solo nunca permite un diagnóstico.
                 </p>
-<h3>TEPT y trauma</h3>
+<h3>Trauma</h3>
 <p>
-                    El trastorno de estrés postraumático altera fundamentalmente el contenido onírico. Los supervivientes de trauma a menudo experimentan sueños que reproducen o representan simbólicamente el evento traumático. Estos sueños difieren de los sueños de ansiedad típicos en que pueden incluir <strong>reproducciones exactas del trauma</strong>, detalle sensorial intensificado y una angustia emocional severa que altera la arquitectura del sueño.
+                    Después de un hecho traumático, los sueños pueden repetir la escena o parecerse mucho a ella, con un malestar intenso. Es distinto de los sueños de ansiedad cotidianos y requiere la ayuda de un profesional formado en trauma, no una interpretación en solitario.
                 </p>
-<h3>Depresión</h3>
+<h3>Estado de ánimo bajo</h3>
 <p>
-                    La depresión está vinculada a cambios en el sueño REM: las personas deprimidas entran en fase REM más temprano y pasan más tiempo en ella. Esta arquitectura de sueño alterada aumenta el recuerdo de los sueños y tiende a producir <strong>sueños cargados de temas de pérdida, fracaso e impotencia</strong>, reforzando el paisaje emocional del estado depresivo.
+                    La depresión suele ir acompañada de cambios en el sueño. Algunas personas cuentan más sueños desagradables; otras apenas recuerdan ninguno. Los temas de pérdida o impotencia no son, por sí solos, un signo diagnóstico.
                 </p>
-<h3>Impacto de los medicamentos</h3>
+<h3>Medicamentos, alcohol y otras sustancias</h3>
 <p>
-                    Varios medicamentos comunes pueden influir en la frecuencia de los sueños de ansiedad. Los <strong>ISRS</strong> (como sertralina y fluoxetina) suprimen inicialmente el sueño REM pero pueden causar un rebote REM con sueños ansiosos y vívidos una vez que el cuerpo se adapta. Los <strong>betabloqueantes</strong> (usados para la tensión arterial y la ansiedad de rendimiento) cruzan la barrera hematoencefálica y alteran el contenido onírico. La abstinencia de <strong>benzodiazepinas, alcohol o cannabis</strong> produce un rebote REM dramático, a menudo resultando en semanas de sueños ansiosos intensos.
+                    Algunos medicamentos que actúan sobre el sistema nervioso, como ciertos antidepresivos o betabloqueantes, pueden cambiar los sueños. Dejar un fármaco que reduce el sueño REM, o beber alcohol poco antes de acostarte, puede provocar un «rebote» de sueño REM con sueños más vívidos al final de la noche. No cambies nunca un tratamiento por tu cuenta: coméntalo con tu médico.
                 </p>
 </div>
 <!-- Anxiety Dream Cards -->
@@ -220,12 +229,12 @@
 <div class="p-2 bg-purple-500/20 rounded-lg">
 <i class="w-5 h-5 text-purple-300" data-lucide="cloud-rain"></i>
 </div>
-<h3 class="font-serif text-lg text-dream-cream">Malestar difuso</h3>
+<h3 class="font-serif text-lg text-dream-cream">Un malestar difuso</h3>
 </div>
 <p class="text-sm text-gray-300 mb-3">
-                        Sueños de estar perdido, no preparado o llegando tarde. Vinculados a la <a class="text-dream-salmon hover:underline" href="../simbolos/examen">ansiedad de examen</a> y al miedo al juicio. Sin amenaza directa, pero una sensación constante de aprensión.
+                        Perderte, llegar tarde, hacer un <a class="text-dream-salmon hover:underline" href="../simbolos/examen">examen</a> sin haberlo preparado. Ningún peligro directo, solo la sensación persistente de no estar listo.
                     </p>
-<p class="text-xs text-dream-salmon">Frecuencia muy alta, malestar moderado</p>
+<p class="text-xs text-dream-salmon">Para anotar: ¿qué tenías que conseguir?</p>
 </div>
 <div class="symptom-card glass-panel rounded-xl p-6 border border-transparent">
 <div class="flex items-center gap-3 mb-4">
@@ -235,74 +244,74 @@
 <h3 class="font-serif text-lg text-dream-cream">Pérdida de control</h3>
 </div>
 <p class="text-sm text-gray-300 mb-3">
-                        Sueños de caer, de dientes que se desmoronan o de incapacidad para hablar. A menudo reflejan inseguridades profundas sobre autonomía y autoimagen.
+                        Caer, perder los dientes, una voz que no sale. El cuerpo deja de obedecer, y la sensación suele ser más fuerte que la propia escena.
                     </p>
-<p class="text-xs text-dream-salmon">Alta frecuencia, alto malestar</p>
+<p class="text-xs text-dream-salmon">Para anotar: ¿qué se te escapa ahora mismo?</p>
 </div>
 </div>
 <div class="prose max-w-none text-gray-300">
-<h2 id="reduce-anxiety-dreams">Técnicas probadas para reducir los sueños de ansiedad</h2>
+<h2 id="reduce-anxiety-dreams">¿Qué puedes hacer desde esta noche?</h2>
 <p>
-                    No puedes eliminar por completo los sueños de ansiedad - cumplen una función - pero sí puedes reducir significativamente su frecuencia e intensidad con enfoques basados en evidencia.
+                    No puedes apagar los sueños de ansiedad, y tampoco hace falta: uno de vez en cuando no tiene importancia. Lo que sí puedes es bajar la presión que los alimenta. Empieza por uno o dos pasos y observa cómo cambian tus noches en unas semanas.
                 </p>
-<h3>Terapia de Ensayo de Imágenes (TEI)</h3>
+<h3>1. Pasar las preocupaciones al papel antes de dormir</h3>
 <p>
-                    La TEI es el tratamiento de referencia para los sueños perturbadores. Desarrollada por Barry Krakow y refinada por Antonio Zadra, esta técnica implica tres pasos: (1) escribe un sueño ansioso recurrente, (2) cambia conscientemente la narrativa hacia un desenlace más positivo o neutro, y (3) ensaya mentalmente la nueva versión durante 10-20 minutos antes de dormir. Un metaanálisis de 2006 en <em>Sleep Medicine Reviews</em> demostró que la TEI <strong>reduce la frecuencia de pesadillas entre un 60 y un 70 %</strong> y también mejora significativamente el contenido de los sueños ansiosos.
+                    Diez minutos antes de acostarte, apunta lo que te ronda la cabeza y, para cada cosa, un siguiente paso concreto: «mandar el correo a Lucía a las 9», en lugar de una promesa vaga. Un plan realista tranquiliza más que un pensamiento positivo forzado. Nuestro artículo sobre los <a class="text-dream-salmon hover:underline" href="suenos-estres-trabajo">sueños de estrés laboral</a> profundiza en ello.
                 </p>
-<h3>Optimización de la higiene del sueño</h3>
+<h3>2. Hacer la noche más tranquila</h3>
 <ul>
-<li><strong>Horario constante:</strong> Acuéstate y levántate a la misma hora cada día, incluso los fines de semana. El sueño irregular desestabiliza la arquitectura REM</li>
-<li><strong>Temperatura:</strong> Mantén tu dormitorio entre 18-20 °C. El sobrecalentamiento intensifica la vivacidad de los sueños</li>
-<li><strong>Límite de cafeína:</strong> Nada de cafeína después de las 14 h. La cafeína fragmenta el sueño REM y hace los sueños más ansiosos</li>
-<li><strong>Atención al alcohol:</strong> El alcohol suprime el REM de primera hora de la noche y causa un rebote REM intenso después, produciendo sueños ansiosos más vívidos</li>
-<li><strong>Frontera digital:</strong> Sin pantallas 60 minutos antes de dormir. La luz azul y los contenidos estimulantes preparan al cerebro para soñar con ansiedad</li>
+<li><strong>Horarios regulares:</strong> acuéstate y levántate más o menos a la misma hora, también el fin de semana</li>
+<li><strong>Cafeína:</strong> observa si el café o las bebidas energéticas por la tarde agitan tus noches</li>
+<li><strong>Alcohol:</strong> puede ayudarte a conciliar el sueño, pero fragmenta la segunda mitad de la noche y puede intensificar los sueños</li>
+<li><strong>Un rato de transición:</strong> reserva la última media hora para algo tranquilo, lejos de los mensajes del trabajo y de las noticias</li>
+<li><strong>El dormitorio:</strong> fresco, oscuro y silencioso, para que lo que te despierte no sea la habitación</li>
 </ul>
-<h3>Diario de sueños</h3>
+<h3>3. Relajar el cuerpo</h3>
 <p>
-                    Llevar un diario de sueños crea distancia entre tú y el contenido onírico. Al <a class="text-dream-salmon hover:underline" href="como-recordar-suenos">anotar tus sueños</a> cada mañana, externalizas la preocupación, facilitando que tu cerebro la procese y libere. Los estudios muestran que el diario de sueños constante <strong>reduce la intensidad emocional de los sueños en 2-3 semanas</strong>. El seguimiento de patrones también revela qué factores de estrés reales alimentan tus sueños ansiosos.
+                    La relajación muscular progresiva consiste en tensar y soltar cada grupo de músculos, de los pies a la cara. Alargar la espiración también funciona. Estos ejercicios no controlan el contenido de los sueños, pero te ayudan a llegar a la noche menos en alerta.
                 </p>
-<h3>Relajación muscular progresiva</h3>
+<h3>4. Llevar un diario de sueños</h3>
 <p>
-                    Esta técnica consiste en tensar y relajar sistemáticamente cada grupo muscular antes de dormir. Un estudio del <em>Journal of Clinical Psychology</em> encontró que los participantes que practicaron relajación progresiva durante dos semanas reportaron <strong>un 40 % menos de sueños ansiosos</strong> en comparación con el grupo de control. El mecanismo es simple: la relajación física reduce el cortisol, disminuyendo así la materia prima que tu cerebro soñador usa para construir escenarios ansiosos.
+                    <a class="text-dream-salmon hover:underline" href="como-recordar-suenos">Anotar tus sueños</a> nada más despertar crea algo de distancia con ellos. Con el tiempo verás si se agrupan en ciertas semanas, alrededor de ciertas preocupaciones o tras noches cortas. Bastan unas líneas. Si escribir alimenta las vueltas que le das a todo en lugar de calmarlas, haz una pausa.
                 </p>
-<h3>Reestructuración cognitiva antes de dormir</h3>
+<h3>5. Reescribir el final de un sueño que se repite</h3>
 <p>
-                    En lugar de acostarte rumiando los problemas del día siguiente, dedica cinco minutos a anotar tus preocupaciones y luego escribir una contra-declaración para cada una. «Voy a fracasar en la presentación» se convierte en «Me he preparado bien y domino el tema». Esta técnica interrumpe los bucles cognitivos que se prolongan en los <a class="text-dream-salmon hover:underline" href="suenos-estres-trabajo">sueños de estrés</a>.
+                    La terapia de ensayo en imaginación (IRT), descrita en detalle por Barry Krakow y Antonio Zadra, tiene tres pasos: escribir el sueño recurrente, cambiar su desarrollo por una versión menos amenazante y repasar mentalmente esa nueva versión unos minutos al día, despierto. Se ha estudiado sobre todo en pesadillas recurrentes, y la Academia Estadounidense de Medicina del Sueño la incluye entre los tratamientos posibles del trastorno de pesadillas. Si el sueño está ligado a un trauma, practícala con un profesional.
                 </p>
-
+<!-- CTA inline -->
 <aside class="glass-panel rounded-2xl p-6 my-8 border border-dream-salmon/20">
 <div class="flex items-start gap-4">
 <div class="p-3 bg-dream-salmon/10 rounded-xl">
 <i class="w-6 h-6 text-dream-salmon" data-lucide="book-open"></i>
 </div>
 <div>
-<h4 class="font-serif text-lg text-dream-cream mb-2">Registra tus patrones de sueños ansiosos</h4>
-<p class="text-sm text-gray-400 mb-4">La vía más rápida para reducir los sueños de ansiedad es identificar qué los desencadena. El diario de sueños de Noctalia, potenciado por IA, te permite registrar tus sueños por voz en el momento del despertar, detectando automáticamente patrones de ansiedad y vinculándolos con tus factores de estrés diarios.</p>
+<h4 class="font-serif text-lg text-dream-cream mb-2">Anota el sueño antes de que se borre</h4>
+<p class="text-sm text-gray-400 mb-4">En Noctalia, cuenta tu sueño en voz alta nada más despertar. Se transcribe y se guarda en tu diario, para que puedas releer tus sueños de ansiedad uno al lado del otro y ver qué se repite.</p>
 <a class="inline-flex items-center gap-2 text-sm text-dream-salmon hover:text-dream-salmonLight transition-colors" href="/es/">
-                                Empieza a registrar con Noctalia <i class="w-4 h-4" data-lucide="arrow-right"></i>
+                                Probar Noctalia gratis <i class="w-4 h-4" data-lucide="arrow-right"></i>
 </a>
 </div>
 </div>
 </aside>
-
-<h2 id="seek-help">Cuándo buscar ayuda profesional</h2>
+<h2 id="seek-help">Cuándo pedir ayuda profesional</h2>
 <p>
-                    Los sueños de ansiedad son una parte normal del sueño humano. Pero cuando se intensifican en frecuencia o gravedad, pueden convertirse en una preocupación clínica que merece atención profesional.
+                    La mayoría de los sueños de ansiedad no necesitan tratamiento. Merecen una consulta cuando empiezan a pesar sobre tu descanso o tus días.
                 </p>
-<h3>Considera buscar ayuda si experimentas:</h3>
+<h3>Habla con tu médico o con un psicólogo si:</h3>
 <ul>
-<li><strong>Sueños ansiosos cada noche</strong> que persisten durante más de dos a tres semanas</li>
-<li><strong>Evitación del sueño:</strong> Quedarte despierto hasta tarde o desarrollar insomnio por miedo a dormirte</li>
-<li><strong>Deterioro diurno:</strong> El residuo emocional de tus sueños afecta tu estado de ánimo, concentración o relaciones durante el día</li>
-<li><strong>Síntomas físicos:</strong> Despertarte con el corazón acelerado, sudoración, náuseas o tensión muscular la mayoría de las mañanas</li>
-<li><strong>Contenido que se agrava:</strong> Sueños que se vuelven progresivamente más perturbadores o que empiezan a incorporar recuerdos traumáticos</li>
-<li><strong>Automedicación:</strong> Recurrir al alcohol, al cannabis o a somníferos específicamente para suprimir los sueños ansiosos</li>
+<li><strong>Frecuencia:</strong> los sueños angustiosos vuelven más de una vez por semana durante varias semanas</li>
+<li><strong>Evitación:</strong> retrasas la hora de acostarte porque temes dormirte</li>
+<li><strong>Impacto de día:</strong> tu ánimo, tu concentración o tus relaciones se resienten por tus noches</li>
+<li><strong>Señales físicas:</strong> te despiertas a menudo con el corazón acelerado, sudando o con náuseas</li>
+<li><strong>Medicación:</strong> los sueños empezaron o empeoraron con un tratamiento nuevo o un cambio de dosis</li>
+<li><strong>Trauma:</strong> los sueños repiten un hecho traumático o son cada vez más perturbadores</li>
+<li><strong>Automedicación:</strong> recurres al alcohol, al cannabis o a somníferos para no soñar</li>
 </ul>
 <p>
-                    Un profesional de salud mental puede ayudar mediante varios enfoques basados en evidencia. La <strong>Terapia Cognitivo-Conductual para el Insomnio (TCC-I)</strong> aborda los patrones de sueño que alimentan los sueños ansiosos. La <strong>Terapia de Ensayo de Imágenes</strong> ataca los sueños directamente. Para los trastornos de ansiedad subyacentes, puede recomendarse una combinación de terapia y manejo farmacológico.
+                    Un profesional puede valorar si hay un trastorno del sueño, un trastorno de ansiedad, un trauma, un medicamento o un factor físico detrás. Según el caso, puede proponerte terapia cognitivo-conductual para el insomnio (TCC-I), la terapia de ensayo en imaginación o un tratamiento de la ansiedad de fondo.
                 </p>
 <p>
-                    Si los sueños de ansiedad se acompañan de ansiedad diurna, ataques de pánico o síntomas de TEPT, los sueños pueden ser una manifestación de un trastorno más amplio que se beneficiará de un tratamiento integral. Lo importante es reconocer que los sueños ansiosos frecuentes y angustiantes <strong>no son algo que simplemente debas soportar</strong>: existen tratamientos eficaces. Para una exploración más profunda de la relación entre sueños y bienestar psicológico, consulta nuestra guía sobre <a class="text-dream-salmon hover:underline" href="suenos-salud-mental">sueños y salud mental</a>.
+                    Los sueños frecuentes y angustiosos <strong>no son algo que tengas que aguantar sin más</strong>. Existen ayudas eficaces, y pedirlas pronto suele facilitar las cosas.
                 </p>
 </div>
 <!-- CTA Section -->
@@ -310,25 +319,25 @@
 <div class="w-16 h-16 bg-dream-salmon/10 rounded-full flex items-center justify-center mx-auto mb-6">
 <i class="w-8 h-8 text-dream-salmon" data-lucide="shield"></i>
 </div>
-<h3 class="font-serif text-2xl md:text-3xl mb-4 text-dream-cream">Toma el control de tus noches ansiosas</h3>
+<h3 class="font-serif text-2xl md:text-3xl mb-4 text-dream-cream">Una noche inquieta es una escena. Diez son una pista.</h3>
 <p class="text-purple-200/70 mb-6 max-w-lg mx-auto">
-                    Noctalia te ayuda a rastrear los patrones de tus sueños de ansiedad, identificar desencadenantes y recuperar un sueño reparador. El diario de voz captura cada detalle antes de que se desvanezca.
+                    Guarda tus sueños de ansiedad en Noctalia, junto con lo que sentiste y lo que pasaba esa semana. Al releerlos juntos, verás cuándo vuelven y qué suele acompañarlos.
                 </p>
 <a class="inline-flex items-center gap-2 px-8 py-4 bg-dream-salmon text-dream-dark rounded-full font-bold hover:bg-dream-salmon/90 transition-colors" href="/es/">
-                    Comienza tu diario de sueños <i class="w-5 h-5" data-lucide="arrow-right"></i>
+                    Empezar mi diario de sueños <i class="w-5 h-5" data-lucide="arrow-right"></i>
 </a>
 </aside>
 <!-- FAQ Section -->
 <section class="mt-16">
-<h2 class="font-serif text-2xl text-dream-cream mb-8">Preguntas Frecuentes</h2>
+<h2 class="font-serif text-2xl text-dream-cream mb-8">Preguntas frecuentes</h2>
 <div class="space-y-4">
 <details class="glass-panel rounded-xl p-4 group cursor-pointer">
 <summary class="font-medium flex justify-between items-center text-dream-cream">
-                            ¿Cuál es la diferencia entre sueños de ansiedad y pesadillas?
+                            ¿Qué diferencia hay entre un sueño de ansiedad y una pesadilla?
                             <i class="w-5 h-5 transition-transform group-open:rotate-180 text-dream-salmon" data-lucide="chevron-down"></i>
 </summary>
 <p class="mt-4 text-sm text-gray-400 leading-relaxed">
-                            Las pesadillas suelen implicar un peligro inmediato e intenso que a menudo te despierta sobresaltado. Los sueños de ansiedad, en cambio, se caracterizan por una sensación generalizada de inquietud, impotencia o aprensión sin una amenaza directa para la vida. Puedes sentirte perdido, no preparado o incapaz de actuar, en lugar de huir activamente de un peligro. Ambos ocurren principalmente durante el <a class="text-dream-salmon hover:underline" href="sueno-rem-suenos">sueño REM</a>, pero los sueños de ansiedad dejan una preocupación persistente en vez de un terror agudo.
+                            La pesadilla presenta una amenaza clara, un miedo intenso y suele despertarte. El sueño de ansiedad es más difuso: llegas tarde, te pierdes, no estás preparado o no puedes actuar, y te despiertas inquieto más que aterrado. La frontera es borrosa, y ambos ocurren sobre todo durante el <a class="text-dream-salmon hover:underline" href="sueno-rem-suenos">sueño REM</a>.
                         </p>
 </details>
 <details class="glass-panel rounded-xl p-4 group cursor-pointer">
@@ -337,31 +346,52 @@
                             <i class="w-5 h-5 transition-transform group-open:rotate-180 text-dream-salmon" data-lucide="chevron-down"></i>
 </summary>
 <p class="mt-4 text-sm text-gray-400 leading-relaxed">
-                            No necesariamente. Los sueños de ansiedad ocasionales son una parte normal del procesamiento del estrés por parte del cerebro. Sin embargo, si ocurren frecuentemente, alteran tu sueño la mayoría de las noches y se acompañan de síntomas diurnos como preocupación persistente, inquietud o dificultad para concentrarse, pueden estar asociados con un trastorno de ansiedad generalizada (TAG) o TEPT. Considera consultar a un <a class="text-dream-salmon hover:underline" href="suenos-salud-mental">profesional de salud mental</a> si los sueños ansiosos impactan significativamente tu vida diaria.
+                            No por sí solos. Los sueños de ansiedad ocasionales son comunes, sobre todo en épocas de estrés. Si son frecuentes y van acompañados de preocupación persistente, ataques de pánico, miedo a acostarte o dificultades claras durante el día, conviene hablarlo con un médico o un <a class="text-dream-salmon hover:underline" href="suenos-salud-mental">profesional de salud mental</a>.
                         </p>
 </details>
 <details class="glass-panel rounded-xl p-4 group cursor-pointer">
 <summary class="font-medium flex justify-between items-center text-dream-cream">
-                            ¿Los medicamentos pueden causar sueños de ansiedad?
+                            ¿Un medicamento puede provocar sueños de ansiedad?
                             <i class="w-5 h-5 transition-transform group-open:rotate-180 text-dream-salmon" data-lucide="chevron-down"></i>
 </summary>
 <p class="mt-4 text-sm text-gray-400 leading-relaxed">
-                            Sí, ciertos medicamentos pueden aumentar la frecuencia o intensidad de los sueños de ansiedad. Los ISRS (inhibidores selectivos de la recaptación de serotonina), los betabloqueantes y algunos antihipertensivos son conocidos por alterar el contenido onírico. Además, la abstinencia de benzodiazepinas, alcohol o cannabis puede desencadenar sueños ansiosos y vívidos debido al rebote REM. Nunca dejes ni ajustes la medicación sin consultar a tu médico.
+                            Sí, es posible. Fármacos que actúan sobre el sistema nervioso, como ciertos antidepresivos o betabloqueantes, pueden cambiar los sueños, y dejar un medicamento que reduce el sueño REM puede hacerlos más vívidos durante un tiempo. Si notas un cambio al empezar, dejar o ajustar un tratamiento, díselo a tu médico. No lo modifiques nunca por tu cuenta.
+                        </p>
+</details>
+<details class="glass-panel rounded-xl p-4 group cursor-pointer">
+<summary class="font-medium flex justify-between items-center text-dream-cream">
+                            ¿Cómo dejar de tener sueños de ansiedad?
+                            <i class="w-5 h-5 transition-transform group-open:rotate-180 text-dream-salmon" data-lucide="chevron-down"></i>
+</summary>
+<p class="mt-4 text-sm text-gray-400 leading-relaxed">
+                            No se pueden eliminar del todo, pero sí hacerlos menos frecuentes: horarios de sueño regulares, menos alcohol por la noche, apuntar las preocupaciones con un siguiente paso concreto y unos minutos de relajación antes de acostarte. Para un sueño que se repite, la terapia de ensayo en imaginación puede ayudar. Si alteran tu descanso más de una vez por semana, consulta a un médico.
+                        </p>
+</details>
+<details class="glass-panel rounded-xl p-4 group cursor-pointer">
+<summary class="font-medium flex justify-between items-center text-dream-cream">
+                            ¿Un sueño de ansiedad anuncia que va a pasar algo malo?
+                            <i class="w-5 h-5 transition-transform group-open:rotate-180 text-dream-salmon" data-lucide="chevron-down"></i>
+</summary>
+<p class="mt-4 text-sm text-gray-400 leading-relaxed">
+                            No. Soñar que suspendes un examen o que pierdes un tren no significa que vaya a ocurrir. Estos sueños reflejan una preocupación actual, una época de mucha carga o simplemente una mala noche, no el futuro.
                         </p>
 </details>
 </div>
 </section>
 <!-- Sources / Trust -->
 <section class="mt-16 glass-panel rounded-2xl p-6" id="sources">
-<h2 class="font-serif text-2xl text-dream-cream mb-4">Fuentes / Para Ir Más Lejos</h2>
+<h2 class="font-serif text-2xl text-dream-cream mb-4">Fuentes y lecturas</h2>
 <ul class="mt-6 space-y-2 text-sm text-gray-400">
-<li><a href="https://pubmed.ncbi.nlm.nih.gov/11515147/" rel="nofollow noopener noreferrer" target="_blank">Revonsuo (2000): The reinterpretation of dreams - threat simulation theory (BBS / PubMed)</a></li>
-<li><a href="https://pubmed.ncbi.nlm.nih.gov/16390284/" rel="nofollow noopener noreferrer" target="_blank">Krakow & Zadra (2006): Clinical management of chronic nightmares - Imagery Rehearsal Therapy (Behavioral Sleep Medicine)</a></li>
-<li><a href="https://www.apa.org/topics/anxiety" rel="nofollow noopener noreferrer" target="_blank">APA: Anxiety - Understanding and Managing It</a></li>
-<li><a href="https://www.nimh.nih.gov/health/topics/anxiety-disorders" rel="nofollow noopener noreferrer" target="_blank">NIMH: Anxiety Disorders</a></li>
-<li><a href="https://www.sleepfoundation.org/mental-health/anxiety-and-sleep" rel="nofollow noopener noreferrer" target="_blank">Sleep Foundation: Anxiety and Sleep</a></li>
+<li><a href="https://asdreams.org/journal/issues/asdj13-4.htm" rel="nofollow noopener noreferrer" target="_blank">Nielsen, Zadra et al. (2003), «The Typical Dreams of Canadian University Students», <em>Dreaming</em>, 13(4)</a></li>
+<li><a href="https://pubmed.ncbi.nlm.nih.gov/11515147/" rel="nofollow noopener noreferrer" target="_blank">Revonsuo (2000), «The reinterpretation of dreams: an evolutionary hypothesis of the function of dreaming», <em>Behavioral and Brain Sciences</em></a></li>
+<li><a href="https://doi.org/10.1037/a0016570" rel="nofollow noopener noreferrer" target="_blank">Walker y van der Helm (2009), «Overnight therapy? The role of sleep in emotional brain processing», <em>Psychological Bulletin</em></a></li>
+<li><a href="https://doi.org/10.1207/s15402010bsm0401_4" rel="nofollow noopener noreferrer" target="_blank">Krakow y Zadra (2006), «Clinical management of chronic nightmares: imagery rehearsal therapy», <em>Behavioral Sleep Medicine</em></a></li>
+<li><a href="https://pubmed.ncbi.nlm.nih.gov/29852917/" rel="nofollow noopener noreferrer" target="_blank">American Academy of Sleep Medicine (2018), «Position paper for the treatment of nightmare disorder in adults», <em>Journal of Clinical Sleep Medicine</em></a></li>
+<li><a href="https://www.sleepfoundation.org/mental-health/anxiety-and-sleep" rel="nofollow noopener noreferrer" target="_blank">Sleep Foundation, «Sleep and anxiety disorders» (en inglés)</a></li>
+<li><a href="https://www.sleepfoundation.org/nightmares" rel="nofollow noopener noreferrer" target="_blank">Sleep Foundation, «Why we have nightmares (and how to prevent them)» (en inglés)</a></li>
+<li><a href="https://www.nimh.nih.gov/health/publications/generalized-anxiety-disorder-gad" rel="nofollow noopener noreferrer" target="_blank">National Institute of Mental Health (NIMH), «Generalized anxiety disorder: what you need to know» (en inglés)</a></li>
 </ul>
-<p class="mt-6 text-xs text-purple-200/60">Actualizado el 6 de marzo de 2026</p>
+<p class="mt-6 text-xs text-purple-200/60">Actualizado el 9 de octubre de 2026</p>
 </section>
 <!-- Related Symbols Start -->
 <section aria-label="Símbolos de sueños relacionados" class="mt-12 mb-8">

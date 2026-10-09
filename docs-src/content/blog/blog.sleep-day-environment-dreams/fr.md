@@ -5,7 +5,7 @@
   "lang": "fr",
   "slug": "journee-sommeil-environnement-reves",
   "title": "Journée du sommeil 2026 : mieux dormir | Noctalia",
-  "description": "La Journée nationale du sommeil 2026 met en lumière l'impact de l'environnement sur le sommeil.",
+  "description": "Journée du sommeil 2026 : lumière, bruit, chaleur… ce que votre chambre change à votre sommeil et à vos rêves, ce que dit la recherche, quoi ajuster ce soir.",
   "robots": "max-image-preview:large",
   "themeColor": "#0a0514",
   "htmlClass": "scroll-smooth blog-article",
@@ -14,24 +14,24 @@
   "mainClass": "pt-32 pb-20 px-4",
   "ogType": "article",
   "ogTitle": "Journée du sommeil 2026 : mieux dormir | Noctalia",
-  "ogDescription": "La Journée nationale du sommeil 2026 met en lumière l'impact de l'environnement sur le sommeil.",
+  "ogDescription": "Lumière, bruit, température : comment la chambre influence le sommeil et les rêves, ce que dit la recherche et quoi changer ce soir.",
   "ogImage": "https://noctalia.app/img/blog/sleep-day-environment-dreams.webp",
   "ogImageAlt": "Chambre paisible baignée de lumière douce illustrant l'environnement idéal pour le sommeil et les rêves",
   "twitterCard": "summary_large_image",
   "twitterTitle": "Journée du sommeil 2026 : mieux dormir | Noctalia",
-  "twitterDescription": "La Journée nationale du sommeil 2026 met en lumière l'impact de l'environnement sur le sommeil.",
+  "twitterDescription": "Lumière, bruit, chaleur : ce que votre chambre change à vos nuits et aux rêves dont vous vous souvenez.",
   "twitterImage": "https://noctalia.app/img/blog/sleep-day-environment-dreams.webp",
   "twitterImageAlt": "Chambre paisible baignée de lumière douce illustrant l'environnement idéal pour le sommeil et les rêves",
   "publishedTime": "2026-03-10",
-  "modifiedTime": "2026-07-06",
+  "modifiedTime": "2026-10-09",
   "author": "Thanh Chau",
   "prevPath": "/fr/blog/guide-reves-enfants",
   "nextPath": "/fr/blog/ia-analyse-sommeil-reves",
   "preloadImage": "/img/blog/sleep-day-environment-dreams.webp",
   "jsonLd": [
-    "{\n  \"@context\": \"https://schema.org\",\n  \"@type\": \"BlogPosting\",\n  \"headline\": \"Journée du sommeil 2026 : comment votre environnement transforme vos rêves\",\n  \"description\": \"La Journée nationale du sommeil 2026 met en lumière l'impact de l'environnement sur le sommeil.\",\n  \"image\": {\n    \"@type\": \"ImageObject\",\n    \"url\": \"https://noctalia.app/img/blog/sleep-day-environment-dreams.webp\",\n    \"width\": 1200,\n    \"height\": 630\n  },\n  \"author\": [\n    {\n      \"@type\": \"Person\",\n      \"@id\": \"https://noctalia.app/fr/a-propos#person\",\n      \"name\": \"Thanh Chau\",\n      \"jobTitle\": \"Fondateur & Directeur de la publication\",\n      \"url\": \"https://noctalia.app/fr/a-propos\",\n      \"worksFor\": {\n        \"@type\": \"Organization\",\n        \"@id\": \"https://noctalia.app/#organization\",\n        \"name\": \"Noctalia\",\n        \"url\": \"https://noctalia.app\"\n      }\n    },\n    {\n      \"@type\": \"Organization\",\n      \"@id\": \"https://noctalia.app/#organization\",\n      \"name\": \"Noctalia\",\n      \"url\": \"https://noctalia.app\",\n      \"logo\": {\n        \"@type\": \"ImageObject\",\n        \"url\": \"https://noctalia.app/logo/logo_noctalia.png\"\n      }\n    }\n  ],\n  \"publisher\": {\n    \"@type\": \"Organization\",\n    \"name\": \"Noctalia\",\n    \"url\": \"https://noctalia.app\",\n    \"logo\": {\n      \"@type\": \"ImageObject\",\n      \"url\": \"https://noctalia.app/logo/logo_noctalia.png\"\n    }\n  },\n  \"datePublished\": \"2026-03-10\",\n  \"dateModified\": \"2026-07-06\",\n  \"mainEntityOfPage\": {\n    \"@type\": \"WebPage\",\n    \"@id\": \"https://noctalia.app/fr/blog/journee-sommeil-environnement-reves\"\n  },\n  \"inLanguage\": \"fr\",\n  \"isAccessibleForFree\": true,\n  \"wordCount\": 1600,\n  \"timeRequired\": \"PT5M\",\n  \"url\": \"https://noctalia.app/fr/blog/journee-sommeil-environnement-reves\"\n}",
+    "{\n    \"@context\": \"https://schema.org\",\n    \"@type\": \"BlogPosting\",\n    \"headline\": \"Journée du sommeil 2026 : comment votre chambre influence vos rêves\",\n    \"description\": \"Journée du sommeil 2026 : lumière, bruit, chaleur… ce que votre chambre change à votre sommeil et à vos rêves, ce que dit la recherche, quoi ajuster ce soir.\",\n    \"image\": {\n        \"@type\": \"ImageObject\",\n        \"url\": \"https://noctalia.app/img/blog/sleep-day-environment-dreams.webp\",\n        \"width\": 1200,\n        \"height\": 630\n    },\n    \"author\": [\n        {\n            \"@type\": \"Person\",\n            \"@id\": \"https://noctalia.app/fr/a-propos#person\",\n            \"name\": \"Thanh Chau\",\n            \"jobTitle\": \"Fondateur & Directeur de la publication\",\n            \"url\": \"https://noctalia.app/fr/a-propos\",\n            \"worksFor\": {\n                \"@type\": \"Organization\",\n                \"@id\": \"https://noctalia.app/#organization\",\n                \"name\": \"Noctalia\",\n                \"url\": \"https://noctalia.app\"\n            }\n        },\n        {\n            \"@type\": \"Organization\",\n            \"@id\": \"https://noctalia.app/#organization\",\n            \"name\": \"Noctalia\",\n            \"url\": \"https://noctalia.app\",\n            \"logo\": {\n                \"@type\": \"ImageObject\",\n                \"url\": \"https://noctalia.app/logo/logo_noctalia.png\"\n            }\n        }\n    ],\n    \"publisher\": {\n        \"@type\": \"Organization\",\n        \"name\": \"Noctalia\",\n        \"url\": \"https://noctalia.app\",\n        \"logo\": {\n            \"@type\": \"ImageObject\",\n            \"url\": \"https://noctalia.app/logo/logo_noctalia.png\"\n        }\n    },\n    \"datePublished\": \"2026-03-10\",\n    \"dateModified\": \"2026-10-09\",\n    \"mainEntityOfPage\": {\n        \"@type\": \"WebPage\",\n        \"@id\": \"https://noctalia.app/fr/blog/journee-sommeil-environnement-reves\"\n    },\n    \"inLanguage\": \"fr\",\n    \"isAccessibleForFree\": true,\n    \"wordCount\": 2371,\n    \"timeRequired\": \"PT11M\",\n    \"url\": \"https://noctalia.app/fr/blog/journee-sommeil-environnement-reves\"\n}",
     "{\n  \"@context\": \"https://schema.org\",\n  \"@type\": \"WebPage\",\n  \"@id\": \"https://noctalia.app/fr/blog/journee-sommeil-environnement-reves\",\n  \"url\": \"https://noctalia.app/fr/blog/journee-sommeil-environnement-reves\",\n  \"name\": \"Journée du sommeil 2026 : mieux dormir | Noctalia\",\n  \"inLanguage\": \"fr\"\n}",
-    "{\n  \"@context\": \"https://schema.org\",\n  \"@type\": \"FAQPage\",\n  \"mainEntity\": [\n    {\n      \"@type\": \"Question\",\n      \"name\": \"Comment la lumière affecte-t-elle la qualité de mes rêves ?\",\n      \"acceptedAnswer\": {\n        \"@type\": \"Answer\",\n        \"text\": \"La lumière artificielle, en particulier la lumière bleue des écrans, supprime la production de mélatonine et retarde l'endormissement. Cela réduit la durée du sommeil paradoxal, la phase où se produisent les rêves les plus vivaces. Une exposition à la lumière vive le soir peut raccourcir vos phases de rêve de 20 à 30 minutes et rendre vos rêves moins riches et moins mémorables. Pour préserver la qualité de vos rêves, éteignez les écrans au moins 60 minutes avant le coucher et utilisez des rideaux occultants.\"\n      }\n    },\n    {\n      \"@type\": \"Question\",\n      \"name\": \"Quelle est la température idéale pour bien rêver ?\",\n      \"acceptedAnswer\": {\n        \"@type\": \"Answer\",\n        \"text\": \"La température idéale pour un sommeil favorable aux rêves se situe entre 18 et 19 °C. À cette température, votre corps peut effectuer la thermorégulation nécessaire pendant le sommeil paradoxal sans perturbation. Une chambre trop chaude (au-dessus de 24 °C) fragmente le sommeil paradoxal et produit des rêves plus anxieux, tandis qu'une chambre trop froide peut provoquer des réveils nocturnes qui interrompent les cycles de rêve.\"\n      }\n    },\n    {\n      \"@type\": \"Question\",\n      \"name\": \"Les bruits extérieurs peuvent-ils s'intégrer dans mes rêves ?\",\n      \"acceptedAnswer\": {\n        \"@type\": \"Answer\",\n        \"text\": \"Oui, le cerveau continue de traiter les sons pendant le sommeil. Des études montrent que les stimuli auditifs externes — une alarme, le bruit de la pluie, une conversation — peuvent être incorporés dans le scénario onirique en temps réel. Le cerveau interprète ces sons à travers le filtre du récit du rêve en cours, les transformant en éléments cohérents avec l'histoire. Le bruit blanc constant, en revanche, tend à masquer les sons intrusifs et à stabiliser le sommeil paradoxal.\"\n      }\n    }\n  ]\n}",
+    "{\n    \"@context\": \"https://schema.org\",\n    \"@type\": \"FAQPage\",\n    \"mainEntity\": [\n        {\n            \"@type\": \"Question\",\n            \"name\": \"La lumière dans la chambre influence-t-elle les rêves ?\",\n            \"acceptedAnswer\": {\n                \"@type\": \"Answer\",\n                \"text\": \"Indirectement. La lumière du soir retarde la mélatonine et peut repousser l'endormissement, ce qui raccourcit la fin de nuit, où le sommeil paradoxal dure le plus longtemps. La lumière pendant la nuit peut aussi provoquer de brefs réveils. Tamiser les lumières la dernière heure et garder la chambre sombre est un bon début.\"\n            }\n        },\n        {\n            \"@type\": \"Question\",\n            \"name\": \"Quelle température dans la chambre pour bien dormir et rêver ?\",\n            \"acceptedAnswer\": {\n                \"@type\": \"Answer\",\n                \"text\": \"La Sleep Foundation conseille environ 18 °C. En sommeil paradoxal, le corps gère moins bien la chaleur : une chambre chaude et humide multiplie les réveils. Il n'existe pas de « température des rêves » : l'objectif est une chambre fraîche et stable, avec une literie qu'on peut ajuster.\"\n            }\n        },\n        {\n            \"@type\": \"Question\",\n            \"name\": \"Un bruit peut-il se retrouver dans mon rêve ?\",\n            \"acceptedAnswer\": {\n                \"@type\": \"Answer\",\n                \"text\": \"Oui, parfois : une alarme peut devenir une sirène, la pluie un orage. Ce n'est pas systématique, et le son revient le plus souvent transformé. Le bruit provoque aussi de brefs réveils, qui aident à retenir davantage de fragments de rêves.\"\n            }\n        },\n        {\n            \"@type\": \"Question\",\n            \"name\": \"Le bruit blanc aide-t-il à mieux dormir ?\",\n            \"acceptedAnswer\": {\n                \"@type\": \"Answer\",\n                \"text\": \"Il peut masquer les bruits soudains, et beaucoup de gens l'apprécient. Mais une revue systématique de 2021 a jugé de très faible qualité les preuves qu'un bruit continu améliore le sommeil. Essayez-le à faible volume et gardez-le seulement si vous vous réveillez en meilleure forme.\"\n            }\n        }\n    ]\n}",
     "{\n  \"@context\": \"https://schema.org\",\n  \"@type\": \"BreadcrumbList\",\n  \"itemListElement\": [\n    {\n      \"@type\": \"ListItem\",\n      \"position\": 1,\n      \"name\": \"Accueil\",\n      \"item\": \"https://noctalia.app/fr/\"\n    },\n    {\n      \"@type\": \"ListItem\",\n      \"position\": 2,\n      \"name\": \"Ressources\",\n      \"item\": \"https://noctalia.app/fr/blog/\"\n    },\n    {\n      \"@type\": \"ListItem\",\n      \"position\": 3,\n      \"name\": \"Journée du sommeil 2026\",\n      \"item\": \"https://noctalia.app/fr/blog/journee-sommeil-environnement-reves\"\n    }\n  ]\n}"
   ],
   "activeNav": "resources"
@@ -64,13 +64,13 @@
 <a class="text-xs font-mono text-purple-200/70 border border-white/10 rounded-full px-3 py-1 hover:text-white hover:border-dream-salmon/30 transition-colors" href="sommeil-paradoxal-reves">Thématique : Science du sommeil</a>
 <span aria-hidden="true" class="w-full sm:hidden"></span>
 <span class="text-sm text-purple-300/60">Publié le 10 mars 2026</span>
-<span class="text-sm text-purple-300/60">~1600 mots · 5 min de lecture</span>
+<span class="text-sm text-purple-300/60">11 min de lecture</span>
 </div>
 <h1 class="font-serif text-3xl md:text-5xl mb-6 text-transparent bg-clip-text bg-gradient-to-b from-white via-dream-lavender to-purple-400/50 leading-tight">
-                    Journée du sommeil 2026 : comment votre environnement transforme vos rêves
+                    Journée du sommeil 2026 : comment votre chambre influence vos rêves
                 </h1>
 <p class="text-lg text-purple-200/80 leading-relaxed">
-                    Le 13 mars 2026, la Journée nationale du sommeil met à l'honneur le thème « Sommeil et Environnement ». Au-delà de la qualité du matelas, c'est l'ensemble de votre espace de nuit — lumière, bruit, température, saison — qui sculpte chaque nuit la matière de vos rêves. Voici ce que la science nous apprend sur cette relation intime, et comment en tirer parti.
+                    3 heures du matin. Le lampadaire passe sous le rideau, un scooter traverse la rue, la couette devient soudain trop chaude. Au réveil, il vous reste une poursuite dans une ville en flammes, ou rien du tout. Votre chambre n'écrit pas vos rêves, mais elle change la façon dont vous dormez, la fréquence de vos réveils et ce dont vous vous souvenez. C'était l'angle de la Journée du sommeil 2026 : le sommeil comme miroir de nos rythmes et de nos environnements de vie.
                 </p>
 </header>
 <!-- Author Byline (E-E-A-T) -->
@@ -86,7 +86,7 @@
 <!-- Quick Answer (AI SEO) -->
 <section aria-labelledby="quick-answer-title" class="glass-panel rounded-2xl p-6 mb-8 border border-dream-salmon/20 bg-white/5">
 <h2 class="font-serif text-xl text-dream-cream mb-3" id="quick-answer-title">Réponse rapide</h2>
-<p class="text-purple-100/80 leading-relaxed">L'environnement dans lequel vous dormez influence directement la qualité et le contenu de vos rêves. La lumière artificielle supprime la mélatonine et réduit le sommeil paradoxal, le bruit extérieur peut s'intégrer dans vos scénarios oniriques, et la température de votre chambre modifie la vivacité de vos rêves. Une chambre fraîche (18-19°C), sombre et silencieuse est la clé pour des rêves plus riches.</p>
+<p class="text-purple-100/80 leading-relaxed">La chambre agit surtout indirectement sur les rêves. La lumière du soir retarde la mélatonine, la chaleur et le bruit provoquent de brefs réveils qui changent les rêves dont on se souvient et leur tonalité. Un son ou une odeur peut parfois se glisser dans un rêve. Une chambre sombre, calme et fraîche (autour de 18 °C) ne programme pas vos rêves, mais elle protège le sommeil dans lequel ils se déroulent.</p>
 </section>
 <!-- Editorial Review (E-E-A-T) -->
 <div class="mb-8">
@@ -111,88 +111,88 @@
 <!-- Table of Contents -->
 <nav class="glass-panel rounded-2xl p-6 mb-12">
 <h2 class="font-serif text-lg text-dream-cream mb-4 flex items-center gap-2">
-<i class="w-5 h-5 text-dream-salmon" data-lucide="list"></i> Table des matières
+<i class="w-5 h-5 text-dream-salmon" data-lucide="list"></i> Sommaire
                 </h2>
 <ol class="space-y-2 text-sm text-purple-200/70">
-<li><a class="toc-link block" href="#journee-sommeil">1. Journée nationale du sommeil 2026 : le thème de l'année</a></li>
-<li><a class="toc-link block" href="#light">2. Lumière et pollution lumineuse : comment elles perturbent vos rêves</a></li>
-<li><a class="toc-link block" href="#noise">3. Bruit et contenu onirique</a></li>
-<li><a class="toc-link block" href="#temperature">4. Température et vivacité des rêves</a></li>
-<li><a class="toc-link block" href="#seasons">5. Changements saisonniers et schémas oniriques</a></li>
-<li><a class="toc-link block" href="#optimize">6. Optimiser votre environnement pour mieux rêver</a></li>
+<li><a class="toc-link block" href="#journee-sommeil">1. Quel était le thème de la Journée du sommeil 2026 ?</a></li>
+<li><a class="toc-link block" href="#light">2. La lumière change-t-elle vos rêves ?</a></li>
+<li><a class="toc-link block" href="#noise">3. Le bruit peut-il entrer dans un rêve ?</a></li>
+<li><a class="toc-link block" href="#temperature">4. La température de la chambre joue-t-elle sur les rêves ?</a></li>
+<li><a class="toc-link block" href="#seasons">5. Rêve-t-on autrement selon les saisons ?</a></li>
+<li><a class="toc-link block" href="#optimize">6. Que changer dans votre chambre dès ce soir</a></li>
 </ol>
 </nav>
 <!-- Article Content -->
 <div class="prose max-w-none text-gray-300">
-<h2 id="journee-sommeil">Journée nationale du sommeil 2026 : le thème de l'année</h2>
+<h2 id="journee-sommeil">Quel était le thème de la Journée du sommeil 2026 ?</h2>
 <p>
-                    Chaque année depuis 2000, la Journée nationale du sommeil sensibilise les Français à l'importance du repos nocturne. En 2026, l'événement organisé par l'INSV (Institut National du Sommeil et de la Vigilance) et le Réseau Morphée se tiendra le <strong>vendredi 13 mars</strong>, avec pour thème central « Sommeil et Environnement ». Des conférences se tiendront notamment à la Cité des sciences et de l'industrie à Paris, explorant comment notre cadre de vie façonne nos nuits.
+                    Le <strong>vendredi 13 mars 2026</strong>, l'Institut national du sommeil et de la vigilance (INSV) a organisé la 26<sup>e</sup> Journée du sommeil, le même jour que la Journée mondiale du sommeil. Son thème présentait le sommeil comme un pilier de la santé, miroir de nos rythmes et de nos environnements de vie. Plus de 60 centres du sommeil ont ouvert leurs portes au public partout en France.
                 </p>
 <p>
-                    Ce thème ne pouvait pas mieux tomber. Les recherches des deux dernières décennies ont démontré que l'environnement physique — lumière, son, température, qualité de l'air — ne se contente pas d'affecter la facilité d'endormissement ou la profondeur du sommeil. Il modifie directement la durée, l'intensité et le contenu de nos rêves. Le <a class="text-dream-salmon hover:underline" href="sommeil-paradoxal-reves">sommeil paradoxal</a>, cette phase où se produisent les rêves les plus vivaces, est particulièrement sensible aux conditions environnementales.
+                    L'enquête INSV publiée pour l'occasion (OpinionWay, décembre 2025, 1 006 personnes de 18 à 65 ans) rend la chambre très concrète : <strong>36 %</strong> des Français se disent gênés par le bruit la nuit, <strong>58 %</strong> dorment avec leur smartphone allumé dans la chambre et <strong>81 %</strong> déclarent que les dernières fortes chaleurs ont perturbé leur sommeil.
                 </p>
 <p>
-                    Dans cet article, nous explorons les quatre facteurs environnementaux majeurs qui transforment vos nuits oniriques et proposons un plan d'action concret pour optimiser votre chambre — pas seulement pour mieux dormir, mais pour mieux rêver.
-                </p>
-
-<h2 id="light">Lumière et pollution lumineuse : comment elles perturbent vos rêves</h2>
-<h3>Éclairage artificiel et mélatonine</h3>
-<p>
-                    La mélatonine, l'hormone qui signale à votre corps qu'il est temps de dormir, est extrêmement sensible à la lumière. Une exposition à seulement 100 lux (l'équivalent d'une lampe de bureau) le soir peut supprimer la production de mélatonine de <strong>50 % et retarder son pic de 90 minutes</strong> (Cho et al., 2015). Ce décalage ne se contente pas de rendre l'endormissement plus difficile — il comprime les phases de sommeil paradoxal qui surviennent principalement en fin de nuit.
-                </p>
-<p>
-                    Moins de sommeil paradoxal signifie moins de temps pour rêver. Et les rêves qui se produisent malgré tout dans un sommeil paradoxal raccourci tendent à être plus fragmentés, moins élaborés narrativement et plus difficiles à mémoriser au réveil. Si vous vous demandez pourquoi vous ne <a class="text-dream-salmon hover:underline" href="comment-se-souvenir-de-ses-reves">vous souvenez pas de vos rêves</a>, la lumière dans votre chambre est un suspect de premier plan.
-                </p>
-<h3>Écrans avant le coucher : impact sur le sommeil paradoxal</h3>
-<p>
-                    La lumière bleue émise par les smartphones, tablettes et ordinateurs est particulièrement problématique. Sa longueur d'onde (450-490 nm) est la plus efficace pour supprimer la mélatonine. Une étude de la Harvard Medical School a montré que les participants utilisant des tablettes avant le coucher présentaient un <strong>sommeil paradoxal réduit de 20 minutes</strong> par rapport à ceux lisant un livre papier. Vingt minutes de rêves en moins chaque nuit, c'est l'équivalent de perdre un cycle onirique entier.
-                </p>
-<p>
-                    La lumière des réverbères, des enseignes lumineuses ou même d'une veilleuse peut également s'infiltrer pendant le sommeil. Le cerveau, même endormi, détecte ces variations lumineuses à travers les paupières, ce qui peut modifier le contenu des rêves — les rêveurs exposés à la lumière rapportent davantage de scénarios se déroulant en extérieur, de jour, avec des thèmes liés à la <a class="text-dream-salmon hover:underline" href="../symboles/lune">lune</a> ou aux étoiles curieusement absents.
+                    Ces chiffres parlent du sommeil, pas des rêves. Le lien passe par le <a class="text-dream-salmon hover:underline" href="sommeil-paradoxal-reves">sommeil paradoxal</a>, la phase après laquelle on rapporte le plus souvent des rêves vifs et scénarisés, et par les réveils, qui décident de ce dont on se souvient. Voici ce qui est mesuré, et ce qui reste une hypothèse.
                 </p>
 
-<h2 id="noise">Bruit et contenu onirique</h2>
-<h3>Sons intégrés aux rêves</h3>
+<h2 id="light">La lumière change-t-elle vos rêves ?</h2>
+<h3>La lumière du soir retarde la mélatonine</h3>
 <p>
-                    Le cerveau ne coupe pas le son quand vous dormez. Pendant le sommeil paradoxal, le cortex auditif reste partiellement actif, ce qui permet aux sons extérieurs de s'infiltrer dans vos rêves. Des recherches pionnières du neurologue allemand Boris Stuck ont démontré que <strong>des stimuli sonores présentés pendant le sommeil paradoxal sont incorporés dans le récit onirique dans 50 à 60 % des cas</strong>. Le bruit d'une alarme de voiture peut devenir une sirène dans votre rêve ; le son de la pluie sur les vitres se transforme en <a class="text-dream-salmon hover:underline" href="../symboles/orage">orage</a> onirique.
+                    La mélatonine aide le corps à comprendre que la nuit est là, et la lumière la freine. Dans une étude menée auprès de 116 jeunes adultes, la lumière ordinaire d'une pièce (moins de 200 lux) avant le coucher a retardé le début de la sécrétion de mélatonine chez presque tous les participants et raccourci sa durée d'environ 90 minutes (Gooley et al., 2011).
                 </p>
 <p>
-                    Fascinant, certes, mais à double tranchant. Les sons intrusifs — circulation, voisins bruyants, travaux — ne se contentent pas de perturber la continuité du sommeil : ils introduisent des éléments de stress dans le récit onirique, transformant un rêve neutre en scénario anxieux, voire en <a class="text-dream-salmon hover:underline" href="guide-cauchemars">cauchemar</a>. Les études de Cho et al. (2015) ont confirmé que les dormeurs en environnement bruyant rapportent <strong>deux fois plus de rêves à contenu négatif</strong> que ceux en environnement calme.
+                    Si vous vous endormez plus tard mais que le réveil sonne à la même heure, la nuit est amputée par la fin, là où les phases de sommeil paradoxal sont les plus longues. Cela ne veut pas dire automatiquement moins de rêves retenus : le souvenir dépend beaucoup de la manière dont on se réveille. Si vous cherchez <a class="text-dream-salmon hover:underline" href="comment-se-souvenir-de-ses-reves">comment vous souvenir de vos rêves</a>, regardez vos matins autant que vos lampes.
                 </p>
-<h3>Bruit blanc vs silence</h3>
+<h3>Écrans avant le coucher : ce qu'a montré une étude en laboratoire</h3>
 <p>
-                    Si le silence complet est impossible (environnement urbain, par exemple), le bruit blanc ou le bruit rose constitue une alternative efficace. Ces sons constants et réguliers masquent les bruits intrusifs sans introduire de nouveaux éléments narratifs dans les rêves. Une étude publiée dans <em>Sleep Medicine Reviews</em> a révélé que le bruit rose (un bruit blanc légèrement atténué dans les hautes fréquences, semblable au bruit d'une cascade lointaine) améliore la continuité du sommeil paradoxal et augmente la <strong>richesse descriptive des rêves rapportés de 25 %</strong>. La <a class="text-dream-salmon hover:underline" href="../symboles/nuit">nuit</a> idéale n'est pas nécessairement silencieuse — elle est stable.
-                </p>
-
-<h2 id="temperature">Température et vivacité des rêves</h2>
-<h3>Thermorégulation pendant le sommeil paradoxal</h3>
-<p>
-                    Pendant le sommeil paradoxal, votre corps perd temporairement sa capacité à réguler sa température — un phénomène unique appelé <strong>poïkilothermie transitoire</strong>. Concrètement, votre corps ne frissonne plus et ne transpire plus pendant cette phase. Cela signifie que la température ambiante agit directement sur votre température corporelle pendant les rêves, sans que votre corps puisse compenser.
+                    Dans une étude menée à Harvard, 12 adultes ont lu plusieurs soirs de suite sur une tablette lumineuse ou sur papier. Après la tablette, ils mettaient plus de temps à s'endormir, sécrétaient moins de mélatonine, avaient une horloge interne décalée, un peu moins de sommeil paradoxal et se sentaient moins alertes le lendemain matin (Chang et al., 2015). C'est une petite étude, avec de longues lectures à pleine luminosité : une raison de baisser l'écran, pas de s'alarmer pour un message lu au lit.
                 </p>
 <p>
-                    Les travaux d'Okamoto-Mizuno et Mizuno (2012) ont montré qu'une chambre trop chaude (au-dessus de 24 °C) provoque des micro-éveils qui fragmentent le sommeil paradoxal et produisent des rêves plus courts, plus chaotiques et plus chargés émotionnellement. À l'inverse, une chambre trop froide (en dessous de 16 °C) peut provoquer des réveils complets qui interrompent les cycles oniriques.
-                </p>
-<h3>La température idéale : 18-19 °C</h3>
-<p>
-                    La science converge sur une plage optimale de <strong>18 à 19 °C</strong> pour la chambre à coucher. À cette température, le sommeil paradoxal se déroule sans perturbation thermique, les cycles oniriques atteignent leur durée maximale (les phases de sommeil paradoxal du petit matin peuvent durer 45 à 60 minutes), et les rêves rapportés sont plus longs, plus détaillés et plus narrativement cohérents. Votre <a class="text-dream-salmon hover:underline" href="../symboles/maison">maison</a>, et plus précisément votre chambre, est le premier levier sur lequel agir pour transformer vos nuits.
-                </p>
-<p>
-                    Astuce pratique : si vous ne pouvez pas contrôler précisément la température de votre chambre, privilégiez des couches de literie que vous pouvez ajuster pendant la nuit. Le corps a besoin de se refroidir légèrement pour entrer en sommeil paradoxal, puis la température ambiante doit rester stable pour maintenir cette phase.
+                    La lumière peut aussi vous atteindre plus tard dans la nuit : un lampadaire, un téléphone qui s'allume, une <a class="text-dream-salmon hover:underline" href="../symboles/lune">lune</a> brillante derrière un rideau trop fin. Si elle vous réveille un instant, vous pouvez émerger au milieu d'un rêve et en garder un fragment.
                 </p>
 
-<h2 id="seasons">Changements saisonniers et schémas oniriques</h2>
-<h3>Équinoxe de printemps et allongement des phases REM</h3>
+<h2 id="noise">Le bruit peut-il entrer dans un rêve ?</h2>
+<h3>Quand un son ou une odeur se glisse dans le rêve</h3>
 <p>
-                    La Journée du sommeil 2026 tombe quelques jours avant l'équinoxe de printemps (20 mars), et ce n'est pas anodin. Les jours qui s'allongent modifient le timing de la sécrétion de mélatonine, décalant légèrement l'heure d'endormissement naturelle et, par conséquence, <strong>allongeant les phases de sommeil paradoxal du matin</strong>.
+                    Le cerveau endormi continue de surveiller les sons. Une alarme de voiture devient parfois une sirène dans le rêve, la pluie contre la fenêtre un <a class="text-dream-salmon hover:underline" href="../symboles/orage">orage</a>. C'est loin d'être systématique, et le son revient le plus souvent transformé.
                 </p>
 <p>
-                    Des études longitudinales menées dans des laboratoires de sommeil scandinaves ont révélé que les participants rapportent des rêves <strong>30 % plus longs et plus vivaces au printemps</strong> qu'en plein hiver. Ce phénomène s'explique par la combinaison de deux facteurs : l'allongement naturel du sommeil paradoxal matinal et l'augmentation de la luminosité qui stimule le cortex visuel même à travers les paupières fermées.
+                    L'odorat en donne un exemple plus net. Dans une étude allemande menée notamment par Michael Schredl et Boris Stuck, 15 femmes ont été exposées à des odeurs pendant leur sommeil paradoxal : l'odeur de rose était suivie de rêves plus agréables, celle d'œuf pourri de rêves plus désagréables, mais les dormeuses ne rêvaient presque jamais d'une odeur (Schredl et al., 2009). Ce qui entre dans le rêve, c'est souvent une tonalité émotionnelle plutôt que le stimulus lui-même.
                 </p>
 <p>
-                    L'automne, avec ses jours qui raccourcissent, produit l'effet inverse : des rêves plus courts mais souvent plus sombres thématiquement. Les chercheurs du Réseau Morphée notent que les consultations pour cauchemars augmentent de <strong>15 à 20 % entre octobre et décembre</strong>, coïncidant avec la diminution de l'exposition à la lumière naturelle et les premières baisses de température.
+                    Le bruit agit aussi par les réveils. Plus de micro-éveils, c'est plus d'occasions de retenir des fragments, ce qui peut donner l'impression d'une série de <a class="text-dream-salmon hover:underline" href="guide-cauchemars">cauchemars</a> après une nuit bruyante.
+                </p>
+<h3>Bruit blanc ou silence ?</h3>
+<p>
+                    Un son régulier (ventilateur, bruit blanc ou rose) peut masquer les pics soudains, comme une porte qui claque ou un klaxon. Beaucoup l'apprécient, mais une revue systématique de 2021 a jugé de très faible qualité les preuves qu'un bruit continu améliore le sommeil (Riedy et al., 2021). Essayez-le à faible volume et jugez à votre état au réveil. Une bonne <a class="text-dream-salmon hover:underline" href="../symboles/nuit">nuit</a> n'a pas besoin d'être silencieuse ; elle gagne surtout à être prévisible.
+                </p>
+
+<h2 id="temperature">La température de la chambre joue-t-elle sur les rêves ?</h2>
+<h3>En sommeil paradoxal, le corps gère moins bien la chaleur</h3>
+<p>
+                    Pendant le sommeil paradoxal, la régulation thermique est réduite : la transpiration démarre plus tard et ralentit, et l'on n'observe pas de frissons. La revue d'Okamoto-Mizuno et Mizuno (2012) décrit aussi comment la chaleur, surtout humide, augmente l'éveil et réduit le sommeil paradoxal et le sommeil profond. Avec une literie normale, la chaleur perturbe davantage le sommeil que la fraîcheur.
                 </p>
 <p>
-                    En vacances, ces facteurs changent tous en même temps : autre lit, bruit inconnu, lumière moins contrôlée, chaleur et horaires plus souples. Pour relier les rêves au contexte sans les réduire à la chambre, lisez aussi le guide <a class="text-dream-salmon hover:underline" href="vacances-sommeil-reves">vacances, sommeil et rêves</a>.
+                    Une nuit chaude ne « fabrique » donc pas à elle seule des rêves angoissants. Elle fragmente le sommeil, et une nuit fragmentée laisse davantage de bribes de rêves, parfois intenses. Notre article <a class="text-dream-salmon hover:underline" href="canicule-sommeil-reves">canicule, sommeil et rêves</a> détaille ce point.
+                </p>
+<h3>Quelle température viser ?</h3>
+<p>
+                    La Sleep Foundation conseille une chambre <strong>autour de 18 °C</strong>. Prenez ce chiffre comme un point de départ : la couette, le pyjama et la personne à côté de vous changent la chaleur sous les draps. Aucune étude ne montre qu'un degré précis rend les rêves « plus riches » ; ce qui est documenté, c'est qu'une chambre fraîche et stable limite les réveils.
+                </p>
+<p>
+                    L'été, toute la <a class="text-dream-salmon hover:underline" href="../symboles/maison">maison</a> peut emmagasiner la chaleur de la journée. Fermer les volets quand le soleil tape et aérer la nuit aide souvent plus que n'importe quel accessoire.
+                </p>
+
+<h2 id="seasons">Rêve-t-on autrement selon les saisons ?</h2>
+<h3>Lumière de printemps, matins plus précoces</h3>
+<p>
+                    La Journée du sommeil tombe une semaine avant l'équinoxe de printemps. Quand les jours rallongent, la lumière du matin arrive plus tôt et peut vous réveiller pendant les dernières heures de la nuit, riches en sommeil paradoxal. Fin mars, le passage à l'heure d'été retire en plus une heure de sommeil pendant quelques jours. Nous en parlons dans notre article sur les <a class="text-dream-salmon hover:underline" href="perturbation-sommeil-printemps-reves">perturbations du sommeil au printemps</a>.
+                </p>
+<p>
+                    Aucune donnée solide ne montre que les rêves seraient systématiquement plus longs au printemps ou plus sombres en automne. Si vous remarquez un changement selon la saison, notez-le, avec votre heure de coucher, votre heure de réveil et la lumière de la chambre.
+                </p>
+<p>
+                    En vacances, ces facteurs changent souvent en même temps : autre lit, bruits inconnus, lumière moins maîtrisée, chaleur et horaires plus libres. Pour relier les rêves au contexte sans les réduire à la chambre, lisez le guide <a class="text-dream-salmon hover:underline" href="vacances-sommeil-reves">vacances, sommeil et rêves</a>.
                 </p>
 </div>
 
@@ -202,105 +202,129 @@
 <i class="w-6 h-6 text-dream-salmon" data-lucide="book-open"></i>
 </div>
 <div>
-<h4 class="font-serif text-lg text-dream-cream mb-2">Observez comment votre environnement transforme vos rêves</h4>
-<p class="text-sm text-gray-400 mb-4">Le journal de rêves de Noctalia, alimenté par l'IA, vous permet d'enregistrer vos rêves par la voix dès le réveil. Identifiez les corrélations entre les conditions de votre chambre et la richesse de vos rêves au fil du temps.</p>
-<a class="inline-flex items-center gap-2 text-sm text-dream-salmon hover:text-dream-salmonLight transition-colors" href="/fr/">
-                                Commencer à enregistrer avec Noctalia <i class="w-4 h-4" data-lucide="arrow-right"></i>
+<h4 class="font-serif text-lg text-dream-cream mb-2">Notez la nuit en même temps que le rêve</h4>
+<p class="text-sm text-gray-400 mb-4">Dans Noctalia, vous pouvez dicter votre rêve dès le réveil, puis ajouter une ligne sur la nuit : chaleur, bruit, lumière. En relisant vos notes côte à côte, vous voyez si certains rêves reviennent après certaines nuits.</p>
+<a class="inline-flex items-center gap-2 text-sm text-dream-salmon hover:text-dream-salmonLight transition-colors" href="/fr/journal-de-reves-vocal">
+                                Essayer le journal de rêves vocal <i class="w-4 h-4" data-lucide="arrow-right"></i>
 </a>
 </div>
 </div>
 </aside>
 
 <div class="prose max-w-none text-gray-300">
-<h2 id="optimize">Optimiser votre environnement pour mieux rêver</h2>
+<h2 id="optimize">Que changer dans votre chambre dès ce soir</h2>
 <p>
-                    Vous ne pouvez pas contrôler vos rêves, mais vous pouvez contrôler les conditions qui les favorisent. Voici une checklist concrète, appuyée par la science, pour transformer votre chambre en sanctuaire onirique.
+                    Vous ne choisissez pas vos rêves, mais vous pouvez protéger le sommeil dans lequel ils se déroulent. Commencez par ce qui vous gêne le plus, changez une chose à la fois et laissez-lui une semaine.
                 </p>
 <h3>Lumière</h3>
 <ul>
-<li><strong>Rideaux occultants :</strong> Investissez dans des rideaux opaques ou un masque de sommeil de qualité. L'obscurité complète permet une production optimale de mélatonine</li>
-<li><strong>Couvre-feu numérique :</strong> Éteignez tous les écrans au moins 60 minutes avant le coucher. Utilisez le mode « nuit » si vous devez utiliser votre téléphone en soirée</li>
-<li><strong>Éclairage ambré :</strong> Remplacez les ampoules de votre chambre par des ampoules à lumière chaude (2 700 K ou moins). La lumière ambrée ne supprime pas la mélatonine</li>
-<li><strong>Supprimez les LED :</strong> Couvrez les indicateurs lumineux des appareils électroniques (routeur, chargeur, réveil digital)</li>
+<li><strong>L'obscurité :</strong> rideaux occultants ou masque de nuit confortable, surtout si un lampadaire ou le soleil du matin atteint le lit.</li>
+<li><strong>La dernière heure :</strong> baissez les lumières et préférez des ampoules chaudes. Réduisez la luminosité de l'écran, ou posez le téléphone plus tôt.</li>
+<li><strong>Le téléphone :</strong> chargez-le loin du lit, écran retourné ou dans une autre pièce, pour que les notifications n'éclairent pas la chambre.</li>
+<li><strong>Les petites lumières :</strong> masquez les voyants des chargeurs, de la box et du réveil.</li>
 </ul>
 <h3>Bruit</h3>
 <ul>
-<li><strong>Bruit blanc ou rose :</strong> Utilisez un appareil ou une application de bruit blanc pour masquer les sons intrusifs. Le bruit rose est souvent préféré pour sa qualité plus naturelle</li>
-<li><strong>Bouchons d'oreilles :</strong> Si votre environnement est particulièrement bruyant, les bouchons en mousse ou en silicone réduisent le bruit de 20 à 30 dB</li>
-<li><strong>Double vitrage :</strong> Si vous habitez en zone urbaine, le double ou triple vitrage constitue un investissement à long terme pour la qualité de votre sommeil paradoxal</li>
+<li><strong>Identifiez le bruit :</strong> un ronronnement continu et des pics soudains ne se traitent pas de la même façon.</li>
+<li><strong>Bouchons d'oreilles :</strong> en mousse ou en silicone, bien insérés, contre les voisins, la circulation ou un partenaire qui ronfle.</li>
+<li><strong>Un son régulier :</strong> un ventilateur ou un bruit blanc à faible volume peut masquer les pics. Gardez-le seulement si vous vous réveillez en meilleure forme.</li>
+<li><strong>Le côté calme :</strong> si vous le pouvez, dormez dans la pièce qui ne donne pas sur la rue.</li>
 </ul>
 <h3>Température</h3>
 <ul>
-<li><strong>Thermostat à 18-19 °C :</strong> Réglez la température de votre chambre une heure avant le coucher pour qu'elle soit stabilisée à l'endormissement</li>
-<li><strong>Literie adaptable :</strong> Préférez plusieurs couches légères à une couette épaisse. Vous pourrez ajuster votre couverture au fil de la nuit</li>
-<li><strong>Aération :</strong> Aérez votre chambre 15 minutes avant le coucher, même en hiver. L'air frais et renouvelé favorise un endormissement plus rapide</li>
+<li><strong>Autour de 18 °C :</strong> baissez le chauffage ou aérez avant le coucher pour que la chambre soit déjà fraîche quand vous vous couchez.</li>
+<li><strong>Des couches :</strong> plusieurs couvertures légères plutôt qu'une couette épaisse, pour ajuster pendant la nuit.</li>
+<li><strong>En canicule :</strong> volets fermés en journée, courant d'air la nuit, draps en coton léger.</li>
 </ul>
-<h3>Environnement global</h3>
+<h3>Tenez un journal chambre et rêves</h3>
+<p>
+                    L'outil le plus utile reste un simple <a class="text-dream-salmon hover:underline" href="guide-journal-reves">journal de rêves</a>, avec une ligne de plus sur la nuit. Exemple fictif, pour montrer le format :
+                </p>
 <ul>
-<li><strong>Plantes :</strong> Certaines plantes (lavande, jasmin) émettent des composés qui, selon des études préliminaires, favorisent un sommeil paradoxal plus stable</li>
-<li><strong>Désencombrement :</strong> Un espace rangé réduit la stimulation visuelle inconsciente et l'anxiété associée, favorisant des rêves plus paisibles</li>
-<li><strong>Tenez un <a class="text-dream-salmon hover:underline" href="guide-journal-reves">journal de rêves</a> :</strong> Notez vos rêves ET les conditions de votre chambre (température, bruit, lumière). Après quelques semaines, les corrélations apparaîtront clairement</li>
+<li><strong>Rêve :</strong> « Un tremblement de terre dans un immeuble inconnu. Je cherchais l'escalier. »</li>
+<li><strong>Émotion :</strong> « De l'urgence, puis du soulagement au réveil. »</li>
+<li><strong>La nuit :</strong> « Fenêtre ouverte, 24 °C, le camion poubelle vers 5 heures. »</li>
+<li><strong>Question à garder :</strong> « Mes rêves les plus agités reviennent-ils les nuits chaudes ou bruyantes, ou avec autre chose ? »</li>
 </ul>
+<p>
+                    Au bout de quelques semaines, vous verrez si un lien apparaît ou non. Les deux réponses sont utiles.
+                </p>
+<p>
+                    <strong>Quand consulter :</strong> si vous dormez mal depuis plusieurs semaines malgré une chambre calme, si l'on vous signale des ronflements forts ou des pauses respiratoires, si vous somnolez dans la journée ou si les cauchemars abîment régulièrement vos nuits, parlez-en à un médecin. La chambre n'est pas toujours en cause.
+                </p>
 </div>
 <!-- CTA Section -->
 <aside class="glass-panel rounded-3xl p-8 md:p-10 mt-16 text-center border border-dream-salmon/20">
 <div class="w-16 h-16 bg-dream-salmon/10 rounded-full flex items-center justify-center mx-auto mb-6">
 <i class="w-8 h-8 text-dream-salmon" data-lucide="moon"></i>
 </div>
-<h3 class="font-serif text-2xl md:text-3xl mb-4 text-dream-cream">Transformez votre chambre en sanctuaire onirique</h3>
+<h3 class="font-serif text-2xl md:text-3xl mb-4 text-dream-cream">Une nuit est un indice. Un mois de notes montre une tendance.</h3>
 <p class="text-purple-200/70 mb-6 max-w-lg mx-auto">
-                    Noctalia vous aide à suivre l'impact de votre environnement sur vos rêves. Enregistrez vos rêves par la voix, découvrez les schémas et optimisez vos nuits grâce à l'analyse IA.
+                    Notez vos rêves à la voix ou par écrit dès le réveil, ajoutez les conditions de la nuit, puis relisez-les côte à côte pour repérer ce qui revient.
                 </p>
 <a class="inline-flex items-center gap-2 px-8 py-4 bg-dream-salmon text-dream-dark rounded-full font-bold hover:bg-dream-salmon/90 transition-colors" href="/fr/">
-                    Commencer votre journal de rêves <i class="w-5 h-5" data-lucide="arrow-right"></i>
+                    Commencer mon journal de rêves <i class="w-5 h-5" data-lucide="arrow-right"></i>
 </a>
 </aside>
 <!-- FAQ Section -->
 <section class="mt-16">
-<h2 class="font-serif text-2xl text-dream-cream mb-8">Questions Fréquentes</h2>
+<h2 class="font-serif text-2xl text-dream-cream mb-8">Questions fréquentes</h2>
 <div class="space-y-4">
 <details class="glass-panel rounded-xl p-4 group cursor-pointer">
 <summary class="font-medium flex justify-between items-center text-dream-cream">
-                            Comment la lumière affecte-t-elle la qualité de mes rêves ?
+                            La lumière dans la chambre influence-t-elle les rêves ?
                             <i class="w-5 h-5 transition-transform group-open:rotate-180 text-dream-salmon" data-lucide="chevron-down"></i>
 </summary>
 <p class="mt-4 text-sm text-gray-400 leading-relaxed">
-                            La lumière artificielle, en particulier la lumière bleue des écrans, supprime la production de mélatonine et retarde l'endormissement. Cela réduit la durée du <a class="text-dream-salmon hover:underline" href="sommeil-paradoxal-reves">sommeil paradoxal</a>, la phase où se produisent les rêves les plus vivaces. Une exposition à la lumière vive le soir peut raccourcir vos phases de rêve de 20 à 30 minutes. Pour préserver vos rêves, éteignez les écrans au moins 60 minutes avant le coucher et utilisez des rideaux occultants.
+                            Indirectement. La lumière du soir retarde la mélatonine et peut repousser l'endormissement, ce qui raccourcit la fin de nuit, où le <a class="text-dream-salmon hover:underline" href="sommeil-paradoxal-reves">sommeil paradoxal</a> dure le plus longtemps. La lumière pendant la nuit peut aussi provoquer de brefs réveils. Tamiser les lumières la dernière heure et garder la chambre sombre est un bon début.
                         </p>
 </details>
 <details class="glass-panel rounded-xl p-4 group cursor-pointer">
 <summary class="font-medium flex justify-between items-center text-dream-cream">
-                            Quelle est la température idéale pour bien rêver ?
+                            Quelle température dans la chambre pour bien dormir et rêver ?
                             <i class="w-5 h-5 transition-transform group-open:rotate-180 text-dream-salmon" data-lucide="chevron-down"></i>
 </summary>
 <p class="mt-4 text-sm text-gray-400 leading-relaxed">
-                            La température idéale se situe entre 18 et 19 °C. À cette température, votre corps effectue la thermorégulation nécessaire pendant le sommeil paradoxal sans perturbation. Une chambre trop chaude (au-dessus de 24 °C) fragmente le sommeil paradoxal et produit des rêves plus anxieux, tandis qu'une chambre trop froide peut provoquer des réveils qui interrompent les cycles de rêve.
+                            La Sleep Foundation conseille environ 18 °C. En sommeil paradoxal, le corps gère moins bien la chaleur : une chambre chaude et humide multiplie les réveils. Il n'existe pas de « température des rêves » : l'objectif est une chambre fraîche et stable, avec une literie qu'on peut ajuster.
                         </p>
 </details>
 <details class="glass-panel rounded-xl p-4 group cursor-pointer">
 <summary class="font-medium flex justify-between items-center text-dream-cream">
-                            Les bruits extérieurs peuvent-ils s'intégrer dans mes rêves ?
+                            Un bruit peut-il se retrouver dans mon rêve ?
                             <i class="w-5 h-5 transition-transform group-open:rotate-180 text-dream-salmon" data-lucide="chevron-down"></i>
 </summary>
 <p class="mt-4 text-sm text-gray-400 leading-relaxed">
-                            Oui, le cerveau continue de traiter les sons pendant le sommeil. Des études montrent que les stimuli auditifs externes — une alarme, le bruit de la pluie, une conversation — peuvent être incorporés dans le scénario onirique en temps réel. Le bruit blanc constant, en revanche, tend à masquer les sons intrusifs et à stabiliser le sommeil paradoxal, favorisant des rêves plus riches et plus cohérents.
+                            Oui, parfois : une alarme peut devenir une sirène, la pluie un orage. Ce n'est pas systématique, et le son revient le plus souvent transformé. Le bruit provoque aussi de brefs réveils, qui aident à retenir davantage de fragments de rêves.
+                        </p>
+</details>
+<details class="glass-panel rounded-xl p-4 group cursor-pointer">
+<summary class="font-medium flex justify-between items-center text-dream-cream">
+                            Le bruit blanc aide-t-il à mieux dormir ?
+                            <i class="w-5 h-5 transition-transform group-open:rotate-180 text-dream-salmon" data-lucide="chevron-down"></i>
+</summary>
+<p class="mt-4 text-sm text-gray-400 leading-relaxed">
+                            Il peut masquer les bruits soudains, et beaucoup de gens l'apprécient. Mais une revue systématique de 2021 a jugé de très faible qualité les preuves qu'un bruit continu améliore le sommeil. Essayez-le à faible volume et gardez-le seulement si vous vous réveillez en meilleure forme.
                         </p>
 </details>
 </div>
 </section>
 <!-- July catch-up backlink: sleep-env-to-noise -->
-<section class="glass-panel rounded-2xl p-6 my-8 border border-dream-salmon/20"><h2 class="font-serif text-2xl text-dream-cream mb-3">À lire aussi : bruit nocturne</h2><p>Si votre environnement change surtout par le son, le guide <a class="text-dream-salmon hover:underline" href="bruit-nocturne-sommeil-reves">bruit nocturne, sommeil et rêves</a> explique comment distinguer micro-réveils, bruit réel et scènes de rêve plus mémorables.</p></section>
+<section class="glass-panel rounded-2xl p-6 my-8 border border-dream-salmon/20"><h2 class="font-serif text-2xl text-dream-cream mb-3">À lire aussi : bruit nocturne</h2><p>Si vos nuits changent surtout à cause du son, le guide <a class="text-dream-salmon hover:underline" href="bruit-nocturne-sommeil-reves">bruit nocturne, sommeil et rêves</a> vous aide à distinguer micro-éveils, bruits réels et scènes de rêve dont vous vous souvenez.</p></section>
 <!-- Sources / Trust -->
 <section class="mt-16 glass-panel rounded-2xl p-6" id="sources">
-<h2 class="font-serif text-2xl text-dream-cream mb-4">Sources / Pour aller plus loin</h2>
+<h2 class="font-serif text-2xl text-dream-cream mb-4">Sources et lectures complémentaires</h2>
 <ul class="mt-6 space-y-2 text-sm text-gray-400">
-<li><a href="https://institut-sommeil-vigilance.org/journee-du-sommeil/" rel="nofollow noopener noreferrer" target="_blank">INSV (Institut National du Sommeil et de la Vigilance) — Journée du sommeil 2026</a></li>
-<li><a href="https://www.reseau-morphee.fr/" rel="nofollow noopener noreferrer" target="_blank">Réseau Morphée — Sommeil et environnement</a></li>
-<li><a href="https://pubmed.ncbi.nlm.nih.gov/26375320/" rel="nofollow noopener noreferrer" target="_blank">Cho et al. (2015) : Effects of artificial light at night on human health — Chronobiology International</a></li>
-<li><a href="https://pubmed.ncbi.nlm.nih.gov/22738673/" rel="nofollow noopener noreferrer" target="_blank">Okamoto-Mizuno & Mizuno (2012) : Effects of thermal environment on sleep and circadian rhythm — Journal of Physiological Anthropology</a></li>
-<li><a href="https://www.sleepfoundation.org/bedroom-environment" rel="nofollow noopener noreferrer" target="_blank">Sleep Foundation : Bedroom Environment</a></li>
+<li><a href="https://institut-sommeil-vigilance.org/wp-content/uploads/2026/03/CP-INSV-JS-2026.pdf" rel="nofollow noopener noreferrer" target="_blank">INSV (2026), communiqué de presse et enquête de la Journée du sommeil 2026</a></li>
+<li><a href="https://worldsleepday.org/" rel="nofollow noopener noreferrer" target="_blank">World Sleep Day (Journée mondiale du sommeil, en anglais)</a></li>
+<li><a href="https://doi.org/10.1210/jc.2010-2098" rel="nofollow noopener noreferrer" target="_blank">Gooley et al. (2011), « Exposure to room light before bedtime suppresses melatonin onset and shortens melatonin duration in humans », <em>Journal of Clinical Endocrinology &amp; Metabolism</em></a></li>
+<li><a href="https://doi.org/10.1073/pnas.1418490112" rel="nofollow noopener noreferrer" target="_blank">Chang et al. (2015), « Evening use of light-emitting eReaders negatively affects sleep, circadian timing, and next-morning alertness », <em>PNAS</em></a></li>
+<li><a href="https://pubmed.ncbi.nlm.nih.gov/19552703/" rel="nofollow noopener noreferrer" target="_blank">Schredl et al. (2009), « Information processing during sleep: the effect of olfactory stimuli on dream content and dream emotions », <em>Journal of Sleep Research</em></a></li>
+<li><a href="https://doi.org/10.1016/j.smrv.2020.101385" rel="nofollow noopener noreferrer" target="_blank">Riedy et al. (2021), « Noise as a sleep aid: A systematic review », <em>Sleep Medicine Reviews</em></a></li>
+<li><a href="https://doi.org/10.1186/1880-6805-31-14" rel="nofollow noopener noreferrer" target="_blank">Okamoto-Mizuno et Mizuno (2012), « Effects of thermal environment on sleep and circadian rhythm », <em>Journal of Physiological Anthropology</em></a></li>
+<li><a href="https://www.sleepfoundation.org/bedroom-environment/best-temperature-for-sleep" rel="nofollow noopener noreferrer" target="_blank">Sleep Foundation, « Best temperature for sleep » (en anglais)</a></li>
+<li><a href="https://www.sleepfoundation.org/bedroom-environment" rel="nofollow noopener noreferrer" target="_blank">Sleep Foundation, « Bedroom environment » (en anglais)</a></li>
 </ul>
-<p class="mt-6 text-xs text-purple-200/60">Mis à jour le 10 mars 2026</p>
+<p class="mt-6 text-xs text-purple-200/60">Mis à jour le 9 octobre 2026</p>
 </section>
 <!-- Related Symbols Start -->
 <section aria-label="Symboles de rêves associés" class="mt-12 mb-8">

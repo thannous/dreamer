@@ -5,7 +5,7 @@
   "lang": "de",
   "slug": "ki-traumtagebuch-datenschutz",
   "title": "KI-Traumtagebuch und Datenschutz | Noctalia",
-  "description": "Was Sie prüfen sollten, bevor Sie einem KI-Traumtagebuch intime Notizen anvertrauen: Audio, Anbieter, Modelltraining, Export und Löschung.",
+  "description": "KI-Traumtagebuch und Datenschutz: fünf Punkte, die Sie vor dem ersten Eintrag prüfen sollten, von Audio und KI-Anbietern bis Training, Löschung und Werbung.",
   "robots": "index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1",
   "themeColor": "#0a0514",
   "htmlClass": "scroll-smooth blog-article",
@@ -14,16 +14,16 @@
   "mainClass": "pt-32 pb-20 px-4",
   "ogType": "article",
   "ogTitle": "KI-Traumtagebuch und Datenschutz",
-  "ogDescription": "Träume sind intime Daten. So bewerten Sie ein KI-Traumtagebuch, ohne sich auf vage Datenschutzversprechen zu verlassen.",
+  "ogDescription": "Träume verraten Gesundheit, Liebe und Ängste. Fünf konkrete Prüfpunkte, um ein KI-Traumtagebuch jenseits vager Datenschutzversprechen zu bewerten.",
   "ogImage": "https://noctalia.app/img/blog/dream-memory-hero.webp",
   "ogImageAlt": "Geschützte Traumerinnerungen in nächtlichem Licht",
   "twitterCard": "summary_large_image",
   "twitterTitle": "KI-Traumtagebuch und Datenschutz",
-  "twitterDescription": "Was Sie prüfen sollten, bevor Sie einem KI-Traumtagebuch intime Notizen anvertrauen.",
+  "twitterDescription": "Fünf Punkte, die Sie prüfen sollten, bevor Sie einem KI-Traumtagebuch Ihre Träume anvertrauen.",
   "twitterImage": "https://noctalia.app/img/blog/dream-memory-hero.webp",
   "twitterImageAlt": "Geschützte Traumerinnerungen in nächtlichem Licht",
   "publishedTime": "2026-06-20T00:00:00+02:00",
-  "modifiedTime": "2026-07-17T00:00:00+02:00",
+  "modifiedTime": "2026-10-09",
   "author": "Thanh Chau",
   "prevPath": "/de/blog/traeume-emotionsregulation-studie-2026",
   "nextPath": "/de/blog/wachtraeumen-onirische-zustaende",
@@ -35,35 +35,47 @@
 <article class="max-w-5xl mx-auto">
 <nav aria-label="Breadcrumb" class="text-sm text-purple-200/60 mb-8"><ol class="flex items-center gap-2 flex-wrap"><li><a class="hover:text-dream-salmon transition-colors" href="/de/">Startseite</a></li><li class="text-purple-400">/</li><li><a class="hover:text-dream-salmon transition-colors" href="/de/blog/">Ressourcen</a></li><li class="text-purple-400">/</li><li class="text-dream-cream">KI-Datenschutz</li></ol></nav>
 <header class="mb-12">
-<div class="flex flex-wrap items-center gap-3 mb-6"><span class="text-xs font-mono text-dream-salmon border border-dream-salmon/30 rounded-full px-3 py-1 uppercase">KI</span><span class="text-sm text-purple-300/60">Veröffentlicht am 20. Juni 2026</span><span class="text-sm text-purple-300/60">5 Min. Lesezeit</span></div>
-<h1 class="font-serif text-3xl md:text-5xl mb-6 text-transparent bg-clip-text bg-gradient-to-b from-white via-dream-lavender to-purple-400/50 leading-tight">KI-Traumtagebuch und Datenschutz: Fragen vor der ersten Notiz</h1>
-<p class="text-lg text-purple-200/80 leading-relaxed">Ein Traumtagebuch kann Ängste, Beziehungen, Erinnerungen, Gesundheitssorgen, Wünsche und verletzliche Momente enthalten. Wenn KI Teil dieses privaten Notizbuchs wird, stellt sich nicht nur die Frage „Ist das nützlich?“, sondern auch: „Was geschieht mit meinen Einträgen?“</p>
+<div class="flex flex-wrap items-center gap-3 mb-6"><span class="text-xs font-mono text-dream-salmon border border-dream-salmon/30 rounded-full px-3 py-1 uppercase">KI</span><span class="text-sm text-purple-300/60">Veröffentlicht am 20. Juni 2026</span><span class="text-sm text-purple-300/60">3 Min. Lesezeit</span></div>
+<h1 class="font-serif text-3xl md:text-5xl mb-6 text-transparent bg-clip-text bg-gradient-to-b from-white via-dream-lavender to-purple-400/50 leading-tight">KI-Traumtagebuch und Datenschutz: Was Sie vor dem ersten Eintrag prüfen sollten</h1>
+<p class="text-lg text-purple-200/80 leading-relaxed">Sie wachen auf und diktieren: Ihr Ex, ein Krankenhausflur, ein Streit mit Ihrer Mutter. Dinge, die Sie kaum jemandem erzählen würden. Bevor ein KI-Traumtagebuch sie liest, sollten Sie wissen, wohin sie gehen.</p>
 </header>
 <figure class="mb-10 rounded-2xl overflow-hidden"><img alt="Geschützte Traumerinnerungen in nächtlichem Licht" class="w-full h-auto" fetchpriority="high" height="630" loading="eager" sizes="(max-width: 768px) 100vw, 1200px" src="../../img/blog/dream-memory-hero.webp" srcset="../../img/blog/dream-memory-hero-480w.webp 480w, ../../img/blog/dream-memory-hero-800w.webp 800w, ../../img/blog/dream-memory-hero-1200w.webp 1200w" width="1200"></figure>
 <section class="prose prose-invert prose-purple max-w-none text-gray-300 leading-relaxed">
-<p class="text-sm text-purple-200/70">Dieser Artikel dient nur der Information und stellt keine Rechtsberatung dar. In der Europäischen Union bleibt die DSGVO der praktische Maßstab: klare Zweckbindung, Datenminimierung, verständliche Hinweise sowie Auskunfts- und Löschungsrechte.</p>
-<h2>Warum Träume keine gewöhnlichen Notizen sind</h2>
-<p>Ein Traum ist keine bloße Arbeitsnotiz. Selbst wenn er absurd erscheint, kann er von nahestehenden Personen, der Arbeit, Gesundheitsängsten, einer Trennung oder Gefühlen handeln, die Sie sonst nirgendwo öffentlich teilen würden. Über längere Zeit können solche Fragmente persönliche Muster erkennen lassen.</p>
-<p>Ein aktuelles Beispiel liefert die <a class="text-dream-salmon hover:underline" href="traeume-emotionsregulation-studie-2026">Studie von 2026 zu Traumgefühlen und Morgenstimmung</a>: Eine aussagekräftige Auswertung beruht auf sensiblen Aufzeichnungen, die sich über längere Zeit ansammeln.</p>
-<p>Genau das macht ein Traumtagebuch wertvoll: Es bewahrt Zusammenhänge. Diese sollten für Sie jedoch nachvollziehbar bleiben, statt in einer Blackbox zu verschwinden. Bevor Sie eine KI-App nutzen, prüfen Sie, was sie speichert, welche Daten sie an Anbieter übermittelt, wie lange diese aufbewahrt werden und wie die Löschung funktioniert.</p>
+<p class="text-sm text-purple-200/70">Dieser Artikel dient der Information und ist keine Rechtsberatung. In der EU ist die DSGVO der Maßstab.</p>
+<div class="glass-panel rounded-2xl p-6 my-8 border border-dream-salmon/20">
+<h2 class="font-serif text-2xl text-dream-cream mb-3">Kurze Antwort</h2>
+<p>Prüfen Sie fünf Punkte: Audio, KI-Anbieter, Modelltraining, Löschung und Werbung. Eine vertrauenswürdige App beantwortet jeden davon klar in ihrer Datenschutzerklärung und nennt ihre Anbieter beim Namen. Ein vages Versprechen ist keine Antwort.</p>
+</div>
+<h2>Warum ist ein Traumtagebuch so sensibel?</h2>
+<p>Auch ein absurder Traum kann einen nahestehenden Menschen, eine Trennung, eine Gesundheitssorge oder einen Wunsch erwähnen. Die DSGVO nennt Träume nicht, doch eine Traumnotiz kann besondere Kategorien personenbezogener Daten enthalten: Gesundheit, Sexualleben, religiöse Überzeugungen (Artikel 9).</p>
+<p>Über Monate ergeben die Einträge ein Porträt. Genau das macht ein Tagebuch nützlich, wie die <a class="text-dream-salmon hover:underline" href="traeume-emotionsregulation-studie-2026">Studie von 2026 zu Traumgefühlen und Morgenstimmung</a> zeigt. Dieses Porträt sollte für Sie nachvollziehbar bleiben, statt in einer Blackbox zu verschwinden.</p>
 <h2>Fünf Fragen vor der Auswahl</h2>
 <ul>
-<li><strong>Audio:</strong> Wird die Sprachaufnahme gespeichert, transkribiert und anschließend gelöscht oder dauerhaft aufbewahrt?</li>
-<li><strong>KI-Anbieter:</strong> Wird der Traumtext zur Analyse an einen externen Anbieter eines KI-Modells übermittelt?</li>
-<li><strong>Training:</strong> Werden Ihre Träume zum Trainieren von Modellen verwendet oder ausschließlich, um Ihre eigene Analyse zu erstellen?</li>
-<li><strong>Kontrolle über das Konto:</strong> Können Sie Ihre Daten exportieren oder löschen, ohne dafür eine unklare Supportanfrage stellen zu müssen?</li>
-<li><strong>Werbung:</strong> Werden Traumnotizen für zielgerichtete Werbung verwendet?</li>
+<li><strong>Audio:</strong> Die Aufnahme dient der Transkription und wird danach gelöscht. Schweigt die App dazu, ist das ein Warnsignal.</li>
+<li><strong>KI-Anbieter:</strong> Er wird genannt, und Sie wissen, was übermittelt wird. „Vertrauenswürdige Partner“ ist kein Name.</li>
+<li><strong>Training:</strong> Die App sagt, ob Ihre Träume Modelle trainieren dürfen.</li>
+<li><strong>Löschung:</strong> direkt in der App, mit genannter Frist.</li>
+<li><strong>Werbung:</strong> kein Verkauf von Daten, keine personalisierte Werbung, klar formuliert.</li>
 </ul>
+<h2>Was Noctalia darauf antwortet</h2>
+<p>Laut unserer <a class="text-dream-salmon hover:underline" href="/de/datenschutz">Datenschutzerklärung</a> läuft die Spracherkennung zuerst auf Ihrem Smartphone. Scheitert sie, kann das Audio an Google Cloud Speech-to-Text gehen; es wird nur wenige Minuten verarbeitet und von Noctalia nicht gespeichert. Der Traumtext geht für Analyse und Bilder an Google (Gemini), wobei das Training allgemeiner Modelle deaktiviert ist, soweit der Dienst das erlaubt. Das Tagebuch liegt in der EU. Kein Datenverkauf, keine personalisierte Werbung. <a class="text-dream-salmon hover:underline" href="/de/konto-loeschen">Ihr Konto löschen</a> Sie in den Einstellungen; die Daten werden in der Regel innerhalb von 30 Tagen entfernt.</p>
 <h2>Was sich durch die EU-KI-Verordnung ändert</h2>
-<p>Die EU-KI-Verordnung führt schrittweise strengere Transparenzpflichten für bestimmte Akteure im KI-Bereich ein. Für die Wahl eines Traumtagebuchs gilt weiterhin eine einfache Faustregel: Bevorzugen Sie Produkte, die ihre Anbieter, die Datennutzung und ihre Grenzen klar benennen, statt mit einem vagen KI-Versprechen ohne Kontext zu werben.</p>
+<p>Die KI-Verordnung wurde 2024 verabschiedet und gilt seit 2025 schrittweise. Ein Traumtagebuch zählt nicht zu ihren Hochrisiko-Anwendungen. Wenn Sie mit einer KI chatten, müssen Sie darüber informiert werden. Ein Siegel „konform mit der KI-Verordnung“ sagt also wenig über Ihre Notizen: Auskunft und Löschung regelt die DSGVO.</p>
 <h2>Eine gute Analyse muss korrigierbar bleiben</h2>
-<p>Ein KI-gestütztes Tagebuch sollte Ihnen helfen, Ihre Träume noch einmal zu betrachten, statt Sie auf eine endgültige Deutung festzulegen. Achten Sie auf Funktionen, die die Originalnotiz bewahren, Traumtext und Analyse voneinander trennen und Korrekturen an wiederkehrenden Motiven zulassen. Traumdeutungen sind als persönliche Hypothesen sinnvoller denn als Diagnosen.</p>
-<p>Unterscheiden Sie außerdem drei Ebenen: die Rohaufnahme, die Transkription und die Analyse. Eine App kann sehr datenschutzfreundlich wirken und dennoch Metadaten wie Uhrzeit, Sprache, Gerät oder fehlgeschlagene Versuche speichern. Je sensibler der Traum, desto wichtiger ist ein klarer, einfacher Löschvorgang.</p>
-<p>Noctalia folgt diesem Prinzip: schnell erfassen, den Kontext bewahren und den Traum anschließend behutsam betrachten. Die <a class="text-dream-salmon hover:underline" href="/de/datenschutz">Datenschutzerklärung</a> sollte bereits vor der Nutzung verständlich sein, und Leitfäden wie der zum <a class="text-dream-salmon hover:underline" href="dream-journaling-der-vollstaendige-leitfaden-zum-aufzeichnen-ihrer-naechtlichen-abenteuer">Traumtagebuch</a> stellen Ihre eigenen Erfahrungen vor die Automatisierung.</p>
-<h2>Quellen und Orientierung</h2>
-<ul>
-<li><a class="text-dream-salmon hover:underline" href="https://www.cnil.fr/fr/intelligence-artificielle" rel="noopener noreferrer">CNIL: Künstliche Intelligenz und personenbezogene Daten</a></li>
-<li><a class="text-dream-salmon hover:underline" href="https://digital-strategy.ec.europa.eu/en/policies/regulatory-framework-ai" rel="noopener noreferrer">Europäische Kommission: KI-Regulierungsrahmen</a></li>
+<p>Eine KI-Analyse ist eine Lesart, kein Urteil. Wählen Sie eine App, die Ihre eigenen Worte getrennt von der Analyse aufbewahrt und Ihnen Widerspruch erlaubt. Achten Sie auch auf Metadaten wie Uhrzeit oder Gerät: Je sensibler der Traum, desto wichtiger ist eine einfache Löschung. Unser Leitfaden zum <a class="text-dream-salmon hover:underline" href="dream-journaling-der-vollstaendige-leitfaden-zum-aufzeichnen-ihrer-naechtlichen-abenteuer">Traumtagebuch</a> stellt Ihren eigenen Kontext an erste Stelle.</p>
+<div class="glass-panel rounded-2xl p-6 my-8 border border-dream-salmon/20">
+<h2 class="font-serif text-2xl text-dream-cream mb-3">Traum erzählen, Text behalten</h2>
+<p>Erzählen Sie Ihren Traum in Noctalia nach dem Aufwachen laut. Er wird in Ihr Tagebuch transkribiert, die Aufnahme wird nicht aufbewahrt. Danach lesen Sie Ihre Träume nebeneinander.</p>
+<p><a class="inline-flex items-center justify-center rounded-full bg-dream-salmon px-5 py-3 text-sm font-semibold text-dream-dark hover:bg-dream-cream transition-colors" href="/de/traumtagebuch-spracheingabe">Traumtagebuch per Sprache testen</a></p>
+</div>
+</section>
+<section class="mt-16 glass-panel rounded-2xl p-6" id="sources">
+<h2 class="font-serif text-2xl text-dream-cream mb-4">Quellen und weiterführende Literatur</h2>
+<ul class="mt-6 space-y-2 text-sm text-gray-400">
+<li><a href="https://eur-lex.europa.eu/eli/reg/2016/679/oj" rel="nofollow noopener noreferrer" target="_blank">DSGVO, Verordnung (EU) 2016/679, Artikel 9</a></li>
+<li><a href="https://digital-strategy.ec.europa.eu/en/policies/regulatory-framework-ai" rel="nofollow noopener noreferrer" target="_blank">Europäische Kommission: KI-Verordnung (englisch)</a></li>
+<li><a href="https://www.cnil.fr/fr/intelligence-artificielle" rel="nofollow noopener noreferrer" target="_blank">CNIL: Künstliche Intelligenz und personenbezogene Daten (französisch)</a></li>
 </ul>
+<p class="mt-6 text-xs text-purple-200/60">Aktualisiert am 9. Oktober 2026</p>
 </section>
 </article>
