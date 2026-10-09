@@ -5,7 +5,7 @@
   "lang": "en",
   "slug": "rem-sleep-dreams",
   "title": "REM Sleep: Why Your Brain Needs Dreams | Noctalia",
-  "description": "Explore the science of REM sleep and its vital role in dreaming. Learn how sleep cycles work and optimize your REM phases for better memory and dream recall.",
+  "description": "REM sleep explained: when it happens, why REM dreams feel so vivid, what disrupts it, and how to use your sleep cycles to remember more of your dreams.",
   "robots": "max-image-preview:large",
   "themeColor": "#0a0514",
   "htmlClass": "scroll-smooth blog-article",
@@ -14,25 +14,25 @@
   "mainClass": "pt-32 pb-20 px-4",
   "ogType": "article",
   "ogTitle": "REM Sleep: Why Your Brain Needs Dreams | Noctalia",
-  "ogDescription": "Explore the science of REM sleep and its vital role in dreaming. Learn how sleep cycles work and optimize your REM phases for better memory and dream recall.",
+  "ogDescription": "When REM sleep happens, why its dreams feel so real, and how to use your sleep cycles to remember them.",
   "ogImage": "https://noctalia.app/img/blog/rem-sleep-dreams.webp",
   "ogImageAlt": "Visual representation of REM sleep brain activity and eye movement",
   "twitterCard": "summary_large_image",
   "twitterTitle": "REM Sleep: Why Your Brain Needs Dreams | Noctalia",
-  "twitterDescription": "Explore the science of REM sleep and its vital role in dreaming. Learn how sleep cycles work and optimize your REM phases for better memory and dream recall.",
+  "twitterDescription": "REM sleep and dreams: what science has measured, what is still debated, and what to note when you wake up.",
   "twitterImage": "https://noctalia.app/img/blog/rem-sleep-dreams.webp",
   "twitterImageAlt": "Visual representation of REM sleep brain activity and eye movement",
   "publishedTime": "2025-12-11",
-  "modifiedTime": "2026-01-06",
+  "modifiedTime": "2026-10-08",
   "author": "Thanh Chau",
   "prevPath": "/en/blog/why-we-dream-science",
   "nextPath": "/en/blog/dream-interpretation-history",
   "preloadImage": "/img/blog/rem-sleep-dreams.webp",
   "jsonLd": [
-    "{\n  \"@context\": \"https://schema.org\",\n  \"@type\": \"BlogPosting\",\n  \"headline\": \"REM Sleep and Dreams: Understanding Your Brain's Nightly Reset\",\n  \"description\": \"Discover the science of REM sleep and why it's crucial for dreaming. Learn about sleep cycles, REM vs non-REM dreams, and how to optimize your REM sleep.\",\n  \"image\": {\n    \"@type\": \"ImageObject\",\n    \"url\": \"https://noctalia.app/img/blog/rem-sleep-dreams.webp\",\n    \"width\": 1200,\n    \"height\": 630\n  },\n  \"author\": [\n    {\n      \"@type\": \"Person\",\n      \"@id\": \"https://noctalia.app/en/about#person\",\n      \"name\": \"Thanh Chau\",\n      \"jobTitle\": \"Founder & Publication Director\",\n      \"url\": \"https://noctalia.app/en/about\",\n      \"worksFor\": {\n        \"@type\": \"Organization\",\n        \"@id\": \"https://noctalia.app/#organization\",\n        \"name\": \"Noctalia\",\n        \"url\": \"https://noctalia.app\"\n      }\n    },\n    {\n      \"@type\": \"Organization\",\n      \"@id\": \"https://noctalia.app/#organization\",\n      \"name\": \"Noctalia\",\n      \"url\": \"https://noctalia.app\",\n      \"logo\": {\n        \"@type\": \"ImageObject\",\n        \"url\": \"https://noctalia.app/logo/logo_noctalia.png\"\n      }\n    }\n  ],\n  \"publisher\": {\n    \"@type\": \"Organization\",\n    \"name\": \"Noctalia\",\n    \"url\": \"https://noctalia.app\",\n    \"logo\": {\n      \"@type\": \"ImageObject\",\n      \"url\": \"https://noctalia.app/logo/logo_noctalia.png\"\n    }\n  },\n  \"datePublished\": \"2025-12-11\",\n  \"dateModified\": \"2026-01-06\",\n  \"mainEntityOfPage\": {\n    \"@type\": \"WebPage\",\n    \"@id\": \"https://noctalia.app/en/blog/rem-sleep-dreams\"\n  },\n  \"inLanguage\": \"en\",\n  \"isAccessibleForFree\": true,\n  \"wordCount\": 1785,\n  \"timeRequired\": \"PT6M\",\n  \"url\": \"https://noctalia.app/en/blog/rem-sleep-dreams\"\n}",
+    "{\n    \"@context\": \"https://schema.org\",\n    \"@type\": \"BlogPosting\",\n    \"headline\": \"REM sleep and dreams: what really happens in your brain at night\",\n    \"description\": \"REM sleep explained: when it happens, why REM dreams feel so vivid, what disrupts it, and how to use your sleep cycles to remember more of your dreams.\",\n    \"image\": {\n        \"@type\": \"ImageObject\",\n        \"url\": \"https://noctalia.app/img/blog/rem-sleep-dreams.webp\",\n        \"width\": 1200,\n        \"height\": 630\n    },\n    \"author\": [\n        {\n            \"@type\": \"Person\",\n            \"@id\": \"https://noctalia.app/en/about#person\",\n            \"name\": \"Thanh Chau\",\n            \"jobTitle\": \"Founder & Publication Director\",\n            \"url\": \"https://noctalia.app/en/about\",\n            \"worksFor\": {\n                \"@type\": \"Organization\",\n                \"@id\": \"https://noctalia.app/#organization\",\n                \"name\": \"Noctalia\",\n                \"url\": \"https://noctalia.app\"\n            }\n        },\n        {\n            \"@type\": \"Organization\",\n            \"@id\": \"https://noctalia.app/#organization\",\n            \"name\": \"Noctalia\",\n            \"url\": \"https://noctalia.app\",\n            \"logo\": {\n                \"@type\": \"ImageObject\",\n                \"url\": \"https://noctalia.app/logo/logo_noctalia.png\"\n            }\n        }\n    ],\n    \"publisher\": {\n        \"@type\": \"Organization\",\n        \"name\": \"Noctalia\",\n        \"url\": \"https://noctalia.app\",\n        \"logo\": {\n            \"@type\": \"ImageObject\",\n            \"url\": \"https://noctalia.app/logo/logo_noctalia.png\"\n        }\n    },\n    \"datePublished\": \"2025-12-11\",\n    \"dateModified\": \"2026-10-08\",\n    \"mainEntityOfPage\": {\n        \"@type\": \"WebPage\",\n        \"@id\": \"https://noctalia.app/en/blog/rem-sleep-dreams\"\n    },\n    \"inLanguage\": \"en\",\n    \"isAccessibleForFree\": true,\n    \"wordCount\": 2668,\n    \"timeRequired\": \"PT13M\",\n    \"url\": \"https://noctalia.app/en/blog/rem-sleep-dreams\"\n}",
     "{\n  \"@context\": \"https://schema.org\",\n  \"@type\": \"WebPage\",\n  \"@id\": \"https://noctalia.app/en/blog/rem-sleep-dreams\",\n  \"url\": \"https://noctalia.app/en/blog/rem-sleep-dreams\",\n  \"name\": \"REM Sleep: Why Your Brain Needs Dreams | Noctalia\",\n  \"inLanguage\": \"en\"\n}",
-    "{\n  \"@context\": \"https://schema.org\",\n  \"@type\": \"FAQPage\",\n  \"mainEntity\": [\n    {\n      \"@type\": \"Question\",\n      \"name\": \"How much REM sleep do I need?\",\n      \"acceptedAnswer\": {\n        \"@type\": \"Answer\",\n        \"text\": \"Adults typically need 90-120 minutes of REM sleep per night, which represents about 20-25% of total sleep. This usually occurs across 4-6 REM cycles throughout the night, with REM periods becoming longer toward morning.\"\n      }\n    },\n    {\n      \"@type\": \"Question\",\n      \"name\": \"Why are REM dreams more vivid than other dreams?\",\n      \"acceptedAnswer\": {\n        \"@type\": \"Answer\",\n        \"text\": \"REM dreams are more vivid because during REM sleep, brain activity in visual, motor, emotional, and memory centers is as high as when awake. The prefrontal cortex (logical thinking) is less active, allowing bizarre, emotional narratives to unfold without logical constraints.\"\n      }\n    },\n    {\n      \"@type\": \"Question\",\n      \"name\": \"Can I increase my REM sleep naturally?\",\n      \"acceptedAnswer\": {\n        \"@type\": \"Answer\",\n        \"text\": \"Yes. Maintain a consistent sleep schedule, get 7-9 hours of sleep, avoid alcohol and certain medications that suppress REM, exercise regularly (but not before bed), keep your bedroom cool (60-67°F), and reduce stress through relaxation techniques.\"\n      }\n    }\n  ]\n}",
-    "{\n  \"@context\": \"https://schema.org\",\n  \"@type\": \"BreadcrumbList\",\n  \"itemListElement\": [\n    {\n      \"@type\": \"ListItem\",\n      \"position\": 1,\n      \"name\": \"Home\",\n      \"item\": \"https://noctalia.app/\"\n    },\n    {\n      \"@type\": \"ListItem\",\n      \"position\": 2,\n      \"name\": \"Resources\",\n      \"item\": \"https://noctalia.app/en/blog/\"\n    },\n    {\n      \"@type\": \"ListItem\",\n      \"position\": 3,\n      \"name\": \"REM Sleep and Dreams\",\n      \"item\": \"https://noctalia.app/en/blog/rem-sleep-dreams\"\n    }\n  ]\n}"
+    "{\n    \"@context\": \"https://schema.org\",\n    \"@type\": \"FAQPage\",\n    \"mainEntity\": [\n        {\n            \"@type\": \"Question\",\n            \"name\": \"How much REM sleep do I need?\",\n            \"acceptedAnswer\": {\n                \"@type\": \"Answer\",\n                \"text\": \"There is no official target for REM alone. In adults it makes up around a quarter of sleep, spread over several periods that lengthen toward morning. The best way to get enough is to sleep enough overall: 7 to 9 hours for most adults.\"\n            }\n        },\n        {\n            \"@type\": \"Question\",\n            \"name\": \"Why are REM dreams more vivid than other dreams?\",\n            \"acceptedAnswer\": {\n                \"@type\": \"Answer\",\n                \"text\": \"During REM, emotional regions of the brain are very active, while part of the prefrontal cortex, involved in reasoning, is less so, and noradrenaline and serotonin drop. This mix likely contributes to vivid, emotional and illogical dreams, though the exact mechanism is still debated.\"\n            }\n        },\n        {\n            \"@type\": \"Question\",\n            \"name\": \"Do we only dream during REM sleep?\",\n            \"acceptedAnswer\": {\n                \"@type\": \"Answer\",\n                \"text\": \"No. People also dream in non-REM sleep. Those dreams are usually shorter, closer to a thought and harder to remember, which is why REM long got all the credit.\"\n            }\n        },\n        {\n            \"@type\": \"Question\",\n            \"name\": \"Can I increase my REM sleep naturally?\",\n            \"acceptedAnswer\": {\n                \"@type\": \"Answer\",\n                \"text\": \"The surest way is to protect your total sleep: regular hours, enough time in bed and no habitual short nights, since REM is concentrated at the end. Alcohol in the evening and some medications reduce REM. No supplement has shown a reliable benefit; ask a doctor before trying one.\"\n            }\n        }\n    ]\n}",
+    "{\n    \"@context\": \"https://schema.org\",\n    \"@type\": \"BreadcrumbList\",\n    \"itemListElement\": [\n        {\n            \"@type\": \"ListItem\",\n            \"position\": 1,\n            \"name\": \"Home\",\n            \"item\": \"https://noctalia.app/\"\n        },\n        {\n            \"@type\": \"ListItem\",\n            \"position\": 2,\n            \"name\": \"Resources\",\n            \"item\": \"https://noctalia.app/en/blog/\"\n        },\n        {\n            \"@type\": \"ListItem\",\n            \"position\": 3,\n            \"name\": \"REM sleep and dreams\",\n            \"item\": \"https://noctalia.app/en/blog/rem-sleep-dreams\"\n        }\n    ]\n}"
   ],
   "activeNav": "resources"
 }
@@ -52,7 +52,7 @@
 </li>
 <li class="text-purple-400">/</li>
 <li itemprop="itemListElement" itemscope="" itemtype="https://schema.org/ListItem">
-<span class="text-dream-cream" itemprop="name">REM Sleep and Dreams</span>
+<span class="text-dream-cream" itemprop="name">REM sleep and dreams</span>
 <meta content="3" itemprop="position">
 </li>
 </ol>
@@ -60,17 +60,17 @@
 <!-- Article Header -->
 <header class="mb-12">
 <div class="flex flex-wrap items-center gap-3 mb-6">
-<span class="text-xs font-mono text-dream-salmon border border-dream-salmon/30 rounded-full px-3 py-1 uppercase">Complete Guide</span>
+<span class="text-xs font-mono text-dream-salmon border border-dream-salmon/30 rounded-full px-3 py-1 uppercase">Complete guide</span>
 <a class="text-xs font-mono text-purple-200/70 border border-white/10 rounded-full px-3 py-1 hover:text-white hover:border-dream-salmon/30 transition-colors" href="dream-journal">Topic: Dream journaling</a>
 <span aria-hidden="true" class="w-full sm:hidden"></span>
 <span class="text-sm text-purple-300/60">Published December 11, 2025</span>
-<span class="text-sm text-purple-300/60">6 min read</span>
+<span class="text-sm text-purple-300/60">13 min read</span>
 </div>
 <h1 class="font-serif text-3xl md:text-5xl mb-6 text-transparent bg-clip-text bg-gradient-to-b from-white via-dream-lavender to-purple-400/50 leading-tight">
-                    REM Sleep and Dreams: Understanding Your Brain's Nightly Reset
+                    REM sleep and dreams: what really happens in your brain at night
                 </h1>
 <p class="text-lg text-purple-200/80 leading-relaxed">
-                    Every night, your brain cycles through distinct sleep stages, but REM sleep is where the real action happens. Your most vivid dreams unfold, memories consolidate, and your mind processes emotions. Understanding this phase is the key to unlocking better dream recall and sleep quality.
+                    The alarm goes off in the middle of a story: an airport that keeps changing shape, a conversation that made perfect sense. Ten seconds later, it is slipping away. A dream that vivid most likely came from REM sleep, the stage that grows longer toward morning. Here is what research knows about it, what is still debated, and how to use it to remember your dreams.
                 </p>
 </header>
 <!-- Author Byline (E-E-A-T) -->
@@ -87,7 +87,7 @@
 <!-- Quick Answer (AI SEO) -->
 <section class="glass-panel rounded-2xl p-6 mb-8 border border-dream-salmon/20 bg-white/5" aria-labelledby="quick-answer-title">
     <h2 id="quick-answer-title" class="font-serif text-xl text-dream-cream mb-3">Quick answer</h2>
-    <p class="text-purple-100/80 leading-relaxed">Explore the science of REM sleep and its vital role in dreaming. Learn how sleep cycles work and optimize your REM phases for better memory and dream recall.</p>
+    <p class="text-purple-100/80 leading-relaxed">REM (rapid eye movement) sleep is the stage when the brain is highly active while the arm and leg muscles are temporarily paralyzed. It comes back several times a night and lengthens toward morning. Most vivid, story-like dreams happen in REM, although people also dream in other stages. To remember more, protect the end of your night and note the dream as soon as you wake.</p>
 </section>
 
 <!-- Editorial Review (E-E-A-T) -->
@@ -113,115 +113,99 @@
 <!-- Table of Contents -->
 <nav class="glass-panel rounded-2xl p-6 mb-12">
 <h2 class="font-serif text-lg text-dream-cream mb-4 flex items-center gap-2">
-<i class="w-5 h-5 text-dream-salmon" data-lucide="list"></i> Table of Contents
+<i class="w-5 h-5 text-dream-salmon" data-lucide="list"></i> Table of contents
                 </h2>
 <ol class="space-y-2 text-sm text-purple-200/70">
 <li><a class="toc-link block" href="#what-is-rem">1. What is REM sleep?</a></li>
-<li><a class="toc-link block" href="#sleep-cycles">2. Understanding sleep cycles</a></li>
-<li><a class="toc-link block" href="#why-crucial">3. Why REM sleep matters for dreaming</a></li>
+<li><a class="toc-link block" href="#sleep-cycles">2. How sleep cycles work</a></li>
+<li><a class="toc-link block" href="#why-crucial">3. Why REM dreams are so vivid</a></li>
 <li><a class="toc-link block" href="#rem-vs-nonrem">4. REM vs non-REM dreams</a></li>
 <li><a class="toc-link block" href="#brain-activity">5. What happens in your brain during REM</a></li>
-<li><a class="toc-link block" href="#optimize">6. How to optimize your REM sleep</a></li>
-<li><a class="toc-link block" href="#disorders">7. REM sleep disorders</a></li>
-<li><a class="toc-link block" href="#dream-recall">8. Improving dream recall through REM awareness</a></li>
+<li><a class="toc-link block" href="#optimize">6. How to protect your REM sleep</a></li>
+<li><a class="toc-link block" href="#disorders">7. REM sleep disorders: when to see a doctor</a></li>
+<li><a class="toc-link block" href="#dream-recall">8. Using REM to remember your dreams</a></li>
 </ol>
 </nav>
 <!-- Article Content -->
 <div class="prose max-w-none text-gray-300">
-<h2 id="what-is-rem">What Is REM Sleep? The Dream Stage Explained</h2>
+<h2 id="what-is-rem">What is REM sleep?</h2>
 <p>
-                    REM stands for <strong>Rapid Eye Movement</strong>, named after the characteristic quick eye movements that occur beneath closed eyelids during this stage. Researchers Eugene Aserinsky and Nathaniel Kleitman discovered it in 1953, and it remains one of the most fascinating states of consciousness.
+                    REM stands for <strong>rapid eye movement</strong>: during this stage, the eyes move quickly beneath closed eyelids. Eugene Aserinsky and Nathaniel Kleitman described it in 1953, after noticing that these movements came back in regular periods through the night.
                 </p>
 <p>
-                    During REM sleep, your brain is almost as active as when you're awake, yet your body is temporarily paralyzed. This paradoxical state - sometimes called "paradoxical sleep" - creates the perfect conditions for vivid, story-like dreams.
+                    What makes REM so striking is a contrast. The brain is highly active, while the arm and leg muscles are temporarily paralyzed, which stops you from acting out your dreams. That is why it is also called "paradoxical sleep."
                 </p>
-<h3>Key Characteristics of REM Sleep and Dreams</h3>
+<h3>Key characteristics of REM sleep</h3>
 <ul>
-<li><strong>Rapid eye movements:</strong> Eyes dart back and forth beneath eyelids, possibly tracking dream imagery</li>
-<li><strong>Muscle atonia:</strong> Voluntary muscles are paralyzed to prevent acting out dreams</li>
-<li><strong>Increased brain activity:</strong> Neural activity rivals waking levels in many regions</li>
-<li><strong>Irregular vital signs:</strong> Heart rate, breathing, and blood pressure fluctuate</li>
-<li><strong>Vivid dreaming:</strong> 80% of awakenings from REM yield dream reports</li>
+<li><strong>Rapid eye movements:</strong> bursts of quick movements under closed eyelids.</li>
+<li><strong>Muscle atonia:</strong> most voluntary muscles go slack, except the eye muscles and the diaphragm.</li>
+<li><strong>An active brain:</strong> in many regions, activity comes close to waking levels.</li>
+<li><strong>Less regular vital signs:</strong> breathing and heart rate become more variable.</li>
+<li><strong>The most vivid dreams:</strong> dreams are reported most often, and are most story-like, after REM awakenings.</li>
 </ul>
 <p>
-                    Adults typically spend <strong>20-25% of total sleep time in REM</strong>, which translates to roughly 90-120 minutes per night across multiple cycles.
+                    In adults, REM makes up around a quarter of total sleep, and that share tends to shrink with age.
                 </p>
-<h2 id="sleep-cycles">Understanding Sleep Cycles and REM Phases</h2>
+<h2 id="sleep-cycles">How do sleep cycles and REM phases work?</h2>
 <p>
-                    Sleep isn't a uniform state - it's a carefully orchestrated progression through different stages that repeat throughout the night. Each complete cycle lasts approximately <strong>90-110 minutes</strong> and repeats 4-6 times per night.
+                    Sleep is not one uniform state. Over a typical night, you go through four to six cycles. They last about 90 minutes on average: the first is often shorter, and later ones tend to run between 90 and 120 minutes.
                 </p>
-<h3>The Four Stages of Sleep and Dreaming</h3>
-<p><strong>Stage 1 (N1): Light Sleep</strong></p>
+<h3>The stages of sleep</h3>
+<p><strong>Stage 1 (N1): falling asleep</strong></p>
 <ul>
-<li>Transition between wakefulness and sleep</li>
-<li>Lasts only 1-5 minutes per cycle</li>
-<li>Easy to wake from, may experience hypnic jerks</li>
-<li>Theta waves begin to appear on EEG</li>
+<li>A transition of a few minutes, easy to wake from. Hypnic jerks, the sudden start as you drift off, happen here.</li>
 </ul>
-<p><strong>Stage 2 (N2): Deeper Light Sleep</strong></p>
+<p><strong>Stage 2 (N2): light sleep</strong></p>
 <ul>
-<li>Represents 45-55% of total sleep</li>
-<li>Body temperature drops, heart rate slows</li>
-<li>Sleep spindles and K-complexes appear - critical for memory consolidation</li>
-<li>Become less aware of surroundings</li>
+<li>A large share of the night. Heart rate and body temperature drop; sleep spindles appear on the EEG.</li>
 </ul>
-<p><strong>Stage 3 (N3): Deep Sleep (Slow-Wave Sleep)</strong></p>
+<p><strong>Stage 3 (N3): deep sleep</strong></p>
 <ul>
-<li>Deepest and most restorative sleep stage</li>
-<li>Delta waves dominate brain activity</li>
-<li>Physical restoration occurs - tissue repair, immune function, growth hormone release</li>
-<li>Very difficult to wake from, disorientation if awakened</li>
-<li>Dreams can occur but are usually vague, non-narrative</li>
+<li>Slow, large brain waves; the hardest stage to wake from and the most restorative for the body.</li>
+<li>Dreams happen here too, but they are usually shorter and less vivid.</li>
 </ul>
-<p><strong>REM Sleep: Dream Stage</strong></p>
+<p><strong>REM sleep</strong></p>
 <ul>
-<li>First occurs about 90 minutes after falling asleep</li>
-<li>Increases in duration with each cycle (from 10 minutes to 60+ minutes)</li>
-<li>Brain activity similar to waking state</li>
-<li>Most vivid, memorable dreams occur here</li>
+<li>First appears about 90 minutes after you fall asleep, with an active brain and relaxed muscles.</li>
 </ul>
-<h3>How Sleep Cycles Change Through the Night</h3>
+<h3>How sleep cycles change through the night</h3>
 <p>
-                    Sleep cycle composition shifts dramatically as the night progresses:
+                    The cycles do not all look the same:
                 </p>
 <ul>
-<li><strong>Early night (Cycles 1-2):</strong> Dominated by deep sleep (N3), minimal REM</li>
-<li><strong>Middle night (Cycles 3-4):</strong> Less deep sleep, REM periods lengthen</li>
-<li><strong>Late night (Cycles 5-6):</strong> Almost no deep sleep, REM can last 30-60 minutes</li>
+<li><strong>First half of the night:</strong> deep sleep dominates, and REM periods are short, sometimes only a few minutes.</li>
+<li><strong>Second half of the night:</strong> deep sleep becomes rare and REM periods lengthen.</li>
+<li><strong>Last cycles before waking:</strong> a single REM period can last around an hour.</li>
 </ul>
-<blockquote>
-                    "This is why cutting sleep short by even an hour or two disproportionately robs you of REM sleep - you're missing the longest, most dream-rich cycles of the night."
-                </blockquote>
-<h2 id="why-crucial">Why REM Sleep Matters for Dreaming</h2>
 <p>
-                    While dreams can occur in any sleep stage, REM sleep is the dream factory of the brain. Here's why REM produces the most vivid, memorable dreams:
+                    The practical consequence: when you cut your night short by an hour or two, you mostly lose REM-rich sleep. Those late cycles are also the ones whose dreams you are most likely to remember.
                 </p>
-<h3>Unique Brain Chemistry During REM Sleep</h3>
+<h2 id="why-crucial">Why are REM dreams so vivid?</h2>
 <p>
-                    During REM sleep, neurotransmitter levels shift dramatically:
+                    You can dream in any stage of sleep, but REM dreams are usually the most vivid: images, movement, strong emotions, a plot. Researchers have clues as to why, not a complete explanation.
+                </p>
+<h3>Brain chemistry during REM sleep</h3>
+<ul>
+<li><strong>Acetylcholine stays high:</strong> it keeps the cortex activated, much as it does when you are awake.</li>
+<li><strong>Noradrenaline and serotonin fall sharply:</strong> these systems, which support alertness during the day, go almost silent.</li>
+</ul>
+<p>
+                    This mix may contribute to the feel of dreams: intense, with little critical distance. It is a plausible link, not a proven mechanism.
+                </p>
+<h3>Brain regions activated during REM dreams</h3>
+<p>
+                    Brain imaging studies, starting in the 1990s, show a recurring pattern during REM sleep:
                 </p>
 <ul>
-<li><strong>Acetylcholine increases:</strong> This neurotransmitter activates the visual cortex and hippocampus, creating vivid imagery and accessing memories</li>
-<li><strong>Norepinephrine and serotonin drop to zero:</strong> This reduces logical thinking and reality testing, allowing bizarre dream content</li>
-<li><strong>Dopamine increases:</strong> Enhances motivation, emotion, and reward processing in dreams</li>
-</ul>
-<h3>Brain Regions Activated During REM Dreams</h3>
-<p>
-                    PET scans and fMRI studies reveal that during REM sleep:
-                </p>
-<ul>
-<li><strong>Visual cortex:</strong> Highly active, creating dream imagery</li>
-<li><strong>Amygdala:</strong> Emotional center fires intensely, explaining emotional dream content</li>
-<li><strong>Hippocampus:</strong> Memory center integrates new and old information</li>
-<li><strong>Motor cortex:</strong> Active but signals are blocked, creating dream movement sensations</li>
-<li><strong>Prefrontal cortex:</strong> DEACTIVATED - logical reasoning and self-awareness are offline</li>
+<li><strong>Emotional regions, such as the amygdala:</strong> highly active, which fits the emotional charge of many dreams.</li>
+<li><strong>The dorsolateral prefrontal cortex:</strong> less active. This region is involved in reasoning and planning, which may help explain why you rarely notice, in the moment, that a dream makes no sense.</li>
 </ul>
 <p>
-                    Together, these conditions create the perfect <a class="text-dream-salmon hover:underline" href="../symbols/storm">storm</a> for vivid, emotional, illogical narratives that feel completely real while you experience them.
+                    Together, these conditions favor scenes that are vivid, emotional and illogical, yet feel completely real while they last.
                 </p>
-<h2 id="rem-vs-nonrem">REM vs Non-REM Dreams: Key Differences</h2>
+<h2 id="rem-vs-nonrem">REM vs non-REM dreams: what is the difference?</h2>
 <p>
-                    Dreams aren't exclusive to REM sleep, but the quality differs dramatically between stages:
+                    Dreams are not exclusive to REM sleep, but they tend to take a different form:
                 </p>
 </div>
 <!-- Dream Type Comparison Cards -->
@@ -231,15 +215,15 @@
 <div class="p-2 bg-purple-500/20 rounded-lg">
 <i class="w-5 h-5 text-purple-300" data-lucide="zap"></i>
 </div>
-<h3 class="font-serif text-lg text-dream-cream">REM Dreams</h3>
+<h3 class="font-serif text-lg text-dream-cream">REM dreams</h3>
 </div>
 <ul class="text-sm text-gray-300 space-y-2">
-<li>Vivid, detailed imagery</li>
-<li>Complex narratives with plot</li>
-<li>Bizarre, illogical elements</li>
-<li>Intense emotions</li>
-<li>Better recall upon waking</li>
-<li>Often involve movement and action</li>
+<li>Vivid, detailed images</li>
+<li>A story with a plot and twists</li>
+<li>Strange or impossible elements</li>
+<li>Often strong emotions</li>
+<li>Easier to recall on waking</li>
+<li>Frequent movement and action</li>
 </ul>
 </div>
 <div class="symptom-card glass-panel rounded-xl p-6 border border-transparent">
@@ -247,211 +231,155 @@
 <div class="p-2 bg-blue-500/20 rounded-lg">
 <i class="w-5 h-5 text-blue-300" data-lucide="cloud"></i>
 </div>
-<h3 class="font-serif text-lg text-dream-cream">Non-REM Dreams</h3>
+<h3 class="font-serif text-lg text-dream-cream">Non-REM dreams</h3>
 </div>
 <ul class="text-sm text-gray-300 space-y-2">
-<li>Vague, fragmented imagery</li>
-<li>Thought-like, static scenes</li>
-<li>More realistic, mundane content</li>
-<li>Muted emotions</li>
-<li>Difficult to recall</li>
-<li>Often involve thoughts about daily concerns</li>
+<li>Shorter, more fragmented scenes</li>
+<li>Often closer to a thought than a story</li>
+<li>More realistic, everyday content</li>
+<li>Generally calmer emotions</li>
+<li>Harder to recall</li>
+<li>Often about ordinary daily concerns</li>
 </ul>
 </div>
 </div>
 <div class="prose max-w-none text-gray-300">
 <p>
-                    Research shows that when awakened from REM sleep, <strong>80-90% of people report vivid dreams</strong>, compared to only 20-50% when awakened from non-REM sleep. The dreams from non-REM tend to be brief, thought-like experiences rather than immersive narratives.
+                    The first sleep lab studies, in the 1950s, found vivid dream recall after <strong>74 to 80% of REM awakenings</strong>, against 7 to 9% of non-REM awakenings. When researchers later asked a broader question, such as "Was anything going through your mind?", awakenings from non-REM stages N2 and N3 yielded some reported experience 50 to 70% of the time. The difference is less "dream or no dream" than the kind of dream.
                 </p>
-<h2 id="brain-activity">What Happens in Your Brain During REM Sleep</h2>
+<h2 id="brain-activity">What happens in your brain during REM sleep?</h2>
 <p>
-                    REM sleep represents a unique neurological state that researcher J. Allan Hobson called "the brain awake in the sleeping body." Here's what's happening:
+                    During REM, the brain behaves in some respects like a waking one. Several processes are studied, with very different levels of evidence.
                 </p>
-<h3>The PGO Waves: Brain Signals That Trigger REM Dreams</h3>
+<h3>PGO waves: the signals linked to eye movements</h3>
 <p>
-                    Ponto-Geniculo-Occipital (PGO) waves originate in the pons (brainstem), travel through the geniculate nucleus (visual relay), and arrive at the occipital cortex (visual processing). These electrical bursts:
+                    In animals, mainly cats, researchers have recorded bursts of electrical activity called ponto-geniculo-occipital (PGO) waves. They start in the brainstem and reach visual areas as the eyes move. In 1977, J. Allan Hobson and Robert McCarley built their activation-synthesis hypothesis on such signals: the cortex would weave a story out of activation from the brainstem. In humans the evidence is indirect, and the hypothesis is still debated.
                 </p>
-<ul>
-<li>Trigger rapid eye movements</li>
-<li>Activate visual dream imagery</li>
-<li>May consolidate visual memories</li>
-<li>Occur in bursts throughout REM sleep</li>
-</ul>
-<h3>Memory Consolidation During REM Sleep</h3>
+<h3>Memory consolidation during REM sleep</h3>
 <p>
-                    Your REM phases play a key role in different types of memory:
+                    Sleep helps stabilize what you learned during the day; this is one of the best-established findings in sleep research. The specific role of REM, for skills, emotional memories or new connections between ideas, is less clear, with mixed results depending on the task. "Sleeping on it" is reasonable advice; claiming that REM solves your problems would go beyond the evidence.
                 </p>
-<ul>
-<li><strong>Procedural memory:</strong> Skills like playing instruments or sports are strengthened</li>
-<li><strong>Emotional memory:</strong> REM helps process and integrate emotional experiences</li>
-<li><strong>Creative problem-solving:</strong> REM helps novel connections between disparate ideas</li>
-</ul>
+<h3>Emotional regulation and processing in REM sleep</h3>
 <p>
-                    Studies show that <strong>REM-deprived individuals perform worse on creative tasks</strong> and struggle to learn new motor skills. The famous "sleep on it" advice has scientific backing - REM sleep literally helps you solve problems.
+                    In 2009, Matthew Walker and Els van der Helm proposed an "overnight therapy" hypothesis: because noradrenaline is very low during REM, the brain could reactivate emotional memories while softening their charge. It is an influential idea, still being tested. In practice, the emotion you wake up with is often more useful to write down than the setting of the dream.
                 </p>
-<h3>Emotional Regulation and Processing in REM Sleep</h3>
-<p>
-                    REM sleep acts as "overnight therapy" for emotional experiences. During REM:
-                </p>
-<ul>
-<li>Emotional memories are reactivated in the amygdala</li>
-<li>The emotional "charge" of memories is gradually reduced</li>
-<li>Stressful experiences are processed and integrated</li>
-<li>Norepinephrine (stress hormone) is absent, allowing safe processing</li>
-</ul>
-<blockquote>
-                    "REM sleep is like therapy without the therapist - your brain processes difficult emotions in a neurochemically safe environment." - Dr. Matthew Walker, sleep researcher
-                </blockquote>
 <aside class="glass-panel rounded-2xl p-6 my-8 border border-dream-salmon/20">
 <div class="flex items-start gap-4">
 <div class="p-3 bg-dream-salmon/10 rounded-xl">
 <i class="w-6 h-6 text-dream-salmon" data-lucide="book-open"></i>
 </div>
 <div>
-<h4 class="font-serif text-lg text-dream-cream mb-2">Capture your REM dreams</h4>
-<p class="text-sm text-gray-400 mb-4">The most vivid dreams occur during late-night REM periods. Record them immediately upon waking with Noctalia's voice recording feature - before they fade from memory.</p>
-<a class="inline-flex items-center gap-2 text-sm text-dream-salmon hover:text-dream-salmonLight transition-colors" href="/">
-                                Discover Noctalia <i class="w-4 h-4" data-lucide="arrow-right"></i>
+<h4 class="font-serif text-lg text-dream-cream mb-2">Catch your morning dream before it fades</h4>
+<p class="text-sm text-gray-400 mb-4">The most vivid dreams often come in the last REM periods, just before you wake. In Noctalia, tell your dream out loud: it is transcribed and saved in your journal, ready to reread.</p>
+<a class="inline-flex items-center gap-2 text-sm text-dream-salmon hover:text-dream-salmonLight transition-colors" href="/en/voice-dream-journal">
+                                Try the voice dream journal <i class="w-4 h-4" data-lucide="arrow-right"></i>
 </a>
 </div>
 </div>
 </aside>
-<h2 id="optimize">How to Improve Your REM Sleep for Better Dreams</h2>
+<h2 id="optimize">How can you protect your REM sleep?</h2>
 <p>
-                    REM sleep concentrates in later sleep cycles, so getting enough total sleep matters. Specific strategies can also boost REM quality and quantity:
+                    There is no proven trick to "boost" REM. Since it is concentrated in the second half of the night, the most effective lever is simple: sleep long enough, at regular times.
                 </p>
-<h3>Sleep Duration and Timing for REM Optimization</h3>
+<h3>Sleep duration and timing</h3>
 <ul>
-<li><strong>Aim for 7-9 hours:</strong> Cutting sleep short disproportionately reduces REM</li>
-<li><strong>Maintain consistent schedule:</strong> Go to bed and wake at the same times daily</li>
-<li><strong>Don't set multiple alarms:</strong> REM rebound after alarm snoozing is poor quality</li>
-<li><strong>Allow natural waking:</strong> When possible, wake without an alarm during late REM</li>
+<li><strong>Give yourself enough sleep:</strong> most adults need 7 to 9 hours a night.</li>
+<li><strong>Keep regular hours:</strong> go to bed and get up at roughly the same time, weekends included.</li>
+<li><strong>Protect the end of the night:</strong> that is where REM periods are longest.</li>
 </ul>
-<h3>Environmental Factors That Affect REM Sleep</h3>
+<h3>Bedroom environment</h3>
 <ul>
-<li><strong>Keep bedroom cool:</strong> 60-67°F (15-19°C) is optimal for REM sleep</li>
-<li><strong>Complete darkness:</strong> Light suppresses REM; use blackout curtains or eye masks</li>
-<li><strong>Minimize noise:</strong> Sudden sounds can fragment REM cycles</li>
-<li><strong>Comfortable bedding:</strong> Physical discomfort reduces REM sleep</li>
+<li><strong>Cool, dark and quiet:</strong> a bedroom that is too warm, too bright or noisy makes awakenings more likely.</li>
+<li><strong>Screens away:</strong> keep the last half hour for something calm.</li>
 </ul>
-<h3>Substances That Affect REM Sleep and Dreams</h3>
-<p><strong>REM suppressors (avoid):</strong></p>
+<h3>Substances that affect REM sleep and dreams</h3>
 <ul>
-<li><strong>Alcohol:</strong> Severely fragments and reduces REM sleep</li>
-<li><strong>Cannabis/THC:</strong> Suppresses REM (may cause REM rebound when stopped)</li>
-<li><strong>Antidepressants (SSRIs, SNRIs):</strong> Can reduce REM by up to 30%</li>
-<li><strong>Beta-blockers:</strong> Some reduce REM and dream recall</li>
-<li><strong>Benzodiazepines:</strong> Reduce REM percentage</li>
+<li><strong>Alcohol:</strong> it reduces REM early in the night and makes the rest of your sleep more fragmented.</li>
+<li><strong>Some medications:</strong> many antidepressants reduce REM sleep, and dreams can become more intense for a while when a treatment is stopped. Never change a treatment without medical advice.</li>
+<li><strong>Supplements:</strong> products sold to intensify dreams or "boost REM" have little solid evidence behind them. Ask a doctor or pharmacist before trying one.</li>
 </ul>
-<p><strong>REM enhancers:</strong></p>
+<h3>Daily habits that support REM sleep</h3>
 <ul>
-<li><strong>Melatonin:</strong> Can increase REM percentage when taken correctly</li>
-<li><strong>Galantamine:</strong> Cholinesterase inhibitor that enhances REM (used by lucid dreamers)</li>
-<li><strong>Vitamin B6:</strong> May improve dream vividness and recall</li>
-<li><strong>Regular exercise:</strong> Increases total REM sleep when done regularly</li>
+<li><strong>Move during the day:</strong> regular physical activity supports sleep, ideally not right before bed.</li>
+<li><strong>Watch late caffeine:</strong> coffee, tea and energy drinks can disturb sleep long after the last cup.</li>
+<li><strong>Use light:</strong> bright light in the morning, softer light in the evening, to keep your rhythm steady.</li>
+<li><strong>Wind down:</strong> slow breathing, reading or a short meditation help you go to bed less on alert.</li>
 </ul>
-<h3>Lifestyle Practices to Boost REM Sleep</h3>
-<ul>
-<li><strong>Exercise regularly:</strong> But not within 3 hours of bedtime</li>
-<li><strong>Manage stress:</strong> High cortisol disrupts REM cycles</li>
-<li><strong>Meditation before bed:</strong> Calms the mind and promotes deeper sleep cycles</li>
-<li><strong>Avoid late caffeine:</strong> Half-life is 5-6 hours; stop by early afternoon</li>
-<li><strong>Light exposure:</strong> Bright light in morning, dim light in evening regulates cycles</li>
-</ul>
-<h2 id="disorders">REM Sleep Disorders: When Dreams Go Wrong</h2>
+<h2 id="disorders">REM sleep disorders: when to see a doctor</h2>
 <p>
-                    When REM sleep goes wrong, several distinct disorders can emerge:
+                    Intense dreams are usually not a disorder. A few situations do deserve a medical opinion.
                 </p>
-<h3>REM Sleep Behavior Disorder (RBD): Acting Out Dreams</h3>
+<h3>REM sleep behavior disorder: acting out dreams</h3>
 <p>
-                    In RBD, the normal muscle paralysis of REM sleep fails, allowing people to physically act out their dreams. This can result in:
+                    In this disorder, the muscle paralysis of REM sleep no longer works properly. The person physically acts out their dreams: punching, kicking, shouting, sometimes falling out of bed, with a risk of injury to themselves or their partner.
+                </p>
+<p>
+                    It is rare, affecting fewer than 1% of people, mostly men over 50. In some people it can appear years before Parkinson's disease. That is a reason to see a sleep doctor, not to draw conclusions on your own.
+                </p>
+<h3>Narcolepsy: REM sleep spilling into the day</h3>
+<p>
+                    Narcolepsy disrupts the regulation of sleep, and of REM sleep in particular. Signs include:
                 </p>
 <ul>
-<li>Punching, kicking, or flailing during sleep</li>
-<li>Shouting or talking loudly</li>
-<li>Jumping out of bed</li>
-<li>Injury to self or sleep partner</li>
+<li><strong>Excessive daytime sleepiness,</strong> with sudden sleep attacks.</li>
+<li><strong>Cataplexy:</strong> sudden muscle weakness, often triggered by a strong emotion, while you stay fully conscious.</li>
+<li><strong><a class="text-dream-salmon hover:underline" href="sleep-paralysis-guide">Sleep paralysis</a> and vivid hallucinations</strong> when falling asleep or waking up.</li>
+<li><strong>Very fast entry into REM:</strong> often within about 15 minutes of falling asleep, against 60 to 90 minutes usually.</li>
 </ul>
+<h3>REM sleep deprivation: effects on dreams and health</h3>
 <p>
-                    RBD affects about 0.5% of adults and is more common in men over 50. It can also be an early indicator of neurodegenerative conditions like Parkinson's disease - about 80% of RBD patients eventually develop a parkinsonian disorder.
+                    Regularly sleeping too little mostly cuts into the REM-rich end of the night. When you sleep long enough again, REM tends to come back in force, with unusually intense dreams.
                 </p>
-<h3>Narcolepsy: REM Sleep Intrusion During Wakefulness</h3>
+<h3>Nightmare disorder</h3>
 <p>
-                    Narcolepsy involves dysfunction in REM sleep regulation, causing:
+                    Occasional <a class="text-dream-salmon hover:underline" href="stop-nightmares-guide">nightmares</a> are common. They become a problem when they are frequent, wake you up and spill over into your days. They are often associated with trauma, anxiety, some medications, or stopping them.
                 </p>
-<ul>
-<li><strong>Excessive daytime sleepiness:</strong> Overwhelming urge to sleep during the day</li>
-<li><strong>Cataplexy:</strong> Sudden muscle weakness triggered by emotions (REM atonia during wakefulness)</li>
-<li><strong>Sleep paralysis:</strong> Frequent episodes of REM paralysis upon waking or falling asleep</li>
-<li><strong>Hypnagogic hallucinations:</strong> Vivid REM-like dreams while falling asleep</li>
-<li><strong>Sleep-onset REM:</strong> Entering REM within 15 minutes of sleep (vs. normal 90 minutes)</li>
-</ul>
-<h3>REM Sleep Deprivation: Effects on Dreams and Health</h3>
 <p>
-                    Chronic lack of REM sleep, whether from short sleep duration or sleep disorders, leads to:
-                </p>
-<ul>
-<li>Impaired memory consolidation</li>
-<li>Reduced emotional regulation</li>
-<li>Decreased creativity and problem-solving</li>
-<li>Increased risk of mood disorders</li>
-<li>REM rebound (intense, vivid dreams) when sleep normalizes</li>
-</ul>
-<h3>Nightmare Disorder</h3>
-<p>
-                    Frequent, severe <a class="text-dream-salmon hover:underline" href="stop-nightmares-guide">nightmares</a> that disrupt sleep and cause daytime distress. Often associated with:
-                </p>
-<ul>
-<li>PTSD and trauma</li>
-<li>Anxiety disorders</li>
-<li>Certain medications</li>
-<li>Withdrawal from REM-suppressing substances</li>
-</ul>
-<p>
-                    Treatment often involves <strong>Imagery Rehearsal Therapy (IRT)</strong>, where patients rewrite nightmare endings and rehearse positive versions while awake.
+                    The best-studied treatment is <strong>imagery rehearsal therapy</strong>: while awake, you rewrite the ending of a recurring nightmare and rehearse the new version. If nightmares, violent movements during sleep or heavy daytime sleepiness persist, talk to your doctor.
                 </p>
 <h2 id="dream-recall">Improving dream recall through REM awareness</h2>
-<p>
-                    Knowing how REM sleep cycles work can dramatically improve your ability to remember dreams:
-                </p>
 <h3>Timing your wake-up</h3>
-<p>
-                    Since REM periods occur in 90-minute cycles and lengthen throughout the night, waking after complete cycles increases dream recall:
-                </p>
 <ul>
-<li><strong>Calculate in 90-minute increments:</strong> 6 hours (4 cycles), 7.5 hours (5 cycles), or 9 hours (6 cycles)</li>
-<li><strong>Wake naturally when possible:</strong> Natural awakening often occurs during or right after REM</li>
-<li><strong>Stay still upon waking:</strong> Movement can disrupt dream memory</li>
+<li><strong>Count in cycles, roughly:</strong> 6, 7.5 or 9 hours make about 4, 5 or 6 cycles of 90 minutes. Cycles vary, so treat this as a rough guide.</li>
+<li><strong>Wake up gently when you can:</strong> a natural awakening at the end of the night often follows a REM period.</li>
+<li><strong>Stay still for a moment:</strong> eyes closed, replay the dream before you reach for your phone or get up.</li>
 </ul>
 <h3>The wake-back-to-bed (WBTB) technique</h3>
 <p>
-                    This technique uses the REM-rich final sleep cycles:
+                    Borrowed from <a class="text-dream-salmon hover:underline" href="lucid-dreaming-beginners-guide">lucid dreaming</a> practice, it uses the REM-rich final cycles:
                 </p>
 <ol>
-<li>Sleep for 4-6 hours</li>
-<li>Wake and stay up for 15-30 minutes</li>
-<li>Return to sleep for 1-2 hours</li>
-<li>This final sleep will be almost entirely REM, with vivid dreams</li>
+<li>Sleep for 4 to 6 hours.</li>
+<li>Get up for 15 to 30 minutes and stay calm, away from bright screens.</li>
+<li>Go back to sleep for the rest of the night.</li>
 </ol>
+<p>
+                    The sleep that follows is rich in REM, and dreams are often more vivid. Skip it if you struggle to fall back asleep, and keep it for days off.
+                </p>
 <h3><a class="text-dream-salmon hover:underline" href="dream-journal-guide">Dream journaling</a> aligned with REM</h3>
 <ul>
-<li><strong>Record immediately:</strong> REM dreams fade within 5-10 minutes of waking</li>
-<li><strong>Keep tools ready:</strong> Voice recorder, phone, or journal by bedside</li>
-<li><strong>Capture keywords first:</strong> Don't worry about full narratives initially</li>
-<li><strong>Note emotions:</strong> REM dreams are emotionally rich; record feelings</li>
-</ul>
-<blockquote>
-                    "The first 90 seconds after waking from REM are critical. Even sitting up can erase dream memories. Lie still and mentally rehearse the dream before recording it."
-                </blockquote>
-<h3>Supplements and techniques</h3>
-<ul>
-<li><strong>Vitamin B6:</strong> 100-250mg before bed may increase dream vividness and recall</li>
-<li><strong>Galantamine:</strong> 4-8mg during WBTB can dramatically intensify REM dreams (consult doctor)</li>
-<li><strong>Reality testing:</strong> Asking "Am I dreaming?" throughout the day carries into REM dreams</li>
-<li><strong>Dream incubation:</strong> Focusing on a topic before sleep can influence REM dream content</li>
+<li><strong>Note it right away:</strong> a dream can fade within minutes of waking.</li>
+<li><strong>Keywords first:</strong> a place, a person, an image. The full story can come afterwards.</li>
+<li><strong>Write down the emotion:</strong> REM dreams are often emotionally charged, and the feeling is what fades fastest.</li>
 </ul>
 <p>
-                    Your brain needs <strong>full sleep cycles</strong> to access the richest REM periods. Many people sacrifice the last 1-2 hours of sleep without realizing they're cutting out their most vivid, memorable dreams.
+                    Keeping a journal is itself associated with better dream recall.
+                </p>
+<h3>Example dream journal entry</h3>
+<p><strong>Fictional example:</strong> it shows what to note when a dream is cut short by the alarm.</p>
+<ul>
+<li><strong>Dream:</strong> "I was looking for my gate in an airport that kept changing shape. My sister was there, but younger."</li>
+<li><strong>Emotion:</strong> "Rushed, then oddly calm when I saw her."</li>
+<li><strong>Night:</strong> "Alarm after about seven and a half hours."</li>
+<li><strong>Question to keep:</strong> "Do I remember more on the mornings I sleep longer?"</li>
+</ul>
+<h3>Other techniques worth knowing</h3>
+<ul>
+<li><strong>Reality checks:</strong> asking yourself "Am I dreaming?" during the day, a classic lucid dreaming exercise.</li>
+<li><strong>Dream incubation:</strong> thinking about a chosen theme before sleep, as explained in our <a class="text-dream-salmon hover:underline" href="dream-incubation-guide">dream incubation guide</a>.</li>
+</ul>
+<p>
+                    Above all, give your brain <strong>full nights</strong>: the last hour or two of sleep is where the most memorable dreams are.
                 </p>
 </div>
 <!-- CTA Section -->
@@ -459,17 +387,17 @@
 <div class="w-16 h-16 bg-dream-salmon/10 rounded-full flex items-center justify-center mx-auto mb-6">
 <i class="w-8 h-8 text-dream-salmon" data-lucide="moon-star"></i>
 </div>
-<h3 class="font-serif text-2xl md:text-3xl mb-4 text-dream-cream">Never lose a dream again</h3>
+<h3 class="font-serif text-2xl md:text-3xl mb-4 text-dream-cream">A vivid dream fades in minutes. Your journal keeps it.</h3>
 <p class="text-purple-200/70 mb-6 max-w-lg mx-auto">
-                    Capture your vivid REM dreams the moment you wake up with Noctalia's voice recording. Noctalia analysis helps you understand patterns and unlock the meaning behind your nightly adventures.
+                    Tell Noctalia your dream when you wake, by voice or in writing. Then reread your dreams side by side and see what comes back from one night to the next.
                 </p>
 <a class="inline-flex items-center gap-2 px-8 py-4 bg-dream-salmon text-dream-dark rounded-full font-bold hover:bg-dream-salmon/90 transition-colors" href="/">
-                    Start Dream Journaling <i class="w-5 h-5" data-lucide="arrow-right"></i>
+                    Start my dream journal <i class="w-5 h-5" data-lucide="arrow-right"></i>
 </a>
 </aside>
 <!-- FAQ Section -->
 <section class="mt-16">
-<h2 class="font-serif text-2xl text-dream-cream mb-8">Frequently Asked Questions</h2>
+<h2 class="font-serif text-2xl text-dream-cream mb-8">Frequently asked questions</h2>
 <div class="space-y-4">
 <details class="glass-panel rounded-xl p-4 group cursor-pointer">
 <summary class="font-medium flex justify-between items-center text-dream-cream">
@@ -477,7 +405,7 @@
                             <i class="w-5 h-5 transition-transform group-open:rotate-180 text-dream-salmon" data-lucide="chevron-down"></i>
 </summary>
 <p class="mt-4 text-sm text-gray-400 leading-relaxed">
-                            Adults typically need 90-120 minutes of REM sleep per night, which represents about 20-25% of total sleep. This usually occurs across 4-6 REM cycles throughout the night, with REM periods becoming longer toward morning.
+                            There is no official target for REM alone. In adults it makes up around a quarter of sleep, spread over several periods that lengthen toward morning. The best way to get enough is to sleep enough overall: 7 to 9 hours for most adults.
                         </p>
 </details>
 <details class="glass-panel rounded-xl p-4 group cursor-pointer">
@@ -486,7 +414,16 @@
                             <i class="w-5 h-5 transition-transform group-open:rotate-180 text-dream-salmon" data-lucide="chevron-down"></i>
 </summary>
 <p class="mt-4 text-sm text-gray-400 leading-relaxed">
-                            REM dreams are more vivid because during REM sleep, brain activity in visual, motor, emotional, and memory centers is as high as when awake. The prefrontal cortex (logical thinking) is less active, allowing bizarre, emotional narratives to unfold without logical constraints.
+                            During REM, emotional regions of the brain are very active, while part of the prefrontal cortex, involved in reasoning, is less so, and noradrenaline and serotonin drop. This mix likely contributes to vivid, emotional and illogical dreams, though the exact mechanism is still debated.
+                        </p>
+</details>
+<details class="glass-panel rounded-xl p-4 group cursor-pointer">
+<summary class="font-medium flex justify-between items-center text-dream-cream">
+                            Do we only dream during REM sleep?
+                            <i class="w-5 h-5 transition-transform group-open:rotate-180 text-dream-salmon" data-lucide="chevron-down"></i>
+</summary>
+<p class="mt-4 text-sm text-gray-400 leading-relaxed">
+                            No. People also dream in non-REM sleep. Those dreams are usually shorter, closer to a thought and harder to remember, which is why REM long got all the credit.
                         </p>
 </details>
 <details class="glass-panel rounded-xl p-4 group cursor-pointer">
@@ -495,24 +432,33 @@
                             <i class="w-5 h-5 transition-transform group-open:rotate-180 text-dream-salmon" data-lucide="chevron-down"></i>
 </summary>
 <p class="mt-4 text-sm text-gray-400 leading-relaxed">
-                            Yes. Maintain a consistent sleep schedule, get 7-9 hours of sleep, avoid alcohol and certain medications that suppress REM, exercise regularly (but not before bed), keep your bedroom cool (60-67°F), and reduce stress through relaxation techniques.
+                            The surest way is to protect your total sleep: regular hours, enough time in bed and no habitual short nights, since REM is concentrated at the end. Alcohol in the evening and some medications reduce REM. No supplement has shown a reliable benefit; ask a doctor before trying one.
                         </p>
 </details>
 </div>
 </section>
 <!-- July catch-up backlink: rem-to-night-waking -->
-<section class="glass-panel rounded-2xl p-6 my-8 border border-dream-salmon/20"><h2 class="font-serif text-2xl text-dream-cream mb-3">Night waking</h2><p>To adapt this method to a nighttime awakening without breaking sleep, read <a class="text-dream-salmon hover:underline" href="night-waking-dream-recall">night waking and dream recall</a>.</p></section>
+<section class="glass-panel rounded-2xl p-6 my-8 border border-dream-salmon/20"><h2 class="font-serif text-2xl text-dream-cream mb-3">Waking up in the night</h2><p>Woke up at 3 a.m. with a dream still in your head? Here is how to note it without ruining the rest of your night: <a class="text-dream-salmon hover:underline" href="night-waking-dream-recall">night waking and dream recall</a>.</p></section>
 <!-- Sources / Trust (TI-97) -->
 <section class="mt-16 glass-panel rounded-2xl p-6" id="sources">
-<h2 class="font-serif text-2xl text-dream-cream mb-4">Sources / Further Reading</h2>
+<h2 class="font-serif text-2xl text-dream-cream mb-4">Sources and further reading</h2>
 <ul class="mt-6 space-y-2 text-sm text-gray-400">
-<li><a href="https://dictionary.apa.org/dream" rel="nofollow noopener noreferrer" target="_blank">APA Dictionary of Psychology:Dream</a></li>
-<li><a href="https://dreamresearch.net/" rel="nofollow noopener noreferrer" target="_blank">DreamResearch.net:G. William Domhoff (dream research overview)</a></li>
-<li><a href="https://pubmed.ncbi.nlm.nih.gov/13089671/" rel="nofollow noopener noreferrer" target="_blank">Aserinsky &amp; Kleitman (1953):Discovery of REM sleep (Science, PubMed abstract)</a></li>
-<li><a href="https://www.sleepfoundation.org/stages-of-sleep" rel="nofollow noopener noreferrer" target="_blank">Sleep Foundation:Stages of sleep</a></li>
-<li><a href="https://www.ninds.nih.gov/health-information/public-education/brain-basics/brain-basics-understanding-sleep" rel="nofollow noopener noreferrer" target="_blank">NINDS:Brain Basics: Understanding Sleep</a></li>
+<li><a href="https://pubmed.ncbi.nlm.nih.gov/13089671/" rel="nofollow noopener noreferrer" target="_blank">Aserinsky &amp; Kleitman (1953), “Regularly occurring periods of eye motility, and concomitant phenomena, during sleep”, <em>Science</em></a></li>
+<li><a href="https://www.ninds.nih.gov/health-information/public-education/brain-basics/brain-basics-understanding-sleep" rel="nofollow noopener noreferrer" target="_blank">NINDS, “Brain Basics: Understanding Sleep”</a></li>
+<li><a href="https://www.sleepfoundation.org/stages-of-sleep" rel="nofollow noopener noreferrer" target="_blank">Sleep Foundation, “Stages of Sleep”</a></li>
+<li><a href="https://pmc.ncbi.nlm.nih.gov/articles/PMC2814941/" rel="nofollow noopener noreferrer" target="_blank">Nir &amp; Tononi (2010), “Dreaming and the brain: from phenomenology to neurophysiology”, <em>Trends in Cognitive Sciences</em></a></li>
+<li><a href="https://doi.org/10.1038/383163a0" rel="nofollow noopener noreferrer" target="_blank">Maquet et al. (1996), “Functional neuroanatomy of human rapid-eye-movement sleep and dreaming”, <em>Nature</em></a></li>
+<li><a href="https://doi.org/10.1176/ajp.134.12.1335" rel="nofollow noopener noreferrer" target="_blank">Hobson &amp; McCarley (1977), “The brain as a dream state generator: an activation-synthesis hypothesis of the dream process”, <em>American Journal of Psychiatry</em></a></li>
+<li><a href="https://doi.org/10.1038/nature04286" rel="nofollow noopener noreferrer" target="_blank">Stickgold (2005), “Sleep-dependent memory consolidation”, <em>Nature</em></a></li>
+<li><a href="https://doi.org/10.1037/a0016570" rel="nofollow noopener noreferrer" target="_blank">Walker &amp; van der Helm (2009), “Overnight therapy? The role of sleep in emotional brain processing”, <em>Psychological Bulletin</em></a></li>
+<li><a href="https://www.sleepfoundation.org/nutrition/alcohol-and-sleep" rel="nofollow noopener noreferrer" target="_blank">Sleep Foundation, “Alcohol and Sleep”</a></li>
+<li><a href="https://pmc.ncbi.nlm.nih.gov/articles/PMC5548844/" rel="nofollow noopener noreferrer" target="_blank">Wichniak et al. (2017), “Effects of Antidepressants on Sleep”, <em>Current Psychiatry Reports</em></a></li>
+<li><a href="https://sleepeducation.org/sleep-disorders/rem-sleep-behavior-disorder/" rel="nofollow noopener noreferrer" target="_blank">AASM Sleep Education, “REM Sleep Behavior Disorder”</a></li>
+<li><a href="https://www.ninds.nih.gov/health-information/disorders/narcolepsy" rel="nofollow noopener noreferrer" target="_blank">NINDS, “Narcolepsy”</a></li>
+<li><a href="https://pubmed.ncbi.nlm.nih.gov/29852917/" rel="nofollow noopener noreferrer" target="_blank">Morgenthaler et al. (2018), “Position paper for the treatment of nightmare disorder in adults”, <em>Journal of Clinical Sleep Medicine</em></a></li>
+<li><a href="https://pubmed.ncbi.nlm.nih.gov/25725324/" rel="nofollow noopener noreferrer" target="_blank">Aspy et al. (2015), “Is dream recall underestimated by retrospective measures and enhanced by keeping a logbook? A review”, <em>Consciousness and Cognition</em></a></li>
 </ul>
-<p class="mt-6 text-xs text-purple-200/60">Last updated: December 26, 2025</p>
+<p class="mt-6 text-xs text-purple-200/60">Last updated October 8, 2026</p>
 </section>
 <!-- Related Symbols Start -->
 <section aria-label="Related dream symbols" class="mt-12 mb-8">

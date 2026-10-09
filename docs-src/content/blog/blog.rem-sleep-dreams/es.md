@@ -5,7 +5,7 @@
   "lang": "es",
   "slug": "sueno-rem-suenos",
   "title": "Sueño REM: El Secreto de Tus Sueños Vívidos | Noctalia",
-  "description": "Descubre la ciencia del sueño REM y por qué genera tus sueños más vívidos. Aprende a optimizar tus ciclos de sueño.",
+  "description": "El sueño REM explicado: cuándo ocurre, por qué sus sueños son tan vívidos, qué lo altera y cómo aprovechar tus ciclos de sueño para recordar más sueños.",
   "robots": "max-image-preview:large",
   "themeColor": "#0a0514",
   "htmlClass": "scroll-smooth blog-article",
@@ -14,25 +14,25 @@
   "mainClass": "pt-32 pb-20 px-4",
   "ogType": "article",
   "ogTitle": "Sueño REM: El Secreto de Tus Sueños Vívidos | Noctalia",
-  "ogDescription": "Descubre la ciencia del sueño REM y por qué genera tus sueños más vívidos. Aprende a optimizar tus ciclos de sueño.",
+  "ogDescription": "Cuándo aparece el sueño REM, por qué sus sueños parecen tan reales y cómo recordarlos mejor al despertar.",
   "ogImage": "https://noctalia.app/img/blog/rem-sleep-dreams.webp",
   "ogImageAlt": "Gráfico de actividad cerebral característica del sueño REM",
   "twitterCard": "summary_large_image",
   "twitterTitle": "Sueño REM: El Secreto de Tus Sueños Vívidos | Noctalia",
-  "twitterDescription": "Descubre la ciencia del sueño REM y por qué genera tus sueños más vívidos. Aprende a optimizar tus ciclos de sueño.",
+  "twitterDescription": "Sueño REM y sueños: lo que la ciencia ha medido, lo que sigue en debate y qué anotar al despertar.",
   "twitterImage": "https://noctalia.app/img/blog/rem-sleep-dreams.webp",
   "twitterImageAlt": "Gráfico de actividad cerebral característica del sueño REM",
   "publishedTime": "2025-12-11",
-  "modifiedTime": "2026-07-09",
+  "modifiedTime": "2026-10-08",
   "author": "Thanh Chau",
   "prevPath": "/es/blog/por-que-sonamos-ciencia",
   "nextPath": "/es/blog/historia-interpretacion-suenos",
   "preloadImage": "/img/blog/rem-sleep-dreams.webp",
   "jsonLd": [
-    "{\n            \"@context\": \"https://schema.org\",\n            \"@type\": \"BlogPosting\",\n            \"headline\": \"Sueño REM y Sueños: Entendiendo el Reinicio Nocturno de tu Cerebro\",\n            \"description\": \"Descubre la ciencia del sueño REM y su papel crucial en los sueños. Aprende sobre los ciclos de sueño y cómo optimizar tu sueño REM.\",\n            \"image\": {\n                \"@type\": \"ImageObject\",\n                \"url\": \"https://noctalia.app/img/blog/rem-sleep-dreams.webp\",\n                \"width\": 1200,\n                \"height\": 630\n            },\n            \"author\": [\n                {\n                    \"@type\": \"Person\",\n                    \"@id\": \"https://noctalia.app/es/sobre#person\",\n                    \"name\": \"Thanh Chau\",\n                    \"jobTitle\": \"Founder & Publication Director\",\n                    \"url\": \"https://noctalia.app/es/sobre\",\n                    \"worksFor\": {\n                        \"@type\": \"Organization\",\n                        \"@id\": \"https://noctalia.app/#organization\",\n                        \"name\": \"Noctalia\",\n                        \"url\": \"https://noctalia.app\"\n                    }\n                },\n                {\n                    \"@type\": \"Organization\",\n                    \"@id\": \"https://noctalia.app/#organization\",\n                    \"name\": \"Noctalia\",\n                    \"url\": \"https://noctalia.app\",\n                    \"logo\": {\n                        \"@type\": \"ImageObject\",\n                        \"url\": \"https://noctalia.app/logo/logo_noctalia.png\"\n                    }\n                }\n            ],\n            \"publisher\": {\n                \"@type\": \"Organization\",\n                \"name\": \"Noctalia\",\n                \"url\": \"https://noctalia.app\",\n                \"logo\": {\n                    \"@type\": \"ImageObject\",\n                    \"url\": \"https://noctalia.app/logo/logo_noctalia.png\"\n                }\n            },\n            \"datePublished\": \"2025-12-11\",\n            \"dateModified\": \"2026-07-09\",\n            \"mainEntityOfPage\": {\n                \"@type\": \"WebPage\",\n                \"@id\": \"https://noctalia.app/es/blog/sueno-rem-suenos\"\n            },\n            \"inLanguage\": \"es\",\n            \"isAccessibleForFree\": true,\n            \"wordCount\": 2047,\n            \"timeRequired\": \"PT7M\",\n            \"url\": \"https://noctalia.app/es/blog/sueno-rem-suenos\"\n        }",
+    "{\n    \"@context\": \"https://schema.org\",\n    \"@type\": \"BlogPosting\",\n    \"headline\": \"Sueño REM y sueños: qué pasa de verdad en tu cerebro por la noche\",\n    \"description\": \"El sueño REM explicado: cuándo ocurre, por qué sus sueños son tan vívidos, qué lo altera y cómo aprovechar tus ciclos de sueño para recordar más sueños.\",\n    \"image\": {\n        \"@type\": \"ImageObject\",\n        \"url\": \"https://noctalia.app/img/blog/rem-sleep-dreams.webp\",\n        \"width\": 1200,\n        \"height\": 630\n    },\n    \"author\": [\n        {\n            \"@type\": \"Person\",\n            \"@id\": \"https://noctalia.app/es/sobre#person\",\n            \"name\": \"Thanh Chau\",\n            \"jobTitle\": \"Founder & Publication Director\",\n            \"url\": \"https://noctalia.app/es/sobre\",\n            \"worksFor\": {\n                \"@type\": \"Organization\",\n                \"@id\": \"https://noctalia.app/#organization\",\n                \"name\": \"Noctalia\",\n                \"url\": \"https://noctalia.app\"\n            }\n        },\n        {\n            \"@type\": \"Organization\",\n            \"@id\": \"https://noctalia.app/#organization\",\n            \"name\": \"Noctalia\",\n            \"url\": \"https://noctalia.app\",\n            \"logo\": {\n                \"@type\": \"ImageObject\",\n                \"url\": \"https://noctalia.app/logo/logo_noctalia.png\"\n            }\n        }\n    ],\n    \"publisher\": {\n        \"@type\": \"Organization\",\n        \"name\": \"Noctalia\",\n        \"url\": \"https://noctalia.app\",\n        \"logo\": {\n            \"@type\": \"ImageObject\",\n            \"url\": \"https://noctalia.app/logo/logo_noctalia.png\"\n        }\n    },\n    \"datePublished\": \"2025-12-11\",\n    \"dateModified\": \"2026-10-08\",\n    \"mainEntityOfPage\": {\n        \"@type\": \"WebPage\",\n        \"@id\": \"https://noctalia.app/es/blog/sueno-rem-suenos\"\n    },\n    \"inLanguage\": \"es\",\n    \"isAccessibleForFree\": true,\n    \"wordCount\": 2896,\n    \"timeRequired\": \"PT14M\",\n    \"url\": \"https://noctalia.app/es/blog/sueno-rem-suenos\"\n}",
     "{\n    \"@context\": \"https://schema.org\",\n    \"@type\": \"WebPage\",\n    \"@id\": \"https://noctalia.app/es/blog/sueno-rem-suenos\",\n    \"url\": \"https://noctalia.app/es/blog/sueno-rem-suenos\",\n    \"name\": \"Sueño REM: El Secreto de Tus Sueños Vívidos | Noctalia\",\n    \"inLanguage\": \"es\"\n}",
-    "{\n            \"@context\": \"https://schema.org\",\n            \"@type\": \"FAQPage\",\n            \"mainEntity\": [\n                { \"@type\": \"Question\", \"name\": \"¿Cuánto sueño REM necesito?\", \"acceptedAnswer\": { \"@type\": \"Answer\", \"text\": \"Los adultos generalmente necesitan 90-120 minutos de sueño REM por noche, lo que representa aproximadamente el 20-25 % del sueño total. Esto suele ocurrir a lo largo de 4-6 ciclos REM durante la noche, con períodos REM que se vuelven más largos hacia la mañana.\" } },\n                { \"@type\": \"Question\", \"name\": \"¿Por qué los sueños REM son más vívidos que otros sueños?\", \"acceptedAnswer\": { \"@type\": \"Answer\", \"text\": \"Los sueños REM son más vívidos porque durante el sueño REM, la actividad cerebral en los centros visuales, motores, emocionales y de memoria es tan alta como cuando estás despierto. La corteza prefrontal (pensamiento lógico) está menos activa, permitiendo narrativas bizarras y emocionales sin restricciones lógicas.\" } },\n                { \"@type\": \"Question\", \"name\": \"¿Puedo aumentar mi sueño REM naturalmente?\", \"acceptedAnswer\": { \"@type\": \"Answer\", \"text\": \"Sí. Mantén un horario de sueño consistente, duerme 7-9 horas, evita el alcohol y ciertos medicamentos que suprimen el REM, haz ejercicio regularmente (pero no antes de dormir), mantén tu habitación fresca (15-19 °C) y reduce el estrés mediante técnicas de relajación.\" } }\n            ]\n        }",
-    "{\n            \"@context\": \"https://schema.org\",\n            \"@type\": \"BreadcrumbList\",\n            \"itemListElement\": [\n                { \"@type\": \"ListItem\", \"position\": 1, \"name\": \"Inicio\", \"item\": \"https://noctalia.app/es/\" },\n                { \"@type\": \"ListItem\", \"position\": 2, \"name\": \"Recursos\", \"item\": \"https://noctalia.app/es/blog/\" },\n                { \"@type\": \"ListItem\", \"position\": 3, \"name\": \"Sueño REM y Sueños\", \"item\": \"https://noctalia.app/es/blog/sueno-rem-suenos\" }\n            ]\n        }"
+    "{\n    \"@context\": \"https://schema.org\",\n    \"@type\": \"FAQPage\",\n    \"mainEntity\": [\n        {\n            \"@type\": \"Question\",\n            \"name\": \"¿Cuánto sueño REM necesito?\",\n            \"acceptedAnswer\": {\n                \"@type\": \"Answer\",\n                \"text\": \"No existe un objetivo oficial solo para el REM. En adultos ocupa alrededor de una cuarta parte del sueño, repartida en varios periodos que se alargan hacia la mañana. La mejor forma de tener suficiente es dormir lo suficiente: entre 7 y 9 horas para la mayoría de los adultos.\"\n            }\n        },\n        {\n            \"@type\": \"Question\",\n            \"name\": \"¿Por qué los sueños REM son más vívidos que los demás?\",\n            \"acceptedAnswer\": {\n                \"@type\": \"Answer\",\n                \"text\": \"Durante el REM, las regiones emocionales del cerebro están muy activas, una parte de la corteza prefrontal, implicada en el razonamiento, lo está menos, y la noradrenalina y la serotonina caen. Esta mezcla contribuye probablemente a sueños vívidos, emotivos e ilógicos, aunque el mecanismo exacto sigue en debate.\"\n            }\n        },\n        {\n            \"@type\": \"Question\",\n            \"name\": \"¿Solo soñamos durante el sueño REM?\",\n            \"acceptedAnswer\": {\n                \"@type\": \"Answer\",\n                \"text\": \"No. También se sueña en las fases no REM. Esos sueños suelen ser más cortos, más parecidos a un pensamiento y más difíciles de recordar, por eso durante mucho tiempo el REM se llevó todo el mérito.\"\n            }\n        },\n        {\n            \"@type\": \"Question\",\n            \"name\": \"¿Puedo aumentar mi sueño REM de forma natural?\",\n            \"acceptedAnswer\": {\n                \"@type\": \"Answer\",\n                \"text\": \"Lo más seguro es proteger tu sueño total: horarios regulares, tiempo suficiente en la cama y nada de noches cortas encadenadas, ya que el REM se concentra al final. El alcohol por la noche y algunos medicamentos lo reducen. Ningún suplemento ha mostrado un beneficio fiable; consulta con un médico antes de probar uno.\"\n            }\n        }\n    ]\n}",
+    "{\n    \"@context\": \"https://schema.org\",\n    \"@type\": \"BreadcrumbList\",\n    \"itemListElement\": [\n        {\n            \"@type\": \"ListItem\",\n            \"position\": 1,\n            \"name\": \"Inicio\",\n            \"item\": \"https://noctalia.app/es/\"\n        },\n        {\n            \"@type\": \"ListItem\",\n            \"position\": 2,\n            \"name\": \"Recursos\",\n            \"item\": \"https://noctalia.app/es/blog/\"\n        },\n        {\n            \"@type\": \"ListItem\",\n            \"position\": 3,\n            \"name\": \"Sueño REM y sueños\",\n            \"item\": \"https://noctalia.app/es/blog/sueno-rem-suenos\"\n        }\n    ]\n}"
   ],
   "activeNav": "resources"
 }
@@ -52,7 +52,7 @@
 </li>
 <li class="text-purple-400">/</li>
 <li itemprop="itemListElement" itemscope="" itemtype="https://schema.org/ListItem">
-<span class="text-dream-cream" itemprop="name">Sueño REM y Sueños</span>
+<span class="text-dream-cream" itemprop="name">Sueño REM y sueños</span>
 <meta content="3" itemprop="position">
 </li>
 </ol>
@@ -60,17 +60,17 @@
 <!-- Article Header -->
 <header class="mb-12">
 <div class="flex flex-wrap items-center gap-3 mb-6">
-<span class="text-xs font-mono text-dream-salmon border border-dream-salmon/30 rounded-full px-3 py-1 uppercase">Guía Completa</span>
+<span class="text-xs font-mono text-dream-salmon border border-dream-salmon/30 rounded-full px-3 py-1 uppercase">Guía completa</span>
 <a class="text-xs font-mono text-purple-200/70 border border-white/10 rounded-full px-3 py-1 hover:text-white hover:border-dream-salmon/30 transition-colors" href="diario-de-suenos">Tema: Diario de sueños</a>
 <span aria-hidden="true" class="w-full sm:hidden"></span>
 <span class="text-sm text-purple-300/60">Publicado el 11 de diciembre de 2025</span>
-<span class="text-sm text-purple-300/60">7 min de lectura</span>
+<span class="text-sm text-purple-300/60">14 min de lectura</span>
 </div>
 <h1 class="font-serif text-3xl md:text-5xl mb-6 text-transparent bg-clip-text bg-gradient-to-b from-white via-dream-lavender to-purple-400/50 leading-tight">
-                    Sueño REM y Sueños: Entendiendo el Reinicio Nocturno de tu Cerebro
+                    Sueño REM y sueños: qué pasa de verdad en tu cerebro por la noche
                 </h1>
 <p class="text-lg text-purple-200/80 leading-relaxed">
-                    Cada noche, tu cerebro pasa por distintas fases de sueño, pero es durante el sueño REM cuando ocurre la magia. Tus sueños más vívidos se desarrollan, los recuerdos se consolidan y tu mente procesa emociones. Entender el sueño REM es la clave para mejorar el recuerdo de sueños y la calidad del descanso.
+                    Suena la alarma en mitad de una historia: un aeropuerto que cambia de forma, una conversación que tenía todo el sentido del mundo. Diez segundos después, se te escapa. Un sueño tan nítido viene casi seguro de la fase REM, la que se alarga a medida que se acerca la mañana. Aquí tienes lo que sabe la investigación, lo que sigue en debate y cómo aprovecharlo para recordar lo que sueñas.
                 </p>
 </header>
 <!-- Author Byline (E-E-A-T) -->
@@ -87,7 +87,7 @@
 <!-- Quick Answer (AI SEO) -->
 <section class="glass-panel rounded-2xl p-6 mb-8 border border-dream-salmon/20 bg-white/5" aria-labelledby="quick-answer-title">
     <h2 id="quick-answer-title" class="font-serif text-xl text-dream-cream mb-3">Respuesta rápida</h2>
-    <p class="text-purple-100/80 leading-relaxed">Descubre la ciencia del sueño REM y por qué genera tus sueños más vívidos. Aprende a optimizar tus ciclos de sueño.</p>
+    <p class="text-purple-100/80 leading-relaxed">El sueño REM (por «rapid eye movement», movimientos oculares rápidos) es la fase en la que el cerebro está muy activo mientras los músculos de brazos y piernas quedan paralizados de forma temporal. Se repite varias veces por noche y se alarga hacia la mañana. La mayoría de los sueños vívidos y con argumento ocurren en REM, aunque también se sueña en otras fases. Para recordar más, protege el final de la noche y anota el sueño nada más despertar.</p>
 </section>
 
 <!-- Editorial Review (E-E-A-T) -->
@@ -113,115 +113,99 @@
 <!-- Table of Contents -->
 <nav class="glass-panel rounded-2xl p-6 mb-12">
 <h2 class="font-serif text-lg text-dream-cream mb-4 flex items-center gap-2">
-<i class="w-5 h-5 text-dream-salmon" data-lucide="list"></i> Tabla de Contenidos
+<i class="w-5 h-5 text-dream-salmon" data-lucide="list"></i> Índice
                 </h2>
 <ol class="space-y-2 text-sm text-purple-200/70">
 <li><a class="toc-link block" href="#que-es-rem">1. ¿Qué es el sueño REM?</a></li>
-<li><a class="toc-link block" href="#ciclos-sueno">2. Entendiendo los ciclos del sueño</a></li>
-<li><a class="toc-link block" href="#por-que-crucial">3. Por qué el sueño REM es crucial para soñar</a></li>
-<li><a class="toc-link block" href="#rem-vs-norem">4. Sueños REM vs no-REM</a></li>
+<li><a class="toc-link block" href="#ciclos-sueno">2. Cómo funcionan los ciclos del sueño</a></li>
+<li><a class="toc-link block" href="#por-que-crucial">3. Por qué los sueños REM son tan vívidos</a></li>
+<li><a class="toc-link block" href="#rem-vs-norem">4. Sueños REM y no REM: diferencias</a></li>
 <li><a class="toc-link block" href="#actividad-cerebral">5. Qué pasa en tu cerebro durante el REM</a></li>
-<li><a class="toc-link block" href="#optimizar">6. Cómo optimizar tu sueño REM</a></li>
-<li><a class="toc-link block" href="#trastornos">7. Trastornos del sueño REM</a></li>
-<li><a class="toc-link block" href="#recordar-suenos">8. Mejorar el recuerdo de sueños mediante el REM</a></li>
+<li><a class="toc-link block" href="#optimizar">6. Cómo proteger tu sueño REM</a></li>
+<li><a class="toc-link block" href="#trastornos">7. Trastornos del sueño REM: cuándo consultar</a></li>
+<li><a class="toc-link block" href="#recordar-suenos">8. Usar el REM para recordar tus sueños</a></li>
 </ol>
 </nav>
 <!-- Article Content -->
 <div class="prose max-w-none text-gray-300">
-<h2 id="que-es-rem">Sueño REM: definición y características</h2>
+<h2 id="que-es-rem">¿Qué es el sueño REM?</h2>
 <p>
-                    REM significa <strong>Rapid Eye Movement</strong> (movimiento ocular rápido), nombrado así por los movimientos oculares rápidos característicos que ocurren bajo los párpados cerrados durante esta fase. Descubierto en 1953 por los investigadores Eugene Aserinsky y Nathaniel Kleitman, el sueño REM representa uno de los estados de conciencia más fascinantes.
+                    REM son las siglas en inglés de <strong>Rapid Eye Movement</strong>, movimientos oculares rápidos: durante esta fase, los ojos se mueven deprisa bajo los párpados cerrados. Eugene Aserinsky y Nathaniel Kleitman la describieron en 1953, al notar que esos movimientos volvían en periodos regulares a lo largo de la noche.
                 </p>
 <p>
-                    Durante el sueño REM, tu cerebro está casi tan activo como cuando estás despierto, pero tu cuerpo está temporalmente paralizado. Este estado paradójico - a veces llamado "sueño paradójico" - crea las condiciones perfectas para los sueños más vívidos y narrativos.
+                    Lo llamativo es el contraste. El cerebro está muy activo, mientras los músculos de brazos y piernas quedan paralizados de forma temporal, lo que te impide representar físicamente lo que sueñas. Por eso también se le llama «sueño paradójico».
                 </p>
-<h3>Características clave del sueño REM</h3>
+<h3>Características principales del sueño REM</h3>
 <ul>
-<li><strong>Movimientos oculares rápidos:</strong> Los ojos se mueven rápidamente bajo los párpados, posiblemente siguiendo las imágenes del sueño</li>
-<li><strong>Atonía muscular:</strong> Los músculos voluntarios están paralizados para evitar actuar físicamente los sueños</li>
-<li><strong>Actividad cerebral aumentada:</strong> La actividad neuronal rivaliza con los niveles de vigilia en muchas regiones</li>
-<li><strong>Signos vitales irregulares:</strong> La frecuencia cardíaca, respiración y presión arterial fluctúan</li>
-<li><strong>Sueños vívidos:</strong> El 80 % de los despertares durante el REM revelan reportes de sueños</li>
+<li><strong>Movimientos oculares rápidos:</strong> ráfagas de movimientos bajo los párpados cerrados.</li>
+<li><strong>Atonía muscular:</strong> la mayoría de los músculos voluntarios se relajan, salvo los de los ojos y el diafragma.</li>
+<li><strong>Un cerebro activo:</strong> en muchas regiones, la actividad se acerca a la de la vigilia.</li>
+<li><strong>Constantes menos regulares:</strong> la respiración y el ritmo cardiaco varían más.</li>
+<li><strong>Los sueños más vívidos:</strong> al despertar en REM es cuando más a menudo se cuenta un sueño, y con más argumento.</li>
 </ul>
 <p>
-                    Los adultos generalmente pasan <strong>20-25 % del tiempo total de sueño en REM</strong>, lo que se traduce en aproximadamente 90-120 minutos por noche a través de múltiples ciclos.
+                    En adultos, el REM ocupa alrededor de una cuarta parte del sueño total, y esa proporción tiende a bajar con la edad.
                 </p>
-<h2 id="ciclos-sueno">Sueño REM: entendiendo los ciclos del sueño</h2>
+<h2 id="ciclos-sueno">¿Cómo funcionan los ciclos del sueño y las fases REM?</h2>
 <p>
-                    El sueño no es un estado uniforme - es una progresión cuidadosamente orquestada a través de diferentes fases que se repiten durante la noche. Cada ciclo completo dura aproximadamente <strong>90-110 minutos</strong> y se repite 4-6 veces por noche.
+                    Dormir no es un estado uniforme. En una noche normal pasas por cuatro a seis ciclos. Duran unos 90 minutos de media: el primero suele ser más corto y los siguientes rondan los 90 a 120 minutos.
                 </p>
-<h3>Las cuatro fases del sueño</h3>
-<p><strong>Fase 1 (N1): Sueño ligero</strong></p>
+<h3>Las fases del sueño</h3>
+<p><strong>Fase 1 (N1): quedarse dormido</strong></p>
 <ul>
-<li>Transición entre vigilia y sueño</li>
-<li>Dura solo 1-5 minutos por ciclo</li>
-<li>Fácil de despertar, puede experimentar sacudidas hipnóticas</li>
-<li>Las ondas theta comienzan a aparecer en el EEG</li>
+<li>Una transición de pocos minutos, de la que es fácil despertarse. Aquí aparecen las sacudidas hípnicas, ese sobresalto al quedarse dormido.</li>
 </ul>
-<p><strong>Fase 2 (N2): Sueño ligero más profundo</strong></p>
+<p><strong>Fase 2 (N2): sueño ligero</strong></p>
 <ul>
-<li>Representa el 45-55% del sueño total</li>
-<li>La temperatura corporal baja, el ritmo cardíaco se ralentiza</li>
-<li>Aparecen husos de sueño y complejos K - cruciales para la consolidación de memoria</li>
-<li>Menos consciente del entorno</li>
+<li>Una gran parte de la noche. Bajan el ritmo cardiaco y la temperatura; en el EEG aparecen los husos de sueño.</li>
 </ul>
-<p><strong>Fase 3 (N3): Sueño profundo (sueño de ondas lentas)</strong></p>
+<p><strong>Fase 3 (N3): sueño profundo</strong></p>
 <ul>
-<li>La fase de sueño más profunda y reparadora</li>
-<li>Las ondas delta dominan la actividad cerebral</li>
-<li>Ocurre restauración física - reparación de tejidos, función inmune, liberación de hormona del crecimiento</li>
-<li>Muy difícil de despertar, desorientación si se despierta</li>
-<li>Los sueños pueden ocurrir pero generalmente son vagos, no narrativos</li>
+<li>Ondas cerebrales lentas y amplias; es la fase de la que más cuesta despertar y la más reparadora para el cuerpo.</li>
+<li>También se sueña, pero los sueños suelen ser más cortos y menos vívidos.</li>
 </ul>
-<p><strong>Sueño REM: Fase de sueños</strong></p>
+<p><strong>Sueño REM</strong></p>
 <ul>
-<li>Ocurre por primera vez unos 90 minutos después de dormirse</li>
-<li>Aumenta en duración con cada ciclo (de 10 minutos a más de 60 minutos)</li>
-<li>Actividad cerebral similar al estado de vigilia</li>
-<li>Los sueños más vívidos y memorables ocurren aquí</li>
+<li>Aparece unos 90 minutos después de dormirte, con el cerebro activo y los músculos relajados.</li>
 </ul>
-<h3>Cómo cambian los ciclos durante la noche</h3>
+<h3>Cómo cambian los ciclos a lo largo de la noche</h3>
 <p>
-                    La composición de los ciclos de sueño cambia dramáticamente a medida que avanza la noche:
+                    Los ciclos no son todos iguales:
                 </p>
 <ul>
-<li><strong>Inicio de la noche (Ciclos 1-2):</strong> Dominado por sueño profundo (N3), REM mínimo</li>
-<li><strong>Mitad de la noche (Ciclos 3-4):</strong> Menos sueño profundo, períodos REM se alargan</li>
-<li><strong>Final de la noche (Ciclos 5-6):</strong> Casi sin sueño profundo, REM puede durar 30-60 minutos</li>
+<li><strong>Primera mitad de la noche:</strong> domina el sueño profundo y los periodos REM son breves, a veces de pocos minutos.</li>
+<li><strong>Segunda mitad de la noche:</strong> el sueño profundo escasea y el REM se alarga.</li>
+<li><strong>Últimos ciclos antes de despertar:</strong> un solo periodo REM puede durar cerca de una hora.</li>
 </ul>
-<blockquote>
-                    "Por eso acortar el sueño solo una o dos horas te priva desproporcionadamente de sueño REM - estás perdiendo los ciclos más largos y ricos en sueños de la noche."
-                </blockquote>
-<h2 id="por-que-crucial">Por qué el sueño REM es crucial para soñar</h2>
 <p>
-                    Aunque los sueños pueden ocurrir en cualquier fase del sueño, el sueño REM es la fábrica de sueños del cerebro. Por eso el REM produce los sueños más vívidos y memorables:
+                    La consecuencia práctica: si recortas la noche una o dos horas, lo que más pierdes es sueño REM. Y esos ciclos finales son también los que te dejan los sueños que más probablemente recordarás.
                 </p>
-<h3>Química cerebral única</h3>
+<h2 id="por-que-crucial">¿Por qué los sueños REM son tan vívidos?</h2>
 <p>
-                    Durante el sueño REM, los niveles de neurotransmisores cambian dramáticamente:
+                    Se puede soñar en cualquier fase, pero los sueños de la fase REM suelen ser los más vívidos: imágenes, movimiento, emociones intensas, una trama. La investigación tiene pistas sobre el porqué, no una explicación completa.
+                </p>
+<h3>Una química cerebral particular</h3>
+<ul>
+<li><strong>La acetilcolina se mantiene alta:</strong> mantiene la corteza activada, como durante la vigilia.</li>
+<li><strong>La noradrenalina y la serotonina caen con fuerza:</strong> estos sistemas, que sostienen la alerta durante el día, quedan casi en silencio.</li>
+</ul>
+<p>
+                    Esta mezcla podría contribuir a la sensación que dejan los sueños: intensos, pero sin distancia crítica. Es un vínculo plausible, no un mecanismo demostrado.
+                </p>
+<h3>Las regiones cerebrales que se activan</h3>
+<p>
+                    Los estudios de imagen cerebral, desde los años noventa, encuentran un patrón repetido durante el sueño REM:
                 </p>
 <ul>
-<li><strong>La acetilcolina aumenta:</strong> Este neurotransmisor activa la corteza visual y el hipocampo, creando imágenes vívidas y accediendo a recuerdos</li>
-<li><strong>La norepinefrina y serotonina caen a cero:</strong> Esto reduce el pensamiento lógico y la verificación de realidad, permitiendo contenido onírico bizarro</li>
-<li><strong>La dopamina aumenta:</strong> Mejora la motivación, emoción y procesamiento de recompensa en los sueños</li>
-</ul>
-<h3>Regiones cerebrales activadas</h3>
-<p>
-                    Los PET y fMRI revelan que durante el sueño REM:
-                </p>
-<ul>
-<li><strong>Corteza visual:</strong> Muy activa, creando imágenes de sueños</li>
-<li><strong>Amígdala:</strong> El centro emocional se activa intensamente, explicando el contenido emocional de los sueños</li>
-<li><strong>Hipocampo:</strong> El centro de memoria integra información nueva y antigua</li>
-<li><strong>Corteza motora:</strong> Activa pero las señales están bloqueadas, creando sensaciones de movimiento en los sueños</li>
-<li><strong>Corteza prefrontal:</strong> DESACTIVADA - el razonamiento lógico y autoconciencia están fuera de línea</li>
+<li><strong>Las regiones emocionales, como la amígdala:</strong> muy activas, algo que encaja con la carga emocional de muchos sueños.</li>
+<li><strong>La corteza prefrontal dorsolateral:</strong> menos activa. Esta región interviene en el razonamiento y la planificación, lo que podría explicar por qué casi nunca notas, en el momento, que un sueño no tiene sentido.</li>
 </ul>
 <p>
-                    Este patrón único crea la <a class="text-dream-salmon hover:underline" href="../simbolos/tormenta">tormenta</a> perfecta para narrativas vívidas, emocionales e ilógicas que se sienten completamente reales mientras las experimentas.
+                    Juntas, estas condiciones favorecen escenas vívidas, emotivas e ilógicas que, mientras duran, parecen totalmente reales.
                 </p>
-<h2 id="rem-vs-norem">Sueños REM vs no-REM</h2>
+<h2 id="rem-vs-norem">Sueños REM y no REM: ¿en qué se diferencian?</h2>
 <p>
-                    Los sueños no son exclusivos del sueño REM, pero la calidad difiere dramáticamente entre las fases:
+                    Los sueños no son exclusivos de la fase REM, pero no toman la misma forma:
                 </p>
 </div>
 <!-- Dream Type Comparison Cards -->
@@ -235,11 +219,11 @@
 </div>
 <ul class="text-sm text-gray-300 space-y-2">
 <li>Imágenes vívidas y detalladas</li>
-<li>Narrativas complejas con trama</li>
-<li>Elementos bizarros e ilógicos</li>
-<li>Emociones intensas</li>
-<li>Mejor recuerdo al despertar</li>
-<li>A menudo involucran movimiento y acción</li>
+<li>Una historia con giros</li>
+<li>Elementos extraños o imposibles</li>
+<li>Emociones a menudo intensas</li>
+<li>Más fáciles de recordar al despertar</li>
+<li>Mucho movimiento y acción</li>
 </ul>
 </div>
 <div class="symptom-card glass-panel rounded-xl p-6 border border-transparent">
@@ -247,211 +231,155 @@
 <div class="p-2 bg-blue-500/20 rounded-lg">
 <i class="w-5 h-5 text-blue-300" data-lucide="cloud"></i>
 </div>
-<h3 class="font-serif text-lg text-dream-cream">Sueños no-REM</h3>
+<h3 class="font-serif text-lg text-dream-cream">Sueños no REM</h3>
 </div>
 <ul class="text-sm text-gray-300 space-y-2">
-<li>Imágenes vagas y fragmentadas</li>
-<li>Escenas estáticas, como pensamientos</li>
-<li>Contenido más realista y mundano</li>
-<li>Emociones atenuadas</li>
-<li>Difícil de recordar</li>
-<li>A menudo involucran pensamientos sobre preocupaciones diarias</li>
+<li>Escenas más cortas y fragmentadas</li>
+<li>Más parecidos a un pensamiento que a un relato</li>
+<li>Contenido más realista y cotidiano</li>
+<li>Emociones en general más tranquilas</li>
+<li>Más difíciles de recordar</li>
+<li>A menudo ligados a preocupaciones del día</li>
 </ul>
 </div>
 </div>
 <div class="prose max-w-none text-gray-300">
 <p>
-                    La investigación muestra que cuando se despierta durante el sueño REM, <strong>80-90% de las personas reportan sueños vívidos</strong>, comparado con solo 20-50% cuando se despierta durante el sueño no-REM. Los sueños no-REM tienden a ser experiencias breves, similares a pensamientos, en lugar de narrativas inmersivas.
+                    Los primeros estudios de laboratorio, en los años cincuenta, obtenían un relato onírico vívido tras <strong>el 74 al 80 % de los despertares en REM</strong>, frente al 7 al 9 % en fase no REM. Cuando más tarde se hizo una pregunta más amplia, del tipo «¿Tenías algo en la cabeza?», los despertares en las fases N2 y N3 aportaron algún contenido en el 50 al 70 % de los casos. La diferencia está menos en si hay sueño que en qué tipo de sueño.
                 </p>
-<h2 id="actividad-cerebral">Sueño REM: qué pasa en tu cerebro</h2>
+<h2 id="actividad-cerebral">¿Qué pasa en tu cerebro durante el sueño REM?</h2>
 <p>
-                    El sueño REM representa un estado neurológico único que el investigador J. Allan Hobson llamó "el cerebro despierto en el cuerpo dormido". Esto es lo que sucede:
+                    Durante el REM, el cerebro se comporta en algunos aspectos como en la vigilia. Se estudian varios procesos, con niveles de evidencia muy distintos.
                 </p>
-<h3>Las ondas PGO</h3>
+<h3>Las ondas PGO, ligadas a los movimientos oculares</h3>
 <p>
-                    Las ondas Ponto-Geniculo-Occipitales (PGO) se originan en el <a class="text-dream-salmon hover:underline" href="../simbolos/puente">puente</a> (tronco cerebral), viajan a través del núcleo geniculado (relevo visual) y llegan a la corteza occipital (procesamiento visual). Estas ráfagas eléctricas:
+                    En animales, sobre todo en gatos, se han registrado ráfagas de actividad eléctrica llamadas ondas ponto-genículo-occipitales (PGO). Nacen en el tronco cerebral y llegan a las áreas visuales cuando se mueven los ojos. En 1977, J. Allan Hobson y Robert McCarley basaron en este tipo de señales su hipótesis de activación-síntesis: la corteza tejería una historia a partir de la activación que llega del tronco cerebral. En humanos los indicios son indirectos, y la hipótesis sigue en debate.
                 </p>
-<ul>
-<li>Desencadenan movimientos oculares rápidos</li>
-<li>Activan imágenes visuales de sueños</li>
-<li>Pueden consolidar recuerdos visuales</li>
-<li>Ocurren en ráfagas durante todo el sueño REM</li>
-</ul>
-<h3>Consolidación de memoria</h3>
+<h3>La consolidación de la memoria</h3>
 <p>
-                    Tus fases REM juegan un papel crucial en diferentes tipos de memoria:
+                    Dormir ayuda a fijar lo aprendido durante el día: es uno de los resultados mejor establecidos de la investigación del sueño. El papel propio del REM, en habilidades, recuerdos emocionales o conexiones nuevas entre ideas, está menos claro, con resultados que varían según la tarea. «Consultarlo con la almohada» es un buen consejo; afirmar que el REM resuelve tus problemas iría más allá de las pruebas.
                 </p>
-<ul>
-<li><strong>Memoria procedimental:</strong> Habilidades como tocar instrumentos o practicar deportes se fortalecen</li>
-<li><strong>Memoria emocional:</strong> El REM ayuda a procesar e integrar experiencias emocionales</li>
-<li><strong>Resolución creativa de problemas:</strong> El REM facilita conexiones novedosas entre ideas dispares</li>
-</ul>
+<h3>La regulación emocional</h3>
 <p>
-                    Los estudios muestran que <strong>los individuos privados de REM tienen peor desempeño en tareas creativas</strong> y les cuesta aprender nuevas habilidades motoras. El famoso consejo de "consultarlo con la almohada" tiene respaldo científico: el sueño REM literalmente te ayuda a resolver problemas.
+                    En 2009, Matthew Walker y Els van der Helm propusieron la hipótesis de una «terapia nocturna»: como la noradrenalina está muy baja durante el REM, el cerebro podría reactivar los recuerdos emocionales suavizando su carga. Es una idea influyente que todavía se está poniendo a prueba. En la práctica, la emoción con la que despiertas suele ser más útil de anotar que el escenario del sueño.
                 </p>
-<h3>Regulación emocional</h3>
-<p>
-                    Piensa en el sueño REM como una "terapia nocturna" para experiencias emocionales. Durante esta fase:
-                </p>
-<ul>
-<li>Los recuerdos emocionales se reactivan en la amígdala</li>
-<li>La "carga" emocional de los recuerdos se reduce gradualmente</li>
-<li>Las experiencias estresantes se procesan e integran</li>
-<li>La norepinefrina (hormona del estrés) está ausente, permitiendo procesamiento seguro</li>
-</ul>
-<blockquote>
-                    "El sueño REM es como terapia sin terapeuta - tu cerebro procesa emociones difíciles en un entorno neuroquímicamente seguro." - Dr. Matthew Walker, investigador del sueño
-                </blockquote>
 <aside class="glass-panel rounded-2xl p-6 my-8 border border-dream-salmon/20">
 <div class="flex items-start gap-4">
 <div class="p-3 bg-dream-salmon/10 rounded-xl">
 <i class="w-6 h-6 text-dream-salmon" data-lucide="book-open"></i>
 </div>
 <div>
-<h4 class="font-serif text-lg text-dream-cream mb-2">Captura tus sueños REM</h4>
-<p class="text-sm text-gray-400 mb-4">Los sueños más vívidos ocurren durante los períodos REM de final de noche. Grábalos inmediatamente al despertar con la función de grabación de voz de Noctalia - antes de que se desvanezcan de la memoria.</p>
-<a class="inline-flex items-center gap-2 text-sm text-dream-salmon hover:text-dream-salmonLight transition-colors" href="/es/">
-                                Descubrir Noctalia <i class="w-4 h-4" data-lucide="arrow-right"></i>
+<h4 class="font-serif text-lg text-dream-cream mb-2">Guarda el sueño de la mañana antes de que se borre</h4>
+<p class="text-sm text-gray-400 mb-4">Los sueños más vívidos suelen llegar en los últimos periodos REM, justo antes de despertar. En Noctalia, cuenta tu sueño en voz alta: se transcribe y se guarda en tu diario, listo para releerlo.</p>
+<a class="inline-flex items-center gap-2 text-sm text-dream-salmon hover:text-dream-salmonLight transition-colors" href="/es/diario-de-suenos-por-voz">
+                                Probar el diario de sueños por voz <i class="w-4 h-4" data-lucide="arrow-right"></i>
 </a>
 </div>
 </div>
 </aside>
-<h2 id="optimizar">Cómo optimizar tu sueño REM</h2>
+<h2 id="optimizar">¿Cómo proteger tu sueño REM?</h2>
 <p>
-                    El sueño REM se concentra en los ciclos posteriores, así que dormir lo suficiente en total es esencial. Estrategias específicas pueden mejorar la calidad y cantidad de REM:
+                    No hay ningún truco demostrado para «potenciar» el REM. Como se concentra en la segunda mitad de la noche, la palanca más eficaz es sencilla: dormir lo suficiente y con horarios regulares.
                 </p>
-<h3>Duración y horario del sueño</h3>
+<h3>Duración y horarios de sueño</h3>
 <ul>
-<li><strong>Apunta a 7-9 horas:</strong> Acortar el sueño reduce desproporcionadamente el REM</li>
-<li><strong>Mantén un horario consistente:</strong> Acuéstate y despierta a las mismas horas diariamente</li>
-<li><strong>No uses múltiples alarmas:</strong> El rebote REM después de posponer la alarma es de mala calidad</li>
-<li><strong>Permite despertar natural:</strong> Cuando sea posible, despierta sin alarma durante el REM tardío</li>
+<li><strong>Duerme lo suficiente:</strong> la mayoría de los adultos necesita entre 7 y 9 horas por noche.</li>
+<li><strong>Mantén horarios regulares:</strong> acuéstate y levántate más o menos a la misma hora, también el fin de semana.</li>
+<li><strong>Protege el final de la noche:</strong> ahí es donde los periodos REM son más largos.</li>
 </ul>
-<h3>Factores ambientales</h3>
+<h3>El entorno del dormitorio</h3>
 <ul>
-<li><strong>Mantén la habitación fresca:</strong> 15-19 °C es óptimo para el sueño REM</li>
-<li><strong>Oscuridad completa:</strong> La luz suprime el REM; usa cortinas opacas o antifaz</li>
-<li><strong>Minimiza el ruido:</strong> Los sonidos repentinos pueden fragmentar los ciclos REM</li>
-<li><strong>Ropa de cama cómoda:</strong> La incomodidad física reduce el sueño REM</li>
+<li><strong>Fresco, oscuro y silencioso:</strong> un dormitorio demasiado caluroso, iluminado o ruidoso hace más probables los despertares.</li>
+<li><strong>Pantallas lejos:</strong> reserva la última media hora para algo tranquilo.</li>
 </ul>
-<h3>Sustancias que afectan el REM</h3>
-<p><strong>Supresores de REM (evitar):</strong></p>
+<h3>Sustancias que afectan al sueño REM</h3>
 <ul>
-<li><strong>Alcohol:</strong> Fragmenta y reduce severamente el sueño REM</li>
-<li><strong>Cannabis/THC:</strong> Suprime el REM (puede causar rebote REM al dejar de usarse)</li>
-<li><strong>Antidepresivos (ISRS, IRSN):</strong> Pueden reducir el REM hasta un 30 %</li>
-<li><strong>Betabloqueantes:</strong> Algunos reducen el REM y el recuerdo de sueños</li>
-<li><strong>Benzodiazepinas:</strong> Reducen el porcentaje de REM</li>
+<li><strong>El alcohol:</strong> reduce el REM al principio de la noche y fragmenta el resto del sueño.</li>
+<li><strong>Algunos medicamentos:</strong> muchos antidepresivos reducen el sueño REM, y los sueños pueden volverse más intensos durante un tiempo al dejar un tratamiento. Nunca cambies un tratamiento sin consejo médico.</li>
+<li><strong>Los suplementos:</strong> los productos que prometen intensificar los sueños o «potenciar el REM» tienen poca evidencia sólida detrás. Consulta con tu médico o farmacéutico antes de probar uno.</li>
 </ul>
-<p><strong>Potenciadores de REM:</strong></p>
+<h3>Hábitos del día</h3>
 <ul>
-<li><strong>Melatonina:</strong> Puede aumentar el porcentaje de REM si se toma correctamente</li>
-<li><strong>Galantamina:</strong> Inhibidor de la colinesterasa que mejora el REM (usado por soñadores lúcidos)</li>
-<li><strong>Vitamina B6:</strong> Puede mejorar la vivacidad y recuerdo de sueños</li>
-<li><strong>Ejercicio regular:</strong> Aumenta el sueño REM total cuando se hace regularmente</li>
+<li><strong>Muévete durante el día:</strong> la actividad física regular favorece el sueño, mejor no justo antes de acostarte.</li>
+<li><strong>Cuidado con la cafeína tardía:</strong> café, té y bebidas energéticas pueden alterar el sueño mucho después de la última taza.</li>
+<li><strong>Aprovecha la luz:</strong> luz intensa por la mañana y suave por la noche, para mantener un ritmo estable.</li>
+<li><strong>Baja el ritmo por la noche:</strong> respiración lenta, lectura o una meditación breve ayudan a acostarse menos en alerta.</li>
 </ul>
-<h3>Prácticas de estilo de vida</h3>
-<ul>
-<li><strong>Ejercicio regular:</strong> Pero no dentro de las 3 horas antes de dormir</li>
-<li><strong>Gestionar el estrés:</strong> El cortisol alto interrumpe los ciclos REM</li>
-<li><strong>Meditación antes de dormir:</strong> Calma la mente y promueve ciclos de sueño más profundos</li>
-<li><strong>Evitar cafeína tarde:</strong> Vida media de 5-6 horas; dejar de tomar a primera hora de la tarde</li>
-<li><strong>Exposición a la luz:</strong> Luz brillante por la mañana, luz tenue por la noche regula los ciclos</li>
-</ul>
-<h2 id="trastornos">Trastornos del sueño REM</h2>
+<h2 id="trastornos">Trastornos del sueño REM: ¿cuándo consultar?</h2>
 <p>
-                    Cuando el sueño REM falla, pueden surgir varios trastornos distintos:
+                    Unos sueños intensos no suelen ser un trastorno. Pero algunas situaciones sí merecen una valoración médica.
                 </p>
-<h3>Trastorno del Comportamiento del Sueño REM (TCSR)</h3>
+<h3>Trastorno de conducta del sueño REM</h3>
 <p>
-                    En el TCSR, la parálisis muscular normal del sueño REM falla, permitiendo que las personas actúen físicamente sus sueños. Esto puede resultar en:
+                    En este trastorno, la parálisis muscular del REM deja de funcionar bien. La persona representa físicamente lo que sueña: puñetazos, patadas, gritos, a veces caídas de la cama, con riesgo de lesiones para ella o para quien duerme a su lado.
+                </p>
+<p>
+                    Es poco frecuente, afecta a menos del 1 % de las personas, sobre todo a hombres de más de 50 años. En algunas personas puede aparecer años antes de una enfermedad de Parkinson. Es un motivo para consultar a un especialista del sueño, no para sacar conclusiones por tu cuenta.
+                </p>
+<h3>La narcolepsia: cuando el REM invade el día</h3>
+<p>
+                    La narcolepsia altera la regulación del sueño, y del REM en particular. Algunas señales:
                 </p>
 <ul>
-<li>Puñetazos, patadas o agitación durante el sueño</li>
-<li>Gritar o hablar en voz alta</li>
-<li>Saltar de la cama</li>
-<li>Lesiones a uno mismo o a la pareja de sueño</li>
+<li><strong>Somnolencia diurna excesiva,</strong> con ataques de sueño repentinos.</li>
+<li><strong>Cataplejía:</strong> pérdida súbita de fuerza muscular, a menudo provocada por una emoción intensa, sin perder la conciencia.</li>
+<li><strong><a class="text-dream-salmon hover:underline" href="guia-paralisis-sueno">Parálisis del sueño</a> y alucinaciones vívidas</strong> al dormirse o al despertar.</li>
+<li><strong>Entrada muy rápida en REM:</strong> a menudo en unos 15 minutos, frente a los 60 a 90 minutos habituales.</li>
 </ul>
+<h3>Falta de sueño REM</h3>
 <p>
-                    El TCSR afecta aproximadamente al 0,5 % de los adultos y es más frecuente en hombres mayores de 50 años. Puede ser un indicador temprano de condiciones neurodegenerativas como la enfermedad de Parkinson: aproximadamente el 80 % de los pacientes con TCSR desarrollan un trastorno parkinsoniano.
+                    Dormir poco de forma habitual recorta sobre todo el final de la noche, rico en REM. Cuando vuelves a dormir lo suficiente, el REM tiende a regresar con fuerza, con sueños inusualmente intensos.
                 </p>
-<h3>Narcolepsia</h3>
-<p>
-                    La narcolepsia implica disfunción en la regulación del sueño REM, causando:
-                </p>
-<ul>
-<li><strong>Somnolencia diurna excesiva:</strong> Impulso abrumador de dormir durante el día</li>
-<li><strong>Cataplejía:</strong> Debilidad muscular repentina desencadenada por emociones (atonía REM durante la vigilia)</li>
-<li><strong><a class="text-dream-salmon hover:underline" href="guia-paralisis-sueno">Parálisis del sueño</a>:</strong> Episodios frecuentes de parálisis REM al despertar o dormirse</li>
-<li><strong>Alucinaciones hipnagógicas:</strong> Sueños vívidos tipo REM al quedarse dormido</li>
-<li><strong>REM al inicio del sueño:</strong> Entrar en REM en 15 minutos de sueño (vs 90 minutos normal)</li>
-</ul>
-<h3>Privación de sueño REM</h3>
-<p>
-                    La falta crónica de sueño REM, ya sea por corta duración del sueño o trastornos del sueño, lleva a:
-                </p>
-<ul>
-<li>Consolidación de memoria deteriorada</li>
-<li>Regulación emocional reducida</li>
-<li>Disminución de creatividad y resolución de problemas</li>
-<li>Mayor riesgo de trastornos del estado de ánimo</li>
-<li>Rebote REM (sueños intensos y vívidos) cuando el sueño se normaliza</li>
-</ul>
 <h3>Trastorno de pesadillas</h3>
 <p>
-<a class="text-dream-salmon hover:underline" href="guia-pesadillas">Pesadillas</a> frecuentes y severas que interrumpen el sueño y causan angustia diurna. A menudo asociado con:
+                    Las <a class="text-dream-salmon hover:underline" href="guia-pesadillas">pesadillas</a> ocasionales son comunes. Se convierten en un problema cuando son frecuentes, te despiertan y afectan a tus días. Suelen asociarse a un trauma, a la ansiedad, a algunos medicamentos o a su retirada.
                 </p>
+<p>
+                    El tratamiento más estudiado es la <strong>terapia de ensayo en imaginación</strong>: despierto, reescribes el final de una pesadilla recurrente y ensayas la nueva versión. Si las pesadillas, los movimientos violentos durante el sueño o una fuerte somnolencia diurna persisten, habla con tu médico.
+                </p>
+<h2 id="recordar-suenos">Cómo usar el sueño REM para recordar tus sueños</h2>
+<h3>Elegir el momento de despertar</h3>
 <ul>
-<li>TEPT y trauma</li>
-<li>Trastornos de ansiedad</li>
-<li>Ciertos medicamentos</li>
-<li>Abstinencia de sustancias supresoras de REM</li>
+<li><strong>Cuenta en ciclos, de forma aproximada:</strong> 6, 7,5 o 9 horas equivalen a unos 4, 5 o 6 ciclos de 90 minutos. Los ciclos varían, así que tómalo como una referencia orientativa.</li>
+<li><strong>Despierta con suavidad cuando puedas:</strong> un despertar natural al final de la noche suele llegar tras un periodo REM.</li>
+<li><strong>Quédate quieto un momento:</strong> con los ojos cerrados, repasa el sueño antes de coger el móvil o levantarte.</li>
 </ul>
+<h3>La técnica de despertar y volver a la cama (WBTB)</h3>
 <p>
-                    El tratamiento a menudo implica <strong>Terapia de Repetición de Imágenes (TRI)</strong>, donde los pacientes reescriben los finales de <a class="text-dream-salmon hover:underline" href="guia-pesadillas">pesadillas</a> y ensayan versiones positivas mientras están despiertos.
-                </p>
-<h2 id="recordar-suenos">Mejorar el recuerdo de sueños mediante el REM</h2>
-<p>
-                    Conocer los ciclos de sueño REM puede mejorar enormemente tu capacidad de recordar sueños:
-                </p>
-<h3>Temporizar tu despertar</h3>
-<p>
-                    Como los períodos REM ocurren en ciclos de 90 minutos y se alargan durante la noche, despertar después de ciclos completos aumenta el recuerdo de sueños:
-                </p>
-<ul>
-<li><strong>Calcular en incrementos de 90 minutos:</strong> 6 horas (4 ciclos), 7,5 horas (5 ciclos), o 9 horas (6 ciclos)</li>
-<li><strong>Despertar naturalmente cuando sea posible:</strong> El despertar natural a menudo ocurre durante o justo después del REM</li>
-<li><strong>Permanecer quieto al despertar:</strong> El movimiento puede interrumpir la memoria del sueño</li>
-</ul>
-<h3>La técnica despertar-volver-a-dormir (WBTB)</h3>
-<p>
-                    Esta técnica aprovecha los últimos ciclos ricos en REM:
+                    Tomada de la práctica de los <a class="text-dream-salmon hover:underline" href="guia-suenos-lucidos-principiantes">sueños lúcidos</a>, aprovecha los últimos ciclos, ricos en REM:
                 </p>
 <ol>
-<li>Dormir durante 4-6 horas</li>
-<li>Despertar y permanecer despierto durante 15-30 minutos</li>
-<li>Volver a dormir durante 1-2 horas</li>
-<li>Este último sueño será casi completamente REM, con sueños extremadamente vívidos</li>
+<li>Duerme de 4 a 6 horas.</li>
+<li>Levántate de 15 a 30 minutos, con calma y lejos de pantallas brillantes.</li>
+<li>Vuelve a dormir el resto de la noche.</li>
 </ol>
-<h3>Diario de sueños alineado con el REM</h3>
+<p>
+                    El sueño que sigue es rico en REM y los sueños suelen ser más vívidos. Evítala si te cuesta volver a dormirte y resérvala para los días libres.
+                </p>
+<h3>Un <a class="text-dream-salmon hover:underline" href="guia-diario-suenos">diario de sueños</a> pensado para el REM</h3>
 <ul>
-<li><strong>Registrar inmediatamente:</strong> Los sueños REM se desvanecen en 5-10 minutos después de despertar</li>
-<li><strong>Mantener herramientas listas:</strong> Grabadora de voz, teléfono o diario junto a la cama</li>
-<li><strong>Capturar palabras clave primero:</strong> No preocuparse por narrativas completas inicialmente</li>
-<li><strong>Anotar emociones:</strong> Los sueños REM son emocionalmente ricos; registrar sentimientos</li>
-</ul>
-<blockquote>
-                    "Los primeros 90 segundos después de despertar del REM son críticos. Incluso sentarse puede borrar los recuerdos de sueños. Permanece quieto y repasa mentalmente el sueño antes de registrarlo."
-                </blockquote>
-<h3>Suplementos y técnicas</h3>
-<ul>
-<li><strong>Vitamina B6:</strong> 100-250mg antes de dormir puede mejorar la vivacidad y recuerdo de sueños</li>
-<li><strong>Galantamina:</strong> 4-8mg durante el WBTB puede intensificar dramáticamente los sueños REM (consultar médico)</li>
-<li><strong>Prueba de realidad:</strong> Preguntar "¿Estoy soñando?" durante el día se traslada a los sueños REM</li>
-<li><strong>Incubación de sueños:</strong> Enfocarse en un tema antes de dormir puede influir en el contenido de los sueños REM</li>
+<li><strong>Anota enseguida:</strong> un sueño puede borrarse en pocos minutos tras despertar.</li>
+<li><strong>Primero, palabras clave:</strong> un lugar, una persona, una imagen. El relato completo puede venir después.</li>
+<li><strong>Apunta la emoción:</strong> los sueños REM suelen tener mucha carga emocional, y lo que antes se borra es la sensación.</li>
 </ul>
 <p>
-                    Tu cerebro necesita <strong>ciclos de sueño completos</strong> para acceder a los períodos REM más ricos. Muchas personas sacrifican las últimas 1-2 horas de sueño sin darse cuenta de que están eliminando sus sueños más vívidos y memorables.
+                    Llevar un diario se asocia, por sí mismo, a recordar mejor los sueños.
+                </p>
+<h3>Ejemplo de diario de sueños</h3>
+<p><strong>Ejemplo ficticio:</strong> muestra qué anotar cuando la alarma interrumpe un sueño.</p>
+<ul>
+<li><strong>Sueño:</strong> «Buscaba mi puerta de embarque en un aeropuerto que cambiaba de forma. Mi hermana estaba allí, pero más joven».</li>
+<li><strong>Emoción:</strong> «Prisa, y luego una calma extraña al verla».</li>
+<li><strong>Noche:</strong> «Alarma tras unas siete horas y media».</li>
+<li><strong>Pregunta para seguir:</strong> «¿Recuerdo más los días que duermo más?».</li>
+</ul>
+<h3>Otras técnicas que conviene conocer</h3>
+<ul>
+<li><strong>Pruebas de realidad:</strong> preguntarte «¿Estoy soñando?» durante el día, un ejercicio clásico del sueño lúcido.</li>
+<li><strong>Incubación de sueños:</strong> pensar en un tema elegido antes de dormir, como explica nuestra <a class="text-dream-salmon hover:underline" href="guia-incubacion-suenos">guía de incubación de sueños</a>.</li>
+</ul>
+<p>
+                    Sobre todo, dale a tu cerebro <strong>noches completas</strong>: en la última o las dos últimas horas de sueño están los sueños más memorables.
                 </p>
 </div>
 <!-- CTA Section -->
@@ -459,17 +387,17 @@
 <div class="w-16 h-16 bg-dream-salmon/10 rounded-full flex items-center justify-center mx-auto mb-6">
 <i class="w-8 h-8 text-dream-salmon" data-lucide="moon-star"></i>
 </div>
-<h3 class="font-serif text-2xl md:text-3xl mb-4 text-dream-cream">Nunca pierdas un sueño de nuevo</h3>
+<h3 class="font-serif text-2xl md:text-3xl mb-4 text-dream-cream">Un sueño vívido se borra en minutos. Tu diario lo guarda.</h3>
 <p class="text-purple-200/70 mb-6 max-w-lg mx-auto">
-                    Captura tus sueños REM vívidos en el momento en que despiertas con la grabación de voz de Noctalia. El análisis Noctalia te ayuda a entender patrones y desbloquear el significado detrás de tus aventuras nocturnas.
+                    Cuéntale tu sueño a Noctalia al despertar, por voz o por escrito. Después, relee tus sueños uno junto a otro y fíjate en lo que vuelve de una noche a otra.
                 </p>
 <a class="inline-flex items-center gap-2 px-8 py-4 bg-dream-salmon text-dream-dark rounded-full font-bold hover:bg-dream-salmon/90 transition-colors" href="/es/">
-                    Comenzar Diario de Sueños <i class="w-5 h-5" data-lucide="arrow-right"></i>
+                    Empezar mi diario de sueños <i class="w-5 h-5" data-lucide="arrow-right"></i>
 </a>
 </aside>
 <!-- FAQ Section -->
 <section class="mt-16">
-<h2 class="font-serif text-2xl text-dream-cream mb-8">Preguntas Frecuentes</h2>
+<h2 class="font-serif text-2xl text-dream-cream mb-8">Preguntas frecuentes</h2>
 <div class="space-y-4">
 <details class="glass-panel rounded-xl p-4 group cursor-pointer">
 <summary class="font-medium flex justify-between items-center text-dream-cream">
@@ -477,42 +405,60 @@
                             <i class="w-5 h-5 transition-transform group-open:rotate-180 text-dream-salmon" data-lucide="chevron-down"></i>
 </summary>
 <p class="mt-4 text-sm text-gray-400 leading-relaxed">
-                            Los adultos generalmente necesitan 90-120 minutos de sueño REM por noche, lo que representa aproximadamente el 20-25 % del sueño total. Esto suele ocurrir a lo largo de 4-6 ciclos REM durante la noche, con períodos REM que se vuelven más largos hacia la mañana.
+                            No existe un objetivo oficial solo para el REM. En adultos ocupa alrededor de una cuarta parte del sueño, repartida en varios periodos que se alargan hacia la mañana. La mejor forma de tener suficiente es dormir lo suficiente: entre 7 y 9 horas para la mayoría de los adultos.
                         </p>
 </details>
 <details class="glass-panel rounded-xl p-4 group cursor-pointer">
 <summary class="font-medium flex justify-between items-center text-dream-cream">
-                            ¿Por qué los sueños REM son más vívidos que otros sueños?
+                            ¿Por qué los sueños REM son más vívidos que los demás?
                             <i class="w-5 h-5 transition-transform group-open:rotate-180 text-dream-salmon" data-lucide="chevron-down"></i>
 </summary>
 <p class="mt-4 text-sm text-gray-400 leading-relaxed">
-                            Los sueños REM son más vívidos porque durante el sueño REM, la actividad cerebral en los centros visuales, motores, emocionales y de memoria es tan alta como cuando estás despierto. La corteza prefrontal (pensamiento lógico) está menos activa, permitiendo narrativas bizarras y emocionales sin restricciones lógicas.
+                            Durante el REM, las regiones emocionales del cerebro están muy activas, una parte de la corteza prefrontal, implicada en el razonamiento, lo está menos, y la noradrenalina y la serotonina caen. Esta mezcla contribuye probablemente a sueños vívidos, emotivos e ilógicos, aunque el mecanismo exacto sigue en debate.
                         </p>
 </details>
 <details class="glass-panel rounded-xl p-4 group cursor-pointer">
 <summary class="font-medium flex justify-between items-center text-dream-cream">
-                            ¿Puedo aumentar mi sueño REM naturalmente?
+                            ¿Solo soñamos durante el sueño REM?
                             <i class="w-5 h-5 transition-transform group-open:rotate-180 text-dream-salmon" data-lucide="chevron-down"></i>
 </summary>
 <p class="mt-4 text-sm text-gray-400 leading-relaxed">
-                            Sí. Mantén un horario de sueño consistente, duerme 7-9 horas, evita el alcohol y ciertos medicamentos que suprimen el REM, haz ejercicio regularmente (pero no antes de dormir), mantén tu habitación fresca (15-19 °C) y reduce el estrés mediante técnicas de relajación.
+                            No. También se sueña en las fases no REM. Esos sueños suelen ser más cortos, más parecidos a un pensamiento y más difíciles de recordar, por eso durante mucho tiempo el REM se llevó todo el mérito.
+                        </p>
+</details>
+<details class="glass-panel rounded-xl p-4 group cursor-pointer">
+<summary class="font-medium flex justify-between items-center text-dream-cream">
+                            ¿Puedo aumentar mi sueño REM de forma natural?
+                            <i class="w-5 h-5 transition-transform group-open:rotate-180 text-dream-salmon" data-lucide="chevron-down"></i>
+</summary>
+<p class="mt-4 text-sm text-gray-400 leading-relaxed">
+                            Lo más seguro es proteger tu sueño total: horarios regulares, tiempo suficiente en la cama y nada de noches cortas encadenadas, ya que el REM se concentra al final. El alcohol por la noche y algunos medicamentos lo reducen. Ningún suplemento ha mostrado un beneficio fiable; consulta con un médico antes de probar uno.
                         </p>
 </details>
 </div>
 </section>
 <!-- July catch-up backlink: rem-to-night-waking -->
-<section class="glass-panel rounded-2xl p-6 my-8 border border-dream-salmon/20"><h2 class="font-serif text-2xl text-dream-cream mb-3">Despertar nocturno</h2><p>Para adaptar este método a un despertar en mitad de la noche sin romper el descanso, lee <a class="text-dream-salmon hover:underline" href="despertares-nocturnos-recordar-suenos">despertares nocturnos y recuerdo de sueños</a>.</p></section>
+<section class="glass-panel rounded-2xl p-6 my-8 border border-dream-salmon/20"><h2 class="font-serif text-2xl text-dream-cream mb-3">Despertar nocturno</h2><p>¿Te has despertado a las tres de la madrugada con un sueño todavía en la cabeza? Aquí tienes cómo anotarlo sin estropear el resto de la noche: <a class="text-dream-salmon hover:underline" href="despertares-nocturnos-recordar-suenos">despertares nocturnos y recuerdo de sueños</a>.</p></section>
 <!-- Sources / Trust (TI-97) -->
 <section class="mt-16 glass-panel rounded-2xl p-6" id="sources">
-<h2 class="font-serif text-2xl text-dream-cream mb-4">Fuentes / Para Ir Más Lejos</h2>
+<h2 class="font-serif text-2xl text-dream-cream mb-4">Fuentes y lecturas</h2>
 <ul class="mt-6 space-y-2 text-sm text-gray-400">
-<li><a href="https://dictionary.apa.org/dream" rel="nofollow noopener noreferrer" target="_blank">APA Dictionary of Psychology — Dream</a></li>
-<li><a href="https://dreamresearch.net/" rel="nofollow noopener noreferrer" target="_blank">DreamResearch.net — G. William Domhoff (dream research overview)</a></li>
-<li><a href="https://pubmed.ncbi.nlm.nih.gov/13089671/" rel="nofollow noopener noreferrer" target="_blank">Aserinsky &amp; Kleitman (1953) — Discovery of REM sleep (Science, PubMed abstract)</a></li>
-<li><a href="https://www.sleepfoundation.org/stages-of-sleep" rel="nofollow noopener noreferrer" target="_blank">Sleep Foundation — Etapas del sueño</a></li>
-<li><a href="https://www.ninds.nih.gov/health-information/public-education/brain-basics/brain-basics-understanding-sleep" rel="nofollow noopener noreferrer" target="_blank">NINDS — Brain Basics: Understanding Sleep</a></li>
+<li><a href="https://pubmed.ncbi.nlm.nih.gov/13089671/" rel="nofollow noopener noreferrer" target="_blank">Aserinsky y Kleitman (1953), «Regularly occurring periods of eye motility, and concomitant phenomena, during sleep», <em>Science</em></a></li>
+<li><a href="https://www.ninds.nih.gov/health-information/public-education/brain-basics/brain-basics-understanding-sleep" rel="nofollow noopener noreferrer" target="_blank">NINDS, «Brain Basics: Understanding Sleep»</a></li>
+<li><a href="https://www.sleepfoundation.org/stages-of-sleep" rel="nofollow noopener noreferrer" target="_blank">Sleep Foundation, «Stages of Sleep»</a></li>
+<li><a href="https://pmc.ncbi.nlm.nih.gov/articles/PMC2814941/" rel="nofollow noopener noreferrer" target="_blank">Nir y Tononi (2010), «Dreaming and the brain: from phenomenology to neurophysiology», <em>Trends in Cognitive Sciences</em></a></li>
+<li><a href="https://doi.org/10.1038/383163a0" rel="nofollow noopener noreferrer" target="_blank">Maquet et al. (1996), «Functional neuroanatomy of human rapid-eye-movement sleep and dreaming», <em>Nature</em></a></li>
+<li><a href="https://doi.org/10.1176/ajp.134.12.1335" rel="nofollow noopener noreferrer" target="_blank">Hobson y McCarley (1977), «The brain as a dream state generator: an activation-synthesis hypothesis of the dream process», <em>American Journal of Psychiatry</em></a></li>
+<li><a href="https://doi.org/10.1038/nature04286" rel="nofollow noopener noreferrer" target="_blank">Stickgold (2005), «Sleep-dependent memory consolidation», <em>Nature</em></a></li>
+<li><a href="https://doi.org/10.1037/a0016570" rel="nofollow noopener noreferrer" target="_blank">Walker y van der Helm (2009), «Overnight therapy? The role of sleep in emotional brain processing», <em>Psychological Bulletin</em></a></li>
+<li><a href="https://www.sleepfoundation.org/nutrition/alcohol-and-sleep" rel="nofollow noopener noreferrer" target="_blank">Sleep Foundation, «Alcohol and Sleep»</a></li>
+<li><a href="https://pmc.ncbi.nlm.nih.gov/articles/PMC5548844/" rel="nofollow noopener noreferrer" target="_blank">Wichniak et al. (2017), «Effects of Antidepressants on Sleep», <em>Current Psychiatry Reports</em></a></li>
+<li><a href="https://sleepeducation.org/sleep-disorders/rem-sleep-behavior-disorder/" rel="nofollow noopener noreferrer" target="_blank">AASM Sleep Education, «REM Sleep Behavior Disorder»</a></li>
+<li><a href="https://www.ninds.nih.gov/health-information/disorders/narcolepsy" rel="nofollow noopener noreferrer" target="_blank">NINDS, «Narcolepsy»</a></li>
+<li><a href="https://pubmed.ncbi.nlm.nih.gov/29852917/" rel="nofollow noopener noreferrer" target="_blank">Morgenthaler et al. (2018), «Position paper for the treatment of nightmare disorder in adults», <em>Journal of Clinical Sleep Medicine</em></a></li>
+<li><a href="https://pubmed.ncbi.nlm.nih.gov/25725324/" rel="nofollow noopener noreferrer" target="_blank">Aspy et al. (2015), «Is dream recall underestimated by retrospective measures and enhanced by keeping a logbook? A review», <em>Consciousness and Cognition</em></a></li>
 </ul>
-<p class="mt-6 text-xs text-purple-200/60">Actualizado el 26 de diciembre de 2025</p>
+<p class="mt-6 text-xs text-purple-200/60">Actualizado el 8 de octubre de 2026</p>
 </section>
 <!-- Related Symbols Start -->
 <section aria-label="Símbolos de sueños relacionados" class="mt-12 mb-8">
