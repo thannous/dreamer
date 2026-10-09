@@ -12831,58 +12831,152 @@
       "en": {
         "slug": "bicycle",
         "name": "Bicycle",
-        "shortDescription": "Riding a bicycle may make independence, balance, effort or your personal pace visible. The terrain, condition of the bike and how much control you had provide the relevant context.",
-        "modifiedAt": "2026-07-24",
+        "shortDescription": "Riding a bicycle in a dream often brings up balance, effort and your own pace: moving forward on your own strength. The slope, the state of the bike and whether you stayed in control show which part of that effort matters right now.",
+        "modifiedAt": "2026-10-08",
         "askYourself": [
-          "What did bicycle change in the scene?",
-          "Which feeling stayed with me after waking?"
+          "Was I steady on the bike, wobbling, or about to fall?",
+          "Was the ride easy, uphill, too fast, or going nowhere?",
+          "Where in my life am I moving forward on my own strength right now?"
         ],
-        "faq": []
+        "faq": [
+          {
+            "question": "What does it mean to dream about riding a bicycle?",
+            "answer": "A bicycle is often associated with balance, effort and moving at your own pace. Its meaning depends on the ride, smooth or shaky, uphill or downhill, alone or with others, and on how you felt while pedaling."
+          },
+          {
+            "question": "What does it mean to fall off a bike in a dream?",
+            "answer": "A fall can go with a moment when something you were managing alone suddenly tipped over. It is not a warning of an accident. Note what made you fall and whether you got back on."
+          },
+          {
+            "question": "Why can't I pedal or steer in my dream?",
+            "answer": "Pedals that spin in the void, legs that will not push or handlebars that do not respond are common dream frustrations. They can echo an effort that does not seem to move anything forward. Where do you feel that right now?"
+          },
+          {
+            "question": "What does a stolen or broken bicycle mean in a dream?",
+            "answer": "A stolen bike or a flat tire can stage the loss of something you counted on to keep moving: time, energy, independence, someone's help. Ask yourself what you rely on at the moment, and whether that support feels fragile."
+          }
+        ],
+        "documentMetaDescription": "Dreaming of riding a bike, falling off or pedaling uphill: what balance, effort and pace may say about your life now, with questions and a journal example."
       },
       "fr": {
         "slug": "velo",
         "name": "Vélo",
-        "shortDescription": "Rouler à vélo peut rendre visibles l’autonomie, l’équilibre, l’effort ou votre rythme personnel. Le terrain, l’état du vélo et le contrôle que vous gardiez fournissent le contexte pertinent.",
-        "modifiedAt": "2026-07-24",
+        "shortDescription": "Rêver de faire du vélo ramène souvent à l'équilibre, à l'effort et à votre propre rythme : avancer par vos propres moyens. La pente, l'état du vélo et le contrôle que vous gardiez montrent quelle part de cet effort compte en ce moment.",
+        "modifiedAt": "2026-10-08",
         "askYourself": [
-          "Qu’est-ce que vélo a changé dans la scène ?",
-          "Quelle émotion est restée après le réveil ?"
+          "Étais-je stable sur le vélo, hésitant, ou sur le point de tomber ?",
+          "Le trajet était-il facile, en montée, trop rapide, ou sans arriver nulle part ?",
+          "Où est-ce que j'avance en ce moment par mes propres moyens ?"
         ],
-        "faq": []
+        "faq": [
+          {
+            "question": "Que signifie rêver de faire du vélo ?",
+            "answer": "Le vélo est souvent associé à l'équilibre, à l'effort et au fait d'avancer à son rythme. Son sens dépend du trajet, fluide ou chaotique, en montée ou en descente, seul ou accompagné, et de ce que vous ressentiez en pédalant."
+          },
+          {
+            "question": "Que signifie tomber de vélo en rêve ?",
+            "answer": "Une chute peut accompagner un moment où quelque chose que vous gériez seul a basculé d'un coup. Ce n'est pas l'annonce d'un accident. Notez ce qui vous a fait tomber et si vous êtes remonté en selle."
+          },
+          {
+            "question": "Pourquoi n'arrive-t-on pas à pédaler dans un rêve ?",
+            "answer": "Des pédales qui tournent dans le vide, des jambes sans force ou un guidon qui ne répond pas sont des frustrations fréquentes en rêve. Elles peuvent faire écho à un effort qui ne semble rien faire avancer. Où le ressentez-vous en ce moment ?"
+          },
+          {
+            "question": "Que signifie rêver qu'on vous vole votre vélo ?",
+            "answer": "Un vélo volé ou un pneu crevé peut mettre en scène la perte d'un moyen sur lequel vous comptiez pour avancer : du temps, de l'énergie, votre autonomie, l'aide de quelqu'un. Demandez-vous sur quoi vous vous appuyez, et si cet appui vous semble fragile."
+          }
+        ],
+        "documentMetaDescription": "Rêver de vélo, de tomber de vélo ou de pédaler en montée : ce que l'équilibre, l'effort et le rythme peuvent dire de votre période, avec questions et exemple."
       },
       "es": {
         "slug": "bicicleta",
         "name": "Bicicleta",
-        "shortDescription": "Ir en bicicleta puede hacer visibles la autonomía, el equilibrio, el esfuerzo o tu ritmo personal. El terreno, el estado de la bici y el control que conservabas aportan el contexto.",
-        "modifiedAt": "2026-07-24",
+        "shortDescription": "Soñar que vas en bicicleta suele llevarte al equilibrio, al esfuerzo y a tu propio ritmo: avanzar con tus propias fuerzas. La cuesta, el estado de la bici y el control que mantenías muestran qué parte de ese esfuerzo pesa ahora.",
+        "modifiedAt": "2026-10-08",
         "askYourself": [
-          "¿Qué cambió bicicleta dentro de la escena?",
-          "¿Qué emoción siguió conmigo al despertar?"
+          "¿Iba estable en la bici, tambaleándome o a punto de caer?",
+          "¿El trayecto era fácil, cuesta arriba, demasiado rápido o no llevaba a ninguna parte?",
+          "¿Dónde estoy avanzando ahora mismo solo con mis propias fuerzas?"
         ],
-        "faq": []
+        "faq": [
+          {
+            "question": "¿Qué significa soñar que vas en bicicleta?",
+            "answer": "La bicicleta se asocia a menudo con el equilibrio, el esfuerzo y avanzar a tu ritmo. Su sentido depende del trayecto (fluido o accidentado, cuesta arriba o cuesta abajo, solo o acompañado) y de lo que sentías al pedalear."
+          },
+          {
+            "question": "¿Qué significa caerse de la bicicleta en sueños?",
+            "answer": "Una caída puede acompañar un momento en el que algo que llevabas tú solo se ha desequilibrado de golpe. No anuncia un accidente. Anota qué te hizo caer y si volviste a subirte."
+          },
+          {
+            "question": "¿Por qué en sueños no puedo pedalear?",
+            "answer": "Pedales que giran en vacío, piernas sin fuerza o un manillar que no responde son frustraciones frecuentes en sueños. Pueden hacer eco de un esfuerzo que no parece mover nada. ¿Dónde lo notas ahora mismo?"
+          },
+          {
+            "question": "¿Qué significa soñar que te roban la bicicleta?",
+            "answer": "Una bici robada o una rueda pinchada puede escenificar la pérdida de un medio con el que contabas para avanzar: tiempo, energía, autonomía, la ayuda de alguien. Pregúntate en qué te apoyas ahora y si ese apoyo te parece frágil."
+          }
+        ],
+        "documentMetaDescription": "Soñar con bicicleta, caerte de la bici o pedalear cuesta arriba: qué dicen el equilibrio, el esfuerzo y el ritmo de tu momento, con preguntas y un ejemplo."
       },
       "de": {
         "slug": "fahrrad",
         "name": "Fahrrad",
-        "shortDescription": "Beim Fahrradfahren im Traum können Eigenständigkeit, Gleichgewicht, Anstrengung oder dein persönliches Tempo sichtbar werden. Gelände, Zustand des Rads und deine Kontrolle darüber liefern den passenden Kontext.",
+        "shortDescription": "Wer im Traum Fahrrad fährt, begegnet oft Fragen von Gleichgewicht, Anstrengung und eigenem Tempo: aus eigener Kraft vorankommen. Steigung, Zustand des Rads und wie sicher Sie lenkten, zeigen, welcher Teil dieser Anstrengung gerade zählt.",
         "askYourself": [
-          "Konntest du sicher lenken und das Gleichgewicht halten?",
-          "War die Strecke steil, schnell, holprig oder leicht zu fahren?",
-          "Bei welchem Vorhaben bestimmst du gerade selbst Tempo und Richtung?"
+          "Saß ich sicher im Sattel, habe ich geschwankt, oder bin ich fast gestürzt?",
+          "War die Fahrt leicht, steil bergauf, zu schnell oder ohne Ziel?",
+          "Wo komme ich gerade nur aus eigener Kraft voran?"
         ],
-        "faq": [],
-        "modifiedAt": "2026-07-24"
+        "faq": [
+          {
+            "question": "Was bedeutet es, im Traum Fahrrad zu fahren?",
+            "answer": "Das Fahrrad wird oft mit Gleichgewicht, Anstrengung und dem eigenen Tempo verbunden. Was es bedeutet, hängt von der Fahrt ab, ob leicht oder holprig, bergauf oder bergab, allein oder mit anderen, und davon, wie Sie sich beim Treten gefühlt haben."
+          },
+          {
+            "question": "Was bedeutet es, im Traum vom Fahrrad zu fallen?",
+            "answer": "Ein Sturz kann einen Moment begleiten, in dem etwas, das Sie allein getragen haben, plötzlich ins Wanken geraten ist. Er kündigt keinen Unfall an. Notieren Sie, was Sie zu Fall gebracht hat und ob Sie wieder aufgestiegen sind."
+          },
+          {
+            "question": "Warum kann ich im Traum nicht in die Pedale treten?",
+            "answer": "Pedale, die ins Leere treten, kraftlose Beine oder ein Lenker, der nicht reagiert, sind häufige Frustrationen im Traum. Sie können eine Anstrengung aufgreifen, die nichts zu bewegen scheint. Wo erleben Sie das gerade?"
+          },
+          {
+            "question": "Was bedeutet es, wenn im Traum das Fahrrad gestohlen wird?",
+            "answer": "Ein gestohlenes Rad oder ein platter Reifen kann den Verlust eines Mittels in Szene setzen, auf das Sie gezählt haben: Zeit, Kraft, Selbstständigkeit, die Hilfe eines Menschen. Fragen Sie sich, worauf Sie sich gerade stützen und ob diese Stütze brüchig wirkt."
+          }
+        ],
+        "modifiedAt": "2026-10-08",
+        "documentMetaDescription": "Fahrrad im Traum, vom Rad fallen oder bergauf strampeln: was Gleichgewicht, Anstrengung und Tempo über Ihre Lage sagen können, mit Fragen und Beispiel."
       },
       "it": {
         "slug": "bicicletta",
         "name": "Bicicletta",
-        "shortDescription": "Andare in bicicletta può rendere visibili autonomia, equilibrio, fatica o ritmo personale. Terreno, condizioni della bici e controllo che riuscivi a mantenere forniscono il contesto.",
-        "modifiedAt": "2026-07-24",
+        "shortDescription": "Sognare di andare in bicicletta riporta spesso all’equilibrio, alla fatica e al tuo ritmo: andare avanti con le tue forze. La salita, lo stato della bici e il controllo che riuscivi a mantenere mostrano quale parte di questo sforzo conta adesso.",
+        "modifiedAt": "2026-10-08",
         "askYourself": [
-          "Che cosa ha cambiato bicicletta nella scena?",
-          "Quale emozione è rimasta dopo il risveglio?"
+          "Stavo in equilibrio sulla bici, sbandavo o stavo per cadere?",
+          "Il percorso era facile, in salita, troppo veloce o non portava da nessuna parte?",
+          "Dove sto andando avanti, in questo periodo, solo con le mie forze?"
         ],
-        "faq": []
+        "faq": [
+          {
+            "question": "Che cosa significa sognare di andare in bicicletta?",
+            "answer": "La bicicletta viene spesso associata all’equilibrio, alla fatica e al fatto di procedere al proprio ritmo. Il significato dipende dal percorso, scorrevole o accidentato, in salita o in discesa, da solo o in compagnia, e da ciò che provavi pedalando."
+          },
+          {
+            "question": "Che cosa significa cadere dalla bicicletta in sogno?",
+            "answer": "Una caduta può accompagnare un momento in cui qualcosa che gestivi da solo si è sbilanciato all’improvviso. Non annuncia un incidente. Annota che cosa ti ha fatto cadere e se sei risalito in sella."
+          },
+          {
+            "question": "Perché in sogno non riesco a pedalare?",
+            "answer": "Pedali che girano a vuoto, gambe senza forza o un manubrio che non risponde sono frustrazioni frequenti nei sogni. Possono fare eco a uno sforzo che non sembra smuovere nulla. Dove lo senti in questo periodo?"
+          },
+          {
+            "question": "Che cosa significa sognare che ti rubano la bicicletta?",
+            "answer": "Una bici rubata o una gomma a terra può mettere in scena la perdita di un mezzo su cui contavi per andare avanti: tempo, energia, autonomia, l’aiuto di qualcuno. Chiediti su che cosa ti appoggi adesso e se quell’appoggio ti sembra fragile."
+          }
+        ],
+        "documentMetaDescription": "Sognare la bicicletta, cadere dalla bici o pedalare in salita: che cosa dicono equilibrio, fatica e ritmo del tuo momento, con domande ed esempio di diario."
       },
       "pt": {
         "slug": "bicicleta",
@@ -12916,58 +13010,152 @@
       "en": {
         "slug": "boat",
         "name": "Boat",
-        "shortDescription": "Moving through a dream by boat may reflect how you navigate a transition or uncertain situation. The water, weather, passengers and your control of the vessel make the journey personal.",
-        "modifiedAt": "2026-07-24",
+        "shortDescription": "Dreaming of a boat often puts you in the middle of a crossing: something carries you over water you cannot fully control. The state of the boat, the sea and who was at the helm show what this passage may echo in your life right now.",
+        "modifiedAt": "2026-10-08",
         "askYourself": [
-          "What did boat change in the scene?",
-          "Which feeling stayed with me after waking?"
+          "Was the boat steady, leaking, drifting, or holding its course?",
+          "Who was steering, and where was I on board?",
+          "What am I crossing right now, and what is keeping me afloat?"
         ],
-        "faq": []
+        "faq": [
+          {
+            "question": "What does it mean to dream about a boat?",
+            "answer": "A boat is often associated with a crossing, a transition, or with what carries you through a period of uncertainty. Its meaning depends on the water, the weather, who was steering, and how safe you felt on board."
+          },
+          {
+            "question": "What does a sinking boat mean in a dream?",
+            "answer": "A boat taking on water can go with a feeling that something you relied on no longer holds: a plan, a routine, a relationship, your energy. It is not a prediction. Note whether you bailed, swam or waited for help."
+          },
+          {
+            "question": "What does it mean to dream of a boat on rough water?",
+            "answer": "Waves, wind and a rolling deck can echo a stressful or unpredictable period. Look at the boat as well as the storm: did it hold? Being tossed about but staying afloat tells a different story from capsizing."
+          },
+          {
+            "question": "What does it mean to miss a boat in a dream?",
+            "answer": "Watching a boat pull away from the dock can stage a fear of missing a chance, or of being left behind while others move on. Ask yourself which departure, or which deadline, is on your mind at the moment."
+          }
+        ],
+        "documentMetaDescription": "Dreaming of a boat, a sinking boat or rough water: what the crossing, the helm and the sea may say about a change you are living, with a journal example."
       },
       "fr": {
         "slug": "bateau",
         "name": "Bateau",
-        "shortDescription": "Se déplacer en bateau peut montrer comment vous traversez une transition ou une situation incertaine. L’eau, la météo, les passagers et votre maîtrise de l’embarcation rendent ce voyage personnel.",
-        "modifiedAt": "2026-07-24",
+        "shortDescription": "Rêver d'un bateau vous place souvent au milieu d'une traversée : quelque chose vous porte sur une eau que vous ne maîtrisez pas tout à fait. L'état du bateau, celui de la mer et la personne à la barre montrent ce que ce passage peut évoquer en ce moment.",
+        "modifiedAt": "2026-10-08",
         "askYourself": [
-          "Qu’est-ce que bateau a changé dans la scène ?",
-          "Quelle émotion est restée après le réveil ?"
+          "Le bateau était-il stable, percé, à la dérive, ou tenait-il son cap ?",
+          "Qui tenait la barre, et où étais-je à bord ?",
+          "Qu'est-ce que je traverse en ce moment, et qu'est-ce qui me maintient à flot ?"
         ],
-        "faq": []
+        "faq": [
+          {
+            "question": "Que signifie rêver d'un bateau ?",
+            "answer": "Le bateau est souvent associé à une traversée, à une transition, ou à ce qui vous porte pendant une période incertaine. Son sens dépend de l'eau, de la météo, de la personne à la barre et du sentiment de sécurité que vous aviez à bord."
+          },
+          {
+            "question": "Que signifie rêver d'un bateau qui coule ?",
+            "answer": "Un bateau qui prend l'eau peut accompagner l'impression que quelque chose sur quoi vous comptiez ne tient plus : un projet, une routine, une relation, votre énergie. Ce n'est pas une prédiction. Notez si vous écopiez, nagiez ou attendiez de l'aide."
+          },
+          {
+            "question": "Que signifie rêver d'un bateau sur une mer agitée ?",
+            "answer": "Les vagues, le vent et le pont qui tangue peuvent faire écho à une période stressante ou imprévisible. Regardez le bateau autant que la tempête : a-t-il tenu ? Être secoué mais rester à flot ne raconte pas la même chose que chavirer."
+          },
+          {
+            "question": "Que signifie rater un bateau en rêve ?",
+            "answer": "Voir le bateau s'éloigner du quai peut mettre en scène la peur de laisser passer une occasion, ou de rester sur place pendant que les autres avancent. Demandez-vous quel départ, ou quelle échéance, vous occupe l'esprit en ce moment."
+          }
+        ],
+        "documentMetaDescription": "Rêver d'un bateau, d'un bateau qui coule ou d'une mer agitée : ce que la traversée et la barre peuvent dire d'une transition, avec questions et exemple."
       },
       "es": {
         "slug": "barco",
         "name": "Barco",
-        "shortDescription": "Avanzar en barco puede mostrar cómo atraviesas una transición o una situación incierta. El agua, el clima, los acompañantes y tu control de la embarcación personalizan el viaje.",
-        "modifiedAt": "2026-07-24",
+        "shortDescription": "Soñar con un barco suele ponerte en mitad de una travesía: algo te lleva por un agua que no controlas del todo. El estado del barco, el del mar y quién llevaba el timón muestran qué puede reflejar ese paso en tu momento actual.",
+        "modifiedAt": "2026-10-08",
         "askYourself": [
-          "¿Qué cambió barco dentro de la escena?",
-          "¿Qué emoción siguió conmigo al despertar?"
+          "¿El barco iba estable, hacía agua, iba a la deriva o mantenía el rumbo?",
+          "¿Quién llevaba el timón, y dónde estaba yo a bordo?",
+          "¿Qué estoy atravesando ahora mismo, y qué me mantiene a flote?"
         ],
-        "faq": []
+        "faq": [
+          {
+            "question": "¿Qué significa soñar con un barco?",
+            "answer": "El barco se asocia a menudo con una travesía, una transición o con lo que te sostiene en una etapa incierta. Su sentido depende del agua, del tiempo, de quién llevaba el timón y de lo seguro que te sentías a bordo."
+          },
+          {
+            "question": "¿Qué significa soñar con un barco que se hunde?",
+            "answer": "Un barco que hace agua puede acompañar la sensación de que algo con lo que contabas ya no aguanta: un plan, una rutina, una relación, tu energía. No es una predicción. Anota si achicabas agua, nadabas o esperabas ayuda."
+          },
+          {
+            "question": "¿Qué significa soñar con un barco en un mar agitado?",
+            "answer": "Las olas, el viento y la cubierta que se balancea pueden reflejar una etapa estresante o imprevisible. Mira el barco tanto como la tormenta: ¿aguantó? Ir zarandeado pero a flote no cuenta lo mismo que volcar."
+          },
+          {
+            "question": "¿Qué significa perder un barco en sueños?",
+            "answer": "Ver el barco alejarse del muelle puede escenificar el miedo a dejar pasar una oportunidad o a quedarte atrás mientras los demás avanzan. Pregúntate qué partida, o qué fecha límite, te ronda la cabeza ahora."
+          }
+        ],
+        "documentMetaDescription": "Soñar con un barco, con un barco que se hunde o con mar agitado: qué dicen la travesía y el timón de una transición, con preguntas y un ejemplo de diario."
       },
       "de": {
         "slug": "boot",
         "name": "Boot",
-        "shortDescription": "Wie du dich mit einem Boot durch die Szene bewegst, kann deinen Umgang mit einer Übergangsphase oder unsicheren Lage beleuchten. Wasser, Wetter, Mitreisende und deine Kontrolle über das Boot geben der Szene ihre persönliche Bedeutung.",
+        "shortDescription": "Ein Boot im Traum setzt Sie oft mitten in eine Überfahrt: Etwas trägt Sie über Wasser, das Sie nicht ganz im Griff haben. Zustand des Boots, Seegang und wer am Ruder stand, zeigen, woran diese Überfahrt in Ihrem Leben gerade anknüpfen kann.",
         "askYourself": [
-          "War das Boot stabil, beschädigt, festgemacht oder in Bewegung?",
-          "Wer steuerte, und wie verhielten sich Wasser und Wetter?",
-          "Welche Situation verlangt gerade Vertrauen, Anpassung oder einen Kurswechsel von dir?"
+          "War das Boot stabil, leck, trieb es ab, oder hielt es Kurs?",
+          "Wer stand am Ruder, und wo war ich an Bord?",
+          "Was durchquere ich gerade, und was hält mich über Wasser?"
         ],
-        "faq": [],
-        "modifiedAt": "2026-07-24"
+        "faq": [
+          {
+            "question": "Was bedeutet es, von einem Boot zu träumen?",
+            "answer": "Das Boot wird oft mit einer Überfahrt, einem Übergang oder mit dem verbunden, was Sie durch eine unsichere Phase trägt. Was es bedeutet, hängt vom Wasser, vom Wetter, von der Person am Ruder und davon ab, wie sicher Sie sich an Bord fühlten."
+          },
+          {
+            "question": "Was bedeutet ein sinkendes Boot im Traum?",
+            "answer": "Ein Boot, das voll Wasser läuft, kann das Gefühl begleiten, dass etwas, auf das Sie gezählt haben, nicht mehr trägt: ein Plan, eine Routine, eine Beziehung, Ihre Kraft. Eine Vorhersage ist es nicht. Notieren Sie, ob Sie Wasser geschöpft haben, geschwommen sind oder auf Hilfe gewartet haben."
+          },
+          {
+            "question": "Was bedeutet ein Boot auf stürmischer See im Traum?",
+            "answer": "Wellen, Wind und ein schwankendes Deck können eine stressige oder unberechenbare Phase aufgreifen. Achten Sie auf das Boot ebenso wie auf den Sturm: Hat es gehalten? Durchgeschüttelt zu werden und oben zu bleiben, erzählt etwas anderes als zu kentern."
+          },
+          {
+            "question": "Was bedeutet es, im Traum ein Boot zu verpassen?",
+            "answer": "Ein Boot, das ohne Sie ablegt, kann die Angst in Szene setzen, eine Gelegenheit zu verpassen oder zurückzubleiben, während andere weiterziehen. Fragen Sie sich, welcher Aufbruch oder welche Frist Sie gerade beschäftigt."
+          }
+        ],
+        "modifiedAt": "2026-10-08",
+        "documentMetaDescription": "Boot im Traum, sinkend oder auf stürmischer See: was Überfahrt und Ruder über einen Übergang in Ihrem Leben sagen können, mit Fragen und Tagebuchbeispiel."
       },
       "it": {
         "slug": "barca",
         "name": "Barca",
-        "shortDescription": "Muoversi in barca può mostrare come attraversi una transizione o una situazione incerta. Acqua, meteo, compagni di viaggio e controllo dell’imbarcazione rendono personale il percorso.",
-        "modifiedAt": "2026-07-24",
+        "shortDescription": "Sognare una barca ti mette spesso nel mezzo di una traversata: qualcosa ti porta su un’acqua che non controlli del tutto. Lo stato della barca, quello del mare e chi teneva il timone mostrano che cosa può evocare questo passaggio adesso.",
+        "modifiedAt": "2026-10-08",
         "askYourself": [
-          "Che cosa ha cambiato barca nella scena?",
-          "Quale emozione è rimasta dopo il risveglio?"
+          "La barca era stabile, imbarcava acqua, andava alla deriva o teneva la rotta?",
+          "Chi teneva il timone, e dov’ero io a bordo?",
+          "Che cosa sto attraversando in questo periodo, e che cosa mi tiene a galla?"
         ],
-        "faq": []
+        "faq": [
+          {
+            "question": "Che cosa significa sognare una barca?",
+            "answer": "La barca viene spesso associata a una traversata, a una transizione o a ciò che ti sostiene in un periodo incerto. Il significato dipende dall’acqua, dal tempo, da chi teneva il timone e da quanto ti sentivi al sicuro a bordo."
+          },
+          {
+            "question": "Che cosa significa sognare una barca che affonda?",
+            "answer": "Una barca che imbarca acqua può accompagnare la sensazione che qualcosa su cui contavi non regga più: un progetto, un’abitudine, una relazione, le tue energie. Non è una previsione. Annota se svuotavi l’acqua, nuotavi o aspettavi aiuto."
+          },
+          {
+            "question": "Che cosa significa sognare una barca nel mare mosso?",
+            "answer": "Onde, vento e un ponte che beccheggia possono fare eco a un periodo stressante o imprevedibile. Guarda la barca quanto la tempesta: ha retto? Essere sballottato restando a galla racconta altro rispetto al ribaltarsi."
+          },
+          {
+            "question": "Che cosa significa perdere la barca in sogno?",
+            "answer": "Vedere la barca allontanarsi dal molo può mettere in scena la paura di lasciarti sfuggire un’occasione, o di restare fermo mentre gli altri vanno avanti. Chiediti quale partenza, o quale scadenza, ti occupa i pensieri in questo periodo."
+          }
+        ],
+        "documentMetaDescription": "Sognare una barca, una barca che affonda o il mare mosso: che cosa dicono traversata e timone di una transizione che vivi, con domande ed esempio di diario."
       },
       "pt": {
         "slug": "barco",
@@ -13000,58 +13188,152 @@
       "en": {
         "slug": "airport",
         "name": "Airport",
-        "shortDescription": "An airport may concentrate anticipation, farewell, transition or preparation for a major change. The destination, time pressure and obstacles show which part of the movement mattered to you.",
-        "modifiedAt": "2026-07-24",
+        "shortDescription": "Dreaming of an airport often puts you in between: no longer here, not yet there. A missed flight, a long wait or a gate you cannot find can echo a change you are preparing for. What held you back shapes the reading.",
+        "modifiedAt": "2026-10-08",
         "askYourself": [
-          "What did airport change in the scene?",
-          "Which feeling stayed with me after waking?"
+          "Was I leaving, waiting, arriving, or seeing someone off?",
+          "What stood in my way: time, a ticket, security, a gate I couldn't find?",
+          "Which change am I preparing for right now, eagerly or reluctantly?"
         ],
-        "faq": []
+        "faq": [
+          {
+            "question": "What does it mean to dream about an airport?",
+            "answer": "An airport is often associated with transition, anticipation and goodbyes: a place between where you were and where you are going. Its meaning depends on whether you were leaving, waiting or arriving, and on how you felt in the crowd."
+          },
+          {
+            "question": "What does it mean to miss a flight in a dream?",
+            "answer": "Missing a flight is a very common stress dream. It can go with a fear of missing a chance, an overloaded schedule, or a change you are not sure you are ready for. It predicts nothing. Note what made you late."
+          },
+          {
+            "question": "Why can't I find my gate in a dream?",
+            "answer": "Endless corridors, changing screens and a gate that keeps moving can echo a situation where the rules seem unclear, or where you feel lost among too many options. Ask yourself where you are looking for directions in your waking life."
+          },
+          {
+            "question": "What does it mean to be stuck at security or without a passport in a dream?",
+            "answer": "Being stopped at security, or realizing your passport is missing, can stage a feeling of not having what it takes to move to the next stage, or of being judged right at the threshold. What did you think you were missing?"
+          }
+        ],
+        "documentMetaDescription": "Dreaming of an airport, a missed flight or a gate you can't find: what departures and waiting may say about a change ahead, with questions and an example."
       },
       "fr": {
         "slug": "aeroport",
         "name": "Aéroport",
-        "shortDescription": "Un aéroport peut concentrer l’attente, le départ, la transition ou la préparation d’un changement important. La destination, la pression du temps et les obstacles rencontrés montrent ce qui comptait pour vous.",
-        "modifiedAt": "2026-07-24",
+        "shortDescription": "Rêver d'un aéroport vous place souvent entre deux : plus tout à fait ici, pas encore là-bas. Un vol raté, une longue attente ou une porte introuvable peuvent faire écho à un changement en préparation. Ce qui vous retenait oriente la lecture.",
+        "modifiedAt": "2026-10-08",
         "askYourself": [
-          "Qu’est-ce que aéroport a changé dans la scène ?",
-          "Quelle émotion est restée après le réveil ?"
+          "Est-ce que je partais, j'attendais, j'arrivais, ou j'accompagnais quelqu'un ?",
+          "Qu'est-ce qui me retenait : l'heure, un billet, le contrôle, une porte introuvable ?",
+          "À quel changement suis-je en train de me préparer, avec envie ou à contrecœur ?"
         ],
-        "faq": []
+        "faq": [
+          {
+            "question": "Que signifie rêver d'un aéroport ?",
+            "answer": "L'aéroport est souvent associé à la transition, à l'attente et aux adieux : un lieu entre ce que vous quittez et ce qui vous attend. Son sens dépend de ce que vous y faisiez, partir, attendre ou arriver, et de ce que vous ressentiez dans la foule."
+          },
+          {
+            "question": "Que signifie rater son avion en rêve ?",
+            "answer": "Rater son vol est un rêve de stress très courant. Il peut accompagner la peur de laisser passer une occasion, un agenda trop chargé ou un changement auquel vous ne vous sentez pas prêt. Il ne prédit rien. Notez ce qui vous a mis en retard."
+          },
+          {
+            "question": "Pourquoi ne trouve-t-on pas sa porte d'embarquement en rêve ?",
+            "answer": "Des couloirs sans fin, des écrans qui changent et une porte qui se déplace peuvent faire écho à une situation aux règles floues, ou au sentiment d'être perdu entre trop d'options. Demandez-vous où vous cherchez des repères en ce moment."
+          },
+          {
+            "question": "Que signifie être bloqué au contrôle ou sans passeport en rêve ?",
+            "answer": "Être arrêté au contrôle de sécurité, ou découvrir que votre passeport a disparu, peut mettre en scène le sentiment de ne pas avoir ce qu'il faut pour passer à l'étape suivante, ou d'être jugé au moment de franchir le seuil. Que pensiez-vous qu'il vous manquait ?"
+          }
+        ],
+        "documentMetaDescription": "Rêver d'un aéroport, de rater son avion ou de chercher sa porte : ce que départ et attente peuvent dire d'un changement à venir, avec questions et exemple."
       },
       "es": {
         "slug": "aeropuerto",
         "name": "Aeropuerto",
-        "shortDescription": "Un aeropuerto puede reunir espera, despedida, transición y preparación para un cambio importante. El destino, la prisa y los obstáculos muestran qué parte del movimiento te afectaba.",
-        "modifiedAt": "2026-07-24",
+        "shortDescription": "Soñar con un aeropuerto suele situarte en un punto intermedio: ya no estás aquí, todavía no estás allí. Un vuelo perdido, una larga espera o una puerta que no aparece pueden reflejar un cambio que preparas. Lo que te frenaba orienta la lectura.",
+        "modifiedAt": "2026-10-08",
         "askYourself": [
-          "¿Qué cambió aeropuerto dentro de la escena?",
-          "¿Qué emoción siguió conmigo al despertar?"
+          "¿Me iba, esperaba, llegaba o despedía a alguien?",
+          "¿Qué me frenaba: la hora, un billete, el control, una puerta que no encontraba?",
+          "¿Para qué cambio me estoy preparando ahora, con ganas o a regañadientes?"
         ],
-        "faq": []
+        "faq": [
+          {
+            "question": "¿Qué significa soñar con un aeropuerto?",
+            "answer": "El aeropuerto se asocia a menudo con la transición, la espera y las despedidas: un lugar entre lo que dejas y lo que te espera. Su sentido depende de lo que hacías allí (irte, esperar o llegar) y de lo que sentías entre la gente."
+          },
+          {
+            "question": "¿Qué significa soñar que pierdes un avión?",
+            "answer": "Perder el vuelo es un sueño de estrés muy habitual. Puede acompañar el miedo a dejar pasar una oportunidad, una agenda demasiado llena o un cambio para el que no te sientes preparado. No predice nada. Anota qué te hizo llegar tarde."
+          },
+          {
+            "question": "¿Por qué en sueños no encuentro la puerta de embarque?",
+            "answer": "Pasillos sin fin, pantallas que cambian y una puerta que se mueve pueden reflejar una situación de reglas poco claras, o la sensación de estar perdido entre demasiadas opciones. Pregúntate dónde estás buscando referencias ahora mismo."
+          },
+          {
+            "question": "¿Qué significa quedarte atascado en el control o sin pasaporte en sueños?",
+            "answer": "Que te paren en el control de seguridad, o descubrir que no llevas el pasaporte, puede escenificar la sensación de no tener lo necesario para pasar a la siguiente etapa, o de que te juzgan justo en el umbral. ¿Qué creías que te faltaba?"
+          }
+        ],
+        "documentMetaDescription": "Soñar con un aeropuerto, perder un avión o no encontrar la puerta: qué pueden decir salidas y esperas de un cambio cercano, con preguntas y un ejemplo."
       },
       "de": {
         "slug": "flughafen",
         "name": "Flughafen",
-        "shortDescription": "Am Flughafen können Erwartung, Abschied, Übergang oder die Vorbereitung auf einen größeren Wechsel in den Vordergrund rücken. Ziel, Zeitdruck und mögliche Hindernisse zeigen, was an dieser Veränderung für dich wichtig ist.",
+        "shortDescription": "Ein Flughafen im Traum versetzt Sie oft in einen Zwischenraum: nicht mehr hier, noch nicht dort. Ein verpasster Flug, langes Warten oder ein unauffindbares Gate können eine Veränderung aufgreifen, die Sie vorbereiten. Was Sie aufhielt, lenkt die Deutung.",
         "askYourself": [
-          "Wohin solltest du fliegen, und hattest du ein gültiges Ticket?",
-          "Hast du Gate, Gepäck oder eine Begleitperson gesucht?",
-          "Welche bevorstehende Veränderung löst gerade Vorfreude oder Zeitdruck aus?"
+          "Bin ich abgeflogen, habe ich gewartet, bin ich angekommen oder habe ich jemanden verabschiedet?",
+          "Was hielt mich auf: die Zeit, ein Ticket, die Kontrolle, ein Gate, das ich nicht fand?",
+          "Auf welche Veränderung bereite ich mich gerade vor, mit Vorfreude oder widerwillig?"
         ],
-        "faq": [],
-        "modifiedAt": "2026-07-24"
+        "faq": [
+          {
+            "question": "Was bedeutet es, von einem Flughafen zu träumen?",
+            "answer": "Der Flughafen wird oft mit Übergang, Erwartung und Abschied verbunden: ein Ort zwischen dem, was Sie verlassen, und dem, was auf Sie wartet. Was er bedeutet, hängt davon ab, ob Sie abflogen, warteten oder ankamen, und wie Sie sich im Gedränge fühlten."
+          },
+          {
+            "question": "Was bedeutet es, im Traum den Flug zu verpassen?",
+            "answer": "Einen Flug zu verpassen ist ein sehr häufiger Stresstraum. Er kann die Angst begleiten, eine Gelegenheit zu verpassen, einen übervollen Kalender oder eine Veränderung, für die Sie sich nicht bereit fühlen. Er sagt nichts voraus. Notieren Sie, was Sie aufgehalten hat."
+          },
+          {
+            "question": "Warum finde ich im Traum mein Gate nicht?",
+            "answer": "Endlose Gänge, wechselnde Anzeigetafeln und ein Gate, das immer woanders ist, können eine Lage mit unklaren Regeln aufgreifen oder das Gefühl, zwischen zu vielen Möglichkeiten verloren zu sein. Fragen Sie sich, wo Sie gerade Orientierung suchen."
+          },
+          {
+            "question": "Was bedeutet es, im Traum an der Kontrolle festzuhängen oder keinen Pass zu haben?",
+            "answer": "An der Sicherheitskontrolle aufgehalten zu werden oder festzustellen, dass der Reisepass fehlt, kann das Gefühl in Szene setzen, nicht das Nötige für den nächsten Schritt zu haben, oder direkt an der Schwelle beurteilt zu werden. Was glaubten Sie, fehlte Ihnen?"
+          }
+        ],
+        "modifiedAt": "2026-10-08",
+        "documentMetaDescription": "Flughafen im Traum, Flug verpasst oder Gate nicht gefunden: was Abflug und Warten über eine anstehende Veränderung sagen können, mit Fragen und Beispiel."
       },
       "it": {
         "slug": "aeroporto",
         "name": "Aeroporto",
-        "shortDescription": "Un aeroporto può concentrare attesa, saluto, transizione o preparazione a un cambiamento importante. Destinazione, fretta e ostacoli mostrano quale parte del movimento contava per te.",
-        "modifiedAt": "2026-07-24",
+        "shortDescription": "Sognare un aeroporto ti mette spesso in un punto di mezzo: non sei più qui, non sei ancora là. Un volo perso, una lunga attesa o un gate introvabile possono fare eco a un cambiamento che stai preparando. Ciò che ti tratteneva orienta la lettura.",
+        "modifiedAt": "2026-10-08",
         "askYourself": [
-          "Che cosa ha cambiato aeroporto nella scena?",
-          "Quale emozione è rimasta dopo il risveglio?"
+          "Stavo partendo, aspettando, arrivando o salutando qualcuno?",
+          "Che cosa mi tratteneva: l’orario, un biglietto, i controlli, un gate che non trovavo?",
+          "A quale cambiamento mi sto preparando in questo periodo, con voglia o controvoglia?"
         ],
-        "faq": []
+        "faq": [
+          {
+            "question": "Che cosa significa sognare un aeroporto?",
+            "answer": "L’aeroporto viene spesso associato alla transizione, all’attesa e ai saluti: un luogo tra ciò che lasci e ciò che ti aspetta. Il significato dipende da che cosa facevi, partire, aspettare o arrivare, e da ciò che provavi in mezzo alla folla."
+          },
+          {
+            "question": "Che cosa significa sognare di perdere l’aereo?",
+            "answer": "Perdere il volo è un sogno di stress molto comune. Può accompagnare la paura di lasciarti sfuggire un’occasione, un’agenda troppo piena o un cambiamento per cui non ti senti pronto. Non predice nulla. Annota che cosa ti ha fatto arrivare tardi."
+          },
+          {
+            "question": "Perché in sogno non trovo il gate d’imbarco?",
+            "answer": "Corridoi infiniti, tabelloni che cambiano e un gate che si sposta possono fare eco a una situazione dalle regole poco chiare, o alla sensazione di perderti tra troppe opzioni. Chiediti dove stai cercando punti di riferimento in questo periodo."
+          },
+          {
+            "question": "Che cosa significa restare bloccato ai controlli o senza passaporto in sogno?",
+            "answer": "Essere fermato ai controlli di sicurezza, o scoprire di non avere il passaporto, può mettere in scena la sensazione di non avere ciò che serve per passare alla fase successiva, o di essere giudicato proprio sulla soglia. Che cosa pensavi che ti mancasse?"
+          }
+        ],
+        "documentMetaDescription": "Sognare un aeroporto, perdere l’aereo o non trovare il gate: che cosa possono dire partenze e attese di un cambiamento vicino, con domande ed esempio di diario."
       },
       "pt": {
         "slug": "aeroporto",
@@ -13086,58 +13368,152 @@
       "en": {
         "slug": "suitcase",
         "name": "Suitcase",
-        "shortDescription": "A suitcase may involve preparation, carried experience or responsibility during a change. Its contents, weight and whether you packed or lost it make the connection to the scene concrete.",
-        "modifiedAt": "2026-07-24",
+        "shortDescription": "Dreaming of a suitcase often comes down to what you carry: what you pack, what weighs you down, what you leave behind. Packing in a rush, a case too heavy to lift or luggage that goes missing each point to a different side of a change.",
+        "modifiedAt": "2026-10-08",
         "askYourself": [
-          "What did suitcase change in the scene?",
-          "Which feeling stayed with me after waking?"
+          "What was in the suitcase, and had I packed it myself?",
+          "Was it too heavy, empty, open, swapped, or gone?",
+          "What do I want to take into the next stage, and what could I leave behind?"
         ],
-        "faq": []
+        "faq": [
+          {
+            "question": "What does it mean to dream about a suitcase?",
+            "answer": "A suitcase is often associated with preparation, change, and what you carry from one stage of life to the next. Its meaning depends on its contents, its weight, and whether you were packing, dragging, losing or opening it."
+          },
+          {
+            "question": "What does it mean to lose your luggage in a dream?",
+            "answer": "Lost luggage can go with a fear of arriving somewhere new without what you need, or with the sense of leaving part of yourself behind during a change. It is not a sign of loss to come. Note what you most wanted to get back."
+          },
+          {
+            "question": "Why do I dream of packing in a hurry?",
+            "answer": "Packing at the last minute, with the taxi waiting and the case refusing to close, is a common stress scene. It can echo an overloaded schedule or a change that arrives before you feel ready. What would not fit?"
+          },
+          {
+            "question": "What does a heavy suitcase mean in a dream?",
+            "answer": "A case you can barely lift can stage a load you carry: responsibilities, worries, old habits, other people's expectations. Ask yourself what you are dragging along right now, and whether all of it still belongs to you."
+          }
+        ],
+        "documentMetaDescription": "Dreaming of a suitcase, lost luggage or packing in a rush: what you carry, leave or forget may say about a change, with questions and a journal example."
       },
       "fr": {
         "slug": "valise",
         "name": "Valise",
-        "shortDescription": "Une valise peut évoquer la préparation, les expériences emportées ou les responsabilités liées à un changement. Son contenu, son poids et le fait de la préparer ou de la perdre rendent le lien concret.",
-        "modifiedAt": "2026-07-24",
+        "shortDescription": "Rêver d'une valise ramène souvent à ce que vous emportez : ce qui vous pèse, ce que vous laissez derrière vous. Bouclée à la hâte, trop lourde à soulever ou perdue à l'arrivée, elle éclaire chaque fois une autre facette d'un changement.",
+        "modifiedAt": "2026-10-08",
         "askYourself": [
-          "Qu’est-ce que valise a changé dans la scène ?",
-          "Quelle émotion est restée après le réveil ?"
+          "Qu'y avait-il dans la valise, et l'avais-je préparée moi-même ?",
+          "Était-elle trop lourde, vide, ouverte, échangée, ou introuvable ?",
+          "Qu'ai-je envie d'emporter dans l'étape qui vient, et que pourrais-je laisser derrière moi ?"
         ],
-        "faq": []
+        "faq": [
+          {
+            "question": "Que signifie rêver d'une valise ?",
+            "answer": "La valise est souvent associée à la préparation, au changement et à ce que l'on emporte d'une étape de vie à l'autre. Son sens dépend de son contenu, de son poids, et de ce que vous en faisiez : la remplir, la traîner, la perdre ou l'ouvrir."
+          },
+          {
+            "question": "Que signifie perdre sa valise en rêve ?",
+            "answer": "Une valise perdue peut accompagner la peur d'arriver quelque part sans ce qu'il vous faut, ou le sentiment de laisser une part de vous derrière pendant un changement. Ce n'est pas l'annonce d'une perte. Notez ce que vous vouliez le plus récupérer."
+          },
+          {
+            "question": "Pourquoi rêve-t-on de faire sa valise dans l'urgence ?",
+            "answer": "Faire sa valise à la dernière minute, le taxi en bas et le couvercle qui ne ferme pas, est une scène de stress fréquente. Elle peut faire écho à un agenda surchargé ou à un changement qui arrive avant que vous vous sentiez prêt. Qu'est-ce qui ne rentrait pas ?"
+          },
+          {
+            "question": "Que signifie rêver d'une valise lourde ?",
+            "answer": "Une valise qu'on soulève à peine peut mettre en scène une charge que vous portez : responsabilités, soucis, vieilles habitudes, attentes des autres. Demandez-vous ce que vous traînez en ce moment, et si tout cela vous appartient encore."
+          }
+        ],
+        "documentMetaDescription": "Rêver d'une valise, de bagages perdus ou de partir à la hâte : ce que vos bagages peuvent dire d'un changement, avec questions et exemple de journal."
       },
       "es": {
         "slug": "maleta",
         "name": "Maleta",
-        "shortDescription": "Una maleta puede acompañar preparación, experiencias acumuladas o responsabilidades durante un cambio. Su contenido, su peso y si la preparabas o la perdías concretan la escena.",
-        "modifiedAt": "2026-07-24",
+        "shortDescription": "Soñar con una maleta suele llevarte a lo que cargas contigo: lo que guardas, lo que te pesa, lo que dejas atrás. Hecha a toda prisa, imposible de levantar o perdida al llegar, ilumina cada vez una cara distinta de un cambio.",
+        "modifiedAt": "2026-10-08",
         "askYourself": [
-          "¿Qué cambió maleta dentro de la escena?",
-          "¿Qué emoción siguió conmigo al despertar?"
+          "¿Qué había en la maleta, y la había hecho yo?",
+          "¿Pesaba demasiado, estaba vacía, abierta, cambiada o había desaparecido?",
+          "¿Qué quiero llevarme a la etapa que viene, y qué podría dejar atrás?"
         ],
-        "faq": []
+        "faq": [
+          {
+            "question": "¿Qué significa soñar con una maleta?",
+            "answer": "La maleta se asocia a menudo con la preparación, el cambio y lo que llevas de una etapa de la vida a otra. Su sentido depende de su contenido, de su peso y de lo que hacías con ella: llenarla, arrastrarla, perderla o abrirla."
+          },
+          {
+            "question": "¿Qué significa soñar que pierdes la maleta?",
+            "answer": "Una maleta perdida puede acompañar el miedo a llegar a un sitio nuevo sin lo que necesitas, o la sensación de dejar atrás una parte de ti durante un cambio. No anuncia ninguna pérdida. Anota qué querías recuperar ante todo."
+          },
+          {
+            "question": "¿Por qué sueño que hago la maleta con prisa?",
+            "answer": "Hacer la maleta en el último momento, con el taxi esperando y la cremallera que no cierra, es una escena de estrés frecuente. Puede reflejar una agenda demasiado llena o un cambio que llega antes de que te sientas preparado. ¿Qué no cabía?"
+          },
+          {
+            "question": "¿Qué significa soñar con una maleta pesada?",
+            "answer": "Una maleta que apenas puedes levantar puede escenificar una carga que llevas: responsabilidades, preocupaciones, viejas costumbres, expectativas ajenas. Pregúntate qué vas arrastrando ahora mismo, y si todo eso sigue siendo tuyo."
+          }
+        ],
+        "documentMetaDescription": "Soñar con una maleta, perder el equipaje o hacer la maleta con prisa: qué puede decir tu equipaje de un cambio, con preguntas y un ejemplo de diario."
       },
       "de": {
         "slug": "koffer",
         "name": "Koffer",
-        "shortDescription": "Was mit einem Koffer im Traum geschieht, kann Vorbereitung, mitgebrachte Erfahrungen oder Verantwortung im Zusammenhang mit einer Veränderung berühren. Inhalt, Gewicht und die Frage, ob du ihn gepackt oder verloren hast, machen den Bezug konkret.",
+        "shortDescription": "Ein Koffer im Traum führt oft zu dem, was Sie mit sich tragen: was Sie einpacken, was Sie belastet, was Sie zurücklassen. Hastig gepackt, zu schwer zum Heben oder bei der Ankunft verschwunden, zeigt er jeweils eine andere Seite einer Veränderung.",
         "askYourself": [
-          "Was befand sich im Koffer, und hattest du ihn selbst gepackt?",
-          "War er zu schwer, leer, vertauscht oder verschwunden?",
-          "Was möchtest du in eine neue Phase mitnehmen oder bewusst zurücklassen?"
+          "Was war im Koffer, und hatte ich ihn selbst gepackt?",
+          "War er zu schwer, leer, offen, vertauscht oder verschwunden?",
+          "Was möchte ich in die nächste Lebensphase mitnehmen, und was könnte ich zurücklassen?"
         ],
-        "faq": [],
-        "modifiedAt": "2026-07-24"
+        "faq": [
+          {
+            "question": "Was bedeutet es, von einem Koffer zu träumen?",
+            "answer": "Der Koffer wird oft mit Vorbereitung, Veränderung und dem verbunden, was man von einer Lebensphase in die nächste mitnimmt. Was er bedeutet, hängt von Inhalt und Gewicht ab und davon, ob Sie ihn gepackt, geschleppt, verloren oder geöffnet haben."
+          },
+          {
+            "question": "Was bedeutet es, im Traum den Koffer zu verlieren?",
+            "answer": "Verlorenes Gepäck kann die Angst begleiten, ohne das Nötige an einem neuen Ort anzukommen, oder das Gefühl, bei einer Veränderung einen Teil von sich zurückzulassen. Ein Vorzeichen für einen Verlust ist es nicht. Notieren Sie, was Sie am dringendsten zurückhaben wollten."
+          },
+          {
+            "question": "Warum träume ich davon, in Eile den Koffer zu packen?",
+            "answer": "In letzter Minute zu packen, während das Taxi wartet und der Deckel nicht zugeht, ist eine häufige Stressszene. Sie kann einen übervollen Kalender aufgreifen oder eine Veränderung, die kommt, bevor Sie sich bereit fühlen. Was passte nicht hinein?"
+          },
+          {
+            "question": "Was bedeutet ein schwerer Koffer im Traum?",
+            "answer": "Ein Koffer, den Sie kaum heben können, kann eine Last in Szene setzen, die Sie tragen: Verantwortung, Sorgen, alte Gewohnheiten, die Erwartungen anderer. Fragen Sie sich, was Sie gerade mit sich schleppen und ob all das noch zu Ihnen gehört."
+          }
+        ],
+        "modifiedAt": "2026-10-08",
+        "documentMetaDescription": "Koffer im Traum, verlorenes Gepäck oder hastiges Packen: was Sie mitnehmen oder zurücklassen, kann von einer Veränderung erzählen, mit Fragen und Beispiel."
       },
       "it": {
         "slug": "valigia",
         "name": "Valigia",
-        "shortDescription": "Una valigia può accompagnare preparazione, esperienze portate con sé o responsabilità durante un cambiamento. Contenuto, peso e il fatto di prepararla o perderla rendono concreta la scena.",
-        "modifiedAt": "2026-07-24",
+        "shortDescription": "Sognare una valigia riporta spesso a ciò che porti con te: ciò che metti dentro, ciò che ti pesa, ciò che lasci indietro. Preparata di corsa, troppo pesante da sollevare o persa all’arrivo, mostra ogni volta un lato diverso di un cambiamento.",
+        "modifiedAt": "2026-10-08",
         "askYourself": [
-          "Che cosa ha cambiato valigia nella scena?",
-          "Quale emozione è rimasta dopo il risveglio?"
+          "Che cosa c’era nella valigia, e l’avevo preparata io?",
+          "Era troppo pesante, vuota, aperta, scambiata o sparita?",
+          "Che cosa voglio portare con me nella prossima fase, e che cosa potrei lasciare indietro?"
         ],
-        "faq": []
+        "faq": [
+          {
+            "question": "Che cosa significa sognare una valigia?",
+            "answer": "La valigia viene spesso associata alla preparazione, al cambiamento e a ciò che porti da una fase della vita alla successiva. Il significato dipende dal contenuto, dal peso e da ciò che ne facevi: riempirla, trascinarla, perderla o aprirla."
+          },
+          {
+            "question": "Che cosa significa sognare di perdere la valigia?",
+            "answer": "Una valigia persa può accompagnare la paura di arrivare in un posto nuovo senza ciò che ti serve, o la sensazione di lasciare indietro una parte di te durante un cambiamento. Non annuncia nessuna perdita. Annota che cosa volevi recuperare per primo."
+          },
+          {
+            "question": "Perché sogno di fare la valigia di corsa?",
+            "answer": "Fare la valigia all’ultimo momento, con il taxi che aspetta e la cerniera che non si chiude, è una scena di stress frequente. Può fare eco a un’agenda troppo piena o a un cambiamento che arriva prima che tu ti senta pronto. Che cosa non ci stava?"
+          },
+          {
+            "question": "Che cosa significa sognare una valigia pesante?",
+            "answer": "Una valigia che riesci a malapena a sollevare può mettere in scena un carico che porti: responsabilità, preoccupazioni, vecchie abitudini, aspettative altrui. Chiediti che cosa ti stai trascinando dietro in questo periodo, e se tutto questo ti appartiene ancora."
+          }
+        ],
+        "documentMetaDescription": "Sognare una valigia, perdere i bagagli o fare la valigia di corsa: che cosa può dire di un cambiamento ciò che porti o lasci, con domande ed esempio di diario."
       },
       "pt": {
         "slug": "mala",
