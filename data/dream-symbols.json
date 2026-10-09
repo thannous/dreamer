@@ -11402,58 +11402,152 @@
       "en": {
         "slug": "grandfather",
         "name": "Grandfather",
-        "shortDescription": "A grandfather in a dream may bring shared memories, family values, advice or authority to the foreground. Notice whether his presence offered support, created distance or reopened an old question.",
-        "modifiedAt": "2026-07-24",
+        "shortDescription": "Dreaming of your grandfather often brings back a voice, a workshop, a garden or an old armchair: memories, family values, advice, sometimes authority. His attitude and how you felt near him show what the scene is stirring up today.",
+        "modifiedAt": "2026-10-08",
         "askYourself": [
-          "What did grandfather change in the scene?",
-          "Which feeling stayed with me after waking?"
+          "Was it my own grandfather, or an older man I did not know?",
+          "What did he say, show me or ask of me?",
+          "Which family value or old rule is on my mind right now?"
         ],
-        "faq": []
+        "faq": [
+          {
+            "question": "What does it mean to dream about your grandfather?",
+            "answer": "A grandfather in a dream is often associated with memories, family values, advice and what gets passed down. His attitude, the place and how you felt near him matter more than any fixed meaning."
+          },
+          {
+            "question": "What does it mean to dream of your deceased grandfather?",
+            "answer": "Dreaming of a grandfather who has died is common during grief. The dream can comfort, sadden or both, and often returns near an anniversary or a family gathering. It predicts nothing; whatever your beliefs, it speaks mostly of the bond you keep with him."
+          },
+          {
+            "question": "What does it mean when your dead grandfather talks to you in a dream?",
+            "answer": "His words often echo what you remember of him, or what you would need to hear right now: encouragement, advice, permission. Write them down as they came, then ask which situation in your life they might fit."
+          },
+          {
+            "question": "What does it mean to dream your grandfather is sick?",
+            "answer": "Seeing him weakened can echo a real worry about his health, or the passing of time in the family. It is not a prediction. If he is alive, the dream may simply follow a visit, a phone call or news about him."
+          }
+        ],
+        "documentMetaDescription": "Dreaming of your grandfather, alive or deceased, talking or ill: what the scene may say about memory and family values, with questions and an example."
       },
       "fr": {
         "slug": "grand-pere",
         "name": "Grand-père",
-        "shortDescription": "Voir un grand-père peut replacer au premier plan des souvenirs communs, des valeurs familiales, un conseil ou une autorité. Sa présence vous rassurait-elle, créait-elle une distance, ou rouvrait-elle une ancienne question ?",
-        "modifiedAt": "2026-07-24",
+        "shortDescription": "Rêver de son grand-père ramène souvent une voix, un atelier, un jardin : des souvenirs, des valeurs familiales, un conseil, parfois une autorité. Son attitude et ce que vous ressentiez près de lui aident à voir ce que la scène remue aujourd'hui.",
+        "modifiedAt": "2026-10-08",
         "askYourself": [
-          "Qu’est-ce que grand-père a changé dans la scène ?",
-          "Quelle émotion est restée après le réveil ?"
+          "Était-ce mon propre grand-père, ou un homme âgé inconnu ?",
+          "Que m'a-t-il dit, montré ou demandé ?",
+          "Quelle valeur ou quelle règle de famille me travaille en ce moment ?"
         ],
-        "faq": []
+        "faq": [
+          {
+            "question": "Que signifie rêver de son grand-père ?",
+            "answer": "Un grand-père en rêve est souvent associé aux souvenirs, aux valeurs familiales, au conseil et à ce qui se transmet. Son attitude, le lieu et ce que vous ressentiez près de lui comptent plus qu'un sens figé."
+          },
+          {
+            "question": "Que signifie rêver de son grand-père décédé ?",
+            "answer": "Rêver d'un grand-père disparu est fréquent dans le deuil. Le rêve peut réconforter, attrister, ou les deux, et revient souvent près d'un anniversaire ou d'une réunion de famille. Il ne prédit rien ; quelles que soient vos croyances, il parle surtout du lien que vous gardez avec lui."
+          },
+          {
+            "question": "Que signifie un grand-père décédé qui parle en rêve ?",
+            "answer": "Ses paroles font souvent écho à ce que vous gardez de lui, ou à ce que vous auriez besoin d'entendre en ce moment : un encouragement, un conseil, une permission. Notez-les telles qu'elles sont venues, puis demandez-vous à quelle situation elles pourraient s'appliquer."
+          },
+          {
+            "question": "Que signifie rêver que son grand-père est malade ?",
+            "answer": "Le voir affaibli peut faire écho à une inquiétude réelle pour sa santé, ou au temps qui passe dans la famille. Ce n'est pas une prédiction. S'il est en vie, le rêve suit parfois simplement une visite, un appel ou des nouvelles de lui."
+          }
+        ],
+        "documentMetaDescription": "Rêver de son grand-père, vivant ou décédé, qui parle ou qui est malade : ce que la scène peut dire des souvenirs et des valeurs de famille, avec questions."
       },
       "es": {
         "slug": "abuelo",
         "name": "Abuelo",
-        "shortDescription": "La presencia de un abuelo puede traer recuerdos compartidos, valores familiares, consejo o autoridad. Observa si te ofrecía apoyo, marcaba distancia o reabría una pregunta antigua.",
-        "modifiedAt": "2026-07-24",
+        "shortDescription": "Soñar con tu abuelo suele traer de vuelta una voz, un taller, un huerto o un sillón: recuerdos, valores de familia, consejos y, a veces, autoridad. Su actitud y lo que sentías a su lado te ayudan a ver qué remueve hoy la escena.",
+        "modifiedAt": "2026-10-08",
         "askYourself": [
-          "¿Qué cambió abuelo dentro de la escena?",
-          "¿Qué emoción siguió conmigo al despertar?"
+          "¿Era mi abuelo, o un hombre mayor que no conocía?",
+          "¿Qué me dijo, me enseñó o me pidió?",
+          "¿Qué valor o norma de mi familia me da vueltas estos días?"
         ],
-        "faq": []
+        "faq": [
+          {
+            "question": "¿Qué significa soñar con tu abuelo?",
+            "answer": "El abuelo en sueños se asocia a menudo con los recuerdos, los valores familiares, el consejo y lo que se transmite. Su actitud, el lugar y lo que sentías a su lado cuentan más que un significado fijo."
+          },
+          {
+            "question": "¿Qué significa soñar con tu abuelo fallecido?",
+            "answer": "Soñar con un abuelo que ya no está es frecuente durante el duelo. El sueño puede consolar, entristecer o ambas cosas, y suele volver cerca de un aniversario o de una reunión familiar. No predice nada; sean cuales sean tus creencias, habla sobre todo del vínculo que mantienes con él."
+          },
+          {
+            "question": "¿Qué significa soñar que tu abuelo muerto te habla?",
+            "answer": "Sus palabras suelen hacer eco de lo que guardas de él, o de lo que necesitarías oír ahora mismo: un ánimo, un consejo, un permiso. Anótalas tal como llegaron y pregúntate a qué situación de tu vida podrían aplicarse."
+          },
+          {
+            "question": "¿Qué significa soñar que tu abuelo está enfermo?",
+            "answer": "Verlo débil puede hacer eco de una preocupación real por su salud, o del paso del tiempo en la familia. No es una predicción. Si está vivo, el sueño a veces sigue simplemente a una visita, una llamada o noticias suyas."
+          }
+        ],
+        "documentMetaDescription": "Soñar con tu abuelo, vivo o fallecido, que te habla o que está enfermo: qué puede decir la escena de tus recuerdos y valores de familia, con preguntas."
       },
       "de": {
         "slug": "grossvater",
         "name": "Großvater",
-        "shortDescription": "Wenn ein Großvater im Traum erscheint, können gemeinsame Erinnerungen, familiäre Werte, Rat oder Autorität in den Vordergrund rücken. Entscheidend ist, ob seine Gegenwart dir Halt gab, Distanz schuf oder eine alte Frage neu öffnete.",
+        "shortDescription": "Vom Großvater zu träumen bringt oft eine Stimme, eine Werkstatt, einen Garten oder einen Lehnstuhl zurück: Erinnerungen, Familienwerte, Rat und manchmal Autorität. Sein Verhalten und Ihr Gefühl in seiner Nähe zeigen, was die Szene heute in Ihnen bewegt.",
         "askYourself": [
-          "Wie alt und in welchem Zustand erschien dein Großvater?",
-          "Welchen Rat oder Gegenstand gab er dir, und wie sah er dich an?",
-          "Welche Haltung aus deiner Familie beeinflusst dich heute noch?"
+          "War es mein eigener Großvater oder ein fremder älterer Mann?",
+          "Was hat er gesagt, mir gezeigt oder von mir verlangt?",
+          "Welcher Familienwert oder welche alte Regel beschäftigt mich gerade?"
         ],
-        "faq": [],
-        "modifiedAt": "2026-07-24"
+        "faq": [
+          {
+            "question": "Was bedeutet es, vom Großvater zu träumen?",
+            "answer": "Der Großvater im Traum wird oft mit Erinnerungen, Familienwerten, Rat und dem verbunden, was weitergegeben wird. Sein Verhalten, der Ort und Ihr Gefühl in seiner Nähe zählen mehr als eine feste Bedeutung."
+          },
+          {
+            "question": "Was bedeutet es, vom verstorbenen Opa zu träumen?",
+            "answer": "Von einem verstorbenen Großvater zu träumen ist in der Trauer häufig. Der Traum kann trösten, traurig machen oder beides und kehrt oft rund um einen Jahrestag oder ein Familientreffen wieder. Er sagt nichts voraus; unabhängig von Ihren Überzeugungen erzählt er vor allem von Ihrer Bindung an ihn."
+          },
+          {
+            "question": "Was bedeutet es, wenn der verstorbene Großvater im Traum spricht?",
+            "answer": "Seine Worte greifen oft auf, was Sie von ihm in Erinnerung haben, oder was Sie gerade gern hören würden: Ermutigung, einen Rat, eine Erlaubnis. Schreiben Sie sie so auf, wie sie kamen, und fragen Sie sich, auf welche Situation sie passen könnten."
+          },
+          {
+            "question": "Was bedeutet es, wenn der Großvater im Traum krank ist?",
+            "answer": "Ihn geschwächt zu sehen kann eine echte Sorge um seine Gesundheit aufgreifen oder die vergehende Zeit in der Familie. Eine Vorhersage ist es nicht. Lebt er noch, folgt der Traum manchmal einfach auf einen Besuch, einen Anruf oder Neuigkeiten von ihm."
+          }
+        ],
+        "modifiedAt": "2026-10-08",
+        "documentMetaDescription": "Großvater im Traum, lebend oder verstorben, sprechend oder krank: was die Szene über Erinnerungen und Familienwerte sagen kann, mit Fragen und Beispiel."
       },
       "it": {
         "slug": "nonno",
         "name": "Nonno",
-        "shortDescription": "La presenza di un nonno può riportare in primo piano ricordi condivisi, valori familiari, consiglio o autorità. Nota se ti offriva sostegno, creava distanza o riapriva una vecchia domanda.",
-        "modifiedAt": "2026-07-24",
+        "shortDescription": "Sognare il nonno riporta spesso una voce, un laboratorio, un orto o una poltrona: ricordi, valori di famiglia, consigli e a volte autorità. Il suo atteggiamento e ciò che provavi accanto a lui aiutano a capire che cosa smuove oggi la scena.",
+        "modifiedAt": "2026-10-08",
         "askYourself": [
-          "Che cosa ha cambiato nonno nella scena?",
-          "Quale emozione è rimasta dopo il risveglio?"
+          "Era mio nonno, o un uomo anziano che non conoscevo?",
+          "Che cosa mi ha detto, mostrato o chiesto?",
+          "Quale valore o regola di famiglia mi gira in testa in questo periodo?"
         ],
-        "faq": []
+        "faq": [
+          {
+            "question": "Che cosa significa sognare il nonno?",
+            "answer": "Il nonno in sogno viene spesso associato ai ricordi, ai valori familiari, al consiglio e a ciò che si tramanda. Il suo atteggiamento, il luogo e ciò che provavi accanto a lui contano più di un significato fisso."
+          },
+          {
+            "question": "Che cosa significa sognare il nonno morto?",
+            "answer": "Sognare un nonno scomparso è frequente durante un lutto. Il sogno può consolare, rattristare o entrambe le cose, e torna spesso vicino a un anniversario o a una riunione di famiglia. Non predice nulla; qualunque siano le tue convinzioni, parla soprattutto del legame che conservi con lui."
+          },
+          {
+            "question": "Che cosa significa sognare il nonno morto che parla?",
+            "answer": "Le sue parole fanno spesso eco a ciò che ricordi di lui, o a ciò che avresti bisogno di sentirti dire adesso: un incoraggiamento, un consiglio, un permesso. Annotale così come sono arrivate e chiediti a quale situazione della tua vita potrebbero riferirsi."
+          },
+          {
+            "question": "Che cosa significa sognare il nonno malato?",
+            "answer": "Vederlo indebolito può fare eco a una preoccupazione reale per la sua salute, o al tempo che passa in famiglia. Non è una previsione. Se è vivo, il sogno a volte segue semplicemente una visita, una telefonata o notizie su di lui."
+          }
+        ],
+        "documentMetaDescription": "Sognare il nonno, vivo o morto, che parla o che è malato: che cosa può dire la scena dei ricordi e dei valori di famiglia, con domande ed esempio di diario."
       },
       "pt": {
         "slug": "avo",
@@ -11486,58 +11580,152 @@
       "en": {
         "slug": "classroom",
         "name": "Classroom",
-        "shortDescription": "A classroom may revive experiences of learning, performance, belonging or evaluation. Being a student, teacher or observer changes your position and the emotional tone of what happens there.",
-        "modifiedAt": "2026-07-24",
+        "shortDescription": "Dreaming of a classroom often puts you back at a desk, facing the board, with a whole class watching. It is often associated with learning, being assessed and your place in a group. Where you sat and what was asked of you matter most.",
+        "modifiedAt": "2026-10-08",
         "askYourself": [
-          "What did classroom change in the scene?",
-          "Which feeling stayed with me after waking?"
+          "Was I a pupil at a desk, the teacher at the front, or just watching?",
+          "Was someone about to ask me something I could not answer?",
+          "Where in my life do I feel assessed, or still learning the rules?"
         ],
-        "faq": []
+        "faq": [
+          {
+            "question": "What does it mean to dream about a classroom?",
+            "answer": "A classroom is often associated with learning, being assessed and your place in a group. Your role in the room (pupil, teacher or onlooker) and how you felt there point to the most useful lead."
+          },
+          {
+            "question": "What does it mean to be called to the board in a dream?",
+            "answer": "Being called up in front of the class often goes with a fear of being judged in public, or of not knowing the answer. Ask where you feel put on the spot right now: a meeting, a presentation, a family gathering."
+          },
+          {
+            "question": "What does it mean to dream you are the teacher in a classroom?",
+            "answer": "Standing at the front can go with a new responsibility, a role where others rely on you, or the wish to pass something on. Did the class listen to you, or did the room get away from you?"
+          },
+          {
+            "question": "Why do I dream about my old classroom?",
+            "answer": "An old classroom can bring back a time, a friendship or a feeling from that age. The dream often comes in periods of change or evaluation. Ask which part of that time feels present today, rather than looking for a hidden message."
+          }
+        ],
+        "documentMetaDescription": "Dreaming of a classroom, being called to the board or teaching a class: what the scene may say about learning and being judged, with questions and an example."
       },
       "fr": {
         "slug": "salle-de-classe",
         "name": "Salle de classe",
-        "shortDescription": "Une salle de classe peut réactiver des expériences d’apprentissage, de performance, d’appartenance ou d’évaluation. Être élève, enseignant ou simple observateur change votre rapport à ce qui s’y déroule.",
-        "modifiedAt": "2026-07-24",
+        "shortDescription": "Rêver d'une salle de classe vous remet souvent à un pupitre, face au tableau, sous le regard de toute la classe. La scène est souvent associée à l'apprentissage, à l'évaluation, à votre place dans un groupe. Où étiez-vous assis, et qu'attendait-on de vous ?",
+        "modifiedAt": "2026-10-08",
         "askYourself": [
-          "Qu’est-ce que salle de classe a changé dans la scène ?",
-          "Quelle émotion est restée après le réveil ?"
+          "Étais-je élève à un pupitre, professeur au tableau, ou simple témoin ?",
+          "Allait-on m'interroger sur quelque chose que je ne savais pas ?",
+          "Où est-ce que je me sens évalué, ou encore en train d'apprendre les règles ?"
         ],
-        "faq": []
+        "faq": [
+          {
+            "question": "Que signifie rêver d'une salle de classe ?",
+            "answer": "La salle de classe est souvent associée à l'apprentissage, à l'évaluation et à la place qu'on occupe dans un groupe. Votre rôle dans la salle (élève, professeur ou témoin) et ce que vous y ressentiez orientent vers la piste la plus utile."
+          },
+          {
+            "question": "Que signifie être interrogé au tableau en rêve ?",
+            "answer": "Être appelé devant toute la classe accompagne souvent la peur d'être jugé en public, ou de ne pas avoir la réponse. Demandez-vous où l'on vous met sur la sellette en ce moment : une réunion, une présentation, un repas de famille."
+          },
+          {
+            "question": "Que signifie rêver qu'on est professeur dans une classe ?",
+            "answer": "Se tenir face aux élèves peut accompagner une nouvelle responsabilité, un rôle où l'on compte sur vous, ou l'envie de transmettre. La classe vous écoutait-elle, ou la situation vous échappait-elle ?"
+          },
+          {
+            "question": "Pourquoi je rêve de mon ancienne salle de classe ?",
+            "answer": "Une ancienne salle de classe peut ramener une époque, une amitié, une émotion de cet âge. Ce rêve revient souvent dans les périodes de changement ou d'évaluation. Demandez-vous ce qui, de cette époque, vous semble encore présent aujourd'hui."
+          }
+        ],
+        "documentMetaDescription": "Rêver d'une salle de classe, d'être interrogé au tableau ou de faire cours : ce que la scène peut dire de l'apprentissage et du jugement, avec questions."
       },
       "es": {
         "slug": "aula",
         "name": "Aula",
-        "shortDescription": "Un aula puede reactivar experiencias de aprendizaje, rendimiento, pertenencia o evaluación. Ser alumno, docente u observador cambia tu posición y el tono emocional de la escena.",
-        "modifiedAt": "2026-07-24",
+        "shortDescription": "Soñar con un aula suele devolverte a un pupitre, frente a la pizarra, con toda la clase mirando. Se asocia a menudo con aprender, ser evaluado y tu sitio en un grupo. Lo que más cuenta es dónde te sentabas y qué se esperaba de ti.",
+        "modifiedAt": "2026-10-08",
         "askYourself": [
-          "¿Qué cambió aula dentro de la escena?",
-          "¿Qué emoción siguió conmigo al despertar?"
+          "¿Era alumno en un pupitre, profesor en la pizarra o solo miraba?",
+          "¿Iban a preguntarme algo que no sabía responder?",
+          "¿Dónde me siento evaluado, o todavía aprendiendo las normas?"
         ],
-        "faq": []
+        "faq": [
+          {
+            "question": "¿Qué significa soñar con un aula?",
+            "answer": "El aula se asocia a menudo con el aprendizaje, la evaluación y el lugar que ocupas en un grupo. Tu papel en la clase (alumno, profesor u observador) y lo que sentías allí te orientan hacia la pista más útil."
+          },
+          {
+            "question": "¿Qué significa soñar que te sacan a la pizarra?",
+            "answer": "Salir a la pizarra delante de toda la clase suele acompañar el miedo a ser juzgado en público, o a no saber la respuesta. Pregúntate dónde te sientes en el punto de mira ahora mismo: una reunión, una presentación, una comida familiar."
+          },
+          {
+            "question": "¿Qué significa soñar que eres profesor en un aula?",
+            "answer": "Estar delante de los alumnos puede acompañar una nueva responsabilidad, un papel en el que otros cuentan contigo, o las ganas de transmitir algo. ¿La clase te escuchaba, o se te iba de las manos?"
+          },
+          {
+            "question": "¿Por qué sueño con mi antigua aula?",
+            "answer": "Tu antigua aula puede traer de vuelta una época, una amistad o una emoción de aquella edad. Este sueño vuelve a menudo en etapas de cambio o de evaluación. Pregúntate qué parte de aquel tiempo sigue presente hoy."
+          }
+        ],
+        "documentMetaDescription": "Soñar con un aula, con salir a la pizarra o con dar clase: qué puede decir la escena sobre aprender y sentirte juzgado, con preguntas y un ejemplo."
       },
       "de": {
         "slug": "klassenzimmer",
         "name": "Klassenzimmer",
-        "shortDescription": "Im Klassenzimmer können Erfahrungen mit Lernen, Leistung, Zugehörigkeit oder Bewertung wieder aufleben. Ob du Schüler, Lehrkraft oder Beobachter warst, verändert den persönlichen Bezug der Szene.",
+        "shortDescription": "Vom Klassenzimmer zu träumen setzt Sie oft wieder in die Schulbank, vor die Tafel, unter die Blicke der ganzen Klasse. Die Szene wird oft mit Lernen, Bewertung und Ihrem Platz in einer Gruppe verbunden. Wo saßen Sie, und was wurde von Ihnen verlangt?",
         "askYourself": [
-          "War das Klassenzimmer aus deiner Vergangenheit oder völlig unbekannt?",
-          "Welche Aufgabe, Prüfung oder Unterrichtssituation fand dort statt?",
-          "Wo musst du gerade etwas lernen oder deine Fähigkeiten zeigen?"
+          "War ich Schüler in der Bank, Lehrkraft an der Tafel oder nur Zuschauer?",
+          "Sollte ich gleich etwas gefragt werden, das ich nicht wusste?",
+          "Wo fühle ich mich gerade bewertet, oder wo lerne ich noch die Regeln?"
         ],
-        "faq": [],
-        "modifiedAt": "2026-07-24"
+        "faq": [
+          {
+            "question": "Was bedeutet es, von einem Klassenzimmer zu träumen?",
+            "answer": "Das Klassenzimmer wird oft mit Lernen, Bewertung und dem eigenen Platz in einer Gruppe verbunden. Ihre Rolle im Raum (Schüler, Lehrkraft oder Zuschauer) und Ihr Gefühl dort weisen auf die hilfreichste Spur."
+          },
+          {
+            "question": "Was bedeutet es, im Traum an die Tafel gerufen zu werden?",
+            "answer": "Vor der ganzen Klasse an die Tafel zu müssen, begleitet oft die Angst, öffentlich beurteilt zu werden oder die Antwort nicht zu wissen. Fragen Sie sich, wo Sie gerade auf dem Prüfstand stehen: in einer Besprechung, bei einer Präsentation, in der Familie."
+          },
+          {
+            "question": "Was bedeutet es, im Traum Lehrer in einer Klasse zu sein?",
+            "answer": "Vorne vor der Klasse zu stehen kann eine neue Verantwortung begleiten, eine Rolle, in der andere auf Sie zählen, oder den Wunsch, etwas weiterzugeben. Hat die Klasse Ihnen zugehört, oder ist Ihnen der Raum entglitten?"
+          },
+          {
+            "question": "Warum träume ich von meinem alten Klassenzimmer?",
+            "answer": "Ein altes Klassenzimmer kann eine Zeit, eine Freundschaft oder ein Gefühl aus diesem Alter zurückbringen. Der Traum kommt oft in Phasen von Veränderung oder Bewertung. Fragen Sie sich, was von damals heute noch gegenwärtig ist."
+          }
+        ],
+        "modifiedAt": "2026-10-08",
+        "documentMetaDescription": "Klassenzimmer im Traum, an die Tafel gerufen oder selbst unterrichten: was die Szene über Lernen und Bewertung sagen kann, mit Fragen und Tagebuchbeispiel."
       },
       "it": {
         "slug": "aula",
         "name": "Aula",
-        "shortDescription": "Un’aula può riattivare esperienze di apprendimento, rendimento, appartenenza o valutazione. Essere studente, insegnante o osservatore cambia la tua posizione e il tono emotivo della scena.",
-        "modifiedAt": "2026-07-24",
+        "shortDescription": "Sognare un’aula ti riporta spesso a un banco, davanti alla lavagna, sotto lo sguardo di tutta la classe. Viene spesso associata all’imparare, all’essere valutati e al tuo posto in un gruppo. Contano soprattutto dove sedevi e che cosa ti veniva chiesto.",
+        "modifiedAt": "2026-10-08",
         "askYourself": [
-          "Che cosa ha cambiato aula nella scena?",
-          "Quale emozione è rimasta dopo il risveglio?"
+          "Ero uno studente al banco, l’insegnante alla lavagna o solo uno spettatore?",
+          "Stavano per interrogarmi su qualcosa che non sapevo?",
+          "Dove mi sento valutato, o ancora alle prese con regole da imparare?"
         ],
-        "faq": []
+        "faq": [
+          {
+            "question": "Che cosa significa sognare un’aula?",
+            "answer": "L’aula viene spesso associata all’apprendimento, alla valutazione e al posto che occupi in un gruppo. Il tuo ruolo nella stanza (studente, insegnante o spettatore) e ciò che provavi lì indicano la pista più utile."
+          },
+          {
+            "question": "Che cosa significa sognare di essere interrogato alla lavagna?",
+            "answer": "Essere chiamato alla lavagna davanti a tutta la classe accompagna spesso la paura di essere giudicato in pubblico, o di non sapere la risposta. Chiediti dove ti senti sotto esame in questo periodo: una riunione, una presentazione, un pranzo di famiglia."
+          },
+          {
+            "question": "Che cosa significa sognare di essere l’insegnante in classe?",
+            "answer": "Stare in cattedra può accompagnare una nuova responsabilità, un ruolo in cui gli altri contano su di te, o il desiderio di trasmettere qualcosa. La classe ti ascoltava, o la situazione ti sfuggiva di mano?"
+          },
+          {
+            "question": "Perché sogno la mia vecchia aula?",
+            "answer": "La tua vecchia aula può riportare un periodo, un’amicizia o un’emozione di quell’età. Il sogno torna spesso nelle fasi di cambiamento o di valutazione. Chiediti quale parte di quel tempo senti ancora presente oggi."
+          }
+        ],
+        "documentMetaDescription": "Sognare un’aula, di essere interrogato alla lavagna o di fare lezione: che cosa può dire la scena sull’imparare e sul giudizio, con domande ed esempio."
       },
       "pt": {
         "slug": "sala-de-aula",
@@ -11570,58 +11758,152 @@
       "en": {
         "slug": "bathroom",
         "name": "Bathroom",
-        "shortDescription": "A bathroom may bring privacy, bodily care, relief or vulnerability into focus. Its condition, accessibility and the people present show whether you felt protected or exposed.",
-        "modifiedAt": "2026-07-24",
+        "shortDescription": "Bathroom dreams often come down to a door that won't lock, a toilet you can't find or a stall in full view. The scene is often associated with privacy, relief and feeling exposed. Whether you could close the door, and who walked in, matter most.",
+        "modifiedAt": "2026-10-08",
         "askYourself": [
-          "What did bathroom change in the scene?",
-          "Which feeling stayed with me after waking?"
+          "Could I close the door, or was the room open to everyone?",
+          "Was I looking for a bathroom, using it, or cleaning it?",
+          "Where in my life do I lack privacy or a moment to myself right now?"
         ],
-        "faq": []
+        "faq": [
+          {
+            "question": "What does it mean to dream about a bathroom?",
+            "answer": "A bathroom is often associated with privacy, bodily care, relief and vulnerability. Its state, whether you could lock the door and who else was there show whether you felt protected or exposed."
+          },
+          {
+            "question": "What does it mean to dream you can't find a toilet?",
+            "answer": "Searching for a toilet that never appears can go with a need you keep postponing: rest, time alone, saying no. Sometimes a full bladder is simply slipping into the dream. If you wake up needing to go, that may be all it was."
+          },
+          {
+            "question": "What does it mean to dream of a toilet with no door?",
+            "answer": "A toilet in full view, with no door or walls, often goes with feeling exposed or watched: at work, in a shared home, online. Ask where you cannot get a moment to yourself without being seen."
+          },
+          {
+            "question": "What does it mean to dream of a dirty or overflowing toilet?",
+            "answer": "A dirty or blocked toilet can match disgust, overload, or something you have not managed to get rid of. It predicts nothing. Ask what in your days seems to be piling up with no way out."
+          }
+        ],
+        "documentMetaDescription": "Dreaming of a bathroom, a toilet you can't find or one with no door: what the scene may say about privacy and feeling exposed, with questions and an example."
       },
       "fr": {
         "slug": "salle-de-bain",
         "name": "Salle de bain",
-        "shortDescription": "Une salle de bain peut toucher à l’intimité, au soin du corps, au soulagement ou à la vulnérabilité. Son état, son accessibilité et les personnes présentes précisent si vous vous sentiez protégé ou exposé.",
-        "modifiedAt": "2026-07-24",
+        "shortDescription": "Rêver d'une salle de bain ou de toilettes, c'est souvent une porte qui ne ferme pas, des WC introuvables ou une cabine à la vue de tous. La scène est souvent associée à l'intimité, au soulagement et au sentiment d'être exposé. Pouviez-vous fermer la porte ?",
+        "modifiedAt": "2026-10-08",
         "askYourself": [
-          "Qu’est-ce que salle de bain a changé dans la scène ?",
-          "Quelle émotion est restée après le réveil ?"
+          "Pouvais-je fermer la porte, ou la pièce était-elle ouverte à tous ?",
+          "Est-ce que je cherchais des toilettes, je les utilisais, ou je nettoyais ?",
+          "Où me manque-t-il de l'intimité ou un moment à moi en ce moment ?"
         ],
-        "faq": []
+        "faq": [
+          {
+            "question": "Que signifie rêver d'une salle de bain ?",
+            "answer": "La salle de bain est souvent associée à l'intimité, au soin du corps, au soulagement et à la vulnérabilité. Son état, la possibilité de fermer à clé et les personnes présentes montrent si vous vous sentiez protégé ou exposé."
+          },
+          {
+            "question": "Que signifie rêver de ne pas trouver les toilettes ?",
+            "answer": "Chercher des toilettes introuvables peut accompagner un besoin que vous repoussez : du repos, du temps seul, dire non. Parfois, c'est aussi une vraie envie d'uriner qui se glisse dans le rêve. Si vous vous réveillez avec ce besoin, la piste est peut-être simplement là."
+          },
+          {
+            "question": "Que signifie rêver de toilettes sans porte ?",
+            "answer": "Des toilettes à la vue de tous, sans porte ni cloison, accompagnent souvent le sentiment d'être exposé ou observé : au travail, dans un logement partagé, en ligne. Demandez-vous où vous ne pouvez pas avoir un moment à vous sans être vu."
+          },
+          {
+            "question": "Que signifie rêver de toilettes sales ou qui débordent ?",
+            "answer": "Des toilettes sales ou bouchées peuvent rejoindre un dégoût, une surcharge, ou quelque chose dont vous n'arrivez pas à vous débarrasser. Elles ne prédisent rien. Demandez-vous ce qui s'accumule dans vos journées sans trouver d'issue."
+          }
+        ],
+        "documentMetaDescription": "Rêver d'une salle de bain, de toilettes introuvables ou sans porte : ce que la scène peut dire de l'intimité et du sentiment d'être exposé, avec questions."
       },
       "es": {
         "slug": "bano",
         "name": "Baño",
-        "shortDescription": "Un baño puede poner en juego la intimidad, el cuidado corporal, el alivio o la vulnerabilidad. Su estado, la posibilidad de cerrar la puerta y quién estaba allí muestran si te sentías protegido o expuesto.",
-        "modifiedAt": "2026-07-24",
+        "shortDescription": "Soñar con un baño suele ser una puerta que no cierra, un váter que no aparece o un retrete a la vista de todos. Se asocia a menudo con la intimidad, el alivio y sentirte expuesto. Cuenta sobre todo si podías cerrar la puerta y quién entró.",
+        "modifiedAt": "2026-10-08",
         "askYourself": [
-          "¿Qué cambió baño dentro de la escena?",
-          "¿Qué emoción siguió conmigo al despertar?"
+          "¿Podía cerrar la puerta, o el baño estaba a la vista de todos?",
+          "¿Buscaba un baño, lo estaba usando o lo limpiaba?",
+          "¿Dónde me falta ahora intimidad o un rato para mí?"
         ],
-        "faq": []
+        "faq": [
+          {
+            "question": "¿Qué significa soñar con un baño?",
+            "answer": "El baño se asocia a menudo con la intimidad, el cuidado del cuerpo, el alivio y la vulnerabilidad. Su estado, si podías echar el pestillo y quién más estaba allí muestran si te sentías protegido o expuesto."
+          },
+          {
+            "question": "¿Qué significa soñar que no encuentras el baño?",
+            "answer": "Buscar un baño que nunca aparece puede acompañar una necesidad que vas aplazando: descanso, tiempo a solas, decir que no. A veces también son unas ganas reales de orinar que se cuelan en el sueño. Si te despiertas con esa necesidad, quizá la pista sea solo esa."
+          },
+          {
+            "question": "¿Qué significa soñar con un baño sin puerta?",
+            "answer": "Un váter a la vista de todos, sin puerta ni paredes, suele acompañar la sensación de estar expuesto u observado: en el trabajo, en un piso compartido, en redes. Pregúntate dónde no puedes tener un momento para ti sin que te vean."
+          },
+          {
+            "question": "¿Qué significa soñar con un baño sucio o un váter que se desborda?",
+            "answer": "Un baño sucio o un váter atascado pueden enlazar con asco, sobrecarga o algo de lo que no consigues librarte. No predicen nada. Pregúntate qué se te está acumulando estos días sin encontrar salida."
+          }
+        ],
+        "documentMetaDescription": "Soñar con un baño, con no encontrar el váter o con un baño sin puerta: qué puede decir la escena sobre la intimidad y sentirte expuesto, con preguntas."
       },
       "de": {
         "slug": "badezimmer",
         "name": "Badezimmer",
-        "shortDescription": "Im Badezimmer können Privatsphäre, Körperpflege, Erleichterung oder Verletzlichkeit zum Thema werden. Zustand, Zugänglichkeit und anwesende Personen zeigen, ob du dich geschützt oder bloßgestellt gefühlt hast.",
+        "shortDescription": "Vom Badezimmer zu träumen heißt oft: eine Tür, die sich nicht abschließen lässt, eine Toilette, die nicht zu finden ist, oder eine Kabine ohne Wände. Die Szene wird oft mit Privatsphäre, Erleichterung und Bloßstellung verbunden. Konnten Sie die Tür schließen?",
         "askYourself": [
-          "War das Badezimmer sauber, überflutet, beschädigt oder ohne Tür?",
-          "Konntest du es ungestört benutzen, oder wurdest du unterbrochen?",
-          "Wo fehlt dir im Alltag gerade Privatsphäre oder Gelegenheit zum Durchatmen?"
+          "Konnte ich die Tür schließen, oder war der Raum für alle offen?",
+          "Habe ich eine Toilette gesucht, sie benutzt oder sie geputzt?",
+          "Wo fehlt mir gerade Privatsphäre oder ein Moment für mich?"
         ],
-        "faq": [],
-        "modifiedAt": "2026-07-24"
+        "faq": [
+          {
+            "question": "Was bedeutet es, von einem Badezimmer zu träumen?",
+            "answer": "Das Badezimmer wird oft mit Privatsphäre, Körperpflege, Erleichterung und Verletzlichkeit verbunden. Sein Zustand, ob Sie abschließen konnten und wer sonst da war, zeigen, ob Sie sich geschützt oder bloßgestellt fühlten."
+          },
+          {
+            "question": "Was bedeutet es, im Traum keine Toilette zu finden?",
+            "answer": "Eine Toilette zu suchen, die nie auftaucht, kann ein Bedürfnis begleiten, das Sie immer wieder aufschieben: Ruhe, Zeit für sich, Nein sagen. Manchmal schleicht sich auch einfach eine volle Blase in den Traum. Wachen Sie mit Harndrang auf, liegt die Spur vielleicht nur dort."
+          },
+          {
+            "question": "Was bedeutet eine Toilette ohne Tür im Traum?",
+            "answer": "Eine Toilette vor aller Augen, ohne Tür oder Wände, begleitet oft das Gefühl, bloßgestellt oder beobachtet zu werden: im Job, in einer WG, online. Fragen Sie sich, wo Sie keinen Moment für sich haben, ohne gesehen zu werden."
+          },
+          {
+            "question": "Was bedeutet eine schmutzige oder überlaufende Toilette im Traum?",
+            "answer": "Eine schmutzige oder verstopfte Toilette kann Ekel, Überlastung oder etwas aufgreifen, das Sie nicht loswerden. Sie sagt nichts voraus. Fragen Sie sich, was sich in Ihrem Alltag gerade staut, ohne abfließen zu können."
+          }
+        ],
+        "modifiedAt": "2026-10-08",
+        "documentMetaDescription": "Badezimmer im Traum, keine Toilette finden oder eine Toilette ohne Tür: was die Szene über Privatsphäre und Bloßstellung sagen kann, mit Fragen und Beispiel."
       },
       "it": {
         "slug": "bagno",
         "name": "Bagno",
-        "shortDescription": "Un bagno può mettere in primo piano intimità, cura del corpo, sollievo o vulnerabilità. Stato, accessibilità e persone presenti mostrano se ti sentivi protetto o esposto.",
-        "modifiedAt": "2026-07-24",
+        "shortDescription": "Sognare il bagno significa spesso una porta che non si chiude, un water introvabile o un gabinetto sotto gli occhi di tutti. Viene spesso associato all’intimità, al sollievo e al sentirsi esposti. Conta se potevi chiudere la porta, e chi è entrato.",
+        "modifiedAt": "2026-10-08",
         "askYourself": [
-          "Che cosa ha cambiato bagno nella scena?",
-          "Quale emozione è rimasta dopo il risveglio?"
+          "Potevo chiudere la porta, o il bagno era aperto a tutti?",
+          "Cercavo un bagno, lo stavo usando o lo pulivo?",
+          "Dove mi mancano, in questo periodo, intimità o un momento per me?"
         ],
-        "faq": []
+        "faq": [
+          {
+            "question": "Che cosa significa sognare il bagno?",
+            "answer": "Il bagno viene spesso associato all’intimità, alla cura del corpo, al sollievo e alla vulnerabilità. Il suo stato, la possibilità di chiudere a chiave e chi altro c’era mostrano se ti sentivi protetto o esposto."
+          },
+          {
+            "question": "Che cosa significa sognare di non trovare il bagno?",
+            "answer": "Cercare un bagno che non compare mai può accompagnare un bisogno che continui a rimandare: riposo, tempo per te, dire di no. A volte è anche un vero stimolo a fare pipì che si infila nel sogno. Se ti svegli con quel bisogno, forse la pista è semplicemente lì."
+          },
+          {
+            "question": "Che cosa significa sognare un bagno senza porta?",
+            "answer": "Un gabinetto sotto gli occhi di tutti, senza porta né pareti, accompagna spesso la sensazione di essere esposto o osservato: al lavoro, in una casa condivisa, sui social. Chiediti dove non riesci ad avere un momento per te senza essere visto."
+          },
+          {
+            "question": "Che cosa significa sognare un bagno sporco o un water che trabocca?",
+            "answer": "Un bagno sporco o un water intasato possono avvicinarsi a disgusto, sovraccarico o qualcosa di cui non riesci a liberarti. Non predicono nulla. Chiediti che cosa si sta accumulando nelle tue giornate senza trovare uno sbocco."
+          }
+        ],
+        "documentMetaDescription": "Sognare il bagno, di non trovare il water o un bagno senza porta: che cosa può dire la scena dell’intimità e del sentirsi esposti, con domande ed esempio."
       },
       "pt": {
         "slug": "banheiro",
@@ -11654,58 +11936,152 @@
       "en": {
         "slug": "bedroom",
         "name": "Bedroom",
-        "shortDescription": "A bedroom may bring rest, intimacy, retreat or personal boundaries into focus. Whether the room was familiar, altered or entered by others says more than the location alone.",
-        "modifiedAt": "2026-07-24",
+        "shortDescription": "Dreaming of a bedroom takes you into the most private room you know: your own, your childhood one, or a stranger's. The scene is often associated with rest, intimacy and personal boundaries. Whose room it was, and who came in, matter more than the furniture.",
+        "modifiedAt": "2026-10-08",
         "askYourself": [
-          "What did bedroom change in the scene?",
-          "Which feeling stayed with me after waking?"
+          "Was it my bedroom today, my childhood room, or a room I did not know?",
+          "Was I alone, and could I control the door and the light?",
+          "How well am I protecting my rest and my private space right now?"
         ],
-        "faq": []
+        "faq": [
+          {
+            "question": "What does it mean to dream about a bedroom?",
+            "answer": "A bedroom is often associated with rest, intimacy, retreat and personal boundaries. Whether it was familiar, changed or entered by others, and how you felt there, say more than the room itself."
+          },
+          {
+            "question": "What does it mean to dream of your childhood bedroom?",
+            "answer": "Going back to your childhood bedroom can bring back the feelings of that age: safety, boredom, waiting to grow up. The dream often comes in periods of change or tiredness. Ask what you needed back then, and whether you need it again now."
+          },
+          {
+            "question": "What does it mean to dream someone is in your bedroom?",
+            "answer": "A stranger or an intruder in your room often goes with a boundary that feels crossed, or a lack of privacy. If the scene felt very real and you could not move, it may have been sleep paralysis, a well-known and usually harmless phenomenon."
+          },
+          {
+            "question": "Why do I dream I wake up in my own bedroom?",
+            "answer": "A dream set exactly where you sleep can be a false awakening: you think you are up, then wake for real. It is common and usually harmless. If it comes with distress or keeps disturbing your sleep, talk to a doctor."
+          }
+        ],
+        "documentMetaDescription": "Dreaming of a bedroom, your childhood room or someone in your room: what the scene may say about rest, intimacy and boundaries, with questions and an example."
       },
       "fr": {
         "slug": "chambre",
         "name": "Chambre",
-        "shortDescription": "Une chambre peut mettre au premier plan le repos, l’intimité, le retrait ou les limites personnelles. Le fait qu’elle soit familière, transformée ou envahie par d’autres précise l’expérience.",
-        "modifiedAt": "2026-07-24",
+        "shortDescription": "Rêver d'une chambre vous ramène dans la pièce la plus intime que vous connaissiez : la vôtre, celle de votre enfance, ou celle d'un inconnu. La scène est souvent associée au repos, à l'intimité et aux limites personnelles. À qui était-elle, et qui y est entré ?",
+        "modifiedAt": "2026-10-08",
         "askYourself": [
-          "Qu’est-ce que chambre a changé dans la scène ?",
-          "Quelle émotion est restée après le réveil ?"
+          "Était-ce ma chambre actuelle, ma chambre d'enfant, ou une pièce inconnue ?",
+          "Étais-je seul, et pouvais-je fermer la porte et allumer la lumière ?",
+          "Est-ce que je protège assez mon repos et mon espace à moi en ce moment ?"
         ],
-        "faq": []
+        "faq": [
+          {
+            "question": "Que signifie rêver d'une chambre ?",
+            "answer": "La chambre est souvent associée au repos, à l'intimité, au retrait et aux limites personnelles. Qu'elle soit familière, transformée ou envahie par d'autres, et ce que vous y ressentiez, en disent plus que la pièce elle-même."
+          },
+          {
+            "question": "Que signifie rêver de sa chambre d'enfant ?",
+            "answer": "Retrouver sa chambre d'enfant peut ramener les émotions de cet âge : la sécurité, l'ennui, l'attente de grandir. Ce rêve revient souvent dans les périodes de changement ou de fatigue. Demandez-vous ce dont vous aviez besoin à l'époque, et si ce besoin revient aujourd'hui."
+          },
+          {
+            "question": "Que signifie rêver que quelqu'un est dans sa chambre ?",
+            "answer": "Un inconnu ou un intrus dans votre chambre accompagne souvent une limite qui semble franchie, ou un manque d'intimité. Si la scène était très réaliste et que vous ne pouviez pas bouger, il peut s'agir d'une paralysie du sommeil, un phénomène connu et le plus souvent bénin."
+          },
+          {
+            "question": "Pourquoi je rêve que je me réveille dans ma chambre ?",
+            "answer": "Un rêve qui se passe exactement là où vous dormez peut être un faux réveil : vous croyez être levé, puis vous vous réveillez pour de bon. C'est fréquent et le plus souvent bénin. S'il s'accompagne de détresse ou abîme votre sommeil, parlez-en à un médecin."
+          }
+        ],
+        "documentMetaDescription": "Rêver d'une chambre, de sa chambre d'enfant ou de quelqu'un dans sa chambre : ce que la scène peut dire du repos, de l'intimité et des limites, avec questions."
       },
       "es": {
         "slug": "dormitorio",
         "name": "Dormitorio",
-        "shortDescription": "Un dormitorio puede situar en primer plano el descanso, la intimidad, el retiro o los límites personales. Que fuera familiar, estuviera cambiado o entraran otras personas concreta la experiencia.",
-        "modifiedAt": "2026-07-24",
+        "shortDescription": "Soñar con un dormitorio te lleva a la habitación más íntima que conoces: la tuya, la de tu infancia o la de un desconocido. La escena se asocia a menudo con el descanso, la intimidad y los límites personales. Cuenta más de quién era y quién entró que los muebles.",
+        "modifiedAt": "2026-10-08",
         "askYourself": [
-          "¿Qué cambió dormitorio dentro de la escena?",
-          "¿Qué emoción siguió conmigo al despertar?"
+          "¿Era mi dormitorio de ahora, el de mi infancia o un cuarto desconocido?",
+          "¿Estaba solo, y podía cerrar la puerta y encender la luz?",
+          "¿Estoy protegiendo bien mi descanso y mi espacio propio estos días?"
         ],
-        "faq": []
+        "faq": [
+          {
+            "question": "¿Qué significa soñar con un dormitorio?",
+            "answer": "El dormitorio se asocia a menudo con el descanso, la intimidad, el retiro y los límites personales. Que fuera familiar, estuviera cambiado o entraran otras personas, y lo que sentías allí, dicen más que la habitación en sí."
+          },
+          {
+            "question": "¿Qué significa soñar con tu habitación de la infancia?",
+            "answer": "Volver a tu cuarto de niño puede traer las emociones de aquella edad: seguridad, aburrimiento, ganas de crecer. Este sueño vuelve a menudo en etapas de cambio o de cansancio. Pregúntate qué necesitabas entonces y si esa necesidad vuelve ahora."
+          },
+          {
+            "question": "¿Qué significa soñar que alguien está en tu habitación?",
+            "answer": "Un desconocido o un intruso en tu cuarto suele acompañar un límite que sientes traspasado, o una falta de intimidad. Si la escena parecía muy real y no podías moverte, puede haber sido una parálisis del sueño, un fenómeno conocido y casi siempre benigno."
+          },
+          {
+            "question": "¿Por qué sueño que me despierto en mi habitación?",
+            "answer": "Un sueño que ocurre justo donde duermes puede ser un falso despertar: crees que te has levantado y luego te despiertas de verdad. Es frecuente y casi siempre benigno. Si viene con angustia o te estropea el descanso, coméntalo con un médico."
+          }
+        ],
+        "documentMetaDescription": "Soñar con un dormitorio, con tu cuarto de la infancia o con alguien en tu habitación: qué puede decir la escena del descanso, la intimidad y los límites."
       },
       "de": {
         "slug": "schlafzimmer",
         "name": "Schlafzimmer",
-        "shortDescription": "Im Schlafzimmer können Ruhe, Intimität, Rückzug oder persönliche Grenzen in den Mittelpunkt rücken. Ob der Raum vertraut, verändert oder von anderen betreten war, prägt die Deutung stärker als der Ort allein.",
+        "shortDescription": "Vom Schlafzimmer zu träumen führt Sie in den privatesten Raum, den Sie kennen: Ihren eigenen, Ihr Kinderzimmer oder das Zimmer eines Fremden. Die Szene wird oft mit Ruhe, Intimität und persönlichen Grenzen verbunden. Wem gehörte das Zimmer, und wer kam herein?",
         "askYourself": [
-          "War es dein eigenes Schlafzimmer oder ein fremder Raum?",
-          "Wer befand sich dort, und hattest du Kontrolle über Tür und Licht?",
-          "Wie gut kannst du dir derzeit Ruhe und privaten Raum sichern?"
+          "War es mein heutiges Schlafzimmer, mein Kinderzimmer oder ein fremder Raum?",
+          "War ich allein, und hatte ich Tür und Licht unter Kontrolle?",
+          "Wie gut schütze ich gerade meine Ruhe und meinen privaten Raum?"
         ],
-        "faq": [],
-        "modifiedAt": "2026-07-24"
+        "faq": [
+          {
+            "question": "Was bedeutet es, von einem Schlafzimmer zu träumen?",
+            "answer": "Das Schlafzimmer wird oft mit Ruhe, Intimität, Rückzug und persönlichen Grenzen verbunden. Ob es vertraut, verändert oder von anderen betreten war, und wie Sie sich dort fühlten, sagt mehr als der Raum selbst."
+          },
+          {
+            "question": "Was bedeutet es, vom eigenen Kinderzimmer zu träumen?",
+            "answer": "Ins Kinderzimmer zurückzukehren kann die Gefühle dieses Alters zurückbringen: Geborgenheit, Langeweile, das Warten aufs Großwerden. Der Traum kommt oft in Phasen von Veränderung oder Erschöpfung. Fragen Sie sich, was Sie damals brauchten und ob dieses Bedürfnis heute wiederkehrt."
+          },
+          {
+            "question": "Was bedeutet es, wenn im Traum jemand in meinem Schlafzimmer ist?",
+            "answer": "Ein Fremder oder Eindringling im Zimmer begleitet oft eine Grenze, die sich überschritten anfühlt, oder fehlende Privatsphäre. War die Szene sehr real und konnten Sie sich nicht bewegen, war es vielleicht eine Schlafparalyse: ein bekanntes und meist harmloses Phänomen."
+          },
+          {
+            "question": "Warum träume ich, dass ich in meinem Schlafzimmer aufwache?",
+            "answer": "Ein Traum, der genau dort spielt, wo Sie schlafen, kann ein falsches Erwachen sein: Sie glauben, aufgestanden zu sein, und wachen dann wirklich auf. Das ist häufig und meist harmlos. Kommen Belastung oder schlechter Schlaf hinzu, sprechen Sie mit einer Ärztin oder einem Arzt."
+          }
+        ],
+        "modifiedAt": "2026-10-08",
+        "documentMetaDescription": "Schlafzimmer im Traum, das Kinderzimmer oder jemand im eigenen Zimmer: was die Szene über Ruhe, Intimität und Grenzen sagen kann, mit Fragen und Beispiel."
       },
       "it": {
         "slug": "camera-da-letto",
         "name": "Camera da letto",
-        "shortDescription": "Una camera da letto può mettere in primo piano riposo, intimità, ritiro o confini personali. Il fatto che fosse familiare, trasformata o invasa da altri precisa l’esperienza.",
-        "modifiedAt": "2026-07-24",
+        "shortDescription": "Sognare una camera da letto ti porta nella stanza più intima che conosci: la tua, quella di quando eri bambino o quella di uno sconosciuto. Viene spesso associata al riposo, all’intimità e ai confini personali. Di chi era la stanza, e chi è entrato?",
+        "modifiedAt": "2026-10-08",
         "askYourself": [
-          "Che cosa ha cambiato camera da letto nella scena?",
-          "Quale emozione è rimasta dopo il risveglio?"
+          "Era la mia camera di adesso, quella di quando ero bambino o una stanza sconosciuta?",
+          "Ero solo, e potevo chiudere la porta e accendere la luce?",
+          "Sto proteggendo abbastanza il mio riposo e il mio spazio in questo periodo?"
         ],
-        "faq": []
+        "faq": [
+          {
+            "question": "Che cosa significa sognare una camera da letto?",
+            "answer": "La camera da letto viene spesso associata al riposo, all’intimità, al ritiro e ai confini personali. Che fosse familiare, cambiata o invasa da altri, e ciò che provavi lì, dicono più della stanza in sé."
+          },
+          {
+            "question": "Che cosa significa sognare la propria cameretta da bambino?",
+            "answer": "Ritrovare la cameretta dell’infanzia può riportare le emozioni di quell’età: sicurezza, noia, la voglia di crescere. Il sogno torna spesso nei periodi di cambiamento o di stanchezza. Chiediti di che cosa avevi bisogno allora, e se quel bisogno torna oggi."
+          },
+          {
+            "question": "Che cosa significa sognare qualcuno nella propria camera?",
+            "answer": "Uno sconosciuto o un intruso nella tua camera accompagna spesso un confine che senti oltrepassato, o una mancanza di intimità. Se la scena era molto realistica e non riuscivi a muoverti, potrebbe trattarsi di una paralisi del sonno, un fenomeno noto e di solito innocuo."
+          },
+          {
+            "question": "Perché sogno di svegliarmi nella mia camera?",
+            "answer": "Un sogno ambientato proprio dove dormi può essere un falso risveglio: credi di esserti alzato, poi ti svegli davvero. È frequente e di solito innocuo. Se si accompagna ad angoscia o disturba spesso il tuo sonno, parlane con un medico."
+          }
+        ],
+        "documentMetaDescription": "Sognare una camera da letto, la cameretta d’infanzia o qualcuno nella propria stanza: che cosa può dire la scena del riposo, dell’intimità e dei confini."
       },
       "pt": {
         "slug": "quarto",
