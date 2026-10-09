@@ -32,10 +32,11 @@
 // VERIFY_LOCAL_COMMON_DIR (the shared git directory, for caches) set, with
 // TMPDIR in a directory of their own removed with the copy, and without the
 // GIT_* variables of a hook nor the variables that narrow what a check runs
-// (SCOPE_ENV, plus the config's stripEnv). A `when` check runs only if its paths changed
-// since origin/<main> (a docs-only PR skips typecheck in a fresh clone). On
-// the main commit itself nothing changed: releaseAlways: true makes a release
-// run it anyway.
+// (SCOPE_ENV, plus the config's stripEnv). In a PR, a `when` check runs only
+// if its paths changed since origin/<main> (a docs-only PR skips typecheck in a
+// fresh clone). A release runs every check, `when` ones included: on the main
+// commit nothing changed since origin/<main>, and a release proves the
+// delivered commit, not a diff (releaseAlways is implied).
 //
 // Exit codes: 0 passed, 1 failed, 2 incomplete (a required specialised check
 // could not run here; see --external), 64 usage or configuration error.
@@ -666,7 +667,8 @@ export async function verify(kind, argv = [], {
       const entry = { name: check.name, command: check.command, fingerprint, specialised: check.specialised };
       if (check.targets) entry.targets = check.targets;
 
-      if (check.when && !(kind === 'release' && check.releaseAlways)) {
+      // `when` narrows a PR to the paths it changes; a release runs every check.
+      if (check.when && kind === 'pr') {
         const touched = scope ? scope.files.filter((file) => matchesAny(file, check.when)) : null;
         if (touched && touched.length === 0) {
           results.push({ ...entry, result: 'skipped', reason: `no change under ${check.when.join(', ')} since ${base.ref}` });

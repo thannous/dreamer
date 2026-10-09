@@ -27,7 +27,7 @@ const ENGINE = fileURLToPath(new URL('./verify-local.mjs', import.meta.url));
 // sha256 of the engine shared by the five repositories. An edit to
 // scripts/verify-local.mjs in one repository alone fails here: change the
 // engine in all five at once, then update this value in all five.
-const ENGINE_SHA256 = '3d6c57f7b1b64d469301da2e108a11328bcf980a54a10d4e0cc5bcf82e32f4a2';
+const ENGINE_SHA256 = '8ac3f52e85d849fbd6f51dded779047bf5ba28267de198086c7a65dd7fcb2453';
 const scratch = mkdtempSync(path.join(os.tmpdir(), 'verify-local-test-'));
 after(() => rmSync(scratch, { recursive: true, force: true }));
 
@@ -334,6 +334,8 @@ describe('verify:pr', () => {
 describe('verify:release and the deploy guard', () => {
   test('release runs every check again, even one the PR proof of the same tree passed, and covers the requested targets', async () => {
     const repo = makeRepository();
+    // The release runs the database check too: say the database is up.
+    repo.env.DB_AVAILABLE = '1';
     repo.git(['checkout', '--quiet', '-b', 'feature']);
     const head = repo.commit('feature', { 'src/b.js': '1\n' });
     assert.equal((await verify('pr', [], repo.options)).status, 0);
@@ -341,7 +343,7 @@ describe('verify:release and the deploy guard', () => {
 
     const release = await verify('release', ['--target', 'site'], repo.options);
     assert.equal(release.status, 0);
-    assert.deepEqual(repo.runs(), ['lint', 'test', 'site-check', `build:${head}`, 'site']);
+    assert.deepEqual(repo.runs(), ['lint', 'test', 'db', 'site-check', `build:${head}`, 'site']);
     assert.ok(release.proof.checks.every((check) => !check.reused), 'a release reuses nothing');
     assert.deepEqual(release.proof.targets, ['site']);
 
@@ -354,15 +356,18 @@ describe('verify:release and the deploy guard', () => {
     assert.equal(unknown.status, 64);
   });
 
-  test('on the main commit, a releaseAlways check runs while a plain when check stays out of scope', async () => {
+  test('on the main commit, a release runs every check, when ones included, while a PR run has nothing in scope', async () => {
     const repo = makeRepository();
+    // The release runs the database check too: say the database is up.
+    repo.env.DB_AVAILABLE = '1';
     const head = repo.commit('site', { 'site/index.html': '<p>ok</p>\n' });
     repo.git(['push', '--quiet', 'origin', 'main']);
     const { status, proof } = await verify('release', [], repo.options);
     assert.equal(status, 0);
     assert.equal(proof.sha, head);
-    assert.equal(proof.checks.find((check) => check.name === 'db').result, 'skipped');
+    assert.equal(proof.checks.find((check) => check.name === 'db').result, 'passed');
     assert.ok(repo.runs().includes('site-check'));
+    assert.ok(repo.runs().includes('db'), 'a when check runs at release although nothing changed since origin/main');
     repo.clearRuns();
     await verify('pr', ['--force'], repo.options);
     assert.deepEqual(repo.runs(), ['lint', 'test'], 'a PR run on main has no path in scope');
@@ -410,6 +415,8 @@ describe('verify:release and the deploy guard', () => {
 
   test('a release runs again a check whose identical inputs passed on another tree', async () => {
     const repo = makeRepository();
+    // The release runs the database check too: say the database is up.
+    repo.env.DB_AVAILABLE = '1';
     repo.git(['checkout', '--quiet', '-b', 'feature']);
     repo.commit('feature', { 'src/b.js': '1\n' });
     assert.equal((await verify('pr', [], repo.options)).status, 0);
@@ -425,6 +432,8 @@ describe('verify:release and the deploy guard', () => {
 
   test('a failed or incomplete release run never replaces a passed PR proof', async () => {
     const repo = makeRepository();
+    // The release runs the database check too: say the database is up.
+    repo.env.DB_AVAILABLE = '1';
     repo.git(['checkout', '--quiet', '-b', 'feature']);
     const head = repo.commit('feature', { 'src/b.js': '1\n' });
     assert.equal((await verify('pr', [], repo.options)).status, 0);
@@ -440,12 +449,14 @@ describe('verify:release and the deploy guard', () => {
     repo.clearRuns();
     const passing = await verify('release', [], repo.options);
     assert.equal(passing.status, 0);
-    assert.deepEqual(repo.runs(), ['lint', 'test', 'site-check', `build:${head}`], 'every release check runs again');
+    assert.deepEqual(repo.runs(), ['lint', 'test', 'db', 'site-check', `build:${head}`], 'every release check runs again');
     assert.equal(readProof(commonDir, tree).kind, 'release');
   });
 
   test('a failed run for one more target never replaces a passed release proof', async () => {
     const repo = makeRepository();
+    // The release runs the database check too: say the database is up.
+    repo.env.DB_AVAILABLE = '1';
     repo.git(['checkout', '--quiet', '-b', 'feature']);
     const head = repo.commit('feature', { 'src/b.js': '1\n' });
     assert.equal((await verify('release', [], repo.options)).status, 0);
@@ -465,6 +476,8 @@ describe('verify:release and the deploy guard', () => {
 
   test('a check that needs a real install replaces the linked node_modules first', async () => {
     const repo = makeRepository();
+    // The release runs the database check too: say the database is up.
+    repo.env.DB_AVAILABLE = '1';
     repo.git(['checkout', '--quiet', '-b', 'feature']);
     repo.commit('feature', { 'src/b.js': '1\n' });
     mkdirSync(path.join(repo.work, 'node_modules', 'ext'), { recursive: true });
@@ -478,6 +491,8 @@ describe('verify:release and the deploy guard', () => {
 
   test('a deploy needs a release proof for HEAD = origin/main; a PR proof or another commit is refused', async () => {
     const repo = makeRepository();
+    // The release runs the database check too: say the database is up.
+    repo.env.DB_AVAILABLE = '1';
     repo.git(['checkout', '--quiet', '-b', 'feature']);
     const head = repo.commit('feature', { 'src/b.js': '1\n' });
     assert.equal((await verify('release', [], repo.options)).status, 0);
@@ -494,7 +509,7 @@ describe('verify:release and the deploy guard', () => {
 
     repo.clearRuns();
     assert.equal((await verify('release', [], repo.options)).status, 0);
-    assert.deepEqual(repo.runs(), ['lint', 'test', 'site-check', `build:${squash}`], 'every release check runs again on the delivered commit');
+    assert.deepEqual(repo.runs(), ['lint', 'test', 'db', 'site-check', `build:${squash}`], 'every release check runs again on the delivered commit');
     assert.deepEqual(checkReleaseProof({ cwd: repo.work, env: repo.env, fetch: false }).failures, []);
     assert.deepEqual(
       checkReleaseProof({ cwd: repo.work, env: repo.env, fetch: false, targets: ['site'] }).failures.map((failure) => failure.check),
