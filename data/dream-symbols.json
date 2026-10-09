@@ -9596,58 +9596,152 @@
       "en": {
         "slug": "stranger",
         "name": "Stranger",
-        "shortDescription": "Meeting a stranger in a dream may accompany an unfamiliar situation, a new encounter or uncertainty around other people. Their appearance, behavior and your response give the scene its personal context.",
-        "modifiedAt": "2026-07-24",
+        "shortDescription": "A stranger in a dream is a face you cannot place: kind, neutral or threatening. The figure is often associated with something new or unclear in your life, or with a side of yourself you have not named yet. Your reaction to them points the way.",
+        "modifiedAt": "2026-10-08",
         "askYourself": [
-          "What did stranger change in the scene?",
-          "Which feeling stayed with me after waking?"
+          "What did the stranger look like, and what did they do?",
+          "Did I want to get closer, keep my distance or run?",
+          "What in my life feels new, unclear or hard to read right now?"
         ],
-        "faq": []
+        "faq": [
+          {
+            "question": "What does it mean to dream of a stranger?",
+            "answer": "A stranger is often associated with something unfamiliar: a new situation, a person you barely know yet, or a part of yourself you rarely look at. Their behavior and how you felt toward them point to the most useful reading."
+          },
+          {
+            "question": "What does it mean when a stranger follows or threatens you in a dream?",
+            "answer": "A threatening stranger can go with a diffuse worry or a pressure you cannot name. It does not mean that a real person wants to harm you. Note where you were and what you did: run, hide or turn around."
+          },
+          {
+            "question": "Why do I dream of a stranger who feels familiar?",
+            "answer": "It is common: an unknown face can blend the features of several people, or carry a quality you link to someone. Ask yourself who the stranger reminded you of, and what that quality means to you right now."
+          },
+          {
+            "question": "What does it mean to dream of a kind or attractive stranger?",
+            "answer": "A warm stranger can go with curiosity, a wish for connection or openness to something new. It does not announce a meeting. Note what the stranger offered or said, and how you felt when you woke up."
+          }
+        ],
+        "documentMetaDescription": "Dreaming of a stranger who is kind, threatening or strangely familiar: what the scene may say about the unknown in your life, with questions and an example."
       },
       "fr": {
         "slug": "inconnu",
         "name": "Inconnu",
-        "shortDescription": "Rencontrer un inconnu peut accompagner une situation nouvelle, une relation encore indéfinie ou une incertitude face aux autres. Son apparence, ses intentions apparentes et votre réaction donnent au rêve son contexte propre.",
-        "modifiedAt": "2026-07-24",
+        "shortDescription": "Rêver d'un inconnu, c'est croiser un visage qu'on ne sait pas situer : bienveillant, neutre ou menaçant. Il est souvent associé à ce qui reste nouveau ou flou dans votre vie, ou à une part de vous encore sans nom. Votre réaction donne la piste.",
+        "modifiedAt": "2026-10-08",
         "askYourself": [
-          "Qu’est-ce que inconnu a changé dans la scène ?",
-          "Quelle émotion est restée après le réveil ?"
+          "À quoi ressemblait cet inconnu, et que faisait-il ?",
+          "Avais-je envie de m'approcher, de garder mes distances ou de fuir ?",
+          "Qu'est-ce qui, en ce moment, me paraît nouveau, flou ou difficile à lire ?"
         ],
-        "faq": []
+        "faq": [
+          {
+            "question": "Que signifie rêver d'un inconnu ?",
+            "answer": "L'inconnu est souvent associé à ce qui n'est pas encore familier : une situation nouvelle, une personne que vous connaissez mal, ou une part de vous que vous regardez peu. Son attitude et ce que vous ressentiez orientent la lecture."
+          },
+          {
+            "question": "Que signifie rêver d'un inconnu qui vous suit ou vous menace ?",
+            "answer": "Un inconnu menaçant peut accompagner une inquiétude diffuse ou une pression difficile à nommer. Cela ne veut pas dire qu'une personne réelle vous veut du mal. Notez le lieu et votre réaction : fuir, vous cacher, faire face."
+          },
+          {
+            "question": "Pourquoi rêve-t-on d'un inconnu qui semble familier ?",
+            "answer": "C'est fréquent : un visage inconnu peut mêler les traits de plusieurs personnes, ou porter une qualité que vous associez à quelqu'un. Demandez-vous à qui il vous faisait penser, et ce que cette qualité représente pour vous."
+          },
+          {
+            "question": "Que signifie rêver d'un inconnu attirant ou bienveillant ?",
+            "answer": "Un inconnu chaleureux peut accompagner une curiosité, un besoin de lien ou une ouverture à quelque chose de neuf. Ce n'est pas l'annonce d'une rencontre. Notez ce qu'il vous offrait ou vous disait, et l'émotion au réveil."
+          }
+        ],
+        "documentMetaDescription": "Rêver d'un inconnu bienveillant, menaçant ou étrangement familier : ce que la scène peut dire de la nouveauté dans votre vie, avec questions et exemple."
       },
       "es": {
         "slug": "desconocido",
         "name": "Desconocido",
-        "shortDescription": "Encontrarte con una persona desconocida puede acompañar una situación nueva, un encuentro inesperado o cierta incertidumbre social. Su aspecto, su conducta y tu reacción dan matices al sueño.",
-        "modifiedAt": "2026-07-24",
+        "shortDescription": "Soñar con un desconocido es cruzarte con una cara que no sabes situar: amable, neutra o amenazante. Suele asociarse con lo que aún es nuevo o confuso en tu vida, o con una parte de ti que todavía no tiene nombre. Tu reacción marca la pista.",
+        "modifiedAt": "2026-10-08",
         "askYourself": [
-          "¿Qué cambió desconocido dentro de la escena?",
-          "¿Qué emoción siguió conmigo al despertar?"
+          "¿Cómo era esa persona desconocida y qué hacía?",
+          "¿Quería acercarme, mantener la distancia o huir?",
+          "¿Qué hay ahora mismo en mi vida que me resulta nuevo, confuso o difícil de leer?"
         ],
-        "faq": []
+        "faq": [
+          {
+            "question": "¿Qué significa soñar con un desconocido?",
+            "answer": "Un desconocido se asocia a menudo con lo que todavía no te resulta familiar: una situación nueva, alguien a quien apenas conoces o una parte de ti que miras poco. Su actitud y lo que sentiste ante él orientan la lectura."
+          },
+          {
+            "question": "¿Qué significa soñar que un desconocido te persigue?",
+            "answer": "Un desconocido que te sigue o te amenaza puede acompañar una preocupación difusa o una presión difícil de nombrar. No significa que alguien real quiera hacerte daño. Anota el lugar y tu reacción: huir, esconderte o plantarle cara."
+          },
+          {
+            "question": "¿Por qué sueño con un desconocido que me resulta familiar?",
+            "answer": "Es frecuente: una cara desconocida puede mezclar rasgos de varias personas o llevar una cualidad que asocias a alguien. Pregúntate a quién te recordaba y qué significa para ti esa cualidad en este momento."
+          },
+          {
+            "question": "¿Qué significa soñar con un desconocido amable o atractivo?",
+            "answer": "Un desconocido cálido puede acompañar curiosidad, ganas de conectar o apertura a algo nuevo. No anuncia ningún encuentro. Anota lo que te ofrecía o te decía, y cómo te sentiste al despertar."
+          }
+        ],
+        "documentMetaDescription": "Soñar con un desconocido amable, amenazante o extrañamente familiar: qué puede decir la escena sobre lo nuevo en tu vida, con preguntas y un ejemplo."
       },
       "de": {
         "slug": "fremder",
         "name": "Fremder",
-        "shortDescription": "Begegnest du im Traum einer fremden Person, können eine unbekannte Situation, eine neue Begegnung oder Unsicherheit gegenüber anderen in den Blick rücken. Ihr Aussehen, Verhalten und deine Reaktion geben der Szene ihren persönlichen Kontext.",
+        "shortDescription": "Von einem Fremden zu träumen heißt, einem Gesicht zu begegnen, das Sie nicht einordnen können: freundlich, neutral oder bedrohlich. Die Figur wird oft mit etwas Neuem oder Unklarem verbunden, oder mit einer Seite von Ihnen, die noch keinen Namen hat.",
         "askYourself": [
-          "Welche Details machten die Person fremd oder auffällig?",
-          "Bist du auf sie zugegangen, vor ihr geflohen oder hast du sie beobachtet?",
-          "Welche neue oder schwer einschätzbare Situation beschäftigt dich derzeit?"
+          "Wie sah die fremde Person aus, und was hat sie getan?",
+          "Wollte ich näherkommen, Abstand halten oder fliehen?",
+          "Was in meinem Leben wirkt gerade neu, unklar oder schwer einzuschätzen?"
         ],
-        "faq": [],
-        "modifiedAt": "2026-07-24"
+        "faq": [
+          {
+            "question": "Was bedeutet es, von einem Fremden zu träumen?",
+            "answer": "Ein Fremder wird oft mit dem verbunden, was noch nicht vertraut ist: eine neue Situation, ein Mensch, den Sie kaum kennen, oder eine Seite von Ihnen, die Sie selten betrachten. Sein Verhalten und Ihr Gefühl geben die Richtung vor."
+          },
+          {
+            "question": "Was bedeutet es, wenn mich im Traum ein Fremder verfolgt?",
+            "answer": "Ein bedrohlicher Fremder kann eine diffuse Sorge oder einen schwer benennbaren Druck begleiten. Es heißt nicht, dass Ihnen ein realer Mensch schaden will. Notieren Sie den Ort und Ihre Reaktion: fliehen, sich verstecken, sich umdrehen."
+          },
+          {
+            "question": "Warum träume ich von einem Fremden, der mir bekannt vorkommt?",
+            "answer": "Das ist häufig: Ein unbekanntes Gesicht kann Züge mehrerer Menschen mischen oder eine Eigenschaft tragen, die Sie mit jemandem verbinden. Fragen Sie sich, an wen die Person Sie erinnert hat und wofür diese Eigenschaft steht."
+          },
+          {
+            "question": "Was bedeutet ein freundlicher oder anziehender Fremder im Traum?",
+            "answer": "Ein warmherziger Fremder kann Neugier, den Wunsch nach Nähe oder Offenheit für Neues begleiten. Er kündigt keine Begegnung an. Notieren Sie, was er Ihnen angeboten oder gesagt hat und wie Sie sich beim Aufwachen gefühlt haben."
+          }
+        ],
+        "modifiedAt": "2026-10-08",
+        "documentMetaDescription": "Von einem Fremden träumen, freundlich, bedrohlich oder seltsam vertraut: was die Szene über Neues in Ihrem Leben sagen kann, mit Fragen und Beispiel."
       },
       "it": {
         "slug": "sconosciuto",
         "name": "Sconosciuto",
-        "shortDescription": "Incontrare uno sconosciuto in sogno può accompagnare una situazione nuova, un incontro inatteso o incertezza verso gli altri. Aspetto, comportamento e tua reazione danno alla scena il suo contesto personale.",
-        "modifiedAt": "2026-07-24",
+        "shortDescription": "Sognare uno sconosciuto vuol dire incrociare un volto che non sai collocare: gentile, neutro o minaccioso. Viene spesso associato a ciò che è ancora nuovo o poco chiaro nella tua vita, o a una parte di te senza nome. La tua reazione indica la pista.",
+        "modifiedAt": "2026-10-08",
         "askYourself": [
-          "Che cosa ha cambiato sconosciuto nella scena?",
-          "Quale emozione è rimasta dopo il risveglio?"
+          "Com’era lo sconosciuto, e che cosa faceva?",
+          "Volevo avvicinarmi, tenere le distanze o scappare?",
+          "Che cosa, in questo periodo, mi sembra nuovo, confuso o difficile da leggere?"
         ],
-        "faq": []
+        "faq": [
+          {
+            "question": "Che cosa significa sognare uno sconosciuto?",
+            "answer": "Lo sconosciuto viene spesso associato a ciò che non è ancora familiare: una situazione nuova, una persona che conosci poco o una parte di te che guardi di rado. Il suo atteggiamento e ciò che provavi orientano la lettura."
+          },
+          {
+            "question": "Che cosa significa sognare uno sconosciuto che ti segue?",
+            "answer": "Uno sconosciuto che ti segue o ti minaccia può accompagnare una preoccupazione diffusa o una pressione difficile da nominare. Non significa che una persona reale voglia farti del male. Annota il luogo e la tua reazione: fuggire, nasconderti, voltarti."
+          },
+          {
+            "question": "Perché sogno uno sconosciuto che mi sembra familiare?",
+            "answer": "Succede spesso: un volto sconosciuto può mescolare i tratti di più persone, o portare una qualità che associ a qualcuno. Chiediti a chi ti faceva pensare, e che cosa rappresenta per te quella qualità in questo periodo."
+          },
+          {
+            "question": "Che cosa significa sognare uno sconosciuto gentile o attraente?",
+            "answer": "Uno sconosciuto caloroso può accompagnare curiosità, voglia di legami o apertura verso qualcosa di nuovo. Non annuncia un incontro. Annota che cosa ti offriva o ti diceva, e come ti sei sentito al risveglio."
+          }
+        ],
+        "documentMetaDescription": "Sognare uno sconosciuto gentile, minaccioso o stranamente familiare: che cosa può dire la scena del nuovo nella tua vita, con domande ed esempio di diario."
       },
       "pt": {
         "slug": "desconhecido",
@@ -9682,58 +9776,152 @@
       "en": {
         "slug": "teacher",
         "name": "Teacher",
-        "shortDescription": "A teacher in a dream may revive experiences of learning, evaluation, guidance or authority. The task you faced and whether the teacher encouraged or pressured you help place the scene.",
-        "modifiedAt": "2026-07-24",
+        "shortDescription": "A teacher in a dream often takes you back to the classroom: being called on, handing in work, waiting for a grade. The figure is often associated with being assessed or guided today. Whether they encouraged or judged you sets the tone.",
+        "modifiedAt": "2026-10-08",
         "askYourself": [
-          "What did teacher change in the scene?",
-          "Which feeling stayed with me after waking?"
+          "Did I know this teacher, and from which time in my life?",
+          "Was I being taught, tested, scolded or encouraged?",
+          "Where do I feel judged, or expected to prove something, right now?"
         ],
-        "faq": []
+        "faq": [
+          {
+            "question": "What does it mean to dream of a teacher?",
+            "answer": "A teacher is often associated with learning, evaluation or authority. The meaning depends on the scene (being guided, questioned or scolded) and on whether you knew the teacher. How you felt in the dream is the main clue."
+          },
+          {
+            "question": "Why do I dream about a former teacher?",
+            "answer": "A teacher from your school years can bring back a whole period of your life, or a way of being judged that echoes something today: a new job, a performance review, a demanding boss. The dream reuses a memory; it is not a message from that person."
+          },
+          {
+            "question": "What does it mean to be scolded by a teacher in a dream?",
+            "answer": "Being told off can go with a fear of falling short, or with a self-criticism that has grown loud lately. Note what you were blamed for and whether it felt fair: that detail often points to the area of life concerned."
+          },
+          {
+            "question": "What does it mean to dream that you are the teacher?",
+            "answer": "Standing at the front of the class can go with a new responsibility, a role where others rely on you, or a wish to pass something on. Did you feel confident, exposed or out of place? That reaction narrows the reading."
+          }
+        ],
+        "documentMetaDescription": "Dreaming of a teacher, past or present, kind or strict, or of being the teacher: what the scene may say about feeling judged, with questions and an example."
       },
       "fr": {
         "slug": "professeur",
         "name": "Professeur",
-        "shortDescription": "Un professeur en rêve peut raviver des expériences d’apprentissage, d’évaluation, de conseil ou d’autorité. La tâche demandée et le fait de vous sentir encouragé ou sous pression situent mieux la scène.",
-        "modifiedAt": "2026-07-24",
+        "shortDescription": "Rêver d'un professeur ramène souvent en classe : être interrogé au tableau, rendre une copie, attendre une note. La figure est souvent associée au fait d'être évalué ou guidé aujourd'hui. Qu'il vous encourage ou vous juge donne le ton.",
+        "modifiedAt": "2026-10-08",
         "askYourself": [
-          "Qu’est-ce que professeur a changé dans la scène ?",
-          "Quelle émotion est restée après le réveil ?"
+          "Connaissais-je ce professeur, et de quelle période de ma vie venait-il ?",
+          "Étais-je en train d'apprendre, d'être interrogé, grondé ou encouragé ?",
+          "Où ai-je le sentiment, en ce moment, d'être jugé ou de devoir faire mes preuves ?"
         ],
-        "faq": []
+        "faq": [
+          {
+            "question": "Que signifie rêver d'un professeur ?",
+            "answer": "Le professeur est souvent associé à l'apprentissage, à l'évaluation ou à l'autorité. Le sens dépend de la scène (être guidé, interrogé ou grondé) et du fait de connaître ou non ce professeur. Votre émotion dans le rêve est l'indice principal."
+          },
+          {
+            "question": "Pourquoi rêver d'un ancien professeur ?",
+            "answer": "Un professeur de votre scolarité peut ramener toute une période, ou une façon d'être jugé qui fait écho à aujourd'hui : un nouveau poste, un entretien annuel, un supérieur exigeant. Le rêve réutilise un souvenir ; ce n'est pas un message de cette personne."
+          },
+          {
+            "question": "Que signifie se faire gronder par un professeur en rêve ?",
+            "answer": "Être réprimandé peut accompagner la peur de ne pas être à la hauteur, ou une autocritique devenue bruyante ces temps-ci. Notez ce qu'on vous reprochait et si c'était juste : ce détail désigne souvent le domaine concerné."
+          },
+          {
+            "question": "Que signifie rêver d'être professeur ?",
+            "answer": "Être face à la classe peut accompagner une nouvelle responsabilité, un rôle où l'on compte sur vous, ou l'envie de transmettre. Vous sentiez-vous à l'aise, exposé ou pas à votre place ? Cette réaction affine la lecture."
+          }
+        ],
+        "documentMetaDescription": "Rêver d'un professeur, ancien ou actuel, bienveillant ou sévère, ou d'être professeur : ce que la scène peut dire du jugement, avec questions et exemple."
       },
       "es": {
         "slug": "profesor",
         "name": "Profesor",
-        "shortDescription": "Un profesor en sueños puede reavivar experiencias de aprendizaje, evaluación, orientación o autoridad. La tarea que afrontabas y si te sentías apoyado o presionado ayudan a situar la escena.",
-        "modifiedAt": "2026-07-24",
+        "shortDescription": "Soñar con un profesor suele devolverte al aula: que te saquen a la pizarra, entregar un examen, esperar una nota. La figura se asocia a menudo con sentirte evaluado, guiado o exigido hoy. Que te animara o te juzgara marca el tono del sueño.",
+        "modifiedAt": "2026-10-08",
         "askYourself": [
-          "¿Qué cambió profesor dentro de la escena?",
-          "¿Qué emoción siguió conmigo al despertar?"
+          "¿Conocía a ese profesor, y de qué etapa de mi vida venía?",
+          "¿Estaba aprendiendo, me examinaban, me regañaban o me animaban?",
+          "¿Dónde siento ahora mismo que me juzgan o que tengo que demostrar algo?"
         ],
-        "faq": []
+        "faq": [
+          {
+            "question": "¿Qué significa soñar con un profesor?",
+            "answer": "El profesor se asocia a menudo con aprender, con ser evaluado o con la autoridad. El sentido depende de la escena (que te guíe, te pregunte o te regañe) y de si lo conocías. Lo que sentiste en el sueño es la pista principal."
+          },
+          {
+            "question": "¿Qué significa soñar con un antiguo profesor?",
+            "answer": "Un profesor de tu época escolar puede traer de vuelta toda una etapa, o una forma de ser juzgado que resuena con el presente: un trabajo nuevo, una evaluación, un jefe exigente. El sueño reutiliza un recuerdo; no es un mensaje de esa persona."
+          },
+          {
+            "question": "¿Qué significa soñar que un profesor te regaña?",
+            "answer": "Que te regañen puede acompañar el miedo a no estar a la altura, o una autocrítica que últimamente se ha vuelto ruidosa. Anota qué te reprochaban y si era justo: ese detalle suele señalar el terreno en juego."
+          },
+          {
+            "question": "¿Qué significa soñar que eres profesor?",
+            "answer": "Estar delante de la clase puede acompañar una responsabilidad nueva, un papel en el que otros cuentan contigo o las ganas de enseñar algo. ¿Te sentías seguro, expuesto o fuera de lugar? Esa reacción afina la lectura."
+          }
+        ],
+        "documentMetaDescription": "Soñar con un profesor, antiguo o actual, amable o severo, o que tú eres el profesor: qué puede decir la escena de sentirte juzgado, con preguntas y ejemplo."
       },
       "de": {
         "slug": "lehrer",
         "name": "Lehrer",
-        "shortDescription": "Bei einer Lehrkraft im Traum können Erfahrungen mit Lernen, Bewertung, Anleitung oder Autorität wieder lebendig werden. Ob die Szene ermutigend oder belastend wirkt, zeigt sich an der Aufgabe und deinem Verhältnis zur Person.",
+        "shortDescription": "Von einem Lehrer zu träumen führt oft zurück ins Klassenzimmer: an die Tafel gerufen werden, auf die Note warten. Die Figur wird oft damit verbunden, heute bewertet oder angeleitet zu werden. Ob sie ermutigt oder urteilt, gibt den Ton vor.",
         "askYourself": [
-          "Kanntest du die Lehrkraft, und aus welcher Lebensphase stammte sie?",
-          "Solltest du etwas lernen, beweisen oder erklären?",
-          "Wo fühlst du dich aktuell angeleitet oder beurteilt?"
+          "Kannte ich diese Lehrkraft, und aus welcher Lebensphase stammte sie?",
+          "Sollte ich etwas lernen, wurde ich abgefragt, getadelt oder ermutigt?",
+          "Wo fühle ich mich gerade beurteilt oder unter Druck, mich zu beweisen?"
         ],
-        "faq": [],
-        "modifiedAt": "2026-07-24"
+        "faq": [
+          {
+            "question": "Was bedeutet es, von einem Lehrer zu träumen?",
+            "answer": "Ein Lehrer oder eine Lehrerin wird oft mit Lernen, Bewertung oder Autorität verbunden. Was die Szene bedeutet, hängt davon ab, ob Sie angeleitet, abgefragt oder getadelt wurden und ob Sie die Person kannten. Ihr Gefühl im Traum ist der wichtigste Hinweis."
+          },
+          {
+            "question": "Warum träume ich von einem ehemaligen Lehrer?",
+            "answer": "Eine Lehrkraft aus der Schulzeit kann eine ganze Lebensphase zurückholen, oder eine Art, beurteilt zu werden, die zu heute passt: eine neue Stelle, ein Mitarbeitergespräch, eine strenge Vorgesetzte. Der Traum greift auf eine Erinnerung zurück; er ist keine Botschaft dieser Person."
+          },
+          {
+            "question": "Was bedeutet es, im Traum von einem Lehrer getadelt zu werden?",
+            "answer": "Getadelt zu werden kann die Angst begleiten, nicht zu genügen, oder eine Selbstkritik, die zuletzt laut geworden ist. Notieren Sie, was Ihnen vorgeworfen wurde und ob es gerecht war: Dieses Detail zeigt oft den betroffenen Lebensbereich."
+          },
+          {
+            "question": "Was bedeutet es, im Traum selbst Lehrer zu sein?",
+            "answer": "Vor der Klasse zu stehen kann eine neue Verantwortung begleiten, eine Rolle, in der andere auf Sie zählen, oder den Wunsch, etwas weiterzugeben. Fühlten Sie sich sicher, bloßgestellt oder fehl am Platz? Diese Reaktion grenzt die Deutung ein."
+          }
+        ],
+        "modifiedAt": "2026-10-08",
+        "documentMetaDescription": "Von einem Lehrer träumen, früher oder heute, freundlich oder streng, oder selbst unterrichten: was die Szene über Bewertung sagen kann, mit Fragen."
       },
       "it": {
         "slug": "insegnante",
         "name": "Insegnante",
-        "shortDescription": "Un insegnante in sogno può riaccendere esperienze di apprendimento, valutazione, guida o autorità. Il compito da affrontare e il fatto di sentirti incoraggiato o sotto pressione aiutano a situare la scena.",
-        "modifiedAt": "2026-07-24",
+        "shortDescription": "Sognare un insegnante riporta spesso in classe: l’interrogazione alla lavagna, il compito da consegnare, il voto da aspettare. La figura viene spesso associata al sentirsi valutati o guidati oggi. Che ti incoraggiasse o ti giudicasse dà il tono.",
+        "modifiedAt": "2026-10-08",
         "askYourself": [
-          "Che cosa ha cambiato insegnante nella scena?",
-          "Quale emozione è rimasta dopo il risveglio?"
+          "Conoscevo questo insegnante, e da quale periodo della mia vita veniva?",
+          "Stavo imparando, venivo interrogato, rimproverato o incoraggiato?",
+          "Dove mi sento giudicato, in questo periodo, o costretto a dimostrare qualcosa?"
         ],
-        "faq": []
+        "faq": [
+          {
+            "question": "Che cosa significa sognare un insegnante?",
+            "answer": "L’insegnante viene spesso associato all’apprendimento, alla valutazione o all’autorità. Il significato dipende dalla scena (essere guidati, interrogati o rimproverati) e dal fatto di conoscerlo o no. Ciò che provavi nel sogno è l’indizio principale."
+          },
+          {
+            "question": "Che cosa significa sognare una vecchia professoressa o un vecchio professore?",
+            "answer": "Un insegnante dei tempi della scuola può riportare un intero periodo, o un modo di essere giudicati che risuona con il presente: un nuovo lavoro, una valutazione, un capo esigente. Il sogno riusa un ricordo; non è un messaggio di quella persona."
+          },
+          {
+            "question": "Che cosa significa sognare di essere rimproverati da un insegnante?",
+            "answer": "Essere rimproverati può accompagnare la paura di non essere all’altezza, o un’autocritica diventata rumorosa negli ultimi tempi. Annota che cosa ti rimproverava e se era giusto: quel dettaglio indica spesso l’ambito in gioco."
+          },
+          {
+            "question": "Che cosa significa sognare di essere un insegnante?",
+            "answer": "Stare davanti alla classe può accompagnare una nuova responsabilità, un ruolo in cui gli altri contano su di te o il desiderio di trasmettere qualcosa. Ti sentivi sicuro, esposto o fuori posto? Questa reazione affina la lettura."
+          }
+        ],
+        "documentMetaDescription": "Sognare un insegnante, di oggi o dei tempi della scuola, gentile o severo, o di insegnare: che cosa può dire la scena del sentirsi giudicati, con domande."
       },
       "pt": {
         "slug": "professor",
@@ -9766,47 +9954,122 @@
       "en": {
         "slug": "police",
         "name": "Police",
-        "shortDescription": "Police in a dream may bring rules, protection, control or a conflict over boundaries into focus. Seeking help, being pursued or having to take responsibility each gives the scene a different direction.",
-        "modifiedAt": "2026-07-24",
+        "shortDescription": "Police in a dream can arrive as help, as a check or as a chase. They are often associated with rules, protection, control or a fear of being judged. Whether you called them, were stopped or ran away matters more than the uniform.",
+        "modifiedAt": "2026-10-08",
         "askYourself": [
-          "What did police change in the scene?",
-          "Which feeling stayed with me after waking?"
+          "Was I asking for help, being stopped, or running from the police?",
+          "Did I feel protected, watched, accused or relieved?",
+          "Which rule, limit or responsibility is weighing on me at the moment?"
         ],
-        "faq": []
+        "faq": [
+          {
+            "question": "What does it mean to dream about the police?",
+            "answer": "Police are often associated with rules, protection or judgment. The meaning depends on their role in the scene (helping, checking or chasing you) and on how you felt. The dream is not evidence of guilt or of a real legal problem."
+          },
+          {
+            "question": "What does it mean to dream of being arrested?",
+            "answer": "Being arrested can go with a fear of being caught out, a guilt you carry, or a feeling of losing freedom in some area of life. It is not a prediction. Note what you were accused of and whether you understood why."
+          },
+          {
+            "question": "What does it mean to be chased by the police in a dream?",
+            "answer": "Running from the police can match a pressure you are avoiding, or the sense of having broken a rule, even a small or private one. Note whether you knew why they were after you, and what you were afraid of."
+          },
+          {
+            "question": "What does it mean to call the police in a dream?",
+            "answer": "Calling for help can go with a wish for support, order or protection in a situation that feels out of hand. Did help arrive? Relief, waiting or disappointment each point to a different question about support."
+          }
+        ],
+        "documentMetaDescription": "Dreaming of the police, of being arrested, chased or calling for help: what the scene may say about rules and guilt, with questions and a journal example."
       },
       "fr": {
         "slug": "police",
         "name": "Police",
-        "shortDescription": "La police dans un rêve peut faire entrer en jeu les règles, la protection, le contrôle ou le franchissement d’une limite. Cherchiez-vous de l’aide, étiez-vous poursuivi, ou deviez-vous répondre d’une décision ?",
-        "modifiedAt": "2026-07-24",
+        "shortDescription": "La police peut surgir en rêve comme une aide, un contrôle ou une poursuite. Elle est souvent associée aux règles, à la protection, au contrôle ou à la peur d'être jugé. L'avoir appelée, être arrêté ou fuir compte plus que l'uniforme.",
+        "modifiedAt": "2026-10-08",
         "askYourself": [
-          "Qu’est-ce que police a changé dans la scène ?",
-          "Quelle émotion est restée après le réveil ?"
+          "Est-ce que je demandais de l'aide, subissais un contrôle ou fuyais la police ?",
+          "Me sentais-je protégé, surveillé, accusé ou soulagé ?",
+          "Quelle règle, quelle limite ou quelle responsabilité me pèse en ce moment ?"
         ],
-        "faq": []
+        "faq": [
+          {
+            "question": "Que signifie rêver de la police ?",
+            "answer": "La police est souvent associée aux règles, à la protection ou au jugement. Le sens dépend de son rôle dans la scène (vous aider, vous contrôler, vous poursuivre) et de votre émotion. Le rêve ne prouve ni une faute ni un problème judiciaire."
+          },
+          {
+            "question": "Que signifie rêver d'être arrêté par la police ?",
+            "answer": "Être arrêté peut accompagner la peur d'être pris en défaut, une culpabilité, ou le sentiment de perdre une liberté quelque part dans votre vie. Ce n'est pas une prédiction. Notez de quoi on vous accusait et si vous le compreniez."
+          },
+          {
+            "question": "Que signifie être poursuivi par la police en rêve ?",
+            "answer": "Fuir la police peut rejoindre une pression que vous évitez, ou l'impression d'avoir enfreint une règle, même petite ou intime. Notez si vous saviez pourquoi on vous poursuivait, et ce que vous redoutiez."
+          },
+          {
+            "question": "Que signifie appeler la police en rêve ?",
+            "answer": "Appeler à l'aide peut accompagner un besoin de soutien, d'ordre ou de protection face à une situation qui vous échappe. L'aide est-elle arrivée ? Soulagement, attente ou déception mènent à des questions différentes."
+          }
+        ],
+        "documentMetaDescription": "Rêver de la police, d'être arrêté, poursuivi ou d'appeler à l'aide : ce que la scène peut dire des règles et de la culpabilité, avec questions et exemple."
       },
       "es": {
         "slug": "policia",
         "name": "Policía",
-        "shortDescription": "La policía puede situar en primer plano las reglas, la protección, el control o un conflicto con los límites. No es igual pedir ayuda que ser perseguido o tener que asumir una responsabilidad.",
-        "modifiedAt": "2026-07-24",
+        "shortDescription": "La policía puede aparecer en sueños como ayuda, como control o como persecución. Se asocia a menudo con las normas, la protección, el control o el miedo a ser juzgado. Haberla llamado, que te paren o huir importa más que el uniforme.",
+        "modifiedAt": "2026-10-08",
         "askYourself": [
-          "¿Qué cambió policía dentro de la escena?",
-          "¿Qué emoción siguió conmigo al despertar?"
+          "¿Pedía ayuda, me paraban en un control o huía de la policía?",
+          "¿Me sentía protegido, vigilado, acusado o aliviado?",
+          "¿Qué norma, límite o responsabilidad me pesa ahora mismo?"
         ],
-        "faq": []
+        "faq": [
+          {
+            "question": "¿Qué significa soñar con la policía?",
+            "answer": "La policía se asocia a menudo con las normas, la protección o el juicio. El sentido depende de su papel en la escena (ayudarte, controlarte o perseguirte) y de lo que sentiste. El sueño no prueba ninguna culpa ni un problema legal."
+          },
+          {
+            "question": "¿Qué significa soñar que te detiene la policía?",
+            "answer": "Que te detengan puede acompañar el miedo a que te pillen en falta, una culpa que cargas o la sensación de perder libertad en algún terreno. No es una predicción. Anota de qué te acusaban y si entendías por qué."
+          },
+          {
+            "question": "¿Qué significa soñar que te persigue la policía?",
+            "answer": "Huir de la policía puede enlazar con una presión que evitas, o con la sensación de haberte saltado una norma, aunque sea pequeña o íntima. Anota si sabías por qué te perseguían y qué temías."
+          },
+          {
+            "question": "¿Qué significa soñar que llamas a la policía?",
+            "answer": "Pedir ayuda puede acompañar una necesidad de apoyo, orden o protección ante algo que se te escapa de las manos. ¿Llegó la ayuda? Alivio, espera o decepción llevan a preguntas distintas."
+          }
+        ],
+        "documentMetaDescription": "Soñar con la policía, que te detienen, te persiguen o que pides ayuda: qué puede decir la escena sobre las normas y la culpa, con preguntas y un ejemplo."
       },
       "de": {
         "slug": "polizei",
         "name": "Polizei",
-        "shortDescription": "Polizei im Traum kann Regeln, Schutz, Kontrolle oder einen Konflikt mit Grenzen zum Thema machen. Entscheidend ist, ob du Hilfe gesucht hast, verfolgt wurdest oder selbst Verantwortung übernehmen solltest.",
+        "shortDescription": "Polizei im Traum kann als Hilfe, Kontrolle oder Verfolgung auftreten. Sie wird oft mit Regeln, Schutz oder der Angst verbunden, beurteilt zu werden. Ob Sie sie gerufen haben, angehalten wurden oder geflohen sind, zählt mehr als die Uniform.",
         "askYourself": [
-          "Warum war die Polizei in der Szene anwesend?",
-          "Hast du dich geschützt, kontrolliert oder beschuldigt gefühlt?",
-          "Welche Regel oder Grenze spielt in deinem Alltag gerade eine wichtige Rolle?"
+          "Habe ich Hilfe gesucht, wurde ich kontrolliert, oder bin ich vor der Polizei geflohen?",
+          "Fühlte ich mich geschützt, beobachtet, beschuldigt oder erleichtert?",
+          "Welche Regel, Grenze oder Verantwortung belastet mich gerade?"
         ],
-        "faq": [],
-        "modifiedAt": "2026-07-24"
+        "faq": [
+          {
+            "question": "Was bedeutet es, von der Polizei zu träumen?",
+            "answer": "Die Polizei wird oft mit Regeln, Schutz oder Urteil verbunden. Was sie bedeutet, hängt von ihrer Rolle in der Szene ab (helfen, kontrollieren, verfolgen) und von Ihrem Gefühl. Der Traum beweist weder Schuld noch ein rechtliches Problem."
+          },
+          {
+            "question": "Was bedeutet es, im Traum verhaftet zu werden?",
+            "answer": "Eine Verhaftung kann die Angst begleiten, ertappt zu werden, ein Schuldgefühl oder das Gefühl, irgendwo im Leben Freiheit zu verlieren. Sie ist keine Vorhersage. Notieren Sie, was Ihnen vorgeworfen wurde und ob Sie es verstanden haben."
+          },
+          {
+            "question": "Was bedeutet es, im Traum von der Polizei verfolgt zu werden?",
+            "answer": "Vor der Polizei zu fliehen kann zu einem Druck passen, dem Sie ausweichen, oder zu dem Gefühl, eine Regel verletzt zu haben, auch eine kleine oder private. Notieren Sie, ob Sie wussten, warum man Sie verfolgte, und was Sie befürchteten."
+          },
+          {
+            "question": "Was bedeutet es, im Traum die Polizei zu rufen?",
+            "answer": "Hilfe zu rufen kann den Wunsch nach Unterstützung, Ordnung oder Schutz begleiten, wenn Ihnen etwas entgleitet. Kam die Hilfe an? Erleichterung, Warten oder Enttäuschung führen zu unterschiedlichen Fragen."
+          }
+        ],
+        "modifiedAt": "2026-10-08",
+        "documentMetaDescription": "Von der Polizei träumen, verhaftet, verfolgt oder um Hilfe rufen: was die Szene über Regeln und Schuldgefühle sagen kann, mit Fragen und Beispiel."
       },
       "it": {
         "slug": "polizia",
@@ -9871,58 +10134,152 @@
       "en": {
         "slug": "doctor",
         "name": "Doctor",
-        "shortDescription": "A doctor figure may touch on worry, care, trust or a wish for support without delivering a medical message. Notice who was examined and whether you felt heard or vulnerable.",
-        "modifiedAt": "2026-07-24",
+        "shortDescription": "A doctor in a dream often turns up at a moment of worry: an examination, a result, a word you are waiting for. The figure is often associated with care, trust or a need for support. It is not a medical message: who was being examined?",
+        "modifiedAt": "2026-10-08",
         "askYourself": [
-          "What did doctor change in the scene?",
-          "Which feeling stayed with me after waking?"
+          "Was I the patient, a companion, or the one giving care?",
+          "Did I feel listened to, reassured, exposed or dismissed?",
+          "Where in my life am I waiting for advice, an answer or some help?"
         ],
-        "faq": []
+        "faq": [
+          {
+            "question": "What does it mean to dream about a doctor?",
+            "answer": "A doctor is often associated with care, trust, worry or a wish for support. The meaning depends on who was examined and how you felt: heard, reassured or vulnerable. The dream is not a medical message about your body."
+          },
+          {
+            "question": "Can a dream about a doctor warn me about an illness?",
+            "answer": "No dream can diagnose an illness. The scene may echo a health worry you already have, or a period of tiredness. If you have symptoms or a real concern, talk to a doctor in waking life: that is where the answer is."
+          },
+          {
+            "question": "What does it mean to get bad news from a doctor in a dream?",
+            "answer": "Bad news in a dream can go with a fear of a verdict, about health or something else: a review, a decision, a relationship. It predicts nothing. Note what was said, and whether you were alone or with someone when you heard it."
+          },
+          {
+            "question": "What does it mean to dream that you are a doctor?",
+            "answer": "Giving care in a dream can go with a role where others rely on you, at home or at work, or a wish to fix something. Did you feel capable or overwhelmed? That reaction often points to the real question."
+          }
+        ],
+        "documentMetaDescription": "Dreaming of a doctor, an examination, bad news or being the doctor yourself: what the scene may say about care and trust, with questions and an example."
       },
       "fr": {
         "slug": "medecin",
         "name": "Médecin",
-        "shortDescription": "Une figure de médecin peut évoquer le soin, la confiance, l’inquiétude ou le souhait d’être aidé, sans constituer un message médical. Qui était examiné, et vous sentiez-vous écouté ou vulnérable dans la scène ?",
-        "modifiedAt": "2026-07-24",
+        "shortDescription": "Rêver d'un médecin arrive souvent dans un moment d'inquiétude : un examen, un résultat, une parole qu'on attend. La figure est souvent associée au soin, à la confiance ou au besoin d'être aidé. Ce n'est pas un message médical : qui était examiné ?",
+        "modifiedAt": "2026-10-08",
         "askYourself": [
-          "Qu’est-ce que médecin a changé dans la scène ?",
-          "Quelle émotion est restée après le réveil ?"
+          "Étais-je le patient, l'accompagnant, ou celui qui soignait ?",
+          "Me sentais-je écouté, rassuré, exposé ou pas pris au sérieux ?",
+          "Où, dans ma vie, est-ce que j'attends un conseil, une réponse ou de l'aide ?"
         ],
-        "faq": []
+        "faq": [
+          {
+            "question": "Que signifie rêver d'un médecin ?",
+            "answer": "Le médecin est souvent associé au soin, à la confiance, à l'inquiétude ou au besoin d'être aidé. Le sens dépend de qui était examiné et de ce que vous ressentiez : écouté, rassuré ou vulnérable. Le rêve n'est pas un message médical sur votre corps."
+          },
+          {
+            "question": "Rêver d'un médecin peut-il annoncer une maladie ?",
+            "answer": "Aucun rêve ne peut poser un diagnostic. La scène peut faire écho à une inquiétude pour votre santé que vous avez déjà, ou à une période de fatigue. Si vous avez des symptômes ou un vrai doute, parlez-en à votre médecin : c'est là qu'est la réponse."
+          },
+          {
+            "question": "Que signifie recevoir une mauvaise nouvelle d'un médecin en rêve ?",
+            "answer": "Une mauvaise nouvelle en rêve peut accompagner la peur d'un verdict, de santé ou d'autre chose : un entretien, une décision, une relation. Elle ne prédit rien. Notez ce qui était dit, et si vous étiez seul ou accompagné en l'apprenant."
+          },
+          {
+            "question": "Que signifie rêver d'être médecin ?",
+            "answer": "Soigner en rêve peut accompagner un rôle où l'on compte sur vous, à la maison ou au travail, ou l'envie de réparer quelque chose. Vous sentiez-vous compétent ou débordé ? Cette réaction désigne souvent la vraie question."
+          }
+        ],
+        "documentMetaDescription": "Rêver d'un médecin, d'un examen, d'une mauvaise nouvelle ou d'être médecin : ce que la scène peut dire du soin et de la confiance, avec questions et exemple."
       },
       "es": {
         "slug": "medico",
         "name": "Médico",
-        "shortDescription": "Una figura médica puede tocar preocupaciones, confianza, cuidado o necesidad de apoyo, sin constituir una señal sobre tu salud. Mira quién recibía atención y si te sentías escuchado.",
-        "modifiedAt": "2026-07-24",
+        "shortDescription": "Soñar con un médico suele llegar en un momento de preocupación: una revisión, un resultado, una palabra que esperas. La figura se asocia a menudo con el cuidado, la confianza o la necesidad de ayuda. No es un mensaje médico: ¿quién recibía atención?",
+        "modifiedAt": "2026-10-08",
         "askYourself": [
-          "¿Qué cambió médico dentro de la escena?",
-          "¿Qué emoción siguió conmigo al despertar?"
+          "¿Era yo el paciente, el acompañante o quien atendía?",
+          "¿Me sentía escuchado, tranquilo, expuesto o ignorado?",
+          "¿En qué parte de mi vida estoy esperando un consejo, una respuesta o ayuda?"
         ],
-        "faq": []
+        "faq": [
+          {
+            "question": "¿Qué significa soñar con un médico?",
+            "answer": "El médico se asocia a menudo con el cuidado, la confianza, la preocupación o las ganas de que te ayuden. El sentido depende de quién recibía atención y de lo que sentías: escuchado, tranquilo o vulnerable. El sueño no es un mensaje médico sobre tu cuerpo."
+          },
+          {
+            "question": "¿Soñar con un médico puede avisar de una enfermedad?",
+            "answer": "Ningún sueño puede hacer un diagnóstico. La escena puede hacerse eco de una preocupación por tu salud que ya tienes, o de una época de cansancio. Si tienes síntomas o una duda real, consúltalo con tu médico: ahí está la respuesta."
+          },
+          {
+            "question": "¿Qué significa soñar que un médico te da una mala noticia?",
+            "answer": "Una mala noticia en sueños puede acompañar el miedo a un veredicto, de salud o de otro tipo: una entrevista, una decisión, una relación. No predice nada. Anota qué te dijeron y si estabas solo o acompañado al oírlo."
+          },
+          {
+            "question": "¿Qué significa soñar que eres médico?",
+            "answer": "Atender a otros en sueños puede acompañar un papel en el que cuentan contigo, en casa o en el trabajo, o las ganas de arreglar algo. ¿Te sentías capaz o desbordado? Esa reacción suele señalar la pregunta de fondo."
+          }
+        ],
+        "documentMetaDescription": "Soñar con un médico, una revisión, una mala noticia o que eres médico: qué puede decir la escena sobre el cuidado y la confianza, con preguntas y ejemplo."
       },
       "de": {
         "slug": "arzt",
         "name": "Arzt",
-        "shortDescription": "Begegnungen mit einer Arztfigur können Sorge, Fürsorge, Vertrauen oder den Wunsch nach Unterstützung berühren, ohne eine medizinische Aussage zu liefern. Beachte, wer untersucht oder behandelt wurde und ob du dich ernst genommen gefühlt hast.",
+        "shortDescription": "Von einem Arzt zu träumen geschieht oft in einer Phase der Sorge: eine Untersuchung, ein Befund, ein Wort, auf das Sie warten. Die Figur wird oft mit Fürsorge, Vertrauen oder dem Wunsch nach Hilfe verbunden. Eine medizinische Botschaft ist sie nicht.",
         "askYourself": [
-          "Warst du Patient, Begleitung oder selbst in der behandelnden Rolle?",
-          "Welche Worte, Untersuchung oder Entscheidung standen im Mittelpunkt?",
-          "Bei welchem Thema wünschst du dir gerade verlässliche Hilfe oder Klarheit?"
+          "War ich Patient, Begleitung oder selbst in der behandelnden Rolle?",
+          "Fühlte ich mich ernst genommen, beruhigt, ausgeliefert oder übergangen?",
+          "Wo in meinem Leben warte ich gerade auf Rat, eine Antwort oder Hilfe?"
         ],
-        "faq": [],
-        "modifiedAt": "2026-07-24"
+        "faq": [
+          {
+            "question": "Was bedeutet es, von einem Arzt zu träumen?",
+            "answer": "Ein Arzt oder eine Ärztin wird oft mit Fürsorge, Vertrauen, Sorge oder dem Wunsch nach Unterstützung verbunden. Was die Szene bedeutet, hängt davon ab, wer untersucht wurde und wie Sie sich fühlten. Eine medizinische Aussage über Ihren Körper ist der Traum nicht."
+          },
+          {
+            "question": "Kann ein Traum vom Arzt eine Krankheit ankündigen?",
+            "answer": "Kein Traum kann eine Diagnose stellen. Die Szene kann eine Sorge um Ihre Gesundheit aufgreifen, die Sie schon haben, oder eine Phase der Erschöpfung. Bei Beschwerden oder echten Zweifeln sprechen Sie mit Ihrer Ärztin oder Ihrem Arzt: Dort liegt die Antwort."
+          },
+          {
+            "question": "Was bedeutet eine schlechte Nachricht vom Arzt im Traum?",
+            "answer": "Eine schlechte Nachricht im Traum kann die Angst vor einem Urteil begleiten, gesundheitlich oder anderswo: ein Gespräch, eine Entscheidung, eine Beziehung. Sie sagt nichts voraus. Notieren Sie, was gesagt wurde und ob Sie allein oder in Begleitung waren."
+          },
+          {
+            "question": "Was bedeutet es, im Traum selbst Arzt zu sein?",
+            "answer": "Im Traum andere zu behandeln kann eine Rolle begleiten, in der man auf Sie zählt, zu Hause oder im Beruf, oder den Wunsch, etwas in Ordnung zu bringen. Fühlten Sie sich kompetent oder überfordert? Diese Reaktion zeigt oft die eigentliche Frage."
+          }
+        ],
+        "modifiedAt": "2026-10-08",
+        "documentMetaDescription": "Von einem Arzt träumen, von einer Untersuchung, einer schlechten Nachricht oder selbst Arzt sein: was die Szene über Fürsorge sagen kann, mit Fragen."
       },
       "it": {
         "slug": "medico",
         "name": "Medico",
-        "shortDescription": "Una figura medica può toccare preoccupazione, cura, fiducia o bisogno di sostegno senza offrire un messaggio sulla salute. Nota chi veniva visitato e se ti sentivi ascoltato o vulnerabile.",
-        "modifiedAt": "2026-07-24",
+        "shortDescription": "Sognare un medico capita spesso in un momento di preoccupazione: una visita, un referto, una parola che aspetti. La figura viene spesso associata alla cura, alla fiducia o al bisogno di aiuto. Non è un messaggio sulla salute: chi veniva visitato?",
+        "modifiedAt": "2026-10-08",
         "askYourself": [
-          "Che cosa ha cambiato medico nella scena?",
-          "Quale emozione è rimasta dopo il risveglio?"
+          "Ero io il paziente, chi accompagnava o chi curava?",
+          "Mi sentivo ascoltato, rassicurato, esposto o ignorato?",
+          "In quale ambito della mia vita sto aspettando un consiglio, una risposta o un aiuto?"
         ],
-        "faq": []
+        "faq": [
+          {
+            "question": "Che cosa significa sognare un medico?",
+            "answer": "Il medico viene spesso associato alla cura, alla fiducia, alla preoccupazione o al desiderio di essere aiutati. Il significato dipende da chi veniva visitato e da ciò che provavi: ascoltato, rassicurato o vulnerabile. Il sogno non è un messaggio medico sul tuo corpo."
+          },
+          {
+            "question": "Sognare un medico può annunciare una malattia?",
+            "answer": "Nessun sogno può fare una diagnosi. La scena può riprendere una preoccupazione per la salute che hai già, o un periodo di stanchezza. Se hai sintomi o un dubbio reale, parlane con il tuo medico: è lì che trovi la risposta."
+          },
+          {
+            "question": "Che cosa significa ricevere una brutta notizia da un medico in sogno?",
+            "answer": "Una brutta notizia in sogno può accompagnare la paura di un verdetto, sulla salute o altrove: un colloquio, una decisione, una relazione. Non predice nulla. Annota che cosa veniva detto e se eri solo o accompagnato quando l’hai sentita."
+          },
+          {
+            "question": "Che cosa significa sognare di essere un medico?",
+            "answer": "Curare gli altri in sogno può accompagnare un ruolo in cui contano su di te, a casa o al lavoro, o il desiderio di aggiustare qualcosa. Ti sentivi capace o sopraffatto? Questa reazione indica spesso la vera domanda."
+          }
+        ],
+        "documentMetaDescription": "Sognare un medico, una visita, una brutta notizia o di essere medico: che cosa può dire la scena della cura e della fiducia, con domande ed esempio di diario."
       },
       "pt": {
         "slug": "medico",
