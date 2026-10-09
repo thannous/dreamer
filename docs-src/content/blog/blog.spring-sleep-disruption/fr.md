@@ -5,7 +5,7 @@
   "lang": "fr",
   "slug": "perturbation-sommeil-printemps-reves",
   "title": "Perturbation du sommeil au printemps | Noctalia",
-  "description": "Les jours plus longs du printemps suppriment la mélatonine, perturbent le rythme circadien et modifient les rêves.",
+  "description": "Perturbation du sommeil au printemps : pourquoi les soirées claires retardent l'endormissement, l'aube vous réveille tôt et vos rêves changent, et quoi faire.",
   "robots": "max-image-preview:large",
   "themeColor": "#0a0514",
   "htmlClass": "scroll-smooth blog-article",
@@ -14,24 +14,24 @@
   "mainClass": "pt-32 pb-20 px-4",
   "ogType": "article",
   "ogTitle": "Perturbation du sommeil au printemps | Noctalia",
-  "ogDescription": "Les jours plus longs du printemps suppriment la mélatonine, perturbent le rythme circadien et modifient les rêves.",
+  "ogDescription": "Il fait jour à 21 h, la lumière vous réveille à 5 h 30 ? Ce que le printemps change au sommeil et aux rêves, ce que dit la recherche, ce qui aide.",
   "ogImage": "https://noctalia.app/img/blog/spring-sleep-disruption-dreams.webp",
   "ogImageAlt": "Paysage printanier onirique avec fleurs en éclosion et ondes lumineuses circadiennes perturbées dans des tons violets et dorés",
   "twitterCard": "summary_large_image",
   "twitterTitle": "Perturbation du sommeil au printemps | Noctalia",
-  "twitterDescription": "Les jours plus longs du printemps suppriment la mélatonine, perturbent le rythme circadien et modifient les rêves.",
+  "twitterDescription": "Il fait jour à 21 h, la lumière vous réveille à 5 h 30 ? Ce que le printemps change au sommeil et aux rêves, ce que dit la recherche, ce qui aide.",
   "twitterImage": "https://noctalia.app/img/blog/spring-sleep-disruption-dreams.webp",
   "twitterImageAlt": "Paysage printanier onirique avec fleurs en éclosion et ondes lumineuses circadiennes perturbées dans des tons violets et dorés",
   "publishedTime": "2026-03-24",
-  "modifiedTime": "2026-03-24",
+  "modifiedTime": "2026-10-08",
   "author": "Thanh Chau",
   "prevPath": "/fr/blog/dette-sommeil-sante-reves",
   "nextPath": "/fr/blog/sommeil-sante-priorite",
   "preloadImage": "/img/blog/spring-sleep-disruption-dreams.webp",
   "jsonLd": [
-    "{\n  \"@context\": \"https://schema.org\",\n  \"@type\": \"BlogPosting\",\n  \"headline\": \"Perturbation du sommeil au printemps : comment les jours plus longs altèrent votre sommeil et vos rêves\",\n  \"description\": \"Les jours plus longs du printemps suppriment la mélatonine, perturbent le rythme circadien et modifient les rêves.\",\n  \"image\": {\n    \"@type\": \"ImageObject\",\n    \"url\": \"https://noctalia.app/img/blog/spring-sleep-disruption-dreams.webp\",\n    \"width\": 1200,\n    \"height\": 630\n  },\n  \"author\": [\n    {\n      \"@type\": \"Person\",\n      \"@id\": \"https://noctalia.app/fr/a-propos#person\",\n      \"name\": \"Thanh Chau\",\n      \"jobTitle\": \"Fondateur & Directeur de la publication\",\n      \"url\": \"https://noctalia.app/fr/a-propos\",\n      \"worksFor\": {\n        \"@type\": \"Organization\",\n        \"@id\": \"https://noctalia.app/#organization\",\n        \"name\": \"Noctalia\",\n        \"url\": \"https://noctalia.app\"\n      }\n    },\n    {\n      \"@type\": \"Organization\",\n      \"@id\": \"https://noctalia.app/#organization\",\n      \"name\": \"Noctalia\",\n      \"url\": \"https://noctalia.app\",\n      \"logo\": {\n        \"@type\": \"ImageObject\",\n        \"url\": \"https://noctalia.app/logo/logo_noctalia.png\"\n      }\n    }\n  ],\n  \"publisher\": {\n    \"@type\": \"Organization\",\n    \"name\": \"Noctalia\",\n    \"url\": \"https://noctalia.app\",\n    \"logo\": {\n      \"@type\": \"ImageObject\",\n      \"url\": \"https://noctalia.app/logo/logo_noctalia.png\"\n    }\n  },\n  \"datePublished\": \"2026-03-24\",\n  \"dateModified\": \"2026-03-24\",\n  \"mainEntityOfPage\": {\n    \"@type\": \"WebPage\",\n    \"@id\": \"https://noctalia.app/fr/blog/perturbation-sommeil-printemps-reves\"\n  },\n  \"inLanguage\": \"fr\",\n  \"isAccessibleForFree\": true,\n  \"wordCount\": 1600,\n  \"timeRequired\": \"PT6M\",\n  \"url\": \"https://noctalia.app/fr/blog/perturbation-sommeil-printemps-reves\"\n}",
+    "{\n    \"@context\": \"https://schema.org\",\n    \"@type\": \"BlogPosting\",\n    \"headline\": \"Perturbation du sommeil au printemps : quand les jours plus longs bousculent vos nuits et vos rêves\",\n    \"description\": \"Perturbation du sommeil au printemps : pourquoi les soirées claires retardent l'endormissement, l'aube vous réveille tôt et vos rêves changent, et quoi faire.\",\n    \"image\": {\n        \"@type\": \"ImageObject\",\n        \"url\": \"https://noctalia.app/img/blog/spring-sleep-disruption-dreams.webp\",\n        \"width\": 1200,\n        \"height\": 630\n    },\n    \"author\": [\n        {\n            \"@type\": \"Person\",\n            \"@id\": \"https://noctalia.app/fr/a-propos#person\",\n            \"name\": \"Thanh Chau\",\n            \"jobTitle\": \"Fondateur & Directeur de la publication\",\n            \"url\": \"https://noctalia.app/fr/a-propos\",\n            \"worksFor\": {\n                \"@type\": \"Organization\",\n                \"@id\": \"https://noctalia.app/#organization\",\n                \"name\": \"Noctalia\",\n                \"url\": \"https://noctalia.app\"\n            }\n        },\n        {\n            \"@type\": \"Organization\",\n            \"@id\": \"https://noctalia.app/#organization\",\n            \"name\": \"Noctalia\",\n            \"url\": \"https://noctalia.app\",\n            \"logo\": {\n                \"@type\": \"ImageObject\",\n                \"url\": \"https://noctalia.app/logo/logo_noctalia.png\"\n            }\n        }\n    ],\n    \"publisher\": {\n        \"@type\": \"Organization\",\n        \"name\": \"Noctalia\",\n        \"url\": \"https://noctalia.app\",\n        \"logo\": {\n            \"@type\": \"ImageObject\",\n            \"url\": \"https://noctalia.app/logo/logo_noctalia.png\"\n        }\n    },\n    \"datePublished\": \"2026-03-24\",\n    \"dateModified\": \"2026-10-08\",\n    \"mainEntityOfPage\": {\n        \"@type\": \"WebPage\",\n        \"@id\": \"https://noctalia.app/fr/blog/perturbation-sommeil-printemps-reves\"\n    },\n    \"inLanguage\": \"fr\",\n    \"isAccessibleForFree\": true,\n    \"wordCount\": 2332,\n    \"timeRequired\": \"PT11M\",\n    \"url\": \"https://noctalia.app/fr/blog/perturbation-sommeil-printemps-reves\"\n}",
     "{\n  \"@context\": \"https://schema.org\",\n  \"@type\": \"WebPage\",\n  \"@id\": \"https://noctalia.app/fr/blog/perturbation-sommeil-printemps-reves\",\n  \"url\": \"https://noctalia.app/fr/blog/perturbation-sommeil-printemps-reves\",\n  \"name\": \"Perturbation du sommeil au printemps | Noctalia\",\n  \"inLanguage\": \"fr\"\n}",
-    "{\n  \"@context\": \"https://schema.org\",\n  \"@type\": \"FAQPage\",\n  \"mainEntity\": [\n    {\n      \"@type\": \"Question\",\n      \"name\": \"Pourquoi le printemps perturbe-t-il le sommeil même sans changement d'heure ?\",\n      \"acceptedAnswer\": {\n        \"@type\": \"Answer\",\n        \"text\": \"Le printemps allonge la durée du jour de plusieurs minutes chaque jour après l'équinoxe de mars, supprimant progressivement la sécrétion de mélatonine de 30 à 60 minutes. Contrairement au changement d'heure, qui impose un décalage brutal d'une heure, la modification photopériodique printanière est cumulative : le noyau suprachiasmatique doit se recalibrer en continu pour s'adapter à l'équilibre lumière-obscurité changeant. Cette dérive progressive retarde l'endormissement tandis que la lumière matinale avance l'heure de réveil, comprimant le temps de sommeil total et modifiant les cycles oniriques.\"\n      }\n    },\n    {\n      \"@type\": \"Question\",\n      \"name\": \"Qu'est-ce que la fatigue printanière et est-elle réelle ?\",\n      \"acceptedAnswer\": {\n        \"@type\": \"Answer\",\n        \"text\": \"La fatigue printanière (Frühjahrmüdigkeit en allemand) est un phénomène bien documenté, reconnu en particulier dans les pays germanophones. À mesure que la durée du jour augmente, la production de sérotonine s'accélère tandis que les réserves hivernales de mélatonine s'épuisent, forçant l'organisme à passer du mode conservation à l'activation printanière. Les enquêtes indiquent qu'environ 1 Européen sur 3 signale une fatigue accrue en mars et avril. Cette fatigue se résorbe généralement en 2 à 4 semaines, le temps que le système circadien s'adapte pleinement à la nouvelle photopériode.\"\n      }\n    },\n    {\n      \"@type\": \"Question\",\n      \"name\": \"Comment le printemps affecte-t-il les rêves ?\",\n      \"acceptedAnswer\": {\n        \"@type\": \"Answer\",\n        \"text\": \"Le printemps modifie les cycles oniriques par plusieurs mécanismes. La lumière matinale plus longue peut comprimer le dernier cycle de sommeil paradoxal, réduisant le rappel onirique. Pendant la recalibration de l'horloge circadienne, le timing du sommeil paradoxal se décale, produisant souvent des rêves plus vifs et émotionnellement chargés durant la période d'adaptation. Les études saisonnières montrent que le contenu onirique au printemps intègre fréquemment des thèmes de renouveau, de paysages ouverts et d'imagerie plus lumineuse, reflétant le traitement par le cerveau de l'environnement extérieur en mutation.\"\n      }\n    }\n  ]\n}",
+    "{\n    \"@context\": \"https://schema.org\",\n    \"@type\": \"FAQPage\",\n    \"mainEntity\": [\n        {\n            \"@type\": \"Question\",\n            \"name\": \"Pourquoi dort-on moins bien au printemps, même sans changement d'heure ?\",\n            \"acceptedAnswer\": {\n                \"@type\": \"Answer\",\n                \"text\": \"Après l'équinoxe de mars, les jours gagnent quelques minutes chaque jour. Les soirées plus claires peuvent retarder la montée de la mélatonine et l'envie de dormir, tandis que l'aube plus précoce peut vous réveiller plus tôt. Sur plusieurs semaines, les nuits peuvent raccourcir. L'effet dépend de votre chambre, de vos habitudes et de votre sensibilité à la lumière.\"\n            }\n        },\n        {\n            \"@type\": \"Question\",\n            \"name\": \"La fatigue de printemps existe-t-elle vraiment ?\",\n            \"acceptedAnswer\": {\n                \"@type\": \"Answer\",\n                \"text\": \"Beaucoup de gens la décrivent, et l'allemand lui donne même un nom, Frühjahrsmüdigkeit. Ce n'est pas un diagnostic médical pour autant. Nuits plus courtes, changement d'heure, pollens et soirées chargées sont les suspects habituels. Une fatigue qui dure des semaines mérite un avis médical.\"\n            }\n        },\n        {\n            \"@type\": \"Question\",\n            \"name\": \"Le printemps change-t-il les rêves ?\",\n            \"acceptedAnswer\": {\n                \"@type\": \"Answer\",\n                \"text\": \"Surtout par le souvenir. Un réveil plus précoce, parfois à la sortie du sommeil paradoxal, peut laisser des rêves plus vifs en mémoire, alors que des nuits courtes ou hachées en laissent moins. Des images de printemps peuvent apparaître, car les rêves puisent dans les jours récents, mais aucun langage onirique saisonnier n'a été démontré.\"\n            }\n        },\n        {\n            \"@type\": \"Question\",\n            \"name\": \"Quand consulter pour des troubles du sommeil au printemps ?\",\n            \"acceptedAnswer\": {\n                \"@type\": \"Answer\",\n                \"text\": \"Si le mauvais sommeil dure plus de quelques semaines, si vous luttez pour rester éveillé la journée, si des cauchemars reviennent plusieurs fois par semaine ou si votre moral baisse. Le printemps est une explication fréquente, pas la seule.\"\n            }\n        }\n    ]\n}",
     "{\n  \"@context\": \"https://schema.org\",\n  \"@type\": \"BreadcrumbList\",\n  \"itemListElement\": [\n    {\n      \"@type\": \"ListItem\",\n      \"position\": 1,\n      \"name\": \"Accueil\",\n      \"item\": \"https://noctalia.app/fr/\"\n    },\n    {\n      \"@type\": \"ListItem\",\n      \"position\": 2,\n      \"name\": \"Ressources\",\n      \"item\": \"https://noctalia.app/fr/blog/\"\n    },\n    {\n      \"@type\": \"ListItem\",\n      \"position\": 3,\n      \"name\": \"Sommeil au printemps\",\n      \"item\": \"https://noctalia.app/fr/blog/perturbation-sommeil-printemps-reves\"\n    }\n  ]\n}"
   ],
   "activeNav": "resources"
@@ -64,13 +64,13 @@
 <a class="text-xs font-mono text-purple-200/70 border border-white/10 rounded-full px-3 py-1 hover:text-white hover:border-dream-salmon/30 transition-colors" href="sommeil-paradoxal-reves">Th&#232;me : Science du sommeil</a>
 <span aria-hidden="true" class="w-full sm:hidden"></span>
 <span class="text-sm text-purple-300/60">Publi&#233; le 24 mars 2026</span>
-<span class="text-sm text-purple-300/60">~1600 mots &#183; 6 min de lecture</span>
+<span class="text-sm text-purple-300/60">11 min de lecture</span>
 </div>
 <h1 class="font-serif text-3xl md:text-5xl mb-6 text-transparent bg-clip-text bg-gradient-to-b from-white via-dream-lavender to-purple-400/50 leading-tight">
-                    Perturbation du sommeil au printemps : comment les jours plus longs alt&#232;rent votre sommeil et vos r&#234;ves
+                    Perturbation du sommeil au printemps : quand les jours plus longs bousculent vos nuits et vos rêves
                 </h1>
 <p class="text-lg text-purple-200/80 leading-relaxed">
-                    Chaque mois de mars, l'&#233;quinoxe r&#233;&#233;quilibre discr&#232;tement la balance entre lumi&#232;re et obscurit&#233;. Les journ&#233;es s'allongent, les soir&#233;es s'&#233;clairent, et votre organisme entame une recalibration de plusieurs semaines que la plupart des gens ne remarquent pas, jusqu'&#224; ce que leur sommeil commence &#224; d&#233;river. Contrairement au choc brutal du changement d'heure, la modification de la photop&#233;riode printani&#232;re est progressive et cumulative, ce qui la rend &#224; la fois plus facile &#224; ignorer et plus difficile &#224; contourner. Voici ce qui arrive &#224; votre rythme circadien, &#224; votre m&#233;latonine et &#224; vos r&#234;ves lorsque la saison tourne.
+                    Il est 22 h 30 et le ciel n'est pas encore noir. Vous vous couchez plus tard qu'en hiver, puis la lumière filtre par les volets à 5 h 40, une demi-heure avant le réveil, et un rêve s'efface. La perturbation du sommeil au printemps tient souvent à cela : plus de lumière le soir, plus tôt le matin, et une horloge interne qui doit suivre. Voici ce que montre la recherche, ce que cela change à vos rêves et ce qui aide.
                 </p>
 </header>
 <!-- Author Byline (E-E-A-T) -->
@@ -90,8 +90,8 @@
 </div>
 <!-- Quick Answer (AI SEO) -->
 <section aria-labelledby="quick-answer-title" class="glass-panel rounded-2xl p-6 mb-8 border border-dream-salmon/20 bg-white/5">
-<h2 class="font-serif text-xl text-dream-cream mb-3" id="quick-answer-title">R&#233;ponse rapide</h2>
-<p class="text-purple-100/80 leading-relaxed">Apr&#232;s l'&#233;quinoxe de printemps, l'allongement de la dur&#233;e du jour supprime la s&#233;cr&#233;tion de m&#233;latonine de 30 &#224; 60 minutes, obligeant le noyau suprachiasmatique &#224; se recalibrer en permanence. L'endormissement d&#233;rive vers des heures plus tardives tandis que la lumi&#232;re matinale avance l'heure de r&#233;veil, comprimant le temps de sommeil total et remodelant l'architecture du sommeil paradoxal. Le r&#233;sultat est un ph&#233;nom&#232;ne que certains chercheurs appellent la fatigue printani&#232;re, signal&#233; par environ 1 Europ&#233;en sur 3, caract&#233;ris&#233; par une somnolence diurne, des cycles oniriques modifi&#233;s et une augmentation temporaire des r&#234;ves vifs ou &#233;motionnellement charg&#233;s. L'exposition &#224; la lumi&#232;re matinale, l'ajustement progressif de l'heure du coucher et la gestion de la lumi&#232;re v&#234;sp&#233;rale sont les strat&#233;gies les plus efficaces pour une transition en douceur.</p>
+<h2 class="font-serif text-xl text-dream-cream mb-3" id="quick-answer-title">Réponse rapide</h2>
+<p class="text-purple-100/80 leading-relaxed">Au printemps, les soirées plus claires peuvent retarder l'envie de dormir, et l'aube plus précoce vous réveiller plus tôt. Si les deux s'additionnent, les nuits raccourcissent : fatigue passagère, rêves dont on se souvient autrement. La plupart des gens s'adaptent seuls. La lumière du jour le matin, des soirées tamisées, une heure de lever stable et une chambre bien sombre aident. Si le mauvais sommeil dure des semaines ou pèse sur vos journées, parlez-en à un médecin.</p>
 </section>
 <!-- Featured Image -->
 <figure class="mb-12 rounded-2xl overflow-hidden">
@@ -100,83 +100,82 @@
 <!-- Table of Contents -->
 <nav class="glass-panel rounded-2xl p-6 mb-12">
 <h2 class="font-serif text-lg text-dream-cream mb-4 flex items-center gap-2">
-<i class="w-5 h-5 text-dream-salmon" data-lucide="list"></i> Table des mati&#232;res
+<i class="w-5 h-5 text-dream-salmon" data-lucide="list"></i> Sommaire
                 </h2>
 <ol class="space-y-2 text-sm text-purple-200/70">
-<li><a class="toc-link block" href="#equinox-effect">1. L'effet &#233;quinoxe</a></li>
-<li><a class="toc-link block" href="#melatonin">2. La m&#233;latonine sous pression</a></li>
-<li><a class="toc-link block" href="#spring-fatigue">3. La fatigue printani&#232;re : le creux d'&#233;nergie saisonnier</a></li>
-<li><a class="toc-link block" href="#dream-quality">4. Comment le printemps transforme vos r&#234;ves</a></li>
-<li><a class="toc-link block" href="#adaptation">5. Strat&#233;gies d'adaptation</a></li>
-<li><a class="toc-link block" href="#journaling">6. Journaliser pendant la transition</a></li>
+<li><a class="toc-link block" href="#equinox-effect">1. Qu'est-ce qui change au printemps ?</a></li>
+<li><a class="toc-link block" href="#melatonin">2. Pourquoi les soirées claires retardent le coucher</a></li>
+<li><a class="toc-link block" href="#spring-fatigue">3. La fatigue de printemps existe-t-elle ?</a></li>
+<li><a class="toc-link block" href="#dream-quality">4. Le printemps change-t-il vos rêves ?</a></li>
+<li><a class="toc-link block" href="#adaptation">5. Ce qui aide pendant la transition</a></li>
+<li><a class="toc-link block" href="#journaling">6. Tenir un journal de rêves au printemps</a></li>
 </ol>
 </nav>
 <!-- Article Content -->
 <div class="prose max-w-none text-gray-300">
-<h2 id="equinox-effect">L'effet &#233;quinoxe</h2>
-<h3>Quand la lumi&#232;re et l'obscurit&#233; &#233;changent leurs places</h3>
+<h2 id="equinox-effect">Qu'est-ce qui change au printemps ?</h2>
+<h3>Des jours qui s'allongent vite après l'équinoxe</h3>
 <p>
-                    Aux alentours du 20 mars dans l'h&#233;misph&#232;re Nord, l'&#233;quinoxe de printemps marque le moment o&#249; le jour et la <a class="text-dream-salmon hover:underline" href="../symboles/nuit">nuit</a> atteignent une dur&#233;e approximativement &#233;gale. &#192; partir de l&#224;, la dur&#233;e du jour augmente de deux &#224; quatre minutes quotidiennement, selon la latitude. En un mois, de nombreuses r&#233;gions gagnent plus d'une heure de lumi&#232;re suppl&#233;mentaire en soir&#233;e. Agr&#233;able en apparence, ce changement repr&#233;sente un v&#233;ritable d&#233;fi pour le syst&#232;me circadien.
+                    Vers le 20 mars, dans l'hémisphère Nord, le jour et la <a class="text-dream-salmon hover:underline" href="../symboles/nuit">nuit</a> ont à peu près la même durée. Ensuite, sous nos latitudes, les journées gagnent quelques minutes chaque jour. En quelques semaines, vous vous couchez dans une clarté qui était encore la nuit en février, et l'aube arrive bien avant beaucoup de réveils.
                 </p>
 <p>
-                    Votre horloge circadienne ma&#238;tresse, le noyau suprachiasmatique (NSC), est un amas d'environ 20 000 neurones situ&#233; dans l'hypothalamus. Il synchronise chaque rythme physiologique du corps, de la s&#233;cr&#233;tion de m&#233;latonine &#224; la temp&#233;rature corporelle centrale en passant par le timing du <a class="text-dream-salmon hover:underline" href="sommeil-paradoxal-reves">sommeil paradoxal</a>. Des cellules ganglionnaires r&#233;tiniennes sp&#233;cialis&#233;es fournissent au NSC l'influx lumineux dont il d&#233;pend pour se calibrer. Lorsque la photop&#233;riode se modifie, le NSC doit se recalibrer, et ce processus n'est ni instantan&#233; ni indolore.
+                    Votre horloge interne le remarque. Elle se trouve dans une petite zone de l'hypothalamus, le noyau suprachiasmatique, et elle se règle surtout sur la lumière. Des cellules spécialisées de la rétine lui indiquent quand et combien il fait clair. Ce qui compte, c'est le moment, l'intensité et la durée de la lumière, pas la date du calendrier.
+                </p>
+<h3>Ce que la recherche a mesuré</h3>
+<p>
+                    Dans une petite étude menée à l'Institut national de la santé mentale américain, Wehr et ses collègues ont placé 15 volontaires sous des nuits longues (14 heures d'obscurité), puis courtes (8 heures). Après les nuits longues, la période de sécrétion de mélatonine et la période de sommeil étaient toutes deux plus longues. L'horloge humaine reste donc sensible à la durée du jour.
                 </p>
 <p>
-                    Le changement d'heure impose une avance de phase d'une heure du jour au lendemain, un choc soudain. La modification photop&#233;riodique printani&#232;re, elle, est graduelle, mais graduel ne signifie pas n&#233;gligeable. Sur plusieurs semaines, l'effet cumulatif est consid&#233;rable : &#224; la mi-avril, le coucher du <a class="text-dream-salmon hover:underline" href="../symboles/soleil">soleil</a> peut &#234;tre d&#233;cal&#233; de 90 minutes par rapport &#224; l'&#233;quinoxe. Votre NSC suit cette d&#233;rive jour apr&#232;s jour, ajustant les cascades hormonales par petits incr&#233;ments, un processus qui peut vous laisser subtilement d&#233;synchronis&#233; pendant des semaines sans que vous compreniez pourquoi.
+                    Des travaux de terrain vont dans le même sens. Quand Stothard et ses collègues ont fait camper des volontaires sous la seule lumière naturelle, leur nuit biologique était plus longue en hiver qu'en été, et l'éclairage électrique moderne avait tendance à retarder leur horloge. La vie réelle se situe entre les deux : la lumière du printemps, plus les lampes et les écrans.
                 </p>
-
-<h2 id="melatonin">La m&#233;latonine sous pression</h2>
-<h3>Le probl&#232;me du d&#233;calage d'endormissement</h3>
+<h3>Ce n'est pas la même chose que le changement d'heure</h3>
 <p>
-                    Extr&#234;mement sensible &#224; la lumi&#232;re, la m&#233;latonine est l'hormone qui signale l'obscurit&#233; &#224; l'organisme. Sa production d&#233;bute dans la glande pin&#233;ale lorsque la lumi&#232;re d&#233;cline le soir, un processus appel&#233; d&#233;but de s&#233;cr&#233;tion de m&#233;latonine en lumi&#232;re tamis&#233;e (DLMO, pour <em>dim-light melatonin onset</em>). Wehr et al. (1993) ont d&#233;montr&#233; que la dur&#233;e de la photop&#233;riode module directement la dur&#233;e et le timing de cette s&#233;cr&#233;tion. &#192; mesure que les soir&#233;es printani&#232;res s'&#233;clairent et s'allongent, le DLMO se d&#233;cale vers des heures plus tardives d'environ <strong>30 &#224; 60 minutes</strong> sur quelques semaines.
-                </p>
-<p>
-                    En pratique, vous ne ressentez tout simplement pas de somnolence &#224; votre heure de coucher habituelle. Le soleil est encore au-dessus de l'horizon, les niveaux de lumi&#232;re ambiante restent &#233;lev&#233;s, et votre glande pin&#233;ale lit cela comme &laquo; pas encore la nuit &raquo;. L'endormissement d&#233;rive vers des heures plus tardives, parfois d'une demi-heure ou davantage.
-                </p>
-<p>
-                    La lumi&#232;re matinale produit l'effet inverse. Une lumi&#232;re vive d&#232;s le r&#233;veil avance l'horloge circadienne, signalant au NSC de supprimer la m&#233;latonine et d'initier la r&#233;ponse cortisol du r&#233;veil plus t&#244;t. R&#233;sultat : un &#233;tau. <strong>L'endormissement se d&#233;cale tandis que l'heure de r&#233;veil peut ne pas bouger</strong>, voire avancer. La dur&#233;e totale de sommeil se contracte, souvent sans que le dormeur s'en aper&#231;oive.
+                    Le <a class="text-dream-salmon hover:underline" href="heure-ete-sommeil-reves">passage à l'heure d'été</a>, fin mars, décale l'heure sociale d'un coup, en une nuit. Une revue de Harrison l'associe à un sommeil plus court et plus fragmenté dans les jours qui suivent. L'allongement des jours est plus lent, mais il s'additionne sur plusieurs semaines, et les deux tombent le même mois. Kantermann et ses collègues ont observé que l'heure du sommeil suit le décalage saisonnier de l'aube, et que le changement d'heure interrompt cet ajustement.
                 </p>
 
-<blockquote class="border-l-4 border-dream-salmon/40 pl-4 italic text-purple-200/80 my-6">
-&laquo; La photop&#233;riode est le signal saisonnier le plus fiable dont dispose le syst&#232;me circadien. Les changements de dur&#233;e du jour modifient non seulement le timing mais la structure interne du sommeil lui-m&#234;me. &raquo;
-<span class="block text-sm text-purple-300/60 mt-2 not-italic">-- Wehr et al., Archives of General Psychiatry, 1993</span>
-</blockquote>
-
-<h3>La lumi&#232;re artificielle, un perturbateur suppl&#233;mentaire</h3>
+<h2 id="melatonin">Pourquoi les soirées claires retardent le coucher</h2>
+<h3>La lumière du soir retarde le signal de la nuit</h3>
 <p>
-                    L'&#233;clairage artificiel moderne amplifie le probl&#232;me. M&#234;me apr&#232;s le coucher du soleil, la lumi&#232;re artificielle &#224; des longueurs d'onde entre 460 et 490 nm (lumi&#232;re blanche enrichie en bleu) continue de supprimer la m&#233;latonine. Gooley et al. (2011) ont montr&#233; que l'exposition &#224; l'&#233;clairage domestique dans les heures pr&#233;c&#233;dant le coucher repousse le d&#233;but de s&#233;cr&#233;tion de m&#233;latonine d'environ 90 minutes et raccourcit sa dur&#233;e d'autant. Au printemps, quand la lumi&#232;re naturelle du soir d&#233;cale d&#233;j&#224; le DLMO, ajouter du temps d'&#233;cran et de l'&#233;clairage int&#233;rieur cr&#233;e un double retard.
+                    La mélatonine monte quand la lumière baisse le soir et signale à l'organisme que la nuit commence. Une lumière vive à ce moment-là la freine. Quand le <a class="text-dream-salmon hover:underline" href="../symboles/soleil">soleil</a> se couche plus tard, ce signal peut arriver plus tard lui aussi, et vous n'avez tout simplement pas sommeil à votre heure habituelle.
+                </p>
+<p>
+                    L'éclairage intérieur s'y ajoute. Dans une étude en laboratoire, Gooley et ses collègues ont montré qu'une lumière ordinaire de pièce, dans les heures précédant le coucher, freinait la mélatonine et raccourcissait sa durée de sécrétion, par rapport à une lumière tamisée. Au printemps, un salon bien éclairé et un écran de téléphone viennent s'ajouter à un coucher de soleil tardif.
+                </p>
+<h3>La lumière du matin tire dans l'autre sens</h3>
+<p>
+                    La lumière du petit matin avance l'horloge et aide à se sentir éveillé. C'est utile si vous avez du mal à démarrer. Mais si l'aube atteint votre oreiller à 5 h 30, elle peut aussi écourter la nuit avant le réveil. Endormi plus tard, réveillé plus tôt : c'est la plainte la plus fréquente au printemps.
+                </p>
+<p>
+                    L'intensité de l'effet dépend de votre chambre, de vos volets, de vos horaires et de votre propre sensibilité à la lumière. Certaines personnes ne remarquent rien.
                 </p>
 
-<h2 id="spring-fatigue">La fatigue printani&#232;re : le creux d'&#233;nergie saisonnier</h2>
-<h3>Un ph&#233;nom&#232;ne reconnu</h3>
+<h2 id="spring-fatigue">La fatigue de printemps existe-t-elle ?</h2>
+<h3>Une sensation connue, pas un diagnostic</h3>
 <p>
-                    Dans les pays germanophones, le ph&#233;nom&#232;ne porte un nom : <strong>Fr&uuml;jahrsm&uuml;digkeit</strong>, litt&#233;ralement &laquo; fatigue du printemps &raquo;. Il d&#233;signe la fatigue paradoxale que de nombreuses personnes ressentent au moment m&#234;me o&#249; le monde s'&#233;veille autour d'elles. Certains le rejettent comme une croyance populaire, mais les donn&#233;es d'enqu&#234;te confirment sa pr&#233;valence. Les grandes enqu&#234;tes europ&#233;ennes de sant&#233; constatent r&#233;guli&#232;rement qu'environ <strong>1 adulte sur 3 signale une somnolence diurne accrue en mars et avril</strong>, sans maladie ni changement de mode de vie.
+                    Les germanophones ont même un mot pour elle : <strong>Frühjahrsmüdigkeit</strong>, la fatigue de printemps. Beaucoup de gens décrivent des après-midi lourds, une concentration en berne ou un manque d'énergie au moment même où il fait plus beau. La sensation est réelle pour ceux qui la vivent, mais ce n'est pas une maladie reconnue avec une cause unique, et les chiffres fiables sur le nombre de personnes concernées manquent.
                 </p>
 <p>
-                    Une transition hormonale en est le moteur. Pendant les jours courts et sombres de l'hiver, l'organisme fonctionne en mode conservation : production &#233;lev&#233;e de m&#233;latonine, activit&#233; s&#233;rotoninergique r&#233;duite. &#192; mesure que la dur&#233;e du jour augmente, l'exposition lumineuse stimule les noyaux du raph&#233; dans le tronc c&#233;r&#233;bral, acc&#233;l&#233;rant la synth&#232;se de s&#233;rotonine. En parall&#232;le, l'organisme doit &#233;puiser ses r&#233;serves hivernales de m&#233;latonine et recalibrer l'&#233;quilibre s&#233;rotonine-m&#233;latonine. Cette p&#233;riode de transition, d'une dur&#233;e de deux &#224; quatre semaines, constitue la fen&#234;tre de la fatigue printani&#232;re.
+                    Les explications les plus probables sont ordinaires. Des nuits plus courtes finissent par creuser une <a class="text-dream-salmon hover:underline" href="dette-sommeil-sante-reves">dette de sommeil</a>. Le changement d'heure coûte une heure. Les soirées lumineuses donnent envie de rester dehors. Le récit d'une bascule nette entre mélatonine et sérotonine à la sortie de l'hiver est une simplification que la recherche ne confirme pas sous cette forme.
+                </p>
+<h3>Ce qui peut s'y ajouter</h3>
+<p>
+                    La saison des pollens peut boucher le nez et morceler le sommeil. Les nuits plus douces peuvent rendre la chambre trop chaude. Soirées plus remplies, sport, sorties : tout cela grignote la nuit.
                 </p>
 <p>
-                    D'autres facteurs s'y ajoutent. La synth&#232;se de vitamine D augmente avec l'exposition cutan&#233;e aux UV, d&#233;clenchant des ajustements m&#233;taboliques. La temp&#233;rature corporelle centrale commence &#224; s'&#233;lever avec les temp&#233;ratures ambiantes, ce qui peut paradoxalement accentuer la somnolence diurne. La recalibration saisonni&#232;re du syst&#232;me immunitaire joue aussi un r&#244;le, certaines &#233;tudes associant la fatigue printani&#232;re &#224; des modifications des profils de marqueurs inflammatoires.
-                </p>
-
-<h2 id="dream-quality">Comment le printemps transforme vos r&#234;ves</h2>
-<h3>Le sommeil paradoxal sous pression saisonni&#232;re</h3>
-<p>
-                    &#201;troitement coupl&#233; au timing circadien, le sommeil paradoxal est le stade o&#249; surviennent les r&#234;ves les plus vifs. Sa p&#233;riode la plus longue et la plus riche en r&#234;ves correspond au dernier cycle de 90 minutes avant le r&#233;veil, typiquement entre 5h30 et 7h00. &#192; mesure que la photop&#233;riode printani&#232;re avance l'heure de r&#233;veil tout en retardant l'endormissement, ce dernier cycle se retrouve sous pression.
-                </p>
-<p>
-                    Kohsaka et al. (1992) ont montr&#233; que les changements saisonniers de photop&#233;riode modifient de mani&#232;re mesurable la distribution du sommeil paradoxal. En photop&#233;riode longue, le sommeil paradoxal tend &#224; se consolider plus t&#244;t dans la nuit, et un &#233;veil pr&#233;coce induit par la lumi&#232;re peut comprimer ou tronquer le dernier &#233;pisode matinal. Cela affecte directement le <a class="text-dream-salmon hover:underline" href="comment-se-souvenir-de-ses-reves">rappel onirique</a> : se r&#233;veiller pendant ou juste apr&#232;s une phase de sommeil paradoxal est le d&#233;terminant principal du souvenir d'un r&#234;ve, et un cycle final comprim&#233; r&#233;duit la probabilit&#233; que cela se produise naturellement.
+                    Une fatigue qui dure plusieurs semaines, ou qui s'accompagne d'autres symptômes, ne doit pas être mise d'office sur le compte du printemps. Elle mérite un avis médical.
                 </p>
 
-<h3>Des r&#234;ves plus intenses pendant l'adaptation</h3>
+<h2 id="dream-quality">Le printemps change-t-il vos rêves ?</h2>
+<h3>Le souvenir, plus que le contenu</h3>
 <p>
-                    Paradoxalement, de nombreuses personnes rapportent des <strong>r&#234;ves plus vifs et &#233;motionnellement intenses</strong> pendant la transition printani&#232;re, m&#234;me si le rappel global peut fluctuer. La pression de sommeil paradoxal explique probablement ce ph&#233;nom&#232;ne : quand la compression photop&#233;riodique r&#233;duit l&#233;g&#232;rement le temps total de sommeil paradoxal, le cerveau compense en augmentant l'intensit&#233; et la densit&#233; du sommeil paradoxal qu'il parvient &#224; produire. C'est le m&#234;me m&#233;canisme que le rebond REM apr&#232;s une <a class="text-dream-salmon hover:underline" href="dette-sommeil-sante-reves">privation de sommeil</a> : le cerveau privil&#233;gie la qualit&#233; lorsque la quantit&#233; est contrainte.
+                    Le <a class="text-dream-salmon hover:underline" href="sommeil-paradoxal-reves">sommeil paradoxal</a>, la phase des rêves les plus vifs, s'allonge dans la seconde moitié de la nuit. La façon dont votre nuit se termine pèse donc sur ce dont vous vous souvenez. Se réveiller juste à la sortie d'une phase de sommeil paradoxal, par exemple quand la lumière vous tire du lit, laisse souvent un rêve frais en tête. Une nuit courte ou hachée peut avoir l'effet inverse. Pour aller plus loin : <a class="text-dream-salmon hover:underline" href="comment-se-souvenir-de-ses-reves">comment se souvenir de ses rêves</a>.
                 </p>
 <p>
-                    Le contenu onirique &#233;volue aussi au fil des saisons. Des journaux de r&#234;ves tenus sur plusieurs saisons r&#233;v&#232;lent que les r&#234;ves printaniers int&#232;grent fr&#233;quemment des <strong>d&#233;cors ext&#233;rieurs, des paysages naturels, une lumi&#232;re vive et des th&#232;mes de mouvement ou de transition</strong>. Davantage de lumi&#232;re du jour, des temp&#233;ratures ambiantes plus &#233;lev&#233;es et les indices visuels du r&#233;veil de la nature alimentent la mati&#232;re premi&#232;re &#224; partir de laquelle les r&#234;ves se construisent.
+                    C'est pourquoi certaines personnes rapportent des rêves plus vifs au début du printemps, et d'autres moins. Ni l'un ni l'autre n'est le signe d'un problème. Après plusieurs nuits écourtées, le sommeil paradoxal peut aussi revenir plus intense, ce qui peut rendre les rêves plus marquants pendant un temps.
                 </p>
+<h3>Le printemps dans vos rêves</h3>
 <p>
-                    L&#224; o&#249; la <a class="text-dream-salmon hover:underline" href="../symboles/lune">lune</a> domine souvent l'imagerie onirique hivernale, elle appara&#238;t moins fr&#233;quemment dans les r&#234;ves printaniers, remplac&#233;e par des motifs solaires et diurnes. Ce glissement saisonnier du symbolisme onirique suit le r&#233;alignement circadien en cours au niveau neurologique.
+                    Jardins, fenêtres ouvertes, longues soirées claires : les rêves puisent dans ce que vous avez vécu récemment, et des images de printemps peuvent apparaître. Aucune étude solide ne montre pour autant un langage onirique propre à la saison. Si la lumière, le soleil ou la <a class="text-dream-salmon hover:underline" href="../symboles/lune">lune</a> vous frappent dans un rêve, prenez-les comme des pistes à rapprocher de vos journées, pas comme des messages sur votre horloge biologique.
                 </p>
 </div>
 
@@ -186,58 +185,61 @@
 <i class="w-6 h-6 text-dream-salmon" data-lucide="book-open"></i>
 </div>
 <div>
-<h4 class="font-serif text-lg text-dream-cream mb-2">Observez comment les saisons fa&#231;onnent vos r&#234;ves</h4>
-<p class="text-sm text-gray-400 mb-4">Le journal de r&#234;ves intelligent de Noctalia vous permet d'enregistrer vos r&#234;ves par la voix d&#232;s le r&#233;veil. Comparez vos cycles oniriques au fil des saisons pour d&#233;couvrir comment la lumi&#232;re, la temp&#233;rature et les d&#233;calages circadiens influencent votre monde int&#233;rieur.</p>
-<a class="inline-flex items-center gap-2 text-sm text-dream-salmon hover:text-dream-salmonLight transition-colors" href="/fr/">
-                                Commencer &#224; journaliser avec Noctalia <i class="w-4 h-4" data-lucide="arrow-right"></i>
+<h4 class="font-serif text-lg text-dream-cream mb-2">Notez le rêve avant que la lumière ne l'efface</h4>
+<p class="text-sm text-gray-400 mb-4">Dans Noctalia, vous racontez votre rêve à voix haute dès le réveil. Il est transcrit et rangé dans votre journal, et vous pouvez ajouter une ligne sur votre nuit.</p>
+<a class="inline-flex items-center gap-2 text-sm text-dream-salmon hover:text-dream-salmonLight transition-colors" href="/fr/journal-de-reves-vocal">
+                                Voir comment fonctionne le journal vocal <i class="w-4 h-4" data-lucide="arrow-right"></i>
 </a>
 </div>
 </div>
 </aside>
 
 <div class="prose max-w-none text-gray-300">
-<h2 id="adaptation">Strat&#233;gies d'adaptation</h2>
-<h3>La lumi&#232;re matinale : le signal de r&#233;initialisation le plus puissant</h3>
+<h2 id="adaptation">Ce qui aide pendant la transition</h2>
+<h3>Prendre la lumière du jour tôt</h3>
 <p>
-                    Rien ne bat la lumi&#232;re naturelle pour recaler votre horloge pendant la transition printani&#232;re. <strong>Exposez-vous &#224; la lumi&#232;re vive dans les 30 minutes suivant le r&#233;veil</strong>. Une marche de 15 &#224; 20 minutes en ext&#233;rieur le matin fournit environ 10 000 lux, bien plus que l'&#233;clairage int&#233;rieur et suffisant pour envoyer un signal &laquo; matin &raquo; clair au NSC. Cela avance votre phase circadienne et contribue &#224; contrebalancer le d&#233;calage d'endormissement caus&#233; par les soir&#233;es plus longues.
+                    La lumière extérieure du matin est le signal le plus clair que vous puissiez donner à votre horloge. Une marche, un café sur le balcon, le trajet à vélo : tout compte, même sous les nuages, car la lumière du dehors est bien plus forte que celle de la plupart des pièces. C'est aussi le principe de la luminothérapie contre la dépression saisonnière, dont Terman et Terman ont fait la revue, mais ce traitement relève d'un suivi médical, pas d'une routine improvisée.
                 </p>
+<h3>Tamiser la soirée</h3>
 <p>
-                    Terman et al. (2001) ont d&#233;montr&#233; que l'exposition matinale &#224; la lumi&#232;re est l'intervention non pharmacologique la plus efficace pour le r&#233;alignement circadien. L'effet est dose-d&#233;pendant : plus la lumi&#232;re est intense et pr&#233;coce dans la journ&#233;e, plus l'avance de phase est marqu&#233;e. M&#234;me les jours couverts, la lumi&#232;re ext&#233;rieure fournit 1 000 &#224; 5 000 lux, bien plus que les environnements int&#233;rieurs habituels.
+                    Dans l'heure ou les deux heures qui précèdent le coucher, baissez les lumières, préférez des lampes chaudes au plafonnier, rangez les écrans ou baissez leur luminosité. Si le soleil du soir entre dans votre chambre, fermez les volets tôt.
                 </p>
-
-<h3>Gestion de la lumi&#232;re en soir&#233;e</h3>
+<h3>Garder une heure de lever stable</h3>
 <p>
-                    Si la lumi&#232;re matinale est l'acc&#233;l&#233;rateur, l'obscurit&#233; v&#234;sp&#233;rale est le frein. &#192; mesure que les soir&#233;es printani&#232;res s'&#233;clairent, g&#233;rer activement votre environnement lumineux devient essentiel. Baissez les lumi&#232;res int&#233;rieures apr&#232;s le coucher du soleil, passez &#224; des ampoules &#224; tons chauds (2 700 K ou moins) et activez les filtres de lumi&#232;re bleue sur vos &#233;crans. Des rideaux occultants m&#233;ritent consid&#233;ration si votre chambre re&#231;oit la lumi&#232;re directe du soleil couchant, qui peut retarder la s&#233;cr&#233;tion de m&#233;latonine m&#234;me &#224; travers les paupi&#232;res ferm&#233;es.
+                    Une heure de lever régulière stabilise l'horloge davantage qu'une heure de coucher fixe. Si les soirées claires vous gardent éveillé, laissez le coucher glisser un peu, mais protégez un nombre d'heures de sommeil suffisant. Attention aux week-ends : des couchers très tardifs suivis de grasses matinées compliquent l'ajustement.
                 </p>
-
-<h3>Ajustement progressif de l'heure du coucher</h3>
+<h3>Faire le noir à l'aube</h3>
 <p>
-                    Plut&#244;t que de lutter pour maintenir votre heure de coucher hivernale contre la mar&#233;e des jours plus longs, d&#233;calez votre horaire de sommeil progressivement. Repoussez votre heure de coucher de 10 &#224; 15 minutes chaque semaine, laissant votre syst&#232;me circadien suivre le changement naturel de photop&#233;riode. Maintenez cependant votre heure de r&#233;veil constante : c'est plus important que l'heure du coucher pour la stabilit&#233; circadienne. Associer une heure de r&#233;veil ancr&#233;e &#224; un coucher qui d&#233;rive reproduit ce que le NSC fait naturellement, r&#233;duisant les conflits internes.
+                    Si vous vous réveillez avec les premières lueurs, essayez des rideaux occultants ou un masque de nuit pendant quelques semaines. C'est l'une des solutions les plus simples aux réveils précoces du printemps et du début de l'été.
                 </p>
-
-<h3>Le timing de l'exercice physique</h3>
-<p>
-                    L'activit&#233; physique agit comme un puissant zeitgeber circadien (donneur de temps). S'entra&#238;ner le matin ou en d&#233;but d'apr&#232;s-midi renforce l'avance de phase circadienne induite par la lumi&#232;re matinale. &#201;vitez toutefois l'exercice vigoureux dans les trois heures pr&#233;c&#233;dant le coucher : il &#233;l&#232;ve la temp&#233;rature corporelle centrale et retarde l'endormissement, aggravant le d&#233;calage photop&#233;riodique du printemps.
-                </p>
-
-<h3>Strat&#233;gies compl&#233;mentaires</h3>
+<h3>D'autres habitudes à vérifier</h3>
 <ul>
-<li><strong>Gardez votre chambre fra&#238;che :</strong> &#192; mesure que les temp&#233;ratures ambiantes montent au printemps, assurez-vous que votre environnement de sommeil reste &#224; 18-19 &#176;C. Une pi&#232;ce fra&#238;che favorise &#224; la fois l'endormissement et la continuit&#233; du sommeil paradoxal</li>
-<li><strong>Limitez la caf&#233;ine apr&#232;s 14h :</strong> Avec un endormissement d&#233;j&#224; d&#233;cal&#233; vers des heures plus tardives, la caf&#233;ine de l'apr&#232;s-midi cr&#233;e une double barri&#232;re &#224; un sommeil ponctuel</li>
-<li><strong>Surveillez la d&#233;rive du week-end :</strong> La tentation de veiller tard lors des soir&#233;es printani&#232;res lumineuses est forte. De grands &#233;carts d'horaire le week-end cr&#233;ent un d&#233;calage horaire social qui n&#233;cessite des jours de r&#233;cup&#233;ration</li>
-<li><strong>Mod&#233;rez la consommation d'alcool :</strong> L'alcool fragmente l'architecture du sommeil et supprime le sommeil paradoxal, exactement l'inverse de ce dont votre cerveau a besoin pendant la recalibration circadienne</li>
+<li><strong>Bouger dans la journée :</strong> une activité régulière aide à dormir ; un effort très intense tard le soir empêche certaines personnes de s'endormir</li>
+<li><strong>Garder la chambre fraîche :</strong> quand les nuits s'adoucissent, aérez et passez à une couette plus légère</li>
+<li><strong>Limiter le café l'après-midi :</strong> il s'ajoute au retard que provoquent déjà les soirées claires</li>
+<li><strong>Surveiller l'alcool :</strong> il peut rendre le sommeil plus léger et plus haché en seconde partie de nuit</li>
 </ul>
 
-<h2 id="journaling">Journaliser pendant la transition</h2>
-<h3>Utiliser vos r&#234;ves comme boussole circadienne</h3>
+<h2 id="journaling">Tenir un journal de rêves au printemps</h2>
+<h3>Ce qu'un journal peut montrer, et ce qu'il ne montre pas</h3>
 <p>
-                    Vos r&#234;ves sont un indicateur &#233;tonnamment sensible de la sant&#233; circadienne. Rappel onirique, vivacit&#233;, tonalit&#233; &#233;motionnelle et contenu refl&#232;tent tous des modifications du timing et de l'architecture du sommeil paradoxal. Tenir un <a class="text-dream-salmon hover:underline" href="guide-journal-reves">journal de r&#234;ves</a> pendant la transition printani&#232;re cr&#233;e un jeu de donn&#233;es personnel qui r&#233;v&#232;le comment votre organisme s'adapte &#224; la photop&#233;riode changeante.
+                    Un <a class="text-dream-salmon hover:underline" href="guide-journal-reves">journal de rêves</a> garde ce dont vous vous souvenez et rend plus visibles les images et les émotions qui reviennent. Il ne mesure ni le sommeil paradoxal, ni la mélatonine, ni la santé de votre horloge. Pour comparer les saisons, notez la nuit à côté du rêve : heure du coucher, heure du réveil, réveil par la lumière ou non, sensation d'être reposé.
                 </p>
 <p>
-                    Recherchez des sch&#233;mas r&#233;currents : vous souvenez-vous de moins de r&#234;ves au fil des semaines ? Cela peut indiquer que votre dernier cycle de sommeil paradoxal est comprim&#233;. Vos r&#234;ves deviennent-ils inhabituellement vifs ou &#233;motionnellement intenses ? C'est le signe d'une pression de sommeil paradoxal, votre cerveau compense un temps de sommeil paradoxal r&#233;duit. Les th&#232;mes oniriques s'orientent-ils vers des d&#233;cors ext&#233;rieurs et une imagerie plus lumineuse ? Votre syst&#232;me circadien int&#232;gre le changement saisonnier.
+                    Notez le rêve dès le réveil, par écrit ou en quelques mots à voix haute, avant qu'il ne s'efface. Parler fonctionne bien dans ces minutes encore ensommeillées où le souvenir est le plus net.
                 </p>
+<h3>Exemple de journal de rêve</h3>
+<p><strong>Exemple fictif :</strong> il montre comment séparer le rêve et la nuit.</p>
+<ul>
+<li><strong>Rêve :</strong> « J'étais dans un jardin la nuit, mais le ciel ne voulait pas s'assombrir. Je cherchais un interrupteur pour éteindre la lumière. »</li>
+<li><strong>Émotion :</strong> « Agité, un peu agacé. Réveillé avant la sonnerie. »</li>
+<li><strong>Nuit :</strong> « Couché à 23 h 45, plus tard que d'habitude. Lumière aux volets vers 5 h 45. »</li>
+<li><strong>Question à garder :</strong> « Ces rêves agités et lumineux reviennent-ils les nuits courtes, ou aussi les nuits calmes ? »</li>
+</ul>
+<p>Une seule entrée ne prouve rien. Sur quelques semaines, comparer février et avril peut faire apparaître une tendance, sans prouver une cause.</p>
+<h3>Quand consulter</h3>
 <p>
-                    Enregistrer ses r&#234;ves imm&#233;diatement au r&#233;veil, avant que le souvenir ne s'estompe, est essentiel. L'enregistrement vocal fonctionne particuli&#232;rement bien car il capture les d&#233;tails du r&#234;ve dans l'&#233;tat de semi-&#233;veil o&#249; le rappel est le plus fort. Noctalia est con&#231;u pour ce moment pr&#233;cis : parlez votre r&#234;ve dans l'application, et l'analyse par IA identifie des sch&#233;mas, des th&#232;mes et des signatures &#233;motionnelles que vous pourriez manquer seul. Au fil des semaines, ces entr&#233;es construisent une carte saisonni&#232;re de votre vie onirique, r&#233;v&#233;lant la profondeur avec laquelle la transition printani&#232;re atteint votre inconscient.
+                    Consultez un médecin si le mauvais sommeil dure plus de quelques semaines, si la somnolence de jour devient difficile à combattre (surtout au volant), si des cauchemars reviennent plusieurs fois par semaine et abîment vos nuits, ou si votre moral reste durablement bas. Le printemps est une explication fréquente, pas la seule.
                 </p>
 </div>
 <!-- CTA Section -->
@@ -245,57 +247,68 @@
 <div class="w-16 h-16 bg-dream-salmon/10 rounded-full flex items-center justify-center mx-auto mb-6">
 <i class="w-8 h-8 text-dream-salmon" data-lucide="moon"></i>
 </div>
-<h3 class="font-serif text-2xl md:text-3xl mb-4 text-dream-cream">Traversez la transition printani&#232;re en conscience</h3>
+<h3 class="font-serif text-2xl md:text-3xl mb-4 text-dream-cream">Relisez vos rêves de printemps côte à côte</h3>
 <p class="text-purple-200/70 mb-6 max-w-lg mx-auto">
-                    Noctalia vous aide &#224; suivre comment les changements saisonniers de lumi&#232;re affectent votre sommeil et vos r&#234;ves. Enregistrez vos r&#234;ves par la voix, d&#233;couvrez vos rythmes circadiens gr&#226;ce &#224; l'analyse IA et comprenez la r&#233;ponse de votre corps &#224; chaque transition saisonni&#232;re.
+                    Notez chaque rêve à voix haute ou par écrit dès le réveil, avec un mot sur votre nuit. Dans Noctalia, vous pouvez les relire ensemble et repérer ce qui revient au fil de la saison.
                 </p>
 <a class="inline-flex items-center gap-2 px-8 py-4 bg-dream-salmon text-dream-dark rounded-full font-bold hover:bg-dream-salmon/90 transition-colors" href="/fr/">
-                    Commencer votre journal de r&#234;ves <i class="w-5 h-5" data-lucide="arrow-right"></i>
+                    Commencer mon journal de rêves <i class="w-5 h-5" data-lucide="arrow-right"></i>
 </a>
 </aside>
 <!-- FAQ Section -->
 <section class="mt-16">
-<h2 class="font-serif text-2xl text-dream-cream mb-8">Questions fr&#233;quentes</h2>
+<h2 class="font-serif text-2xl text-dream-cream mb-8">Questions fréquentes</h2>
 <div class="space-y-4">
 <details class="glass-panel rounded-xl p-4 group cursor-pointer">
 <summary class="font-medium flex justify-between items-center text-dream-cream">
-                            Pourquoi le printemps perturbe-t-il le sommeil m&#234;me sans changement d'heure ?
+                            Pourquoi dort-on moins bien au printemps, même sans changement d'heure ?
                             <i class="w-5 h-5 transition-transform group-open:rotate-180 text-dream-salmon" data-lucide="chevron-down"></i>
 </summary>
 <p class="mt-4 text-sm text-gray-400 leading-relaxed">
-                            Le printemps allonge la dur&#233;e du jour de plusieurs minutes chaque jour apr&#232;s l'&#233;quinoxe de mars, supprimant progressivement la s&#233;cr&#233;tion de m&#233;latonine de 30 &#224; 60 minutes. Contrairement au changement d'heure, qui impose un d&#233;calage brutal d'une heure, la modification photop&#233;riodique printani&#232;re est cumulative : le noyau suprachiasmatique doit se recalibrer en continu pour s'adapter &#224; l'&#233;quilibre lumi&#232;re-obscurit&#233; changeant. Cette d&#233;rive progressive retarde l'endormissement tandis que la lumi&#232;re matinale avance l'heure de r&#233;veil, comprimant le temps de sommeil total et modifiant les cycles oniriques.
+                            Après l'équinoxe de mars, les jours gagnent quelques minutes chaque jour. Les soirées plus claires peuvent retarder la montée de la mélatonine et l'envie de dormir, tandis que l'aube plus précoce peut vous réveiller plus tôt. Sur plusieurs semaines, les nuits peuvent raccourcir. L'effet dépend de votre chambre, de vos habitudes et de votre sensibilité à la lumière.
                         </p>
 </details>
 <details class="glass-panel rounded-xl p-4 group cursor-pointer">
 <summary class="font-medium flex justify-between items-center text-dream-cream">
-                            Qu'est-ce que la fatigue printani&#232;re et est-elle r&#233;elle ?
+                            La fatigue de printemps existe-t-elle vraiment ?
                             <i class="w-5 h-5 transition-transform group-open:rotate-180 text-dream-salmon" data-lucide="chevron-down"></i>
 </summary>
 <p class="mt-4 text-sm text-gray-400 leading-relaxed">
-                            La fatigue printani&#232;re (Fr&uuml;jahrsm&uuml;digkeit en allemand) est un ph&#233;nom&#232;ne bien document&#233;, reconnu en particulier dans les pays germanophones. &#192; mesure que la dur&#233;e du jour augmente, la production de s&#233;rotonine s'acc&#233;l&#232;re tandis que les r&#233;serves hivernales de m&#233;latonine s'&#233;puisent, for&#231;ant l'organisme &#224; passer du mode conservation &#224; l'activation printani&#232;re. Les enqu&#234;tes indiquent qu'environ 1 Europ&#233;en sur 3 signale une fatigue accrue en mars et avril. Cette fatigue se r&#233;sorbe g&#233;n&#233;ralement en 2 &#224; 4 semaines, le temps que le syst&#232;me circadien s'adapte pleinement &#224; la nouvelle photop&#233;riode.
+                            Beaucoup de gens la décrivent, et l'allemand lui donne même un nom, Frühjahrsmüdigkeit. Ce n'est pas un diagnostic médical pour autant. Nuits plus courtes, changement d'heure, pollens et soirées chargées sont les suspects habituels. Une fatigue qui dure des semaines mérite un avis médical.
                         </p>
 </details>
 <details class="glass-panel rounded-xl p-4 group cursor-pointer">
 <summary class="font-medium flex justify-between items-center text-dream-cream">
-                            Comment le printemps affecte-t-il les r&#234;ves ?
+                            Le printemps change-t-il les rêves ?
                             <i class="w-5 h-5 transition-transform group-open:rotate-180 text-dream-salmon" data-lucide="chevron-down"></i>
 </summary>
 <p class="mt-4 text-sm text-gray-400 leading-relaxed">
-                            Le printemps modifie les cycles oniriques par plusieurs m&#233;canismes. La lumi&#232;re matinale plus longue peut comprimer le dernier cycle de <a class="text-dream-salmon hover:underline" href="sommeil-paradoxal-reves">sommeil paradoxal</a>, r&#233;duisant le <a class="text-dream-salmon hover:underline" href="comment-se-souvenir-de-ses-reves">rappel onirique</a>. Pendant la recalibration de l'horloge circadienne, le timing du sommeil paradoxal se d&#233;cale, produisant souvent des r&#234;ves plus vifs et &#233;motionnellement charg&#233;s durant la p&#233;riode d'adaptation. Les &#233;tudes saisonni&#232;res montrent que le contenu onirique au printemps int&#232;gre fr&#233;quemment des th&#232;mes de renouveau, de paysages ouverts et d'imagerie plus lumineuse, refl&#233;tant le traitement par le cerveau de l'environnement ext&#233;rieur en mutation.
+                            Surtout par le souvenir. Un réveil plus précoce, parfois à la sortie du sommeil paradoxal, peut laisser des rêves plus vifs en mémoire, alors que des nuits courtes ou hachées en laissent moins. Des images de printemps peuvent apparaître, car les rêves puisent dans les jours récents, mais aucun langage onirique saisonnier n'a été démontré.
+                        </p>
+</details>
+<details class="glass-panel rounded-xl p-4 group cursor-pointer">
+<summary class="font-medium flex justify-between items-center text-dream-cream">
+                            Quand consulter pour des troubles du sommeil au printemps ?
+                            <i class="w-5 h-5 transition-transform group-open:rotate-180 text-dream-salmon" data-lucide="chevron-down"></i>
+</summary>
+<p class="mt-4 text-sm text-gray-400 leading-relaxed">
+                            Si le mauvais sommeil dure plus de quelques semaines, si vous luttez pour rester éveillé la journée, si des cauchemars reviennent plusieurs fois par semaine ou si votre moral baisse. Le printemps est une explication fréquente, pas la seule.
                         </p>
 </details>
 </div>
 </section>
 <!-- Sources / Trust -->
 <section class="mt-16 glass-panel rounded-2xl p-6" id="sources">
-<h2 class="font-serif text-2xl text-dream-cream mb-4">Sources / Lectures compl&#233;mentaires</h2>
+<h2 class="font-serif text-2xl text-dream-cream mb-4">Sources et lectures</h2>
 <ul class="mt-6 space-y-2 text-sm text-gray-400">
-<li><a href="https://doi.org/10.1152/ajpregu.1993.265.4.R846" rel="nofollow noopener noreferrer" target="_blank">Wehr et al. (1993) : Conservation of photoperiod-responsive mechanisms in humans, American Journal of Physiology</a></li>
-<li><a href="https://doi.org/10.1210/jc.2010-2098" rel="nofollow noopener noreferrer" target="_blank">Gooley et al. (2011) : Exposure to room light before bedtime suppresses melatonin onset, Journal of Clinical Endocrinology &amp; Metabolism</a></li>
-<li><a href="https://doi.org/10.1093/sleep/15.3.217" rel="nofollow noopener noreferrer" target="_blank">Kohsaka et al. (1992) : Seasonal variation in REM sleep, Sleep</a></li>
-<li><a href="https://doi.org/10.1017/S1092852900019611" rel="nofollow noopener noreferrer" target="_blank">Terman &amp; Terman (2005) : Light therapy for seasonal and nonseasonal depression, CNS Spectrums</a></li>
+<li><a href="https://doi.org/10.1152/ajpregu.1993.265.4.R846" rel="nofollow noopener noreferrer" target="_blank">Wehr et al. (1993), « Conservation of photoperiod-responsive mechanisms in humans », <em>American Journal of Physiology</em></a></li>
+<li><a href="https://doi.org/10.1016/j.cub.2016.12.041" rel="nofollow noopener noreferrer" target="_blank">Stothard et al. (2017), « Circadian entrainment to the natural light-dark cycle across seasons and the weekend », <em>Current Biology</em></a></li>
+<li><a href="https://doi.org/10.1016/j.cub.2007.10.025" rel="nofollow noopener noreferrer" target="_blank">Kantermann et al. (2007), « The human circadian clock's seasonal adjustment is disrupted by daylight saving time », <em>Current Biology</em></a></li>
+<li><a href="https://doi.org/10.1016/j.smrv.2012.10.001" rel="nofollow noopener noreferrer" target="_blank">Harrison (2013), « The impact of daylight saving time on sleep and related behaviours », <em>Sleep Medicine Reviews</em></a></li>
+<li><a href="https://doi.org/10.1210/jc.2010-2098" rel="nofollow noopener noreferrer" target="_blank">Gooley et al. (2011), « Exposure to room light before bedtime suppresses melatonin onset and shortens melatonin duration in humans », <em>Journal of Clinical Endocrinology &amp; Metabolism</em></a></li>
+<li><a href="https://doi.org/10.1017/S1092852900019611" rel="nofollow noopener noreferrer" target="_blank">Terman et Terman (2005), « Light therapy for seasonal and nonseasonal depression », <em>CNS Spectrums</em></a></li>
 </ul>
-<p class="mt-6 text-xs text-purple-200/60">Mis &#224; jour le 24 mars 2026</p>
+<p class="mt-6 text-xs text-purple-200/60">Mis à jour le 8 octobre 2026</p>
 </section>
 <!-- Related Symbols Start -->
 <section aria-label="Symboles de r&#234;ves associ&#233;s" class="mt-12 mb-8">
