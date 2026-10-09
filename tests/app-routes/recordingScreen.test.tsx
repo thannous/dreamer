@@ -2215,6 +2215,54 @@ describe('Recording screen', () => {
     expect(editor.value).toBe('Hier Le grand jardin fleuri');
   });
 
+  it('writes dictated words once when the editor reports an earlier preview during dictation', async () => {
+    mockRecordingPermissionState = 'granted';
+    render(<RecordingScreen />);
+    await awaitEditorReady();
+    const editor = screen.getByTestId(TID.Input.DreamTranscript) as HTMLTextAreaElement;
+    fireEvent.click(screen.getByTestId('recording-voice-control'));
+    await waitFor(() => expect(mockStartRecording).toHaveBeenCalledTimes(1));
+    act(() => mockOnPartialTranscript?.("J'ai rêvé"));
+    act(() => mockOnPartialTranscript?.("J'ai rêvé que j'étais à la montagne"));
+    // iOS multiline inputs can emit onChange for text the app set, possibly a stale preview.
+    fireEvent.change(editor, { target: { value: "J'ai rêvé" } });
+    act(() => mockOnPartialTranscript?.("J'ai rêvé que j'étais à la montagne avec mon chat"));
+    expect(editor.value).toBe("J'ai rêvé que j'étais à la montagne avec mon chat");
+
+    mockStopRecording.mockImplementationOnce(async () => {
+      mockIsRecordingRef.current = false;
+      return { transcript: "J'ai rêvé que j'étais à la montagne avec mon chat." };
+    });
+    fireEvent.click(screen.getByTestId('recording-voice-control'));
+    await waitFor(() => expect(editor.value).toBe("J'ai rêvé que j'étais à la montagne avec mon chat."));
+  });
+
+  it('does not start another dictation while the ending one writes its final words', async () => {
+    mockRecordingPermissionState = 'granted';
+    render(<RecordingScreen />);
+    await awaitEditorReady();
+    const editor = screen.getByTestId(TID.Input.DreamTranscript) as HTMLTextAreaElement;
+    fireEvent.click(screen.getByTestId('recording-voice-control'));
+    await waitFor(() => expect(mockStartRecording).toHaveBeenCalledTimes(1));
+    act(() => mockOnPartialTranscript?.('Un chat pixel'));
+
+    let resolveStop!: (value: { transcript: string }) => void;
+    mockStopRecording.mockImplementationOnce(() => {
+      mockIsRecordingRef.current = false;
+      return new Promise(resolve => { resolveStop = resolve; });
+    });
+    // The recognizer ends on silence just as the user taps the microphone to stop.
+    act(() => { mockOnNativeEnd?.(); });
+    expect(mockStopRecording).toHaveBeenCalledTimes(1);
+    await act(async () => { fireEvent.click(screen.getByTestId('recording-voice-control')); });
+    expect(mockStartRecording).toHaveBeenCalledTimes(1);
+
+    await act(async () => { resolveStop({ transcript: 'Un chat pixel.' }); });
+    expect(editor.value).toBe('Un chat pixel.');
+    fireEvent.click(screen.getByTestId('recording-voice-control'));
+    await waitFor(() => expect(mockStartRecording).toHaveBeenCalledTimes(2));
+  });
+
   it('continues at the insertion point after Android restarts recognition', async () => {
     mockPlatformOS = 'android';
     mockRecordingPermissionState = 'granted';

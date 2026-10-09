@@ -70,7 +70,13 @@ import {
 import { canDictate } from '@/lib/speechCapability';
 import { buildJournalDetailHref } from '@/lib/journalSavedConfirmation';
 import { isTranscriptSaveable } from '@/lib/recordingDraftProgress';
-import { insertDictation, type DictationInsertion, type TranscriptSelection } from '@/lib/dictationInsertion';
+import {
+  insertDictation,
+  rebaseDictation,
+  type DictationAnchor,
+  type DictationInsertion,
+  type TranscriptSelection,
+} from '@/lib/dictationInsertion';
 import { TID } from '@/lib/testIDs';
 import type {
   DreamAnalysis,
@@ -181,7 +187,9 @@ export default function RecordingScreen() {
   const baseTranscriptRef = useRef('');
   const transcriptSelectionRef = useRef<TranscriptSelection | undefined>(undefined);
   const [transcriptSelection, setTranscriptSelection] = useState<TranscriptSelection | undefined>();
-  const dictationInsertionRef = useRef<DictationInsertion | null>(null);
+  const dictationInsertionRef = useRef<DictationAnchor | null>(null);
+  // A new dictation must not start before the stopping one has written its final words.
+  const stopsInFlightRef = useRef(0);
   const dictationIntentRef = useRef<'idle' | 'listening' | 'paused'>('idle');
   const [dictationIntent, setDictationIntent] = useState<'idle' | 'listening' | 'paused'>('idle');
   const [isHandsFreeRestarting, setIsHandsFreeRestarting] = useState(false);
@@ -487,7 +495,7 @@ export default function RecordingScreen() {
       setCurrentAnswer('');
       setTranscript(text);
       baseTranscriptRef.current = text;
-      dictationInsertionRef.current = null;
+      dictationInsertionRef.current = dictationInsertionRef.current && rebaseDictation(dictationInsertionRef.current, text);
       transcriptSelectionRef.current = undefined;
       setTranscriptSelection(undefined);
     },
@@ -522,7 +530,7 @@ export default function RecordingScreen() {
     };
     const result = insertDictation(insertion, speech);
     if (noteInput(result.text) !== true) return false;
-    dictationInsertionRef.current = insertion;
+    dictationInsertionRef.current = { ...insertion, speech };
     baseTranscriptRef.current = result.text;
     transcriptSelectionRef.current = result.selection;
     setTranscriptSelection(result.selection);
@@ -724,6 +732,7 @@ export default function RecordingScreen() {
     const reason = options?.reason ?? 'stop';
     cancelHandsFreeRestart();
     setDictationIntentState(reason === 'pause' ? 'paused' : 'idle');
+    stopsInFlightRef.current += 1;
     try {
       setIsPreparingRecording(false);
       const result = await stopSessionRecording();
@@ -766,6 +775,7 @@ export default function RecordingScreen() {
       log.error('Failed to stop recording:', err);
       Alert.alert(t('common.error_title'), t('recording.alert.stop_failed'));
     } finally {
+      stopsInFlightRef.current -= 1;
       hasAutoStoppedRecordingRef.current = false;
       if (inputMode === 'voice' && reason === 'pause') void askCaptureQuestion(baseTranscriptRef.current);
     }
@@ -815,7 +825,7 @@ export default function RecordingScreen() {
   }, [handleClearTranscript, isHydrated, isPersisting, t]);
 
   const startRecording = useCallback(async (options?: { preserveDraft?: boolean }) => {
-    if (!isHydrated || restartingCaptureRef.current) return false;
+    if (!isHydrated || restartingCaptureRef.current || stopsInFlightRef.current > 0) return false;
     discardDictationRef.current = false;
     captureMicrophoneMutedRef.current = false;
     const previousIntent = dictationIntentRef.current;
@@ -1605,7 +1615,7 @@ export default function RecordingScreen() {
     answerInsertionRef.current = insertion;
     setAnswerBase(insertion.storyBase);
     setCurrentAnswer(text);
-    dictationInsertionRef.current = null;
+    dictationInsertionRef.current = dictationInsertionRef.current && rebaseDictation(dictationInsertionRef.current, result.text);
     baseTranscriptRef.current = result.text;
     setTranscript(result.text);
     transcriptSelectionRef.current = result.selection;
