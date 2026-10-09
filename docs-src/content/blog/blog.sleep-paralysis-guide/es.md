@@ -117,7 +117,7 @@
                 </h2>
 <ol class="space-y-2 text-sm text-purple-200/70">
 <li><a class="toc-link block" href="#que-es">1. ¿Qué es la parálisis del sueño?</a></li>
-<li><a class="toc-link block" href="#sintomas">2. ¿Qué se siente durante un episodio?</a></li>
+<li><a class="toc-link block" href="#síntomas">2. ¿Qué se siente durante un episodio?</a></li>
 <li><a class="toc-link block" href="#ciencia">3. ¿Qué pasa en el cerebro?</a></li>
 <li><a class="toc-link block" href="#causas">4. ¿Qué la hace más probable?</a></li>
 <li><a class="toc-link block" href="#alucinaciones">5. ¿Por qué la presencia, el peso y la sensación de flotar?</a></li>
@@ -147,7 +147,7 @@
 <p>
                     Estas historias describen la experiencia con mucha precisión, pero no demuestran que algo te visite por la noche.
                 </p>
-<h2 id="sintomas">¿Qué se siente durante un episodio?</h2>
+<h2 id="síntomas">¿Qué se siente durante un episodio?</h2>
 <p>
                     Un episodio suele empezar de dos maneras. O sales de un sueño y tu cuerpo no responde, o te estás quedando dormido y notas que te «bloqueas» mientras sigues consciente.
                 </p>

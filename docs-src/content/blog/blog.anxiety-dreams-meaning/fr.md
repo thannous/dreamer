@@ -115,7 +115,7 @@
                 </h2>
 <ol class="space-y-2 text-sm text-purple-200/70">
 <li><a class="toc-link block" href="#what-are-anxiety-dreams">1. Rêve d'anxiété ou cauchemar : quelle différence ?</a></li>
-<li><a class="toc-link block" href="#common-scenarios">2. Quel rêve d'anxiété avez-vous fait ?</a></li>
+<li><a class="toc-link block" href="#common-scénarios">2. Quel rêve d'anxiété avez-vous fait ?</a></li>
 <li><a class="toc-link block" href="#why-anxiety-dreams">3. Pourquoi l'inquiétude vous suit-elle dans le sommeil ?</a></li>
 <li><a class="toc-link block" href="#mental-health">4. Quand ces rêves signalent une difficulté plus large</a></li>
 <li><a class="toc-link block" href="#reduce-anxiety-dreams">5. Que faire, dès ce soir ?</a></li>
@@ -134,7 +134,7 @@
 <p>
                     La frontière entre les deux est floue, et l'étiquette compte moins que l'effet. Le rêve vous a-t-il réveillé ? Le malaise vous a-t-il suivi dans la journée ? Ces deux questions en disent plus sur la suite à donner que n'importe quelle définition.
                 </p>
-<h2 id="common-scenarios">Quel rêve d'anxiété avez-vous fait ?</h2>
+<h2 id="common-scénarios">Quel rêve d'anxiété avez-vous fait ?</h2>
 <p>
                     Certaines scènes reviennent chez beaucoup de monde. Dans une enquête menée auprès de 1 181 étudiants canadiens, la poursuite, la chute et l'école faisaient partie des thèmes rapportés par plus de 60 % des répondants ; arriver en retard ou rater un examen figuraient aussi dans la liste des rêves typiques. Si vous reconnaissez le vôtre, vous n'êtes pas seul.
                 </p>
