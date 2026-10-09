@@ -118,6 +118,8 @@ const copy: Record<string, string> = {
   "release_notes.symbol_pages.body": "Chaque fiche présente l’interprétation, les variations, des questions à te poser et les symboles liés.",
   "release_notes.readability.title": "Grandes tailles de texte",
   "release_notes.readability.body": "L’affichage est corrigé quand tu utilises de grandes tailles de texte.",
+  "release_notes.lucid.title": "Lucid Trainer a déménagé",
+  "release_notes.lucid.body": "L’entraînement se trouve désormais sur lucid.noctalia.app, accessible depuis le rituel Rêve lucide. Tes anciennes séances d’entraînement ne sont plus affichées dans Noctalia.",
   "release_notes.primary": "Explorer les symboles",
   "release_notes.later": "Plus tard",
   "release_notes.close": "Fermer les nouveautés"
@@ -163,6 +165,12 @@ describe('WhatsNewModal', () => {
     expect(view.getByText('160 symboles illustrés')).toBeTruthy();
     expect(view.getByText('Des fiches plus lisibles')).toBeTruthy();
     expect(view.getByText('Grandes tailles de texte')).toBeTruthy();
+    expect(view.getByText('Lucid Trainer a déménagé')).toBeTruthy();
+    expect(
+      view.getByText(
+        'L’entraînement se trouve désormais sur lucid.noctalia.app, accessible depuis le rituel Rêve lucide. Tes anciennes séances d’entraînement ne sont plus affichées dans Noctalia.'
+      )
+    ).toBeTruthy();
 
     fireEvent.press(view.getByTestId(TID.Button.WhatsNewPrimary));
     fireEvent.press(view.getByTestId(TID.Button.WhatsNewLater));

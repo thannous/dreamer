@@ -1067,6 +1067,8 @@ const translations: Record<string, string> = {
     'release_notes.symbol_pages.body': "Cada ficha mostra a interpretação, as variações, perguntas para te fazeres e os símbolos relacionados.",
     'release_notes.readability.title': "Texto grande",
     'release_notes.readability.body': "Corrigimos a apresentação com tamanhos de texto grandes.",
+    'release_notes.lucid.title': "O Lucid Trainer mudou-se",
+    'release_notes.lucid.body': "O treino está agora em lucid.noctalia.app, com ligação a partir do ritual Sonho lúcido. As tuas sessões de treino anteriores já não aparecem no Noctalia.",
     'release_notes.primary': "Explorar os símbolos",
     'release_notes.later': 'Mais tarde',
     'release_notes.close': 'Fechar novidades',
