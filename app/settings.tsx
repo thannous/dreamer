@@ -240,6 +240,7 @@ export default function SettingsScreen() {
             legal={legal}
             footer={user ? <View testID="settings-signout-footer"><SettingsSignOutAction /></View> : undefined}
             onOpenSubscription={handleOpenPaywall}
+            onReplayOnboarding={() => router.push({ pathname: '/onboarding', params: { replay: '1' } })}
             quota={quota}
             returningGuestBlocked={returningGuestBlocked}
             subscriptionSubtitle={t('settings.plus.subtitle')}

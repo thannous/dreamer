@@ -41,6 +41,8 @@ type SettingsFieldGroupProps = {
   appVersionLabel?: string;
   bottomPadding: number;
   legal?: ReactElement;
+  /** Opens the welcome story again; the saved onboarding is left as it is. */
+  onReplayOnboarding?: () => void;
   footer?: ReactElement;
   onOpenSubscription: () => void;
   quota: ReactElement;
@@ -239,7 +241,7 @@ type PreferenceRowProps = {
   noctalia: NoctaliaDesignTokens;
   onPress: () => void;
   testID: string;
-  value: string;
+  value?: string;
   wideValue?: boolean;
 };
 
@@ -267,17 +269,17 @@ function PreferenceRow({
       {stackCopy ? (
         <View className="min-w-0 flex-1 gap-1">
           <Text className="font-sans text-[15px] leading-[20px] text-ivory">{label}</Text>
-          <Text className="font-sans text-[15px] leading-[20px] text-ivory-muted">{value}</Text>
+          {value ? <Text className="font-sans text-[15px] leading-[20px] text-ivory-muted">{value}</Text> : null}
         </View>
       ) : (
         <>
           <Text className={ROW_LABEL_CLASS}>{label}</Text>
-          <Text
+          {value ? <Text
             numberOfLines={1}
             className={cx(ROW_VALUE_CLASS, wideValue && 'max-w-[48%]')}
           >
             {value}
-          </Text>
+          </Text> : null}
         </>
       )}
       <IconSymbol name="chevron.right" size={20} color={noctalia.text.tertiary} />
@@ -317,6 +319,7 @@ export function SettingsFieldGroup({
   appVersionLabel,
   bottomPadding,
   legal,
+  onReplayOnboarding,
   footer,
   onOpenSubscription,
   quota,
@@ -417,13 +420,22 @@ export function SettingsFieldGroup({
             ) : null}
             <PreferenceRow
               icon="globe"
-              isLast={!isHdIllustrationsEnabled()}
+              isLast={!onReplayOnboarding && !isHdIllustrationsEnabled()}
               label={language.title}
               noctalia={noctalia}
               onPress={() => setLanguageSheetVisible(true)}
               testID="settings-language-choice"
               value={language.currentLabel}
             />
+            {/* Replays the welcome story without changing the saved onboarding. */}
+            {onReplayOnboarding ? <PreferenceRow
+              icon="arrow.clockwise"
+              isLast={!isHdIllustrationsEnabled()}
+              label={t('settings.onboarding_replay')}
+              noctalia={noctalia}
+              onPress={onReplayOnboarding}
+              testID="settings-onboarding-replay"
+            /> : null}
             <IllustrationQualityPreference />
           </SettingsSection>
 

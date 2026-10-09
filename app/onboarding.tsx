@@ -29,7 +29,7 @@ import {
 import { TID } from '@/lib/testIDs';
 import { Asset } from 'expo-asset';
 import { LinearGradient } from 'expo-linear-gradient';
-import { router, useFocusEffect } from 'expo-router';
+import { router, useFocusEffect, useLocalSearchParams } from 'expo-router';
 import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import {
   AccessibilityInfo,
@@ -111,6 +111,10 @@ export default function OnboardingScreen() {
   } = useOnboarding();
   const sheetTokens = useMemo(() => getNoctaliaDesignTokens(colors, mode), [colors, mode]);
   const noctalia = ONBOARDING_TOKENS;
+  // Replayed from Settings: the steps stay on this screen and nothing is saved,
+  // so a finished onboarding is never reopened or given a new capture intent.
+  const isReplay = useLocalSearchParams<{ replay?: string }>().replay === '1';
+  const [replayStep, setReplayStep] = useState<OnboardingStep>('intro');
   const { height: viewportHeight, fontScale } = useWindowDimensions();
   const [selectedPathOverride, setSelectedPathOverride] = useState<OnboardingPath | null>(null);
   const [isLeaving, setIsLeaving] = useState(false);
@@ -159,7 +163,7 @@ export default function OnboardingScreen() {
     return () => StatusBar.popStackEntry(entry);
   }, []));
 
-  const step: OnboardingStep = state.step === 'path' ? 'path' : 'intro';
+  const step: OnboardingStep = isReplay ? replayStep : state.step === 'path' ? 'path' : 'intro';
   // The first act plays once. Coming back to the intro replays a quick entrance, and a
   // resumed session that opens on the path step never sees the arrival at all.
   const [visitedPath, setVisitedPath] = useState(state.step === 'path');
@@ -250,7 +254,7 @@ export default function OnboardingScreen() {
   }, [isLeaving, loading, pathPreloaded, step]);
 
   useEffect(() => {
-    if (loading || startedRef.current || state.status !== 'not_started') return;
+    if (isReplay || loading || startedRef.current || state.status !== 'not_started') return;
     startedRef.current = true;
     void transition({ type: 'START' })
       .then(() => trackProductEvent('onboarding_started', { experience_version: 2 }))
@@ -258,7 +262,7 @@ export default function OnboardingScreen() {
         startedRef.current = false;
         setFailedAction({ type: 'start' });
       });
-  }, [loading, state.status, transition]);
+  }, [isReplay, loading, state.status, transition]);
 
   useEffect(() => {
     if (loading) return;
@@ -316,6 +320,10 @@ export default function OnboardingScreen() {
 
   const runStepTransition = useCallback(async (nextStep: OnboardingStep) => {
     if (stepTransitionRef.current || isLeavingRef.current) return;
+    if (isReplay) {
+      setReplayStep(nextStep);
+      return;
+    }
     markPerformance('onboarding.continue_pressed', { next_step: nextStep });
     stepTransitionRef.current = true;
     setIsStepTransitioning(true);
@@ -333,14 +341,27 @@ export default function OnboardingScreen() {
       stepTransitionRef.current = false;
       setIsStepTransitioning(false);
     }
-  }, [transition]);
+  }, [isReplay, transition]);
 
   const waitForExitFade = useCallback(() => (reducedMotion
     ? Promise.resolve()
     : new Promise<void>((resolve) => setTimeout(resolve, STORY.exitFadeDelay + STORY.exitFade))), [reducedMotion]);
 
+  /** A replay ends where it started, without touching the saved onboarding. */
+  const leaveReplay = useCallback(async () => {
+    isLeavingRef.current = true;
+    setIsLeaving(true);
+    await waitForExitFade();
+    if (router.canGoBack()) router.back();
+    else router.replace('/settings');
+  }, [waitForExitFade]);
+
   const completePath = useCallback(async (path: OnboardingPath) => {
     if (isLeavingRef.current || stepTransitionRef.current) return;
+    if (isReplay) {
+      await leaveReplay();
+      return;
+    }
     isLeavingRef.current = true;
     setIsLeaving(true);
     setFailedAction(null);
@@ -371,10 +392,14 @@ export default function OnboardingScreen() {
       setIsLeaving(false);
       setFailedAction({ type: 'complete', path });
     }
-  }, [openRecording, transition, waitForExitFade]);
+  }, [isReplay, leaveReplay, openRecording, transition, waitForExitFade]);
 
   const skip = useCallback(async () => {
     if (isLeavingRef.current) return;
+    if (isReplay) {
+      await leaveReplay();
+      return;
+    }
     isLeavingRef.current = true;
     setIsLeaving(true);
     setFailedAction(null);
@@ -397,13 +422,14 @@ export default function OnboardingScreen() {
       setIsLeaving(false);
       setFailedAction({ type: 'skip' });
     }
-  }, [step, transition, waitForExitFade]);
+  }, [isReplay, leaveReplay, step, transition, waitForExitFade]);
 
   const selectPath = useCallback((path: OnboardingPath) => {
     const selectionVersion = selectionVersionRef.current + 1;
     selectionVersionRef.current = selectionVersion;
     setSelectedPathOverride(path);
     setFailedAction(null);
+    if (isReplay) return;
     void transition({ type: 'SELECT_PATH', path })
       .then(() => {
         if (selectionVersionRef.current !== selectionVersion) return;
@@ -418,7 +444,7 @@ export default function OnboardingScreen() {
         setSelectedPathOverride(state.selectedPath);
         setFailedAction({ type: 'select', path });
       });
-  }, [state.selectedPath, transition]);
+  }, [isReplay, state.selectedPath, transition]);
 
   const retry = useCallback(async () => {
     const action = failedAction;

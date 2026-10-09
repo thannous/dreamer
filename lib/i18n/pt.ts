@@ -1076,6 +1076,7 @@ const translations: Record<string, string> = {
     'settings.section.subscription': 'Assinatura',
     'settings.section.preferences': 'Preferências',
     'settings.section.experience': 'Minha experiência',
+    'settings.onboarding_replay': "Rever a apresentação",
     'settings.section.notifications': 'Notificações',
     'settings.section.rituals': 'Rituais',
     'settings.rituals.reminders': 'Lembretes de sonhos',

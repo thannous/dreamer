@@ -90,6 +90,7 @@ const renderOnboarding = (
 jest.doMock('expo-router', () => ({
   router: { replace: mockReplace },
   useFocusEffect: () => undefined,
+  useLocalSearchParams: () => ({}),
 }));
 jest.doMock('@/lib/authReturnIntent', () => ({ getAuthReturnSnapshot: () => ({ intent: mockAuthReturn, ready: true }) }));
 

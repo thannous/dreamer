@@ -107,3 +107,24 @@ for (const theme of ['light', 'dark'] as const) {
     await expect(page.getByTestId('settings-delete-account')).toHaveCount(0);
   });
 }
+
+test('Settings replays the introduction without reopening a finished onboarding', async ({ page }) => {
+  await page.goto('/', { waitUntil: 'domcontentloaded' });
+  await page.getByTestId('btn.onboarding.intro.next').click();
+  await page.getByTestId('btn.onboarding.skip').click();
+  await expect(page.getByTestId('screen.recording').filter({ visible: true })).toHaveCount(1);
+  await openSettings(page);
+  await page.getByTestId('settings-onboarding-replay').click();
+  await expect(page.getByTestId('component.onboarding.intro')).toBeVisible();
+  await page.getByTestId('btn.onboarding.intro.next').click();
+  await expect(page.getByTestId('component.onboarding.path')).toBeVisible();
+  await page.getByTestId('btn.onboarding.path.memory').click();
+  await page.getByTestId('btn.onboarding.primary').click();
+  // The replay returns to Settings instead of starting a capture.
+  await expect(page.getByTestId('screen.settings')).toBeVisible();
+  await expect(page.getByTestId('screen.recording').filter({ visible: true })).toHaveCount(0);
+  // The saved onboarding is still finished: a fresh start skips it.
+  await page.goto('/', { waitUntil: 'domcontentloaded' });
+  await expect(page.getByTestId('screen.recording').filter({ visible: true })).toHaveCount(1);
+  await expect(page.getByTestId('screen.onboarding')).toHaveCount(0);
+});
