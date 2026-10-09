@@ -14260,58 +14260,152 @@
       "en": {
         "slug": "letter",
         "name": "Letter",
-        "shortDescription": "A letter may center an awaited message, a memory or a wish for clear communication. The sender, whether you could read it and your reaction to its contents make the context personal.",
-        "modifiedAt": "2026-07-24",
+        "shortDescription": "Dreaming of a letter often stages a message: one you are waiting for, one you dread, one you never open or cannot read. Who sent it, what you managed to read and how you reacted matter more than the envelope itself.",
+        "modifiedAt": "2026-10-08",
         "askYourself": [
-          "What did letter change in the scene?",
-          "Which feeling stayed with me after waking?"
+          "Who was the letter from, and who was it addressed to?",
+          "Could I open it and read it, or did the words slip away?",
+          "What message, to send or to receive, is on hold in my life right now?"
         ],
-        "faq": []
+        "faq": [
+          {
+            "question": "What does it mean to dream of a letter?",
+            "answer": "A letter is often associated with a message on hold: news, a confession, an answer. Its meaning depends on who sent it, what you could read and how you felt holding it."
+          },
+          {
+            "question": "What does it mean when you can't read a letter in a dream?",
+            "answer": "Blurry or shifting text is common in dreams, where reading tends to be unstable. The scene can match a feeling of missing information, or of facing a situation whose terms you do not understand yet."
+          },
+          {
+            "question": "What does a letter from someone who has died, or from an ex, mean in a dream?",
+            "answer": "This scene often goes with an unfinished bond: words left unsaid, a question never answered. It does not carry a message from beyond. It can help you put into words what you would have wanted to say."
+          },
+          {
+            "question": "What does it mean to dream of writing a letter?",
+            "answer": "Writing in a dream can go with a need to express something you are holding back. Note who you were writing to, whether you finished and whether you sent it: those three details point to the right lead."
+          }
+        ],
+        "documentMetaDescription": "Dreaming of a letter, sealed, unreadable or from someone you lost: what the scene may say about a message on hold, with questions and a journal example."
       },
       "fr": {
         "slug": "lettre",
         "name": "Lettre",
-        "shortDescription": "Une lettre peut placer au centre un message attendu, un souvenir ou le souhait d’un échange clair. L’expéditeur, la possibilité de la lire et votre réaction à son contenu donnent à la scène son contexte personnel.",
-        "modifiedAt": "2026-07-24",
+        "shortDescription": "Rêver d'une lettre met souvent en scène un message : attendu, redouté, jamais ouvert ou impossible à lire. L'expéditeur, ce que vous avez pu lire et votre réaction comptent plus que l'enveloppe elle-même.",
+        "modifiedAt": "2026-10-08",
         "askYourself": [
-          "Qu’est-ce que lettre a changé dans la scène ?",
-          "Quelle émotion est restée après le réveil ?"
+          "De qui venait la lettre, et à qui était-elle adressée ?",
+          "Ai-je pu l'ouvrir et la lire, ou les mots m'échappaient-ils ?",
+          "Quel message, à dire ou à recevoir, reste en suspens dans ma vie en ce moment ?"
         ],
-        "faq": []
+        "faq": [
+          {
+            "question": "Que signifie rêver d'une lettre ?",
+            "answer": "La lettre est souvent associée à un message en attente : une nouvelle, un aveu, une réponse. Son sens dépend de l'expéditeur, de ce que vous avez pu lire et de ce que vous avez ressenti en la tenant."
+          },
+          {
+            "question": "Que signifie rêver d'une lettre qu'on n'arrive pas à lire ?",
+            "answer": "Un texte flou ou qui change est fréquent en rêve, où la lecture est instable. La scène peut rejoindre le sentiment qu'il vous manque des informations, ou une situation dont vous ne comprenez pas encore les termes."
+          },
+          {
+            "question": "Que signifie recevoir une lettre d'un défunt ou d'un ex en rêve ?",
+            "answer": "Cette scène accompagne souvent un lien inachevé : des mots non dits, une question restée sans réponse. Elle ne transmet pas de message de l'au-delà. Elle peut vous aider à formuler ce que vous auriez voulu dire."
+          },
+          {
+            "question": "Que signifie rêver d'écrire une lettre ?",
+            "answer": "Écrire en rêve peut accompagner le besoin d'exprimer quelque chose que vous retenez. Notez à qui vous écriviez, si vous avez terminé et si vous avez envoyé la lettre : ces trois détails orientent la piste."
+          }
+        ],
+        "documentMetaDescription": "Rêver d'une lettre fermée, illisible ou venue d'un proche disparu : ce que la scène peut dire d'un message en suspens, avec questions et exemple de journal."
       },
       "es": {
         "slug": "carta",
         "name": "Carta",
-        "shortDescription": "Una carta puede centrar un mensaje pendiente, un recuerdo o el deseo de una comunicación clara. El remitente, si podías leerla y tu reacción ante el contenido personalizan la escena.",
-        "modifiedAt": "2026-07-24",
+        "shortDescription": "Soñar con una carta suele escenificar un mensaje: uno que esperas, uno que temes, uno que nunca abres o que no consigues leer. Quién la enviaba, lo que pudiste leer y cómo reaccionaste importan más que el sobre.",
+        "modifiedAt": "2026-10-08",
         "askYourself": [
-          "¿Qué cambió carta dentro de la escena?",
-          "¿Qué emoción siguió conmigo al despertar?"
+          "¿De quién era la carta y a quién iba dirigida?",
+          "¿Pude abrirla y leerla, o las palabras se me escapaban?",
+          "¿Qué mensaje, por decir o por recibir, tengo pendiente ahora mismo?"
         ],
-        "faq": []
+        "faq": [
+          {
+            "question": "¿Qué significa soñar con una carta?",
+            "answer": "La carta se asocia a menudo con un mensaje pendiente: una noticia, una confesión, una respuesta. Su sentido depende de quién la enviaba, de lo que pudiste leer y de lo que sentiste al tenerla en las manos."
+          },
+          {
+            "question": "¿Qué significa no poder leer una carta en sueños?",
+            "answer": "Un texto borroso o que cambia es habitual en sueños, donde la lectura es inestable. La escena puede enlazar con la sensación de que te falta información, o con una situación cuyas reglas todavía no entiendes."
+          },
+          {
+            "question": "¿Qué significa soñar con una carta de un difunto o de tu ex?",
+            "answer": "Esta escena suele acompañar un vínculo inacabado: palabras que no se dijeron, una pregunta sin respuesta. No trae un mensaje del más allá. Puede ayudarte a poner en palabras lo que te habría gustado decir."
+          },
+          {
+            "question": "¿Qué significa soñar que escribes una carta?",
+            "answer": "Escribir en sueños puede acompañar la necesidad de expresar algo que te guardas. Anota a quién escribías, si terminaste y si la enviaste: esos tres detalles orientan la pista."
+          }
+        ],
+        "documentMetaDescription": "Soñar con una carta cerrada, ilegible o de alguien que ya no está: qué puede decir la escena sobre un mensaje pendiente, con preguntas y un ejemplo de diario."
       },
       "de": {
         "slug": "brief",
         "name": "Brief",
-        "shortDescription": "Taucht ein Brief im Traum auf, rücken möglicherweise eine ausstehende Mitteilung, eine Erinnerung oder der Wunsch nach einem klaren Austausch in den Mittelpunkt. Absender, Lesbarkeit und deine Reaktion auf den Inhalt geben den persönlichen Kontext.",
+        "shortDescription": "Von einem Brief zu träumen bringt oft eine Nachricht ins Spiel: erwartet, gefürchtet, nie geöffnet oder unleserlich. Wer ihn geschickt hat, was Sie lesen konnten und wie Sie reagiert haben, zählt mehr als der Umschlag.",
         "askYourself": [
-          "Von wem kam der Brief, und war er an dich adressiert?",
-          "Konntest du ihn öffnen und den Inhalt lesen?",
-          "Welches Gespräch oder welche Nachricht steht in deinem Alltag noch aus?"
+          "Von wem kam der Brief, und an wen war er adressiert?",
+          "Konnte ich ihn öffnen und lesen, oder entglitten mir die Worte?",
+          "Welche Nachricht, die ich senden oder bekommen möchte, steht in meinem Leben gerade aus?"
         ],
-        "faq": [],
-        "modifiedAt": "2026-07-24"
+        "faq": [
+          {
+            "question": "Was bedeutet es, von einem Brief zu träumen?",
+            "answer": "Ein Brief wird oft mit einer ausstehenden Nachricht verbunden: einer Neuigkeit, einem Geständnis, einer Antwort. Was er bedeutet, hängt davon ab, wer ihn geschickt hat, was Sie lesen konnten und was Sie beim Halten gefühlt haben."
+          },
+          {
+            "question": "Was bedeutet es, einen Brief im Traum nicht lesen zu können?",
+            "answer": "Verschwommener oder wechselnder Text ist in Träumen häufig, denn Lesen funktioniert dort unzuverlässig. Die Szene kann zu dem Gefühl passen, dass Ihnen Informationen fehlen, oder zu einer Lage, deren Regeln Sie noch nicht verstehen."
+          },
+          {
+            "question": "Was bedeutet ein Brief von einem Verstorbenen oder vom Ex im Traum?",
+            "answer": "Diese Szene begleitet oft eine unabgeschlossene Beziehung: Ungesagtes, eine offene Frage. Sie überbringt keine Botschaft aus dem Jenseits. Sie kann helfen, in Worte zu fassen, was Sie gern gesagt hätten."
+          },
+          {
+            "question": "Was bedeutet es, im Traum einen Brief zu schreiben?",
+            "answer": "Schreiben im Traum kann das Bedürfnis begleiten, etwas auszudrücken, das Sie zurückhalten. Notieren Sie, an wen Sie schrieben, ob Sie fertig wurden und ob Sie den Brief abschickten: Diese drei Details weisen die Richtung."
+          }
+        ],
+        "modifiedAt": "2026-10-08",
+        "documentMetaDescription": "Brief im Traum, verschlossen, unleserlich oder von einem Verstorbenen: was die Szene über eine offene Nachricht sagen kann, mit Fragen und Tagebuchbeispiel."
       },
       "it": {
         "slug": "lettera",
         "name": "Lettera",
-        "shortDescription": "Una lettera può porre al centro un messaggio atteso, un ricordo o il desiderio di comunicare con chiarezza. Mittente, leggibilità e tua reazione al contenuto rendono personale la scena.",
-        "modifiedAt": "2026-07-24",
+        "shortDescription": "Sognare una lettera mette spesso in scena un messaggio: atteso, temuto, mai aperto o impossibile da leggere. Chi la mandava, che cosa sei riuscito a leggere e come hai reagito contano più della busta in sé.",
+        "modifiedAt": "2026-10-08",
         "askYourself": [
-          "Che cosa ha cambiato lettera nella scena?",
-          "Quale emozione è rimasta dopo il risveglio?"
+          "Da chi arrivava la lettera, e a chi era indirizzata?",
+          "Sono riuscito ad aprirla e a leggerla, o le parole mi sfuggivano?",
+          "Quale messaggio, da dire o da ricevere, è in sospeso nella mia vita in questo periodo?"
         ],
-        "faq": []
+        "faq": [
+          {
+            "question": "Che cosa significa sognare una lettera?",
+            "answer": "La lettera viene spesso associata a un messaggio in sospeso: una notizia, una confessione, una risposta. Il significato dipende da chi la mandava, da ciò che hai potuto leggere e da ciò che hai provato tenendola in mano."
+          },
+          {
+            "question": "Che cosa significa non riuscire a leggere una lettera in sogno?",
+            "answer": "Un testo sfocato o che cambia è frequente nei sogni, dove la lettura è instabile. La scena può avvicinarsi alla sensazione che ti manchino informazioni, o a una situazione di cui non capisci ancora le regole."
+          },
+          {
+            "question": "Che cosa significa sognare una lettera da un defunto o dall’ex?",
+            "answer": "Questa scena accompagna spesso un legame rimasto in sospeso: parole non dette, una domanda senza risposta. Non porta un messaggio dall’aldilà. Può aiutarti a mettere in parole ciò che avresti voluto dire."
+          },
+          {
+            "question": "Che cosa significa sognare di scrivere una lettera?",
+            "answer": "Scrivere in sogno può accompagnare il bisogno di esprimere qualcosa che trattieni. Annota a chi scrivevi, se hai finito e se l’hai spedita: questi tre dettagli orientano la pista."
+          }
+        ],
+        "documentMetaDescription": "Sognare una lettera chiusa, illeggibile o da una persona scomparsa: che cosa può dire la scena di un messaggio in sospeso, con domande ed esempio di diario."
       },
       "pt": {
         "slug": "carta",
@@ -14345,58 +14439,152 @@
       "en": {
         "slug": "hair",
         "name": "Hair",
-        "shortDescription": "Hair often stands out when it is cut, lost, changed or displayed in a dream. Whether that change felt freeing, embarrassing, controlled or unfamiliar gives the scene its direction.",
-        "modifiedAt": "2026-07-24",
+        "shortDescription": "Dreaming of hair often brings up appearance, the image you give and how much control you keep over it. Cut, falling out, changed or admired: what happened to the hair and how you felt about it guide the reading more than the hair itself.",
+        "modifiedAt": "2026-10-08",
         "askYourself": [
-          "What did hair change in the scene?",
-          "Which feeling stayed with me after waking?"
+          "Who was touching my hair, me or someone else, and had I chosen it?",
+          "Did I feel embarrassed, relieved or proud about the change?",
+          "Is there a change of image or role that I am living through, or dreading, right now?"
         ],
-        "faq": []
+        "faq": [
+          {
+            "question": "What does it mean to dream about hair?",
+            "answer": "Hair is often associated with appearance, self-image and control over what you show. Its meaning depends mostly on what happened to it (a cut, hair loss, a new color) and on how you felt."
+          },
+          {
+            "question": "What does it mean to dream of your hair falling out?",
+            "answer": "Losing hair in a dream can go with a fear of aging, of losing confidence or of no longer controlling the image you give. It is not a sign of illness; if you are actually losing hair, talk to a doctor."
+          },
+          {
+            "question": "What does it mean to dream of cutting your hair?",
+            "answer": "Cutting your own hair can go with a wish to turn the page or take back control. If someone cut it without asking, the scene may match a change imposed on you. The difference between the two matters."
+          },
+          {
+            "question": "What does gray hair mean in a dream?",
+            "answer": "Hair turning gray can stage the passing of time, fatigue or a new stage of life. Some people feel worried, others strangely calm: your reaction to the reflection is the best clue."
+          }
+        ],
+        "documentMetaDescription": "Dreaming of hair falling out, being cut or turning gray: what the scene may say about self-image and change, with questions and a journal example."
       },
       "fr": {
         "slug": "cheveux",
         "name": "Cheveux",
-        "shortDescription": "Les cheveux attirent surtout l’attention lorsqu’ils sont coupés, perdus, transformés ou montrés. Le fait que ce changement semble libérateur, gênant, maîtrisé ou étranger donne sa direction à la scène.",
-        "modifiedAt": "2026-07-24",
+        "shortDescription": "Rêver de cheveux attire l'attention sur l'apparence, l'image que vous donnez et la maîtrise que vous en gardez. Coupés, qui tombent, changés ou admirés : ce qui leur arrive et votre émotion orientent la lecture plus que les cheveux eux-mêmes.",
+        "modifiedAt": "2026-10-08",
         "askYourself": [
-          "Qu’est-ce que cheveux a changé dans la scène ?",
-          "Quelle émotion est restée après le réveil ?"
+          "Qui touchait mes cheveux, moi ou quelqu'un d'autre, et l'avais-je choisi ?",
+          "Ai-je ressenti de la gêne, du soulagement ou de la fierté face à ce changement ?",
+          "Suis-je en train de vivre, ou de redouter, un changement d'image ou de rôle ?"
         ],
-        "faq": []
+        "faq": [
+          {
+            "question": "Que signifie rêver de cheveux ?",
+            "answer": "Les cheveux sont souvent associés à l'apparence, à l'image de soi et à la maîtrise de ce que l'on montre. Le sens dépend surtout de ce qui leur arrivait (coupe, chute, couleur) et de ce que vous ressentiez."
+          },
+          {
+            "question": "Que signifie rêver de perdre ses cheveux ?",
+            "answer": "Perdre ses cheveux en rêve peut accompagner la peur de vieillir, de perdre de l'assurance ou de ne plus maîtriser l'image que vous donnez. Ce n'est pas un signe de maladie ; si vous perdez réellement vos cheveux, parlez-en à un médecin."
+          },
+          {
+            "question": "Que signifie rêver de se couper les cheveux ?",
+            "answer": "Couper soi-même ses cheveux peut accompagner l'envie de tourner une page ou de reprendre la main. Si quelqu'un les coupait sans votre accord, la scène peut rejoindre un changement imposé. La différence entre les deux compte."
+          },
+          {
+            "question": "Que signifie rêver de cheveux blancs ?",
+            "answer": "Des cheveux qui blanchissent peuvent mettre en scène le temps qui passe, la fatigue ou une nouvelle étape de vie. Certains s'en inquiètent, d'autres se sentent étrangement apaisés : votre réaction devant le reflet est le meilleur indice."
+          }
+        ],
+        "documentMetaDescription": "Rêver de cheveux qui tombent, coupés ou blancs : ce que la scène peut dire de l'image de soi et du changement, avec questions et exemple de journal."
       },
       "es": {
         "slug": "cabello",
         "name": "Cabello",
-        "shortDescription": "El cabello destaca cuando se corta, se pierde, cambia o se muestra en el sueño. Que esa transformación resultara liberadora, vergonzosa, controlada o extraña orienta la escena.",
-        "modifiedAt": "2026-07-24",
+        "shortDescription": "Soñar con el cabello suele llevarte a la apariencia, a la imagen que das y a cuánto control conservas sobre ella. Cortado, que se cae, cambiado o admirado: lo que le pasaba y lo que sentiste orientan la lectura más que el pelo en sí.",
+        "modifiedAt": "2026-10-08",
         "askYourself": [
-          "¿Qué cambió cabello dentro de la escena?",
-          "¿Qué emoción siguió conmigo al despertar?"
+          "¿Quién me tocaba el pelo, yo u otra persona, y lo había elegido yo?",
+          "¿Sentí vergüenza, alivio u orgullo ante ese cambio?",
+          "¿Estoy viviendo, o temiendo, un cambio de imagen o de papel ahora mismo?"
         ],
-        "faq": []
+        "faq": [
+          {
+            "question": "¿Qué significa soñar con cabello?",
+            "answer": "El cabello se asocia a menudo con la apariencia, la imagen de uno mismo y el control sobre lo que muestras. Su sentido depende sobre todo de lo que le pasaba (un corte, una caída, un color nuevo) y de lo que sentías."
+          },
+          {
+            "question": "¿Qué significa soñar que se te cae el pelo?",
+            "answer": "Perder pelo en sueños puede acompañar el miedo a envejecer, a perder seguridad o a dejar de controlar la imagen que das. No es un aviso de enfermedad; si de verdad se te está cayendo el pelo, consúltalo con un médico."
+          },
+          {
+            "question": "¿Qué significa soñar que te cortas el pelo?",
+            "answer": "Cortarte el pelo tú mismo puede acompañar las ganas de pasar página o de recuperar el control. Si otra persona te lo cortaba sin preguntar, la escena puede enlazar con un cambio impuesto. La diferencia entre los dos importa."
+          },
+          {
+            "question": "¿Qué significa soñar con canas?",
+            "answer": "Verte con canas puede escenificar el paso del tiempo, el cansancio o una nueva etapa de la vida. Hay quien se inquieta y quien se siente extrañamente en calma: tu reacción ante el reflejo es la mejor pista."
+          }
+        ],
+        "documentMetaDescription": "Soñar con cabello que se cae, que te cortan o con canas: qué puede decir la escena sobre tu imagen y los cambios, con preguntas y un ejemplo de diario."
       },
       "de": {
         "slug": "haare",
         "name": "Haare",
-        "shortDescription": "Haare fallen im Traum besonders auf, wenn sie geschnitten, verloren, verändert oder gezeigt werden. Entscheidend ist, ob die Veränderung sich befreiend, beschämend, kontrolliert oder fremd anfühlte.",
+        "shortDescription": "Von Haaren zu träumen führt oft zum Aussehen: zu dem Bild, das Sie abgeben, und dazu, wie viel Kontrolle Sie darüber haben. Geschnitten, ausfallend, verändert oder bewundert: Was mit den Haaren geschah und was Sie fühlten, weist die Richtung.",
         "askYourself": [
-          "Wie sahen deine Haare aus, und wer veränderte oder betrachtete sie?",
-          "Hast du dich damit attraktiv, geschützt oder bloßgestellt gefühlt?",
-          "Welche Veränderung an deinem Auftreten beschäftigt dich gerade?"
+          "Wer hat meine Haare berührt, ich oder jemand anderes, und hatte ich das gewollt?",
+          "Habe ich mich bei dieser Veränderung geschämt, erleichtert oder stolz gefühlt?",
+          "Erlebe oder fürchte ich gerade eine Veränderung meines Auftretens oder meiner Rolle?"
         ],
-        "modifiedAt": "2026-07-24",
-        "faq": []
+        "modifiedAt": "2026-10-08",
+        "faq": [
+          {
+            "question": "Was bedeutet es, von Haaren zu träumen?",
+            "answer": "Haare werden oft mit dem Aussehen, dem Selbstbild und der Kontrolle darüber verbunden, was Sie zeigen. Was sie bedeuten, hängt vor allem davon ab, was mit ihnen geschah (Schnitt, Ausfall, neue Farbe) und was Sie dabei fühlten."
+          },
+          {
+            "question": "Was bedeutet es, wenn im Traum die Haare ausfallen?",
+            "answer": "Haarausfall im Traum kann die Angst vor dem Älterwerden begleiten, vor dem Verlust von Selbstsicherheit oder davor, das eigene Bild nicht mehr im Griff zu haben. Ein Krankheitszeichen ist er nicht; verlieren Sie tatsächlich Haare, sprechen Sie mit Ihrer Ärztin oder Ihrem Arzt."
+          },
+          {
+            "question": "Was bedeutet es, sich im Traum die Haare abzuschneiden?",
+            "answer": "Sich selbst die Haare zu schneiden, kann den Wunsch begleiten, ein Kapitel abzuschließen oder die Kontrolle zurückzugewinnen. Schnitt jemand anderes sie ohne Ihr Einverständnis, kann die Szene zu einer aufgezwungenen Veränderung passen."
+          },
+          {
+            "question": "Was bedeuten graue Haare im Traum?",
+            "answer": "Graue Haare können das Vergehen der Zeit, Müdigkeit oder eine neue Lebensphase in Szene setzen. Manche erschrecken, andere fühlen sich seltsam ruhig: Wie Sie auf Ihr Spiegelbild reagiert haben, ist der wichtigste Hinweis."
+          }
+        ],
+        "documentMetaDescription": "Haare im Traum, die ausfallen, abgeschnitten werden oder ergrauen: was die Szene über Selbstbild und Veränderung sagen kann, mit Fragen und Tagebuchbeispiel."
       },
       "it": {
         "slug": "capelli",
         "name": "Capelli",
-        "shortDescription": "I capelli risaltano quando vengono tagliati, persi, trasformati o mostrati nel sogno. Il fatto che il cambiamento sembrasse liberatorio, imbarazzante, controllato o estraneo orienta la scena.",
-        "modifiedAt": "2026-07-24",
+        "shortDescription": "Sognare i capelli riporta spesso all’aspetto, all’immagine che dai e a quanto controllo ne conservi. Tagliati, che cadono, cambiati o ammirati: ciò che succede ai capelli e ciò che provi orientano la lettura più dei capelli stessi.",
+        "modifiedAt": "2026-10-08",
         "askYourself": [
-          "Che cosa ha cambiato capelli nella scena?",
-          "Quale emozione è rimasta dopo il risveglio?"
+          "Chi toccava i miei capelli, io o qualcun altro, e l’avevo scelto?",
+          "Ho provato imbarazzo, sollievo o orgoglio davanti a quel cambiamento?",
+          "Sto vivendo, o temendo, un cambiamento d’immagine o di ruolo in questo periodo?"
         ],
-        "faq": []
+        "faq": [
+          {
+            "question": "Che cosa significa sognare i capelli?",
+            "answer": "I capelli vengono spesso associati all’aspetto, all’immagine di sé e al controllo su ciò che mostri. Il significato dipende soprattutto da ciò che succedeva (un taglio, una caduta, un nuovo colore) e da ciò che provavi."
+          },
+          {
+            "question": "Che cosa significa sognare di perdere i capelli?",
+            "answer": "Perdere i capelli in sogno può accompagnare la paura di invecchiare, di perdere sicurezza o di non controllare più l’immagine che dai. Non è un segnale di malattia; se li stai perdendo davvero, parlane con un medico."
+          },
+          {
+            "question": "Che cosa significa sognare di tagliarsi i capelli?",
+            "answer": "Tagliarti i capelli da solo può accompagnare la voglia di voltare pagina o di riprendere in mano le cose. Se qualcuno li tagliava senza chiedertelo, la scena può avvicinarsi a un cambiamento imposto. La differenza conta."
+          },
+          {
+            "question": "Che cosa significa sognare i capelli bianchi?",
+            "answer": "Vederti con i capelli bianchi può mettere in scena il tempo che passa, la stanchezza o una nuova fase della vita. C’è chi si preoccupa e chi si sente stranamente tranquillo: la tua reazione davanti al riflesso è l’indizio migliore."
+          }
+        ],
+        "documentMetaDescription": "Sognare capelli che cadono, tagliati o bianchi: che cosa può dire la scena dell’immagine di sé e del cambiamento, con domande ed esempio di diario."
       },
       "pt": {
         "slug": "cabelo",
@@ -14428,58 +14616,152 @@
       "en": {
         "slug": "eyes",
         "name": "Eyes",
-        "shortDescription": "Eyes direct a dream toward looking: who watches whom, and what remains unseen? Whether the gaze felt familiar, judging or threatening shapes the scene more than the symbol alone.",
-        "modifiedAt": "2026-07-24",
+        "shortDescription": "Dreaming of eyes often brings you back to looking: the gaze others place on you, the one you place on them, what you see or refuse to see. A kind gaze, a staring one or eyes that will not open each tell a different story.",
+        "modifiedAt": "2026-10-08",
         "askYourself": [
-          "What did eyes change in the scene?",
-          "Which feeling stayed with me after waking?"
+          "Who was looking at whom, and could someone see me without my seeing them?",
+          "Could I see clearly, or was my sight blurred, blocked or closed?",
+          "Where do I feel watched, judged or, on the contrary, overlooked right now?"
         ],
-        "faq": []
+        "faq": [
+          {
+            "question": "What does it mean to dream about eyes?",
+            "answer": "Eyes are often associated with looking: being seen, being judged, seeing clearly. Their meaning depends on who was looking, what you could see and how you felt under that gaze."
+          },
+          {
+            "question": "What does it mean when you can't open your eyes in a dream?",
+            "answer": "This is a common and often distressing scene. It can match a feeling of not seeing clearly in a situation. If it happens as you wake, with a sense that you cannot move, it may be sleep paralysis: frightening, but usually harmless."
+          },
+          {
+            "question": "What does it mean to dream of eyes watching you?",
+            "answer": "Eyes staring at you can go with a feeling of being assessed or monitored, at work, in the family or online. Note whether the gaze was hostile, neutral or kind: the lead is not the same."
+          },
+          {
+            "question": "Is dreaming of going blind a bad omen?",
+            "answer": "No. This dream predicts nothing about your health. It can go with a period when you are moving forward without landmarks, or without the information you need. For a real problem with your eyesight, see an eye doctor."
+          }
+        ],
+        "documentMetaDescription": "Dreaming of eyes, of being watched or of being unable to open your eyes: what the scene may say about how you see and are seen, with a journal example."
       },
       "fr": {
         "slug": "yeux",
         "name": "Yeux",
-        "shortDescription": "Les yeux orientent le rêve vers les regards : qui observe qui, et que reste-t-il invisible ? Un regard familier, évaluateur ou menaçant façonne davantage la scène que le symbole seul.",
-        "modifiedAt": "2026-07-24",
+        "shortDescription": "Rêver d'yeux ramène souvent au regard : celui qu'on pose sur vous, celui que vous portez sur les autres, ce que vous voyez ou refusez de voir. Regard bienveillant, regard insistant, yeux qui ne s'ouvrent pas : chaque scène raconte autre chose.",
+        "modifiedAt": "2026-10-08",
         "askYourself": [
-          "Qu’est-ce que yeux a changé dans la scène ?",
-          "Quelle émotion est restée après le réveil ?"
+          "Qui regardait qui, et quelqu'un pouvait-il me voir sans que je le voie ?",
+          "Ai-je pu voir clairement, ou ma vue était-elle floue, bloquée, fermée ?",
+          "En ce moment, où est-ce que je me sens observé, jugé ou au contraire ignoré ?"
         ],
-        "faq": []
+        "faq": [
+          {
+            "question": "Que signifie rêver d'yeux ?",
+            "answer": "Les yeux sont souvent associés au regard : être vu, être jugé, voir clair. Le sens dépend de qui regardait, de ce que vous pouviez voir et de ce que vous avez ressenti sous ce regard."
+          },
+          {
+            "question": "Que signifie rêver de ne pas pouvoir ouvrir les yeux ?",
+            "answer": "C'est une scène fréquente, souvent angoissante. Elle peut rejoindre le sentiment de ne pas voir clair dans une situation. Si elle survient au réveil avec l'impression de ne pas pouvoir bouger, il peut s'agir d'une paralysie du sommeil, impressionnante mais en général sans danger."
+          },
+          {
+            "question": "Que signifie rêver d'être observé par des yeux ?",
+            "answer": "Des yeux qui vous fixent peuvent accompagner le sentiment d'être évalué ou surveillé : au travail, en famille, en ligne. Notez si le regard était hostile, neutre ou bienveillant : la piste n'est pas la même."
+          },
+          {
+            "question": "Rêver de perdre la vue, est-ce un mauvais présage ?",
+            "answer": "Non. Ce rêve ne prédit rien sur votre santé. Il peut accompagner une période où vous avancez sans repères, ou sans les informations dont vous avez besoin. Pour un vrai trouble de la vue, consultez un ophtalmologue."
+          }
+        ],
+        "documentMetaDescription": "Rêver d'yeux, d'être observé ou de ne pas pouvoir ouvrir les yeux : ce que la scène peut dire du regard des autres, avec questions et exemple de journal."
       },
       "es": {
         "slug": "ojos",
         "name": "Ojos",
-        "shortDescription": "Los ojos orientan el sueño hacia las miradas: quién observa a quién y qué queda sin ver. Que la mirada fuera familiar, crítica o amenazante da forma a la escena más que el símbolo aislado.",
-        "modifiedAt": "2026-07-24",
+        "shortDescription": "Soñar con ojos suele llevarte a la mirada: la que otros ponen en ti, la que tú pones en los demás, lo que ves o te niegas a ver. Una mirada amable, una mirada insistente o unos ojos que no se abren cuentan cosas distintas.",
+        "modifiedAt": "2026-10-08",
         "askYourself": [
-          "¿Qué cambió ojos dentro de la escena?",
-          "¿Qué emoción siguió conmigo al despertar?"
+          "¿Quién miraba a quién, y alguien podía verme sin que yo lo viera?",
+          "¿Pude ver con claridad, o tenía la vista borrosa, bloqueada o cerrada?",
+          "¿Dónde me siento ahora observado, juzgado o, al contrario, ignorado?"
         ],
-        "faq": []
+        "faq": [
+          {
+            "question": "¿Qué significa soñar con ojos?",
+            "answer": "Los ojos se asocian a menudo con la mirada: que te vean, que te juzguen, ver con claridad. Su sentido depende de quién miraba, de lo que podías ver y de lo que sentiste bajo esa mirada."
+          },
+          {
+            "question": "¿Qué significa soñar que no puedes abrir los ojos?",
+            "answer": "Es una escena frecuente y a menudo angustiosa. Puede enlazar con la sensación de no ver claro en una situación. Si ocurre al despertar, con la impresión de no poder moverte, puede tratarse de una parálisis del sueño: impresiona, pero suele ser inofensiva."
+          },
+          {
+            "question": "¿Qué significa soñar con unos ojos que te observan?",
+            "answer": "Unos ojos clavados en ti pueden acompañar la sensación de que te evalúan o te vigilan: en el trabajo, en la familia, en redes. Anota si la mirada era hostil, neutra o amable: la pista no es la misma."
+          },
+          {
+            "question": "¿Soñar que te quedas ciego es un mal presagio?",
+            "answer": "No. Este sueño no predice nada sobre tu salud. Puede acompañar una etapa en la que avanzas sin referencias, o sin la información que necesitas. Si notas un problema real de visión, consulta a un oftalmólogo."
+          }
+        ],
+        "documentMetaDescription": "Soñar con ojos, con que te observan o con no poder abrir los ojos: qué puede decir la escena sobre la mirada de los demás, con preguntas y un ejemplo."
       },
       "de": {
         "slug": "augen",
         "name": "Augen",
-        "shortDescription": "Augen lenken einen Traum auf Blicke: Wer beobachtet wen, und was bleibt ungesehen? Ob der Blick vertraut, prüfend oder bedrohlich wirkt, prägt die Szene stärker als das Symbol allein.",
+        "shortDescription": "Von Augen zu träumen führt oft zum Blick: dem der anderen auf Sie, Ihrem auf andere, dem, was Sie sehen oder nicht sehen wollen. Ein freundlicher, ein starrer Blick oder Augen, die sich nicht öffnen, erzählen Verschiedenes.",
         "askYourself": [
-          "Wessen Augen oder Blick standen im Mittelpunkt?",
-          "Konntest du zurückblicken, wegsehen oder etwas nicht erkennen?",
-          "Wo fühlst du dich derzeit beobachtet, beurteilt oder übersehen?"
+          "Wer hat wen angesehen, und konnte mich jemand sehen, ohne dass ich ihn sah?",
+          "Konnte ich klar sehen, oder war mein Blick verschwommen, versperrt, geschlossen?",
+          "Wo fühle ich mich gerade beobachtet, beurteilt oder im Gegenteil übersehen?"
         ],
-        "modifiedAt": "2026-07-24",
-        "faq": []
+        "modifiedAt": "2026-10-08",
+        "faq": [
+          {
+            "question": "Was bedeutet es, von Augen zu träumen?",
+            "answer": "Augen werden oft mit dem Blick verbunden: gesehen werden, beurteilt werden, klar sehen. Was sie bedeuten, hängt davon ab, wer schaute, was Sie sehen konnten und was Sie unter diesem Blick gefühlt haben."
+          },
+          {
+            "question": "Was bedeutet es, im Traum die Augen nicht öffnen zu können?",
+            "answer": "Diese Szene ist häufig und oft beklemmend. Sie kann zu dem Gefühl passen, in einer Lage nicht klar zu sehen. Geschieht es beim Aufwachen und Sie können sich nicht bewegen, kann es eine Schlaflähmung sein: beängstigend, aber in der Regel harmlos."
+          },
+          {
+            "question": "Was bedeutet es, im Traum von Augen beobachtet zu werden?",
+            "answer": "Augen, die Sie anstarren, können das Gefühl begleiten, bewertet oder überwacht zu werden: im Beruf, in der Familie, online. Notieren Sie, ob der Blick feindselig, neutral oder freundlich war: Die Spur ist jeweils eine andere."
+          },
+          {
+            "question": "Ist es ein schlechtes Zeichen, im Traum zu erblinden?",
+            "answer": "Nein. Dieser Traum sagt nichts über Ihre Gesundheit voraus. Er kann eine Phase begleiten, in der Sie ohne Orientierung oder ohne die nötigen Informationen vorangehen. Bei echten Sehproblemen ist die Augenarztpraxis der richtige Ort."
+          }
+        ],
+        "documentMetaDescription": "Augen im Traum, beobachtet werden oder die Augen nicht öffnen können: was die Szene über Blicke und Gesehenwerden sagen kann, mit Fragen und Beispiel."
       },
       "it": {
         "slug": "occhi",
         "name": "Occhi",
-        "shortDescription": "Gli occhi orientano il sogno verso gli sguardi: chi osserva chi e cosa resta invisibile. Uno sguardo familiare, giudicante o minaccioso modella la scena più del simbolo isolato.",
-        "modifiedAt": "2026-07-24",
+        "shortDescription": "Sognare gli occhi riporta spesso allo sguardo: quello che gli altri posano su di te, quello che tu posi su di loro, ciò che vedi o ti rifiuti di vedere. Uno sguardo gentile, uno insistente o occhi che non si aprono raccontano cose diverse.",
+        "modifiedAt": "2026-10-08",
         "askYourself": [
-          "Che cosa ha cambiato occhi nella scena?",
-          "Quale emozione è rimasta dopo il risveglio?"
+          "Chi guardava chi, e qualcuno poteva vedermi senza che io lo vedessi?",
+          "Riuscivo a vedere chiaramente, o la vista era sfocata, bloccata, chiusa?",
+          "In questo periodo, dove mi sento osservato, giudicato o al contrario ignorato?"
         ],
-        "faq": []
+        "faq": [
+          {
+            "question": "Che cosa significa sognare gli occhi?",
+            "answer": "Gli occhi vengono spesso associati allo sguardo: essere visti, essere giudicati, vedere chiaro. Il significato dipende da chi guardava, da ciò che potevi vedere e da ciò che hai provato sotto quello sguardo."
+          },
+          {
+            "question": "Che cosa significa sognare di non riuscire ad aprire gli occhi?",
+            "answer": "È una scena frequente e spesso angosciante. Può avvicinarsi alla sensazione di non vedere chiaro in una situazione. Se succede al risveglio, con l’impressione di non poterti muovere, può trattarsi di una paralisi del sonno: spaventa, ma di solito è innocua."
+          },
+          {
+            "question": "Che cosa significa sognare occhi che ti osservano?",
+            "answer": "Occhi fissi su di te possono accompagnare la sensazione di essere valutato o sorvegliato: al lavoro, in famiglia, online. Annota se lo sguardo era ostile, neutro o benevolo: la pista non è la stessa."
+          },
+          {
+            "question": "Sognare di diventare ciechi è un cattivo presagio?",
+            "answer": "No. Questo sogno non predice nulla sulla tua salute. Può accompagnare un periodo in cui vai avanti senza punti di riferimento, o senza le informazioni che ti servono. Per un vero disturbo della vista, rivolgiti a un oculista."
+          }
+        ],
+        "documentMetaDescription": "Sognare occhi, di essere osservati o di non riuscire ad aprire gli occhi: che cosa può dire la scena dello sguardo degli altri, con domande ed esempio."
       },
       "pt": {
         "slug": "olhos",
@@ -14512,58 +14794,152 @@
       "en": {
         "slug": "hands",
         "name": "Hands",
-        "shortDescription": "Hands in a dream is rarely one-note. It may bring up how emotion lands in the body, what you show, what you hide, and what asks for care, especially if the scene felt unusually vivid or unfinished.",
+        "shortDescription": "Dreaming of hands often brings you back to what you do, hold or let go of: acting, touching, helping, holding on. Skilled, empty, injured or unresponsive hands tell different stories, and the gesture in the scene is the first clue.",
         "askYourself": [
-          "What did hands change in the scene?",
-          "Which feeling stayed with me after waking?"
+          "What were my hands doing, and did they manage it?",
+          "Who or what did I hold, touch or let go of?",
+          "In which current situation would I like more grip, or more help?"
         ],
-        "faq": [],
-        "modifiedAt": "2026-07-24"
+        "faq": [
+          {
+            "question": "What does it mean to dream about hands?",
+            "answer": "Hands are often associated with action, connection and control: what you do, what you hold, who you touch. Their meaning depends on the gesture, on what worked or failed and on how you felt."
+          },
+          {
+            "question": "What does it mean when your hands don't work in a dream?",
+            "answer": "Heavy, limp or unresponsive hands can match a feeling of powerlessness in a situation. The body can play a part too: an arm that went numb during sleep sometimes finds its way into the dream."
+          },
+          {
+            "question": "What does it mean to dream of hurting or cutting your hand?",
+            "answer": "An injured hand can go with a fear of no longer being able to work, create or help as usual. It is not an omen of an accident; ask yourself which task feels beyond your strength right now."
+          },
+          {
+            "question": "What does it mean to dream of holding someone's hand?",
+            "answer": "Holding hands is often associated with connection, support and trust. Note who it was, who was holding whom and whether the hand let go: these details say more than the gesture alone."
+          }
+        ],
+        "modifiedAt": "2026-10-08",
+        "documentMetaDescription": "Dreaming of hands, injured, empty or not responding: what the scene may say about your grip on things and your bonds, with questions and a journal example."
       },
       "fr": {
         "slug": "mains",
         "name": "Mains",
-        "shortDescription": "Mains dans un rêve n’a presque jamais un seul sens. Le symbole peut faire remonter la façon dont l’émotion se loge dans le corps, ce que vous montrez, cachez ou devez écouter, surtout si la scène reste vive après le réveil.",
+        "shortDescription": "Rêver de mains ramène souvent à ce que vous faites, tenez ou lâchez : agir, toucher, aider, retenir. Des mains habiles, vides, blessées ou qui n'obéissent plus ne racontent pas la même chose, et le geste de la scène est le premier indice.",
         "askYourself": [
-          "Qu’est-ce que mains a changé dans la scène ?",
-          "Quelle émotion est restée après le réveil ?"
+          "Que faisaient mes mains, et y arrivaient-elles ?",
+          "Qui ou quoi ai-je tenu, touché ou lâché ?",
+          "Dans quelle situation actuelle aimerais-je avoir plus de prise, ou plus d'aide ?"
         ],
-        "faq": [],
-        "modifiedAt": "2026-07-24"
+        "faq": [
+          {
+            "question": "Que signifie rêver de mains ?",
+            "answer": "Les mains sont souvent associées à l'action, au lien et au contrôle : ce que vous faites, ce que vous tenez, qui vous touchez. Le sens dépend du geste, de ce qui réussissait ou échouait et de ce que vous ressentiez."
+          },
+          {
+            "question": "Que signifie rêver de mains qui ne répondent plus ?",
+            "answer": "Des mains lourdes, molles ou qui n'obéissent pas peuvent rejoindre un sentiment d'impuissance face à une situation. Le corps peut aussi jouer : un bras engourdi pendant le sommeil s'invite parfois dans le rêve."
+          },
+          {
+            "question": "Que signifie rêver de se blesser ou de se couper la main ?",
+            "answer": "Une main blessée peut accompagner la peur de ne plus pouvoir travailler, créer ou aider comme d'habitude. Ce n'est pas un présage d'accident ; demandez-vous quelle tâche vous semble en ce moment au-dessus de vos forces."
+          },
+          {
+            "question": "Que signifie rêver de tenir la main de quelqu'un ?",
+            "answer": "Tenir une main est souvent associé au lien, au soutien et à la confiance. Notez qui c'était, qui tenait qui, et si la main a lâché : ces détails en disent plus que le geste seul."
+          }
+        ],
+        "modifiedAt": "2026-10-08",
+        "documentMetaDescription": "Rêver de mains blessées, vides ou qui n'obéissent plus : ce que la scène peut dire de votre prise sur les choses et de vos liens, avec questions et exemple."
       },
       "es": {
         "slug": "manos",
         "name": "Manos",
-        "shortDescription": "Manos en un sueño casi nunca tiene un solo significado. Puede activar cómo la emoción se instala en el cuerpo, lo que muestras, lo que escondes y lo que pide cuidado, sobre todo si la escena queda muy viva al despertar.",
+        "shortDescription": "Soñar con manos suele llevarte a lo que haces, sostienes o sueltas: actuar, tocar, ayudar, retener. Unas manos hábiles, vacías, heridas o que no obedecen cuentan cosas distintas, y el gesto de la escena es la primera pista.",
         "askYourself": [
-          "¿Qué cambió manos dentro de la escena?",
-          "¿Qué emoción siguió conmigo al despertar?"
+          "¿Qué hacían mis manos, y lo conseguían?",
+          "¿A quién o qué sostuve, toqué o solté?",
+          "¿En qué situación actual me gustaría tener más control, o más ayuda?"
         ],
-        "faq": [],
-        "modifiedAt": "2026-07-24"
+        "faq": [
+          {
+            "question": "¿Qué significa soñar con manos?",
+            "answer": "Las manos se asocian a menudo con la acción, el vínculo y el control: lo que haces, lo que sostienes, a quién tocas. Su sentido depende del gesto, de lo que salía bien o mal y de lo que sentías."
+          },
+          {
+            "question": "¿Qué significa soñar que las manos no te responden?",
+            "answer": "Unas manos pesadas, flojas o que no obedecen pueden enlazar con una sensación de impotencia ante una situación. El cuerpo también puede influir: un brazo dormido durante el sueño a veces se cuela en lo que sueñas."
+          },
+          {
+            "question": "¿Qué significa soñar que te cortas o te haces daño en la mano?",
+            "answer": "Una mano herida puede acompañar el miedo a no poder trabajar, crear o ayudar como de costumbre. No es un presagio de accidente; pregúntate qué tarea te parece ahora mismo superior a tus fuerzas."
+          },
+          {
+            "question": "¿Qué significa soñar que le das la mano a alguien?",
+            "answer": "Ir de la mano se asocia a menudo con el vínculo, el apoyo y la confianza. Anota quién era, quién sujetaba a quién y si la mano se soltó: esos detalles dicen más que el gesto en sí."
+          }
+        ],
+        "modifiedAt": "2026-10-08",
+        "documentMetaDescription": "Soñar con manos heridas, vacías o que no obedecen: qué puede decir la escena sobre tu control de las cosas y tus vínculos, con preguntas y un ejemplo."
       },
       "de": {
         "slug": "hande",
         "name": "Hände",
-        "shortDescription": "Hände können im Traum handeln, halten, berühren oder etwas nicht festhalten. Was sie tun und ob du sie kontrollieren kannst, rückt Handlungsspielraum, Nähe oder Hilflosigkeit in den Vordergrund.",
+        "shortDescription": "Von Händen zu träumen führt oft zu dem, was Sie tun, halten oder loslassen: handeln, berühren, helfen, festhalten. Geschickte, leere, verletzte oder kraftlose Hände erzählen Verschiedenes, und die Geste in der Szene ist der erste Hinweis.",
         "askYourself": [
-          "Was taten deine Hände, und gelang dir die Handlung?",
-          "Wen oder was hast du gehalten, berührt oder verloren?",
-          "Bei welcher aktuellen Aufgabe wünschst du dir mehr Einfluss oder Unterstützung?"
+          "Was taten meine Hände, und gelang es ihnen?",
+          "Wen oder was habe ich gehalten, berührt oder losgelassen?",
+          "In welcher aktuellen Lage wünsche ich mir mehr Einfluss oder mehr Unterstützung?"
         ],
-        "modifiedAt": "2026-07-24",
-        "faq": []
+        "modifiedAt": "2026-10-08",
+        "faq": [
+          {
+            "question": "Was bedeutet es, von Händen zu träumen?",
+            "answer": "Hände werden oft mit Handeln, Verbindung und Kontrolle verbunden: was Sie tun, was Sie halten, wen Sie berühren. Was sie bedeuten, hängt von der Geste ab, davon, was gelang oder misslang, und von Ihrem Gefühl dabei."
+          },
+          {
+            "question": "Was bedeutet es, wenn die Hände im Traum nicht gehorchen?",
+            "answer": "Schwere, kraftlose oder ungehorsame Hände können zu einem Gefühl der Ohnmacht in einer Lage passen. Auch der Körper kann mitspielen: Ein Arm, der im Schlaf eingeschlafen ist, findet manchmal seinen Weg in den Traum."
+          },
+          {
+            "question": "Was bedeutet es, sich im Traum an der Hand zu verletzen?",
+            "answer": "Eine verletzte Hand kann die Sorge begleiten, nicht mehr wie gewohnt arbeiten, gestalten oder helfen zu können. Ein Vorzeichen für einen Unfall ist sie nicht; fragen Sie sich, welche Aufgabe Ihnen gerade über den Kopf wächst."
+          },
+          {
+            "question": "Was bedeutet es, im Traum jemandes Hand zu halten?",
+            "answer": "Händchenhalten wird oft mit Verbindung, Halt und Vertrauen verbunden. Notieren Sie, wer es war, wer wen hielt und ob die Hand losließ: Diese Details sagen mehr als die Geste allein."
+          }
+        ],
+        "documentMetaDescription": "Hände im Traum, verletzt, leer oder kraftlos: was die Szene über Ihren Einfluss auf die Dinge und Ihre Bindungen sagen kann, mit Fragen und Beispiel."
       },
       "it": {
         "slug": "mani",
         "name": "Mani",
-        "shortDescription": "Mani in sogno raramente ha un solo significato. Può far emergere come l’emozione arriva nel corpo, ciò che mostri, nascondi o devi ascoltare, soprattutto se la scena resta vivida dopo il risveglio.",
+        "shortDescription": "Sognare le mani riporta spesso a ciò che fai, tieni o lasci andare: agire, toccare, aiutare, trattenere. Mani abili, vuote, ferite o che non obbediscono raccontano cose diverse, e il gesto della scena è il primo indizio.",
         "askYourself": [
-          "Che cosa ha cambiato mani nella scena?",
-          "Quale emozione è rimasta dopo il risveglio?"
+          "Che cosa facevano le mie mani, e ci riuscivano?",
+          "Chi o che cosa ho tenuto, toccato o lasciato andare?",
+          "In quale situazione attuale vorrei avere più presa, o più aiuto?"
         ],
-        "faq": [],
-        "modifiedAt": "2026-07-24"
+        "faq": [
+          {
+            "question": "Che cosa significa sognare le mani?",
+            "answer": "Le mani vengono spesso associate all’azione, al legame e al controllo: ciò che fai, ciò che tieni, chi tocchi. Il significato dipende dal gesto, da ciò che riusciva o falliva e da ciò che provavi."
+          },
+          {
+            "question": "Che cosa significa sognare che le mani non rispondono?",
+            "answer": "Mani pesanti, molli o che non obbediscono possono avvicinarsi a un senso di impotenza davanti a una situazione. Anche il corpo può avere un ruolo: un braccio intorpidito durante il sonno a volte entra nel sogno."
+          },
+          {
+            "question": "Che cosa significa sognare di ferirsi o tagliarsi una mano?",
+            "answer": "Una mano ferita può accompagnare la paura di non riuscire più a lavorare, creare o aiutare come al solito. Non è il presagio di un incidente; chiediti quale compito ti sembra oggi al di sopra delle tue forze."
+          },
+          {
+            "question": "Che cosa significa sognare di tenere la mano a qualcuno?",
+            "answer": "Tenersi per mano viene spesso associato al legame, al sostegno e alla fiducia. Annota chi era, chi teneva chi e se la mano ha lasciato la presa: questi dettagli dicono più del gesto in sé."
+          }
+        ],
+        "modifiedAt": "2026-10-08",
+        "documentMetaDescription": "Sognare mani ferite, vuote o che non obbediscono: che cosa può dire la scena della tua presa sulle cose e dei tuoi legami, con domande ed esempio di diario."
       },
       "pt": {
         "slug": "maos",
