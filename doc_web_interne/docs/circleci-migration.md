@@ -67,20 +67,23 @@ curl -X POST https://circleci.com/api/v2/project/<project-slug>/pipeline/run \
 
 Une étape de release ou de publication qui exigeait une pipeline CircleCI verte
 sur le SHA exige désormais que **`npm run verify:release` ait réussi sur ce SHA
-exact (ou une pipeline CircleCI manuelle avec `force_full_validation: true`,
-citée avec `--external`)**. Ce choix ne prouve rien sur une machine vierge : le
+exact**. Un contrôle spécialisé que la machine ne peut pas lancer vient d'abord
+de la machine du propriétaire (`--external <contrôle>="owner-machine: <hôte> <note> on <SHA>"`) ;
+une pipeline CircleCI manuelle ne compte que si la table « External CI » de la
+[règle commune](regle-commune-livraison.md)
+la déclare (aujourd'hui : aucune). Ce choix ne prouve rien sur une machine vierge : le
 contrôle tourne avec l'installation locale de l'auteur.
 
 ### Validation complète locale
 
 La commande est `npm run verify:release`, sur le commit visé (par défaut
 `HEAD`, `--rev <sha>` sinon), après `mise exec -- npm ci` à la racine et dans
-`apps/meditation`. Elle vérifie une copie isolée de ce commit, réutilise les
-contrôles de la PR dont les entrées sont identiques, reconstruit le site et
-l'app web pour ce commit, puis lance les commandes `run` du portefeuille
-`full` de `.circleci/continue.yml` (contrôles `release` de
-`verify-local.config.mjs` ; `scripts/verify-local-config.test.js` vérifie
-qu'aucune étape de ce portefeuille n'y manque) :
+`apps/meditation`. Elle vérifie une copie isolée de ce commit, relance les
+contrôles de la PR (une publication ne réutilise rien), reconstruit le site et
+l'app web pour ce commit, puis lance les contrôles `release` de
+`verify-local.config.mjs`, qui forment la validation complète
+(`scripts/verify-local-config.test.js` vérifie qu'aucune étape du portefeuille
+manuel `full` de `.circleci/continue.yml` n'y manque) :
 
 - Noctalia : `npm run dependencies:check`, `npm run boundaries:check`,
   `node scripts/mobile-release.js verify --app all`,
@@ -103,12 +106,15 @@ qu'aucune étape de ce portefeuille n'y manque) :
 - builds livrés, refaits pour chaque commit : `npm run docs:build` et
   `npm run docs:check` (site), `npm run build:web` (app web Vercel).
 
-`continue.yml` reste la source de vérité de cette liste. Les contrôles qui
+`verify-local.config.mjs` est la source de vérité de cette liste ; le
+portefeuille CircleCI n'est qu'un lancement manuel facultatif, gardé en phase
+par ce test. Les contrôles qui
 demandent Deno (Edge), Docker (`test:e2e:backend`) ou l'installation
 TesterArmy sont déclarés avec leur prérequis : si la machine ne les a pas, la
-preuve est `incomplete` et indique la commande d'installation. Les lancer
-ailleurs (pipeline CircleCI manuelle `force_full_validation: true`, machine du
-propriétaire), puis relancer avec `--external <contrôle>=<preuve>`.
+preuve est `incomplete` et indique la commande d'installation. Les lancer sur
+la machine du propriétaire (PC Tanuki), puis relancer avec
+`--external <contrôle>="owner-machine: <hôte> <note> on <SHA>"` ; une CI externe
+seulement si la table « External CI » la déclare.
 `node scripts/verify-local.mjs status` affiche la preuve du commit.
 
 ## Architecture et frontière des responsabilités

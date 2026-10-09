@@ -3,6 +3,7 @@
 
 import assert from 'node:assert/strict';
 import { spawnSync } from 'node:child_process';
+import { createHash } from 'node:crypto';
 import { existsSync, lstatSync, mkdirSync, mkdtempSync, readFileSync, readlinkSync, rmSync, symlinkSync, writeFileSync } from 'node:fs';
 import os from 'node:os';
 import path from 'node:path';
@@ -11,16 +12,22 @@ import { fileURLToPath } from 'node:url';
 
 import {
   PROOF_FORMAT_VERSION,
+  checkFingerprint,
   checkReleaseProof,
   cleanGitEnv,
   globToRegExp,
   prePush,
+  readBlobs,
   proofBlock,
   readProof,
   verify,
 } from './verify-local.mjs';
 
 const ENGINE = fileURLToPath(new URL('./verify-local.mjs', import.meta.url));
+// sha256 of the engine shared by the five repositories. An edit to
+// scripts/verify-local.mjs in one repository alone fails here: change the
+// engine in all five at once, then update this value in all five.
+const ENGINE_SHA256 = '8ac3f52e85d849fbd6f51dded779047bf5ba28267de198086c7a65dd7fcb2453';
 const scratch = mkdtempSync(path.join(os.tmpdir(), 'verify-local-test-'));
 after(() => rmSync(scratch, { recursive: true, force: true }));
 
@@ -94,6 +101,13 @@ function makeRepository() {
   return { base, origin, work, env, git, write, commit, runs, clearRuns, lines, options };
 }
 
+describe('shared engine', () => {
+  test('the engine is the version shared by the five repositories', () => {
+    const actual = createHash('sha256').update(readFileSync(ENGINE)).digest('hex');
+    assert.equal(actual, ENGINE_SHA256, 'scripts/verify-local.mjs differs from the shared engine; change it in all five repositories at once and update ENGINE_SHA256');
+  });
+});
+
 describe('globs', () => {
   test('** crosses directories, * does not, a trailing slash is a prefix', () => {
     assert.ok(globToRegExp('src/**').test('src/a/b.js'));
@@ -106,7 +120,7 @@ describe('globs', () => {
 });
 
 describe('verify:pr', () => {
-  test('checks the commit in an isolated copy and writes a v2 proof keyed by tree', async () => {
+  test('checks the commit in an isolated copy and writes a proof keyed by tree', async () => {
     const repo = makeRepository();
     repo.git(['checkout', '--quiet', '-b', 'feature']);
     const sha = repo.commit('feature', { 'src/b.js': 'export const b = 1;\n' });
@@ -177,23 +191,100 @@ describe('verify:pr', () => {
   test('a specialised check runs only when its inputs change, and can come from elsewhere', async () => {
     const repo = makeRepository();
     repo.git(['checkout', '--quiet', '-b', 'feature']);
-    repo.commit('migration', { 'db/1.sql': 'select 1;\n' });
+    const sha = repo.commit('migration', { 'db/1.sql': 'select 1;\n' });
 
     const missing = await verify('pr', [], repo.options);
     assert.equal(missing.status, 2, 'incomplete when the database cannot run here');
     assert.equal(missing.proof.result, 'incomplete');
     assert.equal(missing.proof.checks.find((check) => check.name === 'db').result, 'unavailable');
 
-    const external = await verify('pr', ['--external', 'db=CircleCI pipeline 42'], repo.options);
+    const evidence = `https://app.circleci.com/pipelines/github/o/r/42 on ${sha}`;
+    const external = await verify('pr', ['--external', `db=${evidence}`], repo.options);
     assert.equal(external.status, 0);
     const db = external.proof.checks.find((check) => check.name === 'db');
     assert.equal(db.result, 'passed');
-    assert.equal(db.external, 'CircleCI pipeline 42');
+    assert.equal(db.external, evidence);
 
     repo.clearRuns();
     const local = await verify('pr', ['--force'], { ...repo.options, env: { ...repo.env, DB_AVAILABLE: '1' } });
     assert.equal(local.status, 0);
     assert.deepEqual(repo.runs(), ['lint', 'test', 'db']);
+  });
+
+  test('without a known base, a check limited by when runs rather than being skipped', async () => {
+    const repo = makeRepository();
+    repo.git(['checkout', '--quiet', '-b', 'feature']);
+    repo.commit('feature', { 'src/b.js': '1\n' });
+    // No origin/main (a fresh clone of another remote, or a missing fetch):
+    // the changed files are unknown, so nothing is out of scope.
+    repo.git(['update-ref', '-d', 'refs/remotes/origin/main']);
+
+    const { status, proof } = await verify('pr', [], { ...repo.options, env: { ...repo.env, DB_AVAILABLE: '1' } });
+    assert.equal(status, 0);
+    assert.deepEqual(repo.runs(), ['lint', 'test', 'db', 'site-check']);
+    assert.equal(proof.base.sha, null);
+    assert.ok(proof.checks.every((check) => check.result !== 'skipped'));
+  });
+
+  test('--external only stands in for a specialised check that cannot run here, with evidence for this tree', async () => {
+    const repo = makeRepository();
+    repo.git(['checkout', '--quiet', '-b', 'feature']);
+    const sha = repo.commit('migration', { 'db/1.sql': 'select 1;\n' });
+    const tree = repo.git(['rev-parse', `${sha}^{tree}`]);
+
+    await assert.rejects(verify('pr', ['--external', `lint=https://ci.example/1 on ${sha}`], repo.options), /only a specialised check/);
+    await assert.rejects(verify('pr', ['--external', `nope=https://ci.example/1 on ${sha}`], repo.options), /no such pr check/);
+    const unknown = spawnSync(process.execPath, [ENGINE, 'pr', '--external', `lint=https://ci.example/1 on ${sha}`], { cwd: repo.work, env: repo.env, encoding: 'utf8' });
+    assert.equal(unknown.status, 64);
+
+    // The evidence gives an https location (or owner-machine:) and names exactly one commit.
+    const other = repo.git(['rev-parse', 'origin/main']);
+    for (const [evidence, reason] of [
+      ['https://app.circleci.com/pipelines/github/o/r/42', /exactly one commit/],
+      [`CircleCI pipeline 42 on ${sha}`, /https:\/\/ location/],
+      [`http://ci.example/run?sha=${sha}`, /plain http/],
+      [`https://ci.example/run/1 on ${tree}`, /names [0-9a-f]{40}, which is neither/],
+      [`https://ci.example/run/1 on ${other}`, new RegExp(`names ${other}`)],
+      [`https://ci.example/run/1 on ${sha}, see ${other.toUpperCase()}`, /exactly one commit/],
+      [`https://ci.example/run/1 on ${sha} ${sha}`, /exactly one commit/],
+    ]) {
+      await assert.rejects(verify('pr', ['--force', '--external', `db=${evidence}`], repo.options), reason, evidence);
+    }
+
+    // The verified commit, or a commit with the same tree (a squash), counts; so does owner-machine:.
+    assert.equal((await verify('pr', ['--force', '--external', `db=owner-machine: pgTAP on ${sha.toUpperCase()}`], repo.options)).status, 0);
+    const squash = repo.git(['commit-tree', tree, '-p', 'origin/main', '-m', 'squash']);
+    assert.equal((await verify('pr', ['--rev', squash, '--force', '--external', `db=https://ci.example/run/2 on ${sha}`], repo.options)).status, 0);
+
+    // When the check can run here, --external is refused: run it.
+    await assert.rejects(
+      verify('pr', ['--force', '--external', `db=https://ci.example/run/3 on ${sha}`], { ...repo.options, env: { ...repo.env, DB_AVAILABLE: '1' } }),
+      /can run it/,
+    );
+  });
+
+  test('external evidence is never reused by another proof', async () => {
+    const repo = makeRepository();
+    repo.git(['checkout', '--quiet', '-b', 'feature']);
+    const sha = repo.commit('migration', { 'db/1.sql': 'select 1;\n' });
+    assert.equal((await verify('pr', ['--external', `db=https://ci.example/run/1 on ${sha}`], repo.options)).status, 0);
+    // A squash has the same tree, so every other check is reused, but not the evidence.
+    const tree = repo.git(['rev-parse', `${sha}^{tree}`]);
+    const squash = repo.git(['commit-tree', tree, '-p', 'origin/main', '-m', 'squash']);
+    const again = await verify('pr', ['--rev', squash], repo.options);
+    assert.equal(again.status, 2, 'incomplete: the evidence for the first commit is not carried over');
+    // The passed proof of the tree is kept; the incomplete run is recorded beside it.
+    const attempt = JSON.parse(readFileSync(path.join(repo.work, '.git', 'verify-proofs', `${tree}.pr-attempt.json`), 'utf8'));
+    assert.equal(attempt.sha, squash);
+    assert.equal(attempt.checks.find((check) => check.name === 'db').result, 'unavailable');
+  });
+
+  test('a check that picks its work from the base is reused only against the same merge base', () => {
+    const check = { name: 'affected', command: 'x', env: {}, inputs: null, exclude: [], perCommit: false, perBase: true };
+    const args = { check, files: [], tree: 't', sha: 's', environment: {} };
+    assert.notEqual(checkFingerprint({ ...args, mergeBase: 'a' }), checkFingerprint({ ...args, mergeBase: 'b' }));
+    const plain = { ...check, perBase: false };
+    assert.equal(checkFingerprint({ ...args, check: plain, mergeBase: 'a' }), checkFingerprint({ ...args, check: plain, mergeBase: 'b' }));
   });
 
   test('a failed check fails the run, stops it, and is never reused', async () => {
@@ -220,11 +311,31 @@ describe('verify:pr', () => {
     });
     assert.equal(result.status, 0, result.stdout + result.stderr);
   });
+
+  test('variables that narrow what a check runs are stripped from the environment', async () => {
+    const repo = makeRepository();
+    repo.git(['checkout', '--quiet', '-b', 'feature']);
+    const config = readFileSync(path.join(repo.work, 'verify-local.config.mjs'), 'utf8')
+      .replace("mainBranch: 'main',", "mainBranch: 'main',\n  stripEnv: ['MY_SCOPE'],")
+      .replace(
+        "command: 'echo lint >> \"$RUN_LOG\"'",
+        "command: 'echo \"lint:${JEST_CHANGED_SINCE-unset}:${TURBO_SCM_HEAD-unset}:${MY_SCOPE-unset}:${TURBO_SCM_BASE-unset}\" >> \"$RUN_LOG\"', env: { TURBO_SCM_BASE: 'origin/main' }",
+      );
+    repo.commit('scope', { 'verify-local.config.mjs': config });
+    const narrowed = { JEST_CHANGED_SINCE: 'HEAD', TURBO_SCM_HEAD: 'HEAD', TURBO_SCM_BASE: 'HEAD', MY_SCOPE: 'x' };
+    const { status } = await verify('pr', [], { ...repo.options, env: { ...repo.env, ...narrowed } });
+    assert.equal(status, 0);
+    // A check's own env still applies: here it sets TURBO_SCM_BASE itself.
+    assert.ok(repo.runs().includes('lint:unset:unset:unset:origin/main'), repo.runs().join('\n'));
+    assert.ok(repo.lines.some((line) => line.includes('ignored JEST_CHANGED_SINCE, TURBO_SCM_BASE, TURBO_SCM_HEAD, MY_SCOPE from the environment')));
+  });
 });
 
 describe('verify:release and the deploy guard', () => {
-  test('release reuses identical checks, reruns per-commit ones, and covers the requested targets', async () => {
+  test('release runs every check again, even one the PR proof of the same tree passed, and covers the requested targets', async () => {
     const repo = makeRepository();
+    // The release runs the database check too: say the database is up.
+    repo.env.DB_AVAILABLE = '1';
     repo.git(['checkout', '--quiet', '-b', 'feature']);
     const head = repo.commit('feature', { 'src/b.js': '1\n' });
     assert.equal((await verify('pr', [], repo.options)).status, 0);
@@ -232,8 +343,8 @@ describe('verify:release and the deploy guard', () => {
 
     const release = await verify('release', ['--target', 'site'], repo.options);
     assert.equal(release.status, 0);
-    // site-check was out of scope for the PR, so the release runs it once.
-    assert.deepEqual(repo.runs(), ['site-check', `build:${head}`, 'site']);
+    assert.deepEqual(repo.runs(), ['lint', 'test', 'db', 'site-check', `build:${head}`, 'site']);
+    assert.ok(release.proof.checks.every((check) => !check.reused), 'a release reuses nothing');
     assert.deepEqual(release.proof.targets, ['site']);
 
     // A PR run on the same tree keeps the release proof.
@@ -245,15 +356,18 @@ describe('verify:release and the deploy guard', () => {
     assert.equal(unknown.status, 64);
   });
 
-  test('on the main commit, a releaseAlways check runs while a plain when check stays out of scope', async () => {
+  test('on the main commit, a release runs every check, when ones included, while a PR run has nothing in scope', async () => {
     const repo = makeRepository();
+    // The release runs the database check too: say the database is up.
+    repo.env.DB_AVAILABLE = '1';
     const head = repo.commit('site', { 'site/index.html': '<p>ok</p>\n' });
     repo.git(['push', '--quiet', 'origin', 'main']);
     const { status, proof } = await verify('release', [], repo.options);
     assert.equal(status, 0);
     assert.equal(proof.sha, head);
-    assert.equal(proof.checks.find((check) => check.name === 'db').result, 'skipped');
+    assert.equal(proof.checks.find((check) => check.name === 'db').result, 'passed');
     assert.ok(repo.runs().includes('site-check'));
+    assert.ok(repo.runs().includes('db'), 'a when check runs at release although nothing changed since origin/main');
     repo.clearRuns();
     await verify('pr', ['--force'], repo.options);
     assert.deepEqual(repo.runs(), ['lint', 'test'], 'a PR run on main has no path in scope');
@@ -299,8 +413,27 @@ describe('verify:release and the deploy guard', () => {
     assert.match(proof.packageManager ?? '', /^npm@\d+\./);
   });
 
+  test('a release runs again a check whose identical inputs passed on another tree', async () => {
+    const repo = makeRepository();
+    // The release runs the database check too: say the database is up.
+    repo.env.DB_AVAILABLE = '1';
+    repo.git(['checkout', '--quiet', '-b', 'feature']);
+    repo.commit('feature', { 'src/b.js': '1\n' });
+    assert.equal((await verify('pr', [], repo.options)).status, 0);
+    repo.commit('docs', { 'docs/readme.md': '# more\n' });
+    repo.clearRuns();
+    assert.equal((await verify('pr', [], repo.options)).status, 0);
+    assert.ok(!repo.runs().includes('lint'), 'a PR reuses lint: its inputs (src/**) did not change');
+    repo.clearRuns();
+    const release = await verify('release', [], repo.options);
+    assert.equal(release.status, 0);
+    assert.ok(repo.runs().includes('lint'), 'a release runs lint again');
+  });
+
   test('a failed or incomplete release run never replaces a passed PR proof', async () => {
     const repo = makeRepository();
+    // The release runs the database check too: say the database is up.
+    repo.env.DB_AVAILABLE = '1';
     repo.git(['checkout', '--quiet', '-b', 'feature']);
     const head = repo.commit('feature', { 'src/b.js': '1\n' });
     assert.equal((await verify('pr', [], repo.options)).status, 0);
@@ -316,29 +449,35 @@ describe('verify:release and the deploy guard', () => {
     repo.clearRuns();
     const passing = await verify('release', [], repo.options);
     assert.equal(passing.status, 0);
-    assert.deepEqual(repo.runs(), [`build:${head}`], 'the failed build runs again, the PR checks are reused');
+    assert.deepEqual(repo.runs(), ['lint', 'test', 'db', 'site-check', `build:${head}`], 'every release check runs again');
     assert.equal(readProof(commonDir, tree).kind, 'release');
   });
 
-  test('an incomplete run for one more target never replaces a passed release proof', async () => {
+  test('a failed run for one more target never replaces a passed release proof', async () => {
     const repo = makeRepository();
+    // The release runs the database check too: say the database is up.
+    repo.env.DB_AVAILABLE = '1';
     repo.git(['checkout', '--quiet', '-b', 'feature']);
     const head = repo.commit('feature', { 'src/b.js': '1\n' });
     assert.equal((await verify('release', [], repo.options)).status, 0);
     const failing = await verify('release', ['--target', 'site'], { ...repo.options, env: { ...repo.env, FAIL_BUILD: '1' } });
-    assert.equal(failing.status, 0, 'build is reused, site-e2e passes');
+    assert.equal(failing.status, 1, 'the build runs again and fails');
     const commonDir = path.join(repo.work, '.git');
     const tree = repo.git(['rev-parse', `${head}^{tree}`]);
-    assert.deepEqual(readProof(commonDir, tree).targets, ['site']);
+    const kept = readProof(commonDir, tree);
+    assert.equal(kept.result, 'passed');
+    assert.deepEqual(kept.targets, []);
+    assert.ok(existsSync(path.join(commonDir, 'verify-proofs', `${tree}.release-attempt.json`)));
 
-    // A rerun that only reuses this tree's results keeps the proof and its counts.
-    const before = readFileSync(path.join(commonDir, 'verify-proofs', `${tree}.json`), 'utf8');
+    // A passing run for the target extends the proof of the same commit.
     assert.equal((await verify('release', ['--target', 'site'], repo.options)).status, 0);
-    assert.equal(readFileSync(path.join(commonDir, 'verify-proofs', `${tree}.json`), 'utf8'), before);
+    assert.deepEqual(readProof(commonDir, tree).targets, ['site']);
   });
 
   test('a check that needs a real install replaces the linked node_modules first', async () => {
     const repo = makeRepository();
+    // The release runs the database check too: say the database is up.
+    repo.env.DB_AVAILABLE = '1';
     repo.git(['checkout', '--quiet', '-b', 'feature']);
     repo.commit('feature', { 'src/b.js': '1\n' });
     mkdirSync(path.join(repo.work, 'node_modules', 'ext'), { recursive: true });
@@ -352,6 +491,8 @@ describe('verify:release and the deploy guard', () => {
 
   test('a deploy needs a release proof for HEAD = origin/main; a PR proof or another commit is refused', async () => {
     const repo = makeRepository();
+    // The release runs the database check too: say the database is up.
+    repo.env.DB_AVAILABLE = '1';
     repo.git(['checkout', '--quiet', '-b', 'feature']);
     const head = repo.commit('feature', { 'src/b.js': '1\n' });
     assert.equal((await verify('release', [], repo.options)).status, 0);
@@ -368,7 +509,7 @@ describe('verify:release and the deploy guard', () => {
 
     repo.clearRuns();
     assert.equal((await verify('release', [], repo.options)).status, 0);
-    assert.deepEqual(repo.runs(), [`build:${squash}`], 'only the per-commit build runs again');
+    assert.deepEqual(repo.runs(), ['lint', 'test', 'db', 'site-check', `build:${squash}`], 'every release check runs again on the delivered commit');
     assert.deepEqual(checkReleaseProof({ cwd: repo.work, env: repo.env, fetch: false }).failures, []);
     assert.deepEqual(
       checkReleaseProof({ cwd: repo.work, env: repo.env, fetch: false, targets: ['site'] }).failures.map((failure) => failure.check),
@@ -387,6 +528,28 @@ describe('verify:release and the deploy guard', () => {
     assert.ok(checkReleaseProof({ cwd: repo.work, env: repo.env, fetch: false }).failures.some((failure) => failure.check === 'clean-tree'));
   });
 
+  test('the deploy guard refuses a forged external entry and a proof of an older format', async () => {
+    const repo = makeRepository();
+    const head = repo.git(['rev-parse', 'HEAD']);
+    const tree = repo.git(['rev-parse', 'HEAD^{tree}']);
+    const commonDir = path.join(repo.work, '.git');
+    const forged = (version, external) => ({
+      version, rule: 'regle-commune-livraison v2', kind: 'release', sha: head, tree, clean: true, result: 'passed',
+      startedAt: 'x', finishedAt: 'x', command: 'x', node: process.version, packageManager: null, targets: [],
+      checks: [{ name: 'test', result: 'passed', external, specialised: false }],
+    });
+    mkdirSync(path.join(commonDir, 'verify-proofs'), { recursive: true });
+    const file = path.join(commonDir, 'verify-proofs', `${tree}.json`);
+
+    writeFileSync(file, JSON.stringify(forged(2, 'x')));
+    const older = checkReleaseProof({ cwd: repo.work, env: repo.env, fetch: false }).failures;
+    assert.deepEqual(older.map((failure) => failure.check), ['proof-present']);
+    assert.match(older[0].message, new RegExp(`has format 2, older than ${PROOF_FORMAT_VERSION}`));
+
+    writeFileSync(file, JSON.stringify(forged(PROOF_FORMAT_VERSION, 'x')));
+    assert.deepEqual(checkReleaseProof({ cwd: repo.work, env: repo.env, fetch: false }).failures.map((failure) => failure.check), ['proof-external']);
+  });
+
   test('proof-block prints the Local proof section the merge gate reads', async () => {
     const repo = makeRepository();
     repo.git(['checkout', '--quiet', '-b', 'feature']);
@@ -401,6 +564,64 @@ describe('verify:release and the deploy guard', () => {
     assert.match(block, /^- Result: passed/m);
     assert.match(block, /^- Tree \(`git rev-parse <sha>\^\{tree\}`\): `[0-9a-f]{40}`$/m);
     assert.match(block, /^- Integration: base unchanged/m);
+    assert.doesNotMatch(block, /Delivery checks changed/);
+  });
+
+  test('proof-block flags a change to the checks themselves for the owner', async () => {
+    const repo = makeRepository();
+    repo.git(['checkout', '--quiet', '-b', 'feature']);
+    const config = readFileSync(path.join(repo.work, 'verify-local.config.mjs'), 'utf8');
+    repo.commit('relax', { 'verify-local.config.mjs': config.replace("allow: ['public/*.pem']", "allow: ['public/*.pem', '**/*.key']") });
+    await verify('pr', [], repo.options);
+    repo.lines.length = 0;
+    await proofBlock([], repo.options);
+    assert.match(repo.lines.join('\n'), /^- Delivery checks changed: verify-local.config.mjs \(needs the owner's review\)$/m);
+  });
+
+  test('proof-block also flags the repository check scripts and package.json changes', async () => {
+    const repo = makeRepository();
+    const config = readFileSync(path.join(repo.work, 'verify-local.config.mjs'), 'utf8')
+      .replace("mainBranch: 'main',", "mainBranch: 'main',\n  deliveryFiles: ['scripts/lint-changed.mjs'],");
+    repo.commit('declare', { 'verify-local.config.mjs': config });
+    repo.git(['push', '--quiet', 'origin', 'main']);
+    repo.git(['checkout', '--quiet', '-b', 'feature']);
+    repo.commit('weaken', {
+      'scripts/lint-changed.mjs': 'process.exit(0);\n',
+      'package.json': '{ "name": "fixture", "packageManager": "npm@11.0.0", "scripts": { "lint": "true" } }\n',
+    });
+    await verify('pr', [], repo.options);
+    repo.lines.length = 0;
+    await proofBlock([], repo.options);
+    assert.match(repo.lines.join('\n'), /^- Delivery checks changed: scripts\/lint-changed.mjs, package.json \(needs the owner's review\)$/m);
+
+    // A workspace's scripts, tool config inside a package.json and tool config files count too.
+    repo.commit('weaken more', {
+      'apps/web/package.json': '{ "name": "web", "scripts": { "test": "true" } }\n',
+      'apps/web/tsconfig.json': '{ "compilerOptions": { "strict": false } }\n',
+      'eslint.config.mjs': 'export default [];\n',
+      'apps/mobile/package.json': '{ "name": "mobile", "jest": { "passWithNoTests": true, "testPathIgnorePatterns": [".*"] } }\n',
+      'supabase/functions/deno.json': '{ "test": { "exclude": ["api/"] } }\n',
+      'sdk/python/pyproject.toml': '[tool.pytest.ini_options]\naddopts = "--collect-only"\n',
+    });
+    await verify('pr', [], repo.options);
+    repo.lines.length = 0;
+    await proofBlock([], repo.options);
+    const flagged = repo.lines.join('\n');
+    for (const item of ['apps/web/package.json', 'apps/web/tsconfig.json', 'eslint.config.mjs', 'apps/mobile/package.json', 'supabase/functions/deno.json', 'sdk/python/pyproject.toml']) {
+      assert.ok(flagged.includes(item), `${item} is flagged`);
+    }
+
+    // A dependency or version bump alone is not flagged, nor is a key reordering.
+    repo.git(['checkout', '--quiet', 'main']);
+    repo.git(['checkout', '--quiet', '-b', 'deps']);
+    repo.commit('bump', {
+      'package-lock.json': '{ "lockfileVersion": 3, "bump": 1 }\n',
+      'package.json': '{ "packageManager": "npm@11.0.0", "name": "fixture", "version": "2.0.0", "dependencies": { "ext": "^1.0.0" } }\n',
+    });
+    await verify('pr', [], repo.options);
+    repo.lines.length = 0;
+    await proofBlock([], repo.options);
+    assert.doesNotMatch(repo.lines.join('\n'), /Delivery checks changed/);
   });
 });
 
@@ -495,6 +716,37 @@ describe('pre-push hook', () => {
     const afterProof = await hookRun(repo, line);
     assert.match(afterProof.output, /pr proof passed/);
   });
+
+  test('the secret scan fails closed when git cannot read the blobs', () => {
+    assert.equal(readBlobs(path.join(scratch, 'no-such-repository'), cleanGitEnv(), [{ file: 'a', object: 'b'.repeat(40) }]), null);
+  });
+
+  // A git whose `cat-file --batch` fails or answers short; everything else is real git.
+  function fakeGit(repo, mode) {
+    const bin = path.join(repo.base, `fake-git-${mode}`);
+    mkdirSync(bin, { recursive: true });
+    const realGit = spawnSync('sh', ['-c', 'command -v git'], { encoding: 'utf8' }).stdout.trim();
+    const batch = mode === 'fail'
+      ? 'exit 1'
+      : `"${realGit}" "$@" | head -c 60`;
+    writeFileSync(path.join(bin, 'git'), `#!/bin/sh\nif [ "$1" = cat-file ] && [ "$2" = --batch ]; then\n  ${batch}\n  exit $?\nfi\nexec "${realGit}" "$@"\n`, { mode: 0o755 });
+    return { ...repo.env, PATH: `${bin}:${process.env.PATH}` };
+  }
+
+  for (const mode of ['fail', 'short']) {
+    test(`the hook blocks a push when cat-file ${mode === 'fail' ? 'fails' : 'answers short'}`, async () => {
+      const repo = makeRepository();
+      repo.git(['checkout', '--quiet', '-b', 'feature']);
+      const fake = ['AKIA', 'ABCDEFGHIJKLMNOP'].join('');
+      const sha = repo.commit('key', { 'src/config.js': `${'// padding\n'.repeat(20)}const key = "${fake}";\n` });
+      const output = [];
+      const result = await prePush('origin', `refs/heads/feature ${sha} refs/heads/feature ${ZERO}\n`, {
+        cwd: repo.work, env: fakeGit(repo, mode), log: (line) => output.push(line), error: (line) => output.push(line),
+      });
+      assert.equal(result.status, 1, output.join('\n'));
+      assert.match(output.join('\n'), /secret scan did not run/);
+    });
+  }
 
   test('a real git push runs the hook in under 10 seconds', () => {
     const repo = makeRepository();
