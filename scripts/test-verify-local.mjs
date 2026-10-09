@@ -132,6 +132,8 @@ describe('verify:pr', () => {
     assert.ok(existsSync(path.join(commonDir, 'verify-proofs', `${tree}.json`)));
     assert.equal(readFileSync(path.join(repo.work, 'src/a.js'), 'utf8'), 'broken\n');
     assert.equal(repo.git(['worktree', 'list']).split('\n').length, 1, 'the isolated copy is removed');
+    // The committed config is loaded from the clone's own git directory, whatever the current directory.
+    assert.ok(existsSync(path.join(commonDir, 'verify-local')), 'config copy kept in the shared git directory');
     assert.equal(proof.checks.find((check) => check.name === 'db').result, 'skipped');
   });
 

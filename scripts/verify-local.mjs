@@ -119,7 +119,7 @@ export async function loadConfig(git, rev, { scratchDir } = {}) {
     throw new UsageError(`${CONFIG_FILE} is missing at ${rev}.`);
   }
   const digest = createHash('sha256').update(source).digest('hex').slice(0, 16);
-  const dir = scratchDir ?? path.resolve(git(['rev-parse', '--git-common-dir']), 'verify-local');
+  const dir = scratchDir ?? path.join(git(['rev-parse', '--path-format=absolute', '--git-common-dir']), 'verify-local');
   const file = path.join(dir, `config-${digest}.mjs`);
   if (!existsSync(file)) {
     mkdirSync(dir, { recursive: true });
