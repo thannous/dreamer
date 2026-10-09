@@ -5231,47 +5231,152 @@
       "en": {
         "slug": "mountain",
         "name": "Mountain",
-        "shortDescription": "A mountain represents challenges, ambitious goals, and spiritual quest. Climbing a mountain symbolizes efforts to reach your goals.",
+        "shortDescription": "Dreaming of a mountain often puts you in front of something big: a goal, an obstacle, an effort that will take time. Where you stood matters most. At the foot, halfway up, on the summit or slipping down, each scene asks a different question.",
         "askYourself": [
-          "What challenge am I facing?",
-          "Is the effort worth it?"
-        ]
+          "Was I looking at the mountain, climbing it, standing on top or coming down?",
+          "Did the climb feel exciting, exhausting, frightening or peaceful?",
+          "What in my life right now feels like a long climb, and who chose it?"
+        ],
+        "faq": [
+          {
+            "question": "What does it mean to dream of a mountain?",
+            "answer": "A mountain is often associated with a big goal, an obstacle or a long effort. Its meaning depends mostly on where you were (at the foot, climbing, on the summit) and on how the climb felt to you."
+          },
+          {
+            "question": "What does it mean to dream of climbing a mountain?",
+            "answer": "Climbing can go with a project or a stage of life that asks for steady effort. Notice whether you climbed easily or with difficulty, alone or with others, and whether you knew where the path led."
+          },
+          {
+            "question": "What does it mean to reach the top of a mountain in a dream?",
+            "answer": "Reaching the summit can match relief, pride or a sudden wider view of your situation. Some people also feel empty or exposed up there. What you saw from the top and how you felt are the main clues."
+          },
+          {
+            "question": "What does falling from a mountain mean in a dream?",
+            "answer": "Slipping or falling can echo a fear of losing ground, after a setback or under pressure. It is not a sign of failure to come. Note what made you fall and whether you landed: those details guide the reading."
+          }
+        ],
+        "documentMetaDescription": "Dreaming of a mountain, climbing it, reaching the summit or falling: what the scene may say about a goal or an obstacle, with questions and a journal example.",
+        "modifiedAt": "2026-10-08"
       },
       "fr": {
         "slug": "montagne",
         "name": "Montagne",
-        "shortDescription": "La montagne représente les défis, les objectifs ambitieux et la quête spirituelle. Gravir une montagne symbolise les efforts pour atteindre vos buts.",
+        "shortDescription": "Rêver d'une montagne vous place souvent devant quelque chose de grand : un objectif, un obstacle, un effort qui prendra du temps. L'endroit où vous étiez compte le plus : au pied, en pleine montée, au sommet ou en train de glisser.",
         "askYourself": [
-          "Quel défi suis-je en train de relever ?",
-          "Est-ce que l'effort en vaut la peine ?"
-        ]
+          "Étais-je au pied de la montagne, en train de grimper, au sommet ou en descente ?",
+          "La montée était-elle grisante, épuisante, effrayante ou paisible ?",
+          "Qu'est-ce qui ressemble en ce moment à une longue ascension, et qui l'a choisie ?"
+        ],
+        "faq": [
+          {
+            "question": "Que signifie rêver d'une montagne ?",
+            "answer": "La montagne est souvent associée à un grand objectif, à un obstacle ou à un effort de longue haleine. Son sens dépend surtout de votre position (au pied, en montée, au sommet) et de ce que vous ressentiez."
+          },
+          {
+            "question": "Que signifie rêver de gravir une montagne ?",
+            "answer": "Gravir une montagne peut accompagner un projet ou une étape de vie qui demande un effort soutenu. Notez si vous montiez facilement ou péniblement, seul ou accompagné, et si vous saviez où menait le chemin."
+          },
+          {
+            "question": "Que signifie arriver au sommet d'une montagne en rêve ?",
+            "answer": "Atteindre le sommet peut rejoindre un soulagement, une fierté ou une vue d'ensemble soudaine. Certains s'y sentent aussi vides ou exposés. Ce que vous voyiez d'en haut et ce que vous ressentiez sont les meilleurs indices."
+          },
+          {
+            "question": "Que signifie tomber d'une montagne en rêve ?",
+            "answer": "Glisser ou tomber peut faire écho à la peur de perdre du terrain, après un revers ou sous pression. Ce n'est pas l'annonce d'un échec. Notez ce qui vous a fait tomber et si vous avez touché le sol."
+          }
+        ],
+        "documentMetaDescription": "Rêver d'une montagne, de la gravir, d'atteindre le sommet ou d'en tomber : ce que la scène peut dire d'un objectif ou d'un obstacle, avec questions et exemple.",
+        "modifiedAt": "2026-10-08"
       },
       "es": {
         "slug": "montana",
         "name": "Montaña",
-        "shortDescription": "Una montaña representa desafíos, metas ambiciosas y búsqueda espiritual. Escalar una montaña simboliza esfuerzos para alcanzar tus objetivos.",
+        "shortDescription": "Soñar con una montaña suele ponerte delante de algo grande: una meta, un obstáculo, un esfuerzo que llevará tiempo. Lo que más cuenta es dónde estabas: al pie, subiendo, en la cima o resbalando ladera abajo.",
         "askYourself": [
-          "¿Qué desafío estoy enfrentando?",
-          "¿Vale la pena el esfuerzo?"
-        ]
+          "¿Estaba al pie de la montaña, subiendo, en la cima o bajando?",
+          "¿La subida era emocionante, agotadora, aterradora o tranquila?",
+          "¿Qué se parece ahora mismo a una larga subida, y quién la eligió?"
+        ],
+        "faq": [
+          {
+            "question": "¿Qué significa soñar con una montaña?",
+            "answer": "La montaña se asocia a menudo con una gran meta, un obstáculo o un esfuerzo de largo recorrido. Su sentido depende sobre todo de dónde estabas (al pie, subiendo, en la cima) y de lo que sentías."
+          },
+          {
+            "question": "¿Qué significa soñar que subes una montaña?",
+            "answer": "Subir una montaña puede acompañar un proyecto o una etapa que pide un esfuerzo constante. Fíjate en si subías con facilidad o con dificultad, solo o en compañía, y en si sabías adónde llevaba el camino."
+          },
+          {
+            "question": "¿Qué significa llegar a la cima de una montaña en sueños?",
+            "answer": "Llegar a la cima puede enlazar con alivio, orgullo o una visión de conjunto repentina. Hay quien también se siente vacío o expuesto allí arriba. Lo que veías desde lo alto y lo que sentías son las mejores pistas."
+          },
+          {
+            "question": "¿Qué significa caerse de una montaña en sueños?",
+            "answer": "Resbalar o caer puede hacer eco del miedo a perder terreno, tras un tropiezo o bajo presión. No anuncia un fracaso. Anota qué te hizo caer y si llegaste a tocar el suelo."
+          }
+        ],
+        "documentMetaDescription": "Soñar con una montaña, subirla, llegar a la cima o caerte: qué puede decir la escena sobre una meta o un obstáculo, con preguntas y un ejemplo de diario.",
+        "modifiedAt": "2026-10-08"
       },
       "de": {
         "slug": "berg",
         "name": "Berg",
-        "shortDescription": "Berge symbolisieren Herausforderungen, Ambitionen und spirituelle Erhebung. Einen Berg zu besteigen deutet auf Anstrengung und Entschlossenheit hin, den Gipfel zu erreichen auf Erfolg.",
+        "shortDescription": "Von einem Berg zu träumen stellt Sie oft vor etwas Großes: ein Ziel, ein Hindernis, eine Anstrengung, die Zeit braucht. Am meisten zählt, wo Sie standen: am Fuß des Berges, mitten im Aufstieg, auf dem Gipfel oder beim Abrutschen.",
         "askYourself": [
-          "Welche große Herausforderung steht vor mir?",
-          "Welche Ambitionen verfolge ich?"
-        ]
+          "Stand ich am Fuß des Berges, war ich im Aufstieg, auf dem Gipfel oder im Abstieg?",
+          "War der Aufstieg aufregend, erschöpfend, beängstigend oder ruhig?",
+          "Was fühlt sich gerade wie ein langer Aufstieg an, und wer hat ihn gewählt?"
+        ],
+        "faq": [
+          {
+            "question": "Was bedeutet es, von einem Berg zu träumen?",
+            "answer": "Der Berg wird oft mit einem großen Ziel, einem Hindernis oder einer langen Anstrengung verbunden. Was er bedeutet, hängt vor allem davon ab, wo Sie waren (am Fuß, im Aufstieg, auf dem Gipfel) und was Sie dabei gefühlt haben."
+          },
+          {
+            "question": "Was bedeutet es, im Traum einen Berg zu besteigen?",
+            "answer": "Ein Aufstieg kann ein Projekt oder eine Lebensphase begleiten, die ausdauernde Anstrengung verlangt. Achten Sie darauf, ob Sie leicht oder mühsam stiegen, allein oder mit anderen, und ob Sie wussten, wohin der Weg führt."
+          },
+          {
+            "question": "Was bedeutet es, im Traum auf dem Gipfel zu stehen?",
+            "answer": "Den Gipfel zu erreichen kann Erleichterung, Stolz oder einen plötzlichen Überblick begleiten. Manche fühlen sich dort oben auch leer oder ausgesetzt. Was Sie von oben sahen und was Sie fühlten, sind die besten Hinweise."
+          },
+          {
+            "question": "Was bedeutet es, im Traum von einem Berg zu fallen?",
+            "answer": "Abrutschen oder Fallen kann die Angst aufgreifen, Boden zu verlieren, nach einem Rückschlag oder unter Druck. Ein Zeichen für kommendes Scheitern ist es nicht. Notieren Sie, was Sie stürzen ließ und ob Sie aufkamen."
+          }
+        ],
+        "documentMetaDescription": "Berg im Traum: ihn besteigen, auf dem Gipfel stehen oder abstürzen. Was die Szene über ein Ziel oder Hindernis sagen kann, mit Fragen und Tagebuchbeispiel.",
+        "modifiedAt": "2026-10-08"
       },
       "it": {
         "slug": "montagna",
         "name": "Montagna",
-        "shortDescription": "Le montagne simboleggiano sfide, ambizioni ed elevazione spirituale. Scalare una montagna indica sforzo e determinazione, raggiungere la cima rappresenta il successo.",
+        "shortDescription": "Sognare una montagna ti mette spesso davanti a qualcosa di grande: un obiettivo, un ostacolo, uno sforzo che richiederà tempo. Conta soprattutto dove ti trovavi: ai piedi, in salita, in vetta o mentre scivolavi giù.",
         "askYourself": [
-          "Quale grande sfida ho davanti a me?",
-          "Quali ambizioni sto perseguendo?"
-        ]
+          "Ero ai piedi della montagna, in salita, in vetta o in discesa?",
+          "La salita era entusiasmante, sfiancante, spaventosa o tranquilla?",
+          "Che cosa somiglia in questo periodo a una lunga salita, e chi l’ha scelta?"
+        ],
+        "faq": [
+          {
+            "question": "Cosa significa sognare una montagna?",
+            "answer": "La montagna viene spesso associata a un grande obiettivo, a un ostacolo o a uno sforzo di lunga durata. Il significato dipende soprattutto da dove ti trovavi (ai piedi, in salita, in vetta) e da ciò che provavi."
+          },
+          {
+            "question": "Cosa significa sognare di scalare una montagna?",
+            "answer": "Scalare una montagna può accompagnare un progetto o una fase della vita che chiede uno sforzo costante. Nota se salivi con facilità o a fatica, da solo o in compagnia, e se sapevi dove portava il sentiero."
+          },
+          {
+            "question": "Cosa significa arrivare in cima a una montagna in sogno?",
+            "answer": "Raggiungere la vetta può avvicinarsi al sollievo, all’orgoglio o a una visione d’insieme improvvisa. C’è anche chi lassù si sente vuoto o esposto. Ciò che vedevi dall’alto e ciò che provavi sono gli indizi migliori."
+          },
+          {
+            "question": "Cosa significa cadere da una montagna in sogno?",
+            "answer": "Scivolare o cadere può fare eco alla paura di perdere terreno, dopo un passo falso o sotto pressione. Non annuncia un fallimento. Annota che cosa ti ha fatto cadere e se hai toccato terra."
+          }
+        ],
+        "documentMetaDescription": "Sognare una montagna, scalarla, arrivare in vetta o cadere: che cosa può dire la scena di un obiettivo o di un ostacolo, con domande ed esempio di diario.",
+        "modifiedAt": "2026-10-08"
       },
       "pt": {
         "slug": "montanha",
@@ -6336,47 +6441,152 @@
       "en": {
         "slug": "wedding",
         "name": "Wedding",
-        "shortDescription": "Dreams about weddings often symbolize commitment, new beginnings, or significant life transitions beyond marriage.",
+        "shortDescription": "Dreaming of a wedding is rarely only about marriage. The scene often goes with a commitment, a new chapter or a choice that will be hard to undo. Whose wedding it was, and whether the day went smoothly or wrong, says more than the ceremony itself.",
         "askYourself": [
-          "What commitment am I making or considering?",
-          "What new chapter is beginning in my life?"
-        ]
+          "Whose wedding was it: mine, a friend's, an ex's, a stranger's?",
+          "Did the day go to plan, or did something go wrong?",
+          "What commitment, decision or new chapter is on my mind right now?"
+        ],
+        "faq": [
+          {
+            "question": "What does it mean to dream of a wedding?",
+            "answer": "A wedding is often associated with commitment, a new stage of life or a decision that ties you to something. It is not always about romance. Whose wedding it was and how you felt during it point to the most useful lead."
+          },
+          {
+            "question": "What does it mean to dream of your own wedding?",
+            "answer": "Your own wedding can go with a commitment you are making or weighing: a relationship, a job, a move, a project. If you are actually planning a wedding, the dream may simply be replaying the preparations and worries."
+          },
+          {
+            "question": "What does it mean to dream of someone else's wedding?",
+            "answer": "Watching someone else marry can echo a change in that person's life or in your relationship with them. It can also stir a feeling of being left behind. Who was getting married, and where were you in the room?"
+          },
+          {
+            "question": "What does it mean when a wedding goes wrong in a dream?",
+            "answer": "A missing dress, a late arrival or an empty altar often go with doubt, pressure or a fear of getting a big choice wrong. These dreams are common before real weddings too. They do not predict that anything will go badly."
+          }
+        ],
+        "documentMetaDescription": "Dreaming of a wedding, your own, an ex's or one that goes wrong: what the scene may say about commitment and change, with questions and a journal example.",
+        "modifiedAt": "2026-10-08"
       },
       "fr": {
         "slug": "mariage",
         "name": "Mariage",
-        "shortDescription": "Les rêves de mariage symbolisent souvent l'engagement, les nouveaux départs ou des transitions importantes au-delà du mariage.",
+        "shortDescription": "Rêver d'un mariage parle rarement du mariage seulement. La scène accompagne souvent un engagement, un nouveau chapitre ou un choix difficile à défaire. De qui était le mariage, et si la journée se passait bien ou mal, en dit plus que la cérémonie.",
         "askYourself": [
-          "Quel engagement suis-je en train de prendre ou de considérer ?",
-          "Quel nouveau chapitre commence dans ma vie ?"
-        ]
+          "De qui était le mariage : le mien, celui d'un proche, d'un ex, d'un inconnu ?",
+          "La journée s'est-elle passée comme prévu, ou quelque chose a-t-il dérapé ?",
+          "Quel engagement, quelle décision ou quel nouveau chapitre m'occupe en ce moment ?"
+        ],
+        "faq": [
+          {
+            "question": "Que signifie rêver d'un mariage ?",
+            "answer": "Le mariage est souvent associé à l'engagement, à une nouvelle étape de vie ou à une décision qui lie. Il ne parle pas toujours d'amour. De qui était le mariage et ce que vous ressentiez orientent vers la piste la plus utile."
+          },
+          {
+            "question": "Que signifie rêver de son propre mariage ?",
+            "answer": "Votre propre mariage peut accompagner un engagement que vous prenez ou envisagez : une relation, un poste, un déménagement, un projet. Si vous préparez réellement un mariage, le rêve peut simplement rejouer les préparatifs et les soucis."
+          },
+          {
+            "question": "Que signifie rêver du mariage de quelqu'un d'autre ?",
+            "answer": "Assister au mariage d'un autre peut faire écho à un changement dans sa vie ou dans votre lien avec cette personne. La scène peut aussi réveiller l'impression d'être laissé de côté. Qui se mariait, et où étiez-vous ?"
+          },
+          {
+            "question": "Que signifie un mariage qui tourne mal en rêve ?",
+            "answer": "Une robe introuvable, un retard, un autel vide accompagnent souvent un doute, une pression ou la peur de se tromper sur un grand choix. Ces rêves sont fréquents avant de vrais mariages. Ils ne prédisent pas que les choses iront mal."
+          }
+        ],
+        "documentMetaDescription": "Rêver d'un mariage, du sien, de celui d'un ex ou d'une cérémonie qui tourne mal : ce que la scène peut dire d'un engagement, avec questions et exemple.",
+        "modifiedAt": "2026-10-08"
       },
       "es": {
         "slug": "boda",
         "name": "Boda",
-        "shortDescription": "Los sueños sobre bodas simbolizan compromiso, nuevos comienzos o transiciones importantes más allá del matrimonio.",
+        "shortDescription": "Soñar con una boda pocas veces habla solo de casarse. La escena suele acompañar un compromiso, una nueva etapa o una decisión difícil de deshacer. De quién era la boda, y si todo salía bien o se torcía, dice más que la ceremonia.",
         "askYourself": [
-          "¿Qué compromiso estoy haciendo o considerando?",
-          "¿Qué nuevo capítulo está comenzando en mi vida?"
-        ]
+          "¿De quién era la boda: la mía, la de un amigo, la de mi ex, la de un desconocido?",
+          "¿El día salió como estaba previsto, o algo se torció?",
+          "¿Qué compromiso, decisión o etapa nueva tengo ahora mismo en la cabeza?"
+        ],
+        "faq": [
+          {
+            "question": "¿Qué significa soñar con una boda?",
+            "answer": "La boda se asocia a menudo con el compromiso, una nueva etapa o una decisión que te ata a algo. No siempre habla de amor. De quién era la boda y lo que sentiste durante ella señalan la pista más útil."
+          },
+          {
+            "question": "¿Qué significa soñar con tu propia boda?",
+            "answer": "Tu propia boda puede acompañar un compromiso que estás asumiendo o sopesando: una relación, un trabajo, una mudanza, un proyecto. Si de verdad estás preparando una boda, el sueño puede limitarse a repasar preparativos y nervios."
+          },
+          {
+            "question": "¿Qué significa soñar con la boda de otra persona?",
+            "answer": "Ver casarse a otra persona puede hacer eco de un cambio en su vida o en vuestra relación. También puede despertar la sensación de quedarte atrás. ¿Quién se casaba y dónde estabas tú?"
+          },
+          {
+            "question": "¿Qué significa soñar que una boda sale mal?",
+            "answer": "Un vestido que no aparece, un retraso o un altar vacío suelen acompañar dudas, presión o miedo a equivocarte en una decisión importante. Estos sueños son frecuentes antes de bodas reales. No predicen que nada vaya a salir mal."
+          }
+        ],
+        "documentMetaDescription": "Soñar con una boda, con la tuya, la de tu ex o una que sale mal: qué puede decir la escena sobre un compromiso o un cambio, con preguntas y un ejemplo.",
+        "modifiedAt": "2026-10-08"
       },
       "de": {
         "slug": "hochzeit",
         "name": "Hochzeit",
-        "shortDescription": "Hochzeiten symbolisieren Vereinigung, Bindung und das Zusammenbringen verschiedener Aspekte des Selbst. Sie können neue Partnerschaften, Verpflichtungen oder innere Integration darstellen.",
+        "shortDescription": "Von einer Hochzeit zu träumen handelt selten nur vom Heiraten. Die Szene begleitet oft eine Bindung, einen neuen Lebensabschnitt oder eine Entscheidung, die sich schwer umkehren lässt. Wessen Hochzeit es war und ob alles glattlief, sagt mehr als die Zeremonie.",
         "askYourself": [
-          "Welche Aspekte meines Lebens integriere ich?",
-          "Bin ich bereit für eine tiefere Bindung?"
-        ]
+          "Wessen Hochzeit war es: meine, die von Freunden, die meines Ex, die eines Fremden?",
+          "Lief der Tag wie geplant, oder ging etwas schief?",
+          "Welche Bindung, welche Entscheidung oder welcher neue Abschnitt beschäftigt mich gerade?"
+        ],
+        "faq": [
+          {
+            "question": "Was bedeutet es, von einer Hochzeit zu träumen?",
+            "answer": "Die Hochzeit wird oft mit Bindung, einem neuen Lebensabschnitt oder einer verpflichtenden Entscheidung verbunden. Um Liebe geht es nicht immer. Wessen Hochzeit es war und was Sie dabei gefühlt haben, weist auf die nützlichste Spur."
+          },
+          {
+            "question": "Was bedeutet es, von der eigenen Hochzeit zu träumen?",
+            "answer": "Die eigene Hochzeit kann eine Verpflichtung begleiten, die Sie eingehen oder abwägen: eine Beziehung, eine Stelle, einen Umzug, ein Projekt. Planen Sie tatsächlich eine Hochzeit, spielt der Traum vielleicht einfach Vorbereitungen und Sorgen durch."
+          },
+          {
+            "question": "Was bedeutet die Hochzeit einer anderen Person im Traum?",
+            "answer": "Zu sehen, wie jemand anderes heiratet, kann eine Veränderung in dessen Leben oder in Ihrer Beziehung aufgreifen. Es kann auch das Gefühl wecken, zurückzubleiben. Wer hat geheiratet, und wo standen Sie?"
+          },
+          {
+            "question": "Was bedeutet es, wenn im Traum bei der Hochzeit alles schiefgeht?",
+            "answer": "Ein fehlendes Kleid, eine Verspätung oder ein leerer Altar begleiten oft Zweifel, Druck oder die Angst, sich bei einer großen Wahl zu irren. Solche Träume sind vor echten Hochzeiten häufig. Sie sagen nicht voraus, dass etwas schiefgeht."
+          }
+        ],
+        "documentMetaDescription": "Hochzeit im Traum, die eigene, die des Ex oder eine, die schiefgeht: was die Szene über Bindung und Veränderung sagen kann, mit Fragen und Tagebuchbeispiel.",
+        "modifiedAt": "2026-10-08"
       },
       "it": {
         "slug": "matrimonio",
         "name": "Matrimonio",
-        "shortDescription": "I matrimoni simboleggiano unione, impegno e l'unione di diversi aspetti del sé. Possono rappresentare nuove partnership, impegni o integrazione interiore.",
+        "shortDescription": "Sognare un matrimonio raramente parla solo di nozze. La scena accompagna spesso un impegno, un nuovo capitolo o una scelta difficile da disfare. Di chi erano le nozze, e se tutto filava liscio o andava storto, dice più della cerimonia.",
         "askYourself": [
-          "Quali aspetti della mia vita sto integrando?",
-          "Sono pronto per un impegno più profondo?"
-        ]
+          "Di chi era il matrimonio: il mio, quello di un amico, del mio ex, di uno sconosciuto?",
+          "La giornata è andata come previsto, o qualcosa è andato storto?",
+          "Quale impegno, decisione o nuovo capitolo mi occupa i pensieri in questo periodo?"
+        ],
+        "faq": [
+          {
+            "question": "Cosa significa sognare un matrimonio?",
+            "answer": "Il matrimonio viene spesso associato all’impegno, a una nuova fase della vita o a una decisione che vincola. Non parla sempre d’amore. Di chi erano le nozze e ciò che provavi indicano la pista più utile."
+          },
+          {
+            "question": "Cosa significa sognare il proprio matrimonio?",
+            "answer": "Il tuo matrimonio può accompagnare un impegno che stai prendendo o valutando: una relazione, un lavoro, un trasloco, un progetto. Se stai davvero organizzando le nozze, il sogno può semplicemente ripassare preparativi e preoccupazioni."
+          },
+          {
+            "question": "Cosa significa sognare il matrimonio di un’altra persona?",
+            "answer": "Vedere qualcun altro sposarsi può fare eco a un cambiamento nella sua vita o nel vostro legame. Può anche risvegliare la sensazione di restare indietro. Chi si sposava, e dov’eri tu?"
+          },
+          {
+            "question": "Cosa significa sognare un matrimonio che va storto?",
+            "answer": "Un abito che non si trova, un ritardo o un altare vuoto accompagnano spesso dubbi, pressione o la paura di sbagliare una scelta importante. Sono sogni frequenti anche prima di nozze vere. Non predicono che qualcosa andrà male."
+          }
+        ],
+        "documentMetaDescription": "Sognare un matrimonio, il tuo, quello di un ex o uno che va storto: che cosa può dire la scena di un impegno o di un cambiamento, con domande ed esempio.",
+        "modifiedAt": "2026-10-08"
       },
       "pt": {
         "slug": "casamento",
@@ -6403,60 +6613,64 @@
       "en": {
         "slug": "hospital",
         "name": "Hospital",
-        "shortDescription": "A hospital dream often points to healing, vulnerability, health anxiety or a need to accept help before stress becomes urgent. Notice whether you were a patient, visitor, doctor or waiting for news.",
+        "shortDescription": "Dreaming of a hospital can go with a need for care, rest or support, or simply replay a recent visit or piece of news. Your role matters: patient, visitor, staff, or waiting in a corridor. A hospital dream does not predict illness.",
         "askYourself": [
-          "Was I a patient, visitor, doctor or looking for help?",
-          "Did the dream feel like an emergency, a wait, relief or fear?",
-          "What part of my life needs care, rest or support now?"
+          "Was I a patient, a visitor, a member of staff, or waiting for news?",
+          "Did the dream feel like an emergency, a long wait, relief or fear?",
+          "What part of my life needs care, rest or support right now?"
         ],
         "faq": [
           {
             "question": "What does it mean to dream about a hospital?",
-            "answer": "Dreaming about a hospital usually suggests that something needs care, healing or closer attention. It may point to health worries, emotional exhaustion, family concern or a situation where you need support rather than control."
+            "answer": "A hospital can go with tiredness, worry about someone close, a vulnerable period or a need for help. It can also replay a recent visit or piece of news. It does not diagnose or predict an illness."
           },
           {
             "question": "What does it mean to dream that you are in a hospital?",
-            "answer": "Being in a hospital often reflects vulnerability and recovery. The dream may show that you need rest, guidance, treatment or help processing a stressful period."
+            "answer": "Being a patient in a dream can echo vulnerability, recovery or a need to rest and let others help. Why you were there and how you felt about it help link the scene to something concrete in your life."
           },
           {
             "question": "What do doctors or nurses mean in a hospital dream?",
-            "answer": "Doctors and nurses can symbolize guidance, diagnosis or the part of you that knows what needs to be repaired."
+            "answer": "Doctors and nurses can go with a search for answers, guidance or support. What matters most is how they treated you: whether they reassured you, examined you or did not listen."
           },
           {
             "question": "What do sick people in a hospital dream mean?",
-            "answer": "Sick people may reflect worry for others, a neglected part of your own wellbeing or a relationship that needs more care."
+            "answer": "Sick people may reflect worry for others, a feeling of overload or a crowded place you saw recently. The dream does not mean that someone will fall ill. If a real health worry keeps you awake, talk to a doctor."
           }
         ],
-        "seoTitle": "hospital, doctors or sick people"
+        "seoTitle": "hospital, doctors or sick people",
+        "documentMetaDescription": "Dreaming of a hospital, being a patient, doctors or sick people: what your role and the mood of the scene may say, with a journal example and no predictions.",
+        "modifiedAt": "2026-10-08"
       },
       "fr": {
         "slug": "hopital",
         "name": "Hôpital",
-        "shortDescription": "Rêver d’hôpital évoque souvent un besoin de guérison, une inquiétude de santé, une période de vulnérabilité ou l’urgence de demander de l’aide. Le sens change selon que vous êtes patient, visiteur ou en attente d’une réponse claire.",
+        "shortDescription": "Rêver d'un hôpital peut accompagner un besoin de soin, de repos ou de soutien, ou simplement rejouer une visite ou une nouvelle récente. Votre rôle compte : patient, visiteur, soignant, en attente dans un couloir. Ce rêve ne prédit pas une maladie.",
         "askYourself": [
-          "Étais-je patient, visiteur, médecin ou à la recherche d’aide ?",
-          "Le rêve ressemblait-il à une urgence, une attente, un soulagement ou une peur ?",
-          "Quelle partie de ma vie a besoin de soin, de repos ou de soutien ?"
+          "Étais-je patient, visiteur, soignant ou en attente de nouvelles ?",
+          "Le rêve ressemblait-il à une urgence, une longue attente, un soulagement ou une peur ?",
+          "Quelle partie de ma vie a besoin de soin, de repos ou de soutien en ce moment ?"
         ],
         "seoTitle": "hôpital, médecin ou personne malade",
         "faq": [
           {
-            "question": "Que signifie rêver d’un hôpital ?",
-            "answer": "Rêver d’un hôpital indique souvent qu’une situation demande de l’attention, du soin ou une forme de réparation. Le rêve peut parler de santé, mais aussi de fatigue émotionnelle, d’inquiétude pour un proche ou d’un besoin d’accompagnement."
+            "question": "Que signifie rêver d'un hôpital ?",
+            "answer": "Un hôpital peut accompagner une fatigue, une inquiétude pour un proche, une période de vulnérabilité ou un besoin d'aide. Il peut aussi rejouer une visite ou une nouvelle récente. Il ne permet ni de diagnostiquer ni de prédire une maladie."
           },
           {
-            "question": "Que signifie rêver d’être à l’hôpital ?",
-            "answer": "Être à l’hôpital dans un rêve renvoie souvent à la vulnérabilité et à la récupération. Votre inconscient peut signaler que vous avez besoin de repos, de soutien ou d’un temps pour guérir."
+            "question": "Que signifie rêver d'être à l'hôpital ?",
+            "answer": "Être hospitalisé en rêve peut faire écho à la vulnérabilité, à la récupération ou au besoin de se reposer et de se laisser aider. La raison de votre présence et ce que vous ressentiez aident à relier la scène à une situation concrète."
           },
           {
-            "question": "Que signifie rêver de médecins ou d’infirmières ?",
-            "answer": "Les soignants peuvent symboliser l’aide, l’éclairage ou la partie de vous qui sait quoi réparer."
+            "question": "Que signifie rêver de médecins ou d'infirmières ?",
+            "answer": "Les soignants peuvent accompagner une recherche de réponses, d'orientation ou de soutien. Ce qui compte le plus, c'est leur attitude envers vous : vous rassuraient-ils, vous examinaient-ils, ou ne vous écoutaient-ils pas ?"
           },
           {
-            "question": "Que signifient les malades dans un rêve d’hôpital ?",
-            "answer": "Les personnes malades peuvent représenter une inquiétude pour autrui ou un aspect de votre bien-être que vous négligez."
+            "question": "Que signifient les malades dans un rêve d'hôpital ?",
+            "answer": "Des personnes malades peuvent refléter une inquiétude pour les autres, une surcharge ou un lieu bondé vu récemment. Le rêve n'annonce pas que quelqu'un va tomber malade. Si une vraie inquiétude de santé vous empêche de dormir, parlez-en à un médecin."
           }
-        ]
+        ],
+        "documentMetaDescription": "Rêver d'un hôpital, d'être hospitalisé, de médecins ou de malades : ce que votre rôle et l'ambiance peuvent dire, avec un exemple de journal, sans prédiction.",
+        "modifiedAt": "2026-10-08"
       },
       "es": {
         "slug": "hospital",
@@ -6504,31 +6718,33 @@
       "de": {
         "slug": "krankenhaus",
         "name": "Krankenhaus",
-        "shortDescription": "Ein Krankenhaus im Traum weist oft auf Heilung, Verletzlichkeit, Gesundheitsangst oder den Wunsch nach Unterstützung hin. Entscheidend ist, ob Sie Patient, Besucher oder wartend im Krankenhaus waren.",
+        "shortDescription": "Ein Krankenhaus im Traum kann ein Bedürfnis nach Fürsorge, Ruhe oder Unterstützung begleiten oder einfach einen Besuch oder eine Nachricht der letzten Tage aufgreifen. Ihre Rolle zählt: Patient, Besucher, Personal, wartend im Flur. Eine Krankheit sagt der Traum nicht voraus.",
         "askYourself": [
-          "War ich Patient, Besucher, Arzt oder auf der Suche nach Hilfe?",
-          "Fühlte sich der Traum wie Notfall, Warten, Erleichterung oder Angst an?",
-          "Welcher Bereich meines Lebens braucht Pflege, Ruhe oder Unterstützung?"
+          "War ich Patient, Besucher, Teil des Personals, oder wartete ich auf Nachrichten?",
+          "Fühlte sich der Traum wie ein Notfall, ein langes Warten, Erleichterung oder Angst an?",
+          "Welcher Bereich meines Lebens braucht gerade Fürsorge, Ruhe oder Unterstützung?"
         ],
         "faq": [
           {
             "question": "Was bedeutet ein Krankenhaus im Traum?",
-            "answer": "Ein Krankenhaus im Traum deutet meist darauf hin, dass etwas Aufmerksamkeit, Heilung oder Unterstützung braucht. Es kann um Gesundheit gehen, aber auch um seelische Erschöpfung, Sorge um Angehörige oder den Wunsch nach Hilfe."
+            "answer": "Ein Krankenhaus kann Erschöpfung, Sorge um Angehörige, eine verletzliche Phase oder den Wunsch nach Hilfe begleiten. Es kann auch einen Besuch oder eine Nachricht der letzten Tage aufgreifen. Eine Diagnose oder Vorhersage ist es nicht."
           },
           {
             "question": "Was bedeutet es, im Traum selbst im Krankenhaus zu sein?",
-            "answer": "Selbst im Krankenhaus zu sein steht oft für Verletzlichkeit und Erholung. Der Traum kann zeigen, dass Sie Ruhe, Begleitung oder bewusstere Fürsorge brauchen."
+            "answer": "Selbst Patient zu sein kann Verletzlichkeit, Erholung oder das Bedürfnis aufgreifen, sich auszuruhen und helfen zu lassen. Warum Sie dort waren und was Sie fühlten, hilft, die Szene mit einer konkreten Situation zu verbinden."
           },
           {
             "question": "Was bedeuten Ärzte oder Pflegekräfte im Traum?",
-            "answer": "Ärzte und Pflegekräfte können Hilfe, Orientierung oder Diagnose symbolisieren."
+            "answer": "Ärzte und Pflegekräfte können die Suche nach Antworten, Orientierung oder Unterstützung begleiten. Entscheidend ist, wie sie mit Ihnen umgingen: ob sie Sie beruhigten, untersuchten oder Ihnen nicht zuhörten."
           },
           {
             "question": "Was bedeuten kranke Menschen im Krankenhaustraum?",
-            "answer": "Kranke Menschen können Sorge um andere oder einen vernachlässigten Teil des eigenen Wohlbefindens darstellen."
+            "answer": "Kranke Menschen können Sorge um andere, Überlastung oder einen vollen Ort aufgreifen, den Sie kürzlich gesehen haben. Der Traum heißt nicht, dass jemand krank wird. Hält Sie eine echte Gesundheitssorge wach, sprechen Sie mit einer Ärztin oder einem Arzt."
           }
         ],
-        "seoTitle": "Krankenhaus, Arzt oder kranke Menschen"
+        "seoTitle": "Krankenhaus, Arzt oder kranke Menschen",
+        "documentMetaDescription": "Krankenhaus im Traum, selbst Patient sein, Ärzte oder kranke Menschen: was Ihre Rolle und die Stimmung sagen können, mit Tagebuchbeispiel, ohne Vorhersagen.",
+        "modifiedAt": "2026-10-08"
       },
       "it": {
         "slug": "ospedale",
@@ -6610,47 +6826,152 @@
       "en": {
         "slug": "running",
         "name": "Running",
-        "shortDescription": "Running in dreams can symbolize escape, pursuit of goals, or urgency in life. Context determines whether it's fleeing or chasing.",
+        "shortDescription": "Running in a dream is first a sensation: breath, speed, legs that fly or refuse to move. The scene often goes with urgency, escape or a goal you are chasing. Whether you were running away from something or towards something changes the reading.",
         "askYourself": [
-          "What am I running from or toward?",
-          "Is there urgency in my waking life?"
-        ]
+          "Was I running away from something, towards something, or just running?",
+          "Did my legs carry me easily, or did they feel heavy and slow?",
+          "Where in my life am I rushing right now, and could I slow down?"
+        ],
+        "faq": [
+          {
+            "question": "What does it mean to dream about running?",
+            "answer": "Running is often associated with urgency, escape or the pursuit of a goal. The meaning depends mostly on direction (away from or towards something), on how easily you moved and on what you felt."
+          },
+          {
+            "question": "Why do I run in slow motion in my dreams?",
+            "answer": "Heavy legs and slow motion are common in running dreams. They can echo a feeling of powerlessness or of effort that leads nowhere. During REM sleep the muscles are almost completely relaxed, which is one possible explanation for that heaviness."
+          },
+          {
+            "question": "What does it mean to dream of running away?",
+            "answer": "Running away can go with a situation, a conversation or an emotion you would rather avoid for now. Who or what was behind you, and whether you turned round, helps you choose the right lead."
+          },
+          {
+            "question": "What does it mean to dream of running a race?",
+            "answer": "A race can go with competition, comparison with others or pressure to perform. It is not a forecast of winning or losing. Were you focused on the finish line, or on the people running beside you?"
+          }
+        ],
+        "documentMetaDescription": "Dreaming of running away, running towards a goal or being unable to run: what the scene may say about urgency or avoidance, with questions and an example.",
+        "modifiedAt": "2026-10-08"
       },
       "fr": {
         "slug": "courir",
         "name": "Courir",
-        "shortDescription": "Courir dans les rêves peut symboliser la fuite, la poursuite d'objectifs ou l'urgence. Le contexte détermine si c'est fuir ou poursuivre.",
+        "shortDescription": "Courir en rêve, c'est d'abord une sensation : le souffle, la vitesse, des jambes qui volent ou refusent d'avancer. La scène accompagne souvent l'urgence, la fuite ou un but que l'on poursuit. Courir pour fuir ou pour rejoindre ne raconte pas la même chose.",
         "askYourself": [
-          "Qu'est-ce que je fuis ou poursuis ?",
-          "Y a-t-il une urgence dans ma vie éveillée ?"
-        ]
+          "Est-ce que je fuyais quelque chose, je courais vers quelque chose, ou je courais simplement ?",
+          "Mes jambes me portaient-elles facilement, ou étaient-elles lourdes et lentes ?",
+          "Où suis-je pressé en ce moment, et pourrais-je ralentir ?"
+        ],
+        "faq": [
+          {
+            "question": "Que signifie rêver de courir ?",
+            "answer": "Courir est souvent associé à l'urgence, à la fuite ou à la poursuite d'un objectif. Le sens dépend surtout de la direction (fuir ou rejoindre quelque chose), de la facilité avec laquelle vous avanciez et de ce que vous ressentiez."
+          },
+          {
+            "question": "Pourquoi court-on au ralenti dans les rêves ?",
+            "answer": "Jambes lourdes et ralenti sont fréquents dans ces rêves. Ils peuvent faire écho à un sentiment d'impuissance ou à des efforts qui ne mènent nulle part. Pendant le sommeil paradoxal, les muscles sont presque au repos : c'est une explication possible de cette lourdeur."
+          },
+          {
+            "question": "Que signifie rêver de fuir en courant ?",
+            "answer": "Fuir en courant peut accompagner une situation, une conversation ou une émotion que vous préférez éviter pour l'instant. Qui ou quoi se trouvait derrière vous, et si vous vous êtes retourné, aide à choisir la bonne piste."
+          },
+          {
+            "question": "Que signifie rêver de faire une course ?",
+            "answer": "Une course peut accompagner la compétition, la comparaison avec les autres ou la pression de réussir. Elle ne prédit ni victoire ni défaite. Regardiez-vous la ligne d'arrivée, ou les coureurs à côté de vous ?"
+          }
+        ],
+        "documentMetaDescription": "Rêver de courir pour fuir, courir vers un but ou ne pas arriver à courir : ce que la scène peut dire de l'urgence ou de l'évitement, avec questions et exemple.",
+        "modifiedAt": "2026-10-08"
       },
       "es": {
         "slug": "correr",
         "name": "Correr",
-        "shortDescription": "Correr en sueños puede simbolizar escape, búsqueda de metas o urgencia. El contexto determina si es huir o perseguir.",
+        "shortDescription": "Correr en sueños es ante todo una sensación: el aliento, la velocidad, unas piernas que vuelan o que no responden. La escena suele acompañar prisa, huida o una meta que persigues. Correr para escapar o para llegar a algo no cuenta lo mismo.",
         "askYourself": [
-          "¿De qué estoy huyendo o hacia qué corro?",
-          "¿Hay urgencia en mi vida despierta?"
-        ]
+          "¿Huía de algo, corría hacia algo o simplemente corría?",
+          "¿Mis piernas me llevaban con facilidad, o pesaban e iban lentas?",
+          "¿Dónde voy con prisa ahora mismo, y podría bajar el ritmo?"
+        ],
+        "faq": [
+          {
+            "question": "¿Qué significa soñar que corres?",
+            "answer": "Correr se asocia a menudo con la prisa, la huida o la búsqueda de una meta. El sentido depende sobre todo de la dirección (huir o ir hacia algo), de la facilidad con la que avanzabas y de lo que sentías."
+          },
+          {
+            "question": "¿Por qué en sueños corro a cámara lenta?",
+            "answer": "Las piernas pesadas y la cámara lenta son frecuentes en estos sueños. Pueden hacer eco de una sensación de impotencia o de esfuerzos que no llevan a ninguna parte. Durante el sueño REM los músculos están casi del todo relajados, una explicación posible de ese peso."
+          },
+          {
+            "question": "¿Qué significa soñar que huyes corriendo?",
+            "answer": "Huir corriendo puede acompañar una situación, una conversación o una emoción que prefieres evitar por ahora. Quién o qué iba detrás de ti, y si llegaste a girarte, te ayuda a elegir la pista adecuada."
+          },
+          {
+            "question": "¿Qué significa soñar que corres una carrera?",
+            "answer": "Una carrera puede acompañar la competición, la comparación con los demás o la presión por rendir. No predice victoria ni derrota. ¿Mirabas la meta o a quienes corrían a tu lado?"
+          }
+        ],
+        "documentMetaDescription": "Soñar que corres para huir, hacia una meta o que no puedes correr: qué puede decir la escena sobre la prisa o la evitación, con preguntas y un ejemplo.",
+        "modifiedAt": "2026-10-08"
       },
       "de": {
         "slug": "rennen",
         "name": "Rennen",
-        "shortDescription": "Rennen in Träumen symbolisiert Dringlichkeit, Flucht oder das Streben nach einem Ziel. Die Fähigkeit oder Unfähigkeit zu rennen spiegelt Ihr Gefühl von Kontrolle und Fortschritt wider.",
+        "shortDescription": "Im Traum zu rennen ist zuerst ein Körpergefühl: Atem, Tempo, Beine, die fliegen oder nicht gehorchen. Die Szene begleitet oft Eile, Flucht oder ein Ziel, dem Sie nachjagen. Ob Sie vor etwas weglaufen oder auf etwas zu, verändert die Deutung.",
         "askYourself": [
-          "Vor was renne ich weg?",
-          "Auf welches Ziel bewege ich mich zu?"
-        ]
+          "Bin ich vor etwas weggelaufen, auf etwas zugelaufen oder einfach gerannt?",
+          "Trugen mich meine Beine leicht, oder waren sie schwer und langsam?",
+          "Wo bin ich gerade in Eile, und könnte ich das Tempo herausnehmen?"
+        ],
+        "faq": [
+          {
+            "question": "Was bedeutet es, im Traum zu rennen?",
+            "answer": "Rennen wird oft mit Eile, Flucht oder dem Verfolgen eines Ziels verbunden. Was es bedeutet, hängt vor allem von der Richtung ab (weg von etwas oder hin zu etwas), davon, wie leicht Sie vorankamen, und von Ihrem Gefühl dabei."
+          },
+          {
+            "question": "Warum renne ich im Traum wie in Zeitlupe?",
+            "answer": "Schwere Beine und Zeitlupe sind in solchen Träumen häufig. Sie können ein Gefühl von Ohnmacht aufgreifen oder Anstrengung, die nirgendwohin führt. Im REM-Schlaf sind die Muskeln fast völlig entspannt, was eine mögliche Erklärung für diese Schwere ist."
+          },
+          {
+            "question": "Was bedeutet es, im Traum wegzulaufen?",
+            "answer": "Wegzulaufen kann eine Situation, ein Gespräch oder ein Gefühl begleiten, dem Sie gerade lieber ausweichen. Wer oder was hinter Ihnen war und ob Sie sich umgedreht haben, hilft bei der Wahl der passenden Spur."
+          },
+          {
+            "question": "Was bedeutet ein Wettlauf im Traum?",
+            "answer": "Ein Wettlauf kann Konkurrenz, den Vergleich mit anderen oder Leistungsdruck begleiten. Ob Sie gewinnen oder verlieren, sagt er nicht voraus. Hatten Sie das Ziel im Blick oder die anderen Läufer?"
+          }
+        ],
+        "documentMetaDescription": "Im Traum rennen, weglaufen, auf ein Ziel zulaufen oder nicht vom Fleck kommen: was die Szene über Eile oder Vermeidung sagen kann, mit Fragen und Beispiel.",
+        "modifiedAt": "2026-10-08"
       },
       "it": {
         "slug": "correre",
         "name": "Correre",
-        "shortDescription": "Correre nei sogni simboleggia urgenza, fuga o il perseguimento di un obiettivo. La capacità o incapacità di correre riflette il tuo senso di controllo e progresso.",
+        "shortDescription": "Correre in sogno è prima di tutto una sensazione: il fiato, la velocità, gambe che volano o che non rispondono. La scena accompagna spesso fretta, fuga o un obiettivo che stai inseguendo. Correre per scappare o per raggiungere qualcosa non racconta la stessa storia.",
         "askYourself": [
-          "Da cosa sto scappando?",
-          "Verso quale obiettivo mi sto muovendo?"
-        ]
+          "Stavo scappando da qualcosa, correvo verso qualcosa o correvo e basta?",
+          "Le gambe mi portavano con facilità, o erano pesanti e lente?",
+          "Dove sto andando di fretta in questo periodo, e potrei rallentare?"
+        ],
+        "faq": [
+          {
+            "question": "Cosa significa sognare di correre?",
+            "answer": "Correre viene spesso associato alla fretta, alla fuga o all’inseguimento di un obiettivo. Il significato dipende soprattutto dalla direzione (scappare o andare verso qualcosa), dalla facilità con cui avanzavi e da ciò che provavi."
+          },
+          {
+            "question": "Perché nei sogni corro al rallentatore?",
+            "answer": "Gambe pesanti e rallentatore sono frequenti in questi sogni. Possono fare eco a una sensazione di impotenza o a sforzi che non portano da nessuna parte. Durante il sonno REM i muscoli sono quasi del tutto rilassati: è una spiegazione possibile di quella pesantezza."
+          },
+          {
+            "question": "Cosa significa sognare di scappare correndo?",
+            "answer": "Scappare di corsa può accompagnare una situazione, una conversazione o un’emozione che per ora preferisci evitare. Chi o che cosa c’era dietro di te, e se ti sei voltato, aiuta a scegliere la pista giusta."
+          },
+          {
+            "question": "Cosa significa sognare di fare una gara di corsa?",
+            "answer": "Una gara può accompagnare la competizione, il confronto con gli altri o la pressione di rendere. Non predice vittoria né sconfitta. Guardavi il traguardo o chi correva accanto a te?"
+          }
+        ],
+        "documentMetaDescription": "Sognare di correre per scappare, verso un obiettivo o di non riuscire a correre: che cosa può dire la scena di fretta o evitamento, con domande ed esempio.",
+        "modifiedAt": "2026-10-08"
       },
       "pt": {
         "slug": "correr",
