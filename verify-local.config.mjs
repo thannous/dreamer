@@ -131,7 +131,14 @@ export default {
     // Root Jest tests related to the files changed since the merge-base with
     // origin/master (scripts/run-jest-changed.js). Whole tree: tests read files.
     // Picks its tests from the diff: reused only against the same merge base.
-    { name: 'jest-changed', perBase: true, command: 'npm run test:changed -- --runInBand --watchman=false' },
+    // JEST_CHANGED_SINCE would override that base (HEAD selects no test), so
+    // the check never inherits it.
+    {
+      name: 'jest-changed',
+      perBase: true,
+      command: 'npm run test:changed -- --runInBand --watchman=false',
+      env: { JEST_CHANGED_SINCE: '' },
+    },
     { name: 'db-contracts', command: DB_CONTRACTS },
 
     // ---- verify:pr, only when the commit changes that surface since origin/master.
