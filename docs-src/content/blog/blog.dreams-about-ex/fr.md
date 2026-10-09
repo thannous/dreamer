@@ -5,7 +5,7 @@
   "lang": "fr",
   "slug": "reves-ex-partenaire",
   "title": "Rêver de son ex : signification et scénarios | Noctalia",
-  "description": "Rêver de son ex ne signifie pas forcément vouloir revenir ensemble. Décodez les scénarios, les émotions et les déclencheurs possibles de ce rêve.",
+  "description": "Rêver de son ex ne veut pas dire vouloir le récupérer. Retrouvailles, dispute, nouveau couple : ce que ce rêve peut signifier, et quoi noter au réveil.",
   "robots": "max-image-preview:large",
   "themeColor": "#0a0514",
   "htmlClass": "scroll-smooth blog-article",
@@ -14,24 +14,24 @@
   "mainClass": "pt-32 pb-20 px-4",
   "ogType": "article",
   "ogTitle": "Rêver de son ex : signification et scénarios | Noctalia",
-  "ogDescription": "Décodez les scénarios, les émotions et les déclencheurs possibles d'un rêve avec votre ex.",
+  "ogDescription": "Retrouvailles, dispute, ex avec quelqu'un d'autre : ce que rêver de son ex peut signifier, et ce que ce rêve ne prouve pas.",
   "ogImage": "https://noctalia.app/img/blog/dreams-about-ex.webp",
   "ogImageAlt": "Silhouette contemplative évoquant les souvenirs et les relations passées",
   "twitterCard": "summary_large_image",
   "twitterTitle": "Rêver de son ex : signification et scénarios | Noctalia",
-  "twitterDescription": "Scénarios, émotions et déclencheurs possibles d'un rêve avec votre ex.",
+  "twitterDescription": "Rêver de son ex : les scènes fréquentes, ce qu'elles peuvent raconter, et ce qu'elles ne disent pas.",
   "twitterImage": "https://noctalia.app/img/blog/dreams-about-ex.webp",
   "twitterImageAlt": "Silhouette contemplative évoquant les souvenirs et les relations passées",
   "publishedTime": "2025-12-11",
-  "modifiedTime": "2026-07-27",
+  "modifiedTime": "2026-10-09",
   "author": "Thanh Chau",
   "prevPath": "/fr/blog/reves-eau",
   "nextPath": "/fr/blog/reves-de-grossesse",
   "preloadImage": "/img/blog/dreams-about-ex.webp",
   "jsonLd": [
-    "{\n    \"@context\": \"https://schema.org\",\n    \"@type\": \"BlogPosting\",\n    \"headline\": \"Rêver de son ex : signification et scénarios\",\n    \"description\": \"Rêver de son ex ne signifie pas forcément vouloir revenir ensemble. Décodez les scénarios, les émotions et les déclencheurs possibles de ce rêve.\",\n    \"image\": {\n        \"@type\": \"ImageObject\",\n        \"url\": \"https://noctalia.app/img/blog/dreams-about-ex.webp\",\n        \"width\": 1200,\n        \"height\": 630\n    },\n    \"author\": [\n        {\n            \"@type\": \"Person\",\n            \"@id\": \"https://noctalia.app/fr/a-propos#person\",\n            \"name\": \"Thanh Chau\",\n            \"jobTitle\": \"Founder & Publication Director\",\n            \"url\": \"https://noctalia.app/fr/a-propos\",\n            \"worksFor\": {\n                \"@type\": \"Organization\",\n                \"@id\": \"https://noctalia.app/#organization\",\n                \"name\": \"Noctalia\",\n                \"url\": \"https://noctalia.app\"\n            }\n        },\n        {\n            \"@type\": \"Organization\",\n            \"@id\": \"https://noctalia.app/#organization\",\n            \"name\": \"Noctalia\",\n            \"url\": \"https://noctalia.app\",\n            \"logo\": {\n                \"@type\": \"ImageObject\",\n                \"url\": \"https://noctalia.app/logo/logo_noctalia.png\"\n            }\n        }\n    ],\n    \"publisher\": {\n        \"@type\": \"Organization\",\n        \"name\": \"Noctalia\",\n        \"url\": \"https://noctalia.app\",\n        \"logo\": {\n            \"@type\": \"ImageObject\",\n            \"url\": \"https://noctalia.app/logo/logo_noctalia.png\"\n        }\n    },\n    \"datePublished\": \"2025-12-11\",\n    \"dateModified\": \"2026-07-27\",\n    \"mainEntityOfPage\": {\n        \"@type\": \"WebPage\",\n        \"@id\": \"https://noctalia.app/fr/blog/reves-ex-partenaire\"\n    },\n    \"inLanguage\": \"fr\",\n    \"isAccessibleForFree\": true,\n    \"wordCount\": 1060,\n    \"timeRequired\": \"PT4M\",\n    \"url\": \"https://noctalia.app/fr/blog/reves-ex-partenaire\"\n}",
-    "{\n    \"@context\": \"https://schema.org\",\n    \"@type\": \"FAQPage\",\n    \"mainEntity\": [\n        {\n            \"@type\": \"Question\",\n            \"name\": \"Pourquoi je rêve toujours de mon ex ?\",\n            \"acceptedAnswer\": {\n                \"@type\": \"Answer\",\n                \"text\": \"Rêver de votre ex ne signifie pas nécessairement que vous voulez le/la récupérer. Ces rêves représentent souvent des émotions non résolues, des leçons apprises ou des aspects de vous-même associés à cette relation. Votre cerveau traite les expériences passées pendant le sommeil.\"\n            }\n        },\n        {\n            \"@type\": \"Question\",\n            \"name\": \"Rêver de mon ex signifie-t-il que je l'aime encore ?\",\n            \"acceptedAnswer\": {\n                \"@type\": \"Answer\",\n                \"text\": \"Pas nécessairement. Les rêves d'ex peuvent refléter beaucoup de choses : traiter le deuil, résoudre des problèmes non résolus, manquer certaines qualités (pas la personne), ou votre subconscient utilisant un visage familier pour représenter autre chose. L'émotion dans le rêve compte plus que l'apparition de votre ex.\"\n            }\n        },\n        {\n            \"@type\": \"Question\",\n            \"name\": \"Pourquoi je rêve d'un ex auquel je n'ai pas pensé depuis des années ?\",\n            \"acceptedAnswer\": {\n                \"@type\": \"Answer\",\n                \"text\": \"Les rêves soudains d'un ex oublié surviennent souvent quand quelque chose dans votre vie actuelle déclenche des souvenirs ou émotions associées. Vous faites peut-être face à des dynamiques relationnelles similaires ou des défis émotionnels. Votre cerveau utilise les expériences passées comme points de référence.\"\n            }\n        }\n    ]\n}",
-    "{\n    \"@context\": \"https://schema.org\",\n    \"@type\": \"BreadcrumbList\",\n    \"itemListElement\": [\n        {\n            \"@type\": \"ListItem\",\n            \"position\": 1,\n            \"name\": \"Accueil\",\n            \"item\": \"https://noctalia.app/fr/\"\n        },\n        {\n            \"@type\": \"ListItem\",\n            \"position\": 2,\n            \"name\": \"Ressources\",\n            \"item\": \"https://noctalia.app/fr/blog/\"\n        },\n        {\n            \"@type\": \"ListItem\",\n            \"position\": 3,\n            \"name\": \"Rêves d'Ex\",\n            \"item\": \"https://noctalia.app/fr/blog/reves-ex-partenaire\"\n        }\n    ]\n}"
+    "{\n    \"@context\": \"https://schema.org\",\n    \"@type\": \"BlogPosting\",\n    \"headline\": \"Rêver de son ex : ce que ce rêve peut signifier, et ce qu'il ne dit pas\",\n    \"description\": \"Rêver de son ex ne veut pas dire vouloir le récupérer. Retrouvailles, dispute, nouveau couple : ce que ce rêve peut signifier, et quoi noter au réveil.\",\n    \"image\": {\n        \"@type\": \"ImageObject\",\n        \"url\": \"https://noctalia.app/img/blog/dreams-about-ex.webp\",\n        \"width\": 1200,\n        \"height\": 630\n    },\n    \"author\": [\n        {\n            \"@type\": \"Person\",\n            \"@id\": \"https://noctalia.app/fr/a-propos#person\",\n            \"name\": \"Thanh Chau\",\n            \"jobTitle\": \"Founder & Publication Director\",\n            \"url\": \"https://noctalia.app/fr/a-propos\",\n            \"worksFor\": {\n                \"@type\": \"Organization\",\n                \"@id\": \"https://noctalia.app/#organization\",\n                \"name\": \"Noctalia\",\n                \"url\": \"https://noctalia.app\"\n            }\n        },\n        {\n            \"@type\": \"Organization\",\n            \"@id\": \"https://noctalia.app/#organization\",\n            \"name\": \"Noctalia\",\n            \"url\": \"https://noctalia.app\",\n            \"logo\": {\n                \"@type\": \"ImageObject\",\n                \"url\": \"https://noctalia.app/logo/logo_noctalia.png\"\n            }\n        }\n    ],\n    \"publisher\": {\n        \"@type\": \"Organization\",\n        \"name\": \"Noctalia\",\n        \"url\": \"https://noctalia.app\",\n        \"logo\": {\n            \"@type\": \"ImageObject\",\n            \"url\": \"https://noctalia.app/logo/logo_noctalia.png\"\n        }\n    },\n    \"datePublished\": \"2025-12-11\",\n    \"dateModified\": \"2026-10-09\",\n    \"mainEntityOfPage\": {\n        \"@type\": \"WebPage\",\n        \"@id\": \"https://noctalia.app/fr/blog/reves-ex-partenaire\"\n    },\n    \"inLanguage\": \"fr\",\n    \"isAccessibleForFree\": true,\n    \"wordCount\": 2333,\n    \"timeRequired\": \"PT11M\",\n    \"url\": \"https://noctalia.app/fr/blog/reves-ex-partenaire\"\n}",
+    "{\n    \"@context\": \"https://schema.org\",\n    \"@type\": \"FAQPage\",\n    \"mainEntity\": [\n        {\n            \"@type\": \"Question\",\n            \"name\": \"Rêver de son ex, est-ce que ça veut dire qu'on veut le récupérer ?\",\n            \"acceptedAnswer\": {\n                \"@type\": \"Answer\",\n                \"text\": \"Pas forcément. Le rêve ramène souvent une période de votre vie, un besoin de proximité ou des mots restés en suspens, plutôt que la personne telle qu'elle est aujourd'hui. Comparez-le à ce que vous voulez éveillé et aux vraies raisons de la rupture.\"\n            }\n        },\n        {\n            \"@type\": \"Question\",\n            \"name\": \"Si je rêve de mon ex, est-ce qu'il ou elle pense à moi ?\",\n            \"acceptedAnswer\": {\n                \"@type\": \"Answer\",\n                \"text\": \"Non. Votre rêve est fait de vos propres souvenirs et émotions. Il ne dit rien de ce que ressent votre ex, ni qu'il ou elle compte vous recontacter.\"\n            }\n        },\n        {\n            \"@type\": \"Question\",\n            \"name\": \"Rêver de son ex quand on est en couple, est-ce mauvais signe ?\",\n            \"acceptedAnswer\": {\n                \"@type\": \"Answer\",\n                \"text\": \"Non. Un rêve n'est pas une infidélité et n'annonce pas une rupture. S'il soulève une question sur votre couple, regardez-la éveillé, à partir de la façon dont vous vous traitez au quotidien.\"\n            }\n        },\n        {\n            \"@type\": \"Question\",\n            \"name\": \"Pourquoi je rêve d'un ex auquel je n'ai pas pensé depuis des années ?\",\n            \"acceptedAnswer\": {\n                \"@type\": \"Answer\",\n                \"text\": \"Souvent parce que quelque chose de récent rappelle cette époque : un lieu, une date, une nouvelle relation, une émotion familière. Parfois, aucun déclencheur n'apparaît. Noter le contexte du rêve pendant quelques semaines est le meilleur moyen de vérifier si un lien tient.\"\n            }\n        }\n    ]\n}",
+    "{\n    \"@context\": \"https://schema.org\",\n    \"@type\": \"BreadcrumbList\",\n    \"itemListElement\": [\n        {\n            \"@type\": \"ListItem\",\n            \"position\": 1,\n            \"name\": \"Accueil\",\n            \"item\": \"https://noctalia.app/fr/\"\n        },\n        {\n            \"@type\": \"ListItem\",\n            \"position\": 2,\n            \"name\": \"Ressources\",\n            \"item\": \"https://noctalia.app/fr/blog/\"\n        },\n        {\n            \"@type\": \"ListItem\",\n            \"position\": 3,\n            \"name\": \"Rêver de son ex\",\n            \"item\": \"https://noctalia.app/fr/blog/reves-ex-partenaire\"\n        }\n    ]\n}"
   ],
   "activeNav": "resources"
 }
@@ -50,7 +50,7 @@
 </li>
 <li class="text-purple-400">/</li>
 <li itemprop="itemListElement" itemscope="" itemtype="https://schema.org/ListItem">
-<span class="text-dream-cream" itemprop="name">Rêves d'Ex</span>
+<span class="text-dream-cream" itemprop="name">Rêver de son ex</span>
 <meta content="3" itemprop="position">
 </li>
 </ol>
@@ -58,16 +58,16 @@
 <header class="mb-12">
 <div class="flex flex-wrap items-center gap-3 mb-6">
 <span class="text-xs font-mono text-dream-salmon border border-dream-salmon/30 rounded-full px-3 py-1 uppercase">Interprétation</span>
-<a class="text-xs font-mono text-purple-200/70 border border-white/10 rounded-full px-3 py-1 hover:text-white hover:border-dream-salmon/30 transition-colors" href="signification-des-reves">Thématique : Signification des rêves</a>
+<a class="text-xs font-mono text-purple-200/70 border border-white/10 rounded-full px-3 py-1 hover:text-white hover:border-dream-salmon/30 transition-colors" href="signification-des-reves">Thématique : Signification des rêves</a>
 <span aria-hidden="true" class="w-full sm:hidden"></span>
 <span class="text-sm text-purple-300/60">Publié le 11 décembre 2025</span>
-<span class="text-sm text-purple-300/60">4 min de lecture</span>
+<span class="text-sm text-purple-300/60">11 min de lecture</span>
 </div>
 <h1 class="font-serif text-3xl md:text-5xl mb-6 text-transparent bg-clip-text bg-gradient-to-b from-white via-dream-lavender to-purple-400/50 leading-tight">
-                    Rêver de son ex : signification et scénarios
+                    Rêver de son ex : ce que ce rêve peut signifier, et ce qu'il ne dit pas
                 </h1>
 <p class="text-lg text-purple-200/80 leading-relaxed">
-                    Rêver de son ex peut être déstabilisant : vous étiez peut-être de nouveau ensemble, en <a class="text-dream-salmon hover:underline" href="../symboles/train">train</a> de vous disputer ou simplement dans le même lieu. Ce rêve ne traduit pas automatiquement un désir de reprendre la relation. Les émotions, le scénario et votre situation actuelle donnent des indices plus utiles que la présence de l'<a class="text-dream-salmon hover:underline" href="../symboles/ex-partenaire">ancien partenaire</a> à elle seule.
+                    Vous étiez de retour dans votre ancienne cuisine, et votre ex riait comme si rien ne s'était passé. Ou bien il passait au bras de quelqu'un d'autre sans même vous voir. Au réveil, un drôle de goût reste : tendresse, colère, culpabilité, parfois les trois. Rêver de son ex est assez courant, et cela veut rarement dire ce qu'on redoute d'abord. Voici comment lire le vôtre sans en faire un verdict sur votre vie amoureuse.
                 </p>
 </header>
 <!-- Author Byline (E-E-A-T) -->
@@ -82,45 +82,42 @@
 </div>
 <!-- Quick Answer (AI SEO) -->
 <section class="glass-panel rounded-2xl p-6 mb-8 border border-dream-salmon/20 bg-white/5" aria-labelledby="quick-answer-title">
-    <h2 id="quick-answer-title" class="font-serif text-xl text-dream-cream mb-3">En bref</h2>
-    <p class="text-purple-100/80 leading-relaxed"><strong>Rêver de son ex ne signifie pas forcément que vous souhaitez reprendre la relation.</strong> Le sens dépend surtout de l'émotion ressentie, du scénario et de ce qui se passe aujourd'hui : rupture encore sensible, schéma relationnel similaire, nostalgie d'une période ou besoin de clôture. Notez ce que votre ex représentait pour vous et votre ressenti au réveil ; aucun symbole n'a une signification unique.</p>
+    <h2 id="quick-answer-title" class="font-serif text-xl text-dream-cream mb-3">Réponse rapide</h2>
+    <p class="text-purple-100/80 leading-relaxed">Rêver de son ex ne signifie pas forcément que vous voulez le ou la retrouver, que cette personne pense à vous, ni que votre couple actuel va mal. L'ex ramène souvent une période de votre vie, des mots restés en suspens ou une situation d'aujourd'hui qui rappelle le passé. L'émotion du rêve et ce que vous vivez en ce moment sont les meilleurs indices. Si ces rêves reviennent souvent et abîment vos nuits, ils méritent qu'on s'y arrête.</p>
 </section>
 <figure class="mb-12 rounded-2xl overflow-hidden">
 <img alt="Silhouette contemplative évoquant les souvenirs et les relations passées" class="w-full h-auto" fetchpriority="high" height="630" loading="eager" sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 33vw" src="../../img/blog/dreams-about-ex.webp" srcset="../../img/blog/dreams-about-ex-480w.webp 480w, ../../img/blog/dreams-about-ex-800w.webp 800w, ../../img/blog/dreams-about-ex-1200w.webp 1200w" width="1200">
 </figure>
 <nav class="glass-panel rounded-2xl p-6 mb-12">
 <h2 class="font-serif text-lg text-dream-cream mb-4 flex items-center gap-2">
-<i class="w-5 h-5 text-dream-salmon" data-lucide="list"></i> Table des matières
+<i class="w-5 h-5 text-dream-salmon" data-lucide="list"></i> Sommaire
                 </h2>
 <ol class="space-y-2 text-sm text-purple-200/70">
-<li><a class="toc-link block" href="#pourquoi">1. Pourquoi rêve-t-on de son ex-partenaire ?</a></li>
-<li><a class="toc-link block" href="#scénarios">2. Les scénarios de rêves d'ex les plus fréquents</a></li>
-<li><a class="toc-link block" href="#significations">3. Signification psychologique des rêves d'ex</a></li>
-<li><a class="toc-link block" href="#psychologie">4. La psychologie des rêves d'anciens partenaires</a></li>
+<li><a class="toc-link block" href="#pourquoi">1. Pourquoi rêve-t-on de son ex ?</a></li>
+<li><a class="toc-link block" href="#scénarios">2. Que s'est-il passé entre vous dans le rêve ?</a></li>
+<li><a class="toc-link block" href="#significations">3. Ce que ce rêve peut raconter</a></li>
+<li><a class="toc-link block" href="#psychologie">4. Ce que dit la recherche sur les rêves d'ex</a></li>
 <li><a class="toc-link block" href="#actuel">5. Rêver de son ex quand on est en couple</a></li>
-<li><a class="toc-link block" href="#avancer">6. Comment arrêter de rêver de son ex</a></li>
+<li><a class="toc-link block" href="#avancer">6. Que faire si vous rêvez souvent de votre ex ?</a></li>
 </ol>
 </nav>
 <div class="prose max-w-none text-gray-300">
-<h2 id="pourquoi">Pourquoi rêve-t-on de son ex-partenaire ?</h2>
+<h2 id="pourquoi">Pourquoi rêve-t-on de son ex ?</h2>
 <p>
-                    D'abord, abordons le sujet directement : <strong>rêver de votre ex ne signifie pas que vous voulez le/la récupérer</strong>. En fait, la plupart des rêves d'ex n'ont rien à voir avec le désir de raviver la relation.
+                    D'abord, ce qui rassure : rêver de son ex n'a rien d'anormal. Une relation passée laisse beaucoup de matière derrière elle : des lieux, des habitudes, des émotions fortes, des conversations jamais terminées. Les rêves puisent dans ce genre de souvenirs, surtout quand ils sont chargés d'émotion.
                 </p>
 <p>
-                    Nos cerveaux sont des machines de reconnaissance de motifs. Les relations amoureuses créent des voies neuronales profondes - nous passons un temps significatif avec ces personnes, partageons des émotions intenses et formons des souvenirs durables. Quand nous dormons, notre cerveau <strong>consolide les souvenirs et traite les émotions</strong>, puisant souvent dans nos expériences les plus significatives.
+                    La plupart des rêves surviennent pendant le <a class="text-dream-salmon hover:underline" href="sommeil-paradoxal-reves">sommeil paradoxal</a>, et le sommeil participe à la consolidation de la mémoire, rappelle le NINDS, l'institut américain des maladies neurologiques. Rien d'étonnant à ce que des personnes qui ont compté reviennent la nuit, parfois dans un décor précis, comme la <a class="text-dream-salmon hover:underline" href="../symboles/maison">maison</a> où vous viviez ensemble.
                 </p>
 <p>
-                    Ces souvenirs peuvent ressurgir dans des décors familiers comme une <a class="text-dream-salmon hover:underline" href="../symboles/maison">maison</a> chargée d'émotion.
+                    Souvent, il y a un déclencheur simple : une chanson dans un magasin, une vieille photo qui remonte sur votre téléphone, des nouvelles d'un ami commun, une date anniversaire, un déménagement. Parfois, le déclencheur n'a rien à voir avec l'ex : une nouvelle relation qui devient sérieuse, une période de solitude, un conflit qui vous semble familier.
                 </p>
 <p>
-                    La recherche montre que nous sommes plus susceptibles de rêver de personnes qui ont eu un fort impact émotionnel sur nous, que ces émotions soient positives ou négatives. Votre ex représente un chapitre marquant de votre vie, et votre cerveau utilise ce point de référence pour traiter des thèmes similaires.
+                    Et parfois, vous ne trouverez rien. Ce n'est pas grave. Tous les rêves ne cachent pas un message, et il n'est pas nécessaire d'inventer un désir caché pour expliquer celui-ci. La fiche <a class="text-dream-salmon hover:underline" href="../symboles/ex-partenaire">rêver d'un ex-partenaire</a> en donne un aperçu court ; les scènes ci-dessous aident davantage à lire votre propre rêve.
                 </p>
-<blockquote>
-                    "Les rêves d'ex concernent rarement la personne réelle. Ils concernent généralement ce que cette personne représente - une période de votre vie, un sentiment ou un aspect de vous-même." - Dr. Wendy Walsh, Psychologue relationnelle
-                </blockquote>
-<h2 id="scénarios">Les scénarios de rêves d'ex les plus fréquents</h2>
+<h2 id="scénarios">Que s'est-il passé entre vous dans le rêve ?</h2>
 <p>
-                    Chaque scénario de rêve fournit des indices importants sur sa signification :
+                    Avant de chercher un sens, décrivez la scène. Ces variantes ne sont pas des définitions : ce sont des pistes à confronter à ce que vous avez ressenti.
                 </p>
 </div>
 <div class="grid md:grid-cols-2 gap-6 my-12">
@@ -132,7 +129,7 @@
 <h3 class="font-serif text-lg text-dream-cream">Se remettre ensemble</h3>
 </div>
 <p class="text-sm text-gray-300">
-                        Les rêves de réconciliation reflètent souvent le <strong>traitement de la fin de la relation</strong> ou le manque de certaines qualités - confort, sécurité ou intimité - plutôt que la personne elle-même.
+                        Qui l'a proposé, et qu'avez-vous ressenti : soulagement, malaise, impression d'être piégé ? Ce rêve ramène souvent ce que la relation vous apportait, <strong>un confort, une proximité, une routine</strong>, plus que la personne telle qu'elle est aujourd'hui. Est-ce elle qui vous manque, ou ce que vous viviez alors ?
                     </p>
 </div>
 <div class="dream-card glass-panel rounded-xl p-6 border border-transparent">
@@ -140,10 +137,10 @@
 <div class="p-2 bg-dream-salmon/10 rounded-lg">
 <i class="w-5 h-5 text-dream-salmon" data-lucide="swords"></i>
 </div>
-<h3 class="font-serif text-lg text-dream-cream">Disputes ou conflits</h3>
+<h3 class="font-serif text-lg text-dream-cream">Se disputer</h3>
 </div>
 <p class="text-sm text-gray-300">
-                        Les disputes dans les rêves suggèrent des <strong>problèmes non résolus ou du ressentiment persistant</strong>. Votre subconscient travaille peut-être sur des choses que vous n'avez jamais pu dire.
+                        Sur quoi portait la <a class="text-dream-salmon hover:underline" href="../symboles/dispute">dispute</a> ? Une vraie querelle passée, ou une nouvelle ? Ce rêve peut faire écho à des <strong>mots jamais dits</strong> ou à une colère gardée pour vous. Il peut aussi rejouer la fin de la relation, sans prouver que vous gardez de la rancune.
                     </p>
 </div>
 <div class="dream-card glass-panel rounded-xl p-6 border border-transparent">
@@ -151,10 +148,10 @@
 <div class="p-2 bg-dream-salmon/10 rounded-lg">
 <i class="w-5 h-5 text-dream-salmon" data-lucide="bed"></i>
 </div>
-<h3 class="font-serif text-lg text-dream-cream">Rêves intimes</h3>
+<h3 class="font-serif text-lg text-dream-cream">Un baiser ou un rêve intime</h3>
 </div>
 <p class="text-sm text-gray-300">
-                        Les rêves sexuels d'un ex sont courants et ne signifient pas que vous le/la voulez. Ils représentent souvent le <strong>manque d'intimité en général</strong> ou la reconnexion avec votre propre sensualité.
+                        C'est souvent le rêve qui culpabilise le plus, et il en dit peu sur vos intentions. Un rêve involontaire n'est ni un choix ni un acte. Il peut refléter un <strong>besoin de tendresse</strong>, le souvenir d'un désir ou une période sans beaucoup d'intimité. Notez surtout ce que vous ressentiez au réveil.
                     </p>
 </div>
 <div class="dream-card glass-panel rounded-xl p-6 border border-transparent">
@@ -162,10 +159,10 @@
 <div class="p-2 bg-dream-salmon/10 rounded-lg">
 <i class="w-5 h-5 text-dream-salmon" data-lucide="user-plus"></i>
 </div>
-<h3 class="font-serif text-lg text-dream-cream">Ex avec quelqu'un d'autre</h3>
+<h3 class="font-serif text-lg text-dream-cream">Votre ex avec quelqu'un d'autre</h3>
 </div>
 <p class="text-sm text-gray-300">
-                        Voir votre ex avec une autre personne reflète souvent le <strong>traitement de la perte, la peur d'être remplace</strong>, ou le travail sur des sentiments d'inadéquation de la relation.
+                        Vous regardiez de loin, on vous présentait, on vous ignorait ? Cette scène accompagne souvent la <strong>comparaison ou la peur d'être remplacé</strong>, même longtemps après la rupture. Elle ne dit rien de la vraie vie de votre ex : inutile d'aller vérifier ses réseaux sociaux.
                     </p>
 </div>
 <div class="dream-card glass-panel rounded-xl p-6 border border-transparent">
@@ -173,10 +170,10 @@
 <div class="p-2 bg-dream-salmon/10 rounded-lg">
 <i class="w-5 h-5 text-dream-salmon" data-lucide="hand-heart"></i>
 </div>
-<h3 class="font-serif text-lg text-dream-cream">Interaction amicale</h3>
+<h3 class="font-serif text-lg text-dream-cream">Une conversation paisible</h3>
 </div>
 <p class="text-sm text-gray-300">
-                        Les rêves d'ex neutres ou amicaux indiquent souvent une <strong>guérison émotionnelle et une acceptation</strong>. Vous avez traite la relation et pouvez vous en souvenir sans douleur intense.
+                        Une blague à l'arrêt de bus, une discussion sur les courses. Un rêve calme peut aller avec une relation dont vous vous souvenez <strong>sans trop de douleur</strong>. Ce n'est pas pour autant un certificat de deuil terminé, pas plus qu'un rêve orageux ne prouve que vous êtes bloqué.
                     </p>
 </div>
 <div class="dream-card glass-panel rounded-xl p-6 border border-transparent">
@@ -187,98 +184,106 @@
 <h3 class="font-serif text-lg text-dream-cream">Votre ex s'excuse</h3>
 </div>
 <p class="text-sm text-gray-300">
-                        Les rêves ou un ex s'excuse peuvent refléter <strong>votre besoin de closure</strong> ou de validation. Votre subconscient crée la résolution que vous n'avez pas eue dans la réalité.
+                        Avez-vous accepté, douté, tourné les talons ? Le rêve met peut-être en scène une <strong>reconnaissance que vous n'avez jamais reçue</strong>. Il ne dit pas si votre ex regrette quoi que ce soit. Une question utile : qu'est-ce que ces excuses changeraient pour moi aujourd'hui ?
                     </p>
 </div>
 </div>
 <div class="prose max-w-none text-gray-300">
-<h2 id="significations">Signification psychologique des rêves d'ex</h2>
-<h3>Rêver de son ex après une rupture difficile</h3>
+<h2 id="significations">Ce que ce rêve peut raconter</h2>
 <p>
-                    Même si vous avez mis fin à la relation, il y à un deuil impliqué. Les rêves vous aident à <strong>traiter la perte de ce qui était et ce qui aurait pu être</strong>. C'est un travail émotionnel sain que votre cerveau fait pendant le sommeil.
+                    Aucune liste ne peut dire pourquoi <em>vous</em> avez rêvé de <em>cet</em> ex. Voici les liens qui reviennent le plus souvent quand on compare le rêve à ce que l'on vit. Gardez ceux qui vous parlent, laissez les autres.
                 </p>
-<h3>Rêves d'ex et émotions non résolues</h3>
+<h3>Une période de votre vie</h3>
 <p>
-                    Les choses se sont-elles terminées brusquement ? Y avait-il des mots non dits ? Les rêves d'ex apparaissent souvent quand il y à une <strong>closure émotionnelle que vous n'avez jamais reçue</strong>. Votre subconscient rejoue des scénarios en essayant de trouver une résolution.
+                    Un ex est lié à une époque : une ville, un âge, une version de vous-même. Le rêve parle parfois moins de lui que de <strong>la personne que vous étiez alors</strong>, comme un <a class="text-dream-salmon hover:underline" href="../symboles/miroir">miroir</a> tendu vers le passé : plus libre, plus confiante, ou au contraire plus fragile. Qu'avait cette période qui vous manque, ou que vous êtes content d'avoir quitté ?
                 </p>
-<h3>Ce que votre subconscient cherche à comprendre</h3>
+<h3>Quelque chose d'inachevé</h3>
 <p>
-                    Les relations nous apprennent des choses sur nous-memes. Les rêves peuvent apparaître quand vous <strong>intégrez inconsciemment des leçons de cette relation</strong> - reconnaître des schémas, comprendre vos besoins ou traiter comment vous avez grandi.
+                    Une rupture brutale, sans explication, ou avec des mots retenus. Le rêve peut revenir à cet endroit précis. Écrire ce que vous auriez aimé dire, sans l'envoyer, apaise souvent ce genre de rêve davantage que de l'analyser.
                 </p>
-<h3>Quand un rêve d'ex reflète votre vie actuelle</h3>
+<h3>Une situation actuelle qui rappelle le passé</h3>
 <p>
-                    Quelque chose dans votre vie actuelle peut déclencher des rêves d'ex. Peut-être faites-vous face à des situations similaires - <strong>problèmes de confiance, défis de communication ou dynamiques relationnelles</strong> - que votre cerveau associe à cette relation passée.
+                    Un nouveau partenaire qui se ferme de la même façon, un conflit au travail qui semble familier, la peur d'être déçu à nouveau. Votre esprit emprunte peut-être le visage de l'ex parce que c'est l'image la plus nette qu'il ait de ce sentiment. Demandez-vous : où est-ce que je ressens cela en ce moment ?
                 </p>
-<h3>Rêver de son ex : nostalgie ou besoin intérieur ?</h3>
+<h3>Un tournant</h3>
 <p>
-                    Parfois nous perdons des parties de nous-memes dans les relations ou leurs suites. Les rêves d'un ex peuvent représenter des <strong>aspects de vous-même de cette époque</strong> - des loisirs abandonnes, une confiance perdue ou une version de vous-même qui vous manque.
+                    Emménager avec quelqu'un, des fiançailles, un <a class="text-dream-salmon hover:underline" href="../symboles/mariage">mariage</a>, une naissance, un déménagement. Les grands pas en avant font parfois revenir ceux qu'on a laissés derrière soi. Le rêve accompagne le changement ; il ne dit pas que vous vous êtes trompé de chemin.
                 </p>
+<h3>Rien de particulier</h3>
+<p>
+                    Il arrive qu'un ex apparaisse parce que vous êtes passé dans sa rue la veille. Si le rêve n'a laissé aucune émotion forte, inutile de creuser. Un rêve léger peut rester un rêve léger.
+                </p>
+<h3 id="exemple-journal">Exemple de journal de rêve</h3>
+<p><strong>Exemple fictif :</strong> il montre comment séparer la scène, l'émotion et un lien possible avec votre vie.</p>
+<ul>
+<li><strong>Rêve :</strong> « Nous étions sur le quai de la gare où l'on se disait au revoir. Il riait comme si de rien n'était. Je voulais lui dire quelque chose, mais le <a class="text-dream-salmon hover:underline" href="../symboles/train">train</a> est parti. »</li>
+<li><strong>Émotion :</strong> « De la tendresse d'abord, puis la gorge serrée. Aucune envie de l'appeler au réveil. »</li>
+<li><strong>Contexte récent :</strong> « Je déménage la semaine prochaine. En faisant les cartons, j'ai retrouvé un billet de concert de l'époque. »</li>
+<li><strong>Question à garder :</strong> « Est-ce lui qui me manque, ou cette période de ma vie ? Le rêve revient-il autour d'autres départs ? »</li>
+</ul>
+<p>Une seule entrée ne prouve rien. En notant les mêmes éléments sur plusieurs semaines, vous verrez si l'ex apparaît autour de certaines dates, de certains lieux ou de certaines humeurs, et si l'émotion change.</p>
 <aside class="glass-panel rounded-2xl p-6 my-8 border border-dream-salmon/20">
 <div class="flex items-start gap-4">
 <div class="p-3 bg-dream-salmon/10 rounded-xl">
 <i class="w-6 h-6 text-dream-salmon" data-lucide="sparkles"></i>
 </div>
 <div>
-<h4 class="font-serif text-lg text-dream-cream mb-2">Décodez vos rêves relationnels</h4>
-<p class="text-sm text-gray-400 mb-4">Noctalia analyse les détails spécifiques de vos rêves d'ex - le scénario, les émotions et le contexte - pour vous aider à comprendre ce que votre subconscient traite.</p>
+<h4 class="font-serif text-lg text-dream-cream mb-2">Notez le rêve avant qu'il ne s'efface</h4>
+<p class="text-sm text-gray-400 mb-4">Dans Noctalia, racontez votre rêve à voix haute ou écrivez-le au réveil. Il est transcrit et rangé dans votre journal avec votre émotion, et vous pouvez relire vos rêves d'ex côte à côte.</p>
 <a class="inline-flex items-center gap-2 text-sm text-dream-salmon hover:text-dream-salmonLight transition-colors" href="/fr/">
-                                Essayer Noctalia Gratuitement <i class="w-4 h-4" data-lucide="arrow-right"></i>
+                                Essayer Noctalia gratuitement <i class="w-4 h-4" data-lucide="arrow-right"></i>
 </a>
 </div>
 </div>
 </aside>
-<h2 id="psychologie">La psychologie des rêves d'anciens partenaires</h2>
-<h3>Attachement émotionnel et rêves d'ex</h3>
+<h2 id="psychologie">Ce que dit la recherche sur les rêves d'ex</h2>
 <p>
-                    Notre style d'attachement affecte la façon dont nous traitons les ruptures. Les <strong>individus anxieusement attaches</strong> ont tendance à avoir des rêves d'ex plus fréquents et mettent plus de temps à cesser d'en avoir. Les <strong>personnes evitantes</strong> peuvent supprimer les pensées éveillées pour qu'elles refassent surface dans les rêves.
+                    Peu d'études portent directement sur ce thème. La plus nette est une étude de journaux de rêves menée par Michael Schredl et Lara Wood (2021) : 1 612 récits de rêves de 425 étudiants. Un ex apparaissait dans environ 5 % des récits (77 rêves), bien moins souvent que le partenaire actuel.
                 </p>
-<h3>Mémoire et sommeil paradoxal : revivre son ex</h3>
 <p>
-                    Pendant le <a class="text-dream-salmon hover:underline" href="sommeil-paradoxal-reves">sommeil paradoxal</a>, votre cerveau consolide les souvenirs émotionnels. Les relations significatives créent des <strong>réseaux denses de souvenirs</strong> qui s'activent pendant ce processus. Plus la signification émotionnelle est grande, plus ces souvenirs sont susceptibles d'apparaître dans les rêves.
+                    Le plus intéressant, c'est le ton. Par rapport aux rêves du partenaire actuel, les interactions avec un ex étaient plus souvent négatives ou agressives, et aussi plus souvent amicales ou chaleureuses. Dans environ un quart de ces rêves, la séparation elle-même était évoquée. Autrement dit, les rêves d'ex sont souvent <strong>plus chargés en émotion, dans les deux sens</strong>.
                 </p>
-<h3>L'effet Zeigarnik : pourquoi l'ex revient en rêve</h3>
 <p>
-                    Nous nous souvenons mieux des taches incomplètes que des taches terminées. Les relations qui se sont terminées sans closure, brusquement ou avec des problèmes non résolus sont <strong>psychologiquement "incomplètes"</strong>, les rendant plus susceptibles de revenir dans les rêves.
+                    Les auteurs y voient une illustration de l'hypothèse de continuité : les rêves reflètent volontiers ce qui nous occupe éveillés, et le poids émotionnel d'une ancienne relation peut ressurgir même quand le contact quotidien a cessé. L'étude a des limites claires : des étudiantes et étudiants en psychologie, en majorité des femmes, et aucune donnée sur la situation amoureuse ni sur le temps écoulé depuis la rupture. Elle décrit un groupe, pas votre rêve.
                 </p>
-<blockquote>
-                    "L'ex dans votre rêve ne concerne souvent pas vraiment votre ex. Il s'agit de ce qu'il représente - une époque ou vous ressentiez certaines choses, des défis que vous avez affrontés ou des besoins non satisfaits." - Dr. Ian Wallace, Psychologue des rêves
-                </blockquote>
+<p>
+                    Vous lirez peut-être ailleurs que le style d'attachement ou « l'effet Zeigarnik » expliquent pourquoi certaines personnes rêvent de leur ex pendant des années. Ce sont des hypothèses, pas des résultats établis sur les rêves d'ex. Prenez-les comme des pistes de réflexion, jamais comme un diagnostic.
+                </p>
 <h2 id="actuel">Rêver de son ex quand on est en couple</h2>
 <p>
-                    Rêver d'un ex alors que vous êtes heureusement en couple peut sembler alarmant ou culpabilisant. Voici ce qu'il faut savoir :
+                    Ici, la réponse est sereine : un rêve n'est pas une infidélité, et ce n'est pas le signe que votre couple va mal. Vous n'avez pas choisi ce rêve. Ce qui compte, c'est la façon dont vous et votre partenaire vous traitez, éveillés.
                 </p>
-<h3>Est-ce normal de rêver de son ex en couple ?</h3>
+<h3>Et s'il soulève une question ?</h3>
 <p>
-                    Les études montrent que <strong>jusqu'à 35 % des personnes en couple rêvent de leurs ex</strong>. Cela ne signifie pas que vous êtes malheureux ou infidèle. Votre cerveau n'efface pas les souvenirs marquants simplement parce que vous êtes passé à autre chose.
+                    Regardez-la en face. Quelque chose manque-t-il dans votre relation actuelle ? Un conflit récent vous rappelle-t-il l'ancien ? Vous pouvez parler de ce point précis sans présenter le rêve comme une preuve contre qui que ce soit.
                 </p>
-<h3>Comparaison inconsciente avec l'ex-partenaire</h3>
+<h3>Faut-il en parler à son partenaire ?</h3>
 <p>
-                    Votre subconscient peut <strong>comparer les dynamiques</strong> - non pas pour préférer l'un à l'autre, mais pour comprendre votre relation actuelle à travers le prisme de l'expérience passée.
+                    Rien ne vous y oblige. Si vous le partagez, parlez du ressenti plutôt que de chaque détail. Et le rêve n'est pas une raison de recontacter votre ex : une telle décision se prend éveillé, selon vos envies réelles et les limites de chacun.
                 </p>
-<h3>Faut-il parler de ses rêves d'ex à son conjoint ?</h3>
+<h2 id="avancer">Que faire si vous rêvez souvent de votre ex ?</h2>
 <p>
-                    Il n'y a pas d'obligation de partager vos rêves. Considérez le contexte : Cela aiderait-il votre relation ou causerait-il des inquiétudes inutiles ? Si les rêves d'ex sont fréquents et perturbants, <strong>discuter des schémas (pas des détails)</strong> avec un thérapeute peut être plus approprie.
+                    Il n'existe pas de méthode garantie pour cesser de rêver de quelqu'un. Mais quelques gestes aident le rêve à perdre de sa force.
                 </p>
-<h2 id="avancer">Comment arrêter de rêver de son ex</h2>
-<h3>Tenir un journal de rêves pour comprendre son ex</h3>
+<h3>1. Noter la scène, l'émotion et la date</h3>
 <p>
-                    Notez le rêve immédiatement au réveil. Notez <strong>le scénario, les émotions et tout symbole</strong> (comme une <a class="text-dream-salmon hover:underline" href="../symboles/maison">maison</a>, une <a class="text-dream-salmon hover:underline" href="../symboles/porte">porte</a>, un <a class="text-dream-salmon hover:underline" href="../symboles/telephone">telephone</a> ou un <a class="text-dream-salmon hover:underline" href="../symboles/miroir">miroir</a>). Avec le temps, des schémas émergent qui révèlent sur quoi votre subconscient travaille.
+                    Trois lignes suffisent : ce qui s'est passé, ce que vous avez ressenti, ce qui se passe dans votre vie. Après quelques entrées, vous distinguerez un rêve qui revient chaque semaine d'une nuit marquante isolée. Notre <a class="text-dream-salmon hover:underline" href="guide-journal-reves">guide du journal de rêves</a> propose une méthode simple, et l'article sur les <a class="text-dream-salmon hover:underline" href="signification-reves-recurrents">rêves récurrents</a> aide si la même scène revient.
                 </p>
-<h3>Identifier ce qui déclenche les rêves d'ex</h3>
+<h3>2. Repérer les déclencheurs</h3>
 <p>
-                    Demandez-vous : Que se passe-t-il dans ma vie maintenant ? <strong>Les événements récents, le stress ou les situations</strong> peuvent avoir déclenche le rêve. La connexion n'est pas toujours évidente mais explorer aide.
+                    Dates anniversaires, lieux, une playlist, un défilement de vieilles photos sur votre <a class="text-dream-salmon hover:underline" href="../symboles/telephone">téléphone</a> avant de dormir. Si un déclencheur ressort, vous pouvez l'adoucir : archiver les photos, changer de rituel du soir.
                 </p>
-<h3>Faire son deuil pour ne plus rêver de son ex</h3>
+<h3>3. Écrire ce qui n'a pas été dit</h3>
 <p>
-                    Si des sentiments non résolus alimentent les rêves, créez votre propre closure. Écrivez une lettre (vous n'avez pas à l'envoyer), <strong>reconnaissez ce que vous avez appris et libérez consciemment</strong> ce qui ne vous sert plus.
+                    Une lettre jamais envoyée, quelques phrases dans un carnet. Le but est de poser ce qui tourne encore dans votre tête, pas de rouvrir la conversation.
                 </p>
-<h3>Transformer les rêves d'ex en croissance personnelle</h3>
+<h3>4. Réécrire la fin d'un rêve pénible</h3>
 <p>
-                    Au lieu de voir les rêves d'ex comme des reculs, voyez-les comme une <strong>preuve de traitement émotionnel continu</strong>. Votre cerveau fait un travail important d'intégration des expériences passées.
+                    Si un rêve douloureux revient sous la même forme, imaginez-le le soir avec une autre issue : vous dites ce que vous vouliez dire, ou vous sortez calmement par une <a class="text-dream-salmon hover:underline" href="../symboles/porte">porte</a>. Cette technique, proche de celle utilisée contre les <a class="text-dream-salmon hover:underline" href="guide-cauchemars">cauchemars</a>, se pratique éveillé, quelques minutes par jour.
                 </p>
-<h3>Briser le cycle des rêves répétitifs d'ex</h3>
+<h3>5. Savoir quand demander de l'aide</h3>
 <p>
-                    Si vous répétez des schémas relationnels, les rêves d'ex peuvent le souligner. Considérez ce que le rêve essaie de vous montrer sur <strong>les choix, les limites ou les besoins</strong> que vous devriez examiner.
+                    Si ces rêves, ou des cauchemars en général, reviennent régulièrement et pèsent sur votre sommeil ou vos journées, le NHS britannique conseille d'en parler à un médecin. De même si la rupture elle-même vous pèse encore beaucoup : un psychologue peut vous aider avec cette détresse, sans qu'il faille d'abord décoder le rêve.
                 </p>
 </div>
 <!-- Related Symbols Start -->
@@ -308,69 +313,77 @@
 <div class="w-16 h-16 bg-dream-salmon/10 rounded-full flex items-center justify-center mx-auto mb-6">
 <i class="w-8 h-8 text-dream-salmon" data-lucide="heart-handshake"></i>
 </div>
-<h3 class="font-serif text-2xl md:text-3xl mb-4 text-dream-cream">Comprenez votre cœur à travers vos rêves</h3>
+<h3 class="font-serif text-2xl md:text-3xl mb-4 text-dream-cream">Un rêve, c'est une scène. Plusieurs rêves, c'est une piste.</h3>
 <p class="text-purple-200/70 mb-6 max-w-lg mx-auto">
-                    Les rêves de relations passées révèlent ce que votre cœur traite. Enregistrez-les dans Noctalia et laissez l'analyse Noctalia vous aider à comprendre les schémas profonds.
+                    Gardez vos rêves d'ex dans Noctalia, avec ce que vous avez ressenti. En les relisant ensemble, vous verrez quand ils reviennent et ce qui les accompagne.
                 </p>
 <a class="inline-flex items-center gap-2 px-8 py-4 bg-dream-salmon text-dream-dark rounded-full font-bold hover:bg-dream-salmon/90 transition-colors" href="/fr/">
-                    Commencez à Explorer Vos Rêves <i class="w-5 h-5" data-lucide="arrow-right"></i>
+                    Commencer mon journal de rêves <i class="w-5 h-5" data-lucide="arrow-right"></i>
 </a>
 </aside>
 <section class="mt-16">
-<h2 class="font-serif text-2xl text-dream-cream mb-8">Questions Fréquemment Posées</h2>
+<h2 class="font-serif text-2xl text-dream-cream mb-8">Questions fréquentes</h2>
 <div class="space-y-4">
 <details class="glass-panel rounded-xl p-4 group cursor-pointer">
 <summary class="font-medium flex justify-between items-center text-dream-cream">
-                            Pourquoi je rêve toujours de mon ex ?
+                            Rêver de son ex, est-ce que ça veut dire qu'on veut le récupérer ?
                             <i class="w-5 h-5 transition-transform group-open:rotate-180 text-dream-salmon" data-lucide="chevron-down"></i>
 </summary>
 <p class="mt-4 text-sm text-gray-400 leading-relaxed">
-                            Rêver de votre ex ne signifie pas nécessairement que vous voulez le/la récupérer. Ces rêves représentent souvent des émotions non résolues, des leçons apprises ou des aspects de vous-même associés à cette relation. Votre cerveau traite les expériences passées pendant le sommeil.
+                            Pas forcément. Le rêve ramène souvent une période de votre vie, un besoin de proximité ou des mots restés en suspens, plutôt que la personne telle qu'elle est aujourd'hui. Comparez-le à ce que vous voulez éveillé et aux vraies raisons de la rupture.
                         </p>
 </details>
 <details class="glass-panel rounded-xl p-4 group cursor-pointer">
 <summary class="font-medium flex justify-between items-center text-dream-cream">
-                            Rêver de mon ex signifie-t-il que je l'aime encore ?
+                            Si je rêve de mon ex, est-ce qu'il ou elle pense à moi ?
                             <i class="w-5 h-5 transition-transform group-open:rotate-180 text-dream-salmon" data-lucide="chevron-down"></i>
 </summary>
 <p class="mt-4 text-sm text-gray-400 leading-relaxed">
-                            Pas nécessairement. Les rêves d'ex peuvent refléter beaucoup de choses : traiter le deuil, résoudre des problèmes non résolus, manquer certaines qualités (pas la personne), ou votre subconscient utilisant un visage familier pour représenter autre chose. L'émotion dans le rêve compte plus que l'apparition de votre ex.
+                            Non. Votre rêve est fait de vos propres souvenirs et émotions. Il ne dit rien de ce que ressent votre ex, ni qu'il ou elle compte vous recontacter.
                         </p>
 </details>
 <details class="glass-panel rounded-xl p-4 group cursor-pointer">
 <summary class="font-medium flex justify-between items-center text-dream-cream">
-                            Pourquoi je rêve d'un ex auquel je n'ai pas pensé depuis des années ?
+                            Rêver de son ex quand on est en couple, est-ce mauvais signe ?
                             <i class="w-5 h-5 transition-transform group-open:rotate-180 text-dream-salmon" data-lucide="chevron-down"></i>
 </summary>
 <p class="mt-4 text-sm text-gray-400 leading-relaxed">
-                            Les rêves soudains d'un ex oublié surviennent souvent quand quelque chose dans votre vie actuelle déclenche des souvenirs ou émotions associées. Vous faites peut-être face à des dynamiques relationnelles similaires ou des défis émotionnels. Votre cerveau utilise les expériences passées comme points de référence.
+                            Non. Un rêve n'est pas une infidélité et n'annonce pas une rupture. S'il soulève une question sur votre couple, regardez-la éveillé, à partir de la façon dont vous vous traitez au quotidien.
+                        </p>
+</details>
+<details class="glass-panel rounded-xl p-4 group cursor-pointer">
+<summary class="font-medium flex justify-between items-center text-dream-cream">
+                            Pourquoi je rêve d'un ex auquel je n'ai pas pensé depuis des années ?
+                            <i class="w-5 h-5 transition-transform group-open:rotate-180 text-dream-salmon" data-lucide="chevron-down"></i>
+</summary>
+<p class="mt-4 text-sm text-gray-400 leading-relaxed">
+                            Souvent parce que quelque chose de récent rappelle cette époque : un lieu, une date, une nouvelle relation, une émotion familière. Parfois, aucun déclencheur n'apparaît. Noter le contexte du rêve pendant quelques semaines est le meilleur moyen de vérifier si un lien tient.
                         </p>
 </details>
 </div>
 </section>
 <!-- Sources / Trust -->
 <section class="mt-16 glass-panel rounded-2xl p-6" id="sources">
-<h2 class="font-serif text-2xl text-dream-cream mb-4">Sources / Pour aller plus loin</h2>
+<h2 class="font-serif text-2xl text-dream-cream mb-4">Sources</h2>
 <ul class="mt-6 space-y-2 text-sm text-gray-400">
-<li><a href="https://dictionary.apa.org/dream" rel="nofollow noopener noreferrer" target="_blank">APA Dictionary of Psychology: Dream</a></li>
-<li>McNamara (2008) — Nightmares: The science and solution of those frightening visions</li>
-<li><a href="https://dreamresearch.net/" rel="nofollow noopener noreferrer" target="_blank">Domhoff (2003) — Dream research overview</a></li>
-<li>Schredl (2006) — Factors affecting the continuity between waking and dreaming</li>
+<li><a href="https://doi.org/10.3390/clockssleep3020018" rel="nofollow noopener noreferrer" target="_blank">Schredl et Wood (2021), « Partners and Ex-Partners in Dreams: A Diary Study », <em>Clocks &amp; Sleep</em>, 3(2)</a></li>
+<li><a href="https://www.ninds.nih.gov/health-information/public-education/brain-basics/brain-basics-understanding-sleep" rel="nofollow noopener noreferrer" target="_blank">NINDS, « Brain Basics: Understanding Sleep »</a></li>
+<li><a href="https://www.nhs.uk/conditions/night-terrors/" rel="nofollow noopener noreferrer" target="_blank">NHS, « Night terrors and nightmares »</a></li>
 </ul>
-<p class="mt-6 text-xs text-purple-200/60">Mis à jour le 6 janvier 2026</p>
+<p class="mt-6 text-xs text-purple-200/60">Mis à jour le 9 octobre 2026</p>
 </section>
 <section class="mt-16">
-<h2 class="font-serif text-2xl text-dream-cream mb-8">Articles Connexes</h2>
+<h2 class="font-serif text-2xl text-dream-cream mb-8">Articles connexes</h2>
 <div class="grid md:grid-cols-2 gap-6">
 <a class="glass-panel rounded-xl p-6 block hover:border-dream-salmon/30 transition-colors" href="signification-reves-recurrents">
 <span class="text-xs text-dream-salmon uppercase mb-2 block">Interprétation</span>
-<h3 class="font-serif text-lg text-dream-cream mb-2">Signification des Rêves Récurrents</h3>
-<p class="text-sm text-gray-400">Pourquoi faites-vous toujours le même rêve ? Découvrez les messages cachés.</p>
+<h3 class="font-serif text-lg text-dream-cream mb-2">Signification des rêves récurrents</h3>
+<p class="text-sm text-gray-400">Pourquoi le même rêve revient-il, et que noter pour le comprendre ?</p>
 </a>
 <a class="glass-panel rounded-xl p-6 block hover:border-dream-salmon/30 transition-colors" href="reves-etre-poursuivi">
 <span class="text-xs text-dream-salmon uppercase mb-2 block">Interprétation</span>
-<h3 class="font-serif text-lg text-dream-cream mb-2">Rêves d'Être Poursuivi</h3>
-<p class="text-sm text-gray-400">Que signifie fuir quelque chose dans vos rêves ?</p>
+<h3 class="font-serif text-lg text-dream-cream mb-2">Rêver d'être poursuivi</h3>
+<p class="text-sm text-gray-400">Fuir quelqu'un ou quelque chose en rêve : les pistes possibles.</p>
 </a>
 </div>
 </section>

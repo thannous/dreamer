@@ -5,7 +5,7 @@
   "lang": "fr",
   "slug": "heure-ete-sommeil-reves",
   "title": "Heure d'été, sommeil et rêves | Noctalia",
-  "description": "Comprenez comment le changement d'heure perturbe rythme circadien, sommeil paradoxal, rappel des rêves et récupération nocturne.",
+  "description": "Changement d'heure et sommeil : pourquoi le passage à l'heure d'été est plus dur, ses effets sur le sommeil paradoxal et les rêves, et comment s'adapter.",
   "robots": "max-image-preview:large",
   "themeColor": "#0a0514",
   "htmlClass": "scroll-smooth blog-article",
@@ -14,24 +14,24 @@
   "mainClass": "pt-32 pb-20 px-4",
   "ogType": "article",
   "ogTitle": "Heure d'été, sommeil et rêves | Noctalia",
-  "ogDescription": "Comprenez comment le changement d'heure perturbe rythme circadien, sommeil paradoxal, rappel des rêves et récupération nocturne.",
+  "ogDescription": "Pourquoi le passage à l'heure d'été pèse plus sur le sommeil, ce qu'il change aux rêves, et comment s'adapter en quelques jours.",
   "ogImage": "https://noctalia.app/img/blog/daylight-saving-time-sleep-dreams.webp",
   "ogImageAlt": "Horloge entourée de cycles de sommeil perturbés et de symboles oniriques dans des tons violets et ambrés",
   "twitterCard": "summary_large_image",
   "twitterTitle": "Heure d'été, sommeil et rêves | Noctalia",
-  "twitterDescription": "Comprenez comment le changement d'heure perturbe rythme circadien, sommeil paradoxal, rappel des rêves et récupération nocturne.",
+  "twitterDescription": "Pourquoi le passage à l'heure d'été pèse plus sur le sommeil, ce qu'il change aux rêves, et comment s'adapter en quelques jours.",
   "twitterImage": "https://noctalia.app/img/blog/daylight-saving-time-sleep-dreams.webp",
   "twitterImageAlt": "Horloge entourée de cycles de sommeil perturbés et de symboles oniriques dans des tons violets et ambrés",
   "publishedTime": "2026-03-17",
-  "modifiedTime": "2026-06-18",
+  "modifiedTime": "2026-10-09",
   "author": "Thanh Chau",
   "prevPath": "/fr/blog/controler-reves-resolution-problemes",
   "nextPath": "/fr/blog/dette-sommeil-sante-reves",
   "preloadImage": "/img/blog/daylight-saving-time-sleep-dreams.webp",
   "jsonLd": [
-    "{\n  \"@context\": \"https://schema.org\",\n  \"@type\": \"BlogPosting\",\n  \"headline\": \"Changement d'heure et sommeil : comment l'heure d'été perturbe vos rêves\",\n  \"description\": \"Comprenez comment le changement d'heure perturbe rythme circadien, sommeil paradoxal, rappel des rêves et récupération nocturne.\",\n  \"image\": {\n    \"@type\": \"ImageObject\",\n    \"url\": \"https://noctalia.app/img/blog/daylight-saving-time-sleep-dreams.webp\",\n    \"width\": 1200,\n    \"height\": 630\n  },\n  \"author\": [\n    {\n      \"@type\": \"Person\",\n      \"@id\": \"https://noctalia.app/fr/a-propos#person\",\n      \"name\": \"Thanh Chau\",\n      \"jobTitle\": \"Fondateur & Directeur de la publication\",\n      \"url\": \"https://noctalia.app/fr/a-propos\",\n      \"worksFor\": {\n        \"@type\": \"Organization\",\n        \"@id\": \"https://noctalia.app/#organization\",\n        \"name\": \"Noctalia\",\n        \"url\": \"https://noctalia.app\"\n      }\n    },\n    {\n      \"@type\": \"Organization\",\n      \"@id\": \"https://noctalia.app/#organization\",\n      \"name\": \"Noctalia\",\n      \"url\": \"https://noctalia.app\",\n      \"logo\": {\n        \"@type\": \"ImageObject\",\n        \"url\": \"https://noctalia.app/logo/logo_noctalia.png\"\n      }\n    }\n  ],\n  \"publisher\": {\n    \"@type\": \"Organization\",\n    \"name\": \"Noctalia\",\n    \"url\": \"https://noctalia.app\",\n    \"logo\": {\n      \"@type\": \"ImageObject\",\n      \"url\": \"https://noctalia.app/logo/logo_noctalia.png\"\n    }\n  },\n  \"datePublished\": \"2026-03-17\",\n  \"dateModified\": \"2026-06-18\",\n  \"mainEntityOfPage\": {\n    \"@type\": \"WebPage\",\n    \"@id\": \"https://noctalia.app/fr/blog/heure-ete-sommeil-reves\"\n  },\n  \"inLanguage\": \"fr\",\n  \"isAccessibleForFree\": true,\n  \"wordCount\": 1600,\n  \"timeRequired\": \"PT6M\",\n  \"url\": \"https://noctalia.app/fr/blog/heure-ete-sommeil-reves\"\n}",
+    "{\n    \"@context\": \"https://schema.org\",\n    \"@type\": \"BlogPosting\",\n    \"headline\": \"Changement d'heure et sommeil : ce que l'heure d'été fait à vos nuits et à vos rêves\",\n    \"description\": \"Changement d'heure et sommeil : pourquoi le passage à l'heure d'été est plus dur, ses effets sur le sommeil paradoxal et les rêves, et comment s'adapter.\",\n    \"image\": {\n        \"@type\": \"ImageObject\",\n        \"url\": \"https://noctalia.app/img/blog/daylight-saving-time-sleep-dreams.webp\",\n        \"width\": 1200,\n        \"height\": 630\n    },\n    \"author\": [\n        {\n            \"@type\": \"Person\",\n            \"@id\": \"https://noctalia.app/fr/a-propos#person\",\n            \"name\": \"Thanh Chau\",\n            \"jobTitle\": \"Fondateur & Directeur de la publication\",\n            \"url\": \"https://noctalia.app/fr/a-propos\",\n            \"worksFor\": {\n                \"@type\": \"Organization\",\n                \"@id\": \"https://noctalia.app/#organization\",\n                \"name\": \"Noctalia\",\n                \"url\": \"https://noctalia.app\"\n            }\n        },\n        {\n            \"@type\": \"Organization\",\n            \"@id\": \"https://noctalia.app/#organization\",\n            \"name\": \"Noctalia\",\n            \"url\": \"https://noctalia.app\",\n            \"logo\": {\n                \"@type\": \"ImageObject\",\n                \"url\": \"https://noctalia.app/logo/logo_noctalia.png\"\n            }\n        }\n    ],\n    \"publisher\": {\n        \"@type\": \"Organization\",\n        \"name\": \"Noctalia\",\n        \"url\": \"https://noctalia.app\",\n        \"logo\": {\n            \"@type\": \"ImageObject\",\n            \"url\": \"https://noctalia.app/logo/logo_noctalia.png\"\n        }\n    },\n    \"datePublished\": \"2026-03-17\",\n    \"dateModified\": \"2026-10-09\",\n    \"mainEntityOfPage\": {\n        \"@type\": \"WebPage\",\n        \"@id\": \"https://noctalia.app/fr/blog/heure-ete-sommeil-reves\"\n    },\n    \"inLanguage\": \"fr\",\n    \"isAccessibleForFree\": true,\n    \"wordCount\": 2331,\n    \"timeRequired\": \"PT11M\",\n    \"url\": \"https://noctalia.app/fr/blog/heure-ete-sommeil-reves\"\n}",
     "{\n  \"@context\": \"https://schema.org\",\n  \"@type\": \"WebPage\",\n  \"@id\": \"https://noctalia.app/fr/blog/heure-ete-sommeil-reves\",\n  \"url\": \"https://noctalia.app/fr/blog/heure-ete-sommeil-reves\",\n  \"name\": \"Changement d'heure et sommeil : comment l'heure d'été | Noctalia\",\n  \"inLanguage\": \"fr\"\n}",
-    "{\n  \"@context\": \"https://schema.org\",\n  \"@type\": \"FAQPage\",\n  \"mainEntity\": [\n    {\n      \"@type\": \"Question\",\n      \"name\": \"Le changement d'heure affecte-t-il vraiment le sommeil ?\",\n      \"acceptedAnswer\": {\n        \"@type\": \"Answer\",\n        \"text\": \"Oui. Le passage à l'heure d'été impose une avance de phase d'une heure à votre rythme circadien, perturbant la sécrétion de mélatonine et comprimant le sommeil paradoxal. Les études montrent qu'il faut 1 à 7 jours pour s'adapter complètement, avec des effets mesurables sur la qualité du sommeil, le rappel onirique et la santé cardiovasculaire. Le lundi suivant le passage à l'heure d'été voit une augmentation de 24 % des admissions pour infarctus.\"\n      }\n    },\n    {\n      \"@type\": \"Question\",\n      \"name\": \"Combien de temps faut-il pour s'adapter au changement d'heure ?\",\n      \"acceptedAnswer\": {\n        \"@type\": \"Answer\",\n        \"text\": \"La plupart des gens ont besoin de 1 à 3 jours pour s'adapter au décalage d'une heure. Toutefois, les personnes sensibles — enfants, personnes âgées et personnes souffrant de troubles du sommeil — peuvent avoir besoin d'une semaine complète. Les couche-tard (chronotypes tardifs) sont les plus affectés par le passage à l'heure d'été. Les recherches de Kantermann et al. montrent des effets circadiens mesurables durant jusqu'à quatre semaines chez certains individus.\"\n      }\n    },\n    {\n      \"@type\": \"Question\",\n      \"name\": \"Le changement d'heure peut-il affecter mes rêves ?\",\n      \"acceptedAnswer\": {\n        \"@type\": \"Answer\",\n        \"text\": \"Absolument. Le passage à l'heure d'été ampute le dernier cycle de sommeil paradoxal du matin — la période la plus longue et la plus riche en rêves de la nuit. Cela réduit initialement le rappel onirique, mais pendant la période d'adaptation, le rebond de sommeil paradoxal peut produire des rêves inhabituellement vifs et émotionnellement intenses. Le contenu onirique s'oriente également vers des thèmes de désorientation, de retard et de perte de contrôle.\"\n      }\n    }\n  ]\n}",
+    "{\n    \"@context\": \"https://schema.org\",\n    \"@type\": \"FAQPage\",\n    \"mainEntity\": [\n        {\n            \"@type\": \"Question\",\n            \"name\": \"Le changement d'heure affecte-t-il vraiment le sommeil ?\",\n            \"acceptedAnswer\": {\n                \"@type\": \"Answer\",\n                \"text\": \"Oui, surtout au printemps. Les revues de recherche montrent un sommeil plus court et plus fragmenté pendant plusieurs jours, pas seulement la nuit du changement. Le réveil ampute aussi la fin de nuit, quand les périodes de sommeil paradoxal sont les plus longues.\"\n            }\n        },\n        {\n            \"@type\": \"Question\",\n            \"name\": \"Combien de temps faut-il pour s'adapter au changement d'heure ?\",\n            \"acceptedAnswer\": {\n                \"@type\": \"Answer\",\n                \"text\": \"La plupart des gens se sentent mieux en quelques jours à une semaine. Les personnes du soir s'adaptent moins bien au passage à l'heure d'été : dans une étude, leurs horaires d'activité ne s'étaient toujours pas recalés plusieurs semaines après. Si le mauvais sommeil dure plusieurs semaines, parlez-en à un médecin.\"\n            }\n        },\n        {\n            \"@type\": \"Question\",\n            \"name\": \"Le changement d'heure peut-il affecter mes rêves ?\",\n            \"acceptedAnswer\": {\n                \"@type\": \"Answer\",\n                \"text\": \"Indirectement, oui. Une fin de nuit raccourcie peut d'abord réduire le nombre de rêves dont on se souvient, puis laisser place à des rêves plus intenses quand le sommeil paradoxal rebondit. C'est plausible plutôt que prouvé pour le changement d'heure. Des thèmes de retard ou d'horloge peuvent aussi faire écho à la semaine.\"\n            }\n        },\n        {\n            \"@type\": \"Question\",\n            \"name\": \"Comment se préparer au passage à l'heure d'été ?\",\n            \"acceptedAnswer\": {\n                \"@type\": \"Answer\",\n                \"text\": \"Couchez-vous et levez-vous 15 à 20 minutes plus tôt chaque jour pendant les trois ou quatre jours qui précèdent. Après le changement, sortez à la lumière du jour peu après le réveil, tamisez l'éclairage le soir et arrêtez la caféine en début d'après-midi.\"\n            }\n        }\n    ]\n}",
     "{\n  \"@context\": \"https://schema.org\",\n  \"@type\": \"BreadcrumbList\",\n  \"itemListElement\": [\n    {\n      \"@type\": \"ListItem\",\n      \"position\": 1,\n      \"name\": \"Accueil\",\n      \"item\": \"https://noctalia.app/fr/\"\n    },\n    {\n      \"@type\": \"ListItem\",\n      \"position\": 2,\n      \"name\": \"Ressources\",\n      \"item\": \"https://noctalia.app/fr/blog/\"\n    },\n    {\n      \"@type\": \"ListItem\",\n      \"position\": 3,\n      \"name\": \"Changement d'heure\",\n      \"item\": \"https://noctalia.app/fr/blog/heure-ete-sommeil-reves\"\n    }\n  ]\n}"
   ],
   "activeNav": "resources"
@@ -64,13 +64,13 @@
 <a class="text-xs font-mono text-purple-200/70 border border-white/10 rounded-full px-3 py-1 hover:text-white hover:border-dream-salmon/30 transition-colors" href="sommeil-paradoxal-reves">Sujet : Science du sommeil</a>
 <span aria-hidden="true" class="w-full sm:hidden"></span>
 <span class="text-sm text-purple-300/60">Publié le 17 mars 2026</span>
-<span class="text-sm text-purple-300/60">~1600 mots · 6 min de lecture</span>
+<span class="text-sm text-purple-300/60">11 min de lecture</span>
 </div>
 <h1 class="font-serif text-3xl md:text-5xl mb-6 text-transparent bg-clip-text bg-gradient-to-b from-white via-dream-lavender to-purple-400/50 leading-tight">
-                    Changement d'heure et sommeil : comment l'heure d'été perturbe vos rêves
+                    Changement d'heure et sommeil : ce que l'heure d'été fait à vos nuits et à vos rêves
                 </h1>
 <p class="text-lg text-purple-200/80 leading-relaxed">
-                    Deux fois par an, des milliards de personnes décalent leurs horloges d'une heure. Cela semble anodin, mais cette unique heure déclenche une cascade de perturbations sur votre rythme circadien, votre architecture du sommeil et votre vie onirique. À l'approche du passage à l'heure d'été, il est temps de comprendre ce qui arrive à votre corps et à votre esprit -- et comment protéger votre sommeil.
+                    Lundi matin, lendemain du passage à l'heure d'été. Le réveil sonne à 7 h, votre corps jure qu'il est 6 h, et le rêve dans lequel vous étiez, un train à ne pas rater, s'efface dès que vous vous asseyez. Le changement d'heure avance l'horloge d'une heure en une nuit ; votre horloge interne, elle, met plusieurs jours à suivre. Voici ce que cette heure change à votre sommeil et à vos rêves, ce qui est mesuré, ce qui reste une hypothèse, et comment passer le cap en douceur.
                 </p>
 </header>
 <!-- Author Byline (E-E-A-T) -->
@@ -91,7 +91,7 @@
 <!-- Quick Answer (AI SEO) -->
 <section aria-labelledby="quick-answer-title" class="glass-panel rounded-2xl p-6 mb-8 border border-dream-salmon/20 bg-white/5">
 <h2 class="font-serif text-xl text-dream-cream mb-3" id="quick-answer-title">Réponse rapide</h2>
-<p class="text-purple-100/80 leading-relaxed">Le changement d'heure impose un décalage brutal d'une heure à votre rythme circadien, perturbant le timing délicat de la sécrétion de mélatonine et des cycles de sommeil. Le passage à l'heure d'été est particulièrement nocif : il comprime le sommeil paradoxal, réduit le rappel onirique, augmente le risque d'infarctus de 24 % dans les jours suivants, et peut nécessiter jusqu'à une semaine de récupération chez les personnes sensibles. Le décalage progressif de l'horaire, l'exposition à la lumière matinale et l'évitement de la caféine sont les stratégies d'adaptation les plus efficaces.</p>
+<p class="text-purple-100/80 leading-relaxed">L'heure légale change en une nuit, votre horloge biologique rattrape le retard en plusieurs jours. Le passage à l'heure d'été est le plus difficile : le sommeil devient plus court et plus haché, et le réveil ampute la fin de nuit, là où le sommeil paradoxal, la phase la plus liée aux rêves marquants, dure le plus longtemps. Comptez quelques jours de fatigue, parfois davantage si vous êtes du soir. Décaler son horaire progressivement, prendre la lumière du matin et tamiser les soirées sont les gestes les plus utiles.</p>
 </section>
 <!-- Featured Image -->
 <figure class="mb-12 rounded-2xl overflow-hidden">
@@ -100,67 +100,67 @@
 <!-- Table of Contents -->
 <nav class="glass-panel rounded-2xl p-6 mb-12">
 <h2 class="font-serif text-lg text-dream-cream mb-4 flex items-center gap-2">
-<i class="w-5 h-5 text-dream-salmon" data-lucide="list"></i> Table des matières
+<i class="w-5 h-5 text-dream-salmon" data-lucide="list"></i> Sommaire
                 </h2>
 <ol class="space-y-2 text-sm text-purple-200/70">
-<li><a class="toc-link block" href="#clock-change">1. Ce qui arrive à votre corps lors du changement d'heure</a></li>
-<li><a class="toc-link block" href="#sleep-architecture">2. Comment l'heure d'été perturbe l'architecture du sommeil</a></li>
-<li><a class="toc-link block" href="#dream-disruption">3. L'effet de perturbation des rêves</a></li>
-<li><a class="toc-link block" href="#health-risks">4. Risques pour la santé liés au changement d'heure</a></li>
-<li><a class="toc-link block" href="#tips">5. Conseils pour adapter votre horaire de sommeil</a></li>
-<li><a class="toc-link block" href="#abolish-dst">6. Faut-il abolir le changement d'heure ?</a></li>
+<li><a class="toc-link block" href="#clock-change">1. Que se passe-t-il dans le corps au changement d'heure ?</a></li>
+<li><a class="toc-link block" href="#sleep-architecture">2. Comment le changement d'heure perturbe-t-il le sommeil ?</a></li>
+<li><a class="toc-link block" href="#dream-disruption">3. Et les rêves, dans tout ça ?</a></li>
+<li><a class="toc-link block" href="#health-risks">4. Le changement d'heure est-il mauvais pour la santé ?</a></li>
+<li><a class="toc-link block" href="#tips">5. S'adapter avant et après le changement</a></li>
+<li><a class="toc-link block" href="#abolish-dst">6. Faut-il arrêter de changer d'heure ?</a></li>
 </ol>
 </nav>
 <!-- Article Content -->
 <div class="prose max-w-none text-gray-300">
-<h2 id="clock-change">Ce qui arrive à votre corps lors du changement d'heure</h2>
-<h3>Votre horloge interne vs. l'horloge murale</h3>
+<h2 id="clock-change">Que se passe-t-il dans le corps au changement d'heure ?</h2>
+<h3>Votre horloge interne ne lit pas l'heure de votre téléphone</h3>
 <p>
-                    Votre corps ne fonctionne pas selon l'heure affichée sur votre téléphone. Il fonctionne selon une <a class="text-dream-salmon hover:underline" href="../symboles/nuit">nuit</a> biologique -- le noyau suprachiasmatique (NSC), un minuscule amas d'environ 20 000 neurones dans l'hypothalamus. Cette horloge maîtresse orchestre la sécrétion de mélatonine, de cortisol, les cycles de température corporelle et le timing de chaque stade du sommeil. Elle se synchronise principalement par l'exposition à la lumière, en particulier les longueurs d'onde bleues présentes dans la lumière matinale.
+                    Votre corps a sa propre heure. Une horloge centrale située dans l'hypothalamus, le noyau suprachiasmatique, règle le rythme de la mélatonine, de la température corporelle et de l'envie de dormir. Elle se recale chaque jour, surtout grâce à la lumière, et celle du matin compte le plus.
                 </p>
 <p>
-                    Lorsque le passage à l'heure d'été impose un décalage d'une heure, votre NSC ne se réinitialise pas simplement. Il continue de fonctionner selon son horaire précédent tandis que le monde extérieur exige soudain un horaire différent. Ce décalage -- techniquement appelé <strong>désalignement circadien</strong> -- est la cause première de tous les effets en cascade : la somnolence, le sommeil perturbé et les rêves altérés qui suivent un changement d'heure.
+                    Quand l'heure de votre téléphone fait un bond, cette horloge ne bondit pas avec elle. Pendant quelques jours, l'heure sociale et l'heure biologique ne coïncident plus. Ce décalage, appelé <strong>désalignement circadien</strong>, explique les matins pâteux et les soirées où le sommeil ne vient pas.
                 </p>
+<h3>Pourquoi le printemps est plus dur que l'automne</h3>
 <p>
-                    Les recherches de Kantermann et al. (2007) ont montré que l'horloge circadienne humaine s'adapte au passage à l'heure d'été beaucoup plus lentement qu'au passage à l'heure d'hiver. Alors que la plupart des gens récupèrent du recul d'une heure en un ou deux jours, l'avance d'une heure peut laisser des traces mesurables sur le timing du sommeil pendant <strong>jusqu'à quatre semaines</strong> chez certains individus, en particulier les chronotypes tardifs (couche-tard).
+                    Kantermann et ses collègues (2007) ont suivi 50 personnes pendant huit semaines autour de chaque changement d'heure. Leurs horaires de sommeil et d'activité se sont recalés sans difficulté au passage à l'heure d'hiver, mais pas après celui de l'heure d'été, surtout chez les <strong>personnes du soir</strong> (chronotypes tardifs). Dans une enquête plus large, menée auprès d'environ 55 000 personnes en Europe centrale, la même équipe a montré que l'horaire du sommeil suit l'avancée saisonnière de l'aube à l'heure normale, mais pas à l'heure d'été.
                 </p>
-
-<h3>Le retard de mélatonine</h3>
+<h3>Le retard de la mélatonine</h3>
 <p>
-                    Dans les jours suivant le passage à l'heure d'été, votre corps continue à produire de la mélatonine selon son ancien horaire. Vous vous sentez somnolent plus tard que ne l'exige votre nouvelle heure de coucher, et vous êtes forcé de vous réveiller avant que votre biologie ne soit prête. Le résultat est une forme de privation aiguë de sommeil -- comparable au décalage horaire, mais sans l'excitation d'arriver quelque part de nouveau. Harrison (2013) décrit cela comme un <strong>&laquo; décalage horaire social &raquo;</strong>, où le conflit entre le temps biologique et le temps social crée un stress chronique de faible intensité sur l'organisme.
+                    Après le passage à l'heure d'été, votre corps continue de sécréter la mélatonine selon l'ancien horaire. Vous n'avez pas sommeil à la nouvelle heure du coucher, et le réveil sonne avant que votre organisme soit prêt. On dirait un petit décalage horaire, sans le voyage.
                 </p>
-
-<h2 id="sleep-architecture">Comment l'heure d'été perturbe l'architecture du sommeil</h2>
-<h3>Le cycle de sommeil paradoxal perdu</h3>
+<h2 id="sleep-architecture">Comment le changement d'heure perturbe-t-il le sommeil ?</h2>
+<h3>Des nuits plus courtes et plus hachées</h3>
 <p>
-                    Le sommeil n'est pas un bloc uniforme d'inconscience. Il se déroule en cycles de 90 minutes, chacun contenant des périodes progressivement plus longues de <a class="text-dream-salmon hover:underline" href="sommeil-paradoxal-reves">sommeil paradoxal</a>. La période de sommeil paradoxal la plus riche et la plus longue survient lors du dernier cycle de la nuit -- typiquement entre 6h00 et 7h30. C'est exactement la période que le passage à l'heure d'été élimine.
+                    On imagine souvent le passage à l'heure d'été comme une seule heure perdue dans la nuit de samedi à dimanche. Une revue de Harrison (2013) dresse un tableau moins confortable : on met plus de temps à s'endormir et le sommeil est plus fragmenté, si bien que la dette <strong>s'accumule au moins sur la semaine suivante</strong>. L'« heure en plus » de l'automne n'est pas vraiment un cadeau non plus : rien ne montre que l'on dorme davantage cette nuit-là, et les réveils plus matinaux des jours suivants peuvent aussi se solder par une perte.
                 </p>
+<h3>La fin de nuit, là où le sommeil paradoxal s'allonge</h3>
 <p>
-                    Lorsque votre réveil sonne une heure plus tôt que votre corps ne s'y attend, il coupe directement dans cette dernière phase de sommeil paradoxal. Vous ne perdez pas simplement 60 minutes de sommeil générique ; vous perdez <strong>l'heure la plus dense en sommeil paradoxal de toute la nuit</strong>. Les études par polysomnographie dans les jours suivant les transitions montrent une réduction mesurable du sommeil paradoxal total de 15 à 25 minutes, même lorsque le temps de sommeil total n'est réduit que des 60 minutes attendues.
+                    Le sommeil s'organise en cycles successifs, et les périodes de <a class="text-dream-salmon hover:underline" href="sommeil-paradoxal-reves">sommeil paradoxal</a> s'allongent vers le matin. Quand le réveil sonne une heure plus tôt que ce qu'attend votre corps, c'est surtout cette dernière partie de la nuit qui est rognée. Combien de minutes de sommeil paradoxal sont réellement perdues après le changement d'heure n'a pas été mesuré de façon fiable, mais la logique des cycles fait de la fin de nuit la partie la plus exposée.
                 </p>
-
-<h3>Le sommeil profond fragmenté</h3>
+<h2 id="dream-disruption">Et les rêves, dans tout ça ?</h2>
+<h3>D'abord, moins de rêves retenus</h3>
 <p>
-                    Cette perturbation s'étend au-delà du sommeil paradoxal. Le désalignement circadien causé par le changement d'heure fragmente également le sommeil lent (stades N2 et N3), les phases profondes et réparatrices où le corps répare les tissus et consolide la mémoire procédurale. Les dormeurs dans la semaine suivant le passage à l'heure d'été montrent une <strong>fragmentation accrue du sommeil</strong> -- davantage de micro-éveils, davantage de réveils brefs et davantage de transitions entre les stades du sommeil. Même lorsque vous parvenez à vous endormir à la &laquo; bonne &raquo; heure, la qualité de votre sommeil est dégradée.
+                    Peu d'études ont porté sur les rêves juste après le changement d'heure. Ce qui suit est déduit de ce que l'on sait du sommeil, pas mesuré sur le changement d'heure lui-même. Avec une fin de nuit raccourcie et un réveil brutal, beaucoup de gens se lèvent sans aucun rêve en tête, ou avec un fragment qui s'efface en quelques secondes. Notre guide pour <a class="text-dream-salmon hover:underline" href="comment-se-souvenir-de-ses-reves">se souvenir de ses rêves</a> explique comment le retenir.
                 </p>
-
-<blockquote class="border-l-4 border-dream-salmon/40 pl-4 italic text-purple-200/80 my-6">
-&laquo; La transition printanière du changement d'heure est essentiellement une avance de phase d'une heure imposée à l'ensemble de la population simultanément -- un scénario qu'aucun chronobiologiste ne recommanderait jamais. &raquo;
-<span class="block text-sm text-purple-300/60 mt-2 not-italic">-- Roenneberg et al., Journal of Biological Rhythms, 2019</span>
-</blockquote>
-
-<h2 id="dream-disruption">L'effet de perturbation des rêves</h2>
-<h3>Pourquoi vos rêves changent après le changement d'heure</h3>
+<h3>Puis, parfois, des rêves plus intenses</h3>
 <p>
-                    Puisque le passage à l'heure d'été cible spécifiquement le dernier cycle de sommeil matinal -- la portion la plus riche en rêves de la nuit -- son impact sur les rêves est disproportionnellement important. Avec la dernière période de sommeil paradoxal raccourcie ou entièrement éliminée, de nombreuses personnes remarquent une baisse immédiate du <a class="text-dream-salmon hover:underline" href="comment-se-souvenir-de-ses-reves">rappel onirique</a>. Vous vous réveillez l'esprit vide, incapable de vous souvenir si vous avez rêvé.
+                    Après une perte de sommeil paradoxal, l'organisme tend à le récupérer les nuits suivantes : c'est le <strong>rebond de sommeil paradoxal</strong>, un effet bien connu. Certaines personnes remarquent donc des rêves frappants ou intenses quelques nuits après le changement. C'est plausible, pas démontré pour le changement d'heure en particulier. Un sommeil plus léger multiplie aussi les <a class="text-dream-salmon hover:underline" href="reveil-nocturne-rappel-reves">réveils nocturnes</a>, et chacun est une occasion de surprendre un rêve en cours.
                 </p>
+<h3>Des rêves de retard et d'horloges</h3>
 <p>
-                    Mais l'histoire est plus nuancée qu'une simple perte de rêves. Pendant la période d'adaptation (typiquement 3 à 7 jours), le cerveau compense le temps de sommeil paradoxal perdu en augmentant la <strong>pression de sommeil paradoxal</strong> -- la pulsion biologique d'entrer en sommeil paradoxal. Cela produit ce que les chercheurs appellent un <strong>rebond de sommeil paradoxal</strong>, caractérisé par des rêves inhabituellement vifs, émotionnellement intenses et parfois bizarres. Si vous remarquez des rêves particulièrement frappants ou troublants dans la semaine suivant le passage à l'heure d'été, votre cerveau rattrape probablement le temps de rêve perdu.
+                    Les rêves empruntent souvent à ce qui nous occupe le jour. Une semaine passée à vérifier l'heure peut donner un train manqué, une horloge qui affiche une heure impossible, un <a class="text-dream-salmon hover:underline" href="../symboles/soleil">soleil</a> encore haut à minuit, une <a class="text-dream-salmon hover:underline" href="../symboles/lune">lune</a> au mauvais endroit ou une <a class="text-dream-salmon hover:underline" href="../symboles/nuit">nuit</a> qui ne finit pas. Voyez ces images comme des échos de la semaine, pas comme des messages.
                 </p>
-
-<h3>Changements dans le contenu onirique</h3>
+<h3>Un exemple de journal pour la semaine du changement</h3>
+<p><strong>Exemple fictif</strong>, pour montrer ce qui vaut la peine d'être noté :</p>
+<ul>
+<li><strong>Nuit :</strong> « Passage à l'heure d'été dimanche. Endormi vers 0 h 30, réveil à 7 h. »</li>
+<li><strong>Rêve :</strong> « Je courais après un train. L'horloge de la gare affichait deux heures différentes. »</li>
+<li><strong>Émotion :</strong> « Pressé, puis agacé. »</li>
+<li><strong>Question à garder :</strong> « Cette course vient-elle du changement d'heure ou des échéances de la semaine ? Le rêve revient-il une fois adapté ? »</li>
+</ul>
 <p>
-                    La recherche sur le contenu des rêves après une perturbation circadienne révèle des schémas récurrents. Les rêveurs rapportent davantage de thèmes de <strong>désorientation, de retard, de transport manqué et de perte de contrôle</strong> -- des récits oniriques qui reflètent l'expérience éveillée de se sentir désynchronisé avec le temps. Le <a class="text-dream-salmon hover:underline" href="../symboles/soleil">soleil</a> apparaît plus fréquemment dans les rêves post-changement d'heure, souvent dans des contextes de confusion sur le moment de la journée, reflétant la tentative du cerveau de traiter le cycle lumière-obscurité altéré.
+                    Une seule entrée ne prouve rien. C'est en comparant la semaine du changement aux suivantes qu'un motif devient visible.
                 </p>
 </div>
 
@@ -170,74 +170,60 @@
 <i class="w-6 h-6 text-dream-salmon" data-lucide="book-open"></i>
 </div>
 <div>
-<h4 class="font-serif text-lg text-dream-cream mb-2">Suivez l'impact du changement d'heure sur vos rêves</h4>
-<p class="text-sm text-gray-400 mb-4">Le journal de rêves intelligent de Noctalia vous permet d'enregistrer vos rêves par la voix dès le réveil. Comparez vos schémas oniriques avant et après le changement d'heure pour voir l'impact réel sur votre sommeil.</p>
-<a class="inline-flex items-center gap-2 text-sm text-dream-salmon hover:text-dream-salmonLight transition-colors" href="/fr/">
-                                Commencer à journaliser avec Noctalia <i class="w-4 h-4" data-lucide="arrow-right"></i>
+<h4 class="font-serif text-lg text-dream-cream mb-2">Notez vos rêves pendant la semaine du changement</h4>
+<p class="text-sm text-gray-400 mb-4">Racontez votre rêve à voix haute dès le réveil, ou tapez-le. Noctalia le transcrit et le range dans votre journal, pour relire côte à côte les nuits d'avant et d'après le changement d'heure.</p>
+<a class="inline-flex items-center gap-2 text-sm text-dream-salmon hover:text-dream-salmonLight transition-colors" href="/fr/journal-de-reves-vocal">
+                                Essayer le journal de rêves vocal <i class="w-4 h-4" data-lucide="arrow-right"></i>
 </a>
 </div>
 </div>
 </aside>
 
 <div class="prose max-w-none text-gray-300">
-<h2 id="health-risks">Risques pour la santé liés au changement d'heure</h2>
-<h3>Impact cardiovasculaire</h3>
+<h2 id="health-risks">Le changement d'heure est-il mauvais pour la santé ?</h2>
+<h3>Infarctus : un décalage dans le temps plus qu'une hausse</h3>
 <p>
-                    Les conséquences sanitaires du changement d'heure vont bien au-delà de la somnolence. Une étude de référence de Sandhu et al. (2014) publiée dans <em>Open Heart</em> a révélé que le lundi suivant le passage à l'heure d'été voit une <strong>augmentation de 24 % des admissions pour infarctus aigu du myocarde</strong> par rapport au lundi moyen. La privation de sommeil déclenche un pic de cortisol, augmente les marqueurs inflammatoires et élève la pression artérielle -- un cocktail dangereux pour les personnes présentant un risque cardiovasculaire préexistant.
+                    Sandhu et ses collègues (2014) ont analysé les infarctus pris en charge dans des hôpitaux du Michigan autour de plusieurs changements d'heure. Ils ont observé environ <strong>24 % d'infarctus en plus le lundi suivant le passage à l'heure d'été</strong>, et environ 21 % en moins le mardi suivant le passage à l'heure d'hiver. Mais le total sur chaque semaine ne changeait pas. Les auteurs concluent que le changement d'heure modifie <em>le moment</em> où surviennent les infarctus, pas leur nombre. Pas de quoi paniquer, mais une raison de ménager cette semaine si vous avez déjà des facteurs de risque cardiaque.
+                </p>
+<h3>Route, attention et humeur</h3>
+<p>
+                    Aux États-Unis, le risque d'accident de la route mortel augmente d'environ 6 % la semaine qui suit le passage à l'heure d'été, selon une analyse des données nationales (Fritz et al., 2020). L'American Academy of Sleep Medicine (AASM) cite aussi les événements cardiovasculaires, les troubles de l'humeur et les accidents de la route parmi les risques aigus de cette transition. Concrètement : conduisez plus prudemment les premiers jours et, si vous le pouvez, évitez de caler une décision importante le lundi matin.
+                </p>
+<h3>Quand consulter</h3>
+<p>
+                    La fatigue s'estompe en général en une semaine environ. Parlez-en à un médecin si votre sommeil reste mauvais plusieurs semaines après, si vous somnolez beaucoup dans la journée, si l'on vous signale des ronflements avec des pauses respiratoires, ou si votre moral baisse nettement. De même si les <a class="text-dream-salmon hover:underline" href="guide-cauchemars">cauchemars</a> deviennent assez fréquents pour abîmer vos nuits.
+                </p>
+<h2 id="tips">S'adapter avant et après le changement</h2>
+<h3>Avant le changement : décaler progressivement</h3>
+<p>
+                    Trois ou quatre jours avant le passage à l'heure d'été, couchez-vous et levez-vous 15 à 20 minutes plus tôt chaque jour. Le dimanche venu, l'essentiel de l'heure est déjà fait. Vous pouvez aussi avancer les repas : leurs horaires font partie des repères des horloges du corps, et cela peut aider l'ensemble à suivre.
                 </p>
 <p>
-                    Inversement, le passage à l'heure d'hiver est associé à une baisse de 21 % des admissions pour infarctus le mardi suivant, suggérant que même une heure de sommeil supplémentaire offre une protection cardiovasculaire mesurable. Cette asymétrie illustre puissamment la sensibilité du corps humain à de petits changements dans le timing du sommeil.
+                    À l'automne, faites l'inverse, ou gardez simplement votre heure de lever habituelle sans faire de grasse matinée.
                 </p>
-
-<h3>Santé mentale et performances cognitives</h3>
+<h3>Lumière le matin, pénombre le soir</h3>
 <p>
-                    Accidents du travail, collisions routières et visites aux urgences augmentent eux aussi dans les jours suivant le passage à l'heure d'été. Une étude suédoise a révélé une <strong>augmentation de 6,7 % des accidents de la route</strong> le lundi suivant la transition printanière. Les tests de performance cognitive révèlent une attention réduite, des temps de réaction plus lents et une prise de décision altérée pendant jusqu'à cinq jours après le changement.
+                    La lumière est le signal le plus puissant pour votre horloge interne. Les jours qui suivent le passage à l'heure d'été, <strong>sortez peu après le réveil</strong>, même par temps couvert : la lumière du jour dehors est bien plus intense que l'éclairage intérieur. Le soir, faites l'inverse : baissez les lumières et rangez les écrans un moment avant le nouveau coucher.
                 </p>
-<p>
-                    Pour les personnes souffrant de troubles de l'humeur, l'impact peut être plus sévère. La perturbation circadienne exacerbe les symptômes de dépression et d'anxiété, et des études ont documenté une hausse mesurable des hospitalisations pour épisodes dépressifs dans la semaine suivant le passage à l'heure d'été. La <a class="text-dream-salmon hover:underline" href="../symboles/lune">lune</a>, symbole onirique universel de la nuit et du repos, apparaît fréquemment dans les rêves des personnes affectées par cette perturbation circadienne.
-                </p>
-
-<h2 id="tips">Conseils pour adapter votre horaire de sommeil</h2>
-<h3>Avant le changement : décalage progressif</h3>
-<p>
-                    Commencez à vous adapter avant que les horloges ne changent -- c'est la stratégie la plus efficace. En commençant quatre jours avant la transition printanière, décalez votre heure de coucher et de lever de 15 minutes plus tôt chaque jour. Au moment du changement d'heure, votre corps aura déjà effectué l'ajustement complet d'une heure progressivement, vous épargnant le choc brutal.
-                </p>
-<p>
-                    Appliquez le même principe aux repas. Dîner 15 minutes plus tôt chaque jour aide à décaler vos horloges circadiennes périphériques -- celles de votre foie, de votre intestin et de votre pancréas -- qui réagissent fortement au timing des repas. Un système circadien synchronisé s'adapte plus rapidement et plus harmonieusement.
-                </p>
-
-<h3>La lumière matinale est votre outil le plus puissant</h3>
-<p>
-                    La lumière est le signal principal qui réinitialise votre noyau suprachiasmatique. Dans les jours suivant le passage à l'heure d'été, exposez-vous à <strong>une lumière naturelle vive dans les 30 minutes suivant le réveil</strong>. Une marche matinale de 20 minutes en extérieur fournit environ 10 000 lux -- bien plus que tout éclairage intérieur. Cette exposition lumineuse avance votre phase circadienne, indiquant à votre cerveau que le &laquo; matin &raquo; est arrivé à la nouvelle heure.
-                </p>
-<p>
-                    Inversement, minimisez l'exposition à la lumière le soir. Baissez vos lumières après le coucher du soleil, utilisez des ampoules à tons chauds (2 700 K ou moins) et évitez les écrans pendant au moins 60 minutes avant votre nouvelle heure de coucher. Cette combinaison de lumière matinale et d'obscurité vespérale crée le signal le plus puissant possible pour un réajustement circadien rapide.
-                </p>
-
-<h3>Les fondamentaux de l'hygiène du sommeil</h3>
+<h3>Quelques habitudes simples pour la semaine</h3>
 <ul>
-<li><strong>Pas de caféine après 14h :</strong> La caféine a une demi-vie de 5 à 6 heures. La consommation en après-midi concurrence directement l'endormissement anticipé dont vous avez besoin</li>
-<li><strong>Rafraîchissez votre chambre :</strong> Réglez votre thermostat sur 18-19 °C. Une pièce fraîche favorise à la fois l'endormissement et la continuité du sommeil paradoxal</li>
-<li><strong>Évitez les repas copieux le soir :</strong> Les repas copieux proches de l'heure du coucher élèvent la température corporelle centrale et retardent l'endormissement</li>
-<li><strong>Évitez le piège de la sieste :</strong> Bien que tentante, une sieste de plus de 20 minutes en après-midi réduira votre pression de sommeil et rendra la nouvelle heure de coucher plus difficile à atteindre</li>
-<li><strong>Tenez un <a class="text-dream-salmon hover:underline" href="guide-journal-reves">journal de rêves</a> :</strong> Enregistrer vos rêves pendant la semaine de transition révèle comment votre architecture du sommeil se rétablit -- des rêves vifs signalent un rebond de sommeil paradoxal sain</li>
+<li><strong>Arrêtez la caféine tôt :</strong> son effet dure plusieurs heures, un café l'après-midi joue contre le coucher plus précoce dont vous avez besoin</li>
+<li><strong>Gardez la chambre fraîche, sombre et calme :</strong> l'endormissement et le maintien du sommeil en sont facilités</li>
+<li><strong>Dînez léger et pas trop tard :</strong> un repas copieux juste avant de dormir retarde l'endormissement</li>
+<li><strong>Faites la sieste courte et tôt :</strong> une petite sieste en début d'après-midi passe ; une longue sieste tardive rend le nouveau coucher plus difficile</li>
+<li><strong>Tenez un <a class="text-dream-salmon hover:underline" href="guide-journal-reves">journal de rêves</a> :</strong> notez l'heure du coucher, du lever et le rêve éventuel pendant la semaine du changement ; vous verrez comment vos nuits se rétablissent</li>
 </ul>
-
-<h2 id="abolish-dst">Faut-il abolir le changement d'heure ?</h2>
-<h3>Le consensus scientifique</h3>
+<h2 id="abolish-dst">Faut-il arrêter de changer d'heure ?</h2>
+<h3>Ce que recommandent les spécialistes du sommeil</h3>
 <p>
-                    L'abolition du changement d'heure est passée d'un sujet marginal à un véritable débat de société. En 2019, Roenneberg et al. ont publié un article de position complet dans le <em>Journal of Biological Rhythms</em> arguant que <strong>l'heure standard permanente est la seule option alignée avec la chronobiologie humaine</strong>. Leur raisonnement : l'heure standard maintient le midi solaire le plus proche du midi horloge, garantissant que le cycle lumière-obscurité correspond au mieux aux rythmes biologiques évolués sur des millions d'années.
+                    Les chercheurs en sommeil et en chronobiologie sont largement d'accord. Dans une prise de position publiée en 2019 pour la Society for Research on Biological Rhythms, Roenneberg et ses collègues plaident pour supprimer l'heure d'été au profit d'une <strong>heure normale permanente</strong> (l'heure d'hiver), plus proche de l'heure solaire. L'AASM a adopté la même position en 2020. Une heure d'été permanente laisserait selon eux les matins dans le noir une bonne partie de l'année et rendrait permanent l'écart entre horloge biologique et horaires sociaux.
+                </p>
+<h3>Où en est-on en 2026 ?</h3>
+<p>
+                    Dans l'Union européenne, le Parlement a voté en mars 2019 la fin des changements d'heure saisonniers, mais les États membres ne se sont pas mis d'accord sur une approche commune. En France comme ailleurs en Europe, on change donc toujours d'heure le dernier dimanche de mars et le dernier dimanche d'octobre. Aux États-Unis, la Chambre des représentants a adopté en juillet 2026 le Sunshine Protection Act, qui rendrait l'heure d'été permanente ; début octobre 2026, le Sénat ne s'était pas prononcé.
                 </p>
 <p>
-                    En 2019, le Parlement européen a voté l'abolition des changements d'heure saisonniers, mais la mise en oeuvre a été reportée à plusieurs reprises en raison de désaccords entre les États membres sur l'adoption de l'heure d'été permanente ou de l'heure standard permanente. Les chercheurs en sommeil sont catégoriques : l'heure d'été permanente serait <strong>pire que le système actuel</strong>, car elle imposerait un désalignement circadien chronique -- faisant essentiellement de chaque matin un mini passage à l'heure d'été.
-                </p>
-
-<h3>Où en sommes-nous en 2026</h3>
-<p>
-                    Aux États-Unis, le Sunshine Protection Act (proposant l'heure d'été permanente) a été réintroduit à plusieurs reprises sans devenir loi. Pendant ce temps, des États individuels continuent d'adopter des lois pour passer à l'heure d'été permanente si la loi fédérale le permet. Les communautés médicale et chronobiologique continuent de plaider fermement pour l'heure standard permanente, avec l'American Academy of Sleep Medicine, la Society for Research on Biological Rhythms et l'European Sleep Research Society émettant toutes des déclarations de position formelles.
-                </p>
-<p>
-                    En attendant que la législation rattrape la science, le changement d'heure biannuel reste une réalité. La bonne nouvelle est que comprendre les mécanismes derrière l'impact du changement d'heure sur votre sommeil vous donne les outils pour en minimiser les effets. Votre système circadien est résilient -- avec une préparation délibérée, vous pouvez traverser la transition avec votre architecture du sommeil et votre vie onirique largement intactes.
+                    En attendant, le levier le plus utile reste personnel : préparer le changement quelques jours avant, et s'accorder une semaine d'indulgence.
                 </p>
 </div>
 <!-- CTA Section -->
@@ -245,12 +231,12 @@
 <div class="w-16 h-16 bg-dream-salmon/10 rounded-full flex items-center justify-center mx-auto mb-6">
 <i class="w-8 h-8 text-dream-salmon" data-lucide="moon"></i>
 </div>
-<h3 class="font-serif text-2xl md:text-3xl mb-4 text-dream-cream">Ne laissez pas le changement d'heure voler vos rêves</h3>
+<h3 class="font-serif text-2xl md:text-3xl mb-4 text-dream-cream">Gardez une trace de la semaine du changement d'heure</h3>
 <p class="text-purple-200/70 mb-6 max-w-lg mx-auto">
-                    Noctalia vous aide à suivre comment les changements d'heure et les habitudes de sommeil affectent votre vie onirique. Enregistrez vos rêves par la voix, découvrez des schémas grâce à l'analyse IA et protégez votre sommeil à chaque transition saisonnière.
+                    Notez votre rêve à la voix ou par écrit au réveil. Noctalia le transcrit et le range dans votre journal, pour comparer les nuits d'avant et d'après le changement et repérer ce qui revient.
                 </p>
 <a class="inline-flex items-center gap-2 px-8 py-4 bg-dream-salmon text-dream-dark rounded-full font-bold hover:bg-dream-salmon/90 transition-colors" href="/fr/">
-                    Commencer votre journal de rêves <i class="w-5 h-5" data-lucide="arrow-right"></i>
+                    Commencer mon journal de rêves <i class="w-5 h-5" data-lucide="arrow-right"></i>
 </a>
 </aside>
 <!-- FAQ Section -->
@@ -259,43 +245,56 @@
 <div class="space-y-4">
 <details class="glass-panel rounded-xl p-4 group cursor-pointer">
 <summary class="font-medium flex justify-between items-center text-dream-cream">
-                            Le changement d'heure affecte-t-il vraiment le sommeil ?
+                            Le changement d'heure affecte-t-il vraiment le sommeil ?
                             <i class="w-5 h-5 transition-transform group-open:rotate-180 text-dream-salmon" data-lucide="chevron-down"></i>
 </summary>
 <p class="mt-4 text-sm text-gray-400 leading-relaxed">
-                            Oui. Le passage à l'heure d'été impose une avance de phase d'une heure à votre rythme circadien, perturbant la sécrétion de mélatonine et comprimant le <a class="text-dream-salmon hover:underline" href="sommeil-paradoxal-reves">sommeil paradoxal</a>. Les études montrent qu'il faut 1 à 7 jours pour s'adapter complètement, avec des effets mesurables sur la qualité du sommeil, le rappel onirique et la santé cardiovasculaire. Le lundi suivant la transition voit une augmentation de 24 % des admissions pour infarctus.
+                            Oui, surtout au printemps. Les revues de recherche montrent un sommeil plus court et plus fragmenté pendant plusieurs jours, pas seulement la nuit du changement. Le réveil ampute aussi la fin de nuit, quand les périodes de <a class="text-dream-salmon hover:underline" href="sommeil-paradoxal-reves">sommeil paradoxal</a> sont les plus longues.
                         </p>
 </details>
 <details class="glass-panel rounded-xl p-4 group cursor-pointer">
 <summary class="font-medium flex justify-between items-center text-dream-cream">
-                            Combien de temps faut-il pour s'adapter au changement d'heure ?
+                            Combien de temps faut-il pour s'adapter au changement d'heure ?
                             <i class="w-5 h-5 transition-transform group-open:rotate-180 text-dream-salmon" data-lucide="chevron-down"></i>
 </summary>
 <p class="mt-4 text-sm text-gray-400 leading-relaxed">
-                            La plupart des gens ont besoin de 1 à 3 jours pour s'adapter au décalage d'une heure. Toutefois, les personnes sensibles -- enfants, personnes âgées et personnes souffrant de troubles du sommeil -- peuvent avoir besoin d'une semaine complète. Les couche-tard (chronotypes tardifs) sont les plus affectés par le passage à l'heure d'été. Les recherches de Kantermann et al. montrent des effets circadiens mesurables durant jusqu'à quatre semaines chez certains individus.
+                            La plupart des gens se sentent mieux en quelques jours à une semaine. Les personnes du soir s'adaptent moins bien au passage à l'heure d'été : dans une étude, leurs horaires d'activité ne s'étaient toujours pas recalés plusieurs semaines après. Si le mauvais sommeil dure plusieurs semaines, parlez-en à un médecin.
                         </p>
 </details>
 <details class="glass-panel rounded-xl p-4 group cursor-pointer">
 <summary class="font-medium flex justify-between items-center text-dream-cream">
-                            Le changement d'heure peut-il affecter mes rêves ?
+                            Le changement d'heure peut-il affecter mes rêves ?
                             <i class="w-5 h-5 transition-transform group-open:rotate-180 text-dream-salmon" data-lucide="chevron-down"></i>
 </summary>
 <p class="mt-4 text-sm text-gray-400 leading-relaxed">
-                            Absolument. Le passage à l'heure d'été ampute le dernier cycle de sommeil paradoxal du matin -- la période la plus longue et la plus riche en rêves de la nuit. Cela réduit initialement le <a class="text-dream-salmon hover:underline" href="comment-se-souvenir-de-ses-reves">rappel onirique</a>, mais pendant la période d'adaptation, le rebond de sommeil paradoxal peut produire des rêves inhabituellement vifs et émotionnellement intenses. Le contenu onirique s'oriente également vers des thèmes de désorientation, de retard et de perte de contrôle.
+                            Indirectement, oui. Une fin de nuit raccourcie peut d'abord réduire le nombre de <a class="text-dream-salmon hover:underline" href="comment-se-souvenir-de-ses-reves">rêves dont on se souvient</a>, puis laisser place à des rêves plus intenses quand le sommeil paradoxal rebondit. C'est plausible plutôt que prouvé pour le changement d'heure. Des thèmes de retard ou d'horloge peuvent aussi faire écho à la semaine.
+                        </p>
+</details>
+<details class="glass-panel rounded-xl p-4 group cursor-pointer">
+<summary class="font-medium flex justify-between items-center text-dream-cream">
+                            Comment se préparer au passage à l'heure d'été ?
+                            <i class="w-5 h-5 transition-transform group-open:rotate-180 text-dream-salmon" data-lucide="chevron-down"></i>
+</summary>
+<p class="mt-4 text-sm text-gray-400 leading-relaxed">
+                            Couchez-vous et levez-vous 15 à 20 minutes plus tôt chaque jour pendant les trois ou quatre jours qui précèdent. Après le changement, sortez à la lumière du jour peu après le réveil, tamisez l'éclairage le soir et arrêtez la caféine en début d'après-midi.
                         </p>
 </details>
 </div>
 </section>
 <!-- Sources / Trust -->
 <section class="mt-16 glass-panel rounded-2xl p-6" id="sources">
-<h2 class="font-serif text-2xl text-dream-cream mb-4">Sources / Lectures complémentaires</h2>
+<h2 class="font-serif text-2xl text-dream-cream mb-4">Sources et lectures complémentaires</h2>
 <ul class="mt-6 space-y-2 text-sm text-gray-400">
-<li><a href="https://doi.org/10.1016/j.smrv.2012.10.001" rel="nofollow noopener noreferrer" target="_blank">Harrison (2013) : The impact of daylight saving time on sleep and related behaviours -- Sleep Medicine Reviews</a></li>
-<li><a href="https://doi.org/10.1016/j.cub.2007.10.025" rel="nofollow noopener noreferrer" target="_blank">Kantermann et al. (2007) : The human circadian clock's seasonal adjustment is disrupted by daylight saving time -- Current Biology</a></li>
-<li><a href="https://doi.org/10.1136/openhrt-2013-000019" rel="nofollow noopener noreferrer" target="_blank">Sandhu et al. (2014) : Time change and incidence of acute myocardial infarction -- Open Heart</a></li>
-<li><a href="https://doi.org/10.1177/0748730419854197" rel="nofollow noopener noreferrer" target="_blank">Roenneberg et al. (2019) : Why should we abolish daylight saving time? -- Journal of Biological Rhythms</a></li>
+<li><a href="https://doi.org/10.1016/j.smrv.2012.10.001" rel="nofollow noopener noreferrer" target="_blank">Harrison (2013) : The impact of daylight saving time on sleep and related behaviours — Sleep Medicine Reviews</a></li>
+<li><a href="https://doi.org/10.1016/j.cub.2007.10.025" rel="nofollow noopener noreferrer" target="_blank">Kantermann et al. (2007) : The human circadian clock’s seasonal adjustment is disrupted by daylight saving time — Current Biology</a></li>
+<li><a href="https://doi.org/10.1136/openhrt-2013-000019" rel="nofollow noopener noreferrer" target="_blank">Sandhu et al. (2014) : Daylight savings time and myocardial infarction — Open Heart</a></li>
+<li><a href="https://doi.org/10.1016/j.cub.2019.12.045" rel="nofollow noopener noreferrer" target="_blank">Fritz et al. (2020) : A chronobiological evaluation of the acute effects of daylight saving time on traffic accident risk — Current Biology</a></li>
+<li><a href="https://doi.org/10.5664/jcsm.8780" rel="nofollow noopener noreferrer" target="_blank">Rishi et al. (2020) : Daylight saving time, an American Academy of Sleep Medicine position statement — Journal of Clinical Sleep Medicine</a></li>
+<li><a href="https://doi.org/10.1177/0748730419854197" rel="nofollow noopener noreferrer" target="_blank">Roenneberg et al. (2019) : Why should we abolish daylight saving time? — Journal of Biological Rhythms</a></li>
+<li><a href="https://www.europarl.europa.eu/news/en/press-room/20190321IPR32107/parliament-backs-proposal-to-end-switch-between-summer-and-winter-time-in-2021" rel="nofollow noopener noreferrer" target="_blank">Parlement européen (2019) : vote en faveur de la fin du changement d'heure saisonnier (en anglais)</a></li>
+<li><a href="https://time.com/article/2026/10/07/senate-permanent-daylight-saving-time-sunshine-protection-act/" rel="nofollow noopener noreferrer" target="_blank">Time (octobre 2026) : sur le Sunshine Protection Act et l'attente du Sénat américain (en anglais)</a></li>
 </ul>
-<p class="mt-6 text-xs text-purple-200/60">Mis à jour le 17 mars 2026</p>
+<p class="mt-6 text-xs text-purple-200/60">Mis à jour le 9 octobre 2026</p>
 </section>
 <!-- Related Symbols Start -->
 <section aria-label="Symboles de rêves associés" class="mt-12 mb-8">

@@ -5,7 +5,7 @@
   "lang": "it",
   "slug": "ora-legale-sonno-sogni",
   "title": "Ora legale: effetti su sonno e sogni | Noctalia",
-  "description": "L'ora legale altera il ritmo circadiano, l'architettura del sonno e i sogni.",
+  "description": "Ora legale e sonno: perché il passaggio di primavera pesa di più, cosa succede al sonno REM e ai sogni, e come adattarsi in pochi giorni.",
   "robots": "max-image-preview:large",
   "themeColor": "#0a0514",
   "htmlClass": "scroll-smooth blog-article",
@@ -14,24 +14,24 @@
   "mainClass": "pt-32 pb-20 px-4",
   "ogType": "article",
   "ogTitle": "Ora legale: effetti su sonno e sogni | Noctalia",
-  "ogDescription": "L'ora legale altera il ritmo circadiano, l'architettura del sonno e i sogni.",
+  "ogDescription": "Perché il passaggio all'ora legale pesa di più sul sonno, cosa cambia nei sogni e come adattarsi in pochi giorni.",
   "ogImage": "https://noctalia.app/img/blog/daylight-saving-time-sleep-dreams.webp",
   "ogImageAlt": "Orologio circondato da cicli di sonno alterati e simboli onirici in toni viola e ambra",
   "twitterCard": "summary_large_image",
   "twitterTitle": "Ora legale: effetti su sonno e sogni | Noctalia",
-  "twitterDescription": "L'ora legale altera il ritmo circadiano, l'architettura del sonno e i sogni.",
+  "twitterDescription": "Perché il passaggio all'ora legale pesa di più sul sonno, cosa cambia nei sogni e come adattarsi in pochi giorni.",
   "twitterImage": "https://noctalia.app/img/blog/daylight-saving-time-sleep-dreams.webp",
   "twitterImageAlt": "Orologio circondato da cicli di sonno alterati e simboli onirici in toni viola e ambra",
   "publishedTime": "2026-03-17",
-  "modifiedTime": "2026-03-17",
+  "modifiedTime": "2026-10-09",
   "author": "Thanh Chau",
   "prevPath": "/it/blog/controllare-sogni-risoluzione-problemi",
   "nextPath": "/it/blog/debito-sonno-salute-sogni",
   "preloadImage": "/img/blog/daylight-saving-time-sleep-dreams.webp",
   "jsonLd": [
-    "{\n  \"@context\": \"https://schema.org\",\n  \"@type\": \"BlogPosting\",\n  \"headline\": \"Ora legale e sonno: come il cambio dell'ora altera i tuoi sogni\",\n  \"description\": \"L'ora legale altera il ritmo circadiano, l'architettura del sonno e i sogni.\",\n  \"image\": {\n    \"@type\": \"ImageObject\",\n    \"url\": \"https://noctalia.app/img/blog/daylight-saving-time-sleep-dreams.webp\",\n    \"width\": 1200,\n    \"height\": 630\n  },\n  \"author\": [\n    {\n      \"@type\": \"Person\",\n      \"@id\": \"https://noctalia.app/it/chi-siamo#person\",\n      \"name\": \"Thanh Chau\",\n      \"jobTitle\": \"Fondatore e Direttore della pubblicazione\",\n      \"url\": \"https://noctalia.app/it/chi-siamo\",\n      \"worksFor\": {\n        \"@type\": \"Organization\",\n        \"@id\": \"https://noctalia.app/#organization\",\n        \"name\": \"Noctalia\",\n        \"url\": \"https://noctalia.app\"\n      }\n    },\n    {\n      \"@type\": \"Organization\",\n      \"@id\": \"https://noctalia.app/#organization\",\n      \"name\": \"Noctalia\",\n      \"url\": \"https://noctalia.app\",\n      \"logo\": {\n        \"@type\": \"ImageObject\",\n        \"url\": \"https://noctalia.app/logo/logo_noctalia.png\"\n      }\n    }\n  ],\n  \"publisher\": {\n    \"@type\": \"Organization\",\n    \"name\": \"Noctalia\",\n    \"url\": \"https://noctalia.app\",\n    \"logo\": {\n      \"@type\": \"ImageObject\",\n      \"url\": \"https://noctalia.app/logo/logo_noctalia.png\"\n    }\n  },\n  \"datePublished\": \"2026-03-17\",\n  \"dateModified\": \"2026-03-17\",\n  \"mainEntityOfPage\": {\n    \"@type\": \"WebPage\",\n    \"@id\": \"https://noctalia.app/it/blog/ora-legale-sonno-sogni\"\n  },\n  \"inLanguage\": \"it\",\n  \"isAccessibleForFree\": true,\n  \"wordCount\": 1600,\n  \"timeRequired\": \"PT6M\",\n  \"url\": \"https://noctalia.app/it/blog/ora-legale-sonno-sogni\"\n}",
+    "{\n    \"@context\": \"https://schema.org\",\n    \"@type\": \"BlogPosting\",\n    \"headline\": \"Ora legale e sonno: cosa fa il cambio dell'ora alle tue notti e ai tuoi sogni\",\n    \"description\": \"Ora legale e sonno: perché il passaggio di primavera pesa di più, cosa succede al sonno REM e ai sogni, e come adattarsi in pochi giorni.\",\n    \"image\": {\n        \"@type\": \"ImageObject\",\n        \"url\": \"https://noctalia.app/img/blog/daylight-saving-time-sleep-dreams.webp\",\n        \"width\": 1200,\n        \"height\": 630\n    },\n    \"author\": [\n        {\n            \"@type\": \"Person\",\n            \"@id\": \"https://noctalia.app/it/chi-siamo#person\",\n            \"name\": \"Thanh Chau\",\n            \"jobTitle\": \"Fondatore e Direttore della pubblicazione\",\n            \"url\": \"https://noctalia.app/it/chi-siamo\",\n            \"worksFor\": {\n                \"@type\": \"Organization\",\n                \"@id\": \"https://noctalia.app/#organization\",\n                \"name\": \"Noctalia\",\n                \"url\": \"https://noctalia.app\"\n            }\n        },\n        {\n            \"@type\": \"Organization\",\n            \"@id\": \"https://noctalia.app/#organization\",\n            \"name\": \"Noctalia\",\n            \"url\": \"https://noctalia.app\",\n            \"logo\": {\n                \"@type\": \"ImageObject\",\n                \"url\": \"https://noctalia.app/logo/logo_noctalia.png\"\n            }\n        }\n    ],\n    \"publisher\": {\n        \"@type\": \"Organization\",\n        \"name\": \"Noctalia\",\n        \"url\": \"https://noctalia.app\",\n        \"logo\": {\n            \"@type\": \"ImageObject\",\n            \"url\": \"https://noctalia.app/logo/logo_noctalia.png\"\n        }\n    },\n    \"datePublished\": \"2026-03-17\",\n    \"dateModified\": \"2026-10-09\",\n    \"mainEntityOfPage\": {\n        \"@type\": \"WebPage\",\n        \"@id\": \"https://noctalia.app/it/blog/ora-legale-sonno-sogni\"\n    },\n    \"inLanguage\": \"it\",\n    \"isAccessibleForFree\": true,\n    \"wordCount\": 2185,\n    \"timeRequired\": \"PT10M\",\n    \"url\": \"https://noctalia.app/it/blog/ora-legale-sonno-sogni\"\n}",
     "{\n  \"@context\": \"https://schema.org\",\n  \"@type\": \"WebPage\",\n  \"@id\": \"https://noctalia.app/it/blog/ora-legale-sonno-sogni\",\n  \"url\": \"https://noctalia.app/it/blog/ora-legale-sonno-sogni\",\n  \"name\": \"Ora legale: effetti su sonno e sogni | Noctalia\",\n  \"inLanguage\": \"it\"\n}",
-    "{\n  \"@context\": \"https://schema.org\",\n  \"@type\": \"FAQPage\",\n  \"mainEntity\": [\n    {\n      \"@type\": \"Question\",\n      \"name\": \"L'ora legale influisce davvero sul sonno?\",\n      \"acceptedAnswer\": {\n        \"@type\": \"Answer\",\n        \"text\": \"Sì. Il cambio dell'ora forza uno spostamento improvviso di un'ora nel ritmo circadiano, alterando la produzione di melatonina e l'organizzazione dei cicli di sonno. L'anticipo primaverile è particolarmente dannoso: comprime il sonno REM, riduce il ricordo dei sogni e aumenta il rischio di infarto del 24 % nei giorni successivi. Le persone sensibili possono impiegare fino a una settimana per adattarsi completamente.\"\n      }\n    },\n    {\n      \"@type\": \"Question\",\n      \"name\": \"Quanto tempo ci vuole per adattarsi al cambio dell'ora?\",\n      \"acceptedAnswer\": {\n        \"@type\": \"Answer\",\n        \"text\": \"La maggior parte delle persone necessita da 1 a 3 giorni per adattarsi al cambio di un'ora. Tuttavia, le persone sensibili — bambini, anziani e chi soffre di disturbi del sonno — possono aver bisogno di una settimana. Questo ritardo è dovuto all'inerzia del ritmo circadiano: il tuo orologio interno, governato dal nucleo soprachiasmatico, resiste ai cambiamenti bruschi e necessita di tempo per risincronizzarsi con i segnali luminosi esterni.\"\n      }\n    },\n    {\n      \"@type\": \"Question\",\n      \"name\": \"Il cambio dell'ora può influenzare i miei sogni?\",\n      \"acceptedAnswer\": {\n        \"@type\": \"Answer\",\n        \"text\": \"Sì. L'anticipo primaverile accorcia o elimina l'ultimo periodo REM della notte, il più lungo e ricco di sogni. Questo riduce il ricordo dei sogni nei giorni successivi. Paradossalmente, durante il periodo di adattamento, alcune persone sperimentano sogni insolitamente vividi o bizzarri — un fenomeno noto come rimbalzo REM: il cervello compensa il sonno REM perduto.\"\n      }\n    }\n  ]\n}",
+    "{\n    \"@context\": \"https://schema.org\",\n    \"@type\": \"FAQPage\",\n    \"mainEntity\": [\n        {\n            \"@type\": \"Question\",\n            \"name\": \"L'ora legale influisce davvero sul sonno?\",\n            \"acceptedAnswer\": {\n                \"@type\": \"Answer\",\n                \"text\": \"Sì, soprattutto in primavera. Le revisioni scientifiche mostrano un sonno più corto e più frammentato per diversi giorni, non solo la notte del cambio. La sveglia taglia inoltre la fine della notte, quando le fasi di sonno REM sono più lunghe.\"\n            }\n        },\n        {\n            \"@type\": \"Question\",\n            \"name\": \"Quanto tempo ci vuole per adattarsi al cambio dell'ora?\",\n            \"acceptedAnswer\": {\n                \"@type\": \"Answer\",\n                \"text\": \"La maggior parte delle persone si sente meglio in qualche giorno o una settimana. I nottambuli si adattano peggio al passaggio all'ora legale: in uno studio i loro orari di attività non si erano ancora riallineati settimane dopo. Se dormi male per diverse settimane, parlane con il medico.\"\n            }\n        },\n        {\n            \"@type\": \"Question\",\n            \"name\": \"Il cambio dell'ora può influenzare i miei sogni?\",\n            \"acceptedAnswer\": {\n                \"@type\": \"Answer\",\n                \"text\": \"Indirettamente, sì. Una fine della notte più corta può ridurre all'inizio i sogni che ricordi e poi lasciare spazio a sogni più intensi quando il REM rimbalza. Per il cambio dell'ora è plausibile più che dimostrato. Temi di ritardo o di orologi possono anche fare eco alla settimana.\"\n            }\n        },\n        {\n            \"@type\": \"Question\",\n            \"name\": \"Come prepararsi al passaggio all'ora legale?\",\n            \"acceptedAnswer\": {\n                \"@type\": \"Answer\",\n                \"text\": \"Vai a letto e alzati 15-20 minuti prima ogni giorno nei tre o quattro giorni precedenti. Dopo il cambio, esci alla luce del giorno poco dopo il risveglio, abbassa le luci la sera e smetti con la caffeina dal primo pomeriggio.\"\n            }\n        }\n    ]\n}",
     "{\n  \"@context\": \"https://schema.org\",\n  \"@type\": \"BreadcrumbList\",\n  \"itemListElement\": [\n    {\n      \"@type\": \"ListItem\",\n      \"position\": 1,\n      \"name\": \"Home\",\n      \"item\": \"https://noctalia.app/it/\"\n    },\n    {\n      \"@type\": \"ListItem\",\n      \"position\": 2,\n      \"name\": \"Risorse\",\n      \"item\": \"https://noctalia.app/it/blog/\"\n    },\n    {\n      \"@type\": \"ListItem\",\n      \"position\": 3,\n      \"name\": \"Ora legale\",\n      \"item\": \"https://noctalia.app/it/blog/ora-legale-sonno-sogni\"\n    }\n  ]\n}"
   ],
   "activeNav": "resources"
@@ -64,14 +64,14 @@
 <a class="text-xs font-mono text-purple-200/70 border border-white/10 rounded-full px-3 py-1 hover:text-white hover:border-dream-salmon/30 transition-colors" href="sonno-rem-e-sogni-comprendere-il-ripristino-notturno-del-cervello">Tema: Scienza del sonno</a>
 <span aria-hidden="true" class="w-full sm:hidden"></span>
 <span class="text-sm text-purple-300/60">Pubblicato il 17 marzo 2026</span>
-<span class="text-sm text-purple-300/60">~1600 parole &middot; 6 min di lettura</span>
+<span class="text-sm text-purple-300/60">10 minuti di lettura</span>
 </div>
 <h1 class="font-serif text-3xl md:text-5xl mb-6 text-transparent bg-clip-text bg-gradient-to-b from-white via-dream-lavender to-purple-400/50 leading-tight">
-                    Ora legale e sonno: come il cambio dell'ora altera i tuoi sogni
-                </h1>
+Ora legale e sonno: cosa fa il cambio dell'ora alle tue notti e ai tuoi sogni
+</h1>
 <p class="text-lg text-purple-200/80 leading-relaxed">
-                    Due volte l'anno, miliardi di persone spostano le lancette di un'ora. Sembra un dettaglio, ma quell'unica ora innesca una cascata di alterazioni nel ritmo circadiano, nell'architettura del sonno e nella vita onirica. Con gli Stati Uniti che avanzano l'ora l'8 marzo e l'Europa il 29 marzo, &egrave; il momento giusto per capire cosa succede al tuo corpo e alla tua mente &mdash; e come proteggere il tuo sonno.
-                </p>
+È il primo lunedì dopo il passaggio all'ora legale. La sveglia segna le 7, il tuo corpo giura che sono le 6, e il sogno in cui ti trovavi, un treno da non perdere, svanisce appena ti metti seduto. Il cambio dell'ora sposta le lancette di un'ora in una notte; il tuo orologio interno impiega diversi giorni per adeguarsi. Ecco cosa fa quell'ora al tuo sonno e ai tuoi sogni, che cosa è misurato e che cosa resta un'ipotesi, e come affrontare il cambio con più dolcezza.
+</p>
 </header>
 <!-- Author Byline (E-E-A-T) -->
 <div class="flex items-center gap-3 mb-8 text-sm text-purple-200/70">
@@ -102,7 +102,7 @@
 <!-- Quick Answer (AI SEO) -->
 <section aria-labelledby="quick-answer-title" class="glass-panel rounded-2xl p-6 mb-8 border border-dream-salmon/20 bg-white/5">
 <h2 class="font-serif text-xl text-dream-cream mb-3" id="quick-answer-title">Risposta rapida</h2>
-<p class="text-purple-100/80 leading-relaxed">Il passaggio all'ora legale forza uno spostamento improvviso di un'ora nel ritmo circadiano, alterando il delicato tempismo del rilascio di melatonina e dei cicli di sonno. L'anticipo primaverile &egrave; particolarmente dannoso: comprime il sonno REM, riduce il ricordo dei sogni, aumenta il rischio di infarto del 24 % nei giorni successivi e pu&ograve; richiedere fino a una settimana per il recupero nelle persone sensibili. L'adattamento graduale degli orari, l'esposizione alla luce mattutina e l'eliminazione della caffeina sono le strategie pi&ugrave; efficaci.</p>
+<p class="text-purple-100/80 leading-relaxed">L'ora ufficiale cambia in una notte, il tuo orologio biologico recupera in qualche giorno. Il passaggio all'ora legale è il più difficile: il sonno si accorcia e si frammenta, e la sveglia taglia la fine della notte, quando il sonno REM, la fase più legata ai sogni vividi, dura più a lungo. Metti in conto qualche giorno di stanchezza, qualcuno in più se sei un nottambulo. Spostare gli orari gradualmente, cercare la luce del mattino e abbassare le luci la sera sono le mosse più utili.</p>
 </section>
 <!-- Featured Image -->
 <figure class="mb-12 rounded-2xl overflow-hidden">
@@ -111,88 +111,81 @@
 <!-- Table of Contents -->
 <nav class="glass-panel rounded-2xl p-6 mb-12">
 <h2 class="font-serif text-lg text-dream-cream mb-4 flex items-center gap-2">
-<i class="w-5 h-5 text-dream-salmon" data-lucide="list"></i> Sommario
-                </h2>
+<i class="w-5 h-5 text-dream-salmon" data-lucide="list"></i> Indice
+</h2>
 <ol class="space-y-2 text-sm text-purple-200/70">
-<li><a class="toc-link block" href="#clock-change">1. Cosa succede al tuo corpo quando cambia l'ora</a></li>
-<li><a class="toc-link block" href="#sleep-architecture">2. Come l'ora legale altera l'architettura del sonno</a></li>
-<li><a class="toc-link block" href="#dream-disruption">3. L'effetto sui sogni</a></li>
-<li><a class="toc-link block" href="#health-risks">4. Rischi per la salute legati al cambio dell'ora</a></li>
-<li><a class="toc-link block" href="#tips">5. Consigli per adattare il ritmo del sonno</a></li>
-<li><a class="toc-link block" href="#abolish-dst">6. Dovremmo abolire l'ora legale?</a></li>
+<li><a class="toc-link block" href="#clock-change">1. Che cosa succede nel corpo quando cambia l'ora?</a></li>
+<li><a class="toc-link block" href="#sleep-architecture">2. Come il cambio dell'ora disturba il sonno</a></li>
+<li><a class="toc-link block" href="#dream-disruption">3. E i sogni?</a></li>
+<li><a class="toc-link block" href="#health-risks">4. Il cambio dell'ora fa male alla salute?</a></li>
+<li><a class="toc-link block" href="#tips">5. Come adattarsi prima e dopo il cambio</a></li>
+<li><a class="toc-link block" href="#abolish-dst">6. Bisognerebbe smettere di cambiare l'ora?</a></li>
 </ol>
 </nav>
 <!-- Article Content -->
 <div class="prose max-w-none text-gray-300">
-<h2 id="clock-change">Cosa succede al tuo corpo quando cambia l'ora</h2>
-<h3>Il tuo orologio interno contro l'orologio da parete</h3>
+<h2 id="clock-change">Che cosa succede nel corpo quando cambia l'ora?</h2>
+<h3>Il tuo orologio interno non guarda l'ora del telefono</h3>
 <p>
-                    Il tuo corpo non si regola sull'ora visualizzata dal telefono. Funziona secondo un <a class="text-dream-salmon hover:underline" href="../simboli/notte">notte</a> biologico &mdash; il nucleo soprachiasmatico (NSC), un minuscolo gruppo di circa 20.000 neuroni nell'ipotalamo. Questo orologio maestro orchestra il rilascio di melatonina, cortisolo, i cicli di temperatura corporea e la tempistica di ogni fase del sonno. Si sincronizza principalmente attraverso l'esposizione alla luce, in particolare le lunghezze d'onda blu presenti nella luce solare mattutina.
-                </p>
+Il tuo corpo ha un suo orario. Un orologio centrale nell'ipotalamo, il nucleo soprachiasmatico, scandisce il ritmo della melatonina, della temperatura corporea e della sonnolenza. Si rimette in pari ogni giorno soprattutto grazie alla luce, e quella del mattino conta più di tutte.
+</p>
 <p>
-                    Quando il cambio dell'ora forza uno spostamento di un'ora, il tuo NSC non si resetta semplicemente. Continua a operare secondo il suo vecchio programma mentre il mondo esterno ne richiede improvvisamente uno diverso. Questa discrepanza &mdash; tecnicamente chiamata <strong>disallineamento circadiano</strong> &mdash; &egrave; la causa alla radice di tutti gli effetti a valle: la sonnolenza, il sonno disturbato e i sogni alterati che seguono un cambio d'ora.
-                </p>
+Quando l'ora del telefono fa un salto, quell'orologio non salta con lei. Per qualche giorno, ora sociale e ora biologica non coincidono. Questo scarto, chiamato <strong>disallineamento circadiano</strong>, spiega le mattine pesanti e le sere in cui il sonno non arriva.
+</p>
+<h3>Perché la primavera è più dura dell'autunno</h3>
 <p>
-                    La ricerca di Kantermann et al. (2007) ha dimostrato che l'orologio circadiano umano si adatta alla transizione primaverile molto pi&ugrave; lentamente rispetto a quella autunnale. Mentre la maggior parte delle persone si riprende dal ritardo autunnale in uno o due giorni, l'anticipo primaverile pu&ograve; lasciare tracce misurabili nei tempi di sonno per <strong>fino a quattro settimane</strong> in alcuni individui, in particolare quelli con cronotipo tardivo (i cosiddetti gufi).
-                </p>
-
+Kantermann e colleghi (2007) hanno seguito 50 persone per otto settimane attorno a ogni cambio dell'ora. I loro orari di sonno e attività si sono adeguati senza fatica al ritorno dell'ora solare in autunno, ma non al passaggio all'ora legale, soprattutto nei <strong>nottambuli</strong> (cronotipi serotini). In un'indagine più ampia, su circa 55.000 persone dell'Europa centrale, lo stesso gruppo ha mostrato che l'orario del sonno segue l'anticipo stagionale dell'alba con l'ora solare, ma non con l'ora legale.
+</p>
 <h3>Il ritardo della melatonina</h3>
 <p>
-                    Nei giorni successivi all'anticipo primaverile, il tuo corpo continua a produrre melatonina secondo il suo vecchio programma. Ti senti assonnato pi&ugrave; tardi di quanto richieda il tuo nuovo orario di sonno, e sei costretto a svegliarti prima che la tua biologia sia pronta. Il risultato &egrave; una forma di deprivazione acuta del sonno &mdash; simile al jet lag, ma senza l'emozione di arrivare in un posto nuovo. Harrison (2013) descrive questo fenomeno come <strong>&laquo;jet lag sociale&raquo;</strong>, dove il conflitto tra tempo biologico e tempo sociale crea uno stress cronico di basso livello sull'organismo.
-                </p>
-
-<h2 id="sleep-architecture">Come l'ora legale altera l'architettura del sonno</h2>
-<h3>Il ciclo REM perduto</h3>
+Dopo il passaggio all'ora legale, il tuo corpo continua a produrre melatonina secondo il vecchio orario. Non hai sonno alla nuova ora di coricarti, e la sveglia suona prima che il tuo organismo sia pronto. Somiglia a un piccolo jet lag, senza il viaggio.
+</p>
+<h2 id="sleep-architecture">Come il cambio dell'ora disturba il sonno</h2>
+<h3>Notti più corte e più spezzate</h3>
 <p>
-                    Il sonno non &egrave; un blocco uniforme di incoscienza. Si sviluppa in cicli di 90 minuti, ciascuno con periodi progressivamente pi&ugrave; lunghi di <a class="text-dream-salmon hover:underline" href="sonno-rem-e-sogni-comprendere-il-ripristino-notturno-del-cervello">sonno REM</a>. Il periodo REM pi&ugrave; lungo e ricco si verifica nell'ultimo ciclo della notte, tipicamente tra le 6:00 e le 7:30 del mattino. &Egrave; esattamente il periodo che l'anticipo primaverile elimina.
-                </p>
+Di solito immaginiamo il passaggio all'ora legale come una sola ora persa nella notte tra sabato e domenica, quando alle 2 diventano le 3. Una revisione di Harrison (2013) disegna un quadro meno comodo: ci si addormenta più lentamente e il sonno è più frammentato, così la perdita <strong>si accumula almeno per tutta la settimana successiva</strong>. Nemmeno l'«ora in più» d'autunno è un vero regalo: ci sono poche prove che quella notte si dorma di più, e i risvegli anticipati dei giorni seguenti possono tradursi anch'essi in una perdita.
+</p>
+<h3>La fine della notte, dove il REM si allunga</h3>
 <p>
-                    Quando la sveglia suona un'ora prima di quanto il tuo corpo si aspetti, taglia direttamente in quest'ultima fase REM. Non perdi semplicemente 60 minuti di sonno generico; perdi l'<strong>ora a maggiore densit&agrave; REM dell'intera notte</strong>. Gli studi polisonnografici condotti nei giorni successivi alla transizione oraria hanno mostrato una riduzione misurabile del sonno REM totale di 15-25 minuti, anche quando il tempo totale di sonno si riduce solo dei 60 minuti previsti.
-                </p>
-
-<h3>Sonno profondo frammentato</h3>
+Il sonno procede per cicli successivi, e le fasi di <a class="text-dream-salmon hover:underline" href="sonno-rem-e-sogni-comprendere-il-ripristino-notturno-del-cervello">sonno REM</a> si allungano verso il mattino. Quando la sveglia suona un'ora prima di quanto il corpo si aspetta, è soprattutto quest'ultimo tratto a venire tagliato. Quanti minuti di REM si perdano davvero dopo il cambio dell'ora non è stato misurato in modo affidabile, ma la logica dei cicli rende la fine della notte la parte più esposta.
+</p>
+<h2 id="dream-disruption">E i sogni?</h2>
+<h3>All'inizio, meno sogni ricordati</h3>
 <p>
-                    Questa alterazione va oltre il REM. Il disallineamento circadiano causato dal cambio d'ora frammenta anche il sonno a onde lente (fasi N2 e N3), le fasi profonde ristoranti in cui il corpo ripara i tessuti e consolida la memoria procedurale. Le persone che dormono nella settimana successiva all'anticipo primaverile mostrano una <strong>maggiore frammentazione del sonno</strong> &mdash; pi&ugrave; micro-risvegli, pi&ugrave; brevi risvegli e pi&ugrave; transizioni tra le fasi. Questa frammentazione significa che, anche quando riesci ad addormentarti all'ora &laquo;giusta&raquo;, la qualit&agrave; del tuo sonno &egrave; degradata.
-                </p>
-
-<blockquote class="border-l-4 border-dream-salmon/40 pl-4 italic text-purple-200/80 my-6">
-&laquo;La transizione all'ora legale &egrave; essenzialmente un anticipo di fase forzato di un'ora imposto a tutta la popolazione simultaneamente &mdash; uno scenario che nessun cronobiologo raccomanderebbe mai.&raquo;
-<span class="block text-sm text-purple-300/60 mt-2 not-italic">&mdash; Roenneberg et al., Journal of Biological Rhythms, 2019</span>
-</blockquote>
-
-<h2 id="dream-disruption">L'effetto sui sogni</h2>
-<h3>Perch&eacute; i tuoi sogni cambiano dopo lo spostamento delle lancette</h3>
+Pochi studi hanno esaminato i sogni subito dopo il cambio dell'ora. Quanto segue è dedotto da ciò che sappiamo sul sonno, non misurato sul cambio dell'ora in sé. Con una fine della notte più corta e un risveglio brusco, molte persone si alzano senza alcun sogno in mente, o con un frammento che svanisce in pochi secondi. La nostra guida su <a class="text-dream-salmon hover:underline" href="come-ricordare-i-tuoi-sogni-10-tecniche-efficaci">come ricordare i sogni</a> spiega come trattenerlo.
+</p>
+<h3>Poi, a volte, sogni più intensi</h3>
 <p>
-                    Poich&eacute; l'anticipo primaverile colpisce specificamente l'ultimo ciclo di sonno mattutino &mdash; la porzione pi&ugrave; ricca di sogni della notte &mdash;, il suo impatto sull'attivit&agrave; onirica &egrave; sproporzionatamente grande. Con l'ultimo periodo REM accorciato o completamente eliminato, molte persone notano un calo immediato nel <a class="text-dream-salmon hover:underline" href="come-ricordare-i-tuoi-sogni-10-tecniche-efficaci">ricordo dei sogni</a>. Ci si sveglia con la mente vuota, incapaci di ricordare se si &egrave; sognato.
-                </p>
+Dopo aver perso sonno REM, l'organismo tende a recuperarlo nelle notti seguenti: è il <strong>rimbalzo REM</strong>, un effetto ben noto. Per questo alcune persone notano sogni vividi o intensi qualche notte dopo il cambio. È plausibile, ma non dimostrato per il cambio dell'ora in particolare. Un sonno più leggero significa anche più <a class="text-dream-salmon hover:underline" href="risveglio-notturno-ricordo-sogni">risvegli notturni</a>, e ognuno è un'occasione per cogliere un sogno a metà.
+</p>
+<h3>Sogni di ritardi e di orologi</h3>
 <p>
-                    Ma la storia &egrave; pi&ugrave; sfumata di una semplice perdita di sogni. Durante il periodo di adattamento (tipicamente da 3 a 7 giorni), il cervello sembra compensare il tempo REM perduto aumentando la <strong>pressione REM</strong> &mdash; la spinta biologica a entrare nel sonno REM. Questo pu&ograve; produrre quello che i ricercatori del sonno chiamano <strong>rimbalzo REM</strong>, caratterizzato da sogni insolitamente vividi, emotivamente intensi e talvolta bizzarri. Se noti sogni particolarmente marcati o inquietanti nella settimana successiva all'anticipo, il tuo cervello sta probabilmente recuperando il tempo di sogno perduto.
-                </p>
-
-<h3>Cambiamenti nel contenuto dei sogni</h3>
+I sogni prendono spesso in prestito ciò che ci occupa di giorno. Una settimana passata a controllare l'ora può portare un treno perso, un orologio che segna un'ora impossibile, un <a class="text-dream-salmon hover:underline" href="../simboli/sole">sole</a> ancora alto a mezzanotte, una <a class="text-dream-salmon hover:underline" href="../simboli/luna">luna</a> fuori posto o una <a class="text-dream-salmon hover:underline" href="../simboli/notte">notte</a> che non finisce. Considera queste immagini echi della settimana, non messaggi.
+</p>
+<h3>Un esempio di diario per la settimana del cambio</h3>
+<p><strong>Esempio inventato</strong>, per mostrare che cosa vale la pena annotare:</p>
+<ul>
+<li><strong>Notte:</strong> «Passaggio all'ora legale domenica. Addormentato verso le 0:30, sveglia alle 7.»</li>
+<li><strong>Sogno:</strong> «Correvo dietro a un treno. L'orologio della stazione segnava due ore diverse.»</li>
+<li><strong>Emozione:</strong> «Fretta, poi irritazione.»</li>
+<li><strong>Domanda da tenere:</strong> «Questa fretta viene dal cambio dell'ora o dalle scadenze della settimana? Il sogno torna quando mi sarò adattato?»</li>
+</ul>
 <p>
-                    La ricerca sul contenuto onirico dopo un'alterazione circadiana rivela schemi consistenti. I sognatori riportano pi&ugrave; temi di <strong>disorientamento, ritardo, mezzi di trasporto persi e perdita di controllo</strong> &mdash; narrative oniriche che rispecchiano l'esperienza da svegli di sentirsi fuori sincronia con il tempo. Il <a class="text-dream-salmon hover:underline" href="../simboli/sole">sole</a> appare pi&ugrave; frequentemente nei sogni post-cambio d'ora, spesso in contesti di confusione sull'ora del giorno, riflettendo il tentativo del cervello di elaborare il ciclo luce-buio alterato.
-                </p>
+Una sola annotazione non prova nulla. È confrontando la settimana del cambio con quelle successive che un andamento diventa visibile.
+</p>
+<h2 id="health-risks">Il cambio dell'ora fa male alla salute?</h2>
+<h3>Infarti: cambia il momento più che il numero</h3>
 <p>
-                    Questi cambiamenti di contenuto non sono casuali. Il cervello sognante utilizza gli stessi circuiti neurali che elaborano la percezione temporale durante la veglia. Quando il tuo senso del tempo &egrave; alterato, i tuoi sogni riflettono quella confusione &mdash; diventano uno spazio di elaborazione dello stress circadiano che il tuo corpo sta vivendo.
-                </p>
-
-<h2 id="health-risks">Rischi per la salute legati al cambio dell'ora</h2>
-<h3>Impatto cardiovascolare</h3>
+Sandhu e colleghi (2014) hanno analizzato gli infarti trattati in ospedali del Michigan attorno a diversi cambi dell'ora. Hanno osservato circa il <strong>24 % di infarti in più il lunedì dopo il passaggio all'ora legale</strong> e circa il 21 % in meno il martedì dopo il ritorno all'ora solare. Il totale di ogni settimana però non cambiava. Gli autori concludono che il cambio dell'ora influisce su <em>quando</em> si verificano gli infarti, non su quanti sono. Nessun motivo di allarme, ma una buona ragione per avere riguardo di quella settimana se hai già fattori di rischio cardiaco.
+</p>
+<h3>Strada, attenzione e umore</h3>
 <p>
-                    Le conseguenze sanitarie del cambio d'ora vanno ben oltre la sonnolenza. Uno studio di riferimento di Sandhu et al. (2014) pubblicato su <em>Open Heart</em> ha dimostrato che il luned&igrave; successivo all'anticipo primaverile registra un <strong>aumento del 24 % dei ricoveri per infarto miocardico acuto</strong> rispetto al luned&igrave; medio. La deprivazione di sonno provoca un picco di cortisolo, aumenta i marcatori infiammatori e innalza la pressione sanguigna &mdash; un cocktail pericoloso per le persone con rischio cardiovascolare preesistente.
-                </p>
+Negli Stati Uniti il rischio di incidenti stradali mortali aumenta di circa il 6 % nella settimana dopo il passaggio all'ora legale, secondo un'analisi dei dati nazionali (Fritz et al., 2020). L'American Academy of Sleep Medicine (AASM) cita inoltre eventi cardiovascolari, disturbi dell'umore e incidenti stradali tra i rischi acuti di questa transizione. In pratica: guida con più prudenza nei primi giorni e, se puoi, non fissare una decisione importante per il lunedì mattina.
+</p>
+<h3>Quando rivolgersi al medico</h3>
 <p>
-                    Al contrario, il ritardo autunnale &egrave; associato a una diminuzione del 21 % dei ricoveri per infarto il marted&igrave; successivo, suggerendo che anche una sola ora di sonno in pi&ugrave; fornisce una protezione cardiovascolare misurabile. Questa asimmetria illustra con chiarezza quanto il corpo umano sia sensibile anche a piccole variazioni nei tempi del sonno.
-                </p>
-
-<h3>Salute mentale e prestazioni cognitive</h3>
-<p>
-                    Infortuni sul lavoro, incidenti stradali e visite al pronto soccorso aumentano tutti nei giorni successivi all'anticipo primaverile. Uno studio svedese ha documentato un <strong>aumento del 6,7 % degli incidenti stradali</strong> il luned&igrave; successivo alla transizione primaverile. I test di prestazione cognitiva rivelano una riduzione dell'attenzione, tempi di reazione pi&ugrave; lenti e un processo decisionale compromesso fino a cinque giorni dopo il cambio.
-                </p>
-<p>
-                    Per le persone con disturbi dell'umore, l'impatto pu&ograve; essere pi&ugrave; severo. L'alterazione circadiana aggrava i sintomi di depressione e ansia, e gli studi hanno documentato un aumento misurabile dei ricoveri ospedalieri per episodi depressivi nella settimana successiva all'anticipo primaverile. La <a class="text-dream-salmon hover:underline" href="../simboli/notte">notte</a>, gi&agrave; un momento vulnerabile per chi soffre di problemi di salute mentale, diventa ancora pi&ugrave; difficile quando l'orologio ruba un'ora di sonno ristoratore.
-                </p>
+La stanchezza di solito passa in una settimana circa. Parlane con il medico se dormi ancora male dopo diverse settimane, se hai molta sonnolenza di giorno, se qualcuno nota che russi con pause nel respiro o se il tuo umore cala in modo evidente. Lo stesso vale se gli <a class="text-dream-salmon hover:underline" href="incubi-cause-significato-e-come-fermarli">incubi</a> diventano così frequenti da rovinarti le notti.
+</p>
 </div>
 
 <aside class="glass-panel rounded-2xl p-6 my-8 border border-dream-salmon/20">
@@ -201,70 +194,60 @@
 <i class="w-6 h-6 text-dream-salmon" data-lucide="book-open"></i>
 </div>
 <div>
-<h4 class="font-serif text-lg text-dream-cream mb-2">Osserva come il cambio dell'ora influenza i tuoi sogni</h4>
-<p class="text-sm text-gray-400 mb-4">Il diario dei sogni con IA di Noctalia ti permette di registrare i sogni con la voce appena ti svegli. Confronta i tuoi schemi onirici prima e dopo il cambio dell'ora per vedere l'impatto reale sul tuo sonno.</p>
-<a class="inline-flex items-center gap-2 text-sm text-dream-salmon hover:text-dream-salmonLight transition-colors" href="/it/">
-                                Inizia a registrare con Noctalia <i class="w-4 h-4" data-lucide="arrow-right"></i>
+<h4 class="font-serif text-lg text-dream-cream mb-2">Annota i tuoi sogni nella settimana del cambio</h4>
+<p class="text-sm text-gray-400 mb-4">Racconta il sogno ad alta voce appena sveglio, oppure scrivilo. Noctalia lo trascrive e lo conserva nel tuo diario, così puoi rileggere fianco a fianco le notti prima e dopo il cambio dell'ora.</p>
+<a class="inline-flex items-center gap-2 text-sm text-dream-salmon hover:text-dream-salmonLight transition-colors" href="/it/diario-dei-sogni-vocale">
+Prova il diario dei sogni vocale <i class="w-4 h-4" data-lucide="arrow-right"></i>
 </a>
 </div>
 </div>
 </aside>
 
 <div class="prose max-w-none text-gray-300">
-<h2 id="tips">Consigli per adattare il ritmo del sonno</h2>
-<h3>Prima del cambio: adattamento graduale</h3>
+<h2 id="tips">Come adattarsi prima e dopo il cambio</h2>
+<h3>Prima del cambio: spostarsi gradualmente</h3>
 <p>
-                    Inizia ad adattarti prima che cambino le lancette: &egrave; la strategia pi&ugrave; efficace. Cominciando quattro giorni prima della transizione primaverile, anticipa l'orario di sonno e di risveglio di 15 minuti ogni giorno. Quando le lancette avanzeranno, il tuo corpo avr&agrave; gi&agrave; completato gradualmente l'adattamento di un'ora, risparmiandoti lo shock improvviso.
-                </p>
+Tre o quattro giorni prima del passaggio all'ora legale, vai a letto e alzati 15-20 minuti prima ogni giorno. Arrivata la domenica, gran parte dell'ora sarà già fatta. Puoi anticipare anche i pasti: i loro orari sono tra i segnali che regolano gli orologi del corpo, e questo può aiutare tutto il sistema ad adeguarsi.
+</p>
 <p>
-                    Applica lo stesso principio ai pasti. Cenare 15 minuti prima ogni giorno aiuta a spostare gli orologi circadiani periferici &mdash; quelli di fegato, intestino e pancreas &mdash; che rispondono fortemente agli orari dei pasti. Un sistema circadiano sincronizzato si adatta pi&ugrave; rapidamente e con maggiore fluidit&agrave;.
-                </p>
-
-<h3>La luce mattutina &egrave; il tuo strumento pi&ugrave; potente</h3>
+In autunno fai il contrario, oppure mantieni semplicemente il tuo solito orario di sveglia senza dormire fino a tardi.
+</p>
+<h3>Luce al mattino, penombra la sera</h3>
 <p>
-                    La luce &egrave; il segnale primario che resetta il nucleo soprachiasmatico. Nei giorni successivi all'anticipo primaverile, esponiti alla <strong>luce naturale intensa entro 30 minuti dal risveglio</strong>. Una passeggiata mattutina di 20 minuti all'aperto fornisce circa 10.000 lux &mdash; molto pi&ugrave; di qualsiasi illuminazione interna. Questa esposizione alla luce avanza la tua fase circadiana, segnalando al cervello che il &laquo;mattino&raquo; &egrave; arrivato al nuovo orario.
-                </p>
-<p>
-                    Al contrario, minimizza l'esposizione alla luce la sera. Abbassa le luci dopo il tramonto, usa lampadine a tono caldo (2.700K o inferiore) ed evita gli schermi per almeno 60 minuti prima del tuo nuovo orario di sonno. Questa combinazione di luce mattutina e oscurit&agrave; serale crea il segnale pi&ugrave; potente possibile per un rapido adattamento circadiano.
-                </p>
-
-<h3>Basi dell'igiene del sonno</h3>
+La luce è il segnale più potente per il tuo orologio interno. Nei giorni dopo il passaggio all'ora legale, <strong>esci all'aperto poco dopo il risveglio</strong>, anche con il cielo coperto: la luce del giorno all'esterno è molto più intensa di quella di casa. La sera fai l'opposto: abbassa le luci e metti via gli schermi un po' prima della nuova ora di andare a letto.
+</p>
+<h3>Abitudini semplici per quella settimana</h3>
 <ul>
-<li><strong>Niente caffeina dopo le 14:</strong> la caffeina ha un'emivita di 5-6 ore. Il consumo pomeridiano compete direttamente con l'addormentamento anticipato di cui hai bisogno</li>
-<li><strong>Raffredda la camera da letto:</strong> imposta il termostato a 18-19 &deg;C. Una stanza fresca favorisce sia l'addormentamento che la continuit&agrave; del sonno REM</li>
-<li><strong>Evita cene abbondanti:</strong> pasti pesanti vicino all'ora di coricarsi aumentano la temperatura corporea centrale e ritardano l'addormentamento</li>
-<li><strong>Evita la trappola del sonnellino:</strong> per quanto allettanti, i sonnellini pomeridiani superiori ai 20 minuti riducono la pressione del sonno e rendono pi&ugrave; difficile raggiungere il nuovo orario di coricarsi</li>
-<li><strong>Tieni un <a class="text-dream-salmon hover:underline" href="dream-journaling-la-guida-completa-per-registrare-le-tue-avventure-notturne">diario dei sogni</a>:</strong> registrare i sogni durante la settimana di transizione rivela come si sta riprendendo la tua architettura del sonno &mdash; sogni vividi segnalano un sano rimbalzo REM</li>
+<li><strong>Smetti presto con la caffeina:</strong> il suo effetto dura diverse ore, quindi il caffè del pomeriggio rema contro l'orario anticipato di cui hai bisogno</li>
+<li><strong>Tieni la camera fresca, buia e silenziosa:</strong> addormentarsi e restare addormentati diventa più facile</li>
+<li><strong>Cena leggera e non troppo tardi:</strong> un pasto abbondante subito prima di dormire ritarda il sonno</li>
+<li><strong>Pisolino breve e presto:</strong> un sonnellino corto nel primo pomeriggio va bene, uno lungo e tardivo rende più difficile il nuovo orario</li>
+<li><strong>Tieni un <a class="text-dream-salmon hover:underline" href="dream-journaling-la-guida-completa-per-registrare-le-tue-avventure-notturne">diario dei sogni</a>:</strong> nella settimana del cambio annota ora di coricarti, ora di sveglia e l'eventuale sogno; vedrai come si riprendono le tue notti</li>
 </ul>
-
-<h2 id="abolish-dst">Dovremmo abolire l'ora legale?</h2>
-<h3>Il consenso scientifico</h3>
+<h2 id="abolish-dst">Bisognerebbe smettere di cambiare l'ora?</h2>
+<h3>Che cosa raccomandano gli esperti del sonno</h3>
 <p>
-                    Abolire l'ora legale &egrave; passato da tema marginale a dibattito centrale. Nel 2019, Roenneberg et al. hanno pubblicato un articolo di posizione esaustivo sul <em>Journal of Biological Rhythms</em> sostenendo che l'<strong>ora solare permanente &egrave; l'unica opzione allineata con la cronobiologia umana</strong>. Il loro ragionamento: l'ora solare mantiene il mezzogiorno solare il pi&ugrave; vicino possibile al mezzogiorno dell'orologio, assicurando che il ciclo luce-buio corrisponda al meglio ai ritmi biologici evoluti nel corso di milioni di anni.
-                </p>
-<p>
-                    Il Parlamento Europeo ha votato nel 2019 per abolire i cambi d'ora stagionali, ma l'attuazione &egrave; stata ripetutamente ritardata dai disaccordi tra gli stati membri su se adottare l'ora legale permanente o l'ora solare permanente. I ricercatori del sonno sono categorici: l'ora legale permanente sarebbe <strong>peggiore del sistema attuale</strong>, poich&eacute; imporrebbe un disallineamento circadiano cronico &mdash; rendendo essenzialmente ogni mattina un mini anticipo primaverile.
-                </p>
-
+I ricercatori del sonno e della cronobiologia sono in larga parte d'accordo. In un documento di posizione pubblicato nel 2019 per la Society for Research on Biological Rhythms, Roenneberg e colleghi sostengono l'abolizione dell'ora legale a favore di un'<strong>ora solare permanente</strong>, più vicina al tempo del sole. L'AASM ha preso la stessa posizione nel 2020. Un'ora legale permanente, secondo loro, lascerebbe le mattine al buio per buona parte dell'anno e renderebbe permanente lo scarto tra orologio biologico e orari sociali.
+</p>
 <h3>La situazione nel 2026</h3>
 <p>
-                    Negli Stati Uniti, il Sunshine Protection Act (che propone l'ora legale permanente) &egrave; stato reintrodotto pi&ugrave; volte senza diventare legge. Nel frattempo, singoli stati stanno approvando legislazioni per adottare l'ora legale permanente se la legge federale lo consentir&agrave;. La comunit&agrave; medica e cronobiologica continua a sostenere con forza l'ora solare permanente, con l'American Academy of Sleep Medicine, la Society for Research on Biological Rhythms e la European Sleep Research Society che hanno tutte emesso dichiarazioni di posizione formali.
-                </p>
+Nell'Unione europea, il Parlamento ha votato nel marzo 2019 per abolire il cambio stagionale dell'ora, ma gli Stati membri non hanno trovato un accordo. In Italia come nel resto dell'UE, quindi, le lancette si spostano ancora l'ultima domenica di marzo e l'ultima domenica di ottobre. Negli Stati Uniti, la Camera dei rappresentanti ha approvato a luglio 2026 il Sunshine Protection Act, che renderebbe permanente l'ora legale; all'inizio di ottobre 2026 il Senato non lo aveva ancora votato.
+</p>
 <p>
-                    Finch&eacute; la legislazione non raggiunger&agrave; la scienza, il cambio d'ora semestrale resta una realt&agrave;. La buona notizia &egrave; che comprendere i meccanismi dietro l'impatto del cambio d'ora sul sonno ti fornisce gli strumenti per minimizzarne gli effetti. Il tuo sistema circadiano &egrave; resiliente &mdash; con una preparazione consapevole, puoi attraversare la transizione mantenendo la tua architettura del sonno e la tua vita onirica sostanzialmente intatte.
-                </p>
+Nel frattempo, la leva più utile è personale: preparare il cambio qualche giorno prima e concedersi una settimana di indulgenza.
+</p>
 </div>
 <!-- CTA Section -->
 <aside class="glass-panel rounded-3xl p-8 md:p-10 mt-16 text-center border border-dream-salmon/20">
 <div class="w-16 h-16 bg-dream-salmon/10 rounded-full flex items-center justify-center mx-auto mb-6">
 <i class="w-8 h-8 text-dream-salmon" data-lucide="moon"></i>
 </div>
-<h3 class="font-serif text-2xl md:text-3xl mb-4 text-dream-cream">Non lasciare che il cambio dell'ora ti rubi i sogni</h3>
+<h3 class="font-serif text-2xl md:text-3xl mb-4 text-dream-cream">Tieni traccia della settimana del cambio dell'ora</h3>
 <p class="text-purple-200/70 mb-6 max-w-lg mx-auto">
-                    Noctalia ti aiuta a monitorare come i cambi d'ora e i ritmi del sonno influenzano la tua vita onirica. Registra i sogni con la voce, scopri schemi con l'analisi IA e proteggi il tuo sonno attraverso ogni transizione stagionale.
-                </p>
+Registra il tuo sogno a voce o per iscritto al risveglio. Noctalia lo trascrive e lo conserva nel tuo diario, così puoi confrontare le notti prima e dopo il cambio e notare che cosa ritorna.
+</p>
 <a class="inline-flex items-center gap-2 px-8 py-4 bg-dream-salmon text-dream-dark rounded-full font-bold hover:bg-dream-salmon/90 transition-colors" href="/it/">
-                    Inizia il tuo diario dei sogni <i class="w-5 h-5" data-lucide="arrow-right"></i>
+Inizia il tuo diario dei sogni <i class="w-5 h-5" data-lucide="arrow-right"></i>
 </a>
 </aside>
 <!-- FAQ Section -->
@@ -273,43 +256,56 @@
 <div class="space-y-4">
 <details class="glass-panel rounded-xl p-4 group cursor-pointer">
 <summary class="font-medium flex justify-between items-center text-dream-cream">
-                            L'ora legale influisce davvero sul sonno?
-                            <i class="w-5 h-5 transition-transform group-open:rotate-180 text-dream-salmon" data-lucide="chevron-down"></i>
+L'ora legale influisce davvero sul sonno?
+<i class="w-5 h-5 transition-transform group-open:rotate-180 text-dream-salmon" data-lucide="chevron-down"></i>
 </summary>
 <p class="mt-4 text-sm text-gray-400 leading-relaxed">
-                            S&igrave;. Il cambio dell'ora forza uno spostamento improvviso di un'ora nel ritmo circadiano, alterando la produzione di melatonina e l'organizzazione dei cicli di sonno. L'anticipo primaverile &egrave; particolarmente dannoso: comprime il <a class="text-dream-salmon hover:underline" href="sonno-rem-e-sogni-comprendere-il-ripristino-notturno-del-cervello">sonno REM</a>, riduce il ricordo dei sogni e aumenta il rischio di infarto del 24 % nei giorni successivi. Le persone sensibili &mdash; bambini, anziani e chi soffre di disturbi del sonno &mdash; possono impiegare fino a una settimana per adattarsi.
-                        </p>
+Sì, soprattutto in primavera. Le revisioni scientifiche mostrano un sonno più corto e più frammentato per diversi giorni, non solo la notte del cambio. La sveglia taglia inoltre la fine della notte, quando le fasi di <a class="text-dream-salmon hover:underline" href="sonno-rem-e-sogni-comprendere-il-ripristino-notturno-del-cervello">sonno REM</a> sono più lunghe.
+</p>
 </details>
 <details class="glass-panel rounded-xl p-4 group cursor-pointer">
 <summary class="font-medium flex justify-between items-center text-dream-cream">
-                            Quanto tempo ci vuole per adattarsi al cambio dell'ora?
-                            <i class="w-5 h-5 transition-transform group-open:rotate-180 text-dream-salmon" data-lucide="chevron-down"></i>
+Quanto tempo ci vuole per adattarsi al cambio dell'ora?
+<i class="w-5 h-5 transition-transform group-open:rotate-180 text-dream-salmon" data-lucide="chevron-down"></i>
 </summary>
 <p class="mt-4 text-sm text-gray-400 leading-relaxed">
-                            La maggior parte delle persone necessita da 1 a 3 giorni per adattarsi al cambio di un'ora. Tuttavia, le persone sensibili &mdash; bambini, anziani e chi soffre di disturbi del sonno &mdash; possono aver bisogno di una settimana. Questo ritardo &egrave; dovuto all'inerzia del ritmo circadiano: il tuo orologio interno, governato dal nucleo soprachiasmatico, resiste ai cambiamenti bruschi e necessita di tempo per risincronizzarsi con i segnali luminosi esterni. I cronotipi tardivi (i gufi) sono quelli che faticano di pi&ugrave; con l'anticipo primaverile.
-                        </p>
+La maggior parte delle persone si sente meglio in qualche giorno o una settimana. I nottambuli si adattano peggio al passaggio all'ora legale: in uno studio i loro orari di attività non si erano ancora riallineati settimane dopo. Se dormi male per diverse settimane, parlane con il medico.
+</p>
 </details>
 <details class="glass-panel rounded-xl p-4 group cursor-pointer">
 <summary class="font-medium flex justify-between items-center text-dream-cream">
-                            Il cambio dell'ora pu&ograve; influenzare i miei sogni?
-                            <i class="w-5 h-5 transition-transform group-open:rotate-180 text-dream-salmon" data-lucide="chevron-down"></i>
+Il cambio dell'ora può influenzare i miei sogni?
+<i class="w-5 h-5 transition-transform group-open:rotate-180 text-dream-salmon" data-lucide="chevron-down"></i>
 </summary>
 <p class="mt-4 text-sm text-gray-400 leading-relaxed">
-                            S&igrave;. L'anticipo primaverile accorcia o elimina l'ultimo periodo REM della notte &mdash; il pi&ugrave; lungo e ricco di sogni vividi. Questo riduce il ricordo onirico nei giorni successivi. Paradossalmente, durante il periodo di adattamento, alcune persone sperimentano sogni insolitamente vividi o bizzarri &mdash; un fenomeno noto come rimbalzo REM: il cervello compensa il sonno REM perduto intensificando le fasi oniriche.
-                        </p>
+Indirettamente, sì. Una fine della notte più corta può ridurre all'inizio i <a class="text-dream-salmon hover:underline" href="come-ricordare-i-tuoi-sogni-10-tecniche-efficaci">sogni che ricordi</a> e poi lasciare spazio a sogni più intensi quando il REM rimbalza. Per il cambio dell'ora è plausibile più che dimostrato. Temi di ritardo o di orologi possono anche fare eco alla settimana.
+</p>
+</details>
+<details class="glass-panel rounded-xl p-4 group cursor-pointer">
+<summary class="font-medium flex justify-between items-center text-dream-cream">
+Come prepararsi al passaggio all'ora legale?
+<i class="w-5 h-5 transition-transform group-open:rotate-180 text-dream-salmon" data-lucide="chevron-down"></i>
+</summary>
+<p class="mt-4 text-sm text-gray-400 leading-relaxed">
+Vai a letto e alzati 15-20 minuti prima ogni giorno nei tre o quattro giorni precedenti. Dopo il cambio, esci alla luce del giorno poco dopo il risveglio, abbassa le luci la sera e smetti con la caffeina dal primo pomeriggio.
+</p>
 </details>
 </div>
 </section>
 <!-- Sources / Trust -->
 <section class="mt-16 glass-panel rounded-2xl p-6" id="sources">
-<h2 class="font-serif text-2xl text-dream-cream mb-4">Fonti / Letture consigliate</h2>
+<h2 class="font-serif text-2xl text-dream-cream mb-4">Fonti e letture di approfondimento</h2>
 <ul class="mt-6 space-y-2 text-sm text-gray-400">
-<li><a href="https://doi.org/10.1016/j.smrv.2012.10.001" rel="nofollow noopener noreferrer" target="_blank">Harrison (2013): The impact of daylight saving time on sleep and related behaviours &mdash; Sleep Medicine Reviews</a></li>
-<li><a href="https://doi.org/10.1016/j.cub.2007.10.025" rel="nofollow noopener noreferrer" target="_blank">Kantermann et al. (2007): The human circadian clock's seasonal adjustment is disrupted by daylight saving time &mdash; Current Biology</a></li>
-<li><a href="https://doi.org/10.1136/openhrt-2013-000019" rel="nofollow noopener noreferrer" target="_blank">Sandhu et al. (2014): Time change and incidence of acute myocardial infarction &mdash; Open Heart</a></li>
-<li><a href="https://doi.org/10.1177/0748730419854197" rel="nofollow noopener noreferrer" target="_blank">Roenneberg et al. (2019): Why should we abolish daylight saving time? &mdash; Journal of Biological Rhythms</a></li>
+<li><a href="https://doi.org/10.1016/j.smrv.2012.10.001" rel="nofollow noopener noreferrer" target="_blank">Harrison (2013): The impact of daylight saving time on sleep and related behaviours — Sleep Medicine Reviews</a></li>
+<li><a href="https://doi.org/10.1016/j.cub.2007.10.025" rel="nofollow noopener noreferrer" target="_blank">Kantermann et al. (2007): The human circadian clock’s seasonal adjustment is disrupted by daylight saving time — Current Biology</a></li>
+<li><a href="https://doi.org/10.1136/openhrt-2013-000019" rel="nofollow noopener noreferrer" target="_blank">Sandhu et al. (2014): Daylight savings time and myocardial infarction — Open Heart</a></li>
+<li><a href="https://doi.org/10.1016/j.cub.2019.12.045" rel="nofollow noopener noreferrer" target="_blank">Fritz et al. (2020): A chronobiological evaluation of the acute effects of daylight saving time on traffic accident risk — Current Biology</a></li>
+<li><a href="https://doi.org/10.5664/jcsm.8780" rel="nofollow noopener noreferrer" target="_blank">Rishi et al. (2020): Daylight saving time, an American Academy of Sleep Medicine position statement — Journal of Clinical Sleep Medicine</a></li>
+<li><a href="https://doi.org/10.1177/0748730419854197" rel="nofollow noopener noreferrer" target="_blank">Roenneberg et al. (2019): Why should we abolish daylight saving time? — Journal of Biological Rhythms</a></li>
+<li><a href="https://www.europarl.europa.eu/news/en/press-room/20190321IPR32107/parliament-backs-proposal-to-end-switch-between-summer-and-winter-time-in-2021" rel="nofollow noopener noreferrer" target="_blank">Parlamento europeo (2019): voto per abolire il cambio stagionale dell'ora (in inglese)</a></li>
+<li><a href="https://time.com/article/2026/10/07/senate-permanent-daylight-saving-time-sunshine-protection-act/" rel="nofollow noopener noreferrer" target="_blank">Time (ottobre 2026): il Sunshine Protection Act e le esitazioni del Senato USA (in inglese)</a></li>
 </ul>
-<p class="mt-6 text-xs text-purple-200/60">Ultimo aggiornamento: 17 marzo 2026</p>
+<p class="mt-6 text-xs text-purple-200/60">Ultimo aggiornamento: 9 ottobre 2026</p>
 </section>
 <!-- Related Symbols Start -->
 <section aria-label="Simboli dei sogni correlati" class="mt-12 mb-8">

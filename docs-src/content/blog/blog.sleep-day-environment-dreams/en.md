@@ -5,7 +5,7 @@
   "lang": "en",
   "slug": "sleep-day-environment-dreams",
   "title": "Sleep Day 2026: How Your Environment Transforms Your Dreams | Noctalia",
-  "description": "National Sleep Day 2026 highlights how environment affects sleep. Light, noise, temperature: discover how to optimize your space for better dreaming.",
+  "description": "Sleep Day 2026 put the bedroom in focus. How light, noise and temperature affect your sleep and dreams, what research shows, and what to change tonight.",
   "robots": "max-image-preview:large",
   "themeColor": "#0a0514",
   "htmlClass": "scroll-smooth blog-article",
@@ -14,24 +14,24 @@
   "mainClass": "pt-32 pb-20 px-4",
   "ogType": "article",
   "ogTitle": "Sleep Day 2026: How Your Environment Transforms Your Dreams | Noctalia",
-  "ogDescription": "National Sleep Day 2026 highlights how environment affects sleep. Light, noise, temperature: discover how to optimize your space for better dreaming.",
+  "ogDescription": "How light, noise and temperature in your bedroom affect sleep and dreams: what research shows, and what to change tonight.",
   "ogImage": "https://noctalia.app/img/blog/sleep-day-environment-dreams.webp",
   "ogImageAlt": "Peaceful bedroom bathed in soft light illustrating the ideal environment for sleep and dreams",
   "twitterCard": "summary_large_image",
   "twitterTitle": "Sleep Day 2026: How Your Environment Transforms Your Dreams | Noctalia",
-  "twitterDescription": "National Sleep Day 2026 highlights how environment affects sleep. Light, noise, temperature: discover how to optimize your space for better dreaming.",
+  "twitterDescription": "Light, noise, heat: how your bedroom shapes your nights and the dreams you remember.",
   "twitterImage": "https://noctalia.app/img/blog/sleep-day-environment-dreams.webp",
   "twitterImageAlt": "Peaceful bedroom bathed in soft light illustrating the ideal environment for sleep and dreams",
   "publishedTime": "2026-03-10",
-  "modifiedTime": "2026-07-06",
+  "modifiedTime": "2026-10-09",
   "author": "Thanh Chau",
   "prevPath": "/en/blog/children-dreams-guide",
   "nextPath": "/en/blog/ai-sleep-analysis-dreams",
   "preloadImage": "/img/blog/sleep-day-environment-dreams.webp",
   "jsonLd": [
-    "{\n  \"@context\": \"https://schema.org\",\n  \"@type\": \"BlogPosting\",\n  \"headline\": \"Sleep Day 2026: How Your Environment Transforms Your Dreams\",\n  \"description\": \"National Sleep Day 2026 highlights how environment affects sleep. Light, noise, temperature: discover how to optimize your space for better dreaming.\",\n  \"image\": {\n    \"@type\": \"ImageObject\",\n    \"url\": \"https://noctalia.app/img/blog/sleep-day-environment-dreams.webp\",\n    \"width\": 1200,\n    \"height\": 630\n  },\n  \"author\": [\n    {\n      \"@type\": \"Person\",\n      \"@id\": \"https://noctalia.app/en/about#person\",\n      \"name\": \"Thanh Chau\",\n      \"jobTitle\": \"Founder & Publication Director\",\n      \"url\": \"https://noctalia.app/en/about\",\n      \"worksFor\": {\n        \"@type\": \"Organization\",\n        \"@id\": \"https://noctalia.app/#organization\",\n        \"name\": \"Noctalia\",\n        \"url\": \"https://noctalia.app\"\n      }\n    },\n    {\n      \"@type\": \"Organization\",\n      \"@id\": \"https://noctalia.app/#organization\",\n      \"name\": \"Noctalia\",\n      \"url\": \"https://noctalia.app\",\n      \"logo\": {\n        \"@type\": \"ImageObject\",\n        \"url\": \"https://noctalia.app/logo/logo_noctalia.png\"\n      }\n    }\n  ],\n  \"publisher\": {\n    \"@type\": \"Organization\",\n    \"name\": \"Noctalia\",\n    \"url\": \"https://noctalia.app\",\n    \"logo\": {\n      \"@type\": \"ImageObject\",\n      \"url\": \"https://noctalia.app/logo/logo_noctalia.png\"\n    }\n  },\n  \"datePublished\": \"2026-03-10\",\n  \"dateModified\": \"2026-07-06\",\n  \"mainEntityOfPage\": {\n    \"@type\": \"WebPage\",\n    \"@id\": \"https://noctalia.app/en/blog/sleep-day-environment-dreams\"\n  },\n  \"inLanguage\": \"en\",\n  \"isAccessibleForFree\": true,\n  \"wordCount\": 1600,\n  \"timeRequired\": \"PT5M\",\n  \"url\": \"https://noctalia.app/en/blog/sleep-day-environment-dreams\"\n}",
+    "{\n    \"@context\": \"https://schema.org\",\n    \"@type\": \"BlogPosting\",\n    \"headline\": \"Sleep Day 2026: how your bedroom environment shapes your dreams\",\n    \"description\": \"Sleep Day 2026 put the bedroom in focus. How light, noise and temperature affect your sleep and dreams, what research shows, and what to change tonight.\",\n    \"image\": {\n        \"@type\": \"ImageObject\",\n        \"url\": \"https://noctalia.app/img/blog/sleep-day-environment-dreams.webp\",\n        \"width\": 1200,\n        \"height\": 630\n    },\n    \"author\": [\n        {\n            \"@type\": \"Person\",\n            \"@id\": \"https://noctalia.app/en/about#person\",\n            \"name\": \"Thanh Chau\",\n            \"jobTitle\": \"Founder & Publication Director\",\n            \"url\": \"https://noctalia.app/en/about\",\n            \"worksFor\": {\n                \"@type\": \"Organization\",\n                \"@id\": \"https://noctalia.app/#organization\",\n                \"name\": \"Noctalia\",\n                \"url\": \"https://noctalia.app\"\n            }\n        },\n        {\n            \"@type\": \"Organization\",\n            \"@id\": \"https://noctalia.app/#organization\",\n            \"name\": \"Noctalia\",\n            \"url\": \"https://noctalia.app\",\n            \"logo\": {\n                \"@type\": \"ImageObject\",\n                \"url\": \"https://noctalia.app/logo/logo_noctalia.png\"\n            }\n        }\n    ],\n    \"publisher\": {\n        \"@type\": \"Organization\",\n        \"name\": \"Noctalia\",\n        \"url\": \"https://noctalia.app\",\n        \"logo\": {\n            \"@type\": \"ImageObject\",\n            \"url\": \"https://noctalia.app/logo/logo_noctalia.png\"\n        }\n    },\n    \"datePublished\": \"2026-03-10\",\n    \"dateModified\": \"2026-10-09\",\n    \"mainEntityOfPage\": {\n        \"@type\": \"WebPage\",\n        \"@id\": \"https://noctalia.app/en/blog/sleep-day-environment-dreams\"\n    },\n    \"inLanguage\": \"en\",\n    \"isAccessibleForFree\": true,\n    \"wordCount\": 2108,\n    \"timeRequired\": \"PT10M\",\n    \"url\": \"https://noctalia.app/en/blog/sleep-day-environment-dreams\"\n}",
     "{\n  \"@context\": \"https://schema.org\",\n  \"@type\": \"WebPage\",\n  \"@id\": \"https://noctalia.app/en/blog/sleep-day-environment-dreams\",\n  \"url\": \"https://noctalia.app/en/blog/sleep-day-environment-dreams\",\n  \"name\": \"Sleep Day 2026: How Your Environment Transforms Your Dreams | Noctalia\",\n  \"inLanguage\": \"en\"\n}",
-    "{\n  \"@context\": \"https://schema.org\",\n  \"@type\": \"FAQPage\",\n  \"mainEntity\": [\n    {\n      \"@type\": \"Question\",\n      \"name\": \"How does light affect the quality of my dreams?\",\n      \"acceptedAnswer\": {\n        \"@type\": \"Answer\",\n        \"text\": \"Artificial light, especially blue light from screens, suppresses melatonin production and delays sleep onset. This reduces REM sleep duration, the phase where the most vivid dreams occur. Evening exposure to bright light can shorten your dream phases by 20 to 30 minutes, making dreams less rich and harder to recall. To preserve dream quality, turn off screens at least 60 minutes before bed and use blackout curtains.\"\n      }\n    },\n    {\n      \"@type\": \"Question\",\n      \"name\": \"What is the ideal temperature for good dreaming?\",\n      \"acceptedAnswer\": {\n        \"@type\": \"Answer\",\n        \"text\": \"The ideal temperature for dream-friendly sleep is between 18 and 19°C (64-66°F). At this temperature, your body can perform the thermoregulation needed during REM sleep without disruption. A room that is too warm (above 24°C/75°F) fragments REM sleep and produces more anxious dreams, while a room that is too cold can cause nighttime awakenings that interrupt dream cycles.\"\n      }\n    },\n    {\n      \"@type\": \"Question\",\n      \"name\": \"Can external noise be integrated into my dreams?\",\n      \"acceptedAnswer\": {\n        \"@type\": \"Answer\",\n        \"text\": \"Yes, the brain continues processing sounds during sleep. Studies show that external auditory stimuli — an alarm, rain sounds, a conversation — can be incorporated into the dream narrative in real time. The brain interprets these sounds through the filter of the ongoing dream story, transforming them into coherent elements. Consistent white noise, on the other hand, tends to mask intrusive sounds and stabilize REM sleep.\"\n      }\n    }\n  ]\n}",
+    "{\n    \"@context\": \"https://schema.org\",\n    \"@type\": \"FAQPage\",\n    \"mainEntity\": [\n        {\n            \"@type\": \"Question\",\n            \"name\": \"Does light in the bedroom affect dreams?\",\n            \"acceptedAnswer\": {\n                \"@type\": \"Answer\",\n                \"text\": \"Indirectly. Evening light delays melatonin and can push back sleep, which shortens the end of the night, where REM sleep is longest. Light during the night can also wake you briefly. Dimming the lights in the last hour and keeping the room dark is a good start.\"\n            }\n        },\n        {\n            \"@type\": \"Question\",\n            \"name\": \"What is the best bedroom temperature for sleep and dreams?\",\n            \"acceptedAnswer\": {\n                \"@type\": \"Answer\",\n                \"text\": \"The Sleep Foundation suggests around 18 °C (65 °F). During REM sleep the body handles heat less well, so a hot, humid room causes more awakenings. There is no \\\"dream temperature\\\": the goal is a cool, stable room and bedding you can adjust.\"\n            }\n        },\n        {\n            \"@type\": \"Question\",\n            \"name\": \"Can a noise end up in my dream?\",\n            \"acceptedAnswer\": {\n                \"@type\": \"Answer\",\n                \"text\": \"Yes, sometimes: an alarm can become a siren, rain a storm. It is not systematic, and the sound usually comes back transformed. Noise also causes brief awakenings, which help you remember more dream fragments.\"\n            }\n        },\n        {\n            \"@type\": \"Question\",\n            \"name\": \"Does white noise help you sleep better?\",\n            \"acceptedAnswer\": {\n                \"@type\": \"Answer\",\n                \"text\": \"It can mask sudden noises, and many people like it. But a 2021 systematic review rated the evidence that continuous noise improves sleep as very low quality. Try it at a low volume and keep it only if you wake up feeling better.\"\n            }\n        }\n    ]\n}",
     "{\n  \"@context\": \"https://schema.org\",\n  \"@type\": \"BreadcrumbList\",\n  \"itemListElement\": [\n    {\n      \"@type\": \"ListItem\",\n      \"position\": 1,\n      \"name\": \"Home\",\n      \"item\": \"https://noctalia.app/\"\n    },\n    {\n      \"@type\": \"ListItem\",\n      \"position\": 2,\n      \"name\": \"Resources\",\n      \"item\": \"https://noctalia.app/en/blog/\"\n    },\n    {\n      \"@type\": \"ListItem\",\n      \"position\": 3,\n      \"name\": \"Sleep Day 2026\",\n      \"item\": \"https://noctalia.app/en/blog/sleep-day-environment-dreams\"\n    }\n  ]\n}"
   ],
   "activeNav": "resources"
@@ -64,13 +64,13 @@
 <a class="text-xs font-mono text-purple-200/70 border border-white/10 rounded-full px-3 py-1 hover:text-white hover:border-dream-salmon/30 transition-colors" href="rem-sleep-dreams">Topic: Sleep science</a>
 <span aria-hidden="true" class="w-full sm:hidden"></span>
 <span class="text-sm text-purple-300/60">Published March 10, 2026</span>
-<span class="text-sm text-purple-300/60">~1600 words · 5 min read</span>
+<span class="text-sm text-purple-300/60">10 min read</span>
 </div>
 <h1 class="font-serif text-3xl md:text-5xl mb-6 text-transparent bg-clip-text bg-gradient-to-b from-white via-dream-lavender to-purple-400/50 leading-tight">
-                    Sleep Day 2026: How Your Environment Transforms Your Dreams
+                    Sleep Day 2026: how your bedroom environment shapes your dreams
                 </h1>
 <p class="text-lg text-purple-200/80 leading-relaxed">
-                    On March 13, 2026, National Sleep Day shines a spotlight on "Sleep and Environment." Beyond mattress quality, your entire sleep space — light, noise, temperature, season — sculpts the fabric of your dreams every night. Here is what science tells us about this intimate relationship and how to use it to your advantage.
+                    It is 3 a.m. A streetlight slips under the curtain, a scooter roars past, the duvet is suddenly too hot. In the morning you remember a chase through a burning city, or nothing at all. Your room does not write your dreams, but it changes how you sleep, how often you wake and what you remember. That was the angle of Sleep Day 2026 in France: sleep as a mirror of our rhythms and our living environments.
                 </p>
 </header>
 <!-- Author Byline (E-E-A-T) -->
@@ -86,7 +86,7 @@
 <!-- Quick Answer (AI SEO) -->
 <section aria-labelledby="quick-answer-title" class="glass-panel rounded-2xl p-6 mb-8 border border-dream-salmon/20 bg-white/5">
 <h2 class="font-serif text-xl text-dream-cream mb-3" id="quick-answer-title">Quick answer</h2>
-<p class="text-purple-100/80 leading-relaxed">The environment you sleep in directly shapes the quality and content of your dreams. Artificial light suppresses melatonin and shortens REM sleep, external noise can weave itself into your dream narrative, and bedroom temperature alters dream vividness. A cool (18-19°C / 64-66°F), dark, and quiet room is the key to richer dreams.</p>
+<p class="text-purple-100/80 leading-relaxed">Your bedroom affects dreams mostly indirectly. Evening light delays melatonin, while heat and noise cause brief awakenings that change which dreams you remember and how they feel. A sound or a smell can sometimes slip into a dream. A dark, quiet, cool room (around 18 °C / 65 °F) will not program your dreams, but it protects the sleep they happen in.</p>
 </section>
 <!-- Editorial Review (E-E-A-T) -->
 <div class="mb-8">
@@ -111,85 +111,85 @@
 <!-- Table of Contents -->
 <nav class="glass-panel rounded-2xl p-6 mb-12">
 <h2 class="font-serif text-lg text-dream-cream mb-4 flex items-center gap-2">
-<i class="w-5 h-5 text-dream-salmon" data-lucide="list"></i> Table of Contents
+<i class="w-5 h-5 text-dream-salmon" data-lucide="list"></i> Table of contents
                 </h2>
 <ol class="space-y-2 text-sm text-purple-200/70">
-<li><a class="toc-link block" href="#journee-sommeil">1. National Sleep Day 2026: this year's theme</a></li>
-<li><a class="toc-link block" href="#light">2. Light and light pollution: how they disrupt your dreams</a></li>
-<li><a class="toc-link block" href="#noise">3. Noise and dream content</a></li>
-<li><a class="toc-link block" href="#temperature">4. Temperature and dream vividness</a></li>
-<li><a class="toc-link block" href="#seasons">5. Seasonal changes and dream patterns</a></li>
-<li><a class="toc-link block" href="#optimize">6. Optimize your environment for better dreams</a></li>
+<li><a class="toc-link block" href="#journee-sommeil">1. What was Sleep Day 2026 about?</a></li>
+<li><a class="toc-link block" href="#light">2. How does light affect your dreams?</a></li>
+<li><a class="toc-link block" href="#noise">3. Can noise get into your dreams?</a></li>
+<li><a class="toc-link block" href="#temperature">4. Does bedroom temperature change your dreams?</a></li>
+<li><a class="toc-link block" href="#seasons">5. Do dreams change with the seasons?</a></li>
+<li><a class="toc-link block" href="#optimize">6. How to set up your bedroom tonight</a></li>
 </ol>
 </nav>
 <!-- Article Content -->
 <div class="prose max-w-none text-gray-300">
-<h2 id="journee-sommeil">National Sleep Day 2026: This Year's Theme</h2>
+<h2 id="journee-sommeil">What was Sleep Day 2026 about?</h2>
 <p>
-                    Every year since 2000, National Sleep Day raises awareness about the importance of nighttime rest. In 2026, the event organized by the INSV (French National Institute for Sleep and Vigilance) and the Morphée Network will take place on <strong>Friday, March 13</strong>, with the central theme "Sleep and Environment." Conferences will be held at the Cité des sciences et de l'industrie in Paris, exploring how our living environment shapes our nights.
+                    On <strong>Friday, March 13, 2026</strong>, the French National Institute for Sleep and Vigilance (INSV) held the 26th edition of its Sleep Day, the same day as World Sleep Day. Its theme presented sleep as a pillar of health and a mirror of our rhythms and living environments. More than 60 sleep centres across France opened their doors to the public.
                 </p>
 <p>
-                    This timing could not be better. Research over the past two decades has shown that the physical environment — light, sound, temperature, air quality — does not merely affect how easily you fall asleep or how deeply you sleep. It directly modifies the duration, intensity, and content of your dreams. <a class="text-dream-salmon hover:underline" href="rem-sleep-dreams">REM sleep</a>, the phase where the most vivid dreams occur, is particularly sensitive to environmental conditions.
+                    The INSV survey released for the occasion (OpinionWay, December 2025, 1,006 people aged 18 to 65) makes the bedroom very concrete: <strong>36%</strong> say noise bothers them at night, <strong>58%</strong> sleep with their smartphone switched on in the bedroom, and <strong>81%</strong> say the latest heatwaves disrupted their sleep.
                 </p>
 <p>
-                    In this article, we explore the four major environmental factors that transform your dream life and offer a concrete action plan for optimizing your bedroom — not just for better sleep, but for better dreaming.
-                </p>
-
-<h2 id="light">Light and Light Pollution: How They Disrupt Your Dreams</h2>
-<h3>Artificial lighting and melatonin</h3>
-<p>
-                    Melatonin, the hormone that signals your body it is time to sleep, is extremely sensitive to light. Exposure to just 100 lux (equivalent to a desk lamp) in the evening can suppress melatonin production by <strong>50% and delay its peak by 90 minutes</strong> (Cho et al., 2015). This shift does not merely make falling asleep harder — it compresses the REM phases that occur primarily in the latter part of the night.
-                </p>
-<p>
-                    Less REM sleep means less time dreaming. And the dreams that do occur within shortened REM sleep tend to be more fragmented, less narratively complex, and harder to recall upon waking. If you wonder why you <a class="text-dream-salmon hover:underline" href="why-we-forget-dreams">cannot remember your dreams</a>, the light in your bedroom is a prime suspect.
-                </p>
-<h3>Screens before bed: impact on REM sleep</h3>
-<p>
-                    Blue light emitted by smartphones, tablets, and computers is particularly problematic. Its wavelength (450-490 nm) is the most effective at suppressing melatonin. A Harvard Medical School study showed that participants using tablets before bed experienced <strong>20 fewer minutes of REM sleep</strong> compared to those reading a paper book. Twenty fewer minutes of dreaming each night is the equivalent of losing an entire dream cycle.
-                </p>
-<p>
-                    Streetlights, illuminated signs, and even nightlights can also seep in during sleep. The brain, even when asleep, detects light variations through closed eyelids, which can alter dream content — dreamers exposed to light report more outdoor, daytime scenarios, with themes related to the <a class="text-dream-salmon hover:underline" href="../symbols/moon">moon</a> or stars curiously absent.
+                    These figures are about sleep, not dreams. The link runs through <a class="text-dream-salmon hover:underline" href="rem-sleep-dreams">REM sleep</a>, the stage after which the most vivid, story-like dreams are most often reported, and through awakenings, which decide what you remember. Below, we separate what has been measured from what is only plausible.
                 </p>
 
-<h2 id="noise">Noise and Dream Content</h2>
-<h3>Sounds woven into dreams</h3>
+<h2 id="light">How does light affect your dreams?</h2>
+<h3>Evening light delays melatonin</h3>
 <p>
-                    The brain does not mute its audio input when you sleep. During REM sleep, the auditory cortex remains partially active, allowing external sounds to seep into your dreams. Pioneering research by German neurologist Boris Stuck demonstrated that <strong>auditory stimuli presented during REM sleep are incorporated into the dream narrative 50 to 60% of the time</strong>. A car alarm can become a siren in your dream; the sound of rain on windows transforms into a dream <a class="text-dream-salmon hover:underline" href="../symbols/storm">storm</a>.
+                    Melatonin helps tell your body that night has come, and light holds it back. In a study of 116 young adults, ordinary room light (under 200 lux) in the hours before bed delayed melatonin onset in almost every participant and shortened its nightly release by about 90 minutes (Gooley et al., 2011).
                 </p>
 <p>
-                    Fascinating as this is, it cuts both ways. Intrusive sounds — traffic, noisy neighbors, construction — do not merely disrupt sleep continuity; they introduce stress elements into the dream narrative, turning a neutral dream into an anxious scenario or even a <a class="text-dream-salmon hover:underline" href="stop-nightmares-guide">nightmare</a>. Studies by Cho et al. (2015) confirmed that sleepers in noisy environments report <strong>twice as many negatively charged dreams</strong> as those in quiet settings.
+                    If you fall asleep later but the alarm stays the same, the night gets cut at the end, where REM periods are longest. That does not automatically mean fewer remembered dreams: recall depends a lot on how and when you wake up. If you are wondering why you <a class="text-dream-salmon hover:underline" href="why-we-forget-dreams">forget your dreams</a>, look at your mornings as well as your lamps.
                 </p>
-<h3>White noise vs. silence</h3>
+<h3>Screens before bed: what one lab study found</h3>
 <p>
-                    When complete silence is impossible (urban settings, for instance), white or pink noise offers an effective alternative. These constant, even sounds mask intrusive noises without introducing new narrative elements into dreams. A study published in <em>Sleep Medicine Reviews</em> found that pink noise (a slightly attenuated version of white noise, resembling a distant waterfall) improves REM sleep continuity and increases the <strong>descriptive richness of reported dreams by 25%</strong>. The ideal <a class="text-dream-salmon hover:underline" href="../symbols/night">night</a> is not necessarily silent — it is stable.
-                </p>
-
-<h2 id="temperature">Temperature and Dream Vividness</h2>
-<h3>Thermoregulation during REM sleep</h3>
-<p>
-                    During REM sleep, your body temporarily loses its ability to regulate temperature — a unique phenomenon called <strong>transient poikilothermy</strong>. In practical terms, your body stops shivering and sweating during this phase. This means the ambient temperature acts directly on your core temperature during dreaming, with no physiological compensation available.
+                    In a Harvard lab study, 12 adults read on a light-emitting tablet or on paper over several evenings. After the tablet, they took longer to fall asleep, released less melatonin, had a later body clock, less REM sleep and felt less alert the next morning (Chang et al., 2015). It is a small study with long reading sessions at full brightness: a reason to dim the screen, not to panic over a quick message check.
                 </p>
 <p>
-                    Research by Okamoto-Mizuno and Mizuno (2012) showed that an overly warm room (above 24°C / 75°F) triggers micro-arousals that fragment REM sleep, producing shorter, more chaotic, and more emotionally charged dreams. Conversely, a room that is too cold (below 16°C / 61°F) can cause full awakenings that interrupt dream cycles entirely.
-                </p>
-<h3>The ideal temperature: 18-19°C (64-66°F)</h3>
-<p>
-                    Science converges on an optimal range of <strong>18 to 19°C (64-66°F)</strong> for the bedroom. At this temperature, REM sleep unfolds without thermal disruption, dream cycles reach their maximum duration (late-morning REM phases can last 45 to 60 minutes), and reported dreams are longer, more detailed, and more narratively coherent. Your <a class="text-dream-salmon hover:underline" href="../symbols/house">house</a>, and specifically your bedroom, is the primary lever you can pull to transform your nights.
-                </p>
-<p>
-                    Practical tip: if you cannot precisely control your bedroom temperature, choose layered bedding that you can adjust during the night. The body needs to cool slightly to enter REM sleep; then the ambient temperature must remain stable to sustain it.
+                    Light can also reach you later in the night: a streetlight, a phone lighting up, a bright <a class="text-dream-salmon hover:underline" href="../symbols/moon">moon</a> through thin curtains. When it wakes you briefly, you may surface in the middle of a dream and keep a fragment of it.
                 </p>
 
-<h2 id="seasons">Seasonal Changes and Dream Patterns</h2>
-<h3>Spring equinox and lengthening REM phases</h3>
+<h2 id="noise">Can noise get into your dreams?</h2>
+<h3>When a sound or a smell slips into the dream</h3>
 <p>
-                    Sleep Day 2026 falls just days before the spring equinox (March 20), and this is no coincidence. Lengthening days shift the timing of melatonin secretion, slightly delaying natural sleep onset and, as a consequence, <strong>extending morning REM sleep phases</strong>.
+                    The sleeping brain keeps monitoring sounds. Sometimes a car alarm becomes a siren in the dream, or rain against the window turns into a <a class="text-dream-salmon hover:underline" href="../symbols/storm">storm</a>. It is far from systematic, and the sound usually comes back transformed.
                 </p>
 <p>
-                    Longitudinal studies conducted in Scandinavian sleep laboratories have found that participants report dreams that are <strong>30% longer and more vivid in spring</strong> than in midwinter. This phenomenon is explained by two converging factors: the natural lengthening of morning REM sleep and increased ambient light that stimulates the visual cortex even through closed eyelids.
+                    Smell gives a clearer example. In a German study by a team including Michael Schredl and Boris Stuck, 15 women were exposed to smells during REM sleep: the scent of roses was followed by more pleasant dreams, rotten eggs by more unpleasant ones, yet the sleepers almost never dreamed of smelling anything (Schredl et al., 2009). What enters the dream is often an emotional tone rather than the stimulus itself.
                 </p>
 <p>
-                    Autumn, with its shortening days, produces the opposite effect: shorter dreams that are often thematically darker. Researchers from the Morphée Network note that consultations for nightmares increase by <strong>15 to 20% between October and December</strong>, coinciding with reduced natural light exposure and the first drops in temperature.
+                    Noise also works through awakenings. More micro-awakenings mean more chances to remember fragments, which can feel like a run of <a class="text-dream-salmon hover:underline" href="stop-nightmares-guide">nightmares</a> after a noisy night.
+                </p>
+<h3>White noise or silence?</h3>
+<p>
+                    A steady sound (a fan, white or pink noise) can mask sudden peaks such as a door or a horn. Many people like it, but a 2021 systematic review rated the evidence that continuous noise improves sleep as very low quality (Riedy et al., 2021). Try it at a low volume and judge by how you feel in the morning. A restful <a class="text-dream-salmon hover:underline" href="../symbols/night">night</a> does not have to be silent; it helps when it is predictable.
+                </p>
+
+<h2 id="temperature">Does bedroom temperature change your dreams?</h2>
+<h3>During REM sleep, your body handles heat less well</h3>
+<p>
+                    During REM sleep, temperature control is reduced: sweating starts later and slows down, and shivering is not observed. A review by Okamoto-Mizuno and Mizuno (2012) also describes how heat, especially humid heat, increases wakefulness and reduces REM and deep sleep. With normal bedding, heat disturbs sleep more than cool air does.
+                </p>
+<p>
+                    So a hot night does not "create" anxious dreams by itself. It fragments sleep, and a fragmented night leaves more scraps of dreams, sometimes intense ones. Our <a class="text-dream-salmon hover:underline" href="heatwave-sleep-dreams">heatwave sleep and dreams guide</a> goes into this in detail.
+                </p>
+<h3>What temperature should you aim for?</h3>
+<p>
+                    The Sleep Foundation suggests a room <strong>around 18 °C (65 °F)</strong>. Treat it as a starting point: your bedding, pyjamas and the person next to you change the warmth under the covers. No study shows that one exact degree makes dreams "richer"; what is documented is fewer awakenings in a cool, stable room.
+                </p>
+<p>
+                    In summer, the whole <a class="text-dream-salmon hover:underline" href="../symbols/house">house</a> can store heat during the day. Closing shutters while the sun is on the windows and airing out at night often helps more than any accessory.
+                </p>
+
+<h2 id="seasons">Do dreams change with the seasons?</h2>
+<h3>Spring light, earlier mornings</h3>
+<p>
+                    Sleep Day falls a week before the spring equinox. As days lengthen, morning light arrives earlier and can wake you during the last, REM-rich hours of the night. In Europe, the clock change at the end of March also removes an hour of sleep for a few days. We cover this in our article on <a class="text-dream-salmon hover:underline" href="spring-sleep-disruption-dreams">spring sleep disruption and dreams</a>.
+                </p>
+<p>
+                    There is no solid evidence that dreams are systematically longer in spring or darker in autumn. If you notice a seasonal pattern, it is worth writing down, along with your bedtime, wake time and the light in the room.
                 </p>
 <p>
                     On vacation, these factors often change at the same time: another bed, unfamiliar noise, less controlled light, heat and looser schedules. To connect dreams with context without reducing them to the bedroom, read the <a class="text-dream-salmon hover:underline" href="vacation-sleep-dreams">vacation sleep and dreams guide</a>.
@@ -202,105 +202,129 @@
 <i class="w-6 h-6 text-dream-salmon" data-lucide="book-open"></i>
 </div>
 <div>
-<h4 class="font-serif text-lg text-dream-cream mb-2">Track how your environment transforms your dreams</h4>
-<p class="text-sm text-gray-400 mb-4">Noctalia's AI-powered dream journal lets you record dreams by voice the moment you wake. Identify correlations between your bedroom conditions and dream richness over time.</p>
-<a class="inline-flex items-center gap-2 text-sm text-dream-salmon hover:text-dream-salmonLight transition-colors" href="/">
-                                Start journaling with Noctalia <i class="w-4 h-4" data-lucide="arrow-right"></i>
+<h4 class="font-serif text-lg text-dream-cream mb-2">Note the night along with the dream</h4>
+<p class="text-sm text-gray-400 mb-4">In Noctalia, you can record your dream by voice as soon as you wake up, then add a line about the night: heat, noise, light. Reading your entries side by side shows whether some dreams come back after certain nights.</p>
+<a class="inline-flex items-center gap-2 text-sm text-dream-salmon hover:text-dream-salmonLight transition-colors" href="/en/voice-dream-journal">
+                                Try the voice dream journal <i class="w-4 h-4" data-lucide="arrow-right"></i>
 </a>
 </div>
 </div>
 </aside>
 
 <div class="prose max-w-none text-gray-300">
-<h2 id="optimize">Optimize Your Environment for Better Dreams</h2>
+<h2 id="optimize">How to set up your bedroom tonight</h2>
 <p>
-                    You cannot control your dreams, but you can control the conditions that foster them. Here is a science-backed checklist to turn your bedroom into a dream sanctuary.
+                    You cannot choose your dreams, but you can protect the sleep they happen in. Start with what bothers you most, change one thing at a time, and give it a week.
                 </p>
 <h3>Light</h3>
 <ul>
-<li><strong>Blackout curtains:</strong> Invest in opaque curtains or a quality sleep mask. Complete darkness enables optimal melatonin production</li>
-<li><strong>Digital curfew:</strong> Turn off all screens at least 60 minutes before bed. Use "night mode" if you must use your phone in the evening</li>
-<li><strong>Amber lighting:</strong> Replace bedroom bulbs with warm-light options (2,700 K or below). Amber light does not suppress melatonin</li>
-<li><strong>Eliminate LEDs:</strong> Cover indicator lights on electronics (router, charger, digital alarm clock)</li>
+<li><strong>Darkness:</strong> blackout curtains or a comfortable sleep mask, especially if a streetlight or early sun reaches the bed.</li>
+<li><strong>The last hour:</strong> dim the lights and choose warm bulbs. Lower your screen brightness, or put the phone down earlier.</li>
+<li><strong>The phone:</strong> charge it away from the bed, face down or in another room, so notifications do not light up the room.</li>
+<li><strong>Small lights:</strong> cover the standby LEDs on chargers, routers and clocks.</li>
 </ul>
 <h3>Noise</h3>
 <ul>
-<li><strong>White or pink noise:</strong> Use a device or app for white noise to mask intrusive sounds. Pink noise is often preferred for its more natural quality</li>
-<li><strong>Earplugs:</strong> If your environment is particularly noisy, foam or silicone earplugs reduce noise by 20 to 30 dB</li>
-<li><strong>Double glazing:</strong> If you live in an urban area, double or triple glazing is a long-term investment in your REM sleep quality</li>
+<li><strong>Identify the noise:</strong> a steady hum and sudden peaks are not handled the same way.</li>
+<li><strong>Earplugs:</strong> foam or silicone, inserted properly, for neighbours, traffic or a snoring partner.</li>
+<li><strong>A steady sound:</strong> a fan or white noise at low volume can mask peaks. Keep it only if you wake up feeling better.</li>
+<li><strong>The quiet side:</strong> if you can, sleep in the room away from the street.</li>
 </ul>
 <h3>Temperature</h3>
 <ul>
-<li><strong>Thermostat at 18-19°C (64-66°F):</strong> Set your bedroom temperature one hour before bed so it is stabilized by the time you fall asleep</li>
-<li><strong>Adjustable bedding:</strong> Choose multiple light layers over a single heavy duvet. You can adjust coverage throughout the night</li>
-<li><strong>Ventilation:</strong> Air out your bedroom for 15 minutes before bed, even in winter. Fresh air promotes faster sleep onset</li>
+<li><strong>Around 18 °C (65 °F):</strong> adjust the heating or air out before bed so the room is already cool when you lie down.</li>
+<li><strong>Layers:</strong> several light layers rather than one heavy duvet, so you can adjust during the night.</li>
+<li><strong>Heatwaves:</strong> shutters closed during the day, air flowing at night, light cotton bedding.</li>
 </ul>
-<h3>Overall environment</h3>
+<h3>Keep a bedroom-and-dream log</h3>
+<p>
+                    The most useful tool is a simple <a class="text-dream-salmon hover:underline" href="dream-journal-guide">dream journal</a> with one extra line about the night. Fictional example, to show the format:
+                </p>
 <ul>
-<li><strong>Plants:</strong> Certain plants (lavender, jasmine) emit compounds that, according to preliminary studies, promote more stable REM sleep</li>
-<li><strong>Declutter:</strong> A tidy space reduces unconscious visual stimulation and associated anxiety, promoting more peaceful dreams</li>
-<li><strong>Keep a <a class="text-dream-salmon hover:underline" href="dream-journal-guide">dream journal</a>:</strong> Record your dreams AND your bedroom conditions (temperature, noise, light). After a few weeks, clear correlations will emerge</li>
+<li><strong>Dream:</strong> "An earthquake in a building I did not know. I was looking for the stairs."</li>
+<li><strong>Emotion:</strong> "Urgency, then relief when I woke up."</li>
+<li><strong>The night:</strong> "Window open, 24 °C, a garbage truck around 5 a.m."</li>
+<li><strong>Question to keep:</strong> "Do my most agitated dreams come back on hot or noisy nights, or with something else?"</li>
 </ul>
+<p>
+                    After a few weeks, you will see whether a link appears or not. Both answers are useful.
+                </p>
+<p>
+                    <strong>When to see a doctor:</strong> if you sleep badly despite a calm room for several weeks, if someone notices loud snoring or pauses in your breathing, if you are very sleepy during the day, or if nightmares keep spoiling your nights, talk to a doctor. The bedroom is not always the cause.
+                </p>
 </div>
 <!-- CTA Section -->
 <aside class="glass-panel rounded-3xl p-8 md:p-10 mt-16 text-center border border-dream-salmon/20">
 <div class="w-16 h-16 bg-dream-salmon/10 rounded-full flex items-center justify-center mx-auto mb-6">
 <i class="w-8 h-8 text-dream-salmon" data-lucide="moon"></i>
 </div>
-<h3 class="font-serif text-2xl md:text-3xl mb-4 text-dream-cream">Turn your bedroom into a dream sanctuary</h3>
+<h3 class="font-serif text-2xl md:text-3xl mb-4 text-dream-cream">One night is a clue. A month of notes shows a pattern.</h3>
 <p class="text-purple-200/70 mb-6 max-w-lg mx-auto">
-                    Noctalia helps you track how your environment affects your dreams. Record dreams by voice, discover patterns, and optimize your nights with AI analysis.
+                    Record your dreams by voice or in writing as soon as you wake, add the conditions of the night, and reread your entries side by side to spot what comes back.
                 </p>
 <a class="inline-flex items-center gap-2 px-8 py-4 bg-dream-salmon text-dream-dark rounded-full font-bold hover:bg-dream-salmon/90 transition-colors" href="/">
-                    Start your dream journal <i class="w-5 h-5" data-lucide="arrow-right"></i>
+                    Start my dream journal <i class="w-5 h-5" data-lucide="arrow-right"></i>
 </a>
 </aside>
 <!-- FAQ Section -->
 <section class="mt-16">
-<h2 class="font-serif text-2xl text-dream-cream mb-8">Frequently Asked Questions</h2>
+<h2 class="font-serif text-2xl text-dream-cream mb-8">Frequently asked questions</h2>
 <div class="space-y-4">
 <details class="glass-panel rounded-xl p-4 group cursor-pointer">
 <summary class="font-medium flex justify-between items-center text-dream-cream">
-                            How does light affect the quality of my dreams?
+                            Does light in the bedroom affect dreams?
                             <i class="w-5 h-5 transition-transform group-open:rotate-180 text-dream-salmon" data-lucide="chevron-down"></i>
 </summary>
 <p class="mt-4 text-sm text-gray-400 leading-relaxed">
-                            Artificial light, especially blue light from screens, suppresses melatonin production and delays sleep onset. This reduces <a class="text-dream-salmon hover:underline" href="rem-sleep-dreams">REM sleep</a> duration, the phase where the most vivid dreams occur. Evening exposure to bright light can shorten your dream phases by 20 to 30 minutes. To preserve dream quality, turn off screens at least 60 minutes before bed and use blackout curtains.
+                            Indirectly. Evening light delays melatonin and can push back sleep, which shortens the end of the night, where <a class="text-dream-salmon hover:underline" href="rem-sleep-dreams">REM sleep</a> is longest. Light during the night can also wake you briefly. Dimming the lights in the last hour and keeping the room dark is a good start.
                         </p>
 </details>
 <details class="glass-panel rounded-xl p-4 group cursor-pointer">
 <summary class="font-medium flex justify-between items-center text-dream-cream">
-                            What is the ideal temperature for good dreaming?
+                            What is the best bedroom temperature for sleep and dreams?
                             <i class="w-5 h-5 transition-transform group-open:rotate-180 text-dream-salmon" data-lucide="chevron-down"></i>
 </summary>
 <p class="mt-4 text-sm text-gray-400 leading-relaxed">
-                            The ideal temperature is between 18 and 19°C (64-66°F). At this range, your body can thermoregulate during REM sleep without disruption. A room above 24°C (75°F) fragments REM sleep and produces more anxious dreams, while a room that is too cold can cause awakenings that interrupt dream cycles.
+                            The Sleep Foundation suggests around 18 °C (65 °F). During REM sleep the body handles heat less well, so a hot, humid room causes more awakenings. There is no "dream temperature": the goal is a cool, stable room and bedding you can adjust.
                         </p>
 </details>
 <details class="glass-panel rounded-xl p-4 group cursor-pointer">
 <summary class="font-medium flex justify-between items-center text-dream-cream">
-                            Can external noise be integrated into my dreams?
+                            Can a noise end up in my dream?
                             <i class="w-5 h-5 transition-transform group-open:rotate-180 text-dream-salmon" data-lucide="chevron-down"></i>
 </summary>
 <p class="mt-4 text-sm text-gray-400 leading-relaxed">
-                            Yes, the brain continues processing sounds during sleep. Studies show that external auditory stimuli — an alarm, rain, a conversation — can be incorporated into the dream narrative in real time. Consistent white noise, on the other hand, tends to mask intrusive sounds and stabilize REM sleep, fostering richer and more coherent dreams.
+                            Yes, sometimes: an alarm can become a siren, rain a storm. It is not systematic, and the sound usually comes back transformed. Noise also causes brief awakenings, which help you remember more dream fragments.
+                        </p>
+</details>
+<details class="glass-panel rounded-xl p-4 group cursor-pointer">
+<summary class="font-medium flex justify-between items-center text-dream-cream">
+                            Does white noise help you sleep better?
+                            <i class="w-5 h-5 transition-transform group-open:rotate-180 text-dream-salmon" data-lucide="chevron-down"></i>
+</summary>
+<p class="mt-4 text-sm text-gray-400 leading-relaxed">
+                            It can mask sudden noises, and many people like it. But a 2021 systematic review rated the evidence that continuous noise improves sleep as very low quality. Try it at a low volume and keep it only if you wake up feeling better.
                         </p>
 </details>
 </div>
 </section>
 <!-- July catch-up backlink: sleep-env-to-noise -->
-<section class="glass-panel rounded-2xl p-6 my-8 border border-dream-salmon/20"><h2 class="font-serif text-2xl text-dream-cream mb-3">Also read: night noise</h2><p>If your sleep environment changes mainly through sound, the <a class="text-dream-salmon hover:underline" href="night-noise-sleep-dreams">night noise, sleep and dreams</a> guide explains how to separate micro-awakenings, real sound and more memorable dream scenes.</p></section>
+<section class="glass-panel rounded-2xl p-6 my-8 border border-dream-salmon/20"><h2 class="font-serif text-2xl text-dream-cream mb-3">Also read: night noise</h2><p>If your nights change mostly because of sound, the <a class="text-dream-salmon hover:underline" href="night-noise-sleep-dreams">night noise, sleep and dreams</a> guide helps you tell apart micro-awakenings, real sounds and the dream scenes you remember.</p></section>
 <!-- Sources / Trust -->
 <section class="mt-16 glass-panel rounded-2xl p-6" id="sources">
-<h2 class="font-serif text-2xl text-dream-cream mb-4">Sources / Further Reading</h2>
+<h2 class="font-serif text-2xl text-dream-cream mb-4">Sources and further reading</h2>
 <ul class="mt-6 space-y-2 text-sm text-gray-400">
-<li><a href="https://institut-sommeil-vigilance.org/journee-du-sommeil/" rel="nofollow noopener noreferrer" target="_blank">INSV (French National Institute for Sleep and Vigilance) — Sleep Day 2026</a></li>
-<li><a href="https://www.reseau-morphee.fr/" rel="nofollow noopener noreferrer" target="_blank">Morphée Network — Sleep and Environment</a></li>
-<li><a href="https://pubmed.ncbi.nlm.nih.gov/26375320/" rel="nofollow noopener noreferrer" target="_blank">Cho et al. (2015): Effects of artificial light at night on human health — Chronobiology International</a></li>
-<li><a href="https://pubmed.ncbi.nlm.nih.gov/22738673/" rel="nofollow noopener noreferrer" target="_blank">Okamoto-Mizuno & Mizuno (2012): Effects of thermal environment on sleep and circadian rhythm — Journal of Physiological Anthropology</a></li>
-<li><a href="https://www.sleepfoundation.org/bedroom-environment" rel="nofollow noopener noreferrer" target="_blank">Sleep Foundation: Bedroom Environment</a></li>
+<li><a href="https://institut-sommeil-vigilance.org/wp-content/uploads/2026/03/CP-INSV-JS-2026.pdf" rel="nofollow noopener noreferrer" target="_blank">INSV (2026), Sleep Day 2026 press release and survey (in French)</a></li>
+<li><a href="https://worldsleepday.org/" rel="nofollow noopener noreferrer" target="_blank">World Sleep Day</a></li>
+<li><a href="https://doi.org/10.1210/jc.2010-2098" rel="nofollow noopener noreferrer" target="_blank">Gooley et al. (2011), "Exposure to room light before bedtime suppresses melatonin onset and shortens melatonin duration in humans," <em>Journal of Clinical Endocrinology &amp; Metabolism</em></a></li>
+<li><a href="https://doi.org/10.1073/pnas.1418490112" rel="nofollow noopener noreferrer" target="_blank">Chang et al. (2015), "Evening use of light-emitting eReaders negatively affects sleep, circadian timing, and next-morning alertness," <em>PNAS</em></a></li>
+<li><a href="https://pubmed.ncbi.nlm.nih.gov/19552703/" rel="nofollow noopener noreferrer" target="_blank">Schredl et al. (2009), "Information processing during sleep: the effect of olfactory stimuli on dream content and dream emotions," <em>Journal of Sleep Research</em></a></li>
+<li><a href="https://doi.org/10.1016/j.smrv.2020.101385" rel="nofollow noopener noreferrer" target="_blank">Riedy et al. (2021), "Noise as a sleep aid: A systematic review," <em>Sleep Medicine Reviews</em></a></li>
+<li><a href="https://doi.org/10.1186/1880-6805-31-14" rel="nofollow noopener noreferrer" target="_blank">Okamoto-Mizuno and Mizuno (2012), "Effects of thermal environment on sleep and circadian rhythm," <em>Journal of Physiological Anthropology</em></a></li>
+<li><a href="https://www.sleepfoundation.org/bedroom-environment/best-temperature-for-sleep" rel="nofollow noopener noreferrer" target="_blank">Sleep Foundation, "Best temperature for sleep"</a></li>
+<li><a href="https://www.sleepfoundation.org/bedroom-environment" rel="nofollow noopener noreferrer" target="_blank">Sleep Foundation, "Bedroom environment"</a></li>
 </ul>
-<p class="mt-6 text-xs text-purple-200/60">Last updated: March 10, 2026</p>
+<p class="mt-6 text-xs text-purple-200/60">Updated October 9, 2026</p>
 </section>
 <!-- Related Symbols Start -->
 <section aria-label="Related dream symbols" class="mt-12 mb-8">

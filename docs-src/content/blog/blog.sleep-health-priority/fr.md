@@ -5,7 +5,7 @@
   "lang": "fr",
   "slug": "sommeil-sante-priorite",
   "title": "Le sommeil, votre levier santé n°1 : l'étude OHSU qui | Noctalia",
-  "description": "Une étude OHSU révèle que le manque de sommeil surpasse le manque d'exercice et la mauvaise alimentation pour l'espérance de vie. Seul le tabac fait pire.",
+  "description": "Le sommeil, levier santé n°1 ? Une étude OHSU relie les nuits courtes à une espérance de vie plus basse, devant l'alimentation et le sport. Portée et limites.",
   "robots": "max-image-preview:large",
   "themeColor": "#0a0514",
   "htmlClass": "scroll-smooth blog-article",
@@ -14,25 +14,25 @@
   "mainClass": "pt-32 pb-20 px-4",
   "ogType": "article",
   "ogTitle": "Le sommeil, votre levier santé n°1 : l'étude OHSU qui | Noctalia",
-  "ogDescription": "Une étude OHSU révèle que le manque de sommeil surpasse le manque d'exercice et la mauvaise alimentation pour l'espérance de vie. Seul le tabac fait pire.",
+  "ogDescription": "Une étude OHSU relie le manque de sommeil à une espérance de vie plus basse, devant l'alimentation et le sport. Ce qu'elle montre, et ce qu'elle ne prouve pas.",
   "ogImage": "https://noctalia.app/img/blog/sleep-health-priority.webp",
   "ogImageAlt": "Silhouette humaine avec cerveau lumineux entourée d'indicateurs de santé avec le sommeil comme élément dominant dans des tons bleu profond et violet",
   "twitterCard": "summary_large_image",
   "twitterTitle": "Le sommeil, votre levier santé n°1 : l'étude OHSU qui | Noctalia",
-  "twitterDescription": "Une étude OHSU révèle que le manque de sommeil surpasse le manque d'exercice et la mauvaise alimentation pour l'espérance de vie. Seul le tabac fait pire.",
+  "twitterDescription": "Nuits courtes, espérance de vie et rêves : ce que montre l'étude OHSU, et ce qu'elle ne prouve pas.",
   "twitterImage": "https://noctalia.app/img/blog/sleep-health-priority.webp",
   "twitterImageAlt": "Silhouette humaine avec cerveau lumineux entourée d'indicateurs de santé avec le sommeil comme élément dominant dans des tons bleu profond et violet",
   "publishedTime": "2026-03-24",
-  "modifiedTime": "2026-03-24",
+  "modifiedTime": "2026-10-09",
   "author": "Thanh Chau",
   "prevPath": "/fr/blog/perturbation-sommeil-printemps-reves",
   "nextPath": "/fr/blog/traqueurs-sommeil-connectes-reves",
   "preloadImage": "/img/blog/sleep-health-priority.webp",
   "jsonLd": [
-    "{\n  \"@context\": \"https://schema.org\",\n  \"@type\": \"BlogPosting\",\n  \"headline\": \"Le sommeil, votre levier santé n°1 : l'étude OHSU qui change tout\",\n  \"description\": \"Une étude OHSU révèle que le manque de sommeil surpasse le manque d'exercice et la mauvaise alimentation pour l'espérance de vie. Seul le tabac fait pire.\",\n  \"image\": {\n    \"@type\": \"ImageObject\",\n    \"url\": \"https://noctalia.app/img/blog/sleep-health-priority.webp\",\n    \"width\": 1200,\n    \"height\": 630\n  },\n  \"author\": [\n    {\n      \"@type\": \"Person\",\n      \"@id\": \"https://noctalia.app/fr/a-propos#person\",\n      \"name\": \"Thanh Chau\",\n      \"jobTitle\": \"Fondateur & Directeur de la publication\",\n      \"url\": \"https://noctalia.app/fr/a-propos\",\n      \"worksFor\": {\n        \"@type\": \"Organization\",\n        \"@id\": \"https://noctalia.app/#organization\",\n        \"name\": \"Noctalia\",\n        \"url\": \"https://noctalia.app\"\n      }\n    },\n    {\n      \"@type\": \"Organization\",\n      \"@id\": \"https://noctalia.app/#organization\",\n      \"name\": \"Noctalia\",\n      \"url\": \"https://noctalia.app\",\n      \"logo\": {\n        \"@type\": \"ImageObject\",\n        \"url\": \"https://noctalia.app/logo/logo_noctalia.png\"\n      }\n    }\n  ],\n  \"publisher\": {\n    \"@type\": \"Organization\",\n    \"name\": \"Noctalia\",\n    \"url\": \"https://noctalia.app\",\n    \"logo\": {\n      \"@type\": \"ImageObject\",\n      \"url\": \"https://noctalia.app/logo/logo_noctalia.png\"\n    }\n  },\n  \"datePublished\": \"2026-03-24\",\n  \"dateModified\": \"2026-03-24\",\n  \"mainEntityOfPage\": {\n    \"@type\": \"WebPage\",\n    \"@id\": \"https://noctalia.app/fr/blog/sommeil-sante-priorite\"\n  },\n  \"inLanguage\": \"fr\",\n  \"isAccessibleForFree\": true,\n  \"wordCount\": 1600,\n  \"timeRequired\": \"PT6M\",\n  \"url\": \"https://noctalia.app/fr/blog/sommeil-sante-priorite\"\n}",
+    "{\n    \"@context\": \"https://schema.org\",\n    \"@type\": \"BlogPosting\",\n    \"headline\": \"Le sommeil, votre levier santé n°1 ? Ce que montre vraiment l'étude OHSU\",\n    \"description\": \"Le sommeil, levier santé n°1 ? Une étude OHSU relie les nuits courtes à une espérance de vie plus basse, devant l'alimentation et le sport. Portée et limites.\",\n    \"image\": {\n        \"@type\": \"ImageObject\",\n        \"url\": \"https://noctalia.app/img/blog/sleep-health-priority.webp\",\n        \"width\": 1200,\n        \"height\": 630\n    },\n    \"author\": [\n        {\n            \"@type\": \"Person\",\n            \"@id\": \"https://noctalia.app/fr/a-propos#person\",\n            \"name\": \"Thanh Chau\",\n            \"jobTitle\": \"Fondateur & Directeur de la publication\",\n            \"url\": \"https://noctalia.app/fr/a-propos\",\n            \"worksFor\": {\n                \"@type\": \"Organization\",\n                \"@id\": \"https://noctalia.app/#organization\",\n                \"name\": \"Noctalia\",\n                \"url\": \"https://noctalia.app\"\n            }\n        },\n        {\n            \"@type\": \"Organization\",\n            \"@id\": \"https://noctalia.app/#organization\",\n            \"name\": \"Noctalia\",\n            \"url\": \"https://noctalia.app\",\n            \"logo\": {\n                \"@type\": \"ImageObject\",\n                \"url\": \"https://noctalia.app/logo/logo_noctalia.png\"\n            }\n        }\n    ],\n    \"publisher\": {\n        \"@type\": \"Organization\",\n        \"name\": \"Noctalia\",\n        \"url\": \"https://noctalia.app\",\n        \"logo\": {\n            \"@type\": \"ImageObject\",\n            \"url\": \"https://noctalia.app/logo/logo_noctalia.png\"\n        }\n    },\n    \"datePublished\": \"2026-03-24\",\n    \"dateModified\": \"2026-10-09\",\n    \"mainEntityOfPage\": {\n        \"@type\": \"WebPage\",\n        \"@id\": \"https://noctalia.app/fr/blog/sommeil-sante-priorite\"\n    },\n    \"inLanguage\": \"fr\",\n    \"isAccessibleForFree\": true,\n    \"wordCount\": 2569,\n    \"timeRequired\": \"PT12M\",\n    \"url\": \"https://noctalia.app/fr/blog/sommeil-sante-priorite\"\n}",
     "{\n  \"@context\": \"https://schema.org\",\n  \"@type\": \"WebPage\",\n  \"@id\": \"https://noctalia.app/fr/blog/sommeil-sante-priorite\",\n  \"url\": \"https://noctalia.app/fr/blog/sommeil-sante-priorite\",\n  \"name\": \"Le sommeil, votre levier santé n°1 : l'étude OHSU qui | Noctalia\",\n  \"inLanguage\": \"fr\"\n}",
-    "{\n  \"@context\": \"https://schema.org\",\n  \"@type\": \"FAQPage\",\n  \"mainEntity\": [\n    {\n      \"@type\": \"Question\",\n      \"name\": \"Pourquoi le sommeil est-il plus important que l'alimentation et l'exercice pour la longévité ?\",\n      \"acceptedAnswer\": {\n        \"@type\": \"Answer\",\n        \"text\": \"Une étude de décembre 2025 de l'Oregon Health & Science University, analysant plus de 40 ans de données NHANES, a révélé que le sommeil insuffisant (moins de 7 heures par nuit) est un prédicteur plus fort de mortalité prématurée que le manque d'exercice ou une mauvaise alimentation. Parmi les comportements de santé modifiables, seul le tabagisme actif présente un risque de mortalité plus élevé. Le sommeil affecte simultanément chaque système du corps, fonction immunitaire, santé cardiovasculaire, régulation métabolique et maintenance cérébrale, ce qui en fait le comportement de santé à plus fort impact que la plupart des gens négligent.\"\n      }\n    },\n    {\n      \"@type\": \"Question\",\n      \"name\": \"Combien d'heures de sommeil faut-il pour une santé optimale ?\",\n      \"acceptedAnswer\": {\n        \"@type\": \"Answer\",\n        \"text\": \"Le consensus scientifique, appuyé par l'étude OHSU et les recommandations de l'American Academy of Sleep Medicine, préconise 7 à 9 heures de sommeil par nuit pour les adultes. Dormir régulièrement moins de 7 heures est associé à un risque accru de mortalité, à des fonctions cognitives altérées, à une immunité affaiblie et à un risque élevé de maladies cardiovasculaires, de diabète et de troubles de santé mentale.\"\n      }\n    },\n    {\n      \"@type\": \"Question\",\n      \"name\": \"Les changements dans les rêves peuvent-ils indiquer un sommeil insuffisant ?\",\n      \"acceptedAnswer\": {\n        \"@type\": \"Answer\",\n        \"text\": \"Oui. Les changements dans les schémas oniriques peuvent servir de signes précoces d'insuffisance de sommeil. Lorsque le sommeil est régulièrement trop court, les stades de sommeil paradoxal où se produisent les rêves vivaces sont disproportionnément sacrifiés, entraînant une diminution du rappel onirique. Lorsque le sommeil adéquat revient, le rebond REM produit des rêves inhabituellement vivaces ou intenses. Une augmentation des rêves de stress, des cauchemars ou des rêves anxieux peut également signaler que votre cerveau peine à traiter les émotions en raison d'un sommeil paradoxal insuffisant.\"\n      }\n    }\n  ]\n}",
-    "{\n  \"@context\": \"https://schema.org\",\n  \"@type\": \"BreadcrumbList\",\n  \"itemListElement\": [\n    {\n      \"@type\": \"ListItem\",\n      \"position\": 1,\n      \"name\": \"Accueil\",\n      \"item\": \"https://noctalia.app/fr/\"\n    },\n    {\n      \"@type\": \"ListItem\",\n      \"position\": 2,\n      \"name\": \"Ressources\",\n      \"item\": \"https://noctalia.app/fr/blog/\"\n    },\n    {\n      \"@type\": \"ListItem\",\n      \"position\": 3,\n      \"name\": \"Sommeil et santé\",\n      \"item\": \"https://noctalia.app/fr/blog/sommeil-sante-priorite\"\n    }\n  ]\n}"
+    "{\n    \"@context\": \"https://schema.org\",\n    \"@type\": \"FAQPage\",\n    \"mainEntity\": [\n        {\n            \"@type\": \"Question\",\n            \"name\": \"Le sommeil compte-t-il plus que l'alimentation et le sport ?\",\n            \"acceptedAnswer\": {\n                \"@type\": \"Answer\",\n                \"text\": \"Dans une analyse de l'OHSU publiée en décembre 2025 sur les comtés américains, le manque de sommeil était plus fortement associé à une espérance de vie plus basse que la mauvaise alimentation ou l'inactivité physique ; seul le tabac l'était davantage. C'est une corrélation entre populations, pas une preuve individuelle. La leçon pratique n'est pas de choisir, mais de cesser de sacrifier le sommeil en premier.\"\n            }\n        },\n        {\n            \"@type\": \"Question\",\n            \"name\": \"Combien d'heures de sommeil faut-il à un adulte ?\",\n            \"acceptedAnswer\": {\n                \"@type\": \"Answer\",\n                \"text\": \"L'American Academy of Sleep Medicine et la Sleep Research Society recommandent au moins 7 heures de façon régulière. Les besoins varient d'une personne à l'autre. Si vous avez régulièrement besoin de bien plus de 9 heures et restez fatigué, parlez-en à un médecin : un sommeil très long peut aussi accompagner un problème de santé.\"\n            }\n        },\n        {\n            \"@type\": \"Question\",\n            \"name\": \"Les changements dans les rêves peuvent-ils indiquer un manque de sommeil ?\",\n            \"acceptedAnswer\": {\n                \"@type\": \"Answer\",\n                \"text\": \"Ce n'est pas un test, mais cela peut être un indice. Les nuits courtes amputent surtout le sommeil paradoxal du matin : on se souvient alors de moins de rêves. Après une nuit de récupération, le rebond de sommeil paradoxal peut amener des rêves inhabituellement vivaces. Noter vos rêves avec vos heures de coucher permet de voir si ces changements suivent vos nuits courtes.\"\n            }\n        },\n        {\n            \"@type\": \"Question\",\n            \"name\": \"Quand faut-il consulter pour son sommeil ?\",\n            \"acceptedAnswer\": {\n                \"@type\": \"Answer\",\n                \"text\": \"Si vous vous réveillez épuisé malgré des nuits suffisantes, si l'on remarque de forts ronflements ou des pauses respiratoires, si vous luttez pour rester éveillé la journée, si l'insomnie dure depuis des semaines, ou si des cauchemars reviennent plusieurs fois par semaine. Ces signes méritent un avis médical.\"\n            }\n        }\n    ]\n}",
+    "{\n    \"@context\": \"https://schema.org\",\n    \"@type\": \"BreadcrumbList\",\n    \"itemListElement\": [\n        {\n            \"@type\": \"ListItem\",\n            \"position\": 1,\n            \"name\": \"Accueil\",\n            \"item\": \"https://noctalia.app/fr/\"\n        },\n        {\n            \"@type\": \"ListItem\",\n            \"position\": 2,\n            \"name\": \"Ressources\",\n            \"item\": \"https://noctalia.app/fr/blog/\"\n        },\n        {\n            \"@type\": \"ListItem\",\n            \"position\": 3,\n            \"name\": \"Sommeil et sant&#233;\",\n            \"item\": \"https://noctalia.app/fr/blog/sommeil-sante-priorite\"\n        }\n    ]\n}"
   ],
   "activeNav": "resources"
 }
@@ -64,13 +64,13 @@
 <a class="text-xs font-mono text-purple-200/70 border border-white/10 rounded-full px-3 py-1 hover:text-white hover:border-dream-salmon/30 transition-colors" href="sommeil-paradoxal-reves">Th&#232;me : Science du sommeil</a>
 <span aria-hidden="true" class="w-full sm:hidden"></span>
 <span class="text-sm text-purple-300/60">Publi&#233; le 24 mars 2026</span>
-<span class="text-sm text-purple-300/60">~1600 mots &#183; 6 min de lecture</span>
+<span class="text-sm text-purple-300/60">12 min de lecture</span>
 </div>
 <h1 class="font-serif text-3xl md:text-5xl mb-6 text-transparent bg-clip-text bg-gradient-to-b from-white via-dream-lavender to-purple-400/50 leading-tight">
-                    Le sommeil, votre levier sant&#233; n&#176;1 : l'&#233;tude OHSU qui change tout
+                    Le sommeil, votre levier santé n°1 ? Ce que montre vraiment l'étude OHSU
                 </h1>
 <p class="text-lg text-purple-200/80 leading-relaxed">
-                    Nous d&#233;pensons des milliards en compl&#233;ments alimentaires, abonnements de sport et produits bio, pourtant le comportement de sant&#233; le plus puissant que la plupart des gens n&#233;gligent ne co&#251;te rien et ne demande aucune volont&#233;. Une &#233;tude majeure de d&#233;cembre 2025 de l'Oregon Health &amp; Science University a quantifi&#233; ce que les chercheurs sur le sommeil soup&#231;onnaient depuis longtemps : le manque de sommeil est un pr&#233;dicteur plus fort de mort pr&#233;matur&#233;e que la mauvaise alimentation ou le manque d'exercice. Seul le tabagisme actif fait pire. Voici pourquoi le sommeil m&#233;rite la premi&#232;re place dans vos priorit&#233;s de sant&#233;, ce qui se passe dans votre cerveau quand vous le privez chroniquement, et comment vos r&#234;ves pourraient tirer une alarme que vous ignoriez.
+                    Vous avez mangé équilibré à midi, pris l'escalier, et à 23 h 40 vous vous dites qu'un épisode de plus ne changera rien. Le réveil sonnera quand même à 6 h 30. Une étude de l'Oregon Health &amp; Science University (OHSU), publiée en décembre 2025, suggère que ces nuits courtes pèsent sur la santé plus qu'on ne le croit : dans ses données, le manque de sommeil suit l'espérance de vie de plus près que l'alimentation ou l'activité physique. Voici ce que l'étude a mesuré, ce qu'elle ne prouve pas, ce que les nuits courtes font au cerveau, et ce que vos rêves peuvent, ou non, vous en dire.
                 </p>
 </header>
 <!-- Author Byline (E-E-A-T) -->
@@ -91,7 +91,7 @@
 <!-- Quick Answer (AI SEO) -->
 <section aria-labelledby="quick-answer-title" class="glass-panel rounded-2xl p-6 mb-8 border border-dream-salmon/20 bg-white/5">
 <h2 class="font-serif text-xl text-dream-cream mb-3" id="quick-answer-title">R&#233;ponse rapide</h2>
-<p class="text-purple-100/80 leading-relaxed">Une &#233;tude de d&#233;cembre 2025 de l'Oregon Health &amp; Science University (OHSU), analysant plus de 40 ans de donn&#233;es NHANES couvrant des dizaines de milliers de participants, a r&#233;v&#233;l&#233; que le sommeil insuffisant, dormir r&#233;guli&#232;rement moins de 7 heures par nuit, est un pr&#233;dicteur plus fort de mortalit&#233; pr&#233;matur&#233;e que l'inactivit&#233; physique ou la mauvaise alimentation. Parmi les facteurs de mode de vie modifiables, seul le tabagisme actif pr&#233;sente un risque de mortalit&#233; plus &#233;lev&#233;. Le sommeil agit simultan&#233;ment sur le nettoyage glymphatique des d&#233;chets c&#233;r&#233;braux, la r&#233;gulation &#233;motionnelle par les cycles REM, la fonction immunitaire et la sant&#233; cardiovasculaire, ce qui en fait le levier de sant&#233; le plus puissant &#224; la disposition de la plupart des adultes.</p>
+<p class="text-purple-100/80 leading-relaxed">Dans une analyse de l'OHSU portant sur les comtés américains entre 2019 et 2025, l'espérance de vie était plus basse là où davantage d'adultes déclaraient dormir moins de 7 heures. Ce lien tenait compte de l'alimentation, de l'inactivité physique et d'autres facteurs, et seul le tabac montrait un lien plus fort. C'est une corrélation entre populations, pas une prédiction sur votre propre vie. Elle rejoint cependant de nombreux travaux : les adultes devraient dormir au moins 7 heures de façon régulière. Vos rêves ne mesurent pas votre sommeil, mais les noter chaque matin aide à repérer une série de nuits trop courtes.</p>
 </section>
 <!-- Featured Image -->
 <figure class="mb-12 rounded-2xl overflow-hidden">
@@ -100,71 +100,71 @@
 <!-- Table of Contents -->
 <nav class="glass-panel rounded-2xl p-6 mb-12">
 <h2 class="font-serif text-lg text-dream-cream mb-4 flex items-center gap-2">
-<i class="w-5 h-5 text-dream-salmon" data-lucide="list"></i> Table des mati&#232;res
+<i class="w-5 h-5 text-dream-salmon" data-lucide="list"></i> Sommaire
                 </h2>
 <ol class="space-y-2 text-sm text-purple-200/70">
-<li><a class="toc-link block" href="#ohsu-study">1. L'&#233;tude OHSU : le sommeil surpasse alimentation et exercice</a></li>
-<li><a class="toc-link block" href="#hierarchy">2. La hi&#233;rarchie sant&#233; : o&#249; le sommeil se situe vraiment</a></li>
-<li><a class="toc-link block" href="#brain-changes">3. Ce qui arrive &#224; votre cerveau sans assez de sommeil</a></li>
-<li><a class="toc-link block" href="#rem-emotions">4. Sommeil paradoxal et traitement &#233;motionnel</a></li>
-<li><a class="toc-link block" href="#dream-warnings">5. Quand les r&#234;ves tirent la sonnette d'alarme</a></li>
-<li><a class="toc-link block" href="#strategies">6. Une strat&#233;gie sant&#233; centr&#233;e sur le sommeil</a></li>
+<li><a class="toc-link block" href="#ohsu-study">1. Qu'a vraiment trouvé l'étude OHSU ?</a></li>
+<li><a class="toc-link block" href="#hierarchy">2. Le sommeil passe-t-il vraiment avant l'alimentation et le sport ?</a></li>
+<li><a class="toc-link block" href="#brain-changes">3. Ce que les nuits courtes font au cerveau</a></li>
+<li><a class="toc-link block" href="#rem-emotions">4. Nuits courtes, sommeil paradoxal et humeur</a></li>
+<li><a class="toc-link block" href="#dream-warnings">5. Vos rêves peuvent-ils signaler un manque de sommeil ?</a></li>
+<li><a class="toc-link block" href="#strategies">6. Faire passer le sommeil en premier, dès ce soir</a></li>
 </ol>
 </nav>
 <!-- Article Content -->
 <div class="prose max-w-none text-gray-300">
-<h2 id="ohsu-study">L'&#233;tude OHSU : le sommeil surpasse alimentation et exercice</h2>
+<h2 id="ohsu-study">Qu'a vraiment trouvé l'étude OHSU ?</h2>
 <p>
-                    En d&#233;cembre 2025, une &#233;quipe de l'Oregon Health &amp; Science University a publi&#233; une &#233;tude qui a secou&#233; la communaut&#233; de sant&#233; publique. En s'appuyant sur plus de 40 ans de donn&#233;es NHANES (National Health and Nutrition Examination Survey), l'un des jeux de donn&#233;es sanitaires les plus vastes et les plus anciens des &#201;tats-Unis, les chercheurs ont compar&#233; syst&#233;matiquement l'impact des facteurs de mode de vie modifiables sur la mortalit&#233; toutes causes confondues. Statut tabagique, dur&#233;e de sommeil, activit&#233; physique et qualit&#233; alimentaire sont pass&#233;s au crible.
+                    L'étude a paru en décembre 2025 dans la revue <em>SLEEP Advances</em>, signée par Kathryn McAuliffe, Andrew McHill et leurs collègues de l'OHSU. Elle ne suit pas des personnes une à une. Elle compare des comtés américains : d'un côté l'espérance de vie moyenne, de l'autre les réponses à une enquête des CDC recueillies de 2019 à 2025, dont la part d'adultes qui disent dormir moins de 7 heures par nuit.
                 </p>
 <p>
-                    Un r&#233;sultat a fait la une : <strong>le sommeil insuffisant, d&#233;fini comme dormir r&#233;guli&#232;rement moins de 7 heures par nuit, est un pr&#233;dicteur plus fort de d&#233;c&#232;s pr&#233;matur&#233; que le manque d'exercice r&#233;gulier ou une alimentation de mauvaise qualit&#233;</strong>. Parmi tous les facteurs de risque modifiables analys&#233;s, seul le tabagisme actif pr&#233;sentait un risque de mortalit&#233; plus &#233;lev&#233;. Et l'effet n'&#233;tait pas marginal. Apr&#232;s ajustement pour l'&#226;ge, le sexe, le statut socio-&#233;conomique, les conditions pr&#233;existantes et d'autres facteurs confondants, le risque de mortalit&#233; li&#233; au sommeil court habituel rivalisait avec celui de tueurs bien &#233;tablis comme l'hypertension et l'ob&#233;sit&#233;.
+                    Le résultat va dans un sens net. Dans la plupart des États, les comtés où l'on dort trop peu sont aussi ceux où l'on vit moins longtemps. Le lien résiste quand les chercheurs tiennent compte du tabac, de l'alimentation, de l'inactivité physique et d'autres facteurs. Parmi les comportements étudiés, seul le tabagisme est plus fortement associé à l'espérance de vie. L'alimentation, l'activité physique et l'isolement social viennent après le sommeil.
                 </p>
 <p>
-                    Son envergure et sa profondeur longitudinale rendent l'&#233;tude OHSU particuli&#232;rement convaincante. Contrairement aux &#233;tudes plus modestes qui suivent les participants pendant quelques ann&#233;es, le jeu de donn&#233;es NHANES a permis de suivre les r&#233;sultats de sant&#233; sur des d&#233;cennies, capturant les cons&#233;quences &#224; d&#233;veloppement lent de la restriction chronique de sommeil que les &#233;tudes courtes manquent. Le message est sans ambigu&#239;t&#233; : si vous optimisez votre sant&#233; mais ignorez votre sommeil, vous vous occupez des notes de bas de page en sautant le titre principal.
-                </p>
-
-<h2 id="hierarchy">La hi&#233;rarchie sant&#233; : o&#249; le sommeil se situe vraiment</h2>
-<h3>Le classement des facteurs de risque modifiables</h3>
-<p>
-                    En combinant les r&#233;sultats OHSU et les recherches convergentes, une hi&#233;rarchie claire se dessine. Premi&#232;rement, ne pas fumer, cela reste le comportement modifiable le plus nocif. Deuxi&#232;mement, dormir 7 &#224; 9 heures par nuit de mani&#232;re r&#233;guli&#232;re. Troisi&#232;mement, pratiquer une activit&#233; physique r&#233;guli&#232;re. Quatri&#232;mement, maintenir une alimentation &#233;quilibr&#233;e et riche en nutriments. Exercice et nutrition restent essentiels, mais ce classement corrige un angle mort persistant dans la communication de sant&#233; publique.
-                </p>
-<p>
-                    Pendant des d&#233;cennies, &#171; bien manger et faire de l'exercice &#187; a domin&#233; le discours sur la sant&#233;. Gouvernements, campagnes m&#233;diatiques et influenceurs bien-&#234;tre ont consacr&#233; une &#233;nergie consid&#233;rable &#224; promouvoir recommandations alimentaires et objectifs de forme physique. Le sommeil, en comparaison, a &#233;t&#233; trait&#233; comme un luxe, quelque chose que les ambitieux sacrifient et que les disciplin&#233;s optimisent &#224; la baisse. Les donn&#233;es OHSU remettent ce cadre en cause frontalement. Vous pouvez manger bio et courir des marathons, mais si vous dormez en moyenne 5 &#224; 6 heures par nuit, vous sapez les syst&#232;mes m&#234;mes que ces comportements sains sont cens&#233;s soutenir.
-                </p>
-<h3>Pourquoi le sommeil a &#233;t&#233; n&#233;glig&#233;</h3>
-<p>
-                    Pourquoi le sommeil a-t-il croupi au bas des priorit&#233;s de sant&#233; publique ? D'abord, il est invisible : pas de compteur de calories &#224; suivre, pas de podom&#232;tre &#224; gamifier, pas de photo avant-apr&#232;s &#224; publier. Il est aussi culturellement stigmatis&#233; : &#171; je dormirai quand je serai mort &#187; reste une fanfaronnade courante dans les environnements professionnels comp&#233;titifs. Et contrairement &#224; l'alimentation et l'exercice, le sommeil ne se commercialise pas facilement. Il n'y a pas de box par abonnement pour l'inconscience. R&#233;sultat : une population mondiale qui sous-&#233;value chroniquement le seul comportement de sant&#233; que la science place d&#233;sormais juste derri&#232;re l'abstinence tabagique.
+                    Certains résumés, dont une version précédente de cet article, ont présenté l'étude comme le suivi de personnes sur plusieurs décennies. C'était faux, et nous l'avons corrigé. Le dispositif réel est plus modeste, et cela limite la portée de la conclusion.
                 </p>
 
-<h2 id="brain-changes">Ce qui arrive &#224; votre cerveau sans assez de sommeil</h2>
-<h3>Le syst&#232;me glymphatique et l'&#233;limination des d&#233;chets</h3>
+<h2 id="hierarchy">Le sommeil passe-t-il vraiment avant l'alimentation et le sport ?</h2>
+<h3>Ce que ce classement veut dire, et ce qu'il ne dit pas</h3>
 <p>
-                    Parmi les d&#233;couvertes neuroscientifiques majeures de la derni&#232;re d&#233;cennie figure le <strong>syst&#232;me glymphatique</strong>, un r&#233;seau de canaux c&#233;r&#233;braux qui &#233;limine les d&#233;chets m&#233;taboliques pendant le sommeil. D&#233;crit pour la premi&#232;re fois par Nedergaard et coll&#232;gues en 2012, il fonctionne comme un lave-vaisselle pour le cerveau, &#233;vacuant les sous-produits toxiques dont la prot&#233;ine b&#234;ta-amylo&#239;de, impliqu&#233;e dans la maladie d'Alzheimer. Ce nettoyage atteint son pic pendant le sommeil lent profond et chute brutalement quand le sommeil est &#233;court&#233;.
+                    L'étude compare des populations, pas des individus. Elle montre qu'à l'échelle d'un comté, le sommeil suit l'espérance de vie au moins d'aussi près que l'alimentation ou le sport. Elle ne montre pas que dormir 6 heures vous fera perdre des années, ni que vous pouvez renoncer à bouger si vous dormez bien.
                 </p>
 <p>
-                    La privation chronique de sommeil ne vous laisse pas seulement embrouill&#233; le lendemain matin. Elle permet aux d&#233;chets neurotoxiques de s'accumuler au fil du temps. Une seule nuit de sommeil restreint produit des augmentations mesurables de b&#234;ta-amylo&#239;de dans le liquide c&#233;phalo-rachidien. Sur des ann&#233;es de sommeil court habituel, cette accumulation peut contribuer au d&#233;clin cognitif acc&#233;l&#233;r&#233; et au risque accru d'Alzheimer observ&#233;s dans les populations chroniquement priv&#233;es de sommeil. Contrairement aux autres organes, le cerveau ne peut pas reporter ind&#233;finiment sa maintenance. Chaque nuit de sommeil insuffisant est une nuit o&#249; l'&#233;quipe de nettoyage n'a pas pu finir son travail.
+                    Les auteurs signalent plusieurs limites. Le sommeil est déclaré, pas mesuré. Le travail de nuit et les troubles du sommeil ne sont pas pris en compte. Les personnes qui dorment très longtemps sont comptées parmi celles qui dorment assez. Et la maladie peut raccourcir le sommeil autant que le manque de sommeil peut nuire à la santé. L'analyse ne cherche pas non plus à expliquer <em>pourquoi</em> sommeil et espérance de vie évoluent ensemble.
                 </p>
-<h3>Consolidation de la m&#233;moire et hippocampe</h3>
+<h3>Ce qu'ajoutent les autres recherches</h3>
 <p>
-                    Votre cerveau profite aussi du sommeil pour consolider les souvenirs, transf&#233;rant l'information de l'hippocampe (stockage &#224; court terme) vers le n&#233;ocortex (stockage &#224; long terme). Ce processus se d&#233;roule principalement pendant le sommeil lent profond et n&#233;cessite une architecture de sommeil intacte. Quand le sommeil est fragment&#233; ou raccourci, la consolidation m&#233;morielle en souffre. Born et Wilhelm (2012) ont montr&#233; que les sujets ayant dormi apr&#232;s un apprentissage obtenaient des r&#233;sultats nettement meilleurs aux tests de rappel que ceux rest&#233;s &#233;veill&#233;s pendant la m&#234;me dur&#233;e. L'hippocampe a besoin du sommeil pour traiter les exp&#233;riences de la journ&#233;e, et &#233;courter ce temps laisse les souvenirs instables et sujets &#224; la d&#233;gradation.
+                    Le résultat de l'OHSU n'est pas isolé. En 2010, une méta-analyse d'études prospectives menée par Francesco Cappuccio et ses collègues a montré que les personnes qui dormaient habituellement peu avaient un risque plus élevé de mourir pendant le suivi. Celles qui dormaient beaucoup plus que la moyenne aussi : plus n'est pas toujours mieux, car un sommeil très long peut accompagner un problème de santé sous-jacent.
                 </p>
-<h3>Vuln&#233;rabilit&#233; du cortex pr&#233;frontal</h3>
 <p>
-                    Votre cortex pr&#233;frontal, si&#232;ge du jugement, du contr&#244;le des impulsions, de la planification et de la prise de d&#233;cision complexe, est disproportionn&#233;ment sensible au manque de sommeil. Les &#233;tudes d'imagerie fonctionnelle montrent que les individus priv&#233;s de sommeil pr&#233;sentent une activit&#233; pr&#233;frontale r&#233;duite et une r&#233;activit&#233; amygdalienne accrue, une combinaison qui produit de mauvaises d&#233;cisions guid&#233;es par des r&#233;ponses &#233;motionnelles amplifi&#233;es. C'est pourquoi les personnes en manque de sommeil font souvent des choix qu'elles regrettent ensuite : la p&#233;dale de frein rationnelle s'affaiblit tandis que l'acc&#233;l&#233;rateur &#233;motionnel se renforce.
+                    C'est pourquoi les recommandations fixent un seuil plutôt qu'un classement. L'American Academy of Sleep Medicine et la Sleep Research Society conseillent aux adultes de dormir <strong>au moins 7 heures, de façon régulière</strong>. Sommeil, activité physique et alimentation fonctionnent ensemble : une journée avec un peu de mouvement et de lumière du jour facilite souvent la nuit, et une bonne nuit facilite les choix du lendemain.
                 </p>
 
-<h2 id="rem-emotions">Sommeil paradoxal et traitement &#233;motionnel</h2>
-<h3>Le sommeil paradoxal comme r&#233;gulateur &#233;motionnel</h3>
+<h2 id="brain-changes">Ce que les nuits courtes font au cerveau</h2>
+<h3>Le système glymphatique : un nettoyage nocturne</h3>
 <p>
-                    Le <a class="text-dream-salmon hover:underline" href="sommeil-paradoxal-reves">sommeil paradoxal</a> remplit une fonction unique qu'aucun autre stade ne reproduit : il fournit un environnement neurochimiquement s&#251;r pour traiter les exp&#233;riences &#233;motionnelles. Pendant cette phase, la nor&#233;pin&#233;phrine, le produit chimique du stress, chute &#224; un niveau proche de z&#233;ro. Le cerveau peut alors r&#233;activer les souvenirs &#233;motionnels et les traiter sans la r&#233;ponse de stress physiologique qui accompagnait l'exp&#233;rience originale. Walker et van der Helm (2009) ont d&#233;crit le sommeil paradoxal comme une &#171; th&#233;rapie nocturne &#187; : la charge &#233;motionnelle des exp&#233;riences difficiles est progressivement d&#233;pouill&#233;e tandis que le contenu informationnel reste intact.
+                    En 2013, Lulu Xie, Maiken Nedergaard et leurs collègues ont montré chez la souris que l'espace entre les cellules du cerveau s'élargit pendant le sommeil et que des déchets, dont la bêta-amyloïde, sont évacués plus vite. Cette voie d'élimination porte le nom de <strong>système glymphatique</strong>. Chez l'humain, une étude d'imagerie de Nina Fultz et ses collègues a observé en 2019 des vagues lentes de liquide céphalorachidien pendant le sommeil profond. Leur rôle exact pour la santé du cerveau à long terme est encore à l'étude, mais c'est une raison concrète de ne pas voir le sommeil comme du temps perdu.
+                </p>
+<h3>Consolidation de la mémoire et hippocampe</h3>
+<p>
+                    Le sommeil sert aussi la mémoire. Comme le résument Jan Born et Ines Wilhelm dans une revue de 2012, le cerveau rejoue pendant le sommeil profond ce qui a été appris dans la journée et le transfère peu à peu de l'hippocampe vers le cortex, où il se conserve plus longtemps. Une nuit courte ou hachée laisse moins de temps à ce travail.
+                </p>
+<h3>Pourquoi on ne sent pas toujours la fatigue s'accumuler</h3>
+<p>
+                    En 2003, Hans Van Dongen et ses collègues ont limité des adultes en bonne santé à 6 ou 4 heures au lit pendant deux semaines, en laboratoire. Leur attention et leurs temps de réaction n'ont cessé de se dégrader : à la fin, le groupe à 6 heures faisait à peu près aussi mal que des personnes privées de sommeil jusqu'à deux nuits complètes. Pourtant, leur sensation de somnolence n'augmentait presque plus après les premiers jours. Autrement dit, après quelques nuits courtes, se sentir bien ne veut pas dire fonctionner au mieux.
+                </p>
+
+<h2 id="rem-emotions">Nuits courtes, sommeil paradoxal et humeur</h2>
+<h3>Un sommeil paradoxal concentré en fin de nuit</h3>
+<p>
+                    Au fil de la nuit, les cycles changent. Le sommeil profond domine les premières heures ; le <a class="text-dream-salmon hover:underline" href="sommeil-paradoxal-reves">sommeil paradoxal</a>, la phase la plus associée aux rêves vivaces, occupe une place croissante dans les derniers cycles. Quand le réveil écourte la nuit, c'est donc surtout lui qui disparaît.
+                </p>
+<h3>Un lien avec l'équilibre émotionnel</h3>
+<p>
+                    En 2009, Matthew Walker et Els van der Helm ont proposé que le sommeil paradoxal aide à atténuer la charge des souvenirs émotionnels, parce que la noradrénaline, un messager chimique lié au stress, y est particulièrement basse. C'est une hypothèse, encore discutée, pas un mécanisme établi.
                 </p>
 <p>
-                    Un sommeil chroniquement insuffisant touche le sommeil paradoxal en premier, car les p&#233;riodes REM les plus longues et les plus intenses surviennent dans les derni&#232;res heures de sommeil, pr&#233;cis&#233;ment celles que la plupart des gens sacrifient. Perdre ces cycles REM de fin de nuit revient &#224; perdre le m&#233;canisme principal de r&#233;gulation &#233;motionnelle du cerveau. Les cons&#233;quences se cumulent : &#233;motions non trait&#233;es, anxi&#233;t&#233; et irritabilit&#233; croissantes, seuil de d&#233;compensation &#233;motionnelle abaiss&#233;. Goldstein et Walker (2014) ont montr&#233; qu'une seule nuit de privation de sommeil amplifiait la r&#233;activit&#233; amygdalienne aux stimuli n&#233;gatifs d'environ 60 %, ramenant la r&#233;gulation &#233;motionnelle &#224; un &#233;tat plus primitif et r&#233;actif.
-                </p>
-<h3>Insuffisance de sommeil paradoxal et risque pour la sant&#233; mentale</h3>
-<p>
-                    Sommeil paradoxal insuffisant et troubles de sant&#233; mentale sont d&#233;sormais solidement li&#233;s. Moins de REM corr&#232;le avec un risque accru de d&#233;pression, de trouble anxieux g&#233;n&#233;ralis&#233; et de trouble de stress post-traumatique. Et la relation va au-del&#224; de la corr&#233;lation : les &#233;tudes exp&#233;rimentales de restriction de sommeil montrent syst&#233;matiquement que r&#233;duire le sommeil paradoxal produit des augmentations mesurables de l'humeur n&#233;gative, de la r&#233;activit&#233; &#233;motionnelle et des <a class="text-dream-salmon hover:underline" href="reves-anxiete-signification">sympt&#244;mes d'anxi&#233;t&#233;</a> chez des sujets autrement sains. Quand les chercheurs restauraient s&#233;lectivement le REM par des protocoles de r&#233;cup&#233;ration, les indicateurs &#233;motionnels s'am&#233;lioraient en parall&#232;le.
+                    Ce qui a été observé plus directement : dans une étude d'imagerie de Seung-Schik Yoo et ses collègues (2007), des personnes privées d'une nuit de sommeil montraient une réaction de l'amygdale nettement plus forte face à des images désagréables, et un lien affaibli avec les zones préfrontales qui la régulent. Plus largement, sommeil et humeur s'influencent dans les deux sens : mal dormir peut rendre plus irritable et plus <a class="text-dream-salmon hover:underline" href="reves-anxiete-signification">anxieux</a>, et l'anxiété complique le sommeil.
                 </p>
 </div>
 
@@ -174,55 +174,59 @@
 <i class="w-6 h-6 text-dream-salmon" data-lucide="moon"></i>
 </div>
 <div>
-<h4 class="font-serif text-lg text-dream-cream mb-2">Suivez vos r&#234;ves pour surveiller votre sant&#233; du sommeil</h4>
-<p class="text-sm text-gray-400 mb-4">Noctalia capture vos r&#234;ves par la voix chaque matin. Au fil du temps, les changements de vivacit&#233;, de tonalit&#233; &#233;motionnelle et de fr&#233;quence de rappel peuvent r&#233;v&#233;ler si votre sommeil est vraiment r&#233;parateur, avant l'apparition des sympt&#244;mes classiques.</p>
+<h4 class="font-serif text-lg text-dream-cream mb-2">Gardez vos nuits et vos rêves au même endroit</h4>
+<p class="text-sm text-gray-400 mb-4">Dans Noctalia, racontez votre rêve à voix haute ou écrivez-le au réveil, avec un mot sur votre nuit. Il est transcrit et rangé dans votre journal, et vous pouvez relire vos matins côte à côte.</p>
 <a class="inline-flex items-center gap-2 text-sm text-dream-salmon hover:text-dream-salmonLight transition-colors" href="/fr/">
-                                Commencer le suivi avec Noctalia <i class="w-4 h-4" data-lucide="arrow-right"></i>
+                                Essayer Noctalia gratuitement <i class="w-4 h-4" data-lucide="arrow-right"></i>
 </a>
 </div>
 </div>
 </aside>
 
 <div class="prose max-w-none text-gray-300">
-<h2 id="dream-warnings">Quand les r&#234;ves tirent la sonnette d'alarme</h2>
-<h3>Les changements oniriques comme signaux d'alerte pr&#233;coces</h3>
+<h2 id="dream-warnings">Vos rêves peuvent-ils signaler un manque de sommeil ?</h2>
 <p>
-                    Votre vie onirique est bien plus qu'une curiosit&#233; nocturne. C'est un indicateur sensible de votre qualit&#233; de sommeil et de votre sant&#233; &#233;motionnelle. Les changements dans les sch&#233;mas oniriques apparaissent souvent avant que d'autres sympt&#244;mes d'insuffisance de sommeil ne deviennent &#233;vidents. Quand le sommeil est r&#233;guli&#232;rement trop court, les p&#233;riodes de sommeil paradoxal de fin de nuit, l&#224; o&#249; se produisent les r&#234;ves vivaces et narratifs, sont les premi&#232;res sacrifi&#233;es. Le rappel onirique s'efface progressivement : les nuits commencent &#224; sembler sans r&#234;ves, et la riche vie int&#233;rieure qui se d&#233;roulait pendant le sommeil semble dispara&#238;tre. Beaucoup interpr&#232;tent cela comme normal (&#171; je ne suis simplement pas un r&#234;veur &#187;), alors que c'est un signal que leur cerveau n'atteint pas les stades de sommeil paradoxal r&#233;parateurs dont il a besoin.
+                    Pas de façon fiable, et autant le dire clairement. Un rêve n'est pas une mesure du sommeil, et aucune étude n'a montré que les changements dans les rêves annoncent un problème de santé. Quelques tendances sont cependant cohérentes avec ce que l'on sait du sommeil, et faciles à remarquer.
                 </p>
+<h3>Moins de rêves après les nuits courtes, des rêves intenses après la récupération</h3>
 <p>
-                    Quand une personne priv&#233;e de sommeil obtient enfin un repos ad&#233;quat, l'inverse se produit. Le <strong>rebond REM</strong> produit une explosion de r&#234;ves inhabituellement vivaces, &#233;motionnellement intenses et parfois d&#233;rangeants. Le cerveau rattrape le traitement &#233;motionnel diff&#233;r&#233;, et cela peut sembler alarmant pour quelqu'un habitu&#233; &#224; des nuits sans r&#234;ves. Mais le rebond REM est un m&#233;canisme de r&#233;cup&#233;ration sain, pas le signe d'un probl&#232;me. Le retour de r&#234;ves vivaces est l'un des premiers indicateurs positifs que votre cerveau commence &#224; r&#233;cup&#233;rer de la <a class="text-dream-salmon hover:underline" href="dette-sommeil-sante-reves">dette de sommeil accumul&#233;e</a>.
+                    Comme les nuits courtes amputent surtout le sommeil paradoxal du matin, vous pouvez vous souvenir de moins de rêves pendant une semaine de réveils matinaux. Quand vous dormez enfin plus longtemps, le cerveau tend à rattraper le sommeil paradoxal perdu, c'est le <strong>rebond de sommeil paradoxal</strong>, et les rêves peuvent revenir longs, intenses, parfois étranges. C'est en général un signe de récupération, pas d'un problème. Notre article sur la <a class="text-dream-salmon hover:underline" href="dette-sommeil-sante-reves">dette de sommeil</a> détaille ce mécanisme.
                 </p>
-<h3>R&#234;ves de stress et cauchemars comme signaux</h3>
+<h3>Rêves de stress et cauchemars</h3>
 <p>
-                    Au-del&#224; du rappel, le <em>contenu</em> de vos r&#234;ves peut signaler des probl&#232;mes de sommeil. Une augmentation des <a class="text-dream-salmon hover:underline" href="reves-stress-travail">r&#234;ves de stress</a>, sc&#233;narios de poursuites, d'&#233;checs &#224; des examens, de retards ou de pertes de contr&#244;le, corr&#232;le souvent avec une dur&#233;e de sommeil insuffisante. Une hausse de la fr&#233;quence des <a class="text-dream-salmon hover:underline" href="guide-cauchemars">cauchemars</a> peut indiquer que le syst&#232;me de traitement &#233;motionnel de votre cerveau est submerg&#233;, faute de temps suffisant en sommeil paradoxal pour g&#233;rer les facteurs de stress quotidiens. Ces changements oniriques peuvent pr&#233;c&#233;der les sympt&#244;mes plus reconnus de la privation de sommeil, fatigue diurne, difficult&#233; de concentration, sautes d'humeur, de plusieurs jours, voire semaines. Le journal de r&#234;ves devient ainsi un outil de d&#233;tection pr&#233;coce unique pour les probl&#232;mes de sant&#233; du sommeil.
+                    Les <a class="text-dream-salmon hover:underline" href="reves-stress-travail">rêves de stress</a> (être en retard, être poursuivi, un examen non préparé) reviennent souvent pendant les périodes chargées, qui sont aussi celles où l'on dort le moins. Le rêve ne prouve pas un manque de sommeil : il reflète surtout ce qui vous occupe. Si des <a class="text-dream-salmon hover:underline" href="guide-cauchemars">cauchemars</a> reviennent plusieurs fois par semaine et abîment vos nuits, ils méritent une attention à part entière.
                 </p>
-<blockquote class="border-l-4 border-dream-salmon/40 pl-4 italic text-purple-200/70 my-6">
-                    Parmi les comportements de sant&#233; modifiables, l'&#233;tude OHSU a r&#233;v&#233;l&#233; que seul le tabagisme actif pr&#233;sente un risque de mortalit&#233; plus &#233;lev&#233; que dormir chroniquement moins de 7 heures par nuit, pla&#231;ant le sommeil devant l'alimentation et l'exercice dans la hi&#233;rarchie de la long&#233;vit&#233;.
-                </blockquote>
-
-<h2 id="strategies">Une strat&#233;gie sant&#233; centr&#233;e sur le sommeil</h2>
-<h3>Recadrer le sommeil comme un investissement sant&#233;</h3>
-<p>
-                    L'&#233;tude OHSU exige un recadrage fondamental : le sommeil n'est pas l'absence de productivit&#233;. C'est un investissement actif dans chaque dimension de la sant&#233;. Au lieu de se demander &#171; comment puis-je dormir moins tout en fonctionnant &#187;, la question fond&#233;e sur les preuves est &#171; comment prot&#233;ger mon sommeil pour que tout le reste fonctionne mieux ? &#187; Les athl&#232;tes qui priorisent le sommeil constatent des am&#233;liorations mesurables du temps de r&#233;action, de la r&#233;cup&#233;ration apr&#232;s blessure et de la performance. Ceux qui dorment suffisamment surpassent leurs coll&#232;gues priv&#233;s de sommeil sur chaque indicateur cognitif. Les rendements de cet investissement se cumulent dans tous les domaines.
-                </p>
-<h3>Hygi&#232;ne du sommeil fond&#233;e sur les preuves</h3>
-<p>
-                    Traduire la recherche en pratique n&#233;cessite des habitudes r&#233;guli&#232;res plut&#244;t que des interventions spectaculaires. Ces strat&#233;gies, toutes soutenues par des &#233;tudes r&#233;vis&#233;es par les pairs, forment la base d'une approche sant&#233; centr&#233;e sur le sommeil.
-                </p>
+<h3>Exemple de journal de nuits et de rêves</h3>
+<p><strong>Exemple fictif :</strong> il montre comment noter la nuit et le rêve côte à côte, sans surinterpréter une seule entrée.</p>
 <ul>
-<li><strong>Horaire r&#233;gulier :</strong> Couchez-vous et r&#233;veillez-vous &#224; la m&#234;me heure chaque jour, y compris le week-end. La r&#233;gularit&#233; ancre votre rythme circadien et am&#233;liore l'efficacit&#233; du sommeil davantage que tout compl&#233;ment alimentaire.</li>
-<li><strong>Gestion de la lumi&#232;re :</strong> Recherchez la lumi&#232;re naturelle vive dans les 30 minutes suivant le r&#233;veil pour calibrer votre horloge circadienne. Le soir, diminuez les &#233;clairages et &#233;liminez les &#233;crans au moins 60 minutes avant le coucher pour soutenir la production de m&#233;latonine.</li>
-<li><strong>Optimisation de la temp&#233;rature :</strong> Maintenez votre chambre fra&#238;che, 18 &#224; 19 degr&#233;s Celsius. Une douche chaude avant le coucher refroidit paradoxalement le corps et acc&#233;l&#232;re l'endormissement.</li>
-<li><strong>Discipline caf&#233;ine :</strong> Avec une demi-vie de 5 &#224; 6 heures, un caf&#233; de l'apr&#232;s-midi peut encore &#234;tre actif au moment du coucher. Fixez-vous une heure limite personnelle, id&#233;alement avant 13 h.</li>
-<li><strong>Rituel de d&#233;tente :</strong> Cr&#233;ez une routine de 30 minutes avant le coucher qui signale &#224; votre cerveau de passer en mode sommeil. Lecture, &#233;tirements doux ou planification du lendemain peuvent remplacer le d&#233;filement d'&#233;crans.</li>
+<li><strong>Nuits :</strong> « Du lundi au jeudi, extinction après minuit, réveil à 6 h 15. Samedi, dormi jusqu'à 9 h. »</li>
+<li><strong>Rêves :</strong> « Aucun souvenir en semaine. Samedi, un long rêve : je ratais un train après l'autre et mon sac devenait de plus en plus lourd. »</li>
+<li><strong>Ressenti :</strong> « Irritable dès jeudi. Le rêve de samedi m'a laissé anxieux, puis curieusement reposé. »</li>
+<li><strong>Question à garder :</strong> « Les rêves intenses reviennent-ils surtout après mes longues nuits ? Est-ce que je me souviens davantage quand je dors 7 heures ? »</li>
 </ul>
-<h3>Quand consulter un m&#233;decin</h3>
+<p>Une semaine ne prouve rien. Sur un mois, ces quelques lignes montrent si vos rêves, votre humeur et vos heures de coucher évoluent ensemble.</p>
+
+<h2 id="strategies">Faire passer le sommeil en premier, dès ce soir</h2>
+<h3>Protéger une plage de sommeil</h3>
 <p>
-                    Si vous dormez r&#233;guli&#232;rement 7 &#224; 9 heures mais vous r&#233;veillez toujours sans vous sentir repos&#233;, ou si votre partenaire signale des ronflements bruyants ou des pauses respiratoires pendant votre sommeil, consultez un sp&#233;cialiste du sommeil. Des conditions comme l'apn&#233;e obstructive du sommeil, qui touche environ 1 adulte sur 5, peuvent compromettre la qualit&#233; du sommeil sans en raccourcir la dur&#233;e, et elles n&#233;cessitent une intervention m&#233;dicale plut&#244;t que de simples ajustements de mode de vie.
+                    Partez de l'heure à laquelle vous devez vous lever et comptez à rebours au moins 7 heures de sommeil, plus le temps qu'il vous faut d'habitude pour vous endormir. Vous obtenez une heure de coucher. Traitez-la comme un rendez-vous, pas comme une vague intention.
                 </p>
-<h3>Le journal de r&#234;ves comme indicateur de sant&#233;</h3>
+<h3>Les habitudes qui aident</h3>
+<ul>
+<li><strong>Des horaires réguliers :</strong> couchez-vous et levez-vous à peu près à la même heure, week-end compris.</li>
+<li><strong>De la lumière le matin :</strong> la lumière du jour peu après le réveil aide à caler votre horloge interne.</li>
+<li><strong>Une soirée tamisée :</strong> baissez les lumières et éloignez les écrans un moment avant le coucher.</li>
+<li><strong>La caféine avec modération :</strong> son effet dure plusieurs heures, et un café de l'après-midi peut encore retarder l'endormissement.</li>
+<li><strong>Une chambre fraîche, sombre et calme :</strong> une pièce un peu fraîche facilite en général le sommeil.</li>
+<li><strong>Un court rituel :</strong> lecture, étirements doux ou liste du lendemain peuvent remplacer le défilement sur l'écran.</li>
+</ul>
+<h3>Quand consulter un médecin</h3>
 <p>
-                    Votre <a class="text-dream-salmon hover:underline" href="guide-journal-reves">journal de r&#234;ves</a> peut servir de tableau de bord d'alerte pr&#233;coce pour votre sant&#233;. Un rappel onirique r&#233;gulier et vivace sugg&#232;re un sommeil paradoxal ad&#233;quat. Une baisse soutenue du rappel, ou un glissement vers un contenu anxieux et fragment&#233;, peut signaler que votre sommeil se d&#233;t&#233;riore avant que vous ne le remarquiez consciemment. Sur des semaines et des mois, les tendances de votre journal peuvent r&#233;v&#233;ler des corr&#233;lations entre dur&#233;e de sommeil, r&#233;gularit&#233; du coucher et bien-&#234;tre &#233;motionnel, transformant des exp&#233;riences nocturnes subjectives en donn&#233;es de sant&#233; exploitables. Suivre vos r&#234;ves prend moins de deux minutes chaque matin et ne co&#251;te rien, mais la fen&#234;tre qu'il ouvre sur vos stades de sommeil les plus profonds est quelque chose qu'aucun traqueur connect&#233; ne peut actuellement &#233;galer.
+                    Parlez-en à votre médecin ou à un spécialiste du sommeil si vous dormez 7 à 9 heures et vous réveillez épuisé, si l'on vous entend ronfler fort ou arrêter de respirer pendant la nuit, si vous luttez pour rester éveillé dans la journée ou au volant, si l'insomnie dure depuis des semaines, ou si des cauchemars reviennent sans cesse. L'apnée du sommeil, par exemple, peut abîmer le sommeil sans le raccourcir, et elle demande une prise en charge médicale, pas seulement de meilleures habitudes.
+                </p>
+<h3>Le journal de rêves comme indicateur de santé</h3>
+<p>
+                    Un <a class="text-dream-salmon hover:underline" href="guide-journal-reves">journal de rêves</a> ne mesure pas votre sommeil paradoxal. Mais quelques lignes chaque matin (heure du coucher, heure du réveil, état au lever, un rêve ou « aucun souvenir ») transforment des impressions floues en quelque chose que vous pouvez relire. Cela prend deux minutes et, au fil des semaines, montre si vos nuits courtes sont l'exception ou la règle.
                 </p>
 </div>
 <!-- CTA Section -->
@@ -230,58 +234,73 @@
 <div class="w-16 h-16 bg-dream-salmon/10 rounded-full flex items-center justify-center mx-auto mb-6">
 <i class="w-8 h-8 text-dream-salmon" data-lucide="moon"></i>
 </div>
-<h3 class="font-serif text-2xl md:text-3xl mb-4 text-dream-cream">Faites du sommeil votre priorit&#233; sant&#233; n&#176;1</h3>
+<h3 class="font-serif text-2xl md:text-3xl mb-4 text-dream-cream">Repérez vos nuits courtes avant qu'elles ne s'accumulent</h3>
 <p class="text-purple-200/70 mb-6 max-w-lg mx-auto">
-                    Noctalia capture vos r&#234;ves par la voix chaque matin, suit les tendances au fil du temps et utilise l'IA pour r&#233;v&#233;ler ce que votre vie onirique dit de votre qualit&#233; de sommeil. Commencez &#224; investir dans le levier de sant&#233; qui compte le plus.
+                    Chaque matin, racontez votre rêve à Noctalia à voix haute ou par écrit, et ajoutez un mot sur votre nuit. Tout est rangé dans un même journal : en relisant vos entrées côte à côte, vous voyez ce qui revient.
                 </p>
 <a class="inline-flex items-center gap-2 px-8 py-4 bg-dream-salmon text-dream-dark rounded-full font-bold hover:bg-dream-salmon/90 transition-colors" href="/fr/">
-                    Commencer votre journal de r&#234;ves <i class="w-5 h-5" data-lucide="arrow-right"></i>
+                    Commencer mon journal de rêves <i class="w-5 h-5" data-lucide="arrow-right"></i>
 </a>
 </aside>
 <!-- FAQ Section -->
 <section class="mt-16">
-<h2 class="font-serif text-2xl text-dream-cream mb-8">Questions fr&#233;quentes</h2>
+<h2 class="font-serif text-2xl text-dream-cream mb-8">Questions fréquentes</h2>
 <div class="space-y-4">
 <details class="glass-panel rounded-xl p-4 group cursor-pointer">
 <summary class="font-medium flex justify-between items-center text-dream-cream">
-                            Pourquoi le sommeil est-il plus important que l'alimentation et l'exercice pour la long&#233;vit&#233; ?
+                            Le sommeil compte-t-il plus que l'alimentation et le sport ?
                             <i class="w-5 h-5 transition-transform group-open:rotate-180 text-dream-salmon" data-lucide="chevron-down"></i>
 </summary>
 <p class="mt-4 text-sm text-gray-400 leading-relaxed">
-                            Une &#233;tude de d&#233;cembre 2025 de l'Oregon Health &amp; Science University, analysant plus de 40 ans de donn&#233;es NHANES, a r&#233;v&#233;l&#233; que le sommeil insuffisant (moins de 7 heures par nuit) est un pr&#233;dicteur plus fort de mortalit&#233; pr&#233;matur&#233;e que le manque d'exercice ou une mauvaise alimentation. Parmi les comportements de sant&#233; modifiables, seul le tabagisme actif pr&#233;sente un risque de mortalit&#233; plus &#233;lev&#233;. Le sommeil affecte simultan&#233;ment chaque syst&#232;me du corps, fonction immunitaire, sant&#233; cardiovasculaire, r&#233;gulation m&#233;tabolique et maintenance c&#233;r&#233;brale, ce qui en fait le comportement de sant&#233; &#224; plus fort impact que la plupart des gens n&#233;gligent.
+                            Dans une analyse de l'OHSU publiée en décembre 2025 sur les comtés américains, le manque de sommeil était plus fortement associé à une espérance de vie plus basse que la mauvaise alimentation ou l'inactivité physique ; seul le tabac l'était davantage. C'est une corrélation entre populations, pas une preuve individuelle. La leçon pratique n'est pas de choisir, mais de cesser de sacrifier le sommeil en premier.
                         </p>
 </details>
 <details class="glass-panel rounded-xl p-4 group cursor-pointer">
 <summary class="font-medium flex justify-between items-center text-dream-cream">
-                            Combien d'heures de sommeil faut-il pour une sant&#233; optimale ?
+                            Combien d'heures de sommeil faut-il à un adulte ?
                             <i class="w-5 h-5 transition-transform group-open:rotate-180 text-dream-salmon" data-lucide="chevron-down"></i>
 </summary>
 <p class="mt-4 text-sm text-gray-400 leading-relaxed">
-                            Le consensus scientifique, appuy&#233; par l'&#233;tude OHSU et les recommandations de l'American Academy of Sleep Medicine, pr&#233;conise 7 &#224; 9 heures de sommeil par nuit pour les adultes. Dormir r&#233;guli&#232;rement moins de 7 heures est associ&#233; &#224; un risque accru de mortalit&#233;, &#224; des fonctions cognitives alt&#233;r&#233;es, &#224; une immunit&#233; affaiblie et &#224; un risque &#233;lev&#233; de maladies cardiovasculaires, de diab&#232;te et de troubles de sant&#233; mentale.
+                            L'American Academy of Sleep Medicine et la Sleep Research Society recommandent au moins 7 heures de façon régulière. Les besoins varient d'une personne à l'autre. Si vous avez régulièrement besoin de bien plus de 9 heures et restez fatigué, parlez-en à un médecin : un sommeil très long peut aussi accompagner un problème de santé.
                         </p>
 </details>
 <details class="glass-panel rounded-xl p-4 group cursor-pointer">
 <summary class="font-medium flex justify-between items-center text-dream-cream">
-                            Les changements dans les r&#234;ves peuvent-ils indiquer un sommeil insuffisant ?
+                            Les changements dans les rêves peuvent-ils indiquer un manque de sommeil ?
                             <i class="w-5 h-5 transition-transform group-open:rotate-180 text-dream-salmon" data-lucide="chevron-down"></i>
 </summary>
 <p class="mt-4 text-sm text-gray-400 leading-relaxed">
-                            Oui. Les changements dans les sch&#233;mas oniriques peuvent servir de signaux d'alerte pr&#233;coces d'insuffisance de sommeil. Lorsque le sommeil est r&#233;guli&#232;rement trop court, les stades de sommeil paradoxal o&#249; se produisent les r&#234;ves vivaces sont disproportionn&#233;ment sacrifi&#233;s, entra&#238;nant une diminution du rappel onirique. Lorsque le sommeil ad&#233;quat revient, le <a class="text-dream-salmon hover:underline" href="sommeil-paradoxal-reves">rebond REM</a> produit des r&#234;ves inhabituellement vivaces ou intenses. Une augmentation des r&#234;ves de stress, des cauchemars ou des r&#234;ves anxieux peut &#233;galement signaler que votre cerveau peine &#224; traiter les &#233;motions en raison d'un sommeil paradoxal insuffisant.
+                            Ce n'est pas un test, mais cela peut être un indice. Les nuits courtes amputent surtout le sommeil paradoxal du matin : on se souvient alors de moins de rêves. Après une nuit de récupération, le <a class="text-dream-salmon hover:underline" href="sommeil-paradoxal-reves">rebond de sommeil paradoxal</a> peut amener des rêves inhabituellement vivaces. Noter vos rêves avec vos heures de coucher permet de voir si ces changements suivent vos nuits courtes.
+                        </p>
+</details>
+<details class="glass-panel rounded-xl p-4 group cursor-pointer">
+<summary class="font-medium flex justify-between items-center text-dream-cream">
+                            Quand faut-il consulter pour son sommeil ?
+                            <i class="w-5 h-5 transition-transform group-open:rotate-180 text-dream-salmon" data-lucide="chevron-down"></i>
+</summary>
+<p class="mt-4 text-sm text-gray-400 leading-relaxed">
+                            Si vous vous réveillez épuisé malgré des nuits suffisantes, si l'on remarque de forts ronflements ou des pauses respiratoires, si vous luttez pour rester éveillé la journée, si l'insomnie dure depuis des semaines, ou si des cauchemars reviennent plusieurs fois par semaine. Ces signes méritent un avis médical.
                         </p>
 </details>
 </div>
 </section>
 <!-- Sources / Trust -->
 <section class="mt-16 glass-panel rounded-2xl p-6" id="sources">
-<h2 class="font-serif text-2xl text-dream-cream mb-4">Sources / Lectures compl&#233;mentaires</h2>
+<h2 class="font-serif text-2xl text-dream-cream mb-4">Sources et lectures</h2>
 <ul class="mt-6 space-y-2 text-sm text-gray-400">
-<li><a href="https://www.ohsu.edu/" rel="nofollow noopener noreferrer" target="_blank">Oregon Health &amp; Science University (2025) : Insuffisance de sommeil et mortalit&#233; toutes causes, analyse longitudinale NHANES</a></li>
-<li><a href="https://doi.org/10.1126/science.1241224" rel="nofollow noopener noreferrer" target="_blank">Xie et al. (2013) : Sleep drives metabolite clearance from the adult brain (Science)</a></li>
-<li><a href="https://doi.org/10.1037/a0016570" rel="nofollow noopener noreferrer" target="_blank">Walker &amp; van der Helm (2009) : Overnight therapy? The role of sleep in emotional brain processing (Psychological Bulletin)</a></li>
-<li><a href="https://doi.org/10.1146/annurev-clinpsy-032813-153716" rel="nofollow noopener noreferrer" target="_blank">Goldstein &amp; Walker (2014) : The role of sleep in emotional brain function (Annual Review of Clinical Psychology)</a></li>
-<li><a href="https://doi.org/10.1093/sleep/33.5.585" rel="nofollow noopener noreferrer" target="_blank">Cappuccio et al. (2010) : Sleep duration and all-cause mortality: a systematic review and meta-analysis (Sleep)</a></li>
+<li><a href="https://doi.org/10.1093/sleepadvances/zpaf090" rel="nofollow noopener noreferrer" target="_blank">McAuliffe, McHill et al. (2025), « Sleep insufficiency and life expectancy at the state-county level in the United States, 2019–2025 », <em>SLEEP Advances</em></a></li>
+<li><a href="https://news.ohsu.edu/2025/12/08/insufficient-sleep-associated-with-decreased-life-expectancy" rel="nofollow noopener noreferrer" target="_blank">OHSU News (2025), « Insufficient sleep associated with decreased life expectancy »</a></li>
+<li><a href="https://doi.org/10.1093/sleep/33.5.585" rel="nofollow noopener noreferrer" target="_blank">Cappuccio et al. (2010), « Sleep duration and all-cause mortality: a systematic review and meta-analysis », <em>Sleep</em></a></li>
+<li><a href="https://doi.org/10.5664/jcsm.4758" rel="nofollow noopener noreferrer" target="_blank">Watson et al. (2015), « Recommended amount of sleep for a healthy adult », consensus AASM et SRS, <em>Journal of Clinical Sleep Medicine</em></a></li>
+<li><a href="https://doi.org/10.1126/science.1241224" rel="nofollow noopener noreferrer" target="_blank">Xie et al. (2013), « Sleep drives metabolite clearance from the adult brain », <em>Science</em></a></li>
+<li><a href="https://doi.org/10.1126/science.aax5440" rel="nofollow noopener noreferrer" target="_blank">Fultz et al. (2019), « Coupled electrophysiological, hemodynamic, and cerebrospinal fluid oscillations in human sleep », <em>Science</em></a></li>
+<li><a href="https://doi.org/10.1007/s00426-011-0335-6" rel="nofollow noopener noreferrer" target="_blank">Born &amp; Wilhelm (2012), « System consolidation of memory during sleep », <em>Psychological Research</em></a></li>
+<li><a href="https://doi.org/10.1093/sleep/26.2.117" rel="nofollow noopener noreferrer" target="_blank">Van Dongen et al. (2003), « The cumulative cost of additional wakefulness », <em>Sleep</em></a></li>
+<li><a href="https://doi.org/10.1037/a0016570" rel="nofollow noopener noreferrer" target="_blank">Walker &amp; van der Helm (2009), « Overnight therapy? The role of sleep in emotional brain processing », <em>Psychological Bulletin</em></a></li>
+<li><a href="https://doi.org/10.1016/j.cub.2007.08.007" rel="nofollow noopener noreferrer" target="_blank">Yoo et al. (2007), « The human emotional brain without sleep: a prefrontal amygdala disconnect », <em>Current Biology</em></a></li>
+<li><a href="https://doi.org/10.1146/annurev-clinpsy-032813-153716" rel="nofollow noopener noreferrer" target="_blank">Goldstein &amp; Walker (2014), « The role of sleep in emotional brain function », <em>Annual Review of Clinical Psychology</em></a></li>
 </ul>
-<p class="mt-6 text-xs text-purple-200/60">Mis &#224; jour le 24 mars 2026</p>
+<p class="mt-6 text-xs text-purple-200/60">Mis à jour le 9 octobre 2026</p>
 </section>
 <!-- Related Symbols Start -->
 <section aria-label="Symboles de r&#234;ves associ&#233;s" class="mt-12 mb-8">
