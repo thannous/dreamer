@@ -75,8 +75,8 @@ contrôle tourne avec l'installation locale de l'auteur.
 
 La commande est `npm run verify:release`, sur le commit visé (par défaut
 `HEAD`, `--rev <sha>` sinon), après `mise exec -- npm ci` à la racine et dans
-`apps/meditation`. Elle vérifie une copie isolée de ce commit, réutilise les
-contrôles de la PR dont les entrées sont identiques, reconstruit le site et
+`apps/meditation`. Elle vérifie une copie isolée de ce commit, relance les
+contrôles de la PR (une publication ne réutilise rien), reconstruit le site et
 l'app web pour ce commit, puis lance les commandes `run` du portefeuille
 `full` de `.circleci/continue.yml` (contrôles `release` de
 `verify-local.config.mjs` ; `scripts/verify-local-config.test.js` vérifie
@@ -108,7 +108,7 @@ demandent Deno (Edge), Docker (`test:e2e:backend`) ou l'installation
 TesterArmy sont déclarés avec leur prérequis : si la machine ne les a pas, la
 preuve est `incomplete` et indique la commande d'installation. Les lancer
 ailleurs (pipeline CircleCI manuelle `force_full_validation: true`, machine du
-propriétaire), puis relancer avec `--external <contrôle>=<preuve>`.
+propriétaire), puis relancer avec `--external <contrôle>="https://<preuve> sur <SHA>"`.
 `node scripts/verify-local.mjs status` affiche la preuve du commit.
 
 ## Architecture et frontière des responsabilités

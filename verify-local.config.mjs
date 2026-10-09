@@ -4,17 +4,16 @@
 //
 //   npm run verify:pr       before a merge: the former pre-push `verify:fast`, split
 //                           into checks, plus the surfaces the PR changed.
-//   npm run verify:release  before a publish: the PR checks (reused when their
-//                           inputs are identical) plus the full local validation of
+//   npm run verify:release  before a publish: the PR checks, run again, plus the
+//                           full local validation of
 //                           doc_web_interne/docs/circleci-migration.md.
 //
-// A check without `when` is reused by any later run whose inputs are identical
-// (a squash of an up-to-date branch reuses everything). A `when` check runs only
+// A check without `when` is reused by a later PR run whose inputs are identical;
+// a release reuses nothing. A `when` check runs only
 // when the commit changes those paths since origin/master, like the CircleCI
 // affected portfolio; on the published master commit nothing changed, so a
-// surface a release always needs carries releaseAlways (the PR's result is
-// reused when its inputs are identical), and the release-only checks at the
-// end carry the rest of the full portfolio.
+// surface a release always needs carries releaseAlways, and the release-only
+// checks at the end carry the rest of the full portfolio.
 
 // Markdown and planning documents feed no compiler and no linter.
 const DOCS = ['**/*.md', '**/*.mdx', 'doc_web_interne/**', 'marketing/**', 'specs/**'];
@@ -31,6 +30,21 @@ const MEDITATION = [
   'scripts/android-device-lock.js',
   'scripts/check-monorepo-boundaries*.js',
   'scripts/check-brand-tokens.js',
+];
+
+// What `node scripts/mobile-release.js verify` reads: the pins of
+// release/mobile-versions.json against the app manifests and EAS profiles.
+const MOBILE_VERSIONS = [
+  'release/',
+  'scripts/mobile-release.js',
+  'app.json',
+  'package.json',
+  'package-lock.json',
+  'eas.json',
+  'apps/meditation/app.json',
+  'apps/meditation/package.json',
+  'apps/meditation/package-lock.json',
+  'apps/meditation/eas.json',
 ];
 
 // Deno runtime sources; the Edge tests also read supabase/migrations.
@@ -82,12 +96,12 @@ const EDGE_CHECKS = [
 ].join(' && ');
 const DENO = {
   command: 'deno --version',
-  hint: 'install Deno 2.7.14 (`mise install`), or run the Edge checks in a manual CircleCI pipeline and pass --external <check>=<pipeline>',
+  hint: 'install Deno 2.7.14 (`mise install`), or run the Edge checks in a manual CircleCI pipeline and pass --external <check>="https://<pipeline> on <SHA>"',
 };
 
 const TESTERARMY = {
   command: 'test -d tools/e2e/node_modules/@e2e-dev/web',
-  hint: 'run `npm run test:testerarmy:setup && npm run test:testerarmy:browsers` in the main checkout, or pass --external <check>=<manual CircleCI pipeline>',
+  hint: 'run `npm run test:testerarmy:setup && npm run test:testerarmy:browsers` in the main checkout, or pass --external <check>="https://<manual CircleCI pipeline> on <SHA>"',
 };
 
 // The four passes of tools/e2e/README.md that jointly qualify every Dreamer case.
@@ -110,6 +124,25 @@ export default {
     copy: [],
   },
   setup: [],
+  // The scripts these checks run: changing them changes what a proof proves,
+  // so proof-block flags them for the owner's review like this file.
+  deliveryFiles: [
+    'scripts/install-git-hooks.js',
+    'scripts/run-jest-changed.js',
+    // Meditation's Jest module resolution.
+    'apps/meditation/tests/jestResolver.cjs',
+    // The contract checkers and runners the checks call, and the tests of
+    // this config and of the hook.
+    'scripts/check-brand-tokens.js',
+    'scripts/check-monorepo-boundaries*.js',
+    'scripts/docs-check.js',
+    'scripts/mobile-release.js',
+    'scripts/verify-analysis-authorization.mjs',
+    'scripts/run-backend-e2e.cjs',
+    'tools/e2e/run.mjs',
+    'scripts/verify-local-config.test.js',
+    'scripts/pre-push-hook.test.js',
+  ],
   checks: [
     // ---- verify:pr, reused by verify:release when the inputs are identical.
     {
@@ -123,12 +156,22 @@ export default {
     { name: 'lint-scripts', command: 'npm run lint:scripts', exclude: DOCS },
     // Root Jest tests related to the files changed since the merge-base with
     // origin/master (scripts/run-jest-changed.js). Whole tree: tests read files.
-    { name: 'jest-changed', command: 'npm run test:changed -- --runInBand --watchman=false' },
+    // Picks its tests from the diff: reused only against the same merge base.
+    // JEST_CHANGED_SINCE would override that base (HEAD selects no test), so
+    // the check never inherits it.
+    {
+      name: 'jest-changed',
+      perBase: true,
+      command: 'npm run test:changed -- --runInBand --watchman=false',
+      env: { JEST_CHANGED_SINCE: '' },
+    },
     { name: 'db-contracts', command: DB_CONTRACTS },
 
     // ---- verify:pr, only when the commit changes that surface since origin/master.
     { name: 'site', command: 'npm run docs:build && npm run docs:check', when: SITE },
     { name: 'ci-contracts', command: CI_CONTRACTS, when: ['.circleci/'] },
+    // A bad version pin fails before merge rather than at publication (offline, 0.1 s).
+    { name: 'mobile-versions', command: 'node scripts/mobile-release.js verify --app all', inputs: MOBILE_VERSIONS, when: MOBILE_VERSIONS },
     { name: 'meditation', command: MEDITATION_CHECKS, when: MEDITATION, releaseAlways: true, requires: MEDITATION_DEPS },
     { name: 'edge-functions', command: EDGE_CHECKS, when: EDGE, releaseAlways: true, specialised: true, requires: DENO },
 
@@ -149,7 +192,7 @@ export default {
       specialised: true,
       requires: {
         command: 'docker info',
-        hint: 'start Docker (disposable local Supabase) and install Chromium (`npx playwright install chromium`), or pass --external e2e-backend=<manual CircleCI pipeline>',
+        hint: 'start Docker (disposable local Supabase) and install Chromium (`npx playwright install chromium`), or pass --external e2e-backend="https://<manual CircleCI pipeline> on <SHA>"',
       },
     },
     {

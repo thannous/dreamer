@@ -56,10 +56,9 @@ describe('verify-local.config.mjs', () => {
   });
 
   it('runs every step of the CircleCI portfolio on a published master commit', () => {
-    // On master nothing changed since origin/master, so `when` checks are out of
-    // scope unless releaseAlways makes the release run them anyway.
+    // A release runs every release check, `when` ones included.
     const release = config.checks
-      .filter((check) => (check.kinds ?? ['pr', 'release']).includes('release') && (!check.when || check.releaseAlways))
+      .filter((check) => (check.kinds ?? ['pr', 'release']).includes('release'))
       .map((check) => check.command)
       .join('\n');
     const ci = circleciCommands();

@@ -104,7 +104,7 @@ types ni le lint (leurs entrées ignorent le Markdown, `doc_web_interne/`,
 rien. Un contrôle spécialisé impossible sur la machine (Deno absent, par
 exemple) rend la preuve `incomplete` : le lancer ailleurs (pipeline CircleCI
 manuelle, machine du propriétaire), puis relancer avec
-`--external <contrôle>=<preuve>`.
+`--external <contrôle>="https://<preuve> sur <SHA>"`.
 
 Ce contrôle qualifie une PR, pas une publication. Une publication, une branche
 `release` ou `release/*` et un tag exigent `npm run verify:release` sur le SHA
