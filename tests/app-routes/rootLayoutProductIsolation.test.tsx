@@ -136,6 +136,7 @@ describe('root product composition (real root and DreamsProvider)', () => {
   // otherwise keep firing into a route Dreamer no longer has.
   it.each([
     ['android', false, ['lucid-reminder', 'lucid-cue']],
+    ['ios', false, ['lucid-reminder', 'lucid-cue']],
     ['android', true, []],
     ['web', false, []],
   ] as const)('clears notifications left by the former in-app Lucid trainer (%s, lucid=%s)', async (platform, lucid, cancelled) => {
