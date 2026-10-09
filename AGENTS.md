@@ -214,6 +214,8 @@ lockfile and additionally requires `mise exec -- npm ci` in `apps/meditation`.
 - Install: `npm ci` (reproducible), `npm install` (update), `npx expo install <package>` (Expo-compatible package).
 - Run: `npm run start`, `npm run web`, `npm run android`, `npm run ios`.
 - Runtime modes: `npm run start:mock`, `npm run start:real`, `npm run start:teststore`, `npm run start:playstore`, `npm run start:supabase`.
+- Expo Go: run `NOCTALIA_DISABLE_RC_WEB_STUB=1 npm run start -- --go` so Metro bundles RevenueCat's real web SDK (Expo Go runs
+  react-native-purchases in browser mode). Local Expo Go only; EAS builds ignore it (`EAS_BUILD`). No npm script: `package.json` scripts feed the runtime fingerprint.
 - Diagnose: `npx expo-doctor`.
 - Mobile release: follow [MOBILE_VERSIONING.md](doc_web_interne/docs/MOBILE_VERSIONING.md); use `release:build` for its local checks and pinned EAS CLI.
 - Local Android Release: Java 17 and Android SDK are required. The runner checks Java before build preparation; see [tooling prerequisites](scripts/README.md#local-android-prerequisites).
