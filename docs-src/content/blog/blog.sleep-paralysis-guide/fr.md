@@ -5,7 +5,7 @@
   "lang": "fr",
   "slug": "guide-paralysie-sommeil",
   "title": "Paralysie du sommeil : causes et solutions efficaces | Noctalia",
-  "description": "Comprenez enfin la paralysie du sommeil. Causes, hallucinations et techniques prouvées pour prévenir et arrêter les épisodes.",
+  "description": "Impossible de bouger au réveil, une présence dans la chambre ? Les causes de la paralysie du sommeil, comment en sortir et quand consulter un médecin.",
   "robots": "max-image-preview:large",
   "themeColor": "#0a0514",
   "htmlClass": "scroll-smooth blog-article",
@@ -14,25 +14,25 @@
   "mainClass": "pt-32 pb-20 px-4",
   "ogType": "article",
   "ogTitle": "Paralysie du sommeil : causes et solutions efficaces | Noctalia",
-  "ogDescription": "Causes, hallucinations et techniques prouvées pour arrêter les épisodes.",
+  "ogDescription": "Éveillé mais incapable de bouger : ce qu'est la paralysie du sommeil, pourquoi la présence semble si réelle, et ce qui aide vraiment.",
   "ogImage": "https://noctalia.app/img/blog/sleep-paralysis-guide.webp",
   "ogImageAlt": "Illustration évocatrice d'un réveil nocturne lié à la paralysie du sommeil",
   "twitterCard": "summary_large_image",
   "twitterTitle": "Paralysie du sommeil : causes et solutions efficaces | Noctalia",
-  "twitterDescription": "Techniques prouvées pour prévenir et arrêter les épisodes.",
+  "twitterDescription": "Effrayante mais sans danger : ce qui se passe dans le cerveau pendant une paralysie du sommeil, et comment en sortir.",
   "twitterImage": "https://noctalia.app/img/blog/sleep-paralysis-guide.webp",
   "twitterImageAlt": "Illustration évocatrice d'un réveil nocturne lié à la paralysie du sommeil",
   "publishedTime": "2025-12-11",
-  "modifiedTime": "2026-01-06",
+  "modifiedTime": "2026-10-08",
   "author": "Thanh Chau",
   "prevPath": "/fr/blog/guide-cauchemars",
   "nextPath": "/fr/blog/guide-journal-reves",
   "preloadImage": "/img/blog/sleep-paralysis-guide.webp",
   "jsonLd": [
-    "{\n  \"@context\": \"https://schema.org\",\n  \"@type\": \"BlogPosting\",\n  \"headline\": \"Paralysie du sommeil : pourquoi vous ne pouvez plus bouger et comment en sortir\",\n  \"description\": \"Guide complet pour comprendre la paralysie du sommeil, ses causes et les techniques prouvées pour prévenir les épisodes.\",\n  \"image\": {\n    \"@type\": \"ImageObject\",\n    \"url\": \"https://noctalia.app/img/blog/sleep-paralysis-guide.webp\",\n    \"width\": 1200,\n    \"height\": 630\n  },\n  \"author\": [\n    {\n      \"@type\": \"Person\",\n      \"@id\": \"https://noctalia.app/fr/a-propos#person\",\n      \"name\": \"Thanh Chau\",\n      \"jobTitle\": \"Founder & Publication Director\",\n      \"url\": \"https://noctalia.app/fr/a-propos\",\n      \"worksFor\": {\n        \"@type\": \"Organization\",\n        \"@id\": \"https://noctalia.app/#organization\",\n        \"name\": \"Noctalia\",\n        \"url\": \"https://noctalia.app\"\n      }\n    },\n    {\n      \"@type\": \"Organization\",\n      \"@id\": \"https://noctalia.app/#organization\",\n      \"name\": \"Noctalia\",\n      \"url\": \"https://noctalia.app\",\n      \"logo\": {\n        \"@type\": \"ImageObject\",\n        \"url\": \"https://noctalia.app/logo/logo_noctalia.png\"\n      }\n    }\n  ],\n  \"publisher\": {\n    \"@type\": \"Organization\",\n    \"name\": \"Noctalia\",\n    \"url\": \"https://noctalia.app\",\n    \"logo\": {\n      \"@type\": \"ImageObject\",\n      \"url\": \"https://noctalia.app/logo/logo_noctalia.png\"\n    }\n  },\n  \"datePublished\": \"2025-12-11\",\n  \"dateModified\": \"2026-01-06\",\n  \"mainEntityOfPage\": {\n    \"@type\": \"WebPage\",\n    \"@id\": \"https://noctalia.app/fr/blog/guide-paralysie-sommeil\"\n  },\n  \"inLanguage\": \"fr\",\n  \"isAccessibleForFree\": true,\n  \"wordCount\": 1325,\n  \"timeRequired\": \"PT5M\",\n  \"url\": \"https://noctalia.app/fr/blog/guide-paralysie-sommeil\"\n}",
+    "{\n    \"@context\": \"https://schema.org\",\n    \"@type\": \"BlogPosting\",\n    \"headline\": \"Paralysie du sommeil : pourquoi vous ne pouvez plus bouger et comment en sortir\",\n    \"description\": \"Impossible de bouger au réveil, une présence dans la chambre ? Les causes de la paralysie du sommeil, comment en sortir et quand consulter un médecin.\",\n    \"image\": {\n        \"@type\": \"ImageObject\",\n        \"url\": \"https://noctalia.app/img/blog/sleep-paralysis-guide.webp\",\n        \"width\": 1200,\n        \"height\": 630\n    },\n    \"author\": [\n        {\n            \"@type\": \"Person\",\n            \"@id\": \"https://noctalia.app/fr/a-propos#person\",\n            \"name\": \"Thanh Chau\",\n            \"jobTitle\": \"Founder & Publication Director\",\n            \"url\": \"https://noctalia.app/fr/a-propos\",\n            \"worksFor\": {\n                \"@type\": \"Organization\",\n                \"@id\": \"https://noctalia.app/#organization\",\n                \"name\": \"Noctalia\",\n                \"url\": \"https://noctalia.app\"\n            }\n        },\n        {\n            \"@type\": \"Organization\",\n            \"@id\": \"https://noctalia.app/#organization\",\n            \"name\": \"Noctalia\",\n            \"url\": \"https://noctalia.app\",\n            \"logo\": {\n                \"@type\": \"ImageObject\",\n                \"url\": \"https://noctalia.app/logo/logo_noctalia.png\"\n            }\n        }\n    ],\n    \"publisher\": {\n        \"@type\": \"Organization\",\n        \"name\": \"Noctalia\",\n        \"url\": \"https://noctalia.app\",\n        \"logo\": {\n            \"@type\": \"ImageObject\",\n            \"url\": \"https://noctalia.app/logo/logo_noctalia.png\"\n        }\n    },\n    \"datePublished\": \"2025-12-11\",\n    \"dateModified\": \"2026-10-08\",\n    \"mainEntityOfPage\": {\n        \"@type\": \"WebPage\",\n        \"@id\": \"https://noctalia.app/fr/blog/guide-paralysie-sommeil\"\n    },\n    \"inLanguage\": \"fr\",\n    \"isAccessibleForFree\": true,\n    \"wordCount\": 2583,\n    \"timeRequired\": \"PT12M\",\n    \"url\": \"https://noctalia.app/fr/blog/guide-paralysie-sommeil\"\n}",
     "{\n  \"@context\": \"https://schema.org\",\n  \"@type\": \"WebPage\",\n  \"@id\": \"https://noctalia.app/fr/blog/guide-paralysie-sommeil\",\n  \"url\": \"https://noctalia.app/fr/blog/guide-paralysie-sommeil\",\n  \"name\": \"Paralysie du sommeil : causes et solutions efficaces | Noctalia\",\n  \"inLanguage\": \"fr\"\n}",
-    "{\n  \"@context\": \"https://schema.org\",\n  \"@type\": \"FAQPage\",\n  \"mainEntity\": [\n    {\n      \"@type\": \"Question\",\n      \"name\": \"La paralysie du sommeil est-elle dangereuse ?\",\n      \"acceptedAnswer\": {\n        \"@type\": \"Answer\",\n        \"text\": \"Non, la paralysie du sommeil n'est pas dangereuse. Bien que l'expérience puisse être terrifiante, c'est une condition bénigne qui ne cause pas de dommage physique. Les épisodes durent généralement de quelques secondes à deux minutes et se terminent d'eux-mêmes.\"\n      }\n    },\n    {\n      \"@type\": \"Question\",\n      \"name\": \"Peut-on mourir de paralysie du sommeil ?\",\n      \"acceptedAnswer\": {\n        \"@type\": \"Answer\",\n        \"text\": \"Non, la paralysie du sommeil ne peut pas causer la mort. Malgré la sensation terrifiante de ne pas pouvoir respirer, votre corps continue de respirer automatiquement. La sensation de pression sur la poitrine est une hallucination, pas une restriction respiratoire réelle.\"\n      }\n    },\n    {\n      \"@type\": \"Question\",\n      \"name\": \"Comment arrêter une paralysie du sommeil immédiatement ?\",\n      \"acceptedAnswer\": {\n        \"@type\": \"Answer\",\n        \"text\": \"Pour sortir de la paralysie du sommeil, concentrez-vous sur le mouvement de petites parties du corps comme vos doigts ou orteils. Essayez de les bouger ou de fermer le poing. Certaines personnes trouvent que se concentrer sur la respiration ou essayer de faire un petit son aide. Restez calme et rappelez-vous que l'épisode se terminera bientôt.\"\n      }\n    }\n  ]\n}",
-    "{\n  \"@context\": \"https://schema.org\",\n  \"@type\": \"BreadcrumbList\",\n  \"itemListElement\": [\n    {\n      \"@type\": \"ListItem\",\n      \"position\": 1,\n      \"name\": \"Accueil\",\n      \"item\": \"https://noctalia.app/fr/\"\n    },\n    {\n      \"@type\": \"ListItem\",\n      \"position\": 2,\n      \"name\": \"Ressources\",\n      \"item\": \"https://noctalia.app/fr/blog/\"\n    },\n    {\n      \"@type\": \"ListItem\",\n      \"position\": 3,\n      \"name\": \"Guide paralysie du sommeil\",\n      \"item\": \"https://noctalia.app/fr/blog/guide-paralysie-sommeil\"\n    }\n  ]\n}"
+    "{\n    \"@context\": \"https://schema.org\",\n    \"@type\": \"FAQPage\",\n    \"mainEntity\": [\n        {\n            \"@type\": \"Question\",\n            \"name\": \"La paralysie du sommeil est-elle dangereuse ?\",\n            \"acceptedAnswer\": {\n                \"@type\": \"Answer\",\n                \"text\": \"Non. Elle est effrayante mais sans danger en elle-même, et elle prend fin toute seule, en général en quelques secondes à quelques minutes. Si les épisodes sont fréquents ou vous font redouter le coucher, parlez-en à un médecin.\"\n            }\n        },\n        {\n            \"@type\": \"Question\",\n            \"name\": \"Peut-on mourir d'une paralysie du sommeil ?\",\n            \"acceptedAnswer\": {\n                \"@type\": \"Answer\",\n                \"text\": \"Non, la paralysie du sommeil ne peut pas entraîner la mort. Même quand la poitrine semble écrasée, la respiration continue automatiquement pendant tout l'épisode. Le poids est une sensation, pas une obstruction.\"\n            }\n        },\n        {\n            \"@type\": \"Question\",\n            \"name\": \"Comment sortir d'une paralysie du sommeil ?\",\n            \"acceptedAnswer\": {\n                \"@type\": \"Answer\",\n                \"text\": \"Essayez un tout petit mouvement : un doigt, un orteil, serrer le poing. Respirez lentement et rappelez-vous que c'est passager. Si lutter aggrave la peur, faites l'inverse : cessez de vous débattre, concentrez-vous sur quelque chose de neutre et laissez vos muscles se relâcher jusqu'à ce que ça passe.\"\n            }\n        },\n        {\n            \"@type\": \"Question\",\n            \"name\": \"La présence ressentie pendant une paralysie du sommeil est-elle réelle ?\",\n            \"acceptedAnswer\": {\n                \"@type\": \"Answer\",\n                \"text\": \"Non. La présence, la silhouette et les bruits de pas font partie des hallucinations les plus courantes de la paralysie du sommeil, décrites dans de nombreuses cultures. Elles viennent d'images de rêve qui se mêlent à l'éveil, à un moment où le cerveau est en alerte.\"\n            }\n        }\n    ]\n}",
+    "{\n    \"@context\": \"https://schema.org\",\n    \"@type\": \"BreadcrumbList\",\n    \"itemListElement\": [\n        {\n            \"@type\": \"ListItem\",\n            \"position\": 1,\n            \"name\": \"Accueil\",\n            \"item\": \"https://noctalia.app/fr/\"\n        },\n        {\n            \"@type\": \"ListItem\",\n            \"position\": 2,\n            \"name\": \"Ressources\",\n            \"item\": \"https://noctalia.app/fr/blog/\"\n        },\n        {\n            \"@type\": \"ListItem\",\n            \"position\": 3,\n            \"name\": \"Paralysie du sommeil\",\n            \"item\": \"https://noctalia.app/fr/blog/guide-paralysie-sommeil\"\n        }\n    ]\n}"
   ],
   "activeNav": "resources"
 }
@@ -64,13 +64,13 @@
 <a class="text-xs font-mono text-purple-200/70 border border-white/10 rounded-full px-3 py-1 hover:text-white hover:border-dream-salmon/30 transition-colors" href="reve-lucide">Thématique : Rêve lucide</a>
 <span aria-hidden="true" class="w-full sm:hidden"></span>
 <span class="text-sm text-purple-300/60">Publié le 11 décembre 2025</span>
-<span class="text-sm text-purple-300/60">5 min de lecture</span>
+<span class="text-sm text-purple-300/60">12 min de lecture</span>
 </div>
 <h1 class="font-serif text-3xl md:text-5xl mb-6 text-transparent bg-clip-text bg-gradient-to-b from-white via-dream-lavender to-purple-400/50 leading-tight">
-                    Paralysie du sommeil : pourquoi vous ne pouvez plus bouger et comment en sortir
+                    Paralysie du sommeil : pourquoi vous ne pouvez plus bouger et comment en sortir
                 </h1>
 <p class="text-lg text-purple-200/80 leading-relaxed">
-                    Vous vous réveillez mais ne pouvez pas bouger. Une présence sombre rode dans la pièce. Votre poitrine semble écrasée. C'est la paralysie du sommeil - un phénomène terrifiant mais inoffensif qui touche jusqu'à 8% de la population. Voici tout ce que la science sait à ce sujet.
+                    Vos yeux s'ouvrent. La chambre est là, mais votre corps ne répond plus. Quelqu'un semble se tenir près du lit, et un poids vous écrase la poitrine. C'est la paralysie du sommeil : un raté bref, terrifiant et sans danger entre le rêve et l'éveil. Voici ce qui se passe, ce qui peut aider sur le moment, et comment rendre les épisodes plus rares.
                 </p>
 </header>
 <!-- Author Byline (E-E-A-T) -->
@@ -87,7 +87,7 @@
 <!-- Quick Answer (AI SEO) -->
 <section class="glass-panel rounded-2xl p-6 mb-8 border border-dream-salmon/20 bg-white/5" aria-labelledby="quick-answer-title">
     <h2 id="quick-answer-title" class="font-serif text-xl text-dream-cream mb-3">Réponse rapide</h2>
-    <p class="text-purple-100/80 leading-relaxed">Comprenez enfin la paralysie du sommeil. Causes, hallucinations et techniques prouvées pour prévenir et arrêter les épisodes.</p>
+    <p class="text-purple-100/80 leading-relaxed">La paralysie du sommeil survient quand vous vous réveillez, ou commencez à vous endormir, alors que le relâchement musculaire du sommeil paradoxal est encore actif. Vous êtes conscient mais ne pouvez ni bouger ni parler, en général de quelques secondes à quelques minutes. La présence, le poids sur la poitrine et l'impression de flotter sont des images de rêve qui débordent sur l'éveil. Ce n'est pas dangereux. Un sommeil suffisant et régulier et moins de stress rendent les épisodes plus rares ; consultez s'ils sont fréquents ou s'accompagnent d'une forte somnolence dans la journée.</p>
 </section>
 
 <!-- Editorial Review (E-E-A-T) -->
@@ -116,95 +116,83 @@
 <i class="w-5 h-5 text-dream-salmon" data-lucide="list"></i> Sommaire
                 </h2>
 <ol class="space-y-2 text-sm text-purple-200/70">
-<li><a class="toc-link block" href="#quest-ce-que">1. Qu'est-ce que la paralysie du sommeil</a></li>
-<li><a class="toc-link block" href="#symptomes">2. Symptômes de la paralysie du sommeil</a></li>
-<li><a class="toc-link block" href="#science">3. Explication scientifique de la paralysie</a></li>
-<li><a class="toc-link block" href="#causes">4. Causes et facteurs déclencheurs</a></li>
-<li><a class="toc-link block" href="#hallucinations">5. Pourquoi voit-on des présences</a></li>
-<li><a class="toc-link block" href="#arreter">6. Comment sortir d'une paralysie</a></li>
-<li><a class="toc-link block" href="#prevenir">7. Comment éviter la paralysie du sommeil</a></li>
-<li><a class="toc-link block" href="#quand-consulter">8. Quand consulter un médecin</a></li>
+<li><a class="toc-link block" href="#quest-ce-que">1. Qu'est-ce que la paralysie du sommeil ?</a></li>
+<li><a class="toc-link block" href="#symptomes">2. Que ressent-on pendant un épisode ?</a></li>
+<li><a class="toc-link block" href="#science">3. Que se passe-t-il dans le cerveau ?</a></li>
+<li><a class="toc-link block" href="#causes">4. Qu'est-ce qui favorise les épisodes ?</a></li>
+<li><a class="toc-link block" href="#hallucinations">5. Pourquoi cette présence, ce poids, ce flottement ?</a></li>
+<li><a class="toc-link block" href="#arreter">6. Que faire pendant un épisode ?</a></li>
+<li><a class="toc-link block" href="#prevenir">7. Comment espacer les épisodes ?</a></li>
+<li><a class="toc-link block" href="#quand-consulter">8. Quand consulter un médecin ?</a></li>
 </ol>
 </nav>
 <!-- Article Content -->
 <div class="prose max-w-none text-gray-300">
-<h2 id="quest-ce-que">Qu'est-ce que la paralysie du sommeil et comment la reconnaître</h2>
+<h2 id="quest-ce-que">Qu'est-ce que la paralysie du sommeil ?</h2>
 <p>
-                    La paralysie du sommeil est une incapacité temporaire à bouger ou parler qui survient <strong>au réveil ou à l'endormissement</strong>. Pendant un épisode, vous êtes pleinement conscient mais votre corps reste dans l'état paralyse du <a class="text-dream-salmon hover:underline" href="sommeil-paradoxal-reves">sommeil paradoxal</a>. Cette déconnexion entre l'esprit et le corps crée l'une des expériences les plus effrayantes du sommeil humain.
+                    La paralysie du sommeil est un court moment, <strong>juste après le réveil ou juste avant l'endormissement</strong>, pendant lequel vous êtes conscient sans pouvoir bouger ni parler. Votre esprit a refait surface, mais votre corps est encore dans l'état du <a class="text-dream-salmon hover:underline" href="sommeil-paradoxal-reves">sommeil paradoxal</a>, la phase des rêves les plus vivants, où la plupart des muscles sont mis au repos.
                 </p>
 <p>
-                    Ce phénomène est documente à travers l'histoire humaine, souvent attribue à des causes surnaturelles :
+                    C'est plus courant qu'on ne le croit. Une revue systématique de Sharpless et Barber, qui regroupe 35 études, estime qu'<strong>environ 7,6 % de la population générale</strong> a vécu au moins un épisode, et jusqu'à 28,3 % des étudiants et 31,9 % des patients suivis en psychiatrie.
+                </p>
+<p>
+                    Bien avant qu'on la mesure, de nombreuses cultures lui ont donné un nom et un coupable :
                 </p>
 <ul>
-<li><strong>Europe médiévale :</strong> Attribue à des démons ou "cauchemars" assis sur la poitrine</li>
-<li><strong>Japon :</strong> Appelé "kanashibari", signifiant lié par le métal</li>
-<li><strong>Terre-Neuve :</strong> Connu comme le syndrome de la "Vieille Sorcière"</li>
-<li><strong>Brésil :</strong> Attribue a "Pisadeira", une vieille femme qui piétine les dormeurs</li>
+<li><strong>En français :</strong> le mot <em>cauchemar</em> vient de l'ancien verbe <em>cauchier</em>, « presser », et de <em>mare</em>, un fantôme nocturne. Le cauchemar était d'abord cet être qui pèse sur la poitrine du dormeur.</li>
+<li><strong>À Terre-Neuve :</strong> on parle de l'<em>Old Hag</em>, la « vieille sorcière » qui s'assoit sur les dormeurs.</li>
+<li><strong>Au Japon :</strong> <em>kanashibari</em>, littéralement « lié par le métal ».</li>
+<li><strong>Au Brésil :</strong> la Pisadeira, une vieille femme qui piétine la poitrine des dormeurs.</li>
 </ul>
 <p>
-                    Aujourd'hui, la science à une explication claire pour ce phénomène, et le comprendre peut aider à réduire la peur associée aux épisodes.
+                    Ces récits décrivent l'expérience avec une grande justesse, mais ils ne prouvent pas que quelque chose vous rend visite la nuit.
                 </p>
-<h2 id="symptomes">Symptômes de la paralysie du sommeil : que ressent-on</h2>
+<h2 id="symptomes">Que ressent-on pendant un épisode ?</h2>
 <p>
-                    Les épisodes de paralysie du sommeil incluent généralement plusieurs symptômes distincts :
+                    Un épisode commence en général de deux façons. Soit vous sortez d'un rêve et votre corps ne répond plus, soit vous êtes en train de vous endormir et vous vous sentez « verrouillé » alors que vous êtes encore conscient.
                 </p>
-<h3>Symptômes physiques de la paralysie nocturne</h3>
+<h3>Dans le corps</h3>
 <ul>
-<li><strong>Paralysie musculaire complète :</strong> Incapacité de bouger les membres, le torse ou la tete</li>
-<li><strong>Pression thoracique :</strong> Sensation de poids sur la poitrine, difficulté à respirer</li>
-<li><strong>Mouvement des yeux préserve :</strong> Souvent le seul mouvement volontaire possible</li>
-<li><strong>Parole impossible :</strong> Incapacité d'appeler à l'aide ou de faire des sons</li>
+<li><strong>Impossible de bouger</strong> les bras, les jambes ou la tête, malgré tous vos efforts.</li>
+<li><strong>Impossible de parler</strong> ou d'appeler. Parfois les yeux bougent ou s'ouvrent, parfois non.</li>
+<li><strong>Un poids sur la poitrine</strong>, comme si quelque chose appuyait dessus, et une respiration qui semble courte.</li>
 </ul>
-<h3>Hallucinations pendant la paralysie du sommeil</h3>
+<h3>Dans ce que vous percevez</h3>
 <ul>
-<li><strong>Sens d'une présence :</strong> Sentiment que quelqu'un ou quelque chose est dans la pièce</li>
-<li><strong>Hallucinations visuelles :</strong> Figures d'ombre, intrus ou entités surnaturelles</li>
-<li><strong>Hallucinations auditives :</strong> Pas, respiration, chuchotements ou bourdonnements</li>
-<li><strong>Sensations de sortie de corps :</strong> Impression de flotter ou de se voir d'en haut</li>
-</ul>
-<blockquote>
-                    "J'ai senti quelque chose s'asseoir sur mon lit. Je ne pouvais pas bouger, pas crier. Une figure sombre s'est penchée sur moi. Ça a semble durer une éternité, mais c'était probablement 30 secondes." - Témoignage courant
-                </blockquote>
-<h2 id="science">Explication scientifique de la paralysie du sommeil</h2>
-<p>
-                    La paralysie du sommeil survient pendant les <strong>transitions entre les phases de sommeil</strong>, impliquant spécifiquement le <a class="text-dream-salmon hover:underline" href="sommeil-paradoxal-reves">sommeil paradoxal</a> (REM). Voici ce qui se passe dans votre cerveau :
-                </p>
-<p>
-                    Pendant le sommeil paradoxal normal, votre cerveau paralyse vos muscles par un processus appelé <strong>atonie REM</strong>. Cela vous empêche d'agir vos rêves - un mécanisme de sécurité crucial. La paralysie du sommeil survient quand cette atonie persiste dans l'éveil ou commence avant que vous ne soyez complètement endormi.
-                </p>
-<h3>Mécanisme cérébral de la paralysie du sommeil</h3>
-<ul>
-<li>La <strong>zone preoptique ventrolaterale</strong> échoue à transitionner correctement entre les états de sommeil et d'éveil</li>
-<li>Les neurotransmetteurs <strong>glycine et GABA</strong> continuent de supprimer les neurones moteurs</li>
-<li>L'<strong>amygdale</strong> (centre de la peur) devient hyperactive, expliquant la terreur</li>
-<li>L'activité du <strong>cortex préfrontal</strong> augmente, créant la conscience pendant la paralysie</li>
+<li><strong>Une présence :</strong> quelqu'un, ou quelque chose, est dans la chambre.</li>
+<li><strong>Des images :</strong> une <a class="text-dream-salmon hover:underline" href="../symboles/ombre">ombre</a> dans un coin, une silhouette près de la porte ou penchée sur le lit.</li>
+<li><strong>Des sons :</strong> des pas, une respiration, des chuchotements, un bourdonnement.</li>
+<li><strong>Des sensations corporelles :</strong> flotter, tourner, <a class="text-dream-salmon hover:underline" href="../symboles/chute">tomber</a>, ou se voir d'en haut.</li>
 </ul>
 <p>
-                    Une recherche de l'Université de Waterloo a trouve que la paralysie du sommeil survient chez environ <strong>7,6% de la population générale</strong>, avec des taux plus eleves chez les étudiants (28,3%) et les patients psychiatriques (31,9%).
+                    Selon la Sleep Foundation, environ 75 % des épisodes s'accompagnent d'hallucinations de ce type. Un épisode dure en général de quelques secondes à plusieurs minutes et prend fin de lui-même, parfois dès que vous parvenez à faire un mouvement ou que quelqu'un vous touche ou vous parle.
                 </p>
-<h2 id="causes">Causes de la paralysie du sommeil : facteurs déclencheurs</h2>
+<h2 id="science">Que se passe-t-il dans le cerveau ?</h2>
 <p>
-                    Bien que n'importe qui puisse expérimenter la paralysie du sommeil, certains facteurs augmentent nettement la probabilité :
+                    Pendant le sommeil paradoxal, le tronc cérébral relâche activement la plupart des muscles du corps. Cette <strong>atonie musculaire</strong> vous empêche de mimer vos rêves. La respiration et les mouvements des yeux, eux, continuent.
                 </p>
-<h3>Manque de sommeil et horaires irréguliers</h3>
+<p>
+                    La paralysie du sommeil est un <strong>état mixte</strong> : une partie du cerveau s'est réveillée alors que l'atonie, et parfois les images du rêve, sont toujours là. Comme le résume le NHS, le service de santé britannique, les muscles restent inertes pendant que le cerveau est actif. Pourquoi ce passage de relais entre sommeil et éveil se dérègle certaines nuits fait encore l'objet de recherches.
+                </p>
+<p>
+                    C'est ce qui rend l'expérience si réelle : vous êtes assez éveillé pour voir votre chambre, et encore assez endormi pour que des images de rêve s'y superposent. Voir des choses pendant un épisode ne signifie pas que vous « perdez la tête ».
+                </p>
+<h2 id="causes">Qu'est-ce qui favorise les épisodes ?</h2>
+<p>
+                    Tout le monde peut en vivre un, et il y a rarement une cause unique. Une revue systématique de 42 études, menée par Denis, French et Gregory (2018), relève des liens avec un sommeil perturbé, le stress et les expériences traumatiques, les symptômes anxieux, la consommation de substances et certains troubles psychiatriques. L'association la plus forte concerne le trouble de stress post-traumatique. Des antécédents familiaux jouent aussi un rôle, selon le NHS.
+                </p>
+<h3>Un sommeil trop court ou décalé</h3>
 <ul>
-<li><strong>Manque de sommeil :</strong> Le déclencheur le plus courant</li>
-<li><strong>Horaires de sommeil irréguliers :</strong> Travail poste, décalage horaire, heures de coucher inconsistantes</li>
-<li><strong>Dormir sur le dos :</strong> La position supine augmente la fréquence des épisodes</li>
-<li><strong>Narcolepsie :</strong> La paralysie du sommeil est un symptôme clé de ce trouble</li>
+<li><strong>Le manque de sommeil</strong>, surtout plusieurs nuits courtes d'affilée.</li>
+<li><strong>Des horaires irréguliers :</strong> travail posté, décalage horaire, grasses matinées qui décalent tout le week-end.</li>
+<li><strong>Dormir sur le dos</strong>, qui rend les épisodes plus probables selon le NHS.</li>
+<li><strong>D'autres troubles du sommeil :</strong> insomnie, apnée du sommeil, et narcolepsie, dont la paralysie du sommeil est un symptôme reconnu.</li>
 </ul>
-<h3>Stress et anxiété comme déclencheurs</h3>
+<h3>Le stress et la santé mentale</h3>
 <ul>
-<li><strong>Stress et anxiété :</strong> Forte corrélation avec la fréquence des épisodes</li>
-<li><strong>Consommation de substances :</strong> Alcool, caféine et certains médicaments</li>
-<li><strong>Mauvaise hygiène de sommeil :</strong> Utilisation d'écrans avant le coucher, environnement de sommeil inconfortable</li>
-</ul>
-<h3>Troubles du sommeil associés à la paralysie</h3>
-<ul>
-<li><strong>Apnée du sommeil :</strong> Interruptions de la respiration pendant le sommeil</li>
-<li><strong>TSPT :</strong> Le stress post-traumatique augmente la vulnérabilité</li>
-<li><strong>Troubles anxieux :</strong> Particulièrement le trouble panique</li>
-<li><strong>Trouble bipolaire :</strong> Associe à des patterns de sommeil perturbes</li>
+<li><strong>Les périodes de stress intense</strong> ou de bouleversement.</li>
+<li><strong>Les troubles anxieux</strong>, en particulier le trouble panique, et le <strong>stress post-traumatique</strong>.</li>
+<li><strong>L'alcool et certaines substances</strong>, mais aussi l'arrêt brutal de l'alcool ou de certains antidépresseurs, qui peut perturber le sommeil paradoxal.</li>
 </ul>
 </div>
 <!-- Symptom Cards -->
@@ -214,132 +202,132 @@
 <div class="p-2 bg-purple-500/20 rounded-lg">
 <i class="w-5 h-5 text-purple-300" data-lucide="moon"></i>
 </div>
-<h3 class="font-serif text-lg text-dream-cream">Hypnopompique</h3>
+<h3 class="font-serif text-lg text-dream-cream">Au réveil (hypnopompique)</h3>
 </div>
 <p class="text-sm text-gray-300 mb-3">
-                        Survient au réveil. Le type le plus courant. Votre esprit se réveille avant que votre corps ne soit libère de l'atonie REM.
+                        Vous sortez d'un rêve et votre esprit se réveille avant vos muscles. Le rêve peut sembler se prolonger dans la chambre autour de vous.
                     </p>
-<p class="text-xs text-dream-salmon">~90% des épisodes</p>
+<p class="text-xs text-dream-salmon">À noter : de quoi rêviez-vous juste avant ?</p>
 </div>
 <div class="symptom-card glass-panel rounded-xl p-6 border border-transparent">
 <div class="flex items-center gap-3 mb-4">
 <div class="p-2 bg-purple-500/20 rounded-lg">
 <i class="w-5 h-5 text-purple-300" data-lucide="sunset"></i>
 </div>
-<h3 class="font-serif text-lg text-dream-cream">Hypnagogique</h3>
+<h3 class="font-serif text-lg text-dream-cream">À l'endormissement (hypnagogique)</h3>
 </div>
 <p class="text-sm text-gray-300 mb-3">
-                        Survient à l'endormissement. Moins courant mais souvent plus intense. L'atonie REM commence alors que vous êtes encore conscient.
+                        Vous glissez dans le sommeil et sentez votre corps devenir lourd et immobile alors que vous êtes pleinement conscient. Des images et des sons peuvent apparaître avant même que vous dormiez.
                     </p>
-<p class="text-xs text-dream-salmon">~10% des épisodes</p>
+<p class="text-xs text-dream-salmon">À noter : combien aviez-vous dormi les nuits précédentes ?</p>
 </div>
 </div>
 <div class="prose max-w-none text-gray-300">
-<h2 id="hallucinations">Pourquoi voit-on des présences pendant la paralysie</h2>
+<h2 id="hallucinations">Pourquoi cette présence, ce poids, ce flottement ?</h2>
 <p>
-                    Ces hallucinations ne sont pas aléatoires - elles suivent des schémas prévisibles expliqués par les neurosciences :
+                    Les images de la paralysie du sommeil se ressemblent étonnamment d'une personne à l'autre. Le psychologue J. Allan Cheyne et ses collègues les ont regroupées en trois familles. Leurs explications restent des hypothèses, mais elles aident à comprendre ce que vous avez vécu.
                 </p>
-<h3>Sensation de présence malveillante expliquée</h3>
+<h3>L'intrus : quelqu'un est dans la chambre</h3>
 <p>
-                    Ce sentiment de présence menaçante résulte de l'<strong>hyperactivation de votre amygdale</strong>. Normalement, le cortex préfrontal modère les réponses de peur, mais pendant la paralysie du sommeil, cette régulation échoue. Votre cerveau interprète la paralysie comme une menace et crée une source pour ce danger.
+                    Une présence, des pas, une silhouette, et souvent une peur intense. Une explication avancée : le système de détection de la menace reste actif pendant le sommeil paradoxal. Éveillé, immobile et en alerte, le cerveau cherche la source du danger, et les images du rêve lui donnent une forme. Autrement dit, <strong>la silhouette naît de la peur</strong>, elle n'en est pas la cause.
                 </p>
-<h3>Pression sur la poitrine et difficulté à respirer</h3>
+<h3>L'incube : le poids sur la poitrine</h3>
 <p>
-                    Pression thoracique et difficulté à respirer surviennent parce que les muscles respiratoires (bien que fonctionnant toujours) semblent restreints. Votre cerveau interprète cela comme quelque chose appuyant sur vous, souvent visualisé comme une figure assise sur votre poitrine.
+                    Une pression, une sensation d'étouffement, parfois l'impression que quelqu'un est assis sur vous. En sommeil paradoxal, la respiration repose surtout sur le diaphragme, tandis que les autres muscles du thorax restent relâchés. Chercher à inspirer profondément dans cet état peut donner l'impression de lutter contre un poids. <strong>Votre respiration continue d'elle-même</strong> tout du long.
                 </p>
-<h3>Sensation de flottement et sortie de corps</h3>
+<h3>Les sensations corporelles : flotter, tomber, sortir de son corps</h3>
 <p>
-                    Sortie de corps et flottement surviennent quand le <strong>système vestibulaire</strong> du cerveau (équilibre et conscience spatiale) envoie des signaux conflictuels. Votre cerveau s'attend à un mouvement mais ne reçoit aucun retour, créant des sensations de flottement ou de quitter le corps.
+                    Flotter, voler, tourner, chuter, ou se voir d'en haut. Une explication probable tient à un décalage : les systèmes de l'équilibre et du mouvement envoient des signaux de déplacement, alors que le corps immobile n'en renvoie aucun. Il en résulte parfois l'impression de quitter son corps.
                 </p>
+<!-- CTA inline -->
 <aside class="glass-panel rounded-2xl p-6 my-8 border border-dream-salmon/20">
 <div class="flex items-start gap-4">
 <div class="p-3 bg-dream-salmon/10 rounded-xl">
 <i class="w-6 h-6 text-dream-salmon" data-lucide="book-open"></i>
 </div>
 <div>
-<h4 class="font-serif text-lg text-dream-cream mb-2">Suivez vos patterns de sommeil</h4>
-<p class="text-sm text-gray-400 mb-4">Enregistrer vos rêves et expériences de sommeil peut aider à identifier les déclencheurs de la paralysie du sommeil. Noctalia facilite l'enregistrement vocal de toute expérience nocturne des le réveil.</p>
+<h4 class="font-serif text-lg text-dream-cream mb-2">Notez l'épisode tant qu'il est frais</h4>
+<p class="text-sm text-gray-400 mb-4">Dans Noctalia, racontez à voix haute ce qui s'est passé dès que vous le pouvez : l'heure, votre position, ce que vous avez vu. Le récit est transcrit dans votre journal, et vous pouvez relire vos épisodes côte à côte pour voir ce qui les précède.</p>
 <a class="inline-flex items-center gap-2 text-sm text-dream-salmon hover:text-dream-salmonLight transition-colors" href="/fr/">
-                                Découvrir Noctalia <i class="w-4 h-4" data-lucide="arrow-right"></i>
+                                Essayer Noctalia gratuitement <i class="w-4 h-4" data-lucide="arrow-right"></i>
 </a>
 </div>
 </div>
 </aside>
-<h2 id="arreter">Comment sortir d'une paralysie du sommeil rapidement</h2>
+<h2 id="arreter">Que faire pendant un épisode ?</h2>
 <p>
-                    Quand vous vous trouvez en paralysie du sommeil, ces techniques peuvent vous aider a vous libérer :
+                    Savoir ce qui se passe enlève déjà une partie de la peur : un épisode est effrayant, pas dangereux, et il se termine de lui-même. Aucune de ces approches ne marche pour tout le monde ; gardez ce qui vous aide.
                 </p>
-<h3>Techniques pour se libérer de la paralysie</h3>
-<ol>
-<li><strong>Concentrez-vous sur les petits mouvements :</strong> Concentrez-vous sur le mouvement de vos doigts, orteils ou muscles faciaux. Ceux-ci brisent souvent la paralysie</li>
-<li><strong>Contrôlez votre respiration :</strong> Prenez des respirations lentes et profondes. Cela active votre système nerveux parasympathique</li>
-<li><strong>Essayez de faire un son :</strong> Tentez de fredonner, grognez ou faites n'importe quel bruit vocal</li>
-<li><strong>Mouvement rapide des yeux :</strong> Bougez vos yeux rapidement d'avant en arrière</li>
-</ol>
-<h3>Calmer la panique pendant la paralysie du sommeil</h3>
-<ul>
-<li><strong>Restez calme :</strong> Rappelez-vous que c'est temporaire et inoffensif</li>
-<li><strong>Ne luttez pas :</strong> Se débattre peut prolonger l'épisode et augmenter la peur</li>
-<li><strong>Concentrez-vous sur l'extérieur :</strong> Écoutez les sons ambiants, sentez le lit sous vous</li>
-<li><strong>Visualisation :</strong> Imaginez-vous bouger, vous lever, allumer les lumières</li>
-</ul>
-<blockquote>
-                    "Au moment ou j'ai arrête de lutter et que je me suis juste concentre sur le mouvement de mon petit doigt, la paralysie s'est brisée en quelques secondes."
-                </blockquote>
-<h2 id="prevenir">Comment éviter la paralysie du sommeil : prévention</h2>
+<h3>1. Commencer par un tout petit mouvement</h3>
 <p>
-                    Bien que vous ne puissiez pas garantir la prévention, ces stratégies réduisent nettement la fréquence des épisodes :
+                    Plutôt que d'essayer de vous redresser, concentrez-vous sur un doigt ou un orteil, ou essayez de serrer le poing. La Sleep Foundation propose ces petits mouvements pour mettre fin à un épisode.
                 </p>
-<h3>Hygiène du sommeil pour prévenir les épisodes</h3>
-<ul>
-<li><strong>Maintenez des heures de sommeil constantes :</strong> Couchez-vous et réveillez-vous à là même heure quotidiennement</li>
-<li><strong>Dormez suffisamment :</strong> Visez 7-9 heures par nuit</li>
-<li><strong>Évitez de dormir sur le dos :</strong> Dormir sur le cote réduit significativement les épisodes</li>
-<li><strong>Créez un environnement propice au sommeil :</strong> Chambre fraîche, sombre, calme</li>
-</ul>
-<h3>Mode de vie anti-paralysie du sommeil</h3>
-<ul>
-<li><strong>Réduisez le stress :</strong> Pratiquez la méditation, le yoga ou d'autres techniques de relaxation</li>
-<li><strong>Limitez les stimulants :</strong> Évitez la caféine et l'alcool pres du coucher</li>
-<li><strong>Exercice régulier :</strong> Mais pas dans les 3 heures avant le sommeil</li>
-<li><strong>Gérez le temps d'écran :</strong> Pas d'écrans 1-2 heures avant le coucher</li>
-</ul>
-<h3>Paralysie du sommeil fréquente : que faire</h3>
-<ul>
-<li><strong>Tenez un journal de sommeil :</strong> Suivez les patterns, déclencheurs et fréquence</li>
-<li><strong>Pratiquez la méditation de sommeil :</strong> Relaxation guidée avant le coucher</li>
-<li><strong>Considérez la TCC-I :</strong> Thérapie Cognitivo-Comportementale pour l'Insomnie</li>
-<li><strong>Traitez les conditions sous-jacentes :</strong> Traitez l'anxiété, la dépression ou les troubles du sommeil</li>
-</ul>
-<h2 id="quand-consulter">Quand consulter un médecin pour la paralysie du sommeil</h2>
+<h3>2. Respirer lentement et nommer ce qui se passe</h3>
 <p>
-                    La paralysie du sommeil est généralement bénigne, mais consultez un professionnel de santé si :
+                    Respirez calmement, sans forcer une grande inspiration : votre respiration continue d'elle-même, même si la poitrine semble lourde. Dites-vous intérieurement : « C'est une paralysie du sommeil. Ça va passer. » Mettre un nom sur l'expérience peut faire retomber une partie de la panique, celle qui rend les secondes si longues.
+                </p>
+<h3>3. Ou l'inverse : arrêter de lutter</h3>
+<p>
+                    Certaines personnes s'en sortent mieux sans se débattre du tout. Le psychologue Baland Jalal a proposé une approche en quatre étapes, qu'il appelle <strong>thérapie MR</strong> (méditation-relaxation) : redonner son vrai sens à l'épisode (bénin et passager), garder une distance émotionnelle avec ce que vous voyez, ramener l'attention vers l'intérieur, sur quelque chose de neutre ou de rassurant, et relâcher les muscles. Elle a été présentée à partir de cas cliniques et n'a pas encore été évaluée dans de grands essais.
+                </p>
+<h3>4. Après l'épisode</h3>
+<ul>
+<li>Allumez une lumière ou levez-vous une minute si vous craignez d'y replonger aussitôt.</li>
+<li>Notez quelques lignes : l'heure, votre position, ce que vous avez vu, comment l'épisode s'est terminé.</li>
+</ul>
+<h2 id="prevenir">Comment espacer les épisodes ?</h2>
+<p>
+                    Il n'existe pas de moyen garanti d'éviter la paralysie du sommeil. Mais les facteurs qui la favorisent sont souvent ceux sur lesquels vous avez prise.
+                </p>
+<h3>Protéger votre sommeil</h3>
+<ul>
+<li><strong>Visez 7 à 9 heures par nuit</strong>, la durée recommandée aux adultes par le NHS.</li>
+<li><strong>Gardez des horaires réguliers</strong> de coucher et de lever, week-end compris.</li>
+<li><strong>Bougez régulièrement</strong>, mais pas juste avant de vous coucher.</li>
+<li><strong>Allégez la soirée :</strong> pas de repas copieux, d'alcool ni de café tard le soir.</li>
+<li><strong>Posez les écrans</strong> environ une heure avant le coucher.</li>
+<li><strong>Dormez sur le côté</strong> si vos épisodes surviennent plutôt sur le dos ; un oreiller calé dans le dos évite de rouler pendant la nuit.</li>
+<li><strong>Faites baisser la pression</strong> avec quelques minutes de respiration lente, ou en notant ce qui vous occupe l'esprit.</li>
+</ul>
+<h3 id="exemple-journal">Tenir un carnet de vos épisodes</h3>
+<p><strong>Exemple fictif :</strong> à quoi peut ressembler une note utile.</p>
+<ul>
+<li><strong>Nuit :</strong> « Mardi, 6 h 40, sur le dos, juste avant le réveil. À peu près cinq heures de sommeil après un rendu tardif. »</li>
+<li><strong>Épisode :</strong> « Impossible de bouger pendant ce qui m'a semblé une minute. Une silhouette sombre près de la porte, des pas. »</li>
+<li><strong>Fin :</strong> « J'ai réussi à bouger le pouce, puis tout est revenu. »</li>
+<li><strong>Question à garder :</strong> « Mes épisodes suivent-ils les nuits courtes, ou les nuits sur le dos ? »</li>
+</ul>
+<p>Une seule note ne prouve rien. Au bout de quelques semaines, ces notes montrent si les épisodes suivent des nuits courtes, une position ou des périodes chargées, et elles sont utiles à apporter chez le médecin. Notre <a class="text-dream-salmon hover:underline" href="guide-journal-reves">guide du journal de rêves</a> explique comment en prendre l'habitude.</p>
+<h3>Si vous pratiquez le rêve lucide</h3>
+<p>
+                    Certaines techniques de <a class="text-dream-salmon hover:underline" href="reve-lucide">rêve lucide</a> consistent à se réveiller pendant la nuit, puis à se rendormir en restant conscient. Si vos épisodes augmentent, levez le pied : un sommeil perturbé fait partie des facteurs associés à la paralysie du sommeil.
+                </p>
+<h2 id="quand-consulter">Quand consulter un médecin ?</h2>
+<p>
+                    Un épisode isolé ne nécessite pas d'avis médical. Parlez-en à un médecin si :
                 </p>
 <ul>
-<li>Les épisodes surviennent <strong>plusieurs fois par semaine</strong></li>
-<li>Vous expérimentez une <strong>somnolence diurne excessive</strong></li>
-<li>Les épisodes causent une <strong>anxiété significative ou un évitement du sommeil</strong></li>
-<li>Vous avez d'autres symptômes de <strong>narcolepsie</strong> (faiblesse musculaire soudaine, rêves vivides)</li>
-<li>La paralysie du sommeil a commencé après un <strong>traumatisme ou des changements de médication</strong></li>
+<li>les épisodes sont <strong>fréquents</strong> et vous avez peur d'aller dormir ;</li>
+<li>vous êtes <strong>constamment fatigué</strong> à cause d'un mauvais sommeil ;</li>
+<li>vous avez <strong>très sommeil dans la journée</strong> ou vous endormez brusquement à des moments inappropriés ;</li>
+<li>vous avez des <strong>pertes soudaines de tonus musculaire</strong>, par exemple en riant, ce qui peut être un signe de narcolepsie ;</li>
+<li>les épisodes ont commencé après un <strong>traumatisme</strong>, ou s'accompagnent de <a class="text-dream-salmon hover:underline" href="guide-cauchemars">cauchemars</a> fréquents et d'une détresse dans la journée.</li>
 </ul>
 <p>
-                    Un spécialiste du sommeil peut recommander une <strong>polysomnographie</strong> (étude du sommeil) pour exclure la narcolepsie ou d'autres troubles du sommeil. Dans certains cas, des médicaments comme les ISRS peuvent aider à réduire la fréquence des épisodes.
+                    Le médecin peut rechercher une cause sous-jacente, comme une insomnie, une apnée du sommeil, une narcolepsie ou un stress post-traumatique, et la traiter. Si besoin, il vous orientera vers un spécialiste du sommeil, qui pourra prescrire un enregistrement du sommeil (<strong>polysomnographie</strong>). Selon le NHS, les solutions possibles incluent une thérapie cognitivo-comportementale (TCC) ou, dans certains cas, un antidépresseur à faible dose.
                 </p>
-<blockquote>
-                    "Comprendre que la paralysie du sommeil est un phénomène naturel, bien qu'inconfortable, a enleve la plupart de son pouvoir sur moi. La connaissance est vraiment la meilleure défense."
-                </blockquote>
 </div>
 <!-- CTA Section -->
 <aside class="glass-panel rounded-3xl p-8 md:p-10 mt-16 text-center border border-dream-salmon/20">
 <div class="w-16 h-16 bg-dream-salmon/10 rounded-full flex items-center justify-center mx-auto mb-6">
 <i class="w-8 h-8 text-dream-salmon" data-lucide="shield"></i>
 </div>
-<h3 class="font-serif text-2xl md:text-3xl mb-4 text-dream-cream">Comprenez mieux votre sommeil</h3>
+<h3 class="font-serif text-2xl md:text-3xl mb-4 text-dream-cream">Un épisode, c'est une frayeur. Dix épisodes notés, c'est une piste.</h3>
 <p class="text-purple-200/70 mb-6 max-w-lg mx-auto">
-                    Suivez vos rêves et expériences de sommeil avec Noctalia. L'enregistrement vocal facilite la capture des détails immédiatement au réveil, vous aidant à identifier les patterns et déclencheurs.
+                    Gardez vos épisodes et vos rêves dans Noctalia, avec l'heure et la façon dont vous avez dormi. En les relisant côte à côte, vous verrez ce qui les précède.
                 </p>
 <a class="inline-flex items-center gap-2 px-8 py-4 bg-dream-salmon text-dream-dark rounded-full font-bold hover:bg-dream-salmon/90 transition-colors" href="/fr/">
-                    Découvrir Noctalia <i class="w-5 h-5" data-lucide="arrow-right"></i>
+                    Commencer mon journal de rêves <i class="w-5 h-5" data-lucide="arrow-right"></i>
 </a>
 </aside>
 <!-- FAQ Section -->
@@ -348,44 +336,54 @@
 <div class="space-y-4">
 <details class="glass-panel rounded-xl p-4 group cursor-pointer">
 <summary class="font-medium flex justify-between items-center text-dream-cream">
-                            La paralysie du sommeil est-elle dangereuse ?
+                            La paralysie du sommeil est-elle dangereuse ?
                             <i class="w-5 h-5 transition-transform group-open:rotate-180 text-dream-salmon" data-lucide="chevron-down"></i>
 </summary>
 <p class="mt-4 text-sm text-gray-400 leading-relaxed">
-                            Non, la paralysie du sommeil n'est pas dangereuse. Bien que l'expérience puisse être terrifiante, c'est une condition bénigne qui ne cause pas de dommage physique. Les épisodes durent généralement de quelques secondes à deux minutes et se terminent d'eux-mêmes.
+                            Non. Elle est effrayante mais sans danger en elle-même, et elle prend fin toute seule, en général en quelques secondes à quelques minutes. Si les épisodes sont fréquents ou vous font redouter le coucher, parlez-en à un médecin.
                         </p>
 </details>
 <details class="glass-panel rounded-xl p-4 group cursor-pointer">
 <summary class="font-medium flex justify-between items-center text-dream-cream">
-                            Peut-on mourir de paralysie du sommeil ?
+                            Peut-on mourir d'une paralysie du sommeil ?
                             <i class="w-5 h-5 transition-transform group-open:rotate-180 text-dream-salmon" data-lucide="chevron-down"></i>
 </summary>
 <p class="mt-4 text-sm text-gray-400 leading-relaxed">
-                            Non, la paralysie du sommeil ne peut pas causer la <a class="text-dream-salmon hover:underline" href="../symboles/mort">mort</a>. Malgré la sensation terrifiante de ne pas pouvoir respirer, votre corps continue de respirer automatiquement. La sensation de pression sur la poitrine est une hallucination, pas une restriction respiratoire réelle.
+                            Non, la paralysie du sommeil ne peut pas entraîner la <a class="text-dream-salmon hover:underline" href="../symboles/mort">mort</a>. Même quand la poitrine semble écrasée, la respiration continue automatiquement pendant tout l'épisode. Le poids est une sensation, pas une obstruction.
                         </p>
 </details>
 <details class="glass-panel rounded-xl p-4 group cursor-pointer">
 <summary class="font-medium flex justify-between items-center text-dream-cream">
-                            Comment arrêter une paralysie du sommeil immédiatement ?
+                            Comment sortir d'une paralysie du sommeil ?
                             <i class="w-5 h-5 transition-transform group-open:rotate-180 text-dream-salmon" data-lucide="chevron-down"></i>
 </summary>
 <p class="mt-4 text-sm text-gray-400 leading-relaxed">
-                            Pour sortir de la paralysie du sommeil, concentrez-vous sur le mouvement de petites parties du corps comme vos doigts ou orteils. Essayez de les bouger ou de fermer le poing. Certaines personnes trouvent que se concentrer sur la respiration ou essayer de faire un petit son aide. Restez calme et rappelez-vous que l'épisode se terminera bientôt.
+                            Essayez un tout petit mouvement : un doigt, un orteil, serrer le poing. Respirez lentement et rappelez-vous que c'est passager. Si lutter aggrave la peur, faites l'inverse : cessez de vous débattre, concentrez-vous sur quelque chose de neutre et laissez vos muscles se relâcher jusqu'à ce que ça passe.
+                        </p>
+</details>
+<details class="glass-panel rounded-xl p-4 group cursor-pointer">
+<summary class="font-medium flex justify-between items-center text-dream-cream">
+                            La présence ressentie pendant une paralysie du sommeil est-elle réelle ?
+                            <i class="w-5 h-5 transition-transform group-open:rotate-180 text-dream-salmon" data-lucide="chevron-down"></i>
+</summary>
+<p class="mt-4 text-sm text-gray-400 leading-relaxed">
+                            Non. La présence, la silhouette et les bruits de pas font partie des hallucinations les plus courantes de la paralysie du sommeil, décrites dans de nombreuses cultures. Elles viennent d'images de rêve qui se mêlent à l'éveil, à un moment où le cerveau est en alerte.
                         </p>
 </details>
 </div>
 </section>
 <!-- Sources / Trust (TI-97) -->
 <section class="mt-16 glass-panel rounded-2xl p-6" id="sources">
-<h2 class="font-serif text-2xl text-dream-cream mb-4">Sources / Pour aller plus loin</h2>
+<h2 class="font-serif text-2xl text-dream-cream mb-4">Sources et lectures</h2>
 <ul class="mt-6 space-y-2 text-sm text-gray-400">
-<li><a href="https://dictionary.apa.org/dream" rel="nofollow noopener noreferrer" target="_blank">APA Dictionary of Psychology — Dream</a></li>
-<li><a href="https://dreamresearch.net/" rel="nofollow noopener noreferrer" target="_blank">DreamResearch.net — G. William Domhoff (dream research overview)</a></li>
-<li><a href="https://www.mayoclinic.org/diseases-conditions/sleep-paralysis/symptoms-causes/syc-20352606" rel="nofollow noopener noreferrer" target="_blank">Mayo Clinic — Sleep paralysis (symptoms &amp; causes)</a></li>
-<li><a href="https://pubmed.ncbi.nlm.nih.gov/21571556/" rel="nofollow noopener noreferrer" target="_blank">Sharpless &amp; Barber (2011) — Sleep paralysis prévalence (PubMed)</a></li>
-<li><a href="https://www.sleepfoundation.org/parasomnias/sleep-paralysis" rel="nofollow noopener noreferrer" target="_blank">Sleep Foundation — Sleep paralysis overview</a></li>
+<li><a href="https://pubmed.ncbi.nlm.nih.gov/21571556/" rel="nofollow noopener noreferrer" target="_blank">Sharpless et Barber (2011), « Lifetime prevalence rates of sleep paralysis: a systematic review », <em>Sleep Medicine Reviews</em></a></li>
+<li><a href="https://pubmed.ncbi.nlm.nih.gov/28735779/" rel="nofollow noopener noreferrer" target="_blank">Denis, French et Gregory (2018), « A systematic review of variables associated with sleep paralysis », <em>Sleep Medicine Reviews</em></a></li>
+<li><a href="https://pubmed.ncbi.nlm.nih.gov/10487786/" rel="nofollow noopener noreferrer" target="_blank">Cheyne, Rueffer et Newby-Clark (1999), « Hypnagogic and hypnopompic hallucinations during sleep paralysis », <em>Consciousness and Cognition</em></a></li>
+<li><a href="https://doi.org/10.3389/fpsyg.2016.00028" rel="nofollow noopener noreferrer" target="_blank">Jalal (2016), « How to make the ghosts in my bedroom disappear? Focused-attention meditation combined with muscle relaxation (MR therapy) », <em>Frontiers in Psychology</em></a></li>
+<li><a href="https://www.nhs.uk/conditions/sleep-paralysis/" rel="nofollow noopener noreferrer" target="_blank">NHS (service de santé britannique), « Sleep paralysis »</a></li>
+<li><a href="https://www.sleepfoundation.org/parasomnias/sleep-paralysis" rel="nofollow noopener noreferrer" target="_blank">Sleep Foundation, « Sleep paralysis »</a></li>
 </ul>
-<p class="mt-6 text-xs text-purple-200/60">Mis à jour le 26 décembre 2025</p>
+<p class="mt-6 text-xs text-purple-200/60">Mis à jour le 8 octobre 2026</p>
 </section>
 <!-- Related Symbols Start -->
 <section aria-label="Symboles de rêves associés" class="mt-12 mb-8">
