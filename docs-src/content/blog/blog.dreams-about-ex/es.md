@@ -5,7 +5,7 @@
   "lang": "es",
   "slug": "suenos-con-ex",
   "title": "Soñar con tu ex: significado y sueños repetidos | Noctalia",
-  "description": "Soñar con tu ex no significa que quieras volver. Reconciliación, discusión, tu ex con otra pareja: qué puede significar el sueño y qué anotar al despertar.",
+  "description": "¿Sueñas con tu ex constantemente, vuelven o aparece con otra pareja? Explora las escenas y tus emociones sin deducir que debas retomar el contacto.",
   "robots": "max-image-preview:large",
   "themeColor": "#0a0514",
   "htmlClass": "scroll-smooth blog-article",
@@ -14,24 +14,24 @@
   "mainClass": "pt-32 pb-20 px-4",
   "ogType": "article",
   "ogTitle": "Soñar con tu ex: significado y sueños repetidos | Noctalia",
-  "ogDescription": "Reconciliación, discusión, tu ex con otra persona: qué puede significar soñar con tu ex y qué no demuestra ese sueño.",
+  "ogDescription": "¿Sueñas con tu ex constantemente, vuelven o aparece con otra pareja? Explora las escenas y tus emociones sin deducir que debas retomar el contacto.",
   "ogImage": "https://noctalia.app/img/blog/dreams-about-ex.webp",
   "ogImageAlt": "Dos siluetas separadas por un espacio luminoso con imágenes flotantes",
   "twitterCard": "summary_large_image",
   "twitterTitle": "Soñar con tu ex: significado y sueños repetidos | Noctalia",
-  "twitterDescription": "Soñar con tu ex: las escenas más habituales, lo que pueden contar y lo que no dicen.",
+  "twitterDescription": "¿Sueñas con tu ex constantemente, vuelven o aparece con otra pareja? Explora las escenas y tus emociones sin deducir que debas retomar el contacto.",
   "twitterImage": "https://noctalia.app/img/blog/dreams-about-ex.webp",
   "twitterImageAlt": "Dos siluetas separadas por un espacio luminoso con imágenes flotantes",
   "publishedTime": "2025-12-11",
-  "modifiedTime": "2026-10-08",
+  "modifiedTime": "2026-09-21",
   "author": "Thanh Chau",
   "prevPath": "/es/blog/suenos-de-agua",
   "nextPath": "/es/blog/suenos-de-embarazo",
   "preloadImage": "/img/blog/dreams-about-ex.webp",
   "jsonLd": [
-    "{\n    \"@context\": \"https://schema.org\",\n    \"@type\": \"BlogPosting\",\n    \"headline\": \"Soñar con tu ex: qué puede significar y qué no demuestra\",\n    \"description\": \"Soñar con tu ex no significa que quieras volver. Reconciliación, discusión, tu ex con otra pareja: qué puede significar el sueño y qué anotar al despertar.\",\n    \"image\": {\n        \"@type\": \"ImageObject\",\n        \"url\": \"https://noctalia.app/img/blog/dreams-about-ex.webp\",\n        \"width\": 1200,\n        \"height\": 630\n    },\n    \"author\": [\n        {\n            \"@type\": \"Person\",\n            \"@id\": \"https://noctalia.app/es/sobre#person\",\n            \"name\": \"Thanh Chau\",\n            \"jobTitle\": \"Founder & Publication Director\",\n            \"url\": \"https://noctalia.app/es/sobre\",\n            \"worksFor\": {\n                \"@type\": \"Organization\",\n                \"@id\": \"https://noctalia.app/#organization\",\n                \"name\": \"Noctalia\",\n                \"url\": \"https://noctalia.app\"\n            }\n        },\n        {\n            \"@type\": \"Organization\",\n            \"@id\": \"https://noctalia.app/#organization\",\n            \"name\": \"Noctalia\",\n            \"url\": \"https://noctalia.app\",\n            \"logo\": {\n                \"@type\": \"ImageObject\",\n                \"url\": \"https://noctalia.app/logo/logo_noctalia.png\"\n            }\n        }\n    ],\n    \"publisher\": {\n        \"@type\": \"Organization\",\n        \"name\": \"Noctalia\",\n        \"url\": \"https://noctalia.app\",\n        \"logo\": {\n            \"@type\": \"ImageObject\",\n            \"url\": \"https://noctalia.app/logo/logo_noctalia.png\"\n        }\n    },\n    \"datePublished\": \"2025-12-11\",\n    \"dateModified\": \"2026-10-08\",\n    \"mainEntityOfPage\": {\n        \"@type\": \"WebPage\",\n        \"@id\": \"https://noctalia.app/es/blog/suenos-con-ex\"\n    },\n    \"inLanguage\": \"es\",\n    \"isAccessibleForFree\": true,\n    \"wordCount\": 2197,\n    \"timeRequired\": \"PT10M\",\n    \"url\": \"https://noctalia.app/es/blog/suenos-con-ex\"\n}",
-    "{\n    \"@context\": \"https://schema.org\",\n    \"@type\": \"FAQPage\",\n    \"mainEntity\": [\n        {\n            \"@type\": \"Question\",\n            \"name\": \"¿Qué significa soñar con tu ex constantemente?\",\n            \"acceptedAnswer\": {\n                \"@type\": \"Answer\",\n                \"text\": \"La repetición no demuestra que quieras volver ni que no hayas superado la ruptura. Suele indicar que algo de esa etapa, o algo actual que la recuerda, sigue ocupándote. Anota la escena, la emoción y el contexto durante unas semanas para ver qué se repite de verdad.\"\n            }\n        },\n        {\n            \"@type\": \"Question\",\n            \"name\": \"¿Soñar con mi ex significa que piensa en mí?\",\n            \"acceptedAnswer\": {\n                \"@type\": \"Answer\",\n                \"text\": \"No. Tu sueño está hecho de tus propios recuerdos y emociones. No dice nada de lo que siente tu ex, ni que te eche de menos o vaya a escribirte.\"\n            }\n        },\n        {\n            \"@type\": \"Question\",\n            \"name\": \"¿Qué pasa si sueño con mi ex y tengo pareja?\",\n            \"acceptedAnswer\": {\n                \"@type\": \"Answer\",\n                \"text\": \"Nada grave. Un sueño no es una infidelidad ni anuncia una ruptura. Si te deja una pregunta sobre tu relación, piénsala despierto, a partir de cómo os tratáis en el día a día.\"\n            }\n        },\n        {\n            \"@type\": \"Question\",\n            \"name\": \"¿Por qué sueño con un ex en el que no pensaba desde hace años?\",\n            \"acceptedAnswer\": {\n                \"@type\": \"Answer\",\n                \"text\": \"A menudo porque algo reciente recuerda aquella época: un lugar, una fecha, una relación nueva, una emoción conocida. A veces no aparece ningún detonante. Anotar el contexto del sueño durante unas semanas es la mejor forma de comprobar si una relación se sostiene.\"\n            }\n        }\n    ]\n}",
-    "{\n    \"@context\": \"https://schema.org\",\n    \"@type\": \"BreadcrumbList\",\n    \"itemListElement\": [\n        {\n            \"@type\": \"ListItem\",\n            \"position\": 1,\n            \"name\": \"Inicio\",\n            \"item\": \"https://noctalia.app/es/\"\n        },\n        {\n            \"@type\": \"ListItem\",\n            \"position\": 2,\n            \"name\": \"Recursos\",\n            \"item\": \"https://noctalia.app/es/blog/\"\n        },\n        {\n            \"@type\": \"ListItem\",\n            \"position\": 3,\n            \"name\": \"Soñar con tu ex\",\n            \"item\": \"https://noctalia.app/es/blog/suenos-con-ex\"\n        }\n    ]\n}"
+    "{\n    \"@context\": \"https://schema.org\",\n    \"@type\": \"BlogPosting\",\n    \"headline\": \"Soñar con tu ex: escenas, repetición y significado\",\n    \"description\": \"¿Sueñas con tu ex constantemente, vuelven o aparece con otra pareja? Explora las escenas y tus emociones sin deducir que debas retomar el contacto.\",\n    \"image\": {\n        \"@type\": \"ImageObject\",\n        \"url\": \"https://noctalia.app/img/blog/dreams-about-ex.webp\",\n        \"width\": 1200,\n        \"height\": 630\n    },\n    \"author\": [\n        {\n            \"@type\": \"Person\",\n            \"@id\": \"https://noctalia.app/es/sobre#person\",\n            \"name\": \"Thanh Chau\",\n            \"jobTitle\": \"Founder & Publication Director\",\n            \"url\": \"https://noctalia.app/es/sobre\",\n            \"worksFor\": {\n                \"@type\": \"Organization\",\n                \"@id\": \"https://noctalia.app/#organization\",\n                \"name\": \"Noctalia\",\n                \"url\": \"https://noctalia.app\"\n            }\n        },\n        {\n            \"@type\": \"Organization\",\n            \"@id\": \"https://noctalia.app/#organization\",\n            \"name\": \"Noctalia\",\n            \"url\": \"https://noctalia.app\",\n            \"logo\": {\n                \"@type\": \"ImageObject\",\n                \"url\": \"https://noctalia.app/logo/logo_noctalia.png\"\n            }\n        }\n    ],\n    \"publisher\": {\n        \"@type\": \"Organization\",\n        \"name\": \"Noctalia\",\n        \"url\": \"https://noctalia.app\",\n        \"logo\": {\n            \"@type\": \"ImageObject\",\n            \"url\": \"https://noctalia.app/logo/logo_noctalia.png\"\n        }\n    },\n    \"datePublished\": \"2025-12-11\",\n    \"dateModified\": \"2026-09-21\",\n    \"mainEntityOfPage\": {\n        \"@type\": \"WebPage\",\n        \"@id\": \"https://noctalia.app/es/blog/suenos-con-ex\"\n    },\n    \"inLanguage\": \"es\",\n    \"isAccessibleForFree\": true,\n    \"wordCount\": 1294,\n    \"timeRequired\": \"PT6M\",\n    \"url\": \"https://noctalia.app/es/blog/suenos-con-ex\"\n}",
+    "{\n    \"@context\": \"https://schema.org\",\n    \"@type\": \"FAQPage\",\n    \"mainEntity\": [\n        {\n            \"@type\": \"Question\",\n            \"name\": \"¿Qué significa soñar con tu ex constantemente?\",\n            \"acceptedAnswer\": {\n                \"@type\": \"Answer\",\n                \"text\": \"La repetición no demuestra que quieras volver ni que no hayas superado la ruptura. Distingue la frecuencia, las escenas y las emociones. Puedes explorar recuerdos recientes sin dar por probada una causa.\"\n            }\n        },\n        {\n            \"@type\": \"Question\",\n            \"name\": \"¿Soñar con mi ex significa que piensa en mí?\",\n            \"acceptedAnswer\": {\n                \"@type\": \"Answer\",\n                \"text\": \"El sueño no permite conocer los pensamientos o sentimientos de otra persona. No lo uses como evidencia de que tu ex quiere contactar o retomar la relación.\"\n            }\n        },\n        {\n            \"@type\": \"Question\",\n            \"name\": \"¿Qué pasa si sueño con mi ex y tengo pareja?\",\n            \"acceptedAnswer\": {\n                \"@type\": \"Answer\",\n                \"text\": \"El sueño no prueba una infidelidad ni decide qué sientes por tu pareja. Valora tu relación por los hechos y tus deseos despierto. No estás obligado a contactar con tu ex por lo que has soñado.\"\n            }\n        }\n    ]\n}",
+    "{\n    \"@context\": \"https://schema.org\",\n    \"@type\": \"BreadcrumbList\",\n    \"itemListElement\": [\n        {\n            \"@type\": \"ListItem\",\n            \"position\": 1,\n            \"name\": \"Inicio\",\n            \"item\": \"https://noctalia.app/es/\"\n        },\n        {\n            \"@type\": \"ListItem\",\n            \"position\": 2,\n            \"name\": \"Recursos\",\n            \"item\": \"https://noctalia.app/es/blog/\"\n        },\n        {\n            \"@type\": \"ListItem\",\n            \"position\": 3,\n            \"name\": \"Sueños con Ex\",\n            \"item\": \"https://noctalia.app/es/blog/suenos-con-ex\"\n        }\n    ]\n}"
   ],
   "activeNav": "resources"
 }
@@ -50,7 +50,7 @@
 </li>
 <li class="text-purple-400">/</li>
 <li itemprop="itemListElement" itemscope="" itemtype="https://schema.org/ListItem">
-<span class="text-dream-cream" itemprop="name">Soñar con tu ex</span>
+<span class="text-dream-cream" itemprop="name">Sueños con Ex</span>
 <meta content="3" itemprop="position">
 </li>
 </ol>
@@ -61,12 +61,12 @@
 <a class="text-xs font-mono text-purple-200/70 border border-white/10 rounded-full px-3 py-1 hover:text-white hover:border-dream-salmon/30 transition-colors" href="significado-de-suenos">Tema: Significado de sueños</a>
 <span aria-hidden="true" class="w-full sm:hidden"></span>
 <span class="text-sm text-purple-300/60">Publicado el 11 de diciembre de 2025</span>
-<span class="text-sm text-purple-300/60">10 min de lectura</span>
+<span class="text-sm text-purple-300/60">6 min de lectura</span>
 </div>
 <h1 class="font-serif text-3xl md:text-5xl mb-6 text-transparent bg-clip-text bg-gradient-to-b from-white via-dream-lavender to-purple-400/50 leading-tight">
-Soñar con tu ex: qué puede significar y qué no demuestra
+Soñar con tu ex: escenas, repetición y significado
 </h1>
-<p class="text-lg text-purple-200/80 leading-relaxed">Estabas otra vez en la cocina de vuestro antiguo piso y tu ex se reía como si no hubiera pasado nada. O pasaba de la mano de otra persona sin mirarte siquiera. Te despiertas con un regusto extraño: ternura, rabia, culpa, a veces las tres cosas a la vez. Soñar con tu ex es bastante frecuente y casi nunca significa lo que temes al principio. Aquí tienes cómo leer tu sueño sin convertirlo en un veredicto sobre tu vida amorosa.</p>
+<p class="text-lg text-purple-200/80 leading-relaxed">Tu ex aparece en una conversación, en una reconciliación o junto a otra persona. Al despertar puedes sentir nostalgia, incomodidad o simplemente sorpresa. Un sueño no decide si quieres volver ni revela lo que siente tu ex. Separar la escena soñada de tus deseos actuales ayuda a pensar con más claridad.</p>
 </header>
 <!-- Author Byline (E-E-A-T) -->
 <div class="flex items-center gap-3 mb-8 text-sm text-purple-200/70">
@@ -81,7 +81,7 @@ Soñar con tu ex: qué puede significar y qué no demuestra
 <!-- Quick Answer (AI SEO) -->
 <section class="glass-panel rounded-2xl p-6 mb-8 border border-dream-salmon/20 bg-white/5" aria-labelledby="quick-answer-title">
     <h2 id="quick-answer-title" class="font-serif text-xl text-dream-cream mb-3">Respuesta rápida</h2>
-    <p class="text-purple-100/80 leading-relaxed">Soñar con tu ex no significa que quieras volver, que esa persona piense en ti ni que tu relación actual vaya mal. El ex suele traer de vuelta una etapa de tu vida, algo que quedó sin decir o una situación de hoy que recuerda al pasado. La emoción del sueño y lo que estás viviendo ahora son las mejores pistas. Si se repite a menudo y te estropea las noches, merece una mirada más atenta.</p>
+    <p class="text-purple-100/80 leading-relaxed">Soñar con tu ex no demuestra que sigas enamorado, que tu ex piense en ti o que debáis volver. Si ocurre constantemente, compara qué se repite: la persona, la situación o la emoción. Los recuerdos y las asociaciones personales son pistas para explorar, no una explicación segura de cada sueño.</p>
 </section>
 <figure class="mb-12 rounded-2xl overflow-hidden">
 <img alt="Dos siluetas separadas por un espacio luminoso con imágenes flotantes" class="w-full h-auto" fetchpriority="high" height="630" loading="eager" sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 33vw" src="../../img/blog/dreams-about-ex.webp" srcset="../../img/blog/dreams-about-ex-480w.webp 480w, ../../img/blog/dreams-about-ex-800w.webp 800w, ../../img/blog/dreams-about-ex-1200w.webp 1200w" width="1200">
@@ -90,84 +90,49 @@ Soñar con tu ex: qué puede significar y qué no demuestra
 <nav class="glass-panel rounded-2xl p-6 mb-12" aria-label="Contenido">
 <h2 class="font-serif text-lg text-dream-cream mb-4">Contenido</h2>
 <ol class="space-y-2 text-sm text-purple-200/70">
-<li><a class="toc-link block" href="#porque">1. ¿Por qué sueño con mi ex?</a></li>
-<li><a class="toc-link block" href="#escenarios">2. ¿Qué pasaba entre vosotros en el sueño?</a></li>
-<li><a class="toc-link block" href="#significados">3. De qué puede hablar el sueño</a></li>
-<li><a class="toc-link block" href="#psicología">4. Qué dice la investigación sobre los sueños con ex</a></li>
-<li><a class="toc-link block" href="#actual">5. Soñar con tu ex cuando tienes pareja</a></li>
-<li><a class="toc-link block" href="#seguir">6. Qué hacer si sueñas con tu ex a menudo</a></li>
+<li><a class="toc-link block" href="#porque">1. ¿Por qué sueño con mi ex constantemente?</a></li>
+<li><a class="toc-link block" href="#escenarios">2. Volver, discutir, intimidad y otros escenarios</a></li>
+<li><a class="toc-link block" href="#significados">3. Lo que puedes preguntarte sin sacar conclusiones automáticas</a></li>
+<li><a class="toc-link block" href="#psicología">4. Qué sabemos por la investigación</a></li>
+<li><a class="toc-link block" href="#actual">5. Si tienes una nueva relación: sueño y decisiones son cosas distintas</a></li>
+<li><a class="toc-link block" href="#seguir">6. Cómo registrar el sueño y cuidar tu descanso</a></li>
 </ol>
 </nav>
 <!-- Article Content -->
 <div class="prose max-w-none text-gray-300">
-<h2 id="porque">¿Por qué sueño con mi ex?</h2>
-<p>Primero, lo que tranquiliza: soñar con tu ex no tiene nada de raro. Una relación pasada deja mucho material: lugares, costumbres, emociones fuertes, conversaciones que nunca terminaron. Los sueños se alimentan de ese tipo de recuerdos, sobre todo cuando tienen carga emocional.</p>
-<p>La mayor parte de los sueños ocurre durante el <a href="sueno-rem-suenos">sueño REM</a>, y el sueño participa en la consolidación de la memoria, según el NINDS, el instituto estadounidense de enfermedades neurológicas. No es raro que vuelvan de noche las personas que fueron importantes.</p>
-<p>A menudo hay un detonante sencillo: una canción en una tienda, una foto antigua que aparece en el móvil, noticias de un amigo en común, un aniversario, una mudanza. Otras veces el detonante no tiene que ver con tu ex: una relación nueva que se vuelve seria, una temporada de soledad, un conflicto que te resulta conocido.</p>
-<p>Y a veces no encontrarás nada. No pasa nada. No todos los sueños esconden un mensaje, y no hace falta inventar un deseo oculto para explicarlo. La <a href="../simbolos/ex-pareja">ficha de la expareja</a> ofrece un resumen breve; las escenas de abajo te ayudarán más a leer tu propio sueño.</p>
+<h2 id="porque">¿Por qué sueño con mi ex constantemente?</h2>
+<p>Empieza por precisar qué significa “constantemente”: varias noches seguidas, de vez en cuando o un único sueño muy memorable. Anota si se repite la misma escena o si tu ex aparece en relatos diferentes. La frecuencia por sí sola no mide cuánto has superado la ruptura.</p>
+<p>Puedes revisar si hubo un recuerdo reciente: una foto, una canción, una conversación o un lugar compartido. Encontrar esa coincidencia no demuestra la causa del sueño; no encontrarla tampoco implica un deseo oculto. La <a href="../simbolos/ex-pareja">ficha de la expareja</a> ofrece un resumen del tema.</p>
 
-<h2 id="escenarios">¿Qué pasaba entre vosotros en el sueño?</h2>
-<p>Antes de buscar un significado, describe la escena. Estas variantes no son definiciones: son pistas para contrastar con lo que sentiste.</p>
-<h3>Volver con tu ex</h3>
-<p>¿Quién lo proponía y cómo te sentías: aliviado, incómodo, atrapado? Este sueño suele traer de vuelta lo que la relación te daba, como <strong>compañía, cercanía o una rutina</strong>, más que a la persona tal como es hoy. Pregúntate: ¿echo de menos a esa persona o lo que yo vivía entonces?</p>
-<h3>Discutir</h3>
-<p>¿Sobre qué era la <a href="../simbolos/discusion">discusión</a>? ¿Una pelea que tuvisteis de verdad o una nueva? Estos sueños pueden reflejar <strong>cosas que quedaron sin decir</strong> o un enfado que te guardaste. También pueden repetir cómo terminó la relación, sin demostrar que sigas resentido.</p>
-<h3>Besar a tu ex o tener un sueño íntimo</h3>
-<p>Es un sueño que suele dar culpa y, sin embargo, dice poco de tus intenciones. Un sueño involuntario no es una elección ni un acto. Puede reflejar <strong>ganas de ternura</strong>, el recuerdo de un deseo o una época con poca intimidad. Fíjate sobre todo en cómo te sentías al despertar.</p>
+<h2 id="escenarios">Volver, discutir, intimidad y otros escenarios</h2>
+<h3>Volver a estar juntos</h3>
+<p>Observa quién propone volver y cómo reaccionas. ¿Te alegra, dudas o te sientes atrapado? Después distingue esa reacción de lo que deseas despierto. Extrañar una rutina o una época es una posible asociación, pero no hay que descartar ni afirmar sentimientos actuales solo por el sueño.</p>
 <h3>Ver a tu ex con otra pareja</h3>
-<p>¿Mirabas de lejos, te la presentaban, te ignoraban? Esta escena suele ir con la <strong>comparación o el miedo a ser reemplazado</strong>, incluso mucho después de la ruptura. No dice nada de la vida real de tu ex: no hace falta revisar sus redes para «confirmar» un sueño.</p>
-<h3>Una conversación tranquila</h3>
-<p>Una broma en la parada del autobús, una charla sobre la compra. Un sueño sereno puede acompañar una relación que ya recuerdas <strong>sin demasiado dolor</strong>, pero no es un certificado de que todo esté superado, igual que un sueño tormentoso no demuestra que estés estancado.</p>
-<h3>Tu ex te pide perdón</h3>
-<p>¿Aceptabas, dudabas, te ibas? El sueño quizá pone en escena un <strong>reconocimiento que nunca recibiste</strong>. No dice si tu ex se arrepiente de algo. Una pregunta útil: ¿qué cambiaría para mí hoy esa disculpa?</p>
+<p>La otra persona puede ser conocida o inventada. Describe si participas, observas o te vas, y qué emoción aparece. La escena no informa de la vida actual de tu ex ni demuestra que hayas sido reemplazado. Puedes reflexionar sobre lo que te incomoda sin buscar confirmación en sus redes.</p>
+<h3>Discutir o recibir una disculpa</h3>
+<p>Son situaciones distintas: una pelea puede dejarte enfado; una disculpa, alivio o desconfianza. Anota las palabras que recuerdas y lo que te gustaría expresar hoy. Puedes escribirlo para ti sin enviarlo. Una disculpa soñada no indica que tu ex se arrepienta.</p>
+<h3>Besar a tu ex o tener un sueño íntimo</h3>
+<p>Separa la escena de tu intención al despertar. Puedes preguntarte qué te resulta familiar, agradable o incómodo. El sueño no prueba una infidelidad, no obliga a actuar y tampoco permite afirmar que no sientes nada por esa persona.</p>
+<h3>Hablar de forma amistosa</h3>
+<p>Una conversación tranquila puede recordarte momentos cotidianos, como volver juntos de un viaje o encontrarte en un café. La calma es parte del relato, no un certificado de que la ruptura esté resuelta. Conserva también las escenas neutrales si te interesa compararlas.</p>
 <h3>Soñar con un ex que ya falleció</h3>
-<p>Aquí el duelo y la relación pasada se mezclan. No hace falta reducir el encuentro a ganas de volver: a menudo habla de lo que no pudo cerrarse. Para este caso, el artículo sobre <a href="suenos-de-muerte">sueños de muerte y personas fallecidas</a> puede ayudarte.</p>
+<p>La pérdida y la relación pasada pueden coexistir en tus recuerdos. No hace falta reducir el encuentro a ganas de volver. Para distinguirlo de otros escenarios, puedes leer el artículo sobre <a href="suenos-de-muerte">sueños de muerte y personas fallecidas</a>.</p>
 
-<h2 id="significados">De qué puede hablar el sueño</h2>
-<p>Ninguna lista puede decirte por qué <em>tú</em> soñaste con <em>este</em> ex. Estas son las relaciones que aparecen con más frecuencia cuando se compara el sueño con la vida despierta. Quédate con las que te resuenen y deja las demás.</p>
-<h3>Una etapa de tu vida</h3>
-<p>Un ex va unido a una época: una ciudad, una edad, una versión de ti. A veces el sueño habla menos de esa persona que de <strong>quién eras entonces</strong>: más libre, más seguro o, al contrario, más frágil. ¿Qué tenía aquella etapa que echas de menos, o que te alegra haber dejado atrás?</p>
-<h3>Algo que quedó a medias</h3>
-<p>Una ruptura brusca, sin explicación, o con palabras que te callaste. El sueño puede volver a ese punto. Escribir lo que te habría gustado decir, sin enviarlo, suele calmar este tipo de sueños más que analizarlos.</p>
-<h3>Una situación actual que recuerda al pasado</h3>
-<p>Una pareja nueva que se cierra de la misma manera, un conflicto en el trabajo que te suena, el miedo a volver a decepcionarte. Tu mente quizá toma prestada la cara de tu ex porque es la imagen más clara que tiene de ese sentimiento. Pregúntate: ¿dónde siento esto ahora mismo?</p>
-<h3>Un momento de cambio</h3>
-<p>Irte a vivir con alguien, un compromiso, una <a href="../simbolos/boda">boda</a>, un nacimiento, una mudanza. Los grandes pasos hacia delante a veces traen de vuelta a quienes quedaron atrás. El sueño acompaña el cambio; no te dice que te hayas equivocado de camino.</p>
-<h3>Nada en particular</h3>
-<p>A veces tu ex aparece porque ayer pasaste por su calle. Si el sueño no te dejó una emoción fuerte, no hace falta escarbar. Un sueño ligero puede seguir siendo un sueño ligero.</p>
-<h3 id="ejemplo-diario">Un ejemplo de diario de sueños</h3>
-<p><strong>Ejemplo ficticio:</strong> muestra cómo separar la escena, la emoción y una posible relación con tu vida.</p>
-<ul>
-<li><strong>Sueño:</strong> «Estábamos en el andén donde nos despedíamos siempre. Él se reía como si nada. Quería decirle algo, pero el <a href="../simbolos/tren">tren</a> se fue».</li>
-<li><strong>Emoción:</strong> «Ternura al principio, luego un nudo en la garganta. Al despertar, ninguna gana de llamarle».</li>
-<li><strong>Contexto reciente:</strong> «Me mudo la semana que viene. Haciendo cajas encontré una entrada de un concierto de cuando estábamos juntos».</li>
-<li><strong>Pregunta para guardar:</strong> «¿Le echo de menos a él o a esa etapa de mi vida? ¿El sueño vuelve en otras despedidas?».</li>
-</ul>
-<p>Una sola entrada no demuestra nada. Si anotas los mismos datos durante varias semanas, verás si tu ex aparece en torno a ciertas fechas, lugares o estados de ánimo, y si la emoción cambia.</p>
+<h2 id="significados">Lo que puedes preguntarte sin sacar conclusiones automáticas</h2>
+<p>¿Qué detalle reconoces de aquella etapa? ¿Qué es distinto ahora? ¿Qué emoción permanece cuando dejas de pensar en la escena? Estas preguntas pueden ayudarte a encontrar un significado personal, sin convertir al ex en un símbolo obligatorio de inseguridad, crecimiento o asuntos pendientes.</p>
+<p>Si identificas una necesidad actual, descríbela directamente: compañía, una conversación respetuosa o tiempo para ti. Puedes atenderla por sus propios motivos. No necesitas demostrar que el sueño te la estaba comunicando.</p>
 
-<h2 id="psicología">Qué dice la investigación sobre los sueños con ex</h2>
-<p>Hay pocos estudios centrados en este tema. El más claro es un estudio con diarios de sueños de Michael Schredl y Lara Wood (2021), que analizaron 1.612 relatos de 425 estudiantes. Un ex aparecía en alrededor del 5 % de los relatos (77 sueños), mucho menos que la pareja actual.</p>
-<p>Lo más interesante es el tono. Frente a los sueños con la pareja actual, las interacciones con un ex eran más a menudo negativas o agresivas, y también más a menudo amistosas o cálidas. En aproximadamente una cuarta parte, la propia separación aparecía en el sueño. Es decir, los sueños con ex suelen estar <strong>más cargados de emoción, en los dos sentidos</strong>.</p>
-<p>Los autores lo interpretan con la hipótesis de continuidad: los sueños tienden a reflejar lo que nos ocupa despiertos, y el peso emocional de una relación pasada puede reaparecer aunque el contacto diario haya terminado. El estudio tiene límites claros: estudiantes de Psicología, en su mayoría mujeres, y sin datos sobre su situación sentimental ni sobre el tiempo desde la ruptura. Describe un grupo, no tu sueño.</p>
-<p>Quizá leas en otros sitios que el estilo de apego o el «efecto Zeigarnik» explican por qué algunas personas sueñan con su ex durante años. Son hipótesis, no resultados demostrados sobre estos sueños. Tómalas como ideas para pensar, nunca como un diagnóstico.</p>
+<h2 id="psicología">Qué sabemos por la investigación</h2>
+<p>Schredl y Wood (2021) analizaron 1.612 relatos de sueños de 425 estudiantes. Encontraron encuentros con parejas y exparejas, con interacciones y emociones de distintos tonos. El estudio describe relatos de ese grupo; no ofrece una prueba para saber si una persona quiere volver con su ex.</p>
+<p>No deducimos aquí un estilo de apego ni una “relación incompleta” por el efecto Zeigarnik. Esas explicaciones no quedan establecidas para tu sueño. Que el sueño pueda incorporar experiencias y recuerdos no demuestra un mecanismo concreto de consolidación de memoria en cada escena.</p>
 
-<h2 id="actual">Soñar con tu ex cuando tienes pareja</h2>
-<p>La respuesta es tranquilizadora: un sueño no es una infidelidad ni una señal de que tu relación esté fallando. No elegiste soñarlo. Lo que cuenta es cómo os tratáis tu pareja y tú cuando estáis despiertos.</p>
-<p>Si el sueño te dejó una pregunta, mírala de frente. ¿Echas algo en falta en tu relación actual? ¿Un conflicto reciente te recuerda al de antes? Puedes hablar de eso sin presentar el sueño como prueba contra nadie.</p>
-<p>¿Hay que contárselo a tu pareja? No es obligatorio. Si lo compartes, habla de lo que sentiste más que de cada detalle. Y el sueño tampoco es motivo para escribir a tu ex: esa decisión se toma despierto, según tus deseos reales y los límites de ambas personas.</p>
+<h2 id="actual">Si tienes una nueva relación: sueño y decisiones son cosas distintas</h2>
+<p>Soñar con tu ex no es una acción que hayas elegido ni una prueba de deslealtad. Valora tu relación actual por lo que ocurre entre vosotros: acuerdos, trato, necesidades y decisiones. Si hay una inquietud real, puedes hablar de ella sin usar el sueño como acusación o veredicto.</p>
+<p>Tampoco es una señal para contactar con tu ex. Antes de plantearte hacerlo, considera tus motivos despierto y los límites de ambas personas. Si hubo daño o necesitas mantener distancia, un sueño no te obliga a cambiar ese límite.</p>
 
-<h2 id="seguir">Qué hacer si sueñas con tu ex a menudo</h2>
-<p>No existe un método garantizado para dejar de soñar con alguien. Pero algunos gestos ayudan a que el sueño pierda fuerza.</p>
-<h3>1. Anota la escena, la emoción y la fecha</h3>
-<p>Bastan tres líneas: qué pasó, qué sentiste, qué está ocurriendo en tu vida. Tras unas cuantas entradas, distinguirás un sueño que vuelve cada semana de una noche aislada que te impactó. Nuestra <a href="guia-diario-suenos">guía del diario de sueños</a> propone un método sencillo, y el artículo sobre <a href="significado-suenos-recurrentes">sueños recurrentes</a> te ayudará si se repite la misma escena.</p>
-<h3>2. Localiza los detonantes</h3>
-<p>Aniversarios, lugares, una lista de reproducción, repasar fotos antiguas en el <a href="../simbolos/telefono">teléfono</a> antes de dormir. Si destaca algún detonante, puedes suavizarlo: archivar las fotos, cambiar la rutina de la noche.</p>
-<h3>3. Escribe lo que nunca dijiste</h3>
-<p>Una carta que no vas a enviar, unas frases en un cuaderno. Sirve para dejar en el papel lo que todavía te da vueltas, no para reabrir la conversación.</p>
-<h3>4. Cambia el final de un sueño doloroso</h3>
-<p>Si un sueño angustiante vuelve siempre igual, imagínalo por la noche con otro final: dices lo que querías decir o sales con calma por una <a href="../simbolos/puerta">puerta</a>. Esta técnica, parecida a la que se usa con las <a href="guia-pesadillas">pesadillas</a>, se practica despierto, unos minutos al día.</p>
-<h3>5. Cuándo pedir ayuda</h3>
-<p>Si estos sueños, o las pesadillas en general, se repiten con regularidad y afectan a tu descanso o a tu día a día, el NHS británico aconseja consultar con un médico. Lo mismo si la ruptura en sí te sigue pesando mucho: un psicólogo puede ayudarte con ese malestar sin que tengas que descifrar antes el sueño.</p>
+<h2 id="seguir">Cómo registrar el sueño y cuidar tu descanso</h2>
+<p>Escribe tres líneas: qué pasó, qué sentiste y qué piensas ahora. Si se repite, añade fecha y efecto sobre el descanso. Puedes dejar la interpretación abierta y no repasar el relato si hacerlo te resulta desagradable.</p>
+<p>No hay un método garantizado para dejar de soñar con una persona. Si las pesadillas regulares afectan al sueño o a tu vida diaria, consulta con un profesional sanitario. El malestar merece atención aunque el significado siga siendo incierto.</p>
 
 </div>
 <!-- Related Symbols Start -->
@@ -195,9 +160,9 @@ Soñar con tu ex: qué puede significar y qué no demuestra
 <!-- Related Symbols End -->
 <!-- CTA Section -->
 <aside class="glass-panel rounded-3xl p-8 md:p-10 mt-16 text-center border border-dream-salmon/20">
-<h3 class="font-serif text-2xl md:text-3xl mb-4 text-dream-cream">Un sueño es una escena. Varios sueños dibujan una pista.</h3>
-<p class="text-purple-200/70 mb-6 max-w-lg mx-auto">Cuéntale tu sueño a Noctalia en voz alta o escríbelo al despertar. Se transcribe y se guarda en tu diario con tu emoción, para que puedas releer tus sueños con tu ex uno al lado del otro y ver qué se repite.</p>
-<a class="inline-flex items-center gap-2 px-8 py-4 bg-dream-salmon text-dream-dark rounded-full font-bold hover:bg-dream-salmon/90 transition-colors" href="/es/">Empezar mi diario de sueños</a>
+<h3 class="font-serif text-2xl md:text-3xl mb-4 text-dream-cream">Anota la escena y cómo te sientes ahora</h3>
+<p class="text-purple-200/70 mb-6 max-w-lg mx-auto">Usa Noctalia para guardar tus recuerdos y preguntas, sin convertir un sueño en una decisión sobre tus relaciones.</p>
+<a class="inline-flex items-center gap-2 px-8 py-4 bg-dream-salmon text-dream-dark rounded-full font-bold hover:bg-dream-salmon/90 transition-colors" href="/es/">Empezar un diario de sueños</a>
 </aside>
 <!-- FAQ Section -->
 <section class="mt-16">
@@ -205,30 +170,26 @@ Soñar con tu ex: qué puede significar y qué no demuestra
 <div class="space-y-4">
 <details class="glass-panel rounded-xl p-4 group cursor-pointer">
 <summary class="font-medium flex justify-between items-center text-dream-cream">¿Qué significa soñar con tu ex constantemente?<i class="w-5 h-5 transition-transform group-open:rotate-180 text-dream-salmon" data-lucide="chevron-down"></i></summary>
-<p class="mt-4 text-sm text-gray-400 leading-relaxed">La repetición no demuestra que quieras volver ni que no hayas superado la ruptura. Suele indicar que algo de esa etapa, o algo actual que la recuerda, sigue ocupándote. Anota la escena, la emoción y el contexto durante unas semanas para ver qué se repite de verdad.</p>
+<p class="mt-4 text-sm text-gray-400 leading-relaxed">La repetición no demuestra que quieras volver ni que no hayas superado la ruptura. Distingue la frecuencia, las escenas y las emociones. Puedes explorar recuerdos recientes sin dar por probada una causa.</p>
 </details>
 <details class="glass-panel rounded-xl p-4 group cursor-pointer">
 <summary class="font-medium flex justify-between items-center text-dream-cream">¿Soñar con mi ex significa que piensa en mí?<i class="w-5 h-5 transition-transform group-open:rotate-180 text-dream-salmon" data-lucide="chevron-down"></i></summary>
-<p class="mt-4 text-sm text-gray-400 leading-relaxed">No. Tu sueño está hecho de tus propios recuerdos y emociones. No dice nada de lo que siente tu ex, ni que te eche de menos o vaya a escribirte.</p>
+<p class="mt-4 text-sm text-gray-400 leading-relaxed">El sueño no permite conocer los pensamientos o sentimientos de otra persona. No lo uses como evidencia de que tu ex quiere contactar o retomar la relación.</p>
 </details>
 <details class="glass-panel rounded-xl p-4 group cursor-pointer">
 <summary class="font-medium flex justify-between items-center text-dream-cream">¿Qué pasa si sueño con mi ex y tengo pareja?<i class="w-5 h-5 transition-transform group-open:rotate-180 text-dream-salmon" data-lucide="chevron-down"></i></summary>
-<p class="mt-4 text-sm text-gray-400 leading-relaxed">Nada grave. Un sueño no es una infidelidad ni anuncia una ruptura. Si te deja una pregunta sobre tu relación, piénsala despierto, a partir de cómo os tratáis en el día a día.</p>
-</details>
-<details class="glass-panel rounded-xl p-4 group cursor-pointer">
-<summary class="font-medium flex justify-between items-center text-dream-cream">¿Por qué sueño con un ex en el que no pensaba desde hace años?<i class="w-5 h-5 transition-transform group-open:rotate-180 text-dream-salmon" data-lucide="chevron-down"></i></summary>
-<p class="mt-4 text-sm text-gray-400 leading-relaxed">A menudo porque algo reciente recuerda aquella época: un lugar, una fecha, una relación nueva, una emoción conocida. A veces no aparece ningún detonante. Anotar el contexto del sueño durante unas semanas es la mejor forma de comprobar si una relación se sostiene.</p>
+<p class="mt-4 text-sm text-gray-400 leading-relaxed">El sueño no prueba una infidelidad ni decide qué sientes por tu pareja. Valora tu relación por los hechos y tus deseos despierto. No estás obligado a contactar con tu ex por lo que has soñado.</p>
 </details>
 </div>
 </section>
 <section class="mt-16 glass-panel rounded-2xl p-6" id="sources">
-<h2 class="font-serif text-2xl text-dream-cream mb-4">Fuentes</h2>
+<h2 class="font-serif text-2xl text-dream-cream mb-4">Fuentes y límites de la investigación</h2>
 <ul class="mt-6 space-y-2 text-sm text-gray-400">
-<li><a href="https://doi.org/10.3390/clockssleep3020018" rel="nofollow noopener noreferrer" target="_blank">Schredl y Wood (2021), «Partners and Ex-Partners in Dreams: A Diary Study», <em>Clocks &amp; Sleep</em>, 3(2)</a></li>
-<li><a href="https://www.ninds.nih.gov/health-information/public-education/brain-basics/brain-basics-understanding-sleep" rel="nofollow noopener noreferrer" target="_blank">NINDS, «Brain Basics: Understanding Sleep»</a></li>
-<li><a href="https://www.nhs.uk/conditions/night-terrors/" rel="nofollow noopener noreferrer" target="_blank">NHS, «Night terrors and nightmares»</a></li>
+<li><a href="https://pubmed.ncbi.nlm.nih.gov/34073273/" rel="nofollow noopener noreferrer" target="_blank">Schredl y Wood (2021) — Estudio de diarios sobre parejas y exparejas</a></li>
+<li><a href="https://www.ninds.nih.gov/health-information/public-education/brain-basics/brain-basics-understanding-sleep" rel="nofollow noopener noreferrer" target="_blank">NINDS — Sueño, experiencias y preguntas abiertas</a></li>
+<li><a href="https://www.nhs.uk/conditions/night-terrors/" rel="nofollow noopener noreferrer" target="_blank">NHS — Pesadillas y cuándo pedir ayuda</a></li>
 </ul>
-<p class="mt-6 text-xs text-purple-200/60">Actualizado el 8 de octubre de 2026</p>
+<p class="mt-6 text-xs text-purple-200/60">Actualizado el 21 de septiembre de 2026</p>
 </section>
 <!-- Blog Nav Start -->
 <section class="mt-12" aria-label="Navegación entre artículos" data-blog-nav="">
