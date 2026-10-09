@@ -386,7 +386,7 @@ export default function SymbolDictionaryScreen() {
         >
           {popularSymbols.map((symbol) => {
             const content = symbol[lang] ?? symbol.en;
-            const illustration = getSymbolIllustration(symbol.id);
+            const illustration = getSymbolIllustration(symbol.id, 'poster');
             return (
               <Pressable
                 key={symbol.id}

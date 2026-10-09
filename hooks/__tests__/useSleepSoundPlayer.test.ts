@@ -8,6 +8,7 @@ import {
 
 import type { SleepSoundConfig } from '@/lib/sleepSounds';
 import { useSleepSoundPlayer } from '@/hooks/useSleepSoundPlayer';
+import { ensureSleepSoundFile } from '@/services/sleepSoundFiles';
 
 let focusCleanup: (() => void) | undefined;
 
@@ -36,6 +37,10 @@ jest.mock('expo-audio', () => ({
   useAudioPlayerStatus: jest.fn(() => mockStatus),
 }));
 
+jest.mock('@/services/sleepSoundFiles', () => ({
+  ensureSleepSoundFile: jest.fn(),
+}));
+
 jest.mock('expo-router', () => ({
   useFocusEffect: jest.fn((callback: () => void | (() => void)) => {
     focusCleanup = callback() ?? undefined;
@@ -45,8 +50,17 @@ jest.mock('expo-router', () => ({
 const sound: SleepSoundConfig = {
   id: 'rain',
   icon: 'cloud.rain.fill',
-  source: 1,
+  remoteUrl: 'https://noctalia.app/audio/sleep/rain.m4a',
 };
+
+const LOCAL_URI = 'file:///document/sleep-sounds/rain.m4a';
+
+// The loop resolves asynchronously (cached file or first download).
+async function flushDownload() {
+  await act(async () => {
+    await Promise.resolve();
+  });
+}
 
 describe('useSleepSoundPlayer', () => {
   beforeEach(() => {
@@ -64,6 +78,7 @@ describe('useSleepSoundPlayer', () => {
     mockStatus.playing = false;
     jest.mocked(setAudioModeAsync).mockResolvedValue(undefined);
     jest.mocked(mockPlayer.seekTo).mockResolvedValue(undefined);
+    jest.mocked(ensureSleepSoundFile).mockResolvedValue(LOCAL_URI);
   });
 
   afterEach(() => {
@@ -79,12 +94,13 @@ describe('useSleepSoundPlayer', () => {
         albumTitle: 'Evening ambience',
       }),
     );
+    await flushDownload();
 
     await act(async () => {
       await result.current.play();
     });
 
-    expect(useAudioPlayer).toHaveBeenCalledWith(sound.source, {
+    expect(useAudioPlayer).toHaveBeenLastCalledWith({ uri: LOCAL_URI }, {
       downloadFirst: true,
       updateInterval: 500,
     });
@@ -123,6 +139,7 @@ describe('useSleepSoundPlayer', () => {
         albumTitle: 'Evening ambience',
       }),
     );
+    await flushDownload();
 
     await act(async () => {
       await result.current.play();
@@ -153,6 +170,7 @@ describe('useSleepSoundPlayer', () => {
         albumTitle: 'Evening ambience',
       }),
     );
+    await flushDownload();
 
     await act(async () => {
       await result.current.play();
@@ -195,6 +213,7 @@ describe('useSleepSoundPlayer', () => {
         albumTitle: 'Evening ambience',
       }),
     );
+    await flushDownload();
 
     await act(async () => {
       await result.current.play();
@@ -260,6 +279,7 @@ describe('useSleepSoundPlayer', () => {
         albumTitle: 'Evening ambience',
       }),
     );
+    await flushDownload();
 
     await act(async () => {
       await result.current.play();
@@ -268,5 +288,31 @@ describe('useSleepSoundPlayer', () => {
     expect(result.current.error).toBe('playback_failed');
     expect(mockPlayer.play).not.toHaveBeenCalled();
     expect(mockPlayer.clearLockScreenControls).toHaveBeenCalled();
+  });
+
+  it('reports a failed first download and retries it on the next play', async () => {
+    jest.mocked(ensureSleepSoundFile).mockRejectedValueOnce(new Error('offline'));
+    const { result } = renderHook(() =>
+      useSleepSoundPlayer({
+        sound,
+        durationMinutes: 30,
+        title: 'Gentle rain',
+        albumTitle: 'Evening ambience',
+      }),
+    );
+    await flushDownload();
+
+    expect(result.current.error).toBe('download_failed');
+    expect(result.current.isLoaded).toBe(false);
+
+    await act(async () => {
+      await result.current.play();
+    });
+    await flushDownload();
+
+    expect(ensureSleepSoundFile).toHaveBeenCalledTimes(2);
+    expect(result.current.error).toBeNull();
+    expect(result.current.isLoaded).toBe(true);
+    expect(mockPlayer.play).not.toHaveBeenCalled();
   });
 });

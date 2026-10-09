@@ -694,7 +694,7 @@ export default function LucidNightScreen() {
                 label={ambience.isPlaying ? copy.ambiencePause : copy.ambiencePlay}
                 variant="secondary"
                 icon={ambience.isPlaying ? 'pause' : 'play'}
-                disabled={!ambience.isLoaded || ambience.isBuffering}
+                disabled={ambience.error !== 'download_failed' && (!ambience.isLoaded || ambience.isBuffering)}
                 onPress={() => void (ambience.isPlaying ? ambience.pause() : ambience.play())}
                 testID="lucid-night-ambience-play"
               />

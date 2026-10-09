@@ -14,12 +14,12 @@ type ShowcaseDream = Omit<DreamAnalysis, 'id' | 'imageUrl' | 'thumbnailUrl'> & {
 type ShowcaseLanguage = 'fr' | 'en';
 
 const ART = {
-  house: require('@/assets/images/symbols/house.webp'),
-  flying: require('@/assets/images/symbols/flying.webp'),
-  forest: require('@/assets/images/symbols/forest.webp'),
-  stairs: require('@/assets/images/symbols/stairs.webp'),
-  wolf: require('@/assets/images/symbols/wolf.webp'),
-  key: require('@/assets/images/symbols/key.webp'),
+  house: require('@/mock-data/assets/showcase/house.webp'),
+  flying: require('@/mock-data/assets/showcase/flying.webp'),
+  forest: require('@/mock-data/assets/showcase/forest.webp'),
+  stairs: require('@/mock-data/assets/showcase/stairs.webp'),
+  wolf: require('@/mock-data/assets/showcase/wolf.webp'),
+  key: require('@/mock-data/assets/showcase/key.webp'),
 };
 
 const base = {

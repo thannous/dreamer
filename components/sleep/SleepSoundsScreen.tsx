@@ -146,9 +146,10 @@ export function SleepSoundsScreen() {
   const reducedMotion = useReducedMotion();
   const backButtonTop = insets.top + ThemeLayout.spacing.lg20;
   const contentPaddingTop = backButtonTop + 44 + ThemeLayout.spacing.lg;
+  const downloadFailed = player.error === 'download_failed';
   const isPreparing =
     !preferencesLoaded ||
-    (!player.hasStarted && (!player.isLoaded || player.isBuffering));
+    (!downloadFailed && !player.hasStarted && (!player.isLoaded || player.isBuffering));
   const primaryLabel = isPreparing
     ? copy.loading
     : player.isPlaying
@@ -389,7 +390,7 @@ export function SleepSoundsScreen() {
 
               {player.error ? (
                 <Text style={[styles.errorText, { color: noctalia.status.danger.text }]}>
-                  {copy.error}
+                  {downloadFailed ? copy.downloadError : copy.error}
                 </Text>
               ) : null}
             </GlassCard>

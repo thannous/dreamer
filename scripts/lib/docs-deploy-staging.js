@@ -8,6 +8,8 @@ const { copyFile, walkFiles } = require('./docs-source-utils');
 
 const ALLOWED_ROOT_DIRECTORIES = new Set([
   '.well-known',
+  // Sleep sounds the app downloads on first play (lib/sleepSounds.ts).
+  'audio',
   'auth',
   'css',
   ...siteConfig.languages,
