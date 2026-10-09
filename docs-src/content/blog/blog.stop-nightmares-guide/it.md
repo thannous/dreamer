@@ -5,7 +5,7 @@
   "lang": "it",
   "slug": "incubi-cause-significato-e-come-fermarli",
   "title": "Incubi: cause, significato e come fermarli - Noctalia",
-  "description": "Stanco di svegliarti terrorizzato? Comprendi le cause degli incubi e padroneggia tecniche come l'IRT per ridurne la frequenza e dormire meglio.",
+  "description": "Perché arrivano gli incubi, cosa possono significare e come fermarli: terapia di ripetizione per immagini, sonno regolare e quando rivolgersi a un medico.",
   "robots": "max-image-preview:large",
   "themeColor": "#0a0514",
   "htmlClass": "scroll-smooth blog-article",
@@ -14,23 +14,23 @@
   "mainClass": "pt-32 pb-20 px-4",
   "ogType": "article",
   "ogTitle": "Incubi: cause, significato e come fermarli - Noctalia",
-  "ogDescription": "Stanco di svegliarti terrorizzato? Comprendi le cause degli incubi e padroneggia tecniche come l'IRT per ridurne la frequenza e dormire meglio.",
+  "ogDescription": "Cause, significato e il metodo più studiato per fermare gli incubi ricorrenti: riscriverli da svegli.",
   "ogImage": "https://noctalia.app/img/blog/stop-nightmares-guide.webp",
   "ogImageAlt": "La luce dell'alba che irrompe nell'oscurità, simboleggia la libertà dagli incubi",
   "twitterCard": "summary_large_image",
   "twitterTitle": "Incubi: cause, significato e come fermarli - Noctalia",
-  "twitterDescription": "Stanco di svegliarti terrorizzato? Comprendi le cause degli incubi e padroneggia tecniche come l'IRT per ridurne la frequenza e dormire meglio.",
+  "twitterDescription": "Perché fai incubi e come averne meno, già da stanotte.",
   "twitterImage": "https://noctalia.app/img/blog/stop-nightmares-guide.webp",
   "twitterImageAlt": "La luce dell'alba che irrompe nell'oscurità, simboleggia la libertà dagli incubi",
   "publishedTime": "2025-12-11",
-  "modifiedTime": "2026-07-10T00:00:00+02:00",
+  "modifiedTime": "2026-10-08",
   "author": "Thanh Chau",
   "prevPath": "/it/blog/sogni-di-gravidanza-cosa-significano-anche-se-non-sei-incinta",
   "nextPath": "/it/blog/la-paralisi-del-sonno-spiegata-perche-non-puoi-muoverti-e-come-fermarla",
   "preloadImage": "/img/blog/stop-nightmares-guide.webp",
   "jsonLd": [
-    "{\n  \"@context\": \"https://schema.org\",\n  \"@type\": \"BlogPosting\",\n  \"headline\": \"Incubi: cause, significato e come fermarli\",\n  \"description\": \"Perché abbiamo gli incubi? Scopri le cause dei brutti sogni, cosa significano e tecniche comprovate per ridurre la frequenza degli incubi.\",\n  \"image\": {\n    \"@type\": \"ImageObject\",\n    \"url\": \"https://noctalia.app/img/blog/stop-nightmares-guide.webp\",\n    \"width\": 1200,\n    \"height\": 630\n  },\n  \"author\": [\n    {\n      \"@type\": \"Person\",\n      \"@id\": \"https://noctalia.app/it/chi-siamo#person\",\n      \"name\": \"Thanh Chau\",\n      \"jobTitle\": \"Founder & Publication Director\",\n      \"url\": \"https://noctalia.app/it/chi-siamo\",\n      \"worksFor\": {\n        \"@type\": \"Organization\",\n        \"@id\": \"https://noctalia.app/#organization\",\n        \"name\": \"Noctalia\",\n        \"url\": \"https://noctalia.app\"\n      }\n    },\n    {\n      \"@type\": \"Organization\",\n      \"@id\": \"https://noctalia.app/#organization\",\n      \"name\": \"Noctalia\",\n      \"url\": \"https://noctalia.app\",\n      \"logo\": {\n        \"@type\": \"ImageObject\",\n        \"url\": \"https://noctalia.app/logo/logo_noctalia.png\"\n      }\n    }\n  ],\n  \"publisher\": {\n    \"@type\": \"Organization\",\n    \"name\": \"Noctalia\",\n    \"url\": \"https://noctalia.app\",\n    \"logo\": {\n      \"@type\": \"ImageObject\",\n      \"url\": \"https://noctalia.app/logo/logo_noctalia.png\"\n    }\n  },\n  \"datePublished\": \"2025-12-11\",\n  \"dateModified\": \"2026-07-10T00:00:00+02:00\",\n  \"mainEntityOfPage\": {\n    \"@type\": \"WebPage\",\n    \"@id\": \"https://noctalia.app/it/blog/incubi-cause-significato-e-come-fermarli\"\n  },\n  \"inLanguage\": \"it\",\n  \"isAccessibleForFree\": true,\n  \"wordCount\": 911,\n  \"timeRequired\": \"PT4M\",\n  \"url\": \"https://noctalia.app/it/blog/incubi-cause-significato-e-come-fermarli\"\n}",
-    "{\n  \"@context\": \"https://schema.org\",\n  \"@type\": \"FAQPage\",\n  \"mainEntity\": [\n    {\n      \"@type\": \"Question\",\n      \"name\": \"Perchè ho gli incubi?\",\n      \"acceptedAnswer\": {\n        \"@type\": \"Answer\",\n        \"text\": \"Gli incubi possono essere causati da stress, ansia, traumi, farmaci, privazione del sonno o dal mangiare a tarda notte. Spesso sono il modo in cui il tuo cervello elabora emozioni o esperienze difficili. Circa il 2-8% degli adulti sperimenta incubi frequenti.\"\n      }\n    },\n    {\n      \"@type\": \"Question\",\n      \"name\": \"Come posso smettere di avere incubi?\",\n      \"acceptedAnswer\": {\n        \"@type\": \"Answer\",\n        \"text\": \"Per ridurre gli incubi: mantieni un programma di sonno regolare, pratica la gestione dello stress, evita gli schermi prima di andare a letto, crea un ambiente di sonno tranquillo e prova l'Image Rehearsal Therapy (IRT), una tecnica in cui riscrivi i finali degli incubi mentre sei sveglio. Gli incubi gravi possono richiedere un aiuto professionale.\"\n      }\n    },\n    {\n      \"@type\": \"Question\",\n      \"name\": \"Gli incubi significano qualcosa?\",\n      \"acceptedAnswer\": {\n        \"@type\": \"Answer\",\n        \"text\": \"Sì, gli incubi spesso riflettono ansie sottostanti, emozioni non elaborate o fattori di stress nella tua vita da sveglio. Possono essere il tuo subconscio che evidenzia problemi che richiedono attenzione. I temi più comuni degli incubi riguardano la paura della perdita, del fallimento, dell'essere inseguiti o della perdita del controllo.\"\n      }\n    }\n  ]\n}",
+    "{\n    \"@context\": \"https://schema.org\",\n    \"@type\": \"BlogPosting\",\n    \"headline\": \"Incubi: cause, significato e come fermarli\",\n    \"description\": \"Perché arrivano gli incubi, cosa possono significare e come fermarli: terapia di ripetizione per immagini, sonno regolare e quando rivolgersi a un medico.\",\n    \"image\": {\n        \"@type\": \"ImageObject\",\n        \"url\": \"https://noctalia.app/img/blog/stop-nightmares-guide.webp\",\n        \"width\": 1200,\n        \"height\": 630\n    },\n    \"author\": [\n        {\n            \"@type\": \"Person\",\n            \"@id\": \"https://noctalia.app/it/chi-siamo#person\",\n            \"name\": \"Thanh Chau\",\n            \"jobTitle\": \"Founder & Publication Director\",\n            \"url\": \"https://noctalia.app/it/chi-siamo\",\n            \"worksFor\": {\n                \"@type\": \"Organization\",\n                \"@id\": \"https://noctalia.app/#organization\",\n                \"name\": \"Noctalia\",\n                \"url\": \"https://noctalia.app\"\n            }\n        },\n        {\n            \"@type\": \"Organization\",\n            \"@id\": \"https://noctalia.app/#organization\",\n            \"name\": \"Noctalia\",\n            \"url\": \"https://noctalia.app\",\n            \"logo\": {\n                \"@type\": \"ImageObject\",\n                \"url\": \"https://noctalia.app/logo/logo_noctalia.png\"\n            }\n        }\n    ],\n    \"publisher\": {\n        \"@type\": \"Organization\",\n        \"name\": \"Noctalia\",\n        \"url\": \"https://noctalia.app\",\n        \"logo\": {\n            \"@type\": \"ImageObject\",\n            \"url\": \"https://noctalia.app/logo/logo_noctalia.png\"\n        }\n    },\n    \"datePublished\": \"2025-12-11\",\n    \"dateModified\": \"2026-10-08\",\n    \"mainEntityOfPage\": {\n        \"@type\": \"WebPage\",\n        \"@id\": \"https://noctalia.app/it/blog/incubi-cause-significato-e-come-fermarli\"\n    },\n    \"inLanguage\": \"it\",\n    \"isAccessibleForFree\": true,\n    \"wordCount\": 2103,\n    \"timeRequired\": \"PT10M\",\n    \"url\": \"https://noctalia.app/it/blog/incubi-cause-significato-e-come-fermarli\"\n}",
+    "{\n    \"@context\": \"https://schema.org\",\n    \"@type\": \"FAQPage\",\n    \"mainEntity\": [\n        {\n            \"@type\": \"Question\",\n            \"name\": \"Perché ho gli incubi?\",\n            \"acceptedAnswer\": {\n                \"@type\": \"Answer\",\n                \"text\": \"I fattori scatenanti più comuni sono stress, traumi, notti corte o irregolari, alcuni farmaci e l'uso di alcol o droghe, o la loro sospensione. Spesso se ne sommano diversi. Guarda cosa è cambiato nelle tue giornate e nelle tue notti invece di cercare di decifrare il sogno.\"\n            }\n        },\n        {\n            \"@type\": \"Question\",\n            \"name\": \"Come posso smettere di avere incubi?\",\n            \"acceptedAnswer\": {\n                \"@type\": \"Answer\",\n                \"text\": \"Tieni orari di sonno regolari, limita l'alcol e i contenuti inquietanti la sera e prova la ripetizione per immagini: riscrivi da sveglio un incubo ricorrente e ripassa la nuova versione qualche minuto al giorno. Se gli incubi persistono o seguono un trauma, un professionista può aiutarti.\"\n            }\n        },\n        {\n            \"@type\": \"Question\",\n            \"name\": \"Gli incubi significano qualcosa?\",\n            \"acceptedAnswer\": {\n                \"@type\": \"Answer\",\n                \"text\": \"Non predicono nulla e non nascondono messaggi. Spesso fanno eco a un'emozione già presente, come preoccupazione, impotenza o lutto. Ciò che hai provato nel sogno e ciò che stai vivendo dicono più della scena in sé.\"\n            }\n        },\n        {\n            \"@type\": \"Question\",\n            \"name\": \"Quando rivolgersi a un medico per gli incubi?\",\n            \"acceptedAnswer\": {\n                \"@type\": \"Answer\",\n                \"text\": \"Quando arrivano più volte a settimana, disturbano il sonno, ti fanno temere di andare a letto, seguono un trauma o pesano sulle tue giornate. Un medico o uno specialista del sonno può cercarne la causa e proporre un trattamento, come la terapia di ripetizione per immagini.\"\n            }\n        }\n    ]\n}",
     "{\n  \"@context\": \"https://schema.org\",\n  \"@type\": \"BreadcrumbList\",\n  \"itemListElement\": [\n    {\n      \"@type\": \"ListItem\",\n      \"position\": 1,\n      \"name\": \"Home\",\n      \"item\": \"https://noctalia.app/it/\"\n    },\n    {\n      \"@type\": \"ListItem\",\n      \"position\": 2,\n      \"name\": \"Risorse\",\n      \"item\": \"https://noctalia.app/it/blog/\"\n    },\n    {\n      \"@type\": \"ListItem\",\n      \"position\": 3,\n      \"name\": \"Guida agli incubi\",\n      \"item\": \"https://noctalia.app/it/blog/incubi-cause-significato-e-come-fermarli\"\n    }\n  ]\n}"
   ],
   "activeNav": "resources"
@@ -61,13 +61,13 @@
 <a class="text-xs font-mono text-purple-200/70 border border-white/10 rounded-full px-3 py-1 hover:text-white hover:border-dream-salmon/30 transition-colors" href="significati-dei-sogni-interpretazione-e-simboli">Argomento: significati dei sogni</a>
 <span aria-hidden="true" class="w-full sm:hidden"></span>
 <span class="text-sm text-purple-300/60">Pubblicato l'11 dicembre 2025</span>
-<span class="text-sm text-purple-300/60">3 minuti di lettura</span>
+<span class="text-sm text-purple-300/60">10 minuti di lettura</span>
 </div>
 <h1 class="font-serif text-3xl md:text-5xl mb-6 text-transparent bg-clip-text bg-gradient-to-b from-white via-dream-lavender to-purple-400/50 leading-tight">
                     Incubi: cause, significato e come fermarli
                 </h1>
 <p class="text-lg text-purple-200/80 leading-relaxed">
-                    Ti svegli terrorizzato, con il cuore che batte forte e le immagini vivide ancora fresche nella tua mente. La paura persiste a lungo dopo che ti rendi conto che era solo un sogno. Gli incubi colpiscono quasi tutti occasionalmente, ma per alcuni sono un evento regolare che influisce sulla qualità del sonno e sulla vita quotidiana. Esploriamo perché accadono gli incubi e, soprattutto, cosa puoi fare per risolverli.
+                    Ti svegli di soprassalto, il cuore che batte forte e la scena ancora nitida: qualcuno era entrato in casa, tuo figlio era sparito, i freni non rispondevano. Ci vuole qualche secondo per convincerti che era solo un sogno. Un incubo ogni tanto fa parte del sonno normale. Quando tornano di continuo, esistono modi concreti e ben studiati per averne meno.
                 </p>
 </header>
 <!-- Author Byline (E-E-A-T) -->
@@ -83,41 +83,41 @@
 <!-- Quick Answer (AI SEO) -->
 <section class="glass-panel rounded-2xl p-6 mb-8 border border-dream-salmon/20 bg-white/5" aria-labelledby="quick-answer-title">
     <h2 id="quick-answer-title" class="font-serif text-xl text-dream-cream mb-3">Risposta rapida</h2>
-    <p class="text-purple-100/80 leading-relaxed">Gli incubi sono sogni vividi e angoscianti che ti svegliano con forti emozioni negative. Colpiscono regolarmente il 2-8 % degli adulti e fino al 50 % dei bambini tra i 3 e i 6 anni. A differenza dei terrori notturni (che si verificano durante il sonno profondo senza ricordo), gli incubi avvengono durante il sonno REM e vengono ricordati chiaramente. Il trattamento più efficace basato sull'evidenza è la Terapia di Ripetizione delle Immagini (IRT): riscrivi lo scenario del tuo incubo da sveglio, poi ripeti mentalmente la nuova versione prima di dormire. La gestione dello stress, orari di sonno regolari e l'elaborazione dei traumi sottostanti riducono significativamente la frequenza degli incubi.</p>
+    <p class="text-purple-100/80 leading-relaxed">Un incubo è un sogno angosciante che ti sveglia e che ricordi con chiarezza. Quasi tutti gli adulti ne hanno uno ogni tanto; per circa il 2-8 %, sono così frequenti da rovinare il sonno. Stress, traumi, notti corte o irregolari, alcuni farmaci e l'alcol li rendono più probabili. La tecnica più solida è la ripetizione per immagini: riscrivere l'incubo da sveglio, poi ripassare la nuova versione per qualche minuto al giorno. Se gli incubi arrivano più volte a settimana o ti fanno temere l'ora di andare a letto, parlane con un medico.</p>
 </section>
 <figure class="mb-12 rounded-2xl overflow-hidden">
 <img alt="La luce dell'alba che irrompe nell'oscurità, simboleggia la libertà dagli incubi" class="w-full h-auto" fetchpriority="high" height="630" loading="eager" sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 33vw" src="../../img/blog/stop-nightmares-guide.webp" srcset="../../img/blog/stop-nightmares-guide-480w.webp 480w, ../../img/blog/stop-nightmares-guide-800w.webp 800w, ../../img/blog/stop-nightmares-guide-1200w.webp 1200w" width="1200">
 </figure>
 <nav class="glass-panel rounded-2xl p-6 mb-12">
 <h2 class="font-serif text-lg text-dream-cream mb-4 flex items-center gap-2">
-<i class="w-5 h-5 text-dream-salmon" data-lucide="list"></i> Sommario
+<i class="w-5 h-5 text-dream-salmon" data-lucide="list"></i> Indice
                 </h2>
 <ol class="space-y-2 text-sm text-purple-200/70">
-<li><a class="toc-link block" href="#what-are">1. Cosa sono gli incubi?</a></li>
-<li><a class="toc-link block" href="#causes">2. Cause comuni di incubi</a></li>
-<li><a class="toc-link block" href="#meaning">3. Cosa significano gli incubi</a></li>
-<li><a class="toc-link block" href="#types">4. Tipi di incubi</a></li>
-<li><a class="toc-link block" href="#stop">5. Come fermare gli incubi</a></li>
-<li><a class="toc-link block" href="#when-help">6. Quando cercare aiuto</a></li>
+<li><a class="toc-link block" href="#what-are">1. Che cos'è esattamente un incubo?</a></li>
+<li><a class="toc-link block" href="#causes">2. Cosa favorisce gli incubi?</a></li>
+<li><a class="toc-link block" href="#meaning">3. Gli incubi hanno un significato?</a></li>
+<li><a class="toc-link block" href="#types">4. Che tipo di incubo è il tuo?</a></li>
+<li><a class="toc-link block" href="#stop">5. Come fermare gli incubi, o averne meno</a></li>
+<li><a class="toc-link block" href="#when-help">6. Quando rivolgersi a un medico</a></li>
 </ol>
 </nav>
 <div class="prose max-w-none text-gray-300">
-<h2 id="what-are">Cosa sono gli incubi?</h2>
+<h2 id="what-are">Che cos'è esattamente un incubo?</h2>
 <p>
-                    Gli incubi sono <strong>sogni vividi e inquietanti che provocano sentimenti di paura, terrore o ansia</strong>. A differenza dei sogni normali, in genere ti svegliano e ti lasciano un forte residuo emotivo. La maggior parte degli incubi si verificano durante il sonno REM (Rapid Eye Movement), di solito nella seconda metà della notte.
+                    Un incubo è un sogno lungo e spaventoso che ti sveglia, di solito con un ricordo preciso di ciò che è successo. L'emozione più comune è la paura, ma possono prevalere anche rabbia, disgusto, vergogna o tristezza. Gli incubi nascono soprattutto durante il <a class="text-dream-salmon hover:underline" href="sonno-rem-e-sogni-comprendere-il-ripristino-notturno-del-cervello">sonno REM</a>, le cui fasi si allungano verso il mattino. Per questo i sogni peggiori arrivano spesso alle prime luci.
                 </p>
 <p>
-                    Spesso presentano temi come <a class="text-dream-salmon hover:underline" href="../simboli/inseguimento">essere inseguiti</a>, che può aumentare il senso di minaccia.
+                    Le trame si somigliano: un <a class="text-dream-salmon hover:underline" href="../simboli/inseguimento">inseguimento</a>, un intruso, una persona cara in pericolo, una caduta, una catastrofe impossibile da fermare.
                 </p>
 <p>
-                    Mentre gli incubi occasionali sono normali, <strong>il 2-8% degli adulti li sperimenta frequentemente</strong> - una volta alla settimana o più. Quando gli incubi compromettono la qualità del sonno o il funzionamento quotidiano, possono essere classificati come disturbo da incubi.
+                    Sono molto comuni. L'Accademia americana di medicina del sonno (AASM) stima che tra il 50 e l'85 % degli adulti abbia qualche incubo occasionale e che tra il 2 e l'8 % ne abbia abbastanza da dormire male. Quando sono frequenti, angoscianti e pesano anche sulla giornata, i medici parlano di <strong>disturbo da incubi</strong>. I bambini ne hanno più spesso degli adulti, soprattutto tra i 3 e i 6 anni.
                 </p>
 <p>
-                    Gli incubi differiscono dai terrori notturni, che si verificano durante i periodi non<a class="text-dream-salmon hover:underline" href="sonno-rem-e-sogni-comprendere-il-ripristino-notturno-del-cervello">il sonno REM</a>, comportano reazioni fisiche come urla e vengono ricordati raramente. Gli incubi vengono ricordati completamente e si verificano durante le fasi del sonno più leggero.
+                    Un incubo non è un pavor nocturnus (terrore notturno). Il pavor nasce dal sonno profondo non REM, spesso nella prima parte della notte: la persona può urlare o agitarsi, sembra sveglia senza esserlo e di solito non ricorda nulla. Dopo un incubo, invece, sei del tutto sveglio e ti ricordi.
                 </p>
-<h2 id="causes">Cause comuni degli incubi</h2>
+<h2 id="causes">Cosa favorisce gli incubi?</h2>
 <p>
-                    Capire cosa scatena gli incubi è il primo passo per ridurli:
+                    Di solito si sommano più fattori. Invece di indovinare la causa partendo dal sogno, guarda cosa è cambiato nelle tue giornate e nelle tue notti.
                 </p>
 </div>
 <div class="grid md:grid-cols-2 gap-6 my-12">
@@ -129,7 +129,7 @@
 <h3 class="font-serif text-lg text-dream-cream">Stress e ansia</h3>
 </div>
 <p class="text-sm text-gray-300">
-                        La causa più comune. <strong>Lo stress quotidiano, la pressione lavorativa o i cambiamenti della vita</strong> possono manifestarsi come incubi. Il cervello elabora le minacce durante il sonno e l'ansia elevata aumenta la frequenza degli incubi.
+                        La pressione di tutti i giorni, come un conflitto al lavoro, problemi di soldi o un trasloco, è tra i fattori scatenanti più comuni. Gli incubi tendono a <strong>concentrarsi nelle settimane più pesanti</strong> e a diradarsi quando la pressione cala.
                     </p>
 <p class="text-sm text-gray-300">Una notte calda può aggiungere risvegli a questa tensione. La guida su <a class="text-dream-salmon hover:underline" href="incubi-caldo-stress">caldo, stress e incubi</a> separa il contesto fisico del sonno dal contenuto del sogno.</p>
 </div>
@@ -141,7 +141,7 @@
 <h3 class="font-serif text-lg text-dream-cream">Traumi e disturbo da stress post-traumatico</h3>
 </div>
 <p class="text-sm text-gray-300">
-                        Le esperienze traumatiche spesso portano a <strong>incubi ricorrenti che riproducono l'evento</strong> o temi correlati. Fino all'80% delle persone affette da disturbo da stress post-traumatico sperimenta incubi frequenti.
+                        Dopo un incidente, un'aggressione o una perdita improvvisa, gli incubi possono <strong>rivivere l'evento</strong>, o la sua emozione in un'altra scena. Sono frequenti nel disturbo da stress post-traumatico (PTSD) e richiedono un aiuto specialistico, non una caccia ai simboli.
                     </p>
 </div>
 <div class="dream-card glass-panel rounded-xl p-6 border border-transparent">
@@ -152,7 +152,7 @@
 <h3 class="font-serif text-lg text-dream-cream">Farmaci</h3>
 </div>
 <p class="text-sm text-gray-300">
-                        Alcuni farmaci influenzano <a class="text-dream-salmon hover:underline" href="sonno-rem-e-sogni-comprendere-il-ripristino-notturno-del-cervello">il sonno REM</a> e l'intensità dei sogni. <strong>Antidepressivi, farmaci per la pressione sanguigna e sonniferi</strong> possono scatenare o intensificare gli incubi.
+                        Alcuni farmaci agiscono sul <a class="text-dream-salmon hover:underline" href="sonno-rem-e-sogni-comprendere-il-ripristino-notturno-del-cervello">sonno REM</a> e possono scatenare incubi, tra cui <strong>alcuni antidepressivi e farmaci per la pressione</strong> come i betabloccanti. Se gli incubi sono iniziati con una nuova prescrizione o un cambio di dose, dillo al tuo medico. Non sospendere mai una terapia da solo.
                     </p>
 </div>
 <div class="dream-card glass-panel rounded-xl p-6 border border-transparent">
@@ -160,21 +160,21 @@
 <div class="p-2 bg-dream-salmon/10 rounded-lg">
 <i class="w-5 h-5 text-dream-salmon" data-lucide="moon-star"></i>
 </div>
-<h3 class="font-serif text-lg text-dream-cream">Privazione del sonno</h3>
+<h3 class="font-serif text-lg text-dream-cream">Notti corte o irregolari</h3>
 </div>
 <p class="text-sm text-gray-300">
-                        Ironia della sorte, non dormire abbastanza può causare incubi. <strong>La privazione del sonno <a class="text-dream-salmon hover:underline" href="../simboli/porta">porta</a> alla ripresa REM</strong> - periodi REM più intensi che producono sogni vividi e spesso inquietanti.
+                        Dormire meno del solito, o a orari che cambiano, aumenta il rischio. Dopo notti troppo corte <strong>il sonno REM tende a tornare più intenso</strong>, con sogni più vividi.
                     </p>
 </div>
 <div class="dream-card glass-panel rounded-xl p-6 border border-transparent">
 <div class="flex items-center gap-3 mb-4">
 <div class="p-2 bg-dream-salmon/10 rounded-lg">
-<i class="w-5 h-5 text-dream-salmon" data-lucide="utensils"></i>
+<i class="w-5 h-5 text-dream-salmon" data-lucide="wine"></i>
 </div>
-<h3 class="font-serif text-lg text-dream-cream">Mangiare a tarda notte</h3>
+<h3 class="font-serif text-lg text-dream-cream">Alcol e altre sostanze</h3>
 </div>
 <p class="text-sm text-gray-300">
-                        Mangiare prima il letto <strong>aumenta il metabolismo e l'attività cerebrale</strong>, portando a sogni più attivi. I cibi pesanti o piccanti sono particolarmente associati a sogni inquietanti.
+                        Bere molto, alcune droghe e <strong>la loro sospensione</strong> possono scatenare incubi. Spesso si dà la colpa anche alla cena abbondante, ma le prove di un legame diretto con gli incubi sono scarse.
                     </p>
 </div>
 <div class="dream-card glass-panel rounded-xl p-6 border border-transparent">
@@ -182,52 +182,48 @@
 <div class="p-2 bg-dream-salmon/10 rounded-lg">
 <i class="w-5 h-5 text-dream-salmon" data-lucide="tv"></i>
 </div>
-<h3 class="font-serif text-lg text-dream-cream">Media prima di andare a letto</h3>
+<h3 class="font-serif text-lg text-dream-cream">Immagini inquietanti prima di dormire</h3>
 </div>
 <p class="text-sm text-gray-300">
-                        Guardare film spaventosi, notizie o contenuti violenti prima di dormire può <strong>preparare il cervello a contenuti minacciosi dei sogni</strong>. Le immagini vengono elaborate durante il sonno.
+                        Un horror, una serie violenta o le notizie scorse sul telefono a tarda sera possono <strong>restare in testa a schermo spento</strong>. Se noti questo legame nelle tue notti, dedica l'ultima ora a qualcosa di più tranquillo.
                     </p>
 </div>
 </div>
 <div class="prose max-w-none text-gray-300">
-<h2 id="meaning">Significato degli incubi: cosa rivelano i tuoi brutti sogni</h2>
+<h2 id="meaning">Gli incubi hanno un significato?</h2>
 <p>
-                    I tuoi incubi non sono casuali: spesso portano messaggi significativi dal subconscio:
+                    Non nel senso di un messaggio cifrato o di un avvertimento. Un incubo non predice nulla, e la stessa immagine può voler dire cose molto diverse da persona a persona. Spesso però riflette un'emozione già presente: preoccupazione, senso di colpa, impotenza, lutto. I sogni attingono a ciò che hai vissuto di recente, ma nessuno può ricostruire perché proprio quella scena sia apparsa proprio quella notte.
                 </p>
 <p>
-                    Se i tuoi incubi ruotano attorno a temi ricorrenti come <a class="text-dream-salmon hover:underline" href="../simboli/inseguimento">essere inseguiti</a>, <a class="text-dream-salmon hover:underline" href="../simboli/cadere">cadere</a>, <a class="text-dream-salmon hover:underline" href="../simboli/morte">morte</a> o creature spaventose come un <a class="text-dream-salmon hover:underline" href="../simboli/serpente">serpente</a> o <a class="text-dream-salmon hover:underline" href="../simboli/ragno">ragno</a>, cercare questi simboli può aiutarti a interpretare il messaggio più profondo.
+                    L'emozione di solito dice più dell'ambientazione. Essere <a class="text-dream-salmon hover:underline" href="../simboli/inseguimento">inseguiti</a>, <a class="text-dream-salmon hover:underline" href="../simboli/cadere">cadere</a>, trovarsi davanti alla <a class="text-dream-salmon hover:underline" href="../simboli/morte">morte</a>, a un <a class="text-dream-salmon hover:underline" href="../simboli/serpente">serpente</a> o a un <a class="text-dream-salmon hover:underline" href="../simboli/ragno">ragno</a>: le schede dei simboli propongono letture possibili, ma le tue associazioni contano più di qualsiasi dizionario.
                 </p>
-<h3>Elaborazione emotiva</h3>
+<h3>Una prova generale del pericolo?</h3>
 <p>
-                    Il tuo cervello usa i sogni per <strong>elaborare le emozioni che non hai affrontato completamente da sveglio</strong>. Gli incubi possono emergere quando le emozioni diventano troppo intense per essere ignorate. La paura nel sogno spesso rispecchia paure reali che stai reprimendo.
+                    Secondo la teoria della simulazione della minaccia del ricercatore finlandese Antti Revonsuo, sognare servirebbe in parte a <strong>provare situazioni minacciose</strong> in un ambiente sicuro. È una teoria discussa, ma aiuta a capire perché i sogni spiacevoli siano così comuni.
                 </p>
-<h3>Sistema di allarme</h3>
+<h3>Cosa vale la pena annotare</h3>
 <p>
-                    Alcuni incubi funzionano come <strong>sistema di allarme precoce</strong>, evidenziando problemi o minacce che non riconosci consapevolmente. Presta attenzione ai temi ricorrenti degli incubi: potrebbero indicare problemi che richiedono attenzione.
-                </p>
-<h3>Consolidamento della memoria</h3>
-<p>
-                    Durante il sonno, il tuo cervello consolida ricordi ed esperienze. <strong>Eventi stressanti vengono riprodotti</strong> mentre la tua mente cerca di elaborarli e archiviarli. Questo è il motivo per cui gli incubi spesso seguono giorni difficili.
+                    Un tema che ritorna non nasconde un messaggio, ma può mostrarti quando il tuo sonno soffre. Chiediti: cos'è successo il giorno prima? Cosa provavo al risveglio? L'incubo è arrivato dopo una notte corta, un bicchiere di troppo, una serata tesa?
                 </p>
 <p>
-                    Gli incubi possono richiamare l’attenzione su stress o esperienze che sembrano ancora irrisolte. Non sono una punizione e un singolo sogno non permette di formulare una diagnosi.
+                    Gli incubi non sono una punizione, e un singolo sogno non è una diagnosi.
                 </p>
-<h2 id="types">Tipi di incubi e loro significato psicologico</h2>
+<h2 id="types">Che tipo di incubo è il tuo?</h2>
 <h3>Incubi da stress</h3>
 <p>
-                    Rappresentano il tipo più comune, direttamente correlato ai fattori di stress quotidiani. Questi incubi spesso presentano <strong>scenari in cui si è impreparati, si fallisce o si affrontano situazioni imbarazzanti</strong>. In genere diminuiscono quando il fattore di stress viene risolto.
+                    I più comuni. Sei in ritardo, impreparato, ti perdi o fai una brutta figura davanti agli altri. Questi incubi tendono a <strong>svanire quando la pressione cala</strong>.
                 </p>
-<h3>Incubi da trauma</h3>
+<h3>Incubi post-traumatici</h3>
 <p>
-                    A seguito di eventi traumatici, gli incubi possono <strong>riprodurre il trauma o temi correlati</strong>. Questi sono particolarmente persistenti e possono richiedere un trattamento professionale. Sono un sintomo caratteristico del disturbo da stress post-traumatico.
+                    Rivivono l'evento, o la sua emozione, quasi senza cambiamenti, e possono comparire prima nella notte rispetto ad altri incubi. Sono un sintomo centrale del PTSD. <strong>Esistono trattamenti efficaci</strong>, e funzionano meglio con un professionista.
                 </p>
 <h3>Incubi ricorrenti</h3>
 <p>
-                    Quando lo stesso incubo si ripete notte dopo notte, suggerisce un <strong>problema irrisolto che la tua psiche sta cercando di elaborare</strong>. Aspettati che la ripetizione continui finché non risolvi il problema di fondo.
+                    La stessa scena, notte dopo notte. La ripetizione non significa che il sogno continuerà finché non avrai «risolto» un problema nascosto. Alcuni clinici la vedono in parte come uno <strong>schema appreso</strong>, ed è proprio ciò che la ripetizione per immagini cerca di cambiare. La guida ai <a class="text-dream-salmon hover:underline" href="significato-dei-sogni-ricorrenti-comprendere-i-loro-messaggi-nascosti">sogni ricorrenti</a> approfondisce il tema.
                 </p>
-<h3>Incubi esistenziali</h3>
+<h3>Incubi di morte o di perdita</h3>
 <p>
-                    I sogni sulla morte, la fine del mondo o la perdita di persone care spesso riflettono <strong>profonde ansie esistenziali o paura della perdita</strong>. Questi tendono ad aumentare durante le principali transizioni della vita.
+                    Sognare di morire, una catastrofe o di perdere una persona vicina spaventa, ma <strong>non annuncia nulla</strong>. Questi sogni compaiono spesso in periodi di cambiamento, di malattia di qualcuno vicino o di lutto.
                 </p>
 <aside class="glass-panel rounded-2xl p-6 my-8 border border-dream-salmon/20">
 <div class="flex items-start gap-4">
@@ -235,69 +231,80 @@
 <i class="w-6 h-6 text-dream-salmon" data-lucide="sparkles"></i>
 </div>
 <div>
-<h4 class="font-serif text-lg text-dream-cream mb-2">Comprendi i tuoi incubi</h4>
-<p class="text-sm text-gray-400 mb-4">Noctalia Noctalia ti aiuta a decodificare gli schemi degli incubi, identificare i fattori scatenanti e capire cosa i tuoi sogni inquietanti stanno cercando di dirti.</p>
+<h4 class="font-serif text-lg text-dream-cream mb-2">Annota l'incubo prima che svanisca</h4>
+<p class="text-sm text-gray-400 mb-4">Su Noctalia, racconta il tuo incubo a voce appena sveglio. Viene trascritto e salvato nel tuo diario, così puoi rileggere i tuoi incubi uno accanto all'altro e vedere quando tornano.</p>
 <a class="inline-flex items-center gap-2 text-sm text-dream-salmon hover:text-dream-salmonLight transition-colors" href="/it/">
-                                Prova Noctalia gratuitamente <i class="w-4 h-4" data-lucide="arrow-right"></i>
+                                Prova Noctalia gratis <i class="w-4 h-4" data-lucide="arrow-right"></i>
 </a>
 </div>
 </div>
 </aside>
-<h2 id="stop">Come fermare gli incubi</h2>
+<h2 id="stop">Come fermare gli incubi, o averne meno</h2>
 <p>
-                    Tecniche collaudate per ridurre la frequenza degli incubi e intensità:
+                    Nessun metodo garantisce una notte senza brutti sogni. Ecco i passi con le basi più solide, a partire dal più studiato.
                 </p>
-<h3>1. Terapia di ripetizione delle immagini (IRT)</h3>
+<h3>1. Terapia di ripetizione per immagini (IRT)</h3>
 <p>
-                    Considera questa la tecnica di riferimento per gli incubi ricorrenti. <strong>Mentre sei sveglio, visualizza l'incubo ma cambia il finale</strong> in qualcosa di neutro o positivo. Pratica questa nuova versione ogni giorno per 10-20 minuti. Gli studi dimostrano che la IRT può ridurre la frequenza degli incubi del 50-80%.
-                </p>
-<h3>2. Migliora l'igiene del sonno</h3>
-<p>
-                    Dormire meglio significa meno incubi:
+                    È il trattamento raccomandato dall'AASM per il disturbo da incubi e per gli incubi legati al PTSD. Il principio: cambi il copione da sveglio, così il cervello ha un'altra versione da mettere in scena.
                 </p>
 <ul>
-<li>Mantieni un <strong>programma di sonno coerente</strong></li>
-<li>Evita gli schermi 1-2 ore prima di andare a letto</li>
-<li>Mantieni la tua camera da letto <strong>fresca, buia e silenziosa</strong></li>
-<li>Non consumare pasti pesanti a tarda notte</li>
-<li>Limita alcol e caffeina</li>
+<li>Scegli <strong>un solo incubo ricorrente</strong>, possibilmente non il più doloroso per cominciare.</li>
+<li><strong>Scrivi una nuova versione.</strong> Cambia ciò che vuoi: il finale, il luogo, un dettaglio. Non deve essere felice, solo meno spaventosa.</li>
+<li><strong>Ripassa la nuova versione</strong> nella mente per qualche minuto al giorno, da sveglio e tranquillo. Non ripercorrere l'incubo originale.</li>
+<li>Continua per qualche settimana e annota quanto spesso l'incubo ritorna.</li>
 </ul>
-<h3>3. Gestione dello stress</h3>
 <p>
-                    Poiché lo stress è la principale causa di incubi:
+                    In uno studio citato dalla guida di buona pratica dell'AASM del 2010, le persone formate all'IRT sono passate da circa sette incubi al mese a due, tre mesi dopo. Se l'incubo è legato a un trauma, pratica la tecnica con un terapeuta e non da solo.
+                </p>
+<h3 id="esempio-diario">Un esempio di diario degli incubi</h3>
+<p><strong>Esempio inventato:</strong> mostra come annotare un incubo e la nuova versione da ripassare.</p>
+<ul>
+<li><strong>Sogno:</strong> «Guidavo di notte in tangenziale e i freni non funzionavano più. L'auto correva contro un muro.»</li>
+<li><strong>Emozione:</strong> «Panico, poi impotenza. Sveglia alle quattro, impossibile riaddormentarmi.»</li>
+<li><strong>Contesto recente:</strong> «Tre consegne questa settimana e una notte troppo corta domenica.»</li>
+<li><strong>Nuova versione da ripassare:</strong> «L'auto rallenta da sola e si ferma nella corsia di emergenza. Scendo, l'aria è fresca.»</li>
+<li><strong>Domanda da tenere:</strong> «L'incubo torna dopo le notti corte, o solo prima delle scadenze?»</li>
+</ul>
+<p>Una sola annotazione non dimostra nulla. Scritte per qualche settimana, queste poche righe mostrano se l'incubo si fa più raro e cosa tende ad accompagnarlo.</p>
+<h3>2. Rendi regolare il sonno</h3>
+<ul>
+<li>Vai a letto e alzati a <strong>orari regolari</strong>, anche nel fine settimana</li>
+<li>Metti via gli schermi nell'ultima ora prima di dormire</li>
+<li>Tieni la camera <strong>fresca, buia e silenziosa</strong></li>
+<li>Limita alcol e caffeina, soprattutto la sera</li>
+<li>Evita una cena pesante subito prima di coricarti</li>
+</ul>
+<h3>3. Abbassa la pressione della sera</h3>
+<ul>
+<li>Qualche minuto di <strong>respirazione lenta o una breve meditazione</strong> prima di dormire</li>
+<li>Attività fisica regolare, ma non subito prima di andare a letto</li>
+<li>Scrivi su un foglio le preoccupazioni per domani prima di spegnere la luce</li>
+<li>Rilassamento muscolare progressivo, un gruppo di muscoli alla volta</li>
+<li>Sostituisci il thriller o i social con qualcosa di più calmo nell'ultima ora: non programmerà i tuoi sogni, ma può aiutarti ad addormentarti</li>
+</ul>
+<h3>4. I sogni lucidi, come opzione</h3>
+<p>
+                    Alcune persone imparano a riconoscere che stanno sognando e a <strong>cambiare la scena dall'interno</strong>. L'AASM inserisce la terapia dei sogni lucidi tra le opzioni utilizzabili per il disturbo da incubi, con prove più deboli rispetto all'IRT. Non funziona per tutti; smetti se l'allenamento peggiora il tuo sonno. La <a class="text-dream-salmon hover:underline" href="guida-ai-sogni-lucidi-per-principianti-prendi-il-controllo-delle-tue-notti">guida ai sogni lucidi per principianti</a> spiega come iniziare.
+                </p>
+<h3>5. Tieni un <a class="text-dream-salmon hover:underline" href="dream-journaling-la-guida-completa-per-registrare-le-tue-avventure-notturne">diario dei sogni</a></h3>
+<p>
+                    Annotare i tuoi incubi, anche in tre righe, mostra <strong>quanto spesso arrivano</strong>, cosa li accompagna e se ciò che stai provando funziona. Scrivi solo quanto ti senti di reggere.
+                </p>
+<h2 id="when-help">Quando rivolgersi a un medico</h2>
+<p>
+                    Gli incubi occasionali non sono motivo di preoccupazione. Parlane con il tuo medico di base se:
                 </p>
 <ul>
-<li>Esercitati <strong>meditazione o respirazione profonda</strong> prima di andare a letto</li>
-<li>Fai attività fisica regolarmente (ma non vicino all'ora di andare a dormire)</li>
-<li>Tieni un <strong>diario delle preoccupazioni</strong> - scrivi le tue preoccupazioni prima di dormire</li>
-<li>Prova il rilassamento muscolare progressivo</li>
-</ul>
-<h3>4. Crea una routine calmante prima del sonno</h3>
-<p>
-<strong>Ciò che fai prima di andare a letto influisce sui tuoi sogni</strong>. Evita contenuti disturbanti. Leggi invece qualcosa di piacevole, ascolta musica rilassante o pratica la gratitudine. Questo prepara il tuo cervello a contenuti onirici più positivi.
-                </p>
-<h3>5. Formazione sui sogni lucidi</h3>
-<p>
-                    Imparare a riconoscere che stai sognando ti consente di <strong>cambiare l'incubo dall'interno</strong>. Quando sei lucido puoi affrontare figure da incubo, cambiare scenario o semplicemente svegliarti. Testare la realtà durante il giorno aiuta a sviluppare questa abilità.
-                </p>
-<h3>6. <a class="text-dream-salmon hover:underline" href="dream-journaling-la-guida-completa-per-registrare-le-tue-avventure-notturne">Dream Journaling</a></h3>
-<p>
-<strong>Annunciare gli incubi può ridurne il potere</strong>. Registrarli ti aiuta a identificare schemi, elaborare i contenuti in modo consapevole e monitorare se gli interventi funzionano.
-                </p>
-<h2 id="when-help">Quando chiedere aiuto</h2>
-<p>
-                    Considera l'aiuto di un professionista se:
-                </p>
-<ul>
-<li>Si verificano incubi <strong>più volte a settimana</strong></li>
-<li>Hanno un impatto significativo <strong>influiscono sulla qualità del sonno</strong></li>
-<li>Sviluppi <strong>paura di andare a dormire</strong></li>
-<li>Gli incubi sono legati a <strong>traumi o disturbi da stress post-traumatico</strong></li>
-<li>Causano <strong>disfunzioni diurne</strong></li>
-<li>Tecniche di auto-aiuto non funzionano dopo diverse settimane</li>
+<li>arrivano <strong>più volte a settimana</strong> o aumentano</li>
+<li><strong>interrompono il tuo sonno</strong> con regolarità</li>
+<li>cominci a <strong>temere l'ora di andare a letto</strong></li>
+<li>sono iniziati dopo un <strong>trauma</strong>, o lo rivivono</li>
+<li>stanchezza, umore o concentrazione ne risentono durante il giorno</li>
+<li>sono comparsi con un nuovo farmaco</li>
+<li>ciò che hai provato da solo non è servito dopo qualche settimana</li>
 </ul>
 <p>
-                    Un terapista specializzato in disturbi del sonno può fornire <strong>Terapia cognitivo comportamentale per l'insonnia (CBT-I)</strong>, EMDR per incubi legati a traumi o farmaci se appropriato.
+                    In base alla causa, un medico o uno specialista del sonno può proporre la terapia di ripetizione per immagini, una terapia cognitivo-comportamentale (compresa la TCC-I se è il sonno stesso a essere diventato difficile), una terapia focalizzata sul trauma come l'EMDR o, in alcuni casi, dei farmaci. Per un bambino con incubi frequenti, il primo riferimento è il pediatra.
                 </p>
 </div>
 <!-- Related Symbols Start -->
@@ -330,14 +337,56 @@
 <div class="w-16 h-16 bg-dream-salmon/10 rounded-full flex items-center justify-center mx-auto mb-6">
 <i class="w-8 h-8 text-dream-salmon" data-lucide="shield"></i>
 </div>
-<h3 class="font-serif text-2xl md:text-3xl mb-4 text-dream-cream">Prendi il controllo dei tuoi sogni</h3>
+<h3 class="font-serif text-2xl md:text-3xl mb-4 text-dream-cream">Un incubo è una brutta notte. Tanti sono uno schema su cui lavorare.</h3>
 <p class="text-purple-200/70 mb-6 max-w-lg mx-auto">
-                    Traccia i tuoi incubi in Noctalia per identificare schemi e fattori scatenanti. L'analisi Noctalia ti aiuta a capire cosa cercano di dirti i tuoi sogni inquietanti.
+                    Conserva i tuoi incubi su Noctalia, con ciò che hai provato e come hai dormito. Rileggendoli uno accanto all'altro vedrai quando tornano e se si diradano quando cambi qualcosa.
                 </p>
 <a class="inline-flex items-center gap-2 px-8 py-4 bg-dream-salmon text-dream-dark rounded-full font-bold hover:bg-dream-salmon/90 transition-colors" href="/it/">
-                    Inizia a esplorare i tuoi sogni <i class="w-5 h-5" data-lucide="arrow-right"></i>
+                    Inizia il mio diario dei sogni <i class="w-5 h-5" data-lucide="arrow-right"></i>
 </a>
 </aside>
+<!-- FAQ Section -->
+<section class="mt-16">
+<h2 class="font-serif text-2xl text-dream-cream mb-8">Domande frequenti</h2>
+<div class="space-y-4">
+<details class="glass-panel rounded-xl p-4 group cursor-pointer">
+<summary class="font-medium flex justify-between items-center text-dream-cream">
+                            Perché ho gli incubi?
+                            <i class="w-5 h-5 transition-transform group-open:rotate-180 text-dream-salmon" data-lucide="chevron-down"></i>
+</summary>
+<p class="mt-4 text-sm text-gray-400 leading-relaxed">
+                            I fattori scatenanti più comuni sono stress, traumi, notti corte o irregolari, alcuni farmaci e l'uso di alcol o droghe, o la loro sospensione. Spesso se ne sommano diversi. Guarda cosa è cambiato nelle tue giornate e nelle tue notti invece di cercare di decifrare il sogno.
+                        </p>
+</details>
+<details class="glass-panel rounded-xl p-4 group cursor-pointer">
+<summary class="font-medium flex justify-between items-center text-dream-cream">
+                            Come posso smettere di avere incubi?
+                            <i class="w-5 h-5 transition-transform group-open:rotate-180 text-dream-salmon" data-lucide="chevron-down"></i>
+</summary>
+<p class="mt-4 text-sm text-gray-400 leading-relaxed">
+                            Tieni orari di sonno regolari, limita l'alcol e i contenuti inquietanti la sera e prova la ripetizione per immagini: riscrivi da sveglio un incubo ricorrente e ripassa la nuova versione qualche minuto al giorno. Se gli incubi persistono o seguono un trauma, un professionista può aiutarti.
+                        </p>
+</details>
+<details class="glass-panel rounded-xl p-4 group cursor-pointer">
+<summary class="font-medium flex justify-between items-center text-dream-cream">
+                            Gli incubi significano qualcosa?
+                            <i class="w-5 h-5 transition-transform group-open:rotate-180 text-dream-salmon" data-lucide="chevron-down"></i>
+</summary>
+<p class="mt-4 text-sm text-gray-400 leading-relaxed">
+                            Non predicono nulla e non nascondono messaggi. Spesso fanno eco a un'emozione già presente, come preoccupazione, impotenza o lutto. Ciò che hai provato nel sogno e ciò che stai vivendo dicono più della scena in sé.
+                        </p>
+</details>
+<details class="glass-panel rounded-xl p-4 group cursor-pointer">
+<summary class="font-medium flex justify-between items-center text-dream-cream">
+                            Quando rivolgersi a un medico per gli incubi?
+                            <i class="w-5 h-5 transition-transform group-open:rotate-180 text-dream-salmon" data-lucide="chevron-down"></i>
+</summary>
+<p class="mt-4 text-sm text-gray-400 leading-relaxed">
+                            Quando arrivano più volte a settimana, disturbano il sonno, ti fanno temere di andare a letto, seguono un trauma o pesano sulle tue giornate. Un medico o uno specialista del sonno può cercarne la causa e proporre un trattamento, come la terapia di ripetizione per immagini.
+                        </p>
+</details>
+</div>
+</section>
                                                             <!-- Blog Nav Start -->
                                                             <section class="mt-12" aria-label="Navigazione tra articoli" data-blog-nav="">
                                                               <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -358,31 +407,6 @@
                                                               </div>
                                                             </section>
                                                             <!-- Blog Nav End -->
-<!-- FAQ (from JSON-LD) -->
-            <section class="mb-10" data-faq-visible="true">
-                <h2 class="font-serif text-xl md:text-2xl text-dream-cream mb-6 flex items-center gap-3">
-                    <i data-lucide="help-circle" class="w-6 h-6 text-dream-salmon"></i>
-                    FAQ
-                </h2>
-                <div class="grid gap-4">
-
-                <div class="glass-panel rounded-2xl p-6 border border-transparent">
-                    <h3 class="font-medium text-dream-cream mb-2">Perchè ho gli incubi?</h3>
-                    <p class="text-sm text-gray-300 leading-relaxed">Gli incubi possono essere causati da stress, ansia, traumi, farmaci, privazione del sonno o dal mangiare a tarda notte. Spesso sono il modo in cui il tuo cervello elabora emozioni o esperienze difficili. Circa il 2-8% degli adulti sperimenta incubi frequenti.</p>
-                </div>
-
-                <div class="glass-panel rounded-2xl p-6 border border-transparent">
-                    <h3 class="font-medium text-dream-cream mb-2">Come posso smettere di avere incubi?</h3>
-                    <p class="text-sm text-gray-300 leading-relaxed">Per ridurre gli incubi: mantieni un programma di sonno regolare, pratica la gestione dello stress, evita gli schermi prima di andare a letto, crea un ambiente di sonno tranquillo e prova l'Image Rehearsal Therapy (IRT), una tecnica in cui riscrivi i finali degli incubi mentre sei sveglio. Gli incubi gravi possono richiedere un aiuto professionale.</p>
-                </div>
-
-                <div class="glass-panel rounded-2xl p-6 border border-transparent">
-                    <h3 class="font-medium text-dream-cream mb-2">Gli incubi significano qualcosa?</h3>
-                    <p class="text-sm text-gray-300 leading-relaxed">Sì, gli incubi spesso riflettono ansie sottostanti, emozioni non elaborate o fattori di stress nella tua vita da sveglio. Possono essere il tuo subconscio che evidenzia problemi che richiedono attenzione. I temi più comuni degli incubi riguardano la paura della perdita, del fallimento, dell'essere inseguiti o della perdita del controllo.</p>
-                </div>
-                </div>
-            </section>
-
             <!-- Blog Related Start -->
             <section class="mt-12" aria-label="Continua a leggere" data-blog-related="">
               <header class="mb-6">
@@ -410,15 +434,17 @@
             <!-- Blog Related End -->
 <!-- Sources / Trust -->
 <section class="mt-16 glass-panel rounded-2xl p-6" id="sources">
-<h2 class="font-serif text-2xl text-dream-cream mb-4">Fonti / Approfondimenti</h2>
+<h2 class="font-serif text-2xl text-dream-cream mb-4">Fonti e letture</h2>
 <ul class="mt-6 space-y-2 text-sm text-gray-400">
-<li><a href="https://dictionary.apa.org/nightmare" rel="nofollow noopener noreferrer" target="_blank">APA Dictionary of Psychology: Nightmare (incubo)</a></li>
-<li><a href="https://pubmed.ncbi.nlm.nih.gov/20726290/" rel="nofollow noopener noreferrer" target="_blank">Aurora et al. (2010): Guida alle migliori pratiche per il trattamento del disturbo da incubi negli adulti</a></li>
-<li><a href="https://pubmed.ncbi.nlm.nih.gov/29852917/" rel="nofollow noopener noreferrer" target="_blank">Morgenthaler et al. (2018): Documento di posizione per il trattamento del disturbo da incubi negli adulti</a></li>
-<li><a href="https://www.sleepfoundation.org/nightmares" rel="nofollow noopener noreferrer" target="_blank">Sleep Foundation: Nightmares (incubi)</a></li>
-<li><a href="https://www.ninds.nih.gov/health-information/public-education/brain-basics/brain-basics-understanding-sleep" rel="nofollow noopener noreferrer" target="_blank">NINDS: Nozioni di base sul cervello: Comprendere il sonno</a></li>
+<li><a href="https://sleepeducation.org/sleep-disorders/nightmares/" rel="nofollow noopener noreferrer" target="_blank">AASM Sleep Education, «Nightmares»</a></li>
+<li><a href="https://www.sleepfoundation.org/nightmares" rel="nofollow noopener noreferrer" target="_blank">Sleep Foundation, «Nightmares»</a></li>
+<li><a href="https://www.mayoclinic.org/diseases-conditions/nightmare-disorder/symptoms-causes/syc-20353515" rel="nofollow noopener noreferrer" target="_blank">Mayo Clinic, «Nightmare disorder: symptoms and causes»</a></li>
+<li><a href="https://pubmed.ncbi.nlm.nih.gov/20726290/" rel="nofollow noopener noreferrer" target="_blank">Aurora et al. (2010), «Best practice guide for the treatment of nightmare disorder in adults», <em>Journal of Clinical Sleep Medicine</em></a></li>
+<li><a href="https://pubmed.ncbi.nlm.nih.gov/29852917/" rel="nofollow noopener noreferrer" target="_blank">Morgenthaler et al. (2018), «Position paper for the treatment of nightmare disorder in adults», <em>Journal of Clinical Sleep Medicine</em></a></li>
+<li><a href="https://www.cambridge.org/core/journals/behavioral-and-brain-sciences/article/reinterpretation-of-dreams-an-evolutionary-hypothesis-of-the-function-of-dreaming/EE0E7DB39E361540D2DDA79C262EDA7E" rel="nofollow noopener noreferrer" target="_blank">Revonsuo (2000), «The reinterpretation of dreams», <em>Behavioral and Brain Sciences</em></a></li>
+<li><a href="https://dictionary.apa.org/nightmare" rel="nofollow noopener noreferrer" target="_blank">APA Dictionary of Psychology, «Nightmare»</a></li>
 </ul>
-<p class="mt-6 text-xs text-purple-200/60">Ultimo aggiornamento: 6 gennaio 2026</p>
+<p class="mt-6 text-xs text-purple-200/60">Aggiornato l'8 ottobre 2026</p>
 </section>
 </article>
 <!-- Health Disclaimer (TI-97 E-E-A-T) -->
