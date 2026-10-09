@@ -303,8 +303,10 @@ function SettingsContentHost({ children, testID }: { children: ReactElement; tes
       </View>
     );
   }
+  // The host fills its parent by default. Percentage dimensions are converted
+  // to numeric Compose modifiers by Expo 58 and would crash Android composition.
   return (
-    <RNHostView style={{ height: '100%', width: '100%' }} testID={testID}>
+    <RNHostView testID={testID}>
       {children}
     </RNHostView>
   );
