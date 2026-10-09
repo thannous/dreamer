@@ -16398,58 +16398,152 @@
       "en": {
         "slug": "trapped",
         "name": "Trapped",
-        "shortDescription": "Feeling trapped often begins with a specific barrier: a locked door, a tight space or someone blocking the way. Looking for an exit, receiving help or giving up changes the scene’s emotional force.",
-        "modifiedAt": "2026-07-24",
+        "shortDescription": "Dreaming of being trapped often starts with a door that will not open, a room that keeps shrinking or an elevator stuck between floors. It is often linked to feeling short of room or options. What held you in, and what you tried, matters most.",
+        "modifiedAt": "2026-10-08",
         "askYourself": [
-          "What did trapped change in the scene?",
-          "Which feeling stayed with me after waking?"
+          "What exactly held me in: a wall, a lock, a person, my own body?",
+          "Did I search for a way out, call for help, or give up?",
+          "Where in my life do I feel short of room or choices right now?"
         ],
-        "faq": []
+        "faq": [
+          {
+            "question": "What does it mean to dream of being trapped?",
+            "answer": "Being trapped is often associated with feeling short of room, time or choices in a situation. Its meaning depends on what held you in, where you were and what you did about it: search, call out, wait or give up."
+          },
+          {
+            "question": "What does it mean to be trapped in a room with no way out?",
+            "answer": "A closed room with no exit can go with a situation that feels locked from every side: a job, a relationship, an obligation. Note whether you knew the room: a familiar place often points to a specific part of your life."
+          },
+          {
+            "question": "Why could I not move or scream in my dream?",
+            "answer": "This feeling is common. During REM sleep most muscles are relaxed, which is one possible explanation. If you often wake up unable to move for a few seconds, it may be sleep paralysis: talk to a doctor if it disturbs your nights."
+          },
+          {
+            "question": "Does dreaming of being trapped mean something bad will happen?",
+            "answer": "No. A dream of being trapped predicts nothing. It stages a feeling, often pressure or lack of space. It is more useful to look at what in your days resembles the scene than to wait for an event."
+          }
+        ],
+        "documentMetaDescription": "Dreaming of being trapped in a room, an elevator or a building: what the scene may say about feeling stuck, with questions and a journal example."
       },
       "fr": {
         "slug": "piege",
         "name": "Piégé",
-        "shortDescription": "Se sentir piégé commence souvent par une limite précise : porte verrouillée, espace étroit ou personne qui bloque le passage. Chercher une issue, recevoir de l’aide ou renoncer module la charge émotionnelle.",
-        "modifiedAt": "2026-07-24",
+        "shortDescription": "Rêver d'être piégé, c'est souvent une porte qui ne s'ouvre plus, une pièce qui rétrécit ou un ascenseur bloqué. La scène est souvent associée au manque de marge dans une situation. Ce qui vous retenait, et ce que vous avez tenté, compte le plus.",
+        "modifiedAt": "2026-10-08",
         "askYourself": [
-          "Qu’est-ce que piégé a changé dans la scène ?",
-          "Quelle émotion est restée après le réveil ?"
+          "Qu'est-ce qui me retenait exactement : un mur, une serrure, quelqu'un, mon propre corps ?",
+          "Ai-je cherché une issue, appelé à l'aide, ou ai-je renoncé ?",
+          "Où est-ce que je manque de marge ou de choix en ce moment ?"
         ],
-        "faq": []
+        "faq": [
+          {
+            "question": "Que signifie rêver d'être piégé ?",
+            "answer": "Être piégé est souvent associé au sentiment de manquer de place, de temps ou de choix dans une situation. Le sens dépend de ce qui vous retenait, du lieu et de votre réaction : chercher, appeler, attendre ou renoncer."
+          },
+          {
+            "question": "Que signifie rêver d'être enfermé dans une pièce sans issue ?",
+            "answer": "Une pièce close sans sortie peut accompagner une situation verrouillée de tous côtés : un travail, une relation, une obligation. Notez si la pièce vous était familière : un lieu connu renvoie souvent à un domaine précis de votre vie."
+          },
+          {
+            "question": "Pourquoi je n'arrivais ni à bouger ni à crier dans mon rêve ?",
+            "answer": "Cette impression est fréquente. Pendant le sommeil paradoxal, la plupart des muscles sont relâchés, ce qui est une explication possible. Si vous vous réveillez souvent sans pouvoir bouger quelques secondes, il peut s'agir de paralysie du sommeil : parlez-en à un médecin si cela gêne vos nuits."
+          },
+          {
+            "question": "Rêver d'être piégé annonce-t-il un malheur ?",
+            "answer": "Non. Un rêve d'enfermement ne prédit rien. Il met en scène un ressenti, souvent la pression ou le manque d'espace. Mieux vaut chercher ce qui, dans vos journées, ressemble à cette scène que d'attendre un événement."
+          }
+        ],
+        "documentMetaDescription": "Rêver d'être piégé dans une pièce, un ascenseur ou un bâtiment : ce que la scène peut dire du sentiment d'être coincé, avec questions et exemple de journal."
       },
       "es": {
         "slug": "atrapado",
         "name": "Atrapado",
-        "shortDescription": "Sentirte atrapado suele partir de un límite concreto: una puerta cerrada, un espacio estrecho o alguien que bloquea el paso. Buscar salida, recibir ayuda o rendirte cambia su efecto emocional.",
-        "modifiedAt": "2026-07-24",
+        "shortDescription": "Soñar que estás atrapado suele empezar con una puerta que no se abre, una habitación que encoge o un ascensor parado. La escena se asocia a menudo con la falta de margen en una situación. Lo que te retenía y lo que intentaste es lo que más cuenta.",
+        "modifiedAt": "2026-10-08",
         "askYourself": [
-          "¿Qué cambió atrapado dentro de la escena?",
-          "¿Qué emoción siguió conmigo al despertar?"
+          "¿Qué me retenía exactamente: una pared, una cerradura, alguien, mi propio cuerpo?",
+          "¿Busqué una salida, pedí ayuda o me rendí?",
+          "¿Dónde siento ahora mismo que me falta margen o capacidad de elegir?"
         ],
-        "faq": []
+        "faq": [
+          {
+            "question": "¿Qué significa soñar que estás atrapado?",
+            "answer": "Estar atrapado se asocia a menudo con la sensación de que te falta espacio, tiempo o capacidad de elegir en una situación. El sentido depende de lo que te retenía, del lugar y de tu reacción: buscar, pedir ayuda, esperar o rendirte."
+          },
+          {
+            "question": "¿Qué significa soñar que estás encerrado en una habitación sin salida?",
+            "answer": "Una habitación cerrada sin salida puede acompañar una situación bloqueada por todos lados: un trabajo, una relación, una obligación. Fíjate si conocías el lugar: un sitio familiar suele apuntar a un terreno concreto de tu vida."
+          },
+          {
+            "question": "¿Por qué en el sueño no podía moverme ni gritar?",
+            "answer": "Es una sensación frecuente. Durante el sueño REM la mayoría de los músculos están relajados, y es una explicación posible. Si a menudo te despiertas sin poder moverte unos segundos, puede ser parálisis del sueño: coméntalo con un médico si afecta a tus noches."
+          },
+          {
+            "question": "¿Soñar que estás atrapado anuncia algo malo?",
+            "answer": "No. Un sueño de encierro no predice nada. Escenifica una sensación, a menudo presión o falta de espacio. Es más útil buscar qué se parece a esa escena en tus días que esperar un acontecimiento."
+          }
+        ],
+        "documentMetaDescription": "Soñar que estás atrapado en una habitación, un ascensor o un edificio: qué puede decir la escena sobre sentirte sin salida, con preguntas y un ejemplo."
       },
       "de": {
         "slug": "gefangen",
         "name": "Gefangen",
-        "shortDescription": "Gefangensein beginnt im Traum oft mit einer konkreten Grenze: einer verschlossenen Tür, einem engen Raum oder einer Person, die den Weg versperrt. Ob du nach einem Ausgang suchst, Hilfe bekommst oder aufgibst, prägt die emotionale Wirkung.",
+        "shortDescription": "Im Traum gefangen zu sein beginnt oft mit einer Tür, die nicht aufgeht, einem Raum, der enger wird, oder einem steckengebliebenen Aufzug. Die Szene wird oft mit fehlendem Spielraum verbunden. Was Sie festhielt und was Sie versucht haben, zählt am meisten.",
         "askYourself": [
-          "Wo warst du eingeschlossen, und was versperrte den Ausgang?",
-          "Welche Fluchtmöglichkeit hast du versucht, und warum scheiterte sie?",
-          "Bei welcher Verpflichtung oder Beziehung wünschst du dir derzeit mehr Spielraum?"
+          "Was hielt mich genau fest: eine Wand, ein Schloss, eine Person, mein eigener Körper?",
+          "Habe ich einen Ausweg gesucht, um Hilfe gerufen oder aufgegeben?",
+          "Wo fehlt mir gerade Spielraum oder eine echte Wahl?"
         ],
-        "modifiedAt": "2026-07-24",
-        "faq": []
+        "modifiedAt": "2026-10-08",
+        "faq": [
+          {
+            "question": "Was bedeutet es, im Traum gefangen zu sein?",
+            "answer": "Gefangensein wird oft mit dem Gefühl verbunden, in einer Situation zu wenig Raum, Zeit oder Wahl zu haben. Was es bedeutet, hängt davon ab, was Sie festhielt, wo Sie waren und wie Sie reagiert haben: suchen, rufen, warten oder aufgeben."
+          },
+          {
+            "question": "Was bedeutet es, im Traum in einem Raum ohne Ausgang eingesperrt zu sein?",
+            "answer": "Ein geschlossener Raum ohne Ausgang kann eine Situation begleiten, die von allen Seiten festgefahren wirkt: ein Job, eine Beziehung, eine Verpflichtung. Achten Sie darauf, ob Sie den Raum kannten: Ein vertrauter Ort weist oft auf einen bestimmten Lebensbereich."
+          },
+          {
+            "question": "Warum konnte ich mich im Traum nicht bewegen oder schreien?",
+            "answer": "Dieses Gefühl ist häufig. Im REM-Schlaf sind die meisten Muskeln entspannt, das ist eine mögliche Erklärung. Wachen Sie oft auf und können sich einige Sekunden lang nicht bewegen, kann das eine Schlaflähmung sein: Sprechen Sie ärztlich darüber, wenn sie Ihren Schlaf stört."
+          },
+          {
+            "question": "Bedeutet ein Traum vom Gefangensein etwas Schlimmes?",
+            "answer": "Nein. Ein solcher Traum sagt nichts voraus. Er setzt ein Gefühl in Szene, oft Druck oder Enge. Hilfreicher als das Warten auf ein Ereignis ist die Frage, was in Ihrem Alltag dieser Szene ähnelt."
+          }
+        ],
+        "documentMetaDescription": "Im Traum gefangen in einem Raum, Aufzug oder Gebäude: was die Szene über das Gefühl sagen kann, festzustecken, mit Fragen und einem Tagebuchbeispiel."
       },
       "it": {
         "slug": "intrappolato",
         "name": "Intrappolato",
-        "shortDescription": "Sentirti intrappolato spesso parte da un limite concreto: una porta chiusa, uno spazio stretto o qualcuno che blocca il passaggio. Cercare un’uscita, ricevere aiuto o arrenderti cambia l’impatto emotivo.",
-        "modifiedAt": "2026-07-24",
+        "shortDescription": "Sognare di essere intrappolato comincia spesso con una porta che non si apre, una stanza che si stringe o un ascensore bloccato. La scena viene spesso associata alla mancanza di margine. Conta soprattutto che cosa ti tratteneva e che cosa hai tentato.",
+        "modifiedAt": "2026-10-08",
         "askYourself": [
-          "Che cosa ha cambiato intrappolato nella scena?",
-          "Quale emozione è rimasta dopo il risveglio?"
+          "Che cosa mi tratteneva esattamente: un muro, una serratura, qualcuno, il mio stesso corpo?",
+          "Ho cercato un’uscita, chiesto aiuto o mi sono arreso?",
+          "Dove sento, in questo periodo, di avere poco margine o poca scelta?"
         ],
-        "faq": []
+        "faq": [
+          {
+            "question": "Che cosa significa sognare di essere intrappolato?",
+            "answer": "Essere intrappolati viene spesso associato alla sensazione di avere poco spazio, poco tempo o poca scelta in una situazione. Il significato dipende da che cosa ti tratteneva, dal luogo e dalla tua reazione: cercare, chiamare, aspettare o arrenderti."
+          },
+          {
+            "question": "Che cosa significa sognare di essere chiuso in una stanza senza uscita?",
+            "answer": "Una stanza chiusa senza uscita può accompagnare una situazione bloccata da ogni lato: un lavoro, una relazione, un impegno. Nota se conoscevi il luogo: un posto familiare rimanda spesso a un ambito preciso della tua vita."
+          },
+          {
+            "question": "Perché nel sogno non riuscivo a muovermi né a gridare?",
+            "answer": "È una sensazione frequente. Durante il sonno REM la maggior parte dei muscoli è rilassata, ed è una spiegazione possibile. Se ti svegli spesso senza riuscire a muoverti per qualche secondo, può trattarsi di paralisi del sonno: parlane con un medico se disturba le tue notti."
+          },
+          {
+            "question": "Sognare di essere intrappolato è un brutto presagio?",
+            "answer": "No. Un sogno di questo tipo non predice nulla. Mette in scena una sensazione, spesso pressione o mancanza di spazio. È più utile chiederti che cosa, nelle tue giornate, somiglia a quella scena che aspettare un evento."
+          }
+        ],
+        "documentMetaDescription": "Sognare di essere intrappolato in una stanza, un ascensore o un edificio: che cosa può dire la scena del sentirsi bloccati, con domande ed esempio di diario."
       },
       "pt": {
         "slug": "estar-preso",
@@ -16482,58 +16576,152 @@
       "en": {
         "slug": "attic",
         "name": "Attic",
-        "shortDescription": "An attic takes you to a rarely used part of the house where objects are kept out of daily life. What you found there and whether you chose to climb up make the setting personal.",
-        "modifiedAt": "2026-07-24",
+        "shortDescription": "Dreaming of an attic often means climbing to a dusty, half-forgotten part of the house where things wait in boxes. The scene is often linked to memories and to matters set aside. What you found up there, and whether you chose to go, matters most.",
+        "modifiedAt": "2026-10-08",
         "askYourself": [
-          "What did attic change in the scene?",
-          "Which feeling stayed with me after waking?"
+          "What was stored up there, and did I recognize any of it?",
+          "Did I choose to climb up, out of curiosity, or was I sent?",
+          "What have I put aside lately, telling myself I would deal with it later?"
         ],
-        "faq": []
+        "faq": [
+          {
+            "question": "What does it mean to dream of an attic?",
+            "answer": "An attic is often associated with memories, old belongings and matters put aside. Its meaning depends on what you found there, how the space felt (cozy, cramped, frightening) and whether you went up by choice."
+          },
+          {
+            "question": "What does it mean to find old things in an attic in a dream?",
+            "answer": "Boxes, toys, letters or clothes from the past can go with a memory resurfacing, or a stage of life you are looking back on. Note which object held your attention, and who it reminded you of."
+          },
+          {
+            "question": "Why was the attic dark and frightening in my dream?",
+            "answer": "A dark attic full of noises can stage unease about something you prefer not to look at, or simply the fear of an unfamiliar space. It is not a warning. What did you think was up there before you saw it?"
+          },
+          {
+            "question": "What does it mean to discover a hidden room in the attic?",
+            "answer": "Finding a space you did not know about often feels exciting or unsettling. It can go with a new possibility, an interest coming back, or a side of you that has had little room lately. How did you feel stepping in?"
+          }
+        ],
+        "documentMetaDescription": "Dreaming of an attic, old boxes or a hidden room under the roof: what the scene may say about memories and things set aside, with questions and an example."
       },
       "fr": {
         "slug": "grenier",
         "name": "Grenier",
-        "shortDescription": "Un grenier conduit vers une partie peu fréquentée de la maison, où restent des objets mis de côté. Ce que vous y découvrez et votre choix de monter ou non donnent à cet espace un contexte très personnel.",
-        "modifiedAt": "2026-07-24",
+        "shortDescription": "Rêver d'un grenier, c'est souvent monter vers une partie de la maison où l'on va rarement, où des choses attendent dans des cartons. La scène est souvent associée aux souvenirs et à ce qu'on a mis de côté. Ce que vous y trouvez compte le plus.",
+        "modifiedAt": "2026-10-08",
         "askYourself": [
-          "Qu’est-ce que grenier a changé dans la scène ?",
-          "Quelle émotion est restée après le réveil ?"
+          "Qu'est-ce qui était rangé là-haut, et ai-je reconnu quelque chose ?",
+          "Suis-je monté par choix, par curiosité, ou m'y a-t-on envoyé ?",
+          "Qu'ai-je mis de côté ces derniers temps en me disant que je verrais plus tard ?"
         ],
-        "faq": []
+        "faq": [
+          {
+            "question": "Que signifie rêver d'un grenier ?",
+            "answer": "Le grenier est souvent associé aux souvenirs, aux objets du passé et à ce qu'on a mis de côté. Son sens dépend de ce que vous y avez trouvé, de l'ambiance du lieu (chaleureux, étouffant, inquiétant) et de votre façon d'y monter."
+          },
+          {
+            "question": "Que signifie trouver de vieux objets dans un grenier en rêve ?",
+            "answer": "Cartons, jouets, lettres ou vêtements d'autrefois peuvent accompagner un souvenir qui remonte, ou une étape de vie sur laquelle vous vous retournez. Notez l'objet qui retenait votre attention, et à qui il vous faisait penser."
+          },
+          {
+            "question": "Pourquoi le grenier était-il sombre et inquiétant dans mon rêve ?",
+            "answer": "Un grenier sombre et plein de bruits peut mettre en scène un malaise face à ce que vous préférez ne pas regarder, ou simplement la peur d'un lieu inconnu. Ce n'est pas un avertissement. Qu'imaginiez-vous trouver avant de voir ?"
+          },
+          {
+            "question": "Que signifie découvrir une pièce cachée dans le grenier ?",
+            "answer": "Trouver un espace inconnu chez soi est souvent excitant ou troublant. Cela peut accompagner une possibilité nouvelle, un intérêt qui revient ou une part de vous qui a eu peu de place ces derniers temps. Qu'avez-vous ressenti en entrant ?"
+          }
+        ],
+        "documentMetaDescription": "Rêver d'un grenier, de vieux cartons ou d'une pièce cachée sous le toit : ce que la scène peut dire des souvenirs et de ce qu'on a mis de côté, avec questions."
       },
       "es": {
         "slug": "atico",
         "name": "Ático",
-        "shortDescription": "Un ático te conduce a una parte poco utilizada de la casa, donde suelen guardarse objetos apartados de la vida diaria. Lo que encuentras y si subes por voluntad propia personalizan la escena.",
-        "modifiedAt": "2026-07-24",
+        "shortDescription": "Soñar con un ático o un desván suele ser subir a una parte de la casa que apenas pisas, donde las cosas esperan en cajas. La escena se asocia a menudo con recuerdos y asuntos aparcados. Lo que encuentras allí arriba es lo que más cuenta.",
+        "modifiedAt": "2026-10-08",
         "askYourself": [
-          "¿Qué cambió ático dentro de la escena?",
-          "¿Qué emoción siguió conmigo al despertar?"
+          "¿Qué había guardado allí arriba, y reconocí algo?",
+          "¿Subí por decisión propia, por curiosidad o porque me mandaron?",
+          "¿Qué he dejado aparcado últimamente pensando que ya lo vería más adelante?"
         ],
-        "faq": []
+        "faq": [
+          {
+            "question": "¿Qué significa soñar con un ático?",
+            "answer": "El ático o desván se asocia a menudo con recuerdos, objetos del pasado y asuntos que has dejado a un lado. Su sentido depende de lo que encontraste, del ambiente del lugar (acogedor, agobiante, inquietante) y de cómo subiste."
+          },
+          {
+            "question": "¿Qué significa encontrar cosas viejas en un desván en sueños?",
+            "answer": "Cajas, juguetes, cartas o ropa de otra época pueden acompañar un recuerdo que vuelve, o una etapa de la vida que estás mirando con distancia. Anota qué objeto te llamó la atención y en quién te hizo pensar."
+          },
+          {
+            "question": "¿Por qué el ático era oscuro y daba miedo en mi sueño?",
+            "answer": "Un ático oscuro y lleno de ruidos puede escenificar inquietud ante algo que prefieres no mirar, o simplemente el miedo a un lugar desconocido. No es un aviso. ¿Qué imaginabas encontrar antes de verlo?"
+          },
+          {
+            "question": "¿Qué significa descubrir una habitación oculta en el ático?",
+            "answer": "Encontrar un espacio que no conocías suele resultar emocionante o desconcertante. Puede acompañar una posibilidad nueva, un interés que vuelve o una parte de ti que ha tenido poco sitio últimamente. ¿Qué sentiste al entrar?"
+          }
+        ],
+        "documentMetaDescription": "Soñar con un ático o desván, cajas viejas o una habitación oculta: qué puede decir la escena sobre recuerdos y asuntos aparcados, con preguntas y un ejemplo."
       },
       "de": {
         "slug": "dachboden",
         "name": "Dachboden",
-        "shortDescription": "Ein Dachboden bringt dich an einen selten genutzten Ort des Hauses, an dem Dinge lagern, die nicht täglich gebraucht werden. Was du dort findest und ob du freiwillig hinaufgehst, gibt der Szene ihren persönlichen Kontext.",
+        "shortDescription": "Vom Dachboden zu träumen heißt oft, in einen Teil des Hauses hinaufzusteigen, den man selten betritt und in dem Dinge in Kisten warten. Die Szene wird oft mit Erinnerungen und Aufgeschobenem verbunden. Was Sie oben finden, zählt am meisten.",
         "askYourself": [
-          "Wie bist du auf den Dachboden gelangt, und war der Zugang leicht?",
-          "Welche Gegenstände, Geräusche oder Personen erwarteten dich dort?",
-          "Was aus deiner Vergangenheit bewahrst du auf, obwohl du es selten betrachtest?"
+          "Was lag dort oben, und habe ich etwas davon wiedererkannt?",
+          "Bin ich freiwillig hinaufgestiegen, aus Neugier, oder wurde ich hinaufgeschickt?",
+          "Was habe ich in letzter Zeit beiseitegelegt, um mich später darum zu kümmern?"
         ],
-        "modifiedAt": "2026-07-24",
-        "faq": []
+        "modifiedAt": "2026-10-08",
+        "faq": [
+          {
+            "question": "Was bedeutet es, von einem Dachboden zu träumen?",
+            "answer": "Der Dachboden wird oft mit Erinnerungen, alten Dingen und Aufgeschobenem verbunden. Was er bedeutet, hängt davon ab, was Sie dort gefunden haben, wie der Ort wirkte (gemütlich, eng, unheimlich) und wie Sie hinaufkamen."
+          },
+          {
+            "question": "Was bedeutet es, im Traum alte Sachen auf dem Dachboden zu finden?",
+            "answer": "Kisten, Spielzeug, Briefe oder Kleidung von früher können eine Erinnerung begleiten, die zurückkehrt, oder eine Lebensphase, auf die Sie zurückblicken. Notieren Sie, welcher Gegenstand Ihre Aufmerksamkeit hatte und an wen er Sie erinnerte."
+          },
+          {
+            "question": "Warum war der Dachboden im Traum dunkel und unheimlich?",
+            "answer": "Ein dunkler Dachboden voller Geräusche kann Unbehagen vor etwas in Szene setzen, das Sie lieber nicht ansehen, oder einfach die Angst vor einem fremden Ort. Eine Warnung ist das nicht. Was dachten Sie dort oben zu finden, bevor Sie es sahen?"
+          },
+          {
+            "question": "Was bedeutet es, auf dem Dachboden einen versteckten Raum zu entdecken?",
+            "answer": "Einen unbekannten Raum zu finden, wirkt oft aufregend oder verwirrend. Es kann eine neue Möglichkeit begleiten, ein Interesse, das zurückkehrt, oder eine Seite von Ihnen, die zuletzt wenig Platz hatte. Was haben Sie beim Eintreten gefühlt?"
+          }
+        ],
+        "documentMetaDescription": "Dachboden im Traum, alte Kisten oder ein versteckter Raum unter dem Dach: was die Szene über Erinnerungen und Aufgeschobenes sagen kann, mit Fragen."
       },
       "it": {
         "slug": "soffitta",
         "name": "Soffitta",
-        "shortDescription": "Una soffitta conduce in una parte poco usata della casa, dove restano oggetti esclusi dalla vita quotidiana. Ciò che trovi e il fatto di salire per scelta o meno rendono personale la scena.",
-        "modifiedAt": "2026-07-24",
+        "shortDescription": "Sognare una soffitta vuol dire spesso salire in una parte della casa dove vai di rado, dove le cose aspettano negli scatoloni. La scena viene spesso associata ai ricordi e a ciò che hai messo da parte. Conta soprattutto che cosa trovi lassù.",
+        "modifiedAt": "2026-10-08",
         "askYourself": [
-          "Che cosa ha cambiato soffitta nella scena?",
-          "Quale emozione è rimasta dopo il risveglio?"
+          "Che cosa c’era riposto lassù, e ho riconosciuto qualcosa?",
+          "Sono salito per scelta, per curiosità, o mi ci hanno mandato?",
+          "Che cosa ho messo da parte di recente, pensando di occuparmene più avanti?"
         ],
-        "faq": []
+        "faq": [
+          {
+            "question": "Che cosa significa sognare una soffitta?",
+            "answer": "La soffitta viene spesso associata ai ricordi, agli oggetti del passato e a ciò che hai messo da parte. Il significato dipende da che cosa hai trovato, dall’atmosfera del luogo (accogliente, soffocante, inquietante) e da come ci sei salito."
+          },
+          {
+            "question": "Che cosa significa trovare vecchi oggetti in soffitta in sogno?",
+            "answer": "Scatoloni, giocattoli, lettere o vestiti di un tempo possono accompagnare un ricordo che riaffiora, o una fase della vita su cui ti stai voltando. Annota quale oggetto attirava la tua attenzione e a chi ti faceva pensare."
+          },
+          {
+            "question": "Perché nel sogno la soffitta era buia e faceva paura?",
+            "answer": "Una soffitta buia e piena di rumori può mettere in scena un disagio verso qualcosa che preferisci non guardare, o semplicemente la paura di un luogo sconosciuto. Non è un avvertimento. Che cosa immaginavi di trovare prima di vederlo?"
+          },
+          {
+            "question": "Che cosa significa scoprire una stanza nascosta in soffitta?",
+            "answer": "Trovare uno spazio che non conoscevi è spesso emozionante o spiazzante. Può accompagnare una possibilità nuova, un interesse che ritorna o una parte di te che ha avuto poco posto ultimamente. Che cosa hai provato entrando?"
+          }
+        ],
+        "documentMetaDescription": "Sognare una soffitta, vecchi scatoloni o una stanza nascosta sotto il tetto: che cosa può dire la scena dei ricordi e di ciò che hai messo da parte."
       },
       "pt": {
         "slug": "sotao",
@@ -16568,58 +16756,152 @@
       "en": {
         "slug": "being-late",
         "name": "Being late",
-        "shortDescription": "Being late creates time pressure before the destination is even reached. Where you had to be, who was waiting and the consequences you expected shape the mix of shame, frustration or relief.",
-        "modifiedAt": "2026-07-24",
+        "shortDescription": "Dreaming of being late often means watching the clock while everything slows you down: lost keys, endless corridors, a bus that never comes. The scene is often linked to pressure or expectations. Where you had to be, and who was waiting, matters most.",
+        "modifiedAt": "2026-10-08",
         "askYourself": [
-          "What did being late change in the scene?",
-          "Which feeling stayed with me after waking?"
+          "Where did I have to be, and who was waiting for me?",
+          "What held me back: the world around me, or something I was doing?",
+          "Which deadline or expectation is weighing on me at the moment?"
         ],
-        "faq": []
+        "faq": [
+          {
+            "question": "What does it mean to dream of being late?",
+            "answer": "Being late is often associated with pressure, deadlines or the fear of letting someone down. Its meaning depends on where you had to be, what held you back and what you expected to happen when you arrived."
+          },
+          {
+            "question": "Why do I keep dreaming that I am late?",
+            "answer": "A recurring lateness dream often returns during busy or uncertain periods. It is not a forecast. Note what happened the day before each one: over time, the link with a schedule, a role or a person often becomes clear."
+          },
+          {
+            "question": "What does it mean to be late for an exam or for work in a dream?",
+            "answer": "An exam or a workday puts you in front of a judgment or a commitment. Arriving late can stage the worry of not being ready or not measuring up, even when you are well prepared in waking life."
+          },
+          {
+            "question": "What does it mean to arrive on time in the end?",
+            "answer": "Making it after all, or finding that nobody minded, often changes the tone of the dream. It can go with a sense that the pressure is more manageable than it feels. What did you notice when you arrived?"
+          }
+        ],
+        "documentMetaDescription": "Dreaming of being late for work, an exam or a flight: what the scene may say about pressure and expectations, with questions and a journal example."
       },
       "fr": {
         "slug": "etre-en-retard",
         "name": "Être en retard",
-        "shortDescription": "Être en retard crée une pression temporelle avant même d’atteindre la destination. Le lieu visé, la personne qui attend et les conséquences redoutées façonnent la honte, l’agacement ou le soulagement.",
-        "modifiedAt": "2026-07-24",
+        "shortDescription": "Rêver d'être en retard, c'est souvent voir l'heure filer pendant que tout vous freine : clés introuvables, couloirs sans fin, bus qui ne vient pas. La scène est souvent associée à la pression ou aux attentes. Le lieu visé et qui vous attendait comptent le plus.",
+        "modifiedAt": "2026-10-08",
         "askYourself": [
-          "Qu’est-ce que être en retard a changé dans la scène ?",
-          "Quelle émotion est restée après le réveil ?"
+          "Où devais-je être, et qui m'attendait ?",
+          "Qu'est-ce qui me retenait : le monde autour de moi, ou quelque chose que je faisais ?",
+          "Quelle échéance ou quelle attente me pèse en ce moment ?"
         ],
-        "faq": []
+        "faq": [
+          {
+            "question": "Que signifie rêver d'être en retard ?",
+            "answer": "Le retard est souvent associé à la pression, aux échéances ou à la peur de décevoir. Le sens dépend du lieu où vous deviez être, de ce qui vous retenait et de ce que vous redoutiez en arrivant."
+          },
+          {
+            "question": "Pourquoi je rêve souvent que je suis en retard ?",
+            "answer": "Un rêve de retard qui revient apparaît souvent dans les périodes chargées ou incertaines. Ce n'est pas une prédiction. Notez ce qui s'est passé la veille de chacun : avec le temps, le lien avec un emploi du temps, un rôle ou une personne apparaît souvent."
+          },
+          {
+            "question": "Que signifie être en retard à un examen ou au travail en rêve ?",
+            "answer": "Un examen ou une journée de travail vous placent face à un jugement ou à un engagement. Arriver en retard peut mettre en scène la crainte de ne pas être prêt ou à la hauteur, même si vous l'êtes dans la vie éveillée."
+          },
+          {
+            "question": "Que signifie arriver finalement à l'heure dans le rêve ?",
+            "answer": "Arriver de justesse, ou découvrir que personne ne vous en veut, change souvent le ton du rêve. Cela peut accompagner le sentiment que la pression est plus gérable qu'elle n'en a l'air. Qu'avez-vous remarqué en arrivant ?"
+          }
+        ],
+        "documentMetaDescription": "Rêver d'être en retard au travail, à un examen ou pour un avion : ce que la scène peut dire de la pression et des attentes, avec questions et un exemple."
       },
       "es": {
         "slug": "llegar-tarde",
         "name": "Llegar tarde",
-        "shortDescription": "Llegar tarde crea presión antes incluso de alcanzar el destino. Adónde ibas, quién esperaba y las consecuencias que anticipabas forman la mezcla de vergüenza, frustración o alivio.",
-        "modifiedAt": "2026-07-24",
+        "shortDescription": "Soñar que llegas tarde suele ser ver cómo vuela la hora mientras todo te frena: llaves que no aparecen, pasillos sin fin, un autobús que no llega. La escena se asocia a menudo con la presión o las expectativas. Adónde ibas y quién te esperaba es lo que más cuenta.",
+        "modifiedAt": "2026-10-08",
         "askYourself": [
-          "¿Qué cambió llegar tarde dentro de la escena?",
-          "¿Qué emoción siguió conmigo al despertar?"
+          "¿Dónde tenía que estar y quién me esperaba?",
+          "¿Qué me retenía: el mundo a mi alrededor o algo que hacía yo?",
+          "¿Qué plazo o qué expectativa me pesa en este momento?"
         ],
-        "faq": []
+        "faq": [
+          {
+            "question": "¿Qué significa soñar que llegas tarde?",
+            "answer": "Llegar tarde se asocia a menudo con la presión, los plazos o el miedo a decepcionar. El sentido depende de adónde tenías que ir, de lo que te retenía y de lo que temías que pasara al llegar."
+          },
+          {
+            "question": "¿Por qué sueño a menudo que llego tarde?",
+            "answer": "Un sueño de llegar tarde que se repite suele aparecer en épocas cargadas o inciertas. No es una predicción. Anota qué pasó el día anterior a cada uno: con el tiempo suele verse el vínculo con un horario, un papel o una persona."
+          },
+          {
+            "question": "¿Qué significa llegar tarde a un examen o al trabajo en sueños?",
+            "answer": "Un examen o una jornada de trabajo te ponen frente a un juicio o un compromiso. Llegar tarde puede escenificar el miedo a no estar preparado o a no estar a la altura, aunque despierto lo estés."
+          },
+          {
+            "question": "¿Qué significa llegar a tiempo al final del sueño?",
+            "answer": "Llegar justo a tiempo, o descubrir que a nadie le importó, cambia a menudo el tono del sueño. Puede acompañar la sensación de que la presión es más manejable de lo que parece. ¿Qué notaste al llegar?"
+          }
+        ],
+        "documentMetaDescription": "Soñar que llegas tarde al trabajo, a un examen o a un vuelo: qué puede decir la escena sobre la presión y las expectativas, con preguntas y un ejemplo."
       },
       "de": {
         "slug": "zu-spat-kommen",
         "name": "Zu spät kommen",
-        "shortDescription": "Zu spät zu kommen erzeugt im Traum Zeitdruck, noch bevor das Ziel erreicht ist. Wohin du musst, wer auf dich wartet und welche Folgen du erwartest, bestimmen, ob Scham, Ärger oder Erleichterung überwiegt.",
+        "shortDescription": "Im Traum zu spät zu kommen heißt oft, die Uhr rasen zu sehen, während Sie alles aufhält: verlegte Schlüssel, endlose Gänge, ein Bus, der nicht kommt. Die Szene wird oft mit Druck oder Erwartungen verbunden. Wohin Sie mussten und wer wartete, zählt am meisten.",
         "askYourself": [
-          "Zu welchem Termin oder Ereignis kamst du zu spät?",
-          "Was hielt dich auf, und konntest du jemanden informieren?",
-          "Welche Frist oder Erwartung setzt dich im Alltag gerade unter Druck?"
+          "Wo musste ich sein, und wer wartete auf mich?",
+          "Was hielt mich auf: die Umstände oder etwas, das ich selbst tat?",
+          "Welche Frist oder Erwartung setzt mich gerade unter Druck?"
         ],
-        "modifiedAt": "2026-07-24",
-        "faq": []
+        "modifiedAt": "2026-10-08",
+        "faq": [
+          {
+            "question": "Was bedeutet es, im Traum zu spät zu kommen?",
+            "answer": "Zu spät zu kommen wird oft mit Druck, Fristen oder der Angst verbunden, jemanden zu enttäuschen. Was es bedeutet, hängt davon ab, wohin Sie mussten, was Sie aufhielt und was Sie bei Ihrer Ankunft befürchteten."
+          },
+          {
+            "question": "Warum träume ich immer wieder, dass ich zu spät komme?",
+            "answer": "Ein wiederkehrender Traum vom Zuspätkommen taucht oft in vollen oder unsicheren Phasen auf. Er ist keine Vorhersage. Notieren Sie, was am Tag davor geschah: Mit der Zeit zeigt sich oft der Zusammenhang mit einem Termin, einer Rolle oder einer Person."
+          },
+          {
+            "question": "Was bedeutet es, im Traum zu spät zur Prüfung oder zur Arbeit zu kommen?",
+            "answer": "Eine Prüfung oder ein Arbeitstag stellt Sie vor ein Urteil oder eine Verpflichtung. Zu spät zu kommen kann die Sorge in Szene setzen, nicht bereit zu sein oder nicht zu genügen, auch wenn Sie im Wachleben gut vorbereitet sind."
+          },
+          {
+            "question": "Was bedeutet es, im Traum doch noch pünktlich anzukommen?",
+            "answer": "Gerade noch rechtzeitig anzukommen oder festzustellen, dass niemand verärgert ist, verändert oft den Ton des Traums. Es kann das Gefühl begleiten, dass der Druck besser zu bewältigen ist, als er scheint. Was ist Ihnen bei der Ankunft aufgefallen?"
+          }
+        ],
+        "documentMetaDescription": "Im Traum zu spät zur Arbeit, zur Prüfung oder zum Flug: was die Szene über Druck und Erwartungen sagen kann, mit Fragen und einem Tagebuchbeispiel."
       },
       "it": {
         "slug": "essere-in-ritardo",
         "name": "Essere in ritardo",
-        "shortDescription": "Essere in ritardo crea pressione prima ancora di raggiungere la destinazione. Dove dovevi andare, chi aspettava e le conseguenze previste formano il misto di vergogna, frustrazione o sollievo.",
-        "modifiedAt": "2026-07-24",
+        "shortDescription": "Sognare di essere in ritardo vuol dire spesso vedere l’ora correre mentre tutto ti frena: chiavi introvabili, corridoi infiniti, un autobus che non arriva. La scena viene spesso associata alla pressione o alle aspettative. Contano soprattutto la meta e chi ti aspettava.",
+        "modifiedAt": "2026-10-08",
         "askYourself": [
-          "Che cosa ha cambiato essere in ritardo nella scena?",
-          "Quale emozione è rimasta dopo il risveglio?"
+          "Dove dovevo essere, e chi mi aspettava?",
+          "Che cosa mi tratteneva: le circostanze o qualcosa che facevo io?",
+          "Quale scadenza o quale aspettativa mi pesa in questo periodo?"
         ],
-        "faq": []
+        "faq": [
+          {
+            "question": "Che cosa significa sognare di essere in ritardo?",
+            "answer": "Il ritardo viene spesso associato alla pressione, alle scadenze o alla paura di deludere qualcuno. Il significato dipende da dove dovevi andare, da che cosa ti tratteneva e da che cosa temevi al tuo arrivo."
+          },
+          {
+            "question": "Perché sogno spesso di essere in ritardo?",
+            "answer": "Un sogno di ritardo che ritorna compare spesso nei periodi pieni o incerti. Non è una previsione. Annota che cosa è successo il giorno prima di ciascuno: con il tempo il legame con un orario, un ruolo o una persona diventa spesso visibile."
+          },
+          {
+            "question": "Che cosa significa arrivare in ritardo a un esame o al lavoro in sogno?",
+            "answer": "Un esame o una giornata di lavoro ti mettono davanti a un giudizio o a un impegno. Arrivare in ritardo può mettere in scena la paura di non essere pronto o all’altezza, anche quando da sveglio lo sei."
+          },
+          {
+            "question": "Che cosa significa arrivare in tempo alla fine del sogno?",
+            "answer": "Arrivare per un soffio, o scoprire che nessuno ce l’aveva con te, cambia spesso il tono del sogno. Può accompagnare la sensazione che la pressione sia più gestibile di quanto sembri. Che cosa hai notato arrivando?"
+          }
+        ],
+        "documentMetaDescription": "Sognare di essere in ritardo al lavoro, a un esame o per un volo: che cosa può dire la scena della pressione e delle aspettative, con domande ed esempio."
       },
       "pt": {
         "slug": "estar-atrasado",
@@ -16652,58 +16934,152 @@
       "en": {
         "slug": "missing-a-train",
         "name": "Missing a train",
-        "shortDescription": "Missing a train combines a fixed timetable with a journey that suddenly becomes unavailable. Arriving late, meeting an obstacle or waiting on the wrong platform shifts the dream’s focus.",
-        "modifiedAt": "2026-07-24",
+        "shortDescription": "Dreaming of missing a train often ends on the platform, watching the doors close or the last carriage pull away. The scene is often linked to the fear of missing a chance or falling behind. Where the train was going, and why you missed it, matters most.",
+        "modifiedAt": "2026-10-08",
         "askYourself": [
-          "What did missing a train change in the scene?",
-          "Which feeling stayed with me after waking?"
+          "Where was the train going, and why did that trip matter?",
+          "Did I miss it because of me, an obstacle, or the wrong platform?",
+          "Which opportunity or decision am I afraid of letting slip right now?"
         ],
-        "faq": []
+        "faq": [
+          {
+            "question": "What does it mean to dream of missing a train?",
+            "answer": "Missing a train is often associated with the fear of letting a chance pass, or of falling behind others. Its meaning depends on where the train was going, why you missed it and how you felt once it had left: panic, frustration or relief."
+          },
+          {
+            "question": "What does it mean to watch the train leave without you?",
+            "answer": "Seeing the doors close in front of you can stage a sense of being left out of a move others are making: a promotion, a group plan, a stage of life. Note who was on board, if you saw anyone."
+          },
+          {
+            "question": "Why did I feel relieved after missing the train?",
+            "answer": "Relief is a frequent and useful clue. It can suggest that part of you was not ready for that departure, or did not really want it. Ask yourself what the trip would have required of you."
+          },
+          {
+            "question": "Is missing a train in a dream a bad sign?",
+            "answer": "No. The dream predicts nothing about opportunities to come. It stages a feeling around timing and choices. It is more useful to look at which schedule or decision is on your mind than to read it as a warning."
+          }
+        ],
+        "documentMetaDescription": "Dreaming of missing a train, waiting on the wrong platform or watching it leave: what the scene may say about chances and timing, with questions."
       },
       "fr": {
         "slug": "rater-un-train",
         "name": "Rater un train",
-        "shortDescription": "Rater un train confronte un horaire fixe à une possibilité de départ soudainement perdue. Un retard de votre fait, un obstacle extérieur ou un mauvais quai ne mettent pas en jeu la même préoccupation.",
-        "modifiedAt": "2026-07-24",
+        "shortDescription": "Rêver de rater un train, c'est souvent arriver sur le quai au moment où les portes se ferment, et voir le dernier wagon s'éloigner. La scène est souvent associée à la peur de laisser passer une occasion. La destination et la raison du retard comptent le plus.",
+        "modifiedAt": "2026-10-08",
         "askYourself": [
-          "Qu’est-ce que rater un train a changé dans la scène ?",
-          "Quelle émotion est restée après le réveil ?"
+          "Où allait ce train, et pourquoi ce voyage comptait-il ?",
+          "L'ai-je raté à cause de moi, d'un obstacle ou d'un mauvais quai ?",
+          "Quelle occasion ou quelle décision ai-je peur de laisser filer en ce moment ?"
         ],
-        "faq": []
+        "faq": [
+          {
+            "question": "Que signifie rêver de rater un train ?",
+            "answer": "Rater un train est souvent associé à la peur de laisser passer une occasion, ou de prendre du retard sur les autres. Le sens dépend de la destination, de la raison pour laquelle vous l'avez manqué et de ce que vous avez ressenti une fois le train parti : panique, colère ou soulagement."
+          },
+          {
+            "question": "Que signifie voir le train partir sans soi ?",
+            "answer": "Voir les portes se fermer devant vous peut mettre en scène le sentiment d'être tenu à l'écart d'un mouvement que d'autres font : une promotion, un projet commun, une étape de vie. Notez qui était à bord, si vous avez vu quelqu'un."
+          },
+          {
+            "question": "Pourquoi me suis-je senti soulagé après avoir raté le train ?",
+            "answer": "Le soulagement est un indice fréquent et utile. Il peut suggérer qu'une part de vous n'était pas prête pour ce départ, ou ne le souhaitait pas vraiment. Demandez-vous ce que ce voyage aurait exigé de vous."
+          },
+          {
+            "question": "Rater un train en rêve, est-ce un mauvais signe ?",
+            "answer": "Non. Ce rêve ne prédit rien sur les occasions à venir. Il met en scène un ressenti autour du bon moment et des choix. Mieux vaut regarder quel calendrier ou quelle décision vous occupe que d'y lire un avertissement."
+          }
+        ],
+        "documentMetaDescription": "Rêver de rater un train, de se tromper de quai ou de voir le train partir sans vous : ce que la scène peut dire des occasions et du bon moment, avec questions."
       },
       "es": {
         "slug": "perder-un-tren",
         "name": "Perder un tren",
-        "shortDescription": "Perder un tren combina un horario fijo con una oportunidad de viaje que desaparece. Llegar tarde, topar con un obstáculo o estar en el andén equivocado cambia el centro de la experiencia.",
-        "modifiedAt": "2026-07-24",
+        "shortDescription": "Soñar que pierdes un tren suele terminar en el andén, viendo cómo se cierran las puertas o cómo se aleja el último vagón. La escena se asocia a menudo con el miedo a dejar pasar una oportunidad. Adónde iba el tren y por qué lo perdiste es lo que más cuenta.",
+        "modifiedAt": "2026-10-08",
         "askYourself": [
-          "¿Qué cambió perder un tren dentro de la escena?",
-          "¿Qué emoción siguió conmigo al despertar?"
+          "¿Adónde iba el tren y por qué me importaba ese viaje?",
+          "¿Lo perdí por mi culpa, por un obstáculo o por equivocarme de andén?",
+          "¿Qué oportunidad o qué decisión me da miedo dejar escapar ahora mismo?"
         ],
-        "faq": []
+        "faq": [
+          {
+            "question": "¿Qué significa soñar que pierdes un tren?",
+            "answer": "Perder un tren se asocia a menudo con el miedo a dejar pasar una oportunidad o a quedarte atrás respecto a los demás. El sentido depende del destino, de por qué lo perdiste y de lo que sentiste al verlo irse: pánico, rabia o alivio."
+          },
+          {
+            "question": "¿Qué significa ver cómo el tren se va sin ti?",
+            "answer": "Ver cerrarse las puertas delante de ti puede escenificar la sensación de quedarte fuera de un movimiento que hacen otros: un ascenso, un plan en grupo, una etapa de la vida. Anota quién iba a bordo, si viste a alguien."
+          },
+          {
+            "question": "¿Por qué sentí alivio después de perder el tren?",
+            "answer": "El alivio es una pista frecuente y útil. Puede sugerir que una parte de ti no estaba lista para esa salida, o no la quería de verdad. Pregúntate qué te habría exigido ese viaje."
+          },
+          {
+            "question": "¿Perder un tren en sueños es mala señal?",
+            "answer": "No. El sueño no predice nada sobre las oportunidades que vendrán. Escenifica una sensación en torno a los tiempos y las elecciones. Es más útil mirar qué calendario o qué decisión te ocupa que leerlo como un aviso."
+          }
+        ],
+        "documentMetaDescription": "Soñar que pierdes un tren, te equivocas de andén o ves el tren irse sin ti: qué puede decir la escena sobre oportunidades y tiempos, con preguntas."
       },
       "de": {
         "slug": "einen-zug-verpassen",
         "name": "Einen Zug verpassen",
-        "shortDescription": "Ein verpasster Zug verbindet einen festen Fahrplan mit einer plötzlich verschwundenen Reisemöglichkeit. Ob du selbst zu spät kamst, ein Hindernis auftauchte oder du am falschen Bahnsteig standest, verändert den Schwerpunkt des Traums.",
+        "shortDescription": "Vom verpassten Zug zu träumen endet oft am Bahnsteig: Die Türen schließen sich, der letzte Wagen rollt davon. Die Szene wird oft mit der Angst verbunden, eine Gelegenheit zu verpassen. Wohin der Zug fuhr und warum Sie ihn verpasst haben, zählt am meisten.",
         "askYourself": [
-          "Wohin sollte der Zug fahren, und warum war diese Reise wichtig?",
-          "Hast du ihn abfahren sehen oder erst später bemerkt, dass du ihn verpasst hattest?",
-          "Welche Gelegenheit befürchtest du gerade nicht rechtzeitig zu nutzen?"
+          "Wohin fuhr der Zug, und warum war mir diese Reise wichtig?",
+          "Habe ich ihn wegen mir selbst, wegen eines Hindernisses oder am falschen Gleis verpasst?",
+          "Welche Gelegenheit oder Entscheidung fürchte ich gerade zu verpassen?"
         ],
-        "modifiedAt": "2026-07-24",
-        "faq": []
+        "modifiedAt": "2026-10-08",
+        "faq": [
+          {
+            "question": "Was bedeutet es, im Traum einen Zug zu verpassen?",
+            "answer": "Ein verpasster Zug wird oft mit der Angst verbunden, eine Gelegenheit verstreichen zu lassen oder hinter anderen zurückzubleiben. Was er bedeutet, hängt vom Ziel ab, vom Grund der Verspätung und davon, was Sie danach fühlten: Panik, Ärger oder Erleichterung."
+          },
+          {
+            "question": "Was bedeutet es, den Zug ohne sich abfahren zu sehen?",
+            "answer": "Zu sehen, wie sich die Türen vor einem schließen, kann das Gefühl in Szene setzen, bei einer Bewegung anderer außen vor zu bleiben: eine Beförderung, ein gemeinsamer Plan, eine Lebensphase. Notieren Sie, wer im Zug saß, falls Sie jemanden gesehen haben."
+          },
+          {
+            "question": "Warum war ich erleichtert, als ich den Zug verpasst hatte?",
+            "answer": "Erleichterung ist ein häufiger und nützlicher Hinweis. Sie kann darauf deuten, dass ein Teil von Ihnen für diese Abfahrt noch nicht bereit war oder sie nicht wirklich wollte. Fragen Sie sich, was diese Reise von Ihnen verlangt hätte."
+          },
+          {
+            "question": "Ist ein verpasster Zug im Traum ein schlechtes Zeichen?",
+            "answer": "Nein. Der Traum sagt nichts über künftige Gelegenheiten voraus. Er setzt ein Gefühl rund um Zeitpunkte und Entscheidungen in Szene. Hilfreicher als eine Warnung darin zu sehen, ist der Blick darauf, welcher Zeitplan oder welche Entscheidung Sie beschäftigt."
+          }
+        ],
+        "documentMetaDescription": "Einen Zug verpassen im Traum, am falschen Gleis warten oder ihn abfahren sehen: was die Szene über Chancen und Zeitpunkte sagen kann, mit Fragen."
       },
       "it": {
         "slug": "perdere-un-treno",
         "name": "Perdere un treno",
-        "shortDescription": "Perdere un treno unisce un orario fisso a un viaggio che diventa improvvisamente irraggiungibile. Arrivare tardi, incontrare un ostacolo o aspettare sul binario sbagliato sposta il centro del sogno.",
-        "modifiedAt": "2026-07-24",
+        "shortDescription": "Sognare di perdere un treno finisce spesso sul binario, mentre le porte si chiudono e l’ultima carrozza si allontana. La scena viene spesso associata alla paura di lasciarsi sfuggire un’occasione. Contano soprattutto dove andava il treno e perché l’hai perso.",
+        "modifiedAt": "2026-10-08",
         "askYourself": [
-          "Che cosa ha cambiato perdere un treno nella scena?",
-          "Quale emozione è rimasta dopo il risveglio?"
+          "Dove andava il treno, e perché quel viaggio era importante?",
+          "L’ho perso per colpa mia, per un ostacolo o per il binario sbagliato?",
+          "Quale occasione o quale decisione ho paura di lasciarmi sfuggire in questo periodo?"
         ],
-        "faq": []
+        "faq": [
+          {
+            "question": "Che cosa significa sognare di perdere un treno?",
+            "answer": "Perdere un treno viene spesso associato alla paura di lasciarsi sfuggire un’occasione o di restare indietro rispetto agli altri. Il significato dipende dalla destinazione, dal motivo per cui l’hai perso e da che cosa hai provato dopo: panico, rabbia o sollievo."
+          },
+          {
+            "question": "Che cosa significa vedere il treno partire senza di te?",
+            "answer": "Vedere le porte chiudersi davanti a te può mettere in scena la sensazione di restare fuori da un movimento che fanno gli altri: una promozione, un progetto comune, una fase della vita. Annota chi c’era a bordo, se hai visto qualcuno."
+          },
+          {
+            "question": "Perché mi sono sentito sollevato dopo aver perso il treno?",
+            "answer": "Il sollievo è un indizio frequente e utile. Può suggerire che una parte di te non era pronta per quella partenza, o non la desiderava davvero. Chiediti che cosa ti avrebbe chiesto quel viaggio."
+          },
+          {
+            "question": "Perdere un treno in sogno è un brutto segno?",
+            "answer": "No. Il sogno non predice nulla sulle occasioni future. Mette in scena una sensazione legata ai tempi e alle scelte. È più utile guardare quale calendario o quale decisione ti occupa la mente che leggerlo come un avvertimento."
+          }
+        ],
+        "documentMetaDescription": "Sognare di perdere un treno, di sbagliare binario o di vederlo partire senza di te: che cosa può dire la scena delle occasioni e dei tempi, con domande."
       },
       "pt": {
         "slug": "perder-o-trem",
