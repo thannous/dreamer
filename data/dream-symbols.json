@@ -5404,47 +5404,152 @@
       "en": {
         "slug": "lion",
         "name": "Lion",
-        "shortDescription": "The lion represents strength, courage, and leadership. It can symbolize your own power or an authority figure in your life.",
+        "shortDescription": "Dreaming of a lion often brings strength, courage and authority into the scene: yours, or someone else's. A calm lion, a roaring one, one chasing you or one in a cage each tell a different story, and so does how close you dared to stand.",
         "askYourself": [
-          "Am I in touch with my inner strength?",
-          "How do I express my power?"
-        ]
+          "Was the lion calm, roaring, hunting me, caged or wounded?",
+          "What did I feel: admiration, fear, protectiveness, or a sense of my own strength?",
+          "Who holds power over me right now, or where do I need to assert mine?"
+        ],
+        "faq": [
+          {
+            "question": "What does it mean to dream of a lion?",
+            "answer": "A lion is often associated with strength, courage, pride and authority. It can stand for your own power or for a dominant figure in your life. The lion's behavior and your feelings toward it help you tell which."
+          },
+          {
+            "question": "What does it mean when a lion attacks or chases you in a dream?",
+            "answer": "An attacking lion can go with a force that feels bigger than you: a demanding boss, a conflict, or your own anger. It is not a warning of real danger. Note where you were and who the lion reminded you of."
+          },
+          {
+            "question": "What does a calm or friendly lion mean in a dream?",
+            "answer": "A calm lion close by, or one you can stroke, can go with a confidence that is settling in, or with a strong person you trust. It may also point to a power you are learning to handle gently."
+          },
+          {
+            "question": "What does a lioness or a lion cub mean in a dream?",
+            "answer": "A lioness is often linked to fierce protection: of a child, a project or your values. A cub can go with a strength that is still growing, a confidence you are only beginning to build. Who or what were you protecting?"
+          }
+        ],
+        "documentMetaDescription": "Dreaming of a lion that attacks, roars, stays calm or paces in a cage: what the scene may say about strength and authority, with questions and an example.",
+        "modifiedAt": "2026-10-08"
       },
       "fr": {
         "slug": "lion",
         "name": "Lion",
-        "shortDescription": "Le lion représente la force, le courage et le leadership. Il peut symboliser votre propre puissance ou une figure d'autorité dans votre vie.",
+        "shortDescription": "Rêver d'un lion fait souvent entrer en scène la force, le courage et l'autorité : la vôtre, ou celle de quelqu'un d'autre. Un lion calme, qui rugit, qui vous poursuit ou en cage ne raconte pas la même chose, pas plus que la distance que vous osiez garder.",
         "askYourself": [
-          "Suis-je en contact avec ma force intérieure ?",
-          "Comment j'exprime mon pouvoir ?"
-        ]
+          "Le lion était-il calme, rugissant, en chasse, en cage ou blessé ?",
+          "Qu'ai-je ressenti : admiration, peur, envie de protéger, sentiment de ma propre force ?",
+          "Qui a du pouvoir sur moi en ce moment, ou où ai-je besoin d'affirmer le mien ?"
+        ],
+        "faq": [
+          {
+            "question": "Que signifie rêver d'un lion ?",
+            "answer": "Le lion est souvent associé à la force, au courage, à la fierté et à l'autorité. Il peut représenter votre propre puissance ou une figure dominante de votre vie. Son comportement et ce que vous ressentiez aident à faire la différence."
+          },
+          {
+            "question": "Que signifie rêver d'un lion qui attaque ou vous poursuit ?",
+            "answer": "Un lion qui attaque peut accompagner une force qui vous dépasse : un supérieur exigeant, un conflit, ou votre propre colère. Ce n'est pas l'annonce d'un danger réel. Notez où vous étiez et à qui le lion vous faisait penser."
+          },
+          {
+            "question": "Que signifie rêver d'un lion calme ou gentil ?",
+            "answer": "Un lion paisible tout près, ou que vous pouvez caresser, peut accompagner une confiance qui s'installe, ou une personne forte sur qui vous comptez. Il peut aussi désigner une force que vous apprenez à manier en douceur."
+          },
+          {
+            "question": "Que signifie rêver d'une lionne ou d'un lionceau ?",
+            "answer": "La lionne est souvent liée à une protection farouche : d'un enfant, d'un projet, de vos valeurs. Le lionceau peut accompagner une force qui grandit encore, une assurance en train de se construire. Qui ou que protégiez-vous ?"
+          }
+        ],
+        "documentMetaDescription": "Rêver d'un lion qui attaque, rugit, reste calme ou tourne en cage : ce que la scène peut dire de la force et de l'autorité, avec questions et exemple.",
+        "modifiedAt": "2026-10-08"
       },
       "es": {
         "slug": "leon",
         "name": "León",
-        "shortDescription": "El león representa fuerza, coraje y liderazgo. Puede simbolizar tu propio poder o una figura de autoridad en tu vida.",
+        "shortDescription": "Soñar con un león suele traer a escena la fuerza, el valor y la autoridad: los tuyos o los de otra persona. Un león tranquilo, uno que ruge, uno que te persigue o uno enjaulado no cuentan lo mismo, y también importa cuánto te atreviste a acercarte.",
         "askYourself": [
-          "¿Estoy en contacto con mi fuerza interior?",
-          "¿Cómo expreso mi poder?"
-        ]
+          "¿El león estaba tranquilo, rugía, me cazaba, estaba enjaulado o herido?",
+          "¿Qué sentí: admiración, miedo, ganas de proteger, la sensación de mi propia fuerza?",
+          "¿Quién tiene poder sobre mí ahora mismo, o dónde necesito hacer valer el mío?"
+        ],
+        "faq": [
+          {
+            "question": "¿Qué significa soñar con un león?",
+            "answer": "El león se asocia a menudo con la fuerza, el valor, el orgullo y la autoridad. Puede representar tu propio poder o una figura dominante de tu vida. Su comportamiento y lo que sentías te ayudan a ver cuál de las dos."
+          },
+          {
+            "question": "¿Qué significa soñar con un león que te ataca o te persigue?",
+            "answer": "Un león que ataca puede acompañar una fuerza que te supera: un jefe exigente, un conflicto o tu propia rabia. No anuncia un peligro real. Anota dónde estabas y a quién te recordaba el león."
+          },
+          {
+            "question": "¿Qué significa soñar con un león tranquilo o manso?",
+            "answer": "Un león en calma a tu lado, o al que puedes acariciar, puede acompañar una confianza que se asienta, o a una persona fuerte en la que confías. También puede señalar una fuerza que aprendes a manejar con suavidad."
+          },
+          {
+            "question": "¿Qué significa soñar con una leona o un cachorro de león?",
+            "answer": "La leona se relaciona a menudo con una protección feroz: de un hijo, de un proyecto, de tus valores. El cachorro puede acompañar una fuerza que todavía crece, una seguridad que estás construyendo. ¿A quién o qué protegías?"
+          }
+        ],
+        "documentMetaDescription": "Soñar con un león que ataca, ruge, está tranquilo o enjaulado: qué puede decir la escena sobre la fuerza y la autoridad, con preguntas y un ejemplo.",
+        "modifiedAt": "2026-10-08"
       },
       "de": {
         "slug": "loewe",
         "name": "Löwe",
-        "shortDescription": "Löwen symbolisieren Stärke, Mut und Autorität. Sie können persönliche Macht, Führung oder die Notwendigkeit darstellen, sich einer Herausforderung mutig zu stellen.",
+        "shortDescription": "Von einem Löwen zu träumen bringt oft Stärke, Mut und Autorität ins Spiel: Ihre eigene oder die eines anderen Menschen. Ein ruhiger, brüllender, jagender oder eingesperrter Löwe erzählt jeweils etwas anderes, und auch, wie nah Sie sich herantrauten.",
         "askYourself": [
-          "Wo muss ich mutiger sein?",
-          "Wie gehe ich mit meiner persönlichen Macht um?"
-        ]
+          "War der Löwe ruhig, brüllte er, jagte er mich, war er eingesperrt oder verletzt?",
+          "Was habe ich gefühlt: Bewunderung, Angst, den Wunsch zu schützen, meine eigene Kraft?",
+          "Wer hat gerade Macht über mich, oder wo muss ich meine eigene behaupten?"
+        ],
+        "faq": [
+          {
+            "question": "Was bedeutet es, von einem Löwen zu träumen?",
+            "answer": "Der Löwe wird oft mit Stärke, Mut, Stolz und Autorität verbunden. Er kann für Ihre eigene Kraft stehen oder für eine dominante Person in Ihrem Leben. Sein Verhalten und Ihre Gefühle helfen, das zu unterscheiden."
+          },
+          {
+            "question": "Was bedeutet es, wenn ein Löwe einen im Traum angreift oder verfolgt?",
+            "answer": "Ein angreifender Löwe kann eine Kraft begleiten, die Ihnen über den Kopf wächst: eine fordernde Chefin, ein Konflikt oder Ihre eigene Wut. Eine reale Gefahr kündigt er nicht an. Notieren Sie, wo Sie waren und an wen der Löwe Sie erinnerte."
+          },
+          {
+            "question": "Was bedeutet ein ruhiger oder zahmer Löwe im Traum?",
+            "answer": "Ein friedlicher Löwe ganz nah, den Sie vielleicht sogar streicheln, kann wachsendes Selbstvertrauen begleiten oder einen starken Menschen, dem Sie vertrauen. Er kann auch für eine Kraft stehen, die Sie sanft einzusetzen lernen."
+          },
+          {
+            "question": "Was bedeuten eine Löwin oder ein Löwenjunges im Traum?",
+            "answer": "Die Löwin wird oft mit entschlossenem Schutz verbunden: eines Kindes, eines Projekts, Ihrer Werte. Ein Junges kann eine Kraft begleiten, die noch wächst, ein Selbstvertrauen im Aufbau. Wen oder was haben Sie beschützt?"
+          }
+        ],
+        "documentMetaDescription": "Von einem Löwen träumen, der angreift, brüllt, ruhig bleibt oder im Käfig sitzt: was die Szene über Stärke und Autorität sagen kann, mit Beispiel.",
+        "modifiedAt": "2026-10-08"
       },
       "it": {
         "slug": "leone",
         "name": "Leone",
-        "shortDescription": "I leoni simboleggiano forza, coraggio e autorità. Possono rappresentare potere personale, leadership o la necessità di affrontare una sfida con coraggio.",
+        "shortDescription": "Sognare un leone porta spesso in scena forza, coraggio e autorità: i tuoi o quelli di qualcun altro. Un leone tranquillo, uno che ruggisce, uno che ti insegue o uno in gabbia non raccontano la stessa cosa, e conta anche quanto hai osato avvicinarti.",
         "askYourself": [
-          "Dove devo essere più coraggioso?",
-          "Come gestisco il mio potere personale?"
-        ]
+          "Il leone era tranquillo, ruggiva, mi dava la caccia, era in gabbia o ferito?",
+          "Che cosa ho provato: ammirazione, paura, voglia di proteggere, la sensazione della mia forza?",
+          "Chi ha potere su di me in questo periodo, o dove ho bisogno di far valere il mio?"
+        ],
+        "faq": [
+          {
+            "question": "Che cosa significa sognare un leone?",
+            "answer": "Il leone viene spesso associato a forza, coraggio, orgoglio e autorità. Può rappresentare la tua forza o una figura dominante della tua vita. Il suo comportamento e ciò che provavi ti aiutano a capire quale delle due."
+          },
+          {
+            "question": "Che cosa significa sognare un leone che ti attacca o ti insegue?",
+            "answer": "Un leone che attacca può accompagnare una forza che ti supera: un capo esigente, un conflitto o la tua stessa rabbia. Non annuncia un pericolo reale. Annota dove ti trovavi e a chi ti faceva pensare il leone."
+          },
+          {
+            "question": "Che cosa significa sognare un leone tranquillo o mansueto?",
+            "answer": "Un leone calmo accanto a te, o che puoi accarezzare, può accompagnare una fiducia che si consolida, o una persona forte di cui ti fidi. Può anche indicare una forza che stai imparando a usare con delicatezza."
+          },
+          {
+            "question": "Che cosa significa sognare una leonessa o un cucciolo di leone?",
+            "answer": "La leonessa è spesso legata a una protezione decisa: di un figlio, di un progetto, dei tuoi valori. Il cucciolo può accompagnare una forza che sta ancora crescendo, una sicurezza in costruzione. Chi o che cosa stavi proteggendo?"
+          }
+        ],
+        "documentMetaDescription": "Sognare un leone che attacca, ruggisce, resta tranquillo o è in gabbia: che cosa può dire la scena di forza e autorità, con domande ed esempio di diario.",
+        "modifiedAt": "2026-10-08"
       },
       "pt": {
         "slug": "leao",
@@ -5645,47 +5750,152 @@
       "en": {
         "slug": "money",
         "name": "Money",
-        "shortDescription": "Money in dreams often represents self-worth, power, or vital energy. Losing money can symbolize a sense of loss or insecurity.",
+        "shortDescription": "Dreaming of money often has less to do with your bank account than with value: what you are worth, what you are owed, what you can afford to lose. Finding, losing, counting or giving money each raise a different question.",
         "askYourself": [
-          "How do I feel about my self-worth?",
-          "What has value to me?"
-        ]
+          "Was I finding money, losing it, counting it, giving it away or running short?",
+          "What did I feel: relief, shame, greed, panic or generosity?",
+          "Where do I feel underpaid, in debt or unsure of my value right now?"
+        ],
+        "faq": [
+          {
+            "question": "What does it mean to dream about money?",
+            "answer": "Money is often associated with value, security and power: what you think you are worth, what you can count on, how free you are to choose. What happened in the dream and how you felt help you pick the lead that fits."
+          },
+          {
+            "question": "What does it mean to find money in a dream?",
+            "answer": "Finding money can go with a pleasant surprise, a recognition you were hoping for, or a resource you had not noticed. It does not predict a windfall. Note where the money was and whether you kept it."
+          },
+          {
+            "question": "What does it mean to lose money in a dream?",
+            "answer": "Losing money or a wallet can go with a fear of loss, a decision you regret, or the feeling of not being up to the task. Ask yourself what else seems to be slipping through your fingers right now."
+          },
+          {
+            "question": "Can money dreams come from real financial worries?",
+            "answer": "Yes, often. Bills, a salary negotiation or a big purchase can find their way into dreams quite literally. In that case the dream mainly shows what is on your mind; it is neither financial advice nor a forecast."
+          }
+        ],
+        "documentMetaDescription": "Dreaming about money: finding it, losing it, counting it or running short, and what the scene may say about value and security, with questions and an example.",
+        "modifiedAt": "2026-10-08"
       },
       "fr": {
         "slug": "argent",
         "name": "Argent",
-        "shortDescription": "L'argent dans les rêves représente souvent la valeur personnelle, le pouvoir ou l'énergie vitale. Perdre de l'argent peut symboliser un sentiment de perte ou d'insécurité.",
+        "shortDescription": "Rêver d'argent parle souvent moins de votre compte en banque que de valeur : ce que vous valez, ce qu'on vous doit, ce que vous pouvez vous permettre de perdre. Trouver, perdre, compter ou donner de l'argent ouvrent chacun une question différente.",
         "askYourself": [
-          "Comment je me sens par rapport à ma valeur personnelle ?",
-          "Qu'est-ce qui a de la valeur pour moi ?"
-        ]
+          "Est-ce que je trouvais de l'argent, en perdais, en comptais, en donnais ou en manquais ?",
+          "Qu'ai-je ressenti : soulagement, honte, envie, panique, générosité ?",
+          "Où est-ce que je me sens sous-payé, endetté ou peu sûr de ma valeur en ce moment ?"
+        ],
+        "faq": [
+          {
+            "question": "Que signifie rêver d'argent ?",
+            "answer": "L'argent est souvent associé à la valeur, à la sécurité et au pouvoir : ce que vous pensez valoir, ce sur quoi vous pouvez compter, votre liberté de choisir. Ce qui se passait dans le rêve et ce que vous ressentiez aident à choisir la piste."
+          },
+          {
+            "question": "Que signifie trouver de l'argent en rêve ?",
+            "answer": "Trouver de l'argent peut accompagner une bonne surprise, une reconnaissance espérée ou une ressource que vous n'aviez pas remarquée. Ce n'est pas l'annonce d'un gain. Notez où était l'argent et si vous l'avez gardé."
+          },
+          {
+            "question": "Que signifie perdre de l'argent en rêve ?",
+            "answer": "Perdre de l'argent ou son portefeuille peut accompagner une peur de la perte, un regret ou le sentiment de ne pas être à la hauteur. Demandez-vous ce qui, en ce moment, semble vous filer entre les doigts."
+          },
+          {
+            "question": "Les rêves d'argent viennent-ils de vrais soucis financiers ?",
+            "answer": "Oui, souvent. Des factures, une négociation de salaire ou un gros achat peuvent entrer très littéralement dans les rêves. Le rêve montre alors surtout ce qui vous occupe : ce n'est ni un conseil financier ni une prévision."
+          }
+        ],
+        "documentMetaDescription": "Rêver d'argent : en trouver, en perdre, en compter ou en manquer, et ce que la scène peut dire de la valeur et de la sécurité, avec questions et exemple.",
+        "modifiedAt": "2026-10-08"
       },
       "es": {
         "slug": "dinero",
         "name": "Dinero",
-        "shortDescription": "El dinero en sueños a menudo representa autoestima, poder o energía vital. Perder dinero puede simbolizar una sensación de pérdida o inseguridad.",
+        "shortDescription": "Soñar con dinero suele hablar menos de tu cuenta bancaria que de valor: lo que vales, lo que te deben, lo que puedes permitirte perder. Encontrar, perder, contar o regalar dinero abren cada uno una pregunta distinta.",
         "askYourself": [
-          "¿Cómo me siento sobre mi autoestima?",
-          "¿Qué tiene valor para mí?"
-        ]
+          "¿Encontraba dinero, lo perdía, lo contaba, lo daba o me faltaba?",
+          "¿Qué sentí: alivio, vergüenza, codicia, pánico o generosidad?",
+          "¿Dónde me siento mal pagado, endeudado o inseguro de mi valor ahora mismo?"
+        ],
+        "faq": [
+          {
+            "question": "¿Qué significa soñar con dinero?",
+            "answer": "El dinero se asocia a menudo con el valor, la seguridad y el poder: lo que crees que vales, aquello con lo que puedes contar, tu libertad para elegir. Lo que pasaba en el sueño y lo que sentías te ayudan a elegir la pista."
+          },
+          {
+            "question": "¿Qué significa encontrar dinero en sueños?",
+            "answer": "Encontrar dinero puede acompañar una buena sorpresa, un reconocimiento que esperabas o un recurso en el que no te habías fijado. No anuncia ninguna ganancia. Anota dónde estaba el dinero y si te lo quedaste."
+          },
+          {
+            "question": "¿Qué significa perder dinero en sueños?",
+            "answer": "Perder dinero o la cartera puede acompañar el miedo a perder algo, un arrepentimiento o la sensación de no estar a la altura. Pregúntate qué parece escapársete de las manos estos días."
+          },
+          {
+            "question": "¿Los sueños con dinero vienen de preocupaciones económicas reales?",
+            "answer": "Sí, a menudo. Las facturas, una negociación de sueldo o una compra importante pueden colarse en los sueños de forma muy literal. Entonces el sueño muestra sobre todo lo que te ocupa: no es un consejo financiero ni una previsión."
+          }
+        ],
+        "documentMetaDescription": "Soñar con dinero: encontrarlo, perderlo, contarlo o que te falte, y qué puede decir la escena sobre el valor y la seguridad, con preguntas y un ejemplo.",
+        "modifiedAt": "2026-10-08"
       },
       "de": {
         "slug": "geld",
         "name": "Geld",
-        "shortDescription": "Geld in Träumen symbolisiert Selbstwert, Macht, Sicherheit und den Austausch von Energie. Geld zu finden oder zu verlieren spiegelt Ihr Gefühl von persönlichem Wert wider.",
+        "shortDescription": "Von Geld zu träumen hat oft weniger mit Ihrem Kontostand zu tun als mit Wert: was Sie wert sind, was man Ihnen schuldet, was Sie verlieren dürfen. Geld finden, verlieren, zählen oder verschenken wirft jeweils eine andere Frage auf.",
         "askYourself": [
-          "Wie bewerte ich meinen eigenen Wert?",
-          "Fühle ich mich sicher in meiner aktuellen Situation?"
-        ]
+          "Habe ich Geld gefunden, verloren, gezählt, verschenkt, oder fehlte es mir?",
+          "Was habe ich gefühlt: Erleichterung, Scham, Gier, Panik oder Großzügigkeit?",
+          "Wo fühle ich mich gerade unterbezahlt, verschuldet oder unsicher über meinen Wert?"
+        ],
+        "faq": [
+          {
+            "question": "Was bedeutet es, von Geld zu träumen?",
+            "answer": "Geld wird oft mit Wert, Sicherheit und Macht verbunden: was Sie glauben wert zu sein, worauf Sie zählen können, wie frei Sie wählen können. Was im Traum geschah und was Sie fühlten, hilft, die passende Spur zu finden."
+          },
+          {
+            "question": "Was bedeutet es, im Traum Geld zu finden?",
+            "answer": "Geld zu finden, kann eine schöne Überraschung begleiten, eine erhoffte Anerkennung oder eine Ressource, die Sie bisher übersehen haben. Einen Geldsegen sagt es nicht voraus. Notieren Sie, wo das Geld lag und ob Sie es behalten haben."
+          },
+          {
+            "question": "Was bedeutet es, im Traum Geld zu verlieren?",
+            "answer": "Geld oder das Portemonnaie zu verlieren, kann Verlustangst, Bedauern oder das Gefühl begleiten, einer Aufgabe nicht gewachsen zu sein. Fragen Sie sich, was Ihnen gerade zwischen den Fingern zu zerrinnen scheint."
+          },
+          {
+            "question": "Kommen Geldträume von echten Geldsorgen?",
+            "answer": "Ja, oft. Rechnungen, eine Gehaltsverhandlung oder eine große Anschaffung können ganz wörtlich in Träume wandern. Dann zeigt der Traum vor allem, was Sie beschäftigt: Er ist weder Finanzrat noch Prognose."
+          }
+        ],
+        "documentMetaDescription": "Von Geld träumen: es finden, verlieren, zählen oder zu wenig haben, und was die Szene über Wert und Sicherheit sagen kann, mit Fragen und Tagebuchbeispiel.",
+        "modifiedAt": "2026-10-08"
       },
       "it": {
         "slug": "denaro",
         "name": "Denaro",
-        "shortDescription": "Il denaro nei sogni simboleggia autostima, potere, sicurezza e lo scambio di energia. Trovare o perdere denaro riflette il tuo senso di valore personale.",
+        "shortDescription": "Sognare soldi parla spesso meno del tuo conto in banca che di valore: quanto vali, che cosa ti è dovuto, che cosa puoi permetterti di perdere. Trovare, perdere, contare o regalare denaro aprono ciascuno una domanda diversa.",
         "askYourself": [
-          "Come valuto il mio valore?",
-          "Mi sento sicuro nella mia situazione attuale?"
-        ]
+          "Trovavo denaro, lo perdevo, lo contavo, lo regalavo o mi mancava?",
+          "Che cosa ho provato: sollievo, vergogna, avidità, panico o generosità?",
+          "Dove mi sento pagato poco, in debito o insicuro del mio valore in questo periodo?"
+        ],
+        "faq": [
+          {
+            "question": "Che cosa significa sognare denaro?",
+            "answer": "Il denaro viene spesso associato a valore, sicurezza e potere: quanto pensi di valere, su che cosa puoi contare, quanto sei libero di scegliere. Che cosa succedeva nel sogno e che cosa provavi ti aiutano a scegliere la pista."
+          },
+          {
+            "question": "Che cosa significa trovare soldi in sogno?",
+            "answer": "Trovare soldi può accompagnare una bella sorpresa, un riconoscimento sperato o una risorsa che non avevi notato. Non annuncia nessuna vincita. Annota dove si trovava il denaro e se lo hai tenuto."
+          },
+          {
+            "question": "Che cosa significa perdere soldi in sogno?",
+            "answer": "Perdere soldi o il portafoglio può accompagnare la paura di perdere qualcosa, un rimpianto o la sensazione di non essere all’altezza. Chiediti che cosa sembra sfuggirti di mano in questo periodo."
+          },
+          {
+            "question": "I sogni sui soldi nascono da preoccupazioni economiche reali?",
+            "answer": "Sì, spesso. Bollette, una trattativa sullo stipendio o un acquisto importante possono entrare nei sogni in modo molto letterale. In quel caso il sogno mostra soprattutto ciò che ti occupa la mente: non è un consiglio finanziario né una previsione."
+          }
+        ],
+        "documentMetaDescription": "Sognare soldi o denaro: trovarli, perderli, contarli o non averne abbastanza, e che cosa può dire la scena di valore e sicurezza, con domande ed esempio.",
+        "modifiedAt": "2026-10-08"
       },
       "pt": {
         "slug": "dinheiro",
@@ -5713,47 +5923,152 @@
       "en": {
         "slug": "blood",
         "name": "Blood",
-        "shortDescription": "Blood represents life force, family bonds, or energy loss. Losing blood can symbolize exhaustion or sacrifice.",
+        "shortDescription": "Dreaming of blood is rarely neutral. Blood is often associated with life energy, family ties, guilt or a price paid. Where it was matters most: on your hands, your clothes or the floor, and whose blood it was.",
         "askYourself": [
-          "Is something draining my energy?",
-          "What bonds connect me to my family?"
-        ]
+          "Where was the blood: on me, on someone else, on an object, on the floor?",
+          "Whose blood was it, and did I feel disgust, guilt, fear or calm?",
+          "What is costing me energy, or which family bond is on my mind right now?"
+        ],
+        "faq": [
+          {
+            "question": "What does it mean to dream about blood?",
+            "answer": "Blood is often associated with life energy, family bonds, guilt or a price paid. Where the blood was, whose it was and what you felt help you choose the lead that fits. A violent film seen recently can also be the source."
+          },
+          {
+            "question": "What does blood on your hands mean in a dream?",
+            "answer": "Blood on your hands often echoes the expression: a feeling of guilt or responsibility, even for something minor or unintended. Ask yourself which recent situation you feel you caused, rightly or not."
+          },
+          {
+            "question": "What does it mean to dream of period blood?",
+            "answer": "It can simply reflect your period, if it is due or under way: the body often feeds dreams. It can also touch on cycles, intimacy or the fear of being seen. It does not predict a pregnancy or a health problem."
+          },
+          {
+            "question": "Is dreaming of a lot of blood a bad sign?",
+            "answer": "No. A bloody dream predicts neither an accident nor an illness. If nightmares like this come back often, wake you in distress or spoil your sleep, talk to a doctor: frequent nightmares can be treated."
+          }
+        ],
+        "documentMetaDescription": "Dreaming about blood on your hands, on your clothes or on the floor, or about blood ties: what the scene may say, with questions and a journal example.",
+        "modifiedAt": "2026-10-08"
       },
       "fr": {
         "slug": "sang",
         "name": "Sang",
-        "shortDescription": "Le sang représente la force vitale, les liens familiaux ou une perte d'énergie. Perdre du sang peut symboliser l'épuisement ou un sacrifice.",
+        "shortDescription": "Rêver de sang laisse rarement indifférent. Le sang est souvent associé à l'énergie vitale, aux liens familiaux, à la culpabilité ou à un prix payé. Où il se trouvait compte d'abord : sur vos mains, vos vêtements ou le sol, et à qui il appartenait.",
         "askYourself": [
-          "Est-ce que quelque chose draine mon énergie ?",
-          "Quels liens me connectent à ma famille ?"
-        ]
+          "Où était le sang : sur moi, sur quelqu'un d'autre, sur un objet, par terre ?",
+          "À qui appartenait-il, et qu'ai-je ressenti : dégoût, culpabilité, peur, calme ?",
+          "Qu'est-ce qui me coûte de l'énergie, ou quel lien familial m'occupe en ce moment ?"
+        ],
+        "faq": [
+          {
+            "question": "Que signifie rêver de sang ?",
+            "answer": "Le sang est souvent associé à l'énergie vitale, aux liens familiaux, à la culpabilité ou à un prix payé. Où il était, à qui il appartenait et ce que vous ressentiez aident à choisir la piste. Un film violent vu récemment peut aussi en être la source."
+          },
+          {
+            "question": "Que signifie avoir du sang sur les mains en rêve ?",
+            "answer": "Du sang sur les mains reprend souvent l'expression : un sentiment de culpabilité ou de responsabilité, même pour une chose mineure ou involontaire. Demandez-vous de quelle situation récente vous vous sentez la cause, à tort ou à raison."
+          },
+          {
+            "question": "Que signifie rêver de sang des règles ?",
+            "answer": "Le rêve peut simplement refléter vos règles, si elles approchent ou sont en cours : le corps nourrit souvent les rêves. Il peut aussi toucher aux cycles, à l'intimité ou à la peur d'être vue. Il ne prédit ni grossesse ni problème de santé."
+          },
+          {
+            "question": "Rêver de beaucoup de sang, est-ce un mauvais signe ?",
+            "answer": "Non. Un rêve sanglant ne prédit ni accident ni maladie. Si ce type de cauchemar revient souvent, vous réveille en détresse ou abîme votre sommeil, parlez-en à un médecin : des cauchemars fréquents se soignent."
+          }
+        ],
+        "documentMetaDescription": "Rêver de sang sur les mains, sur des vêtements ou par terre, ou de liens du sang : ce que la scène peut dire, avec questions et exemple de journal.",
+        "modifiedAt": "2026-10-08"
       },
       "es": {
         "slug": "sangre",
         "name": "Sangre",
-        "shortDescription": "La sangre representa fuerza vital, lazos familiares o pérdida de energía. Perder sangre puede simbolizar agotamiento o sacrificio.",
+        "shortDescription": "Soñar con sangre rara vez deja indiferente. La sangre se asocia a menudo con la energía vital, los lazos familiares, la culpa o un precio pagado. Lo primero es dónde estaba: en tus manos, en la ropa o en el suelo, y de quién era.",
         "askYourself": [
-          "¿Algo está drenando mi energía?",
-          "¿Qué lazos me conectan a mi familia?"
-        ]
+          "¿Dónde estaba la sangre: en mí, en otra persona, en un objeto, en el suelo?",
+          "¿De quién era, y qué sentí: asco, culpa, miedo o calma?",
+          "¿Qué me está costando energía, o qué vínculo familiar me ocupa estos días?"
+        ],
+        "faq": [
+          {
+            "question": "¿Qué significa soñar con sangre?",
+            "answer": "La sangre se asocia a menudo con la energía vital, los lazos familiares, la culpa o un precio pagado. Dónde estaba, de quién era y qué sentiste te ayudan a elegir la pista. Una película violenta vista hace poco también puede ser el origen."
+          },
+          {
+            "question": "¿Qué significa soñar con sangre en las manos?",
+            "answer": "La sangre en las manos suele retomar la expresión: un sentimiento de culpa o de responsabilidad, incluso por algo pequeño o involuntario. Pregúntate de qué situación reciente te sientes causante, con razón o sin ella."
+          },
+          {
+            "question": "¿Qué significa soñar con sangre de la regla?",
+            "answer": "Puede reflejar sin más tu regla, si está a punto de llegar o la tienes: el cuerpo alimenta a menudo los sueños. También puede tocar los ciclos, la intimidad o el miedo a que te vean. No predice un embarazo ni un problema de salud."
+          },
+          {
+            "question": "¿Es mala señal soñar con mucha sangre?",
+            "answer": "No. Un sueño sangriento no predice un accidente ni una enfermedad. Si este tipo de pesadillas vuelve a menudo, te despierta angustiado o estropea tu descanso, coméntalo con un médico: las pesadillas frecuentes tienen tratamiento."
+          }
+        ],
+        "documentMetaDescription": "Soñar con sangre en las manos, en la ropa o en el suelo, o con los lazos de sangre: qué puede decir la escena, con preguntas y un ejemplo de diario.",
+        "modifiedAt": "2026-10-08"
       },
       "de": {
         "slug": "blut",
         "name": "Blut",
-        "shortDescription": "Blut symbolisiert Lebensenergie, Leidenschaft und tiefe emotionale Verbindungen. Es kann auch auf Verlust, Opfer oder die Notwendigkeit emotionaler Heilung hinweisen.",
+        "shortDescription": "Von Blut zu träumen lässt selten kalt. Blut wird oft mit Lebenskraft, familiären Bindungen, Schuld oder einem gezahlten Preis verbunden. Entscheidend ist, wo es war: an Ihren Händen, auf der Kleidung oder auf dem Boden, und wessen Blut es war.",
         "askYourself": [
-          "Wo verliere ich Energie in meinem Leben?",
-          "Welche tiefen Emotionen brauchen Aufmerksamkeit?"
-        ]
+          "Wo war das Blut: an mir, an jemand anderem, auf einem Gegenstand, auf dem Boden?",
+          "Wessen Blut war es, und was habe ich gefühlt: Ekel, Schuld, Angst oder Ruhe?",
+          "Was kostet mich gerade Kraft, oder welche familiäre Bindung beschäftigt mich?"
+        ],
+        "faq": [
+          {
+            "question": "Was bedeutet es, von Blut zu träumen?",
+            "answer": "Blut wird oft mit Lebenskraft, familiären Bindungen, Schuld oder einem gezahlten Preis verbunden. Wo das Blut war, wessen Blut es war und was Sie fühlten, hilft, die passende Spur zu finden. Auch ein brutaler Film kann der Auslöser sein."
+          },
+          {
+            "question": "Was bedeutet Blut an den Händen im Traum?",
+            "answer": "Blut an den Händen greift oft die Redewendung auf: ein Gefühl von Schuld oder Verantwortung, selbst für etwas Kleines oder Ungewolltes. Fragen Sie sich, für welche aktuelle Situation Sie sich verantwortlich fühlen, ob zu Recht oder nicht."
+          },
+          {
+            "question": "Was bedeutet Menstruationsblut im Traum?",
+            "answer": "Es kann einfach Ihre Periode widerspiegeln, wenn sie bald kommt oder gerade da ist: Der Körper fließt oft in Träume ein. Es kann auch Zyklen, Intimität oder die Angst berühren, gesehen zu werden. Eine Schwangerschaft oder Krankheit sagt es nicht voraus."
+          },
+          {
+            "question": "Ist es ein schlechtes Zeichen, von viel Blut zu träumen?",
+            "answer": "Nein. Ein blutiger Traum sagt weder einen Unfall noch eine Krankheit voraus. Kehren solche Albträume oft wieder, wecken Sie verstört oder stören Ihren Schlaf, sprechen Sie mit einer Ärztin oder einem Arzt: Häufige Albträume lassen sich behandeln."
+          }
+        ],
+        "documentMetaDescription": "Von Blut träumen, an den Händen, auf der Kleidung oder auf dem Boden, oder von Blutsbanden: was die Szene sagen kann, mit Fragen und Tagebuchbeispiel.",
+        "modifiedAt": "2026-10-08"
       },
       "it": {
         "slug": "sangue",
         "name": "Sangue",
-        "shortDescription": "Il sangue simboleggia energia vitale, passione e connessioni emotive profonde. Può anche indicare perdita, sacrificio o il bisogno di guarigione emotiva.",
+        "shortDescription": "Sognare sangue lascia raramente indifferenti. Il sangue viene spesso associato all’energia vitale, ai legami familiari, alla colpa o a un prezzo pagato. Conta prima di tutto dove si trovava: sulle mani, sui vestiti o a terra, e di chi era.",
         "askYourself": [
-          "Dove sto perdendo energia nella mia vita?",
-          "Quali emozioni profonde hanno bisogno di attenzione?"
-        ]
+          "Dov’era il sangue: su di me, su un’altra persona, su un oggetto, per terra?",
+          "Di chi era, e che cosa ho provato: disgusto, colpa, paura o calma?",
+          "Che cosa mi sta costando energia, o quale legame familiare mi occupa la mente in questo periodo?"
+        ],
+        "faq": [
+          {
+            "question": "Che cosa significa sognare sangue?",
+            "answer": "Il sangue viene spesso associato all’energia vitale, ai legami familiari, alla colpa o a un prezzo pagato. Dove si trovava, di chi era e che cosa provavi ti aiutano a scegliere la pista. Anche un film violento visto di recente può esserne l’origine."
+          },
+          {
+            "question": "Che cosa significa sognare sangue sulle mani?",
+            "answer": "Il sangue sulle mani riprende spesso il modo di dire: un senso di colpa o di responsabilità, anche per qualcosa di piccolo o involontario. Chiediti di quale situazione recente ti senti la causa, a torto o a ragione."
+          },
+          {
+            "question": "Che cosa significa sognare sangue mestruale?",
+            "answer": "Può semplicemente riflettere il ciclo, se sta per arrivare o è in corso: il corpo alimenta spesso i sogni. Può anche toccare l’intimità, i ritmi del corpo o la paura di essere visti. Non predice una gravidanza né un problema di salute."
+          },
+          {
+            "question": "Sognare tanto sangue è un brutto segno?",
+            "answer": "No. Un sogno pieno di sangue non predice un incidente né una malattia. Se incubi di questo tipo tornano spesso, ti svegliano in angoscia o rovinano il sonno, parlane con un medico: gli incubi frequenti si possono curare."
+          }
+        ],
+        "documentMetaDescription": "Sognare sangue sulle mani, sui vestiti o per terra, o legami di sangue: che cosa può dire la scena, con domande ed esempio inventato di diario.",
+        "modifiedAt": "2026-10-08"
       },
       "pt": {
         "slug": "sangue",
@@ -27205,155 +27520,160 @@
         "name": "Wasps",
         "seoTitle": "wasps, stings, attacks or a nest",
         "documentTitle": "Dreaming About Wasps: Sting, Attack or Nest",
-        "documentMetaDescription": "Dreaming about wasps? Compare a sting, an attack or chase, a wasp nest, many wasps and calm wasps using your emotion and recent context.",
-        "shortDescription": "A wasp in a dream can bring irritation, boundaries, anger or a perceived threat into focus. Its behavior — stinging, chasing, nesting nearby or simply present — and your reaction help separate a vivid recent image from a wider emotional theme.",
+        "documentMetaDescription": "Dreaming about wasps: a sting, an attack, a nest or a swarm, and what the scene may say about irritation and boundaries, with questions and an example.",
+        "shortDescription": "A wasp in a dream often brings irritation, a crossed boundary or a sharp remark into focus. What it did matters most: a sting, a chase, a nest close by or a calm wasp on the table each tell a different story.",
         "askYourself": [
-          "Was the wasp stinging, attacking, chasing me, calm, near a nest or one of many?",
-          "Did I feel fear, pain, irritation, panic, control or simple caution around it?",
-          "Has an argument, a stinging remark, an insect encounter or a nest nearby recently occupied my attention?"
+          "Did the wasp sting me, chase me, or just hover around me?",
+          "What did I feel: fear, pain, irritation, or only caution?",
+          "Who or what has been needling me lately: a remark, a conflict, a deadline?"
         ],
         "faq": [
           {
             "question": "What does it mean to dream about wasps?",
-            "answer": "Wasps can fit irritation, anger, boundaries or a perceived threat. The wasp's behavior, the place and your emotion give more useful context than a fixed universal meaning."
+            "answer": "Wasps are often associated with irritation, anger, boundaries or a threat you sense nearby. What the wasp did, where it appeared and how you felt give a more useful lead than any fixed meaning."
           },
           {
             "question": "What does a wasp sting mean in a dream?",
-            "answer": "A sting can make a hurtful remark, a sudden conflict or a crossed boundary vivid. It does not predict injury; compare the scene with recent tensions and any literal sensation during sleep."
+            "answer": "A sting can make a hurtful remark, a sudden conflict or a crossed boundary feel concrete. It does not predict an injury. Compare the scene with recent tensions, and with any real itch or discomfort during the night."
           },
           {
             "question": "What does being attacked or chased by wasps mean?",
-            "answer": "An attack or pursuit can mirror pressure that feels hard to escape — criticism, conflict or accumulated irritation. It reflects intensity, not a real danger waiting for you."
+            "answer": "An attack or a chase can echo pressure that feels hard to escape: criticism, a conflict that keeps flaring up, irritation piling up. It expresses intensity, not a real danger waiting for you."
           },
           {
             "question": "What does a wasp nest or many wasps mean in a dream?",
-            "answer": "A nest can point to a source of tension close to home or work; many wasps can amplify a swarm of small worries. Neither scene proves that people around you are hostile."
+            "answer": "A nest can point to a source of tension close to home or work; a swarm can amplify a cloud of small worries. Neither scene proves that the people around you are hostile."
           }
-        ]
+        ],
+        "modifiedAt": "2026-10-08"
       },
       "fr": {
         "slug": "guepes",
         "name": "Guêpes",
         "seoTitle": "guêpes, piqûre, attaque ou nid",
         "documentTitle": "Rêver de guêpes : piqûre, attaque ou nid",
-        "documentMetaDescription": "Rêver de guêpes : comparez piqûre, attaque ou poursuite, nid, essaim et guêpes calmes selon l’émotion et le contexte récent.",
-        "shortDescription": "Une guêpe dans un rêve peut mettre en avant irritation, limites, colère ou menace ressentie. Son comportement — piqûre, poursuite, nid proche ou simple présence — et votre réaction distinguent une image récente marquante d’un thème émotionnel plus large.",
+        "documentMetaDescription": "Rêver de guêpes : piqûre, attaque, nid ou essaim, et ce que la scène peut dire de l'irritation et des limites, avec questions et exemple de journal.",
+        "shortDescription": "Une guêpe en rêve met souvent en avant une irritation, une limite franchie ou une remarque piquante. Ce qu'elle faisait compte d'abord : piqûre, poursuite, nid tout proche ou guêpe calme sur la table ne racontent pas la même chose.",
         "askYourself": [
-          "La guêpe piquait-elle, attaquait-elle, me poursuivait-elle, restait-elle calme, proche d’un nid ou parmi plusieurs autres ?",
-          "Ai-je ressenti peur, douleur, irritation, panique, contrôle ou simple prudence à son égard ?",
-          "Une dispute, une remarque piquante, une rencontre avec un insecte ou un nid voisin a-t-elle récemment occupé mon attention ?"
+          "La guêpe m'a-t-elle piqué, poursuivi, ou tournait-elle seulement autour de moi ?",
+          "Qu'ai-je ressenti : peur, douleur, agacement, ou simple prudence ?",
+          "Qui ou quoi me pique en ce moment : une remarque, un conflit, une échéance ?"
         ],
         "faq": [
           {
-            "question": "Que signifie rêver de guêpes ?",
-            "answer": "Les guêpes peuvent rejoindre irritation, colère, limites ou menace ressentie. Le comportement de l’insecte, le lieu et votre émotion donnent plus de contexte qu’une définition universelle."
+            "question": "Que signifie rêver de guêpes ?",
+            "answer": "Les guêpes sont souvent associées à l'irritation, à la colère, aux limites ou à une menace sentie tout près. Ce que faisait l'insecte, l'endroit et votre émotion donnent une piste plus utile qu'un sens figé."
           },
           {
-            "question": "Que signifie une piqûre de guêpe en rêve ?",
-            "answer": "La piqûre peut rendre concrète une remarque blessante, un conflit soudain ou une limite franchie. Elle ne prédit pas une blessure; comparez la scène aux tensions récentes et aux sensations du sommeil."
+            "question": "Que signifie une piqûre de guêpe en rêve ?",
+            "answer": "La piqûre peut rendre concrète une remarque blessante, un conflit soudain ou une limite franchie. Elle ne prédit aucune blessure. Comparez la scène aux tensions récentes, et à une éventuelle démangeaison réelle pendant la nuit."
           },
           {
-            "question": "Que signifie être attaqué ou poursuivi par des guêpes ?",
-            "answer": "L’attaque ou la poursuite peut refléter une pression difficile à éviter — critiques, conflit ou irritation accumulée. Elle exprime une intensité, pas un danger réel."
+            "question": "Que signifie être attaqué ou poursuivi par des guêpes ?",
+            "answer": "L'attaque ou la poursuite peut faire écho à une pression difficile à fuir : critiques, conflit qui se rallume, agacement qui s'accumule. Elle exprime une intensité, pas un danger réel qui vous attendrait."
           },
           {
-            "question": "Que signifient un nid de guêpes ou de nombreuses guêpes ?",
-            "answer": "Le nid peut désigner une source de tension proche, à la maison ou au travail; de nombreuses guêpes amplifient un essaim de petits soucis. La scène ne prouve pas l’hostilité de votre entourage."
+            "question": "Que signifient un nid de guêpes ou de nombreuses guêpes ?",
+            "answer": "Le nid peut désigner une source de tension proche, à la maison ou au travail ; un essaim peut amplifier une foule de petits soucis. Aucune de ces scènes ne prouve que votre entourage vous est hostile."
           }
-        ]
+        ],
+        "modifiedAt": "2026-10-08"
       },
       "es": {
         "slug": "avispas",
         "name": "Avispas",
         "seoTitle": "avispas, picadura, ataque o nido",
         "documentTitle": "Soñar con avispas: picadura, ataque o nido",
-        "documentMetaDescription": "Soñar con avispas: compara picaduras, ataques o persecuciones, un nido, muchas avispas y avispas tranquilas según tu emoción y contexto reciente.",
-        "shortDescription": "Una avispa en un sueño puede destacar irritación, límites, enfado o una amenaza percibida. Su comportamiento — picar, perseguir, anidar cerca o simplemente estar presente — y tu reacción diferencian una imagen reciente intensa de un tema emocional más amplio.",
+        "documentMetaDescription": "Soñar con avispas: picadura, ataque, nido o enjambre, y qué puede decir la escena sobre la irritación y los límites, con preguntas y un ejemplo de diario.",
+        "shortDescription": "Una avispa en sueños suele poner en primer plano una irritación, un límite cruzado o un comentario que pica. Lo primero es lo que hacía: una picadura, una persecución, un nido cerca o una avispa tranquila sobre la mesa no cuentan lo mismo.",
         "askYourself": [
-          "¿La avispa picaba, atacaba, me perseguía, estaba tranquila, cerca de un nido o había muchas?",
-          "¿Sentí miedo, dolor, irritación, pánico, control o simple precaución ante ella?",
-          "¿Una discusión, un comentario hiriente, un encuentro con un insecto o un nido cercano ha ocupado recientemente mi atención?"
+          "¿La avispa me picó, me persiguió, o solo revoloteaba a mi alrededor?",
+          "¿Qué sentí: miedo, dolor, fastidio o simple precaución?",
+          "¿Quién o qué me está picando estos días: un comentario, un conflicto, un plazo?"
         ],
         "faq": [
           {
             "question": "¿Qué significa soñar con avispas?",
-            "answer": "Las avispas pueden relacionarse con irritación, enfado, límites o una amenaza percibida. Su conducta, el lugar y tu emoción aportan más contexto que un significado fijo."
+            "answer": "Las avispas se asocian a menudo con irritación, enfado, límites o una amenaza que se siente cerca. Lo que hacía el insecto, el lugar y tu emoción dan una pista más útil que un significado fijo."
           },
           {
             "question": "¿Qué significa la picadura de una avispa en un sueño?",
-            "answer": "Una picadura puede volver concreto un comentario hiriente, un conflicto repentino o un límite cruzado. No predice una lesión; compárala con tensiones recientes y sensaciones durante el sueño."
+            "answer": "La picadura puede volver concreto un comentario hiriente, un conflicto repentino o un límite cruzado. No predice ninguna lesión. Compárala con las tensiones recientes y con algún picor real durante la noche."
           },
           {
             "question": "¿Qué significa ser atacado o perseguido por avispas?",
-            "answer": "Un ataque o una persecución puede reflejar una presión difícil de evitar: críticas, conflicto o irritación acumulada. Expresa intensidad, no un peligro real."
+            "answer": "El ataque o la persecución puede enlazar con una presión de la que cuesta escapar: críticas, un conflicto que se reaviva, un fastidio que se acumula. Expresa intensidad, no un peligro real que te espera."
           },
           {
             "question": "¿Qué significan un nido de avispas o muchas avispas?",
-            "answer": "El nido puede señalar una fuente de tensión cercana, en casa o en el trabajo; muchas avispas amplifican un enjambre de pequeñas preocupaciones. La escena no demuestra hostilidad en tu entorno."
+            "answer": "El nido puede señalar una fuente de tensión cercana, en casa o en el trabajo; un enjambre puede amplificar un montón de pequeñas preocupaciones. Ninguna de las dos escenas demuestra que tu entorno sea hostil."
           }
-        ]
+        ],
+        "modifiedAt": "2026-10-08"
       },
       "de": {
         "slug": "wespen",
         "name": "Wespen",
         "seoTitle": "Wespen, Stich, Angriff oder Nest",
         "documentTitle": "Von Wespen träumen: Stich, Angriff oder Nest",
-        "documentMetaDescription": "Von Wespen träumen: Vergleiche Stich, Angriff oder Verfolgung, ein Nest, viele Wespen und ruhige Tiere anhand von Gefühl und aktuellem Kontext.",
-        "shortDescription": "Eine Wespe im Traum kann Gereiztheit, Grenzen, Ärger oder eine empfundene Bedrohung hervorheben. Ihr Verhalten — stechen, verfolgen, in der Nähe nisten oder einfach anwesend sein — und deine Reaktion unterscheiden ein aktuelles starkes Bild von einem breiteren Gefühlsthema.",
+        "documentMetaDescription": "Von Wespen träumen: Stich, Angriff, Nest oder Schwarm und was die Szene über Gereiztheit und Grenzen sagen kann, mit Fragen und einem Tagebuchbeispiel.",
+        "shortDescription": "Eine Wespe im Traum rückt oft Gereiztheit, eine überschrittene Grenze oder eine spitze Bemerkung in den Vordergrund. Entscheidend ist, was sie tat: Ein Stich, eine Verfolgung, ein Nest in der Nähe oder eine ruhige Wespe erzählen jeweils etwas anderes.",
         "askYourself": [
-          "Hat die Wespe gestochen, angegriffen, mich verfolgt, war sie ruhig, in Nestnähe oder eine von vielen?",
-          "Empfand ich Angst, Schmerz, Gereiztheit, Panik, Kontrolle oder einfach Vorsicht?",
-          "Haben ein Streit, eine verletzende Bemerkung, eine Insektenbegegnung oder ein Nest in der Nähe zuletzt meine Aufmerksamkeit beansprucht?"
+          "Hat die Wespe mich gestochen, verfolgt, oder ist sie nur um mich herumgeflogen?",
+          "Was habe ich gefühlt: Angst, Schmerz, Ärger oder nur Vorsicht?",
+          "Wer oder was sticht mich gerade: eine Bemerkung, ein Konflikt, eine Frist?"
         ],
         "faq": [
           {
             "question": "Was bedeutet es, von Wespen zu träumen?",
-            "answer": "Wespen können zu Gereiztheit, Ärger, Grenzen oder einer empfundenen Bedrohung passen. Verhalten, Ort und Gefühl geben mehr Kontext als eine feste Deutung."
+            "answer": "Wespen werden oft mit Gereiztheit, Ärger, Grenzen oder einer nahen Bedrohung verbunden. Was das Tier tat, wo es auftauchte und was Sie gefühlt haben, hilft mehr als eine feste Deutung."
           },
           {
             "question": "Was bedeutet ein Wespenstich im Traum?",
-            "answer": "Ein Stich kann eine verletzende Bemerkung, einen plötzlichen Konflikt oder eine überschrittene Grenze anschaulich machen. Er sagt keine Verletzung voraus; vergleiche aktuelle Spannungen und Körpergefühle im Schlaf."
+            "answer": "Ein Stich kann eine verletzende Bemerkung, einen plötzlichen Konflikt oder eine überschrittene Grenze greifbar machen. Er sagt keine Verletzung voraus. Vergleichen Sie die Szene mit aktuellen Spannungen und mit einem echten Jucken in der Nacht."
           },
           {
             "question": "Was bedeutet es, von Wespen angegriffen oder verfolgt zu werden?",
-            "answer": "Ein Angriff oder eine Verfolgung kann einen Druck spiegeln, dem man schwer entkommt — Kritik, Konflikt oder angesammelte Gereiztheit. Er drückt Intensität aus, keine reale Gefahr."
+            "answer": "Ein Angriff oder eine Verfolgung kann einen Druck aufgreifen, dem man schwer entkommt: Kritik, ein Konflikt, der immer wieder aufflammt, Ärger, der sich ansammelt. Das zeigt Intensität, keine reale Gefahr."
           },
           {
             "question": "Was bedeuten ein Wespennest oder viele Wespen im Traum?",
-            "answer": "Ein Nest kann auf eine Spannungsquelle in der Nähe hinweisen, zu Hause oder bei der Arbeit; viele Wespen verstärken einen Schwarm kleiner Sorgen. Die Szene beweist keine Feindseligkeit im Umfeld."
+            "answer": "Ein Nest kann auf eine Spannungsquelle in der Nähe hinweisen, zu Hause oder im Job; ein Schwarm kann viele kleine Sorgen verstärken. Keine der beiden Szenen beweist, dass Ihr Umfeld Ihnen feindlich gesinnt ist."
           }
-        ]
+        ],
+        "modifiedAt": "2026-10-08"
       },
       "it": {
         "slug": "vespe",
         "name": "Vespe",
         "seoTitle": "vespe, puntura, attacco o nido",
         "documentTitle": "Sognare vespe: puntura, attacco o nido",
-        "documentMetaDescription": "Sognare vespe: confronta puntura, attacco o inseguimento, un nido, molte vespe e vespe tranquille usando emozione e contesto recente.",
-        "shortDescription": "Una vespa in sogno può mettere in primo piano irritazione, confini, rabbia o una minaccia percepita. Il suo comportamento — pungere, inseguire, nidificare vicino o essere semplicemente presente — e la tua reazione distinguono un’immagine recente intensa da un tema emotivo più ampio.",
+        "documentMetaDescription": "Sognare vespe: puntura, attacco, nido o sciame, e che cosa può dire la scena su irritazione e confini, con domande ed esempio di diario.",
+        "shortDescription": "Una vespa in sogno mette spesso in primo piano un’irritazione, un confine superato o un commento pungente. Conta prima di tutto che cosa faceva: una puntura, un inseguimento, un nido vicino o una vespa tranquilla sul tavolo non raccontano la stessa cosa.",
         "askYourself": [
-          "La vespa pungeva, attaccava, mi inseguiva, era tranquilla, vicino a un nido o compariva con molte altre?",
-          "Provavo paura, dolore, irritazione, panico, controllo o semplice cautela nei suoi confronti?",
-          "Un litigio, un commento pungente, un incontro con un insetto o un nido vicino ha occupato di recente la mia attenzione?"
+          "La vespa mi ha punto, mi ha inseguito, o mi ronzava solo intorno?",
+          "Che cosa ho provato: paura, dolore, fastidio o semplice prudenza?",
+          "Chi o che cosa mi sta pungendo in questo periodo: un commento, un conflitto, una scadenza?"
         ],
         "faq": [
           {
             "question": "Che cosa significa sognare vespe?",
-            "answer": "Le vespe possono collegarsi a irritazione, rabbia, confini o minaccia percepita. Comportamento, luogo ed emozione offrono più contesto di un significato fisso."
+            "answer": "Le vespe vengono spesso associate a irritazione, rabbia, confini o a una minaccia avvertita come vicina. Che cosa faceva l’insetto, il luogo e la tua emozione danno una pista più utile di un significato fisso."
           },
           {
             "question": "Che cosa significa la puntura di una vespa in sogno?",
-            "answer": "Una puntura può rendere concreto un commento doloroso, un conflitto improvviso o un confine superato. Non predice una ferita; confrontala con tensioni recenti e sensazioni durante il sonno."
+            "answer": "La puntura può rendere concreto un commento che ferisce, un conflitto improvviso o un confine superato. Non predice nessuna ferita. Confronta la scena con le tensioni recenti e con un eventuale prurito reale durante la notte."
           },
           {
             "question": "Che cosa significa essere attaccati o inseguiti dalle vespe?",
-            "answer": "Un attacco o un inseguimento può riflettere una pressione difficile da evitare: critiche, conflitto o irritazione accumulata. Esprime intensità, non un pericolo reale."
+            "answer": "Un attacco o un inseguimento può fare eco a una pressione da cui è difficile sottrarsi: critiche, un conflitto che si riaccende, un fastidio che si accumula. Esprime intensità, non un pericolo reale che ti aspetta."
           },
           {
             "question": "Che cosa significano un nido di vespe o molte vespe?",
-            "answer": "Il nido può indicare una fonte di tensione vicina, in casa o al lavoro; molte vespe amplificano uno sciame di piccole preoccupazioni. La scena non dimostra ostilità intorno a te."
+            "answer": "Il nido può indicare una fonte di tensione vicina, in casa o al lavoro; uno sciame può amplificare tante piccole preoccupazioni. Nessuna delle due scene dimostra che chi ti sta intorno ti sia ostile."
           }
-        ]
+        ],
+        "modifiedAt": "2026-10-08"
       },
       "pt": {
         "slug": "vespas",
