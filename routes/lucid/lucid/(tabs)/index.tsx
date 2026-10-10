@@ -21,6 +21,7 @@ import { useLucidNow } from '@/hooks/useLucidNow';
 import {
   getLucidDayPhase,
   getLucidPersonalizedPlan,
+  type LucidDayPhase,
   type LucidPersonalizedPlan,
   type LucidPlanPrimaryAction,
 } from '@/lib/lucid/personalization';
@@ -31,6 +32,8 @@ const DREAM_ATLAS = require('../../../../assets/images/lucid/today-dream-atlas.w
 
 const COPY = {
   en: {
+    phases: { day: 'Day', bedtime: 'Evening', sleep: 'Night', morning: 'Morning' },
+    phaseLabel: (phase: string) => `Moment of the day: ${phase}`,
     day: 'Day',
     ready: 'Ready',
     guided: 'Guided practice',
@@ -81,6 +84,8 @@ const COPY = {
     },
   },
   fr: {
+    phases: { day: 'Jour', bedtime: 'Soir', sleep: 'Nuit', morning: 'Matin' },
+    phaseLabel: (phase: string) => `Moment de la journée : ${phase}`,
     day: 'Jour',
     ready: 'Prêt',
     guided: 'Pratique guidée',
@@ -131,6 +136,8 @@ const COPY = {
     },
   },
   es: {
+    phases: { day: 'Día', bedtime: 'Tarde', sleep: 'Noche', morning: 'Mañana' },
+    phaseLabel: (phase: string) => `Momento del día: ${phase}`,
     day: 'Día',
     ready: 'Listo',
     guided: 'Práctica guiada',
@@ -181,6 +188,8 @@ const COPY = {
     },
   },
   de: {
+    phases: { day: 'Tag', bedtime: 'Abend', sleep: 'Nacht', morning: 'Morgen' },
+    phaseLabel: (phase: string) => `Tageszeit: ${phase}`,
     day: 'Tag',
     ready: 'Bereit',
     guided: 'Geführte Übung',
@@ -231,6 +240,8 @@ const COPY = {
     },
   },
   it: {
+    phases: { day: 'Giorno', bedtime: 'Sera', sleep: 'Notte', morning: 'Mattino' },
+    phaseLabel: (phase: string) => `Momento della giornata: ${phase}`,
     day: 'Giorno',
     ready: 'Pronto',
     guided: 'Pratica guidata',
@@ -336,6 +347,68 @@ function getPlanPrimaryCopy(
     };
   }
   return null;
+}
+
+// The day read as one thread, like Noctalia's onboarding steps: the moment
+// the trainer is in sits filled, the others wait on the line. Night means
+// sleep, so its mark is the moon, never an exercise.
+const DAY_THREAD: readonly { phase: LucidDayPhase; icon: React.ComponentProps<typeof Ionicons>['name'] }[] = [
+  { phase: 'day', icon: 'eye-outline' },
+  { phase: 'bedtime', icon: 'sparkles-outline' },
+  { phase: 'sleep', icon: 'moon-outline' },
+  { phase: 'morning', icon: 'sunny-outline' },
+];
+
+function LucidDayThread({
+  current,
+  label,
+  names,
+  palette,
+}: {
+  current: LucidDayPhase;
+  label: string;
+  names: Record<LucidDayPhase, string>;
+  palette: ReturnType<typeof getLucidPalette>;
+}) {
+  return (
+    <View
+      accessible
+      accessibilityLabel={label}
+      style={styles.dayThread}
+      testID="lucid-today-day-thread"
+    >
+      <View style={[styles.dayThreadLine, { backgroundColor: palette.border }]} />
+      <View style={styles.dayThreadSteps}>
+        {DAY_THREAD.map(({ phase, icon }) => {
+          const now = phase === current;
+          return (
+            <View key={phase} style={styles.dayThreadStep} testID={`lucid-today-day-thread-${phase}`}>
+              <View
+                style={[
+                  styles.dayThreadMark,
+                  now
+                    ? { backgroundColor: palette.accent, borderColor: palette.accent }
+                    : { backgroundColor: palette.background, borderColor: palette.border },
+                ]}
+              >
+                <Ionicons
+                  color={now ? palette.backgroundDeep : palette.textMuted}
+                  name={icon}
+                  size={LucidIcon.sm}
+                />
+              </View>
+              <Text
+                maxFontSizeMultiplier={1.3}
+                style={[styles.dayThreadName, { color: now ? palette.text : palette.textMuted }]}
+              >
+                {names[phase]}
+              </Text>
+            </View>
+          );
+        })}
+      </View>
+    </View>
+  );
 }
 
 export default function LucidTodayScreen() {
@@ -505,10 +578,17 @@ export default function LucidTodayScreen() {
 
       <Reveal index={1} distance={LucidSpace.sm} style={styles.mainContent}>
         <View style={styles.practiceCopy}>
-          <Text style={[styles.overline, { color: palette.accent }]}>
-            {primaryPresentation.overline}
-          </Text>
-          <Text accessibilityRole="header" style={[styles.title, { color: palette.text }]}>
+          <View style={styles.eyebrow}>
+            <View style={[styles.eyebrowRule, { backgroundColor: palette.accent }]} />
+            <Text style={[styles.overline, { color: palette.accent }]}>
+              {primaryPresentation.overline}
+            </Text>
+          </View>
+          <Text
+            accessibilityRole="header"
+            maxFontSizeMultiplier={1.4}
+            style={[styles.title, { color: palette.text }]}
+          >
             {primaryPresentation.title}
           </Text>
           <Text style={[styles.objective, { color: palette.textSecondary }]}>
@@ -541,6 +621,13 @@ export default function LucidTodayScreen() {
             {primaryPresentation.label}
           </Text>
         </PressableScale>
+
+        <LucidDayThread
+          current={dayPhase}
+          label={copy.phaseLabel(copy.phases[dayPhase])}
+          names={copy.phases}
+          palette={palette}
+        />
 
         {showPlanSummary && !planSummaryRepeatsPrimary ? (
           <View style={styles.planSummary} testID="lucid-today-plan">
@@ -749,16 +836,43 @@ const styles = StyleSheet.create({
     letterSpacing: 1.5,
     textTransform: 'uppercase',
   },
+  eyebrow: { flexDirection: 'row', alignItems: 'center', gap: LucidSpace.sm },
+  eyebrowRule: { width: 20, height: StyleSheet.hairlineWidth * 2 },
   title: {
-    fontFamily: 'Fraunces_600SemiBold',
-    fontSize: LucidType.display[0],
-    lineHeight: LucidType.display[1],
-    letterSpacing: -0.8,
+    fontFamily: 'Fraunces_400Regular',
+    fontSize: LucidType.saga[0],
+    lineHeight: LucidType.saga[1],
+    letterSpacing: -1,
   },
   objective: {
-    fontFamily: 'SpaceGrotesk_400Regular',
-    fontSize: LucidType.bodySm[0],
-    lineHeight: LucidType.bodySm[1],
+    fontFamily: 'Lora_400Regular_Italic',
+    fontSize: LucidType.body[0],
+    lineHeight: LucidType.body[1],
+  },
+  dayThread: { paddingTop: LucidSpace.sm },
+  dayThreadLine: {
+    position: 'absolute',
+    left: 16,
+    right: 16,
+    top: LucidSpace.sm + 16,
+    height: StyleSheet.hairlineWidth,
+  },
+  dayThreadSteps: { flexDirection: 'row', justifyContent: 'space-between' },
+  dayThreadStep: { alignItems: 'center', gap: LucidSpace.xs, minWidth: 56 },
+  dayThreadMark: {
+    width: 32,
+    height: 32,
+    borderRadius: LucidRadius.full,
+    borderWidth: 1,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  dayThreadName: {
+    fontFamily: 'SpaceGrotesk_500Medium',
+    fontSize: LucidType.overline[0],
+    lineHeight: LucidType.overline[1],
+    letterSpacing: 1,
+    textTransform: 'uppercase',
   },
   primaryAction: {
     minHeight: 64,
