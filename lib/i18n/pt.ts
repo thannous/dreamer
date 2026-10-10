@@ -139,7 +139,7 @@ const translations: Record<string, string> = {
     "onboarding.narrative.capture.demo.title": "Salvo.",
     "onboarding.narrative.capture.demo.body": "Encontre-o ilustrado, entre tantos outros sonhos.",
     "onboarding.narrative.connect.0.title": "Segunda-feira.",
-    "onboarding.narrative.connect.0.body": "A porta azul se abre para uma casa. Você ainda não a conhece.",
+    "onboarding.narrative.connect.0.body": "Vamos seguir suas noites para ver o que volta. A porta azul se abre para uma casa.",
     "onboarding.narrative.connect.0.next": "E na quinta-feira?",
     "onboarding.narrative.connect.1.title": "Quinta-feira.",
     "onboarding.narrative.connect.1.body": "A casa volta, perto da água.",
