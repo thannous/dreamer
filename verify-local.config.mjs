@@ -190,6 +190,22 @@ export default {
     // The Vercel project config the CLI deploy reads, and its ignored-build step.
     'vercel.json',
     'scripts/vercel-ignore-build.mjs',
+    // The shared test-login guard (test-supabase-guard): production refused,
+    // test projects allowlisted, fail closed.
+    'scripts/test-supabase-guard.mjs',
+    'scripts/test-test-supabase-guard.mjs',
+    'scripts/test-supabase-targets.json',
+    '.env.test.example',
+    // The seed, the API login and the guarded Expo start that use it.
+    'scripts/test-seed-users.mjs',
+    'scripts/test-auth-setup.mjs',
+    'scripts/start-branch-e2e.mjs',
+    'scripts/maestro-branch-sign-in.mjs',
+    'scripts/test-test-seed-auth.mjs',
+    // The Expo runner re-checks a guarded branch run (marker from start-branch-e2e).
+    'scripts/expo-safe-runner.js',
+    'scripts/expo-safe-runner.test.js',
+    'playwright.branch.config.ts',
     // The suites ci-contracts runs.
     '.circleci/tests/classify-changes.test.sh',
     '.circleci/tests/shared-build-impact.test.py',
@@ -219,10 +235,42 @@ export default {
         'scripts/web-deploy.js',
         'scripts/web-deploy.test.ts',
         'package.json',
+        // web-deploy.test.ts checks the vercel@62.2.0 lock entry.
+        'package-lock.json',
         'vercel.json',
         'scripts/vercel-ignore-build.mjs',
         // docs-deploy.test.ts reads the real Cloudflare Pages config.
         'docs-src/config/cloudflare-pages.json',
+      ],
+    },
+    // The test-login guard: refuses the production Supabase project and any
+    // project missing from the allowlist, before any network call.
+    {
+      name: 'test-supabase-guard',
+      command: 'node --test scripts/test-test-supabase-guard.mjs scripts/test-test-seed-auth.mjs && npm run test:file -- scripts/expo-safe-runner.test.js',
+      inputs: [
+        'scripts/test-supabase-guard.mjs',
+        'scripts/test-test-supabase-guard.mjs',
+        'scripts/test-supabase-targets.json',
+        'scripts/test-seed-users.mjs',
+        'scripts/test-auth-setup.mjs',
+        'scripts/start-branch-e2e.mjs',
+        'scripts/test-test-seed-auth.mjs',
+        // The static test scans every script in scripts/.
+        'scripts/**',
+        // The seed mirrors this fixture's RPC call; the web origin is pinned here.
+        'e2e/backend/fixtures.ts',
+        'supabase/migrations/20260916185856_hd_illustration_monthly_quota.sql',
+        'supabase/migrations/20260316130000_add_dream_sync_revisions.sql',
+        'supabase/migrations/20260722124500_add_ai_sync_admission_control.sql',
+        'supabase/functions/api/services/aiAdmission.ts',
+        'supabase/functions/api/services/storage.ts',
+        'maestro/e2e-account-sign-in.yml',
+        'maestro/subflows/**',
+        'playwright.branch.config.ts',
+        '.gitignore',
+        // The production ref is pinned against app.json.
+        'app.json',
       ],
     },
     { name: 'typecheck-app', command: 'npm run typecheck:app', exclude: DOCS },
