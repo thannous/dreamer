@@ -60,6 +60,8 @@ jest.mock('react-native-reanimated', () => {
     cubicBezier: (...points: number[]) => `cubic-bezier(${points.join(', ')})`,
     Easing: { bezier: () => (value: unknown) => value },
     useReducedMotion: () => false,
+    // The cover's scroll parallax is visual only.
+    useAnimatedStyle: () => ({}),
   };
 });
 

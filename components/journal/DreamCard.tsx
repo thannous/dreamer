@@ -19,7 +19,9 @@ import { Image } from 'expo-image';
 import { LinearGradient } from 'expo-linear-gradient';
 import React, { memo, useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { Pressable, Text, View, useWindowDimensions } from 'react-native';
+import Animated from 'react-native-reanimated';
 import { IconSymbol } from '@/components/ui/icon-symbol';
+import { useFrameParallax } from '@/components/ui/scrollDepth';
 
 export type DreamCardVariant = 'standard' | 'featured';
 
@@ -44,6 +46,7 @@ interface DreamCardProps {
 
 /** Expo media components keep their geometry as native props. */
 const CARD_IMAGE_STYLE = { position: 'absolute', top: 0, left: 0, width: '100%', height: '100%' } as const;
+const COVER_FRAME_STYLE = { position: 'absolute', top: 0, right: 0, bottom: 0, left: 0 } as const;
 const SCRIM_FADE_STYLE = { height: 120, width: '100%' } as const;
 const SCRIM_FADE_LOCATIONS = [0, 0.25, 0.55, 1] as const;
 // Margin icons, one per line, each with a 44 pt touch target around its glyph.
@@ -136,6 +139,10 @@ export const DreamCard = memo(function DreamCard({
   const imageAttemptKey = JSON.stringify([accessScope, getDreamIdentityKey(dream), imageVersion, imageUri]);
   const [failedImageAttempt, setFailedImageAttempt] = useState<string | null>(null);
   const [coverWidth, setCoverWidth] = useState(260);
+  const coverMinHeight = Math.min(coverWidth * 16 / 9, 620);
+  // The illustration drifts through its frame as the card crosses the screen.
+  const coverTravel = Math.round(coverMinHeight * 0.05);
+  const coverParallax = useFrameParallax(coverTravel);
   // The scrim's own colour at decreasing strength, so the fade eases into the illustration.
   const scrimFade = useMemo(() => {
     const at = (alpha: number) => noctalia.illustration.scrim.replace(/[\d.]+\)$/, `${alpha})`);
@@ -367,10 +374,12 @@ export const DreamCard = memo(function DreamCard({
           <View
             className="relative w-full overflow-hidden rounded-xl bg-ink-raised"
             // 9:16, the format the illustrations are generated in: the whole image shows. Capped on wide screens.
-            style={{ minHeight: Math.min(coverWidth * 16 / 9, 620) }}
+            style={{ minHeight: coverMinHeight }}
             onLayout={(event) => setCoverWidth(event.nativeEvent.layout.width)}
             testID={testID && `journal.cover.${testID}`}
           >
+            <Animated.View ref={coverParallax.frame} style={COVER_FRAME_STYLE} pointerEvents="none">
+            <Animated.View style={[{ position: 'absolute', left: 0, right: 0, top: -coverTravel, bottom: -coverTravel }, coverParallax.style]}>
             <Image
               source={imageUri ? { uri: imageUri, cacheKey: preferFullImage ? media.imageCacheKey : thumbnailCacheKey } : null}
               style={CARD_IMAGE_STYLE}
@@ -395,6 +404,8 @@ export const DreamCard = memo(function DreamCard({
               accessible={false}
               importantForAccessibility="no"
             />
+            </Animated.View>
+            </Animated.View>
             <View testID={testID && `journal.text.${testID}`}>
               {/* In-flow backing grows with the actual five-line text block. */}
               <View

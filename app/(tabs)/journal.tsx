@@ -68,7 +68,6 @@ import { headerScrollY, useHeaderScrollFocus } from '@/components/ui/headerStret
 const SCROLL_IDLE_MS = 140;
 const PREFETCH_CACHE_LIMIT = 250;
 const PREFETCH_MAX_PER_FLUSH = 8;
-const MIN_MOBILE_JOURNAL_LIST_VIEWPORT = 120;
 const OVERLAY_SEARCH_DRAG_SLOP = 8;
 
 /**
@@ -135,15 +134,13 @@ export default function JournalListScreen() {
   // on short viewports the measured chrome can collapse as the list scrolls.
   const scrollHeader = !isDesktopLayout;
   const [isKeyboardVisible, setIsKeyboardVisible] = useState(getInitialKeyboardVisibility);
-  const [keyboardHeight, setKeyboardHeight] = useState(0);
   const navigationClearance = navigationLayout.barHeight + Math.max(insets.bottom, navigationLayout.minimumBottomInset);
   // The tab bar in app/(tabs)/_layout.tsx is position:absolute, so FlashList must
   // reserve the full overlay from the viewport. Capping marginBottom would leave
-  // the remaining list box covered by the bar. Production SearchBar is 112dp at
-  // fontScale 2 plus 16dp chrome and the top inset; when that would consume the
-  // uncovered viewport, keep the input mounted outside the column-keyed list but
-  // out of flow so the list can fill the space above the overlay. A header spacer
-  // and scroll translation let a dream card move into that uncovered box.
+  // the remaining list box covered by the bar. On phones the header and search stay
+  // mounted outside the column-keyed list but float over it: a header spacer and a
+  // scroll translation carry them away with the first dreams, so the list gets the
+  // whole screen once it scrolls.
   const headerMeasureKey = `${width}:${fontScale}:${insets.top}`;
   const [measuredHeader, setMeasuredHeader] = useState({ key: '', height: 0 });
   const mobileSearchHeaderHeight = isDesktopLayout
@@ -152,17 +149,7 @@ export default function JournalListScreen() {
       ? measuredHeader.height
       : insets.top + ThemeLayout.spacing.sm + searchBarLayout(fontScale).minHeight + ThemeLayout.spacing.sm;
   const overlayNavClearance = isDesktopLayout || isKeyboardVisible ? 0 : navigationClearance;
-  const viewportAboveNav = Math.max(0, height - overlayNavClearance);
-  // iOS software keyboards overlay the window and do not shrink
-  // useWindowDimensions(). Subtract that occlusion, and if iOS reports no
-  // height keep search out of flow so results can still scroll.
-  const keyboardAvoidedViewport = !isKeyboardVisible || Platform.OS !== 'ios'
-    ? viewportAboveNav
-    : keyboardHeight > 0
-      ? Math.max(0, viewportAboveNav - keyboardHeight)
-      : 0;
-  const searchConsumesLayout = isDesktopLayout
-    || keyboardAvoidedViewport - mobileSearchHeaderHeight >= MIN_MOBILE_JOURNAL_LIST_VIEWPORT;
+  const searchConsumesLayout = isDesktopLayout;
   // A column change remounts the list; keyboard/height changes retain its offset.
   const mobileListKey = isTabletLayout ? 'tablet-2col' : 'mobile-cards-1col';
   const listScrollY = useSharedValue(0);
@@ -176,17 +163,11 @@ export default function JournalListScreen() {
   useEffect(() => {
     const show = Keyboard.addListener(
       Platform.OS === 'ios' ? 'keyboardWillShow' : 'keyboardDidShow',
-      (e: { endCoordinates?: { height?: number } }) => {
-        setIsKeyboardVisible(true);
-        setKeyboardHeight(e?.endCoordinates?.height ?? 0);
-      },
+      () => setIsKeyboardVisible(true),
     );
     const hide = Keyboard.addListener(
       Platform.OS === 'ios' ? 'keyboardWillHide' : 'keyboardDidHide',
-      () => {
-        setIsKeyboardVisible(false);
-        setKeyboardHeight(0);
-      },
+      () => setIsKeyboardVisible(false),
     );
     return () => {
       show.remove();
@@ -1041,7 +1022,7 @@ export default function JournalListScreen() {
             }, searchCollapseStyle]}
           >
             <View
-              pointerEvents="auto"
+              pointerEvents={searchConsumesLayout ? 'auto' : 'box-none'}
               testID="journal-search-controls"
               onTouchStart={searchConsumesLayout ? undefined : handleOverlaySearchTouchStart}
               onStartShouldSetResponderCapture={searchConsumesLayout ? undefined : () => false}
@@ -1053,7 +1034,7 @@ export default function JournalListScreen() {
               onResponderTerminate={searchConsumesLayout ? undefined : handleOverlaySearchDragEnd}
             >
               <NoctaliaScreenHeader
-                scene={!isKeyboardVisible ? "journal" : undefined}
+                scene="journal"
                 // On phones the header floats over the list: its painting grows down on a pull.
                 pinned={!searchConsumesLayout}
                 titleKey="nav.journal"

@@ -1776,7 +1776,7 @@ export default function RecordingScreen() {
             reach the top edge like the other destinations. */}
         {!isDesktopWeb && !isCompactLandscape ? (
           <NightSkyBand height={insets.top + (headerHeight || 140) + 40} background={noctalia.screen.background}
-            scene={!keyboardVisible && !chatMode ? 'capture' : undefined} pinned />
+            scene="capture" pinned fixed />
         ) : null}
         {/* The desktop sidebar leads everywhere. Keep a back control only
             while a capture review is open, so leaving still offers to keep or

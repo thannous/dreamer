@@ -1,24 +1,11 @@
-import { useFocusEffect } from 'expo-router';
+import { useFocusEffect, useIsFocused } from 'expo-router';
 import { useCallback, useEffect, useRef } from 'react';
 import type { NativeScrollEvent, NativeSyntheticEvent } from 'react-native';
-import {
-  Extrapolation, interpolate, makeMutable, useAnimatedStyle, useReducedMotion, type SharedValue,
-} from 'react-native-reanimated';
+import { Extrapolation, interpolate, useAnimatedStyle, useReducedMotion } from 'react-native-reanimated';
 
-function plainHolder(): SharedValue<number> {
-  let current = 0;
-  return { get: () => current, set: (next: number) => { current = next; } } as unknown as SharedValue<number>;
-}
+import { headerScrollY } from './scrollDepth';
 
-/**
- * The vertical scroll of the screen in front, shared with its header and painting.
- * Each screen keeps its own offset and publishes it again when it comes back into
- * focus, so a header never reads another screen's scroll.
- */
-export const headerScrollY: SharedValue<number> = typeof makeMutable === 'function'
-  ? makeMutable(0)
-  // Test doubles of Reanimated may omit makeMutable; a plain holder keeps the same API.
-  : plainHolder();
+export { headerScrollY };
 
 // Test doubles of expo-router may omit useFocusEffect; mounting is then the only focus.
 const useScreenFocus: (effect: () => void) => void = typeof useFocusEffect === 'function'
@@ -70,4 +57,41 @@ export function useHeaderFadeStyle(height: number) {
       ? interpolate(headerScrollY.get(), [0, height * 0.65], [1, 0], Extrapolation.CLAMP)
       : 1,
   }));
+}
+
+/**
+ * Depth for a painting: it slides through its frame more slowly than the page.
+ * A frame that scrolls with the content leaves its painting lagging behind; a frame
+ * fixed over the content lets its painting drift up instead. The uncovered strip is
+ * off screen (or already the page's ground), so the frame needs no overhang.
+ */
+export function usePaintingDepthStyle(height: number, frame: 'scrolls' | 'fixed' = 'scrolls') {
+  const reduced = useReducedMotion();
+  return useAnimatedStyle(() => {
+    const y = headerScrollY.get();
+    if (reduced || y <= 0 || height <= 0) return { transform: [{ translateY: 0 }] };
+    const travel = Math.min(y, height);
+    return { transform: [{ translateY: frame === 'scrolls' ? travel * 0.45 : -travel * 0.3 }] };
+  });
+}
+
+// Test doubles of expo-router may omit useIsFocused; a mounted painting is then on screen.
+const useOnScreen: () => boolean = typeof useIsFocused === 'function' ? useIsFocused : () => true;
+
+/**
+ * A painting breathes: a slow zoom in and out, as if the scene were still dreaming.
+ * Only on the screen in front, and never with reduced motion.
+ */
+export function usePaintingBreath() {
+  const reduced = useReducedMotion();
+  const onScreen = useOnScreen();
+  if (reduced) return null;
+  return {
+    animationName: { from: { transform: [{ scale: 1 }] }, to: { transform: [{ scale: 1.07 }] } },
+    animationDuration: '18s',
+    animationIterationCount: 'infinite',
+    animationDirection: 'alternate',
+    animationTimingFunction: 'ease-in-out',
+    animationPlayState: onScreen ? 'running' : 'paused',
+  } as const;
 }

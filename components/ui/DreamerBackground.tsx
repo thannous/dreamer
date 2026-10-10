@@ -8,7 +8,7 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { getDreamerArtwork, type DreamerScene } from '@/constants/dreamerArtwork';
 import { getNoctaliaDesignTokens } from '@/constants/noctaliaDesign';
 import { useTheme } from '@/context/ThemeContext';
-import { useHeaderStretchStyle } from './headerStretch';
+import { usePaintingBreath, usePaintingDepthStyle, useHeaderStretchStyle } from './headerStretch';
 
 type Props = {
   scene: DreamerScene;
@@ -20,7 +20,25 @@ type Props = {
   fadeEnd?: number;
   /** Fade out while the page scrolls down; off when the header around it already fades. */
   fadeOnScroll?: boolean;
+  /** Stays in place while the page scrolls under it, instead of scrolling with the page. */
+  fixed?: boolean;
 };
+
+/**
+ * The painting itself, alive: it breathes slowly and lags behind the page as it scrolls,
+ * so the scene seems to lie deeper than the copy over it.
+ */
+function PaintingLayer({ height, frame, children }: {
+  height: number;
+  frame: 'scrolls' | 'fixed';
+  children: React.ReactNode;
+}) {
+  const depth = usePaintingDepthStyle(height, frame);
+  const breath = usePaintingBreath();
+  return <Animated.View style={[StyleSheet.absoluteFill, depth]}>
+    <Animated.View style={[StyleSheet.absoluteFill, breath]}>{children}</Animated.View>
+  </Animated.View>;
+}
 
 /** A real opening onto the scene: copy lives on the theme's reading surface below it.
  * No paper/night wash covers the painting. Only its last 40 points meet the page.
@@ -47,19 +65,21 @@ export function DreamerArtworkWindow({ scene, style, bleedTop = 0 }: {
     importantForAccessibility="no-hide-descendants"
     style={[{ height: paintingHeight + bleedTop, marginTop: -bleedTop, alignSelf: 'stretch', flexShrink: 0, overflow: 'hidden', backgroundColor: ground, transformOrigin: 'top center' }, style, stretch]}
   >
-    <Image testID={`image.background.${scene}`} accessible={false}
-      source={getDreamerArtwork(scene, mode)} contentFit="cover" contentPosition="center"
-      // Bundled Android resource IDs can move between compatible app updates.
-      // Keep these local paintings out of the persisted resource-ID cache.
-      cachePolicy="memory"
-      recyclingKey={artworkKey} onError={() => setFailedArtwork(artworkKey)} style={StyleSheet.absoluteFill} />
+    <PaintingLayer height={paintingHeight + bleedTop} frame="scrolls">
+      <Image testID={`image.background.${scene}`} accessible={false}
+        source={getDreamerArtwork(scene, mode)} contentFit="cover" contentPosition="center"
+        // Bundled Android resource IDs can move between compatible app updates.
+        // Keep these local paintings out of the persisted resource-ID cache.
+        cachePolicy="memory"
+        recyclingKey={artworkKey} onError={() => setFailedArtwork(artworkKey)} style={StyleSheet.absoluteFill} />
+    </PaintingLayer>
     <LinearGradient colors={[`${ground}00`, ground]}
       style={{ position: 'absolute', bottom: 0, left: 0, right: 0, height: 40 }} />
   </Animated.View>;
 }
 
 /** A static, decorative painting fades into the page's own readable ground. */
-export function DreamerBackground({ scene, height, background, pinned = false, fadeEnd, fadeOnScroll = true }: Props) {
+export function DreamerBackground({ scene, height, background, pinned = false, fadeEnd, fadeOnScroll = true, fixed = false }: Props) {
   const { colors, mode } = useTheme();
   const tokens = getNoctaliaDesignTokens(colors, mode);
   const insets = useSafeAreaInsets();
@@ -83,6 +103,7 @@ export function DreamerBackground({ scene, height, background, pinned = false, f
       style={[styles.band, { height, backgroundColor: ground }, stretch]}
     >
       {failedArtwork !== artworkKey ? (
+        <PaintingLayer height={height} frame={fixed ? 'fixed' : 'scrolls'}>
         <Image
           testID={`image.background.${scene}`}
           accessible={false}
@@ -94,6 +115,7 @@ export function DreamerBackground({ scene, height, background, pinned = false, f
           onError={() => setFailedArtwork(artworkKey)}
           style={StyleSheet.absoluteFill}
         />
+        </PaintingLayer>
       ) : null}
       <LinearGradient
         colors={[tokens.backgroundArtwork.reveal, tokens.backgroundArtwork.scrim, tokens.backgroundArtwork.scrim, ground, ground]}

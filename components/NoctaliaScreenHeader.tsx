@@ -116,12 +116,17 @@ export const NoctaliaScreenHeader = memo(function NoctaliaScreenHeader({
     textShadowRadius: 14,
   } as const;
 
+  // Floating over its list, only the controls catch touches: a drag anywhere else on the
+  // header reaches the list beneath and scrolls it natively, momentum included.
+  const passThrough = pinned ? 'box-none' as const : undefined;
+
   if (variant === 'tab') {
     const tabTitleScale = Math.min(fontScale, 1.3);
     // Same gutter as the Today hero; only the narrowest phones tighten it.
     const horizontalPadding = width <= 360 ? ThemeLayout.spacing.md : ThemeLayout.spacing.lg;
     return (
       <Animated.View
+        pointerEvents={passThrough}
         onLayout={(event) => setMeasuredHeight(event.nativeEvent.layout.height)}
         style={[styles.tabContainer, { paddingTop: (includeTopInset ? insets.top : 0) + ThemeLayout.spacing.md }, fadeStyle]}
       >
@@ -129,13 +134,14 @@ export const NoctaliaScreenHeader = memo(function NoctaliaScreenHeader({
             header from the top of the screen, status bar included, and fades into the page. */}
         {/* A screen that paints its own top (backdrop={false}) passes the scene to that painting instead. */}
         {backdrop ? (
-          // Pure ground by the bottom of the header, whatever is drawn below it.
-          <NightSkyBand height={(measuredHeight || insets.top + 160) + 40} background={noctalia.screen.background}
+          // Pure ground by the bottom of the header, whatever is drawn below it. Floating over
+          // its content, it ends with the header so it never covers what scrolls beneath.
+          <NightSkyBand height={(measuredHeight || insets.top + 160) + (pinned ? 0 : 40)} background={noctalia.screen.background}
             scene={scene} pinned={pinned} fadeEnd={measuredHeight || undefined} fadeOnScroll={false} />
         ) : null}
-        <View style={[styles.tabBrandRow, { paddingHorizontal: horizontalPadding }]}>
+        <View pointerEvents={passThrough} style={[styles.tabBrandRow, { paddingHorizontal: horizontalPadding }]}>
           {showBrand ? (
-            <View style={styles.tabBrand} accessible accessibilityLabel="Noctalia">
+            <View pointerEvents={pinned ? 'none' : undefined} style={styles.tabBrand} accessible accessibilityLabel="Noctalia">
               <IconSymbol name="moon.stars.fill" size={22} color={noctalia.accent.text} />
               <Text
                 allowFontScaling={false}
@@ -149,9 +155,9 @@ export const NoctaliaScreenHeader = memo(function NoctaliaScreenHeader({
                 Noctalia
               </Text>
             </View>
-          ) : <View style={styles.tabBrand} />}
+          ) : <View pointerEvents={pinned ? 'none' : undefined} style={styles.tabBrand} />}
           {actions.length > 0 ? (
-            <View style={styles.headerActions}>
+            <View pointerEvents={passThrough} style={styles.headerActions}>
               {actions.map((action) => (
                 <Pressable
                   key={action.accessibilityLabel}
@@ -176,7 +182,7 @@ export const NoctaliaScreenHeader = memo(function NoctaliaScreenHeader({
             </View>
           ) : null}
         </View>
-        <View style={{ paddingHorizontal: horizontalPadding }}>
+        <View pointerEvents={pinned ? 'none' : undefined} style={{ paddingHorizontal: horizontalPadding }}>
           <Text
             accessibilityRole="header"
             allowFontScaling={false}
@@ -197,8 +203,8 @@ export const NoctaliaScreenHeader = memo(function NoctaliaScreenHeader({
             </Text>
           ) : null}
         </View>
-        {inlineSlot ? <View style={{ paddingHorizontal: horizontalPadding }}>{inlineSlot}</View> : null}
-        {slot ? <View style={styles.slot}>{slot}</View> : null}
+        {inlineSlot ? <View pointerEvents={passThrough} style={{ paddingHorizontal: horizontalPadding }}>{inlineSlot}</View> : null}
+        {slot ? <View pointerEvents={passThrough} style={styles.slot}>{slot}</View> : null}
       </Animated.View>
     );
   }

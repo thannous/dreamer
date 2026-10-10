@@ -106,7 +106,9 @@ import {
   useWindowDimensions,
   View,
 } from 'react-native';
-import { useReducedMotion } from 'react-native-reanimated';
+import Animated, { useReducedMotion } from 'react-native-reanimated';
+import { useHeaderScroll } from '@/components/ui/headerStretch';
+import { useFrameParallax } from '@/components/ui/scrollDepth';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { IconSymbol } from '@/components/ui/icon-symbol';
 
@@ -331,6 +333,10 @@ const JournalDetailContent = memo(function JournalDetailContent({ dream }: { dre
     viewportHeight - navigationHeight - introHeight - insets.bottom - 24
   ));
   const coverLayout = { imageHeight: coverHeight };
+  // The illustration lies a little deeper than the page and drifts as it scrolls.
+  const coverTravel = Math.round(coverHeight * 0.06);
+  const coverParallax = useFrameParallax(coverTravel);
+  const onHeaderScroll = useHeaderScroll();
   const noctalia = useMemo(() => getNoctaliaDesignTokens(colors, mode), [colors, mode]);
   const markdownStyles = useMemo(() => StyleSheet.create({
     transcript: { fontSize: 16, lineHeight: 26, color: noctalia.text.secondary },
@@ -2510,6 +2516,8 @@ const JournalDetailContent = memo(function JournalDetailContent({ dream }: { dre
               className="absolute top-0 right-0 left-0"
               style={{ height: coverLayout.imageHeight }}
             >
+              <Animated.View ref={coverParallax.frame} style={StyleSheet.absoluteFill} pointerEvents="none">
+              <Animated.View style={[{ position: 'absolute', left: 0, right: 0, top: -coverTravel, bottom: -coverTravel }, coverParallax.style]}>
               <Image
                 key={displayImageUrl ?? dream.imageUrl}
                 source={displayImageUrl ? { uri: displayImageUrl, cacheKey: imageCacheKey } : null}
@@ -2521,6 +2529,8 @@ const JournalDetailContent = memo(function JournalDetailContent({ dream }: { dre
                 priority={imageConfig.priority}
                 placeholder={{ blurhash: 'L6PZfSi_.AyE_3t7t7R**0o#DgR4' }}
               />
+              </Animated.View>
+              </Animated.View>
             </PressableScale>
             <View
               pointerEvents="none"
@@ -2670,8 +2680,10 @@ const JournalDetailContent = memo(function JournalDetailContent({ dream }: { dre
             paddingTop: navigationHeight,
             paddingBottom: ((isEditing || isEditingTranscript) ? 220 : actionDockHeight + 32) + insets.bottom,
           }}
-          scrollEventThrottle={32}
-          onScroll={({ nativeEvent }) => {
+          scrollEventThrottle={16}
+          onScroll={(event) => {
+            const { nativeEvent } = event;
+            onHeaderScroll(event);
             readingScrollOffset.current = nativeEvent.contentOffset.y;
             updateReadingChrome(nativeEvent.contentOffset.y);
           }}
