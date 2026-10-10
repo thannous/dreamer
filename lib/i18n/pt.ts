@@ -137,7 +137,7 @@ const translations: Record<string, string> = {
     "onboarding.narrative.capture.2.body": "Algumas palavras bastam para guardá-lo.",
     "onboarding.narrative.capture.2.next": "Salvar",
     "onboarding.narrative.capture.demo.title": "Salvo.",
-    "onboarding.narrative.capture.demo.body": "Encontre-o de novo entre seus outros sonhos.",
+    "onboarding.narrative.capture.demo.body": "Encontre-o ilustrado, com tantos outros sonhos.",
     "onboarding.narrative.connect.0.title": "Segunda-feira.",
     "onboarding.narrative.connect.0.body": "Uma casa aparece no seu sonho.",
     "onboarding.narrative.connect.0.next": "E na quinta-feira?",
