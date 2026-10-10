@@ -63,6 +63,8 @@ yarn-error.*
 
 # local env files
 .env*.local
+# Test-login sessions (doc_web_interne/docs/test-login.md)
+.auth/
 .env.real
 .env.supabase
 .env.google.template
@@ -127,3 +129,6 @@ doc_web_interne/SEO_NOCTALIA_AHREF
 
 # Local generated creative assets (images, videos, storyboards, and QA sheets)
 /output/
+
+# Vercel CLI link (vercel link, npm run web:deploy:prod)
+.vercel/

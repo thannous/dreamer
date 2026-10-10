@@ -65,7 +65,7 @@ test('mock purchase error is recoverable without granting Plus', async ({ page }
   await offer(page);
   await page.getByTestId('btn.paywall.purchase').click();
   const error = page.getByTestId('bottomSheet.paywall.error');
-  await expect(error).toContainText('Connection error');
+  await expect(error).toContainText('No connection right now');
   await page.getByRole('button', { name: 'OK', exact: true }).click();
   await page.getByTestId('btn.paywall.close').click();
   await expect(page.getByTestId('quota.analysisValue')).toHaveText('5 / 3');
