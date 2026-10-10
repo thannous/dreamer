@@ -5,6 +5,7 @@ import { ScopedTheme } from 'uniwind';
 
 import { NightStatusBar } from '@/components/atmosphere/NightStatusBar';
 import { Screen } from '@/components/atmosphere/Screen';
+import { OnboardingScrim } from '@/constants/theme';
 import { ReminderOrbitalClock } from '@/components/onboarding/ReminderOrbitalClock';
 import { StepDots } from '@/components/onboarding/StepDots';
 import { BackLink, Button, Rule, Text } from '@/components/ui';
@@ -162,6 +163,6 @@ export default function ReminderStep() {
 
 const styles = StyleSheet.create({
   atmosphereVeil: {
-    backgroundColor: 'rgba(3, 4, 13, 0.74)',
+    backgroundColor: OnboardingScrim.dial,
   },
 });

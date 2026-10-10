@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
 import { Linking, Pressable, ScrollView, View } from 'react-native';
 
-import { Screen } from '@/components/atmosphere/Screen';
-import { BackLink, Button, IconSymbol, Rule, Text } from '@/components/ui';
+import { WorldPage } from '@/components/worlds/WorldPage';
+import { BackLink, Button, Card, IconSymbol, Rule, Text } from '@/components/ui';
 import { SUPPORT_EMAIL } from '@/constants/legalLinks';
 import { useTranslation } from '@/context/LanguageContext';
 import { useTheme } from '@/context/ThemeContext';
@@ -45,7 +45,7 @@ export default function HelpScreen() {
   const { t } = useTranslation();
 
   return (
-    <Screen variant="subtle" edges={['top']}>
+    <WorldPage edges={['top']}>
       <BackLink label={t('common.back')} className="px-gutter pt-2" />
 
       <ScrollView
@@ -56,11 +56,11 @@ export default function HelpScreen() {
           <Rule className="self-start" />
         </View>
 
-        <View>
+        <Card>
           {QUESTIONS.map((index) => (
             <FaqItem key={index} index={index} />
           ))}
-        </View>
+        </Card>
 
         <Button
           label={t('help.contact')}
@@ -68,6 +68,6 @@ export default function HelpScreen() {
           onPress={() => Linking.openURL(CONTACT).catch(() => {})}
         />
       </ScrollView>
-    </Screen>
+    </WorldPage>
   );
 }

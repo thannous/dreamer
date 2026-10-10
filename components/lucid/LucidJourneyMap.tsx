@@ -866,7 +866,7 @@ const styles = StyleSheet.create({
     textTransform: 'uppercase',
   },
   progress: {
-    fontFamily: 'SpaceGrotesk_700Bold',
+    fontFamily: 'Fraunces_400Regular',
     fontSize: LucidType.display[0],
     lineHeight: LucidType.display[1],
     fontVariant: ['tabular-nums'],

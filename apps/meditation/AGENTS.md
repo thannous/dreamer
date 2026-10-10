@@ -54,6 +54,16 @@ npm run lint       # eslint
 6. **Le thème** : `auto` est passé tel quel à `Uniwind.setTheme('system')`, et
    le thème **résolu** se lit via `useUniwind()`. Ne pas réintroduire d'écouteur
    `Appearance` manuel.
+   La préférence technique initiale est `dark` pour les surfaces sans univers.
+   L'accueil initial et tout l'onboarding restent nocturnes. Les pages de
+   pratique suivent l'apparence de leur univers. Pour imposer celle d'une surface,
+   utiliser `ThemeScope` : il synchronise Uniwind, `useTheme()` et l'atmosphère.
+   Un `ScopedTheme` seul ne suffit pas si le fond ou les props natives lisent
+   aussi `useTheme()`.
+   Les pages annexes (réglages, enregistrées, accès) utilisent `WorldPage` :
+   elles suivent l'univers sélectionné comme les onglets. Dans les réglages,
+   « Univers » ouvre le sélecteur de l'accueil ; ne pas réintroduire une bascule
+   clair/sombre indépendante qui créerait une rupture dans ce parcours.
 7. **Le souffle est unique.** Une seule animation pour toute l'app, dans
    `BreathProvider`. Une surface qui respire lit `useBreath()` — elle ne démarre
    jamais sa propre boucle, sinon les rythmes dérivent et l'effet se casse. Toute

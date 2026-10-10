@@ -1,4 +1,4 @@
-# Dispatch only (common delivery rule, External CI: none). Run on demand with
+# Dispatch only: no tag, push or pull request starts it. Run on demand with
 # `eas workflow:run .eas/workflows/e2e-test-android.yml`; an EAS build needs the owner's explicit go.
 name: e2e-test-android
 

@@ -15,6 +15,8 @@ export type LucidPalette = ReturnType<typeof getLucidPalette>;
 
 /** Paliers typographiques : [fontSize, lineHeight]. */
 export const LucidType = {
+  /** One title per screen, at the scale of the landing; Fraunces regular, as in Dreams. */
+  saga: [44, 48],
   display: [34, 40],
   h1: [28, 34],
   h2: [22, 28],

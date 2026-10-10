@@ -62,7 +62,7 @@ export function TrainerFocus({
       <View className="w-full items-center gap-2 px-1">
         <Text
           testID={phaseTestID}
-          variant={compact ? 'h2' : 'display'}
+          variant={compact ? 'h2' : 'hero'}
           className="text-center"
           accessibilityRole="header">
           {phaseLabel}

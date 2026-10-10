@@ -18,5 +18,5 @@ export const CompactTabBar = {
   margin: 6,
 } as const;
 
-/** Artwork (40) + vertical padding (2 × 8) + the hairline above it. */
-export const MiniPlayerHeight = 57;
+/** Two visible text lines, 48 dp controls, padding and border. */
+export const MiniPlayerHeight = 81;

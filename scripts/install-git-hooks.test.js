@@ -1,6 +1,6 @@
 'use strict';
 
-// Contract of the `prepare` step (common delivery rule v2, section 3): it
+// Contract of the `prepare` step (AGENTS.md, "Livraison"): it
 // installs the tracked hooks in the repository that owns the package, never
 // fails an install, and does nothing outside a Git work tree (EAS, archives),
 // for a package nested in another repository, or over a customized hooks path.

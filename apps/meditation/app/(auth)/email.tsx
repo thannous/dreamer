@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { View } from 'react-native';
 
-import { Screen } from '@/components/atmosphere/Screen';
+import { WorldPage } from '@/components/worlds/WorldPage';
 import { Button, Rule, Text, TextField } from '@/components/ui';
 import { useTranslation } from '@/context/LanguageContext';
 
@@ -13,7 +13,7 @@ export default function EmailScreen() {
   const canSubmit = email.includes('@') && password.length >= 8;
 
   return (
-    <Screen variant="subtle">
+    <WorldPage>
       <View className="flex-1 justify-between px-gutter pb-4 pt-12">
         <View className="gap-6">
           <View className="gap-3">
@@ -47,6 +47,6 @@ export default function EmailScreen() {
           <Button label={t('auth.email.forgot')} variant="ghost" />
         </View>
       </View>
-    </Screen>
+    </WorldPage>
   );
 }

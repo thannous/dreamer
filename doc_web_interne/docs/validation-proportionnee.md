@@ -67,7 +67,7 @@ lorsque c'est possible. Pousser ne coûte rien : le hook ne lance aucune suite.
 n'autorise ni le contournement du hook ni une modification implicite des
 contrôles (`verify-local.config.mjs`) ou du pipeline.
 
-## Pousser, puis prouver avant la fusion (règle commune v2)
+## Prouver avant de pousser
 
 Chaque push lance le hook `.githooks/pre-push`, installé par `npm ci`/`npm install`.
 Il dure quelques secondes et ne lance aucune suite : fichiers interdits (`.env`,
@@ -76,7 +76,8 @@ l'arbre poussé (une preuve absente ne bloque pas). Une suppression de branche o
 un push sans nouveau commit ne lance rien. Les agents n'utilisent jamais
 `git push --no-verify`.
 
-Avant la fusion, l'auteur lance, sur la tête de la PR :
+Avant chaque push, l'auteur lance, sur le commit à pousser (s'il échoue, il ne
+pousse pas) :
 
 ```sh
 git fetch origin master
@@ -102,11 +103,12 @@ les mêmes entrées est réutilisé : une correction documentaire ne rejoue ni l
 types ni le lint (leurs entrées ignorent le Markdown, `doc_web_interne/`,
 `marketing/` et `specs/`), et un second `verify:pr` sur le même arbre ne rejoue
 rien. Un contrôle spécialisé impossible sur la machine (Deno absent, par
-exemple) rend la preuve `incomplete` : le lancer d'abord sur la machine du
-propriétaire (PC Tanuki), puis relancer avec
-`--external <contrôle>="owner-machine: <hôte> <note> on <SHA>"` ; une CI externe
-seulement si la table « External CI » de la
-[règle commune](regle-commune-livraison.md) la déclare.
+exemple) rend la preuve `incomplete` : le lancer en local là où tourne
+`verify:pr` ; si cette machine ne peut pas, relancer avec
+`--external <contrôle>="owner-machine: <hôte> <note> on <SHA>"` depuis la
+machine qui l'a lancé ; tant que la preuve est `incomplete`, ne pas pousser et
+le signaler comme bloquant
+([règle commune](regle-commune-livraison.md)).
 
 Ce contrôle qualifie une PR, pas une publication. Une publication, une branche
 `release` ou `release/*` et un tag exigent `npm run verify:release` sur le SHA
@@ -131,17 +133,19 @@ Regrouper les corrections et vérifier les changements de dernière minute avant
 un push. Quand plusieurs tâches travaillent sur une même branche, garder un
 responsable de l'intégration et signaler les nouveaux commits.
 
-1. Coller dans la section **Local proof** de la PR la sortie de
-   `node scripts/verify-local.mjs proof-block`, puis ajouter les preuves encore
-   manquantes (natif, appareil). Push et PR ne déclenchent pas CircleCI.
+1. Remplir dans la PR le commit vérifié et le résultat de `npm run verify:pr`
+   (`node scripts/verify-local.mjs proof-block` les affiche), puis noter les
+   preuves encore manquantes (natif, appareil). Push et PR ne déclenchent pas CircleCI.
 2. Traiter les commentaires de revue par de nouveaux commits, puis relancer
-   `npm run verify:pr` sur la nouvelle tête et mettre la preuve à jour.
-3. Avant fusion, `git fetch origin master`. Si `master` a bougé depuis la
+   `npm run verify:pr` sur la nouvelle tête avant de la pousser et mettre à
+   jour le commit vérifié et le résultat.
+3. Avant de pousser une mise à jour, `git fetch origin master`. Si `master` a bougé depuis la
    preuve, fusionner `origin/master` dans la branche, relancer
    `npm run verify:pr` (seuls les contrôles dont les entrées ont changé
-   tournent) et mettre `## Local proof` à jour.
+   tournent) avant de pousser, et mettre à jour le commit vérifié et le
+   résultat.
 4. Le CTO fusionne en squash quand la PR n'est plus en brouillon, que le
-   `Commit SHA` de la preuve est la tête de la PR
+   commit vérifié est la tête de la PR
    (`gh pr view <PR> --json headRefOid,mergeable`), sans fil ouvert ni conflit.
    `gh pr merge <PR> --squash --match-head-commit <SHA vérifié>` évite une
    fusion après un push concurrent. Une nouvelle tête nécessite son propre

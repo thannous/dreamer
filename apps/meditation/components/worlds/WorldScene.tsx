@@ -15,7 +15,7 @@ import {
   SafeAreaView as RNSafeAreaView,
   type Edge,
 } from 'react-native-safe-area-context';
-import { ScopedTheme, withUniwind } from 'uniwind';
+import { withUniwind } from 'uniwind';
 
 import { GrainOverlay } from '@/components/atmosphere/GrainOverlay';
 import { ImmersiveScene } from '@/components/immersive';
@@ -23,6 +23,7 @@ import { BreathAmplitude, Curve, Duration } from '@/constants/motion';
 import { Atmosphere, NightTheme, PaperTheme, Themes } from '@/constants/theme';
 import type { MeditationWorld, WorldMotion } from '@/constants/worlds';
 import { useBreath } from '@/context/BreathContext';
+import { ThemeScope } from '@/context/ThemeContext';
 import { useReducedMotion } from '@/hooks/useReducedMotion';
 
 const SafeAreaView = withUniwind(RNSafeAreaView);
@@ -310,14 +311,14 @@ export function WorldScene({
 
       <GrainOverlay opacity={world.appearance === 'dark' ? 0.035 : 0.022} />
 
-      <ScopedTheme theme={world.appearance}>
+      <ThemeScope mode={world.appearance}>
         <SafeAreaView
           edges={edges}
           className={className ?? 'flex-1'}
           style={{ zIndex: 1 }}>
           {children}
         </SafeAreaView>
-      </ScopedTheme>
+      </ThemeScope>
     </View>
   );
 }

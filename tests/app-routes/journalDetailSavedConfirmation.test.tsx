@@ -571,12 +571,17 @@ describe('journal detail saved confirmation route', () => {
     mockQuotaLoading = true;
     mockQuotaUsage = undefined;
     const view = render(<JournalDetailScreen />);
-    const loadingMessage = screen.getByTestId(TID.Text.DreamDetailActionMessage).textContent;
-    expect(screen.getByTestId(TID.Button.DreamDetailPrimaryCta).textContent).not.toContain('journal.detail.check_analysis');
+    // The saved moment may omit the default message, so absence must stay absence too.
+    const actionMessage = () => screen.queryByTestId(TID.Text.DreamDetailActionMessage)?.textContent ?? null;
+    const primaryCta = () => screen.getByTestId(TID.Button.DreamDetailPrimaryCta).textContent;
+    const loadingMessage = actionMessage();
+    const loadingCta = primaryCta();
+    expect(loadingCta).not.toContain('journal.detail.check_analysis');
     mockQuotaLoading = false;
     mockQuotaUsage = { analysis: { used: 1, limit: 3, remaining: 2 } };
     view.rerender(<JournalDetailScreen />);
-    expect(screen.getByTestId(TID.Text.DreamDetailActionMessage).textContent).toBe(loadingMessage);
+    expect(actionMessage()).toBe(loadingMessage);
+    expect(primaryCta()).toBe(loadingCta);
   });
 
   it('does not start a second categorization for a saved guest dream', () => {

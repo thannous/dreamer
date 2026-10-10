@@ -60,10 +60,20 @@ qualification ; ce document n'affirme pas qu'une instrumentation existe déjà.
 - Distinguer « tu as rapporté » (observation), « une possibilité serait »
   (hypothèse IA), « cela m'évoque » (association personnelle), et une information
   éducative sourcée. Ne pas présenter une déduction comme un souvenir vécu.
-- En français, privilégier le tutoiement calme déjà utilisé par les catalogues ;
-  corriger progressivement les écrans qui alternent avec le vouvoiement. Garder
-  le même sens prudent dans les langues effectivement prises en charge : six
-  dans Journal/Meditation, cinq dans Lucid (portugais non pris en charge).
+- En français, tutoiement calme partout dans Journal (plus aucun vouvoiement
+  depuis la passe de vocabulaire). Registre familier équivalent dans les autres
+  langues : du, tú, tu ; portugais du Brésil avec « você ». Garder le même sens
+  prudent dans les langues effectivement prises en charge : six dans
+  Journal/Meditation, cinq dans Lucid (portugais non pris en charge).
+- Un seul mot pour l'analyse : « analyse » (analysis, Analyse, análisis, analisi,
+  análise) nomme l'action, la section et le quota (« analyses offertes »).
+  « Interprétation » désigne seulement le texte interprétatif d'une analyse ou
+  d'une fiche symbole ; « réflexion » la conversation guidée.
+- Messages d'erreur : dire ce qui s'est passé en mots simples, sans jargon
+  (« requête », « serveur », code) ni titre réduit à « Erreur » ; rassurer sur le
+  rêve seulement quand c'est vrai dans ce contexte ; proposer une seule prochaine
+  étape ; ne jamais culpabiliser ni crier en capitales.
+  `lib/__tests__/i18nVocabulary.test.ts` garde ces règles sur les catalogues.
 - Écarter les promesses de diagnostic, vérité cachée, guérison ou résultat lucide
   garanti de l'interface et du site eux-mêmes. Une mention légale en bas de page
   ne corrige pas une promesse excessive dans un titre.

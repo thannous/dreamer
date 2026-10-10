@@ -13,6 +13,7 @@ import { AdvancedFilterSheet, type JournalSortOrder } from '@/components/journal
 import { RemoteJournalList } from '@/components/journal/RemoteJournalList';
 import type { DreamListItem } from '@/lib/journalReadContracts';
 import { DreamCard } from '@/components/journal/DreamCard';
+import { takeDreamStoryEpilogue } from '@/lib/dreamStoryEpilogue';
 import { EmptyState } from '@/components/journal/EmptyState';
 import { NoctaliaScreenHeader } from '@/components/NoctaliaScreenHeader';
 import { JournalFirstPage } from '@/components/journal/JournalFirstPage';
@@ -589,6 +590,19 @@ export default function JournalListScreen() {
     };
   }, []);
 
+  // Epilogue of the dream story: arriving from a just-captured dream, its card glows once.
+  // Taken on focus because this tab often stays mounted while the dream is told. Lists get
+  // it as extraData only while it glows, so ordinary scrolling never re-renders rows.
+  // The glow ends when the card has shown it (a filtered or scrolled list may mount it
+  // later) or when the journal loses focus, so a recycled row never replays it.
+  const [storyGlowKey, setStoryGlowKey] = useState<string | null>(null);
+  const clearStoryGlow = useCallback(() => setStoryGlowKey(null), []);
+  useFocusEffect(useCallback(() => {
+    const key = takeDreamStoryEpilogue();
+    if (key) setStoryGlowKey(key);
+    return () => setStoryGlowKey(null);
+  }, []));
+
   // No `entering` on a row: FlashList recycles them, so an entrance replays on every
   // scroll. The list itself is the thing that appeared, and it appeared with the screen.
   const renderDreamItem = useCallback(({ item, index }: ListRenderItemInfo<DreamAnalysis>) => {
@@ -604,10 +618,12 @@ export default function JournalListScreen() {
           testID={TID.List.DreamItem(item.id)}
           dateLabel={dateStr}
           variant={isFirstItem ? 'featured' : 'standard'}
+          glow={storyGlowKey === getDreamIdentityKey(item)}
+          onGlowDone={clearStoryGlow}
         />
       </View>
     );
-  }, [formatDreamListDate, handleDreamPress]);
+  }, [clearStoryGlow, formatDreamListDate, handleDreamPress, storyGlowKey]);
 
   const renderDreamItemTablet = useCallback(({ item }: ListRenderItemInfo<DreamAnalysis>) => {
     if (!item) return null;
@@ -621,10 +637,12 @@ export default function JournalListScreen() {
           testID={TID.List.DreamItem(item.id)}
           dateLabel={dateStr}
           variant="standard"
+          glow={storyGlowKey === getDreamIdentityKey(item)}
+          onGlowDone={clearStoryGlow}
         />
       </View>
     );
-  }, [formatDreamListDate, handleDreamPress]);
+  }, [clearStoryGlow, formatDreamListDate, handleDreamPress, storyGlowKey]);
 
   const renderDreamItemDesktop = useCallback(({ item, index }: ListRenderItemInfo<DreamAnalysis>) => {
     // Recycling can briefly retain an index after a filter shrinks the data array.
@@ -637,10 +655,12 @@ export default function JournalListScreen() {
           testID={TID.List.DreamItem(item.id)}
           dateLabel={formatDreamListDate(item.id)}
           variant={index === 0 ? 'featured' : 'standard'}
+          glow={storyGlowKey === getDreamIdentityKey(item)}
+          onGlowDone={clearStoryGlow}
         />
       </View>
     );
-  }, [formatDreamListDate, handleDreamPress]);
+  }, [clearStoryGlow, formatDreamListDate, handleDreamPress, storyGlowKey]);
 
   const hasNonDefaultSort = sortOrder !== 'newest';
   const hasActiveFilter = !!(
@@ -1027,6 +1047,7 @@ export default function JournalListScreen() {
           ListFooterComponent={listFooter}
           keyExtractor={keyExtractor}
           renderItem={renderDreamItemDesktop}
+          extraData={storyGlowKey ?? undefined}
           // Perf: helps FlashList recycle views by layout type to reduce scroll-time layout work.
           getItemType={getDreamItemType}
           numColumns={desktopColumns}
@@ -1054,6 +1075,7 @@ export default function JournalListScreen() {
           ListFooterComponent={listFooter}
           keyExtractor={keyExtractor}
           renderItem={isTabletLayout ? renderDreamItemTablet : renderDreamItem}
+          extraData={storyGlowKey ?? undefined}
           numColumns={isTabletLayout ? 2 : 1}
           // Perf: helps FlashList recycle views by layout type to reduce scroll-time layout work.
           getItemType={getDreamItemType}

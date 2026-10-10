@@ -31,6 +31,7 @@ jest.mock('@/services/subscriptionService', () => ({
 }));
 
 jest.mock('expo-router', () => ({
+  useIsFocused: () => true,
   useLocalSearchParams: () => ({ reason: mockReason }),
   useRouter: () => ({ back: jest.fn(), canGoBack: () => true }),
 }));

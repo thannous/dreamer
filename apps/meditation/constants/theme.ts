@@ -9,6 +9,9 @@
 export type ThemeMode = 'light' | 'dark';
 export type ThemePreference = ThemeMode | 'auto';
 
+/** The product opens in Noctalia's night palette; system mode is an explicit choice. */
+export const DEFAULT_THEME_PREFERENCE: ThemePreference = 'dark';
+
 export interface ThemeColors {
   background: string;
   /**
@@ -65,7 +68,8 @@ export const PaperTheme: ThemeColors = {
   textSecondary: '#4F4C63',
   textTertiary: '#5C5870',
   accent: '#D4A574',
-  accentText: '#9A6332',
+  // Small bronze copy needs more contrast than the decorative accent.
+  accentText: '#76471F',
   accentDark: '#9A6332',
   accentLight: '#EAD4B4',
   textOnAccent: '#4A2F1B',
@@ -98,7 +102,7 @@ export const Atmosphere = {
     gradientLocations: [0, 0.55, 1] as const,
     orbit: 'rgba(234, 212, 180, 0.24)',
     star: 'rgba(234, 212, 180, 0.70)',
-    veil: 'rgba(25, 35, 68, 0.42)',
+    veil: 'rgba(3, 4, 13, 0.42)',
     glow: '#D4A574',
     glowOpacity: 0.16,
     horizon: 'rgba(255, 249, 239, 0.08)',
@@ -140,6 +144,18 @@ export const GlassOpacity: Record<ThemeMode, number> = { dark: 0.3, light: 0.96 
 export const ArtworkScrim = {
   transparent: 'rgba(3, 4, 13, 0.04)',
   strong: 'rgba(3, 4, 13, 0.84)',
+} as const;
+
+/** Onboarding artwork uses the same ink ground as the listening experience. */
+export const OnboardingScrim = {
+  welcome: [
+    'rgba(3, 4, 13, 0.7)',
+    'rgba(3, 4, 13, 0.08)',
+    'rgba(3, 4, 13, 0.14)',
+    'rgba(3, 4, 13, 0.78)',
+  ] as const,
+  experience: 'rgba(3, 4, 13, 0.58)',
+  dial: 'rgba(3, 4, 13, 0.74)',
 } as const;
 
 /**

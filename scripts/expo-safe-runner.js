@@ -244,12 +244,63 @@ function reserveExpoAndroidDeviceLock({
   };
 }
 
-function main(args = process.argv.slice(2)) {
+// Set by scripts/start-branch-e2e.mjs. Its presence (any value, even empty
+// or "0") only adds restrictions: no --profile, no .env auto-loading, only
+// `start`, and the final env is re-checked by the test-login guard before
+// Expo starts. There is no value that turns these checks off.
+const BRANCH_GUARD_MARKER = 'NOCTALIA_BRANCH_E2E_GUARD';
+
+function isBranchGuarded(env = process.env) {
+  return Object.prototype.hasOwnProperty.call(env, BRANCH_GUARD_MARKER);
+}
+
+function applyBranchGuardRestrictions(parsedArgs, env = process.env) {
+  if (parsedArgs.envFile) {
+    throw new Error(`[branch-e2e] --profile is refused in a guarded branch run (${BRANCH_GUARD_MARKER} is set); the env comes only from scripts/start-branch-e2e.mjs.`);
+  }
+  if (parsedArgs.expoArgs[0] !== 'start') {
+    throw new Error(`[branch-e2e] only "expo start" is allowed in a guarded branch run.`);
+  }
+  // Expo CLI auto-loads .env, .env.local, ... from the project root unless
+  // EXPO_NO_DOTENV is truthy; force it whatever the inherited value.
+  env.EXPO_NO_DOTENV = '1';
+}
+
+// Re-runs the guard on the env Expo will actually inline (after every
+// mutation above), refusing production and any non-allowlisted branch.
+async function assertBranchFinalEnv(env = process.env, loadGuard = () => import('./test-supabase-guard.mjs')) {
+  const guard = await loadGuard();
+  guard.assertBranchAppEnv(env);
+  if (env.EXPO_NO_DOTENV !== '1') {
+    throw new Error('[branch-e2e] EXPO_NO_DOTENV must be 1 in a guarded branch run.');
+  }
+}
+
+function startExpo(expoArgs) {
+  configureCodexWatchman();
+
+  process.argv = [
+    process.argv[0],
+    require.resolve('expo/bin/cli'),
+    ...expoArgs,
+  ];
+  require('expo/bin/cli');
+}
+
+function main(args = process.argv.slice(2), {
+  env = process.env,
+  start = startExpo,
+  loadGuard,
+} = {}) {
   let parsedArgs;
   let releaseOnce = () => {};
+  const guarded = isBranchGuarded(env);
 
   try {
     parsedArgs = parseRunnerArgs(args);
+    if (guarded) {
+      applyBranchGuardRestrictions(parsedArgs, env);
+    }
     const lockFlags = extractAndroidLockFlags(parsedArgs.expoArgs);
     parsedArgs.expoArgs = lockFlags.expoArgs;
     if (parsedArgs.envFile) {
@@ -292,17 +343,21 @@ function main(args = process.argv.slice(2)) {
     console.error(error instanceof Error ? error.message : String(error));
     process.exitCode = 1;
     releaseOnce();
-    return;
+    return undefined;
   }
 
-  configureCodexWatchman();
-
-  process.argv = [
-    process.argv[0],
-    require.resolve('expo/bin/cli'),
-    ...parsedArgs.expoArgs,
-  ];
-  require('expo/bin/cli');
+  if (!guarded) {
+    start(parsedArgs.expoArgs);
+    return undefined;
+  }
+  return assertBranchFinalEnv(env, loadGuard).then(
+    () => start(parsedArgs.expoArgs),
+    (error) => {
+      console.error(error instanceof Error ? error.message : String(error));
+      process.exitCode = 1;
+      releaseOnce();
+    },
+  );
 }
 
 if (require.main === module) {
@@ -310,6 +365,10 @@ if (require.main === module) {
 }
 
 module.exports = {
+  BRANCH_GUARD_MARKER,
+  applyBranchGuardRestrictions,
+  assertBranchFinalEnv,
+  isBranchGuarded,
   configureCodexWatchman,
   isAndroidRun,
   loadEnvProfile,

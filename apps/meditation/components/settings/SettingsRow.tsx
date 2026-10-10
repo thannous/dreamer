@@ -3,6 +3,7 @@ import { Pressable, View, useWindowDimensions } from 'react-native';
 import Animated from 'react-native-reanimated';
 
 import { IconSymbol, Text } from '@/components/ui';
+import { ArtworkGlassPanel } from '@/components/ui/ArtworkGlassPanel';
 import { useTheme } from '@/context/ThemeContext';
 import { usePressMotion } from '@/hooks/usePressMotion';
 
@@ -102,13 +103,13 @@ export function SettingsRow({
 /** Groups rows under a quiet heading. */
 export function SettingsGroup({ title, children }: React.PropsWithChildren<{ title: string }>) {
   return (
-    <View className="gap-2">
-      <Text variant="overline" className="px-gutter">
+    <ArtworkGlassPanel className="mx-gutter">
+      <Text variant="overline" className="px-gutter pb-1 pt-4">
         {title}
       </Text>
-      <View className="overflow-hidden rounded-xl border border-hairline bg-ink-card">
+      <View>
         {children}
       </View>
-    </View>
+    </ArtworkGlassPanel>
   );
 }

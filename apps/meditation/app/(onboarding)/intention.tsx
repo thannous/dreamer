@@ -5,6 +5,7 @@ import { ScopedTheme } from 'uniwind';
 
 import { NightStatusBar } from '@/components/atmosphere/NightStatusBar';
 import { Screen } from '@/components/atmosphere/Screen';
+import { OnboardingScrim } from '@/constants/theme';
 import { DurationLunarDial } from '@/components/onboarding/DurationLunarDial';
 import { StepDots } from '@/components/onboarding/StepDots';
 import { BackLink, Button, Rule, Text } from '@/components/ui';
@@ -87,7 +88,7 @@ export default function IntentionStep() {
 
 const styles = StyleSheet.create({
   atmosphereVeil: {
-    backgroundColor: 'rgba(3, 4, 13, 0.74)',
+    backgroundColor: OnboardingScrim.dial,
   },
   copyBlock: {
     maxWidth: 330,

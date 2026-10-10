@@ -1,82 +1,124 @@
-import React, { useState } from 'react';
-import { ActivityIndicator, Keyboard, Pressable, StyleSheet, Text, TextInput, View } from 'react-native';
+import React, { useEffect, useMemo, useState } from 'react';
+import { ActivityIndicator, Keyboard, Pressable, Text, TextInput, View, type StyleProp, type ViewStyle } from 'react-native';
+import Animated, { useReducedMotion, type CSSStyle } from 'react-native-reanimated';
+import { DREAM_STORY, entrance, recapLineDelay, recapSettled } from '@/components/journal/story/dreamStoryMotion';
 import { useTheme } from '@/context/ThemeContext';
 import { getNoctaliaDesignTokens } from '@/constants/noctaliaDesign';
-import { Fonts } from '@/constants/theme';
 import { useTranslation } from '@/hooks/useTranslation';
 import { IconSymbol } from '@/components/ui/icon-symbol';
 import { TID } from '@/lib/testIDs';
 
 type Props = {
   text: string;
+  /** The account was woven from the narrator's words by the formatter, not only gathered. */
+  woven?: boolean;
   disabled: boolean;
   pending: boolean;
-  saved: boolean;
   onChange: (text: string) => void;
   onSave: () => void | Promise<void>;
   onExit: () => void;
-  onOpen: () => void;
 };
 
+const paragraphsOf = (text: string) => text.split(/\n\s*\n/).map(paragraph => paragraph.trim()).filter(Boolean);
+
+/** A node that plays its one-time entrance while the page is being told, and is at rest after. */
+function Told({ motion, className, testID, children }: {
+  motion: CSSStyle | null; className?: string; testID?: string; children?: React.ReactNode;
+}) {
+  return <Animated.View testID={testID} className={className} style={motion as StyleProp<ViewStyle>}>{children}</Animated.View>;
+}
+
+/**
+ * The threshold of the dream story: the narrator's words become one page before the dream
+ * enters the journal. The page is told once when it appears — the card settles, a star
+ * lights between two threads, then the account arrives paragraph by paragraph — and is at
+ * rest afterwards, through edits and added details. Saving hands it to the seal. Under reduce motion
+ * everything fades in together, without travel.
+ */
 export function CaptureConversationCard(props: Props) {
   const { colors, mode } = useTheme();
   const tokens = getNoctaliaDesignTokens(colors, mode);
   const { t } = useTranslation();
+  const reduced = useReducedMotion();
   const [editing, setEditing] = useState(false);
+  const paragraphs = useMemo(() => paragraphsOf(props.text), [props.text]);
+  const [tellingTime] = useState(() => recapSettled(paragraphs.length));
+  const [told, setTold] = useState(false);
+  useEffect(() => {
+    const timer = setTimeout(() => setTold(true), tellingTime);
+    return () => clearTimeout(timer);
+  }, [tellingTime]);
+
+  const motion = useMemo(() => {
+    const play = (style: CSSStyle) => (told ? null : style);
+    return {
+      card: play(entrance({ from: [{ translateY: 14 }, { scale: 0.98 }], to: [{ translateY: 0 }, { scale: 1 }] }, DREAM_STORY.recapCard, 0, reduced)),
+      thread: play(entrance({ from: [{ scaleX: 0.15 }], to: [{ scaleX: 1 }] }, DREAM_STORY.recapThread, DREAM_STORY.recapStar, reduced)),
+      star: play(entrance({ from: [{ scale: 0.6 }], to: [{ scale: 1 }] }, DREAM_STORY.starIgnite, DREAM_STORY.recapStar, reduced)),
+      title: play(entrance({ from: [{ translateY: 6 }], to: [{ translateY: 0 }] }, DREAM_STORY.recapCard, DREAM_STORY.recapTitle, reduced)),
+      line: (index: number) => play(entrance({ from: [{ translateY: 8 }], to: [{ translateY: 0 }] }, DREAM_STORY.recapLine, recapLineDelay(index), reduced)),
+      actions: play(entrance(null, DREAM_STORY.recapCard, recapLineDelay(paragraphs.length), reduced)),
+    };
+  }, [paragraphs.length, reduced, told]);
+
   const saveDisabled = props.disabled || props.pending || !props.text.trim() || editing;
-  return <View style={[styles.card, { backgroundColor: tokens.surface.raised, borderColor: tokens.surface.border }]} testID="capture-review-card">
-    <View style={styles.header}>
-      <Text accessibilityRole="header" accessibilityLiveRegion="polite" style={[styles.title, { color: tokens.text.primary }]}
-        testID="capture-review-title">
-        {t('recording.chat.ready')}
-      </Text>
-      {!props.saved ? <Pressable accessibilityRole="button" accessibilityLabel={t('recording.review.exit')} onPress={props.onExit}
-        disabled={props.disabled} style={styles.close} testID="capture-review-exit">
+  return <Told motion={motion.card} testID="capture-review-card" className="w-full gap-4 rounded-2xl border border-line bg-ink-raised px-5 pb-5 pt-4">
+    <View className="flex-row items-start gap-2">
+      <View className="flex-1 gap-2">
+        <View accessible={false} importantForAccessibility="no-hide-descendants" accessibilityElementsHidden
+          className="h-4 flex-row items-center gap-2">
+          <Told motion={motion.thread} className="h-px w-7 bg-champagne opacity-40" />
+          <Told motion={motion.star} className="h-2 w-2 rounded-full bg-champagne" />
+          <Told motion={motion.thread} className="h-px w-7 bg-champagne opacity-40" />
+        </View>
+        <Told motion={motion.title}>
+          <Text accessibilityRole="header" accessibilityLiveRegion="polite" testID="capture-review-title"
+            className="font-display-medium text-[22px] leading-7 text-ivory">
+            {t('recording.chat.ready')}
+          </Text>
+          {props.woven ? (
+            <Text testID="capture-review-woven" className="mt-1 font-sans text-[13px] leading-5 text-ivory-muted">
+              {t('recording.chat.woven_note')}
+            </Text>
+          ) : null}
+        </Told>
+      </View>
+      <Pressable accessibilityRole="button" accessibilityLabel={t('recording.review.exit')} onPress={props.onExit}
+        disabled={props.disabled} className="-m-2.5 min-h-11 min-w-11 items-center justify-center" testID="capture-review-exit">
         <IconSymbol name="xmark" size={18} color={tokens.text.secondary} />
-      </Pressable> : <IconSymbol name="checkmark.circle.fill" size={22} color={tokens.text.primary} />}
+      </Pressable>
     </View>
-    {editing && !props.saved ? <TextInput
+
+    {editing ? <TextInput
       testID="capture-review-text" accessibilityLabel={t('recording.review.title')}
       value={props.text} onChangeText={props.onChange} multiline autoFocus editable={!props.disabled}
-      style={[styles.editor, { color: tokens.text.primary, borderColor: tokens.surface.border }]}
-    /> : <Text selectable style={[styles.narrative, { color: tokens.text.primary }]} testID="capture-review-narrative">{props.text}</Text>}
-    {!props.saved ? <>
+      className="max-h-[260px] min-h-[120px] rounded-[10px] border border-line p-2.5 font-serif text-[17px] leading-7 text-ivory"
+      style={{ textAlignVertical: 'top' }}
+    /> : <View testID="capture-review-narrative" className="gap-3">
+      {paragraphs.map((paragraph, index) => (
+        <Told key={index} motion={motion.line(index)}>
+          <Text selectable className="font-serif text-[17px] leading-7 text-ivory">{paragraph}</Text>
+        </Told>
+      ))}
+    </View>}
+
+    <Told motion={motion.actions} className="gap-3">
       <Pressable onPress={() => { if (editing) Keyboard.dismiss(); setEditing(!editing); }} disabled={props.disabled}
         accessibilityRole="button" accessibilityLabel={t(editing ? 'common.done' : 'recording.chat.edit')}
-        style={styles.edit} testID={editing ? 'capture-review-edit-done' : 'capture-review-edit'}>
+        className="min-h-11 flex-row items-center gap-2.5" testID={editing ? 'capture-review-edit-done' : 'capture-review-edit'}>
         <IconSymbol name={editing ? 'checkmark' : 'pencil'} size={20} color={tokens.text.primary} />
-        <Text style={[styles.editText, { color: tokens.text.primary }]}>{t(editing ? 'common.done' : 'recording.chat.edit')}</Text>
+        <Text className="font-sans-medium text-[14px] leading-5 text-ivory">{t(editing ? 'common.done' : 'recording.chat.edit')}</Text>
       </Pressable>
-      {props.pending ? <Text style={[styles.hint, { color: tokens.text.secondary }]}>{t('recording.chat.pending_hint')}</Text> : null}
+      {props.pending ? <Text className="font-sans text-[13px] leading-[18px] text-ivory-muted">{t('recording.chat.pending_hint')}</Text> : null}
       <Pressable accessibilityRole="button" accessibilityLabel={t('recording.button.save_dream')}
         accessibilityState={{ disabled: saveDisabled, busy: props.disabled }} disabled={saveDisabled}
         onPress={() => { void props.onSave(); }} testID={TID.Button.SaveDream}
-        style={[styles.primary, { backgroundColor: tokens.action.primary, opacity: saveDisabled ? 0.45 : 1 }]}>
-        <Text style={[styles.actionText, { color: tokens.action.primaryText }]}>{t('recording.button.save_dream')}</Text>
+        className="min-h-[52px] flex-row items-center justify-between gap-3 rounded-[14px] bg-champagne px-4 py-3"
+        style={{ opacity: saveDisabled ? 0.45 : 1 }}>
+        <Text className="shrink font-sans-medium text-[16px] leading-[23px] text-on-champagne">{t('recording.button.save_dream')}</Text>
         {props.disabled ? <ActivityIndicator color={tokens.action.primaryText} /> : <IconSymbol name="arrow.right" size={22} color={tokens.action.primaryText} />}
       </Pressable>
-    </> : <>
-      <Pressable onPress={props.onOpen} disabled={props.disabled} accessibilityRole="button" testID="capture-review-open" style={styles.edit}>
-        <IconSymbol name="book.fill" size={20} color={tokens.text.primary} />
-        <Text style={[styles.editText, { color: tokens.text.primary }]}>{t('recording.chat.open')}</Text>
-      </Pressable>
-      <View style={[styles.primary, { backgroundColor: tokens.action.primary }]} testID="capture-review-confirmed">
-        <Text accessibilityLiveRegion="polite" style={[styles.actionText, { color: tokens.action.primaryText }]} testID="capture-review-saved">{t('recording.chat.saved')}</Text>
-        <IconSymbol name="checkmark" size={22} color={tokens.action.primaryText} />
-      </View>
-    </>}
-  </View>;
+      <Text className="text-center font-sans text-[13px] leading-5 text-ivory-muted">{t('recording.chat.next_hint')}</Text>
+    </Told>
+  </Told>;
 }
-const styles = StyleSheet.create({
-  card: { width: '100%', borderWidth: StyleSheet.hairlineWidth, borderRadius: 16, padding: 16, gap: 12 },
-  header: { flexDirection: 'row', alignItems: 'center', gap: 8 },
-  title: { flex: 1, fontFamily: Fonts.spaceGrotesk.medium, fontSize: 18, lineHeight: 25 },
-  close: { minWidth: 44, minHeight: 44, margin: -10, alignItems: 'center', justifyContent: 'center' },
-  narrative: { fontFamily: Fonts.spaceGrotesk.regular, fontSize: 16, lineHeight: 24 },
-  editor: { fontFamily: Fonts.spaceGrotesk.regular, fontSize: 16, lineHeight: 24, minHeight: 120, maxHeight: 260, borderWidth: 1, borderRadius: 10, padding: 10, textAlignVertical: 'top' },
-  edit: { minHeight: 44, flexDirection: 'row', alignItems: 'center', gap: 10 },
-  editText: { fontFamily: Fonts.spaceGrotesk.medium, fontSize: 14, lineHeight: 20 },
-  hint: { fontFamily: Fonts.spaceGrotesk.regular, fontSize: 13, lineHeight: 18 },
-  primary: { minHeight: 52, borderRadius: 14, paddingVertical: 12, paddingHorizontal: 16, flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', gap: 12 },
-  actionText: { flexShrink: 1, fontFamily: Fonts.spaceGrotesk.medium, fontSize: 16, lineHeight: 23 },
-});

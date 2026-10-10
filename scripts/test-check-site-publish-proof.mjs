@@ -36,7 +36,7 @@ const SCRATCH_CONFIG = `export default {
       command: 'echo site-e2e >> "$RUN_LOG"',
       kinds: ['release'],
       specialised: true,
-      requires: { command: 'test -z "$SITE_E2E_UNAVAILABLE"', hint: 'run it on the owner machine' },
+      requires: { command: 'test -z "$SITE_E2E_UNAVAILABLE"', hint: 'run it locally or pass owner-machine evidence' },
     },
   ],
 };
@@ -171,15 +171,17 @@ test('a missing proof is refused', async () => {
 test('a pr proof never unlocks a production publish', async () => {
   await withRepository(async ({ check, engine }) => {
     assert.equal((await engine('pr')).status, 0);
-    assert.deepEqual(failedChecks(await check()), ['proof-kind']);
+    // A pr run is not a release run, so the run log has no release run either.
+    assert.deepEqual(failedChecks(await check()), ['proof-kind', 'proof-latest-release']);
   });
 });
 
-test('an incomplete release is refused until the missing check is proven on the owner machine', async () => {
+test('an incomplete release is refused until the missing check has owner-machine evidence', async () => {
   await withRepository(async ({ check, engine, git }) => {
     const unavailable = { extraEnv: { SITE_E2E_UNAVAILABLE: '1' } };
     assert.equal((await engine('release', [], unavailable)).status, 2);
-    assert.deepEqual(failedChecks(await check()), ['proof-passed']);
+    // The incomplete release run is the latest one, and its missing check stays open.
+    assert.deepEqual(failedChecks(await check()), ['proof-passed', 'proof-latest-release', 'proof-open-check']);
 
     const head = git(['rev-parse', 'HEAD']);
     assert.equal((await engine('release', ['--external', `site-e2e=owner-machine: tanuki site-e2e on ${head}`], unavailable)).status, 0);
@@ -198,7 +200,8 @@ test('a stale proof (written for another commit of the same tree) is refused', a
     git(['switch', '-q', 'master']);
     git(['reset', '-q', '--hard', squash]);
     git(['push', '-q', 'origin', 'master']);
-    assert.deepEqual(failedChecks(await check()), ['proof-matches-head']);
+    // The release run was logged for the feature commit, not for the squash.
+    assert.deepEqual(failedChecks(await check()), ['proof-matches-head', 'proof-latest-release']);
 
     assert.equal((await engine('release')).status, 0);
     assert.deepEqual((await check()).failures, []);
@@ -231,6 +234,15 @@ test('there is no override: no environment variable lets a refused publish throu
     assert.equal(refused.stderr.trim().split('\n').length, 1, 'the refusal is one paragraph');
     await assert.rejects(assertSitePublishProof({ root: work, gitEnv: { ...env, ...extra } }), /refused: no proof/);
     assert.doesNotMatch(readFileSync(guardScript, 'utf8'), /process\.env\.[A-Z_]*OVERRIDE|--force|--override/);
+  });
+});
+
+test('the refusal names the publish target it guards', async () => {
+  await withRepository(async ({ env, work }) => {
+    await assert.rejects(
+      assertSitePublishProof({ root: work, gitEnv: env, label: 'the Vercel web app (dream.noctalia.app)' }),
+      /production publish of the Vercel web app \(dream\.noctalia\.app\) refused: no proof/,
+    );
   });
 });
 

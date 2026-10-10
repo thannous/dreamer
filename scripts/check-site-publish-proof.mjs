@@ -16,12 +16,16 @@
 //   - the proof is a `pr` proof (proof-kind): only a release proof unlocks a
 //     publish,
 //   - the release did not pass, or is incomplete because a specialised check
-//     could not run and was not proven on the owner machine (proof-passed),
+//     could not run and has no --external owner-machine evidence (proof-passed),
 //   - the proof was written for another commit with the same tree, such as a
 //     branch before its squash (proof-matches-head),
 //   - an external entry is not a specialised check, or its evidence does not
 //     name this commit, or cites an https source outside externalSources
-//     (proof-external).
+//     (proof-external),
+//   - the commit's run log has no release run, or its latest release run did
+//     not pass on fresh results (proof-latest-release),
+//   - a check is still open: its latest real result did not pass and no later
+//     run reran it and passed (proof-open-check).
 // There is no override of any kind: a refused publish is fixed by publishing
 // the right commit after verify:release, never by a flag or a variable.
 // Preview uploads (`npm run docs:deploy:preview`) are not guarded.
@@ -47,6 +51,8 @@ export const SITE_PUBLISH_PROOF_CHECKS = Object.freeze([
   'proof-matches-head',
   'proof-target',
   'proof-external',
+  'proof-latest-release',
+  'proof-open-check',
 ]);
 
 /**
@@ -65,18 +71,20 @@ export async function checkSitePublishProof({ root = defaultRoot, gitEnv, fetch 
     fetch,
     mainBranch: MAIN_BRANCH,
     // External evidence is checked again against the externalSources of the
-    // config committed at HEAD (External CI, regle-commune-livraison.md 13.1:
-    // none, so only owner-machine evidence counts).
+    // config committed at HEAD (empty here, so only owner-machine evidence
+    // counts).
     externalSources: await loadExternalSources({ cwd: root, env: gitVariables }),
   });
   const { head, tree, failures } = release;
   return { ok: failures.length === 0, head, tree, failures, proof: release.proof };
 }
 
-export function formatRefusal(result) {
+export const DEFAULT_LABEL = 'noctalia.app';
+
+export function formatRefusal(result, label = DEFAULT_LABEL) {
   const problems = result.failures.map((failure) => failure.message);
   return (
-    `${PREFIX} production publish of noctalia.app refused: ${problems.join('; ')}. `
+    `${PREFIX} production publish of ${label} refused: ${problems.join('; ')}. `
     + `A production publish uploads only the exact origin/master commit on which \`${RELEASE_COMMAND}\` passed. `
     + 'Check out master and update it (`git switch master && git pull --ff-only`), commit, stash or remove local changes, '
     + `run \`${RELEASE_COMMAND}\` (it writes the release proof of HEAD in the shared git directory; a specialised check `
@@ -95,14 +103,14 @@ export function formatAccepted(result) {
  * scripts/docs-deploy.js awaits it before any build of a production publish,
  * and again right before the upload, which must find the same HEAD.
  */
-export async function assertSitePublishProof(options = {}) {
+export async function assertSitePublishProof({ label = DEFAULT_LABEL, ...options } = {}) {
   let result;
   try {
     result = await checkSitePublishProof(options);
   } catch (error) {
-    throw new Error(`${PREFIX} production publish of noctalia.app refused: the guard could not run (${String(error?.message || error).split('\n')[0]}).`);
+    throw new Error(`${PREFIX} production publish of ${label} refused: the guard could not run (${String(error?.message || error).split('\n')[0]}).`);
   }
-  if (!result.ok) throw new Error(formatRefusal(result));
+  if (!result.ok) throw new Error(formatRefusal(result, label));
   return { head: result.head, tree: result.tree, message: formatAccepted(result) };
 }
 

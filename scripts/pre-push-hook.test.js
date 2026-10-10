@@ -1,6 +1,6 @@
 'use strict';
 
-// Contract of the pre-push hook (common delivery rule v2, section 3), run with
+// Contract of the pre-push hook (AGENTS.md, "Livraison"), run with
 // the real .githooks/pre-push, scripts/verify-local.mjs and
 // verify-local.config.mjs in a fixture repository: a deletion or a push with no
 // new commit runs nothing; a push takes a few seconds; forbidden files and
@@ -99,7 +99,7 @@ describe('pre-push hook', () => {
 
     const result = repo.push('--quiet', 'origin', 'feature');
     expect(result.status).toBe(0);
-    expect(result.output).toContain('no proof yet; run npm run verify:pr before asking for a merge');
+    expect(result.output).toContain('no proof yet; run npm run verify:pr before pushing');
     expect(result.output).toContain('fast checks passed');
     expect(result.elapsed).toBeLessThan(10_000);
     expect(repo.git('ls-remote', 'origin', 'refs/heads/feature')).not.toBe('');

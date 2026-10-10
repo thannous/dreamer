@@ -1,12 +1,12 @@
-// Checks of the common delivery rule (Version commune v5) for this repository,
-// read by scripts/verify-local.mjs. The rule is this repository's own copy,
-// doc_web_interne/docs/regle-commune-livraison.md (its section 13.1 holds what
-// is specific to dreamer). The engine and its tests are this repository's own
+// Checks of the common delivery rule for this repository, read by
+// scripts/verify-local.mjs. The rule is this repository's own copy,
+// doc_web_interne/docs/regle-commune-livraison.md; what is specific to dreamer
+// is in AGENTS.md, "Notes dreamer". The engine and its tests are this repository's own
 // copy: each repository pins its own ENGINE_SHA256 (below) and verifies it
 // locally; an engine fix is worth porting to the others, but nothing checks
 // that across repositories. This file is data only (no imports).
 //
-//   npm run verify:pr       before a merge: the former pre-push `verify:fast`, split
+//   npm run verify:pr       before every push: the former pre-push `verify:fast`, split
 //                           into checks, plus the surfaces the PR changed.
 //   npm run verify:release  before a publish: the PR checks, run again, plus the
 //                           full local validation of
@@ -111,12 +111,12 @@ const EDGE_CHECKS = [
 ].join(' && ');
 const DENO = {
   command: 'deno --version',
-  hint: 'run it on the owner machine (PC Tanuki, with Deno 2.7.14: `mise install`) and pass --external <check>="owner-machine: <host> <note> on <SHA>"; trigger a manual CircleCI pipeline only if it is listed in External CI (doc_web_interne/docs/regle-commune-livraison.md, section 13)',
+  hint: 'run it locally where you run verify:pr (Deno 2.7.14: `mise install`); if this machine cannot, pass --external <check>="owner-machine: <host> <note> on <SHA>" from the machine that ran it; until then the proof is incomplete: do not push, report it as a blocker',
 };
 
 const TESTERARMY = {
   command: 'test -d tools/e2e/node_modules/@e2e-dev/web',
-  hint: 'run it on the owner machine (PC Tanuki, after `npm run test:testerarmy:setup && npm run test:testerarmy:browsers` in its main checkout) and pass --external <check>="owner-machine: <host> <note> on <SHA>"; trigger a manual CircleCI pipeline only if it is listed in External CI (doc_web_interne/docs/regle-commune-livraison.md, section 13)',
+  hint: 'run it locally where you run verify:pr (after `npm run test:testerarmy:setup && npm run test:testerarmy:browsers` in the main checkout); if this machine cannot, pass --external <check>="owner-machine: <host> <note> on <SHA>" from the machine that ran it; until then the proof is incomplete: do not push, report it as a blocker',
 };
 
 // The four passes of tools/e2e/README.md that jointly qualify every Dreamer case.
@@ -131,7 +131,7 @@ const DREAMER_PASSES = [
 // tests compare the file with it, so an engine edit is a deliberate change of
 // this pin. No other repository is read or compared.
 export const ENGINE_SHA256 =
-  'bcb521d64c7e1cc8872784b50c8101a7614dadee19c89a395e09d04ec231d7b2';
+  '269adfe5e46a3a6c7b21bf220d5a5c9a85859fe8287974d3c0253a93ac8acdbf';
 
 export default {
   mainBranch: 'master',
@@ -145,9 +145,8 @@ export default {
     copy: [],
   },
   setup: [],
-  // https:// URL prefixes of the external CI runs --external may cite, one per
-  // row of the External CI table (doc_web_interne/docs/regle-commune-livraison.md,
-  // section 13.1). That table is "none" here, so only owner-machine evidence counts.
+  // https:// URL prefixes of the external CI runs --external may cite. None
+  // here, so only owner-machine evidence counts.
   externalSources: [],
   // The scripts these checks run: changing them changes what a proof proves,
   // so proof-block flags them for the owner's review like this file.
@@ -184,6 +183,28 @@ export default {
     'docs-src/config/cloudflare-pages.json',
     'scripts/check-site-publish-proof.mjs',
     'scripts/test-check-site-publish-proof.mjs',
+    // The Vercel web app production publish (web:deploy:prod), same guard.
+    'scripts/web-deploy.js',
+    'scripts/web-deploy.test.ts',
+    // The Vercel project config the CLI deploy reads, and its ignored-build step.
+    'vercel.json',
+    'scripts/vercel-ignore-build.mjs',
+    // The shared test-login guard (test-supabase-guard): production refused,
+    // test projects allowlisted, fail closed.
+    'scripts/test-supabase-guard.mjs',
+    'scripts/test-test-supabase-guard.mjs',
+    'scripts/test-supabase-targets.json',
+    '.env.test.example',
+    // The seed, the API login and the guarded Expo start that use it.
+    'scripts/test-seed-users.mjs',
+    'scripts/test-auth-setup.mjs',
+    'scripts/start-branch-e2e.mjs',
+    'scripts/maestro-branch-sign-in.mjs',
+    'scripts/test-test-seed-auth.mjs',
+    // The Expo runner re-checks a guarded branch run (marker from start-branch-e2e).
+    'scripts/expo-safe-runner.js',
+    'scripts/expo-safe-runner.test.js',
+    'playwright.branch.config.ts',
     // The suites ci-contracts runs.
     '.circleci/tests/classify-changes.test.sh',
     '.circleci/tests/shared-build-impact.test.py',
@@ -198,10 +219,58 @@ export default {
     },
     // The production publish guard of noctalia.app (docs:deploy:prod) against
     // proofs written by this engine in scratch repositories.
+    // Also the two production publishes that await it (docs:deploy:prod,
+    // web:deploy:prod), whose tests mock the guard.
     {
       name: 'site-publish-guard',
-      command: 'node --test scripts/test-check-site-publish-proof.mjs',
-      inputs: ['scripts/check-site-publish-proof.mjs', 'scripts/test-check-site-publish-proof.mjs', 'scripts/verify-local.mjs', 'verify-local.config.mjs'],
+      command: 'node --test scripts/test-check-site-publish-proof.mjs && npm run test:file -- scripts/docs-deploy.test.ts scripts/web-deploy.test.ts',
+      inputs: [
+        'scripts/check-site-publish-proof.mjs',
+        'scripts/test-check-site-publish-proof.mjs',
+        'scripts/verify-local.mjs',
+        'verify-local.config.mjs',
+        'scripts/docs-deploy.js',
+        'scripts/docs-deploy.test.ts',
+        'scripts/web-deploy.js',
+        'scripts/web-deploy.test.ts',
+        'package.json',
+        // web-deploy.test.ts checks the vercel@62.2.0 lock entry.
+        'package-lock.json',
+        'vercel.json',
+        'scripts/vercel-ignore-build.mjs',
+        // docs-deploy.test.ts reads the real Cloudflare Pages config.
+        'docs-src/config/cloudflare-pages.json',
+      ],
+    },
+    // The test-login guard: refuses the production Supabase project and any
+    // project missing from the allowlist, before any network call.
+    {
+      name: 'test-supabase-guard',
+      command: 'node --test scripts/test-test-supabase-guard.mjs scripts/test-test-seed-auth.mjs && npm run test:file -- scripts/expo-safe-runner.test.js',
+      inputs: [
+        'scripts/test-supabase-guard.mjs',
+        'scripts/test-test-supabase-guard.mjs',
+        'scripts/test-supabase-targets.json',
+        'scripts/test-seed-users.mjs',
+        'scripts/test-auth-setup.mjs',
+        'scripts/start-branch-e2e.mjs',
+        'scripts/test-test-seed-auth.mjs',
+        // The static test scans every script in scripts/.
+        'scripts/**',
+        // The seed mirrors this fixture's RPC call; the web origin is pinned here.
+        'e2e/backend/fixtures.ts',
+        'supabase/migrations/20260916185856_hd_illustration_monthly_quota.sql',
+        'supabase/migrations/20260316130000_add_dream_sync_revisions.sql',
+        'supabase/migrations/20260722124500_add_ai_sync_admission_control.sql',
+        'supabase/functions/api/services/aiAdmission.ts',
+        'supabase/functions/api/services/storage.ts',
+        'maestro/e2e-account-sign-in.yml',
+        'maestro/subflows/**',
+        'playwright.branch.config.ts',
+        '.gitignore',
+        // The production ref is pinned against app.json.
+        'app.json',
+      ],
     },
     { name: 'typecheck-app', command: 'npm run typecheck:app', exclude: DOCS },
     { name: 'typecheck-tests', command: 'npm run typecheck:tests', exclude: DOCS },
@@ -224,7 +293,7 @@ export default {
     { name: 'site', command: 'npm run docs:build && npm run docs:check', when: SITE },
     { name: 'ci-contracts', command: CI_CONTRACTS, when: ['.circleci/'] },
     { name: 'eas-workflow-contracts', command: EAS_WORKFLOW_CONTRACTS, when: EAS_WORKFLOWS },
-    // A bad version pin fails before merge rather than at publication (offline, 0.1 s).
+    // A bad version pin fails before push rather than at publication (offline, 0.1 s).
     { name: 'mobile-versions', command: 'node scripts/mobile-release.js verify --app all', inputs: MOBILE_VERSIONS, when: MOBILE_VERSIONS },
     { name: 'meditation', command: MEDITATION_CHECKS, when: MEDITATION, releaseAlways: true, requires: MEDITATION_DEPS },
     { name: 'edge-functions', command: EDGE_CHECKS, when: EDGE, releaseAlways: true, specialised: true, requires: DENO },
@@ -246,7 +315,7 @@ export default {
       specialised: true,
       requires: {
         command: 'docker info',
-        hint: 'run it on the owner machine (PC Tanuki: Docker for the disposable local Supabase, Chromium via `npx playwright install chromium`) and pass --external e2e-backend="owner-machine: <host> <note> on <SHA>"; trigger a manual CircleCI pipeline only if it is listed in External CI (doc_web_interne/docs/regle-commune-livraison.md, section 13)',
+        hint: 'run it locally where you run verify:pr (Docker for the disposable local Supabase, Chromium via `npx playwright install chromium`); if this machine cannot, pass --external e2e-backend="owner-machine: <host> <note> on <SHA>" from the machine that ran it; until then the proof is incomplete: do not push, report it as a blocker',
       },
     },
     {
