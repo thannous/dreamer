@@ -128,7 +128,6 @@ jest.mock('react-native', () => {
     __esModule: true,
     ActivityIndicator: () => <div role="progressbar" />,
     Alert: { alert: jest.fn() },
-    Image: { resolveAssetSource: (source: unknown) => ({ uri: String(source) }) },
     Keyboard: {
       addListener: () => ({ remove: jest.fn() }),
       dismiss: jest.fn(),
@@ -182,6 +181,12 @@ jest.mock('expo-linear-gradient', () => ({
 jest.mock('react-native-safe-area-context', () => ({
   useSafeAreaInsets: () => ({ top: 0, right: 0, bottom: 0, left: 0 }),
 }));
+
+// This route fixture replaces React Native entirely; keep Expo's asset-native
+// initialization outside the saved-dream interaction being exercised here.
+jest.mock('expo-asset', () => ({ Asset: {
+  fromModule: (source: unknown) => ({ uri: typeof source === 'string' ? source : 'file:///bundled-test-artwork.webp' }),
+} }));
 
 jest.mock('@/components/analysis/AnalysisReadingModal', () => ({
   AnalysisReadingModal: ({ onClose }: { onClose: () => void }) => (
