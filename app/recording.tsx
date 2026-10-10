@@ -47,7 +47,7 @@ import {
 import { isMockModeEnabled } from '@/lib/env';
 import { DreamPersistenceError } from '@/lib/dreamStorageRead';
 import { getDreamIdentityKey } from '@/lib/dreamIdentity';
-import { GuestDreamLimitError } from '@/lib/errors';
+import { classifyError, GuestDreamLimitError } from '@/lib/errors';
 import { hasAiConsent } from '@/lib/aiConsent';
 import { trackInitialDreamCategorization } from '@/lib/initialDreamCategorization';
 import { getTranscriptionLocale } from '@/lib/locale';
@@ -1130,9 +1130,8 @@ export default function RecordingScreen() {
                 ? 'journal.persistence.write_device'
                 : 'journal.persistence.write_cache'
           )
-        : error instanceof Error
-          ? error.message
-          : 'Unexpected error occurred. Please try again.';
+        // A raw exception message is technical and often English: show a plain one.
+        : classifyError(error instanceof Error ? error : new Error(String(error)), t).userMessage;
       Alert.alert(t('common.error_title'), message);
     } finally {
       saveInFlightRef.current = false;

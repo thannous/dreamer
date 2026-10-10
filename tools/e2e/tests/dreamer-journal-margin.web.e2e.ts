@@ -55,7 +55,7 @@ for (const theme of ['light', 'dark'] as const) {
     const cover = card.getByTestId(`journal.cover.${id}`);
     const text = card.getByTestId(`journal.text.${id}`);
     const metadata = card.getByTestId(`journal.metadata.${id}`);
-    await expect(metadata).toContainText('Symbolic Dream');
+    await expect(metadata).toContainText('Symbolic dream');
     await expect(metadata).toContainText('Mystical');
     await expect(metadata).toContainText('Analyzed');
     await expect(text).toContainText('I found myself in an enormous library');

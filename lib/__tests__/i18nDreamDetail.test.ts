@@ -109,7 +109,7 @@ describe('dream detail i18n', () => {
   it('promises a lossless local-to-account copy in every language, without claiming live sync', () => {
     const futureCopy = /will be copied|seront copiés|werden .* kopiert|se copiarán|verranno copiati|serão copiados/i;
     const noLoss = /without loss|sans perte|ohne Verlust|sin pérdidas|senza perdite|sem perdas/i;
-    const noDuplicate = /duplicate|doublon|Duplikate|duplicados|duplicati/i;
+    const noDuplicate = /duplicate|doublon|Duplikate|duplicados|duplicatas|duplicati/i;
     const liveSyncClaim = /already sync|déjà synchron|bereits synchron|ya se sincron|già sincron|já sincron|You're signed in and syncing|Vous êtes connecté et vos données se synchronisent/i;
 
     for (const translations of Object.values(packs)) {
