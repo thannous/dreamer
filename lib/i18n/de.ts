@@ -148,7 +148,7 @@ const translations: Record<string, string> = {
     "onboarding.narrative.connect.2.body": "Eine Katze wartet auf der Schwelle auf dich. Wieder das Haus.",
     "onboarding.narrative.connect.2.next": "Symbole erkunden",
     "onboarding.narrative.connect.demo.title": "Mit deinen Träumen.",
-    "onboarding.narrative.connect.demo.body": "Noctalia knüpft diese Fäden für dich. Tippe ein Symbol an, um seinem Faden zu folgen.",
+    "onboarding.narrative.connect.demo.body": "Noctalia knüpft diese Fäden für dich.",
     "onboarding.narrative.explore.0.title": "Eine Frage.",
     "onboarding.narrative.explore.0.body": "Noctalia geht von deinem Traum aus.",
     "onboarding.narrative.explore.0.next": "Antworten",

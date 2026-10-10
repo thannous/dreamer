@@ -67,6 +67,8 @@ export function SymbolConstellation({ tokens, storyStep, onInteraction, stageHei
   const seen = DREAMS.slice(0, current + 1);
   const count = (id: SymbolName) => seen.filter((dream) => dream.symbols.includes(id)).length;
   const related = seen.flatMap((dream, index) => dream.symbols.includes(selected) ? [index] : []);
+  // The example waits for a first touch before marking a symbol as chosen.
+  const chosen = storyStep !== undefined || inspecting ? selected : null;
   const select = (id: SymbolName) => { onInteraction?.(); setSelected(id); setInspecting(true); };
   // What a symbol has done so far: born tonight, returned every night, some nights, or passed once.
   const status = (id: SymbolName) => {
@@ -100,14 +102,16 @@ export function SymbolConstellation({ tokens, storyStep, onInteraction, stageHei
               style={styles.nodeButton}
               testID={`btn.onboarding.constellation.symbol.${symbol.id}`}
             >
-              {/* In the story, a symbol that returns breathes: the eye finds what repeats. */}
-              {storyStep !== undefined && count(symbol.id) > 1 && !reduced ? <Animated.View pointerEvents="none" style={[styles.halo, {
+              {/* In the story, a symbol that returns breathes: the eye finds what repeats.
+                  In the example, every symbol breathes in turn until the first touch: they are there to be touched. */}
+              {!reduced && (storyStep !== undefined ? count(symbol.id) > 1 : !inspecting) ? <Animated.View pointerEvents="none" style={[styles.halo, {
                 backgroundColor: tokens.accent.text,
                 animationName: { from: { opacity: 0.08, transform: [{ scale: 0.9 }] }, to: { opacity: 0.4, transform: [{ scale: 1.35 }] } },
-                animationDuration: 1600, animationDelay: 600, animationIterationCount: 'infinite', animationDirection: 'alternate',
+                animationDuration: 1600, animationDelay: storyStep !== undefined ? 600 : 300 + 400 * SYMBOLS.indexOf(symbol),
+                animationIterationCount: 'infinite', animationDirection: 'alternate',
                 animationTimingFunction: EASE.inOut, animationFillMode: 'both',
               }]} /> : null}
-              <View style={[styles.nodeImageBorder, { borderColor: selected === symbol.id ? tokens.accent.text : tokens.surface.border, borderWidth: selected === symbol.id ? 2 : 1 }]}>
+              <View style={[styles.nodeImageBorder, { borderColor: chosen === symbol.id ? tokens.accent.text : tokens.surface.border, borderWidth: chosen === symbol.id ? 2 : 1 }]}>
                 <Image source={symbol.image} style={styles.nodeImage} contentFit="cover" />
                 {count(symbol.id) > 1 ? <View style={[styles.count, { backgroundColor: tokens.surface.base, borderColor: tokens.accent.text }]}>
                   <Text style={[styles.countText, { color: tokens.accent.text }]}>{count(symbol.id)}</Text>
@@ -119,7 +123,7 @@ export function SymbolConstellation({ tokens, storyStep, onInteraction, stageHei
           ) : null;
         })}
       </View>
-      {storyStep === undefined || inspecting ? <View style={[styles.selection, storyStep !== undefined && styles.selectionOverlay, { backgroundColor: storyStep !== undefined ? tokens.surface.raised : tokens.surface.soft, borderColor: tokens.surface.border }]} accessibilityLiveRegion={storyStep === undefined ? 'polite' : 'none'} testID="component.onboarding.constellation.selection">
+      {inspecting ? <View style={[styles.selection, storyStep !== undefined && styles.selectionOverlay, { backgroundColor: storyStep !== undefined ? tokens.surface.raised : tokens.surface.soft, borderColor: tokens.surface.border }]} accessibilityLiveRegion={storyStep === undefined ? 'polite' : 'none'} testID="component.onboarding.constellation.selection">
         <Text style={[styles.selectionTitle, { color: tokens.text.primary }]}>
           {t(`onboarding.feature.constellation.symbol.${selected}`)}{' · '}{status(selected)}
         </Text>
