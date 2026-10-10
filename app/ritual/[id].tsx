@@ -28,6 +28,7 @@ import {
 } from '@/lib/inspirationRituals';
 import { getSleepSoundCopy } from '@/lib/sleepSoundCopy';
 import { isSleepSoundsAvailable } from '@/lib/sleepSoundsFeature';
+import { onHeaderScroll } from '@/components/ui/headerStretch';
 import {
   getLocalDateKey,
 } from '@/lib/ritualProgressUtils';
@@ -304,15 +305,16 @@ export default function RitualDetailScreen() {
         >
           <IconSymbol name="chevron.left" size={22} color={noctalia.accent.text} />
         </Pressable>
-        <ScrollView
-          style={[styles.scrollView, { marginTop: insets.top }]}
-          contentContainerStyle={{ paddingBottom: insets.bottom + 40 }}
+        <ScrollView onScroll={onHeaderScroll} scrollEventThrottle={16}
+          style={styles.scrollView}
+          contentInsetAdjustmentBehavior="never"
+          contentContainerStyle={{ paddingTop: insets.top, paddingBottom: insets.bottom + 40 }}
           onScrollBeginDrag={scrollPerf.onScrollBeginDrag}
           onScrollEndDrag={scrollPerf.onScrollEndDrag}
           onMomentumScrollBegin={scrollPerf.onMomentumScrollBegin}
           onMomentumScrollEnd={scrollPerf.onMomentumScrollEnd}
         >
-          <DreamerArtworkWindow scene={RITUAL_SCENES[ritual.id]} />
+          <DreamerArtworkWindow scene={RITUAL_SCENES[ritual.id]} bleedTop={insets.top} />
           <View style={[styles.content, { paddingTop: 20 }]}>
           {/* Ritual icon and name */}
           <View style={styles.titleSection}>

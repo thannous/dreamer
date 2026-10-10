@@ -63,6 +63,7 @@ import {
   useWindowDimensions,
 } from 'react-native';
 import { IconSymbol } from '@/components/ui/icon-symbol';
+import { headerScrollY, onHeaderScroll } from '@/components/ui/headerStretch';
 
 const SCROLL_IDLE_MS = 140;
 const PREFETCH_CACHE_LIMIT = 250;
@@ -563,10 +564,14 @@ export default function JournalListScreen() {
   // already delivers JS scroll events; avoid a UI worklet for every such frame.
   const handleStaticListScroll = useCallback((event: NativeSyntheticEvent<NativeScrollEvent>) => {
     staticScrollY.current = event.nativeEvent.contentOffset.y;
+    onHeaderScroll(event);
   }, []);
 
   const handleListScroll = useAnimatedScrollHandler({
-    onScroll: (event) => { listScrollY.set(event.contentOffset.y); },
+    onScroll: (event) => {
+      listScrollY.set(event.contentOffset.y);
+      headerScrollY.set(event.contentOffset.y);
+    },
   });
 
   const handleOverlaySearchTouchStart = useCallback((event: GestureResponderEvent) => {
@@ -1043,6 +1048,8 @@ export default function JournalListScreen() {
             >
               <NoctaliaScreenHeader
                 scene={!isKeyboardVisible ? "journal" : undefined}
+                // On phones the header floats over the list: its painting grows down on a pull.
+                pinned={!searchConsumesLayout}
                 titleKey="nav.journal"
                 variant="tab"
                 actions={[{

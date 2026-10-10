@@ -23,6 +23,7 @@ import {
 } from '@/services/dreamGuideService';
 import { LinearGradient } from 'expo-linear-gradient';
 import { router, useLocalSearchParams } from 'expo-router';
+import { onHeaderScroll } from '@/components/ui/headerStretch';
 
 export default function DreamGuideDetailScreen() {
   const { id } = useLocalSearchParams<{ id?: string | string[] }>();
@@ -79,7 +80,7 @@ export default function DreamGuideDetailScreen() {
         style={styles.container}
         testID="screen.dreamGuideDetail"
       >
-        <ScrollView
+        <ScrollView onScroll={onHeaderScroll} scrollEventThrottle={16}
           style={styles.scrollView}
           contentInsetAdjustmentBehavior="automatic"
           contentContainerStyle={styles.scrollContent}
@@ -89,7 +90,7 @@ export default function DreamGuideDetailScreen() {
           onMomentumScrollBegin={scrollPerf.onMomentumScrollBegin}
           onMomentumScrollEnd={scrollPerf.onMomentumScrollEnd}
         >
-          <DreamerArtworkWindow scene="path" style={{ marginHorizontal: -16 }} />
+          <DreamerArtworkWindow scene="path" style={{ marginHorizontal: -16 }} bleedTop={38} />
           <View style={styles.headerRow}>
             <Pressable
               onPress={() => router.back()}

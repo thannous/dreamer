@@ -19,6 +19,7 @@ import { useTheme } from "@/context/ThemeContext";
 import { useTranslation } from "@/hooks/useTranslation";
 import { trackProductEvent } from "@/lib/analytics";
 import { getDreamGuideCopy } from "@/lib/dreamGuideCopy";
+import { onHeaderScroll } from '@/components/ui/headerStretch';
 import type {
   DreamSymbol,
   SymbolCategory,
@@ -318,7 +319,7 @@ export default function SymbolDictionaryScreen() {
 
   const listHeader = (
     <View style={[styles.listHeader, { paddingTop: insets.top + 12 }]}>
-          <DreamerArtworkWindow scene="symbols" style={{ marginHorizontal: -20 }} />
+          <DreamerArtworkWindow scene="symbols" style={{ marginHorizontal: -20 }} bleedTop={insets.top + 12} />
       <View style={styles.headerRow}>
         <Pressable
           onPress={handleBack}
@@ -481,6 +482,8 @@ export default function SymbolDictionaryScreen() {
         keyboardShouldPersistTaps="handled"
         keyboardDismissMode="on-drag"
         showsVerticalScrollIndicator={false}
+        onScroll={onHeaderScroll}
+        scrollEventThrottle={16}
         data={listData}
         keyExtractor={(item) => item.id}
         renderItem={({ item }) => renderListRow(item)}

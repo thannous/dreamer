@@ -17,6 +17,7 @@ import { router, useFocusEffect } from 'expo-router';
 import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { AccessibilityInfo, AppState, Platform, Pressable, ScrollView, Text, View, useWindowDimensions } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import { onHeaderScroll } from '@/components/ui/headerStretch';
 
 // TalkBack rejects input-focus events while its window transition is unstable.
 // Its WindowEventInterpreter uses 550 ms; leave one small scheduling margin.
@@ -180,6 +181,8 @@ export default function ExploreScreen() {
     <View className="flex-1 bg-ink" testID={TID.Screen.Explore}>
       <ScrollView
         className="flex-1"
+        onScroll={onHeaderScroll}
+        scrollEventThrottle={16}
         // The header scrolls away with the resources, as on Today. In short windows
         // the viewport must also end above navigation. The header already owns top
         // safe-area padding; avoid automatically adding that inset a second time.

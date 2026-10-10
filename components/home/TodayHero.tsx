@@ -16,6 +16,8 @@ import { getFormattingLocale } from '@/lib/locale';
 import { TID } from '@/lib/testIDs';
 import type { TodayState } from '@/lib/todayState';
 import type { DreamAnalysis } from '@/lib/types';
+import { useHeaderStretchStyle } from '@/components/ui/headerStretch';
+import Animated from 'react-native-reanimated';
 
 type Props = {
   state: TodayState | null;
@@ -46,6 +48,8 @@ export function TodayHero({ state, dream, now, onPressCta, onOpenSettings }: Pro
   const stageHeight = immersiveArtwork
     ? Math.min(560, Math.max(300, height * 0.58 - insets.top))
     : undefined;
+  // Pulling the page down stretches the dream's image over the gap, like every header painting.
+  const artworkStretch = useHeaderStretchStyle((stageHeight ?? 260) + 1);
   const locale = getFormattingLocale(currentLang ?? 'en');
   const formattedDate = new Date(now).toLocaleDateString(locale, { weekday: 'long', day: 'numeric', month: 'long' });
   const dateLabel = formattedDate.charAt(0).toLocaleUpperCase(locale) + formattedDate.slice(1);
@@ -58,16 +62,16 @@ export function TodayHero({ state, dream, now, onPressCta, onOpenSettings }: Pro
     <View className="relative bg-ink">
       {/* No dream artwork yet: the night sky fills the opening from the top of the screen, like every tab header. */}
       {!hasArtwork ? <NightSkyBand height={insets.top + 340} background={ground} scene="reverie" /> : null}
-      {immersiveArtwork ? <View className="absolute left-0 right-0 top-0 overflow-hidden"
+      {immersiveArtwork ? <Animated.View className="absolute left-0 right-0 top-0 overflow-hidden"
         pointerEvents="none" accessibilityElementsHidden importantForAccessibility="no-hide-descendants"
-        style={{ height: (stageHeight ?? 260) + 1 }}>
+        style={[{ height: (stageHeight ?? 260) + 1, transformOrigin: 'top center' }, artworkStretch]}>
         <View className="absolute left-0 right-0" style={{ top: 80, bottom: -80 }}>{image}</View>
         <LinearGradient colors={[ground, `${ground}F5`, `${ground}E6`, `${ground}00`]}
           locations={[0, 0.65, 0.84, 1]}
           style={{ position: 'absolute', left: 0, right: 0, top: 0, height: insets.top + 190 }} />
         <LinearGradient colors={[`${ground}00`, `${ground}C0`, ground]} locations={[0, 0.65, 1]}
           style={{ position: 'absolute', left: 0, right: 0, bottom: 0, height: 110 }} />
-      </View> : null}
+      </Animated.View> : null}
       <View className="justify-between" style={{ minHeight: stageHeight }}>
         <View className="pb-4">
           {/* The hero paints its own artwork or sky, so the shared header stays transparent. */}

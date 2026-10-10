@@ -17,6 +17,7 @@ import { useScrollIdle } from '@/hooks/useScrollIdle';
 import { useSleepSoundPlayer } from '@/hooks/useSleepSoundPlayer';
 import { useTranslation } from '@/hooks/useTranslation';
 import { getSleepSoundCopy } from '@/lib/sleepSoundCopy';
+import { onHeaderScroll } from '@/components/ui/headerStretch';
 import {
   DEFAULT_SLEEP_SOUND_ID,
   DEFAULT_SLEEP_TIMER_MINUTES,
@@ -181,18 +182,19 @@ export function SleepSoundsScreen() {
         >
           <IconSymbol name="chevron.left" size={21} color={noctalia.text.secondary} />
         </Pressable>
-        <ScrollView
-          style={[styles.scrollView, { marginTop: insets.top }]}
+        <ScrollView onScroll={onHeaderScroll} scrollEventThrottle={16}
+          style={styles.scrollView}
+          contentInsetAdjustmentBehavior="never"
           contentContainerStyle={{
             paddingBottom: insets.bottom + ThemeLayout.spacing.xl,
-            paddingTop: 0,
+            paddingTop: insets.top,
           }}
           onScrollBeginDrag={scrollPerf.onScrollBeginDrag}
           onScrollEndDrag={scrollPerf.onScrollEndDrag}
           onMomentumScrollBegin={scrollPerf.onMomentumScrollBegin}
           onMomentumScrollEnd={scrollPerf.onMomentumScrollEnd}
         >
-          <DreamerArtworkWindow scene="sleep" />
+          <DreamerArtworkWindow scene="sleep" bleedTop={insets.top} />
           <View style={styles.content}>
             <View style={styles.titleSection}>
               <Animated.View

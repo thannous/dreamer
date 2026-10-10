@@ -47,6 +47,7 @@ import {
 import { TID } from "@/lib/testIDs";
 import { resolveTodayState, type TodayState } from "@/lib/todayState";
 import { getRitualPreference, getRitualStepProgress, getSavedTranscript, saveRitualStepProgress } from "@/services/storageService";
+import { onHeaderScroll } from '@/components/ui/headerStretch';
 
 type IconName = Parameters<typeof IconSymbol>[0]["name"];
 type TranslateFn = ReturnType<typeof useTranslation>["t"];
@@ -308,6 +309,8 @@ export default function InspirationScreen() {
       <View testID="screen.home" className="flex-1 bg-ink">
         <ScrollView
           className="flex-1"
+          onScroll={onHeaderScroll}
+          scrollEventThrottle={16}
           style={scrollHeader ? { marginBottom: navigationClearance } : undefined}
           contentInsetAdjustmentBehavior={scrollHeader ? 'never' : undefined}
           contentContainerStyle={{ paddingBottom: scrollContentBottomPadding }}

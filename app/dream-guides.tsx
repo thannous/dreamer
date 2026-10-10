@@ -17,6 +17,7 @@ import { getGeneralDreamGuides, getImportantDreamGuides } from '@/services/dream
 import { getAllSymbols } from '@/services/symbolDictionaryService';
 import { router } from 'expo-router';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import { onHeaderScroll } from '@/components/ui/headerStretch';
 
 export default function DreamGuidesScreen() {
   const { colors, mode } = useTheme();
@@ -41,6 +42,8 @@ export default function DreamGuidesScreen() {
       >
         <ScrollView
           style={styles.scrollView}
+          onScroll={onHeaderScroll}
+          scrollEventThrottle={16}
           contentInsetAdjustmentBehavior="never"
           contentContainerStyle={[
             styles.scrollContent,
@@ -52,7 +55,7 @@ export default function DreamGuidesScreen() {
           onMomentumScrollBegin={scrollPerf.onMomentumScrollBegin}
           onMomentumScrollEnd={scrollPerf.onMomentumScrollEnd}
         >
-          <DreamerArtworkWindow scene="path" style={{ marginHorizontal: -20 }} />
+          <DreamerArtworkWindow scene="path" style={{ marginHorizontal: -20 }} bleedTop={insets.top + 20} />
           <View style={styles.headerRow}>
             <Pressable
               onPress={() => router.back()}

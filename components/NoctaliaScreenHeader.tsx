@@ -54,6 +54,8 @@ interface NoctaliaScreenHeaderProps {
   subtitle?: string;
   /** Paint the night sky behind the `tab` header. Off when the screen draws its own artwork. */
   backdrop?: boolean;
+  /** The header floats over its scrolling content instead of scrolling with it. */
+  pinned?: boolean;
   includeTopInset?: boolean;
   actions?: NoctaliaHeaderAction[];
   chips?: NoctaliaHeaderChip[];
@@ -74,6 +76,7 @@ export const NoctaliaScreenHeader = memo(function NoctaliaScreenHeader({
   inlineSlot,
   subtitle,
   backdrop = true,
+  pinned = false,
 }: NoctaliaScreenHeaderProps) {
   const { colors, mode } = useTheme();
   const { t } = useTranslation();
@@ -116,7 +119,7 @@ export const NoctaliaScreenHeader = memo(function NoctaliaScreenHeader({
         {/* A screen that paints its own top (backdrop={false}) passes the scene to that painting instead. */}
         {backdrop ? (
           <NightSkyBand height={(measuredHeight || insets.top + 160) + 40} background={noctalia.screen.background}
-            scene={scene} />
+            scene={scene} pinned={pinned} />
         ) : null}
         <View style={[styles.tabBrandRow, { paddingHorizontal: horizontalPadding }]}>
           {showBrand ? (

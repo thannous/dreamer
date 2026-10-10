@@ -31,6 +31,7 @@ import {
 } from '@/lib/dreamTrends';
 import { getDreamThemeLabel, getDreamTypeLabel, getEmotionFamilyLabel } from '@/lib/dreamLabels';
 import { TID } from '@/lib/testIDs';
+import { onHeaderScroll } from '@/components/ui/headerStretch';
 
 const COMPACT_BREAKPOINT = 360;
 
@@ -177,6 +178,8 @@ export default function StatisticsScreen() {
         {scrollHeader ? (
           <ScrollView
             className="flex-1"
+            onScroll={onHeaderScroll}
+            scrollEventThrottle={16}
             style={{ marginBottom: navigationClearance }}
             contentInsetAdjustmentBehavior="never"
             contentContainerStyle={{ paddingBottom: scrollBottomPadding }}
@@ -248,6 +251,8 @@ export default function StatisticsScreen() {
     <View className="flex-1 bg-ink">
       <ScrollView
         className="flex-1"
+        onScroll={onHeaderScroll}
+        scrollEventThrottle={16}
         style={scrollHeader ? { marginBottom: navigationClearance } : undefined}
         // The header scrolls away with the content, as on Today. It already owns
         // the top safe-area padding, so iOS must not add that inset again.

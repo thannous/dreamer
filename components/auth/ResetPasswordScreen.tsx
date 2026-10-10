@@ -26,6 +26,7 @@ import { isLucidTrainer } from '@/lib/appVariant';
 import { onPasswordRecovery, updatePassword } from '@/lib/auth';
 import { PASSWORD_MIN_LENGTH } from '@/lib/authValidation';
 import { TID } from '@/lib/testIDs';
+import { onHeaderScroll } from '@/components/ui/headerStretch';
 
 type Phase = 'checking' | 'ready' | 'success' | 'expired';
 
@@ -323,7 +324,7 @@ const ResetPasswordScreen: React.FC = () => {
       style={[styles.container, { backgroundColor: noctalia.screen.background }]}
       testID={TID.Screen.ResetPassword}
     >
-      <ScrollView
+      <ScrollView onScroll={onHeaderScroll} scrollEventThrottle={16}
         style={styles.scroll}
         contentContainerStyle={[
           styles.scrollContent,
@@ -335,7 +336,7 @@ const ResetPasswordScreen: React.FC = () => {
         keyboardShouldPersistTaps="handled"
         automaticallyAdjustKeyboardInsets={Platform.OS === 'ios'}
       >
-        {!isLucidTrainer ? <DreamerArtworkWindow scene="journal" style={{ marginHorizontal: -ThemeLayout.spacing.md, marginBottom: 24 }} /> : null}
+        {!isLucidTrainer ? <DreamerArtworkWindow scene="journal" style={{ marginHorizontal: -ThemeLayout.spacing.md, marginBottom: 24 }} bleedTop={insets.top + ThemeLayout.spacing.xl} /> : null}
         <View
           style={[
             styles.card,

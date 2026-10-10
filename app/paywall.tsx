@@ -35,6 +35,7 @@ import {
 import { getPaywallVariant, PLUS_PAYWALL_FEATURE_KEYS } from '@/lib/paywallVariants';
 import { classifyPurchaseFailure } from '@/lib/subscriptionErrors';
 import { TID } from '@/lib/testIDs';
+import { onHeaderScroll } from '@/components/ui/headerStretch';
 
 const log = createScopedLogger('[Paywall]');
 const PAYWALL_MAX_WIDTH = 720;
@@ -489,7 +490,7 @@ export default function PaywallScreen() {
           </View>
         </ScreenContainer>
 
-        <ScrollView
+        <ScrollView onScroll={onHeaderScroll} scrollEventThrottle={16}
           style={styles.scroll}
           contentContainerStyle={styles.scrollContent}
           contentInsetAdjustmentBehavior="automatic"
@@ -540,7 +541,7 @@ export default function PaywallScreen() {
 
   return (
     <View style={rootStyle} testID={TID.Screen.Paywall}>
-      <ScrollView
+      <ScrollView onScroll={onHeaderScroll} scrollEventThrottle={16}
         style={styles.scroll}
         contentContainerStyle={[
           styles.scrollContent,
@@ -551,7 +552,7 @@ export default function PaywallScreen() {
         ]}
         contentInsetAdjustmentBehavior="automatic"
       >
-        <DreamerArtworkWindow scene="observatory" style={{ marginHorizontal: -ThemeLayout.spacing.md }} />
+        <DreamerArtworkWindow scene="observatory" style={{ marginHorizontal: -ThemeLayout.spacing.md }} bleedTop={ThemeLayout.spacing.sm + insets.top} />
         <ScreenContainer maxWidth={PAYWALL_MAX_WIDTH}>
           <View style={styles.topBar}>
             <View style={styles.brandLockup}>

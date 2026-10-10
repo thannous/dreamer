@@ -19,6 +19,7 @@ import { getDreamThemeLabel, getEmotionFamilyLabel } from '@/lib/dreamLabels';
 import { buildPaywallHref } from '@/lib/paywallRoute';
 import { TID } from '@/lib/testIDs';
 import { buildWeeklyRecap } from '@/lib/weeklyRecap';
+import { onHeaderScroll } from '@/components/ui/headerStretch';
 
 /**
  * "Your week in dreams": the Sunday-morning recap opened from the weekly push
@@ -105,14 +106,15 @@ export function WeeklyRecapScreen() {
         <IconSymbol name="chevron.left" size={22} color={noctalia.accent.text} />
       </Pressable>
 
-      <ScrollView
-        style={[styles.scrollView, { marginTop: insets.top }]}
+      <ScrollView onScroll={onHeaderScroll} scrollEventThrottle={16}
+        style={styles.scrollView}
+        contentInsetAdjustmentBehavior="never"
         contentContainerStyle={{
           paddingBottom: insets.bottom + ThemeLayout.spacing.xl,
-          paddingTop: 0,
+          paddingTop: insets.top,
         }}
       >
-        <DreamerArtworkWindow scene="astral" />
+        <DreamerArtworkWindow scene="astral" bleedTop={insets.top} />
         <View style={styles.content}>
           <View style={styles.titleSection}>
             <Text style={[styles.eyebrow, { color: noctalia.accent.text }]}>{rangeLabel}</Text>

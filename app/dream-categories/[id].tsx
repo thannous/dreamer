@@ -24,6 +24,7 @@ import { canUseExploration360Synthesis, getExploration360SynthesisStatus } from 
 import { getDreamImageVersion, withCacheBuster } from '@/lib/imageUtils';
 import { buildPaywallHref } from '@/lib/paywallRoute';
 import { TID } from '@/lib/testIDs';
+import { onHeaderScroll } from '@/components/ui/headerStretch';
 
 const CATEGORY_ICONS = { symbols: 'sparkles', emotions: 'heart.fill', growth: 'leaf.fill' } as const;
 
@@ -69,10 +70,10 @@ export default function DreamCategoriesScreen() {
   return (
     <ScrollPerfProvider isScrolling={scrollPerf.isScrolling}>
       <View style={[styles.screen, { backgroundColor: tokens.screen.background }]} testID="screen.dreamCategories">
-        <ScrollView contentContainerStyle={[styles.content, { paddingTop: insets.top + 8, paddingBottom: insets.bottom + 24 }]}
+        <ScrollView onScroll={onHeaderScroll} scrollEventThrottle={16} contentContainerStyle={[styles.content, { paddingTop: insets.top + 8, paddingBottom: insets.bottom + 24 }]}
           onScrollBeginDrag={scrollPerf.onScrollBeginDrag} onScrollEndDrag={scrollPerf.onScrollEndDrag}
           onMomentumScrollBegin={scrollPerf.onMomentumScrollBegin} onMomentumScrollEnd={scrollPerf.onMomentumScrollEnd}>
-          <DreamerArtworkWindow scene="dialogue" style={{ marginHorizontal: -32 }} />
+          <DreamerArtworkWindow scene="dialogue" style={{ marginHorizontal: -32 }} bleedTop={insets.top + 8} />
           <Pressable onPress={() => router.back()} accessibilityRole="button" accessibilityLabel={t('navigation.back')}
             style={({ pressed }) => [styles.back, pressed && styles.pressed]}>
             <IconSymbol name="chevron.left" size={22} color={tokens.accent.text} />

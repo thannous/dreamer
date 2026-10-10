@@ -122,6 +122,7 @@ import { useReducedMotion } from 'react-native-reanimated';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { DreamCaptureSeal } from '@/components/journal/story/DreamCaptureSeal';
 import { DREAM_STORY } from '@/components/journal/story/dreamStoryMotion';
+import { onHeaderScroll } from '@/components/ui/headerStretch';
 
 const log = createScopedLogger('[Recording]');
 const isMockMode = isMockModeEnabled();
@@ -1773,7 +1774,7 @@ export default function RecordingScreen() {
             reach the top edge like the other destinations. */}
         {!isDesktopWeb && !isCompactLandscape ? (
           <NightSkyBand height={insets.top + (headerHeight || 140) + 40} background={noctalia.screen.background}
-            scene={!keyboardVisible && !chatMode ? 'capture' : undefined} />
+            scene={!keyboardVisible && !chatMode ? 'capture' : undefined} pinned />
         ) : null}
         {/* The desktop sidebar leads everywhere. Keep a back control only
             while a capture review is open, so leaving still offers to keep or
@@ -1803,6 +1804,8 @@ export default function RecordingScreen() {
         >
           <ScrollView
             ref={scrollViewRef}
+            onScroll={onHeaderScroll}
+            scrollEventThrottle={16}
             style={[
               styles.scrollView,
               !isDesktopWeb && { marginTop: insets.top },
