@@ -478,8 +478,15 @@ export default function LucidProgressScreen() {
 
       <View style={styles.mainContent}>
         <View style={styles.heroCopy}>
-          <Text style={[styles.overline, { color: palette.accent }]}>{copy.eyebrow}</Text>
-          <Text accessibilityRole="header" style={[styles.title, { color: palette.text }]}>
+          <View style={styles.eyebrow}>
+            <View style={[styles.eyebrowRule, { backgroundColor: palette.accent }]} />
+            <Text style={[styles.overline, { color: palette.accent }]}>{copy.eyebrow}</Text>
+          </View>
+          <Text
+            accessibilityRole="header"
+            maxFontSizeMultiplier={1.4}
+            style={[styles.title, { color: palette.text }]}
+          >
             {copy.focusTitle[profile.focus]}
           </Text>
           <Text style={[styles.subtitle, { color: palette.textSecondary }]}>{copy.subtitle}</Text>
@@ -893,16 +900,18 @@ const styles = StyleSheet.create({
     letterSpacing: 1.5,
     textTransform: 'uppercase',
   },
+  eyebrow: { flexDirection: 'row', alignItems: 'center', gap: LucidSpace.sm },
+  eyebrowRule: { width: 20, height: StyleSheet.hairlineWidth * 2 },
   title: {
-    fontFamily: 'Fraunces_600SemiBold',
-    fontSize: LucidType.display[0],
-    lineHeight: LucidType.display[1],
-    letterSpacing: -0.8,
+    fontFamily: 'Fraunces_400Regular',
+    fontSize: LucidType.saga[0],
+    lineHeight: LucidType.saga[1],
+    letterSpacing: -1,
   },
   subtitle: {
-    fontFamily: 'SpaceGrotesk_400Regular',
-    fontSize: LucidType.bodySm[0],
-    lineHeight: LucidType.bodySm[1],
+    fontFamily: 'Lora_400Regular_Italic',
+    fontSize: LucidType.body[0],
+    lineHeight: LucidType.body[1],
   },
   overview: {
     borderRadius: LucidRadius.xl,
@@ -937,9 +946,9 @@ const styles = StyleSheet.create({
   metricsReflow: { flexDirection: 'column' },
   metric: { flexBasis: '47%', flexGrow: 1, minWidth: 0, gap: LucidSpace.xs },
   metricValue: {
-    fontFamily: 'SpaceGrotesk_700Bold',
-    fontSize: LucidType.h2[0],
-    lineHeight: LucidType.h2[1],
+    fontFamily: 'Fraunces_400Regular',
+    fontSize: LucidType.display[0],
+    lineHeight: LucidType.display[1],
     fontVariant: ['tabular-nums'],
   },
   metricLabel: {
