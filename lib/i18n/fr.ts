@@ -162,7 +162,7 @@ const translations: Record<string, string> = {
     "onboarding.narrative.explore.demo.title": "À toi.",
     "onboarding.narrative.explore.demo.body": "Choisis ce que cette porte évoque pour toi.",
     "onboarding.narrative.continue.connect": "Et les nuits suivantes ?",
-    "onboarding.narrative.continue.explore": "Ouvrir le dialogue",
+    "onboarding.narrative.continue.explore": "Et si on questionnait tes rêves ?",
     "onboarding.narrative.finish": "Revenir à mon parcours",
     "onboarding.narrative.finish_guided": "Continuer",
     "onboarding.story.capture.fragment": "Je me souviens d’une porte bleue…",
