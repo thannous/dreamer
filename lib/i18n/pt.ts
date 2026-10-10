@@ -162,7 +162,6 @@ const translations: Record<string, string> = {
     "onboarding.narrative.explore.demo.body": "Escolha o que essa porta evoca para você.",
     "onboarding.narrative.continue.connect": "E as noites seguintes?",
     "onboarding.narrative.continue.explore": "E se a gente questionasse seus sonhos?",
-    "onboarding.narrative.finish": "Voltar ao meu percurso",
     "onboarding.narrative.finish_guided": "Atravessar a porta",
     "onboarding.narrative.restart": "Ver desde o início",
     "onboarding.story.capture.fragment": "Eu me lembro de uma porta azul…",

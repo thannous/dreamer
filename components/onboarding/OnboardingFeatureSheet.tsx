@@ -109,8 +109,8 @@ function StoryFooter({ label, testID, readyAt, tokens, onNext, secondary }: {
 
 export function OnboardingFeatureSheet({ feature, onClose, onFeatureChange, ending }: {
   feature: OnboardingFeature; onClose: () => void; onFeatureChange: (feature: OnboardingFeature) => void;
-  /** When the stories lead on to the next onboarding step: how the last page ends them. */
-  ending?: { label: string; restartLabel: string; onFinish: () => void };
+  /** How the last page ends the stories: walking on to the next onboarding step, or starting over. */
+  ending: { label: string; restartLabel: string; onFinish: () => void };
 }) {
   const { t } = useTranslation();
   const tokens = NIGHT;
@@ -141,15 +141,14 @@ export function OnboardingFeatureSheet({ feature, onClose, onFeatureChange, endi
     dragIndicatorColor={tokens.text.secondary} showsVerticalScrollIndicator={false}
     headerContent={<StoryProgress step={step} tokens={tokens} />}
     footer={<StoryFooter key={`${feature}-${step}`} tokens={tokens} readyAt={readyAt}
-      label={demo && !nextChapter && ending ? ending.label
-        : t(demo ? (nextChapter ? `onboarding.narrative.continue.${nextChapter}` : 'onboarding.narrative.finish') : `onboarding.narrative.${feature}.${step}.next`)}
-      secondary={demo && !nextChapter && ending ? { label: ending.restartLabel, testID: 'btn.onboarding.story.restart', onPress: () => onFeatureChange(CHAPTERS[0]) } : undefined}
+      label={demo && !nextChapter ? ending.label
+        : t(demo ? `onboarding.narrative.continue.${nextChapter}` : `onboarding.narrative.${feature}.${step}.next`)}
+      secondary={demo && !nextChapter ? { label: ending.restartLabel, testID: 'btn.onboarding.story.restart', onPress: () => onFeatureChange(CHAPTERS[0]) } : undefined}
       testID={demo ? 'btn.onboarding.story.continue' : 'btn.onboarding.story.next'}
       onNext={() => {
         if (!demo) storyRef.current?.next();
         else if (nextChapter) onFeatureChange(nextChapter);
-        else if (ending) ending.onFinish();
-        else onClose();
+        else ending.onFinish();
       }}
     />}
     closeButton={{ label: t('journal.detail.share_modal.close'), testID: 'btn.onboarding.feature.close' }}>

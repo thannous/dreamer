@@ -81,8 +81,9 @@ const SIGNALS = [
 // Keep the disabled previews from initializing their motion/gesture modules.
 const OnboardingFeatureSheet = React.lazy(() => import('@/components/onboarding/OnboardingFeatureSheet')
   .then((module) => ({ default: module.OnboardingFeatureSheet })));
-const DoorPassage = React.lazy(() => import('@/components/onboarding/story/DoorPassage')
-  .then((module) => ({ default: module.DoorPassage })));
+// Fetched as soon as the stories open, so the door is ready the moment the reader steps through.
+const loadDoorPassage = () => import('@/components/onboarding/story/DoorPassage');
+const DoorPassage = React.lazy(() => loadDoorPassage().then((module) => ({ default: module.DoorPassage })));
 
 const BACKGROUND_IMAGE = require('@/assets/images/onboarding-reverie-background.webp');
 // The immersive artwork always needs its nocturnal contrast, independently of
@@ -149,6 +150,10 @@ export default function OnboardingScreen() {
   useEffect(() => () => {
     if (featureFocusTimer.current) clearTimeout(featureFocusTimer.current);
   }, []);
+
+  useEffect(() => {
+    if (activeFeature) void loadDoorPassage();
+  }, [activeFeature]);
 
   const closeFeature = () => {
     const trigger = activeFeature ? featureTriggers.current[activeFeature] : null;
@@ -361,6 +366,7 @@ export default function OnboardingScreen() {
   };
 
   const passThroughDoor = () => {
+    guidedTourSeenRef.current = true;
     setActiveFeature(null);
     setGuidedTour(false);
     setDoorPassage(true);
@@ -990,15 +996,15 @@ export default function OnboardingScreen() {
       {featureSheetsEnabled && activeFeature ? (
         <React.Suspense fallback={null}>
           <OnboardingFeatureSheet feature={activeFeature} onClose={guidedTour ? finishGuidedTour : closeFeature}
-            onFeatureChange={setActiveFeature} ending={guidedTour ? {
+            onFeatureChange={setActiveFeature} ending={{
               label: t('onboarding.narrative.finish_guided'),
               restartLabel: t('onboarding.narrative.restart'),
               onFinish: passThroughDoor,
-            } : undefined} />
+            }} />
         </React.Suspense>
       ) : null}
 
-      {doorPassage ? <React.Suspense fallback={null}>
+      {doorPassage ? <React.Suspense fallback={<View style={[StyleSheet.absoluteFill, styles.doorFallback]} />}>
         <DoorPassage onCovered={() => void runStepTransition('path')} onDone={() => setDoorPassage(false)} />
       </React.Suspense> : null}
 
@@ -1067,6 +1073,8 @@ export default function OnboardingScreen() {
 }
 
 const styles = StyleSheet.create({
+  // Holds the night over the screen if the door is still loading when the reader steps through.
+  doorFallback: { zIndex: 100, backgroundColor: ONBOARDING_TOKENS.screen.background },
   screen: { flex: 1 },
   loading: { flex: 1, alignItems: 'center', justifyContent: 'center' },
   content: { flexGrow: 1, paddingHorizontal: 24, gap: 8 },

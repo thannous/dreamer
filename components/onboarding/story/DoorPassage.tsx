@@ -3,7 +3,7 @@ import { LinearGradient } from 'expo-linear-gradient';
 import React, { useEffect } from 'react';
 import { StyleSheet, View, useWindowDimensions } from 'react-native';
 import Animated, {
-  Easing, interpolate, useAnimatedStyle, useReducedMotion, useSharedValue, withDelay, withSequence, withTiming,
+  Easing, interpolate, useAnimatedStyle, useReducedMotion, useSharedValue, withDelay, withTiming,
 } from 'react-native-reanimated';
 
 import { EASING } from '@/components/motion/motion';
@@ -22,14 +22,14 @@ const LIGHT = ['#FFF9EF', '#EAD4B4'] as const;
  * arrives, opens onto its light, and the camera walks through it into the next step.
  */
 const BEAT = {
-  covered: 320,
+  covered: 60,
   arrive: 120, arriveFor: 620,
   open: 640, openFor: 820,
   walk: 1240, walkFor: 900,
   glow: 1640, glowFor: 420,
   reveal: 2080, revealFor: 560,
 } as const;
-const REDUCED = { covered: 220, reveal: 760, revealFor: 320 } as const;
+const REDUCED = { covered: 60, reveal: 760, revealFor: 320 } as const;
 
 /**
  * The end of the onboarding stories: the blue door the reader followed since
@@ -40,7 +40,8 @@ const REDUCED = { covered: 220, reveal: 760, revealFor: 320 } as const;
 export function DoorPassage({ onCovered, onDone }: { onCovered: () => void; onDone: () => void }) {
   const reduced = useReducedMotion();
   const { width, height } = useWindowDimensions();
-  const veil = useSharedValue(0);
+  // The night is already there when the sheet slides away: nothing of the previous step shows through.
+  const veil = useSharedValue(1);
   const arrive = useSharedValue(reduced ? 1 : 0);
   const open = useSharedValue(reduced ? 1 : 0);
   const walk = useSharedValue(0);
@@ -57,11 +58,8 @@ export function DoorPassage({ onCovered, onDone }: { onCovered: () => void; onDo
       walk.set(withDelay(BEAT.walk, withTiming(1, { duration: BEAT.walkFor, easing: Easing.bezier(0.55, 0, 0.75, 0.4) })));
       glow.set(withDelay(BEAT.glow, withTiming(1, { duration: BEAT.glowFor, easing: EASING.out })));
     }
-    // The night covers the closing sheet, holds through the passage, then lifts on the next step.
-    veil.set(withSequence(
-      withTiming(1, { duration: beat.covered, easing: EASING.out }),
-      withDelay(beat.reveal - beat.covered, withTiming(0, { duration: beat.revealFor, easing: EASING.out })),
-    ));
+    // The night holds through the passage, then lifts on the next step.
+    veil.set(withDelay(beat.reveal, withTiming(0, { duration: beat.revealFor, easing: EASING.out })));
     const haptic = (style: Haptics.ImpactFeedbackStyle) => {
       if (process.env.EXPO_OS !== 'web') void Haptics.impactAsync(style);
     };
@@ -92,12 +90,9 @@ export function DoorPassage({ onCovered, onDone }: { onCovered: () => void; onDo
   }));
   const leafShadeStyle = useAnimatedStyle(() => ({ opacity: interpolate(open.get(), [0, 1], [0, 0.55]) }));
   const lightStyle = useAnimatedStyle(() => ({ opacity: interpolate(open.get(), [0, 0.3, 1], [0.12, 0.75, 1]) }));
-  const haloStyle = useAnimatedStyle(() => ({
-    opacity: interpolate(open.get(), [0, 1], [0.08, 0.7]),
-    transform: [{ scale: interpolate(open.get(), [0, 1], [0.7, 1.15]) }],
-  }));
+  const haloStyle = useAnimatedStyle(() => ({ opacity: interpolate(open.get(), [0, 1], [0.08, 0.9]) }));
   const spillStyle = useAnimatedStyle(() => ({
-    opacity: interpolate(open.get(), [0, 1], [0, 0.32]),
+    opacity: interpolate(open.get(), [0, 1], [0, 0.9]),
     transform: [{ scaleX: interpolate(open.get(), [0, 1], [0.3, 1]) }],
   }));
   const glowStyle = useAnimatedStyle(() => ({ opacity: glow.get() * 0.9 }));
@@ -107,7 +102,8 @@ export function DoorPassage({ onCovered, onDone }: { onCovered: () => void; onDo
     style={[StyleSheet.absoluteFill, styles.root, { backgroundColor: NIGHT.screen.background }, veilStyle]}>
     <StoryNight tokens={NIGHT} page={{ key: 'door', index: 12 }} />
     <Animated.View style={[styles.scene, sceneStyle]}>
-      <Animated.View style={[styles.halo, { backgroundColor: LIGHT[1], boxShadow: [{ offsetX: 0, offsetY: 0, blurRadius: 60, spreadDistance: 18, color: LIGHT[1] }] }, haloStyle]} />
+      {/* The glow has the door's own shape, hidden behind it: the light seems to leak around the frame. */}
+      <Animated.View style={[styles.halo, { backgroundColor: LIGHT[1], boxShadow: [{ offsetX: 0, offsetY: 0, blurRadius: 80, spreadDistance: 20, color: `${LIGHT[1]}A6` }] }, haloStyle]} />
       <View style={[styles.frame, { borderColor: NIGHT.accent.text }]}>
         <Animated.View style={[StyleSheet.absoluteFill, lightStyle]}>
           <LinearGradient colors={LIGHT} start={{ x: 0.5, y: 0.25 }} end={{ x: 0.5, y: 1 }} style={StyleSheet.absoluteFill} />
@@ -121,7 +117,7 @@ export function DoorPassage({ onCovered, onDone }: { onCovered: () => void; onDo
           <Animated.View style={[StyleSheet.absoluteFill, { backgroundColor: NIGHT.screen.background }, leafShadeStyle]} />
         </Animated.View>
       </View>
-      <Animated.View style={[styles.spill, { backgroundColor: LIGHT[1], boxShadow: [{ offsetX: 0, offsetY: 0, blurRadius: 24, spreadDistance: 4, color: LIGHT[1] }] }, spillStyle]} />
+      <Animated.View style={[styles.spill, { backgroundColor: `${LIGHT[1]}33`, boxShadow: [{ offsetX: 0, offsetY: 0, blurRadius: 34, spreadDistance: 8, color: `${LIGHT[1]}80` }] }, spillStyle]} />
     </Animated.View>
     <Animated.View pointerEvents="none" style={[StyleSheet.absoluteFill, { backgroundColor: LIGHT[1] }, glowStyle]} />
   </Animated.View>;
@@ -132,7 +128,10 @@ const INNER = { width: DOOR.width - DOOR.frame * 2, height: DOOR.height - DOOR.f
 const styles = StyleSheet.create({
   root: { zIndex: 100, alignItems: 'center', justifyContent: 'center' },
   scene: { width: DOOR.width, height: DOOR.height, alignItems: 'center', justifyContent: 'center' },
-  halo: { position: 'absolute', width: DOOR.width * 1.6, height: DOOR.height * 1.3, borderRadius: DOOR.width },
+  halo: {
+    position: 'absolute', width: DOOR.width, height: DOOR.height,
+    borderTopLeftRadius: DOOR.radius, borderTopRightRadius: DOOR.radius, borderBottomLeftRadius: 6, borderBottomRightRadius: 6,
+  },
   frame: {
     width: DOOR.width, height: DOOR.height, padding: DOOR.frame, borderWidth: 1, overflow: 'hidden',
     borderTopLeftRadius: DOOR.radius, borderTopRightRadius: DOOR.radius, borderBottomLeftRadius: 6, borderBottomRightRadius: 6,
@@ -145,5 +144,5 @@ const styles = StyleSheet.create({
   panelTop: { top: 34, height: INNER.height * 0.36, borderTopLeftRadius: 44, borderTopRightRadius: 44 },
   panelBottom: { bottom: 18, height: INNER.height * 0.3 },
   knob: { position: 'absolute', right: 14, top: INNER.height * 0.55, width: 8, height: 8, borderRadius: 4 },
-  spill: { position: 'absolute', bottom: -12, width: DOOR.width * 1.8, height: 22, borderRadius: 22 },
+  spill: { position: 'absolute', bottom: -8, width: DOOR.width * 1.9, height: 14, borderRadius: 999 },
 });
