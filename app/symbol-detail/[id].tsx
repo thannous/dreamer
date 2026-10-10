@@ -91,7 +91,9 @@ export default function SymbolDetailScreen() {
     }
   }, [onboardingState, source, symbol]);
 
-  const heroHeight = Math.round(Math.min(560, Math.max(380, windowHeight * 0.58)));
+  // On the paper theme the night scene needs room to dawn into the page below its copy.
+  const heroDusk = mode === 'light' ? 72 : 0;
+  const heroHeight = Math.round(Math.min(560, Math.max(380, windowHeight * 0.58))) + heroDusk;
   const collapseAt = heroHeight - insets.top - TOP_BAR_HEIGHT;
 
   const onScroll = useAnimatedScrollHandler((event) => {
@@ -198,10 +200,14 @@ export default function SymbolDetailScreen() {
             />
             <LinearGradient
               pointerEvents="none"
-              colors={['rgba(9,4,19,0)', mode === 'dark' ? 'rgba(3,4,13,0.42)' : background]}
-              style={styles.heroFade}
+              colors={mode === 'dark'
+                ? ['rgba(9,4,19,0)', 'rgba(3,4,13,0.42)']
+                // Eased from night into paper below the copy, instead of a 36 point step.
+                : ['rgba(9,4,19,0)', `${background}38`, `${background}99`, `${background}E0`, background]}
+              locations={mode === 'dark' ? undefined : [0, 0.3, 0.58, 0.82, 1]}
+              style={[styles.heroFade, heroDusk ? { height: heroDusk + 36 } : null]}
             />
-            <View style={styles.heroCopy}>
+            <View style={[styles.heroCopy, heroDusk ? { paddingBottom: 30 + heroDusk } : null]}>
               <View style={[styles.chip, { borderColor: 'rgba(234,212,180,0.45)' }]}>
                 <Text style={[styles.chipText, { color: HERO_TOKENS.accent.text }]}>{categoryName}</Text>
               </View>
