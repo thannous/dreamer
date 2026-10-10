@@ -287,7 +287,8 @@ export const DreamCard = memo(function DreamCard({
         allowFontScaling={false}
         style={{ fontSize: 15 * compactTextScale, lineHeight: 22 * compactTextScale }}
         className={`font-sans text-[15px] leading-[22px] ${hasImage ? 'text-illustration-text' : 'text-ivory-muted'}`}
-        numberOfLines={hasImage ? 3 : 2}
+        // At least three lines of the dream, with or without an illustration.
+        numberOfLines={3}
       >
         {transcriptPreview}
       </Text>
