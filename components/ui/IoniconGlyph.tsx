@@ -1,4 +1,5 @@
 import React from 'react';
+import { Platform } from 'react-native';
 import Svg, { Path } from 'react-native-svg';
 
 // Outlines of four Ionicons glyphs (MIT, https://ionic.io/ionicons) on their
@@ -23,9 +24,13 @@ type IoniconGlyphProps = {
   color: string;
 };
 
+// Decorative: hidden from assistive tech. react-native-svg's web build forwards
+// props to the <svg> element, where `accessible` is not a DOM attribute.
+const DECORATIVE = Platform.OS === 'web' ? { 'aria-hidden': true } : { accessible: false };
+
 export function IoniconGlyph({ name, size, color }: IoniconGlyphProps) {
   return (
-    <Svg width={size} height={size} viewBox="0 0 512 512" accessible={false}>
+    <Svg width={size} height={size} viewBox="0 0 512 512" {...DECORATIVE}>
       <Path d={PATHS[name]} fill={color} />
     </Svg>
   );
