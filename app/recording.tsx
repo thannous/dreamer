@@ -1776,8 +1776,10 @@ export default function RecordingScreen() {
         {/* The scroll view starts below the status bar, so the sky is painted here to
             reach the top edge like the other destinations. */}
         {!isDesktopWeb && !isCompactLandscape ? (
-          <NightSkyBand height={insets.top + (headerHeight || 140) + 40} background={noctalia.screen.background}
-            scene="capture" pinned fixed immersive={captureStage} />
+          <NightSkyBand background={noctalia.screen.background} scene="capture" pinned fixed
+            // In text mode the painting reaches the top third, behind the title and the top of the
+            // composer, which stay where they are; the conversation and keyboard keep it compact.
+            height={Math.max(insets.top + (headerHeight || 140), captureStage ? Math.round(Math.min(420, viewportHeight * 0.33)) : 0) + 40} />
         ) : null}
         {/* The desktop sidebar leads everywhere. Keep a back control only
             while a capture review is open, so leaving still offers to keep or
@@ -1829,9 +1831,6 @@ export default function RecordingScreen() {
                 backdrop={false}
                 prominentTitle={!isCompactLandscape}
                 variant={isCompactLandscape ? 'standard' : 'tab'}
-                // Like Explorer, the painting opens over the top third, except while the
-                // conversation or the keyboard needs the room.
-                immersive={captureStage}
                 titleKey="nav.capture_dream"
                 actions={isDesktopWeb ? [] : [{
                   icon: 'gear',
