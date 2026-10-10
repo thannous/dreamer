@@ -135,6 +135,9 @@ export const DreamCard = memo(function DreamCard({
   const imageAttemptKey = JSON.stringify([accessScope, getDreamIdentityKey(dream), imageVersion, imageUri]);
   const [failedImageAttempt, setFailedImageAttempt] = useState<string | null>(null);
   const [coverWidth, setCoverWidth] = useState(260);
+  // The whole dream can be read in place; the arrow shows only when three lines cut it.
+  const [expanded, setExpanded] = useState(false);
+  const canExpand = dream.transcript.trim().length > 120;
   const hasImage = (Boolean(imageUri) || (media.loading && Boolean(dream.imageUrl || dream.thumbnailUrl)))
     && failedImageAttempt !== imageAttemptKey;
 
@@ -287,11 +290,19 @@ export const DreamCard = memo(function DreamCard({
         allowFontScaling={false}
         style={{ fontSize: 15 * compactTextScale, lineHeight: 22 * compactTextScale }}
         className={`font-sans text-[15px] leading-[22px] ${hasImage ? 'text-illustration-text' : 'text-ivory-muted'}`}
-        // At least three lines of the dream, with or without an illustration.
-        numberOfLines={3}
+        // At least three lines of the dream, with or without an illustration; all of it once unfolded.
+        numberOfLines={expanded ? undefined : 3}
       >
-        {transcriptPreview}
+        {expanded ? dream.transcript : transcriptPreview}
       </Text>
+      {canExpand ? (
+        <Pressable accessibilityRole="button" accessibilityState={{ expanded }}
+          accessibilityLabel={t(expanded ? 'journal.card.collapse' : 'journal.card.expand')}
+          hitSlop={10} onPress={() => setExpanded((value) => !value)}
+          testID={testID && `journal.expand.${testID}`} className="h-8 w-10 items-start justify-center">
+          <IconSymbol name={expanded ? 'chevron.up' : 'chevron.down'} size={22} color={hasImage ? noctalia.illustration.text : noctalia.text.secondary} />
+        </Pressable>
+      ) : null}
     </>
   );
 

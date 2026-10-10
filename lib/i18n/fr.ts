@@ -516,6 +516,8 @@ const translations: Record<string, string> = {
     'journal.atlas.action.explore': 'Approfondir',
     'journal.atlas.action.continue': 'Relire',
     'journal.card.accessibility.open': 'Ouvrir le détail du rêve',
+    "journal.card.expand": "Lire tout le rêve",
+    "journal.card.collapse": "Réduire",
     'journal.badge.favorite': 'Favori',
     'journal.badge.recurring': 'Récurrent',
     'journal.badge.unanalyzed': 'Non analysé',
