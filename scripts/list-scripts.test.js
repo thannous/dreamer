@@ -32,6 +32,19 @@ describe('script catalog', () => {
     expect(classifyScript('release:check')).toBe('Mobile release');
   });
 
+  it('discloses the Supabase test branch side effects', () => {
+    expect(classifyScript('test:seed-users')).toBe('Test branch E2E');
+    expect(classifyScript('test:auth-setup')).toBe('Test branch E2E');
+    expect(classifyScript('test:e2e:branch')).toBe('Test branch E2E');
+    expect(classifyScript('test:env:check')).toBe('Test branch E2E');
+    expect(classifyScript('test:e2e:branch:mobile')).toBe('Test branch E2E');
+    expect(scriptSafety('test:seed-users')).toBe('writes the Supabase test branch (accounts, dreams, quota, tier)');
+    expect(scriptSafety('test:auth-setup')).toBe('writes session tokens to .auth/');
+    expect(scriptSafety('test:e2e:branch')).toBe('writes session tokens to .auth/');
+    expect(scriptSafety('test:e2e:branch:mobile')).toBe('signs the device app out and in; writes test-results/e2e-branch-mobile/run.json');
+    expect(scriptSafety('test:env:check')).toBe('read-only or runtime');
+  });
+
   it('distinguishes release preparation, remote builds and counter synchronization', () => {
     expect(scriptSafety('release:prepare')).toBe('writes release manifests');
     expect(scriptSafety('release:build')).toBe('starts a remote build');

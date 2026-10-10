@@ -187,3 +187,128 @@ describe('expo-safe-runner', () => {
     });
   });
 });
+
+describe('expo-safe-runner guarded branch mode', () => {
+  const { execFileSync } = require('node:child_process');
+  const {
+    BRANCH_GUARD_MARKER,
+    applyBranchGuardRestrictions,
+    assertBranchFinalEnv,
+    isBranchGuarded,
+    main,
+  } = require('./expo-safe-runner');
+  const REF = 'abcdefghijklmnopqrst';
+  const PROD = 'usuyppgsmmowzizhaoqj';
+  const branchEnv = (overrides = {}) => ({
+    [BRANCH_GUARD_MARKER]: '1',
+    EXPO_PUBLIC_SUPABASE_URL: `https://${REF}.supabase.co`,
+    EXPO_PUBLIC_SUPABASE_ANON_KEY: 'sb_publishable_test',
+    EXPO_PUBLIC_API_URL: `https://${REF}.functions.supabase.co/api`,
+    EXPO_PUBLIC_SUPABASE_FUNCTION_JWT: 'sb_publishable_test',
+    EXPO_PUBLIC_MOCK_MODE: 'false',
+    ...overrides,
+  });
+  const silence = () => jest.spyOn(console, 'error').mockImplementation(() => {});
+
+  it('treats any marker value as guarded; there is no value that turns it off', () => {
+    for (const value of ['1', '0', '', 'false', 'off']) {
+      expect(isBranchGuarded({ [BRANCH_GUARD_MARKER]: value })).toBe(true);
+    }
+    expect(isBranchGuarded({})).toBe(false);
+  });
+
+  it('refuses --profile and non-start commands, and forces EXPO_NO_DOTENV=1', () => {
+    expect(() => applyBranchGuardRestrictions(parseRunnerArgs(['start', '--profile', '.env.playstore']), {})).toThrow(/--profile is refused/);
+    expect(() => applyBranchGuardRestrictions(parseRunnerArgs(['start', '--profile=.env.playstore']), {})).toThrow(/--profile is refused/);
+    expect(() => applyBranchGuardRestrictions(parseRunnerArgs(['run:android']), {})).toThrow(/only "expo start"/);
+    const env = { EXPO_NO_DOTENV: '0' };
+    applyBranchGuardRestrictions(parseRunnerArgs(['start', '--web']), env);
+    expect(env.EXPO_NO_DOTENV).toBe('1');
+  });
+
+  it('main refuses a guarded --profile before loading it and never starts Expo', async () => {
+    const spy = silence();
+    const started = [];
+    const previous = process.exitCode;
+    const env = branchEnv();
+    await main(['start', '--profile', '.env.playstore'], { env, start: (args) => started.push(args) });
+    expect(started).toEqual([]);
+    expect(process.exitCode).toBe(1);
+    expect(env.EXPO_PUBLIC_SUPABASE_URL).toBe(`https://${REF}.supabase.co`);
+    process.exitCode = previous;
+    spy.mockRestore();
+  });
+
+  it('main re-checks the final env with the guard before starting Expo', async () => {
+    const spy = silence();
+    const previous = process.exitCode;
+    const started = [];
+    const seen = [];
+    const loadGuard = async () => ({ assertBranchAppEnv: (env) => seen.push({ ...env }) });
+    await main(['start', '--web'], { env: branchEnv({ EXPO_NO_DOTENV: '0' }), start: (args) => started.push(args), loadGuard });
+    expect(started).toEqual([['start', '--web']]);
+    expect(seen).toHaveLength(1);
+    expect(seen[0].EXPO_NO_DOTENV).toBe('1');
+    const refusing = async () => ({ assertBranchAppEnv: () => { throw new Error('test-login refused: production'); } });
+    await main(['start', '--web'], { env: branchEnv(), start: (args) => started.push(args), loadGuard: refusing });
+    expect(started).toHaveLength(1);
+    expect(process.exitCode).toBe(1);
+    process.exitCode = previous;
+    spy.mockRestore();
+  });
+
+  it('as a process: the real guard refuses a production final env and the committed (empty) allowlist', () => {
+    const script = path.join(__dirname, 'expo-safe-runner.js');
+    const run = (env) => {
+      try {
+        execFileSync(process.execPath, [script, 'start', '--web'], {
+          cwd: path.join(__dirname, '..'),
+          env: { PATH: process.env.PATH, ...env },
+          encoding: 'utf8',
+          stdio: 'pipe',
+          timeout: 20000,
+        });
+        return { status: 0, output: '' };
+      } catch (error) {
+        return { status: error.status, output: `${error.stdout}${error.stderr}` };
+      }
+    };
+    const prod = run(branchEnv({ EXPO_PUBLIC_SUPABASE_URL: `https://${PROD}.supabase.co`, EXPO_PUBLIC_API_URL: `https://${PROD}.functions.supabase.co/api` }));
+    expect(prod.status).toBe(1);
+    expect(prod.output).toMatch(/production Supabase project/);
+    const unlisted = run(branchEnv());
+    expect(unlisted.status).toBe(1);
+    expect(unlisted.output).toMatch(/no test Supabase project is allowlisted/);
+    expect(typeof assertBranchFinalEnv).toBe('function');
+  });
+
+  it('unguarded runs keep working as before (no marker, profile allowed)', () => {
+    const started = [];
+    const env = {};
+    const result = main(['start', '--web'], { env, start: (args) => started.push(args) });
+    expect(result).toBeUndefined();
+    expect(started).toEqual([['start', '--web']]);
+    expect(env.EXPO_NO_DOTENV).toBeUndefined();
+  });
+
+  it('as a process: a guarded --profile .env.playstore exits 1 before Expo starts', () => {
+    const script = path.join(__dirname, 'expo-safe-runner.js');
+    let status = 0;
+    let output = '';
+    try {
+      execFileSync(process.execPath, [script, 'start', '--profile', '.env.playstore'], {
+        cwd: path.join(__dirname, '..'),
+        env: { PATH: process.env.PATH, ...branchEnv() },
+        encoding: 'utf8',
+        stdio: 'pipe',
+        timeout: 20000,
+      });
+    } catch (error) {
+      status = error.status;
+      output = `${error.stdout}${error.stderr}`;
+    }
+    expect(status).toBe(1);
+    expect(output).toMatch(/--profile is refused/);
+    expect(output).not.toMatch(new RegExp(PROD));
+  });
+});
