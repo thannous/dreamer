@@ -212,7 +212,6 @@ jest.mock('@/components/NoctaliaScreenHeader', () => ({
   NoctaliaScreenHeader: ({ titleKey, actions = [], slot, inlineSlot }: any) => <header data-testid="journal-shared-header"><span>Noctalia</span><span>{titleKey}</span>{actions.map((action: any) => <button key={action.testID} data-testid={action.testID} aria-label={action.accessibilityLabel} onClick={action.onPress} />)}{inlineSlot ?? slot}</header>,
 }));
 jest.mock('@/components/inspiration/PageHeader', () => ({ PageHeaderContent: () => <header data-testid="journal-header">Journal</header> }));
-jest.mock('@/components/dev/MockNavigationRail', () => ({ MockNavigationRail: () => null }));
 jest.mock('@/components/ui/icon-symbol', () => ({ IconSymbol: () => null }));
 jest.mock('@/components/guest/UpsellCard', () => ({ UpsellCard: () => <div data-testid="journal-upsell" /> }));
 jest.mock('@/components/journal/DreamCard', () => ({

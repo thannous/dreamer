@@ -157,9 +157,6 @@ jest.mock('@/components/NoctaliaScreenHeader', () => ({
 jest.mock('@/components/ScreenContainer', () => ({
   ScreenContainer: ({ children }: { children?: React.ReactNode }) => <div>{children}</div>,
 }));
-jest.mock('@/components/dev/MockNavigationRail', () => ({
-  MockNavigationRail: () => null,
-}));
 jest.mock('@/hooks/useClearWebFocus', () => ({
   useClearWebFocus: () => undefined,
 }));

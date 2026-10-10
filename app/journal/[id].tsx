@@ -248,7 +248,7 @@ export default function JournalDetailScreen() {
 }
 
 const JournalDetailContent = memo(function JournalDetailContent({ dream }: { dream?: DreamAnalysis }) {
-  const { id, remoteId, clientRequestId, saved: savedParam, recall: recallParam, autoAnalyze: autoAnalyzeParam, analyzeAfterPurchase, analysisOwnerId } = useLocalSearchParams<{ id: string; remoteId?: string; clientRequestId?: string; saved?: string | string[]; recall?: string | string[]; autoAnalyze?: string; analyzeAfterPurchase?: string; analysisOwnerId?: string }>();
+  const { id, remoteId, clientRequestId, saved: savedParam, recall: recallParam, autoAnalyze: autoAnalyzeParam, analyzeAfterPurchase, analysisOwnerId, share: shareParam } = useLocalSearchParams<{ id: string; remoteId?: string; clientRequestId?: string; saved?: string | string[]; recall?: string | string[]; autoAnalyze?: string; analyzeAfterPurchase?: string; analysisOwnerId?: string; share?: string }>();
   const recallRequested = isJournalSavedConfirmationParam(recallParam);
   const { state: onboardingState, transition: transitionOnboarding } = useOnboarding();
   const [savedConfirmationVisible, setSavedConfirmationVisible] = useState(
@@ -1284,6 +1284,15 @@ const JournalDetailContent = memo(function JournalDetailContent({ dream }: { dre
       }
     }
   }, [dream, isAnalysisLocked, openShareModal, shareComposite, shareImage, shareMessage, shareTitle, t, media, shareMediaPending, shareDreamIdentity, shareImageRef, onShareMediaReady]);
+
+  // Opened from a journal card's share icon: share once the dream is here, then drop the request.
+  const autoShareDoneRef = useRef(false);
+  useEffect(() => {
+    if (shareParam !== '1' || !dream || autoShareDoneRef.current) return;
+    autoShareDoneRef.current = true;
+    router.setParams({ share: undefined });
+    void onShare();
+  }, [dream, onShare, shareParam]);
 
   const handleToggleFavorite = useCallback(async () => {
     if (!dream || isAnalysisLocked) return;

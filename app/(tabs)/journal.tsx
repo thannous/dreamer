@@ -8,7 +8,6 @@ import { getDreamIdentityKey } from '@/lib/dreamIdentity';
 import { UpsellCard } from '@/components/guest/UpsellCard';
 import { AtmosphericBackground } from '@/components/inspiration/AtmosphericBackground';
 import { PageHeaderContent } from '@/components/inspiration/PageHeader';
-import { MockNavigationRail } from '@/components/dev/MockNavigationRail';
 import { AdvancedFilterSheet, type JournalSortOrder } from '@/components/journal/AdvancedFilterSheet';
 import { RemoteJournalList } from '@/components/journal/RemoteJournalList';
 import type { DreamListItem } from '@/lib/journalReadContracts';
@@ -474,6 +473,13 @@ export default function JournalListScreen() {
     router.push({ pathname: '/journal/[id]', params: getDreamRouteParams(dream) });
   }, []);
 
+  // Opens the dream and its share sheet: the detail screen owns the composed share.
+  const handleDreamShare = useCallback((dream: DreamAnalysis) => {
+    if (isNavigatingRef.current) return;
+    isNavigatingRef.current = true;
+    router.push({ pathname: '/journal/[id]', params: { ...getDreamRouteParams(dream), share: '1' } });
+  }, []);
+
   // Track viewable items and prefetch thumbnails once scrolling is idle.
   const filteredDreamsRef = useRef(filteredDreams);
   useEffect(() => {
@@ -615,6 +621,7 @@ export default function JournalListScreen() {
         <DreamCard
           dream={item}
           onPress={handleDreamPress}
+          onShare={handleDreamShare}
           testID={TID.List.DreamItem(item.id)}
           dateLabel={dateStr}
           variant={isFirstItem ? 'featured' : 'standard'}
@@ -623,7 +630,7 @@ export default function JournalListScreen() {
         />
       </View>
     );
-  }, [clearStoryGlow, formatDreamListDate, handleDreamPress, storyGlowKey]);
+  }, [clearStoryGlow, formatDreamListDate, handleDreamPress, handleDreamShare, storyGlowKey]);
 
   const renderDreamItemTablet = useCallback(({ item }: ListRenderItemInfo<DreamAnalysis>) => {
     if (!item) return null;
@@ -634,6 +641,7 @@ export default function JournalListScreen() {
         <DreamCard
           dream={item}
           onPress={handleDreamPress}
+          onShare={handleDreamShare}
           testID={TID.List.DreamItem(item.id)}
           dateLabel={dateStr}
           variant="standard"
@@ -642,7 +650,7 @@ export default function JournalListScreen() {
         />
       </View>
     );
-  }, [clearStoryGlow, formatDreamListDate, handleDreamPress, storyGlowKey]);
+  }, [clearStoryGlow, formatDreamListDate, handleDreamPress, handleDreamShare, storyGlowKey]);
 
   const renderDreamItemDesktop = useCallback(({ item, index }: ListRenderItemInfo<DreamAnalysis>) => {
     // Recycling can briefly retain an index after a filter shrinks the data array.
@@ -652,6 +660,7 @@ export default function JournalListScreen() {
         <DreamCard
           dream={item}
           onPress={handleDreamPress}
+          onShare={handleDreamShare}
           testID={TID.List.DreamItem(item.id)}
           dateLabel={formatDreamListDate(item.id)}
           variant={index === 0 ? 'featured' : 'standard'}
@@ -660,7 +669,7 @@ export default function JournalListScreen() {
         />
       </View>
     );
-  }, [clearStoryGlow, formatDreamListDate, handleDreamPress, storyGlowKey]);
+  }, [clearStoryGlow, formatDreamListDate, handleDreamPress, handleDreamShare, storyGlowKey]);
 
   const hasNonDefaultSort = sortOrder !== 'newest';
   const hasActiveFilter = !!(
@@ -886,7 +895,6 @@ export default function JournalListScreen() {
         className="gap-4 p-4"
         style={isDesktopLayout ? DESKTOP_MAX_WIDTH_STYLE : undefined}
       >
-        <MockNavigationRail />
         <JournalPersistenceNotice
           state={persistenceState}
           refreshState={completeness?.status === 'incomplete' ? undefined : refreshState}

@@ -122,7 +122,6 @@ jest.mock('@/services/storageService', () => ({
   saveRecordingInputModePreference: jest.fn(async () => {}),
   saveRecordingVoiceHintCompleted: jest.fn(async () => {}),
 }));
-jest.mock('@/components/dev/MockNavigationRail', () => ({ MockNavigationRail: () => null }));
 jest.mock('@/components/navigation/NoctaliaBottomNav', () => ({ NoctaliaBottomNav: () => null }));
 jest.mock('@/components/ui/icon-symbol', () => ({ IconSymbol: () => null }));
 jest.mock('@/components/recording/AtmosphereBackground', () => ({ AtmosphereBackground: () => null }));

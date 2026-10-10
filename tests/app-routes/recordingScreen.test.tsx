@@ -244,9 +244,6 @@ jest.doMock('expo-linear-gradient', () => ({
   LinearGradient: () => <div data-testid="recording-gradient" />,
 }));
 
-jest.doMock('@/components/dev/MockNavigationRail', () => ({
-  MockNavigationRail: () => null,
-}));
 
 jest.doMock('@/components/journal/SubjectProposition', () => ({
   SubjectProposition: ({ subjectType }: { subjectType: 'person' | 'animal' }) => (
