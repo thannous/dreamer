@@ -67,6 +67,7 @@ const MAPPING: Partial<Record<SFSymbolName, MaterialIconName>> = {
   photo: 'photo',
   trash: 'delete',
   'moon.stars.fill': 'nights-stay',
+  'sun.horizon': 'wb-twilight',
   sparkles: 'auto-awesome',
   'cloud.rain.fill': 'grain',
   'water.waves': 'waves',

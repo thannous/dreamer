@@ -156,7 +156,7 @@ export default function BreatheExercise() {
   const compact = fontScale >= 1.5 || height < 720;
   const ringSize = Math.min(
     width * 0.68,
-    height * (compact ? 0.12 : started ? 0.31 : 0.25),
+    height * (compact ? 0.12 : started ? 0.31 : 0.21),
     compact ? 128 : 300
   );
   const cycleTotal = Math.max(
@@ -317,7 +317,7 @@ export default function BreatheExercise() {
         ) : (
           <>
             <View testID={TID.Screen.BreatheExercise} className="min-h-0 flex-1 px-gutter">
-              <PracticeProgress world={world} stage="practice" className="pt-1" />
+              <PracticeProgress world={world} stage="practice" labels={false} className="pt-1" />
               <View className="items-center gap-1 pt-1">
                 <Text variant="overline">
                   {t(`breathe.pattern.${pattern.id}.name` as TranslationKey)}
