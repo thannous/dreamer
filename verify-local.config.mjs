@@ -131,7 +131,7 @@ const DREAMER_PASSES = [
 // tests compare the file with it, so an engine edit is a deliberate change of
 // this pin. No other repository is read or compared.
 export const ENGINE_SHA256 =
-  'bcb521d64c7e1cc8872784b50c8101a7614dadee19c89a395e09d04ec231d7b2';
+  '269adfe5e46a3a6c7b21bf220d5a5c9a85859fe8287974d3c0253a93ac8acdbf';
 
 export default {
   mainBranch: 'master',

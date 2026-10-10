@@ -99,7 +99,7 @@ describe('pre-push hook', () => {
 
     const result = repo.push('--quiet', 'origin', 'feature');
     expect(result.status).toBe(0);
-    expect(result.output).toContain('no proof yet; run npm run verify:pr before asking for a merge');
+    expect(result.output).toContain('no proof yet; run npm run verify:pr before pushing');
     expect(result.output).toContain('fast checks passed');
     expect(result.elapsed).toBeLessThan(10_000);
     expect(repo.git('ls-remote', 'origin', 'refs/heads/feature')).not.toBe('');
