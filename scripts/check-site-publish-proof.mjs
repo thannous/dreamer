@@ -16,7 +16,7 @@
 //   - the proof is a `pr` proof (proof-kind): only a release proof unlocks a
 //     publish,
 //   - the release did not pass, or is incomplete because a specialised check
-//     could not run and was not proven on the owner machine (proof-passed),
+//     could not run and has no --external owner-machine evidence (proof-passed),
 //   - the proof was written for another commit with the same tree, such as a
 //     branch before its squash (proof-matches-head),
 //   - an external entry is not a specialised check, or its evidence does not
@@ -65,8 +65,8 @@ export async function checkSitePublishProof({ root = defaultRoot, gitEnv, fetch 
     fetch,
     mainBranch: MAIN_BRANCH,
     // External evidence is checked again against the externalSources of the
-    // config committed at HEAD (External CI, regle-commune-livraison.md 13.1:
-    // none, so only owner-machine evidence counts).
+    // config committed at HEAD (empty here, so only owner-machine evidence
+    // counts).
     externalSources: await loadExternalSources({ cwd: root, env: gitVariables }),
   });
   const { head, tree, failures } = release;

@@ -1,6 +1,6 @@
 'use strict';
 
-// Contract of the pre-push hook (common delivery rule v2, section 3), run with
+// Contract of the pre-push hook (AGENTS.md, "Livraison"), run with
 // the real .githooks/pre-push, scripts/verify-local.mjs and
 // verify-local.config.mjs in a fixture repository: a deletion or a push with no
 // new commit runs nothing; a push takes a few seconds; forbidden files and
