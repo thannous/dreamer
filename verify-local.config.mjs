@@ -190,6 +190,12 @@ export default {
     // The Vercel project config the CLI deploy reads, and its ignored-build step.
     'vercel.json',
     'scripts/vercel-ignore-build.mjs',
+    // The shared test-login guard (test-supabase-guard): production refused,
+    // test projects allowlisted, fail closed.
+    'scripts/test-supabase-guard.mjs',
+    'scripts/test-test-supabase-guard.mjs',
+    'scripts/test-supabase-targets.json',
+    '.env.test.example',
     // The suites ci-contracts runs.
     '.circleci/tests/classify-changes.test.sh',
     '.circleci/tests/shared-build-impact.test.py',
@@ -223,6 +229,19 @@ export default {
         'scripts/vercel-ignore-build.mjs',
         // docs-deploy.test.ts reads the real Cloudflare Pages config.
         'docs-src/config/cloudflare-pages.json',
+      ],
+    },
+    // The test-login guard: refuses the production Supabase project and any
+    // project missing from the allowlist, before any network call.
+    {
+      name: 'test-supabase-guard',
+      command: 'node --test scripts/test-test-supabase-guard.mjs',
+      inputs: [
+        'scripts/test-supabase-guard.mjs',
+        'scripts/test-test-supabase-guard.mjs',
+        'scripts/test-supabase-targets.json',
+        // The production ref is pinned against app.json.
+        'app.json',
       ],
     },
     { name: 'typecheck-app', command: 'npm run typecheck:app', exclude: DOCS },
