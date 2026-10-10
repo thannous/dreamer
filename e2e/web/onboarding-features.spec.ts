@@ -195,31 +195,28 @@ test.describe('feature sheet previews', () => {
     }
   });
 
-  test('the constellation accumulates symbols and replays the nights behind a recurring motif', async ({ page }, testInfo) => {
+  test('the constellation example hands the three nights to the reader, one symbol at a time', async ({ page }, testInfo) => {
     await openDemo(page, 'connect');
     const selection = page.getByTestId('component.onboarding.constellation.selection');
-    // The example opens where the story ended: on Saturday, with all three dreams seen.
+    // The example is the chapter's promise, not a replay: no night stepper, all three nights at once.
+    await expect(page.getByText('With your dreams.')).toBeVisible();
+    await expect(page.getByTestId('btn.onboarding.constellation.previous')).toHaveCount(0);
+    await expect(page.getByTestId('btn.onboarding.constellation.next')).toHaveCount(0);
+    // The house is the thread: each night tells its own part of it.
     await page.getByTestId('btn.onboarding.constellation.symbol.house').click();
     await expect(selection).toContainText('Returns every night');
-    await expect(selection).toContainText('Saturday · Back again. A cat guards the doorstep.');
-    await expect(page.getByTestId('btn.onboarding.constellation.next')).toBeDisabled();
-    await page.getByTestId('btn.onboarding.constellation.previous').click();
-    await page.getByTestId('btn.onboarding.constellation.previous').click();
-    await expect(selection).toContainText('First appearance');
     await expect(selection).toContainText('Monday · Behind the door, an unknown house.');
-    await page.getByTestId('btn.onboarding.constellation.next').click();
-    await expect(selection).toContainText('Returns every night');
     await expect(selection).toContainText('Thursday · It returns, by the water.');
-    await page.getByTestId('btn.onboarding.constellation.next').click();
-    await expect(selection).toContainText('Returns every night');
+    await expect(selection).toContainText('Saturday · Back again. A cat guards the doorstep.');
+    // The other symbols pass once and say something different from the house.
     await page.getByTestId('btn.onboarding.constellation.symbol.door').click();
     await expect(selection).toContainText('Only one night');
     await expect(selection).toContainText('Monday · The blue door opens. The house appears.');
-    await expect(selection).not.toContainText('Thursday · It returns, by the water.');
+    await expect(selection).not.toContainText('Thursday');
     await page.screenshot({ path: testInfo.outputPath('constellation-related-dreams.png') });
-    await page.getByTestId('btn.onboarding.constellation.previous').click();
-    await page.getByTestId('btn.onboarding.constellation.symbol.house').click();
-    await expect(selection).toContainText('Returns every night');
+    await page.getByTestId('btn.onboarding.constellation.symbol.cat').click();
+    await expect(selection).toContainText('First appearance');
+    await expect(selection).toContainText('Saturday · A cat waits for you, as if it knew you.');
     await page.getByTestId('btn.onboarding.feature.close').click();
   });
 

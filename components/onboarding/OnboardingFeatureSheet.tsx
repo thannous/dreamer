@@ -45,7 +45,7 @@ function FeatureNarrative({ feature, tokens, stageHeight, frameHeight, onStoryCh
   const body = t(`onboarding.narrative.${feature}.${scene}.body`);
   const sceneHeight = demo ? stageHeight : frameHeight - SUBTITLE_SPACE;
   const visual = feature === 'capture' ? <CaptureStory step={story.step} reduced={story.reduced} tokens={tokens} stageHeight={sceneHeight} /> :
-    feature === 'connect' ? <SymbolConstellation tokens={tokens} storyStep={demo ? undefined : story.step} stageHeight={sceneHeight} startAt={story.lastScene} /> :
+    feature === 'connect' ? <SymbolConstellation tokens={tokens} storyStep={demo ? undefined : story.step} stageHeight={sceneHeight} /> :
       <DialogueStory step={story.step} tokens={tokens} stageHeight={sceneHeight} />;
   return <View style={styles.narrative}>
     <View key={story.step} style={[styles.copy, !demo && styles.storyCopy]}>

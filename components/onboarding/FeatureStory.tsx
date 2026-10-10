@@ -17,18 +17,15 @@ const SEGMENTS = STORY_DEMO_STEP + 1;
 export function useFeatureStory() {
   const reduced = useReducedMotion();
   const [step, setStep] = useState(0);
-  // The example picks up where the told story stopped.
-  const [lastScene, setLastScene] = useState(0);
   const seek = (next: number) => {
     const target = Math.max(0, Math.min(STORY_DEMO_STEP, next));
     if (target === step) return;
-    setLastScene(target < STORY_DEMO_STEP ? target : Math.min(step, STORY_DEMO_STEP - 1));
     // One soft tick per page turn, in the same frame as the new slide.
     if (process.env.EXPO_OS !== 'web') void Haptics.selectionAsync();
     setStep(target);
   };
   return {
-    step, reduced, lastScene,
+    step, reduced,
     next: () => seek(step + 1),
   };
 }
