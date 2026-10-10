@@ -17,10 +17,12 @@ export function getNoctaliaPalette(mode: ThemeMode) {
     line: dark ? '#514637' : 'rgba(126, 83, 49, 0.25)',
     overlay: dark ? 'rgba(0, 0, 0, 0.64)' : 'rgba(38, 27, 28, 0.44)',
     onAccent: dark ? '#382D35' : '#FFF9EF',
-    // The least veiled point still gives every ordinary text token AA contrast
-    // over a pure-white night image or pure-black paper image (the worst cases).
+    // Dreamer uses curated paintings, with contrast measured behind actual copy.
+    // Preserve their colour and detail rather than flattening them into the ground.
     backgroundArtwork: {
-      scrim: dark ? 'rgba(3, 4, 13, 0.78)' : 'rgba(240, 228, 212, 0.92)',
+      scrim: dark ? 'rgba(3, 4, 13, 0.75)' : 'rgba(240, 228, 212, 0.90)',
+      reveal: dark ? 'rgba(3, 4, 13, 0.24)' : 'rgba(240, 228, 212, 0.48)',
+      transparent: dark ? 'rgba(3, 4, 13, 0)' : 'rgba(240, 228, 212, 0)',
     },
     // Fixed contrast on artwork in every theme, including a pure-white or pure-black image:
     // the title sits on a near-opaque band of the theme's own ground (night, or paper on the

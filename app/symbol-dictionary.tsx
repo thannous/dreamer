@@ -340,7 +340,10 @@ export default function SymbolDictionaryScreen() {
           accessibilityRole="button"
           accessibilityLabel={guideCopy.screenTitle}
           testID="btn.symbolDictionary.guides"
-          style={({ pressed }) => [styles.guidesLink, pressed && styles.pressed]}
+          style={({ pressed }) => [styles.guidesLink, {
+            backgroundColor: noctalia.surface.raised,
+            borderColor: noctalia.surface.border,
+          }, pressed && styles.pressed]}
         >
           <Text style={[styles.guidesText, { color: noctalia.accent.text }]}>
             {t("explore.guides.title")}
@@ -498,7 +501,7 @@ const styles = StyleSheet.create({
   headerRow: { flexDirection: "row", flexWrap: "wrap", alignItems: "center", columnGap: 8, rowGap: 4, marginBottom: 8 },
   backButton: { width: 44, minHeight: 44, alignItems: "center", justifyContent: "center", marginLeft: -12 },
   headerTitle: { flex: 1, flexBasis: 140, minWidth: 0, fontFamily: Fonts.fraunces.semiBold, fontSize: 34, lineHeight: 40, letterSpacing: -0.3 },
-  guidesLink: { minHeight: 44, justifyContent: "center", maxWidth: "100%", paddingHorizontal: 4 },
+  guidesLink: { minHeight: 44, justifyContent: "center", maxWidth: "100%", paddingHorizontal: 12, borderRadius: 22, borderWidth: StyleSheet.hairlineWidth },
   guidesText: { fontFamily: Fonts.spaceGrotesk.medium, fontSize: 15, lineHeight: 22, flexShrink: 1 },
   popularBlock: { marginTop: 10, marginBottom: 6 },
   eyebrowRow: { flexDirection: "row", alignItems: "center", gap: 10, marginBottom: 12 },

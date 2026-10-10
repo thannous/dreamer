@@ -478,7 +478,7 @@ export default function PaywallScreen() {
             <Pressable
               onPress={handleClose}
               disabled={busy}
-              style={({ pressed }) => [styles.closeButton, pressed && styles.closeButtonPressed]}
+              style={({ pressed }) => [styles.closeButton, { backgroundColor: noctalia.surface.raised }, pressed && styles.closeButtonPressed]}
               accessibilityRole="button"
               testID={TID.Button.PaywallClose}
             >
@@ -561,7 +561,7 @@ export default function PaywallScreen() {
             <Pressable
               onPress={handleClose}
               disabled={busy}
-              style={({ pressed }) => [styles.closeButton, pressed && styles.closeButtonPressed]}
+              style={({ pressed }) => [styles.closeButton, { backgroundColor: noctalia.surface.raised }, pressed && styles.closeButtonPressed]}
               accessibilityRole="button"
               testID={TID.Button.PaywallClose}
             >
@@ -978,6 +978,7 @@ const styles = StyleSheet.create({
     minHeight: 44,
     minWidth: 44,
     paddingHorizontal: 8,
+    borderRadius: 22,
     alignItems: 'center',
     justifyContent: 'center',
   },
