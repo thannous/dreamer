@@ -37,6 +37,7 @@ describe('script catalog', () => {
     expect(classifyScript('test:auth-setup')).toBe('Test branch E2E');
     expect(classifyScript('test:e2e:branch')).toBe('Test branch E2E');
     expect(classifyScript('test:env:check')).toBe('Test branch E2E');
+    expect(classifyScript('test:e2e:branch:mobile')).toBe('Test branch E2E');
     expect(scriptSafety('test:seed-users')).toBe('writes the Supabase test branch (accounts, dreams, quota, tier)');
     expect(scriptSafety('test:auth-setup')).toBe('writes session tokens to .auth/');
     expect(scriptSafety('test:e2e:branch')).toBe('writes session tokens to .auth/');

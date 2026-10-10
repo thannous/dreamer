@@ -25,7 +25,7 @@ const FAMILY_DESCRIPTIONS = {
 function classifyScript(name) {
   if (/^test:e2e:web(?::|$)/.test(name)) return 'Web E2E';
   if (name === 'test:e2e:backend' || name === 'start:backend-e2e') return 'Backend E2E';
-  if (['test:e2e:branch', 'test:seed-users', 'test:auth-setup', 'test:env:check'].includes(name)) return 'Test branch E2E';
+  if (/^test:e2e:branch(?::|$)/.test(name) || ['test:seed-users', 'test:auth-setup', 'test:env:check'].includes(name)) return 'Test branch E2E';
   if (name.startsWith('test:e2e')) return 'Android E2E';
   if (name.startsWith('release:') || name === 'eas-build-pre-install') return 'Mobile release';
   if (name.startsWith('android:')) return 'Android';

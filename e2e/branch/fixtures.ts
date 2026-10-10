@@ -25,6 +25,17 @@ export const test = base.extend<{ account: TestAccount; productionGuard: void }>
       }
       return route.continue();
     });
+    // context.route does not see WebSockets: Realtime (wss://<ref>.supabase.co)
+    // goes through routeWebSocket. Production sockets are closed, the rest
+    // are connected to the real server unchanged.
+    await context.routeWebSocket(/.*/, (ws) => {
+      const host = new URL(ws.url()).hostname;
+      if (host.includes(PRODUCTION_REF)) {
+        blocked.push(`ws:${host}`);
+        return ws.close({ code: 1008, reason: 'production Supabase is blocked in branch E2E' });
+      }
+      ws.connectToServer();
+    });
     await provide();
     expect(blocked, 'No request may reach the production Supabase project').toEqual([]);
   }, { auto: true }],

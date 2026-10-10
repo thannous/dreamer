@@ -3,7 +3,7 @@
 // Everything goes through runGuarded: production and unlisted projects are
 // refused before any request, and only e2e+free@ / e2e+premium@<domain> are
 // touched. Idempotent: an existing account gets its password reset, its dreams
-// and quota usage deleted and its tier set again; a missing one is created.
+// quota usage and HD credits deleted and its tier set again; a missing one is created.
 // Premium mirrors the local backend fixture (e2e/backend/fixtures.ts): the
 // service-role RPC apply_subscription_state_update with p_tier 'plus' and
 // p_is_active true. Free is set back with p_tier 'free', p_is_active false.
@@ -97,6 +97,9 @@ export function makeSeedAction(secrets, { log = console.log, randomUUID = nodeRa
       // Quota rows are counted by user and month even when the dream is gone
       // (no cascade), so a reset clears them too.
       await call(fetch, target, key, 'DELETE', `/rest/v1/quota_usage?user_id=eq.${encodeURIComponent(id)}`, undefined, secretValues, { Prefer: 'return=minimal' });
+      // HD illustration credits (public.hd_image_credits, migration
+      // 20260916185856) are counted per user and month with no link to dreams.
+      await call(fetch, target, key, 'DELETE', `/rest/v1/hd_image_credits?user_id=eq.${encodeURIComponent(id)}`, undefined, secretValues, { Prefer: 'return=minimal' });
       await call(fetch, target, key, 'POST', '/rest/v1/rpc/apply_subscription_state_update', {
         p_user_id: id,
         ...TIER_STATE[tier],
@@ -104,7 +107,7 @@ export function makeSeedAction(secrets, { log = console.log, randomUUID = nodeRa
         p_source_event_id: randomUUID(),
       }, secretValues);
       const action = existing ? 'reset' : 'created';
-      log(`[test-seed-users] ${email}: ${action}, tier ${TIER_STATE[tier].p_tier}, dreams and quota usage cleared (${target.url}).`);
+      log(`[test-seed-users] ${email}: ${action}, tier ${TIER_STATE[tier].p_tier}, dreams, quota usage and HD credits cleared (${target.url}).`);
       results.push({ tier, email, id, action });
     }
     return results;

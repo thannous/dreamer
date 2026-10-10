@@ -6,7 +6,8 @@ import path from 'node:path';
 import { _runGuardedWithListsForTests, TestTargetRefused } from './test-supabase-guard.mjs';
 import { TIER_STATE, keyHeaders, main as seedMain, makeSeedAction, readSeedSecrets } from './test-seed-users.mjs';
 import { BRANCH_WEB_ORIGIN, BRANCH_WEB_PORT, main as authMain, makeAuthAction, readAuthSecrets, storageKey } from './test-auth-setup.mjs';
-import { branchAppEnv, main as startMain } from './start-branch-e2e.mjs';
+import { PASSTHROUGH_EXPO_PUBLIC, branchAppEnv, main as startMain } from './start-branch-e2e.mjs';
+import { FLOW, main as maestroMain, maestroEnv } from './maestro-branch-sign-in.mjs';
 
 const PROD = 'usuyppgsmmowzizhaoqj';
 const REF = 'abcdefghijklmnopqrst';
@@ -28,7 +29,7 @@ const prodEnv = () => env({ E2E_SUPABASE_URL: `https://${PROD}.supabase.co`, E2E
 
 // A fake test branch: GoTrue admin + PostgREST + token endpoint, recording calls.
 function fakeBranch({ users = [], failRpc = false } = {}) {
-  const state = { users: users.map((user) => ({ ...user })), dreamsDeleted: [], quotaDeleted: [], rpc: [], calls: [], nextId: 1 };
+  const state = { users: users.map((user) => ({ ...user })), dreamsDeleted: [], quotaDeleted: [], hdDeleted: [], rpc: [], calls: [], nextId: 1 };
   const json = (status, body) => new Response(body === undefined ? null : JSON.stringify(body), { status });
   const fetch = async (input, init = {}) => {
     const url = new URL(input);
@@ -54,6 +55,10 @@ function fakeBranch({ users = [], failRpc = false } = {}) {
     }
     if (url.pathname === '/rest/v1/dreams' && method === 'DELETE') {
       state.dreamsDeleted.push(url.searchParams.get('user_id'));
+      return json(204);
+    }
+    if (url.pathname === '/rest/v1/hd_image_credits' && method === 'DELETE') {
+      state.hdDeleted.push(url.searchParams.get('user_id'));
       return json(204);
     }
     if (url.pathname === '/rest/v1/quota_usage' && method === 'DELETE') {
@@ -89,6 +94,10 @@ test('seed creates both accounts, confirms them, clears dreams and sets the tier
   ]);
   assert.deepEqual(branch.state.dreamsDeleted, ['eq.u1', 'eq.u2']);
   assert.deepEqual(branch.state.quotaDeleted, ['eq.u1', 'eq.u2']);
+  assert.deepEqual(branch.state.hdDeleted, ['eq.u1', 'eq.u2']);
+  const hdMigration = fs.readFileSync(new URL('../supabase/migrations/20260916185856_hd_illustration_monthly_quota.sql', import.meta.url), 'utf8');
+  assert.match(hdMigration, /create table public\.hd_image_credits \([\s\S]*?user_id uuid not null/);
+  assert.match(hdMigration, /grant all on public\.hd_image_credits to service_role;/);
   // Same argument names and premium values as e2e/backend/fixtures.ts.
   assert.deepEqual(branch.state.rpc, [
     { p_user_id: 'u1', p_tier: 'free', p_is_active: false, p_source: 'e2e-seed', p_source_event_id: 'event-id' },
@@ -223,6 +232,29 @@ test('start-branch-e2e gives the app only the branch URL, anon key and functions
   assert.equal(child.EXPO_PUBLIC_REVENUECAT_WEB_KEY, undefined);
   assert.equal(child.EXPO_PUBLIC_REVENUECAT_ANDROID_KEY, undefined);
   assert.equal(child.PATH, '/bin');
+  // Only the allowlisted EXPO_PUBLIC_* flags pass; every other one is dropped.
+  const shell = {
+    PATH: '/bin',
+    EXPO_PUBLIC_HD_ILLUSTRATIONS_ENABLED: 'true',
+    EXPO_PUBLIC_TURNSTILE_SITE_KEY: 'prod-site-key',
+    EXPO_PUBLIC_GOOGLE_WEB_CLIENT_ID: 'prod-client',
+    EXPO_PUBLIC_SUBSCRIPTION_QA_LAB: 'true',
+    EXPO_PUBLIC_MOCK_PERSISTENCE: 'true',
+    EXPO_PUBLIC_SOMETHING_NEW: 'x',
+  };
+  const filtered = branchAppEnv({ ref: REF, url: `https://${REF}.supabase.co` }, env(), shell);
+  const publicNames = Object.keys(filtered).filter((name) => name.startsWith('EXPO_PUBLIC_')).sort();
+  assert.deepEqual(publicNames, [
+    'EXPO_PUBLIC_API_URL',
+    'EXPO_PUBLIC_HD_ILLUSTRATIONS_ENABLED',
+    'EXPO_PUBLIC_MOCK_MODE',
+    'EXPO_PUBLIC_SUPABASE_ANON_KEY',
+    'EXPO_PUBLIC_SUPABASE_FUNCTION_JWT',
+    'EXPO_PUBLIC_SUPABASE_URL',
+  ]);
+  assert.ok(PASSTHROUGH_EXPO_PUBLIC.every((name) => !/KEY|URL|TOKEN|SECRET|CLIENT|JWT/.test(name)));
+  // A service key in the anon slot never reaches the bundle.
+  assert.throws(() => branchAppEnv({ ref: REF, url: `https://${REF}.supabase.co` }, env({ E2E_SUPABASE_ANON_KEY: SERVICE }), shell), TestTargetRefused);
   assert.ok(!JSON.stringify(child).includes(SERVICE));
   assert.ok(!JSON.stringify(child).includes(FREE_PW));
   assert.ok(!JSON.stringify(child).includes(PROD));
@@ -230,4 +262,19 @@ test('start-branch-e2e gives the app only the branch URL, anon key and functions
   assert.throws(() => startMain([], { env: prodEnv(), spawnImpl: () => { spawned = true; } }), TestTargetRefused);
   assert.throws(() => startMain([], { env: env(), spawnImpl: () => { spawned = true; } }), TestTargetRefused);
   assert.equal(spawned, false);
+});
+
+test('maestro wrapper: credentials from the loaded env, only as MAESTRO_* env vars, guard first', () => {
+  const child = maestroEnv('premium', env({ E2E_ACCOUNT_DOMAIN: 'Example.com' }), { PATH: '/bin', E2E_SUPABASE_SERVICE_ROLE_KEY: SERVICE, MAESTRO_E2E_EMAIL: 'stale@example.com' });
+  assert.deepEqual(child, { PATH: '/bin', MAESTRO_E2E_EMAIL: 'e2e+premium@example.com', MAESTRO_E2E_PASSWORD: PREMIUM_PW });
+  assert.throws(() => maestroEnv('admin', env()), /tier must be/);
+  assert.throws(() => maestroEnv('free', env({ E2E_FREE_PASSWORD: '' })), /E2E_FREE_PASSWORD/);
+  assert.throws(() => maestroEnv('free', env({ E2E_ACCOUNT_DOMAIN: 'thanh@example.com' })), TestTargetRefused);
+  const calls = [];
+  const spawnImpl = (...args) => { calls.push(args); };
+  assert.throws(() => maestroMain(['free'], { env: prodEnv(), spawnImpl }), TestTargetRefused);
+  assert.throws(() => maestroMain(['free'], { env: env(), spawnImpl }), TestTargetRefused, 'committed allowlist is empty');
+  assert.equal(calls.length, 0);
+  assert.equal(FLOW, 'maestro/e2e-account-sign-in.yml');
+  assert.ok(fs.existsSync(new URL(`../${FLOW}`, import.meta.url)));
 });

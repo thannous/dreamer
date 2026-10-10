@@ -6,6 +6,10 @@
 # (node scripts/start-branch-e2e.mjs); the account does not exist elsewhere.
 appId: ${APP_ID || "com.tanuki75.noctalia"}
 ---
+# Fail fast when the credentials were not loaded (see test-login.md).
+- assertTrue:
+    condition: ${/^e2e\+(free|premium)@[a-z0-9.-]+$/.test(String(MAESTRO_E2E_EMAIL).toLowerCase()) && String(MAESTRO_E2E_PASSWORD).length >= 12}
+    label: MAESTRO_E2E_EMAIL is a shared test account and MAESTRO_E2E_PASSWORD is set
 # A device that is already signed in (any account) is signed out first, so a
 # rerun signs in and checks the requested account instead of timing out. The
 # account's data stays on the server.
@@ -84,6 +88,10 @@ appId: ${APP_ID || "com.tanuki75.noctalia"}
     visible:
       id: text.auth.email
     timeout: 45000
-- assertVisible:
+# The signed-in account must be exactly the requested one (autofill or a
+# saved credential could sign in the other shared account).
+- copyTextFrom:
     id: text.auth.email
-    text: "e2e\\+(free|premium)@.*"
+- assertTrue:
+    condition: ${maestro.copiedText.trim().toLowerCase() === String(MAESTRO_E2E_EMAIL).trim().toLowerCase()}
+    label: the signed-in email equals MAESTRO_E2E_EMAIL

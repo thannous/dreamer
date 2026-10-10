@@ -7,6 +7,7 @@ import { execFileSync } from 'node:child_process';
 import { fileURLToPath } from 'node:url';
 import {
   _assertWithListsForTests,
+  assertKeyRole,
   _runGuardedWithListsForTests,
   FORBIDDEN_PROJECT_REFS,
   TARGETS_FILE,
@@ -164,6 +165,39 @@ test('refuses a project ref or a legacy JWT key naming another project', () => {
   refused(() => _assertWithListsForTests(env({ E2E_SUPABASE_PROJECT_REF: OTHER_REF }), allowed), /E2E_SUPABASE_PROJECT_REF/);
   refused(() => _assertWithListsForTests(env({ E2E_SUPABASE_SERVICE_ROLE_KEY: jwt({ ref: OTHER_REF, role: 'service_role' }) }), allowed), /SERVICE_ROLE_KEY belongs to another/);
   assert.equal(_assertWithListsForTests(env({ E2E_SUPABASE_ANON_KEY: jwt({ ref: TEST_REF, role: 'anon' }) }), allowed).ref, TEST_REF);
+});
+
+test('key slots: the anon slot takes only publishable/anon keys, the service slot only secret/service_role keys', () => {
+  // Legacy JWTs: the role claim is decoded and must match the slot.
+  assert.equal(_assertWithListsForTests(env({ E2E_SUPABASE_ANON_KEY: jwt({ ref: TEST_REF, role: 'anon' }), E2E_SUPABASE_SERVICE_ROLE_KEY: jwt({ ref: TEST_REF, role: 'service_role' }) }), allowed).ref, TEST_REF);
+  refused(() => _assertWithListsForTests(env({ E2E_SUPABASE_ANON_KEY: jwt({ ref: TEST_REF, role: 'service_role' }) }), allowed), /ANON_KEY holds a JWT with role "service_role"/);
+  refused(() => _assertWithListsForTests(env({ E2E_SUPABASE_SERVICE_ROLE_KEY: jwt({ ref: TEST_REF, role: 'anon' }) }), allowed), /SERVICE_ROLE_KEY holds a JWT with role "anon"/);
+  refused(() => _assertWithListsForTests(env({ E2E_SUPABASE_ANON_KEY: jwt({ ref: TEST_REF }) }), allowed), /role "undefined"/);
+  refused(() => _assertWithListsForTests(env({ E2E_SUPABASE_ANON_KEY: jwt({ ref: TEST_REF, role: 'authenticated' }) }), allowed), /ANON_KEY/);
+  // New formats: the prefix decides.
+  refused(() => _assertWithListsForTests(env({ E2E_SUPABASE_ANON_KEY: 'sb_secret_abc' }), allowed), /ANON_KEY must be a sb_publishable_/);
+  refused(() => _assertWithListsForTests(env({ E2E_SUPABASE_SERVICE_ROLE_KEY: 'sb_publishable_abc' }), allowed), /SERVICE_ROLE_KEY must be a sb_secret_/);
+  // Swapped keys are refused in both slots.
+  refused(() => _assertWithListsForTests(env({ E2E_SUPABASE_ANON_KEY: 'sb_secret_test', E2E_SUPABASE_SERVICE_ROLE_KEY: 'sb_publishable_test' }), allowed), /ANON_KEY/);
+  // Unknown or malformed values.
+  for (const bad of ['plain-string', 'sb_publishable_', 'sb_publishable_has space', 'sb_other_abc', 'a.b.c', 'eyJ.notjson.x']) {
+    refused(() => _assertWithListsForTests(env({ E2E_SUPABASE_ANON_KEY: bad }), allowed), /ANON_KEY/);
+  }
+  // The runtime entry point applies it too (before the allowlist would refuse).
+  assert.throws(() => assertKeyRole('E2E_SUPABASE_ANON_KEY', jwt({ ref: TEST_REF, role: 'service_role' })), TestTargetRefused);
+  assert.doesNotThrow(() => assertKeyRole('E2E_SUPABASE_ANON_KEY', 'sb_publishable_ok'));
+  assert.doesNotThrow(() => assertKeyRole('E2E_SUPABASE_SERVICE_ROLE_KEY', 'sb_secret_ok'));
+});
+
+test('the guarded fetch never follows redirects', async () => {
+  const seen = [];
+  await _runGuardedWithListsForTests(env(), async ({ fetch: scoped, target }) => {
+    await scoped(`${target.url}/auth/v1/health`, { method: 'POST', redirect: 'follow', headers: { a: 'b' } });
+    await scoped(`${target.url}/rest/v1/x`);
+  }, { ...allowed, fetch: async (input, init) => { seen.push(init); return new Response('{}'); } });
+  assert.deepEqual(seen.map((init) => init.redirect), ['error', 'error']);
+  assert.equal(seen[0].method, 'POST');
+  assert.deepEqual(seen[0].headers, { a: 'b' });
 });
 
 test('the guard runs before any network call', async () => {

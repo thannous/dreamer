@@ -25,7 +25,7 @@ Every test-login script must call `runGuarded(env, action)` before any network
 call. The action receives `{ target, accounts, fetch }`: the canonical
 `target.url`, only the two accounts built from `E2E_ACCOUNT_DOMAIN`
 (`e2e+free@` and `e2e+premium@`), and a `fetch` that refuses any request whose
-origin is not the target. It must use those and nothing else: never read
+origin is not the target and never follows a redirect (`redirect: 'error'`). It must use those and nothing else: never read
 `E2E_SUPABASE_URL` itself, never take another address (a static test checks every
 `scripts/test-*seed*` / `scripts/test-*auth*` script). The policy is not
 configurable by callers: the production ref and key are pinned in the script, and
@@ -43,6 +43,11 @@ refuses, with no override:
 - a URL that is not byte for byte `https://<ref>.supabase.co` (one trailing slash
   allowed; no port, path, case change, whitespace, custom domain or local URL);
 - a missing or invalid `E2E_ACCOUNT_DOMAIN` (before the action runs);
+- a key in the wrong slot: `E2E_SUPABASE_ANON_KEY` (bundled into the app) must be
+  `sb_publishable_...` or a legacy JWT with `role: anon`;
+  `E2E_SUPABASE_SERVICE_ROLE_KEY` must be `sb_secret_...` or a legacy JWT with
+  `role: service_role`; anything else (swapped keys, other roles, unknown format)
+  is refused;
 - `E2E_SUPABASE_PROJECT_REF` missing or different from the URL ref, and a legacy
   JWT key whose `ref` claim names another project;
 - any account email other than `e2e+free@<domain>` and `e2e+premium@<domain>`.
@@ -117,7 +122,9 @@ before any request and print no key, password or token.
    (`POST`, `email_confirm: true`) or reset its password (`PUT`), delete its dreams
    (`DELETE /rest/v1/dreams?user_id=eq.<id>`, as the local fixture does) and its
    quota usage (`DELETE /rest/v1/quota_usage?user_id=eq.<id>`: those rows are
-   counted per month even when the dream is gone), then set
+   counted per month even when the dream is gone) and its HD illustration credits
+   (`DELETE /rest/v1/hd_image_credits?user_id=eq.<id>`, table of migration
+   `20260916185856`, also counted per month), then set
    its tier with `apply_subscription_state_update`: `p_tier 'plus', p_is_active
    true` for premium (the fixture's values), `p_tier 'free', p_is_active false` for
    free, `p_source 'e2e-seed'`, a fresh `p_source_event_id`. Idempotent: a second run
@@ -147,7 +154,10 @@ with that URL, the branch publishable key, the branch functions URL
 (`https://<ref>.functions.supabase.co/api`), `EXPO_PUBLIC_SUPABASE_FUNCTION_JWT` set to
 the branch key (else `lib/http.ts` falls back to the production legacy JWT in
 `app.json`), mock mode off and `EXPO_NO_DOTENV=1` (no `.env.local` mixed in); no
-`E2E_*` or `EXPO_PUBLIC_REVENUECAT_*` variable reaches Metro. Edge Functions want
+`E2E_*` variable reaches Metro. Of the shell's `EXPO_PUBLIC_*` values (inlined into
+the bundle) only an explicit allowlist of feature flags passes
+(`PASSTHROUGH_EXPO_PUBLIC` in the script); keys, endpoints, RevenueCat, Google,
+Turnstile, mock and QA switches are dropped. Edge Functions want
 a JWT: use the branch legacy anon JWT as `E2E_SUPABASE_ANON_KEY` for journeys
 that call them (the guard checks its `ref` claim names the branch); with a
 publishable key, function calls may answer 401. Reports record `dirty` like the
@@ -158,7 +168,9 @@ import { test, expect } from './fixtures'; // e2e/branch/fixtures.ts
 test.use({ account: 'premium' }); // starts signed in from .auth/premium.json
 ```
 
-The fixture fails a test if any request reaches the production project. Traces are
+The fixture fails a test if any request reaches the production project: HTTP
+through `context.route` and Realtime WebSockets (`wss://<prod-ref>.supabase.co`)
+through `context.routeWebSocket`; both are aborted before they leave. Traces are
 off (they would record tokens). `e2e/branch/session.spec.ts` checks both accounts
 open signed in. The TesterArmy engine (`tools/e2e`) keeps its mocked services; it
 can load the same `.auth/<account>.json` later if a real-backend TesterArmy journey
@@ -169,17 +181,28 @@ is wanted.
 No deep link and no app code. `maestro/e2e-account-sign-in.yml` opens Settings and
 runs `maestro/subflows/sign-in-e2e-account.yml`, which types the account into the
 existing EmailAuthCard form (`settings-account-open-signin`, `input.auth.email`,
-`input.auth.password`, `btn.auth.signIn`) and checks `text.auth.email` shows an
-`e2e+free@`/`e2e+premium@` address. A device already signed in (any account) is
-signed out first (`btn.auth.signOut`), so reruns work; use a dev client kept for
-tests. Credentials come only from the shell:
-Maestro reads `MAESTRO_*` variables. On the owner machine, with a dev client on
-Metro started against the branch:
+`input.auth.password`, `btn.auth.signIn`), then copies `text.auth.email` and
+asserts it equals `MAESTRO_E2E_EMAIL` exactly (so autofill cannot sign in the
+other shared account unnoticed). It fails fast if the credentials were not loaded.
+A device already signed in (any account) is signed out first (`btn.auth.signOut`),
+so reruns work; use a dev client kept for tests.
+
+Credentials are never typed or expanded in the shell. `npm run
+test:e2e:branch:mobile -- <free|premium>` (`scripts/maestro-branch-sign-in.mjs`)
+loads `.env.test.local` with the guard's own loader, runs the guard (production
+and unlisted projects refused), builds the email from `E2E_ACCOUNT_DOMAIN`, and
+starts `maestro test` with only `MAESTRO_E2E_EMAIL` / `MAESTRO_E2E_PASSWORD` in its
+environment (Maestro reads `MAESTRO_*` shell variables; nothing on the command
+line, no other `E2E_*` value). Metro stays in the foreground, so use two terminals
+on the owner machine, with the dev client connected to that Metro:
 
 ```sh
-node scripts/start-branch-e2e.mjs            # guarded; refuses production
-MAESTRO_E2E_EMAIL="e2e+free@$E2E_ACCOUNT_DOMAIN" MAESTRO_E2E_PASSWORD="$E2E_FREE_PASSWORD" \
-  maestro test maestro/e2e-account-sign-in.yml
+# terminal 1: Metro against the branch (guarded; refuses production); leave it running
+node scripts/start-branch-e2e.mjs
+
+# terminal 2: once Metro is up and the dev client is connected
+npm run test:e2e:branch:mobile -- free
+npm run test:e2e:branch:mobile -- premium
 ```
 
 A release build talks to production, where these accounts do not exist, so the

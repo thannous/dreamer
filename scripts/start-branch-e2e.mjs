@@ -7,18 +7,37 @@
 import path from 'node:path';
 import { spawn } from 'node:child_process';
 import { fileURLToPath } from 'node:url';
-import { assertTestSupabaseTarget, readTestEnv } from './test-supabase-guard.mjs';
+import { assertKeyRole, assertTestSupabaseTarget, readTestEnv } from './test-supabase-guard.mjs';
 
 const SCRIPT_DIR = path.dirname(fileURLToPath(import.meta.url));
+
+// EXPO_PUBLIC_* values are inlined into the bundle, so only these feature
+// flags pass through from the shell; every other EXPO_PUBLIC_* (endpoints,
+// keys, RevenueCat, Google, Turnstile, mock and QA switches) is dropped and the
+// Supabase ones are set below from the guarded target.
+export const PASSTHROUGH_EXPO_PUBLIC = Object.freeze([
+  'EXPO_PUBLIC_ANALYSIS_JOBS_ENABLED',
+  'EXPO_PUBLIC_ANALYTICS_DEBUG',
+  'EXPO_PUBLIC_DEBUG_CHAT',
+  'EXPO_PUBLIC_HD_ILLUSTRATIONS_ENABLED',
+  'EXPO_PUBLIC_ONBOARDING_FEATURE_SHEETS_ENABLED',
+  'EXPO_PUBLIC_PERFORMANCE_TRACING',
+  'EXPO_PUBLIC_REFERENCE_IMAGES_ENABLED',
+  'EXPO_PUBLIC_SLEEP_SOUNDS_ENABLED',
+]);
 
 // target must come from assertTestSupabaseTarget (main does that first).
 export function branchAppEnv(target, env, base = process.env) {
   if (!env.E2E_SUPABASE_ANON_KEY) throw new Error('start-branch-e2e: E2E_SUPABASE_ANON_KEY is not set.');
-  const child = { ...base };
-  // Never hand the admin key or the test passwords to the app or Metro, and
-  // keep RevenueCat out: with a key it would reconcile the seeded tier to free.
-  for (const name of Object.keys(child)) {
-    if (name.startsWith('E2E_') || name.startsWith('EXPO_PUBLIC_REVENUECAT_')) delete child[name];
+  // Checked again here: this value is bundled into the app.
+  assertKeyRole('E2E_SUPABASE_ANON_KEY', env.E2E_SUPABASE_ANON_KEY);
+  const child = {};
+  // Never hand the admin key or the test passwords to the app or Metro; keep
+  // RevenueCat out (with a key it would reconcile the seeded tier to free).
+  for (const [name, value] of Object.entries(base)) {
+    if (name.startsWith('E2E_')) continue;
+    if (name.startsWith('EXPO_PUBLIC_') && !PASSTHROUGH_EXPO_PUBLIC.includes(name)) continue;
+    child[name] = value;
   }
   return {
     ...child,

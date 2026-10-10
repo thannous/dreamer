@@ -200,6 +200,7 @@ export default {
     'scripts/test-seed-users.mjs',
     'scripts/test-auth-setup.mjs',
     'scripts/start-branch-e2e.mjs',
+    'scripts/maestro-branch-sign-in.mjs',
     'scripts/test-test-seed-auth.mjs',
     'playwright.branch.config.ts',
     // The suites ci-contracts runs.
@@ -256,6 +257,8 @@ export default {
         'scripts/**',
         // The seed mirrors this fixture's RPC call; the web origin is pinned here.
         'e2e/backend/fixtures.ts',
+        'supabase/migrations/20260916185856_hd_illustration_monthly_quota.sql',
+        'maestro/e2e-account-sign-in.yml',
         'playwright.branch.config.ts',
         '.gitignore',
         // The production ref is pinned against app.json.

@@ -68,15 +68,43 @@ export function loadAllowedRefs() {
   return validateAllowedRefs(parsed.allowedProjectRefs, path.basename(TARGETS_FILE));
 }
 
-function jwtRef(key) {
+function jwtPayload(key) {
   const parts = String(key).split('.');
   if (parts.length !== 3) return null;
   try {
     const payload = JSON.parse(Buffer.from(parts[1], 'base64url').toString('utf8'));
-    return typeof payload?.ref === 'string' ? payload.ref : null;
+    return payload && typeof payload === 'object' ? payload : null;
   } catch {
     return null;
   }
+}
+
+function jwtRef(key) {
+  const payload = jwtPayload(key);
+  return typeof payload?.ref === 'string' ? payload.ref : null;
+}
+
+// Which slot accepts which key. The anon key is bundled into the app, so it
+// must be a publishable key or a legacy JWT whose role is anon; the service
+// key must be a secret key or a legacy service_role JWT. Anything else
+// (swapped, mislabeled, unknown format) is refused.
+const KEY_SLOTS = Object.freeze({
+  E2E_SUPABASE_ANON_KEY: { prefix: 'sb_publishable_', role: 'anon' },
+  E2E_SUPABASE_SERVICE_ROLE_KEY: { prefix: 'sb_secret_', role: 'service_role' },
+});
+const OPAQUE_KEY_BODY = /^[A-Za-z0-9_-]+$/;
+
+export function assertKeyRole(name, value) {
+  const slot = KEY_SLOTS[name];
+  if (!slot) throw new TestTargetRefused(`${name} is not a Supabase key slot`);
+  const key = String(value ?? '');
+  if (key.startsWith('sb_')) {
+    if (key.startsWith(slot.prefix) && OPAQUE_KEY_BODY.test(key.slice(slot.prefix.length))) return;
+    throw new TestTargetRefused(`${name} must be a ${slot.prefix}... key or a legacy ${slot.role} JWT`);
+  }
+  const payload = jwtPayload(key);
+  if (!payload) throw new TestTargetRefused(`${name} must be a ${slot.prefix}... key or a legacy ${slot.role} JWT`);
+  if (payload.role !== slot.role) throw new TestTargetRefused(`${name} holds a JWT with role "${String(payload.role)}", expected "${slot.role}"`);
 }
 
 function checkTarget(env, allowedRefs) {
@@ -113,9 +141,11 @@ function checkTarget(env, allowedRefs) {
     throw new TestTargetRefused('no test Supabase project is allowlisted in scripts/test-supabase-targets.json');
   }
   if (!allowedRefs.includes(ref)) throw new TestTargetRefused(`${ref} is not an allowlisted test Supabase project`);
-  for (const name of ['E2E_SUPABASE_ANON_KEY', 'E2E_SUPABASE_SERVICE_ROLE_KEY']) {
-    const keyRef = env[name] ? jwtRef(env[name]) : null;
-    if (keyRef && keyRef !== ref) throw new TestTargetRefused(`${name} belongs to another Supabase project`);
+  for (const name of Object.keys(KEY_SLOTS)) {
+    if (!env[name]) continue;
+    assertKeyRole(name, env[name]);
+    const keyRef = jwtRef(env[name]);
+    if (keyRef !== null && keyRef !== ref) throw new TestTargetRefused(`${name} belongs to another Supabase project`);
   }
   return { ref, url: canonical };
 }
@@ -163,7 +193,8 @@ export function scopedFetch(target, fetch) {
       throw new TestTargetRefused('a request URL could not be parsed');
     }
     if (origin !== target.url) throw new TestTargetRefused(`a request to ${origin} is outside the guarded test project`);
-    return fetch(input, init);
+    // A redirect could carry the key to another host: refuse to follow it.
+    return fetch(input, { ...init, redirect: 'error' });
   };
 }
 
