@@ -6,7 +6,7 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { NoctaliaScreenHeader } from '@/components/NoctaliaScreenHeader';
 import { TodayCard } from '@/components/home/TodayCard';
-import { DreamerArtworkWindow } from '@/components/ui/DreamerBackground';
+import { NightSkyBand } from '@/components/ui/NightSkyBand';
 import { getNoctaliaDesignTokens } from '@/constants/noctaliaDesign';
 import { useTheme } from '@/context/ThemeContext';
 import { useDreamMedia } from '@/hooks/useDreamMedia';
@@ -56,8 +56,8 @@ export function TodayHero({ state, dream, now, onPressCta, onOpenSettings }: Pro
 
   return (
     <View className="relative bg-ink">
-      {/* No dream artwork yet: the night sky keeps the opening immersive instead of flat ink. */}
-      {!hasArtwork ? <DreamerArtworkWindow scene="reverie" style={{ marginTop: insets.top }} /> : null}
+      {/* No dream artwork yet: the night sky fills the opening from the top of the screen, like every tab header. */}
+      {!hasArtwork ? <NightSkyBand height={insets.top + 340} background={ground} scene="reverie" /> : null}
       {immersiveArtwork ? <View className="absolute left-0 right-0 top-0 overflow-hidden"
         pointerEvents="none" accessibilityElementsHidden importantForAccessibility="no-hide-descendants"
         style={{ height: (stageHeight ?? 260) + 1 }}>
@@ -76,8 +76,6 @@ export function TodayHero({ state, dream, now, onPressCta, onOpenSettings }: Pro
             variant="tab"
             subtitle={dateLabel}
             backdrop={false}
-            // Over the dream's artwork the header clears the status bar; otherwise the screen already does.
-            includeTopInset={hasArtwork}
             actions={[{
               icon: 'gear',
               onPress: onOpenSettings,

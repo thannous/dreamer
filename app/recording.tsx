@@ -1771,8 +1771,9 @@ export default function RecordingScreen() {
         />
         {/* The scroll view starts below the status bar, so the sky is painted here to
             reach the top edge like the other destinations. */}
-        {mode === 'dark' && !isDesktopWeb && !isCompactLandscape ? (
-          <NightSkyBand height={insets.top + (headerHeight || 140)} background={noctalia.screen.background} />
+        {!isDesktopWeb && !isCompactLandscape ? (
+          <NightSkyBand height={insets.top + (headerHeight || 140) + 40} background={noctalia.screen.background}
+            scene={!keyboardVisible && !chatMode ? 'capture' : undefined} />
         ) : null}
         {/* The desktop sidebar leads everywhere. Keep a back control only
             while a capture review is open, so leaving still offers to keep or
@@ -1818,7 +1819,6 @@ export default function RecordingScreen() {
               onLayout={(event) => setHeaderHeight(event.nativeEvent.layout.height)}
             >
               <NoctaliaScreenHeader
-                scene={!keyboardVisible && !isCompactLandscape && !chatMode ? "capture" : undefined}
                 includeTopInset={false}
                 backdrop={false}
                 prominentTitle={!isCompactLandscape}

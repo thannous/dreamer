@@ -1,6 +1,5 @@
 import { IconSymbol } from '@/components/ui/icon-symbol';
 import { NightSkyBand } from '@/components/ui/NightSkyBand';
-import { DreamerArtworkWindow } from '@/components/ui/DreamerBackground';
 import type { DreamerScene } from '@/constants/dreamerArtwork';
 import { ThemeLayout } from '@/constants/journalTheme';
 import { DESKTOP_BREAKPOINT } from '@/constants/layout';
@@ -112,9 +111,12 @@ export const NoctaliaScreenHeader = memo(function NoctaliaScreenHeader({
         onLayout={(event) => setMeasuredHeight(event.nativeEvent.layout.height)}
         style={[styles.tabContainer, { paddingTop: (includeTopInset ? insets.top : 0) + ThemeLayout.spacing.md }]}
       >
-        {/* A screen's contextual painting wins; otherwise the night sky, in the dark theme. */}
-        {scene ? <DreamerArtworkWindow scene={scene} /> : backdrop && mode === 'dark' ? (
-          <NightSkyBand height={measuredHeight || insets.top + 160} background={noctalia.screen.background} />
+        {/* One treatment on every tab: the screen's painting (or the night sky) fills the whole
+            header from the top of the screen, status bar included, and fades into the page. */}
+        {/* A screen that paints its own top (backdrop={false}) passes the scene to that painting instead. */}
+        {backdrop ? (
+          <NightSkyBand height={(measuredHeight || insets.top + 160) + 40} background={noctalia.screen.background}
+            scene={scene} />
         ) : null}
         <View style={[styles.tabBrandRow, { paddingHorizontal: horizontalPadding }]}>
           {showBrand ? (
@@ -187,8 +189,10 @@ export const NoctaliaScreenHeader = memo(function NoctaliaScreenHeader({
   }
 
   return (
-    <View style={[styles.container, isProminent && styles.prominentContainer, variant === 'editorial' && styles.editorialContainer, { paddingTop: (includeTopInset ? insets.top : 0) + ThemeLayout.spacing.sm, borderBottomColor: noctalia.surface.border }]}>
-      {scene ? <DreamerArtworkWindow scene={scene} /> : null}
+    <View onLayout={(event) => setMeasuredHeight(event.nativeEvent.layout.height)}
+      style={[styles.container, isProminent && styles.prominentContainer, variant === 'editorial' && styles.editorialContainer, { paddingTop: (includeTopInset ? insets.top : 0) + ThemeLayout.spacing.sm, borderBottomColor: noctalia.surface.border }]}>
+      {/* Same as the tab header: the painting fills the header from the top of the screen. */}
+      {scene && backdrop ? <NightSkyBand height={(measuredHeight || insets.top + 160) + 40} background={noctalia.screen.background} scene={scene} /> : null}
       <View style={[styles.titleRow, isNarrow && styles.titleRowNarrow, stackActions && styles.titleRowStacked, wrapInlineSlot && styles.searchRowWrapped]}>
         <View style={[styles.titleBlock, stackActions && styles.titleBlockStacked,
           Boolean(inlineSlot) && (canInlineSlot
