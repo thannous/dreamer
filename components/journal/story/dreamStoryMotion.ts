@@ -7,6 +7,8 @@ import { EASE } from '@/components/motion/motion';
  * The dream story's choreography, in one place: what happens to a dream after capture,
  * told on one object (the saved moment's medallion) and the reading below it.
  *
+ *   Prologue — once the dream is durably saved, night falls over the draft, its glow
+ *       condenses into a star and the star rises to where the medallion will open.
  *   I.  Saved — the astrolabe settles once around a window onto the night sky.
  *   II. Read  — while the analysis runs, its stars light one after another (no fake
  *       progress: the loop says "working", never "73 %"). When the reading lands, the
@@ -34,6 +36,10 @@ export const DREAM_STORY = {
   thread: 420,
   /** The reading chapters start once the last star is lit. */
   chapterLead: 240,
+  /** The capture screen's seal, from the save to the saved moment. */
+  prologue: 560,
+  /** The seal's veil outlasts the screen transition that covers it. */
+  prologueVeilHold: 700,
   /** One pass of the light band across a canvas being painted. */
   paintSweep: 2600,
   /** A landed painting settling into its frame. */

@@ -103,6 +103,8 @@ for (const profile of ['plus', 'existing'] as const) {
     const story = `E2E ${profile} silver owl above a sleeping mountain.`;
     await screen.getByTestId('input.dreamTranscript', { visible: true }).fill(story);
     await screen.getByTestId('btn.saveDream', { visible: true }).tap();
+    // Prologue: the saved draft condenses into a star before its page opens.
+    await expect(screen.getByTestId('component.recording.dreamSeal')).toHaveCount(1);
     const moment = screen.getByTestId('component.dreamDetail.savedMoment', { visible: true });
     await expect(moment).toContainText(/dream saved/i);
     // The moment is the confirmation: no second toast announces the save.

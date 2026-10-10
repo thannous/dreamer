@@ -269,6 +269,7 @@ export const TID = {
     AnalysisStaleBanner: 'component.dreamDetail.staleBanner',
     DreamDetailActionCard: 'component.dreamDetail.actionCard',
     SavedDreamMoment: 'component.dreamDetail.savedMoment',
+    DreamCaptureSeal: 'component.recording.dreamSeal',
     SavedDreamArtwork: 'component.dreamDetail.savedMoment.artwork',
     DreamPaintedArtwork: 'component.dreamDetail.paintedArtwork',
     DreamStoryHalo: 'component.journal.storyHalo',
