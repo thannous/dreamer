@@ -279,6 +279,10 @@ export const it: Record<keyof typeof en, string> = {
 
   'complete.saved': 'Questa pratica è salvata su questo dispositivo.',
   'complete.rest': 'È abbastanza per stasera. Torna quando vuoi.',
+  'complete.record.world': 'Universo',
+  'complete.record.session': 'Sessione',
+  'complete.record.duration': 'Durata',
+  'complete.record.category': 'Categoria',
   'breathe.title': 'Respirare',
   'breathe.subtitle': 'Quattro ritmi. Scegline uno e seguilo.',
   'breathe.pattern.calm.name': 'Calmante',
