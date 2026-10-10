@@ -4,7 +4,7 @@ import React, { useState } from 'react';
 import { StyleSheet, View, useWindowDimensions, type StyleProp, type ViewStyle } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
-import { DREAMER_ARTWORK, type DreamerScene } from '@/constants/dreamerArtwork';
+import { getDreamerArtwork, type DreamerScene } from '@/constants/dreamerArtwork';
 import { getNoctaliaDesignTokens } from '@/constants/noctaliaDesign';
 import { useTheme } from '@/context/ThemeContext';
 
@@ -24,11 +24,12 @@ export function DreamerArtworkWindow({ scene, style }: {
   const { colors, mode } = useTheme();
   const { width, height, fontScale } = useWindowDimensions();
   const ground = getNoctaliaDesignTokens(colors, mode).screen.background;
-  const [failedScene, setFailedScene] = useState<DreamerScene | null>(null);
+  const artworkKey = `${scene}:${mode}`;
+  const [failedArtwork, setFailedArtwork] = useState<string | null>(null);
   const compact = height < 700 || fontScale >= 1.5;
   const paintingHeight = Math.min(compact ? 128 : 240, width * 0.625);
 
-  if (failedScene === scene) return null;
+  if (failedArtwork === artworkKey) return null;
   return <View
     testID={`artwork.window.${scene}`}
     pointerEvents="none" accessible={false} accessibilityElementsHidden
@@ -36,8 +37,8 @@ export function DreamerArtworkWindow({ scene, style }: {
     style={[{ height: paintingHeight, alignSelf: 'stretch', flexShrink: 0, overflow: 'hidden', backgroundColor: ground }, style]}
   >
     <Image testID={`image.background.${scene}`} accessible={false}
-      source={DREAMER_ARTWORK[scene]} contentFit="cover" contentPosition="center"
-      recyclingKey={scene} onError={() => setFailedScene(scene)} style={StyleSheet.absoluteFill} />
+      source={getDreamerArtwork(scene, mode)} contentFit="cover" contentPosition="center"
+      recyclingKey={artworkKey} onError={() => setFailedArtwork(artworkKey)} style={StyleSheet.absoluteFill} />
     <LinearGradient colors={[`${ground}00`, ground]}
       style={{ position: 'absolute', bottom: 0, left: 0, right: 0, height: 40 }} />
   </View>;
@@ -48,7 +49,8 @@ export function DreamerBackground({ scene, height, background }: Props) {
   const { colors, mode } = useTheme();
   const tokens = getNoctaliaDesignTokens(colors, mode);
   const insets = useSafeAreaInsets();
-  const [failedScene, setFailedScene] = useState<DreamerScene | null>(null);
+  const artworkKey = `${scene}:${mode}`;
+  const [failedArtwork, setFailedArtwork] = useState<string | null>(null);
   const ground = background ?? tokens.screen.background;
   const spaciousHero = scene === 'sleep' || scene === 'ritual';
   const readingStart = Math.min(0.68, (insets.top + (spaciousHero ? 190 : 72)) / height);
@@ -61,15 +63,15 @@ export function DreamerBackground({ scene, height, background }: Props) {
       importantForAccessibility="no-hide-descendants"
       style={[styles.band, { height, backgroundColor: ground }]}
     >
-      {failedScene !== scene ? (
+      {failedArtwork !== artworkKey ? (
         <Image
           testID={`image.background.${scene}`}
           accessible={false}
-          source={DREAMER_ARTWORK[scene]}
+          source={getDreamerArtwork(scene, mode)}
           contentFit="cover"
           contentPosition={scene === 'reverie' ? 'top' : 'bottom right'}
-          recyclingKey={scene}
-          onError={() => setFailedScene(scene)}
+          recyclingKey={artworkKey}
+          onError={() => setFailedArtwork(artworkKey)}
           style={StyleSheet.absoluteFill}
         />
       ) : null}

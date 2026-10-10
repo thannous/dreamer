@@ -171,13 +171,28 @@ async function theme(page: Page, value: 'light' | 'dark') {
   await expect(page.getByTestId('screen.home')).toHaveCSS('background-color', value === 'dark' ? 'rgb(3, 4, 13)' : 'rgb(240, 228, 212)');
 }
 
-async function artwork(page: Page, scene: string) {
+async function artwork(page: Page, scene: string, mode: 'light' | 'dark') {
   const image = page.getByTestId(`image.background.${scene}`).filter({ visible: true });
   await expect(image).toBeVisible();
   await expect.poll(() => image.evaluate(element => {
     const image = element instanceof HTMLImageElement ? element : element.querySelector('img');
     return Boolean(image?.complete && image.naturalWidth > 0);
   })).toBe(true);
+  const lightness = await image.evaluate(element => {
+    const img = element instanceof HTMLImageElement ? element : element.querySelector('img');
+    if (!img) throw new Error('Painting missing');
+    const canvas = document.createElement('canvas');
+    canvas.width = 80; canvas.height = 60;
+    const ctx = canvas.getContext('2d')!;
+    ctx.drawImage(img, 0, 0, 80, 60);
+    const pixels = ctx.getImageData(0, 0, 80, 60).data;
+    let sum = 0;
+    for (let i = 0; i < pixels.length; i += 4) sum += pixels[i] * 0.2126 + pixels[i + 1] * 0.7152 + pixels[i + 2] * 0.0722;
+    return sum / (80 * 60 * 255);
+  });
+  // A night painting behind the light interface reproduces the owner's defect.
+  if (mode === 'light') expect(lightness, `${scene}: a luminous painting in the paper theme`).toBeGreaterThan(0.55);
+  else expect(lightness, `${scene}: the night painting is retained in dark mode`).toBeLessThan(0.5);
 }
 
 /** The picture must retain its actual colour, not merely exist beneath a wash.
@@ -231,10 +246,10 @@ for (const mode of ['light', 'dark'] as const) {
   test(`contextual backgrounds stay readable throughout Dreamer in ${mode} mode`, async ({ page }, info) => {
     await start(page);
     await theme(page, mode);
-    await artwork(page, 'reverie');
+    await artwork(page, 'reverie', mode);
     await readable(page, info, `home-${mode}`);
     await page.getByTestId('tab.addDream').filter({ visible: true }).click();
-    await artwork(page, 'capture');
+    await artwork(page, 'capture', mode);
     await immersivePainting(page, info, `capture-${mode}`);
     await readable(page, info, `capture-${mode}`);
     await page.getByTestId('input.dreamTranscript').fill('Un phare doré éclairait un lac calme.');
@@ -242,21 +257,21 @@ for (const mode of ['light', 'dark'] as const) {
     await readable(page, info, `capture-filled-${mode}`);
     await page.getByTestId('input.dreamTranscript').fill('');
     await page.getByTestId('tab.stats').filter({ visible: true }).click();
-    await artwork(page, 'astral');
+    await artwork(page, 'astral', mode);
     await readable(page, info, `trends-${mode}`);
     await page.getByTestId('tab.explore').filter({ visible: true }).click();
-    await artwork(page, 'path');
+    await artwork(page, 'path', mode);
     await readable(page, info, `explorer-${mode}`);
     await page.getByTestId('btn.explorer.guides').click();
-    await artwork(page, 'path');
+    await artwork(page, 'path', mode);
     await readable(page, info, `guides-${mode}`);
     await page.getByTestId(/^dream-guide-/).first().click();
-    await artwork(page, 'path');
+    await artwork(page, 'path', mode);
     await readable(page, info, `guide-reading-${mode}`);
     await page.goBack();
     await page.goBack();
     await page.getByTestId('btn.explorer.symbols').click();
-    await artwork(page, 'symbols');
+    await artwork(page, 'symbols', mode);
     await readable(page, info, `symbols-${mode}`);
     await page.getByTestId(/^symbol\.popular\./).first().click();
     await expect(page.getByTestId('screen.symbolDetail')).toBeVisible();
@@ -272,7 +287,7 @@ for (const mode of ['light', 'dark'] as const) {
         await expect(page.getByTestId('ritual-picker-confirm')).toHaveCount(0);
       }
       await page.getByTestId('btn.explorer.ritual').click();
-      await artwork(page, scene);
+      await artwork(page, scene, mode);
       await readable(page, info, `ritual-${id}-${mode}`);
       const step = page.getByRole('checkbox').first();
       await step.click();
@@ -286,11 +301,11 @@ for (const mode of ['light', 'dark'] as const) {
     ]) {
       await openRoute(page, route);
       await expect(page.getByTestId(screen)).toBeVisible();
-      await artwork(page, scene);
+      await artwork(page, scene, mode);
       await readable(page, info, `${screen}-${mode}`);
       if (screen === 'screen.settings') {
         await page.getByTestId('settings-section-subscription').click();
-        await artwork(page, 'observatory');
+        await artwork(page, 'observatory', mode);
         await expect(page.getByTestId('screen.paywall')).toBeVisible();
         await readable(page, info, `paywall-${mode}`);
         await page.getByTestId('btn.paywall.close').click();
@@ -313,17 +328,17 @@ for (const mode of ['light', 'dark'] as const) {
     await expect(page.getByTestId('component.dreamDetail.readingZone')).toContainText(/\S[\s\S]{80}/);
     await page.getByTestId('component.dreamDetail.actionCard').click();
     await expect(page.getByTestId('screen.dreamCategories')).toBeVisible();
-    await artwork(page, 'dialogue');
+    await artwork(page, 'dialogue', mode);
     await readable(page, info, `reflection-${mode}`);
     await page.getByTestId('btn.dreamCategory.symbols').click();
-    await artwork(page, 'dialogue');
+    await artwork(page, 'dialogue', mode);
     await expect(page.getByTestId('btn.exploration360.synthesis').filter({ visible: true })).toBeEnabled();
     await readable(page, info, `dialogue-${mode}`);
     await page.getByRole('button', { name: 'Retour', exact: true }).click();
     await expect(page.getByTestId('text.reflection.exchangeSaved')).toBeVisible();
     await page.goBack();
     await page.getByTestId('btn.navigateJournal').click();
-    await artwork(page, 'journal');
+    await artwork(page, 'journal', mode);
     await readable(page, info, `journal-${mode}`);
     await page.getByTestId('input.searchDreams').fill('lanterne');
     await expect(page.getByTestId(/^dream\.item\./).filter({ visible: true })).toHaveCount(1);
@@ -338,11 +353,11 @@ test('contextual backgrounds remain usable on narrow and desktop screens with a 
     for (const viewport of [{ width: 320, height: 640 }, { width: 1440, height: 900 }]) {
       await page.setViewportSize(viewport);
       await page.getByTestId('tab.explore').filter({ visible: true }).click();
-      await artwork(page, 'path');
+      await artwork(page, 'path', mode);
       await readable(page, info, `explorer-${mode}-${viewport.width}`);
       await expect(page.getByTestId('btn.explorer.guides')).toBeInViewport();
       await page.getByTestId('tab.addDream').filter({ visible: true }).click();
-      await artwork(page, 'capture');
+      await artwork(page, 'capture', mode);
       await readable(page, info, `capture-${mode}-${viewport.width}`);
       await page.getByTestId('input.dreamTranscript').fill('Le ciel était calme.');
       await expect(page.getByTestId('btn.saveDream')).toBeEnabled();
