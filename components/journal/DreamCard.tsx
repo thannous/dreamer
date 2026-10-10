@@ -313,7 +313,7 @@ export const DreamCard = memo(function DreamCard({
             <Text allowFontScaling={false} style={captionStyle} className="font-sans text-[12px] leading-[18px] text-ivory-faint">{dateYear}</Text>
           )}
         </View>
-        <View className="my-3 h-px w-6 bg-line" />
+        <View className="my-3 h-px w-11/12 self-center bg-line" />
         <View className="items-center gap-1">
           {onToggleFavorite ? (
             <Pressable accessibilityRole="button" accessibilityState={{ selected: isFavorite }}
@@ -329,7 +329,7 @@ export const DreamCard = memo(function DreamCard({
             </Pressable>
           ) : null}
         </View>
-        <View className="my-3 h-px w-6 bg-line" />
+        <View className="my-3 h-px w-11/12 self-center bg-line" />
         <View key={`metadata-${fontScale}`} className="gap-1" testID={testID && `journal.metadata.${testID}`}>
           <Text allowFontScaling={false} style={captionStyle} className="font-sans-medium text-[12px] leading-[18px] text-ivory">{typeLabel}</Text>
           {themeLabel && <Text allowFontScaling={false} style={captionStyle} className="font-sans text-[12px] leading-[18px] text-ivory-muted">{themeLabel}</Text>}
