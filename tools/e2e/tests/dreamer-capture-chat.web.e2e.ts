@@ -121,6 +121,8 @@ test('chat finishes automatically and keeps a single card and reply reachable in
     await page.getByTestId('recording-conversation-submit').click();
     await expect(page.getByTestId('capture-review-card')).toHaveCount(1);
     await expect(page.getByTestId('capture-review-narrative')).toContainText('Encore une lumière.');
+    // An added detail keeps the account marked as woven.
+    await expect(page.getByTestId('capture-review-woven')).toBeVisible();
     await page.screenshot({ path: info.outputPath(`chat-${viewport.width}x${viewport.height}.png`) });
   }
 });

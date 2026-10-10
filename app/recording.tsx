@@ -1724,7 +1724,8 @@ export default function RecordingScreen() {
       const answer = review.pendingAnswer?.trim();
       if (!answer) return;
       const source = `${review.source}\n\n${t('recording.conversation.question_label')} ${t('recording.chat.add_detail')}\n${t('recording.conversation.answer_label')} ${answer}`;
-      const next = { source, text: `${review.text.trim()}\n\n${answer}` };
+      // An added detail keeps the review's provenance: a woven account stays marked as woven.
+      const next: CaptureReview = { source, text: `${review.text.trim()}\n\n${answer}`, ...(review.woven ? { woven: true } : {}) };
       if (!noteInput(encodeCaptureReview(next))) return;
       captureReviewRef.current = next;
       setCaptureReview(next);
