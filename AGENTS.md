@@ -5,7 +5,7 @@ Noctalia is an Expo/React Native dream-journal app with a Supabase backend and a
 Start with the [repository task index](doc_web_interne/docs/README.md) for feature
 entry points and current guides. Run `mise exec -- npm run scripts:list` for the
 command catalog; [scripts/README.md](scripts/README.md) explains prerequisites and effects.
-Changes are proven locally under the [common delivery rule](#livraison--règle-commune-local-dabord):
+Changes are proven locally under the [common delivery rule](#livraison):
 `npm run verify:pr` before merge, `npm run verify:release` before a publish, and the PR
 records that proof; review happens in PR comments. External CI never runs by default
 (External CI table: none): CircleCI runs only for a manual or API trigger (GitHub App
@@ -111,7 +111,7 @@ A request to prepare or audit a proposal authorizes the proposal only. An explic
 instruction to implement an identified proposal authorizes its implementation and
 applicable delivery steps: scoped fixes, appropriate validation, correction of related
 failures, commits, PR creation and push, then `npm run verify:pr` on the final PR head;
-the merge follows the [delivery rule](#livraison--règle-commune-local-dabord). Reuse that
+the merge follows the [delivery rule](#livraison). Reuse that
 authorization. Explicit local-only, no-push, review-before-merge, and publication
 boundaries take precedence; a production-triggering merge requires publication intent.
 
@@ -230,29 +230,12 @@ can delegate desktop Run actions to it; this checkout does not ship that file.
 Use the package scripts when it is absent. See `./script/build_and_run.sh --help`
 for supported modes.
 
-## Livraison : règle commune (local d'abord)
+## Livraison
 
-> Push rapide ; contrôles locaux proportionnés avant fusion ; publication vérifiée pour la cible livrée ; CI externe seulement sur demande explicite.
-
-Règle complète : [la copie de ce dépôt de la règle commune](doc_web_interne/docs/regle-commune-livraison.md) (à l'emplacement choisi par le dépôt, donné dans sa §13.1), qui fait foi pour lui (sa ligne « Version commune » dit quelle version du texte commun il applique). Processus commun, pas code commun : ce dépôt possède son moteur (`scripts/verify-local.mjs` et ses tests `scripts/test-verify-local.mjs`), sa config (`verify-local.config.mjs`), ses hooks (`.githooks/`) et ce document, et se vérifie sans aucun autre dépôt. Utiliser le même fichier moteur dans les cinq dépôts est recommandé ; ce dépôt épingle son propre `ENGINE_SHA256` et le vérifie localement. Une correction du moteur gagne à être reportée dans chaque dépôt, mais ce report n'est jamais vérifié entre dépôts.
-
-| Étape | Commande | Effet |
-| --- | --- | --- |
-| Push (S0) | hook `.githooks/pre-push` (automatique) | quelques secondes : les contrôles de push du dépôt (§3 de la règle, détail en §13.1) ; affiche la preuve de l'arbre poussé (absente : non bloquant) |
-| Avant fusion (S1) | `npm run verify:pr` | contrôles déclarés dans `verify-local.config.mjs`, sur une copie isolée du commit (le travail en cours n'est ni vérifié ni touché) ; preuve liée à l'arbre ; contrôles déjà réussis sur les mêmes entrées réutilisés |
-| Contrôles spécialisés (S2) | contrôles qui portent `requires` dans la config | sur la machine du propriétaire quand celle-ci ne peut pas les lancer, cités par `--external <contrôle>="owner-machine: <hôte> <note> on <SHA>"` |
-| Description de PR | `node scripts/verify-local.mjs proof-block` | imprime la section `## Local proof` à coller |
-| Après fusion (S5, facultatif) | `npm run verify:pr -- --rev <SHA de master>` sur la machine partagée | signal seulement, ne bloque jamais rien |
-| Avant publication (S6) | `npm run verify:release` | tous les contrôles relancés sur le commit livré, sans réutilisation |
-
-- Push libre et brouillons permis ; ne jamais contourner ni désactiver le hook (`--no-verify`, `core.hooksPath`).
-- Fusion : PR hors brouillon ; le `Commit SHA` de `## Local proof` est la tête de la PR ; chaque fil a une réponse et est résolu, aucun n'est ouvert ; pas de conflit ; relecture du CTO sans point bloquant (échelle bloquant / à corriger / détail, §11 de la règle). Le CTO fusionne en squash ; un relecteur ne pousse jamais sur la branche de l'auteur. Une PR qui modifie ses propres contrôles (config, moteur et ses tests, `.githooks/`, scripts de `deliveryFiles`, `package.json` hors dépendances et version, configuration d'un outil de contrôle) demande en plus la relecture du propriétaire ; `## Local proof` le signale (« Delivery checks changed »).
-- `--external` ne vaut que pour un contrôle spécialisé que la machine ne peut pas lancer, et cite exactement un commit, le commit vérifié : le SHA de tête de la PR pour `verify:pr`, le commit livré pour `verify:release` ; jamais un autre commit, même de même arbre. Par défaut, la machine du propriétaire (`owner-machine: <hôte> <note> on <SHA du commit vérifié>`) ; une source externe seulement pour un workflow listé dans la table de CI externe du dépôt (§13 et §13.1 de la règle), et seulement sur le commit vérifié.
-- Les variables qui réduisent le périmètre d'un contrôle (`JEST_CHANGED_SINCE`, `TURBO_SCM_BASE`, `TURBO_SCM_HEAD`, `CI_BASE_REVISION`, `GITHUB_BASE_SHA`, et celles de `stripEnv` dans la config) sont retirées de l'environnement des contrôles ; un contrôle qui en a besoin la fixe dans son propre `env`.
-- Base avancée : fusionner la base dans la branche, relancer `verify:pr` (seuls les contrôles dont les entrées ont changé tournent), mettre `## Local proof` à jour.
-- Publication : `verify:release` sur le commit livré de la branche principale (il ne réutilise rien, contrôles limités par `when` compris), puis vérifier la production et noter le SHA. Publier reste une décision explicite. Un workflow de publication se garde au niveau du job (`if` sur la branche principale) et par un environnement GitHub limité à elle qui porte les secrets de publication, jamais par un contrôle dans une étape (§13 de la règle).
-- CI externe : jamais par défaut, seulement sur demande explicite là où un client, un partenaire ou un registre l'exige (table §13 de la règle). Le signal après fusion est le `verify:pr` facultatif sur la machine partagée (S5), jamais une condition. Aucun aperçu automatique.
-- Machines : machine partagée (box) pour `verify:pr` et les relectures ; PC Tanuki pour Docker, Supabase local, e2e navigateur et `verify:release` web ; Mac mini pour Expo, Maestro, iOS, Android et `verify:release` mobile.
+1. Avant de push, l'agent lance `npm run verify:pr` sur sa machine. Si ça échoue, il ne pousse pas.
+2. La PR indique le commit vérifié et le résultat.
+3. Le CTO relit et merge quand les commentaires sont réglés et que rien ne bloque.
+4. Rien ne part en prod sans le go de thanh.
 
 ### Propre à dreamer
 
@@ -293,7 +276,7 @@ Choose validation by the behavior and risk changed, not by the number of files o
 - Pick one appropriate focused test entry point; the commands below are alternatives, not a sequence to run in full.
 - Apply the E2E-first policy above when adding coverage; isolation controls require a concrete failure model, not a mandatory implementation order.
 - Once checks pass, rerun only when changed code, dependencies/configuration, a failure or an unresolved risk invalidates that evidence. A documentation-only follow-up does not invalidate code tests.
-- Push freely, drafts included: the pre-push hook takes a few seconds and runs no suite. The checks run once, before merge, with `npm run verify:pr` (see [Livraison](#livraison--règle-commune-local-dabord)). Agents never use `git push --no-verify` nor change `core.hooksPath`: fix a blocked push or report it as a blocker.
+- Push freely, drafts included: the pre-push hook takes a few seconds and runs no suite. The checks run once, before merge, with `npm run verify:pr` (see [Livraison](#livraison)). Agents never use `git push --no-verify` nor change `core.hooksPath`: fix a blocked push or report it as a blocker.
 - `npm run verify:pr` checks the committed head in an isolated copy (`git worktree`, `node_modules` linked from the main checkout), so uncommitted work is neither checked nor disturbed. It runs `typecheck:app`, `typecheck:tests`, `lint`, `lint:scripts`, the root Jest tests related to the diff (`test:changed`), the static database contracts and the engine tests. It adds `docs:build` and `docs:check` when site inputs changed (`docs-src/`, `data/`, `scripts/`, package files), the CI contract tests when `.circleci/` changed, the mobile version pins (`mobile-release.js verify`) when `release/`, an app manifest, a lockfile or an EAS profile changed, Meditation (`apps/meditation`, shared release files) and the Edge Functions under Deno (`supabase/functions`, `supabase/lib`, `supabase/migrations`, `deno.lock`) when theirs changed. A check that already passed on the same inputs is reused (typecheck and lint ignore Markdown and `doc_web_interne/`, `marketing/`, `specs/`). Native device checks and store builds stay outside it.
 - It compares against the local `origin/master`: fetch it first. `test:changed` uses the same merge-base; `JEST_CHANGED_SINCE=HEAD` is only an explicit working-tree delta, never proof of a committed PR.
 - Paste `node scripts/verify-local.mjs proof-block` into the PR template's **Local proof**, then say what remains unchecked (native, device). Review happens in PR comments; answer them with new commits, then rerun `npm run verify:pr` on the new head before merge.
