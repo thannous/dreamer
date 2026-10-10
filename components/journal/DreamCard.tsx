@@ -44,7 +44,8 @@ interface DreamCardProps {
 
 /** Expo media components keep their geometry as native props. */
 const CARD_IMAGE_STYLE = { position: 'absolute', top: 0, left: 0, width: '100%', height: '100%' } as const;
-const SCRIM_FADE_STYLE = { height: 56, width: '100%' } as const;
+const SCRIM_FADE_STYLE = { height: 120, width: '100%' } as const;
+const SCRIM_FADE_LOCATIONS = [0, 0.25, 0.55, 1] as const;
 // Margin icons, one per line, each with a 44 pt touch target around its glyph.
 const MARGIN_ACTION_STYLE = { width: 44, height: 44, alignItems: 'center', justifyContent: 'center' } as const;
 const CARD_IMAGE_PLACEHOLDER = { blurhash: 'L6PZfSi_.AyE_3t7t7R**0o#DgR4' };
@@ -135,6 +136,11 @@ export const DreamCard = memo(function DreamCard({
   const imageAttemptKey = JSON.stringify([accessScope, getDreamIdentityKey(dream), imageVersion, imageUri]);
   const [failedImageAttempt, setFailedImageAttempt] = useState<string | null>(null);
   const [coverWidth, setCoverWidth] = useState(260);
+  // The scrim's own colour at decreasing strength, so the fade eases into the illustration.
+  const scrimFade = useMemo(() => {
+    const at = (alpha: number) => noctalia.illustration.scrim.replace(/[\d.]+\)$/, `${alpha})`);
+    return [noctalia.illustration.scrim, at(0.55), at(0.2), noctalia.illustration.transparent] as const;
+  }, [noctalia]);
   // The whole dream can be read in place; the arrow shows only when three lines cut it.
   const [expanded, setExpanded] = useState(false);
   const canExpand = dream.transcript.trim().length > 120;
@@ -279,7 +285,7 @@ export const DreamCard = memo(function DreamCard({
       <Text
         key={`title-${fontScale}`}
         allowFontScaling={false}
-        style={{ fontSize: (variant === 'featured' ? 22 : 20) * titleTextScale, lineHeight: 28 * titleTextScale }}
+        style={[{ fontSize: (variant === 'featured' ? 22 : 20) * titleTextScale, lineHeight: 28 * titleTextScale }]}
         className={`font-display leading-[28px] ${hasImage ? 'text-illustration-text' : 'text-ivory'} ${variant === 'featured' ? 'text-[22px]' : 'text-[20px]'}`}
         numberOfLines={2}
       >
@@ -288,7 +294,7 @@ export const DreamCard = memo(function DreamCard({
       <Text
         key={`preview-${fontScale}`}
         allowFontScaling={false}
-        style={{ fontSize: 15 * compactTextScale, lineHeight: 22 * compactTextScale }}
+        style={[{ fontSize: 15 * compactTextScale, lineHeight: 22 * compactTextScale }]}
         className={`font-sans text-[15px] leading-[22px] ${hasImage ? 'text-illustration-text' : 'text-ivory-muted'}`}
         // At least three lines of the dream, with or without an illustration; all of it once unfolded.
         numberOfLines={expanded ? undefined : 3}
@@ -299,7 +305,8 @@ export const DreamCard = memo(function DreamCard({
         <Pressable accessibilityRole="button" accessibilityState={{ expanded }}
           accessibilityLabel={t(expanded ? 'journal.card.collapse' : 'journal.card.expand')}
           hitSlop={10} onPress={() => setExpanded((value) => !value)}
-          testID={testID && `journal.expand.${testID}`} className="h-8 w-10 items-start justify-center">
+          testID={testID && `journal.expand.${testID}`} className="h-8 w-10 items-start justify-center"
+        >
           <IconSymbol name={expanded ? 'chevron.up' : 'chevron.down'} size={22} color={hasImage ? noctalia.illustration.text : noctalia.text.secondary} />
         </Pressable>
       ) : null}
@@ -397,7 +404,9 @@ export const DreamCard = memo(function DreamCard({
                 {readingText}
               </View>
               <LinearGradient
-                colors={[noctalia.illustration.scrim, noctalia.illustration.transparent]}
+                // Eased, not linear: most of the darkness goes in the first third.
+                colors={scrimFade}
+                locations={SCRIM_FADE_LOCATIONS}
                 style={SCRIM_FADE_STYLE}
                 pointerEvents="none"
               />
