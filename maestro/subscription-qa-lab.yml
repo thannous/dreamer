@@ -3,8 +3,8 @@ appId: com.tanuki75.noctalia
 # Validate the in-app RevenueCat QA Lab in mock mode.
 
 - runFlow: subflows/open-mock-app.yml
-- tapOn:
-    id: btn.mockNav.settings
+- openLink: ${DEEP_LINK_SCHEME || "noctalia"}://settings
+- waitForAnimationToEnd
 - extendedWaitUntil:
     visible: "Settings|Paramètres|Configuración|Ajustes"
     timeout: 30000

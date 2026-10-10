@@ -117,11 +117,11 @@ appId: com.tanuki75.noctalia
 - assertVisible:
     id: chat.screen.blocked
 - tapOn:
-    id: btn.mockNav.journal
+    id: tab.journal
 
 # Create account to migrate guest quotas
-- tapOn:
-    id: btn.mockNav.settings
+- openLink: ${DEEP_LINK_SCHEME || "noctalia"}://settings
+- waitForAnimationToEnd
 - tapOn:
     id: input.auth.email
 - inputText: "mock.guest@dreamer.test"
@@ -145,7 +145,7 @@ appId: com.tanuki75.noctalia
 
 # Authenticated analyses (one more to reach three total)
 - tapOn:
-    id: btn.mockNav.home
+    id: tab.home
 - runFlow: subflows/ensure-recording-text.yml
 - tapOn:
     id: input.dreamTranscript
@@ -167,7 +167,7 @@ appId: com.tanuki75.noctalia
 - assertVisible:
     id: btn.exploreDream
 - tapOn:
-    id: btn.mockNav.home
+    id: tab.home
 
 # Auth Dream 2 - analysis quota exhausted (3/3)
 - runFlow: subflows/ensure-recording-text.yml
@@ -195,6 +195,6 @@ appId: com.tanuki75.noctalia
 - tapOn:
     id: btn.quotaLimit.journal
 - waitForAnimationToEnd
-- tapOn:
-    id: btn.mockNav.settings
+- openLink: ${DEEP_LINK_SCHEME || "noctalia"}://settings
+- waitForAnimationToEnd
 - assertVisible: "3 / 3"
