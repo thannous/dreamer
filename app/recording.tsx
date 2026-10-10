@@ -92,6 +92,7 @@ import {
   saveRecordingVoiceHintCompleted,
   saveRecordingInputModePreference,
 } from '@/services/storageService';
+import * as Haptics from 'expo-haptics';
 import { LinearGradient } from 'expo-linear-gradient';
 import { router, useFocusEffect, useLocalSearchParams } from 'expo-router';
 import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
@@ -110,7 +111,10 @@ import {
   View,
   useWindowDimensions,
 } from 'react-native';
+import { useReducedMotion } from 'react-native-reanimated';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import { DreamCaptureSeal } from '@/components/journal/story/DreamCaptureSeal';
+import { DREAM_STORY } from '@/components/journal/story/dreamStoryMotion';
 
 const log = createScopedLogger('[Recording]');
 const isMockMode = isMockModeEnabled();
@@ -668,6 +672,23 @@ export default function RecordingScreen() {
     router.replace(buildJournalDetailHref(dream, options));
   }, []);
 
+  // Prologue of the dream story: the saved draft condenses into a star before its page
+  // opens. The veil is lifted only once the next page covers this one, so the emptied
+  // composer is never glimpsed during the transition.
+  const reducedMotion = useReducedMotion();
+  const [sealingSavedDream, setSealingSavedDream] = useState(false);
+  const sealTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  useEffect(() => () => {
+    if (sealTimerRef.current) clearTimeout(sealTimerRef.current);
+  }, []);
+  // The seal is a guarded transition: hardware Back cannot pop the capture before the
+  // saved dream opens. The guard ends as the next page takes focus.
+  useFocusEffect(useCallback(() => {
+    if (!sealingSavedDream) return;
+    const subscription = BackHandler.addEventListener('hardwareBackPress', () => true);
+    return () => subscription.remove();
+  }, [sealingSavedDream]));
+
   useEffect(() => {
     const pending = onboardingState.pendingRecordingIntent;
     if (
@@ -1110,7 +1131,23 @@ export default function RecordingScreen() {
       if (inputMode === 'voice' && captureReview) {
         setSavedCapture({ dream: savedDream, review: captureReview, scope: onboardingScope });
       } else {
-        navigateToSavedDream(savedDream, { saved: true, recall: completeWithHelp, autoAnalyze: isNewDream && !user && !completeWithHelp });
+        const openSavedDream = () => navigateToSavedDream(savedDream, {
+          saved: true, recall: completeWithHelp, autoAnalyze: isNewDream && !user && !completeWithHelp,
+        });
+        // One success haptic at the causal moment, paired with the seal or the next page.
+        void Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success).catch(() => {});
+        if (reducedMotion) {
+          openSavedDream();
+        } else {
+          setSealingSavedDream(true);
+          sealTimerRef.current = setTimeout(() => {
+            openSavedDream();
+            sealTimerRef.current = setTimeout(() => {
+              sealTimerRef.current = null;
+              setSealingSavedDream(false);
+            }, DREAM_STORY.prologueVeilHold);
+          }, DREAM_STORY.prologue);
+        }
       }
     } catch (error) {
       if (error instanceof GuestDreamLimitError) {
@@ -1155,6 +1192,7 @@ export default function RecordingScreen() {
     language,
     navigateToSavedDream,
     onboardingState.pendingRecordingIntent,
+    reducedMotion,
     resetComposer,
     stopRecording,
     t,
@@ -1977,6 +2015,7 @@ export default function RecordingScreen() {
         </ScrollView>
       </StandardBottomSheet>
 
+      {sealingSavedDream ? <DreamCaptureSeal /> : null}
       <MicPermissionRationaleSheet
         visible={showMicRationaleSheet}
         onClose={handleMicRationaleClose}

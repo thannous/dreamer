@@ -241,16 +241,6 @@ jest.doMock('expo-linear-gradient', () => ({
   LinearGradient: () => <div data-testid="recording-gradient" />,
 }));
 
-jest.doMock('@/components/analysis/AnalysisProgress', () => ({
-  AnalysisProgress: () => <div data-testid="analysis-progress" />,
-}));
-
-jest.doMock('@/components/analysis/AnalysisRevealOverlay', () => ({
-  ANALYSIS_REVEAL_HOLD_MS: 0,
-  AnalysisRevealOverlay: ({ visible }: { visible: boolean }) =>
-    visible ? <div data-testid="analysis-reveal-overlay" /> : null,
-}));
-
 jest.doMock('@/components/dev/MockNavigationRail', () => ({
   MockNavigationRail: () => null,
 }));
@@ -1550,9 +1540,10 @@ describe('Recording screen', () => {
     await act(async () => { finish(buildDream('A blue room under the rain', 42)); });
     await waitFor(() => expect(mockTrackDreamSaveMilestone).toHaveBeenCalledWith(true));
     expect(mockTrackDreamSaveMilestone).toHaveBeenCalledTimes(1);
-    expect(mockReplace).toHaveBeenCalledWith({
+    // The detail opens once the capture seal (the story's prologue) has played.
+    await waitFor(() => expect(mockReplace).toHaveBeenCalledWith({
       pathname: '/journal/[id]', params: { id: '42', saved: '1' },
-    });
+    }));
   });
 
   it('marks a new save into an existing journal as a return candidate, never a first save', async () => {
@@ -1603,6 +1594,31 @@ describe('Recording screen', () => {
     expect(isInitialDreamCategorizationPending(savedIdentity)).toBe(false);
   });
 
+  it('holds Android Back during the seal so the saved dream still opens', async () => {
+    render(<RecordingScreen />);
+    await awaitEditorReady();
+    fireEvent.change(screen.getByTestId(TID.Input.DreamTranscript), { target: { value: 'A lantern in the snow' } });
+    fireEvent.click(await screen.findByTestId('recording-save'));
+    await screen.findByTestId(TID.Component.DreamCaptureSeal);
+    expect(mockReplace).not.toHaveBeenCalled();
+
+    // Focus the screen as rendered under the seal and press Back on whatever it registers.
+    const addListener = jest.requireMock('react-native').BackHandler.addEventListener as jest.Mock;
+    const registeredBefore = addListener.mock.calls.length;
+    type FocusEffect = () => (() => void) | undefined;
+    const focusEffects = mockUseFocusEffect.mock.calls.slice(-3).map((call: unknown[]) => call[0] as FocusEffect);
+    const unfocus = focusEffects.map((effect: FocusEffect) => effect());
+    const backHandlers = addListener.mock.calls.slice(registeredBefore).map(([, handler]) => handler as () => boolean);
+    expect(backHandlers.some((handler) => handler())).toBe(true);
+    expect(mockReplace).not.toHaveBeenCalled();
+    unfocus.slice(1).forEach((cleanup: (() => void) | undefined) => cleanup?.());
+
+    await waitFor(() => expect(mockReplace).toHaveBeenCalledWith({
+      pathname: '/journal/[id]',
+      params: { id: '42', saved: '1' },
+    }));
+  });
+
   it('saves without calling categorizeDream while AI consent is missing', async () => {
     mockHasAiConsent.mockResolvedValue(false);
     render(<RecordingScreen />);
@@ -1639,7 +1655,7 @@ describe('Recording screen', () => {
     expect(mockAddDream).toHaveBeenCalledTimes(1);
     expect(mockReplace).not.toHaveBeenCalled();
     await act(async () => { finish({ ...buildDream('A quiet lake'), remoteId: 17, clientRequestId: 'capture-42' }); });
-    expect(mockReplace).toHaveBeenCalledTimes(1);
+    await waitFor(() => expect(mockReplace).toHaveBeenCalledTimes(1));
     expect(mockReplace).toHaveBeenCalledWith({
       pathname: '/journal/[id]',
       params: { id: '42', remoteId: '17', clientRequestId: 'capture-42', saved: '1' },
@@ -1660,7 +1676,7 @@ describe('Recording screen', () => {
       await awaitEditorReady();
       fireEvent.change(screen.getByTestId(TID.Input.DreamTranscript), { target: { value: 'A quiet lake' } });
       await act(async () => { fireEvent.click(getCaptureSaveAction()); });
-      expect(mockReplace).toHaveBeenCalledTimes(1);
+      await waitFor(() => expect(mockReplace).toHaveBeenCalledTimes(1));
       expect(mockReplace).toHaveBeenCalledWith({ pathname: '/journal/[id]', params: { id: '42', saved: '1', ...(access === 'guest' ? { autoAnalyze: '1' } : {}) } });
       mockQuotaState.loading = false;
       mockQuotaState.error = null;
@@ -1682,7 +1698,7 @@ describe('Recording screen', () => {
     mockQuotaState.tier = 'plus';
     view.rerender(<RecordingScreen />);
     await act(async () => { finish(buildDream('A quiet lake')); });
-    expect(mockReplace).toHaveBeenCalledTimes(1);
+    await waitFor(() => expect(mockReplace).toHaveBeenCalledTimes(1));
     expect(mockReplace).toHaveBeenCalledWith({ pathname: '/journal/[id]', params: { id: '42', saved: '1' } });
   });
 
@@ -1854,10 +1870,10 @@ describe('Recording screen', () => {
       );
     });
 
-    expect(mockReplace).toHaveBeenCalledWith({
+    await waitFor(() => expect(mockReplace).toHaveBeenCalledWith({
         pathname: '/journal/[id]',
         params: { id: '42', saved: '1' },
-      });
+      }));
     expect(mockAnalyzeDream).not.toHaveBeenCalled();
     expect(screen.queryByTestId('first-dream-sheet')).toBeNull();
     expect(screen.queryByTestId('btn.guestLimit.cta')).toBeNull();
