@@ -6,7 +6,7 @@ import path from 'node:path';
 import { _runGuardedWithListsForTests, TestTargetRefused } from './test-supabase-guard.mjs';
 import { TIER_STATE, keyHeaders, main as seedMain, makeSeedAction, readSeedSecrets } from './test-seed-users.mjs';
 import { BRANCH_WEB_ORIGIN, BRANCH_WEB_PORT, main as authMain, makeAuthAction, readAuthSecrets, storageKey } from './test-auth-setup.mjs';
-import { PASSTHROUGH_EXPO_PUBLIC, branchAppEnv, main as startMain } from './start-branch-e2e.mjs';
+import { BRANCH_GUARD_MARKER, PASSTHROUGH_EXPO_PUBLIC, RUNNER, branchAppEnv, branchCommand, main as startMain, parseBranchArgs } from './start-branch-e2e.mjs';
 import { FLOW, main as maestroMain, maestroEnv, runRecord } from './maestro-branch-sign-in.mjs';
 
 const PROD = 'usuyppgsmmowzizhaoqj';
@@ -266,6 +266,54 @@ test('start-branch-e2e gives the app only the branch URL, anon key and functions
   assert.throws(() => startMain([], { env: prodEnv(), spawnImpl: () => { spawned = true; } }), TestTargetRefused);
   assert.throws(() => startMain([], { env: env(), spawnImpl: () => { spawned = true; } }), TestTargetRefused);
   assert.equal(spawned, false);
+});
+
+test('start-branch-e2e accepts only an allowlist of Expo args and refuses the rest before the guard or a spawn', () => {
+  assert.deepEqual(parseBranchArgs([]), []);
+  assert.deepEqual(
+    parseBranchArgs(['--web', '--port', '8087', '--dev-client', '--clear', '--lan', '--localhost']),
+    ['--web', '--port', '8087', '--dev-client', '--clear', '--lan', '--localhost'],
+  );
+  assert.deepEqual(parseBranchArgs(['--port', '1']), ['--port', '1']);
+  assert.deepEqual(parseBranchArgs(['--port', '65535']), ['--port', '65535']);
+  for (const bad of [
+    ['--profile', '.env.playstore'],
+    ['--profile=.env.playstore'],
+    ['-p', '.env.playstore'],
+    ['--web', '--', '--profile', '.env.playstore'],
+    ['--'],
+    ['.env.playstore'],
+    ['start'],
+    ['--port'],
+    ['--port', '0'],
+    ['--port', '65536'],
+    ['--port', '80a'],
+    ['--port', '-1'],
+    ['--port', '1e3'],
+    ['--port', ' 8087'],
+    ['--port=8087'],
+    ['--WEB'],
+    ['--web=1'],
+    ['--tunnel'],
+    ['--android'],
+  ]) {
+    assert.throws(() => parseBranchArgs(bad), /start-branch-e2e: (argument|--port)/, JSON.stringify(bad));
+    let spawned = false;
+    // With a valid-looking env too: the argv check comes first, nothing spawns.
+    assert.throws(() => startMain(bad, { env: env(), spawnImpl: () => { spawned = true; } }), /start-branch-e2e: (argument|--port)/);
+    assert.throws(() => startMain(bad, { env: prodEnv(), spawnImpl: () => { spawned = true; } }), /start-branch-e2e: (argument|--port)/);
+    assert.equal(spawned, false);
+  }
+});
+
+test('start-branch-e2e hands the runner the guard marker and EXPO_NO_DOTENV=1, and a marker from the shell cannot weaken it', () => {
+  const target = { ref: REF, url: `https://${REF}.supabase.co` };
+  const command = branchCommand(['--web'], target, env({ EXPO_NO_DOTENV: '0', [BRANCH_GUARD_MARKER]: '0' }));
+  assert.deepEqual(command.args, [RUNNER, 'start', '--web']);
+  assert.equal(command.env[BRANCH_GUARD_MARKER], '1');
+  assert.equal(command.env.EXPO_NO_DOTENV, '1');
+  assert.equal(command.env.EXPO_PUBLIC_SUPABASE_URL, target.url);
+  assert.ok(RUNNER.endsWith(path.join('scripts', 'expo-safe-runner.js')));
 });
 
 test('maestro wrapper: credentials from the loaded env, only as MAESTRO_* env vars, guard first', () => {

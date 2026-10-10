@@ -202,6 +202,9 @@ export default {
     'scripts/start-branch-e2e.mjs',
     'scripts/maestro-branch-sign-in.mjs',
     'scripts/test-test-seed-auth.mjs',
+    // The Expo runner re-checks a guarded branch run (marker from start-branch-e2e).
+    'scripts/expo-safe-runner.js',
+    'scripts/expo-safe-runner.test.js',
     'playwright.branch.config.ts',
     // The suites ci-contracts runs.
     '.circleci/tests/classify-changes.test.sh',
@@ -244,7 +247,7 @@ export default {
     // project missing from the allowlist, before any network call.
     {
       name: 'test-supabase-guard',
-      command: 'node --test scripts/test-test-supabase-guard.mjs scripts/test-test-seed-auth.mjs',
+      command: 'node --test scripts/test-test-supabase-guard.mjs scripts/test-test-seed-auth.mjs && npm run test:file -- scripts/expo-safe-runner.test.js',
       inputs: [
         'scripts/test-supabase-guard.mjs',
         'scripts/test-test-supabase-guard.mjs',

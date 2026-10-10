@@ -158,7 +158,18 @@ the branch key (else `lib/http.ts` falls back to the production legacy JWT in
 `E2E_*` variable reaches Metro. Of the shell's `EXPO_PUBLIC_*` values (inlined into
 the bundle) only an explicit allowlist of feature flags passes
 (`PASSTHROUGH_EXPO_PUBLIC` in the script); keys, endpoints, RevenueCat, Google,
-Turnstile, mock and QA switches are dropped. Scope: the harness covers Auth and
+Turnstile, mock and QA switches are dropped. Arguments: only `--web`,
+`--port <1-65535>`, `--dev-client`, `--clear`, `--lan` and `--localhost` pass;
+anything else (`--profile`, `--profile=...`, `-p`, positional args, `--`) is
+refused before anything starts, so no env file can replace the guarded target.
+The script also sets `NOCTALIA_BRANCH_E2E_GUARD=1` for `scripts/expo-safe-runner.js`.
+With that marker present (any value; it only adds restrictions) the runner refuses
+`--profile` and anything but `expo start`, forces `EXPO_NO_DOTENV=1` (Expo CLI
+would otherwise auto-load `.env`, `.env.local` and the like from the project
+root), and re-runs the guard on the final `EXPO_PUBLIC_SUPABASE_URL`, anon key,
+`EXPO_PUBLIC_API_URL` and `EXPO_PUBLIC_SUPABASE_FUNCTION_JWT` before Expo starts:
+production ref or key anywhere in `EXPO_PUBLIC_*`, a non-allowlisted ref, another
+functions host or a non-anon function key all refuse. Scope: the harness covers Auth and
 database journeys. A branch starts with the parent project's deployed Edge
 Functions and, without the GitHub integration, never receives the functions of
 this checkout; journeys that call functions (analysis, chat) need owner step 4b

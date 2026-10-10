@@ -60,9 +60,50 @@ export function branchAppEnv(target, env, base = process.env) {
   };
 }
 
+// Marker for scripts/expo-safe-runner.js: when present (any value) the runner
+// refuses --profile, forces EXPO_NO_DOTENV=1, accepts only `start`, and
+// re-checks the final app env with the guard. It only adds restrictions.
+export const BRANCH_GUARD_MARKER = 'NOCTALIA_BRANCH_E2E_GUARD';
+
+const FLAG_ARGS = new Set(['--web', '--dev-client', '--clear', '--lan', '--localhost']);
+
+// Only these Expo args pass; anything else (--profile, --profile=..., -p,
+// positional args, `--`, unknown flags) is refused before anything starts.
+export function parseBranchArgs(argv) {
+  const out = [];
+  for (let index = 0; index < argv.length; index += 1) {
+    const arg = String(argv[index]);
+    if (FLAG_ARGS.has(arg)) {
+      out.push(arg);
+      continue;
+    }
+    if (arg === '--port') {
+      const value = String(argv[index + 1] ?? '');
+      const port = Number(value);
+      if (!/^[0-9]{1,5}$/.test(value) || port < 1 || port > 65535) throw new Error('start-branch-e2e: --port needs a number from 1 to 65535.');
+      out.push('--port', String(port));
+      index += 1;
+      continue;
+    }
+    throw new Error(`start-branch-e2e: argument "${arg}" is not allowed. Allowed: --web, --port <1-65535>, --dev-client, --clear, --lan, --localhost.`);
+  }
+  return out;
+}
+
+export const RUNNER = path.join(SCRIPT_DIR, 'expo-safe-runner.js');
+
+// The exact runner command for an already guarded target.
+export function branchCommand(args, target, env) {
+  return {
+    args: [RUNNER, 'start', ...args],
+    env: { ...branchAppEnv(target, env), [BRANCH_GUARD_MARKER]: '1' },
+  };
+}
+
 export function main(argv = process.argv.slice(2), { env = readTestEnv(), spawnImpl = spawn } = {}) {
-  const childEnv = branchAppEnv(assertTestSupabaseTarget(env), env);
-  return spawnImpl(process.execPath, [path.join(SCRIPT_DIR, 'expo-safe-runner.js'), 'start', ...argv], { stdio: 'inherit', env: childEnv });
+  const args = parseBranchArgs(argv);
+  const command = branchCommand(args, assertTestSupabaseTarget(env), env);
+  return spawnImpl(process.execPath, command.args, { stdio: 'inherit', env: command.env });
 }
 
 if (process.argv[1] && path.resolve(process.argv[1]) === fileURLToPath(import.meta.url)) {

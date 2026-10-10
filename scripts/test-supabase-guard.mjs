@@ -150,6 +150,50 @@ function checkTarget(env, allowedRefs) {
   return { ref, url: canonical };
 }
 
+// The final app env of a branch run (what Expo will inline), checked again in
+// the Expo runner after it built that env. Same policy: pinned production ref
+// and key, allowlisted ref, anon slot rules for the key and the function JWT,
+// the functions URL of that same ref, and no production ref or key in any
+// EXPO_PUBLIC_* value.
+function checkBranchAppEnv(appEnv, allowedRefs) {
+  const publicValues = Object.entries(appEnv).filter(([name]) => name.startsWith('EXPO_PUBLIC_')).map(([, value]) => String(value ?? ''));
+  for (const ref of FORBIDDEN_PROJECT_REFS) {
+    if (publicValues.some((value) => value.toLowerCase().includes(ref))) throw new TestTargetRefused(`the production Supabase project (${ref}) is in the branch app env`);
+  }
+  for (const key of FORBIDDEN_KEYS) {
+    if (publicValues.includes(key)) throw new TestTargetRefused('a production Supabase key is in the branch app env');
+  }
+  const host = (() => {
+    try {
+      return new URL(String(appEnv.EXPO_PUBLIC_SUPABASE_URL ?? '')).hostname;
+    } catch {
+      return '';
+    }
+  })();
+  const ref = HOST_PATTERN.exec(host)?.[1] ?? '';
+  const target = checkTarget({
+    E2E_SUPABASE_URL: appEnv.EXPO_PUBLIC_SUPABASE_URL,
+    E2E_SUPABASE_PROJECT_REF: ref,
+    E2E_SUPABASE_ANON_KEY: appEnv.EXPO_PUBLIC_SUPABASE_ANON_KEY,
+  }, allowedRefs);
+  if (!appEnv.EXPO_PUBLIC_SUPABASE_ANON_KEY) throw new TestTargetRefused('EXPO_PUBLIC_SUPABASE_ANON_KEY is not set in the branch app env');
+  if (appEnv.EXPO_PUBLIC_API_URL !== `https://${target.ref}.functions.supabase.co/api`) {
+    throw new TestTargetRefused('EXPO_PUBLIC_API_URL must be the functions URL of the guarded branch');
+  }
+  const functionJwt = appEnv.EXPO_PUBLIC_SUPABASE_FUNCTION_JWT;
+  if (!functionJwt) throw new TestTargetRefused('EXPO_PUBLIC_SUPABASE_FUNCTION_JWT must be set (else app.json falls back to production)');
+  assertKeyRole('E2E_SUPABASE_ANON_KEY', functionJwt);
+  const jwtKeyRef = jwtRef(functionJwt);
+  if (jwtKeyRef !== null && FORBIDDEN_PROJECT_REFS.includes(jwtKeyRef.toLowerCase())) throw new TestTargetRefused('EXPO_PUBLIC_SUPABASE_FUNCTION_JWT belongs to the production Supabase project');
+  if (jwtKeyRef !== null && jwtKeyRef !== target.ref) throw new TestTargetRefused('EXPO_PUBLIC_SUPABASE_FUNCTION_JWT belongs to another Supabase project');
+  if (String(appEnv.EXPO_PUBLIC_MOCK_MODE ?? '').toLowerCase() === 'true') throw new TestTargetRefused('mock mode is on in the branch app env');
+  return target;
+}
+
+export function assertBranchAppEnv(appEnv) {
+  return checkBranchAppEnv(appEnv, loadAllowedRefs());
+}
+
 // The runtime check: pinned production ref and key, committed allowlist.
 // It takes only the env; nothing a caller passes can change the policy.
 export function assertTestSupabaseTarget(env) {
@@ -218,6 +262,11 @@ export async function runGuarded(env, action, { fetch = globalThis.fetch } = {})
 // runtime scripts; a static test enforces that.
 export function _assertWithListsForTests(env, { allowedRefs = [] } = {}) {
   return checkTarget(env, validateAllowedRefs(allowedRefs, 'the test allowlist'));
+}
+
+// TEST ONLY: assertBranchAppEnv with an injected allowlist (see above).
+export function _assertBranchAppEnvWithListsForTests(appEnv, { allowedRefs = [] } = {}) {
+  return checkBranchAppEnv(appEnv, validateAllowedRefs(allowedRefs, 'the test allowlist'));
 }
 
 // TEST ONLY: runGuarded with an injected allowlist (see above).
