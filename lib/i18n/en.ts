@@ -256,7 +256,7 @@ const translations: Record<string, string> = {
     'onboarding.privacy.no_content': "Usage measurement is optional and never includes what your dreams say.",
     "onboarding.privacy.details": "Read the privacy policy",
     "onboarding.privacy.private": "They are never sold or used for advertising.",
-    'onboarding.privacy.ai_body': "Noctalia uses generative AI to understand your dreams and create their illustrations, with your consent.",
+    'onboarding.privacy.ai_body': "Noctalia uses generative AI to understand your dreams and create their illustrations.",
     'onboarding.privacy.toggle_label': "Allow usage measurement (optional)",
     'onboarding.privacy.toggle_hint': "Optional, off by default.",
     'onboarding.privacy.enabled': 'Measurement enabled',

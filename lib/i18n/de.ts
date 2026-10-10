@@ -256,7 +256,7 @@ const translations: Record<string, string> = {
     'onboarding.privacy.no_content': "Die Nutzungsmessung ist freiwillig und enthält nie den Inhalt deiner Träume.",
     "onboarding.privacy.details": "Datenschutzerklärung lesen",
     "onboarding.privacy.private": "Sie werden weder verkauft noch für Werbung genutzt.",
-    'onboarding.privacy.ai_body': "Noctalia nutzt generative KI, um deine Träume zu verstehen und ihre Illustrationen zu erstellen, mit deiner Zustimmung.",
+    'onboarding.privacy.ai_body': "Noctalia nutzt generative KI, um deine Träume zu verstehen und ihre Illustrationen zu erstellen.",
     'onboarding.privacy.toggle_label': "Nutzungsmessung erlauben (freiwillig)",
     'onboarding.privacy.toggle_hint': "Freiwillig, standardmäßig aus.",
     'onboarding.privacy.enabled': 'Messung aktiviert',

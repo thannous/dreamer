@@ -257,7 +257,7 @@ const translations: Record<string, string> = {
     'onboarding.privacy.no_content': "La mesure d’usage est facultative et n’inclut jamais le contenu de tes rêves.",
     "onboarding.privacy.details": "Lire la politique de confidentialité",
     "onboarding.privacy.private": "Ils ne sont ni vendus ni utilisés pour la publicité.",
-    'onboarding.privacy.ai_body': "Noctalia utilise l’IA générative pour comprendre tes rêves et créer leurs illustrations, avec ton accord.",
+    'onboarding.privacy.ai_body': "Noctalia utilise l’IA générative pour comprendre tes rêves et créer leurs illustrations.",
     'onboarding.privacy.toggle_label': "Autoriser la mesure d’usage (facultatif)",
     'onboarding.privacy.toggle_hint': "Facultatif, désactivé par défaut.",
     'onboarding.privacy.enabled': 'Mesure activée',

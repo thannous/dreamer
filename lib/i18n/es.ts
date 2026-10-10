@@ -256,7 +256,7 @@ const translations: Record<string, string> = {
     'onboarding.privacy.no_content': "La medición de uso es opcional y nunca incluye el contenido de tus sueños.",
     "onboarding.privacy.details": "Leer la política de privacidad",
     "onboarding.privacy.private": "Nunca se venden ni se usan para publicidad.",
-    'onboarding.privacy.ai_body': "Noctalia usa IA generativa para comprender tus sueños y crear sus ilustraciones, con tu permiso.",
+    'onboarding.privacy.ai_body': "Noctalia usa IA generativa para comprender tus sueños y crear sus ilustraciones.",
     'onboarding.privacy.toggle_label': "Permitir la medición de uso (opcional)",
     'onboarding.privacy.toggle_hint': "Opcional, desactivada por defecto.",
     'onboarding.privacy.enabled': 'Medición activada',
