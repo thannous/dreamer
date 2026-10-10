@@ -1,6 +1,6 @@
 // Historical UI assertions, run on the public TesterArmy web surface.
 import type { Page } from 'playwright/test';
-import { createParityTest, expect } from '../web-parity-fixtures';
+import { createParityTest, expect, withDialog } from '../web-parity-fixtures';
 const test = createParityTest();
 
 const story = 'Je marchais au bord d’un lac. Une maison éclairée apparaissait entre les arbres.\n\nJe reconnaissais cet endroit, sans savoir pourquoi. Tout semblait calme, comme si le temps s’était arrêté.\n\nJe me souviens surtout de la lumière et de cette sensation de douceur.';
@@ -14,8 +14,7 @@ async function startFrenchCapture(page: Page) {
   await page.getByTestId('btn.onboarding.intro.next').click();
   // With feature sheets, "Commencer" first tells the three stories; the cross moves on.
   if (process.env.EXPO_PUBLIC_ONBOARDING_FEATURE_SHEETS_ENABLED === 'true') {
-    page.once('dialog', (dialog) => dialog.accept());
-    await page.getByTestId('btn.onboarding.feature.close').click();
+    await withDialog(page, 'accept', () => page.getByTestId('btn.onboarding.feature.close').click());
   }
   await page.getByTestId('btn.onboarding.skip').click();
   await expect(page.getByTestId('screen.recording')).toBeVisible();

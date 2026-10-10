@@ -1,7 +1,7 @@
 // Desktop web shell: the night sidebar stays on every journal route, tab pages
 // keep a reading width and Capture saves right under its editor.
 import type { Page } from 'playwright/test';
-import { createParityTest, expect } from '../web-parity-fixtures';
+import { createParityTest, expect, withDialog } from '../web-parity-fixtures';
 
 const sidebar = (page: Page) => page.getByTestId('component.desktopSidebar');
 
@@ -13,8 +13,7 @@ async function startGuest(page: Page) {
   await page.getByTestId('btn.onboarding.intro.next').click();
   // With feature sheets, "Commencer" first tells the three stories; the cross moves on.
   if (process.env.EXPO_PUBLIC_ONBOARDING_FEATURE_SHEETS_ENABLED === 'true') {
-    page.once('dialog', (dialog) => dialog.accept());
-    await page.getByTestId('btn.onboarding.feature.close').click();
+    await withDialog(page, 'accept', () => page.getByTestId('btn.onboarding.feature.close').click());
   }
   await page.getByTestId('btn.onboarding.skip').click();
   await expect(page.getByTestId('screen.recording')).toBeVisible();

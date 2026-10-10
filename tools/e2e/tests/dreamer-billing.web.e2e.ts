@@ -1,6 +1,6 @@
 // Historical billing UI assertions, executed by TesterArmy with mock-only service guard.
 import type { Page } from 'playwright/test';
-import { createParityTest, expect } from '../web-parity-fixtures';
+import { createParityTest, expect, withDialog } from '../web-parity-fixtures';
 const test = createParityTest();
 
 async function setupFreeAccount(page: Page) {
@@ -8,8 +8,7 @@ async function setupFreeAccount(page: Page) {
   await page.getByTestId('btn.onboarding.intro.next').click();
   // With feature sheets, "Commencer" first tells the three stories; the cross moves on.
   if (process.env.EXPO_PUBLIC_ONBOARDING_FEATURE_SHEETS_ENABLED === 'true') {
-    page.once('dialog', (dialog) => dialog.accept());
-    await page.getByTestId('btn.onboarding.feature.close').click();
+    await withDialog(page, 'accept', () => page.getByTestId('btn.onboarding.feature.close').click());
   }
   await page.getByTestId('btn.onboarding.skip').click();
   await page.getByTestId('btn.recording.home').or(page.getByTestId('tab.home')).filter({ visible: true }).click();

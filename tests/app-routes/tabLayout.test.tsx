@@ -82,6 +82,11 @@ jest.doMock('react-native', () => {
   };
 
   return {
+    Keyboard: { isVisible: () => false, addListener: () => ({ remove: () => undefined }) },
+    Pressable: ({ onPress, testID, accessible, style }: { onPress?: () => void; testID?: string; accessible?: boolean; style?: unknown }) => (
+      <button data-testid={testID} aria-hidden={accessible === false} onClick={onPress}
+        data-native-style={JSON.stringify(flattenStyle(style))} />
+    ),
     Platform: {
       get OS() {
         return mockPlatformOS;

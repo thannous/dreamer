@@ -1,6 +1,6 @@
 // Historical exact UI assertions executed under the guarded TesterArmy engine.
 import type { Locator, Page } from 'playwright/test';
-import { createParityTest, expect } from '../web-parity-fixtures';
+import { createParityTest, expect, withDialog } from '../web-parity-fixtures';
 import { PRACTICAL_DREAM_GUIDES } from '../../../data/practicalDreamGuides';
 import curation from '../../../docs-src/static/data/curation-pages.json';
 import dictionary from '../../../data/dream-symbols.json';
@@ -23,8 +23,7 @@ async function openGuides(page: Page, preference: 'light' | 'dark' | 'auto') {
   await page.getByTestId('btn.onboarding.intro.next').click();
   // With feature sheets, "Commencer" first tells the three stories; the cross moves on.
   if (process.env.EXPO_PUBLIC_ONBOARDING_FEATURE_SHEETS_ENABLED === 'true') {
-    page.once('dialog', (dialog) => dialog.accept());
-    await page.getByTestId('btn.onboarding.feature.close').click();
+    await withDialog(page, 'accept', () => page.getByTestId('btn.onboarding.feature.close').click());
   }
   await page.getByTestId('btn.onboarding.skip').click();
   await expect(page.getByTestId('screen.recording')).toBeVisible();
