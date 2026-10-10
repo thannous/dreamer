@@ -31,7 +31,7 @@ import {
 } from '@/lib/dreamTrends';
 import { getDreamThemeLabel, getDreamTypeLabel, getEmotionFamilyLabel } from '@/lib/dreamLabels';
 import { TID } from '@/lib/testIDs';
-import { onHeaderScroll } from '@/components/ui/headerStretch';
+import { useHeaderScroll } from '@/components/ui/headerStretch';
 
 const COMPACT_BREAKPOINT = 360;
 
@@ -100,6 +100,8 @@ function SectionHead({ title, subtitle }: { title: string; subtitle?: string }) 
 }
 
 export default function StatisticsScreen() {
+  // This screen's own scroll, published to its header painting and title.
+  const onHeaderScroll = useHeaderScroll();
   const { dreams, loaded, completeness, reloadDreams } = useDreams();
   const { t } = useTranslation();
   const { formatDate, formatNumber, locale } = useLocaleFormatting();

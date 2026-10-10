@@ -63,7 +63,7 @@ import {
   useWindowDimensions,
 } from 'react-native';
 import { IconSymbol } from '@/components/ui/icon-symbol';
-import { headerScrollY, onHeaderScroll } from '@/components/ui/headerStretch';
+import { headerScrollY, useHeaderScrollFocus } from '@/components/ui/headerStretch';
 
 const SCROLL_IDLE_MS = 140;
 const PREFETCH_CACHE_LIMIT = 250;
@@ -564,8 +564,14 @@ export default function JournalListScreen() {
   // already delivers JS scroll events; avoid a UI worklet for every such frame.
   const handleStaticListScroll = useCallback((event: NativeSyntheticEvent<NativeScrollEvent>) => {
     staticScrollY.current = event.nativeEvent.contentOffset.y;
-    onHeaderScroll(event);
+    headerScrollY.set(staticScrollY.current);
   }, []);
+
+  // Back on the journal, its header reads the journal's own scroll again.
+  useHeaderScrollFocus(useCallback(
+    () => (searchConsumesLayout ? staticScrollY.current : listScrollY.get()),
+    [listScrollY, searchConsumesLayout],
+  ));
 
   const handleListScroll = useAnimatedScrollHandler({
     onScroll: (event) => {

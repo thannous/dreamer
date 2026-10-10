@@ -23,9 +23,11 @@ import {
 } from '@/services/dreamGuideService';
 import { LinearGradient } from 'expo-linear-gradient';
 import { router, useLocalSearchParams } from 'expo-router';
-import { onHeaderScroll } from '@/components/ui/headerStretch';
+import { useHeaderScroll } from '@/components/ui/headerStretch';
 
 export default function DreamGuideDetailScreen() {
+  // This screen's own scroll, published to its header painting and title.
+  const onHeaderScroll = useHeaderScroll();
   const { id } = useLocalSearchParams<{ id?: string | string[] }>();
   const guideId = Array.isArray(id) ? id[0] : id;
   const { colors, mode, shadows } = useTheme();

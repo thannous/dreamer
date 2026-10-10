@@ -35,7 +35,7 @@ import {
 import { getPaywallVariant, PLUS_PAYWALL_FEATURE_KEYS } from '@/lib/paywallVariants';
 import { classifyPurchaseFailure } from '@/lib/subscriptionErrors';
 import { TID } from '@/lib/testIDs';
-import { onHeaderScroll } from '@/components/ui/headerStretch';
+import { useHeaderScroll } from '@/components/ui/headerStretch';
 
 const log = createScopedLogger('[Paywall]');
 const PAYWALL_MAX_WIDTH = 720;
@@ -47,6 +47,8 @@ const PAYWALL_MAX_WIDTH = 720;
 const CTA_TRANSITION = ['backgroundColor', 'borderColor'] as const;
 
 export default function PaywallScreen() {
+  // This screen's own scroll, published to its header painting and title.
+  const onHeaderScroll = useHeaderScroll();
   const { colors, mode } = useTheme();
   const noctalia = useMemo(() => getNoctaliaDesignTokens(colors, mode), [colors, mode]);
   const { t, translationRevision, currentLang } = useTranslation();

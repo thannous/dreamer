@@ -19,7 +19,7 @@ import { useTheme } from "@/context/ThemeContext";
 import { useTranslation } from "@/hooks/useTranslation";
 import { trackProductEvent } from "@/lib/analytics";
 import { getDreamGuideCopy } from "@/lib/dreamGuideCopy";
-import { onHeaderScroll } from '@/components/ui/headerStretch';
+import { useHeaderScroll } from '@/components/ui/headerStretch';
 import type {
   DreamSymbol,
   SymbolCategory,
@@ -90,6 +90,8 @@ const FULL_ALPHABET = "ABCDEFGHIJKLMNOPQRSTUVWXYZ".split("");
 let trackedOnboardingDictionaryDestination = false;
 
 export default function SymbolDictionaryScreen() {
+  // This screen's own scroll, published to its header painting and title.
+  const onHeaderScroll = useHeaderScroll();
   const { source } = useLocalSearchParams<{ source?: string }>();
   const { colors, mode } = useTheme();
   const insets = useSafeAreaInsets();

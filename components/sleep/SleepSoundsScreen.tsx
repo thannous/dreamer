@@ -17,7 +17,7 @@ import { useScrollIdle } from '@/hooks/useScrollIdle';
 import { useSleepSoundPlayer } from '@/hooks/useSleepSoundPlayer';
 import { useTranslation } from '@/hooks/useTranslation';
 import { getSleepSoundCopy } from '@/lib/sleepSoundCopy';
-import { onHeaderScroll } from '@/components/ui/headerStretch';
+import { useHeaderScroll } from '@/components/ui/headerStretch';
 import {
   DEFAULT_SLEEP_SOUND_ID,
   DEFAULT_SLEEP_TIMER_MINUTES,
@@ -69,6 +69,8 @@ function formatRemainingTime(totalSeconds: number): string {
 }
 
 export function SleepSoundsScreen() {
+  // This screen's own scroll, published to its header painting and title.
+  const onHeaderScroll = useHeaderScroll();
   const { colors, mode } = useTheme();
   const noctalia = useMemo(() => getNoctaliaDesignTokens(colors, mode), [colors, mode]);
   const { currentLang, t } = useTranslation();

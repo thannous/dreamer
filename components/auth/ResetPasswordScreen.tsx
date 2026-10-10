@@ -26,7 +26,7 @@ import { isLucidTrainer } from '@/lib/appVariant';
 import { onPasswordRecovery, updatePassword } from '@/lib/auth';
 import { PASSWORD_MIN_LENGTH } from '@/lib/authValidation';
 import { TID } from '@/lib/testIDs';
-import { onHeaderScroll } from '@/components/ui/headerStretch';
+import { useHeaderScroll } from '@/components/ui/headerStretch';
 
 type Phase = 'checking' | 'ready' | 'success' | 'expired';
 
@@ -49,6 +49,8 @@ const getUpdateErrorKey = (error: unknown): string => {
  * arrives (expired or already-used link) the screen offers a way back to sign-in.
  */
 const ResetPasswordScreen: React.FC = () => {
+  // This screen's own scroll, published to its header painting and title.
+  const onHeaderScroll = useHeaderScroll();
   const { colors, mode } = useTheme();
   const noctalia = useMemo(() => getAuthDesignTokens(colors, mode), [colors, mode]);
   const insets = useSafeAreaInsets();

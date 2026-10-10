@@ -19,7 +19,7 @@ import { getDreamThemeLabel, getEmotionFamilyLabel } from '@/lib/dreamLabels';
 import { buildPaywallHref } from '@/lib/paywallRoute';
 import { TID } from '@/lib/testIDs';
 import { buildWeeklyRecap } from '@/lib/weeklyRecap';
-import { onHeaderScroll } from '@/components/ui/headerStretch';
+import { useHeaderScroll } from '@/components/ui/headerStretch';
 
 /**
  * "Your week in dreams": the Sunday-morning recap opened from the weekly push
@@ -28,6 +28,8 @@ import { onHeaderScroll } from '@/components/ui/headerStretch';
  * and doubles as a contextual entry to the paywall.
  */
 export function WeeklyRecapScreen() {
+  // This screen's own scroll, published to its header painting and title.
+  const onHeaderScroll = useHeaderScroll();
   const { colors, mode, shadows } = useTheme();
   const noctalia = useMemo(() => getNoctaliaDesignTokens(colors, mode), [colors, mode]);
   const { t } = useTranslation();

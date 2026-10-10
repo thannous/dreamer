@@ -24,11 +24,13 @@ import { canUseExploration360Synthesis, getExploration360SynthesisStatus } from 
 import { getDreamImageVersion, withCacheBuster } from '@/lib/imageUtils';
 import { buildPaywallHref } from '@/lib/paywallRoute';
 import { TID } from '@/lib/testIDs';
-import { onHeaderScroll } from '@/components/ui/headerStretch';
+import { useHeaderScroll } from '@/components/ui/headerStretch';
 
 const CATEGORY_ICONS = { symbols: 'sparkles', emotions: 'heart.fill', growth: 'leaf.fill' } as const;
 
 export default function DreamCategoriesScreen() {
+  // This screen's own scroll, published to its header painting and title.
+  const onHeaderScroll = useHeaderScroll();
   const { t } = useTranslation();
   const route = useLocalSearchParams<{ id: string; remoteId?: string; clientRequestId?: string }>();
   const { dreams } = useDreamsData();

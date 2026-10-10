@@ -18,6 +18,8 @@ type Props = {
   pinned?: boolean;
   /** Where the painting has fully become the page's ground (the bottom of its header), in points. */
   fadeEnd?: number;
+  /** Fade out while the page scrolls down; off when the header around it already fades. */
+  fadeOnScroll?: boolean;
 };
 
 /** A real opening onto the scene: copy lives on the theme's reading surface below it.
@@ -57,7 +59,7 @@ export function DreamerArtworkWindow({ scene, style, bleedTop = 0 }: {
 }
 
 /** A static, decorative painting fades into the page's own readable ground. */
-export function DreamerBackground({ scene, height, background, pinned = false, fadeEnd }: Props) {
+export function DreamerBackground({ scene, height, background, pinned = false, fadeEnd, fadeOnScroll = true }: Props) {
   const { colors, mode } = useTheme();
   const tokens = getNoctaliaDesignTokens(colors, mode);
   const insets = useSafeAreaInsets();
@@ -66,7 +68,7 @@ export function DreamerBackground({ scene, height, background, pinned = false, f
   const ground = background ?? tokens.screen.background;
   const spaciousHero = scene === 'sleep' || scene === 'ritual';
   const readingStart = Math.min(0.68, (insets.top + (spaciousHero ? 190 : 72)) / height);
-  const stretch = useHeaderStretchStyle(height, pinned);
+  const stretch = useHeaderStretchStyle(height, pinned, fadeOnScroll);
   // The painting melts into the page over 80 points and is pure ground by the bottom of its
   // header, so content with its own ground below never meets it as an edge.
   const fadeEndAt = Math.min(1, Math.max(readingStart + 0.05, (fadeEnd ?? height) / height));

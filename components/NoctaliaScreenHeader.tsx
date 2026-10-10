@@ -20,6 +20,8 @@ import {
   type ViewStyle,
 } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import Animated from 'react-native-reanimated';
+import { useHeaderFadeStyle } from '@/components/ui/headerStretch';
 
 type IconName = Parameters<typeof IconSymbol>[0]['name'];
 
@@ -104,6 +106,8 @@ export const NoctaliaScreenHeader = memo(function NoctaliaScreenHeader({
   const iconButtonBg = noctalia.surface.soft;
   const quietIconColor = noctalia.text.secondary;
   const [measuredHeight, setMeasuredHeight] = useState(0);
+  // Scrolling down, the header fades away to give the page its room.
+  const fadeStyle = useHeaderFadeStyle(measuredHeight);
   // Header copy over a painting keeps its contrast through a soft halo of the page's ground,
   // so the veil over the painting can stay light.
   const paintedTextShadow = {
@@ -117,9 +121,9 @@ export const NoctaliaScreenHeader = memo(function NoctaliaScreenHeader({
     // Same gutter as the Today hero; only the narrowest phones tighten it.
     const horizontalPadding = width <= 360 ? ThemeLayout.spacing.md : ThemeLayout.spacing.lg;
     return (
-      <View
+      <Animated.View
         onLayout={(event) => setMeasuredHeight(event.nativeEvent.layout.height)}
-        style={[styles.tabContainer, { paddingTop: (includeTopInset ? insets.top : 0) + ThemeLayout.spacing.md }]}
+        style={[styles.tabContainer, { paddingTop: (includeTopInset ? insets.top : 0) + ThemeLayout.spacing.md }, fadeStyle]}
       >
         {/* One treatment on every tab: the screen's painting (or the night sky) fills the whole
             header from the top of the screen, status bar included, and fades into the page. */}
@@ -127,7 +131,7 @@ export const NoctaliaScreenHeader = memo(function NoctaliaScreenHeader({
         {backdrop ? (
           // Pure ground by the bottom of the header, whatever is drawn below it.
           <NightSkyBand height={(measuredHeight || insets.top + 160) + 40} background={noctalia.screen.background}
-            scene={scene} pinned={pinned} fadeEnd={measuredHeight || undefined} />
+            scene={scene} pinned={pinned} fadeEnd={measuredHeight || undefined} fadeOnScroll={false} />
         ) : null}
         <View style={[styles.tabBrandRow, { paddingHorizontal: horizontalPadding }]}>
           {showBrand ? (
@@ -195,15 +199,15 @@ export const NoctaliaScreenHeader = memo(function NoctaliaScreenHeader({
         </View>
         {inlineSlot ? <View style={{ paddingHorizontal: horizontalPadding }}>{inlineSlot}</View> : null}
         {slot ? <View style={styles.slot}>{slot}</View> : null}
-      </View>
+      </Animated.View>
     );
   }
 
   return (
-    <View onLayout={(event) => setMeasuredHeight(event.nativeEvent.layout.height)}
-      style={[styles.container, isProminent && styles.prominentContainer, variant === 'editorial' && styles.editorialContainer, { paddingTop: (includeTopInset ? insets.top : 0) + ThemeLayout.spacing.sm, borderBottomColor: noctalia.surface.border }]}>
+    <Animated.View onLayout={(event) => setMeasuredHeight(event.nativeEvent.layout.height)}
+      style={[fadeStyle, styles.container, isProminent && styles.prominentContainer, variant === 'editorial' && styles.editorialContainer, { paddingTop: (includeTopInset ? insets.top : 0) + ThemeLayout.spacing.sm, borderBottomColor: noctalia.surface.border }]}>
       {/* Same as the tab header: the painting fills the header from the top of the screen. */}
-      {scene && backdrop ? <NightSkyBand height={(measuredHeight || insets.top + 160) + 40} background={noctalia.screen.background} scene={scene} fadeEnd={measuredHeight || undefined} /> : null}
+      {scene && backdrop ? <NightSkyBand height={(measuredHeight || insets.top + 160) + 40} background={noctalia.screen.background} scene={scene} fadeEnd={measuredHeight || undefined} fadeOnScroll={false} /> : null}
       <View style={[styles.titleRow, isNarrow && styles.titleRowNarrow, stackActions && styles.titleRowStacked, wrapInlineSlot && styles.searchRowWrapped]}>
         <View style={[styles.titleBlock, stackActions && styles.titleBlockStacked,
           Boolean(inlineSlot) && (canInlineSlot
@@ -323,7 +327,7 @@ export const NoctaliaScreenHeader = memo(function NoctaliaScreenHeader({
           </View>
         </ScrollView>
       ) : null}
-    </View>
+    </Animated.View>
   );
 });
 
