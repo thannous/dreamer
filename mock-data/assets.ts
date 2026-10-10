@@ -33,7 +33,7 @@ export function getMockDreamImage(name: MockDreamArt): string {
   // On web the bundler already gives a URL (or { uri }); react-native-web has no resolveAssetSource.
   if (typeof source === 'string') return source;
   if (source && typeof source === 'object' && 'uri' in source) return String((source as { uri: unknown }).uri);
-  return Image.resolveAssetSource?.(source as number)?.uri ?? '';
+  return Image?.resolveAssetSource?.(source as number)?.uri ?? '';
 }
 
 /** Which illustrations suit each theme's mood. */
