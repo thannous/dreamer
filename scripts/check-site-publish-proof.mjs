@@ -51,6 +51,7 @@ export const SITE_PUBLISH_PROOF_CHECKS = Object.freeze([
   'proof-matches-head',
   'proof-target',
   'proof-external',
+  'proof-engine',
   'proof-latest-release',
   'proof-open-check',
 ]);

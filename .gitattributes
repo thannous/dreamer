@@ -1,0 +1,3 @@
+scripts/verify-local*.mjs text eol=lf
+scripts/test-verify-local.mjs text eol=lf
+verify-local.config.mjs text eol=lf

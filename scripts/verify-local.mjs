@@ -84,8 +84,12 @@ import { fileURLToPath, pathToFileURL } from 'node:url';
 export const RULE = 'regle-commune-livraison v4';
 // 3: --external is guarded (specialised, probe fails, evidence names the
 // commit or tree) and never reused; proofs written before that are ignored.
-export const PROOF_FORMAT_VERSION = 3;
+// 4: each proof and run log entry names the sha256 of the engine that wrote
+// it; a deploy needs it to equal ENGINE_SHA256 of the config at HEAD.
+export const PROOF_FORMAT_VERSION = 4;
 export const ENGINE_VERSION = 1;
+/** The sha256 of this engine file's own bytes, as it runs. */
+export const ENGINE_FILE_SHA256 = createHash('sha256').update(readFileSync(fileURLToPath(import.meta.url))).digest('hex');
 export const CONFIG_FILE = 'verify-local.config.mjs';
 export const PROOFS_DIR = 'verify-proofs';
 const PREFIX = '[verify-local]';
@@ -279,10 +283,13 @@ export function readProof(commonDir, tree, name = `${tree}.json`) {
  * the tree's proof as it is, whose SHA then differs from <sha>.
  */
 export function readProofFor(commonDir, tree, sha) {
-  const proof = readProof(commonDir, tree);
+  // Status, the proof block and the hook trust only a proof of this engine,
+  // as the deploy guard does.
+  const ours = (candidate) => (candidate?.engine === ENGINE_FILE_SHA256 ? candidate : null);
+  const proof = ours(readProof(commonDir, tree));
   if (proof?.sha === sha) return proof;
   const beside = ['pr', 'release']
-    .map((kind) => readProof(commonDir, tree, attemptName(tree, kind, sha)))
+    .map((kind) => ours(readProof(commonDir, tree, attemptName(tree, kind, sha))))
     .filter((attempt) => attempt?.sha === sha && attempt.tree === tree)
     .sort((a, b) => Number(b.result === 'passed') - Number(a.result === 'passed'));
   return beside[0] ?? proof;
@@ -320,7 +327,49 @@ export function readRunLog(commonDir, sha) {
       && entry.checks.every((check) => check && typeof check.name === 'string' && typeof check.result === 'string');
     entries.push(valid ? entry : { kind: 'unreadable', sha, result: 'unreadable', line: index + 1, finishedAt: null, checks: [] });
   });
-  return entries;
+  // A start entry is dropped once its run ended. One that never ended stands
+  // for an interrupted run of each check it selected, and counts as the
+  // newest entry (it may have died after any later entry) until a later run
+  // sees its process gone and records its end there (closeUnended), so only
+  // a run after that clears it.
+  const ended = new Set(entries.filter((entry) => entry.runId && entry.result !== 'started').map((entry) => entry.runId));
+  const unended = entries.filter((entry) => entry.result === 'started' && !ended.has(entry.runId)).map((entry) => ({
+    ...entry,
+    result: 'interrupted',
+    unended: true,
+    finishedAt: entry.startedAt,
+    checks: (Array.isArray(entry.selected) ? entry.selected : []).filter((name) => typeof name === 'string').map((name) => ({ name, result: 'interrupted' })),
+  }));
+  return [...entries.filter((entry) => entry.result !== 'started'), ...unended];
+}
+
+/** No verify run lasts this long: an older unended start is over, whatever its pid. */
+export const RUN_MAX_MS = 6 * 60 * 60 * 1000;
+
+/**
+ * Records, at this point of the log, the end of each run of <sha> that
+ * started, never ended and is no longer running (its process on this machine
+ * is gone, or it ran elsewhere), as interrupted. A run still running stays
+ * unended, so it counts as newer than any run that ends before it.
+ */
+export function closeUnended(commonDir, sha, at, proofLock = {}) {
+  // Under the proof lock, on a fresh read: a run another verifier already
+  // closed has an end entry now, so it is never closed twice. Without the
+  // lock nothing is closed (the unended start still counts as newest).
+  withProofLock(commonDir, () => closeUnendedLocked(commonDir, sha, at), proofLock);
+}
+
+function closeUnendedLocked(commonDir, sha, at) {
+  for (const entry of readRunLog(commonDir, sha).filter((item) => item.unended)) {
+    // This process runs one verify at a time, so its own earlier start is over;
+    // past RUN_MAX_MS, a live pid is a recycled one, not the run.
+    const running = Number.isInteger(entry.pid) && entry.pid !== process.pid && entry.host === os.hostname()
+      && Date.now() - Date.parse(entry.startedAt) < RUN_MAX_MS && processAlive(entry.pid);
+    if (running) continue;
+    const closed = { ...entry, finishedAt: at, closedBy: 'a later run' };
+    delete closed.unended;
+    appendRun(commonDir, sha, closed);
+  }
 }
 
 /** Whether a check result really ran here or came with external evidence (not reused, not out of scope). */
@@ -337,7 +386,7 @@ function realResult(check) {
  * config's checks in `known`; <known> adds the caller's), each until its own
  * real pass. With no known check at all, it stays open as `run-log`.
  */
-export function openChecks(log, known = []) {
+export function openChecks(log, known = [], engine = ENGINE_FILE_SHA256) {
   const names = new Set(known);
   for (const entry of log) {
     for (const name of Array.isArray(entry.known) ? entry.known : []) if (typeof name === 'string') names.add(name);
@@ -352,7 +401,10 @@ export function openChecks(log, known = []) {
       continue;
     }
     for (const check of entry.checks) {
-      if (realResult(check)) last.set(check.name, { check: check.name, result: check.result, kind: entry.kind, finishedAt: entry.finishedAt });
+      // Only a pass logged by <engine> (the pinned one) closes a check; a
+      // result of any engine that did not pass still opens it.
+      if (!realResult(check) || (check.result === 'passed' && entry.engine !== engine)) continue;
+      last.set(check.name, { check: check.name, result: check.result, kind: entry.kind, finishedAt: entry.finishedAt });
     }
   }
   return [...last.values()].filter((item) => item.result !== 'passed');
@@ -378,23 +430,87 @@ function openSuffix(commonDir, sha) {
 export const PROOF_LOCK_STALE_MS = 60000;
 export const PROOF_LOCK_WAIT_MS = 90000;
 
+/** A lock token: "<pid> <host> <random>". */
+function lockToken() {
+  return `${process.pid} ${os.hostname()} ${randomBytes(8).toString('hex')}`;
+}
+
+/** Whether process <pid> of this machine is still running. */
+function processAlive(pid) {
+  try {
+    process.kill(pid, 0);
+    return true;
+  } catch (error) {
+    return error.code === 'EPERM';
+  }
+}
+
 /**
- * Moves a stale proof lock aside (rename is atomic: only one waiter gets a
- * given lock), so the caller can create a new one. If the lock moved aside is
- * not the one judged stale (a new owner took the name meanwhile), it is put
- * back with link, which never replaces a lock that exists.
+ * Whether a lock holding <token> is stale. A lock of this machine is stale
+ * once its process is gone, and never while it runs (however long it holds
+ * it, up to RUN_MAX_MS), so a live holder is never robbed. Another machine's lock, or one
+ * whose token cannot be read, is stale after staleMs.
  */
-function takeOverStale(lock, staleMs) {
+export function lockIsStale(token, mtimeMs, staleMs) {
+  const [pid, host] = String(token).split(' ');
+  // Past RUN_MAX_MS, a live pid is a recycled one, not the holder.
+  if (/^[1-9][0-9]*$/.test(pid ?? '') && host === os.hostname() && Date.now() - mtimeMs < RUN_MAX_MS) return !processAlive(Number(pid));
+  return Date.now() - mtimeMs > staleMs;
+}
+
+/**
+ * Takes over a stale proof lock. One waiter at a time does it, under a
+ * takeover lock (created exclusively, itself taken over once stale), and only
+ * after reading the lock again there: a waiter never removes a lock other
+ * than the stale one it judged. The stale lock is renamed aside (atomic) and
+ * checked once more; if it is not the one judged stale, it is put back with
+ * link, which never replaces a lock that exists. <onJudged> is a test hook.
+ */
+export function takeOverStale(lock, staleMs, { onJudged, onGuardJudged } = {}) {
   let seen;
   try {
-    if (Date.now() - statSync(lock).mtimeMs <= staleMs) return;
     seen = readFileSync(lock, 'utf8');
+    if (!lockIsStale(seen, statSync(lock).mtimeMs, staleMs)) return;
   } catch {
     return;
   }
-  const aside = `${lock}.stale.${process.pid}.${randomBytes(4).toString('hex')}`;
+  onJudged?.();
+  const guard = `${lock}.takeover`;
   try {
-    renameSync(lock, aside);
+    writeFileSync(guard, lockToken(), { flag: 'wx' });
+  } catch {
+    // A stale guard is removed like a stale lock: renamed aside, checked, and
+    // put back if it is not the one judged stale.
+    try {
+      const seenGuard = readFileSync(guard, 'utf8');
+      if (lockIsStale(seenGuard, statSync(guard).mtimeMs, staleMs)) {
+        onGuardJudged?.();
+        removeIfSame(guard, seenGuard);
+      }
+    } catch {
+      // Gone meanwhile.
+    }
+    return;
+  }
+  try {
+    let current = null;
+    try {
+      current = readFileSync(lock, 'utf8');
+    } catch {
+      return;
+    }
+    if (current !== seen) return;
+    removeIfSame(lock, seen);
+  } finally {
+    rmSync(guard, { force: true });
+  }
+}
+
+/** Removes <file> only if it still holds <seen>: renamed aside (atomic), checked, put back with link otherwise. */
+function removeIfSame(file, seen) {
+  const aside = `${file}.stale.${process.pid}.${randomBytes(4).toString('hex')}`;
+  try {
+    renameSync(file, aside);
   } catch {
     return;
   }
@@ -406,9 +522,9 @@ function takeOverStale(lock, staleMs) {
   }
   if (taken !== seen) {
     try {
-      linkSync(aside, lock);
+      linkSync(aside, file);
     } catch {
-      // A new lock exists already; the one moved aside was not stale.
+      // A new one exists already.
     }
   }
   rmSync(aside, { force: true });
@@ -425,7 +541,7 @@ export function withProofLock(commonDir, fn, { waitMs = PROOF_LOCK_WAIT_MS, stal
   const dir = proofsDir(commonDir);
   mkdirSync(dir, { recursive: true });
   const lock = path.join(dir, '.proof.lock');
-  const token = `${process.pid}.${randomBytes(8).toString('hex')}`;
+  const token = lockToken();
   const pause = new Int32Array(new SharedArrayBuffer(4));
   const deadline = Date.now() + waitMs;
   for (;;) {
@@ -468,7 +584,8 @@ function appendRun(commonDir, sha, entry) {
       if (last.toString() !== '\n') start = '\n';
     }
   }
-  appendFileSync(file, `${start}${JSON.stringify(entry)}\n`);
+  // Every entry names the engine that wrote it.
+  appendFileSync(file, `${start}${JSON.stringify({ ...entry, engine: ENGINE_FILE_SHA256 })}\n`);
 }
 
 /** The format version of the proof file of a tree, whatever it is, or null. */
@@ -490,7 +607,8 @@ function listProofs(commonDir) {
     if (!name.endsWith('.json')) continue;
     try {
       const proof = JSON.parse(readFileSync(path.join(dir, name), 'utf8'));
-      if (proof && proof.version === PROOF_FORMAT_VERSION) proofs.push(proof);
+      // Results are never reused across an engine change.
+      if (proof && proof.version === PROOF_FORMAT_VERSION && proof.engine === ENGINE_FILE_SHA256) proofs.push(proof);
     } catch {
       // A torn or foreign file is ignored, never trusted.
     }
@@ -531,7 +649,7 @@ function findReusable(proofs, fingerprint) {
 
 // ---------------------------------------------------------------- fingerprints
 
-function packageManagerOf(git, rev, config, env) {
+function packageManagerOf(git, rev, config, env, shell = posixShell(env)) {
   const manifest = git(['show', `${rev}:package.json`], { allowFailure: true });
   let field = null;
   try {
@@ -542,7 +660,7 @@ function packageManagerOf(git, rev, config, env) {
   if (field) return field;
   // No pinned version: record the one installed.
   const name = config.deps.lockfile === 'pnpm-lock.yaml' ? 'pnpm' : config.deps.lockfile === 'yarn.lock' ? 'yarn' : 'npm';
-  const result = spawnSync(name, ['--version'], { env, encoding: 'utf8' });
+  const result = spawnSync(shell, ['-c', `${name} --version`], { env, encoding: 'utf8' });
   return !result.error && result.status === 0 ? `${name}@${result.stdout.trim()}` : null;
 }
 
@@ -553,7 +671,7 @@ function lockfileBlob(git, rev, config) {
 
 export function checkFingerprint({ check, files, tree, sha, environment, mergeBase = null }) {
   const hash = createHash('sha256');
-  hash.update(JSON.stringify({ engine: ENGINE_VERSION, name: check.name, command: check.command, env: check.env, environment }));
+  hash.update(JSON.stringify({ engine: ENGINE_VERSION, engineSha256: ENGINE_FILE_SHA256, name: check.name, command: check.command, env: check.env, environment }));
   if (check.perCommit) hash.update(`\ncommit ${sha}`);
   // A check that picks its work from the diff against the base (affected
   // packages, changed files) is reused only against the same merge base.
@@ -619,6 +737,166 @@ function probeCommand(program, args, env) {
   return probes.get(key);
 }
 
+const posixShells = new Map();
+
+/**
+ * The POSIX shell that runs config commands, which use sh syntax (`VAR=x cmd`,
+ * `${VAR:-default}`, `>/dev/null`): /bin/sh, except on Windows, which has
+ * none: there it is the sh of the Git for Windows install whose git.exe is on
+ * PATH (git is required anyway), or null when there is none. Nothing comes
+ * from the environment but PATH: no shell override, no GIT_* variable, no
+ * bare `sh`. Only absolute PATH entries count, and a Git root inside one of
+ * <repoDirs> (the repository's own directories, see repositoryDirs) is
+ * refused, so a PR cannot ship its own "Git". These location rules are the
+ * control; probeShell before any step is only a speed bump.
+ */
+export function posixShell(env = process.env, platform = process.platform, { repoDirs = [] } = {}) {
+  if (platform !== 'win32') return '/bin/sh';
+  const pathKey = Object.keys(env).find((key) => key.toUpperCase() === 'PATH');
+  const searchPath = pathKey ? env[pathKey] : '';
+  const key = JSON.stringify([searchPath, repoDirs]);
+  if (!posixShells.has(key)) posixShells.set(key, gitForWindowsShell(searchPath, repoDirs));
+  return posixShells.get(key);
+}
+
+/**
+ * Whether a PATH entry is absolute. On Windows: a drive path (C:\x) or a UNC
+ * path (\\server\share), never a relative one (cmd, .\cmd), a drive-relative
+ * one (C:x) or a rooted one (\x). Elsewhere (tests of the Windows path): /x.
+ */
+export function absolutePathEntry(entry, platform = process.platform) {
+  if (platform === 'win32') return /^[A-Za-z]:[\\/]/.test(entry) || /^[\\/]{2}[^\\/]/.test(entry);
+  return path.posix.isAbsolute(entry);
+}
+
+/** The directories of the repository at <root>: its top level, every worktree, the git dir and the common dir. */
+export function repositoryDirs(git, root, commonDir) {
+  const dirs = [root, commonDir, path.dirname(path.resolve(commonDir))];
+  try {
+    dirs.push(git(['rev-parse', '--absolute-git-dir']));
+  } catch {
+    // Not a repository: nothing more to add.
+  }
+  try {
+    for (const line of git(['worktree', 'list', '--porcelain']).split('\n')) {
+      if (line.startsWith('worktree ')) dirs.push(line.slice('worktree '.length));
+    }
+  } catch {
+    // No worktree list: the dirs above remain.
+  }
+  return [...new Set(dirs.filter(Boolean))];
+}
+
+/**
+ * The real path of <file> (realpathSync.native, without a \\?\ or \\?\UNC\
+ * prefix), or null when it does not exist.
+ */
+function realPath(file) {
+  try {
+    return windowsLocalPath(realpathSync.native(file));
+  } catch {
+    return null;
+  }
+}
+
+/**
+ * <file> without a \\?\ or \\?\UNC\ prefix, and with a local admin share
+ * (\\localhost\c$\x, \\127.0.0.1\c$\x, \\<this host>\c$\x, \\.\c:\x) spelt as the
+ * drive path it names (c:\x), so both spellings compare equal.
+ */
+export function windowsLocalPath(file) {
+  const plain = String(file).replace(/^\\\\\?\\UNC\\/i, '\\\\').replace(/^\\\\\?\\/, '');
+  const hosts = ['localhost', '127.0.0.1', '[::1]', os.hostname()].map((host) => host.replace(/[.[\]]/g, '\\$&')).join('|');
+  return plain
+    .replace(new RegExp(`^[\\\\/]{2}(?:${hosts})[\\\\/]([A-Za-z])\\$(?=[\\\\/]|$)`, 'i'), '$1:')
+    .replace(/^[\\/]{2}\.[\\/]([A-Za-z]:)/, '$1');
+}
+
+/** Whether <file>, after realpath, is one of <dirs> or inside one (case-insensitive on Windows). */
+function insideAny(file, dirs) {
+  const fold = (value) => (process.platform === 'win32' ? value.toLowerCase() : value);
+  const real = fold(realPath(file) ?? windowsLocalPath(path.resolve(file)));
+  return dirs.some((dir) => {
+    const relative = path.relative(fold(realPath(dir) ?? windowsLocalPath(path.resolve(dir))), real);
+    return relative === '' || (!relative.startsWith('..') && !path.isAbsolute(relative));
+  });
+}
+
+/**
+ * The sh.exe of the standard Git for Windows layout around the first git.exe
+ * on <searchPath>: <root>/cmd, <root>/bin or <root>/mingw64/bin holds git.exe,
+ * its `git --exec-path` (asked with no GIT_* variable) is
+ * <root>/mingw64/libexec/git-core, and <root>/bin/sh.exe or
+ * <root>/usr/bin/sh.exe exists. A PATH entry inside <repoDirs> is dropped,
+ * and git.exe, the root, the exec path and sh.exe must all exist and resolve
+ * (realpath) outside them. Anything else is null.
+ */
+function gitForWindowsShell(searchPath, repoDirs) {
+  const outside = (file) => realPath(file) !== null && !insideAny(file, repoDirs);
+  const found = searchPath.split(';').filter((dir) => absolutePathEntry(dir) && !insideAny(dir, repoDirs))
+    .map((dir) => path.join(dir, 'git.exe')).find((file) => existsSync(file));
+  if (!found || !outside(found)) return null;
+  const git = realPath(found);
+  const dir = path.dirname(git);
+  const parent = path.dirname(dir);
+  const root = /^(cmd|bin)$/i.test(path.basename(dir)) && !/^(mingw64|mingw32|clangarm64|ucrt64)$/i.test(path.basename(parent)) ? parent
+    : /^bin$/i.test(path.basename(dir)) ? path.dirname(parent) : null;
+  if (!root || !outside(root)) return null;
+  const env = Object.fromEntries(Object.entries(process.env).filter(([name]) => !/^GIT_/i.test(name)));
+  const exec = spawnSync(git, ['--exec-path'], { env: { ...env, PATH: searchPath }, encoding: 'utf8' });
+  if (exec.error || exec.status !== 0) return null;
+  const execPath = exec.stdout.trim();
+  if (!execPath || !outside(execPath)) return null;
+  const relative = path.relative(realPath(root), realPath(execPath));
+  if (!/^(mingw64|mingw32|clangarm64|ucrt64)[\\/]libexec[\\/]git-core$/i.test(relative)) return null;
+  const shell = [path.join(root, 'bin', 'sh.exe'), path.join(root, 'usr', 'bin', 'sh.exe')].find((file) => existsSync(file));
+  return shell && outside(shell) ? shell : null;
+}
+
+/** A random integer in [min, max]. */
+function randomInt(min, max) {
+  return min + (randomBytes(4).readUInt32BE(0) % (max - min + 1));
+}
+
+/**
+ * Sanity probe of <shell>, with a shape a fake cannot pattern-match: a script
+ * that prints a random token and a random arithmetic result, then exits with
+ * a random code (1 to 200), and another that does the same and exits 0. A
+ * shell that does not really run its script fails one of them. Returns
+ * { ok, detail }.
+ */
+export function probeShell(shell, env = process.env) {
+  if (!shell) return { ok: false, detail: 'no shell found' };
+  const run = (code) => {
+    const token = randomBytes(8).toString('hex');
+    const [a, b, c] = [randomInt(2, 9999), randomInt(2, 9999), randomInt(2, 9999)];
+    const exit = code === 0 ? '' : `; exit ${code}`;
+    const result = spawnSync(shell, ['-c', `printf '%s %s\\n' ${token} $((${a}*${b}+${c}))${exit}`], { env, encoding: 'utf8', stdio: ['ignore', 'pipe', 'ignore'] });
+    return {
+      status: result.error ? 'error' : result.status,
+      ok: !result.error && result.status === code && String(result.stdout).trim() === `${token} ${a * b + c}`,
+      echoed: String(result.stdout).trim() === `${token} ${a * b + c}`,
+    };
+  };
+  const code = randomInt(1, 200);
+  const failing = run(code);
+  const passing = run(0);
+  const ok = failing.ok && passing.ok;
+  const detail = ok
+    ? 'random token, sum and exit code as asked'
+    : `refused: exits ${failing.status}/${passing.status} for ${code}/0, answer ${failing.echoed && passing.echoed ? 'right' : 'wrong'}`;
+  return { ok, detail };
+}
+
+/** The sha256 of a file, or null when it cannot be read (a bare command name). */
+function fileHash(file) {
+  try {
+    return createHash('sha256').update(readFileSync(file)).digest('hex');
+  } catch {
+    return null;
+  }
+}
+
 /** Whether the util-linux `flock` command exists here (macOS has none by default). */
 export function hasFlock(env = process.env) {
   return probeCommand('flock', ['--version'], env);
@@ -651,13 +929,18 @@ export function hasPdeathsig(env = process.env) {
  */
 const STEP_SUPERVISOR = `
 const { spawn } = require('node:child_process');
+const { rmSync } = require('node:fs');
 const net = require('node:net');
 const { constants } = require('node:os');
-const [grace, lock, program, ...args] = JSON.parse(process.argv[1]);
+const [grace, lock, engine, copy, program, ...args] = JSON.parse(process.argv[1]);
 let group = null;
 let holder = null;
-// Frees the lock (if held), then exits.
+let engineGone = false;
+const engineAlive = () => { try { process.kill(engine, 0); return true; } catch (error) { return error.code === 'EPERM'; } };
+// Frees the lock (if held), then exits. If the engine died, removes its
+// isolated copy first: nobody else will.
 const leave = (status) => {
+  if (copy.length && (engineGone || !engineAlive())) for (const dir of copy) try { rmSync(dir, { recursive: true, force: true }); } catch {}
   if (!holder || holder.exitCode !== null || holder.signalCode !== null) process.exit(status);
   holder.on('exit', () => process.exit(status));
   try { process.kill(-holder.pid, 'SIGKILL'); } catch { process.exit(status); }
@@ -682,7 +965,7 @@ const stop = (term, done) => {
 };
 const lifeline = new net.Socket({ fd: 3, readable: true, writable: false });
 lifeline.on('data', () => {});
-const orphaned = () => stop(!forwarded, () => leave(137));
+const orphaned = () => { engineGone = true; stop(!forwarded, () => leave(137)); };
 lifeline.on('end', orphaned);
 lifeline.on('error', orphaned);
 // HUP (a closed terminal) and QUIT (Ctrl-\\) go on as TERM, the signal step
@@ -733,27 +1016,32 @@ export function stepGrace(env) {
 
 /** Runs [program, ...args] as a supervised process group tied to this engine. */
 function supervised(lock, program, args, { cwd, env }) {
-  return spawnSync(process.execPath, ['-e', STEP_SUPERVISOR, JSON.stringify([stepGrace(env), lock, program, ...args])], {
+  const copy = currentCopy ? copyPaths(currentCopy) : [];
+  return spawnSync(process.execPath, ['-e', STEP_SUPERVISOR, JSON.stringify([stepGrace(env), lock, process.pid, copy, program, ...args])], {
     cwd,
     env,
     stdio: ['inherit', 'inherit', 'inherit', 'pipe'],
   });
 }
 
-function runShell(command, { cwd, env, log }) {
+function runShell(command, { cwd, env, log, shell = posixShell(env) }) {
   log(`${PREFIX} $ ${command}`);
   const lock = env.VERIFY_LOCAL_HEAVY_LOCK || HEAVY_LOCK;
   const started = Date.now();
   let result;
   if (env[HEAVY_LOCK_HELD] === lock) {
-    result = spawnSync('/bin/sh', ['-c', command], { cwd, env, stdio: 'inherit' });
+    result = spawnSync(shell, ['-c', command], { cwd, env, stdio: 'inherit' });
+  } else if (process.platform === 'win32') {
+    // Windows has no process groups or flock: the step runs in its sh, unsupervised and without the lock.
+    log(`${PREFIX} Windows: this step runs without the lock ${lock} and without a supervised process group.`);
+    result = spawnSync(shell, ['-c', command], { cwd, env, stdio: 'inherit' });
   } else if (!hasFlock(env)) {
     log(`${PREFIX} flock is not installed here: this step runs without the lock ${lock}.`);
-    result = supervised(null, '/bin/sh', ['-c', command], { cwd, env });
+    result = supervised(null, shell, ['-c', command], { cwd, env });
   } else {
     const free = spawnSync('flock', ['--nonblock', lock, 'true'], { env, stdio: 'ignore' });
     if (free.error || free.status !== 0) log(`${PREFIX} waiting for lock ${lock} (another heavy check runs on this machine)...`);
-    result = supervised(lock, '/bin/sh', ['-c', command], { cwd, env: { ...env, [HEAVY_LOCK_HELD]: lock } });
+    result = supervised(lock, shell, ['-c', command], { cwd, env: { ...env, [HEAVY_LOCK_HELD]: lock } });
   }
   // A step killed by a signal (directly, or through flock as 128 + signal) failed.
   const killed = result.signal ?? (result.status > 128 ? `signal ${result.status - 128}` : null);
@@ -762,8 +1050,8 @@ function runShell(command, { cwd, env, log }) {
   return { status: status === 0 && killed ? 1 : status, durationMs: Date.now() - started, killed };
 }
 
-function quiet(command, { cwd, env }) {
-  const result = spawnSync(command, { cwd, env, shell: true, stdio: 'ignore' });
+function quiet(command, { cwd, env, shell = posixShell(env) }) {
+  const result = spawnSync(shell, ['-c', command], { cwd, env, stdio: 'ignore' });
   return !result.error && result.status === 0;
 }
 
@@ -848,10 +1136,15 @@ export function linkNodeModules(from, to, root, copy) {
   }
 }
 
-export function prepareWorktree({ git, root, sha, files, config, env, log, worktreeRoot }) {
+export function prepareWorktree({ git, root, sha, files, config, env, log, worktreeRoot, shell = posixShell(env) }) {
   const base = worktreeRoot ?? path.join(os.tmpdir(), 'verify-local');
   mkdirSync(base, { recursive: true });
+  sweepStaleCopies(base, log);
   const dir = path.join(base, `${path.basename(root)}-${sha.slice(0, 12)}-${randomBytes(3).toString('hex')}`);
+  // The owner file names this run; a later run removes the copy once its
+  // owner is gone (a SIGKILLed engine and supervisor cannot clean up).
+  writeFileSync(`${dir}.owner`, lockToken());
+  currentCopy = dir;
   git(['worktree', 'prune'], { allowFailure: true });
   git(['worktree', 'add', '--detach', '--quiet', dir, sha]);
   // Its own temporary directory, beside it: caches kept in TMPDIR (Metro,
@@ -881,7 +1174,7 @@ export function prepareWorktree({ git, root, sha, files, config, env, log, workt
   } else if (config.deps.install) {
     const reason = config.deps.mode === 'link' ? `${config.deps.lockfile} differs from ${root}` : 'install mode';
     log(`${PREFIX} installing dependencies in the isolated copy (${reason}).`);
-    const installed = runShell(config.deps.install, { cwd: dir, env, log });
+    const installed = runShell(config.deps.install, { cwd: dir, env, log, shell });
     if (installed.status !== 0) {
       return { dir, tmp, error: `dependency install failed (${config.deps.install})` };
     }
@@ -890,14 +1183,14 @@ export function prepareWorktree({ git, root, sha, files, config, env, log, workt
   log(`${PREFIX} isolated copy ${dir}: ${deps}.`);
 
   for (const command of config.setup) {
-    const result = runShell(command, { cwd: dir, env, log });
+    const result = runShell(command, { cwd: dir, env, log, shell });
     if (result.status !== 0) return { dir, tmp, error: `setup step failed (${command})` };
   }
   return { dir, deps, linked, tmp };
 }
 
 /** Replace linked node_modules with a real install, for a check that cannot run on links. */
-function installInWorktree(worktree, config, env, log) {
+function installInWorktree(worktree, config, env, log, shell = posixShell(env)) {
   if (!worktree.linked?.length) return null;
   if (!config.deps.install) return 'this check needs a real install, and deps.install is not set';
   for (const relative of worktree.linked) {
@@ -906,16 +1199,73 @@ function installInWorktree(worktree, config, env, log) {
   }
   worktree.linked = [];
   log(`${PREFIX} installing dependencies in the isolated copy (a check needs a real install).`);
-  const installed = runShell(config.deps.install, { cwd: worktree.dir, env, log });
+  const installed = runShell(config.deps.install, { cwd: worktree.dir, env, log, shell });
   if (installed.status !== 0) return `dependency install failed (${config.deps.install})`;
   worktree.deps = `installed with ${config.deps.install} (${Math.round(installed.durationMs / 1000)} s)`;
   return null;
 }
 
+/**
+ * The isolated copy of this run (null when none): the supervisor of each
+ * step removes it if the engine dies during the step.
+ */
+let currentCopy = null;
+
+/** An isolated copy and what sits beside it: its .tmp directory and its owner file. */
+function copyPaths(dir) {
+  return [dir, `${dir}.tmp`, `${dir}.owner`];
+}
+
+/**
+ * Removes the isolated copies under <base> left by runs that are gone: an
+ * owner file whose process is no longer running (see lockIsStale), or a copy
+ * with no owner file (an older engine, or a kept copy) untouched for
+ * RUN_MAX_MS.
+ */
+export function sweepStaleCopies(base, log = () => {}) {
+  let names;
+  try {
+    names = readdirSync(base);
+  } catch {
+    return [];
+  }
+  const swept = [];
+  for (const name of names) {
+    if (name.endsWith('.owner') || name.endsWith('.tmp')) continue;
+    const dir = path.join(base, name);
+    let stale;
+    try {
+      const owner = `${dir}.owner`;
+      stale = existsSync(owner)
+        ? lockIsStale(readFileSync(owner, 'utf8'), statSync(owner).mtimeMs, RUN_MAX_MS)
+        : Date.now() - statSync(dir).mtimeMs > RUN_MAX_MS;
+    } catch {
+      continue;
+    }
+    if (!stale) continue;
+    for (const item of copyPaths(dir)) rmSync(item, { recursive: true, force: true });
+    swept.push(dir);
+  }
+  for (const name of names) {
+    // An owner file or .tmp directory whose copy is gone.
+    const stem = name.replace(/\.(owner|tmp)$/, '');
+    if (stem === name || existsSync(path.join(base, stem))) continue;
+    const item = path.join(base, name);
+    try {
+      const stale = name.endsWith('.owner')
+        ? lockIsStale(readFileSync(item, 'utf8'), statSync(item).mtimeMs, RUN_MAX_MS)
+        : !existsSync(path.join(base, `${stem}.owner`)) && Date.now() - statSync(item).mtimeMs > RUN_MAX_MS;
+      if (stale) rmSync(item, { recursive: true, force: true });
+    } catch {}
+  }
+  if (swept.length) log(`${PREFIX} removed ${swept.length} isolated cop${swept.length === 1 ? 'y' : 'ies'} left by runs that are gone.`);
+  return swept;
+}
+
 function removeWorktree(git, dir) {
+  if (currentCopy === dir) currentCopy = null;
   git(['worktree', 'remove', '--force', dir], { allowFailure: true });
-  rmSync(dir, { recursive: true, force: true });
-  rmSync(`${dir}.tmp`, { recursive: true, force: true });
+  for (const item of copyPaths(dir)) rmSync(item, { recursive: true, force: true });
   git(['worktree', 'prune'], { allowFailure: true });
 }
 
@@ -1071,6 +1421,8 @@ export async function verify(kind, argv = [], {
   worktreeRoot,
   now = () => new Date(),
   proofLock = {},
+  // Test seam only (the JS API, never the CLI or the environment).
+  shell: shellOverride,
 } = {}) {
   const options = parseArgs(argv);
   if (options.rest.length) throw new UsageError(`unknown argument ${options.rest[0]}.`);
@@ -1094,14 +1446,29 @@ export async function verify(kind, argv = [], {
   }
   if (kind === 'pr' && targets.length) throw new UsageError('--target applies to release only.');
 
+  // The shell of every step: /bin/sh (Git for Windows' sh on Windows), never
+  // from the environment, and only if it really runs a script.
+  const shell = shellOverride ?? posixShell(env, process.platform, { repoDirs: process.platform === 'win32' ? repositoryDirs(git, root, commonDir) : [] });
+  if (!shell) {
+    log(`${PREFIX} no sh.exe of Git for Windows next to the git.exe on PATH (<git>/bin/sh.exe or <git>/usr/bin/sh.exe, from an absolute PATH entry, outside this repository): install Git for Windows; no check runs and no proof is written.`);
+    return { status: 1, proof: null };
+  }
+  const shellProbe = probeShell(shell, env);
+  if (!shellProbe.ok) {
+    log(`${PREFIX} the shell ${shell} failed its sanity probe (${shellProbe.detail}): no check runs and no proof is written.`);
+    return { status: 1, proof: null };
+  }
+  const shellRecord = { path: shell, probe: shellProbe.detail };
   const startedAt = now().toISOString();
   const base = resolveBase(git, config);
   const scope = changedFiles(git, base, sha);
   const files = listTreeFiles(git, sha);
   const environment = {
     node: process.version,
-    packageManager: packageManagerOf(git, sha, config, env),
+    packageManager: packageManagerOf(git, sha, config, env, shell),
     lockfile: lockfileBlob(git, sha, config),
+    // A result reused only from a run in the same shell (path and bytes).
+    shell: { path: shell, sha256: fileHash(shell) },
   };
   // A release reuses nothing: every release check runs on the delivered commit.
   const proofs = options.force || kind === 'release' ? [] : listProofs(commonDir);
@@ -1114,7 +1481,7 @@ export async function verify(kind, argv = [], {
   // The probe runs in the main checkout, before any isolated copy exists.
   const probes = new Map();
   const probe = (check) => {
-    if (!probes.has(check.name)) probes.set(check.name, quiet(check.requires.command, { cwd: root, env }));
+    if (!probes.has(check.name)) probes.set(check.name, quiet(check.requires.command, { cwd: root, env, shell }));
     return probes.get(check.name);
   };
   for (const [name, evidence] of Object.entries(options.external)) {
@@ -1132,6 +1499,15 @@ export async function verify(kind, argv = [], {
   // pass) is never reused: only a run that really reruns it can close it.
   const openItems = openChecks(readRunLog(commonDir, sha), config.checks.map((check) => check.name));
   const open = new Set(openItems.map((item) => item.check));
+  // A start entry first: a run that never ends (killed, OOM) counts as an
+  // interrupted run of every check it selected, so it is never a pass.
+  const runId = randomBytes(8).toString('hex');
+  mkdirSync(proofsDir(commonDir), { recursive: true });
+  closeUnended(commonDir, sha, startedAt, proofLock);
+  appendRun(commonDir, sha, {
+    kind, sha, tree, runId, result: 'started', startedAt, pid: process.pid, host: os.hostname(), shell: shellRecord, known: config.checks.map((check) => check.name),
+    selected: selected.map((check) => check.name), checks: [],
+  });
   const results = [];
   let worktree = null;
   let failed = false;
@@ -1176,7 +1552,7 @@ export async function verify(kind, argv = [], {
       if (!worktree) {
         // Checks may keep caches (Turbo, ESLint) in the shared git directory.
         const shared = { VERIFY_LOCAL_COMMON_DIR: commonDir, VERIFY_LOCAL_ROOT: root };
-        worktree = prepareWorktree({ git, root, sha, files, config, env: { ...env, ...shared }, log, worktreeRoot });
+        worktree = prepareWorktree({ git, root, sha, files, config, env: { ...env, ...shared }, log, worktreeRoot, shell });
         worktree.env = { ...shared, TMPDIR: worktree.tmp, TMP: worktree.tmp, TEMP: worktree.tmp };
         if (worktree.error) {
           failed = true;
@@ -1186,7 +1562,7 @@ export async function verify(kind, argv = [], {
         }
       }
       if (check.install) {
-        const installError = installInWorktree(worktree, config, { ...env, ...worktree.env }, log);
+        const installError = installInWorktree(worktree, config, { ...env, ...worktree.env }, log, shell);
         if (installError) {
           failed = true;
           results.push({ ...entry, result: 'failed', reason: installError });
@@ -1198,6 +1574,7 @@ export async function verify(kind, argv = [], {
         cwd: worktree.dir,
         env: { ...env, ...check.env, ...worktree.env, VERIFY_LOCAL_KIND: kind, VERIFY_LOCAL_SHA: sha, VERIFY_LOCAL_TREE: tree },
         log,
+        shell,
       });
       const passed = run.status === 0;
       results.push({ ...entry, result: passed ? 'passed' : 'failed', durationMs: run.durationMs, ...(run.killed ? { reason: `killed (${run.killed})` } : {}) });
@@ -1210,6 +1587,9 @@ export async function verify(kind, argv = [], {
   } finally {
     if (worktree?.dir) {
       if (options.keep || (failed && process.env.VERIFY_LOCAL_KEEP_FAILED === '1')) {
+        // Without an owner, a later run removes it once it is RUN_MAX_MS old.
+        rmSync(`${worktree.dir}.owner`, { force: true });
+        currentCopy = null;
         log(`${PREFIX} isolated copy kept at ${worktree.dir}.`);
       } else {
         removeWorktree(git, worktree.dir);
@@ -1220,6 +1600,7 @@ export async function verify(kind, argv = [], {
   const result = failed ? 'failed' : incomplete ? 'incomplete' : 'passed';
   const proof = {
     version: PROOF_FORMAT_VERSION,
+    engine: ENGINE_FILE_SHA256,
     rule: RULE,
     kind,
     sha,
@@ -1233,6 +1614,7 @@ export async function verify(kind, argv = [], {
     command,
     node: environment.node,
     packageManager: environment.packageManager,
+    shell: shellRecord,
     base: { ref: base.ref, sha: base.sha, mergeBase: scope?.mergeBase ?? null },
     targets: kind === 'release' ? targets : [],
     checks: results,
@@ -1246,7 +1628,7 @@ export async function verify(kind, argv = [], {
   // of the same kind is already there; the run log keeps every result anyway.
   // A rerun that only reused this tree's own results leaves the proof as it is.
   const entry = {
-    kind, sha, tree, result, targets: proof.targets, startedAt, finishedAt: proof.finishedAt,
+    kind, sha, tree, runId, result, targets: proof.targets, startedAt, finishedAt: proof.finishedAt, shell: shellRecord,
     known: config.checks.map((check) => check.name),
     checks: results.map((check) => ({ name: check.name, result: check.result, ...(check.reused ? { reused: true } : {}), ...(check.external ? { external: true } : {}) })),
   };
@@ -1282,7 +1664,7 @@ export async function verify(kind, argv = [], {
   if (!locked.locked) {
     // Never a pass without the lock: the result still goes to the run log
     // (an append is one write), the proof is left as it is, and the run fails.
-    appendRun(commonDir, sha, { ...entry, proofLock: 'timeout' });
+    appendRun(commonDir, sha, { ...entry, result: result === 'passed' ? 'failed' : result, proofLock: 'timeout' });
     log(`${PREFIX} the proof lock ${path.join(proofsDir(commonDir), '.proof.lock')} is still held after ${Math.round((proofLock.waitMs ?? PROOF_LOCK_WAIT_MS) / 1000)} s: this ${result} run is in the run log, the proof is unchanged, and the run counts as failed. Rerun it.`);
     return { status: 1, proof: null };
   }
@@ -1342,6 +1724,15 @@ export function checkReleaseProof({ cwd = process.cwd(), env = cleanGitEnv(), ta
         : `the proof for tree ${tree} has format ${older}, older than ${PROOF_FORMAT_VERSION}; run verify:release on HEAD again`,
     });
   } else {
+    // The proof and the latest release run must come from the engine pinned
+    // at HEAD, and the running engine must be that one too.
+    const configSource = git(['show', `HEAD:${CONFIG_FILE}`], { allowFailure: true }) ?? '';
+    const pinned = /ENGINE_SHA256\s*=\s*['"`]([0-9a-f]{64})['"`]/.exec(configSource)?.[1] ?? null;
+    if (!pinned) failures.push({ check: 'proof-engine', message: `${CONFIG_FILE} at HEAD pins no ENGINE_SHA256` });
+    else {
+      if (ENGINE_FILE_SHA256 !== pinned) failures.push({ check: 'proof-engine', message: `the running engine is ${ENGINE_FILE_SHA256.slice(0, 12)}, but HEAD pins ${pinned.slice(0, 12)}; deploy with the engine of HEAD` });
+      if (proof.engine !== pinned) failures.push({ check: 'proof-engine', message: `the proof was written by engine ${proof.engine ? String(proof.engine).slice(0, 12) : '(none)'}, not ${pinned.slice(0, 12)} pinned at HEAD; run verify:release on HEAD again` });
+    }
     if (proof.kind !== 'release') failures.push({ check: 'proof-kind', message: `the proof is a ${proof.kind} proof; only a release proof unlocks a deploy` });
     if (proof.result !== 'passed') failures.push({ check: 'proof-passed', message: `the proof result is ${proof.result}` });
     if (proof.sha !== head) failures.push({ check: 'proof-matches-head', message: `the proof was written for ${proof.sha}, not HEAD ${head}; run verify:release on HEAD (identical checks are reused)` });
@@ -1351,10 +1742,12 @@ export function checkReleaseProof({ cwd = process.cwd(), env = cleanGitEnv(), ta
     const runs = readRunLog(commonDir, head);
     const latest = runs.filter((entry) => entry.kind === 'release').at(-1);
     if (!latest) failures.push({ check: 'proof-latest-release', message: `no release run of ${head} in its run log; run verify:release on HEAD` });
-    else if (latest.result !== 'passed' || latest.checks.some((check) => check.reused)) {
+    else if (latest.engine !== pinned) {
+      failures.push({ check: 'proof-latest-release', message: `the latest release run of ${head} was logged by engine ${latest.engine ? String(latest.engine).slice(0, 12) : '(none)'}, not the one pinned at HEAD; run verify:release on HEAD again` });
+    } else if (latest.result !== 'passed' || latest.checks.some((check) => check.reused)) {
       failures.push({ check: 'proof-latest-release', message: `the latest release run of ${head} ${latest.result === 'passed' ? 'reused results' : latest.result} at ${latest.finishedAt}; run verify:release on HEAD again` });
     }
-    const open = openChecks(runs);
+    const open = openChecks(runs, [], pinned ?? ENGINE_FILE_SHA256);
     if (open.length) failures.push({ check: 'proof-open-check', message: `open on ${head}: ${describeOpen(open)}; a run that really reruns them must pass, then verify:release on HEAD` });
     for (const target of targets) {
       if (!(proof.targets ?? []).includes(target)) failures.push({ check: 'proof-target', message: `the proof does not cover target ${target}` });
@@ -1434,18 +1827,26 @@ export async function proofBlock(argv = [], { cwd = process.cwd(), env = cleanGi
   } else {
     integration = `base unchanged (${base.ref} ${(base.sha ?? '').slice(0, 12)})`;
   }
+  // A pass is bound to the asked commit's own run log: its latest run must
+  // have passed, with no open check, whatever proof its tree has.
+  const runs = readRunLog(commonDir, sha);
+  const open = openChecks(runs);
+  const latest = runs.at(-1);
+  const notPassed = !latest ? `no run of this commit; the proof is for ${proof.sha}`
+    : open.length ? 'checks open on this commit'
+      : latest.result !== 'passed' ? `its latest run is ${latest.kind} ${latest.result}` : null;
+  const passed = proof.result === 'passed' && !notPassed;
   const lines = [
     '## Local proof',
     `- Commands: \`${proof.command}\``,
-    `- Commit SHA: \`${proof.sha}\``,
-    `- Result: ${proof.result}, ${proof.kind} proof (${countChecks(proof)})`,
+    `- Commit SHA: \`${sha}\``,
+    `- Result: ${proof.result === 'passed' && notPassed ? `not passed (${notPassed})` : proof.result}, ${proof.kind} proof (${countChecks(proof)})`,
     `- Tree (\`git rev-parse <sha>^{tree}\`): \`${proof.tree}\``,
     `- Specialised checks (database, browser, mobile, corpus): run: ${specialisedRun.join(', ') || 'none'} / out of scope: ${specialisedOut.join(', ') || 'none'}${specialisedMissing.length ? ` / still needed: ${specialisedMissing.join(', ')}` : ''}`,
     `- Integration: ${integration}`,
   ];
   const external = externalEvidence(proof);
   if (external.length) lines.push(`- External evidence: ${external.join('; ')}`);
-  const open = openChecks(readRunLog(commonDir, proof.sha));
   if (open.length) lines.push(`- Open on this commit: ${describeOpen(open)}; a run that really reruns them must pass`);
   // A PR can change its own checks or hook rules: say so, for the owner's review.
   const scope = changedFiles(git, base, sha);
@@ -1458,7 +1859,7 @@ export async function proofBlock(argv = [], { cwd = process.cwd(), env = cleanGi
   }
   if (delivery.length) lines.push(`- Delivery checks changed: ${delivery.join(', ')} (needs the owner's review)`);
   log(lines.join('\n'));
-  return { status: proof.result === 'passed' ? 0 : 1, proof };
+  return { status: passed ? 0 : 1, proof };
 }
 
 // ---------------------------------------------------------------- pre-push hook
@@ -1681,12 +2082,15 @@ export async function prePush(remote, stdinText, {
     }
   }
 
-  for (const check of config.hook.checks) {
+  const hookShell = posixShell(env, process.platform, { repoDirs: process.platform === 'win32' ? repositoryDirs(git, root, commonDir) : [] });
+  const hookProbe = config.hook.checks.length ? probeShell(hookShell, env) : { ok: true };
+  if (!hookProbe.ok) problems.push(`the shell ${hookShell ?? '(none: no sh.exe of Git for Windows next to the git.exe on PATH)'} failed its sanity probe (${hookProbe.detail}); the hook checks cannot run`);
+  for (const check of hookProbe.ok ? config.hook.checks : []) {
     if (pushes.some((push) => push.sha !== head)) {
       log(`${PREFIX} pre-push: ${check.name} skipped (it reads the checkout, and the pushed commit is not HEAD).`);
       continue;
     }
-    const result = spawnSync(check.command, { cwd: root, env, shell: true, encoding: 'utf8' });
+    const result = spawnSync(hookShell, ['-c', check.command], { cwd: root, env, encoding: 'utf8' });
     if (result.error || result.status !== 0) {
       problems.push(`${check.name} failed:\n${`${result.stdout ?? ''}${result.stderr ?? ''}`.trim()}`);
     }
