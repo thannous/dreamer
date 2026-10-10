@@ -207,25 +207,26 @@ test.describe('feature sheet previews', () => {
     const selection = page.getByTestId('component.onboarding.constellation.selection');
     // The example opens where the story ended: on Saturday, with all three dreams seen.
     await page.getByTestId('btn.onboarding.constellation.symbol.house').click();
-    await expect(selection).toContainText('3 nights out of 3');
-    await expect(selection).toContainText('Saturday · The cat on the doorstep');
+    await expect(selection).toContainText('Returns every night');
+    await expect(selection).toContainText('Saturday · Back again. A cat guards the doorstep.');
     await expect(page.getByTestId('btn.onboarding.constellation.next')).toBeDisabled();
     await page.getByTestId('btn.onboarding.constellation.previous').click();
     await page.getByTestId('btn.onboarding.constellation.previous').click();
-    await expect(selection).toContainText('1 night out of 1');
-    await expect(selection).toContainText('Monday · The blue door');
+    await expect(selection).toContainText('First appearance');
+    await expect(selection).toContainText('Monday · Behind the door, an unknown house.');
     await page.getByTestId('btn.onboarding.constellation.next').click();
-    await expect(selection).toContainText('2 nights out of 2');
-    await expect(selection).toContainText('Thursday · The house by the water');
+    await expect(selection).toContainText('Returns every night');
+    await expect(selection).toContainText('Thursday · It returns, by the water.');
     await page.getByTestId('btn.onboarding.constellation.next').click();
-    await expect(selection).toContainText('3 nights out of 3');
+    await expect(selection).toContainText('Returns every night');
     await page.getByTestId('btn.onboarding.constellation.symbol.door').click();
-    await expect(selection).toContainText('1 night out of 3');
-    await expect(selection).not.toContainText('Thursday · The house by the water');
+    await expect(selection).toContainText('Only one night');
+    await expect(selection).toContainText('Monday · The blue door opens. The house appears.');
+    await expect(selection).not.toContainText('Thursday · It returns, by the water.');
     await page.screenshot({ path: testInfo.outputPath('constellation-related-dreams.png') });
     await page.getByTestId('btn.onboarding.constellation.previous').click();
     await page.getByTestId('btn.onboarding.constellation.symbol.house').click();
-    await expect(selection).toContainText('2 nights out of 2');
+    await expect(selection).toContainText('Returns every night');
     await page.getByTestId('btn.onboarding.feature.close').click();
   });
 
@@ -245,7 +246,7 @@ test.describe('feature sheet previews', () => {
         await page.clock.runFor(5000);
       }
       if (feature === 'capture') await expect(page.getByTestId('component.onboarding.dreamGlobe')).toBeVisible();
-      if (feature === 'connect') await expect(page.getByTestId('component.onboarding.constellation.selection')).toContainText('3 nights out of 3');
+      if (feature === 'connect') await expect(page.getByTestId('component.onboarding.constellation.selection')).toContainText('Returns every night');
       if (feature === 'explore') await expect(page.getByTestId('btn.onboarding.dialogue.home')).toBeVisible();
       await expectCloseButton(page);
       await page.getByTestId('btn.onboarding.feature.close').click();
@@ -297,7 +298,7 @@ test.describe('feature sheet previews', () => {
     await page.clock.runFor(8000);
     const selection = page.getByTestId('component.onboarding.constellation.selection');
     await expect(selection).toContainText('Door');
-    await expect(selection).toContainText('1 night out of 1');
+    await expect(selection).toContainText('First appearance');
     await expect(page.getByTestId('component.onboarding.story.connect.0')).toBeVisible();
   });
 

@@ -77,7 +77,13 @@ export function SymbolConstellation({ tokens, storyStep, onInteraction, stageHei
     setCurrent(next);
   };
   const select = (id: SymbolName) => { onInteraction?.(); setSelected(id); setInspecting(true); };
-  const nights = (count: number) => t(`onboarding.feature.constellation.related_${count === 1 ? 'one' : 'other'}`, { count, total: seen.length });
+  // What a symbol has done so far: born tonight, returned every night, some nights, or passed once.
+  const status = (id: SymbolName) => {
+    const nights = seen.flatMap((dream, index) => dream.symbols.includes(id) ? [index] : []);
+    const kind = nights.length > 1 ? (nights.length === seen.length ? 'every' : 'some')
+      : nights[0] === current ? 'first' : 'once';
+    return t(`onboarding.feature.constellation.status.${kind}`, { count: nights.length, total: seen.length });
+  };
   const night = (index: number) => `${t(`onboarding.feature.constellation.night_${index + 1}.day`)} · ${t(`onboarding.feature.constellation.night_${index + 1}.title`)}`;
 
   return (
@@ -119,7 +125,7 @@ export function SymbolConstellation({ tokens, storyStep, onInteraction, stageHei
             <StoryScene key={symbol.id} style={[styles.node, { left: symbol.x / 300 * width - 27, top: symbol.y * mapScale - 27 }]}>
             <PressableScale
               accessibilityRole="button"
-              accessibilityLabel={`${t(`onboarding.feature.constellation.symbol.${symbol.id}`)}, ${nights(count(symbol.id))}`}
+              accessibilityLabel={`${t(`onboarding.feature.constellation.symbol.${symbol.id}`)}, ${status(symbol.id)}`}
               accessibilityHint={t('onboarding.feature.constellation.select_hint')}
               accessibilityState={{ selected: selected === symbol.id }}
               onPress={() => select(symbol.id)}
@@ -147,9 +153,9 @@ export function SymbolConstellation({ tokens, storyStep, onInteraction, stageHei
       </View>
       {storyStep === undefined || inspecting ? <View style={[styles.selection, storyStep !== undefined && styles.selectionOverlay, { backgroundColor: storyStep !== undefined ? tokens.surface.raised : tokens.surface.soft, borderColor: tokens.surface.border }]} accessibilityLiveRegion={storyStep === undefined ? 'polite' : 'none'} testID="component.onboarding.constellation.selection">
         <Text style={[styles.selectionTitle, { color: tokens.text.primary }]}>
-          {t(`onboarding.feature.constellation.symbol.${selected}`)}{' · '}{nights(related.length)}
+          {t(`onboarding.feature.constellation.symbol.${selected}`)}{' · '}{status(selected)}
         </Text>
-        {related.map((index) => <Text key={index} style={[styles.related, { color: tokens.text.secondary }]}>{night(index)}</Text>)}
+        {related.map((index) => <Text key={index} style={[styles.related, { color: tokens.text.secondary }]}>{t(`onboarding.feature.constellation.night_${index + 1}.day`)}{' · '}{t(`onboarding.feature.constellation.trace.${selected}.${index + 1}`)}</Text>)}
       </View> : null}
     </View>
   );
