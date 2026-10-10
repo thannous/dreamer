@@ -38,6 +38,9 @@ export function DreamerArtworkWindow({ scene, style }: {
   >
     <Image testID={`image.background.${scene}`} accessible={false}
       source={getDreamerArtwork(scene, mode)} contentFit="cover" contentPosition="center"
+      // Bundled Android resource IDs can move between compatible app updates.
+      // Keep these local paintings out of the persisted resource-ID cache.
+      cachePolicy="memory"
       recyclingKey={artworkKey} onError={() => setFailedArtwork(artworkKey)} style={StyleSheet.absoluteFill} />
     <LinearGradient colors={[`${ground}00`, ground]}
       style={{ position: 'absolute', bottom: 0, left: 0, right: 0, height: 40 }} />
@@ -70,6 +73,7 @@ export function DreamerBackground({ scene, height, background }: Props) {
           source={getDreamerArtwork(scene, mode)}
           contentFit="cover"
           contentPosition={scene === 'reverie' ? 'top' : 'bottom right'}
+          cachePolicy="memory"
           recyclingKey={artworkKey}
           onError={() => setFailedArtwork(artworkKey)}
           style={StyleSheet.absoluteFill}
