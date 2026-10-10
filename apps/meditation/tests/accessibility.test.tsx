@@ -106,16 +106,16 @@ describe('text scaling', () => {
   });
 
   it('keeps a caller line height so a larger display figure is not cropped', () => {
-    const { fontScale } = ReactNative.Dimensions.get('window');
-
     render(
       <Text variant="display" style={{ fontSize: 58, lineHeight: 68 }}>
         10 min
       </Text>
     );
 
+    // The caller's box replaces the variant's 40pt one; native Dynamic Type
+    // then scales both metrics together, so they stay unscaled here.
     expect(ReactNative.StyleSheet.flatten(screen.getByText('10 min').props.style)).toEqual(
-      expect.objectContaining({ fontSize: 58, lineHeight: 68 * Math.min(fontScale, 2) })
+      expect.objectContaining({ fontSize: 58, lineHeight: 68 })
     );
   });
 
