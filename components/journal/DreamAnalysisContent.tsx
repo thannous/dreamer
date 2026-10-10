@@ -1,5 +1,6 @@
 import React, { useEffect } from 'react';
 import { Text, View, type ViewProps } from 'react-native';
+import { useReducedMotion } from 'react-native-reanimated';
 import { Reveal } from '@/components/motion';
 import { MarkdownText } from '@/components/ui/MarkdownText';
 import { useTheme } from '@/context/ThemeContext';
@@ -10,7 +11,7 @@ import { TID } from '@/lib/testIDs';
 import type { DreamAnalysis } from '@/lib/types';
 import { DreamReadingWait } from './story/DreamReadingWait';
 import { DreamSymbolConstellation, MAX_CONSTELLATION_STARS } from './story/DreamSymbolConstellation';
-import { DREAM_STORY, chaptersDelay } from './story/dreamStoryMotion';
+import { DREAM_STORY, chaptersDelay, reducedDelay } from './story/dreamStoryMotion';
 
 /** Chapters follow one another slowly enough to read as a sequence, not as a list loading. */
 const CHAPTER_STEP_MS = 160;
@@ -41,6 +42,7 @@ export function DreamAnalysisContent({ dream, pending, reveal = false, onLayout 
 }) {
   const { colors } = useTheme();
   const { t } = useTranslation();
+  const reduced = useReducedMotion();
   useEffect(() => {
     if (!pending && dream.analysisRequestId) {
       markPerformance('analysis.text_displayed', { trace: performanceTraceId(dream.analysisRequestId) });
@@ -57,7 +59,11 @@ export function DreamAnalysisContent({ dream, pending, reveal = false, onLayout 
   const firstChapter = symbolNames.length
     ? chaptersDelay(Math.min(symbolNames.length, MAX_CONSTELLATION_STARS))
     : DREAM_STORY.revealLead;
-  const chapterDelay = (index: number) => firstChapter + index * CHAPTER_STEP_MS;
+  // Under reduce motion the chapters fade in together with the constellation, without the sequence.
+  const chapterDelay = (index: number) => {
+    const delay = firstChapter + index * CHAPTER_STEP_MS;
+    return reduced ? reducedDelay(delay) : delay;
+  };
   const quote = dream.shareableQuote?.trim();
 
   return (
