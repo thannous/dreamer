@@ -160,7 +160,7 @@ const translations: Record<string, string> = {
     "onboarding.narrative.explore.2.next": "Te toca elegir",
     "onboarding.narrative.explore.demo.title": "Te toca.",
     "onboarding.narrative.explore.demo.body": "Elige lo que te evoca esta puerta.",
-    "onboarding.narrative.continue.connect": "Seguir las conexiones",
+    "onboarding.narrative.continue.connect": "¿Y las noches siguientes?",
     "onboarding.narrative.continue.explore": "Abrir el diálogo",
     "onboarding.narrative.finish": "Volver a mi recorrido",
     "onboarding.narrative.finish_guided": "Continuar",

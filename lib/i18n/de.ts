@@ -160,7 +160,7 @@ const translations: Record<string, string> = {
     "onboarding.narrative.explore.2.next": "Du wählst",
     "onboarding.narrative.explore.demo.title": "Du bist dran.",
     "onboarding.narrative.explore.demo.body": "Wähle, woran dich diese Tür erinnert.",
-    "onboarding.narrative.continue.connect": "Den Verbindungen folgen",
+    "onboarding.narrative.continue.connect": "Und die nächsten Nächte?",
     "onboarding.narrative.continue.explore": "Das Gespräch öffnen",
     "onboarding.narrative.finish": "Zurück zu meinem Weg",
     "onboarding.narrative.finish_guided": "Weiter",
