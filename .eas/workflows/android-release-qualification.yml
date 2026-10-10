@@ -1,5 +1,4 @@
-# Dispatch only (common delivery rule, External CI: none): no tag, push or pull
-# request starts it. Run on demand from the release tag with
+# Dispatch only: no tag, push or pull request starts it. Run on demand from the release tag with
 # `eas workflow:run .eas/workflows/android-release-qualification.yml --ref vX.Y.Z -F release_tag=vX.Y.Z`.
 # Without --ref the EAS CLI uploads the local directory, so release_tag would
 # only prove that the uploaded app.json has that version, not that the source

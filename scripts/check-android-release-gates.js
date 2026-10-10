@@ -568,8 +568,7 @@ function checkSubscriptionQaGate(
   };
 }
 
-// External CI is opt-in only (doc_web_interne/docs/regle-commune-livraison.md,
-// section 13): every EAS workflow's `on:` mapping holds workflow_dispatch and
+// EAS workflows run on demand only: every EAS workflow's `on:` mapping holds workflow_dispatch and
 // nothing else (no push, tag, pull_request, pull_request_comment,
 // pull_request_labeled, app_store_connect, schedule or any other trigger). The
 // two release workflows also require the release_tag input, and pass it to a

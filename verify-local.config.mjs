@@ -1,12 +1,12 @@
-// Checks of the common delivery rule (Version commune v5) for this repository,
-// read by scripts/verify-local.mjs. The rule is this repository's own copy,
-// doc_web_interne/docs/regle-commune-livraison.md (its section 13.1 holds what
-// is specific to dreamer). The engine and its tests are this repository's own
+// Checks of the common delivery rule for this repository, read by
+// scripts/verify-local.mjs. The rule is this repository's own copy,
+// doc_web_interne/docs/regle-commune-livraison.md; what is specific to dreamer
+// is in AGENTS.md, "Notes dreamer". The engine and its tests are this repository's own
 // copy: each repository pins its own ENGINE_SHA256 (below) and verifies it
 // locally; an engine fix is worth porting to the others, but nothing checks
 // that across repositories. This file is data only (no imports).
 //
-//   npm run verify:pr       before a merge: the former pre-push `verify:fast`, split
+//   npm run verify:pr       before every push: the former pre-push `verify:fast`, split
 //                           into checks, plus the surfaces the PR changed.
 //   npm run verify:release  before a publish: the PR checks, run again, plus the
 //                           full local validation of
@@ -111,12 +111,12 @@ const EDGE_CHECKS = [
 ].join(' && ');
 const DENO = {
   command: 'deno --version',
-  hint: 'run it on the owner machine (PC Tanuki, with Deno 2.7.14: `mise install`) and pass --external <check>="owner-machine: <host> <note> on <SHA>"; trigger a manual CircleCI pipeline only if it is listed in External CI (doc_web_interne/docs/regle-commune-livraison.md, section 13)',
+  hint: 'run it locally where you run verify:pr (Deno 2.7.14: `mise install`); if this machine cannot, pass --external <check>="owner-machine: <host> <note> on <SHA>" from the machine that ran it; until then the proof is incomplete: do not push, report it as a blocker',
 };
 
 const TESTERARMY = {
   command: 'test -d tools/e2e/node_modules/@e2e-dev/web',
-  hint: 'run it on the owner machine (PC Tanuki, after `npm run test:testerarmy:setup && npm run test:testerarmy:browsers` in its main checkout) and pass --external <check>="owner-machine: <host> <note> on <SHA>"; trigger a manual CircleCI pipeline only if it is listed in External CI (doc_web_interne/docs/regle-commune-livraison.md, section 13)',
+  hint: 'run it locally where you run verify:pr (after `npm run test:testerarmy:setup && npm run test:testerarmy:browsers` in the main checkout); if this machine cannot, pass --external <check>="owner-machine: <host> <note> on <SHA>" from the machine that ran it; until then the proof is incomplete: do not push, report it as a blocker',
 };
 
 // The four passes of tools/e2e/README.md that jointly qualify every Dreamer case.
@@ -145,9 +145,8 @@ export default {
     copy: [],
   },
   setup: [],
-  // https:// URL prefixes of the external CI runs --external may cite, one per
-  // row of the External CI table (doc_web_interne/docs/regle-commune-livraison.md,
-  // section 13.1). That table is "none" here, so only owner-machine evidence counts.
+  // https:// URL prefixes of the external CI runs --external may cite. None
+  // here, so only owner-machine evidence counts.
   externalSources: [],
   // The scripts these checks run: changing them changes what a proof proves,
   // so proof-block flags them for the owner's review like this file.
@@ -294,7 +293,7 @@ export default {
     { name: 'site', command: 'npm run docs:build && npm run docs:check', when: SITE },
     { name: 'ci-contracts', command: CI_CONTRACTS, when: ['.circleci/'] },
     { name: 'eas-workflow-contracts', command: EAS_WORKFLOW_CONTRACTS, when: EAS_WORKFLOWS },
-    // A bad version pin fails before merge rather than at publication (offline, 0.1 s).
+    // A bad version pin fails before push rather than at publication (offline, 0.1 s).
     { name: 'mobile-versions', command: 'node scripts/mobile-release.js verify --app all', inputs: MOBILE_VERSIONS, when: MOBILE_VERSIONS },
     { name: 'meditation', command: MEDITATION_CHECKS, when: MEDITATION, releaseAlways: true, requires: MEDITATION_DEPS },
     { name: 'edge-functions', command: EDGE_CHECKS, when: EDGE, releaseAlways: true, specialised: true, requires: DENO },
@@ -316,7 +315,7 @@ export default {
       specialised: true,
       requires: {
         command: 'docker info',
-        hint: 'run it on the owner machine (PC Tanuki: Docker for the disposable local Supabase, Chromium via `npx playwright install chromium`) and pass --external e2e-backend="owner-machine: <host> <note> on <SHA>"; trigger a manual CircleCI pipeline only if it is listed in External CI (doc_web_interne/docs/regle-commune-livraison.md, section 13)',
+        hint: 'run it locally where you run verify:pr (Docker for the disposable local Supabase, Chromium via `npx playwright install chromium`); if this machine cannot, pass --external e2e-backend="owner-machine: <host> <note> on <SHA>" from the machine that ran it; until then the proof is incomplete: do not push, report it as a blocker',
       },
     },
     {
