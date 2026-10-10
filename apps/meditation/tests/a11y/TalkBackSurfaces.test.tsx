@@ -452,7 +452,7 @@ describe('TI-394 TalkBack surfaces', () => {
     expect(onSelect).toHaveBeenCalledTimes(1);
   });
 
-  it('keeps world and upcoming rails horizontal when no screen reader is running', () => {
+  it('keeps the world index flat and the upcoming rail horizontal when no screen reader is running', () => {
     const worlds = WORLD_IDS.slice(0, 3).map((id) => WORLD_BY_ID[id]);
     const worldView = render(
       <WorldJourneyPicker
@@ -472,7 +472,7 @@ describe('TI-394 TalkBack surfaces', () => {
       />
     );
 
-    expect(worldView.UNSAFE_getAllByType(ScrollView).some((node) => node.props.horizontal)).toBe(true);
+    expect(worldView.UNSAFE_queryAllByType(ScrollView)).toHaveLength(0);
     expect(upcomingView.UNSAFE_getAllByType(ScrollView).some((node) => node.props.horizontal)).toBe(
       true
     );

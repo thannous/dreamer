@@ -7,7 +7,7 @@ import { UpcomingJourneyRail } from '@/components/journey/UpcomingJourneyRail';
 import { WeeklyJourney } from '@/components/journey/WeeklyJourney';
 import { WorldJourneyPicker } from '@/components/journey/WorldJourneyPicker';
 import { WorldPreviewShelf } from '@/components/journey/WorldPreviewShelf';
-import { Button, Card, Text } from '@/components/ui';
+import { Button, Card, Eyebrow, Tag, Text } from '@/components/ui';
 import { WorldScene } from '@/components/worlds/WorldScene';
 import { DEFAULT_WORLD_ID, WORLD_BY_ID, WORLD_IDS, type WorldId } from '@/constants/worlds';
 import { useTranslation } from '@/context/LanguageContext';
@@ -50,7 +50,6 @@ export default function HomeTab() {
     subscriptionsEnabled = true,
   } = useSubscription();
   const {
-    loaded: worldLoaded,
     worldId,
     previewWorldId,
     presentationWorldId,
@@ -252,17 +251,44 @@ export default function HomeTab() {
         showsVerticalScrollIndicator={false}
         keyboardShouldPersistTaps="handled">
         <View
-          className={
-            narrowViewport
-              ? 'max-w-[90%] gap-1'
-              : compactViewport
-                ? 'max-w-[82%] gap-1 pr-8'
-                : 'max-w-[78%] gap-2 pr-8'
-          }>
-          <Text variant="overline">{t(world.nameKey)}</Text>
-          <Text variant={narrowViewport ? 'h2' : compactViewport ? 'h1' : 'display'}>
-            {t(greetingKey(hour))}
-          </Text>
+          style={{ minHeight: Math.round(height * (compactViewport ? 0.42 : 0.52)) }}
+          className={compactViewport ? 'justify-between gap-4' : 'justify-between gap-6'}
+          testID="home.world.hero">
+          <Eyebrow className="pr-12">{t(greetingKey(hour))}</Eyebrow>
+          <View className={compactViewport ? 'gap-3' : 'gap-4'}>
+            <Text
+              variant={narrowViewport ? 'hero' : 'saga'}
+              accessibilityRole="header"
+              maxFontSizeMultiplier={1.4}
+              testID="home.world.name">
+              {t(world.nameKey)}
+            </Text>
+            <View className="flex-row flex-wrap items-center gap-x-3 gap-y-2">
+              <Tag label={t(`world.${world.id}.moment` as TranslationKey)} />
+              <Text variant="quote">{t(`world.${world.id}.role` as TranslationKey)}</Text>
+            </View>
+            {world.access === 'purchase' && activeWorldAccess === 'owned' ? (
+              <Tag label={t('world.purchase.owned')} testID="home.world.owned" />
+            ) : null}
+            <WorldJourneyPicker
+              worlds={WORLDS}
+              selectedWorldId={selectedWorldId}
+              previewedWorldId={previewWorldId}
+              onSelect={handleSelectWorld}
+              isWorldOwned={isWorldOwned}
+              worldAccess={resolveWorldAccess}
+              offersStatus={offersStatus}
+              priceForWorld={(nextWorldId) => offerForWorld(nextWorldId)?.priceLabel}
+              appearance={world.appearance}
+              accessibilityLabel={t('home.journey.worldLabel')}
+              testID="home.world-switcher"
+            />
+          </View>
+        </View>
+
+        <View
+          className={compactViewport ? 'mt-5 gap-3' : 'mt-7 gap-3'}
+          testID="home.journey.deck">
           <Text
             variant="bodySm"
             testID="home.journey.reason">
@@ -283,24 +309,6 @@ export default function HomeTab() {
                       })
                     : t(`world.${world.id}.role` as TranslationKey)}
           </Text>
-        </View>
-
-        <View
-          className={compactViewport ? 'mt-4 gap-3' : 'mt-5 gap-3'}
-          testID="home.journey.deck">
-          <WorldJourneyPicker
-            worlds={WORLDS}
-            selectedWorldId={selectedWorldId}
-            previewedWorldId={previewWorldId}
-            onSelect={handleSelectWorld}
-            isWorldOwned={isWorldOwned}
-            worldAccess={resolveWorldAccess}
-            offersStatus={offersStatus}
-            priceForWorld={(nextWorldId) => offerForWorld(nextWorldId)?.priceLabel}
-            initialSelectionReady={worldLoaded && ownershipStatus !== 'loading'}
-            accessibilityLabel={t('home.journey.worldLabel')}
-            testID="home.world-switcher"
-          />
           {worldAccessUnknown ? (
             <Card
               accessibilityLiveRegion="polite"

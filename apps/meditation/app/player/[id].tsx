@@ -179,7 +179,7 @@ export default function PlayerScreen() {
             <ScrollView
               contentContainerClassName="gap-5 px-gutter pb-4"
               showsVerticalScrollIndicator={false}>
-              <PracticeProgress world={world} stage="practice" />
+              <PracticeProgress world={world} stage="practice" labels={false} />
               <View className="gap-1">
                 <Text variant="h2">{t(`session.${session.id}.title` as TranslationKey)}</Text>
                 <Text variant="bodySm">
