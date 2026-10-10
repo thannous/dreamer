@@ -31,7 +31,11 @@ export function getMockDreamArt(name: MockDreamArt): number {
 export function getMockDreamImage(name: MockDreamArt): string {
   // Expo 58 registers numeric asset modules on web too. Resolve those through
   // its registry; react-native-web has no Image.resolveAssetSource.
-  return Asset.fromModule(DREAM_ART[name]).uri;
+  const uri = Asset.fromModule(DREAM_ART[name]).uri;
+  // The media resolver accepts absolute URLs. Expo's web assets may be relative
+  // to the app, so retain their own origin rather than treating them as storage IDs.
+  return uri && typeof window !== 'undefined' && window.location?.href
+    ? new URL(uri, window.location.href).href : uri;
 }
 
 /** Which illustrations suit each theme's mood. */

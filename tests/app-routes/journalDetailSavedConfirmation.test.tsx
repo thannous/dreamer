@@ -128,6 +128,7 @@ jest.mock('react-native', () => {
     __esModule: true,
     ActivityIndicator: () => <div role="progressbar" />,
     Alert: { alert: jest.fn() },
+    Image: { resolveAssetSource: (source: unknown) => ({ uri: String(source) }) },
     Keyboard: {
       addListener: () => ({ remove: jest.fn() }),
       dismiss: jest.fn(),
