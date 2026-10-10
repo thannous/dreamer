@@ -81,6 +81,11 @@ externes bloquées. Les données sont synthétiques. Les contrôles de types app
 TesterArmy et le lint ciblé passent ; le lint conserve les avertissements
 préexistants, sans erreur.
 
+La première validation PR a exposé un import natif `expo-image` non simulé dans
+trois fixtures de capture/Explorer. Leur ancien mock de fond décoratif cible
+maintenant `DreamerBackground` ; toutes les assertions métier sont conservées.
+La qualification de l’image et du voile reste celle des parcours E2E réels ci-dessus.
+
 ## Portée restante
 
 Cette preuve est web. Le rendu natif, les tailles de texte système, les gestes

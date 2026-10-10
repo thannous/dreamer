@@ -106,8 +106,8 @@ jest.mock('@/components/ScreenContainer', () => ({
   ScreenContainer: ({ children }: any) => <div>{children}</div>,
 }));
 
-jest.mock('@/components/inspiration/AtmosphericBackground', () => ({
-  AtmosphericBackground: () => null,
+jest.mock('@/components/ui/DreamerBackground', () => ({
+  DreamerBackground: () => null,
 }));
 
 jest.mock('@/components/ui/icon-symbol', () => ({
