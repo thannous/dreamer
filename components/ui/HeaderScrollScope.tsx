@@ -1,12 +1,16 @@
 import { LinearGradient } from 'expo-linear-gradient';
-import React from 'react';
+import React, { createContext, useContext } from 'react';
 import { StyleSheet } from 'react-native';
 import Animated, { Extrapolation, interpolate, useAnimatedStyle, type SharedValue } from 'react-native-reanimated';
-import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import { SafeAreaInsetsContext, type EdgeInsets } from 'react-native-safe-area-context';
 
 import { getNoctaliaDesignTokens } from '@/constants/noctaliaDesign';
 import { useTheme } from '@/context/ThemeContext';
 import { HeaderScrollContext, useScreenScrollValue } from './scrollDepth';
+
+// Read without requiring a provider: a screen rendered outside one simply has no veil.
+// Test doubles of the safe-area module may omit the context.
+const InsetsContext: React.Context<EdgeInsets | null> = SafeAreaInsetsContext ?? createContext<EdgeInsets | null>(null);
 
 /**
  * Once the page leaves the top, whatever scrolls under the clock and battery melts into
@@ -14,17 +18,18 @@ import { HeaderScrollContext, useScreenScrollValue } from './scrollDepth';
  */
 function StatusBarVeil({ scrollY }: { scrollY: SharedValue<number> }) {
   const { colors, mode } = useTheme();
-  const insets = useSafeAreaInsets();
-  const ground = getNoctaliaDesignTokens(colors, mode).screen.background;
+  const top = useContext(InsetsContext)?.top ?? 0;
+  // Test doubles of the design tokens may omit the screen ground; there is then no veil.
+  const ground = getNoctaliaDesignTokens(colors, mode)?.screen?.background;
   const style = useAnimatedStyle(() => ({
     opacity: interpolate(scrollY.get(), [8, 64], [0, 1], Extrapolation.CLAMP),
   }));
-  if (insets.top <= 0) return null;
-  const height = insets.top + 28;
+  if (top <= 0 || !ground) return null;
+  const height = top + 28;
   return (
     <Animated.View pointerEvents="none" accessible={false} importantForAccessibility="no-hide-descendants"
       style={[styles.veil, { height }, style]}>
-      <LinearGradient colors={[ground, `${ground}F2`, `${ground}00`]} locations={[0, insets.top / height, 1]}
+      <LinearGradient colors={[ground, `${ground}F2`, `${ground}00`]} locations={[0, top / height, 1]}
         style={StyleSheet.absoluteFill} />
     </Animated.View>
   );
