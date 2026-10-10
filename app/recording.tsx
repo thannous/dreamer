@@ -1818,6 +1818,7 @@ export default function RecordingScreen() {
               onLayout={(event) => setHeaderHeight(event.nativeEvent.layout.height)}
             >
               <NoctaliaScreenHeader
+                scene={!keyboardVisible && !isCompactLandscape && !chatMode ? "capture" : undefined}
                 includeTopInset={false}
                 backdrop={false}
                 prominentTitle={!isCompactLandscape}

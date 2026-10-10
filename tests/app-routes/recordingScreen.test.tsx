@@ -258,8 +258,8 @@ jest.doMock('@/components/navigation/NoctaliaBottomNav', () => ({
   },
 }));
 
-jest.doMock('@/components/recording/AtmosphereBackground', () => ({
-  AtmosphereBackground: () => null,
+jest.doMock('@/components/ui/DreamerBackground', () => ({
+  DreamerArtworkWindow: () => null, DreamerBackground: () => null,
 }));
 
 jest.doMock('@/components/recording/OfflineModelDownloadSheet', () => ({

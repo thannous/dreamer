@@ -136,6 +136,7 @@ export default function StatisticsScreen() {
 
   const header = (
     <NoctaliaScreenHeader
+      scene="astral"
       titleKey="trends.title"
       variant="tab"
       actions={[

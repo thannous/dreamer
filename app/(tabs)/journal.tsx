@@ -6,7 +6,7 @@ import { useQuickSettings } from '@/context/QuickSettingsContext';
 import { getDreamRouteParams } from '@/lib/dreamRoute';
 import { getDreamIdentityKey } from '@/lib/dreamIdentity';
 import { UpsellCard } from '@/components/guest/UpsellCard';
-import { AtmosphericBackground } from '@/components/inspiration/AtmosphericBackground';
+import { DreamerArtworkWindow } from '@/components/ui/DreamerBackground';
 import { PageHeaderContent } from '@/components/inspiration/PageHeader';
 import { AdvancedFilterSheet, type JournalSortOrder } from '@/components/journal/AdvancedFilterSheet';
 import { RemoteJournalList } from '@/components/journal/RemoteJournalList';
@@ -901,6 +901,7 @@ export default function JournalListScreen() {
       {!searchConsumesLayout ? (
         <View testID="journal-search-scroll-slot" style={{ height: mobileSearchHeaderHeight }} />
       ) : null}
+      {isDesktopLayout ? <DreamerArtworkWindow scene="journal" /> : null}
       {isDesktopLayout ? <PageHeaderContent
         titleKey="journal.title"
         animationSeed={showHeaderAnimations ? 1 : 0}
@@ -1000,8 +1001,6 @@ export default function JournalListScreen() {
   return (
     <ScrollPerfProvider isScrolling={isScrolling}>
       <View className="flex-1 bg-ink" testID={TID.Screen.Journal}>
-        {/* Atmospheric dreamlike background */}
-        <AtmosphericBackground variant="subtle" />
 
         {isDesktopLayout ? listHeader : (
           <Animated.View
@@ -1043,6 +1042,7 @@ export default function JournalListScreen() {
               onResponderTerminate={searchConsumesLayout ? undefined : handleOverlaySearchDragEnd}
             >
               <NoctaliaScreenHeader
+                scene={!isKeyboardVisible ? "journal" : undefined}
                 titleKey="nav.journal"
                 variant="tab"
                 actions={[{
