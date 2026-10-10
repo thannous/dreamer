@@ -20,8 +20,9 @@ export function getNoctaliaPalette(mode: ThemeMode) {
     // Dreamer uses curated paintings, with contrast measured behind actual copy.
     // Preserve their colour and detail rather than flattening them into the ground.
     backgroundArtwork: {
-      scrim: dark ? 'rgba(3, 4, 13, 0.75)' : 'rgba(240, 228, 212, 0.90)',
-      reveal: dark ? 'rgba(3, 4, 13, 0.24)' : 'rgba(240, 228, 212, 0.48)',
+      // One light veil: header copy keeps its contrast through a soft shadow of the ground.
+      scrim: dark ? 'rgba(3, 4, 13, 0.45)' : 'rgba(240, 228, 212, 0.60)',
+      reveal: dark ? 'rgba(3, 4, 13, 0.12)' : 'rgba(240, 228, 212, 0.25)',
       transparent: dark ? 'rgba(3, 4, 13, 0)' : 'rgba(240, 228, 212, 0)',
     },
     // Fixed contrast on artwork in every theme, including a pure-white or pure-black image:

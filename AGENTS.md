@@ -70,8 +70,7 @@ depend on it. Verify the selected model's live contract before submission.
 - Colour values passed as *props* (LinearGradient `colors`, icon `color=`, chart colours) stay
   on `useTheme()`. That is expected, not debt.
 - Motion primitives are in `components/motion/` (`PressableScale`, `Reveal`, `DURATION`, `EASE`,
-  `SPRING`). Run the `animate-expo` skill before writing any animation and apply its frequency
-  gate — most things should not animate. Tabs never slide.
+  `SPRING`). Most things should not animate. Tabs never slide.
 - Missing release-device evidence does not block authorized local motion work. Report
   motion quality as unqualified until the relevant release-device checks are complete.
 - After editing `global.css`, run `npm run uniwind:types`.

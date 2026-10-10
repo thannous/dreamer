@@ -23,10 +23,6 @@ export const TID = {
   },
   Button: {
     AddDream: 'btn.addDream',
-    MockNavHome: 'btn.mockNav.home',
-    MockNavJournal: 'btn.mockNav.journal',
-    MockNavStats: 'btn.mockNav.stats',
-    MockNavSettings: 'btn.mockNav.settings',
     RecordToggle: 'btn.recordToggle',
     SwitchToText: 'btn.recording.switchToText',
     SwitchToVoice: 'btn.recording.switchToVoice',

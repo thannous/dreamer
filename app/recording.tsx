@@ -1,10 +1,10 @@
 import type { TextInputInstance } from 'react-native';
 import { markPerformance, performanceTraceId } from '@/lib/performanceTrace';
 import { RecordingDurationLabel } from '@/components/recording/RecordingDurationLabel';
-import { MockNavigationRail } from '@/components/dev/MockNavigationRail';
 import { NoctaliaBottomNav } from '@/components/navigation/NoctaliaBottomNav';
 import { NoctaliaScreenHeader } from '@/components/NoctaliaScreenHeader';
 import { IconSymbol } from '@/components/ui/icon-symbol';
+import { NightSkyBand } from '@/components/ui/NightSkyBand';
 import { OfflineModelDownloadSheet } from '@/components/recording/OfflineModelDownloadSheet';
 import { RecordingFooter } from '@/components/recording/RecordingFooter';
 import { MicPermissionRationaleSheet } from '@/components/recording/RecordingSheets';
@@ -122,6 +122,8 @@ import { useReducedMotion } from 'react-native-reanimated';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { DreamCaptureSeal } from '@/components/journal/story/DreamCaptureSeal';
 import { DREAM_STORY } from '@/components/journal/story/dreamStoryMotion';
+import { useHeaderScroll } from '@/components/ui/headerStretch';
+import { withHeaderScroll } from '@/components/ui/HeaderScrollScope';
 
 const log = createScopedLogger('[Recording]');
 const isMockMode = isMockModeEnabled();
@@ -146,7 +148,9 @@ const trackedOnboardingRecordingDestinations = new Set<string>();
 
 type CaptureIntent = RecordingCaptureIntent;
 
-export default function RecordingScreen() {
+function RecordingScreen() {
+  // This screen's own scroll, published to its header painting and title.
+  const onHeaderScroll = useHeaderScroll();
   const { dreams } = useDreamsData();
   const { user } = useAuth();
   const {
@@ -179,6 +183,7 @@ export default function RecordingScreen() {
   );
 
   const [transcript, setTranscript] = useState('');
+  const [headerHeight, setHeaderHeight] = useState(0);
   const [editableCapture, setEditableCapture] = useState<CaptureEditableDraft | null>(null);
   const [captureReviewState, setCaptureReview] = useState<CaptureReview | null>(null);
   const captureReviewRef = useRef<CaptureReview | null>(null);
@@ -1227,6 +1232,7 @@ export default function RecordingScreen() {
   const isDesktopWeb = Platform.OS === 'web' && viewportWidth >= DESKTOP_BREAKPOINT;
   const chatMode = inputMode === 'voice' && !editableCapture;
   const chatLayout = chatMode && !isCompactLandscape;
+  const captureStage = !chatLayout && !keyboardVisible && !isDesktopWeb;
   const openReviewExit = useCallback(() => {
     if (!captureReview || interactionDisabled || leavingReviewRef.current) return;
     Keyboard.dismiss();
@@ -1768,6 +1774,14 @@ export default function RecordingScreen() {
           end={{ x: 1, y: 1 }}
           style={StyleSheet.absoluteFill}
         />
+        {/* The scroll view starts below the status bar, so the sky is painted here to
+            reach the top edge like the other destinations. */}
+        {!isDesktopWeb && !isCompactLandscape ? (
+          <NightSkyBand background={noctalia.screen.background} scene="capture" pinned fixed
+            // In text mode the painting reaches the top third, behind the title and the top of the
+            // composer, which stay where they are; the conversation and keyboard keep it compact.
+            height={Math.max(insets.top + (headerHeight || 140), captureStage ? Math.round(Math.min(420, viewportHeight * 0.33)) : 0) + 40} />
+        ) : null}
         {/* The desktop sidebar leads everywhere. Keep a back control only
             while a capture review is open, so leaving still offers to keep or
             discard that review. */}
@@ -1796,6 +1810,8 @@ export default function RecordingScreen() {
         >
           <ScrollView
             ref={scrollViewRef}
+            onScroll={onHeaderScroll}
+            scrollEventThrottle={16}
             style={[
               styles.scrollView,
               !isDesktopWeb && { marginTop: insets.top },
@@ -1807,11 +1823,15 @@ export default function RecordingScreen() {
             testID={TID.Screen.Recording}
             accessibilityState={{ busy: hydrationStatus === 'loading' }}
           >
-            <View style={isDesktopWeb ? styles.desktopColumn : undefined}>
+            <View
+              style={isDesktopWeb ? styles.desktopColumn : undefined}
+              onLayout={(event) => setHeaderHeight(event.nativeEvent.layout.height)}
+            >
               <NoctaliaScreenHeader
-                scene={!keyboardVisible && !isCompactLandscape && !chatMode ? "capture" : undefined}
                 includeTopInset={false}
+                backdrop={false}
                 prominentTitle={!isCompactLandscape}
+                variant={isCompactLandscape ? 'standard' : 'tab'}
                 titleKey="nav.capture_dream"
                 actions={isDesktopWeb ? [] : [{
                   icon: 'gear',
@@ -1820,7 +1840,6 @@ export default function RecordingScreen() {
                 }]}
               />
             </View>
-            <MockNavigationRail />
             <View style={mainContentStyle}>
               <View style={[styles.bodySection, isCompactLandscape && styles.bodySectionCompact, chatLayout && styles.chatBody]}>
                 {!editableCapture && !keyboardVisible ? <RecordingInputModeSelect
@@ -2144,3 +2163,5 @@ const styles = StyleSheet.create({
     zIndex: 40,
   },
 });
+
+export default withHeaderScroll(RecordingScreen);

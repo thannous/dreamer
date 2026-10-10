@@ -7,6 +7,7 @@ import { getDreamImageVersion, withCacheBuster } from '@/lib/imageUtils';
 import type { DreamAnalysis } from '@/lib/types';
 
 let mockMediaPending = false;
+let mockTranscriptHeight = 0;
 const mockIsMockModeEnabled = jest.fn(() => false);
 
 jest.mock('@/hooks/useDreamMedia', () => ({ useDreamMedia: (dream: any) => ({ imageUrl: mockMediaPending ? undefined : dream.imageUrl, thumbnailUrl: mockMediaPending ? undefined : dream.thumbnailUrl, loading: mockMediaPending, error: false }) }));
@@ -26,20 +27,27 @@ jest.mock('react-native', () => {
       children,
       onPress,
       testID,
+      accessibilityLabel,
+      accessibilityState,
     }: {
       children?: React.ReactNode | ((state: { pressed: boolean }) => React.ReactNode);
       onPress?: () => void;
       testID?: string;
+      accessibilityLabel?: string;
+      accessibilityState?: { expanded?: boolean };
     }) => (
-      <button data-testid={testID} onClick={onPress}>
+      <button data-testid={testID} onClick={onPress} aria-label={accessibilityLabel} aria-expanded={accessibilityState?.expanded}>
         {typeof children === 'function' ? children({ pressed: false }) : children}
       </button>
     ),
     StyleSheet: { create: (styles: Record<string, unknown>) => styles },
     useWindowDimensions: () => ({ width: 390, height: 844, scale: 1, fontScale: 1 }),
-    Text: ({ children, testID }: { children?: React.ReactNode; testID?: string }) => (
-      <span data-testid={testID}>{children}</span>
-    ),
+    Text: ({ children, testID, onLayout, numberOfLines }: { children?: React.ReactNode; testID?: string; onLayout?: (event: unknown) => void; numberOfLines?: number }) => {
+      React.useLayoutEffect(() => {
+        if (testID?.startsWith('journal.measure.')) onLayout?.({ nativeEvent: { layout: { height: mockTranscriptHeight } } });
+      }, [onLayout, testID]);
+      return <span data-testid={testID} data-visible-lines={numberOfLines}>{children}</span>;
+    },
     View: ({ children, testID }: { children?: React.ReactNode; testID?: string }) => (
       <div data-testid={testID}>{children}</div>
     ),
@@ -60,6 +68,8 @@ jest.mock('react-native-reanimated', () => {
     cubicBezier: (...points: number[]) => `cubic-bezier(${points.join(', ')})`,
     Easing: { bezier: () => (value: unknown) => value },
     useReducedMotion: () => false,
+    // The cover's scroll parallax is visual only.
+    useAnimatedStyle: () => ({}),
   };
 });
 
@@ -130,6 +140,7 @@ describe('DreamCard image fallback', () => {
   afterEach(() => {
     cleanup();
     mockIsMockModeEnabled.mockReturnValue(false);
+    mockTranscriptHeight = 0;
   });
 
   it('keeps using the full image after a thumbnail error and remount', async () => {
@@ -182,6 +193,25 @@ describe('DreamCard image fallback', () => {
 
     expect(screen.queryByText('journal.badge.sync_pending')).toBeNull();
   });
+});
+
+it('unfolds short text that wraps past three lines and collapses a recycled dream', () => {
+  const { DreamCard } = require('../DreamCard');
+  // Native text layout/recycling are not exercised by the browser image-fallback journey.
+  mockTranscriptHeight = 88;
+  const dream: DreamAnalysis = { id: 1456, transcript: 'A blue door.\nA stair.\nA cloud.\nI wake.',
+    title: 'First dream', dreamType: 'Symbolic Dream', interpretation: '', shareableQuote: '', imageUrl: '', chatHistory: [] };
+  const props = { onPress: jest.fn(), testID: 'reading' };
+  const { rerender } = render(<DreamCard {...props} dream={dream} />);
+  const expand = screen.getByRole('button', { name: 'journal.card.expand' });
+  fireEvent.click(expand);
+  expect(screen.getByRole('button', { name: 'journal.card.collapse' }).getAttribute('aria-expanded')).toBe('true');
+  expect(screen.getByTestId('journal.preview.reading').getAttribute('data-visible-lines')).toBeNull();
+  rerender(<DreamCard {...props} dream={{ ...dream, id: 1457, title: 'Second dream' }} />);
+  expect(screen.getByRole('button', { name: 'journal.card.expand' }).getAttribute('aria-expanded')).toBe('false');
+  expect(screen.getByTestId('journal.preview.reading').getAttribute('data-visible-lines')).toBe('3');
+  mockTranscriptHeight = 0;
+  cleanup();
 });
 
 

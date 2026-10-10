@@ -27,6 +27,19 @@ describe('requestAiConsent', () => {
 
   afterEach(() => jest.restoreAllMocks());
 
+  it('does not send a guest dream before permission', async () => {
+    const sendDream = jest.fn();
+    const attempt = requestAiConsent(t).then((accepted) => {
+      if (accepted) sendDream();
+    });
+    await flush();
+    expect(sendDream).not.toHaveBeenCalled();
+    expect(Alert.alert).toHaveBeenCalledTimes(1);
+    answer(0);
+    await attempt;
+    expect(sendDream).not.toHaveBeenCalled();
+  });
+
   it('does not grant when the user declines, and asks again next time', async () => {
     const first = requestAiConsent(t);
     await flush();

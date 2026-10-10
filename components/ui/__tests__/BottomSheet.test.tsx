@@ -12,6 +12,7 @@ import {
 jest.mock('react-native-safe-area-context', () => ({ useSafeAreaInsets: () => ({ top: 24, bottom: 24, left: 0, right: 0 }) }));
 
 jest.mock('react-native', () => require('../../../tests/react-native-stub'));
+jest.mock('expo-asset', () => ({ Asset: { fromModule: (source: unknown) => ({ uri: String(source) }) } }));
 
 afterEach(cleanup);
 

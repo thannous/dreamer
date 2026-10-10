@@ -1,6 +1,6 @@
 // Historical UI assertions, run on the public TesterArmy web surface.
 import type { Page } from 'playwright/test';
-import { createParityTest, expect } from '../web-parity-fixtures';
+import { createParityTest, expect, withDialog } from '../web-parity-fixtures';
 const test = createParityTest();
 
 const story = 'Je marchais au bord d’un lac. Une maison éclairée apparaissait entre les arbres.';
@@ -9,6 +9,10 @@ const detail = 'Des arbres très hauts et une lumière douce.';
 async function startChat(page: Page) {
   await page.goto('/');
   await page.getByTestId('btn.onboarding.intro.next').click();
+  // With feature sheets, "Commencer" first tells the three stories; the cross moves on.
+  if (process.env.EXPO_PUBLIC_ONBOARDING_FEATURE_SHEETS_ENABLED === 'true') {
+    await withDialog(page, 'accept', () => page.getByTestId('btn.onboarding.feature.close').click());
+  }
   await page.getByTestId('btn.onboarding.skip').click();
   await page.getByRole('button', { name: /^(Settings|Paramètres)$/ }).filter({ visible: true }).click();
   await page.getByTestId('quick-settings.language').click();

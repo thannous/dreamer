@@ -90,6 +90,7 @@ const renderOnboarding = (
 jest.doMock('expo-router', () => ({
   router: { replace: mockReplace },
   useFocusEffect: () => undefined,
+  useLocalSearchParams: () => ({}),
 }));
 jest.doMock('@/lib/authReturnIntent', () => ({ getAuthReturnSnapshot: () => ({ intent: mockAuthReturn, ready: true }) }));
 
@@ -228,11 +229,15 @@ jest.doMock('@/components/ui/StandardBottomSheet', () => ({
     children,
     testID,
     visible,
+    actions,
   }: {
     children?: React.ReactNode;
     testID?: string;
     visible: boolean;
-  }) => (visible ? <div data-testid={testID}>{children}</div> : null),
+    actions?: { primaryLabel: string; onPrimary: () => void };
+  }) => (visible ? <div data-testid={testID}>{children}
+    {actions ? <button type="button" onClick={actions.onPrimary}>{actions.primaryLabel}</button> : null}
+  </div> : null),
 }));
 
 jest.doMock('@/context/OnboardingContext', () => ({
@@ -500,6 +505,9 @@ describe('Onboarding screen', () => {
       name: 'onboarding.privacy.toggle_label',
     });
     fireEvent.click(analyticsSwitch);
+    // The box is saved when the reader closes the sheet with "Done".
+    expect(mockSetProductAnalyticsEnabled).not.toHaveBeenCalled();
+    fireEvent.click(screen.getByRole('button', { name: 'common.done' }));
 
     await waitFor(() => {
       expect(mockGetProductAnalyticsPreference).toHaveBeenCalledTimes(1);

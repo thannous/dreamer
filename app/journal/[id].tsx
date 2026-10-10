@@ -106,7 +106,10 @@ import {
   useWindowDimensions,
   View,
 } from 'react-native';
-import { useReducedMotion } from 'react-native-reanimated';
+import Animated, { useReducedMotion } from 'react-native-reanimated';
+import { useHeaderScroll } from '@/components/ui/headerStretch';
+import { withHeaderScroll } from '@/components/ui/HeaderScrollScope';
+import { useFrameParallax } from '@/components/ui/scrollDepth';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { IconSymbol } from '@/components/ui/icon-symbol';
 
@@ -239,7 +242,7 @@ function ArrivalReveal({ play, index, className, children }: {
     : <View className={className}>{children}</View>;
 }
 
-export default function JournalDetailScreen() {
+function JournalDetailScreen() {
   const route = useLocalSearchParams<{ id: string; remoteId?: string; clientRequestId?: string }>();
   const { user } = useAuth();
   const { dreams } = useDreamsData();
@@ -248,7 +251,7 @@ export default function JournalDetailScreen() {
 }
 
 const JournalDetailContent = memo(function JournalDetailContent({ dream }: { dream?: DreamAnalysis }) {
-  const { id, remoteId, clientRequestId, saved: savedParam, recall: recallParam, autoAnalyze: autoAnalyzeParam, analyzeAfterPurchase, analysisOwnerId } = useLocalSearchParams<{ id: string; remoteId?: string; clientRequestId?: string; saved?: string | string[]; recall?: string | string[]; autoAnalyze?: string; analyzeAfterPurchase?: string; analysisOwnerId?: string }>();
+  const { id, remoteId, clientRequestId, saved: savedParam, recall: recallParam, autoAnalyze: autoAnalyzeParam, analyzeAfterPurchase, analysisOwnerId, share: shareParam } = useLocalSearchParams<{ id: string; remoteId?: string; clientRequestId?: string; saved?: string | string[]; recall?: string | string[]; autoAnalyze?: string; analyzeAfterPurchase?: string; analysisOwnerId?: string; share?: string }>();
   const recallRequested = isJournalSavedConfirmationParam(recallParam);
   const { state: onboardingState, transition: transitionOnboarding } = useOnboarding();
   const [savedConfirmationVisible, setSavedConfirmationVisible] = useState(
@@ -331,6 +334,10 @@ const JournalDetailContent = memo(function JournalDetailContent({ dream }: { dre
     viewportHeight - navigationHeight - introHeight - insets.bottom - 24
   ));
   const coverLayout = { imageHeight: coverHeight };
+  // The illustration lies a little deeper than the page and drifts as it scrolls.
+  const coverTravel = Math.round(coverHeight * 0.06);
+  const coverParallax = useFrameParallax(coverTravel);
+  const onHeaderScroll = useHeaderScroll();
   const noctalia = useMemo(() => getNoctaliaDesignTokens(colors, mode), [colors, mode]);
   const markdownStyles = useMemo(() => StyleSheet.create({
     transcript: { fontSize: 16, lineHeight: 26, color: noctalia.text.secondary },
@@ -1285,6 +1292,15 @@ const JournalDetailContent = memo(function JournalDetailContent({ dream }: { dre
     }
   }, [dream, isAnalysisLocked, openShareModal, shareComposite, shareImage, shareMessage, shareTitle, t, media, shareMediaPending, shareDreamIdentity, shareImageRef, onShareMediaReady]);
 
+  // Opened from a journal card's share icon: share once the dream is here, then drop the request.
+  const autoShareDoneRef = useRef(false);
+  useEffect(() => {
+    if (shareParam !== '1' || !dream || autoShareDoneRef.current) return;
+    autoShareDoneRef.current = true;
+    router.setParams({ share: undefined });
+    void onShare();
+  }, [dream, onShare, shareParam]);
+
   const handleToggleFavorite = useCallback(async () => {
     if (!dream || isAnalysisLocked) return;
     try {
@@ -1509,15 +1525,16 @@ const JournalDetailContent = memo(function JournalDetailContent({ dream }: { dre
   const runAnalyze = useCallback(
     async (replaceImage: boolean, skipAllowanceCheck = false) => {
       if (!dream || isAnalysisLaunchBlocked || analysisLaunchInFlightRef.current) return;
-      // Lock synchronously, including the asynchronous quota check.
+      // Lock synchronously, including the asynchronous quota check and consent.
       analysisLaunchInFlightRef.current = true;
-      setIsAnalyzing(true);
       try {
         if (!skipAllowanceCheck && !isResumableAnalysisRequest(dream)) {
           const allowed = await ensureAnalyzeAllowed();
           if (!allowed) return;
         }
         if (!(await requestAiConsent(t))) return;
+        // Only now is anything being analysed: never show progress behind the consent prompt.
+        setIsAnalyzing(true);
 
         const pending = onboardingState.pendingRecordingIntent;
         if (pending?.savedDreamId === dream.id && pending.phase === 'analysis_confirmation') {
@@ -2175,7 +2192,8 @@ const JournalDetailContent = memo(function JournalDetailContent({ dream }: { dre
     );
   };
 
-  const analysisAccessLabel = visiblePrimaryAction !== 'analyze' || isPrimaryActionBusy || canResumeAnalysis || guestNeedsAccount || savedAnalysisAction === 'upgrade' ? null
+  // While allowances load, keep the regular card so it does not reflow under the user's thumb.
+  const analysisAccessLabel = visiblePrimaryAction !== 'analyze' || quotaLoading || isPrimaryActionBusy || canResumeAnalysis || guestNeedsAccount || savedAnalysisAction === 'upgrade' ? null
     : quotaHint.kind === 'unknown' ? t('journal.detail.check_analysis')
       : quotaHint.kind === 'remaining' && quotaHint.remaining <= 0
         ? t('journal.detail.analysis_options') : null;
@@ -2499,6 +2517,8 @@ const JournalDetailContent = memo(function JournalDetailContent({ dream }: { dre
               className="absolute top-0 right-0 left-0"
               style={{ height: coverLayout.imageHeight }}
             >
+              <Animated.View ref={coverParallax.frame} style={StyleSheet.absoluteFill} pointerEvents="none">
+              <Animated.View style={[{ position: 'absolute', left: 0, right: 0, top: -coverTravel, bottom: -coverTravel }, coverParallax.style]}>
               <Image
                 key={displayImageUrl ?? dream.imageUrl}
                 source={displayImageUrl ? { uri: displayImageUrl, cacheKey: imageCacheKey } : null}
@@ -2510,12 +2530,21 @@ const JournalDetailContent = memo(function JournalDetailContent({ dream }: { dre
                 priority={imageConfig.priority}
                 placeholder={{ blurhash: 'L6PZfSi_.AyE_3t7t7R**0o#DgR4' }}
               />
+              </Animated.View>
+              </Animated.View>
             </PressableScale>
             <View
               pointerEvents="none"
               className="absolute top-0 right-0 left-0"
               style={{ height: coverLayout.imageHeight + 1 }}
             >
+              {/* The page's ground eases into the top of the illustration as well, so it never
+                  starts on a hard edge under the heading. */}
+              <LinearGradient
+                colors={[noctalia.screen.background, `${noctalia.screen.background}A6`, `${noctalia.screen.background}3D`, `${noctalia.screen.background}00`]}
+                locations={[0, 0.3, 0.62, 1]}
+                style={{ position: 'absolute', top: 0, right: 0, left: 0, height: Math.min(72, coverLayout.imageHeight * 0.18) }}
+              />
               <LinearGradient
                 colors={noctalia.cover.gradient}
                 locations={noctalia.cover.gradientLocations}
@@ -2659,8 +2688,10 @@ const JournalDetailContent = memo(function JournalDetailContent({ dream }: { dre
             paddingTop: navigationHeight,
             paddingBottom: ((isEditing || isEditingTranscript) ? 220 : actionDockHeight + 32) + insets.bottom,
           }}
-          scrollEventThrottle={32}
-          onScroll={({ nativeEvent }) => {
+          scrollEventThrottle={16}
+          onScroll={(event) => {
+            const { nativeEvent } = event;
+            onHeaderScroll(event);
             readingScrollOffset.current = nativeEvent.contentOffset.y;
             updateReadingChrome(nativeEvent.contentOffset.y);
           }}
@@ -3113,3 +3144,6 @@ const JournalDetailContent = memo(function JournalDetailContent({ dream }: { dre
     </View>
   );
 });
+
+// The dream's page draws its own bar over the status bar.
+export default withHeaderScroll(JournalDetailScreen, { veil: false });

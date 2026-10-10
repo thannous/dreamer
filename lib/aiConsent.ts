@@ -21,7 +21,6 @@ type Translate = (key: string) => string;
 
 let granted: boolean | null = null;
 let pending: Promise<boolean> | null = null;
-
 export async function hasAiConsent(): Promise<boolean> {
   if (granted) return true;
   try {

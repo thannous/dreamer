@@ -4,6 +4,7 @@ import {
   AccessibilityInfo,
   Pressable,
   ScrollView,
+  StyleSheet,
   findNodeHandle,
   Text,
   View,
@@ -35,6 +36,9 @@ const webTitleFocusResetStyle: TextStyle | null = process.env.EXPO_OS === 'web'
       outlineWidth: 0,
     } as unknown as TextStyle)
   : null;
+
+/** Read by assistive technology, never drawn. */
+const VISUALLY_HIDDEN: TextStyle = { position: 'absolute', width: 1, height: 1, opacity: 0, overflow: 'hidden' };
 
 export type StandardBottomSheetActions = {
   primaryLabel: string;
@@ -78,6 +82,17 @@ export type StandardBottomSheetProps = {
   children?: React.ReactNode;
   /** Optional footer actions; informational sheets can use a close button instead. */
   actions?: StandardBottomSheetActions;
+  /** A custom fixed footer, used instead of `actions` when the footer has its own timing. */
+  footer?: React.ReactNode;
+  /**
+   * Shown in the close-button row in place of the visible title. The title stays the
+   * sheet's accessible heading and focus target.
+   */
+  headerContent?: React.ReactNode;
+  /** A decorative layer painted behind the whole sheet content (artwork, never controls). */
+  background?: React.ReactNode;
+  /** The close icon's colour when `background` sets its own ground. */
+  closeIconColor?: string;
   /** Optional fixed top-right close control, with a localized accessibility label. */
   closeButton?: { label: string; testID?: string };
   /** Optional opaque color for the platform host. */
@@ -135,6 +150,10 @@ export function StandardBottomSheet({
   subtitle,
   children,
   actions,
+  footer,
+  headerContent,
+  background,
+  closeIconColor,
   closeButton,
   surfaceColor,
   transparentContent = false,
@@ -198,13 +217,30 @@ export function StandardBottomSheet({
       ]}
       testID={testID}
     >
+      {background ? <View accessible={false} importantForAccessibility="no-hide-descendants" pointerEvents="none" style={StyleSheet.absoluteFill}>
+        {background}
+      </View> : null}
       {dragIndicatorColor ? <View accessible={false} pointerEvents="none" style={{ height: 16, alignItems: 'center', justifyContent: 'center' }}>
         <View style={{ width: 48, height: 4, borderRadius: 2, backgroundColor: dragIndicatorColor }} />
       </View> : null}
       {closeButton ? (
         <View className="mb-2 min-h-12 flex-row items-center">
           <View accessible={false} className="w-12" />
-          <Text
+          {headerContent ? (
+            <View className="flex-1 items-center justify-center">
+              <Text
+                ref={titleRef}
+                {...(process.env.EXPO_OS === 'web' ? { tabIndex: -1 as const } : {})}
+                accessible
+                accessibilityRole="header"
+                style={[webTitleFocusResetStyle, VISUALLY_HIDDEN]}
+                testID={titleTestID}
+              >
+                {title}
+              </Text>
+              {headerContent}
+            </View>
+          ) : <Text
             ref={titleRef}
             {...(process.env.EXPO_OS === 'web' ? { tabIndex: -1 as const } : {})}
             accessible
@@ -214,7 +250,7 @@ export function StandardBottomSheet({
             testID={titleTestID}
           >
             {title}
-          </Text>
+          </Text>}
           <Pressable
             accessibilityRole="button"
             accessibilityLabel={closeButton.label}
@@ -223,7 +259,7 @@ export function StandardBottomSheet({
             className="h-12 w-12 items-center justify-center rounded-full"
             testID={closeButton.testID}
           >
-            <IconSymbol name="xmark" size={22} color={colors.textPrimary} />
+            <IconSymbol name="xmark" size={22} color={closeIconColor ?? colors.textPrimary} />
           </Pressable>
         </View>
       ) : null}
@@ -264,7 +300,7 @@ export function StandardBottomSheet({
       </ScrollView>
 
       {/* Actions remain outside the scrollable content. */}
-      {actions ? <BottomSheetActions>
+      {footer ?? (actions ? <BottomSheetActions>
         <BottomSheetPrimaryAction
           label={actions.primaryLabel}
           detail={actions.primaryDetail}
@@ -294,7 +330,7 @@ export function StandardBottomSheet({
             testID={actions.linkTestID}
           />
         ) : null}
-      </BottomSheetActions> : null}
+      </BottomSheetActions> : null)}
     </BottomSheet>
   );
 }

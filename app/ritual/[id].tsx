@@ -28,6 +28,8 @@ import {
 } from '@/lib/inspirationRituals';
 import { getSleepSoundCopy } from '@/lib/sleepSoundCopy';
 import { isSleepSoundsAvailable } from '@/lib/sleepSoundsFeature';
+import { useHeaderScroll } from '@/components/ui/headerStretch';
+import { withHeaderScroll } from '@/components/ui/HeaderScrollScope';
 import {
   getLocalDateKey,
 } from '@/lib/ritualProgressUtils';
@@ -159,7 +161,9 @@ function getLucidTrainerBridgeCopy(language: string) {
   return LUCID_TRAINER_BRIDGE_COPY.en;
 }
 
-export default function RitualDetailScreen() {
+function RitualDetailScreen() {
+  // This screen's own scroll, published to its header painting and title.
+  const onHeaderScroll = useHeaderScroll();
   const { id } = useLocalSearchParams<{ id: string }>();
   const ritualId = id as RitualId;
   const { colors, mode, shadows } = useTheme();
@@ -304,15 +308,16 @@ export default function RitualDetailScreen() {
         >
           <IconSymbol name="chevron.left" size={22} color={noctalia.accent.text} />
         </Pressable>
-        <ScrollView
-          style={[styles.scrollView, { marginTop: insets.top }]}
-          contentContainerStyle={{ paddingBottom: insets.bottom + 40 }}
+        <ScrollView onScroll={onHeaderScroll} scrollEventThrottle={16}
+          style={styles.scrollView}
+          contentInsetAdjustmentBehavior="never"
+          contentContainerStyle={{ paddingTop: insets.top, paddingBottom: insets.bottom + 40 }}
           onScrollBeginDrag={scrollPerf.onScrollBeginDrag}
           onScrollEndDrag={scrollPerf.onScrollEndDrag}
           onMomentumScrollBegin={scrollPerf.onMomentumScrollBegin}
           onMomentumScrollEnd={scrollPerf.onMomentumScrollEnd}
         >
-          <DreamerArtworkWindow scene={RITUAL_SCENES[ritual.id]} />
+          <DreamerArtworkWindow scene={RITUAL_SCENES[ritual.id]} bleedTop={insets.top} />
           <View style={[styles.content, { paddingTop: 20 }]}>
           {/* Ritual icon and name */}
           <View style={styles.titleSection}>
@@ -673,3 +678,5 @@ const styles = StyleSheet.create({
     lineHeight: 20,
   },
 });
+
+export default withHeaderScroll(RitualDetailScreen);

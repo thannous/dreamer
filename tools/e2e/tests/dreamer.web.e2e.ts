@@ -1,12 +1,21 @@
-import { test } from '@e2e-dev/web';
+import { test, type Browser } from '@e2e-dev/web';
 import { expect } from 'e2e';
 import { fileURLToPath } from 'node:url';
 import { isolateWeb } from '../web-fixtures';
 import type { App, Screen } from 'e2e';
 
-async function startGuest(app: App, screen: Screen) {
+async function leaveGuidedStories(browser: Browser, screen: Screen) {
+  if (process.env.EXPO_PUBLIC_ONBOARDING_FEATURE_SHEETS_ENABLED !== 'true') return;
+  const unsubscribe = await browser.onDialog('accept');
+  try { await screen.getByTestId('btn.onboarding.feature.close', { visible: true }).tap(); }
+  finally { await unsubscribe(); }
+}
+
+async function startGuest(app: App, screen: Screen, browser: Browser) {
   await app.open();
   await screen.getByTestId('btn.onboarding.intro.next').tap();
+  // With feature sheets, "Commencer" first tells the three stories; the cross moves on.
+  await leaveGuidedStories(browser, screen);
   await screen.getByTestId('btn.onboarding.skip').tap();
   await expect(screen.getByTestId('screen.recording', { visible: true })).toBeVisible();
 }
@@ -19,8 +28,8 @@ async function openSettings(screen: Screen) {
   await screen.getByTestId('quick-settings.all', { visible: true }).tap();
 }
 
-async function selectProfile(app: App, screen: Screen, profile: 'existing' | 'plus') {
-  await startGuest(app, screen);
+async function selectProfile(app: App, screen: Screen, browser: Browser, profile: 'existing' | 'plus') {
+  await startGuest(app, screen, browser);
   await openSettings(screen);
   await screen.getByTestId('settings-account-open-signin', { visible: true }).tap();
   await screen.getByTestId(`btn.mockProfile.${profile}`, { visible: true }).tap();
@@ -48,7 +57,7 @@ async function openDream(screen: Screen, title: string) {
 
 test('guest saves the exact story and reads its simulated analysis inline', async ({ app, screen, browser }) => {
   await isolateWeb(browser, app);
-  await startGuest(app, screen);
+  await startGuest(app, screen, browser);
   const story = 'E2E moonlit harbor with a golden lighthouse.';
   // The first analysis asks once for permission to send the dream to the AI provider.
   const consentPrompts: string[] = [];
@@ -72,7 +81,7 @@ test('guest saves the exact story and reads its simulated analysis inline', asyn
 
 test('free user saves, renames and finds the exact story in Journal', async ({ app, screen, browser }) => {
   await isolateWeb(browser, app);
-  await selectProfile(app, screen, 'existing');
+  await selectProfile(app, screen, browser, 'existing');
   const story = 'E2E sapphire lighthouse above the quiet ocean.';
   await screen.getByTestId('input.dreamTranscript', { visible: true }).fill(story);
   await screen.getByTestId('btn.saveDream', { visible: true }).tap();
@@ -91,7 +100,7 @@ test('free user saves, renames and finds the exact story in Journal', async ({ a
 for (const profile of ['plus', 'existing'] as const) {
   test(`${profile} account lands once on the saved moment with its next step`, async ({ app, screen, browser }) => {
     await isolateWeb(browser, app);
-    await selectProfile(app, screen, profile);
+    await selectProfile(app, screen, browser, profile);
     // One run per theme: the moment's sky, orbit and dock fade must hold on both grounds.
     if (profile === 'existing') {
       await screen.getByRole('button', /^(Settings|Paramètres)$/, { visible: true }).tap();
@@ -150,7 +159,7 @@ async function settledMotion(browser: Parameters<typeof isolateWeb>[0]) {
 // symbols land as a constellation and the reading is brought into view, once.
 test('plus account watches its saved dream being read, then lit as a constellation', async ({ app, screen, browser }) => {
   await isolateWeb(browser, app);
-  await selectProfile(app, screen, 'plus');
+  await selectProfile(app, screen, browser, 'plus');
   // The first analysis asks once for permission to send the dream to the AI provider.
   const offConsent = await browser.onDialog(async (dialog) => { await dialog.accept(); });
   const story = 'E2E lantern drifting over dark water toward a doorway of light.';
@@ -206,7 +215,7 @@ test('plus account watches its saved dream being read, then lit as a constellati
 
 test('free user recovers empty search, edits, cancels deletion and deletes only one dream', async ({ app, screen, browser }) => {
   await isolateWeb(browser, app);
-  await selectProfile(app, screen, 'existing');
+  await selectProfile(app, screen, browser, 'existing');
   await journal(screen);
   const search = screen.getByRole('textbox', 'Search dreams…', { visible: true });
   await search.fill('E2E no such dream 93f82');
@@ -232,7 +241,7 @@ test('free user recovers empty search, edits, cancels deletion and deletes only 
 
 test('free user adds and removes a favorite without deleting its story', async ({ app, screen, browser }) => {
   await isolateWeb(browser, app);
-  await selectProfile(app, screen, 'existing');
+  await selectProfile(app, screen, browser, 'existing');
   await journal(screen);
   await openDream(screen, 'Garden in the Clouds');
   await screen.getByTestId('btn.dream.favorite', { visible: true }).tap();
@@ -251,7 +260,7 @@ test('free user adds and removes a favorite without deleting its story', async (
 
 test('exhausted free account keeps its story when declining the analysis offer', async ({ app, screen, browser }) => {
   await isolateWeb(browser, app);
-  await selectProfile(app, screen, 'existing');
+  await selectProfile(app, screen, browser, 'existing');
   const story = 'E2E saved even when my analysis allowance is exhausted.';
   await screen.getByTestId('input.dreamTranscript', { visible: true }).fill(story);
   await screen.getByTestId('btn.saveDream', { visible: true }).tap();
@@ -267,7 +276,7 @@ test('exhausted free account keeps its story when declining the analysis offer',
 for (const profile of ['existing', 'plus'] as const) {
   test(`${profile} account allowance and sign-out preserve account isolation`, async ({ app, screen, browser }) => {
     await isolateWeb(browser, app);
-    await selectProfile(app, screen, profile);
+    await selectProfile(app, screen, browser, profile);
     await openSettings(screen);
     // The populated historical fixture contains exactly five completed analyses.
     await expect(screen.getByTestId('quota.analysisValue', { visible: true })).toHaveText(profile === 'plus' ? 'Unlimited' : '5 / 3');
@@ -295,6 +304,8 @@ test('onboarding prevents an empty save and capture preserves the draft', async 
   await isolateWeb(browser, app);
   await app.open();
   await screen.getByTestId('btn.onboarding.intro.next').tap();
+  // With feature sheets, "Commencer" first tells the three stories; the cross moves on.
+  await leaveGuidedStories(browser, screen);
   await screen.getByTestId('btn.onboarding.skip').tap();
   await expect(screen.getByTestId('screen.recording', { visible: true })).toBeVisible();
   await expect(screen.getByTestId('btn.saveDream')).toBeDisabled();
@@ -311,6 +322,8 @@ test('Quick Settings changes language and theme without losing the Capture draft
   await isolateWeb(browser, app);
   await app.open();
   await screen.getByTestId('btn.onboarding.intro.next').tap();
+  // With feature sheets, "Commencer" first tells the three stories; the cross moves on.
+  await leaveGuidedStories(browser, screen);
   await screen.getByTestId('btn.onboarding.skip').tap();
   await screen.getByTestId('btn.recording.inputMode.text', { visible: true }).tap();
   const editor = screen.getByTestId('input.dreamTranscript', { visible: true });
@@ -363,23 +376,34 @@ test('the onboarding story bridges capture to understanding and exploration', {
   await isolateWeb(browser, app);
   await app.open();
   await screen.getByTestId('btn.onboarding.feature.capture').tap();
-  await screen.getByTestId('btn.onboarding.story.skip').tap();
+  await expect(screen.getByTestId('btn.onboarding.story.next')).toBeEnabled();
+  await screen.getByTestId('btn.onboarding.story.next').tap();
+  await expect(screen.getByTestId('btn.onboarding.story.next')).toBeEnabled();
+  await screen.getByTestId('btn.onboarding.story.next').tap();
+  await expect(screen.getByTestId('btn.onboarding.story.next')).toBeEnabled();
+  await screen.getByTestId('btn.onboarding.story.next').tap();
   await expect(screen.getByTestId('component.onboarding.story.capture.3')).toBeVisible();
   await screen.getByTestId('btn.onboarding.globeCard.1').tap();
   await expect(screen.getByTestId('component.onboarding.dreamEntry')).toContainText('Flying over the harbour');
+  await expect(screen.getByTestId('btn.onboarding.story.continue')).toBeEnabled();
   await screen.getByTestId('btn.onboarding.story.continue').tap();
-  await expect(screen.getByText('Once your dream is saved…')).toBeVisible();
-  await screen.getByTestId('btn.onboarding.story.next').tap();
-  await expect(screen.getByText('you can find the details that return…')).toBeVisible();
-  await screen.getByTestId('btn.onboarding.story.next').tap();
-  await expect(screen.getByText('and discover what connects your nights.')).toBeVisible();
-  await app.screenshot('capture-story-bridge');
-  await screen.getByTestId('btn.onboarding.story.next').tap();
   await expect(screen.getByTestId('component.onboarding.story.connect.0')).toBeVisible();
-  await screen.getByTestId('btn.onboarding.story.skip').tap();
+  await expect(screen.getByTestId('btn.onboarding.story.next')).toBeEnabled();
+  await screen.getByTestId('btn.onboarding.story.next').tap();
+  await expect(screen.getByTestId('btn.onboarding.story.next')).toBeEnabled();
+  await screen.getByTestId('btn.onboarding.story.next').tap();
+  await expect(screen.getByTestId('btn.onboarding.story.next')).toBeEnabled();
+  await screen.getByTestId('btn.onboarding.story.next').tap();
+  await expect(screen.getByTestId('btn.onboarding.story.continue')).toBeEnabled();
   await screen.getByTestId('btn.onboarding.story.continue').tap();
   await expect(screen.getByTestId('component.onboarding.story.explore.0')).toBeVisible();
-  await screen.getByTestId('btn.onboarding.story.skip').tap();
+  await expect(screen.getByTestId('btn.onboarding.story.next')).toBeEnabled();
+  await screen.getByTestId('btn.onboarding.story.next').tap();
+  await expect(screen.getByTestId('btn.onboarding.story.next')).toBeEnabled();
+  await screen.getByTestId('btn.onboarding.story.next').tap();
+  await expect(screen.getByTestId('btn.onboarding.story.next')).toBeEnabled();
+  await screen.getByTestId('btn.onboarding.story.next').tap();
+  await expect(screen.getByTestId('btn.onboarding.story.continue')).toBeEnabled();
   await screen.getByTestId('btn.onboarding.story.continue').tap();
   await expect(screen.getByTestId('sheet.onboarding.feature')).toHaveCount(0);
   await expect(screen.getByTestId('component.onboarding.intro')).toBeVisible();
@@ -390,6 +414,8 @@ test('Quick Settings keeps interior taps open and accepts every sign-in button e
   await isolateWeb(browser, app);
   await app.open();
   await screen.getByTestId('btn.onboarding.intro.next').tap();
+  // With feature sheets, "Commencer" first tells the three stories; the cross moves on.
+  await leaveGuidedStories(browser, screen);
   await screen.getByTestId('btn.onboarding.skip').tap();
   const settings = screen.getByRole('button', 'Settings', { visible: true });
   const drawer = screen.getByTestId('quick-settings.drawer', { visible: true });
@@ -438,7 +464,7 @@ const MOCK_PAINTING = fileURLToPath(new URL('../../../assets/images/onboarding-r
 test('plus account watches its dream painted into the window, then finds it glowing in the journal', async ({ app, screen, browser }) => {
   await isolateWeb(browser, app);
   await browser.route('https://picsum.photos/**', route => route.fulfill({ path: MOCK_PAINTING, contentType: 'image/webp' }));
-  await selectProfile(app, screen, 'plus');
+  await selectProfile(app, screen, browser, 'plus');
   const offConsent = await browser.onDialog(async (dialog) => { await dialog.accept(); });
   const story = 'E2E painted harbor where the lanterns float above the tide.';
   await screen.getByTestId('input.dreamTranscript', { visible: true }).fill(story);

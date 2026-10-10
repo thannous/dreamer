@@ -1,84 +1,95 @@
+import * as Haptics from 'expo-haptics';
 import React, { useMemo, useState } from 'react';
-import { StyleSheet, Text, View, type ViewProps, type ViewStyle } from 'react-native';
+import { StyleSheet, View, type StyleProp, type TextStyle, type ViewProps, type ViewStyle } from 'react-native';
 import Animated, { useReducedMotion, type CSSStyle } from 'react-native-reanimated';
 
-import { PressableScale } from '@/components/motion/PressableScale';
 import { DURATION, EASE } from '@/components/motion/motion';
-import { IconSymbol } from '@/components/ui/icon-symbol';
 import type { NoctaliaDesignTokens } from '@/constants/noctaliaDesign';
-import { Fonts } from '@/constants/theme';
-import { useTranslation } from '@/hooks/useTranslation';
 
+/** Three told scenes, then the interactive example. */
 export const STORY_DEMO_STEP = 3;
+const SEGMENTS = STORY_DEMO_STEP + 1;
 
-/** Reading stays at the user's pace; only the artwork and entrances animate. */
+/**
+ * The reader turns the pages. Nothing advances on a timer: readers found the
+ * timed scenes too fast, and a story read at one's own pace is the point.
+ */
 export function useFeatureStory() {
   const reduced = useReducedMotion();
   const [step, setStep] = useState(0);
+  const seek = (next: number) => {
+    const target = Math.max(0, Math.min(STORY_DEMO_STEP, next));
+    if (target === step) return;
+    // One soft tick per page turn, in the same frame as the new slide.
+    if (process.env.EXPO_OS !== 'web') void Haptics.selectionAsync();
+    setStep(target);
+  };
   return {
     step, reduced,
-    next: () => setStep((current) => Math.min(STORY_DEMO_STEP, current + 1)),
-    previous: () => setStep((current) => Math.max(0, current - 1)),
-    skip: () => setStep(STORY_DEMO_STEP),
-    replay: () => setStep(0),
+    next: () => seek(step + 1),
   };
 }
 
 export type FeatureStoryPlayback = ReturnType<typeof useFeatureStory>;
 
-/** A brief entrance, with the same reading order and opacity-only reduced motion. */
-export function StoryScene({ children, style, ...props }: ViewProps) {
+/**
+ * A scene's entrance: a short rise and fade, staggered by `delay` so the title
+ * lands before the sentence under it. Reduced motion keeps only the fade.
+ */
+export function StoryScene({ children, style, delay = 0, ...props }: ViewProps & { delay?: number }) {
   const reduced = useReducedMotion();
   const animation = useMemo<CSSStyle<Pick<ViewStyle, 'opacity' | 'transform'>>>(() => ({
     animationName: {
-      from: { opacity: 0, ...(!reduced ? { transform: [{ translateY: 8 }] } : {}) },
+      from: { opacity: 0, ...(!reduced ? { transform: [{ translateY: 10 }] } : {}) },
       to: { opacity: 1, ...(!reduced ? { transform: [{ translateY: 0 }] } : {}) },
     },
-    animationDuration: DURATION.fast,
+    animationDuration: DURATION.normal,
+    animationDelay: reduced ? 0 : delay,
     animationTimingFunction: EASE.out,
     animationFillMode: 'both',
-  }), [reduced]);
+  }), [delay, reduced]);
   return <Animated.View {...props} style={[animation, style]}>{children}</Animated.View>;
 }
 
-function StoryProgress({ active, complete, color, track }: {
-  active: boolean; complete: boolean; color: string; track: string;
-}) {
-  return <View style={[styles.segment, { backgroundColor: active || complete ? color : track }]} />;
+/** The sentence follows the headline once the word has risen. */
+export const HEADLINE_SETTLE = 260;
+
+/**
+ * The slide's one word, rising out of a mask as on a keynote slide. Reduced
+ * motion keeps only the fade; assistive technology reads it once, whole.
+ */
+export function Headline({ text, style, lineHeight }: { text: string; style: StyleProp<TextStyle>; lineHeight: number }) {
+  const reduced = useReducedMotion();
+  return <View accessible accessibilityRole="header" accessibilityLabel={text} accessibilityLiveRegion="polite" style={styles.mask}>
+    <Animated.Text accessible={false} maxFontSizeMultiplier={1.4} style={[style, {
+      animationName: {
+        from: { opacity: 0, ...(!reduced ? { transform: [{ translateY: lineHeight * 0.7 }] } : {}) },
+        to: { opacity: 1, ...(!reduced ? { transform: [{ translateY: 0 }] } : {}) },
+      },
+      animationDuration: DURATION.slow,
+      animationTimingFunction: EASE.out,
+      animationFillMode: 'both',
+    }]}>
+      {text}
+    </Animated.Text>
+  </View>;
 }
 
-export function FeatureStoryControls({ story, tokens, showSkip = true, endLabel }: {
-  story: FeatureStoryPlayback; tokens: NoctaliaDesignTokens; showSkip?: boolean; endLabel?: string;
-}) {
-  const { t } = useTranslation();
-  const demo = story.step === STORY_DEMO_STEP;
-  return <View style={styles.controls}>
-    <View accessible={false} style={styles.progress}>
-      {[0, 1, 2].map((index) => <StoryProgress key={index} active={index === story.step} complete={index < story.step}
-        color={tokens.accent.text} track={tokens.surface.border} />)}
-    </View>
-    <View style={styles.actions}>
-      <PressableScale accessibilityRole="button" accessibilityLabel={t('onboarding.story.previous')} disabled={story.step === 0} onPress={story.previous} style={styles.icon} testID="btn.onboarding.story.previous">
-        <IconSymbol name="chevron.left" size={17} color={story.step === 0 ? tokens.text.tertiary : tokens.text.secondary} />
-      </PressableScale>
-      {demo ? <PressableScale accessibilityRole="button" accessibilityLabel={t('onboarding.story.replay')}
-        onPress={story.replay} style={styles.icon} testID="btn.onboarding.story.replay">
-        <IconSymbol name="arrow.clockwise" size={16} color={tokens.text.secondary} />
-      </PressableScale> : null}
-      {demo ? <Text style={[styles.skip, styles.label, { color: tokens.text.tertiary }]}>{endLabel ?? t('onboarding.feature.example')}</Text> : showSkip ?
-        <PressableScale accessibilityRole="button" onPress={story.skip} style={styles.skip} testID="btn.onboarding.story.skip">
-          <Text style={[styles.label, { color: tokens.text.secondary }]}>{t('onboarding.story.skip')}</Text>
-        </PressableScale> : null}
-    </View>
+/** Quiet progress: one small dot per page, the current one a little brighter. */
+export function StoryProgress({ step, tokens }: { step: number; tokens: NoctaliaDesignTokens }) {
+  return <View accessible={false} importantForAccessibility="no-hide-descendants" style={styles.progress}>
+    {Array.from({ length: SEGMENTS }, (_, index) => <Animated.View key={index} style={[styles.dot, {
+      backgroundColor: index === step ? tokens.text.secondary : tokens.surface.border,
+      transitionProperty: 'backgroundColor',
+      transitionDuration: DURATION.fast,
+      transitionTimingFunction: EASE.out,
+    }]} />)}
   </View>;
 }
 
 const styles = StyleSheet.create({
-  controls: { paddingTop: 8, paddingBottom: 0 },
-  progress: { flexDirection: 'row', gap: 8 },
-  segment: { flex: 1, height: 2, borderRadius: 1, overflow: 'hidden' },
-  actions: { flexDirection: 'row', alignItems: 'center' },
-  icon: { width: 48, height: 48, alignItems: 'center', justifyContent: 'center' },
-  skip: { flex: 1, minHeight: 48, justifyContent: 'center', alignItems: 'flex-end', paddingLeft: 8 },
-  label: { fontFamily: Fonts.spaceGrotesk.medium, fontSize: 11, lineHeight: 17 },
+  // Clips the rising word so it appears out of a line, not out of thin air.
+  mask: { overflow: 'hidden', maxWidth: 340 },
+  progress: { flexDirection: 'row', gap: 6, alignItems: 'center' },
+  dot: { width: 6, height: 6, borderRadius: 3 },
 });

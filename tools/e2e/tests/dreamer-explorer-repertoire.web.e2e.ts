@@ -1,6 +1,6 @@
 // Historical exact UI assertions executed under the guarded TesterArmy engine.
 import type { Page } from 'playwright/test';
-import { createParityTest, expect } from '../web-parity-fixtures';
+import { createParityTest, expect, withDialog } from '../web-parity-fixtures';
 
 const test = createParityTest({ viewport: { width: 390, height: 844 }, locale: 'fr-FR', timezoneId: 'Europe/Paris' });
 
@@ -8,6 +8,10 @@ async function openExplorer(page: Page) {
   await page.clock.setFixedTime(new Date('2026-10-03T12:00:00+02:00'));
   await page.goto('/');
   await page.getByTestId('btn.onboarding.intro.next').click();
+  // With feature sheets, "Commencer" first tells the three stories; the cross moves on.
+  if (process.env.EXPO_PUBLIC_ONBOARDING_FEATURE_SHEETS_ENABLED === 'true') {
+    await withDialog(page, 'accept', () => page.getByTestId('btn.onboarding.feature.close').click());
+  }
   await page.getByTestId('btn.onboarding.skip').click();
   await expect(page.getByTestId('screen.recording')).toBeVisible();
   await page.getByTestId('tab.explore').filter({ visible: true }).click();

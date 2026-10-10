@@ -14,7 +14,7 @@ import {
 describe('getBottomNavigationLayout', () => {
   it.each([320, 361, 375, 390, 399, 400, 430, 768])('sizes portrait labels at %i dp without changing narrow classification', (width: number) => {
     const layout = getBottomNavigationLayout(width, 1024);
-    expect(layout.labelFontSize).toBe(width < 400 ? 11 : 12);
+    expect(layout.labelFontSize).toBe(width < 600 ? 11 : 12);
     expect(layout.narrow).toBe(width <= 360);
     expect(layout.labelLines).toBe(1);
     expect(layout.barHeight).toBe(TAB_BAR_HEIGHT);
@@ -38,12 +38,12 @@ describe('getBottomNavigationLayout', () => {
       narrow: false,
       stackedLabels: false,
       fontScale: 1,
-      labelFontSize: 12,
+      labelFontSize: 11,
       labelLineHeight: 16,
       labelLines: 1,
       labelHeight: 20,
       barHeight: TAB_BAR_HEIGHT,
-      centerActionWidth: 66,
+      centerActionWidth: 71.6,
       centerActionHeight: 76,
       minimumBottomInset: 14,
     });
@@ -117,7 +117,7 @@ describe('getBottomNavigationLayout', () => {
     expect(narrow.centerActionWidth).toBeLessThanOrEqual(64);
     expect(narrow.centerActionWidth).toBeCloseTo(54.8, 5);
     expect(regular.centerActionWidth).toBeLessThanOrEqual(72);
-    expect(regular.centerActionWidth).toBeCloseTo(66, 5);
+    expect(regular.centerActionWidth).toBeCloseTo(71.6, 5);
     expect(narrow.centerActionWidth).toBeLessThan(regular.centerActionWidth);
   });
 
@@ -140,12 +140,14 @@ describe('narrow bottom navigation', () => {
     expect(isNarrowBottomNavigation(width)).toBe(expected);
   });
 
-  it('widens the bar below 400 dp while preserving the narrow label breakpoint', () => {
+  it('widens the bar on phones below 600 dp while preserving the narrow label breakpoint', () => {
     expect(getTabBarHorizontalLayout(320)).toEqual({ start: 8, end: 8 });
     expect(getTabBarHorizontalLayout(361)).toEqual({ start: 8, end: 8 });
     expect(getTabBarHorizontalLayout(390)).toEqual({ start: 8, end: 8 });
     expect(getTabBarHorizontalLayout(399)).toEqual({ start: 8, end: 8 });
-    expect(getTabBarHorizontalLayout(400)).toEqual({ start: 22, end: 22 });
+    expect(getTabBarHorizontalLayout(402)).toEqual({ start: 8, end: 8 });
+    expect(getTabBarHorizontalLayout(599)).toEqual({ start: 8, end: 8 });
+    expect(getTabBarHorizontalLayout(600)).toEqual({ start: 22, end: 22 });
     expect(getTabBarHorizontalLayout(1280)).toEqual({ start: 160, end: 160 });
   });
 });

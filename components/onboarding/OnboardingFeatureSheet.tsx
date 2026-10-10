@@ -1,109 +1,180 @@
-import React, { useMemo, useState } from 'react';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { Platform, StyleSheet, Text, View, useWindowDimensions } from 'react-native';
+import Animated, { useReducedMotion } from 'react-native-reanimated';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
+import { DURATION, EASE } from '@/components/motion/motion';
+import { PressableScale } from '@/components/motion/PressableScale';
+import { BottomSheetActions } from '@/components/ui/BottomSheetActions';
 import { StandardBottomSheet } from '@/components/ui/StandardBottomSheet';
+import { DarkTheme } from '@/constants/journalTheme';
 import { getNoctaliaDesignTokens, type NoctaliaDesignTokens } from '@/constants/noctaliaDesign';
 import { Fonts } from '@/constants/theme';
-import { useTheme } from '@/context/ThemeContext';
 import { useTranslation } from '@/hooks/useTranslation';
-import { CaptureStory } from './CaptureStory';
-import { CaptureTransition } from './CaptureTransition';
-import { DialogueStory } from './DialogueStory';
-import { FeatureStoryControls, STORY_DEMO_STEP, StoryScene, useFeatureStory, type FeatureStoryPlayback } from './FeatureStory';
+import { CAPTURE_BEATS, CaptureStory } from './CaptureStory';
+import { DialogueStory, EXPLORE_BEATS } from './DialogueStory';
+import {
+  HEADLINE_SETTLE, Headline, STORY_DEMO_STEP, StoryProgress, StoryScene, useFeatureStory, type FeatureStoryPlayback,
+} from './FeatureStory';
 import { SymbolConstellation } from './SymbolConstellation';
+import { StoryButton } from './story/StoryButton';
+import { StoryFrame, SUBTITLE_SPACE, SUBTITLE_STAGGER } from './story/StoryFrame';
+import { StoryNight } from './story/StoryNight';
+import { wordRevealDuration } from './story/StoryText';
 
 export type OnboardingFeature = 'capture' | 'connect' | 'explore';
 const CHAPTERS: OnboardingFeature[] = ['capture', 'connect', 'explore'];
+/** The story is told at night in either theme, like the onboarding it opens from. */
+const NIGHT = getNoctaliaDesignTokens(DarkTheme, 'dark');
+/** When each scene has played its part and its subtitle may follow. */
+const SUBTITLE_DELAYS: Record<OnboardingFeature, readonly number[]> = {
+  capture: [CAPTURE_BEATS.dream, CAPTURE_BEATS.forget, CAPTURE_BEATS.tell],
+  connect: [1000, 1000, 1300],
+  explore: EXPLORE_BEATS.subtitles,
+};
 
-function FeatureNarrative({ feature, tokens, stageHeight, story, transitioning }: {
-  feature: OnboardingFeature; tokens: NoctaliaDesignTokens; stageHeight: number; story: FeatureStoryPlayback; transitioning: boolean;
+function FeatureNarrative({ feature, tokens, stageHeight, frameHeight, onStoryChange }: {
+  feature: OnboardingFeature; tokens: NoctaliaDesignTokens; stageHeight: number; frameHeight: number;
+  onStoryChange: (story: FeatureStoryPlayback) => void;
 }) {
   const { t } = useTranslation();
-  const [selectedDream, setSelectedDream] = useState(0);
+  const story = useFeatureStory();
+  // The sheet's footer turns the pages; it needs this chapter's current controls.
+  useEffect(() => onStoryChange(story));
   const demo = story.step === STORY_DEMO_STEP;
-  const chapter = CHAPTERS.indexOf(feature);
   const scene = demo ? 'demo' : String(story.step);
+  const body = t(`onboarding.narrative.${feature}.${scene}.body`);
+  const sceneHeight = demo ? stageHeight : frameHeight - SUBTITLE_SPACE;
+  const visual = feature === 'capture' ? <CaptureStory step={story.step} reduced={story.reduced} tokens={tokens} stageHeight={sceneHeight} /> :
+    feature === 'connect' ? <SymbolConstellation tokens={tokens} storyStep={demo ? undefined : story.step} stageHeight={sceneHeight} /> :
+      <DialogueStory step={story.step} tokens={tokens} stageHeight={sceneHeight} />;
   return <View style={styles.narrative}>
-    <Text style={[styles.chapter, { color: tokens.accent.text }]}>
-      {String(chapter + 1).padStart(2, '0')}{'  /  03  ·  '}{t(`onboarding.feature.${feature}.title`)}
-    </Text>
-    {transitioning ? <CaptureTransition story={story} tokens={tokens} stageHeight={stageHeight} dreamIndex={selectedDream} /> : <>
-    <StoryScene key={story.step} style={[styles.copy, demo && styles.demoCopy]}>
-      <Text accessibilityRole="header" style={[styles.title, demo && styles.demoTitle, { color: tokens.text.primary }]}>
-        {t(`onboarding.narrative.${feature}.${scene}.title`)}
-      </Text>
-      <Text style={[styles.body, { color: tokens.text.secondary }]}>
-        {t(`onboarding.narrative.${feature}.${scene}.body`)}
-      </Text>
-    </StoryScene>
+    <View key={story.step} style={[styles.copy, !demo && styles.storyCopy]}>
+      <Headline text={t(`onboarding.narrative.${feature}.${scene}.title`)} lineHeight={styles.title.lineHeight}
+        style={[styles.title, { color: tokens.text.primary }]} />
+      {demo ? <StoryScene delay={HEADLINE_SETTLE}>
+        <Text style={[styles.body, { color: tokens.text.secondary, textShadowColor: tokens.illustration.scrim }]}>{body}</Text>
+      </StoryScene> : null}
+    </View>
     <View testID={`component.onboarding.preview.${feature}`}>
       <View testID={`component.onboarding.story.${feature}.${story.step}`}>
-        {feature === 'capture' ? <CaptureStory step={story.step} reduced={story.reduced} tokens={tokens} stageHeight={stageHeight} onDreamChange={setSelectedDream} /> :
-          feature === 'connect' ? <SymbolConstellation tokens={tokens} storyStep={demo ? undefined : story.step} /> :
-            <DialogueStory step={story.step} tokens={tokens} stageHeight={stageHeight} />}
+        {/* Each slide is a scene played in the same night; its sentence is the subtitle. */}
+        {demo ? visual : <StoryFrame height={frameHeight} tokens={tokens} subtitle={body}
+          subtitleDelay={SUBTITLE_DELAYS[feature][story.step]} sceneKey={story.step}>
+          <View key={story.step} style={styles.sceneSlot}>{visual}</View>
+        </StoryFrame>}
       </View>
     </View>
-    <FeatureStoryControls story={story} tokens={tokens} />
     {feature !== 'capture' && demo ? <Text style={[styles.note, { color: tokens.text.tertiary }]}>{t('onboarding.feature.reflection_note')}</Text> : null}
-    </>}
   </View>;
 }
 
-export function OnboardingFeatureSheet({ feature, onClose, onFeatureChange }: {
+/**
+ * The page-turning footer: one button, always in the same place. It arrives once
+ * the scene has finished telling its part, and its label names what comes next.
+ * The story only moves forward; the close button leaves it at any time.
+ */
+function StoryFooter({ label, testID, readyAt, tokens, onNext, secondary }: {
+  label: string; testID: string; readyAt: number; tokens: NoctaliaDesignTokens; onNext: () => void;
+  /** A quiet second way out under the button, such as starting the stories over. */
+  secondary?: { label: string; testID: string; onPress: () => void };
+}) {
+  const [ready, setReady] = useState(readyAt <= 0);
+  useEffect(() => {
+    if (ready) return;
+    const timer = setTimeout(() => setReady(true), readyAt);
+    return () => clearTimeout(timer);
+  }, [ready, readyAt]);
+  return <BottomSheetActions>
+    <Animated.View
+      pointerEvents={ready ? 'auto' : 'none'}
+      accessibilityElementsHidden={!ready}
+      importantForAccessibility={ready ? 'auto' : 'no-hide-descendants'}
+      style={{
+        opacity: ready ? 1 : 0,
+        transform: [{ translateY: ready ? 0 : 10 }],
+        transitionProperty: ['opacity', 'transform'],
+        transitionDuration: DURATION.normal,
+        transitionTimingFunction: EASE.out,
+      }}
+    >
+      <StoryButton label={label} onPress={onNext} disabled={!ready} testID={testID} tokens={tokens} />
+      {secondary ? <PressableScale accessibilityRole="button" onPress={secondary.onPress} disabled={!ready}
+        testID={secondary.testID} style={styles.secondary}>
+        <Text style={[styles.secondaryText, { color: tokens.text.secondary }]}>{secondary.label}</Text>
+      </PressableScale> : null}
+    </Animated.View>
+  </BottomSheetActions>;
+}
+
+export function OnboardingFeatureSheet({ feature, onClose, onFeatureChange, ending }: {
   feature: OnboardingFeature; onClose: () => void; onFeatureChange: (feature: OnboardingFeature) => void;
+  /** How the last page ends the stories: walking on to the next onboarding step, or starting over. */
+  ending: { label: string; restartLabel: string; onFinish: () => void };
 }) {
   const { t } = useTranslation();
-  const { colors, mode } = useTheme();
+  const tokens = NIGHT;
+  const reduced = useReducedMotion();
   const { height, width } = useWindowDimensions();
   const insets = useSafeAreaInsets();
-  const tokens = useMemo(() => getNoctaliaDesignTokens(colors, mode), [colors, mode]);
-  const sheetHeight = Math.max(160, Math.min(height * 0.8, height - insets.top - insets.bottom - 96) - 48);
+  // Tall enough to be the night itself; the onboarding stays visible above it.
+  const sheetHeight = Math.max(160, Math.min(height * 0.86, height - insets.top - insets.bottom - 40) - 24);
   const nextChapter = CHAPTERS[CHAPTERS.indexOf(feature) + 1];
-  const story = useFeatureStory();
-  const [transitioning, setTransitioning] = useState(false);
-  const demo = story.step === STORY_DEMO_STEP;
-  const advanceChapter = () => {
-    if (nextChapter) {
-      story.replay();
-      setTransitioning(false);
-      onFeatureChange(nextChapter);
-    } else onClose();
-  };
+  const storyRef = useRef<FeatureStoryPlayback | null>(null);
+  const [step, setStep] = useState(0);
+  const updateStory = useCallback((story: FeatureStoryPlayback) => {
+    storyRef.current = story;
+    setStep(story.step);
+  }, []);
+  const demo = step === STORY_DEMO_STEP;
+  const subtitle = t(`onboarding.narrative.${feature}.${demo ? 'demo' : step}.body`);
+  // Wait for the scene's subtitle to land; the example only needs its headline.
+  const readyAt = reduced ? 0 : demo ? HEADLINE_SETTLE + DURATION.normal
+    : SUBTITLE_DELAYS[feature][step] + wordRevealDuration(subtitle, SUBTITLE_STAGGER);
 
-  return <StandardBottomSheet visible onClose={onClose} title={t(`onboarding.feature.${feature}.title`)} focusKey={feature}
+  // Only the cross closes the stories, and it asks first: no swipe can end them by accident.
+  return <StandardBottomSheet visible onClose={onClose} dismissBehavior="none" title={t(`onboarding.feature.${feature}.title`)} focusKey={feature}
     testID="sheet.onboarding.feature" style={{ height: sheetHeight, ...(Platform.OS === 'web' ? { width } : {}) }}
-    surfaceColor={colors.backgroundCard} transparentContent
+    surfaceColor={tokens.screen.background} transparentContent
+    // The whole sheet is the night: sky, stars, and a shooting star at each page.
+    background={<StoryNight tokens={tokens} page={{ key: `${feature}-${step}`, index: CHAPTERS.indexOf(feature) * 4 + step }} />}
+    closeIconColor={tokens.text.primary}
     dragIndicatorColor={tokens.text.secondary} showsVerticalScrollIndicator={false}
-    actions={{
-      primaryLabel: t(demo && feature === 'explore' ? 'onboarding.narrative.finish' : 'common.continue'),
-      primaryTestID: demo ? 'btn.onboarding.story.continue' : 'btn.onboarding.story.next',
-      onPrimary: () => {
-        if (transitioning) {
-          if (story.step < 2) story.next();
-          else advanceChapter();
-        } else if (!demo) story.next();
-        else if (feature === 'capture') {
-          story.replay();
-          setTransitioning(true);
-        } else advanceChapter();
-      },
-    }}
+    headerContent={<StoryProgress step={step} tokens={tokens} />}
+    footer={<StoryFooter key={`${feature}-${step}`} tokens={tokens} readyAt={readyAt}
+      label={demo && !nextChapter ? ending.label
+        : t(demo ? `onboarding.narrative.continue.${nextChapter}` : `onboarding.narrative.${feature}.${step}.next`)}
+      secondary={demo && !nextChapter ? { label: ending.restartLabel, testID: 'btn.onboarding.story.restart', onPress: () => onFeatureChange(CHAPTERS[0]) } : undefined}
+      testID={demo ? 'btn.onboarding.story.continue' : 'btn.onboarding.story.next'}
+      onNext={() => {
+        if (!demo) storyRef.current?.next();
+        else if (nextChapter) onFeatureChange(nextChapter);
+        else ending.onFinish();
+      }}
+    />}
     closeButton={{ label: t('journal.detail.share_modal.close'), testID: 'btn.onboarding.feature.close' }}>
     {/* Only the narrative resets. The sheet host and its close control stay in place. */}
     <FeatureNarrative key={feature} feature={feature} tokens={tokens}
-      stageHeight={Math.max(170, Math.min(270, sheetHeight - 350))}
-      story={story} transitioning={transitioning} />
+      // The example's globe takes the room the copy and the button leave it.
+      stageHeight={Math.max(200, Math.min(420, sheetHeight - 350))}
+      // Leaves room under the scene for the button's glow.
+      frameHeight={Math.max(230, Math.min(440, sheetHeight - 290))}
+      onStoryChange={updateStory} />
   </StandardBottomSheet>;
 }
 
 const styles = StyleSheet.create({
-  narrative: { paddingTop: 0 },
-  chapter: { fontFamily: Fonts.spaceGrotesk.medium, fontSize: 10, lineHeight: 16, letterSpacing: 1.6, textTransform: 'uppercase', textAlign: 'center', paddingBottom: 6 },
-  copy: { alignItems: 'center', gap: 8, paddingHorizontal: 6, paddingBottom: 20, minHeight: 102 },
-  demoCopy: { gap: 6, paddingBottom: 8, minHeight: 0 },
-  demoTitle: { fontSize: 23, lineHeight: 29 },
-  title: { fontFamily: Fonts.fraunces.regular, fontSize: 25, lineHeight: 32, textAlign: 'center' },
-  body: { fontFamily: Fonts.spaceGrotesk.regular, fontSize: 13, lineHeight: 20, textAlign: 'center', maxWidth: 320 },
-  note: { fontFamily: Fonts.spaceGrotesk.regular, fontSize: 10, lineHeight: 16, textAlign: 'center', paddingTop: 12, paddingBottom: 8 },
+  // Air between the scene and the footer, so captions never touch the button.
+  narrative: { paddingTop: 4, paddingBottom: 20 },
+  // Room for the word and a two-line sentence, so the image never jumps between slides.
+  copy: { alignItems: 'center', gap: 10, paddingHorizontal: 8, paddingTop: 6, paddingBottom: 18, minHeight: 132 },
+  // Above a scene, the word stands alone; the sentence plays as the scene's subtitle.
+  storyCopy: { minHeight: 0, paddingBottom: 14 },
+  sceneSlot: { width: '100%', alignItems: 'center', paddingHorizontal: 12 },
+  title: { fontFamily: Fonts.fraunces.semiBold, fontSize: 44, lineHeight: 52, textAlign: 'center' },
+  // Shaded like the subtitles, so it stays legible over the moon.
+  body: { fontFamily: Fonts.spaceGrotesk.regular, fontSize: 17, lineHeight: 24, textAlign: 'center', maxWidth: 300, textShadowOffset: { width: 0, height: 1 }, textShadowRadius: 12 },
+  note: { fontFamily: Fonts.spaceGrotesk.regular, fontSize: 11, lineHeight: 16, textAlign: 'center', paddingTop: 12, paddingBottom: 8 },
+  secondary: { minHeight: 44, alignItems: 'center', justifyContent: 'center', marginTop: 4 },
+  secondaryText: { fontFamily: Fonts.spaceGrotesk.medium, fontSize: 14, lineHeight: 20 },
 });

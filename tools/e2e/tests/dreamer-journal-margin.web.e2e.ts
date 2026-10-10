@@ -1,6 +1,6 @@
 // Historical UI assertions, run on the public TesterArmy web surface.
 import type { Page } from 'playwright/test';
-import { createParityTest, expect } from '../web-parity-fixtures';
+import { createParityTest, expect, withDialog } from '../web-parity-fixtures';
 const test = createParityTest();
 
 test.use({ viewport: { width: 390, height: 867 }, timezoneId: 'Europe/Paris' });
@@ -8,6 +8,10 @@ test.use({ viewport: { width: 390, height: 867 }, timezoneId: 'Europe/Paris' });
 async function startGuest(page: Page) {
   await page.goto('/');
   await page.getByTestId('btn.onboarding.intro.next').click();
+  // With feature sheets, "Commencer" first tells the three stories; the cross moves on.
+  if (process.env.EXPO_PUBLIC_ONBOARDING_FEATURE_SHEETS_ENABLED === 'true') {
+    await withDialog(page, 'accept', () => page.getByTestId('btn.onboarding.feature.close').click());
+  }
   await page.getByTestId('btn.onboarding.skip').click();
   await expect(page.getByTestId('screen.recording')).toBeVisible();
 }
@@ -57,13 +61,18 @@ for (const theme of ['light', 'dark'] as const) {
     const metadata = card.getByTestId(`journal.metadata.${id}`);
     await expect(metadata).toContainText('Symbolic dream');
     await expect(metadata).toContainText('Mystical');
-    await expect(metadata).toContainText('Analyzed');
+    await expect(card).toContainText('Analyzed');
     await expect(text).toContainText('I found myself in an enormous library');
+    // React Native's layout event follows the phone/grid resize. Observe the
+    // settled portrait frame rather than its initial width from the previous layout.
+    await expect.poll(async () => {
+      const bounds = (await cover.boundingBox())!;
+      return Math.abs(bounds.height - Math.min(bounds.width * 16 / 9, 620));
+    }).toBeLessThanOrEqual(1);
     const coverBounds = (await cover.boundingBox())!;
     const textBounds = (await text.boundingBox())!;
     const marginBounds = (await margin.boundingBox())!;
-    expect(coverBounds.height).toBeLessThanOrEqual(260);
-    expect(marginBounds.width).toBeLessThanOrEqual(64);
+    expect(marginBounds.width).toBeGreaterThanOrEqual(88);
     expect(marginBounds.x + marginBounds.width).toBeLessThanOrEqual(coverBounds.x);
     expect(textBounds.y).toBeGreaterThanOrEqual(coverBounds.y);
     expect(textBounds.y + textBounds.height).toBeLessThanOrEqual(coverBounds.y + coverBounds.height);
@@ -78,7 +87,7 @@ for (const theme of ['light', 'dark'] as const) {
     expect(lines.reduce((total, count) => total + count, 0)).toBeLessThanOrEqual(5);
     expect(backingBounds.y + backingBounds.height).toBeLessThanOrEqual(textBounds.y + textBounds.height);
     expect(await backing.evaluate(node => getComputedStyle(node).backgroundColor)).not.toBe('rgba(0, 0, 0, 0)');
-    const badge = metadata.getByTestId(`journal.badge.${id}.0`);
+    const badge = card.getByTestId(`journal.badge.${id}.0`);
     const badgeChildren = await badge.evaluate(node => Array.from(node.children).map(child => {
       const rect = child.getBoundingClientRect();
       return { x: rect.x, y: rect.y, height: rect.height };

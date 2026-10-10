@@ -63,8 +63,8 @@ appId: com.tanuki75.noctalia
 - assertVisible: "Guest Limit Dream 3"
 
 # Create account via settings; all local dreams must remain after signup
-- tapOn:
-    id: btn.mockNav.settings
+- openLink: ${DEEP_LINK_SCHEME || "noctalia"}://settings
+- waitForAnimationToEnd
 - scrollUntilVisible:
     element:
       id: input.auth.password
