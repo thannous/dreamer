@@ -63,10 +63,15 @@ for (const theme of ['light', 'dark'] as const) {
     await expect(metadata).toContainText('Mystical');
     await expect(card).toContainText('Analyzed');
     await expect(text).toContainText('I found myself in an enormous library');
+    // React Native's layout event follows the phone/grid resize. Observe the
+    // settled portrait frame rather than its initial width from the previous layout.
+    await expect.poll(async () => {
+      const bounds = (await cover.boundingBox())!;
+      return Math.abs(bounds.height - Math.min(bounds.width * 16 / 9, 620));
+    }).toBeLessThanOrEqual(1);
     const coverBounds = (await cover.boundingBox())!;
     const textBounds = (await text.boundingBox())!;
     const marginBounds = (await margin.boundingBox())!;
-    expect(coverBounds.height).toBeCloseTo(Math.min(coverBounds.width * 16 / 9, 620), 0);
     expect(marginBounds.width).toBeGreaterThanOrEqual(88);
     expect(marginBounds.x + marginBounds.width).toBeLessThanOrEqual(coverBounds.x);
     expect(textBounds.y).toBeGreaterThanOrEqual(coverBounds.y);
