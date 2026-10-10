@@ -366,7 +366,7 @@ jest.doMock('@/components/recording/RecordingConversation', () => ({
       {props.review ? <div data-testid="capture-review-card">
         <textarea data-testid="capture-review-text" value={props.review.text} onChange={(event) => props.onReviewChange(event.currentTarget.value)} />
         <button data-testid="capture-review-exit" onClick={props.onExitReview}>Exit</button>
-        {props.saved ? <button data-testid="capture-review-open" onClick={props.onOpenSaved}>Open</button> : <button data-testid="recording-save" disabled={props.disabled || !!props.answer.trim()} onClick={props.onSave}>Save</button>}
+        <button data-testid="recording-save" disabled={props.disabled || !!props.answer.trim()} onClick={props.onSave}>Save</button>
       </div> : null}
     </>;
   },
@@ -890,7 +890,7 @@ describe('Recording screen', () => {
     }
   });
 
-  it('reviews the original narrative without an AI call before saving and retains the original answered questions', async () => {
+  it('reviews the narrative before saving, then seals it into its saved moment with the original answered questions', async () => {
     mockGetInputModePreference.mockResolvedValue('voice');
     render(<RecordingScreen />);
     await awaitEditorReady();
@@ -905,8 +905,8 @@ describe('Recording screen', () => {
     expect(mockAddDream).not.toHaveBeenCalled();
     fireEvent.change(screen.getByTestId('capture-review-text'), { target: { value: 'My corrected account.' } });
     fireEvent.click(getCaptureSaveAction());
-    await screen.findByTestId('capture-review-open');
-    fireEvent.click(screen.getByTestId('capture-review-open'));
+    // A told dream enters the story like a written one: the seal, then its saved moment.
+    await screen.findByTestId(TID.Component.DreamCaptureSeal);
     await waitFor(() => expect(mockReplace).toHaveBeenCalledWith({ pathname: '/journal/[id]', params: { id: '42', saved: '1' } }));
     expect(mockAddDream).toHaveBeenCalledWith(expect.objectContaining({ transcript: 'My corrected account.', captureOriginalTranscript: answerPair('A blue garden at dawn', 'A door was open.') }));
     expect(mockAnalyzeDream).not.toHaveBeenCalled();

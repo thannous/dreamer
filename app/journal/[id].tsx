@@ -15,6 +15,7 @@ import { SavedDreamMoment, type SavedDreamPhase } from '@/components/journal/Sav
 import { DreamPaintedArtwork } from '@/components/journal/story/DreamPaintedArtwork';
 import { DreamPaintingWait } from '@/components/journal/story/DreamPaintingWait';
 import { DREAM_STORY } from '@/components/journal/story/dreamStoryMotion';
+import { WaitingStars } from '@/components/journal/story/WaitingStars';
 import { markDreamStoryEpilogue } from '@/lib/dreamStoryEpilogue';
 import { DreamShareImage } from '@/components/journal/DreamShareImage';
 import { getImageJobFailure } from '@/lib/imageJobErrors';
@@ -1742,7 +1743,9 @@ const JournalDetailContent = memo(function JournalDetailContent({ dream }: { dre
   // saved on the dream before its signed URL resolves. Its landing plays once per visit,
   // even when an editor hides and remounts the illustration.
   const artworkResolving = Boolean(dream?.imageUrl?.trim()) && !paintedArtwork && !coverImageFailed;
-  const paintingInProgress = illustrationSidecar === 'pending' || (artworkAtArrival === false && artworkResolving);
+  // Act III starts on the tap: a request in flight already paints, before the job reports.
+  const paintingRequested = illustrationSidecar === 'pending' || (isRetryingImage && !dream?.imageUrl);
+  const paintingInProgress = paintingRequested || (artworkAtArrival === false && artworkResolving);
   const [artworkLanded, setArtworkLanded] = useState(false);
   const artworkLanding = artworkAtArrival === false && Boolean(paintedArtwork) && !artworkLanded;
   useEffect(() => {
@@ -2209,7 +2212,8 @@ const JournalDetailContent = memo(function JournalDetailContent({ dream }: { dre
           accessibilityLiveRegion="polite"
           className="min-h-[52px] flex-row items-center gap-3 rounded-xl bg-ink-active p-4"
         >
-          <ActivityIndicator size="small" color={noctalia.accent.text} />
+          {/* Act II's waiting stars, the same signal the medallion and the reading show. */}
+          <WaitingStars count={3} compact />
           <Text
             allowFontScaling={false}
             style={{ fontSize: 16 * compactTextScale, lineHeight: 24 * compactTextScale }}
@@ -2520,6 +2524,8 @@ const JournalDetailContent = memo(function JournalDetailContent({ dream }: { dre
             </View>
             <View pointerEvents="none" style={{ height: coverLayout.imageHeight }} />
           </View>
+        ) : paintingRequested ? (
+          <DreamPaintingWait queued={dream.imageJobStatus === 'queued'} />
         ) : illustrationSidecar === 'failed' ? (
           visibleIllustrationCta === 'retry' || getImageJobFailure(dream.imageJobErrorCode) ? (
             <ImageRetry onRetry={onRetryImage} isRetrying={isRetryingImage}
@@ -2550,8 +2556,6 @@ const JournalDetailContent = memo(function JournalDetailContent({ dream }: { dre
               ) : null}
             </View>
           )
-        ) : illustrationSidecar === 'pending' ? (
-          <DreamPaintingWait queued={dream.imageJobStatus === 'queued'} />
         ) : (
           <View className="min-h-[180px] flex-col items-center justify-center gap-2.5 rounded-lg border border-line bg-ink-soft px-5 py-6">
             <IconSymbol name="photo" size={28} color={noctalia.text.secondary} />
@@ -2626,11 +2630,11 @@ const JournalDetailContent = memo(function JournalDetailContent({ dream }: { dre
             </Pressable>
           </View>
         ) : null}
-        {isRetryingImage && (
+        {isRetryingImage && dream.imageUrl ? (
           <View className="absolute inset-0 items-center justify-center rounded-lg bg-ink-overlay">
             <ActivityIndicator color={noctalia.text.primary} />
           </View>
-        )}
+        ) : null}
       </View>
     );
   };

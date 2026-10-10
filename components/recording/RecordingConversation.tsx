@@ -21,12 +21,9 @@ type Props = {
   review?: { source: string; text: string; woven?: boolean };
   /** The answers are being woven into one account. */
   weaving?: boolean;
-  saved?: boolean;
   onReviewChange?: (text: string) => void;
   onSave?: () => void | Promise<void>;
   onExitReview?: () => void;
-  onOpenSaved?: () => void;
-  onNewCapture?: () => void;
   transcript: string;
   answer: string;
   storyTranscript: string;
@@ -78,7 +75,7 @@ export function RecordingConversation(props: Props) {
   const hasStory = sections.some(section => Boolean(section.text.trim()));
   const listening = props.voiceStatus === 'recording';
   const preparing = props.voiceStatus === 'preparing';
-  const locked = props.disabled || preparing || switching || !!props.saved;
+  const locked = props.disabled || preparing || switching;
   const voiceLabel = preparing ? t('recording.status.preparing.title')
     : listening ? t('recording.conversation.mute')
     : hasStory ? t('recording.conversation.reply') : t('recording.conversation.begin');
@@ -124,8 +121,8 @@ export function RecordingConversation(props: Props) {
         if (revealReview.current) revealReview.current = !scrollToReview();
       }}>
         <CaptureConversationCard text={props.review.text} woven={props.review.woven} disabled={props.disabled || listening || preparing}
-          pending={Boolean(props.answer.trim())} saved={!!props.saved} onChange={props.onReviewChange ?? (() => {})}
-          onSave={props.onSave ?? (() => {})} onExit={props.onExitReview ?? (() => {})} onOpen={props.onOpenSaved ?? (() => {})}
+          pending={Boolean(props.answer.trim())} onChange={props.onReviewChange ?? (() => {})}
+          onSave={props.onSave ?? (() => {})} onExit={props.onExitReview ?? (() => {})}
         />
       </View> : null}
     </ScrollView>
@@ -140,10 +137,7 @@ export function RecordingConversation(props: Props) {
         style={styles.secondary} testID="recording-conversation-finish"><Text style={[styles.hint, { color: tokens.text.primary }]}>{t('recording.conversation.done')}</Text></Pressable> : null}
     </View> : null}
     {listening ? <Text accessibilityLiveRegion="polite" style={[styles.hint, { color: tokens.text.secondary }]} testID="recording-listening-status">{t('recording.conversation.listening')}</Text> : null}
-    {props.saved ? <Pressable onPress={props.onNewCapture} disabled={props.disabled} accessibilityRole="button"
-      style={[styles.newCapture, { borderColor: tokens.surface.border }]} testID="capture-review-new">
-      <Text style={[styles.message, { color: tokens.text.primary }]}>{t('recording.chat.new')}</Text>
-    </Pressable> : <RecordingTextInput chat compact autoFocus={false} value={props.answer} onChange={props.onAnswerChange}
+    <RecordingTextInput chat compact autoFocus={false} value={props.answer} onChange={props.onAnswerChange}
       disabled={locked || props.loading || listening} instructionText="" lengthWarning="" voiceSupported={props.voiceSupported}
       voiceStatus={props.voiceStatus} switchToVoiceLabel={t('recording.conversation.reply_voice')} onSwitchToVoice={() => { void onVoice(); }}
       placeholder={t(props.review ? 'recording.chat.add_detail' : 'recording.conversation.answer_placeholder')}
@@ -158,7 +152,7 @@ export function RecordingConversation(props: Props) {
           accessibilityLabel={t('recording.chat.send')} accessibilityState={{ disabled: submitDisabled, busy: switching }}
           style={[styles.control, { backgroundColor: tokens.action.primary, borderColor: tokens.action.primary, opacity: submitDisabled ? 0.4 : 1 }]}
           testID="recording-conversation-submit"><IconSymbol name="arrow.up" size={22} color={tokens.action.primaryText} /></Pressable>
-      </>} />}
+      </>} />
   </View>;
 }
 const styles = StyleSheet.create({
@@ -174,6 +168,5 @@ const styles = StyleSheet.create({
   tools: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' },
   tool: { minHeight: 44, minWidth: 44, alignItems: 'center', justifyContent: 'center' },
   secondary: { minHeight: 44, alignItems: 'center', justifyContent: 'center', paddingHorizontal: 12 },
-  newCapture: { minHeight: 82, borderWidth: StyleSheet.hairlineWidth, borderRadius: 16, alignItems: 'center', justifyContent: 'center' },
   control: { width: 44, height: 44, borderRadius: 22, borderWidth: 1, alignItems: 'center', justifyContent: 'center' },
 });

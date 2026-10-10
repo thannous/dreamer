@@ -31,7 +31,7 @@ async function finish(page: Page) {
 
 test.use({ viewport: { width: 390, height: 844 }, contextOptions: { reducedMotion: 'reduce' } });
 
-test('chat keeps chronological replies, edits and pending details through reload, then saves the exact card once', async ({ page }, info) => {
+test('chat keeps chronological replies, edits and pending details through reload, then saves the exact card once into its saved moment', async ({ page }, info) => {
   await startChat(page);
   const reply = page.getByTestId('recording-conversation-answer');
   await reply.fill(story);
@@ -69,15 +69,13 @@ test('chat keeps chronological replies, edits and pending details through reload
     await page.screenshot({ path: info.outputPath(`chat-card-${mode}.png`) });
   }
   await save.dblclick();
-  await expect(page.getByTestId('capture-review-saved')).toBeVisible();
-  await expect(page.getByTestId('btn.saveDream')).toHaveCount(0);
-  await expect(page.getByTestId('btn.recording.inputMode.text')).toBeDisabled();
-  await expect(page.getByTestId('capture-review-new')).toBeVisible();
-  await page.screenshot({ path: info.outputPath('chat-saved.png') });
-  await page.getByTestId('capture-review-open').click();
+  // A told dream enters the story like a written one: the seal (skipped under reduced
+  // motion), then its saved moment. The double tap still saves it once.
+  await expect(page.getByTestId('component.dreamDetail.savedMoment')).toBeVisible();
+  await page.screenshot({ path: info.outputPath('chat-saved-moment.png') });
   await expect(page.getByTestId('component.transcriptCard')).toContainText(edited);
   await expect(page.getByTestId('component.transcriptCard')).toContainText(detail);
-  await page.getByTestId('btn.dream.primaryCta').click();
+  // A guest's new dream is read on arrival, told or written alike.
   await expect(page.getByTestId('component.dreamDetail.readingZone')).toContainText(/\S[\s\S]{80}/);
   await expect(page.getByTestId('analysis.reading.modal')).toHaveCount(0);
   await page.screenshot({ path: info.outputPath('chat-dream-inline-analysis.png') });

@@ -14,11 +14,9 @@ type Props = {
   woven?: boolean;
   disabled: boolean;
   pending: boolean;
-  saved: boolean;
   onChange: (text: string) => void;
   onSave: () => void | Promise<void>;
   onExit: () => void;
-  onOpen: () => void;
 };
 
 const paragraphsOf = (text: string) => text.split(/\n\s*\n/).map(paragraph => paragraph.trim()).filter(Boolean);
@@ -34,7 +32,7 @@ function Told({ motion, className, testID, children }: {
  * The threshold of the dream story: the narrator's words become one page before the dream
  * enters the journal. The page is told once when it appears — the card settles, a star
  * lights between two threads, then the account arrives paragraph by paragraph — and is at
- * rest afterwards, through edits, added details and the saved state. Under reduce motion
+ * rest afterwards, through edits and added details. Saving hands it to the seal. Under reduce motion
  * everything fades in together, without travel.
  */
 export function CaptureConversationCard(props: Props) {
@@ -78,20 +76,20 @@ export function CaptureConversationCard(props: Props) {
             className="font-display-medium text-[22px] leading-7 text-ivory">
             {t('recording.chat.ready')}
           </Text>
-          {props.woven && !props.saved ? (
+          {props.woven ? (
             <Text testID="capture-review-woven" className="mt-1 font-sans text-[13px] leading-5 text-ivory-muted">
               {t('recording.chat.woven_note')}
             </Text>
           ) : null}
         </Told>
       </View>
-      {!props.saved ? <Pressable accessibilityRole="button" accessibilityLabel={t('recording.review.exit')} onPress={props.onExit}
+      <Pressable accessibilityRole="button" accessibilityLabel={t('recording.review.exit')} onPress={props.onExit}
         disabled={props.disabled} className="-m-2.5 min-h-11 min-w-11 items-center justify-center" testID="capture-review-exit">
         <IconSymbol name="xmark" size={18} color={tokens.text.secondary} />
-      </Pressable> : <IconSymbol name="checkmark.circle.fill" size={22} color={tokens.text.primary} />}
+      </Pressable>
     </View>
 
-    {editing && !props.saved ? <TextInput
+    {editing ? <TextInput
       testID="capture-review-text" accessibilityLabel={t('recording.review.title')}
       value={props.text} onChangeText={props.onChange} multiline autoFocus editable={!props.disabled}
       className="max-h-[260px] min-h-[120px] rounded-[10px] border border-line p-2.5 font-serif text-[17px] leading-7 text-ivory"
@@ -105,34 +103,21 @@ export function CaptureConversationCard(props: Props) {
     </View>}
 
     <Told motion={motion.actions} className="gap-3">
-      {!props.saved ? <>
-        <Pressable onPress={() => { if (editing) Keyboard.dismiss(); setEditing(!editing); }} disabled={props.disabled}
-          accessibilityRole="button" accessibilityLabel={t(editing ? 'common.done' : 'recording.chat.edit')}
-          className="min-h-11 flex-row items-center gap-2.5" testID={editing ? 'capture-review-edit-done' : 'capture-review-edit'}>
-          <IconSymbol name={editing ? 'checkmark' : 'pencil'} size={20} color={tokens.text.primary} />
-          <Text className="font-sans-medium text-[14px] leading-5 text-ivory">{t(editing ? 'common.done' : 'recording.chat.edit')}</Text>
-        </Pressable>
-        {props.pending ? <Text className="font-sans text-[13px] leading-[18px] text-ivory-muted">{t('recording.chat.pending_hint')}</Text> : null}
-        <Pressable accessibilityRole="button" accessibilityLabel={t('recording.button.save_dream')}
-          accessibilityState={{ disabled: saveDisabled, busy: props.disabled }} disabled={saveDisabled}
-          onPress={() => { void props.onSave(); }} testID={TID.Button.SaveDream}
-          className="min-h-[52px] flex-row items-center justify-between gap-3 rounded-[14px] bg-champagne px-4 py-3"
-          style={{ opacity: saveDisabled ? 0.45 : 1 }}>
-          <Text className="shrink font-sans-medium text-[16px] leading-[23px] text-on-champagne">{t('recording.button.save_dream')}</Text>
-          {props.disabled ? <ActivityIndicator color={tokens.action.primaryText} /> : <IconSymbol name="arrow.right" size={22} color={tokens.action.primaryText} />}
-        </Pressable>
-      </> : <>
-        <Pressable onPress={props.onOpen} disabled={props.disabled} accessibilityRole="button" testID="capture-review-open"
-          className="min-h-11 flex-row items-center gap-2.5">
-          <IconSymbol name="book.fill" size={20} color={tokens.text.primary} />
-          <Text className="font-sans-medium text-[14px] leading-5 text-ivory">{t('recording.chat.open')}</Text>
-        </Pressable>
-        <View className="min-h-[52px] flex-row items-center justify-between gap-3 rounded-[14px] bg-champagne px-4 py-3" testID="capture-review-confirmed">
-          <Text accessibilityLiveRegion="polite" className="shrink font-sans-medium text-[16px] leading-[23px] text-on-champagne" testID="capture-review-saved">{t('recording.chat.saved')}</Text>
-          <IconSymbol name="checkmark" size={22} color={tokens.action.primaryText} />
-        </View>
-      </>}
-      {/* True before and after saving; kept in both states so a double tap never lands on a shifted control. */}
+      <Pressable onPress={() => { if (editing) Keyboard.dismiss(); setEditing(!editing); }} disabled={props.disabled}
+        accessibilityRole="button" accessibilityLabel={t(editing ? 'common.done' : 'recording.chat.edit')}
+        className="min-h-11 flex-row items-center gap-2.5" testID={editing ? 'capture-review-edit-done' : 'capture-review-edit'}>
+        <IconSymbol name={editing ? 'checkmark' : 'pencil'} size={20} color={tokens.text.primary} />
+        <Text className="font-sans-medium text-[14px] leading-5 text-ivory">{t(editing ? 'common.done' : 'recording.chat.edit')}</Text>
+      </Pressable>
+      {props.pending ? <Text className="font-sans text-[13px] leading-[18px] text-ivory-muted">{t('recording.chat.pending_hint')}</Text> : null}
+      <Pressable accessibilityRole="button" accessibilityLabel={t('recording.button.save_dream')}
+        accessibilityState={{ disabled: saveDisabled, busy: props.disabled }} disabled={saveDisabled}
+        onPress={() => { void props.onSave(); }} testID={TID.Button.SaveDream}
+        className="min-h-[52px] flex-row items-center justify-between gap-3 rounded-[14px] bg-champagne px-4 py-3"
+        style={{ opacity: saveDisabled ? 0.45 : 1 }}>
+        <Text className="shrink font-sans-medium text-[16px] leading-[23px] text-on-champagne">{t('recording.button.save_dream')}</Text>
+        {props.disabled ? <ActivityIndicator color={tokens.action.primaryText} /> : <IconSymbol name="arrow.right" size={22} color={tokens.action.primaryText} />}
+      </Pressable>
       <Text className="text-center font-sans text-[13px] leading-5 text-ivory-muted">{t('recording.chat.next_hint')}</Text>
     </Told>
   </Told>;

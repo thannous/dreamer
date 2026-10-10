@@ -32,7 +32,8 @@ export function DreamPaintingWait({ queued }: { queued: boolean }) {
       className="items-center gap-3 rounded-lg bg-ink-soft px-5 py-6">
       <View accessible={false} importantForAccessibility="no-hide-descendants" accessibilityElementsHidden
         className="overflow-hidden rounded-full border border-line bg-ink" style={{ width: CANVAS, height: CANVAS }}>
-        <Image source={ASTRAL_ART} contentFit="cover" style={{ width: '100%', height: '100%', opacity: 0.45 }} />
+        {/* A dimmed night reads as night on the night ground, but as a grey stain on paper. */}
+        <Image source={ASTRAL_ART} contentFit="cover" style={{ width: '100%', height: '100%', opacity: mode === 'dark' ? 0.45 : 0.9 }} />
         <Animated.View className="absolute" style={[{ top: -CANVAS * 0.25, left: CANVAS * 0.25, width: CANVAS * 0.5, height: CANVAS * 1.5 }, sweep] as StyleProp<ViewStyle>}>
           <LinearGradient
             start={{ x: 0, y: 0.5 }}
