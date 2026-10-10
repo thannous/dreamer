@@ -5,7 +5,7 @@ import assert from 'node:assert/strict';
 import { spawn, spawnSync } from 'node:child_process';
 import net from 'node:net';
 import { createHash } from 'node:crypto';
-import { appendFileSync, existsSync, lstatSync, mkdirSync, mkdtempSync, readdirSync, readFileSync, readlinkSync, rmSync, symlinkSync, utimesSync, writeFileSync } from 'node:fs';
+import { appendFileSync, existsSync, lstatSync, mkdirSync, mkdtempSync, readdirSync, readFileSync, readlinkSync, realpathSync, rmSync, symlinkSync, utimesSync, writeFileSync } from 'node:fs';
 import os from 'node:os';
 import path from 'node:path';
 import { after, describe, test } from 'node:test';
@@ -1123,9 +1123,9 @@ describe('verify:release and the deploy guard', () => {
       return { root, env: { Path: `${bin};${path.join(scratch, 'elsewhere')}` } };
     };
     const both = fakeGit('both', ['bin/sh.exe', 'usr/bin/sh.exe']);
-    assert.equal(posixShell(both.env, 'win32'), path.join(both.root, 'bin', 'sh.exe'));
+    assert.equal(posixShell(both.env, 'win32'), realpathSync(path.join(both.root, 'bin', 'sh.exe')));
     const usr = fakeGit('usr', ['usr/bin/sh.exe'], { gitDir: 'mingw64/bin' });
-    assert.equal(posixShell(usr.env, 'win32'), path.join(usr.root, 'usr', 'bin', 'sh.exe'));
+    assert.equal(posixShell(usr.env, 'win32'), realpathSync(path.join(usr.root, 'usr', 'bin', 'sh.exe')));
     // GIT_EXEC_PATH (and any GIT_* variable) of the caller is ignored.
     const evil = mkdtempSync(path.join(scratch, 'evil-'));
     mkdirSync(path.join(evil, 'mingw64', 'libexec', 'git-core'), { recursive: true });
@@ -1135,7 +1135,7 @@ describe('verify:release and the deploy guard', () => {
     process.env.GIT_EXEC_PATH = path.join(evil, 'mingw64', 'libexec', 'git-core');
     try {
       const ignored = fakeGit('ignored', ['bin/sh.exe']);
-      assert.equal(posixShell({ ...ignored.env, GIT_EXEC_PATH: process.env.GIT_EXEC_PATH }, 'win32'), path.join(ignored.root, 'bin', 'sh.exe'));
+      assert.equal(posixShell({ ...ignored.env, GIT_EXEC_PATH: process.env.GIT_EXEC_PATH }, 'win32'), realpathSync(path.join(ignored.root, 'bin', 'sh.exe')));
     } finally {
       if (saved === undefined) delete process.env.GIT_EXEC_PATH;
       else process.env.GIT_EXEC_PATH = saved;
@@ -1171,7 +1171,7 @@ describe('verify:release and the deploy guard', () => {
     const inGitDir = path.join(repo.work, '.git', 'fake-git');
     layout(inGitDir);
     // The layouts are complete: only the repository rule refuses them.
-    assert.equal(posixShell({ Path: path.join(inGitDir, 'cmd') }, 'win32'), path.join(inGitDir, 'bin', 'sh.exe'));
+    assert.equal(posixShell({ Path: path.join(inGitDir, 'cmd') }, 'win32'), realpathSync(path.join(inGitDir, 'bin', 'sh.exe')));
     const cwd = process.cwd();
     process.chdir(repo.work);
     try {
@@ -1194,7 +1194,7 @@ describe('verify:release and the deploy guard', () => {
     // A valid layout outside the repository is accepted.
     const outside = mkdtempSync(path.join(scratch, 'real-git-'));
     layout(outside);
-    assert.equal(posixShell({ Path: `cmd;${path.join(outside, 'cmd')}` }, 'win32', { repoDirs: withWorktree }), path.join(outside, 'bin', 'sh.exe'));
+    assert.equal(posixShell({ Path: `cmd;${path.join(outside, 'cmd')}` }, 'win32', { repoDirs: withWorktree }), realpathSync(path.join(outside, 'bin', 'sh.exe')));
 
     // A checkout folder named bin on PATH, with a committed git.exe and sh.exe:
     // the computed root is its parent, outside the repository, but the entry,
@@ -1207,7 +1207,7 @@ describe('verify:release and the deploy guard', () => {
     writeFileSync(path.join(binCheckout, 'sh.exe'), '');
     writeFileSync(path.join(binCheckout, 'git.exe'), `#!/bin/sh\necho ${JSON.stringify(path.join(parent, 'mingw64', 'libexec', 'git-core'))}\n`, { mode: 0o755 });
     const binDirs = repositoryDirs(git, repo.work, path.join(repo.work, '.git'));
-    assert.equal(posixShell({ Path: binCheckout }, 'win32'), path.join(binCheckout, 'sh.exe'), 'the layout is complete: only the repository rule refuses it');
+    assert.equal(posixShell({ Path: binCheckout }, 'win32'), realpathSync(path.join(binCheckout, 'sh.exe')), 'the layout is complete: only the repository rule refuses it');
     assert.equal(posixShell({ Path: binCheckout }, 'win32', { repoDirs: binDirs }), null, 'a checkout named bin on PATH');
     // git.exe outside, but a symlinked sh.exe that points into the repository.
     const linked = mkdtempSync(path.join(scratch, 'linked-sh-'));
@@ -1225,7 +1225,7 @@ describe('verify:release and the deploy guard', () => {
     layout(noExec);
     rmSync(path.join(noExec, 'mingw64'), { recursive: true });
     assert.equal(posixShell({ Path: path.join(noExec, 'cmd') }, 'win32', { repoDirs: binDirs }), null, 'the exec path must exist');
-    assert.equal(posixShell({ Path: path.join(outside, 'cmd') }, 'win32', { repoDirs: binDirs }), path.join(outside, 'bin', 'sh.exe'), 'a valid outside layout still passes');
+    assert.equal(posixShell({ Path: path.join(outside, 'cmd') }, 'win32', { repoDirs: binDirs }), realpathSync(path.join(outside, 'bin', 'sh.exe')), 'a valid outside layout still passes');
   });
 
   test('the shell probe is random: a fake with a fixed answer, or one that mimics a fixed probe, fails', { skip: process.platform === 'win32' ? 'uses #!/bin/sh fakes' : false }, () => {
@@ -1928,7 +1928,10 @@ describe('node_modules of the isolated copy', () => {
     const kept = repo.lines.find((line) => line.includes('isolated copy kept at'));
     const copy = kept.replace(/^.*kept at /, '').replace(/\.$/, '');
     assert.ok(lstatSync(path.join(copy, 'node_modules', 'ext')).isSymbolicLink());
-    assert.equal(readlinkSync(path.join(copy, 'node_modules', 'ext')), path.join(repo.work, 'node_modules', 'ext'));
+    assert.equal(
+      realpathSync(readlinkSync(path.join(copy, 'node_modules', 'ext'))),
+      realpathSync(path.join(repo.work, 'node_modules', 'ext')),
+    );
     assert.equal(
       readFileSync(path.join(copy, 'node_modules', '@fixture', 'ws', 'index.js'), 'utf8'),
       'module.exports = "verified";\n',
