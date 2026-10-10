@@ -49,7 +49,7 @@
 
   <section class="grid md:grid-cols-3 gap-6">
     <div class="glass-panel p-6 rounded-2xl border border-white/10 bg-white/5"><h2 class="text-xl font-serif text-white mb-3">1. Record</h2><p>Speak the scene, people, places, emotions and fragments before the morning edits them away.</p></div>
-    <div class="glass-panel p-6 rounded-2xl border border-white/10 bg-white/5"><h2 class="text-xl font-serif text-white mb-3">2. Save</h2><p>Turn the voice note into a dream entry with text, mood, symbols and a generated image.</p></div>
+    <div class="glass-panel p-6 rounded-2xl border border-white/10 bg-white/5"><h2 class="text-xl font-serif text-white mb-3">2. Save</h2><p>Keep the transcript as a dream entry you can correct. Analysis and an image come later, only if you ask for them.</p></div>
     <div class="glass-panel p-6 rounded-2xl border border-white/10 bg-white/5"><h2 class="text-xl font-serif text-white mb-3">3. Reflect</h2><p>Come back later for AI interpretation, follow-up questions and the patterns that recur across entries.</p></div>
   </section>
 
