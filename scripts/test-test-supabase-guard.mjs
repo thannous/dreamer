@@ -192,10 +192,38 @@ test('the guard runs before any network call', async () => {
   let seen = null;
   const result = await _runGuardedWithListsForTests(env(), async ({ target, fetch }) => {
     seen = target;
-    return fetch('https://x');
+    return fetch(`${target.url}/auth/v1/health`);
   }, { ...allowed, fetch: async () => 'called' });
   assert.equal(result, 'called');
   assert.equal(seen.ref, TEST_REF);
+});
+
+test('the action fetch only reaches the guarded target origin', async () => {
+  const sent = [];
+  const fetch = async (input) => {
+    sent.push(String(input instanceof Request ? input.url : input));
+    return new Response('{}');
+  };
+  await _runGuardedWithListsForTests(env(), async ({ fetch: scoped }) => {
+    await scoped(`https://${TEST_REF}.supabase.co/auth/v1/admin/users`);
+    await scoped(new URL(`https://${TEST_REF}.supabase.co/rest/v1/dreams`));
+    await scoped(new Request(`https://${TEST_REF}.supabase.co/rest/v1/rpc/x`, { method: 'POST' }));
+    for (const url of [
+      `https://${PROD}.supabase.co/auth/v1/admin/users`,
+      `https://${PROD}.functions.supabase.co/api`,
+      `https://${OTHER_REF}.supabase.co/rest/v1/dreams`,
+      `http://${TEST_REF}.supabase.co/x`,
+      `https://${TEST_REF}.supabase.co.evil.example/x`,
+      '/relative',
+    ]) {
+      await assert.rejects(scoped(url), TestTargetRefused, url);
+    }
+  }, { ...allowed, fetch });
+  assert.deepEqual(sent, [
+    `https://${TEST_REF}.supabase.co/auth/v1/admin/users`,
+    `https://${TEST_REF}.supabase.co/rest/v1/dreams`,
+    `https://${TEST_REF}.supabase.co/rest/v1/rpc/x`,
+  ]);
 });
 
 test('accepts only the e2e account emails', () => {

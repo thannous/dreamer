@@ -144,17 +144,40 @@ function guardedAccounts(env) {
   return E2E_TIERS.map((tier) => ({ tier, email: accountEmail(tier, env.E2E_ACCOUNT_DOMAIN) }));
 }
 
+function requestUrl(input) {
+  if (typeof input === 'string') return input;
+  if (input instanceof URL) return input.href;
+  if (input && typeof input.url === 'string') return input.url;
+  return String(input);
+}
+
+// The fetch handed to the action: any request whose origin is not the guarded
+// target is refused before it leaves, so the production refusal also applies
+// to the network operation itself, not only to the env.
+export function scopedFetch(target, fetch) {
+  return async (input, init) => {
+    let origin;
+    try {
+      origin = new URL(requestUrl(input)).origin;
+    } catch {
+      throw new TestTargetRefused('a request URL could not be parsed');
+    }
+    if (origin !== target.url) throw new TestTargetRefused(`a request to ${origin} is outside the guarded test project`);
+    return fetch(input, init);
+  };
+}
+
 async function guardedRun(env, action, allowedRefs, fetch) {
   const target = checkTarget(env, allowedRefs);
   const accounts = guardedAccounts(env);
-  return action({ target, accounts, fetch });
+  return action({ target, accounts, fetch: scopedFetch(target, fetch) });
 }
 
 // The only entry point for tooling that talks to the test project. The target
 // and the account domain are checked first, synchronously, so a refusal
-// happens before any network call. The action gets the canonical target URL
-// and only the two test accounts (e2e+free@ and e2e+premium@ the domain);
-// it must not use any other URL or address. Only fetch is injectable.
+// happens before any network call. The action gets the canonical target URL,
+// only the two test accounts (e2e+free@ and e2e+premium@ the domain) and a
+// fetch that refuses any other origin. Only the underlying fetch is injectable.
 export async function runGuarded(env, action, { fetch = globalThis.fetch } = {}) {
   return guardedRun(env, action, loadAllowedRefs(), fetch);
 }

@@ -20,8 +20,9 @@ instead of driving the login screen. dreamer is the reference for the other repo
 
 Every test-login script must call `runGuarded(env, action)` before any network
 call. The action receives `{ target, accounts, fetch }`: the canonical
-`target.url`, and only the two accounts built from `E2E_ACCOUNT_DOMAIN`
-(`e2e+free@` and `e2e+premium@`). It must use those and nothing else: never read
+`target.url`, only the two accounts built from `E2E_ACCOUNT_DOMAIN`
+(`e2e+free@` and `e2e+premium@`), and a `fetch` that refuses any request whose
+origin is not the target. It must use those and nothing else: never read
 `E2E_SUPABASE_URL` itself, never take another address (a static test checks every
 `scripts/test-*seed*` / `scripts/test-*auth*` script). The policy is not
 configurable by callers: the production ref and key are pinned in the script, and
@@ -72,9 +73,21 @@ triggers and the app read (`app_metadata` tier, `plus` or `free`). RevenueCat
 webhooks call the same path in production. The local backend fixture
 (`e2e/backend/fixtures.ts`) already makes its Plus account this way with
 `p_tier: 'plus', p_is_active: true, p_source: 'local-e2e-fixture'`. The seed will
-do the same on the test project; no RevenueCat sandbox user is needed. The client
-also asks RevenueCat; with no RevenueCat customer the server tier is what the
-journeys see (to confirm on the first real run).
+do the same on the test project.
+
+RevenueCat can undo that: in a build with a RevenueCat key,
+`hooks/useSubscriptionInternal.ts` replaces the optimistic metadata tier with the
+RevenueCat status and calls `/subscription/refresh`, which maps a user with no
+RevenueCat customer to `free` and writes it to the server. So the test runtime
+must keep RevenueCat out on both sides:
+- app: no `EXPO_PUBLIC_REVENUECAT_*` key (web and dev builds then use the store-less
+  subscription service of `services/subscriptionService.ts`, which reads the
+  `app_metadata` tier), started through a guarded test runtime;
+- branch functions: no `REVENUECAT_*` secret, so `/subscription/refresh` answers
+  "RevenueCat not configured" (500) and applies nothing
+  (`supabase/functions/api/routes/subscription.ts`).
+A RevenueCat sandbox entitlement would be the alternative; it is not needed with
+the two rules above (to confirm on the first real run).
 
 ## Login path and captcha
 
@@ -97,11 +110,17 @@ journeys see (to confirm on the first real run).
 2. `npm run test:auth-setup`: password grant (`/auth/v1/token?grant_type=password`
    with the anon key) per account, session written to `.auth/<account>.json`
    (gitignored, mode 0600), never logged.
-3. Web: Playwright `storageState` built from that session (the Supabase web client
+3. A guarded test runtime for the app: `lib/supabase.ts` reads only
+   `EXPO_PUBLIC_SUPABASE_URL` / `EXPO_PUBLIC_SUPABASE_ANON_KEY` (falling back to the
+   production values in `app.json`), so Expo must be started with the test URL,
+   anon key and functions URL taken from the guard, no RevenueCat key and no
+   `.env` files mixed in. Without it the web app would look for the session under
+   the production storage key and mobile sign-in would go to production.
+4. Web: Playwright `storageState` built from that session (the Supabase web client
    stores it in `localStorage` under `sb-<ref>-auth-token`), wired as a setup project
    for real-backend suites and for the TesterArmy web engine (`tools/e2e`). The mock
    suites keep their simulated auth.
-4. Mobile: no new code in the app. Maestro types the test credentials into the
+5. Mobile: no new code in the app. Maestro types the test credentials into the
    existing password form (it ships in every build already), reading them from the
    owner machine env. A dev-only session-injection deep link would add prod-risk
    surface for little gain; if one is ever wanted, it must be gated on `__DEV__`
@@ -114,9 +133,16 @@ journeys see (to confirm on the first real run).
    `supabase db push` on the test ref). In its dashboard: Auth > Providers > Email
    on, password sign-in on, confirm email off or seed with `email_confirm`; Auth
    captcha off; no Google provider needed.
-2. Send the test ref through review: add it to
+2. On the test project, before any seed: unschedule the RevenueCat reconcile job
+   that two migrations create with a hard-coded production functions URL
+   (`20251222162951_` and `20251223000000_schedule_revenuecat_reconcile.sql`): run
+   `select cron.unschedule('revenuecat_reconcile_daily');` in its SQL editor. The
+   job only calls out when the vault holds `revenuecat_reconcile_secret`; never add
+   that secret, nor any `REVENUECAT_*` function secret, to the test project.
+   Production migrations stay unchanged.
+3. Send the test ref through review: add it to
    `scripts/test-supabase-targets.json` (`allowedProjectRefs`).
-3. On the PC Tanuki and the Mac mini, copy `.env.test.example` to
+4. On the PC Tanuki and the Mac mini, copy `.env.test.example` to
    `.env.test.local` and fill it (test project URL, ref, keys, domain, two
    passwords). Run `npm run test:env:check`: it must print the allowlisted URL.
-4. Production dashboard: nothing changes.
+5. Production dashboard: nothing changes.
