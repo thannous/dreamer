@@ -241,6 +241,9 @@ test('start-branch-e2e gives the app only the branch URL, anon key and functions
     EXPO_PUBLIC_SUBSCRIPTION_QA_LAB: 'true',
     EXPO_PUBLIC_MOCK_PERSISTENCE: 'true',
     EXPO_PUBLIC_SOMETHING_NEW: 'x',
+    EXPO_PUBLIC_APP_VARIANT: 'lucid',
+    NOCTALIA_APP_VARIANT: 'lucid',
+    NOCTALIA_DREAMER_QA_BUILD: '1',
   };
   const filtered = branchAppEnv({ ref: REF, url: `https://${REF}.supabase.co` }, env(), shell);
   const publicNames = Object.keys(filtered).filter((name) => name.startsWith('EXPO_PUBLIC_')).sort();
@@ -253,6 +256,7 @@ test('start-branch-e2e gives the app only the branch URL, anon key and functions
     'EXPO_PUBLIC_SUPABASE_URL',
   ]);
   assert.ok(PASSTHROUGH_EXPO_PUBLIC.every((name) => !/KEY|URL|TOKEN|SECRET|CLIENT|JWT/.test(name)));
+  assert.deepEqual(Object.keys(filtered).filter((name) => name.startsWith('NOCTALIA_')), [], 'product selectors are dropped');
   // A service key in the anon slot never reaches the bundle.
   assert.throws(() => branchAppEnv({ ref: REF, url: `https://${REF}.supabase.co` }, env({ E2E_SUPABASE_ANON_KEY: SERVICE }), shell), TestTargetRefused);
   assert.ok(!JSON.stringify(child).includes(SERVICE));

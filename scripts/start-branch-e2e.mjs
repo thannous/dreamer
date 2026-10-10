@@ -36,6 +36,10 @@ export function branchAppEnv(target, env, base = process.env) {
   // RevenueCat out (with a key it would reconcile the seeded tier to free).
   for (const [name, value] of Object.entries(base)) {
     if (name.startsWith('E2E_')) continue;
+    // Product selectors (NOCTALIA_APP_VARIANT, NOCTALIA_DREAMER_QA_BUILD, ...)
+    // are dropped: this runtime is Dreamer only, and a lone native Lucid
+    // marker without its EXPO_PUBLIC_ twin would make app.config.ts refuse.
+    if (name.startsWith('NOCTALIA_')) continue;
     if (name.startsWith('EXPO_PUBLIC_') && !PASSTHROUGH_EXPO_PUBLIC.includes(name)) continue;
     child[name] = value;
   }

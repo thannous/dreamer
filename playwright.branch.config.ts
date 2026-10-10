@@ -1,5 +1,6 @@
 import { defineConfig, devices } from 'playwright/test';
 import { execFileSync } from 'node:child_process';
+import fs from 'node:fs';
 
 // Real-backend web journeys against the persistent Supabase test branch
 // (doc_web_interne/docs/test-login.md). Optional and opt-in: npm run
@@ -12,11 +13,29 @@ import { execFileSync } from 'node:child_process';
 const port = 8087;
 const baseURL = `http://127.0.0.1:${port}`;
 
+// Backend identity for the report: the guarded branch ref (a project id, not a
+// secret) or why it is unresolved, and the newest migration file in this
+// checkout. The applied state on the branch is not queried here (no request
+// at config load); compare it with `supabase migration list --linked`.
+function branchIdentity(): string {
+  try {
+    const out = execFileSync(process.execPath, ['./scripts/test-supabase-guard.mjs'], { encoding: 'utf8', stdio: ['ignore', 'pipe', 'pipe'] });
+    const match = /https:\/\/([a-z0-9]{20})\.supabase\.co/.exec(out);
+    return match ? `supabase branch ref ${match[1]}` : 'unresolved';
+  } catch {
+    return 'unresolved (guard refused: see npm run test:env:check)';
+  }
+}
+const newestMigration = fs.readdirSync('supabase/migrations').filter((name) => name.endsWith('.sql')).sort().at(-1) ?? 'none';
+
 export default defineConfig({
   metadata: {
     sourceRevision: execFileSync('git', ['rev-parse', 'HEAD'], { encoding: 'utf8' }).trim(),
     dirty: Boolean(execFileSync('git', ['status', '--porcelain'], { encoding: 'utf8' }).trim()),
     environment: 'Expo web against the persistent Supabase test branch; sessions from npm run test:auth-setup',
+    backend: branchIdentity(),
+    repoMigrationsHead: newestMigration,
+    rerunCommand: 'npm run test:e2e:branch',
     fixtures: 'shared e2e+free@ and e2e+premium@ accounts (npm run test:seed-users)',
   },
   testDir: './e2e/branch',

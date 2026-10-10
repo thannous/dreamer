@@ -249,7 +249,8 @@ See the click-level list below; production auth settings never change.
    (no `--with-data`). Dashboard alternative (public alpha): user menu (top right)
    > Branching via dashboard > Enable feature; top bar branch selector > Create
    branch `e2e`, Include data left off; then make it persistent with
-   `supabase branches update e2e --persistent` (the dashboard "Switch to
+   `supabase branches update e2e --persistent --project-ref usuyppgsmmowzizhaoqj`
+   (the parent project, as no project is linked yet; the dashboard "Switch to
    persistent" item may only appear for Git-linked branches).
 3. Migrations: a new branch is a clone of the production schema built from the
    production migration history ("Pull - Retrieves database migrations from your
