@@ -254,6 +254,8 @@ const translations: Record<string, string> = {
     'onboarding.privacy.title': 'Nutzungsmessung und Datenschutz',
     'onboarding.privacy.body': 'Die Nutzungsmessung ist freiwillig und standardmäßig deaktiviert. Mit deiner Zustimmung misst Noctalia Navigation, gespeicherte Träume und die Rückkehr innerhalb von sieben Tagen mit einer zufälligen Kennung, die höchstens sieben Tage besteht. Ablehnen schränkt die App nicht ein. Du kannst in den Einstellungen widerrufen.',
     'onboarding.privacy.no_content': 'Traumtext, Titel und Analyse werden niemals mit Nutzungsdaten übertragen.',
+    'onboarding.privacy.ai_title': 'Analyse mit KI',
+    'onboarding.privacy.ai_body': 'Um einen Traum zu analysieren, einzuordnen, darüber zu sprechen oder ihn zu illustrieren, sendet Noctalia seinen Text an einen externen KI-Dienst (derzeit Google Gemini), nachdem du beim ersten Mal zugestimmt hast. Er dient nur deiner Antwort und wird weder verkauft noch für Werbung genutzt. Dein Journal zu schreiben und zu lesen läuft nie über KI.',
     'onboarding.privacy.toggle_label': 'Nutzungsmessung erlauben',
     'onboarding.privacy.toggle_hint': 'Nutzungsmessung von Noctalia ein- oder ausschalten.',
     'onboarding.privacy.enabled': 'Messung aktiviert',

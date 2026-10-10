@@ -1020,6 +1020,20 @@ export default function OnboardingScreen() {
           onPrimary: () => setShowPrivacySheet(false),
         }}
       >
+        {/* What the AI sees, said before the reader meets it: when the dream leaves the device, and for what. */}
+        <View
+          testID="component.onboarding.privacy.ai"
+          style={[
+            styles.privacyAssurance,
+            { backgroundColor: sheetTokens.surface.soft, borderColor: sheetTokens.surface.border },
+          ]}
+        >
+          <IconSymbol name="sparkles" size={19} color={sheetTokens.accent.text} />
+          <View style={styles.privacyAiCopy}>
+            <Text style={[styles.privacyAiTitle, { color: sheetTokens.text.primary }]}>{t('onboarding.privacy.ai_title')}</Text>
+            <Text style={[styles.privacyAssuranceText, { color: sheetTokens.text.secondary }]}>{t('onboarding.privacy.ai_body')}</Text>
+          </View>
+        </View>
         <View
           style={[
             styles.privacyAssurance,
@@ -1146,6 +1160,8 @@ const styles = StyleSheet.create({
   primaryText: { flexShrink: 1, fontFamily: Fonts.spaceGrotesk.bold, fontSize: 17, lineHeight: 22, textAlign: 'center' },
   privacyAssurance: { flexDirection: 'row', alignItems: 'flex-start', gap: 10, borderWidth: 1, borderRadius: 14, padding: 12, marginBottom: 14 },
   privacyAssuranceText: { flex: 1, fontFamily: Fonts.spaceGrotesk.regular, fontSize: 13, lineHeight: 19 },
+  privacyAiCopy: { flex: 1, gap: 3 },
+  privacyAiTitle: { fontFamily: Fonts.spaceGrotesk.medium, fontSize: 14, lineHeight: 20 },
   privacyToggleRow: { minHeight: 64, flexDirection: 'row', alignItems: 'center', gap: 16, marginBottom: 16 },
   privacyToggleCopy: { flex: 1, gap: 3 },
   privacyToggleLabel: { fontFamily: Fonts.spaceGrotesk.bold, fontSize: 15, lineHeight: 20 },
