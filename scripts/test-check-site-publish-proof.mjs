@@ -171,7 +171,8 @@ test('a missing proof is refused', async () => {
 test('a pr proof never unlocks a production publish', async () => {
   await withRepository(async ({ check, engine }) => {
     assert.equal((await engine('pr')).status, 0);
-    assert.deepEqual(failedChecks(await check()), ['proof-kind']);
+    // A pr run is not a release run, so the run log has no release run either.
+    assert.deepEqual(failedChecks(await check()), ['proof-kind', 'proof-latest-release']);
   });
 });
 
@@ -179,7 +180,8 @@ test('an incomplete release is refused until the missing check has owner-machine
   await withRepository(async ({ check, engine, git }) => {
     const unavailable = { extraEnv: { SITE_E2E_UNAVAILABLE: '1' } };
     assert.equal((await engine('release', [], unavailable)).status, 2);
-    assert.deepEqual(failedChecks(await check()), ['proof-passed']);
+    // The incomplete release run is the latest one, and its missing check stays open.
+    assert.deepEqual(failedChecks(await check()), ['proof-passed', 'proof-latest-release', 'proof-open-check']);
 
     const head = git(['rev-parse', 'HEAD']);
     assert.equal((await engine('release', ['--external', `site-e2e=owner-machine: tanuki site-e2e on ${head}`], unavailable)).status, 0);
@@ -198,7 +200,8 @@ test('a stale proof (written for another commit of the same tree) is refused', a
     git(['switch', '-q', 'master']);
     git(['reset', '-q', '--hard', squash]);
     git(['push', '-q', 'origin', 'master']);
-    assert.deepEqual(failedChecks(await check()), ['proof-matches-head']);
+    // The release run was logged for the feature commit, not for the squash.
+    assert.deepEqual(failedChecks(await check()), ['proof-matches-head', 'proof-latest-release']);
 
     assert.equal((await engine('release')).status, 0);
     assert.deepEqual((await check()).failures, []);

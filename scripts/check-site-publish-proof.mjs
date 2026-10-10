@@ -21,7 +21,11 @@
 //     branch before its squash (proof-matches-head),
 //   - an external entry is not a specialised check, or its evidence does not
 //     name this commit, or cites an https source outside externalSources
-//     (proof-external).
+//     (proof-external),
+//   - the commit's run log has no release run, or its latest release run did
+//     not pass on fresh results (proof-latest-release),
+//   - a check is still open: its latest real result did not pass and no later
+//     run reran it and passed (proof-open-check).
 // There is no override of any kind: a refused publish is fixed by publishing
 // the right commit after verify:release, never by a flag or a variable.
 // Preview uploads (`npm run docs:deploy:preview`) are not guarded.
@@ -47,6 +51,8 @@ export const SITE_PUBLISH_PROOF_CHECKS = Object.freeze([
   'proof-matches-head',
   'proof-target',
   'proof-external',
+  'proof-latest-release',
+  'proof-open-check',
 ]);
 
 /**
