@@ -673,17 +673,32 @@ async function main(argv = process.argv.slice(2), deps = {}) {
     const buildHome = path.join(parentDir, 'build-home');
     fs.mkdirSync(buildHome);
     const buildOptions = { cwd: source, env: buildEnv(env, buildHome), onChild };
-    await runCommand(vercel.command, [...vercel.args, ...buildVercelLinkArgs()], options);
+    // Once a signal handler has started, no further step may start: a step
+    // that exits 0 right after the signal (on its own or on the group
+    // SIGTERM) would otherwise resume the pipeline and launch the next,
+    // detached step, which the handler does not know about. Checked before
+    // and after every step and the recheck; the finally then waits for the
+    // handler, which exits with the signal's code.
+    const assertNotStopping = () => {
+      if (stopping) throw new Error('[web-deploy] stopping on a signal: no further Vercel step starts.');
+    };
+    const step = async (args, stepOptions) => {
+      assertNotStopping();
+      await runCommand(vercel.command, [...vercel.args, ...args], stepOptions);
+      assertNotStopping();
+    };
+    await step(buildVercelLinkArgs(), options);
     assertProjectLink(source);
-    await runCommand(vercel.command, [...vercel.args, ...buildVercelPullArgs()], options);
+    await step(buildVercelPullArgs(), options);
     assertProjectLink(source);
-    await runCommand(vercel.command, [...vercel.args, ...buildVercelBuildArgs()], buildOptions);
+    await step(buildVercelBuildArgs(), buildOptions);
     if (!fs.existsSync(path.join(source, '.vercel', 'output', 'config.json'))) {
       throw new Error('vercel build wrote no .vercel/output/config.json in the clean copy; nothing was deployed.');
     }
 
     // Right before the irreversible deploy: fetch origin/master again and
     // rerun every check, which must accept the same HEAD the copy was made from.
+    assertNotStopping();
     const recheck = await guardProduction();
     if (recheck.head !== accepted.head) {
       throw new Error(
@@ -696,7 +711,7 @@ async function main(argv = process.argv.slice(2), deps = {}) {
     }
     assertProjectLink(source);
     log(recheck.message);
-    await runCommand(vercel.command, [...vercel.args, ...buildVercelDeployArgs(accepted.head)], options);
+    await step(buildVercelDeployArgs(accepted.head), options);
   } finally {
     // A signal stops the step, which makes it fail: let the handler finish
     // (it exits with the signal's code) before the ordinary cleanup.

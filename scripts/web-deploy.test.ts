@@ -519,6 +519,44 @@ describe('web-deploy: guarded, clean copy, pinned project, prebuilt upload', () 
     for (const name of ['SIGINT', 'SIGTERM', 'SIGHUP', 'SIGQUIT']) expect(proc.listenerCount(name)).toBe(0);
   });
 
+  it.each([
+    ['link', 'SIGHUP', 129, 'pull'],
+    ['pull', 'SIGQUIT', 131, 'build'],
+    ['build', 'SIGTERM', 143, 'deploy'],
+  ])('a %s step that exits 0 right after %s starts no further step: exit %i, no %s, copy removed', async (during, signal, code, next) => {
+    const proc = Object.assign(new EventEmitter(), {
+      pid: process.pid,
+      exit: jest.fn((exitCode: number) => {
+        throw new Error(`exit ${exitCode}`);
+      }),
+    });
+    // The handler's tree stop takes a moment, as a real one does, so the
+    // step's success resolves first.
+    const stopTree = jest.fn(() => new Promise<void>((resolve) => setTimeout(resolve, 50)));
+    const calls: Call[] = [];
+    const inner = fakeCli(calls);
+    const setup = deps(async () => accepted(), {
+      proc,
+      stopTree,
+      runCommand: async (command: string, args: string[], options: { cwd: string; env: Record<string, string | undefined>; onChild: (c: unknown) => void }) => {
+        inner(command, args, options);
+        if (args[1] === during) {
+          options.onChild({ pid: 4321 });
+          proc.emit(signal);
+          options.onChild(null);
+        }
+      },
+    });
+    await expect(main(['prod'], setup.deps)).rejects.toThrow(`exit ${code}`);
+    expect(proc.exit).toHaveBeenCalledTimes(1);
+    expect(proc.exit).toHaveBeenCalledWith(code);
+    const steps = calls.map((call) => call.args[2]);
+    expect(steps[steps.length - 1]).toBe(during);
+    expect(steps).not.toContain(next);
+    expect(setup.deps.guardProduction).toHaveBeenCalledTimes(1);
+    expect(fs.readdirSync(tempRoot)).toEqual([]);
+  });
+
   it('handles SIGINT, SIGTERM, SIGHUP and SIGQUIT with exit 128 + the signal number (no SIGQUIT on Windows)', () => {
     for (const [signal, code] of Object.entries(SIGNAL_EXIT_CODES)) expect(code).toBe(128 + os.constants.signals[signal]);
     expect(handledSignals('linux')).toEqual(['SIGINT', 'SIGTERM', 'SIGHUP', 'SIGQUIT']);
