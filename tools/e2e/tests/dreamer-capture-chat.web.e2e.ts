@@ -42,7 +42,7 @@ test('chat keeps chronological replies, edits and pending details through reload
   await finish(page);
   const card = page.getByTestId('capture-review-card');
   const save = card.getByTestId('btn.saveDream');
-  await expect(card.getByTestId('capture-review-narrative')).toHaveText(story);
+  await expect(card.getByTestId('capture-review-narrative')).toHaveText(story, { useInnerText: true });
   await expect(page.getByTestId('btn.saveDream')).toHaveCount(1);
   await page.getByTestId('capture-review-edit').click();
   const edited = story + ' Je reconnaissais cet endroit.';
@@ -55,10 +55,10 @@ test('chat keeps chronological replies, edits and pending details through reload
   await page.reload();
   await expect(page.getByTestId('capture-review-card')).toBeVisible();
   await expect(reply).toHaveValue(detail);
-  await expect(card.getByTestId('capture-review-narrative')).toHaveText(edited);
+  await expect(card.getByTestId('capture-review-narrative')).toHaveText(edited, { useInnerText: true });
   await page.getByTestId('recording-conversation-submit').click();
   const expected = edited + '\n\n' + detail;
-  await expect(card.getByTestId('capture-review-narrative')).toHaveText(expected);
+  await expect(card.getByTestId('capture-review-narrative')).toHaveText(expected, { useInnerText: true });
   await expect(save).toBeEnabled();
   for (const mode of ['light', 'dark'] as const) {
     await page.getByRole('button', { name: 'Paramètres', exact: true }).filter({ visible: true }).click();
@@ -99,6 +99,16 @@ test('chat finishes automatically and keeps a single card and reply reachable in
     await send(page, answer);
   }
   await expect(page.getByTestId('capture-review-card')).toHaveCount(1);
+  // Answers to the questions are woven into one account (simulated in mock mode), and the card says so.
+  await expect(page.getByTestId('capture-review-woven')).toHaveText('Relié à partir de tes mots. Relis-le : tu peux tout modifier.');
+  await expect(page.getByTestId('capture-review-narrative')).toHaveText([story, detail, 'Un grand calme.', 'Je me souviens du silence.'].join(' '), { useInnerText: true });
+  // The page is told once (a fade under reduced motion): capture it once it has settled.
+  await expect.poll(() => page.getByTestId('capture-review-card').evaluate(card => Number(getComputedStyle(card).opacity))).toBe(1);
+  await expect.poll(() => page.getByTestId('capture-review-narrative').evaluate(narrative =>
+    Number(getComputedStyle(narrative.lastElementChild ?? narrative).opacity))).toBe(1);
+  // It lands where the reader sees it begin.
+  await expect(page.getByTestId('capture-review-title')).toBeInViewport();
+  await page.screenshot({ path: info.outputPath('chat-woven-card.png') });
   for (const viewport of [{ width: 320, height: 640 }, { width: 640, height: 390 }]) {
     await page.setViewportSize(viewport);
     const reply = page.getByTestId('recording-conversation-answer');

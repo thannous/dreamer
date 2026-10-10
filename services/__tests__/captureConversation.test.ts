@@ -42,7 +42,7 @@ it('formats through the isolated route without automatic retries and rejects unu
   mockBaseUrl = 'https://project.supabase.co/functions/v1/api';
   fetch.mockResolvedValueOnce({ transcript: ' Une plage noire. ' });
   expect(await formatCaptureNarrative('Une plage. Question : couleur ? Réponse : noire.', 'fr')).toBe('Une plage noire.');
-  expect(fetch).toHaveBeenLastCalledWith('https://project.supabase.co/functions/v1/capture-recall/format-recall', expect.objectContaining({ retries: 0, timeoutMs: 45000 }));
+  expect(fetch).toHaveBeenLastCalledWith('https://project.supabase.co/functions/v1/capture-recall/format-recall', expect.objectContaining({ retries: 0, timeoutMs: 20000 }));
   for (const response of [{}, { transcript: '' }, { transcript: 'a'.repeat(20001) }]) {
     fetch.mockResolvedValueOnce(response);
     await expect(formatCaptureNarrative('Une plage.', 'fr')).rejects.toThrow('Invalid formatted narrative');

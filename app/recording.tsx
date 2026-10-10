@@ -49,6 +49,7 @@ import { DreamPersistenceError } from '@/lib/dreamStorageRead';
 import { getDreamIdentityKey } from '@/lib/dreamIdentity';
 import { classifyError, GuestDreamLimitError } from '@/lib/errors';
 import { hasAiConsent } from '@/lib/aiConsent';
+import { formatCaptureNarrative } from '@/services/captureConversation';
 import { trackInitialDreamCategorization } from '@/lib/initialDreamCategorization';
 import { getTranscriptionLocale } from '@/lib/locale';
 import { createScopedLogger } from '@/lib/logger';
@@ -118,6 +119,23 @@ import { DREAM_STORY } from '@/components/journal/story/dreamStoryMotion';
 
 const log = createScopedLogger('[Recording]');
 const isMockMode = isMockModeEnabled();
+
+/**
+ * Answers to the capture questions are woven into the account by the faithful formatter:
+ * nothing invented or interpreted, and the narrator reviews it before it is saved. Without
+ * an answered question, AI consent or the service, the review keeps the narrator's own
+ * words (null). The original exchanges are saved with the dream either way.
+ */
+async function weaveCaptureNarrative(source: string, language: string, signal: AbortSignal): Promise<string | null> {
+  const answered = parseCaptureEditableDraft(source).sections.some(section => section.question && section.text.trim());
+  if (!answered || !(await hasAiConsent())) return null;
+  try {
+    const woven = await formatCaptureNarrative(source, language, signal);
+    return isTranscriptSaveable(woven) ? woven : null;
+  } catch {
+    return null;
+  }
+}
 const trackedOnboardingRecordingDestinations = new Set<string>();
 
 type CaptureIntent = RecordingCaptureIntent;
@@ -1661,12 +1679,13 @@ export default function RecordingScreen() {
       }
       if (controller.signal.aborted) return;
       const source = baseTranscriptRef.current || transcript;
-      // Keep narrator words in the review and questions in the original exchanges.
-      const text = buildCaptureNarrative(source);
-      if (!isTranscriptSaveable(text)) return;
+      // The narrator's own words, questions kept in the original exchanges: the fallback proposal.
+      const gathered = buildCaptureNarrative(source);
+      if (!isTranscriptSaveable(gathered)) return;
       formatSourceRef.current = source;
+      const woven = await weaveCaptureNarrative(source, language, controller.signal);
       if (controller.signal.aborted || formatRequestRef.current !== controller) return;
-      const review = { source, text };
+      const review: CaptureReview = woven ? { source, text: woven, woven: true } : { source, text: gathered };
       if (!noteInput(encodeCaptureReview(review))) return;
       captureReviewRef.current = review;
       setCaptureReview(review);
@@ -1691,7 +1710,7 @@ export default function RecordingScreen() {
         setIsFormatting(false);
       }
     }
-  }, [cancelConversation, handleSaveDream, isHydrated, isPersisting, isRecordingRef, noteInput, stopRecording, t, transcript]);
+  }, [cancelConversation, handleSaveDream, isHydrated, isPersisting, isRecordingRef, language, noteInput, stopRecording, t, transcript]);
 
   const handleConversationSubmit = useCallback(async () => {
     captureMicrophoneMutedRef.current = true;
@@ -1831,6 +1850,7 @@ export default function RecordingScreen() {
                     compact={isCompactLandscape}
                     finishDisabled={isSaveDisabled}
                     review={savedConversation?.review ?? captureReview ?? undefined}
+                    weaving={isFormatting}
                     saved={!!savedConversation}
                     onReviewChange={(text) => {
                       const review = captureReviewRef.current;

@@ -7,6 +7,10 @@ import { EASE } from '@/components/motion/motion';
  * The dream story's choreography, in one place: what happens to a dream after capture,
  * told on one object (the saved moment's medallion) and the reading below it.
  *
+ *   Threshold — when the capture conversation ends, the narrator's answers are woven into
+ *       one account (stars take turns while the formatter works). The account then arrives
+ *       as a page: the card settles, a star lights between two threads, the paragraphs
+ *       follow one another.
  *   Prologue — once the dream is durably saved, night falls over the draft, its glow
  *       condenses into a star and the star rises to where the medallion will open.
  *   I.  Saved — the astrolabe settles once around a window onto the night sky.
@@ -44,6 +48,15 @@ export const DREAM_STORY = {
   paintSweep: 2600,
   /** A landed painting settling into its frame. */
   paintSettle: 1200,
+  /** The threshold page: the card settling, then its star and threads. */
+  recapCard: 480,
+  recapStar: 180,
+  recapThread: 520,
+  recapTitle: 120,
+  /** Each paragraph of the account, and the step between two paragraphs. */
+  recapLine: 560,
+  recapLineStep: 150,
+  recapLineLead: 360,
   /** The journal card's single glow, in and out. */
   epilogueHalo: 1800,
 } as const;
@@ -117,3 +130,10 @@ export const paintSweep = (travel: number, reduced: boolean): CSSStyle => (reduc
 /** A painting that has just landed, settling into its frame once. */
 export const paintSettle = (reduced: boolean): CSSStyle =>
   entrance({ from: [{ scale: 1.08 }], to: [{ scale: 1 }] }, DREAM_STORY.paintSettle, 0, reduced);
+
+/** When paragraph `index` of the threshold page starts; long accounts stop staggering after six. */
+export const recapLineDelay = (index: number): number =>
+  DREAM_STORY.recapLineLead + Math.min(index, 6) * DREAM_STORY.recapLineStep;
+
+/** When a threshold page of `count` paragraphs has been told and may rest. */
+export const recapSettled = (count: number): number => recapLineDelay(count) + DREAM_STORY.recapCard + 100;

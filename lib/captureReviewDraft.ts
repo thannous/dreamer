@@ -1,6 +1,7 @@
 import { parseCaptureEditableDraft } from './captureEditableDraft';
 
-export type CaptureReview = { source: string; text: string; pendingAnswer?: string };
+/** `woven`: the text was proposed by the faithful formatter rather than gathered locally. */
+export type CaptureReview = { source: string; text: string; pendingAnswer?: string; woven?: boolean };
 export function buildCaptureNarrative(source: string): string {
   return parseCaptureEditableDraft(source).sections
     .map(section => section.text.trim()).filter(Boolean).join('\n\n');
@@ -18,7 +19,7 @@ export function decodeCaptureDraft(value: string): { transcript: string; review:
     try {
       const parsed = JSON.parse(value.slice(PREFIX.length));
       if (typeof parsed?.source === 'string' && typeof parsed?.text === 'string') {
-        return { transcript: parsed.source, review: { source: parsed.source, text: parsed.text === parsed.source ? buildCaptureNarrative(parsed.source) : parsed.text, ...(typeof parsed.pendingAnswer === 'string' && parsed.pendingAnswer ? { pendingAnswer: parsed.pendingAnswer } : {}) } };
+        return { transcript: parsed.source, review: { source: parsed.source, text: parsed.text === parsed.source ? buildCaptureNarrative(parsed.source) : parsed.text, ...(typeof parsed.pendingAnswer === 'string' && parsed.pendingAnswer ? { pendingAnswer: parsed.pendingAnswer } : {}), ...(parsed.woven === true ? { woven: true } : {}) } };
       }
     } catch { /* Preserve unrecognized text; never erase a draft. */ }
   }
