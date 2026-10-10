@@ -132,7 +132,8 @@ export function OnboardingFeatureSheet({ feature, onClose, onFeatureChange, endi
   const readyAt = reduced ? 0 : demo ? HEADLINE_SETTLE + DURATION.normal
     : SUBTITLE_DELAYS[feature][step] + wordRevealDuration(subtitle, SUBTITLE_STAGGER);
 
-  return <StandardBottomSheet visible onClose={onClose} title={t(`onboarding.feature.${feature}.title`)} focusKey={feature}
+  // Only the cross closes the stories, and it asks first: no swipe can end them by accident.
+  return <StandardBottomSheet visible onClose={onClose} dismissBehavior="none" title={t(`onboarding.feature.${feature}.title`)} focusKey={feature}
     testID="sheet.onboarding.feature" style={{ height: sheetHeight, ...(Platform.OS === 'web' ? { width } : {}) }}
     surfaceColor={tokens.screen.background} transparentContent
     // The whole sheet is the night: sky, stars, and a shooting star at each page.

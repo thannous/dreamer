@@ -34,6 +34,7 @@ import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import {
   AccessibilityInfo,
   ActivityIndicator,
+  Alert,
   Platform,
   Pressable,
   StatusBar,
@@ -126,7 +127,6 @@ export default function OnboardingScreen() {
   const [showPrivacySheet, setShowPrivacySheet] = useState(false);
   const [activeFeature, setActiveFeature] = useState<OnboardingFeature | null>(null);
   // "Commencer" tells the three stories in order once, then moves on to the path.
-  const [guidedTour, setGuidedTour] = useState(false);
   const guidedTourSeenRef = useRef(false);
   // The stories end by walking through the blue door into the path step.
   const [doorPassage, setDoorPassage] = useState(false);
@@ -155,19 +155,6 @@ export default function OnboardingScreen() {
     if (activeFeature) void loadDoorPassage();
   }, [activeFeature]);
 
-  const closeFeature = () => {
-    const trigger = activeFeature ? featureTriggers.current[activeFeature] : null;
-    setActiveFeature(null);
-    if (featureFocusTimer.current) clearTimeout(featureFocusTimer.current);
-    featureFocusTimer.current = setTimeout(() => {
-      if (isLeavingRef.current || stepTransitionRef.current) return;
-      if (Platform.OS === 'web') trigger?.focus();
-      else {
-        const node = findNodeHandle(trigger ?? null);
-        if (node) AccessibilityInfo.setAccessibilityFocus(node);
-      }
-    }, Platform.OS === 'web' ? 0 : 300);
-  };
 
   useFocusEffect(useCallback(() => {
     if (Platform.OS === 'web') return;
@@ -361,22 +348,36 @@ export default function OnboardingScreen() {
       return;
     }
     guidedTourSeenRef.current = true;
-    setGuidedTour(true);
     setActiveFeature('capture');
   };
 
   const passThroughDoor = () => {
     guidedTourSeenRef.current = true;
     setActiveFeature(null);
-    setGuidedTour(false);
     setDoorPassage(true);
   };
 
   // Closing the guided stories skips straight to the path.
-  const finishGuidedTour = () => {
+  // Leaving the stories skips to the path step, the last one of the onboarding.
+  const leaveStories = () => {
+    guidedTourSeenRef.current = true;
     setActiveFeature(null);
-    setGuidedTour(false);
     void runStepTransition('path');
+  };
+
+  // The cross means "I want out": confirm first, so a stray tap does not end the stories.
+  const confirmLeaveStories = () => {
+    const title = t('onboarding.story.leave.title');
+    const message = t('onboarding.story.leave.message');
+    // react-native-web's Alert is a no-op: use the browser's own confirmation there.
+    if (Platform.OS === 'web') {
+      if (typeof window !== 'undefined' && typeof window.confirm === 'function' && window.confirm(`${title}\n\n${message}`)) leaveStories();
+      return;
+    }
+    Alert.alert(title, message, [
+      { text: t('onboarding.story.leave.stay'), style: 'cancel' },
+      { text: t('onboarding.story.leave.confirm'), onPress: leaveStories },
+    ], { cancelable: true });
   };
 
   const waitForExitFade = useCallback(() => (reducedMotion
@@ -995,7 +996,7 @@ export default function OnboardingScreen() {
 
       {featureSheetsEnabled && activeFeature ? (
         <React.Suspense fallback={null}>
-          <OnboardingFeatureSheet feature={activeFeature} onClose={guidedTour ? finishGuidedTour : closeFeature}
+          <OnboardingFeatureSheet feature={activeFeature} onClose={confirmLeaveStories}
             onFeatureChange={setActiveFeature} ending={{
               label: t('onboarding.narrative.finish_guided'),
               restartLabel: t('onboarding.narrative.restart'),
