@@ -211,7 +211,11 @@ starts `maestro test` with only `MAESTRO_E2E_EMAIL` / `MAESTRO_E2E_PASSWORD` in 
 environment (Maestro reads `MAESTRO_*` shell variables; nothing on the command
 line, no other `E2E_*` value). After the tier only `--device <id>` is accepted;
 `-e`/`--env` and any other Maestro argument are refused, so the flow cannot be
-pointed at another account. Metro stays in the foreground, so use two terminals
+pointed at another account. Before Maestro starts the wrapper writes
+`test-results/e2e-branch-mobile/run.json` (source SHA, `dirty`, branch ref, app id,
+tier, flow, rerun command; no secret) with `outcome.status: running`, then sets
+`passed` (exit 0, no signal), `failed` (exit code or signal) or `error` (Maestro
+did not start) when it ends. A dev-loop record, not release evidence. Metro stays in the foreground, so use two terminals
 on the owner machine, with the dev client connected to that Metro:
 
 ```sh

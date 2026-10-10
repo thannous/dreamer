@@ -43,7 +43,30 @@ export function runRecord({ tier, target, appId, git = (args) => execFileSync('g
     tier,
     flow: FLOW,
     rerunCommand: `npm run test:e2e:branch:mobile -- ${tier}`,
+    outcome: { status: 'running' },
   };
+}
+
+// Final outcome, written over the pre-run record when Maestro ends. Only an
+// exit code 0 without a signal counts as passed; a record left at "running"
+// means the wrapper itself was killed.
+export function outcomeOf({ code = null, signal = null, error = null } = {}) {
+  const status = error ? 'error' : code === 0 && !signal ? 'passed' : 'failed';
+  return {
+    status,
+    exitCode: code,
+    signal,
+    ...(error ? { error: String(error.message ?? error) } : {}),
+    finishedAt: new Date().toISOString(),
+  };
+}
+
+export function finishRecord(result, file = RECORD_FILE) {
+  if (!fs.existsSync(file)) return null;
+  const record = JSON.parse(fs.readFileSync(file, 'utf8'));
+  record.outcome = outcomeOf(result);
+  fs.writeFileSync(file, `${JSON.stringify(record, null, 2)}\n`);
+  return record;
 }
 
 export const RECORD_FILE = path.join(ROOT_DIR, 'test-results', 'e2e-branch-mobile', 'run.json');
@@ -84,8 +107,12 @@ export function main(argv = process.argv.slice(2), { env = readTestEnv(), spawnI
 if (process.argv[1] && path.resolve(process.argv[1]) === fileURLToPath(import.meta.url)) {
   try {
     const child = main();
-    child.on('exit', (code, signal) => process.exit(code ?? (signal ? 1 : 0)));
+    child.on('exit', (code, signal) => {
+      finishRecord({ code, signal });
+      process.exit(code ?? (signal ? 1 : 0));
+    });
     child.on('error', (error) => {
+      finishRecord({ error });
       console.error(`maestro-branch-sign-in: ${error.message}`);
       process.exit(1);
     });

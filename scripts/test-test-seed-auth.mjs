@@ -7,7 +7,7 @@ import { _runGuardedWithListsForTests, TestTargetRefused } from './test-supabase
 import { TIER_STATE, keyHeaders, main as seedMain, makeSeedAction, readSeedSecrets } from './test-seed-users.mjs';
 import { BRANCH_WEB_ORIGIN, BRANCH_WEB_PORT, main as authMain, makeAuthAction, readAuthSecrets, storageKey } from './test-auth-setup.mjs';
 import { BRANCH_GUARD_MARKER, PASSTHROUGH_EXPO_PUBLIC, RUNNER, branchAppEnv, branchCommand, main as startMain, parseBranchArgs } from './start-branch-e2e.mjs';
-import { FLOW, main as maestroMain, maestroArgs, maestroEnv, runRecord } from './maestro-branch-sign-in.mjs';
+import { FLOW, finishRecord, main as maestroMain, maestroArgs, maestroEnv, outcomeOf, runRecord } from './maestro-branch-sign-in.mjs';
 
 const PROD = 'usuyppgsmmowzizhaoqj';
 const REF = 'abcdefghijklmnopqrst';
@@ -335,6 +335,7 @@ test('maestro wrapper: credentials from the loaded env, only as MAESTRO_* env va
     tier: 'free',
     flow: FLOW,
     rerunCommand: 'npm run test:e2e:branch:mobile -- free',
+    outcome: { status: 'running' },
   });
   assert.ok(!JSON.stringify(record).includes(FREE_PW));
   assert.throws(() => maestroEnv('free', env({ E2E_ACCOUNT_DOMAIN: 'thanh@example.com' })), TestTargetRefused);
@@ -385,4 +386,30 @@ test('maestro wrapper: only --device passes; -e/--env credential overrides and o
     assert.equal(spawned, false);
   }
   assert.throws(() => maestroMain(['admin'], { env: env(), spawnImpl: () => {}, writeRecord: false }), /tier must be/);
+});
+
+test('maestro wrapper: the run record starts at running and ends with the real outcome', () => {
+  assert.equal(outcomeOf({ code: 0 }).status, 'passed');
+  assert.equal(outcomeOf({ code: 1 }).status, 'failed');
+  assert.equal(outcomeOf({ code: null, signal: 'SIGINT' }).status, 'failed');
+  assert.equal(outcomeOf({ code: 0, signal: 'SIGTERM' }).status, 'failed');
+  const spawnError = outcomeOf({ error: new Error('spawn maestro ENOENT') });
+  assert.equal(spawnError.status, 'error');
+  assert.match(spawnError.error, /ENOENT/);
+  const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'maestro-record-'));
+  try {
+    const file = path.join(dir, 'run.json');
+    assert.equal(finishRecord({ code: 0 }, file), null, 'no record, nothing written');
+    const record = runRecord({ tier: 'free', target: { ref: REF }, appId: 'com.tanuki75.noctalia', git: (args) => (args[0] === 'rev-parse' ? 'abc' : '') });
+    assert.deepEqual(record.outcome, { status: 'running' });
+    fs.writeFileSync(file, JSON.stringify(record));
+    finishRecord({ code: 1, signal: null }, file);
+    const done = JSON.parse(fs.readFileSync(file, 'utf8'));
+    assert.equal(done.outcome.status, 'failed');
+    assert.equal(done.outcome.exitCode, 1);
+    assert.equal(done.sourceRevision, 'abc');
+    assert.ok(done.outcome.finishedAt);
+  } finally {
+    fs.rmSync(dir, { recursive: true, force: true });
+  }
 });
