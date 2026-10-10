@@ -1,0 +1,4 @@
+{
+  "_comment": "Supabase projects the test-login scripts may write to (test or staging only). Fail closed: an empty list refuses every project. Adding a ref is an owner-reviewed change (deliveryFiles). Never add the production ref usuyppgsmmowzizhaoqj, which scripts/test-supabase-guard.mjs refuses anyway.",
+  "allowedProjectRefs": []
+}

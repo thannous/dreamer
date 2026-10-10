@@ -22,16 +22,23 @@
 //    the copy was made from, and the link is checked again.
 // 6. `vercel deploy --prebuilt --prod` from the copy.
 // The temp dir (mode 0700 from mkdtemp), with the pulled env file, is removed
-// in a finally and by the SIGINT/SIGTERM handlers, which also stop the running
-// CLI and exit non-zero. At start, stale noctalia-vercel-* dirs left by a
-// killed run are swept (see sweepStaleCopies). Every CLI call names the
-// project (--scope, --project) and runs with an allowlisted env (see
-// vercelEnv): no ambient EXPO_PUBLIC_*, NOCTALIA_*, NODE_ENV or
-// VERCEL_PROJECT_ID / VERCEL_ORG_ID can reach `vercel build` or redirect the
-// project. VERCEL_TOKEN is never in argv (the CLI reads it from the env). CLI
-// output is captured and printed with the pulled env values and the token
-// redacted. Same pattern as skillcodex's scripts/deploy-production.mjs.
+// in a finally and by the SIGINT, SIGTERM, SIGHUP and SIGQUIT handlers, which
+// also stop the running CLI step's process group and exit 128 + the signal
+// number. SIGKILL of this script cannot be handled: the running step's group
+// is then not stopped, and the copy is left until the next run sweeps it.
+// At start, stale noctalia-vercel-* dirs left by a killed run are swept (see
+// sweepStaleCopies). Every CLI call names the project (--scope, --project)
+// and runs with an allowlisted env (see vercelEnv): no ambient EXPO_PUBLIC_*,
+// NOCTALIA_*, NODE_ENV or VERCEL_PROJECT_ID / VERCEL_ORG_ID can reach `vercel
+// build` or redirect the project. VERCEL_TOKEN is read once at start, removed
+// from process.env, and passed only into the env of link, pull and deploy,
+// never in argv (the CLI reads it from the env). CLI output is captured and
+// printed with the pulled env values and the token redacted. The CLI is the
+// exact devDependency vercel@62.2.0, run as `node <its entry file>` after
+// checkPinnedCli verified the install. Same pattern as skillcodex's
+// scripts/deploy-production.mjs.
 
+const crypto = require('crypto');
 const fs = require('fs');
 const os = require('os');
 const path = require('path');
@@ -44,23 +51,39 @@ const VERCEL_PROJECT = 'noctalia';
 // this repo (projectId and teamId in the Vercel bot links on dreamer PRs).
 const VERCEL_PROJECT_ID = 'prj_ehKoWHHtWwekaivfEmqCCHRbjogu';
 const VERCEL_ORG_ID = 'team_2wbw33JALkqNG73AvmOQO17L';
-// Pinned CLI, same version as skillcodex: a production deploy must not pick
-// up whatever `vercel` is latest on the day.
-const VERCEL_CLI = 'vercel@62.2.0';
+// Pinned CLI, same version as skillcodex: an exact devDependency
+// (package.json and package-lock.json, installed by `npm ci`), so a
+// production deploy never downloads or picks up whatever `vercel` is latest
+// on the day. It is not run through node_modules/.bin: checkPinnedCli checks
+// the installed package against these pins and returns `node <entry>` (see
+// there). A version bump updates all three values (follow-up: npm marks
+// 62.2.0 deprecated for its `vc upgrade` bug; this script never runs upgrade).
+const VERCEL_CLI_VERSION = '62.2.0';
+const VERCEL_CLI = `vercel@${VERCEL_CLI_VERSION}`;
+// The registry tarball's integrity, as in package-lock.json.
+const VERCEL_CLI_INTEGRITY =
+  'sha512-hwet6qXoOfZEc6waIx1VgI2nLl83wwuZZnFqKSsKJ47UFi9waEezPmAV7uNOx8Fq+6JTJIi+lRnxFXr9YFW3Eg==';
+// sha256 over the installed package's own files (every file under
+// node_modules/vercel except its nested node_modules: package.json, dist/**,
+// README, LICENSE), as computed by hashPackageFiles. npm extracts the tarball
+// as is, so the value is the same on every OS.
+const VERCEL_CLI_FILES_SHA256 = '0c637f26b1511d966d0400460de088894b8c6a0d906c067df1c030bbdc98c9da';
 // The only variables a Vercel call receives, when set. Anything else in the
 // release shell (EXPO_PUBLIC_*, NOCTALIA_*, NODE_ENV, npm_*, VERCEL_PROJECT_ID,
 // VERCEL_ORG_ID...) is dropped: `vercel build` loads the pulled production env
 // without overriding variables already set, so an ambient one would win and
 // be inlined in the production bundle.
-//   PATH          find npx, node, git and the shell the CLI spawns.
+//   PATH          find node, npm, git and the shell the CLI spawns.
 //   HOME          npm's default cache (~/.npm) and the Vercel CLI config dir.
 //   TMPDIR        where npm and the CLI write their temp files.
-//   VERCEL_TOKEN  authentication; read from the env, never put in argv.
+// VERCEL_TOKEN is not in this list: main takes it out of process.env at start
+// (takeVercelToken) and adds it only to the env of link, pull and deploy
+// (withToken), never to argv.
 //   HTTPS_PROXY, HTTP_PROXY, NO_PROXY (and lowercase), NODE_EXTRA_CA_CERTS:
 //                 only reach the registry and the Vercel API from a host that
 //                 needs a proxy or a corporate CA; none is read by the app.
 //   Windows only: SYSTEMROOT, COMSPEC, PATHEXT, USERPROFILE, APPDATA,
-//                 LOCALAPPDATA, which node, npx and cmd.exe need to start,
+//                 LOCALAPPDATA, which node, npm and cmd.exe need to start,
 //                 and TEMP, TMP, the temp dirs npm and node use there.
 // Not passed: LANG/LC_* (CLI output is English either way), npm_config_*
 // (the default cache under HOME is enough; an inherited registry or cache
@@ -69,7 +92,6 @@ const ENV_ALLOWLIST = [
   'PATH',
   'HOME',
   'TMPDIR',
-  'VERCEL_TOKEN',
   'HTTPS_PROXY',
   'HTTP_PROXY',
   'NO_PROXY',
@@ -85,7 +107,16 @@ const TEMP_PREFIX = 'noctalia-vercel-';
 const OWNER_FILE = 'owner.pid';
 // A dir without a readable owner pid is swept only once older than this.
 const STALE_WITHOUT_OWNER_MS = 6 * 60 * 60 * 1000;
-const SIGNAL_EXIT_CODES = { SIGINT: 130, SIGTERM: 143 };
+// 128 + the signal number, as a shell reports a process ended by it. SIGHUP
+// (terminal closed, SSH dropped) and SIGQUIT matter because each step runs in
+// its own process group and session (detached): without a handler they would
+// end this script and leave the step running, with no message.
+const SIGNAL_EXIT_CODES = { SIGINT: 130, SIGTERM: 143, SIGHUP: 129, SIGQUIT: 131 };
+// Windows has no SIGQUIT; node emits SIGINT and SIGHUP there (console close).
+function handledSignals(platform = process.platform) {
+  const signals = Object.keys(SIGNAL_EXIT_CODES);
+  return platform === 'win32' ? signals.filter((signal) => signal !== 'SIGQUIT') : signals;
+}
 const REDACTED = '[redacted]';
 // Pulled values shorter than this (true, 1, prod) are not redacted, so the
 // log stays readable; secrets are longer.
@@ -118,6 +149,201 @@ function createCleanCopy(commitHash, { rootDir = ROOT_DIR, parentDir } = {}) {
   return source;
 }
 
+// sha256 of a package's own files: every regular file under pkgDir, except
+// its top-level node_modules (the nested dependencies), in sorted relative
+// path order, each fed as `<path>\0<size>\0<bytes>`. Any symlink or other
+// non-regular entry refuses: npm extracts a registry tarball as plain files.
+function hashPackageFiles(pkgDir) {
+  const files = [];
+  const walk = (dir, relative) => {
+    for (const name of fs.readdirSync(dir).sort()) {
+      if (!relative && name === 'node_modules') continue;
+      const full = path.join(dir, name);
+      const rel = relative ? `${relative}/${name}` : name;
+      const stat = fs.lstatSync(full);
+      if (stat.isDirectory()) walk(full, rel);
+      else if (stat.isFile()) files.push([rel, full]);
+      else throw new Error(`${rel} is not a regular file`);
+    }
+  };
+  walk(pkgDir, '');
+  const hash = crypto.createHash('sha256');
+  for (const [rel, full] of files.sort(([a], [b]) => (a < b ? -1 : a > b ? 1 : 0))) {
+    const bytes = fs.readFileSync(full);
+    hash.update(`${rel}\0${bytes.length}\0`);
+    hash.update(bytes);
+  }
+  return hash.digest('hex');
+}
+
+// Where npm resolves dependency `name` from the lock entry at `fromKey`:
+// the nearest node_modules/<name> walking up from fromKey to the root.
+function resolveLockDependency(packages, fromKey, name) {
+  let base = fromKey;
+  for (;;) {
+    const candidate = `${base ? `${base}/` : ''}node_modules/${name}`;
+    if (packages[candidate]) return candidate;
+    if (!base) return null;
+    const cut = base.lastIndexOf('/node_modules/');
+    base = cut === -1 ? '' : base.slice(0, cut);
+  }
+}
+
+// The lock entries of pkgKey's whole resolved dependency closure
+// (dependencies and optionalDependencies, hoisted or nested), plus any entry
+// physically nested under pkgKey. Each with version, resolved, integrity
+// and whether it is optional.
+function lockEntries(lock, pkgKey = 'node_modules/vercel') {
+  const packages = (lock && lock.packages) || {};
+  const pick = (value) => ({ version: value.version, resolved: value.resolved, integrity: value.integrity, optional: value.optional === true });
+  const entries = {};
+  const queue = packages[pkgKey] ? [pkgKey] : [];
+  while (queue.length > 0) {
+    const key = queue.shift();
+    if (entries[key]) continue;
+    const value = packages[key];
+    entries[key] = pick(value);
+    for (const name of Object.keys({ ...value.dependencies, ...value.optionalDependencies })) {
+      const resolved = resolveLockDependency(packages, key, name);
+      if (resolved && !entries[resolved]) queue.push(resolved);
+    }
+  }
+  for (const [key, value] of Object.entries(packages)) {
+    if (key.startsWith(`${pkgKey}/node_modules/`) && !entries[key]) entries[key] = pick(value);
+  }
+  return entries;
+}
+
+// The keys where npm's install record differs from the lockfile: an entry
+// installed with another version, resolved or integrity, an installed entry
+// the lock does not list, or a non-optional lock entry that is not installed
+// (optional ones for another OS or CPU, like @esbuild/*, are skipped by npm).
+function lockMismatches(locked, installed) {
+  const same = (a, b) => a.version === b.version && a.resolved === b.resolved && a.integrity === b.integrity;
+  const mismatches = [];
+  for (const [key, entry] of Object.entries(locked)) {
+    if (installed[key] ? !same(entry, installed[key]) : !entry.optional) mismatches.push(key);
+  }
+  for (const key of Object.keys(installed)) if (!locked[key]) mismatches.push(key);
+  return mismatches;
+}
+
+// Checks the installed CLI and returns how to run it: `process.execPath`
+// (this node) on the package's own entry file, never node_modules/.bin,
+// which is a link anyone can point anywhere. Refuses (run `npm ci`) unless:
+// 1. node_modules/vercel is a real directory of this checkout: its realpath is
+//    <realpath of rootDir>/node_modules/vercel (no symlinked package, no npm
+//    link, no symlinked node_modules), and its package.json is name vercel,
+//    version VERCEL_CLI_VERSION, with bin.vercel inside the package; the
+//    entry's realpath stays inside the package dir and it is a regular file.
+// 2. package-lock.json (tracked, so covered by the guard's clean-tree check)
+//    pins node_modules/vercel to VERCEL_CLI_VERSION and VERCEL_CLI_INTEGRITY,
+//    and npm's install record node_modules/.package-lock.json has the same
+//    version, resolved and integrity for node_modules/vercel and its whole
+//    resolved dependency closure in the lock, hoisted (@vercel/*, ...) or
+//    nested (see lockEntries, lockMismatches). This catches a stale or
+//    different install; it is metadata npm wrote, not a content check.
+// 3. The content check: hashPackageFiles(node_modules/vercel) equals
+//    VERCEL_CLI_FILES_SHA256, committed here. Every file of the CLI package
+//    itself (dist/vc.js and the dist/ bundle it loads) is covered, which is
+//    the strongest check that stays cheap (about 285 files, 11 MB). It does
+//    not cover the CLI's dependencies (hoisted @vercel/* packages, nested
+//    node_modules), checked by metadata only.
+// Same-user limit: node_modules is not tracked, and code running as the same
+// user can still change it between this check and the run (or change a
+// dependency the hash does not cover). Only a read-only or separate-user
+// install closes that.
+function checkPinnedCli(rootDir = ROOT_DIR, { expectedSha256 = VERCEL_CLI_FILES_SHA256 } = {}) {
+  const refuse = (reason) => {
+    throw new Error(`Vercel publish requires the pinned devDependency ${VERCEL_CLI} installed by \`npm ci\`: ${reason}. Run \`npm ci\`; nothing was run.`);
+  };
+  const readJson = (file) => {
+    try {
+      return JSON.parse(fs.readFileSync(file, 'utf8'));
+    } catch {
+      return null;
+    }
+  };
+  const pkgDir = path.join(rootDir, 'node_modules', 'vercel');
+  let realPkgDir;
+  let expectedDir;
+  try {
+    realPkgDir = fs.realpathSync(pkgDir);
+    expectedDir = path.join(fs.realpathSync(rootDir), 'node_modules', 'vercel');
+  } catch {
+    refuse('node_modules/vercel is missing');
+  }
+  if (realPkgDir !== expectedDir || !fs.lstatSync(pkgDir).isDirectory()) {
+    refuse(`node_modules/vercel resolves to ${realPkgDir}, not ${expectedDir} (symlinked package or npm link)`);
+  }
+  const pkg = readJson(path.join(pkgDir, 'package.json'));
+  if (!pkg || pkg.name !== 'vercel' || pkg.version !== VERCEL_CLI_VERSION) {
+    refuse(`node_modules/vercel/package.json is ${JSON.stringify(pkg && pkg.name)}@${JSON.stringify(pkg && pkg.version)}`);
+  }
+  const binField = typeof pkg.bin === 'string' ? pkg.bin : pkg.bin && pkg.bin.vercel;
+  if (typeof binField !== 'string' || !binField) refuse('node_modules/vercel/package.json has no bin.vercel');
+  const entry = path.resolve(pkgDir, binField);
+  let realEntry;
+  try {
+    realEntry = fs.realpathSync(entry);
+  } catch {
+    refuse(`the entry ${binField} is missing`);
+  }
+  if (!realEntry.startsWith(realPkgDir + path.sep) || !fs.lstatSync(entry).isFile()) {
+    refuse(`the entry ${binField} resolves to ${realEntry}, outside node_modules/vercel or not a regular file`);
+  }
+  const locked = lockEntries(readJson(path.join(rootDir, 'package-lock.json')));
+  const lockedCli = locked['node_modules/vercel'];
+  if (!lockedCli || lockedCli.version !== VERCEL_CLI_VERSION || lockedCli.integrity !== VERCEL_CLI_INTEGRITY) {
+    refuse(`package-lock.json does not pin node_modules/vercel to ${VERCEL_CLI_VERSION} with the expected integrity`);
+  }
+  // npm's record of the same keys (it lists what it installed), plus
+  // anything it installed nested under node_modules/vercel.
+  const record = (readJson(path.join(rootDir, 'node_modules', '.package-lock.json')) || {}).packages || {};
+  const installed = {};
+  for (const [key, value] of Object.entries(record)) {
+    if (locked[key] || key === 'node_modules/vercel' || key.startsWith('node_modules/vercel/node_modules/')) {
+      installed[key] = { version: value.version, resolved: value.resolved, integrity: value.integrity };
+    }
+  }
+  const mismatches = installed['node_modules/vercel'] ? lockMismatches(locked, installed) : ['node_modules/vercel'];
+  if (mismatches.length > 0) {
+    refuse(`node_modules/.package-lock.json does not match package-lock.json (version, resolved or integrity) for ${mismatches.slice(0, 3).join(', ')}: a stale or different install`);
+  }
+  let digest;
+  try {
+    digest = hashPackageFiles(realPkgDir);
+  } catch (error) {
+    refuse(`node_modules/vercel holds a non-regular file (${error.message})`);
+  }
+  if (digest !== expectedSha256) {
+    refuse(`the files of node_modules/vercel hash to ${digest}, not the pinned ${expectedSha256}`);
+  }
+  return { command: process.execPath, args: [realEntry] };
+}
+
+// Reads VERCEL_TOKEN once and removes it (every case spelling) from env,
+// which is process.env in a real run: nothing this process starts later
+// inherits it by default (the guard's git calls, `vercel build`), and only
+// withToken adds it back, to the env of link, pull and deploy. This does not
+// isolate the token from other code running as the same user: the env block
+// this process (and the `npm run` parent) was started with stays readable in
+// /proc/<pid>/environ on Linux, and a `vercel login` auth file in the real
+// HOME is readable too. Only a separate user or a container isolates that.
+function takeVercelToken(env = process.env) {
+  let token;
+  for (const name of Object.keys(env)) {
+    if (name.toUpperCase() !== 'VERCEL_TOKEN') continue;
+    if (token === undefined || name === 'VERCEL_TOKEN') token = env[name] || token;
+    delete env[name];
+  }
+  return token || undefined;
+}
+
+function withToken(childEnv, token) {
+  return token ? { ...childEnv, VERCEL_TOKEN: token } : childEnv;
+}
+
 function assertProjectLink(source) {
   const linkFile = path.join(source, '.vercel', 'project.json');
   let link;
@@ -144,10 +370,14 @@ function readHeadCommit(rootDir = ROOT_DIR) {
   return hash;
 }
 
-// The child env, built from ENV_ALLOWLIST only (see above).
+// The child env, built from ENV_ALLOWLIST only (see above), plus
+// VERCEL_CLI_USE_NATIVE_BINARY=0: dist/vc.js otherwise hands the command to
+// the optional native binary @vercel/vc-native-<os>-<arch> (always on macOS),
+// found by walking up from the package, which the content hash does not
+// cover. With 0 it stays in the hashed JavaScript CLI.
 function vercelEnv(env = process.env, platform = process.platform) {
   const names = platform === 'win32' ? [...ENV_ALLOWLIST, ...WINDOWS_ENV_ALLOWLIST] : ENV_ALLOWLIST;
-  const child = {};
+  const child = { VERCEL_CLI_USE_NATIVE_BINARY: '0' };
   for (const [name, value] of Object.entries(env)) {
     const allowed = platform === 'win32' ? names.some((entry) => entry.toUpperCase() === name.toUpperCase()) : names.includes(name);
     if (allowed && value !== undefined) child[name] = value;
@@ -157,9 +387,13 @@ function vercelEnv(env = process.env, platform = process.platform) {
 
 // The env of `vercel build`, which runs `npm install` (every dependency's
 // lifecycle scripts) and the project build command: the allowlist without
-// VERCEL_TOKEN, and HOME pointed at an empty dir inside the temp copy, so no
-// third-party script can read the token, a `vercel login` auth file or an
-// ~/.npmrc credential from the real HOME. npm keeps its download cache
+// VERCEL_TOKEN, and HOME pointed at an empty dir inside the temp copy, so the
+// token, a `vercel login` auth file or an ~/.npmrc credential is not handed
+// to those scripts through their env or the HOME they see. That is not a
+// sandbox: they run as the same user and can still read this process's
+// initial env in /proc/<pid>/environ (Linux) or find the real HOME through
+// os.userInfo(). Only a separate user or a container would stop that (see
+// takeVercelToken). npm keeps its download cache
 // (package tarballs, no credentials) through npm_config_cache. The build
 // needs no auth: it reads the link and the settings `vercel pull` cached in
 // .vercel/ (vercel@62.2.0 lists build among SUBCOMMANDS_WITHOUT_TOKEN, and
@@ -195,10 +429,31 @@ async function stopProcessTree(child, { platform = process.platform, kill = proc
       // The group is already gone.
     }
   };
+  // The direct child closing is not enough: a descendant (npm, the build)
+  // may outlive it in the same group. On POSIX, wait until the group itself
+  // is gone (kill(-pgid, 0) fails with ESRCH); Windows has no group to probe.
+  const groupAlive = () => {
+    if (platform === 'win32') return false;
+    try {
+      kill(-child.pid, 0);
+      return true;
+    } catch (error) {
+      return error?.code === 'EPERM';
+    }
+  };
+  const goneWithin = async (ms) => {
+    const end = Date.now() + ms;
+    if (!(await closedWithin(ms))) return false;
+    while (groupAlive()) {
+      if (Date.now() >= end) return false;
+      await new Promise((resolve) => setTimeout(resolve, 50));
+    }
+    return true;
+  };
   signalGroup('SIGTERM');
-  if (await closedWithin(timeoutMs)) return;
+  if (await goneWithin(timeoutMs)) return;
   signalGroup('SIGKILL');
-  await closedWithin(timeoutMs);
+  await goneWithin(timeoutMs);
 }
 
 function isPidAlive(pid) {
@@ -253,12 +508,13 @@ function projectArgs() {
   return ['--scope', VERCEL_SCOPE, '--project', VERCEL_PROJECT];
 }
 
+// Arguments of the pinned CLI, after `node <entry>` (see checkPinnedCli).
 function buildVercelLinkArgs() {
-  return ['--yes', VERCEL_CLI, 'link', '--yes', ...projectArgs()];
+  return ['link', '--yes', ...projectArgs()];
 }
 
 function buildVercelPullArgs() {
-  return ['--yes', VERCEL_CLI, 'pull', '--yes', '--environment=production', ...projectArgs()];
+  return ['pull', '--yes', '--environment=production', ...projectArgs()];
 }
 
 // No --project or --scope (they make build resolve the project through the
@@ -266,14 +522,14 @@ function buildVercelPullArgs() {
 // token): build uses only the local link, checked against the pinned ids, and
 // the settings already pulled. Missing settings fail the build.
 function buildVercelBuildArgs() {
-  return ['--yes', VERCEL_CLI, 'build', '--prod'];
+  return ['build', '--prod'];
 }
 
 function buildVercelDeployArgs(commitHash) {
   if (!/^[0-9a-f]{40}$/i.test(String(commitHash || ''))) {
     throw new Error(`Vercel publish requires the guarded 40-character commit SHA (got "${commitHash}").`);
   }
-  return ['--yes', VERCEL_CLI, 'deploy', '--prebuilt', '--prod', '--yes', ...projectArgs(), '--meta', `gitCommitSha=${commitHash}`];
+  return ['deploy', '--prebuilt', '--prod', '--yes', ...projectArgs(), '--meta', `gitCommitSha=${commitHash}`];
 }
 
 // Values to hide from any printed output: every value of the env files
@@ -342,11 +598,11 @@ function run(command, args, options = {}) {
     try {
       // Detached on POSIX: its own process group, so a signal can stop the
       // CLI and every process it started (see stopProcessTree).
+      // No shell: the CLI is node on a file path, on every OS.
       child = spawn(command, args, {
         cwd,
         env,
         detached: process.platform !== 'win32',
-        shell: process.platform === 'win32',
         stdio: ['ignore', 'pipe', 'pipe'],
       });
     } catch (error) {
@@ -388,12 +644,15 @@ clean, and \`npm run verify:release\` passed on HEAD
 archive in a temp dir) it links the pinned project, pulls the production
 settings, builds, runs the guard again on the same HEAD, then deploys only the
 prebuilt output (\`vercel deploy --prebuilt --prod\`). Vercel calls get an
-allowlisted env only (PATH, HOME, TMPDIR, VERCEL_TOKEN, proxy and CA
-variables). The temp copy is removed on exit, on failure and on SIGINT or
-SIGTERM (after stopping the running step's whole process group); stale
-copies of killed runs are swept at start. \`vercel build\` gets no token. The CLI is pinned
-(${VERCEL_CLI}). There is no override. Set VERCEL_TOKEN in the environment;
-never commit it.`);
+allowlisted env only (PATH, HOME, TMPDIR, proxy and CA variables), plus
+VERCEL_TOKEN for link, pull and deploy only; the token is removed from this
+process's env at start. The temp copy is removed on exit, on failure and on
+SIGINT, SIGTERM, SIGHUP or SIGQUIT (after stopping the running step's whole
+process group; exit 128 + the signal number); stale copies of killed runs are
+swept at start. The CLI is the exact devDependency ${VERCEL_CLI}, run with
+node on its own entry file once its location, lock entries and file hash
+check out (run \`npm ci\` first). There is no override. Set
+VERCEL_TOKEN in the environment; never commit it.`);
 }
 
 function parseTarget(argv = process.argv.slice(2)) {
@@ -415,6 +674,7 @@ async function main(argv = process.argv.slice(2), deps = {}) {
     proc = process,
     sweep = sweepStaleCopies,
     stopTree = stopProcessTree,
+    checkCli = checkPinnedCli,
     killTimeoutMs = 5000,
   } = deps;
   const target = parseTarget(argv);
@@ -423,7 +683,13 @@ async function main(argv = process.argv.slice(2), deps = {}) {
     return;
   }
 
+  // First the sweep, so stale copies holding a pulled production env are
+  // removed even when a later check refuses. Then the token leaves this
+  // process's env, so nothing started from here on inherits it, and the
+  // pinned CLI must check out.
   for (const dir of sweep({ tempRoot })) log(`[web-deploy] removed a stale temp copy: ${dir}`);
+  const token = takeVercelToken(env);
+  const vercel = checkCli(rootDir);
 
   // Before anything else: a refused publish runs nothing.
   const accepted = await guardProduction();
@@ -433,38 +699,63 @@ async function main(argv = process.argv.slice(2), deps = {}) {
   fs.writeFileSync(path.join(parentDir, OWNER_FILE), `${proc.pid ?? process.pid}\n`);
   let child = null;
   let stopping = null;
-  // On SIGINT or SIGTERM: stop the running CLI step and its whole process
-  // tree, wait for it, then remove the copy and exit 130 or 143. The main flow
-  // waits for this before its own cleanup, so the exit code is the signal's.
+  // On SIGINT, SIGTERM, SIGHUP or SIGQUIT: stop the running CLI step and its
+  // whole process tree (SIGTERM, SIGKILL after the timeout), wait for it,
+  // remove the copy, then exit 128 + the signal number. The main flow waits
+  // for this before its own cleanup, so the exit code is the signal's.
   const onSignal = (signal) => {
     if (stopping) return;
     stopping = (async () => {
+      const code = SIGNAL_EXIT_CODES[signal] || 1;
       await stopTree(child, { timeoutMs: killTimeoutMs });
       fs.rmSync(parentDir, { recursive: true, force: true });
-      console.error(`[web-deploy] ${signal}: the running Vercel step and its processes were stopped, temp copy removed.`);
-      proc.exit(SIGNAL_EXIT_CODES[signal] || 1);
+      try {
+        // After a hangup stderr may be gone: the cleanup above already ran.
+        console.error(
+          `[web-deploy] Stopped by ${signal}: the running Vercel step and its process group were stopped and the temp copy was removed; exit ${code}. ` +
+            'If this came during the deploy step, check the Vercel dashboard: the upload may have finished.'
+        );
+      } catch {
+        // Nothing to print to.
+      }
+      proc.exit(code);
     })();
   };
-  const handlers = Object.keys(SIGNAL_EXIT_CODES).map((signal) => [signal, () => onSignal(signal)]);
+  const handlers = handledSignals().map((signal) => [signal, () => onSignal(signal)]);
   for (const [signal, handler] of handlers) proc.on(signal, handler);
   try {
     const source = createCleanCopy(accepted.head, { rootDir, parentDir });
     const onChild = (running) => (child = running);
-    const options = { cwd: source, env: vercelEnv(env), onChild };
+    const options = { cwd: source, env: withToken(vercelEnv(env), token), onChild };
     const buildHome = path.join(parentDir, 'build-home');
     fs.mkdirSync(buildHome);
     const buildOptions = { cwd: source, env: buildEnv(env, buildHome), onChild };
-    await runCommand('npx', buildVercelLinkArgs(), options);
+    // Once a signal handler has started, no further step may start: a step
+    // that exits 0 right after the signal (on its own or on the group
+    // SIGTERM) would otherwise resume the pipeline and launch the next,
+    // detached step, which the handler does not know about. Checked before
+    // and after every step and the recheck; the finally then waits for the
+    // handler, which exits with the signal's code.
+    const assertNotStopping = () => {
+      if (stopping) throw new Error('[web-deploy] stopping on a signal: no further Vercel step starts.');
+    };
+    const step = async (args, stepOptions) => {
+      assertNotStopping();
+      await runCommand(vercel.command, [...vercel.args, ...args], stepOptions);
+      assertNotStopping();
+    };
+    await step(buildVercelLinkArgs(), options);
     assertProjectLink(source);
-    await runCommand('npx', buildVercelPullArgs(), options);
+    await step(buildVercelPullArgs(), options);
     assertProjectLink(source);
-    await runCommand('npx', buildVercelBuildArgs(), buildOptions);
+    await step(buildVercelBuildArgs(), buildOptions);
     if (!fs.existsSync(path.join(source, '.vercel', 'output', 'config.json'))) {
       throw new Error('vercel build wrote no .vercel/output/config.json in the clean copy; nothing was deployed.');
     }
 
     // Right before the irreversible deploy: fetch origin/master again and
     // rerun every check, which must accept the same HEAD the copy was made from.
+    assertNotStopping();
     const recheck = await guardProduction();
     if (recheck.head !== accepted.head) {
       throw new Error(
@@ -477,7 +768,7 @@ async function main(argv = process.argv.slice(2), deps = {}) {
     }
     assertProjectLink(source);
     log(recheck.message);
-    await runCommand('npx', buildVercelDeployArgs(accepted.head), options);
+    await step(buildVercelDeployArgs(accepted.head), options);
   } finally {
     // A signal stops the step, which makes it fail: let the handler finish
     // (it exits with the signal's code) before the ordinary cleanup.
@@ -498,6 +789,10 @@ if (require.main === module) {
 }
 
 module.exports = {
+  SIGNAL_EXIT_CODES,
+  VERCEL_CLI_FILES_SHA256,
+  VERCEL_CLI_INTEGRITY,
+  VERCEL_CLI_VERSION,
   VERCEL_ORG_ID,
   VERCEL_PROJECT_ID,
   buildEnv,
@@ -505,8 +800,12 @@ module.exports = {
   buildVercelDeployArgs,
   buildVercelLinkArgs,
   buildVercelPullArgs,
+  checkPinnedCli,
   collectSecrets,
   createCleanCopy,
+  handledSignals,
+  hashPackageFiles,
+  lockEntries,
   parseEnvFile,
   main,
   parseTarget,
@@ -514,5 +813,7 @@ module.exports = {
   run,
   stopProcessTree,
   sweepStaleCopies,
+  takeVercelToken,
   vercelEnv,
+  withToken,
 };

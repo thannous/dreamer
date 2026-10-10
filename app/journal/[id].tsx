@@ -902,15 +902,17 @@ const JournalDetailContent = memo(function JournalDetailContent({ dream }: { dre
   const isAnalysisLocked = isAnalysisLaunchBlocked || awaitingPurchasedAnalysis;
   // Act II of the dream story follows the dream's real state: waiting while an analysis
   // runs, then a reveal only when the reading lands while this screen watches. A dream
-  // still marked pending keeps the story waiting even after the local request settles.
+  // still marked pending keeps the story waiting even after the local request settles;
+  // a reading saved before the request returns (sync and quota run after it) lands at once.
   const readingInFlight = isAnalysisLocked;
+  const readingAwaited = readingInFlight && !showCompletedReading;
   const [readingStory, setReadingStory] = useState<'idle' | 'waiting' | 'revealed'>('idle');
-  if (readingInFlight && readingStory !== 'waiting') {
+  if (readingAwaited && readingStory !== 'waiting') {
     setReadingStory('waiting');
-  } else if (!readingInFlight && readingStory === 'waiting') {
+  } else if (!readingAwaited && readingStory === 'waiting') {
     setReadingStory(showCompletedReading ? 'revealed' : 'idle');
   }
-  const savedMomentPhase: SavedDreamPhase = readingInFlight && !showCompletedReading ? 'reading'
+  const savedMomentPhase: SavedDreamPhase = readingAwaited ? 'reading'
     : showCompletedReading ? 'read' : 'saved';
   const reducedMotion = useReducedMotion();
   const readingZoneTopRef = useRef<number | null>(null);
@@ -2702,7 +2704,7 @@ const JournalDetailContent = memo(function JournalDetailContent({ dream }: { dre
 
             {(showCompletedReading || readingInFlight) ? (
               <DreamAnalysisContent dream={dream}
-                pending={isAnalysisPending || (readingInFlight && !showCompletedReading)}
+                pending={isAnalysisPending || readingAwaited}
                 reveal={readingStory === 'revealed'}
                 onLayout={({ nativeEvent }) => { readingZoneTopRef.current = nativeEvent.layout.y; }} />
             ) : null}

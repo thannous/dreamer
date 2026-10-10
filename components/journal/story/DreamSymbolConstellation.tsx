@@ -1,5 +1,5 @@
 import React, { useMemo, useState } from 'react';
-import { Text, View, type StyleProp, type ViewStyle } from 'react-native';
+import { Text, View, useWindowDimensions, type StyleProp, type ViewStyle } from 'react-native';
 import Animated, { useReducedMotion, type CSSStyle } from 'react-native-reanimated';
 
 import { EASE } from '@/components/motion/motion';
@@ -10,21 +10,32 @@ import { DREAM_STORY, reducedDelay } from './dreamStoryMotion';
 /** Beyond five, labels no longer fit a phone width; the reading lists every symbol. */
 export const MAX_CONSTELLATION_STARS = 5;
 
-const HEIGHT = 136;
-/** High stars carry their label above, low stars below, so no thread crosses a word. */
-const HIGH_Y = 48;
-const LOW_Y = 86;
 const STAR = 9;
 const HALO = 26;
 const LABEL_GAP = 10;
+const LABEL_LINE = 18;
+/** Vertical distance between the high and the low row of stars. */
+const ROW_GAP = 38;
 
 type Point = { x: number; y: number; high: boolean };
+type Rows = { high: number; low: number; height: number };
 
-const layoutStars = (count: number, width: number): Point[] => {
-  if (count === 1) return [{ x: width / 2, y: (HIGH_Y + LOW_Y) / 2, high: false }];
+/**
+ * High stars carry their label above, low stars below, so no thread crosses a word.
+ * Each label keeps room for its two lines at the reader's text size (136 points at 100 %).
+ */
+const rowsFor = (fontScale: number): Rows => {
+  const label = 2 * LABEL_LINE * Math.max(fontScale, 1);
+  const high = LABEL_GAP + label + 2;
+  const low = high + ROW_GAP;
+  return { high, low, height: low + LABEL_GAP + label + 4 };
+};
+
+const layoutStars = (count: number, width: number, rows: Rows): Point[] => {
+  if (count === 1) return [{ x: width / 2, y: (rows.high + rows.low) / 2, high: false }];
   return Array.from({ length: count }, (_, index) => {
     const high = index % 2 === 1;
-    return { x: ((index + 0.5) / count) * width, y: high ? HIGH_Y : LOW_Y, high };
+    return { x: ((index + 0.5) / count) * width, y: high ? rows.high : rows.low, high };
   });
 };
 
@@ -38,9 +49,11 @@ const layoutStars = (count: number, width: number): Point[] => {
  */
 export function DreamSymbolConstellation({ names, play }: { names: readonly string[]; play: boolean }) {
   const reduced = useReducedMotion();
+  const { fontScale } = useWindowDimensions();
   const [width, setWidth] = useState(0);
   const stars = names.slice(0, MAX_CONSTELLATION_STARS);
-  const points = useMemo(() => (width ? layoutStars(stars.length, width) : []), [stars.length, width]);
+  const rows = useMemo(() => rowsFor(fontScale), [fontScale]);
+  const points = useMemo(() => (width ? layoutStars(stars.length, width, rows) : []), [rows, stars.length, width]);
   const labelWidth = width ? Math.max(56, width / stars.length - 8) : 0;
 
   return (
@@ -51,7 +64,7 @@ export function DreamSymbolConstellation({ names, play }: { names: readonly stri
       accessibilityElementsHidden
       pointerEvents="none"
       onLayout={({ nativeEvent }) => setWidth(previous => previous === nativeEvent.layout.width ? previous : nativeEvent.layout.width)}
-      style={{ height: HEIGHT }}
+      style={{ height: rows.height }}
     >
       {points.slice(0, -1).map((from, index) => (
         <Thread key={`thread-${index}`} from={from} to={points[index + 1]} index={index}
@@ -59,7 +72,7 @@ export function DreamSymbolConstellation({ names, play }: { names: readonly stri
       ))}
       {points.map((point, index) => (
         <Star key={`${index}:${stars[index]}`} point={point} index={index} name={stars[index]}
-          labelWidth={labelWidth} play={play} reduced={reduced} />
+          labelWidth={labelWidth} height={rows.height} play={play} reduced={reduced} />
       ))}
     </View>
   );
@@ -67,8 +80,8 @@ export function DreamSymbolConstellation({ names, play }: { names: readonly stri
 
 const igniteDelay = (index: number) => DREAM_STORY.revealLead + index * DREAM_STORY.starStep;
 
-function Star({ point, index, name, labelWidth, play, reduced }: {
-  point: Point; index: number; name: string; labelWidth: number; play: boolean; reduced: boolean;
+function Star({ point, index, name, labelWidth, height, play, reduced }: {
+  point: Point; index: number; name: string; labelWidth: number; height: number; play: boolean; reduced: boolean;
 }) {
   const delay = igniteDelay(index);
   const ignite = useMemo<CSSStyle<ViewStyle>>(() => (play ? {
@@ -108,7 +121,7 @@ function Star({ point, index, name, labelWidth, play, reduced }: {
           left: point.x - labelWidth / 2,
           width: labelWidth,
           ...(point.high
-            ? { bottom: HEIGHT - point.y + LABEL_GAP }
+            ? { bottom: height - point.y + LABEL_GAP }
             : { top: point.y + LABEL_GAP }),
         }, label] as StyleProp<ViewStyle>}
       >
