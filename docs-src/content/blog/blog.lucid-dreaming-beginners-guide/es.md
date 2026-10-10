@@ -439,17 +439,17 @@ El sueño lúcido en sí no se considera peligroso. Los métodos que interrumpen
                     <a href="como-recordar-suenos" class="glass-panel rounded-xl p-6 block hover:border-dream-salmon/30 transition-all hover:-translate-y-1">
                         <span class="text-xs text-dream-salmon uppercase mb-2 block">Guía</span>
                         <h3 class="font-serif text-lg text-dream-cream mb-2">Cómo recordar tus sueños: 10 técnicas efectivas</h3>
-                        <p class="text-sm text-gray-400">Descubre métodos científicamente probados para mejorar tu recuerdo de sueños y no volver a olvidarlos al despertar. Técnicas simples que puedes aplicar esta noche.</p>
+                        <p class="text-sm text-gray-400">Diez hábitos sencillos para retener más fragmentos al despertar, desde despertarte con calma hasta anotar antes de moverte.</p>
                     </a>
                     <a href="por-que-olvidamos-suenos" class="glass-panel rounded-xl p-6 block hover:border-dream-salmon/30 transition-all hover:-translate-y-1">
                         <span class="text-xs text-dream-salmon uppercase mb-2 block">Ciencia</span>
                         <h3 class="font-serif text-lg text-dream-cream mb-2">¿Por qué olvidamos los sueños al despertar? Las explicaciones científicas</h3>
-                        <p class="text-sm text-gray-400">Descubre los mecanismos cerebrales y neuroquímicos que explican por qué olvidamos el 95% de nuestros sueños.</p>
+                        <p class="text-sm text-gray-400">Por qué los sueños se borran a los pocos minutos de despertar, qué papel tienen el sueño REM y la memoria, y hábitos sencillos para recordar más.</p>
                     </a>
                     <a href="significado-suenos-recurrentes" class="glass-panel rounded-xl p-6 block hover:border-dream-salmon/30 transition-all hover:-translate-y-1">
                         <span class="text-xs text-dream-salmon uppercase mb-2 block">Interpretación</span>
                         <h3 class="font-serif text-lg text-dream-cream mb-2">Significado de Sueños Recurrentes: Entender sus Mensajes</h3>
-                        <p class="text-sm text-gray-400">¿Por qué sigues teniendo el mismo sueño? Descubre lo que tu subconsciente está tratando de decirte.</p>
+                        <p class="text-sm text-gray-400">Por qué vuelve el mismo sueño, qué anotar entre un episodio y otro, y cuándo las pesadillas repetidas merecen una consulta médica.</p>
                     </a>
               </div>
             </section>

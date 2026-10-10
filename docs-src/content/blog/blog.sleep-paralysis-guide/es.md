@@ -431,17 +431,17 @@
         <a href="como-recordar-suenos" class="glass-panel rounded-xl p-6 block hover:border-dream-salmon/30 transition-all hover:-translate-y-1">
             <span class="text-xs text-dream-salmon uppercase mb-2 block">Guía</span>
             <h3 class="font-serif text-lg text-dream-cream mb-2">Cómo recordar tus sueños: 10 técnicas efectivas</h3>
-            <p class="text-sm text-gray-400">Descubre métodos científicamente probados para mejorar tu recuerdo de sueños y nunca más olvidar tus sueños al despertar. Técnicas simples que puedes aplicar esta noche.</p>
+            <p class="text-sm text-gray-400">Diez hábitos sencillos para retener más fragmentos al despertar, desde despertarte con calma hasta anotar antes de moverte.</p>
         </a>
         <a href="guia-incubacion-suenos" class="glass-panel rounded-xl p-6 block hover:border-dream-salmon/30 transition-all hover:-translate-y-1">
             <span class="text-xs text-dream-salmon uppercase mb-2 block">Guía</span>
             <h3 class="font-serif text-lg text-dream-cream mb-2">Incubación de sueños: cómo soñar exactamente lo que quieres esta noche</h3>
-            <p class="text-sm text-gray-400">Aprende el arte antiguo de la incubación onírica para resolver problemas y estimular tu creatividad.</p>
+            <p class="text-sm text-gray-400">Un método en seis pasos para elegir una pregunta antes de dormir y anotar lo que vuelve al despertar, con lo que dice la investigación y sus límites.</p>
         </a>
         <a href="guia-pesadillas" class="glass-panel rounded-xl p-6 block hover:border-dream-salmon/30 transition-all hover:-translate-y-1">
             <span class="text-xs text-dream-salmon uppercase mb-2 block">Guía</span>
             <h3 class="font-serif text-lg text-dream-cream mb-2">Pesadillas: Causas, Significado y Cómo Detenerlas</h3>
-            <p class="text-sm text-gray-400">¿Por qué tenemos pesadillas? Descubre las causas de los malos sueños, su significado y técnicas probadas para reducir su frecuencia y dormir mejor.</p>
+            <p class="text-sm text-gray-400">Por qué aparecen las pesadillas, qué pueden significar y qué no, y cómo el ensayo en imaginación y un sueño más regular ayudan a reducirlas.</p>
         </a>
   </div>
 </section>

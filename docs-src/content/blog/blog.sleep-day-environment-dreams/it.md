@@ -371,7 +371,7 @@
 <a class="glass-panel rounded-xl p-6 block hover:border-dream-salmon/30 transition-all hover:-translate-y-1" href="sonno-rem-e-sogni-comprendere-il-ripristino-notturno-del-cervello">
 <span class="text-xs text-dream-salmon uppercase mb-2 block">Scienza</span>
 <h3 class="font-serif text-lg text-dream-cream mb-2">Sonno REM e sogni: comprendere il ripristino notturno del cervello</h3>
-<p class="text-sm text-gray-400">Scopri come il sonno REM plasma i tuoi sogni e perché questa fase è essenziale per il tuo benessere.</p>
+<p class="text-sm text-gray-400">In quale momento della notte arriva il sonno REM, perché i suoi sogni sono così vividi e cosa lo accorcia.</p>
 </a>
 <a class="glass-panel rounded-xl p-6 block hover:border-dream-salmon/30 transition-all hover:-translate-y-1" href="come-ricordare-i-tuoi-sogni-10-tecniche-efficaci">
 <span class="text-xs text-dream-salmon uppercase mb-2 block">Guida</span>

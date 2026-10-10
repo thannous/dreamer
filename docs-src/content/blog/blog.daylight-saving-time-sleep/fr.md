@@ -285,12 +285,12 @@
 <section class="mt-16 glass-panel rounded-2xl p-6" id="sources">
 <h2 class="font-serif text-2xl text-dream-cream mb-4">Sources et lectures complémentaires</h2>
 <ul class="mt-6 space-y-2 text-sm text-gray-400">
-<li><a href="https://doi.org/10.1016/j.smrv.2012.10.001" rel="nofollow noopener noreferrer" target="_blank">Harrison (2013) : The impact of daylight saving time on sleep and related behaviours — Sleep Medicine Reviews</a></li>
-<li><a href="https://doi.org/10.1016/j.cub.2007.10.025" rel="nofollow noopener noreferrer" target="_blank">Kantermann et al. (2007) : The human circadian clock’s seasonal adjustment is disrupted by daylight saving time — Current Biology</a></li>
-<li><a href="https://doi.org/10.1136/openhrt-2013-000019" rel="nofollow noopener noreferrer" target="_blank">Sandhu et al. (2014) : Daylight savings time and myocardial infarction — Open Heart</a></li>
-<li><a href="https://doi.org/10.1016/j.cub.2019.12.045" rel="nofollow noopener noreferrer" target="_blank">Fritz et al. (2020) : A chronobiological evaluation of the acute effects of daylight saving time on traffic accident risk — Current Biology</a></li>
-<li><a href="https://doi.org/10.5664/jcsm.8780" rel="nofollow noopener noreferrer" target="_blank">Rishi et al. (2020) : Daylight saving time, an American Academy of Sleep Medicine position statement — Journal of Clinical Sleep Medicine</a></li>
-<li><a href="https://doi.org/10.1177/0748730419854197" rel="nofollow noopener noreferrer" target="_blank">Roenneberg et al. (2019) : Why should we abolish daylight saving time? — Journal of Biological Rhythms</a></li>
+<li><a href="https://doi.org/10.1016/j.smrv.2012.10.001" rel="nofollow noopener noreferrer" target="_blank">Harrison (2013) : The impact of daylight saving time on sleep and related behaviours. Sleep Medicine Reviews</a></li>
+<li><a href="https://doi.org/10.1016/j.cub.2007.10.025" rel="nofollow noopener noreferrer" target="_blank">Kantermann et al. (2007) : The human circadian clock’s seasonal adjustment is disrupted by daylight saving time. Current Biology</a></li>
+<li><a href="https://doi.org/10.1136/openhrt-2013-000019" rel="nofollow noopener noreferrer" target="_blank">Sandhu et al. (2014) : Daylight savings time and myocardial infarction. Open Heart</a></li>
+<li><a href="https://doi.org/10.1016/j.cub.2019.12.045" rel="nofollow noopener noreferrer" target="_blank">Fritz et al. (2020) : A chronobiological evaluation of the acute effects of daylight saving time on traffic accident risk. Current Biology</a></li>
+<li><a href="https://doi.org/10.5664/jcsm.8780" rel="nofollow noopener noreferrer" target="_blank">Rishi et al. (2020) : Daylight saving time, an American Academy of Sleep Medicine position statement. Journal of Clinical Sleep Medicine</a></li>
+<li><a href="https://doi.org/10.1177/0748730419854197" rel="nofollow noopener noreferrer" target="_blank">Roenneberg et al. (2019) : Why should we abolish daylight saving time? Journal of Biological Rhythms</a></li>
 <li><a href="https://www.europarl.europa.eu/news/en/press-room/20190321IPR32107/parliament-backs-proposal-to-end-switch-between-summer-and-winter-time-in-2021" rel="nofollow noopener noreferrer" target="_blank">Parlement européen (2019) : vote en faveur de la fin du changement d'heure saisonnier (en anglais)</a></li>
 <li><a href="https://time.com/article/2026/10/07/senate-permanent-daylight-saving-time-sunshine-protection-act/" rel="nofollow noopener noreferrer" target="_blank">Time (octobre 2026) : sur le Sunshine Protection Act et l'attente du Sénat américain (en anglais)</a></li>
 </ul>
@@ -340,7 +340,7 @@
 <a class="glass-panel rounded-xl p-6 block hover:border-dream-salmon/30 transition-all hover:-translate-y-1" href="sommeil-paradoxal-reves">
 <span class="text-xs text-dream-salmon uppercase mb-2 block">Science</span>
 <h3 class="font-serif text-lg text-dream-cream mb-2">Sommeil paradoxal et rêves : comprendre la phase de rêve</h3>
-<p class="text-sm text-gray-400">Découvrez comment le sommeil paradoxal façonne vos rêves et pourquoi cette phase est essentielle à votre bien-être.</p>
+<p class="text-sm text-gray-400">À quel moment de la nuit survient le sommeil paradoxal, pourquoi ses rêves sont si intenses et ce qui le raccourcit.</p>
 </a>
 <a class="glass-panel rounded-xl p-6 block hover:border-dream-salmon/30 transition-all hover:-translate-y-1" href="comment-se-souvenir-de-ses-reves">
 <span class="text-xs text-dream-salmon uppercase mb-2 block">Guide</span>
@@ -350,7 +350,7 @@
 <a class="glass-panel rounded-xl p-6 block hover:border-dream-salmon/30 transition-all hover:-translate-y-1" href="journee-sommeil-environnement-reves">
 <span class="text-xs text-dream-salmon uppercase mb-2 block">Science</span>
 <h3 class="font-serif text-lg text-dream-cream mb-2">Journée du sommeil 2026 : comment votre environnement transforme vos rêves</h3>
-<p class="text-sm text-gray-400">Lumière, bruit, température et changements saisonniers : découvrez comment votre environnement de sommeil façonne la trame de vos rêves.</p>
+<p class="text-sm text-gray-400">Comment la lumière, le bruit et la température de la chambre agissent sur le sommeil et les rêves, et quoi ajuster dès ce soir.</p>
 </a>
 </div>
 </section>

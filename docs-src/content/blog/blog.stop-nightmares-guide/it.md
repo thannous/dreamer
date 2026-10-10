@@ -313,7 +313,7 @@
 <i class="w-5 h-5 text-dream-salmon" data-lucide="book-open"></i>
                     Esplora i simboli correlati
                 </h2>
-<p class="text-sm text-purple-300/60 mb-4">Immergiti più a fondo nei simboli di questo articolo:</p>
+<p class="text-sm text-purple-300/60 mb-4">Approfondisci i simboli di questo articolo:</p>
 <div class="flex flex-wrap gap-3">
 <a class="inline-flex items-center gap-2 px-4 py-2 glass-button rounded-full text-sm hover:text-dream-salmon transition-colors" href="../simboli/inseguimento">
                         Significato del sogno di essere inseguito
@@ -322,7 +322,7 @@
                         Significato del sogno di morte
                     </a>
 <a class="inline-flex items-center gap-2 px-4 py-2 glass-button rounded-full text-sm hover:text-dream-salmon transition-colors" href="../simboli/cadere">
-                        Significato del sogno che cade
+                        Sognare di cadere
                     </a>
 <a class="inline-flex items-center gap-2 px-4 py-2 glass-button rounded-full text-sm hover:text-dream-salmon transition-colors" href="../simboli/serpente">
                         Significato del sogno del serpente
@@ -417,7 +417,7 @@
                     <a href="come-ricordare-i-tuoi-sogni-10-tecniche-efficaci" class="glass-panel rounded-xl p-6 block hover:border-dream-salmon/30 transition-all hover:-translate-y-1">
                         <span class="text-xs text-dream-salmon uppercase mb-2 block">Guida</span>
                         <h3 class="font-serif text-lg text-dream-cream mb-2">Come ricordare i tuoi sogni: 10 tecniche efficaci</h3>
-                        <p class="text-sm text-gray-400">Scopri metodi scientificamente provati per migliorare il ricordo dei tuoi sogni e non dimenticarli mai i tuoi sogni al risveglio. Tecniche semplici che puoi applicare stasera.</p>
+                        <p class="text-sm text-gray-400">Dieci abitudini semplici per trattenere più frammenti al risveglio, dal risveglio graduale alla nota presa prima di alzarti.</p>
                     </a>
                     <a href="incubazione-dei-sogni-come-sognare-esattamente-cio-che-desideri-stasera" class="glass-panel rounded-xl p-6 block hover:border-dream-salmon/30 transition-all hover:-translate-y-1">
                         <span class="text-xs text-dream-salmon uppercase mb-2 block">Guida</span>
@@ -427,7 +427,7 @@
                     <a href="la-paralisi-del-sonno-spiegata-perche-non-puoi-muoverti-e-come-fermarla" class="glass-panel rounded-xl p-6 block hover:border-dream-salmon/30 transition-all hover:-translate-y-1">
                         <span class="text-xs text-dream-salmon uppercase mb-2 block">Guida</span>
                         <h3 class="font-serif text-lg text-dream-cream mb-2">Paralisi del sonno: perché non puoi muoverti e come fermarla</h3>
-                        <p class="text-sm text-gray-400">Guida completa per comprendere la paralisi del sonno. Scopri le cause, perché si verificano allucinazioni e tecniche comprovate per prevenirla.</p>
+                        <p class="text-sm text-gray-400">Perché a volte ci si sveglia senza riuscire a muoversi e con una presenza nella stanza, come superare un episodio e quando consultare un medico.</p>
                     </a>
               </div>
             </section>

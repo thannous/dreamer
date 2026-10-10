@@ -344,7 +344,7 @@ In versione semplificata, sì: scrivi la tua domanda prima di dormire, abbinala 
 <a class="glass-panel rounded-xl p-6 block hover:border-dream-salmon/30 transition-all hover:-translate-y-1" href="sogni-e-creativita">
 <span class="text-xs text-dream-salmon uppercase mb-2 block">Scienza</span>
 <h3 class="font-serif text-lg text-dream-cream mb-2">Sogni e creatività: come il tuo cervello addormentato risolve problemi</h3>
-<p class="text-sm text-gray-400">Scopri come i sogni stimolano la creatività e l'innovazione, da Kekulé alla ricerca moderna.</p>
+<p class="text-sm text-gray-400">Cosa dice la ricerca sul sonno a proposito di sogni e soluzione dei problemi, e come annotare un'idea prima che svanisca.</p>
 </a>
 <a class="glass-panel rounded-xl p-6 block hover:border-dream-salmon/30 transition-all hover:-translate-y-1" href="incubazione-dei-sogni-come-sognare-esattamente-cio-che-desideri-stasera">
 <span class="text-xs text-dream-salmon uppercase mb-2 block">Guida</span>

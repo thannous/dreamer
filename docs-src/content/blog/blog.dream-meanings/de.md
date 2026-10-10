@@ -37,7 +37,7 @@
 ---
 <article class="max-w-5xl mx-auto">
 <!-- Breadcrumb -->
-<nav aria-label="Semmelbrösel" class="text-sm text-purple-200/60 mb-8">
+<nav aria-label="Brotkrümelnavigation" class="text-sm text-purple-200/60 mb-8">
 <ol class="flex items-center gap-2 flex-wrap" itemscope="" itemtype="https://schema.org/BreadcrumbList">
 <li itemprop="itemListElement" itemscope="" itemtype="https://schema.org/ListItem">
 <a class="hover:text-dream-salmon transition-colors" href="/de/" itemprop="item"><span itemprop="name">Startseite</span></a>
@@ -183,23 +183,23 @@ Die Ratgeber eignen sich zum schnellen Nachschlagen im Web. Wenn Sie den Traum s
                     Verwandte Symbole erkunden
                 </h2>
 <p class="text-sm text-purple-300/60 mb-4">
-                    Tauchen Sie tiefer in die Symbole dieses Hubs ein – oder stöbern Sie im <a class="text-dream-salmon hover:underline" href="../guides/traumsymbole-lexikon">Wörterbuch der Traumsymbole</a>.
+                    Lesen Sie die Symbole dieser Übersicht nach oder stöbern Sie im <a class="text-dream-salmon hover:underline" href="../guides/traumsymbole-lexikon">Wörterbuch der Traumsymbole</a>.
                 </p>
 <div class="flex flex-wrap gap-3">
 <a class="inline-flex items-center gap-2 px-4 py-2 glass-button rounded-full text-sm hover:text-dream-salmon transition-colors" href="../traumsymbole/wasser">
-                        Wassertraumbedeutung
+                        Traum von Wasser
                     </a>
 <a class="inline-flex items-center gap-2 px-4 py-2 glass-button rounded-full text-sm hover:text-dream-salmon transition-colors" href="../traumsymbole/fliegen">
-                        Fliegende Traumbedeutung
+                        Traum vom Fliegen
                     </a>
 <a class="inline-flex items-center gap-2 px-4 py-2 glass-button rounded-full text-sm hover:text-dream-salmon transition-colors" href="../traumsymbole/zaehne">
-                        Zähne Traumbedeutung
+                        Traum von Zahnverlust
                     </a>
 <a class="inline-flex items-center gap-2 px-4 py-2 glass-button rounded-full text-sm hover:text-dream-salmon transition-colors" href="../traumsymbole/schlange">
-                        Bedeutung des Traums Schlange
+                        Traum von einer Schlange
                     </a>
 <a class="inline-flex items-center gap-2 px-4 py-2 glass-button rounded-full text-sm hover:text-dream-salmon transition-colors" href="../traumsymbole/verfolgung">
-                        Bedeutung des Traums „Gejagt werden“
+                        Traum vom Verfolgtwerden
                     </a>
 </div>
 </section>

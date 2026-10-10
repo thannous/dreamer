@@ -38,7 +38,7 @@
 ---
 <article class="max-w-5xl mx-auto">
 <!-- Breadcrumb -->
-<nav aria-label="Semmelbrösel" class="text-sm text-purple-200/60 mb-8">
+<nav aria-label="Brotkrümelnavigation" class="text-sm text-purple-200/60 mb-8">
 <ol class="flex items-center gap-2 flex-wrap" itemscope="" itemtype="https://schema.org/BreadcrumbList">
 <li itemprop="itemListElement" itemscope="" itemtype="https://schema.org/ListItem">
 <a class="hover:text-dream-salmon transition-colors" href="/de/" itemprop="item"><span itemprop="name">Startseite</span></a>
@@ -388,12 +388,12 @@
 <i class="w-5 h-5 text-dream-salmon" data-lucide="book-open"></i>
                     Verwandte Symbole erkunden
                 </h2>
-<p class="text-sm text-purple-300/60 mb-4">Tauchen Sie tiefer in die Symbole aus diesem Artikel ein:</p>
+<p class="text-sm text-purple-300/60 mb-4">Passende Traumsymbole aus dem Artikel:</p>
 <div class="flex flex-wrap gap-3">
-<a class="inline-flex items-center gap-2 px-4 py-2 glass-button rounded-full text-sm hover:text-dream-salmon transition-colors" href="../traumsymbole/nacht">Nachttraumbedeutung</a>
-<a class="inline-flex items-center gap-2 px-4 py-2 glass-button rounded-full text-sm hover:text-dream-salmon transition-colors" href="../traumsymbole/telefon">Telefontraumbedeutung</a>
-<a class="inline-flex items-center gap-2 px-4 py-2 glass-button rounded-full text-sm hover:text-dream-salmon transition-colors" href="../traumsymbole/schluessel">Schlüsseltraumbedeutung</a>
-<a class="inline-flex items-center gap-2 px-4 py-2 glass-button rounded-full text-sm hover:text-dream-salmon transition-colors" href="../traumsymbole/zug">Traumbedeutung trainieren</a>
+<a class="inline-flex items-center gap-2 px-4 py-2 glass-button rounded-full text-sm hover:text-dream-salmon transition-colors" href="../traumsymbole/nacht">Traum von der Nacht</a>
+<a class="inline-flex items-center gap-2 px-4 py-2 glass-button rounded-full text-sm hover:text-dream-salmon transition-colors" href="../traumsymbole/telefon">Traum von einem Telefon</a>
+<a class="inline-flex items-center gap-2 px-4 py-2 glass-button rounded-full text-sm hover:text-dream-salmon transition-colors" href="../traumsymbole/schluessel">Traum von einem Schlüssel</a>
+<a class="inline-flex items-center gap-2 px-4 py-2 glass-button rounded-full text-sm hover:text-dream-salmon transition-colors" href="../traumsymbole/zug">Traum von einem Zug</a>
 </div>
 </section>
 <!-- Related Symbols End -->
@@ -428,17 +428,17 @@
         <a href="koennen-traeume-die-zukunft-vorhersagen-die-ueberraschende-wissenschaft-praekognitiver-traeume" class="glass-panel rounded-xl p-6 block hover:border-dream-salmon/30 transition-all hover:-translate-y-1">
             <span class="text-xs text-dream-salmon uppercase mb-2 block">Wissenschaft</span>
             <h3 class="font-serif text-lg text-dream-cream mb-2">Können Träume die Zukunft vorhersagen? Die Wissenschaft präkognitiver Träume</h3>
-            <p class="text-sm text-gray-400">Entdecken Sie die faszinierende Wissenschaft hinter präkognitiven Träumen und ob sie wirklich die Zukunft vorhersagen können.</p>
+            <p class="text-sm text-gray-400">Was kontrollierte Studien über Träume sagen, die scheinbar die Zukunft vorhersagen, und wie Zufall und Erinnerungsfehler viele Fälle erklären.</p>
         </a>
         <a href="traeume-und-psychische-gesundheit-wie-ihr-schlaf-ihren-geist-offenbart" class="glass-panel rounded-xl p-6 block hover:border-dream-salmon/30 transition-all hover:-translate-y-1">
             <span class="text-xs text-dream-salmon uppercase mb-2 block">Wissenschaft</span>
             <h3 class="font-serif text-lg text-dream-cream mb-2">Träume und psychische Gesundheit: Wie Ihr Schlaf Ihren Geist offenbart</h3>
-            <p class="text-sm text-gray-400">Entdecken Sie die tiefe Verbindung zwischen Träumen und psychischer Gesundheit. Erfahren Sie, wie Angst, Depression und Trauma Ihre Träume beeinflussen und wie Traumarbeit die Heilung unterstützen kann.</p>
+            <p class="text-sm text-gray-400">Wie sich Angst, Depression, Stress und Trauma in Träumen zeigen und wann häufige Albträume ein Gespräch mit einer Fachperson wert sind.</p>
         </a>
         <a href="warum-traeumen-wir-die-wissenschaft-hinter-ihren-naechtlichen-abenteuern" class="glass-panel rounded-xl p-6 block hover:border-dream-salmon/30 transition-all hover:-translate-y-1">
             <span class="text-xs text-dream-salmon uppercase mb-2 block">Wissenschaft</span>
             <h3 class="font-serif text-lg text-dream-cream mb-2">Warum träumen wir? Die Wissenschaft hinter Ihren nächtlichen Abenteuern</h3>
-            <p class="text-sm text-gray-400">Entdecken Sie die faszinierende Wissenschaft des Träumens. Erfahren Sie mehr über die wichtigsten Theorien, Gehirnaktivität während des Träumens und was Ihre Träume über das Bewusstsein verraten.</p>
+            <p class="text-sm text-gray-400">Was die Forschung über Gedächtnis, Gefühle und das Proben von Bedrohungen im Traum gemessen hat und was noch Hypothese ist.</p>
         </a>
   </div>
 </section>

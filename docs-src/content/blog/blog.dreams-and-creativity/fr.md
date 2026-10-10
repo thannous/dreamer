@@ -366,7 +366,7 @@ Non. Des réveils répétés fragmentent le sommeil, et le manque de sommeil nui
 <a class="glass-panel rounded-xl p-6 block hover:border-dream-salmon/30 transition-all hover:-translate-y-1" href="sommeil-paradoxal-reves">
 <span class="text-xs text-dream-salmon uppercase mb-2 block">Science</span>
 <h3 class="font-serif text-lg text-dream-cream mb-2">Sommeil paradoxal et rêves : comprendre la réinitialisation nocturne du cerveau</h3>
-<p class="text-sm text-gray-400">Découvrez ce qui se passe pendant le sommeil paradoxal et pourquoi cette phase est essentielle pour la mémoire, les émotions et la créativité.</p>
+<p class="text-sm text-gray-400">À quel moment de la nuit survient le sommeil paradoxal, pourquoi ses rêves sont si intenses et ce qui le raccourcit.</p>
 </a>
 <a class="glass-panel rounded-xl p-6 block hover:border-dream-salmon/30 transition-all hover:-translate-y-1" href="comment-se-souvenir-de-ses-reves">
 <span class="text-xs text-dream-salmon uppercase mb-2 block">Guide</span>

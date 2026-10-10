@@ -428,17 +428,17 @@
         <a href="reves-premonitoires-science" class="glass-panel rounded-xl p-6 block hover:border-dream-salmon/30 transition-all hover:-translate-y-1">
             <span class="text-xs text-dream-salmon uppercase mb-2 block">Science</span>
             <h3 class="font-serif text-lg text-dream-cream mb-2">Les rêves peuvent-ils prédire l'avenir ? La science des rêves prémonitoires</h3>
-            <p class="text-sm text-gray-400">Explorez la science fascinante des rêves prémonitoires et s'ils peuvent vraiment prédire l'avenir.</p>
+            <p class="text-sm text-gray-400">Ce que disent les études contrôlées sur les rêves qui semblent prédire l'avenir, et comment le hasard et les biais de mémoire expliquent beaucoup de cas.</p>
         </a>
         <a href="reves-sante-mentale" class="glass-panel rounded-xl p-6 block hover:border-dream-salmon/30 transition-all hover:-translate-y-1">
             <span class="text-xs text-dream-salmon uppercase mb-2 block">Science</span>
             <h3 class="font-serif text-lg text-dream-cream mb-2">Rêves et Santé Mentale : Comment Votre Sommeil Révèle Votre Esprit</h3>
-            <p class="text-sm text-gray-400">Découvrez le lien profond entre les rêves et la santé mentale. Apprenez comment l'anxiété, la dépression et les traumatismes affectent vos rêves, et comment le travail onirique peut soutenir la guérison.</p>
+            <p class="text-sm text-gray-400">Comment l'anxiété, la dépression, le stress et les traumatismes se retrouvent dans les rêves, et quand des cauchemars fréquents justifient d'en parler à un professionnel.</p>
         </a>
         <a href="pourquoi-nous-revons-science" class="glass-panel rounded-xl p-6 block hover:border-dream-salmon/30 transition-all hover:-translate-y-1">
             <span class="text-xs text-dream-salmon uppercase mb-2 block">Science</span>
             <h3 class="font-serif text-lg text-dream-cream mb-2">Pourquoi rêvons-nous ? La science derrière vos aventures nocturnes</h3>
-            <p class="text-sm text-gray-400">Explorez la science fascinante des rêves. Découvrez les théories majeures, l'activité cérébrale pendant les rêves et ce qu'ils révèlent sur la conscience.</p>
+            <p class="text-sm text-gray-400">Ce que la recherche a mesuré sur la mémoire, les émotions et la répétition des menaces pendant le rêve, et ce qui reste une hypothèse.</p>
         </a>
   </div>
 </section>

@@ -283,7 +283,7 @@
                     Esplora i simboli correlati
                 </h2>
 <p class="text-sm text-purple-300/60 mb-4">
-                    Immergiti più a fondo nei simboli di questo articolo o sfoglia <a class="text-dream-salmon hover:underline" href="../guides/dizionario-simboli-sogni">Dizionario dei simboli dei sogni</a>.
+                    Approfondisci i simboli di questo articolo o sfoglia il <a class="text-dream-salmon hover:underline" href="../guides/dizionario-simboli-sogni">Dizionario dei simboli dei sogni</a>.
                 </p>
 <div class="flex flex-wrap gap-3">
 <a class="inline-flex items-center gap-2 px-4 py-2 glass-button rounded-full text-sm hover:text-dream-salmon transition-colors" href="../simboli/serpente">
@@ -414,17 +414,17 @@
         <a href="perche-dimentichiamo-i-nostri-sogni-la-scienza-dietro-l-amnesia-onirica" class="glass-panel rounded-xl p-6 block hover:border-dream-salmon/30 transition-all hover:-translate-y-1">
             <span class="text-xs text-dream-salmon uppercase mb-2 block">Scienza</span>
             <h3 class="font-serif text-lg text-dream-cream mb-2">Perché dimentichiamo i sogni? La scienza dietro l'amnesia onirica</h3>
-            <p class="text-sm text-gray-400">Scopri i meccanismi cerebrali e la neurochimica che spiegano perché dimentichiamo il 95% dei sogni al risveglio.</p>
+            <p class="text-sm text-gray-400">Perché i sogni svaniscono pochi minuti dopo il risveglio, che ruolo hanno il sonno REM e la memoria, e abitudini semplici per ricordarne di più.</p>
         </a>
         <a href="i-sogni-possono-predire-il-futuro-la-sorprendente-scienza-dei-sogni-precognitivi" class="glass-panel rounded-xl p-6 block hover:border-dream-salmon/30 transition-all hover:-translate-y-1">
             <span class="text-xs text-dream-salmon uppercase mb-2 block">Scienza</span>
             <h3 class="font-serif text-lg text-dream-cream mb-2">I sogni possono predire il futuro? La scienza dei sogni precognitivi</h3>
-            <p class="text-sm text-gray-400">Esplora l'affascinante scienza dietro i sogni precognitivi e se possono davvero predire il futuro.</p>
+            <p class="text-sm text-gray-400">Cosa dicono gli studi controllati sui sogni che sembrano predire il futuro, e come il caso e i bias della memoria spiegano molti episodi.</p>
         </a>
         <a href="sogni-e-salute-mentale-come-il-tuo-sonno-rivela-la-tua-mente" class="glass-panel rounded-xl p-6 block hover:border-dream-salmon/30 transition-all hover:-translate-y-1">
             <span class="text-xs text-dream-salmon uppercase mb-2 block">Scienza</span>
             <h3 class="font-serif text-lg text-dream-cream mb-2">Sogni e salute mentale: come il tuo sonno rivela la tua mente</h3>
-            <p class="text-sm text-gray-400">Scopri la profonda connessione tra sogni e salute mentale. Come ansia, depressione e trauma influenzano i tuoi sogni e come il lavoro onirico può supportare la guarigione.</p>
+            <p class="text-sm text-gray-400">Come ansia, depressione, stress e trauma compaiono nei sogni, e quando gli incubi frequenti meritano di essere affrontati con un professionista.</p>
         </a>
   </div>
 </section>

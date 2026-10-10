@@ -447,17 +447,17 @@
         <a href="comment-se-souvenir-de-ses-reves" class="glass-panel rounded-xl p-6 block hover:border-dream-salmon/30 transition-all hover:-translate-y-1">
             <span class="text-xs text-dream-salmon uppercase mb-2 block">Guide</span>
             <h3 class="font-serif text-lg text-dream-cream mb-2">Comment se souvenir de ses rêves : 10 techniques efficaces</h3>
-            <p class="text-sm text-gray-400">Découvrez des méthodes scientifiquement prouvées pour améliorer votre mémoire onirique et ne plus jamais oublier vos rêves au réveil. Des techniques simples à appliquer des ce soir.</p>
+            <p class="text-sm text-gray-400">Dix habitudes simples pour retenir plus de fragments au réveil, du réveil lent à la note prise avant de bouger.</p>
         </a>
         <a href="guide-incubation-reves" class="glass-panel rounded-xl p-6 block hover:border-dream-salmon/30 transition-all hover:-translate-y-1">
             <span class="text-xs text-dream-salmon uppercase mb-2 block">Guide</span>
             <h3 class="font-serif text-lg text-dream-cream mb-2">Incubation des rêves : comment rêver exactement de ce que vous voulez</h3>
-            <p class="text-sm text-gray-400">Apprenez l'art ancien de l'incubation onirique pour résoudre des problèmes et stimuler votre créativité.</p>
+            <p class="text-sm text-gray-400">Une méthode en six étapes pour choisir une question avant de dormir et noter ce qui revient au réveil, avec ce que dit la recherche et ses limites.</p>
         </a>
         <a href="guide-paralysie-sommeil" class="glass-panel rounded-xl p-6 block hover:border-dream-salmon/30 transition-all hover:-translate-y-1">
             <span class="text-xs text-dream-salmon uppercase mb-2 block">Guide</span>
             <h3 class="font-serif text-lg text-dream-cream mb-2">Paralysie du sommeil : pourquoi vous ne pouvez plus bouger et comment en sortir</h3>
-            <p class="text-sm text-gray-400">Guide complet pour comprendre la paralysie du sommeil. Découvrez ses causes, pourquoi les hallucinations surviennent, et les techniques prouvées pour prévenir et arrêter les épisodes.</p>
+            <p class="text-sm text-gray-400">Pourquoi on se réveille parfois sans pouvoir bouger, avec une présence dans la chambre, comment traverser un épisode et quand consulter.</p>
         </a>
   </div>
 </section>

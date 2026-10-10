@@ -365,7 +365,7 @@ Write “no dream this morning” and how you feel, then get on with your day. I
 <i class="w-5 h-5 text-dream-salmon" data-lucide="book-open"></i>
                     Explore Related Symbols
                 </h2>
-<p class="text-sm text-purple-300/60 mb-4">Dive deeper into the symbols from this article:</p>
+<p class="text-sm text-purple-300/60 mb-4">Read up on the symbols mentioned in this article:</p>
 <div class="flex flex-wrap gap-3">
 <a class="inline-flex items-center gap-2 px-4 py-2 glass-button rounded-full text-sm hover:text-dream-salmon transition-colors" href="../symbols/night">Night Dream Meaning</a>
 <a class="inline-flex items-center gap-2 px-4 py-2 glass-button rounded-full text-sm hover:text-dream-salmon transition-colors" href="../symbols/water">Water Dream Meaning</a>
@@ -405,7 +405,7 @@ Write “no dream this morning” and how you feel, then get on with your day. I
         <a href="dream-incubation-guide" class="glass-panel rounded-xl p-6 block hover:border-dream-salmon/30 transition-all hover:-translate-y-1">
             <span class="text-xs text-dream-salmon uppercase mb-2 block">Guide</span>
             <h3 class="font-serif text-lg text-dream-cream mb-2">Dream Incubation: How to Dream About Exactly What You Want Tonight</h3>
-            <p class="text-sm text-gray-400">Learn the ancient art of dream incubation to solve problems, spark creativity, and explore specific topics in your dreams.</p>
+            <p class="text-sm text-gray-400">A six-step method for choosing a question before sleep and noting what comes back on waking, with what research shows and its limits.</p>
         </a>
         <a href="stop-nightmares-guide" class="glass-panel rounded-xl p-6 block hover:border-dream-salmon/30 transition-all hover:-translate-y-1">
             <span class="text-xs text-dream-salmon uppercase mb-2 block">Guide</span>

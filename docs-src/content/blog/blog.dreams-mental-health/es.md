@@ -458,17 +458,17 @@
         <a href="por-que-olvidamos-suenos" class="glass-panel rounded-xl p-6 block hover:border-dream-salmon/30 transition-all hover:-translate-y-1">
             <span class="text-xs text-dream-salmon uppercase mb-2 block">Ciencia</span>
             <h3 class="font-serif text-lg text-dream-cream mb-2">¿Por qué olvidamos los sueños al despertar? Las explicaciones científicas</h3>
-            <p class="text-sm text-gray-400">Descubre los mecanismos cerebrales y neuroquímicos que explican por qué olvidamos el 95% de nuestros sueños.</p>
+            <p class="text-sm text-gray-400">Por qué los sueños se borran a los pocos minutos de despertar, qué papel tienen el sueño REM y la memoria, y hábitos sencillos para recordar más.</p>
         </a>
         <a href="suenos-premonitorios-ciencia" class="glass-panel rounded-xl p-6 block hover:border-dream-salmon/30 transition-all hover:-translate-y-1">
             <span class="text-xs text-dream-salmon uppercase mb-2 block">Ciencia</span>
             <h3 class="font-serif text-lg text-dream-cream mb-2">¿Pueden los sueños predecir el futuro? La ciencia de los sueños premonitorios</h3>
-            <p class="text-sm text-gray-400">Explora la fascinante ciencia de los sueños premonitorios y si realmente pueden predecir el futuro.</p>
+            <p class="text-sm text-gray-400">Lo que dicen los estudios controlados sobre los sueños que parecen predecir el futuro, y cómo el azar y los sesgos de memoria explican muchos casos.</p>
         </a>
         <a href="por-que-sonamos-ciencia" class="glass-panel rounded-xl p-6 block hover:border-dream-salmon/30 transition-all hover:-translate-y-1">
             <span class="text-xs text-dream-salmon uppercase mb-2 block">Ciencia</span>
             <h3 class="font-serif text-lg text-dream-cream mb-2">¿Por qué soñamos? La ciencia detrás de tus aventuras nocturnas</h3>
-            <p class="text-sm text-gray-400">Explora la fascinante ciencia de los sueños. Aprende sobre las teorías principales, la actividad cerebral durante los sueños y lo que revelan sobre la consciencia.</p>
+            <p class="text-sm text-gray-400">Lo que la investigación ha medido sobre la memoria, las emociones y el ensayo de amenazas en los sueños, y lo que sigue siendo hipótesis.</p>
         </a>
   </div>
 </section>

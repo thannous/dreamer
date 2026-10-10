@@ -23,14 +23,14 @@ export function initDreamJourney(heroReady, seek = top => window.scrollTo({ top,
     seek(window.scrollY + track.getBoundingClientRect().top + offset, options);
   };
   const labels = {
-    en: 'Discover what connects them', fr: 'Découvre ce qui les relie',
-    de: 'Entdecke, was sie verbindet', es: 'Descubre qué los conecta',
-    it: 'Scopri cosa li collega', pt: 'Descubra o que os conecta',
+    en: 'What connects them', fr: 'Ce qui les relie',
+    de: 'Was sie verbindet', es: 'Lo que los conecta',
+    it: 'Cosa li collega', pt: 'O que os conecta',
   };
   const copy = [head.querySelector('h2').textContent, closing.textContent,
     labels[document.documentElement.lang.slice(0, 2)] || labels.en];
   const progressLabels = {
-    en: 'Scroll to explore', fr: 'Défile pour explorer', de: 'Scrollen zum Entdecken',
+    en: 'Scroll to explore', fr: 'Faites défiler pour explorer', de: 'Scrollen zum Entdecken',
     es: 'Desliza para explorar', it: 'Scorri per esplorare', pt: 'Role para explorar',
   };
   const progress = document.createElement('div');
@@ -102,7 +102,7 @@ export function initDreamJourney(heroReady, seek = top => window.scrollTo({ top,
     if (percent !== lastPercent) { lastPercent = percent; meter.setAttribute('aria-valuenow', String(percent)); }
     if (index !== lastIndex) {
       lastIndex = index;
-      meter.setAttribute('aria-valuetext', `${index + 1}/3 — ${copy[index]}`);
+      meter.setAttribute('aria-valuetext', `${index + 1}/3, ${copy[index]}`);
       dots.forEach((dot, i) => {
         dot.classList.toggle('is-current', i === index);
         dot.classList.toggle('is-past', i < index);

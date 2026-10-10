@@ -344,7 +344,7 @@ Una versión simplificada, sí: escribe tu pregunta antes de dormir, asóciala a
 <a class="glass-panel rounded-xl p-6 block hover:border-dream-salmon/30 transition-all hover:-translate-y-1" href="suenos-y-creatividad">
 <span class="text-xs text-dream-salmon uppercase mb-2 block">Ciencia</span>
 <h3 class="font-serif text-lg text-dream-cream mb-2">Sueños y creatividad: cómo tu cerebro dormido resuelve problemas</h3>
-<p class="text-sm text-gray-400">Descubre cómo los sueños estimulan la creatividad y la innovación, de Kekulé a la investigación moderna.</p>
+<p class="text-sm text-gray-400">Lo que dice la investigación sobre los sueños y la resolución de problemas, y cómo anotar una idea antes de que se esfume.</p>
 </a>
 <a class="glass-panel rounded-xl p-6 block hover:border-dream-salmon/30 transition-all hover:-translate-y-1" href="guia-incubacion-suenos">
 <span class="text-xs text-dream-salmon uppercase mb-2 block">Guía</span>

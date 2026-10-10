@@ -431,17 +431,17 @@
         <a href="comment-se-souvenir-de-ses-reves" class="glass-panel rounded-xl p-6 block hover:border-dream-salmon/30 transition-all hover:-translate-y-1">
             <span class="text-xs text-dream-salmon uppercase mb-2 block">Guide</span>
             <h3 class="font-serif text-lg text-dream-cream mb-2">Comment se souvenir de ses rêves : 10 techniques efficaces</h3>
-            <p class="text-sm text-gray-400">Découvrez des méthodes scientifiquement prouvées pour améliorer votre mémoire onirique et ne plus jamais oublier vos rêves au réveil. Des techniques simples à appliquer des ce soir.</p>
+            <p class="text-sm text-gray-400">Dix habitudes simples pour retenir plus de fragments au réveil, du réveil lent à la note prise avant de bouger.</p>
         </a>
         <a href="guide-incubation-reves" class="glass-panel rounded-xl p-6 block hover:border-dream-salmon/30 transition-all hover:-translate-y-1">
             <span class="text-xs text-dream-salmon uppercase mb-2 block">Guide</span>
             <h3 class="font-serif text-lg text-dream-cream mb-2">Incubation des rêves : comment rêver exactement de ce que vous voulez</h3>
-            <p class="text-sm text-gray-400">Apprenez l'art ancien de l'incubation onirique pour résoudre des problèmes et stimuler votre créativité.</p>
+            <p class="text-sm text-gray-400">Une méthode en six étapes pour choisir une question avant de dormir et noter ce qui revient au réveil, avec ce que dit la recherche et ses limites.</p>
         </a>
         <a href="guide-cauchemars" class="glass-panel rounded-xl p-6 block hover:border-dream-salmon/30 transition-all hover:-translate-y-1">
             <span class="text-xs text-dream-salmon uppercase mb-2 block">Guide</span>
             <h3 class="font-serif text-lg text-dream-cream mb-2">Cauchemars : Causes, Signification et Comment les Arrêter</h3>
-            <p class="text-sm text-gray-400">Pourquoi fait-on des cauchemars ? Découvrez les causes des mauvais rêves, leur signification et les techniques prouvées pour réduire leur fréquence et mieux dormir.</p>
+            <p class="text-sm text-gray-400">Pourquoi les cauchemars surviennent, ce qu'ils peuvent ou non signifier, et comment la répétition d'imagerie mentale et un sommeil plus régulier aident à les réduire.</p>
         </a>
   </div>
 </section>

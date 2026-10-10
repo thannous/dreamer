@@ -414,17 +414,17 @@
         <a href="pourquoi-oublie-reves-reveil" class="glass-panel rounded-xl p-6 block hover:border-dream-salmon/30 transition-all hover:-translate-y-1">
             <span class="text-xs text-dream-salmon uppercase mb-2 block">Science</span>
             <h3 class="font-serif text-lg text-dream-cream mb-2">Pourquoi oublie-t-on ses rêves au réveil ? Les explications scientifiques</h3>
-            <p class="text-sm text-gray-400">Découvrez les mécanismes cérébraux et neurochimiques qui expliquent pourquoi nous oublions 95% de nos rêves.</p>
+            <p class="text-sm text-gray-400">Pourquoi les rêves s'effacent quelques minutes après le réveil, le rôle du sommeil paradoxal et de la mémoire, et des gestes simples pour en garder plus.</p>
         </a>
         <a href="reves-premonitoires-science" class="glass-panel rounded-xl p-6 block hover:border-dream-salmon/30 transition-all hover:-translate-y-1">
             <span class="text-xs text-dream-salmon uppercase mb-2 block">Science</span>
             <h3 class="font-serif text-lg text-dream-cream mb-2">Les rêves peuvent-ils prédire l'avenir ? La science des rêves prémonitoires</h3>
-            <p class="text-sm text-gray-400">Explorez la science fascinante des rêves prémonitoires et s'ils peuvent vraiment prédire l'avenir.</p>
+            <p class="text-sm text-gray-400">Ce que disent les études contrôlées sur les rêves qui semblent prédire l'avenir, et comment le hasard et les biais de mémoire expliquent beaucoup de cas.</p>
         </a>
         <a href="reves-sante-mentale" class="glass-panel rounded-xl p-6 block hover:border-dream-salmon/30 transition-all hover:-translate-y-1">
             <span class="text-xs text-dream-salmon uppercase mb-2 block">Science</span>
             <h3 class="font-serif text-lg text-dream-cream mb-2">Rêves et Santé Mentale : Comment Votre Sommeil Révèle Votre Esprit</h3>
-            <p class="text-sm text-gray-400">Découvrez le lien profond entre les rêves et la santé mentale. Apprenez comment l'anxiété, la dépression et les traumatismes affectent vos rêves, et comment le travail onirique peut soutenir la guérison.</p>
+            <p class="text-sm text-gray-400">Comment l'anxiété, la dépression, le stress et les traumatismes se retrouvent dans les rêves, et quand des cauchemars fréquents justifient d'en parler à un professionnel.</p>
         </a>
   </div>
 </section>
