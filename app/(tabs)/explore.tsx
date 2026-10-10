@@ -162,6 +162,7 @@ export default function ExploreScreen() {
   const ritual = RITUALS.find((entry) => entry.id === selectedRitualId) ?? RITUALS[0];
   const header = (
     <NoctaliaScreenHeader
+      scene="path"
       titleKey="explore.title"
       variant="editorial"
       actions={[

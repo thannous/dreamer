@@ -1809,6 +1809,7 @@ export default function RecordingScreen() {
           >
             <View style={isDesktopWeb ? styles.desktopColumn : undefined}>
               <NoctaliaScreenHeader
+                scene={!keyboardVisible && !isCompactLandscape && !chatMode ? "capture" : undefined}
                 includeTopInset={false}
                 prominentTitle={!isCompactLandscape}
                 titleKey="nav.capture_dream"

@@ -122,7 +122,7 @@ jest.mock('@/services/storageService', () => ({
 jest.mock('@/components/dev/MockNavigationRail', () => ({ MockNavigationRail: () => null }));
 jest.mock('@/components/navigation/NoctaliaBottomNav', () => ({ NoctaliaBottomNav: () => null }));
 jest.mock('@/components/ui/icon-symbol', () => ({ IconSymbol: () => null }));
-jest.mock('@/components/recording/AtmosphereBackground', () => ({ AtmosphereBackground: () => null }));
+jest.mock('@/components/ui/DreamerBackground', () => ({ DreamerArtworkWindow: () => null, DreamerBackground: () => null }));
 jest.mock('@/components/recording/OfflineModelDownloadSheet', () => ({ OfflineModelDownloadSheet: () => null }));
 jest.mock('@/components/recording/RememberedDreamProfileChips', () => ({ RememberedDreamProfileChips: () => null }));
 jest.mock('@/components/recording/RecordingDraftProgress', () => ({ RecordingDraftProgress: () => null }));

@@ -12,11 +12,14 @@ import Svg, {
 
 import { getNoctaliaDesignTokens } from '@/constants/noctaliaDesign';
 import { useTheme } from '@/context/ThemeContext';
+import { DreamerBackground } from '@/components/ui/DreamerBackground';
+import type { DreamerScene } from '@/constants/dreamerArtwork';
 
 type AtmosphericBackgroundVariant = 'immersive' | 'subtle';
 
 interface AtmosphericBackgroundProps {
   variant?: AtmosphericBackgroundVariant;
+  scene?: DreamerScene;
 }
 
 /**
@@ -25,12 +28,16 @@ interface AtmosphericBackgroundProps {
  * - Thin orbit lines and horizon marks
  * - Soft texture without decorative blobs
  */
-export function AtmosphericBackground({ variant = 'immersive' }: AtmosphericBackgroundProps) {
+export function AtmosphericBackground({ variant = 'immersive', scene }: AtmosphericBackgroundProps) {
   const { width, height } = useWindowDimensions();
   const { mode, colors } = useTheme();
   const noctalia = useMemo(() => getNoctaliaDesignTokens(colors, mode), [colors, mode]);
   const isWeb = Platform.OS === 'web';
   const isSubtle = variant === 'subtle';
+
+  if (scene) {
+    return <DreamerBackground scene={scene} height={Math.min(height, isSubtle ? 360 : 460)} />;
+  }
 
   const gradientColors: readonly [string, string, ...string[]] = mode === 'dark'
     ? isSubtle

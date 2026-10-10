@@ -14,7 +14,7 @@ import {
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { router } from 'expo-router';
 
-import { AtmosphericBackground } from '@/components/inspiration/AtmosphericBackground';
+import { DreamerArtworkWindow } from '@/components/ui/DreamerBackground';
 import { EyeIcon, EyeOffIcon } from '@/components/icons/DreamIcons';
 import { ThemeLayout } from '@/constants/journalTheme';
 import { getAuthDesignTokens } from '@/constants/authTheme';
@@ -323,7 +323,6 @@ const ResetPasswordScreen: React.FC = () => {
       style={[styles.container, { backgroundColor: noctalia.screen.background }]}
       testID={TID.Screen.ResetPassword}
     >
-      {!isLucidTrainer ? <AtmosphericBackground /> : null}
       <ScrollView
         style={styles.scroll}
         contentContainerStyle={[
@@ -336,6 +335,7 @@ const ResetPasswordScreen: React.FC = () => {
         keyboardShouldPersistTaps="handled"
         automaticallyAdjustKeyboardInsets={Platform.OS === 'ios'}
       >
+        {!isLucidTrainer ? <DreamerArtworkWindow scene="journal" style={{ marginHorizontal: -ThemeLayout.spacing.md, marginBottom: 24 }} /> : null}
         <View
           style={[
             styles.card,

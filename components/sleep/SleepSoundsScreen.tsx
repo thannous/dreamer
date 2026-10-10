@@ -4,7 +4,7 @@ import Animated, { useReducedMotion } from 'react-native-reanimated';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { router } from 'expo-router';
 
-import { AtmosphericBackground } from '@/components/inspiration/AtmosphericBackground';
+import { DreamerArtworkWindow } from '@/components/ui/DreamerBackground';
 import { GlassCard } from '@/components/inspiration/GlassCard';
 import { PressableScale } from '@/components/motion';
 import { IconSymbol } from '@/components/ui/icon-symbol';
@@ -145,7 +145,6 @@ export function SleepSoundsScreen() {
 
   const reducedMotion = useReducedMotion();
   const backButtonTop = insets.top + ThemeLayout.spacing.lg20;
-  const contentPaddingTop = backButtonTop + 44 + ThemeLayout.spacing.lg;
   const downloadFailed = player.error === 'download_failed';
   const isPreparing =
     !preferencesLoaded ||
@@ -164,7 +163,6 @@ export function SleepSoundsScreen() {
         style={[styles.container, { backgroundColor: noctalia.screen.background }]}
         testID="screen.sleepSounds"
       >
-        <AtmosphericBackground />
 
         <Pressable
           onPress={() => router.back()}
@@ -183,18 +181,18 @@ export function SleepSoundsScreen() {
         >
           <IconSymbol name="chevron.left" size={21} color={noctalia.text.secondary} />
         </Pressable>
-
         <ScrollView
-          style={styles.scrollView}
+          style={[styles.scrollView, { marginTop: insets.top }]}
           contentContainerStyle={{
             paddingBottom: insets.bottom + ThemeLayout.spacing.xl,
-            paddingTop: contentPaddingTop,
+            paddingTop: 0,
           }}
           onScrollBeginDrag={scrollPerf.onScrollBeginDrag}
           onScrollEndDrag={scrollPerf.onScrollEndDrag}
           onMomentumScrollBegin={scrollPerf.onMomentumScrollBegin}
           onMomentumScrollEnd={scrollPerf.onMomentumScrollEnd}
         >
+          <DreamerArtworkWindow scene="sleep" />
           <View style={styles.content}>
             <View style={styles.titleSection}>
               <Animated.View
