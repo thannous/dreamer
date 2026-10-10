@@ -110,6 +110,7 @@
     "test": "jest",
     "test:fast": "jest --silent",
     "test:file": "jest --runTestsByPath --runInBand --silent",
+    "test:env:check": "node scripts/test-supabase-guard.mjs",
     "test:related": "jest --findRelatedTests --passWithNoTests --silent",
     "test:changed": "node ./scripts/run-jest-changed.js",
     "test:verify-local": "node --test scripts/test-verify-local.mjs",

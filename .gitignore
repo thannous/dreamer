@@ -63,6 +63,8 @@ yarn-error.*
 
 # local env files
 .env*.local
+# Test-login sessions (doc_web_interne/docs/test-login.md)
+.auth/
 .env.real
 .env.supabase
 .env.google.template
