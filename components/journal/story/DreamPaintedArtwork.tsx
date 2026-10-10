@@ -14,14 +14,16 @@ import { paintSettle } from './dreamStoryMotion';
  * where its canvas was, framed, and settles once. It does not jump to the cover above
  * the reader; the cover is how a later visit opens. Pressing it opens the full view.
  */
-export function DreamPaintedArtwork({ source, onOpen, onError }: {
+export function DreamPaintedArtwork({ source, land, onOpen, onError }: {
   source: ImageSource | null;
+  /** The painting has just landed: settle once. Later mounts show it at rest. */
+  land: boolean;
   onOpen: () => void;
   onError: () => void;
 }) {
   const { t } = useTranslation();
   const reduced = useReducedMotion();
-  const settle = useMemo(() => paintSettle(reduced), [reduced]);
+  const settle = useMemo(() => (land ? paintSettle(reduced) : null), [land, reduced]);
 
   return (
     <PressableScale

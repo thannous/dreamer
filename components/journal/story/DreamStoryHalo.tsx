@@ -1,4 +1,4 @@
-import React, { useMemo } from 'react';
+import React, { useEffect, useMemo } from 'react';
 import { View, type StyleProp, type ViewStyle } from 'react-native';
 import Animated, { type CSSStyle } from 'react-native-reanimated';
 
@@ -13,7 +13,12 @@ import { DREAM_STORY } from './dreamStoryMotion';
  * wash, so its artwork cannot hide it, and never intercepting a touch. A fade only, so
  * it also plays under reduce motion; decorative, so assistive technology ignores it.
  */
-export function DreamStoryHalo() {
+export function DreamStoryHalo({ onDone }: { onDone?: () => void }) {
+  useEffect(() => {
+    if (!onDone) return;
+    const timer = setTimeout(onDone, DREAM_STORY.epilogueHalo);
+    return () => clearTimeout(timer);
+  }, [onDone]);
   const glow = useMemo<CSSStyle<ViewStyle>>(() => ({
     animationName: {
       '0%': { opacity: 0 },
