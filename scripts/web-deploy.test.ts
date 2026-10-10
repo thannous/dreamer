@@ -4,6 +4,10 @@ const path = require('path');
 const { execFileSync } = require('child_process');
 
 const {
+  SIGNAL_EXIT_CODES,
+  VERCEL_CLI_FILES_SHA256,
+  VERCEL_CLI_INTEGRITY,
+  VERCEL_CLI_VERSION,
   VERCEL_ORG_ID,
   VERCEL_PROJECT_ID,
   buildEnv,
@@ -11,7 +15,11 @@ const {
   buildVercelDeployArgs,
   buildVercelLinkArgs,
   buildVercelPullArgs,
+  checkPinnedCli,
   collectSecrets,
+  handledSignals,
+  hashPackageFiles,
+  lockEntries,
   main,
   parseEnvFile,
   parseTarget,
@@ -19,11 +27,15 @@ const {
   run,
   stopProcessTree,
   sweepStaleCopies,
+  takeVercelToken,
   vercelEnv,
 } = require('./web-deploy');
 const { EventEmitter } = require('events');
 
-const CLI = 'vercel@62.2.0';
+// The pinned CLI as checkPinnedCli returns it (faked here: no install).
+const NODE = '/usr/bin/node';
+const ENTRY = '/repo/node_modules/vercel/dist/vc.js';
+const NATIVE_OFF = { VERCEL_CLI_USE_NATIVE_BINARY: '0' };
 const PROJECT = ['--scope', 'thanhs-projects-9baa3976', '--project', 'noctalia'];
 const SECRET = 'sk_live_pulled_secret_value_123';
 const TOKEN = 'vercel_token_value_abcdef';
@@ -87,7 +99,7 @@ describe('web-deploy: guarded, clean copy, pinned project, prebuilt upload', () 
   function fakeCli(calls: Call[], { linkJson = link(), pullJson = link(), failOn = '' } = {}) {
     return (command: string, args: string[], options: { cwd: string; env: Record<string, string | undefined> }) => {
       const vercelDir = path.join(options.cwd, '.vercel');
-      const sub = args[2];
+      const sub = args[1];
       if (sub === 'link') {
         fs.mkdirSync(vercelDir, { recursive: true });
         fs.writeFileSync(path.join(vercelDir, 'project.json'), linkJson);
@@ -123,11 +135,12 @@ describe('web-deploy: guarded, clean copy, pinned project, prebuilt upload', () 
         tempRoot,
         env: { PATH: process.env.PATH, VERCEL_TOKEN: TOKEN },
         log: (line: string) => logs.push(line),
+        checkCli: () => ({ command: NODE, args: [ENTRY] }),
         ...overrides,
       },
     };
   }
-  const sub = (calls: Call[], name: string) => calls.filter((call) => call.args[3] === name);
+  const sub = (calls: Call[], name: string) => calls.filter((call) => call.args[2] === name);
   const repoHasEnvFile = () => listFiles(repo).some((file) => /(^|\/)\.env\.production/.test(file));
 
   it('a refusal runs nothing and creates no copy', async () => {
@@ -144,10 +157,10 @@ describe('web-deploy: guarded, clean copy, pinned project, prebuilt upload', () 
     const setup = deps(async () => accepted());
     await main(['prod'], setup.deps);
     expect(setup.calls.map((call) => call.args)).toEqual([
-      ['npx', '--yes', CLI, 'link', '--yes', ...PROJECT],
-      ['npx', '--yes', CLI, 'pull', '--yes', '--environment=production', ...PROJECT],
-      ['npx', '--yes', CLI, 'build', '--prod'],
-      ['npx', '--yes', CLI, 'deploy', '--prebuilt', '--prod', '--yes', ...PROJECT, '--meta', `gitCommitSha=${HEAD}`],
+      [NODE, ENTRY, 'link', '--yes', ...PROJECT],
+      [NODE, ENTRY, 'pull', '--yes', '--environment=production', ...PROJECT],
+      [NODE, ENTRY, 'build', '--prod'],
+      [NODE, ENTRY, 'deploy', '--prebuilt', '--prod', '--yes', ...PROJECT, '--meta', `gitCommitSha=${HEAD}`],
     ]);
     const cwds = new Set(setup.calls.map((call) => call.cwd));
     expect(cwds.size).toBe(1);
@@ -184,12 +197,12 @@ describe('web-deploy: guarded, clean copy, pinned project, prebuilt upload', () 
     const inner = fakeCli(calls);
     const setup = deps(async () => accepted(), {
       runCommand: (command: string, args: string[], options: { cwd: string; env: Record<string, string | undefined> }) => {
-        if (args[2] === 'build') return;
+        if (args[1] === 'build') return;
         inner(command, args, options);
       },
     });
     await expect(main(['prod'], setup.deps)).rejects.toThrow('vercel build wrote no .vercel/output/config.json');
-    expect(calls.filter((call) => call.args[3] === 'deploy')).toEqual([]);
+    expect(calls.filter((call) => call.args[2] === 'deploy')).toEqual([]);
     expect(fs.readdirSync(tempRoot)).toEqual([]);
   });
 
@@ -216,9 +229,10 @@ describe('web-deploy: guarded, clean copy, pinned project, prebuilt upload', () 
       },
     });
     await main(['prod'], setup.deps);
-    expect(setup.calls.map((call) => call.args[3])).toEqual(['link', 'pull', 'build', 'deploy']);
-    for (const call of setup.calls.filter((entry) => entry.args[3] !== 'build')) {
+    expect(setup.calls.map((call) => call.args[2])).toEqual(['link', 'pull', 'build', 'deploy']);
+    for (const call of setup.calls.filter((entry) => entry.args[2] !== 'build')) {
       expect(call.env).toEqual({
+        ...NATIVE_OFF,
         PATH: '/usr/bin',
         HOME: '/home/release',
         TMPDIR: '/tmp',
@@ -228,8 +242,9 @@ describe('web-deploy: guarded, clean copy, pinned project, prebuilt upload', () 
       });
       expect(call.args).toEqual(expect.arrayContaining(PROJECT));
     }
-    const [build] = setup.calls.filter((entry) => entry.args[3] === 'build');
+    const [build] = setup.calls.filter((entry) => entry.args[2] === 'build');
     expect(build.env).toEqual({
+      ...NATIVE_OFF,
       PATH: '/usr/bin',
       HOME: path.join(path.dirname(build.cwd), 'build-home'),
       TMPDIR: '/tmp',
@@ -246,11 +261,11 @@ describe('web-deploy: guarded, clean copy, pinned project, prebuilt upload', () 
   it('vercel build never sees VERCEL_TOKEN or the real HOME: env assertion and a fake build that prints its env', async () => {
     const setup = deps(async () => accepted());
     await main(['prod'], setup.deps);
-    const byStep = Object.fromEntries(setup.calls.map((call) => [call.args[3], call.env]));
+    const byStep = Object.fromEntries(setup.calls.map((call) => [call.args[2], call.env]));
     expect(byStep.build.VERCEL_TOKEN).toBeUndefined();
     expect(byStep.build.HOME).not.toBe(process.env.HOME);
     for (const step of ['link', 'pull', 'deploy']) expect(byStep[step].VERCEL_TOKEN).toBe(TOKEN);
-    expect(setup.calls.find((call) => call.args[3] === 'build')?.args).not.toEqual(expect.arrayContaining(['--project', '--scope', '--yes', 'vercel']));
+    expect(setup.calls.find((call) => call.args[2] === 'build')?.args).not.toEqual(expect.arrayContaining(['--project', '--scope', '--yes', 'vercel']));
 
     // A real child with the build env, printing everything it can see.
     const buildHome = fs.mkdtempSync(path.join(tempRoot, 'home-'));
@@ -266,16 +281,68 @@ describe('web-deploy: guarded, clean copy, pinned project, prebuilt upload', () 
     expect(JSON.stringify(printed)).not.toContain(TOKEN);
     expect(printed.HOME).toBe(buildHome);
     expect(buildEnv({ VERCEL_TOKEN: 't', Vercel_Token: 't', HOME: 'h', USERPROFILE: 'u' }, 'B', 'win32')).toEqual({
+      ...NATIVE_OFF,
       HOME: 'B',
       USERPROFILE: 'B',
       npm_config_cache: path.join('h', '.npm'),
     });
   });
 
-  it('vercelEnv keeps only the allowlist, plus the Windows essentials on win32', () => {
+  it('vercelEnv keeps only the allowlist, plus the Windows essentials on win32, and never the token', () => {
     const ambient = { PATH: 'p', HOME: 'h', VERCEL_TOKEN: 't', EXPO_PUBLIC_FOO: 'f', NOCTALIA_X: 'n', VERCEL_PROJECT_ID: 'x', SystemRoot: 'C:\\Windows', APPDATA: 'a', TEMP: 'C:\\T', TMP: 'C:\\T' };
-    expect(vercelEnv(ambient, 'linux')).toEqual({ PATH: 'p', HOME: 'h', VERCEL_TOKEN: 't' });
-    expect(vercelEnv(ambient, 'win32')).toEqual({ PATH: 'p', HOME: 'h', VERCEL_TOKEN: 't', SystemRoot: 'C:\\Windows', APPDATA: 'a', TEMP: 'C:\\T', TMP: 'C:\\T' });
+    expect(vercelEnv(ambient, 'linux')).toEqual({ ...NATIVE_OFF, PATH: 'p', HOME: 'h' });
+    expect(vercelEnv(ambient, 'win32')).toEqual({ ...NATIVE_OFF, PATH: 'p', HOME: 'h', SystemRoot: 'C:\\Windows', APPDATA: 'a', TEMP: 'C:\\T', TMP: 'C:\\T' });
+  });
+
+  it('takes VERCEL_TOKEN out of process.env at start: absent from process.env during every step and from the build env, present only for link, pull and deploy', async () => {
+    const saved = process.env.VERCEL_TOKEN;
+    process.env.VERCEL_TOKEN = TOKEN;
+    try {
+      const seen: Record<string, { processEnv: string | undefined; child: string | undefined }> = {};
+      const calls: Call[] = [];
+      const inner = fakeCli(calls);
+      const setup = deps(async () => {
+        expect(process.env.VERCEL_TOKEN).toBeUndefined();
+        return accepted();
+      }, {
+        env: process.env,
+        runCommand: (command: string, args: string[], options: { cwd: string; env: Record<string, string | undefined> }) => {
+          seen[args[1]] = { processEnv: process.env.VERCEL_TOKEN, child: options.env.VERCEL_TOKEN };
+          inner(command, args, options);
+        },
+      });
+      await main(['prod'], setup.deps);
+      expect(process.env.VERCEL_TOKEN).toBeUndefined();
+      expect(Object.keys(seen)).toEqual(['link', 'pull', 'build', 'deploy']);
+      for (const step of ['link', 'pull', 'deploy']) expect(seen[step]).toEqual({ processEnv: undefined, child: TOKEN });
+      expect(seen.build).toEqual({ processEnv: undefined, child: undefined });
+      expect(JSON.stringify(calls.find((call) => call.args[2] === 'build')?.env)).not.toContain(TOKEN);
+    } finally {
+      if (saved === undefined) delete process.env.VERCEL_TOKEN;
+      else process.env.VERCEL_TOKEN = saved;
+    }
+  });
+
+  it('takeVercelToken returns the token and removes every case spelling from the env it is given', () => {
+    const env: Record<string, string | undefined> = { PATH: 'p', VERCEL_TOKEN: 'real', vercel_token: 'other' };
+    expect(takeVercelToken(env)).toBe('real');
+    expect(env).toEqual({ PATH: 'p' });
+    expect(takeVercelToken({ PATH: 'p' })).toBeUndefined();
+  });
+
+  it('a real run removes VERCEL_TOKEN from its own process.env before any step starts', async () => {
+    const script = `
+      const wd = require(${JSON.stringify(path.join(__dirname, 'web-deploy.js'))});
+      const seen = [];
+      wd.main(['prod'], {
+        guardProduction: async () => { seen.push('guard:' + (process.env.VERCEL_TOKEN === undefined)); throw new Error('stop here'); },
+        checkCli: () => ({ command: 'vercel', args: [] }),
+        sweep: () => [],
+        log: () => {},
+      }).catch(() => console.log(JSON.stringify({ seen, after: process.env.VERCEL_TOKEN === undefined })));
+    `;
+    const out = execFileSync(process.execPath, ['-e', script], { env: { PATH: process.env.PATH, VERCEL_TOKEN: TOKEN }, encoding: 'utf8' });
+    expect(JSON.parse(out)).toEqual({ seen: ['guard:true'], after: true });
   });
 
   it.each([
@@ -284,7 +351,7 @@ describe('web-deploy: guarded, clean copy, pinned project, prebuilt upload', () 
   ])('refuses before pull, build or upload when the link points at %s', async (_label, projectId, orgId) => {
     const setup = deps(async () => accepted(), {}, { linkJson: link(projectId, orgId) });
     await expect(main(['prod'], setup.deps)).rejects.toThrow('not thanhs-projects-9baa3976/noctalia');
-    expect(setup.calls.map((call) => call.args[3])).toEqual(['link']);
+    expect(setup.calls.map((call) => call.args[2])).toEqual(['link']);
     expect(setup.deps.guardProduction).toHaveBeenCalledTimes(1);
     expect(fs.readdirSync(tempRoot)).toEqual([]);
   });
@@ -292,7 +359,7 @@ describe('web-deploy: guarded, clean copy, pinned project, prebuilt upload', () 
   it('refuses before build or upload when vercel pull rewrites the link to another project', async () => {
     const setup = deps(async () => accepted(), {}, { pullJson: link('prj_other') });
     await expect(main(['prod'], setup.deps)).rejects.toThrow('not thanhs-projects-9baa3976/noctalia');
-    expect(setup.calls.map((call) => call.args[3])).toEqual(['link', 'pull']);
+    expect(setup.calls.map((call) => call.args[2])).toEqual(['link', 'pull']);
     expect(fs.readdirSync(tempRoot)).toEqual([]);
   });
 
@@ -414,6 +481,8 @@ describe('web-deploy: guarded, clean copy, pinned project, prebuilt upload', () 
   it.each([
     ['SIGINT', 130],
     ['SIGTERM', 143],
+    ['SIGHUP', 129],
+    ['SIGQUIT', 131],
   ])('on %s during the build: stops the CLI, removes the temp copy and the env file, exits %i, deploys nothing', async (signal, code) => {
     const proc = Object.assign(new EventEmitter(), {
       pid: process.pid,
@@ -431,13 +500,13 @@ describe('web-deploy: guarded, clean copy, pinned project, prebuilt upload', () 
       stopTree,
       runCommand: (command: string, args: string[], options: { cwd: string; env: Record<string, string | undefined>; onChild: (c: unknown) => void }) => {
         inner(command, args, options);
-        if (args[2] === 'build') {
+        if (args[1] === 'build') {
           copyDir = options.cwd;
           options.onChild(child);
           expect(fs.existsSync(path.join(copyDir, '.vercel', '.env.production.local'))).toBe(true);
           proc.emit(signal);
           // The stopped step then fails, as a killed CLI does.
-          throw new Error(`Command failed (${signal}): npx`);
+          throw new Error(`Command failed (${signal}): vercel`);
         }
       },
     });
@@ -447,8 +516,53 @@ describe('web-deploy: guarded, clean copy, pinned project, prebuilt upload', () 
     expect(stopTree).toHaveBeenCalledWith(child, { timeoutMs: 5000 });
     expect(fs.existsSync(copyDir)).toBe(false);
     expect(fs.readdirSync(tempRoot)).toEqual([]);
-    expect(calls.filter((call) => call.args[3] === 'deploy')).toEqual([]);
-    expect(proc.listenerCount('SIGINT') + proc.listenerCount('SIGTERM')).toBe(0);
+    expect(calls.filter((call) => call.args[2] === 'deploy')).toEqual([]);
+    for (const name of ['SIGINT', 'SIGTERM', 'SIGHUP', 'SIGQUIT']) expect(proc.listenerCount(name)).toBe(0);
+  });
+
+  it.each([
+    ['link', 'SIGHUP', 129, 'pull'],
+    ['pull', 'SIGQUIT', 131, 'build'],
+    ['build', 'SIGTERM', 143, 'deploy'],
+  ])('a %s step that exits 0 right after %s starts no further step: exit %i, no %s, copy removed', async (during, signal, code, next) => {
+    const proc = Object.assign(new EventEmitter(), {
+      pid: process.pid,
+      exit: jest.fn((exitCode: number) => {
+        throw new Error(`exit ${exitCode}`);
+      }),
+    });
+    // The handler's tree stop takes a moment, as a real one does, so the
+    // step's success resolves first.
+    const stopTree = jest.fn(() => new Promise<void>((resolve) => setTimeout(resolve, 50)));
+    const calls: Call[] = [];
+    const inner = fakeCli(calls);
+    const setup = deps(async () => accepted(), {
+      proc,
+      stopTree,
+      runCommand: async (command: string, args: string[], options: { cwd: string; env: Record<string, string | undefined>; onChild: (c: unknown) => void }) => {
+        inner(command, args, options);
+        if (args[1] === during) {
+          options.onChild({ pid: 4321 });
+          proc.emit(signal);
+          options.onChild(null);
+        }
+      },
+    });
+    await expect(main(['prod'], setup.deps)).rejects.toThrow(`exit ${code}`);
+    expect(proc.exit).toHaveBeenCalledTimes(1);
+    expect(proc.exit).toHaveBeenCalledWith(code);
+    const steps = calls.map((call) => call.args[2]);
+    expect(steps[steps.length - 1]).toBe(during);
+    expect(steps).not.toContain(next);
+    expect(setup.deps.guardProduction).toHaveBeenCalledTimes(1);
+    expect(fs.readdirSync(tempRoot)).toEqual([]);
+  });
+
+  it('handles SIGINT, SIGTERM, SIGHUP and SIGQUIT with exit 128 + the signal number (no SIGQUIT on Windows)', () => {
+    for (const [signal, code] of Object.entries(SIGNAL_EXIT_CODES)) expect(code).toBe(128 + os.constants.signals[signal]);
+    expect(handledSignals('linux')).toEqual(['SIGINT', 'SIGTERM', 'SIGHUP', 'SIGQUIT']);
+    expect(handledSignals('darwin')).toEqual(['SIGINT', 'SIGTERM', 'SIGHUP', 'SIGQUIT']);
+    expect(handledSignals('win32')).toEqual(['SIGINT', 'SIGTERM', 'SIGHUP']);
   });
 
   it('a real SIGTERM to a running publish removes the temp copy and exits 143', async () => {
@@ -460,6 +574,7 @@ describe('web-deploy: guarded, clean copy, pinned project, prebuilt upload', () 
         rootDir: ${JSON.stringify(repo)},
         tempRoot: ${JSON.stringify(tempRoot)},
         log: () => {},
+        checkCli: () => ({ command: 'vercel', args: [] }),
         runCommand: (command, args, options) => {
           console.log('READY ' + options.cwd);
           return run(process.execPath, ['-e', 'setTimeout(() => {}, 30000)'], options);
@@ -514,7 +629,11 @@ describe('web-deploy: guarded, clean copy, pinned project, prebuilt upload', () 
     setTimeout(() => {}, 60000);
   `;
 
-  it('a real SIGTERM during a step kills the CLI and its grandchild (whole process group), then exits 143', async () => {
+  it.each([
+    ['SIGTERM', 143],
+    ['SIGHUP', 129],
+    ['SIGQUIT', 131],
+  ])('a real %s during a step kills the CLI and its grandchild (whole process group), removes the copy, then exits %i', async (signal, code) => {
     if (process.platform === 'win32') return;
     const pidDir = fs.mkdtempSync(path.join(os.tmpdir(), 'web-deploy-pids-'));
     const pidFile = path.join(pidDir, 'grandchild.pid');
@@ -526,6 +645,7 @@ describe('web-deploy: guarded, clean copy, pinned project, prebuilt upload', () 
           rootDir: ${JSON.stringify(repo)},
           tempRoot: ${JSON.stringify(tempRoot)},
           log: () => {},
+          checkCli: () => ({ command: 'vercel', args: [] }),
           runCommand: (command, args, options) => {
             console.log('READY ' + options.cwd);
             return wd.run(process.execPath, ['-e', ${JSON.stringify(fakeCliWithGrandchild(pidFile))}], options);
@@ -546,11 +666,15 @@ describe('web-deploy: guarded, clean copy, pinned project, prebuilt upload', () 
       expect(await waitFor(() => fs.existsSync(pidFile) && fs.readFileSync(pidFile, 'utf8').length > 0)).toBe(true);
       const grandchildPid = Number(fs.readFileSync(pidFile, 'utf8'));
       expect(alive(grandchildPid)).toBe(true);
+      let stderr = '';
+      harness.stderr.on('data', (chunk: Buffer) => (stderr += chunk.toString()));
       const exitCode = await new Promise((resolve) => {
         harness.on('exit', (codeValue: number) => resolve(codeValue));
-        harness.kill('SIGTERM');
+        harness.kill(signal);
       });
-      expect(exitCode).toBe(143);
+      expect(exitCode).toBe(code);
+      expect(stderr).toContain(`Stopped by ${signal}`);
+      expect(stderr).toContain(`exit ${code}`);
       expect(await waitFor(() => !alive(grandchildPid))).toBe(true);
       expect(fs.existsSync(copy)).toBe(false);
       expect(fs.readdirSync(tempRoot)).toEqual([]);
@@ -581,6 +705,42 @@ describe('web-deploy: guarded, clean copy, pinned project, prebuilt upload', () 
       expect(((await running) as Error).message).toMatch(/Command failed \(SIGKILL\)/);
       expect(await waitFor(() => !alive(grandchildPid))).toBe(true);
       expect(alive((child as unknown as { pid: number }).pid)).toBe(false);
+    } finally {
+      fs.rmSync(pidDir, { recursive: true, force: true });
+    }
+  }, 20000);
+
+  it('stopProcessTree waits for the whole group: a CLI that dies on SIGTERM does not end the stop while a grandchild ignores it', async () => {
+    if (process.platform === 'win32') return;
+    const pidDir = fs.mkdtempSync(path.join(os.tmpdir(), 'web-deploy-pids-'));
+    const pidFile = path.join(pidDir, 'grandchild.pid');
+    try {
+      // The CLI keeps the default SIGTERM action; only its grandchild ignores it.
+      const cli = `
+        const { spawn } = require('child_process');
+        const grandchild = spawn(process.execPath, ['-e', "process.on('SIGTERM', () => {}); setTimeout(() => {}, 60000)"], { stdio: 'ignore' });
+        require('fs').writeFileSync(${JSON.stringify(pidFile)}, String(grandchild.pid));
+        setTimeout(() => {}, 60000);
+      `;
+      let child: { pid: number } | null = null;
+      const running = run(process.execPath, ['-e', cli], {
+        cwd: pidDir,
+        env: { PATH: process.env.PATH },
+        write: () => {},
+        onChild: (value: { pid: number } | null) => {
+          if (value) child = value;
+        },
+      }).catch((error: Error) => error);
+      expect(await waitFor(() => fs.existsSync(pidFile) && fs.readFileSync(pidFile, 'utf8').length > 0)).toBe(true);
+      const grandchildPid = Number(fs.readFileSync(pidFile, 'utf8'));
+      // Let the grandchild install its SIGTERM handler.
+      await new Promise((resolve) => setTimeout(resolve, 300));
+      const started = Date.now();
+      await stopProcessTree(child, { timeoutMs: 400 });
+      expect(((await running) as Error).message).toMatch(/Command failed \(SIGTERM\)/);
+      expect(Date.now() - started).toBeGreaterThanOrEqual(350);
+      // Gone when the stop returns, before any cleanup would run.
+      expect(alive(grandchildPid)).toBe(false);
     } finally {
       fs.rmSync(pidDir, { recursive: true, force: true });
     }
@@ -621,7 +781,7 @@ describe('web-deploy: guarded, clean copy, pinned project, prebuilt upload', () 
     const setup = deps(async () => accepted(), {
       sweep: (options: { tempRoot: string }) => sweepStaleCopies({ ...options, alive: () => false }),
       runCommand: (command: string, args: string[], options: { cwd: string; env: Record<string, string | undefined> }) => {
-        if (args[2] === 'link') ownerSeen = fs.readFileSync(path.join(path.dirname(options.cwd), 'owner.pid'), 'utf8').trim();
+        if (args[1] === 'link') ownerSeen = fs.readFileSync(path.join(path.dirname(options.cwd), 'owner.pid'), 'utf8').trim();
         inner(command, args, options);
       },
     });
@@ -637,7 +797,7 @@ describe('web-deploy: guarded, clean copy, pinned project, prebuilt upload', () 
     const inner = fakeCli(calls);
     const setup = deps(async () => accepted(), {
       runCommand: (command: string, args: string[], options: { cwd: string; env: Record<string, string | undefined> }) => {
-        if (args[2] === 'link') mode = fs.statSync(path.dirname(options.cwd)).mode & 0o777;
+        if (args[1] === 'link') mode = fs.statSync(path.dirname(options.cwd)).mode & 0o777;
         inner(command, args, options);
       },
     });
@@ -645,14 +805,15 @@ describe('web-deploy: guarded, clean copy, pinned project, prebuilt upload', () 
     expect(mode).toBe(0o700);
   });
 
-  it('pins the CLI in every command and the project in every authenticated one, never --token', () => {
+  it('names the project in every authenticated command, never --token, and never goes through npx', () => {
     for (const args of [buildVercelLinkArgs(), buildVercelPullArgs(), buildVercelDeployArgs(HEAD)]) {
-      expect(args[1]).toBe(CLI);
       expect(args).toEqual(expect.arrayContaining(PROJECT));
       expect(args).not.toContain('--token');
     }
     // build resolves the project from the checked local link only.
-    expect(buildVercelBuildArgs()).toEqual(['--yes', CLI, 'build', '--prod']);
+    expect(buildVercelBuildArgs()).toEqual(['build', '--prod']);
+    const source = fs.readFileSync(path.join(__dirname, 'web-deploy.js'), 'utf8');
+    expect(source).not.toMatch(/['"]npx['"]|npx --yes/);
     expect(VERCEL_PROJECT_ID).toBe('prj_ehKoWHHtWwekaivfEmqCCHRbjogu');
     expect(VERCEL_ORG_ID).toBe('team_2wbw33JALkqNG73AvmOQO17L');
   });
@@ -662,6 +823,198 @@ describe('web-deploy: guarded, clean copy, pinned project, prebuilt upload', () 
     const source = fs.readFileSync(path.join(__dirname, 'web-deploy.js'), 'utf8');
     expect(source).toContain("await import('./check-site-publish-proof.mjs')");
     expect(source).not.toMatch(/OVERRIDE|--force|--override|'--token'/);
+  });
+
+  it('the CLI is the exact devDependency vercel@62.2.0, locked in package-lock.json', () => {
+    expect(VERCEL_CLI_VERSION).toBe('62.2.0');
+    const pkg = JSON.parse(fs.readFileSync(path.join(__dirname, '..', 'package.json'), 'utf8'));
+    expect(pkg.devDependencies.vercel).toBe('62.2.0');
+    const lock = JSON.parse(fs.readFileSync(path.join(__dirname, '..', 'package-lock.json'), 'utf8'));
+    expect(lock.packages[''].devDependencies.vercel).toBe('62.2.0');
+    expect(lock.packages['node_modules/vercel'].version).toBe('62.2.0');
+    expect(lock.packages['node_modules/vercel'].integrity).toBe(VERCEL_CLI_INTEGRITY);
+    expect(VERCEL_CLI_FILES_SHA256).toMatch(/^[0-9a-f]{64}$/);
+  });
+
+  // A fake install shaped like `npm ci` leaves it: the package with its bin
+  // entry, the tracked lockfile and npm's install record.
+  function fakeInstall(root: string, { pkgJson, entry = 'export {};\n', installed }: { pkgJson?: string; entry?: string; installed?: (lock: any) => void } = {}) {
+    const pkgDir = path.join(root, 'node_modules', 'vercel');
+    fs.mkdirSync(path.join(pkgDir, 'dist'), { recursive: true });
+    fs.writeFileSync(path.join(pkgDir, 'package.json'), pkgJson ?? JSON.stringify({ name: 'vercel', version: '62.2.0', bin: { vc: './dist/vc.js', vercel: './dist/vc.js' } }));
+    fs.writeFileSync(path.join(pkgDir, 'dist', 'vc.js'), entry);
+    const entries = {
+      'node_modules/vercel': {
+        version: '62.2.0',
+        resolved: 'https://registry.npmjs.org/vercel/-/vercel-62.2.0.tgz',
+        integrity: VERCEL_CLI_INTEGRITY,
+        dev: true,
+        dependencies: { '@vercel/cli-auth': '1.0.0', undici: '7.0.0' },
+        optionalDependencies: { '@esbuild/aix-ppc64': '0.27.0' },
+      },
+      // Hoisted dependencies of the CLI, direct and transitive, and a package
+      // outside its closure.
+      'node_modules/@vercel/cli-auth': { version: '1.0.0', resolved: 'https://registry.npmjs.org/@vercel/cli-auth/-/cli-auth-1.0.0.tgz', integrity: 'sha512-cliauth', dev: true, dependencies: { jose: '^6.1.3' } },
+      'node_modules/jose': { version: '6.2.3', resolved: 'https://registry.npmjs.org/jose/-/jose-6.2.3.tgz', integrity: 'sha512-jose', dev: true },
+      'node_modules/left-pad': { version: '1.3.0', resolved: 'https://registry.npmjs.org/left-pad/-/left-pad-1.3.0.tgz', integrity: 'sha512-leftpad' },
+      'node_modules/vercel/node_modules/undici': { version: '7.0.0', resolved: 'https://registry.npmjs.org/undici/-/undici-7.0.0.tgz', integrity: 'sha512-undici', dev: true },
+      'node_modules/vercel/node_modules/@esbuild/aix-ppc64': { version: '0.27.0', resolved: 'https://registry.npmjs.org/x.tgz', integrity: 'sha512-aix', dev: true, optional: true },
+    };
+    fs.writeFileSync(path.join(root, 'package-lock.json'), JSON.stringify({ packages: { '': {}, ...entries } }));
+    const { 'node_modules/vercel/node_modules/@esbuild/aix-ppc64': _otherOs, ...installedEntries } = entries;
+    const record = { packages: JSON.parse(JSON.stringify(installedEntries)) };
+    if (installed) installed(record);
+    fs.writeFileSync(path.join(root, 'node_modules', '.package-lock.json'), JSON.stringify(record));
+    return { pkgDir, sha: hashPackageFiles(pkgDir) };
+  }
+  const newRoot = () => fs.mkdtempSync(path.join(tempRoot, 'root-'));
+
+  it('checkPinnedCli accepts a matching install and returns node on the package entry file, not node_modules/.bin', () => {
+    const root = newRoot();
+    const { sha } = fakeInstall(root);
+    const cli = checkPinnedCli(root, { expectedSha256: sha });
+    expect(cli).toEqual({ command: process.execPath, args: [fs.realpathSync(path.join(root, 'node_modules', 'vercel', 'dist', 'vc.js'))] });
+    expect(cli.args[0]).not.toContain('.bin');
+    // The committed pin is not this fixture's hash.
+    expect(() => checkPinnedCli(root)).toThrow(`not the pinned ${VERCEL_CLI_FILES_SHA256}`);
+  });
+
+  it('checkPinnedCli refuses the reproduced swap: a one-line package.json saying 62.2.0 and .bin/vercel linked to any script', () => {
+    const root = newRoot();
+    fs.mkdirSync(path.join(root, 'node_modules', 'vercel'), { recursive: true });
+    fs.mkdirSync(path.join(root, 'node_modules', '.bin'));
+    fs.writeFileSync(path.join(root, 'node_modules', 'vercel', 'package.json'), '{"version":"62.2.0"}');
+    const evil = path.join(root, 'evil.js');
+    fs.writeFileSync(evil, 'console.log(process.env.VERCEL_TOKEN)');
+    fs.symlinkSync(evil, path.join(root, 'node_modules', '.bin', 'vercel'));
+    expect(() => checkPinnedCli(root)).toThrow('package.json is undefined@"62.2.0"');
+    expect(() => checkPinnedCli(root, { expectedSha256: hashPackageFiles(path.join(root, 'node_modules', 'vercel')) })).toThrow('Run `npm ci`');
+  });
+
+  it('checkPinnedCli refuses a missing install and a wrong version', () => {
+    expect(() => checkPinnedCli(newRoot())).toThrow('node_modules/vercel is missing');
+    const root = newRoot();
+    const { sha } = fakeInstall(root, { pkgJson: JSON.stringify({ name: 'vercel', version: '62.1.0', bin: { vercel: './dist/vc.js' } }) });
+    expect(() => checkPinnedCli(root, { expectedSha256: sha })).toThrow('"vercel"@"62.1.0"');
+  });
+
+  it('checkPinnedCli refuses a symlinked node_modules/vercel (npm link) even when its content matches', () => {
+    const root = newRoot();
+    const elsewhere = newRoot();
+    const { pkgDir, sha } = fakeInstall(elsewhere);
+    fakeInstall(root);
+    fs.rmSync(path.join(root, 'node_modules', 'vercel'), { recursive: true });
+    fs.symlinkSync(pkgDir, path.join(root, 'node_modules', 'vercel'));
+    expect(() => checkPinnedCli(root, { expectedSha256: sha })).toThrow('symlinked package or npm link');
+  });
+
+  it('checkPinnedCli refuses a symlinked entry file, outside or inside the package', () => {
+    const root = newRoot();
+    const { pkgDir, sha } = fakeInstall(root);
+    const evil = path.join(root, 'evil.js');
+    fs.writeFileSync(evil, 'export {};\n');
+    fs.rmSync(path.join(pkgDir, 'dist', 'vc.js'));
+    fs.symlinkSync(evil, path.join(pkgDir, 'dist', 'vc.js'));
+    expect(() => checkPinnedCli(root, { expectedSha256: sha })).toThrow('outside node_modules/vercel or not a regular file');
+    fs.rmSync(path.join(pkgDir, 'dist', 'vc.js'));
+    fs.writeFileSync(path.join(pkgDir, 'dist', 'real.js'), 'export {};\n');
+    fs.symlinkSync(path.join(pkgDir, 'dist', 'real.js'), path.join(pkgDir, 'dist', 'vc.js'));
+    expect(() => checkPinnedCli(root, { expectedSha256: sha })).toThrow('Run `npm ci`');
+  });
+
+  it('checkPinnedCli refuses an integrity mismatch: lockfile not on the pinned integrity, or an install record that differs from the lock', () => {
+    const root = newRoot();
+    const { sha } = fakeInstall(root);
+    const lockFile = path.join(root, 'package-lock.json');
+    const lock = JSON.parse(fs.readFileSync(lockFile, 'utf8'));
+    lock.packages['node_modules/vercel'].integrity = 'sha512-other';
+    fs.writeFileSync(lockFile, JSON.stringify(lock));
+    expect(() => checkPinnedCli(root, { expectedSha256: sha })).toThrow('package-lock.json does not pin node_modules/vercel');
+
+    for (const change of [
+      (record: any) => (record.packages['node_modules/vercel'].integrity = 'sha512-stale'),
+      (record: any) => (record.packages['node_modules/vercel'] = { ...record.packages['node_modules/vercel'], resolved: 'https://evil.example/vercel.tgz' }),
+      (record: any) => (record.packages['node_modules/vercel/node_modules/undici'] = { ...record.packages['node_modules/vercel/node_modules/undici'], integrity: 'sha512-swapped' }),
+      (record: any) => delete record.packages['node_modules/vercel/node_modules/undici'],
+      (record: any) => (record.packages['node_modules/vercel/node_modules/extra'] = { version: '1.0.0' }),
+      (record: any) => delete record.packages['node_modules/vercel'],
+      // Hoisted dependencies of the CLI: a stale direct one, a stale
+      // transitive one, a missing one.
+      (record: any) => (record.packages['node_modules/@vercel/cli-auth'].integrity = 'sha512-stale'),
+      (record: any) => (record.packages['node_modules/jose'] = { ...record.packages['node_modules/jose'], version: '6.1.3', integrity: 'sha512-old' }),
+      (record: any) => delete record.packages['node_modules/@vercel/cli-auth'],
+    ]) {
+      const other = newRoot();
+      const fixture = fakeInstall(other, { installed: change });
+      expect(() => checkPinnedCli(other, { expectedSha256: fixture.sha })).toThrow('node_modules/.package-lock.json does not match package-lock.json');
+    }
+    // A package outside the CLI's closure may differ.
+    const unrelated = newRoot();
+    const fixture = fakeInstall(unrelated, { installed: (record: any) => (record.packages['node_modules/left-pad'].integrity = 'sha512-other') });
+    expect(checkPinnedCli(unrelated, { expectedSha256: fixture.sha }).command).toBe(process.execPath);
+  });
+
+  it('lockEntries follows the CLI dependency closure through hoisted and nested entries', () => {
+    const lock = JSON.parse(fs.readFileSync(path.join(__dirname, '..', 'package-lock.json'), 'utf8'));
+    const closure = Object.keys(lockEntries(lock));
+    expect(closure).toEqual(expect.arrayContaining(['node_modules/vercel', 'node_modules/@vercel/cli-auth', 'node_modules/@vercel/cli-config', 'node_modules/jose']));
+    expect(closure.length).toBeGreaterThan(100);
+    expect(closure).not.toContain('node_modules/react');
+  });
+
+  it('checkPinnedCli refuses an entry hash mismatch: one changed byte in dist/vc.js, or an added file', () => {
+    const root = newRoot();
+    const { pkgDir, sha } = fakeInstall(root);
+    fs.writeFileSync(path.join(pkgDir, 'dist', 'vc.js'), 'export {}; \n');
+    expect(() => checkPinnedCli(root, { expectedSha256: sha })).toThrow(`not the pinned ${sha}`);
+    fs.writeFileSync(path.join(pkgDir, 'dist', 'vc.js'), 'export {};\n');
+    expect(checkPinnedCli(root, { expectedSha256: sha }).command).toBe(process.execPath);
+    fs.writeFileSync(path.join(pkgDir, 'dist', 'index.js'), 'steal()');
+    expect(() => checkPinnedCli(root, { expectedSha256: sha })).toThrow(`not the pinned ${sha}`);
+    // Nested dependencies are outside the package hash (checked by the lock).
+    fs.rmSync(path.join(pkgDir, 'dist', 'index.js'));
+    fs.mkdirSync(path.join(pkgDir, 'node_modules', 'undici'), { recursive: true });
+    fs.writeFileSync(path.join(pkgDir, 'node_modules', 'undici', 'index.js'), 'x');
+    expect(hashPackageFiles(pkgDir)).toBe(sha);
+  });
+
+  it('the real install of this checkout passes checkPinnedCli with the committed hash, and the CLI stays off the native binary', () => {
+    const rootDir = path.join(__dirname, '..');
+    expect(vercelEnv({}, 'linux')).toEqual({ VERCEL_CLI_USE_NATIVE_BINARY: '0' });
+    if (!fs.existsSync(path.join(rootDir, 'node_modules', 'vercel'))) return;
+    // verify:pr runs in a scratch worktree whose node_modules is a dir of
+    // links to the main checkout's packages: a linked package is refused, by
+    // design.
+    if (['node_modules', 'node_modules/vercel'].some((entry) => fs.lstatSync(path.join(rootDir, entry)).isSymbolicLink())) {
+      expect(() => checkPinnedCli(rootDir)).toThrow('symlinked package or npm link');
+      return;
+    }
+    const cli = checkPinnedCli(rootDir);
+    expect(cli).toEqual({ command: process.execPath, args: [fs.realpathSync(path.join(rootDir, 'node_modules', 'vercel', 'dist', 'vc.js'))] });
+  });
+
+  it('a CLI check refusal runs nothing (no guard, no copy) but stale copies are swept first', async () => {
+    const stale = path.join(tempRoot, 'noctalia-vercel-stale');
+    fs.mkdirSync(stale);
+    fs.writeFileSync(path.join(stale, 'owner.pid'), '999999');
+    fs.writeFileSync(path.join(stale, '.env.production.local'), `API_SECRET="${SECRET}"\n`);
+    const order: string[] = [];
+    const setup = deps(async () => accepted(), {
+      sweep: (options: { tempRoot: string }) => {
+        order.push('sweep');
+        return sweepStaleCopies({ ...options, alive: () => false });
+      },
+      checkCli: (dir: string) => {
+        order.push('cli');
+        return checkPinnedCli(dir);
+      },
+    });
+    await expect(main(['prod'], setup.deps)).rejects.toThrow('Run `npm ci`');
+    expect(order).toEqual(['sweep', 'cli']);
+    expect(fs.existsSync(stale)).toBe(false);
+    expect(setup.deps.guardProduction).not.toHaveBeenCalled();
+    expect(setup.calls).toEqual([]);
+    expect(fs.readdirSync(tempRoot)).toEqual([]);
   });
 
   it('package.json exposes web:deploy:prod through this script', () => {

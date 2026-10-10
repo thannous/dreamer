@@ -225,6 +225,8 @@ export default {
         'scripts/web-deploy.js',
         'scripts/web-deploy.test.ts',
         'package.json',
+        // web-deploy.test.ts checks the vercel@62.2.0 lock entry.
+        'package-lock.json',
         'vercel.json',
         'scripts/vercel-ignore-build.mjs',
         // docs-deploy.test.ts reads the real Cloudflare Pages config.
