@@ -127,7 +127,11 @@ before any request and print no key, password or token.
    `20260916185856`, also counted per month) and its sync receipts
    (`DELETE /rest/v1/dream_sync_receipts?user_id=eq.<id>`, migration
    `20260316130000`: a kept receipt would answer a replayed request with the
-   deleted dream), then set
+   deleted dream), its AI burst buckets (`DELETE
+   /rest/v1/ai_rate_limit_buckets?actor_hash=eq.<sha256("user:<id>")>`, the hash
+   `aiAdmission.ts` uses; the `global` rows stay) and its generated images (Storage
+   API: list `dream-images` under `<id>/` then remove, page by page, only for those
+   two account ids), then set
    its tier with `apply_subscription_state_update`: `p_tier 'plus', p_is_active
    true` for premium (the fixture's values), `p_tier 'free', p_is_active false` for
    free, `p_source 'e2e-seed'`, a fresh `p_source_event_id`. Idempotent: a second run
@@ -215,10 +219,19 @@ environment (Maestro reads `MAESTRO_*` shell variables; nothing on the command
 line, no other `E2E_*` value). After the tier only `--device <id>` is accepted;
 `-e`/`--env` and any other Maestro argument are refused, so the flow cannot be
 pointed at another account. Before Maestro starts the wrapper writes
-`test-results/e2e-branch-mobile/run.json` (source SHA, `dirty`, branch ref, app id,
+`test-results/e2e-branch-mobile/run-<timestamp>-<pid>.json` (one file per run, so
+two devices can run at once; source SHA, `dirty`, branch ref, app id,
 tier, flow, rerun command; no secret) with `outcome.status: running`, then sets
 `passed` (exit 0, no signal), `failed` (exit code or signal) or `error` (Maestro
-did not start) when it ends. A dev-loop record, not release evidence. Metro stays in the foreground, so use two terminals
+did not start) when it ends. A dev-loop record, not release evidence. Maestro's own
+output for that run goes to `test-results/e2e-branch-mobile/run-<timestamp>-<pid>/`
+(`--debug-output`). Maestro 2.10.0 writes the typed password and its env into
+`maestro.log` and `commands-*.json` and has no redaction option (`inputText`
+`redact` is still an upstream PR), so when the run ends (exit, error or
+SIGINT/SIGTERM/SIGHUP) the wrapper replaces the exact password, raw and
+JSON-escaped, with `[redacted]` in that folder and in every
+`~/.maestro/tests/<stamp>/` folder created during the run. Older folders are not
+touched; if you ran the flow before this wrapper existed, delete them. Metro stays in the foreground, so use two terminals
 on the owner machine, with the dev client connected to that Metro:
 
 ```sh

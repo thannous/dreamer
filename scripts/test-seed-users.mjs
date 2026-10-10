@@ -9,7 +9,7 @@
 // p_is_active true. Free is set back with p_tier 'free', p_is_active false.
 // It never prints a key or a password.
 import path from 'node:path';
-import { randomUUID as nodeRandomUUID } from 'node:crypto';
+import { createHash, randomUUID as nodeRandomUUID } from 'node:crypto';
 import { fileURLToPath } from 'node:url';
 import { readTestEnv, runGuarded } from './test-supabase-guard.mjs';
 
@@ -81,6 +81,44 @@ async function findUser(fetch, target, key, email, secretValues) {
   throw new Error(`test-seed-users: more than ${PAGE_SIZE * MAX_PAGES} users on the test branch; refusing to guess.`);
 }
 
+// Generated images live under dream-images/<userId>/ (flat, see
+// supabase/functions/api/services/storage.ts) with no FK cascade, like the
+// account deletion route (routes/account.ts) handles. List then remove, page by
+// page, strictly under that one user's prefix.
+export const IMAGE_BUCKET = 'dream-images';
+const UUID_PATTERN = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/;
+const STORAGE_PAGE_SIZE = 100;
+const STORAGE_MAX_PAGES = 100;
+
+async function clearUserImages(fetch, target, key, userId, secretValues) {
+  if (!UUID_PATTERN.test(userId)) throw new Error('test-seed-users: refusing to clear Storage for a non-UUID user id.');
+  const prefix = `${userId}/`;
+  let removed = 0;
+  for (let page = 0; page < STORAGE_MAX_PAGES; page += 1) {
+    const entries = await call(fetch, target, key, 'POST', `/storage/v1/object/list/${IMAGE_BUCKET}`, {
+      prefix,
+      limit: STORAGE_PAGE_SIZE,
+      offset: 0,
+      sortBy: { column: 'name', order: 'asc' },
+    }, secretValues);
+    // Folder placeholders have a null id; names never leave the prefix.
+    const paths = (Array.isArray(entries) ? entries : [])
+      .filter((entry) => entry?.id && typeof entry.name === 'string' && entry.name && !entry.name.includes('/') && entry.name !== '..' && entry.name !== '.')
+      .map((entry) => `${prefix}${entry.name}`);
+    if (paths.length === 0) return removed;
+    await call(fetch, target, key, 'DELETE', `/storage/v1/object/${IMAGE_BUCKET}`, { prefixes: paths }, secretValues);
+    removed += paths.length;
+  }
+  throw new Error(`test-seed-users: more than ${STORAGE_PAGE_SIZE * STORAGE_MAX_PAGES} images for one test account; refusing to continue.`);
+}
+
+// public.ai_rate_limit_buckets keys rows by actor_hash = sha256("user:<id>")
+// (supabase/functions/api/services/aiAdmission.ts hashAiActor), next to
+// 'global' rows that must stay.
+export function aiActorHash(userId) {
+  return createHash('sha256').update(`user:${userId}`).digest('hex');
+}
+
 export function makeSeedAction(secrets, { log = console.log, randomUUID = nodeRandomUUID } = {}) {
   const key = secrets.serviceKey;
   const secretValues = [key, ...Object.values(secrets.passwords)];
@@ -110,6 +148,11 @@ export function makeSeedAction(secrets, { log = console.log, randomUUID = nodeRa
       // are linked to the user only: a kept receipt would answer a replayed
       // client_request_id with the deleted dream instead of recreating it.
       await call(fetch, target, key, 'DELETE', `/rest/v1/dream_sync_receipts?user_id=eq.${encodeURIComponent(id)}`, undefined, secretValues, { Prefer: 'return=minimal' });
+      // AI burst buckets of this account only (never the 'global' rows).
+      const actorHash = aiActorHash(id);
+      if (!/^[a-f0-9]{64}$/.test(actorHash)) throw new Error('test-seed-users: unexpected AI actor hash.');
+      await call(fetch, target, key, 'DELETE', `/rest/v1/ai_rate_limit_buckets?actor_hash=eq.${actorHash}`, undefined, secretValues, { Prefer: 'return=minimal' });
+      const images = await clearUserImages(fetch, target, key, id, secretValues);
       await call(fetch, target, key, 'POST', '/rest/v1/rpc/apply_subscription_state_update', {
         p_user_id: id,
         ...TIER_STATE[tier],
@@ -117,7 +160,7 @@ export function makeSeedAction(secrets, { log = console.log, randomUUID = nodeRa
         p_source_event_id: randomUUID(),
       }, secretValues);
       const action = existing ? 'reset' : 'created';
-      log(`[test-seed-users] ${email}: ${action}, tier ${TIER_STATE[tier].p_tier}, dreams, quota usage and HD credits cleared (${target.url}).`);
+      log(`[test-seed-users] ${email}: ${action}, tier ${TIER_STATE[tier].p_tier}, dreams, quota usage, HD credits, sync receipts, AI rate-limit buckets and ${images} image(s) cleared (${target.url}).`);
       results.push({ tier, email, id, action });
     }
     return results;

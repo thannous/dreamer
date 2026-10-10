@@ -1,13 +1,14 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
+import { createHash } from 'node:crypto';
 import os from 'node:os';
 import path from 'node:path';
 import { _runGuardedWithListsForTests, TestTargetRefused } from './test-supabase-guard.mjs';
-import { TIER_STATE, keyHeaders, main as seedMain, makeSeedAction, readSeedSecrets } from './test-seed-users.mjs';
+import { IMAGE_BUCKET, TIER_STATE, aiActorHash, keyHeaders, main as seedMain, makeSeedAction, readSeedSecrets } from './test-seed-users.mjs';
 import { BRANCH_WEB_ORIGIN, BRANCH_WEB_PORT, main as authMain, makeAuthAction, readAuthSecrets, storageKey } from './test-auth-setup.mjs';
 import { BRANCH_GUARD_MARKER, PASSTHROUGH_EXPO_PUBLIC, RUNNER, branchAppEnv, branchCommand, main as startMain, parseBranchArgs } from './start-branch-e2e.mjs';
-import { FLOW, finishRecord, main as maestroMain, maestroArgs, maestroEnv, outcomeOf, runRecord } from './maestro-branch-sign-in.mjs';
+import { FLOW, finishRecord, main as maestroMain, maestroArgs, maestroEnv, outcomeOf, runPaths, runRecord, scrubSecret, startRun } from './maestro-branch-sign-in.mjs';
 
 const PROD = 'usuyppgsmmowzizhaoqj';
 const REF = 'abcdefghijklmnopqrst';
@@ -27,9 +28,14 @@ const env = (overrides = {}) => ({
 });
 const prodEnv = () => env({ E2E_SUPABASE_URL: `https://${PROD}.supabase.co`, E2E_SUPABASE_PROJECT_REF: PROD });
 
+const uid = (n) => `00000000-0000-4000-8000-${String(n).padStart(12, '0')}`;
+const U1 = uid(1);
+const U2 = uid(2);
+const LATE = uid(999);
+
 // A fake test branch: GoTrue admin + PostgREST + token endpoint, recording calls.
-function fakeBranch({ users = [], failRpc = false } = {}) {
-  const state = { users: users.map((user) => ({ ...user })), dreamsDeleted: [], quotaDeleted: [], hdDeleted: [], receiptsDeleted: [], rpc: [], calls: [], nextId: 1 };
+function fakeBranch({ users = [], failRpc = false, objects = {} } = {}) {
+  const state = { users: users.map((user) => ({ ...user })), dreamsDeleted: [], quotaDeleted: [], hdDeleted: [], receiptsDeleted: [], bucketsDeleted: [], listed: [], removed: [], objects: { ...objects }, rpc: [], calls: [], nextId: 1 };
   const json = (status, body) => new Response(body === undefined ? null : JSON.stringify(body), { status });
   const fetch = async (input, init = {}) => {
     const url = new URL(input);
@@ -43,7 +49,7 @@ function fakeBranch({ users = [], failRpc = false } = {}) {
       return json(200, { users: state.users.slice((page - 1) * per, page * per) });
     }
     if (url.pathname === '/auth/v1/admin/users' && method === 'POST') {
-      const user = { id: `u${state.nextId++}`, email: body.email, password: body.password, confirmed: body.email_confirm };
+      const user = { id: uid(state.nextId++), email: body.email, password: body.password, confirmed: body.email_confirm };
       state.users.push(user);
       return json(200, { id: user.id, email: user.email });
     }
@@ -60,6 +66,25 @@ function fakeBranch({ users = [], failRpc = false } = {}) {
     if (url.pathname === '/rest/v1/hd_image_credits' && method === 'DELETE') {
       state.hdDeleted.push(url.searchParams.get('user_id'));
       return json(204);
+    }
+    if (url.pathname === '/rest/v1/ai_rate_limit_buckets' && method === 'DELETE') {
+      state.bucketsDeleted.push(url.searchParams.get('actor_hash'));
+      return json(204);
+    }
+    if (url.pathname === '/storage/v1/object/list/dream-images' && method === 'POST') {
+      state.listed.push(body.prefix);
+      // Names relative to the prefix, paged by limit; a folder placeholder
+      // (id null) comes first whenever the prefix still holds objects.
+      const names = Object.keys(state.objects).filter((name) => name.startsWith(body.prefix)).map((name) => name.slice(body.prefix.length)).sort();
+      const page = names.slice(body.offset, body.offset + body.limit).map((name) => ({ id: `obj-${name}`, name }));
+      return json(200, page.length ? [{ id: null, name: '.emptyFolderPlaceholder' }, ...page] : []);
+    }
+    if (url.pathname === '/storage/v1/object/dream-images' && method === 'DELETE') {
+      for (const name of body.prefixes) {
+        state.removed.push(name);
+        delete state.objects[name];
+      }
+      return json(200, body.prefixes.map((name) => ({ name })));
     }
     if (url.pathname === '/rest/v1/dream_sync_receipts' && method === 'DELETE') {
       state.receiptsDeleted.push(url.searchParams.get('user_id'));
@@ -96,10 +121,10 @@ test('seed creates both accounts, confirms them, clears dreams and sets the tier
     { email: 'e2e+free@example.com', password: FREE_PW, confirmed: true },
     { email: 'e2e+premium@example.com', password: PREMIUM_PW, confirmed: true },
   ]);
-  assert.deepEqual(branch.state.dreamsDeleted, ['eq.u1', 'eq.u2']);
-  assert.deepEqual(branch.state.quotaDeleted, ['eq.u1', 'eq.u2']);
-  assert.deepEqual(branch.state.hdDeleted, ['eq.u1', 'eq.u2']);
-  assert.deepEqual(branch.state.receiptsDeleted, ['eq.u1', 'eq.u2']);
+  assert.deepEqual(branch.state.dreamsDeleted, [`eq.${U1}`, `eq.${U2}`]);
+  assert.deepEqual(branch.state.quotaDeleted, [`eq.${U1}`, `eq.${U2}`]);
+  assert.deepEqual(branch.state.hdDeleted, [`eq.${U1}`, `eq.${U2}`]);
+  assert.deepEqual(branch.state.receiptsDeleted, [`eq.${U1}`, `eq.${U2}`]);
   const syncMigration = fs.readFileSync(new URL('../supabase/migrations/20260316130000_add_dream_sync_revisions.sql', import.meta.url), 'utf8');
   assert.match(syncMigration, /create table if not exists public\.dream_sync_receipts \([\s\S]*?user_id uuid not null/);
   // Only public, anon and authenticated lose access; service_role keeps
@@ -110,8 +135,8 @@ test('seed creates both accounts, confirms them, clears dreams and sets the tier
   assert.match(hdMigration, /grant all on public\.hd_image_credits to service_role;/);
   // Same argument names and premium values as e2e/backend/fixtures.ts.
   assert.deepEqual(branch.state.rpc, [
-    { p_user_id: 'u1', p_tier: 'free', p_is_active: false, p_source: 'e2e-seed', p_source_event_id: 'event-id' },
-    { p_user_id: 'u2', p_tier: 'plus', p_is_active: true, p_source: 'e2e-seed', p_source_event_id: 'event-id' },
+    { p_user_id: U1, p_tier: 'free', p_is_active: false, p_source: 'e2e-seed', p_source_event_id: 'event-id' },
+    { p_user_id: U2, p_tier: 'plus', p_is_active: true, p_source: 'e2e-seed', p_source_event_id: 'event-id' },
   ]);
   const fixture = fs.readFileSync(new URL('../e2e/backend/fixtures.ts', import.meta.url), 'utf8');
   assert.match(fixture, /apply_subscription_state_update', \{\s*p_user_id: account\.id, p_tier: 'plus', p_is_active: true,\s*p_source: 'local-e2e-fixture', p_source_event_id: randomUUID\(\),/);
@@ -139,9 +164,9 @@ test('seed is idempotent: a second run resets the same accounts instead of creat
 
 test('seed finds an existing account beyond the first page', async () => {
   const filler = Array.from({ length: 200 }, (_, index) => ({ id: `f${index}`, email: `user${index}@example.com` }));
-  const branch = fakeBranch({ users: [...filler, { id: 'late', email: 'e2e+premium@example.com' }] });
+  const branch = fakeBranch({ users: [...filler, { id: LATE, email: 'e2e+premium@example.com' }] });
   const result = await seed(branch);
-  assert.deepEqual(result.map(({ action, id }) => [action, id]), [['created', 'u1'], ['reset', 'late']]);
+  assert.deepEqual(result.map(({ action, id }) => [action, id]), [['created', U1], ['reset', LATE]]);
 });
 
 test('seed errors are redacted and stop the run', async () => {
@@ -442,5 +467,104 @@ test('maestro wrapper: the rerun command keeps the selected device and APP_ID; a
   } finally {
     if (previous === undefined) delete process.env.APP_ID;
     else process.env.APP_ID = previous;
+  }
+});
+
+test('seed clears the two accounts\' images (paged list then remove) and AI buckets, never another user or the global rows', async () => {
+  const objects = { [`${uid(77)}/other.png`]: 1 };
+  for (let index = 0; index < 230; index += 1) objects[`${U1}/${String(index).padStart(3, '0')}.png`] = 1;
+  objects[`${U2}/plus.webp`] = 1;
+  const branch = fakeBranch({ objects });
+  const result = await seed(branch);
+  assert.deepEqual(result.map(({ id }) => id), [U1, U2]);
+  assert.deepEqual(Object.keys(branch.state.objects), [`${uid(77)}/other.png`], 'only the other user\'s object is left');
+  assert.equal(branch.state.removed.length, 231);
+  assert.ok(branch.state.removed.every((name) => name.startsWith(`${U1}/`) || name.startsWith(`${U2}/`)));
+  assert.ok(!branch.state.removed.some((name) => name.includes('emptyFolderPlaceholder')), 'placeholders (id null) are skipped');
+  assert.ok(branch.state.listed.every((prefix) => prefix === `${U1}/` || prefix === `${U2}/`));
+  const removals = branch.state.calls.filter((call) => call.url.endsWith('/storage/v1/object/dream-images'));
+  assert.ok(removals.length >= 4 && removals.every((call) => call.body.prefixes.length <= 100));
+  // AI buckets: sha256("user:<id>") for exactly the two accounts, like hashAiActor.
+  const expected = [U1, U2].map((id) => createHash('sha256').update(`user:${id}`).digest('hex'));
+  assert.deepEqual(branch.state.bucketsDeleted, expected.map((hash) => `eq.${hash}`));
+  assert.deepEqual([aiActorHash(U1), aiActorHash(U2)], expected);
+  assert.ok(!branch.state.bucketsDeleted.includes('eq.global'));
+  const admission = fs.readFileSync(new URL('../supabase/functions/api/services/aiAdmission.ts', import.meta.url), 'utf8');
+  assert.match(admission, /`user:\$\{ctx\.user\.id\}`/);
+  assert.match(admission, /crypto\.subtle\.digest\('SHA-256', encoded\)/);
+  const bucketMigration = fs.readFileSync(new URL('../supabase/migrations/20260722124500_add_ai_sync_admission_control.sql', import.meta.url), 'utf8');
+  assert.match(bucketMigration, /create table if not exists public\.ai_rate_limit_buckets \(\s*actor_hash text not null/);
+  assert.doesNotMatch(bucketMigration, /revoke[^;]*ai_rate_limit_buckets[^;]*service_role/);
+  const storageService = fs.readFileSync(new URL('../supabase/functions/api/services/storage.ts', import.meta.url), 'utf8');
+  assert.match(storageService, /const objectKey = `\$\{resolvedOwnerId\}\/\$\{Date\.now\(\)\}-/, 'images are flat under <userId>/');
+  assert.equal(IMAGE_BUCKET, 'dream-images');
+});
+
+test('seed refuses to clear Storage for a non-UUID account id', async () => {
+  const branch = fakeBranch({ users: [{ id: 'not-a-uuid', email: 'e2e+free@example.com' }] });
+  await assert.rejects(seed(branch), /non-UUID user id/);
+  assert.ok(!branch.state.calls.some((call) => call.url.includes('/storage/')));
+});
+
+test('maestro wrapper: each run gets its own record and output folder', () => {
+  const now = new Date('2026-10-10T05:00:00.123Z');
+  const a = runPaths({ resultsDir: '/r', now, pid: 11 });
+  const b = runPaths({ resultsDir: '/r', now, pid: 12 });
+  assert.equal(a.recordFile, '/r/run-2026-10-10T05-00-00-123Z-11.json');
+  assert.equal(a.outputDir, '/r/run-2026-10-10T05-00-00-123Z-11');
+  assert.notEqual(a.recordFile, b.recordFile);
+  assert.notEqual(a.outputDir, b.outputDir);
+});
+
+test('maestro wrapper: finalize records the outcome and scrubs the password from this run\'s Maestro output only', () => {
+  const tmp = fs.mkdtempSync(path.join(os.tmpdir(), 'maestro-scrub-'));
+  try {
+    const home = path.join(tmp, 'home');
+    const tests = path.join(home, '.maestro', 'tests');
+    const password = 'Pa"ss\\w/rd-12chars';
+    const jsonEscaped = JSON.stringify(password).slice(1, -1);
+    fs.mkdirSync(path.join(tests, 'older-run'), { recursive: true });
+    fs.writeFileSync(path.join(tests, 'older-run', 'maestro.log'), 'unrelated older run');
+    const paths = runPaths({ resultsDir: path.join(tmp, 'results'), pid: 42 });
+    const spawned = [];
+    const spawnImpl = (cmd, args, options) => {
+      spawned.push({ cmd, args, options });
+      // What Maestro 2.10.0 writes: the typed text in maestro.log, the env
+      // and command JSON in commands-*.json, in both output locations.
+      const stamp = path.join(tests, '2026-10-10_050000');
+      fs.mkdirSync(stamp, { recursive: true });
+      fs.writeFileSync(path.join(stamp, 'maestro.log'), `Input text ${password}\nInputTextCommand(text=${password})\n`);
+      fs.writeFileSync(path.join(stamp, 'commands-(e2e-account-sign-in.yml).json'), `{"text":"${jsonEscaped}","env":{"MAESTRO_E2E_PASSWORD":"${jsonEscaped.replace(/\//g, '\\/')}"}}`);
+      fs.mkdirSync(path.join(paths.outputDir, 'nested'), { recursive: true });
+      fs.writeFileSync(path.join(paths.outputDir, 'nested', 'maestro.log'), `typed ${password}`);
+      return { pid: 1 };
+    };
+    const childEnv = { MAESTRO_E2E_EMAIL: 'e2e+free@example.com', MAESTRO_E2E_PASSWORD: password };
+    const run = startRun({ tier: 'free', target: { ref: REF }, childEnv, deviceArgs: ['--device', 'emulator-5554'], spawnImpl, paths, home });
+    assert.deepEqual(spawned[0].args, ['--device', 'emulator-5554', 'test', '--debug-output', paths.outputDir, FLOW]);
+    assert.ok(!spawned[0].args.some((arg) => arg.includes(password)), 'the password is never on argv');
+    assert.equal(JSON.parse(fs.readFileSync(paths.recordFile, 'utf8')).outcome.status, 'running');
+    run.finalize({ code: 1, signal: null });
+    run.finalize({ code: 0, signal: null });
+    const record = JSON.parse(fs.readFileSync(paths.recordFile, 'utf8'));
+    assert.equal(record.outcome.status, 'failed', 'finalize runs once');
+    assert.ok(record.maestroOutput.endsWith(path.basename(paths.outputDir)));
+    const walk = (dir) => fs.readdirSync(dir, { withFileTypes: true }).flatMap((entry) => (entry.isDirectory() ? walk(path.join(dir, entry.name)) : [path.join(dir, entry.name)]));
+    const written = [...walk(path.join(tests, '2026-10-10_050000')), ...walk(paths.outputDir)];
+    assert.equal(written.length, 3);
+    for (const file of written) {
+      const text = fs.readFileSync(file, 'utf8');
+      assert.ok(!text.includes(password) && !text.includes(jsonEscaped) && !text.includes('ss\\\\w\\/rd'), file);
+      assert.match(text, /\[redacted\]/);
+    }
+    assert.equal(fs.readFileSync(path.join(tests, 'older-run', 'maestro.log'), 'utf8'), 'unrelated older run');
+    // A spawn that throws still scrubs and records.
+    const paths2 = runPaths({ resultsDir: path.join(tmp, 'results'), pid: 43 });
+    assert.throws(() => startRun({ tier: 'free', target: { ref: REF }, childEnv, spawnImpl: () => { fs.writeFileSync(path.join(paths2.outputDir, 'maestro.log'), password); throw new Error('spawn maestro ENOENT'); }, paths: paths2, home }), /ENOENT/);
+    assert.equal(JSON.parse(fs.readFileSync(paths2.recordFile, 'utf8')).outcome.status, 'error');
+    assert.equal(fs.readFileSync(path.join(paths2.outputDir, 'maestro.log'), 'utf8'), '[redacted]');
+    assert.equal(scrubSecret([tmp], ''), 0, 'an empty secret scrubs nothing');
+  } finally {
+    fs.rmSync(tmp, { recursive: true, force: true });
   }
 });
