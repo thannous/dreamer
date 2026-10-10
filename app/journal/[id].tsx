@@ -2538,6 +2538,13 @@ const JournalDetailContent = memo(function JournalDetailContent({ dream }: { dre
               className="absolute top-0 right-0 left-0"
               style={{ height: coverLayout.imageHeight + 1 }}
             >
+              {/* The page's ground eases into the top of the illustration as well, so it never
+                  starts on a hard edge under the heading. */}
+              <LinearGradient
+                colors={[noctalia.screen.background, `${noctalia.screen.background}A6`, `${noctalia.screen.background}3D`, `${noctalia.screen.background}00`]}
+                locations={[0, 0.3, 0.62, 1]}
+                style={{ position: 'absolute', top: 0, right: 0, left: 0, height: Math.min(72, coverLayout.imageHeight * 0.18) }}
+              />
               <LinearGradient
                 colors={noctalia.cover.gradient}
                 locations={noctalia.cover.gradientLocations}
