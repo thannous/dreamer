@@ -47,14 +47,14 @@
       <li><strong class="text-white">Registrar:</strong> conte o sonho ao acordar ou escreva-o quando tiver mais tempo.</li>
       <li><strong class="text-white">Contextualizar:</strong> preserve as pessoas, os lugares, as emoções e os detalhes estranhos próprios desse sonho.</li>
       <li><strong class="text-white">Explorar:</strong> releia os temas possíveis, símbolos recorrentes, sinais emocionais, a imagem gerada e as perguntas de acompanhamento.</li>
-      <li><strong class="text-white">Comparar:</strong> volte depois ao sonho registrado e aproxime-o de outras entradas em vez de isolá-lo.</li>
+      <li><strong class="text-white">Comparar:</strong> volte depois ao sonho registrado e compare-o com outras entradas em vez de olhá-lo isolado.</li>
     </ol>
   </section>
 
   <section class="grid md:grid-cols-2 gap-6">
     <div class="glass-panel p-8 rounded-2xl border border-white/10 bg-white/5">
-      <h2 class="text-2xl font-serif text-white mb-4">O que a ferramenta ajuda a identificar</h2>
-      <p>O Noctalia transforma uma lembrança fragmentada em uma entrada legível e destaca palavras, símbolos, emoções ou mudanças de cena. As perguntas guiadas permitem testar uma associação em relação à sua vida desperta. O valor vem do contexto preservado e do diário que você constrói ao longo do tempo.</p>
+      <h2 class="text-2xl font-serif text-white mb-4">O que você pode identificar</h2>
+      <p>O Noctalia transforma uma lembrança fragmentada em uma entrada legível e destaca palavras, símbolos, emoções ou mudanças de cena. As perguntas guiadas convidam você a confrontar uma associação com o seu dia a dia. O valor vem do contexto preservado e do diário que você constrói ao longo do tempo.</p>
     </div>
     <div class="glass-panel p-8 rounded-2xl border border-white/10 bg-white/5">
       <h2 class="text-2xl font-serif text-white mb-4">O que a ferramenta não pode concluir</h2>
@@ -69,7 +69,7 @@
 
   <section class="glass-panel p-8 rounded-2xl border border-white/10 bg-white/5">
     <h2 class="text-2xl font-serif text-white mb-4">Privacidade e limites editoriais</h2>
-    <p>Um sonho pode conter informações íntimas. A <a href="/pt-br/politica-de-privacidade" class="text-dream-salmon hover:underline">política de privacidade</a> apresenta a hospedagem dos dados na União Europeia, os fornecedores de transcrição e de IA, os direitos de exclusão e a ausência de venda de dados pessoais e de publicidade direcionada. Esta página é revisada pela equipe do Noctalia; nenhum clínico é apresentado como seu avaliador.</p>
+    <p>Um sonho pode conter informações íntimas. A <a href="/pt-br/politica-de-privacidade" class="text-dream-salmon hover:underline">política de privacidade</a> apresenta a hospedagem dos dados na União Europeia, os fornecedores de transcrição e de IA, os direitos de exclusão, e deixa claro que não há venda de dados pessoais nem publicidade direcionada. Esta página é revisada pela equipe do Noctalia; nenhum clínico é apresentado como seu avaliador.</p>
   </section>
 
   <section class="glass-panel p-8 rounded-2xl border border-white/10 bg-white/5">

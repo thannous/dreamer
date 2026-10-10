@@ -53,8 +53,8 @@
 
   <section class="grid md:grid-cols-2 gap-6">
     <div class="glass-panel p-8 rounded-2xl border border-white/10 bg-white/5">
-      <h2 class="text-2xl font-serif text-white mb-4">Ce que l'outil aide à repérer</h2>
-      <p>Noctalia transforme un souvenir décousu en entrée lisible et fait ressortir des mots, symboles, émotions ou changements de scène. Les questions guidées permettent de tester une association par rapport à votre vie éveillée. L'intérêt vient du contexte préservé et du journal que vous construisez dans la durée.</p>
+      <h2 class="text-2xl font-serif text-white mb-4">Ce que vous pouvez y repérer</h2>
+      <p>Noctalia transforme un souvenir décousu en entrée lisible et fait ressortir des mots, symboles, émotions ou changements de scène. Les questions guidées vous invitent à confronter une association à votre vie éveillée. L'intérêt tient au contexte conservé et au journal que vous tenez dans la durée.</p>
     </div>
     <div class="glass-panel p-8 rounded-2xl border border-white/10 bg-white/5">
       <h2 class="text-2xl font-serif text-white mb-4">Ce que l'outil ne peut pas conclure</h2>

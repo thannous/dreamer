@@ -81,7 +81,7 @@
 
   <section class="glass-panel p-8 rounded-2xl border border-dream-salmon/20 bg-dream-salmon/5">
     <h2 class="text-2xl font-serif text-white mb-4">Mit einer Sprachnotiz beginnen</h2>
-    <p>Installiere Noctalia auf Android und erzähle morgen früh einen Traum, bevor du mit deinem Tag beginnst.</p>
+    <p>Installiere Noctalia auf Android und erzähle morgen früh einen Traum, bevor du deine Nachrichten öffnest.</p>
     <p class="mt-4"><a href="https://play.google.com/store/apps/details?id=com.tanuki75.noctalia&amp;hl=de" class="text-dream-salmon hover:underline" rel="nofollow noopener noreferrer" target="_blank">Noctalia bei Google Play installieren</a></p>
   </section>
 </div>

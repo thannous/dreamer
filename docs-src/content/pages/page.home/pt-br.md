@@ -66,7 +66,7 @@
         <div class="oh-manifesto-head reveal">
             <span class="oh-index" aria-hidden="true">23h</span>
             <h2 class="oh-manifesto-title">De uma cena que se apaga a um relato para reler</h2>
-            <p class="oh-lede">Primeiro, capture enquanto ainda está vivo. Depois, dê sentido, quando estiver bem acordado.</p>
+            <p class="oh-lede">Primeiro, anote enquanto ainda está vivo. Depois, dê sentido, quando estiver bem acordado.</p>
         </div>
         <ul class="oh-promises" role="list">
             <li class="oh-promise reveal">
@@ -78,7 +78,7 @@
                 <p>O Noctalia aponta possíveis símbolos, emoções e temas no seu relato. São perguntas para você, não um diagnóstico.</p>
             </li>
             <li class="oh-promise reveal">
-                <h3>O que volta acaba aparecendo</h3>
+                <h3>O que volta fica à vista</h3>
                 <p>Cada sonho entra no seu diário. Com as semanas, as emoções e imagens que se repetem começam a aparecer.</p>
             </li>
             <li class="oh-promise reveal">
@@ -273,7 +273,7 @@
                 <h2 class="oh-h2">Uma noite é uma cena. Dez noites são um mapa.</h2>
             </div>
             <div>
-                <p class="oh-lede">Cada sonho que você registra acrescenta seus símbolos ao céu. Quando a mesma imagem volta, as linhas dela ficam mais fortes — e aparece um padrão que nenhuma noite sozinha mostrava.</p>
+                <p class="oh-lede">Cada sonho que você registra acrescenta seus símbolos ao céu. Quando a mesma imagem volta, as linhas dela ficam mais fortes. Aparece um padrão que nenhuma noite sozinha mostrava.</p>
                 <p class="oh-starmap-hint">Passe o cursor ou toque numa estrela para seguir seus sonhos.</p>
             </div>
         </div>
@@ -490,9 +490,9 @@
         <div class="oh-section-head reveal">
             <div>
                 <span class="oh-index" aria-hidden="true">5h</span>
-                <h2 class="oh-h2">Dicionário de Símbolos</h2>
+                <h2 class="oh-h2">Dicionário de símbolos</h2>
             </div>
-            <p class="oh-lede">Alguns símbolos comuns, cada um com uma pergunta de contexto para começar. A cena — e o que você sentiu nela — importa mais do que qualquer definição fixa.</p>
+            <p class="oh-lede">Alguns símbolos comuns, cada um com uma pergunta de contexto para começar. O que conta é a cena e o que você sentiu nela, mais do que qualquer definição fixa.</p>
         </div>
 
         <div class="oh-symbols reveal">
@@ -583,14 +583,14 @@
             <div class="oh-wake-pitch reveal">
                 <p class="oh-wake-sentence">O Noctalia guarda a cena antes que ela se apague.</p>
                 <p class="oh-lede">Você diz o que sobrou. O app transcreve, aponta símbolos e emoções e deixa você explorar.</p>
-                <a href="https://play.google.com/store/apps/details?id=com.tanuki75.noctalia&amp;hl=pt-BR" class="oh-btn-quiet">Experimente no próximo despertar <i data-lucide="arrow-right"></i></a>
+                <a href="https://play.google.com/store/apps/details?id=com.tanuki75.noctalia&amp;hl=pt-BR" class="oh-btn-quiet">Experimente da próxima vez que acordar <i data-lucide="arrow-right"></i></a>
             </div>
         </div>
         <div class="oh-features oh-remember" data-chapter="remembering">
             <details class="oh-feature" name="oh-features" open>
                 <summary><span class="oh-feature-num" aria-hidden="true">01</span><h3 class="oh-feature-title">Diário</h3></summary>
                 <div class="oh-feature-body">
-                    <p>Cada registro vai para um diário que você pode percorrer de volta, com data, título e a emoção principal.</p>
+                    <p>Cada registro vai para um diário que você pode folhear, com data, título e a emoção principal.</p>
                     <p class="oh-feature-links"><a href="/pt-br/diario-de-sonhos-por-voz">Diário de sonhos por voz <i data-lucide="arrow-up-right"></i></a> <a href="/pt-br/app-android-analise-de-sonhos">App Android de análise de sonhos <i data-lucide="arrow-up-right"></i></a></p>
                 </div>
                 <div class="oh-feature-object" data-object="journal">
@@ -764,7 +764,7 @@
             <span class="oh-index" aria-hidden="true">7h15</span>
             <p class="oh-ending-mentions"><span>Grátis no Google Play</span><span>Seus sonhos continuam privados</span></p>
             <h2 class="oh-ending-title"><span>Abra os olhos.</span> <span class="oh-accent-line">O sonho ainda está aí.</span></h2>
-            <p class="oh-lede">Registre antes que ele se apague — com suas palavras, no celular, assim que acordar.</p>
+            <p class="oh-lede">Registre o sonho assim que acordar, com suas palavras, no celular, antes que ele se apague.</p>
             <div class="oh-hero-cta">
                 <a href="https://play.google.com/store/apps/details?id=com.tanuki75.noctalia&amp;hl=pt-BR" class="oh-btn-primary">
                     Registrar meu primeiro sonho <i data-lucide="play"></i>

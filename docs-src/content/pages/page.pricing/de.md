@@ -39,7 +39,7 @@
 ---
 <h1 class="font-serif text-4xl md:text-5xl mb-4 text-dream-cream">Noctalia Tarife und Preise</h1>
 <p class="text-sm text-purple-300/70 mb-6">Aktualisiert am 31. Juli 2026</p>
-<p class="text-lg text-purple-200/80 leading-relaxed mb-10">Starte mit dem kostenlosen Träumer-Tarif und wechsle nur dann zu Plus, wenn du mehr geführte Reflexion nutzen möchtest. Noctalia lässt sich kostenlos auf Android installieren. Da Google Play Preise, Steuern, Abrechnungszeiträume, Berechtigungen und Angebote lokal anpasst, bleibt der Store die maßgebliche Quelle für den Betrag, den du tatsächlich zahlst.</p>
+<p class="text-lg text-purple-200/80 leading-relaxed mb-10">Starte mit dem kostenlosen Träumer-Tarif und wechsle nur dann zu Plus, wenn du mehr geführte Reflexion nutzen möchtest. Noctalia lässt sich kostenlos auf Android installieren. Preis, Steuern, Abrechnungszeitraum, Voraussetzungen und Angebote hängen von deinem Land und Konto ab. Den Betrag, den du tatsächlich zahlst, zeigt Google Play.</p>
 
 <div class="space-y-8 text-gray-300 leading-relaxed">
   <section class="grid md:grid-cols-2 gap-6">
@@ -66,13 +66,13 @@
         <li>360°-Synthese am Ende einer geführten Erkundung</li>
         <li>Abrechnung und Verlängerung über Google Play</li>
       </ul>
-      <p class="mt-5">Monatliche und jährliche Optionen können je nach Land, Konto und Berechtigung abweichen. Google Play zeigt das genaue Angebot vor dem Kauf.</p>
+      <p class="mt-5">Monatliche und jährliche Optionen können je nach Land, Konto und Voraussetzungen abweichen. Google Play zeigt das genaue Angebot vor dem Kauf.</p>
     </div>
   </section>
 
   <section class="glass-panel p-8 rounded-2xl border border-white/10 bg-white/5">
     <h2 class="text-2xl font-serif text-white mb-4">Warum diese Seite keinen festen Plus-Preis nennt</h2>
-    <p>Google Play kann lokale Währungen, Steuern und kontospezifische Angebote anzeigen. Ein auf dieser Website kopierter Betrag könnte deshalb für dich falsch sein. Prüfe im Store-Eintrag oder auf dem Abo-Bildschirm in Noctalia den geltenden Preis, den Abrechnungszeitraum, einen möglichen Testzeitraum oder Rabatt, die Verlängerungsbedingungen und die Zahlungsmethode, bevor du bestätigst. Das Installieren der App allein startet kein kostenpflichtiges Abo. Du kannst den kostenlosen Tarif zuerst im Alltag testen und später entscheiden.</p>
+    <p>Google Play kann lokale Währungen, Steuern und kontospezifische Angebote anzeigen. Ein auf dieser Website kopierter Betrag könnte deshalb für dich falsch sein. Prüfe im Store-Eintrag oder auf dem Abo-Bildschirm in Noctalia den geltenden Preis, den Abrechnungszeitraum, einen möglichen Testzeitraum oder Rabatt, die Verlängerungsbedingungen und die Zahlungsmethode, bevor du bestätigst. Das Installieren der App allein startet kein kostenpflichtiges Abo.</p>
   </section>
 
   <section class="glass-panel p-8 rounded-2xl border border-white/10 bg-white/5">
@@ -87,7 +87,7 @@
 
   <section class="glass-panel p-8 rounded-2xl border border-dream-salmon/20 bg-dream-salmon/5">
     <h2 class="text-2xl font-serif text-white mb-4">Mit dem kostenlosen Tarif starten</h2>
-    <p>Lade Noctalia herunter, halte deinen nächsten Traum fest und entscheide nach echter Nutzung, ob Plus für dich sinnvoll ist. Lies die <a href="/de/agb" class="text-dream-salmon hover:underline">Nutzungsbedingungen</a> und die <a href="/de/datenschutz" class="text-dream-salmon hover:underline">Datenschutzerklärung</a> für die vollständigen Regeln zu Dienst und Daten.</p>
-    <p class="mt-4"><a href="https://play.google.com/store/apps/details?id=com.tanuki75.noctalia&amp;hl=de" class="text-dream-salmon hover:underline" rel="nofollow noopener noreferrer" target="_blank">Noctalia bei Google Play ansehen</a></p>
+    <p>Lade Noctalia herunter, halte deinen nächsten Traum fest und entscheide nach echter Nutzung, ob Plus für dich sinnvoll ist. Die <a href="/de/agb" class="text-dream-salmon hover:underline">Nutzungsbedingungen</a> und die <a href="/de/datenschutz" class="text-dream-salmon hover:underline">Datenschutzerklärung</a> regeln im Detail, wie der Dienst funktioniert und was mit deinen Daten geschieht.</p>
+    <p class="mt-4"><a href="https://play.google.com/store/apps/details?id=com.tanuki75.noctalia&amp;hl=de" class="text-dream-salmon hover:underline" rel="nofollow noopener noreferrer" target="_blank">Noctalia kostenlos bei Google Play installieren</a></p>
   </section>
 </div>

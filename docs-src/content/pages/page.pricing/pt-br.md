@@ -39,7 +39,7 @@
 ---
 <h1 class="font-serif text-4xl md:text-5xl mb-4 text-dream-cream">Planos e preços do Noctalia</h1>
 <p class="text-sm text-purple-300/70 mb-6">Atualizado em 31 de julho de 2026</p>
-<p class="text-lg text-purple-200/80 leading-relaxed mb-10">Comece com o plano gratuito Sonhador e passe para o Plus somente se quiser mais reflexão guiada. O Noctalia é instalado gratuitamente no Android. Como o Google Play localiza preços, impostos, períodos de cobrança, condições de elegibilidade e promoções, a loja continua sendo a referência para o valor que será realmente cobrado de você.</p>
+<p class="text-lg text-purple-200/80 leading-relaxed mb-10">Comece com o plano gratuito Sonhador e passe para o Plus somente se quiser mais reflexão guiada. O Noctalia é gratuito para instalar no Android. Preço, impostos, período de cobrança, elegibilidade e promoções dependem do seu país e da sua conta, por isso é o Google Play que mostra o valor que você vai pagar de fato.</p>
 
 <div class="space-y-8 text-gray-300 leading-relaxed">
   <section class="grid md:grid-cols-2 gap-6">
@@ -54,7 +54,7 @@
         <li>Até 10 mensagens de acompanhamento por sonho analisado</li>
         <li>Um diário de sonhos salvo para consultar</li>
       </ul>
-      <p class="mt-5">Este plano permite testar o percurso completo, do registro à reflexão, sem começar uma assinatura paga.</p>
+      <p class="mt-5">Dá para testar todo o percurso, do sonho anotado ao acordar até a reflexão guiada, sem assinatura paga.</p>
     </div>
     <div class="glass-panel p-8 rounded-2xl border border-dream-salmon/30 bg-dream-salmon/5">
       <p class="text-sm uppercase tracking-wide text-dream-salmon mb-2">Assinatura opcional</p>
@@ -87,7 +87,7 @@
 
   <section class="glass-panel p-8 rounded-2xl border border-dream-salmon/20 bg-dream-salmon/5">
     <h2 class="text-2xl font-serif text-white mb-4">Comece com o plano gratuito</h2>
-    <p>Baixe o Noctalia, registre seu próximo sonho e decida depois de um uso real se o Plus é útil para você. Consulte os <a href="/pt-br/termos-de-uso" class="text-dream-salmon hover:underline">termos de uso</a> e a <a href="/pt-br/politica-de-privacidade" class="text-dream-salmon hover:underline">política de privacidade</a> para conhecer todas as regras do serviço e do tratamento de dados.</p>
-    <p class="mt-4"><a href="https://play.google.com/store/apps/details?id=com.tanuki75.noctalia&amp;hl=pt-BR" class="text-dream-salmon hover:underline" rel="nofollow noopener noreferrer" target="_blank">Ver o Noctalia no Google Play</a></p>
+    <p>Baixe o Noctalia, registre seu próximo sonho e decida, usando, se o Plus vale a pena para você. Os <a href="/pt-br/termos-de-uso" class="text-dream-salmon hover:underline">termos de uso</a> e a <a href="/pt-br/politica-de-privacidade" class="text-dream-salmon hover:underline">política de privacidade</a> detalham as regras do serviço e o tratamento dos seus dados.</p>
+    <p class="mt-4"><a href="https://play.google.com/store/apps/details?id=com.tanuki75.noctalia&amp;hl=pt-BR" class="text-dream-salmon hover:underline" rel="nofollow noopener noreferrer" target="_blank">Instale o Noctalia grátis pelo Google Play</a></p>
   </section>
 </div>

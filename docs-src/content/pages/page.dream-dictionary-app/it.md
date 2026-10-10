@@ -38,7 +38,7 @@
 ---
 <h1 class="font-serif text-4xl md:text-5xl mb-4 text-dream-cream">App dizionario dei sogni</h1>
 <p class="text-sm text-purple-300/70 mb-6">Aggiornato il 9 luglio 2026</p>
-<p class="text-lg text-purple-200/80 leading-relaxed mb-10">Noctalia unisce un dizionario pubblico di 150 schede editoriali di simboli e un diario Android. Cerca significati possibili, poi riporta il simbolo nel sogno completo, nelle tue emozioni e nei dettagli catturati al risveglio.</p>
+<p class="text-lg text-purple-200/80 leading-relaxed mb-10">Noctalia unisce un dizionario pubblico di 150 schede editoriali di simboli e un diario Android. Cerca significati possibili, poi riporta il simbolo nel sogno completo, nelle tue emozioni e nei dettagli annotati al risveglio.</p>
 
 <div class="space-y-8 text-gray-300 leading-relaxed">
   <section class="glass-panel p-8 rounded-2xl border border-white/10 bg-white/5">
@@ -49,7 +49,7 @@
   <section class="grid md:grid-cols-3 gap-6">
     <div class="glass-panel p-6 rounded-2xl border border-white/10 bg-white/5"><h2 class="text-xl font-serif text-white mb-3">1. Cerca</h2><p>Esplora 150 schede pubbliche per categoria o dalla A alla Z. Ogni scheda presenta varianti, domande e associazioni possibili.</p></div>
     <div class="glass-panel p-6 rounded-2xl border border-white/10 bg-white/5"><h2 class="text-xl font-serif text-white mb-3">2. Aggiungi contesto</h2><p>Annota che cosa faceva il simbolo, il suo aspetto e come ti sentivi. Un mare calmo e un'alluvione non sono la stessa scena.</p></div>
-    <div class="glass-panel p-6 rounded-2xl border border-white/10 bg-white/5"><h2 class="text-xl font-serif text-white mb-3">3. Confronta</h2><p>Salva il sogno completo nell'app e osserva simboli ripetuti tra più voci invece di concludere dopo una sola ricerca.</p></div>
+    <div class="glass-panel p-6 rounded-2xl border border-white/10 bg-white/5"><h2 class="text-xl font-serif text-white mb-3">3. Confronta</h2><p>Salva il sogno completo nell'app e guarda quali simboli tornano da una voce all'altra, invece di trarre conclusioni da una sola ricerca.</p></div>
   </section>
 
   <section class="glass-panel p-8 rounded-2xl border border-white/10 bg-white/5 overflow-x-auto">

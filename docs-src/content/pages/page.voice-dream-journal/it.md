@@ -44,12 +44,12 @@
   <section class="grid md:grid-cols-3 gap-6">
     <div class="glass-panel p-6 rounded-2xl border border-white/10 bg-white/5"><h2 class="text-xl font-serif text-white mb-3">1. Parla</h2><p>Descrivi scena, persone, luoghi, emozioni e frammenti nell'ordine in cui tornano alla memoria.</p></div>
     <div class="glass-panel p-6 rounded-2xl border border-white/10 bg-white/5"><h2 class="text-xl font-serif text-white mb-3">2. Rileggi</h2><p>Conserva la trascrizione come base del diario e aggiungi i dettagli che riaffiorano quando sei completamente sveglio.</p></div>
-    <div class="glass-panel p-6 rounded-2xl border border-white/10 bg-white/5"><h2 class="text-xl font-serif text-white mb-3">3. Esplora</h2><p>Torna più tardi a emozioni, simboli, pattern e domande guidate invece di interpretare in fretta.</p></div>
+    <div class="glass-panel p-6 rounded-2xl border border-white/10 bg-white/5"><h2 class="text-xl font-serif text-white mb-3">3. Esplora</h2><p>Torna più tardi a emozioni, simboli, temi ricorrenti e domande guidate invece di interpretare in fretta.</p></div>
   </section>
 
   <section class="glass-panel p-8 rounded-2xl border border-white/10 bg-white/5">
     <h2 class="text-2xl font-serif text-white mb-4">Dalla nota vocale a una voce utile</h2>
-    <p>Una raccolta di file audio diventa presto difficile da consultare. Il diario vocale Noctalia trasforma la cattura in testo e la collega agli altri elementi del sogno. Puoi cercare la voce, completarla e confrontarla con sogni precedenti quando luoghi, persone o emozioni si ripetono.</p>
+    <p>Una cartella di note vocali diventa presto impossibile da consultare. Noctalia trascrive la registrazione e la collega a umore, simboli e immagine del sogno. Puoi cercare la voce, completarla e confrontarla con sogni precedenti quando luoghi, persone o emozioni si ripetono.</p>
   </section>
 
   <section class="glass-panel p-8 rounded-2xl border border-white/10 bg-white/5 overflow-x-auto">
@@ -65,8 +65,8 @@
   </section>
 
   <section class="grid md:grid-cols-2 gap-6">
-    <div class="glass-panel p-8 rounded-2xl border border-white/10 bg-white/5"><h2 class="text-2xl font-serif text-white mb-4">Dopo la cattura</h2><p>La voce salvata può alimentare l'<a href="/it/app-analisi-sogni-android" class="text-dream-salmon hover:underline">analisi del sogno</a>, l'esplorazione dei simboli e le domande successive. Ogni suggerimento resta una possibilità, non una verità imposta.</p></div>
-    <div class="glass-panel p-8 rounded-2xl border border-white/10 bg-white/5"><h2 class="text-2xl font-serif text-white mb-4">Privacy in parole chiare</h2><p>L'<a href="/it/privacy-policy" class="text-dream-salmon hover:underline">informativa sulla privacy</a> indica che l'audio viene usato per la trascrizione e non è conservato in modo permanente da Noctalia. Descrive anche dati del diario, fornitori e diritti di cancellazione.</p><p class="mt-4 text-sm text-purple-200/70">Questa pagina è revisionata dal team editoriale Noctalia; non viene indicato alcun professionista clinico come revisore.</p></div>
+    <div class="glass-panel p-8 rounded-2xl border border-white/10 bg-white/5"><h2 class="text-2xl font-serif text-white mb-4">Dopo la registrazione</h2><p>La voce salvata può alimentare l'<a href="/it/app-analisi-sogni-android" class="text-dream-salmon hover:underline">analisi del sogno</a>, l'esplorazione dei simboli e le domande successive. Ogni suggerimento resta una possibilità, non una verità imposta.</p></div>
+    <div class="glass-panel p-8 rounded-2xl border border-white/10 bg-white/5"><h2 class="text-2xl font-serif text-white mb-4">La privacy, spiegata in chiaro</h2><p>L'<a href="/it/privacy-policy" class="text-dream-salmon hover:underline">informativa sulla privacy</a> indica che l'audio viene usato per la trascrizione e non è conservato in modo permanente da Noctalia. Descrive anche dati del diario, fornitori e diritti di cancellazione.</p><p class="mt-4 text-sm text-purple-200/70">Questa pagina è revisionata dal team editoriale Noctalia; non viene indicato alcun professionista clinico come revisore.</p></div>
   </section>
 
   <section class="glass-panel p-8 rounded-2xl border border-white/10 bg-white/5">
@@ -81,7 +81,7 @@
 
   <section class="glass-panel p-8 rounded-2xl border border-dream-salmon/20 bg-dream-salmon/5">
     <h2 class="text-2xl font-serif text-white mb-4">Inizia con una nota vocale</h2>
-    <p>Installa Noctalia su Android e racconta un sogno domani mattina prima di iniziare il resto della giornata.</p>
+    <p>Installa Noctalia su Android e racconta un sogno domani mattina, prima di aprire i messaggi.</p>
     <p class="mt-4"><a href="https://play.google.com/store/apps/details?id=com.tanuki75.noctalia&amp;hl=it" class="text-dream-salmon hover:underline" rel="nofollow noopener noreferrer" target="_blank">Installa Noctalia da Google Play</a></p>
   </section>
 </div>

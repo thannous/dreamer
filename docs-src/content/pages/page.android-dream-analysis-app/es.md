@@ -53,8 +53,8 @@
 
   <section class="grid md:grid-cols-2 gap-6">
     <div class="glass-panel p-8 rounded-2xl border border-white/10 bg-white/5">
-      <h2 class="text-2xl font-serif text-white mb-4">Qué puede ayudarte a observar</h2>
-      <p>Noctalia transforma un recuerdo fragmentado en una entrada legible y destaca palabras, símbolos, emociones o cambios de escena. Las preguntas guiadas te ayudan a comprobar una asociación frente a tu vida despierta. El valor está en conservar el contexto y construir un diario que puedas comparar con el tiempo.</p>
+      <h2 class="text-2xl font-serif text-white mb-4">Qué puedes observar</h2>
+      <p>Noctalia transforma un recuerdo fragmentado en una entrada legible y destaca palabras, símbolos, emociones o cambios de escena. Las preguntas guiadas te invitan a contrastar una asociación con tu vida diaria. Lo útil es conservar el contexto y llevar un diario que puedas comparar con el tiempo.</p>
     </div>
     <div class="glass-panel p-8 rounded-2xl border border-white/10 bg-white/5">
       <h2 class="text-2xl font-serif text-white mb-4">Qué no puede determinar</h2>
@@ -69,7 +69,7 @@
 
   <section class="glass-panel p-8 rounded-2xl border border-white/10 bg-white/5">
     <h2 class="text-2xl font-serif text-white mb-4">Privacidad y límites editoriales</h2>
-    <p>Un sueño puede incluir información íntima. La <a href="/es/politica-privacidad" class="text-dream-salmon hover:underline">política de privacidad</a> describe el alojamiento de datos en la Unión Europea, los proveedores de transcripción e IA, los derechos de eliminación, la ausencia de venta de datos personales y de publicidad dirigida. Esta página la revisa el equipo de Noctalia; no se presenta a ningún profesional clínico como revisor.</p>
+    <p>Un sueño puede incluir información íntima. La <a href="/es/politica-privacidad" class="text-dream-salmon hover:underline">política de privacidad</a> describe el alojamiento de datos en la Unión Europea, los proveedores de transcripción e IA, los derechos de eliminación, y deja claro que no se venden datos personales ni hay publicidad dirigida. Esta página la revisa el equipo de Noctalia; no se presenta a ningún profesional clínico como revisor.</p>
   </section>
 
   <section class="glass-panel p-8 rounded-2xl border border-white/10 bg-white/5">

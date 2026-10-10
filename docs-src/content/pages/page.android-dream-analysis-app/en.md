@@ -38,7 +38,7 @@
 ---
 <h1 class="font-serif text-4xl md:text-5xl mb-4 text-dream-cream">Android dream analysis app</h1>
 <p class="text-sm text-purple-300/70 mb-6">Updated July 9, 2026</p>
-<p class="text-lg text-purple-200/80 leading-relaxed mb-10">Noctalia is an Android dream analysis app built around the part most tools skip: capturing the dream in your own words first. Record or type what happened, preserve the mood and context, then explore symbols, images and guided questions without treating the result as a fixed truth.</p>
+<p class="text-lg text-purple-200/80 leading-relaxed mb-10">Noctalia is an Android dream analysis app that starts with the dream in your own words. Record or type what happened, keep the mood and context, then explore symbols, images and guided questions without treating the result as a fixed truth.</p>
 
 <div class="space-y-8 text-gray-300 leading-relaxed">
   <section class="glass-panel p-8 rounded-2xl border border-white/10 bg-white/5">
@@ -54,7 +54,7 @@
   <section class="grid md:grid-cols-2 gap-6">
     <div class="glass-panel p-8 rounded-2xl border border-white/10 bg-white/5">
       <h2 class="text-2xl font-serif text-white mb-4">What it can help you notice</h2>
-      <p>Noctalia can organize a long, disjointed memory into a readable entry and surface repeated words, symbols, emotions or scene changes. Guided questions help you test an association against your waking life. The value is in preserving context and building a journal you can compare over time.</p>
+      <p>Noctalia can organize a long, disjointed memory into a readable entry and surface repeated words, symbols, emotions or scene changes. Guided questions help you test an association against your waking life. The value comes from the context you keep and from a journal you can compare over time.</p>
     </div>
     <div class="glass-panel p-8 rounded-2xl border border-white/10 bg-white/5">
       <h2 class="text-2xl font-serif text-white mb-4">What it cannot determine</h2>

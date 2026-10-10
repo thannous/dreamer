@@ -43,8 +43,8 @@
 <div class="space-y-8 text-gray-300 leading-relaxed">
   <section class="glass-panel p-8 rounded-2xl border border-white/10 bg-white/5">
     <h2 class="text-2xl font-serif text-white mb-4">Short version</h2>
-    <p>Choose Dream Journal Ultimate for iOS support, Dream Wall, similar-dream discovery, a large symbol dictionary, lucid lessons and reality-check reminders. Choose Noctalia for an Android-first experience centered on speaking a dream before it fades, creating a visual card, following recurring symbols and continuing with private guided questions.</p>
-    <p class="mt-4">This is not a winner-takes-all ranking. Dream Journal Ultimate has the broader community and lucid toolkit; Noctalia has the more focused capture-to-reflection path. Neither app should be presented as a medical or predictive service.</p>
+    <p>Choose Dream Journal Ultimate for iOS support, Dream Wall, similar-dream discovery, a large symbol dictionary, lucid lessons and reality-check reminders. Choose Noctalia on Android to speak a dream before it fades, creating a visual card, following recurring symbols and continuing with private guided questions.</p>
+    <p class="mt-4">There is no single winner here. Dream Journal Ultimate has the broader community and lucid toolkit; Noctalia has the more direct path from capture to reflection. Neither app is presented here as a medical or predictive service.</p>
   </section>
 
   <section class="glass-panel p-8 rounded-2xl border border-white/10 bg-white/5">
@@ -54,8 +54,8 @@
         <thead class="text-purple-200"><tr><th class="py-3 pr-4">Category</th><th class="py-3 pr-4">Dream Journal Ultimate</th><th class="py-3 pr-4">Noctalia</th><th class="py-3 pr-4">Bottom line</th></tr></thead>
         <tbody class="divide-y divide-white/10">
           <tr><td class="py-4 pr-4 text-white font-medium">Morning capture</td><td class="py-4 pr-4">Official pages advertise voice dream recording, reminders, tags and sync.</td><td class="py-4 pr-4">Voice-first capture leads directly into a structured dream card and follow-up reflection.</td><td class="py-4 pr-4">Both support voice; Noctalia is built around that single morning job.</td></tr>
-          <tr><td class="py-4 pr-4 text-white font-medium">Platforms</td><td class="py-4 pr-4">Android and iOS, with web community and resource surfaces.</td><td class="py-4 pr-4">Android app plus public web resources; no iOS app today.</td><td class="py-4 pr-4">Choose Dream Journal Ultimate if iOS is required.</td></tr>
-          <tr><td class="py-4 pr-4 text-white font-medium">Community</td><td class="py-4 pr-4">Dreams remain private unless the user chooses to share them to Dream Wall.</td><td class="py-4 pr-4">No public social dream feed; the product centers on the user's own journal.</td><td class="py-4 pr-4">Choose based on whether community is useful or distracting.</td></tr>
+          <tr><td class="py-4 pr-4 text-white font-medium">Platforms</td><td class="py-4 pr-4">Android and iOS, with a community and resources on the web.</td><td class="py-4 pr-4">Android app plus public web resources; no iOS app today.</td><td class="py-4 pr-4">Choose Dream Journal Ultimate if iOS is required.</td></tr>
+          <tr><td class="py-4 pr-4 text-white font-medium">Community</td><td class="py-4 pr-4">Dreams remain private unless the user chooses to share them to Dream Wall.</td><td class="py-4 pr-4">No public social dream feed; the product centers on your own journal.</td><td class="py-4 pr-4">Choose based on whether community is useful or distracting.</td></tr>
           <tr><td class="py-4 pr-4 text-white font-medium">Interpretation and images</td><td class="py-4 pr-4">AI interpretation, Dream Companion, similar dreams, symbols and AI artwork.</td><td class="py-4 pr-4">Structured AI reflection, generated dream images, recurring symbols and guided follow-up.</td><td class="py-4 pr-4">Dream Journal Ultimate is broader; Noctalia is more linear and focused.</td></tr>
           <tr><td class="py-4 pr-4 text-white font-medium">Lucid dreaming</td><td class="py-4 pr-4">Academy lessons, reality checks, reminders and progress tools are advertised.</td><td class="py-4 pr-4">Basic lucid support, not a complete training program.</td><td class="py-4 pr-4">Dream Journal Ultimate is the stronger lucid-practice choice.</td></tr>
           <tr><td class="py-4 pr-4 text-white font-medium">Privacy evidence</td><td class="py-4 pr-4">PIN or biometric lock, optional sharing and cloud sync; store disclosures list collected and shared data categories.</td><td class="py-4 pr-4">EU-hosted journal data, named processing providers, no sale of personal data and no targeted ads.</td><td class="py-4 pr-4">Compare the disclosed models; do not reduce privacy to one badge.</td></tr>
@@ -66,12 +66,12 @@
 
   <section class="grid md:grid-cols-2 gap-6">
     <div class="glass-panel p-8 rounded-2xl border border-white/10 bg-white/5">
-      <h2 class="text-2xl font-serif text-white mb-4">Current public proof</h2>
-      <p>On August 9, 2026, Google Play showed Dream Journal Ultimate at 100K+ downloads, 4.4 stars and about 1.14K reviews, updated August 1. The US App Store showed 4.5 stars from 547 ratings and version 2026.8.5. Noctalia should acknowledge that maturity rather than claim equivalent scale.</p>
+      <h2 class="text-2xl font-serif text-white mb-4">Store figures</h2>
+      <p>On August 9, 2026, Google Play showed Dream Journal Ultimate at 100K+ downloads, 4.4 stars and about 1.14K reviews, updated August 1. The US App Store showed 4.5 stars from 547 ratings and version 2026.8.5. Noctalia does not claim comparable scale.</p>
     </div>
     <div class="glass-panel p-8 rounded-2xl border border-white/10 bg-white/5">
-      <h2 class="text-2xl font-serif text-white mb-4">Pricing boundary</h2>
-      <p>Both apps are free to download and expose in-app purchase or subscription signals. Store prices vary by country, taxes, eligibility and date, so this page does not declare a universal cheapest option. Check the purchase screen that applies to you.</p>
+      <h2 class="text-2xl font-serif text-white mb-4">On pricing</h2>
+      <p>Both apps are free to download and show in-app purchases or subscriptions. Store prices vary by country, taxes, eligibility and date, so this page does not declare a universal cheapest option. Check the purchase screen that applies to you.</p>
     </div>
   </section>
 
@@ -125,7 +125,7 @@
 
   <section class="glass-panel p-8 rounded-2xl border border-dream-salmon/20 bg-dream-salmon/5">
     <h2 class="text-2xl font-serif text-white mb-4">Try Noctalia on Android</h2>
-    <p>Noctalia is for people who want to capture a dream quickly, turn it into a visual memory and continue with a focused private reflection workflow.</p>
+    <p>Speak your dream as you wake, get an image of it and keep reflecting in private with guided questions.</p>
     <p class="mt-4"><a href="https://play.google.com/store/apps/details?id=com.tanuki75.noctalia&amp;hl=en" class="text-dream-salmon hover:underline" rel="nofollow noopener noreferrer" target="_blank">Open Noctalia on Google Play</a></p>
   </section>
 </div>

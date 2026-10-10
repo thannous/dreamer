@@ -44,7 +44,7 @@
   <section class="glass-panel p-8 rounded-2xl border border-dream-salmon/20 bg-dream-salmon/5">
     <h2 class="text-2xl font-serif text-white mb-4">Estado de la cifra «55 000 sueños»</h2>
     <p>La fuente pública actual de Noctalia no contiene 55 000 relatos, una exportación agregada con fecha ni la procedencia que permita reproducir esa cantidad. Tampoco documenta marco de muestreo, consentimiento, protocolo de anotación ni resultados estadísticos para tal corpus. Por ello, la cifra <strong class="text-white">no puede verificarse con la evidencia actual y no debe citarse como respaldo científico</strong>.</p>
-    <p class="mt-4">Los diarios privados no se publican deliberadamente. Un futuro análisis agregado debería documentar periodo de recogida, criterios de inclusión, tratamiento de privacidad, reglas de deduplicación, método de anotación y resultados reproducibles antes de utilizar una cifra global.</p>
+    <p class="mt-4">Los diarios privados no se publican, por decisión propia. Un futuro análisis agregado debería documentar periodo de recogida, criterios de inclusión, tratamiento de privacidad, reglas de deduplicación, método de anotación y resultados reproducibles antes de utilizar una cifra global.</p>
   </section>
 
   <section class="glass-panel p-8 rounded-2xl border border-white/10 bg-white/5">

@@ -36,7 +36,7 @@
 ---
 <h1 class="font-serif text-4xl md:text-5xl mb-6 text-dream-cream">Noctalia Pressekit</h1>
 <p class="text-sm text-purple-300/70 mb-6">Aktualisiert am 4. August 2026</p>
-<p class="text-lg text-purple-200/80 leading-relaxed mb-10">Noctalia ist ein Android-orientiertes Traumtagebuch, mit dem Menschen Träume per Sprache festhalten, in strukturierte Einträge verwandeln und Symbole, Bilder, Muster und geführte Nachfragen erkunden.</p>
+<p class="text-lg text-purple-200/80 leading-relaxed mb-10">Noctalia ist ein Traumtagebuch für Android. Man erzählt seinen Traum laut, die App macht daraus einen strukturierten Eintrag, danach lassen sich Symbole, Bilder, Muster und geführte Nachfragen erkunden.</p>
 
 <div class="space-y-8 text-gray-300 leading-relaxed">
   <section class="glass-panel p-8 rounded-2xl border border-white/10 bg-white/5">
@@ -54,9 +54,9 @@
   <section class="glass-panel p-8 rounded-2xl border border-white/10 bg-white/5">
     <h2 class="text-2xl font-serif text-white mb-4">Beschreibungen</h2>
     <h3 class="text-white font-medium mb-2">Kurzbeschreibung</h3>
-    <p>Android-Traumtagebuch mit Sprachaufnahme, KI-Reflexion, Symbolen, generierten Bildern und geführter Reflexion.</p>
+    <p>Android-Traumtagebuch mit Sprachaufnahme, KI-Reflexion, Symbolen, generierten Bildern und geführten Nachfragen.</p>
     <h3 class="text-white font-medium mt-6 mb-2">Langbeschreibung</h3>
-    <p>Noctalia hilft, Träume festzuhalten, bevor Details verblassen. Nutzer können per Sprache oder Text aufnehmen, eine strukturierte Reflexion erhalten, wiederkehrende Symbole und Emotionen ansehen, ein Traumbild generieren und mit geführten Fragen weiterarbeiten.</p>
+    <p>Mit Noctalia ist ein Traum notiert, bevor die Details verblassen. Nutzer können per Sprache oder Text aufnehmen, eine strukturierte Reflexion erhalten, wiederkehrende Symbole und Emotionen ansehen, ein Traumbild generieren und mit geführten Fragen weiterarbeiten.</p>
   </section>
 
   <section class="glass-panel p-8 rounded-2xl border border-white/10 bg-white/5">
@@ -102,7 +102,7 @@
 
   <section class="glass-panel p-8 rounded-2xl border border-white/10 bg-white/5">
     <h2 class="text-2xl font-serif text-white mb-4">Redaktioneller Hinweis</h2>
-    <p>Noctalia ist für Journaling, Reflexion und Wohlbefinden gedacht. Es ist kein Medizinprodukt und ersetzt keine Beratung durch medizinisches Fachpersonal.</p>
+    <p>Noctalia ist eine App für Journaling, Reflexion und Wohlbefinden. Sie ist kein Medizinprodukt und ersetzt keine Beratung durch medizinisches Fachpersonal.</p>
   </section>
 
   <section class="glass-panel p-8 rounded-2xl border border-white/10 bg-white/5">

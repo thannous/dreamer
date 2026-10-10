@@ -49,7 +49,7 @@
   <section class="grid md:grid-cols-3 gap-6">
     <div class="glass-panel p-6 rounded-2xl border border-white/10 bg-white/5"><h2 class="text-xl font-serif text-white mb-3">1. Nachschlagen</h2><p>Durchsuche 150 öffentliche Einträge nach Kategorie oder von A bis Z. Jeder Eintrag zeigt Varianten, Fragen und mögliche Assoziationen.</p></div>
     <div class="glass-panel p-6 rounded-2xl border border-white/10 bg-white/5"><h2 class="text-xl font-serif text-white mb-3">2. Kontext ergänzen</h2><p>Notiere, was das Symbol tat, wie es aussah und was du fühltest. Ein ruhiges Meer und eine Überschwemmung sind nicht dieselbe Szene.</p></div>
-    <div class="glass-panel p-6 rounded-2xl border border-white/10 bg-white/5"><h2 class="text-xl font-serif text-white mb-3">3. Vergleichen</h2><p>Speichere den ganzen Traum in der App und beobachte wiederholte Symbole über mehrere Einträge, statt aus einer Suche zu schließen.</p></div>
+    <div class="glass-panel p-6 rounded-2xl border border-white/10 bg-white/5"><h2 class="text-xl font-serif text-white mb-3">3. Vergleichen</h2><p>Speichere den ganzen Traum in der App und achte darauf, welche Symbole in mehreren Einträgen wiederkehren, statt aus einer einzigen Suche Schlüsse zu ziehen.</p></div>
   </section>
 
   <section class="glass-panel p-8 rounded-2xl border border-white/10 bg-white/5 overflow-x-auto">
@@ -66,7 +66,7 @@
 
   <section class="glass-panel p-8 rounded-2xl border border-white/10 bg-white/5">
     <h2 class="text-2xl font-serif text-white mb-4">Redaktionelle Grenzen und Datenschutz</h2>
-    <p>Das Lexikon ist redaktioneller Inhalt, kein Datensatz privater Nutzerträume und keine klinische Beratung. Es wird keine klinische Fachperson als Gutachter dieser Seite genannt. Für das Android-Journal erklärt die <a href="/de/datenschutz" class="text-dream-salmon hover:underline">Datenschutzerklärung</a> Hosting, KI-Anbieter und Löschmöglichkeiten.</p>
+    <p>Das Lexikon ist redaktioneller Inhalt, kein Datensatz privater Nutzerträume und keine klinische Beratung. Als Prüfer dieser Seite ist keine klinische Fachperson genannt. Für das Android-Journal erklärt die <a href="/de/datenschutz" class="text-dream-salmon hover:underline">Datenschutzerklärung</a> Hosting, KI-Anbieter und Löschmöglichkeiten.</p>
   </section>
 
   <section class="glass-panel p-8 rounded-2xl border border-white/10 bg-white/5">

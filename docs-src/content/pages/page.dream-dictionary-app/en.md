@@ -43,13 +43,13 @@
 <div class="space-y-8 text-gray-300 leading-relaxed">
   <section class="glass-panel p-8 rounded-2xl border border-white/10 bg-white/5">
     <h2 class="text-2xl font-serif text-white mb-4">Use a dream dictionary as a starting point</h2>
-    <p>A symbol page can help you find language for an image such as water, a dog, a door or a bridge. It cannot know what that image means to you. Read the common possibilities, note which variation appeared and check the emotion in the dream before choosing an interpretation that fits.</p>
+    <p>A symbol page gives you words for an image such as water, a dog, a door or a bridge. It cannot know what that image means to you. Read the common possibilities, note which variation appeared and check the emotion in the dream before choosing an interpretation that fits.</p>
   </section>
 
   <section class="grid md:grid-cols-3 gap-6">
     <div class="glass-panel p-6 rounded-2xl border border-white/10 bg-white/5"><h2 class="text-xl font-serif text-white mb-3">1. Look up</h2><p>Browse 150 public symbol entries by category or A-Z. Each entry presents variations, questions and possible associations.</p></div>
     <div class="glass-panel p-6 rounded-2xl border border-white/10 bg-white/5"><h2 class="text-xl font-serif text-white mb-3">2. Add context</h2><p>Record what the symbol did, how it looked and how you felt. A calm sea and a flood should not be read as the same scene.</p></div>
-    <div class="glass-panel p-6 rounded-2xl border border-white/10 bg-white/5"><h2 class="text-xl font-serif text-white mb-3">3. Compare</h2><p>Save the complete dream in the app and revisit repeated symbols across entries instead of making a decision from one lookup.</p></div>
+    <div class="glass-panel p-6 rounded-2xl border border-white/10 bg-white/5"><h2 class="text-xl font-serif text-white mb-3">3. Compare</h2><p>Save the complete dream in the app and watch which symbols come back across entries, instead of drawing a conclusion from one lookup.</p></div>
   </section>
 
   <section class="glass-panel p-8 rounded-2xl border border-white/10 bg-white/5 overflow-x-auto">
@@ -66,7 +66,7 @@
 
   <section class="glass-panel p-8 rounded-2xl border border-white/10 bg-white/5">
     <h2 class="text-2xl font-serif text-white mb-4">Editorial and privacy limits</h2>
-    <p>The dictionary is editorial content, not a dataset of private user dreams and not clinical guidance. Noctalia does not present a clinician as reviewer of this page. When you use the Android journal, the <a href="/en/privacy-policy" class="text-dream-salmon hover:underline">privacy policy</a> explains data hosting, AI providers and deletion controls.</p>
+    <p>The dictionary is editorial content, not a dataset of private user dreams and not clinical guidance. No clinician is listed as a reviewer of this page. When you use the Android journal, the <a href="/en/privacy-policy" class="text-dream-salmon hover:underline">privacy policy</a> explains data hosting, AI providers and deletion controls.</p>
   </section>
 
   <section class="glass-panel p-8 rounded-2xl border border-white/10 bg-white/5">

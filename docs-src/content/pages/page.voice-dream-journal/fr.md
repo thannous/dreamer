@@ -38,7 +38,7 @@
 ---
 <h1 class="font-serif text-4xl md:text-5xl mb-4 text-dream-cream">Journal de rêves vocal Android</h1>
 <p class="text-sm text-purple-300/70 mb-6">Mis à jour le 9 juillet 2026</p>
-<p class="text-lg text-purple-200/80 leading-relaxed mb-10">Un rêve peut perdre ses détails pendant que vous cherchez les bons mots. Avec Noctalia sur Android, racontez d'abord ce dont vous vous souvenez, puis gardez la transcription comme une entrée consultable avec humeur, symboles, image et questions de réflexion.</p>
+<p class="text-lg text-purple-200/80 leading-relaxed mb-10">Un rêve peut perdre ses détails pendant que vous cherchez les bons mots. Avec le journal de rêves vocal de Noctalia sur Android, racontez d'abord ce dont vous vous souvenez, puis gardez la transcription comme une entrée consultable avec humeur, symboles, image et questions de réflexion.</p>
 
 <div class="space-y-8 text-gray-300 leading-relaxed">
   <section class="grid md:grid-cols-3 gap-6">
@@ -49,7 +49,7 @@
 
   <section class="glass-panel p-8 rounded-2xl border border-white/10 bg-white/5">
     <h2 class="text-2xl font-serif text-white mb-4">De la note vocale à une entrée utile</h2>
-    <p>Une simple collection de fichiers audio devient vite difficile à parcourir. Le journal vocal Noctalia transforme la capture en texte, puis la relie aux autres éléments du rêve. Vous pouvez rechercher l'entrée, la compléter et la comparer à des rêves antérieurs lorsque des lieux, personnes ou émotions reviennent.</p>
+    <p>Un dossier de mémos vocaux devient vite impossible à parcourir. Noctalia transcrit l'enregistrement, puis le relie à l'humeur, aux symboles et à l'image du rêve. Vous pouvez rechercher l'entrée, la compléter et la comparer à des rêves antérieurs lorsque des lieux, personnes ou émotions reviennent.</p>
   </section>
 
   <section class="glass-panel p-8 rounded-2xl border border-white/10 bg-white/5 overflow-x-auto">
@@ -81,7 +81,7 @@
 
   <section class="glass-panel p-8 rounded-2xl border border-dream-salmon/20 bg-dream-salmon/5">
     <h2 class="text-2xl font-serif text-white mb-4">Commencer avec une note vocale</h2>
-    <p>Installez Noctalia sur Android et racontez un rêve demain matin avant de consulter le reste de votre journée.</p>
+    <p>Installez Noctalia sur Android et racontez un rêve demain matin, avant d'ouvrir vos messages.</p>
     <p class="mt-4"><a href="https://play.google.com/store/apps/details?id=com.tanuki75.noctalia&amp;hl=fr" class="text-dream-salmon hover:underline" rel="nofollow noopener noreferrer" target="_blank">Installer Noctalia sur Google Play</a></p>
   </section>
 </div>

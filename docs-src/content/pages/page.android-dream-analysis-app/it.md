@@ -44,7 +44,7 @@
   <section class="glass-panel p-8 rounded-2xl border border-white/10 bg-white/5">
     <h2 class="text-2xl font-serif text-white mb-4">Come funziona l'analisi</h2>
     <ol class="list-decimal pl-5 space-y-2">
-      <li><strong class="text-white">Cattura:</strong> racconta il sogno subito dopo il risveglio o scrivilo quando hai più tempo.</li>
+      <li><strong class="text-white">Racconto:</strong> racconta il sogno subito dopo il risveglio o scrivilo quando hai più tempo.</li>
       <li><strong class="text-white">Contesto:</strong> conserva persone, luoghi, emozioni e dettagli strani che rendono il sogno personale.</li>
       <li><strong class="text-white">Esplorazione:</strong> rileggi temi possibili, simboli ricorrenti, segnali emotivi, un'immagine generata e domande di approfondimento.</li>
       <li><strong class="text-white">Confronto:</strong> torna più tardi alla voce salvata e confrontala con altri sogni invece di giudicarla da sola.</li>
@@ -53,8 +53,8 @@
 
   <section class="grid md:grid-cols-2 gap-6">
     <div class="glass-panel p-8 rounded-2xl border border-white/10 bg-white/5">
-      <h2 class="text-2xl font-serif text-white mb-4">Che cosa può aiutarti a notare</h2>
-      <p>Noctalia trasforma un ricordo frammentato in una voce leggibile e mette in evidenza parole, simboli, emozioni o cambi di scena. Le domande guidate ti aiutano a verificare un'associazione rispetto alla vita da sveglio. Il valore è nel contesto conservato e in un diario che puoi confrontare nel tempo.</p>
+      <h2 class="text-2xl font-serif text-white mb-4">Che cosa puoi notare</h2>
+      <p>Noctalia trasforma un ricordo frammentato in una voce leggibile e mette in evidenza parole, simboli, emozioni o cambi di scena. Le domande guidate ti invitano a confrontare un'associazione con la tua vita di tutti i giorni. Il valore è nel contesto conservato e in un diario che puoi confrontare nel tempo.</p>
     </div>
     <div class="glass-panel p-8 rounded-2xl border border-white/10 bg-white/5">
       <h2 class="text-2xl font-serif text-white mb-4">Che cosa non può stabilire</h2>
@@ -63,13 +63,13 @@
   </section>
 
   <section class="glass-panel p-8 rounded-2xl border border-white/10 bg-white/5">
-    <h2 class="text-2xl font-serif text-white mb-4">Analisi, dizionario e cattura vocale hanno compiti diversi</h2>
+    <h2 class="text-2xl font-serif text-white mb-4">Analisi, dizionario e registrazione vocale hanno compiti diversi</h2>
     <p>Questa pagina descrive il percorso completo di analisi. Se cerchi solo un significato generale per una singola immagine, inizia dal <a href="/it/dizionario-dei-sogni-app" class="text-dream-salmon hover:underline">dizionario dei sogni</a>. Se il problema è annotare tutto al risveglio, consulta il <a href="/it/diario-dei-sogni-vocale" class="text-dream-salmon hover:underline">diario dei sogni vocale</a>. L'analisi Noctalia collega poi questi elementi all'intero sogno salvato.</p>
   </section>
 
   <section class="glass-panel p-8 rounded-2xl border border-white/10 bg-white/5">
     <h2 class="text-2xl font-serif text-white mb-4">Privacy e limiti editoriali</h2>
-    <p>Un sogno può contenere informazioni intime. L'<a href="/it/privacy-policy" class="text-dream-salmon hover:underline">informativa sulla privacy</a> descrive l'hosting dei dati nell'Unione europea, i fornitori di trascrizione e IA, i diritti di cancellazione, nessuna vendita di dati personali e nessuna pubblicità mirata. Questa pagina è revisionata dal team Noctalia; non viene indicato alcun professionista clinico come revisore.</p>
+    <p>Un sogno può contenere informazioni intime. L'<a href="/it/privacy-policy" class="text-dream-salmon hover:underline">informativa sulla privacy</a> descrive l'hosting dei dati nell'Unione europea, i fornitori di trascrizione e IA, i diritti di cancellazione, e precisa che i dati personali non vengono venduti e che non c'è pubblicità mirata. Questa pagina è revisionata dal team Noctalia; non viene indicato alcun professionista clinico come revisore.</p>
   </section>
 
   <section class="glass-panel p-8 rounded-2xl border border-white/10 bg-white/5">
@@ -84,7 +84,7 @@
 
   <section class="glass-panel p-8 rounded-2xl border border-dream-salmon/20 bg-dream-salmon/5">
     <h2 class="text-2xl font-serif text-white mb-4">Analizza un sogno nel suo contesto</h2>
-    <p>Installa Noctalia su Android, cattura il prossimo sogno con le tue parole e rileggi la riflessione quando sei completamente sveglio.</p>
-    <p class="mt-4 flex flex-wrap gap-4"><a href="https://play.google.com/store/apps/details?id=com.tanuki75.noctalia&amp;hl=it" class="text-dream-salmon hover:underline" rel="nofollow noopener noreferrer" target="_blank">Installa Noctalia da Google Play</a><a href="/it/app-interpretazione-sogni-ai" class="text-dream-salmon hover:underline">Scopri come viene usata l'IA</a></p>
+    <p>Installa Noctalia su Android, annota il prossimo sogno con le tue parole e rileggi la riflessione quando sei completamente sveglio.</p>
+    <p class="mt-4 flex flex-wrap gap-4"><a href="https://play.google.com/store/apps/details?id=com.tanuki75.noctalia&amp;hl=it" class="text-dream-salmon hover:underline" rel="nofollow noopener noreferrer" target="_blank">Installa Noctalia da Google Play</a><a href="/it/app-interpretazione-sogni-ai" class="text-dream-salmon hover:underline">Leggi come viene usata l'IA</a></p>
   </section>
 </div>

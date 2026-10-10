@@ -49,7 +49,7 @@
   <section class="grid md:grid-cols-3 gap-6">
     <div class="glass-panel p-6 rounded-2xl border border-white/10 bg-white/5"><h2 class="text-xl font-serif text-white mb-3">1. Pesquisar</h2><p>Percorra 150 fichas públicas por categoria ou de A a Z. Cada ficha apresenta variantes, perguntas e associações possíveis.</p></div>
     <div class="glass-panel p-6 rounded-2xl border border-white/10 bg-white/5"><h2 class="text-xl font-serif text-white mb-3">2. Contextualizar</h2><p>Anote a ação do símbolo, seu aspecto e o que você sentiu. Um mar calmo e uma enchente não descrevem a mesma cena.</p></div>
-    <div class="glass-panel p-6 rounded-2xl border border-white/10 bg-white/5"><h2 class="text-xl font-serif text-white mb-3">3. Comparar</h2><p>Guarde o sonho completo no app e observe os símbolos repetidos entre várias entradas em vez de concluir depois de uma pesquisa.</p></div>
+    <div class="glass-panel p-6 rounded-2xl border border-white/10 bg-white/5"><h2 class="text-xl font-serif text-white mb-3">3. Comparar</h2><p>Guarde o sonho completo no app e repare nos símbolos que voltam de uma entrada para outra, em vez de tirar conclusões de uma única pesquisa.</p></div>
   </section>
 
   <section class="glass-panel p-8 rounded-2xl border border-white/10 bg-white/5 overflow-x-auto">

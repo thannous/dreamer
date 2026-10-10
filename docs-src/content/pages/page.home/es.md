@@ -66,7 +66,7 @@
         <div class="oh-manifesto-head reveal">
             <span class="oh-index" aria-hidden="true">23:00</span>
             <h2 class="oh-manifesto-title">De una escena que se desvanece a un relato al que puedes volver</h2>
-            <p class="oh-lede">Primero captura, mientras sigue vivo. Después dale sentido, cuando estés bien despierto.</p>
+            <p class="oh-lede">Primero guárdalo, mientras sigue vivo. Después dale sentido, cuando estés bien despierto.</p>
         </div>
         <ul class="oh-promises" role="list">
             <li class="oh-promise reveal">
@@ -78,7 +78,7 @@
                 <p>Noctalia señala posibles símbolos, emociones y temas en tu relato. Son preguntas para ti, no un diagnóstico.</p>
             </li>
             <li class="oh-promise reveal">
-                <h3>Lo que vuelve acaba viéndose</h3>
+                <h3>Lo que vuelve salta a la vista</h3>
                 <p>Cada sueño se suma a tu diario. Con las semanas, aparecen las emociones y las imágenes que se repiten.</p>
             </li>
             <li class="oh-promise reveal">
@@ -492,7 +492,7 @@
                 <span class="oh-index" aria-hidden="true">5:00</span>
                 <h2 class="oh-h2">Diccionario de símbolos</h2>
             </div>
-            <p class="oh-lede">Explora 150 símbolos frecuentes, cada uno con preguntas de contexto y asociaciones posibles. La escena —y lo que sentiste en ella— importa más que una definición fija.</p>
+            <p class="oh-lede">Recorre 150 símbolos frecuentes, cada uno con preguntas de contexto y asociaciones posibles. Lo que cuenta es la escena y lo que sentiste en ella, más que una definición fija.</p>
         </div>
 
         <div class="oh-symbols reveal">
@@ -599,14 +599,14 @@
             <div class="oh-wake-pitch reveal">
                 <p class="oh-wake-sentence">Noctalia guarda la escena antes de que se desvanezca.</p>
                 <p class="oh-lede">Tú dices lo que queda. La app lo transcribe, señala símbolos y emociones, y te deja explorar.</p>
-                <a href="https://play.google.com/store/apps/details?id=com.tanuki75.noctalia&amp;hl=es" class="oh-btn-quiet">Pruébalo en tu próximo despertar <i data-lucide="arrow-right"></i></a>
+                <a href="https://play.google.com/store/apps/details?id=com.tanuki75.noctalia&amp;hl=es" class="oh-btn-quiet">Pruébalo la próxima vez que despiertes <i data-lucide="arrow-right"></i></a>
             </div>
         </div>
         <div class="oh-features oh-remember" data-chapter="remembering">
             <details class="oh-feature" name="oh-features" open>
                 <summary><span class="oh-feature-num" aria-hidden="true">01</span><h3 class="oh-feature-title">Diario</h3></summary>
                 <div class="oh-feature-body">
-                    <p>Cada entrada llega a un diario que puedes recorrer hacia atrás, con su fecha, su título y su emoción principal.</p>
+                    <p>Cada entrada se guarda en un diario que puedes repasar, con su fecha, su título y su emoción principal.</p>
                     <p class="oh-feature-links"><a href="/es/diario-de-suenos-por-voz">Diario de sueños por voz <i data-lucide="arrow-up-right"></i></a> <a href="/es/apps-diario-de-suenos">Mejores apps de diario de sueños <i data-lucide="arrow-up-right"></i></a></p>
                 </div>
                 <div class="oh-feature-object" data-object="journal">
@@ -653,7 +653,7 @@
                         <picture>
                             <source type="image/webp" srcset="/img/app/en/chat-480w.webp 480w, /img/app/en/chat-800w.webp 800w" sizes="(min-width: 768px) 300px, 78vw">
                             <source type="image/jpeg" srcset="/img/app/en/chat-800w.jpg 800w" sizes="(min-width: 768px) 300px, 78vw">
-                            <img src="/img/app/en/chat-800w.jpg" alt="Explorando ideas y simbolismo de tu sueño" class="w-full h-full object-cover" width="800" height="1639" loading="lazy" decoding="async">
+                            <img src="/img/app/en/chat-800w.jpg" alt="Explorar los símbolos de tu sueño" class="w-full h-full object-cover" width="800" height="1639" loading="lazy" decoding="async">
                         </picture>
                     </div>
                 </div>

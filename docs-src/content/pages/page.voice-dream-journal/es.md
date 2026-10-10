@@ -49,7 +49,7 @@
 
   <section class="glass-panel p-8 rounded-2xl border border-white/10 bg-white/5">
     <h2 class="text-2xl font-serif text-white mb-4">De la nota de voz a una entrada útil</h2>
-    <p>Una colección de archivos de audio pronto resulta difícil de consultar. El diario de voz de Noctalia convierte la captura en texto y la relaciona con los demás elementos del sueño. Puedes buscar la entrada, completarla y compararla con sueños anteriores cuando se repitan lugares, personas o emociones.</p>
+    <p>Una carpeta de notas de voz pronto se vuelve imposible de revisar. Noctalia transcribe la grabación y la vincula con el estado de ánimo, los símbolos y la imagen del sueño. Puedes buscar la entrada, completarla y compararla con sueños anteriores cuando se repitan lugares, personas o emociones.</p>
   </section>
 
   <section class="glass-panel p-8 rounded-2xl border border-white/10 bg-white/5 overflow-x-auto">
@@ -66,7 +66,7 @@
 
   <section class="grid md:grid-cols-2 gap-6">
     <div class="glass-panel p-8 rounded-2xl border border-white/10 bg-white/5"><h2 class="text-2xl font-serif text-white mb-4">Después de capturarlo</h2><p>El diario guardado puede alimentar el <a href="/es/app-analisis-suenos-android" class="text-dream-salmon hover:underline">análisis del sueño</a>, la exploración de símbolos y las preguntas de seguimiento. Cada sugerencia sigue siendo una posibilidad, no una verdad impuesta.</p></div>
-    <div class="glass-panel p-8 rounded-2xl border border-white/10 bg-white/5"><h2 class="text-2xl font-serif text-white mb-4">Privacidad en palabras claras</h2><p>La <a href="/es/politica-privacidad" class="text-dream-salmon hover:underline">política de privacidad</a> indica que el audio se usa para transcribir y que Noctalia no lo conserva de forma permanente. También describe los datos del diario, los proveedores y los derechos de eliminación.</p><p class="mt-4 text-sm text-purple-200/70">El equipo editorial de Noctalia revisa esta página; no se presenta a ningún profesional clínico como revisor.</p></div>
+    <div class="glass-panel p-8 rounded-2xl border border-white/10 bg-white/5"><h2 class="text-2xl font-serif text-white mb-4">La privacidad, explicada con claridad</h2><p>La <a href="/es/politica-privacidad" class="text-dream-salmon hover:underline">política de privacidad</a> indica que el audio se usa para transcribir y que Noctalia no lo conserva de forma permanente. También describe los datos del diario, los proveedores y los derechos de eliminación.</p><p class="mt-4 text-sm text-purple-200/70">El equipo editorial de Noctalia revisa esta página; no se presenta a ningún profesional clínico como revisor.</p></div>
   </section>
 
   <section class="glass-panel p-8 rounded-2xl border border-white/10 bg-white/5">
@@ -81,7 +81,7 @@
 
   <section class="glass-panel p-8 rounded-2xl border border-dream-salmon/20 bg-dream-salmon/5">
     <h2 class="text-2xl font-serif text-white mb-4">Empieza con una nota de voz</h2>
-    <p>Instala Noctalia en Android y cuenta un sueño mañana por la mañana antes de empezar el resto del día.</p>
+    <p>Instala Noctalia en Android y cuenta un sueño mañana por la mañana, antes de abrir tus mensajes.</p>
     <p class="mt-4"><a href="https://play.google.com/store/apps/details?id=com.tanuki75.noctalia&amp;hl=es" class="text-dream-salmon hover:underline" rel="nofollow noopener noreferrer" target="_blank">Instalar Noctalia en Google Play</a></p>
   </section>
 </div>

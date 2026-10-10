@@ -44,7 +44,7 @@
   <section class="glass-panel p-8 rounded-2xl border border-white/10 bg-white/5">
     <h2 class="text-2xl font-serif text-white mb-4">In breve</h2>
     <p>Scegli Dream Journal Ultimate per iOS, Dream Wall, scoperta di sogni simili, dizionario ampio, lezioni di lucidità e promemoria dei reality check. Scegli Noctalia per raccontare un sogno prima che svanisca, creare una scheda visiva, seguire simboli ricorrenti e continuare con domande guidate.</p>
-    <p class="mt-4">Non è una classifica con un vincitore universale. Dream Journal Ultimate ha l’ecosistema community e sogni lucidi più ampio; Noctalia offre un percorso più diretto dalla cattura alla riflessione. Nessuna app va presentata come servizio medico o predittivo.</p>
+    <p class="mt-4">Qui non c’è un vincitore assoluto. Dream Journal Ultimate ha più community e più strumenti per i sogni lucidi; Noctalia offre un percorso più diretto dalla cattura alla riflessione. Nessuna delle due viene presentata qui come servizio medico o predittivo.</p>
   </section>
 
   <section class="glass-panel p-8 rounded-2xl border border-white/10 bg-white/5">
@@ -65,8 +65,8 @@
   </section>
 
   <section class="grid md:grid-cols-2 gap-6">
-    <div class="glass-panel p-8 rounded-2xl border border-white/10 bg-white/5"><h2 class="text-2xl font-serif text-white mb-4">Prove pubbliche attuali</h2><p>Il 9 agosto 2026 Google Play mostrava 100 mila+ download, 4,4 stelle e circa 1,14 mila recensioni, con aggiornamento del 1° agosto. L’App Store USA mostrava 4,5 stelle su 547 valutazioni e la versione 2026.8.5. Noctalia deve riconoscere questa maturità.</p></div>
-    <div class="glass-panel p-8 rounded-2xl border border-white/10 bg-white/5"><h2 class="text-2xl font-serif text-white mb-4">Limite sui prezzi</h2><p>Entrambe le app si scaricano gratis e mostrano acquisti o abbonamenti. I prezzi cambiano per paese, tasse, idoneità e data; questa pagina non dichiara quindi un’opzione universalmente più economica.</p></div>
+    <div class="glass-panel p-8 rounded-2xl border border-white/10 bg-white/5"><h2 class="text-2xl font-serif text-white mb-4">I numeri degli store</h2><p>Il 9 agosto 2026 Google Play mostrava per Dream Journal Ultimate 100 mila+ download, 4,4 stelle e circa 1,14 mila recensioni, con aggiornamento del 1° agosto. L’App Store USA mostrava 4,5 stelle su 547 valutazioni e la versione 2026.8.5. Noctalia non rivendica una diffusione paragonabile.</p></div>
+    <div class="glass-panel p-8 rounded-2xl border border-white/10 bg-white/5"><h2 class="text-2xl font-serif text-white mb-4">Sui prezzi</h2><p>Entrambe le app si scaricano gratis e mostrano acquisti o abbonamenti. I prezzi cambiano per paese, tasse, idoneità e data; questa pagina non dichiara quindi un’opzione universalmente più economica.</p></div>
   </section>
 
   <section class="glass-panel p-8 rounded-2xl border border-white/10 bg-white/5">
@@ -110,7 +110,7 @@
 
   <section class="glass-panel p-8 rounded-2xl border border-dream-salmon/20 bg-dream-salmon/5">
     <h2 class="text-2xl font-serif text-white mb-4">Prova Noctalia su Android</h2>
-    <p>Noctalia è per chi vuole catturare rapidamente un sogno, trasformarlo in una memoria visiva e proseguire con una riflessione privata e mirata.</p>
+    <p>Detta il tuo sogno appena ti svegli, conservane un’immagine e continua a rifletterci in privato con domande guidate.</p>
     <p class="mt-4"><a href="https://play.google.com/store/apps/details?id=com.tanuki75.noctalia&amp;hl=it" class="text-dream-salmon hover:underline" rel="nofollow noopener noreferrer" target="_blank">Apri Noctalia su Google Play</a></p>
   </section>
 </div>

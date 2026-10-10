@@ -49,7 +49,7 @@
   <section class="grid md:grid-cols-3 gap-6">
     <div class="glass-panel p-6 rounded-2xl border border-white/10 bg-white/5"><h2 class="text-xl font-serif text-white mb-3">1. Busca</h2><p>Explora 150 fichas públicas por categoría o de la A a la Z. Cada una presenta variantes, preguntas y asociaciones posibles.</p></div>
     <div class="glass-panel p-6 rounded-2xl border border-white/10 bg-white/5"><h2 class="text-xl font-serif text-white mb-3">2. Añade contexto</h2><p>Anota qué hacía el símbolo, qué aspecto tenía y cómo te sentías. Un mar tranquilo y una inundación no representan la misma escena.</p></div>
-    <div class="glass-panel p-6 rounded-2xl border border-white/10 bg-white/5"><h2 class="text-xl font-serif text-white mb-3">3. Compara</h2><p>Guarda el sueño completo en la app y observa símbolos repetidos en varias entradas en vez de concluir a partir de una sola búsqueda.</p></div>
+    <div class="glass-panel p-6 rounded-2xl border border-white/10 bg-white/5"><h2 class="text-xl font-serif text-white mb-3">3. Compara</h2><p>Guarda el sueño completo en la app y fíjate en qué símbolos vuelven de una entrada a otra, en vez de sacar conclusiones de una sola búsqueda.</p></div>
   </section>
 
   <section class="glass-panel p-8 rounded-2xl border border-white/10 bg-white/5 overflow-x-auto">
@@ -66,7 +66,7 @@
 
   <section class="glass-panel p-8 rounded-2xl border border-white/10 bg-white/5">
     <h2 class="text-2xl font-serif text-white mb-4">Límites editoriales y privacidad</h2>
-    <p>El diccionario es contenido editorial, no un conjunto de sueños privados ni orientación clínica. No se presenta a ningún profesional clínico como revisor de esta página. Al usar el diario Android, la <a href="/es/politica-privacidad" class="text-dream-salmon hover:underline">política de privacidad</a> explica el alojamiento, los proveedores de IA y los controles de eliminación.</p>
+    <p>El diccionario es contenido editorial, no un conjunto de sueños privados ni orientación clínica. Ningún profesional clínico figura como revisor de esta página. Al usar el diario Android, la <a href="/es/politica-privacidad" class="text-dream-salmon hover:underline">política de privacidad</a> explica el alojamiento, los proveedores de IA y los controles de eliminación.</p>
   </section>
 
   <section class="glass-panel p-8 rounded-2xl border border-white/10 bg-white/5">

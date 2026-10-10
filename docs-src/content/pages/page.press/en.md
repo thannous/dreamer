@@ -39,7 +39,7 @@
 ---
 <h1 class="font-serif text-4xl md:text-5xl mb-6 text-dream-cream">Noctalia Press Kit</h1>
 <p class="text-sm text-purple-300/70 mb-6">Updated August 12, 2026</p>
-<p class="text-lg text-purple-200/80 leading-relaxed mb-10">Noctalia is an Android-first dream journal that helps people record dreams by voice, turn them into structured entries, and explore symbols, images, patterns, and guided follow-up questions.</p>
+<p class="text-lg text-purple-200/80 leading-relaxed mb-10">Noctalia is an Android-first dream journal. People tell a dream out loud, the app turns it into a structured entry, and they can then explore its symbols, images, patterns, and guided follow-up questions.</p>
 
 <div class="space-y-8 text-gray-300 leading-relaxed">
   <section class="glass-panel p-8 rounded-2xl border border-white/10 bg-white/5">
@@ -67,9 +67,9 @@
   <section class="glass-panel p-8 rounded-2xl border border-white/10 bg-white/5">
     <h2 class="text-2xl font-serif text-white mb-4">Descriptions</h2>
     <h3 class="text-white font-medium mb-2">Short description</h3>
-    <p>Android dream journal for voice capture, AI reflection, symbols, generated images, and guided reflection.</p>
+    <p>Android dream journal for voice capture, AI reflection, symbols, generated images, and guided follow-up questions.</p>
     <h3 class="text-white font-medium mt-6 mb-2">Long description</h3>
-    <p>Noctalia helps people capture dreams before the details fade. Users can record by voice or text, receive a structured reflection, review recurring symbols and emotions, generate a dream image, and continue with guided follow-up questions.</p>
+    <p>With Noctalia, people write down a dream before the details fade. Users can record by voice or text, receive a structured reflection, review recurring symbols and emotions, generate a dream image, and continue with guided follow-up questions.</p>
   </section>
 
   <section class="glass-panel p-8 rounded-2xl border border-white/10 bg-white/5">
@@ -126,7 +126,7 @@
 
   <section class="glass-panel p-8 rounded-2xl border border-white/10 bg-white/5">
     <h2 class="text-2xl font-serif text-white mb-4">Editorial note</h2>
-    <p>Noctalia is designed for journaling, reflection, and wellbeing. It is not a medical device and does not replace advice from a qualified health professional.</p>
+    <p>Noctalia is a journaling, reflection, and wellbeing app. It is not a medical device and does not replace advice from a qualified health professional.</p>
   </section>
 
   <section id="media-contact" class="glass-panel p-8 rounded-2xl border border-white/10 bg-white/5 scroll-mt-28">
