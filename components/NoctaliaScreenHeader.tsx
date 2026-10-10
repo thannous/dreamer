@@ -60,7 +60,7 @@ interface NoctaliaScreenHeaderProps {
   pinned?: boolean;
   /**
    * `tab` only: the painting opens over the top third of the screen and the title rests at
-   * its foot. Compact again with very large text.
+   * its foot, whether the header paints it or the screen does. Compact with very large text.
    */
   immersive?: boolean;
   includeTopInset?: boolean;
@@ -130,8 +130,8 @@ export const NoctaliaScreenHeader = memo(function NoctaliaScreenHeader({
     const tabTitleScale = Math.min(fontScale, 1.3);
     // Same gutter as the Today hero; only the narrowest phones tighten it.
     const horizontalPadding = width <= 360 ? ThemeLayout.spacing.md : ThemeLayout.spacing.lg;
-    const stageHeight = immersive && backdrop && fontScale < 1.5
-      ? Math.round(Math.min(420, windowHeight * 0.33))
+    const stageHeight = immersive && fontScale < 1.5
+      ? Math.round(Math.min(420, windowHeight * 0.33)) - (includeTopInset ? 0 : insets.top)
       : undefined;
     return (
       <Animated.View

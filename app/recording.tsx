@@ -1231,6 +1231,7 @@ export default function RecordingScreen() {
   const isDesktopWeb = Platform.OS === 'web' && viewportWidth >= DESKTOP_BREAKPOINT;
   const chatMode = inputMode === 'voice' && !editableCapture;
   const chatLayout = chatMode && !isCompactLandscape;
+  const captureStage = !chatLayout && !keyboardVisible && !isDesktopWeb;
   const openReviewExit = useCallback(() => {
     if (!captureReview || interactionDisabled || leavingReviewRef.current) return;
     Keyboard.dismiss();
@@ -1776,7 +1777,7 @@ export default function RecordingScreen() {
             reach the top edge like the other destinations. */}
         {!isDesktopWeb && !isCompactLandscape ? (
           <NightSkyBand height={insets.top + (headerHeight || 140) + 40} background={noctalia.screen.background}
-            scene="capture" pinned fixed />
+            scene="capture" pinned fixed immersive={captureStage} />
         ) : null}
         {/* The desktop sidebar leads everywhere. Keep a back control only
             while a capture review is open, so leaving still offers to keep or
@@ -1828,6 +1829,9 @@ export default function RecordingScreen() {
                 backdrop={false}
                 prominentTitle={!isCompactLandscape}
                 variant={isCompactLandscape ? 'standard' : 'tab'}
+                // Like Explorer, the painting opens over the top third, except while the
+                // conversation or the keyboard needs the room.
+                immersive={captureStage}
                 titleKey="nav.capture_dream"
                 actions={isDesktopWeb ? [] : [{
                   icon: 'gear',
