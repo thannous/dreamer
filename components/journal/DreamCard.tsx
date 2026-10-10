@@ -307,7 +307,8 @@ export const DreamCard = memo(function DreamCard({
         {hasImage ? (
           <View
             className="relative w-full overflow-hidden rounded-xl bg-ink-raised"
-            style={{ minHeight: Math.min(coverWidth, 260) }}
+            // Portrait 3:4, close to the 9:16 the illustrations are generated in; capped on wide screens.
+            style={{ minHeight: Math.min(coverWidth * 4 / 3, 480) }}
             onLayout={(event) => setCoverWidth(event.nativeEvent.layout.width)}
             testID={testID && `journal.cover.${testID}`}
           >
