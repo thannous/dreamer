@@ -10,5 +10,5 @@ tags:
 ---
 - launchApp
 - runFlow: subflows/dismiss-first-launch-onboarding.yml
-- runFlow: journeys/subflows/open-settings.yml
+- runFlow: subflows/open-settings-app-id.yml
 - runFlow: subflows/sign-in-e2e-account.yml

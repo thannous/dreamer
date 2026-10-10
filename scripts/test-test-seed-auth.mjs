@@ -344,6 +344,23 @@ test('maestro wrapper: credentials from the loaded env, only as MAESTRO_* env va
   assert.throws(() => maestroMain(['free'], { env: env(), spawnImpl, writeRecord: false }), TestTargetRefused, 'committed allowlist is empty');
   assert.equal(calls.length, 0);
   assert.equal(FLOW, 'maestro/e2e-account-sign-in.yml');
+  // Every flow the branch sign-in runs follows APP_ID (a pinned header would
+  // drive the base package instead of the selected dev client).
+  const flowDir = new URL('../maestro/', import.meta.url);
+  const pending = [FLOW.replace(/^maestro\//, '')];
+  const seen = new Set();
+  while (pending.length) {
+    const rel = pending.pop();
+    if (seen.has(rel)) continue;
+    seen.add(rel);
+    const file = new URL(rel, flowDir);
+    const text = fs.readFileSync(file, 'utf8');
+    assert.match(text, /^appId: \$\{APP_ID \|\| "com\.tanuki75\.noctalia"\}$/m, rel);
+    for (const match of text.matchAll(/runFlow:\s*(?:\n\s*file:\s*)?([\w./-]+\.ya?ml)/g)) {
+      pending.push(path.posix.join(path.posix.dirname(rel), match[1]));
+    }
+  }
+  assert.ok(seen.has('subflows/open-settings-app-id.yml'));
   assert.ok(fs.existsSync(new URL(`../${FLOW}`, import.meta.url)));
 });
 

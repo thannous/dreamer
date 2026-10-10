@@ -262,6 +262,7 @@ export default {
         'e2e/backend/fixtures.ts',
         'supabase/migrations/20260916185856_hd_illustration_monthly_quota.sql',
         'maestro/e2e-account-sign-in.yml',
+        'maestro/subflows/**',
         'playwright.branch.config.ts',
         '.gitignore',
         // The production ref is pinned against app.json.
