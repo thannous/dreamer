@@ -4,6 +4,7 @@ import Animated, { useReducedMotion } from 'react-native-reanimated';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { DURATION, EASE } from '@/components/motion/motion';
+import { PressableScale } from '@/components/motion/PressableScale';
 import { BottomSheetActions } from '@/components/ui/BottomSheetActions';
 import { StandardBottomSheet } from '@/components/ui/StandardBottomSheet';
 import { DarkTheme } from '@/constants/journalTheme';
@@ -73,8 +74,10 @@ function FeatureNarrative({ feature, tokens, stageHeight, frameHeight, onStoryCh
  * the scene has finished telling its part, and its label names what comes next.
  * The story only moves forward; the close button leaves it at any time.
  */
-function StoryFooter({ label, testID, readyAt, tokens, onNext }: {
+function StoryFooter({ label, testID, readyAt, tokens, onNext, secondary }: {
   label: string; testID: string; readyAt: number; tokens: NoctaliaDesignTokens; onNext: () => void;
+  /** A quiet second way out under the button, such as starting the stories over. */
+  secondary?: { label: string; testID: string; onPress: () => void };
 }) {
   const [ready, setReady] = useState(readyAt <= 0);
   useEffect(() => {
@@ -96,14 +99,18 @@ function StoryFooter({ label, testID, readyAt, tokens, onNext }: {
       }}
     >
       <StoryButton label={label} onPress={onNext} disabled={!ready} testID={testID} tokens={tokens} />
+      {secondary ? <PressableScale accessibilityRole="button" onPress={secondary.onPress} disabled={!ready}
+        testID={secondary.testID} style={styles.secondary}>
+        <Text style={[styles.secondaryText, { color: tokens.text.secondary }]}>{secondary.label}</Text>
+      </PressableScale> : null}
     </Animated.View>
   </BottomSheetActions>;
 }
 
-export function OnboardingFeatureSheet({ feature, onClose, onFeatureChange, finishLabel }: {
+export function OnboardingFeatureSheet({ feature, onClose, onFeatureChange, ending }: {
   feature: OnboardingFeature; onClose: () => void; onFeatureChange: (feature: OnboardingFeature) => void;
-  /** The last button's label when the stories lead on to the next onboarding step. */
-  finishLabel?: string;
+  /** When the stories lead on to the next onboarding step: how the last page ends them. */
+  ending?: { label: string; restartLabel: string; onFinish: () => void };
 }) {
   const { t } = useTranslation();
   const tokens = NIGHT;
@@ -134,12 +141,14 @@ export function OnboardingFeatureSheet({ feature, onClose, onFeatureChange, fini
     dragIndicatorColor={tokens.text.secondary} showsVerticalScrollIndicator={false}
     headerContent={<StoryProgress step={step} tokens={tokens} />}
     footer={<StoryFooter key={`${feature}-${step}`} tokens={tokens} readyAt={readyAt}
-      label={demo && !nextChapter && finishLabel ? finishLabel
+      label={demo && !nextChapter && ending ? ending.label
         : t(demo ? (nextChapter ? `onboarding.narrative.continue.${nextChapter}` : 'onboarding.narrative.finish') : `onboarding.narrative.${feature}.${step}.next`)}
+      secondary={demo && !nextChapter && ending ? { label: ending.restartLabel, testID: 'btn.onboarding.story.restart', onPress: () => onFeatureChange(CHAPTERS[0]) } : undefined}
       testID={demo ? 'btn.onboarding.story.continue' : 'btn.onboarding.story.next'}
       onNext={() => {
         if (!demo) storyRef.current?.next();
         else if (nextChapter) onFeatureChange(nextChapter);
+        else if (ending) ending.onFinish();
         else onClose();
       }}
     />}
@@ -166,4 +175,6 @@ const styles = StyleSheet.create({
   // Shaded like the subtitles, so it stays legible over the moon.
   body: { fontFamily: Fonts.spaceGrotesk.regular, fontSize: 17, lineHeight: 24, textAlign: 'center', maxWidth: 300, textShadowOffset: { width: 0, height: 1 }, textShadowRadius: 12 },
   note: { fontFamily: Fonts.spaceGrotesk.regular, fontSize: 11, lineHeight: 16, textAlign: 'center', paddingTop: 12, paddingBottom: 8 },
+  secondary: { minHeight: 44, alignItems: 'center', justifyContent: 'center', marginTop: 4 },
+  secondaryText: { fontFamily: Fonts.spaceGrotesk.medium, fontSize: 14, lineHeight: 20 },
 });

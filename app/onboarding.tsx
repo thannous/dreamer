@@ -81,6 +81,8 @@ const SIGNALS = [
 // Keep the disabled previews from initializing their motion/gesture modules.
 const OnboardingFeatureSheet = React.lazy(() => import('@/components/onboarding/OnboardingFeatureSheet')
   .then((module) => ({ default: module.OnboardingFeatureSheet })));
+const DoorPassage = React.lazy(() => import('@/components/onboarding/story/DoorPassage')
+  .then((module) => ({ default: module.DoorPassage })));
 
 const BACKGROUND_IMAGE = require('@/assets/images/onboarding-reverie-background.webp');
 // The immersive artwork always needs its nocturnal contrast, independently of
@@ -125,6 +127,8 @@ export default function OnboardingScreen() {
   // "Commencer" tells the three stories in order once, then moves on to the path.
   const [guidedTour, setGuidedTour] = useState(false);
   const guidedTourSeenRef = useRef(false);
+  // The stories end by walking through the blue door into the path step.
+  const [doorPassage, setDoorPassage] = useState(false);
   const featureTriggers = useRef<Partial<Record<OnboardingFeature, ViewInstance | null>>>({});
   const featureFocusTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
   const [analyticsEnabled, setAnalyticsEnabled] = useState(false);
@@ -356,7 +360,13 @@ export default function OnboardingScreen() {
     setActiveFeature('capture');
   };
 
-  // Finishing or closing the guided stories both continue the onboarding.
+  const passThroughDoor = () => {
+    setActiveFeature(null);
+    setGuidedTour(false);
+    setDoorPassage(true);
+  };
+
+  // Closing the guided stories skips straight to the path.
   const finishGuidedTour = () => {
     setActiveFeature(null);
     setGuidedTour(false);
@@ -980,9 +990,17 @@ export default function OnboardingScreen() {
       {featureSheetsEnabled && activeFeature ? (
         <React.Suspense fallback={null}>
           <OnboardingFeatureSheet feature={activeFeature} onClose={guidedTour ? finishGuidedTour : closeFeature}
-            onFeatureChange={setActiveFeature} finishLabel={guidedTour ? t('onboarding.narrative.finish_guided') : undefined} />
+            onFeatureChange={setActiveFeature} ending={guidedTour ? {
+              label: t('onboarding.narrative.finish_guided'),
+              restartLabel: t('onboarding.narrative.restart'),
+              onFinish: passThroughDoor,
+            } : undefined} />
         </React.Suspense>
       ) : null}
+
+      {doorPassage ? <React.Suspense fallback={null}>
+        <DoorPassage onCovered={() => void runStepTransition('path')} onDone={() => setDoorPassage(false)} />
+      </React.Suspense> : null}
 
       {showPrivacySheet ? <StandardBottomSheet
         visible

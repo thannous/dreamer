@@ -66,6 +66,10 @@ export function DialogueStory({ step, tokens, onInteraction, stageHeight }: {
       <Text style={[styles.speaker, { color: tokens.accent.text }]}>Noctalia</Text>
       <Text accessibilityLiveRegion="polite" style={[styles.message, { color: tokens.text.primary }]}>{t(`onboarding.story.explore.followup_${association}`)}</Text>
     </StoryScene> : null}
+    {/* The question is left with the reader: no answer is asked for here, the first dream will bring one. */}
+    {step === STORY_DEMO_STEP ? <StoryScene key={`closing-${association}`} delay={900}>
+      <Text style={[styles.closing, { color: tokens.accent.text }]} testID="text.onboarding.dialogue.closing">{t('onboarding.story.explore.closing')}</Text>
+    </StoryScene> : null}
   </View>;
 }
 
@@ -84,5 +88,6 @@ const styles = StyleSheet.create({
   message: { fontFamily: Fonts.spaceGrotesk.regular, fontSize: 15, lineHeight: 21 },
   choices: { flexDirection: 'row', gap: 10 },
   choice: { flex: 1, minHeight: 52, paddingHorizontal: 12, paddingVertical: 10, borderRadius: 16, borderWidth: 1, alignItems: 'center', justifyContent: 'center' },
+  closing: { fontFamily: Fonts.fraunces.regular, fontStyle: 'italic', fontSize: 16, lineHeight: 22, textAlign: 'center', paddingHorizontal: 8 },
   choiceText: { fontFamily: Fonts.spaceGrotesk.medium, fontSize: 14, lineHeight: 19, textAlign: 'center' },
 });
