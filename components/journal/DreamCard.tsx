@@ -28,6 +28,8 @@ interface DreamCardProps {
   onPress: (dream: DreamAnalysis) => void;
   /** Opens the dream's share sheet; shown as an icon in the date margin. */
   onShare?: (dream: DreamAnalysis) => void;
+  /** Adds or removes the dream from favourites; the heart in the margin. */
+  onToggleFavorite?: (dream: DreamAnalysis) => void;
   testID?: string;
   /** Date string to display as an overline above the title */
   dateLabel?: string;
@@ -43,6 +45,8 @@ interface DreamCardProps {
 /** Expo media components keep their geometry as native props. */
 const CARD_IMAGE_STYLE = { position: 'absolute', top: 0, left: 0, width: '100%', height: '100%' } as const;
 const SCRIM_FADE_STYLE = { height: 56, width: '100%' } as const;
+// Margin icons get a full 36 pt touch target around their 22 pt glyph.
+const MARGIN_ACTION_STYLE = { width: 36, height: 36, alignItems: 'flex-start', justifyContent: 'center' } as const;
 const CARD_IMAGE_PLACEHOLDER = { blurhash: 'L6PZfSi_.AyE_3t7t7R**0o#DgR4' };
 
 const BADGE_TEXT_CLASS = {
@@ -55,6 +59,7 @@ export const DreamCard = memo(function DreamCard({
   dream,
   onPress,
   onShare,
+  onToggleFavorite,
   testID,
   dateLabel,
   variant = 'standard',
@@ -309,12 +314,18 @@ export const DreamCard = memo(function DreamCard({
           )}
         </View>
         <View className="my-3 h-px w-6 bg-line" />
-        <View className="flex-row items-center gap-4">
-          {isFavorite && <IconSymbol name="heart.fill" size={17} color={noctalia.accent.text} />}
+        <View className="flex-row items-center gap-3">
+          {onToggleFavorite ? (
+            <Pressable accessibilityRole="button" accessibilityState={{ selected: isFavorite }}
+              accessibilityLabel={t('journal.badge.favorite')} hitSlop={8} onPress={() => onToggleFavorite(dream)}
+              testID={testID && `journal.favorite.${testID}`} style={MARGIN_ACTION_STYLE}>
+              <IconSymbol name={isFavorite ? 'heart.fill' : 'heart'} size={22} color={isFavorite ? noctalia.accent.text : noctalia.text.secondary} />
+            </Pressable>
+          ) : isFavorite ? <IconSymbol name="heart.fill" size={22} color={noctalia.accent.text} /> : null}
           {onShare ? (
             <Pressable accessibilityRole="button" accessibilityLabel={t('journal.detail.share.button_default')}
-              hitSlop={12} onPress={() => onShare(dream)} testID={testID && `journal.share.${testID}`}>
-              <IconSymbol name="square.and.arrow.up" size={17} color={noctalia.text.secondary} />
+              hitSlop={8} onPress={() => onShare(dream)} testID={testID && `journal.share.${testID}`} style={MARGIN_ACTION_STYLE}>
+              <IconSymbol name="square.and.arrow.up" size={22} color={noctalia.text.secondary} />
             </Pressable>
           ) : null}
         </View>
@@ -398,6 +409,7 @@ export const DreamCard = memo(function DreamCard({
   if (prev === next) return true;
   if (prev.onPress !== next.onPress) return false;
   if (prev.onShare !== next.onShare) return false;
+  if (prev.onToggleFavorite !== next.onToggleFavorite) return false;
   if (prev.testID !== next.testID) return false;
   if (prev.dateLabel !== next.dateLabel) return false;
   if (prev.variant !== next.variant) return false;

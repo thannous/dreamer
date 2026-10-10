@@ -53,6 +53,7 @@ import React, { useCallback, useContext, useDeferredValue, useEffect, useLayoutE
 import {
   Keyboard,
   Platform,
+  Share,
   Text,
   type GestureResponderEvent,
   type NativeScrollEvent,
@@ -103,7 +104,7 @@ const AnimatedDreamList = Platform.OS === 'web'
   : Animated.createAnimatedComponent(FlashList<DreamAnalysis>);
 
 export default function JournalListScreen() {
-  const { dreams, completeness, remotePreviewAllowed, loadRemoteDreamForPreview, persistenceState, refreshState, reloadDreams, retryPersistence } = useDreams();
+  const { dreams, completeness, remotePreviewAllowed, loadRemoteDreamForPreview, persistenceState, refreshState, reloadDreams, retryPersistence, toggleFavorite } = useDreams();
   const { colors, mode } = useTheme();
   const openQuickSettings = useQuickSettings();
   const { t } = useTranslation();
@@ -473,12 +474,28 @@ export default function JournalListScreen() {
     router.push({ pathname: '/journal/[id]', params: getDreamRouteParams(dream) });
   }, []);
 
-  // Opens the dream and its share sheet: the detail screen owns the composed share.
+  // On a phone the system share sheet opens right away with the dream's words; the web has no
+  // reliable share sheet, so it opens the dream, whose detail falls back to copying.
   const handleDreamShare = useCallback((dream: DreamAnalysis) => {
-    if (isNavigatingRef.current) return;
-    isNavigatingRef.current = true;
-    router.push({ pathname: '/journal/[id]', params: { ...getDreamRouteParams(dream), share: '1' } });
-  }, []);
+    if (Platform.OS === 'web') {
+      if (isNavigatingRef.current) return;
+      isNavigatingRef.current = true;
+      router.push({ pathname: '/journal/[id]', params: { ...getDreamRouteParams(dream), share: '1' } });
+      return;
+    }
+    const quote = dream.shareableQuote?.trim();
+    const excerpt = dream.transcript?.trim().slice(0, 220);
+    const message = [
+      dream.title ? `🌙 ${dream.title}` : null,
+      quote ? `“${quote}”` : excerpt ? `${excerpt}${(dream.transcript?.trim().length ?? 0) > 220 ? '…' : ''}` : null,
+      t('journal.detail.share.footer'),
+    ].filter(Boolean).join('\n\n');
+    void Share.share({ message, title: dream.title }).catch(() => undefined);
+  }, [t]);
+
+  const handleDreamFavorite = useCallback((dream: DreamAnalysis) => {
+    void toggleFavorite(dream);
+  }, [toggleFavorite]);
 
   // Track viewable items and prefetch thumbnails once scrolling is idle.
   const filteredDreamsRef = useRef(filteredDreams);
@@ -622,6 +639,7 @@ export default function JournalListScreen() {
           dream={item}
           onPress={handleDreamPress}
           onShare={handleDreamShare}
+          onToggleFavorite={handleDreamFavorite}
           testID={TID.List.DreamItem(item.id)}
           dateLabel={dateStr}
           variant={isFirstItem ? 'featured' : 'standard'}
@@ -630,7 +648,7 @@ export default function JournalListScreen() {
         />
       </View>
     );
-  }, [clearStoryGlow, formatDreamListDate, handleDreamPress, handleDreamShare, storyGlowKey]);
+  }, [clearStoryGlow, formatDreamListDate, handleDreamFavorite, handleDreamPress, handleDreamShare, storyGlowKey]);
 
   const renderDreamItemTablet = useCallback(({ item }: ListRenderItemInfo<DreamAnalysis>) => {
     if (!item) return null;
@@ -642,6 +660,7 @@ export default function JournalListScreen() {
           dream={item}
           onPress={handleDreamPress}
           onShare={handleDreamShare}
+          onToggleFavorite={handleDreamFavorite}
           testID={TID.List.DreamItem(item.id)}
           dateLabel={dateStr}
           variant="standard"
@@ -650,7 +669,7 @@ export default function JournalListScreen() {
         />
       </View>
     );
-  }, [clearStoryGlow, formatDreamListDate, handleDreamPress, handleDreamShare, storyGlowKey]);
+  }, [clearStoryGlow, formatDreamListDate, handleDreamFavorite, handleDreamPress, handleDreamShare, storyGlowKey]);
 
   const renderDreamItemDesktop = useCallback(({ item, index }: ListRenderItemInfo<DreamAnalysis>) => {
     // Recycling can briefly retain an index after a filter shrinks the data array.
@@ -661,6 +680,7 @@ export default function JournalListScreen() {
           dream={item}
           onPress={handleDreamPress}
           onShare={handleDreamShare}
+          onToggleFavorite={handleDreamFavorite}
           testID={TID.List.DreamItem(item.id)}
           dateLabel={formatDreamListDate(item.id)}
           variant={index === 0 ? 'featured' : 'standard'}
@@ -669,7 +689,7 @@ export default function JournalListScreen() {
         />
       </View>
     );
-  }, [clearStoryGlow, formatDreamListDate, handleDreamPress, handleDreamShare, storyGlowKey]);
+  }, [clearStoryGlow, formatDreamListDate, handleDreamFavorite, handleDreamPress, handleDreamShare, storyGlowKey]);
 
   const hasNonDefaultSort = sortOrder !== 'newest';
   const hasActiveFilter = !!(
