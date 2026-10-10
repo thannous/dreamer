@@ -124,7 +124,10 @@ before any request and print no key, password or token.
    quota usage (`DELETE /rest/v1/quota_usage?user_id=eq.<id>`: those rows are
    counted per month even when the dream is gone) and its HD illustration credits
    (`DELETE /rest/v1/hd_image_credits?user_id=eq.<id>`, table of migration
-   `20260916185856`, also counted per month), then set
+   `20260916185856`, also counted per month) and its sync receipts
+   (`DELETE /rest/v1/dream_sync_receipts?user_id=eq.<id>`, migration
+   `20260316130000`: a kept receipt would answer a replayed request with the
+   deleted dream), then set
    its tier with `apply_subscription_state_update`: `p_tier 'plus', p_is_active
    true` for premium (the fixture's values), `p_tier 'free', p_is_active false` for
    free, `p_source 'e2e-seed'`, a fresh `p_source_event_id`. Idempotent: a second run

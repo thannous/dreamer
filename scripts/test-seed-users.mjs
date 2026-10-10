@@ -106,6 +106,10 @@ export function makeSeedAction(secrets, { log = console.log, randomUUID = nodeRa
       // HD illustration credits (public.hd_image_credits, migration
       // 20260916185856) are counted per user and month with no link to dreams.
       await call(fetch, target, key, 'DELETE', `/rest/v1/hd_image_credits?user_id=eq.${encodeURIComponent(id)}`, undefined, secretValues, { Prefer: 'return=minimal' });
+      // Sync receipts (public.dream_sync_receipts, migration 20260316130000)
+      // are linked to the user only: a kept receipt would answer a replayed
+      // client_request_id with the deleted dream instead of recreating it.
+      await call(fetch, target, key, 'DELETE', `/rest/v1/dream_sync_receipts?user_id=eq.${encodeURIComponent(id)}`, undefined, secretValues, { Prefer: 'return=minimal' });
       await call(fetch, target, key, 'POST', '/rest/v1/rpc/apply_subscription_state_update', {
         p_user_id: id,
         ...TIER_STATE[tier],

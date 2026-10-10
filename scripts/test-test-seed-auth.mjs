@@ -29,7 +29,7 @@ const prodEnv = () => env({ E2E_SUPABASE_URL: `https://${PROD}.supabase.co`, E2E
 
 // A fake test branch: GoTrue admin + PostgREST + token endpoint, recording calls.
 function fakeBranch({ users = [], failRpc = false } = {}) {
-  const state = { users: users.map((user) => ({ ...user })), dreamsDeleted: [], quotaDeleted: [], hdDeleted: [], rpc: [], calls: [], nextId: 1 };
+  const state = { users: users.map((user) => ({ ...user })), dreamsDeleted: [], quotaDeleted: [], hdDeleted: [], receiptsDeleted: [], rpc: [], calls: [], nextId: 1 };
   const json = (status, body) => new Response(body === undefined ? null : JSON.stringify(body), { status });
   const fetch = async (input, init = {}) => {
     const url = new URL(input);
@@ -59,6 +59,10 @@ function fakeBranch({ users = [], failRpc = false } = {}) {
     }
     if (url.pathname === '/rest/v1/hd_image_credits' && method === 'DELETE') {
       state.hdDeleted.push(url.searchParams.get('user_id'));
+      return json(204);
+    }
+    if (url.pathname === '/rest/v1/dream_sync_receipts' && method === 'DELETE') {
+      state.receiptsDeleted.push(url.searchParams.get('user_id'));
       return json(204);
     }
     if (url.pathname === '/rest/v1/quota_usage' && method === 'DELETE') {
@@ -95,6 +99,12 @@ test('seed creates both accounts, confirms them, clears dreams and sets the tier
   assert.deepEqual(branch.state.dreamsDeleted, ['eq.u1', 'eq.u2']);
   assert.deepEqual(branch.state.quotaDeleted, ['eq.u1', 'eq.u2']);
   assert.deepEqual(branch.state.hdDeleted, ['eq.u1', 'eq.u2']);
+  assert.deepEqual(branch.state.receiptsDeleted, ['eq.u1', 'eq.u2']);
+  const syncMigration = fs.readFileSync(new URL('../supabase/migrations/20260316130000_add_dream_sync_revisions.sql', import.meta.url), 'utf8');
+  assert.match(syncMigration, /create table if not exists public\.dream_sync_receipts \([\s\S]*?user_id uuid not null/);
+  // Only public, anon and authenticated lose access; service_role keeps
+  // Supabase's default grant, which the seed's DELETE relies on.
+  assert.doesNotMatch(syncMigration, /revoke[^;]*on table public\.dream_sync_receipts from[^;]*service_role/);
   const hdMigration = fs.readFileSync(new URL('../supabase/migrations/20260916185856_hd_illustration_monthly_quota.sql', import.meta.url), 'utf8');
   assert.match(hdMigration, /create table public\.hd_image_credits \([\s\S]*?user_id uuid not null/);
   assert.match(hdMigration, /grant all on public\.hd_image_credits to service_role;/);
@@ -411,5 +421,26 @@ test('maestro wrapper: the run record starts at running and ends with the real o
     assert.ok(done.outcome.finishedAt);
   } finally {
     fs.rmSync(dir, { recursive: true, force: true });
+  }
+});
+
+test('maestro wrapper: the rerun command keeps the selected device and APP_ID; a bad APP_ID is refused', () => {
+  const git = (args) => (args[0] === 'rev-parse' ? 'abc' : '');
+  assert.equal(runRecord({ tier: 'free', target: { ref: REF }, appId: 'com.tanuki75.noctalia', git }).rerunCommand, 'npm run test:e2e:branch:mobile -- free');
+  assert.equal(
+    runRecord({ tier: 'premium', target: { ref: REF }, appId: 'com.tanuki75.noctalia.qa', appIdFromEnv: true, deviceArgs: ['--device', 'emulator-5554'], git }).rerunCommand,
+    'APP_ID=com.tanuki75.noctalia.qa npm run test:e2e:branch:mobile -- premium --device emulator-5554',
+  );
+  const previous = process.env.APP_ID;
+  try {
+    for (const bad of ['com.x; rm -rf /', 'noctalia', '$(id)', '']) {
+      process.env.APP_ID = bad;
+      assert.throws(() => maestroMain(['free'], { env: prodEnv(), spawnImpl: () => {}, writeRecord: false }), /APP_ID must be an Android package/, bad);
+    }
+    process.env.APP_ID = 'com.tanuki75.noctalia.qa';
+    assert.throws(() => maestroMain(['free'], { env: prodEnv(), spawnImpl: () => {}, writeRecord: false }), TestTargetRefused);
+  } finally {
+    if (previous === undefined) delete process.env.APP_ID;
+    else process.env.APP_ID = previous;
   }
 });

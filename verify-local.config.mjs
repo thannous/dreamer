@@ -261,6 +261,7 @@ export default {
         // The seed mirrors this fixture's RPC call; the web origin is pinned here.
         'e2e/backend/fixtures.ts',
         'supabase/migrations/20260916185856_hd_illustration_monthly_quota.sql',
+        'supabase/migrations/20260316130000_add_dream_sync_revisions.sql',
         'maestro/e2e-account-sign-in.yml',
         'maestro/subflows/**',
         'playwright.branch.config.ts',

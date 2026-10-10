@@ -33,7 +33,7 @@ export function maestroEnv(tier, env, base = process.env) {
 // What this run was: written next to the Maestro output before it starts.
 // It is a dev-loop record (source, backend, app id, tier), not release
 // qualification evidence; the installed build is not inspected here.
-export function runRecord({ tier, target, appId, git = (args) => execFileSync('git', args, { cwd: ROOT_DIR, encoding: 'utf8' }).trim() }) {
+export function runRecord({ tier, target, appId, appIdFromEnv = false, deviceArgs = [], git = (args) => execFileSync('git', args, { cwd: ROOT_DIR, encoding: 'utf8' }).trim() }) {
   return {
     kind: 'branch-e2e-mobile-sign-in (dev loop, not release evidence)',
     sourceRevision: git(['rev-parse', 'HEAD']),
@@ -42,7 +42,7 @@ export function runRecord({ tier, target, appId, git = (args) => execFileSync('g
     appId,
     tier,
     flow: FLOW,
-    rerunCommand: `npm run test:e2e:branch:mobile -- ${tier}`,
+    rerunCommand: `${appIdFromEnv ? `APP_ID=${appId} ` : ''}npm run test:e2e:branch:mobile -- ${[tier, ...deviceArgs].join(' ')}`,
     outcome: { status: 'running' },
   };
 }
@@ -94,11 +94,15 @@ export function main(argv = process.argv.slice(2), { env = readTestEnv(), spawnI
   const [tier = 'free', ...rest] = argv;
   if (!E2E_TIERS.includes(tier)) throw new Error(`maestro-branch-sign-in: tier must be one of ${E2E_TIERS.join(', ')}`);
   const deviceArgs = maestroArgs(rest);
+  // APP_ID selects the package (flow headers) and goes into the rerun command.
+  if (process.env.APP_ID !== undefined && !/^[A-Za-z][A-Za-z0-9_]*(\.[A-Za-z][A-Za-z0-9_]*)+$/.test(process.env.APP_ID)) {
+    throw new Error('maestro-branch-sign-in: APP_ID must be an Android package name (e.g. com.tanuki75.noctalia).');
+  }
   const target = assertTestSupabaseTarget(env);
   const childEnv = maestroEnv(tier, env);
   if (writeRecord) {
     fs.mkdirSync(path.dirname(RECORD_FILE), { recursive: true });
-    const record = runRecord({ tier, target, appId: childEnv.APP_ID || 'com.tanuki75.noctalia' });
+    const record = runRecord({ tier, target, appId: childEnv.APP_ID || 'com.tanuki75.noctalia', appIdFromEnv: Boolean(childEnv.APP_ID), deviceArgs });
     fs.writeFileSync(RECORD_FILE, `${JSON.stringify(record, null, 2)}\n`);
   }
   return spawnImpl('maestro', [...deviceArgs, 'test', FLOW], { cwd: ROOT_DIR, stdio: 'inherit', env: childEnv });
