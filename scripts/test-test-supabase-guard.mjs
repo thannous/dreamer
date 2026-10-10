@@ -4,7 +4,10 @@ import fs from 'node:fs';
 import os from 'node:os';
 import path from 'node:path';
 import { execFileSync } from 'node:child_process';
+import { fileURLToPath } from 'node:url';
 import {
+  _assertWithListsForTests,
+  _runGuardedWithListsForTests,
   FORBIDDEN_PROJECT_REFS,
   TARGETS_FILE,
   TestTargetRefused,
@@ -40,27 +43,104 @@ test('pins the production ref as forbidden', () => {
 });
 
 test('allows an allowlisted test project', () => {
-  assert.deepEqual(assertTestSupabaseTarget(env(), allowed), { ref: TEST_REF, url: `https://${TEST_REF}.supabase.co` });
-  assert.equal(assertTestSupabaseTarget(env({ E2E_SUPABASE_URL: `https://${TEST_REF}.supabase.co/` }), allowed).ref, TEST_REF);
+  assert.deepEqual(_assertWithListsForTests(env(), allowed), { ref: TEST_REF, url: `https://${TEST_REF}.supabase.co` });
+  assert.equal(_assertWithListsForTests(env({ E2E_SUPABASE_URL: `https://${TEST_REF}.supabase.co/` }), allowed).ref, TEST_REF);
 });
 
 test('refuses the production project, even when it is allowlisted', () => {
-  refused(() => assertTestSupabaseTarget(env({ E2E_SUPABASE_URL: `https://${PROD}.supabase.co`, E2E_SUPABASE_PROJECT_REF: PROD }), { allowedRefs: [PROD] }), /production/);
-  refused(() => assertTestSupabaseTarget(env({ E2E_SUPABASE_URL: `https://${PROD.toUpperCase()}.supabase.co` }), allowed), /production/);
-  refused(() => assertTestSupabaseTarget(env({ E2E_SUPABASE_PROJECT_REF: PROD }), allowed), /production/);
-  refused(() => assertTestSupabaseTarget(env({ E2E_SUPABASE_URL: `https://proxy.example.com/${PROD}` }), allowed), /production/);
-  refused(() => assertTestSupabaseTarget(env({ E2E_SUPABASE_ANON_KEY: 'sb_publishable_MpacCRXT8NJRcx6q_ww_pw_L_TQWi3n' }), allowed), /production Supabase key/);
+  refused(() => _assertWithListsForTests(env({ E2E_SUPABASE_URL: `https://${PROD}.supabase.co`, E2E_SUPABASE_PROJECT_REF: PROD }), { allowedRefs: [PROD] }), /production/);
+  refused(() => _assertWithListsForTests(env({ E2E_SUPABASE_URL: `https://${PROD.toUpperCase()}.supabase.co` }), allowed), /production/);
+  refused(() => _assertWithListsForTests(env(), { allowedRefs: [TEST_REF, PROD] }), /allowlists the production/);
+  refused(() => _assertWithListsForTests(env({ E2E_SUPABASE_PROJECT_REF: PROD }), allowed), /production/);
+  refused(() => _assertWithListsForTests(env({ E2E_SUPABASE_URL: `https://proxy.example.com/${PROD}` }), allowed), /production/);
+  refused(() => _assertWithListsForTests(env({ E2E_SUPABASE_ANON_KEY: 'sb_publishable_MpacCRXT8NJRcx6q_ww_pw_L_TQWi3n' }), allowed), /production Supabase key/);
 });
 
 test('refuses an unknown project and fails closed on an empty allowlist', () => {
-  refused(() => assertTestSupabaseTarget(env({ E2E_SUPABASE_URL: `https://${OTHER_REF}.supabase.co`, E2E_SUPABASE_PROJECT_REF: OTHER_REF }), allowed), /not an allowlisted/);
-  refused(() => assertTestSupabaseTarget(env(), { allowedRefs: [] }), /no test Supabase project is allowlisted/);
-  refused(() => assertTestSupabaseTarget(env(), {}), /no test Supabase project is allowlisted/);
+  refused(() => _assertWithListsForTests(env({ E2E_SUPABASE_URL: `https://${OTHER_REF}.supabase.co`, E2E_SUPABASE_PROJECT_REF: OTHER_REF }), allowed), /not an allowlisted/);
+  refused(() => _assertWithListsForTests(env(), { allowedRefs: [] }), /no test Supabase project is allowlisted/);
+  refused(() => _assertWithListsForTests(env(), {}), /no test Supabase project is allowlisted/);
+});
+
+test('no option a caller passes can unlock production or an unlisted ref through the runtime entry points', async () => {
+  const prodEnv = env({ E2E_SUPABASE_URL: `https://${PROD}.supabase.co`, E2E_SUPABASE_PROJECT_REF: PROD, E2E_SUPABASE_ANON_KEY: 'k', E2E_SUPABASE_SERVICE_ROLE_KEY: 'k' });
+  const unlock = { allowedRefs: [PROD, TEST_REF], forbiddenRefs: [], forbiddenKeys: [] };
+  refused(() => assertTestSupabaseTarget(prodEnv, unlock), /production/);
+  refused(() => assertTestSupabaseTarget(env(), unlock), /no test Supabase project is allowlisted/);
+  for (const target of [prodEnv, env()]) {
+    let ran = false;
+    await assert.rejects(runGuarded(target, async () => { ran = true; }, unlock), TestTargetRefused);
+    assert.equal(ran, false);
+  }
+  // Even the test-only helpers keep production forbidden.
+  refused(() => _assertWithListsForTests(prodEnv, unlock), /production/);
+  await assert.rejects(_runGuardedWithListsForTests(prodEnv, async () => {}, unlock), /production/);
+});
+
+test('allowlist entries must be 20-character lowercase refs, never production', () => {
+  for (const bad of ['ABCDEFGHIJKLMNOPQRST', 'abc', `${TEST_REF}x`, ' abcdefghijklmnopqrst', 'abcdefghij.lmnopqrst', 42]) {
+    refused(() => _assertWithListsForTests(env(), { allowedRefs: [bad] }), /allowedProjectRefs|20-character/);
+  }
+  refused(() => _assertWithListsForTests(env(), { allowedRefs: 'abcdefghijklmnopqrst' }), /array of strings/);
+  refused(() => _assertWithListsForTests(env(), { allowedRefs: [PROD] }), /production/);
+});
+
+test('the URL must be byte-for-byte https://<ref>.supabase.co (one trailing slash allowed)', () => {
+  for (const url of [
+    `https://${TEST_REF.toUpperCase()}.supabase.co`,
+    ` https://${TEST_REF}.supabase.co`,
+    `https://${TEST_REF}.supabase.co:443`,
+    `https://${TEST_REF}.supabase.c%6F`,
+    `https://${TEST_REF}.supabase.co//`,
+    `https:\\${TEST_REF}.supabase.co`,
+  ]) {
+    refused(() => _assertWithListsForTests(env({ E2E_SUPABASE_URL: url }), allowed), /E2E_SUPABASE_URL/);
+  }
+});
+
+test('the guarded action gets only the two test accounts; a bad domain refuses before it runs', async () => {
+  let seen = null;
+  await _runGuardedWithListsForTests(env({ E2E_ACCOUNT_DOMAIN: 'Example.com' }), async ({ accounts, target }) => {
+    seen = { accounts, url: target.url };
+  }, allowed);
+  assert.deepEqual(seen, {
+    accounts: [
+      { tier: 'free', email: 'e2e+free@example.com' },
+      { tier: 'premium', email: 'e2e+premium@example.com' },
+    ],
+    url: `https://${TEST_REF}.supabase.co`,
+  });
+  for (const domain of [undefined, '', 'thanh@example.com', 'localhost']) {
+    let ran = false;
+    await assert.rejects(
+      _runGuardedWithListsForTests(env({ E2E_ACCOUNT_DOMAIN: domain }), async () => { ran = true; }, allowed),
+      /E2E_ACCOUNT_DOMAIN/
+    );
+    assert.equal(ran, false);
+  }
+});
+
+test('static: seed/auth scripts import runGuarded, read no raw E2E_SUPABASE_URL, and no runtime script uses the test-only helpers', () => {
+  const dir = path.dirname(fileURLToPath(import.meta.url));
+  const files = fs.readdirSync(dir).filter((name) => /\.(mjs|cjs|js|ts)$/.test(name));
+  const isTest = (name) => /^test-test-|\.test\.|^test-verify-local|^test-check-/.test(name);
+  const guarded = files.filter((name) => /^test-.*(seed|auth)/.test(name) && !isTest(name));
+  for (const name of guarded) {
+    const source = fs.readFileSync(path.join(dir, name), 'utf8');
+    assert.match(source, /import\s*\{[^}]*\brunGuarded\b[^}]*\}\s*from\s*'\.\/test-supabase-guard\.mjs'/, `${name} must import runGuarded`);
+    assert.ok(!/E2E_SUPABASE_URL/.test(source), `${name} must use target.url, not E2E_SUPABASE_URL`);
+  }
+  for (const name of files.filter((file) => !isTest(file))) {
+    if (name === 'test-supabase-guard.mjs') continue;
+    const source = fs.readFileSync(path.join(dir, name), 'utf8');
+    assert.ok(!/_(assert|runGuarded)WithListsForTests/.test(source), `${name} must not use the test-only guard helpers`);
+  }
 });
 
 test('the committed allowlist is empty today, so every project is refused', () => {
-  assert.deepEqual(loadAllowedRefs(TARGETS_FILE), []);
-  refused(() => assertTestSupabaseTarget(env(), { allowedRefs: loadAllowedRefs(TARGETS_FILE) }), /no test Supabase project is allowlisted/);
+  assert.deepEqual(loadAllowedRefs(), []);
+  refused(() => assertTestSupabaseTarget(env()), /no test Supabase project is allowlisted/);
+  assert.equal(TARGETS_FILE, path.join(path.dirname(fileURLToPath(new URL('./test-supabase-guard.mjs', import.meta.url))), 'test-supabase-targets.json'));
 });
 
 test('refuses URLs that are not exactly https://<ref>.supabase.co', () => {
@@ -75,15 +155,15 @@ test('refuses URLs that are not exactly https://<ref>.supabase.co', () => {
     'http://127.0.0.1:54321',
     'https://db.example.com',
   ]) {
-    refused(() => assertTestSupabaseTarget(env({ E2E_SUPABASE_URL: url }), allowed), /E2E_SUPABASE_URL/);
+    refused(() => _assertWithListsForTests(env({ E2E_SUPABASE_URL: url }), allowed), /E2E_SUPABASE_URL/);
   }
 });
 
 test('refuses a project ref or a legacy JWT key naming another project', () => {
-  refused(() => assertTestSupabaseTarget(env({ E2E_SUPABASE_PROJECT_REF: undefined }), allowed), /E2E_SUPABASE_PROJECT_REF/);
-  refused(() => assertTestSupabaseTarget(env({ E2E_SUPABASE_PROJECT_REF: OTHER_REF }), allowed), /E2E_SUPABASE_PROJECT_REF/);
-  refused(() => assertTestSupabaseTarget(env({ E2E_SUPABASE_SERVICE_ROLE_KEY: jwt({ ref: OTHER_REF, role: 'service_role' }) }), allowed), /SERVICE_ROLE_KEY belongs to another/);
-  assert.equal(assertTestSupabaseTarget(env({ E2E_SUPABASE_ANON_KEY: jwt({ ref: TEST_REF, role: 'anon' }) }), allowed).ref, TEST_REF);
+  refused(() => _assertWithListsForTests(env({ E2E_SUPABASE_PROJECT_REF: undefined }), allowed), /E2E_SUPABASE_PROJECT_REF/);
+  refused(() => _assertWithListsForTests(env({ E2E_SUPABASE_PROJECT_REF: OTHER_REF }), allowed), /E2E_SUPABASE_PROJECT_REF/);
+  refused(() => _assertWithListsForTests(env({ E2E_SUPABASE_SERVICE_ROLE_KEY: jwt({ ref: OTHER_REF, role: 'service_role' }) }), allowed), /SERVICE_ROLE_KEY belongs to another/);
+  assert.equal(_assertWithListsForTests(env({ E2E_SUPABASE_ANON_KEY: jwt({ ref: TEST_REF, role: 'anon' }) }), allowed).ref, TEST_REF);
 });
 
 test('the guard runs before any network call', async () => {
@@ -99,7 +179,7 @@ test('the guard runs before any network call', async () => {
       return new Response('{}');
     };
     await assert.rejects(
-      runGuarded(env(overrides), async ({ fetch: f }) => {
+      _runGuardedWithListsForTests(env(overrides), async ({ fetch: f }) => {
         actionCalls += 1;
         await f('https://example.invalid');
       }, { ...opts, fetch }),
@@ -110,7 +190,7 @@ test('the guard runs before any network call', async () => {
     assert.equal(actionCalls, 0, name);
   }
   let seen = null;
-  const result = await runGuarded(env(), async ({ target, fetch }) => {
+  const result = await _runGuardedWithListsForTests(env(), async ({ target, fetch }) => {
     seen = target;
     return fetch('https://x');
   }, { ...allowed, fetch: async () => 'called' });

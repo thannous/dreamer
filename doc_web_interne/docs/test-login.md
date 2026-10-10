@@ -18,15 +18,27 @@ instead of driving the login screen. dreamer is the reference for the other repo
 
 ## Guard (`scripts/test-supabase-guard.mjs`)
 
-Every test-login script must call `runGuarded(env, action)` (or
-`assertTestSupabaseTarget`) before any network call. It refuses, with no override:
+Every test-login script must call `runGuarded(env, action)` before any network
+call. The action receives `{ target, accounts, fetch }`: the canonical
+`target.url`, and only the two accounts built from `E2E_ACCOUNT_DOMAIN`
+(`e2e+free@` and `e2e+premium@`). It must use those and nothing else: never read
+`E2E_SUPABASE_URL` itself, never take another address (a static test checks every
+`scripts/test-*seed*` / `scripts/test-*auth*` script). The policy is not
+configurable by callers: the production ref and key are pinned in the script, and
+the allowlist is the committed file next to it (read relative to the script, not
+the working directory). Only `_assertWithListsForTests` /
+`_runGuardedWithListsForTests` take an allowlist, for the guard's own tests; no
+runtime script may import them, and even they keep production forbidden. It
+refuses, with no override:
 
 - the production project `usuyppgsmmowzizhaoqj`, also when its ref or its public
   key appears in any `E2E_*` value, and even if someone allowlists it;
 - any ref not listed in `scripts/test-supabase-targets.json` (empty today, so
-  every project is refused: fail closed);
-- a URL that is not exactly `https://<ref>.supabase.co` (no port, path, custom
-  domain or local URL);
+  every project is refused: fail closed), and an allowlist entry that is not a
+  20-character lowercase ref or is the production ref;
+- a URL that is not byte for byte `https://<ref>.supabase.co` (one trailing slash
+  allowed; no port, path, case change, whitespace, custom domain or local URL);
+- a missing or invalid `E2E_ACCOUNT_DOMAIN` (before the action runs);
 - `E2E_SUPABASE_PROJECT_REF` missing or different from the URL ref, and a legacy
   JWT key whose `ref` claim names another project;
 - any account email other than `e2e+free@<domain>` and `e2e+premium@<domain>`.
