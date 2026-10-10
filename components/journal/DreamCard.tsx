@@ -66,7 +66,7 @@ export const DreamCard = memo(function DreamCard({
   const compactTextScale = Math.min(1.3, Math.max(1, fontScale));
   const titleTextScale = Math.min(1.4, Math.max(1, fontScale));
   const captionStyle = { fontSize: 12 * compactTextScale, lineHeight: 18 * compactTextScale };
-  // The margin holds the date and the dream's labels, centred; wide enough for a two-line label.
+  // The margin holds the date and the dream's labels; wide enough for a two-line label.
   const dateMarginWidth = Math.max(88, Math.ceil(64 * compactTextScale) + 12);
   const noctalia = useMemo(() => getNoctaliaDesignTokens(colors, mode), [colors, mode]);
   const { t, currentLang } = useTranslation();
@@ -239,14 +239,14 @@ export const DreamCard = memo(function DreamCard({
     return (
       <View
         key={key}
-        className="max-w-full items-center gap-1"
+        className="max-w-full flex-row items-center gap-1.5"
         testID={testID && `journal.badge.${testID}.${i}`}
       >
         {badge.icon && (
           <IconSymbol name={badge.icon} size={13} color={getBadgeIconColor(badge.variant)} />
         )}
         {badge.label && (
-          <Text allowFontScaling={false} style={captionStyle} className={`text-center font-sans text-[12px] leading-[18px] ${BADGE_TEXT_CLASS[badge.variant]}`}>
+          <Text allowFontScaling={false} style={captionStyle} className={`min-w-0 shrink font-sans text-[12px] leading-[18px] ${BADGE_TEXT_CLASS[badge.variant]}`}>
             {badge.label}
           </Text>
         )}
@@ -297,17 +297,19 @@ export const DreamCard = memo(function DreamCard({
       accessibilityLabel={accessibilityLabel}
       testID={testID}
     >
-      {/* The margin reads as three quiet blocks: when, what you can do, what the dream is. */}
-      <View className="shrink-0 self-stretch items-center border-r border-line pr-2" style={{ width: dateMarginWidth }} testID={testID && `journal.margin.${testID}`}>
-        <View key={`date-${fontScale}`} className="items-center">
-          <Text allowFontScaling={false} style={{ fontSize: 30 * compactTextScale, lineHeight: 34 * compactTextScale }} className="font-sans-medium text-[30px] leading-[34px] text-ivory">{dateDay}</Text>
-          <Text allowFontScaling={false} style={{ fontSize: 11 * compactTextScale, lineHeight: 16 * compactTextScale, letterSpacing: 1.2 }} className="font-sans-medium text-[11px] uppercase leading-[16px] text-ivory-muted">{dateMonth.replace('.', '')}</Text>
+      {/* The margin reads as three quiet blocks, set flush left: when, what you can do, what the dream is. */}
+      <View className="shrink-0 self-stretch border-r border-line pr-2" style={{ width: dateMarginWidth }} testID={testID && `journal.margin.${testID}`}>
+        <View key={`date-${fontScale}`}>
+          <Text allowFontScaling={false} numberOfLines={1} className="text-ivory">
+            <Text style={{ fontSize: 22 * compactTextScale, lineHeight: 28 * compactTextScale }} className="font-sans-medium text-[22px] leading-[28px]">{dateDay}</Text>
+            <Text style={{ fontSize: 12 * compactTextScale, letterSpacing: 1 }} className="font-sans-medium text-[12px] uppercase text-ivory-muted">{` ${dateMonth.replace('.', '')}`}</Text>
+          </Text>
           {dateYear !== new Date().getFullYear() && (
             <Text allowFontScaling={false} style={captionStyle} className="font-sans text-[12px] leading-[18px] text-ivory-faint">{dateYear}</Text>
           )}
         </View>
         <View className="my-3 h-px w-6 bg-line" />
-        <View className="flex-row items-center justify-center gap-4">
+        <View className="flex-row items-center gap-4">
           {isFavorite && <IconSymbol name="heart.fill" size={17} color={noctalia.accent.text} />}
           {onShare ? (
             <Pressable accessibilityRole="button" accessibilityLabel={t('journal.detail.share.button_default')}
@@ -317,22 +319,21 @@ export const DreamCard = memo(function DreamCard({
           ) : null}
         </View>
         <View className="my-3 h-px w-6 bg-line" />
-        <View key={`metadata-${fontScale}`} className="w-full items-center gap-1.5" testID={testID && `journal.metadata.${testID}`}>
-          <Text allowFontScaling={false} style={captionStyle} className="text-center font-sans-medium text-[12px] leading-[18px] text-ivory">{typeLabel}</Text>
-          {themeLabel && <Text allowFontScaling={false} style={captionStyle} className="text-center font-sans text-[12px] leading-[18px] text-ivory-muted">{themeLabel}</Text>}
+        <View key={`metadata-${fontScale}`} className="gap-1" testID={testID && `journal.metadata.${testID}`}>
+          <Text allowFontScaling={false} style={captionStyle} className="font-sans-medium text-[12px] leading-[18px] text-ivory">{typeLabel}</Text>
+          {themeLabel && <Text allowFontScaling={false} style={captionStyle} className="font-sans text-[12px] leading-[18px] text-ivory-muted">{themeLabel}</Text>}
           {recurringLabel && (
-            <View className="max-w-full items-center gap-1">
-              <IconSymbol name="arrow.triangle.2.circlepath" size={13} color={noctalia.text.secondary} />
-              <Text allowFontScaling={false} style={captionStyle} className="text-center font-sans text-[12px] leading-[18px] text-ivory-muted">{recurringLabel}</Text>
+            <View className="flex-row items-center gap-1">
+              <IconSymbol name="arrow.triangle.2.circlepath" size={12} color={noctalia.text.secondary} />
+              <Text allowFontScaling={false} style={captionStyle} className="shrink font-sans text-[12px] leading-[18px] text-ivory-muted">{recurringLabel}</Text>
             </View>
           )}
           {memoryLabel && (
-            <View className="max-w-full items-center gap-1">
-              <IconSymbol name="moon.stars.fill" size={13} color={noctalia.text.secondary} />
-              <Text allowFontScaling={false} style={captionStyle} className="text-center font-sans text-[12px] leading-[18px] text-ivory-muted">{memoryLabel}</Text>
+            <View className="flex-row items-center gap-1">
+              <IconSymbol name="moon.stars.fill" size={12} color={noctalia.text.secondary} />
+              <Text allowFontScaling={false} style={captionStyle} className="shrink font-sans text-[12px] leading-[18px] text-ivory-muted">{memoryLabel}</Text>
             </View>
           )}
-          {badgeList.length ? <View className="mt-1.5 items-center gap-1.5">{badgeList}</View> : null}
         </View>
       </View>
       <View className="min-w-0 flex-1 gap-3">
@@ -386,6 +387,9 @@ export const DreamCard = memo(function DreamCard({
         ) : (
           <View className="gap-2 pr-1" testID={testID && `journal.text.${testID}`}>{readingText}</View>
         )}
+        {badgeList.length ? (
+          <View className="flex-row flex-wrap items-center gap-x-4 gap-y-1" testID={testID && `journal.status.${testID}`}>{badgeList}</View>
+        ) : null}
       </View>
       {glow ? <DreamStoryHalo onDone={onGlowDone} /> : null}
     </PressableScale>
