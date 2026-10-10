@@ -8,6 +8,7 @@ const FAMILY_DESCRIPTIONS = {
   Quality: 'lint, type checks, unit tests, and performance tests',
   'Web E2E': 'Playwright journeys with simulated services',
   'Backend E2E': 'Playwright journeys with disposable local Supabase',
+  'Test branch E2E': 'shared test accounts and sessions on the persistent Supabase test branch',
   'Android E2E': 'Maestro flows and release-device scenarios',
   'Mobile release': 'release planning, preparation, builds and version mirrors',
   Android: 'device, Play, build, and release gates',
@@ -24,6 +25,7 @@ const FAMILY_DESCRIPTIONS = {
 function classifyScript(name) {
   if (/^test:e2e:web(?::|$)/.test(name)) return 'Web E2E';
   if (name === 'test:e2e:backend' || name === 'start:backend-e2e') return 'Backend E2E';
+  if (/^test:e2e:branch(?::|$)/.test(name) || ['test:seed-users', 'test:auth-setup', 'test:env:check'].includes(name)) return 'Test branch E2E';
   if (name.startsWith('test:e2e')) return 'Android E2E';
   if (name.startsWith('release:') || name === 'eas-build-pre-install') return 'Mobile release';
   if (name.startsWith('android:')) return 'Android';
@@ -45,6 +47,9 @@ function scriptSafety(name) {
   if (name === 'release:prepare') return 'writes release manifests';
   if (name === 'release:versions:sync') return 'writes local version mirrors';
   if (name === 'prepare') return 'writes local Git config';
+  if (name === 'test:seed-users') return 'writes the Supabase test branch (accounts, dreams, quota, tier)';
+  if (name === 'test:auth-setup' || name === 'test:e2e:branch') return 'writes session tokens to .auth/';
+  if (name === 'test:e2e:branch:mobile') return 'signs the device app out and in; writes test-results/e2e-branch-mobile/run.json';
   if (/^docs:deploy:/.test(name)) return 'publishes';
   if (/^(docs:(build|build-guides|dev|release-check)|generate-sitemap|content:build-manifest$|content:build-site-manifest$)/.test(name)) return 'writes generated files';
   if (/^(subscription:qa:(evidence|play-state|revenuecat-subscriber-expiry|google-play-state)|android:.*-state)$/.test(name)) return 'writes QA evidence';

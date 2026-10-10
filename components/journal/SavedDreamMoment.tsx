@@ -55,12 +55,14 @@ const sparklePath = (cx: number, cy: number, size: number) =>
  * medallion opens the full view. Under reduced motion the layers only fade in and the
  * looping stars and light hold still.
  */
-export function SavedDreamMoment({ phase = 'saved', painting = false, artwork = null, onOpenArtwork }: {
+export function SavedDreamMoment({ phase = 'saved', painting = false, artwork = null, landArtwork = true, onOpenArtwork }: {
   phase?: SavedDreamPhase;
   /** The illustration job is running: the window is being painted. */
   painting?: boolean;
   /** The dream's own illustration, once it has landed. */
   artwork?: ImageSource | null;
+  /** The illustration has just landed: it settles once. Later mounts show it at rest. */
+  landArtwork?: boolean;
   onOpenArtwork?: () => void;
 }) {
   const { t } = useTranslation();
@@ -81,7 +83,7 @@ export function SavedDreamMoment({ phase = 'saved', painting = false, artwork = 
     [reduced]
   );
   const sweep = useMemo(() => paintSweep(MEDALLION, reduced), [reduced]);
-  const settle = useMemo(() => paintSettle(reduced), [reduced]);
+  const settle = useMemo(() => (landArtwork ? paintSettle(reduced) : null), [landArtwork, reduced]);
 
   const medallion = (
     <Animated.View

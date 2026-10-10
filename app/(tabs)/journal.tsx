@@ -13,7 +13,6 @@ import { AdvancedFilterSheet, type JournalSortOrder } from '@/components/journal
 import { RemoteJournalList } from '@/components/journal/RemoteJournalList';
 import type { DreamListItem } from '@/lib/journalReadContracts';
 import { DreamCard } from '@/components/journal/DreamCard';
-import { DREAM_STORY } from '@/components/journal/story/dreamStoryMotion';
 import { takeDreamStoryEpilogue } from '@/lib/dreamStoryEpilogue';
 import { EmptyState } from '@/components/journal/EmptyState';
 import { NoctaliaScreenHeader } from '@/components/NoctaliaScreenHeader';
@@ -594,13 +593,14 @@ export default function JournalListScreen() {
   // Epilogue of the dream story: arriving from a just-captured dream, its card glows once.
   // Taken on focus because this tab often stays mounted while the dream is told. Lists get
   // it as extraData only while it glows, so ordinary scrolling never re-renders rows.
+  // The glow ends when the card has shown it (a filtered or scrolled list may mount it
+  // later) or when the journal loses focus, so a recycled row never replays it.
   const [storyGlowKey, setStoryGlowKey] = useState<string | null>(null);
+  const clearStoryGlow = useCallback(() => setStoryGlowKey(null), []);
   useFocusEffect(useCallback(() => {
     const key = takeDreamStoryEpilogue();
-    if (!key) return;
-    setStoryGlowKey(key);
-    const timer = setTimeout(() => setStoryGlowKey(null), DREAM_STORY.epilogueHalo);
-    return () => clearTimeout(timer);
+    if (key) setStoryGlowKey(key);
+    return () => setStoryGlowKey(null);
   }, []));
 
   // No `entering` on a row: FlashList recycles them, so an entrance replays on every
@@ -619,10 +619,11 @@ export default function JournalListScreen() {
           dateLabel={dateStr}
           variant={isFirstItem ? 'featured' : 'standard'}
           glow={storyGlowKey === getDreamIdentityKey(item)}
+          onGlowDone={clearStoryGlow}
         />
       </View>
     );
-  }, [formatDreamListDate, handleDreamPress, storyGlowKey]);
+  }, [clearStoryGlow, formatDreamListDate, handleDreamPress, storyGlowKey]);
 
   const renderDreamItemTablet = useCallback(({ item }: ListRenderItemInfo<DreamAnalysis>) => {
     if (!item) return null;
@@ -637,10 +638,11 @@ export default function JournalListScreen() {
           dateLabel={dateStr}
           variant="standard"
           glow={storyGlowKey === getDreamIdentityKey(item)}
+          onGlowDone={clearStoryGlow}
         />
       </View>
     );
-  }, [formatDreamListDate, handleDreamPress, storyGlowKey]);
+  }, [clearStoryGlow, formatDreamListDate, handleDreamPress, storyGlowKey]);
 
   const renderDreamItemDesktop = useCallback(({ item, index }: ListRenderItemInfo<DreamAnalysis>) => {
     // Recycling can briefly retain an index after a filter shrinks the data array.
@@ -654,10 +656,11 @@ export default function JournalListScreen() {
           dateLabel={formatDreamListDate(item.id)}
           variant={index === 0 ? 'featured' : 'standard'}
           glow={storyGlowKey === getDreamIdentityKey(item)}
+          onGlowDone={clearStoryGlow}
         />
       </View>
     );
-  }, [formatDreamListDate, handleDreamPress, storyGlowKey]);
+  }, [clearStoryGlow, formatDreamListDate, handleDreamPress, storyGlowKey]);
 
   const hasNonDefaultSort = sortOrder !== 'newest';
   const hasActiveFilter = !!(

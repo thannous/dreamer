@@ -1,0 +1,19 @@
+# Opens settings on the app selected by APP_ID (the shared
+# journeys/subflows/open-settings.yml pins the base package).
+appId: ${APP_ID || "com.tanuki75.noctalia"}
+---
+- tapOn:
+    id: tab.home
+- tapOn:
+    id: btn.header.home.settings
+- runFlow:
+    when:
+      visible:
+        id: quick-settings.all
+    commands:
+      - tapOn:
+          id: quick-settings.all
+- extendedWaitUntil:
+    visible:
+      id: screen.settings
+    timeout: 15000

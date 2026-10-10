@@ -33,6 +33,8 @@ interface DreamCardProps {
   variant?: DreamCardVariant;
   /** The dream story's epilogue: this card glows once. */
   glow?: boolean;
+  /** Called once the glow has played on this card. */
+  onGlowDone?: () => void;
 }
 
 
@@ -54,6 +56,7 @@ export const DreamCard = memo(function DreamCard({
   dateLabel,
   variant = 'standard',
   glow = false,
+  onGlowDone,
 }: DreamCardProps) {
   const { colors, mode } = useTheme();
   const { fontScale } = useWindowDimensions();
@@ -368,7 +371,7 @@ export const DreamCard = memo(function DreamCard({
           {badgeList}
         </View>
       </View>
-      {glow ? <DreamStoryHalo /> : null}
+      {glow ? <DreamStoryHalo onDone={onGlowDone} /> : null}
     </PressableScale>
   );
 }, (prev, next) => {
@@ -378,6 +381,7 @@ export const DreamCard = memo(function DreamCard({
   if (prev.dateLabel !== next.dateLabel) return false;
   if (prev.variant !== next.variant) return false;
   if (prev.glow !== next.glow) return false;
+  if (prev.onGlowDone !== next.onGlowDone) return false;
 
   const prevDream = prev.dream;
   const nextDream = next.dream;

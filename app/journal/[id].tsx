@@ -14,6 +14,7 @@ import { DreamRecallAssistantCard } from '@/components/journal/DreamRecallAssist
 import { SavedDreamMoment, type SavedDreamPhase } from '@/components/journal/SavedDreamMoment';
 import { DreamPaintedArtwork } from '@/components/journal/story/DreamPaintedArtwork';
 import { DreamPaintingWait } from '@/components/journal/story/DreamPaintingWait';
+import { DREAM_STORY } from '@/components/journal/story/dreamStoryMotion';
 import { markDreamStoryEpilogue } from '@/lib/dreamStoryEpilogue';
 import { DreamShareImage } from '@/components/journal/DreamShareImage';
 import { getImageJobFailure } from '@/lib/imageJobErrors';
@@ -902,15 +903,17 @@ const JournalDetailContent = memo(function JournalDetailContent({ dream }: { dre
   const isAnalysisLocked = isAnalysisLaunchBlocked || awaitingPurchasedAnalysis;
   // Act II of the dream story follows the dream's real state: waiting while an analysis
   // runs, then a reveal only when the reading lands while this screen watches. A dream
-  // still marked pending keeps the story waiting even after the local request settles.
+  // still marked pending keeps the story waiting even after the local request settles;
+  // a reading saved before the request returns (sync and quota run after it) lands at once.
   const readingInFlight = isAnalysisLocked;
+  const readingAwaited = readingInFlight && !showCompletedReading;
   const [readingStory, setReadingStory] = useState<'idle' | 'waiting' | 'revealed'>('idle');
-  if (readingInFlight && readingStory !== 'waiting') {
+  if (readingAwaited && readingStory !== 'waiting') {
     setReadingStory('waiting');
-  } else if (!readingInFlight && readingStory === 'waiting') {
+  } else if (!readingAwaited && readingStory === 'waiting') {
     setReadingStory(showCompletedReading ? 'revealed' : 'idle');
   }
-  const savedMomentPhase: SavedDreamPhase = readingInFlight && !showCompletedReading ? 'reading'
+  const savedMomentPhase: SavedDreamPhase = readingAwaited ? 'reading'
     : showCompletedReading ? 'read' : 'saved';
   const reducedMotion = useReducedMotion();
   const readingZoneTopRef = useRef<number | null>(null);
@@ -1735,6 +1738,18 @@ const JournalDetailContent = memo(function JournalDetailContent({ dream }: { dre
   const hasIllustratedCover = artworkAtArrival === true && Boolean(dream?.imageUrl?.trim())
     && !shouldHideHeroMedia && !coverImageFailed;
   const paintedArtwork = !coverImageFailed && displayImageUrl ? { uri: displayImageUrl, cacheKey: imageCacheKey } : null;
+  // Act III keeps painting until the image can actually be shown: stored artwork is
+  // saved on the dream before its signed URL resolves. Its landing plays once per visit,
+  // even when an editor hides and remounts the illustration.
+  const artworkResolving = Boolean(dream?.imageUrl?.trim()) && !paintedArtwork && !coverImageFailed;
+  const paintingInProgress = illustrationSidecar === 'pending' || (artworkAtArrival === false && artworkResolving);
+  const [artworkLanded, setArtworkLanded] = useState(false);
+  const artworkLanding = artworkAtArrival === false && Boolean(paintedArtwork) && !artworkLanded;
+  useEffect(() => {
+    if (!artworkLanding) return;
+    const timer = setTimeout(() => setArtworkLanded(true), DREAM_STORY.paintSettle);
+    return () => clearTimeout(timer);
+  }, [artworkLanding]);
   const floatingTranscriptBottom = Platform.OS === 'ios' ? 32 : 24;
   const showSavedMoment = opensOnSavedMoment && !hasIllustratedCover && !shouldHideHeroMedia;
 
@@ -2463,8 +2478,13 @@ const JournalDetailContent = memo(function JournalDetailContent({ dream }: { dre
             </Pressable>
           </View>
         ) : dream.imageUrl && !hasIllustratedCover ? (
-          <DreamPaintedArtwork source={paintedArtwork} onOpen={() => setIsIllustrationFullscreen(true)}
-            onError={() => setFailedCoverUri(displayImageUrl ?? null)} />
+          paintedArtwork ? (
+            <DreamPaintedArtwork source={paintedArtwork} land={artworkLanding}
+              onOpen={() => setIsIllustrationFullscreen(true)}
+              onError={() => setFailedCoverUri(displayImageUrl ?? null)} />
+          ) : (
+            <DreamPaintingWait queued={false} />
+          )
         ) : dream.imageUrl ? (
           <View className="relative overflow-hidden bg-ink">
             <PressableScale
@@ -2644,8 +2664,8 @@ const JournalDetailContent = memo(function JournalDetailContent({ dream }: { dre
         >
           <View ref={readingContentRef} collapsable={false} onLayout={measureTranscriptSection} className="px-4 pb-6">
             {showSavedMoment ? (
-              <SavedDreamMoment phase={savedMomentPhase} painting={illustrationSidecar === 'pending'}
-                artwork={paintedArtwork} onOpenArtwork={() => setIsIllustrationFullscreen(true)} />
+              <SavedDreamMoment phase={savedMomentPhase} painting={paintingInProgress}
+                artwork={paintedArtwork} landArtwork={artworkLanding} onOpenArtwork={() => setIsIllustrationFullscreen(true)} />
             ) : null}
             <View onLayout={({ nativeEvent: { layout } }) => {
               setCoverIntroHeight(previous => previous === layout.height ? previous : layout.height);
@@ -2702,7 +2722,7 @@ const JournalDetailContent = memo(function JournalDetailContent({ dream }: { dre
 
             {(showCompletedReading || readingInFlight) ? (
               <DreamAnalysisContent dream={dream}
-                pending={isAnalysisPending || (readingInFlight && !showCompletedReading)}
+                pending={isAnalysisPending || readingAwaited}
                 reveal={readingStory === 'revealed'}
                 onLayout={({ nativeEvent }) => { readingZoneTopRef.current = nativeEvent.layout.y; }} />
             ) : null}
