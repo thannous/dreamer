@@ -7,6 +7,7 @@
 
 import type { DreamAnalysis } from '@/lib/types';
 
+import { getMockDreamImage } from './assets';
 import { getShowcaseDreams } from './showcaseDreams';
 
 const mockUuid = (index: number, variant = 0): string =>
@@ -29,8 +30,8 @@ export const PREDEFINED_DREAMS: Omit<DreamAnalysis, 'id'>[] = [
     ],
     theme: 'mystical',
     dreamType: 'Symbolic Dream',
-    imageUrl: 'https://picsum.photos/seed/library-dream/800/600',
-    thumbnailUrl: 'https://picsum.photos/seed/library-dream/400/300',
+    imageUrl: getMockDreamImage('cat'),
+    thumbnailUrl: getMockDreamImage('cat'),
     chatHistory: [],
     isFavorite: true,
     imageGenerationFailed: false,
@@ -52,8 +53,8 @@ export const PREDEFINED_DREAMS: Omit<DreamAnalysis, 'id'>[] = [
     ],
     theme: 'surreal',
     dreamType: 'Symbolic Dream',
-    imageUrl: 'https://picsum.photos/seed/ocean-stars/800/600',
-    thumbnailUrl: 'https://picsum.photos/seed/ocean-stars/400/300',
+    imageUrl: getMockDreamImage('floating'),
+    thumbnailUrl: getMockDreamImage('floating'),
     chatHistory: [
       {
         id: 'ocean-user-1',
