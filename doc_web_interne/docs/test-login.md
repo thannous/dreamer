@@ -162,7 +162,7 @@ with that URL, the branch publishable key, the branch functions URL
 (`https://<ref>.functions.supabase.co/api`), `EXPO_PUBLIC_SUPABASE_FUNCTION_JWT` set to
 the branch key (else `lib/http.ts` falls back to the production legacy JWT in
 `app.json`), mock mode off and `EXPO_NO_DOTENV=1` (no `.env.local` mixed in); no
-`E2E_*` variable reaches Metro. Of the shell's `EXPO_PUBLIC_*` values (inlined into
+`E2E_*` variable reaches Metro, and `NODE_OPTIONS` / `NODE_PATH` are dropped (a preload would run before the runner's final guard). Of the shell's `EXPO_PUBLIC_*` values (inlined into
 the bundle) only an explicit allowlist of feature flags passes
 (`PASSTHROUGH_EXPO_PUBLIC` in the script); keys, endpoints, RevenueCat, Google,
 Turnstile, mock and QA switches are dropped. Arguments: only `--web`,
