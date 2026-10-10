@@ -185,7 +185,7 @@ export function SleepSoundsScreen() {
           style={styles.scrollView}
           contentContainerStyle={{
             paddingBottom: insets.bottom + ThemeLayout.spacing.xl,
-            paddingTop: 0,
+            paddingTop: insets.top,
           }}
           onScrollBeginDrag={scrollPerf.onScrollBeginDrag}
           onScrollEndDrag={scrollPerf.onScrollEndDrag}

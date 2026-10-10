@@ -109,7 +109,7 @@ export function WeeklyRecapScreen() {
         style={styles.scrollView}
         contentContainerStyle={{
           paddingBottom: insets.bottom + ThemeLayout.spacing.xl,
-          paddingTop: 0,
+          paddingTop: insets.top,
         }}
       >
         <DreamerArtworkWindow scene="astral" />
