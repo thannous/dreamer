@@ -248,7 +248,7 @@
 <span class="text-xs text-purple-300/60">6 Min. Lesezeit</span>
 </div>
 <h2 class="font-serif text-xl md:text-2xl mb-3 text-dream-cream group-hover:text-white transition-colors">Von der Rückkehr in die Schule träumen: alte Schule, erster Tag und Stress zum Schulanfang</h2>
-<p class="text-sm text-gray-400 line-clamp-2">Alte Schule, erster Tag, Zuspätkommen: was diese Träume zum Schulanfang über deine Übergänge erzählen.</p>
+<p class="text-sm text-gray-400 line-clamp-2">Alte Schule, erster Tag, Zuspätkommen: was diese Träume zum Schulanfang über Ihre Übergänge erzählen.</p>
 </div>
 </a>
 </article>
