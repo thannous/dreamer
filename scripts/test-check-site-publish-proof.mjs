@@ -36,7 +36,7 @@ const SCRATCH_CONFIG = `export default {
       command: 'echo site-e2e >> "$RUN_LOG"',
       kinds: ['release'],
       specialised: true,
-      requires: { command: 'test -z "$SITE_E2E_UNAVAILABLE"', hint: 'run it on the owner machine' },
+      requires: { command: 'test -z "$SITE_E2E_UNAVAILABLE"', hint: 'run it locally or pass owner-machine evidence' },
     },
   ],
 };
@@ -175,7 +175,7 @@ test('a pr proof never unlocks a production publish', async () => {
   });
 });
 
-test('an incomplete release is refused until the missing check is proven on the owner machine', async () => {
+test('an incomplete release is refused until the missing check has owner-machine evidence', async () => {
   await withRepository(async ({ check, engine, git }) => {
     const unavailable = { extraEnv: { SITE_E2E_UNAVAILABLE: '1' } };
     assert.equal((await engine('release', [], unavailable)).status, 2);
