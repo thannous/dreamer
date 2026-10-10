@@ -19,7 +19,7 @@ const SYMBOLS: { id: SymbolName; x: number; y: number; image: number }[] = [
   { id: 'water', x: 55, y: 154, image: require('../../docs-src/static/img/starmap/water-160w.webp') },
   { id: 'cat', x: 178, y: 205, image: require('../../docs-src/static/img/starmap/cat-160w.webp') },
 ];
-// Three accounts from the landing, with their original symbol associations.
+// The three nights of the story (Monday, Thursday, Saturday) and the symbols each one shows.
 const DREAMS: { symbols: SymbolName[] }[] = [
   { symbols: ['house', 'door'] },
   { symbols: ['water', 'house'] },
@@ -77,6 +77,8 @@ export function SymbolConstellation({ tokens, storyStep, onInteraction, stageHei
     setCurrent(next);
   };
   const select = (id: SymbolName) => { onInteraction?.(); setSelected(id); setInspecting(true); };
+  const nights = (count: number) => t(`onboarding.feature.constellation.related_${count === 1 ? 'one' : 'other'}`, { count, total: seen.length });
+  const night = (index: number) => `${t(`onboarding.feature.constellation.night_${index + 1}.day`)} · ${t(`onboarding.feature.constellation.night_${index + 1}.title`)}`;
 
   return (
     <View style={styles.root}>
@@ -92,8 +94,8 @@ export function SymbolConstellation({ tokens, storyStep, onInteraction, stageHei
         </PressableScale>
       </View> : null}
       {storyStep === undefined ? <StoryScene key={current} style={[styles.story, { backgroundColor: tokens.surface.soft, borderColor: tokens.surface.border }]}>
-        <Text style={[styles.storyTitle, { color: tokens.text.primary }]}>{t(`onboarding.feature.constellation.dream_${current + 1}.title`)}</Text>
-        <Text style={[styles.storyText, { color: tokens.text.secondary }]}>{t(`onboarding.feature.constellation.dream_${current + 1}.body`)}</Text>
+        <Text style={[styles.storyTitle, { color: tokens.text.primary }]}>{night(current)}</Text>
+        <Text style={[styles.storyText, { color: tokens.text.secondary }]}>{t(`onboarding.narrative.connect.${current}.body`)}</Text>
         <View style={styles.tags}>
           {DREAMS[current].symbols.map((id) => (
             <PressableScale key={id} accessibilityRole="button" onPress={() => select(id)} style={styles.tag} accessibilityLabel={t(`onboarding.feature.constellation.symbol.${id}`)}>
@@ -117,7 +119,7 @@ export function SymbolConstellation({ tokens, storyStep, onInteraction, stageHei
             <StoryScene key={symbol.id} style={[styles.node, { left: symbol.x / 300 * width - 27, top: symbol.y * mapScale - 27 }]}>
             <PressableScale
               accessibilityRole="button"
-              accessibilityLabel={`${t(`onboarding.feature.constellation.symbol.${symbol.id}`)}, ${t('onboarding.feature.constellation.related', { count: count(symbol.id), total: seen.length })}`}
+              accessibilityLabel={`${t(`onboarding.feature.constellation.symbol.${symbol.id}`)}, ${nights(count(symbol.id))}`}
               accessibilityHint={t('onboarding.feature.constellation.select_hint')}
               accessibilityState={{ selected: selected === symbol.id }}
               onPress={() => select(symbol.id)}
@@ -145,9 +147,9 @@ export function SymbolConstellation({ tokens, storyStep, onInteraction, stageHei
       </View>
       {storyStep === undefined || inspecting ? <View style={[styles.selection, storyStep !== undefined && styles.selectionOverlay, { backgroundColor: storyStep !== undefined ? tokens.surface.raised : tokens.surface.soft, borderColor: tokens.surface.border }]} accessibilityLiveRegion={storyStep === undefined ? 'polite' : 'none'} testID="component.onboarding.constellation.selection">
         <Text style={[styles.selectionTitle, { color: tokens.text.primary }]}>
-          {t(`onboarding.feature.constellation.symbol.${selected}`)}{' · '}{t('onboarding.feature.constellation.related', { count: related.length, total: seen.length })}
+          {t(`onboarding.feature.constellation.symbol.${selected}`)}{' · '}{nights(related.length)}
         </Text>
-        {related.map((index) => <Text key={index} style={[styles.related, { color: tokens.text.secondary }]}>{t(`onboarding.feature.constellation.dream_${index + 1}.title`)}</Text>)}
+        {related.map((index) => <Text key={index} style={[styles.related, { color: tokens.text.secondary }]}>{night(index)}</Text>)}
       </View> : null}
     </View>
   );
