@@ -39,7 +39,6 @@ import {
   Pressable,
   StatusBar,
   StyleSheet,
-  Switch,
   Text,
   View,
   findNodeHandle,
@@ -132,7 +131,7 @@ export default function OnboardingScreen() {
   const [doorPassage, setDoorPassage] = useState(false);
   const featureTriggers = useRef<Partial<Record<OnboardingFeature, ViewInstance | null>>>({});
   const featureFocusTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
-  const [analyticsEnabled, setAnalyticsEnabled] = useState(false);
+  const [, setAnalyticsEnabled] = useState(false);
   const [analyticsPreferenceLoading, setAnalyticsPreferenceLoading] = useState(false);
   const [analyticsPreferenceError, setAnalyticsPreferenceError] = useState(false);
   const [footerHeight, setFooterHeight] = useState(0);
@@ -556,9 +555,11 @@ export default function OnboardingScreen() {
     setAnalyticsPreferenceError(false);
     try {
       await setProductAnalyticsEnabled(enabled);
+      return true;
     } catch {
       setAnalyticsEnabled((current) => !current);
       setAnalyticsPreferenceError(true);
+      return false;
     } finally {
       setAnalyticsPreferenceLoading(false);
     }
@@ -589,6 +590,11 @@ export default function OnboardingScreen() {
   const selectedPath = selectedPathOverride ?? state.selectedPath ?? 'analyze';
   const selectedDefinition = PATHS.find((path) => path.id === selectedPath) ?? PATHS[0];
   const analyticsAvailable = isProductAnalyticsAvailable();
+  // The sheet's two answers: save the usage choice (when this build collects at all), then close.
+  const answerPrivacy = async (accepted: boolean) => {
+    if (analyticsAvailable && !(await toggleAnalytics(accepted))) return;
+    setShowPrivacySheet(false);
+  };
   const layeredStepHeight = Math.max(stepHeights.intro ?? 0, stepHeights.path ?? 0) || undefined;
 
   return (
@@ -1015,9 +1021,13 @@ export default function OnboardingScreen() {
         title={t('onboarding.privacy.title')}
         subtitle={t('onboarding.privacy.body')}
         testID={TID.Sheet.OnboardingPrivacy}
+        // Accepting and refusing weigh the same: one tap each, then the sheet closes on the saved choice.
         actions={{
-          primaryLabel: t('common.done'),
-          onPrimary: () => setShowPrivacySheet(false),
+          primaryLabel: t('onboarding.privacy.accept'),
+          onPrimary: () => void answerPrivacy(true),
+          primaryLoading: analyticsPreferenceLoading,
+          secondaryLabel: t('onboarding.privacy.refuse'),
+          onSecondary: () => void answerPrivacy(false),
         }}
       >
         {/* Three plain promises, one line each; the policy holds the details. */}
@@ -1033,37 +1043,16 @@ export default function OnboardingScreen() {
             </View>
           ))}
         </View>
-        <View style={styles.privacyToggleRow}>
-          <View style={styles.privacyToggleCopy}>
-            <Text style={[styles.privacyToggleLabel, { color: sheetTokens.text.primary }]}>
-              {t('onboarding.privacy.toggle_label')}
-            </Text>
-            <Text style={[styles.privacyToggleHint, { color: sheetTokens.text.secondary }]}>
-              {t('onboarding.privacy.toggle_hint')}
-            </Text>
-            <Text
-              accessibilityLiveRegion="polite"
-              style={[styles.privacyStatus, { color: analyticsPreferenceError ? sheetTokens.status.danger.text : sheetTokens.accent.text }]}
-            >
-              {analyticsPreferenceError
-                ? t('onboarding.privacy.error')
-                : !analyticsAvailable
-                  ? t('analytics.privacy.unavailable')
-                  : t(analyticsEnabled ? 'onboarding.privacy.enabled' : 'onboarding.privacy.disabled')}
-            </Text>
-          </View>
-          {analyticsPreferenceLoading ? (
-            <ActivityIndicator color={sheetTokens.accent.text} />
-          ) : (
-            <Switch
-              disabled={!analyticsAvailable}
-              value={analyticsAvailable && analyticsEnabled}
-              onValueChange={(value) => void toggleAnalytics(value)}
-              accessibilityLabel={t('onboarding.privacy.toggle_label')}
-              accessibilityHint={t('onboarding.privacy.toggle_hint')}
-            />
-          )}
-        </View>
+        <Text style={[styles.privacyDetails, { color: sheetTokens.text.tertiary }]}>{t('onboarding.privacy.details')}</Text>
+        <Text style={[styles.privacyToggleLabel, { color: sheetTokens.text.primary }]}>{t('onboarding.privacy.toggle_label')}</Text>
+        {analyticsPreferenceError || !analyticsAvailable ? (
+          <Text
+            accessibilityLiveRegion="polite"
+            style={[styles.privacyStatus, { color: analyticsPreferenceError ? sheetTokens.status.danger.text : sheetTokens.accent.text }]}
+          >
+            {analyticsPreferenceError ? t('onboarding.privacy.error') : t('analytics.privacy.unavailable')}
+          </Text>
+        ) : null}
       </StandardBottomSheet> : null}
       <Animated.View
         pointerEvents="none"
@@ -1147,11 +1136,9 @@ const styles = StyleSheet.create({
   primaryContent: { flex: 1, flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: 12, paddingVertical: 14 },
   primaryText: { flexShrink: 1, fontFamily: Fonts.spaceGrotesk.bold, fontSize: 17, lineHeight: 22, textAlign: 'center' },
   privacyAssuranceText: { flex: 1, fontFamily: Fonts.spaceGrotesk.regular, fontSize: 13, lineHeight: 19 },
-  privacyPoints: { gap: 12, marginBottom: 18 },
+  privacyPoints: { gap: 12, marginBottom: 14 },
+  privacyDetails: { fontFamily: Fonts.spaceGrotesk.regular, fontSize: 12, lineHeight: 17, marginBottom: 18 },
   privacyPoint: { flexDirection: 'row', alignItems: 'flex-start', gap: 12 },
-  privacyToggleRow: { minHeight: 64, flexDirection: 'row', alignItems: 'center', gap: 16, marginBottom: 16 },
-  privacyToggleCopy: { flex: 1, gap: 3 },
   privacyToggleLabel: { fontFamily: Fonts.spaceGrotesk.bold, fontSize: 15, lineHeight: 20 },
-  privacyToggleHint: { fontFamily: Fonts.spaceGrotesk.regular, fontSize: 13, lineHeight: 18 },
   privacyStatus: { fontFamily: Fonts.spaceGrotesk.medium, fontSize: 12, lineHeight: 16 },
 });
