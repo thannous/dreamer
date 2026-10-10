@@ -636,6 +636,8 @@ const translations: Record<string, string> = {
     'journal.detail.image.generating_title': 'Imagen del sueño en generación',
     'journal.detail.image.queued_subtitle': 'La solicitud de imagen está en cola y empezará pronto.',
     'journal.detail.image.running_subtitle': 'Noctalia está pintando la escena. Puede tardar unos instantes.',
+    'journal.detail.image.painting_title': 'Noctalia está pintando tu sueño…',
+    'journal.detail.image.painting_body': 'La ilustración aparecerá aquí. Puede tardar unos instantes.',
     'journal.detail.image.no_source': 'No hay texto disponible para generar una imagen para este sueño.',
     'journal.detail.image.generate_action': 'Ilustrar mi sueño',
     'journal.detail.image.add_from_library': 'Añadir desde mi dispositivo',
