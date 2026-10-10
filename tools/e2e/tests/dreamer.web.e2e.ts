@@ -137,6 +137,70 @@ for (const profile of ['plus', 'existing'] as const) {
   });
 }
 
+/** Authored entrances only: the waiting loop never settles and is not waited for. */
+async function settledMotion(browser: Parameters<typeof isolateWeb>[0]) {
+  await expect.poll(() => browser.evaluate(() => document.getAnimations().filter(animation =>
+    animation.playState === 'running' && animation.effect?.getTiming().iterations !== Infinity).length)).toBe(0);
+}
+
+// Act II of the dream story: the analysis is visibly waited for, then the dream's real
+// symbols land as a constellation and the reading is brought into view, once.
+test('plus account watches its saved dream being read, then lit as a constellation', async ({ app, screen, browser }) => {
+  await isolateWeb(browser, app);
+  await selectProfile(app, screen, 'plus');
+  // The first analysis asks once for permission to send the dream to the AI provider.
+  const offConsent = await browser.onDialog(async (dialog) => { await dialog.accept(); });
+  const story = 'E2E lantern drifting over dark water toward a doorway of light.';
+  await screen.getByTestId('input.dreamTranscript', { visible: true }).fill(story);
+  await screen.getByTestId('btn.saveDream', { visible: true }).tap();
+  await expect(screen.getByTestId('component.dreamDetail.savedMoment', { visible: true })).toBeVisible();
+  await screen.getByTestId('btn.dream.primaryCta', { visible: true }).tap();
+  const wait = screen.getByTestId('component.dreamDetail.readingWait');
+  await expect(wait).toContainText('Noctalia is reading your dream…');
+  await expect(wait).toContainText('Its symbols and emotions will appear here.');
+  await settledMotion(browser);
+  await app.screenshot('plus-dream-being-read');
+  // The mock reading names three symbols; the constellation draws exactly those.
+  const constellation = screen.getByTestId('component.dreamDetail.constellation', { visible: true });
+  for (const symbol of ['Water', 'Light', 'Doorway']) await expect(constellation).toContainText(symbol);
+  await expect(screen.getByTestId('component.dreamDetail.readingWait')).toHaveCount(0);
+  await expect(screen.getByTestId('component.dreamDetail.readingZone', { visible: true })).toContainText('Symbols');
+  await offConsent();
+  await settledMotion(browser);
+  const landed = await constellation.boundingBox();
+  // The reading landed below the story: it was brought into view rather than left off-screen.
+  expect(landed!.y).toBeGreaterThan(0);
+  expect(landed!.y + landed!.height).toBeLessThan(844);
+  await app.screenshot('plus-reading-constellation');
+  // The reading ends on its questions and the dream's own line.
+  expect(await browser.evaluate(() => {
+    const questions = document.querySelector('[data-testid="component.dreamDetail.reflectionZone"]');
+    questions?.scrollIntoView({ block: 'center' });
+    return Boolean(questions);
+  })).toBe(true);
+  const quote = screen.getByTestId('text.dreamDetail.quote', { visible: true });
+  await expect(quote).toContainText('«');
+  // The last chapter enters after the others; wait until the reader can actually see it.
+  await expect.poll(() => browser.evaluate(() => {
+    let node: Element | null = document.querySelector('[data-testid="text.dreamDetail.quote"]');
+    let opacity = 1;
+    for (; node; node = node.parentElement) opacity *= Number(getComputedStyle(node).opacity);
+    return opacity;
+  })).toBe(1);
+  await app.screenshot('plus-reading-chapters');
+  // A return visit shows the constellation lit at once, with no story replayed.
+  await journal(screen);
+  await screen.getByRole('textbox', 'Search dreams…', { visible: true }).fill('lantern drifting');
+  const card = screen.getByTestId(/^dream\.item\./, { visible: true });
+  await expect(card).toHaveCount(1);
+  await card.tap();
+  await expect(screen.getByTestId('component.dreamDetail.constellation')).toContainText('Doorway');
+  await expect(screen.getByTestId('component.dreamDetail.savedMoment')).toHaveCount(0);
+  expect(await browser.evaluate(() => [...document.querySelectorAll('[data-testid="component.dreamDetail.constellation"]')]
+    .reduce((count, node) => count + node.getAnimations({ subtree: true }).length, 0))).toBe(0);
+  await app.screenshot('plus-revisit-constellation-at-rest');
+});
+
 test('free user recovers empty search, edits, cancels deletion and deletes only one dream', async ({ app, screen, browser }) => {
   await isolateWeb(browser, app);
   await selectProfile(app, screen, 'existing');

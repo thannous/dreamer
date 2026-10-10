@@ -595,6 +595,8 @@ const translations: Record<string, string> = {
     'journal.detail.zone.reflection': 'Ma réflexion',
     'journal.detail.quote_attribution': 'Noctalia · inspiré de ton rêve',
     'journal.detail.zone.reading': 'Analyse',
+    'journal.detail.reading.wait.title': 'Noctalia lit ton rêve…',
+    'journal.detail.reading.wait.body': 'Ses symboles et ses émotions apparaîtront ici.',
     'journal.detail.zone.actions': 'Actions',
     'journal.detail.stale.label': 'Analyse potentiellement obsolète',
     'journal.detail.stale.banner': 'Cette analyse a été faite sur une version antérieure du rêve. La lecture précédente reste visible.',
