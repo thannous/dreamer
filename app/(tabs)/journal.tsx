@@ -51,6 +51,7 @@ import { router, useFocusEffect } from 'expo-router';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import React, { useCallback, useContext, useDeferredValue, useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react';
 import {
+  Alert,
   Keyboard,
   Platform,
   Share,
@@ -476,7 +477,9 @@ function JournalListScreen() {
       quote ? `“${quote}”` : excerpt ? `${excerpt}${(dream.transcript?.trim().length ?? 0) > 220 ? '…' : ''}` : null,
       t('journal.detail.share.footer'),
     ].filter(Boolean).join('\n\n');
-    void Share.share({ message, title: dream.title }).catch(() => undefined);
+    void Share.share({ message, title: dream.title }).catch(() => {
+      Alert.alert(t('common.error_title'), t('journal.detail.share.error_message'));
+    });
   }, [t]);
 
   const handleDreamFavorite = useCallback((dream: DreamAnalysis) => {
@@ -1056,7 +1059,8 @@ function JournalListScreen() {
       {/* List */}
       {previewEligible && previewFiltersSupported && mediaUserId ? (
         <RemoteJournalList key={mediaUserId} userId={mediaUserId} searchQuery={deferredSearchQuery}
-          onOpenDream={openRemoteDream} header={isDesktopLayout ? undefined : listHeader} bottomInset={overlayNavClearance} />
+          onOpenDream={openRemoteDream} header={isDesktopLayout ? undefined : listHeader} bottomInset={overlayNavClearance}
+          onScroll={handleStaticListScroll} />
       ) : isDesktopLayout ? (
         <AnimatedDreamList
           onLoad={onListLoaded}

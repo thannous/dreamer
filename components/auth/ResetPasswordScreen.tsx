@@ -464,4 +464,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default withHeaderScroll(ResetPasswordScreen);
+export default withHeaderScroll(ResetPasswordScreen, { veil: !isLucidTrainer });
