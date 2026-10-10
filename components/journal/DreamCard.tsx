@@ -304,14 +304,10 @@ export const DreamCard = memo(function DreamCard({
     >
       {/* The margin reads as three quiet blocks, set flush left: when, what you can do, what the dream is. */}
       <View className="shrink-0 self-stretch border-r border-line pr-2" style={{ width: dateMarginWidth }} testID={testID && `journal.margin.${testID}`}>
-        <View key={`date-${fontScale}`}>
-          <Text allowFontScaling={false} numberOfLines={1} className="text-ivory">
-            <Text style={{ fontSize: 22 * compactTextScale, lineHeight: 28 * compactTextScale }} className="font-sans-medium text-[22px] leading-[28px]">{dateDay}</Text>
-            <Text style={{ fontSize: 12 * compactTextScale, letterSpacing: 1 }} className="font-sans-medium text-[12px] uppercase text-ivory-muted">{` ${dateMonth.replace('.', '')}`}</Text>
-          </Text>
-          {dateYear !== new Date().getFullYear() && (
-            <Text allowFontScaling={false} style={captionStyle} className="font-sans text-[12px] leading-[18px] text-ivory-faint">{dateYear}</Text>
-          )}
+        <View key={`date-${fontScale}`} className="items-center">
+          <Text allowFontScaling={false} style={{ fontSize: 38 * compactTextScale, lineHeight: 42 * compactTextScale }} className="font-sans-medium text-[38px] leading-[42px] text-ivory">{dateDay}</Text>
+          <Text allowFontScaling={false} style={{ fontSize: 13 * compactTextScale, lineHeight: 18 * compactTextScale, letterSpacing: 1.2 }} className="font-sans-medium text-[13px] uppercase leading-[18px] text-ivory-muted">{dateMonth.replace('.', '')}</Text>
+          <Text allowFontScaling={false} style={captionStyle} className="font-sans text-[12px] leading-[18px] text-ivory-faint">{dateYear}</Text>
         </View>
         <View className="my-3 h-px w-11/12 self-center bg-line" />
         <View className="items-center gap-1">
