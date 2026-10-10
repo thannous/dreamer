@@ -29,6 +29,7 @@ import {
 import { getSleepSoundCopy } from '@/lib/sleepSoundCopy';
 import { isSleepSoundsAvailable } from '@/lib/sleepSoundsFeature';
 import { useHeaderScroll } from '@/components/ui/headerStretch';
+import { withHeaderScroll } from '@/components/ui/HeaderScrollScope';
 import {
   getLocalDateKey,
 } from '@/lib/ritualProgressUtils';
@@ -160,7 +161,7 @@ function getLucidTrainerBridgeCopy(language: string) {
   return LUCID_TRAINER_BRIDGE_COPY.en;
 }
 
-export default function RitualDetailScreen() {
+function RitualDetailScreen() {
   // This screen's own scroll, published to its header painting and title.
   const onHeaderScroll = useHeaderScroll();
   const { id } = useLocalSearchParams<{ id: string }>();
@@ -677,3 +678,5 @@ const styles = StyleSheet.create({
     lineHeight: 20,
   },
 });
+
+export default withHeaderScroll(RitualDetailScreen);

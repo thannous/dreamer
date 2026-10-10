@@ -108,6 +108,7 @@ import {
 } from 'react-native';
 import Animated, { useReducedMotion } from 'react-native-reanimated';
 import { useHeaderScroll } from '@/components/ui/headerStretch';
+import { withHeaderScroll } from '@/components/ui/HeaderScrollScope';
 import { useFrameParallax } from '@/components/ui/scrollDepth';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { IconSymbol } from '@/components/ui/icon-symbol';
@@ -241,7 +242,7 @@ function ArrivalReveal({ play, index, className, children }: {
     : <View className={className}>{children}</View>;
 }
 
-export default function JournalDetailScreen() {
+function JournalDetailScreen() {
   const route = useLocalSearchParams<{ id: string; remoteId?: string; clientRequestId?: string }>();
   const { user } = useAuth();
   const { dreams } = useDreamsData();
@@ -3136,3 +3137,6 @@ const JournalDetailContent = memo(function JournalDetailContent({ dream }: { dre
     </View>
   );
 });
+
+// The dream's page draws its own bar over the status bar.
+export default withHeaderScroll(JournalDetailScreen, { veil: false });

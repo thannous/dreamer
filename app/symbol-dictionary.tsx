@@ -20,6 +20,7 @@ import { useTranslation } from "@/hooks/useTranslation";
 import { trackProductEvent } from "@/lib/analytics";
 import { getDreamGuideCopy } from "@/lib/dreamGuideCopy";
 import { useHeaderScroll } from '@/components/ui/headerStretch';
+import { withHeaderScroll } from '@/components/ui/HeaderScrollScope';
 import type {
   DreamSymbol,
   SymbolCategory,
@@ -89,7 +90,7 @@ const ART_TEXT = getNoctaliaDesignTokens(DarkTheme, "dark").text.primary;
 const FULL_ALPHABET = "ABCDEFGHIJKLMNOPQRSTUVWXYZ".split("");
 let trackedOnboardingDictionaryDestination = false;
 
-export default function SymbolDictionaryScreen() {
+function SymbolDictionaryScreen() {
   // This screen's own scroll, published to its header painting and title.
   const onHeaderScroll = useHeaderScroll();
   const { source } = useLocalSearchParams<{ source?: string }>();
@@ -531,3 +532,5 @@ const styles = StyleSheet.create({
   emptyState: { alignItems: "center", paddingHorizontal: 20, paddingVertical: 48, gap: 12 },
   emptyText: { fontFamily: Fonts.spaceGrotesk.regular, fontSize: 15, lineHeight: 22, textAlign: "center" },
 });
+
+export default withHeaderScroll(SymbolDictionaryScreen);

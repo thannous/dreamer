@@ -24,8 +24,9 @@ import {
 import { LinearGradient } from 'expo-linear-gradient';
 import { router, useLocalSearchParams } from 'expo-router';
 import { useHeaderScroll } from '@/components/ui/headerStretch';
+import { withHeaderScroll } from '@/components/ui/HeaderScrollScope';
 
-export default function DreamGuideDetailScreen() {
+function DreamGuideDetailScreen() {
   // This screen's own scroll, published to its header painting and title.
   const onHeaderScroll = useHeaderScroll();
   const { id } = useLocalSearchParams<{ id?: string | string[] }>();
@@ -351,3 +352,5 @@ const styles = StyleSheet.create({
     fontSize: 16,
   },
 });
+
+export default withHeaderScroll(DreamGuideDetailScreen);

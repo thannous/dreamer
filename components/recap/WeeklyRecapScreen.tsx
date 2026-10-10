@@ -20,6 +20,7 @@ import { buildPaywallHref } from '@/lib/paywallRoute';
 import { TID } from '@/lib/testIDs';
 import { buildWeeklyRecap } from '@/lib/weeklyRecap';
 import { useHeaderScroll } from '@/components/ui/headerStretch';
+import { withHeaderScroll } from '@/components/ui/HeaderScrollScope';
 
 /**
  * "Your week in dreams": the Sunday-morning recap opened from the weekly push
@@ -27,7 +28,7 @@ import { useHeaderScroll } from '@/components/ui/headerStretch';
  * recurring emotion stays a Plus signal (same gate as the Statistics screen)
  * and doubles as a contextual entry to the paywall.
  */
-export function WeeklyRecapScreen() {
+function WeeklyRecapContent() {
   // This screen's own scroll, published to its header painting and title.
   const onHeaderScroll = useHeaderScroll();
   const { colors, mode, shadows } = useTheme();
@@ -412,4 +413,5 @@ const styles = StyleSheet.create({
   },
 });
 
+export const WeeklyRecapScreen = withHeaderScroll(WeeklyRecapContent);
 export default WeeklyRecapScreen;

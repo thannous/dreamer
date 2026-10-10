@@ -123,6 +123,7 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { DreamCaptureSeal } from '@/components/journal/story/DreamCaptureSeal';
 import { DREAM_STORY } from '@/components/journal/story/dreamStoryMotion';
 import { useHeaderScroll } from '@/components/ui/headerStretch';
+import { withHeaderScroll } from '@/components/ui/HeaderScrollScope';
 
 const log = createScopedLogger('[Recording]');
 const isMockMode = isMockModeEnabled();
@@ -147,7 +148,7 @@ const trackedOnboardingRecordingDestinations = new Set<string>();
 
 type CaptureIntent = RecordingCaptureIntent;
 
-export default function RecordingScreen() {
+function RecordingScreen() {
   // This screen's own scroll, published to its header painting and title.
   const onHeaderScroll = useHeaderScroll();
   const { dreams } = useDreamsData();
@@ -2162,3 +2163,5 @@ const styles = StyleSheet.create({
     zIndex: 40,
   },
 });
+
+export default withHeaderScroll(RecordingScreen);

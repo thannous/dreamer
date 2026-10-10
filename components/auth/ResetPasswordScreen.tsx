@@ -27,6 +27,7 @@ import { onPasswordRecovery, updatePassword } from '@/lib/auth';
 import { PASSWORD_MIN_LENGTH } from '@/lib/authValidation';
 import { TID } from '@/lib/testIDs';
 import { useHeaderScroll } from '@/components/ui/headerStretch';
+import { withHeaderScroll } from '@/components/ui/HeaderScrollScope';
 
 type Phase = 'checking' | 'ready' | 'success' | 'expired';
 
@@ -463,4 +464,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default ResetPasswordScreen;
+export default withHeaderScroll(ResetPasswordScreen);

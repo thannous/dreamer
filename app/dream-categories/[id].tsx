@@ -25,10 +25,11 @@ import { getDreamImageVersion, withCacheBuster } from '@/lib/imageUtils';
 import { buildPaywallHref } from '@/lib/paywallRoute';
 import { TID } from '@/lib/testIDs';
 import { useHeaderScroll } from '@/components/ui/headerStretch';
+import { withHeaderScroll } from '@/components/ui/HeaderScrollScope';
 
 const CATEGORY_ICONS = { symbols: 'sparkles', emotions: 'heart.fill', growth: 'leaf.fill' } as const;
 
-export default function DreamCategoriesScreen() {
+function DreamCategoriesScreen() {
   // This screen's own scroll, published to its header painting and title.
   const onHeaderScroll = useHeaderScroll();
   const { t } = useTranslation();
@@ -173,3 +174,5 @@ const styles = StyleSheet.create({
   openChat: { flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: 8, minHeight: 44, marginTop: 12 },
   pressed: { opacity: 0.7 },
 });
+
+export default withHeaderScroll(DreamCategoriesScreen);

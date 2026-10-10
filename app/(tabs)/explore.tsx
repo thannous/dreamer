@@ -18,6 +18,7 @@ import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { AccessibilityInfo, AppState, Platform, Pressable, ScrollView, Text, View, useWindowDimensions } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useHeaderScroll } from '@/components/ui/headerStretch';
+import { withHeaderScroll } from '@/components/ui/HeaderScrollScope';
 
 // TalkBack rejects input-focus events while its window transition is unstable.
 // Its WindowEventInterpreter uses 550 ms; leave one small scheduling margin.
@@ -64,7 +65,7 @@ function ExplorerRow({ icon, title, body, testID, onPress, separator = false }: 
   );
 }
 
-export default function ExploreScreen() {
+function ExploreScreen() {
   // This screen's own scroll, published to its header painting and title.
   const onHeaderScroll = useHeaderScroll();
   const openQuickSettings = useQuickSettings();
@@ -269,3 +270,5 @@ export default function ExploreScreen() {
     </View>
   );
 }
+
+export default withHeaderScroll(ExploreScreen);

@@ -63,7 +63,8 @@ import {
   useWindowDimensions,
 } from 'react-native';
 import { IconSymbol } from '@/components/ui/icon-symbol';
-import { headerScrollY, useHeaderScrollFocus } from '@/components/ui/headerStretch';
+import { withHeaderScroll } from '@/components/ui/HeaderScrollScope';
+import { useHeaderScrollY } from '@/components/ui/scrollDepth';
 
 const SCROLL_IDLE_MS = 140;
 const PREFETCH_CACHE_LIMIT = 250;
@@ -103,7 +104,7 @@ const AnimatedDreamList = Platform.OS === 'web'
   ? FlashList<DreamAnalysis>
   : Animated.createAnimatedComponent(FlashList<DreamAnalysis>);
 
-export default function JournalListScreen() {
+function JournalListScreen() {
   const { dreams, completeness, remotePreviewAllowed, loadRemoteDreamForPreview, persistenceState, refreshState, reloadDreams, retryPersistence, toggleFavorite } = useDreams();
   const { colors, mode } = useTheme();
   const openQuickSettings = useQuickSettings();
@@ -153,6 +154,8 @@ export default function JournalListScreen() {
   // A column change remounts the list; keyboard/height changes retain its offset.
   const mobileListKey = isTabletLayout ? 'tablet-2col' : 'mobile-cards-1col';
   const listScrollY = useSharedValue(0);
+  // The journal's own scroll, read by its header, painting and dream cards.
+  const headerScrollY = useHeaderScrollY();
   const staticScrollY = useRef(0);
   const scrollLayout = useRef({ mobileListKey, isDesktopLayout, searchConsumesLayout });
   const searchCollapseStyle = useAnimatedStyle(() => ({
@@ -546,13 +549,7 @@ export default function JournalListScreen() {
   const handleStaticListScroll = useCallback((event: NativeSyntheticEvent<NativeScrollEvent>) => {
     staticScrollY.current = event.nativeEvent.contentOffset.y;
     headerScrollY.set(staticScrollY.current);
-  }, []);
-
-  // Back on the journal, its header reads the journal's own scroll again.
-  useHeaderScrollFocus(useCallback(
-    () => (searchConsumesLayout ? staticScrollY.current : listScrollY.get()),
-    [listScrollY, searchConsumesLayout],
-  ));
+  }, [headerScrollY]);
 
   const handleListScroll = useAnimatedScrollHandler({
     onScroll: (event) => {
@@ -1148,3 +1145,5 @@ export default function JournalListScreen() {
     </ScrollPerfProvider>
   );
 }
+
+export default withHeaderScroll(JournalListScreen);

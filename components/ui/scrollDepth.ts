@@ -1,7 +1,8 @@
-import { useRef } from 'react';
+import { createContext, useContext, useRef } from 'react';
 import { useWindowDimensions, type View } from 'react-native';
 import {
-  Extrapolation, interpolate, makeMutable, measure, useAnimatedRef, useAnimatedStyle, useReducedMotion, type SharedValue,
+  Extrapolation, interpolate, makeMutable, measure, useAnimatedRef, useAnimatedStyle, useReducedMotion,
+  useSharedValue, type SharedValue,
 } from 'react-native-reanimated';
 
 function plainHolder(): SharedValue<number> {
@@ -9,15 +10,33 @@ function plainHolder(): SharedValue<number> {
   return { get: () => current, set: (next: number) => { current = next; } } as unknown as SharedValue<number>;
 }
 
+// Test doubles of Reanimated may omit makeMutable; a plain holder keeps the same API.
+const RESTING_SCROLL: SharedValue<number> = typeof makeMutable === 'function' ? makeMutable(0) : plainHolder();
+
 /**
- * The vertical scroll of the screen in front, shared with its header and painting.
- * Each screen keeps its own offset and publishes it again when it comes back into
- * focus, so a header never reads another screen's scroll.
+ * The vertical scroll of the screen around a header, painting or card. Each screen that
+ * scrolls owns its value (see `withHeaderScroll`); anywhere else it rests at the top, so
+ * a header never fades from another screen's scroll.
  */
-export const headerScrollY: SharedValue<number> = typeof makeMutable === 'function'
-  ? makeMutable(0)
-  // Test doubles of Reanimated may omit makeMutable; a plain holder keeps the same API.
-  : plainHolder();
+export const HeaderScrollContext = createContext<SharedValue<number>>(RESTING_SCROLL);
+
+export function useHeaderScrollY(): SharedValue<number> {
+  return useContext(HeaderScrollContext);
+}
+
+/** True outside any scrolling screen: such a value is never written. */
+export function isRestingScroll(value: SharedValue<number>): boolean {
+  return value === RESTING_SCROLL;
+}
+
+// Test doubles of Reanimated may omit useSharedValue; a plain holder keeps the same API.
+export const useScreenScrollValue: () => SharedValue<number> = typeof useSharedValue === 'function'
+  ? () => useSharedValue(0)
+  : () => {
+      const holder = useRef<SharedValue<number> | null>(null);
+      if (!holder.current) holder.current = plainHolder();
+      return holder.current;
+    };
 
 // Test doubles of Reanimated may omit useAnimatedRef; a plain ref keeps the frame still.
 const useFrameRef: () => ReturnType<typeof useAnimatedRef<View>> = typeof useAnimatedRef === 'function'
@@ -32,11 +51,12 @@ const useFrameRef: () => ReturnType<typeof useAnimatedRef<View>> = typeof useAni
  */
 export function useFrameParallax(travel: number) {
   const frame = useFrameRef();
+  const scrollY = useHeaderScrollY();
   const reduced = useReducedMotion();
   const { height: screen } = useWindowDimensions();
   const style = useAnimatedStyle(() => {
-    // Read to run again on every scroll frame of the screen in front.
-    headerScrollY.get();
+    // Read to run again on every scroll frame of its screen.
+    scrollY.get();
     // Positions are only known on the UI thread; the first pass on the JS thread rests.
     if (reduced || travel <= 0 || !globalThis._WORKLET) return { transform: [{ translateY: 0 }] };
     const box = measure(frame);

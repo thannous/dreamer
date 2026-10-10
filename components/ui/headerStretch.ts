@@ -1,33 +1,19 @@
-import { useFocusEffect, useIsFocused } from 'expo-router';
-import { useCallback, useEffect, useRef } from 'react';
+import { useIsFocused } from 'expo-router';
+import { useCallback } from 'react';
 import type { NativeScrollEvent, NativeSyntheticEvent } from 'react-native';
 import { Extrapolation, interpolate, useAnimatedStyle, useReducedMotion } from 'react-native-reanimated';
 
-import { headerScrollY } from './scrollDepth';
-
-export { headerScrollY };
-
-// Test doubles of expo-router may omit useFocusEffect; mounting is then the only focus.
-const useScreenFocus: (effect: () => void) => void = typeof useFocusEffect === 'function'
-  ? useFocusEffect
-  : (effect) => { useEffect(effect, [effect]); };
-
-/** Publishes a screen's own scroll offset again whenever the screen comes into focus. */
-export function useHeaderScrollFocus(read: () => number): void {
-  useScreenFocus(useCallback(() => { headerScrollY.set(read()); }, [read]));
-}
+import { isRestingScroll, useHeaderScrollY } from './scrollDepth';
 
 /**
- * For a screen's main vertical scroller, with `scrollEventThrottle={16}`: tracks the
- * screen's own offset and publishes it to its header.
+ * For a screen's main vertical scroller, with `scrollEventThrottle={16}`: publishes its
+ * offset to the header, paintings and cards of the screen (wrapped in `withHeaderScroll`).
  */
 export function useHeaderScroll() {
-  const offset = useRef(0);
-  useHeaderScrollFocus(useCallback(() => offset.current, []));
+  const scrollY = useHeaderScrollY();
   return useCallback((event: NativeSyntheticEvent<NativeScrollEvent>) => {
-    offset.current = event.nativeEvent.contentOffset.y;
-    headerScrollY.set(offset.current);
-  }, []);
+    if (!isRestingScroll(scrollY)) scrollY.set(event.nativeEvent.contentOffset.y);
+  }, [scrollY]);
 }
 
 /**
@@ -37,9 +23,10 @@ export function useHeaderScroll() {
  * (its header) already fades. Apply with `transformOrigin: 'top center'`.
  */
 export function useHeaderStretchStyle(height: number, pinned = false, fadeOnScroll = true) {
+  const scrollY = useHeaderScrollY();
   const reduced = useReducedMotion();
   return useAnimatedStyle(() => {
-    const y = headerScrollY.get();
+    const y = scrollY.get();
     const opacity = fadeOnScroll && height > 0
       ? interpolate(y, [0, height * 0.6], [1, 0], Extrapolation.CLAMP)
       : 1;
@@ -52,9 +39,10 @@ export function useHeaderStretchStyle(height: number, pinned = false, fadeOnScro
 
 /** A header fades out as the page scrolls down, over about two thirds of its height. */
 export function useHeaderFadeStyle(height: number) {
+  const scrollY = useHeaderScrollY();
   return useAnimatedStyle(() => ({
     opacity: height > 0
-      ? interpolate(headerScrollY.get(), [0, height * 0.65], [1, 0], Extrapolation.CLAMP)
+      ? interpolate(scrollY.get(), [0, height * 0.65], [1, 0], Extrapolation.CLAMP)
       : 1,
   }));
 }
@@ -66,9 +54,10 @@ export function useHeaderFadeStyle(height: number) {
  * off screen (or already the page's ground), so the frame needs no overhang.
  */
 export function usePaintingDepthStyle(height: number, frame: 'scrolls' | 'fixed' = 'scrolls') {
+  const scrollY = useHeaderScrollY();
   const reduced = useReducedMotion();
   return useAnimatedStyle(() => {
-    const y = headerScrollY.get();
+    const y = scrollY.get();
     if (reduced || y <= 0 || height <= 0) return { transform: [{ translateY: 0 }] };
     const travel = Math.min(y, height);
     return { transform: [{ translateY: frame === 'scrolls' ? travel * 0.45 : -travel * 0.3 }] };

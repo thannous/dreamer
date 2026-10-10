@@ -18,6 +18,7 @@ import { useSleepSoundPlayer } from '@/hooks/useSleepSoundPlayer';
 import { useTranslation } from '@/hooks/useTranslation';
 import { getSleepSoundCopy } from '@/lib/sleepSoundCopy';
 import { useHeaderScroll } from '@/components/ui/headerStretch';
+import { withHeaderScroll } from '@/components/ui/HeaderScrollScope';
 import {
   DEFAULT_SLEEP_SOUND_ID,
   DEFAULT_SLEEP_TIMER_MINUTES,
@@ -68,7 +69,7 @@ function formatRemainingTime(totalSeconds: number): string {
   return `${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
 }
 
-export function SleepSoundsScreen() {
+function SleepSoundsContent() {
   // This screen's own scroll, published to its header painting and title.
   const onHeaderScroll = useHeaderScroll();
   const { colors, mode } = useTheme();
@@ -569,3 +570,5 @@ const styles = StyleSheet.create({
   },
   pressed: { opacity: 0.76 },
 });
+
+export const SleepSoundsScreen = withHeaderScroll(SleepSoundsContent);

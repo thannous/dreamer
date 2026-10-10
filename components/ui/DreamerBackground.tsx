@@ -43,7 +43,7 @@ function PaintingLayer({ height, frame, children }: {
 }
 
 /** A real opening onto the scene: copy lives on the theme's reading surface below it.
- * No paper/night wash covers the painting. Only its last 40 points meet the page.
+ * No paper/night wash covers the painting. Only its last stretch melts into the page.
  */
 export function DreamerArtworkWindow({ scene, style, bleedTop = 0 }: {
   scene: DreamerScene;
@@ -75,8 +75,10 @@ export function DreamerArtworkWindow({ scene, style, bleedTop = 0 }: {
         cachePolicy="memory"
         recyclingKey={artworkKey} onError={() => setFailedArtwork(artworkKey)} style={StyleSheet.absoluteFill} />
     </PaintingLayer>
-    <LinearGradient colors={[`${ground}00`, ground]}
-      style={{ position: 'absolute', bottom: 0, left: 0, right: 0, height: 40 }} />
+    {/* Eased over about 120 points: the scene thins into the page instead of stopping at a line. */}
+    <LinearGradient colors={[`${ground}00`, `${ground}33`, `${ground}8C`, `${ground}D9`, ground]}
+      locations={[0, 0.3, 0.6, 0.85, 1]}
+      style={{ position: 'absolute', bottom: 0, left: 0, right: 0, height: Math.min(120, paintingHeight * 0.6) }} />
   </Animated.View>;
 }
 

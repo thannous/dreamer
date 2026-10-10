@@ -18,8 +18,9 @@ import { getAllSymbols } from '@/services/symbolDictionaryService';
 import { router } from 'expo-router';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useHeaderScroll } from '@/components/ui/headerStretch';
+import { withHeaderScroll } from '@/components/ui/HeaderScrollScope';
 
-export default function DreamGuidesScreen() {
+function DreamGuidesScreen() {
   // This screen's own scroll, published to its header painting and title.
   const onHeaderScroll = useHeaderScroll();
   const { colors, mode } = useTheme();
@@ -248,3 +249,5 @@ const styles = StyleSheet.create({
     opacity: 0.82,
   },
 });
+
+export default withHeaderScroll(DreamGuidesScreen);

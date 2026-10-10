@@ -47,8 +47,10 @@ interface DreamCardProps {
 /** Expo media components keep their geometry as native props. */
 const CARD_IMAGE_STYLE = { position: 'absolute', top: 0, left: 0, width: '100%', height: '100%' } as const;
 const COVER_FRAME_STYLE = { position: 'absolute', top: 0, right: 0, bottom: 0, left: 0 } as const;
-const SCRIM_FADE_STYLE = { height: 120, width: '100%' } as const;
-const SCRIM_FADE_LOCATIONS = [0, 0.25, 0.55, 1] as const;
+const SCRIM_FADE_STYLE = { height: 180, width: '100%' } as const;
+// A sine-like ease out of the reading backing: no step where a bright illustration begins.
+const SCRIM_FADE_LOCATIONS = [0, 0.12, 0.3, 0.5, 0.7, 0.86, 1] as const;
+const SCRIM_FADE_STRENGTH = [1, 0.92, 0.75, 0.52, 0.3, 0.13, 0] as const;
 // Margin icons, one per line, each with a 44 pt touch target around its glyph.
 const MARGIN_ACTION_STYLE = { width: 44, height: 44, alignItems: 'center', justifyContent: 'center' } as const;
 const CARD_IMAGE_PLACEHOLDER = { blurhash: 'L6PZfSi_.AyE_3t7t7R**0o#DgR4' };
@@ -145,8 +147,9 @@ export const DreamCard = memo(function DreamCard({
   const coverParallax = useFrameParallax(coverTravel);
   // The scrim's own colour at decreasing strength, so the fade eases into the illustration.
   const scrimFade = useMemo(() => {
-    const at = (alpha: number) => noctalia.illustration.scrim.replace(/[\d.]+\)$/, `${alpha})`);
-    return [noctalia.illustration.scrim, at(0.55), at(0.2), noctalia.illustration.transparent] as const;
+    const base = Number(/([\d.]+)\)$/.exec(noctalia.illustration.scrim)?.[1] ?? 1);
+    const at = (alpha: number) => noctalia.illustration.scrim.replace(/[\d.]+\)$/, `${+(alpha).toFixed(3)})`);
+    return SCRIM_FADE_STRENGTH.map((strength) => at(base * strength)) as unknown as readonly [string, string, ...string[]];
   }, [noctalia]);
   // The whole dream can be read in place; the arrow shows only when three lines cut it.
   const [expanded, setExpanded] = useState(false);
