@@ -1,7 +1,7 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { act, fireEvent, render, screen, waitFor, within } from '@testing-library/react-native-legacy';
 import React from 'react';
-import { ScrollView, StyleSheet, useWindowDimensions } from 'react-native';
+import { useWindowDimensions } from 'react-native';
 
 import HomeTab from '@/app/(drawer)/(tabs)/index';
 import { ACTIVE_JOURNEY_CTA_TEST_ID } from '@/components/journey/WorldJourneyPicker';
@@ -359,9 +359,10 @@ describe('immersive home journey', () => {
     expect(cta).toHaveTextContent(/^Begin$/);
     expect(cta).not.toHaveTextContent(/Begin the journey/i);
     expect(screen.getByRole('button', { name: /Begin the journey/i })).toBe(cta);
-    const activeWorld = within(screen.getByRole('radio', { name: 'Constellation' }));
-    expect(activeWorld.getByText('Enter the night').props.numberOfLines).toBeUndefined();
-    expect(activeWorld.getByText('Before sleep').props.numberOfLines).toBeUndefined();
+    const hero = within(screen.getByTestId('home.world.hero'));
+    expect(hero.getByTestId('home.world.name').props.numberOfLines).toBeUndefined();
+    expect(hero.getByText('Enter the night').props.numberOfLines).toBeUndefined();
+    expect(hero.getByText('Before sleep').props.numberOfLines).toBeUndefined();
     expect(screen.getByTestId('home.world-switcher.tide.locked')).toBeTruthy();
     expect(screen.queryByTestId('home.world-switcher.tide.owned')).toBeNull();
     expect(screen.getByTestId('home.journey.ritual-access')).toHaveTextContent('Free');
@@ -380,39 +381,26 @@ describe('immersive home journey', () => {
     expect(useWindowDimensions().fontScale).toBe(2);
   });
 
-  it('reveals the hydrated initial world once without recentering later choices', async () => {
-    const scrollTo = jest.spyOn(ScrollView.prototype, 'scrollTo').mockImplementation(() => {});
-    try {
-      await AsyncStorage.setItem(StorageKey.world, JSON.stringify('forest'));
+  it('names the hydrated world in the hero, then follows a new choice', async () => {
+    await AsyncStorage.setItem(StorageKey.world, JSON.stringify('forest'));
 
-      renderHome();
+    renderHome();
 
-      await waitFor(() =>
-        expect(
-          screen.getByRole('radio', { name: 'Inner forest' }).props.accessibilityState
-        ).toMatchObject({ checked: true })
-      );
-      await waitFor(() => expect(scrollTo).toHaveBeenCalledTimes(1));
-      const cardWidth = StyleSheet.flatten(
-        screen.getByTestId('home.world-switcher.forest').props.style
-      ).width;
-      expect(scrollTo).toHaveBeenCalledWith({
-        x: 2 * (cardWidth + 12),
-        y: 0,
-        animated: false,
-      });
+    await waitFor(() =>
+      expect(
+        screen.getByRole('radio', { name: 'Inner forest' }).props.accessibilityState
+      ).toMatchObject({ checked: true })
+    );
+    expect(screen.getByTestId('home.world.name')).toHaveTextContent('Inner forest');
 
-      fireEvent.press(screen.getByRole('radio', { name: 'Inner dawn' }));
+    fireEvent.press(screen.getByRole('radio', { name: 'Inner dawn' }));
 
-      await waitFor(() =>
-        expect(
-          screen.getByRole('radio', { name: 'Inner dawn' }).props.accessibilityState
-        ).toMatchObject({ checked: true })
-      );
-      expect(scrollTo).toHaveBeenCalledTimes(1);
-    } finally {
-      scrollTo.mockRestore();
-    }
+    await waitFor(() =>
+      expect(
+        screen.getByRole('radio', { name: 'Inner dawn' }).props.accessibilityState
+      ).toMatchObject({ checked: true })
+    );
+    expect(screen.getByTestId('home.world.name')).toHaveTextContent('Inner dawn');
   });
 
   it('keeps world choice semantic and the session action outside the radio card', async () => {
@@ -430,8 +418,10 @@ describe('immersive home journey', () => {
     expect(hiddenSessionTitle).toBeTruthy();
     expect(active.queryByText(hiddenSessionTitle)).toBeNull();
     expect(active.queryByTestId(ACTIVE_JOURNEY_CTA_TEST_ID)).toBeNull();
-    expect(active.getByText('Enter the night')).toBeTruthy();
-    expect(active.getByText('Before sleep')).toBeTruthy();
+    const hero = within(screen.getByTestId('home.world.hero'));
+    expect(active.queryByText('Enter the night')).toBeNull();
+    expect(hero.getByText('Enter the night')).toBeTruthy();
+    expect(hero.getByText('Before sleep')).toBeTruthy();
     expect(cta).toHaveTextContent(/^Begin$/);
     expect(accessibilityLabel).toMatch(/^Begin the journey\./);
     expect(active.queryByText('Plus')).toBeNull();
@@ -520,8 +510,8 @@ describe('immersive home journey', () => {
     renderHome();
 
     const tide = await screen.findByRole('radio', { name: 'Deep tide' });
-    expect(screen.getByTestId('home.world-switcher.tide.owned')).toHaveTextContent('This world is yours');
     expect(screen.queryByTestId('home.world-switcher.tide.locked')).toBeNull();
+    expect(screen.queryByTestId('home.world.owned')).toBeNull();
     expect(tide.props.accessibilityHint).toMatch(/This world is yours/);
     expect(tide.props.accessibilityHint).not.toMatch(/One-time purchase/);
     fireEvent.press(tide);
@@ -531,6 +521,7 @@ describe('immersive home journey', () => {
         checked: true,
       })
     );
+    expect(screen.getByTestId('home.world.owned')).toHaveTextContent('This world is yours');
     expect(screen.queryByText('Plus')).toBeNull();
     expect(screen.getByTestId('home.journey.ritual-access')).toHaveTextContent('Free');
     expect(screen.getByTestId('home.journey.ritual-access')).not.toHaveTextContent('Plus');

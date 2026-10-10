@@ -9,6 +9,7 @@ import {
 export type TextVariant =
   | 'display'
   | 'hero'
+  | 'saga'
   | 'h1'
   | 'h2'
   | 'h3'
@@ -33,6 +34,7 @@ export type TextTone = 'default' | 'muted' | 'faint' | 'accent' | 'onAccent' | '
 const VARIANT: Record<TextVariant, string> = {
   display: 'font-display text-display',
   hero: 'font-display-light text-hero',
+  saga: 'font-display-light text-saga',
   h1: 'font-display text-h1',
   h2: 'font-display text-h2',
   h3: 'font-medium text-h3',
@@ -53,6 +55,7 @@ const VARIANT: Record<TextVariant, string> = {
 const LINE_HEIGHT: Record<TextVariant, number> = {
   display: 40,
   hero: 46,
+  saga: 56,
   h1: 34,
   h2: 28,
   h3: 24,
@@ -78,6 +81,7 @@ const TONE: Record<TextTone, string> = {
 const DEFAULT_TONE: Record<TextVariant, TextTone> = {
   display: 'default',
   hero: 'default',
+  saga: 'default',
   h1: 'default',
   h2: 'default',
   h3: 'default',
