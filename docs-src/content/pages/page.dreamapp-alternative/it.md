@@ -23,13 +23,13 @@
   "twitterImage": "https://noctalia.app/img/og/noctalia-en-1200x630.jpg",
   "twitterImageAlt": "Noctalia dream journal app",
   "publishedTime": "2026-05-20T00:00:00+02:00",
-  "modifiedTime": "2026-07-09T00:00:00+02:00",
+  "modifiedTime": "2026-10-10T00:00:00+02:00",
   "author": "Thanh Chau",
   "prevPath": "",
   "nextPath": "",
   "preloadImage": "",
   "jsonLd": [
-    "{\n  \"@context\": \"https://schema.org\",\n  \"@type\": \"WebPage\",\n  \"name\": \"Alternativa a DreamApp per diario dei sogni\",\n  \"description\": \"Confronta DreamApp e Noctalia per interpretazione dei sogni, voce, prezzo, Android, privacy e scelta del diario più adatto.\",\n  \"url\": \"https://noctalia.app/it/alternativa-dreamapp\",\n  \"inLanguage\": \"it\",\n  \"dateModified\": \"2026-07-09T00:00:00+02:00\",\n  \"publisher\": {\n    \"@id\": \"https://noctalia.app/#organization\"\n  }\n}",
+    "{\n  \"@context\": \"https://schema.org\",\n  \"@type\": \"WebPage\",\n  \"name\": \"Alternativa a DreamApp per diario dei sogni\",\n  \"description\": \"Confronta DreamApp e Noctalia per interpretazione dei sogni, voce, prezzo, Android, privacy e scelta del diario più adatto.\",\n  \"url\": \"https://noctalia.app/it/alternativa-dreamapp\",\n  \"inLanguage\": \"it\",\n  \"dateModified\": \"2026-10-10T00:00:00+02:00\",\n  \"publisher\": {\n    \"@id\": \"https://noctalia.app/#organization\"\n  }\n}",
     "{\n  \"@context\": \"https://schema.org\",\n  \"@type\": \"BreadcrumbList\",\n  \"itemListElement\": [\n    {\n      \"@type\": \"ListItem\",\n      \"position\": 1,\n      \"name\": \"Home\",\n      \"item\": \"https://noctalia.app/it/\"\n    },\n    {\n      \"@type\": \"ListItem\",\n      \"position\": 2,\n      \"name\": \"Alternativa a DreamApp per diario dei sogni\",\n      \"item\": \"https://noctalia.app/it/alternativa-dreamapp\"\n    }\n  ]\n}",
     "{\n  \"@context\": \"https://schema.org\",\n  \"@type\": \"FAQPage\",\n  \"mainEntity\": [\n    {\n      \"@type\": \"Question\",\n      \"name\": \"Scegli DreamApp se\",\n      \"acceptedAnswer\": {\n        \"@type\": \"Answer\",\n        \"text\": \"Scegli DreamApp se vuoi un’app generalista molto conosciuta, con versione iOS e approccio terapeutico.\"\n      }\n    },\n    {\n      \"@type\": \"Question\",\n      \"name\": \"Scegli Noctalia se\",\n      \"acceptedAnswer\": {\n        \"@type\": \"Answer\",\n        \"text\": \"Scegli Noctalia se dimentichi i sogni prima di scriverli e vuoi dettarli su Android, conservarli come schede visuali, esplorarli con domande guidate e sapere chiaramente chi tratta i tuoi dati.\"\n      }\n    }\n  ]\n}"
   ],
@@ -37,8 +37,8 @@
 }
 ---
 <h1 class="font-serif text-4xl md:text-5xl mb-4 text-dream-cream">Alternativa a DreamApp per diario dei sogni Android</h1>
-<p class="text-sm text-purple-300/70 mb-6">Aggiornato il 20 maggio 2026</p>
-<p class="text-lg text-purple-200/80 leading-relaxed mb-10">DreamApp è una grande app per interpretare i sogni, molto diffusa. Noctalia è un’alternativa più mirata per Android: detti il sogno appena sveglio, riceve un’immagine e l’interpretazione resta uno spunto su cui riflettere, non un verdetto. La sua informativa sulla privacy indica anche chiaramente chi tratta i tuoi dati.</p>
+<p class="text-sm text-purple-300/70 mb-6">Aggiornato il 10 ottobre 2026</p>
+<p class="text-lg text-purple-200/80 leading-relaxed mb-10">DreamApp è una grande app per interpretare i sogni, molto diffusa. Noctalia è un’alternativa più mirata per Android: detti il sogno appena sveglio, chiedi un’immagine se vuoi e l’interpretazione resta uno spunto su cui riflettere, non un verdetto. La sua informativa sulla privacy indica anche chiaramente chi tratta i tuoi dati.</p>
 
 <div class="space-y-8 text-gray-300 leading-relaxed">
   <section class="glass-panel p-8 rounded-2xl border border-white/10 bg-white/5">
@@ -55,7 +55,7 @@
         <tbody class="divide-y divide-white/10">
           <tr><td class="py-4 pr-4 text-white font-medium">Cattura al risveglio</td><td class="py-4 pr-4 ">Le schede pubbliche enfatizzano racconto, analisi IA, temi e cornice terapeutica.</td><td class="py-4 pr-4 ">La voce è il flusso principale, con testo come alternativa.</td><td class="py-4 pr-4 ">Noctalia se scrivere al risveglio fa perdere dettagli.</td></tr>
           <tr><td class="py-4 pr-4 text-white font-medium">Interpretazione</td><td class="py-4 pr-4 ">Punta sul significato dei sogni, con l’avvertenza che i significati non sono universali.</td><td class="py-4 pr-4 ">Analisi riflessiva, simboli ricorrenti e domande in riflessione guidata.</td><td class="py-4 pr-4 ">Entrambe interpretano. Noctalia offre spunti e un seguito nel tempo, non certezze.</td></tr>
-          <tr><td class="py-4 pr-4 text-white font-medium">Memoria visuale</td><td class="py-4 pr-4 ">Cita funzioni visuali, ma non sono ciò che mette più in evidenza.</td><td class="py-4 pr-4 ">Le immagini generate sono una parte centrale del diario.</td><td class="py-4 pr-4 ">Noctalia dà più peso al diario illustrato.</td></tr>
+          <tr><td class="py-4 pr-4 text-white font-medium">Memoria visuale</td><td class="py-4 pr-4 ">Cita funzioni visuali, ma non sono ciò che mette più in evidenza.</td><td class="py-4 pr-4 ">Le immagini generate su richiesta sono una parte centrale del diario.</td><td class="py-4 pr-4 ">Noctalia dà più peso al diario illustrato.</td></tr>
           <tr><td class="py-4 pr-4 text-white font-medium">Privacy</td><td class="py-4 pr-4 ">Google Play indica categorie di dati condivisi o raccolti.</td><td class="py-4 pr-4 ">Noctalia spiega hosting UE, audio, provider IA, RevenueCat, nessuna vendita dati e nessuna pubblicità mirata.</td><td class="py-4 pr-4 ">Noctalia non promette una privacy assoluta, ma spiegazioni chiare.</td></tr>
           <tr><td class="py-4 pr-4 text-white font-medium">Prezzo con fonte</td><td class="py-4 pr-4 ">Download gratuito con acquisti in-app; catalogo completo non pubblico su Google Play.</td><td class="py-4 pr-4 ">Piano gratuito più Noctalia Plus; Google Play mostra il prezzo applicabile prima dell’acquisto.</td><td class="py-4 pr-4 ">Confronta i prezzi che lo store mostra all’acquisto, non un generico «più economico».</td></tr>
           <tr><td class="py-4 pr-4 text-white font-medium">Piattaforma</td><td class="py-4 pr-4 ">Android e iOS con grande visibilità pubblica.</td><td class="py-4 pr-4 ">Android e risorse web oggi.</td><td class="py-4 pr-4 ">DreamApp se serve iOS; Noctalia per Android al risveglio.</td></tr>
@@ -123,7 +123,7 @@
 
   <section class="glass-panel p-8 rounded-2xl border border-dream-salmon/20 bg-dream-salmon/5">
     <h2 class="text-2xl font-serif text-white mb-4">Prova Noctalia</h2>
-    <p>Su Android, detta il tuo sogno al risveglio. Noctalia lo conserva, lo illustra e ti aiuta a seguire i simboli che ritornano.</p>
+    <p>Su Android, detta il tuo sogno al risveglio. Noctalia lo conserva, lo illustra se lo chiedi e ti aiuta a seguire i simboli che ritornano.</p>
     <p class="mt-4"><a href="https://play.google.com/store/apps/details?id=com.tanuki75.noctalia&hl=en" class="text-dream-salmon hover:underline" rel="nofollow noopener noreferrer" target="_blank">Registra il tuo prossimo sogno con Noctalia</a></p>
   </section>
 </div>

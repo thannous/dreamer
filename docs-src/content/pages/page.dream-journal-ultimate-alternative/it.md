@@ -23,13 +23,13 @@
   "twitterImage": "https://noctalia.app/img/og/noctalia-it-1200x630.jpg",
   "twitterImageAlt": "App diario dei sogni Noctalia",
   "publishedTime": "2026-08-09T00:00:00+02:00",
-  "modifiedTime": "2026-08-09T00:00:00+02:00",
+  "modifiedTime": "2026-10-10T00:00:00+02:00",
   "author": "Thanh Chau",
   "prevPath": "",
   "nextPath": "",
   "preloadImage": "",
   "jsonLd": [
-    "{\"@context\":\"https://schema.org\",\"@type\":\"WebPage\",\"name\":\"Alternativa a Dream Journal Ultimate per Android\",\"description\":\"Confronta Dream Journal Ultimate e Noctalia: voce, riflessione IA, sogni lucidi, community, Android e privacy.\",\"url\":\"https://noctalia.app/it/alternativa-dream-journal-ultimate\",\"inLanguage\":\"it\",\"dateModified\":\"2026-08-09T00:00:00+02:00\",\"publisher\":{\"@id\":\"https://noctalia.app/#organization\"}}",
+    "{\"@context\":\"https://schema.org\",\"@type\":\"WebPage\",\"name\":\"Alternativa a Dream Journal Ultimate per Android\",\"description\":\"Confronta Dream Journal Ultimate e Noctalia: voce, riflessione IA, sogni lucidi, community, Android e privacy.\",\"url\":\"https://noctalia.app/it/alternativa-dream-journal-ultimate\",\"inLanguage\":\"it\",\"dateModified\":\"2026-10-10T00:00:00+02:00\",\"publisher\":{\"@id\":\"https://noctalia.app/#organization\"}}",
     "{\"@context\":\"https://schema.org\",\"@type\":\"BreadcrumbList\",\"itemListElement\":[{\"@type\":\"ListItem\",\"position\":1,\"name\":\"Home\",\"item\":\"https://noctalia.app/it/\"},{\"@type\":\"ListItem\",\"position\":2,\"name\":\"Alternativa a Dream Journal Ultimate\",\"item\":\"https://noctalia.app/it/alternativa-dream-journal-ultimate\"}]}",
     "{\"@context\":\"https://schema.org\",\"@type\":\"FAQPage\",\"mainEntity\":[{\"@type\":\"Question\",\"name\":\"Scegli Dream Journal Ultimate se\",\"acceptedAnswer\":{\"@type\":\"Answer\",\"text\":\"Vuoi iOS, una community pubblica facoltativa, sogni simili, un dizionario ampio o allenamento lucido strutturato.\"}},{\"@type\":\"Question\",\"name\":\"Scegli Noctalia se\",\"acceptedAnswer\":{\"@type\":\"Answer\",\"text\":\"Usi Android e vuoi voce rapida, schede visive, simboli ricorrenti e riflessione privata senza feed sociale.\"}}]}"
   ],
@@ -110,7 +110,7 @@
 
   <section class="glass-panel p-8 rounded-2xl border border-dream-salmon/20 bg-dream-salmon/5">
     <h2 class="text-2xl font-serif text-white mb-4">Prova Noctalia su Android</h2>
-    <p>Detta il tuo sogno appena ti svegli, conservane un’immagine e continua a rifletterci in privato con domande guidate.</p>
+    <p>Detta il tuo sogno appena ti svegli, chiedine un’immagine e continua a rifletterci in privato con domande guidate.</p>
     <p class="mt-4"><a href="https://play.google.com/store/apps/details?id=com.tanuki75.noctalia&amp;hl=it" class="text-dream-salmon hover:underline" rel="nofollow noopener noreferrer" target="_blank">Apri Noctalia su Google Play</a></p>
   </section>
 </div>

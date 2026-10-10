@@ -23,13 +23,13 @@
   "twitterImage": "https://noctalia.app/img/og/noctalia-it-1200x630.jpg",
   "twitterImageAlt": "Diario dei sogni vocale Noctalia",
   "publishedTime": "2026-06-04T00:00:00+02:00",
-  "modifiedTime": "2026-07-09T00:00:00+02:00",
+  "modifiedTime": "2026-10-10T00:00:00+02:00",
   "author": "Thanh Chau",
   "prevPath": "",
   "nextPath": "",
   "preloadImage": "",
   "jsonLd": [
-    "{\"@context\":\"https://schema.org\",\"@type\":\"WebPage\",\"name\":\"Diario dei sogni vocale Android\",\"description\":\"Registra un sogno a voce su Android prima che svanisca e conserva una voce ricercabile con testo, umore, simboli e riflessione guidata.\",\"url\":\"https://noctalia.app/it/diario-dei-sogni-vocale\",\"inLanguage\":\"it\",\"dateModified\":\"2026-07-09T00:00:00+02:00\",\"about\":{\"@id\":\"https://noctalia.app/#software\"},\"publisher\":{\"@id\":\"https://noctalia.app/#organization\"}}",
+    "{\"@context\":\"https://schema.org\",\"@type\":\"WebPage\",\"name\":\"Diario dei sogni vocale Android\",\"description\":\"Registra un sogno a voce su Android prima che svanisca e conserva una voce ricercabile con testo, umore, simboli e riflessione guidata.\",\"url\":\"https://noctalia.app/it/diario-dei-sogni-vocale\",\"inLanguage\":\"it\",\"dateModified\":\"2026-10-10T00:00:00+02:00\",\"about\":{\"@id\":\"https://noctalia.app/#software\"},\"publisher\":{\"@id\":\"https://noctalia.app/#organization\"}}",
     "{\"@context\":\"https://schema.org\",\"@type\":\"BreadcrumbList\",\"itemListElement\":[{\"@type\":\"ListItem\",\"position\":1,\"name\":\"Home\",\"item\":\"https://noctalia.app/it/\"},{\"@type\":\"ListItem\",\"position\":2,\"name\":\"Diario dei sogni vocale Android\",\"item\":\"https://noctalia.app/it/diario-dei-sogni-vocale\"}]} ",
     "{\"@context\":\"https://schema.org\",\"@type\":\"FAQPage\",\"mainEntity\":[{\"@type\":\"Question\",\"name\":\"Posso registrare un sogno a voce in Noctalia?\",\"acceptedAnswer\":{\"@type\":\"Answer\",\"text\":\"Sì. Su Android puoi raccontare il sogno poco dopo il risveglio e salvare la trascrizione come voce del diario.\"}},{\"@type\":\"Question\",\"name\":\"Posso scrivere invece di parlare?\",\"acceptedAnswer\":{\"@type\":\"Answer\",\"text\":\"Sì. La voce è utile quando i dettagli svaniscono, ma Noctalia supporta anche voci scritte per correggere o completare il racconto.\"}},{\"@type\":\"Question\",\"name\":\"Che cosa succede alla registrazione audio?\",\"acceptedAnswer\":{\"@type\":\"Answer\",\"text\":\"Secondo l'informativa sulla privacy, l'audio viene usato per la trascrizione, non è conservato in modo permanente da Noctalia e il testo trascritto viene salvato nel diario.\"}},{\"@type\":\"Question\",\"name\":\"Noctalia offre diagnosi o previsioni?\",\"acceptedAnswer\":{\"@type\":\"Answer\",\"text\":\"No. Noctalia serve a registrare ed esplorare i sogni. L'app non fornisce consigli medici, diagnosi psicologiche o previsioni.\"}}]}"
   ],
@@ -37,7 +37,7 @@
 }
 ---
 <h1 class="font-serif text-4xl md:text-5xl mb-4 text-dream-cream">Diario dei sogni vocale Android</h1>
-<p class="text-sm text-purple-300/70 mb-6">Aggiornato il 9 luglio 2026</p>
+<p class="text-sm text-purple-300/70 mb-6">Aggiornato il 10 ottobre 2026</p>
 <p class="text-lg text-purple-200/80 leading-relaxed mb-10">Un sogno può perdere dettagli mentre cerchi le parole giuste. Con Noctalia su Android racconti prima ciò che ricordi e conservi la trascrizione come voce ricercabile. L'analisi (umore, simboli, domande di riflessione) e l'immagine arrivano dopo, se le chiedi.</p>
 
 <div class="space-y-8 text-gray-300 leading-relaxed">

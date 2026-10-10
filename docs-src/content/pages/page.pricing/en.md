@@ -23,13 +23,13 @@
   "twitterImage": "https://noctalia.app/img/og/noctalia-en-1200x630.jpg",
   "twitterImageAlt": "Noctalia dream journal plans and pricing",
   "publishedTime": "2026-07-31T00:00:00+02:00",
-  "modifiedTime": "2026-07-31T00:00:00+02:00",
+  "modifiedTime": "2026-10-10T00:00:00+02:00",
   "author": "Thanh Chau",
   "prevPath": "",
   "nextPath": "",
   "preloadImage": "",
   "jsonLd": [
-    "{\"@context\":\"https://schema.org\",\"@type\":\"WebPage\",\"name\":\"Noctalia plans and pricing\",\"description\":\"Compare Noctalia's free Dreamer plan and optional Noctalia Plus subscription. Google Play shows the current price and billing options before purchase.\",\"url\":\"https://noctalia.app/en/pricing\",\"inLanguage\":\"en\",\"datePublished\":\"2026-07-31T00:00:00+02:00\",\"dateModified\":\"2026-07-31T00:00:00+02:00\"}",
+    "{\"@context\":\"https://schema.org\",\"@type\":\"WebPage\",\"name\":\"Noctalia plans and pricing\",\"description\":\"Compare Noctalia's free Dreamer plan and optional Noctalia Plus subscription. Google Play shows the current price and billing options before purchase.\",\"url\":\"https://noctalia.app/en/pricing\",\"inLanguage\":\"en\",\"datePublished\":\"2026-07-31T00:00:00+02:00\",\"dateModified\":\"2026-10-10T00:00:00+02:00\"}",
     "{\"@context\":\"https://schema.org\",\"@type\":\"BreadcrumbList\",\"itemListElement\":[{\"@type\":\"ListItem\",\"position\":1,\"name\":\"Home\",\"item\":\"https://noctalia.app/\"},{\"@type\":\"ListItem\",\"position\":2,\"name\":\"Pricing\",\"item\":\"https://noctalia.app/en/pricing\"}]}",
     "{\"@context\":\"https://schema.org\",\"@type\":\"MobileApplication\",\"name\":\"Noctalia\",\"operatingSystem\":\"Android\",\"applicationCategory\":\"LifestyleApplication\",\"downloadUrl\":\"https://play.google.com/store/apps/details?id=com.tanuki75.noctalia\",\"offers\":{\"@type\":\"Offer\",\"price\":\"0\",\"priceCurrency\":\"EUR\",\"url\":\"https://play.google.com/store/apps/details?id=com.tanuki75.noctalia\",\"description\":\"Free installation with optional Noctalia Plus purchases shown by Google Play.\"}}",
     "{\"@context\":\"https://schema.org\",\"@type\":\"FAQPage\",\"mainEntity\":[{\"@type\":\"Question\",\"name\":\"Is Noctalia free to use?\",\"acceptedAnswer\":{\"@type\":\"Answer\",\"text\":\"Yes. The Dreamer plan includes unlimited dream recordings, three dream analyses per month (each with an image), guided explorations with no monthly limit, up to 10 follow-up messages per analyzed dream and a saved dream journal.\"}},{\"@type\":\"Question\",\"name\":\"How much does Noctalia Plus cost?\",\"acceptedAnswer\":{\"@type\":\"Answer\",\"text\":\"Open the Google Play listing or the in-app subscription screen to see the current price, billing period, taxes, eligibility and any promotion for your country and account before you purchase.\"}},{\"@type\":\"Question\",\"name\":\"Are monthly and annual subscriptions available?\",\"acceptedAnswer\":{\"@type\":\"Answer\",\"text\":\"Monthly and annual options may be available. Google Play shows the options currently offered to your country and account, so availability can vary.\"}},{\"@type\":\"Question\",\"name\":\"Where can I manage or cancel a subscription?\",\"acceptedAnswer\":{\"@type\":\"Answer\",\"text\":\"Noctalia Plus is billed through Google Play. You can manage or cancel it from the subscriptions section of the Google Play account used for the purchase.\"}}]}"
@@ -38,7 +38,7 @@
 }
 ---
 <h1 class="font-serif text-4xl md:text-5xl mb-4 text-dream-cream">Noctalia plans and pricing</h1>
-<p class="text-sm text-purple-300/70 mb-6">Updated July 31, 2026</p>
+<p class="text-sm text-purple-300/70 mb-6">Updated October 10, 2026</p>
 <p class="text-lg text-purple-200/80 leading-relaxed mb-10">Start with the free Dreamer plan and upgrade only if you want more guided reflection. Noctalia is free to install on Android. Price, taxes, billing period, eligibility and promotions depend on your country and account, so Google Play is where you see the amount you will actually pay.</p>
 
 <div class="space-y-8 text-gray-300 leading-relaxed">

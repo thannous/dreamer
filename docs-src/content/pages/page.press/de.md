@@ -23,7 +23,7 @@
   "twitterImage": "https://noctalia.app/img/og/noctalia-de-1200x630.jpg",
   "twitterImageAlt": "Noctalia KI-Traumtagebuch App",
   "publishedTime": "2026-05-09T00:00:00+02:00",
-  "modifiedTime": "2026-07-31T00:00:00+02:00",
+  "modifiedTime": "2026-10-10T00:00:00+02:00",
   "author": "Thanh Chau",
   "prevPath": "",
   "nextPath": "",
@@ -35,7 +35,7 @@
 }
 ---
 <h1 class="font-serif text-4xl md:text-5xl mb-6 text-dream-cream">Noctalia Pressekit</h1>
-<p class="text-sm text-purple-300/70 mb-6">Aktualisiert am 4. August 2026</p>
+<p class="text-sm text-purple-300/70 mb-6">Aktualisiert am 10. Oktober 2026</p>
 <p class="text-lg text-purple-200/80 leading-relaxed mb-10">Noctalia ist ein Traumtagebuch für Android. Man erzählt seinen Traum laut, die App macht daraus einen strukturierten Eintrag, danach lassen sich Symbole, Bilder, Muster und geführte Nachfragen erkunden.</p>
 
 <div class="space-y-8 text-gray-300 leading-relaxed">

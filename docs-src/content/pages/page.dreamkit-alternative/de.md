@@ -23,13 +23,13 @@
   "twitterImage": "https://noctalia.app/img/og/noctalia-de-1200x630.jpg",
   "twitterImageAlt": "Noctalia Traumtagebuch-App",
   "publishedTime": "2026-08-09T00:00:00+02:00",
-  "modifiedTime": "2026-08-09T00:00:00+02:00",
+  "modifiedTime": "2026-10-10T00:00:00+02:00",
   "author": "Thanh Chau",
   "prevPath": "",
   "nextPath": "",
   "preloadImage": "",
   "jsonLd": [
-    "{\"@context\":\"https://schema.org\",\"@type\":\"WebPage\",\"name\":\"DreamKit-Alternative nach der Store-Entfernung\",\"description\":\"Vergleiche das frühere DreamKit-Tagebuch mit Noctalia, nachdem der Android-Eintrag 404 liefert und die frühere iOS-Kennung zu Arcana gehört.\",\"url\":\"https://noctalia.app/de/dreamkit-alternative\",\"inLanguage\":\"de\",\"dateModified\":\"2026-08-09T00:00:00+02:00\",\"publisher\":{\"@id\":\"https://noctalia.app/#organization\"}}",
+    "{\"@context\":\"https://schema.org\",\"@type\":\"WebPage\",\"name\":\"DreamKit-Alternative nach der Store-Entfernung\",\"description\":\"Vergleiche das frühere DreamKit-Tagebuch mit Noctalia, nachdem der Android-Eintrag 404 liefert und die frühere iOS-Kennung zu Arcana gehört.\",\"url\":\"https://noctalia.app/de/dreamkit-alternative\",\"inLanguage\":\"de\",\"dateModified\":\"2026-10-10T00:00:00+02:00\",\"publisher\":{\"@id\":\"https://noctalia.app/#organization\"}}",
     "{\"@context\":\"https://schema.org\",\"@type\":\"BreadcrumbList\",\"itemListElement\":[{\"@type\":\"ListItem\",\"position\":1,\"name\":\"Startseite\",\"item\":\"https://noctalia.app/de/\"},{\"@type\":\"ListItem\",\"position\":2,\"name\":\"DreamKit-Alternative\",\"item\":\"https://noctalia.app/de/dreamkit-alternative\"}]} ",
     "{\"@context\":\"https://schema.org\",\"@type\":\"FAQPage\",\"mainEntity\":[{\"@type\":\"Question\",\"name\":\"Behalte DreamKit, wenn\",\"acceptedAnswer\":{\"@type\":\"Answer\",\"text\":\"Du bereits eine funktionierende Installation hast und PDF-Export, Cloud-Backup oder Erinnerungen noch nutzen kannst.\"}},{\"@type\":\"Question\",\"name\":\"Wähle Noctalia, wenn\",\"acceptedAnswer\":{\"@type\":\"Answer\",\"text\":\"Du auf Android ein derzeit herunterladbares Tagebuch mit Spracheingabe, visuellen Karten, wiederkehrenden Symbolen und privater Reflexion möchtest.\"}}]}"
   ],
@@ -43,7 +43,7 @@
 <div class="space-y-8 text-gray-300 leading-relaxed">
   <section class="glass-panel p-8 rounded-2xl border border-white/10 bg-white/5">
     <h2 class="text-2xl font-serif text-white mb-4">Kurzfassung</h2>
-    <p>Behalte eine bestehende DreamKit-Installation, wenn sie noch funktioniert und PDF-Export, Cloud-Backup, App-Sperre oder Reality-Check-Erinnerungen deine Gewohnheit tragen. Ziehe Noctalia in Betracht, wenn du ein Android-Tagebuch suchst, das du heute installieren kannst: Du sprichst den Traum nach dem Aufwachen ein, er bekommt ein Bild, und private Folgefragen helfen dir, ihn noch einmal anzusehen.</p>
+    <p>Behalte eine bestehende DreamKit-Installation, wenn sie noch funktioniert und PDF-Export, Cloud-Backup, App-Sperre oder Reality-Check-Erinnerungen deine Gewohnheit tragen. Ziehe Noctalia in Betracht, wenn du ein Android-Tagebuch suchst, das du heute installieren kannst: Du sprichst den Traum nach dem Aufwachen ein, lässt auf Wunsch ein Bild erzeugen, und private Folgefragen helfen dir, ihn noch einmal anzusehen.</p>
     <p class="mt-4">Entscheidend ist die Verfügbarkeit. Das frühere DreamKit-Android-Paket lieferte bei Google-Play-Prüfungen für die USA und Frankreich HTTP 404, und die frühere iOS-Kennung öffnet inzwischen Arcana, eine Astrologie- und Tarot-App von Neural Candy LLC. Diese Seite behandelt DreamKit deshalb als App, die du vielleicht noch installiert hast und aus der du deine Träume mitnehmen willst, nicht als App, die man heute installiert.</p>
   </section>
 
@@ -109,7 +109,7 @@
 
   <section class="glass-panel p-8 rounded-2xl border border-dream-salmon/20 bg-dream-salmon/5">
     <h2 class="text-2xl font-serif text-white mb-4">Noctalia auf Android testen</h2>
-    <p>Sprich nach dem Aufwachen ein, was vom Traum übrig ist. Noctalia bewahrt ihn mit einem Bild und stellt dir private Fragen, mit denen du ihn später noch einmal ansiehst.</p>
+    <p>Sprich nach dem Aufwachen ein, was vom Traum übrig ist. Noctalia bewahrt ihn, ergänzt auf Wunsch ein Bild und stellt dir private Fragen, mit denen du ihn später noch einmal ansiehst.</p>
     <p class="mt-4"><a href="https://play.google.com/store/apps/details?id=com.tanuki75.noctalia&amp;hl=de" class="text-dream-salmon hover:underline" rel="nofollow noopener noreferrer" target="_blank">Nächsten Traum mit Noctalia festhalten</a></p>
   </section>
 </div>

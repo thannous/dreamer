@@ -23,13 +23,13 @@
   "twitterImage": "https://noctalia.app/img/og/noctalia-en-1200x630.jpg",
   "twitterImageAlt": "Noctalia dream journal app",
   "publishedTime": "2026-08-09T00:00:00+02:00",
-  "modifiedTime": "2026-08-09T00:00:00+02:00",
+  "modifiedTime": "2026-10-10T00:00:00+02:00",
   "author": "Thanh Chau",
   "prevPath": "",
   "nextPath": "",
   "preloadImage": "",
   "jsonLd": [
-    "{\"@context\":\"https://schema.org\",\"@type\":\"WebPage\",\"name\":\"DreamKit Alternative After Its Store Removal\",\"description\":\"Compare the former DreamKit journal with Noctalia after its Android listing began returning 404 and its old iOS identifier became Arcana.\",\"url\":\"https://noctalia.app/en/dreamkit-alternative\",\"inLanguage\":\"en\",\"dateModified\":\"2026-08-09T00:00:00+02:00\",\"publisher\":{\"@id\":\"https://noctalia.app/#organization\"}}",
+    "{\"@context\":\"https://schema.org\",\"@type\":\"WebPage\",\"name\":\"DreamKit Alternative After Its Store Removal\",\"description\":\"Compare the former DreamKit journal with Noctalia after its Android listing began returning 404 and its old iOS identifier became Arcana.\",\"url\":\"https://noctalia.app/en/dreamkit-alternative\",\"inLanguage\":\"en\",\"dateModified\":\"2026-10-10T00:00:00+02:00\",\"publisher\":{\"@id\":\"https://noctalia.app/#organization\"}}",
     "{\"@context\":\"https://schema.org\",\"@type\":\"BreadcrumbList\",\"itemListElement\":[{\"@type\":\"ListItem\",\"position\":1,\"name\":\"Home\",\"item\":\"https://noctalia.app/\"},{\"@type\":\"ListItem\",\"position\":2,\"name\":\"DreamKit Alternative\",\"item\":\"https://noctalia.app/en/dreamkit-alternative\"}]} ",
     "{\"@context\":\"https://schema.org\",\"@type\":\"FAQPage\",\"mainEntity\":[{\"@type\":\"Question\",\"name\":\"Keep DreamKit if\",\"acceptedAnswer\":{\"@type\":\"Answer\",\"text\":\"You already have a working installation and can still use its PDF export, cloud backup or reminder routine.\"}},{\"@type\":\"Question\",\"name\":\"Choose Noctalia if\",\"acceptedAnswer\":{\"@type\":\"Answer\",\"text\":\"You use Android and want a currently downloadable voice-first journal with visual cards, recurring symbols and private guided reflection.\"}}]}"
   ],
@@ -43,7 +43,7 @@
 <div class="space-y-8 text-gray-300 leading-relaxed">
   <section class="glass-panel p-8 rounded-2xl border border-white/10 bg-white/5">
     <h2 class="text-2xl font-serif text-white mb-4">Short version</h2>
-    <p>Keep an existing DreamKit installation if it still works and its PDF export, cloud backup, app lock or reality-check reminders support your habit. Consider Noctalia if you want an Android journal you can download today: you speak the dream when you wake up, it gets an image, and private questions and recurring symbols help you reread it.</p>
+    <p>Keep an existing DreamKit installation if it still works and its PDF export, cloud backup, app lock or reality-check reminders support your habit. Consider Noctalia if you want an Android journal you can download today: you speak the dream when you wake up, ask for an image if you want one, and private questions and recurring symbols help you reread it.</p>
     <p class="mt-4">Availability is what decides it. The former DreamKit Android package returned HTTP 404 in both US and French Google Play checks, and its former iOS identifier now opens Arcana, an astrology and tarot app from Neural Candy LLC. So this page treats DreamKit as an app you may still have installed and want to move your dreams out of, not as one to install today.</p>
   </section>
 
@@ -115,7 +115,7 @@
 
   <section class="glass-panel p-8 rounded-2xl border border-dream-salmon/20 bg-dream-salmon/5">
     <h2 class="text-2xl font-serif text-white mb-4">Try Noctalia on Android</h2>
-    <p>When you wake up, say what is left of the dream. Noctalia keeps it with an image, then offers private questions to help you reread it.</p>
+    <p>When you wake up, say what is left of the dream. Noctalia keeps it, adds an image if you ask, then offers private questions to help you reread it.</p>
     <p class="mt-4"><a href="https://play.google.com/store/apps/details?id=com.tanuki75.noctalia&amp;hl=en" class="text-dream-salmon hover:underline" rel="nofollow noopener noreferrer" target="_blank">Record your next dream with Noctalia</a></p>
   </section>
 </div>

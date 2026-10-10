@@ -23,13 +23,13 @@
   "twitterImage": "https://noctalia.app/img/og/noctalia-de-1200x630.jpg",
   "twitterImageAlt": "Noctalia Traumtagebuch-App",
   "publishedTime": "2026-08-09T00:00:00+02:00",
-  "modifiedTime": "2026-08-09T00:00:00+02:00",
+  "modifiedTime": "2026-10-10T00:00:00+02:00",
   "author": "Thanh Chau",
   "prevPath": "",
   "nextPath": "",
   "preloadImage": "",
   "jsonLd": [
-    "{\"@context\":\"https://schema.org\",\"@type\":\"WebPage\",\"name\":\"Dream Journal Ultimate Alternative für Android\",\"description\":\"Vergleiche Dream Journal Ultimate und Noctalia bei Sprache, KI-Reflexion, Klarträumen, Community, Android und Datenschutz.\",\"url\":\"https://noctalia.app/de/dream-journal-ultimate-alternative\",\"inLanguage\":\"de\",\"dateModified\":\"2026-08-09T00:00:00+02:00\",\"publisher\":{\"@id\":\"https://noctalia.app/#organization\"}}",
+    "{\"@context\":\"https://schema.org\",\"@type\":\"WebPage\",\"name\":\"Dream Journal Ultimate Alternative für Android\",\"description\":\"Vergleiche Dream Journal Ultimate und Noctalia bei Sprache, KI-Reflexion, Klarträumen, Community, Android und Datenschutz.\",\"url\":\"https://noctalia.app/de/dream-journal-ultimate-alternative\",\"inLanguage\":\"de\",\"dateModified\":\"2026-10-10T00:00:00+02:00\",\"publisher\":{\"@id\":\"https://noctalia.app/#organization\"}}",
     "{\"@context\":\"https://schema.org\",\"@type\":\"BreadcrumbList\",\"itemListElement\":[{\"@type\":\"ListItem\",\"position\":1,\"name\":\"Startseite\",\"item\":\"https://noctalia.app/de/\"},{\"@type\":\"ListItem\",\"position\":2,\"name\":\"Dream Journal Ultimate Alternative\",\"item\":\"https://noctalia.app/de/dream-journal-ultimate-alternative\"}]}",
     "{\"@context\":\"https://schema.org\",\"@type\":\"FAQPage\",\"mainEntity\":[{\"@type\":\"Question\",\"name\":\"Wähle Dream Journal Ultimate, wenn\",\"acceptedAnswer\":{\"@type\":\"Answer\",\"text\":\"Du iOS, eine optionale öffentliche Community, ähnliche Träume, ein großes Lexikon oder strukturiertes Klartraumtraining willst.\"}},{\"@type\":\"Question\",\"name\":\"Wähle Noctalia, wenn\",\"acceptedAnswer\":{\"@type\":\"Answer\",\"text\":\"Du Android nutzt und schnelle Spracheingabe, visuelle Karten, wiederkehrende Symbole und private Reflexion ohne Social Feed willst.\"}}]}"
   ],
@@ -110,7 +110,7 @@
 
   <section class="glass-panel p-8 rounded-2xl border border-dream-salmon/20 bg-dream-salmon/5">
     <h2 class="text-2xl font-serif text-white mb-4">Noctalia auf Android testen</h2>
-    <p>Sprich deinen Traum direkt nach dem Aufwachen ein, behalte ein Bild davon und denk privat mit geführten Fragen weiter.</p>
+    <p>Sprich deinen Traum direkt nach dem Aufwachen ein, lass auf Wunsch ein Bild davon erzeugen und denk privat mit geführten Fragen weiter.</p>
     <p class="mt-4"><a href="https://play.google.com/store/apps/details?id=com.tanuki75.noctalia&amp;hl=de" class="text-dream-salmon hover:underline" rel="nofollow noopener noreferrer" target="_blank">Noctalia bei Google Play öffnen</a></p>
   </section>
 </div>

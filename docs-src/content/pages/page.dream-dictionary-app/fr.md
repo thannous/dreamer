@@ -23,13 +23,13 @@
   "twitterImage": "https://noctalia.app/img/og/noctalia-fr-1200x630.jpg",
   "twitterImageAlt": "Application dictionnaire de rêves Noctalia",
   "publishedTime": "2026-06-04T00:00:00+02:00",
-  "modifiedTime": "2026-07-09T00:00:00+02:00",
+  "modifiedTime": "2026-10-10T00:00:00+02:00",
   "author": "Thanh Chau",
   "prevPath": "",
   "nextPath": "",
   "preloadImage": "",
   "jsonLd": [
-    "{\"@context\":\"https://schema.org\",\"@type\":\"WebPage\",\"name\":\"Application dictionnaire de rêves\",\"description\":\"Parcourez 150 fiches publiques de symboles, comparez des significations possibles et reliez un symbole à votre propre rêve dans Noctalia sur Android.\",\"url\":\"https://noctalia.app/fr/dictionnaire-de-reves-application\",\"inLanguage\":\"fr\",\"dateModified\":\"2026-07-09T00:00:00+02:00\",\"about\":{\"@id\":\"https://noctalia.app/#software\"},\"publisher\":{\"@id\":\"https://noctalia.app/#organization\"}}",
+    "{\"@context\":\"https://schema.org\",\"@type\":\"WebPage\",\"name\":\"Application dictionnaire de rêves\",\"description\":\"Parcourez 150 fiches publiques de symboles, comparez des significations possibles et reliez un symbole à votre propre rêve dans Noctalia sur Android.\",\"url\":\"https://noctalia.app/fr/dictionnaire-de-reves-application\",\"inLanguage\":\"fr\",\"dateModified\":\"2026-10-10T00:00:00+02:00\",\"about\":{\"@id\":\"https://noctalia.app/#software\"},\"publisher\":{\"@id\":\"https://noctalia.app/#organization\"}}",
     "{\"@context\":\"https://schema.org\",\"@type\":\"BreadcrumbList\",\"itemListElement\":[{\"@type\":\"ListItem\",\"position\":1,\"name\":\"Accueil\",\"item\":\"https://noctalia.app/fr/\"},{\"@type\":\"ListItem\",\"position\":2,\"name\":\"Application dictionnaire de rêves\",\"item\":\"https://noctalia.app/fr/dictionnaire-de-reves-application\"}]} ",
     "{\"@context\":\"https://schema.org\",\"@type\":\"FAQPage\",\"mainEntity\":[{\"@type\":\"Question\",\"name\":\"Le dictionnaire Noctalia est-il gratuit ?\",\"acceptedAnswer\":{\"@type\":\"Answer\",\"text\":\"Oui. Le dictionnaire web public permet de parcourir 150 fiches éditoriales de symboles par catégorie ou de A à Z sans installer l'application.\"}},{\"@type\":\"Question\",\"name\":\"Un symbole a-t-il toujours la même signification ?\",\"acceptedAnswer\":{\"@type\":\"Answer\",\"text\":\"Non. Un même symbole peut renvoyer à des souvenirs, émotions et situations différents. Utilisez le dictionnaire comme un ensemble de possibilités à comparer avec le rêve complet.\"}},{\"@type\":\"Question\",\"name\":\"Qu'ajoute l'application Android au dictionnaire ?\",\"acceptedAnswer\":{\"@type\":\"Answer\",\"text\":\"L'application ajoute la capture vocale ou écrite, un journal privé, la réflexion par IA, le contexte émotionnel et symbolique, des images générées et des questions de suivi.\"}},{\"@type\":\"Question\",\"name\":\"Un dictionnaire de rêves peut-il diagnostiquer ou prédire ?\",\"acceptedAnswer\":{\"@type\":\"Answer\",\"text\":\"Non. Les fiches sont des pistes informatives, pas un avis médical, un diagnostic psychologique ou une prédiction.\"}}]}"
   ],
@@ -37,7 +37,7 @@
 }
 ---
 <h1 class="font-serif text-4xl md:text-5xl mb-4 text-dream-cream">Application dictionnaire de rêves</h1>
-<p class="text-sm text-purple-300/70 mb-6">Mis à jour le 9 juillet 2026</p>
+<p class="text-sm text-purple-300/70 mb-6">Mis à jour le 10 octobre 2026</p>
 <p class="text-lg text-purple-200/80 leading-relaxed mb-10">Noctalia associe un dictionnaire public de 150 fiches éditoriales de symboles à un journal Android. Cherchez les significations possibles d'un symbole, puis replacez-le dans le rêve complet, vos émotions et les détails notés au réveil.</p>
 
 <div class="space-y-8 text-gray-300 leading-relaxed">

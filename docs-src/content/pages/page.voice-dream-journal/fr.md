@@ -23,13 +23,13 @@
   "twitterImage": "https://noctalia.app/img/og/noctalia-fr-1200x630.jpg",
   "twitterImageAlt": "Journal de rêves vocal Noctalia",
   "publishedTime": "2026-06-04T00:00:00+02:00",
-  "modifiedTime": "2026-07-09T00:00:00+02:00",
+  "modifiedTime": "2026-10-10T00:00:00+02:00",
   "author": "Thanh Chau",
   "prevPath": "",
   "nextPath": "",
   "preloadImage": "",
   "jsonLd": [
-    "{\"@context\":\"https://schema.org\",\"@type\":\"WebPage\",\"name\":\"Journal de rêves vocal Android\",\"description\":\"Enregistrez un rêve à la voix sur Android avant qu'il ne s'efface, puis gardez une entrée consultable avec texte, humeur, symboles et réflexion guidée.\",\"url\":\"https://noctalia.app/fr/journal-de-reves-vocal\",\"inLanguage\":\"fr\",\"dateModified\":\"2026-07-09T00:00:00+02:00\",\"about\":{\"@id\":\"https://noctalia.app/#software\"},\"publisher\":{\"@id\":\"https://noctalia.app/#organization\"}}",
+    "{\"@context\":\"https://schema.org\",\"@type\":\"WebPage\",\"name\":\"Journal de rêves vocal Android\",\"description\":\"Enregistrez un rêve à la voix sur Android avant qu'il ne s'efface, puis gardez une entrée consultable avec texte, humeur, symboles et réflexion guidée.\",\"url\":\"https://noctalia.app/fr/journal-de-reves-vocal\",\"inLanguage\":\"fr\",\"dateModified\":\"2026-10-10T00:00:00+02:00\",\"about\":{\"@id\":\"https://noctalia.app/#software\"},\"publisher\":{\"@id\":\"https://noctalia.app/#organization\"}}",
     "{\"@context\":\"https://schema.org\",\"@type\":\"BreadcrumbList\",\"itemListElement\":[{\"@type\":\"ListItem\",\"position\":1,\"name\":\"Accueil\",\"item\":\"https://noctalia.app/fr/\"},{\"@type\":\"ListItem\",\"position\":2,\"name\":\"Journal de rêves vocal Android\",\"item\":\"https://noctalia.app/fr/journal-de-reves-vocal\"}]} ",
     "{\"@context\":\"https://schema.org\",\"@type\":\"FAQPage\",\"mainEntity\":[{\"@type\":\"Question\",\"name\":\"Puis-je enregistrer un rêve à la voix dans Noctalia ?\",\"acceptedAnswer\":{\"@type\":\"Answer\",\"text\":\"Oui. Sur Android, vous pouvez raconter le rêve peu après le réveil, puis garder la transcription sous forme d'entrée dans votre journal.\"}},{\"@type\":\"Question\",\"name\":\"Puis-je écrire au lieu de parler ?\",\"acceptedAnswer\":{\"@type\":\"Answer\",\"text\":\"Oui. La voix est pratique lorsque les détails s'effacent, mais Noctalia accepte aussi les entrées écrites pour corriger ou compléter le récit.\"}},{\"@type\":\"Question\",\"name\":\"Que devient l'enregistrement audio ?\",\"acceptedAnswer\":{\"@type\":\"Answer\",\"text\":\"Selon la politique de confidentialité, l'audio sert à la transcription, n'est pas conservé durablement par Noctalia et le texte transcrit est enregistré dans le journal.\"}},{\"@type\":\"Question\",\"name\":\"Noctalia donne-t-elle un diagnostic ou une prédiction ?\",\"acceptedAnswer\":{\"@type\":\"Answer\",\"text\":\"Non. Noctalia sert à enregistrer et à explorer des rêves. L'application ne fournit pas d'avis médical, de diagnostic psychologique ou de prédiction.\"}}]}"
   ],
@@ -37,7 +37,7 @@
 }
 ---
 <h1 class="font-serif text-4xl md:text-5xl mb-4 text-dream-cream">Journal de rêves vocal Android</h1>
-<p class="text-sm text-purple-300/70 mb-6">Mis à jour le 9 juillet 2026</p>
+<p class="text-sm text-purple-300/70 mb-6">Mis à jour le 10 octobre 2026</p>
 <p class="text-lg text-purple-200/80 leading-relaxed mb-10">Un rêve peut perdre ses détails pendant que vous cherchez les bons mots. Avec le journal de rêves vocal de Noctalia sur Android, racontez d'abord ce dont vous vous souvenez, puis gardez la transcription comme une entrée consultable. L'analyse (humeur, symboles, questions de réflexion) et l'image viennent ensuite, si vous les demandez.</p>
 
 <div class="space-y-8 text-gray-300 leading-relaxed">

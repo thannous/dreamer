@@ -23,7 +23,7 @@
   "twitterImage": "https://noctalia.app/img/og/noctalia-es-1200x630.jpg",
   "twitterImageAlt": "App de diario de sueños con IA Noctalia",
   "publishedTime": "2026-05-09T00:00:00+02:00",
-  "modifiedTime": "2026-07-31T00:00:00+02:00",
+  "modifiedTime": "2026-10-10T00:00:00+02:00",
   "author": "Thanh Chau",
   "prevPath": "",
   "nextPath": "",
@@ -35,7 +35,7 @@
 }
 ---
 <h1 class="font-serif text-4xl md:text-5xl mb-6 text-dream-cream">Kit de prensa de Noctalia</h1>
-<p class="text-sm text-purple-300/70 mb-6">Actualizado el 4 de agosto de 2026</p>
+<p class="text-sm text-purple-300/70 mb-6">Actualizado el 10 de octubre de 2026</p>
 <p class="text-lg text-purple-200/80 leading-relaxed mb-10">Noctalia es un diario de sueños para Android. La persona cuenta su sueño en voz alta, la app lo convierte en una entrada estructurada y después puede explorar símbolos, imágenes, patrones y preguntas de seguimiento guiadas.</p>
 
 <div class="space-y-8 text-gray-300 leading-relaxed">

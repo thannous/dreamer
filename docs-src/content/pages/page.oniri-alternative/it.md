@@ -23,13 +23,13 @@
   "twitterImage": "https://noctalia.app/img/og/noctalia-en-1200x630.jpg",
   "twitterImageAlt": "Noctalia dream journal app",
   "publishedTime": "2026-05-20T00:00:00+02:00",
-  "modifiedTime": "2026-07-09T00:00:00+02:00",
+  "modifiedTime": "2026-10-10T00:00:00+02:00",
   "author": "Thanh Chau",
   "prevPath": "",
   "nextPath": "",
   "preloadImage": "",
   "jsonLd": [
-    "{\n  \"@context\": \"https://schema.org\",\n  \"@type\": \"WebPage\",\n  \"name\": \"Alternativa a Oniri per diario dei sogni\",\n  \"description\": \"Confronta Oniri e Noctalia: sogno lucido, analisi IA, voce, immagini, Android e informativa privacy.\",\n  \"url\": \"https://noctalia.app/it/alternativa-oniri\",\n  \"inLanguage\": \"it\",\n  \"dateModified\": \"2026-07-09T00:00:00+02:00\",\n  \"publisher\": {\n    \"@id\": \"https://noctalia.app/#organization\"\n  }\n}",
+    "{\n  \"@context\": \"https://schema.org\",\n  \"@type\": \"WebPage\",\n  \"name\": \"Alternativa a Oniri per diario dei sogni\",\n  \"description\": \"Confronta Oniri e Noctalia: sogno lucido, analisi IA, voce, immagini, Android e informativa privacy.\",\n  \"url\": \"https://noctalia.app/it/alternativa-oniri\",\n  \"inLanguage\": \"it\",\n  \"dateModified\": \"2026-10-10T00:00:00+02:00\",\n  \"publisher\": {\n    \"@id\": \"https://noctalia.app/#organization\"\n  }\n}",
     "{\n  \"@context\": \"https://schema.org\",\n  \"@type\": \"BreadcrumbList\",\n  \"itemListElement\": [\n    {\n      \"@type\": \"ListItem\",\n      \"position\": 1,\n      \"name\": \"Home\",\n      \"item\": \"https://noctalia.app/it/\"\n    },\n    {\n      \"@type\": \"ListItem\",\n      \"position\": 2,\n      \"name\": \"Alternativa a Oniri per diario dei sogni\",\n      \"item\": \"https://noctalia.app/it/alternativa-oniri\"\n    }\n  ]\n}",
     "{\n  \"@context\": \"https://schema.org\",\n  \"@type\": \"FAQPage\",\n  \"mainEntity\": [\n    {\n      \"@type\": \"Question\",\n      \"name\": \"Scegli Oniri se\",\n      \"acceptedAnswer\": {\n        \"@type\": \"Answer\",\n        \"text\": \"Scegli Oniri se le tue priorità sono il sogno lucido, l’export in PDF, le statistiche e un’app iOS matura.\"\n      }\n    },\n    {\n      \"@type\": \"Question\",\n      \"name\": \"Scegli Noctalia se\",\n      \"acceptedAnswer\": {\n        \"@type\": \"Answer\",\n        \"text\": \"Scegli Noctalia se vuoi annotare in fretta i sogni su Android, trasformarli in schede visive, seguirne i simboli e parlare di un sogno preciso.\"\n      }\n    }\n  ]\n}"
   ],
@@ -37,7 +37,7 @@
 }
 ---
 <h1 class="font-serif text-4xl md:text-5xl mb-4 text-dream-cream">Alternativa a Oniri per diario dei sogni</h1>
-<p class="text-sm text-purple-300/70 mb-6">Aggiornato il 20 maggio 2026</p>
+<p class="text-sm text-purple-300/70 mb-6">Aggiornato il 10 ottobre 2026</p>
 <p class="text-lg text-purple-200/80 leading-relaxed mb-10">Oniri è un’app matura per il diario dei sogni e il sogno lucido. Noctalia è un’alternativa a Oniri se non ti serve un programma completo di allenamento lucido e vuoi soprattutto annotare in fretta i sogni su Android, interpretarli con l’IA, vederli in immagine, seguirne i simboli e proseguire con domande guidate.</p>
 
 <div class="space-y-8 text-gray-300 leading-relaxed">
@@ -56,7 +56,7 @@
           <tr><td class="py-4 pr-4 text-white font-medium">Sogno lucido</td><td class="py-4 pr-4 ">Reality check, promemoria, segnali audio e tecniche WILD/MILD/SSILD.</td><td class="py-4 pr-4 ">Funzioni di base e riflessione; non un programma avanzato di lucidità.</td><td class="py-4 pr-4 ">Oniri se la lucidità è prioritaria.</td></tr>
           <tr><td class="py-4 pr-4 text-white font-medium">Cattura al risveglio</td><td class="py-4 pr-4 ">Note vocali presenti, in un’app più ampia.</td><td class="py-4 pr-4 ">La voce viene prima, ma puoi anche scrivere.</td><td class="py-4 pr-4 ">Noctalia, se ti serve annotare il sogno prima che svanisca.</td></tr>
           <tr><td class="py-4 pr-4 text-white font-medium">Interpretazione</td><td class="py-4 pr-4 ">IA, domande e centinaia di significati.</td><td class="py-4 pr-4 ">Scheda IA, simboli ricorrenti e riflessione guidata.</td><td class="py-4 pr-4 ">Entrambe interpretano; Noctalia è più mirata e passa dalla conversazione.</td></tr>
-          <tr><td class="py-4 pr-4 text-white font-medium">Immagini</td><td class="py-4 pr-4 ">Immagini generate e fino a 5 immagini per sogno in premium.</td><td class="py-4 pr-4 ">Un’immagine generata conserva il ricordo visivo del sogno.</td><td class="py-4 pr-4 ">Decidi sul resto dell’app.</td></tr>
+          <tr><td class="py-4 pr-4 text-white font-medium">Immagini</td><td class="py-4 pr-4 ">Immagini generate e fino a 5 immagini per sogno in premium.</td><td class="py-4 pr-4 ">Un’immagine generata su richiesta conserva il ricordo visivo del sogno.</td><td class="py-4 pr-4 ">Decidi sul resto dell’app.</td></tr>
           <tr><td class="py-4 pr-4 text-white font-medium">Export e statistiche</td><td class="py-4 pr-4 ">PDF, filtri e statistiche sono tra i suoi punti forti dichiarati.</td><td class="py-4 pr-4 ">Statistiche e simboli, ma l’export non è in primo piano.</td><td class="py-4 pr-4 ">Oniri, se esporti spesso il tuo diario.</td></tr>
           <tr><td class="py-4 pr-4 text-white font-medium">Prezzo</td><td class="py-4 pr-4 ">La scheda App Store USA elenca vari acquisti in-app e avvisa che i prezzi variano in base alla località.</td><td class="py-4 pr-4 ">Piano gratuito più Noctalia Plus; Google Play mostra il prezzo applicabile prima dell’acquisto.</td><td class="py-4 pr-4 ">Un prezzo vale solo per un paese e una data.</td></tr>
         </tbody>
@@ -123,7 +123,7 @@
 
   <section class="glass-panel p-8 rounded-2xl border border-dream-salmon/20 bg-dream-salmon/5">
     <h2 class="text-2xl font-serif text-white mb-4">Prova Noctalia</h2>
-    <p>Su Android, Noctalia ti permette di dettare un sogno appena ti svegli, conservarne un’immagine, ritrovarne i simboli e continuare con domande guidate.</p>
+    <p>Su Android, Noctalia ti permette di dettare un sogno appena ti svegli, chiederne un’immagine, ritrovarne i simboli e continuare con domande guidate.</p>
     <p class="mt-4"><a href="https://play.google.com/store/apps/details?id=com.tanuki75.noctalia&hl=en" class="text-dream-salmon hover:underline" rel="nofollow noopener noreferrer" target="_blank">Apri Noctalia su Google Play</a></p>
   </section>
 </div>

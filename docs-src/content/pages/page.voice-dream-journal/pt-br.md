@@ -23,13 +23,13 @@
   "twitterImage": "https://noctalia.app/img/og/noctalia-en-1200x630.jpg",
   "twitterImageAlt": "Diário de sonhos por voz Noctalia",
   "publishedTime": "2026-06-04T00:00:00+02:00",
-  "modifiedTime": "2026-07-09T00:00:00+02:00",
+  "modifiedTime": "2026-10-10T00:00:00+02:00",
   "author": "Thanh Chau",
   "prevPath": "",
   "nextPath": "",
   "preloadImage": "",
   "jsonLd": [
-    "{\"@context\":\"https://schema.org\",\"@type\":\"WebPage\",\"name\":\"Diário de sonhos por voz no Android\",\"description\":\"Registre um sonho por voz no Android antes que ele se apague, e guarde uma entrada consultável com texto, humor, símbolos e reflexão guiada.\",\"url\":\"https://noctalia.app/pt-br/diario-de-sonhos-por-voz\",\"inLanguage\":\"pt-BR\",\"dateModified\":\"2026-07-09T00:00:00+02:00\",\"about\":{\"@id\":\"https://noctalia.app/#software\"},\"publisher\":{\"@id\":\"https://noctalia.app/#organization\"}}",
+    "{\"@context\":\"https://schema.org\",\"@type\":\"WebPage\",\"name\":\"Diário de sonhos por voz no Android\",\"description\":\"Registre um sonho por voz no Android antes que ele se apague, e guarde uma entrada consultável com texto, humor, símbolos e reflexão guiada.\",\"url\":\"https://noctalia.app/pt-br/diario-de-sonhos-por-voz\",\"inLanguage\":\"pt-BR\",\"dateModified\":\"2026-10-10T00:00:00+02:00\",\"about\":{\"@id\":\"https://noctalia.app/#software\"},\"publisher\":{\"@id\":\"https://noctalia.app/#organization\"}}",
     "{\"@context\":\"https://schema.org\",\"@type\":\"BreadcrumbList\",\"itemListElement\":[{\"@type\":\"ListItem\",\"position\":1,\"name\":\"Início\",\"item\":\"https://noctalia.app/pt-br/\"},{\"@type\":\"ListItem\",\"position\":2,\"name\":\"Diário de sonhos por voz no Android\",\"item\":\"https://noctalia.app/pt-br/diario-de-sonhos-por-voz\"}]} ",
     "{\"@context\":\"https://schema.org\",\"@type\":\"FAQPage\",\"mainEntity\":[{\"@type\":\"Question\",\"name\":\"Posso gravar um sonho por voz no Noctalia?\",\"acceptedAnswer\":{\"@type\":\"Answer\",\"text\":\"Sim. No Android, você pode contar o sonho logo depois de acordar e guardar a transcrição como uma entrada no seu diário.\"}},{\"@type\":\"Question\",\"name\":\"Posso escrever em vez de falar?\",\"acceptedAnswer\":{\"@type\":\"Answer\",\"text\":\"Sim. A voz é prática quando os detalhes estão se apagando, mas o Noctalia também aceita entradas escritas para corrigir ou completar o relato.\"}},{\"@type\":\"Question\",\"name\":\"O que acontece com a gravação de áudio?\",\"acceptedAnswer\":{\"@type\":\"Answer\",\"text\":\"Segundo a política de privacidade, o áudio serve para a transcrição, não é guardado de forma duradoura pelo Noctalia, e o texto transcrito é salvo no diário.\"}},{\"@type\":\"Question\",\"name\":\"O Noctalia dá diagnóstico ou previsão?\",\"acceptedAnswer\":{\"@type\":\"Answer\",\"text\":\"Não. O Noctalia serve para registrar e explorar sonhos. O app não fornece orientação médica, diagnóstico psicológico nem previsão.\"}}]}"
   ],
@@ -37,7 +37,7 @@
 }
 ---
 <h1 class="font-serif text-4xl md:text-5xl mb-4 text-dream-cream">Diário de sonhos por voz no Android</h1>
-<p class="text-sm text-purple-300/70 mb-6">Atualizado em 9 de julho de 2026</p>
+<p class="text-sm text-purple-300/70 mb-6">Atualizado em 10 de outubro de 2026</p>
 <p class="text-lg text-purple-200/80 leading-relaxed mb-10">Um sonho pode perder os detalhes enquanto você procura as palavras certas. Com o Noctalia no Android, conte primeiro o que você lembra, e depois guarde a transcrição como uma entrada consultável. A análise (humor, símbolos, perguntas de reflexão) e a imagem vêm depois, se você pedir.</p>
 
 <div class="space-y-8 text-gray-300 leading-relaxed">

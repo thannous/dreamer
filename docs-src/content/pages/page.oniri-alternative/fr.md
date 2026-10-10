@@ -23,13 +23,13 @@
   "twitterImage": "https://noctalia.app/img/og/noctalia-en-1200x630.jpg",
   "twitterImageAlt": "Noctalia dream journal app",
   "publishedTime": "2026-05-20T00:00:00+02:00",
-  "modifiedTime": "2026-07-09T00:00:00+02:00",
+  "modifiedTime": "2026-10-10T00:00:00+02:00",
   "author": "Thanh Chau",
   "prevPath": "",
   "nextPath": "",
   "preloadImage": "",
   "jsonLd": [
-    "{\n  \"@context\": \"https://schema.org\",\n  \"@type\": \"WebPage\",\n  \"name\": \"Alternative à Oniri pour journal de rêves\",\n  \"description\": \"Comparez Oniri et Noctalia: rêve lucide, analyse IA, voix, images, Android et confidentialité.\",\n  \"url\": \"https://noctalia.app/fr/alternative-oniri\",\n  \"inLanguage\": \"fr\",\n  \"dateModified\": \"2026-07-09T00:00:00+02:00\",\n  \"publisher\": {\n    \"@id\": \"https://noctalia.app/#organization\"\n  }\n}",
+    "{\n  \"@context\": \"https://schema.org\",\n  \"@type\": \"WebPage\",\n  \"name\": \"Alternative à Oniri pour journal de rêves\",\n  \"description\": \"Comparez Oniri et Noctalia: rêve lucide, analyse IA, voix, images, Android et confidentialité.\",\n  \"url\": \"https://noctalia.app/fr/alternative-oniri\",\n  \"inLanguage\": \"fr\",\n  \"dateModified\": \"2026-10-10T00:00:00+02:00\",\n  \"publisher\": {\n    \"@id\": \"https://noctalia.app/#organization\"\n  }\n}",
     "{\n  \"@context\": \"https://schema.org\",\n  \"@type\": \"BreadcrumbList\",\n  \"itemListElement\": [\n    {\n      \"@type\": \"ListItem\",\n      \"position\": 1,\n      \"name\": \"Accueil\",\n      \"item\": \"https://noctalia.app/fr/\"\n    },\n    {\n      \"@type\": \"ListItem\",\n      \"position\": 2,\n      \"name\": \"Alternative à Oniri pour journal de rêves\",\n      \"item\": \"https://noctalia.app/fr/alternative-oniri\"\n    }\n  ]\n}",
     "{\n  \"@context\": \"https://schema.org\",\n  \"@type\": \"FAQPage\",\n  \"mainEntity\": [\n    {\n      \"@type\": \"Question\",\n      \"name\": \"Choisissez Oniri si\",\n      \"acceptedAnswer\": {\n        \"@type\": \"Answer\",\n        \"text\": \"Choisissez Oniri si le rêve lucide, l’export PDF, les statistiques et une app iOS éprouvée sont prioritaires.\"\n      }\n    },\n    {\n      \"@type\": \"Question\",\n      \"name\": \"Choisissez Noctalia si\",\n      \"acceptedAnswer\": {\n        \"@type\": \"Answer\",\n        \"text\": \"Choisissez Noctalia si vous voulez surtout noter vite vos rêves sur Android, en faire des cartes visuelles, suivre leurs symboles et parler d’un rêve précis.\"\n      }\n    }\n  ]\n}"
   ],
@@ -37,7 +37,7 @@
 }
 ---
 <h1 class="font-serif text-4xl md:text-5xl mb-4 text-dream-cream">Alternative à Oniri pour journal de rêves</h1>
-<p class="text-sm text-purple-300/70 mb-6">Mis à jour le 20 mai 2026</p>
+<p class="text-sm text-purple-300/70 mb-6">Mis à jour le 10 octobre 2026</p>
 <p class="text-lg text-purple-200/80 leading-relaxed mb-10">Oniri est une app mature pour journal de rêves et rêve lucide. Noctalia est une alternative si vous n’avez pas besoin d’un programme complet de rêve lucide et voulez surtout noter vite vos rêves sur Android, les faire analyser par l’IA, les illustrer, suivre leurs symboles et poursuivre par une exploration guidée.</p>
 
 <div class="space-y-8 text-gray-300 leading-relaxed">
@@ -56,7 +56,7 @@
           <tr><td class="py-4 pr-4 text-white font-medium">Rêve lucide</td><td class="py-4 pr-4 ">Tests de réalité, rappels, signaux audio et techniques WILD/MILD/SSILD sont au cœur du positionnement.</td><td class="py-4 pr-4 ">Outils de base et réflexion sur le rêve, sans programme avancé de rêve lucide.</td><td class="py-4 pr-4 ">Oniri reste le choix si le rêve lucide est prioritaire.</td></tr>
           <tr><td class="py-4 pr-4 text-white font-medium">Capture au réveil</td><td class="py-4 pr-4 ">Notes orales disponibles, dans une app plus large.</td><td class="py-4 pr-4 ">La voix passe en premier, et vous pouvez aussi écrire.</td><td class="py-4 pr-4 ">Noctalia, si vous voulez tout noter avant que le rêve s’efface.</td></tr>
           <tr><td class="py-4 pr-4 text-white font-medium">Interprétation</td><td class="py-4 pr-4 ">Interprétation IA, questions et centaines de significations annoncées.</td><td class="py-4 pr-4 ">Carte de rêve IA, symboles récurrents et exploration guidée.</td><td class="py-4 pr-4 ">Les deux interprètent ; Noctalia est plus ciblée et passe par la conversation.</td></tr>
-          <tr><td class="py-4 pr-4 text-white font-medium">Images</td><td class="py-4 pr-4 ">Images générées et jusqu’à 5 images par rêve dans l’offre premium.</td><td class="py-4 pr-4 ">Une image générée sert de souvenir visuel du rêve.</td><td class="py-4 pr-4 ">Choisissez sur le reste de l’app.</td></tr>
+          <tr><td class="py-4 pr-4 text-white font-medium">Images</td><td class="py-4 pr-4 ">Images générées et jusqu’à 5 images par rêve dans l’offre premium.</td><td class="py-4 pr-4 ">Une image générée à la demande sert de souvenir visuel du rêve.</td><td class="py-4 pr-4 ">Choisissez sur le reste de l’app.</td></tr>
           <tr><td class="py-4 pr-4 text-white font-medium">Export et stats</td><td class="py-4 pr-4 ">Export PDF, filtres et statistiques avancées font partie de ses points forts affichés.</td><td class="py-4 pr-4 ">Statistiques et symboles, mais l’export n’est pas mis en avant.</td><td class="py-4 pr-4 ">Oniri, si vous exportez souvent votre journal.</td></tr>
           <tr><td class="py-4 pr-4 text-white font-medium">Prix</td><td class="py-4 pr-4 ">L’App Store américain liste plusieurs achats intégrés Oniri ; les prix varient selon la zone.</td><td class="py-4 pr-4 ">Offre gratuite plus Noctalia Plus ; Google Play affiche le tarif applicable avant l’achat.</td><td class="py-4 pr-4 ">Un prix ne vaut que pour un pays et une date.</td></tr>
         </tbody>
@@ -123,7 +123,7 @@
 
   <section class="glass-panel p-8 rounded-2xl border border-dream-salmon/20 bg-dream-salmon/5">
     <h2 class="text-2xl font-serif text-white mb-4">Essayer Noctalia</h2>
-    <p>Sur Android, Noctalia vous permet de dicter un rêve dès le réveil, d’en garder une image, de retrouver ses symboles et de poursuivre par une exploration guidée.</p>
+    <p>Sur Android, Noctalia vous permet de dicter un rêve dès le réveil, d’en demander une image, de retrouver ses symboles et de poursuivre par une exploration guidée.</p>
     <p class="mt-4"><a href="https://play.google.com/store/apps/details?id=com.tanuki75.noctalia&hl=en" class="text-dream-salmon hover:underline" rel="nofollow noopener noreferrer" target="_blank">Ouvrir Noctalia sur Google Play</a></p>
   </section>
 </div>

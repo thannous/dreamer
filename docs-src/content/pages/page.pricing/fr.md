@@ -23,13 +23,13 @@
   "twitterImage": "https://noctalia.app/img/og/noctalia-fr-1200x630.jpg",
   "twitterImageAlt": "Offres et tarifs du journal de rêves Noctalia",
   "publishedTime": "2026-07-31T00:00:00+02:00",
-  "modifiedTime": "2026-07-31T00:00:00+02:00",
+  "modifiedTime": "2026-10-10T00:00:00+02:00",
   "author": "Thanh Chau",
   "prevPath": "",
   "nextPath": "",
   "preloadImage": "",
   "jsonLd": [
-    "{\"@context\":\"https://schema.org\",\"@type\":\"WebPage\",\"name\":\"Offres et tarifs Noctalia\",\"description\":\"Comparez l'offre gratuite Rêveur et l'abonnement facultatif Noctalia Plus. Google Play affiche le prix et les options applicables avant l'achat.\",\"url\":\"https://noctalia.app/fr/tarifs\",\"inLanguage\":\"fr\",\"datePublished\":\"2026-07-31T00:00:00+02:00\",\"dateModified\":\"2026-07-31T00:00:00+02:00\"}",
+    "{\"@context\":\"https://schema.org\",\"@type\":\"WebPage\",\"name\":\"Offres et tarifs Noctalia\",\"description\":\"Comparez l'offre gratuite Rêveur et l'abonnement facultatif Noctalia Plus. Google Play affiche le prix et les options applicables avant l'achat.\",\"url\":\"https://noctalia.app/fr/tarifs\",\"inLanguage\":\"fr\",\"datePublished\":\"2026-07-31T00:00:00+02:00\",\"dateModified\":\"2026-10-10T00:00:00+02:00\"}",
     "{\"@context\":\"https://schema.org\",\"@type\":\"BreadcrumbList\",\"itemListElement\":[{\"@type\":\"ListItem\",\"position\":1,\"name\":\"Accueil\",\"item\":\"https://noctalia.app/fr/\"},{\"@type\":\"ListItem\",\"position\":2,\"name\":\"Tarifs\",\"item\":\"https://noctalia.app/fr/tarifs\"}]}",
     "{\"@context\":\"https://schema.org\",\"@type\":\"MobileApplication\",\"name\":\"Noctalia\",\"operatingSystem\":\"Android\",\"applicationCategory\":\"LifestyleApplication\",\"downloadUrl\":\"https://play.google.com/store/apps/details?id=com.tanuki75.noctalia\",\"offers\":{\"@type\":\"Offer\",\"price\":\"0\",\"priceCurrency\":\"EUR\",\"url\":\"https://play.google.com/store/apps/details?id=com.tanuki75.noctalia\",\"description\":\"Installation gratuite avec achats Noctalia Plus facultatifs affichés par Google Play.\"}}",
     "{\"@context\":\"https://schema.org\",\"@type\":\"FAQPage\",\"mainEntity\":[{\"@type\":\"Question\",\"name\":\"Noctalia est-elle gratuite ?\",\"acceptedAnswer\":{\"@type\":\"Answer\",\"text\":\"Oui. L'offre Rêveur comprend des enregistrements de rêves illimités, trois analyses de rêves par mois (chacune avec une image), des explorations guidées sans limite mensuelle, jusqu’à 10 messages de suivi par rêve analysé et un journal de rêves enregistré.\"}},{\"@type\":\"Question\",\"name\":\"Combien coûte Noctalia Plus ?\",\"acceptedAnswer\":{\"@type\":\"Answer\",\"text\":\"Ouvrez la fiche Google Play ou l'écran d'abonnement dans l'application pour voir le prix, la période de facturation, les taxes, l'éligibilité et toute promotion applicables à votre pays et à votre compte avant l'achat.\"}},{\"@type\":\"Question\",\"name\":\"Des abonnements mensuel et annuel sont-ils disponibles ?\",\"acceptedAnswer\":{\"@type\":\"Answer\",\"text\":\"Des options mensuelle et annuelle peuvent être proposées. Google Play affiche les options actuellement accessibles dans votre pays et pour votre compte ; leur disponibilité peut donc varier.\"}},{\"@type\":\"Question\",\"name\":\"Où gérer ou résilier un abonnement ?\",\"acceptedAnswer\":{\"@type\":\"Answer\",\"text\":\"Noctalia Plus est facturé via Google Play. Vous pouvez gérer ou résilier l'abonnement depuis la rubrique Abonnements du compte Google Play utilisé lors de l'achat.\"}}]}"
@@ -38,7 +38,7 @@
 }
 ---
 <h1 class="font-serif text-4xl md:text-5xl mb-4 text-dream-cream">Offres et tarifs Noctalia</h1>
-<p class="text-sm text-purple-300/70 mb-6">Mis à jour le 31 juillet 2026</p>
+<p class="text-sm text-purple-300/70 mb-6">Mis à jour le 10 octobre 2026</p>
 <p class="text-lg text-purple-200/80 leading-relaxed mb-10">Commencez avec l'offre gratuite Rêveur et passez à Plus seulement si vous voulez aller plus loin dans la réflexion guidée. Noctalia s'installe gratuitement sur Android. Le prix, les taxes, la période de facturation, l'éligibilité et les promotions dépendent de votre pays et de votre compte. C'est Google Play qui affiche le montant réellement facturé.</p>
 
 <div class="space-y-8 text-gray-300 leading-relaxed">

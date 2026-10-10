@@ -23,13 +23,13 @@
   "twitterImage": "https://noctalia.app/img/og/noctalia-it-1200x630.jpg",
   "twitterImageAlt": "Piani e prezzi del diario dei sogni Noctalia",
   "publishedTime": "2026-07-31T00:00:00+02:00",
-  "modifiedTime": "2026-07-31T00:00:00+02:00",
+  "modifiedTime": "2026-10-10T00:00:00+02:00",
   "author": "Thanh Chau",
   "prevPath": "",
   "nextPath": "",
   "preloadImage": "",
   "jsonLd": [
-    "{\"@context\":\"https://schema.org\",\"@type\":\"WebPage\",\"name\":\"Piani e prezzi Noctalia\",\"description\":\"Confronta il piano gratuito Sognatore e l'abbonamento facoltativo Noctalia Plus. Google Play mostra prezzo e opzioni applicabili prima dell'acquisto.\",\"url\":\"https://noctalia.app/it/prezzi\",\"inLanguage\":\"it\",\"datePublished\":\"2026-07-31T00:00:00+02:00\",\"dateModified\":\"2026-07-31T00:00:00+02:00\"}",
+    "{\"@context\":\"https://schema.org\",\"@type\":\"WebPage\",\"name\":\"Piani e prezzi Noctalia\",\"description\":\"Confronta il piano gratuito Sognatore e l'abbonamento facoltativo Noctalia Plus. Google Play mostra prezzo e opzioni applicabili prima dell'acquisto.\",\"url\":\"https://noctalia.app/it/prezzi\",\"inLanguage\":\"it\",\"datePublished\":\"2026-07-31T00:00:00+02:00\",\"dateModified\":\"2026-10-10T00:00:00+02:00\"}",
     "{\"@context\":\"https://schema.org\",\"@type\":\"BreadcrumbList\",\"itemListElement\":[{\"@type\":\"ListItem\",\"position\":1,\"name\":\"Home\",\"item\":\"https://noctalia.app/it/\"},{\"@type\":\"ListItem\",\"position\":2,\"name\":\"Prezzi\",\"item\":\"https://noctalia.app/it/prezzi\"}]}",
     "{\"@context\":\"https://schema.org\",\"@type\":\"MobileApplication\",\"name\":\"Noctalia\",\"operatingSystem\":\"Android\",\"applicationCategory\":\"LifestyleApplication\",\"downloadUrl\":\"https://play.google.com/store/apps/details?id=com.tanuki75.noctalia\",\"offers\":{\"@type\":\"Offer\",\"price\":\"0\",\"priceCurrency\":\"EUR\",\"url\":\"https://play.google.com/store/apps/details?id=com.tanuki75.noctalia\",\"description\":\"Installazione gratuita con acquisti facoltativi Noctalia Plus mostrati da Google Play.\"}}",
     "{\"@context\":\"https://schema.org\",\"@type\":\"FAQPage\",\"mainEntity\":[{\"@type\":\"Question\",\"name\":\"Noctalia si può usare gratis?\",\"acceptedAnswer\":{\"@type\":\"Answer\",\"text\":\"Sì. Il piano Sognatore include registrazioni dei sogni illimitate, tre analisi dei sogni al mese (ognuna con un’immagine), esplorazioni guidate senza limite mensile, fino a 10 messaggi di approfondimento per sogno analizzato e un diario dei sogni salvato.\"}},{\"@type\":\"Question\",\"name\":\"Quanto costa Noctalia Plus?\",\"acceptedAnswer\":{\"@type\":\"Answer\",\"text\":\"Apri la scheda Google Play o la schermata di abbonamento nell'app per vedere prima dell'acquisto il prezzo, il periodo di fatturazione, le imposte, l'idoneità e le eventuali promozioni per il tuo paese e account.\"}},{\"@type\":\"Question\",\"name\":\"Sono disponibili abbonamenti mensili e annuali?\",\"acceptedAnswer\":{\"@type\":\"Answer\",\"text\":\"Possono essere disponibili opzioni mensili e annuali. Google Play mostra le opzioni offerte attualmente per il tuo paese e account, quindi la disponibilità può variare.\"}},{\"@type\":\"Question\",\"name\":\"Dove posso gestire o annullare un abbonamento?\",\"acceptedAnswer\":{\"@type\":\"Answer\",\"text\":\"Noctalia Plus viene fatturato tramite Google Play. Puoi gestirlo o annullarlo dalla sezione Abbonamenti dell'account Google Play utilizzato per l'acquisto.\"}}]}"
@@ -38,7 +38,7 @@
 }
 ---
 <h1 class="font-serif text-4xl md:text-5xl mb-4 text-dream-cream">Piani e prezzi Noctalia</h1>
-<p class="text-sm text-purple-300/70 mb-6">Aggiornato il 31 luglio 2026</p>
+<p class="text-sm text-purple-300/70 mb-6">Aggiornato il 10 ottobre 2026</p>
 <p class="text-lg text-purple-200/80 leading-relaxed mb-10">Inizia con il piano gratuito Sognatore e passa a Plus solo se vuoi andare più a fondo con la riflessione guidata. Noctalia si installa gratuitamente su Android. Prezzo, imposte, periodo di fatturazione, idoneità e promozioni dipendono dal tuo paese e dal tuo account: l'importo che pagherai davvero lo mostra Google Play.</p>
 
 <div class="space-y-8 text-gray-300 leading-relaxed">

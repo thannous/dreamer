@@ -23,13 +23,13 @@
   "twitterImage": "https://noctalia.app/img/og/noctalia-en-1200x630.jpg",
   "twitterImageAlt": "App dicionário de sonhos Noctalia",
   "publishedTime": "2026-06-04T00:00:00+02:00",
-  "modifiedTime": "2026-07-09T00:00:00+02:00",
+  "modifiedTime": "2026-10-10T00:00:00+02:00",
   "author": "Thanh Chau",
   "prevPath": "",
   "nextPath": "",
   "preloadImage": "",
   "jsonLd": [
-    "{\"@context\":\"https://schema.org\",\"@type\":\"WebPage\",\"name\":\"App dicionário de sonhos\",\"description\":\"Percorra 150 fichas públicas de símbolos, compare significados possíveis e conecte um símbolo ao seu próprio sonho no Noctalia para Android.\",\"url\":\"https://noctalia.app/pt-br/app-dicionario-de-sonhos\",\"inLanguage\":\"pt-BR\",\"dateModified\":\"2026-07-09T00:00:00+02:00\",\"about\":{\"@id\":\"https://noctalia.app/#software\"},\"publisher\":{\"@id\":\"https://noctalia.app/#organization\"}}",
+    "{\"@context\":\"https://schema.org\",\"@type\":\"WebPage\",\"name\":\"App dicionário de sonhos\",\"description\":\"Percorra 150 fichas públicas de símbolos, compare significados possíveis e conecte um símbolo ao seu próprio sonho no Noctalia para Android.\",\"url\":\"https://noctalia.app/pt-br/app-dicionario-de-sonhos\",\"inLanguage\":\"pt-BR\",\"dateModified\":\"2026-10-10T00:00:00+02:00\",\"about\":{\"@id\":\"https://noctalia.app/#software\"},\"publisher\":{\"@id\":\"https://noctalia.app/#organization\"}}",
     "{\"@context\":\"https://schema.org\",\"@type\":\"BreadcrumbList\",\"itemListElement\":[{\"@type\":\"ListItem\",\"position\":1,\"name\":\"Início\",\"item\":\"https://noctalia.app/pt-br/\"},{\"@type\":\"ListItem\",\"position\":2,\"name\":\"App dicionário de sonhos\",\"item\":\"https://noctalia.app/pt-br/app-dicionario-de-sonhos\"}]} ",
     "{\"@context\":\"https://schema.org\",\"@type\":\"FAQPage\",\"mainEntity\":[{\"@type\":\"Question\",\"name\":\"O dicionário do Noctalia é gratuito?\",\"acceptedAnswer\":{\"@type\":\"Answer\",\"text\":\"Sim. O dicionário web público permite percorrer 150 fichas editoriais de símbolos por categoria ou de A a Z sem instalar o app.\"}},{\"@type\":\"Question\",\"name\":\"Um símbolo tem sempre o mesmo significado?\",\"acceptedAnswer\":{\"@type\":\"Answer\",\"text\":\"Não. Um mesmo símbolo pode remeter a lembranças, emoções e situações diferentes. Use o dicionário como um conjunto de possibilidades a comparar com o sonho completo.\"}},{\"@type\":\"Question\",\"name\":\"O que o app Android adiciona ao dicionário?\",\"acceptedAnswer\":{\"@type\":\"Answer\",\"text\":\"O app adiciona o registro por voz ou texto, um diário privado, a reflexão por IA, o contexto emocional e simbólico, imagens geradas e perguntas de acompanhamento.\"}},{\"@type\":\"Question\",\"name\":\"Um dicionário de sonhos pode diagnosticar ou prever?\",\"acceptedAnswer\":{\"@type\":\"Answer\",\"text\":\"Não. As fichas são pistas informativas, não uma orientação médica, um diagnóstico psicológico ou uma previsão.\"}}]}"
   ],
@@ -37,7 +37,7 @@
 }
 ---
 <h1 class="font-serif text-4xl md:text-5xl mb-4 text-dream-cream">App dicionário de sonhos</h1>
-<p class="text-sm text-purple-300/70 mb-6">Atualizado em 9 de julho de 2026</p>
+<p class="text-sm text-purple-300/70 mb-6">Atualizado em 10 de outubro de 2026</p>
 <p class="text-lg text-purple-200/80 leading-relaxed mb-10">O Noctalia associa um dicionário público de 150 fichas editoriais de símbolos a um diário Android. Pesquise os significados possíveis de um símbolo e depois recoloque-o no sonho completo, nas suas emoções e nos detalhes registrados ao acordar.</p>
 
 <div class="space-y-8 text-gray-300 leading-relaxed">

@@ -23,13 +23,13 @@
   "twitterImage": "https://noctalia.app/img/og/noctalia-it-1200x630.jpg",
   "twitterImageAlt": "Noctalia app Android per analisi dei sogni",
   "publishedTime": "2026-06-04T00:00:00+02:00",
-  "modifiedTime": "2026-07-09T00:00:00+02:00",
+  "modifiedTime": "2026-10-10T00:00:00+02:00",
   "author": "Thanh Chau",
   "prevPath": "",
   "nextPath": "",
   "preloadImage": "",
   "jsonLd": [
-    "{\"@context\":\"https://schema.org\",\"@type\":\"WebPage\",\"name\":\"App Android per analisi dei sogni\",\"description\":\"Cattura un sogno con voce o testo su Android ed esplora contesto, emozioni, simboli, immagini e domande guidate senza imporre un significato.\",\"url\":\"https://noctalia.app/it/app-analisi-sogni-android\",\"inLanguage\":\"it\",\"dateModified\":\"2026-07-09T00:00:00+02:00\",\"about\":{\"@id\":\"https://noctalia.app/#software\"},\"publisher\":{\"@id\":\"https://noctalia.app/#organization\"}}",
+    "{\"@context\":\"https://schema.org\",\"@type\":\"WebPage\",\"name\":\"App Android per analisi dei sogni\",\"description\":\"Cattura un sogno con voce o testo su Android ed esplora contesto, emozioni, simboli, immagini e domande guidate senza imporre un significato.\",\"url\":\"https://noctalia.app/it/app-analisi-sogni-android\",\"inLanguage\":\"it\",\"dateModified\":\"2026-10-10T00:00:00+02:00\",\"about\":{\"@id\":\"https://noctalia.app/#software\"},\"publisher\":{\"@id\":\"https://noctalia.app/#organization\"}}",
     "{\"@context\":\"https://schema.org\",\"@type\":\"BreadcrumbList\",\"itemListElement\":[{\"@type\":\"ListItem\",\"position\":1,\"name\":\"Home\",\"item\":\"https://noctalia.app/it/\"},{\"@type\":\"ListItem\",\"position\":2,\"name\":\"App Android per analisi dei sogni\",\"item\":\"https://noctalia.app/it/app-analisi-sogni-android\"}]} ",
     "{\"@context\":\"https://schema.org\",\"@type\":\"FAQPage\",\"mainEntity\":[{\"@type\":\"Question\",\"name\":\"Che cosa analizza Noctalia in un sogno?\",\"acceptedAnswer\":{\"@type\":\"Answer\",\"text\":\"Noctalia organizza il racconto con emozioni, simboli, dettagli della scena, un'immagine generata e domande guidate. Il risultato è uno spunto di riflessione, non una conclusione clinica o una previsione.\"}},{\"@type\":\"Question\",\"name\":\"Posso scrivere invece di registrare la voce?\",\"acceptedAnswer\":{\"@type\":\"Answer\",\"text\":\"Sì. Puoi catturare un sogno con la voce o con il testo. La voce aiuta subito dopo il risveglio; il testo è utile per correggere e aggiungere contesto.\"}},{\"@type\":\"Question\",\"name\":\"L'app fornisce un significato definitivo?\",\"acceptedAnswer\":{\"@type\":\"Answer\",\"text\":\"No. I simboli non sono diagnosi universali. Noctalia propone associazioni possibili e domande che puoi confrontare con la tua esperienza.\"}},{\"@type\":\"Question\",\"name\":\"Come vengono trattati i contenuti privati dei sogni?\",\"acceptedAnswer\":{\"@type\":\"Answer\",\"text\":\"L'informativa sulla privacy descrive i dati del diario ospitati nell'Unione europea, i fornitori di trascrizione e IA, la cancellazione dell'account, nessuna vendita di dati personali e nessuna pubblicità mirata.\"}}]}"
   ],
@@ -37,7 +37,7 @@
 }
 ---
 <h1 class="font-serif text-4xl md:text-5xl mb-4 text-dream-cream">App Android per analisi dei sogni</h1>
-<p class="text-sm text-purple-300/70 mb-6">Aggiornato il 9 luglio 2026</p>
+<p class="text-sm text-purple-300/70 mb-6">Aggiornato il 10 ottobre 2026</p>
 <p class="text-lg text-purple-200/80 leading-relaxed mb-10">Noctalia è un'app Android per l'analisi dei sogni che parte dall'elemento più importante: il tuo racconto. Registra o scrivi ciò che è accaduto, conserva emozioni e contesto, poi esplora simboli, immagini e domande guidate senza considerare il risultato una verità definitiva.</p>
 
 <div class="space-y-8 text-gray-300 leading-relaxed">

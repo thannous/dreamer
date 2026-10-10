@@ -23,13 +23,13 @@
   "twitterImage": "https://noctalia.app/img/og/noctalia-fr-1200x630.jpg",
   "twitterImageAlt": "Application de journal de rêves Noctalia",
   "publishedTime": "2026-08-09T00:00:00+02:00",
-  "modifiedTime": "2026-08-09T00:00:00+02:00",
+  "modifiedTime": "2026-10-10T00:00:00+02:00",
   "author": "Thanh Chau",
   "prevPath": "",
   "nextPath": "",
   "preloadImage": "",
   "jsonLd": [
-    "{\"@context\":\"https://schema.org\",\"@type\":\"WebPage\",\"name\":\"Alternative à DreamKit après son retrait des stores\",\"description\":\"Comparez l’ancien journal DreamKit à Noctalia depuis que sa fiche Android renvoie 404 et que son ancien identifiant iOS correspond à Arcana.\",\"url\":\"https://noctalia.app/fr/alternative-dreamkit\",\"inLanguage\":\"fr\",\"dateModified\":\"2026-08-09T00:00:00+02:00\",\"publisher\":{\"@id\":\"https://noctalia.app/#organization\"}}",
+    "{\"@context\":\"https://schema.org\",\"@type\":\"WebPage\",\"name\":\"Alternative à DreamKit après son retrait des stores\",\"description\":\"Comparez l’ancien journal DreamKit à Noctalia depuis que sa fiche Android renvoie 404 et que son ancien identifiant iOS correspond à Arcana.\",\"url\":\"https://noctalia.app/fr/alternative-dreamkit\",\"inLanguage\":\"fr\",\"dateModified\":\"2026-10-10T00:00:00+02:00\",\"publisher\":{\"@id\":\"https://noctalia.app/#organization\"}}",
     "{\"@context\":\"https://schema.org\",\"@type\":\"BreadcrumbList\",\"itemListElement\":[{\"@type\":\"ListItem\",\"position\":1,\"name\":\"Accueil\",\"item\":\"https://noctalia.app/fr/\"},{\"@type\":\"ListItem\",\"position\":2,\"name\":\"Alternative à DreamKit\",\"item\":\"https://noctalia.app/fr/alternative-dreamkit\"}]} ",
     "{\"@context\":\"https://schema.org\",\"@type\":\"FAQPage\",\"mainEntity\":[{\"@type\":\"Question\",\"name\":\"Gardez DreamKit si\",\"acceptedAnswer\":{\"@type\":\"Answer\",\"text\":\"Vous disposez déjà d’une installation fonctionnelle et pouvez encore utiliser son export PDF, sa sauvegarde cloud ou ses rappels.\"}},{\"@type\":\"Question\",\"name\":\"Choisissez Noctalia si\",\"acceptedAnswer\":{\"@type\":\"Answer\",\"text\":\"Vous voulez sur Android un journal actuellement téléchargeable avec capture vocale, cartes visuelles, symboles récurrents et réflexion guidée privée.\"}}]}"
   ],
@@ -43,7 +43,7 @@
 <div class="space-y-8 text-gray-300 leading-relaxed">
   <section class="glass-panel p-8 rounded-2xl border border-white/10 bg-white/5">
     <h2 class="text-2xl font-serif text-white mb-4">En bref</h2>
-    <p>Gardez une installation DreamKit existante si elle fonctionne encore et si son export PDF, sa sauvegarde cloud, son verrouillage ou ses rappels structurent votre habitude. Envisagez Noctalia s’il vous faut un journal Android téléchargeable aujourd’hui : vous dictez le rêve au réveil, il reçoit une image, puis des questions privées vous aident à le relire.</p>
+    <p>Gardez une installation DreamKit existante si elle fonctionne encore et si son export PDF, sa sauvegarde cloud, son verrouillage ou ses rappels structurent votre habitude. Envisagez Noctalia s’il vous faut un journal Android téléchargeable aujourd’hui : vous dictez le rêve au réveil, demandez une image si vous le souhaitez, puis des questions privées vous aident à le relire.</p>
     <p class="mt-4">Le point décisif reste la disponibilité. L’ancien paquet Android DreamKit renvoyait HTTP 404 dans les vérifications Google Play française et américaine, et son ancien identifiant iOS ouvre désormais Arcana, une application d’astrologie et de tarot de Neural Candy LLC. Cette page parle donc de DreamKit comme d’une application que vous avez peut-être encore et dont vous voulez sortir vos rêves, pas comme d’une application à installer aujourd’hui.</p>
   </section>
 
@@ -82,5 +82,5 @@
 
   <section class="glass-panel p-8 rounded-2xl border border-white/10 bg-white/5"><h2 class="text-2xl font-serif text-white mb-4">Sources vérifiées</h2><ul class="list-disc pl-5 space-y-2"><li><a href="https://dreamkit.app/" class="text-dream-salmon hover:underline" rel="nofollow noopener noreferrer" target="_blank">Site officiel DreamKit</a></li><li><span class="text-purple-200/80">Ancien paquet Google Play <code>app.DreamKit.DreamKit.dreamkit</code> : HTTP 404 le 9 août 2026</span></li><li><a href="https://dreamkit.app/pages/privacy_policy/" class="text-dream-salmon hover:underline" rel="nofollow noopener noreferrer" target="_blank">Politique de confidentialité DreamKit</a></li><li><a href="https://apps.apple.com/fr/app/arcana-astrology-tarot-chat/id1572753006" class="text-dream-salmon hover:underline" rel="nofollow noopener noreferrer" target="_blank">Produit actuel sous l’ancien identifiant iOS DreamKit</a></li><li><a href="/fr/politique-confidentialite" class="text-dream-salmon hover:underline">Confidentialité Noctalia</a></li></ul></section>
 
-  <section class="glass-panel p-8 rounded-2xl border border-dream-salmon/20 bg-dream-salmon/5"><h2 class="text-2xl font-serif text-white mb-4">Essayer Noctalia sur Android</h2><p>Au réveil, dites ce qu’il reste du rêve. Noctalia le garde avec une image, puis vous propose des questions privées pour le relire.</p><p class="mt-4"><a href="https://play.google.com/store/apps/details?id=com.tanuki75.noctalia&amp;hl=fr" class="text-dream-salmon hover:underline" rel="nofollow noopener noreferrer" target="_blank">Dicter mon prochain rêve avec Noctalia</a></p></section>
+  <section class="glass-panel p-8 rounded-2xl border border-dream-salmon/20 bg-dream-salmon/5"><h2 class="text-2xl font-serif text-white mb-4">Essayer Noctalia sur Android</h2><p>Au réveil, dites ce qu’il reste du rêve. Noctalia le garde, y ajoute une image si vous le demandez, puis vous propose des questions privées pour le relire.</p><p class="mt-4"><a href="https://play.google.com/store/apps/details?id=com.tanuki75.noctalia&amp;hl=fr" class="text-dream-salmon hover:underline" rel="nofollow noopener noreferrer" target="_blank">Dicter mon prochain rêve avec Noctalia</a></p></section>
 </div>

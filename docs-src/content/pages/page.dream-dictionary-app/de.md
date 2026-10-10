@@ -23,13 +23,13 @@
   "twitterImage": "https://noctalia.app/img/og/noctalia-de-1200x630.jpg",
   "twitterImageAlt": "Noctalia Traumlexikon App",
   "publishedTime": "2026-06-04T00:00:00+02:00",
-  "modifiedTime": "2026-07-09T00:00:00+02:00",
+  "modifiedTime": "2026-10-10T00:00:00+02:00",
   "author": "Thanh Chau",
   "prevPath": "",
   "nextPath": "",
   "preloadImage": "",
   "jsonLd": [
-    "{\"@context\":\"https://schema.org\",\"@type\":\"WebPage\",\"name\":\"Traumlexikon App für Android\",\"description\":\"Durchsuche 150 öffentliche Traumsymbol-Einträge, vergleiche mögliche Bedeutungen und verbinde das Symbol in Noctalia mit deinem gespeicherten Traum.\",\"url\":\"https://noctalia.app/de/traumlexikon-app\",\"inLanguage\":\"de\",\"dateModified\":\"2026-07-09T00:00:00+02:00\",\"about\":{\"@id\":\"https://noctalia.app/#software\"},\"publisher\":{\"@id\":\"https://noctalia.app/#organization\"}}",
+    "{\"@context\":\"https://schema.org\",\"@type\":\"WebPage\",\"name\":\"Traumlexikon App für Android\",\"description\":\"Durchsuche 150 öffentliche Traumsymbol-Einträge, vergleiche mögliche Bedeutungen und verbinde das Symbol in Noctalia mit deinem gespeicherten Traum.\",\"url\":\"https://noctalia.app/de/traumlexikon-app\",\"inLanguage\":\"de\",\"dateModified\":\"2026-10-10T00:00:00+02:00\",\"about\":{\"@id\":\"https://noctalia.app/#software\"},\"publisher\":{\"@id\":\"https://noctalia.app/#organization\"}}",
     "{\"@context\":\"https://schema.org\",\"@type\":\"BreadcrumbList\",\"itemListElement\":[{\"@type\":\"ListItem\",\"position\":1,\"name\":\"Startseite\",\"item\":\"https://noctalia.app/de/\"},{\"@type\":\"ListItem\",\"position\":2,\"name\":\"Traumlexikon App für Android\",\"item\":\"https://noctalia.app/de/traumlexikon-app\"}]} ",
     "{\"@context\":\"https://schema.org\",\"@type\":\"FAQPage\",\"mainEntity\":[{\"@type\":\"Question\",\"name\":\"Ist das Noctalia-Traumlexikon kostenlos?\",\"acceptedAnswer\":{\"@type\":\"Answer\",\"text\":\"Ja. Im öffentlichen Web-Lexikon kannst du 150 redaktionelle Traumsymbol-Einträge nach Kategorie oder von A bis Z durchsuchen, ohne die App zu installieren.\"}},{\"@type\":\"Question\",\"name\":\"Hat ein Symbol immer dieselbe Bedeutung?\",\"acceptedAnswer\":{\"@type\":\"Answer\",\"text\":\"Nein. Dasselbe Symbol kann mit unterschiedlichen Erinnerungen, Gefühlen und Situationen zusammenhängen. Nutze das Lexikon als Sammlung von Möglichkeiten und vergleiche sie mit dem ganzen Traum.\"}},{\"@type\":\"Question\",\"name\":\"Was ergänzt die Android-App zum Lexikon?\",\"acceptedAnswer\":{\"@type\":\"Answer\",\"text\":\"Die App ergänzt Sprach- oder Texteingabe, ein privates Journal, KI-Reflexion, Gefühls- und Symbolkontext, generierte Bilder und Anschlussfragen.\"}},{\"@type\":\"Question\",\"name\":\"Kann ein Traumlexikon diagnostizieren oder vorhersagen?\",\"acceptedAnswer\":{\"@type\":\"Answer\",\"text\":\"Nein. Die Einträge sind informative Denkanstöße, keine medizinische Beratung, psychologische Diagnose oder Vorhersage.\"}}]}"
   ],
@@ -37,7 +37,7 @@
 }
 ---
 <h1 class="font-serif text-4xl md:text-5xl mb-4 text-dream-cream">Traumlexikon App für Android</h1>
-<p class="text-sm text-purple-300/70 mb-6">Aktualisiert am 9. Juli 2026</p>
+<p class="text-sm text-purple-300/70 mb-6">Aktualisiert am 10. Oktober 2026</p>
 <p class="text-lg text-purple-200/80 leading-relaxed mb-10">Noctalia verbindet ein öffentliches Lexikon mit 150 redaktionellen Traumsymbol-Einträgen und ein Android-Journal. Suche nach möglichen Bedeutungen und setze das Symbol anschließend wieder in den ganzen Traum, deine Gefühle und die Details vom Aufwachen ein.</p>
 
 <div class="space-y-8 text-gray-300 leading-relaxed">

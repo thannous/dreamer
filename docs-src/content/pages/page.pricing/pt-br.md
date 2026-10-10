@@ -23,13 +23,13 @@
   "twitterImage": "https://noctalia.app/img/og/noctalia-en-1200x630.jpg",
   "twitterImageAlt": "Planos e preços do diário de sonhos Noctalia",
   "publishedTime": "2026-07-31T00:00:00+02:00",
-  "modifiedTime": "2026-07-31T00:00:00+02:00",
+  "modifiedTime": "2026-10-10T00:00:00+02:00",
   "author": "Thanh Chau",
   "prevPath": "",
   "nextPath": "",
   "preloadImage": "",
   "jsonLd": [
-    "{\"@context\":\"https://schema.org\",\"@type\":\"WebPage\",\"name\":\"Planos e preços do Noctalia\",\"description\":\"Compare o plano gratuito Sonhador e a assinatura opcional Noctalia Plus. O Google Play exibe o preço e as opções aplicáveis antes da compra.\",\"url\":\"https://noctalia.app/pt-br/precos\",\"inLanguage\":\"pt-BR\",\"datePublished\":\"2026-07-31T00:00:00+02:00\",\"dateModified\":\"2026-07-31T00:00:00+02:00\"}",
+    "{\"@context\":\"https://schema.org\",\"@type\":\"WebPage\",\"name\":\"Planos e preços do Noctalia\",\"description\":\"Compare o plano gratuito Sonhador e a assinatura opcional Noctalia Plus. O Google Play exibe o preço e as opções aplicáveis antes da compra.\",\"url\":\"https://noctalia.app/pt-br/precos\",\"inLanguage\":\"pt-BR\",\"datePublished\":\"2026-07-31T00:00:00+02:00\",\"dateModified\":\"2026-10-10T00:00:00+02:00\"}",
     "{\"@context\":\"https://schema.org\",\"@type\":\"BreadcrumbList\",\"itemListElement\":[{\"@type\":\"ListItem\",\"position\":1,\"name\":\"Início\",\"item\":\"https://noctalia.app/pt-br/\"},{\"@type\":\"ListItem\",\"position\":2,\"name\":\"Preços\",\"item\":\"https://noctalia.app/pt-br/precos\"}]}",
     "{\"@context\":\"https://schema.org\",\"@type\":\"MobileApplication\",\"name\":\"Noctalia\",\"operatingSystem\":\"Android\",\"applicationCategory\":\"LifestyleApplication\",\"downloadUrl\":\"https://play.google.com/store/apps/details?id=com.tanuki75.noctalia\",\"offers\":{\"@type\":\"Offer\",\"price\":\"0\",\"priceCurrency\":\"BRL\",\"url\":\"https://play.google.com/store/apps/details?id=com.tanuki75.noctalia\",\"description\":\"Instalação gratuita com compras opcionais do Noctalia Plus exibidas pelo Google Play.\"}}",
     "{\"@context\":\"https://schema.org\",\"@type\":\"FAQPage\",\"mainEntity\":[{\"@type\":\"Question\",\"name\":\"O Noctalia é gratuito?\",\"acceptedAnswer\":{\"@type\":\"Answer\",\"text\":\"Sim. O plano Sonhador inclui registros de sonhos ilimitados, três análises de sonhos por mês (cada uma com uma imagem), explorações guiadas sem limite mensal, até 10 mensagens de acompanhamento por sonho analisado e um diário de sonhos salvo.\"}},{\"@type\":\"Question\",\"name\":\"Quanto custa o Noctalia Plus?\",\"acceptedAnswer\":{\"@type\":\"Answer\",\"text\":\"Abra a página do Google Play ou a tela de assinatura no app para ver o preço, o período de cobrança, os impostos, a elegibilidade e qualquer promoção aplicáveis ao seu país e à sua conta antes da compra.\"}},{\"@type\":\"Question\",\"name\":\"Há assinaturas mensal e anual disponíveis?\",\"acceptedAnswer\":{\"@type\":\"Answer\",\"text\":\"Opções mensal e anual podem ser oferecidas. O Google Play exibe as opções atualmente acessíveis no seu país e para a sua conta; a disponibilidade pode variar.\"}},{\"@type\":\"Question\",\"name\":\"Onde gerenciar ou cancelar uma assinatura?\",\"acceptedAnswer\":{\"@type\":\"Answer\",\"text\":\"O Noctalia Plus é cobrado pelo Google Play. Você pode gerenciar ou cancelar a assinatura na seção Assinaturas da conta do Google Play usada na compra.\"}}]}"
@@ -38,7 +38,7 @@
 }
 ---
 <h1 class="font-serif text-4xl md:text-5xl mb-4 text-dream-cream">Planos e preços do Noctalia</h1>
-<p class="text-sm text-purple-300/70 mb-6">Atualizado em 31 de julho de 2026</p>
+<p class="text-sm text-purple-300/70 mb-6">Atualizado em 10 de outubro de 2026</p>
 <p class="text-lg text-purple-200/80 leading-relaxed mb-10">Comece com o plano gratuito Sonhador e passe para o Plus somente se quiser mais reflexão guiada. O Noctalia é gratuito para instalar no Android. Preço, impostos, período de cobrança, elegibilidade e promoções dependem do seu país e da sua conta, por isso é o Google Play que mostra o valor que você vai pagar de fato.</p>
 
 <div class="space-y-8 text-gray-300 leading-relaxed">
