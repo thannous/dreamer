@@ -7,7 +7,8 @@ entry points and current guides. Run `mise exec -- npm run scripts:list` for the
 command catalog; [scripts/README.md](scripts/README.md) explains prerequisites and effects.
 Changes are proven locally under the [common delivery rule](#livraison):
 `npm run verify:pr` before every push, `npm run verify:release` before a publish, and the PR
-records the verified commit and result; review happens in PR comments. CircleCI runs only for a manual or API trigger (GitHub App
+records the verified commit and the `verify:pr` result; review happens in PR comments. CircleCI runs only
+for a manual or API trigger (GitHub App
 `pipeline.event.name=api`, legacy OAuth `pipeline.trigger.type=api`) or when
 `force_full_validation` is true, and the EAS Workflows in `.eas/workflows/` run on
 `workflow_dispatch` only. Webhook pushes run nothing. Find filenames with
