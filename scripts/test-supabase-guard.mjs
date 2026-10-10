@@ -68,15 +68,43 @@ export function loadAllowedRefs() {
   return validateAllowedRefs(parsed.allowedProjectRefs, path.basename(TARGETS_FILE));
 }
 
-function jwtRef(key) {
+function jwtPayload(key) {
   const parts = String(key).split('.');
   if (parts.length !== 3) return null;
   try {
     const payload = JSON.parse(Buffer.from(parts[1], 'base64url').toString('utf8'));
-    return typeof payload?.ref === 'string' ? payload.ref : null;
+    return payload && typeof payload === 'object' ? payload : null;
   } catch {
     return null;
   }
+}
+
+function jwtRef(key) {
+  const payload = jwtPayload(key);
+  return typeof payload?.ref === 'string' ? payload.ref : null;
+}
+
+// Which slot accepts which key. The anon key is bundled into the app, so it
+// must be a publishable key or a legacy JWT whose role is anon; the service
+// key must be a secret key or a legacy service_role JWT. Anything else
+// (swapped, mislabeled, unknown format) is refused.
+const KEY_SLOTS = Object.freeze({
+  E2E_SUPABASE_ANON_KEY: { prefix: 'sb_publishable_', role: 'anon' },
+  E2E_SUPABASE_SERVICE_ROLE_KEY: { prefix: 'sb_secret_', role: 'service_role' },
+});
+const OPAQUE_KEY_BODY = /^[A-Za-z0-9_-]+$/;
+
+export function assertKeyRole(name, value) {
+  const slot = KEY_SLOTS[name];
+  if (!slot) throw new TestTargetRefused(`${name} is not a Supabase key slot`);
+  const key = String(value ?? '');
+  if (key.startsWith('sb_')) {
+    if (key.startsWith(slot.prefix) && OPAQUE_KEY_BODY.test(key.slice(slot.prefix.length))) return;
+    throw new TestTargetRefused(`${name} must be a ${slot.prefix}... key or a legacy ${slot.role} JWT`);
+  }
+  const payload = jwtPayload(key);
+  if (!payload) throw new TestTargetRefused(`${name} must be a ${slot.prefix}... key or a legacy ${slot.role} JWT`);
+  if (payload.role !== slot.role) throw new TestTargetRefused(`${name} holds a JWT with role "${String(payload.role)}", expected "${slot.role}"`);
 }
 
 function checkTarget(env, allowedRefs) {
@@ -113,11 +141,57 @@ function checkTarget(env, allowedRefs) {
     throw new TestTargetRefused('no test Supabase project is allowlisted in scripts/test-supabase-targets.json');
   }
   if (!allowedRefs.includes(ref)) throw new TestTargetRefused(`${ref} is not an allowlisted test Supabase project`);
-  for (const name of ['E2E_SUPABASE_ANON_KEY', 'E2E_SUPABASE_SERVICE_ROLE_KEY']) {
-    const keyRef = env[name] ? jwtRef(env[name]) : null;
-    if (keyRef && keyRef !== ref) throw new TestTargetRefused(`${name} belongs to another Supabase project`);
+  for (const name of Object.keys(KEY_SLOTS)) {
+    if (!env[name]) continue;
+    assertKeyRole(name, env[name]);
+    const keyRef = jwtRef(env[name]);
+    if (keyRef !== null && keyRef !== ref) throw new TestTargetRefused(`${name} belongs to another Supabase project`);
   }
   return { ref, url: canonical };
+}
+
+// The final app env of a branch run (what Expo will inline), checked again in
+// the Expo runner after it built that env. Same policy: pinned production ref
+// and key, allowlisted ref, anon slot rules for the key and the function JWT,
+// the functions URL of that same ref, and no production ref or key in any
+// EXPO_PUBLIC_* value.
+function checkBranchAppEnv(appEnv, allowedRefs) {
+  const publicValues = Object.entries(appEnv).filter(([name]) => name.startsWith('EXPO_PUBLIC_')).map(([, value]) => String(value ?? ''));
+  for (const ref of FORBIDDEN_PROJECT_REFS) {
+    if (publicValues.some((value) => value.toLowerCase().includes(ref))) throw new TestTargetRefused(`the production Supabase project (${ref}) is in the branch app env`);
+  }
+  for (const key of FORBIDDEN_KEYS) {
+    if (publicValues.includes(key)) throw new TestTargetRefused('a production Supabase key is in the branch app env');
+  }
+  const host = (() => {
+    try {
+      return new URL(String(appEnv.EXPO_PUBLIC_SUPABASE_URL ?? '')).hostname;
+    } catch {
+      return '';
+    }
+  })();
+  const ref = HOST_PATTERN.exec(host)?.[1] ?? '';
+  const target = checkTarget({
+    E2E_SUPABASE_URL: appEnv.EXPO_PUBLIC_SUPABASE_URL,
+    E2E_SUPABASE_PROJECT_REF: ref,
+    E2E_SUPABASE_ANON_KEY: appEnv.EXPO_PUBLIC_SUPABASE_ANON_KEY,
+  }, allowedRefs);
+  if (!appEnv.EXPO_PUBLIC_SUPABASE_ANON_KEY) throw new TestTargetRefused('EXPO_PUBLIC_SUPABASE_ANON_KEY is not set in the branch app env');
+  if (appEnv.EXPO_PUBLIC_API_URL !== `https://${target.ref}.functions.supabase.co/api`) {
+    throw new TestTargetRefused('EXPO_PUBLIC_API_URL must be the functions URL of the guarded branch');
+  }
+  const functionJwt = appEnv.EXPO_PUBLIC_SUPABASE_FUNCTION_JWT;
+  if (!functionJwt) throw new TestTargetRefused('EXPO_PUBLIC_SUPABASE_FUNCTION_JWT must be set (else app.json falls back to production)');
+  assertKeyRole('E2E_SUPABASE_ANON_KEY', functionJwt);
+  const jwtKeyRef = jwtRef(functionJwt);
+  if (jwtKeyRef !== null && FORBIDDEN_PROJECT_REFS.includes(jwtKeyRef.toLowerCase())) throw new TestTargetRefused('EXPO_PUBLIC_SUPABASE_FUNCTION_JWT belongs to the production Supabase project');
+  if (jwtKeyRef !== null && jwtKeyRef !== target.ref) throw new TestTargetRefused('EXPO_PUBLIC_SUPABASE_FUNCTION_JWT belongs to another Supabase project');
+  if (String(appEnv.EXPO_PUBLIC_MOCK_MODE ?? '').toLowerCase() === 'true') throw new TestTargetRefused('mock mode is on in the branch app env');
+  return target;
+}
+
+export function assertBranchAppEnv(appEnv) {
+  return checkBranchAppEnv(appEnv, loadAllowedRefs());
 }
 
 // The runtime check: pinned production ref and key, committed allowlist.
@@ -163,7 +237,8 @@ export function scopedFetch(target, fetch) {
       throw new TestTargetRefused('a request URL could not be parsed');
     }
     if (origin !== target.url) throw new TestTargetRefused(`a request to ${origin} is outside the guarded test project`);
-    return fetch(input, init);
+    // A redirect could carry the key to another host: refuse to follow it.
+    return fetch(input, { ...init, redirect: 'error' });
   };
 }
 
@@ -187,6 +262,11 @@ export async function runGuarded(env, action, { fetch = globalThis.fetch } = {})
 // runtime scripts; a static test enforces that.
 export function _assertWithListsForTests(env, { allowedRefs = [] } = {}) {
   return checkTarget(env, validateAllowedRefs(allowedRefs, 'the test allowlist'));
+}
+
+// TEST ONLY: assertBranchAppEnv with an injected allowlist (see above).
+export function _assertBranchAppEnvWithListsForTests(appEnv, { allowedRefs = [] } = {}) {
+  return checkBranchAppEnv(appEnv, validateAllowedRefs(allowedRefs, 'the test allowlist'));
 }
 
 // TEST ONLY: runGuarded with an injected allowlist (see above).
