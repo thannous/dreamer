@@ -1,0 +1,89 @@
+# Types a shared test account (doc_web_interne/docs/test-login.md) into the
+# existing EmailAuthCard form. No deep link, no app code. Credentials come
+# from the environment only: MAESTRO_E2E_EMAIL and MAESTRO_E2E_PASSWORD
+# (Maestro reads MAESTRO_* shell variables), never from a committed file.
+# Run it only on an app started against the test branch
+# (node scripts/start-branch-e2e.mjs); the account does not exist elsewhere.
+appId: ${APP_ID || "com.tanuki75.noctalia"}
+---
+# A device that is already signed in (any account) is signed out first, so a
+# rerun signs in and checks the requested account instead of timing out. The
+# account's data stays on the server.
+- runFlow:
+    when:
+      visible:
+        id: text.auth.email
+    commands:
+      - scrollUntilVisible:
+          element:
+            id: btn.auth.signOut
+          direction: DOWN
+          visibilityPercentage: 60
+          timeout: 30000
+      - tapOn:
+          id: btn.auth.signOut
+      - extendedWaitUntil:
+          notVisible:
+            id: text.auth.email
+          timeout: 30000
+- runFlow:
+    when:
+      notVisible:
+        id: input.auth.email
+    commands:
+      - scrollUntilVisible:
+          element:
+            id: settings-account-open-signin
+          direction: UP
+          visibilityPercentage: 60
+          timeout: 30000
+      - tapOn:
+          id: settings-account-open-signin
+- extendedWaitUntil:
+    visible:
+      id: input.auth.email
+    timeout: 30000
+- tapOn:
+    id: input.auth.email
+- eraseText
+- inputText: ${MAESTRO_E2E_EMAIL}
+- runFlow:
+    when:
+      visible: "Use your saved password.*"
+    commands:
+      - tapOn:
+          text: "No thanks"
+          optional: true
+- hideKeyboard
+- scrollUntilVisible:
+    element:
+      id: input.auth.password
+    direction: DOWN
+    visibilityPercentage: 70
+    timeout: 30000
+- tapOn:
+    id: input.auth.password
+- eraseText
+- inputText: ${MAESTRO_E2E_PASSWORD}
+- hideKeyboard
+- scrollUntilVisible:
+    element:
+      id: btn.auth.signIn
+    direction: DOWN
+    visibilityPercentage: 70
+    timeout: 30000
+- tapOn:
+    id: btn.auth.signIn
+- runFlow:
+    when:
+      visible: "Save password to Google Password Manager.*"
+    commands:
+      - tapOn:
+          text: "Never|Not now"
+- extendedWaitUntil:
+    visible:
+      id: text.auth.email
+    timeout: 45000
+- assertVisible:
+    id: text.auth.email
+    text: "e2e\\+(free|premium)@.*"

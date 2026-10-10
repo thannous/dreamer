@@ -1,0 +1,14 @@
+# Signs a shared test account in through the existing form, then checks the
+# settings show that account. Needs MAESTRO_E2E_EMAIL / MAESTRO_E2E_PASSWORD
+# from .env.test.local and a dev client on Metro started with
+# node scripts/start-branch-e2e.mjs (guarded: test branch only).
+appId: ${APP_ID || "com.tanuki75.noctalia"}
+name: Shared test account sign-in (test branch)
+tags:
+  - auth
+  - test-branch
+---
+- launchApp
+- runFlow: subflows/dismiss-first-launch-onboarding.yml
+- runFlow: journeys/subflows/open-settings.yml
+- runFlow: subflows/sign-in-e2e-account.yml

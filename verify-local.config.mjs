@@ -196,6 +196,12 @@ export default {
     'scripts/test-test-supabase-guard.mjs',
     'scripts/test-supabase-targets.json',
     '.env.test.example',
+    // The seed, the API login and the guarded Expo start that use it.
+    'scripts/test-seed-users.mjs',
+    'scripts/test-auth-setup.mjs',
+    'scripts/start-branch-e2e.mjs',
+    'scripts/test-test-seed-auth.mjs',
+    'playwright.branch.config.ts',
     // The suites ci-contracts runs.
     '.circleci/tests/classify-changes.test.sh',
     '.circleci/tests/shared-build-impact.test.py',
@@ -237,11 +243,21 @@ export default {
     // project missing from the allowlist, before any network call.
     {
       name: 'test-supabase-guard',
-      command: 'node --test scripts/test-test-supabase-guard.mjs',
+      command: 'node --test scripts/test-test-supabase-guard.mjs scripts/test-test-seed-auth.mjs',
       inputs: [
         'scripts/test-supabase-guard.mjs',
         'scripts/test-test-supabase-guard.mjs',
         'scripts/test-supabase-targets.json',
+        'scripts/test-seed-users.mjs',
+        'scripts/test-auth-setup.mjs',
+        'scripts/start-branch-e2e.mjs',
+        'scripts/test-test-seed-auth.mjs',
+        // The static test scans every script in scripts/.
+        'scripts/**',
+        // The seed mirrors this fixture's RPC call; the web origin is pinned here.
+        'e2e/backend/fixtures.ts',
+        'playwright.branch.config.ts',
+        '.gitignore',
         // The production ref is pinned against app.json.
         'app.json',
       ],
