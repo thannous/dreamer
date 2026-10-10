@@ -6,6 +6,12 @@ import React from 'react';
 
 import { NoctaliaScreenHeader } from '@/components/NoctaliaScreenHeader';
 
+jest.mock('@/components/ui/DreamerBackground', () => ({
+  DreamerArtworkWindow: () => null,
+  DreamerBackground: () => null,
+}));
+
+
 let mockWidth = 375;
 let mockFontScale = 1;
 

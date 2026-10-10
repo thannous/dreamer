@@ -3,6 +3,11 @@ import React from 'react';
 import { cleanup, fireEvent, render, screen } from '@testing-library/react';
 import { afterEach, describe, expect, it, jest } from '@jest/globals';
 
+jest.doMock('@/components/ui/DreamerBackground', () => ({
+  DreamerArtworkWindow: () => null,
+  DreamerBackground: () => null,
+}));
+
 afterEach(() => {
   cleanup();
   mockWindowWidth = 390;
