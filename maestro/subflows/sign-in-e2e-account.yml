@@ -51,13 +51,16 @@ appId: ${APP_ID || "com.tanuki75.noctalia"}
     id: input.auth.email
 - eraseText
 - inputText: ${MAESTRO_E2E_EMAIL}
-- runFlow:
-    when:
-      visible: "Use your saved password.*"
+# System prompts (Google Password Manager / Credential Manager) are matched
+# without their localized text: if the app's email field is hidden behind one,
+# press back, at most twice.
+- repeat:
+    times: 2
+    while:
+      notVisible:
+        id: input.auth.email
     commands:
-      - tapOn:
-          text: "No thanks"
-          optional: true
+      - back
 - hideKeyboard
 - scrollUntilVisible:
     element:
@@ -78,12 +81,35 @@ appId: ${APP_ID || "com.tanuki75.noctalia"}
     timeout: 30000
 - tapOn:
     id: btn.auth.signIn
+# Android's autofill save dialog has a stable resource id for its decline
+# button in every locale.
 - runFlow:
     when:
-      visible: "Save password to Google Password Manager.*"
+      visible:
+        id: ".*autofill_save_no"
     commands:
       - tapOn:
-          text: "Never|Not now"
+          id: ".*autofill_save_no"
+# Any other system sheet: while the settings screen itself is hidden, press
+# back (bounded). A slow sign-in keeps screen.settings visible, so it is never
+# backed out of.
+- repeat:
+    times: 3
+    while:
+      notVisible:
+        id: text.auth.email
+    commands:
+      - extendedWaitUntil:
+          visible:
+            id: text.auth.email
+          timeout: 15000
+          optional: true
+      - runFlow:
+          when:
+            notVisible:
+              id: screen.settings
+          commands:
+            - back
 - extendedWaitUntil:
     visible:
       id: text.auth.email

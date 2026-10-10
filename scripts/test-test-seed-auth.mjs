@@ -568,3 +568,18 @@ test('maestro wrapper: finalize records the outcome and scrubs the password from
     fs.rmSync(tmp, { recursive: true, force: true });
   }
 });
+
+test('maestro sign-in subflow: system prompts are handled without English text, with bounded retries', () => {
+  const flow = fs.readFileSync(new URL('../maestro/subflows/sign-in-e2e-account.yml', import.meta.url), 'utf8');
+  for (const english of ['Use your saved password', 'No thanks', 'Save password to Google', 'Never', 'Not now']) {
+    assert.ok(!flow.includes(english), english);
+  }
+  assert.match(flow, /id: "\.\*autofill_save_no"/);
+  const repeats = [...flow.matchAll(/- repeat:\n\s+times: (\d+)/g)].map((match) => Number(match[1]));
+  assert.deepEqual(repeats, [2, 3]);
+  // Back is only pressed while the app screen is hidden, and the exact email
+  // assertion still closes the flow.
+  assert.match(flow, /notVisible:\n\s+id: screen\.settings\n\s+commands:\n\s+- back/);
+  assert.match(flow, /copyTextFrom:\n\s+id: text\.auth\.email\n- assertTrue:\n\s+condition: \$\{maestro\.copiedText\.trim\(\)\.toLowerCase\(\) === String\(MAESTRO_E2E_EMAIL\)/);
+  assert.match(flow, /extendedWaitUntil:\n\s+visible:\n\s+id: text\.auth\.email\n\s+timeout: 45000/);
+});

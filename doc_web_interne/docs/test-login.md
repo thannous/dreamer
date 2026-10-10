@@ -207,7 +207,10 @@ existing EmailAuthCard form (`settings-account-open-signin`, `input.auth.email`,
 `input.auth.password`, `btn.auth.signIn`), then copies `text.auth.email` and
 asserts it equals `MAESTRO_E2E_EMAIL` exactly (so autofill cannot sign in the
 other shared account unnoticed). It fails fast if the credentials were not loaded.
-A device already signed in (any account) is signed out first (`btn.auth.signOut`),
+System password prompts are dismissed without their localized text (the autofill
+decline button by resource id, otherwise a bounded back press while the app
+screen is hidden); if a prompt still blocks the run, set the device locale to
+English. A device already signed in (any account) is signed out first (`btn.auth.signOut`),
 so reruns work; use a dev client kept for tests.
 
 Credentials are never typed or expanded in the shell. `npm run
@@ -296,7 +299,7 @@ See the click-level list below; production auth settings never change.
    `supabase migration list --linked` must show every file of `supabase/migrations`
    on both sides; apply any missing one with `supabase db push` (still linked to
    the branch). Re-link production afterwards if you use the link elsewhere.
-4. Ref and keys: `supabase branches list` (column `BRANCH PROJECT ID`) or the
+4. Ref and keys: `supabase branches list --project-ref usuyppgsmmowzizhaoqj` (column `BRANCH PROJECT ID`) or the
    dashboard with `e2e` selected; URL `https://<e2e-branch-ref>.supabase.co`;
    keys under Settings > API Keys with `e2e` selected, or
    `supabase projects api-keys --project-ref <e2e-branch-ref>` (a branch has its
