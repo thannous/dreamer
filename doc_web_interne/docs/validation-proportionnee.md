@@ -106,7 +106,8 @@ rien. Un contrôle spécialisé impossible sur la machine (Deno absent, par
 exemple) rend la preuve `incomplete` : le lancer en local là où tourne
 `verify:pr` ; si cette machine ne peut pas, relancer avec
 `--external <contrôle>="owner-machine: <hôte> <note> on <SHA>"` depuis la
-machine qui l'a lancé, ou le dire dans la PR
+machine qui l'a lancé ; tant que la preuve est `incomplete`, ne pas pousser et
+le signaler comme bloquant
 ([règle commune](regle-commune-livraison.md)).
 
 Ce contrôle qualifie une PR, pas une publication. Une publication, une branche

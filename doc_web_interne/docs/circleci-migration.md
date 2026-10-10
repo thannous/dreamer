@@ -71,7 +71,8 @@ Une étape de release ou de publication qui exigeait une pipeline CircleCI verte
 sur le SHA exige désormais que **`npm run verify:release` ait réussi sur ce SHA
 exact**. Un contrôle spécialisé se lance en local là où tourne `verify:pr` ; si cette
 machine ne peut pas, `--external <contrôle>="owner-machine: <hôte> <note> on <SHA>"`
-depuis la machine qui l'a lancé, ou le dire dans la PR. `--external` n'accepte
+depuis la machine qui l'a lancé ; tant que la preuve est `incomplete`, ne pas
+pousser et le signaler comme bloquant. `--external` n'accepte
 aucun lien de CI (`externalSources: []`). Ce choix ne prouve rien sur une machine vierge : le
 contrôle tourne avec l'installation locale de l'auteur.
 
@@ -115,7 +116,8 @@ TesterArmy sont déclarés avec leur prérequis : si la machine ne les a pas, la
 preuve est `incomplete` et indique la commande d'installation. Les lancer en
 local là où tourne `verify:pr` ; si cette machine ne peut pas, relancer avec
 `--external <contrôle>="owner-machine: <hôte> <note> on <SHA>"` depuis la
-machine qui les a lancés, ou le dire dans la PR.
+machine qui les a lancés ; tant que la preuve est `incomplete`, ne pas pousser
+et le signaler comme bloquant.
 `node scripts/verify-local.mjs status` affiche la preuve du commit.
 
 ## Architecture et frontière des responsabilités
