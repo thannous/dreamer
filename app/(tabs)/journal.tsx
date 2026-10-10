@@ -551,7 +551,8 @@ function JournalListScreen() {
   const handleStaticListScroll = useCallback((event: NativeSyntheticEvent<NativeScrollEvent>) => {
     staticScrollY.current = event.nativeEvent.contentOffset.y;
     headerScrollY.set(staticScrollY.current);
-  }, [headerScrollY]);
+    listScrollY.set(staticScrollY.current);
+  }, [headerScrollY, listScrollY]);
 
   const handleListScroll = useAnimatedScrollHandler({
     onScroll: (event) => {
@@ -1106,7 +1107,7 @@ function JournalListScreen() {
           // Keep layout styles on the wrapper: Reanimated supplies style arrays,
           // while FlashList's web container spreads its style as an object.
           ListHeaderComponent={listHeader}
-          onScroll={searchConsumesLayout ? handleStaticListScroll : handleListScroll}
+          onScroll={isWeb || searchConsumesLayout ? handleStaticListScroll : handleListScroll}
           scrollEventThrottle={16}
           keyboardShouldPersistTaps="handled"
           keyboardDismissMode="on-drag"
