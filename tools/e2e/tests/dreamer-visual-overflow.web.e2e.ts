@@ -8,6 +8,8 @@ test.use({ locale: 'fr-FR', viewport: { width: 320, height: 568 } });
 async function enter(page: Page) {
   await page.goto('/');
   await page.getByTestId('btn.onboarding.intro.next').click();
+  // With feature sheets, "Commencer" first tells the three stories; the cross moves on.
+  if (process.env.EXPO_PUBLIC_ONBOARDING_FEATURE_SHEETS_ENABLED === 'true') await page.getByTestId('btn.onboarding.feature.close').click();
   await page.getByTestId('btn.onboarding.skip').click();
   await expect(page.getByTestId('screen.recording')).toBeVisible();
 }

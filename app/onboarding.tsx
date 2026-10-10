@@ -122,6 +122,9 @@ export default function OnboardingScreen() {
   const [failedAction, setFailedAction] = useState<FailedAction | null>(null);
   const [showPrivacySheet, setShowPrivacySheet] = useState(false);
   const [activeFeature, setActiveFeature] = useState<OnboardingFeature | null>(null);
+  // "Commencer" tells the three stories in order once, then moves on to the path.
+  const [guidedTour, setGuidedTour] = useState(false);
+  const guidedTourSeenRef = useRef(false);
   const featureTriggers = useRef<Partial<Record<OnboardingFeature, ViewInstance | null>>>({});
   const featureFocusTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
   const [analyticsEnabled, setAnalyticsEnabled] = useState(false);
@@ -342,6 +345,23 @@ export default function OnboardingScreen() {
       setIsStepTransitioning(false);
     }
   }, [isReplay, transition]);
+
+  const startIntro = () => {
+    if (!featureSheetsEnabled || guidedTourSeenRef.current) {
+      void runStepTransition('path');
+      return;
+    }
+    guidedTourSeenRef.current = true;
+    setGuidedTour(true);
+    setActiveFeature('capture');
+  };
+
+  // Finishing or closing the guided stories both continue the onboarding.
+  const finishGuidedTour = () => {
+    setActiveFeature(null);
+    setGuidedTour(false);
+    void runStepTransition('path');
+  };
 
   const waitForExitFade = useCallback(() => (reducedMotion
     ? Promise.resolve()
@@ -928,7 +948,7 @@ export default function OnboardingScreen() {
             : t(`onboarding.path.${selectedDefinition.id}.cta`)}
           accessibilityRole="button"
           onPress={() => step === 'intro'
-            ? void runStepTransition('path')
+            ? startIntro()
             : void completePath(selectedDefinition.id)}
           disabled={isLeaving || isStepTransitioning}
           style={({ pressed }) => [
@@ -959,7 +979,8 @@ export default function OnboardingScreen() {
 
       {featureSheetsEnabled && activeFeature ? (
         <React.Suspense fallback={null}>
-          <OnboardingFeatureSheet feature={activeFeature} onClose={closeFeature} onFeatureChange={setActiveFeature} />
+          <OnboardingFeatureSheet feature={activeFeature} onClose={guidedTour ? finishGuidedTour : closeFeature}
+            onFeatureChange={setActiveFeature} finishLabel={guidedTour ? t('onboarding.narrative.finish_guided') : undefined} />
         </React.Suspense>
       ) : null}
 

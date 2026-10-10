@@ -8,6 +8,8 @@ async function openExplorer(page: Page) {
   await page.clock.setFixedTime(new Date('2026-10-03T12:00:00+02:00'));
   await page.goto('/');
   await page.getByTestId('btn.onboarding.intro.next').click();
+  // With feature sheets, "Commencer" first tells the three stories; the cross moves on.
+  if (process.env.EXPO_PUBLIC_ONBOARDING_FEATURE_SHEETS_ENABLED === 'true') await page.getByTestId('btn.onboarding.feature.close').click();
   await page.getByTestId('btn.onboarding.skip').click();
   await expect(page.getByTestId('screen.recording')).toBeVisible();
   await page.getByTestId('tab.explore').filter({ visible: true }).click();

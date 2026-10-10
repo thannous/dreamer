@@ -72,17 +72,22 @@ defaultFeatureTest('feature sheets stay disabled by default while onboarding and
   await page.getByRole('button', { name: 'Done', exact: true }).click();
   await expect(page.getByTestId('sheet.onboarding.privacy')).toHaveCount(0);
   await page.getByTestId('btn.onboarding.intro.next').click();
+  // With feature sheets, "Commencer" first tells the three stories; the cross moves on.
+  if (process.env.EXPO_PUBLIC_ONBOARDING_FEATURE_SHEETS_ENABLED === 'true') await page.getByTestId('btn.onboarding.feature.close').click();
   await expect(page.getByTestId('component.onboarding.path')).toBeVisible();
 });
 
 test('the chosen path is announced as selected and survives a return to the introduction', async ({ page }) => {
   await page.getByTestId('btn.onboarding.intro.next').click();
+  // With feature sheets, "Commencer" first tells the three stories; the cross moves on.
+  if (process.env.EXPO_PUBLIC_ONBOARDING_FEATURE_SHEETS_ENABLED === 'true') await page.getByTestId('btn.onboarding.feature.close').click();
   const memory = page.getByTestId('btn.onboarding.path.memory');
   await memory.click();
   await expect(memory).toHaveAttribute('aria-checked', 'true');
   await expect(page.getByTestId('btn.onboarding.path.analyze')).toHaveAttribute('aria-checked', 'false');
   await page.getByTestId('btn.onboarding.back').click();
   await expect(page.getByTestId('component.onboarding.intro')).toBeVisible();
+  // The stories are told once: returning to the introduction goes straight back to the path.
   await page.getByTestId('btn.onboarding.intro.next').click();
   await expect(memory).toHaveAttribute('aria-checked', 'true');
 });
@@ -91,6 +96,8 @@ test('the welcome and path remain inside the viewport without off-canvas horizon
   const overflow = () => page.evaluate(() => document.documentElement.scrollWidth - window.innerWidth);
   await expect.poll(overflow).toBeLessThanOrEqual(1);
   await page.getByTestId('btn.onboarding.intro.next').click();
+  // With feature sheets, "Commencer" first tells the three stories; the cross moves on.
+  if (process.env.EXPO_PUBLIC_ONBOARDING_FEATURE_SHEETS_ENABLED === 'true') await page.getByTestId('btn.onboarding.feature.close').click();
   await page.getByTestId('btn.onboarding.path.memory').click();
   await expect(page.getByTestId('btn.onboarding.path.memory')).toHaveAttribute('aria-checked', 'true');
   await expect.poll(overflow).toBeLessThanOrEqual(1);
@@ -119,6 +126,8 @@ test.describe('feature sheet previews', () => {
         await expect(page.getByTestId('component.onboarding.intro')).toBeVisible();
       }
       await page.getByTestId('btn.onboarding.intro.next').click();
+      // With feature sheets, "Commencer" first tells the three stories; the cross moves on.
+      if (process.env.EXPO_PUBLIC_ONBOARDING_FEATURE_SHEETS_ENABLED === 'true') await page.getByTestId('btn.onboarding.feature.close').click();
       await expect(page.getByTestId('component.onboarding.path')).toBeVisible();
     });
   }
@@ -325,7 +334,33 @@ test.describe('feature sheet previews', () => {
     await expect(page.getByTestId('sheet.onboarding.feature')).toHaveCount(0);
     await expect(page.getByTestId('btn.onboarding.feature.explore')).toBeFocused();
     await page.getByTestId('btn.onboarding.intro.next').click();
+    // With feature sheets, "Commencer" first tells the three stories; the cross moves on.
+    if (process.env.EXPO_PUBLIC_ONBOARDING_FEATURE_SHEETS_ENABLED === 'true') await page.getByTestId('btn.onboarding.feature.close').click();
     await expect(page.getByTestId('component.onboarding.path')).toBeVisible();
+  });
+
+  test('Commencer tells the three stories in order, then continues to the path', async ({ page }) => {
+    await page.getByTestId('btn.onboarding.intro.next').click();
+    for (const feature of ['capture', 'connect', 'explore']) {
+      await expect(page.getByTestId(`component.onboarding.story.${feature}.0`)).toBeVisible();
+      await readToExample(page, feature);
+      if (feature === 'explore') await expect(page.getByTestId('btn.onboarding.story.continue')).toContainText('Continue');
+      await page.getByTestId('btn.onboarding.story.continue').click();
+    }
+    await expect(page.getByTestId('sheet.onboarding.feature')).toHaveCount(0);
+    await expect(page.getByTestId('component.onboarding.path')).toBeVisible();
+  });
+
+  test('closing the stories started by Commencer moves on, and they are not told twice', async ({ page }) => {
+    await page.getByTestId('btn.onboarding.intro.next').click();
+    await expect(page.getByTestId('component.onboarding.story.capture.0')).toBeVisible();
+    await page.getByTestId('btn.onboarding.feature.close').click();
+    await expect(page.getByTestId('component.onboarding.path')).toBeVisible();
+    await page.getByTestId('btn.onboarding.back').click();
+    await expect(page.getByTestId('component.onboarding.intro')).toBeVisible();
+    await page.getByTestId('btn.onboarding.intro.next').click();
+    await expect(page.getByTestId('component.onboarding.path')).toBeVisible();
+    await expect(page.getByTestId('sheet.onboarding.feature')).toHaveCount(0);
   });
 
   test('turning a page never moves the button under the thumb', async ({ page }) => {

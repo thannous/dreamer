@@ -16,6 +16,8 @@ for (const editor of ['metadata', 'transcript'] as const) {
     await app.open();
     await app.clearState();
     await screen.getByTestId('btn.onboarding.intro.next', { visible: true }).tap();
+    // With feature sheets, "Commencer" first tells the three stories; the cross moves on.
+    if (process.env.EXPO_PUBLIC_ONBOARDING_FEATURE_SHEETS_ENABLED === 'true') await screen.getByTestId('btn.onboarding.feature.close', { visible: true }).tap();
     await screen.getByTestId('btn.onboarding.skip', { visible: true }).tap();
     const settings = screen.getByRole('button', /^(Settings|Paramètres)$/, { visible: true }).first();
     await screen.scrollUntilVisible(settings, { direction: 'up' });
@@ -125,6 +127,8 @@ test('Dreamer release onboarding reaches capture and rejects an empty save', asy
   await app.clearState();
   await expect(screen.getByTestId('screen.onboarding')).toBeVisible();
   await screen.getByTestId('btn.onboarding.intro.next').tap();
+  // With feature sheets, "Commencer" first tells the three stories; the cross moves on.
+  if (process.env.EXPO_PUBLIC_ONBOARDING_FEATURE_SHEETS_ENABLED === 'true') await screen.getByTestId('btn.onboarding.feature.close', { visible: true }).tap();
   await screen.getByTestId('btn.onboarding.skip').tap();
   await expect(screen.getByTestId('screen.recording')).toBeVisible();
   await expect(screen.getByTestId('btn.saveDream')).toBeDisabled();
@@ -144,6 +148,8 @@ test('Dreamer release Quick Settings persists French and theme choices while pre
   await app.open();
   await app.clearState();
   await screen.getByTestId('btn.onboarding.intro.next').tap();
+  // With feature sheets, "Commencer" first tells the three stories; the cross moves on.
+  if (process.env.EXPO_PUBLIC_ONBOARDING_FEATURE_SHEETS_ENABLED === 'true') await screen.getByTestId('btn.onboarding.feature.close', { visible: true }).tap();
   await screen.getByTestId('btn.onboarding.skip').tap();
   await screen.getByTestId('btn.recording.inputMode.text', { visible: true }).tap();
   const draft = 'Fixture de qualification : un phare bleu sur une mer calme.';
@@ -204,6 +210,8 @@ test('Dreamer release opens the language choices from the Quick Settings row', a
   await app.open();
   await app.clearState();
   await screen.getByTestId('btn.onboarding.intro.next').tap();
+  // With feature sheets, "Commencer" first tells the three stories; the cross moves on.
+  if (process.env.EXPO_PUBLIC_ONBOARDING_FEATURE_SHEETS_ENABLED === 'true') await screen.getByTestId('btn.onboarding.feature.close', { visible: true }).tap();
   await screen.getByTestId('btn.onboarding.skip').tap();
   await screen.getByRole('button', /^(Settings|Paramètres)$/, { visible: true }).first().tap();
   const language = screen.getByTestId('quick-settings.language', { visible: true });
@@ -218,6 +226,8 @@ test('Dreamer release drawer layout, backdrop and full settings actions remain u
   await app.open();
   await app.clearState();
   await screen.getByTestId('btn.onboarding.intro.next').tap();
+  // With feature sheets, "Commencer" first tells the three stories; the cross moves on.
+  if (process.env.EXPO_PUBLIC_ONBOARDING_FEATURE_SHEETS_ENABLED === 'true') await screen.getByTestId('btn.onboarding.feature.close', { visible: true }).tap();
   await screen.getByTestId('btn.onboarding.skip').tap();
   const settings = screen.getByRole('button', /^(Settings|Paramètres)$/, { visible: true }).first();
   await settings.tap();
@@ -244,6 +254,8 @@ test('Dreamer release drawer sign-in opens its account destination', async ({ ap
   await app.open();
   await app.clearState();
   await screen.getByTestId('btn.onboarding.intro.next').tap();
+  // With feature sheets, "Commencer" first tells the three stories; the cross moves on.
+  if (process.env.EXPO_PUBLIC_ONBOARDING_FEATURE_SHEETS_ENABLED === 'true') await screen.getByTestId('btn.onboarding.feature.close', { visible: true }).tap();
   await screen.getByTestId('btn.onboarding.skip').tap();
   await screen.getByRole('button', /^(Settings|Paramètres)$/, { visible: true }).first().tap();
   const signin = screen.getByTestId('quick-settings.signin', { visible: true });
@@ -304,6 +316,8 @@ test('Dreamer release drawer Plus opens its offer and closes back to Capture', a
   await app.open();
   await app.clearState();
   await screen.getByTestId('btn.onboarding.intro.next').tap();
+  // With feature sheets, "Commencer" first tells the three stories; the cross moves on.
+  if (process.env.EXPO_PUBLIC_ONBOARDING_FEATURE_SHEETS_ENABLED === 'true') await screen.getByTestId('btn.onboarding.feature.close', { visible: true }).tap();
   await screen.getByTestId('btn.onboarding.skip').tap();
   await screen.getByRole('button', /^(Settings|Paramètres)$/, { visible: true }).first().tap();
   const plus = screen.getByTestId('quick-settings.plus', { visible: true });

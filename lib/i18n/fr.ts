@@ -164,6 +164,7 @@ const translations: Record<string, string> = {
     "onboarding.narrative.continue.connect": "Suivre les liens",
     "onboarding.narrative.continue.explore": "Ouvrir le dialogue",
     "onboarding.narrative.finish": "Revenir à mon parcours",
+    "onboarding.narrative.finish_guided": "Continuer",
     "onboarding.story.capture.fragment": "Je me souviens d’une porte bleue…",
     "onboarding.story.explore.home": "Ce lieu me rappelle la maison de mon enfance.",
     "onboarding.story.explore.followup_start": "Qu’est-ce qui te donnerait envie de franchir cette porte ?",

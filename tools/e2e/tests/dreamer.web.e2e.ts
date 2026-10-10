@@ -7,6 +7,8 @@ import type { App, Screen } from 'e2e';
 async function startGuest(app: App, screen: Screen) {
   await app.open();
   await screen.getByTestId('btn.onboarding.intro.next').tap();
+  // With feature sheets, "Commencer" first tells the three stories; the cross moves on.
+  if (process.env.EXPO_PUBLIC_ONBOARDING_FEATURE_SHEETS_ENABLED === 'true') await screen.getByTestId('btn.onboarding.feature.close', { visible: true }).tap();
   await screen.getByTestId('btn.onboarding.skip').tap();
   await expect(screen.getByTestId('screen.recording', { visible: true })).toBeVisible();
 }
@@ -295,6 +297,8 @@ test('onboarding prevents an empty save and capture preserves the draft', async 
   await isolateWeb(browser, app);
   await app.open();
   await screen.getByTestId('btn.onboarding.intro.next').tap();
+  // With feature sheets, "Commencer" first tells the three stories; the cross moves on.
+  if (process.env.EXPO_PUBLIC_ONBOARDING_FEATURE_SHEETS_ENABLED === 'true') await screen.getByTestId('btn.onboarding.feature.close', { visible: true }).tap();
   await screen.getByTestId('btn.onboarding.skip').tap();
   await expect(screen.getByTestId('screen.recording', { visible: true })).toBeVisible();
   await expect(screen.getByTestId('btn.saveDream')).toBeDisabled();
@@ -311,6 +315,8 @@ test('Quick Settings changes language and theme without losing the Capture draft
   await isolateWeb(browser, app);
   await app.open();
   await screen.getByTestId('btn.onboarding.intro.next').tap();
+  // With feature sheets, "Commencer" first tells the three stories; the cross moves on.
+  if (process.env.EXPO_PUBLIC_ONBOARDING_FEATURE_SHEETS_ENABLED === 'true') await screen.getByTestId('btn.onboarding.feature.close', { visible: true }).tap();
   await screen.getByTestId('btn.onboarding.skip').tap();
   await screen.getByTestId('btn.recording.inputMode.text', { visible: true }).tap();
   const editor = screen.getByTestId('input.dreamTranscript', { visible: true });
@@ -401,6 +407,8 @@ test('Quick Settings keeps interior taps open and accepts every sign-in button e
   await isolateWeb(browser, app);
   await app.open();
   await screen.getByTestId('btn.onboarding.intro.next').tap();
+  // With feature sheets, "Commencer" first tells the three stories; the cross moves on.
+  if (process.env.EXPO_PUBLIC_ONBOARDING_FEATURE_SHEETS_ENABLED === 'true') await screen.getByTestId('btn.onboarding.feature.close', { visible: true }).tap();
   await screen.getByTestId('btn.onboarding.skip').tap();
   const settings = screen.getByRole('button', 'Settings', { visible: true });
   const drawer = screen.getByTestId('quick-settings.drawer', { visible: true });

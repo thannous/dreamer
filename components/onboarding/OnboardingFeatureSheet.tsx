@@ -100,8 +100,10 @@ function StoryFooter({ label, testID, readyAt, tokens, onNext }: {
   </BottomSheetActions>;
 }
 
-export function OnboardingFeatureSheet({ feature, onClose, onFeatureChange }: {
+export function OnboardingFeatureSheet({ feature, onClose, onFeatureChange, finishLabel }: {
   feature: OnboardingFeature; onClose: () => void; onFeatureChange: (feature: OnboardingFeature) => void;
+  /** The last button's label when the stories lead on to the next onboarding step. */
+  finishLabel?: string;
 }) {
   const { t } = useTranslation();
   const tokens = NIGHT;
@@ -132,7 +134,8 @@ export function OnboardingFeatureSheet({ feature, onClose, onFeatureChange }: {
     dragIndicatorColor={tokens.text.secondary} showsVerticalScrollIndicator={false}
     headerContent={<StoryProgress step={step} tokens={tokens} />}
     footer={<StoryFooter key={`${feature}-${step}`} tokens={tokens} readyAt={readyAt}
-      label={t(demo ? (nextChapter ? `onboarding.narrative.continue.${nextChapter}` : 'onboarding.narrative.finish') : `onboarding.narrative.${feature}.${step}.next`)}
+      label={demo && !nextChapter && finishLabel ? finishLabel
+        : t(demo ? (nextChapter ? `onboarding.narrative.continue.${nextChapter}` : 'onboarding.narrative.finish') : `onboarding.narrative.${feature}.${step}.next`)}
       testID={demo ? 'btn.onboarding.story.continue' : 'btn.onboarding.story.next'}
       onNext={() => {
         if (!demo) storyRef.current?.next();

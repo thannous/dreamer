@@ -11,6 +11,8 @@ async function prepareReflection(page: Page, media: 'loaded' | 'failed' | 'absen
   await page.route('https://picsum.photos/**', route => media === 'failed' ? route.abort() : route.fulfill({ path: artwork }));
   await page.goto('/');
   await page.getByTestId('btn.onboarding.intro.next').click();
+  // With feature sheets, "Commencer" first tells the three stories; the cross moves on.
+  if (process.env.EXPO_PUBLIC_ONBOARDING_FEATURE_SHEETS_ENABLED === 'true') await page.getByTestId('btn.onboarding.feature.close').click();
   await page.getByTestId('btn.onboarding.skip').click();
   await page.getByTestId('btn.recording.home').or(page.getByTestId('tab.home')).filter({ visible: true }).click();
   await page.getByTestId('btn.header.home.settings').click();
