@@ -9,11 +9,15 @@ for (const account of ['free', 'premium'] as TestAccount[]) {
     test('opens signed in from the saved session', async ({ page }) => {
       await page.goto('/', { waitUntil: 'domcontentloaded' });
       const intro = page.getByTestId('btn.onboarding.intro.next');
-      if (await intro.isVisible({ timeout: 10_000 }).catch(() => false)) {
+      const home = page.getByTestId('btn.recording.home').or(page.getByTestId('tab.home')).filter({ visible: true });
+      // Wait until either onboarding or home has rendered (isVisible does not
+      // wait), then branch on what is actually on screen.
+      await expect(intro.or(home).first()).toBeVisible({ timeout: 30_000 });
+      if (await intro.isVisible()) {
         await intro.click();
         await page.getByTestId('btn.onboarding.skip').click();
       }
-      await page.getByTestId('btn.recording.home').or(page.getByTestId('tab.home')).filter({ visible: true }).click();
+      await home.first().click();
       await page.getByTestId('btn.header.home.settings').click();
       await page.getByTestId('quick-settings.all').click();
       await expect(page.getByTestId('text.auth.email')).toContainText(`e2e+${account}@`);

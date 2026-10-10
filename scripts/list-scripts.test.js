@@ -41,6 +41,7 @@ describe('script catalog', () => {
     expect(scriptSafety('test:seed-users')).toBe('writes the Supabase test branch (accounts, dreams, quota, tier)');
     expect(scriptSafety('test:auth-setup')).toBe('writes session tokens to .auth/');
     expect(scriptSafety('test:e2e:branch')).toBe('writes session tokens to .auth/');
+    expect(scriptSafety('test:e2e:branch:mobile')).toBe('signs the device app out and in; writes test-results/e2e-branch-mobile/run.json');
     expect(scriptSafety('test:env:check')).toBe('read-only or runtime');
   });
 

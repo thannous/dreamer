@@ -49,6 +49,7 @@ function scriptSafety(name) {
   if (name === 'prepare') return 'writes local Git config';
   if (name === 'test:seed-users') return 'writes the Supabase test branch (accounts, dreams, quota, tier)';
   if (name === 'test:auth-setup' || name === 'test:e2e:branch') return 'writes session tokens to .auth/';
+  if (name === 'test:e2e:branch:mobile') return 'signs the device app out and in; writes test-results/e2e-branch-mobile/run.json';
   if (/^docs:deploy:/.test(name)) return 'publishes';
   if (/^(docs:(build|build-guides|dev|release-check)|generate-sitemap|content:build-manifest$|content:build-site-manifest$)/.test(name)) return 'writes generated files';
   if (/^(subscription:qa:(evidence|play-state|revenuecat-subscriber-expiry|google-play-state)|android:.*-state)$/.test(name)) return 'writes QA evidence';

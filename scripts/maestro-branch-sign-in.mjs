@@ -48,8 +48,29 @@ export function runRecord({ tier, target, appId, git = (args) => execFileSync('g
 
 export const RECORD_FILE = path.join(ROOT_DIR, 'test-results', 'e2e-branch-mobile', 'run.json');
 
+// Only `--device <id>` passes after the tier. Anything else (notably `-e` /
+// `--env`, which would replace MAESTRO_E2E_EMAIL/PASSWORD inside the flow) is
+// refused before the guard runs or Maestro starts.
+export function maestroArgs(rest) {
+  const out = [];
+  for (let index = 0; index < rest.length; index += 1) {
+    const arg = String(rest[index]);
+    if (arg === '--device') {
+      const value = String(rest[index + 1] ?? '');
+      if (!/^[A-Za-z0-9][A-Za-z0-9._:-]*$/.test(value)) throw new Error('maestro-branch-sign-in: --device needs an adb serial or device id.');
+      out.push('--device', value);
+      index += 1;
+      continue;
+    }
+    throw new Error(`maestro-branch-sign-in: argument "${arg}" is not allowed. Usage: npm run test:e2e:branch:mobile -- <free|premium> [--device <id>].`);
+  }
+  return out;
+}
+
 export function main(argv = process.argv.slice(2), { env = readTestEnv(), spawnImpl = spawn, writeRecord = true } = {}) {
   const [tier = 'free', ...rest] = argv;
+  if (!E2E_TIERS.includes(tier)) throw new Error(`maestro-branch-sign-in: tier must be one of ${E2E_TIERS.join(', ')}`);
+  const deviceArgs = maestroArgs(rest);
   const target = assertTestSupabaseTarget(env);
   const childEnv = maestroEnv(tier, env);
   if (writeRecord) {
@@ -57,7 +78,7 @@ export function main(argv = process.argv.slice(2), { env = readTestEnv(), spawnI
     const record = runRecord({ tier, target, appId: childEnv.APP_ID || 'com.tanuki75.noctalia' });
     fs.writeFileSync(RECORD_FILE, `${JSON.stringify(record, null, 2)}\n`);
   }
-  return spawnImpl('maestro', ['test', ...rest, FLOW], { cwd: ROOT_DIR, stdio: 'inherit', env: childEnv });
+  return spawnImpl('maestro', [...deviceArgs, 'test', FLOW], { cwd: ROOT_DIR, stdio: 'inherit', env: childEnv });
 }
 
 if (process.argv[1] && path.resolve(process.argv[1]) === fileURLToPath(import.meta.url)) {

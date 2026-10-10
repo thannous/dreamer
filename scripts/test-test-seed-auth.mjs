@@ -7,7 +7,7 @@ import { _runGuardedWithListsForTests, TestTargetRefused } from './test-supabase
 import { TIER_STATE, keyHeaders, main as seedMain, makeSeedAction, readSeedSecrets } from './test-seed-users.mjs';
 import { BRANCH_WEB_ORIGIN, BRANCH_WEB_PORT, main as authMain, makeAuthAction, readAuthSecrets, storageKey } from './test-auth-setup.mjs';
 import { BRANCH_GUARD_MARKER, PASSTHROUGH_EXPO_PUBLIC, RUNNER, branchAppEnv, branchCommand, main as startMain, parseBranchArgs } from './start-branch-e2e.mjs';
-import { FLOW, main as maestroMain, maestroEnv, runRecord } from './maestro-branch-sign-in.mjs';
+import { FLOW, main as maestroMain, maestroArgs, maestroEnv, runRecord } from './maestro-branch-sign-in.mjs';
 
 const PROD = 'usuyppgsmmowzizhaoqj';
 const REF = 'abcdefghijklmnopqrst';
@@ -345,4 +345,27 @@ test('maestro wrapper: credentials from the loaded env, only as MAESTRO_* env va
   assert.equal(calls.length, 0);
   assert.equal(FLOW, 'maestro/e2e-account-sign-in.yml');
   assert.ok(fs.existsSync(new URL(`../${FLOW}`, import.meta.url)));
+});
+
+test('maestro wrapper: only --device passes; -e/--env credential overrides and other args are refused before the guard', () => {
+  assert.deepEqual(maestroArgs([]), []);
+  assert.deepEqual(maestroArgs(['--device', 'emulator-5554']), ['--device', 'emulator-5554']);
+  for (const bad of [
+    ['-e', 'MAESTRO_E2E_EMAIL=e2e+free@other.example'],
+    ['--env', 'MAESTRO_E2E_PASSWORD=x'],
+    ['--env=MAESTRO_E2E_EMAIL=e2e+free@other.example'],
+    ['-eMAESTRO_E2E_EMAIL=x'],
+    ['--device'],
+    ['--device', '-e'],
+    ['--device=emulator-5554'],
+    ['other-flow.yml'],
+    ['--'],
+    ['--debug-output', '/tmp/x'],
+  ]) {
+    assert.throws(() => maestroArgs(bad), /maestro-branch-sign-in: (argument|--device)/, JSON.stringify(bad));
+    let spawned = false;
+    assert.throws(() => maestroMain(['free', ...bad], { env: prodEnv(), spawnImpl: () => { spawned = true; }, writeRecord: false }), /maestro-branch-sign-in: (argument|--device)/);
+    assert.equal(spawned, false);
+  }
+  assert.throws(() => maestroMain(['admin'], { env: env(), spawnImpl: () => {}, writeRecord: false }), /tier must be/);
 });
