@@ -5,7 +5,7 @@ import assert from 'node:assert/strict';
 import { spawn, spawnSync } from 'node:child_process';
 import net from 'node:net';
 import { createHash } from 'node:crypto';
-import { existsSync, lstatSync, mkdirSync, mkdtempSync, readdirSync, readFileSync, readlinkSync, rmSync, symlinkSync, utimesSync, writeFileSync } from 'node:fs';
+import { existsSync, lstatSync, mkdirSync, mkdtempSync, readdirSync, readFileSync, readlinkSync, realpathSync, rmSync, symlinkSync, utimesSync, writeFileSync } from 'node:fs';
 import os from 'node:os';
 import path from 'node:path';
 import { after, describe, test } from 'node:test';
@@ -1364,7 +1364,11 @@ describe('node_modules of the isolated copy', () => {
     const kept = repo.lines.find((line) => line.includes('isolated copy kept at'));
     const copy = kept.replace(/^.*kept at /, '').replace(/\.$/, '');
     assert.ok(lstatSync(path.join(copy, 'node_modules', 'ext')).isSymbolicLink());
-    assert.equal(readlinkSync(path.join(copy, 'node_modules', 'ext')), path.join(repo.work, 'node_modules', 'ext'));
+    // Git reports the checkout by its real path; macOS reaches the temp dir through /var -> /private/var.
+    assert.equal(
+      realpathSync(readlinkSync(path.join(copy, 'node_modules', 'ext'))),
+      realpathSync(path.join(repo.work, 'node_modules', 'ext')),
+    );
     assert.equal(
       readFileSync(path.join(copy, 'node_modules', '@fixture', 'ws', 'index.js'), 'utf8'),
       'module.exports = "verified";\n',
