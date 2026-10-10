@@ -107,18 +107,13 @@ export function DailyRitualShelf({
         contentStyle={styles.content}
         testID="home.journey.ritual-glass">
         <View className="gap-2">
-          <View className="flex-row flex-wrap items-center gap-2">
+          {/* The world's role and moment head the home hero; the shelf names
+              only a recommendation that comes from outside the world. */}
+          {recommendationSource === 'catalogue' ? (
             <Text variant="overline" testID="home.journey.ritual-overline">
-              {recommendationSource === 'catalogue'
-                ? t('home.recommended.forYou')
-                : t(`world.${world.id}.role` as TranslationKey)}
+              {t('home.recommended.forYou')}
             </Text>
-            {recommendationSource === 'catalogue' ? null : (
-              <Text variant="caption" tone="muted">
-                {t(`world.${world.id}.moment` as TranslationKey)}
-              </Text>
-            )}
-          </View>
+          ) : null}
           {recommendationSource === 'catalogue' ? null : (
             <WorldPathProgress world={world} progress={journeyProgress} />
           )}

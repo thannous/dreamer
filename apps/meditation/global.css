@@ -19,6 +19,9 @@
   --text-display--line-height: 40px;
   --text-hero: 40px;
   --text-hero--line-height: 46px;
+  /* One name per screen, at the scale of the landing; Fraunces regular, as in Dreams. */
+  --text-saga: 52px;
+  --text-saga--line-height: 56px;
   --text-h1: 28px;
   --text-h1--line-height: 34px;
   --text-h2: 22px;

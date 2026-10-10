@@ -47,7 +47,7 @@ import {
 import { isMockModeEnabled } from '@/lib/env';
 import { DreamPersistenceError } from '@/lib/dreamStorageRead';
 import { getDreamIdentityKey } from '@/lib/dreamIdentity';
-import { GuestDreamLimitError } from '@/lib/errors';
+import { classifyError, GuestDreamLimitError } from '@/lib/errors';
 import { hasAiConsent } from '@/lib/aiConsent';
 import { trackInitialDreamCategorization } from '@/lib/initialDreamCategorization';
 import { getTranscriptionLocale } from '@/lib/locale';
@@ -70,7 +70,13 @@ import {
 import { canDictate } from '@/lib/speechCapability';
 import { buildJournalDetailHref } from '@/lib/journalSavedConfirmation';
 import { isTranscriptSaveable } from '@/lib/recordingDraftProgress';
-import { insertDictation, type DictationInsertion, type TranscriptSelection } from '@/lib/dictationInsertion';
+import {
+  insertDictation,
+  rebaseDictation,
+  type DictationAnchor,
+  type DictationInsertion,
+  type TranscriptSelection,
+} from '@/lib/dictationInsertion';
 import { TID } from '@/lib/testIDs';
 import type {
   DreamAnalysis,
@@ -92,6 +98,7 @@ import {
   saveRecordingVoiceHintCompleted,
   saveRecordingInputModePreference,
 } from '@/services/storageService';
+import * as Haptics from 'expo-haptics';
 import { LinearGradient } from 'expo-linear-gradient';
 import { router, useFocusEffect, useLocalSearchParams } from 'expo-router';
 import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
@@ -110,7 +117,10 @@ import {
   View,
   useWindowDimensions,
 } from 'react-native';
+import { useReducedMotion } from 'react-native-reanimated';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import { DreamCaptureSeal } from '@/components/journal/story/DreamCaptureSeal';
+import { DREAM_STORY } from '@/components/journal/story/dreamStoryMotion';
 
 const log = createScopedLogger('[Recording]');
 const isMockMode = isMockModeEnabled();
@@ -181,7 +191,9 @@ export default function RecordingScreen() {
   const baseTranscriptRef = useRef('');
   const transcriptSelectionRef = useRef<TranscriptSelection | undefined>(undefined);
   const [transcriptSelection, setTranscriptSelection] = useState<TranscriptSelection | undefined>();
-  const dictationInsertionRef = useRef<DictationInsertion | null>(null);
+  const dictationInsertionRef = useRef<DictationAnchor | null>(null);
+  // A new dictation must not start before the stopping one has written its final words.
+  const stopsInFlightRef = useRef(0);
   const dictationIntentRef = useRef<'idle' | 'listening' | 'paused'>('idle');
   const [dictationIntent, setDictationIntent] = useState<'idle' | 'listening' | 'paused'>('idle');
   const [isHandsFreeRestarting, setIsHandsFreeRestarting] = useState(false);
@@ -487,7 +499,7 @@ export default function RecordingScreen() {
       setCurrentAnswer('');
       setTranscript(text);
       baseTranscriptRef.current = text;
-      dictationInsertionRef.current = null;
+      dictationInsertionRef.current = dictationInsertionRef.current && rebaseDictation(dictationInsertionRef.current, text);
       transcriptSelectionRef.current = undefined;
       setTranscriptSelection(undefined);
     },
@@ -522,7 +534,7 @@ export default function RecordingScreen() {
     };
     const result = insertDictation(insertion, speech);
     if (noteInput(result.text) !== true) return false;
-    dictationInsertionRef.current = insertion;
+    dictationInsertionRef.current = { ...insertion, speech };
     baseTranscriptRef.current = result.text;
     transcriptSelectionRef.current = result.selection;
     setTranscriptSelection(result.selection);
@@ -668,6 +680,23 @@ export default function RecordingScreen() {
     router.replace(buildJournalDetailHref(dream, options));
   }, []);
 
+  // Prologue of the dream story: the saved draft condenses into a star before its page
+  // opens. The veil is lifted only once the next page covers this one, so the emptied
+  // composer is never glimpsed during the transition.
+  const reducedMotion = useReducedMotion();
+  const [sealingSavedDream, setSealingSavedDream] = useState(false);
+  const sealTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  useEffect(() => () => {
+    if (sealTimerRef.current) clearTimeout(sealTimerRef.current);
+  }, []);
+  // The seal is a guarded transition: hardware Back cannot pop the capture before the
+  // saved dream opens. The guard ends as the next page takes focus.
+  useFocusEffect(useCallback(() => {
+    if (!sealingSavedDream) return;
+    const subscription = BackHandler.addEventListener('hardwareBackPress', () => true);
+    return () => subscription.remove();
+  }, [sealingSavedDream]));
+
   useEffect(() => {
     const pending = onboardingState.pendingRecordingIntent;
     if (
@@ -724,6 +753,7 @@ export default function RecordingScreen() {
     const reason = options?.reason ?? 'stop';
     cancelHandsFreeRestart();
     setDictationIntentState(reason === 'pause' ? 'paused' : 'idle');
+    stopsInFlightRef.current += 1;
     try {
       setIsPreparingRecording(false);
       const result = await stopSessionRecording();
@@ -766,6 +796,7 @@ export default function RecordingScreen() {
       log.error('Failed to stop recording:', err);
       Alert.alert(t('common.error_title'), t('recording.alert.stop_failed'));
     } finally {
+      stopsInFlightRef.current -= 1;
       hasAutoStoppedRecordingRef.current = false;
       if (inputMode === 'voice' && reason === 'pause') void askCaptureQuestion(baseTranscriptRef.current);
     }
@@ -815,7 +846,7 @@ export default function RecordingScreen() {
   }, [handleClearTranscript, isHydrated, isPersisting, t]);
 
   const startRecording = useCallback(async (options?: { preserveDraft?: boolean }) => {
-    if (!isHydrated || restartingCaptureRef.current) return false;
+    if (!isHydrated || restartingCaptureRef.current || stopsInFlightRef.current > 0) return false;
     discardDictationRef.current = false;
     captureMicrophoneMutedRef.current = false;
     const previousIntent = dictationIntentRef.current;
@@ -1110,7 +1141,23 @@ export default function RecordingScreen() {
       if (inputMode === 'voice' && captureReview) {
         setSavedCapture({ dream: savedDream, review: captureReview, scope: onboardingScope });
       } else {
-        navigateToSavedDream(savedDream, { saved: true, recall: completeWithHelp, autoAnalyze: isNewDream && !user && !completeWithHelp });
+        const openSavedDream = () => navigateToSavedDream(savedDream, {
+          saved: true, recall: completeWithHelp, autoAnalyze: isNewDream && !user && !completeWithHelp,
+        });
+        // One success haptic at the causal moment, paired with the seal or the next page.
+        void Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success).catch(() => {});
+        if (reducedMotion) {
+          openSavedDream();
+        } else {
+          setSealingSavedDream(true);
+          sealTimerRef.current = setTimeout(() => {
+            openSavedDream();
+            sealTimerRef.current = setTimeout(() => {
+              sealTimerRef.current = null;
+              setSealingSavedDream(false);
+            }, DREAM_STORY.prologueVeilHold);
+          }, DREAM_STORY.prologue);
+        }
       }
     } catch (error) {
       if (error instanceof GuestDreamLimitError) {
@@ -1130,9 +1177,8 @@ export default function RecordingScreen() {
                 ? 'journal.persistence.write_device'
                 : 'journal.persistence.write_cache'
           )
-        : error instanceof Error
-          ? error.message
-          : 'Unexpected error occurred. Please try again.';
+        // A raw exception message is technical and often English: show a plain one.
+        : classifyError(error instanceof Error ? error : new Error(String(error)), t).userMessage;
       Alert.alert(t('common.error_title'), message);
     } finally {
       saveInFlightRef.current = false;
@@ -1156,6 +1202,7 @@ export default function RecordingScreen() {
     language,
     navigateToSavedDream,
     onboardingState.pendingRecordingIntent,
+    reducedMotion,
     resetComposer,
     stopRecording,
     t,
@@ -1605,7 +1652,7 @@ export default function RecordingScreen() {
     answerInsertionRef.current = insertion;
     setAnswerBase(insertion.storyBase);
     setCurrentAnswer(text);
-    dictationInsertionRef.current = null;
+    dictationInsertionRef.current = dictationInsertionRef.current && rebaseDictation(dictationInsertionRef.current, result.text);
     baseTranscriptRef.current = result.text;
     setTranscript(result.text);
     transcriptSelectionRef.current = result.selection;
@@ -1978,6 +2025,7 @@ export default function RecordingScreen() {
         </ScrollView>
       </StandardBottomSheet>
 
+      {sealingSavedDream ? <DreamCaptureSeal /> : null}
       <MicPermissionRationaleSheet
         visible={showMicRationaleSheet}
         onClose={handleMicRationaleClose}
