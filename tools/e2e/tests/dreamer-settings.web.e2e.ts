@@ -25,7 +25,10 @@ for (const theme of ['light', 'dark'] as const) {
     await page.goto('/', { waitUntil: 'domcontentloaded' });
     await page.getByTestId('btn.onboarding.intro.next').click();
     // With feature sheets, "Commencer" first tells the three stories; the cross moves on.
-    if (process.env.EXPO_PUBLIC_ONBOARDING_FEATURE_SHEETS_ENABLED === 'true') await page.getByTestId('btn.onboarding.feature.close').click();
+    if (process.env.EXPO_PUBLIC_ONBOARDING_FEATURE_SHEETS_ENABLED === 'true') {
+    page.once('dialog', (dialog) => dialog.accept());
+    await page.getByTestId('btn.onboarding.feature.close').click();
+  }
     await page.getByTestId('btn.onboarding.skip').click();
     await expect(page.getByTestId('screen.recording').filter({ visible: true })).toHaveCount(1);
     await openSettings(page);
@@ -114,7 +117,10 @@ test('Settings replays the introduction without reopening a finished onboarding'
   await page.goto('/', { waitUntil: 'domcontentloaded' });
   await page.getByTestId('btn.onboarding.intro.next').click();
   // With feature sheets, "Commencer" first tells the three stories; the cross moves on.
-  if (process.env.EXPO_PUBLIC_ONBOARDING_FEATURE_SHEETS_ENABLED === 'true') await page.getByTestId('btn.onboarding.feature.close').click();
+  if (process.env.EXPO_PUBLIC_ONBOARDING_FEATURE_SHEETS_ENABLED === 'true') {
+    page.once('dialog', (dialog) => dialog.accept());
+    await page.getByTestId('btn.onboarding.feature.close').click();
+  }
   await page.getByTestId('btn.onboarding.skip').click();
   await expect(page.getByTestId('screen.recording').filter({ visible: true })).toHaveCount(1);
   await openSettings(page);
@@ -122,7 +128,10 @@ test('Settings replays the introduction without reopening a finished onboarding'
   await expect(page.getByTestId('component.onboarding.intro')).toBeVisible();
   await page.getByTestId('btn.onboarding.intro.next').click();
   // With feature sheets, "Commencer" first tells the three stories; the cross moves on.
-  if (process.env.EXPO_PUBLIC_ONBOARDING_FEATURE_SHEETS_ENABLED === 'true') await page.getByTestId('btn.onboarding.feature.close').click();
+  if (process.env.EXPO_PUBLIC_ONBOARDING_FEATURE_SHEETS_ENABLED === 'true') {
+    page.once('dialog', (dialog) => dialog.accept());
+    await page.getByTestId('btn.onboarding.feature.close').click();
+  }
   await expect(page.getByTestId('component.onboarding.path')).toBeVisible();
   await page.getByTestId('btn.onboarding.path.memory').click();
   await page.getByTestId('btn.onboarding.primary').click();

@@ -21,16 +21,8 @@ type Translate = (key: string) => string;
 
 let granted: boolean | null = null;
 let pending: Promise<boolean> | null = null;
-// Owner decision (2026-10-10): only signed-in users are asked; guests are not prompted.
-let promptRequired = false;
-
-/** Set from the signed-in state: the consent prompt is shown to signed-in users only. */
-export function setAiConsentPromptRequired(required: boolean): void {
-  promptRequired = required;
-}
-
 export async function hasAiConsent(): Promise<boolean> {
-  if (!promptRequired || granted) return true;
+  if (granted) return true;
   try {
     granted = (await AsyncStorage.getItem(STORAGE_KEY)) === GRANTED;
   } catch {

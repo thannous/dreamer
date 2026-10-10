@@ -12,7 +12,10 @@ async function startGuest(page: Page) {
   await expect(sidebar(page)).toHaveCount(0);
   await page.getByTestId('btn.onboarding.intro.next').click();
   // With feature sheets, "Commencer" first tells the three stories; the cross moves on.
-  if (process.env.EXPO_PUBLIC_ONBOARDING_FEATURE_SHEETS_ENABLED === 'true') await page.getByTestId('btn.onboarding.feature.close').click();
+  if (process.env.EXPO_PUBLIC_ONBOARDING_FEATURE_SHEETS_ENABLED === 'true') {
+    page.once('dialog', (dialog) => dialog.accept());
+    await page.getByTestId('btn.onboarding.feature.close').click();
+  }
   await page.getByTestId('btn.onboarding.skip').click();
   await expect(page.getByTestId('screen.recording')).toBeVisible();
 }

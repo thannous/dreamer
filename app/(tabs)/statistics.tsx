@@ -118,9 +118,7 @@ export default function StatisticsScreen() {
   const navigationClearance = navigationLayout.barHeight + Math.max(insets.bottom, navigationLayout.minimumBottomInset);
   const scrollBottomPadding = isDesktopLayout
     ? ThemeLayout.spacing.xl
-    : scrollHeader ? ThemeLayout.spacing.lg : navigationLayout.barHeight
-      + navigationLayout.minimumBottomInset
-      + ThemeLayout.spacing.lg;
+    : scrollHeader ? ThemeLayout.spacing.lg : navigationClearance + ThemeLayout.spacing.lg;
 
   const { trends, weekStart, weekEnd } = useMemo(() => {
     const end = new Date();

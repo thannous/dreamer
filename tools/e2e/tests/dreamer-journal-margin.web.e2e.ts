@@ -9,7 +9,10 @@ async function startGuest(page: Page) {
   await page.goto('/');
   await page.getByTestId('btn.onboarding.intro.next').click();
   // With feature sheets, "Commencer" first tells the three stories; the cross moves on.
-  if (process.env.EXPO_PUBLIC_ONBOARDING_FEATURE_SHEETS_ENABLED === 'true') await page.getByTestId('btn.onboarding.feature.close').click();
+  if (process.env.EXPO_PUBLIC_ONBOARDING_FEATURE_SHEETS_ENABLED === 'true') {
+    page.once('dialog', (dialog) => dialog.accept());
+    await page.getByTestId('btn.onboarding.feature.close').click();
+  }
   await page.getByTestId('btn.onboarding.skip').click();
   await expect(page.getByTestId('screen.recording')).toBeVisible();
 }
@@ -59,13 +62,13 @@ for (const theme of ['light', 'dark'] as const) {
     const metadata = card.getByTestId(`journal.metadata.${id}`);
     await expect(metadata).toContainText('Symbolic dream');
     await expect(metadata).toContainText('Mystical');
-    await expect(metadata).toContainText('Analyzed');
+    await expect(card).toContainText('Analyzed');
     await expect(text).toContainText('I found myself in an enormous library');
     const coverBounds = (await cover.boundingBox())!;
     const textBounds = (await text.boundingBox())!;
     const marginBounds = (await margin.boundingBox())!;
-    expect(coverBounds.height).toBeLessThanOrEqual(260);
-    expect(marginBounds.width).toBeLessThanOrEqual(64);
+    expect(coverBounds.height).toBeCloseTo(Math.min(coverBounds.width * 16 / 9, 620), 0);
+    expect(marginBounds.width).toBeGreaterThanOrEqual(88);
     expect(marginBounds.x + marginBounds.width).toBeLessThanOrEqual(coverBounds.x);
     expect(textBounds.y).toBeGreaterThanOrEqual(coverBounds.y);
     expect(textBounds.y + textBounds.height).toBeLessThanOrEqual(coverBounds.y + coverBounds.height);
@@ -80,7 +83,7 @@ for (const theme of ['light', 'dark'] as const) {
     expect(lines.reduce((total, count) => total + count, 0)).toBeLessThanOrEqual(5);
     expect(backingBounds.y + backingBounds.height).toBeLessThanOrEqual(textBounds.y + textBounds.height);
     expect(await backing.evaluate(node => getComputedStyle(node).backgroundColor)).not.toBe('rgba(0, 0, 0, 0)');
-    const badge = metadata.getByTestId(`journal.badge.${id}.0`);
+    const badge = card.getByTestId(`journal.badge.${id}.0`);
     const badgeChildren = await badge.evaluate(node => Array.from(node.children).map(child => {
       const rect = child.getBoundingClientRect();
       return { x: rect.x, y: rect.y, height: rect.height };

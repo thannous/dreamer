@@ -267,12 +267,12 @@ export default function OnboardingScreen() {
   }, [isReplay, loading, state.status, transition]);
 
   useEffect(() => {
-    if (loading) return;
+    if (isReplay || loading) return;
     if (!viewedStepsRef.current.has(step)) {
       viewedStepsRef.current.add(step);
       void trackProductEvent('onboarding_step_viewed', { step });
     }
-  }, [loading, step]);
+  }, [isReplay, loading, step]);
 
   const handleTitleLayout = useCallback((renderedStep: OnboardingStep) => {
     if (loading || step !== renderedStep || focusedStepRef.current === renderedStep) return;
@@ -1053,8 +1053,8 @@ export default function OnboardingScreen() {
           testID="btn.onboarding.privacy.policy" style={styles.privacyPolicyLink}>
           <Text style={[styles.privacyDetails, { color: sheetTokens.accent.text }]}>{t('onboarding.privacy.details')}</Text>
         </Pressable>
-        <Pressable accessibilityRole="checkbox" accessibilityState={{ checked: usageChecked, disabled: !analyticsAvailable }}
-          disabled={!analyticsAvailable} onPress={() => setUsageChecked((value) => !value)}
+        <Pressable accessibilityRole="checkbox" accessibilityState={{ checked: usageChecked, disabled: !analyticsAvailable || analyticsPreferenceLoading }}
+          disabled={!analyticsAvailable || analyticsPreferenceLoading} onPress={() => setUsageChecked((value) => !value)}
           testID="checkbox.onboarding.privacy.usage" style={styles.privacyCheckRow}>
           <View style={[styles.privacyCheckbox, {
             borderColor: usageChecked ? sheetTokens.accent.text : sheetTokens.surface.border,

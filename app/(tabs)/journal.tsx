@@ -108,6 +108,7 @@ export default function JournalListScreen() {
   const { colors, mode } = useTheme();
   const openQuickSettings = useQuickSettings();
   const { t } = useTranslation();
+  const [favoriteError, setFavoriteError] = useState<string | null>(null);
   const noctalia = useMemo(() => getNoctaliaDesignTokens(colors, mode), [colors, mode]);
   useClearWebFocus();
   const { formatShortDate: formatDreamListDate } = useLocaleFormatting();
@@ -494,8 +495,9 @@ export default function JournalListScreen() {
   }, [t]);
 
   const handleDreamFavorite = useCallback((dream: DreamAnalysis) => {
-    void toggleFavorite(dream);
-  }, [toggleFavorite]);
+    setFavoriteError(null);
+    void toggleFavorite(dream).catch(() => setFavoriteError(t('journal.detail.favorite.error')));
+  }, [toggleFavorite, t]);
 
   // Track viewable items and prefetch thumbnails once scrolling is idle.
   const filteredDreamsRef = useRef(filteredDreams);
@@ -916,6 +918,8 @@ export default function JournalListScreen() {
         className="gap-4 p-4"
         style={isDesktopLayout ? DESKTOP_MAX_WIDTH_STYLE : undefined}
       >
+        {favoriteError ? <Text accessibilityRole="alert" accessibilityLiveRegion="polite"
+          testID="journal.favorite.error" className="font-sans text-danger-on">{favoriteError}</Text> : null}
         <JournalPersistenceNotice
           state={persistenceState}
           refreshState={completeness?.status === 'incomplete' ? undefined : refreshState}

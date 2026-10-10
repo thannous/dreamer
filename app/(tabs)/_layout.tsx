@@ -1,6 +1,6 @@
 import { Tabs, router, useSegments } from 'expo-router';
 import React, { useEffect, useMemo, useState } from 'react';
-import { ActivityIndicator, Platform, StyleSheet, Text, View, ViewStyle, useWindowDimensions } from 'react-native';
+import { ActivityIndicator, Keyboard, Platform, Pressable, StyleSheet, Text, View, ViewStyle, useWindowDimensions } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { HapticTab } from '@/components/haptic-tab';
@@ -215,6 +215,12 @@ export default function TabLayout() {
   const { activeAnalysis } = useAnalysisActivity();
   const isTabsDestination = segments[0] === '(tabs)';
   const [hasEnteredTabs, setHasEnteredTabs] = useState(false);
+  const [keyboardVisible, setKeyboardVisible] = useState(() => Keyboard.isVisible());
+  useEffect(() => {
+    const show = Keyboard.addListener('keyboardDidShow', () => setKeyboardVisible(true));
+    const hide = Keyboard.addListener('keyboardDidHide', () => setKeyboardVisible(false));
+    return () => { show.remove(); hide.remove(); };
+  }, []);
 
   useEffect(() => {
     if (routeCommitted && isTabsDestination) {
@@ -380,8 +386,6 @@ export default function TabLayout() {
               {...props}
               style={[props.style, { paddingHorizontal: 1 }]}
               onPress={handleAddDreamPress}
-              // The raised action rises above the bar; keep that part tappable.
-              hitSlop={{ top: getCaptureOverhang(navigationLayout) }}
               testID={TID.Tab.AddDream}
               accessibilityRole="tab"
               accessibilityLabel={t('nav.capture_dream_accessibility')}
@@ -437,6 +441,16 @@ export default function TabLayout() {
   return (
     <View className="flex-1" style={{ flex: 1, backgroundColor: noctalia.screen.background }}>
       {tabs}
+      {!isDesktopWeb && !returningGuestBlocked && !keyboardVisible && getCaptureAction(navigationLayout).raised ? (
+        // This touch surface is inside the full-screen parent, so Android can hit
+        // the artwork above the tab row. hitSlop on that row is clipped by its bounds.
+        <Pressable accessible={false} accessibilityElementsHidden importantForAccessibility="no-hide-descendants"
+          focusable={false} onPress={handleAddDreamPress} testID="tab.addDream.overhang"
+          style={{ position: 'absolute', bottom: floatingBottomInset + navigationLayout.barHeight,
+            left: (width - getCaptureAction(navigationLayout).size) / 2,
+            width: getCaptureAction(navigationLayout).size, height: getCaptureOverhang(navigationLayout),
+            zIndex: 46, elevation: 15 }} />
+      ) : null}
     </View>
   );
 }

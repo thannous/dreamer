@@ -195,8 +195,6 @@ export function NoctaliaBottomNav({
                 }}
                 accessibilityLabel={item.accessibilityLabel}
                 testID={item.testID}
-                // The raised Capture action rises above the bar; keep that part tappable.
-                hitSlop={isCenter ? { top: captureOverhang } : undefined}
                 style={[
                   { width: navigationLayout.itemWidth },
                   getBottomNavigationItemStyle(index, navigationLayout),
@@ -274,6 +272,13 @@ export function NoctaliaBottomNav({
           })}
         </View>
       </View>
+      {captureAction.raised ? <Pressable accessible={false} accessibilityElementsHidden
+        importantForAccessibility="no-hide-descendants" focusable={false}
+        onPress={activeKey === 'addDream' ? undefined : () => router.dismissTo('/recording')}
+        testID="tab.addDream.overhang"
+        style={{ position: 'absolute', bottom: floatingBottomInset + navigationLayout.barHeight,
+          left: (width - captureAction.size) / 2, width: captureAction.size, height: captureOverhang,
+          zIndex: 46, elevation: 15 }} /> : null}
     </View>
   );
 }

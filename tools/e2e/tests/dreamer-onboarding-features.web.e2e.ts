@@ -73,14 +73,20 @@ defaultFeatureTest('feature sheets stay disabled by default while onboarding and
   await expect(page.getByTestId('sheet.onboarding.privacy')).toHaveCount(0);
   await page.getByTestId('btn.onboarding.intro.next').click();
   // With feature sheets, "Commencer" first tells the three stories; the cross moves on.
-  if (process.env.EXPO_PUBLIC_ONBOARDING_FEATURE_SHEETS_ENABLED === 'true') await page.getByTestId('btn.onboarding.feature.close').click();
+  if (process.env.EXPO_PUBLIC_ONBOARDING_FEATURE_SHEETS_ENABLED === 'true') {
+    page.once('dialog', (dialog) => dialog.accept());
+    await page.getByTestId('btn.onboarding.feature.close').click();
+  }
   await expect(page.getByTestId('component.onboarding.path')).toBeVisible();
 });
 
 test('the chosen path is announced as selected and survives a return to the introduction', async ({ page }) => {
   await page.getByTestId('btn.onboarding.intro.next').click();
   // With feature sheets, "Commencer" first tells the three stories; the cross moves on.
-  if (process.env.EXPO_PUBLIC_ONBOARDING_FEATURE_SHEETS_ENABLED === 'true') await page.getByTestId('btn.onboarding.feature.close').click();
+  if (process.env.EXPO_PUBLIC_ONBOARDING_FEATURE_SHEETS_ENABLED === 'true') {
+    page.once('dialog', (dialog) => dialog.accept());
+    await page.getByTestId('btn.onboarding.feature.close').click();
+  }
   const memory = page.getByTestId('btn.onboarding.path.memory');
   await memory.click();
   await expect(memory).toHaveAttribute('aria-checked', 'true');
@@ -97,7 +103,10 @@ test('the welcome and path remain inside the viewport without off-canvas horizon
   await expect.poll(overflow).toBeLessThanOrEqual(1);
   await page.getByTestId('btn.onboarding.intro.next').click();
   // With feature sheets, "Commencer" first tells the three stories; the cross moves on.
-  if (process.env.EXPO_PUBLIC_ONBOARDING_FEATURE_SHEETS_ENABLED === 'true') await page.getByTestId('btn.onboarding.feature.close').click();
+  if (process.env.EXPO_PUBLIC_ONBOARDING_FEATURE_SHEETS_ENABLED === 'true') {
+    page.once('dialog', (dialog) => dialog.accept());
+    await page.getByTestId('btn.onboarding.feature.close').click();
+  }
   await page.getByTestId('btn.onboarding.path.memory').click();
   await expect(page.getByTestId('btn.onboarding.path.memory')).toHaveAttribute('aria-checked', 'true');
   await expect.poll(overflow).toBeLessThanOrEqual(1);
@@ -127,7 +136,10 @@ test.describe('feature sheet previews', () => {
       }
       await page.getByTestId('btn.onboarding.intro.next').click();
       // With feature sheets, "Commencer" first tells the three stories; the cross moves on.
-      if (process.env.EXPO_PUBLIC_ONBOARDING_FEATURE_SHEETS_ENABLED === 'true') await page.getByTestId('btn.onboarding.feature.close').click();
+      if (process.env.EXPO_PUBLIC_ONBOARDING_FEATURE_SHEETS_ENABLED === 'true') {
+    page.once('dialog', (dialog) => dialog.accept());
+    await page.getByTestId('btn.onboarding.feature.close').click();
+  }
       await expect(page.getByTestId('component.onboarding.path')).toBeVisible();
     });
   }
@@ -335,7 +347,10 @@ test.describe('feature sheet previews', () => {
     await expect(page.getByTestId('btn.onboarding.feature.explore')).toBeFocused();
     await page.getByTestId('btn.onboarding.intro.next').click();
     // With feature sheets, "Commencer" first tells the three stories; the cross moves on.
-    if (process.env.EXPO_PUBLIC_ONBOARDING_FEATURE_SHEETS_ENABLED === 'true') await page.getByTestId('btn.onboarding.feature.close').click();
+    if (process.env.EXPO_PUBLIC_ONBOARDING_FEATURE_SHEETS_ENABLED === 'true') {
+    page.once('dialog', (dialog) => dialog.accept());
+    await page.getByTestId('btn.onboarding.feature.close').click();
+  }
     await expect(page.getByTestId('component.onboarding.path')).toBeVisible();
   });
 
@@ -354,6 +369,10 @@ test.describe('feature sheet previews', () => {
   test('closing the stories started by Commencer moves on, and they are not told twice', async ({ page }) => {
     await page.getByTestId('btn.onboarding.intro.next').click();
     await expect(page.getByTestId('component.onboarding.story.capture.0')).toBeVisible();
+    page.once('dialog', (dialog) => dialog.dismiss());
+    await page.getByTestId('btn.onboarding.feature.close').click();
+    await expect(page.getByTestId('component.onboarding.story.capture.0')).toBeVisible();
+    page.once('dialog', (dialog) => dialog.accept());
     await page.getByTestId('btn.onboarding.feature.close').click();
     await expect(page.getByTestId('component.onboarding.path')).toBeVisible();
     await page.getByTestId('btn.onboarding.back').click();

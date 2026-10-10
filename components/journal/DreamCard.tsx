@@ -142,8 +142,12 @@ export const DreamCard = memo(function DreamCard({
     return [noctalia.illustration.scrim, at(0.55), at(0.2), noctalia.illustration.transparent] as const;
   }, [noctalia]);
   // The whole dream can be read in place; the arrow shows only when three lines cut it.
-  const [expanded, setExpanded] = useState(false);
-  const canExpand = dream.transcript.trim().length > 120;
+  const readingKey = `${getDreamIdentityKey(dream)}:${compactTextScale}:${transcriptPreview}`;
+  const [reading, setReading] = useState({ key: readingKey, expanded: false, canExpand: false });
+  // FlashList can reuse this component for another dream without unmounting it.
+  if (reading.key !== readingKey) setReading({ key: readingKey, expanded: false, canExpand: false });
+  const expanded = reading.key === readingKey && reading.expanded;
+  const canExpand = reading.key === readingKey && reading.canExpand;
   const hasImage = (Boolean(imageUri) || (media.loading && Boolean(dream.imageUrl || dream.thumbnailUrl)))
     && failedImageAttempt !== imageAttemptKey;
 
@@ -291,8 +295,22 @@ export const DreamCard = memo(function DreamCard({
       >
         {dream.title}
       </Text>
+      <View className="relative">
+      <Text accessible={false} accessibilityElementsHidden importantForAccessibility="no-hide-descendants"
+        allowFontScaling={false} pointerEvents="none"
+        style={{ position: 'absolute', top: 0, left: 0, right: 0, opacity: 0,
+          fontSize: 15 * compactTextScale, lineHeight: 22 * compactTextScale }}
+        className="font-sans" testID={testID && `journal.measure.${testID}`}
+        onLayout={(event) => {
+          const overflows = event.nativeEvent.layout.height > 3 * 22 * compactTextScale + 1;
+          setReading((previous) => previous.key !== readingKey || previous.canExpand === overflows
+            ? previous : { ...previous, canExpand: overflows });
+        }}>
+        {transcriptPreview}
+      </Text>
       <Text
         key={`preview-${fontScale}`}
+        testID={testID && `journal.preview.${testID}`}
         allowFontScaling={false}
         style={[{ fontSize: 15 * compactTextScale, lineHeight: 22 * compactTextScale }]}
         className={`font-sans text-[15px] leading-[22px] ${hasImage ? 'text-illustration-text' : 'text-ivory-muted'}`}
@@ -301,24 +319,24 @@ export const DreamCard = memo(function DreamCard({
       >
         {expanded ? dream.transcript : transcriptPreview}
       </Text>
-      {canExpand ? (
-        <Pressable accessibilityRole="button" accessibilityState={{ expanded }}
-          accessibilityLabel={t(expanded ? 'journal.card.collapse' : 'journal.card.expand')}
-          hitSlop={10} onPress={() => setExpanded((value) => !value)}
-          testID={testID && `journal.expand.${testID}`} className="h-8 w-10 items-start justify-center"
-        >
-          <IconSymbol name={expanded ? 'chevron.up' : 'chevron.down'} size={22} color={hasImage ? noctalia.illustration.text : noctalia.text.secondary} />
-        </Pressable>
-      ) : null}
+      </View>
     </>
   );
+  const expandControl = canExpand ? (
+        <Pressable accessibilityRole="button" accessibilityState={{ expanded }}
+          accessibilityLabel={t(expanded ? 'journal.card.collapse' : 'journal.card.expand')}
+          hitSlop={10} onPress={(event) => { event.stopPropagation(); setReading((previous) => ({ ...previous, expanded: !previous.expanded })); }}
+          testID={testID && `journal.expand.${testID}`} className="h-8 w-10 items-start justify-center"
+        >
+          <IconSymbol name={expanded ? 'chevron.up' : 'chevron.down'} size={22} color={noctalia.text.secondary} />
+        </Pressable>
+      ) : null;
 
   return (
     <PressableScale
       className="flex-row items-start gap-3 border-t border-line pt-4"
       onPress={handlePress}
-      accessibilityRole="button"
-      accessibilityLabel={accessibilityLabel}
+      accessible={false}
       testID={testID}
     >
       {/* The margin reads as three quiet blocks, set flush left: when, what you can do, what the dream is. */}
@@ -332,14 +350,14 @@ export const DreamCard = memo(function DreamCard({
         <View className="items-center gap-1">
           {onToggleFavorite ? (
             <Pressable accessibilityRole="button" accessibilityState={{ selected: isFavorite }}
-              accessibilityLabel={t('journal.badge.favorite')} hitSlop={8} onPress={() => onToggleFavorite(dream)}
+              accessibilityLabel={t('journal.badge.favorite')} hitSlop={8} onPress={(event) => { event.stopPropagation(); onToggleFavorite(dream); }}
               testID={testID && `journal.favorite.${testID}`} style={MARGIN_ACTION_STYLE}>
               <IconSymbol name={isFavorite ? 'heart.fill' : 'heart'} size={28} color={isFavorite ? noctalia.accent.text : noctalia.text.secondary} />
             </Pressable>
           ) : isFavorite ? <IconSymbol name="heart.fill" size={28} color={noctalia.accent.text} /> : null}
           {onShare ? (
             <Pressable accessibilityRole="button" accessibilityLabel={t('journal.detail.share.button_default')}
-              hitSlop={8} onPress={() => onShare(dream)} testID={testID && `journal.share.${testID}`} style={MARGIN_ACTION_STYLE}>
+              hitSlop={8} onPress={(event) => { event.stopPropagation(); onShare(dream); }} testID={testID && `journal.share.${testID}`} style={MARGIN_ACTION_STYLE}>
               <IconSymbol name="square.and.arrow.up" size={27} color={noctalia.text.secondary} />
             </Pressable>
           ) : null}
@@ -363,6 +381,8 @@ export const DreamCard = memo(function DreamCard({
         </View>
       </View>
       <View className="min-w-0 flex-1 gap-3">
+        <Pressable accessibilityRole="button" accessibilityLabel={accessibilityLabel}
+          onPress={(event) => { event.stopPropagation(); handlePress(); }}>
         {hasImage ? (
           <View
             className="relative w-full overflow-hidden rounded-xl bg-ink-raised"
@@ -415,6 +435,8 @@ export const DreamCard = memo(function DreamCard({
         ) : (
           <View className="gap-2 pr-1" testID={testID && `journal.text.${testID}`}>{readingText}</View>
         )}
+        </Pressable>
+        {expandControl}
         {badgeList.length ? (
           <View className="flex-row flex-wrap items-center gap-x-4 gap-y-1" testID={testID && `journal.status.${testID}`}>{badgeList}</View>
         ) : null}
