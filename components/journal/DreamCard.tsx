@@ -243,7 +243,7 @@ export const DreamCard = memo(function DreamCard({
         testID={testID && `journal.badge.${testID}.${i}`}
       >
         {badge.icon && (
-          <IconSymbol name={badge.icon} size={14} color={getBadgeIconColor(badge.variant)} />
+          <IconSymbol name={badge.icon} size={13} color={getBadgeIconColor(badge.variant)} />
         )}
         {badge.label && (
           <Text allowFontScaling={false} style={captionStyle} className={`text-center font-sans text-[12px] leading-[18px] ${BADGE_TEXT_CLASS[badge.variant]}`}>
@@ -297,45 +297,50 @@ export const DreamCard = memo(function DreamCard({
       accessibilityLabel={accessibilityLabel}
       testID={testID}
     >
-      <View className="shrink-0 self-stretch items-center gap-3 border-r border-line pr-2" style={{ width: dateMarginWidth }} testID={testID && `journal.margin.${testID}`}>
+      {/* The margin reads as three quiet blocks: when, what you can do, what the dream is. */}
+      <View className="shrink-0 self-stretch items-center border-r border-line pr-2" style={{ width: dateMarginWidth }} testID={testID && `journal.margin.${testID}`}>
         <View key={`date-${fontScale}`} className="items-center">
           <Text allowFontScaling={false} style={{ fontSize: 30 * compactTextScale, lineHeight: 34 * compactTextScale }} className="font-sans-medium text-[30px] leading-[34px] text-ivory">{dateDay}</Text>
-          <Text allowFontScaling={false} style={{ fontSize: 14 * compactTextScale, lineHeight: 20 * compactTextScale }} className="font-sans text-[14px] leading-[20px] text-ivory-muted">{dateMonth}</Text>
+          <Text allowFontScaling={false} style={{ fontSize: 11 * compactTextScale, lineHeight: 16 * compactTextScale, letterSpacing: 1.2 }} className="font-sans-medium text-[11px] uppercase leading-[16px] text-ivory-muted">{dateMonth.replace('.', '')}</Text>
           {dateYear !== new Date().getFullYear() && (
-            <Text allowFontScaling={false} style={captionStyle} className="font-sans text-[12px] leading-[18px] text-ivory-muted">{dateYear}</Text>
+            <Text allowFontScaling={false} style={captionStyle} className="font-sans text-[12px] leading-[18px] text-ivory-faint">{dateYear}</Text>
           )}
         </View>
-        {isFavorite && <IconSymbol name="heart.fill" size={20} color={noctalia.accent.text} />}
-        {onShare ? (
-          <Pressable accessibilityRole="button" accessibilityLabel={t('journal.detail.share.button_default')}
-            hitSlop={12} onPress={() => onShare(dream)} testID={testID && `journal.share.${testID}`}>
-            <IconSymbol name="square.and.arrow.up" size={19} color={noctalia.text.secondary} />
-          </Pressable>
-        ) : null}
-        <View key={`metadata-${fontScale}`} className="items-center gap-2" testID={testID && `journal.metadata.${testID}`}>
-          <Text allowFontScaling={false} style={captionStyle} className="text-center font-sans text-[12px] leading-[18px] text-ivory-muted">{typeLabel}</Text>
+        <View className="my-3 h-px w-6 bg-line" />
+        <View className="flex-row items-center justify-center gap-4">
+          {isFavorite && <IconSymbol name="heart.fill" size={17} color={noctalia.accent.text} />}
+          {onShare ? (
+            <Pressable accessibilityRole="button" accessibilityLabel={t('journal.detail.share.button_default')}
+              hitSlop={12} onPress={() => onShare(dream)} testID={testID && `journal.share.${testID}`}>
+              <IconSymbol name="square.and.arrow.up" size={17} color={noctalia.text.secondary} />
+            </Pressable>
+          ) : null}
+        </View>
+        <View className="my-3 h-px w-6 bg-line" />
+        <View key={`metadata-${fontScale}`} className="w-full items-center gap-1.5" testID={testID && `journal.metadata.${testID}`}>
+          <Text allowFontScaling={false} style={captionStyle} className="text-center font-sans-medium text-[12px] leading-[18px] text-ivory">{typeLabel}</Text>
           {themeLabel && <Text allowFontScaling={false} style={captionStyle} className="text-center font-sans text-[12px] leading-[18px] text-ivory-muted">{themeLabel}</Text>}
           {recurringLabel && (
             <View className="max-w-full items-center gap-1">
-              <IconSymbol name="arrow.triangle.2.circlepath" size={14} color={noctalia.text.secondary} />
+              <IconSymbol name="arrow.triangle.2.circlepath" size={13} color={noctalia.text.secondary} />
               <Text allowFontScaling={false} style={captionStyle} className="text-center font-sans text-[12px] leading-[18px] text-ivory-muted">{recurringLabel}</Text>
             </View>
           )}
           {memoryLabel && (
             <View className="max-w-full items-center gap-1">
-              <IconSymbol name="moon.stars.fill" size={14} color={noctalia.text.secondary} />
+              <IconSymbol name="moon.stars.fill" size={13} color={noctalia.text.secondary} />
               <Text allowFontScaling={false} style={captionStyle} className="text-center font-sans text-[12px] leading-[18px] text-ivory-muted">{memoryLabel}</Text>
             </View>
           )}
-          {badgeList}
+          {badgeList.length ? <View className="mt-1.5 items-center gap-1.5">{badgeList}</View> : null}
         </View>
       </View>
       <View className="min-w-0 flex-1 gap-3">
         {hasImage ? (
           <View
             className="relative w-full overflow-hidden rounded-xl bg-ink-raised"
-            // Portrait 3:4, close to the 9:16 the illustrations are generated in; capped on wide screens.
-            style={{ minHeight: Math.min(coverWidth * 4 / 3, 480) }}
+            // 9:16, the format the illustrations are generated in: the whole image shows. Capped on wide screens.
+            style={{ minHeight: Math.min(coverWidth * 16 / 9, 620) }}
             onLayout={(event) => setCoverWidth(event.nativeEvent.layout.width)}
             testID={testID && `journal.cover.${testID}`}
           >
