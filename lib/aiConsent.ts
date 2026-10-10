@@ -67,12 +67,6 @@ export async function requestAiConsent(t: Translate): Promise<boolean> {
   return pending;
 }
 
-/** Records an explicit acceptance given outside the prompt, such as the onboarding's privacy sheet. */
-export function grantAiConsent(): void {
-  granted = true;
-  void AsyncStorage.setItem(STORAGE_KEY, GRANTED).catch(() => undefined);
-}
-
 /** Test helper: forget the in-memory decision. */
 export function resetAiConsentCacheForTests(): void {
   granted = null;

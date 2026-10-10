@@ -13,7 +13,6 @@ import { DarkTheme } from '@/constants/journalTheme';
 import { getLegalLink } from '@/constants/legalLinks';
 import { Fonts } from '@/constants/theme';
 import { useOnboarding } from '@/context/OnboardingContext';
-import { grantAiConsent } from '@/lib/aiConsent';
 import { useTheme } from '@/context/ThemeContext';
 import { useTranslation } from '@/hooks/useTranslation';
 import { getPaywallTrigger, trackProductEvent } from '@/lib/analytics';
@@ -599,12 +598,9 @@ export default function OnboardingScreen() {
   const selectedPath = selectedPathOverride ?? state.selectedPath ?? 'analyze';
   const selectedDefinition = PATHS.find((path) => path.id === selectedPath) ?? PATHS[0];
   const analyticsAvailable = isProductAnalyticsAvailable();
-  // "I accept" covers the whole sheet: the generative AI features, and usage measurement
-  // only if its box is ticked. "I decline" leaves AI unavailable and measurement off.
-  const answerPrivacy = async (accepted: boolean) => {
-    const measure = accepted && usageChecked;
-    if (analyticsAvailable && measure !== analyticsEnabled && !(await toggleAnalytics(measure))) return;
-    if (accepted) grantAiConsent();
+  // Saves the usage box when it changed (and this build collects at all), then closes.
+  const closePrivacy = async () => {
+    if (analyticsAvailable && usageChecked !== analyticsEnabled && !(await toggleAnalytics(usageChecked))) return;
     setShowPrivacySheet(false);
   };
   const layeredStepHeight = Math.max(stepHeights.intro ?? 0, stepHeights.path ?? 0) || undefined;
@@ -1033,13 +1029,11 @@ export default function OnboardingScreen() {
         title={t('onboarding.privacy.title')}
         subtitle={t('onboarding.privacy.body')}
         testID={TID.Sheet.OnboardingPrivacy}
-        // Accepting and refusing weigh the same: one tap each, then the sheet closes on the saved choice.
+        // An information page: "Done" saves the usage box and closes. AI consent is asked at first use.
         actions={{
-          primaryLabel: t('onboarding.privacy.accept'),
-          onPrimary: () => void answerPrivacy(true),
+          primaryLabel: t('common.done'),
+          onPrimary: () => void closePrivacy(),
           primaryLoading: analyticsPreferenceLoading,
-          secondaryLabel: t('onboarding.privacy.refuse'),
-          onSecondary: () => void answerPrivacy(false),
         }}
       >
         {/* Three plain promises, one line each; the policy holds the details. */}
@@ -1078,7 +1072,6 @@ export default function OnboardingScreen() {
             ) : null}
           </View>
         </Pressable>
-        <Text style={[styles.privacyNote, { color: sheetTokens.text.secondary }]}>{t('onboarding.privacy.accept_note')}</Text>
       </StandardBottomSheet> : null}
       <Animated.View
         pointerEvents="none"
@@ -1165,10 +1158,9 @@ const styles = StyleSheet.create({
   privacyPoints: { gap: 12, marginBottom: 14 },
   privacyPolicyLink: { alignSelf: 'flex-start', minHeight: 44, justifyContent: 'center', marginBottom: 6 },
   privacyDetails: { fontFamily: Fonts.spaceGrotesk.medium, fontSize: 13, lineHeight: 18, textDecorationLine: 'underline' },
-  privacyCheckRow: { flexDirection: 'row', alignItems: 'center', gap: 12, minHeight: 48, marginBottom: 10 },
+  privacyCheckRow: { flexDirection: 'row', alignItems: 'center', gap: 12, minHeight: 48, marginBottom: 16 },
   privacyCheckbox: { width: 22, height: 22, borderRadius: 6, borderWidth: 1.5, alignItems: 'center', justifyContent: 'center' },
   privacyCheckCopy: { flex: 1, gap: 2 },
-  privacyNote: { fontFamily: Fonts.spaceGrotesk.regular, fontSize: 12, lineHeight: 17, marginBottom: 14 },
   privacyPoint: { flexDirection: 'row', alignItems: 'flex-start', gap: 12 },
   privacyToggleLabel: { fontFamily: Fonts.spaceGrotesk.bold, fontSize: 15, lineHeight: 20 },
   privacyStatus: { fontFamily: Fonts.spaceGrotesk.medium, fontSize: 12, lineHeight: 16 },
