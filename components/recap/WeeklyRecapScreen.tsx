@@ -106,10 +106,10 @@ export function WeeklyRecapScreen() {
       </Pressable>
 
       <ScrollView
-        style={styles.scrollView}
+        style={[styles.scrollView, { marginTop: insets.top }]}
         contentContainerStyle={{
           paddingBottom: insets.bottom + ThemeLayout.spacing.xl,
-          paddingTop: insets.top,
+          paddingTop: 0,
         }}
       >
         <DreamerArtworkWindow scene="astral" />

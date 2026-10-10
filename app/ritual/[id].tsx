@@ -305,8 +305,8 @@ export default function RitualDetailScreen() {
           <IconSymbol name="chevron.left" size={22} color={noctalia.accent.text} />
         </Pressable>
         <ScrollView
-          style={styles.scrollView}
-          contentContainerStyle={{ paddingTop: insets.top, paddingBottom: insets.bottom + 40 }}
+          style={[styles.scrollView, { marginTop: insets.top }]}
+          contentContainerStyle={{ paddingBottom: insets.bottom + 40 }}
           onScrollBeginDrag={scrollPerf.onScrollBeginDrag}
           onScrollEndDrag={scrollPerf.onScrollEndDrag}
           onMomentumScrollBegin={scrollPerf.onMomentumScrollBegin}

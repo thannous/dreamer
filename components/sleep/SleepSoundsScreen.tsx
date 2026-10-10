@@ -182,10 +182,10 @@ export function SleepSoundsScreen() {
           <IconSymbol name="chevron.left" size={21} color={noctalia.text.secondary} />
         </Pressable>
         <ScrollView
-          style={styles.scrollView}
+          style={[styles.scrollView, { marginTop: insets.top }]}
           contentContainerStyle={{
             paddingBottom: insets.bottom + ThemeLayout.spacing.xl,
-            paddingTop: insets.top,
+            paddingTop: 0,
           }}
           onScrollBeginDrag={scrollPerf.onScrollBeginDrag}
           onScrollEndDrag={scrollPerf.onScrollEndDrag}
