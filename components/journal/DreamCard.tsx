@@ -2,6 +2,7 @@ import { thumbnailFailures } from '@/lib/thumbnailFailureCache';
 import { getDreamIdentityKey } from '@/lib/dreamIdentity';
 import { useDreamMedia } from '@/hooks/useDreamMedia';
 import { PressableScale } from '@/components/motion';
+import { DreamStoryHalo } from '@/components/journal/story/DreamStoryHalo';
 import { getNoctaliaDesignTokens } from '@/constants/noctaliaDesign';
 import { useTheme } from '@/context/ThemeContext';
 import { useTranslation } from '@/hooks/useTranslation';
@@ -30,6 +31,8 @@ interface DreamCardProps {
   dateLabel?: string;
   /** Card variant: 'featured' for first card, 'standard' for rest */
   variant?: DreamCardVariant;
+  /** The dream story's epilogue: this card glows once. */
+  glow?: boolean;
 }
 
 
@@ -50,6 +53,7 @@ export const DreamCard = memo(function DreamCard({
   testID,
   dateLabel,
   variant = 'standard',
+  glow = false,
 }: DreamCardProps) {
   const { colors, mode } = useTheme();
   const { fontScale } = useWindowDimensions();
@@ -364,6 +368,7 @@ export const DreamCard = memo(function DreamCard({
           {badgeList}
         </View>
       </View>
+      {glow ? <DreamStoryHalo /> : null}
     </PressableScale>
   );
 }, (prev, next) => {
@@ -372,6 +377,7 @@ export const DreamCard = memo(function DreamCard({
   if (prev.testID !== next.testID) return false;
   if (prev.dateLabel !== next.dateLabel) return false;
   if (prev.variant !== next.variant) return false;
+  if (prev.glow !== next.glow) return false;
 
   const prevDream = prev.dream;
   const nextDream = next.dream;

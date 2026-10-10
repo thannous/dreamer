@@ -12,11 +12,13 @@ import { useDreamMedia } from '@/hooks/useDreamMedia';
 import { Toast } from '@/components/Toast';
 import { DreamRecallAssistantCard } from '@/components/journal/DreamRecallAssistantCard';
 import { SavedDreamMoment, type SavedDreamPhase } from '@/components/journal/SavedDreamMoment';
+import { DreamPaintedArtwork } from '@/components/journal/story/DreamPaintedArtwork';
+import { DreamPaintingWait } from '@/components/journal/story/DreamPaintingWait';
+import { markDreamStoryEpilogue } from '@/lib/dreamStoryEpilogue';
 import { DreamShareImage } from '@/components/journal/DreamShareImage';
 import { getImageJobFailure } from '@/lib/imageJobErrors';
 import { ErrorType } from '@/lib/errors';
 import { ImageRetry } from '@/components/journal/ImageRetry';
-import { ImageGenerationDots } from '@/components/analysis/ImageGenerationDots';
 import {
   AnalysisNoticeSheet,
   DeleteConfirmSheet,
@@ -263,6 +265,15 @@ const JournalDetailContent = memo(function JournalDetailContent({ dream }: { dre
   // The arrival either opens on the saved moment or, with artwork already present, on the
   // cover with a toast. Decided once so the confirmation is never shown twice.
   const [opensOnSavedMoment] = useState(() => isSavedArrival && !dream?.imageUrl?.trim());
+  // Act III: an illustration present when the dream is first shown opens the page as its
+  // cover. One painted during this visit lands where the reader is instead, so nothing
+  // they are reading moves; the cover becomes how the next visit opens.
+  const [artworkAtArrival, setArtworkAtArrival] = useState<boolean | null>(
+    () => dream ? Boolean(dream.imageUrl?.trim()) : null
+  );
+  if (artworkAtArrival === null && dream) {
+    setArtworkAtArrival(Boolean(dream.imageUrl?.trim()));
+  }
   const analysisLaunchInFlightRef = useRef(false);
   const autoAnalysisHandledRef = useRef(false);
   const autoAnalysisExpiresAtRef = useRef<number | null>(null);
@@ -1392,6 +1403,8 @@ const JournalDetailContent = memo(function JournalDetailContent({ dream }: { dre
   }, [dream, generateDreamImage, illustrationAccess.allowed, illustrationAccess.bundledRequestId, t, user]);
 
   const handleBackPress = useCallback(() => {
+    // Epilogue: leaving a just-captured dream for the journal lets its card glow once there.
+    if (dream && opensOnSavedMoment) markDreamStoryEpilogue(getDreamIdentityKey(dream));
     const pending = onboardingState.pendingRecordingIntent;
     if (dream && pending?.savedDreamId === dream.id && pending.phase === 'analysis_confirmation') {
       void transitionOnboarding({ type: 'CLEAR_PENDING_INTENT' }).catch(() => {
@@ -1400,7 +1413,7 @@ const JournalDetailContent = memo(function JournalDetailContent({ dream }: { dre
       return;
     }
     router.replace('/(tabs)/journal');
-  }, [dream, onboardingState.pendingRecordingIntent, transitionOnboarding]);
+  }, [dream, onboardingState.pendingRecordingIntent, opensOnSavedMoment, transitionOnboarding]);
 
   const handleJourneyPress = useCallback(() => {
     if (!dream) return;
@@ -1719,7 +1732,9 @@ const JournalDetailContent = memo(function JournalDetailContent({ dream }: { dre
   const keyboardVerticalOffset = Platform.select({ ios: 0, android: 0, web: 0 }) ?? 0;
   const shouldHideHeroMedia = isKeyboardVisible && (isEditing || isEditingTranscript);
   const coverImageFailed = Boolean((failedCoverUri && failedCoverUri === displayImageUrl) || (!displayImageUrl && media.error));
-  const hasIllustratedCover = Boolean(dream?.imageUrl?.trim()) && !shouldHideHeroMedia && !coverImageFailed;
+  const hasIllustratedCover = artworkAtArrival === true && Boolean(dream?.imageUrl?.trim())
+    && !shouldHideHeroMedia && !coverImageFailed;
+  const paintedArtwork = !coverImageFailed && displayImageUrl ? { uri: displayImageUrl, cacheKey: imageCacheKey } : null;
   const floatingTranscriptBottom = Platform.OS === 'ios' ? 32 : 24;
   const showSavedMoment = opensOnSavedMoment && !hasIllustratedCover && !shouldHideHeroMedia;
 
@@ -2447,6 +2462,9 @@ const JournalDetailContent = memo(function JournalDetailContent({ dream }: { dre
               <Text className="font-sans-medium text-champagne-on">{t('journal.persistence.retry')}</Text>
             </Pressable>
           </View>
+        ) : dream.imageUrl && !hasIllustratedCover ? (
+          <DreamPaintedArtwork source={paintedArtwork} onOpen={() => setIsIllustrationFullscreen(true)}
+            onError={() => setFailedCoverUri(displayImageUrl ?? null)} />
         ) : dream.imageUrl ? (
           <View className="relative overflow-hidden bg-ink">
             <PressableScale
@@ -2513,17 +2531,7 @@ const JournalDetailContent = memo(function JournalDetailContent({ dream }: { dre
             </View>
           )
         ) : illustrationSidecar === 'pending' ? (
-          <View className="flex-col items-center justify-center gap-3 rounded-lg border border-line-strong bg-ink-active px-4 py-6" accessibilityLiveRegion="polite">
-            <Text className="text-center font-sans-bold text-[16px] text-ivory">
-              {t('journal.detail.image.generating_title')}
-            </Text>
-            <Text className="px-2 text-center font-sans text-[13px] leading-5 text-ivory-muted">
-              {dream.imageJobStatus === 'queued'
-                ? t('journal.detail.image.queued_subtitle')
-                : t('journal.detail.image.running_subtitle')}
-            </Text>
-            <ImageGenerationDots color={noctalia.accent.base} size={240} testID="journal.detail.image.generation_dots" />
-          </View>
+          <DreamPaintingWait queued={dream.imageJobStatus === 'queued'} />
         ) : (
           <View className="min-h-[180px] flex-col items-center justify-center gap-2.5 rounded-lg border border-line bg-ink-soft px-5 py-6">
             <IconSymbol name="photo" size={28} color={noctalia.text.secondary} />
@@ -2635,7 +2643,10 @@ const JournalDetailContent = memo(function JournalDetailContent({ dream }: { dre
           keyboardShouldPersistTaps="handled"
         >
           <View ref={readingContentRef} collapsable={false} onLayout={measureTranscriptSection} className="px-4 pb-6">
-            {showSavedMoment ? <SavedDreamMoment phase={savedMomentPhase} /> : null}
+            {showSavedMoment ? (
+              <SavedDreamMoment phase={savedMomentPhase} painting={illustrationSidecar === 'pending'}
+                artwork={paintedArtwork} onOpenArtwork={() => setIsIllustrationFullscreen(true)} />
+            ) : null}
             <View onLayout={({ nativeEvent: { layout } }) => {
               setCoverIntroHeight(previous => previous === layout.height ? previous : layout.height);
             }}>
