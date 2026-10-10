@@ -405,8 +405,12 @@ export function DreamRecallAssistantCard({
   if (!state) {
     if (!offerEligible || dismissedOffer) return null;
 
+    // Offered once, right after the save: a gentle question rather than a bare pair of buttons.
     return (
-      <View className={cardClass} testID={TID.Component.DreamRecallOffer}>
+      <View className="mb-5 gap-3 rounded-lg bg-ink-soft p-4" testID={TID.Component.DreamRecallOffer}>
+        <Text className="font-display-medium text-[18px] leading-6 text-ivory">
+          {String(t('dream_recall.offer.title'))}
+        </Text>
         {error ? (
           <Text accessibilityLiveRegion="polite" className="font-sans text-body-sm text-danger-on">
             {String(t('dream_recall.session.error'))}

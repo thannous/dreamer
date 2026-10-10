@@ -85,6 +85,58 @@ test('free user saves, renames and finds the exact story in Journal', async ({ a
   await app.screenshot('saved-story-found-in-journal');
 });
 
+// Act I of the dream story: the arrival from capture opens on the saved moment once,
+// and its single primary next step follows the analysis permission.
+for (const profile of ['plus', 'existing'] as const) {
+  test(`${profile} account lands once on the saved moment with its next step`, async ({ app, screen, browser }) => {
+    await isolateWeb(browser, app);
+    await selectProfile(app, screen, profile);
+    // One run per theme: the moment's sky, orbit and dock fade must hold on both grounds.
+    if (profile === 'existing') {
+      await screen.getByRole('button', /^(Settings|Paramètres)$/, { visible: true }).tap();
+      const light = screen.getByTestId('quick-settings.theme.light', { visible: true });
+      await light.tap();
+      await expect(light).toHaveAttribute('aria-checked', 'true');
+      await screen.getByTestId('quick-settings.close', { visible: true }).tap();
+    }
+    const story = `E2E ${profile} silver owl above a sleeping mountain.`;
+    await screen.getByTestId('input.dreamTranscript', { visible: true }).fill(story);
+    await screen.getByTestId('btn.saveDream', { visible: true }).tap();
+    const moment = screen.getByTestId('component.dreamDetail.savedMoment', { visible: true });
+    await expect(moment).toContainText(/dream saved/i);
+    // The moment is the confirmation: no second toast announces the save.
+    await expect(screen.getByTestId('text.recording.saveConfirmation')).toHaveCount(1);
+    await expect(screen.getByTestId('component.transcriptCard', { visible: true })).toContainText(story);
+    await expect(screen.getByTestId('component.dreamRecall.offer', { visible: true })).toContainText('Remember a little more?');
+    const analysis = screen.getByTestId('btn.dream.primaryCta', { visible: true });
+    const back = screen.getByTestId('btn.savedDream.returnToJournal', { visible: true });
+    await expect(analysis).toBeVisible();
+    await expect(back).toContainText('Back to journal');
+    const [analysisBox, backBox] = [await analysis.boundingBox(), await back.boundingBox()];
+    // Included analysis continues the story; otherwise the journal stays first.
+    if (profile === 'plus') {
+      await expect(analysis).toContainText('Analyze this dream');
+      expect(analysisBox!.y).toBeLessThan(backBox!.y);
+    } else expect(backBox!.y).toBeLessThan(analysisBox!.y);
+    // The arrival is authored motion: record the settled moment, not one of its frames.
+    await expect.poll(() => browser.evaluate(() => document.getAnimations().filter(animation =>
+      animation.playState === 'running' && animation.effect?.getTiming().iterations !== Infinity).length)).toBe(0);
+    await app.screenshot(`${profile}-saved-moment`);
+    // The end of the page lifts the story and the recall question above the action dock.
+    await screen.getByTestId('btn.dream.delete').scrollIntoView();
+    await app.screenshot(`${profile}-saved-story-and-recall`);
+    await back.tap();
+    await expect(screen.getByTestId('screen.journal', { visible: true })).toHaveCount(1);
+    await screen.getByRole('textbox', 'Search dreams…', { visible: true }).fill(`${profile} silver owl`);
+    const card = screen.getByTestId(/^dream\.item\./, { visible: true });
+    await expect(card).toHaveCount(1);
+    await card.tap();
+    await expect(screen.getByTestId('component.transcriptCard', { visible: true })).toContainText(story);
+    await expect(screen.getByTestId('component.dreamDetail.savedMoment')).toHaveCount(0);
+    await app.screenshot(`${profile}-revisit-without-moment`);
+  });
+}
+
 test('free user recovers empty search, edits, cancels deletion and deletes only one dream', async ({ app, screen, browser }) => {
   await isolateWeb(browser, app);
   await selectProfile(app, screen, 'existing');
