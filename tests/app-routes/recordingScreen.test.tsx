@@ -1605,12 +1605,13 @@ describe('Recording screen', () => {
     // Focus the screen as rendered under the seal and press Back on whatever it registers.
     const addListener = jest.requireMock('react-native').BackHandler.addEventListener as jest.Mock;
     const registeredBefore = addListener.mock.calls.length;
-    const focusEffects = mockUseFocusEffect.mock.calls.slice(-3).map(([effect]) => effect as () => (() => void) | undefined);
-    const unfocus = focusEffects.map((effect) => effect());
+    type FocusEffect = () => (() => void) | undefined;
+    const focusEffects = mockUseFocusEffect.mock.calls.slice(-3).map((call: unknown[]) => call[0] as FocusEffect);
+    const unfocus = focusEffects.map((effect: FocusEffect) => effect());
     const backHandlers = addListener.mock.calls.slice(registeredBefore).map(([, handler]) => handler as () => boolean);
     expect(backHandlers.some((handler) => handler())).toBe(true);
     expect(mockReplace).not.toHaveBeenCalled();
-    unfocus.slice(1).forEach((cleanup) => cleanup?.());
+    unfocus.slice(1).forEach((cleanup: (() => void) | undefined) => cleanup?.());
 
     await waitFor(() => expect(mockReplace).toHaveBeenCalledWith({
       pathname: '/journal/[id]',
