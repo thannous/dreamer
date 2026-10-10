@@ -9,8 +9,9 @@ import { useTranslation } from '@/context/LanguageContext';
 import type { WorldAccess, WorldPurchaseResourceStatus } from '@/context/WorldPurchaseContext';
 import type { TranslationKey } from '@/lib/i18n';
 
-/** 48 pt targets: the names are short, the slop makes up the height. */
-const HIT_SLOP = { top: 14, bottom: 14, left: 6, right: 6 } as const;
+/** Each name is a 48 pt row of its own, so wrapped rows never share a target;
+ * the slop only widens the short names sideways. */
+const HIT_SLOP = { left: 6, right: 6 } as const;
 const PRESS_RETENTION = { top: 12, bottom: 12, left: 12, right: 12 } as const;
 export const ACTIVE_JOURNEY_CTA_TEST_ID = 'home.journey.cta';
 /** Literal IDs keep Maestro's static anchor audit honest while the names are
@@ -100,7 +101,7 @@ function WorldIndexEntry({
       hitSlop={HIT_SLOP}
       pressRetentionOffset={PRESS_RETENTION}
       onPress={handlePress}
-      className="flex-row items-center gap-1.5 py-1"
+      className="min-h-12 flex-row items-center gap-1.5"
       testID={testID}>
       {selected && !locked ? (
         <View
@@ -109,9 +110,8 @@ function WorldIndexEntry({
         />
       ) : null}
       <Text
-        variant="bodySm"
-        tone={highlighted ? 'default' : 'muted'}
-        className={highlighted ? 'font-medium underline' : ''}
+        variant={highlighted ? 'label' : 'bodySm'}
+        className={highlighted ? 'underline' : ''}
         testID={testID ? `${testID}.name` : undefined}>
         {name}
       </Text>
@@ -154,7 +154,7 @@ export function WorldJourneyPicker({
       accessibilityRole="radiogroup"
       accessibilityLabel={accessibilityLabel}
       importantForAccessibility="no"
-      className="flex-row flex-wrap gap-x-4 gap-y-1"
+      className="flex-row flex-wrap gap-x-4"
       testID={testID}>
       {worlds.map((world) => (
         <WorldIndexEntry

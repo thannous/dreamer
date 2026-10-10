@@ -22,6 +22,9 @@ const STAGE_ICON = {
  * The trainer keeps the small marks, its ring needs the height. */
 const STEP = 34;
 const STEP_SMALL = 22;
+/** Each stage takes an equal column, so circle centres sit half a column in. */
+const COLUMN = 100 / STAGES.length;
+const TRACK_INSET = `${COLUMN / 2}%` as const;
 
 type Props = {
   world: MeditationWorld;
@@ -83,17 +86,23 @@ export function PracticeProgress({ world, stage, labels = true, className }: Pro
         className="mt-1 flex-row"
         accessibilityElementsHidden
         importantForAccessibility="no-hide-descendants">
+        {/* One track behind every circle, centre of the first to centre of the
+            last; the reached part is drawn over it up to the current step. */}
+        <View
+          className="absolute h-px bg-hairline"
+          style={{ top: step / 2, left: TRACK_INSET, right: TRACK_INSET }}
+        />
+        {stageIndex > 0 ? (
+          <View
+            className="absolute h-px bg-champagne"
+            style={{ top: step / 2, left: TRACK_INSET, width: `${stageIndex * COLUMN}%` }}
+          />
+        ) : null}
         {STAGES.map((item, index) => {
           const reached = index <= stageIndex;
           const currentStage = index === stageIndex;
           return (
             <View key={item} className="flex-1 items-center gap-1.5">
-              {index > 0 ? (
-                <View
-                  className={`absolute h-px ${reached ? 'bg-champagne' : 'bg-hairline'}`}
-                  style={{ top: step / 2, right: '50%', width: '100%' }}
-                />
-              ) : null}
               <View
                 className={`items-center justify-center rounded-full border ${
                   currentStage
@@ -114,7 +123,7 @@ export function PracticeProgress({ world, stage, labels = true, className }: Pro
                 />
               </View>
               {stackLabels || !labels ? null : (
-                <Text variant="caption" tone={currentStage ? 'default' : 'muted'} className="font-display-light">
+                <Text variant="step" tone={currentStage ? 'default' : 'muted'}>
                   {t(`practice.stage.${item}` as TranslationKey)}
                 </Text>
               )}

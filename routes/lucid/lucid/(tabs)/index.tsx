@@ -351,7 +351,9 @@ function getPlanPrimaryCopy(
 
 // The day read as one thread, like Noctalia's onboarding steps: the moment
 // the trainer is in sits filled, the others wait on the line. Night means
-// sleep, so its mark is the moon, never an exercise.
+// sleep, so its mark is the moon, never an exercise. The fill is
+// `accentStrong`, which holds 3:1 under `backgroundDeep` in every palette,
+// the morning one included (`accent` does not there).
 const DAY_THREAD: readonly { phase: LucidDayPhase; icon: React.ComponentProps<typeof Ionicons>['name'] }[] = [
   { phase: 'day', icon: 'eye-outline' },
   { phase: 'bedtime', icon: 'sparkles-outline' },
@@ -387,7 +389,7 @@ function LucidDayThread({
                 style={[
                   styles.dayThreadMark,
                   now
-                    ? { backgroundColor: palette.accent, borderColor: palette.accent }
+                    ? { backgroundColor: palette.accentStrong, borderColor: palette.accentStrong }
                     : { backgroundColor: palette.background, borderColor: palette.border },
                 ]}
               >

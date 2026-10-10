@@ -16,7 +16,9 @@ export type TextVariant =
   | 'cta'
   | 'body'
   | 'bodySm'
+  | 'label'
   | 'caption'
+  | 'step'
   | 'overline'
   | 'quote';
 
@@ -41,7 +43,11 @@ const VARIANT: Record<TextVariant, string> = {
   cta: 'font-medium text-cta',
   body: 'font-sans text-body',
   bodySm: 'font-sans text-body-sm',
+  /** A chosen item in a list of names: interface size, medium weight. */
+  label: 'font-medium text-body-sm',
   caption: 'font-sans text-caption',
+  /** The name under a step circle, in the voice of the titles. */
+  step: 'font-display-light text-caption',
   overline: 'font-medium text-overline uppercase',
   quote: 'font-serif-italic text-h3',
 };
@@ -62,7 +68,9 @@ const LINE_HEIGHT: Record<TextVariant, number> = {
   cta: 28,
   body: 24,
   bodySm: 20,
+  label: 20,
   caption: 16,
+  step: 16,
   overline: 14,
   quote: 24,
 };
@@ -88,7 +96,9 @@ const DEFAULT_TONE: Record<TextVariant, TextTone> = {
   cta: 'default',
   body: 'default',
   bodySm: 'muted',
+  label: 'default',
   caption: 'faint',
+  step: 'muted',
   overline: 'accent',
   quote: 'muted',
 };

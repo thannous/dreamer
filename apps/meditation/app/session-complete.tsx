@@ -32,7 +32,7 @@ const NOCTALIA_STORE = 'https://noctalia.app';
 
 /** Paper ground with its transparent twin, for the night-to-paper fade. */
 const PAPER = PaperTheme.background;
-const PAPER_CLEAR = 'rgba(245, 240, 232, 0)';
+const PAPER_CLEAR = `${PAPER}00`;
 
 /**
  * End of a session, and the one daylight moment of the practice: the world's
