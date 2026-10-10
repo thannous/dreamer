@@ -46,7 +46,7 @@ interface DreamCardProps {
 const CARD_IMAGE_STYLE = { position: 'absolute', top: 0, left: 0, width: '100%', height: '100%' } as const;
 const SCRIM_FADE_STYLE = { height: 56, width: '100%' } as const;
 // Margin icons, one per line, each with a 44 pt touch target around its glyph.
-const MARGIN_ACTION_STYLE = { width: 44, height: 44, alignItems: 'flex-start', justifyContent: 'center' } as const;
+const MARGIN_ACTION_STYLE = { width: 44, height: 44, alignItems: 'center', justifyContent: 'center' } as const;
 const CARD_IMAGE_PLACEHOLDER = { blurhash: 'L6PZfSi_.AyE_3t7t7R**0o#DgR4' };
 
 const BADGE_TEXT_CLASS = {
@@ -314,7 +314,7 @@ export const DreamCard = memo(function DreamCard({
           )}
         </View>
         <View className="my-3 h-px w-6 bg-line" />
-        <View className="gap-1">
+        <View className="items-center gap-1">
           {onToggleFavorite ? (
             <Pressable accessibilityRole="button" accessibilityState={{ selected: isFavorite }}
               accessibilityLabel={t('journal.badge.favorite')} hitSlop={8} onPress={() => onToggleFavorite(dream)}
