@@ -19,12 +19,14 @@ import {
   checkSitePublishProof,
   formatRefusal,
 } from './check-site-publish-proof.mjs';
-import { PROOF_FORMAT_VERSION, verify } from './verify-local.mjs';
+import { ENGINE_FILE_SHA256, PROOF_FORMAT_VERSION, verify } from './verify-local.mjs';
 
 const scriptsRoot = path.dirname(fileURLToPath(import.meta.url));
 const guardScript = path.join(scriptsRoot, 'check-site-publish-proof.mjs');
 
-const SCRATCH_CONFIG = `export default {
+// The scratch config pins the running engine, as this repository's config does.
+const SCRATCH_CONFIG = `export const ENGINE_SHA256 = '${ENGINE_FILE_SHA256}';
+export default {
   mainBranch: 'master',
   commands: { pr: 'npm run verify:pr', release: 'npm run verify:release' },
   deps: { mode: 'link' },
