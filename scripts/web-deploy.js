@@ -34,9 +34,11 @@
 // from process.env, and passed only into the env of link, pull and deploy,
 // never in argv (the CLI reads it from the env). CLI output is captured and
 // printed with the pulled env values and the token redacted. The CLI is the
-// exact devDependency vercel@62.2.0, run from node_modules/.bin. Same pattern
-// as skillcodex's scripts/deploy-production.mjs.
+// exact devDependency vercel@62.2.0, run as `node <its entry file>` after
+// checkPinnedCli verified the install. Same pattern as skillcodex's
+// scripts/deploy-production.mjs.
 
+const crypto = require('crypto');
 const fs = require('fs');
 const os = require('os');
 const path = require('path');
@@ -50,12 +52,22 @@ const VERCEL_PROJECT = 'noctalia';
 const VERCEL_PROJECT_ID = 'prj_ehKoWHHtWwekaivfEmqCCHRbjogu';
 const VERCEL_ORG_ID = 'team_2wbw33JALkqNG73AvmOQO17L';
 // Pinned CLI, same version as skillcodex: an exact devDependency
-// (package.json and package-lock.json, installed by `npm ci`), run from
-// node_modules/.bin, so a production deploy never downloads or picks up
-// whatever `vercel` is latest on the day. checkPinnedCli refuses any other
-// installed version.
+// (package.json and package-lock.json, installed by `npm ci`), so a
+// production deploy never downloads or picks up whatever `vercel` is latest
+// on the day. It is not run through node_modules/.bin: checkPinnedCli checks
+// the installed package against these pins and returns `node <entry>` (see
+// there). A version bump updates all three values (follow-up: npm marks
+// 62.2.0 deprecated for its `vc upgrade` bug; this script never runs upgrade).
 const VERCEL_CLI_VERSION = '62.2.0';
 const VERCEL_CLI = `vercel@${VERCEL_CLI_VERSION}`;
+// The registry tarball's integrity, as in package-lock.json.
+const VERCEL_CLI_INTEGRITY =
+  'sha512-hwet6qXoOfZEc6waIx1VgI2nLl83wwuZZnFqKSsKJ47UFi9waEezPmAV7uNOx8Fq+6JTJIi+lRnxFXr9YFW3Eg==';
+// sha256 over the installed package's own files (every file under
+// node_modules/vercel except its nested node_modules: package.json, dist/**,
+// README, LICENSE), as computed by hashPackageFiles. npm extracts the tarball
+// as is, so the value is the same on every OS.
+const VERCEL_CLI_FILES_SHA256 = '0c637f26b1511d966d0400460de088894b8c6a0d906c067df1c030bbdc98c9da';
 // The only variables a Vercel call receives, when set. Anything else in the
 // release shell (EXPO_PUBLIC_*, NOCTALIA_*, NODE_ENV, npm_*, VERCEL_PROJECT_ID,
 // VERCEL_ORG_ID...) is dropped: `vercel build` loads the pulled production env
@@ -137,23 +149,141 @@ function createCleanCopy(commitHash, { rootDir = ROOT_DIR, parentDir } = {}) {
   return source;
 }
 
-// The path of the pinned CLI in rootDir's node_modules/.bin, after checking
-// that the installed vercel package is exactly VERCEL_CLI_VERSION. Refuses
-// (run `npm ci`) when it is missing or another version.
-function checkPinnedCli(rootDir = ROOT_DIR, platform = process.platform) {
-  let version = null;
+// sha256 of a package's own files: every regular file under pkgDir, except
+// its top-level node_modules (the nested dependencies), in sorted relative
+// path order, each fed as `<path>\0<size>\0<bytes>`. Any symlink or other
+// non-regular entry refuses: npm extracts a registry tarball as plain files.
+function hashPackageFiles(pkgDir) {
+  const files = [];
+  const walk = (dir, relative) => {
+    for (const name of fs.readdirSync(dir).sort()) {
+      if (!relative && name === 'node_modules') continue;
+      const full = path.join(dir, name);
+      const rel = relative ? `${relative}/${name}` : name;
+      const stat = fs.lstatSync(full);
+      if (stat.isDirectory()) walk(full, rel);
+      else if (stat.isFile()) files.push([rel, full]);
+      else throw new Error(`${rel} is not a regular file`);
+    }
+  };
+  walk(pkgDir, '');
+  const hash = crypto.createHash('sha256');
+  for (const [rel, full] of files.sort(([a], [b]) => (a < b ? -1 : a > b ? 1 : 0))) {
+    const bytes = fs.readFileSync(full);
+    hash.update(`${rel}\0${bytes.length}\0`);
+    hash.update(bytes);
+  }
+  return hash.digest('hex');
+}
+
+function lockEntries(lock, pkgKey = 'node_modules/vercel') {
+  const entries = {};
+  for (const [key, value] of Object.entries((lock && lock.packages) || {})) {
+    if (key === pkgKey || key.startsWith(`${pkgKey}/node_modules/`)) {
+      entries[key] = { version: value.version, resolved: value.resolved, integrity: value.integrity, optional: value.optional === true };
+    }
+  }
+  return entries;
+}
+
+// The keys where npm's install record differs from the lockfile: an entry
+// installed with another version, resolved or integrity, an installed entry
+// the lock does not list, or a non-optional lock entry that is not installed
+// (optional ones for another OS or CPU, like @esbuild/*, are skipped by npm).
+function lockMismatches(locked, installed) {
+  const same = (a, b) => a.version === b.version && a.resolved === b.resolved && a.integrity === b.integrity;
+  const mismatches = [];
+  for (const [key, entry] of Object.entries(locked)) {
+    if (installed[key] ? !same(entry, installed[key]) : !entry.optional) mismatches.push(key);
+  }
+  for (const key of Object.keys(installed)) if (!locked[key]) mismatches.push(key);
+  return mismatches;
+}
+
+// Checks the installed CLI and returns how to run it: `process.execPath`
+// (this node) on the package's own entry file, never node_modules/.bin,
+// which is a link anyone can point anywhere. Refuses (run `npm ci`) unless:
+// 1. node_modules/vercel is a real directory of this checkout: its realpath is
+//    <realpath of rootDir>/node_modules/vercel (no symlinked package, no npm
+//    link, no symlinked node_modules), and its package.json is name vercel,
+//    version VERCEL_CLI_VERSION, with bin.vercel inside the package; the
+//    entry's realpath stays inside the package dir and it is a regular file.
+// 2. package-lock.json (tracked, so covered by the guard's clean-tree check)
+//    pins node_modules/vercel to VERCEL_CLI_VERSION and VERCEL_CLI_INTEGRITY,
+//    and npm's install record node_modules/.package-lock.json has the same
+//    version, resolved and integrity for node_modules/vercel and every
+//    nested node_modules/vercel/node_modules/* entry it installed (see
+//    lockMismatches). This catches a stale or
+//    different install; it is metadata npm wrote, not a content check.
+// 3. The content check: hashPackageFiles(node_modules/vercel) equals
+//    VERCEL_CLI_FILES_SHA256, committed here. Every file of the CLI package
+//    itself (dist/vc.js and the dist/ bundle it loads) is covered, which is
+//    the strongest check that stays cheap (about 285 files, 11 MB). It does
+//    not cover the CLI's dependencies (hoisted @vercel/* packages, nested
+//    node_modules), checked by metadata only.
+// Same-user limit: node_modules is not tracked, and code running as the same
+// user can still change it between this check and the run (or change a
+// dependency the hash does not cover). Only a read-only or separate-user
+// install closes that.
+function checkPinnedCli(rootDir = ROOT_DIR, { expectedSha256 = VERCEL_CLI_FILES_SHA256 } = {}) {
+  const refuse = (reason) => {
+    throw new Error(`Vercel publish requires the pinned devDependency ${VERCEL_CLI} installed by \`npm ci\`: ${reason}. Run \`npm ci\`; nothing was run.`);
+  };
+  const readJson = (file) => {
+    try {
+      return JSON.parse(fs.readFileSync(file, 'utf8'));
+    } catch {
+      return null;
+    }
+  };
+  const pkgDir = path.join(rootDir, 'node_modules', 'vercel');
+  let realPkgDir;
+  let expectedDir;
   try {
-    version = JSON.parse(fs.readFileSync(path.join(rootDir, 'node_modules', 'vercel', 'package.json'), 'utf8')).version;
+    realPkgDir = fs.realpathSync(pkgDir);
+    expectedDir = path.join(fs.realpathSync(rootDir), 'node_modules', 'vercel');
   } catch {
-    // Not installed.
+    refuse('node_modules/vercel is missing');
   }
-  const bin = path.join(rootDir, 'node_modules', '.bin', platform === 'win32' ? 'vercel.cmd' : 'vercel');
-  if (version !== VERCEL_CLI_VERSION || !fs.existsSync(bin)) {
-    throw new Error(
-      `Vercel publish requires the pinned devDependency ${VERCEL_CLI} in node_modules (found ${JSON.stringify(version)}${fs.existsSync(bin) ? '' : ', no node_modules/.bin/vercel'}). Run \`npm ci\`; nothing was run.`
-    );
+  if (realPkgDir !== expectedDir || !fs.lstatSync(pkgDir).isDirectory()) {
+    refuse(`node_modules/vercel resolves to ${realPkgDir}, not ${expectedDir} (symlinked package or npm link)`);
   }
-  return bin;
+  const pkg = readJson(path.join(pkgDir, 'package.json'));
+  if (!pkg || pkg.name !== 'vercel' || pkg.version !== VERCEL_CLI_VERSION) {
+    refuse(`node_modules/vercel/package.json is ${JSON.stringify(pkg && pkg.name)}@${JSON.stringify(pkg && pkg.version)}`);
+  }
+  const binField = typeof pkg.bin === 'string' ? pkg.bin : pkg.bin && pkg.bin.vercel;
+  if (typeof binField !== 'string' || !binField) refuse('node_modules/vercel/package.json has no bin.vercel');
+  const entry = path.resolve(pkgDir, binField);
+  let realEntry;
+  try {
+    realEntry = fs.realpathSync(entry);
+  } catch {
+    refuse(`the entry ${binField} is missing`);
+  }
+  if (!realEntry.startsWith(realPkgDir + path.sep) || !fs.lstatSync(entry).isFile()) {
+    refuse(`the entry ${binField} resolves to ${realEntry}, outside node_modules/vercel or not a regular file`);
+  }
+  const locked = lockEntries(readJson(path.join(rootDir, 'package-lock.json')));
+  const lockedCli = locked['node_modules/vercel'];
+  if (!lockedCli || lockedCli.version !== VERCEL_CLI_VERSION || lockedCli.integrity !== VERCEL_CLI_INTEGRITY) {
+    refuse(`package-lock.json does not pin node_modules/vercel to ${VERCEL_CLI_VERSION} with the expected integrity`);
+  }
+  const installed = lockEntries(readJson(path.join(rootDir, 'node_modules', '.package-lock.json')));
+  const mismatches = installed['node_modules/vercel'] ? lockMismatches(locked, installed) : ['node_modules/vercel'];
+  if (mismatches.length > 0) {
+    refuse(`node_modules/.package-lock.json does not match package-lock.json (version, resolved or integrity) for ${mismatches.slice(0, 3).join(', ')}: a stale or different install`);
+  }
+  let digest;
+  try {
+    digest = hashPackageFiles(realPkgDir);
+  } catch (error) {
+    refuse(`node_modules/vercel holds a non-regular file (${error.message})`);
+  }
+  if (digest !== expectedSha256) {
+    refuse(`the files of node_modules/vercel hash to ${digest}, not the pinned ${expectedSha256}`);
+  }
+  return { command: process.execPath, args: [realEntry] };
 }
 
 // Reads VERCEL_TOKEN once and removes it (every case spelling) from env,
@@ -204,10 +334,14 @@ function readHeadCommit(rootDir = ROOT_DIR) {
   return hash;
 }
 
-// The child env, built from ENV_ALLOWLIST only (see above).
+// The child env, built from ENV_ALLOWLIST only (see above), plus
+// VERCEL_CLI_USE_NATIVE_BINARY=0: dist/vc.js otherwise hands the command to
+// the optional native binary @vercel/vc-native-<os>-<arch> (always on macOS),
+// found by walking up from the package, which the content hash does not
+// cover. With 0 it stays in the hashed JavaScript CLI.
 function vercelEnv(env = process.env, platform = process.platform) {
   const names = platform === 'win32' ? [...ENV_ALLOWLIST, ...WINDOWS_ENV_ALLOWLIST] : ENV_ALLOWLIST;
-  const child = {};
+  const child = { VERCEL_CLI_USE_NATIVE_BINARY: '0' };
   for (const [name, value] of Object.entries(env)) {
     const allowed = platform === 'win32' ? names.some((entry) => entry.toUpperCase() === name.toUpperCase()) : names.includes(name);
     if (allowed && value !== undefined) child[name] = value;
@@ -317,7 +451,7 @@ function projectArgs() {
   return ['--scope', VERCEL_SCOPE, '--project', VERCEL_PROJECT];
 }
 
-// Arguments of the pinned node_modules/.bin/vercel (see checkPinnedCli).
+// Arguments of the pinned CLI, after `node <entry>` (see checkPinnedCli).
 function buildVercelLinkArgs() {
   return ['link', '--yes', ...projectArgs()];
 }
@@ -407,13 +541,11 @@ function run(command, args, options = {}) {
     try {
       // Detached on POSIX: its own process group, so a signal can stop the
       // CLI and every process it started (see stopProcessTree).
-      // On Windows the command goes through cmd.exe: quote a path with spaces.
-      const file = process.platform === 'win32' && /\s/.test(command) ? `"${command}"` : command;
-      child = spawn(file, args, {
+      // No shell: the CLI is node on a file path, on every OS.
+      child = spawn(command, args, {
         cwd,
         env,
         detached: process.platform !== 'win32',
-        shell: process.platform === 'win32',
         stdio: ['ignore', 'pipe', 'pipe'],
       });
     } catch (error) {
@@ -460,8 +592,9 @@ VERCEL_TOKEN for link, pull and deploy only; the token is removed from this
 process's env at start. The temp copy is removed on exit, on failure and on
 SIGINT, SIGTERM, SIGHUP or SIGQUIT (after stopping the running step's whole
 process group; exit 128 + the signal number); stale copies of killed runs are
-swept at start. The CLI is the exact devDependency ${VERCEL_CLI}, run from
-node_modules/.bin (run \`npm ci\` first). There is no override. Set
+swept at start. The CLI is the exact devDependency ${VERCEL_CLI}, run with
+node on its own entry file once its location, lock entries and file hash
+check out (run \`npm ci\` first). There is no override. Set
 VERCEL_TOKEN in the environment; never commit it.`);
 }
 
@@ -493,12 +626,13 @@ async function main(argv = process.argv.slice(2), deps = {}) {
     return;
   }
 
-  // First: the token leaves this process's env, so nothing started from here
-  // on inherits it; then the pinned CLI must be installed.
+  // First the sweep, so stale copies holding a pulled production env are
+  // removed even when a later check refuses. Then the token leaves this
+  // process's env, so nothing started from here on inherits it, and the
+  // pinned CLI must check out.
+  for (const dir of sweep({ tempRoot })) log(`[web-deploy] removed a stale temp copy: ${dir}`);
   const token = takeVercelToken(env);
   const vercel = checkCli(rootDir);
-
-  for (const dir of sweep({ tempRoot })) log(`[web-deploy] removed a stale temp copy: ${dir}`);
 
   // Before anything else: a refused publish runs nothing.
   const accepted = await guardProduction();
@@ -539,11 +673,11 @@ async function main(argv = process.argv.slice(2), deps = {}) {
     const buildHome = path.join(parentDir, 'build-home');
     fs.mkdirSync(buildHome);
     const buildOptions = { cwd: source, env: buildEnv(env, buildHome), onChild };
-    await runCommand(vercel, buildVercelLinkArgs(), options);
+    await runCommand(vercel.command, [...vercel.args, ...buildVercelLinkArgs()], options);
     assertProjectLink(source);
-    await runCommand(vercel, buildVercelPullArgs(), options);
+    await runCommand(vercel.command, [...vercel.args, ...buildVercelPullArgs()], options);
     assertProjectLink(source);
-    await runCommand(vercel, buildVercelBuildArgs(), buildOptions);
+    await runCommand(vercel.command, [...vercel.args, ...buildVercelBuildArgs()], buildOptions);
     if (!fs.existsSync(path.join(source, '.vercel', 'output', 'config.json'))) {
       throw new Error('vercel build wrote no .vercel/output/config.json in the clean copy; nothing was deployed.');
     }
@@ -562,7 +696,7 @@ async function main(argv = process.argv.slice(2), deps = {}) {
     }
     assertProjectLink(source);
     log(recheck.message);
-    await runCommand(vercel, buildVercelDeployArgs(accepted.head), options);
+    await runCommand(vercel.command, [...vercel.args, ...buildVercelDeployArgs(accepted.head)], options);
   } finally {
     // A signal stops the step, which makes it fail: let the handler finish
     // (it exits with the signal's code) before the ordinary cleanup.
@@ -584,6 +718,8 @@ if (require.main === module) {
 
 module.exports = {
   SIGNAL_EXIT_CODES,
+  VERCEL_CLI_FILES_SHA256,
+  VERCEL_CLI_INTEGRITY,
   VERCEL_CLI_VERSION,
   VERCEL_ORG_ID,
   VERCEL_PROJECT_ID,
@@ -596,6 +732,7 @@ module.exports = {
   collectSecrets,
   createCleanCopy,
   handledSignals,
+  hashPackageFiles,
   parseEnvFile,
   main,
   parseTarget,
