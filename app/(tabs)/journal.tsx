@@ -8,6 +8,7 @@ import { getDreamIdentityKey } from '@/lib/dreamIdentity';
 import { UpsellCard } from '@/components/guest/UpsellCard';
 import { AtmosphericBackground } from '@/components/inspiration/AtmosphericBackground';
 import { PageHeaderContent } from '@/components/inspiration/PageHeader';
+import { MockNavigationRail } from '@/components/dev/MockNavigationRail';
 import { AdvancedFilterSheet, type JournalSortOrder } from '@/components/journal/AdvancedFilterSheet';
 import { RemoteJournalList } from '@/components/journal/RemoteJournalList';
 import type { DreamListItem } from '@/lib/journalReadContracts';
@@ -885,6 +886,7 @@ export default function JournalListScreen() {
         className="gap-4 p-4"
         style={isDesktopLayout ? DESKTOP_MAX_WIDTH_STYLE : undefined}
       >
+        <MockNavigationRail />
         <JournalPersistenceNotice
           state={persistenceState}
           refreshState={completeness?.status === 'incomplete' ? undefined : refreshState}

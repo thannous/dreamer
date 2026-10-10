@@ -12,6 +12,7 @@ import {
   useWindowDimensions,
 } from 'react-native';
 
+import { MockNavigationRail } from '@/components/dev/MockNavigationRail';
 import { NoctaliaScreenHeader } from '@/components/NoctaliaScreenHeader';
 import { NightSkyBand } from '@/components/ui/NightSkyBand';
 import { ScreenContainer } from '@/components/ScreenContainer';
@@ -262,6 +263,7 @@ export default function StatisticsScreen() {
       >
         {scrollHeader ? header : null}
         <ScreenContainer key="resources">
+          <MockNavigationRail />
           <JournalCompletenessNotice status={completeness?.status} trends onRetry={() => { void reloadDreams(); }} />
           <View className="gap-6 px-5 pb-5 pt-2">
             <View className="gap-4" testID="trends.section.week" accessible={false} accessibilityRole="none">
