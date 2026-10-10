@@ -476,6 +476,9 @@ describe('immersive home journey', () => {
     const tide = await screen.findByRole('radio', { name: 'Deep tide' });
     expect(tide.props.accessibilityHint).toContain(mockEn['world.purchase.offer.unavailable']);
     expect(within(screen.getByTestId('home.world-switcher.tide')).queryByText(/0,99/)).toBeNull();
+    expect(
+      within(screen.getByTestId('home.world-switcher.tide')).queryByText(mockEn['world.purchase.offer.unavailable']),
+    ).toBeNull();
 
     fireEvent.press(tide);
 

@@ -120,9 +120,13 @@ function WorldIndexEntry({
           className="flex-row items-center gap-1"
           testID={testID ? `${testID}.locked` : undefined}>
           <IconSymbol name="lock.fill" size={11} color={Themes[appearance].textTertiary} />
-          <Text variant="caption" tone="faint">
-            {offerLabel}
-          </Text>
+          {/* Only a price fits beside a name; the loading or unavailable
+              sentence stays in the hint and in the recovery card below. */}
+          {priceLabel ? (
+            <Text variant="caption" tone="faint">
+              {priceLabel}
+            </Text>
+          ) : null}
         </View>
       ) : null}
     </Pressable>
