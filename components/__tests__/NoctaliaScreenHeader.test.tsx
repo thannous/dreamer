@@ -105,6 +105,9 @@ jest.mock('@/constants/noctaliaDesign', () => ({
       primary: '#21180f',
       secondary: '#6b6880',
     },
+    screen: {
+      background: '#f0e4d4',
+    },
   }),
 }));
 

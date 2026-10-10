@@ -16,6 +16,8 @@ type Props = {
   background?: string;
   /** Fixed over scrolling content (not inside it): it grows down on a pull instead of following it. */
   pinned?: boolean;
+  /** Where the painting has fully become the page's ground (the bottom of its header), in points. */
+  fadeEnd?: number;
 };
 
 /** A real opening onto the scene: copy lives on the theme's reading surface below it.
@@ -55,7 +57,7 @@ export function DreamerArtworkWindow({ scene, style, bleedTop = 0 }: {
 }
 
 /** A static, decorative painting fades into the page's own readable ground. */
-export function DreamerBackground({ scene, height, background, pinned = false }: Props) {
+export function DreamerBackground({ scene, height, background, pinned = false, fadeEnd }: Props) {
   const { colors, mode } = useTheme();
   const tokens = getNoctaliaDesignTokens(colors, mode);
   const insets = useSafeAreaInsets();
@@ -65,6 +67,10 @@ export function DreamerBackground({ scene, height, background, pinned = false }:
   const spaciousHero = scene === 'sleep' || scene === 'ritual';
   const readingStart = Math.min(0.68, (insets.top + (spaciousHero ? 190 : 72)) / height);
   const stretch = useHeaderStretchStyle(height, pinned);
+  // The painting melts into the page over 80 points and is pure ground by the bottom of its
+  // header, so content with its own ground below never meets it as an edge.
+  const fadeEndAt = Math.min(1, Math.max(readingStart + 0.05, (fadeEnd ?? height) / height));
+  const fadeStart = Math.max(readingStart, fadeEndAt - 80 / height);
 
   return (
     <Animated.View
@@ -88,17 +94,8 @@ export function DreamerBackground({ scene, height, background, pinned = false }:
         />
       ) : null}
       <LinearGradient
-        colors={[tokens.backgroundArtwork.reveal, tokens.backgroundArtwork.scrim, tokens.backgroundArtwork.scrim, ground]}
-        locations={[0, readingStart, 0.72, 1]}
-        style={StyleSheet.absoluteFill}
-      />
-      {/* Reveal the painting beside the header, then protect the full-width copy.
-          Its left edge stays veiled for the wordmark and wrapped page titles. */}
-      <LinearGradient
-        colors={[tokens.backgroundArtwork.scrim, tokens.backgroundArtwork.scrim, tokens.backgroundArtwork.transparent]}
-        locations={[0, 0.42, 1]}
-        start={{ x: 0, y: 0 }}
-        end={{ x: 1, y: 0 }}
+        colors={[tokens.backgroundArtwork.reveal, tokens.backgroundArtwork.scrim, tokens.backgroundArtwork.scrim, ground, ground]}
+        locations={[0, readingStart, fadeStart, fadeEndAt, 1]}
         style={StyleSheet.absoluteFill}
       />
     </Animated.View>

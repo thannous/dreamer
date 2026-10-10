@@ -104,6 +104,13 @@ export const NoctaliaScreenHeader = memo(function NoctaliaScreenHeader({
   const iconButtonBg = noctalia.surface.soft;
   const quietIconColor = noctalia.text.secondary;
   const [measuredHeight, setMeasuredHeight] = useState(0);
+  // Header copy over a painting keeps its contrast through a soft halo of the page's ground,
+  // so the veil over the painting can stay light.
+  const paintedTextShadow = {
+    textShadowColor: `${noctalia.screen.background}D9`,
+    textShadowOffset: { width: 0, height: 1 },
+    textShadowRadius: 14,
+  } as const;
 
   if (variant === 'tab') {
     const tabTitleScale = Math.min(fontScale, 1.3);
@@ -118,8 +125,9 @@ export const NoctaliaScreenHeader = memo(function NoctaliaScreenHeader({
             header from the top of the screen, status bar included, and fades into the page. */}
         {/* A screen that paints its own top (backdrop={false}) passes the scene to that painting instead. */}
         {backdrop ? (
+          // Pure ground by the bottom of the header, whatever is drawn below it.
           <NightSkyBand height={(measuredHeight || insets.top + 160) + 40} background={noctalia.screen.background}
-            scene={scene} pinned={pinned} />
+            scene={scene} pinned={pinned} fadeEnd={measuredHeight || undefined} />
         ) : null}
         <View style={[styles.tabBrandRow, { paddingHorizontal: horizontalPadding }]}>
           {showBrand ? (
@@ -128,7 +136,7 @@ export const NoctaliaScreenHeader = memo(function NoctaliaScreenHeader({
               <Text
                 allowFontScaling={false}
                 numberOfLines={1}
-                style={[styles.tabBrandText, {
+                style={[styles.tabBrandText, paintedTextShadow, {
                   color: noctalia.text.primary,
                   fontSize: styles.tabBrandText.fontSize * brandFontScale,
                   lineHeight: styles.tabBrandText.lineHeight * brandFontScale,
@@ -168,7 +176,7 @@ export const NoctaliaScreenHeader = memo(function NoctaliaScreenHeader({
           <Text
             accessibilityRole="header"
             allowFontScaling={false}
-            style={[styles.tabTitle, {
+            style={[styles.tabTitle, paintedTextShadow, {
               color: noctalia.text.primary,
               fontSize: styles.tabTitle.fontSize * tabTitleScale,
               lineHeight: styles.tabTitle.lineHeight * tabTitleScale,
@@ -180,7 +188,7 @@ export const NoctaliaScreenHeader = memo(function NoctaliaScreenHeader({
             {t(titleKey)}
           </Text>
           {subtitle ? (
-            <Text style={[styles.tabSubtitle, { color: noctalia.text.secondary }]} maxFontSizeMultiplier={1.6}>
+            <Text style={[styles.tabSubtitle, paintedTextShadow, { color: noctalia.text.secondary }]} maxFontSizeMultiplier={1.6}>
               {subtitle}
             </Text>
           ) : null}
@@ -195,7 +203,7 @@ export const NoctaliaScreenHeader = memo(function NoctaliaScreenHeader({
     <View onLayout={(event) => setMeasuredHeight(event.nativeEvent.layout.height)}
       style={[styles.container, isProminent && styles.prominentContainer, variant === 'editorial' && styles.editorialContainer, { paddingTop: (includeTopInset ? insets.top : 0) + ThemeLayout.spacing.sm, borderBottomColor: noctalia.surface.border }]}>
       {/* Same as the tab header: the painting fills the header from the top of the screen. */}
-      {scene && backdrop ? <NightSkyBand height={(measuredHeight || insets.top + 160) + 40} background={noctalia.screen.background} scene={scene} /> : null}
+      {scene && backdrop ? <NightSkyBand height={(measuredHeight || insets.top + 160) + 40} background={noctalia.screen.background} scene={scene} fadeEnd={measuredHeight || undefined} /> : null}
       <View style={[styles.titleRow, isNarrow && styles.titleRowNarrow, stackActions && styles.titleRowStacked, wrapInlineSlot && styles.searchRowWrapped]}>
         <View style={[styles.titleBlock, stackActions && styles.titleBlockStacked,
           Boolean(inlineSlot) && (canInlineSlot
@@ -203,7 +211,7 @@ export const NoctaliaScreenHeader = memo(function NoctaliaScreenHeader({
             : { flex: 0, flexBasis: 'auto', width: '100%', paddingRight: stackActions ? 0 : actions.length * 52 }),
         ]}>
           {showBrand ? <Text
-            style={[styles.brand, isProminent && styles.quietBrand, variant === 'editorial' && styles.editorialBrand, {
+            style={[styles.brand, isProminent && styles.quietBrand, variant === 'editorial' && styles.editorialBrand, scene && paintedTextShadow, {
               color: noctalia.text.primary,
               fontSize: brandTypography.fontSize * brandFontScale,
               lineHeight: brandTypography.lineHeight * brandFontScale,
@@ -218,7 +226,7 @@ export const NoctaliaScreenHeader = memo(function NoctaliaScreenHeader({
           <Text
             accessibilityRole={isProminent || variant === 'editorial' ? 'header' : undefined}
             allowFontScaling={false}
-            style={[styles.subtitle, isProminent && styles.prominentTitle, variant === 'editorial' && styles.editorialTitle, {
+            style={[styles.subtitle, isProminent && styles.prominentTitle, variant === 'editorial' && styles.editorialTitle, scene && paintedTextShadow, {
               color: isProminent || variant === 'editorial' ? noctalia.text.primary : noctalia.text.secondary,
               fontSize: titleTypography.fontSize * titleFontScale,
               lineHeight: titleTypography.lineHeight * titleFontScale,
