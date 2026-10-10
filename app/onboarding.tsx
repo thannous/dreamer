@@ -10,8 +10,10 @@ import { NightSky } from '@/components/onboarding/story/NightSky';
 import { STORY, TRAVEL, reducedDelay } from '@/components/onboarding/story/storyMotion';
 import { getNoctaliaDesignTokens } from '@/constants/noctaliaDesign';
 import { DarkTheme } from '@/constants/journalTheme';
+import { getLegalLink } from '@/constants/legalLinks';
 import { Fonts } from '@/constants/theme';
 import { useOnboarding } from '@/context/OnboardingContext';
+import { grantAiConsent } from '@/lib/aiConsent';
 import { useTheme } from '@/context/ThemeContext';
 import { useTranslation } from '@/hooks/useTranslation';
 import { getPaywallTrigger, trackProductEvent } from '@/lib/analytics';
@@ -35,6 +37,7 @@ import {
   AccessibilityInfo,
   ActivityIndicator,
   Alert,
+  Linking,
   Platform,
   Pressable,
   StatusBar,
@@ -100,7 +103,7 @@ const webTitleFocusResetStyle: TextStyle | null = process.env.EXPO_OS === 'web'
 
 export default function OnboardingScreen() {
   const { colors, mode } = useTheme();
-  const { t } = useTranslation();
+  const { t, currentLang } = useTranslation();
   const featureSheetsEnabled = isOnboardingFeatureSheetsEnabled();
   const reducedMotion = useReducedMotion();
   const insets = useSafeAreaInsets();
@@ -131,7 +134,9 @@ export default function OnboardingScreen() {
   const [doorPassage, setDoorPassage] = useState(false);
   const featureTriggers = useRef<Partial<Record<OnboardingFeature, ViewInstance | null>>>({});
   const featureFocusTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
-  const [, setAnalyticsEnabled] = useState(false);
+  const [analyticsEnabled, setAnalyticsEnabled] = useState(false);
+  // The usage box in the privacy sheet: saved only when the reader answers.
+  const [usageChecked, setUsageChecked] = useState(false);
   const [analyticsPreferenceLoading, setAnalyticsPreferenceLoading] = useState(false);
   const [analyticsPreferenceError, setAnalyticsPreferenceError] = useState(false);
   const [footerHeight, setFooterHeight] = useState(0);
@@ -544,7 +549,11 @@ export default function OnboardingScreen() {
     setAnalyticsPreferenceError(false);
     setAnalyticsPreferenceLoading(true);
     void getProductAnalyticsPreference()
-      .then((preference) => setAnalyticsEnabled(preference === 'enabled'))
+      .then((preference) => {
+        setAnalyticsEnabled(preference === 'enabled');
+        // The usage box starts from the saved choice each time the sheet opens.
+        setUsageChecked(preference === 'enabled');
+      })
       .catch(() => setAnalyticsPreferenceError(true))
       .finally(() => setAnalyticsPreferenceLoading(false));
   }, []);
@@ -590,9 +599,12 @@ export default function OnboardingScreen() {
   const selectedPath = selectedPathOverride ?? state.selectedPath ?? 'analyze';
   const selectedDefinition = PATHS.find((path) => path.id === selectedPath) ?? PATHS[0];
   const analyticsAvailable = isProductAnalyticsAvailable();
-  // The sheet's two answers: save the usage choice (when this build collects at all), then close.
+  // "I accept" covers the whole sheet: the generative AI features, and usage measurement
+  // only if its box is ticked. "I decline" leaves AI unavailable and measurement off.
   const answerPrivacy = async (accepted: boolean) => {
-    if (analyticsAvailable && !(await toggleAnalytics(accepted))) return;
+    const measure = accepted && usageChecked;
+    if (analyticsAvailable && measure !== analyticsEnabled && !(await toggleAnalytics(measure))) return;
+    if (accepted) grantAiConsent();
     setShowPrivacySheet(false);
   };
   const layeredStepHeight = Math.max(stepHeights.intro ?? 0, stepHeights.path ?? 0) || undefined;
@@ -1043,16 +1055,30 @@ export default function OnboardingScreen() {
             </View>
           ))}
         </View>
-        <Text style={[styles.privacyDetails, { color: sheetTokens.text.tertiary }]}>{t('onboarding.privacy.details')}</Text>
-        <Text style={[styles.privacyToggleLabel, { color: sheetTokens.text.primary }]}>{t('onboarding.privacy.toggle_label')}</Text>
-        {analyticsPreferenceError || !analyticsAvailable ? (
-          <Text
-            accessibilityLiveRegion="polite"
-            style={[styles.privacyStatus, { color: analyticsPreferenceError ? sheetTokens.status.danger.text : sheetTokens.accent.text }]}
-          >
-            {analyticsPreferenceError ? t('onboarding.privacy.error') : t('analytics.privacy.unavailable')}
-          </Text>
-        ) : null}
+        <Pressable accessibilityRole="link" onPress={() => void Linking.openURL(getLegalLink('privacyPolicy', currentLang)).catch(() => undefined)}
+          testID="btn.onboarding.privacy.policy" style={styles.privacyPolicyLink}>
+          <Text style={[styles.privacyDetails, { color: sheetTokens.accent.text }]}>{t('onboarding.privacy.details')}</Text>
+        </Pressable>
+        <Pressable accessibilityRole="checkbox" accessibilityState={{ checked: usageChecked, disabled: !analyticsAvailable }}
+          disabled={!analyticsAvailable} onPress={() => setUsageChecked((value) => !value)}
+          testID="checkbox.onboarding.privacy.usage" style={styles.privacyCheckRow}>
+          <View style={[styles.privacyCheckbox, {
+            borderColor: usageChecked ? sheetTokens.accent.text : sheetTokens.surface.border,
+            backgroundColor: usageChecked ? sheetTokens.accent.text : 'transparent',
+          }]}>
+            {usageChecked ? <IconSymbol name="checkmark" size={14} color={sheetTokens.screen.background} /> : null}
+          </View>
+          <View style={styles.privacyCheckCopy}>
+            <Text style={[styles.privacyToggleLabel, { color: sheetTokens.text.primary }]}>{t('onboarding.privacy.toggle_label')}</Text>
+            {analyticsPreferenceError || !analyticsAvailable ? (
+              <Text accessibilityLiveRegion="polite"
+                style={[styles.privacyStatus, { color: analyticsPreferenceError ? sheetTokens.status.danger.text : sheetTokens.accent.text }]}>
+                {analyticsPreferenceError ? t('onboarding.privacy.error') : t('analytics.privacy.unavailable')}
+              </Text>
+            ) : null}
+          </View>
+        </Pressable>
+        <Text style={[styles.privacyNote, { color: sheetTokens.text.secondary }]}>{t('onboarding.privacy.accept_note')}</Text>
       </StandardBottomSheet> : null}
       <Animated.View
         pointerEvents="none"
@@ -1137,7 +1163,12 @@ const styles = StyleSheet.create({
   primaryText: { flexShrink: 1, fontFamily: Fonts.spaceGrotesk.bold, fontSize: 17, lineHeight: 22, textAlign: 'center' },
   privacyAssuranceText: { flex: 1, fontFamily: Fonts.spaceGrotesk.regular, fontSize: 13, lineHeight: 19 },
   privacyPoints: { gap: 12, marginBottom: 14 },
-  privacyDetails: { fontFamily: Fonts.spaceGrotesk.regular, fontSize: 12, lineHeight: 17, marginBottom: 18 },
+  privacyPolicyLink: { alignSelf: 'flex-start', minHeight: 44, justifyContent: 'center', marginBottom: 6 },
+  privacyDetails: { fontFamily: Fonts.spaceGrotesk.medium, fontSize: 13, lineHeight: 18, textDecorationLine: 'underline' },
+  privacyCheckRow: { flexDirection: 'row', alignItems: 'center', gap: 12, minHeight: 48, marginBottom: 10 },
+  privacyCheckbox: { width: 22, height: 22, borderRadius: 6, borderWidth: 1.5, alignItems: 'center', justifyContent: 'center' },
+  privacyCheckCopy: { flex: 1, gap: 2 },
+  privacyNote: { fontFamily: Fonts.spaceGrotesk.regular, fontSize: 12, lineHeight: 17, marginBottom: 14 },
   privacyPoint: { flexDirection: 'row', alignItems: 'flex-start', gap: 12 },
   privacyToggleLabel: { fontFamily: Fonts.spaceGrotesk.bold, fontSize: 15, lineHeight: 20 },
   privacyStatus: { fontFamily: Fonts.spaceGrotesk.medium, fontSize: 12, lineHeight: 16 },
