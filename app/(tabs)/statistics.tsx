@@ -2,7 +2,7 @@ import { useQuickSettings } from '@/context/QuickSettingsContext';
 import { JournalCompletenessNotice } from '@/components/journal/JournalCompletenessNotice';
 import { router } from 'expo-router';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import React, { useCallback, useMemo, useState } from 'react';
+import React, { useCallback, useMemo } from 'react';
 import {
   Platform,
   Pressable,
@@ -14,7 +14,6 @@ import {
 
 import { MockNavigationRail } from '@/components/dev/MockNavigationRail';
 import { NoctaliaScreenHeader } from '@/components/NoctaliaScreenHeader';
-import { NightSkyBand } from '@/components/ui/NightSkyBand';
 import { ScreenContainer } from '@/components/ScreenContainer';
 import { StatsEvolutionBars } from '@/components/stats/StatsEvolutionBars';
 import { StatsRankedList, type StatsRankedRow } from '@/components/stats/StatsRankedList';
@@ -108,7 +107,6 @@ export default function StatisticsScreen() {
   const insets = useSafeAreaInsets();
   const { colors, mode } = useTheme();
   const openQuickSettings = useQuickSettings();
-  const [headerHeight, setHeaderHeight] = useState(insets.top + 120);
   useClearWebFocus();
 
   const compact = width < COMPACT_BREAKPOINT;
@@ -139,6 +137,7 @@ export default function StatisticsScreen() {
 
   const header = (
     <NoctaliaScreenHeader
+      scene="astral"
       titleKey="trends.title"
       variant="editorial"
       actions={[
@@ -248,12 +247,7 @@ export default function StatisticsScreen() {
 
   return (
     <View className="flex-1 bg-ink">
-      {!scrollHeader ? (
-        // Behind the fixed header only, fading out at its edge, so the content that
-        // scrolls under the header is clipped on plain ink rather than across the sky.
-        <NightSkyBand scene="astral" height={headerHeight + 24} background={noctalia.screen.background} />
-      ) : null}
-      {!scrollHeader ? <View onLayout={(event) => setHeaderHeight(event.nativeEvent.layout.height)}>{header}</View> : null}
+      {!scrollHeader ? header : null}
       <ScrollView
         className="flex-1"
         style={scrollHeader ? { marginBottom: navigationClearance } : undefined}

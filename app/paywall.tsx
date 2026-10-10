@@ -5,7 +5,7 @@ import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { ActivityIndicator, BackHandler, Linking, Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
-import { AtmosphericBackground } from '@/components/inspiration/AtmosphericBackground';
+import { DreamerArtworkWindow } from '@/components/ui/DreamerBackground';
 import { PressableScale, Reveal } from '@/components/motion';
 import { ScreenContainer } from '@/components/ScreenContainer';
 import { Toast } from '@/components/Toast';
@@ -469,7 +469,7 @@ export default function PaywallScreen() {
   if (isDeviceUpgraded) {
     return (
       <View style={rootStyle} testID={TID.Screen.Paywall}>
-        <AtmosphericBackground scene="observatory" />
+        <DreamerArtworkWindow scene="observatory" />
         <ScreenContainer style={headerContainerStyle} maxWidth={PAYWALL_MAX_WIDTH}>
           <View style={styles.headerRow}>
             <Text style={[styles.headerTitle, { color: noctalia.text.primary }]}>
@@ -540,7 +540,6 @@ export default function PaywallScreen() {
 
   return (
     <View style={rootStyle} testID={TID.Screen.Paywall}>
-      <AtmosphericBackground scene="observatory" />
       <ScrollView
         style={styles.scroll}
         contentContainerStyle={[
@@ -552,6 +551,7 @@ export default function PaywallScreen() {
         ]}
         contentInsetAdjustmentBehavior="automatic"
       >
+        <DreamerArtworkWindow scene="observatory" style={{ marginHorizontal: -ThemeLayout.spacing.md }} />
         <ScreenContainer maxWidth={PAYWALL_MAX_WIDTH}>
           <View style={styles.topBar}>
             <View style={styles.brandLockup}>

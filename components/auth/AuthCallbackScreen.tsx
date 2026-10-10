@@ -3,6 +3,7 @@ import { ActivityIndicator, StyleSheet, View } from 'react-native';
 import { router, type Href } from 'expo-router';
 
 import { AtmosphericBackground } from '@/components/inspiration/AtmosphericBackground';
+import { DreamerArtworkWindow } from '@/components/ui/DreamerBackground';
 import { getNoctaliaDesignTokens } from '@/constants/noctaliaDesign';
 import { useTheme } from '@/context/ThemeContext';
 import { useAuthReturnIntent } from '@/hooks/useAuthReturnIntent';
@@ -21,7 +22,7 @@ const AuthCallbackScreen: React.FC<{ destination?: Href }> = ({ destination = '/
 
   return (
     <View style={[styles.container, { backgroundColor: noctalia.screen.background }]}>
-      <AtmosphericBackground scene={destination === '/recording' ? 'reverie' : undefined} />
+      {destination === '/recording' ? <DreamerArtworkWindow scene="reverie" /> : <AtmosphericBackground />}
       <ActivityIndicator color={noctalia.accent.text} />
     </View>
   );

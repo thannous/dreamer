@@ -1,5 +1,5 @@
 import { MarkdownText } from '@/components/ui/MarkdownText';
-import { AtmosphericBackground } from '@/components/inspiration/AtmosphericBackground';
+import { DreamerArtworkWindow } from '@/components/ui/DreamerBackground';
 import { IconSymbol } from '@/components/ui/icon-symbol';
 import { DarkTheme, ThemeLayout } from '@/constants/journalTheme';
 import { getNoctaliaDesignTokens } from '@/constants/noctaliaDesign';
@@ -120,7 +120,7 @@ export default function SymbolDetailScreen() {
   if (!symbol) {
     return (
       <View style={[styles.emptyState, { backgroundColor: noctalia.screen.background }]}>
-        <AtmosphericBackground scene="symbols" />
+        <DreamerArtworkWindow scene="symbols" />
         <Text style={[styles.emptyText, { color: noctalia.text.secondary }]}>
           {t('symbols.not_found')}
         </Text>

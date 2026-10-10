@@ -1,7 +1,7 @@
 import React, { useCallback, useMemo } from 'react';
 import { Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
 
-import { AtmosphericBackground } from '@/components/inspiration/AtmosphericBackground';
+import { DreamerArtworkWindow } from '@/components/ui/DreamerBackground';
 import { FlatGlassCard } from '@/components/inspiration/GlassCard';
 import { SymbolCard } from '@/components/symbols/SymbolCard';
 import { IconSymbol } from '@/components/ui/icon-symbol';
@@ -49,7 +49,7 @@ export default function DreamGuideDetailScreen() {
   if (!guide) {
     return (
       <LinearGradient colors={noctalia.screen.gradient} style={styles.emptyState}>
-        <AtmosphericBackground variant="subtle" scene="path" />
+
         <Pressable
           onPress={() => router.back()}
           accessibilityLabel={t('navigation.back')}
@@ -79,7 +79,6 @@ export default function DreamGuideDetailScreen() {
         style={styles.container}
         testID="screen.dreamGuideDetail"
       >
-        <AtmosphericBackground variant="subtle" scene="path" />
         <ScrollView
           style={styles.scrollView}
           contentInsetAdjustmentBehavior="automatic"
@@ -90,6 +89,7 @@ export default function DreamGuideDetailScreen() {
           onMomentumScrollBegin={scrollPerf.onMomentumScrollBegin}
           onMomentumScrollEnd={scrollPerf.onMomentumScrollEnd}
         >
+          <DreamerArtworkWindow scene="path" style={{ marginHorizontal: -16 }} />
           <View style={styles.headerRow}>
             <Pressable
               onPress={() => router.back()}

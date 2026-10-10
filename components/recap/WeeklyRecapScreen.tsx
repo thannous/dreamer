@@ -5,7 +5,7 @@ import React, { useCallback, useMemo, useState } from 'react';
 import { Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
-import { AtmosphericBackground } from '@/components/inspiration/AtmosphericBackground';
+import { DreamerArtworkWindow } from '@/components/ui/DreamerBackground';
 import { IconSymbol } from '@/components/ui/icon-symbol';
 import { ThemeLayout } from '@/constants/journalTheme';
 import { getNoctaliaDesignTokens } from '@/constants/noctaliaDesign';
@@ -79,7 +79,6 @@ export function WeeklyRecapScreen() {
   }, []);
 
   const backButtonTop = insets.top + ThemeLayout.spacing.sm;
-  const contentPaddingTop = backButtonTop + 44 + ThemeLayout.spacing.md;
   const cardStyle = [
     styles.card,
     { backgroundColor: noctalia.surface.raised, borderColor: noctalia.surface.border },
@@ -91,7 +90,6 @@ export function WeeklyRecapScreen() {
 
   return (
     <View style={[styles.container, { backgroundColor: noctalia.screen.background }]} testID={TID.Screen.WeeklyRecap}>
-      <AtmosphericBackground scene="astral" />
 
       <Pressable
         onPress={handleBack}
@@ -111,9 +109,10 @@ export function WeeklyRecapScreen() {
         style={styles.scrollView}
         contentContainerStyle={{
           paddingBottom: insets.bottom + ThemeLayout.spacing.xl,
-          paddingTop: contentPaddingTop,
+          paddingTop: 0,
         }}
       >
+        <DreamerArtworkWindow scene="astral" />
         <View style={styles.content}>
           <View style={styles.titleSection}>
             <Text style={[styles.eyebrow, { color: noctalia.accent.text }]}>{rangeLabel}</Text>

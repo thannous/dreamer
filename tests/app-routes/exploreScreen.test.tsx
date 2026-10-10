@@ -107,7 +107,7 @@ jest.mock('@/components/ScreenContainer', () => ({
 }));
 
 jest.mock('@/components/ui/DreamerBackground', () => ({
-  DreamerBackground: () => null,
+  DreamerArtworkWindow: () => null, DreamerBackground: () => null,
 }));
 
 jest.mock('@/components/ui/icon-symbol', () => ({

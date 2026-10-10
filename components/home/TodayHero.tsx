@@ -6,7 +6,7 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { TodayCard } from '@/components/home/TodayCard';
 import { IconSymbol } from '@/components/ui/icon-symbol';
-import { NightSkyBand } from '@/components/ui/NightSkyBand';
+import { DreamerArtworkWindow } from '@/components/ui/DreamerBackground';
 import { getNoctaliaDesignTokens } from '@/constants/noctaliaDesign';
 import { useTheme } from '@/context/ThemeContext';
 import { useDreamMedia } from '@/hooks/useDreamMedia';
@@ -57,7 +57,7 @@ export function TodayHero({ state, dream, now, onPressCta, onOpenSettings }: Pro
   return (
     <View className="relative bg-ink">
       {/* No dream artwork yet: the night sky keeps the opening immersive instead of flat ink. */}
-      {!hasArtwork ? <NightSkyBand height={insets.top + 340} background={ground} /> : null}
+      {!hasArtwork ? <DreamerArtworkWindow scene="reverie" style={{ marginTop: insets.top }} /> : null}
       {immersiveArtwork ? <View className="absolute left-0 right-0 top-0 overflow-hidden"
         pointerEvents="none" accessibilityElementsHidden importantForAccessibility="no-hide-descendants"
         style={{ height: (stageHeight ?? 260) + 1 }}>
@@ -69,7 +69,7 @@ export function TodayHero({ state, dream, now, onPressCta, onOpenSettings }: Pro
           style={{ position: 'absolute', left: 0, right: 0, bottom: 0, height: 110 }} />
       </View> : null}
       <View className="justify-between" style={{ minHeight: stageHeight }}>
-        <View className="px-6 pb-8" style={{ paddingTop: insets.top + 16 }}>
+        <View className="px-6 pb-8" style={{ paddingTop: hasArtwork ? insets.top + 16 : 16 }}>
           <View className="flex-row items-center justify-between gap-3">
             <View className="min-w-0 flex-1 flex-row items-center gap-2" accessible accessibilityLabel="Noctalia">
               <IconSymbol name="moon.stars.fill" size={22} color={tokens.accent.text} />

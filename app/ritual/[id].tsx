@@ -10,7 +10,7 @@ import Animated, {
 } from 'react-native-reanimated';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
-import { AtmosphericBackground } from '@/components/inspiration/AtmosphericBackground';
+import { DreamerArtworkWindow } from '@/components/ui/DreamerBackground';
 import type { DreamerScene } from '@/constants/dreamerArtwork';
 import { GlassCard } from '@/components/inspiration/GlassCard';
 import { DURATION, EASE, ProgressFill, SPRING } from '@/components/motion';
@@ -280,7 +280,6 @@ export default function RitualDetailScreen() {
   const progressPercent = totalSteps > 0 ? completedCount / totalSteps : 0;
 
   const backButtonTop = insets.top + ThemeLayout.spacing.sm;
-  const contentPaddingTop = backButtonTop + 44 + ThemeLayout.spacing.md;
 
   const checkboxBorderColor =
     mode === 'dark' ? noctalia.surface.border : noctalia.text.secondary;
@@ -290,7 +289,6 @@ export default function RitualDetailScreen() {
   return (
     <ScrollPerfProvider isScrolling={scrollPerf.isScrolling}>
       <View style={[styles.container, { backgroundColor: noctalia.screen.background }]}>
-        <AtmosphericBackground scene={RITUAL_SCENES[ritual.id]} />
 
         {/* Floating Back Button */}
         <Pressable
@@ -306,7 +304,6 @@ export default function RitualDetailScreen() {
         >
           <IconSymbol name="chevron.left" size={22} color={noctalia.accent.text} />
         </Pressable>
-
         <ScrollView
           style={styles.scrollView}
           contentContainerStyle={{ paddingBottom: insets.bottom + 40 }}
@@ -315,7 +312,8 @@ export default function RitualDetailScreen() {
           onMomentumScrollBegin={scrollPerf.onMomentumScrollBegin}
           onMomentumScrollEnd={scrollPerf.onMomentumScrollEnd}
         >
-          <View style={[styles.content, { paddingTop: contentPaddingTop }]}>
+          <DreamerArtworkWindow scene={RITUAL_SCENES[ritual.id]} />
+          <View style={[styles.content, { paddingTop: 20 }]}>
           {/* Ritual icon and name */}
           <View style={styles.titleSection}>
             <View

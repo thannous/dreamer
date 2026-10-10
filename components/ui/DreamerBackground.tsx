@@ -1,7 +1,7 @@
 import { Image } from 'expo-image';
 import { LinearGradient } from 'expo-linear-gradient';
 import React, { useState } from 'react';
-import { StyleSheet, View } from 'react-native';
+import { StyleSheet, View, useWindowDimensions, type StyleProp, type ViewStyle } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { DREAMER_ARTWORK, type DreamerScene } from '@/constants/dreamerArtwork';
@@ -13,6 +13,35 @@ type Props = {
   height: number;
   background?: string;
 };
+
+/** A real opening onto the scene: copy lives on the theme's reading surface below it.
+ * No paper/night wash covers the painting. Only its last 40 points meet the page.
+ */
+export function DreamerArtworkWindow({ scene, style }: {
+  scene: DreamerScene;
+  style?: StyleProp<ViewStyle>;
+}) {
+  const { colors, mode } = useTheme();
+  const { width, height, fontScale } = useWindowDimensions();
+  const ground = getNoctaliaDesignTokens(colors, mode).screen.background;
+  const [failedScene, setFailedScene] = useState<DreamerScene | null>(null);
+  const compact = height < 700 || fontScale >= 1.5;
+  const paintingHeight = Math.min(compact ? 128 : 240, width * 0.625);
+
+  if (failedScene === scene) return null;
+  return <View
+    testID={`artwork.window.${scene}`}
+    pointerEvents="none" accessible={false} accessibilityElementsHidden
+    importantForAccessibility="no-hide-descendants"
+    style={[{ height: paintingHeight, alignSelf: 'stretch', flexShrink: 0, overflow: 'hidden', backgroundColor: ground }, style]}
+  >
+    <Image testID={`image.background.${scene}`} accessible={false}
+      source={DREAMER_ARTWORK[scene]} contentFit="cover" contentPosition="center"
+      recyclingKey={scene} onError={() => setFailedScene(scene)} style={StyleSheet.absoluteFill} />
+    <LinearGradient colors={[`${ground}00`, ground]}
+      style={{ position: 'absolute', bottom: 0, left: 0, right: 0, height: 40 }} />
+  </View>;
+}
 
 /** A static, decorative painting fades into the page's own readable ground. */
 export function DreamerBackground({ scene, height, background }: Props) {

@@ -6,7 +6,7 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { AnalysisReadingModal } from '@/components/analysis/AnalysisReadingModal';
 import { Exploration360Panel } from '@/components/chat/Exploration360Panel';
-import { DreamerBackground } from '@/components/ui/DreamerBackground';
+import { DreamerArtworkWindow } from '@/components/ui/DreamerBackground';
 import { IconSymbol } from '@/components/ui/icon-symbol';
 import { getNoctaliaDesignTokens } from '@/constants/noctaliaDesign';
 import { Fonts } from '@/constants/theme';
@@ -69,10 +69,10 @@ export default function DreamCategoriesScreen() {
   return (
     <ScrollPerfProvider isScrolling={scrollPerf.isScrolling}>
       <View style={[styles.screen, { backgroundColor: tokens.screen.background }]} testID="screen.dreamCategories">
-        <DreamerBackground scene="dialogue" height={insets.top + 360} />
         <ScrollView contentContainerStyle={[styles.content, { paddingTop: insets.top + 8, paddingBottom: insets.bottom + 24 }]}
           onScrollBeginDrag={scrollPerf.onScrollBeginDrag} onScrollEndDrag={scrollPerf.onScrollEndDrag}
           onMomentumScrollBegin={scrollPerf.onMomentumScrollBegin} onMomentumScrollEnd={scrollPerf.onMomentumScrollEnd}>
+          <DreamerArtworkWindow scene="dialogue" style={{ marginHorizontal: -32 }} />
           <Pressable onPress={() => router.back()} accessibilityRole="button" accessibilityLabel={t('navigation.back')}
             style={({ pressed }) => [styles.back, pressed && styles.pressed]}>
             <IconSymbol name="chevron.left" size={22} color={tokens.accent.text} />

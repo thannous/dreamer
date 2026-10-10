@@ -1,4 +1,6 @@
 import { IconSymbol } from '@/components/ui/icon-symbol';
+import { DreamerArtworkWindow } from '@/components/ui/DreamerBackground';
+import type { DreamerScene } from '@/constants/dreamerArtwork';
 import { ThemeLayout } from '@/constants/journalTheme';
 import { DESKTOP_BREAKPOINT } from '@/constants/layout';
 import { getNoctaliaDesignTokens } from '@/constants/noctaliaDesign';
@@ -40,6 +42,7 @@ export interface NoctaliaHeaderChip {
 }
 
 interface NoctaliaScreenHeaderProps {
+  scene?: DreamerScene;
   titleKey: string;
   prominentTitle?: boolean;
   variant?: 'standard' | 'editorial';
@@ -52,6 +55,7 @@ interface NoctaliaScreenHeaderProps {
 }
 
 export const NoctaliaScreenHeader = memo(function NoctaliaScreenHeader({
+  scene,
   titleKey,
   prominentTitle = false,
   variant = 'standard',
@@ -89,6 +93,7 @@ export const NoctaliaScreenHeader = memo(function NoctaliaScreenHeader({
 
   return (
     <View style={[styles.container, isProminent && styles.prominentContainer, variant === 'editorial' && styles.editorialContainer, { paddingTop: (includeTopInset ? insets.top : 0) + ThemeLayout.spacing.sm, borderBottomColor: noctalia.surface.border }]}>
+      {scene ? <DreamerArtworkWindow scene={scene} /> : null}
       <View style={[styles.titleRow, isNarrow && styles.titleRowNarrow, stackActions && styles.titleRowStacked, wrapInlineSlot && styles.searchRowWrapped]}>
         <View style={[styles.titleBlock, stackActions && styles.titleBlockStacked,
           Boolean(inlineSlot) && (canInlineSlot

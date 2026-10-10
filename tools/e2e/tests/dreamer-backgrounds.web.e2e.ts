@@ -180,6 +180,45 @@ async function artwork(page: Page, scene: string) {
   })).toBe(true);
 }
 
+/** The picture must retain its actual colour, not merely exist beneath a wash.
+ * Compare the clear part of Capture's opening to the same decoded image in a
+ * browser canvas; the former 75–90% veils fail this observable assertion.
+ */
+async function immersivePainting(page: Page, info: ParityInfo, label: string) {
+  const picture = page.getByTestId('image.background.capture').filter({ visible: true });
+  const expectedPng = await picture.evaluate(element => {
+    const img = element instanceof HTMLImageElement ? element : element.querySelector('img');
+    if (!img) throw new Error('Decoded painting missing');
+    const bounds = element.getBoundingClientRect();
+    const canvas = document.createElement('canvas');
+    canvas.width = Math.round(bounds.width);
+    canvas.height = Math.round(bounds.height);
+    const ctx = canvas.getContext('2d')!;
+    const scale = Math.max(canvas.width / img.naturalWidth, canvas.height / img.naturalHeight);
+    const width = img.naturalWidth * scale;
+    const height = img.naturalHeight * scale;
+    ctx.drawImage(img, (canvas.width - width) / 2, (canvas.height - height) / 2, width, height);
+    return canvas.toDataURL('image/png').split(',')[1];
+  });
+  const actual = await picture.screenshot({ scale: 'css' });
+  const baseline = await sharp(Buffer.from(expectedPng, 'base64')).removeAlpha().raw().toBuffer({ resolveWithObject: true });
+  const rendered = await sharp(actual).removeAlpha().raw().toBuffer({ resolveWithObject: true });
+  expect(rendered.info.width).toBe(baseline.info.width);
+  expect(rendered.info.height).toBeGreaterThanOrEqual(120);
+  let difference = 0;
+  let count = 0;
+  // The last 40 points blend into the reading surface; keep them out of this comparison.
+  for (let y = 12; y < rendered.info.height - 48; y += 3) {
+    for (let x = 12; x < rendered.info.width - 12; x += 3) {
+      const offset = (y * rendered.info.width + x) * 3;
+      for (let c = 0; c < 3; c++) { difference += Math.abs(rendered.data[offset + c] - baseline.data[offset + c]); count++; }
+    }
+  }
+  const meanChannelDifference = difference / count;
+  await info.attach(`${label}-painting-colour`, { contentType: 'application/json', body: JSON.stringify({ meanChannelDifference, sampledChannels: count, maximum: 8 }) });
+  expect(meanChannelDifference, 'The scene keeps its own colour in either theme').toBeLessThan(8);
+}
+
 /** Browser history navigation keeps the mock session and avoids a new app launch. */
 async function openRoute(page: Page, path: string) {
   await page.evaluate(path => {
@@ -196,6 +235,7 @@ for (const mode of ['light', 'dark'] as const) {
     await readable(page, info, `home-${mode}`);
     await page.getByTestId('tab.addDream').filter({ visible: true }).click();
     await artwork(page, 'capture');
+    await immersivePainting(page, info, `capture-${mode}`);
     await readable(page, info, `capture-${mode}`);
     await page.getByTestId('input.dreamTranscript').fill('Un phare doré éclairait un lac calme.');
     await expect(page.getByTestId('btn.saveDream')).toBeEnabled();

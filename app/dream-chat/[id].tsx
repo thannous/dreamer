@@ -39,7 +39,7 @@ import { incrementLocalExplorationCount } from '@/services/quota/GuestAnalysisCo
 import { markMockExploration } from '@/services/quota/MockQuotaEventStore';
 import { quotaService } from '@/services/quotaService';
 import { createDreamInSupabase } from '@/services/supabaseDreamService';
-import { AtmosphericBackground } from '@/components/inspiration/AtmosphericBackground';
+import { DreamerArtworkWindow } from '@/components/ui/DreamerBackground';
 import { FlatGlassCard } from '@/components/inspiration/GlassCard';
 import { IconSymbol } from '@/components/ui/icon-symbol';
 import { DecoLines } from '@/constants/journalTheme';
@@ -1046,7 +1046,7 @@ function DreamChatContent() {
   if (!dream) {
     return (
       <LinearGradient colors={gradientColors} style={styles.container}>
-        <AtmosphericBackground scene="dialogue" />
+        <DreamerArtworkWindow scene="dialogue" />
         <Text style={[styles.errorText, { color: noctalia.text.primary }]}>{t('dream_chat.not_found.title')}</Text>
         {!user ? (
           <SignInToOpenDream destination={dreamAuthReturnDestination('dream-chat', { id, remoteId, clientRequestId, category, mode: routeMode, messageId: routeMessageId })} />
@@ -1065,7 +1065,7 @@ function DreamChatContent() {
   if (isQuotaGateBlocked) {
     return (
       <LinearGradient colors={gradientColors} style={styles.container}>
-        <AtmosphericBackground scene="dialogue" />
+        <DreamerArtworkWindow scene="dialogue" />
         <Pressable
           onPress={handleBackPress}
           style={[styles.floatingBackButton, shadows.lg, backButtonSurface]}
@@ -1104,7 +1104,7 @@ function DreamChatContent() {
   if (shouldGateOnQuotaCheck && (!quotaCheckComplete || quotaCheckError)) {
     return (
       <LinearGradient colors={gradientColors} style={styles.container}>
-        <AtmosphericBackground scene="dialogue" />
+        <DreamerArtworkWindow scene="dialogue" />
         <Pressable
           onPress={handleBackPress}
           style={[styles.floatingBackButton, shadows.lg, backButtonSurface]}
@@ -1158,13 +1158,7 @@ function DreamChatContent() {
             placeholder={{ blurhash: 'L6PZfSi_.AyE_3t7t7R**0o#DgR4' }}
           />
         ) : (
-          <View
-            style={[
-              styles.dreamImage,
-              styles.imagePlaceholder,
-              { backgroundColor: noctalia.surface.soft },
-            ]}
-          />
+          <DreamerArtworkWindow scene="dialogue" />
         )}
         <LinearGradient
           colors={imageGradientColors}
@@ -1311,7 +1305,6 @@ function DreamChatContent() {
     <ChatProvider isStreaming={isInteractionLocked}>
       <ScrollPerfProvider isScrolling={isScrolling}>
         <LinearGradient colors={gradientColors} style={styles.gradient}>
-          <AtmosphericBackground scene="dialogue" />
           <Pressable
             onPress={handleBackPress}
             style={[styles.floatingBackButton, shadows.lg, backButtonSurface]}
