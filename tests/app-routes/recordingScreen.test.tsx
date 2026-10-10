@@ -1540,9 +1540,10 @@ describe('Recording screen', () => {
     await act(async () => { finish(buildDream('A blue room under the rain', 42)); });
     await waitFor(() => expect(mockTrackDreamSaveMilestone).toHaveBeenCalledWith(true));
     expect(mockTrackDreamSaveMilestone).toHaveBeenCalledTimes(1);
-    expect(mockReplace).toHaveBeenCalledWith({
+    // The detail opens once the capture seal (the story's prologue) has played.
+    await waitFor(() => expect(mockReplace).toHaveBeenCalledWith({
       pathname: '/journal/[id]', params: { id: '42', saved: '1' },
-    });
+    }));
   });
 
   it('marks a new save into an existing journal as a return candidate, never a first save', async () => {
@@ -1629,7 +1630,7 @@ describe('Recording screen', () => {
     expect(mockAddDream).toHaveBeenCalledTimes(1);
     expect(mockReplace).not.toHaveBeenCalled();
     await act(async () => { finish({ ...buildDream('A quiet lake'), remoteId: 17, clientRequestId: 'capture-42' }); });
-    expect(mockReplace).toHaveBeenCalledTimes(1);
+    await waitFor(() => expect(mockReplace).toHaveBeenCalledTimes(1));
     expect(mockReplace).toHaveBeenCalledWith({
       pathname: '/journal/[id]',
       params: { id: '42', remoteId: '17', clientRequestId: 'capture-42', saved: '1' },
@@ -1650,7 +1651,7 @@ describe('Recording screen', () => {
       await awaitEditorReady();
       fireEvent.change(screen.getByTestId(TID.Input.DreamTranscript), { target: { value: 'A quiet lake' } });
       await act(async () => { fireEvent.click(getCaptureSaveAction()); });
-      expect(mockReplace).toHaveBeenCalledTimes(1);
+      await waitFor(() => expect(mockReplace).toHaveBeenCalledTimes(1));
       expect(mockReplace).toHaveBeenCalledWith({ pathname: '/journal/[id]', params: { id: '42', saved: '1', ...(access === 'guest' ? { autoAnalyze: '1' } : {}) } });
       mockQuotaState.loading = false;
       mockQuotaState.error = null;
@@ -1672,7 +1673,7 @@ describe('Recording screen', () => {
     mockQuotaState.tier = 'plus';
     view.rerender(<RecordingScreen />);
     await act(async () => { finish(buildDream('A quiet lake')); });
-    expect(mockReplace).toHaveBeenCalledTimes(1);
+    await waitFor(() => expect(mockReplace).toHaveBeenCalledTimes(1));
     expect(mockReplace).toHaveBeenCalledWith({ pathname: '/journal/[id]', params: { id: '42', saved: '1' } });
   });
 
@@ -1844,10 +1845,10 @@ describe('Recording screen', () => {
       );
     });
 
-    expect(mockReplace).toHaveBeenCalledWith({
+    await waitFor(() => expect(mockReplace).toHaveBeenCalledWith({
         pathname: '/journal/[id]',
         params: { id: '42', saved: '1' },
-      });
+      }));
     expect(mockAnalyzeDream).not.toHaveBeenCalled();
     expect(screen.queryByTestId('first-dream-sheet')).toBeNull();
     expect(screen.queryByTestId('btn.guestLimit.cta')).toBeNull();
