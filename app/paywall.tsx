@@ -35,6 +35,8 @@ import {
 import { getPaywallVariant, PLUS_PAYWALL_FEATURE_KEYS } from '@/lib/paywallVariants';
 import { classifyPurchaseFailure } from '@/lib/subscriptionErrors';
 import { TID } from '@/lib/testIDs';
+import { useHeaderScroll } from '@/components/ui/headerStretch';
+import { withHeaderScroll } from '@/components/ui/HeaderScrollScope';
 
 const log = createScopedLogger('[Paywall]');
 const PAYWALL_MAX_WIDTH = 720;
@@ -45,7 +47,9 @@ const PAYWALL_MAX_WIDTH = 720;
  */
 const CTA_TRANSITION = ['backgroundColor', 'borderColor'] as const;
 
-export default function PaywallScreen() {
+function PaywallScreen() {
+  // This screen's own scroll, published to its header painting and title.
+  const onHeaderScroll = useHeaderScroll();
   const { colors, mode } = useTheme();
   const noctalia = useMemo(() => getNoctaliaDesignTokens(colors, mode), [colors, mode]);
   const { t, translationRevision, currentLang } = useTranslation();
@@ -489,7 +493,7 @@ export default function PaywallScreen() {
           </View>
         </ScreenContainer>
 
-        <ScrollView
+        <ScrollView onScroll={onHeaderScroll} scrollEventThrottle={16}
           style={styles.scroll}
           contentContainerStyle={styles.scrollContent}
           contentInsetAdjustmentBehavior="automatic"
@@ -540,7 +544,7 @@ export default function PaywallScreen() {
 
   return (
     <View style={rootStyle} testID={TID.Screen.Paywall}>
-      <ScrollView
+      <ScrollView onScroll={onHeaderScroll} scrollEventThrottle={16}
         style={styles.scroll}
         contentContainerStyle={[
           styles.scrollContent,
@@ -551,7 +555,7 @@ export default function PaywallScreen() {
         ]}
         contentInsetAdjustmentBehavior="automatic"
       >
-        <DreamerArtworkWindow scene="observatory" style={{ marginHorizontal: -ThemeLayout.spacing.md }} />
+        <DreamerArtworkWindow scene="observatory" style={{ marginHorizontal: -ThemeLayout.spacing.md }} bleedTop={ThemeLayout.spacing.sm + insets.top} />
         <ScreenContainer maxWidth={PAYWALL_MAX_WIDTH}>
           <View style={styles.topBar}>
             <View style={styles.brandLockup}>
@@ -1230,3 +1234,5 @@ const styles = StyleSheet.create({
     lineHeight: 20,
   },
 });
+
+export default withHeaderScroll(PaywallScreen);

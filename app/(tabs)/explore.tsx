@@ -17,6 +17,8 @@ import { router, useFocusEffect } from 'expo-router';
 import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { AccessibilityInfo, AppState, Platform, Pressable, ScrollView, Text, View, useWindowDimensions } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import { useHeaderScroll } from '@/components/ui/headerStretch';
+import { withHeaderScroll } from '@/components/ui/HeaderScrollScope';
 
 // TalkBack rejects input-focus events while its window transition is unstable.
 // Its WindowEventInterpreter uses 550 ms; leave one small scheduling margin.
@@ -63,7 +65,9 @@ function ExplorerRow({ icon, title, body, testID, onPress, separator = false }: 
   );
 }
 
-export default function ExploreScreen() {
+function ExploreScreen() {
+  // This screen's own scroll, published to its header painting and title.
+  const onHeaderScroll = useHeaderScroll();
   const openQuickSettings = useQuickSettings();
   const { t } = useTranslation();
   const { colors, mode } = useTheme();
@@ -165,6 +169,8 @@ export default function ExploreScreen() {
       scene="path"
       titleKey="explore.title"
       variant="tab"
+      immersive
+      subtitle={t('explore.intro')}
       actions={[
         {
           icon: 'gear',
@@ -180,6 +186,8 @@ export default function ExploreScreen() {
     <View className="flex-1 bg-ink" testID={TID.Screen.Explore}>
       <ScrollView
         className="flex-1"
+        onScroll={onHeaderScroll}
+        scrollEventThrottle={16}
         // The header scrolls away with the resources, as on Today. In short windows
         // the viewport must also end above navigation. The header already owns top
         // safe-area padding; avoid automatically adding that inset a second time.
@@ -191,9 +199,6 @@ export default function ExploreScreen() {
         {header}
         <ScreenContainer key="resources">
           <View className="gap-5 px-4 pt-3">
-            <Text className="text-[15px] leading-[22px] font-sans text-ivory-muted">
-              {t('explore.intro')}
-            </Text>
             <View className="border-t border-line">
               <ExplorerRow
                 icon="book.closed.fill"
@@ -265,3 +270,5 @@ export default function ExploreScreen() {
     </View>
   );
 }
+
+export default withHeaderScroll(ExploreScreen);

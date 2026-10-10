@@ -345,28 +345,21 @@ function renderedListViewportStyle() {
   return JSON.parse(viewport?.getAttribute('data-style') ?? '{}') as { flex?: number; marginBottom?: number };
 }
 
+// On phones the header and search always float over the list and scroll away with it,
+// so the list owns the whole viewport above the navigation (or the keyboard).
 function expectReachableListViewport(
   width: number,
   height: number,
   fontScale: number,
   keyboardVisible = false,
-  keyboardHeight = 0,
 ) {
   const searchMinHeight = searchBarLayout(fontScale).minHeight;
-  const searchHeaderHeight = mobileSearchHeaderHeight(fontScale);
   const reservedOverlay = keyboardVisible ? 0 : overlayClearance(width, height, fontScale);
   const listStyle = renderedListViewportStyle();
   const contentStyle = flattenStyle(mockListProps.contentContainerStyle);
   const marginBottom = listStyle.marginBottom ?? 0;
   const extraNavPadding = (contentStyle.paddingBottom ?? 0) - ThemeLayout.spacing.lg;
-  const viewportAboveNav = height - reservedOverlay;
-  const keyboardAvoidedViewport = !keyboardVisible || mockPlatform !== 'ios'
-    ? viewportAboveNav
-    : keyboardHeight > 0
-      ? Math.max(0, viewportAboveNav - keyboardHeight)
-      : 0;
-  const searchInFlow = keyboardAvoidedViewport - searchHeaderHeight >= 120;
-  const listViewport = viewportAboveNav - (searchInFlow ? searchHeaderHeight : 0);
+  const listViewport = height - reservedOverlay;
 
   expect(Number(screen.getByTestId(TID.Component.SearchBar).getAttribute('data-min-height'))).toBe(searchMinHeight);
   expect(marginBottom).toBe(reservedOverlay);
@@ -382,19 +375,14 @@ function expectReachableListViewport(
   };
   expect(chromeNode.contains(controls)).toBe(true);
   expect(controls.contains(input)).toBe(true);
-  expect(controls.getAttribute('data-pointer-events')).toBe('auto');
-  if (searchInFlow) {
-    expect(chrome.position).toBeUndefined();
-    expect(chromeNode.getAttribute('data-pointer-events')).toBe('auto');
-    expect(screen.queryByTestId('journal-search-scroll-slot')).toBeNull();
-  } else {
-    expect(chrome.position).toBe('absolute');
-    expect(chromeNode.getAttribute('data-pointer-events')).toBe('box-none');
-    expect(chromeNode.style.pointerEvents).toBe('box-none');
-    expect(isRnTouchable(chromeNode)).toBe(false);
-    expect(isRnTouchable(input)).toBe(true);
-    expect(screen.getByTestId(TID.List.Dreams).contains(screen.getByTestId('journal-search-scroll-slot'))).toBe(true);
-  }
+  // Only the controls catch touches: a drag elsewhere on the header reaches the list.
+  expect(controls.getAttribute('data-pointer-events')).toBe('box-none');
+  expect(chrome.position).toBe('absolute');
+  expect(chromeNode.getAttribute('data-pointer-events')).toBe('box-none');
+  expect(chromeNode.style.pointerEvents).toBe('box-none');
+  expect(isRnTouchable(chromeNode)).toBe(false);
+  expect(isRnTouchable(input)).toBe(true);
+  expect(screen.getByTestId(TID.List.Dreams).contains(screen.getByTestId('journal-search-scroll-slot'))).toBe(true);
 }
 
 function startOverlaySearchDrag(distance: number, from: HTMLElement) {
@@ -431,7 +419,7 @@ function collapseSearchByOverlayGesture(offset: number) {
   expect(chrome.getAttribute('data-pointer-events')).toBe('box-none');
   expect(chrome.style.pointerEvents).toBe('box-none');
   expect(isRnTouchable(chrome)).toBe(false);
-  expect(controls.getAttribute('data-pointer-events')).toBe('auto');
+  expect(controls.getAttribute('data-pointer-events')).toBe('box-none');
   expect(isRnTouchable(input)).toBe(true);
 
   // The overlay SearchBar covers the uncovered list box at 640x320 fontScale 2.
@@ -590,7 +578,7 @@ describe('Journal compact large-text layout', () => {
     });
     expect(mockWindow.height).toBe(heightBeforeKeyboard);
     expect(mockWindow.height).toBe(320);
-    expectReachableListViewport(640, 320, 2, true, 180);
+    expectReachableListViewport(640, 320, 2, true);
 
     const chrome = JSON.parse(screen.getByTestId('journal-search-chrome').getAttribute('data-style') || '{}') as {
       position?: string;
@@ -734,7 +722,10 @@ describe('Journal compact large-text layout', () => {
     Object.assign(mockWindow, { width: 320, height: 640, fontScale: 2 });
     view.rerender(<JournalScreen />);
     expectReachableListViewport(320, 640, 2);
-    expect(JSON.parse(screen.getByTestId('journal-search-chrome').getAttribute('data-style') || '{}').position).toBeUndefined();
+    // The remounted list starts at the top, so the floating header is back in full.
+    expect(JSON.parse(screen.getByTestId('journal-search-chrome').getAttribute('data-style') || '{}')).toEqual(
+      expect.objectContaining({ position: 'absolute', transform: [{ translateY: 0 }] }),
+    );
 
     Object.assign(mockWindow, { width: 640, height: 320, fontScale: 2 });
     view.rerender(<JournalScreen />);
@@ -838,7 +829,9 @@ describe('Journal compact large-text layout', () => {
 
     expect(mockListProps.numColumns).toBe(2);
     expectReachableListViewport(640, 800, 2);
-    expect(JSON.parse(screen.getByTestId('journal-search-chrome').getAttribute('data-style') || '{}').position).toBeUndefined();
+    expect(JSON.parse(screen.getByTestId('journal-search-chrome').getAttribute('data-style') || '{}')).toEqual(
+      expect.objectContaining({ position: 'absolute', transform: [{ translateY: 0 }] }),
+    );
 
     const retainedOffset = 240;
     act(() => {

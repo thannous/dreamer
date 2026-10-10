@@ -71,6 +71,10 @@ jest.mock('react-native', () => {
   };
 });
 
+// The header's scroll fade is visual only; render it as a plain view here.
+jest.mock('react-native-reanimated', () => ({ __esModule: true, default: { View: jest.requireMock('react-native').View } }));
+jest.mock('@/components/ui/headerStretch', () => ({ useHeaderFadeStyle: () => ({}) }));
+
 jest.mock('react-native-safe-area-context', () => ({
   useSafeAreaInsets: () => ({ top: 0, bottom: 0, left: 0, right: 0 }),
 }));
@@ -104,6 +108,9 @@ jest.mock('@/constants/noctaliaDesign', () => ({
     text: {
       primary: '#21180f',
       secondary: '#6b6880',
+    },
+    screen: {
+      background: '#f0e4d4',
     },
   }),
 }));

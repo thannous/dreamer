@@ -122,6 +122,8 @@ import { useReducedMotion } from 'react-native-reanimated';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { DreamCaptureSeal } from '@/components/journal/story/DreamCaptureSeal';
 import { DREAM_STORY } from '@/components/journal/story/dreamStoryMotion';
+import { useHeaderScroll } from '@/components/ui/headerStretch';
+import { withHeaderScroll } from '@/components/ui/HeaderScrollScope';
 
 const log = createScopedLogger('[Recording]');
 const isMockMode = isMockModeEnabled();
@@ -146,7 +148,9 @@ const trackedOnboardingRecordingDestinations = new Set<string>();
 
 type CaptureIntent = RecordingCaptureIntent;
 
-export default function RecordingScreen() {
+function RecordingScreen() {
+  // This screen's own scroll, published to its header painting and title.
+  const onHeaderScroll = useHeaderScroll();
   const { dreams } = useDreamsData();
   const { user } = useAuth();
   const {
@@ -1228,6 +1232,7 @@ export default function RecordingScreen() {
   const isDesktopWeb = Platform.OS === 'web' && viewportWidth >= DESKTOP_BREAKPOINT;
   const chatMode = inputMode === 'voice' && !editableCapture;
   const chatLayout = chatMode && !isCompactLandscape;
+  const captureStage = !chatLayout && !keyboardVisible && !isDesktopWeb;
   const openReviewExit = useCallback(() => {
     if (!captureReview || interactionDisabled || leavingReviewRef.current) return;
     Keyboard.dismiss();
@@ -1772,8 +1777,10 @@ export default function RecordingScreen() {
         {/* The scroll view starts below the status bar, so the sky is painted here to
             reach the top edge like the other destinations. */}
         {!isDesktopWeb && !isCompactLandscape ? (
-          <NightSkyBand height={insets.top + (headerHeight || 140) + 40} background={noctalia.screen.background}
-            scene={!keyboardVisible && !chatMode ? 'capture' : undefined} />
+          <NightSkyBand background={noctalia.screen.background} scene="capture" pinned fixed
+            // In text mode the painting reaches the top third, behind the title and the top of the
+            // composer, which stay where they are; the conversation and keyboard keep it compact.
+            height={Math.max(insets.top + (headerHeight || 140), captureStage ? Math.round(Math.min(420, viewportHeight * 0.33)) : 0) + 40} />
         ) : null}
         {/* The desktop sidebar leads everywhere. Keep a back control only
             while a capture review is open, so leaving still offers to keep or
@@ -1803,6 +1810,8 @@ export default function RecordingScreen() {
         >
           <ScrollView
             ref={scrollViewRef}
+            onScroll={onHeaderScroll}
+            scrollEventThrottle={16}
             style={[
               styles.scrollView,
               !isDesktopWeb && { marginTop: insets.top },
@@ -2154,3 +2163,5 @@ const styles = StyleSheet.create({
     zIndex: 40,
   },
 });
+
+export default withHeaderScroll(RecordingScreen);

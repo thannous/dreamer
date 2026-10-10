@@ -86,9 +86,10 @@ jest.mock('react-native-safe-area-context', () => ({
 }));
 
 jest.mock('@/components/NoctaliaScreenHeader', () => ({
-  NoctaliaScreenHeader: ({ actions, titleKey }: any) => (
+  NoctaliaScreenHeader: ({ actions, titleKey, subtitle }: any) => (
     <div data-testid="explorer-header">
       <span>{titleKey}</span>
+      {subtitle ? <span>{subtitle}</span> : null}
       {actions?.map((action: any) => (
         <button
           aria-label={action.accessibilityLabel}

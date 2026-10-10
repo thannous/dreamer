@@ -27,6 +27,7 @@ import { LinearGradient } from 'expo-linear-gradient';
 import { router, useLocalSearchParams } from 'expo-router';
 import React, { useEffect, useMemo, useRef } from 'react';
 import { Pressable, ScrollView, StyleSheet, Text, View, useWindowDimensions } from 'react-native';
+import { usePaintingBreath } from '@/components/ui/headerStretch';
 import Animated, {
   Extrapolation,
   interpolate,
@@ -90,7 +91,9 @@ export default function SymbolDetailScreen() {
     }
   }, [onboardingState, source, symbol]);
 
-  const heroHeight = Math.round(Math.min(560, Math.max(380, windowHeight * 0.58)));
+  // On the paper theme the night scene needs room to dawn into the page below its copy.
+  const heroDusk = mode === 'light' ? 72 : 0;
+  const heroHeight = Math.round(Math.min(560, Math.max(380, windowHeight * 0.58))) + heroDusk;
   const collapseAt = heroHeight - insets.top - TOP_BAR_HEIGHT;
 
   const onScroll = useAnimatedScrollHandler((event) => {
@@ -100,6 +103,8 @@ export default function SymbolDetailScreen() {
   // Scroll-derived, so it runs on the UI thread. The artwork drifts at a third of
   // the scroll speed and the page reads as a window onto the sky; reduce motion
   // keeps it pinned to the content.
+  // Like every painting, the hero breathes while the sheet is open.
+  const heroBreath = usePaintingBreath();
   const heroArtStyle = useAnimatedStyle(() => {
     if (reducedMotion) return {};
     const y = scrollY.get();
@@ -174,6 +179,7 @@ export default function SymbolDetailScreen() {
               accessible={false}
               importantForAccessibility="no-hide-descendants"
             >
+              <Animated.View style={[StyleSheet.absoluteFill, heroBreath]}>
               <Image
                 source={illustration ?? SKY_FALLBACK}
                 // Offline before the first visit, the sheet keeps its night sky.
@@ -184,6 +190,7 @@ export default function SymbolDetailScreen() {
                 transition={illustration ? 200 : 0}
                 style={StyleSheet.absoluteFill}
               />
+              </Animated.View>
             </Animated.View>
             <LinearGradient
               pointerEvents="none"
@@ -193,10 +200,14 @@ export default function SymbolDetailScreen() {
             />
             <LinearGradient
               pointerEvents="none"
-              colors={['rgba(9,4,19,0)', mode === 'dark' ? 'rgba(3,4,13,0.42)' : background]}
-              style={styles.heroFade}
+              colors={mode === 'dark'
+                ? ['rgba(9,4,19,0)', 'rgba(3,4,13,0.42)']
+                // Eased from night into paper below the copy, instead of a 36 point step.
+                : ['rgba(9,4,19,0)', `${background}38`, `${background}99`, `${background}E0`, background]}
+              locations={mode === 'dark' ? undefined : [0, 0.3, 0.58, 0.82, 1]}
+              style={[styles.heroFade, heroDusk ? { height: heroDusk + 36 } : null]}
             />
-            <View style={styles.heroCopy}>
+            <View style={[styles.heroCopy, heroDusk ? { paddingBottom: 30 + heroDusk } : null]}>
               <View style={[styles.chip, { borderColor: 'rgba(234,212,180,0.45)' }]}>
                 <Text style={[styles.chipText, { color: HERO_TOKENS.accent.text }]}>{categoryName}</Text>
               </View>

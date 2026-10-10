@@ -3,7 +3,7 @@ appId: com.tanuki75.noctalia
 ---
 - runFlow: subflows/open-mock-app.yml
 - tapOn:
-      id: btn.mockNav.home
+    id: tab.home
 - swipe:
       start: 50%, 78%
       end: 50%, 28%

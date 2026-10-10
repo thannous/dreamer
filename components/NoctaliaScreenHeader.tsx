@@ -20,6 +20,8 @@ import {
   type ViewStyle,
 } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import Animated from 'react-native-reanimated';
+import { useHeaderFadeStyle } from '@/components/ui/headerStretch';
 
 type IconName = Parameters<typeof IconSymbol>[0]['name'];
 
@@ -54,6 +56,13 @@ interface NoctaliaScreenHeaderProps {
   subtitle?: string;
   /** Paint the night sky behind the `tab` header. Off when the screen draws its own artwork. */
   backdrop?: boolean;
+  /** The header floats over its scrolling content instead of scrolling with it. */
+  pinned?: boolean;
+  /**
+   * `tab` only: the painting opens over the top third of the screen and the title rests at
+   * its foot, whether the header paints it or the screen does. Compact with very large text.
+   */
+  immersive?: boolean;
   includeTopInset?: boolean;
   actions?: NoctaliaHeaderAction[];
   chips?: NoctaliaHeaderChip[];
@@ -74,11 +83,13 @@ export const NoctaliaScreenHeader = memo(function NoctaliaScreenHeader({
   inlineSlot,
   subtitle,
   backdrop = true,
+  pinned = false,
+  immersive = false,
 }: NoctaliaScreenHeaderProps) {
   const { colors, mode } = useTheme();
   const { t } = useTranslation();
   const insets = useSafeAreaInsets();
-  const { width, fontScale } = useWindowDimensions();
+  const { width, height: windowHeight, fontScale } = useWindowDimensions();
   const isNarrow = width < 480;
   // Beside the desktop sidebar the wordmark is already on screen.
   const showBrand = !(Platform.OS === 'web' && width >= DESKTOP_BREAKPOINT);
@@ -101,31 +112,51 @@ export const NoctaliaScreenHeader = memo(function NoctaliaScreenHeader({
   const iconButtonBg = noctalia.surface.soft;
   const quietIconColor = noctalia.text.secondary;
   const [measuredHeight, setMeasuredHeight] = useState(0);
+  // Scrolling down, the header fades away to give the page its room.
+  const fadeStyle = useHeaderFadeStyle(measuredHeight);
+  // Header copy over a painting keeps its contrast through a soft halo of the page's ground,
+  // so the veil over the painting can stay light.
+  const paintedTextShadow = {
+    textShadowColor: `${noctalia.screen.background}D9`,
+    textShadowOffset: { width: 0, height: 1 },
+    textShadowRadius: 14,
+  } as const;
+
+  // Floating over its list, only the controls catch touches: a drag anywhere else on the
+  // header reaches the list beneath and scrolls it natively, momentum included.
+  const passThrough = pinned ? 'box-none' as const : undefined;
 
   if (variant === 'tab') {
     const tabTitleScale = Math.min(fontScale, 1.3);
     // Same gutter as the Today hero; only the narrowest phones tighten it.
     const horizontalPadding = width <= 360 ? ThemeLayout.spacing.md : ThemeLayout.spacing.lg;
+    const stageHeight = immersive && fontScale < 1.5
+      ? Math.round(Math.min(420, windowHeight * 0.33)) - (includeTopInset ? 0 : insets.top)
+      : undefined;
     return (
-      <View
+      <Animated.View
+        pointerEvents={passThrough}
         onLayout={(event) => setMeasuredHeight(event.nativeEvent.layout.height)}
-        style={[styles.tabContainer, { paddingTop: (includeTopInset ? insets.top : 0) + ThemeLayout.spacing.md }]}
+        style={[styles.tabContainer, { paddingTop: (includeTopInset ? insets.top : 0) + ThemeLayout.spacing.md, minHeight: stageHeight }, fadeStyle]}
       >
         {/* One treatment on every tab: the screen's painting (or the night sky) fills the whole
             header from the top of the screen, status bar included, and fades into the page. */}
         {/* A screen that paints its own top (backdrop={false}) passes the scene to that painting instead. */}
         {backdrop ? (
-          <NightSkyBand height={(measuredHeight || insets.top + 160) + 40} background={noctalia.screen.background}
-            scene={scene} />
+          // Pure ground by the bottom of the header, whatever is drawn below it. Floating over
+          // its content, it ends with the header so it never covers what scrolls beneath.
+          <NightSkyBand height={(measuredHeight || insets.top + 160) + (pinned ? 0 : 40)} background={noctalia.screen.background}
+            scene={scene} pinned={pinned} fadeEnd={measuredHeight || undefined} fadeOnScroll={false}
+            immersive={Boolean(stageHeight)} />
         ) : null}
-        <View style={[styles.tabBrandRow, { paddingHorizontal: horizontalPadding }]}>
+        <View pointerEvents={passThrough} style={[styles.tabBrandRow, { paddingHorizontal: horizontalPadding }]}>
           {showBrand ? (
-            <View style={styles.tabBrand} accessible accessibilityLabel="Noctalia">
+            <View pointerEvents={pinned ? 'none' : undefined} style={styles.tabBrand} accessible accessibilityLabel="Noctalia">
               <IconSymbol name="moon.stars.fill" size={22} color={noctalia.accent.text} />
               <Text
                 allowFontScaling={false}
                 numberOfLines={1}
-                style={[styles.tabBrandText, {
+                style={[styles.tabBrandText, paintedTextShadow, {
                   color: noctalia.text.primary,
                   fontSize: styles.tabBrandText.fontSize * brandFontScale,
                   lineHeight: styles.tabBrandText.lineHeight * brandFontScale,
@@ -134,9 +165,9 @@ export const NoctaliaScreenHeader = memo(function NoctaliaScreenHeader({
                 Noctalia
               </Text>
             </View>
-          ) : <View style={styles.tabBrand} />}
+          ) : <View pointerEvents={pinned ? 'none' : undefined} style={styles.tabBrand} />}
           {actions.length > 0 ? (
-            <View style={styles.headerActions}>
+            <View pointerEvents={passThrough} style={styles.headerActions}>
               {actions.map((action) => (
                 <Pressable
                   key={action.accessibilityLabel}
@@ -161,11 +192,13 @@ export const NoctaliaScreenHeader = memo(function NoctaliaScreenHeader({
             </View>
           ) : null}
         </View>
-        <View style={{ paddingHorizontal: horizontalPadding }}>
+        {/* The open painting between the wordmark and the title. */}
+        {stageHeight ? <View pointerEvents={passThrough} style={styles.stageSpace} /> : null}
+        <View pointerEvents={pinned ? 'none' : undefined} style={{ paddingHorizontal: horizontalPadding }}>
           <Text
             accessibilityRole="header"
             allowFontScaling={false}
-            style={[styles.tabTitle, {
+            style={[styles.tabTitle, paintedTextShadow, {
               color: noctalia.text.primary,
               fontSize: styles.tabTitle.fontSize * tabTitleScale,
               lineHeight: styles.tabTitle.lineHeight * tabTitleScale,
@@ -177,22 +210,22 @@ export const NoctaliaScreenHeader = memo(function NoctaliaScreenHeader({
             {t(titleKey)}
           </Text>
           {subtitle ? (
-            <Text style={[styles.tabSubtitle, { color: noctalia.text.secondary }]} maxFontSizeMultiplier={1.6}>
+            <Text style={[styles.tabSubtitle, paintedTextShadow, { color: noctalia.text.secondary }]} maxFontSizeMultiplier={1.6}>
               {subtitle}
             </Text>
           ) : null}
         </View>
-        {inlineSlot ? <View style={{ paddingHorizontal: horizontalPadding }}>{inlineSlot}</View> : null}
-        {slot ? <View style={styles.slot}>{slot}</View> : null}
-      </View>
+        {inlineSlot ? <View pointerEvents={passThrough} style={{ paddingHorizontal: horizontalPadding }}>{inlineSlot}</View> : null}
+        {slot ? <View pointerEvents={passThrough} style={styles.slot}>{slot}</View> : null}
+      </Animated.View>
     );
   }
 
   return (
-    <View onLayout={(event) => setMeasuredHeight(event.nativeEvent.layout.height)}
-      style={[styles.container, isProminent && styles.prominentContainer, variant === 'editorial' && styles.editorialContainer, { paddingTop: (includeTopInset ? insets.top : 0) + ThemeLayout.spacing.sm, borderBottomColor: noctalia.surface.border }]}>
+    <Animated.View onLayout={(event) => setMeasuredHeight(event.nativeEvent.layout.height)}
+      style={[fadeStyle, styles.container, isProminent && styles.prominentContainer, variant === 'editorial' && styles.editorialContainer, { paddingTop: (includeTopInset ? insets.top : 0) + ThemeLayout.spacing.sm, borderBottomColor: noctalia.surface.border }]}>
       {/* Same as the tab header: the painting fills the header from the top of the screen. */}
-      {scene && backdrop ? <NightSkyBand height={(measuredHeight || insets.top + 160) + 40} background={noctalia.screen.background} scene={scene} /> : null}
+      {scene && backdrop ? <NightSkyBand height={(measuredHeight || insets.top + 160) + 40} background={noctalia.screen.background} scene={scene} fadeEnd={measuredHeight || undefined} fadeOnScroll={false} /> : null}
       <View style={[styles.titleRow, isNarrow && styles.titleRowNarrow, stackActions && styles.titleRowStacked, wrapInlineSlot && styles.searchRowWrapped]}>
         <View style={[styles.titleBlock, stackActions && styles.titleBlockStacked,
           Boolean(inlineSlot) && (canInlineSlot
@@ -200,7 +233,7 @@ export const NoctaliaScreenHeader = memo(function NoctaliaScreenHeader({
             : { flex: 0, flexBasis: 'auto', width: '100%', paddingRight: stackActions ? 0 : actions.length * 52 }),
         ]}>
           {showBrand ? <Text
-            style={[styles.brand, isProminent && styles.quietBrand, variant === 'editorial' && styles.editorialBrand, {
+            style={[styles.brand, isProminent && styles.quietBrand, variant === 'editorial' && styles.editorialBrand, scene && paintedTextShadow, {
               color: noctalia.text.primary,
               fontSize: brandTypography.fontSize * brandFontScale,
               lineHeight: brandTypography.lineHeight * brandFontScale,
@@ -215,7 +248,7 @@ export const NoctaliaScreenHeader = memo(function NoctaliaScreenHeader({
           <Text
             accessibilityRole={isProminent || variant === 'editorial' ? 'header' : undefined}
             allowFontScaling={false}
-            style={[styles.subtitle, isProminent && styles.prominentTitle, variant === 'editorial' && styles.editorialTitle, {
+            style={[styles.subtitle, isProminent && styles.prominentTitle, variant === 'editorial' && styles.editorialTitle, scene && paintedTextShadow, {
               color: isProminent || variant === 'editorial' ? noctalia.text.primary : noctalia.text.secondary,
               fontSize: titleTypography.fontSize * titleFontScale,
               lineHeight: titleTypography.lineHeight * titleFontScale,
@@ -312,7 +345,7 @@ export const NoctaliaScreenHeader = memo(function NoctaliaScreenHeader({
           </View>
         </ScrollView>
       ) : null}
-    </View>
+    </Animated.View>
   );
 });
 
@@ -324,6 +357,7 @@ const styles = StyleSheet.create({
     gap: ThemeLayout.spacing.sm,
     paddingBottom: ThemeLayout.spacing.md,
   },
+  stageSpace: { flexGrow: 1 },
   tabBrandRow: {
     flexDirection: 'row',
     alignItems: 'center',
