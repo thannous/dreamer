@@ -6,7 +6,10 @@ import path from 'node:path';
 import { execFileSync } from 'node:child_process';
 import { fileURLToPath } from 'node:url';
 import {
+  _assertBranchAppEnvWithListsForTests,
   _assertWithListsForTests,
+  assertBranchAppEnv,
+  assertKeyRole,
   _runGuardedWithListsForTests,
   FORBIDDEN_PROJECT_REFS,
   TARGETS_FILE,
@@ -133,7 +136,7 @@ test('static: seed/auth scripts import runGuarded, read no raw E2E_SUPABASE_URL,
   for (const name of files.filter((file) => !isTest(file))) {
     if (name === 'test-supabase-guard.mjs') continue;
     const source = fs.readFileSync(path.join(dir, name), 'utf8');
-    assert.ok(!/_(assert|runGuarded)WithListsForTests/.test(source), `${name} must not use the test-only guard helpers`);
+    assert.ok(!/_\w*WithListsForTests/.test(source), `${name} must not use the test-only guard helpers`);
   }
 });
 
@@ -164,6 +167,39 @@ test('refuses a project ref or a legacy JWT key naming another project', () => {
   refused(() => _assertWithListsForTests(env({ E2E_SUPABASE_PROJECT_REF: OTHER_REF }), allowed), /E2E_SUPABASE_PROJECT_REF/);
   refused(() => _assertWithListsForTests(env({ E2E_SUPABASE_SERVICE_ROLE_KEY: jwt({ ref: OTHER_REF, role: 'service_role' }) }), allowed), /SERVICE_ROLE_KEY belongs to another/);
   assert.equal(_assertWithListsForTests(env({ E2E_SUPABASE_ANON_KEY: jwt({ ref: TEST_REF, role: 'anon' }) }), allowed).ref, TEST_REF);
+});
+
+test('key slots: the anon slot takes only publishable/anon keys, the service slot only secret/service_role keys', () => {
+  // Legacy JWTs: the role claim is decoded and must match the slot.
+  assert.equal(_assertWithListsForTests(env({ E2E_SUPABASE_ANON_KEY: jwt({ ref: TEST_REF, role: 'anon' }), E2E_SUPABASE_SERVICE_ROLE_KEY: jwt({ ref: TEST_REF, role: 'service_role' }) }), allowed).ref, TEST_REF);
+  refused(() => _assertWithListsForTests(env({ E2E_SUPABASE_ANON_KEY: jwt({ ref: TEST_REF, role: 'service_role' }) }), allowed), /ANON_KEY holds a JWT with role "service_role"/);
+  refused(() => _assertWithListsForTests(env({ E2E_SUPABASE_SERVICE_ROLE_KEY: jwt({ ref: TEST_REF, role: 'anon' }) }), allowed), /SERVICE_ROLE_KEY holds a JWT with role "anon"/);
+  refused(() => _assertWithListsForTests(env({ E2E_SUPABASE_ANON_KEY: jwt({ ref: TEST_REF }) }), allowed), /role "undefined"/);
+  refused(() => _assertWithListsForTests(env({ E2E_SUPABASE_ANON_KEY: jwt({ ref: TEST_REF, role: 'authenticated' }) }), allowed), /ANON_KEY/);
+  // New formats: the prefix decides.
+  refused(() => _assertWithListsForTests(env({ E2E_SUPABASE_ANON_KEY: 'sb_secret_abc' }), allowed), /ANON_KEY must be a sb_publishable_/);
+  refused(() => _assertWithListsForTests(env({ E2E_SUPABASE_SERVICE_ROLE_KEY: 'sb_publishable_abc' }), allowed), /SERVICE_ROLE_KEY must be a sb_secret_/);
+  // Swapped keys are refused in both slots.
+  refused(() => _assertWithListsForTests(env({ E2E_SUPABASE_ANON_KEY: 'sb_secret_test', E2E_SUPABASE_SERVICE_ROLE_KEY: 'sb_publishable_test' }), allowed), /ANON_KEY/);
+  // Unknown or malformed values.
+  for (const bad of ['plain-string', 'sb_publishable_', 'sb_publishable_has space', 'sb_other_abc', 'a.b.c', 'eyJ.notjson.x']) {
+    refused(() => _assertWithListsForTests(env({ E2E_SUPABASE_ANON_KEY: bad }), allowed), /ANON_KEY/);
+  }
+  // The runtime entry point applies it too (before the allowlist would refuse).
+  assert.throws(() => assertKeyRole('E2E_SUPABASE_ANON_KEY', jwt({ ref: TEST_REF, role: 'service_role' })), TestTargetRefused);
+  assert.doesNotThrow(() => assertKeyRole('E2E_SUPABASE_ANON_KEY', 'sb_publishable_ok'));
+  assert.doesNotThrow(() => assertKeyRole('E2E_SUPABASE_SERVICE_ROLE_KEY', 'sb_secret_ok'));
+});
+
+test('the guarded fetch never follows redirects', async () => {
+  const seen = [];
+  await _runGuardedWithListsForTests(env(), async ({ fetch: scoped, target }) => {
+    await scoped(`${target.url}/auth/v1/health`, { method: 'POST', redirect: 'follow', headers: { a: 'b' } });
+    await scoped(`${target.url}/rest/v1/x`);
+  }, { ...allowed, fetch: async (input, init) => { seen.push(init); return new Response('{}'); } });
+  assert.deepEqual(seen.map((init) => init.redirect), ['error', 'error']);
+  assert.equal(seen[0].method, 'POST');
+  assert.deepEqual(seen[0].headers, { a: 'b' });
 });
 
 test('the guard runs before any network call', async () => {
@@ -272,4 +308,35 @@ test('the CLI refuses today (empty allowlist), prints no secret and makes no req
   assert.match(out, /no test Supabase project is allowlisted/);
   assert.ok(!out.includes(secret));
   assert.ok(!out.includes('free-password'));
+});
+
+test('branch app env (re-checked by the Expo runner): only the guarded branch, never production', () => {
+  const good = {
+    EXPO_PUBLIC_SUPABASE_URL: `https://${TEST_REF}.supabase.co`,
+    EXPO_PUBLIC_SUPABASE_ANON_KEY: 'sb_publishable_test',
+    EXPO_PUBLIC_API_URL: `https://${TEST_REF}.functions.supabase.co/api`,
+    EXPO_PUBLIC_SUPABASE_FUNCTION_JWT: 'sb_publishable_test',
+    EXPO_PUBLIC_MOCK_MODE: 'false',
+    PATH: '/bin',
+  };
+  const check = (overrides) => _assertBranchAppEnvWithListsForTests({ ...good, ...overrides }, allowed);
+  assert.equal(check({}).ref, TEST_REF);
+  assert.equal(check({ EXPO_PUBLIC_SUPABASE_FUNCTION_JWT: jwt({ ref: TEST_REF, role: 'anon' }) }).ref, TEST_REF);
+  // What a --profile .env.playstore would have put in.
+  refused(() => check({ EXPO_PUBLIC_SUPABASE_URL: `https://${PROD}.supabase.co` }), /production/);
+  refused(() => check({ EXPO_PUBLIC_API_URL: `https://${PROD}.functions.supabase.co/api` }), /production/);
+  refused(() => check({ EXPO_PUBLIC_SUPABASE_ANON_KEY: 'sb_publishable_MpacCRXT8NJRcx6q_ww_pw_L_TQWi3n' }), /production Supabase key/);
+  refused(() => check({ EXPO_PUBLIC_SUPABASE_FUNCTION_JWT: jwt({ ref: PROD, role: 'anon' }) }), /production/);
+  refused(() => check({ EXPO_PUBLIC_SOMETHING: `x-${PROD.toUpperCase()}` }), /production/);
+  // Not allowlisted, wrong functions host, missing or wrong-role JWT, mock mode.
+  refused(() => check({ EXPO_PUBLIC_SUPABASE_URL: `https://${OTHER_REF}.supabase.co`, EXPO_PUBLIC_API_URL: `https://${OTHER_REF}.functions.supabase.co/api` }), /not an allowlisted/);
+  refused(() => check({ EXPO_PUBLIC_API_URL: 'https://api.example.com/api' }), /EXPO_PUBLIC_API_URL/);
+  refused(() => check({ EXPO_PUBLIC_SUPABASE_FUNCTION_JWT: undefined }), /FUNCTION_JWT must be set/);
+  refused(() => check({ EXPO_PUBLIC_SUPABASE_FUNCTION_JWT: jwt({ ref: TEST_REF, role: 'service_role' }) }), /role "service_role"/);
+  refused(() => check({ EXPO_PUBLIC_SUPABASE_FUNCTION_JWT: jwt({ ref: OTHER_REF, role: 'anon' }) }), /another Supabase project/);
+  refused(() => check({ EXPO_PUBLIC_SUPABASE_ANON_KEY: 'sb_secret_x' }), /ANON_KEY/);
+  refused(() => check({ EXPO_PUBLIC_MOCK_MODE: 'TRUE' }), /mock mode/);
+  refused(() => check({ EXPO_PUBLIC_SUPABASE_URL: undefined }), /E2E_SUPABASE_URL/);
+  // The runtime entry point uses the committed (empty) allowlist.
+  refused(() => assertBranchAppEnv(good), /no test Supabase project is allowlisted/);
 });
