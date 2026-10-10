@@ -109,7 +109,11 @@ Identité du build, compilé dans le checkout isolé
 
 - Source : `832df312df89193a38f6e10598ef70d46a588ef7`.
 - Digest des entrées app : `a0d9501196d4d5ec1d70805e9b188168f7be932911c8acaaf87b8c1aba92bbab`.
-  Les ajouts ultérieurs ne touchent que le parcours TesterArmy et ce compte rendu.
+  La preuve native reste rattachée à ce build. Les ajouts du lot touchent le
+  parcours TesterArmy et ce compte rendu. L’intégration de `master 14587ee40`
+  ajoute sept fichiers de validation/normalisation ; la comparaison avec le
+  reçu confirme que toutes les autres entrées, dont le code app et les assets,
+  restent identiques. Cette intégration n’est pas présentée comme un rejeu natif.
 - Digest des entrées natives : `f5553f7f9a0ebff1aaac1d0de8f787dcbc3692e97a235aaaa40e06836803f7f7`.
 - SHA-256 du `.app` archivé : `b8f155fba941a736c9ef1494a8d6088f3b5370c8a3425b48abf62f11ab5d32fb`.
 - Reçu immuable : `tools/e2e/.e2e/dreamer-ios/1791661181779-47774-407770fa-e294-4cbf-9d00-9c128213ee68/release.json`.
