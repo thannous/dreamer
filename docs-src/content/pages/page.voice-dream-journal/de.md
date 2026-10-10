@@ -38,7 +38,7 @@
 ---
 <h1 class="font-serif text-4xl md:text-5xl mb-4 text-dream-cream">Traumtagebuch mit Spracheingabe</h1>
 <p class="text-sm text-purple-300/70 mb-6">Aktualisiert am 9. Juli 2026</p>
-<p class="text-lg text-purple-200/80 leading-relaxed mb-10">Ein Traum kann Details verlieren, während du nach den richtigen Worten suchst. Mit Noctalia auf Android erzählst du zuerst, was du erinnerst, und bewahrst das Transkript als durchsuchbaren Eintrag mit Stimmung, Symbolen, Bild und Leitfragen.</p>
+<p class="text-lg text-purple-200/80 leading-relaxed mb-10">Ein Traum kann Details verlieren, während du nach den richtigen Worten suchst. Mit Noctalia auf Android erzählst du zuerst, was du erinnerst, und bewahrst das Transkript als durchsuchbaren Eintrag. Die Analyse (Stimmung, Symbole, Leitfragen) und ein Bild kommen danach, wenn du sie anforderst.</p>
 
 <div class="space-y-8 text-gray-300 leading-relaxed">
   <section class="grid md:grid-cols-3 gap-6">

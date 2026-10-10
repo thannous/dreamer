@@ -38,7 +38,7 @@
 ---
 <h1 class="font-serif text-4xl md:text-5xl mb-4 text-dream-cream">Diario de sueños por voz Android</h1>
 <p class="text-sm text-purple-300/70 mb-6">Actualizado el 9 de julio de 2026</p>
-<p class="text-lg text-purple-200/80 leading-relaxed mb-10">Un sueño puede perder detalles mientras buscas las palabras correctas. Con Noctalia en Android, cuenta primero lo que recuerdas y guarda la transcripción como una entrada consultable con estado de ánimo, símbolos, imagen y preguntas para reflexionar.</p>
+<p class="text-lg text-purple-200/80 leading-relaxed mb-10">Un sueño puede perder detalles mientras buscas las palabras correctas. Con Noctalia en Android, cuenta primero lo que recuerdas y guarda la transcripción como una entrada consultable. El análisis (estado de ánimo, símbolos, preguntas para reflexionar) y la imagen llegan después, si los pides.</p>
 
 <div class="space-y-8 text-gray-300 leading-relaxed">
   <section class="grid md:grid-cols-3 gap-6">
@@ -49,7 +49,7 @@
 
   <section class="glass-panel p-8 rounded-2xl border border-white/10 bg-white/5">
     <h2 class="text-2xl font-serif text-white mb-4">De la nota de voz a una entrada útil</h2>
-    <p>Una carpeta de notas de voz pronto se vuelve imposible de revisar. Noctalia transcribe la grabación y la vincula con el estado de ánimo, los símbolos y la imagen del sueño. Puedes buscar la entrada, completarla y compararla con sueños anteriores cuando se repitan lugares, personas o emociones.</p>
+    <p>Una carpeta de notas de voz pronto se vuelve imposible de revisar. Noctalia transcribe la grabación en un texto que puedes buscar; el análisis y la imagen se añaden cuando los pides. Puedes buscar la entrada, completarla y compararla con sueños anteriores cuando se repitan lugares, personas o emociones.</p>
   </section>
 
   <section class="glass-panel p-8 rounded-2xl border border-white/10 bg-white/5 overflow-x-auto">

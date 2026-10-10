@@ -38,7 +38,7 @@
 ---
 <h1 class="font-serif text-4xl md:text-5xl mb-4 text-dream-cream">Voice dream journal app for Android</h1>
 <p class="text-sm text-purple-300/70 mb-6">Updated October 10, 2026</p>
-<p class="text-lg text-purple-200/80 leading-relaxed mb-10">Record dreams by voice with Noctalia, an Android dream journal app for the first minutes after waking. Speak the dream before it fades, then save a searchable entry with transcript, symbols, mood, generated image and guided AI reflection.</p>
+<p class="text-lg text-purple-200/80 leading-relaxed mb-10">Record dreams by voice with Noctalia, an Android dream journal app for the first minutes after waking. Speak the dream before it fades, then save a searchable entry. Analysis, symbols, mood, an image and guided AI reflection come after, when you ask for them.</p>
 
 <div class="space-y-8 text-gray-300 leading-relaxed">
   <section class="glass-panel p-8 rounded-2xl border border-white/10 bg-white/5">
@@ -55,7 +55,7 @@
 
   <section class="glass-panel p-8 rounded-2xl border border-white/10 bg-white/5">
     <h2 class="text-2xl font-serif text-white mb-4">From voice note to searchable dream entry</h2>
-    <p>A voice dream journal should not leave you with a folder of loose audio files. Noctalia turns the recording into readable text, then adds mood, symbols and an image, so you can find the entry again when a similar dream returns.</p>
+    <p>A voice dream journal should not leave you with a folder of loose audio files. Noctalia turns the recording into readable text you can search, so you can find the entry again when a similar dream returns. Analysis and an image come later, when you ask for them.</p>
     <ul class="list-disc pl-5 mt-4 space-y-2">
       <li>Use voice when the dream is fragile and typing would slow you down.</li>
       <li>Keep the transcript as the base of your dream journal entry.</li>
@@ -81,7 +81,7 @@
   <section class="grid md:grid-cols-2 gap-6">
     <div class="glass-panel p-8 rounded-2xl border border-white/10 bg-white/5">
       <h2 class="text-2xl font-serif text-white mb-4">Speech-to-text, symbols, moods and follow-up questions</h2>
-      <p>Voice capture is the first step. The saved dream then gets a transcript, a mood, its recurring symbols, a generated image and follow-up questions that keep the interpretation open rather than final.</p>
+      <p>Voice capture is the first step. The saved dream gets a transcript first. If you ask for an analysis, it adds a mood, recurring symbols and follow-up questions that keep the interpretation open rather than final; an image is generated only when you request one.</p>
     </div>
     <div class="glass-panel p-8 rounded-2xl border border-white/10 bg-white/5">
       <h2 class="text-2xl font-serif text-white mb-4">Privacy in plain language</h2>
