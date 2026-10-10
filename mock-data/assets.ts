@@ -3,7 +3,7 @@
  * The ten dream illustrations of the site, cropped to 9:16: the portrait format the
  * server stores for generated dream images (576×1024), so mock journals look like real ones.
  */
-import { Image } from 'react-native';
+import { Asset } from 'expo-asset';
 
 import type { DreamTheme } from '@/lib/types';
 
@@ -29,11 +29,9 @@ export function getMockDreamArt(name: MockDreamArt): number {
 
 /** A URI for a dream's `imageUrl` and `thumbnailUrl`. */
 export function getMockDreamImage(name: MockDreamArt): string {
-  const source: unknown = DREAM_ART[name];
-  // On web the bundler already gives a URL (or { uri }); react-native-web has no resolveAssetSource.
-  if (typeof source === 'string') return source;
-  if (source && typeof source === 'object' && 'uri' in source) return String((source as { uri: unknown }).uri);
-  return Image?.resolveAssetSource?.(source as number)?.uri ?? '';
+  // Expo 58 registers numeric asset modules on web too. Resolve those through
+  // its registry; react-native-web has no Image.resolveAssetSource.
+  return Asset.fromModule(DREAM_ART[name]).uri;
 }
 
 /** Which illustrations suit each theme's mood. */
