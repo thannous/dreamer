@@ -592,4 +592,8 @@ test('start-branch-e2e drops NODE_OPTIONS and NODE_PATH from the runner env', ()
   assert.equal(child.NODE_PATH, undefined);
   assert.equal(child.PATH, '/bin');
   assert.equal(child.NODE_EXTRA_CA_CERTS, '/etc/ca.pem', 'only those two are dropped');
+  // Windows env names are case-insensitive: any casing is dropped.
+  const mixed = branchAppEnv({ ref: REF, url: `https://${REF}.supabase.co` }, env(), { PATH: '/bin', Node_Options: '--require x', node_path: '/tmp/mods', Node_Path: '/tmp/m2', NODE_options: '--import y' });
+  assert.deepEqual(Object.keys(mixed).filter((name) => /^node_(options|path)$/i.test(name)), []);
+  assert.equal(mixed.PATH, '/bin');
 });

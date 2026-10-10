@@ -26,9 +26,11 @@ export const PASSTHROUGH_EXPO_PUBLIC = Object.freeze([
   'EXPO_PUBLIC_SLEEP_SOUNDS_ENABLED',
 ]);
 
-// target must come from assertTestSupabaseTarget (main does that first).
+// Compared case-insensitively: Windows env names are case-insensitive, so
+// Node_Options or node_path would still reach node.
 export const DROPPED_NODE_VARS = ['NODE_OPTIONS', 'NODE_PATH'];
 
+// target must come from assertTestSupabaseTarget (main does that first).
 export function branchAppEnv(target, env, base = process.env) {
   if (!env.E2E_SUPABASE_ANON_KEY) throw new Error('start-branch-e2e: E2E_SUPABASE_ANON_KEY is not set.');
   // Checked again here: this value is bundled into the app.
@@ -45,7 +47,7 @@ export function branchAppEnv(target, env, base = process.env) {
     // A NODE_OPTIONS --require/--import preload (or a NODE_PATH module
     // override) would run inside the runner before its final guard and could
     // change the env after it.
-    if (DROPPED_NODE_VARS.includes(name)) continue;
+    if (DROPPED_NODE_VARS.includes(name.toUpperCase())) continue;
     if (name.startsWith('EXPO_PUBLIC_') && !PASSTHROUGH_EXPO_PUBLIC.includes(name)) continue;
     child[name] = value;
   }
