@@ -58,6 +58,11 @@ interface NoctaliaScreenHeaderProps {
   backdrop?: boolean;
   /** The header floats over its scrolling content instead of scrolling with it. */
   pinned?: boolean;
+  /**
+   * `tab` only: the painting opens over the top third of the screen and the title rests at
+   * its foot. Compact again with very large text.
+   */
+  immersive?: boolean;
   includeTopInset?: boolean;
   actions?: NoctaliaHeaderAction[];
   chips?: NoctaliaHeaderChip[];
@@ -79,11 +84,12 @@ export const NoctaliaScreenHeader = memo(function NoctaliaScreenHeader({
   subtitle,
   backdrop = true,
   pinned = false,
+  immersive = false,
 }: NoctaliaScreenHeaderProps) {
   const { colors, mode } = useTheme();
   const { t } = useTranslation();
   const insets = useSafeAreaInsets();
-  const { width, fontScale } = useWindowDimensions();
+  const { width, height: windowHeight, fontScale } = useWindowDimensions();
   const isNarrow = width < 480;
   // Beside the desktop sidebar the wordmark is already on screen.
   const showBrand = !(Platform.OS === 'web' && width >= DESKTOP_BREAKPOINT);
@@ -124,11 +130,14 @@ export const NoctaliaScreenHeader = memo(function NoctaliaScreenHeader({
     const tabTitleScale = Math.min(fontScale, 1.3);
     // Same gutter as the Today hero; only the narrowest phones tighten it.
     const horizontalPadding = width <= 360 ? ThemeLayout.spacing.md : ThemeLayout.spacing.lg;
+    const stageHeight = immersive && backdrop && fontScale < 1.5
+      ? Math.round(Math.min(420, windowHeight * 0.33))
+      : undefined;
     return (
       <Animated.View
         pointerEvents={passThrough}
         onLayout={(event) => setMeasuredHeight(event.nativeEvent.layout.height)}
-        style={[styles.tabContainer, { paddingTop: (includeTopInset ? insets.top : 0) + ThemeLayout.spacing.md }, fadeStyle]}
+        style={[styles.tabContainer, { paddingTop: (includeTopInset ? insets.top : 0) + ThemeLayout.spacing.md, minHeight: stageHeight }, fadeStyle]}
       >
         {/* One treatment on every tab: the screen's painting (or the night sky) fills the whole
             header from the top of the screen, status bar included, and fades into the page. */}
@@ -137,7 +146,8 @@ export const NoctaliaScreenHeader = memo(function NoctaliaScreenHeader({
           // Pure ground by the bottom of the header, whatever is drawn below it. Floating over
           // its content, it ends with the header so it never covers what scrolls beneath.
           <NightSkyBand height={(measuredHeight || insets.top + 160) + (pinned ? 0 : 40)} background={noctalia.screen.background}
-            scene={scene} pinned={pinned} fadeEnd={measuredHeight || undefined} fadeOnScroll={false} />
+            scene={scene} pinned={pinned} fadeEnd={measuredHeight || undefined} fadeOnScroll={false}
+            immersive={Boolean(stageHeight)} />
         ) : null}
         <View pointerEvents={passThrough} style={[styles.tabBrandRow, { paddingHorizontal: horizontalPadding }]}>
           {showBrand ? (
@@ -182,6 +192,8 @@ export const NoctaliaScreenHeader = memo(function NoctaliaScreenHeader({
             </View>
           ) : null}
         </View>
+        {/* The open painting between the wordmark and the title. */}
+        {stageHeight ? <View pointerEvents={passThrough} style={styles.stageSpace} /> : null}
         <View pointerEvents={pinned ? 'none' : undefined} style={{ paddingHorizontal: horizontalPadding }}>
           <Text
             accessibilityRole="header"
@@ -345,6 +357,7 @@ const styles = StyleSheet.create({
     gap: ThemeLayout.spacing.sm,
     paddingBottom: ThemeLayout.spacing.md,
   },
+  stageSpace: { flexGrow: 1 },
   tabBrandRow: {
     flexDirection: 'row',
     alignItems: 'center',

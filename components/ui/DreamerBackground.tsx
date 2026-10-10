@@ -22,6 +22,8 @@ type Props = {
   fadeOnScroll?: boolean;
   /** Stays in place while the page scrolls under it, instead of scrolling with the page. */
   fixed?: boolean;
+  /** An open scene: veiled only behind the wordmark at the top and the title at its foot. */
+  immersive?: boolean;
 };
 
 /**
@@ -79,7 +81,7 @@ export function DreamerArtworkWindow({ scene, style, bleedTop = 0 }: {
 }
 
 /** A static, decorative painting fades into the page's own readable ground. */
-export function DreamerBackground({ scene, height, background, pinned = false, fadeEnd, fadeOnScroll = true, fixed = false }: Props) {
+export function DreamerBackground({ scene, height, background, pinned = false, fadeEnd, fadeOnScroll = true, fixed = false, immersive = false }: Props) {
   const { colors, mode } = useTheme();
   const tokens = getNoctaliaDesignTokens(colors, mode);
   const insets = useSafeAreaInsets();
@@ -93,6 +95,21 @@ export function DreamerBackground({ scene, height, background, pinned = false, f
   // header, so content with its own ground below never meets it as an edge.
   const fadeEndAt = Math.min(1, Math.max(readingStart + 0.05, (fadeEnd ?? height) / height));
   const fadeStart = Math.max(readingStart, fadeEndAt - 80 / height);
+  // Open scene: clear from below the wordmark to above the title, which reads on the
+  // veil gathering into the ground at the header's foot.
+  const wordmarkEnd = Math.min(0.3, (insets.top + 72) / height);
+  const titleVeil = Math.max(wordmarkEnd, fadeEndAt - 160 / height);
+  const clearEnd = Math.max(wordmarkEnd, titleVeil - 120 / height);
+  const veil = immersive
+    ? {
+        colors: [tokens.backgroundArtwork.scrim, tokens.backgroundArtwork.reveal, tokens.backgroundArtwork.reveal,
+          tokens.backgroundArtwork.scrim, ground, ground] as const,
+        locations: [0, wordmarkEnd, clearEnd, titleVeil, fadeEndAt, 1] as const,
+      }
+    : {
+        colors: [tokens.backgroundArtwork.reveal, tokens.backgroundArtwork.scrim, tokens.backgroundArtwork.scrim, ground, ground] as const,
+        locations: [0, readingStart, fadeStart, fadeEndAt, 1] as const,
+      };
 
   return (
     <Animated.View
@@ -117,11 +134,7 @@ export function DreamerBackground({ scene, height, background, pinned = false, f
         />
         </PaintingLayer>
       ) : null}
-      <LinearGradient
-        colors={[tokens.backgroundArtwork.reveal, tokens.backgroundArtwork.scrim, tokens.backgroundArtwork.scrim, ground, ground]}
-        locations={[0, readingStart, fadeStart, fadeEndAt, 1]}
-        style={StyleSheet.absoluteFill}
-      />
+      <LinearGradient colors={veil.colors} locations={veil.locations} style={StyleSheet.absoluteFill} />
     </Animated.View>
   );
 }

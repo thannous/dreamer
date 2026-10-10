@@ -142,6 +142,7 @@ export default function StatisticsScreen() {
       scene="astral"
       titleKey="trends.title"
       variant="tab"
+      immersive
       actions={[
         {
           icon: 'gear',

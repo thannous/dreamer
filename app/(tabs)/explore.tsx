@@ -168,6 +168,8 @@ export default function ExploreScreen() {
       scene="path"
       titleKey="explore.title"
       variant="tab"
+      immersive
+      subtitle={t('explore.intro')}
       actions={[
         {
           icon: 'gear',
@@ -196,9 +198,6 @@ export default function ExploreScreen() {
         {header}
         <ScreenContainer key="resources">
           <View className="gap-5 px-4 pt-3">
-            <Text className="text-[15px] leading-[22px] font-sans text-ivory-muted">
-              {t('explore.intro')}
-            </Text>
             <View className="border-t border-line">
               <ExplorerRow
                 icon="book.closed.fill"
