@@ -681,6 +681,13 @@ export default function RecordingScreen() {
   useEffect(() => () => {
     if (sealTimerRef.current) clearTimeout(sealTimerRef.current);
   }, []);
+  // The seal is a guarded transition: hardware Back cannot pop the capture before the
+  // saved dream opens. The guard ends as the next page takes focus.
+  useFocusEffect(useCallback(() => {
+    if (!sealingSavedDream) return;
+    const subscription = BackHandler.addEventListener('hardwareBackPress', () => true);
+    return () => subscription.remove();
+  }, [sealingSavedDream]));
 
   useEffect(() => {
     const pending = onboardingState.pendingRecordingIntent;

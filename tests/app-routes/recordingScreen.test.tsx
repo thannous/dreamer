@@ -1594,6 +1594,30 @@ describe('Recording screen', () => {
     expect(isInitialDreamCategorizationPending(savedIdentity)).toBe(false);
   });
 
+  it('holds Android Back during the seal so the saved dream still opens', async () => {
+    render(<RecordingScreen />);
+    await awaitEditorReady();
+    fireEvent.change(screen.getByTestId(TID.Input.DreamTranscript), { target: { value: 'A lantern in the snow' } });
+    fireEvent.click(await screen.findByTestId('recording-save'));
+    await screen.findByTestId(TID.Component.DreamCaptureSeal);
+    expect(mockReplace).not.toHaveBeenCalled();
+
+    // Focus the screen as rendered under the seal and press Back on whatever it registers.
+    const addListener = jest.requireMock('react-native').BackHandler.addEventListener as jest.Mock;
+    const registeredBefore = addListener.mock.calls.length;
+    const focusEffects = mockUseFocusEffect.mock.calls.slice(-3).map(([effect]) => effect as () => (() => void) | undefined);
+    const unfocus = focusEffects.map((effect) => effect());
+    const backHandlers = addListener.mock.calls.slice(registeredBefore).map(([, handler]) => handler as () => boolean);
+    expect(backHandlers.some((handler) => handler())).toBe(true);
+    expect(mockReplace).not.toHaveBeenCalled();
+    unfocus.slice(1).forEach((cleanup) => cleanup?.());
+
+    await waitFor(() => expect(mockReplace).toHaveBeenCalledWith({
+      pathname: '/journal/[id]',
+      params: { id: '42', saved: '1' },
+    }));
+  });
+
   it('saves without calling categorizeDream while AI consent is missing', async () => {
     mockHasAiConsent.mockResolvedValue(false);
     render(<RecordingScreen />);
