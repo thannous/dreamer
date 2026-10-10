@@ -7,7 +7,7 @@ import { _runGuardedWithListsForTests, TestTargetRefused } from './test-supabase
 import { TIER_STATE, keyHeaders, main as seedMain, makeSeedAction, readSeedSecrets } from './test-seed-users.mjs';
 import { BRANCH_WEB_ORIGIN, BRANCH_WEB_PORT, main as authMain, makeAuthAction, readAuthSecrets, storageKey } from './test-auth-setup.mjs';
 import { PASSTHROUGH_EXPO_PUBLIC, branchAppEnv, main as startMain } from './start-branch-e2e.mjs';
-import { FLOW, main as maestroMain, maestroEnv } from './maestro-branch-sign-in.mjs';
+import { FLOW, main as maestroMain, maestroEnv, runRecord } from './maestro-branch-sign-in.mjs';
 
 const PROD = 'usuyppgsmmowzizhaoqj';
 const REF = 'abcdefghijklmnopqrst';
@@ -273,11 +273,27 @@ test('maestro wrapper: credentials from the loaded env, only as MAESTRO_* env va
   assert.deepEqual(child, { PATH: '/bin', MAESTRO_E2E_EMAIL: 'e2e+premium@example.com', MAESTRO_E2E_PASSWORD: PREMIUM_PW });
   assert.throws(() => maestroEnv('admin', env()), /tier must be/);
   assert.throws(() => maestroEnv('free', env({ E2E_FREE_PASSWORD: '' })), /E2E_FREE_PASSWORD/);
+  for (const bad of ['mot-de-passe-été-1', 'has a space 1234', 'tab\tinside12345', 'emoji-🔑-123456']) {
+    assert.throws(() => maestroEnv('free', env({ E2E_FREE_PASSWORD: bad })), /printable ASCII/);
+    assert.throws(() => readSeedSecrets(env({ E2E_FREE_PASSWORD: bad })), /printable ASCII/);
+  }
+  const record = runRecord({ tier: 'free', target: { ref: REF }, appId: 'com.tanuki75.noctalia', git: (args) => (args[0] === 'rev-parse' ? 'abc123' : '') });
+  assert.deepEqual(record, {
+    kind: 'branch-e2e-mobile-sign-in (dev loop, not release evidence)',
+    sourceRevision: 'abc123',
+    dirty: false,
+    backend: `supabase branch ref ${REF}`,
+    appId: 'com.tanuki75.noctalia',
+    tier: 'free',
+    flow: FLOW,
+    rerunCommand: 'npm run test:e2e:branch:mobile -- free',
+  });
+  assert.ok(!JSON.stringify(record).includes(FREE_PW));
   assert.throws(() => maestroEnv('free', env({ E2E_ACCOUNT_DOMAIN: 'thanh@example.com' })), TestTargetRefused);
   const calls = [];
   const spawnImpl = (...args) => { calls.push(args); };
-  assert.throws(() => maestroMain(['free'], { env: prodEnv(), spawnImpl }), TestTargetRefused);
-  assert.throws(() => maestroMain(['free'], { env: env(), spawnImpl }), TestTargetRefused, 'committed allowlist is empty');
+  assert.throws(() => maestroMain(['free'], { env: prodEnv(), spawnImpl, writeRecord: false }), TestTargetRefused);
+  assert.throws(() => maestroMain(['free'], { env: env(), spawnImpl, writeRecord: false }), TestTargetRefused, 'committed allowlist is empty');
   assert.equal(calls.length, 0);
   assert.equal(FLOW, 'maestro/e2e-account-sign-in.yml');
   assert.ok(fs.existsSync(new URL(`../${FLOW}`, import.meta.url)));

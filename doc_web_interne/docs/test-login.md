@@ -129,7 +129,8 @@ before any request and print no key, password or token.
    true` for premium (the fixture's values), `p_tier 'free', p_is_active false` for
    free, `p_source 'e2e-seed'`, a fresh `p_source_event_id`. Idempotent: a second run
    resets the same two accounts and never touches another user. Passwords must be at
-   least 12 characters.
+   least 12 characters of printable ASCII without spaces (the seed and the Maestro
+   wrapper refuse others: Maestro cannot type Unicode on Android).
 2. `npm run test:auth-setup` (`scripts/test-auth-setup.mjs`), with the publishable
    (anon) key: password grant (`POST /auth/v1/token?grant_type=password`) per
    account, checks the session belongs to that account, and writes a Playwright
@@ -157,7 +158,11 @@ the branch key (else `lib/http.ts` falls back to the production legacy JWT in
 `E2E_*` variable reaches Metro. Of the shell's `EXPO_PUBLIC_*` values (inlined into
 the bundle) only an explicit allowlist of feature flags passes
 (`PASSTHROUGH_EXPO_PUBLIC` in the script); keys, endpoints, RevenueCat, Google,
-Turnstile, mock and QA switches are dropped. Edge Functions want
+Turnstile, mock and QA switches are dropped. Scope: the harness covers Auth and
+database journeys. A branch starts with the parent project's deployed Edge
+Functions and, without the GitHub integration, never receives the functions of
+this checkout; journeys that call functions (analysis, chat) need owner step 4b
+first, else they test stale functions. Edge Functions want
 a JWT: use the branch legacy anon JWT as `E2E_SUPABASE_ANON_KEY` for journeys
 that call them (the guard checks its `ref` claim names the branch); with a
 publishable key, function calls may answer 401. Reports record `dirty` like the
@@ -263,6 +268,11 @@ See the click-level list below; production auth settings never change.
    keys under Settings > API Keys with `e2e` selected, or
    `supabase projects api-keys --project-ref <e2e-branch-ref>` (a branch has its
    own keys).
+4b. Edge Functions, only for journeys that call them: deploy this checkout's
+   functions to the branch, never to production:
+   `supabase functions deploy --project-ref <e2e-branch-ref>` (with any branch
+   function secret other than `REVENUECAT_*`), then check the versions under Edge
+   Functions with `e2e` selected. Auth and database journeys do not need it.
 5. Auth on the branch (`e2e` selected): Authentication > Sign In / Providers >
    Email enabled; captcha off at Settings > Authentication > Bot and Abuse
    Protection > Enable CAPTCHA protection (off). The seed confirms the accounts,
