@@ -19,6 +19,7 @@ const {
   collectSecrets,
   handledSignals,
   hashPackageFiles,
+  lockEntries,
   main,
   parseEnvFile,
   parseTarget,
@@ -709,6 +710,42 @@ describe('web-deploy: guarded, clean copy, pinned project, prebuilt upload', () 
     }
   }, 20000);
 
+  it('stopProcessTree waits for the whole group: a CLI that dies on SIGTERM does not end the stop while a grandchild ignores it', async () => {
+    if (process.platform === 'win32') return;
+    const pidDir = fs.mkdtempSync(path.join(os.tmpdir(), 'web-deploy-pids-'));
+    const pidFile = path.join(pidDir, 'grandchild.pid');
+    try {
+      // The CLI keeps the default SIGTERM action; only its grandchild ignores it.
+      const cli = `
+        const { spawn } = require('child_process');
+        const grandchild = spawn(process.execPath, ['-e', "process.on('SIGTERM', () => {}); setTimeout(() => {}, 60000)"], { stdio: 'ignore' });
+        require('fs').writeFileSync(${JSON.stringify(pidFile)}, String(grandchild.pid));
+        setTimeout(() => {}, 60000);
+      `;
+      let child: { pid: number } | null = null;
+      const running = run(process.execPath, ['-e', cli], {
+        cwd: pidDir,
+        env: { PATH: process.env.PATH },
+        write: () => {},
+        onChild: (value: { pid: number } | null) => {
+          if (value) child = value;
+        },
+      }).catch((error: Error) => error);
+      expect(await waitFor(() => fs.existsSync(pidFile) && fs.readFileSync(pidFile, 'utf8').length > 0)).toBe(true);
+      const grandchildPid = Number(fs.readFileSync(pidFile, 'utf8'));
+      // Let the grandchild install its SIGTERM handler.
+      await new Promise((resolve) => setTimeout(resolve, 300));
+      const started = Date.now();
+      await stopProcessTree(child, { timeoutMs: 400 });
+      expect(((await running) as Error).message).toMatch(/Command failed \(SIGTERM\)/);
+      expect(Date.now() - started).toBeGreaterThanOrEqual(350);
+      // Gone when the stop returns, before any cleanup would run.
+      expect(alive(grandchildPid)).toBe(false);
+    } finally {
+      fs.rmSync(pidDir, { recursive: true, force: true });
+    }
+  }, 20000);
+
   it('sweeps only stale noctalia-vercel-* dirs: dead owner pid, or no owner file and older than 6 hours', () => {
     const make = (name: string, pid?: string, ageMs = 0) => {
       const dir = path.join(tempRoot, name);
@@ -807,12 +844,25 @@ describe('web-deploy: guarded, clean copy, pinned project, prebuilt upload', () 
     fs.writeFileSync(path.join(pkgDir, 'package.json'), pkgJson ?? JSON.stringify({ name: 'vercel', version: '62.2.0', bin: { vc: './dist/vc.js', vercel: './dist/vc.js' } }));
     fs.writeFileSync(path.join(pkgDir, 'dist', 'vc.js'), entry);
     const entries = {
-      'node_modules/vercel': { version: '62.2.0', resolved: 'https://registry.npmjs.org/vercel/-/vercel-62.2.0.tgz', integrity: VERCEL_CLI_INTEGRITY, dev: true },
+      'node_modules/vercel': {
+        version: '62.2.0',
+        resolved: 'https://registry.npmjs.org/vercel/-/vercel-62.2.0.tgz',
+        integrity: VERCEL_CLI_INTEGRITY,
+        dev: true,
+        dependencies: { '@vercel/cli-auth': '1.0.0', undici: '7.0.0' },
+        optionalDependencies: { '@esbuild/aix-ppc64': '0.27.0' },
+      },
+      // Hoisted dependencies of the CLI, direct and transitive, and a package
+      // outside its closure.
+      'node_modules/@vercel/cli-auth': { version: '1.0.0', resolved: 'https://registry.npmjs.org/@vercel/cli-auth/-/cli-auth-1.0.0.tgz', integrity: 'sha512-cliauth', dev: true, dependencies: { jose: '^6.1.3' } },
+      'node_modules/jose': { version: '6.2.3', resolved: 'https://registry.npmjs.org/jose/-/jose-6.2.3.tgz', integrity: 'sha512-jose', dev: true },
+      'node_modules/left-pad': { version: '1.3.0', resolved: 'https://registry.npmjs.org/left-pad/-/left-pad-1.3.0.tgz', integrity: 'sha512-leftpad' },
       'node_modules/vercel/node_modules/undici': { version: '7.0.0', resolved: 'https://registry.npmjs.org/undici/-/undici-7.0.0.tgz', integrity: 'sha512-undici', dev: true },
       'node_modules/vercel/node_modules/@esbuild/aix-ppc64': { version: '0.27.0', resolved: 'https://registry.npmjs.org/x.tgz', integrity: 'sha512-aix', dev: true, optional: true },
     };
     fs.writeFileSync(path.join(root, 'package-lock.json'), JSON.stringify({ packages: { '': {}, ...entries } }));
-    const record = { packages: { 'node_modules/vercel': entries['node_modules/vercel'], 'node_modules/vercel/node_modules/undici': entries['node_modules/vercel/node_modules/undici'] } };
+    const { 'node_modules/vercel/node_modules/@esbuild/aix-ppc64': _otherOs, ...installedEntries } = entries;
+    const record = { packages: JSON.parse(JSON.stringify(installedEntries)) };
     if (installed) installed(record);
     fs.writeFileSync(path.join(root, 'node_modules', '.package-lock.json'), JSON.stringify(record));
     return { pkgDir, sha: hashPackageFiles(pkgDir) };
@@ -888,11 +938,28 @@ describe('web-deploy: guarded, clean copy, pinned project, prebuilt upload', () 
       (record: any) => delete record.packages['node_modules/vercel/node_modules/undici'],
       (record: any) => (record.packages['node_modules/vercel/node_modules/extra'] = { version: '1.0.0' }),
       (record: any) => delete record.packages['node_modules/vercel'],
+      // Hoisted dependencies of the CLI: a stale direct one, a stale
+      // transitive one, a missing one.
+      (record: any) => (record.packages['node_modules/@vercel/cli-auth'].integrity = 'sha512-stale'),
+      (record: any) => (record.packages['node_modules/jose'] = { ...record.packages['node_modules/jose'], version: '6.1.3', integrity: 'sha512-old' }),
+      (record: any) => delete record.packages['node_modules/@vercel/cli-auth'],
     ]) {
       const other = newRoot();
       const fixture = fakeInstall(other, { installed: change });
       expect(() => checkPinnedCli(other, { expectedSha256: fixture.sha })).toThrow('node_modules/.package-lock.json does not match package-lock.json');
     }
+    // A package outside the CLI's closure may differ.
+    const unrelated = newRoot();
+    const fixture = fakeInstall(unrelated, { installed: (record: any) => (record.packages['node_modules/left-pad'].integrity = 'sha512-other') });
+    expect(checkPinnedCli(unrelated, { expectedSha256: fixture.sha }).command).toBe(process.execPath);
+  });
+
+  it('lockEntries follows the CLI dependency closure through hoisted and nested entries', () => {
+    const lock = JSON.parse(fs.readFileSync(path.join(__dirname, '..', 'package-lock.json'), 'utf8'));
+    const closure = Object.keys(lockEntries(lock));
+    expect(closure).toEqual(expect.arrayContaining(['node_modules/vercel', 'node_modules/@vercel/cli-auth', 'node_modules/@vercel/cli-config', 'node_modules/jose']));
+    expect(closure.length).toBeGreaterThan(100);
+    expect(closure).not.toContain('node_modules/react');
   });
 
   it('checkPinnedCli refuses an entry hash mismatch: one changed byte in dist/vc.js, or an added file', () => {

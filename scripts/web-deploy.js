@@ -176,12 +176,40 @@ function hashPackageFiles(pkgDir) {
   return hash.digest('hex');
 }
 
+// Where npm resolves dependency `name` from the lock entry at `fromKey`:
+// the nearest node_modules/<name> walking up from fromKey to the root.
+function resolveLockDependency(packages, fromKey, name) {
+  let base = fromKey;
+  for (;;) {
+    const candidate = `${base ? `${base}/` : ''}node_modules/${name}`;
+    if (packages[candidate]) return candidate;
+    if (!base) return null;
+    const cut = base.lastIndexOf('/node_modules/');
+    base = cut === -1 ? '' : base.slice(0, cut);
+  }
+}
+
+// The lock entries of pkgKey's whole resolved dependency closure
+// (dependencies and optionalDependencies, hoisted or nested), plus any entry
+// physically nested under pkgKey. Each with version, resolved, integrity
+// and whether it is optional.
 function lockEntries(lock, pkgKey = 'node_modules/vercel') {
+  const packages = (lock && lock.packages) || {};
+  const pick = (value) => ({ version: value.version, resolved: value.resolved, integrity: value.integrity, optional: value.optional === true });
   const entries = {};
-  for (const [key, value] of Object.entries((lock && lock.packages) || {})) {
-    if (key === pkgKey || key.startsWith(`${pkgKey}/node_modules/`)) {
-      entries[key] = { version: value.version, resolved: value.resolved, integrity: value.integrity, optional: value.optional === true };
+  const queue = packages[pkgKey] ? [pkgKey] : [];
+  while (queue.length > 0) {
+    const key = queue.shift();
+    if (entries[key]) continue;
+    const value = packages[key];
+    entries[key] = pick(value);
+    for (const name of Object.keys({ ...value.dependencies, ...value.optionalDependencies })) {
+      const resolved = resolveLockDependency(packages, key, name);
+      if (resolved && !entries[resolved]) queue.push(resolved);
     }
+  }
+  for (const [key, value] of Object.entries(packages)) {
+    if (key.startsWith(`${pkgKey}/node_modules/`) && !entries[key]) entries[key] = pick(value);
   }
   return entries;
 }
@@ -211,9 +239,9 @@ function lockMismatches(locked, installed) {
 // 2. package-lock.json (tracked, so covered by the guard's clean-tree check)
 //    pins node_modules/vercel to VERCEL_CLI_VERSION and VERCEL_CLI_INTEGRITY,
 //    and npm's install record node_modules/.package-lock.json has the same
-//    version, resolved and integrity for node_modules/vercel and every
-//    nested node_modules/vercel/node_modules/* entry it installed (see
-//    lockMismatches). This catches a stale or
+//    version, resolved and integrity for node_modules/vercel and its whole
+//    resolved dependency closure in the lock, hoisted (@vercel/*, ...) or
+//    nested (see lockEntries, lockMismatches). This catches a stale or
 //    different install; it is metadata npm wrote, not a content check.
 // 3. The content check: hashPackageFiles(node_modules/vercel) equals
 //    VERCEL_CLI_FILES_SHA256, committed here. Every file of the CLI package
@@ -269,7 +297,15 @@ function checkPinnedCli(rootDir = ROOT_DIR, { expectedSha256 = VERCEL_CLI_FILES_
   if (!lockedCli || lockedCli.version !== VERCEL_CLI_VERSION || lockedCli.integrity !== VERCEL_CLI_INTEGRITY) {
     refuse(`package-lock.json does not pin node_modules/vercel to ${VERCEL_CLI_VERSION} with the expected integrity`);
   }
-  const installed = lockEntries(readJson(path.join(rootDir, 'node_modules', '.package-lock.json')));
+  // npm's record of the same keys (it lists what it installed), plus
+  // anything it installed nested under node_modules/vercel.
+  const record = (readJson(path.join(rootDir, 'node_modules', '.package-lock.json')) || {}).packages || {};
+  const installed = {};
+  for (const [key, value] of Object.entries(record)) {
+    if (locked[key] || key === 'node_modules/vercel' || key.startsWith('node_modules/vercel/node_modules/')) {
+      installed[key] = { version: value.version, resolved: value.resolved, integrity: value.integrity };
+    }
+  }
   const mismatches = installed['node_modules/vercel'] ? lockMismatches(locked, installed) : ['node_modules/vercel'];
   if (mismatches.length > 0) {
     refuse(`node_modules/.package-lock.json does not match package-lock.json (version, resolved or integrity) for ${mismatches.slice(0, 3).join(', ')}: a stale or different install`);
@@ -393,10 +429,31 @@ async function stopProcessTree(child, { platform = process.platform, kill = proc
       // The group is already gone.
     }
   };
+  // The direct child closing is not enough: a descendant (npm, the build)
+  // may outlive it in the same group. On POSIX, wait until the group itself
+  // is gone (kill(-pgid, 0) fails with ESRCH); Windows has no group to probe.
+  const groupAlive = () => {
+    if (platform === 'win32') return false;
+    try {
+      kill(-child.pid, 0);
+      return true;
+    } catch (error) {
+      return error?.code === 'EPERM';
+    }
+  };
+  const goneWithin = async (ms) => {
+    const end = Date.now() + ms;
+    if (!(await closedWithin(ms))) return false;
+    while (groupAlive()) {
+      if (Date.now() >= end) return false;
+      await new Promise((resolve) => setTimeout(resolve, 50));
+    }
+    return true;
+  };
   signalGroup('SIGTERM');
-  if (await closedWithin(timeoutMs)) return;
+  if (await goneWithin(timeoutMs)) return;
   signalGroup('SIGKILL');
-  await closedWithin(timeoutMs);
+  await goneWithin(timeoutMs);
 }
 
 function isPidAlive(pid) {
@@ -748,6 +805,7 @@ module.exports = {
   createCleanCopy,
   handledSignals,
   hashPackageFiles,
+  lockEntries,
   parseEnvFile,
   main,
   parseTarget,
