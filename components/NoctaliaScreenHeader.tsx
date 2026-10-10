@@ -265,7 +265,6 @@ const styles = StyleSheet.create({
     fontFamily: Fonts.spaceGrotesk.bold,
     fontSize: 15,
     lineHeight: 21,
-    opacity: 0.92,
   },
   headerActions: {
     flexDirection: 'row',

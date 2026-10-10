@@ -207,7 +207,7 @@ export default function SettingsScreen() {
       className="flex-1 bg-ink"
       testID="screen.settings"
     >
-      <AtmosphericBackground variant="subtle" />
+      <AtmosphericBackground variant="subtle" scene="journal" />
       <View className={isDesktopLayout ? 'w-full max-w-[760px] self-center' : 'w-full'}>
       <NoctaliaScreenHeader
         titleKey={returningGuestBlocked ? 'auth.returning_guest.title' : 'settings.title'}

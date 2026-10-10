@@ -84,7 +84,6 @@ const getSymbolLetter = (name: string) => {
 
 // Text that sits on artwork stays ivory in both app themes.
 const ART_TEXT = getNoctaliaDesignTokens(DarkTheme, "dark").text.primary;
-const SKY_ART = require("@/assets/images/onboarding-reverie-background.webp");
 
 const FULL_ALPHABET = "ABCDEFGHIJKLMNOPQRSTUVWXYZ".split("");
 let trackedOnboardingDictionaryDestination = false;
@@ -319,21 +318,6 @@ export default function SymbolDictionaryScreen() {
 
   const listHeader = (
     <View style={[styles.listHeader, { paddingTop: insets.top + 12 }]}>
-      {mode === "dark" ? (
-        <View
-          pointerEvents="none"
-          accessible={false}
-          importantForAccessibility="no-hide-descendants"
-          style={[styles.sky, { height: insets.top + 300 }]}
-        >
-          <Image source={SKY_ART} contentFit="cover" contentPosition="top" style={StyleSheet.absoluteFill} />
-          <LinearGradient
-            colors={["rgba(3,4,13,0.35)", "rgba(3,4,13,0.55)", noctalia.screen.background]}
-            locations={[0, 0.55, 1]}
-            style={StyleSheet.absoluteFill}
-          />
-        </View>
-      ) : null}
       <View style={styles.headerRow}>
         <Pressable
           onPress={handleBack}
@@ -484,7 +468,7 @@ export default function SymbolDictionaryScreen() {
   return (
     <View style={[styles.container, { backgroundColor: noctalia.screen.background }]} testID="screen.symbolDictionary">
       <Stack.Screen options={{ headerShown: false, title: t("symbols.dictionary_title") }} />
-      <AtmosphericBackground variant="subtle" />
+      <AtmosphericBackground variant="subtle" scene="symbols" />
       <FlatList<Row>
         testID="symbol-list"
         style={styles.list}
@@ -511,7 +495,6 @@ const styles = StyleSheet.create({
   container: { flex: 1, overflow: "hidden", position: "relative" },
   list: { flex: 1 },
   listHeader: { paddingHorizontal: 20, gap: 8, paddingBottom: 4 },
-  sky: { position: "absolute", top: 0, left: 0, right: 0 },
   headerRow: { flexDirection: "row", flexWrap: "wrap", alignItems: "center", columnGap: 8, rowGap: 4, marginBottom: 8 },
   backButton: { width: 44, minHeight: 44, alignItems: "center", justifyContent: "center", marginLeft: -12 },
   headerTitle: { flex: 1, flexBasis: 140, minWidth: 0, fontFamily: Fonts.fraunces.semiBold, fontSize: 34, lineHeight: 40, letterSpacing: -0.3 },

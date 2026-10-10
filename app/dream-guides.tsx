@@ -39,7 +39,7 @@ export default function DreamGuidesScreen() {
         style={[styles.container, { backgroundColor: noctalia.screen.background }]}
         testID="screen.dreamGuides"
       >
-        <AtmosphericBackground variant="subtle" />
+        <AtmosphericBackground variant="subtle" scene="path" />
         <ScrollView
           style={styles.scrollView}
           contentInsetAdjustmentBehavior="never"

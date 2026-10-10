@@ -4,6 +4,7 @@ import { IconSymbol } from '@/components/ui/icon-symbol';
 import { DarkTheme, ThemeLayout } from '@/constants/journalTheme';
 import { getNoctaliaDesignTokens } from '@/constants/noctaliaDesign';
 import { getSymbolIllustration } from '@/constants/symbolIllustrations';
+import { DREAMER_ARTWORK } from '@/constants/dreamerArtwork';
 import { Fonts } from '@/constants/theme';
 import { ScrollPerfProvider } from '@/context/ScrollPerfContext';
 import { useOnboarding } from '@/context/OnboardingContext';
@@ -41,7 +42,7 @@ type Tokens = ReturnType<typeof getNoctaliaDesignTokens>;
 // The hero always sits on painted night artwork, whatever the app theme, like the
 // site's symbol pages. The reading column below follows the user's theme.
 const HERO_TOKENS = getNoctaliaDesignTokens(DarkTheme, 'dark');
-const SKY_FALLBACK = require('@/assets/images/onboarding-reverie-background.webp');
+const SKY_FALLBACK = DREAMER_ARTWORK.symbols;
 const TOP_BAR_HEIGHT = 52;
 
 /** The same colour at zero alpha, so a fade never darkens a light page. */
@@ -119,7 +120,7 @@ export default function SymbolDetailScreen() {
   if (!symbol) {
     return (
       <View style={[styles.emptyState, { backgroundColor: noctalia.screen.background }]}>
-        <AtmosphericBackground />
+        <AtmosphericBackground scene="symbols" />
         <Text style={[styles.emptyText, { color: noctalia.text.secondary }]}>
           {t('symbols.not_found')}
         </Text>

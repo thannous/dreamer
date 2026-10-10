@@ -323,7 +323,7 @@ const ResetPasswordScreen: React.FC = () => {
       style={[styles.container, { backgroundColor: noctalia.screen.background }]}
       testID={TID.Screen.ResetPassword}
     >
-      {!isLucidTrainer ? <AtmosphericBackground /> : null}
+      {!isLucidTrainer ? <AtmosphericBackground scene="journal" /> : null}
       <ScrollView
         style={styles.scroll}
         contentContainerStyle={[

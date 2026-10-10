@@ -17,6 +17,11 @@ export function getNoctaliaPalette(mode: ThemeMode) {
     line: dark ? '#514637' : 'rgba(126, 83, 49, 0.25)',
     overlay: dark ? 'rgba(0, 0, 0, 0.64)' : 'rgba(38, 27, 28, 0.44)',
     onAccent: dark ? '#382D35' : '#FFF9EF',
+    // The least veiled point still gives every ordinary text token AA contrast
+    // over a pure-white night image or pure-black paper image (the worst cases).
+    backgroundArtwork: {
+      scrim: dark ? 'rgba(3, 4, 13, 0.78)' : 'rgba(240, 228, 212, 0.92)',
+    },
     // Fixed contrast on artwork in every theme, including a pure-white or pure-black image:
     // the title sits on a near-opaque band of the theme's own ground (night, or paper on the
     // light theme, so no black band ever fades over a light page or a pale illustration).
@@ -81,6 +86,7 @@ export function getNoctaliaDesignTokens(colors: ThemeColors, mode: ThemeMode) {
     screen: { background: p.background, gradient: [p.background, p.background] as const },
     cover: p,
     illustration: p.illustration,
+    backgroundArtwork: p.backgroundArtwork,
     text: { primary: colors.textPrimary, secondary: colors.textSecondary, tertiary: colors.textTertiary, onAccent: colors.textOnAccentSurface },
     accent: { base: colors.accent, strong: colors.accentDark, soft: colors.accentLight, text: colors.accentText },
     surface: { base: p.raised, raised: p.raised, active: p.actionTint, soft: p.surface, border: p.line, borderStrong: p.line, overlay: p.overlay },

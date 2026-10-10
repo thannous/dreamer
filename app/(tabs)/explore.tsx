@@ -4,6 +4,7 @@ import { NoctaliaScreenHeader } from '@/components/NoctaliaScreenHeader';
 import { RitualPickerSheet } from '@/components/ritual/RitualPickerSheet';
 import { ScreenContainer } from '@/components/ScreenContainer';
 import { IconSymbol } from '@/components/ui/icon-symbol';
+import { DreamerBackground } from '@/components/ui/DreamerBackground';
 import { DESKTOP_BREAKPOINT, getBottomNavigationLayout } from '@/constants/layout';
 import { ThemeLayout } from '@/constants/journalTheme';
 import { getNoctaliaDesignTokens } from '@/constants/noctaliaDesign';
@@ -177,6 +178,7 @@ export default function ExploreScreen() {
 
   return (
     <View className="flex-1 bg-ink" testID={TID.Screen.Explore}>
+      <DreamerBackground scene="path" height={insets.top + 360} />
       {!scrollHeader ? header : null}
       <ScrollView
         className="flex-1"

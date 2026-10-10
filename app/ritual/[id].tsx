@@ -11,6 +11,7 @@ import Animated, {
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { AtmosphericBackground } from '@/components/inspiration/AtmosphericBackground';
+import type { DreamerScene } from '@/constants/dreamerArtwork';
 import { GlassCard } from '@/components/inspiration/GlassCard';
 import { DURATION, EASE, ProgressFill, SPRING } from '@/components/motion';
 import { IconSymbol } from '@/components/ui/icon-symbol';
@@ -100,6 +101,12 @@ function RitualStepCheckbox({
     </Animated.View>
   );
 }
+
+const RITUAL_SCENES: Record<RitualId, DreamerScene> = {
+  starter: 'ritual',
+  memory: 'journal',
+  lucid: 'astral',
+};
 
 const RITUAL_ICONS: Record<RitualId, IconName> = {
   starter: 'moon.stars.fill',
@@ -283,7 +290,7 @@ export default function RitualDetailScreen() {
   return (
     <ScrollPerfProvider isScrolling={scrollPerf.isScrolling}>
       <View style={[styles.container, { backgroundColor: noctalia.screen.background }]}>
-        <AtmosphericBackground />
+        <AtmosphericBackground scene={RITUAL_SCENES[ritual.id]} />
 
         {/* Floating Back Button */}
         <Pressable

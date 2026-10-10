@@ -57,7 +57,7 @@ export function TodayHero({ state, dream, now, onPressCta, onOpenSettings }: Pro
   return (
     <View className="relative bg-ink">
       {/* No dream artwork yet: the night sky keeps the opening immersive instead of flat ink. */}
-      {!hasArtwork && mode === 'dark' ? <NightSkyBand height={insets.top + 340} background={ground} /> : null}
+      {!hasArtwork ? <NightSkyBand height={insets.top + 340} background={ground} /> : null}
       {immersiveArtwork ? <View className="absolute left-0 right-0 top-0 overflow-hidden"
         pointerEvents="none" accessibilityElementsHidden importantForAccessibility="no-hide-descendants"
         style={{ height: (stageHeight ?? 260) + 1 }}>

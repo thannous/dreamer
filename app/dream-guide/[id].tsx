@@ -49,7 +49,7 @@ export default function DreamGuideDetailScreen() {
   if (!guide) {
     return (
       <LinearGradient colors={noctalia.screen.gradient} style={styles.emptyState}>
-        <AtmosphericBackground variant="subtle" />
+        <AtmosphericBackground variant="subtle" scene="path" />
         <Pressable
           onPress={() => router.back()}
           accessibilityLabel={t('navigation.back')}
@@ -79,7 +79,7 @@ export default function DreamGuideDetailScreen() {
         style={styles.container}
         testID="screen.dreamGuideDetail"
       >
-        <AtmosphericBackground variant="subtle" />
+        <AtmosphericBackground variant="subtle" scene="path" />
         <ScrollView
           style={styles.scrollView}
           contentInsetAdjustmentBehavior="automatic"

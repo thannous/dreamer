@@ -248,10 +248,10 @@ export default function StatisticsScreen() {
 
   return (
     <View className="flex-1 bg-ink">
-      {mode === 'dark' && !scrollHeader ? (
+      {!scrollHeader ? (
         // Behind the fixed header only, fading out at its edge, so the content that
         // scrolls under the header is clipped on plain ink rather than across the sky.
-        <NightSkyBand height={headerHeight + 24} background={noctalia.screen.background} />
+        <NightSkyBand scene="astral" height={headerHeight + 24} background={noctalia.screen.background} />
       ) : null}
       {!scrollHeader ? <View onLayout={(event) => setHeaderHeight(event.nativeEvent.layout.height)}>{header}</View> : null}
       <ScrollView

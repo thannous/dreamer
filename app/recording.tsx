@@ -101,6 +101,7 @@ import {
 } from '@/services/storageService';
 import * as Haptics from 'expo-haptics';
 import { LinearGradient } from 'expo-linear-gradient';
+import { DreamerBackground } from '@/components/ui/DreamerBackground';
 import { router, useFocusEffect, useLocalSearchParams } from 'expo-router';
 import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import {
@@ -1768,6 +1769,7 @@ export default function RecordingScreen() {
           end={{ x: 1, y: 1 }}
           style={StyleSheet.absoluteFill}
         />
+        <DreamerBackground scene="capture" height={insets.top + 360} />
         {/* The desktop sidebar leads everywhere. Keep a back control only
             while a capture review is open, so leaving still offers to keep or
             discard that review. */}

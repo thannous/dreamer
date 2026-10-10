@@ -469,7 +469,7 @@ export default function PaywallScreen() {
   if (isDeviceUpgraded) {
     return (
       <View style={rootStyle} testID={TID.Screen.Paywall}>
-        <AtmosphericBackground />
+        <AtmosphericBackground scene="observatory" />
         <ScreenContainer style={headerContainerStyle} maxWidth={PAYWALL_MAX_WIDTH}>
           <View style={styles.headerRow}>
             <Text style={[styles.headerTitle, { color: noctalia.text.primary }]}>
@@ -540,7 +540,7 @@ export default function PaywallScreen() {
 
   return (
     <View style={rootStyle} testID={TID.Screen.Paywall}>
-      <AtmosphericBackground />
+      <AtmosphericBackground scene="observatory" />
       <ScrollView
         style={styles.scroll}
         contentContainerStyle={[

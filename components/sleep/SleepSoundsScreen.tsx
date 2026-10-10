@@ -164,7 +164,7 @@ export function SleepSoundsScreen() {
         style={[styles.container, { backgroundColor: noctalia.screen.background }]}
         testID="screen.sleepSounds"
       >
-        <AtmosphericBackground />
+        <AtmosphericBackground scene="sleep" />
 
         <Pressable
           onPress={() => router.back()}

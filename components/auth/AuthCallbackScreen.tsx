@@ -21,7 +21,7 @@ const AuthCallbackScreen: React.FC<{ destination?: Href }> = ({ destination = '/
 
   return (
     <View style={[styles.container, { backgroundColor: noctalia.screen.background }]}>
-      <AtmosphericBackground />
+      <AtmosphericBackground scene={destination === '/recording' ? 'reverie' : undefined} />
       <ActivityIndicator color={noctalia.accent.text} />
     </View>
   );

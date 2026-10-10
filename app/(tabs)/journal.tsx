@@ -973,7 +973,7 @@ export default function JournalListScreen() {
     <ScrollPerfProvider isScrolling={isScrolling}>
       <View className="flex-1 bg-ink" testID={TID.Screen.Journal}>
         {/* Atmospheric dreamlike background */}
-        <AtmosphericBackground variant="subtle" />
+        <AtmosphericBackground variant="subtle" scene="journal" />
 
         {isDesktopLayout ? listHeader : (
           <Animated.View

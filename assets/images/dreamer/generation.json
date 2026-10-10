@@ -1,0 +1,71 @@
+{
+  "generator": "Built-in image_gen",
+  "selection": "Agent-selected for the owner's Dreamer implementation request",
+  "format": {
+    "type": "WebP",
+    "quality": 84,
+    "width": 1536
+  },
+  "assets": [
+    {
+      "scene": "journal",
+      "file": "journal-v1.webp",
+      "prompt": "Use case: stylized-concept. Asset type: a production background illustration for Noctalia Dreamer, a calm dream journal. Create ONE finished wide landscape illustration, 1536 by 1024 composition. Style: richly painted cinematic dreamscape, fine natural detail, soft depth, matte textures; restrained ink midnight blue, muted violet and antique champagne-gold palette, consistent with a moonlit lake and celestial orbital artwork. Composition: the upper-left and central 65% must be a quiet, spacious, low-detail field so a screen title and body copy can sit there; meaningful objects are small, at the right or lower perimeter. Light has soft falloff, no bright white hotspots behind future text. It will also be gently veiled on an ivory light-theme surface. This is artwork only, no UI, typography, letters, labels, watermarks, borders, montage, collage or logos. No people or faces. Avoid neon, saturated candy colours, promotional clichés, harsh sharp geometric lines, dense tiny decorative marks, dramatic action, bright central focal points. Scene: a quiet nocturnal archive for saved dreams. A small ivory linen-bound closed journal and a few delicate loose blank pages rest at the lower-right edge of a wooden desk beside a tall arched window. Outside the window is a distant crescent moon and violet mist. Subtle traces of gold dust suggest memory. Cozy, private, composed; not a library full of visible book spines, no readable writing. The central and left field is softly shadowed and almost empty.",
+      "sourceFilename": "exec-a761cec3-77ec-46b6-accb-d20f2b5695a2.png",
+      "width": 1536,
+      "height": 1024,
+      "bytes": 88256,
+      "sha256": "e8d1646e3fac555f5976aaf68933fcfb552fd5650336efef69f7e677d5605b64"
+    },
+    {
+      "scene": "dialogue",
+      "file": "dialogue-v1.webp",
+      "prompt": "Use case: stylized-concept. Asset type: a production background illustration for Noctalia Dreamer, a calm dream journal. Create ONE finished wide landscape illustration, 1536 by 1024 composition. Style: richly painted cinematic dreamscape, fine natural detail, soft depth, matte textures; restrained ink midnight blue, muted violet and antique champagne-gold palette, consistent with a moonlit lake and celestial orbital artwork. Composition: the upper-left and central 65% must be a quiet, spacious, low-detail field so a screen title and body copy can sit there; meaningful objects are small, at the right or lower perimeter. Light has soft falloff, no bright white hotspots behind future text. It will also be gently veiled on an ivory light-theme surface. This is artwork only, no UI, typography, letters, labels, watermarks, borders, montage, collage or logos. No people or faces. Avoid neon, saturated candy colours, promotional clichés, harsh sharp geometric lines, dense tiny decorative marks, dramatic action, bright central focal points. Scene: an introspective conversation with a dream. Over still dark reflective water, two very thin ribbons of warm gold light weave gently toward each other at the right-hand edge between two distant stone arches. A small moon, soft violet haze and restrained reflections. Suggest listening and connection, not two speech bubbles or literal chat symbols. Most of the centre and upper-left is quiet, deep midnight mist.",
+      "sourceFilename": "exec-89dd775c-07da-430c-b1d4-685b830dae26.png",
+      "width": 1536,
+      "height": 1024,
+      "bytes": 63576,
+      "sha256": "e18906bfaa588cc02cb84172fc895072e3e1f84f8ddcf62298a1cf080c0419f1"
+    },
+    {
+      "scene": "ritual",
+      "file": "ritual-v1.webp",
+      "prompt": "Use case: stylized-concept. Asset type: a production background illustration for Noctalia Dreamer, a calm dream journal. Create ONE finished wide landscape illustration, 1536 by 1024 composition. Style: richly painted cinematic dreamscape, fine natural detail, soft depth, matte textures; restrained ink midnight blue, muted violet and antique champagne-gold palette, consistent with a moonlit lake and celestial orbital artwork. Composition: the upper-left and central 65% must be a quiet, spacious, low-detail field so a screen title and body copy can sit there; meaningful objects are small, at the right or lower perimeter. Light has soft falloff, no bright white hotspots behind future text. It will also be gently veiled on an ivory light-theme surface. This is artwork only, no UI, typography, letters, labels, watermarks, borders, montage, collage or logos. No people or faces. Avoid neon, saturated candy colours, promotional clichés, harsh sharp geometric lines, dense tiny decorative marks, dramatic action, bright central focal points. Scene: a gentle nightly preparation ritual. A winding forest trail with one small softly glowing antique lantern at the lower-right, far away from future text. Tall dark blue evergreen silhouettes at the edges, pale violet moonlight, warm golden firefly glow very sparse, distant clearing. Quiet and reassuring, no mystical altar or religious symbols, no intense adventure mood. A broad calm night sky occupies the centre and upper-left.",
+      "sourceFilename": "exec-4c720e27-b0de-49f0-9f6a-326842605fc7.png",
+      "width": 1536,
+      "height": 1024,
+      "bytes": 140848,
+      "sha256": "42badbd534cd317f30ce201ee19bae2b5f0108701e3b76398b104a22c66e914f"
+    },
+    {
+      "scene": "sleep",
+      "file": "sleep-v1.webp",
+      "prompt": "Use case: stylized-concept. Asset type: a production background illustration for Noctalia Dreamer, a calm dream journal. Create ONE finished wide landscape illustration, 1536 by 1024 composition. Style: richly painted cinematic dreamscape, fine natural detail, soft depth, matte textures; restrained ink midnight blue, muted violet and antique champagne-gold palette, consistent with a moonlit lake and celestial orbital artwork. Composition: the upper-left and central 65% must be a quiet, spacious, low-detail field so a screen title and body copy can sit there; meaningful objects are small, at the right or lower perimeter. Light has soft falloff, no bright white hotspots behind future text. It will also be gently veiled on an ivory light-theme surface. This is artwork only, no UI, typography, letters, labels, watermarks, borders, montage, collage or logos. No people or faces. Avoid neon, saturated candy colours, promotional clichés, harsh sharp geometric lines, dense tiny decorative marks, dramatic action, bright central focal points. Scene: winding down to sleep with sound. A vast moonlit lake with low soft fog and tiny gentle ripples; a few reeds and rounded stones near the lower-right bank. One small crescent moon is reflected off to the right, golden reflection subdued. Deep navy and soft muted violet, restful and silent, minimal stars. No architecture, no bed, no clocks. The centre and upper-left stay spacious and tranquil.",
+      "sourceFilename": "exec-e4528c3a-fd83-4512-b66f-68da2d2a7088.png",
+      "width": 1536,
+      "height": 1024,
+      "bytes": 52458,
+      "sha256": "ee6014de11e97b4ec4cbc39d0d6d2da0d9026f8226820da0d925d87088870b56"
+    },
+    {
+      "scene": "symbols",
+      "file": "symbols-v1.webp",
+      "prompt": "Use case: stylized-concept. Asset type: a production background illustration for Noctalia Dreamer, a calm dream journal. Create ONE finished wide landscape illustration, 1536 by 1024 composition. Style: richly painted cinematic dreamscape, fine natural detail, soft depth, matte textures; restrained ink midnight blue, muted violet and antique champagne-gold palette, consistent with a moonlit lake and celestial orbital artwork. Composition: the upper-left and central 65% must be a quiet, spacious, low-detail field so a screen title and body copy can sit there; meaningful objects are small, at the right or lower perimeter. Light has soft falloff, no bright white hotspots behind future text. It will also be gently veiled on an ivory light-theme surface. This is artwork only, no UI, typography, letters, labels, watermarks, borders, montage, collage or logos. No people or faces. Avoid neon, saturated candy colours, promotional clichés, harsh sharp geometric lines, dense tiny decorative marks, dramatic action, bright central focal points. Scene: exploring dream symbols as an open-ended personal atlas. At the far right is a subtle antique celestial sphere with fine champagne orbital rings and a few sparse star connections, surrounded by hints of mountains and cloud silhouettes at the bottom. Dreamlike and editorial, no invented alphabet, no zodiac, no tarot or occult icons. Restrained astral geometry should feel like a map for reflection. The centre and upper-left stay midnight-dark, spacious and smooth.",
+      "sourceFilename": "exec-f128b7e0-9ef5-4f9c-ad41-f5f33c45f2c0.png",
+      "width": 1536,
+      "height": 1024,
+      "bytes": 86418,
+      "sha256": "80fc64885b9d3a1e00c3ca02a60aa11c7f56083531085cb629300db93d630414"
+    },
+    {
+      "scene": "observatory",
+      "file": "observatory-v1.webp",
+      "prompt": "Use case: stylized-concept. Asset type: a production background illustration for Noctalia Dreamer, a calm dream journal. Create ONE finished wide landscape illustration, 1536 by 1024 composition. Style: richly painted cinematic dreamscape, fine natural detail, soft depth, matte textures; restrained ink midnight blue, muted violet and antique champagne-gold palette, consistent with a moonlit lake and celestial orbital artwork. Composition: the upper-left and central 65% must be a quiet, spacious, low-detail field so a screen title and body copy can sit there; meaningful objects are small, at the right or lower perimeter. Light has soft falloff, no bright white hotspots behind future text. It will also be gently veiled on an ivory light-theme surface. This is artwork only, no UI, typography, letters, labels, watermarks, borders, montage, collage or logos. No people or faces. Avoid neon, saturated candy colours, promotional clichés, harsh sharp geometric lines, dense tiny decorative marks, dramatic action, bright central focal points. Scene: deeper exploration for the Dreamer Plus screen. A small elegant open-air celestial observatory perched far to the lower-right on a misty hill, softly lit in antique champagne, with a simple open circular architectural aperture looking toward a very distant violet galaxy. Expansive, inviting and quietly premium. No telescope close-up, no crown, diamonds, money, locks or sales graphics. The upper-left and central area is a broad dark velvet sky with very restrained stars.",
+      "sourceFilename": "exec-1cd9c417-c126-4ad9-9c63-2f4341d708b7.png",
+      "width": 1536,
+      "height": 1024,
+      "bytes": 80028,
+      "sha256": "c1c4a351e6994b910309a8d83a14571d6782c785701f5dfca1918cedebf0410b"
+    }
+  ]
+}

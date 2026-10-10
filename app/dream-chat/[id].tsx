@@ -1046,7 +1046,7 @@ function DreamChatContent() {
   if (!dream) {
     return (
       <LinearGradient colors={gradientColors} style={styles.container}>
-        <AtmosphericBackground />
+        <AtmosphericBackground scene="dialogue" />
         <Text style={[styles.errorText, { color: noctalia.text.primary }]}>{t('dream_chat.not_found.title')}</Text>
         {!user ? (
           <SignInToOpenDream destination={dreamAuthReturnDestination('dream-chat', { id, remoteId, clientRequestId, category, mode: routeMode, messageId: routeMessageId })} />
@@ -1065,7 +1065,7 @@ function DreamChatContent() {
   if (isQuotaGateBlocked) {
     return (
       <LinearGradient colors={gradientColors} style={styles.container}>
-        <AtmosphericBackground />
+        <AtmosphericBackground scene="dialogue" />
         <Pressable
           onPress={handleBackPress}
           style={[styles.floatingBackButton, shadows.lg, backButtonSurface]}
@@ -1104,7 +1104,7 @@ function DreamChatContent() {
   if (shouldGateOnQuotaCheck && (!quotaCheckComplete || quotaCheckError)) {
     return (
       <LinearGradient colors={gradientColors} style={styles.container}>
-        <AtmosphericBackground />
+        <AtmosphericBackground scene="dialogue" />
         <Pressable
           onPress={handleBackPress}
           style={[styles.floatingBackButton, shadows.lg, backButtonSurface]}
@@ -1311,7 +1311,7 @@ function DreamChatContent() {
     <ChatProvider isStreaming={isInteractionLocked}>
       <ScrollPerfProvider isScrolling={isScrolling}>
         <LinearGradient colors={gradientColors} style={styles.gradient}>
-          <AtmosphericBackground />
+          <AtmosphericBackground scene="dialogue" />
           <Pressable
             onPress={handleBackPress}
             style={[styles.floatingBackButton, shadows.lg, backButtonSurface]}
@@ -1534,7 +1534,6 @@ const styles = StyleSheet.create({
   dreamQuotePreview: {
     fontSize: 13,
     fontFamily: Fonts.lora.regularItalic,
-    opacity: 0.6,
     marginTop: 4,
     lineHeight: 18,
   },

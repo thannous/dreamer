@@ -91,7 +91,7 @@ export function WeeklyRecapScreen() {
 
   return (
     <View style={[styles.container, { backgroundColor: noctalia.screen.background }]} testID={TID.Screen.WeeklyRecap}>
-      <AtmosphericBackground />
+      <AtmosphericBackground scene="astral" />
 
       <Pressable
         onPress={handleBack}
