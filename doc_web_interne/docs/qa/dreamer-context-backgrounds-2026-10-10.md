@@ -86,10 +86,67 @@ trois fixtures de capture/Explorer. Leur ancien mock de fond décoratif cible
 maintenant `DreamerBackground` ; toutes les assertions métier sont conservées.
 La qualification de l’image et du voile reste celle des parcours E2E réels ci-dessus.
 
+## Qualification native iOS
+
+Le Release local **3.5.0 (11)** de `com.tanuki75.noctalia` a été installé sur le
+simulateur dédié **Noctalia_Native_QA**, iPhone 18 Pro sous iOS 27. Le profil
+`mock-persistent`, avec `EXPO_PUBLIC_MOCK_SHOWCASE=fr`, utilise les données
+synthétiques françaises et la navigation habituelle sans rail de debug.
+Les OTA sont désactivées et la signature locale est vérifiée.
+
+Les deux matrices natives passent : **17 écrans × 2 thèmes, 34 captures**.
+Le thème et la langue sont sélectionnés et vérifiés dans l’interface. Les
+assertions couvrent les destinations réelles, la recherche du journal, l’entrée
+dans Réflexion et la disparition du consentement initial avant Dialogue.
+Les dix ambiances sont représentées, dont le lac des sons de sommeil, disponible
+uniquement en natif. L’inspection visuelle confirme la lisibilité des textes et
+commandes visibles ; le ratio numérique ci-dessus reste une mesure web.
+Le dialogue est capturé pendant la réponse simulée, avec son illustration de rêve
+prioritaire. La lecture audio et la fin de cette réponse ne sont pas qualifiées.
+
+Identité du build, compilé dans le checkout isolé
+`/private/tmp/noctalia-backgrounds-native-20261010` :
+
+- Source : `832df312df89193a38f6e10598ef70d46a588ef7`.
+- Digest des entrées app : `a0d9501196d4d5ec1d70805e9b188168f7be932911c8acaaf87b8c1aba92bbab`.
+  Les ajouts ultérieurs ne touchent que le parcours TesterArmy et ce compte rendu.
+- Digest des entrées natives : `f5553f7f9a0ebff1aaac1d0de8f787dcbc3692e97a235aaaa40e06836803f7f7`.
+- SHA-256 du `.app` archivé : `b8f155fba941a736c9ef1494a8d6088f3b5370c8a3425b48abf62f11ab5d32fb`.
+- Reçu immuable : `tools/e2e/.e2e/dreamer-ios/1791661181779-47774-407770fa-e294-4cbf-9d00-9c128213ee68/release.json`.
+- Exécution retenue : `tools/e2e/.e2e/dreamer-ios/1791662189170-63928-37161f33-aaaf-4dee-8172-0b8b27d0bea6`.
+  `report.json`, `qualification.json` et `end.json` : code 0, identité installée
+  vérifiée avant/après, source et sorties stables, nettoyage complet, verrou libéré.
+  Le parcours seul était non committé dans ce checkout pendant l’exécution.
+
+TesterArmy `0.18.0`, moteur mobile `0.10.0`, agent-device `0.21.22`, Node `24.19.0`,
+un worker, captures 402 × 874. Les PNG originaux ont été copiés pour la galerie
+dans `tools/e2e/.e2e/dreamer-backgrounds-native-20261010/gallery.md` du checkout
+principal ; leurs empreintes sont vérifiées contre le rapport, dans `manifest.json`.
+Ces artefacts restent ignorés par Git.
+
+Reproduction, depuis le checkout isolé conservant les entrées natives et le reçu :
+
+```sh
+AGENT_DEVICE_STATE_DIR=/private/tmp/noctalia-backgrounds-driver-20261010 \
+E2E_DEVICE=Noctalia_Native_QA \
+E2E_RELEASE_RECEIPT=tools/e2e/.e2e/dreamer-ios/1791661181779-47774-407770fa-e294-4cbf-9d00-9c128213ee68/release.json \
+mise exec -- node tools/e2e/run.mjs dreamer ios run --grep 'native contextual backgrounds matrix'
+```
+
+Le premier build a préparé les frameworks précompilés Expo et a été refusé pour
+`BUILD_INPUTS_CHANGED` ; le second fournit le reçu stable. Le répertoire de pilote
+séparé évite un ancien état partagé dont l’ownership était invérifiable, sans
+effacer cet état ni modifier les verrous des autres tâches. Les premières matrices
+ont conservé leurs échecs : confirmation iOS des liens, fixture française déjà
+explorée reprenant directement Chat, puis consentement initial. Le run
+`1791662047930-43236-13c1291c-7360-460b-b04b-485f090a2f5f` passait mécaniquement,
+mais ses captures de Dialogue restaient masquées : il est écarté de la preuve
+visuelle. L’assertion finale attend l’apparition puis la disparition du consentement.
+
 ## Portée restante
 
-Cette preuve est web. Le rendu natif, les tailles de texte système, les gestes
-physiques et les sons de sommeil sur appareil ne sont pas qualifiés par ce run.
-La disponibilité native des sons de sommeil est conservée. Le callback
-d’authentification réel n’a pas été exercé. Aucune publication, installation
-personnelle, modification de compte réel ni transaction n’a été effectuée.
+Cette qualification native porte sur le simulateur iOS et la taille de texte par
+défaut. Android, un téléphone physique, les grandes tailles de texte système, la
+lecture audio, le callback d’authentification réel et la persistance en production
+restent non qualifiés par ces runs. Aucune publication, installation personnelle,
+modification de compte réel ni transaction n’a été effectuée.
