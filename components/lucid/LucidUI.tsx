@@ -14,11 +14,13 @@ import {
   type ScrollViewProps,
   type ViewStyle,
 } from 'react-native';
+import { useSharedValue } from 'react-native-reanimated';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { ScreenContainer, useWideConstrainedLayout } from '@/components/ScreenContainer';
 import { LucidArtStatusBar } from '@/components/lucid/LucidArtStatusBar';
 import { LucidGlass } from '@/components/lucid/LucidGlass';
+import { LucidStatusBarVeil } from '@/components/lucid/LucidStatusBarVeil';
 import { getLucidPalette, LucidIcon, LucidPress, LucidRadius, LucidSpace, LucidType } from '@/constants/lucidTheme';
 import { useTheme } from '@/context/ThemeContext';
 import { useLucidReducedMotion } from '@/hooks/useLucidReducedMotion';
@@ -133,6 +135,7 @@ export function LucidScreen({
   const wideLayout = useWideConstrainedLayout();
   const artEdge = darkTop === undefined || wideLayout ? undefined : darkTop - insets.top;
   const scrollY = useRef(0);
+  const veilScrollY = useSharedValue(0);
   const [overArt, setOverArt] = useState(false);
   // The artwork can be re-measured (rotation, reflow) away from the top.
   useEffect(() => {
@@ -173,23 +176,29 @@ export function LucidScreen({
           keyboardShouldPersistTaps="handled"
           showsVerticalScrollIndicator={false}
           {...scrollProps}
-          scrollEventThrottle={scrollEventThrottle ?? (darkTop !== undefined ? 32 : undefined)}
-          onScroll={
-            darkTop !== undefined
-              ? (event) => {
-                  onScroll?.(event);
-                  scrollY.current = event.nativeEvent.contentOffset.y;
-                  // Only crossing the artwork's edge re-renders the screen.
-                  setOverArt(artEdge !== undefined && scrollY.current < artEdge);
-                }
-              : onScroll
-          }
+          scrollEventThrottle={scrollEventThrottle ?? 16}
+          onScroll={(event) => {
+            onScroll?.(event);
+            scrollY.current = event.nativeEvent.contentOffset.y;
+            veilScrollY.set(scrollY.current);
+            // Only crossing the artwork's edge re-renders the screen.
+            if (darkTop !== undefined) setOverArt(artEdge !== undefined && scrollY.current < artEdge);
+          }}
         >
           {content}
         </ScrollView>
       ) : (
         content
       )}
+      {scroll ? (
+        <LucidStatusBarVeil
+          scrollY={veilScrollY}
+          start={Math.max(8, artEdge ?? 0)}
+          top={insets.top}
+          ground={palette.background}
+          tint={palette.atmosphere[0]}
+        />
+      ) : null}
       {footer ? (
         <View style={[styles.footer, { paddingBottom: Math.max(insets.bottom, 20) }]}>{footer}</View>
       ) : null}
