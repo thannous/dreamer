@@ -4,7 +4,8 @@
 // `node scripts/check-site-publish-proof.mjs`.
 //
 // A production publish uploads only the exact commit of origin/master on which
-// `npm run verify:release` passed. The checks are those of the common delivery
+// `npm run verify:release:site` (or `npm run verify:release`, which also runs
+// the checks of the `app` target) passed. The checks are those of the common delivery
 // rule (doc_web_interne/docs/regle-commune-livraison.md), run by
 // checkReleaseProof of scripts/verify-local.mjs. The guard fetches master and
 // refuses to continue when:
@@ -25,7 +26,12 @@
 //   - the commit's run log has no release run, or its latest release run did
 //     not pass on fresh results (proof-latest-release),
 //   - a check is still open: its latest real result did not pass and no later
-//     run reran it and passed (proof-open-check).
+//     run reran it and passed (proof-open-check),
+//   - a publish that asks for a release target (web:deploy:prod asks for
+//     `app`) finds a proof that does not cover it (proof-target).
+// The site publish asks for no target, so the checks of the `app` target (the
+// web app build, its backend journey under Docker, the TesterArmy app
+// campaigns) do not hold it back.
 // There is no override of any kind: a refused publish is fixed by publishing
 // the right commit after verify:release, never by a flag or a variable.
 // Preview uploads (`npm run docs:deploy:preview`) are not guarded.
@@ -39,7 +45,14 @@ const defaultRoot = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '
 const PREFIX = '[site-publish-proof]';
 
 export const MAIN_BRANCH = 'master';
+// `release --target app` and `release` (package.json): the only target is app.
 export const RELEASE_COMMAND = 'npm run verify:release';
+export const SITE_RELEASE_COMMAND = 'npm run verify:release:site';
+
+/** The command whose proof covers `targets`: the site needs none. */
+export function releaseCommand(targets = []) {
+  return targets.length ? RELEASE_COMMAND : SITE_RELEASE_COMMAND;
+}
 
 /** Every check the guard runs, named as checkReleaseProof names them. */
 export const SITE_PUBLISH_PROOF_CHECKS = Object.freeze([
@@ -62,13 +75,14 @@ export const SITE_PUBLISH_PROOF_CHECKS = Object.freeze([
  * `fetch: false` skips `git fetch origin master` (tests of a fixture that
  * has no network); the guard itself always fetches. `gitEnv` is the
  * environment of the git commands (tests pass a scratch git environment).
+ * `targets` are the release targets the proof must cover (none for the site).
  */
-export async function checkSitePublishProof({ root = defaultRoot, gitEnv, fetch = true } = {}) {
+export async function checkSitePublishProof({ root = defaultRoot, gitEnv, fetch = true, targets = [] } = {}) {
   const gitVariables = cleanGitEnv(gitEnv ?? process.env);
   const release = await checkReleaseProof({
     cwd: root,
     env: gitVariables,
-    targets: [],
+    targets,
     fetch,
     mainBranch: MAIN_BRANCH,
     // External evidence is checked again against the externalSources of the
@@ -82,20 +96,21 @@ export async function checkSitePublishProof({ root = defaultRoot, gitEnv, fetch 
 
 export const DEFAULT_LABEL = 'noctalia.app';
 
-export function formatRefusal(result, label = DEFAULT_LABEL) {
+export function formatRefusal(result, label = DEFAULT_LABEL, targets = []) {
   const problems = result.failures.map((failure) => failure.message);
+  const command = releaseCommand(targets);
   return (
     `${PREFIX} production publish of ${label} refused: ${problems.join('; ')}. `
-    + `A production publish uploads only the exact origin/master commit on which \`${RELEASE_COMMAND}\` passed. `
+    + `A production publish uploads only the exact origin/master commit on which \`${command}\` passed. `
     + 'Check out master and update it (`git switch master && git pull --ff-only`), commit, stash or remove local changes, '
-    + `run \`${RELEASE_COMMAND}\` (it writes the release proof of HEAD in the shared git directory; a specialised check `
+    + `run \`${command}\` (it writes the release proof of HEAD in the shared git directory; a specialised check `
     + 'that cannot run here takes --external <check>="owner-machine: <host> <note> on <SHA>"), then publish again. '
     + 'There is no override.'
   );
 }
 
-export function formatAccepted(result) {
-  return `${PREFIX} OK: HEAD ${result.head} is origin/${MAIN_BRANCH}, the checkout is clean, and ${RELEASE_COMMAND} passed on it (tree ${result.tree}).`;
+export function formatAccepted(result, targets = []) {
+  return `${PREFIX} OK: HEAD ${result.head} is origin/${MAIN_BRANCH}, the checkout is clean, and ${releaseCommand(targets)} passed on it (tree ${result.tree}).`;
 }
 
 /**
@@ -104,15 +119,15 @@ export function formatAccepted(result) {
  * scripts/docs-deploy.js awaits it before any build of a production publish,
  * and again right before the upload, which must find the same HEAD.
  */
-export async function assertSitePublishProof({ label = DEFAULT_LABEL, ...options } = {}) {
+export async function assertSitePublishProof({ label = DEFAULT_LABEL, targets = [], ...options } = {}) {
   let result;
   try {
-    result = await checkSitePublishProof(options);
+    result = await checkSitePublishProof({ ...options, targets });
   } catch (error) {
     throw new Error(`${PREFIX} production publish of ${label} refused: the guard could not run (${String(error?.message || error).split('\n')[0]}).`);
   }
-  if (!result.ok) throw new Error(formatRefusal(result, label));
-  return { head: result.head, tree: result.tree, message: formatAccepted(result) };
+  if (!result.ok) throw new Error(formatRefusal(result, label, targets));
+  return { head: result.head, tree: result.tree, message: formatAccepted(result, targets) };
 }
 
 function parseRoot(argv) {
