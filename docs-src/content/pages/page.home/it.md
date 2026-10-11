@@ -23,7 +23,7 @@
   "twitterImage": "https://noctalia.app/img/og/noctalia-it-1200x630.jpg",
   "twitterImageAlt": "Diario dei sogni con illustrazioni e interpretazione",
   "publishedTime": "",
-  "modifiedTime": "2026-10-09",
+  "modifiedTime": "2026-10-10",
   "author": "",
   "prevPath": "",
   "nextPath": "",
@@ -66,7 +66,7 @@
         <div class="oh-manifesto-head reveal">
             <span class="oh-index" aria-hidden="true">23:00</span>
             <h2 class="oh-manifesto-title">Da una scena che svanisce a un racconto da rileggere</h2>
-            <p class="oh-lede">Prima cattura, finché è ancora vivido. Poi dagli un senso, quando sei ben sveglio.</p>
+            <p class="oh-lede">Prima fissalo, finché è ancora vivido. Poi dagli un senso, quando sei ben sveglio.</p>
         </div>
         <ul class="oh-promises" role="list">
             <li class="oh-promise reveal">
@@ -492,7 +492,7 @@
                 <span class="oh-index" aria-hidden="true">5:00</span>
                 <h2 class="oh-h2">Dizionario dei simboli dei sogni</h2>
             </div>
-            <p class="oh-lede">Esplora 150 simboli comuni, ognuno con domande di contesto e associazioni possibili. La scena — e ciò che hai provato — conta più di qualsiasi definizione fissa.</p>
+            <p class="oh-lede">Sfoglia 150 simboli comuni, ognuno con domande di contesto e associazioni possibili. Contano la scena e ciò che hai provato, più di qualsiasi definizione fissa.</p>
         </div>
 
         <div class="oh-symbols reveal">
@@ -653,7 +653,7 @@
                         <picture>
                             <source type="image/webp" srcset="/img/app/en/chat-480w.webp 480w, /img/app/en/chat-800w.webp 800w" sizes="(min-width: 768px) 300px, 78vw">
                             <source type="image/jpeg" srcset="/img/app/en/chat-800w.jpg 800w" sizes="(min-width: 768px) 300px, 78vw">
-                            <img src="/img/app/en/chat-800w.jpg" alt="Esplora intuizioni e simbolismo del tuo sogno" class="w-full h-full object-cover" width="800" height="1639" loading="lazy" decoding="async">
+                            <img src="/img/app/en/chat-800w.jpg" alt="Esplora i simboli del tuo sogno" class="w-full h-full object-cover" width="800" height="1639" loading="lazy" decoding="async">
                         </picture>
                     </div>
                 </div>

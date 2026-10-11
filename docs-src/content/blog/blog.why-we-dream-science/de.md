@@ -458,12 +458,12 @@
 <i class="w-5 h-5 text-dream-salmon" data-lucide="book-open"></i>
                     Verwandte Symbole erkunden
                 </h2>
-<p class="text-sm text-purple-300/60 mb-4">Tauchen Sie tiefer in die Symbole aus diesem Artikel ein:</p>
+<p class="text-sm text-purple-300/60 mb-4">Passende Traumsymbole aus dem Artikel:</p>
 <div class="flex flex-wrap gap-3">
-<a class="inline-flex items-center gap-2 px-4 py-2 glass-button rounded-full text-sm hover:text-dream-salmon transition-colors" href="../traumsymbole/wasser">Wassertraumbedeutung</a>
+<a class="inline-flex items-center gap-2 px-4 py-2 glass-button rounded-full text-sm hover:text-dream-salmon transition-colors" href="../traumsymbole/wasser">Traum von Wasser</a>
 <a class="inline-flex items-center gap-2 px-4 py-2 glass-button rounded-full text-sm hover:text-dream-salmon transition-colors" href="../traumsymbole/tod">Bedeutung von Todesträumen</a>
-<a class="inline-flex items-center gap-2 px-4 py-2 glass-button rounded-full text-sm hover:text-dream-salmon transition-colors" href="../traumsymbole/verfolgung">Bedeutung des Traums „Gejagt werden“</a>
-<a class="inline-flex items-center gap-2 px-4 py-2 glass-button rounded-full text-sm hover:text-dream-salmon transition-colors" href="../traumsymbole/fallen">Fallende Traumbedeutung</a>
+<a class="inline-flex items-center gap-2 px-4 py-2 glass-button rounded-full text-sm hover:text-dream-salmon transition-colors" href="../traumsymbole/verfolgung">Traum vom Verfolgtwerden</a>
+<a class="inline-flex items-center gap-2 px-4 py-2 glass-button rounded-full text-sm hover:text-dream-salmon transition-colors" href="../traumsymbole/fallen">Traum vom Fallen</a>
 </div>
 </section>
 <!-- Related Symbols End -->
@@ -498,17 +498,17 @@
         <a href="warum-vergessen-wir-unsere-traeume-die-wissenschaft-hinter-traumamnesie" class="glass-panel rounded-xl p-6 block hover:border-dream-salmon/30 transition-all hover:-translate-y-1">
             <span class="text-xs text-dream-salmon uppercase mb-2 block">Wissenschaft</span>
             <h3 class="font-serif text-lg text-dream-cream mb-2">Warum vergessen wir unsere Träume? Die Wissenschaft hinter Traumamnesie</h3>
-            <p class="text-sm text-gray-400">Entdecken Sie die Gehirnmechanismen und Neurochemie, die erklären, warum wir 95 % unserer Träume beim Aufwachen vergessen.</p>
+            <p class="text-sm text-gray-400">Warum Träume wenige Minuten nach dem Aufwachen verblassen, welche Rolle REM-Schlaf und Gedächtnis spielen und welche einfachen Gewohnheiten helfen.</p>
         </a>
         <a href="koennen-traeume-die-zukunft-vorhersagen-die-ueberraschende-wissenschaft-praekognitiver-traeume" class="glass-panel rounded-xl p-6 block hover:border-dream-salmon/30 transition-all hover:-translate-y-1">
             <span class="text-xs text-dream-salmon uppercase mb-2 block">Wissenschaft</span>
             <h3 class="font-serif text-lg text-dream-cream mb-2">Können Träume die Zukunft vorhersagen? Die Wissenschaft präkognitiver Träume</h3>
-            <p class="text-sm text-gray-400">Entdecken Sie die faszinierende Wissenschaft hinter präkognitiven Träumen und ob sie wirklich die Zukunft vorhersagen können.</p>
+            <p class="text-sm text-gray-400">Was kontrollierte Studien über Träume sagen, die scheinbar die Zukunft vorhersagen, und wie Zufall und Erinnerungsfehler viele Fälle erklären.</p>
         </a>
         <a href="traeume-und-psychische-gesundheit-wie-ihr-schlaf-ihren-geist-offenbart" class="glass-panel rounded-xl p-6 block hover:border-dream-salmon/30 transition-all hover:-translate-y-1">
             <span class="text-xs text-dream-salmon uppercase mb-2 block">Wissenschaft</span>
             <h3 class="font-serif text-lg text-dream-cream mb-2">Träume und psychische Gesundheit: Wie Ihr Schlaf Ihren Geist offenbart</h3>
-            <p class="text-sm text-gray-400">Entdecken Sie die tiefe Verbindung zwischen Träumen und psychischer Gesundheit. Erfahren Sie, wie Angst, Depression und Trauma Ihre Träume beeinflussen und wie Traumarbeit die Heilung unterstützen kann.</p>
+            <p class="text-sm text-gray-400">Wie sich Angst, Depression, Stress und Trauma in Träumen zeigen und wann häufige Albträume ein Gespräch mit einer Fachperson wert sind.</p>
         </a>
   </div>
 </section>

@@ -416,11 +416,11 @@
 <i class="w-5 h-5 text-dream-salmon" data-lucide="book-open"></i>
                     Esplora i simboli correlati
                 </h2>
-<p class="text-sm text-purple-300/60 mb-4">Immergiti più a fondo nei simboli di questo articolo:</p>
+<p class="text-sm text-purple-300/60 mb-4">Approfondisci i simboli di questo articolo:</p>
 <div class="flex flex-wrap gap-3">
-<a class="inline-flex items-center gap-2 px-4 py-2 glass-button rounded-full text-sm hover:text-dream-salmon transition-colors" href="../simboli/notte">Significato del sogno notturno</a>
-<a class="inline-flex items-center gap-2 px-4 py-2 glass-button rounded-full text-sm hover:text-dream-salmon transition-colors" href="../simboli/luna">Significato del sogno lunare</a>
-<a class="inline-flex items-center gap-2 px-4 py-2 glass-button rounded-full text-sm hover:text-dream-salmon transition-colors" href="../simboli/chiave">Significato chiave del sogno</a>
+<a class="inline-flex items-center gap-2 px-4 py-2 glass-button rounded-full text-sm hover:text-dream-salmon transition-colors" href="../simboli/notte">Sognare la notte</a>
+<a class="inline-flex items-center gap-2 px-4 py-2 glass-button rounded-full text-sm hover:text-dream-salmon transition-colors" href="../simboli/luna">Sognare la luna</a>
+<a class="inline-flex items-center gap-2 px-4 py-2 glass-button rounded-full text-sm hover:text-dream-salmon transition-colors" href="../simboli/chiave">Sognare una chiave</a>
 <a class="inline-flex items-center gap-2 px-4 py-2 glass-button rounded-full text-sm hover:text-dream-salmon transition-colors" href="../simboli/porta">Significato del sogno della porta</a>
 </div>
 </section>
@@ -432,7 +432,7 @@
       <i data-lucide="arrow-left" class="w-5 h-5 mt-1 text-dream-salmon shrink-0"></i>
       <div>
         <span class="text-xs text-purple-300/60 uppercase tracking-wide">Articolo precedente</span>
-        <div class="font-serif text-lg text-dream-cream mt-1">Sogni sui serpenti: di cosa ti avverte il tuo subconscio</div>
+        <div class="font-serif text-lg text-dream-cream mt-1">Sognare serpenti: significato, comportamento e contesto</div>
       </div>
     </a>
     <a href="i-sogni-possono-predire-il-futuro-la-sorprendente-scienza-dei-sogni-precognitivi" class="glass-panel rounded-xl p-5 flex items-start justify-between gap-3 hover:border-dream-salmon/30 transition-all hover:-translate-y-1">
@@ -456,17 +456,17 @@
         <a href="come-ricordare-i-tuoi-sogni-10-tecniche-efficaci" class="glass-panel rounded-xl p-6 block hover:border-dream-salmon/30 transition-all hover:-translate-y-1">
             <span class="text-xs text-dream-salmon uppercase mb-2 block">Guida</span>
             <h3 class="font-serif text-lg text-dream-cream mb-2">Come ricordare i tuoi sogni: 10 tecniche efficaci</h3>
-            <p class="text-sm text-gray-400">Scopri metodi scientificamente provati per migliorare il ricordo dei tuoi sogni e non dimenticarli mai i tuoi sogni al risveglio. Tecniche semplici che puoi applicare stasera.</p>
+            <p class="text-sm text-gray-400">Dieci abitudini semplici per trattenere più frammenti al risveglio, dal risveglio graduale alla nota presa prima di alzarti.</p>
         </a>
         <a href="incubi-cause-significato-e-come-fermarli" class="glass-panel rounded-xl p-6 block hover:border-dream-salmon/30 transition-all hover:-translate-y-1">
             <span class="text-xs text-dream-salmon uppercase mb-2 block">Guida</span>
             <h3 class="font-serif text-lg text-dream-cream mb-2">Incubi: cause, significato e come fermarli</h3>
-            <p class="text-sm text-gray-400">Perché abbiamo gli incubi? Scopri le cause dei brutti sogni, cosa significano e tecniche comprovate per ridurne la frequenza e dormire meglio.</p>
+            <p class="text-sm text-gray-400">Perché arrivano gli incubi, cosa possono significare e cosa no, e come la ripetizione immaginativa e un sonno più regolare aiutano a ridurli.</p>
         </a>
         <a href="la-paralisi-del-sonno-spiegata-perche-non-puoi-muoverti-e-come-fermarla" class="glass-panel rounded-xl p-6 block hover:border-dream-salmon/30 transition-all hover:-translate-y-1">
             <span class="text-xs text-dream-salmon uppercase mb-2 block">Guida</span>
             <h3 class="font-serif text-lg text-dream-cream mb-2">Paralisi del sonno: perché non puoi muoverti e come fermarla</h3>
-            <p class="text-sm text-gray-400">Guida completa per comprendere la paralisi del sonno. Scopri le cause, perché si verificano allucinazioni e tecniche comprovate per prevenirla.</p>
+            <p class="text-sm text-gray-400">Perché a volte ci si sveglia senza riuscire a muoversi e con una presenza nella stanza, come superare un episodio e quando consultare un medico.</p>
         </a>
   </div>
 </section>

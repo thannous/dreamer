@@ -328,12 +328,12 @@
 <a class="glass-panel rounded-xl p-6 block hover:border-dream-salmon/30 transition-all hover:-translate-y-1" href="debito-sonno-salute-sogni">
 <span class="text-xs text-dream-salmon uppercase mb-2 block">Salute</span>
 <h3 class="font-serif text-lg text-dream-cream mb-2">Debito di sonno e privazione cronica: come influiscono sulla salute e sui sogni</h3>
-<p class="text-sm text-gray-400">Scopri cos'&egrave; il debito di sonno, come si accumula e le strategie per recuperare un riposo ristoratore.</p>
+<p class="text-sm text-gray-400">Cosa fa il debito di sonno alla salute e ai sogni, perché dormire di più nel weekend non basta e come recuperare davvero.</p>
 </a>
 <a class="glass-panel rounded-xl p-6 block hover:border-dream-salmon/30 transition-all hover:-translate-y-1" href="sonno-rem-e-sogni-comprendere-il-ripristino-notturno-del-cervello">
 <span class="text-xs text-dream-salmon uppercase mb-2 block">Scienza del sonno</span>
 <h3 class="font-serif text-lg text-dream-cream mb-2">Sonno REM e sogni: comprendere il ripristino notturno del cervello</h3>
-<p class="text-sm text-gray-400">Scopri come la fase REM modella i tuoi sogni e perch&eacute; &egrave; essenziale per il tuo benessere.</p>
+<p class="text-sm text-gray-400">In quale momento della notte arriva il sonno REM, perché i suoi sogni sono così vividi e cosa lo accorcia.</p>
 </a>
 <a class="glass-panel rounded-xl p-6 block hover:border-dream-salmon/30 transition-all hover:-translate-y-1" href="/it/blog/">
 <span class="text-xs text-dream-salmon uppercase mb-2 block">Risorse</span>

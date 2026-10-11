@@ -302,17 +302,17 @@
                     <a href="significado-suenos-recurrentes" class="glass-panel rounded-xl p-6 block hover:border-dream-salmon/30 transition-all hover:-translate-y-1">
                         <span class="text-xs text-dream-salmon uppercase mb-2 block">Interpretación</span>
                         <h3 class="font-serif text-lg text-dream-cream mb-2">Significado de Sueños Recurrentes: Entender sus Mensajes</h3>
-                        <p class="text-sm text-gray-400">¿Por qué sigues teniendo el mismo sueño? Descubre lo que tu subconsciente está tratando de decirte.</p>
+                        <p class="text-sm text-gray-400">Por qué vuelve el mismo sueño, qué anotar entre un episodio y otro, y cuándo las pesadillas repetidas merecen una consulta médica.</p>
                     </a>
                     <a href="suenos-dientes-caen" class="glass-panel rounded-xl p-6 block hover:border-dream-salmon/30 transition-all hover:-translate-y-1">
                         <span class="text-xs text-dream-salmon uppercase mb-2 block">Interpretación</span>
                         <h3 class="font-serif text-lg text-dream-cream mb-2">Soñar que se caen los dientes: significado e interpretación</h3>
-                        <p class="text-sm text-gray-400">¿Por qué sueñas que pierdes los dientes? Descubre las 7 interpretaciones más comunes.</p>
+                        <p class="text-sm text-gray-400">Siete posibles lecturas de los sueños en los que se caen los dientes, de la tensión en la mandíbula al miedo al qué dirán, y las variantes que conviene anotar.</p>
                     </a>
                     <a href="suenos-de-caer" class="glass-panel rounded-xl p-6 block hover:border-dream-salmon/30 transition-all hover:-translate-y-1">
                         <span class="text-xs text-dream-salmon uppercase mb-2 block">Interpretación</span>
                         <h3 class="font-serif text-lg text-dream-cream mb-2">Sueños de caer: por qué sueñas que caes al vacío</h3>
-                        <p class="text-sm text-gray-400">¿Por qué sueñas con caer al vacío? Descubre el significado psicológico.</p>
+                        <p class="text-sm text-gray-400">Por qué soñamos con caer, desde la sacudida hípnica al dormirse hasta las caídas largas, y qué anotar al despertar.</p>
                     </a>
               </div>
             </section>

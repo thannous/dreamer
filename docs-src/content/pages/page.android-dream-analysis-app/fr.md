@@ -23,13 +23,13 @@
   "twitterImage": "https://noctalia.app/img/og/noctalia-fr-1200x630.jpg",
   "twitterImageAlt": "Application analyse de rêve Android Noctalia",
   "publishedTime": "2026-06-04T00:00:00+02:00",
-  "modifiedTime": "2026-07-09T00:00:00+02:00",
+  "modifiedTime": "2026-10-10T00:00:00+02:00",
   "author": "Thanh Chau",
   "prevPath": "",
   "nextPath": "",
   "preloadImage": "",
   "jsonLd": [
-    "{\"@context\":\"https://schema.org\",\"@type\":\"WebPage\",\"name\":\"Application analyse de rêve Android\",\"description\":\"Capturez un rêve à la voix ou au clavier sur Android, puis explorez contexte, émotions, symboles, images et questions guidées sans vérité imposée.\",\"url\":\"https://noctalia.app/fr/application-analyse-de-reve-android\",\"inLanguage\":\"fr\",\"dateModified\":\"2026-07-09T00:00:00+02:00\",\"about\":{\"@id\":\"https://noctalia.app/#software\"},\"publisher\":{\"@id\":\"https://noctalia.app/#organization\"}}",
+    "{\"@context\":\"https://schema.org\",\"@type\":\"WebPage\",\"name\":\"Application analyse de rêve Android\",\"description\":\"Capturez un rêve à la voix ou au clavier sur Android, puis explorez contexte, émotions, symboles, images et questions guidées sans vérité imposée.\",\"url\":\"https://noctalia.app/fr/application-analyse-de-reve-android\",\"inLanguage\":\"fr\",\"dateModified\":\"2026-10-10T00:00:00+02:00\",\"about\":{\"@id\":\"https://noctalia.app/#software\"},\"publisher\":{\"@id\":\"https://noctalia.app/#organization\"}}",
     "{\"@context\":\"https://schema.org\",\"@type\":\"BreadcrumbList\",\"itemListElement\":[{\"@type\":\"ListItem\",\"position\":1,\"name\":\"Accueil\",\"item\":\"https://noctalia.app/fr/\"},{\"@type\":\"ListItem\",\"position\":2,\"name\":\"Application analyse de rêve Android\",\"item\":\"https://noctalia.app/fr/application-analyse-de-reve-android\"}]} ",
     "{\"@context\":\"https://schema.org\",\"@type\":\"FAQPage\",\"mainEntity\":[{\"@type\":\"Question\",\"name\":\"Que traite Noctalia dans un rêve ?\",\"acceptedAnswer\":{\"@type\":\"Answer\",\"text\":\"Noctalia organise le récit avec les émotions, symboles, détails de la scène, une image générée et des questions guidées. Le résultat sert de piste de réflexion, pas de conclusion clinique ni de prédiction.\"}},{\"@type\":\"Question\",\"name\":\"Puis-je écrire au lieu d'enregistrer ma voix ?\",\"acceptedAnswer\":{\"@type\":\"Answer\",\"text\":\"Oui. Vous pouvez capturer un rêve à la voix ou au clavier. La voix aide juste après le réveil ; le texte convient pour corriger ou ajouter du contexte.\"}},{\"@type\":\"Question\",\"name\":\"L'application donne-t-elle une signification définitive ?\",\"acceptedAnswer\":{\"@type\":\"Answer\",\"text\":\"Non. Les symboles ne sont pas des diagnostics universels. Noctalia propose des associations possibles et des questions que vous confrontez à votre propre expérience.\"}},{\"@type\":\"Question\",\"name\":\"Comment les rêves privés sont-ils traités ?\",\"acceptedAnswer\":{\"@type\":\"Answer\",\"text\":\"La politique de confidentialité décrit les données de journal hébergées dans l'Union européenne, les prestataires de transcription et d'IA, la suppression du compte, l'absence de vente de données personnelles et de publicité ciblée.\"}}]}"
   ],
@@ -37,7 +37,7 @@
 }
 ---
 <h1 class="font-serif text-4xl md:text-5xl mb-4 text-dream-cream">Application analyse de rêve Android</h1>
-<p class="text-sm text-purple-300/70 mb-6">Mis à jour le 9 juillet 2026</p>
+<p class="text-sm text-purple-300/70 mb-6">Mis à jour le 10 octobre 2026</p>
 <p class="text-lg text-purple-200/80 leading-relaxed mb-10">Noctalia est une application Android d'analyse de rêve qui commence par l'essentiel : votre récit. Enregistrez ou écrivez ce qui s'est passé, gardez l'émotion et le contexte, puis explorez symboles, images et questions guidées sans prendre le résultat pour une vérité définitive.</p>
 
 <div class="space-y-8 text-gray-300 leading-relaxed">
@@ -53,8 +53,8 @@
 
   <section class="grid md:grid-cols-2 gap-6">
     <div class="glass-panel p-8 rounded-2xl border border-white/10 bg-white/5">
-      <h2 class="text-2xl font-serif text-white mb-4">Ce que l'outil aide à repérer</h2>
-      <p>Noctalia transforme un souvenir décousu en entrée lisible et fait ressortir des mots, symboles, émotions ou changements de scène. Les questions guidées permettent de tester une association par rapport à votre vie éveillée. L'intérêt vient du contexte préservé et du journal que vous construisez dans la durée.</p>
+      <h2 class="text-2xl font-serif text-white mb-4">Ce que vous pouvez y repérer</h2>
+      <p>Noctalia transforme un souvenir décousu en entrée lisible et fait ressortir des mots, symboles, émotions ou changements de scène. Les questions guidées vous invitent à confronter une association à votre vie éveillée. L'intérêt tient au contexte conservé et au journal que vous tenez dans la durée.</p>
     </div>
     <div class="glass-panel p-8 rounded-2xl border border-white/10 bg-white/5">
       <h2 class="text-2xl font-serif text-white mb-4">Ce que l'outil ne peut pas conclure</h2>

@@ -23,13 +23,13 @@
   "twitterImage": "https://noctalia.app/img/og/noctalia-it-1200x630.jpg",
   "twitterImageAlt": "Metodologia dei contenuti sui sogni Noctalia",
   "publishedTime": "2026-07-09T00:00:00+02:00",
-  "modifiedTime": "2026-07-09T00:00:00+02:00",
+  "modifiedTime": "2026-10-10T00:00:00+02:00",
   "author": "Thanh Chau",
   "prevPath": "",
   "nextPath": "",
   "preloadImage": "",
   "jsonLd": [
-    "{\"@context\":\"https://schema.org\",\"@type\":\"WebPage\",\"headline\":\"Metodologia dei contenuti sui sogni\",\"description\":\"Ambito verificabile, processo editoriale, limiti di privacy e stato dei dati alla base dei contenuti pubblici di Noctalia.\",\"url\":\"https://noctalia.app/it/metodologia-contenuti-sogni\",\"inLanguage\":\"it\",\"datePublished\":\"2026-07-09\",\"dateModified\":\"2026-07-09T00:00:00+02:00\",\"author\":{\"@type\":\"Person\",\"name\":\"Thanh Chau\",\"url\":\"https://noctalia.app/it/chi-siamo#person\"},\"publisher\":{\"@id\":\"https://noctalia.app/#organization\"}}",
+    "{\"@context\":\"https://schema.org\",\"@type\":\"WebPage\",\"headline\":\"Metodologia dei contenuti sui sogni\",\"description\":\"Ambito verificabile, processo editoriale, limiti di privacy e stato dei dati alla base dei contenuti pubblici di Noctalia.\",\"url\":\"https://noctalia.app/it/metodologia-contenuti-sogni\",\"inLanguage\":\"it\",\"datePublished\":\"2026-07-09\",\"dateModified\":\"2026-10-10T00:00:00+02:00\",\"author\":{\"@type\":\"Person\",\"name\":\"Thanh Chau\",\"url\":\"https://noctalia.app/it/chi-siamo#person\"},\"publisher\":{\"@id\":\"https://noctalia.app/#organization\"}}",
     "{\"@context\":\"https://schema.org\",\"@type\":\"BreadcrumbList\",\"itemListElement\":[{\"@type\":\"ListItem\",\"position\":1,\"name\":\"Home\",\"item\":\"https://noctalia.app/it/\"},{\"@type\":\"ListItem\",\"position\":2,\"name\":\"Metodologia dei contenuti\",\"item\":\"https://noctalia.app/it/metodologia-contenuti-sogni\"}]} ",
     "{\"@context\":\"https://schema.org\",\"@type\":\"FAQPage\",\"mainEntity\":[{\"@type\":\"Question\",\"name\":\"Noctalia pubblica un set verificabile di 55.000 sogni degli utenti?\",\"acceptedAnswer\":{\"@type\":\"Answer\",\"text\":\"No. La fonte pubblica attuale non contiene 55.000 sogni né la provenienza necessaria a riprodurre quella cifra. Noctalia non la considera quindi una prova scientifica verificata.\"}},{\"@type\":\"Question\",\"name\":\"Quale ambito pubblico è verificabile oggi?\",\"acceptedAnswer\":{\"@type\":\"Answer\",\"text\":\"Al 9 luglio 2026 la fonte contiene 150 schede editoriali di simboli in cinque lingue e 44 famiglie BlogPosting più 3 hub tematici, cioè 235 file localizzati.\"}},{\"@type\":\"Question\",\"name\":\"I diari privati vengono usati nel dizionario pubblico?\",\"acceptedAnswer\":{\"@type\":\"Answer\",\"text\":\"I file pubblici non includono voci private degli utenti. Le schede di simboli e gli articoli sono materiale editoriale.\"}},{\"@type\":\"Question\",\"name\":\"Il catalogo Noctalia è un set di ricerca clinica?\",\"acceptedAnswer\":{\"@type\":\"Answer\",\"text\":\"No. Non ha una coorte pubblicata, un protocollo di campionamento, etichette cliniche o uno studio di validazione. Va citato come catalogo editoriale.\"}}]}"
   ],
@@ -44,7 +44,7 @@
   <section class="glass-panel p-8 rounded-2xl border border-dream-salmon/20 bg-dream-salmon/5">
     <h2 class="text-2xl font-serif text-white mb-4">Stato della cifra «55.000 sogni»</h2>
     <p>La fonte pubblica attuale di Noctalia non contiene 55.000 racconti, un'esportazione aggregata datata o la provenienza necessaria a riprodurre quel numero. Non documenta nemmeno piano di campionamento, consenso, protocollo di annotazione o risultati statistici per un simile corpus. La cifra è quindi <strong class="text-white">non verificabile con le prove attuali e non deve essere citata come supporto scientifico</strong>.</p>
-    <p class="mt-4">I diari privati non vengono deliberatamente pubblicati. Una futura analisi aggregata dovrebbe descrivere periodo di raccolta, criteri di inclusione, trattamento della privacy, deduplicazione, metodo di annotazione e risultati riproducibili prima di usare una cifra complessiva.</p>
+    <p class="mt-4">Per scelta, i diari privati non vengono pubblicati. Una futura analisi aggregata dovrebbe descrivere periodo di raccolta, criteri di inclusione, trattamento della privacy, deduplicazione, metodo di annotazione e risultati riproducibili prima di usare una cifra complessiva.</p>
   </section>
 
   <section class="glass-panel p-8 rounded-2xl border border-white/10 bg-white/5">

@@ -359,10 +359,10 @@ Escribe «hoy no recuerdo ningún sueño» y cómo te sientes, y sigue con tu d�
                 </h2>
 <p class="text-sm text-purple-300/60 mb-4">Explora los símbolos mencionados en este artículo:</p>
 <div class="flex flex-wrap gap-3">
-<a class="inline-flex items-center gap-2 px-4 py-2 glass-button rounded-full text-sm hover:text-dream-salmon transition-colors" href="../simbolos/noche">¿Soñar con noche</a>
-<a class="inline-flex items-center gap-2 px-4 py-2 glass-button rounded-full text-sm hover:text-dream-salmon transition-colors" href="../simbolos/agua">¿Soñar con agua</a>
-<a class="inline-flex items-center gap-2 px-4 py-2 glass-button rounded-full text-sm hover:text-dream-salmon transition-colors" href="../simbolos/dientes">¿Soñar con dientes (perder dientes)</a>
-<a class="inline-flex items-center gap-2 px-4 py-2 glass-button rounded-full text-sm hover:text-dream-salmon transition-colors" href="../simbolos/caida">¿Soñar con caída</a>
+<a class="inline-flex items-center gap-2 px-4 py-2 glass-button rounded-full text-sm hover:text-dream-salmon transition-colors" href="../simbolos/noche">Soñar con noche</a>
+<a class="inline-flex items-center gap-2 px-4 py-2 glass-button rounded-full text-sm hover:text-dream-salmon transition-colors" href="../simbolos/agua">Soñar con agua</a>
+<a class="inline-flex items-center gap-2 px-4 py-2 glass-button rounded-full text-sm hover:text-dream-salmon transition-colors" href="../simbolos/dientes">Soñar con dientes (perder dientes)</a>
+<a class="inline-flex items-center gap-2 px-4 py-2 glass-button rounded-full text-sm hover:text-dream-salmon transition-colors" href="../simbolos/caida">Soñar con caída</a>
 </div>
 </section>
 <!-- Related Symbols End -->
@@ -397,17 +397,17 @@ Escribe «hoy no recuerdo ningún sueño» y cómo te sientes, y sigue con tu d�
         <a href="guia-incubacion-suenos" class="glass-panel rounded-xl p-6 block hover:border-dream-salmon/30 transition-all hover:-translate-y-1">
             <span class="text-xs text-dream-salmon uppercase mb-2 block">Guía</span>
             <h3 class="font-serif text-lg text-dream-cream mb-2">Incubación de sueños: cómo soñar exactamente lo que quieres esta noche</h3>
-            <p class="text-sm text-gray-400">Aprende el arte antiguo de la incubación onírica para resolver problemas y estimular tu creatividad.</p>
+            <p class="text-sm text-gray-400">Un método en seis pasos para elegir una pregunta antes de dormir y anotar lo que vuelve al despertar, con lo que dice la investigación y sus límites.</p>
         </a>
         <a href="guia-pesadillas" class="glass-panel rounded-xl p-6 block hover:border-dream-salmon/30 transition-all hover:-translate-y-1">
             <span class="text-xs text-dream-salmon uppercase mb-2 block">Guía</span>
             <h3 class="font-serif text-lg text-dream-cream mb-2">Pesadillas: Causas, Significado y Cómo Detenerlas</h3>
-            <p class="text-sm text-gray-400">¿Por qué tenemos pesadillas? Descubre las causas de los malos sueños, su significado y técnicas probadas para reducir su frecuencia y dormir mejor.</p>
+            <p class="text-sm text-gray-400">Por qué aparecen las pesadillas, qué pueden significar y qué no, y cómo el ensayo en imaginación y un sueño más regular ayudan a reducirlas.</p>
         </a>
         <a href="guia-paralisis-sueno" class="glass-panel rounded-xl p-6 block hover:border-dream-salmon/30 transition-all hover:-translate-y-1">
             <span class="text-xs text-dream-salmon uppercase mb-2 block">Guía</span>
             <h3 class="font-serif text-lg text-dream-cream mb-2">Parálisis del sueño: por qué no puedes moverte y cómo detenerla</h3>
-            <p class="text-sm text-gray-400">Guía completa para entender la parálisis del sueño. Descubre qué la causa, por qué ocurren las alucinaciones y técnicas probadas para prevenir y detener los episodios.</p>
+            <p class="text-sm text-gray-400">Por qué a veces despiertas sin poder moverte y con una presencia en la habitación, cómo pasar un episodio y cuándo consultar.</p>
         </a>
   </div>
 </section>

@@ -328,12 +328,12 @@
 <a class="glass-panel rounded-xl p-6 block hover:border-dream-salmon/30 transition-all hover:-translate-y-1" href="deuda-sueno-salud-suenos">
 <span class="text-xs text-dream-salmon uppercase mb-2 block">Salud</span>
 <h3 class="font-serif text-lg text-dream-cream mb-2">Deuda de sue&ntilde;o y privaci&oacute;n cr&oacute;nica: c&oacute;mo afectan tu salud y tus sue&ntilde;os</h3>
-<p class="text-sm text-gray-400">Descubre qu&eacute; es la deuda de sue&ntilde;o, c&oacute;mo se acumula y las estrategias para recuperar un descanso reparador.</p>
+<p class="text-sm text-gray-400">Qué le hace la deuda de sueño a la salud y a los sueños, por qué dormir más el fin de semana no basta y cómo recuperarte de verdad.</p>
 </a>
 <a class="glass-panel rounded-xl p-6 block hover:border-dream-salmon/30 transition-all hover:-translate-y-1" href="sueno-rem-suenos">
 <span class="text-xs text-dream-salmon uppercase mb-2 block">Ciencia del sue&ntilde;o</span>
 <h3 class="font-serif text-lg text-dream-cream mb-2">Sue&ntilde;o REM y sue&ntilde;os: entendiendo el reinicio nocturno de tu cerebro</h3>
-<p class="text-sm text-gray-400">Descubre c&oacute;mo la fase REM moldea tus sue&ntilde;os y por qu&eacute; es esencial para tu bienestar.</p>
+<p class="text-sm text-gray-400">En qué momento de la noche llega el sueño REM, por qué sus sueños son tan vívidos y qué lo acorta.</p>
 </a>
 <a class="glass-panel rounded-xl p-6 block hover:border-dream-salmon/30 transition-all hover:-translate-y-1" href="/es/blog/">
 <span class="text-xs text-dream-salmon uppercase mb-2 block">Recursos</span>

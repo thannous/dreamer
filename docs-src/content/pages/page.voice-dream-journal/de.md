@@ -23,13 +23,13 @@
   "twitterImage": "https://noctalia.app/img/og/noctalia-de-1200x630.jpg",
   "twitterImageAlt": "Noctalia Traumtagebuch mit Spracheingabe",
   "publishedTime": "2026-06-04T00:00:00+02:00",
-  "modifiedTime": "2026-07-09T00:00:00+02:00",
+  "modifiedTime": "2026-10-10T00:00:00+02:00",
   "author": "Thanh Chau",
   "prevPath": "",
   "nextPath": "",
   "preloadImage": "",
   "jsonLd": [
-    "{\"@context\":\"https://schema.org\",\"@type\":\"WebPage\",\"name\":\"Traumtagebuch mit Spracheingabe\",\"description\":\"Sprich einen Traum auf Android ein, bevor er verblasst, und bewahre einen durchsuchbaren Eintrag mit Text, Stimmung, Symbolen und Leitfragen.\",\"url\":\"https://noctalia.app/de/traumtagebuch-spracheingabe\",\"inLanguage\":\"de\",\"dateModified\":\"2026-07-09T00:00:00+02:00\",\"about\":{\"@id\":\"https://noctalia.app/#software\"},\"publisher\":{\"@id\":\"https://noctalia.app/#organization\"}}",
+    "{\"@context\":\"https://schema.org\",\"@type\":\"WebPage\",\"name\":\"Traumtagebuch mit Spracheingabe\",\"description\":\"Sprich einen Traum auf Android ein, bevor er verblasst, und bewahre einen durchsuchbaren Eintrag mit Text, Stimmung, Symbolen und Leitfragen.\",\"url\":\"https://noctalia.app/de/traumtagebuch-spracheingabe\",\"inLanguage\":\"de\",\"dateModified\":\"2026-10-10T00:00:00+02:00\",\"about\":{\"@id\":\"https://noctalia.app/#software\"},\"publisher\":{\"@id\":\"https://noctalia.app/#organization\"}}",
     "{\"@context\":\"https://schema.org\",\"@type\":\"BreadcrumbList\",\"itemListElement\":[{\"@type\":\"ListItem\",\"position\":1,\"name\":\"Startseite\",\"item\":\"https://noctalia.app/de/\"},{\"@type\":\"ListItem\",\"position\":2,\"name\":\"Traumtagebuch mit Spracheingabe\",\"item\":\"https://noctalia.app/de/traumtagebuch-spracheingabe\"}]} ",
     "{\"@context\":\"https://schema.org\",\"@type\":\"FAQPage\",\"mainEntity\":[{\"@type\":\"Question\",\"name\":\"Kann ich in Noctalia Träume per Sprache aufnehmen?\",\"acceptedAnswer\":{\"@type\":\"Answer\",\"text\":\"Ja. Auf Android kannst du den Traum kurz nach dem Aufwachen erzählen und das Transkript als Eintrag in deinem Journal speichern.\"}},{\"@type\":\"Question\",\"name\":\"Kann ich schreiben, statt zu sprechen?\",\"acceptedAnswer\":{\"@type\":\"Answer\",\"text\":\"Ja. Sprache ist hilfreich, wenn Details schnell verblassen. Noctalia unterstützt auch geschriebene Einträge zum Korrigieren oder Ergänzen.\"}},{\"@type\":\"Question\",\"name\":\"Was geschieht mit der Audioaufnahme?\",\"acceptedAnswer\":{\"@type\":\"Answer\",\"text\":\"Laut Datenschutzerklärung wird Audio zur Transkription verwendet, nicht dauerhaft von Noctalia gespeichert und der transkribierte Text im Journal gesichert.\"}},{\"@type\":\"Question\",\"name\":\"Bietet Noctalia Diagnosen oder Vorhersagen?\",\"acceptedAnswer\":{\"@type\":\"Answer\",\"text\":\"Nein. Noctalia dient zum Festhalten und Erkunden von Träumen. Die App bietet keine medizinische Beratung, psychologische Diagnose oder Vorhersage.\"}}]}"
   ],
@@ -37,8 +37,8 @@
 }
 ---
 <h1 class="font-serif text-4xl md:text-5xl mb-4 text-dream-cream">Traumtagebuch mit Spracheingabe</h1>
-<p class="text-sm text-purple-300/70 mb-6">Aktualisiert am 9. Juli 2026</p>
-<p class="text-lg text-purple-200/80 leading-relaxed mb-10">Ein Traum kann Details verlieren, während du nach den richtigen Worten suchst. Mit Noctalia auf Android erzählst du zuerst, was du erinnerst, und bewahrst das Transkript als durchsuchbaren Eintrag mit Stimmung, Symbolen, Bild und Leitfragen.</p>
+<p class="text-sm text-purple-300/70 mb-6">Aktualisiert am 10. Oktober 2026</p>
+<p class="text-lg text-purple-200/80 leading-relaxed mb-10">Ein Traum kann Details verlieren, während du nach den richtigen Worten suchst. Mit Noctalia auf Android erzählst du zuerst, was du erinnerst, und bewahrst das Transkript als durchsuchbaren Eintrag. Die Analyse (Stimmung, Symbole, Leitfragen) und ein Bild kommen danach, wenn du sie anforderst.</p>
 
 <div class="space-y-8 text-gray-300 leading-relaxed">
   <section class="grid md:grid-cols-3 gap-6">
@@ -81,7 +81,7 @@
 
   <section class="glass-panel p-8 rounded-2xl border border-dream-salmon/20 bg-dream-salmon/5">
     <h2 class="text-2xl font-serif text-white mb-4">Mit einer Sprachnotiz beginnen</h2>
-    <p>Installiere Noctalia auf Android und erzähle morgen früh einen Traum, bevor du mit deinem Tag beginnst.</p>
+    <p>Installiere Noctalia auf Android und erzähle morgen früh einen Traum, bevor du deine Nachrichten öffnest.</p>
     <p class="mt-4"><a href="https://play.google.com/store/apps/details?id=com.tanuki75.noctalia&amp;hl=de" class="text-dream-salmon hover:underline" rel="nofollow noopener noreferrer" target="_blank">Noctalia bei Google Play installieren</a></p>
   </section>
 </div>

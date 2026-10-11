@@ -23,13 +23,13 @@
   "twitterImage": "https://noctalia.app/img/og/noctalia-it-1200x630.jpg",
   "twitterImageAlt": "App dizionario dei sogni Noctalia",
   "publishedTime": "2026-06-04T00:00:00+02:00",
-  "modifiedTime": "2026-07-09T00:00:00+02:00",
+  "modifiedTime": "2026-10-10T00:00:00+02:00",
   "author": "Thanh Chau",
   "prevPath": "",
   "nextPath": "",
   "preloadImage": "",
   "jsonLd": [
-    "{\"@context\":\"https://schema.org\",\"@type\":\"WebPage\",\"name\":\"App dizionario dei sogni\",\"description\":\"Esplora 150 schede pubbliche di simboli, confronta significati possibili e collega ogni simbolo al tuo sogno salvato in Noctalia per Android.\",\"url\":\"https://noctalia.app/it/dizionario-dei-sogni-app\",\"inLanguage\":\"it\",\"dateModified\":\"2026-07-09T00:00:00+02:00\",\"about\":{\"@id\":\"https://noctalia.app/#software\"},\"publisher\":{\"@id\":\"https://noctalia.app/#organization\"}}",
+    "{\"@context\":\"https://schema.org\",\"@type\":\"WebPage\",\"name\":\"App dizionario dei sogni\",\"description\":\"Esplora 150 schede pubbliche di simboli, confronta significati possibili e collega ogni simbolo al tuo sogno salvato in Noctalia per Android.\",\"url\":\"https://noctalia.app/it/dizionario-dei-sogni-app\",\"inLanguage\":\"it\",\"dateModified\":\"2026-10-10T00:00:00+02:00\",\"about\":{\"@id\":\"https://noctalia.app/#software\"},\"publisher\":{\"@id\":\"https://noctalia.app/#organization\"}}",
     "{\"@context\":\"https://schema.org\",\"@type\":\"BreadcrumbList\",\"itemListElement\":[{\"@type\":\"ListItem\",\"position\":1,\"name\":\"Home\",\"item\":\"https://noctalia.app/it/\"},{\"@type\":\"ListItem\",\"position\":2,\"name\":\"App dizionario dei sogni\",\"item\":\"https://noctalia.app/it/dizionario-dei-sogni-app\"}]} ",
     "{\"@context\":\"https://schema.org\",\"@type\":\"FAQPage\",\"mainEntity\":[{\"@type\":\"Question\",\"name\":\"Il dizionario Noctalia è gratuito?\",\"acceptedAnswer\":{\"@type\":\"Answer\",\"text\":\"Sì. Il dizionario web pubblico consente di esplorare 150 schede editoriali di simboli per categoria o dalla A alla Z senza installare l'app.\"}},{\"@type\":\"Question\",\"name\":\"Un simbolo ha sempre lo stesso significato?\",\"acceptedAnswer\":{\"@type\":\"Answer\",\"text\":\"No. Lo stesso simbolo può collegarsi a ricordi, emozioni e situazioni diverse. Usa il dizionario come insieme di possibilità e confrontale con il sogno completo.\"}},{\"@type\":\"Question\",\"name\":\"Che cosa aggiunge l'app Android al dizionario?\",\"acceptedAnswer\":{\"@type\":\"Answer\",\"text\":\"L'app aggiunge cattura vocale o testuale, diario privato, riflessione con IA, contesto emotivo e simbolico, immagini generate e domande di approfondimento.\"}},{\"@type\":\"Question\",\"name\":\"Un dizionario dei sogni può diagnosticare o prevedere?\",\"acceptedAnswer\":{\"@type\":\"Answer\",\"text\":\"No. Le schede sono spunti informativi, non consigli medici, diagnosi psicologiche o previsioni.\"}}]}"
   ],
@@ -37,8 +37,8 @@
 }
 ---
 <h1 class="font-serif text-4xl md:text-5xl mb-4 text-dream-cream">App dizionario dei sogni</h1>
-<p class="text-sm text-purple-300/70 mb-6">Aggiornato il 9 luglio 2026</p>
-<p class="text-lg text-purple-200/80 leading-relaxed mb-10">Noctalia unisce un dizionario pubblico di 150 schede editoriali di simboli e un diario Android. Cerca significati possibili, poi riporta il simbolo nel sogno completo, nelle tue emozioni e nei dettagli catturati al risveglio.</p>
+<p class="text-sm text-purple-300/70 mb-6">Aggiornato il 10 ottobre 2026</p>
+<p class="text-lg text-purple-200/80 leading-relaxed mb-10">Noctalia unisce un dizionario pubblico di 150 schede editoriali di simboli e un diario Android. Cerca significati possibili, poi riporta il simbolo nel sogno completo, nelle tue emozioni e nei dettagli annotati al risveglio.</p>
 
 <div class="space-y-8 text-gray-300 leading-relaxed">
   <section class="glass-panel p-8 rounded-2xl border border-white/10 bg-white/5">
@@ -49,7 +49,7 @@
   <section class="grid md:grid-cols-3 gap-6">
     <div class="glass-panel p-6 rounded-2xl border border-white/10 bg-white/5"><h2 class="text-xl font-serif text-white mb-3">1. Cerca</h2><p>Esplora 150 schede pubbliche per categoria o dalla A alla Z. Ogni scheda presenta varianti, domande e associazioni possibili.</p></div>
     <div class="glass-panel p-6 rounded-2xl border border-white/10 bg-white/5"><h2 class="text-xl font-serif text-white mb-3">2. Aggiungi contesto</h2><p>Annota che cosa faceva il simbolo, il suo aspetto e come ti sentivi. Un mare calmo e un'alluvione non sono la stessa scena.</p></div>
-    <div class="glass-panel p-6 rounded-2xl border border-white/10 bg-white/5"><h2 class="text-xl font-serif text-white mb-3">3. Confronta</h2><p>Salva il sogno completo nell'app e osserva simboli ripetuti tra più voci invece di concludere dopo una sola ricerca.</p></div>
+    <div class="glass-panel p-6 rounded-2xl border border-white/10 bg-white/5"><h2 class="text-xl font-serif text-white mb-3">3. Confronta</h2><p>Salva il sogno completo nell'app e guarda quali simboli tornano da una voce all'altra, invece di trarre conclusioni da una sola ricerca.</p></div>
   </section>
 
   <section class="glass-panel p-8 rounded-2xl border border-white/10 bg-white/5 overflow-x-auto">

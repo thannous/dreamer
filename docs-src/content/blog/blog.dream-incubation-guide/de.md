@@ -416,12 +416,12 @@
 <i class="w-5 h-5 text-dream-salmon" data-lucide="book-open"></i>
                     Verwandte Symbole erkunden
                 </h2>
-<p class="text-sm text-purple-300/60 mb-4">Tauchen Sie tiefer in die Symbole aus diesem Artikel ein:</p>
+<p class="text-sm text-purple-300/60 mb-4">Passende Traumsymbole aus dem Artikel:</p>
 <div class="flex flex-wrap gap-3">
-<a class="inline-flex items-center gap-2 px-4 py-2 glass-button rounded-full text-sm hover:text-dream-salmon transition-colors" href="../traumsymbole/nacht">Nachttraumbedeutung</a>
-<a class="inline-flex items-center gap-2 px-4 py-2 glass-button rounded-full text-sm hover:text-dream-salmon transition-colors" href="../traumsymbole/mond">Mondtraumbedeutung</a>
-<a class="inline-flex items-center gap-2 px-4 py-2 glass-button rounded-full text-sm hover:text-dream-salmon transition-colors" href="../traumsymbole/schluessel">Schlüsseltraumbedeutung</a>
-<a class="inline-flex items-center gap-2 px-4 py-2 glass-button rounded-full text-sm hover:text-dream-salmon transition-colors" href="../traumsymbole/tuer">Türtraumbedeutung</a>
+<a class="inline-flex items-center gap-2 px-4 py-2 glass-button rounded-full text-sm hover:text-dream-salmon transition-colors" href="../traumsymbole/nacht">Traum von der Nacht</a>
+<a class="inline-flex items-center gap-2 px-4 py-2 glass-button rounded-full text-sm hover:text-dream-salmon transition-colors" href="../traumsymbole/mond">Traum vom Mond</a>
+<a class="inline-flex items-center gap-2 px-4 py-2 glass-button rounded-full text-sm hover:text-dream-salmon transition-colors" href="../traumsymbole/schluessel">Traum von einem Schlüssel</a>
+<a class="inline-flex items-center gap-2 px-4 py-2 glass-button rounded-full text-sm hover:text-dream-salmon transition-colors" href="../traumsymbole/tuer">Traum von einer Tür</a>
 </div>
 </section>
 <!-- Related Symbols End -->
@@ -432,7 +432,7 @@
       <i data-lucide="arrow-left" class="w-5 h-5 mt-1 text-dream-salmon shrink-0"></i>
       <div>
         <span class="text-xs text-purple-300/60 uppercase tracking-wide">Vorheriger Artikel</span>
-        <div class="font-serif text-lg text-dream-cream mt-1">Schlangenträume: Wovor Ihr Unterbewusstsein Sie warnt</div>
+        <div class="font-serif text-lg text-dream-cream mt-1">Schlangenträume: was Biss, Verfolgung oder Häutung bedeuten können</div>
       </div>
     </a>
     <a href="koennen-traeume-die-zukunft-vorhersagen-die-ueberraschende-wissenschaft-praekognitiver-traeume" class="glass-panel rounded-xl p-5 flex items-start justify-between gap-3 hover:border-dream-salmon/30 transition-all hover:-translate-y-1">
@@ -456,7 +456,7 @@
         <a href="so-erinnern-sie-sich-an-ihre-traeume-10-effektive-techniken" class="glass-panel rounded-xl p-6 block hover:border-dream-salmon/30 transition-all hover:-translate-y-1">
             <span class="text-xs text-dream-salmon uppercase mb-2 block">Ratgeber</span>
             <h3 class="font-serif text-lg text-dream-cream mb-2">Wie Sie sich an Ihre Träume erinnern: 10 effektive Techniken</h3>
-            <p class="text-sm text-gray-400">Entdecken Sie wissenschaftlich erprobte Methoden, um Ihre Traumerinnerung zu verbessern und sie nie wieder zu vergessen deine Träume, wenn du wieder aufwachst. Einfache Techniken, die Sie heute Abend anwenden können.</p>
+            <p class="text-sm text-gray-400">Zehn einfache Gewohnheiten, mit denen Sie mehr Traumfragmente behalten, vom ruhigen Aufwachen bis zur Notiz vor dem Aufstehen.</p>
         </a>
         <a href="albtraeume-ursachen-bedeutung-und-wie-man-sie-stoppen-kann" class="glass-panel rounded-xl p-6 block hover:border-dream-salmon/30 transition-all hover:-translate-y-1">
             <span class="text-xs text-dream-salmon uppercase mb-2 block">Ratgeber</span>

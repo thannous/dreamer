@@ -233,7 +233,7 @@
 <span class="text-xs text-purple-300/60">6 min de lecture</span>
 </div>
 <h2 class="font-serif text-xl md:text-2xl mb-3 text-dream-cream group-hover:text-white transition-colors">Cauchemars de rentrée chez l’enfant : stress, sommeil et routine du soir</h2>
-<p class="text-sm text-gray-400 line-clamp-2">Pourquoi la rentrée déclenche des cauchemars chez l’enfant — et la routine du soir qui apaise.</p>
+<p class="text-sm text-gray-400 line-clamp-2">Pourquoi la rentrée déclenche des cauchemars chez l’enfant, et la routine du soir qui apaise.</p>
 </div>
 </a>
 </article>
@@ -251,7 +251,7 @@
 <span class="text-xs text-purple-300/60">5 min de lecture</span>
 </div>
 <h2 class="font-serif text-xl md:text-2xl mb-3 text-dream-cream group-hover:text-white transition-colors">Rêves climatiques : quand l'éco-anxiété s'invite la nuit</h2>
-<p class="text-sm text-gray-400 line-clamp-2">Pourquoi inondations, incendies et tempêtes traversent vos rêves — et comment les noter sans les subir.</p>
+<p class="text-sm text-gray-400 line-clamp-2">Pourquoi inondations, incendies et tempêtes traversent vos rêves, et comment les noter sans les subir.</p>
 </div>
 </a>
 </article>
@@ -353,7 +353,7 @@
 <span class="text-xs text-purple-300/60">7 min de lecture</span>
 </div>
 <h2 class="font-serif text-xl md:text-2xl mb-3 text-dream-cream group-hover:text-white transition-colors">Les rêves régulent-ils nos émotions ? Étude 2026</h2>
-<p class="text-sm text-gray-400 line-clamp-2">La peur rêvée ne prédit pas un soulagement immédiat. L'étude de 4 715 journées révèle un lien plus subtil avec l'humeur matinale.</p>
+<p class="text-sm text-gray-400 line-clamp-2">La peur rêvée ne prédit pas un soulagement immédiat. L'étude de 4 715 journées montre un lien plus subtil avec l'humeur matinale.</p>
 </div>
 </a>
 </article>
@@ -475,7 +475,7 @@
                                 Pourquoi oublie-t-on ses rêves au réveil ?
                             </h2>
 <p class="text-sm text-gray-400 line-clamp-2">
-                                Découvrez les mécanismes cérébraux et neurochimiques qui expliquent pourquoi nous oublions 95% de nos rêves.
+                                Pourquoi les rêves s'effacent quelques minutes après le réveil, le rôle du sommeil paradoxal et de la mémoire, et des gestes simples pour en garder plus.
                             </p>
 </div>
 </a>
@@ -495,8 +495,7 @@
                                 Signification des rêves récurrents : comprendre leurs messages
                             </h2>
 <p class="text-sm text-gray-400 line-clamp-2">
-                                Pourquoi refaites-vous toujours le même rêve ? Découvrez ce que votre inconscient essaie
-                                de vous dire.
+                                Pourquoi le même rêve revient, quoi noter d'une nuit à l'autre et quand des cauchemars répétés justifient un avis médical.
                             </p>
 </div>
 </a>
@@ -517,8 +516,7 @@
                                 Guide du rêve lucide pour débutants : prenez le contrôle de vos nuits
                             </h2>
 <p class="text-sm text-gray-400 line-clamp-2">
-                                Apprenez les techniques de base pour devenir conscient dans vos rêves et explorer des
-                                mondes infinis.
+                                Comment débuter le rêve lucide avec un journal, les signes oniriques, les tests de réalité et la méthode MILD, sans sacrifier son sommeil.
                             </p>
 </div>
 </a>
@@ -538,8 +536,7 @@
                                 Rêver de perdre ses dents : signification et interprétation
                             </h2>
 <p class="text-sm text-gray-400 line-clamp-2">
-                                Pourquoi rêvez-vous de perdre vos dents ? Découvrez les 7 interprétations les plus
-                                courantes.
+                                Sept pistes pour les rêves de dents qui tombent, de la tension de la mâchoire à la peur du regard des autres, et les variantes à noter.
                             </p>
 </div>
 </a>
@@ -559,7 +556,7 @@
                                 Rêves de chute : pourquoi rêvez-vous de tomber ?
                             </h2>
 <p class="text-sm text-gray-400 line-clamp-2">
-                                Pourquoi rêvez-vous de tomber dans le vide ? Découvrez la signification psychologique.
+                                Pourquoi on rêve de tomber, de la secousse hypnique à l'endormissement aux longues chutes, et quoi noter au réveil.
                             </p>
 </div>
 </a>
@@ -579,8 +576,7 @@
                                 Rêves de voler : ce que ça signifie
                             </h2>
 <p class="text-sm text-gray-400 line-clamp-2">
-                                Pourquoi rêvez-vous de voler ? Découvrez ce que les rêves de vol révèlent sur la liberté
-                                et l'ambition.
+                                Ce que peuvent suggérer un vol sans effort, un décollage raté ou une fuite dans les airs, et quoi noter au réveil.
                             </p>
 </div>
 </a>
@@ -600,13 +596,13 @@
                                 Dictionnaire des symboles de rêves : interprétation de A à Z
                             </h2>
 <p class="text-sm text-gray-400 line-clamp-2">
-                                Explorez 150 symboles oniriques comme points de départ contextuels pour votre réflexion.
+                                150 symboles de rêves courants de A à Z, comme point de départ pour vos propres notes.
                             </p>
 </div>
 </a>
 </article>
 <!-- Article 8 - Reves de serpents -->
-<article class="article-card glass-panel rounded-2xl overflow-hidden group" data-category="interpretation" data-reading-time="5" data-title="Rêver de serpents : ce que votre inconscient essaie de vous dire">
+<article class="article-card glass-panel rounded-2xl overflow-hidden group" data-category="interpretation" data-reading-time="5" data-title="Rêver de serpents : morsure, attaque, mue… ce que la scène peut raconter">
 <a class="block" href="reves-de-serpents">
 <div class="aspect-video overflow-hidden bg-dream-purple/30">
 <img alt="Signification des rêves de serpents" class="article-image w-full h-full object-cover opacity-80 group-hover:opacity-100 transition-all duration-500" height="450" loading="lazy" sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 33vw" src="../../img/blog/snake-dreams-meaning.webp" srcset="../../img/blog/snake-dreams-meaning-480w.webp 480w, ../../img/blog/snake-dreams-meaning-800w.webp 800w, ../../img/blog/snake-dreams-meaning-1200w.webp 1200w" width="800">
@@ -617,11 +613,10 @@
 <span class="text-xs text-purple-300/60">5 min de lecture</span>
 </div>
 <h2 class="font-serif text-xl md:text-2xl mb-3 text-dream-cream group-hover:text-white transition-colors">
-                                Rêver de serpents : ce que votre inconscient essaie de vous dire
+                                Rêver de serpents : morsure, attaque, mue… ce que la scène peut raconter
                             </h2>
 <p class="text-sm text-gray-400 line-clamp-2">
-                                Découvrez le symbolisme puissant des rêves de serpents et ce qu'ils révèlent sur la
-                                transformation, la peur et la sagesse cachée.
+                                Ce qu'un rêve de serpent peut raconter selon la scène, morsure, attaque, mue ou serpent calme, et quoi noter au réveil.
                             </p>
 </div>
 </a>
@@ -641,8 +636,7 @@
                                 Incubation des rêves : comment rêver exactement de ce que vous voulez
                             </h2>
 <p class="text-sm text-gray-400 line-clamp-2">
-                                Apprenez l'art ancien de l'incubation onirique pour résoudre des problèmes et stimuler
-                                votre créativité.
+                                Une méthode en six étapes pour choisir une question avant de dormir et noter ce qui revient au réveil, avec ce que dit la recherche et ses limites.
                             </p>
 </div>
 </a>
@@ -662,8 +656,7 @@
                                 Les rêves peuvent-ils prédire l'avenir ? La science des rêves prémonitoires
                             </h2>
 <p class="text-sm text-gray-400 line-clamp-2">
-                                Explorez la science fascinante des rêves prémonitoires et s'ils peuvent vraiment prédire
-                                l'avenir.
+                                Ce que disent les études contrôlées sur les rêves qui semblent prédire l'avenir, et comment le hasard et les biais de mémoire expliquent beaucoup de cas.
                             </p>
 </div>
 </a>
@@ -683,7 +676,7 @@
                                 Rêver d'être poursuivi : que signifie ce rêve ?
                             </h2>
 <p class="text-sm text-gray-400 line-clamp-2">
-                                Pourquoi rêvez-vous d'être poursuivi ? Découvrez les significations psychologiques des rêves de poursuite et ce que votre subconscient essaie de vous dire sur la peur et l'évitement.
+                                Pourquoi les rêves de poursuite sont si courants, ce que le poursuivant et la fin de la scène peuvent dire, et que faire quand ils reviennent.
                             </p>
 </div>
 </a>
@@ -703,7 +696,7 @@
                                 Rêves de Mort : Signification et Interprétation
                             </h2>
 <p class="text-sm text-gray-400 line-clamp-2">
-                                Que signifie rêver de la mort ? Découvrez les significations symboliques des rêves de mort - ils prédisent rarement la mort réelle et représentent souvent la transformation et le changement.
+                                Les rêves de sa propre mort, de celle d'un proche ou d'un défunt, relus à travers les souvenirs, la peur et le deuil plutôt que comme un présage.
                             </p>
 </div>
 </a>
@@ -723,7 +716,7 @@
                                 Rêves d'Eau : Signification des Rêves de Noyade, Océan et Inondation
                             </h2>
 <p class="text-sm text-gray-400 line-clamp-2">
-                                Que signifient les rêves d'eau ? Découvrez les interprétations symboliques des rêves de noyade, océan et inondation. L'eau représente les émotions - apprenez ce que votre subconscient vous dit.
+                                Ce que peuvent évoquer une inondation, une eau qui monte, une maison inondée ou une eau claire ou trouble, et les détails à noter au réveil.
                             </p>
 </div>
 </a>
@@ -743,7 +736,7 @@
                                 Rêver de son ex : signification et scénarios
                             </h2>
 <p class="text-sm text-gray-400 line-clamp-2">
-                                Pourquoi rêvez-vous de votre ex ? Découvrez les significations psychologiques des rêves d'anciens partenaires et ce que votre subconscient essaie de traiter.
+                                Ce que peuvent refléter les retrouvailles, la dispute ou l'ex avec quelqu'un d'autre en rêve, sans conclure qu'il faut renouer.
                             </p>
 </div>
 </a>
@@ -763,7 +756,7 @@
                                 Rêves de Grossesse : Ce Qu'ils Signifient (Même Si Vous N'Êtes Pas Enceinte)
                             </h2>
 <p class="text-sm text-gray-400 line-clamp-2">
-                                Que signifient les rêves de grossesse ? Découvrez pourquoi vous rêvez d'être enceinte, d'accoucher ou de bébés - même si vous n'attendez pas d'enfant. Significations symboliques expliquées.
+                                Ce que peut signifier un rêve où vous êtes enceinte, où vous accouchez ou où une proche attend un bébé, ce qu'en dit la recherche et quoi noter.
                             </p>
 </div>
 </a>
@@ -783,7 +776,7 @@
                                 Cauchemars : Causes, Signification et Comment les Arrêter
                             </h2>
 <p class="text-sm text-gray-400 line-clamp-2">
-                                Pourquoi fait-on des cauchemars ? Découvrez les causes des mauvais rêves, leur signification et les techniques prouvées pour réduire leur fréquence et mieux dormir.
+                                Pourquoi les cauchemars surviennent, ce qu'ils peuvent ou non signifier, et comment la répétition d'imagerie mentale et un sommeil plus régulier aident à les réduire.
                             </p>
 </div>
 </a>
@@ -803,7 +796,7 @@
                                 Paralysie du sommeil : pourquoi vous ne pouvez plus bouger et comment en sortir
                             </h2>
 <p class="text-sm text-gray-400 line-clamp-2">
-                                Guide complet pour comprendre la paralysie du sommeil. Découvrez ses causes, pourquoi les hallucinations surviennent, et les techniques prouvées pour prévenir et arrêter les épisodes.
+                                Pourquoi on se réveille parfois sans pouvoir bouger, avec une présence dans la chambre, comment traverser un épisode et quand consulter.
                             </p>
 </div>
 </a>
@@ -823,7 +816,7 @@
                                 Journal de rêves : le guide complet pour enregistrer vos aventures nocturnes
                             </h2>
 <p class="text-sm text-gray-400 line-clamp-2">
-                                Apprenez à tenir un journal de rêves efficace. Découvrez des techniques prouvées pour améliorer votre mémoire onirique, quoi écrire, et comment le journaling transforme votre sommeil.
+                                Quoi noter au réveil dans un journal de rêves, avec un modèle en 60 secondes, une routine de sept jours et un exemple commenté.
                             </p>
 </div>
 </a>
@@ -843,7 +836,7 @@
                                 Rêves et Santé Mentale : Comment Votre Sommeil Révèle Votre Esprit
                             </h2>
 <p class="text-sm text-gray-400 line-clamp-2">
-                                Découvrez le lien profond entre les rêves et la santé mentale. Apprenez comment l'anxiété, la dépression et les traumatismes affectent vos rêves, et comment le travail onirique peut soutenir la guérison.
+                                Comment l'anxiété, la dépression, le stress et les traumatismes se retrouvent dans les rêves, et quand des cauchemars fréquents justifient d'en parler à un professionnel.
                             </p>
 </div>
 </a>
@@ -863,7 +856,7 @@
                                 Pourquoi rêvons-nous ? La science derrière vos aventures nocturnes
                             </h2>
 <p class="text-sm text-gray-400 line-clamp-2">
-                                Explorez la science fascinante des rêves. Découvrez les théories majeures, l'activité cérébrale pendant les rêves et ce qu'ils révèlent sur la conscience.
+                                Ce que la recherche a mesuré sur la mémoire, les émotions et la répétition des menaces pendant le rêve, et ce qui reste une hypothèse.
                             </p>
 </div>
 </a>
@@ -883,7 +876,7 @@
                                 Sommeil Paradoxal et Rêves : Comprendre la Réinitialisation Nocturne de Votre Cerveau
                             </h2>
 <p class="text-sm text-gray-400 line-clamp-2">
-                                Découvrez la science du sommeil paradoxal et son rôle crucial dans les rêves. Apprenez les cycles de sommeil, différences REM vs non-REM, et comment optimiser votre sommeil paradoxal.
+                                À quel moment de la nuit survient le sommeil paradoxal, pourquoi ses rêves sont si intenses et ce qui le raccourcit.
                             </p>
 </div>
 </a>
@@ -903,7 +896,7 @@
                                 L'Histoire de l'Interprétation des Rêves : Des Temples Antiques à la Science Moderne
                             </h2>
 <p class="text-sm text-gray-400 line-clamp-2">
-                                Explorez l'évolution fascinante de l'interprétation des rêves depuis les civilisations antiques jusqu'aux neurosciences modernes. Découvrez comment les cultures du monde entier ont décodé le langage des songes.
+                                Comment on a lu les rêves au fil du temps, des présages mésopotamiens et d'un manuel égyptien à Aristote, Freud, Jung et aux laboratoires du sommeil.
                             </p>
 </div>
 </a>
@@ -945,7 +938,7 @@
                                 Rêves et créativité : comment votre cerveau endormi résout des problèmes
                             </h2>
 <p class="text-sm text-gray-400 line-clamp-2">
-                                Découvrez comment les rêves stimulent la créativité et la résolution de problèmes. Apprenez les découvertes célèbres nées dans les rêves et les techniques pour exploiter votre esprit endormi.
+                                Ce que la recherche dit des rêves et de la résolution de problèmes, et comment noter une idée avant qu'elle s'efface.
                             </p>
 </div>
 </a>
@@ -1008,7 +1001,7 @@
                                 Journée du sommeil 2026 : environnement et rêves
                             </h2>
 <p class="text-sm text-gray-400 line-clamp-2">
-                                Lumière, bruit, température : découvrez comment votre environnement de sommeil façonne directement le contenu et la qualité de vos rêves.
+                                Comment la lumière, le bruit et la température de la chambre agissent sur le sommeil et les rêves, et quoi ajuster dès ce soir.
                             </p>
 </div>
 </a>
@@ -1071,7 +1064,7 @@
                                 Changement d'heure et sommeil
                             </h2>
 <p class="text-sm text-gray-400 line-clamp-2">
-                                Comment le passage &#224; l'heure d'&#233;t&#233; perturbe votre rythme circadien, comprime le sommeil paradoxal et transforme votre vie onirique.
+                                Pourquoi le passage à l'heure d'été est plus difficile, ce qu'il change au sommeil paradoxal et aux rêves, et comment s'adapter en quelques jours.
                             </p>
 </div>
 </a>
@@ -1092,7 +1085,7 @@
                                 Dette de sommeil : le co&#251;t cach&#233; du manque de sommeil
                             </h2>
 <p class="text-sm text-gray-400 line-clamp-2">
-                                Comment la dette de sommeil accumul&#233;e alt&#232;re silencieusement votre sant&#233;, transforme vos r&#234;ves par le rebond REM et ce que la science dit de la r&#233;cup&#233;ration.
+                                Ce que la dette de sommeil fait à la santé et aux rêves, pourquoi la grasse matinée ne suffit pas et comment récupérer vraiment.
                             </p>
 </div>
 </a>
@@ -1113,7 +1106,7 @@
                                 Sommeil au printemps : l'effet des jours plus longs
                             </h2>
 <p class="text-sm text-gray-400 line-clamp-2">
-                                Comment l'&#233;quinoxe de printemps et l'allongement des jours suppriment la m&#233;latonine et alt&#232;rent vos r&#234;ves.
+                                Pourquoi les soirées claires retardent l'endormissement et l'aube réveille tôt, ce que cela change au souvenir des rêves et comment s'adapter.
                             </p>
 </div>
 </a>
@@ -1134,7 +1127,7 @@
                                 Le sommeil, levier sant&#233; n&#176;1
                             </h2>
 <p class="text-sm text-gray-400 line-clamp-2">
-                                Une &#233;tude OHSU r&#233;v&#232;le que le manque de sommeil surpasse la mauvaise alimentation et le manque d'exercice pour l'esp&#233;rance de vie.
+                                Ce qu'a trouvé une étude OHSU en comparant le manque de sommeil à l'alimentation et au sport face à l'espérance de vie, et les limites de ce lien.
                             </p>
 </div>
 </a>
@@ -1155,7 +1148,7 @@
                                 Traqueurs de sommeil connect&#233;s et r&#234;ves
                             </h2>
 <p class="text-sm text-gray-400 line-clamp-2">
-                                40 % des gens suivent leur sommeil chaque semaine. D&#233;couvrez ce que les traqueurs mesurent vraiment et pourquoi le journal de r&#234;ves compl&#232;te le tableau.
+                                Ce que mesurent vraiment une montre ou une bague la nuit, leur fiabilité, et pourquoi aucun capteur n'enregistre ce que vous avez rêvé.
                             </p>
 </div>
 </a>

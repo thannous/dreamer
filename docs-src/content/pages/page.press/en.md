@@ -23,13 +23,13 @@
   "twitterImage": "https://noctalia.app/img/og/noctalia-en-1200x630.jpg",
   "twitterImageAlt": "Noctalia AI dream journal app",
   "publishedTime": "2026-05-09T00:00:00+02:00",
-  "modifiedTime": "2026-08-12T00:00:00+02:00",
+  "modifiedTime": "2026-10-10T00:00:00+02:00",
   "author": "Thanh Chau",
   "prevPath": "",
   "nextPath": "",
   "preloadImage": "",
   "jsonLd": [
-    "{\n    \"@context\": \"https://schema.org\",\n    \"@graph\": [\n        {\n            \"@type\": \"WebPage\",\n            \"@id\": \"https://noctalia.app/en/press#webpage\",\n            \"name\": \"Noctalia Press Kit\",\n            \"description\": \"Press kit for Noctalia, the AI-powered dream journal app for voice capture, dream interpretation, symbols, themes, images, and guided reflection.\",\n            \"url\": \"https://noctalia.app/en/press\",\n            \"inLanguage\": \"en\",\n            \"dateModified\": \"2026-08-12T00:00:00+02:00\",\n            \"about\": {\n                \"@id\": \"https://noctalia.app/#software\"\n            },\n            \"publisher\": {\n                \"@id\": \"https://noctalia.app/#organization\"\n            }\n        },\n        {\n            \"@type\": \"Organization\",\n            \"@id\": \"https://noctalia.app/#organization\",\n            \"name\": \"Noctalia\",\n            \"url\": \"https://noctalia.app\",\n            \"logo\": {\n                \"@type\": \"ImageObject\",\n                \"url\": \"https://noctalia.app/logo/logo_noctalia.png\"\n            },\n            \"founder\": {\n                \"@type\": \"Person\",\n                \"name\": \"Thanh Chau\",\n                \"url\": \"https://noctalia.app/en/about#person\"\n            },\n            \"email\": \"contact@noctalia.app\"\n        },\n        {\n            \"@type\": \"SoftwareApplication\",\n            \"@id\": \"https://noctalia.app/#software\",\n            \"name\": \"Noctalia\",\n            \"applicationCategory\": \"LifestyleApplication\",\n            \"operatingSystem\": \"Android\",\n            \"url\": \"https://noctalia.app\",\n            \"downloadUrl\": \"https://play.google.com/store/apps/details?id=com.tanuki75.noctalia\",\n            \"offers\": {\n                \"@type\": \"Offer\",\n                \"price\": \"0\",\n                \"priceCurrency\": \"EUR\",\n                \"availability\": \"https://schema.org/InStock\"\n            }\n        }\n    ]\n}",
+    "{\n    \"@context\": \"https://schema.org\",\n    \"@graph\": [\n        {\n            \"@type\": \"WebPage\",\n            \"@id\": \"https://noctalia.app/en/press#webpage\",\n            \"name\": \"Noctalia Press Kit\",\n            \"description\": \"Press kit for Noctalia, the AI-powered dream journal app for voice capture, dream interpretation, symbols, themes, images, and guided reflection.\",\n            \"url\": \"https://noctalia.app/en/press\",\n            \"inLanguage\": \"en\",\n            \"dateModified\": \"2026-10-10T00:00:00+02:00\",\n            \"about\": {\n                \"@id\": \"https://noctalia.app/#software\"\n            },\n            \"publisher\": {\n                \"@id\": \"https://noctalia.app/#organization\"\n            }\n        },\n        {\n            \"@type\": \"Organization\",\n            \"@id\": \"https://noctalia.app/#organization\",\n            \"name\": \"Noctalia\",\n            \"url\": \"https://noctalia.app\",\n            \"logo\": {\n                \"@type\": \"ImageObject\",\n                \"url\": \"https://noctalia.app/logo/logo_noctalia.png\"\n            },\n            \"founder\": {\n                \"@type\": \"Person\",\n                \"name\": \"Thanh Chau\",\n                \"url\": \"https://noctalia.app/en/about#person\"\n            },\n            \"email\": \"contact@noctalia.app\"\n        },\n        {\n            \"@type\": \"SoftwareApplication\",\n            \"@id\": \"https://noctalia.app/#software\",\n            \"name\": \"Noctalia\",\n            \"applicationCategory\": \"LifestyleApplication\",\n            \"operatingSystem\": \"Android\",\n            \"url\": \"https://noctalia.app\",\n            \"downloadUrl\": \"https://play.google.com/store/apps/details?id=com.tanuki75.noctalia\",\n            \"offers\": {\n                \"@type\": \"Offer\",\n                \"price\": \"0\",\n                \"priceCurrency\": \"EUR\",\n                \"availability\": \"https://schema.org/InStock\"\n            }\n        }\n    ]\n}",
     "{\n    \"@context\": \"https://schema.org\",\n    \"@type\": \"BreadcrumbList\",\n    \"itemListElement\": [\n        {\n            \"@type\": \"ListItem\",\n            \"position\": 1,\n            \"name\": \"Home\",\n            \"item\": \"https://noctalia.app/\"\n        },\n        {\n            \"@type\": \"ListItem\",\n            \"position\": 2,\n            \"name\": \"Press kit\",\n            \"item\": \"https://noctalia.app/en/press\"\n        }\n    ]\n}",
     "{\"@context\":\"https://schema.org\",\"@type\":\"VideoObject\",\"name\":\"Noctalia Android product walkthrough\",\"description\":\"A 71-second walkthrough of Noctalia's voice capture, structured dream reflection, guided follow-up questions and private journal.\",\"thumbnailUrl\":\"https://noctalia.app/screenshot/product-hunt/noctalia-product-hunt-01-voice-capture.png\",\"uploadDate\":\"2026-07-31T00:00:00+02:00\",\"duration\":\"PT1M11S\",\"contentUrl\":\"https://noctalia.app/video/noctalia-product-walkthrough-en-2026-07.mp4\",\"inLanguage\":\"en\"}",
     "{\"@context\":\"https://schema.org\",\"@type\":\"ImageObject\",\"name\":\"Dream journal apps in 2026: feature snapshot\",\"caption\":\"Four descriptive feature counts from a source-linked desk review of 11 dream journal apps.\",\"contentUrl\":\"https://noctalia.app/img/research/dream-journal-apps-feature-snapshot-2026.svg\",\"encodingFormat\":\"image/svg+xml\",\"width\":1200,\"height\":675,\"dateCreated\":\"2026-08-10\",\"creditText\":\"Noctalia\",\"creator\":{\"@id\":\"https://noctalia.app/#organization\"},\"copyrightNotice\":\"© 2026 Noctalia\",\"license\":\"https://noctalia.app/en/press#media-license\",\"acquireLicensePage\":\"https://noctalia.app/en/press#media-contact\"}"
@@ -38,8 +38,8 @@
 }
 ---
 <h1 class="font-serif text-4xl md:text-5xl mb-6 text-dream-cream">Noctalia Press Kit</h1>
-<p class="text-sm text-purple-300/70 mb-6">Updated August 12, 2026</p>
-<p class="text-lg text-purple-200/80 leading-relaxed mb-10">Noctalia is an Android-first dream journal that helps people record dreams by voice, turn them into structured entries, and explore symbols, images, patterns, and guided follow-up questions.</p>
+<p class="text-sm text-purple-300/70 mb-6">Updated October 10, 2026</p>
+<p class="text-lg text-purple-200/80 leading-relaxed mb-10">Noctalia is an Android-first dream journal. People tell a dream out loud, the app turns it into a structured entry, and they can then explore its symbols, images, patterns, and guided follow-up questions.</p>
 
 <div class="space-y-8 text-gray-300 leading-relaxed">
   <section class="glass-panel p-8 rounded-2xl border border-white/10 bg-white/5">
@@ -67,9 +67,9 @@
   <section class="glass-panel p-8 rounded-2xl border border-white/10 bg-white/5">
     <h2 class="text-2xl font-serif text-white mb-4">Descriptions</h2>
     <h3 class="text-white font-medium mb-2">Short description</h3>
-    <p>Android dream journal for voice capture, AI reflection, symbols, generated images, and guided reflection.</p>
+    <p>Android dream journal for voice capture, AI reflection, symbols, generated images, and guided follow-up questions.</p>
     <h3 class="text-white font-medium mt-6 mb-2">Long description</h3>
-    <p>Noctalia helps people capture dreams before the details fade. Users can record by voice or text, receive a structured reflection, review recurring symbols and emotions, generate a dream image, and continue with guided follow-up questions.</p>
+    <p>With Noctalia, people write down a dream before the details fade. Users can record by voice or text, receive a structured reflection, review recurring symbols and emotions, generate a dream image, and continue with guided follow-up questions.</p>
   </section>
 
   <section class="glass-panel p-8 rounded-2xl border border-white/10 bg-white/5">
@@ -126,7 +126,7 @@
 
   <section class="glass-panel p-8 rounded-2xl border border-white/10 bg-white/5">
     <h2 class="text-2xl font-serif text-white mb-4">Editorial note</h2>
-    <p>Noctalia is designed for journaling, reflection, and wellbeing. It is not a medical device and does not replace advice from a qualified health professional.</p>
+    <p>Noctalia is a journaling, reflection, and wellbeing app. It is not a medical device and does not replace advice from a qualified health professional.</p>
   </section>
 
   <section id="media-contact" class="glass-panel p-8 rounded-2xl border border-white/10 bg-white/5 scroll-mt-28">

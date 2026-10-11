@@ -23,13 +23,13 @@
   "twitterImage": "https://noctalia.app/img/og/noctalia-es-1200x630.jpg",
   "twitterImageAlt": "Metodología del contenido de sueños de Noctalia",
   "publishedTime": "2026-07-09T00:00:00+02:00",
-  "modifiedTime": "2026-07-09T00:00:00+02:00",
+  "modifiedTime": "2026-10-10T00:00:00+02:00",
   "author": "Thanh Chau",
   "prevPath": "",
   "nextPath": "",
   "preloadImage": "",
   "jsonLd": [
-    "{\"@context\":\"https://schema.org\",\"@type\":\"WebPage\",\"headline\":\"Metodología del contenido sobre sueños\",\"description\":\"Alcance verificable, proceso editorial, límites de privacidad y estado de los datos que sustentan el contenido público de Noctalia.\",\"url\":\"https://noctalia.app/es/metodologia-contenido-suenos\",\"inLanguage\":\"es\",\"datePublished\":\"2026-07-09\",\"dateModified\":\"2026-07-09T00:00:00+02:00\",\"author\":{\"@type\":\"Person\",\"name\":\"Thanh Chau\",\"url\":\"https://noctalia.app/es/sobre#person\"},\"publisher\":{\"@id\":\"https://noctalia.app/#organization\"}}",
+    "{\"@context\":\"https://schema.org\",\"@type\":\"WebPage\",\"headline\":\"Metodología del contenido sobre sueños\",\"description\":\"Alcance verificable, proceso editorial, límites de privacidad y estado de los datos que sustentan el contenido público de Noctalia.\",\"url\":\"https://noctalia.app/es/metodologia-contenido-suenos\",\"inLanguage\":\"es\",\"datePublished\":\"2026-07-09\",\"dateModified\":\"2026-10-10T00:00:00+02:00\",\"author\":{\"@type\":\"Person\",\"name\":\"Thanh Chau\",\"url\":\"https://noctalia.app/es/sobre#person\"},\"publisher\":{\"@id\":\"https://noctalia.app/#organization\"}}",
     "{\"@context\":\"https://schema.org\",\"@type\":\"BreadcrumbList\",\"itemListElement\":[{\"@type\":\"ListItem\",\"position\":1,\"name\":\"Inicio\",\"item\":\"https://noctalia.app/es/\"},{\"@type\":\"ListItem\",\"position\":2,\"name\":\"Metodología del contenido\",\"item\":\"https://noctalia.app/es/metodologia-contenido-suenos\"}]} ",
     "{\"@context\":\"https://schema.org\",\"@type\":\"FAQPage\",\"mainEntity\":[{\"@type\":\"Question\",\"name\":\"¿Noctalia publica un conjunto verificable de 55 000 sueños de usuarios?\",\"acceptedAnswer\":{\"@type\":\"Answer\",\"text\":\"No. La fuente pública actual no contiene 55 000 registros de sueños ni la procedencia necesaria para reproducir esa cifra. Noctalia no la considera una prueba científica verificada.\"}},{\"@type\":\"Question\",\"name\":\"¿Qué alcance público puede verificarse hoy?\",\"acceptedAnswer\":{\"@type\":\"Answer\",\"text\":\"A 9 de julio de 2026, la fuente contiene 150 fichas editoriales de símbolos en cinco idiomas y 44 familias BlogPosting más 3 hubs temáticos, es decir, 235 archivos localizados.\"}},{\"@type\":\"Question\",\"name\":\"¿Se usan diarios privados en el diccionario público?\",\"acceptedAnswer\":{\"@type\":\"Answer\",\"text\":\"Los archivos públicos no incluyen entradas privadas de usuarios. Las fichas de símbolos y los artículos son contenido editorial.\"}},{\"@type\":\"Question\",\"name\":\"¿El catálogo de Noctalia es un conjunto de investigación clínica?\",\"acceptedAnswer\":{\"@type\":\"Answer\",\"text\":\"No. No tiene una cohorte publicada, protocolo de muestreo, etiquetas clínicas ni estudio de validación. Debe citarse como catálogo editorial.\"}}]}"
   ],
@@ -44,7 +44,7 @@
   <section class="glass-panel p-8 rounded-2xl border border-dream-salmon/20 bg-dream-salmon/5">
     <h2 class="text-2xl font-serif text-white mb-4">Estado de la cifra «55 000 sueños»</h2>
     <p>La fuente pública actual de Noctalia no contiene 55 000 relatos, una exportación agregada con fecha ni la procedencia que permita reproducir esa cantidad. Tampoco documenta marco de muestreo, consentimiento, protocolo de anotación ni resultados estadísticos para tal corpus. Por ello, la cifra <strong class="text-white">no puede verificarse con la evidencia actual y no debe citarse como respaldo científico</strong>.</p>
-    <p class="mt-4">Los diarios privados no se publican deliberadamente. Un futuro análisis agregado debería documentar periodo de recogida, criterios de inclusión, tratamiento de privacidad, reglas de deduplicación, método de anotación y resultados reproducibles antes de utilizar una cifra global.</p>
+    <p class="mt-4">Los diarios privados no se publican, por decisión propia. Un futuro análisis agregado debería documentar periodo de recogida, criterios de inclusión, tratamiento de privacidad, reglas de deduplicación, método de anotación y resultados reproducibles antes de utilizar una cifra global.</p>
   </section>
 
   <section class="glass-panel p-8 rounded-2xl border border-white/10 bg-white/5">

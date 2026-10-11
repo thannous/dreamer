@@ -23,7 +23,7 @@
   "twitterImage": "https://noctalia.app/img/og/noctalia-es-1200x630.jpg",
   "twitterImageAlt": "App de diario de sueños con IA Noctalia",
   "publishedTime": "2026-05-09T00:00:00+02:00",
-  "modifiedTime": "2026-07-31T00:00:00+02:00",
+  "modifiedTime": "2026-10-10T00:00:00+02:00",
   "author": "Thanh Chau",
   "prevPath": "",
   "nextPath": "",
@@ -35,8 +35,8 @@
 }
 ---
 <h1 class="font-serif text-4xl md:text-5xl mb-6 text-dream-cream">Kit de prensa de Noctalia</h1>
-<p class="text-sm text-purple-300/70 mb-6">Actualizado el 4 de agosto de 2026</p>
-<p class="text-lg text-purple-200/80 leading-relaxed mb-10">Noctalia es un diario de sueños para Android que permite grabar sueños por voz, convertirlos en entradas estructuradas y explorar símbolos, imágenes, patrones y preguntas de seguimiento en reflexión guiada.</p>
+<p class="text-sm text-purple-300/70 mb-6">Actualizado el 10 de octubre de 2026</p>
+<p class="text-lg text-purple-200/80 leading-relaxed mb-10">Noctalia es un diario de sueños para Android. La persona cuenta su sueño en voz alta, la app lo convierte en una entrada estructurada y después puede explorar símbolos, imágenes, patrones y preguntas de seguimiento guiadas.</p>
 
 <div class="space-y-8 text-gray-300 leading-relaxed">
   <section class="glass-panel p-8 rounded-2xl border border-white/10 bg-white/5">
@@ -54,9 +54,9 @@
   <section class="glass-panel p-8 rounded-2xl border border-white/10 bg-white/5">
     <h2 class="text-2xl font-serif text-white mb-4">Descripciones</h2>
     <h3 class="text-white font-medium mb-2">Descripción corta</h3>
-    <p>Diario de sueños Android con captura de voz, reflexión con IA, símbolos, imágenes generadas y reflexión guiada.</p>
+    <p>Diario de sueños Android con captura de voz, reflexión con IA, símbolos, imágenes generadas y preguntas de seguimiento guiadas.</p>
     <h3 class="text-white font-medium mt-6 mb-2">Descripción larga</h3>
-    <p>Noctalia ayuda a capturar un sueño antes de que se pierdan los detalles. La persona puede grabar por voz o texto, recibir una reflexión estructurada, revisar símbolos y emociones recurrentes, generar una imagen del sueño y continuar con reflexión guiada.</p>
+    <p>Con Noctalia, un sueño queda anotado antes de que se pierdan los detalles. La persona puede grabar por voz o texto, recibir una reflexión estructurada, revisar símbolos y emociones recurrentes, generar una imagen del sueño y continuar con reflexión guiada.</p>
   </section>
 
   <section class="glass-panel p-8 rounded-2xl border border-white/10 bg-white/5">
@@ -103,7 +103,7 @@
 
   <section class="glass-panel p-8 rounded-2xl border border-white/10 bg-white/5">
     <h2 class="text-2xl font-serif text-white mb-4">Nota editorial</h2>
-    <p>Noctalia está diseñada para el diario personal, la reflexión y el bienestar. No es un dispositivo médico y no sustituye el consejo de un profesional sanitario.</p>
+    <p>Noctalia es una app de diario personal, reflexión y bienestar. No es un dispositivo médico y no sustituye el consejo de un profesional sanitario.</p>
   </section>
 
   <section class="glass-panel p-8 rounded-2xl border border-white/10 bg-white/5">

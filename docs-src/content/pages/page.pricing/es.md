@@ -23,13 +23,13 @@
   "twitterImage": "https://noctalia.app/img/og/noctalia-es-1200x630.jpg",
   "twitterImageAlt": "Planes y precios del diario de sueños Noctalia",
   "publishedTime": "2026-07-31T00:00:00+02:00",
-  "modifiedTime": "2026-07-31T00:00:00+02:00",
+  "modifiedTime": "2026-10-10T00:00:00+02:00",
   "author": "Thanh Chau",
   "prevPath": "",
   "nextPath": "",
   "preloadImage": "",
   "jsonLd": [
-    "{\"@context\":\"https://schema.org\",\"@type\":\"WebPage\",\"name\":\"Planes y precios de Noctalia\",\"description\":\"Compara el plan gratuito Soñador y la suscripción opcional Noctalia Plus. Google Play muestra el precio y las opciones aplicables antes de comprar.\",\"url\":\"https://noctalia.app/es/precios\",\"inLanguage\":\"es\",\"datePublished\":\"2026-07-31T00:00:00+02:00\",\"dateModified\":\"2026-07-31T00:00:00+02:00\"}",
+    "{\"@context\":\"https://schema.org\",\"@type\":\"WebPage\",\"name\":\"Planes y precios de Noctalia\",\"description\":\"Compara el plan gratuito Soñador y la suscripción opcional Noctalia Plus. Google Play muestra el precio y las opciones aplicables antes de comprar.\",\"url\":\"https://noctalia.app/es/precios\",\"inLanguage\":\"es\",\"datePublished\":\"2026-07-31T00:00:00+02:00\",\"dateModified\":\"2026-10-10T00:00:00+02:00\"}",
     "{\"@context\":\"https://schema.org\",\"@type\":\"BreadcrumbList\",\"itemListElement\":[{\"@type\":\"ListItem\",\"position\":1,\"name\":\"Inicio\",\"item\":\"https://noctalia.app/es/\"},{\"@type\":\"ListItem\",\"position\":2,\"name\":\"Precios\",\"item\":\"https://noctalia.app/es/precios\"}]}",
     "{\"@context\":\"https://schema.org\",\"@type\":\"MobileApplication\",\"name\":\"Noctalia\",\"operatingSystem\":\"Android\",\"applicationCategory\":\"LifestyleApplication\",\"downloadUrl\":\"https://play.google.com/store/apps/details?id=com.tanuki75.noctalia\",\"offers\":{\"@type\":\"Offer\",\"price\":\"0\",\"priceCurrency\":\"EUR\",\"url\":\"https://play.google.com/store/apps/details?id=com.tanuki75.noctalia\",\"description\":\"Instalación gratuita con compras opcionales de Noctalia Plus mostradas por Google Play.\"}}",
     "{\"@context\":\"https://schema.org\",\"@type\":\"FAQPage\",\"mainEntity\":[{\"@type\":\"Question\",\"name\":\"¿Noctalia se puede usar gratis?\",\"acceptedAnswer\":{\"@type\":\"Answer\",\"text\":\"Sí. El plan Soñador incluye grabaciones de sueños ilimitadas, tres análisis de sueños al mes (cada uno con una imagen), exploraciones guiadas sin límite mensual, hasta 10 mensajes de seguimiento por sueño analizado y un diario de sueños guardado.\"}},{\"@type\":\"Question\",\"name\":\"¿Cuánto cuesta Noctalia Plus?\",\"acceptedAnswer\":{\"@type\":\"Answer\",\"text\":\"Abre la ficha de Google Play o la pantalla de suscripción de la aplicación para ver el precio, el periodo de facturación, los impuestos, la elegibilidad y cualquier promoción para tu país y tu cuenta antes de comprar.\"}},{\"@type\":\"Question\",\"name\":\"¿Hay suscripciones mensuales y anuales?\",\"acceptedAnswer\":{\"@type\":\"Answer\",\"text\":\"Puede haber opciones mensuales y anuales. Google Play muestra las opciones disponibles actualmente para tu país y tu cuenta, por lo que la disponibilidad puede variar.\"}},{\"@type\":\"Question\",\"name\":\"¿Dónde puedo gestionar o cancelar una suscripción?\",\"acceptedAnswer\":{\"@type\":\"Answer\",\"text\":\"Noctalia Plus se factura mediante Google Play. Puedes gestionarlo o cancelarlo desde la sección Suscripciones de la cuenta de Google Play utilizada para la compra.\"}}]}"
@@ -38,8 +38,8 @@
 }
 ---
 <h1 class="font-serif text-4xl md:text-5xl mb-4 text-dream-cream">Planes y precios de Noctalia</h1>
-<p class="text-sm text-purple-300/70 mb-6">Actualizado el 31 de julio de 2026</p>
-<p class="text-lg text-purple-200/80 leading-relaxed mb-10">Empieza con el plan gratuito Soñador y pásate a Plus solo si quieres más reflexión guiada. Noctalia se instala gratis en Android. Como Google Play localiza precios, impuestos, periodos de facturación, condiciones de elegibilidad y promociones, la tienda es la fuente de referencia para el importe que pagarás.</p>
+<p class="text-sm text-purple-300/70 mb-6">Actualizado el 10 de octubre de 2026</p>
+<p class="text-lg text-purple-200/80 leading-relaxed mb-10">Empieza con el plan gratuito Soñador y pásate a Plus solo si quieres más reflexión guiada. Noctalia se instala gratis en Android. El precio, los impuestos, el periodo de facturación, la elegibilidad y las promociones dependen de tu país y tu cuenta, así que es Google Play quien muestra el importe que pagarás.</p>
 
 <div class="space-y-8 text-gray-300 leading-relaxed">
   <section class="grid md:grid-cols-2 gap-6">
@@ -54,7 +54,7 @@
         <li>Hasta 10 mensajes de seguimiento por sueño analizado</li>
         <li>Un diario de sueños guardado para volver a consultarlo</li>
       </ul>
-      <p class="mt-5">Este plan sirve para probar el flujo completo, desde la captura hasta la reflexión, sin iniciar una suscripción de pago.</p>
+      <p class="mt-5">Con él pruebas todo el recorrido, desde anotar el sueño al despertar hasta la reflexión guiada, sin pagar una suscripción.</p>
     </div>
     <div class="glass-panel p-8 rounded-2xl border border-dream-salmon/30 bg-dream-salmon/5">
       <p class="text-sm uppercase tracking-wide text-dream-salmon mb-2">Suscripción opcional</p>
@@ -72,7 +72,7 @@
 
   <section class="glass-panel p-8 rounded-2xl border border-white/10 bg-white/5">
     <h2 class="text-2xl font-serif text-white mb-4">Por qué esta página no publica un precio Plus fijo</h2>
-    <p>Google Play puede presentar divisas locales, impuestos y ofertas específicas de una cuenta. Por eso, un importe copiado en este sitio podría no ser correcto para ti. Consulta la ficha de la tienda o la pantalla de suscripción de Noctalia para revisar el precio aplicable, el periodo de facturación, una posible prueba o promoción, las condiciones de renovación y el método de pago antes de confirmar. Instalar la aplicación no activa por sí solo una suscripción de pago.</p>
+    <p>Google Play puede mostrar la moneda local, impuestos y ofertas propias de cada cuenta. Por eso, un importe copiado en este sitio podría no ser correcto para ti. Consulta la ficha de la tienda o la pantalla de suscripción de Noctalia para revisar el precio aplicable, el periodo de facturación, una posible prueba o promoción, las condiciones de renovación y el método de pago antes de confirmar. Instalar la aplicación no activa por sí solo una suscripción de pago.</p>
   </section>
 
   <section class="glass-panel p-8 rounded-2xl border border-white/10 bg-white/5">
@@ -87,7 +87,7 @@
 
   <section class="glass-panel p-8 rounded-2xl border border-dream-salmon/20 bg-dream-salmon/5">
     <h2 class="text-2xl font-serif text-white mb-4">Empieza con el plan gratuito</h2>
-    <p>Descarga Noctalia, registra tu próximo sueño y decide después de usarla si Plus te resulta útil. Consulta los <a href="/es/terminos" class="text-dream-salmon hover:underline">términos</a> y la <a href="/es/politica-privacidad" class="text-dream-salmon hover:underline">política de privacidad</a> para conocer todas las reglas del servicio y del tratamiento de datos.</p>
-    <p class="mt-4"><a href="https://play.google.com/store/apps/details?id=com.tanuki75.noctalia&amp;hl=es" class="text-dream-salmon hover:underline" rel="nofollow noopener noreferrer" target="_blank">Ver Noctalia en Google Play</a></p>
+    <p>Descarga Noctalia, registra tu próximo sueño y decide después de usarla si Plus te resulta útil. Los <a href="/es/terminos" class="text-dream-salmon hover:underline">términos</a> y la <a href="/es/politica-privacidad" class="text-dream-salmon hover:underline">política de privacidad</a> detallan las reglas del servicio y el tratamiento de tus datos.</p>
+    <p class="mt-4"><a href="https://play.google.com/store/apps/details?id=com.tanuki75.noctalia&amp;hl=es" class="text-dream-salmon hover:underline" rel="nofollow noopener noreferrer" target="_blank">Instala Noctalia gratis desde Google Play</a></p>
   </section>
 </div>

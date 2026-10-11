@@ -346,7 +346,7 @@
 <a class="glass-panel rounded-xl p-6 block hover:border-dream-salmon/30 transition-all hover:-translate-y-1" href="sommeil-paradoxal-reves">
 <span class="text-xs text-dream-salmon uppercase mb-2 block">Science</span>
 <h3 class="font-serif text-lg text-dream-cream mb-2">Sommeil paradoxal et r&#234;ves : la science de votre th&#233;&#226;tre nocturne</h3>
-<p class="text-sm text-gray-400">D&#233;couvrez pourquoi le sommeil paradoxal est le stade o&#249; vos r&#234;ves les plus vivaces se d&#233;roulent et ce que la science r&#233;v&#232;le sur cette phase cruciale.</p>
+<p class="text-sm text-gray-400">À quel moment de la nuit survient le sommeil paradoxal, pourquoi ses rêves sont si intenses et ce qui le raccourcit.</p>
 </a>
 <a class="glass-panel rounded-xl p-6 block hover:border-dream-salmon/30 transition-all hover:-translate-y-1" href="dette-sommeil-sante-reves">
 <span class="text-xs text-dream-salmon uppercase mb-2 block">Sant&#233;</span>
@@ -356,7 +356,7 @@
 <a class="glass-panel rounded-xl p-6 block hover:border-dream-salmon/30 transition-all hover:-translate-y-1" href="traqueurs-sommeil-connectes-reves">
 <span class="text-xs text-dream-salmon uppercase mb-2 block">Science</span>
 <h3 class="font-serif text-lg text-dream-cream mb-2">Traqueurs de sommeil connect&#233;s et r&#234;ves : ce qu'ils mesurent vs ce qu'ils manquent</h3>
-<p class="text-sm text-gray-400">D&#233;couvrez ce que les traqueurs mesurent vraiment, leurs limites de pr&#233;cision et pourquoi le journal de r&#234;ves compl&#232;te le tableau.</p>
+<p class="text-sm text-gray-400">Ce que mesurent vraiment une montre ou une bague la nuit, leur fiabilité, et pourquoi aucun capteur n'enregistre ce que vous avez rêvé.</p>
 </a>
 </div>
 </section>

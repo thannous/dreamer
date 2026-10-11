@@ -23,13 +23,13 @@
   "twitterImage": "https://noctalia.app/img/og/noctalia-de-1200x630.jpg",
   "twitterImageAlt": "Noctalia Traumtagebuch-App",
   "publishedTime": "2026-08-09T00:00:00+02:00",
-  "modifiedTime": "2026-08-09T00:00:00+02:00",
+  "modifiedTime": "2026-10-10T00:00:00+02:00",
   "author": "Thanh Chau",
   "prevPath": "",
   "nextPath": "",
   "preloadImage": "",
   "jsonLd": [
-    "{\"@context\":\"https://schema.org\",\"@type\":\"WebPage\",\"name\":\"Dream Journal Ultimate Alternative für Android\",\"description\":\"Vergleiche Dream Journal Ultimate und Noctalia bei Sprache, KI-Reflexion, Klarträumen, Community, Android und Datenschutz.\",\"url\":\"https://noctalia.app/de/dream-journal-ultimate-alternative\",\"inLanguage\":\"de\",\"dateModified\":\"2026-08-09T00:00:00+02:00\",\"publisher\":{\"@id\":\"https://noctalia.app/#organization\"}}",
+    "{\"@context\":\"https://schema.org\",\"@type\":\"WebPage\",\"name\":\"Dream Journal Ultimate Alternative für Android\",\"description\":\"Vergleiche Dream Journal Ultimate und Noctalia bei Sprache, KI-Reflexion, Klarträumen, Community, Android und Datenschutz.\",\"url\":\"https://noctalia.app/de/dream-journal-ultimate-alternative\",\"inLanguage\":\"de\",\"dateModified\":\"2026-10-10T00:00:00+02:00\",\"publisher\":{\"@id\":\"https://noctalia.app/#organization\"}}",
     "{\"@context\":\"https://schema.org\",\"@type\":\"BreadcrumbList\",\"itemListElement\":[{\"@type\":\"ListItem\",\"position\":1,\"name\":\"Startseite\",\"item\":\"https://noctalia.app/de/\"},{\"@type\":\"ListItem\",\"position\":2,\"name\":\"Dream Journal Ultimate Alternative\",\"item\":\"https://noctalia.app/de/dream-journal-ultimate-alternative\"}]}",
     "{\"@context\":\"https://schema.org\",\"@type\":\"FAQPage\",\"mainEntity\":[{\"@type\":\"Question\",\"name\":\"Wähle Dream Journal Ultimate, wenn\",\"acceptedAnswer\":{\"@type\":\"Answer\",\"text\":\"Du iOS, eine optionale öffentliche Community, ähnliche Träume, ein großes Lexikon oder strukturiertes Klartraumtraining willst.\"}},{\"@type\":\"Question\",\"name\":\"Wähle Noctalia, wenn\",\"acceptedAnswer\":{\"@type\":\"Answer\",\"text\":\"Du Android nutzt und schnelle Spracheingabe, visuelle Karten, wiederkehrende Symbole und private Reflexion ohne Social Feed willst.\"}}]}"
   ],
@@ -44,7 +44,7 @@
   <section class="glass-panel p-8 rounded-2xl border border-white/10 bg-white/5">
     <h2 class="text-2xl font-serif text-white mb-4">Kurzfassung</h2>
     <p>Wähle Dream Journal Ultimate für iOS, Dream Wall, die Entdeckung ähnlicher Träume, ein großes Symbollexikon, Klartraumlektionen und Reality-Check-Erinnerungen. Wähle Noctalia, um einen Traum vor dem Vergessen einzusprechen, eine visuelle Karte zu erstellen, wiederkehrende Symbole zu verfolgen und mit geführten Fragen weiterzumachen.</p>
-    <p class="mt-4">Das ist keine Rangliste mit einem universellen Sieger. Dream Journal Ultimate besitzt das breitere Community- und Klartraumangebot; Noctalia bietet einen fokussierteren Weg von der Erfassung zur Reflexion. Keine App sollte als medizinischer oder vorhersagender Dienst dargestellt werden.</p>
+    <p class="mt-4">Einen klaren Sieger gibt es hier nicht. Dream Journal Ultimate hat das breitere Community- und Klartraumangebot; Noctalia den direkteren Weg von der Erfassung zur Reflexion. Keine der beiden Apps wird hier als medizinischer oder vorhersagender Dienst dargestellt.</p>
   </section>
 
   <section class="glass-panel p-8 rounded-2xl border border-white/10 bg-white/5">
@@ -65,8 +65,8 @@
   </section>
 
   <section class="grid md:grid-cols-2 gap-6">
-    <div class="glass-panel p-8 rounded-2xl border border-white/10 bg-white/5"><h2 class="text-2xl font-serif text-white mb-4">Aktuelle öffentliche Belege</h2><p>Am 9. August 2026 zeigte Google Play 100.000+ Downloads, 4,4 Sterne und rund 1.140 Rezensionen; aktualisiert am 1. August. Der US App Store zeigte 4,5 Sterne aus 547 Bewertungen und Version 2026.8.5. Noctalia sollte diese Reife anerkennen.</p></div>
-    <div class="glass-panel p-8 rounded-2xl border border-white/10 bg-white/5"><h2 class="text-2xl font-serif text-white mb-4">Preisgrenze</h2><p>Beide Apps sind kostenlos herunterladbar und zeigen In-App-Käufe oder Abonnements. Preise ändern sich nach Land, Steuer, Berechtigung und Datum; diese Seite behauptet deshalb keine universell günstigste Option.</p></div>
+    <div class="glass-panel p-8 rounded-2xl border border-white/10 bg-white/5"><h2 class="text-2xl font-serif text-white mb-4">Zahlen aus den Stores</h2><p>Am 9. August 2026 zeigte Google Play für Dream Journal Ultimate 100.000+ Downloads, 4,4 Sterne und rund 1.140 Rezensionen; aktualisiert am 1. August. Der US App Store zeigte 4,5 Sterne aus 547 Bewertungen und Version 2026.8.5. Eine vergleichbare Reichweite beansprucht Noctalia nicht.</p></div>
+    <div class="glass-panel p-8 rounded-2xl border border-white/10 bg-white/5"><h2 class="text-2xl font-serif text-white mb-4">Zu den Preisen</h2><p>Beide Apps sind kostenlos herunterladbar und zeigen In-App-Käufe oder Abonnements. Preise ändern sich nach Land, Steuer, Berechtigung und Datum; diese Seite behauptet deshalb keine universell günstigste Option.</p></div>
   </section>
 
   <section class="glass-panel p-8 rounded-2xl border border-white/10 bg-white/5">
@@ -110,7 +110,7 @@
 
   <section class="glass-panel p-8 rounded-2xl border border-dream-salmon/20 bg-dream-salmon/5">
     <h2 class="text-2xl font-serif text-white mb-4">Noctalia auf Android testen</h2>
-    <p>Noctalia ist für Menschen, die einen Traum schnell festhalten, in eine visuelle Erinnerung verwandeln und privat fokussiert weiter reflektieren wollen.</p>
+    <p>Sprich deinen Traum direkt nach dem Aufwachen ein, lass auf Wunsch ein Bild davon erzeugen und denk privat mit geführten Fragen weiter.</p>
     <p class="mt-4"><a href="https://play.google.com/store/apps/details?id=com.tanuki75.noctalia&amp;hl=de" class="text-dream-salmon hover:underline" rel="nofollow noopener noreferrer" target="_blank">Noctalia bei Google Play öffnen</a></p>
   </section>
 </div>

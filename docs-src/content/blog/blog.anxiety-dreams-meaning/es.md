@@ -445,7 +445,7 @@
 <a class="glass-panel rounded-xl p-6 block hover:border-dream-salmon/30 transition-all hover:-translate-y-1" href="suenos-salud-mental">
 <span class="text-xs text-dream-salmon uppercase mb-2 block">Ciencia</span>
 <h3 class="font-serif text-lg text-dream-cream mb-2">Sueños y Salud Mental: Cómo Tu Sueño Revela Tu Mente</h3>
-<p class="text-sm text-gray-400">Descubre la conexión entre los sueños y la salud mental, incluyendo cómo la ansiedad, la depresión y el trauma afectan tus sueños.</p>
+<p class="text-sm text-gray-400">Cómo la ansiedad, la depresión, el estrés y el trauma aparecen en los sueños, y cuándo conviene hablar de las pesadillas frecuentes con un profesional.</p>
 </a>
 <a class="glass-panel rounded-xl p-6 block hover:border-dream-salmon/30 transition-all hover:-translate-y-1" href="suenos-estres-trabajo">
 <span class="text-xs text-dream-salmon uppercase mb-2 block">Guía Completa</span>

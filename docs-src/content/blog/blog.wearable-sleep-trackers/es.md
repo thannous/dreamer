@@ -326,12 +326,12 @@
 <a class="glass-panel rounded-xl p-6 block hover:border-dream-salmon/30 transition-all hover:-translate-y-1" href="sueno-rem-suenos">
 <span class="text-xs text-dream-salmon uppercase mb-2 block">Ciencia del sue&ntilde;o</span>
 <h3 class="font-serif text-lg text-dream-cream mb-2">Sue&ntilde;o REM y sue&ntilde;os: entendiendo el reinicio nocturno de tu cerebro</h3>
-<p class="text-sm text-gray-400">Descubre c&oacute;mo la fase REM moldea tus sue&ntilde;os y por qu&eacute; es esencial para tu bienestar.</p>
+<p class="text-sm text-gray-400">En qué momento de la noche llega el sueño REM, por qué sus sueños son tan vívidos y qué lo acorta.</p>
 </a>
 <a class="glass-panel rounded-xl p-6 block hover:border-dream-salmon/30 transition-all hover:-translate-y-1" href="sueno-salud-prioridad">
 <span class="text-xs text-dream-salmon uppercase mb-2 block">Salud</span>
 <h3 class="font-serif text-lg text-dream-cream mb-2">El sue&ntilde;o, tu principal palanca de salud: el estudio OHSU</h3>
-<p class="text-sm text-gray-400">Un estudio revela que la falta de sue&ntilde;o supera a la mala alimentaci&oacute;n y la falta de ejercicio en esperanza de vida.</p>
+<p class="text-sm text-gray-400">Lo que encontró un estudio de la OHSU al comparar dormir poco con la alimentación y el ejercicio frente a la esperanza de vida, y los límites de ese vínculo.</p>
 </a>
 <a class="glass-panel rounded-xl p-6 block hover:border-dream-salmon/30 transition-all hover:-translate-y-1" href="/es/blog/">
 <span class="text-xs text-dream-salmon uppercase mb-2 block">Recursos</span>

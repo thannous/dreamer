@@ -292,7 +292,7 @@
 <i class="w-5 h-5 text-dream-salmon" data-lucide="book-open"></i>
                     Esplora i simboli correlati
                 </h2>
-<p class="text-sm text-purple-300/60 mb-4">Immergiti più a fondo nei simboli di questo articolo:</p>
+<p class="text-sm text-purple-300/60 mb-4">Approfondisci i simboli di questo articolo:</p>
 <div class="flex flex-wrap gap-3">
 <a class="inline-flex items-center gap-2 px-4 py-2 glass-button rounded-full text-sm hover:text-dream-salmon transition-colors" href="../simboli/casa">
                         Significato del sogno della casa
@@ -373,17 +373,17 @@
                     <a href="significato-dei-sogni-ricorrenti-comprendere-i-loro-messaggi-nascosti" class="glass-panel rounded-xl p-6 block hover:border-dream-salmon/30 transition-all hover:-translate-y-1">
                         <span class="text-xs text-dream-salmon uppercase mb-2 block">Interpretazione</span>
                         <h3 class="font-serif text-lg text-dream-cream mb-2">Significato dei sogni ricorrenti: comprendere i loro messaggi</h3>
-                        <p class="text-sm text-gray-400">Perché continui a fare lo stesso sogno? Scopri cosa il tuo subconscio sta cercando di dirti.</p>
+                        <p class="text-sm text-gray-400">Perché lo stesso sogno ritorna, cosa annotare tra un episodio e l'altro e quando gli incubi ripetuti meritano un parere medico.</p>
                     </a>
                     <a href="sogni-di-denti-che-cadono-significato-e-interpretazione" class="glass-panel rounded-xl p-6 block hover:border-dream-salmon/30 transition-all hover:-translate-y-1">
                         <span class="text-xs text-dream-salmon uppercase mb-2 block">Interpretazione</span>
                         <h3 class="font-serif text-lg text-dream-cream mb-2">Sogni di denti che cadono: significato e interpretazione</h3>
-                        <p class="text-sm text-gray-400">Perché sogni di perdere i denti? Scopri le 7 interpretazioni più comuni.</p>
+                        <p class="text-sm text-gray-400">Denti che cadono, si muovono o si sgretolano in sogno, con gli scenari da confrontare, le emozioni in gioco e cosa dice la ricerca.</p>
                     </a>
                     <a href="significato-dei-sogni-che-cadono-perche-sogni-di-cadere" class="glass-panel rounded-xl p-6 block hover:border-dream-salmon/30 transition-all hover:-translate-y-1">
                         <span class="text-xs text-dream-salmon uppercase mb-2 block">Interpretazione</span>
                         <h3 class="font-serif text-lg text-dream-cream mb-2">Sogni di cadere: perché sogni di cadere nel vuoto</h3>
-                        <p class="text-sm text-gray-400">Perché sogni di cadere nel vuoto? Scopri il significato psicologico.</p>
+                        <p class="text-sm text-gray-400">Perché si sogna di cadere, dalla scossa ipnica all'addormentamento alle cadute lunghe, e cosa annotare al risveglio.</p>
                     </a>
               </div>
             </section>

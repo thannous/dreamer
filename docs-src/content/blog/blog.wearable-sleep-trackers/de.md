@@ -39,7 +39,7 @@
 ---
 <article class="max-w-5xl mx-auto">
 <!-- Breadcrumb -->
-<nav aria-label="Semmelbr&ouml;sel" class="text-sm text-purple-200/60 mb-8">
+<nav aria-label="Brotkrümelnavigation" class="text-sm text-purple-200/60 mb-8">
 <ol class="flex items-center gap-2 flex-wrap" itemscope="" itemtype="https://schema.org/BreadcrumbList">
 <li itemprop="itemListElement" itemscope="" itemtype="https://schema.org/ListItem">
 <a class="hover:text-dream-salmon transition-colors" href="/de/" itemprop="item"><span itemprop="name">Startseite</span></a>
@@ -336,7 +336,7 @@
 <a class="glass-panel rounded-xl p-6 block hover:border-dream-salmon/30 transition-all hover:-translate-y-1" href="/de/blog/">
 <span class="text-xs text-dream-salmon uppercase mb-2 block">Ressourcen</span>
 <h3 class="font-serif text-lg text-dream-cream mb-2">Alle Ressourcen durchsuchen</h3>
-<p class="text-sm text-gray-400">Entdecken Sie unsere vollst&auml;ndige Sammlung von Artikeln &uuml;ber Tr&auml;ume, Schlaf und Wohlbefinden.</p>
+<p class="text-sm text-gray-400">Alle Artikel über Träume und Schlaf, mit Suche und Themenfiltern.</p>
 </a>
 </div>
 </section>

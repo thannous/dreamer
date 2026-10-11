@@ -23,7 +23,7 @@
   "twitterImage": "https://noctalia.app/img/og/noctalia-fr-1200x630.jpg",
   "twitterImageAlt": "Journal de rêves illustré et interprété",
   "publishedTime": "",
-  "modifiedTime": "2026-10-09",
+  "modifiedTime": "2026-10-10",
   "author": "",
   "prevPath": "",
   "nextPath": "",
@@ -91,8 +91,8 @@
     <!-- 1b. Dream: example entries in a 3D night -->
     <section class="oh-section oh-dreams" data-chapter="dream" data-labels='{&quot;close&quot;:&quot;Fermer&quot;,&quot;transcript&quot;:&quot;Transcription&quot;,&quot;symbols&quot;:&quot;Symboles&quot;,&quot;example&quot;:&quot;Exemple d’entrée rédigé pour cette page&quot;}'>
         <div class="oh-section-head reveal">
-            <h2 class="oh-h2">Illustre tes rêves</h2>
-            <p class="oh-h2 oh-dreams-heading-end">Comprends leur sens</p>
+            <h2 class="oh-h2">Illustrez vos rêves</h2>
+            <p class="oh-h2 oh-dreams-heading-end">Comprenez leur sens</p>
         </div>
         <div class="oh-dreamspace">
             <div class="oh-dreamspace-pin">
@@ -260,7 +260,7 @@
                 </li>
                 </ul>
             </div>
-                <p class="oh-h2 oh-dreams-closing reveal">Comprends leur sens</p>
+                <p class="oh-h2 oh-dreams-closing reveal">Comprenez leur sens</p>
             </div>
         </div>
     </section>
@@ -273,7 +273,7 @@
                 <h2 class="oh-h2">Une nuit, c’est une scène. Dix nuits, c’est une carte.</h2>
             </div>
             <div>
-                <p class="oh-lede">Chaque rêve enregistré ajoute ses symboles au ciel. Quand la même image revient, ses lignes s’intensifient — et un motif invisible depuis une seule nuit apparaît.</p>
+                <p class="oh-lede">Chaque rêve enregistré ajoute ses symboles au ciel. Quand la même image revient, ses lignes s’intensifient. Un motif apparaît, qu’une seule nuit ne laissait pas voir.</p>
                 <p class="oh-starmap-hint">Survolez ou touchez une étoile pour suivre ses rêves.</p>
             </div>
         </div>
@@ -492,7 +492,7 @@
                 <span class="oh-index" aria-hidden="true">5 h</span>
                 <h2 class="oh-h2">Dictionnaire des symboles</h2>
             </div>
-            <p class="oh-lede">Parcourez 150 symboles fréquents, chacun avec des questions de contexte et des associations possibles. La scène — et ce que vous y avez ressenti — compte plus qu’une définition figée.</p>
+            <p class="oh-lede">Parcourez 150 symboles fréquents, chacun avec des questions de contexte et des associations possibles. Ce qui compte, c’est la scène et ce que vous y avez ressenti, plus qu’une définition figée.</p>
         </div>
 
         <div class="oh-symbols reveal">
@@ -780,7 +780,7 @@
             <span class="oh-index" aria-hidden="true">7 h 15</span>
             <p class="oh-ending-mentions"><span>Gratuit sur Google Play</span><span>Vos rêves restent privés</span></p>
             <h2 class="oh-ending-title"><span>Ouvrez les yeux.</span> <span class="oh-accent-line">Le rêve est toujours là.</span></h2>
-            <p class="oh-lede">Enregistrez-le avant qu’il ne s’efface — avec vos mots, sur votre téléphone, dès le réveil.</p>
+            <p class="oh-lede">Enregistrez-le dès le réveil, avec vos mots, sur votre téléphone, avant qu’il ne s’efface.</p>
             <div class="oh-hero-cta">
                 <a href="https://play.google.com/store/apps/details?id=com.tanuki75.noctalia&amp;hl=fr" class="oh-btn-primary">
                     Enregistrer mon premier rêve <i data-lucide="play"></i>
