@@ -385,6 +385,39 @@ describe('useSleepSoundPlayer', () => {
     expect(result.current.isLoaded).toBe(true);
   });
 
+  it('does not start a retried download after the screen loses focus', async () => {
+    jest.mocked(ensureSleepSoundFile).mockRejectedValueOnce(new Error('offline'));
+    let resolveRetry: (uri: string) => void = () => {};
+    const { result } = renderHook(() =>
+      useSleepSoundPlayer({
+        sound,
+        durationMinutes: 30,
+        title: 'Gentle rain',
+        albumTitle: 'Evening ambience',
+      }),
+    );
+    await flushDownload();
+    jest.mocked(ensureSleepSoundFile).mockReturnValueOnce(
+      new Promise<string>((resolve) => {
+        resolveRetry = resolve;
+      }),
+    );
+
+    await act(async () => {
+      await result.current.play();
+    });
+    act(() => {
+      focusCleanup?.();
+    });
+    await act(async () => {
+      resolveRetry(LOCAL_URI);
+    });
+    await flushDownload();
+
+    expect(result.current.isLoaded).toBe(true);
+    expect(mockPlayer.play).not.toHaveBeenCalled();
+  });
+
   it('hands the loop to the player again when a load timeout is retried', async () => {
     mockStatus.isLoaded = false;
     const { result } = renderHook(() =>

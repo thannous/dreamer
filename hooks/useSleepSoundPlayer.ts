@@ -288,6 +288,8 @@ export function useSleepSoundPlayer({
   useFocusEffect(
     useCallback(() => {
       return () => {
+        // Leaving the screen also cancels a retry that was waiting to start the sound.
+        playAfterDownloadRef.current = null;
         commitElapsedTime();
         setTimerRunning(false);
         try {

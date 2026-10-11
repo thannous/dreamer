@@ -402,12 +402,6 @@ export default function LucidNightScreen() {
     albumTitle: copy.library,
   });
   const ambienceDownloadFailed = ambience.error === 'download_failed';
-  // Android reads the message through its live region; VoiceOver needs an announcement.
-  useEffect(() => {
-    if (ambienceDownloadFailed && Platform.OS === 'ios') {
-      AccessibilityInfo.announceForAccessibility(ambienceCopy.downloadError);
-    }
-  }, [ambienceCopy.downloadError, ambienceDownloadFailed]);
   const policy = useMemo(
     () =>
       evaluateLucidSafetyPolicyFromState(state, {
@@ -455,6 +449,13 @@ export default function LucidNightScreen() {
     ] as (string | null)[]
   ).filter((label): label is string => label !== null);
   const showSignals = signalsOpen || !!audio.plan;
+  // Android reads the message through its live region; VoiceOver needs an announcement,
+  // made once the ambience controls are on screen to give it context.
+  useEffect(() => {
+    if (showSignals && ambienceDownloadFailed && Platform.OS === 'ios') {
+      AccessibilityInfo.announceForAccessibility(ambienceCopy.downloadError);
+    }
+  }, [ambienceCopy.downloadError, ambienceDownloadFailed, showSignals]);
   const calibrationStatusCopy =
     calibration.status === 'suspended'
       ? copy.suspended

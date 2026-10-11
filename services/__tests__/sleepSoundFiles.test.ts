@@ -104,6 +104,16 @@ it('refuses a page served instead of the loop, so the next try downloads it agai
   await expect(ensureSleepSoundFile(getSleepSound('ocean'))).resolves.toBe(`${DIR}/ocean-waves.m4a`);
 });
 
+it('drops a page an earlier build cached under the loop name and downloads the sound', async () => {
+  mockFiles.add(`${DIR}/ocean-waves.m4a`);
+  mockHeaders.set(`${DIR}/ocean-waves.m4a`, '<!DOCTYPE html>');
+  mockDownload.mockImplementationOnce(downloadsTo());
+
+  await expect(ensureSleepSoundFile(getSleepSound('ocean'))).resolves.toBe(`${DIR}/ocean-waves.m4a`);
+  expect(mockDownload).toHaveBeenCalledTimes(1);
+  expect(mockHeaders.get(`${DIR}/ocean-waves.m4a.part`)).toBe(M4A_HEADER);
+});
+
 it('joins a download already in flight instead of starting a second one', async () => {
   let finish: () => void = () => {};
   mockDownload.mockImplementationOnce(
