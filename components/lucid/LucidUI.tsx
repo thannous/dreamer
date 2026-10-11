@@ -1,6 +1,6 @@
 import Ionicons from '@expo/vector-icons/Ionicons';
 import { LinearGradient } from 'expo-linear-gradient';
-import React, { useState, type ComponentProps, type ReactNode } from 'react';
+import React, { useEffect, useRef, useState, type ComponentProps, type ReactNode } from 'react';
 import {
   ActivityIndicator,
   Pressable,
@@ -16,7 +16,8 @@ import {
 } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
-import { ScreenContainer } from '@/components/ScreenContainer';
+import { ScreenContainer, useWideConstrainedLayout } from '@/components/ScreenContainer';
+import { LucidArtStatusBar } from '@/components/lucid/LucidArtStatusBar';
 import { LucidGlass } from '@/components/lucid/LucidGlass';
 import { getLucidPalette, LucidIcon, LucidPress, LucidRadius, LucidSpace, LucidType } from '@/constants/lucidTheme';
 import { useTheme } from '@/context/ThemeContext';
@@ -29,6 +30,10 @@ const DISABLED_OPACITY = 0.45;
 
 // La barre d'onglets flotte à `max(insets.bottom, 10)` et mesure jusqu’à 84px : le contenu doit réserver de quoi passer dessous sans s'y cacher.
 export const LUCID_TAB_BAR_INSET = 92;
+
+// Les peintures d'en-tête fondent vers le fond à partir de la moitié environ :
+// au-dessus, l'horloge et la batterie restent sur la nuit et passent en clair.
+export const LUCID_HERO_DARK_SHARE = 0.5;
 
 export function LucidScreenHeader({
   eyebrow,
@@ -88,6 +93,7 @@ export function LucidScreen({
   scroll = true,
   contentStyle,
   colorMode = 'theme',
+  darkTop,
   testID,
   ...scrollProps
 }: {
@@ -114,11 +120,25 @@ export function LucidScreen({
   contentStyle?: ViewStyle;
   /** Fixed dark artwork keeps its audited dark text palette in either app theme. */
   colorMode?: 'theme' | 'dark';
+  /** Depth of the night artwork at the top of the page; the status bar reads
+   * light until the page has scrolled past it. */
+  darkTop?: number;
   testID?: string;
 } & Omit<ScrollViewProps, 'contentContainerStyle'>) {
   const { colors, mode } = useTheme();
   const palette = getLucidPalette(colors, colorMode === 'dark' ? 'dark' : mode);
   const insets = useSafeAreaInsets();
+  // Wide Android layouts pad the content, so light gutters sit under the
+  // clock and battery whatever the artwork does.
+  const wideLayout = useWideConstrainedLayout();
+  const artEdge = darkTop === undefined || wideLayout ? undefined : darkTop - insets.top;
+  const scrollY = useRef(0);
+  const [overArt, setOverArt] = useState(false);
+  // The artwork can be re-measured (rotation, reflow) away from the top.
+  useEffect(() => {
+    setOverArt(artEdge !== undefined && scrollY.current < artEdge);
+  }, [artEdge]);
+  const { onScroll, scrollEventThrottle } = scrollProps;
   const content = (
     <ScreenContainer style={styles.screenContainer} maxWidth={760} fillContent={!scroll}>
       <View
@@ -153,6 +173,17 @@ export function LucidScreen({
           keyboardShouldPersistTaps="handled"
           showsVerticalScrollIndicator={false}
           {...scrollProps}
+          scrollEventThrottle={scrollEventThrottle ?? (darkTop !== undefined ? 32 : undefined)}
+          onScroll={
+            darkTop !== undefined
+              ? (event) => {
+                  onScroll?.(event);
+                  scrollY.current = event.nativeEvent.contentOffset.y;
+                  // Only crossing the artwork's edge re-renders the screen.
+                  setOverArt(artEdge !== undefined && scrollY.current < artEdge);
+                }
+              : onScroll
+          }
         >
           {content}
         </ScrollView>
@@ -162,6 +193,7 @@ export function LucidScreen({
       {footer ? (
         <View style={[styles.footer, { paddingBottom: Math.max(insets.bottom, 20) }]}>{footer}</View>
       ) : null}
+      {darkTop !== undefined ? <LucidArtStatusBar overArt={overArt} /> : null}
     </View>
   );
 }

@@ -118,6 +118,7 @@ export default function LucidProgramDetailScreen() {
   const { state, content, startProgram, pauseProgram } = useLucidTrainer();
   const [busy, setBusy] = useState(false);
   const [aboutExpanded, setAboutExpanded] = useState(false);
+  const [sceneBottom, setSceneBottom] = useState<number>();
   const now = useLucidNow();
   const copy = COPY[content.locale];
   const close = () => closeLucidRoute(router, '/lucid/(tabs)/programs');
@@ -282,6 +283,7 @@ export default function LucidProgramDetailScreen() {
         />
       )}
       onPrimaryAction={() => void handleStart()}
+      onSceneLayout={setSceneBottom}
       onSessionPress={(session) => {
         if (wbtbBlocked && !progress?.completedExerciseIds.includes(session.id)) return;
         router.push(`/lucid/session/${id}/${session.session}`);
@@ -293,6 +295,9 @@ export default function LucidProgramDetailScreen() {
   return (
     <LucidScreen
       contentStyle={styles.immersiveScreenContent}
+      // The painted scene is night whatever the app theme; the safety card
+      // below it sits on the screen ground.
+      darkTop={sceneBottom}
       testID="lucid-program-detail"
     >
       {journey}

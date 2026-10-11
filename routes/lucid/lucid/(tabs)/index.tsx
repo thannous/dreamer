@@ -6,7 +6,7 @@ import React from 'react';
 import { StyleSheet, Text, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
-import { LUCID_TAB_BAR_INSET, LucidScreen } from '@/components/lucid/LucidUI';
+import { LUCID_HERO_DARK_SHARE, LUCID_TAB_BAR_INSET, LucidScreen } from '@/components/lucid/LucidUI';
 import { PressableScale, Reveal } from '@/components/motion';
 import {
   getLucidPalette,
@@ -414,6 +414,7 @@ function LucidDayThread({
 }
 
 export default function LucidTodayScreen() {
+  const [heroHeight, setHeroHeight] = React.useState<number>();
   const insets = useSafeAreaInsets();
   const { colors, mode } = useTheme();
   const palette = getLucidPalette(colors, mode);
@@ -543,8 +544,13 @@ export default function LucidTodayScreen() {
       testID="lucid-today"
       bottomInset={LUCID_TAB_BAR_INSET}
       contentStyle={styles.screenContent}
+      darkTop={heroHeight === undefined ? undefined : heroHeight * LUCID_HERO_DARK_SHARE}
     >
-      <Reveal distance={0} style={styles.hero}>
+      <Reveal
+        distance={0}
+        style={styles.hero}
+        onLayout={({ nativeEvent }) => setHeroHeight(nativeEvent.layout.height)}
+      >
         <Image
           accessible={false}
           contentFit="cover"
