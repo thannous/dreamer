@@ -16,6 +16,9 @@ jest.mock('react-native-safe-area-context', () => ({
   useSafeAreaInsets: () => ({ top: 0, right: 0, bottom: 0, left: 0 }),
 }));
 
+// Native status bar chrome; it needs the router, which this stubbed renderer lacks.
+jest.mock('@/components/lucid/LucidArtStatusBar', () => ({ LucidArtStatusBar: () => null }));
+
 jest.mock('react-native', () => {
   const React = require('react');
   const actual = jest.requireActual('../../../tests/react-native-stub');

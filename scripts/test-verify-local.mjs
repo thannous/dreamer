@@ -638,7 +638,9 @@ describe('verify:pr', () => {
     }
   });
 
-  test('without flock or setpriv on PATH, a step still runs, passes or fails, and the run says how it is locked', async () => {
+  test('without flock or setpriv on PATH, a step still runs, passes or fails, and the run says how it is locked', {
+    skip: process.platform === 'win32' ? 'Windows never probes flock or setpriv: runShell takes its own Windows branch, with its own message' : false,
+  }, async () => {
     // A PATH with every command of this one except the hidden ones, so the
     // engine's own probes find them missing (as on macOS), on Linux too.
     const pathWithout = (hidden) => {
@@ -773,7 +775,9 @@ describe('verify:release and the deploy guard', () => {
     assert.deepEqual(repo.runs(), ['lint', 'test'], 'a PR run on main has no path in scope');
   });
 
-  test('checks get a temporary directory of their own, removed with the copy', async () => {
+  test('checks get a temporary directory of their own, removed with the copy', {
+    skip: process.platform === 'win32' ? "Git for Windows' sh prints TMPDIR as a POSIX path (/tmp is mounted on %TEMP%), not the Windows path compared here" : false,
+  }, async () => {
     const repo = makeRepository();
     repo.git(['checkout', '--quiet', '-b', 'feature']);
     repo.commit('feature', { 'src/b.js': '1\n' });
@@ -2026,7 +2030,7 @@ describe('pre-push hook', () => {
   }
 
   for (const mode of ['fail', 'short']) {
-    test(`the hook blocks a push when cat-file ${mode === 'fail' ? 'fails' : 'answers short'}`, async () => {
+    test(`the hook blocks a push when cat-file ${mode === 'fail' ? 'fails' : 'answers short'}`, { skip: process.platform === 'win32' ? 'the fake git is a sh script' : false }, async () => {
       const repo = makeRepository();
       repo.git(['checkout', '--quiet', '-b', 'feature']);
       const fake = ['AKIA', 'ABCDEFGHIJKLMNOP'].join('');
