@@ -40,6 +40,16 @@ export default {
       specialised: true,
       requires: { command: 'test -z "$SITE_E2E_UNAVAILABLE"', hint: 'run it locally or pass owner-machine evidence' },
     },
+    // Like e2e-backend: only in a release of the app target, and never runnable
+    // here, so a release that selected it could not pass.
+    {
+      name: 'app-e2e',
+      command: 'echo app-e2e >> "$RUN_LOG"',
+      kinds: ['release'],
+      targets: ['app'],
+      specialised: true,
+      requires: { command: 'test -n "$APP_E2E_AVAILABLE"', hint: 'run it where Docker runs or pass owner-machine evidence' },
+    },
   ],
 };
 `;
@@ -71,6 +81,7 @@ async function withRepository(run) {
       VERIFY_LOCAL_HEAVY_LOCK: path.join(root, 'heavy.lock'),
     };
     delete env.SITE_E2E_UNAVAILABLE;
+    delete env.APP_E2E_AVAILABLE;
     const remote = path.join(root, 'remote.git');
     const work = path.join(root, 'work');
     execFileSync('git', ['init', '-q', '--bare', '-b', 'master', remote], { env });
@@ -88,8 +99,8 @@ async function withRepository(run) {
     const engine = (kind, args = [], { extraEnv = {} } = {}) =>
       verify(kind, args, { cwd: work, env: { ...env, ...extraEnv }, log: () => {}, worktreeRoot: path.join(root, 'copies') });
     const runs = () => (existsSync(runLog) ? readFileSync(runLog, 'utf8').split('\n').filter(Boolean) : []);
-    const check = async ({ cwd = work, fetch = true } = {}) => {
-      const result = await checkSitePublishProof({ root: cwd, gitEnv: env, fetch });
+    const check = async ({ cwd = work, fetch = true, targets = [] } = {}) => {
+      const result = await checkSitePublishProof({ root: cwd, gitEnv: env, fetch, targets });
       for (const failure of result.failures) {
         assert.ok(SITE_PUBLISH_PROOF_CHECKS.includes(failure.check), `${failure.check} is listed in SITE_PUBLISH_PROOF_CHECKS`);
       }
@@ -188,6 +199,59 @@ test('an incomplete release is refused until the missing check has owner-machine
     const head = git(['rev-parse', 'HEAD']);
     assert.equal((await engine('release', ['--external', `site-e2e=owner-machine: tanuki site-e2e on ${head}`], unavailable)).status, 0);
     assert.deepEqual((await check()).failures, []);
+  });
+});
+
+test('the site publish needs no app check; a publish that asks for the app target does', async () => {
+  await withRepository(async ({ check, engine, env, git, runs, work }) => {
+    // The machine cannot run the app check, and a site release never asks for it.
+    assert.equal((await engine('release')).status, 0);
+    assert.deepEqual(runs(), ['suite', 'site-e2e']);
+    assert.deepEqual((await check()).failures, []);
+
+    assert.deepEqual(failedChecks(await check({ targets: ['app'] })), ['proof-target']);
+    await assert.rejects(
+      assertSitePublishProof({ root: work, gitEnv: env, label: 'the Vercel web app (dream.noctalia.app)', targets: ['app'] }),
+      /refused: the proof does not cover target app\. .*run `npm run verify:release` \(/,
+    );
+    assert.match((await assertSitePublishProof({ root: work, gitEnv: env })).message, /npm run verify:release:site passed on it/);
+
+    // npm run verify:release is `release --target app`.
+    const head = git(['rev-parse', 'HEAD']);
+    assert.equal((await engine('release', ['--target', 'app', '--external', `app-e2e=owner-machine: tanuki app-e2e on ${head}`])).status, 0);
+    assert.deepEqual((await check({ targets: ['app'] })).failures, []);
+    assert.deepEqual((await check()).failures, [], 'an app release also unlocks the site');
+    const accepted = await assertSitePublishProof({ root: work, gitEnv: env, targets: ['app'] });
+    assert.match(accepted.message, /npm run verify:release passed on it/);
+  });
+});
+
+test('an app check left open by an app release does not block the site release that follows it', async () => {
+  await withRepository(async ({ check, engine }) => {
+    // npm run verify:release where Docker is missing: app-e2e is unavailable.
+    assert.equal((await engine('release', ['--target', 'app'])).status, 2);
+    assert.deepEqual(failedChecks(await check()), ['proof-passed'], 'no release has passed yet');
+    assert.deepEqual(failedChecks(await check({ targets: ['app'] })), ['proof-passed', 'proof-latest-release', 'proof-open-check']);
+
+    // npm run verify:release:site then passes: the site may publish, the app may not.
+    assert.equal((await engine('release')).status, 0);
+    assert.deepEqual((await check()).failures, []);
+    assert.deepEqual(failedChecks(await check({ targets: ['app'] })), ['proof-open-check', 'proof-target']);
+  });
+});
+
+test('an app release left incomplete after a passed site release does not block the site', async () => {
+  await withRepository(async ({ check, engine }) => {
+    assert.equal((await engine('release')).status, 0);
+    // npm run verify:release where Docker is missing: the passed site proof is
+    // kept, and the incomplete app run is now the latest release run.
+    assert.equal((await engine('release', ['--target', 'app'])).status, 2);
+    assert.deepEqual((await check()).failures, []);
+    assert.deepEqual(failedChecks(await check({ targets: ['app'] })), ['proof-latest-release', 'proof-open-check', 'proof-target']);
+
+    // A shared check left unpassed by a later app run still refuses the site.
+    assert.equal((await engine('release', ['--target', 'app'], { extraEnv: { SITE_E2E_UNAVAILABLE: '1' } })).status, 2);
+    assert.deepEqual(failedChecks(await check()), ['proof-latest-release', 'proof-open-check']);
   });
 });
 
