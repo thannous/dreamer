@@ -27,7 +27,7 @@ export function getMockDreamArt(name: MockDreamArt): number {
   return DREAM_ART[name];
 }
 
-/** A URI for a dream's `imageUrl` and `thumbnailUrl`. */
+/** A URI for a dream's `imageUrl`. */
 export function getMockDreamImage(name: MockDreamArt): string {
   // Expo 58 registers numeric asset modules on web too. Resolve those through
   // its registry; react-native-web has no Image.resolveAssetSource.
@@ -59,4 +59,13 @@ export function getRandomImageForTheme(theme: DreamTheme): string {
  */
 export function getThumbnailUrl(imageUrl: string): string {
   return imageUrl;
+}
+
+/**
+ * A URI for a dream's `thumbnailUrl`: the same art under its own address, as stored thumbnails
+ * are, so a failed thumbnail still falls back to the full illustration.
+ */
+export function getMockDreamThumbnail(name: MockDreamArt): string {
+  const uri = getMockDreamImage(name);
+  return uri ? `${uri}${uri.includes('?') ? '&' : '?'}variant=thumbnail` : uri;
 }

@@ -74,7 +74,8 @@ test('guest saves the exact story and reads its simulated analysis inline', asyn
   expect((await reading.textContent() ?? '').length).toBeGreaterThan(100);
   await expect(screen.getByTestId('analysis.reading.modal')).toHaveCount(0);
   expect(consentPrompts).toHaveLength(1);
-  expect(consentPrompts[0]).toMatch(/third-party AI service/);
+  // Owner decision (2026-10-10): the prompt names generative AI, never a provider.
+  expect(consentPrompts[0]).toMatch(/generative AI/);
   await offConsent();
   await app.screenshot('guest-saved-analysis');
 });
