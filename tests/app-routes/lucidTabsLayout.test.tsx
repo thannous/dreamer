@@ -110,15 +110,25 @@ describe('Lucid tabs layout', () => {
     for (const [name, options] of firstScreenOptions) {
       expect(mockScreenOptions.get(name)).toBe(options);
     }
-
-    expect(mockScreenOptions.get('night')).toMatchObject({ href: null, title: 'Night' });
-    expect(mockScreenOptions.get('settings')).toMatchObject({ href: null, title: 'Profile' });
-    expect(
-      [...mockScreenOptions.values()].filter(
-        (options) => (options as { href?: unknown }).href !== null
-      )
-    ).toHaveLength(4);
   });
 
+  // Expo Router 58 redirects a focused `href: null` tab to Today, which made
+  // Night and Settings unreachable. They stay plain routes with no tab button.
+  it('keeps Night and Settings reachable but out of the tab bar', () => {
+    render(<LucidTabsLayout />);
 
+    for (const [name, title] of [
+      ['night', 'Night'],
+      ['settings', 'Profile'],
+    ] as const) {
+      const options = mockScreenOptions.get(name) as {
+        href?: unknown;
+        title: string;
+        tabBarButton: () => unknown;
+      };
+      expect(options).not.toHaveProperty('href');
+      expect(options.title).toBe(title);
+      expect(options.tabBarButton()).toBeNull();
+    }
+  });
 });

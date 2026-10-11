@@ -72,10 +72,12 @@ export default function LucidTabsLayout() {
     });
 
     // Night and Settings remain routable peers in this navigator, but they are
-    // contextual destinations rather than permanent navigation choices. Expo
-    // Router's `href: null` keeps direct/deep-link navigation intact while
-    // removing them from the tab bar and its accessibility order.
-    const hiddenScreen = (title: string) => ({ title, href: null });
+    // contextual destinations rather than permanent navigation choices: they get
+    // no button, so they stay out of the tab bar and its accessibility order.
+    // Not `href: null`: since Expo Router 58 that marks the tab hidden, and a
+    // focused hidden tab is redirected to Today, so the Night card, the profile
+    // button and the Night deep link all landed back on Today.
+    const hiddenScreen = (title: string) => ({ title, tabBarButton: () => null });
 
     return {
       today: screen(labels.today, 'sparkles', 'lucid-tab-today'),
