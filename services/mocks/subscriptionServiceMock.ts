@@ -234,6 +234,10 @@ export async function refreshStatus(): Promise<SubscriptionStatus> {
   return syncStatusWithCurrentUser();
 }
 
+export async function openManagement(userId?: string | null): Promise<SubscriptionStatus> {
+  return initialized ? syncStatusWithCurrentUser() : initialize(userId);
+}
+
 export async function syncPurchases(): Promise<void> {
   return;
 }

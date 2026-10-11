@@ -152,7 +152,7 @@ export const QuotaStatusCard: React.FC<Props> = ({
       await manageSubscription(user?.id ?? null);
       refetch();
     } catch (error) {
-      log.warn('Customer Center unavailable', error);
+      log.warn('Subscription management unavailable', error);
       setManageError(true);
     } finally {
       setManaging(false);
