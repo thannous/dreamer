@@ -71,11 +71,13 @@ export default function LucidTabsLayout() {
       ),
     });
 
-    // Night and Settings remain routable peers in this navigator, but they are
-    // contextual destinations rather than permanent navigation choices. Expo
-    // Router's `href: null` keeps direct/deep-link navigation intact while
-    // removing them from the tab bar and its accessibility order.
-    const hiddenScreen = (title: string) => ({ title, href: null });
+    // SDK 58 redirects `href: null` routes to the initial tab. Hide only the
+    // button so Night and Settings stay reachable from their contextual links.
+    const hiddenScreen = (title: string) => ({
+      title,
+      tabBarButton: () => null,
+      tabBarItemStyle: styles.contextualTabItem,
+    });
 
     return {
       today: screen(labels.today, 'sparkles', 'lucid-tab-today'),
@@ -149,6 +151,7 @@ export default function LucidTabsLayout() {
 }
 
 const styles = StyleSheet.create({
+  contextualTabItem: { display: 'none' },
   // Un onglet cède de la largeur à ses voisins au lieu d'élargir la barre : aucune
   // largeur figée ici, les quatre destinations visibles se partagent la place disponible.
   tabBarItem: { flex: 1, minHeight: 48 },

@@ -70,10 +70,18 @@ test('PR237 Lucid dark time fields stay readable and the schedule survives reloa
   await completeOnboarding(fixtures, true);
   const { app, screen, browser } = fixtures;
   await app.open('/lucid/settings?ambience=dark');
+  await expect(screen.getByTestId('lucid-bedtime-input', { visible: true })).toHaveValue('21:45');
+  await expect(screen.getByTestId('lucid-wake-input', { visible: true })).toHaveValue('06:15');
   await browser.reload();
   await expect(screen.getByTestId('lucid-bedtime-input', { visible: true })).toHaveValue('21:45');
   await expect(screen.getByTestId('lucid-wake-input', { visible: true })).toHaveValue('06:15');
   await app.screenshot('persisted-sleep-schedule');
+  await app.open('/lucid/night');
+  await expect(screen.getByTestId('lucid-night', { visible: true })).toBeVisible();
+  await browser.reload();
+  await expect(screen.getByTestId('lucid-night', { visible: true })).toBeVisible();
+  await expect(screen.getByRole('tab', /.*/, { visible: true })).toHaveCount(4);
+  await app.screenshot('contextual-night-after-reload');
 });
 
 test('PR237 Lucid compact tabs, program safeguards and account validation remain usable', async fixtures => {
