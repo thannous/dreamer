@@ -1,0 +1,204 @@
+{
+  "generator": "Built-in image_gen",
+  "selection": "Agent-selected for the owner's Dreamer implementation request",
+  "format": {
+    "type": "WebP",
+    "quality": 84,
+    "width": 1536
+  },
+  "assets": [
+    {
+      "scene": "journal",
+      "file": "journal-v1.webp",
+      "prompt": "Use case: stylized-concept. Asset type: a production background illustration for Noctalia Dreamer, a calm dream journal. Create ONE finished wide landscape illustration, 1536 by 1024 composition. Style: richly painted cinematic dreamscape, fine natural detail, soft depth, matte textures; restrained ink midnight blue, muted violet and antique champagne-gold palette, consistent with a moonlit lake and celestial orbital artwork. Composition: the upper-left and central 65% must be a quiet, spacious, low-detail field so a screen title and body copy can sit there; meaningful objects are small, at the right or lower perimeter. Light has soft falloff, no bright white hotspots behind future text. It will also be gently veiled on an ivory light-theme surface. This is artwork only, no UI, typography, letters, labels, watermarks, borders, montage, collage or logos. No people or faces. Avoid neon, saturated candy colours, promotional clichés, harsh sharp geometric lines, dense tiny decorative marks, dramatic action, bright central focal points. Scene: a quiet nocturnal archive for saved dreams. A small ivory linen-bound closed journal and a few delicate loose blank pages rest at the lower-right edge of a wooden desk beside a tall arched window. Outside the window is a distant crescent moon and violet mist. Subtle traces of gold dust suggest memory. Cozy, private, composed; not a library full of visible book spines, no readable writing. The central and left field is softly shadowed and almost empty.",
+      "sourceFilename": "exec-a761cec3-77ec-46b6-accb-d20f2b5695a2.png",
+      "width": 1536,
+      "height": 1024,
+      "bytes": 88256,
+      "sha256": "e8d1646e3fac555f5976aaf68933fcfb552fd5650336efef69f7e677d5605b64"
+    },
+    {
+      "scene": "dialogue",
+      "file": "dialogue-v1.webp",
+      "prompt": "Use case: stylized-concept. Asset type: a production background illustration for Noctalia Dreamer, a calm dream journal. Create ONE finished wide landscape illustration, 1536 by 1024 composition. Style: richly painted cinematic dreamscape, fine natural detail, soft depth, matte textures; restrained ink midnight blue, muted violet and antique champagne-gold palette, consistent with a moonlit lake and celestial orbital artwork. Composition: the upper-left and central 65% must be a quiet, spacious, low-detail field so a screen title and body copy can sit there; meaningful objects are small, at the right or lower perimeter. Light has soft falloff, no bright white hotspots behind future text. It will also be gently veiled on an ivory light-theme surface. This is artwork only, no UI, typography, letters, labels, watermarks, borders, montage, collage or logos. No people or faces. Avoid neon, saturated candy colours, promotional clichés, harsh sharp geometric lines, dense tiny decorative marks, dramatic action, bright central focal points. Scene: an introspective conversation with a dream. Over still dark reflective water, two very thin ribbons of warm gold light weave gently toward each other at the right-hand edge between two distant stone arches. A small moon, soft violet haze and restrained reflections. Suggest listening and connection, not two speech bubbles or literal chat symbols. Most of the centre and upper-left is quiet, deep midnight mist.",
+      "sourceFilename": "exec-89dd775c-07da-430c-b1d4-685b830dae26.png",
+      "width": 1536,
+      "height": 1024,
+      "bytes": 63576,
+      "sha256": "e18906bfaa588cc02cb84172fc895072e3e1f84f8ddcf62298a1cf080c0419f1"
+    },
+    {
+      "scene": "ritual",
+      "file": "ritual-v1.webp",
+      "prompt": "Use case: stylized-concept. Asset type: a production background illustration for Noctalia Dreamer, a calm dream journal. Create ONE finished wide landscape illustration, 1536 by 1024 composition. Style: richly painted cinematic dreamscape, fine natural detail, soft depth, matte textures; restrained ink midnight blue, muted violet and antique champagne-gold palette, consistent with a moonlit lake and celestial orbital artwork. Composition: the upper-left and central 65% must be a quiet, spacious, low-detail field so a screen title and body copy can sit there; meaningful objects are small, at the right or lower perimeter. Light has soft falloff, no bright white hotspots behind future text. It will also be gently veiled on an ivory light-theme surface. This is artwork only, no UI, typography, letters, labels, watermarks, borders, montage, collage or logos. No people or faces. Avoid neon, saturated candy colours, promotional clichés, harsh sharp geometric lines, dense tiny decorative marks, dramatic action, bright central focal points. Scene: a gentle nightly preparation ritual. A winding forest trail with one small softly glowing antique lantern at the lower-right, far away from future text. Tall dark blue evergreen silhouettes at the edges, pale violet moonlight, warm golden firefly glow very sparse, distant clearing. Quiet and reassuring, no mystical altar or religious symbols, no intense adventure mood. A broad calm night sky occupies the centre and upper-left.",
+      "sourceFilename": "exec-4c720e27-b0de-49f0-9f6a-326842605fc7.png",
+      "width": 1536,
+      "height": 1024,
+      "bytes": 140848,
+      "sha256": "42badbd534cd317f30ce201ee19bae2b5f0108701e3b76398b104a22c66e914f"
+    },
+    {
+      "scene": "sleep",
+      "file": "sleep-v1.webp",
+      "prompt": "Use case: stylized-concept. Asset type: a production background illustration for Noctalia Dreamer, a calm dream journal. Create ONE finished wide landscape illustration, 1536 by 1024 composition. Style: richly painted cinematic dreamscape, fine natural detail, soft depth, matte textures; restrained ink midnight blue, muted violet and antique champagne-gold palette, consistent with a moonlit lake and celestial orbital artwork. Composition: the upper-left and central 65% must be a quiet, spacious, low-detail field so a screen title and body copy can sit there; meaningful objects are small, at the right or lower perimeter. Light has soft falloff, no bright white hotspots behind future text. It will also be gently veiled on an ivory light-theme surface. This is artwork only, no UI, typography, letters, labels, watermarks, borders, montage, collage or logos. No people or faces. Avoid neon, saturated candy colours, promotional clichés, harsh sharp geometric lines, dense tiny decorative marks, dramatic action, bright central focal points. Scene: winding down to sleep with sound. A vast moonlit lake with low soft fog and tiny gentle ripples; a few reeds and rounded stones near the lower-right bank. One small crescent moon is reflected off to the right, golden reflection subdued. Deep navy and soft muted violet, restful and silent, minimal stars. No architecture, no bed, no clocks. The centre and upper-left stay spacious and tranquil.",
+      "sourceFilename": "exec-e4528c3a-fd83-4512-b66f-68da2d2a7088.png",
+      "width": 1536,
+      "height": 1024,
+      "bytes": 52458,
+      "sha256": "ee6014de11e97b4ec4cbc39d0d6d2da0d9026f8226820da0d925d87088870b56"
+    },
+    {
+      "scene": "symbols",
+      "file": "symbols-v1.webp",
+      "prompt": "Use case: stylized-concept. Asset type: a production background illustration for Noctalia Dreamer, a calm dream journal. Create ONE finished wide landscape illustration, 1536 by 1024 composition. Style: richly painted cinematic dreamscape, fine natural detail, soft depth, matte textures; restrained ink midnight blue, muted violet and antique champagne-gold palette, consistent with a moonlit lake and celestial orbital artwork. Composition: the upper-left and central 65% must be a quiet, spacious, low-detail field so a screen title and body copy can sit there; meaningful objects are small, at the right or lower perimeter. Light has soft falloff, no bright white hotspots behind future text. It will also be gently veiled on an ivory light-theme surface. This is artwork only, no UI, typography, letters, labels, watermarks, borders, montage, collage or logos. No people or faces. Avoid neon, saturated candy colours, promotional clichés, harsh sharp geometric lines, dense tiny decorative marks, dramatic action, bright central focal points. Scene: exploring dream symbols as an open-ended personal atlas. At the far right is a subtle antique celestial sphere with fine champagne orbital rings and a few sparse star connections, surrounded by hints of mountains and cloud silhouettes at the bottom. Dreamlike and editorial, no invented alphabet, no zodiac, no tarot or occult icons. Restrained astral geometry should feel like a map for reflection. The centre and upper-left stay midnight-dark, spacious and smooth.",
+      "sourceFilename": "exec-f128b7e0-9ef5-4f9c-ad41-f5f33c45f2c0.png",
+      "width": 1536,
+      "height": 1024,
+      "bytes": 86418,
+      "sha256": "80fc64885b9d3a1e00c3ca02a60aa11c7f56083531085cb629300db93d630414"
+    },
+    {
+      "scene": "observatory",
+      "file": "observatory-v1.webp",
+      "prompt": "Use case: stylized-concept. Asset type: a production background illustration for Noctalia Dreamer, a calm dream journal. Create ONE finished wide landscape illustration, 1536 by 1024 composition. Style: richly painted cinematic dreamscape, fine natural detail, soft depth, matte textures; restrained ink midnight blue, muted violet and antique champagne-gold palette, consistent with a moonlit lake and celestial orbital artwork. Composition: the upper-left and central 65% must be a quiet, spacious, low-detail field so a screen title and body copy can sit there; meaningful objects are small, at the right or lower perimeter. Light has soft falloff, no bright white hotspots behind future text. It will also be gently veiled on an ivory light-theme surface. This is artwork only, no UI, typography, letters, labels, watermarks, borders, montage, collage or logos. No people or faces. Avoid neon, saturated candy colours, promotional clichés, harsh sharp geometric lines, dense tiny decorative marks, dramatic action, bright central focal points. Scene: deeper exploration for the Dreamer Plus screen. A small elegant open-air celestial observatory perched far to the lower-right on a misty hill, softly lit in antique champagne, with a simple open circular architectural aperture looking toward a very distant violet galaxy. Expansive, inviting and quietly premium. No telescope close-up, no crown, diamonds, money, locks or sales graphics. The upper-left and central area is a broad dark velvet sky with very restrained stars.",
+      "sourceFilename": "exec-1cd9c417-c126-4ad9-9c63-2f4341d708b7.png",
+      "width": 1536,
+      "height": 1024,
+      "bytes": 80028,
+      "sha256": "c1c4a351e6994b910309a8d83a14571d6782c785701f5dfca1918cedebf0410b"
+    }
+  ],
+  "lightVariants": {
+    "createdAt": "2026-10-10T21:02:17.566Z",
+    "selection": "agent selected for the owner request; not claimed as owner-reviewed",
+    "assets": [
+      {
+        "scene": "capture",
+        "prompt": "Use case: production illustration variant for Dreamer, a calm dream-journal app. EDIT TARGET: first reference image (the dark capture artwork). STYLE/PALETTE REFERENCE ONLY: second image (the light paper notebook). Create ONE complete 1536x1024 landscape light-theme version, not a UI mockup. Preserve the main composition and recognizable objects of the target: an open journal at the bottom, a microphone on the right, a soft celestial crescent and delicate orbital lines above. Transform this into a luminous dreamlike morning: warm ivory atmosphere, pearl-grey and pale dusty blue clouds, soft peach sunrise, antique pale gold celestial details, notebook in cream paper and microphone in muted warm taupe. Most of the image should be light in value, with gently defined darker outlines only on small objects. Rich painterly detail and depth must stay visibly present, not bleached or covered in a white veil. No navy or black sky, no night, no large dark corners, no neon. Keep the scene tranquil and immersive, warm and airy, appropriate next to an ivory paper interface. No readable text, letters, captions, UI, logos, watermark, border, collage, people or faces. Retain a full illustrated landscape with no blank white margins.",
+        "file": "capture-light-v1.webp",
+        "theme": "light",
+        "generator": "built-in image_gen",
+        "sourceFilename": "exec-0d2f63bc-ed4f-49ad-82cc-e3a0621fa759.png",
+        "width": 1536,
+        "height": 1024,
+        "bytes": 130086,
+        "sha256": "c342d23741b36c67d10ea0e8ea88ca3f56ae7e4e475cb42658ceb17262846e07"
+      },
+      {
+        "scene": "reverie",
+        "prompt": "Use case: a real production illustration for Dreamer's LIGHT theme. Edit target is the FIRST reference; SECOND reference is only the approved-in-task visual palette direction, a newly generated luminous capture painting. Create ONE finished 1536x1024 WIDE LANDSCAPE artwork. Preserve the target's recognizable scene and objects, adapted to wide framing. Repaint it as an airy luminous morning dream: warm ivory light, pearl-grey and pale dusty blue atmosphere, soft peach and antique light gold accents. Detailed painterly depth and recognizable forms, enough midtone contrast to stay immersive. Large sky, water and mist areas must be LIGHT, with no navy or black night sky, no large dark corners. Keep restrained shadows only on small objects. This is a complete painting, not a pale wash over the original, not bleached, no blank white margins. Match a warm paper app theme while remaining richly illustrated. No UI, readable text, letters, labels, watermark, logos, border, montage, people or faces. Keep the winding reflective river/lake valley, small castle on the left hill, distant mountain silhouettes and soft clouds. Make the mountains muted sage and blue-grey, the water pearl blue and peach sunrise reflections, a pale celestial crescent in a glowing dawn sky.",
+        "file": "reverie-light-v1.webp",
+        "theme": "light",
+        "generator": "built-in image_gen",
+        "sourceFilename": "exec-05de105e-d56a-488b-a7ad-435b75d7b266.png",
+        "width": 1536,
+        "height": 1024,
+        "bytes": 206406,
+        "sha256": "a211a07d025baa887a2cd79dd82d3fdb79dbabd04a6492f50dc4c377735eb2e4"
+      },
+      {
+        "scene": "path",
+        "prompt": "Use case: a real production illustration for Dreamer's LIGHT theme. Edit target is the FIRST reference; SECOND reference is only the approved-in-task visual palette direction, a newly generated luminous capture painting. Create ONE finished 1536x1024 WIDE LANDSCAPE artwork. Preserve the target's recognizable scene and objects, adapted to wide framing. Repaint it as an airy luminous morning dream: warm ivory light, pearl-grey and pale dusty blue atmosphere, soft peach and antique light gold accents. Detailed painterly depth and recognizable forms, enough midtone contrast to stay immersive. Large sky, water and mist areas must be LIGHT, with no navy or black night sky, no large dark corners. Keep restrained shadows only on small objects. This is a complete painting, not a pale wash over the original, not bleached, no blank white margins. Match a warm paper app theme while remaining richly illustrated. No UI, readable text, letters, labels, watermark, logos, border, montage, people or faces. Keep the open sky with a large elegant celestial crescent offset right and thin antique-gold orbital lines, sparse tiny constellations and soft cloud banks. Make the sky ivory and pale blue morning, clouds warm cream and peach, celestial orb luminous pearl and champagne.",
+        "file": "path-light-v1.webp",
+        "theme": "light",
+        "generator": "built-in image_gen",
+        "sourceFilename": "exec-b7b081bb-5057-4e28-bd0a-75a5a45c6a49.png",
+        "width": 1536,
+        "height": 1024,
+        "bytes": 148062,
+        "sha256": "6c2f9da325d96172f9a68ae26c6feac501fb5fb5d6adb3e792d305bf5297b8c5"
+      },
+      {
+        "scene": "astral",
+        "prompt": "Use case: a real production illustration for Dreamer's LIGHT theme. Edit target is the FIRST reference; SECOND reference is only the approved-in-task visual palette direction, a newly generated luminous capture painting. Create ONE finished 1536x1024 WIDE LANDSCAPE artwork. Preserve the target's recognizable scene and objects, adapted to wide framing. Repaint it as an airy luminous morning dream: warm ivory light, pearl-grey and pale dusty blue atmosphere, soft peach and antique light gold accents. Detailed painterly depth and recognizable forms, enough midtone contrast to stay immersive. Large sky, water and mist areas must be LIGHT, with no navy or black night sky, no large dark corners. Keep restrained shadows only on small objects. This is a complete painting, not a pale wash over the original, not bleached, no blank white margins. Match a warm paper app theme while remaining richly illustrated. No UI, readable text, letters, labels, watermark, logos, border, montage, people or faces. Keep the elegant circular celestial atlas, fine orbital rings and sparse connected stars over distant small mountain silhouettes. Make the central sky and surrounding space luminous ivory/pearl blue, rings warm antique gold, lunar crescent softly lit cream. No dark space.",
+        "file": "astral-light-v1.webp",
+        "theme": "light",
+        "generator": "built-in image_gen",
+        "sourceFilename": "exec-1ce75242-30d3-4866-9cd0-4edef2cc7c65.png",
+        "width": 1536,
+        "height": 1024,
+        "bytes": 152676,
+        "sha256": "09298e54ed49480d64cc3129c90f54be8fb72173c55ccb579d6bc77ed5e8213d"
+      },
+      {
+        "scene": "journal",
+        "prompt": "Use case: a real production illustration for Dreamer's LIGHT theme. Edit target is the FIRST reference; SECOND reference is only the approved-in-task visual palette direction, a newly generated luminous capture painting. Create ONE finished 1536x1024 WIDE LANDSCAPE artwork. Preserve the target's recognizable scene and objects, adapted to wide framing. Repaint it as an airy luminous morning dream: warm ivory light, pearl-grey and pale dusty blue atmosphere, soft peach and antique light gold accents. Detailed painterly depth and recognizable forms, enough midtone contrast to stay immersive. Large sky, water and mist areas must be LIGHT, with no navy or black night sky, no large dark corners. Keep restrained shadows only on small objects. This is a complete painting, not a pale wash over the original, not bleached, no blank white margins. Match a warm paper app theme while remaining richly illustrated. No UI, readable text, letters, labels, watermark, logos, border, montage, people or faces. Keep the calm writing desk, closed cream-paper notebook, sprig of pressed flowers, subtle brass celestial sphere and tall arched window at the right. Repaint the room in warm ivory plaster with honey-beige wood, window looking over a pale-blue lake and sage hills at sunrise. Light fills the whole interior, with no shadowy empty wall.",
+        "file": "journal-light-v1.webp",
+        "theme": "light",
+        "generator": "built-in image_gen",
+        "sourceFilename": "exec-c595a440-dfc0-482d-bbd5-d15d835850fa.png",
+        "width": 1536,
+        "height": 1024,
+        "bytes": 220930,
+        "sha256": "1ab9c3468785713f8f0599e84bc449d881678da6f1a277f065a1f9b98db03d9c"
+      },
+      {
+        "scene": "dialogue",
+        "prompt": "Use case: a real production illustration for Dreamer's LIGHT theme. Edit target is the FIRST reference; SECOND reference is only the approved-in-task visual palette direction, a newly generated luminous capture painting. Create ONE finished 1536x1024 WIDE LANDSCAPE artwork. Preserve the target's recognizable scene and objects, adapted to wide framing. Repaint it as an airy luminous morning dream: warm ivory light, pearl-grey and pale dusty blue atmosphere, soft peach and antique light gold accents. Detailed painterly depth and recognizable forms, enough midtone contrast to stay immersive. Large sky, water and mist areas must be LIGHT, with no navy or black night sky, no large dark corners. Keep restrained shadows only on small objects. This is a complete painting, not a pale wash over the original, not bleached, no blank white margins. Match a warm paper app theme while remaining richly illustrated. No UI, readable text, letters, labels, watermark, logos, border, montage, people or faces. Keep the two distant stone arches connected by thin warm-gold ribbons across still water. Use pale sandstone arches, pearl-blue reflective lake, soft sage hills and peach morning mist. A delicate pale crescent can remain in a bright sky. Listening and connection, no speech bubbles.",
+        "file": "dialogue-light-v1.webp",
+        "theme": "light",
+        "generator": "built-in image_gen",
+        "sourceFilename": "exec-4e351f00-8003-4b07-bb3e-bec3b7042294.png",
+        "width": 1536,
+        "height": 1024,
+        "bytes": 171010,
+        "sha256": "8cd2e08c67835a954f121c09d49d920e3a098a7777b85c0ba7ba863745377b54"
+      },
+      {
+        "scene": "ritual",
+        "prompt": "Use case: a real production illustration for Dreamer's LIGHT theme. Edit target is the FIRST reference; SECOND reference is only the approved-in-task visual palette direction, a newly generated luminous capture painting. Create ONE finished 1536x1024 WIDE LANDSCAPE artwork. Preserve the target's recognizable scene and objects, adapted to wide framing. Repaint it as an airy luminous morning dream: warm ivory light, pearl-grey and pale dusty blue atmosphere, soft peach and antique light gold accents. Detailed painterly depth and recognizable forms, enough midtone contrast to stay immersive. Large sky, water and mist areas must be LIGHT, with no navy or black night sky, no large dark corners. Keep restrained shadows only on small objects. This is a complete painting, not a pale wash over the original, not bleached, no blank white margins. Match a warm paper app theme while remaining richly illustrated. No UI, readable text, letters, labels, watermark, logos, border, montage, people or faces. Keep the forest trail, small antique lantern on the right, distant tranquil lake and mountains. Make the forest light sage/olive with sun filtering through it, honey-stone trail, pearl-blue water, cream and peach morning clouds. Warm welcoming morning preparation; no large black trees, dense dark forest or night sky.",
+        "file": "ritual-light-v1.webp",
+        "theme": "light",
+        "generator": "built-in image_gen",
+        "sourceFilename": "exec-d9040906-f175-44e6-bec1-0ac98fd80501.png",
+        "width": 1536,
+        "height": 1024,
+        "bytes": 325316,
+        "sha256": "ddcafaa2a17890ae9e673040bcfd3e28d31dbb06318690bcdf1259580540ee77"
+      },
+      {
+        "scene": "sleep",
+        "prompt": "Use case: a real production illustration for Dreamer's LIGHT theme. Edit target is the FIRST reference; SECOND reference is only the approved-in-task visual palette direction, a newly generated luminous capture painting. Create ONE finished 1536x1024 WIDE LANDSCAPE artwork. Preserve the target's recognizable scene and objects, adapted to wide framing. Repaint it as an airy luminous morning dream: warm ivory light, pearl-grey and pale dusty blue atmosphere, soft peach and antique light gold accents. Detailed painterly depth and recognizable forms, enough midtone contrast to stay immersive. Large sky, water and mist areas must be LIGHT, with no navy or black night sky, no large dark corners. Keep restrained shadows only on small objects. This is a complete painting, not a pale wash over the original, not bleached, no blank white margins. Match a warm paper app theme while remaining richly illustrated. No UI, readable text, letters, labels, watermark, logos, border, montage, people or faces. Keep the vast still lake, low fog, a few reeds and rounded stones on the right bank, distant low mountain silhouettes. Repaint as a very soft luminous misty dawn, pearl-blue water, cream and pale peach sky, muted sage reeds. Calm, restful, subtle subdued light, no bright dazzling central sun. Most areas light, atmosphere tranquil and fully illustrated.",
+        "file": "sleep-light-v1.webp",
+        "theme": "light",
+        "generator": "built-in image_gen",
+        "sourceFilename": "exec-11b982fb-7d98-4c2d-87d3-332119ee24a8.png",
+        "width": 1536,
+        "height": 1024,
+        "bytes": 149222,
+        "sha256": "4f936c4abd75e2dd322d4f410817214853550faa37fddb4b026a43a80f99b4a0"
+      },
+      {
+        "scene": "symbols",
+        "prompt": "Use case: a real production illustration for Dreamer's LIGHT theme. Edit target is the FIRST reference; SECOND reference is only the approved-in-task visual palette direction, a newly generated luminous capture painting. Create ONE finished 1536x1024 WIDE LANDSCAPE artwork. Preserve the target's recognizable scene and objects, adapted to wide framing. Repaint it as an airy luminous morning dream: warm ivory light, pearl-grey and pale dusty blue atmosphere, soft peach and antique light gold accents. Detailed painterly depth and recognizable forms, enough midtone contrast to stay immersive. Large sky, water and mist areas must be LIGHT, with no navy or black night sky, no large dark corners. Keep restrained shadows only on small objects. This is a complete painting, not a pale wash over the original, not bleached, no blank white margins. Match a warm paper app theme while remaining richly illustrated. No UI, readable text, letters, labels, watermark, logos, border, montage, people or faces. Keep the fine antique celestial sphere and orbital rings floating off to the right above a quiet lake and distant mountain silhouettes. Ivory/pearl-blue morning sky, softly cream-lit orb, thin restrained gold ring lines, muted sage hills. A contemplative personal atlas, no zodiac, occult icons, labels or invented alphabet.",
+        "file": "symbols-light-v1.webp",
+        "theme": "light",
+        "generator": "built-in image_gen",
+        "sourceFilename": "exec-09a85261-ffca-43d9-bbe7-d276a3c4a7fc.png",
+        "width": 1536,
+        "height": 1024,
+        "bytes": 173656,
+        "sha256": "bcf9091a2ca116df4088f92183442d996748cc848ac91982414f37f2c620a2b3"
+      },
+      {
+        "scene": "observatory",
+        "prompt": "Use case: a real production illustration for Dreamer's LIGHT theme. Edit target is the FIRST reference; SECOND reference is only the approved-in-task visual palette direction, a newly generated luminous capture painting. Create ONE finished 1536x1024 WIDE LANDSCAPE artwork. Preserve the target's recognizable scene and objects, adapted to wide framing. Repaint it as an airy luminous morning dream: warm ivory light, pearl-grey and pale dusty blue atmosphere, soft peach and antique light gold accents. Detailed painterly depth and recognizable forms, enough midtone contrast to stay immersive. Large sky, water and mist areas must be LIGHT, with no navy or black night sky, no large dark corners. Keep restrained shadows only on small objects. This is a complete painting, not a pale wash over the original, not bleached, no blank white margins. Match a warm paper app theme while remaining richly illustrated. No UI, readable text, letters, labels, watermark, logos, border, montage, people or faces. Keep the small open-air stone observatory on a hill at the right, elegant round aperture and steps, distant lake and mountain view. Make the stone pale warm sandstone, vegetation sage and muted olive, sky pearl blue and cream with peach clouds, distant celestial spiral a subtle golden cloud form. Luminous airy morning, expansive and inviting. No sales icons, crowns, money, labels, locks or people.",
+        "file": "observatory-light-v1.webp",
+        "theme": "light",
+        "generator": "built-in image_gen",
+        "sourceFilename": "exec-1ece0dbb-acba-4a03-a3e0-330f0ba7814b.png",
+        "width": 1536,
+        "height": 1024,
+        "bytes": 193878,
+        "sha256": "02927531792fcbe0be007b341120803b7f7405e27634d9468360443bcadee82e"
+      }
+    ],
+    "format": {
+      "type": "WebP",
+      "quality": 82,
+      "effort": 6,
+      "conversion": "format optimization only; no recolouring or compositing"
+    },
+    "paletteReferenceDecision": "Agent-selected working direction; no owner review or approval is claimed."
+  }
+}

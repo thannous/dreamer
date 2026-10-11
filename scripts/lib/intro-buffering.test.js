@@ -28,7 +28,7 @@ function setup({ warmed = true, rejected = false, buffered = 2 } = {}) {
     document: { createElement: element, body: { append() {} }, addEventListener() {}, removeEventListener() {} },
     window: { __expIntroVideo: warmed ? intro : null, setTimeout, clearTimeout, addEventListener() {}, removeEventListener() {} },
     html: { lang: 'en' }, SKIP_LABELS: { en: 'Skip intro' }, INTRO_BASE: '/intro',
-    createVideo, waitForFilmFrame, revealDreamsAfterIntro: jest.fn(),
+    createVideo, waitForFilmFrame, revealDreamsAfterIntro: jest.fn(), unveilHero: jest.fn(),
   };
   vm.createContext(context); vm.runInContext(code + '\nglobalThis.run = playIntro;', context);
   const result = context.run(film, loop, '1280');

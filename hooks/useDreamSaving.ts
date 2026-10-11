@@ -79,7 +79,8 @@ export function useDreamSaving(options: UseDreamSavingOptions = {}) {
           ]);
           return null;
         }
-        const message = error instanceof Error ? error.message : 'Unexpected error occurred. Please try again.';
+        // A raw exception message is technical and often English: show a plain one.
+        const message = classifyError(error instanceof Error ? error : new Error(String(error)), t).userMessage;
         Alert.alert(t('common.error_title'), message);
         return null;
       } finally {

@@ -2,7 +2,7 @@ import { useQuickSettings } from '@/context/QuickSettingsContext';
 import { JournalCompletenessNotice } from '@/components/journal/JournalCompletenessNotice';
 import { router } from 'expo-router';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import React, { useCallback, useMemo, useState } from 'react';
+import React, { useCallback, useMemo } from 'react';
 import {
   Platform,
   Pressable,
@@ -12,9 +12,7 @@ import {
   useWindowDimensions,
 } from 'react-native';
 
-import { MockNavigationRail } from '@/components/dev/MockNavigationRail';
 import { NoctaliaScreenHeader } from '@/components/NoctaliaScreenHeader';
-import { NightSkyBand } from '@/components/ui/NightSkyBand';
 import { ScreenContainer } from '@/components/ScreenContainer';
 import { StatsEvolutionBars } from '@/components/stats/StatsEvolutionBars';
 import { StatsRankedList, type StatsRankedRow } from '@/components/stats/StatsRankedList';
@@ -33,6 +31,8 @@ import {
 } from '@/lib/dreamTrends';
 import { getDreamThemeLabel, getDreamTypeLabel, getEmotionFamilyLabel } from '@/lib/dreamLabels';
 import { TID } from '@/lib/testIDs';
+import { useHeaderScroll } from '@/components/ui/headerStretch';
+import { withHeaderScroll } from '@/components/ui/HeaderScrollScope';
 
 const COMPACT_BREAKPOINT = 360;
 
@@ -100,7 +100,9 @@ function SectionHead({ title, subtitle }: { title: string; subtitle?: string }) 
   );
 }
 
-export default function StatisticsScreen() {
+function StatisticsScreen() {
+  // This screen's own scroll, published to its header painting and title.
+  const onHeaderScroll = useHeaderScroll();
   const { dreams, loaded, completeness, reloadDreams } = useDreams();
   const { t } = useTranslation();
   const { formatDate, formatNumber, locale } = useLocaleFormatting();
@@ -108,7 +110,6 @@ export default function StatisticsScreen() {
   const insets = useSafeAreaInsets();
   const { colors, mode } = useTheme();
   const openQuickSettings = useQuickSettings();
-  const [headerHeight, setHeaderHeight] = useState(insets.top + 120);
   useClearWebFocus();
 
   const compact = width < COMPACT_BREAKPOINT;
@@ -121,9 +122,7 @@ export default function StatisticsScreen() {
   const navigationClearance = navigationLayout.barHeight + Math.max(insets.bottom, navigationLayout.minimumBottomInset);
   const scrollBottomPadding = isDesktopLayout
     ? ThemeLayout.spacing.xl
-    : scrollHeader ? ThemeLayout.spacing.lg : navigationLayout.barHeight
-      + navigationLayout.minimumBottomInset
-      + ThemeLayout.spacing.lg;
+    : scrollHeader ? ThemeLayout.spacing.lg : navigationClearance + ThemeLayout.spacing.lg;
 
   const { trends, weekStart, weekEnd } = useMemo(() => {
     const end = new Date();
@@ -139,8 +138,10 @@ export default function StatisticsScreen() {
 
   const header = (
     <NoctaliaScreenHeader
+      scene="astral"
       titleKey="trends.title"
-      variant="editorial"
+      variant="tab"
+      immersive
       actions={[
         {
           icon: 'gear',
@@ -179,6 +180,8 @@ export default function StatisticsScreen() {
         {scrollHeader ? (
           <ScrollView
             className="flex-1"
+            onScroll={onHeaderScroll}
+            scrollEventThrottle={16}
             style={{ marginBottom: navigationClearance }}
             contentInsetAdjustmentBehavior="never"
             contentContainerStyle={{ paddingBottom: scrollBottomPadding }}
@@ -248,22 +251,19 @@ export default function StatisticsScreen() {
 
   return (
     <View className="flex-1 bg-ink">
-      {mode === 'dark' && !scrollHeader ? (
-        // Behind the fixed header only, fading out at its edge, so the content that
-        // scrolls under the header is clipped on plain ink rather than across the sky.
-        <NightSkyBand height={headerHeight + 24} background={noctalia.screen.background} />
-      ) : null}
-      {!scrollHeader ? <View onLayout={(event) => setHeaderHeight(event.nativeEvent.layout.height)}>{header}</View> : null}
       <ScrollView
         className="flex-1"
+        onScroll={onHeaderScroll}
+        scrollEventThrottle={16}
         style={scrollHeader ? { marginBottom: navigationClearance } : undefined}
-        contentInsetAdjustmentBehavior={scrollHeader ? 'never' : 'automatic'}
+        // The header scrolls away with the content, as on Today. It already owns
+        // the top safe-area padding, so iOS must not add that inset again.
+        contentInsetAdjustmentBehavior="never"
         contentContainerStyle={{ paddingBottom: scrollBottomPadding }}
         showsVerticalScrollIndicator={false}
       >
-        {scrollHeader ? header : null}
+        {header}
         <ScreenContainer key="resources">
-          <MockNavigationRail />
           <JournalCompletenessNotice status={completeness?.status} trends onRetry={() => { void reloadDreams(); }} />
           <View className="gap-6 px-5 pb-5 pt-2">
             <View className="gap-4" testID="trends.section.week" accessible={false} accessibilityRole="none">
@@ -400,3 +400,5 @@ export default function StatisticsScreen() {
     </View>
   );
 }
+
+export default withHeaderScroll(StatisticsScreen);

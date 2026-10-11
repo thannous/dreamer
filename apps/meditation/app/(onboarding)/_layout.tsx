@@ -3,6 +3,7 @@ import React from 'react';
 import { Platform } from 'react-native';
 
 import { Duration } from '@/constants/motion';
+import { ThemeScope } from '@/context/ThemeContext';
 
 const onboardingStackMotion =
   Platform.OS === 'android'
@@ -20,13 +21,15 @@ const onboardingStackMotion =
  */
 export default function OnboardingLayout() {
   return (
-    <Stack
-      screenOptions={{
-        headerShown: false,
-        ...onboardingStackMotion,
-        fullScreenGestureEnabled: false,
-        contentStyle: { backgroundColor: 'transparent' },
-      }}
-    />
+    <ThemeScope mode="dark">
+      <Stack
+        screenOptions={{
+          headerShown: false,
+          ...onboardingStackMotion,
+          fullScreenGestureEnabled: false,
+          contentStyle: { backgroundColor: 'transparent' },
+        }}
+      />
+    </ThemeScope>
   );
 }

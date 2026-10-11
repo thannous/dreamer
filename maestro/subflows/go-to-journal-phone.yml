@@ -14,13 +14,6 @@ appId: ${APP_ID || "com.tanuki75.noctalia"}
 - runFlow:
     when:
       visible:
-        id: btn.mockNav.journal
-    commands:
-      - tapOn:
-          id: btn.mockNav.journal
-- runFlow:
-    when:
-      visible:
         id: tab.journal
     commands:
       - tapOn:

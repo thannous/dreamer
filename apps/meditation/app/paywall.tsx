@@ -2,7 +2,7 @@ import { useLocalSearchParams, useRouter } from 'expo-router';
 import React, { useEffect, useState } from 'react';
 import { Linking, Pressable, ScrollView, View, useWindowDimensions } from 'react-native';
 
-import { Screen } from '@/components/atmosphere/Screen';
+import { WorldPage } from '@/components/worlds/WorldPage';
 import { BackLink, Button, Card, Rule, Text } from '@/components/ui';
 import { getLegalLink } from '@/constants/legalLinks';
 import { useTranslation } from '@/context/LanguageContext';
@@ -226,7 +226,7 @@ export default function PaywallScreen() {
 
   if (isPlus) {
     return (
-      <Screen variant="immersive">
+      <WorldPage>
         <BackLink
           testID={TID.Button.PaywallClose}
           label={t('paywall.close')}
@@ -241,12 +241,12 @@ export default function PaywallScreen() {
             {t('paywall.active.body')}
           </Text>
         </View>
-      </Screen>
+      </WorldPage>
     );
   }
 
   return (
-    <Screen variant="immersive">
+    <WorldPage>
       <BackLink
         testID={TID.Button.PaywallClose}
         label={t('paywall.close')}
@@ -312,6 +312,6 @@ export default function PaywallScreen() {
           raised fill are what tell the eye the page continues underneath
           instead of ending at the button. */}
       {largeText ? null : purchaseActions}
-    </Screen>
+    </WorldPage>
   );
 }

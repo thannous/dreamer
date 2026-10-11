@@ -1,0 +1,123 @@
+# Types a shared test account (doc_web_interne/docs/test-login.md) into the
+# existing EmailAuthCard form. No deep link, no app code. Credentials come
+# from the environment only: MAESTRO_E2E_EMAIL and MAESTRO_E2E_PASSWORD
+# (Maestro reads MAESTRO_* shell variables), never from a committed file.
+# Run it only on an app started against the test branch
+# (node scripts/start-branch-e2e.mjs); the account does not exist elsewhere.
+appId: ${APP_ID || "com.tanuki75.noctalia"}
+---
+# Fail fast when the credentials were not loaded (see test-login.md).
+- assertTrue:
+    condition: ${/^e2e\+(free|premium)@[a-z0-9.-]+$/.test(String(MAESTRO_E2E_EMAIL).toLowerCase()) && String(MAESTRO_E2E_PASSWORD).length >= 12}
+    label: MAESTRO_E2E_EMAIL is a shared test account and MAESTRO_E2E_PASSWORD is set
+# A device that is already signed in (any account) is signed out first, so a
+# rerun signs in and checks the requested account instead of timing out. The
+# account's data stays on the server.
+- runFlow:
+    when:
+      visible:
+        id: text.auth.email
+    commands:
+      - scrollUntilVisible:
+          element:
+            id: btn.auth.signOut
+          direction: DOWN
+          visibilityPercentage: 60
+          timeout: 30000
+      - tapOn:
+          id: btn.auth.signOut
+      - extendedWaitUntil:
+          notVisible:
+            id: text.auth.email
+          timeout: 30000
+- runFlow:
+    when:
+      notVisible:
+        id: input.auth.email
+    commands:
+      - scrollUntilVisible:
+          element:
+            id: settings-account-open-signin
+          direction: UP
+          visibilityPercentage: 60
+          timeout: 30000
+      - tapOn:
+          id: settings-account-open-signin
+- extendedWaitUntil:
+    visible:
+      id: input.auth.email
+    timeout: 30000
+- tapOn:
+    id: input.auth.email
+- eraseText
+- inputText: ${MAESTRO_E2E_EMAIL}
+# System prompts (Google Password Manager / Credential Manager) are matched
+# without their localized text: if the app's email field is hidden behind one,
+# press back, at most twice.
+- repeat:
+    times: 2
+    while:
+      notVisible:
+        id: input.auth.email
+    commands:
+      - back
+- hideKeyboard
+- scrollUntilVisible:
+    element:
+      id: input.auth.password
+    direction: DOWN
+    visibilityPercentage: 70
+    timeout: 30000
+- tapOn:
+    id: input.auth.password
+- eraseText
+- inputText: ${MAESTRO_E2E_PASSWORD}
+- hideKeyboard
+- scrollUntilVisible:
+    element:
+      id: btn.auth.signIn
+    direction: DOWN
+    visibilityPercentage: 70
+    timeout: 30000
+- tapOn:
+    id: btn.auth.signIn
+# Android's autofill save dialog has a stable resource id for its decline
+# button in every locale.
+- runFlow:
+    when:
+      visible:
+        id: ".*autofill_save_no"
+    commands:
+      - tapOn:
+          id: ".*autofill_save_no"
+# Any other system sheet: while the settings screen itself is hidden, press
+# back (bounded). A slow sign-in keeps screen.settings visible, so it is never
+# backed out of.
+- repeat:
+    times: 3
+    while:
+      notVisible:
+        id: text.auth.email
+    commands:
+      - extendedWaitUntil:
+          visible:
+            id: text.auth.email
+          timeout: 15000
+          optional: true
+      - runFlow:
+          when:
+            notVisible:
+              id: screen.settings
+          commands:
+            - back
+- extendedWaitUntil:
+    visible:
+      id: text.auth.email
+    timeout: 45000
+# The signed-in account must be exactly the requested one (autofill or a
+# saved credential could sign in the other shared account).
+- copyTextFrom:
+    id: text.auth.email
+- assertTrue:
+    condition: ${maestro.copiedText.trim().toLowerCase() === String(MAESTRO_E2E_EMAIL).trim().toLowerCase()}
+    label: the signed-in email equals MAESTRO_E2E_EMAIL

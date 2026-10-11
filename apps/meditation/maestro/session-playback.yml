@@ -34,31 +34,45 @@ appId: com.noctalia.meditation
 - assertVisible:
     id: 'btn.player.toggle'
 
-# Playback starts on its own; the chrome then withdraws (progressive silence).
+# Essential controls stay visible throughout playback.
 - assertVisible:
     id: 'text.player.position'
-- waitForAnimationToEnd:
-    timeout: 6000
-
-# One touch anywhere brings the controls back — including over the artwork,
-# which is most of the screen and belongs to no control. Then the transport
-# answers, which is what proves the whole chrome returned and not just a part.
-- tapOn:
-    id: 'btn.player.reveal'
-- tapOn:
-    id: 'btn.player.forward'
-- tapOn:
-    id: 'btn.player.toggle'
-
+- assertNotVisible:
+    id: 'mini.player'
 - tapOn:
     id: 'btn.player.close'
 - assertVisible:
     id: 'screen.session'
-
-# A started session shows up as resumable on the home screen.
+- assertVisible:
+    id: 'mini.state'
+    text: 'Lecture en cours'
+- tapOn:
+    id: 'btn.mini.toggle'
+- assertVisible:
+    id: 'mini.state'
+    text: 'En pause'
+- tapOn:
+    id: 'btn.mini.toggle'
+- assertVisible:
+    id: 'mini.state'
+    text: 'Lecture en cours'
+- tapOn:
+    id: 'btn.mini.open'
+- assertVisible:
+    id: 'screen.player'
+- assertNotVisible:
+    id: 'mini.player'
+- tapOn:
+    id: 'btn.player.close'
 - tapOn:
     id: 'btn.session.back'
 - tapOn:
     id: 'tab.home'
 - assertVisible:
     id: 'screen.home'
+- assertVisible:
+    id: 'mini.player'
+- tapOn:
+    id: 'btn.mini.close'
+- assertNotVisible:
+    id: 'mini.player'

@@ -203,6 +203,9 @@ describe('Lucid Trainer today screen', () => {
     expect(screen.getByTestId('lucid-today-primary').getAttribute('aria-label')).toBe('Faire un test conscient');
     expect(screen.getByText('Maintenant')).not.toBeNull();
     expect(screen.getAllByText('Test de réalité').length).toBeGreaterThan(0);
+    expect(screen.getByTestId('lucid-today-day-thread').getAttribute('aria-label')).toBe(
+      'Moment de la journée : Jour',
+    );
   });
 
   it('prioritizes the morning review during the configured wake window', () => {
@@ -210,6 +213,9 @@ describe('Lucid Trainer today screen', () => {
     render(<LucidTodayScreen />);
 
     expect(screen.getByTestId('lucid-today-primary').getAttribute('aria-label')).toBe('Noter la nuit passée');
+    expect(screen.getByTestId('lucid-today-day-thread').getAttribute('aria-label')).toBe(
+      'Moment de la journée : Matin',
+    );
     fireEvent.click(screen.getByTestId('lucid-today-primary'));
     expect(mockPush).toHaveBeenCalledWith('/lucid/morning');
   });

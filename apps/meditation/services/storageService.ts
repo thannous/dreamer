@@ -1,6 +1,6 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
-import type { ThemePreference } from '@/constants/theme';
+import { DEFAULT_THEME_PREFERENCE, type ThemePreference } from '@/constants/theme';
 
 const PREFIX = '@noctalia-med/';
 
@@ -51,8 +51,8 @@ export async function remove(key: StorageKeyName): Promise<void> {
 const THEME_PREFERENCES: ThemePreference[] = ['light', 'dark', 'auto'];
 
 export async function getThemePreference(): Promise<ThemePreference> {
-  const stored = await readJson<ThemePreference>(StorageKey.theme, 'auto');
-  return THEME_PREFERENCES.includes(stored) ? stored : 'auto';
+  const stored = await readJson<ThemePreference>(StorageKey.theme, DEFAULT_THEME_PREFERENCE);
+  return THEME_PREFERENCES.includes(stored) ? stored : DEFAULT_THEME_PREFERENCE;
 }
 
 export async function saveThemePreference(preference: ThemePreference): Promise<void> {

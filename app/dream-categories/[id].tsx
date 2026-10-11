@@ -6,6 +6,7 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { AnalysisReadingModal } from '@/components/analysis/AnalysisReadingModal';
 import { Exploration360Panel } from '@/components/chat/Exploration360Panel';
+import { DreamerArtworkWindow } from '@/components/ui/DreamerBackground';
 import { IconSymbol } from '@/components/ui/icon-symbol';
 import { getNoctaliaDesignTokens } from '@/constants/noctaliaDesign';
 import { Fonts } from '@/constants/theme';
@@ -14,17 +15,23 @@ import { ScrollPerfProvider } from '@/context/ScrollPerfContext';
 import { useTheme } from '@/context/ThemeContext';
 import { useClearWebFocus } from '@/hooks/useClearWebFocus';
 import { useDreamMedia } from '@/hooks/useDreamMedia';
+import { useQuota } from '@/hooks/useQuota';
 import { useScrollIdle } from '@/hooks/useScrollIdle';
 import { useTranslation } from '@/hooks/useTranslation';
 import { getDreamRouteParams, resolveDreamRoute } from '@/lib/dreamRoute';
 import { isDreamExplored } from '@/lib/dreamUsage';
-import { getExploration360SynthesisStatus } from '@/lib/exploration360';
+import { canUseExploration360Synthesis, getExploration360SynthesisStatus } from '@/lib/exploration360';
 import { getDreamImageVersion, withCacheBuster } from '@/lib/imageUtils';
+import { buildPaywallHref } from '@/lib/paywallRoute';
 import { TID } from '@/lib/testIDs';
+import { useHeaderScroll } from '@/components/ui/headerStretch';
+import { withHeaderScroll } from '@/components/ui/HeaderScrollScope';
 
 const CATEGORY_ICONS = { symbols: 'sparkles', emotions: 'heart.fill', growth: 'leaf.fill' } as const;
 
-export default function DreamCategoriesScreen() {
+function DreamCategoriesScreen() {
+  // This screen's own scroll, published to its header painting and title.
+  const onHeaderScroll = useHeaderScroll();
   const { t } = useTranslation();
   const route = useLocalSearchParams<{ id: string; remoteId?: string; clientRequestId?: string }>();
   const { dreams } = useDreamsData();
@@ -37,6 +44,7 @@ export default function DreamCategoriesScreen() {
   const [failedImage, setFailedImage] = useState<string | null>(null);
   useClearWebFocus();
   const dream = resolveDreamRoute(dreams, route);
+  const { tier, subscriptionLoading } = useQuota({ dreamId: dream?.id, dream });
   const media = useDreamMedia(dream);
   const status = getExploration360SynthesisStatus(dream);
   const mediaUrl = media.thumbnailUrl || media.imageUrl;
@@ -45,6 +53,8 @@ export default function DreamCategoriesScreen() {
   const imageIdentity = JSON.stringify([media.accessScope, cacheKey, uri]);
   const source = useMemo(() => uri ? { uri, cacheKey } : undefined, [uri, cacheKey]);
   const showImage = Boolean(source && !media.error && imageIdentity !== failedImage);
+  const canUseSynthesis = canUseExploration360Synthesis(tier);
+  const subscriptionReady = !subscriptionLoading || canUseSynthesis;
 
   if (!dream) {
     return <View style={[styles.empty, { backgroundColor: tokens.screen.background }]}>
@@ -53,13 +63,20 @@ export default function DreamCategoriesScreen() {
   }
 
   const openChat = () => router.push({ pathname: '/dream-chat/[id]', params: getDreamRouteParams(dream) });
+  const openSynthesis = () => {
+    if (!subscriptionReady) return;
+    router.push(canUseSynthesis
+      ? { pathname: '/dream-chat/[id]', params: { ...getDreamRouteParams(dream), mode: 'synthesis' } }
+      : buildPaywallHref('exploration_limit'));
+  };
 
   return (
     <ScrollPerfProvider isScrolling={scrollPerf.isScrolling}>
       <View style={[styles.screen, { backgroundColor: tokens.screen.background }]} testID="screen.dreamCategories">
-        <ScrollView contentContainerStyle={[styles.content, { paddingTop: insets.top + 8, paddingBottom: insets.bottom + 24 }]}
+        <ScrollView onScroll={onHeaderScroll} scrollEventThrottle={16} contentContainerStyle={[styles.content, { paddingTop: insets.top + 8, paddingBottom: insets.bottom + 24 }]}
           onScrollBeginDrag={scrollPerf.onScrollBeginDrag} onScrollEndDrag={scrollPerf.onScrollEndDrag}
           onMomentumScrollBegin={scrollPerf.onMomentumScrollBegin} onMomentumScrollEnd={scrollPerf.onMomentumScrollEnd}>
+          <DreamerArtworkWindow scene="dialogue" style={{ marginHorizontal: -32 }} bleedTop={insets.top + 8} />
           <Pressable onPress={() => router.back()} accessibilityRole="button" accessibilityLabel={t('navigation.back')}
             style={({ pressed }) => [styles.back, pressed && styles.pressed]}>
             <IconSymbol name="chevron.left" size={22} color={tokens.accent.text} />
@@ -112,7 +129,7 @@ export default function DreamCategoriesScreen() {
           </View>
 
           <Exploration360Panel hasSynthesis={status.hasSynthesis} canGenerateSynthesis={status.canGenerateSynthesis}
-            onSynthesisPress={() => router.push({ pathname: '/dream-chat/[id]', params: { ...getDreamRouteParams(dream), mode: 'synthesis' } })}
+            onSynthesisPress={openSynthesis} synthesisDisabled={!subscriptionReady}
             onReadSynthesisPress={openChat} variant="reflection" style={styles.recap} />
 
           <Pressable onPress={openChat} testID={TID.Button.DreamFreeChat} accessibilityRole="button"
@@ -157,3 +174,5 @@ const styles = StyleSheet.create({
   openChat: { flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: 8, minHeight: 44, marginTop: 12 },
   pressed: { opacity: 0.7 },
 });
+
+export default withHeaderScroll(DreamCategoriesScreen);

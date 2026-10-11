@@ -1,4 +1,7 @@
 /* @jest-environment jsdom */
+
+jest.mock('@/components/ui/DreamerBackground', () => ({ DreamerArtworkWindow: () => null, DreamerBackground: () => null }));
+
 import React from 'react';
 import { cleanup, fireEvent, render, screen, waitFor } from '@testing-library/react';
 import { afterEach, beforeEach, describe, expect, it, jest } from '@jest/globals';

@@ -372,8 +372,7 @@
         const showWhenReady = () => {
           if (!panel.isConnected || readStoredConsent()) return;
           const introActive = document.querySelector('.oh-intro-overlay') ||
-            document.documentElement.classList.contains('exp-intro-pending') ||
-            document.documentElement.classList.contains('oh-sky-expanding');
+            document.documentElement.classList.contains('exp-intro-pending');
           if (introActive && Date.now() < deadline) {
             window.setTimeout(showWhenReady, 250);
             return;

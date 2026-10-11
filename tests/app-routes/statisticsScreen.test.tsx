@@ -157,9 +157,6 @@ jest.mock('@/components/NoctaliaScreenHeader', () => ({
 jest.mock('@/components/ScreenContainer', () => ({
   ScreenContainer: ({ children }: { children?: React.ReactNode }) => <div>{children}</div>,
 }));
-jest.mock('@/components/dev/MockNavigationRail', () => ({
-  MockNavigationRail: () => null,
-}));
 jest.mock('@/hooks/useClearWebFocus', () => ({
   useClearWebFocus: () => undefined,
 }));
@@ -247,7 +244,8 @@ describe('Statistics screen VNext trends', () => {
         const scroll = screen.queryByTestId('trends-scroll');
         const settings = screen.getByTestId(TID.Button.HeaderTrendsSettings);
         expect(screen.getAllByTestId(TID.Button.HeaderTrendsSettings)).toHaveLength(1);
-        expect(Boolean(scroll?.contains(settings))).toBe(scale >= 1.3);
+        // Loaded trends scroll their header away as on Today; the brief loading state only does so in compact large text.
+        expect(Boolean(scroll?.contains(settings))).toBe(loaded || scale >= 1.3);
         if (scale >= 1.3) {
           const style = JSON.parse(scroll!.getAttribute('data-style') ?? '{}');
           const content = JSON.parse(scroll!.getAttribute('data-content-container-style') ?? '{}');
@@ -263,7 +261,7 @@ describe('Statistics screen VNext trends', () => {
         }
         Object.assign(mockWindow, { width: height, height: width });
         view.rerender(<StatisticsScreen />);
-        expect(screen.queryByTestId('trends-scroll')?.contains(screen.getByTestId(TID.Button.HeaderTrendsSettings)) ?? false).toBe(false);
+        expect(screen.queryByTestId('trends-scroll')?.contains(screen.getByTestId(TID.Button.HeaderTrendsSettings)) ?? false).toBe(loaded);
       }
     }
   });

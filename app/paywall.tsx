@@ -5,7 +5,7 @@ import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { ActivityIndicator, BackHandler, Linking, Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
-import { AtmosphericBackground } from '@/components/inspiration/AtmosphericBackground';
+import { DreamerArtworkWindow } from '@/components/ui/DreamerBackground';
 import { PressableScale, Reveal } from '@/components/motion';
 import { ScreenContainer } from '@/components/ScreenContainer';
 import { Toast } from '@/components/Toast';
@@ -35,6 +35,8 @@ import {
 import { getPaywallVariant, PLUS_PAYWALL_FEATURE_KEYS } from '@/lib/paywallVariants';
 import { classifyPurchaseFailure } from '@/lib/subscriptionErrors';
 import { TID } from '@/lib/testIDs';
+import { useHeaderScroll } from '@/components/ui/headerStretch';
+import { withHeaderScroll } from '@/components/ui/HeaderScrollScope';
 
 const log = createScopedLogger('[Paywall]');
 const PAYWALL_MAX_WIDTH = 720;
@@ -45,7 +47,9 @@ const PAYWALL_MAX_WIDTH = 720;
  */
 const CTA_TRANSITION = ['backgroundColor', 'borderColor'] as const;
 
-export default function PaywallScreen() {
+function PaywallScreen() {
+  // This screen's own scroll, published to its header painting and title.
+  const onHeaderScroll = useHeaderScroll();
   const { colors, mode } = useTheme();
   const noctalia = useMemo(() => getNoctaliaDesignTokens(colors, mode), [colors, mode]);
   const { t, translationRevision, currentLang } = useTranslation();
@@ -469,7 +473,7 @@ export default function PaywallScreen() {
   if (isDeviceUpgraded) {
     return (
       <View style={rootStyle} testID={TID.Screen.Paywall}>
-        <AtmosphericBackground />
+        <DreamerArtworkWindow scene="observatory" />
         <ScreenContainer style={headerContainerStyle} maxWidth={PAYWALL_MAX_WIDTH}>
           <View style={styles.headerRow}>
             <Text style={[styles.headerTitle, { color: noctalia.text.primary }]}>
@@ -478,7 +482,7 @@ export default function PaywallScreen() {
             <Pressable
               onPress={handleClose}
               disabled={busy}
-              style={({ pressed }) => [styles.closeButton, pressed && styles.closeButtonPressed]}
+              style={({ pressed }) => [styles.closeButton, { backgroundColor: noctalia.surface.raised }, pressed && styles.closeButtonPressed]}
               accessibilityRole="button"
               testID={TID.Button.PaywallClose}
             >
@@ -489,7 +493,7 @@ export default function PaywallScreen() {
           </View>
         </ScreenContainer>
 
-        <ScrollView
+        <ScrollView onScroll={onHeaderScroll} scrollEventThrottle={16}
           style={styles.scroll}
           contentContainerStyle={styles.scrollContent}
           contentInsetAdjustmentBehavior="automatic"
@@ -540,8 +544,7 @@ export default function PaywallScreen() {
 
   return (
     <View style={rootStyle} testID={TID.Screen.Paywall}>
-      <AtmosphericBackground />
-      <ScrollView
+      <ScrollView onScroll={onHeaderScroll} scrollEventThrottle={16}
         style={styles.scroll}
         contentContainerStyle={[
           styles.scrollContent,
@@ -552,6 +555,7 @@ export default function PaywallScreen() {
         ]}
         contentInsetAdjustmentBehavior="automatic"
       >
+        <DreamerArtworkWindow scene="observatory" style={{ marginHorizontal: -ThemeLayout.spacing.md }} bleedTop={ThemeLayout.spacing.sm + insets.top} />
         <ScreenContainer maxWidth={PAYWALL_MAX_WIDTH}>
           <View style={styles.topBar}>
             <View style={styles.brandLockup}>
@@ -561,7 +565,7 @@ export default function PaywallScreen() {
             <Pressable
               onPress={handleClose}
               disabled={busy}
-              style={({ pressed }) => [styles.closeButton, pressed && styles.closeButtonPressed]}
+              style={({ pressed }) => [styles.closeButton, { backgroundColor: noctalia.surface.raised }, pressed && styles.closeButtonPressed]}
               accessibilityRole="button"
               testID={TID.Button.PaywallClose}
             >
@@ -978,6 +982,7 @@ const styles = StyleSheet.create({
     minHeight: 44,
     minWidth: 44,
     paddingHorizontal: 8,
+    borderRadius: 22,
     alignItems: 'center',
     justifyContent: 'center',
   },
@@ -1229,3 +1234,5 @@ const styles = StyleSheet.create({
     lineHeight: 20,
   },
 });
+
+export default withHeaderScroll(PaywallScreen);

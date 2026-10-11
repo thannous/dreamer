@@ -4,14 +4,15 @@ import { useRouter } from 'expo-router';
 import React from 'react';
 import { StyleSheet, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { ScopedTheme } from 'uniwind';
 
 import { Beat } from '@/components/atmosphere/Beat';
 import { GrainOverlay } from '@/components/atmosphere/GrainOverlay';
 import { NightStatusBar } from '@/components/atmosphere/NightStatusBar';
 import { Button, Rule, Text } from '@/components/ui';
 import { Duration } from '@/constants/motion';
+import { OnboardingScrim } from '@/constants/theme';
 import { useTranslation } from '@/context/LanguageContext';
+import { ThemeScope } from '@/context/ThemeContext';
 import { useReducedMotion } from '@/hooks/useReducedMotion';
 import { TID } from '@/lib/testIDs';
 import { areAccountsEnabled } from '@/lib/env';
@@ -37,7 +38,7 @@ export default function WelcomeScreen() {
   const reducedMotion = useReducedMotion();
 
   return (
-    <ScopedTheme theme="dark">
+    <ThemeScope mode="dark">
       <View className="flex-1 bg-ink">
         <NightStatusBar />
         <Image
@@ -50,12 +51,7 @@ export default function WelcomeScreen() {
         />
         <LinearGradient
           pointerEvents="none"
-          colors={[
-            'rgba(3, 4, 13, 0.7)',
-            'rgba(3, 4, 13, 0.08)',
-            'rgba(3, 4, 13, 0.14)',
-            'rgba(3, 4, 13, 0.78)',
-          ]}
+          colors={[...OnboardingScrim.welcome]}
           locations={[0, 0.22, 0.66, 1]}
           style={StyleSheet.absoluteFill}
         />
@@ -99,6 +95,6 @@ export default function WelcomeScreen() {
           </View>
         </SafeAreaView>
       </View>
-    </ScopedTheme>
+    </ThemeScope>
   );
 }

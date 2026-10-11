@@ -1,11 +1,15 @@
 // Historical billing UI assertions, executed by TesterArmy with mock-only service guard.
 import type { Page } from 'playwright/test';
-import { createParityTest, expect } from '../web-parity-fixtures';
+import { createParityTest, expect, withDialog } from '../web-parity-fixtures';
 const test = createParityTest();
 
 async function setupFreeAccount(page: Page) {
   await page.goto('/', { waitUntil: 'domcontentloaded' });
   await page.getByTestId('btn.onboarding.intro.next').click();
+  // With feature sheets, "Commencer" first tells the three stories; the cross moves on.
+  if (process.env.EXPO_PUBLIC_ONBOARDING_FEATURE_SHEETS_ENABLED === 'true') {
+    await withDialog(page, 'accept', () => page.getByTestId('btn.onboarding.feature.close').click());
+  }
   await page.getByTestId('btn.onboarding.skip').click();
   await page.getByTestId('btn.recording.home').or(page.getByTestId('tab.home')).filter({ visible: true }).click();
   await page.getByTestId('btn.header.home.settings').click();
@@ -65,7 +69,7 @@ test('mock purchase error is recoverable without granting Plus', async ({ page }
   await offer(page);
   await page.getByTestId('btn.paywall.purchase').click();
   const error = page.getByTestId('bottomSheet.paywall.error');
-  await expect(error).toContainText('Connection error');
+  await expect(error).toContainText('No connection right now');
   await page.getByRole('button', { name: 'OK', exact: true }).click();
   await page.getByTestId('btn.paywall.close').click();
   await expect(page.getByTestId('quota.analysisValue')).toHaveText('5 / 3');

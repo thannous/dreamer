@@ -389,7 +389,7 @@ describe('world continuity from journey into practice', () => {
     expect(scene.props.artwork).toBe('trainer');
     expect(screen.getByTestId(TID.Screen.PlayerUnavailable)).toBeTruthy();
     expect(screen.getByTestId('empty-illustration')).toBeTruthy();
-    expect(screen.getByRole('button', { name: 'Close' })).toBeTruthy();
+    expect(screen.getByRole('button', { name: 'Back' })).toBeTruthy();
     expect(screen.queryByTestId(TID.Button.PlayerToggle)).toBeNull();
   });
 

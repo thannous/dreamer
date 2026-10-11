@@ -1,7 +1,7 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { act, fireEvent, render, screen, waitFor, within } from '@testing-library/react-native-legacy';
 import React from 'react';
-import { ScrollView, StyleSheet, useWindowDimensions } from 'react-native';
+import { useWindowDimensions } from 'react-native';
 
 import HomeTab from '@/app/(drawer)/(tabs)/index';
 import { ACTIVE_JOURNEY_CTA_TEST_ID } from '@/components/journey/WorldJourneyPicker';
@@ -196,8 +196,7 @@ describe('immersive home journey', () => {
 
     expect(mockPush).toHaveBeenCalledTimes(1);
     expect(mockPush).toHaveBeenCalledWith('/session/sleep-descent?worldId=constellation');
-    expect(screen.getByTestId('home.journey.ritual-access')).toHaveTextContent('Free');
-    expect(screen.getByTestId('home.journey.ritual-access')).not.toHaveTextContent('Plus');
+    expect(screen.queryByTestId('home.journey.ritual-access')).toBeNull();
     expect(screen.getByTestId('home.journey.upcoming.dream-threshold.access')).toHaveTextContent('Plus');
     expect(screen.getByTestId('home.journey.upcoming.dream-lucid.access')).toHaveTextContent('Plus');
   });
@@ -359,13 +358,15 @@ describe('immersive home journey', () => {
     expect(cta).toHaveTextContent(/^Begin$/);
     expect(cta).not.toHaveTextContent(/Begin the journey/i);
     expect(screen.getByRole('button', { name: /Begin the journey/i })).toBe(cta);
-    const activeWorld = within(screen.getByRole('radio', { name: 'Constellation' }));
-    expect(activeWorld.getByText('Enter the night').props.numberOfLines).toBeUndefined();
-    expect(activeWorld.getByText('Before sleep').props.numberOfLines).toBeUndefined();
+    const hero = within(screen.getByTestId('home.world.hero'));
+    expect(hero.getByTestId('home.world.name').props.numberOfLines).toBeUndefined();
+    expect(hero.getByText('Enter the night').props.numberOfLines).toBeUndefined();
+    expect(hero.getByText('Before sleep').props.numberOfLines).toBeUndefined();
     expect(screen.getByTestId('home.world-switcher.tide.locked')).toBeTruthy();
     expect(screen.queryByTestId('home.world-switcher.tide.owned')).toBeNull();
-    expect(screen.getByTestId('home.journey.ritual-access')).toHaveTextContent('Free');
-    expect(screen.getByTestId('home.journey.reason').props.numberOfLines).toBeUndefined();
+    expect(screen.queryByTestId('home.journey.ritual-access')).toBeNull();
+    // A world-led ritual omits the redundant recommendation paragraph.
+    expect(screen.queryByTestId('home.journey.reason')).toBeNull();
     const ritualTitle = screen.getByTestId('home.journey.ritual-title');
     expect(ritualTitle).toHaveTextContent('Bringing the breath down');
     expect(ritualTitle.props.numberOfLines).toBeUndefined();
@@ -380,39 +381,26 @@ describe('immersive home journey', () => {
     expect(useWindowDimensions().fontScale).toBe(2);
   });
 
-  it('reveals the hydrated initial world once without recentering later choices', async () => {
-    const scrollTo = jest.spyOn(ScrollView.prototype, 'scrollTo').mockImplementation(() => {});
-    try {
-      await AsyncStorage.setItem(StorageKey.world, JSON.stringify('forest'));
+  it('names the hydrated world in the hero, then follows a new choice', async () => {
+    await AsyncStorage.setItem(StorageKey.world, JSON.stringify('forest'));
 
-      renderHome();
+    renderHome();
 
-      await waitFor(() =>
-        expect(
-          screen.getByRole('radio', { name: 'Inner forest' }).props.accessibilityState
-        ).toMatchObject({ checked: true })
-      );
-      await waitFor(() => expect(scrollTo).toHaveBeenCalledTimes(1));
-      const cardWidth = StyleSheet.flatten(
-        screen.getByTestId('home.world-switcher.forest').props.style
-      ).width;
-      expect(scrollTo).toHaveBeenCalledWith({
-        x: 2 * (cardWidth + 12),
-        y: 0,
-        animated: false,
-      });
+    await waitFor(() =>
+      expect(
+        screen.getByRole('radio', { name: 'Inner forest' }).props.accessibilityState
+      ).toMatchObject({ checked: true })
+    );
+    expect(screen.getByTestId('home.world.name')).toHaveTextContent('Inner forest');
 
-      fireEvent.press(screen.getByRole('radio', { name: 'Inner dawn' }));
+    fireEvent.press(screen.getByRole('radio', { name: 'Inner dawn' }));
 
-      await waitFor(() =>
-        expect(
-          screen.getByRole('radio', { name: 'Inner dawn' }).props.accessibilityState
-        ).toMatchObject({ checked: true })
-      );
-      expect(scrollTo).toHaveBeenCalledTimes(1);
-    } finally {
-      scrollTo.mockRestore();
-    }
+    await waitFor(() =>
+      expect(
+        screen.getByRole('radio', { name: 'Inner dawn' }).props.accessibilityState
+      ).toMatchObject({ checked: true })
+    );
+    expect(screen.getByTestId('home.world.name')).toHaveTextContent('Inner dawn');
   });
 
   it('keeps world choice semantic and the session action outside the radio card', async () => {
@@ -430,8 +418,10 @@ describe('immersive home journey', () => {
     expect(hiddenSessionTitle).toBeTruthy();
     expect(active.queryByText(hiddenSessionTitle)).toBeNull();
     expect(active.queryByTestId(ACTIVE_JOURNEY_CTA_TEST_ID)).toBeNull();
-    expect(active.getByText('Enter the night')).toBeTruthy();
-    expect(active.getByText('Before sleep')).toBeTruthy();
+    const hero = within(screen.getByTestId('home.world.hero'));
+    expect(active.queryByText('Enter the night')).toBeNull();
+    expect(hero.getByText('Enter the night')).toBeTruthy();
+    expect(hero.getByText('Before sleep')).toBeTruthy();
     expect(cta).toHaveTextContent(/^Begin$/);
     expect(accessibilityLabel).toMatch(/^Begin the journey\./);
     expect(active.queryByText('Plus')).toBeNull();
@@ -486,6 +476,9 @@ describe('immersive home journey', () => {
     const tide = await screen.findByRole('radio', { name: 'Deep tide' });
     expect(tide.props.accessibilityHint).toContain(mockEn['world.purchase.offer.unavailable']);
     expect(within(screen.getByTestId('home.world-switcher.tide')).queryByText(/0,99/)).toBeNull();
+    expect(
+      within(screen.getByTestId('home.world-switcher.tide')).queryByText(mockEn['world.purchase.offer.unavailable']),
+    ).toBeNull();
 
     fireEvent.press(tide);
 
@@ -520,8 +513,8 @@ describe('immersive home journey', () => {
     renderHome();
 
     const tide = await screen.findByRole('radio', { name: 'Deep tide' });
-    expect(screen.getByTestId('home.world-switcher.tide.owned')).toHaveTextContent('This world is yours');
     expect(screen.queryByTestId('home.world-switcher.tide.locked')).toBeNull();
+    expect(screen.queryByTestId('home.world.owned')).toBeNull();
     expect(tide.props.accessibilityHint).toMatch(/This world is yours/);
     expect(tide.props.accessibilityHint).not.toMatch(/One-time purchase/);
     fireEvent.press(tide);
@@ -531,9 +524,9 @@ describe('immersive home journey', () => {
         checked: true,
       })
     );
+    expect(screen.getByTestId('home.world.owned')).toHaveTextContent('This world is yours');
     expect(screen.queryByText('Plus')).toBeNull();
-    expect(screen.getByTestId('home.journey.ritual-access')).toHaveTextContent('Free');
-    expect(screen.getByTestId('home.journey.ritual-access')).not.toHaveTextContent('Plus');
+    expect(screen.queryByTestId('home.journey.ritual-access')).toBeNull();
     expect(screen.getByTestId(ACTIVE_JOURNEY_CTA_TEST_ID)).toHaveTextContent(/^Begin$/);
     expect(screen.getAllByTestId(/^home\.journey\.upcoming\.[^.]+$/).length).toBeGreaterThan(0);
     expect(screen.getByTestId('home.journey.upcoming.stress-unclench.access')).toHaveTextContent('Free');
@@ -557,8 +550,7 @@ describe('immersive home journey', () => {
     expect(screen.queryByTestId('home.journey.quota')).toBeNull();
     expect(screen.queryByTestId('home.journey.quota-reset')).toBeNull();
     expect(screen.queryByTestId('home.journey.quota-alternative')).toBeNull();
-    expect(screen.getByTestId('home.journey.ritual-access')).toHaveTextContent('Free');
-    expect(screen.getByTestId('home.journey.ritual-access')).not.toHaveTextContent('Quota used');
+    expect(screen.queryByTestId('home.journey.ritual-access')).toBeNull();
 
     const cta = screen.getByTestId(ACTIVE_JOURNEY_CTA_TEST_ID);
     expect(cta).toHaveTextContent(/^Begin$/);
@@ -579,8 +571,7 @@ describe('immersive home journey', () => {
     expect(screen.getByTestId('home.journey.quota')).toHaveTextContent(
       /2 free sessions left this month/
     );
-    expect(screen.getByTestId('home.journey.ritual-access')).toHaveTextContent('Free');
-    expect(screen.getByTestId('home.journey.ritual-access')).not.toHaveTextContent('Quota used');
+    expect(screen.queryByTestId('home.journey.ritual-access')).toBeNull();
     expect(screen.getByTestId('home.journey.quota-reset')).toHaveTextContent(
       /Resets on 1 September 2026/
     );
@@ -630,8 +621,7 @@ describe('immersive home journey', () => {
     });
 
     expect(screen.getByTestId(ACTIVE_JOURNEY_CTA_TEST_ID)).toHaveTextContent(/^Begin$/);
-    expect(screen.getByTestId('home.journey.ritual-access')).toHaveTextContent('Free');
-    expect(screen.getByTestId('home.journey.ritual-access')).not.toHaveTextContent('Quota used');
+    expect(screen.queryByTestId('home.journey.ritual-access')).toBeNull();
     expect(screen.queryByTestId('home.journey.quota')).toBeNull();
     fireEvent.press(screen.getByTestId(ACTIVE_JOURNEY_CTA_TEST_ID));
     expect(mockPush).toHaveBeenCalledWith('/session/sleep-descent?worldId=constellation');
@@ -777,8 +767,7 @@ describe('immersive home journey', () => {
 
     const cta = screen.getByTestId(ACTIVE_JOURNEY_CTA_TEST_ID);
     expect(cta).toHaveTextContent(/^Begin$/);
-    expect(screen.getByTestId('home.journey.ritual-access')).toHaveTextContent('Free');
-    expect(screen.getByTestId('home.journey.ritual-access')).not.toHaveTextContent('Quota used');
+    expect(screen.queryByTestId('home.journey.ritual-access')).toBeNull();
     expect(screen.getByTestId('home.journey.quota')).toHaveTextContent(/1 free session left this month/);
     fireEvent.press(cta);
     expect(mockPush).toHaveBeenCalledWith('/session/sleep-descent?worldId=constellation');
@@ -804,8 +793,7 @@ describe('immersive home journey', () => {
 
     const cta = await screen.findByTestId(ACTIVE_JOURNEY_CTA_TEST_ID);
     expect(cta).toHaveTextContent(/^Begin$/);
-    expect(screen.getByTestId('home.journey.ritual-access')).toHaveTextContent('Free');
-    expect(screen.getByTestId('home.journey.ritual-access')).not.toHaveTextContent('Plus');
+    expect(screen.queryByTestId('home.journey.ritual-access')).toBeNull();
     expect(screen.queryByText('Plus')).toBeNull();
     expect(screen.queryByTestId('home.journey.quota')).toBeNull();
     expect(screen.queryByTestId('home.journey.quota-alternative')).toBeNull();
@@ -827,7 +815,7 @@ describe('immersive home journey', () => {
       await Promise.resolve();
     });
 
-    expect(screen.getByTestId('home.journey.ritual-access')).toHaveTextContent('Free');
+    expect(screen.queryByTestId('home.journey.ritual-access')).toBeNull();
     expect(screen.getByTestId('home.journey.upcoming.dream-threshold.access')).toHaveTextContent('Free');
     expect(screen.getByTestId('home.journey.upcoming.dream-lucid.access')).toHaveTextContent('Free');
     expect(screen.getByTestId('home.journey.upcoming.dream-threshold.access')).not.toHaveTextContent('Plus');

@@ -16,7 +16,6 @@ import { EmailAuthCard } from '@/components/auth/EmailAuthCard';
 import { GuestRecordingQaReset } from '@/components/dev/GuestRecordingQaReset';
 import { VoiceLiveSpikeDebugEntry } from '@/components/dev/VoiceLiveSpikeDebugEntry';
 import { GuestProdQALab } from '@/components/guest/GuestProdQALab';
-import { AtmosphericBackground } from '@/components/inspiration/AtmosphericBackground';
 import { StaticFlatGlassCard } from '@/components/inspiration/GlassCard';
 import { NoctaliaScreenHeader } from '@/components/NoctaliaScreenHeader';
 import { QuotaStatusCard } from '@/components/quota/QuotaStatusCard';
@@ -207,9 +206,9 @@ export default function SettingsScreen() {
       className="flex-1 bg-ink"
       testID="screen.settings"
     >
-      <AtmosphericBackground variant="subtle" />
       <View className={isDesktopLayout ? 'w-full max-w-[760px] self-center' : 'w-full'}>
       <NoctaliaScreenHeader
+        scene="journal"
         titleKey={returningGuestBlocked ? 'auth.returning_guest.title' : 'settings.title'}
         actions={returningGuestBlocked ? [] : [{
           icon: 'chevron.left',
@@ -240,6 +239,7 @@ export default function SettingsScreen() {
             legal={legal}
             footer={user ? <View testID="settings-signout-footer"><SettingsSignOutAction /></View> : undefined}
             onOpenSubscription={handleOpenPaywall}
+            onReplayOnboarding={returningGuestBlocked ? undefined : () => router.push({ pathname: '/onboarding', params: { replay: '1' } })}
             quota={quota}
             returningGuestBlocked={returningGuestBlocked}
             subscriptionSubtitle={t('settings.plus.subtitle')}

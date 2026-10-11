@@ -46,6 +46,30 @@ describe('docs-deploy helpers', () => {
     });
   });
 
+  it.each([' preview', 'preview ', '\tpreview', 'preview\n'])(
+    'refuses a preview whose raw config previewBranch is %j, through the real loader, before any build',
+    async (previewBranch) => {
+      const configPath = path.join(tmpRoot, 'docs-src', 'config', 'cloudflare-pages.json');
+      const raw = JSON.parse(fs.readFileSync(configPath, 'utf8'));
+      fs.writeFileSync(configPath, JSON.stringify({ ...raw, previewBranch }), 'utf8');
+      const config = loadCloudflarePagesConfig(tmpRoot);
+      expect(config.previewBranch).toBe(previewBranch);
+      expect(() => buildWranglerDeployArgs(config, 'preview', '/tmp/x', 'a'.repeat(40))).toThrow('Preview refused');
+      const calls: string[][] = [];
+      await expect(
+        main(['preview'], {
+          loadConfig: () => loadCloudflarePagesConfig(tmpRoot),
+          runCommand: (command: string, args: string[]) => {
+            calls.push([command, ...args]);
+          },
+          createStaging: jest.fn(),
+          log: () => {},
+        })
+      ).rejects.toThrow('Preview refused');
+      expect(calls).toEqual([]);
+    }
+  );
+
   it('builds a preview Wrangler deployment command from config', () => {
     const config = loadCloudflarePagesConfig(tmpRoot);
 
@@ -243,10 +267,27 @@ describe('docs-deploy production guard', () => {
     expect(setup.calls[setup.calls.length - 1]).toEqual(expect.arrayContaining(['npx', 'wrangler', 'pages', 'deploy', '--branch', 'preview']));
   });
 
-  it.each(['master', 'main', 'production', ' Master ', 'MAIN', 'Production', 'release-prod'])(
-    'refuses a preview whose previewBranch is a production branch (%s) before any build or upload',
-    async (previewBranch) => {
-      const productionBranch = previewBranch === 'release-prod' ? 'release-prod' : 'master';
+  it.each([
+    ['master', 'master'],
+    ['main', 'master'],
+    ['production', 'master'],
+    [' Master ', 'master'],
+    ['MAIN', 'master'],
+    ['refs/heads/master', 'master'],
+    ['refs/heads/preview', 'master'],
+    ['Preview', 'master'],
+    [' preview', 'master'],
+    ['preview ', 'master'],
+    ['pr\u0435view', 'master'],
+    ['m\u0430ster', 'master'],
+    ['preview\u200b', 'master'],
+    ['\uff50review', 'master'],
+    ['', 'master'],
+    ['staging', 'master'],
+    ['preview', 'preview'],
+  ])(
+    'refuses a preview unless previewBranch is exactly "preview" and not productionBranch (%j, production %j)',
+    async (previewBranch, productionBranch) => {
       const setup = deps(async () => accepted(), { loadConfig: () => ({ ...config, previewBranch, productionBranch }) });
       await expect(main(['preview'], setup.deps)).rejects.toThrow('Preview refused');
       expect(setup.calls).toEqual([]);
@@ -254,6 +295,12 @@ describe('docs-deploy production guard', () => {
       expect(setup.deps.guardProduction).not.toHaveBeenCalled();
     }
   );
+
+  it('allows exactly "preview" with the real config', () => {
+    const real = JSON.parse(fs.readFileSync(path.join(__dirname, '..', 'docs-src', 'config', 'cloudflare-pages.json'), 'utf8'));
+    expect(real.previewBranch).toBe('preview');
+    expect(buildWranglerDeployArgs(real, 'preview', '/tmp/x', HEAD)).toEqual(expect.arrayContaining(['--branch', 'preview']));
+  });
 
   it('never builds preview Wrangler arguments for a production branch', () => {
     expect(() => buildWranglerDeployArgs({ ...config, previewBranch: 'master' }, 'preview', '/tmp/x', HEAD)).toThrow('Preview refused');

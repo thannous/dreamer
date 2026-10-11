@@ -9,7 +9,7 @@ la même validation, est retiré. Le ruleset de `master` ne requiert aucun check
 Décision du propriétaire du 9 octobre 2026 : la CI distante ne faisait que
 rejouer ce que l'agent peut vérifier avant de pousser, et elle consommait des
 crédits (machine `ubuntu-2404`, conteneurs TesterArmy parallèles). Depuis la
-[règle commune de livraison v2](https://github.com/thannous/shapier/blob/main/docs/regle-commune-livraison.md)
+[règle commune de livraison](regle-commune-livraison.md)
 (section « Livraison » d'`AGENTS.md`) :
 
 1. **Push rapide.** Le hook versionné `.githooks/pre-push` est installé par
@@ -22,7 +22,7 @@ crédits (machine `ubuntu-2404`, conteneurs TesterArmy parallèles). Depuis la
    (une preuve absente ne bloque pas). Il ne fait rien pour une suppression
    de branche ou un push sans nouveau commit. Les agents ne le contournent
    jamais (`git push --no-verify`, `core.hooksPath`).
-2. **Preuve avant fusion.** `npm run verify:pr` vérifie le commit sur une
+2. **Preuve avant push.** Avant chaque push, `npm run verify:pr` vérifie le commit sur une
    copie isolée (`git worktree`) : types application et tests, `lint`,
    `lint:scripts`, tests Jest liés au diff depuis le merge-base avec
    `origin/master`, contrats statiques Supabase et Edge, puis selon les
@@ -30,7 +30,8 @@ crédits (machine `ubuntu-2404`, conteneurs TesterArmy parallèles). Depuis la
    Meditation et les Edge Functions sous Deno (`verify-local.config.mjs`).
    La preuve est liée à l'arbre et un contrôle déjà réussi sur les mêmes
    entrées est réutilisé. `node scripts/verify-local.mjs proof-block` imprime
-   la section `## Local proof` du modèle `.github/pull_request_template.md`.
+   le commit vérifié et le résultat demandés par le modèle
+   `.github/pull_request_template.md`.
    La revue passe par les commentaires de la PR.
 3. **CircleCI sur déclenchement manuel ou API uniquement.** Le workflow
    `setup` de `.circleci/config.yml` s'exécute si l'une de ces conditions est
@@ -47,9 +48,10 @@ crédits (machine `ubuntu-2404`, conteneurs TesterArmy parallèles). Depuis la
    webhook automatique ne consomme aucun crédit, et ni la fusion ni la
    publication n'attendent CircleCI. `.circleci/continue.yml` est inchangé ;
    `.circleci/tests/fallback-jest.test.sh` vérifie chaque combinaison.
-4. **Avant fusion**, si `master` a bougé depuis la preuve, fusionner `master`
-   dans la branche et relancer `npm run verify:pr` : seuls les contrôles dont
-   les entrées ont changé sont rejoués ; mettre `## Local proof` à jour.
+4. **Si `master` a bougé** depuis la preuve, fusionner `master` dans la
+   branche et relancer `npm run verify:pr` avant de pousser : seuls les
+   contrôles dont les entrées ont changé sont rejoués ; mettre à jour le commit
+   vérifié et le résultat dans la PR.
 
 Lancer une pipeline manuelle : application web CircleCI, page *Pipelines* du
 projet, *Trigger Pipeline*, branche de configuration et de checkout, puis
@@ -67,11 +69,11 @@ curl -X POST https://circleci.com/api/v2/project/<project-slug>/pipeline/run \
 
 Une étape de release ou de publication qui exigeait une pipeline CircleCI verte
 sur le SHA exige désormais que **`npm run verify:release` ait réussi sur ce SHA
-exact**. Un contrôle spécialisé que la machine ne peut pas lancer vient d'abord
-de la machine du propriétaire (`--external <contrôle>="owner-machine: <hôte> <note> on <SHA>"`) ;
-une pipeline CircleCI manuelle ne compte que si la table « External CI » de la
-[règle commune](regle-commune-livraison.md)
-la déclare (aujourd'hui : aucune). Ce choix ne prouve rien sur une machine vierge : le
+exact**. Un contrôle spécialisé se lance en local là où tourne `verify:pr` ; si cette
+machine ne peut pas, `--external <contrôle>="owner-machine: <hôte> <note> on <SHA>"`
+depuis la machine qui l'a lancé ; tant que la preuve est `incomplete`, ne pas
+pousser et le signaler comme bloquant. `--external` n'accepte
+aucun lien de CI (`externalSources: []`). Ce choix ne prouve rien sur une machine vierge : le
 contrôle tourne avec l'installation locale de l'auteur.
 
 ### Validation complète locale
@@ -111,10 +113,11 @@ portefeuille CircleCI n'est qu'un lancement manuel facultatif, gardé en phase
 par ce test. Les contrôles qui
 demandent Deno (Edge), Docker (`test:e2e:backend`) ou l'installation
 TesterArmy sont déclarés avec leur prérequis : si la machine ne les a pas, la
-preuve est `incomplete` et indique la commande d'installation. Les lancer sur
-la machine du propriétaire (PC Tanuki), puis relancer avec
-`--external <contrôle>="owner-machine: <hôte> <note> on <SHA>"` ; une CI externe
-seulement si la table « External CI » la déclare.
+preuve est `incomplete` et indique la commande d'installation. Les lancer en
+local là où tourne `verify:pr` ; si cette machine ne peut pas, relancer avec
+`--external <contrôle>="owner-machine: <hôte> <note> on <SHA>"` depuis la
+machine qui les a lancés ; tant que la preuve est `incomplete`, ne pas pousser
+et le signaler comme bloquant.
 `node scripts/verify-local.mjs status` affiche la preuve du commit.
 
 ## Architecture et frontière des responsabilités

@@ -28,36 +28,44 @@ const tier = window.__EXP_TIER__ || html.dataset.expTier || 'static';
 
 const HERO_SELECTOR = '.noctalia-observatory > header';
 
-const STEP_SECTION_SELECTOR = [
-  '#how-it-works',
-  '#comment-ca-marche',
-  '#como-funciona',
-  '#so-funktioniert-es',
-  '#come-funziona',
-].join(',');
-
-const withSuffix = (selectorList, suffix) =>
-  selectorList
-    .split(',')
-    .map((selector) => `${selector.trim()} ${suffix}`)
-    .join(',');
-
 const EASE_OUT = 'cubic-bezier(0.23, 1, 0.32, 1)';
 // easeOutCubic: the restrained curve for the cinematic hero sequence.
 const EASE_FILM = 'cubic-bezier(0.22, 0.61, 0.36, 1)';
-const WORD_STAGGER_MS = 85;
+const LETTER_STAGGER_MS = 42;
 const HEADLINE_LEAD_MS = 450;
 
 const getHeroItems = () => Array.from(document.querySelectorAll('.hero-anim:not(.oh-hero-title)'));
 const getHeadline = () => document.querySelector('.oh-hero-title');
 const getRevealItems = () => Array.from(document.querySelectorAll('.reveal'));
 
+// The hero stays ink from first paint until the opening film covers the
+// screen, so the still never flashes before the eye.
+const unveilHero = () => html.classList.add('exp-intro-unveiled');
+
 const revealDreamsAfterIntro = () => {
   window.clearTimeout(window.__expIntroGateTimer);
+  unveilHero();
   html.classList.remove('exp-intro-pending');
 };
 
+// A replayed film starts from the same ink as the first arrival: the hero
+// copy leaves with the sky, then returns letter by letter after the film.
+const hideHeroForIntro = () => {
+  html.classList.add('exp-intro-replay');
+  getHeadline()?.classList.remove('is-revealed');
+};
+
+const showHeroAfterIntro = () => {
+  html.classList.remove('exp-intro-replay');
+  // Two frames: the collapsed letters must be committed before they transition.
+  window.requestAnimationFrame(() => {
+    window.requestAnimationFrame(() => getHeadline()?.classList.add('is-revealed'));
+  });
+};
+
 const holdDreamsForIntro = () => {
+  // Every attempt, replays included, starts behind the ink veil.
+  html.classList.remove('exp-intro-unveiled');
   html.classList.add('exp-intro-pending');
   window.clearTimeout(window.__expIntroGateTimer);
   window.__expIntroGateTimer = window.setTimeout(revealDreamsAfterIntro, 9000);
@@ -160,17 +168,19 @@ const loadScript = (src) => {
 };
 
 /* ------------------------------------------------------------------ */
-/* Headline: per-word focus pull (full & light tiers).                 */
+/* Headline: per-letter focus pull (full & light tiers).               */
 /* ------------------------------------------------------------------ */
 
 /**
- * Wraps each word of the headline in `.oh-word` so it can rise out of a
- * soft blur, one word after another, like a dream coming back. Spaces stay
- * as text nodes so wrapping, balancing and the accessible name are intact.
+ * Wraps each letter of the headline in `.oh-char` so the title comes into
+ * focus letter by letter as the sky appears. Letters stay inline, so kerning
+ * survives; each word stays unbreakable in `.oh-word`. Screen readers get
+ * the title once, from a hidden copy.
  */
 const revealHeadline = () => {
   const headline = getHeadline();
-  if (!headline || headline.querySelector('.oh-word')) return;
+  if (!headline || headline.querySelector('.oh-char')) return;
+  const label = headline.textContent.replace(/\s+/g, ' ').trim();
   const walker = document.createTreeWalker(headline, NodeFilter.SHOW_TEXT);
   const textNodes = [];
   while (walker.nextNode()) textNodes.push(walker.currentNode);
@@ -188,13 +198,23 @@ const revealHeadline = () => {
       }
       const word = document.createElement('span');
       word.className = 'oh-word';
-      word.textContent = part;
-      word.style.transitionDelay = `${index * WORD_STAGGER_MS}ms`;
-      index += 1;
+      word.setAttribute('aria-hidden', 'true');
+      Array.from(part).forEach((char) => {
+        const letter = document.createElement('span');
+        letter.className = 'oh-char';
+        letter.textContent = char;
+        letter.style.transitionDelay = `${index * LETTER_STAGGER_MS}ms`;
+        index += 1;
+        word.append(letter);
+      });
       fragment.append(word);
     });
     node.replaceWith(fragment);
   });
+  const spoken = document.createElement('span');
+  spoken.className = 'oh-sr';
+  spoken.textContent = label;
+  headline.prepend(spoken);
 
   html.classList.add('exp-words');
   // Two frames: the collapsed state must be committed before it transitions.
@@ -327,38 +347,10 @@ const initGsapScenes = (gsapLib, ScrollTrigger, lenis, heroReady) => {
     },
   });
 
-  // Steps: staggered scrub reveals. The heading is intentionally NOT pinned:
-  // a transparent pinned layer let the phone screenshots slide behind the
-  // heading text, which read as a rendering bug.
-  const stepSection = document.querySelector(STEP_SECTION_SELECTOR);
-  if (stepSection && window.matchMedia('(min-width: 768px)').matches) {
-    const galleryItems = gsapLib.utils.toArray(withSuffix(STEP_SECTION_SELECTOR, '[data-step]'));
-    if (galleryItems.length) {
-      galleryItems.forEach((item, index) => {
-        gsapLib.fromTo(
-          item,
-          { autoAlpha: 0.55, y: 54, scale: 0.96 },
-          {
-            autoAlpha: 1,
-            y: 0,
-            scale: 1,
-            ease: 'none',
-            scrollTrigger: {
-              trigger: item,
-              start: 'top 88%',
-              end: 'bottom 42%',
-              scrub: true,
-            },
-            delay: index * 0.04,
-          }
-        );
-      });
-    }
-  }
-
-  // Media scrub.
+  // Media scrub: the capture phone and the closing phone settle as they
+  // arrive. Accordion screenshots are excluded: closed entries have no box.
   gsapLib.utils
-    .toArray('.noctalia-observatory picture img, .noctalia-observatory [data-phone]')
+    .toArray('.oh-wake-object [data-phone], .oh-ending-portal .phone-frame')
     .forEach((item) => {
       gsapLib.fromTo(
         item,
@@ -375,18 +367,6 @@ const initGsapScenes = (gsapLib, ScrollTrigger, lenis, heroReady) => {
           },
         }
       );
-    });
-
-  // Card hover physics.
-  gsapLib.utils
-    .toArray('.noctalia-observatory a.glass-panel')
-    .forEach((card) => {
-      card.addEventListener('mouseenter', () => {
-        gsapLib.to(card, { y: -6, duration: 0.32, ease: 'power2.out' });
-      });
-      card.addEventListener('mouseleave', () => {
-        gsapLib.to(card, { y: 0, duration: 0.32, ease: 'power2.out' });
-      });
     });
 
   window.requestAnimationFrame(() => ScrollTrigger.refresh());
@@ -494,7 +474,8 @@ const smooth = (t) => t * t * (3 - 2 * t);
 let activeLenis = null;
 
 /* Dawn: one fixed layer whose opacity follows the night's progress, from
- * ink in the dream to a champagne dawn once the page wakes. Opacity only. */
+ * ink in the dream to a champagne glow before the ivory chapter, then a
+ * faint morning light at the end. Opacity only. */
 const initDawn = () => {
   const main = document.querySelector('.noctalia-observatory');
   if (!main) return;
@@ -505,9 +486,9 @@ const initDawn = () => {
   const stops = [
     ['.oh-dreams', 0, 0.55],
     ['.oh-understand', 0.55, 0.5],
-    [STEP_SECTION_SELECTOR, 1, 0.5],
-    ['.oh-remember', 0.8, 0.5],
-    ['.oh-ending', 1, 0.5],
+    ['.oh-symbols', 0.7, 0.5],
+    ['.oh-day', 1, 0.1],
+    ['.oh-ending', 0.35, 0.5],
   ]
     .map(([selector, value, anchor]) => ({ el: document.querySelector(selector), value, anchor }))
     .filter((stop) => stop.el && !stop.el.classList.contains('oh-journey-source'));
@@ -1067,6 +1048,52 @@ const initRemember = () => {
   });
 };
 
+/* Waking: one accordion entry stays open, so its object always fills the
+ * stage beside the list on wide screens. `<details name>` already makes the
+ * entries exclusive; this covers browsers without it. */
+const initFeatures = () => {
+  const entries = Array.from(document.querySelectorAll('.oh-feature'));
+  if (!entries.length) return;
+  const wide = window.matchMedia('(min-width: 900px)');
+  // The wide layout always shows one feature; reopen the first one when a
+  // narrow layout left them all closed.
+  wide.addEventListener('change', () => {
+    if (wide.matches && !entries.some((entry) => entry.open)) entries[0].open = true;
+  });
+  entries.forEach((entry) => {
+    entry.querySelector('summary').addEventListener('click', (event) => {
+      if (entry.open && wide.matches) event.preventDefault();
+    });
+    entry.addEventListener('toggle', () => {
+      if (!entry.open) return;
+      entries.forEach((other) => {
+        if (other !== entry) other.open = false;
+      });
+    });
+  });
+};
+
+/* The visitor's own clock, shown in the waking readout. */
+const initReadout = () => {
+  const item = document.querySelector('.oh-readout [data-local-time]');
+  const slot = item?.querySelector('time');
+  if (!slot) return;
+  let format;
+  try {
+    format = new Intl.DateTimeFormat(html.lang || undefined, { hour: '2-digit', minute: '2-digit' });
+  } catch {
+    return;
+  }
+  const render = () => {
+    const now = new Date();
+    slot.textContent = format.format(now);
+    slot.dateTime = `${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')}`;
+  };
+  render();
+  item.hidden = false;
+  window.setInterval(render, 30000);
+};
+
 const INTRO_BASE = '/video/intro/noctalia-intro';
 const EYES_OPEN_BASE = '/video/intro/noctalia-eyes-open';
 
@@ -1248,6 +1275,7 @@ const playIntro = (film, loop, variant) =>
     const finish = async (cut = false, unavailable = false) => {
       if (finished) return;
       finished = true;
+      unveilHero();
       window.clearTimeout(slowStartTimer);
       window.clearTimeout(maximumTimer);
       window.clearTimeout(firstFrameTimer);
@@ -1286,6 +1314,8 @@ const playIntro = (film, loop, variant) =>
       played = true;
       window.clearTimeout(firstFrameTimer);
       overlay.classList.add('is-playing');
+      // Lift the veil once the overlay's fade-in has covered it.
+      window.setTimeout(unveilHero, 300);
       overlay.append(skip);
       prepareLoop();
     }, { once: true });
@@ -1368,7 +1398,9 @@ const initFilm = (isFull) => {
   if ('IntersectionObserver' in window) {
     new IntersectionObserver(
       (entries) => {
-        filmVisible = entries[0].isIntersecting;
+        // One batch can hold a stale entry from before the film moved into
+        // the shared sky; only the latest one describes it now.
+        filmVisible = entries[entries.length - 1].isIntersecting;
         sync();
       },
       { threshold: 0.02 }
@@ -1398,9 +1430,13 @@ const initFilm = (isFull) => {
     }
     heroHeader.querySelector('.oh-hero-inner').append(retry);
   };
+  // The hero copy is on screen once the first attempt has ended.
+  let heroShown = false;
   const startIntro = () => {
     if (introPlaying) return Promise.resolve();
     retry?.remove();
+    const replay = heroShown;
+    if (replay) hideHeroForIntro();
     holdDreamsForIntro();
     introPlaying = true;
     video.pause();
@@ -1409,7 +1445,9 @@ const initFilm = (isFull) => {
     return playIntro(film, video, '1280').then((result) => {
       if (result.unavailable) showRetry();
       introPlaying = false;
+      heroShown = true;
       startLoop();
+      if (replay) showHeroAfterIntro();
     });
   };
   replayIntroOnReturn = () => {
@@ -1418,6 +1456,7 @@ const initFilm = (isFull) => {
     startIntro();
   };
   if (!canPlayFilm()) {
+    heroShown = true;
     revealDreamsAfterIntro();
     showRetry();
     return Promise.resolve();
@@ -1509,6 +1548,8 @@ if (tier !== 'static' && typeof window.matchMedia === 'function') {
 }
 
 initSharedSky();
+initFeatures();
+initReadout();
 // Start the lightweight video immediately; defer the heavier 3D scenes to idle.
 const heroReady = tier === 'static' ? Promise.resolve() : initFilm(tier === 'full');
 if (tier !== 'static') heroReady.then(revealHeadline);

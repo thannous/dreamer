@@ -57,7 +57,7 @@ describe('site shell Clarity consent control', () => {
     );
   };
 
-  it('defers landing consent until the intro and sky handoff finish, without enabling tracking', () => {
+  it('defers landing consent until the intro finishes, without enabling tracking', () => {
     jest.useFakeTimers();
     try {
       document.body.innerHTML = '<main class="noctalia-observatory"></main><footer class="site-footer"></footer>';
@@ -68,15 +68,11 @@ describe('site shell Clarity consent control', () => {
       jest.advanceTimersByTime(1000);
       expect(panel.hidden).toBe(true);
       document.documentElement.classList.remove('exp-intro-pending');
-      document.documentElement.classList.add('oh-sky-expanding');
-      jest.advanceTimersByTime(1000);
-      expect(panel.hidden).toBe(true);
-      document.documentElement.classList.remove('oh-sky-expanding');
       jest.advanceTimersByTime(300);
       expect(panel.hidden).toBe(false);
       expect(window.clarity).toBeUndefined();
     } finally {
-      document.documentElement.classList.remove('exp-intro-pending', 'oh-sky-expanding');
+      document.documentElement.classList.remove('exp-intro-pending');
       jest.useRealTimers();
     }
   });

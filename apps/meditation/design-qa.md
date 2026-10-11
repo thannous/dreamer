@@ -691,3 +691,67 @@ final result: passed
   descriptions ont été confirmées dans l'arbre d'accessibilité Android.
 
 final result: passed
+
+---
+
+# Design QA — parcours Carnet de nuit, 2026-10-02
+
+## Cible, état et comparaison
+
+Option 3 sélectionnée par l'utilisateur, avec les lignes reliant 01, 02 et 03.
+Source : `/Users/timax/.codex/generated_images/01a0fd1e-db7a-7fc1-a7ab-8b19fcefff60/exec-91842453-5776-4cc8-8af8-a2b50e6d3afc.png`.
+Implémentation : `/private/tmp/meditation-journey-editorial-20261002/revised.png`.
+Comparaison combinée ouverte et inspectée : `/private/tmp/meditation-journey-editorial-20261002/comparison-final.png`.
+Source 841 × 1870 px ramenée à 390 × 866 px ; Chromium 390 × 866 CSS px,
+densité 1. Même univers Constellation, français, deux séances pratiquées,
+première séance reprenable. L'état navigateur est synthétique, sans données
+injectées sur le téléphone. Les textes des cinq surfaces critiques restent
+lisibles dans la comparaison complète ; aucun crop supplémentaire nécessaire.
+
+## Surfaces vérifiées
+
+- Typographie : Fraunces 400 pour titres de chapitres et numéros, Space Grotesk
+  pour les informations ; variante `chapter` 22/28 dans le kit typographique.
+- Espacement : marge réservée aux numéros, deux fils raster continus jusqu'au
+  chapitre suivant, séparateurs fins, une seule action principale. Les textes
+  UI restent à 14 px et le bouton à 48 dp minimum, adaptation volontaire de
+  la maquette pour conserver la lisibilité du produit.
+- Couleurs : tokens du thème ; voile plus profond sous les étapes pour éviter
+  que le foyer lumineux concurrence les titres. Aube conserve son thème clair.
+- Images : artwork existant pour le bandeau et le médaillon ; fil généré en
+  PNG transparent. Aucun dessin SVG artisanal ni image d'interface aplatie.
+- Contenu : titres et descriptions traduits existants, progression locale réelle,
+  états déjà pratiquée / en cours / à faire, aucune répétition sur l'accueil.
+  Le compteur conserve sa traduction existante plutôt que le texte raster du mock.
+
+## Historique des corrections
+
+1. P2 — numéro 02 sur deux lignes en natif : marge élargie et numéro non sécable.
+2. P2 — foyer trop lumineux derrière les séances : voile sous la liste, fond
+   prolongé jusqu'au bas de la zone de défilement.
+3. P2 — médaillon trop petit et première étape trop haute : médaillon placé
+   dans la marge droite du texte, titre plus léger et espacement resserré.
+4. Après corrections : comparaison finale ci-dessus et capture native
+   `/private/tmp/meditation-journey-editorial-20261002/native-final.png` ouvertes.
+   Aucun P0/P1/P2 actionnable restant. P3 : crop lumineux et courbure du fil
+   légèrement différents de l'image générée ; même composition et hiérarchie.
+
+## Validation et limites
+
+- TypeScript Meditation et ESLint ciblé : passés ; `git diff --check` passé.
+- E2E navigateur : états locaux, ouverture d'une séance, reprise dans le lecteur,
+  mini-lecteur sur le parcours, arrêt et absence de débordement à 320 px.
+  Rapport `result.json`, trace `journey.zip`, script `check.cjs` dans le dossier
+  privé ci-dessus ; aucune erreur JavaScript lors du dernier passage.
+- Parcours sans historique Constellation et Aube : CTA ouvre les détails ;
+  captures `empty-constellation.png` et `empty-dawn.png`, script `variants.cjs`.
+- Motorola : ouverture par le lien de l'accueil, inspection normale et texte
+  200 %, capture `native-large.png`. Bouton Reprendre et textes visibles sans
+  rognage ; retour à font_scale 1.0 relu dans `native-settings.json`.
+- Le changement de taille Android recrée la route initiale : le parcours a été
+  rouvert depuis l'accueil avant chaque capture. Les tentatives de deep link
+  à chaud n'ont pas navigué et ne constituent aucune preuve de fonctionnement.
+- App locale existante, JS fourni par Metro 8083. Aucun build natif, push ou
+  publication. iOS, gestes physiques TalkBack et fluidité release non qualifiés.
+
+final result: passed

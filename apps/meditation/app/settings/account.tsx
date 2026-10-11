@@ -4,7 +4,7 @@ import { useRouter } from 'expo-router';
 import React, { useState } from 'react';
 import { Alert, ScrollView, View } from 'react-native';
 
-import { Screen } from '@/components/atmosphere/Screen';
+import { WorldPage } from '@/components/worlds/WorldPage';
 import { BackLink, Button, Card, Chip, Rule, Text, TextField } from '@/components/ui';
 import { useTranslation } from '@/context/LanguageContext';
 import { useOnboarding } from '@/context/OnboardingContext';
@@ -55,7 +55,7 @@ export default function AccountScreen() {
   };
 
   return (
-    <Screen variant="subtle" edges={['top']}>
+    <WorldPage edges={['top']}>
       <BackLink label={t('common.back')} className="px-gutter pt-2" />
 
       <ScrollView
@@ -137,6 +137,6 @@ export default function AccountScreen() {
 
         <Button label={t('account.reset')} variant="ghost" onPress={eraseEverything} />
       </ScrollView>
-    </Screen>
+    </WorldPage>
   );
 }

@@ -32,8 +32,9 @@ and `app.config.ts`. Meditation has its own package, lockfile and
 | Work | Start here | Command or prerequisite |
 | --- | --- | --- |
 | Write or rewrite site articles, symbols and guides | [Editorial charter](charte-editoriale.md) | Voice, sourcing, typography and SEO guardrails; then `docs:build` and `docs:check`. |
-| Choose checks and evolve contracts/tools | [Proportional validation](validation-proportionnee.md) | Current functional expectations, compatible measured upgrades, minimal evidence; the `pre-push` hook takes seconds (forbidden files, secrets, proof display); `npm run verify:pr` proves the PR head on an isolated copy before merge and the PR records that local proof; `npm run verify:release` before a publish. |
+| Choose checks and evolve contracts/tools | [Proportional validation](validation-proportionnee.md) | Current functional expectations, compatible measured upgrades, minimal evidence; the `pre-push` hook takes seconds (forbidden files, secrets, proof display); `npm run verify:pr` proves the commit on an isolated copy before every push, and the PR records the verified commit and the `verify:pr` result; `npm run verify:release` before a publish. |
 | Web and native user journeys | [E2E guide](../../e2e/README.md) | `test:e2e:web`, `test:e2e:journeys`; the guide distinguishes simulated services and native requirements. |
+| Live iPhone UI edits and local IPA delivery | [iPhone, Fast Refresh and Tailscale](ios-local-tailscale-ota.md) | Native Debug + `start:mock -- --dev-client --lan --port 8086` for live edits; `ios:local:build` for Release IPA validation. |
 | TesterArmy Release qualification | [Current native retrospective qualification](qa/native-retro-qualification-20261006.md) | Exact passed-ID union, immutable reports/build receipts, owner decisions and retained physical/Store/video limits. |
 | Historical native qualification | [Initial native qualification, 2026-10-06](qa/native-testerarmy-qualification-20261006.md) | Preserved earlier source/build proofs; not a substitute for the current candidate. |
 | Real local backend, recovery and isolation | [Backend qualification](e2e-backend-qualification.md) | `test:e2e:backend`; needs Chromium and a Docker-compatible runtime. |
@@ -43,7 +44,8 @@ and `app.config.ts`. Meditation has its own package, lockfile and
 | Local Android build prerequisites | [Android tooling](../../scripts/README.md#local-android-prerequisites) | Java 17, Android SDK, local dependencies; requested native QA includes necessary isolated generation. `android:release:local -- --help` explains prebuild and install options. |
 | Android performance measurement | [Performance protocol](../../scripts/android/README-performance.md) | Pilot first, use the device lock and identify the installed binary. |
 | TalkBack qualification | [Motorola protocol](qualification-talkback.md) | Pilot the measurement method and restore device settings. |
-| Delivery rule | [Common delivery rule](regle-commune-livraison.md) | This repository's own copy: merge gate, PR template, review scale (blocker / should-fix / nit), owner-machine-first specialised checks, External CI table (none). |
+| Delivery rule | [Common delivery rule](regle-commune-livraison.md) | This repository's own copy of the four-line common rule; dreamer specifics are in AGENTS.md, "Notes dreamer". |
+| Test login | [Shared test login](test-login.md) | Guard (production refused, allowlisted test projects only), env names, premium mechanism and owner steps. Seed, API login, Playwright storageState and Maestro sign-in for the persistent `e2e` branch; owner dashboard steps. |
 | CI routing and jobs | [CircleCI guide](circleci-migration.md) | Manual or API trigger (`pipeline.event.name=api`, legacy OAuth `pipeline.trigger.type=api`) or `force_full_validation`; webhook pushes run nothing. `.circleci/config.yml`, `.circleci/continue.yml`, `.circleci/scripts/classify-changes.sh`; full local validation for releases: `npm run verify:release`. |
 
 ## Find files before reading them

@@ -21,9 +21,19 @@ type Translate = (key: string) => string;
 
 let granted: boolean | null = null;
 let pending: Promise<boolean> | null = null;
+// Owner decision (2026-10-10, maintained 2026-10-11): only signed-in users are asked.
+// In mock mode a guest's analysis is a local demonstration. In production a guest's dream
+// is still sent to the AI service (/analyzeDream, /categorizeDream) without this prompt; the
+// owner accepted that App Review 5.1.2(i) and privacy risk (review on thannous/dreamer#327).
+let promptRequired = false;
+
+/** Set from the signed-in state: the consent prompt is shown to signed-in users only. */
+export function setAiConsentPromptRequired(required: boolean): void {
+  promptRequired = required;
+}
 
 export async function hasAiConsent(): Promise<boolean> {
-  if (granted) return true;
+  if (!promptRequired || granted) return true;
   try {
     granted = (await AsyncStorage.getItem(STORAGE_KEY)) === GRANTED;
   } catch {
@@ -71,4 +81,5 @@ export async function requestAiConsent(t: Translate): Promise<boolean> {
 export function resetAiConsentCacheForTests(): void {
   granted = null;
   pending = null;
+  promptRequired = false;
 }

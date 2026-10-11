@@ -1,4 +1,4 @@
-# Theme, language, and the reduce-motion fact that must stay a system setting.
+# Universe, language, and the reduce-motion fact that must stay a system setting.
 appId: com.noctalia.meditation
 ---
 - runFlow: onboarding.yml
@@ -29,14 +29,20 @@ appId: com.noctalia.meditation
 - assertNotVisible:
     id: 'screen.settings.language'
 
-# The theme row cycles auto → light → dark. Three taps return to the start,
-# which is the assertion: the cycle closes rather than dead-ending.
+# Appearance follows the universe. Its settings row returns to the selector
+# on Home; re-entering settings must preserve the same local profile.
 - tapOn:
-    id: 'btn.settings.theme'
+    id: 'btn.settings.world'
+- assertVisible:
+    id: 'screen.home'
 - tapOn:
-    id: 'btn.settings.theme'
+    id: 'tab.profile'
+- scrollUntilVisible:
+    element:
+      id: 'btn.profile.settings'
+    direction: DOWN
 - tapOn:
-    id: 'btn.settings.theme'
+    id: 'btn.profile.settings'
 - assertVisible:
     id: 'screen.settings'
 

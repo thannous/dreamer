@@ -361,7 +361,7 @@ describe('Recording i18n - bottom sheets', () => {
       en: /fragment.*enough.*journal/i,
       fr: /fragment.*suffit.*journal/i,
       es: /fragmento.*basta.*diario/i,
-      de: /fragment.*reicht.*tagebuch/i,
+      de: /fragment.*reicht.*journal/i,
       it: /basta.*frammento.*diario/i,
       pt: /fragmento.*basta.*diário/i,
     };

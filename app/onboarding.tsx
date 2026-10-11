@@ -10,6 +10,7 @@ import { NightSky } from '@/components/onboarding/story/NightSky';
 import { STORY, TRAVEL, reducedDelay } from '@/components/onboarding/story/storyMotion';
 import { getNoctaliaDesignTokens } from '@/constants/noctaliaDesign';
 import { DarkTheme } from '@/constants/journalTheme';
+import { getLegalLink } from '@/constants/legalLinks';
 import { Fonts } from '@/constants/theme';
 import { useOnboarding } from '@/context/OnboardingContext';
 import { useTheme } from '@/context/ThemeContext';
@@ -29,16 +30,17 @@ import {
 import { TID } from '@/lib/testIDs';
 import { Asset } from 'expo-asset';
 import { LinearGradient } from 'expo-linear-gradient';
-import { router, useFocusEffect } from 'expo-router';
+import { router, useFocusEffect, useLocalSearchParams } from 'expo-router';
 import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import {
   AccessibilityInfo,
   ActivityIndicator,
+  Alert,
+  Linking,
   Platform,
   Pressable,
   StatusBar,
   StyleSheet,
-  Switch,
   Text,
   View,
   findNodeHandle,
@@ -81,6 +83,9 @@ const SIGNALS = [
 // Keep the disabled previews from initializing their motion/gesture modules.
 const OnboardingFeatureSheet = React.lazy(() => import('@/components/onboarding/OnboardingFeatureSheet')
   .then((module) => ({ default: module.OnboardingFeatureSheet })));
+// Fetched as soon as the stories open, so the door is ready the moment the reader steps through.
+const loadDoorPassage = () => import('@/components/onboarding/story/DoorPassage');
+const DoorPassage = React.lazy(() => loadDoorPassage().then((module) => ({ default: module.DoorPassage })));
 
 const BACKGROUND_IMAGE = require('@/assets/images/onboarding-reverie-background.webp');
 // The immersive artwork always needs its nocturnal contrast, independently of
@@ -97,7 +102,7 @@ const webTitleFocusResetStyle: TextStyle | null = process.env.EXPO_OS === 'web'
 
 export default function OnboardingScreen() {
   const { colors, mode } = useTheme();
-  const { t } = useTranslation();
+  const { t, currentLang } = useTranslation();
   const featureSheetsEnabled = isOnboardingFeatureSheetsEnabled();
   const reducedMotion = useReducedMotion();
   const insets = useSafeAreaInsets();
@@ -111,6 +116,10 @@ export default function OnboardingScreen() {
   } = useOnboarding();
   const sheetTokens = useMemo(() => getNoctaliaDesignTokens(colors, mode), [colors, mode]);
   const noctalia = ONBOARDING_TOKENS;
+  // Replayed from Settings: the steps stay on this screen and nothing is saved,
+  // so a finished onboarding is never reopened or given a new capture intent.
+  const isReplay = useLocalSearchParams<{ replay?: string }>().replay === '1';
+  const [replayStep, setReplayStep] = useState<OnboardingStep>('intro');
   const { height: viewportHeight, fontScale } = useWindowDimensions();
   const [selectedPathOverride, setSelectedPathOverride] = useState<OnboardingPath | null>(null);
   const [isLeaving, setIsLeaving] = useState(false);
@@ -118,9 +127,15 @@ export default function OnboardingScreen() {
   const [failedAction, setFailedAction] = useState<FailedAction | null>(null);
   const [showPrivacySheet, setShowPrivacySheet] = useState(false);
   const [activeFeature, setActiveFeature] = useState<OnboardingFeature | null>(null);
+  // "Commencer" tells the three stories in order once, then moves on to the path.
+  const guidedTourSeenRef = useRef(false);
+  // The stories end by walking through the blue door into the path step.
+  const [doorPassage, setDoorPassage] = useState(false);
   const featureTriggers = useRef<Partial<Record<OnboardingFeature, ViewInstance | null>>>({});
   const featureFocusTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
   const [analyticsEnabled, setAnalyticsEnabled] = useState(false);
+  // The usage box in the privacy sheet: saved only when the reader answers.
+  const [usageChecked, setUsageChecked] = useState(false);
   const [analyticsPreferenceLoading, setAnalyticsPreferenceLoading] = useState(false);
   const [analyticsPreferenceError, setAnalyticsPreferenceError] = useState(false);
   const [footerHeight, setFooterHeight] = useState(0);
@@ -139,19 +154,10 @@ export default function OnboardingScreen() {
     if (featureFocusTimer.current) clearTimeout(featureFocusTimer.current);
   }, []);
 
-  const closeFeature = () => {
-    const trigger = activeFeature ? featureTriggers.current[activeFeature] : null;
-    setActiveFeature(null);
-    if (featureFocusTimer.current) clearTimeout(featureFocusTimer.current);
-    featureFocusTimer.current = setTimeout(() => {
-      if (isLeavingRef.current || stepTransitionRef.current) return;
-      if (Platform.OS === 'web') trigger?.focus();
-      else {
-        const node = findNodeHandle(trigger ?? null);
-        if (node) AccessibilityInfo.setAccessibilityFocus(node);
-      }
-    }, Platform.OS === 'web' ? 0 : 300);
-  };
+  useEffect(() => {
+    if (activeFeature) void loadDoorPassage();
+  }, [activeFeature]);
+
 
   useFocusEffect(useCallback(() => {
     if (Platform.OS === 'web') return;
@@ -159,7 +165,7 @@ export default function OnboardingScreen() {
     return () => StatusBar.popStackEntry(entry);
   }, []));
 
-  const step: OnboardingStep = state.step === 'path' ? 'path' : 'intro';
+  const step: OnboardingStep = isReplay ? replayStep : state.step === 'path' ? 'path' : 'intro';
   // The first act plays once. Coming back to the intro replays a quick entrance, and a
   // resumed session that opens on the path step never sees the arrival at all.
   const [visitedPath, setVisitedPath] = useState(state.step === 'path');
@@ -250,7 +256,7 @@ export default function OnboardingScreen() {
   }, [isLeaving, loading, pathPreloaded, step]);
 
   useEffect(() => {
-    if (loading || startedRef.current || state.status !== 'not_started') return;
+    if (isReplay || loading || startedRef.current || state.status !== 'not_started') return;
     startedRef.current = true;
     void transition({ type: 'START' })
       .then(() => trackProductEvent('onboarding_started', { experience_version: 2 }))
@@ -258,15 +264,15 @@ export default function OnboardingScreen() {
         startedRef.current = false;
         setFailedAction({ type: 'start' });
       });
-  }, [loading, state.status, transition]);
+  }, [isReplay, loading, state.status, transition]);
 
   useEffect(() => {
-    if (loading) return;
+    if (isReplay || loading) return;
     if (!viewedStepsRef.current.has(step)) {
       viewedStepsRef.current.add(step);
       void trackProductEvent('onboarding_step_viewed', { step });
     }
-  }, [loading, step]);
+  }, [isReplay, loading, step]);
 
   const handleTitleLayout = useCallback((renderedStep: OnboardingStep) => {
     if (loading || step !== renderedStep || focusedStepRef.current === renderedStep) return;
@@ -316,6 +322,10 @@ export default function OnboardingScreen() {
 
   const runStepTransition = useCallback(async (nextStep: OnboardingStep) => {
     if (stepTransitionRef.current || isLeavingRef.current) return;
+    if (isReplay) {
+      setReplayStep(nextStep);
+      return;
+    }
     markPerformance('onboarding.continue_pressed', { next_step: nextStep });
     stepTransitionRef.current = true;
     setIsStepTransitioning(true);
@@ -333,14 +343,65 @@ export default function OnboardingScreen() {
       stepTransitionRef.current = false;
       setIsStepTransitioning(false);
     }
-  }, [transition]);
+  }, [isReplay, transition]);
+
+  const startIntro = () => {
+    if (!featureSheetsEnabled || guidedTourSeenRef.current) {
+      void runStepTransition('path');
+      return;
+    }
+    guidedTourSeenRef.current = true;
+    setActiveFeature('capture');
+  };
+
+  const passThroughDoor = () => {
+    guidedTourSeenRef.current = true;
+    setActiveFeature(null);
+    setDoorPassage(true);
+  };
+
+  // Closing the guided stories skips straight to the path.
+  // Leaving the stories skips to the path step, the last one of the onboarding.
+  const leaveStories = () => {
+    guidedTourSeenRef.current = true;
+    setActiveFeature(null);
+    void runStepTransition('path');
+  };
+
+  // The cross means "I want out": confirm first, so a stray tap does not end the stories.
+  const confirmLeaveStories = () => {
+    const title = t('onboarding.story.leave.title');
+    const message = t('onboarding.story.leave.message');
+    // react-native-web's Alert is a no-op: use the browser's own confirmation there.
+    if (Platform.OS === 'web') {
+      if (typeof window !== 'undefined' && typeof window.confirm === 'function' && window.confirm(`${title}\n\n${message}`)) leaveStories();
+      return;
+    }
+    Alert.alert(title, message, [
+      { text: t('onboarding.story.leave.stay'), style: 'cancel' },
+      { text: t('onboarding.story.leave.confirm'), onPress: leaveStories },
+    ], { cancelable: true });
+  };
 
   const waitForExitFade = useCallback(() => (reducedMotion
     ? Promise.resolve()
     : new Promise<void>((resolve) => setTimeout(resolve, STORY.exitFadeDelay + STORY.exitFade))), [reducedMotion]);
 
+  /** A replay ends where it started, without touching the saved onboarding. */
+  const leaveReplay = useCallback(async () => {
+    isLeavingRef.current = true;
+    setIsLeaving(true);
+    await waitForExitFade();
+    if (router.canGoBack()) router.back();
+    else router.replace('/settings');
+  }, [waitForExitFade]);
+
   const completePath = useCallback(async (path: OnboardingPath) => {
     if (isLeavingRef.current || stepTransitionRef.current) return;
+    if (isReplay) {
+      await leaveReplay();
+      return;
+    }
     isLeavingRef.current = true;
     setIsLeaving(true);
     setFailedAction(null);
@@ -371,10 +432,14 @@ export default function OnboardingScreen() {
       setIsLeaving(false);
       setFailedAction({ type: 'complete', path });
     }
-  }, [openRecording, transition, waitForExitFade]);
+  }, [isReplay, leaveReplay, openRecording, transition, waitForExitFade]);
 
   const skip = useCallback(async () => {
     if (isLeavingRef.current) return;
+    if (isReplay) {
+      await leaveReplay();
+      return;
+    }
     isLeavingRef.current = true;
     setIsLeaving(true);
     setFailedAction(null);
@@ -397,13 +462,14 @@ export default function OnboardingScreen() {
       setIsLeaving(false);
       setFailedAction({ type: 'skip' });
     }
-  }, [step, transition, waitForExitFade]);
+  }, [isReplay, leaveReplay, step, transition, waitForExitFade]);
 
   const selectPath = useCallback((path: OnboardingPath) => {
     const selectionVersion = selectionVersionRef.current + 1;
     selectionVersionRef.current = selectionVersion;
     setSelectedPathOverride(path);
     setFailedAction(null);
+    if (isReplay) return;
     void transition({ type: 'SELECT_PATH', path })
       .then(() => {
         if (selectionVersionRef.current !== selectionVersion) return;
@@ -418,7 +484,7 @@ export default function OnboardingScreen() {
         setSelectedPathOverride(state.selectedPath);
         setFailedAction({ type: 'select', path });
       });
-  }, [state.selectedPath, transition]);
+  }, [isReplay, state.selectedPath, transition]);
 
   const retry = useCallback(async () => {
     const action = failedAction;
@@ -482,7 +548,11 @@ export default function OnboardingScreen() {
     setAnalyticsPreferenceError(false);
     setAnalyticsPreferenceLoading(true);
     void getProductAnalyticsPreference()
-      .then((preference) => setAnalyticsEnabled(preference === 'enabled'))
+      .then((preference) => {
+        setAnalyticsEnabled(preference === 'enabled');
+        // The usage box starts from the saved choice each time the sheet opens.
+        setUsageChecked(preference === 'enabled');
+      })
       .catch(() => setAnalyticsPreferenceError(true))
       .finally(() => setAnalyticsPreferenceLoading(false));
   }, []);
@@ -493,9 +563,11 @@ export default function OnboardingScreen() {
     setAnalyticsPreferenceError(false);
     try {
       await setProductAnalyticsEnabled(enabled);
+      return true;
     } catch {
       setAnalyticsEnabled((current) => !current);
       setAnalyticsPreferenceError(true);
+      return false;
     } finally {
       setAnalyticsPreferenceLoading(false);
     }
@@ -526,6 +598,11 @@ export default function OnboardingScreen() {
   const selectedPath = selectedPathOverride ?? state.selectedPath ?? 'analyze';
   const selectedDefinition = PATHS.find((path) => path.id === selectedPath) ?? PATHS[0];
   const analyticsAvailable = isProductAnalyticsAvailable();
+  // Saves the usage box when it changed (and this build collects at all), then closes.
+  const closePrivacy = async () => {
+    if (analyticsAvailable && usageChecked !== analyticsEnabled && !(await toggleAnalytics(usageChecked))) return;
+    setShowPrivacySheet(false);
+  };
   const layeredStepHeight = Math.max(stepHeights.intro ?? 0, stepHeights.path ?? 0) || undefined;
 
   return (
@@ -902,7 +979,7 @@ export default function OnboardingScreen() {
             : t(`onboarding.path.${selectedDefinition.id}.cta`)}
           accessibilityRole="button"
           onPress={() => step === 'intro'
-            ? void runStepTransition('path')
+            ? startIntro()
             : void completePath(selectedDefinition.id)}
           disabled={isLeaving || isStepTransitioning}
           style={({ pressed }) => [
@@ -933,9 +1010,18 @@ export default function OnboardingScreen() {
 
       {featureSheetsEnabled && activeFeature ? (
         <React.Suspense fallback={null}>
-          <OnboardingFeatureSheet feature={activeFeature} onClose={closeFeature} onFeatureChange={setActiveFeature} />
+          <OnboardingFeatureSheet feature={activeFeature} onClose={confirmLeaveStories}
+            onFeatureChange={setActiveFeature} ending={{
+              label: t('onboarding.narrative.finish_guided'),
+              restartLabel: t('onboarding.narrative.restart'),
+              onFinish: passThroughDoor,
+            }} />
         </React.Suspense>
       ) : null}
+
+      {doorPassage ? <React.Suspense fallback={<View style={[StyleSheet.absoluteFill, styles.doorFallback]} />}>
+        <DoorPassage onCovered={() => void runStepTransition('path')} onDone={() => setDoorPassage(false)} />
+      </React.Suspense> : null}
 
       {showPrivacySheet ? <StandardBottomSheet
         visible
@@ -943,53 +1029,49 @@ export default function OnboardingScreen() {
         title={t('onboarding.privacy.title')}
         subtitle={t('onboarding.privacy.body')}
         testID={TID.Sheet.OnboardingPrivacy}
+        // An information page: "Done" saves the usage box and closes. AI consent is asked at first use.
         actions={{
           primaryLabel: t('common.done'),
-          onPrimary: () => setShowPrivacySheet(false),
+          onPrimary: () => void closePrivacy(),
+          primaryLoading: analyticsPreferenceLoading,
         }}
       >
-        <View
-          style={[
-            styles.privacyAssurance,
-            { backgroundColor: sheetTokens.surface.soft, borderColor: sheetTokens.surface.border },
-          ]}
-        >
-          <IconSymbol name="lock.fill" size={19} color={sheetTokens.accent.text} />
-          <Text style={[styles.privacyAssuranceText, { color: sheetTokens.text.secondary }]}>
-            {t('onboarding.privacy.no_content')}
-          </Text>
+        {/* Three plain promises, one line each; the policy holds the details. */}
+        <View style={styles.privacyPoints}>
+          {([
+            ['lock.fill', 'onboarding.privacy.private'],
+            ['sparkles', 'onboarding.privacy.ai_body'],
+            ['chart.bar', 'onboarding.privacy.no_content'],
+          ] as const).map(([icon, key]) => (
+            <View key={key} style={styles.privacyPoint} testID={key === 'onboarding.privacy.ai_body' ? 'component.onboarding.privacy.ai' : undefined}>
+              <IconSymbol name={icon} size={18} color={sheetTokens.accent.text} />
+              <Text style={[styles.privacyAssuranceText, { color: sheetTokens.text.secondary }]}>{t(key)}</Text>
+            </View>
+          ))}
         </View>
-        <View style={styles.privacyToggleRow}>
-          <View style={styles.privacyToggleCopy}>
-            <Text style={[styles.privacyToggleLabel, { color: sheetTokens.text.primary }]}>
-              {t('onboarding.privacy.toggle_label')}
-            </Text>
-            <Text style={[styles.privacyToggleHint, { color: sheetTokens.text.secondary }]}>
-              {t('onboarding.privacy.toggle_hint')}
-            </Text>
-            <Text
-              accessibilityLiveRegion="polite"
-              style={[styles.privacyStatus, { color: analyticsPreferenceError ? sheetTokens.status.danger.text : sheetTokens.accent.text }]}
-            >
-              {analyticsPreferenceError
-                ? t('onboarding.privacy.error')
-                : !analyticsAvailable
-                  ? t('analytics.privacy.unavailable')
-                  : t(analyticsEnabled ? 'onboarding.privacy.enabled' : 'onboarding.privacy.disabled')}
-            </Text>
+        <Pressable accessibilityRole="link" onPress={() => void Linking.openURL(getLegalLink('privacyPolicy', currentLang)).catch(() => undefined)}
+          testID="btn.onboarding.privacy.policy" style={styles.privacyPolicyLink}>
+          <Text style={[styles.privacyDetails, { color: sheetTokens.accent.text }]}>{t('onboarding.privacy.details')}</Text>
+        </Pressable>
+        <Pressable accessibilityRole="checkbox" accessibilityState={{ checked: usageChecked, disabled: !analyticsAvailable || analyticsPreferenceLoading }}
+          disabled={!analyticsAvailable || analyticsPreferenceLoading} onPress={() => setUsageChecked((value) => !value)}
+          testID="checkbox.onboarding.privacy.usage" style={styles.privacyCheckRow}>
+          <View style={[styles.privacyCheckbox, {
+            borderColor: usageChecked ? sheetTokens.accent.text : sheetTokens.surface.border,
+            backgroundColor: usageChecked ? sheetTokens.accent.text : 'transparent',
+          }]}>
+            {usageChecked ? <IconSymbol name="checkmark" size={14} color={sheetTokens.screen.background} /> : null}
           </View>
-          {analyticsPreferenceLoading ? (
-            <ActivityIndicator color={sheetTokens.accent.text} />
-          ) : (
-            <Switch
-              disabled={!analyticsAvailable}
-              value={analyticsAvailable && analyticsEnabled}
-              onValueChange={(value) => void toggleAnalytics(value)}
-              accessibilityLabel={t('onboarding.privacy.toggle_label')}
-              accessibilityHint={t('onboarding.privacy.toggle_hint')}
-            />
-          )}
-        </View>
+          <View style={styles.privacyCheckCopy}>
+            <Text style={[styles.privacyToggleLabel, { color: sheetTokens.text.primary }]}>{t('onboarding.privacy.toggle_label')}</Text>
+            {analyticsPreferenceError || !analyticsAvailable ? (
+              <Text accessibilityLiveRegion="polite"
+                style={[styles.privacyStatus, { color: analyticsPreferenceError ? sheetTokens.status.danger.text : sheetTokens.accent.text }]}>
+                {analyticsPreferenceError ? t('onboarding.privacy.error') : t('analytics.privacy.unavailable')}
+              </Text>
+            ) : null}
+          </View>
+        </Pressable>
       </StandardBottomSheet> : null}
       <Animated.View
         pointerEvents="none"
@@ -1002,6 +1084,8 @@ export default function OnboardingScreen() {
 }
 
 const styles = StyleSheet.create({
+  // Holds the night over the screen if the door is still loading when the reader steps through.
+  doorFallback: { zIndex: 100, backgroundColor: ONBOARDING_TOKENS.screen.background },
   screen: { flex: 1 },
   loading: { flex: 1, alignItems: 'center', justifyContent: 'center' },
   content: { flexGrow: 1, paddingHorizontal: 24, gap: 8 },
@@ -1070,11 +1154,14 @@ const styles = StyleSheet.create({
   primaryButton: { minHeight: 56, borderRadius: 28, borderCurve: 'continuous', borderWidth: 1, flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: 12, paddingHorizontal: 18 },
   primaryContent: { flex: 1, flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: 12, paddingVertical: 14 },
   primaryText: { flexShrink: 1, fontFamily: Fonts.spaceGrotesk.bold, fontSize: 17, lineHeight: 22, textAlign: 'center' },
-  privacyAssurance: { flexDirection: 'row', alignItems: 'flex-start', gap: 10, borderWidth: 1, borderRadius: 14, padding: 12, marginBottom: 14 },
   privacyAssuranceText: { flex: 1, fontFamily: Fonts.spaceGrotesk.regular, fontSize: 13, lineHeight: 19 },
-  privacyToggleRow: { minHeight: 64, flexDirection: 'row', alignItems: 'center', gap: 16, marginBottom: 16 },
-  privacyToggleCopy: { flex: 1, gap: 3 },
+  privacyPoints: { gap: 12, marginBottom: 14 },
+  privacyPolicyLink: { alignSelf: 'flex-start', minHeight: 44, justifyContent: 'center', marginBottom: 6 },
+  privacyDetails: { fontFamily: Fonts.spaceGrotesk.medium, fontSize: 13, lineHeight: 18, textDecorationLine: 'underline' },
+  privacyCheckRow: { flexDirection: 'row', alignItems: 'center', gap: 12, minHeight: 48, marginBottom: 16 },
+  privacyCheckbox: { width: 22, height: 22, borderRadius: 6, borderWidth: 1.5, alignItems: 'center', justifyContent: 'center' },
+  privacyCheckCopy: { flex: 1, gap: 2 },
+  privacyPoint: { flexDirection: 'row', alignItems: 'flex-start', gap: 12 },
   privacyToggleLabel: { fontFamily: Fonts.spaceGrotesk.bold, fontSize: 15, lineHeight: 20 },
-  privacyToggleHint: { fontFamily: Fonts.spaceGrotesk.regular, fontSize: 13, lineHeight: 18 },
   privacyStatus: { fontFamily: Fonts.spaceGrotesk.medium, fontSize: 12, lineHeight: 16 },
 });
