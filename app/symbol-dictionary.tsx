@@ -5,7 +5,7 @@ import React, { useCallback, useDeferredValue, useEffect, useMemo, useState } fr
 import { FlatList, Pressable, ScrollView, StyleSheet, Text, View } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
-import { AtmosphericBackground } from "@/components/inspiration/AtmosphericBackground";
+import { DreamerArtworkWindow } from "@/components/ui/DreamerBackground";
 import { CategoryHeader } from "@/components/symbols/CategoryHeader";
 import { LetterHeader } from "@/components/symbols/LetterHeader";
 import { SymbolCard } from "@/components/symbols/SymbolCard";
@@ -19,6 +19,8 @@ import { useTheme } from "@/context/ThemeContext";
 import { useTranslation } from "@/hooks/useTranslation";
 import { trackProductEvent } from "@/lib/analytics";
 import { getDreamGuideCopy } from "@/lib/dreamGuideCopy";
+import { useHeaderScroll } from '@/components/ui/headerStretch';
+import { withHeaderScroll } from '@/components/ui/HeaderScrollScope';
 import type {
   DreamSymbol,
   SymbolCategory,
@@ -84,12 +86,13 @@ const getSymbolLetter = (name: string) => {
 
 // Text that sits on artwork stays ivory in both app themes.
 const ART_TEXT = getNoctaliaDesignTokens(DarkTheme, "dark").text.primary;
-const SKY_ART = require("@/assets/images/onboarding-reverie-background.webp");
 
 const FULL_ALPHABET = "ABCDEFGHIJKLMNOPQRSTUVWXYZ".split("");
 let trackedOnboardingDictionaryDestination = false;
 
-export default function SymbolDictionaryScreen() {
+function SymbolDictionaryScreen() {
+  // This screen's own scroll, published to its header painting and title.
+  const onHeaderScroll = useHeaderScroll();
   const { source } = useLocalSearchParams<{ source?: string }>();
   const { colors, mode } = useTheme();
   const insets = useSafeAreaInsets();
@@ -319,21 +322,7 @@ export default function SymbolDictionaryScreen() {
 
   const listHeader = (
     <View style={[styles.listHeader, { paddingTop: insets.top + 12 }]}>
-      {mode === "dark" ? (
-        <View
-          pointerEvents="none"
-          accessible={false}
-          importantForAccessibility="no-hide-descendants"
-          style={[styles.sky, { height: insets.top + 300 }]}
-        >
-          <Image source={SKY_ART} contentFit="cover" contentPosition="top" style={StyleSheet.absoluteFill} />
-          <LinearGradient
-            colors={["rgba(3,4,13,0.35)", "rgba(3,4,13,0.55)", noctalia.screen.background]}
-            locations={[0, 0.55, 1]}
-            style={StyleSheet.absoluteFill}
-          />
-        </View>
-      ) : null}
+          <DreamerArtworkWindow scene="symbols" style={{ marginHorizontal: -20 }} bleedTop={insets.top + 12} />
       <View style={styles.headerRow}>
         <Pressable
           onPress={handleBack}
@@ -356,7 +345,10 @@ export default function SymbolDictionaryScreen() {
           accessibilityRole="button"
           accessibilityLabel={guideCopy.screenTitle}
           testID="btn.symbolDictionary.guides"
-          style={({ pressed }) => [styles.guidesLink, pressed && styles.pressed]}
+          style={({ pressed }) => [styles.guidesLink, {
+            backgroundColor: noctalia.surface.raised,
+            borderColor: noctalia.surface.border,
+          }, pressed && styles.pressed]}
         >
           <Text style={[styles.guidesText, { color: noctalia.accent.text }]}>
             {t("explore.guides.title")}
@@ -484,7 +476,7 @@ export default function SymbolDictionaryScreen() {
   return (
     <View style={[styles.container, { backgroundColor: noctalia.screen.background }]} testID="screen.symbolDictionary">
       <Stack.Screen options={{ headerShown: false, title: t("symbols.dictionary_title") }} />
-      <AtmosphericBackground variant="subtle" />
+
       <FlatList<Row>
         testID="symbol-list"
         style={styles.list}
@@ -493,6 +485,8 @@ export default function SymbolDictionaryScreen() {
         keyboardShouldPersistTaps="handled"
         keyboardDismissMode="on-drag"
         showsVerticalScrollIndicator={false}
+        onScroll={onHeaderScroll}
+        scrollEventThrottle={16}
         data={listData}
         keyExtractor={(item) => item.id}
         renderItem={({ item }) => renderListRow(item)}
@@ -511,11 +505,10 @@ const styles = StyleSheet.create({
   container: { flex: 1, overflow: "hidden", position: "relative" },
   list: { flex: 1 },
   listHeader: { paddingHorizontal: 20, gap: 8, paddingBottom: 4 },
-  sky: { position: "absolute", top: 0, left: 0, right: 0 },
   headerRow: { flexDirection: "row", flexWrap: "wrap", alignItems: "center", columnGap: 8, rowGap: 4, marginBottom: 8 },
   backButton: { width: 44, minHeight: 44, alignItems: "center", justifyContent: "center", marginLeft: -12 },
   headerTitle: { flex: 1, flexBasis: 140, minWidth: 0, fontFamily: Fonts.fraunces.semiBold, fontSize: 34, lineHeight: 40, letterSpacing: -0.3 },
-  guidesLink: { minHeight: 44, justifyContent: "center", maxWidth: "100%", paddingHorizontal: 4 },
+  guidesLink: { minHeight: 44, justifyContent: "center", maxWidth: "100%", paddingHorizontal: 12, borderRadius: 22, borderWidth: StyleSheet.hairlineWidth },
   guidesText: { fontFamily: Fonts.spaceGrotesk.medium, fontSize: 15, lineHeight: 22, flexShrink: 1 },
   popularBlock: { marginTop: 10, marginBottom: 6 },
   eyebrowRow: { flexDirection: "row", alignItems: "center", gap: 10, marginBottom: 12 },
@@ -539,3 +532,5 @@ const styles = StyleSheet.create({
   emptyState: { alignItems: "center", paddingHorizontal: 20, paddingVertical: 48, gap: 12 },
   emptyText: { fontFamily: Fonts.spaceGrotesk.regular, fontSize: 15, lineHeight: 22, textAlign: "center" },
 });
+
+export default withHeaderScroll(SymbolDictionaryScreen);

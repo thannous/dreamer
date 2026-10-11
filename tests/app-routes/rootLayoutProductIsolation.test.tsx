@@ -28,6 +28,8 @@ const mockGuestSession = jest.fn();
 const mockNavigation = { isReady: () => true, addListener: () => () => undefined };
 const mockChildren = ({ children }: React.PropsWithChildren) => <>{children}</>;
 
+// The root layout only tells the AI consent module who is signed in.
+jest.mock('@/lib/aiConsent', () => ({ setAiConsentPromptRequired: jest.fn() }));
 jest.mock('@/global.css', () => ({}));
 jest.mock('@/lib/runtimeIdentity', () => ({ reportRuntimeIdentity: mockReportRuntimeIdentity }));
 jest.mock('react-native', () => ({

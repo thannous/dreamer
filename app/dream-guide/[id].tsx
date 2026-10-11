@@ -1,7 +1,7 @@
 import React, { useCallback, useMemo } from 'react';
 import { Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
 
-import { AtmosphericBackground } from '@/components/inspiration/AtmosphericBackground';
+import { DreamerArtworkWindow } from '@/components/ui/DreamerBackground';
 import { FlatGlassCard } from '@/components/inspiration/GlassCard';
 import { SymbolCard } from '@/components/symbols/SymbolCard';
 import { IconSymbol } from '@/components/ui/icon-symbol';
@@ -23,8 +23,12 @@ import {
 } from '@/services/dreamGuideService';
 import { LinearGradient } from 'expo-linear-gradient';
 import { router, useLocalSearchParams } from 'expo-router';
+import { useHeaderScroll } from '@/components/ui/headerStretch';
+import { withHeaderScroll } from '@/components/ui/HeaderScrollScope';
 
-export default function DreamGuideDetailScreen() {
+function DreamGuideDetailScreen() {
+  // This screen's own scroll, published to its header painting and title.
+  const onHeaderScroll = useHeaderScroll();
   const { id } = useLocalSearchParams<{ id?: string | string[] }>();
   const guideId = Array.isArray(id) ? id[0] : id;
   const { colors, mode, shadows } = useTheme();
@@ -49,7 +53,7 @@ export default function DreamGuideDetailScreen() {
   if (!guide) {
     return (
       <LinearGradient colors={noctalia.screen.gradient} style={styles.emptyState}>
-        <AtmosphericBackground variant="subtle" />
+
         <Pressable
           onPress={() => router.back()}
           accessibilityLabel={t('navigation.back')}
@@ -79,8 +83,7 @@ export default function DreamGuideDetailScreen() {
         style={styles.container}
         testID="screen.dreamGuideDetail"
       >
-        <AtmosphericBackground variant="subtle" />
-        <ScrollView
+        <ScrollView onScroll={onHeaderScroll} scrollEventThrottle={16}
           style={styles.scrollView}
           contentInsetAdjustmentBehavior="automatic"
           contentContainerStyle={styles.scrollContent}
@@ -90,6 +93,7 @@ export default function DreamGuideDetailScreen() {
           onMomentumScrollBegin={scrollPerf.onMomentumScrollBegin}
           onMomentumScrollEnd={scrollPerf.onMomentumScrollEnd}
         >
+          <DreamerArtworkWindow scene="path" style={{ marginHorizontal: -16 }} bleedTop={38} />
           <View style={styles.headerRow}>
             <Pressable
               onPress={() => router.back()}
@@ -348,3 +352,5 @@ const styles = StyleSheet.create({
     fontSize: 16,
   },
 });
+
+export default withHeaderScroll(DreamGuideDetailScreen);

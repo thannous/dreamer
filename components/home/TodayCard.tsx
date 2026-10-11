@@ -2,6 +2,7 @@ import React from 'react';
 import { Pressable, Text, View } from 'react-native';
 
 import { IconSymbol } from '@/components/ui/icon-symbol';
+import { getNoctaliaDesignTokens } from '@/constants/noctaliaDesign';
 import { useTheme } from '@/context/ThemeContext';
 import { useTranslation } from '@/hooks/useTranslation';
 import { TID } from '@/lib/testIDs';
@@ -15,7 +16,8 @@ type Props = {
 
 /** One editorial action, driven by the existing capture/draft/dream state. */
 export function TodayCard({ state, onPressCta, dreamTitle }: Props) {
-  const { colors } = useTheme();
+  const { colors, mode } = useTheme();
+  const tokens = getNoctaliaDesignTokens(colors, mode);
   const { t } = useTranslation();
   const copyKey = state?.id ?? 'loading';
   const title = dreamTitle?.trim() || t(`home.today.${copyKey}.title`);
@@ -42,9 +44,10 @@ export function TodayCard({ state, onPressCta, dreamTitle }: Props) {
       </Text>
       {state ? <Pressable onPress={onPressCta} accessibilityRole="button"
         accessibilityLabel={cta} testID={TID.Button.HomeTodayCta}
-        className="mt-2 min-h-[56px] flex-row items-center justify-between gap-4 border-b border-champagne-soft pb-3 pt-2 active:opacity-70">
-        <Text className="min-w-0 flex-1 font-display-medium text-[24px] leading-[30px] text-champagne-on">{cta}</Text>
-        <IconSymbol name="arrow.right" size={26} color={colors.accentText} />
+        // Same primary button as the Journal first page.
+        className="mt-5 min-h-14 flex-row items-center justify-between gap-3 rounded-[18px] bg-champagne px-5 py-4 active:opacity-80">
+        <Text className="min-w-0 flex-1 font-sans-medium text-[16px] leading-[22px] text-on-champagne">{cta}</Text>
+        <IconSymbol name="arrow.right" size={22} color={tokens.action.primaryText} />
       </Pressable> : null}
     </View>
   );

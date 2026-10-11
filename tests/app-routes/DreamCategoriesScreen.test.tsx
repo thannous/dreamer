@@ -95,6 +95,10 @@ jest.mock('@/hooks/useDreamMedia', () => ({
   useDreamMedia: () => ({ imageUrl: undefined, imageCacheKey: undefined, error: false, retry: jest.fn() }),
 }));
 
+jest.mock('@/hooks/useQuota', () => ({
+  useQuota: () => ({ tier: 'plus', subscriptionLoading: false }),
+}));
+
 jest.mock('@/context/ThemeContext', () => ({
   useTheme: () => ({
     mode: 'dark',

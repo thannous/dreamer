@@ -182,7 +182,7 @@ React Native mock exposes `data-native-class` alongside `data-native-style`.
 
 ## 4. Motion
 
-Run the `animate-expo` skill before writing any animation. The short version:
+The motion rules, in short:
 
 **The gate.** Something used 100+ times a day (tab switches, keyboard, scrolling,
 toggles) gets **no** animation. Tens of times a day (press, row selection) gets under

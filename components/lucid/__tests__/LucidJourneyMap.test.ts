@@ -8,6 +8,7 @@ import {
 import { getLucidContent } from '@/lib/lucid/content';
 
 jest.mock('expo-image', () => ({ Image: 'Image' }));
+jest.mock('expo-asset', () => ({ Asset: { fromModule: (source: unknown) => ({ uri: String(source) }) } }));
 
 const sessions = getLucidContent('en').programs.mild.sessions;
 

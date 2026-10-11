@@ -56,7 +56,7 @@ export const TID = {
     WorldPurchaseBack: 'btn.worldPurchase.back',
     WorldPurchaseBuy: 'btn.worldPurchase.buy',
     WorldPurchaseRestore: 'btn.worldPurchase.restore',
-    SettingsTheme: 'btn.settings.theme',
+    SettingsWorld: 'btn.settings.world',
     SettingsLanguage: 'btn.settings.language',
     ProfileSettings: 'btn.profile.settings',
   },

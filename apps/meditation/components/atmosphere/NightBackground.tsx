@@ -69,9 +69,9 @@ export function NightBackground({ variant = 'immersive' }: Props) {
   const starOpacity = isSubtle ? 0.35 : 1;
   const baseGlow = isSubtle ? atmosphere.glowOpacity * 0.5 : atmosphere.glowOpacity;
   const horizonOpacity = isSubtle ? (isDark ? 0.22 : 0.16) : isDark ? 0.74 : 0.48;
-  // Barely damped behind lists: the colour has to survive under a wall of
-  // cards, since those cards are the surfaces meant to be sampling it.
-  const auroraOpacity = isSubtle ? 0.85 : 1;
+  // Keep the night ground ink-dark, including behind translucent settings
+  // panels. Broad auroras must not lift it into a competing purple palette.
+  const auroraOpacity = isDark ? 0.3 : isSubtle ? 0.85 : 1;
 
   // The halo lives in its own layer so the breath animates a plain opacity on
   // the UI thread, instead of driving SVG props frame by frame.

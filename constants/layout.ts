@@ -39,7 +39,7 @@ export function getBottomNavigationLayout(
   const horizontalLayout = getTabBarHorizontalLayout(width);
   const contentWidth = Math.max(0, width - horizontalLayout.start * 2 - (narrow ? 8 : 16) - 2);
   const itemWidth = contentWidth / 5;
-  const labelFontSize = compact || width < 400 ? 11 : 12;
+  const labelFontSize = compact || width < TABLET_BREAKPOINT ? 11 : 12;
   const labelLineHeight = 16;
   // Keep navigation compact while the dream itself follows the user's text size.
   // Translated short labels stay on one line; accessible tab names remain complete.
@@ -98,7 +98,8 @@ export function getBottomNavigationItemStyle(
 export const TAB_BAR_HORIZONTAL_MARGIN = 22;
 
 export const getTabBarHorizontalLayout = (viewportWidth: number) => {
-  const horizontalMargin = viewportWidth < 400
+  // Phones give the five labels the width; the wide margin is for tablets.
+  const horizontalMargin = viewportWidth < TABLET_BREAKPOINT
     ? NARROW_TAB_BAR_HORIZONTAL_MARGIN
     : TAB_BAR_HORIZONTAL_MARGIN;
   const availableWidth = Math.max(0, viewportWidth - horizontalMargin * 2);

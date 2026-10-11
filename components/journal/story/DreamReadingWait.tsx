@@ -1,13 +1,10 @@
-import React, { useMemo } from 'react';
-import { Text, View, type StyleProp, type ViewStyle } from 'react-native';
-import Animated, { useReducedMotion } from 'react-native-reanimated';
+import React from 'react';
+import { Text, View } from 'react-native';
 
 import { useTranslation } from '@/hooks/useTranslation';
 import { TID } from '@/lib/testIDs';
 
-import { twinkle } from './dreamStoryMotion';
-
-const STARS = 5;
+import { WaitingStars } from './WaitingStars';
 
 /**
  * Act II while the analysis runs: stars take turns lighting up, which says "working"
@@ -16,19 +13,10 @@ const STARS = 5;
  */
 export function DreamReadingWait() {
   const { t } = useTranslation();
-  const reduced = useReducedMotion();
-  const stars = useMemo(() => Array.from({ length: STARS }, (_, index) => twinkle(index, STARS, reduced)), [reduced]);
 
   return (
     <View testID={TID.Component.DreamReadingWait} className="items-center gap-3 rounded-lg bg-ink-soft px-5 py-6">
-      <View accessible={false} importantForAccessibility="no-hide-descendants" accessibilityElementsHidden
-        className="h-6 flex-row items-center gap-5">
-        <View className="absolute left-0 right-0 top-[11.5px] h-px bg-champagne opacity-20" />
-        {stars.map((style, index) => (
-          <Animated.View key={index} className="h-2 w-2 rounded-full bg-champagne"
-            style={style as StyleProp<ViewStyle>} />
-        ))}
-      </View>
+      <WaitingStars />
       <Text accessibilityLiveRegion="polite" className="text-center font-display-medium text-[18px] leading-6 text-ivory">
         {t('journal.detail.reading.wait.title')}
       </Text>

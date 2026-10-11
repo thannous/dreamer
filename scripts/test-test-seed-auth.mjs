@@ -7,7 +7,7 @@ import path from 'node:path';
 import { _runGuardedWithListsForTests, TestTargetRefused } from './test-supabase-guard.mjs';
 import { IMAGE_BUCKET, TIER_STATE, aiActorHash, keyHeaders, main as seedMain, makeSeedAction, readSeedSecrets } from './test-seed-users.mjs';
 import { BRANCH_WEB_ORIGIN, BRANCH_WEB_PORT, main as authMain, makeAuthAction, readAuthSecrets, storageKey } from './test-auth-setup.mjs';
-import { BRANCH_GUARD_MARKER, PASSTHROUGH_EXPO_PUBLIC, RUNNER, branchAppEnv, branchCommand, main as startMain, parseBranchArgs } from './start-branch-e2e.mjs';
+import { BRANCH_GUARD_MARKER, DROPPED_NODE_VARS, PASSTHROUGH_EXPO_PUBLIC, RUNNER, branchAppEnv, branchCommand, main as startMain, parseBranchArgs } from './start-branch-e2e.mjs';
 import { FLOW, finishRecord, main as maestroMain, maestroArgs, maestroEnv, outcomeOf, runPaths, runRecord, scrubSecret, startRun } from './maestro-branch-sign-in.mjs';
 
 const PROD = 'usuyppgsmmowzizhaoqj';
@@ -582,4 +582,18 @@ test('maestro sign-in subflow: system prompts are handled without English text, 
   assert.match(flow, /notVisible:\n\s+id: screen\.settings\n\s+commands:\n\s+- back/);
   assert.match(flow, /copyTextFrom:\n\s+id: text\.auth\.email\n- assertTrue:\n\s+condition: \$\{maestro\.copiedText\.trim\(\)\.toLowerCase\(\) === String\(MAESTRO_E2E_EMAIL\)/);
   assert.match(flow, /extendedWaitUntil:\n\s+visible:\n\s+id: text\.auth\.email\n\s+timeout: 45000/);
+});
+
+test('start-branch-e2e drops NODE_OPTIONS and NODE_PATH from the runner env', () => {
+  assert.deepEqual(DROPPED_NODE_VARS, ['NODE_OPTIONS', 'NODE_PATH']);
+  const shell = { PATH: '/bin', HOME: '/home/t', NODE_OPTIONS: '--require /tmp/evil.js', NODE_PATH: '/tmp/mods', NODE_EXTRA_CA_CERTS: '/etc/ca.pem' };
+  const child = branchAppEnv({ ref: REF, url: `https://${REF}.supabase.co` }, env(), shell);
+  assert.equal(child.NODE_OPTIONS, undefined);
+  assert.equal(child.NODE_PATH, undefined);
+  assert.equal(child.PATH, '/bin');
+  assert.equal(child.NODE_EXTRA_CA_CERTS, '/etc/ca.pem', 'only those two are dropped');
+  // Windows env names are case-insensitive: any casing is dropped.
+  const mixed = branchAppEnv({ ref: REF, url: `https://${REF}.supabase.co` }, env(), { PATH: '/bin', Node_Options: '--require x', node_path: '/tmp/mods', Node_Path: '/tmp/m2', NODE_options: '--import y' });
+  assert.deepEqual(Object.keys(mixed).filter((name) => /^node_(options|path)$/i.test(name)), []);
+  assert.equal(mixed.PATH, '/bin');
 });

@@ -17,12 +17,20 @@ export function getNoctaliaPalette(mode: ThemeMode) {
     line: dark ? '#514637' : 'rgba(126, 83, 49, 0.25)',
     overlay: dark ? 'rgba(0, 0, 0, 0.64)' : 'rgba(38, 27, 28, 0.44)',
     onAccent: dark ? '#382D35' : '#FFF9EF',
-    // Fixed contrast on artwork in every theme, including a pure-white image.
-    illustration: {
-      text: '#FFF9EF',
-      scrim: 'rgba(3, 4, 13, 0.86)',
-      transparent: 'rgba(3, 4, 13, 0)',
+    // Dreamer uses curated paintings, with contrast measured behind actual copy.
+    // Preserve their colour and detail rather than flattening them into the ground.
+    backgroundArtwork: {
+      // One light veil: header copy keeps its contrast through a soft shadow of the ground.
+      scrim: dark ? 'rgba(3, 4, 13, 0.45)' : 'rgba(240, 228, 212, 0.60)',
+      reveal: dark ? 'rgba(3, 4, 13, 0.12)' : 'rgba(240, 228, 212, 0.25)',
+      transparent: dark ? 'rgba(3, 4, 13, 0)' : 'rgba(240, 228, 212, 0)',
     },
+    // Fixed contrast on artwork in every theme, including a pure-white or pure-black image:
+    // the title sits on a near-opaque band of the theme's own ground (night, or paper on the
+    // light theme, so no black band ever fades over a light page or a pale illustration).
+    illustration: dark
+      ? { text: '#FFF9EF', scrim: 'rgba(3, 4, 13, 0.86)', transparent: 'rgba(3, 4, 13, 0)' }
+      : { text: '#382D35', scrim: 'rgba(245, 234, 219, 0.92)', transparent: 'rgba(245, 234, 219, 0)' },
     danger: dark ? '#E6A49B' : '#873830',
     status: {
       danger: { background: dark ? '#302126' : '#E4C2AF', border: dark ? '#936D68' : '#A56959', text: dark ? '#E6A49B' : '#873830', icon: dark ? '#E6A49B' : '#873830' },
@@ -81,6 +89,7 @@ export function getNoctaliaDesignTokens(colors: ThemeColors, mode: ThemeMode) {
     screen: { background: p.background, gradient: [p.background, p.background] as const },
     cover: p,
     illustration: p.illustration,
+    backgroundArtwork: p.backgroundArtwork,
     text: { primary: colors.textPrimary, secondary: colors.textSecondary, tertiary: colors.textTertiary, onAccent: colors.textOnAccentSurface },
     accent: { base: colors.accent, strong: colors.accentDark, soft: colors.accentLight, text: colors.accentText },
     surface: { base: p.raised, raised: p.raised, active: p.actionTint, soft: p.surface, border: p.line, borderStrong: p.line, overlay: p.overlay },

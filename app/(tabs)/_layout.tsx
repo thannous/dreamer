@@ -1,9 +1,10 @@
 import { Tabs, router, useSegments } from 'expo-router';
 import React, { useEffect, useMemo, useState } from 'react';
-import { ActivityIndicator, Platform, Text, View, ViewStyle, useWindowDimensions } from 'react-native';
+import { ActivityIndicator, Keyboard, Platform, Pressable, StyleSheet, Text, View, ViewStyle, useWindowDimensions } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { HapticTab } from '@/components/haptic-tab';
+import { ACTIVE_PILL_RADIUS, CAPTURE_GLOW, getCaptureAction, getCaptureOverhang, getIconSlotSize } from '@/components/navigation/tabBarMetrics';
 import { IconSymbol } from '@/components/ui/icon-symbol';
 import {
   BOTTOM_NAVIGATION_MAX_FONT_SIZE_MULTIPLIER,
@@ -31,6 +32,8 @@ type TabPalette = {
   textOnAccentSurface: string;
   text: string;
   textActive: string;
+  activeFill: string;
+  ground: string;
 };
 
 type TabGeometry = {
@@ -38,7 +41,6 @@ type TabGeometry = {
   narrow: boolean;
   stackedLabels: boolean;
   largeText: boolean;
-  horizontalCenter: boolean;
   labelFontSize: number;
   labelLineHeight: number;
   labelLines: number;
@@ -46,36 +48,43 @@ type TabGeometry = {
   centerLabelLines: number;
   centerLabelHeight: number;
   itemWidth: number;
-  centerActionWidth: number;
-  centerActionHeight: number;
 };
 
-function TabBarItem({ label, icon, focused, palette, geometry }: {
+function TabBarItem({ label, icon, activeIcon, focused, palette, geometry }: {
   label: string;
   icon: IconName;
+  activeIcon?: IconName;
   focused: boolean;
   palette: TabPalette;
   geometry: TabGeometry;
 }) {
   const { compact, narrow, stackedLabels } = geometry;
   // Web Text cannot shrink to fit; use the available cell without the native inset.
-  const labelWidth = geometry.itemWidth - (Platform.OS === 'web' || geometry.largeText ? 2 : 10);
+  const labelWidth = geometry.itemWidth - (Platform.OS === 'web' || geometry.largeText ? 2 : 0);
   return (
     <View
       accessible={false}
       importantForAccessibility="no-hide-descendants"
       // React Navigation centers this custom icon in an absolute wrapper.
       // A percentage on the Text alone cannot bound its intrinsic parent width.
-      style={{ width: labelWidth, maxWidth: '100%', borderRadius: 18, backgroundColor: focused ? palette.barBorder : 'transparent' }}
-      className={`flex-1 min-w-0 items-center justify-center ${
-        compact ? 'gap-[1px]' : narrow ? 'gap-[4px]' : 'gap-[5px]'
+      style={{
+        width: labelWidth,
+        maxWidth: '100%',
+        borderRadius: ACTIVE_PILL_RADIUS[compact ? 'compact' : 'default'],
+        backgroundColor: focused ? palette.activeFill : 'transparent',
+      }}
+      className={`min-w-0 items-center justify-center ${
+        compact ? 'gap-0 py-0.5' : 'gap-[2px] py-1'
       }`}
     >
-      <IconSymbol
-        size={24}
-        name={icon}
-        color={focused ? palette.textActive : palette.text}
-      />
+      {/* Same slot height as the Capture action so every label shares one baseline. */}
+      <View className="items-center justify-center" style={{ height: getIconSlotSize(geometry) }}>
+        <IconSymbol
+          size={24}
+          name={focused && activeIcon ? activeIcon : icon}
+          color={focused ? palette.textActive : palette.text}
+        />
+      </View>
       <Text
         accessible={false}
         className="w-full min-w-0 shrink text-center font-sans-medium"
@@ -96,9 +105,6 @@ function TabBarItem({ label, icon, focused, palette, geometry }: {
       >
         {label}
       </Text>
-      <View
-        style={{ width: 16, height: 3, borderRadius: 2, backgroundColor: focused ? palette.textActive : 'transparent' }}
-      />
     </View>
   );
 }
@@ -112,65 +118,53 @@ function AddDreamTabItem({ label, palette, geometry, focused }: {
   // While a dream analysis runs in the background, the Capture button carries
   // the in-progress state so no overlay has to cover the screen content.
   const { activeAnalysis } = useAnalysisActivity();
-  const {
-    compact,
-    narrow,
-    stackedLabels,
-    centerActionWidth,
-    centerActionHeight,
-  } = geometry;
+  const { compact, narrow, stackedLabels } = geometry;
+  const action = getCaptureAction(geometry);
+  const labelWidth = geometry.itemWidth - (Platform.OS === 'web' || geometry.largeText ? 2 : 0);
   return (
     <View
       accessible={false}
       importantForAccessibility="no-hide-descendants"
-      className={`items-center justify-center border-2 ${geometry.horizontalCenter ? 'flex-row' : ''} ${
-        compact
-          ? 'rounded-[22px] gap-[1px]'
-          : narrow
-            ? 'rounded-[24px] gap-[3px]'
-            : 'rounded-[27px] gap-[4px]'
+      style={{
+        width: labelWidth,
+        maxWidth: '100%',
+        borderRadius: ACTIVE_PILL_RADIUS[compact ? 'compact' : 'default'],
+        // Raised, the action itself carries the emphasis; a pill behind it would compete.
+        backgroundColor: focused && !action.raised ? palette.activeFill : 'transparent',
+      }}
+      className={`min-w-0 items-center justify-center ${
+        compact ? 'gap-0 py-0.5' : 'gap-[2px] py-1'
       }`}
-      style={[
-        // The lift stays a real transform: Tailwind v4 emits `translate` through CSS
-        // variables and Uniwind resolves that declaration by splitting the string, so
-        // `-translate-y-2` is not safe here. Shadows stay too — RN spreads them over
-        // shadow*/elevation, which has no single Tailwind equivalent, and the colour
-        // is derived from the palette.
-        !geometry.largeText && ADD_TAB_LIFT[compact ? 'compact' : narrow ? 'narrow' : 'default'],
-        focused && ADD_TAB_SHADOW,
-        {
-          width: centerActionWidth,
-          height: centerActionHeight,
-          backgroundColor: focused ? palette.accent : palette.barBg,
-          borderColor: focused ? palette.accentLight : palette.barBorder,
-          shadowColor: palette.accent,
-        },
-      ]}
     >
+      {/* The primary action reads as one at rest, not only once selected. The ring
+          takes the screen colour so the raised part looks cut out of the bar. */}
       <View
-        className={`w-[32px] rounded-[16px] items-center justify-center ${
-          compact ? 'h-[26px]' : 'h-[30px]'
-        }`}
+        className="items-center justify-center"
+        style={[
+          action.style,
+          { backgroundColor: palette.accent, borderColor: palette.ground },
+          action.raised && { ...CAPTURE_GLOW, shadowColor: palette.accent },
+        ]}
       >
         {activeAnalysis ? (
-          <ActivityIndicator size="small" color={(focused ? palette.textOnAccentSurface : palette.text)} />
+          <ActivityIndicator size="small" color={palette.textOnAccentSurface} />
         ) : (
           <IconSymbol
-            size={24}
+            size={action.iconSize}
             name="pencil"
-            color={(focused ? palette.textOnAccentSurface : palette.text)}
+            color={palette.textOnAccentSurface}
           />
         )}
       </View>
       <Text
         accessible={false}
-        className="w-full min-w-0 shrink text-center font-sans-bold"
+        className="w-full min-w-0 shrink text-center font-sans-medium"
         style={{
-          color: (focused ? palette.textOnAccentSurface : palette.text),
+          color: focused ? palette.textActive : palette.text,
           fontSize: geometry.labelFontSize,
           lineHeight: geometry.labelLineHeight,
           height: stackedLabels ? geometry.centerLabelHeight : undefined,
-          width: centerActionWidth - (geometry.horizontalCenter ? 40 : 4),
+          width: labelWidth,
           maxWidth: '100%',
         }}
         numberOfLines={geometry.centerLabelLines}
@@ -221,6 +215,12 @@ export default function TabLayout() {
   const { activeAnalysis } = useAnalysisActivity();
   const isTabsDestination = segments[0] === '(tabs)';
   const [hasEnteredTabs, setHasEnteredTabs] = useState(false);
+  const [keyboardVisible, setKeyboardVisible] = useState(() => Keyboard.isVisible());
+  useEffect(() => {
+    const show = Keyboard.addListener('keyboardDidShow', () => setKeyboardVisible(true));
+    const hide = Keyboard.addListener('keyboardDidHide', () => setKeyboardVisible(false));
+    return () => { show.remove(); hide.remove(); };
+  }, []);
 
   useEffect(() => {
     if (routeCommitted && isTabsDestination) {
@@ -253,7 +253,6 @@ export default function TabLayout() {
     narrow: navigationLayout.narrow,
     stackedLabels: navigationLayout.stackedLabels,
     largeText: navigationLayout.largeText,
-    horizontalCenter: navigationLayout.horizontalCenter,
     labelFontSize: navigationLayout.labelFontSize,
     labelLineHeight: navigationLayout.labelLineHeight,
     labelLines: navigationLayout.labelLines,
@@ -261,8 +260,6 @@ export default function TabLayout() {
     centerLabelLines: navigationLayout.centerLabelLines,
     centerLabelHeight: navigationLayout.centerLabelHeight,
     itemWidth: navigationLayout.itemWidth,
-    centerActionWidth: navigationLayout.centerActionWidth,
-    centerActionHeight: navigationLayout.centerActionHeight,
   };
   const floatingBottomInset = Math.max(insets.bottom, navigationLayout.minimumBottomInset);
   const isDesktopWeb = Platform.OS === 'web' && width >= DESKTOP_BREAKPOINT;
@@ -275,6 +272,8 @@ export default function TabLayout() {
     textOnAccentSurface: noctalia.action.primaryText,
     text: noctalia.nav.inactive,
     textActive: noctalia.nav.active,
+    activeFill: noctalia.surface.active,
+    ground: noctalia.screen.background,
   };
 
   const handleAddDreamPress = () => {
@@ -291,7 +290,7 @@ export default function TabLayout() {
     paddingTop: navigationLayout.compact ? 4 : 7,
     paddingBottom: navigationLayout.compact ? 4 : 7,
     borderRadius: navigationLayout.compact ? 28 : 36,
-    borderWidth: 1,
+    borderWidth: StyleSheet.hairlineWidth,
     borderTopColor: palette.barBorder,
     borderColor: palette.barBorder,
     shadowColor: noctalia.screen.background,
@@ -353,7 +352,7 @@ export default function TabLayout() {
             accessibilityLabel: t('nav.home'),
           }),
           tabBarIcon: ({ focused }) => (
-            <TabBarItem icon="house" label={t((navigationLayout.largeText || navigationLayout.narrow) ? 'nav.home_compact' : 'nav.home')} focused={focused} palette={palette} geometry={geometry} />
+            <TabBarItem icon="house" activeIcon="house.fill" label={t((navigationLayout.largeText || navigationLayout.narrow) ? 'nav.home_compact' : 'nav.home')} focused={focused} palette={palette} geometry={geometry} />
           ),
           tabBarItemStyle: getBottomNavigationItemStyle(0, navigationLayout),
         }}
@@ -370,7 +369,7 @@ export default function TabLayout() {
             accessibilityLabel: t('nav.journal'),
           }),
           tabBarIcon: ({ focused }) => (
-            <TabBarItem icon="book" label={t('nav.journal')} focused={focused} palette={palette} geometry={geometry} />
+            <TabBarItem icon="book" activeIcon="book.fill" label={t('nav.journal')} focused={focused} palette={palette} geometry={geometry} />
           ),
           tabBarItemStyle: getBottomNavigationItemStyle(1, navigationLayout),
         }}
@@ -411,7 +410,7 @@ export default function TabLayout() {
             accessibilityLabel: t('nav.stats'),
           }),
           tabBarIcon: ({ focused }) => (
-            <TabBarItem icon="chart.bar" label={t((navigationLayout.largeText || navigationLayout.narrow) ? 'nav.stats_compact' : 'nav.stats')} focused={focused} palette={palette} geometry={geometry} />
+            <TabBarItem icon="chart.bar" activeIcon="chart.bar.fill" label={t((navigationLayout.largeText || navigationLayout.narrow) ? 'nav.stats_compact' : 'nav.stats')} focused={focused} palette={palette} geometry={geometry} />
           ),
           tabBarItemStyle: getBottomNavigationItemStyle(3, navigationLayout),
         }}
@@ -442,30 +441,16 @@ export default function TabLayout() {
   return (
     <View className="flex-1" style={{ flex: 1, backgroundColor: noctalia.screen.background }}>
       {tabs}
+      {!isDesktopWeb && !returningGuestBlocked && !keyboardVisible && getCaptureAction(navigationLayout).raised ? (
+        // This touch surface is inside the full-screen parent, so Android can hit
+        // the artwork above the tab row. hitSlop on that row is clipped by its bounds.
+        <Pressable accessible={false} accessibilityElementsHidden importantForAccessibility="no-hide-descendants"
+          focusable={false} onPress={handleAddDreamPress} testID="tab.addDream.overhang"
+          style={{ position: 'absolute', bottom: floatingBottomInset + navigationLayout.barHeight,
+            left: (width - getCaptureAction(navigationLayout).size) / 2,
+            width: getCaptureAction(navigationLayout).size, height: getCaptureOverhang(navigationLayout),
+            zIndex: 46, elevation: 15 }} />
+      ) : null}
     </View>
   );
 }
-
-/**
- * The capture button's lift. This stays a real `transform` rather than a
- * `-translate-y-*` class: Tailwind v4 emits `translate` through CSS variables and
- * Uniwind resolves that declaration by splitting the string, so the variable form
- * would not survive. Everything else on this button is a className.
- */
-const ADD_TAB_LIFT = {
-  default: { transform: [{ translateY: -8 }] },
-  compact: { transform: [{ translateY: -4 }] },
-  narrow: { transform: [{ translateY: -6 }] },
-} satisfies Record<string, ViewStyle>;
-
-/**
- * React Native spreads a shadow across `shadow*` plus Android `elevation`; Tailwind's
- * single `box-shadow` does not map onto that without changing how Android renders it.
- * The colour is per-theme, so it is merged at the call site.
- */
-const ADD_TAB_SHADOW = {
-  shadowOffset: { width: 0, height: 8 },
-  shadowOpacity: 0.24,
-  shadowRadius: 14,
-  elevation: 8,
-} satisfies ViewStyle;

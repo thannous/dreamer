@@ -10,6 +10,9 @@ import { getDreamIdentityKey } from '@/lib/dreamIdentity';
 import { isInitialDreamCategorizationPending } from '@/lib/initialDreamCategorization';
 import { TID } from '@/lib/testIDs';
 
+// Decorative artwork; expo-image needs a native view the test runtime does not provide.
+jest.mock('@/components/ui/NightSkyBand', () => ({ NightSkyBand: () => null }));
+
 const mockGetGuestRecordedDreamCount = jest.fn(async () => 0);
 const mockSubscribeGuestDreamRecordingCount = jest.fn(() => () => undefined);
 const mockAddDream = jest.fn();
@@ -241,9 +244,6 @@ jest.doMock('expo-linear-gradient', () => ({
   LinearGradient: () => <div data-testid="recording-gradient" />,
 }));
 
-jest.doMock('@/components/dev/MockNavigationRail', () => ({
-  MockNavigationRail: () => null,
-}));
 
 jest.doMock('@/components/journal/SubjectProposition', () => ({
   SubjectProposition: ({ subjectType }: { subjectType: 'person' | 'animal' }) => (
@@ -258,8 +258,8 @@ jest.doMock('@/components/navigation/NoctaliaBottomNav', () => ({
   },
 }));
 
-jest.doMock('@/components/recording/AtmosphereBackground', () => ({
-  AtmosphereBackground: () => null,
+jest.doMock('@/components/ui/DreamerBackground', () => ({
+  DreamerArtworkWindow: () => null, DreamerBackground: () => null,
 }));
 
 jest.doMock('@/components/recording/OfflineModelDownloadSheet', () => ({
@@ -366,7 +366,7 @@ jest.doMock('@/components/recording/RecordingConversation', () => ({
       {props.review ? <div data-testid="capture-review-card">
         <textarea data-testid="capture-review-text" value={props.review.text} onChange={(event) => props.onReviewChange(event.currentTarget.value)} />
         <button data-testid="capture-review-exit" onClick={props.onExitReview}>Exit</button>
-        {props.saved ? <button data-testid="capture-review-open" onClick={props.onOpenSaved}>Open</button> : <button data-testid="recording-save" disabled={props.disabled || !!props.answer.trim()} onClick={props.onSave}>Save</button>}
+        <button data-testid="recording-save" disabled={props.disabled || !!props.answer.trim()} onClick={props.onSave}>Save</button>
       </div> : null}
     </>;
   },
@@ -890,7 +890,7 @@ describe('Recording screen', () => {
     }
   });
 
-  it('reviews the original narrative without an AI call before saving and retains the original answered questions', async () => {
+  it('reviews the narrative before saving, then seals it into its saved moment with the original answered questions', async () => {
     mockGetInputModePreference.mockResolvedValue('voice');
     render(<RecordingScreen />);
     await awaitEditorReady();
@@ -905,14 +905,14 @@ describe('Recording screen', () => {
     expect(mockAddDream).not.toHaveBeenCalled();
     fireEvent.change(screen.getByTestId('capture-review-text'), { target: { value: 'My corrected account.' } });
     fireEvent.click(getCaptureSaveAction());
-    await screen.findByTestId('capture-review-open');
-    fireEvent.click(screen.getByTestId('capture-review-open'));
+    // A told dream enters the story like a written one: the seal, then its saved moment.
+    await screen.findByTestId(TID.Component.DreamCaptureSeal);
     await waitFor(() => expect(mockReplace).toHaveBeenCalledWith({ pathname: '/journal/[id]', params: { id: '42', saved: '1' } }));
     expect(mockAddDream).toHaveBeenCalledWith(expect.objectContaining({ transcript: 'My corrected account.', captureOriginalTranscript: answerPair('A blue garden at dawn', 'A door was open.') }));
     expect(mockAnalyzeDream).not.toHaveBeenCalled();
   });
 
-  it('opens the complete narrative for validation after the third answer without another AI call', async () => {
+  it('weaves the answers into one account after the third answer and saves it with the original exchanges', async () => {
     mockGetInputModePreference.mockResolvedValue('voice');
     render(<RecordingScreen />);
     await awaitEditorReady();
@@ -925,13 +925,14 @@ describe('Recording screen', () => {
       await act(async () => { fireEvent.click(screen.getByTestId('conversation-submit')); });
     }
     expect(mockRequestCaptureQuestion).toHaveBeenCalledTimes(3);
-    expect(mockFormatCaptureNarrative).not.toHaveBeenCalled();
-    expect((screen.getByTestId('capture-review-text') as HTMLTextAreaElement).value).toBe('A garden.\n\nBlue flowers.\n\nA bird.\n\nIt was quiet.');
+    await waitFor(() => expect((screen.getByTestId('capture-review-text') as HTMLTextAreaElement).value).toBe('A blue garden at dawn. A door was open.'));
+    expect(mockFormatCaptureNarrative).toHaveBeenCalledTimes(1);
+    expect(mockFormatCaptureNarrative).toHaveBeenCalledWith(expected, 'fr', expect.anything());
     expect(mockAddDream).not.toHaveBeenCalled();
     fireEvent.click(getCaptureSaveAction());
-    await waitFor(() => expect(mockAddDream).toHaveBeenCalledWith(expect.objectContaining({ transcript: 'A garden.\n\nBlue flowers.\n\nA bird.\n\nIt was quiet.', captureOriginalTranscript: expected })));
+    await waitFor(() => expect(mockAddDream).toHaveBeenCalledWith(expect.objectContaining({ transcript: 'A blue garden at dawn. A door was open.', captureOriginalTranscript: expected })));
     expect(mockRequestCaptureQuestion).toHaveBeenCalledTimes(3);
-    expect(mockFormatCaptureNarrative).not.toHaveBeenCalled();
+    expect(mockFormatCaptureNarrative).toHaveBeenCalledTimes(1);
   });
 
   it('preserves the exact question for a one-word answer in the draft, restored editor and direct save', async () => {
@@ -1042,8 +1043,9 @@ describe('Recording screen', () => {
     expect((screen.getByTestId('capture-review-text') as HTMLTextAreaElement).value).toBe('A blue garden at dawn');
   });
 
-  it('edits the narrative and answers while keeping their question context through close, reopen and validation', async () => {
+  it('edits the narrative and answers while keeping their question context, then keeps the narrator words when weaving fails', async () => {
     const source = answerPair('Une plage.', 'Noir.', 'Quelle couleur ?');
+    mockFormatCaptureNarrative.mockRejectedValueOnce(new Error('offline'));
     mockGetInputModePreference.mockResolvedValue('voice');
     mockGetSavedTranscript.mockResolvedValueOnce(source);
     render(<RecordingScreen />);
@@ -1063,8 +1065,9 @@ describe('Recording screen', () => {
     expect((screen.getByTestId('capture-adjust-section-1') as HTMLTextAreaElement).value).toBe('Gris, je crois.');
     fireEvent.click(screen.queryByTestId('conversation-finish') ?? getCaptureSaveAction());
     await screen.findByTestId('capture-review-text');
-    expect(mockFormatCaptureNarrative).not.toHaveBeenCalled();
+    expect(mockFormatCaptureNarrative).toHaveBeenCalledWith(edited, 'fr', expect.anything());
     expect((screen.getByTestId('capture-review-text') as HTMLTextAreaElement).value).toBe('Je marchais sur une plage.\n\nGris, je crois.');
+    expect(Alert.alert).not.toHaveBeenCalled();
     expect(mockAddDream).not.toHaveBeenCalled();
     expect(screen.queryByTestId('capture-draft-editor')).toBeNull();
   });

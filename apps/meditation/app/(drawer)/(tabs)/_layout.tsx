@@ -12,7 +12,6 @@ import {
 import Animated from 'react-native-reanimated';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
-import { MiniPlayer } from '@/components/player/MiniPlayer';
 import { CompactTabBar, TabBar } from '@/constants/layout';
 
 import { IconSymbol } from '@/components/ui';
@@ -249,11 +248,7 @@ export function DrawerButton() {
 
 export default function TabsLayout() {
   const { t } = useTranslation();
-  const insets = useSafeAreaInsets();
-  const { fontScale } = useWindowDimensions();
   const compact = useCompactLayout();
-  const tabBar = compact ? CompactTabBar : TabBar;
-  const tabBarHeight = accessibleTabBarHeight(tabBar.height, fontScale);
   const iconSize = compact ? 20 : 22;
 
   return (
@@ -302,22 +297,6 @@ export default function TabsLayout() {
             }}
           />
         </Tabs>
-
-        {/* Pinned directly above the bar rather than inside it: expo-router owns
-            the bar, and reimplementing it to host one strip is not worth it. */}
-        <View
-          pointerEvents="box-none"
-          // zIndex is required: an absolutely-positioned sibling still paints
-          // below the scene's own stacking context without it.
-          style={{
-            position: 'absolute',
-            left: 0,
-            right: 0,
-            bottom: tabBarHeight + insets.bottom + tabBar.margin,
-            zIndex: 10,
-          }}>
-          <MiniPlayer />
-        </View>
 
         <DrawerButton />
       </View>

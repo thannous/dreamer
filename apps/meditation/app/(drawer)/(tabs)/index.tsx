@@ -237,6 +237,21 @@ export default function HomeTab() {
     }
   }, [retryOffers]);
 
+  const recommendationExplanation = resume
+    ? t('home.resume.title')
+    : recommendation.reason === 'goal-duration' && recommendation.matchedGoal
+      ? t('home.recommended.because.goalDuration', {
+          goal: t(`onboarding.goals.${recommendation.matchedGoal}` as TranslationKey),
+          count: toMinutes(recommendation.session.durationSec),
+        })
+      : recommendation.reason === 'goal' && recommendation.matchedGoal
+        ? t('home.recommended.because.goal', {
+            goal: t(`onboarding.goals.${recommendation.matchedGoal}` as TranslationKey),
+          })
+        : recommendation.reason === 'duration' && onboarding.dailyIntentionMin
+          ? t('home.recommended.because.duration', { count: onboarding.dailyIntentionMin })
+          : null;
+
   return (
     <WorldScene
       world={world}
@@ -289,26 +304,11 @@ export default function HomeTab() {
         <View
           className={compactViewport ? 'mt-5 gap-3' : 'mt-7 gap-3'}
           testID="home.journey.deck">
-          <Text
-            variant="bodySm"
-            testID="home.journey.reason">
-            {resume
-              ? t('home.resume.title')
-              : recommendation.reason === 'goal-duration' && recommendation.matchedGoal
-                ? t('home.recommended.because.goalDuration', {
-                    goal: t(`onboarding.goals.${recommendation.matchedGoal}` as TranslationKey),
-                    count: toMinutes(recommendation.session.durationSec),
-                  })
-                : recommendation.reason === 'goal' && recommendation.matchedGoal
-                  ? t('home.recommended.because.goal', {
-                      goal: t(`onboarding.goals.${recommendation.matchedGoal}` as TranslationKey),
-                    })
-                  : recommendation.reason === 'duration' && onboarding.dailyIntentionMin
-                    ? t('home.recommended.because.duration', {
-                        count: onboarding.dailyIntentionMin,
-                      })
-                    : t(`world.${world.id}.role` as TranslationKey)}
-          </Text>
+          {recommendationExplanation ? (
+            <Text variant="bodySm" testID="home.journey.reason">
+              {recommendationExplanation}
+            </Text>
+          ) : null}
           {worldAccessUnknown ? (
             <Card
               accessibilityLiveRegion="polite"
@@ -399,6 +399,7 @@ export default function HomeTab() {
               quotaResetDay={quotaResetDay}
               isPlus={isPlus}
               subscriptionsEnabled={subscriptionsEnabled}
+              onOpenJourney={() => router.push(`/journey?worldId=${activeWorldId}`)}
               onOpen={openActive}
               onOpenPaywall={openPaywall}
               onOpenAlternative={() => router.push('/breathe')}

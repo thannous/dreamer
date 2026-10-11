@@ -23,14 +23,6 @@ appId: com.tanuki75.noctalia
 - runFlow:
     when:
       visible:
-        id: btn.mockNav.settings
-    commands:
-      - tapOn:
-          id: btn.mockNav.settings
-      - waitForAnimationToEnd
-- runFlow:
-    when:
-      visible:
         id: btn.navigateSettings
     commands:
       - tapOn:

@@ -289,3 +289,28 @@ test('reflection offers an optional recap after one angle and updates it after a
   await page.getByRole('button', { name: 'Back', exact: true }).click();
   await page.screenshot({ path: testInfo.outputPath('reflection-after-exchanges.png'), fullPage: false });
 });
+
+test('free reflection opens Plus directly and declining returns to reflection without entering chat', async ({ page }, testInfo) => {
+  await selectProfile(page, 'existing');
+  await journal(page);
+  await openDream(page, 'The Infinite Library');
+  await page.getByTestId('component.dreamDetail.actionCard').click();
+  await page.getByTestId('btn.dreamCategory.symbols').click();
+  await expect(page.getByTestId('btn.exploration360.synthesis').filter({ visible: true })).toBeEnabled();
+  await page.getByRole('button', { name: 'Back', exact: true }).click();
+  const reflection = page.getByTestId('screen.dreamCategories').filter({ visible: true });
+  await expect(reflection).toBeVisible();
+  const destinations: string[] = [];
+  page.on('framenavigated', (frame) => {
+    if (frame === page.mainFrame()) destinations.push(new URL(frame.url()).pathname);
+  });
+  await reflection.getByTestId('btn.exploration360.synthesis').click();
+  await expect(page.getByTestId('screen.paywall')).toBeVisible();
+  expect(destinations).not.toContainEqual(expect.stringMatching(/^\/dream-chat\//));
+  await page.screenshot({ path: testInfo.outputPath('reflection-direct-plus.png') });
+  await page.getByTestId('btn.paywall.close').click();
+  await expect(reflection).toBeVisible();
+  await expect(page).toHaveURL(/\/dream-categories\//);
+  await expect(reflection.getByTestId('btn.exploration360.synthesis')).toBeEnabled();
+  await page.screenshot({ path: testInfo.outputPath('reflection-after-declining-plus.png') });
+});

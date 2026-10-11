@@ -82,6 +82,11 @@ jest.doMock('react-native', () => {
   };
 
   return {
+    Keyboard: { isVisible: () => false, addListener: () => ({ remove: () => undefined }) },
+    Pressable: ({ onPress, testID, accessible, style }: { onPress?: () => void; testID?: string; accessible?: boolean; style?: unknown }) => (
+      <button data-testid={testID} aria-hidden={accessible === false} onClick={onPress}
+        data-native-style={JSON.stringify(flattenStyle(style))} />
+    ),
     Platform: {
       get OS() {
         return mockPlatformOS;
@@ -202,6 +207,7 @@ jest.doMock('@/constants/noctaliaDesign', () => ({
       inactive: '#777',
     },
     screen: { background: '#faf8f3' },
+    surface: { active: 'rgba(124, 76, 43, 0.08)' },
   }),
 }));
 
@@ -370,8 +376,9 @@ describe('TabLayout returning guest navigation', () => {
 
     expect(labels).toHaveLength(5);
     expect(screen.queryByText('nav.settings')).toBeNull();
-    expect(box.width).toBeCloseTo(54.8, 1);
-    expect(box.height).toBe(76);
+    expect(box.width).toBeCloseTo(58.8, 1);
+    // Capture sits in the bar row like the other tabs; it no longer has a lifted fixed height.
+    expect(box.height).toBeUndefined();
     labels.forEach((label) => {
       expect(label.getAttribute('data-number-of-lines')).toBe('1');
       expect(label.getAttribute('data-accessible')).toBe('false');
@@ -403,7 +410,7 @@ describe('TabLayout returning guest navigation', () => {
       screen.getByText(/^nav\.explore(?:_compact)?$/),
     ]).toHaveLength(5);
     const box = centerBox('nav.capture_dream_compact');
-    expect(box.width).toBe(54.8);
+    expect(box.width).toBe(56.8);
     expect(capturedScreens.find((s) => s.name === 'explore')?.options).toEqual(
       expect.objectContaining({ title: 'nav.explore' }),
     );
@@ -439,7 +446,7 @@ describe('TabLayout returning guest navigation', () => {
     expect(screen.getByText(/^nav\.capture_dream(?:_compact)?$/)).toBeTruthy();
     expect(screen.getByText(/^nav\.capture_dream(?:_compact)?$/).getAttribute('data-number-of-lines')).toBe('1');
     const box = centerBox('nav.capture_dream_compact');
-    expect(box.width).toBeCloseTo(166.6, 2);
+    expect(box.width).toBeCloseTo(168.6, 2);
   });
 
   it.each([[640, 320], [915, 412]])('keeps Capture centered in one row at %i by %i dp', (width: number, height: number) => {
@@ -511,8 +518,9 @@ describe('TabLayout returning guest navigation', () => {
       start: 8,
     }));
     const box = centerBox('nav.capture_dream');
-    expect(box.width).toBeCloseTo(67.2, 1);
-    expect(box.height).toBe(76);
+    expect(box.width).toBeCloseTo(71.2, 1);
+    // Capture sits in the bar row like the other tabs; it no longer has a lifted fixed height.
+    expect(box.height).toBeUndefined();
     expect(centerLabel.getAttribute('data-number-of-lines')).toBe('1');
     expect(centerLabel.getAttribute('data-accessible')).toBe('false');
   });
