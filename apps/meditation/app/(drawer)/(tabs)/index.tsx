@@ -5,7 +5,7 @@ import { ScrollView, View, useWindowDimensions } from 'react-native';
 import { DailyRitualShelf } from '@/components/journey/DailyRitualShelf';
 import { UpcomingJourneyRail } from '@/components/journey/UpcomingJourneyRail';
 import { WeeklyJourney } from '@/components/journey/WeeklyJourney';
-import { WorldJourneyPicker } from '@/components/journey/WorldJourneyPicker';
+import { ARTWORK_TEXT_HALO, WorldJourneyPicker } from '@/components/journey/WorldJourneyPicker';
 import { WorldPreviewShelf } from '@/components/journey/WorldPreviewShelf';
 import { Button, Card, Eyebrow, Tag, Text } from '@/components/ui';
 import { WorldScene } from '@/components/worlds/WorldScene';
@@ -311,7 +311,11 @@ export default function HomeTab() {
           className={compactViewport ? 'mt-5 gap-3' : 'mt-7 gap-3'}
           testID="home.journey.deck">
           {recommendationExplanation ? (
-            <Text variant="bodySm" testID="home.journey.reason">
+            <Text
+              variant="bodySm"
+              tone="default"
+              style={world.appearance === 'dark' ? ARTWORK_TEXT_HALO : undefined}
+              testID="home.journey.reason">
               {recommendationExplanation}
             </Text>
           ) : null}
