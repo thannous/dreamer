@@ -20,8 +20,8 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { ScreenContainer, useWideConstrainedLayout } from '@/components/ScreenContainer';
 import { LucidArtStatusBar } from '@/components/lucid/LucidArtStatusBar';
 import { LucidGlass } from '@/components/lucid/LucidGlass';
-import { LucidStatusBarVeil } from '@/components/lucid/LucidStatusBarVeil';
-import { getLucidPalette, LucidIcon, LucidPress, LucidRadius, LucidSpace, LucidType } from '@/constants/lucidTheme';
+import { LucidStatusBarVeil, VEIL_EDGE_FADE } from '@/components/lucid/LucidStatusBarVeil';
+import { getLucidPalette, LUCID_NIGHT_GROUND, LucidIcon, LucidPress, LucidRadius, LucidSpace, LucidType } from '@/constants/lucidTheme';
 import { useTheme } from '@/context/ThemeContext';
 import { useLucidReducedMotion } from '@/hooks/useLucidReducedMotion';
 
@@ -197,13 +197,15 @@ export function LucidScreen({
           start={8}
           end={artEdge}
           top={insets.top}
-          ground={getLucidPalette(colors, 'dark').backgroundDeep}
+          ground={LUCID_NIGHT_GROUND}
         />
       ) : null}
       {scroll ? (
         <LucidStatusBarVeil
           scrollY={veilScrollY}
-          start={Math.max(8, artEdge ?? 0)}
+          // Past artwork, it crossfades with the night veil at the edge, where the clock turns dark.
+          start={artEdge === undefined ? 8 : Math.max(8, artEdge - VEIL_EDGE_FADE / 2)}
+          startFade={artEdge === undefined ? undefined : VEIL_EDGE_FADE}
           top={insets.top}
           ground={palette.background}
           tint={palette.atmosphere[0]}

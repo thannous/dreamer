@@ -5,6 +5,8 @@ import Animated, { Extrapolation, interpolate, useAnimatedStyle, type SharedValu
 
 /** Scroll distance over which the veil comes in once the page leaves its resting point. */
 const VEIL_FADE = 56;
+/** Scroll distance of the hand-over at the artwork's edge, centred on it. */
+export const VEIL_EDGE_FADE = 16;
 
 const transparent = (rgba: string) => rgba.replace(/[\d.]+\)$/, '0)');
 
@@ -17,6 +19,7 @@ const transparent = (rgba: string) => rgba.replace(/[\d.]+\)$/, '0)');
 export function LucidStatusBarVeil({
   scrollY,
   start,
+  startFade = VEIL_FADE,
   top,
   end,
   ground,
@@ -25,7 +28,8 @@ export function LucidStatusBarVeil({
   scrollY: SharedValue<number>;
   /** Scroll offset where the veil starts to come in. */
   start: number;
-  /** Scroll offset where the veil is gone again, for a veil that only covers artwork. */
+  startFade?: number;
+  /** Scroll offset (artwork edge) around which the veil hands over to the ground veil. */
   end?: number;
   top: number;
   /** Screen ground, as a #RRGGBB colour. */
@@ -35,10 +39,10 @@ export function LucidStatusBarVeil({
 }) {
   const style = useAnimatedStyle(() => {
     const y = scrollY.get();
-    const fadeIn = interpolate(y, [start, start + VEIL_FADE], [0, 1], Extrapolation.CLAMP);
+    const fadeIn = interpolate(y, [start, start + startFade], [0, 1], Extrapolation.CLAMP);
     const fadeOut = end === undefined
       ? 1
-      : interpolate(y, [end - VEIL_FADE, end], [1, 0], Extrapolation.CLAMP);
+      : interpolate(y, [end - VEIL_EDGE_FADE / 2, end + VEIL_EDGE_FADE / 2], [1, 0], Extrapolation.CLAMP);
     return { opacity: fadeIn * fadeOut };
   });
   if (top <= 0) return null;
