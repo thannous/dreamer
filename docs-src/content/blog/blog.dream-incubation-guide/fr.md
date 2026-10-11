@@ -321,7 +321,7 @@
                                                                   <i data-lucide="arrow-left" class="w-5 h-5 mt-1 text-dream-salmon shrink-0"></i>
                                                                   <div>
                                                                     <span class="text-xs text-purple-300/60 uppercase tracking-wide">Article précédent</span>
-                                                                    <div class="font-serif text-lg text-dream-cream mt-1">Rêver de serpents : ce que votre inconscient essaie de vous dire</div>
+                                                                    <div class="font-serif text-lg text-dream-cream mt-1">Rêver de serpents : morsure, attaque, mue… ce que la scène peut raconter</div>
                                                                   </div>
                                                                 </a>
                                                                 <a href="reves-premonitoires-science" class="glass-panel rounded-xl p-5 flex items-start justify-between gap-3 hover:border-dream-salmon/30 transition-all hover:-translate-y-1">
@@ -345,17 +345,17 @@
                     <a href="comment-se-souvenir-de-ses-reves" class="glass-panel rounded-xl p-6 block hover:border-dream-salmon/30 transition-all hover:-translate-y-1">
                         <span class="text-xs text-dream-salmon uppercase mb-2 block">Guide</span>
                         <h3 class="font-serif text-lg text-dream-cream mb-2">Comment se souvenir de ses rêves : 10 techniques efficaces</h3>
-                        <p class="text-sm text-gray-400">Découvrez dix habitudes concrètes pour mieux recueillir les fragments de rêves au réveil, sans promesse de souvenir parfait.</p>
+                        <p class="text-sm text-gray-400">Dix habitudes simples pour retenir plus de fragments au réveil, du réveil lent à la note prise avant de bouger.</p>
                     </a>
                     <a href="guide-cauchemars" class="glass-panel rounded-xl p-6 block hover:border-dream-salmon/30 transition-all hover:-translate-y-1">
                         <span class="text-xs text-dream-salmon uppercase mb-2 block">Guide</span>
                         <h3 class="font-serif text-lg text-dream-cream mb-2">Cauchemars : Causes, Signification et Comment les Arrêter</h3>
-                        <p class="text-sm text-gray-400">Pourquoi fait-on des cauchemars ? Découvrez les causes des mauvais rêves, leur signification et les techniques prouvées pour réduire leur fréquence et mieux dormir.</p>
+                        <p class="text-sm text-gray-400">Pourquoi les cauchemars surviennent, ce qu'ils peuvent ou non signifier, et comment la répétition d'imagerie mentale et un sommeil plus régulier aident à les réduire.</p>
                     </a>
                     <a href="guide-paralysie-sommeil" class="glass-panel rounded-xl p-6 block hover:border-dream-salmon/30 transition-all hover:-translate-y-1">
                         <span class="text-xs text-dream-salmon uppercase mb-2 block">Guide</span>
                         <h3 class="font-serif text-lg text-dream-cream mb-2">Paralysie du sommeil : pourquoi vous ne pouvez plus bouger et comment en sortir</h3>
-                        <p class="text-sm text-gray-400">Guide complet pour comprendre la paralysie du sommeil. Découvrez ses causes, pourquoi les hallucinations surviennent, et les techniques prouvées pour prévenir et arrêter les épisodes.</p>
+                        <p class="text-sm text-gray-400">Pourquoi on se réveille parfois sans pouvoir bouger, avec une présence dans la chambre, comment traverser un épisode et quand consulter.</p>
                     </a>
               </div>
             </section>

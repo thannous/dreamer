@@ -79,12 +79,12 @@
 <h2 class="font-serif text-2xl text-dream-cream mb-4">Fonti</h2>
 <ul class="mt-6 space-y-2 text-sm text-gray-400">
 <li><a href="https://pmc.ncbi.nlm.nih.gov/articles/PMC4023156/" rel="nofollow noopener noreferrer" target="_blank">Eichenlaub et al. (2014), Neuropsychopharmacology</a></li>
-<li><a href="https://presse.inserm.fr/en/why-does-the-brain-remember-dreams/53057/" rel="nofollow noopener noreferrer" target="_blank">Inserm — Why does the brain remember dreams?</a></li>
+<li><a href="https://presse.inserm.fr/en/why-does-the-brain-remember-dreams/53057/" rel="nofollow noopener noreferrer" target="_blank">Inserm: Why does the brain remember dreams?</a></li>
 <li><a href="https://pubmed.ncbi.nlm.nih.gov/22024432/" rel="nofollow noopener noreferrer" target="_blank">De Gennaro et al. (2012), Behavioural Brain Research</a></li>
-<li><a href="https://www.ninds.nih.gov/health-information/public-education/brain-basics/brain-basics-understanding-sleep" rel="nofollow noopener noreferrer" target="_blank">NINDS — Understanding sleep</a></li>
-<li><a href="https://www.nhlbi.nih.gov/health/sleep-apnea/symptoms" rel="nofollow noopener noreferrer" target="_blank">NHLBI — Sintomi dell’apnea del sonno</a></li>
-<li><a href="https://www.sleepfoundation.org/noise-and-sleep" rel="nofollow noopener noreferrer" target="_blank">Sleep Foundation — Rumore e sonno</a></li>
-<li><a href="https://www.who.int/europe/publications/i/item/9789289053563" rel="nofollow noopener noreferrer" target="_blank">OMS Europa — Linee guida sul rumore ambientale</a></li>
+<li><a href="https://www.ninds.nih.gov/health-information/public-education/brain-basics/brain-basics-understanding-sleep" rel="nofollow noopener noreferrer" target="_blank">NINDS: Understanding sleep</a></li>
+<li><a href="https://www.nhlbi.nih.gov/health/sleep-apnea/symptoms" rel="nofollow noopener noreferrer" target="_blank">NHLBI: Sintomi dell’apnea del sonno</a></li>
+<li><a href="https://www.sleepfoundation.org/noise-and-sleep" rel="nofollow noopener noreferrer" target="_blank">Sleep Foundation: Rumore e sonno</a></li>
+<li><a href="https://www.who.int/europe/publications/i/item/9789289053563" rel="nofollow noopener noreferrer" target="_blank">OMS Europa: Linee guida sul rumore ambientale</a></li>
 </ul>
 <p class="mt-6 text-xs text-purple-200/60">Pubblicato l’8 luglio 2026 · Aggiornato il 9 ottobre 2026</p>
 </section>

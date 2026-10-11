@@ -23,7 +23,7 @@
   "twitterImage": "https://noctalia.app/img/og/noctalia-en-1200x630.jpg",
   "twitterImageAlt": "Noctalia dream journal app with voice recording and guided reflection screens",
   "publishedTime": "",
-  "modifiedTime": "2026-10-09",
+  "modifiedTime": "2026-10-10",
   "author": "",
   "prevPath": "",
   "nextPath": "",
@@ -273,7 +273,7 @@
                 <h2 class="oh-h2">One night is a scene. Ten nights are a map.</h2>
             </div>
             <div>
-                <p class="oh-lede">Each dream you record adds its symbols to the sky. When the same image returns, its lines grow brighter — and a pattern you could never see from one night appears.</p>
+                <p class="oh-lede">Each dream you record adds its symbols to the sky. When the same image returns, its lines grow brighter. A pattern appears that no single night could show.</p>
                 <p class="oh-starmap-hint">Hover or tap a star to follow its dreams.</p>
             </div>
         </div>
@@ -490,9 +490,9 @@
         <div class="oh-section-head reveal">
             <div>
                 <span class="oh-index" aria-hidden="true">5 am</span>
-                <h2 class="oh-h2">Dream Symbols Dictionary</h2>
+                <h2 class="oh-h2">Dream symbols dictionary</h2>
             </div>
-            <p class="oh-lede">Browse 150 common symbols, each with context questions and possible associations. The scene — and how you felt in it — matters more than any fixed definition.</p>
+            <p class="oh-lede">Browse 150 common symbols, each with context questions and possible associations. What matters most is the scene and how you felt in it, not a fixed definition.</p>
         </div>
 
         <div class="oh-symbols reveal">
@@ -549,7 +549,7 @@
                 <i data-lucide="arrow-up-right"></i>
             </a>
             <a href="/en/symbols/being-chased" class="oh-symbol">
-                <span><span class="oh-symbol-name">Being Chased</span><span class="oh-symbol-q">Who chased you, and where?</span></span>
+                <span><span class="oh-symbol-name">Being chased</span><span class="oh-symbol-q">Who chased you, and where?</span></span>
                 <i data-lucide="arrow-up-right"></i>
             </a>
             <a href="/en/symbols/ocean" class="oh-symbol">
@@ -653,7 +653,7 @@
                         <picture>
                             <source type="image/webp" srcset="/img/app/en/chat-480w.webp 480w, /img/app/en/chat-800w.webp 800w" sizes="(min-width: 768px) 300px, 78vw">
                             <source type="image/jpeg" srcset="/img/app/en/chat-800w.jpg 800w" sizes="(min-width: 768px) 300px, 78vw">
-                            <img src="/img/app/en/chat-800w.jpg" alt="Exploring insights and symbolism of your dream" class="w-full h-full object-cover" width="800" height="1639" loading="lazy" decoding="async">
+                            <img src="/img/app/en/chat-800w.jpg" alt="Exploring the symbols in your dream" class="w-full h-full object-cover" width="800" height="1639" loading="lazy" decoding="async">
                         </picture>
                     </div>
                 </div>
@@ -677,7 +677,7 @@
                 </div>
             </details>
             <details class="oh-feature" name="oh-features">
-                <summary><span class="oh-feature-num" aria-hidden="true">05</span><h3 class="oh-feature-title">Regularity</h3></summary>
+                <summary><span class="oh-feature-num" aria-hidden="true">05</span><h3 class="oh-feature-title">Consistency</h3></summary>
                 <div class="oh-feature-body">
                     <p>See how many mornings you recorded a dream and how long your streak runs.</p>
                 </div>
@@ -780,7 +780,7 @@
             <span class="oh-index" aria-hidden="true">7:15 am</span>
             <p class="oh-ending-mentions"><span>Free on Google Play</span><span>Your dreams stay private</span></p>
             <h2 class="oh-ending-title"><span>Open your eyes.</span> <span class="oh-accent-line">The dream is still there.</span></h2>
-            <p class="oh-lede">Record it before it fades — in your own words, on your phone, the moment you wake.</p>
+            <p class="oh-lede">Record it the moment you wake, in your own words, on your phone, before it fades.</p>
             <div class="oh-hero-cta">
                 <a href="https://play.google.com/store/apps/details?id=com.tanuki75.noctalia&amp;hl=en" class="oh-btn-primary">
                     Record my first dream <i data-lucide="play"></i>

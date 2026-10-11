@@ -266,7 +266,7 @@
 <span class="text-xs text-purple-300/60">6 min de lectura</span>
 </div>
 <h2 class="font-serif text-xl md:text-2xl mb-3 text-dream-cream group-hover:text-white transition-colors">Pesadillas de la vuelta al cole en niños: estrés, sueño y rutina de la noche</h2>
-<p class="text-sm text-gray-400 line-clamp-2">Por qué la vuelta al cole provoca pesadillas en los niños — y la rutina de la noche que calma.</p>
+<p class="text-sm text-gray-400 line-clamp-2">Por qué la vuelta al cole provoca pesadillas en los niños y la rutina de la noche que calma.</p>
 </div>
 </a>
 </article>
@@ -284,7 +284,7 @@
 <span class="text-xs text-purple-300/60">5 min de lectura</span>
 </div>
 <h2 class="font-serif text-xl md:text-2xl mb-3 text-dream-cream group-hover:text-white transition-colors">Sueños climáticos: cuando la ecoansiedad se cuela de noche</h2>
-<p class="text-sm text-gray-400 line-clamp-2">Por qué inundaciones, incendios y tormentas cruzan tus sueños — y cómo anotarlos sin alimentarlos.</p>
+<p class="text-sm text-gray-400 line-clamp-2">Por qué inundaciones, incendios y tormentas cruzan tus sueños y cómo anotarlos sin alimentarlos.</p>
 </div>
 </a>
 </article>
@@ -508,7 +508,7 @@
                                 ¿Por qué olvidamos los sueños al despertar?
                             </h2>
 <p class="text-sm text-gray-400 line-clamp-2">
-                                Descubre los mecanismos cerebrales y neuroquímicos que explican por qué olvidamos el 95% de nuestros sueños.
+                                Por qué los sueños se borran a los pocos minutos de despertar, qué papel tienen el sueño REM y la memoria, y hábitos sencillos para recordar más.
                             </p>
 </div>
 </a>
@@ -528,8 +528,7 @@
                                 Significado de Sueños Recurrentes: Entender sus Mensajes
                             </h2>
 <p class="text-sm text-gray-400 line-clamp-2">
-                                ¿Por qué sigues teniendo el mismo sueño? Descubre lo que tu subconsciente está tratando
-                                de decirte.
+                                Por qué vuelve el mismo sueño, qué anotar entre un episodio y otro, y cuándo las pesadillas repetidas merecen una consulta médica.
                             </p>
 </div>
 </a>
@@ -550,8 +549,7 @@
                                 Cómo tener sueños lúcidos: guía para principiantes
                             </h2>
 <p class="text-sm text-gray-400 line-clamp-2">
-                                Aprende las técnicas básicas para ser consciente en tus sueños y explorar mundos
-                                infinitos.
+                                Cómo empezar con los sueños lúcidos con un diario, las señales oníricas, las pruebas de realidad y la técnica MILD, sin perder descanso.
                             </p>
 </div>
 </a>
@@ -571,7 +569,7 @@
                                 Soñar que se caen los dientes: significado e interpretación
                             </h2>
 <p class="text-sm text-gray-400 line-clamp-2">
-                                ¿Por qué sueñas que pierdes los dientes? Descubre las 7 interpretaciones más comunes.
+                                Siete posibles lecturas de los sueños en los que se caen los dientes, de la tensión en la mandíbula al miedo al qué dirán, y las variantes que conviene anotar.
                             </p>
 </div>
 </a>
@@ -591,7 +589,7 @@
                                 Sueños de caer: por qué sueñas que caes al vacío
                             </h2>
 <p class="text-sm text-gray-400 line-clamp-2">
-                                ¿Por qué sueñas con caer al vacío? Descubre el significado psicológico.
+                                Por qué soñamos con caer, desde la sacudida hípnica al dormirse hasta las caídas largas, y qué anotar al despertar.
                             </p>
 </div>
 </a>
@@ -611,8 +609,7 @@
                                 Sueños de volar: qué significa volar en sueños
                             </h2>
 <p class="text-sm text-gray-400 line-clamp-2">
-                                ¿Por qué sueñas con volar? Descubre lo que los sueños de volar revelan sobre la libertad
-                                y la ambición.
+                                Qué puede sugerir volar sin esfuerzo, no lograr despegar o huir volando, y qué anotar al despertar.
                             </p>
 </div>
 </a>
@@ -632,13 +629,13 @@
                                 Diccionario de Símbolos de Sueños: Interpretación de la A a la Z
                             </h2>
 <p class="text-sm text-gray-400 line-clamp-2">
-                                Explora 150 símbolos oníricos como puntos de partida contextuales para la reflexión.
+                                150 símbolos oníricos frecuentes de la A a la Z, como punto de partida para tus propias notas.
                             </p>
 </div>
 </a>
 </article>
 <!-- Article 8 - Sueños de serpientes -->
-<article class="article-card glass-panel rounded-2xl overflow-hidden group" data-category="interpretación" data-reading-time="5" data-title="Soñar con serpientes: lo que tu subconsciente te esta advirtiendo">
+<article class="article-card glass-panel rounded-2xl overflow-hidden group" data-category="interpretación" data-reading-time="5" data-title="Soñar con serpientes: qué puede significar una mordedura, una persecución o una muda">
 <a class="block" href="suenos-con-serpientes">
 <div class="aspect-video overflow-hidden bg-dream-purple/30">
 <img alt="Significado de sueños con serpientes" class="article-image w-full h-full object-cover opacity-80 group-hover:opacity-100 transition-all duration-500" height="450" loading="lazy" sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 33vw" src="../../img/blog/snake-dreams-meaning.webp" srcset="../../img/blog/snake-dreams-meaning-480w.webp 480w, ../../img/blog/snake-dreams-meaning-800w.webp 800w, ../../img/blog/snake-dreams-meaning-1200w.webp 1200w" width="800">
@@ -649,11 +646,10 @@
 <span class="text-xs text-purple-300/60">5 min de lectura</span>
 </div>
 <h2 class="font-serif text-xl md:text-2xl mb-3 text-dream-cream group-hover:text-white transition-colors">
-                                ¿Soñar con serpientes: lo que tu subconsciente te esta advirtiendo
+                                Soñar con serpientes: qué puede significar una mordedura, una persecución o una muda
                             </h2>
 <p class="text-sm text-gray-400 line-clamp-2">
-                                Descubre el poderoso simbolismo de los sueños con serpientes y lo que revelan sobre
-                                transformación, miedo y sabiduria oculta.
+                                Lo que puede contar un sueño con serpientes según la escena, una mordedura, una persecución, una muda de piel o una serpiente tranquila, y qué anotar al despertar.
                             </p>
 </div>
 </a>
@@ -673,8 +669,7 @@
                                 Incubación de sueños: cómo soñar exactamente lo que quieres esta noche
                             </h2>
 <p class="text-sm text-gray-400 line-clamp-2">
-                                Aprende el arte antiguo de la incubación onírica para resolver problemas y estimular tu
-                                creatividad.
+                                Un método en seis pasos para elegir una pregunta antes de dormir y anotar lo que vuelve al despertar, con lo que dice la investigación y sus límites.
                             </p>
 </div>
 </a>
@@ -694,8 +689,7 @@
                                 ¿Pueden los sueños predecir el futuro? La ciencia de los sueños premonitorios
                             </h2>
 <p class="text-sm text-gray-400 line-clamp-2">
-                                Explora la fascinante ciencia de los sueños premonitorios y si realmente pueden predecir
-                                el futuro.
+                                Lo que dicen los estudios controlados sobre los sueños que parecen predecir el futuro, y cómo el azar y los sesgos de memoria explican muchos casos.
                             </p>
 </div>
 </a>
@@ -715,7 +709,7 @@
                                 Sueños de Ser Perseguido: Significado e Interpretación
                             </h2>
 <p class="text-sm text-gray-400 line-clamp-2">
-                                ¿Por qué sueñas que te persiguen? Descubre los significados psicológicos detrás de los sueños de persecución y lo que tu subconsciente intenta decirte sobre el miedo y la evitación.
+                                Por qué los sueños de persecución son tan frecuentes, qué pueden decir el perseguidor y el final de la escena, y qué hacer cuando se repiten.
                             </p>
 </div>
 </a>
@@ -735,7 +729,7 @@
                                 Soñar con la muerte: significado según quién muere
                             </h2>
 <p class="text-sm text-gray-400 line-clamp-2">
-                                ¿Qué significa soñar con la muerte? Descubre los significados simbólicos detrás de los sueños de muerte - raramente predicen la muerte real y a menudo representan transformación y cambio.
+                                Sueños con tu propia muerte, con la de un ser querido o con alguien que ya murió, vistos a través de los recuerdos, el miedo y el duelo y no como un presagio.
                             </p>
 </div>
 </a>
@@ -755,7 +749,7 @@
                                 Sueños de agua: significado de sueños de ahogarse, océano e inundación
                             </h2>
 <p class="text-sm text-gray-400 line-clamp-2">
-                                ¿Qué significan los sueños de agua? Descubre las interpretaciones simbólicas de los sueños de ahogarse, océano e inundación. El agua representa las emociones - aprende lo que tu subconsciente te está diciendo.
+                                Lo que pueden evocar una inundación, el agua que sube, una casa inundada o el agua clara o turbia, y qué detalles anotar al despertar.
                             </p>
 </div>
 </a>
@@ -775,7 +769,7 @@
                                 Sueños con tu ex: lo que realmente significan
                             </h2>
 <p class="text-sm text-gray-400 line-clamp-2">
-                                ¿Por qué sigues soñando con tu ex? Descubre los significados psicológicos de los sueños con exparejas y lo que tu subconsciente está procesando.
+                                Lo que pueden reflejar los sueños de reconciliación, de discusión o en los que ves a tu ex con otra persona, sin dar por hecho que quieres volver.
                             </p>
 </div>
 </a>
@@ -795,7 +789,7 @@
                                 Sueños de embarazo: lo que significan (aunque no estés embarazada)
                             </h2>
 <p class="text-sm text-gray-400 line-clamp-2">
-                                ¿Qué significan los sueños de embarazo? Descubre por qué sueñas con estar embarazada, dar a luz o bebés - incluso si no estás esperando. Significados simbólicos explicados.
+                                Lo que puede significar soñar que estás embarazada, que das a luz o que otra persona espera un bebé, lo que dice la investigación y qué anotar.
                             </p>
 </div>
 </a>
@@ -815,7 +809,7 @@
                                 ¿Por qué tengo pesadillas? Causas y soluciones
                             </h2>
 <p class="text-sm text-gray-400 line-clamp-2">
-                                Descubre por qué tienes pesadillas, qué puede desencadenarlas y cómo reducir las recurrentes con hábitos de sueño e IRT.
+                                Por qué aparecen las pesadillas, qué pueden significar y qué no, y cómo el ensayo en imaginación y un sueño más regular ayudan a reducirlas.
                             </p>
 </div>
 </a>
@@ -835,7 +829,7 @@
                                 Parálisis del sueño: por qué no puedes moverte y cómo detenerla
                             </h2>
 <p class="text-sm text-gray-400 line-clamp-2">
-                                Guía completa para entender la parálisis del sueño. Descubre qué la causa, por qué ocurren las alucinaciones y qué técnicas ayudan para prevenir y detener los episodios.
+                                Por qué a veces despiertas sin poder moverte y con una presencia en la habitación, cómo pasar un episodio y cuándo consultar.
                             </p>
 </div>
 </a>
@@ -855,7 +849,7 @@
                                 Diario de sueños: la guía completa para registrar tus aventuras nocturnas
                             </h2>
 <p class="text-sm text-gray-400 line-clamp-2">
-                                Aprende a llevar un diario de sueños efectivo. Descubre técnicas probadas para mejorar tu memoria onírica, qué escribir y cómo el diario transforma tu sueño.
+                                Cómo empezar un diario de sueños con cuatro campos y un ejemplo breve, qué hacer cuando no recuerdas nada y cómo releerlo sin imponer una interpretación.
                             </p>
 </div>
 </a>
@@ -875,7 +869,7 @@
                                 Sueños y Salud Mental: Cómo Tu Sueño Revela Tu Mente
                             </h2>
 <p class="text-sm text-gray-400 line-clamp-2">
-                                Descubre la profunda conexión entre los sueños y la salud mental. Aprende cómo la ansiedad, la depresión y el trauma afectan tus sueños, y cómo el trabajo con sueños puede apoyar la sanación.
+                                Cómo la ansiedad, la depresión, el estrés y el trauma aparecen en los sueños, y cuándo conviene hablar de las pesadillas frecuentes con un profesional.
                             </p>
 </div>
 </a>
@@ -895,7 +889,7 @@
                                 ¿Por qué soñamos? La ciencia detrás de tus aventuras nocturnas
                             </h2>
 <p class="text-sm text-gray-400 line-clamp-2">
-                                Explora la fascinante ciencia de los sueños. Aprende sobre las teorías principales, la actividad cerebral durante los sueños y lo que revelan sobre la consciencia.
+                                Lo que la investigación ha medido sobre la memoria, las emociones y el ensayo de amenazas en los sueños, y lo que sigue siendo hipótesis.
                             </p>
 </div>
 </a>
@@ -915,7 +909,7 @@
                                 Sueño REM y Sueños: Entendiendo el Reinicio Nocturno de tu Cerebro
                             </h2>
 <p class="text-sm text-gray-400 line-clamp-2">
-                                Descubre la ciencia del sueño REM y su papel crucial en los sueños. Aprende sobre los ciclos de sueño, diferencias REM vs no-REM, y cómo optimizar tu sueño REM.
+                                En qué momento de la noche llega el sueño REM, por qué sus sueños son tan vívidos y qué lo acorta.
                             </p>
 </div>
 </a>
@@ -935,7 +929,7 @@
                                 La Historia de la Interpretación de Sueños: De los Templos Antiguos a la Ciencia Moderna
                             </h2>
 <p class="text-sm text-gray-400 line-clamp-2">
-                                Explora la fascinante evolución de la interpretación de sueños desde las civilizaciones antiguas hasta la neurociencia moderna. Descubre cómo las culturas de todo el mundo han decodificado el lenguaje de los sueños.
+                                Cómo se han leído los sueños a lo largo del tiempo, de los presagios mesopotámicos y un manual egipcio a Aristóteles, Freud, Jung y los laboratorios del sueño.
                             </p>
 </div>
 </a>
@@ -977,7 +971,7 @@
                                 Sueños y creatividad: cómo tu cerebro dormido resuelve problemas
                             </h2>
 <p class="text-sm text-gray-400 line-clamp-2">
-                                Descubre cómo los sueños impulsan la creatividad y la resolución de problemas. Conoce descubrimientos famosos nacidos en sueños y técnicas para aprovechar tu mente dormida.
+                                Lo que dice la investigación sobre los sueños y la resolución de problemas, y cómo anotar una idea antes de que se esfume.
                             </p>
 </div>
 </a>
@@ -1040,7 +1034,7 @@
                                 Día del Sueño 2026: entorno y sueños
                             </h2>
 <p class="text-sm text-gray-400 line-clamp-2">
-                                Luz, ruido, temperatura: descubre cómo tu entorno de sueño moldea directamente el contenido y la calidad de tus sueños.
+                                Cómo la luz, el ruido y la temperatura del dormitorio influyen en el sueño y en los sueños, y qué puedes ajustar esta noche.
                             </p>
 </div>
 </a>
@@ -1103,7 +1097,7 @@
                                 Cambio de hora y sue&ntilde;o
                             </h2>
 <p class="text-sm text-gray-400 line-clamp-2">
-                                C&oacute;mo el paso al horario de verano altera tu ritmo circadiano, comprime el sue&ntilde;o REM y transforma tu vida on&iacute;rica.
+                                Por qué el cambio al horario de verano cuesta más, qué pasa con el sueño REM y tus sueños, y cómo adaptarte en pocos días.
                             </p>
 </div>
 </a>
@@ -1124,7 +1118,7 @@
                                 Deuda de sue&ntilde;o: el coste oculto de la privaci&oacute;n cr&oacute;nica
                             </h2>
 <p class="text-sm text-gray-400 line-clamp-2">
-                                C&oacute;mo la deuda de sue&ntilde;o acumulada deteriora tu salud, transforma tus sue&ntilde;os por el rebote REM y qu&eacute; dice la ciencia sobre la recuperaci&oacute;n.
+                                Qué le hace la deuda de sueño a la salud y a los sueños, por qué dormir más el fin de semana no basta y cómo recuperarte de verdad.
                             </p>
 </div>
 </a>
@@ -1145,7 +1139,7 @@
                                 Sue&ntilde;o en primavera: el efecto de los d&iacute;as m&aacute;s largos
                             </h2>
 <p class="text-sm text-gray-400 line-clamp-2">
-                                C&oacute;mo el equinoccio de primavera y los d&iacute;as m&aacute;s largos suprimen la melatonina y alteran tus sue&ntilde;os.
+                                Por qué las tardes largas retrasan el sueño y la luz del alba te despierta antes, cómo cambia eso el recuerdo de los sueños y qué puedes hacer.
                             </p>
 </div>
 </a>
@@ -1166,7 +1160,7 @@
                                 El sue&ntilde;o, palanca de salud n&ordm; 1
                             </h2>
 <p class="text-sm text-gray-400 line-clamp-2">
-                                Un estudio OHSU revela que la falta de sue&ntilde;o supera a la mala alimentaci&oacute;n y la falta de ejercicio para la esperanza de vida.
+                                Lo que encontró un estudio de la OHSU al comparar dormir poco con la alimentación y el ejercicio frente a la esperanza de vida, y los límites de ese vínculo.
                             </p>
 </div>
 </a>
@@ -1187,7 +1181,7 @@
                                 Rastreadores de sue&ntilde;o wearables y sue&ntilde;os
                             </h2>
 <p class="text-sm text-gray-400 line-clamp-2">
-                                El 40 % de las personas monitorean su sue&ntilde;o semanalmente. Descubre qu&eacute; miden realmente los rastreadores y por qu&eacute; el diario de sue&ntilde;os completa el panorama.
+                                Qué miden de verdad un reloj o un anillo por la noche, cuánto fiarte de su puntuación y por qué ningún sensor registra lo que soñaste.
                             </p>
 </div>
 </a>

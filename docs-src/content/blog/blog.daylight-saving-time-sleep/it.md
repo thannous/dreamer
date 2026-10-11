@@ -296,12 +296,12 @@ Vai a letto e alzati 15-20 minuti prima ogni giorno nei tre o quattro giorni pre
 <section class="mt-16 glass-panel rounded-2xl p-6" id="sources">
 <h2 class="font-serif text-2xl text-dream-cream mb-4">Fonti e letture di approfondimento</h2>
 <ul class="mt-6 space-y-2 text-sm text-gray-400">
-<li><a href="https://doi.org/10.1016/j.smrv.2012.10.001" rel="nofollow noopener noreferrer" target="_blank">Harrison (2013): The impact of daylight saving time on sleep and related behaviours — Sleep Medicine Reviews</a></li>
-<li><a href="https://doi.org/10.1016/j.cub.2007.10.025" rel="nofollow noopener noreferrer" target="_blank">Kantermann et al. (2007): The human circadian clock’s seasonal adjustment is disrupted by daylight saving time — Current Biology</a></li>
-<li><a href="https://doi.org/10.1136/openhrt-2013-000019" rel="nofollow noopener noreferrer" target="_blank">Sandhu et al. (2014): Daylight savings time and myocardial infarction — Open Heart</a></li>
-<li><a href="https://doi.org/10.1016/j.cub.2019.12.045" rel="nofollow noopener noreferrer" target="_blank">Fritz et al. (2020): A chronobiological evaluation of the acute effects of daylight saving time on traffic accident risk — Current Biology</a></li>
-<li><a href="https://doi.org/10.5664/jcsm.8780" rel="nofollow noopener noreferrer" target="_blank">Rishi et al. (2020): Daylight saving time, an American Academy of Sleep Medicine position statement — Journal of Clinical Sleep Medicine</a></li>
-<li><a href="https://doi.org/10.1177/0748730419854197" rel="nofollow noopener noreferrer" target="_blank">Roenneberg et al. (2019): Why should we abolish daylight saving time? — Journal of Biological Rhythms</a></li>
+<li><a href="https://doi.org/10.1016/j.smrv.2012.10.001" rel="nofollow noopener noreferrer" target="_blank">Harrison (2013): The impact of daylight saving time on sleep and related behaviours. Sleep Medicine Reviews</a></li>
+<li><a href="https://doi.org/10.1016/j.cub.2007.10.025" rel="nofollow noopener noreferrer" target="_blank">Kantermann et al. (2007): The human circadian clock’s seasonal adjustment is disrupted by daylight saving time. Current Biology</a></li>
+<li><a href="https://doi.org/10.1136/openhrt-2013-000019" rel="nofollow noopener noreferrer" target="_blank">Sandhu et al. (2014): Daylight savings time and myocardial infarction. Open Heart</a></li>
+<li><a href="https://doi.org/10.1016/j.cub.2019.12.045" rel="nofollow noopener noreferrer" target="_blank">Fritz et al. (2020): A chronobiological evaluation of the acute effects of daylight saving time on traffic accident risk. Current Biology</a></li>
+<li><a href="https://doi.org/10.5664/jcsm.8780" rel="nofollow noopener noreferrer" target="_blank">Rishi et al. (2020): Daylight saving time, an American Academy of Sleep Medicine position statement. Journal of Clinical Sleep Medicine</a></li>
+<li><a href="https://doi.org/10.1177/0748730419854197" rel="nofollow noopener noreferrer" target="_blank">Roenneberg et al. (2019): Why should we abolish daylight saving time? Journal of Biological Rhythms</a></li>
 <li><a href="https://www.europarl.europa.eu/news/en/press-room/20190321IPR32107/parliament-backs-proposal-to-end-switch-between-summer-and-winter-time-in-2021" rel="nofollow noopener noreferrer" target="_blank">Parlamento europeo (2019): voto per abolire il cambio stagionale dell'ora (in inglese)</a></li>
 <li><a href="https://time.com/article/2026/10/07/senate-permanent-daylight-saving-time-sunshine-protection-act/" rel="nofollow noopener noreferrer" target="_blank">Time (ottobre 2026): il Sunshine Protection Act e le esitazioni del Senato USA (in inglese)</a></li>
 </ul>
@@ -351,7 +351,7 @@ Vai a letto e alzati 15-20 minuti prima ogni giorno nei tre o quattro giorni pre
 <a class="glass-panel rounded-xl p-6 block hover:border-dream-salmon/30 transition-all hover:-translate-y-1" href="sonno-rem-e-sogni-comprendere-il-ripristino-notturno-del-cervello">
 <span class="text-xs text-dream-salmon uppercase mb-2 block">Scienza</span>
 <h3 class="font-serif text-lg text-dream-cream mb-2">Sonno REM e sogni: comprendere la fase onirica</h3>
-<p class="text-sm text-gray-400">Scopri come il sonno REM modella i tuoi sogni e perch&eacute; questa fase &egrave; essenziale per il tuo benessere.</p>
+<p class="text-sm text-gray-400">In quale momento della notte arriva il sonno REM, perché i suoi sogni sono così vividi e cosa lo accorcia.</p>
 </a>
 <a class="glass-panel rounded-xl p-6 block hover:border-dream-salmon/30 transition-all hover:-translate-y-1" href="come-ricordare-i-tuoi-sogni-10-tecniche-efficaci">
 <span class="text-xs text-dream-salmon uppercase mb-2 block">Guida</span>
@@ -361,7 +361,7 @@ Vai a letto e alzati 15-20 minuti prima ogni giorno nei tre o quattro giorni pre
 <a class="glass-panel rounded-xl p-6 block hover:border-dream-salmon/30 transition-all hover:-translate-y-1" href="giornata-sonno-ambiente-sogni">
 <span class="text-xs text-dream-salmon uppercase mb-2 block">Scienza</span>
 <h3 class="font-serif text-lg text-dream-cream mb-2">Giornata del Sonno 2026: come il tuo ambiente trasforma i sogni</h3>
-<p class="text-sm text-gray-400">Luce, rumore, temperatura e cambiamenti stagionali: scopri come il tuo ambiente di sonno modella il tessuto dei tuoi sogni.</p>
+<p class="text-sm text-gray-400">Come luce, rumore e temperatura della camera influiscono sul sonno e sui sogni, e cosa puoi regolare stasera.</p>
 </a>
 </div>
 </section>

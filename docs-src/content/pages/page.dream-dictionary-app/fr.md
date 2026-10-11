@@ -23,22 +23,22 @@
   "twitterImage": "https://noctalia.app/img/og/noctalia-fr-1200x630.jpg",
   "twitterImageAlt": "Application dictionnaire de rêves Noctalia",
   "publishedTime": "2026-06-04T00:00:00+02:00",
-  "modifiedTime": "2026-07-09T00:00:00+02:00",
+  "modifiedTime": "2026-10-10T00:00:00+02:00",
   "author": "Thanh Chau",
   "prevPath": "",
   "nextPath": "",
   "preloadImage": "",
   "jsonLd": [
-    "{\"@context\":\"https://schema.org\",\"@type\":\"WebPage\",\"name\":\"Application dictionnaire de rêves\",\"description\":\"Parcourez 150 fiches publiques de symboles, comparez des significations possibles et reliez un symbole à votre propre rêve dans Noctalia sur Android.\",\"url\":\"https://noctalia.app/fr/dictionnaire-de-reves-application\",\"inLanguage\":\"fr\",\"dateModified\":\"2026-07-09T00:00:00+02:00\",\"about\":{\"@id\":\"https://noctalia.app/#software\"},\"publisher\":{\"@id\":\"https://noctalia.app/#organization\"}}",
+    "{\"@context\":\"https://schema.org\",\"@type\":\"WebPage\",\"name\":\"Application dictionnaire de rêves\",\"description\":\"Parcourez 150 fiches publiques de symboles, comparez des significations possibles et reliez un symbole à votre propre rêve dans Noctalia sur Android.\",\"url\":\"https://noctalia.app/fr/dictionnaire-de-reves-application\",\"inLanguage\":\"fr\",\"dateModified\":\"2026-10-10T00:00:00+02:00\",\"about\":{\"@id\":\"https://noctalia.app/#software\"},\"publisher\":{\"@id\":\"https://noctalia.app/#organization\"}}",
     "{\"@context\":\"https://schema.org\",\"@type\":\"BreadcrumbList\",\"itemListElement\":[{\"@type\":\"ListItem\",\"position\":1,\"name\":\"Accueil\",\"item\":\"https://noctalia.app/fr/\"},{\"@type\":\"ListItem\",\"position\":2,\"name\":\"Application dictionnaire de rêves\",\"item\":\"https://noctalia.app/fr/dictionnaire-de-reves-application\"}]} ",
-    "{\"@context\":\"https://schema.org\",\"@type\":\"FAQPage\",\"mainEntity\":[{\"@type\":\"Question\",\"name\":\"Le dictionnaire Noctalia est-il gratuit ?\",\"acceptedAnswer\":{\"@type\":\"Answer\",\"text\":\"Oui. Le dictionnaire web public permet de parcourir 150 fiches éditoriales de symboles par catégorie ou de A à Z sans installer l'application.\"}},{\"@type\":\"Question\",\"name\":\"Un symbole a-t-il toujours la même signification ?\",\"acceptedAnswer\":{\"@type\":\"Answer\",\"text\":\"Non. Un même symbole peut renvoyer à des souvenirs, émotions et situations différents. Utilisez le dictionnaire comme un ensemble de possibilités à comparer avec le rêve complet.\"}},{\"@type\":\"Question\",\"name\":\"Qu'ajoute l'application Android au dictionnaire ?\",\"acceptedAnswer\":{\"@type\":\"Answer\",\"text\":\"L'application ajoute la capture vocale ou écrite, un journal privé, la réflexion par IA, le contexte émotionnel et symbolique, des images générées et des questions de suivi.\"}},{\"@type\":\"Question\",\"name\":\"Un dictionnaire de rêves peut-il diagnostiquer ou prédire ?\",\"acceptedAnswer\":{\"@type\":\"Answer\",\"text\":\"Non. Les fiches sont des pistes informatives, pas un avis médical, un diagnostic psychologique ou une prédiction.\"}}]}"
+    "{\"@context\":\"https://schema.org\",\"@type\":\"FAQPage\",\"mainEntity\":[{\"@type\":\"Question\",\"name\":\"Le dictionnaire Noctalia est-il gratuit ?\",\"acceptedAnswer\":{\"@type\":\"Answer\",\"text\":\"Oui. Le dictionnaire web public permet de parcourir 150 fiches éditoriales de symboles par catégorie ou de A à Z sans installer l'application.\"}},{\"@type\":\"Question\",\"name\":\"Un symbole a-t-il toujours la même signification ?\",\"acceptedAnswer\":{\"@type\":\"Answer\",\"text\":\"Non. Un même symbole peut renvoyer à des souvenirs, émotions et situations différents. Utilisez le dictionnaire comme un ensemble de possibilités à comparer avec le rêve complet.\"}},{\"@type\":\"Question\",\"name\":\"Qu'ajoute l'application Android au dictionnaire ?\",\"acceptedAnswer\":{\"@type\":\"Answer\",\"text\":\"L'application ajoute la capture vocale ou écrite, un journal privé, la réflexion par IA, le contexte émotionnel et symbolique, des images générées et des questions de suivi.\"}},{\"@type\":\"Question\",\"name\":\"Un dictionnaire de rêves peut-il diagnostiquer ou prédire ?\",\"acceptedAnswer\":{\"@type\":\"Answer\",\"text\":\"Non. Les fiches sont des pistes informatives, pas un avis médical, un diagnostic psychologique ou une prédiction.\"}}]}"
   ],
   "activeNav": "resources"
 }
 ---
 <h1 class="font-serif text-4xl md:text-5xl mb-4 text-dream-cream">Application dictionnaire de rêves</h1>
-<p class="text-sm text-purple-300/70 mb-6">Mis à jour le 9 juillet 2026</p>
-<p class="text-lg text-purple-200/80 leading-relaxed mb-10">Noctalia associe un dictionnaire public de 150 fiches éditoriales de symboles à un journal Android. Cherchez les significations possibles d'un symbole, puis replacez-le dans le rêve complet, vos émotions et les détails capturés au réveil.</p>
+<p class="text-sm text-purple-300/70 mb-6">Mis à jour le 10 octobre 2026</p>
+<p class="text-lg text-purple-200/80 leading-relaxed mb-10">Noctalia associe un dictionnaire public de 150 fiches éditoriales de symboles à un journal Android. Cherchez les significations possibles d'un symbole, puis replacez-le dans le rêve complet, vos émotions et les détails notés au réveil.</p>
 
 <div class="space-y-8 text-gray-300 leading-relaxed">
   <section class="glass-panel p-8 rounded-2xl border border-white/10 bg-white/5">
@@ -49,16 +49,16 @@
   <section class="grid md:grid-cols-3 gap-6">
     <div class="glass-panel p-6 rounded-2xl border border-white/10 bg-white/5"><h2 class="text-xl font-serif text-white mb-3">1. Chercher</h2><p>Parcourez 150 fiches publiques par catégorie ou de A à Z. Chaque fiche présente des variantes, questions et associations possibles.</p></div>
     <div class="glass-panel p-6 rounded-2xl border border-white/10 bg-white/5"><h2 class="text-xl font-serif text-white mb-3">2. Contextualiser</h2><p>Notez l'action du symbole, son aspect et votre ressenti. Une mer calme et une inondation ne décrivent pas la même scène.</p></div>
-    <div class="glass-panel p-6 rounded-2xl border border-white/10 bg-white/5"><h2 class="text-xl font-serif text-white mb-3">3. Comparer</h2><p>Gardez le rêve complet dans l'application et observez les symboles répétés entre plusieurs entrées plutôt que de conclure après une recherche.</p></div>
+    <div class="glass-panel p-6 rounded-2xl border border-white/10 bg-white/5"><h2 class="text-xl font-serif text-white mb-3">3. Comparer</h2><p>Gardez le rêve complet dans l'application et repérez les symboles qui reviennent d'une entrée à l'autre, plutôt que de conclure après une seule recherche.</p></div>
   </section>
 
   <section class="glass-panel p-8 rounded-2xl border border-white/10 bg-white/5 overflow-x-auto">
-    <h2 class="text-2xl font-serif text-white mb-4">Dictionnaire, journal ou analyse ?</h2>
+    <h2 class="text-2xl font-serif text-white mb-4">Dictionnaire, journal ou analyse ?</h2>
     <table class="w-full text-left text-sm min-w-[720px]">
       <thead class="text-purple-200"><tr><th class="py-3 pr-4">Outil</th><th class="py-3 pr-4">Utile pour</th><th class="py-3 pr-4">Limite</th></tr></thead>
       <tbody class="divide-y divide-white/10">
         <tr><td class="py-4 pr-4 text-white font-medium">Dictionnaire public</td><td class="py-4 pr-4">Trouver des pistes courantes pour un symbole.</td><td class="py-4 pr-4">Il ne connaît pas votre contexte personnel.</td></tr>
-        <tr><td class="py-4 pr-4 text-white font-medium">Journal de rêves</td><td class="py-4 pr-4">Conserver le récit, l'humeur et les détails récurrents.</td><td class="py-4 pr-4">Le journal garde des éléments ; il ne donne pas de réponse figée.</td></tr>
+        <tr><td class="py-4 pr-4 text-white font-medium">Journal de rêves</td><td class="py-4 pr-4">Conserver le récit, l'humeur et les détails récurrents.</td><td class="py-4 pr-4">Le journal garde des éléments ; il ne donne pas de réponse figée.</td></tr>
         <tr><td class="py-4 pr-4 text-white font-medium">Analyse de rêve</td><td class="py-4 pr-4">Explorer ensemble plusieurs parties d'un rêve enregistré.</td><td class="py-4 pr-4">Les suggestions de l'IA peuvent être incomplètes ou fausses.</td></tr>
       </tbody>
     </table>
@@ -72,10 +72,10 @@
   <section class="glass-panel p-8 rounded-2xl border border-white/10 bg-white/5">
     <h2 class="text-2xl font-serif text-white mb-4">FAQ du dictionnaire de rêves</h2>
     <div class="space-y-5">
-      <div><h3 class="text-white font-medium">Le dictionnaire Noctalia est-il gratuit ?</h3><p class="mt-1">Oui. Le dictionnaire web public permet de parcourir 150 fiches éditoriales de symboles par catégorie ou de A à Z sans installer l'application.</p></div>
-      <div><h3 class="text-white font-medium">Un symbole a-t-il toujours la même signification ?</h3><p class="mt-1">Non. Un même symbole peut renvoyer à des souvenirs, émotions et situations différents. Utilisez le dictionnaire comme un ensemble de possibilités à comparer avec le rêve complet.</p></div>
-      <div><h3 class="text-white font-medium">Qu'ajoute l'application Android au dictionnaire ?</h3><p class="mt-1">L'application ajoute la capture vocale ou écrite, un journal privé, la réflexion par IA, le contexte émotionnel et symbolique, des images générées et des questions de suivi.</p></div>
-      <div><h3 class="text-white font-medium">Un dictionnaire de rêves peut-il diagnostiquer ou prédire ?</h3><p class="mt-1">Non. Les fiches sont des pistes informatives, pas un avis médical, un diagnostic psychologique ou une prédiction.</p></div>
+      <div><h3 class="text-white font-medium">Le dictionnaire Noctalia est-il gratuit ?</h3><p class="mt-1">Oui. Le dictionnaire web public permet de parcourir 150 fiches éditoriales de symboles par catégorie ou de A à Z sans installer l'application.</p></div>
+      <div><h3 class="text-white font-medium">Un symbole a-t-il toujours la même signification ?</h3><p class="mt-1">Non. Un même symbole peut renvoyer à des souvenirs, émotions et situations différents. Utilisez le dictionnaire comme un ensemble de possibilités à comparer avec le rêve complet.</p></div>
+      <div><h3 class="text-white font-medium">Qu'ajoute l'application Android au dictionnaire ?</h3><p class="mt-1">L'application ajoute la capture vocale ou écrite, un journal privé, la réflexion par IA, le contexte émotionnel et symbolique, des images générées et des questions de suivi.</p></div>
+      <div><h3 class="text-white font-medium">Un dictionnaire de rêves peut-il diagnostiquer ou prédire ?</h3><p class="mt-1">Non. Les fiches sont des pistes informatives, pas un avis médical, un diagnostic psychologique ou une prédiction.</p></div>
     </div>
   </section>
 

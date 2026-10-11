@@ -23,37 +23,37 @@
   "twitterImage": "https://noctalia.app/img/og/noctalia-en-1200x630.jpg",
   "twitterImageAlt": "Noctalia dream journal app",
   "publishedTime": "2026-05-20T00:00:00+02:00",
-  "modifiedTime": "2026-07-09T00:00:00+02:00",
+  "modifiedTime": "2026-10-10T00:00:00+02:00",
   "author": "Thanh Chau",
   "prevPath": "",
   "nextPath": "",
   "preloadImage": "",
   "jsonLd": [
-    "{\n  \"@context\": \"https://schema.org\",\n  \"@type\": \"WebPage\",\n  \"name\": \"App de interpretación de sueños con IA\",\n  \"description\": \"Noctalia captura sueños por voz, explora símbolos, crea imágenes y permite profundizar con reflexión guiada.\",\n  \"url\": \"https://noctalia.app/es/app-interpretacion-suenos-ia\",\n  \"inLanguage\": \"es\",\n  \"dateModified\": \"2026-07-09T00:00:00+02:00\",\n  \"publisher\": {\n    \"@id\": \"https://noctalia.app/#organization\"\n  }\n}",
+    "{\n  \"@context\": \"https://schema.org\",\n  \"@type\": \"WebPage\",\n  \"name\": \"App de interpretación de sueños con IA\",\n  \"description\": \"Noctalia captura sueños por voz, explora símbolos, crea imágenes y permite profundizar con reflexión guiada.\",\n  \"url\": \"https://noctalia.app/es/app-interpretacion-suenos-ia\",\n  \"inLanguage\": \"es\",\n  \"dateModified\": \"2026-10-10T00:00:00+02:00\",\n  \"publisher\": {\n    \"@id\": \"https://noctalia.app/#organization\"\n  }\n}",
     "{\n  \"@context\": \"https://schema.org\",\n  \"@type\": \"BreadcrumbList\",\n  \"itemListElement\": [\n    {\n      \"@type\": \"ListItem\",\n      \"position\": 1,\n      \"name\": \"Inicio\",\n      \"item\": \"https://noctalia.app/es/\"\n    },\n    {\n      \"@type\": \"ListItem\",\n      \"position\": 2,\n      \"name\": \"App de interpretación de sueños con IA\",\n      \"item\": \"https://noctalia.app/es/app-interpretacion-suenos-ia\"\n    }\n  ]\n}",
-    "{\n  \"@context\": \"https://schema.org\",\n  \"@type\": \"FAQPage\",\n  \"mainEntity\": [\n    {\n      \"@type\": \"Question\",\n      \"name\": \"Qué buscar\",\n      \"acceptedAnswer\": {\n        \"@type\": \"Answer\",\n        \"text\": \"Captura rápida, privacidad clara, límites transparentes, borrado o exportación, contexto de símbolos, preguntas y disclaimer.\"\n      }\n    },\n    {\n      \"@type\": \"Question\",\n      \"name\": \"Por qué Noctalia encaja\",\n      \"acceptedAnswer\": {\n        \"@type\": \"Answer\",\n        \"text\": \"Noctalia es Android, vocal, visual, multilingüe y conectado a un diccionario público de símbolos en crecimiento.\"\n      }\n    }\n  ]\n}"
+    "{\n  \"@context\": \"https://schema.org\",\n  \"@type\": \"FAQPage\",\n  \"mainEntity\": [\n    {\n      \"@type\": \"Question\",\n      \"name\": \"Qué buscar\",\n      \"acceptedAnswer\": {\n        \"@type\": \"Answer\",\n        \"text\": \"Que guarde el sueño en segundos, explique la privacidad con claridad y permita borrar o exportar tus relatos. Que lea los símbolos en su contexto, te haga preguntas y diga lo que no puede hacer.\"\n      }\n    },\n    {\n      \"@type\": \"Question\",\n      \"name\": \"Por qué Noctalia encaja\",\n      \"acceptedAnswer\": {\n        \"@type\": \"Answer\",\n        \"text\": \"Noctalia funciona en Android, se usa con la voz, crea imágenes, está en varios idiomas y se apoya en un diccionario público de símbolos que sigue creciendo.\"\n      }\n    }\n  ]\n}"
   ],
   "activeNav": "resources"
 }
 ---
 <h1 class="font-serif text-4xl md:text-5xl mb-4 text-dream-cream">App de interpretación de sueños con IA</h1>
-<p class="text-sm text-purple-300/70 mb-6">Actualizado el 20 de mayo de 2026</p>
-<p class="text-lg text-purple-200/80 leading-relaxed mb-10">Una buena app de interpretación con IA primero ayuda a capturar el sueño y luego ofrece reflexiones estructuradas sin diagnosticar ni predecir.</p>
+<p class="text-sm text-purple-300/70 mb-6">Actualizado el 10 de octubre de 2026</p>
+<p class="text-lg text-purple-200/80 leading-relaxed mb-10">Al despertar suele quedar una escena suelta. Una buena app de interpretación de sueños con IA te deja guardarla primero y luego te propone pistas y preguntas, sin diagnosticar ni predecir nada.</p>
 
 <div class="space-y-8 text-gray-300 leading-relaxed">
   <section class="glass-panel p-8 rounded-2xl border border-white/10 bg-white/5">
     <h2 class="text-2xl font-serif text-white mb-4">En resumen</h2>
-    <p>Noctalia combina voz, transcripción, interpretación IA, símbolos recurrentes, imágenes generadas y reflexión guiada. La interpretación es una ayuda de reflexión, no una verdad definitiva.</p>
+    <p>En Noctalia dictas el sueño, lo lees transcrito y después pasas a la interpretación con IA, los símbolos que se repiten, una imagen generada y preguntas guiadas. La interpretación es un punto de partida para pensar, no una verdad definitiva.</p>
   </section>
 
   <section class="grid md:grid-cols-2 gap-6">
     <div class="glass-panel p-8 rounded-2xl border border-white/10 bg-white/5">
       <h2 class="text-2xl font-serif text-white mb-4">Qué buscar</h2>
-      <p>Captura rápida, privacidad clara, límites transparentes, borrado o exportación, contexto de símbolos, preguntas y disclaimer.</p>
+      <p>Que guarde el sueño en segundos, explique la privacidad con claridad y permita borrar o exportar tus relatos. Que lea los símbolos en su contexto, te haga preguntas y diga lo que no puede hacer.</p>
     </div>
     <div class="glass-panel p-8 rounded-2xl border border-dream-salmon/20 bg-dream-salmon/5">
       <h2 class="text-2xl font-serif text-white mb-4">Por qué Noctalia encaja</h2>
-      <p>Noctalia es Android, vocal, visual, multilingüe y conectado a un diccionario público de símbolos en crecimiento.</p>
+      <p>Noctalia funciona en Android, se usa con la voz, crea imágenes, está en varios idiomas y se apoya en un diccionario público de símbolos que sigue creciendo.</p>
     </div>
   </section>
 
@@ -64,21 +64,21 @@
         <h3 class="text-white font-medium">Noctalia</h3>
         <p><span class="text-purple-200">Mejor para:</span> captura por voz en Android, reflexión IA, símbolos e imágenes generadas.</p>
         <p><span class="text-purple-200">Precio:</span> freemium; Google Play muestra el precio actual de Noctalia Plus antes de comprar.</p>
-        <p><span class="text-purple-200">Prueba:</span> producto joven con Google Play público y recursos web.</p>
-        <p><span class="text-purple-200">Migración:</span> útil si capturar rápido al despertar pesa más que tener iOS hoy.</p>
+        <p><span class="text-purple-200">Señales:</span> app reciente, publicada en Google Play, con recursos en la web.</p>
+        <p><span class="text-purple-200">Migración:</span> tiene sentido si guardar el sueño rápido al despertar te importa más que tener iOS hoy.</p>
       </article>
       <article class="rounded-xl border border-white/10 bg-white/5 p-4 space-y-2">
         <h3 class="text-white font-medium">DreamApp</h3>
         <p><span class="text-purple-200">Mejor para:</span> significados de sueños generalistas e interpretación amplia.</p>
         <p><span class="text-purple-200">Precio:</span> las tiendas muestran compras integradas; conviene verificar el precio exacto en la tienda.</p>
-        <p><span class="text-purple-200">Prueba:</span> gran presencia Android y señal App Store observadas el 20 de mayo de 2026.</p>
-        <p><span class="text-purple-200">Migración:</span> buena comparación si quieres una app más establecida.</p>
+        <p><span class="text-purple-200">Señales:</span> mucha presencia en Android y también en App Store, observada el 20 de mayo de 2026.</p>
+        <p><span class="text-purple-200">Migración:</span> buena referencia si prefieres una app más establecida.</p>
       </article>
       <article class="rounded-xl border border-white/10 bg-white/5 p-4 space-y-2">
         <h3 class="text-white font-medium">Oniri</h3>
         <p><span class="text-purple-200">Mejor para:</span> sueño lúcido, exportación, estadísticas y técnicas.</p>
         <p><span class="text-purple-200">Precio:</span> los precios de App Store varían por país y fecha.</p>
-        <p><span class="text-purple-200">Prueba:</span> buena señal App Store y posicionamiento maduro.</p>
+        <p><span class="text-purple-200">Señales:</span> buena presencia en App Store y un producto ya maduro.</p>
         <p><span class="text-purple-200">Migración:</span> consérvala si el entrenamiento lúcido es tu hábito principal.</p>
       </article>
     </div>
@@ -87,11 +87,11 @@
   <section class="grid md:grid-cols-2 gap-6">
     <div class="glass-panel p-8 rounded-2xl border border-white/10 bg-white/5">
       <h2 class="text-2xl font-serif text-white mb-4">Quién debería cambiar</h2>
-      <p>Elige Noctalia si usas Android, olvidas sueños rápido, quieres captura por voz y prefieres preguntas de reflexión con símbolos y visuales.</p>
+      <p>Elige Noctalia si usas Android, olvidas sueños rápido, quieres captura por voz y prefieres preguntas para pensar el sueño, con símbolos e imágenes.</p>
     </div>
     <div class="glass-panel p-8 rounded-2xl border border-white/10 bg-white/5">
       <h2 class="text-2xl font-serif text-white mb-4">Quién no debería cambiar</h2>
-      <p>No cambies si necesitas iOS hoy, alarmas avanzadas de sueño lúcido, IA totalmente offline o una herramienta médica/terapéutica.</p>
+      <p>No cambies si necesitas iOS hoy, alarmas avanzadas de sueño lúcido, IA totalmente offline o una herramienta médica o terapéutica.</p>
     </div>
   </section>
 
@@ -99,8 +99,8 @@
     <h2 class="text-2xl font-serif text-white mb-4">Migración</h2>
     <ul class="list-disc pl-5 space-y-2">
       <li>Exporta o copia tus sueños recientes desde la app actual antes de cambiar.</li>
-      <li>Mueve primero los símbolos recurrentes: reconstruyen contexto útil con rapidez.</li>
-      <li>Mantén la app anterior si cubre algo que Noctalia no promete, como iOS o alarmas lúcidas.</li>
+      <li>Pasa primero los símbolos recurrentes: son los que antes te devuelven el contexto.</li>
+      <li>Mantén la app anterior si cubre algo que Noctalia no promete, como iOS o alarmas para sueños lúcidos.</li>
     </ul>
   </section>
 
@@ -112,7 +112,7 @@
       <li>¿La app conserva también la atmósfera del sueño, no solo el texto?</li>
       <li>¿La privacidad explica con claridad almacenamiento, audio, borrado y proveedores de IA?</li>
       <li>¿La plataforma encaja con el dispositivo que usas al despertar?</li>
-      <li><a href="/es/politica-privacidad" class="text-dream-salmon hover:underline">política de privacidad</a></li>
+      <li>Compara con la <a href="/es/politica-privacidad" class="text-dream-salmon hover:underline">política de privacidad</a> de Noctalia.</li>
     </ul>
   </section>
 
@@ -138,8 +138,8 @@
   </section>
 
   <section class="glass-panel p-8 rounded-2xl border border-dream-salmon/20 bg-dream-salmon/5">
-    <h2 class="text-2xl font-serif text-white mb-4">Probar Noctalia</h2>
-    <p>Noctalia está en Android para grabar un sueño antes de olvidar los detalles, revisar símbolos, crear una imagen de recuerdo y seguir con una reflexión guiada.</p>
-    <p class="mt-4"><a href="https://play.google.com/store/apps/details?id=com.tanuki75.noctalia&hl=es" class="text-dream-salmon hover:underline" rel="nofollow noopener noreferrer" target="_blank">Google Play</a></p>
+    <h2 class="text-2xl font-serif text-white mb-4">Guarda tu próximo sueño</h2>
+    <p>En Android, graba el sueño antes de que se borren los detalles. Después, con calma, revisa los símbolos, crea una imagen de recuerdo y sigue con preguntas guiadas.</p>
+    <p class="mt-4"><a href="https://play.google.com/store/apps/details?id=com.tanuki75.noctalia&hl=es" class="text-dream-salmon hover:underline" rel="nofollow noopener noreferrer" target="_blank">Graba tu próximo sueño con Noctalia</a></p>
   </section>
 </div>

@@ -23,13 +23,13 @@
   "twitterImage": "https://noctalia.app/img/og/noctalia-en-1200x630.jpg",
   "twitterImageAlt": "Noctalia Android dream analysis app",
   "publishedTime": "2026-06-04T00:00:00+02:00",
-  "modifiedTime": "2026-07-09T00:00:00+02:00",
+  "modifiedTime": "2026-10-10T00:00:00+02:00",
   "author": "Thanh Chau",
   "prevPath": "",
   "nextPath": "",
   "preloadImage": "",
   "jsonLd": [
-    "{\"@context\":\"https://schema.org\",\"@type\":\"WebPage\",\"name\":\"Android Dream Analysis App\",\"description\":\"Capture a dream by voice or text on Android, then use Noctalia to explore context, emotions, symbols, images and guided reflection without fixed claims.\",\"url\":\"https://noctalia.app/en/android-dream-analysis-app\",\"inLanguage\":\"en\",\"dateModified\":\"2026-07-09T00:00:00+02:00\",\"about\":{\"@id\":\"https://noctalia.app/#software\"},\"publisher\":{\"@id\":\"https://noctalia.app/#organization\"}}",
+    "{\"@context\":\"https://schema.org\",\"@type\":\"WebPage\",\"name\":\"Android Dream Analysis App\",\"description\":\"Capture a dream by voice or text on Android, then use Noctalia to explore context, emotions, symbols, images and guided reflection without fixed claims.\",\"url\":\"https://noctalia.app/en/android-dream-analysis-app\",\"inLanguage\":\"en\",\"dateModified\":\"2026-10-10T00:00:00+02:00\",\"about\":{\"@id\":\"https://noctalia.app/#software\"},\"publisher\":{\"@id\":\"https://noctalia.app/#organization\"}}",
     "{\"@context\":\"https://schema.org\",\"@type\":\"BreadcrumbList\",\"itemListElement\":[{\"@type\":\"ListItem\",\"position\":1,\"name\":\"Home\",\"item\":\"https://noctalia.app/\"},{\"@type\":\"ListItem\",\"position\":2,\"name\":\"Android Dream Analysis App\",\"item\":\"https://noctalia.app/en/android-dream-analysis-app\"}]} ",
     "{\"@context\":\"https://schema.org\",\"@type\":\"FAQPage\",\"mainEntity\":[{\"@type\":\"Question\",\"name\":\"What does Noctalia analyze in a dream?\",\"acceptedAnswer\":{\"@type\":\"Answer\",\"text\":\"Noctalia organizes the dream transcript with emotions, symbols, scene details, a generated visual and guided questions. Its output is a reflection prompt, not a clinical conclusion or a prediction.\"}},{\"@type\":\"Question\",\"name\":\"Can I type instead of recording my dream?\",\"acceptedAnswer\":{\"@type\":\"Answer\",\"text\":\"Yes. You can capture a dream by voice or text. Voice is useful immediately after waking; text is useful when you want to edit or add context.\"}},{\"@type\":\"Question\",\"name\":\"Does the app give one definitive dream meaning?\",\"acceptedAnswer\":{\"@type\":\"Answer\",\"text\":\"No. Dream symbols are not universal diagnoses. Noctalia offers possible associations and questions so you can decide what fits your own experience.\"}},{\"@type\":\"Question\",\"name\":\"How is private dream content handled?\",\"acceptedAnswer\":{\"@type\":\"Answer\",\"text\":\"Noctalia's privacy policy explains EU-hosted journal data, the providers used for transcription and AI features, account deletion, no sale of personal data and no targeted advertising.\"}}]}"
   ],
@@ -37,8 +37,8 @@
 }
 ---
 <h1 class="font-serif text-4xl md:text-5xl mb-4 text-dream-cream">Android dream analysis app</h1>
-<p class="text-sm text-purple-300/70 mb-6">Updated July 9, 2026</p>
-<p class="text-lg text-purple-200/80 leading-relaxed mb-10">Noctalia is an Android dream analysis app built around the part most tools skip: capturing the dream in your own words first. Record or type what happened, preserve the mood and context, then explore symbols, images and guided questions without treating the result as a fixed truth.</p>
+<p class="text-sm text-purple-300/70 mb-6">Updated October 10, 2026</p>
+<p class="text-lg text-purple-200/80 leading-relaxed mb-10">Noctalia is an Android dream analysis app that starts with the dream in your own words. Record or type what happened, keep the mood and context, then explore symbols, images and guided questions without treating the result as a fixed truth.</p>
 
 <div class="space-y-8 text-gray-300 leading-relaxed">
   <section class="glass-panel p-8 rounded-2xl border border-white/10 bg-white/5">
@@ -54,7 +54,7 @@
   <section class="grid md:grid-cols-2 gap-6">
     <div class="glass-panel p-8 rounded-2xl border border-white/10 bg-white/5">
       <h2 class="text-2xl font-serif text-white mb-4">What it can help you notice</h2>
-      <p>Noctalia can organize a long, disjointed memory into a readable entry and surface repeated words, symbols, emotions or scene changes. Guided questions help you test an association against your waking life. The value is in preserving context and building a journal you can compare over time.</p>
+      <p>Noctalia can organize a long, disjointed memory into a readable entry and surface repeated words, symbols, emotions or scene changes. Guided questions help you test an association against your waking life. The value comes from the context you keep and from a journal you can compare over time.</p>
     </div>
     <div class="glass-panel p-8 rounded-2xl border border-white/10 bg-white/5">
       <h2 class="text-2xl font-serif text-white mb-4">What it cannot determine</h2>

@@ -240,7 +240,7 @@
                                                                   <i data-lucide="arrow-left" class="w-5 h-5 mt-1 text-dream-salmon shrink-0"></i>
                                                                   <div>
                                                                     <span class="text-xs text-purple-300/60 uppercase tracking-wide">Artículo anterior</span>
-                                                                    <div class="font-serif text-lg text-dream-cream mt-1">¿Soñar con serpientes: lo que tu subconsciente te esta advirtiendo</div>
+                                                                    <div class="font-serif text-lg text-dream-cream mt-1">Soñar con serpientes: qué puede significar una mordedura, una persecución o una muda</div>
                                                                   </div>
                                                                 </a>
                                                                 <a href="suenos-premonitorios-ciencia" class="glass-panel rounded-xl p-5 flex items-start justify-between gap-3 hover:border-dream-salmon/30 transition-all hover:-translate-y-1">
@@ -263,17 +263,17 @@
                     <a href="como-recordar-suenos" class="glass-panel rounded-xl p-6 block hover:border-dream-salmon/30 transition-all hover:-translate-y-1">
                         <span class="text-xs text-dream-salmon uppercase mb-2 block">Guía</span>
                         <h3 class="font-serif text-lg text-dream-cream mb-2">Cómo recordar tus sueños: 10 técnicas efectivas</h3>
-                        <p class="text-sm text-gray-400">Descubre métodos científicamente probados para mejorar tu recuerdo de sueños y no volver a olvidarlos al despertar. Técnicas simples que puedes aplicar esta noche.</p>
+                        <p class="text-sm text-gray-400">Diez hábitos sencillos para retener más fragmentos al despertar, desde despertarte con calma hasta anotar antes de moverte.</p>
                     </a>
                     <a href="guia-pesadillas" class="glass-panel rounded-xl p-6 block hover:border-dream-salmon/30 transition-all hover:-translate-y-1">
                         <span class="text-xs text-dream-salmon uppercase mb-2 block">Guía</span>
                         <h3 class="font-serif text-lg text-dream-cream mb-2">Pesadillas: Causas, Significado y Cómo Detenerlas</h3>
-                        <p class="text-sm text-gray-400">¿Por qué tenemos pesadillas? Descubre las causas de los malos sueños, su significado y técnicas probadas para reducir su frecuencia y dormir mejor.</p>
+                        <p class="text-sm text-gray-400">Por qué aparecen las pesadillas, qué pueden significar y qué no, y cómo el ensayo en imaginación y un sueño más regular ayudan a reducirlas.</p>
                     </a>
                     <a href="guia-paralisis-sueno" class="glass-panel rounded-xl p-6 block hover:border-dream-salmon/30 transition-all hover:-translate-y-1">
                         <span class="text-xs text-dream-salmon uppercase mb-2 block">Guía</span>
                         <h3 class="font-serif text-lg text-dream-cream mb-2">Parálisis del sueño: por qué no puedes moverte y cómo detenerla</h3>
-                        <p class="text-sm text-gray-400">Guía completa para entender la parálisis del sueño. Descubre qué la causa, por qué ocurren las alucinaciones y qué técnicas ayudan a prevenir y detener los episodios.</p>
+                        <p class="text-sm text-gray-400">Por qué a veces despiertas sin poder moverte y con una presencia en la habitación, cómo pasar un episodio y cuándo consultar.</p>
                     </a>
               </div>
             </section>

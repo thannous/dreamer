@@ -190,7 +190,7 @@ Le guide servono per una consultazione rapida sul web. Se vuoi conservare il sog
                         Significato del sogno dell'acqua
                     </a>
 <a class="inline-flex items-center gap-2 px-4 py-2 glass-button rounded-full text-sm hover:text-dream-salmon transition-colors" href="../simboli/volare">
-                        Significato del sogno di volo
+                        Sognare di volare
                     </a>
 <a class="inline-flex items-center gap-2 px-4 py-2 glass-button rounded-full text-sm hover:text-dream-salmon transition-colors" href="../simboli/denti">
                         Significato dei sogni sui denti
