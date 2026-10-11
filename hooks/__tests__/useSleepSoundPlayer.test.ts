@@ -385,6 +385,139 @@ describe('useSleepSoundPlayer', () => {
     expect(result.current.isLoaded).toBe(true);
   });
 
+  it('reports a sound that drops out while playing as interrupted and resumes it on retry', async () => {
+    const { result, rerender } = renderHook(() =>
+      useSleepSoundPlayer({
+        sound,
+        durationMinutes: 30,
+        title: 'Gentle rain',
+        albumTitle: 'Evening ambience',
+      }),
+    );
+    await flushDownload();
+    await act(async () => {
+      await result.current.play();
+    });
+    mockStatus.playing = true;
+    rerender();
+    act(() => {
+      jest.advanceTimersByTime(60_000);
+    });
+
+    // The Android decoder fails: the loaded file leaves the player.
+    mockStatus.playing = false;
+    mockStatus.isLoaded = false;
+    rerender();
+    act(() => {
+      jest.advanceTimersByTime(2_999);
+    });
+    expect(result.current.error).toBeNull();
+    act(() => {
+      jest.advanceTimersByTime(1);
+    });
+    expect(result.current.error).toBe('playback_interrupted');
+
+    jest.mocked(mockPlayer.play).mockClear();
+    jest.mocked(mockPlayer.seekTo).mockClear();
+    await act(async () => {
+      await result.current.play();
+    });
+    await flushDownload();
+    // The player reports the reloaded file.
+    mockStatus.isLoaded = true;
+    rerender();
+    await flushDownload();
+
+    expect(result.current.error).toBeNull();
+    expect(mockPlayer.play).toHaveBeenCalledTimes(1);
+    expect(mockPlayer.seekTo).not.toHaveBeenCalled();
+    expect(result.current.remainingSeconds).toBe(29 * 60);
+  });
+
+  it('classifies a dropout afresh once a late source has loaded and played', async () => {
+    mockStatus.isLoaded = false;
+    const { result, rerender } = renderHook(() =>
+      useSleepSoundPlayer({
+        sound,
+        durationMinutes: 30,
+        title: 'Gentle rain',
+        albumTitle: 'Evening ambience',
+      }),
+    );
+    await flushDownload();
+    act(() => {
+      jest.advanceTimersByTime(30_000);
+    });
+    expect(result.current.error).toBe('download_failed');
+
+    mockStatus.isLoaded = true;
+    rerender();
+    expect(result.current.error).toBeNull();
+    await act(async () => {
+      await result.current.play();
+    });
+    mockStatus.playing = true;
+    rerender();
+
+    mockStatus.playing = false;
+    mockStatus.isLoaded = false;
+    rerender();
+    expect(result.current.error).toBeNull();
+    act(() => {
+      jest.advanceTimersByTime(3_000);
+    });
+    expect(result.current.error).toBe('playback_interrupted');
+  });
+
+  it('does not call a sound interrupted when it was never heard', async () => {
+    const { result, rerender } = renderHook(() =>
+      useSleepSoundPlayer({
+        sound,
+        durationMinutes: 30,
+        title: 'Gentle rain',
+        albumTitle: 'Evening ambience',
+      }),
+    );
+    await flushDownload();
+
+    mockStatus.isLoaded = false;
+    rerender();
+    act(() => {
+      jest.advanceTimersByTime(3_000);
+    });
+    expect(result.current.error).toBeNull();
+  });
+
+  it('does not call a stopped sound interrupted when the native status lags behind Stop', async () => {
+    const { result, rerender } = renderHook(() =>
+      useSleepSoundPlayer({
+        sound,
+        durationMinutes: 30,
+        title: 'Gentle rain',
+        albumTitle: 'Evening ambience',
+      }),
+    );
+    await flushDownload();
+    await act(async () => {
+      await result.current.play();
+    });
+    mockStatus.playing = true;
+    rerender();
+
+    // Stop lands while the last native snapshot still says playing.
+    await act(async () => {
+      await result.current.stop();
+    });
+    rerender();
+    mockStatus.playing = false;
+    mockStatus.isLoaded = false;
+    rerender();
+    act(() => {
+      jest.advanceTimersByTime(3_000);
+    });
+    expect(result.current.error).toBeNull();
+  });
+
   it('does not start a retried download after the screen loses focus', async () => {
     jest.mocked(ensureSleepSoundFile).mockRejectedValueOnce(new Error('offline'));
     let resolveRetry: (uri: string) => void = () => {};

@@ -23,6 +23,13 @@ const FADE_OUT_MS = 60_000;
  * `ensureSleepSoundFile` itself.
  */
 const SOURCE_LOAD_TIMEOUT_MS = 30_000;
+/**
+ * A loop that was playing and then drops out of the player (an Android decoder error)
+ * is reported after this short grace period, as an interruption rather than a download.
+ */
+const PLAYBACK_LOSS_GRACE_MS = 3_000;
+
+type SourceFailure = { key: string; kind: 'download' | 'playback' };
 
 function getSessionVolume(remainingMs: number) {
   return SLEEP_SOUND_VOLUME * Math.min(1, Math.max(0, remainingMs) / FADE_OUT_MS);
@@ -43,8 +50,10 @@ export function useSleepSoundPlayer({
 }: UseSleepSoundPlayerOptions) {
   const [resolved, setResolved] = useState<{ id: string; uri: string } | null>(null);
   const [downloadAttempt, setDownloadAttempt] = useState(0);
-  const [failedDownload, setFailedDownload] = useState<string | null>(null);
+  const [failure, setFailure] = useState<SourceFailure | null>(null);
   const playAfterDownloadRef = useRef<string | null>(null);
+  // The download attempt the listener actually heard; cleared by Stop.
+  const [playedKey, setPlayedKey] = useState<string | null>(null);
   const downloadKey = `${sound.id}:${downloadAttempt}`;
   const sourceUri = resolved?.id === sound.id ? resolved.uri : null;
   const player = useAudioPlayer(sourceUri ? { uri: sourceUri } : null, {
@@ -54,7 +63,9 @@ export function useSleepSoundPlayer({
   const status = useAudioPlayerStatus(player);
   const isPlayable = Boolean(sourceUri) && status.isLoaded;
   // A source that loads after the timeout clears the error on its own.
-  const downloadFailed = failedDownload === downloadKey && !isPlayable;
+  // A late load retires the failure, so a later dropout is classified afresh.
+  if (isPlayable && failure?.key === downloadKey) setFailure(null);
+  const sourceFailed = failure?.key === downloadKey && !isPlayable;
   const [hasStarted, setHasStarted] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -68,7 +79,7 @@ export function useSleepSoundPlayer({
         if (__DEV__) {
           console.warn('[SleepSounds] Failed to download the loop', downloadError);
         }
-        if (active) setFailedDownload(downloadKey);
+        if (active) setFailure({ key: downloadKey, kind: 'download' });
       },
     );
     return () => {
@@ -77,12 +88,22 @@ export function useSleepSoundPlayer({
   }, [downloadKey, sound]);
 
   useEffect(() => {
-    if (!sourceUri || isPlayable || downloadFailed) return;
-    const timeoutId = setTimeout(() => setFailedDownload(downloadKey), SOURCE_LOAD_TIMEOUT_MS);
+    if (!sourceUri || isPlayable || sourceFailed) return;
+    // The file is on the phone once it has played: losing it now is a playback problem.
+    const kind = playedKey === downloadKey ? 'playback' : 'download';
+    const timeoutId = setTimeout(
+      () => setFailure({ key: downloadKey, kind }),
+      kind === 'playback' ? PLAYBACK_LOSS_GRACE_MS : SOURCE_LOAD_TIMEOUT_MS,
+    );
     return () => clearTimeout(timeoutId);
-  }, [downloadFailed, downloadKey, isPlayable, sourceUri]);
+  }, [downloadKey, isPlayable, playedKey, sourceFailed, sourceUri]);
   const [remainingSeconds, setRemainingSeconds] = useState(durationMinutes * 60);
   const [timerRunning, setTimerRunning] = useState(false);
+  // Heard means playing within a session: Stop ends the session before the native
+  // status catches up, so a stale `playing` cannot mark the attempt again.
+  if (status.playing && timerRunning && isPlayable && playedKey !== downloadKey) {
+    setPlayedKey(downloadKey);
+  }
   const remainingMsRef = useRef(durationMinutes * 60_000);
   const startedAtMsRef = useRef<number | null>(null);
   const previousNativePlayingRef = useRef(status.playing);
@@ -137,6 +158,7 @@ export function useSleepSoundPlayer({
     setRemainingSeconds(sessionDurationSeconds);
     setTimerRunning(false);
     setHasStarted(false);
+    setPlayedKey(null);
     setError(null);
 
     if (status.isLoaded) {
@@ -151,7 +173,7 @@ export function useSleepSoundPlayer({
   // expo-audio intentionally exposes player controls as mutable properties.
   // eslint-disable-next-line react-hooks/immutability
   const play = useCallback(async () => {
-    if (downloadFailed) {
+    if (sourceFailed) {
       // Try the download again; a retry is a request to listen, so play once it is ready.
       playAfterDownloadRef.current = sound.id;
       // Drop the current source first, so a loop that timed out while loading is
@@ -213,11 +235,11 @@ export function useSleepSoundPlayer({
   }, [
     albumTitle,
     clearLockScreen,
-    downloadFailed,
     durationMinutes,
     hasStarted,
     player,
     sound.id,
+    sourceFailed,
     sourceUri,
     status.isLoaded,
     title,
@@ -304,7 +326,11 @@ export function useSleepSoundPlayer({
   );
 
   return {
-    error: downloadFailed ? 'download_failed' : error,
+    error: sourceFailed
+      ? failure?.kind === 'playback'
+        ? 'playback_interrupted'
+        : 'download_failed'
+      : error,
     hasStarted,
     isLoaded: isPlayable,
     isPlaying: status.playing,

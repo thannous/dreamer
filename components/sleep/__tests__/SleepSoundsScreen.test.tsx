@@ -1,7 +1,7 @@
 /* @jest-environment jsdom */
 
 import React from 'react';
-import { cleanup, fireEvent, render, screen, waitFor } from '@testing-library/react';
+import { act, cleanup, fireEvent, render, screen, waitFor } from '@testing-library/react';
 import { afterEach, beforeEach, describe, expect, it, jest } from '@jest/globals';
 
 import { SleepSoundsScreen } from '@/components/sleep/SleepSoundsScreen';
@@ -241,6 +241,37 @@ describe('SleepSoundsScreen', () => {
     expect((toggle as HTMLButtonElement).disabled).toBe(false);
     expect(screen.getByTestId('sleep-sound-error').textContent).toBe(
       'This sound could not be downloaded. Check your connection, then try again. Once downloaded, it plays offline.',
+    );
+
+    fireEvent.click(toggle);
+    expect(mockPlay).toHaveBeenCalledTimes(1);
+  });
+
+  it('keeps Resume unavailable while a started sound is back to loading', async () => {
+    mockPlayer.hasStarted = true;
+    mockPlayer.isLoaded = false;
+    render(<SleepSoundsScreen />);
+
+    await waitFor(() => {
+      expect(mockGetPreferences).toHaveBeenCalled();
+    });
+    await act(async () => {
+      await Promise.resolve();
+    });
+    const toggle = screen.getByTestId('sleep-playback-toggle');
+    expect(toggle.getAttribute('aria-label')).toBe('Preparing sound…');
+    expect((toggle as HTMLButtonElement).disabled).toBe(true);
+  });
+
+  it('does not blame the network when a downloaded sound stops while playing', async () => {
+    mockPlayer.error = 'playback_interrupted';
+    mockPlayer.hasStarted = true;
+    mockPlayer.isLoaded = false;
+    render(<SleepSoundsScreen />);
+
+    const toggle = await screen.findByLabelText('Try again');
+    expect(screen.getByTestId('sleep-sound-error').textContent).toBe(
+      'The sound stopped unexpectedly. Tap Try again to resume it.',
     );
 
     fireEvent.click(toggle);
