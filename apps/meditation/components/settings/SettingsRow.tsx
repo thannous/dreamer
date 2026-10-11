@@ -17,6 +17,9 @@ type Props = {
   disabled?: boolean;
   /** The row acts in place instead of opening a screen — no chevron. */
   inline?: boolean;
+  /** A value as long as its label goes under it at any text size, so the
+   * label is not squeezed onto two lines beside it. */
+  stacked?: boolean;
   testID?: string;
 };
 
@@ -27,11 +30,12 @@ export function SettingsRow({
   onPress,
   disabled = false,
   inline = false,
+  stacked = false,
   testID,
 }: Props) {
   const { fontScale } = useWindowDimensions();
   const { colors } = useTheme();
-  const stackValue = fontScale >= 1.5 && !!value;
+  const stackValue = (stacked || fontScale >= 1.5) && !!value;
   const interactive = Boolean(onPress);
   const { style, handlePressIn, handlePressOut } = usePressMotion({
     surface: 'card',
@@ -52,7 +56,7 @@ export function SettingsRow({
       <View
         className={[
           'flex-shrink-0 flex-row items-center gap-2',
-          stackValue ? 'justify-end' : 'ml-3',
+          stacked ? 'justify-start' : stackValue ? 'justify-end' : 'ml-3',
         ].join(' ')}>
         {value ? (
           <Text variant="bodySm" tone="accent">
