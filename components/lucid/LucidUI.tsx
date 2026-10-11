@@ -1,6 +1,6 @@
 import Ionicons from '@expo/vector-icons/Ionicons';
 import { LinearGradient } from 'expo-linear-gradient';
-import React, { useState, type ComponentProps, type ReactNode } from 'react';
+import React, { useEffect, useRef, useState, type ComponentProps, type ReactNode } from 'react';
 import {
   ActivityIndicator,
   Pressable,
@@ -16,7 +16,7 @@ import {
 } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
-import { ScreenContainer } from '@/components/ScreenContainer';
+import { ScreenContainer, useWideConstrainedLayout } from '@/components/ScreenContainer';
 import { LucidArtStatusBar } from '@/components/lucid/LucidArtStatusBar';
 import { LucidGlass } from '@/components/lucid/LucidGlass';
 import { getLucidPalette, LucidIcon, LucidPress, LucidRadius, LucidSpace, LucidType } from '@/constants/lucidTheme';
@@ -128,8 +128,16 @@ export function LucidScreen({
   const { colors, mode } = useTheme();
   const palette = getLucidPalette(colors, colorMode === 'dark' ? 'dark' : mode);
   const insets = useSafeAreaInsets();
-  const [scrollTop, setScrollTop] = useState(0);
-  const overArt = darkTop !== undefined && scrollTop + insets.top < darkTop;
+  // Wide Android layouts pad the content, so light gutters sit under the
+  // clock and battery whatever the artwork does.
+  const wideLayout = useWideConstrainedLayout();
+  const artEdge = darkTop === undefined || wideLayout ? undefined : darkTop - insets.top;
+  const scrollY = useRef(0);
+  const [overArt, setOverArt] = useState(false);
+  // The artwork can be re-measured (rotation, reflow) away from the top.
+  useEffect(() => {
+    setOverArt(artEdge !== undefined && scrollY.current < artEdge);
+  }, [artEdge]);
   const { onScroll, scrollEventThrottle } = scrollProps;
   const content = (
     <ScreenContainer style={styles.screenContainer} maxWidth={760} fillContent={!scroll}>
@@ -170,9 +178,9 @@ export function LucidScreen({
             darkTop !== undefined
               ? (event) => {
                   onScroll?.(event);
+                  scrollY.current = event.nativeEvent.contentOffset.y;
                   // Only crossing the artwork's edge re-renders the screen.
-                  const next = event.nativeEvent.contentOffset.y + insets.top < darkTop;
-                  if (next !== overArt) setScrollTop(event.nativeEvent.contentOffset.y);
+                  setOverArt(artEdge !== undefined && scrollY.current < artEdge);
                 }
               : onScroll
           }
