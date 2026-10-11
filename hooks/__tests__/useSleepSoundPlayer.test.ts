@@ -384,4 +384,31 @@ describe('useSleepSoundPlayer', () => {
     expect(result.current.error).toBeNull();
     expect(result.current.isLoaded).toBe(true);
   });
+
+  it('hands the loop to the player again when a load timeout is retried', async () => {
+    mockStatus.isLoaded = false;
+    const { result } = renderHook(() =>
+      useSleepSoundPlayer({
+        sound,
+        durationMinutes: 30,
+        title: 'Gentle rain',
+        albumTitle: 'Evening ambience',
+      }),
+    );
+    await flushDownload();
+    act(() => {
+      jest.advanceTimersByTime(30_000);
+    });
+    expect(result.current.error).toBe('download_failed');
+    jest.mocked(useAudioPlayer).mockClear();
+
+    await act(async () => {
+      await result.current.play();
+    });
+    await flushDownload();
+
+    const sources = jest.mocked(useAudioPlayer).mock.calls.map(([source]) => source);
+    expect(sources).toContainEqual(null);
+    expect(sources[sources.length - 1]).toEqual({ uri: LOCAL_URI });
+  });
 });

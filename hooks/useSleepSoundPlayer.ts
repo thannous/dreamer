@@ -154,6 +154,9 @@ export function useSleepSoundPlayer({
     if (downloadFailed) {
       // Try the download again; a retry is a request to listen, so play once it is ready.
       playAfterDownloadRef.current = sound.id;
+      // Drop the current source first, so a loop that timed out while loading is
+      // handed to the player again even when the retry resolves to the same file.
+      setResolved(null);
       setDownloadAttempt((attempt) => attempt + 1);
       return;
     }
