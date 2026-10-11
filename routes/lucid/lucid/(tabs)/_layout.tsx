@@ -73,11 +73,16 @@ export default function LucidTabsLayout() {
 
     // Night and Settings remain routable peers in this navigator, but they are
     // contextual destinations rather than permanent navigation choices: they get
-    // no button, so they stay out of the tab bar and its accessibility order.
+    // no button, so they stay out of the tab bar and its accessibility order,
+    // and no slot, since the bar still renders a flex item for every route.
     // Not `href: null`: since Expo Router 58 that marks the tab hidden, and a
     // focused hidden tab is redirected to Today, so the Night card, the profile
     // button and the Night deep link all landed back on Today.
-    const hiddenScreen = (title: string) => ({ title, tabBarButton: () => null });
+    const hiddenScreen = (title: string) => ({
+      title,
+      tabBarButton: () => null,
+      tabBarItemStyle: styles.hiddenTabBarItem,
+    });
 
     return {
       today: screen(labels.today, 'sparkles', 'lucid-tab-today'),
@@ -154,6 +159,7 @@ const styles = StyleSheet.create({
   // Un onglet cède de la largeur à ses voisins au lieu d'élargir la barre : aucune
   // largeur figée ici, les quatre destinations visibles se partagent la place disponible.
   tabBarItem: { flex: 1, minHeight: 48 },
+  hiddenTabBarItem: { display: 'none' },
   // Palier « overline » : 11/14. En dessous (10pt) le libellé passait sous les 11pt
   // des HIG et les 12sp de Material, sur l'élément le plus permanent de l'app.
   tabLabel: { fontFamily: 'SpaceGrotesk_500Medium', fontSize: LucidType.overline[0], lineHeight: LucidType.overline[1], textAlign: 'center', flexShrink: 0, minHeight: LucidType.overline[1] },

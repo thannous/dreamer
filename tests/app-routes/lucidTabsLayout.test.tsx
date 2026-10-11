@@ -125,10 +125,13 @@ describe('Lucid tabs layout', () => {
         href?: unknown;
         title: string;
         tabBarButton: () => unknown;
+        tabBarItemStyle: unknown;
       };
       expect(options).not.toHaveProperty('href');
       expect(options.title).toBe(title);
       expect(options.tabBarButton()).toBeNull();
+      // The bar renders a flex item per route; a hidden one must not take a slot.
+      expect(options.tabBarItemStyle).toEqual({ display: 'none' });
     }
   });
 });

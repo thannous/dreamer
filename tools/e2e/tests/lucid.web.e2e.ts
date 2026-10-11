@@ -73,6 +73,15 @@ test('Lucid opens Night and Settings from Today and from a link', async fixtures
   await completeOnboarding(fixtures);
   const { app, screen, browser } = fixtures;
   await app.open('/lucid?ambience=dark');
+  // Night and Settings take no slot either: the four visible tabs share the bar.
+  await expect(screen.getByRole('tab', /.*/, { visible: true })).toHaveCount(4);
+  const share = await browser.evaluate(() => {
+    const tabs = Array.from(document.querySelectorAll('[role="tab"]'));
+    // Each tab sits in its slot; the slots share one row.
+    const row = tabs[0].parentElement!.parentElement!.getBoundingClientRect().width;
+    return tabs.reduce((sum, tab) => sum + tab.getBoundingClientRect().width, 0) / row;
+  });
+  expect(share).toBeGreaterThan(0.95);
   await screen.getByTestId('lucid-tab-settings', { visible: true }).tap();
   await expect(screen.getByTestId('lucid-settings', { visible: true })).toBeVisible();
   await expect(screen.getByRole('tab', /.*/, { visible: true })).toHaveCount(4);
