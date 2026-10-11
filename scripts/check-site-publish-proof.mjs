@@ -24,7 +24,9 @@
 //     name this commit, or cites an https source outside externalSources
 //     (proof-external),
 //   - the commit's run log has no release run, or its latest release run did
-//     not pass on fresh results (proof-latest-release),
+//     not pass on fresh results (proof-latest-release); a latest run whose
+//     only unpassed checks belong to a target this publish does not ask for
+//     is left out,
 //   - a check is still open: its latest real result did not pass and no later
 //     run reran it and passed (proof-open-check); a check of a target this
 //     publish does not ask for is left out,
@@ -105,21 +107,32 @@ export async function checkSitePublishProof({ root = defaultRoot, gitEnv, fetch 
   return { ok: failures.length === 0, head, tree, failures, proof: release.proof };
 }
 
-// checkReleaseProof counts every open check of the commit. A check of a target
-// this publish does not ask for never holds it back: e2e-backend left
-// unavailable by `npm run verify:release` on a machine without Docker must not
-// block the site publish that `npm run verify:release:site` then proves. Any
-// other open check, or an unreadable run log line, still refuses.
+// checkReleaseProof judges every run of the commit. A check of a target this
+// publish does not ask for never holds it back: e2e-backend left unavailable
+// by `npm run verify:release` on a machine without Docker must not block the
+// site publish that `npm run verify:release:site` proves, whether that app run
+// came before the site run (it left the check open) or after it (it is also
+// the latest release run). Any other open or unpassed check, an unreadable run
+// log line, or a latest release run of another engine still refuses.
+const TARGET_FAILURES = new Set(['proof-open-check', 'proof-latest-release']);
+
 async function withoutOtherTargets(failures, { root, env, head, targets }) {
-  if (!failures.some((failure) => failure.check === 'proof-open-check')) return failures;
+  if (!failures.some((failure) => TARGET_FAILURES.has(failure.check))) return failures;
   const git = createGit(root, env);
   const config = await loadConfig(git, 'HEAD');
   const outside = new Set(config.checks
     .filter((check) => check.targets && !check.targets.some((target) => targets.includes(target)))
     .map((check) => check.name));
   const commonDir = git(['rev-parse', '--path-format=absolute', '--git-common-dir']);
-  const open = openChecks(readRunLog(commonDir, head), [], ENGINE_FILE_SHA256).filter((item) => !outside.has(item.check));
-  return open.length ? failures : failures.filter((failure) => failure.check !== 'proof-open-check');
+  const runs = readRunLog(commonDir, head);
+  const cleared = new Set();
+  if (openChecks(runs, [], ENGINE_FILE_SHA256).every((item) => outside.has(item.check))) cleared.add('proof-open-check');
+  const latest = runs.filter((entry) => entry.kind === 'release').at(-1);
+  const unpassed = (latest?.checks ?? []).filter((check) => check.reused || !['passed', 'skipped'].includes(check.result));
+  if (latest?.engine === ENGINE_FILE_SHA256 && unpassed.length && unpassed.every((check) => outside.has(check.name))) {
+    cleared.add('proof-latest-release');
+  }
+  return failures.filter((failure) => !cleared.has(failure.check));
 }
 
 export const DEFAULT_LABEL = 'noctalia.app';

@@ -230,13 +230,28 @@ test('an app check left open by an app release does not block the site release t
   await withRepository(async ({ check, engine }) => {
     // npm run verify:release where Docker is missing: app-e2e is unavailable.
     assert.equal((await engine('release', ['--target', 'app'])).status, 2);
-    assert.deepEqual(failedChecks(await check()), ['proof-passed', 'proof-latest-release']);
+    assert.deepEqual(failedChecks(await check()), ['proof-passed'], 'no release has passed yet');
     assert.deepEqual(failedChecks(await check({ targets: ['app'] })), ['proof-passed', 'proof-latest-release', 'proof-open-check']);
 
     // npm run verify:release:site then passes: the site may publish, the app may not.
     assert.equal((await engine('release')).status, 0);
     assert.deepEqual((await check()).failures, []);
     assert.deepEqual(failedChecks(await check({ targets: ['app'] })), ['proof-open-check', 'proof-target']);
+  });
+});
+
+test('an app release left incomplete after a passed site release does not block the site', async () => {
+  await withRepository(async ({ check, engine }) => {
+    assert.equal((await engine('release')).status, 0);
+    // npm run verify:release where Docker is missing: the passed site proof is
+    // kept, and the incomplete app run is now the latest release run.
+    assert.equal((await engine('release', ['--target', 'app'])).status, 2);
+    assert.deepEqual((await check()).failures, []);
+    assert.deepEqual(failedChecks(await check({ targets: ['app'] })), ['proof-latest-release', 'proof-open-check', 'proof-target']);
+
+    // A shared check left unpassed by a later app run still refuses the site.
+    assert.equal((await engine('release', ['--target', 'app'], { extraEnv: { SITE_E2E_UNAVAILABLE: '1' } })).status, 2);
+    assert.deepEqual(failedChecks(await check()), ['proof-latest-release', 'proof-open-check']);
   });
 });
 
