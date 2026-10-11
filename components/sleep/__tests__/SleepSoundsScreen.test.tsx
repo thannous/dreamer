@@ -231,4 +231,19 @@ describe('SleepSoundsScreen', () => {
     expect(mockPlay).not.toHaveBeenCalled();
     expect(mockPause).toHaveBeenCalledTimes(1);
   });
+
+  it('turns a failed download into a clear retry instead of a dead play button', async () => {
+    mockPlayer.error = 'download_failed';
+    mockPlayer.isLoaded = false;
+    render(<SleepSoundsScreen />);
+
+    const toggle = await screen.findByLabelText('Try again');
+    expect((toggle as HTMLButtonElement).disabled).toBe(false);
+    expect(screen.getByTestId('sleep-sound-error').textContent).toBe(
+      'This sound could not be downloaded. Check your connection, then try again. Once downloaded, it plays offline.',
+    );
+
+    fireEvent.click(toggle);
+    expect(mockPlay).toHaveBeenCalledTimes(1);
+  });
 });

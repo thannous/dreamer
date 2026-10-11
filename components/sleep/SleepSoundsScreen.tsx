@@ -1,7 +1,17 @@
 import { Image } from 'expo-image';
 import { router } from 'expo-router';
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
-import { Pressable, ScrollView, StyleSheet, Text, View, type StyleProp, type ViewStyle } from 'react-native';
+import {
+  AccessibilityInfo,
+  Platform,
+  Pressable,
+  ScrollView,
+  StyleSheet,
+  Text,
+  View,
+  type StyleProp,
+  type ViewStyle,
+} from 'react-native';
 import { SystemBars } from 'react-native-edge-to-edge';
 import Animated, { useReducedMotion, type CSSStyle } from 'react-native-reanimated';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
@@ -143,12 +153,20 @@ function SleepSoundsContent() {
   }, [player]);
 
   const downloadFailed = player.error === 'download_failed';
+  // Android reads the message through its live region; VoiceOver needs an announcement.
+  useEffect(() => {
+    if (downloadFailed && Platform.OS === 'ios') {
+      AccessibilityInfo.announceForAccessibility(copy.downloadError);
+    }
+  }, [copy.downloadError, downloadFailed]);
   const isPreparing =
     !preferencesLoaded ||
     (!downloadFailed && !player.hasStarted && (!player.isLoaded || player.isBuffering));
   const primaryLabel = isPreparing
     ? copy.loading
-    : player.isPlaying
+    : downloadFailed
+      ? copy.retry
+      : player.isPlaying
       ? copy.pause
       : player.hasStarted && player.remainingSeconds > 0
         ? copy.resume
@@ -378,7 +396,7 @@ function SleepSoundsContent() {
                 ]}
               >
                 <IconSymbol
-                  name={player.isPlaying ? 'pause.fill' : 'play.fill'}
+                  name={downloadFailed ? 'arrow.clockwise' : player.isPlaying ? 'pause.fill' : 'play.fill'}
                   size={26}
                   color={isPreparing ? noctalia.action.disabledText : noctalia.action.primaryText}
                 />
@@ -398,7 +416,11 @@ function SleepSoundsContent() {
           </View>
 
           {player.error ? (
-            <Text style={[styles.errorText, { color: noctalia.status.danger.text }]}>
+            <Text
+              testID="sleep-sound-error"
+              accessibilityLiveRegion="polite"
+              style={[styles.errorText, { color: noctalia.status.danger.text }]}
+            >
               {downloadFailed ? copy.downloadError : copy.error}
             </Text>
           ) : (
