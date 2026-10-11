@@ -5,16 +5,15 @@ set -euo pipefail
 # Generates the procedural sleep loops (ocean waves, brown noise).
 #
 # Gentle rain is not generated: filtered noise sounded like static, not rain.
-# docs-src/static/audio/sleep/rain-v2.m4a is a field recording of rain on leaves,
+# assets/audio/sleep/rain.m4a is a field recording of rain on leaves,
 # Sirutėnai (Lithuania), 2025-01-29, by alas23/sala on radio aporee
 # (https://archive.org/details/aporee_66409_76780), Public Domain Mark 1.0.
 # It was trimmed to 4-234 s, high-passed at 110 Hz, low-passed at 15 kHz,
 # normalised to -26 LUFS and looped over 220 s with a 10 s crossfade.
-# The old generated rain.m4a stays published for app builds that still request it.
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 REPO_ROOT="$(cd "$SCRIPT_DIR/.." && pwd)"
-OUTPUT_DIR="$REPO_ROOT/docs-src/static/audio/sleep"
+OUTPUT_DIR="$REPO_ROOT/assets/audio/sleep"
 SAMPLE_RATE=48000
 LOOP_DURATION=300
 CROSSFADE_DURATION=10

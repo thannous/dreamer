@@ -1,11 +1,13 @@
+import type { AudioSource } from 'expo-audio';
+
 export type SleepSoundId = 'rain' | 'ocean' | 'brown-noise';
 export type SleepTimerMinutes = 15 | 30 | 45;
 
 export type SleepSoundConfig = {
   id: SleepSoundId;
-  // Published by the marketing site (docs-src/static/audio/sleep). The app
-  // downloads each loop on first play instead of shipping ~4.7 MB of audio.
-  remoteUrl: string;
+  // Bundled with the app (assets/audio/sleep), so a loop plays offline from
+  // the first launch and changing one ships with the app or an OTA update.
+  source: AudioSource;
 };
 
 export const SLEEP_SOUND_LOOP_SECONDS = 5 * 60;
@@ -13,21 +15,18 @@ export const SLEEP_SOUND_TIMER_OPTIONS: SleepTimerMinutes[] = [15, 30, 45];
 export const DEFAULT_SLEEP_SOUND_ID: SleepSoundId = 'rain';
 export const DEFAULT_SLEEP_TIMER_MINUTES: SleepTimerMinutes = 30;
 
-const SLEEP_SOUND_BASE_URL = 'https://noctalia.app/audio/sleep';
-
 export const SLEEP_SOUNDS: SleepSoundConfig[] = [
   {
     id: 'rain',
-    // A field recording; the `-v2` name replaces the generated loop phones kept.
-    remoteUrl: `${SLEEP_SOUND_BASE_URL}/rain-v2.m4a`,
+    source: require('@/assets/audio/sleep/rain.m4a'),
   },
   {
     id: 'ocean',
-    remoteUrl: `${SLEEP_SOUND_BASE_URL}/ocean-waves.m4a`,
+    source: require('@/assets/audio/sleep/ocean-waves.m4a'),
   },
   {
     id: 'brown-noise',
-    remoteUrl: `${SLEEP_SOUND_BASE_URL}/brown-noise.m4a`,
+    source: require('@/assets/audio/sleep/brown-noise.m4a'),
   },
 ];
 

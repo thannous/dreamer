@@ -17,7 +17,6 @@ export type SleepSoundCopy = {
   volumeHint: string;
   backgroundHint: string;
   error: string;
-  downloadError: string;
   sounds: Record<SleepSoundId, { title: string; description: string; story: string }>;
 };
 
@@ -37,7 +36,6 @@ const COPY: Record<SupportedLanguage, SleepSoundCopy> = {
     volumeHint: 'Keep the volume low and comfortable.',
     backgroundHint: 'The sound keeps playing when your screen locks, then fades out automatically.',
     error: 'The ambience could not start. Please try again.',
-    downloadError: 'Connect to the internet once to download this sound. It then plays offline.',
     sounds: {
       rain: { title: 'Gentle rain', description: 'Soft, steady rainfall',
         story: 'Rain falls on the forest. A lantern stays lit by the path. There is nothing left to do tonight.' },
@@ -62,7 +60,6 @@ const COPY: Record<SupportedLanguage, SleepSoundCopy> = {
     volumeHint: 'Garde un volume bas et confortable.',
     backgroundHint: 'Le son continue écran verrouillé, puis s’éteint progressivement tout seul.',
     error: 'Impossible de lancer l’ambiance. Réessaie dans un instant.',
-    downloadError: 'Connecte-toi une première fois pour télécharger ce son. Il fonctionnera ensuite hors ligne.',
     sounds: {
       rain: { title: 'Pluie douce', description: 'Une pluie légère et régulière',
         story: 'Il pleut sur la forêt. Une lanterne reste allumée au bord du chemin. Ce soir, tu n’as plus rien à faire.' },
@@ -87,7 +84,6 @@ const COPY: Record<SupportedLanguage, SleepSoundCopy> = {
     volumeHint: 'Mantén un volumen bajo y cómodo.',
     backgroundHint: 'El sonido sigue con la pantalla bloqueada y se desvanece automáticamente.',
     error: 'No se pudo iniciar el ambiente. Inténtalo de nuevo.',
-    downloadError: 'Conéctate una vez para descargar este sonido. Después funcionará sin conexión.',
     sounds: {
       rain: { title: 'Lluvia suave', description: 'Lluvia ligera y constante',
         story: 'Llueve sobre el bosque. Una linterna sigue encendida junto al camino. Esta noche ya no tienes nada que hacer.' },
@@ -112,7 +108,6 @@ const COPY: Record<SupportedLanguage, SleepSoundCopy> = {
     volumeHint: 'Wähle eine niedrige, angenehme Lautstärke.',
     backgroundHint: 'Der Klang läuft bei gesperrtem Bildschirm weiter und blendet automatisch aus.',
     error: 'Der Klang konnte nicht gestartet werden. Versuche es erneut.',
-    downloadError: 'Verbinde dich einmal mit dem Internet, um diesen Klang zu laden. Danach läuft er offline.',
     sounds: {
       rain: { title: 'Sanfter Regen', description: 'Leichter, gleichmäßiger Regen',
         story: 'Regen fällt auf den Wald. Am Weg brennt noch eine Laterne. Heute Abend gibt es nichts mehr zu tun.' },
@@ -137,7 +132,6 @@ const COPY: Record<SupportedLanguage, SleepSoundCopy> = {
     volumeHint: 'Mantieni un volume basso e confortevole.',
     backgroundHint: 'Il suono continua a schermo bloccato e svanisce automaticamente.',
     error: 'Impossibile avviare l’atmosfera. Riprova.',
-    downloadError: 'Connettiti una volta per scaricare questo suono. Poi funzionerà anche offline.',
     sounds: {
       rain: { title: 'Pioggia leggera', description: 'Una pioggia dolce e regolare',
         story: 'Piove sul bosco. Una lanterna resta accesa lungo il sentiero. Stasera non c’è più niente da fare.' },
@@ -162,7 +156,6 @@ const COPY: Record<SupportedLanguage, SleepSoundCopy> = {
     volumeHint: 'Mantenha o volume baixo e confortável.',
     backgroundHint: 'O som continua com a tela bloqueada e termina automaticamente.',
     error: 'Não foi possível iniciar o ambiente. Tente novamente.',
-    downloadError: 'Liga-te uma vez à internet para descarregar este som. Depois funciona sem ligação.',
     sounds: {
       rain: { title: 'Chuva suave', description: 'Uma chuva leve e constante',
         story: 'Chove sobre a floresta. Uma lanterna continua acesa à beira do caminho. Esta noite, não há mais nada a fazer.' },

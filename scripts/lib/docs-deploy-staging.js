@@ -8,7 +8,8 @@ const { copyFile, walkFiles } = require('./docs-source-utils');
 
 const ALLOWED_ROOT_DIRECTORIES = new Set([
   '.well-known',
-  // Sleep sounds the app downloads on first play (lib/sleepSounds.ts).
+  // Sleep loops still downloaded by app builds from before they were bundled
+  // again (assets/audio/sleep). Keep them online while those builds are in use.
   'audio',
   'auth',
   // Symbol interpretations the native app downloads per language

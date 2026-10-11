@@ -142,10 +142,9 @@ function SleepSoundsContent() {
     void player.play();
   }, [player]);
 
-  const downloadFailed = player.error === 'download_failed';
   const isPreparing =
     !preferencesLoaded ||
-    (!downloadFailed && !player.hasStarted && (!player.isLoaded || player.isBuffering));
+    (!player.hasStarted && (!player.isLoaded || player.isBuffering));
   const primaryLabel = isPreparing
     ? copy.loading
     : player.isPlaying
@@ -399,7 +398,7 @@ function SleepSoundsContent() {
 
           {player.error ? (
             <Text style={[styles.errorText, { color: noctalia.status.danger.text }]}>
-              {downloadFailed ? copy.downloadError : copy.error}
+              {copy.error}
             </Text>
           ) : (
             <Text style={[styles.hintText, { color: noctalia.text.tertiary }]}>
