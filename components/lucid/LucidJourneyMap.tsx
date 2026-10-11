@@ -590,7 +590,9 @@ function JourneyNode({
         >
           {compact ? (
             <Text
-              numberOfLines={2}
+              // Three lines: a long compound (natural-awakening) in a narrow
+              // column needs the third, and the anchors leave room for it.
+              numberOfLines={3}
               style={[
                 styles.nodeCompactLabel,
                 {

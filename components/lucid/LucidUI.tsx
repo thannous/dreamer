@@ -17,6 +17,7 @@ import {
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { ScreenContainer } from '@/components/ScreenContainer';
+import { LucidArtStatusBar } from '@/components/lucid/LucidArtStatusBar';
 import { LucidGlass } from '@/components/lucid/LucidGlass';
 import { getLucidPalette, LucidIcon, LucidPress, LucidRadius, LucidSpace, LucidType } from '@/constants/lucidTheme';
 import { useTheme } from '@/context/ThemeContext';
@@ -29,6 +30,10 @@ const DISABLED_OPACITY = 0.45;
 
 // La barre d'onglets flotte à `max(insets.bottom, 10)` et mesure jusqu’à 84px : le contenu doit réserver de quoi passer dessous sans s'y cacher.
 export const LUCID_TAB_BAR_INSET = 92;
+
+// Les peintures d'en-tête fondent vers le fond à partir de la moitié environ :
+// au-dessus, l'horloge et la batterie restent sur la nuit et passent en clair.
+export const LUCID_HERO_DARK_SHARE = 0.5;
 
 export function LucidScreenHeader({
   eyebrow,
@@ -88,6 +93,7 @@ export function LucidScreen({
   scroll = true,
   contentStyle,
   colorMode = 'theme',
+  darkTop,
   testID,
   ...scrollProps
 }: {
@@ -114,11 +120,17 @@ export function LucidScreen({
   contentStyle?: ViewStyle;
   /** Fixed dark artwork keeps its audited dark text palette in either app theme. */
   colorMode?: 'theme' | 'dark';
+  /** Depth of the night artwork at the top of the page; the status bar reads
+   * light until the page has scrolled past it. */
+  darkTop?: number;
   testID?: string;
 } & Omit<ScrollViewProps, 'contentContainerStyle'>) {
   const { colors, mode } = useTheme();
   const palette = getLucidPalette(colors, colorMode === 'dark' ? 'dark' : mode);
   const insets = useSafeAreaInsets();
+  const [scrollTop, setScrollTop] = useState(0);
+  const overArt = darkTop !== undefined && scrollTop + insets.top < darkTop;
+  const { onScroll, scrollEventThrottle } = scrollProps;
   const content = (
     <ScreenContainer style={styles.screenContainer} maxWidth={760} fillContent={!scroll}>
       <View
@@ -153,6 +165,17 @@ export function LucidScreen({
           keyboardShouldPersistTaps="handled"
           showsVerticalScrollIndicator={false}
           {...scrollProps}
+          scrollEventThrottle={scrollEventThrottle ?? (darkTop !== undefined ? 32 : undefined)}
+          onScroll={
+            darkTop !== undefined
+              ? (event) => {
+                  onScroll?.(event);
+                  // Only crossing the artwork's edge re-renders the screen.
+                  const next = event.nativeEvent.contentOffset.y + insets.top < darkTop;
+                  if (next !== overArt) setScrollTop(event.nativeEvent.contentOffset.y);
+                }
+              : onScroll
+          }
         >
           {content}
         </ScrollView>
@@ -162,6 +185,7 @@ export function LucidScreen({
       {footer ? (
         <View style={[styles.footer, { paddingBottom: Math.max(insets.bottom, 20) }]}>{footer}</View>
       ) : null}
+      {darkTop !== undefined ? <LucidArtStatusBar overArt={overArt} /> : null}
     </View>
   );
 }

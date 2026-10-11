@@ -118,6 +118,7 @@ export default function LucidProgramDetailScreen() {
   const { state, content, startProgram, pauseProgram } = useLucidTrainer();
   const [busy, setBusy] = useState(false);
   const [aboutExpanded, setAboutExpanded] = useState(false);
+  const [journeyHeight, setJourneyHeight] = useState<number>();
   const now = useLucidNow();
   const copy = COPY[content.locale];
   const close = () => closeLucidRoute(router, '/lucid/(tabs)/programs');
@@ -293,9 +294,13 @@ export default function LucidProgramDetailScreen() {
   return (
     <LucidScreen
       contentStyle={styles.immersiveScreenContent}
+      darkTop={journeyHeight}
       testID="lucid-program-detail"
     >
-      {journey}
+      {/* The whole journey is a night scene, whatever the app theme. */}
+      <View onLayout={({ nativeEvent }) => setJourneyHeight(nativeEvent.layout.height)}>
+        {journey}
+      </View>
       <View style={[styles.supportingContent, styles.supportingContentImmersive]}>
         {programDetails}
 

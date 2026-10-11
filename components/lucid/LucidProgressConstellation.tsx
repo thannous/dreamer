@@ -1,7 +1,7 @@
 import { Image } from 'expo-image';
 import { LinearGradient } from 'expo-linear-gradient';
 import React, { type ReactNode } from 'react';
-import { StyleSheet, View } from 'react-native';
+import { StyleSheet, View, type ViewProps } from 'react-native';
 
 import { LucidSpace } from '@/constants/lucidTheme';
 
@@ -21,14 +21,20 @@ export function LucidProgressConstellation({
   reflow,
   source,
   children,
+  onLayout,
 }: {
   fadeColor: string;
   reflow: boolean;
   source: number;
   children?: ReactNode;
+  onLayout?: ViewProps['onLayout'];
 }) {
   return (
-    <View pointerEvents="box-none" style={[styles.hero, reflow && styles.heroReflow]}>
+    <View
+      onLayout={onLayout}
+      pointerEvents="box-none"
+      style={[styles.hero, reflow && styles.heroReflow]}
+    >
       <Image
         accessibilityElementsHidden
         accessible={false}
