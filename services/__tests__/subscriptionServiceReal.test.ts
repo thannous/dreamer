@@ -123,4 +123,17 @@ describe('subscriptionServiceReal management', () => {
     expect(mockShowManageSubscriptions).toHaveBeenCalledTimes(1);
     expect(mockOpenURL).not.toHaveBeenCalled();
   });
+
+  it('opens the owning store on iOS when the subscription was bought on Google Play', async () => {
+    mockPlatform.OS = 'ios';
+    const playUrl = 'https://play.google.com/store/account/subscriptions?package=com.tanuki75.noctalia';
+    mockGetCustomerInfo.mockImplementationOnce(async () => ({ managementURL: playUrl }));
+    mockGetCustomerInfo.mockImplementationOnce(async () => ({ managementURL: playUrl }));
+    const service = require('../subscriptionServiceReal');
+
+    await service.openManagement();
+
+    expect(mockOpenURL).toHaveBeenCalledWith(playUrl);
+    expect(mockShowManageSubscriptions).not.toHaveBeenCalled();
+  });
 });

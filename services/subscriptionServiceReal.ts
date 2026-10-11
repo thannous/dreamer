@@ -332,16 +332,21 @@ export async function restorePurchases(): Promise<SubscriptionStatus> {
 // Google Play lists the signed-in account's subscriptions here when RevenueCat has no management URL.
 const PLAY_SUBSCRIPTIONS_URL = 'https://play.google.com/store/account/subscriptions';
 
-/** Opens the store's own subscription management: the App Store sheet on iOS, the Play page on Android. */
+/**
+ * Opens subscription management in the store that owns the subscription. RevenueCat's
+ * management URL names that store (App Store, Google Play or web billing); App Store
+ * subscriptions on iOS get the in-app sheet instead.
+ */
 export async function openManagement(userId?: string | null): Promise<SubscriptionStatus> {
   if (!persistedState.configured) {
     await ensureConfigured(userId);
   }
-  if (Platform.OS === 'ios') {
+  const { managementURL } = await Purchases.getCustomerInfo();
+  const isAppStoreUrl = !managementURL || managementURL.startsWith('https://apps.apple.com/');
+  if (Platform.OS === 'ios' && isAppStoreUrl) {
     await Purchases.showManageSubscriptions();
   } else {
-    const info = await Purchases.getCustomerInfo();
-    await Linking.openURL(info.managementURL ?? PLAY_SUBSCRIPTIONS_URL);
+    await Linking.openURL(managementURL ?? PLAY_SUBSCRIPTIONS_URL);
   }
   return refreshStatus();
 }
