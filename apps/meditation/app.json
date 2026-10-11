@@ -43,6 +43,16 @@
         "android.permission.SYSTEM_ALERT_WINDOW"
       ]
     },
+    "locales": {
+      "fr": {
+        "ios": {
+          "CFBundleDisplayName": "Noctalia Méditation"
+        },
+        "android": {
+          "app_name": "Noctalia Méditation"
+        }
+      }
+    },
     "web": {
       "output": "static",
       "favicon": "./assets/images/favicon.png"
