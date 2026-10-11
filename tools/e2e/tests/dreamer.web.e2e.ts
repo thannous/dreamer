@@ -59,7 +59,7 @@ test('guest saves the exact story and reads its simulated analysis inline', asyn
   await isolateWeb(browser, app);
   await startGuest(app, screen, browser);
   const story = 'E2E moonlit harbor with a golden lighthouse.';
-  // The first analysis asks once for permission to send the dream to the AI provider.
+  // Owner decision (2026-10-11): a guest's analysis is a demonstration; no AI consent prompt.
   const consentPrompts: string[] = [];
   const offConsent = await browser.onDialog(async (dialog) => {
     consentPrompts.push(dialog.message);
@@ -73,9 +73,7 @@ test('guest saves the exact story and reads its simulated analysis inline', asyn
   await expect(reading).toContainText('Symbols');
   expect((await reading.textContent() ?? '').length).toBeGreaterThan(100);
   await expect(screen.getByTestId('analysis.reading.modal')).toHaveCount(0);
-  expect(consentPrompts).toHaveLength(1);
-  // Owner decision (2026-10-10): the prompt names generative AI, never a provider.
-  expect(consentPrompts[0]).toMatch(/generative AI/);
+  expect(consentPrompts).toEqual([]);
   await offConsent();
   await app.screenshot('guest-saved-analysis');
 });
@@ -161,8 +159,12 @@ async function settledMotion(browser: Parameters<typeof isolateWeb>[0]) {
 test('plus account watches its saved dream being read, then lit as a constellation', async ({ app, screen, browser }) => {
   await isolateWeb(browser, app);
   await selectProfile(app, screen, browser, 'plus');
-  // The first analysis asks once for permission to send the dream to the AI provider.
-  const offConsent = await browser.onDialog(async (dialog) => { await dialog.accept(); });
+  // A signed-in user's first analysis asks once for permission, naming generative AI only.
+  const consentPrompts: string[] = [];
+  const offConsent = await browser.onDialog(async (dialog) => {
+    consentPrompts.push(dialog.message);
+    await dialog.accept();
+  });
   const story = 'E2E lantern drifting over dark water toward a doorway of light.';
   await screen.getByTestId('input.dreamTranscript', { visible: true }).fill(story);
   await screen.getByTestId('btn.saveDream', { visible: true }).tap();
@@ -178,6 +180,8 @@ test('plus account watches its saved dream being read, then lit as a constellati
   for (const symbol of ['Water', 'Light', 'Doorway']) await expect(constellation).toContainText(symbol);
   await expect(screen.getByTestId('component.dreamDetail.readingWait')).toHaveCount(0);
   await expect(screen.getByTestId('component.dreamDetail.readingZone', { visible: true })).toContainText('Symbols');
+  expect(consentPrompts).toHaveLength(1);
+  expect(consentPrompts[0]).toMatch(/generative AI/);
   await offConsent();
   await settledMotion(browser);
   const landed = await constellation.boundingBox();
