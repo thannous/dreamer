@@ -213,10 +213,10 @@ export default function PlayerScreen() {
                 />
               </View>
 
-              <ScrollView
-                horizontal
-                showsHorizontalScrollIndicator={false}
-                contentContainerClassName="gap-2">
+              {/* Five timers do not fit one line in French: they wrap rather than
+                  scroll sideways, where the last ones sat cut off at the edge.
+                  12 pt between rows keeps the chips' 6 pt slops apart. */}
+              <View className="flex-row flex-wrap gap-x-2 gap-y-3">
                 <Chip
                   label={t('player.timer.none')}
                   selected={player.fadeMinutes === null}
@@ -237,7 +237,7 @@ export default function PlayerScreen() {
                     }}
                   />
                 ))}
-              </ScrollView>
+              </View>
 
               <PlayerTimerRemaining />
             </ScrollView>
