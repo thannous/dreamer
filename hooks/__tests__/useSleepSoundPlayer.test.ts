@@ -322,4 +322,33 @@ describe('useSleepSoundPlayer', () => {
     expect(result.current.isLoaded).toBe(true);
     expect(mockPlayer.play).not.toHaveBeenCalled();
   });
+
+  it('offers a retry when the player still cannot open the loop after 30 seconds', async () => {
+    mockStatus.isLoaded = false;
+    const { result, rerender } = renderHook(() =>
+      useSleepSoundPlayer({
+        sound,
+        durationMinutes: 30,
+        title: 'Gentle rain',
+        albumTitle: 'Evening ambience',
+      }),
+    );
+    await flushDownload();
+
+    act(() => {
+      jest.advanceTimersByTime(29_999);
+    });
+    expect(result.current.error).toBeNull();
+
+    act(() => {
+      jest.advanceTimersByTime(1);
+    });
+    expect(result.current.error).toBe('download_failed');
+
+    // The source opens late: the error clears without another tap.
+    mockStatus.isLoaded = true;
+    rerender();
+    expect(result.current.error).toBeNull();
+    expect(result.current.isLoaded).toBe(true);
+  });
 });

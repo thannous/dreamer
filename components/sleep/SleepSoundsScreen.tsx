@@ -148,7 +148,9 @@ function SleepSoundsContent() {
     (!downloadFailed && !player.hasStarted && (!player.isLoaded || player.isBuffering));
   const primaryLabel = isPreparing
     ? copy.loading
-    : player.isPlaying
+    : downloadFailed
+      ? copy.retry
+      : player.isPlaying
       ? copy.pause
       : player.hasStarted && player.remainingSeconds > 0
         ? copy.resume
@@ -378,7 +380,7 @@ function SleepSoundsContent() {
                 ]}
               >
                 <IconSymbol
-                  name={player.isPlaying ? 'pause.fill' : 'play.fill'}
+                  name={downloadFailed ? 'arrow.clockwise' : player.isPlaying ? 'pause.fill' : 'play.fill'}
                   size={26}
                   color={isPreparing ? noctalia.action.disabledText : noctalia.action.primaryText}
                 />
@@ -398,7 +400,11 @@ function SleepSoundsContent() {
           </View>
 
           {player.error ? (
-            <Text style={[styles.errorText, { color: noctalia.status.danger.text }]}>
+            <Text
+              testID="sleep-sound-error"
+              accessibilityLiveRegion="polite"
+              style={[styles.errorText, { color: noctalia.status.danger.text }]}
+            >
               {downloadFailed ? copy.downloadError : copy.error}
             </Text>
           ) : (

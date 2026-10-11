@@ -119,11 +119,13 @@ jest.mock('@/context/LucidTrainerContext', () => {
   };
 });
 
+let mockAmbienceError: string | null = null;
+
 jest.mock('@/hooks/useSleepSoundPlayer', () => ({
   useSleepSoundPlayer: () => ({
-    error: null,
+    error: mockAmbienceError,
     hasStarted: false,
-    isLoaded: true,
+    isLoaded: mockAmbienceError === null,
     isPlaying: false,
     isBuffering: false,
     pause: mockAmbiencePause,
@@ -334,6 +336,23 @@ describe('Lucid Trainer night audio safety', () => {
     expect(mockAmbienceStop).toHaveBeenCalledTimes(1);
     expect(mockStartNight).not.toHaveBeenCalled();
     expect(mockPreview).not.toHaveBeenCalled();
+  });
+
+  it('says when the ambience could not be downloaded and lets the play button retry', () => {
+    mockAmbienceError = 'download_failed';
+    try {
+      render(<LucidNightScreen />);
+      fireEvent.click(screen.getByTestId('lucid-night-signals-toggle'));
+
+      const play = screen.getByTestId('lucid-night-ambience-play') as HTMLButtonElement;
+      expect(play.disabled).toBe(false);
+      expect(play.textContent).toContain('Try again');
+      expect(screen.getByText(/This sound could not be downloaded\./)).toBeTruthy();
+      fireEvent.click(play);
+      expect(mockAmbiencePlay).toHaveBeenCalledTimes(1);
+    } finally {
+      mockAmbienceError = null;
+    }
   });
 
   it('describes the fixed 1.2s experimental cue and keeps the no-REM warning after calibration', () => {
