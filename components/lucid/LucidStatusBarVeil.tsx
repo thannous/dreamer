@@ -5,8 +5,12 @@ import Animated, { Extrapolation, interpolate, useAnimatedStyle, type SharedValu
 
 /** Scroll distance over which the veil comes in once the page leaves its resting point. */
 const VEIL_FADE = 56;
-/** Scroll distance of the hand-over at the artwork's edge, centred on it. */
-export const VEIL_EDGE_FADE = 16;
+/**
+ * Scroll distance of the hand-over at the artwork's edge, centred on it. The
+ * status bar flips there at once, so the veils swap almost as fast: a wider
+ * crossfade leaves light icons over a paling veil, or dark icons over the night.
+ */
+export const VEIL_EDGE_FADE = 2;
 
 const transparent = (rgba: string) => rgba.replace(/[\d.]+\)$/, '0)');
 
