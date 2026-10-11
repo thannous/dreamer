@@ -8,6 +8,7 @@ import {
   shouldUseLucidNightReflow,
 } from '@/components/lucid/LucidNightSanctuary';
 import {
+  LUCID_HERO_DARK_SHARE,
   LUCID_TAB_BAR_INSET,
   LucidButton,
   LucidScreen,
@@ -386,6 +387,7 @@ export default function LucidNightScreen() {
   const { state, content, updateAudioSafetyConsent, updatePreferences } = useLucidTrainer();
   const copy = COPY[content.locale];
   const ambienceCopy = getSleepSoundCopy(content.locale);
+  const [heroHeight, setHeroHeight] = useState<number>();
   const [soundId, setSoundId] = useState<SleepSoundId>(DEFAULT_SLEEP_SOUND_ID);
   const [timerMinutes, setTimerMinutes] = useState(360);
   const [speaker, setSpeaker] = useState(false);
@@ -487,8 +489,14 @@ export default function LucidNightScreen() {
       testID="lucid-night"
       bottomInset={LUCID_TAB_BAR_INSET}
       contentStyle={styles.screenContent}
+      darkTop={heroHeight === undefined ? undefined : heroHeight * LUCID_HERO_DARK_SHARE}
     >
-      <LucidNightSanctuary fadeColor={palette.background} reflow={reflow} source={NIGHT_SANCTUARY} />
+      <LucidNightSanctuary
+        fadeColor={palette.background}
+        reflow={reflow}
+        source={NIGHT_SANCTUARY}
+        onLayout={({ nativeEvent }) => setHeroHeight(nativeEvent.layout.height)}
+      />
 
       <View style={styles.mainContent}>
         <View style={styles.heroCopy}>
