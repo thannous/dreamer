@@ -9,12 +9,12 @@ import { WorldProvider } from '@/context/WorldContext';
 import { TID } from '@/lib/testIDs';
 import { StorageKey } from '@/services/storageService';
 
-const mockReplace = jest.fn();
+const mockDismissTo = jest.fn();
 
 jest.mock('expo-router', () => ({
   useIsFocused: () => true,
   useLocalSearchParams: () => ({ id: 'sleep-descent' }),
-  useRouter: () => ({ replace: mockReplace }),
+  useRouter: () => ({ dismissTo: mockDismissTo }),
 }));
 
 jest.mock('@/context/WorldPurchaseContext', () => ({
@@ -61,6 +61,6 @@ describe('immersive session completion', () => {
     expect(screen.getByRole('button', { name: 'Back to home' })).toBeTruthy();
     fireEvent.press(finish);
 
-    expect(mockReplace).toHaveBeenCalledWith('/(drawer)/(tabs)');
+    expect(mockDismissTo).toHaveBeenCalledWith('/(drawer)/(tabs)');
   });
 });
