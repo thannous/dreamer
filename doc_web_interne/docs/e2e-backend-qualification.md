@@ -5,16 +5,40 @@ Postgres and PostgREST. No production writes, AI calls or payments.
 
 ## Run
 
-Use Node from `mise.toml`, locked dependencies, Chromium (`npx playwright install
-chromium`) and a working Docker-compatible runtime:
+Use Node from `mise.toml`, locked dependencies and Chromium (`npx playwright install
+chromium`). The default uses a working Docker-compatible runtime:
 
 ```sh
 mise exec -- npm run test:e2e:backend
 ```
 
-The runner creates a randomly named disposable project, replays every tracked
-migration, binds its Docker network to loopback, uses ports 56321/56322 and starts
-Expo web on 8085. It never resets an existing project. Cleanup removes only that
+The opt-in managed stack uses the pinned Supabase CLI 2.120.0 and its experimental
+native runtime without Docker:
+
+```sh
+mise exec -- npm run test:e2e:backend -- --runtime native
+```
+
+Native requires macOS 14+ on Apple silicon, or Linux amd64/arm64 with glibc 2.35+.
+`--runtime docker` and `--runtime podman` select the managed container runtimes.
+The default Docker runner and externally supplied local VM mode remain available.
+The new CLI assigns separate ports in 20000–32767 to each disposable directory;
+the runner validates its stack ID, runtime, loopback API and database before any
+privileged client is created. Each invocation destroys only its own stack, including
+after failure. CLI artifacts are cached under ignored `test-results/backend-e2e-cli-home`;
+`E2E_SUPABASE_HOME` can select another owned local cache, without a second download.
+Multiple native stacks share host resources; Docker remains the recommended
+runtime for concurrent worktrees. See the official [runtime guide](https://supabase.com/docs/guides/local-development/docker-and-native-runtimes).
+
+The runner creates a randomly named disposable project, replays local fixture
+copies of every tracked migration and starts Expo web on 8085. Historical HTTP
+URLs in those copies are replaced with an unavailable loopback endpoint, and
+scheduled jobs are disabled in the same migration that creates them. Tracked
+migrations are untouched. The managed mode also asserts zero active cron jobs
+before the suite. These fixture changes prevent unattended production calls; the
+five journeys do not qualify scheduled reconciliation or AI workers.
+The default Docker mode binds its network to loopback and uses ports 56321/56322.
+It never resets an existing project. Cleanup removes only that
 run's containers and database volumes. Unique accounts are created per test and
 deleted on completion, including failure. The Plus account is provisioned through
 the existing service-role subscription RPC, without a purchase or billing bypass
@@ -62,6 +86,12 @@ source SHA, dirty-state marker, fixtures, rerun command and individual assertion
 `test-results/e2e-backend-junit/results.xml` records pass/fail; the HTML report and
 per-test videos show the actual UI. Auth network traces are deliberately disabled
 to avoid recording passwords/JWTs. All stories and identities are synthetic.
+
+The report also records the effective CLI version, backend runtime and migration
+fixture adjustments. Three focused isolation controls cover hosted/ambiguous
+target rejection, non-loopback runtime exposure and neutralization of scheduled
+external work (`node --test scripts/lib/backend-e2e-local.test.cjs`). These are
+negative safety cases that the UI journeys cannot exercise against production.
 
 A manually triggered CircleCI pipeline runs this suite in a Docker-capable machine
 alongside existing checks, on app or database contract changes; pushes and PRs do

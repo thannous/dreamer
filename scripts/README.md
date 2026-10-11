@@ -14,7 +14,7 @@ connects these commands to implementation paths and current runbooks.
 | Content | `content:*`, `validate-seo`, `generate-sitemap` | Manifest commands without `:check` and sitemap generation write generated files. |
 | SEO | `seo:gsc:export`, `seo:backlinks:check` | GSC export writes a dated external-data report; backlink check fetches the tracked public referring pages but never rewrites the CSV. |
 | Web E2E | `test:e2e:web`, `test:e2e:web:report` | Playwright and Chromium; simulated services. See [the E2E guide](../e2e/README.md). |
-| Backend E2E | `test:e2e:backend`, `start:backend-e2e` | Disposable local backend and browser artifacts; requires a Docker-compatible runtime. See [backend qualification](../doc_web_interne/docs/e2e-backend-qualification.md). |
+| Backend E2E | `test:e2e:backend`, `start:backend-e2e` | Disposable local backend and browser artifacts; default Docker, or `test:e2e:backend -- --runtime native` for the experimental Docker-free stack on supported hosts. See [backend qualification](../doc_web_interne/docs/e2e-backend-qualification.md). |
 | Android E2E | Other `test:e2e:*` commands | Maestro, emulator/device and matching binary/runtime profile; each flow has its own data and payment safeguards. |
 | Mobile release | `release:*` | `prepare` writes manifests; `versions:sync` writes local mirrors; `build` starts a remote EAS build and requires explicit authorization. See [the release guide](../doc_web_interne/docs/MOBILE_VERSIONING.md). |
 | Android release | `android:gates:*`, `android:release:local`, `build:apk:*` | May require ADB, a physical device, EAS credentials, or local build tooling. |

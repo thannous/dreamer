@@ -5,25 +5,38 @@ const path = require('node:path');
 const os = require('node:os');
 const { randomUUID } = require('node:crypto');
 const { spawnSync } = require('node:child_process');
+const { assertBackendTarget, normalizeStackStatus, prepareLocalMigrations } = require('./lib/backend-e2e-local.cjs');
 
 const root = path.resolve(__dirname, '..');
 const args = process.argv.slice(2);
 const index = args.indexOf('--status-file');
 const suppliedStatus = index >= 0 ? args.splice(index, 2)[1] : undefined;
 if (index >= 0 && (!suppliedStatus || suppliedStatus.startsWith('--'))) throw new Error('--status-file requires a private JSON file');
+const runtimeIndex = args.indexOf('--runtime');
+const runtime = runtimeIndex >= 0 ? args.splice(runtimeIndex, 2)[1] : undefined;
+if (runtimeIndex >= 0 && !['native', 'docker', 'podman'].includes(runtime)) throw new Error('--runtime requires native, docker or podman');
+if (runtime && suppliedStatus) throw new Error('--runtime owns a new disposable stack; it cannot use --status-file');
 const prepareOnly = args.includes('--prepare-only');
 const isolatedRun = !suppliedStatus && !prepareOnly;
 const workdir = isolatedRun ? fs.mkdtempSync(path.join(os.tmpdir(), 'noctalia-backend-e2e-')) : path.join(os.tmpdir(), 'noctalia-backend-e2e');
 const project = `noctalia-backend-e2e-disposable${isolatedRun ? `-${randomUUID().slice(0, 8)}` : ''}`;
 const target = path.join(workdir, 'supabase');
 // Use the shipped Go engine on macOS, retaining ordinary OS signature validation.
-const cli = process.env.E2E_SUPABASE_CLI || (process.platform === 'darwin'
+const cli = process.env.E2E_SUPABASE_CLI || (!runtime && process.platform === 'darwin'
   ? path.join(path.dirname(require.resolve(`@supabase/cli-darwin-${process.arch}/package.json`)), 'bin/supabase-go')
   : path.join(root, 'node_modules/.bin/supabase'));
 const docker = process.env.E2E_DOCKER_CLI || 'docker';
+const rerunArgs = [...(runtime ? ['--runtime', runtime] : []), ...args]
+  .map(arg => `'${arg.replaceAll("'", "'\"'\"'")}'`).join(' ');
+const cliEnv = runtime ? {
+  ...Object.fromEntries(Object.entries(process.env).filter(([key]) => !key.startsWith('SUPABASE_'))),
+  SUPABASE_HOME: process.env.E2E_SUPABASE_HOME || path.join(root, 'test-results/backend-e2e-cli-home'),
+  SUPABASE_EXPERIMENTAL_STACK: '1',
+  DO_NOT_TRACK: '1',
+} : { ...process.env, SUPABASE_EXPERIMENTAL_STACK: '0' };
 
 function command(binary, argv, options = {}) {
-  const result = spawnSync(binary, argv, { cwd: root, stdio: 'inherit', ...options });
+  const result = spawnSync(binary, argv, { cwd: root, stdio: 'inherit', env: cliEnv, ...options });
   if (result.error) throw result.error;
   if (result.status !== 0) throw new Error(`${path.basename(binary)} failed (${result.status ?? result.signal})`);
   return result.stdout;
@@ -38,13 +51,17 @@ if (fs.existsSync(config)) {
   throw new Error('Refusing nonempty unrecognized E2E directory');
 }
 fs.mkdirSync(target, { recursive: true, mode: 0o700 });
-fs.cpSync(path.join(root, 'supabase/migrations'), path.join(target, 'migrations'), { recursive: true });
+const migrationFixtures = prepareLocalMigrations(path.join(root, 'supabase/migrations'), path.join(target, 'migrations'));
 let input = fs.readFileSync(path.join(root, 'supabase/config.toml'), 'utf8');
 input = input.replace(/^project_id\s*=.*$/m, `project_id = "${project}"`)
   .replace(/^(\s*(?:port|shadow_port)\s*=\s*)5432(\d)\s*$/gm, '$15632$2')
   .replace(/^inspector_port\s*=\s*8083\s*$/m, 'inspector_port = 8283')
   .replace('sql_paths = ["./seed.sql"]', 'sql_paths = []')
   .replaceAll('127.0.0.1:3000', '127.0.0.1:8085');
+if (runtime) {
+  input = input.replace(/^\s*(?:port|shadow_port|inspector_port|smtp_port|pop3_port|vector_port)\s*=.*$/gm, '')
+    .replace('[experimental]', '[experimental]\nstack = true');
+}
 fs.writeFileSync(config, input);
 if (prepareOnly) {
   console.log(`Prepared ${workdir}; no database was started or reset.`);
@@ -54,22 +71,43 @@ if (prepareOnly) {
 const statusFile = suppliedStatus ? path.resolve(suppliedStatus) : path.join(workdir, 'status.json');
 let started = false;
 let network;
+let stackId;
+let cliVersion;
 try {
   if (!suppliedStatus) {
-    // Never reset or stop another project. Supabase initializes this separate project from migrations.
-    network = command(docker, ['network', 'create', '--opt', 'com.docker.network.bridge.host_binding_ipv4=127.0.0.1', project], { stdio: ['ignore', 'pipe', 'inherit'], encoding: 'utf8' }).trim();
-    // Capture stdout because CLI startup prints privileged local keys there.
-    // Also clean partially started containers if migration replay fails.
-    started = true;
-    command(cli, ['start', '--workdir', workdir, '--network-id', network, '--exclude', 'studio,logflare,vector,edge-runtime,imgproxy,mailpit,postgres-meta'], { stdio: ['ignore', 'pipe', 'inherit'], encoding: 'utf8', maxBuffer: 64 * 1024 * 1024 });
-    const status = command(cli, ['status', '--workdir', workdir, '--output', 'json'], { stdio: ['ignore', 'pipe', 'inherit'], encoding: 'utf8' });
-    fs.writeFileSync(statusFile, status, { mode: 0o600 });
+    cliVersion = command(cli, ['--version'], { stdio: ['ignore', 'pipe', 'inherit'], encoding: 'utf8' }).trim();
+    if (runtime) {
+      const version = /^(\d+)\.(\d+)\.(\d+)/.exec(cliVersion);
+      if (!version || Number(version[1]) < 2 || (Number(version[1]) === 2 && Number(version[2]) < 119)) {
+        throw new Error('The managed local stack requires Supabase CLI 2.119.0 or later');
+      }
+      fs.mkdirSync(cliEnv.SUPABASE_HOME, { recursive: true, mode: 0o700 });
+      started = true;
+      const output = command(cli, ['stack', 'start', '--workdir', workdir, '--runtime', runtime,
+        '--exclude', 'realtime,functions,studio,mail,analytics,pooler', '--eager', '--output-format', 'json'],
+      { stdio: ['ignore', 'pipe', 'inherit'], encoding: 'utf8', maxBuffer: 64 * 1024 * 1024 });
+      const status = normalizeStackStatus(JSON.parse(output));
+      if (status.LOCAL_E2E_STACK.runtime !== runtime) throw new Error('Unexpected local stack runtime');
+      stackId = status.LOCAL_E2E_STACK.id;
+      fs.writeFileSync(statusFile, JSON.stringify(status), { mode: 0o600 });
+      const safety = JSON.parse(command(cli, ['db', 'query', '--workdir', workdir, '--db-url', status.DB_URL,
+        'select count(*) as active_jobs from cron.job where active', '--output-format', 'json'],
+      { stdio: ['ignore', 'pipe', 'inherit'], encoding: 'utf8' }));
+      if (Number(safety.rows?.[0]?.active_jobs) !== 0) throw new Error('Disposable local cron jobs must be inactive');
+    } else {
+      // Never reset or stop another project. Supabase initializes this separate project from migrations.
+      network = command(docker, ['network', 'create', '--opt', 'com.docker.network.bridge.host_binding_ipv4=127.0.0.1', project], { stdio: ['ignore', 'pipe', 'inherit'], encoding: 'utf8' }).trim();
+      // Capture stdout because CLI startup prints privileged local keys there.
+      // Also clean partially started containers if migration replay fails.
+      started = true;
+      command(cli, ['start', '--workdir', workdir, '--network-id', network, '--exclude', 'studio,logflare,vector,edge-runtime,imgproxy,mailpit,postgres-meta'], { stdio: ['ignore', 'pipe', 'inherit'], encoding: 'utf8', maxBuffer: 64 * 1024 * 1024 });
+      const status = command(cli, ['status', '--workdir', workdir, '--output', 'json'], { stdio: ['ignore', 'pipe', 'inherit'], encoding: 'utf8' });
+      fs.writeFileSync(statusFile, status, { mode: 0o600 });
+    }
   }
   const status = JSON.parse(fs.readFileSync(statusFile, 'utf8'));
-  const url = new URL(status.API_URL);
-  if (url.protocol !== 'http:' || url.hostname !== '127.0.0.1' || url.port !== '56321' || !status.ANON_KEY || !status.SERVICE_ROLE_KEY) {
-    throw new Error('Only the disposable loopback API on port 56321 is accepted');
-  }
+  if (suppliedStatus && status.LOCAL_E2E_STACK) throw new Error('--status-file accepts only the existing loopback VM mode');
+  const url = assertBackendTarget(status);
   const profile = path.join(workdir, 'expo.env');
   const publicEnv = {
     EXPO_PUBLIC_MOCK_MODE: 'false',
@@ -86,10 +124,15 @@ try {
   };
   fs.writeFileSync(profile, Object.entries(publicEnv).map(([key, value]) => `${key}=${value}`).join('\n') + '\n', { mode: 0o600 });
   command(process.execPath, [path.join(path.dirname(require.resolve('playwright/package.json')), 'cli.js'), 'test', '--config', 'playwright.backend.config.ts', ...args], {
-    env: { ...process.env, E2E_BACKEND_STATUS_FILE: statusFile, E2E_BACKEND_PROFILE: profile },
+    env: { ...process.env, E2E_BACKEND_STATUS_FILE: statusFile, E2E_BACKEND_PROFILE: profile,
+      E2E_BACKEND_RUNTIME: runtime || 'legacy-docker', E2E_BACKEND_CLI_VERSION: cliVersion || 'supplied VM',
+      E2E_BACKEND_RERUN: `mise exec -- npm run test:e2e:backend${rerunArgs ? ` -- ${rerunArgs}` : ''}`,
+      E2E_BACKEND_MIGRATION_FIXTURES: JSON.stringify(migrationFixtures) },
   });
 } finally {
   // Only this run's randomly named disposable database is removed; no reset or --all.
-  if (started) command(cli, ['stop', '--workdir', workdir, '--no-backup']);
+  if (started && runtime) command(cli, ['stack', 'destroy', '--workdir', workdir,
+    ...(stackId ? ['--stack-id', stackId] : []), '--yes'], { stdio: ['ignore', 'pipe', 'inherit'] });
+  else if (started) command(cli, ['stop', '--workdir', workdir, '--no-backup']);
   if (network) command(docker, ['network', 'rm', network]);
 }
