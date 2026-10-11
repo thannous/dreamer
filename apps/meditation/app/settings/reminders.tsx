@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { ScrollView, View } from 'react-native';
 
-import { Screen } from '@/components/atmosphere/Screen';
+import { WorldPage } from '@/components/worlds/WorldPage';
 import { SelectableCard } from '@/components/onboarding/SelectableCard';
 import { BackLink, Chip, Rule, Text } from '@/components/ui';
 import { useTranslation } from '@/context/LanguageContext';
@@ -56,7 +56,7 @@ export default function RemindersScreen() {
   const next = nextOccurrence(reminders, new Date());
 
   return (
-    <Screen variant="subtle" edges={['top']}>
+    <WorldPage edges={['top']}>
       <BackLink label={t('common.back')} className="px-gutter pt-2" />
 
       <ScrollView
@@ -121,6 +121,6 @@ export default function RemindersScreen() {
           </>
         ) : null}
       </ScrollView>
-    </Screen>
+    </WorldPage>
   );
 }

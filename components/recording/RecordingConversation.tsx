@@ -1,7 +1,8 @@
 import type { ScrollViewInstance } from 'react-native';
 import { MarkdownText } from '@/components/ui/MarkdownText';
-import React, { useMemo, useRef, useState } from 'react';
+import React, { useEffect, useMemo, useRef, useState } from 'react';
 import { ActivityIndicator, Keyboard, Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
+import { useReducedMotion } from 'react-native-reanimated';
 import { useTheme } from '@/context/ThemeContext';
 import { getNoctaliaDesignTokens } from '@/constants/noctaliaDesign';
 import { useTranslation } from '@/hooks/useTranslation';
@@ -12,17 +13,17 @@ import { RecordingTextInput } from './RecordingTextInput';
 import { CaptureConversationCard } from './CaptureConversationCard';
 import { parseCaptureEditableDraft } from '@/lib/captureEditableDraft';
 import { Fonts } from '@/constants/theme';
+import { CaptureWeaving } from './CaptureWeaving';
 
 type Props = {
   compact?: boolean;
   finishDisabled?: boolean;
-  review?: { source: string; text: string };
-  saved?: boolean;
+  review?: { source: string; text: string; woven?: boolean };
+  /** The answers are being woven into one account. */
+  weaving?: boolean;
   onReviewChange?: (text: string) => void;
   onSave?: () => void | Promise<void>;
   onExitReview?: () => void;
-  onOpenSaved?: () => void;
-  onNewCapture?: () => void;
   transcript: string;
   answer: string;
   storyTranscript: string;
@@ -51,11 +52,30 @@ export function RecordingConversation(props: Props) {
   const [switching, setSwitching] = useState(false);
   const thread = useRef<ScrollViewInstance>(null);
   const nearBottom = useRef(true);
+  const reduced = useReducedMotion();
+  // The page lands where the reader can see it begin: its top, not the end of the thread.
+  const reviewTop = useRef<number | null>(null);
+  const revealReview = useRef(false);
+  const reviewShown = Boolean(props.review);
+  const scrollToReview = () => {
+    if (reviewTop.current == null) return false;
+    nearBottom.current = false;
+    thread.current?.scrollTo({ y: Math.max(reviewTop.current - 12, 0), animated: !reduced });
+    return true;
+  };
+  useEffect(() => {
+    if (!reviewShown) {
+      reviewTop.current = null;
+      return;
+    }
+    revealReview.current = !scrollToReview();
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- once each time the page appears
+  }, [reviewShown]);
   const sections = useMemo(() => parseCaptureEditableDraft(props.storyTranscript).sections, [props.storyTranscript]);
   const hasStory = sections.some(section => Boolean(section.text.trim()));
   const listening = props.voiceStatus === 'recording';
   const preparing = props.voiceStatus === 'preparing';
-  const locked = props.disabled || preparing || switching || !!props.saved;
+  const locked = props.disabled || preparing || switching;
   const voiceLabel = preparing ? t('recording.status.preparing.title')
     : listening ? t('recording.conversation.mute')
     : hasStory ? t('recording.conversation.reply') : t('recording.conversation.begin');
@@ -73,6 +93,7 @@ export function RecordingConversation(props: Props) {
   };
   const currentQuestion = props.loading ? t('recording.conversation.thinking')
     : props.review ? t('recording.chat.gathered')
+    : props.weaving ? t('recording.chat.weaving')
     : props.done ? t('recording.conversation.ready')
     : props.needsDecision ? t('recording.conversation.edited')
     : props.question ?? t(hasStory ? 'dream_recall.question.what_else' : 'recording.conversation.welcome');
@@ -92,12 +113,18 @@ export function RecordingConversation(props: Props) {
         </Pressable>
       </React.Fragment> : null)}
       <MarkdownText accessibilityLiveRegion="polite" style={[styles.question, { color: tokens.text.primary }]} testID="recording-conversation-question">{currentQuestion}</MarkdownText>
+      {props.weaving && !props.review ? <CaptureWeaving /> : null}
       {props.loading ? <ActivityIndicator color={tokens.text.primary} accessibilityLabel={t('recording.conversation.thinking')} /> : null}
       {props.unavailable && !props.review ? <Text style={[styles.hint, { color: tokens.text.secondary }]}>{t('recording.conversation.offline')}</Text> : null}
-      {props.review ? <CaptureConversationCard text={props.review.text} disabled={props.disabled || listening || preparing}
-        pending={Boolean(props.answer.trim())} saved={!!props.saved} onChange={props.onReviewChange ?? (() => {})}
-        onSave={props.onSave ?? (() => {})} onExit={props.onExitReview ?? (() => {})} onOpen={props.onOpenSaved ?? (() => {})}
-        /> : null}
+      {props.review ? <View onLayout={({ nativeEvent }) => {
+        reviewTop.current = nativeEvent.layout.y;
+        if (revealReview.current) revealReview.current = !scrollToReview();
+      }}>
+        <CaptureConversationCard text={props.review.text} woven={props.review.woven} disabled={props.disabled || listening || preparing}
+          pending={Boolean(props.answer.trim())} onChange={props.onReviewChange ?? (() => {})}
+          onSave={props.onSave ?? (() => {})} onExit={props.onExitReview ?? (() => {})}
+        />
+      </View> : null}
     </ScrollView>
     {props.needsDecision && !props.review ? <Pressable onPress={() => { void props.onContinueQuestions?.(); }} disabled={locked || props.loading}
       accessibilityRole="button" style={styles.secondary} testID="recording-conversation-continue-questions">
@@ -110,10 +137,7 @@ export function RecordingConversation(props: Props) {
         style={styles.secondary} testID="recording-conversation-finish"><Text style={[styles.hint, { color: tokens.text.primary }]}>{t('recording.conversation.done')}</Text></Pressable> : null}
     </View> : null}
     {listening ? <Text accessibilityLiveRegion="polite" style={[styles.hint, { color: tokens.text.secondary }]} testID="recording-listening-status">{t('recording.conversation.listening')}</Text> : null}
-    {props.saved ? <Pressable onPress={props.onNewCapture} disabled={props.disabled} accessibilityRole="button"
-      style={[styles.newCapture, { borderColor: tokens.surface.border }]} testID="capture-review-new">
-      <Text style={[styles.message, { color: tokens.text.primary }]}>{t('recording.chat.new')}</Text>
-    </Pressable> : <RecordingTextInput chat compact autoFocus={false} value={props.answer} onChange={props.onAnswerChange}
+    <RecordingTextInput chat compact autoFocus={false} value={props.answer} onChange={props.onAnswerChange}
       disabled={locked || props.loading || listening} instructionText="" lengthWarning="" voiceSupported={props.voiceSupported}
       voiceStatus={props.voiceStatus} switchToVoiceLabel={t('recording.conversation.reply_voice')} onSwitchToVoice={() => { void onVoice(); }}
       placeholder={t(props.review ? 'recording.chat.add_detail' : 'recording.conversation.answer_placeholder')}
@@ -128,7 +152,7 @@ export function RecordingConversation(props: Props) {
           accessibilityLabel={t('recording.chat.send')} accessibilityState={{ disabled: submitDisabled, busy: switching }}
           style={[styles.control, { backgroundColor: tokens.action.primary, borderColor: tokens.action.primary, opacity: submitDisabled ? 0.4 : 1 }]}
           testID="recording-conversation-submit"><IconSymbol name="arrow.up" size={22} color={tokens.action.primaryText} /></Pressable>
-      </>} />}
+      </>} />
   </View>;
 }
 const styles = StyleSheet.create({
@@ -144,6 +168,5 @@ const styles = StyleSheet.create({
   tools: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' },
   tool: { minHeight: 44, minWidth: 44, alignItems: 'center', justifyContent: 'center' },
   secondary: { minHeight: 44, alignItems: 'center', justifyContent: 'center', paddingHorizontal: 12 },
-  newCapture: { minHeight: 82, borderWidth: StyleSheet.hairlineWidth, borderRadius: 16, alignItems: 'center', justifyContent: 'center' },
   control: { width: 44, height: 44, borderRadius: 22, borderWidth: 1, alignItems: 'center', justifyContent: 'center' },
 });

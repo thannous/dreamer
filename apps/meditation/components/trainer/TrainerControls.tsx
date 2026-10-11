@@ -1,6 +1,6 @@
 import { BlurView } from 'expo-blur';
 import React from 'react';
-import { Pressable, ScrollView, View } from 'react-native';
+import { Pressable, View } from 'react-native';
 
 import { GrainOverlay } from '@/components/atmosphere/GrainOverlay';
 import { Button, Chip, IconSymbol, Text } from '@/components/ui';
@@ -118,34 +118,17 @@ export function TrainerControls({
           {showDurations ? (
             <View className="gap-3">
               <Text variant="overline">{durationLabel}</Text>
-              {compact ? (
-                <ScrollView
-                  horizontal
-                  nestedScrollEnabled
-                  showsHorizontalScrollIndicator={false}
-                  contentContainerClassName="flex-row items-center gap-2 py-1 pr-4">
-                  {durations.map(({ label, value }) => (
-                    <Chip
-                      key={value}
-                      className="shrink-0"
-                      label={label}
-                      selected={durationMin === value}
-                      onPress={() => onDurationChange(value)}
-                    />
-                  ))}
-                </ScrollView>
-              ) : (
-                <View className="flex-row flex-wrap gap-2">
-                  {durations.map(({ label, value }) => (
-                    <Chip
-                      key={value}
-                      label={label}
-                      selected={durationMin === value}
-                      onPress={() => onDurationChange(value)}
-                    />
-                  ))}
-                </View>
-              )}
+              <View className="flex-row flex-wrap items-center gap-2">
+                {durations.map(({ label, value }) => (
+                  <Chip
+                    key={value}
+                    className="shrink-0"
+                    label={label}
+                    selected={durationMin === value}
+                    onPress={() => onDurationChange(value)}
+                  />
+                ))}
+              </View>
             </View>
           ) : null}
 
@@ -155,23 +138,11 @@ export function TrainerControls({
             onPress={onAction}
           />
 
-          {compact ? (
-            <ScrollView
-              horizontal
-              nestedScrollEnabled
-              showsHorizontalScrollIndicator={false}
-              contentContainerClassName="flex-row items-center gap-2 py-1 pr-4">
-              {assistance.map((item) => (
-                <AssistanceSwitch key={item.testID} {...item} color={colors.accentText} />
-              ))}
-            </ScrollView>
-          ) : (
-            <View className="flex-row flex-wrap items-center gap-2">
-              {assistance.map((item) => (
-                <AssistanceSwitch key={item.testID} {...item} color={colors.accentText} />
-              ))}
-            </View>
-          )}
+          <View className="flex-row flex-wrap items-center gap-2">
+            {assistance.map((item) => (
+              <AssistanceSwitch key={item.testID} {...item} color={colors.accentText} />
+            ))}
+          </View>
         </View>
       </BlurView>
     </View>

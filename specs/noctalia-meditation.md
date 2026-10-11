@@ -174,7 +174,7 @@ La galerie de Zen compte 23 captures, dont 4 variantes en thème sombre : **19 �
 | 15 | Category — ex. Sommeil | `/category/[slug]` | En-tête illustré + liste des sessions de la catégorie |
 | 16 | Favorites | `/favorites` | Sessions sauvegardées, état vide soigné |
 | 17 | Paywall « Zen Plus » → **Noctalia Plus** | `/paywall` | Annuel (mis en avant, économie %) / Mensuel, liste de bénéfices, essai, restaurer, CGU/Confidentialité |
-| 18 | Settings + bascule de thème | `/settings` | Thème (Clair/Sombre/Auto), notifications, langue, compte, aide, légal, version |
+| 18 | Settings + univers | `/settings` | Univers actif (retour au sélecteur de l'accueil), notifications, langue, compte, aide, légal, version |
 | 19 | Profile settings + photo | `/settings/account` | Avatar (`expo-image-picker`), prénom, email, plan, déconnexion, suppression de compte |
 | 20 | Language selection | `/settings/language` | en · fr · es · de · it · pt |
 | 21 | Help & FAQ | `/settings/help` | Accordéons FAQ + contact |

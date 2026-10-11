@@ -41,8 +41,8 @@ describe('practice wayfinding', () => {
     );
 
     const progress = screen.getByTestId(WORLD_PATH_PROGRESS_TEST_ID);
-    expect(progress.props.accessibilityValue).toEqual({ min: 1, max: 3, now: 2 });
-    expect(progress.props.accessibilityLabel).toContain('2/3');
+    expect(progress.props.accessibilityValue).toEqual({ text: 'Step 2 of 3 · Follow the space between breaths' });
+    expect(progress.props.accessibilityLabel).toContain('Step 2 of 3');
     expect(progress.props.accessibilityLabel).toContain('Follow the space between breaths');
 
     view.unmount();

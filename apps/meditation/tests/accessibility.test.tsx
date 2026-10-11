@@ -77,7 +77,7 @@ describe('text scaling', () => {
     expect(screen.getByText('Commencer').props.allowFontScaling).not.toBe(false);
   });
 
-  it('scales the line box with Dynamic Type so enlarged glyphs are not cropped', () => {
+  it('lets native Dynamic Type scale the line box once, including a larger local font', () => {
     const dimensions = jest.spyOn(ReactNative, 'useWindowDimensions').mockReturnValue({
       width: 368,
       height: 800,
@@ -85,25 +85,37 @@ describe('text scaling', () => {
       fontScale: 2,
     });
 
-    render(<Text variant="h1">Titre agrandi</Text>);
+    const view = render(<Text variant="h1">Titre agrandi</Text>);
 
     expect(ReactNative.StyleSheet.flatten(screen.getByText('Titre agrandi').props.style)).toEqual(
+      expect.objectContaining({ lineHeight: 34 })
+    );
+
+    // The lunar dial supplies a larger line box than the display variant.
+    // Native text scales that box together with the font, up to its 125% limit.
+    view.rerender(
+      <Text variant="display" maxFontSizeMultiplier={1.25} style={{ fontSize: 58, lineHeight: 68 }}>
+        10 min
+      </Text>
+    );
+    expect(ReactNative.StyleSheet.flatten(screen.getByText('10 min').props.style)).toEqual(
       expect.objectContaining({ lineHeight: 68 })
     );
+    expect(screen.getByText('10 min').props.maxFontSizeMultiplier).toBe(1.25);
     dimensions.mockRestore();
   });
 
   it('keeps a caller line height so a larger display figure is not cropped', () => {
-    const { fontScale } = ReactNative.Dimensions.get('window');
-
     render(
       <Text variant="display" style={{ fontSize: 58, lineHeight: 68 }}>
         10 min
       </Text>
     );
 
+    // The caller's box replaces the variant's 40pt one; native Dynamic Type
+    // then scales both metrics together, so they stay unscaled here.
     expect(ReactNative.StyleSheet.flatten(screen.getByText('10 min').props.style)).toEqual(
-      expect.objectContaining({ fontSize: 58, lineHeight: 68 * Math.min(fontScale, 2) })
+      expect.objectContaining({ fontSize: 58, lineHeight: 68 })
     );
   });
 

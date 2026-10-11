@@ -1,6 +1,6 @@
 'use strict';
 
-// Contract of the pre-push hook (common delivery rule v2, section 3), run with
+// Contract of the pre-push hook (AGENTS.md, "Livraison"), run with
 // the real .githooks/pre-push, scripts/verify-local.mjs and
 // verify-local.config.mjs in a fixture repository: a deletion or a push with no
 // new commit runs nothing; a push takes a few seconds; forbidden files and
@@ -8,6 +8,7 @@
 // pushed tree is reported and its absence does not block.
 
 const { spawnSync } = require('node:child_process');
+const { createHash } = require('node:crypto');
 const { copyFileSync, mkdirSync, mkdtempSync, readFileSync, rmSync, symlinkSync, writeFileSync } = require('node:fs');
 const { tmpdir } = require('node:os');
 const path = require('node:path');
@@ -99,7 +100,7 @@ describe('pre-push hook', () => {
 
     const result = repo.push('--quiet', 'origin', 'feature');
     expect(result.status).toBe(0);
-    expect(result.output).toContain('no proof yet; run npm run verify:pr before asking for a merge');
+    expect(result.output).toContain('no proof yet; run npm run verify:pr before pushing');
     expect(result.output).toContain('fast checks passed');
     expect(result.elapsed).toBeLessThan(10_000);
     expect(repo.git('ls-remote', 'origin', 'refs/heads/feature')).not.toBe('');
@@ -112,12 +113,13 @@ describe('pre-push hook', () => {
     const tree = repo.git('rev-parse', `${sha}^{tree}`);
     const proofs = path.join(repo.work, '.git', 'verify-proofs');
     mkdirSync(proofs, { recursive: true });
-    // The proof format the shared engine reads (older formats are ignored).
-    const version = Number(/export const PROOF_FORMAT_VERSION = (\d+);/.exec(
-      readFileSync(path.join(__dirname, 'verify-local.mjs'), 'utf8'),
-    )[1]);
+    // The proof format the shared engine reads (older formats are ignored),
+    // written by this engine (proofs of another engine are not trusted).
+    const engineFile = readFileSync(path.join(__dirname, 'verify-local.mjs'));
+    const version = Number(/export const PROOF_FORMAT_VERSION = (\d+);/.exec(engineFile.toString('utf8'))[1]);
     writeFileSync(path.join(proofs, `${tree}.json`), JSON.stringify({
       version,
+      engine: createHash('sha256').update(engineFile).digest('hex'),
       kind: 'pr',
       result: 'passed',
       sha,

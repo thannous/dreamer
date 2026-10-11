@@ -3,9 +3,11 @@ import { getApiBaseUrl } from '@/lib/config';
 import { isMockModeEnabled } from '@/lib/env';
 import { NETWORK_REQUEST_POLICIES } from '@/lib/networkPolicy';
 import { getTranslator } from '@/lib/i18n';
+import { buildCaptureNarrative } from '@/lib/captureReviewDraft';
 
 export async function formatCaptureNarrative(transcript: string, lang: string, signal?: AbortSignal): Promise<string> {
-  if (isMockModeEnabled()) return transcript;
+  // Mock mode simulates the weave deterministically: the narrator's words as one paragraph.
+  if (isMockModeEnabled()) return buildCaptureNarrative(transcript).split(/\n\s*\n/).join(' ');
   const baseUrl = getApiBaseUrl().replace(
     /(\/functions\/v1|\.functions\.supabase\.co)\/api$/,
     '$1/capture-recall'

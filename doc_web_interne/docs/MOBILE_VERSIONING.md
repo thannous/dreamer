@@ -23,7 +23,7 @@ Un second passage après commit/fusion ne remonte pas la version : les changemen
 
 ## Construire la release préparée
 
-Depuis le checkout propre de la release validée (validation complète locale réussie sur ce SHA exact, les contrôles spécialisés venant d'abord de la machine du propriétaire ; voir le [guide CircleCI](circleci-migration.md#validation-complète-locale)), installer les dépendances **dans ce checkout** puis :
+Depuis le checkout propre de la release validée (validation complète locale réussie sur ce SHA exact, contrôles spécialisés compris ; voir le [guide CircleCI](circleci-migration.md#validation-complète-locale)), installer les dépendances **dans ce checkout** puis :
 
 ```bash
 npm ci

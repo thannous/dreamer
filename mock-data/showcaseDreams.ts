@@ -9,17 +9,19 @@
 import { Image } from 'react-native';
 
 import type { DreamAnalysis } from '@/lib/types';
+import { getMockDreamArt } from './assets';
 
 type ShowcaseDream = Omit<DreamAnalysis, 'id' | 'imageUrl' | 'thumbnailUrl'> & { art: number };
 type ShowcaseLanguage = 'fr' | 'en';
 
+// The dream illustrations in 9:16, the portrait format of generated images.
 const ART = {
-  house: require('@/mock-data/assets/showcase/house.webp'),
-  flying: require('@/mock-data/assets/showcase/flying.webp'),
-  forest: require('@/mock-data/assets/showcase/forest.webp'),
-  stairs: require('@/mock-data/assets/showcase/stairs.webp'),
-  wolf: require('@/mock-data/assets/showcase/wolf.webp'),
-  key: require('@/mock-data/assets/showcase/key.webp'),
+  house: getMockDreamArt('tide'),
+  flying: getMockDreamArt('floating'),
+  forest: getMockDreamArt('doors'),
+  stairs: getMockDreamArt('staircase'),
+  wolf: getMockDreamArt('frozen-lake'),
+  key: getMockDreamArt('harbour'),
 };
 
 const base = {

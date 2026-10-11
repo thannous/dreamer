@@ -3,7 +3,7 @@ appId: com.tanuki75.noctalia
 ---
 - runFlow: subflows/open-mock-app.yml
 - tapOn:
-      id: btn.mockNav.journal
+    id: tab.journal
 - extendedWaitUntil:
       visible:
           id: screen.journal

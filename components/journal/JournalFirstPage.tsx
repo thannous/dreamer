@@ -30,6 +30,7 @@ export function JournalFirstPage({ bottomInset, onStartDream, onSettings }: Jour
     <View className="flex-1 bg-ink" style={{ marginBottom: bottomInset }}>
       <NoctaliaScreenHeader
         titleKey="nav.journal"
+        variant="tab"
         actions={[{
           icon: 'gear',
           onPress: onSettings,

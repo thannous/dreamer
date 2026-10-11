@@ -4,7 +4,7 @@ import Animated, { useReducedMotion } from 'react-native-reanimated';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { router } from 'expo-router';
 
-import { AtmosphericBackground } from '@/components/inspiration/AtmosphericBackground';
+import { DreamerArtworkWindow } from '@/components/ui/DreamerBackground';
 import { GlassCard } from '@/components/inspiration/GlassCard';
 import { PressableScale } from '@/components/motion';
 import { IconSymbol } from '@/components/ui/icon-symbol';
@@ -17,6 +17,8 @@ import { useScrollIdle } from '@/hooks/useScrollIdle';
 import { useSleepSoundPlayer } from '@/hooks/useSleepSoundPlayer';
 import { useTranslation } from '@/hooks/useTranslation';
 import { getSleepSoundCopy } from '@/lib/sleepSoundCopy';
+import { useHeaderScroll } from '@/components/ui/headerStretch';
+import { withHeaderScroll } from '@/components/ui/HeaderScrollScope';
 import {
   DEFAULT_SLEEP_SOUND_ID,
   DEFAULT_SLEEP_TIMER_MINUTES,
@@ -67,7 +69,9 @@ function formatRemainingTime(totalSeconds: number): string {
   return `${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
 }
 
-export function SleepSoundsScreen() {
+function SleepSoundsContent() {
+  // This screen's own scroll, published to its header painting and title.
+  const onHeaderScroll = useHeaderScroll();
   const { colors, mode } = useTheme();
   const noctalia = useMemo(() => getNoctaliaDesignTokens(colors, mode), [colors, mode]);
   const { currentLang, t } = useTranslation();
@@ -145,7 +149,6 @@ export function SleepSoundsScreen() {
 
   const reducedMotion = useReducedMotion();
   const backButtonTop = insets.top + ThemeLayout.spacing.lg20;
-  const contentPaddingTop = backButtonTop + 44 + ThemeLayout.spacing.lg;
   const downloadFailed = player.error === 'download_failed';
   const isPreparing =
     !preferencesLoaded ||
@@ -164,7 +167,6 @@ export function SleepSoundsScreen() {
         style={[styles.container, { backgroundColor: noctalia.screen.background }]}
         testID="screen.sleepSounds"
       >
-        <AtmosphericBackground />
 
         <Pressable
           onPress={() => router.back()}
@@ -183,18 +185,19 @@ export function SleepSoundsScreen() {
         >
           <IconSymbol name="chevron.left" size={21} color={noctalia.text.secondary} />
         </Pressable>
-
-        <ScrollView
+        <ScrollView onScroll={onHeaderScroll} scrollEventThrottle={16}
           style={styles.scrollView}
+          contentInsetAdjustmentBehavior="never"
           contentContainerStyle={{
             paddingBottom: insets.bottom + ThemeLayout.spacing.xl,
-            paddingTop: contentPaddingTop,
+            paddingTop: insets.top,
           }}
           onScrollBeginDrag={scrollPerf.onScrollBeginDrag}
           onScrollEndDrag={scrollPerf.onScrollEndDrag}
           onMomentumScrollBegin={scrollPerf.onMomentumScrollBegin}
           onMomentumScrollEnd={scrollPerf.onMomentumScrollEnd}
         >
+          <DreamerArtworkWindow scene="sleep" bleedTop={insets.top} />
           <View style={styles.content}>
             <View style={styles.titleSection}>
               <Animated.View
@@ -567,3 +570,5 @@ const styles = StyleSheet.create({
   },
   pressed: { opacity: 0.76 },
 });
+
+export const SleepSoundsScreen = withHeaderScroll(SleepSoundsContent);

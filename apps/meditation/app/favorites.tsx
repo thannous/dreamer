@@ -4,9 +4,9 @@ import { ScrollView, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { EmptyIllustration } from '@/components/atmosphere/EmptyIllustration';
-import { Screen } from '@/components/atmosphere/Screen';
+import { WorldPage } from '@/components/worlds/WorldPage';
 import { SessionCard } from '@/components/session/SessionCard';
-import { BackLink, Button, Rule, Text } from '@/components/ui';
+import { BackLink, Button, Card, Rule, Text } from '@/components/ui';
 import { SESSION_BY_ID } from '@/content/sessions';
 import { useTranslation } from '@/context/LanguageContext';
 import { useLibraryMetadata } from '@/context/LibraryContext';
@@ -27,7 +27,7 @@ export default function FavoritesScreen() {
   );
 
   return (
-    <Screen variant="subtle" edges={['top']}>
+    <WorldPage edges={['top']}>
       <BackLink label={t('common.back')} className="px-gutter pb-2 pt-2" />
 
       <ScrollView
@@ -40,21 +40,23 @@ export default function FavoritesScreen() {
         </View>
 
         {sessions.length === 0 ? (
-          <View className="items-center gap-3 py-10">
-            <EmptyIllustration name="saved" />
-            <Text variant="h3" className="text-center">
-              {t('favorites.empty.title')}
-            </Text>
-            <Text variant="bodySm" className="text-center">
-              {t('favorites.empty.subtitle')}
-            </Text>
-            <Button
-              label={t('favorites.empty.cta')}
-              variant="secondary"
-              className="mt-4"
-              onPress={() => router.push('/search')}
-            />
-          </View>
+          <Card>
+            <View className="items-center gap-3 py-6">
+              <EmptyIllustration name="saved" />
+              <Text variant="h3" className="text-center">
+                {t('favorites.empty.title')}
+              </Text>
+              <Text variant="bodySm" className="text-center">
+                {t('favorites.empty.subtitle')}
+              </Text>
+              <Button
+                label={t('favorites.empty.cta')}
+                variant="secondary"
+                className="mt-4"
+                onPress={() => router.push('/search')}
+              />
+            </View>
+          </Card>
         ) : (
           sessions.map((session) => (
             <SessionCard
@@ -66,6 +68,6 @@ export default function FavoritesScreen() {
           ))
         )}
       </ScrollView>
-    </Screen>
+    </WorldPage>
   );
 }

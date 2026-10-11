@@ -1,6 +1,6 @@
 // Historical UI assertions, run on the public TesterArmy web surface.
 import type { Page } from 'playwright/test';
-import { createParityTest, expect } from '../web-parity-fixtures';
+import { createParityTest, expect, withDialog } from '../web-parity-fixtures';
 const test = createParityTest();
 
 test.use({ viewport: { width: 390, height: 867 }, timezoneId: 'Europe/Paris' });
@@ -8,6 +8,10 @@ test.use({ viewport: { width: 390, height: 867 }, timezoneId: 'Europe/Paris' });
 async function startGuest(page: Page) {
   await page.goto('/');
   await page.getByTestId('btn.onboarding.intro.next').click();
+  // With feature sheets, "Commencer" first tells the three stories; the cross moves on.
+  if (process.env.EXPO_PUBLIC_ONBOARDING_FEATURE_SHEETS_ENABLED === 'true') {
+    await withDialog(page, 'accept', () => page.getByTestId('btn.onboarding.feature.close').click());
+  }
   await page.getByTestId('btn.onboarding.skip').click();
   await expect(page.getByTestId('screen.recording')).toBeVisible();
 }
@@ -55,15 +59,20 @@ for (const theme of ['light', 'dark'] as const) {
     const cover = card.getByTestId(`journal.cover.${id}`);
     const text = card.getByTestId(`journal.text.${id}`);
     const metadata = card.getByTestId(`journal.metadata.${id}`);
-    await expect(metadata).toContainText('Symbolic Dream');
+    await expect(metadata).toContainText('Symbolic dream');
     await expect(metadata).toContainText('Mystical');
-    await expect(metadata).toContainText('Analyzed');
+    await expect(card).toContainText('Analyzed');
     await expect(text).toContainText('I found myself in an enormous library');
+    // React Native's layout event follows the phone/grid resize. Observe the
+    // settled portrait frame rather than its initial width from the previous layout.
+    await expect.poll(async () => {
+      const bounds = (await cover.boundingBox())!;
+      return Math.abs(bounds.height - Math.min(bounds.width * 16 / 9, 620));
+    }).toBeLessThanOrEqual(1);
     const coverBounds = (await cover.boundingBox())!;
     const textBounds = (await text.boundingBox())!;
     const marginBounds = (await margin.boundingBox())!;
-    expect(coverBounds.height).toBeLessThanOrEqual(260);
-    expect(marginBounds.width).toBeLessThanOrEqual(64);
+    expect(marginBounds.width).toBeGreaterThanOrEqual(88);
     expect(marginBounds.x + marginBounds.width).toBeLessThanOrEqual(coverBounds.x);
     expect(textBounds.y).toBeGreaterThanOrEqual(coverBounds.y);
     expect(textBounds.y + textBounds.height).toBeLessThanOrEqual(coverBounds.y + coverBounds.height);
@@ -78,7 +87,7 @@ for (const theme of ['light', 'dark'] as const) {
     expect(lines.reduce((total, count) => total + count, 0)).toBeLessThanOrEqual(5);
     expect(backingBounds.y + backingBounds.height).toBeLessThanOrEqual(textBounds.y + textBounds.height);
     expect(await backing.evaluate(node => getComputedStyle(node).backgroundColor)).not.toBe('rgba(0, 0, 0, 0)');
-    const badge = metadata.getByTestId(`journal.badge.${id}.0`);
+    const badge = card.getByTestId(`journal.badge.${id}.0`);
     const badgeChildren = await badge.evaluate(node => Array.from(node.children).map(child => {
       const rect = child.getBoundingClientRect();
       return { x: rect.x, y: rect.y, height: rect.height };
@@ -158,8 +167,9 @@ test('saved remembered dream keeps its indication and opens the full story', asy
 
 
 test('failed thumbnail falls back to the full illustration', async ({ page, context }, testInfo) => {
+  // The Infinite Library is painted with the bundled cat art; its thumbnail has its own address.
   const failedThumbnails: string[] = [];
-  await context.route('https://picsum.photos/seed/library-dream/400/300**', route => {
+  await context.route(/cat\.[^/]*\.webp\?.*variant=thumbnail|cat\.webp.*variant=thumbnail/, route => {
     failedThumbnails.push(route.request().url());
     return route.abort();
   });
@@ -168,20 +178,24 @@ test('failed thumbnail falls back to the full illustration', async ({ page, cont
   const id = await card.getAttribute('data-testid');
   const cover = card.getByTestId(`journal.cover.${id}`);
   await expect.poll(() => cover.locator('img').evaluateAll(images => images.some(image =>
-    (image as HTMLImageElement).naturalWidth > 0 && (image as HTMLImageElement).src.includes('/800/600')
+    (image as HTMLImageElement).naturalWidth > 0 && /cat/.test((image as HTMLImageElement).src)
+      && !(image as HTMLImageElement).src.includes('variant=thumbnail')
   ))).toBe(true);
   expect(failedThumbnails.length).toBeGreaterThan(0);
   await page.screenshot({ path: testInfo.outputPath('thumbnail-full-fallback.png') });
 });
 
 test('failed illustration leaves a compact readable entry that still opens', async ({ page, context }, testInfo) => {
-  await context.route('https://picsum.photos/seed/library-dream/**', route => route.abort());
+  // Both the thumbnail and the full illustration of the bundled cat art fail.
+  await context.route(/cat(\.[^/]*)?\.webp/, route => route.abort());
   await populatedJournal(page);
   const card = await findDream(page, 'The Infinite Library');
   const id = await card.getAttribute('data-testid');
   await expect(card.getByTestId(`journal.cover.${id}`)).toHaveCount(0);
   await expect(card).toContainText('I found myself in an enormous library');
-  expect((await card.boundingBox())!.height).toBeLessThan(260);
+  // Revised 2026-10-11 (was < 260): the date margin now stacks the favourite and share
+  // buttons (owner request), so it sets the entry's height. Still far below a 9:16 cover.
+  expect((await card.boundingBox())!.height).toBeLessThan(340);
   await page.screenshot({ path: testInfo.outputPath('failed-illustration-text-fallback.png') });
   await card.click();
   await expect(page.getByTestId('component.transcriptCard')).toContainText('Books were floating around me');

@@ -82,10 +82,9 @@ export const SearchBar = memo(forwardRef<TextInputInstance, SearchBarProps>(func
 
   return (
     <View
-      className={`min-h-11 flex-row items-center gap-2 overflow-visible rounded-md px-4 ${
-        isFocused
-          ? 'border-[1.5px] border-champagne bg-ink-active'
-          : 'border border-line bg-ink-raised'
+      // Always see-through: the page's painting stays visible behind the search, focused or not.
+      className={`min-h-11 flex-row items-center gap-2 overflow-visible rounded-md bg-transparent px-4 ${
+        isFocused ? 'border-[1.5px] border-champagne' : 'border border-line'
       }`}
       style={[CONTINUOUS_CORNERS, { minHeight, paddingVertical: verticalPadding }]}
       testID={testID}

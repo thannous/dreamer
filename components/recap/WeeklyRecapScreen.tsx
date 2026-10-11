@@ -5,7 +5,7 @@ import React, { useCallback, useMemo, useState } from 'react';
 import { Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
-import { AtmosphericBackground } from '@/components/inspiration/AtmosphericBackground';
+import { DreamerArtworkWindow } from '@/components/ui/DreamerBackground';
 import { IconSymbol } from '@/components/ui/icon-symbol';
 import { ThemeLayout } from '@/constants/journalTheme';
 import { getNoctaliaDesignTokens } from '@/constants/noctaliaDesign';
@@ -19,6 +19,8 @@ import { getDreamThemeLabel, getEmotionFamilyLabel } from '@/lib/dreamLabels';
 import { buildPaywallHref } from '@/lib/paywallRoute';
 import { TID } from '@/lib/testIDs';
 import { buildWeeklyRecap } from '@/lib/weeklyRecap';
+import { useHeaderScroll } from '@/components/ui/headerStretch';
+import { withHeaderScroll } from '@/components/ui/HeaderScrollScope';
 
 /**
  * "Your week in dreams": the Sunday-morning recap opened from the weekly push
@@ -26,7 +28,9 @@ import { buildWeeklyRecap } from '@/lib/weeklyRecap';
  * recurring emotion stays a Plus signal (same gate as the Statistics screen)
  * and doubles as a contextual entry to the paywall.
  */
-export function WeeklyRecapScreen() {
+function WeeklyRecapContent() {
+  // This screen's own scroll, published to its header painting and title.
+  const onHeaderScroll = useHeaderScroll();
   const { colors, mode, shadows } = useTheme();
   const noctalia = useMemo(() => getNoctaliaDesignTokens(colors, mode), [colors, mode]);
   const { t } = useTranslation();
@@ -79,7 +83,6 @@ export function WeeklyRecapScreen() {
   }, []);
 
   const backButtonTop = insets.top + ThemeLayout.spacing.sm;
-  const contentPaddingTop = backButtonTop + 44 + ThemeLayout.spacing.md;
   const cardStyle = [
     styles.card,
     { backgroundColor: noctalia.surface.raised, borderColor: noctalia.surface.border },
@@ -91,7 +94,6 @@ export function WeeklyRecapScreen() {
 
   return (
     <View style={[styles.container, { backgroundColor: noctalia.screen.background }]} testID={TID.Screen.WeeklyRecap}>
-      <AtmosphericBackground />
 
       <Pressable
         onPress={handleBack}
@@ -107,13 +109,15 @@ export function WeeklyRecapScreen() {
         <IconSymbol name="chevron.left" size={22} color={noctalia.accent.text} />
       </Pressable>
 
-      <ScrollView
+      <ScrollView onScroll={onHeaderScroll} scrollEventThrottle={16}
         style={styles.scrollView}
+        contentInsetAdjustmentBehavior="never"
         contentContainerStyle={{
           paddingBottom: insets.bottom + ThemeLayout.spacing.xl,
-          paddingTop: contentPaddingTop,
+          paddingTop: insets.top,
         }}
       >
+        <DreamerArtworkWindow scene="astral" bleedTop={insets.top} />
         <View style={styles.content}>
           <View style={styles.titleSection}>
             <Text style={[styles.eyebrow, { color: noctalia.accent.text }]}>{rangeLabel}</Text>
@@ -409,4 +413,5 @@ const styles = StyleSheet.create({
   },
 });
 
+export const WeeklyRecapScreen = withHeaderScroll(WeeklyRecapContent);
 export default WeeklyRecapScreen;

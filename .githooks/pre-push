@@ -1,9 +1,9 @@
 #!/bin/sh
-# Pre-push hook of the common delivery rule v2 (AGENTS.md, "Livraison").
+# Pre-push hook (AGENTS.md, "Livraison").
 # It takes a few seconds and runs no suite: forbidden files, secrets and file
 # size of what the push sends, then the proof of the pushed tree (a missing
-# proof does not block). The checks of a PR run once, before merge, with
-# `npm run verify:pr`. A branch deletion or a push with no new commit runs
+# proof does not block). Run `npm run verify:pr` on the commit before pushing
+# it; this hook does not replace it. A branch deletion or a push with no new commit runs
 # nothing. `npm ci` / `npm install` install this hook: the `prepare` script
 # points core.hooksPath at .githooks (scripts/install-git-hooks.js).
 # Never bypass or disable it (`git push --no-verify`, core.hooksPath).
