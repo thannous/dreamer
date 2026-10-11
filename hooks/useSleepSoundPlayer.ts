@@ -14,6 +14,12 @@ import { ensureSleepSoundFile } from '@/services/sleepSoundFiles';
 
 const SLEEP_SOUND_VOLUME = 0.65;
 const TIMER_UPDATE_INTERVAL_MS = 500;
+/** The last minute of a session fades the sound out instead of cutting it. */
+const FADE_OUT_MS = 60_000;
+
+function getSessionVolume(remainingMs: number) {
+  return SLEEP_SOUND_VOLUME * Math.min(1, Math.max(0, remainingMs) / FADE_OUT_MS);
+}
 
 type UseSleepSoundPlayerOptions = {
   sound: SleepSoundConfig;
@@ -147,7 +153,6 @@ export function useSleepSoundPlayer({
 
       // eslint-disable-next-line react-hooks/immutability
       player.loop = true;
-      player.volume = SLEEP_SOUND_VOLUME;
 
       const shouldRestart = !hasStarted || remainingMsRef.current <= 0;
       if (shouldRestart) {
@@ -156,6 +161,7 @@ export function useSleepSoundPlayer({
         setRemainingSeconds(sessionDurationSeconds);
         await player.seekTo(0);
       }
+      player.volume = getSessionVolume(remainingMsRef.current);
 
       player.setActiveForLockScreen(
         true,
@@ -210,13 +216,21 @@ export function useSleepSoundPlayer({
         finishSession();
         return;
       }
+      if (nextRemainingMs < FADE_OUT_MS) {
+        try {
+          // eslint-disable-next-line react-hooks/immutability
+          player.volume = getSessionVolume(nextRemainingMs);
+        } catch {
+          // The native player may already have been released during route cleanup.
+        }
+      }
       setRemainingSeconds(Math.ceil(nextRemainingMs / 1000));
     };
 
     updateTimer();
     const timerId = setInterval(updateTimer, TIMER_UPDATE_INTERVAL_MS);
     return () => clearInterval(timerId);
-  }, [finishSession, getRemainingMs, timerRunning]);
+  }, [finishSession, getRemainingMs, player, timerRunning]);
 
   useEffect(() => {
     const wasPlaying = previousNativePlayingRef.current;
