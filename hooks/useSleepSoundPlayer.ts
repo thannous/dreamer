@@ -65,7 +65,6 @@ export function useSleepSoundPlayer({
   // A source that loads after the timeout clears the error on its own.
   // A late load retires the failure, so a later dropout is classified afresh.
   if (isPlayable && failure?.key === downloadKey) setFailure(null);
-  if (status.playing && isPlayable && playedKey !== downloadKey) setPlayedKey(downloadKey);
   const sourceFailed = failure?.key === downloadKey && !isPlayable;
   const [hasStarted, setHasStarted] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -100,6 +99,11 @@ export function useSleepSoundPlayer({
   }, [downloadKey, isPlayable, playedKey, sourceFailed, sourceUri]);
   const [remainingSeconds, setRemainingSeconds] = useState(durationMinutes * 60);
   const [timerRunning, setTimerRunning] = useState(false);
+  // Heard means playing within a session: Stop ends the session before the native
+  // status catches up, so a stale `playing` cannot mark the attempt again.
+  if (status.playing && timerRunning && isPlayable && playedKey !== downloadKey) {
+    setPlayedKey(downloadKey);
+  }
   const remainingMsRef = useRef(durationMinutes * 60_000);
   const startedAtMsRef = useRef<number | null>(null);
   const previousNativePlayingRef = useRef(status.playing);

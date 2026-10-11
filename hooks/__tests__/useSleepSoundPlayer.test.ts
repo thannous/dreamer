@@ -451,9 +451,13 @@ describe('useSleepSoundPlayer', () => {
     expect(result.current.error).toBe('download_failed');
 
     mockStatus.isLoaded = true;
-    mockStatus.playing = true;
     rerender();
     expect(result.current.error).toBeNull();
+    await act(async () => {
+      await result.current.play();
+    });
+    mockStatus.playing = true;
+    rerender();
 
     mockStatus.playing = false;
     mockStatus.isLoaded = false;
@@ -476,6 +480,36 @@ describe('useSleepSoundPlayer', () => {
     );
     await flushDownload();
 
+    mockStatus.isLoaded = false;
+    rerender();
+    act(() => {
+      jest.advanceTimersByTime(3_000);
+    });
+    expect(result.current.error).toBeNull();
+  });
+
+  it('does not call a stopped sound interrupted when the native status lags behind Stop', async () => {
+    const { result, rerender } = renderHook(() =>
+      useSleepSoundPlayer({
+        sound,
+        durationMinutes: 30,
+        title: 'Gentle rain',
+        albumTitle: 'Evening ambience',
+      }),
+    );
+    await flushDownload();
+    await act(async () => {
+      await result.current.play();
+    });
+    mockStatus.playing = true;
+    rerender();
+
+    // Stop lands while the last native snapshot still says playing.
+    await act(async () => {
+      await result.current.stop();
+    });
+    rerender();
+    mockStatus.playing = false;
     mockStatus.isLoaded = false;
     rerender();
     act(() => {
