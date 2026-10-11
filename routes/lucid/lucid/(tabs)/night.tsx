@@ -54,6 +54,8 @@ const COPY = {
     ambiencePlay: 'Play ambience',
     ambiencePause: 'Pause ambience',
     ambienceStop: 'Stop ambience',
+    ambienceRetry: 'Try again',
+    ambienceUnavailable: 'This sound could not be downloaded. Check your connection, then try again.',
     ambienceHint: 'Local rain, ocean or brown noise for 30 minutes. It does not need night-signal permission.',
     volume: 'Prudent TLR volume',
     timer: 'Night window',
@@ -103,6 +105,8 @@ const COPY = {
     ambiencePlay: 'Lancer l’ambiance',
     ambiencePause: 'Mettre l’ambiance en pause',
     ambienceStop: 'Arrêter l’ambiance',
+    ambienceRetry: 'Réessayer',
+    ambienceUnavailable: 'Ce son n’a pas pu être téléchargé. Vérifie ta connexion, puis réessaie.',
     ambienceHint: 'Pluie, océan ou bruit brun en local pendant 30 minutes. Aucune permission de signal nocturne n’est requise.',
     volume: 'Volume TLR prudent',
     timer: 'Fenêtre nocturne',
@@ -152,6 +156,8 @@ const COPY = {
     ambiencePlay: 'Reproducir ambiente',
     ambiencePause: 'Pausar ambiente',
     ambienceStop: 'Detener ambiente',
+    ambienceRetry: 'Reintentar',
+    ambienceUnavailable: 'No se pudo descargar este sonido. Revisa tu conexión y vuelve a intentarlo.',
     ambienceHint: 'Lluvia, océano o ruido marrón local durante 30 minutos. No requiere permiso de señales nocturnas.',
     volume: 'Volumen TLR prudente',
     timer: 'Ventana nocturna',
@@ -201,6 +207,8 @@ const COPY = {
     ambiencePlay: 'Atmosphäre starten',
     ambiencePause: 'Atmosphäre pausieren',
     ambienceStop: 'Atmosphäre stoppen',
+    ambienceRetry: 'Erneut versuchen',
+    ambienceUnavailable: 'Dieser Klang konnte nicht geladen werden. Prüfe deine Verbindung und versuche es erneut.',
     ambienceHint: 'Lokaler Regen, Ozean oder braunes Rauschen für 30 Minuten. Keine Nachtsignal-Erlaubnis nötig.',
     volume: 'Vorsichtige TLR-Lautstärke',
     timer: 'Nachtfenster',
@@ -250,6 +258,8 @@ const COPY = {
     ambiencePlay: 'Avvia ambiente',
     ambiencePause: 'Metti in pausa l’ambiente',
     ambienceStop: 'Ferma ambiente',
+    ambienceRetry: 'Riprova',
+    ambienceUnavailable: 'Non è stato possibile scaricare questo suono. Controlla la connessione e riprova.',
     ambienceHint: 'Pioggia, oceano o rumore marrone in locale per 30 minuti. Non serve il permesso dei segnali notturni.',
     volume: 'Volume TLR prudente',
     timer: 'Finestra notturna',
@@ -399,6 +409,7 @@ export default function LucidNightScreen() {
     title: copy[selectedAmbience.id],
     albumTitle: copy.library,
   });
+  const ambienceUnavailable = ambience.error === 'download_failed';
   const policy = useMemo(
     () =>
       evaluateLucidSafetyPolicyFromState(state, {
@@ -691,10 +702,16 @@ export default function LucidNightScreen() {
             </View>
             <View style={[styles.ambienceControls, reflow && styles.ambienceControlsReflow]}>
               <LucidButton
-                label={ambience.isPlaying ? copy.ambiencePause : copy.ambiencePlay}
+                label={
+                  ambienceUnavailable
+                    ? copy.ambienceRetry
+                    : ambience.isPlaying
+                      ? copy.ambiencePause
+                      : copy.ambiencePlay
+                }
                 variant="secondary"
-                icon={ambience.isPlaying ? 'pause' : 'play'}
-                disabled={ambience.error !== 'download_failed' && (!ambience.isLoaded || ambience.isBuffering)}
+                icon={ambienceUnavailable ? 'refresh' : ambience.isPlaying ? 'pause' : 'play'}
+                disabled={!ambienceUnavailable && (!ambience.isLoaded || ambience.isBuffering)}
                 onPress={() => void (ambience.isPlaying ? ambience.pause() : ambience.play())}
                 testID="lucid-night-ambience-play"
               />
@@ -706,6 +723,15 @@ export default function LucidNightScreen() {
                 testID="lucid-night-ambience-stop"
               />
             </View>
+            {ambienceUnavailable ? (
+              <Text
+                accessibilityLiveRegion="polite"
+                style={[styles.error, { color: palette.danger }]}
+                testID="lucid-night-ambience-unavailable"
+              >
+                {copy.ambienceUnavailable}
+              </Text>
+            ) : null}
 
             <Text accessibilityRole="header" style={[styles.sectionTitle, { color: palette.text }]}>
               {copy.cueSection}

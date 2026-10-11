@@ -297,7 +297,7 @@ describe('useSleepSoundPlayer', () => {
     expect(mockPlayer.clearLockScreenControls).toHaveBeenCalled();
   });
 
-  it('reports a failed first download and retries it on the next play', async () => {
+  it('reports a failed first download, retries it on the next play and then starts', async () => {
     jest.mocked(ensureSleepSoundFile).mockRejectedValueOnce(new Error('offline'));
     const { result } = renderHook(() =>
       useSleepSoundPlayer({
@@ -320,6 +320,6 @@ describe('useSleepSoundPlayer', () => {
     expect(ensureSleepSoundFile).toHaveBeenCalledTimes(2);
     expect(result.current.error).toBeNull();
     expect(result.current.isLoaded).toBe(true);
-    expect(mockPlayer.play).not.toHaveBeenCalled();
+    expect(mockPlayer.play).toHaveBeenCalledTimes(1);
   });
 });
