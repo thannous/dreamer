@@ -401,7 +401,14 @@ export default function LucidNightScreen() {
     title: copy[selectedAmbience.id],
     albumTitle: copy.library,
   });
-  const ambienceDownloadFailed = ambience.error === 'download_failed';
+  const ambienceNeedsRetry =
+    ambience.error === 'download_failed' || ambience.error === 'playback_interrupted';
+  const ambienceErrorMessage =
+    ambience.error === 'download_failed'
+      ? ambienceCopy.downloadError
+      : ambience.error === 'playback_interrupted'
+        ? ambienceCopy.interruptedError
+        : ambienceCopy.error;
   const policy = useMemo(
     () =>
       evaluateLucidSafetyPolicyFromState(state, {
@@ -452,10 +459,10 @@ export default function LucidNightScreen() {
   // Android reads the message through its live region; VoiceOver needs an announcement,
   // made once the ambience controls are on screen to give it context.
   useEffect(() => {
-    if (showSignals && ambienceDownloadFailed && Platform.OS === 'ios') {
-      AccessibilityInfo.announceForAccessibility(ambienceCopy.downloadError);
+    if (showSignals && ambienceNeedsRetry && Platform.OS === 'ios') {
+      AccessibilityInfo.announceForAccessibility(ambienceErrorMessage);
     }
-  }, [ambienceCopy.downloadError, ambienceDownloadFailed, showSignals]);
+  }, [ambienceErrorMessage, ambienceNeedsRetry, showSignals]);
   const calibrationStatusCopy =
     calibration.status === 'suspended'
       ? copy.suspended
@@ -702,15 +709,15 @@ export default function LucidNightScreen() {
             <View style={[styles.ambienceControls, reflow && styles.ambienceControlsReflow]}>
               <LucidButton
                 label={
-                  ambienceDownloadFailed
+                  ambienceNeedsRetry
                     ? ambienceCopy.retry
                     : ambience.isPlaying
                       ? copy.ambiencePause
                       : copy.ambiencePlay
                 }
                 variant="secondary"
-                icon={ambienceDownloadFailed ? 'refresh' : ambience.isPlaying ? 'pause' : 'play'}
-                disabled={!ambienceDownloadFailed && (!ambience.isLoaded || ambience.isBuffering)}
+                icon={ambienceNeedsRetry ? 'refresh' : ambience.isPlaying ? 'pause' : 'play'}
+                disabled={!ambienceNeedsRetry && (!ambience.isLoaded || ambience.isBuffering)}
                 onPress={() => void (ambience.isPlaying ? ambience.pause() : ambience.play())}
                 testID="lucid-night-ambience-play"
               />
@@ -728,7 +735,7 @@ export default function LucidNightScreen() {
                 accessibilityLiveRegion="polite"
                 style={[styles.error, { color: palette.danger }]}
               >
-                {ambienceDownloadFailed ? ambienceCopy.downloadError : ambienceCopy.error}
+                {ambienceErrorMessage}
               </Text>
             ) : null}
 
