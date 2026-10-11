@@ -61,9 +61,9 @@ mise exec -- npm run test:e2e:backend -- --status-file /absolute/private/status.
 This mode accepts only `http://127.0.0.1:56321`, never starts or stops the supplied
 stack, and is intended for a locally owned stack with loopback port forwarding.
 `E2E_SUPABASE_CLI` can select a local CLI executable. The default uses the locked
-npm CLI on Linux and its co-located Go engine on macOS. The macOS launcher failed
-OS signature validation on this machine; the shipped Go engine has a valid
-signature and completed the suite without changing OS security settings.
+npm CLI on Linux and its co-located Go engine on macOS. An earlier macOS launcher
+failed OS signature validation, so the default Docker path retains the Go engine.
+The native pilot used the pinned 2.120.0 npm launcher successfully without changing OS security settings.
 `E2E_DOCKER_CLI` and `DOCKER_HOST` can select a local Docker-compatible runtime.
 No hosted test branch is required.
 
