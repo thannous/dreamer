@@ -23,13 +23,13 @@
   "twitterImage": "https://noctalia.app/img/og/noctalia-en-1200x630.jpg",
   "twitterImageAlt": "Noctalia dream journal app",
   "publishedTime": "2026-05-20T00:00:00+02:00",
-  "modifiedTime": "2026-10-10T00:00:00+02:00",
+  "modifiedTime": "2026-10-11T00:00:00+02:00",
   "author": "Thanh Chau",
   "prevPath": "",
   "nextPath": "",
   "preloadImage": "",
   "jsonLd": [
-    "{\n  \"@context\": \"https://schema.org\",\n  \"@type\": \"WebPage\",\n  \"name\": \"App interpretazione sogni con IA\",\n  \"description\": \"Noctalia cattura sogni a voce, esplora simboli, genera immagini e approfondisce con riflessione guidata.\",\n  \"url\": \"https://noctalia.app/it/app-interpretazione-sogni-ai\",\n  \"inLanguage\": \"it\",\n  \"dateModified\": \"2026-10-10T00:00:00+02:00\",\n  \"publisher\": {\n    \"@id\": \"https://noctalia.app/#organization\"\n  }\n}",
+    "{\n  \"@context\": \"https://schema.org\",\n  \"@type\": \"WebPage\",\n  \"name\": \"App interpretazione sogni con IA\",\n  \"description\": \"Noctalia cattura sogni a voce, esplora simboli, genera immagini e approfondisce con riflessione guidata.\",\n  \"url\": \"https://noctalia.app/it/app-interpretazione-sogni-ai\",\n  \"inLanguage\": \"it\",\n  \"dateModified\": \"2026-10-11T00:00:00+02:00\",\n  \"publisher\": {\n    \"@id\": \"https://noctalia.app/#organization\"\n  }\n}",
     "{\n  \"@context\": \"https://schema.org\",\n  \"@type\": \"BreadcrumbList\",\n  \"itemListElement\": [\n    {\n      \"@type\": \"ListItem\",\n      \"position\": 1,\n      \"name\": \"Home\",\n      \"item\": \"https://noctalia.app/it/\"\n    },\n    {\n      \"@type\": \"ListItem\",\n      \"position\": 2,\n      \"name\": \"App interpretazione sogni con IA\",\n      \"item\": \"https://noctalia.app/it/app-interpretazione-sogni-ai\"\n    }\n  ]\n}",
     "{\n  \"@context\": \"https://schema.org\",\n  \"@type\": \"FAQPage\",\n  \"mainEntity\": [\n    {\n      \"@type\": \"Question\",\n      \"name\": \"Cosa cercare\",\n      \"acceptedAnswer\": {\n        \"@type\": \"Answer\",\n        \"text\": \"L’app deve salvare il sogno in pochi secondi, spiegare la privacy con chiarezza e permettere di eliminare o esportare i racconti. Dovrebbe leggere i simboli nel contesto, farti domande e dire cosa non può fare.\"\n      }\n    },\n    {\n      \"@type\": \"Question\",\n      \"name\": \"Perché Noctalia funziona\",\n      \"acceptedAnswer\": {\n        \"@type\": \"Answer\",\n        \"text\": \"Noctalia gira su Android, si usa con la voce, crea immagini, è multilingue ed è collegata a un dizionario pubblico di simboli che continua a crescere.\"\n      }\n    }\n  ]\n}"
   ],
@@ -37,7 +37,7 @@
 }
 ---
 <h1 class="font-serif text-4xl md:text-5xl mb-4 text-dream-cream">App interpretazione sogni con IA</h1>
-<p class="text-sm text-purple-300/70 mb-6">Aggiornato il 10 ottobre 2026</p>
+<p class="text-sm text-purple-300/70 mb-6">Aggiornato l’11 ottobre 2026</p>
 <p class="text-lg text-purple-200/80 leading-relaxed mb-10">Al risveglio spesso resta solo una scena. Una buona app di interpretazione dei sogni con IA ti permette di fermarla subito e poi ti propone spunti e domande, senza diagnosi né previsioni.</p>
 
 <div class="space-y-8 text-gray-300 leading-relaxed">
@@ -114,6 +114,50 @@
       <li>La piattaforma corrisponde al dispositivo che usi davvero al risveglio?</li>
       <li>Confronta con l’<a href="/it/privacy-policy" class="text-dream-salmon hover:underline">informativa privacy</a> di Noctalia.</li>
     </ul>
+  </section>
+
+  <section class="glass-panel p-8 rounded-2xl border border-white/10 bg-white/5">
+    <h2 class="text-2xl font-serif text-white mb-4">Due esempi: un incubo e un sogno ricorrente</h2>
+    <p>I due sogni sono inventati. Gli spunti mostrano il tipo di lettura che puoi ottenere, non la risposta parola per parola dell’app.</p>
+    <div class="grid md:grid-cols-2 gap-4 mt-6 text-sm">
+      <article class="rounded-xl border border-white/10 bg-white/5 p-4 space-y-3">
+        <h3 class="text-white font-medium">Un incubo</h3>
+        <p><strong class="text-purple-200">Racconto:</strong> «Qualcuno mi segue in un parcheggio sotterraneo. Cerco la mia auto, tutte le file sono uguali. Mi sveglio di soprassalto, con il cuore che batte forte.»</p>
+        <p><strong class="text-purple-200">Elementi individuati:</strong> parcheggio sotterraneo, inseguitore senza volto, file identiche, paura al risveglio.</p>
+        <p><strong class="text-purple-200">Spunti di interpretazione:</strong> le file tutte uguali possono evocare la sensazione di girare a vuoto. L’inseguimento può evocare una pressione di cui non si vede l’origine. Niente in questo racconto permette di prevedere un pericolo reale.</p>
+        <p><strong class="text-purple-200">Domanda per il diario:</strong> «Questa sensazione di essere seguito, la riconosco anche altrove?»</p>
+        <p class="text-purple-200/70">Dai un nome alla paura con parole tue: l’analisi rileva solo le emozioni che scrivi. Se gli incubi tornano spesso e rovinano il sonno, parlane con un medico. La <a href="/it/blog/incubi-cause-significato-e-come-fermarli" class="text-dream-salmon hover:underline">guida agli incubi</a> spiega cosa può aiutare.</p>
+      </article>
+      <article class="rounded-xl border border-white/10 bg-white/5 p-4 space-y-3">
+        <h3 class="text-white font-medium">Un sogno ricorrente</h3>
+        <p><strong class="text-purple-200">Racconto:</strong> «Di nuovo il sogno dell’esame. Sono in aula, non ho studiato, il foglio resta bianco. È la terza volta questo mese. Mi sveglio più irritato che preoccupato.»</p>
+        <p><strong class="text-purple-200">Elementi individuati:</strong> esame, foglio bianco, impreparazione, ripetizione segnalata, irritazione.</p>
+        <p><strong class="text-purple-200">Spunti di interpretazione:</strong> la scena può evocare il timore di essere giudicato prima di sentirsi pronto. L’irritazione, più che il panico, sfuma questo spunto: forse è stanchezza più che paura.</p>
+        <p><strong class="text-purple-200">Domanda per il diario:</strong> «Nei giorni in cui torna questo sogno, cosa mi aspetta l’indomani?»</p>
+        <p class="text-purple-200/70">Ogni analisi parte dal racconto che le dai. Scrivi quindi che il sogno ritorna: così può essere classificato come ricorrente, e il filtro Ricorrenti del diario mostra questi sogni insieme. Rileggendoli, guarda cosa cambia da una volta all’altra. La <a href="/it/blog/significato-dei-sogni-ricorrenti-comprendere-i-loro-messaggi-nascosti" class="text-dream-salmon hover:underline">guida ai sogni ricorrenti</a> approfondisce.</p>
+      </article>
+    </div>
+  </section>
+
+  <section class="glass-panel p-8 rounded-2xl border border-white/10 bg-white/5">
+    <h2 class="text-2xl font-serif text-white mb-4">Come fare una buona domanda di approfondimento</h2>
+    <p>Dopo l’analisi, la conversazione continua sullo stesso sogno. Scegli un angolo (Simboli, Emozioni, Crescita personale) o fai la tua domanda, scritta o dettata. L’IA conosce solo il sogno e quello che le scrivi: una buona domanda le dà ciò che non può indovinare.</p>
+    <div class="overflow-x-auto mt-6">
+      <table class="w-full text-left text-sm min-w-[560px]">
+        <thead class="text-purple-200"><tr><th class="py-3 pr-4">Domanda vaga</th><th class="py-3 pr-4">Domanda che aiuta</th></tr></thead>
+        <tbody class="divide-y divide-white/10">
+          <tr><td class="py-4 pr-4">Cosa significa il mio sogno?</td><td class="py-4 pr-4 text-white">Perché davanti al foglio bianco sono più irritato che spaventato?</td></tr>
+          <tr><td class="py-4 pr-4">Cosa simboleggia il parcheggio?</td><td class="py-4 pr-4 text-white">Questo parcheggio somiglia a quello del mio vecchio lavoro. Quali spunti apre questo legame?</td></tr>
+          <tr><td class="py-4 pr-4">Questo sogno annuncia qualcosa?</td><td class="py-4 pr-4 text-white">Questo sogno mi ha lasciato la sensazione di girare a vuoto. A cosa posso fare attenzione questa settimana?</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <ul class="list-disc pl-5 space-y-2 mt-6">
+      <li><strong>Aggiungi le tue associazioni.</strong> Un luogo, una persona, qualcosa del giorno prima: è questo che rende personale uno spunto.</li>
+      <li><strong>Correggi ciò che non torna.</strong> «No, non avevo paura, ero irritato.» Il resto della conversazione ne tiene conto.</li>
+      <li><strong>Chiedi di più quando vuoi.</strong> Le risposte sono brevi per impostazione predefinita. Scrivi «approfondisci» o «fammi un esempio».</li>
+    </ul>
+    <p class="mt-4">Ogni sogno ha un tetto di scambi: fino a 10 messaggi di approfondimento per sogno analizzato con il piano gratuito, fino a 20 messaggi di approfondimento per sogno con Plus. Le domande precise li sfruttano meglio.</p>
   </section>
 
       <section class="glass-panel p-8 rounded-2xl border border-white/10 bg-white/5">

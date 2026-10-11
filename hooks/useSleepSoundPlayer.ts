@@ -16,6 +16,13 @@ const SLEEP_SOUND_VOLUME = 0.65;
 const TIMER_UPDATE_INTERVAL_MS = 500;
 /** The last minute of a session fades the sound out instead of cutting it. */
 const FADE_OUT_MS = 60_000;
+/**
+ * A loop the player still cannot open after this long (a stream that never arrives on
+ * web, an unreadable file) is reported like a failed download, so the screen offers a
+ * retry instead of an endless "preparing" state. Stalled downloads are cut by
+ * `ensureSleepSoundFile` itself.
+ */
+const SOURCE_LOAD_TIMEOUT_MS = 30_000;
 
 function getSessionVolume(remainingMs: number) {
   return SLEEP_SOUND_VOLUME * Math.min(1, Math.max(0, remainingMs) / FADE_OUT_MS);
@@ -37,14 +44,17 @@ export function useSleepSoundPlayer({
   const [resolved, setResolved] = useState<{ id: string; uri: string } | null>(null);
   const [downloadAttempt, setDownloadAttempt] = useState(0);
   const [failedDownload, setFailedDownload] = useState<string | null>(null);
+  const playAfterDownloadRef = useRef<string | null>(null);
   const downloadKey = `${sound.id}:${downloadAttempt}`;
-  const downloadFailed = failedDownload === downloadKey;
   const sourceUri = resolved?.id === sound.id ? resolved.uri : null;
   const player = useAudioPlayer(sourceUri ? { uri: sourceUri } : null, {
     downloadFirst: true,
     updateInterval: 500,
   });
   const status = useAudioPlayerStatus(player);
+  const isPlayable = Boolean(sourceUri) && status.isLoaded;
+  // A source that loads after the timeout clears the error on its own.
+  const downloadFailed = failedDownload === downloadKey && !isPlayable;
   const [hasStarted, setHasStarted] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -65,6 +75,12 @@ export function useSleepSoundPlayer({
       active = false;
     };
   }, [downloadKey, sound]);
+
+  useEffect(() => {
+    if (!sourceUri || isPlayable || downloadFailed) return;
+    const timeoutId = setTimeout(() => setFailedDownload(downloadKey), SOURCE_LOAD_TIMEOUT_MS);
+    return () => clearTimeout(timeoutId);
+  }, [downloadFailed, downloadKey, isPlayable, sourceUri]);
   const [remainingSeconds, setRemainingSeconds] = useState(durationMinutes * 60);
   const [timerRunning, setTimerRunning] = useState(false);
   const remainingMsRef = useRef(durationMinutes * 60_000);
@@ -112,6 +128,7 @@ export function useSleepSoundPlayer({
   }, [clearLockScreen, player]);
 
   const stop = useCallback(async () => {
+    playAfterDownloadRef.current = null;
     player.pause();
     clearLockScreen();
     const sessionDurationSeconds = durationMinutes * 60;
@@ -135,7 +152,11 @@ export function useSleepSoundPlayer({
   // eslint-disable-next-line react-hooks/immutability
   const play = useCallback(async () => {
     if (downloadFailed) {
-      // Offline on first use: try the download again.
+      // Try the download again; a retry is a request to listen, so play once it is ready.
+      playAfterDownloadRef.current = sound.id;
+      // Drop the current source first, so a loop that timed out while loading is
+      // handed to the player again even when the retry resolves to the same file.
+      setResolved(null);
       setDownloadAttempt((attempt) => attempt + 1);
       return;
     }
@@ -196,10 +217,20 @@ export function useSleepSoundPlayer({
     durationMinutes,
     hasStarted,
     player,
+    sound.id,
     sourceUri,
     status.isLoaded,
     title,
   ]);
+
+  // The sound starts by itself once a retried download is ready, unless Stop came first.
+  // eslint-disable-next-line react-hooks/immutability
+  useEffect(() => {
+    const pending = playAfterDownloadRef.current;
+    if (pending === null || !isPlayable) return;
+    playAfterDownloadRef.current = null;
+    if (pending === sound.id) void play();
+  }, [isPlayable, play, sound.id]);
 
   const pause = useCallback(() => {
     commitElapsedTime();
@@ -257,6 +288,8 @@ export function useSleepSoundPlayer({
   useFocusEffect(
     useCallback(() => {
       return () => {
+        // Leaving the screen also cancels a retry that was waiting to start the sound.
+        playAfterDownloadRef.current = null;
         commitElapsedTime();
         setTimerRunning(false);
         try {
@@ -273,7 +306,7 @@ export function useSleepSoundPlayer({
   return {
     error: downloadFailed ? 'download_failed' : error,
     hasStarted,
-    isLoaded: Boolean(sourceUri) && status.isLoaded,
+    isLoaded: isPlayable,
     isPlaying: status.playing,
     isBuffering: status.isBuffering,
     pause,

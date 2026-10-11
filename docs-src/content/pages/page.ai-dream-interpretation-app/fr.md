@@ -23,21 +23,21 @@
   "twitterImage": "https://noctalia.app/img/og/noctalia-en-1200x630.jpg",
   "twitterImageAlt": "Application Noctalia de journal et d’interprétation de rêves",
   "publishedTime": "2026-05-20T00:00:00+02:00",
-  "modifiedTime": "2026-10-10T00:00:00+02:00",
+  "modifiedTime": "2026-10-11T00:00:00+02:00",
   "author": "Thanh Chau",
   "prevPath": "",
   "nextPath": "",
   "preloadImage": "",
   "jsonLd": [
-    "{\n  \"@context\": \"https://schema.org\",\n  \"@type\": \"WebPage\",\n  \"name\": \"Application d’interprétation des rêves IA\",\n  \"description\": \"Capturez un rêve par voix, obtenez des pistes d’interprétation IA, reliez les symboles et gardez vos récits dans une application Android.\",\n  \"url\": \"https://noctalia.app/fr/application-interpretation-reves-ia\",\n  \"inLanguage\": \"fr\",\n  \"dateModified\": \"2026-10-10T00:00:00+02:00\",\n  \"publisher\": {\n    \"@id\": \"https://noctalia.app/#organization\"\n  }\n}",
+    "{\n  \"@context\": \"https://schema.org\",\n  \"@type\": \"WebPage\",\n  \"name\": \"Application d’interprétation des rêves IA\",\n  \"description\": \"Capturez un rêve par voix, obtenez des pistes d’interprétation IA, reliez les symboles et gardez vos récits dans une application Android.\",\n  \"url\": \"https://noctalia.app/fr/application-interpretation-reves-ia\",\n  \"inLanguage\": \"fr\",\n  \"dateModified\": \"2026-10-11T00:00:00+02:00\",\n  \"publisher\": {\n    \"@id\": \"https://noctalia.app/#organization\"\n  }\n}",
     "{\n  \"@context\": \"https://schema.org\",\n  \"@type\": \"BreadcrumbList\",\n  \"itemListElement\": [\n    {\n      \"@type\": \"ListItem\",\n      \"position\": 1,\n      \"name\": \"Accueil\",\n      \"item\": \"https://noctalia.app/fr/\"\n    },\n    {\n      \"@type\": \"ListItem\",\n      \"position\": 2,\n      \"name\": \"Application d’interprétation des rêves IA\",\n      \"item\": \"https://noctalia.app/fr/application-interpretation-reves-ia\"\n    }\n  ]\n}",
-    "{\n  \"@context\": \"https://schema.org\",\n  \"@type\": \"FAQPage\",\n  \"mainEntity\": [\n    {\n      \"@type\": \"Question\",\n      \"name\": \"Que peut analyser une IA dans un rêve ?\",\n      \"acceptedAnswer\": {\n        \"@type\": \"Answer\",\n        \"text\": \"Une IA peut comparer le récit, les émotions, les lieux, les personnages, les symboles et les rêves précédents pour proposer des pistes d’interprétation. Elle doit rester un support de réflexion, pas une vérité finale.\"\n      }\n    },\n    {\n      \"@type\": \"Question\",\n      \"name\": \"Pourquoi un dictionnaire des rêves ne suffit pas toujours ?\",\n      \"acceptedAnswer\": {\n        \"@type\": \"Answer\",\n        \"text\": \"Un dictionnaire donne des repères symboliques, mais le sens dépend du contexte personnel, de l’émotion au réveil et des motifs qui reviennent dans votre journal de rêves.\"\n      }\n    },\n    {\n      \"@type\": \"Question\",\n      \"name\": \"Noctalia donne-t-il une signification définitive ?\",\n      \"acceptedAnswer\": {\n        \"@type\": \"Answer\",\n        \"text\": \"Non. Noctalia formule des pistes d’interprétation et des questions de réflexion. Vous gardez la main sur le sens, surtout pour les rêves sensibles ou récurrents.\"\n      }\n    },\n    {\n      \"@type\": \"Question\",\n      \"name\": \"Comment protéger la vie privée de ses rêves ?\",\n      \"acceptedAnswer\": {\n        \"@type\": \"Answer\",\n        \"text\": \"Vérifiez la politique de confidentialité, les options de suppression, le rôle des prestataires IA et les données réellement nécessaires. Les rêves sont intimes et doivent être traités comme tels.\"\n      }\n    }\n  ]\n}"
+    "{\n  \"@context\": \"https://schema.org\",\n  \"@type\": \"FAQPage\",\n  \"mainEntity\": [\n    {\n      \"@type\": \"Question\",\n      \"name\": \"Que peut analyser une IA dans un rêve ?\",\n      \"acceptedAnswer\": {\n        \"@type\": \"Answer\",\n        \"text\": \"Une IA peut comparer le récit, les émotions, les lieux, les personnages et les symboles du rêve pour proposer des pistes d’interprétation. Elle doit rester un support de réflexion, pas une vérité finale.\"\n      }\n    },\n    {\n      \"@type\": \"Question\",\n      \"name\": \"Pourquoi un dictionnaire des rêves ne suffit pas toujours ?\",\n      \"acceptedAnswer\": {\n        \"@type\": \"Answer\",\n        \"text\": \"Un dictionnaire donne des repères symboliques, mais le sens dépend du contexte personnel, de l’émotion au réveil et des motifs qui reviennent dans votre journal de rêves.\"\n      }\n    },\n    {\n      \"@type\": \"Question\",\n      \"name\": \"Noctalia donne-t-il une signification définitive ?\",\n      \"acceptedAnswer\": {\n        \"@type\": \"Answer\",\n        \"text\": \"Non. Noctalia formule des pistes d’interprétation et des questions de réflexion. Vous gardez la main sur le sens, surtout pour les rêves sensibles ou récurrents.\"\n      }\n    },\n    {\n      \"@type\": \"Question\",\n      \"name\": \"Comment protéger la vie privée de ses rêves ?\",\n      \"acceptedAnswer\": {\n        \"@type\": \"Answer\",\n        \"text\": \"Vérifiez la politique de confidentialité, les options de suppression, le rôle des prestataires IA et les données réellement nécessaires. Les rêves sont intimes et doivent être traités comme tels.\"\n      }\n    }\n  ]\n}"
   ],
   "activeNav": "resources"
 }
 ---
 <h1 class="font-serif text-4xl md:text-5xl mb-4 text-dream-cream">Application d’interprétation des rêves IA</h1>
-<p class="text-sm text-purple-300/70 mb-6">Mis à jour le 10 octobre 2026</p>
+<p class="text-sm text-purple-300/70 mb-6">Mis à jour le 11 octobre 2026</p>
 <p class="text-lg text-purple-200/80 leading-relaxed mb-10">Au réveil, il reste souvent une scène et une émotion. Noctalia vous permet de les noter tout de suite, puis de tirer du récit des pistes d’interprétation IA : symboles, émotions, lieux, personnages, images et questions à vous poser. L’interprétation des rêves par IA n’a d’intérêt que si elle part de votre contexte, pas d’un sens imposé.</p>
 
 <div class="grid md:grid-cols-3 gap-4 mb-10 text-sm">
@@ -91,6 +91,50 @@
   </section>
 
   <section class="glass-panel p-8 rounded-2xl border border-white/10 bg-white/5">
+    <h2 class="text-2xl font-serif text-white mb-4">Deux autres exemples : un cauchemar et un rêve récurrent</h2>
+    <p>Les deux récits ci-dessous sont fictifs. Les pistes montrent le genre de lecture que vous pouvez obtenir, pas une réponse mot pour mot de l’application.</p>
+    <div class="grid md:grid-cols-2 gap-4 mt-6 text-sm">
+      <article class="rounded-xl border border-white/10 bg-white/5 p-4 space-y-3">
+        <h3 class="text-white font-medium">Un cauchemar</h3>
+        <p><strong class="text-purple-200">Récit :</strong> « Quelqu’un me suit dans un parking souterrain. Je cherche ma voiture, toutes les rangées se ressemblent. Je me réveille en sursaut, le cœur qui bat. »</p>
+        <p><strong class="text-purple-200">Éléments repérés :</strong> parking souterrain, poursuivant sans visage, rangées identiques, peur au réveil.</p>
+        <p><strong class="text-purple-200">Pistes d’interprétation :</strong> les rangées toutes pareilles peuvent évoquer l’impression de tourner en rond. La poursuite peut évoquer une pression dont on ne voit pas la source. Rien dans ce récit ne permet de prédire un danger réel.</p>
+        <p><strong class="text-purple-200">Question de journal :</strong> « Ce sentiment d’être suivi, est-ce que je le reconnais ailleurs ? »</p>
+        <p class="text-purple-200/70">Nommez la peur avec vos mots : l’analyse ne relève que les émotions que vous écrivez. Si les cauchemars reviennent souvent et abîment votre sommeil, parlez-en à un médecin. Le <a href="/fr/blog/guide-cauchemars" class="text-dream-salmon hover:underline">guide des cauchemars</a> détaille ce qui peut aider.</p>
+      </article>
+      <article class="rounded-xl border border-white/10 bg-white/5 p-4 space-y-3">
+        <h3 class="text-white font-medium">Un rêve récurrent</h3>
+        <p><strong class="text-purple-200">Récit :</strong> « Encore ce rêve d’examen. Je suis dans l’amphi, je n’ai pas révisé, la copie reste blanche. C’est la troisième fois ce mois-ci. Je me réveille agacé plus qu’inquiet. »</p>
+        <p><strong class="text-purple-200">Éléments repérés :</strong> examen, copie blanche, manque de préparation, répétition signalée, agacement.</p>
+        <p><strong class="text-purple-200">Pistes d’interprétation :</strong> la scène peut évoquer la crainte d’être évalué avant d’être prêt. L’agacement, plutôt que la panique, nuance cette piste : il peut s’agir de lassitude plus que de peur.</p>
+        <p><strong class="text-purple-200">Question de journal :</strong> « Les jours où ce rêve revient, qu’est-ce qui m’attend le lendemain ? »</p>
+        <p class="text-purple-200/70">Chaque analyse part du récit que vous lui donnez. Écrivez donc que le rêve revient : il peut alors être classé comme récurrent, et le filtre Récurrents du journal permet de retrouver ces rêves ensemble. En les relisant, regardez ce qui change d’une fois à l’autre. Le <a href="/fr/blog/signification-reves-recurrents" class="text-dream-salmon hover:underline">guide des rêves récurrents</a> va plus loin.</p>
+      </article>
+    </div>
+  </section>
+
+  <section class="glass-panel p-8 rounded-2xl border border-white/10 bg-white/5">
+    <h2 class="text-2xl font-serif text-white mb-4">Comment poser une bonne question de suivi</h2>
+    <p>Après l’analyse, la conversation continue sur le même rêve. Vous choisissez un angle (Symboles, Émotions, Croissance personnelle) ou vous posez votre propre question, au clavier ou à la voix. L’IA ne connaît que le rêve et ce que vous lui écrivez : une bonne question lui apporte ce qu’elle ne peut pas deviner.</p>
+    <div class="overflow-x-auto mt-6">
+      <table class="w-full text-left text-sm min-w-[560px]">
+        <thead class="text-purple-200"><tr><th class="py-3 pr-4">Question vague</th><th class="py-3 pr-4">Question qui aide</th></tr></thead>
+        <tbody class="divide-y divide-white/10">
+          <tr><td class="py-4 pr-4">Que veut dire mon rêve ?</td><td class="py-4 pr-4 text-white">Pourquoi suis-je plus agacé qu’inquiet devant la copie blanche ?</td></tr>
+          <tr><td class="py-4 pr-4">Que symbolise le parking ?</td><td class="py-4 pr-4 text-white">Ce parking ressemble à celui de mon ancien travail. Quelles pistes ce lien ouvre-t-il ?</td></tr>
+          <tr><td class="py-4 pr-4">Ce rêve annonce-t-il quelque chose ?</td><td class="py-4 pr-4 text-white">Ce rêve m’a laissé l’impression de tourner en rond. À quoi puis-je faire attention cette semaine ?</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <ul class="list-disc pl-5 space-y-2 mt-6">
+      <li><strong>Ajoutez vos associations.</strong> Un lieu, une personne, un événement de la veille : c’est ce qui rend une piste personnelle.</li>
+      <li><strong>Corrigez ce qui sonne faux.</strong> « Non, je n’avais pas peur, j’étais agacé. » La suite de la conversation en tient compte.</li>
+      <li><strong>Demandez plus quand vous le voulez.</strong> Les réponses sont courtes par défaut. Écrivez « développe » ou « donne-moi un exemple ».</li>
+    </ul>
+    <p class="mt-4">Chaque rêve a un plafond d’échanges : jusqu’à 10 messages de suivi par rêve analysé avec l’offre gratuite, jusqu’à 20 messages de suivi par rêve avec Plus. Des questions précises en tirent le meilleur parti.</p>
+  </section>
+
+  <section class="glass-panel p-8 rounded-2xl border border-white/10 bg-white/5">
     <h2 class="text-2xl font-serif text-white mb-4">Vie privée : ce qu’il faut vérifier avant de confier ses rêves</h2>
     <p>Les rêves contiennent parfois des détails intimes. Avant d’utiliser une application de journal ou d’interprétation IA, vérifiez ce qui est collecté, pourquoi, et comment vous pouvez reprendre la main.</p>
     <ul class="list-disc pl-5 space-y-2 mt-4">
@@ -123,7 +167,7 @@
     <div class="space-y-4">
       <details class="rounded-xl border border-white/10 bg-white/5 p-4">
         <summary class="text-dream-cream font-medium cursor-pointer">Que peut analyser une IA dans un rêve ?</summary>
-        <p class="mt-3 text-sm text-gray-400">Une IA peut comparer le récit, les émotions, les lieux, les personnages, les symboles et les rêves précédents pour proposer des pistes d’interprétation. Elle doit rester un support de réflexion, pas une vérité finale.</p>
+        <p class="mt-3 text-sm text-gray-400">Une IA peut comparer le récit, les émotions, les lieux, les personnages et les symboles du rêve pour proposer des pistes d’interprétation. Elle doit rester un support de réflexion, pas une vérité finale.</p>
       </details>
       <details class="rounded-xl border border-white/10 bg-white/5 p-4">
         <summary class="text-dream-cream font-medium cursor-pointer">Pourquoi un dictionnaire des rêves ne suffit pas toujours ?</summary>
