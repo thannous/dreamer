@@ -4,6 +4,9 @@ const {
   mockConfigure,
   mockAddCustomerInfoUpdateListener,
   mockGetCustomerInfo,
+  mockOpenURL,
+  mockPlatform,
+  mockShowManageSubscriptions,
   mockGetPublicEnvValue,
   mockSetPublicEnvValue,
   mockClearPublicEnv,
@@ -28,6 +31,9 @@ const {
       originalPurchaseDate: null,
       requestDate: '2026-01-01T00:00:00.000Z',
     })),
+    mockOpenURL: jest.fn(async () => true),
+    mockPlatform: { OS: 'android' },
+    mockShowManageSubscriptions: jest.fn(async () => undefined),
     mockGetPublicEnvValue: (key: string) => publicEnv.get(key),
     mockSetPublicEnvValue: (key: string, value: string) => publicEnv.set(key, value),
     mockClearPublicEnv: () => publicEnv.clear(),
@@ -50,7 +56,8 @@ jest.mock('expo-constants', () => ({
 }));
 
 jest.mock('react-native', () => ({
-  Platform: { OS: 'android' },
+  Linking: { openURL: mockOpenURL },
+  Platform: mockPlatform,
 }));
 
 jest.mock('react-native-purchases', () => ({
@@ -59,6 +66,8 @@ jest.mock('react-native-purchases', () => ({
     addCustomerInfoUpdateListener: mockAddCustomerInfoUpdateListener,
     configure: mockConfigure,
     getCustomerInfo: mockGetCustomerInfo,
+    invalidateCustomerInfoCache: jest.fn(),
+    showManageSubscriptions: mockShowManageSubscriptions,
   },
 }));
 
@@ -67,6 +76,7 @@ describe('subscriptionServiceReal configuration', () => {
     jest.resetModules();
     jest.clearAllMocks();
     mockClearPublicEnv();
+    mockPlatform.OS = 'android';
     delete (globalThis as typeof globalThis & { __dreamerPurchases?: unknown })
       .__dreamerPurchases;
   });
@@ -79,5 +89,51 @@ describe('subscriptionServiceReal configuration', () => {
 
     expect(service.getStoreMode()).toBe('RevenueCat Test Store');
     expect(mockConfigure).toHaveBeenCalledWith({ apiKey: 'test_bundle_key' });
+  });
+});
+
+describe('subscriptionServiceReal management', () => {
+  beforeEach(() => {
+    jest.resetModules();
+    jest.clearAllMocks();
+    mockClearPublicEnv();
+    mockSetPublicEnvValue('EXPO_PUBLIC_REVENUECAT_ANDROID_KEY', 'goog_key');
+    mockSetPublicEnvValue('EXPO_PUBLIC_REVENUECAT_IOS_KEY', 'appl_key');
+    delete (globalThis as typeof globalThis & { __dreamerPurchases?: unknown })
+      .__dreamerPurchases;
+  });
+
+  it('opens the Play subscriptions page on Android when RevenueCat has no management URL', async () => {
+    mockPlatform.OS = 'android';
+    const service = require('../subscriptionServiceReal');
+
+    await service.openManagement();
+
+    expect(mockConfigure).toHaveBeenCalled();
+    expect(mockOpenURL).toHaveBeenCalledWith('https://play.google.com/store/account/subscriptions');
+    expect(mockShowManageSubscriptions).not.toHaveBeenCalled();
+  });
+
+  it('presents the App Store sheet on iOS', async () => {
+    mockPlatform.OS = 'ios';
+    const service = require('../subscriptionServiceReal');
+
+    await service.openManagement();
+
+    expect(mockShowManageSubscriptions).toHaveBeenCalledTimes(1);
+    expect(mockOpenURL).not.toHaveBeenCalled();
+  });
+
+  it('opens the owning store on iOS when the subscription was bought on Google Play', async () => {
+    mockPlatform.OS = 'ios';
+    const playUrl = 'https://play.google.com/store/account/subscriptions?package=com.tanuki75.noctalia';
+    mockGetCustomerInfo.mockImplementationOnce(async () => ({ managementURL: playUrl }));
+    mockGetCustomerInfo.mockImplementationOnce(async () => ({ managementURL: playUrl }));
+    const service = require('../subscriptionServiceReal');
+
+    await service.openManagement();
+
+    expect(mockOpenURL).toHaveBeenCalledWith(playUrl);
+    expect(mockShowManageSubscriptions).not.toHaveBeenCalled();
   });
 });
