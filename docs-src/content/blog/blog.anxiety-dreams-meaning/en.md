@@ -382,7 +382,7 @@
 <section class="mt-16 glass-panel rounded-2xl p-6" id="sources">
 <h2 class="font-serif text-2xl text-dream-cream mb-4">Sources and further reading</h2>
 <ul class="mt-6 space-y-2 text-sm text-gray-400">
-<li><a href="https://asdreams.org/journal/issues/asdj13-4.htm" rel="nofollow noopener noreferrer" target="_blank">Nielsen, Zadra et al. (2003), “The Typical Dreams of Canadian University Students”, <em>Dreaming</em>, 13(4)</a></li>
+<li><a href="https://doi.org/10.1023/B:DREM.0000003144.40929.0b" rel="nofollow noopener noreferrer" target="_blank">Nielsen, Zadra et al. (2003), “The Typical Dreams of Canadian University Students”, <em>Dreaming</em>, 13(4)</a></li>
 <li><a href="https://pubmed.ncbi.nlm.nih.gov/11515147/" rel="nofollow noopener noreferrer" target="_blank">Revonsuo (2000), “The reinterpretation of dreams: an evolutionary hypothesis of the function of dreaming”, <em>Behavioral and Brain Sciences</em></a></li>
 <li><a href="https://doi.org/10.1037/a0016570" rel="nofollow noopener noreferrer" target="_blank">Walker &amp; van der Helm (2009), “Overnight therapy? The role of sleep in emotional brain processing”, <em>Psychological Bulletin</em></a></li>
 <li><a href="https://doi.org/10.1207/s15402010bsm0401_4" rel="nofollow noopener noreferrer" target="_blank">Krakow &amp; Zadra (2006), “Clinical management of chronic nightmares: imagery rehearsal therapy”, <em>Behavioral Sleep Medicine</em></a></li>

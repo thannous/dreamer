@@ -397,7 +397,7 @@
 <section class="mt-16 glass-panel rounded-2xl p-6" id="sources">
 <h2 class="font-serif text-2xl text-dream-cream mb-4">Sources et lectures</h2>
 <ul class="mt-6 space-y-2 text-sm text-gray-400">
-<li><a href="https://asdreams.org/journal/issues/asdj13-4.htm" rel="nofollow noopener noreferrer" target="_blank">Nielsen, Zadra et al. (2003), « The Typical Dreams of Canadian University Students », <em>Dreaming</em>, 13(4)</a></li>
+<li><a href="https://doi.org/10.1023/B:DREM.0000003144.40929.0b" rel="nofollow noopener noreferrer" target="_blank">Nielsen, Zadra et al. (2003), « The Typical Dreams of Canadian University Students », <em>Dreaming</em>, 13(4)</a></li>
 <li><a href="https://www.sleepfoundation.org/sleep-faqs/hypnic-jerks" rel="nofollow noopener noreferrer" target="_blank">Sleep Foundation, « Hypnic Jerks »</a></li>
 <li><a href="https://www.cambridge.org/core/journals/behavioral-and-brain-sciences/article/reinterpretation-of-dreams-an-evolutionary-hypothesis-of-the-function-of-dreaming/EE0E7DB39E361540D2DDA79C262EDA7E" rel="nofollow noopener noreferrer" target="_blank">Revonsuo (2000), « The reinterpretation of dreams », <em>Behavioral and Brain Sciences</em></a></li>
 <li><a href="https://dictionary.apa.org/dream" rel="nofollow noopener noreferrer" target="_blank">APA Dictionary of Psychology, « Dream »</a></li>

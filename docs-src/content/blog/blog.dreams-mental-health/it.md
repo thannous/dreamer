@@ -389,7 +389,7 @@
 <li><a href="https://doi.org/10.5664/jcsm.7178" rel="nofollow noopener noreferrer" target="_blank">Morgenthaler et al. (2018), «Position Paper for the Treatment of Nightmare Disorder in Adults», <em>Journal of Clinical Sleep Medicine</em></a></li>
 <li><a href="https://doi.org/10.1037/a0016570" rel="nofollow noopener noreferrer" target="_blank">Walker e van der Helm (2009), «Overnight therapy? The role of sleep in emotional brain processing», <em>Psychological Bulletin</em>, 135(5)</a></li>
 <li><a href="https://www.nimh.nih.gov/health/publications/post-traumatic-stress-disorder-ptsd" rel="nofollow noopener noreferrer" target="_blank">NIMH, «Post-Traumatic Stress Disorder»</a></li>
-<li><a href="https://asdreams.org/journal/issues/asdj13-4.htm" rel="nofollow noopener noreferrer" target="_blank">Nielsen, Zadra et al. (2003), «The Typical Dreams of Canadian University Students», <em>Dreaming</em>, 13(4)</a></li>
+<li><a href="https://doi.org/10.1023/B:DREM.0000003144.40929.0b" rel="nofollow noopener noreferrer" target="_blank">Nielsen, Zadra et al. (2003), «The Typical Dreams of Canadian University Students», <em>Dreaming</em>, 13(4)</a></li>
 <li><a href="https://dreamresearch.net/" rel="nofollow noopener noreferrer" target="_blank">DreamResearch.net, G. William Domhoff</a></li>
 </ul>
 <p class="mt-6 text-xs text-purple-200/60">Aggiornato il 9 ottobre 2026</p>
