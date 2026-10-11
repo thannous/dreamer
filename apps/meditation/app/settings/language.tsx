@@ -1,7 +1,7 @@
 import React from 'react';
 import { ScrollView, View } from 'react-native';
 
-import { Screen } from '@/components/atmosphere/Screen';
+import { WorldPage } from '@/components/worlds/WorldPage';
 import { SelectableCard } from '@/components/onboarding/SelectableCard';
 import { BackLink, Rule, Text } from '@/components/ui';
 import { useTranslation } from '@/context/LanguageContext';
@@ -17,7 +17,7 @@ export default function LanguageScreen() {
   const { t, language, setLanguage } = useTranslation();
 
   return (
-    <Screen variant="subtle" edges={['top']}>
+    <WorldPage edges={['top']}>
       <BackLink label={t('common.back')} className="px-gutter pt-2" />
 
       <ScrollView
@@ -43,6 +43,6 @@ export default function LanguageScreen() {
           ))}
         </View>
       </ScrollView>
-    </Screen>
+    </WorldPage>
   );
 }

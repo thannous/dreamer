@@ -1,13 +1,14 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { FlatList, Pressable, Text, View } from 'react-native';
+import { FlatList, Pressable, Text, View, type NativeScrollEvent, type NativeSyntheticEvent } from 'react-native';
 import type { DreamListItem } from '@/lib/journalReadContracts';
 import { useRemoteJournalList } from '@/hooks/useRemoteJournalList';
 import { useTranslation } from '@/hooks/useTranslation';
 import { useLocaleFormatting } from '@/hooks/useLocaleFormatting';
 
-export function RemoteJournalList({ userId, searchQuery, onOpenDream, header, bottomInset = 0 }: {
+export function RemoteJournalList({ userId, searchQuery, onOpenDream, header, bottomInset = 0, onScroll }: {
   userId: string; searchQuery: string; onOpenDream: (item: DreamListItem) => Promise<void>;
   header?: React.ReactElement; bottomInset?: number;
+  onScroll?: (event: NativeSyntheticEvent<NativeScrollEvent>) => void;
 }) {
   const { items, loading, error, complete, loadMore } = useRemoteJournalList(userId);
   const { t } = useTranslation();
@@ -34,6 +35,8 @@ export function RemoteJournalList({ userId, searchQuery, onOpenDream, header, bo
     keyExtractor={item => String(item.remoteId)}
     ListHeaderComponent={header}
     keyboardShouldPersistTaps="handled"
+    onScroll={onScroll}
+    scrollEventThrottle={16}
     renderItem={({ item }) => <Pressable accessibilityRole="button" disabled={opening !== null} onPress={() => { void open(item); }} className="mx-4 mb-3 rounded-xl bg-ink-soft p-4">
       <Text className="font-sans-bold text-body text-ivory">{item.title}</Text>
       <Text className="font-sans text-body-sm text-ivory-muted">{formatShortDate(item.id)}</Text>

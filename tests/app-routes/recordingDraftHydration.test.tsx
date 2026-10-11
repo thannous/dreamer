@@ -4,6 +4,9 @@ import { act, cleanup, fireEvent, render, screen } from '@testing-library/react'
 import { afterEach, beforeEach, describe, expect, it, jest } from '@jest/globals';
 import { TID } from '@/lib/testIDs';
 
+// Decorative artwork; expo-image needs a native view the test runtime does not provide.
+jest.mock('@/components/ui/NightSkyBand', () => ({ NightSkyBand: () => null }));
+
 let mockHydrated = false;
 let mockRestore: (value: string) => void;
 let mockPartial: (value: string) => void;
@@ -119,10 +122,9 @@ jest.mock('@/services/storageService', () => ({
   saveRecordingInputModePreference: jest.fn(async () => {}),
   saveRecordingVoiceHintCompleted: jest.fn(async () => {}),
 }));
-jest.mock('@/components/dev/MockNavigationRail', () => ({ MockNavigationRail: () => null }));
 jest.mock('@/components/navigation/NoctaliaBottomNav', () => ({ NoctaliaBottomNav: () => null }));
 jest.mock('@/components/ui/icon-symbol', () => ({ IconSymbol: () => null }));
-jest.mock('@/components/recording/AtmosphereBackground', () => ({ AtmosphereBackground: () => null }));
+jest.mock('@/components/ui/DreamerBackground', () => ({ DreamerArtworkWindow: () => null, DreamerBackground: () => null }));
 jest.mock('@/components/recording/OfflineModelDownloadSheet', () => ({ OfflineModelDownloadSheet: () => null }));
 jest.mock('@/components/recording/RememberedDreamProfileChips', () => ({ RememberedDreamProfileChips: () => null }));
 jest.mock('@/components/recording/RecordingDraftProgress', () => ({ RecordingDraftProgress: () => null }));

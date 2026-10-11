@@ -182,6 +182,12 @@ jest.mock('react-native-safe-area-context', () => ({
   useSafeAreaInsets: () => ({ top: 0, right: 0, bottom: 0, left: 0 }),
 }));
 
+// This route fixture replaces React Native entirely; keep Expo's asset-native
+// initialization outside the saved-dream interaction being exercised here.
+jest.mock('expo-asset', () => ({ Asset: {
+  fromModule: (source: unknown) => ({ uri: typeof source === 'string' ? source : 'file:///bundled-test-artwork.webp' }),
+} }));
+
 jest.mock('@/components/analysis/AnalysisReadingModal', () => ({
   AnalysisReadingModal: ({ onClose }: { onClose: () => void }) => (
     <div data-testid="analysis.reading.modal"><button onClick={onClose}>Close reading</button></div>
@@ -551,6 +557,37 @@ describe('journal detail saved confirmation route', () => {
     });
     expect(screen.queryByTestId(TID.Sheet.SavedDreamAnalysis)).toBeNull();
     expect(mockTransitionOnboarding).not.toHaveBeenCalled();
+  });
+
+  // Web E2E cannot observe this: the browser's confirm() blocks the page while it is open.
+  it('shows no analysis in progress while AI consent is still being asked', async () => {
+    let answer: (granted: boolean) => void = () => {};
+    mockRequestAiConsent.mockImplementationOnce(() => new Promise<boolean>((resolve) => { answer = resolve; }));
+    render(<JournalDetailScreen />);
+    await act(async () => { fireEvent.click(screen.getByTestId(TID.Button.DreamDetailPrimaryCta)); });
+    expect(mockRequestAiConsent).toHaveBeenCalledTimes(1);
+    expect(screen.queryByText('loading.analyzing')).toBeNull();
+    await act(async () => { answer(false); });
+    expect(mockAnalyzeDream).not.toHaveBeenCalled();
+    expect(screen.queryByText('loading.analyzing')).toBeNull();
+    expect(screen.getByTestId(TID.Button.DreamDetailPrimaryCta)).toBeTruthy();
+  });
+
+  it('keeps the analysis offer in place while allowances load', () => {
+    mockQuotaLoading = true;
+    mockQuotaUsage = undefined;
+    const view = render(<JournalDetailScreen />);
+    // The saved moment may omit the default message, so absence must stay absence too.
+    const actionMessage = () => screen.queryByTestId(TID.Text.DreamDetailActionMessage)?.textContent ?? null;
+    const primaryCta = () => screen.getByTestId(TID.Button.DreamDetailPrimaryCta).textContent;
+    const loadingMessage = actionMessage();
+    const loadingCta = primaryCta();
+    expect(loadingCta).not.toContain('journal.detail.check_analysis');
+    mockQuotaLoading = false;
+    mockQuotaUsage = { analysis: { used: 1, limit: 3, remaining: 2 } };
+    view.rerender(<JournalDetailScreen />);
+    expect(actionMessage()).toBe(loadingMessage);
+    expect(primaryCta()).toBe(loadingCta);
   });
 
   it('does not start a second categorization for a saved guest dream', () => {

@@ -2,7 +2,7 @@ import { useRouter } from 'expo-router';
 import React from 'react';
 import { View } from 'react-native';
 
-import { Screen } from '@/components/atmosphere/Screen';
+import { WorldPage } from '@/components/worlds/WorldPage';
 import { Button, Rule, Text } from '@/components/ui';
 import { useTranslation } from '@/context/LanguageContext';
 
@@ -16,7 +16,7 @@ export default function SignInScreen() {
   const { t } = useTranslation();
 
   return (
-    <Screen variant="subtle">
+    <WorldPage>
       <View className="flex-1 justify-between px-gutter pb-4 pt-12">
         <View className="gap-3">
           <Text variant="h1">{t('auth.title')}</Text>
@@ -35,6 +35,6 @@ export default function SignInScreen() {
           <Button label={t('auth.guest')} variant="ghost" onPress={() => router.replace('/')} />
         </View>
       </View>
-    </Screen>
+    </WorldPage>
   );
 }

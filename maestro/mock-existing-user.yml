@@ -9,13 +9,6 @@ appId: com.tanuki75.noctalia
     commands:
       - tapOn:
           id: btn.navigateJournal
-- runFlow:
-    when:
-      visible:
-        id: btn.mockNav.journal
-    commands:
-      - tapOn:
-          id: btn.mockNav.journal
 - extendedWaitUntil:
     visible:
       id: screen.journal

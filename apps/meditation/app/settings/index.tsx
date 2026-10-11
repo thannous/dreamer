@@ -4,36 +4,29 @@ import React from 'react';
 import { ScrollView, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
-import { Screen } from '@/components/atmosphere/Screen';
+import { WorldPage } from '@/components/worlds/WorldPage';
 import { SettingsGroup, SettingsRow } from '@/components/settings/SettingsRow';
 import { BackLink, Rule, Text } from '@/components/ui';
 import { useTranslation } from '@/context/LanguageContext';
 import { useSubscription } from '@/context/SubscriptionContext';
 import { TID } from '@/lib/testIDs';
 import { useSettings } from '@/context/SettingsContext';
-import { useTheme } from '@/context/ThemeContext';
+import { useWorld } from '@/context/WorldContext';
 import type { TranslationKey } from '@/lib/i18n';
 import { formatHour } from '@/lib/reminders';
 
 export default function SettingsScreen() {
   const router = useRouter();
   const { t, language } = useTranslation();
-  const { preference, setPreference } = useTheme();
+  const { world } = useWorld();
   const { reminders, videoBackgrounds, setVideoBackgrounds } = useSettings();
   const { subscriptionsEnabled = true } = useSubscription();
   const insets = useSafeAreaInsets();
 
   const version = Constants.expoConfig?.version ?? '—';
 
-  // Tapping the theme row cycles it: three values do not deserve a screen.
-  const cycleTheme = () => {
-    const order = ['auto', 'light', 'dark'] as const;
-    const next = order[(order.indexOf(preference) + 1) % order.length];
-    setPreference(next);
-  };
-
   return (
-    <Screen variant="subtle" edges={['top']}>
+    <WorldPage edges={['top']}>
       <BackLink label={t('common.back')} className="px-gutter pt-2" />
 
       <ScrollView
@@ -72,11 +65,10 @@ export default function SettingsScreen() {
 
         <SettingsGroup title={t('settings.group.app')}>
           <SettingsRow
-            testID={TID.Button.SettingsTheme}
-            label={t('settings.theme')}
-            value={t(`settings.theme.${preference}` as TranslationKey)}
-            inline
-            onPress={cycleTheme}
+            testID={TID.Button.SettingsWorld}
+            label={t('settings.world')}
+            value={t(world.nameKey)}
+            onPress={() => router.dismissTo('/(drawer)/(tabs)')}
           />
           <SettingsRow
             label={t('settings.video')}
@@ -103,6 +95,6 @@ export default function SettingsScreen() {
           <SettingsRow label={t('settings.version')} value={version} />
         </SettingsGroup>
       </ScrollView>
-    </Screen>
+    </WorldPage>
   );
 }

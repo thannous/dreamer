@@ -196,8 +196,7 @@ describe('immersive home journey', () => {
 
     expect(mockPush).toHaveBeenCalledTimes(1);
     expect(mockPush).toHaveBeenCalledWith('/session/sleep-descent?worldId=constellation');
-    expect(screen.getByTestId('home.journey.ritual-access')).toHaveTextContent('Free');
-    expect(screen.getByTestId('home.journey.ritual-access')).not.toHaveTextContent('Plus');
+    expect(screen.queryByTestId('home.journey.ritual-access')).toBeNull();
     expect(screen.getByTestId('home.journey.upcoming.dream-threshold.access')).toHaveTextContent('Plus');
     expect(screen.getByTestId('home.journey.upcoming.dream-lucid.access')).toHaveTextContent('Plus');
   });
@@ -365,8 +364,9 @@ describe('immersive home journey', () => {
     expect(hero.getByText('Before sleep').props.numberOfLines).toBeUndefined();
     expect(screen.getByTestId('home.world-switcher.tide.locked')).toBeTruthy();
     expect(screen.queryByTestId('home.world-switcher.tide.owned')).toBeNull();
-    expect(screen.getByTestId('home.journey.ritual-access')).toHaveTextContent('Free');
-    expect(screen.getByTestId('home.journey.reason').props.numberOfLines).toBeUndefined();
+    expect(screen.queryByTestId('home.journey.ritual-access')).toBeNull();
+    // A world-led ritual omits the redundant recommendation paragraph.
+    expect(screen.queryByTestId('home.journey.reason')).toBeNull();
     const ritualTitle = screen.getByTestId('home.journey.ritual-title');
     expect(ritualTitle).toHaveTextContent('Bringing the breath down');
     expect(ritualTitle.props.numberOfLines).toBeUndefined();
@@ -526,8 +526,7 @@ describe('immersive home journey', () => {
     );
     expect(screen.getByTestId('home.world.owned')).toHaveTextContent('This world is yours');
     expect(screen.queryByText('Plus')).toBeNull();
-    expect(screen.getByTestId('home.journey.ritual-access')).toHaveTextContent('Free');
-    expect(screen.getByTestId('home.journey.ritual-access')).not.toHaveTextContent('Plus');
+    expect(screen.queryByTestId('home.journey.ritual-access')).toBeNull();
     expect(screen.getByTestId(ACTIVE_JOURNEY_CTA_TEST_ID)).toHaveTextContent(/^Begin$/);
     expect(screen.getAllByTestId(/^home\.journey\.upcoming\.[^.]+$/).length).toBeGreaterThan(0);
     expect(screen.getByTestId('home.journey.upcoming.stress-unclench.access')).toHaveTextContent('Free');
@@ -551,8 +550,7 @@ describe('immersive home journey', () => {
     expect(screen.queryByTestId('home.journey.quota')).toBeNull();
     expect(screen.queryByTestId('home.journey.quota-reset')).toBeNull();
     expect(screen.queryByTestId('home.journey.quota-alternative')).toBeNull();
-    expect(screen.getByTestId('home.journey.ritual-access')).toHaveTextContent('Free');
-    expect(screen.getByTestId('home.journey.ritual-access')).not.toHaveTextContent('Quota used');
+    expect(screen.queryByTestId('home.journey.ritual-access')).toBeNull();
 
     const cta = screen.getByTestId(ACTIVE_JOURNEY_CTA_TEST_ID);
     expect(cta).toHaveTextContent(/^Begin$/);
@@ -573,8 +571,7 @@ describe('immersive home journey', () => {
     expect(screen.getByTestId('home.journey.quota')).toHaveTextContent(
       /2 free sessions left this month/
     );
-    expect(screen.getByTestId('home.journey.ritual-access')).toHaveTextContent('Free');
-    expect(screen.getByTestId('home.journey.ritual-access')).not.toHaveTextContent('Quota used');
+    expect(screen.queryByTestId('home.journey.ritual-access')).toBeNull();
     expect(screen.getByTestId('home.journey.quota-reset')).toHaveTextContent(
       /Resets on 1 September 2026/
     );
@@ -624,8 +621,7 @@ describe('immersive home journey', () => {
     });
 
     expect(screen.getByTestId(ACTIVE_JOURNEY_CTA_TEST_ID)).toHaveTextContent(/^Begin$/);
-    expect(screen.getByTestId('home.journey.ritual-access')).toHaveTextContent('Free');
-    expect(screen.getByTestId('home.journey.ritual-access')).not.toHaveTextContent('Quota used');
+    expect(screen.queryByTestId('home.journey.ritual-access')).toBeNull();
     expect(screen.queryByTestId('home.journey.quota')).toBeNull();
     fireEvent.press(screen.getByTestId(ACTIVE_JOURNEY_CTA_TEST_ID));
     expect(mockPush).toHaveBeenCalledWith('/session/sleep-descent?worldId=constellation');
@@ -771,8 +767,7 @@ describe('immersive home journey', () => {
 
     const cta = screen.getByTestId(ACTIVE_JOURNEY_CTA_TEST_ID);
     expect(cta).toHaveTextContent(/^Begin$/);
-    expect(screen.getByTestId('home.journey.ritual-access')).toHaveTextContent('Free');
-    expect(screen.getByTestId('home.journey.ritual-access')).not.toHaveTextContent('Quota used');
+    expect(screen.queryByTestId('home.journey.ritual-access')).toBeNull();
     expect(screen.getByTestId('home.journey.quota')).toHaveTextContent(/1 free session left this month/);
     fireEvent.press(cta);
     expect(mockPush).toHaveBeenCalledWith('/session/sleep-descent?worldId=constellation');
@@ -798,8 +793,7 @@ describe('immersive home journey', () => {
 
     const cta = await screen.findByTestId(ACTIVE_JOURNEY_CTA_TEST_ID);
     expect(cta).toHaveTextContent(/^Begin$/);
-    expect(screen.getByTestId('home.journey.ritual-access')).toHaveTextContent('Free');
-    expect(screen.getByTestId('home.journey.ritual-access')).not.toHaveTextContent('Plus');
+    expect(screen.queryByTestId('home.journey.ritual-access')).toBeNull();
     expect(screen.queryByText('Plus')).toBeNull();
     expect(screen.queryByTestId('home.journey.quota')).toBeNull();
     expect(screen.queryByTestId('home.journey.quota-alternative')).toBeNull();
@@ -821,7 +815,7 @@ describe('immersive home journey', () => {
       await Promise.resolve();
     });
 
-    expect(screen.getByTestId('home.journey.ritual-access')).toHaveTextContent('Free');
+    expect(screen.queryByTestId('home.journey.ritual-access')).toBeNull();
     expect(screen.getByTestId('home.journey.upcoming.dream-threshold.access')).toHaveTextContent('Free');
     expect(screen.getByTestId('home.journey.upcoming.dream-lucid.access')).toHaveTextContent('Free');
     expect(screen.getByTestId('home.journey.upcoming.dream-threshold.access')).not.toHaveTextContent('Plus');

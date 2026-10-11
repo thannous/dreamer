@@ -6,11 +6,12 @@ import React, {
   useMemo,
   useState,
 } from 'react';
-import { Uniwind, useUniwind } from 'uniwind';
+import { ScopedTheme, Uniwind, useUniwind } from 'uniwind';
 
 import {
   Atmosphere,
-  PaperTheme,
+  DEFAULT_THEME_PREFERENCE,
+  NightTheme,
   Themes,
   type ThemeColors,
   type ThemeMode,
@@ -42,7 +43,7 @@ const applyTheme = (preference: ThemePreference) => {
 
 export const ThemeProvider: React.FC<React.PropsWithChildren> = ({ children }) => {
   const { theme } = useUniwind();
-  const [preference, setPreferenceState] = useState<ThemePreference>('auto');
+  const [preference, setPreferenceState] = useState<ThemePreference>(DEFAULT_THEME_PREFERENCE);
   const [loaded, setLoaded] = useState(false);
 
   useEffect(() => {
@@ -91,11 +92,29 @@ export const useTheme = (): ThemeContextValue => {
   if (ctx) return ctx;
 
   return {
-    mode: 'light',
-    colors: PaperTheme,
-    atmosphere: Atmosphere.light,
-    preference: 'auto',
+    mode: 'dark',
+    colors: NightTheme,
+    atmosphere: Atmosphere.dark,
+    preference: DEFAULT_THEME_PREFERENCE,
     setPreference: async () => {},
     loaded: false,
   };
 };
+
+/** A surface's CSS colours, native props and atmosphere must share one palette. */
+export function ThemeScope({
+  mode,
+  children,
+}: React.PropsWithChildren<{ mode: ThemeMode }>) {
+  const inherited = useTheme();
+  const value = useMemo<ThemeContextValue>(
+    () => ({ ...inherited, mode, colors: Themes[mode], atmosphere: Atmosphere[mode] }),
+    [inherited, mode]
+  );
+
+  return (
+    <ThemeContext.Provider value={value}>
+      <ScopedTheme theme={mode}>{children}</ScopedTheme>
+    </ThemeContext.Provider>
+  );
+}

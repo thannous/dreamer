@@ -226,10 +226,10 @@ describe('NoctaliaBottomNav', () => {
     expect(labels).toHaveLength(5);
     labels.forEach((label) => {
       const style = JSON.parse(label.getAttribute('data-native-style') ?? '{}');
-      expect(style.fontSize).toBe(width < 400 ? 11 : 12);
+      expect(style.fontSize).toBe(11);
       expect(label.getAttribute('data-number-of-lines')).toBe('1');
     });
-    const margin = width < 400 ? 8 : 22;
+    const margin = 8;
     expect(barBox(TID.Tab.AddDream)).toMatchObject({ start: margin, end: margin, height: 86 });
   });
 
@@ -285,8 +285,9 @@ describe('NoctaliaBottomNav', () => {
     expect(box.end).toBe(8);
     expect(box.height).toBe(86);
     expect(barClass).toContain('px-1');
-    expect(center.width).toBeCloseTo(54.8, 1);
-    expect(center.height).toBe(76);
+    expect(center.width).toBeCloseTo(58.8, 1);
+    // Capture sits in the bar row like the other tabs; it no longer has a lifted fixed height.
+    expect(center.height).toBeUndefined();
     expect(screen.queryByTestId(TID.Tab.Settings)).toBeNull();
     expect(labels).toHaveLength(5);
     labels.forEach((label) => {
@@ -307,7 +308,7 @@ describe('NoctaliaBottomNav', () => {
     const center = centerBox(TID.Tab.AddDream);
     const labels = barLabels();
 
-    expect(center.width).toBe(54.8);
+    expect(center.width).toBe(56.8);
     expect(labels).toHaveLength(5);
     [TID.Tab.Home, TID.Tab.Journal, TID.Tab.AddDream, TID.Tab.Stats, TID.Tab.Explore]
       .forEach((testID) => expect(screen.getByTestId(testID).getAttribute('role')).toBe('tab'));
@@ -345,7 +346,7 @@ describe('NoctaliaBottomNav', () => {
     const center = centerBox(TID.Tab.AddDream);
     const labels = barLabels();
 
-    expect(center.width).toBeCloseTo(166.6, 2);
+    expect(center.width).toBeCloseTo(168.6, 2);
     expect(labels).toHaveLength(5);
     expect(screen.getByText(/^nav\.capture_dream(?:_compact)?$/).getAttribute('data-number-of-lines')).toBe('1');
   });
@@ -384,8 +385,9 @@ describe('NoctaliaBottomNav', () => {
     expect(box.start).toBe(8);
     expect(box.end).toBe(8);
     expect(barClass).toContain('px-2');
-    expect(center.width).toBeCloseTo(67.2, 1);
-    expect(center.height).toBe(76);
+    expect(center.width).toBeCloseTo(71.2, 1);
+    // Capture sits in the bar row like the other tabs; it no longer has a lifted fixed height.
+    expect(center.height).toBeUndefined();
     expect(centerLabel?.getAttribute('data-native-class')).toContain('text-[12px]');
     expect(centerLabel?.getAttribute('data-accessible')).toBe('false');
     expect(box.height).toBe(86);

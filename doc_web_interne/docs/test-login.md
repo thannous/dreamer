@@ -162,7 +162,7 @@ with that URL, the branch publishable key, the branch functions URL
 (`https://<ref>.functions.supabase.co/api`), `EXPO_PUBLIC_SUPABASE_FUNCTION_JWT` set to
 the branch key (else `lib/http.ts` falls back to the production legacy JWT in
 `app.json`), mock mode off and `EXPO_NO_DOTENV=1` (no `.env.local` mixed in); no
-`E2E_*` variable reaches Metro. Of the shell's `EXPO_PUBLIC_*` values (inlined into
+`E2E_*` variable reaches Metro, and `NODE_OPTIONS` / `NODE_PATH` are dropped (a preload would run before the runner's final guard). Of the shell's `EXPO_PUBLIC_*` values (inlined into
 the bundle) only an explicit allowlist of feature flags passes
 (`PASSTHROUGH_EXPO_PUBLIC` in the script); keys, endpoints, RevenueCat, Google,
 Turnstile, mock and QA switches are dropped. Arguments: only `--web`,
@@ -235,7 +235,7 @@ SIGINT/SIGTERM/SIGHUP) the wrapper replaces the exact password, raw and
 JSON-escaped, with `[redacted]` in that folder and in every
 `~/.maestro/tests/<stamp>/` folder created during the run. Older folders are not
 touched; if you ran the flow before this wrapper existed, delete them. Metro stays in the foreground, so use two terminals
-on the owner machine, with the dev client connected to that Metro:
+on the machine that runs the tests, with the dev client connected to that Metro:
 
 ```sh
 # terminal 1: Metro against the branch (guarded; refuses production); leave it running
@@ -267,7 +267,7 @@ flow fails there by design.
   ([GitHub integration](https://supabase.com/docs/guides/deployment/branching/github-integration)).
   So the top-level `[auth]` block would not change production auth by default, but
   the integration would push migrations and functions to production on every merge
-  to `master`, outside the owner-machine release rule. Ephemeral preview branches
+  to `master`, outside the delivery rule (nothing goes to production without thanh's go). Ephemeral preview branches
   also get the top-level config.
 - Recommendation: no GitHub integration. Create the branch with the CLI or the
   dashboard and set its Auth settings in the dashboard with the branch selected
@@ -323,6 +323,6 @@ See the click-level list below; production auth settings never change.
 7. No production data: with `e2e` selected, Authentication > Users is empty and
    Table Editor > `dreams` has no rows before the first seed.
 8. Review PR: add `<e2e-branch-ref>` to `scripts/test-supabase-targets.json`.
-9. On the PC Tanuki and the Mac mini: copy `.env.test.example` to
+9. On the machine that runs the tests: copy `.env.test.example` to
    `.env.test.local`, fill it, run `npm run test:env:check`, then
    `npm run test:seed-users` and `npm run test:auth-setup`.

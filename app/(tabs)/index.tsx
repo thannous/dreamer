@@ -47,6 +47,8 @@ import {
 import { TID } from "@/lib/testIDs";
 import { resolveTodayState, type TodayState } from "@/lib/todayState";
 import { getRitualPreference, getRitualStepProgress, getSavedTranscript, saveRitualStepProgress } from "@/services/storageService";
+import { useHeaderScroll } from '@/components/ui/headerStretch';
+import { withHeaderScroll } from '@/components/ui/HeaderScrollScope';
 
 type IconName = Parameters<typeof IconSymbol>[0]["name"];
 type TranslateFn = ReturnType<typeof useTranslation>["t"];
@@ -58,7 +60,9 @@ const DATE_CHECK_INTERVAL_MS = 5 * 60 * 1000;
  *
  * Tracks daily ritual progress and resets it when the local date changes.
  */
-export default function InspirationScreen() {
+function InspirationScreen() {
+  // This screen's own scroll, published to its header painting and title.
+  const onHeaderScroll = useHeaderScroll();
   const { colors, mode } = useTheme();
   const openQuickSettings = useQuickSettings();
   const noctalia = useMemo(() => getNoctaliaDesignTokens(colors, mode), [colors, mode]);
@@ -308,6 +312,8 @@ export default function InspirationScreen() {
       <View testID="screen.home" className="flex-1 bg-ink">
         <ScrollView
           className="flex-1"
+          onScroll={onHeaderScroll}
+          scrollEventThrottle={16}
           style={scrollHeader ? { marginBottom: navigationClearance } : undefined}
           contentInsetAdjustmentBehavior={scrollHeader ? 'never' : undefined}
           contentContainerStyle={{ paddingBottom: scrollContentBottomPadding }}
@@ -455,3 +461,5 @@ const HomeResourcesRow = memo(function HomeResourcesRow({
 
 // QuickAccess section intentionally removed to keep the home
 // focused on guidance, rituals and inspiration rather than navigation.
+
+export default withHeaderScroll(InspirationScreen);

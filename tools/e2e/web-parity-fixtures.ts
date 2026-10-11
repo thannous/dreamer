@@ -1,4 +1,5 @@
 import { test as base, surfaceOf } from '@e2e-dev/web';
+import type { Browser, DialogHandler } from '@e2e-dev/web';
 import { expect as e2eExpect } from 'e2e';
 import type { Page, BrowserContext } from 'playwright/test';
 import { createRequire } from 'node:module';
@@ -19,6 +20,15 @@ export type ParityInfo = {
 };
 
 type Fixtures = { page: Page; context: BrowserContext };
+const ownedBrowsers = new WeakMap<Page, Browser>();
+
+/** Route a historical page's dialog through its SDK-owned attempt. */
+export async function withDialog(page: Page, handler: DialogHandler, action: () => Promise<unknown>) {
+  const browser = ownedBrowsers.get(page);
+  if (!browser) throw new Error('Dialog requires an owned TesterArmy page.');
+  const unsubscribe = await browser.onDialog(handler);
+  try { await action(); } finally { await unsubscribe(); }
+}
 type Body = (fixtures: Fixtures, info: ParityInfo) => Promise<void>;
 type Hook = (fixtures: Fixtures) => Promise<void>;
 
@@ -54,6 +64,7 @@ export function createParityTest(initial: Options = {}) {
       await browser.setViewport(active.viewport ?? { width: 1280, height: 720 });
       await app.open();
       const page = surfaceOf(webEngine)!.page() as unknown as Page;
+      ownedBrowsers.set(page, browser);
       page.setDefaultTimeout(30_000);
       // Historical journeys predate the one-time AI permission dialog; give it up front.
       await page.context().addInitScript(() => window.localStorage.setItem('noctalia.aiConsent.v1', 'granted'));
@@ -65,6 +76,7 @@ export function createParityTest(initial: Options = {}) {
       if (reducedMotion) await page.emulateMedia({ reducedMotion });
       try { await provide(page); }
       finally {
+        ownedBrowsers.delete(page);
         page.goto = goto;
         e2eExpect.soft(serviceRequests, 'No real billing/backend request is allowed').toEqual([]);
       }

@@ -32,6 +32,13 @@ const IMAGES = [
   require('../../docs-src/static/img/dreams/glass-teeth-480w.webp'),
   require('../../docs-src/static/img/dreams/no-driver-480w.webp'),
 ];
+/** The dream told in Raconter (the staircase): it opens facing the reader, ringed in champagne. */
+const TOLD_DREAM = 0;
+/** The sphere point that faces the reader at the globe's opening rotation. */
+const FRONT_POINT = 6;
+const pointFor = (index: number) => POINTS[index === TOLD_DREAM ? FRONT_POINT : index === FRONT_POINT ? TOLD_DREAM : index];
+/** The row holding the way back from a dream to the globe. */
+const CONTROLS_HEIGHT = 44;
 const GOLDEN_ANGLE = Math.PI * (3 - Math.sqrt(5));
 const POINTS = IMAGES.map((_, index) => {
   const y = 1 - ((index + 0.5) * 2) / IMAGES.length;
@@ -44,12 +51,17 @@ const DREAM_KEYS = [
   'dream.glass-teeth', 'dream.no-driver',
 ];
 
-function DreamCard({ index, rotation, width, height, onSelect, buttonRef }: { index: number; rotation: SharedValue<number>; width: number; height: number; onSelect: (index: number) => void; buttonRef: (node: ViewInstance | null) => void }) {
+/** The globe fills the stage it is given; the orbit ring follows its radius. */
+function globeMetrics(width: number, height: number) {
+  const radius = Math.min(width * 0.36, height * 0.33, 160);
+  const cardWidth = Math.min(width * 0.3, height * 0.32, 140);
+  return { radius, cardWidth, cardHeight: cardWidth * 1.25, orbit: radius * 1.75 };
+}
+
+function DreamCard({ index, rotation, width, height, onSelect, buttonRef, ring }: { index: number; rotation: SharedValue<number>; width: number; height: number; onSelect: (index: number) => void; buttonRef: (node: ViewInstance | null) => void; ring?: string }) {
   const { t } = useTranslation();
-  const point = POINTS[index];
-  const radius = Math.min(width * 0.32, height * 0.3, 110);
-  const cardWidth = Math.min(width * 0.28, height * 0.3, 104);
-  const cardHeight = cardWidth * 1.25;
+  const point = pointFor(index);
+  const { radius, cardWidth, cardHeight } = globeMetrics(width, height);
   const position = useAnimatedStyle(() => {
     const yaw = rotation.get();
     const x = point.x * Math.cos(yaw) + point.z * Math.sin(yaw);
@@ -71,7 +83,7 @@ function DreamCard({ index, rotation, width, height, onSelect, buttonRef }: { in
 
   return (
     <Animated.View
-      style={[styles.card, { left: width / 2 - cardWidth / 2, top: (height - cardHeight) / 2, width: cardWidth, height: cardHeight }, position]}
+      style={[styles.card, { left: width / 2 - cardWidth / 2, top: (height - cardHeight) / 2, width: cardWidth, height: cardHeight }, ring ? { borderWidth: 2, borderColor: ring } : null, position]}
       testID={`component.onboarding.globeCard.${index}`}
     >
       <PressableScale
@@ -139,6 +151,7 @@ export function DreamGlobe({ tokens, stageHeight, onSelectionChange }: {
     duration: 300, dampingRatio: 0.8, reduceMotion: ReduceMotion.System,
   }));
 
+  const { orbit } = globeMetrics(width, stageHeight);
   const select = (index: number) => {
     cancelAnimation(rotation);
     setSelected(index);
@@ -148,8 +161,8 @@ export function DreamGlobe({ tokens, stageHeight, onSelectionChange }: {
   if (selected !== null) {
     return (
       <View>
-        <View style={[styles.entry, { height: stageHeight }]} testID="component.onboarding.dreamEntry">
-          <View style={[styles.entryImage, { height: stageHeight - 76, aspectRatio: 0.8 }]}>
+        <View style={[styles.entry, { height: stageHeight - CONTROLS_HEIGHT }]} testID="component.onboarding.dreamEntry">
+          <View style={[styles.entryImage, { height: stageHeight - CONTROLS_HEIGHT - 76, aspectRatio: 0.8 }]}>
             <DreamArtwork index={selected} />
           </View>
           <Text ref={entryTitle} {...(Platform.OS === 'web' ? { tabIndex: -1 as const } : {})} accessibilityRole="header" numberOfLines={1} style={[styles.entryTitle, { color: tokens.text.primary }]}>
@@ -172,7 +185,7 @@ export function DreamGlobe({ tokens, stageHeight, onSelectionChange }: {
       {reducedMotion ? (
         <View style={[styles.gallery, { height: stageHeight }]} testID="component.onboarding.dreamExamples">
           {IMAGES.slice(0, 3).map((source, index) => (
-            <PressableScale ref={(node) => { cardButtons.current[index] = node; }} key={index} accessibilityRole="button" accessibilityLabel={t(`onboarding.feature.${DREAM_KEYS[index]}.title`)} onPress={() => select(index)} style={[styles.galleryImage, { height: Math.min(stageHeight * 0.8, 230) }]} testID={`btn.onboarding.globeCard.${index}`}>
+            <PressableScale ref={(node) => { cardButtons.current[index] = node; }} key={index} accessibilityRole="button" accessibilityLabel={t(`onboarding.feature.${DREAM_KEYS[index]}.title`)} onPress={() => select(index)} style={[styles.galleryImage, { height: Math.min(stageHeight * 0.8, 300) }]} testID={`btn.onboarding.globeCard.${index}`}>
               <Image source={source} style={StyleSheet.absoluteFill} contentFit="cover" />
             </PressableScale>
           ))}
@@ -184,20 +197,21 @@ export function DreamGlobe({ tokens, stageHeight, onSelectionChange }: {
           style={[styles.stage, { height: stageHeight }]}
           testID="component.onboarding.dreamGlobe"
         >
-          <View pointerEvents="none" style={[styles.orbit, { borderColor: tokens.surface.border, top: (stageHeight - 190) / 2 }]} />
-          {IMAGES.map((_, index) => <DreamCard key={index} index={index} rotation={rotation} width={width} height={stageHeight} onSelect={select} buttonRef={(node) => { cardButtons.current[index] = node; }} />)}
+          <View pointerEvents="none" style={[styles.orbit, {
+            borderColor: tokens.surface.border, width: orbit, height: orbit, borderRadius: orbit / 2,
+            top: (stageHeight - orbit) / 2, left: (width - orbit) / 2,
+          }]} />
+          {IMAGES.map((_, index) => <DreamCard key={index} index={index} rotation={rotation} width={width} height={stageHeight} onSelect={select} buttonRef={(node) => { cardButtons.current[index] = node; }}
+            ring={index === TOLD_DREAM ? tokens.accent.text : undefined} />)}
+          {/* Turning buttons sit on the globe's flanks: the drag does the same, these keep it reachable. */}
+          <PressableScale accessibilityRole="button" accessibilityLabel={t('onboarding.feature.globe.previous')} onPress={() => rotate(-1)} style={[styles.control, styles.controlStart]} testID="btn.onboarding.globe.previous">
+            <IconSymbol name="chevron.left" size={20} color={tokens.accent.text} />
+          </PressableScale>
+          <PressableScale accessibilityRole="button" accessibilityLabel={t('onboarding.feature.globe.next')} onPress={() => rotate(1)} style={[styles.control, styles.controlEnd]} testID="btn.onboarding.globe.next">
+            <IconSymbol name="chevron.right" size={20} color={tokens.accent.text} />
+          </PressableScale>
         </View>
       </GestureDetector>}
-      <View style={styles.controls}>
-        {!reducedMotion ? <PressableScale accessibilityRole="button" accessibilityLabel={t('onboarding.feature.globe.previous')} onPress={() => rotate(-1)} style={styles.control} testID="btn.onboarding.globe.previous">
-          <IconSymbol name="chevron.left" size={18} color={tokens.accent.text} />
-        </PressableScale> : null}
-        <Text style={[styles.hint, { color: tokens.text.secondary }]}>{t(reducedMotion ? 'onboarding.feature.globe.touch_hint' : 'onboarding.feature.globe.hint')}</Text>
-        {!reducedMotion ? <PressableScale accessibilityRole="button" accessibilityLabel={t('onboarding.feature.globe.next')} onPress={() => rotate(1)} style={styles.control} testID="btn.onboarding.globe.next">
-          <IconSymbol name="arrow.right" size={18} color={tokens.accent.text} />
-        </PressableScale> : null}
-      </View>
-      <Text style={[styles.caption, { color: tokens.text.secondary }]}>{t('onboarding.feature.globe.caption')}</Text>
     </GestureHandlerRootView>
   );
 }
@@ -205,13 +219,14 @@ export function DreamGlobe({ tokens, stageHeight, onSelectionChange }: {
 const styles = StyleSheet.create({
   root: { width: '100%' },
   stage: { overflow: 'hidden' },
-  orbit: { position: 'absolute', width: 190, height: 190, borderRadius: 95, borderWidth: 1, alignSelf: 'center' },
+  orbit: { position: 'absolute', borderWidth: 1 },
   card: { position: 'absolute', borderRadius: 12, overflow: 'hidden', backfaceVisibility: 'hidden' },
   cardButton: { flex: 1 },
   controls: { flexDirection: 'row', justifyContent: 'center', alignItems: 'center', gap: 10, minHeight: 44 },
   control: { width: 44, height: 44, alignItems: 'center', justifyContent: 'center' },
+  controlStart: { position: 'absolute', left: 0, top: '50%', marginTop: -22, zIndex: 30 },
+  controlEnd: { position: 'absolute', right: 0, top: '50%', marginTop: -22, zIndex: 30 },
   hint: { fontFamily: Fonts.spaceGrotesk.regular, fontSize: 11, lineHeight: 16, textAlign: 'center' },
-  caption: { fontFamily: Fonts.spaceGrotesk.regular, fontSize: 12, lineHeight: 18, textAlign: 'center', paddingTop: 6, paddingBottom: 10 },
   gallery: { flexDirection: 'row', gap: 10, alignItems: 'center' },
   galleryImage: { flex: 1, borderRadius: 12, overflow: 'hidden' },
   entry: { alignItems: 'center', gap: 7 },

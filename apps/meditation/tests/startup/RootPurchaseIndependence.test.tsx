@@ -6,6 +6,9 @@ import * as SplashScreen from 'expo-splash-screen';
 
 jest.mock('expo-font', () => ({ useFonts: () => [true, null] }));
 jest.mock('expo-router', () => ({
+  useSegments: () => ['(drawer)', '(tabs)'],
+  usePathname: () => '/',
+  useGlobalSearchParams: () => ({}),
   Stack: () =>
     jest.requireActual('react').createElement(jest.requireActual('react-native').View, {
       testID: 'root-stack',
@@ -26,6 +29,7 @@ jest.mock('react-native-gesture-handler', () => ({
     ),
 }));
 jest.mock('react-native-safe-area-context', () => ({
+  useSafeAreaInsets: () => ({ top: 0, bottom: 0, left: 0, right: 0 }),
   SafeAreaProvider: ({ children }: React.PropsWithChildren) =>
     jest.requireActual('react').createElement(
       jest.requireActual('react-native').View,
@@ -33,6 +37,8 @@ jest.mock('react-native-safe-area-context', () => ({
       children
     ),
 }));
+
+jest.mock('@/components/player/MiniPlayer', () => ({ MiniPlayer: () => null, isCompactPlayerScreen: () => false }));
 
 jest.mock('@/components/library/LibraryPersistenceNotice', () => ({ LibraryPersistenceNotice: () => null }));
 
@@ -49,6 +55,7 @@ jest.mock('@/context/OnboardingContext', () => ({
   OnboardingProvider: ({ children }: React.PropsWithChildren) => children,
 }));
 jest.mock('@/context/PlayerContext', () => ({
+  usePlayerState: () => ({ session: null, status: 'idle' }),
   PlayerProvider: ({ children }: React.PropsWithChildren) => children,
 }));
 jest.mock('@/context/SettingsContext', () => ({
@@ -58,6 +65,7 @@ jest.mock('@/context/SubscriptionContext', () => ({
   SubscriptionProvider: ({ children }: React.PropsWithChildren) => children,
 }));
 jest.mock('@/context/ThemeContext', () => ({
+  ThemeScope: ({ children }: React.PropsWithChildren) => children,
   ThemeProvider: ({ children }: React.PropsWithChildren) => children,
   useTheme: () => ({
     mode: 'dark',
@@ -67,7 +75,10 @@ jest.mock('@/context/ThemeContext', () => ({
 }));
 jest.mock('@/context/WorldContext', () => ({
   WorldProvider: ({ children }: React.PropsWithChildren) => children,
-  useWorld: () => ({ loaded: true }),
+  useWorld: () => {
+    const world = jest.requireActual('@/constants/worlds').WORLD_BY_ID.constellation;
+    return { loaded: true, world, presentationWorld: world };
+  },
 }));
 jest.mock('@/context/WorldPurchaseContext', () => ({
   WorldPurchaseProvider: ({ children }: React.PropsWithChildren) => children,

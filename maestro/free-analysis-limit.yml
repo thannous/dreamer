@@ -7,7 +7,7 @@ appId: com.tanuki75.noctalia
 - waitForAnimationToEnd
 - runFlow: subflows/select-existing-mock-profile.yml
 - tapOn:
-    id: btn.mockNav.home
+    id: tab.home
 
 # Analysis 3/3
 - runFlow: subflows/ensure-recording-text.yml
@@ -31,7 +31,7 @@ appId: com.tanuki75.noctalia
 - assertVisible:
     id: btn.exploreDream
 - tapOn:
-    id: btn.mockNav.home
+    id: tab.home
 
 # Next analysis should be blocked
 - runFlow: subflows/ensure-recording-text.yml
@@ -59,6 +59,6 @@ appId: com.tanuki75.noctalia
 - tapOn:
     id: btn.quotaLimit.journal
 - waitForAnimationToEnd
-- tapOn:
-    id: btn.mockNav.settings
+- openLink: ${DEEP_LINK_SCHEME || "noctalia"}://settings
+- waitForAnimationToEnd
 - assertVisible: "3 / 3"

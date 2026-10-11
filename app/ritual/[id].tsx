@@ -10,7 +10,8 @@ import Animated, {
 } from 'react-native-reanimated';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
-import { AtmosphericBackground } from '@/components/inspiration/AtmosphericBackground';
+import { DreamerArtworkWindow } from '@/components/ui/DreamerBackground';
+import type { DreamerScene } from '@/constants/dreamerArtwork';
 import { GlassCard } from '@/components/inspiration/GlassCard';
 import { DURATION, EASE, ProgressFill, SPRING } from '@/components/motion';
 import { IconSymbol } from '@/components/ui/icon-symbol';
@@ -27,6 +28,8 @@ import {
 } from '@/lib/inspirationRituals';
 import { getSleepSoundCopy } from '@/lib/sleepSoundCopy';
 import { isSleepSoundsAvailable } from '@/lib/sleepSoundsFeature';
+import { useHeaderScroll } from '@/components/ui/headerStretch';
+import { withHeaderScroll } from '@/components/ui/HeaderScrollScope';
 import {
   getLocalDateKey,
 } from '@/lib/ritualProgressUtils';
@@ -101,6 +104,12 @@ function RitualStepCheckbox({
   );
 }
 
+const RITUAL_SCENES: Record<RitualId, DreamerScene> = {
+  starter: 'ritual',
+  memory: 'journal',
+  lucid: 'astral',
+};
+
 const RITUAL_ICONS: Record<RitualId, IconName> = {
   starter: 'moon.stars.fill',
   memory: 'lightbulb.fill',
@@ -152,7 +161,9 @@ function getLucidTrainerBridgeCopy(language: string) {
   return LUCID_TRAINER_BRIDGE_COPY.en;
 }
 
-export default function RitualDetailScreen() {
+function RitualDetailScreen() {
+  // This screen's own scroll, published to its header painting and title.
+  const onHeaderScroll = useHeaderScroll();
   const { id } = useLocalSearchParams<{ id: string }>();
   const ritualId = id as RitualId;
   const { colors, mode, shadows } = useTheme();
@@ -273,7 +284,6 @@ export default function RitualDetailScreen() {
   const progressPercent = totalSteps > 0 ? completedCount / totalSteps : 0;
 
   const backButtonTop = insets.top + ThemeLayout.spacing.sm;
-  const contentPaddingTop = backButtonTop + 44 + ThemeLayout.spacing.md;
 
   const checkboxBorderColor =
     mode === 'dark' ? noctalia.surface.border : noctalia.text.secondary;
@@ -283,7 +293,6 @@ export default function RitualDetailScreen() {
   return (
     <ScrollPerfProvider isScrolling={scrollPerf.isScrolling}>
       <View style={[styles.container, { backgroundColor: noctalia.screen.background }]}>
-        <AtmosphericBackground />
 
         {/* Floating Back Button */}
         <Pressable
@@ -299,16 +308,17 @@ export default function RitualDetailScreen() {
         >
           <IconSymbol name="chevron.left" size={22} color={noctalia.accent.text} />
         </Pressable>
-
-        <ScrollView
+        <ScrollView onScroll={onHeaderScroll} scrollEventThrottle={16}
           style={styles.scrollView}
-          contentContainerStyle={{ paddingBottom: insets.bottom + 40 }}
+          contentInsetAdjustmentBehavior="never"
+          contentContainerStyle={{ paddingTop: insets.top, paddingBottom: insets.bottom + 40 }}
           onScrollBeginDrag={scrollPerf.onScrollBeginDrag}
           onScrollEndDrag={scrollPerf.onScrollEndDrag}
           onMomentumScrollBegin={scrollPerf.onMomentumScrollBegin}
           onMomentumScrollEnd={scrollPerf.onMomentumScrollEnd}
         >
-          <View style={[styles.content, { paddingTop: contentPaddingTop }]}>
+          <DreamerArtworkWindow scene={RITUAL_SCENES[ritual.id]} bleedTop={insets.top} />
+          <View style={[styles.content, { paddingTop: 20 }]}>
           {/* Ritual icon and name */}
           <View style={styles.titleSection}>
             <View
@@ -668,3 +678,5 @@ const styles = StyleSheet.create({
     lineHeight: 20,
   },
 });
+
+export default withHeaderScroll(RitualDetailScreen);

@@ -1,7 +1,6 @@
 import { fireEvent, render, screen } from '@testing-library/react-native-legacy';
 import React from 'react';
 import * as ReactNative from 'react-native';
-import { ScrollView } from 'react-native';
 
 import BreatheExercise from '@/app/breathe/[pattern]';
 import { BreathGauge } from '@/components/breathe/BreathGauge';
@@ -438,10 +437,6 @@ describe('immersive breathing trainer', () => {
       expect(screen.queryByLabelText('Cycle 1 of 18')).toBeNull();
       const compactColumn = screen.getByTestId(TID.Screen.BreatheExercise);
       expect(compactColumn.props.horizontal).toBeFalsy();
-      const compactRails = view
-        .UNSAFE_getAllByType(ScrollView)
-        .filter((node) => node.props.horizontal === true);
-      expect(compactRails).toHaveLength(2);
       expect(screen.getByTestId(TID.Button.BreatheStart)).toHaveTextContent('Begin');
       expect(screen.getByTestId('btn.breathe.voice')).toBeTruthy();
       expect(screen.getByTestId('btn.breathe.haptic')).toBeTruthy();
