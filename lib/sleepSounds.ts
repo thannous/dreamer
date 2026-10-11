@@ -18,7 +18,8 @@ const SLEEP_SOUND_BASE_URL = 'https://noctalia.app/audio/sleep';
 export const SLEEP_SOUNDS: SleepSoundConfig[] = [
   {
     id: 'rain',
-    remoteUrl: `${SLEEP_SOUND_BASE_URL}/rain.m4a`,
+    // A field recording; the `-v2` name replaces the generated loop phones kept.
+    remoteUrl: `${SLEEP_SOUND_BASE_URL}/rain-v2.m4a`,
   },
   {
     id: 'ocean',
