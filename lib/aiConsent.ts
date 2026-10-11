@@ -21,8 +21,10 @@ type Translate = (key: string) => string;
 
 let granted: boolean | null = null;
 let pending: Promise<boolean> | null = null;
-// Owner decision (2026-10-10, confirmed 2026-10-11): only signed-in users are asked.
-// A guest's analysis is a demonstration that sends nothing to an AI, so it needs no prompt.
+// Owner decision (2026-10-10, maintained 2026-10-11): only signed-in users are asked.
+// In mock mode a guest's analysis is a local demonstration. In production a guest's dream
+// is still sent to the AI service (/analyzeDream, /categorizeDream) without this prompt; the
+// owner accepted that App Review 5.1.2(i) and privacy risk (review on thannous/dreamer#327).
 let promptRequired = false;
 
 /** Set from the signed-in state: the consent prompt is shown to signed-in users only. */

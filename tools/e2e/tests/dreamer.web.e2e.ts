@@ -59,7 +59,7 @@ test('guest saves the exact story and reads its simulated analysis inline', asyn
   await isolateWeb(browser, app);
   await startGuest(app, screen, browser);
   const story = 'E2E moonlit harbor with a golden lighthouse.';
-  // Owner decision (2026-10-11): a guest's analysis is a demonstration; no AI consent prompt.
+  // Owner decision (2026-10-10, maintained 2026-10-11): guests are not asked for AI consent.
   const consentPrompts: string[] = [];
   const offConsent = await browser.onDialog(async (dialog) => {
     consentPrompts.push(dialog.message);
