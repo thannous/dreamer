@@ -1,7 +1,7 @@
 import Ionicons from '@expo/vector-icons/Ionicons';
 import { router } from 'expo-router';
-import React, { useMemo, useState, useSyncExternalStore } from 'react';
-import { Alert, Pressable, StyleSheet, Text, useWindowDimensions, View } from 'react-native';
+import React, { useEffect, useMemo, useState, useSyncExternalStore } from 'react';
+import { AccessibilityInfo, Alert, Platform, Pressable, StyleSheet, Text, useWindowDimensions, View } from 'react-native';
 
 import {
   LucidNightSanctuary,
@@ -402,6 +402,12 @@ export default function LucidNightScreen() {
     albumTitle: copy.library,
   });
   const ambienceDownloadFailed = ambience.error === 'download_failed';
+  // Android reads the message through its live region; VoiceOver needs an announcement.
+  useEffect(() => {
+    if (ambienceDownloadFailed && Platform.OS === 'ios') {
+      AccessibilityInfo.announceForAccessibility(ambienceCopy.downloadError);
+    }
+  }, [ambienceCopy.downloadError, ambienceDownloadFailed]);
   const policy = useMemo(
     () =>
       evaluateLucidSafetyPolicyFromState(state, {

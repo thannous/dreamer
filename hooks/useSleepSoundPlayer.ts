@@ -44,6 +44,7 @@ export function useSleepSoundPlayer({
   const [resolved, setResolved] = useState<{ id: string; uri: string } | null>(null);
   const [downloadAttempt, setDownloadAttempt] = useState(0);
   const [failedDownload, setFailedDownload] = useState<string | null>(null);
+  const playAfterDownloadRef = useRef<string | null>(null);
   const downloadKey = `${sound.id}:${downloadAttempt}`;
   const sourceUri = resolved?.id === sound.id ? resolved.uri : null;
   const player = useAudioPlayer(sourceUri ? { uri: sourceUri } : null, {
@@ -127,6 +128,7 @@ export function useSleepSoundPlayer({
   }, [clearLockScreen, player]);
 
   const stop = useCallback(async () => {
+    playAfterDownloadRef.current = null;
     player.pause();
     clearLockScreen();
     const sessionDurationSeconds = durationMinutes * 60;
@@ -150,7 +152,8 @@ export function useSleepSoundPlayer({
   // eslint-disable-next-line react-hooks/immutability
   const play = useCallback(async () => {
     if (downloadFailed) {
-      // Offline on first use: try the download again.
+      // Try the download again; a retry is a request to listen, so play once it is ready.
+      playAfterDownloadRef.current = sound.id;
       setDownloadAttempt((attempt) => attempt + 1);
       return;
     }
@@ -211,10 +214,20 @@ export function useSleepSoundPlayer({
     durationMinutes,
     hasStarted,
     player,
+    sound.id,
     sourceUri,
     status.isLoaded,
     title,
   ]);
+
+  // The sound starts by itself once a retried download is ready, unless Stop came first.
+  // eslint-disable-next-line react-hooks/immutability
+  useEffect(() => {
+    const pending = playAfterDownloadRef.current;
+    if (pending === null || !isPlayable) return;
+    playAfterDownloadRef.current = null;
+    if (pending === sound.id) void play();
+  }, [isPlayable, play, sound.id]);
 
   const pause = useCallback(() => {
     commitElapsedTime();

@@ -1,7 +1,17 @@
 import { Image } from 'expo-image';
 import { router } from 'expo-router';
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
-import { Pressable, ScrollView, StyleSheet, Text, View, type StyleProp, type ViewStyle } from 'react-native';
+import {
+  AccessibilityInfo,
+  Platform,
+  Pressable,
+  ScrollView,
+  StyleSheet,
+  Text,
+  View,
+  type StyleProp,
+  type ViewStyle,
+} from 'react-native';
 import { SystemBars } from 'react-native-edge-to-edge';
 import Animated, { useReducedMotion, type CSSStyle } from 'react-native-reanimated';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
@@ -143,6 +153,12 @@ function SleepSoundsContent() {
   }, [player]);
 
   const downloadFailed = player.error === 'download_failed';
+  // Android reads the message through its live region; VoiceOver needs an announcement.
+  useEffect(() => {
+    if (downloadFailed && Platform.OS === 'ios') {
+      AccessibilityInfo.announceForAccessibility(copy.downloadError);
+    }
+  }, [copy.downloadError, downloadFailed]);
   const isPreparing =
     !preferencesLoaded ||
     (!downloadFailed && !player.hasStarted && (!player.isLoaded || player.isBuffering));
