@@ -297,7 +297,7 @@ describe('useSleepSoundPlayer', () => {
     expect(mockPlayer.clearLockScreenControls).toHaveBeenCalled();
   });
 
-  it('reports a failed first download and retries it on the next play', async () => {
+  it('reports a failed first download, retries it on the next play and then starts', async () => {
     jest.mocked(ensureSleepSoundFile).mockRejectedValueOnce(new Error('offline'));
     const { result } = renderHook(() =>
       useSleepSoundPlayer({
@@ -320,6 +320,128 @@ describe('useSleepSoundPlayer', () => {
     expect(ensureSleepSoundFile).toHaveBeenCalledTimes(2);
     expect(result.current.error).toBeNull();
     expect(result.current.isLoaded).toBe(true);
+    expect(mockPlayer.play).toHaveBeenCalledTimes(1);
+  });
+
+  it('does not start a retried download after Stop', async () => {
+    jest.mocked(ensureSleepSoundFile).mockRejectedValueOnce(new Error('offline'));
+    let resolveRetry: (uri: string) => void = () => {};
+    const { result } = renderHook(() =>
+      useSleepSoundPlayer({
+        sound,
+        durationMinutes: 30,
+        title: 'Gentle rain',
+        albumTitle: 'Evening ambience',
+      }),
+    );
+    await flushDownload();
+    jest.mocked(ensureSleepSoundFile).mockReturnValueOnce(
+      new Promise<string>((resolve) => {
+        resolveRetry = resolve;
+      }),
+    );
+
+    await act(async () => {
+      await result.current.play();
+    });
+    await act(async () => {
+      await result.current.stop();
+    });
+    await act(async () => {
+      resolveRetry(LOCAL_URI);
+    });
+    await flushDownload();
+
+    expect(result.current.isLoaded).toBe(true);
     expect(mockPlayer.play).not.toHaveBeenCalled();
+  });
+
+  it('offers a retry when the player still cannot open the loop after 30 seconds', async () => {
+    mockStatus.isLoaded = false;
+    const { result, rerender } = renderHook(() =>
+      useSleepSoundPlayer({
+        sound,
+        durationMinutes: 30,
+        title: 'Gentle rain',
+        albumTitle: 'Evening ambience',
+      }),
+    );
+    await flushDownload();
+
+    act(() => {
+      jest.advanceTimersByTime(29_999);
+    });
+    expect(result.current.error).toBeNull();
+
+    act(() => {
+      jest.advanceTimersByTime(1);
+    });
+    expect(result.current.error).toBe('download_failed');
+
+    // The source opens late: the error clears without another tap.
+    mockStatus.isLoaded = true;
+    rerender();
+    expect(result.current.error).toBeNull();
+    expect(result.current.isLoaded).toBe(true);
+  });
+
+  it('does not start a retried download after the screen loses focus', async () => {
+    jest.mocked(ensureSleepSoundFile).mockRejectedValueOnce(new Error('offline'));
+    let resolveRetry: (uri: string) => void = () => {};
+    const { result } = renderHook(() =>
+      useSleepSoundPlayer({
+        sound,
+        durationMinutes: 30,
+        title: 'Gentle rain',
+        albumTitle: 'Evening ambience',
+      }),
+    );
+    await flushDownload();
+    jest.mocked(ensureSleepSoundFile).mockReturnValueOnce(
+      new Promise<string>((resolve) => {
+        resolveRetry = resolve;
+      }),
+    );
+
+    await act(async () => {
+      await result.current.play();
+    });
+    act(() => {
+      focusCleanup?.();
+    });
+    await act(async () => {
+      resolveRetry(LOCAL_URI);
+    });
+    await flushDownload();
+
+    expect(result.current.isLoaded).toBe(true);
+    expect(mockPlayer.play).not.toHaveBeenCalled();
+  });
+
+  it('hands the loop to the player again when a load timeout is retried', async () => {
+    mockStatus.isLoaded = false;
+    const { result } = renderHook(() =>
+      useSleepSoundPlayer({
+        sound,
+        durationMinutes: 30,
+        title: 'Gentle rain',
+        albumTitle: 'Evening ambience',
+      }),
+    );
+    await flushDownload();
+    act(() => {
+      jest.advanceTimersByTime(30_000);
+    });
+    expect(result.current.error).toBe('download_failed');
+    jest.mocked(useAudioPlayer).mockClear();
+
+    await act(async () => {
+      await result.current.play();
+    });
+    await flushDownload();
+
+    const sources = jest.mocked(useAudioPlayer).mock.calls.map(([source]) => source);
+    expect(sources).toContainEqual(null);
+    expect(sources[sources.length - 1]).toEqual({ uri: LOCAL_URI });
   });
 });

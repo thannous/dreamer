@@ -23,13 +23,13 @@
   "twitterImage": "https://noctalia.app/img/og/noctalia-en-1200x630.jpg",
   "twitterImageAlt": "Noctalia dream journal plans and pricing",
   "publishedTime": "2026-07-31T00:00:00+02:00",
-  "modifiedTime": "2026-10-10T00:00:00+02:00",
+  "modifiedTime": "2026-10-11T00:00:00+02:00",
   "author": "Thanh Chau",
   "prevPath": "",
   "nextPath": "",
   "preloadImage": "",
   "jsonLd": [
-    "{\"@context\":\"https://schema.org\",\"@type\":\"WebPage\",\"name\":\"Noctalia plans and pricing\",\"description\":\"Compare Noctalia's free Dreamer plan and optional Noctalia Plus subscription. Google Play shows the current price and billing options before purchase.\",\"url\":\"https://noctalia.app/en/pricing\",\"inLanguage\":\"en\",\"datePublished\":\"2026-07-31T00:00:00+02:00\",\"dateModified\":\"2026-10-10T00:00:00+02:00\"}",
+    "{\"@context\":\"https://schema.org\",\"@type\":\"WebPage\",\"name\":\"Noctalia plans and pricing\",\"description\":\"Compare Noctalia's free Dreamer plan and optional Noctalia Plus subscription. Google Play shows the current price and billing options before purchase.\",\"url\":\"https://noctalia.app/en/pricing\",\"inLanguage\":\"en\",\"datePublished\":\"2026-07-31T00:00:00+02:00\",\"dateModified\":\"2026-10-11T00:00:00+02:00\"}",
     "{\"@context\":\"https://schema.org\",\"@type\":\"BreadcrumbList\",\"itemListElement\":[{\"@type\":\"ListItem\",\"position\":1,\"name\":\"Home\",\"item\":\"https://noctalia.app/\"},{\"@type\":\"ListItem\",\"position\":2,\"name\":\"Pricing\",\"item\":\"https://noctalia.app/en/pricing\"}]}",
     "{\"@context\":\"https://schema.org\",\"@type\":\"MobileApplication\",\"name\":\"Noctalia\",\"operatingSystem\":\"Android\",\"applicationCategory\":\"LifestyleApplication\",\"downloadUrl\":\"https://play.google.com/store/apps/details?id=com.tanuki75.noctalia\",\"offers\":{\"@type\":\"Offer\",\"price\":\"0\",\"priceCurrency\":\"EUR\",\"url\":\"https://play.google.com/store/apps/details?id=com.tanuki75.noctalia\",\"description\":\"Free installation with optional Noctalia Plus purchases shown by Google Play.\"}}",
     "{\"@context\":\"https://schema.org\",\"@type\":\"FAQPage\",\"mainEntity\":[{\"@type\":\"Question\",\"name\":\"Is Noctalia free to use?\",\"acceptedAnswer\":{\"@type\":\"Answer\",\"text\":\"Yes. The Dreamer plan includes unlimited dream recordings, three dream analyses per month (each with an image), guided explorations with no monthly limit, up to 10 follow-up messages per analyzed dream and a saved dream journal.\"}},{\"@type\":\"Question\",\"name\":\"How much does Noctalia Plus cost?\",\"acceptedAnswer\":{\"@type\":\"Answer\",\"text\":\"Open the Google Play listing or the in-app subscription screen to see the current price, billing period, taxes, eligibility and any promotion for your country and account before you purchase.\"}},{\"@type\":\"Question\",\"name\":\"Are monthly and annual subscriptions available?\",\"acceptedAnswer\":{\"@type\":\"Answer\",\"text\":\"Monthly and annual options may be available. Google Play shows the options currently offered to your country and account, so availability can vary.\"}},{\"@type\":\"Question\",\"name\":\"Where can I manage or cancel a subscription?\",\"acceptedAnswer\":{\"@type\":\"Answer\",\"text\":\"Noctalia Plus is billed through Google Play. You can manage or cancel it from the subscriptions section of the Google Play account used for the purchase.\"}}]}"
@@ -38,7 +38,7 @@
 }
 ---
 <h1 class="font-serif text-4xl md:text-5xl mb-4 text-dream-cream">Noctalia plans and pricing</h1>
-<p class="text-sm text-purple-300/70 mb-6">Updated October 10, 2026</p>
+<p class="text-sm text-purple-300/70 mb-6">Updated October 11, 2026</p>
 <p class="text-lg text-purple-200/80 leading-relaxed mb-10">Start with the free Dreamer plan and upgrade only if you want more guided reflection. Noctalia is free to install on Android. Price, taxes, billing period, eligibility and promotions depend on your country and account, so Google Play is where you see the amount you will actually pay.</p>
 
 <div class="space-y-8 text-gray-300 leading-relaxed">
@@ -70,9 +70,41 @@
     </div>
   </section>
 
+  <section class="glass-panel p-8 rounded-2xl border border-white/10 bg-white/5 overflow-x-auto">
+    <h2 class="text-2xl font-serif text-white mb-4">Dreamer or Plus, feature by feature</h2>
+    <table class="w-full text-left text-sm min-w-[720px]">
+      <thead class="text-purple-200"><tr><th class="py-3 pr-4">Feature</th><th class="py-3 pr-4">Dreamer (free)</th><th class="py-3 pr-4">Noctalia Plus</th></tr></thead>
+      <tbody class="divide-y divide-white/10">
+        <tr><td class="py-4 pr-4 text-white font-medium">Record a dream by voice or text</td><td class="py-4 pr-4">No limit</td><td class="py-4 pr-4">No limit</td></tr>
+        <tr><td class="py-4 pr-4 text-white font-medium">Dream analysis</td><td class="py-4 pr-4">3 per month</td><td class="py-4 pr-4">No limit</td></tr>
+        <tr><td class="py-4 pr-4 text-white font-medium">Dream image</td><td class="py-4 pr-4">One with each analysis</td><td class="py-4 pr-4">No limit</td></tr>
+        <tr><td class="py-4 pr-4 text-white font-medium">Guided explorations</td><td class="py-4 pr-4">No monthly limit</td><td class="py-4 pr-4">No monthly limit</td></tr>
+        <tr><td class="py-4 pr-4 text-white font-medium">Follow-up messages</td><td class="py-4 pr-4">Up to 10 per analyzed dream</td><td class="py-4 pr-4">Up to 20 per dream</td></tr>
+        <tr><td class="py-4 pr-4 text-white font-medium">360° synthesis at the end of a guided exploration</td><td class="py-4 pr-4">Not included</td><td class="py-4 pr-4">Included</td></tr>
+        <tr><td class="py-4 pr-4 text-white font-medium">Dream journal</td><td class="py-4 pr-4">Saved, ready to reread</td><td class="py-4 pr-4">Saved, ready to reread</td></tr>
+        <tr><td class="py-4 pr-4 text-white font-medium">Payment</td><td class="py-4 pr-4">None</td><td class="py-4 pr-4">Subscription billed and renewed by Google Play</td></tr>
+      </tbody>
+    </table>
+    <p class="mt-4">Follow-up messages are counted dream by dream: each analyzed dream has its own limit.</p>
+  </section>
+
   <section class="glass-panel p-8 rounded-2xl border border-white/10 bg-white/5">
     <h2 class="text-2xl font-serif text-white mb-4">Why this page does not publish one fixed Plus price</h2>
     <p>Google Play can present local currencies, taxes and account-specific offers. A fixed amount copied onto this website could therefore be inaccurate for you. Use the store listing or the subscription screen inside Noctalia to review the applicable price, billing period, trial or promotion, renewal terms and payment method before confirming. Installing the app does not itself create a paid subscription.</p>
+  </section>
+
+  <section class="glass-panel p-8 rounded-2xl border border-white/10 bg-white/5">
+    <h2 class="text-2xl font-serif text-white mb-4">If you stop Plus</h2>
+    <p>You cancel in Google Play, under Subscriptions in the account used for the purchase. Deleting your Noctalia account does not cancel the Google Play subscription, so cancel it first. The <a href="/en/account-deletion" class="text-dream-salmon hover:underline">account deletion page</a> lists the steps.</p>
+    <p class="mt-4">After you cancel, Google Play shows the date until which Plus stays active. From that date, your account returns to the Dreamer limits:</p>
+    <ul class="list-disc pl-5 space-y-2 mt-3">
+      <li>Your dreams, their analyses and their images stay in your journal.</li>
+      <li>Past conversations stay readable, 360° syntheses included.</li>
+      <li>New analyses count toward the 3 per month.</li>
+      <li>The limit of 10 follow-up messages applies to every analyzed dream, including the ones you started with Plus.</li>
+      <li>A new 360° synthesis needs Plus again.</li>
+    </ul>
+    <p class="mt-4">You can subscribe again later from the subscription screen in the app.</p>
   </section>
 
   <section class="glass-panel p-8 rounded-2xl border border-white/10 bg-white/5">
