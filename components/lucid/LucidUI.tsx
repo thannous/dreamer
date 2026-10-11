@@ -18,10 +18,10 @@ import { useSharedValue } from 'react-native-reanimated';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { ScreenContainer, useWideConstrainedLayout } from '@/components/ScreenContainer';
-import { LucidArtStatusBar } from '@/components/lucid/LucidArtStatusBar';
+import { LucidArtStatusBar, type LucidArtStatusBarController } from '@/components/lucid/LucidArtStatusBar';
 import { LucidGlass } from '@/components/lucid/LucidGlass';
-import { LucidStatusBarVeil } from '@/components/lucid/LucidStatusBarVeil';
-import { getLucidPalette, LucidIcon, LucidPress, LucidRadius, LucidSpace, LucidType } from '@/constants/lucidTheme';
+import { LucidStatusBarVeil, VEIL_EDGE_FADE } from '@/components/lucid/LucidStatusBarVeil';
+import { getLucidPalette, LUCID_NIGHT_GROUND, LucidIcon, LucidPress, LucidRadius, LucidSpace, LucidType } from '@/constants/lucidTheme';
 import { useTheme } from '@/context/ThemeContext';
 import { useLucidReducedMotion } from '@/hooks/useLucidReducedMotion';
 
@@ -136,11 +136,19 @@ export function LucidScreen({
   const artEdge = darkTop === undefined || wideLayout ? undefined : darkTop - insets.top;
   const scrollY = useRef(0);
   const veilScrollY = useSharedValue(0);
-  const [overArt, setOverArt] = useState(false);
+  // Kept out of state: crossing the artwork's edge flips the status bar in the
+  // scroll event itself, without re-rendering the screen.
+  const overArtRef = useRef(false);
+  const artStatusBarRef: LucidArtStatusBarController = useRef(null);
+  const updateOverArt = (next: boolean) => {
+    if (next === overArtRef.current) return;
+    overArtRef.current = next;
+    artStatusBarRef.current?.(next);
+  };
   // The artwork can be re-measured (rotation, reflow) away from the top.
   useEffect(() => {
-    setOverArt(artEdge !== undefined && scrollY.current < artEdge);
-  }, [artEdge]);
+    updateOverArt(artEdge !== undefined && scrollY.current < artEdge);
+  });
   const { onScroll, scrollEventThrottle } = scrollProps;
   const content = (
     <ScreenContainer style={styles.screenContainer} maxWidth={760} fillContent={!scroll}>
@@ -181,8 +189,7 @@ export function LucidScreen({
             onScroll?.(event);
             scrollY.current = event.nativeEvent.contentOffset.y;
             veilScrollY.set(scrollY.current);
-            // Only crossing the artwork's edge re-renders the screen.
-            if (darkTop !== undefined) setOverArt(artEdge !== undefined && scrollY.current < artEdge);
+            if (darkTop !== undefined) updateOverArt(artEdge !== undefined && scrollY.current < artEdge);
           }}
         >
           {content}
@@ -190,10 +197,22 @@ export function LucidScreen({
       ) : (
         content
       )}
+      {scroll && artEdge !== undefined ? (
+        // Night artwork under the light clock: what scrolls over it fades into the night.
+        <LucidStatusBarVeil
+          scrollY={veilScrollY}
+          start={8}
+          end={artEdge}
+          top={insets.top}
+          ground={LUCID_NIGHT_GROUND}
+        />
+      ) : null}
       {scroll ? (
         <LucidStatusBarVeil
           scrollY={veilScrollY}
-          start={Math.max(8, artEdge ?? 0)}
+          // Past artwork, it crossfades with the night veil at the edge, where the clock turns dark.
+          start={artEdge === undefined ? 8 : Math.max(8, artEdge - VEIL_EDGE_FADE / 2)}
+          startFade={artEdge === undefined ? undefined : VEIL_EDGE_FADE}
           top={insets.top}
           ground={palette.background}
           tint={palette.atmosphere[0]}
@@ -202,7 +221,10 @@ export function LucidScreen({
       {footer ? (
         <View style={[styles.footer, { paddingBottom: Math.max(insets.bottom, 20) }]}>{footer}</View>
       ) : null}
-      {darkTop !== undefined ? <LucidArtStatusBar overArt={overArt} /> : null}
+      {darkTop !== undefined ? (
+        <LucidArtStatusBar overArtRef={overArtRef} controllerRef={artStatusBarRef}
+          pageBar={mode === 'dark' ? 'light' : 'dark'} />
+      ) : null}
     </View>
   );
 }
