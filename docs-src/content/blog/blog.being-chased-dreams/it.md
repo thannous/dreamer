@@ -110,7 +110,7 @@
 <div class="prose max-w-none text-gray-300">
 <h2 id="prevalence">Perché si sogna così spesso di essere inseguiti?</h2>
 <p>
-                    Se hai sognato di <a class="text-dream-salmon hover:underline" href="../simboli/inseguimento">essere inseguito</a>, sei in ottima compagnia. In un sondaggio su 1.181 studenti universitari canadesi, l'inseguimento era uno dei quattro temi onirici riferiti da oltre il 60% dei partecipanti, insieme alla caduta, alla scuola e al sesso (<a class="text-dream-salmon hover:underline" href="https://asdreams.org/journal/issues/asdj13-4.htm" rel="nofollow noopener noreferrer" target="_blank">Nielsen, Zadra e altri, 2003</a>). Fare questo sogno non dice niente di strano su di te.
+                    Se hai sognato di <a class="text-dream-salmon hover:underline" href="../simboli/inseguimento">essere inseguito</a>, sei in ottima compagnia. In un sondaggio su 1.181 studenti universitari canadesi, l'inseguimento era uno dei quattro temi onirici riferiti da oltre il 60% dei partecipanti, insieme alla caduta, alla scuola e al sesso (<a class="text-dream-salmon hover:underline" href="https://doi.org/10.1023/B:DREM.0000003144.40929.0b" rel="nofollow noopener noreferrer" target="_blank">Nielsen, Zadra e altri, 2003</a>). Fare questo sogno non dice niente di strano su di te.
                 </p>
 <p>
                     Perché proprio questa scena? Nessuno lo sa con certezza. Un'ipotesi nota sostiene che sognare serva in parte a provare le minacce, e poche minacce sono antiche e semplici come qualcosa che ti corre dietro. Ne riparliamo più avanti, perché resta un'ipotesi.
@@ -407,7 +407,7 @@
 <section class="mt-16 glass-panel rounded-2xl p-6" id="sources">
 <h2 class="font-serif text-2xl text-dream-cream mb-4">Fonti e letture</h2>
 <ul class="mt-6 space-y-2 text-sm text-gray-400">
-<li><a href="https://asdreams.org/journal/issues/asdj13-4.htm" rel="nofollow noopener noreferrer" target="_blank">Nielsen, Zadra e altri (2003), «The Typical Dreams of Canadian University Students», <em>Dreaming</em>, 13(4)</a></li>
+<li><a href="https://doi.org/10.1023/B:DREM.0000003144.40929.0b" rel="nofollow noopener noreferrer" target="_blank">Nielsen, Zadra e altri (2003), «The Typical Dreams of Canadian University Students», <em>Dreaming</em>, 13(4)</a></li>
 <li><a href="https://pubmed.ncbi.nlm.nih.gov/24497669/" rel="nofollow noopener noreferrer" target="_blank">Robert e Zadra (2014), «Thematic and content analysis of idiopathic nightmares and bad dreams», <em>Sleep</em></a></li>
 <li><a href="https://pubmed.ncbi.nlm.nih.gov/11515147/" rel="nofollow noopener noreferrer" target="_blank">Revonsuo (2000), «The reinterpretation of dreams: an evolutionary hypothesis of the function of dreaming», <em>Behavioral and Brain Sciences</em></a></li>
 <li><a href="https://pubmed.ncbi.nlm.nih.gov/29852917/" rel="nofollow noopener noreferrer" target="_blank">Morgenthaler e altri (2018), «Position paper for the treatment of nightmare disorder in adults», American Academy of Sleep Medicine</a></li>

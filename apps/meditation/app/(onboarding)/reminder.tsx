@@ -18,7 +18,8 @@ import { requestPermission, syncReminders } from '@/services/notificationService
 
 /** The root layout's stack, typed only for the reset that closes onboarding. */
 type RootStackReset = {
-  reset(state: { index: number; routes: { name: string }[] }): void;
+  getState(): object | undefined;
+  reset(state: object): void;
 };
 
 /**
@@ -72,8 +73,14 @@ export default function ReminderStep() {
     await complete();
     // Onboarding is behind the listener now: home becomes the only screen of
     // the root stack, so back leaves the app instead of reopening Welcome,
-    // which `replace` left underneath.
-    rootNavigation.reset({ index: 0, routes: [{ name: '(drawer)' }] });
+    // which `replace` left underneath. Expo Router 58 drops a partial RESET
+    // (it needs the stack's key, routeNames and `stale: false`), so the
+    // payload starts from the current root state.
+    rootNavigation.reset({
+      ...rootNavigation.getState(),
+      index: 0,
+      routes: [{ name: '(drawer)' }],
+    });
   };
 
   const finish = async () => {

@@ -113,7 +113,7 @@
                     Bajo el nombre de «sueño de caída» se mezclan dos experiencias distintas. La primera es un instante: te estás quedando dormido, notas que pisas en falso y todo tu cuerpo da un respingo. La segunda es un sueño de verdad, con escenario e historia: un <a class="text-dream-salmon hover:underline" href="../simbolos/acantilado">acantilado</a>, la azotea de un edificio, un ascensor que se desploma.
                 </p>
 <p>
-                    El primer caso tiene sobre todo que ver con el cuerpo, y lo vemos más abajo. El segundo es muy común. En una encuesta a 1181 estudiantes universitarios canadienses, la <a class="text-dream-salmon hover:underline" href="../simbolos/caida">caída</a> estaba entre los cuatro temas que más del 60 % decía haber soñado, junto con la persecución, los estudios y el sexo (<a class="text-dream-salmon hover:underline" href="https://asdreams.org/journal/issues/asdj13-4.htm" rel="nofollow noopener noreferrer" target="_blank">Nielsen y colaboradores, 2003</a>). Soñar que caes no tiene nada de raro. Lo que puede decirte algo son los detalles de <em>tu</em> caída.
+                    El primer caso tiene sobre todo que ver con el cuerpo, y lo vemos más abajo. El segundo es muy común. En una encuesta a 1181 estudiantes universitarios canadienses, la <a class="text-dream-salmon hover:underline" href="../simbolos/caida">caída</a> estaba entre los cuatro temas que más del 60 % decía haber soñado, junto con la persecución, los estudios y el sexo (<a class="text-dream-salmon hover:underline" href="https://doi.org/10.1023/B:DREM.0000003144.40929.0b" rel="nofollow noopener noreferrer" target="_blank">Nielsen y colaboradores, 2003</a>). Soñar que caes no tiene nada de raro. Lo que puede decirte algo son los detalles de <em>tu</em> caída.
                 </p>
 <h2 id="variations">¿Cómo fue tu caída?</h2>
 <p>
@@ -406,7 +406,7 @@
 <section class="mt-16 glass-panel rounded-2xl p-6" id="sources">
 <h2 class="font-serif text-2xl text-dream-cream mb-4">Fuentes y lecturas</h2>
 <ul class="mt-6 space-y-2 text-sm text-gray-400">
-<li><a href="https://asdreams.org/journal/issues/asdj13-4.htm" rel="nofollow noopener noreferrer" target="_blank">Nielsen, Zadra et al. (2003), «The Typical Dreams of Canadian University Students», <em>Dreaming</em>, 13(4)</a></li>
+<li><a href="https://doi.org/10.1023/B:DREM.0000003144.40929.0b" rel="nofollow noopener noreferrer" target="_blank">Nielsen, Zadra et al. (2003), «The Typical Dreams of Canadian University Students», <em>Dreaming</em>, 13(4)</a></li>
 <li><a href="https://www.sleepfoundation.org/sleep-faqs/hypnic-jerks" rel="nofollow noopener noreferrer" target="_blank">Sleep Foundation, «Hypnic Jerks»</a></li>
 <li><a href="https://www.cambridge.org/core/journals/behavioral-and-brain-sciences/article/reinterpretation-of-dreams-an-evolutionary-hypothesis-of-the-function-of-dreaming/EE0E7DB39E361540D2DDA79C262EDA7E" rel="nofollow noopener noreferrer" target="_blank">Revonsuo (2000), «The reinterpretation of dreams», <em>Behavioral and Brain Sciences</em></a></li>
 <li><a href="https://dictionary.apa.org/dream" rel="nofollow noopener noreferrer" target="_blank">APA Dictionary of Psychology, «Dream»</a></li>
