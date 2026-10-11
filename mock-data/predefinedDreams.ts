@@ -7,7 +7,7 @@
 
 import type { DreamAnalysis } from '@/lib/types';
 
-import { getMockDreamImage } from './assets';
+import { getMockDreamImage, getMockDreamThumbnail } from './assets';
 import { getShowcaseDreams } from './showcaseDreams';
 
 const mockUuid = (index: number, variant = 0): string =>
@@ -31,7 +31,7 @@ export const PREDEFINED_DREAMS: Omit<DreamAnalysis, 'id'>[] = [
     theme: 'mystical',
     dreamType: 'Symbolic Dream',
     imageUrl: getMockDreamImage('cat'),
-    thumbnailUrl: getMockDreamImage('cat'),
+    thumbnailUrl: getMockDreamThumbnail('cat'),
     chatHistory: [],
     isFavorite: true,
     imageGenerationFailed: false,
@@ -54,7 +54,7 @@ export const PREDEFINED_DREAMS: Omit<DreamAnalysis, 'id'>[] = [
     theme: 'surreal',
     dreamType: 'Symbolic Dream',
     imageUrl: getMockDreamImage('floating'),
-    thumbnailUrl: getMockDreamImage('floating'),
+    thumbnailUrl: getMockDreamThumbnail('floating'),
     chatHistory: [
       {
         id: 'ocean-user-1',
@@ -156,7 +156,7 @@ export const PREDEFINED_DREAMS: Omit<DreamAnalysis, 'id'>[] = [
     theme: 'mystical',
     dreamType: 'Symbolic Dream',
     imageUrl: getMockDreamImage('tide'),
-    thumbnailUrl: getMockDreamImage('tide'),
+    thumbnailUrl: getMockDreamThumbnail('tide'),
     chatHistory: [],
     isFavorite: true,
     imageGenerationFailed: false,
@@ -181,7 +181,7 @@ export const PREDEFINED_DREAMS: Omit<DreamAnalysis, 'id'>[] = [
     theme: 'calm',
     dreamType: 'Symbolic Dream',
     imageUrl: getMockDreamImage('doors'),
-    thumbnailUrl: getMockDreamImage('doors'),
+    thumbnailUrl: getMockDreamThumbnail('doors'),
     chatHistory: [],
     isFavorite: false,
     imageGenerationFailed: false,

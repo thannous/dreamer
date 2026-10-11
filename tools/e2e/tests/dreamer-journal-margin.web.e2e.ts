@@ -167,8 +167,9 @@ test('saved remembered dream keeps its indication and opens the full story', asy
 
 
 test('failed thumbnail falls back to the full illustration', async ({ page, context }, testInfo) => {
+  // The Infinite Library is painted with the bundled cat art; its thumbnail has its own address.
   const failedThumbnails: string[] = [];
-  await context.route('https://picsum.photos/seed/library-dream/400/300**', route => {
+  await context.route(/cat\.[^/]*\.webp\?.*variant=thumbnail|cat\.webp.*variant=thumbnail/, route => {
     failedThumbnails.push(route.request().url());
     return route.abort();
   });
@@ -177,20 +178,24 @@ test('failed thumbnail falls back to the full illustration', async ({ page, cont
   const id = await card.getAttribute('data-testid');
   const cover = card.getByTestId(`journal.cover.${id}`);
   await expect.poll(() => cover.locator('img').evaluateAll(images => images.some(image =>
-    (image as HTMLImageElement).naturalWidth > 0 && (image as HTMLImageElement).src.includes('/800/600')
+    (image as HTMLImageElement).naturalWidth > 0 && /cat/.test((image as HTMLImageElement).src)
+      && !(image as HTMLImageElement).src.includes('variant=thumbnail')
   ))).toBe(true);
   expect(failedThumbnails.length).toBeGreaterThan(0);
   await page.screenshot({ path: testInfo.outputPath('thumbnail-full-fallback.png') });
 });
 
 test('failed illustration leaves a compact readable entry that still opens', async ({ page, context }, testInfo) => {
-  await context.route('https://picsum.photos/seed/library-dream/**', route => route.abort());
+  // Both the thumbnail and the full illustration of the bundled cat art fail.
+  await context.route(/cat(\.[^/]*)?\.webp/, route => route.abort());
   await populatedJournal(page);
   const card = await findDream(page, 'The Infinite Library');
   const id = await card.getAttribute('data-testid');
   await expect(card.getByTestId(`journal.cover.${id}`)).toHaveCount(0);
   await expect(card).toContainText('I found myself in an enormous library');
-  expect((await card.boundingBox())!.height).toBeLessThan(260);
+  // Revised 2026-10-11 (was < 260): the date margin now stacks the favourite and share
+  // buttons (owner request), so it sets the entry's height. Still far below a 9:16 cover.
+  expect((await card.boundingBox())!.height).toBeLessThan(340);
   await page.screenshot({ path: testInfo.outputPath('failed-illustration-text-fallback.png') });
   await card.click();
   await expect(page.getByTestId('component.transcriptCard')).toContainText('Books were floating around me');

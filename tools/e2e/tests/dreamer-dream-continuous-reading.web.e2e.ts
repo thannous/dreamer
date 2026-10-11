@@ -45,9 +45,9 @@ for (const mode of ['light', 'dark'] as const) {
     await expect(page.getByTestId('journal.detail.image.generation_dots')).toHaveCount(0);
     await page.getByTestId('btn.journal.illustration.expand').scrollIntoViewIfNeeded();
     const image = page.getByTestId('btn.journal.illustration.expand');
-    // Expo retains the previous blob image during a crossfade. Check the actual
-    // fixture URI rather than requiring the image wrapper to contain one img.
-    const renderedImage = image.locator('img[src^="https://picsum.photos/"]');
+    // Expo retains the previous blob image during a crossfade. Check the painted mock
+    // art (a bundled 9:16 .webp) rather than requiring the wrapper to contain one img.
+    const renderedImage = image.locator('img[src*="webp"]').last();
     await expect(renderedImage).toBeVisible();
     await expect.poll(() => renderedImage.evaluate(el => (el as HTMLImageElement).naturalWidth)).toBeGreaterThan(0);
     await expect(renderedImage).toHaveCSS('opacity', '1');

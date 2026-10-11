@@ -20,6 +20,27 @@ async function openDemo(page: Page, feature: string) {
   await readToExample(page, feature);
 }
 
+// The cross means "I want out": it asks before leaving the introduction for the path.
+async function leaveStories(page: Page) {
+  let question = '';
+  await withDialog(page, async (dialog) => { question = dialog.message; await dialog.accept(); },
+    () => page.getByTestId('btn.onboarding.feature.close').click());
+  expect(question).toContain('Leave the introduction?');
+  await expect(page.getByTestId('sheet.onboarding.feature')).toHaveCount(0);
+  await expect(page.getByTestId('component.onboarding.path')).toBeVisible();
+}
+
+// Declining the question keeps the reader in the story.
+async function keepReading(page: Page) {
+  await withDialog(page, 'dismiss', () => page.getByTestId('btn.onboarding.feature.close').click());
+  await expect(page.getByTestId('sheet.onboarding.feature')).toBeVisible();
+}
+
+async function backToIntroduction(page: Page) {
+  await page.getByTestId('btn.onboarding.back').click();
+  await expect(page.getByTestId('component.onboarding.intro')).toBeVisible();
+}
+
 async function expectCloseButton(page: Page) {
   const close = page.getByTestId('btn.onboarding.feature.close');
   await expect(close).toHaveRole('button');
@@ -72,19 +93,15 @@ defaultFeatureTest('feature sheets stay disabled by default while onboarding and
   await page.getByRole('button', { name: 'Done', exact: true }).click();
   await expect(page.getByTestId('sheet.onboarding.privacy')).toHaveCount(0);
   await page.getByTestId('btn.onboarding.intro.next').click();
-  // With feature sheets, "Commencer" first tells the three stories; the cross moves on.
-  if (process.env.EXPO_PUBLIC_ONBOARDING_FEATURE_SHEETS_ENABLED === 'true') {
-    await withDialog(page, 'accept', () => page.getByTestId('btn.onboarding.feature.close').click());
-  }
+  // With feature sheets, "Commencer" first tells the three stories; leaving them by the cross is confirmed.
+  if (process.env.EXPO_PUBLIC_ONBOARDING_FEATURE_SHEETS_ENABLED === 'true') await leaveStories(page);
   await expect(page.getByTestId('component.onboarding.path')).toBeVisible();
 });
 
 test('the chosen path is announced as selected and survives a return to the introduction', async ({ page }) => {
   await page.getByTestId('btn.onboarding.intro.next').click();
-  // With feature sheets, "Commencer" first tells the three stories; the cross moves on.
-  if (process.env.EXPO_PUBLIC_ONBOARDING_FEATURE_SHEETS_ENABLED === 'true') {
-    await withDialog(page, 'accept', () => page.getByTestId('btn.onboarding.feature.close').click());
-  }
+  // With feature sheets, "Commencer" first tells the three stories; leaving them by the cross is confirmed.
+  if (process.env.EXPO_PUBLIC_ONBOARDING_FEATURE_SHEETS_ENABLED === 'true') await leaveStories(page);
   const memory = page.getByTestId('btn.onboarding.path.memory');
   await memory.click();
   await expect(memory).toHaveAttribute('aria-checked', 'true');
@@ -100,10 +117,8 @@ test('the welcome and path remain inside the viewport without off-canvas horizon
   const overflow = () => page.evaluate(() => document.documentElement.scrollWidth - window.innerWidth);
   await expect.poll(overflow).toBeLessThanOrEqual(1);
   await page.getByTestId('btn.onboarding.intro.next').click();
-  // With feature sheets, "Commencer" first tells the three stories; the cross moves on.
-  if (process.env.EXPO_PUBLIC_ONBOARDING_FEATURE_SHEETS_ENABLED === 'true') {
-    await withDialog(page, 'accept', () => page.getByTestId('btn.onboarding.feature.close').click());
-  }
+  // With feature sheets, "Commencer" first tells the three stories; leaving them by the cross is confirmed.
+  if (process.env.EXPO_PUBLIC_ONBOARDING_FEATURE_SHEETS_ENABLED === 'true') await leaveStories(page);
   await page.getByTestId('btn.onboarding.path.memory').click();
   await expect(page.getByTestId('btn.onboarding.path.memory')).toHaveAttribute('aria-checked', 'true');
   await expect.poll(overflow).toBeLessThanOrEqual(1);
@@ -116,7 +131,9 @@ test.describe('feature sheet previews', () => {
   test.skip(process.env.EXPO_PUBLIC_ONBOARDING_FEATURE_SHEETS_ENABLED !== 'true', 'Feature sheets require explicit opt-in.');
 
   for (const theme of ['light', 'dark'] as const) {
-    test(`each promise closes with the top-right cross and restores focus in ${theme} theme`, async ({ page }, testInfo) => {
+    // Product change (owner, 2026-10-10): the cross means leaving the introduction. It asks
+    // first, and leaving goes on to the path instead of back to the introduction.
+    test(`each story's top-right cross asks before leaving the introduction in ${theme} theme`, async ({ page }, testInfo) => {
       if (theme === 'dark') {
         await page.clock.setFixedTime(new Date('2026-10-02T23:00:00+02:00'));
         await page.reload();
@@ -126,29 +143,29 @@ test.describe('feature sheet previews', () => {
         await expect(page.getByTestId(`component.onboarding.preview.${feature}`)).toBeVisible();
         await expectCloseButton(page);
         await page.screenshot({ path: testInfo.outputPath(`${theme}-${feature}.png`) });
-        await page.getByTestId('btn.onboarding.feature.close').click();
-        await expect(page.getByTestId('sheet.onboarding.feature')).toHaveCount(0);
-        await expect(page.getByTestId(`btn.onboarding.feature.${feature}`)).toBeFocused();
-        await expect(page.getByTestId('component.onboarding.intro')).toBeVisible();
+        await keepReading(page);
+        await expect(page.getByTestId(`component.onboarding.preview.${feature}`)).toBeVisible();
+        await leaveStories(page);
+        await backToIntroduction(page);
       }
+      // Once left, the stories are not told again: Commencer goes straight to the path.
       await page.getByTestId('btn.onboarding.intro.next').click();
-      // With feature sheets, "Commencer" first tells the three stories; the cross moves on.
-      if (process.env.EXPO_PUBLIC_ONBOARDING_FEATURE_SHEETS_ENABLED === 'true') {
-    await withDialog(page, 'accept', () => page.getByTestId('btn.onboarding.feature.close').click());
-  }
       await expect(page.getByTestId('component.onboarding.path')).toBeVisible();
     });
   }
 
-  test('Escape dismisses the explanation without skipping onboarding', async ({ page }) => {
+  // Product change (owner, 2026-10-10): only the cross ends a story, so no stray key or
+  // swipe can close it by accident.
+  test('Escape keeps a story open; only the cross leaves it', async ({ page }) => {
     for (const feature of ['capture', 'connect', 'explore']) {
       await page.getByTestId(`btn.onboarding.feature.${feature}`).click();
       await expect(page.getByTestId('sheet.onboarding.feature')).toBeVisible();
       await page.keyboard.press('Escape');
-      await expect(page.getByTestId('sheet.onboarding.feature')).toHaveCount(0);
-      await expect(page.getByTestId(`btn.onboarding.feature.${feature}`)).toBeFocused();
+      await expect(page.getByTestId('sheet.onboarding.feature')).toBeVisible();
+      await expect(page.getByTestId(`component.onboarding.preview.${feature}`)).toBeVisible();
+      await leaveStories(page);
+      await backToIntroduction(page);
     }
-    await expect(page.getByTestId('btn.onboarding.intro.next')).toBeVisible();
   });
 
   test('the illustrated dream globe responds to rotation and keeps the sheet open', async ({ page }, testInfo) => {
@@ -160,7 +177,7 @@ test.describe('feature sheet previews', () => {
     await expect.poll(async () => Math.abs((await card.boundingBox())!.x - before!.x)).toBeGreaterThan(5);
     await expect(page.getByTestId('sheet.onboarding.feature')).toBeVisible();
     await page.screenshot({ path: testInfo.outputPath('globe-rotated.png') });
-    await page.getByTestId('btn.onboarding.feature.close').click();
+    await leaveStories(page);
   });
 
   test('Raconter lets an illustration reveal its journal entry and return to the globe', async ({ page }, testInfo) => {
@@ -178,8 +195,7 @@ test.describe('feature sheet previews', () => {
     await expect(entry).toHaveCount(0);
     await expect(page.getByTestId('component.onboarding.dreamGlobe')).toBeVisible();
     await expect(page.getByTestId('btn.onboarding.globeCard.1')).toBeFocused();
-    await page.getByTestId('btn.onboarding.feature.close').click();
-    await expect(page.getByTestId('btn.onboarding.feature.capture')).toBeFocused();
+    await leaveStories(page);
   });
 
   test('a reduced-motion illustration remains touchable without the globe', async ({ page }) => {
@@ -193,7 +209,7 @@ test.describe('feature sheet previews', () => {
     await page.getByTestId('btn.onboarding.dreamEntry.back').click();
     await expect(page.getByTestId('component.onboarding.dreamExamples')).toBeVisible();
     await expect(page.getByTestId('btn.onboarding.globeCard.0')).toBeFocused();
-    await page.getByTestId('btn.onboarding.feature.close').click();
+    await leaveStories(page);
   });
 
   test('a small screen with reduced motion can read and close all explanations', async ({ page }, testInfo) => {
@@ -212,10 +228,8 @@ test.describe('feature sheet previews', () => {
       await page.mouse.wheel(0, 600);
       await expectCloseButton(page);
       await page.screenshot({ path: testInfo.outputPath(`small-reduced-${feature}.png`) });
-      await page.getByTestId('btn.onboarding.feature.close').click();
-      await expect(page.getByTestId('sheet.onboarding.feature')).toHaveCount(0);
-      await expect(page.getByTestId(`btn.onboarding.feature.${feature}`)).toBeFocused();
-      await expect(page.getByTestId('component.onboarding.intro')).toBeVisible();
+      await leaveStories(page);
+      await backToIntroduction(page);
     }
   });
 
@@ -241,7 +255,7 @@ test.describe('feature sheet previews', () => {
     await page.getByTestId('btn.onboarding.constellation.symbol.cat').click();
     await expect(selection).toContainText('First appearance');
     await expect(selection).toContainText('Saturday · A cat waits for you, as if it knew you.');
-    await page.getByTestId('btn.onboarding.feature.close').click();
+    await leaveStories(page);
   });
 
 
@@ -260,12 +274,20 @@ test.describe('feature sheet previews', () => {
         await page.clock.runFor(5000);
       }
       if (feature === 'capture') await expect(page.getByTestId('component.onboarding.dreamGlobe')).toBeVisible();
-      if (feature === 'connect') await expect(page.getByTestId('component.onboarding.constellation.selection')).toContainText('Returns every night');
+      // The example waits for the reader: touching the house follows its thread.
+      if (feature === 'connect') {
+        await page.getByTestId('btn.onboarding.constellation.symbol.house').click();
+        await expect(page.getByTestId('component.onboarding.constellation.selection')).toContainText('Returns every night');
+      }
       if (feature === 'explore') await expect(page.getByTestId('btn.onboarding.dialogue.home')).toBeVisible();
       await expectCloseButton(page);
-      await page.getByTestId('btn.onboarding.feature.close').click();
-      await page.clock.runFor(50);
-      await expect(page.getByTestId(`btn.onboarding.feature.${feature}`)).toBeFocused();
+      // The installed clock holds every timer: move it on through each transition.
+      await withDialog(page, 'accept', () => page.getByTestId('btn.onboarding.feature.close').click());
+      await page.clock.runFor(3000);
+      await expect(page.getByTestId('component.onboarding.path')).toBeVisible();
+      await page.getByTestId('btn.onboarding.back').click();
+      await page.clock.runFor(3000);
+      await expect(page.getByTestId('component.onboarding.intro')).toBeVisible();
     }
   });
 
@@ -282,9 +304,7 @@ test.describe('feature sheet previews', () => {
     await readToExample(page, 'capture');
     await expect(page.getByTestId('component.onboarding.dreamGlobe')).toBeVisible();
     await expect(page.getByTestId('btn.onboarding.story.previous')).toHaveCount(0);
-    await page.getByTestId('btn.onboarding.feature.close').click();
-    await expect(page.getByTestId('btn.onboarding.feature.capture')).toBeFocused();
-    await expect(page.getByTestId('component.onboarding.intro')).toBeVisible();
+    await leaveStories(page);
   });
 
   test('reduced motion makes every story available as manual steps on a small screen', async ({ page }, testInfo) => {
@@ -300,8 +320,8 @@ test.describe('feature sheet previews', () => {
       }
       await expect(page.getByTestId(`component.onboarding.story.${feature}.3`)).toBeVisible();
       await page.screenshot({ path: testInfo.outputPath(`manual-${feature}.png`) });
-      await page.getByTestId('btn.onboarding.feature.close').click();
-      await expect(page.getByTestId(`btn.onboarding.feature.${feature}`)).toBeFocused();
+      await leaveStories(page);
+      await backToIntroduction(page);
     }
   });
 
@@ -324,12 +344,13 @@ test.describe('feature sheet previews', () => {
     await page.getByTestId('btn.onboarding.dialogue.start').click();
     await expect(followup).toContainText('What would make you want to walk through that door?');
     await page.screenshot({ path: testInfo.outputPath('explore-personal-association.png') });
-    await page.getByTestId('btn.onboarding.feature.close').click();
-    await expect(page.getByTestId('btn.onboarding.feature.explore')).toBeFocused();
+    await leaveStories(page);
   });
 
 
-  test('the three chapters continue in order within the feature sheet and return to onboarding', async ({ page }, testInfo) => {
+  // Product change (owner, 2026-10-10): the last story ends at the blue door, which opens
+  // on the path, with a way to start the stories over.
+  test('the three chapters continue in order within the feature sheet and end through the door', async ({ page }, testInfo) => {
     await page.getByTestId('btn.onboarding.feature.capture').click();
     for (const feature of ['capture', 'connect', 'explore']) {
       await expect(page.getByTestId(`component.onboarding.story.${feature}.0`)).toBeVisible();
@@ -337,16 +358,24 @@ test.describe('feature sheet previews', () => {
       await readToExample(page, feature);
       await page.getByTestId('btn.onboarding.story.continue').scrollIntoViewIfNeeded();
       await page.screenshot({ path: testInfo.outputPath(`chapter-${feature}.png`) });
+      if (feature === 'explore') {
+        await expect(page.getByTestId('btn.onboarding.story.continue')).toContainText('Step through the door');
+        await expect(page.getByTestId('btn.onboarding.story.restart')).toContainText('Start over');
+      } else {
+        await expect(page.getByTestId('btn.onboarding.story.restart')).toHaveCount(0);
+      }
       await page.getByTestId('btn.onboarding.story.continue').click();
     }
     await expect(page.getByTestId('sheet.onboarding.feature')).toHaveCount(0);
-    await expect(page.getByTestId('btn.onboarding.feature.explore')).toBeFocused();
-    await page.getByTestId('btn.onboarding.intro.next').click();
-    // With feature sheets, "Commencer" first tells the three stories; the cross moves on.
-    if (process.env.EXPO_PUBLIC_ONBOARDING_FEATURE_SHEETS_ENABLED === 'true') {
-    await withDialog(page, 'accept', () => page.getByTestId('btn.onboarding.feature.close').click());
-  }
     await expect(page.getByTestId('component.onboarding.path')).toBeVisible();
+  });
+
+  test('starting over from the last story returns to the first one', async ({ page }) => {
+    await page.getByTestId('btn.onboarding.feature.explore').click();
+    await readToExample(page, 'explore');
+    await page.getByTestId('btn.onboarding.story.restart').click();
+    await expect(page.getByTestId('component.onboarding.story.capture.0')).toBeVisible();
+    await expect(page.getByTestId('sheet.onboarding.feature')).toBeVisible();
   });
 
   test('Commencer tells the three stories in order, then continues to the path', async ({ page }) => {
@@ -354,19 +383,19 @@ test.describe('feature sheet previews', () => {
     for (const feature of ['capture', 'connect', 'explore']) {
       await expect(page.getByTestId(`component.onboarding.story.${feature}.0`)).toBeVisible();
       await readToExample(page, feature);
+      if (feature === 'explore') await expect(page.getByTestId('btn.onboarding.story.continue')).toContainText('Step through the door');
       await page.getByTestId('btn.onboarding.story.continue').click();
     }
     await expect(page.getByTestId('sheet.onboarding.feature')).toHaveCount(0);
     await expect(page.getByTestId('component.onboarding.path')).toBeVisible();
   });
 
-  test('closing the stories started by Commencer moves on, and they are not told twice', async ({ page }) => {
+  test('closing the stories started by Commencer asks first, moves on, and they are not told twice', async ({ page }) => {
     await page.getByTestId('btn.onboarding.intro.next').click();
     await expect(page.getByTestId('component.onboarding.story.capture.0')).toBeVisible();
-    await withDialog(page, 'dismiss', () => page.getByTestId('btn.onboarding.feature.close').click());
+    await keepReading(page);
     await expect(page.getByTestId('component.onboarding.story.capture.0')).toBeVisible();
-    await withDialog(page, 'accept', () => page.getByTestId('btn.onboarding.feature.close').click());
-    await expect(page.getByTestId('component.onboarding.path')).toBeVisible();
+    await leaveStories(page);
     await page.getByTestId('btn.onboarding.back').click();
     await expect(page.getByTestId('component.onboarding.intro')).toBeVisible();
     await page.getByTestId('btn.onboarding.intro.next').click();
@@ -400,7 +429,7 @@ test.describe('feature sheet previews', () => {
     await expect(page.getByTestId('component.onboarding.story.capture.3')).toBeVisible();
     await expect(page.getByTestId('btn.onboarding.story.continue')).toBeEnabled();
     expect(Math.abs(await offset('btn.onboarding.story.continue') - first)).toBeLessThanOrEqual(1);
-    await page.getByTestId('btn.onboarding.feature.close').click();
+    await leaveStories(page);
   });
 
 });

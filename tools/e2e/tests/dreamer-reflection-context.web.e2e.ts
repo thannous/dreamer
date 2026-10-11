@@ -9,6 +9,8 @@ const story = 'An elephant lands on top of a Ferris wheel among turquoise and co
 
 async function prepareReflection(page: Page, media: 'loaded' | 'failed' | 'absent' = 'loaded') {
   await page.route('https://picsum.photos/**', route => media === 'failed' ? route.abort() : route.fulfill({ path: artwork }));
+  // Generated mock illustrations are the bundled 9:16 dream art, not picsum.
+  if (media === 'failed') await page.route(/mock-data(?:%2F|\/)assets(?:%2F|\/)dreams(?:%2F|\/)/, route => route.abort());
   await page.goto('/');
   await page.getByTestId('btn.onboarding.intro.next').click();
   // With feature sheets, "Commencer" first tells the three stories; the cross moves on.

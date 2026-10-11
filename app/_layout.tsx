@@ -74,6 +74,7 @@ import { scheduleAfterStartupPaint } from '@/lib/startupPaint';
 import { QuickSettingsProvider } from '@/components/settings/QuickSettingsProvider';
 import type { LanguagePreference } from '@/lib/types';
 import { scheduleProductBootstrap } from '@/lib/productBootstrap';
+import { setAiConsentPromptRequired } from '@/lib/aiConsent';
 import { configureNotificationHandler } from '@/services/notificationService';
 import {
   clearPendingRecordingNotification,
@@ -216,6 +217,8 @@ function RootLayoutNav({
 }) {
   const { mode } = useTheme();
   const { user, returningGuestBlocked, loading: authLoading } = useAuth();
+  // The AI consent prompt is for signed-in users only.
+  setAiConsentPromptRequired(Boolean(user));
   const {
     state: onboardingState,
     loading: onboardingLoading,
