@@ -15,7 +15,8 @@
       "infoPlist": {
         "UIBackgroundModes": [
           "audio"
-        ]
+        ],
+        "CFBundleDisplayName": "Meditation"
       },
       "icon": "./assets/images/icon.png"
     },
@@ -44,12 +45,52 @@
       ]
     },
     "locales": {
-      "fr": {
+      "de": {
         "ios": {
-          "CFBundleDisplayName": "Noctalia Méditation"
+          "CFBundleDisplayName": "Meditation"
         },
         "android": {
-          "app_name": "Noctalia Méditation"
+          "app_name": "Meditation"
+        }
+      },
+      "en": {
+        "ios": {
+          "CFBundleDisplayName": "Meditation"
+        },
+        "android": {
+          "app_name": "Meditation"
+        }
+      },
+      "es": {
+        "ios": {
+          "CFBundleDisplayName": "Meditación"
+        },
+        "android": {
+          "app_name": "Meditación"
+        }
+      },
+      "fr": {
+        "ios": {
+          "CFBundleDisplayName": "Méditation"
+        },
+        "android": {
+          "app_name": "Méditation"
+        }
+      },
+      "it": {
+        "ios": {
+          "CFBundleDisplayName": "Meditazione"
+        },
+        "android": {
+          "app_name": "Meditazione"
+        }
+      },
+      "pt": {
+        "ios": {
+          "CFBundleDisplayName": "Meditação"
+        },
+        "android": {
+          "app_name": "Meditação"
         }
       }
     },
