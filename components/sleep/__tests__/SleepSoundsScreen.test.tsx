@@ -246,4 +246,19 @@ describe('SleepSoundsScreen', () => {
     fireEvent.click(toggle);
     expect(mockPlay).toHaveBeenCalledTimes(1);
   });
+
+  it('does not blame the network when a downloaded sound stops while playing', async () => {
+    mockPlayer.error = 'playback_interrupted';
+    mockPlayer.hasStarted = true;
+    mockPlayer.isLoaded = false;
+    render(<SleepSoundsScreen />);
+
+    const toggle = await screen.findByLabelText('Try again');
+    expect(screen.getByTestId('sleep-sound-error').textContent).toBe(
+      'The sound stopped unexpectedly. Tap Try again to resume it.',
+    );
+
+    fireEvent.click(toggle);
+    expect(mockPlay).toHaveBeenCalledTimes(1);
+  });
 });

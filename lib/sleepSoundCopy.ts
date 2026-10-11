@@ -19,6 +19,7 @@ export type SleepSoundCopy = {
   backgroundHint: string;
   error: string;
   downloadError: string;
+  interruptedError: string;
   sounds: Record<SleepSoundId, { title: string; description: string; story: string }>;
 };
 
@@ -40,6 +41,7 @@ const COPY: Record<SupportedLanguage, SleepSoundCopy> = {
     backgroundHint: 'The sound keeps playing when your screen locks, then fades out automatically.',
     error: 'The ambience could not start. Please try again.',
     downloadError: 'This sound could not be downloaded. Check your connection, then try again. Once downloaded, it plays offline.',
+    interruptedError: 'The sound stopped unexpectedly. Tap Try again to resume it.',
     sounds: {
       rain: { title: 'Gentle rain', description: 'Soft, steady rainfall',
         story: 'Rain falls on the forest. A lantern stays lit by the path. There is nothing left to do tonight.' },
@@ -66,6 +68,7 @@ const COPY: Record<SupportedLanguage, SleepSoundCopy> = {
     backgroundHint: 'Le son continue écran verrouillé, puis s’éteint progressivement tout seul.',
     error: 'Impossible de lancer l’ambiance. Réessaie dans un instant.',
     downloadError: 'Ce son n’a pas pu être téléchargé. Vérifie ta connexion, puis réessaie. Une fois téléchargé, il fonctionne hors ligne.',
+    interruptedError: 'Le son s’est interrompu. Touche Réessayer pour le reprendre.',
     sounds: {
       rain: { title: 'Pluie douce', description: 'Une pluie légère et régulière',
         story: 'Il pleut sur la forêt. Une lanterne reste allumée au bord du chemin. Ce soir, tu n’as plus rien à faire.' },
@@ -92,6 +95,7 @@ const COPY: Record<SupportedLanguage, SleepSoundCopy> = {
     backgroundHint: 'El sonido sigue con la pantalla bloqueada y se desvanece automáticamente.',
     error: 'No se pudo iniciar el ambiente. Inténtalo de nuevo.',
     downloadError: 'No se pudo descargar este sonido. Revisa tu conexión y vuelve a intentarlo. Una vez descargado, funciona sin conexión.',
+    interruptedError: 'El sonido se interrumpió. Toca Reintentar para reanudarlo.',
     sounds: {
       rain: { title: 'Lluvia suave', description: 'Lluvia ligera y constante',
         story: 'Llueve sobre el bosque. Una linterna sigue encendida junto al camino. Esta noche ya no tienes nada que hacer.' },
@@ -118,6 +122,7 @@ const COPY: Record<SupportedLanguage, SleepSoundCopy> = {
     backgroundHint: 'Der Klang läuft bei gesperrtem Bildschirm weiter und blendet automatisch aus.',
     error: 'Der Klang konnte nicht gestartet werden. Versuche es erneut.',
     downloadError: 'Dieser Klang konnte nicht geladen werden. Prüfe deine Verbindung und versuche es erneut. Einmal geladen, läuft er offline.',
+    interruptedError: 'Der Klang wurde unterbrochen. Tippe auf Erneut versuchen, um ihn fortzusetzen.',
     sounds: {
       rain: { title: 'Sanfter Regen', description: 'Leichter, gleichmäßiger Regen',
         story: 'Regen fällt auf den Wald. Am Weg brennt noch eine Laterne. Heute Abend gibt es nichts mehr zu tun.' },
@@ -144,6 +149,7 @@ const COPY: Record<SupportedLanguage, SleepSoundCopy> = {
     backgroundHint: 'Il suono continua a schermo bloccato e svanisce automaticamente.',
     error: 'Impossibile avviare l’atmosfera. Riprova.',
     downloadError: 'Impossibile scaricare questo suono. Controlla la connessione e riprova. Una volta scaricato, funziona anche offline.',
+    interruptedError: 'Il suono si è interrotto. Tocca Riprova per riprenderlo.',
     sounds: {
       rain: { title: 'Pioggia leggera', description: 'Una pioggia dolce e regolare',
         story: 'Piove sul bosco. Una lanterna resta accesa lungo il sentiero. Stasera non c’è più niente da fare.' },
@@ -170,6 +176,7 @@ const COPY: Record<SupportedLanguage, SleepSoundCopy> = {
     backgroundHint: 'O som continua com a tela bloqueada e termina automaticamente.',
     error: 'Não foi possível iniciar o ambiente. Tente novamente.',
     downloadError: 'Não foi possível baixar este som. Verifique sua conexão e tente novamente. Depois de baixado, ele funciona offline.',
+    interruptedError: 'O som foi interrompido. Toque em Tentar novamente para retomá-lo.',
     sounds: {
       rain: { title: 'Chuva suave', description: 'Uma chuva leve e constante',
         story: 'Chove sobre a floresta. Uma lanterna continua acesa à beira do caminho. Esta noite, não há mais nada a fazer.' },

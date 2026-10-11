@@ -152,19 +152,26 @@ function SleepSoundsContent() {
     void player.play();
   }, [player]);
 
-  const downloadFailed = player.error === 'download_failed';
+  const needsRetry =
+    player.error === 'download_failed' || player.error === 'playback_interrupted';
+  const errorMessage =
+    player.error === 'download_failed'
+      ? copy.downloadError
+      : player.error === 'playback_interrupted'
+        ? copy.interruptedError
+        : copy.error;
   // Android reads the message through its live region; VoiceOver needs an announcement.
   useEffect(() => {
-    if (downloadFailed && Platform.OS === 'ios') {
-      AccessibilityInfo.announceForAccessibility(copy.downloadError);
+    if (needsRetry && Platform.OS === 'ios') {
+      AccessibilityInfo.announceForAccessibility(errorMessage);
     }
-  }, [copy.downloadError, downloadFailed]);
+  }, [errorMessage, needsRetry]);
   const isPreparing =
     !preferencesLoaded ||
-    (!downloadFailed && !player.hasStarted && (!player.isLoaded || player.isBuffering));
+    (!needsRetry && !player.hasStarted && (!player.isLoaded || player.isBuffering));
   const primaryLabel = isPreparing
     ? copy.loading
-    : downloadFailed
+    : needsRetry
       ? copy.retry
       : player.isPlaying
       ? copy.pause
@@ -396,7 +403,7 @@ function SleepSoundsContent() {
                 ]}
               >
                 <IconSymbol
-                  name={downloadFailed ? 'arrow.clockwise' : player.isPlaying ? 'pause.fill' : 'play.fill'}
+                  name={needsRetry ? 'arrow.clockwise' : player.isPlaying ? 'pause.fill' : 'play.fill'}
                   size={26}
                   color={isPreparing ? noctalia.action.disabledText : noctalia.action.primaryText}
                 />
@@ -421,7 +428,7 @@ function SleepSoundsContent() {
               accessibilityLiveRegion="polite"
               style={[styles.errorText, { color: noctalia.status.danger.text }]}
             >
-              {downloadFailed ? copy.downloadError : copy.error}
+              {errorMessage}
             </Text>
           ) : (
             <Text style={[styles.hintText, { color: noctalia.text.tertiary }]}>
