@@ -163,10 +163,25 @@ export function LucidJourneyMap({
     naturalSceneHeight,
     naturalSceneHeight * currentAnchor.top + IMMERSIVE_SPLIT_CLEARANCE
   );
-  const immersiveSceneHeight = naturalSceneHeight + IMMERSIVE_CARD_GAP;
+  // The immersive header floats over the artwork. Where it reaches lower than
+  // the sky above the last node (short artwork, tall header), the whole scene
+  // moves down together so the nodes stay on the painted path.
+  const [headerBottom, setHeaderBottom] = useState(0);
+  const sceneOffset = immersive && !reflow
+    ? Math.max(0, Math.ceil(headerBottom + LucidSpace.sm - topNodeEdge(naturalSceneHeight)))
+    : 0;
+  const immersiveSceneHeight = naturalSceneHeight + IMMERSIVE_CARD_GAP + sceneOffset;
 
   const progressHeader = (
     <View
+      onLayout={
+        immersive && !reflow
+          ? ({ nativeEvent }) => {
+              const nextBottom = nativeEvent.layout.y + nativeEvent.layout.height;
+              if (Math.abs(nextBottom - headerBottom) > 0.5) setHeaderBottom(nextBottom);
+            }
+          : undefined
+      }
       style={[
         styles.header,
         immersive && (reflow ? styles.headerImmersiveReflow : styles.headerImmersive),
@@ -284,6 +299,8 @@ export function LucidJourneyMap({
             : styles.sceneMap,
         immersive && styles.sceneImmersive,
         immersive && { backgroundColor: palette.backgroundDeep },
+        // The reflowed header sits in the flow, so it clears device chrome here.
+        immersive && reflow && { paddingTop: immersiveTopInset + LucidSpace.lg },
       ]}
       testID="lucid-journey-scene"
     >
@@ -291,7 +308,7 @@ export function LucidJourneyMap({
         <>
           <View
             pointerEvents="none"
-            style={[styles.sceneImageClip, { top: 0, height: insertionY }]}
+            style={[styles.sceneImageClip, { top: sceneOffset, height: insertionY }]}
           >
             <Image
               accessibilityIgnoresInvertColors
@@ -312,7 +329,7 @@ export function LucidJourneyMap({
             style={[
               styles.sceneImageClip,
               {
-                top: insertionY + IMMERSIVE_CARD_GAP,
+                top: sceneOffset + insertionY + IMMERSIVE_CARD_GAP,
                 height: naturalSceneHeight - insertionY,
               },
             ]}
@@ -353,7 +370,11 @@ export function LucidJourneyMap({
 
       <View
         accessibilityRole="list"
-        style={[styles.path, reflow ? styles.pathReflow : styles.pathMap]}
+        style={[
+          styles.path,
+          reflow ? styles.pathReflow : styles.pathMap,
+          sceneOffset > 0 && { top: sceneOffset },
+        ]}
         testID="lucid-journey-path"
       >
         {visualJourneyDays.map((day) => {
@@ -771,6 +792,12 @@ const JOURNEY_ANCHORS: Readonly<Record<number, JourneyAnchor>> = {
   2: { left: '51%', top: 0.68 },
   1: { left: '24%', top: 0.82 },
 };
+
+/** Top edge of the highest marker: node rows are centred on their anchor. */
+function topNodeEdge(naturalSceneHeight: number): number {
+  const highest = Math.min(...Object.values(JOURNEY_ANCHORS).map((anchor) => anchor.top));
+  return naturalSceneHeight * highest - (LucidSpace.xl + LucidSpace.xs);
+}
 
 function journeyAnchorForSession(session: number): JourneyAnchor {
   return JOURNEY_ANCHORS[session] ?? JOURNEY_ANCHORS[1];
