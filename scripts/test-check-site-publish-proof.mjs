@@ -226,6 +226,20 @@ test('the site publish needs no app check; a publish that asks for the app targe
   });
 });
 
+test('an app check left open by an app release does not block the site release that follows it', async () => {
+  await withRepository(async ({ check, engine }) => {
+    // npm run verify:release where Docker is missing: app-e2e is unavailable.
+    assert.equal((await engine('release', ['--target', 'app'])).status, 2);
+    assert.deepEqual(failedChecks(await check()), ['proof-passed', 'proof-latest-release']);
+    assert.deepEqual(failedChecks(await check({ targets: ['app'] })), ['proof-passed', 'proof-latest-release', 'proof-open-check']);
+
+    // npm run verify:release:site then passes: the site may publish, the app may not.
+    assert.equal((await engine('release')).status, 0);
+    assert.deepEqual((await check()).failures, []);
+    assert.deepEqual(failedChecks(await check({ targets: ['app'] })), ['proof-open-check', 'proof-target']);
+  });
+});
+
 test('a stale proof (written for another commit of the same tree) is refused', async () => {
   await withRepository(async ({ check, engine, git, work }) => {
     git(['switch', '-q', '-c', 'feature']);
