@@ -323,7 +323,7 @@ Si duermes suficientes horas y aun así te levantas agotado, si alguien nota ron
 <a class="glass-panel rounded-xl p-6 block hover:border-dream-salmon/30 transition-all hover:-translate-y-1" href="sueno-rem-suenos">
 <span class="text-xs text-dream-salmon uppercase mb-2 block">Ciencia del sue&ntilde;o</span>
 <h3 class="font-serif text-lg text-dream-cream mb-2">Sue&ntilde;o REM y sue&ntilde;os: entendiendo el reinicio nocturno de tu cerebro</h3>
-<p class="text-sm text-gray-400">Descubre c&oacute;mo la fase REM moldea tus sue&ntilde;os y por qu&eacute; es esencial para tu bienestar.</p>
+<p class="text-sm text-gray-400">En qué momento de la noche llega el sueño REM, por qué sus sueños son tan vívidos y qué lo acorta.</p>
 </a>
 <a class="glass-panel rounded-xl p-6 block hover:border-dream-salmon/30 transition-all hover:-translate-y-1" href="horario-verano-sueno-suenos">
 <span class="text-xs text-dream-salmon uppercase mb-2 block">Salud</span>

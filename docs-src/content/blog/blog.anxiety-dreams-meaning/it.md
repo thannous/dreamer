@@ -444,7 +444,7 @@
         <a href="sogni-e-salute-mentale-come-il-tuo-sonno-rivela-la-tua-mente" class="glass-panel rounded-xl p-6 block hover:border-dream-salmon/30 transition-all hover:-translate-y-1">
             <span class="text-xs text-dream-salmon uppercase mb-2 block">Scienza</span>
             <h3 class="font-serif text-lg text-dream-cream mb-2">Sogni e salute mentale: come il tuo sonno rivela la tua mente</h3>
-            <p class="text-sm text-gray-400">Scopri la connessione tra sogni e salute mentale, incluso come ansia, depressione e trauma influenzano i sogni.</p>
+            <p class="text-sm text-gray-400">Come ansia, depressione, stress e trauma compaiono nei sogni, e quando gli incubi frequenti meritano di essere affrontati con un professionista.</p>
         </a>
         <a href="sogni-stressanti-sul-lavoro-perche-il-tuo-lavoro-ti-segue-nel-sonno" class="glass-panel rounded-xl p-6 block hover:border-dream-salmon/30 transition-all hover:-translate-y-1">
             <span class="text-xs text-dream-salmon uppercase mb-2 block">Guida Completa</span>

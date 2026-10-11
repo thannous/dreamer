@@ -445,7 +445,7 @@
 <a class="glass-panel rounded-xl p-6 block hover:border-dream-salmon/30 transition-all hover:-translate-y-1" href="reves-sante-mentale">
 <span class="text-xs text-dream-salmon uppercase mb-2 block">Science</span>
 <h3 class="font-serif text-lg text-dream-cream mb-2">Rêves et santé mentale : comment votre sommeil révèle votre esprit</h3>
-<p class="text-sm text-gray-400">Découvrez le lien entre les rêves et la santé mentale, y compris comment l'anxiété, la dépression et les traumatismes affectent les rêves.</p>
+<p class="text-sm text-gray-400">Comment l'anxiété, la dépression, le stress et les traumatismes se retrouvent dans les rêves, et quand des cauchemars fréquents justifient d'en parler à un professionnel.</p>
 </a>
 <a class="glass-panel rounded-xl p-6 block hover:border-dream-salmon/30 transition-all hover:-translate-y-1" href="reves-stress-travail">
 <span class="text-xs text-dream-salmon uppercase mb-2 block">Guide Complet</span>

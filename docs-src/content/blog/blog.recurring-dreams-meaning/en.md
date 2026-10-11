@@ -441,17 +441,17 @@
         <a href="teeth-falling-out-dreams" class="glass-panel rounded-xl p-6 block hover:border-dream-salmon/30 transition-all hover:-translate-y-1">
             <span class="text-xs text-dream-salmon uppercase mb-2 block">Interpretation</span>
             <h3 class="font-serif text-lg text-dream-cream mb-2">Teeth Falling Out Dreams: Meaning and Interpretation</h3>
-            <p class="text-sm text-gray-400">Why do you dream about losing your teeth? Discover the 7 most common interpretations.</p>
+            <p class="text-sm text-gray-400">Seven possible readings of dreams about teeth falling out, from jaw tension to fear of being judged, and the variations worth noting.</p>
         </a>
         <a href="falling-dreams-meaning" class="glass-panel rounded-xl p-6 block hover:border-dream-salmon/30 transition-all hover:-translate-y-1">
             <span class="text-xs text-dream-salmon uppercase mb-2 block">Interpretation</span>
             <h3 class="font-serif text-lg text-dream-cream mb-2">Falling Dreams Meaning: Why You Dream of Falling</h3>
-            <p class="text-sm text-gray-400">Why do you dream about falling into the void? Discover the psychological meaning.</p>
+            <p class="text-sm text-gray-400">Why falling dreams happen, from the hypnic jerk at sleep onset to long falls, and what to note when you wake.</p>
         </a>
         <a href="flying-dreams-meaning" class="glass-panel rounded-xl p-6 block hover:border-dream-salmon/30 transition-all hover:-translate-y-1">
             <span class="text-xs text-dream-salmon uppercase mb-2 block">Interpretation</span>
             <h3 class="font-serif text-lg text-dream-cream mb-2">Flying Dreams Meaning: What It Means to Fly</h3>
-            <p class="text-sm text-gray-400">Why do you dream about flying? Discover what flying dreams reveal about freedom and ambition.</p>
+            <p class="text-sm text-gray-400">What effortless soaring, failing to take off or flying to escape can suggest, and what to note when you wake.</p>
         </a>
   </div>
 </section>

@@ -23,13 +23,13 @@
   "twitterImage": "https://noctalia.app/img/og/noctalia-fr-1200x630.jpg",
   "twitterImageAlt": "Application de journal de rêves Noctalia",
   "publishedTime": "2026-08-09T00:00:00+02:00",
-  "modifiedTime": "2026-08-09T00:00:00+02:00",
+  "modifiedTime": "2026-10-10T00:00:00+02:00",
   "author": "Thanh Chau",
   "prevPath": "",
   "nextPath": "",
   "preloadImage": "",
   "jsonLd": [
-    "{\"@context\":\"https://schema.org\",\"@type\":\"WebPage\",\"name\":\"Alternative à Dream Journal Ultimate sur Android\",\"description\":\"Comparez Dream Journal Ultimate et Noctalia : capture vocale, réflexion IA, rêve lucide, communauté, Android et confidentialité.\",\"url\":\"https://noctalia.app/fr/alternative-dream-journal-ultimate\",\"inLanguage\":\"fr\",\"dateModified\":\"2026-08-09T00:00:00+02:00\",\"publisher\":{\"@id\":\"https://noctalia.app/#organization\"}}",
+    "{\"@context\":\"https://schema.org\",\"@type\":\"WebPage\",\"name\":\"Alternative à Dream Journal Ultimate sur Android\",\"description\":\"Comparez Dream Journal Ultimate et Noctalia : capture vocale, réflexion IA, rêve lucide, communauté, Android et confidentialité.\",\"url\":\"https://noctalia.app/fr/alternative-dream-journal-ultimate\",\"inLanguage\":\"fr\",\"dateModified\":\"2026-10-10T00:00:00+02:00\",\"publisher\":{\"@id\":\"https://noctalia.app/#organization\"}}",
     "{\"@context\":\"https://schema.org\",\"@type\":\"BreadcrumbList\",\"itemListElement\":[{\"@type\":\"ListItem\",\"position\":1,\"name\":\"Accueil\",\"item\":\"https://noctalia.app/fr/\"},{\"@type\":\"ListItem\",\"position\":2,\"name\":\"Alternative à Dream Journal Ultimate\",\"item\":\"https://noctalia.app/fr/alternative-dream-journal-ultimate\"}]}",
     "{\"@context\":\"https://schema.org\",\"@type\":\"FAQPage\",\"mainEntity\":[{\"@type\":\"Question\",\"name\":\"Choisissez Dream Journal Ultimate si\",\"acceptedAnswer\":{\"@type\":\"Answer\",\"text\":\"Vous voulez iOS, une communauté publique facultative, les rêves similaires, un grand dictionnaire ou un entraînement lucide structuré.\"}},{\"@type\":\"Question\",\"name\":\"Choisissez Noctalia si\",\"acceptedAnswer\":{\"@type\":\"Answer\",\"text\":\"Vous utilisez Android et voulez une capture vocale rapide, des cartes visuelles, des symboles récurrents et une réflexion privée sans fil social.\"}}]}"
   ],
@@ -44,7 +44,7 @@
   <section class="glass-panel p-8 rounded-2xl border border-white/10 bg-white/5">
     <h2 class="text-2xl font-serif text-white mb-4">En bref</h2>
     <p>Choisissez Dream Journal Ultimate pour iOS, le Dream Wall, les rêves similaires, son vaste dictionnaire, les leçons de rêve lucide et les rappels de tests de réalité. Choisissez Noctalia pour parler d’un rêve avant qu’il ne s’efface, créer une carte visuelle, suivre les symboles récurrents et poursuivre avec des questions guidées.</p>
-    <p class="mt-4">Ce comparatif ne désigne pas un vainqueur universel. Dream Journal Ultimate possède l’écosystème communautaire et lucide le plus large ; Noctalia propose un chemin plus concentré entre capture et réflexion. Aucune des deux applications ne doit être présentée comme un service médical ou prédictif.</p>
+    <p class="mt-4">Ce comparatif ne désigne pas de gagnant. Dream Journal Ultimate offre la communauté et les outils de rêve lucide les plus larges ; Noctalia, un chemin plus direct de la capture à la réflexion. Ni l’une ni l’autre n’est présentée ici comme un service médical ou prédictif.</p>
   </section>
 
   <section class="glass-panel p-8 rounded-2xl border border-white/10 bg-white/5">
@@ -53,7 +53,7 @@
       <table class="w-full text-left text-sm min-w-[900px]">
         <thead class="text-purple-200"><tr><th class="py-3 pr-4">Catégorie</th><th class="py-3 pr-4">Dream Journal Ultimate</th><th class="py-3 pr-4">Noctalia</th><th class="py-3 pr-4">Conclusion</th></tr></thead>
         <tbody class="divide-y divide-white/10">
-          <tr><td class="py-4 pr-4 text-white font-medium">Capture matinale</td><td class="py-4 pr-4">Les pages officielles annoncent l’enregistrement vocal, les rappels, les tags et la synchronisation.</td><td class="py-4 pr-4">La capture vocale mène directement vers une carte structurée et une réflexion guidée.</td><td class="py-4 pr-4">Les deux gèrent la voix ; Noctalia centre tout le parcours sur ce besoin matinal.</td></tr>
+          <tr><td class="py-4 pr-4 text-white font-medium">Capture matinale</td><td class="py-4 pr-4">Les pages officielles annoncent l’enregistrement vocal, les rappels, les tags et la synchronisation.</td><td class="py-4 pr-4">La capture vocale mène directement à une carte structurée et une réflexion guidée.</td><td class="py-4 pr-4">Les deux gèrent la voix ; Noctalia centre tout le parcours sur ce besoin matinal.</td></tr>
           <tr><td class="py-4 pr-4 text-white font-medium">Plateformes</td><td class="py-4 pr-4">Android et iOS, avec une communauté et des ressources sur le web.</td><td class="py-4 pr-4">Application Android et ressources web publiques ; pas d’application iOS aujourd’hui.</td><td class="py-4 pr-4">Choisissez Dream Journal Ultimate si iOS est indispensable.</td></tr>
           <tr><td class="py-4 pr-4 text-white font-medium">Communauté</td><td class="py-4 pr-4">Les rêves restent privés sauf partage volontaire sur le Dream Wall.</td><td class="py-4 pr-4">Aucun fil social public ; le produit reste centré sur le journal personnel.</td><td class="py-4 pr-4">Décidez si la communauté vous aide ou vous distrait.</td></tr>
           <tr><td class="py-4 pr-4 text-white font-medium">Interprétation et images</td><td class="py-4 pr-4">Interprétation IA, Dream Companion, rêves similaires, symboles et images IA.</td><td class="py-4 pr-4">Réflexion IA structurée, images, symboles récurrents et questions de suivi.</td><td class="py-4 pr-4">Dream Journal Ultimate est plus large ; Noctalia plus linéaire.</td></tr>
@@ -66,11 +66,11 @@
 
   <section class="grid md:grid-cols-2 gap-6">
     <div class="glass-panel p-8 rounded-2xl border border-white/10 bg-white/5">
-      <h2 class="text-2xl font-serif text-white mb-4">Preuves publiques actuelles</h2>
-      <p>Le 9 août 2026, Google Play affichait 100 k+ téléchargements, 4,4 étoiles et environ 1,14 k avis, avec une mise à jour au 1er août. L’App Store américain affichait 4,5 étoiles sur 547 notes et la version 2026.8.5. Noctalia doit reconnaître cette maturité.</p>
+      <h2 class="text-2xl font-serif text-white mb-4">Chiffres des stores</h2>
+      <p>Le 9 août 2026, Google Play affichait pour Dream Journal Ultimate 100 k+ téléchargements, 4,4 étoiles et environ 1,14 k avis, avec une mise à jour au 1er août. L’App Store américain affichait 4,5 étoiles sur 547 notes et la version 2026.8.5. Noctalia ne revendique pas une audience comparable.</p>
     </div>
     <div class="glass-panel p-8 rounded-2xl border border-white/10 bg-white/5">
-      <h2 class="text-2xl font-serif text-white mb-4">Limite tarifaire</h2>
+      <h2 class="text-2xl font-serif text-white mb-4">Sur les prix</h2>
       <p>Les deux applications sont téléchargeables gratuitement et présentent des achats intégrés ou abonnements. Les prix varient selon le pays, les taxes, l’éligibilité et la date ; vérifiez donc l’écran d’achat applicable plutôt qu’un prix universel.</p>
     </div>
   </section>
@@ -116,7 +116,7 @@
 
   <section class="glass-panel p-8 rounded-2xl border border-dream-salmon/20 bg-dream-salmon/5">
     <h2 class="text-2xl font-serif text-white mb-4">Essayer Noctalia sur Android</h2>
-    <p>Noctalia s’adresse aux personnes qui veulent capturer rapidement un rêve, le transformer en mémoire visuelle et poursuivre dans un parcours de réflexion privé.</p>
+    <p>Dictez votre rêve au réveil, demandez-en une image et poursuivez la réflexion en privé, avec des questions guidées.</p>
     <p class="mt-4"><a href="https://play.google.com/store/apps/details?id=com.tanuki75.noctalia&amp;hl=fr" class="text-dream-salmon hover:underline" rel="nofollow noopener noreferrer" target="_blank">Ouvrir Noctalia sur Google Play</a></p>
   </section>
 </div>

@@ -38,7 +38,7 @@
 ---
 <article class="max-w-5xl mx-auto">
 <!-- Breadcrumb -->
-<nav aria-label="Semmelbrösel" class="text-sm text-purple-200/60 mb-8">
+<nav aria-label="Brotkrümelnavigation" class="text-sm text-purple-200/60 mb-8">
 <ol class="flex items-center gap-2 flex-wrap" itemscope="" itemtype="https://schema.org/BreadcrumbList">
 <li itemprop="itemListElement" itemscope="" itemtype="https://schema.org/ListItem">
 <a class="hover:text-dream-salmon transition-colors" href="/de/" itemprop="item">
@@ -340,12 +340,12 @@ Schreiben Sie „heute keine Traumerinnerung“ und wie Sie sich fühlen, dann s
 <i class="w-5 h-5 text-dream-salmon" data-lucide="book-open"></i>
                     Verwandte Symbole erkunden
                 </h2>
-<p class="text-sm text-purple-300/60 mb-4">Tauchen Sie tiefer in die Symbole aus diesem Artikel ein:</p>
+<p class="text-sm text-purple-300/60 mb-4">Passende Traumsymbole aus dem Artikel:</p>
 <div class="flex flex-wrap gap-3">
-<a class="inline-flex items-center gap-2 px-4 py-2 glass-button rounded-full text-sm hover:text-dream-salmon transition-colors" href="../traumsymbole/nacht">Nachttraumbedeutung</a>
-<a class="inline-flex items-center gap-2 px-4 py-2 glass-button rounded-full text-sm hover:text-dream-salmon transition-colors" href="../traumsymbole/wasser">Wassertraumbedeutung</a>
-<a class="inline-flex items-center gap-2 px-4 py-2 glass-button rounded-full text-sm hover:text-dream-salmon transition-colors" href="../traumsymbole/zaehne">Zähne (Zahnverlust) Traumbedeutung</a>
-<a class="inline-flex items-center gap-2 px-4 py-2 glass-button rounded-full text-sm hover:text-dream-salmon transition-colors" href="../traumsymbole/fallen">Fallende Traumbedeutung</a>
+<a class="inline-flex items-center gap-2 px-4 py-2 glass-button rounded-full text-sm hover:text-dream-salmon transition-colors" href="../traumsymbole/nacht">Traum von der Nacht</a>
+<a class="inline-flex items-center gap-2 px-4 py-2 glass-button rounded-full text-sm hover:text-dream-salmon transition-colors" href="../traumsymbole/wasser">Traum von Wasser</a>
+<a class="inline-flex items-center gap-2 px-4 py-2 glass-button rounded-full text-sm hover:text-dream-salmon transition-colors" href="../traumsymbole/zaehne">Traum von Zahnverlust</a>
+<a class="inline-flex items-center gap-2 px-4 py-2 glass-button rounded-full text-sm hover:text-dream-salmon transition-colors" href="../traumsymbole/fallen">Traum vom Fallen</a>
 </div>
 </section>
 <!-- Related Symbols End -->
@@ -380,7 +380,7 @@ Schreiben Sie „heute keine Traumerinnerung“ und wie Sie sich fühlen, dann s
         <a href="trauminkubation-wie-sie-heute-abend-genau-das-traeumen-was-sie-wollen" class="glass-panel rounded-xl p-6 block hover:border-dream-salmon/30 transition-all hover:-translate-y-1">
             <span class="text-xs text-dream-salmon uppercase mb-2 block">Ratgeber</span>
             <h3 class="font-serif text-lg text-dream-cream mb-2">Trauminkubation: Wie Sie heute Abend genau das träumen, was Sie wollen</h3>
-            <p class="text-sm text-gray-400">Lernen Sie die uralte Kunst der Trauminkubation, um Probleme zu lösen, Kreativität zu wecken und bestimmte Themen in Ihren Träumen zu erkunden.</p>
+            <p class="text-sm text-gray-400">Eine Methode in sechs Schritten, um vor dem Schlafen eine Frage zu wählen und morgens festzuhalten, was zurückkommt, mit Forschungsstand und Grenzen.</p>
         </a>
         <a href="albtraeume-ursachen-bedeutung-und-wie-man-sie-stoppen-kann" class="glass-panel rounded-xl p-6 block hover:border-dream-salmon/30 transition-all hover:-translate-y-1">
             <span class="text-xs text-dream-salmon uppercase mb-2 block">Ratgeber</span>

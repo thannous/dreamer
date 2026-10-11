@@ -418,7 +418,7 @@
 <i class="w-5 h-5 text-dream-salmon" data-lucide="book-open"></i>
                     Explore Related Symbols
                 </h2>
-<p class="text-sm text-purple-300/60 mb-4">Dive deeper into the symbols from this article:</p>
+<p class="text-sm text-purple-300/60 mb-4">Read up on the symbols mentioned in this article:</p>
 <div class="flex flex-wrap gap-3">
 <a class="inline-flex items-center gap-2 px-4 py-2 glass-button rounded-full text-sm hover:text-dream-salmon transition-colors" href="../symbols/teeth">Teeth (losing teeth) Dream Meaning</a>
 <a class="inline-flex items-center gap-2 px-4 py-2 glass-button rounded-full text-sm hover:text-dream-salmon transition-colors" href="../symbols/exam">Exam Dream Meaning</a>
@@ -458,17 +458,17 @@
         <a href="why-we-forget-dreams" class="glass-panel rounded-xl p-6 block hover:border-dream-salmon/30 transition-all hover:-translate-y-1">
             <span class="text-xs text-dream-salmon uppercase mb-2 block">Science</span>
             <h3 class="font-serif text-lg text-dream-cream mb-2">Why Do We Forget Our Dreams? The Science Behind Dream Amnesia</h3>
-            <p class="text-sm text-gray-400">Discover the brain mechanisms and neurochemistry that explain why we forget 95% of our dreams upon waking.</p>
+            <p class="text-sm text-gray-400">Why dreams fade within minutes of waking, what REM sleep and memory have to do with it, and simple habits to keep more of them.</p>
         </a>
         <a href="precognitive-dreams-science" class="glass-panel rounded-xl p-6 block hover:border-dream-salmon/30 transition-all hover:-translate-y-1">
             <span class="text-xs text-dream-salmon uppercase mb-2 block">Science</span>
             <h3 class="font-serif text-lg text-dream-cream mb-2">Can Dreams Predict the Future? The Science of Precognitive Dreams</h3>
-            <p class="text-sm text-gray-400">Explore the fascinating science behind precognitive dreams and whether they can really predict the future.</p>
+            <p class="text-sm text-gray-400">What controlled studies say about dreams that seem to predict the future, and how coincidence and memory bias explain many cases.</p>
         </a>
         <a href="why-we-dream-science" class="glass-panel rounded-xl p-6 block hover:border-dream-salmon/30 transition-all hover:-translate-y-1">
             <span class="text-xs text-dream-salmon uppercase mb-2 block">Science</span>
             <h3 class="font-serif text-lg text-dream-cream mb-2">Why Do We Dream? The Science Behind Your Nightly Adventures</h3>
-            <p class="text-sm text-gray-400">Explore the fascinating science of dreaming. Learn about major theories, brain activity during dreams, and what your dreams reveal about consciousness.</p>
+            <p class="text-sm text-gray-400">What dream research has measured about memory, emotion and threat rehearsal, and which explanations are still theory.</p>
         </a>
   </div>
 </section>

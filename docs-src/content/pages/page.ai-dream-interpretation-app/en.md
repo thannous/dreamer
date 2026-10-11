@@ -23,13 +23,13 @@
   "twitterImage": "https://noctalia.app/img/og/noctalia-en-1200x630.jpg",
   "twitterImageAlt": "Noctalia dream journal app",
   "publishedTime": "2026-05-20T00:00:00+02:00",
-  "modifiedTime": "2026-07-09T00:00:00+02:00",
+  "modifiedTime": "2026-10-10T00:00:00+02:00",
   "author": "Thanh Chau",
   "prevPath": "",
   "nextPath": "",
   "preloadImage": "",
   "jsonLd": [
-    "{\n  \"@context\": \"https://schema.org\",\n  \"@type\": \"WebPage\",\n  \"name\": \"AI Dream Interpretation App for Android\",\n  \"description\": \"Use Noctalia as an AI dream interpretation app for Android: capture dreams by voice, explore symbols, images, moods and guided follow-up questions.\",\n  \"url\": \"https://noctalia.app/en/ai-dream-interpretation-app\",\n  \"inLanguage\": \"en\",\n  \"dateModified\": \"2026-07-09T00:00:00+02:00\",\n  \"publisher\": {\n    \"@id\": \"https://noctalia.app/#organization\"\n  }\n}",
+    "{\n  \"@context\": \"https://schema.org\",\n  \"@type\": \"WebPage\",\n  \"name\": \"AI Dream Interpretation App for Android\",\n  \"description\": \"Use Noctalia as an AI dream interpretation app for Android: capture dreams by voice, explore symbols, images, moods and guided follow-up questions.\",\n  \"url\": \"https://noctalia.app/en/ai-dream-interpretation-app\",\n  \"inLanguage\": \"en\",\n  \"dateModified\": \"2026-10-10T00:00:00+02:00\",\n  \"publisher\": {\n    \"@id\": \"https://noctalia.app/#organization\"\n  }\n}",
     "{\n  \"@context\": \"https://schema.org\",\n  \"@type\": \"BreadcrumbList\",\n  \"itemListElement\": [\n    {\n      \"@type\": \"ListItem\",\n      \"position\": 1,\n      \"name\": \"Home\",\n      \"item\": \"https://noctalia.app/\"\n    },\n    {\n      \"@type\": \"ListItem\",\n      \"position\": 2,\n      \"name\": \"AI Dream Interpretation App for Android\",\n      \"item\": \"https://noctalia.app/en/ai-dream-interpretation-app\"\n    }\n  ]\n}",
     "{\n  \"@context\": \"https://schema.org\",\n  \"@type\": \"FAQPage\",\n  \"mainEntity\": [\n    {\n      \"@type\": \"Question\",\n      \"name\": \"Is Noctalia an AI dream interpretation app for Android?\",\n      \"acceptedAnswer\": {\n        \"@type\": \"Answer\",\n        \"text\": \"Yes. Noctalia is an Android app that lets you capture a dream by voice or text, then explore AI interpretation, symbols, generated images, moods and follow-up questions.\"\n      }\n    },\n    {\n      \"@type\": \"Question\",\n      \"name\": \"What should I do before asking for AI interpretation?\",\n      \"acceptedAnswer\": {\n        \"@type\": \"Answer\",\n        \"text\": \"Capture the dream first in your own words. Noctalia is designed to interpret after the dream is saved, so the AI has the transcript, mood, symbols and context to work with.\"\n      }\n    },\n    {\n      \"@type\": \"Question\",\n      \"name\": \"Can AI tell me the exact meaning of a dream?\",\n      \"acceptedAnswer\": {\n        \"@type\": \"Answer\",\n        \"text\": \"No. Noctalia treats AI interpretation as a reflection prompt, not a diagnosis, prediction or final truth.\"\n      }\n    },\n    {\n      \"@type\": \"Question\",\n      \"name\": \"How does Noctalia handle privacy for dreams and audio?\",\n      \"acceptedAnswer\": {\n        \"@type\": \"Answer\",\n        \"text\": \"Noctalia's privacy policy explains EU-hosted journal data, AI providers, no sale of personal data, no targeted advertising, and audio used for transcription without persistent Noctalia storage.\"\n      }\n    }\n  ]\n}"
   ],
@@ -37,8 +37,8 @@
 }
 ---
 <h1 class="font-serif text-4xl md:text-5xl mb-4 text-dream-cream">AI dream interpretation app for Android</h1>
-<p class="text-sm text-purple-300/70 mb-6">Updated June 11, 2026</p>
-<p class="text-lg text-purple-200/80 leading-relaxed mb-10">Noctalia is an AI dream interpretation app for Android users who need to capture the dream first. Record or type the dream, then explore symbols, images, moods, recurring patterns and guided questions without treating AI as a final truth.</p>
+<p class="text-sm text-purple-300/70 mb-6">Updated October 10, 2026</p>
+<p class="text-lg text-purple-200/80 leading-relaxed mb-10">Noctalia is an AI dream interpretation app for Android that starts with capture. Record or type the dream while you still have it, then look at its symbols, images, moods, recurring patterns and guided questions, without treating the AI as the final word.</p>
 
 <div class="space-y-8 text-gray-300 leading-relaxed">
   <section class="glass-panel p-8 rounded-2xl border border-white/10 bg-white/5">
@@ -84,7 +84,7 @@
   </section>
 
   <section class="glass-panel p-8 rounded-2xl border border-white/10 bg-white/5">
-    <h2 class="text-2xl font-serif text-white mb-4">Best Android fit: voice, symbols, images and guided questions</h2>
+    <h2 class="text-2xl font-serif text-white mb-4">Voice, symbols, images and guided questions on Android</h2>
     <div class="grid md:grid-cols-4 gap-4 text-sm">
       <article class="rounded-xl border border-white/10 bg-white/5 p-4">
         <h3 class="text-white font-medium mb-2">Voice</h3>
@@ -92,11 +92,11 @@
       </article>
       <article class="rounded-xl border border-white/10 bg-white/5 p-4">
         <h3 class="text-white font-medium mb-2">Symbols</h3>
-        <p>Move from isolated meanings to symbols inside the full dream context.</p>
+        <p>Read each symbol inside the whole dream, not as an isolated meaning.</p>
       </article>
       <article class="rounded-xl border border-white/10 bg-white/5 p-4">
         <h3 class="text-white font-medium mb-2">Images</h3>
-        <p>Preserve the atmosphere visually so the dream is easier to revisit later.</p>
+        <p>Keep the dream's atmosphere as a picture, so it is easier to come back to.</p>
       </article>
       <article class="rounded-xl border border-white/10 bg-white/5 p-4">
         <h3 class="text-white font-medium mb-2">Guided questions</h3>
@@ -107,7 +107,7 @@
 
   <section class="glass-panel p-8 rounded-2xl border border-white/10 bg-white/5">
     <h2 class="text-2xl font-serif text-white mb-4">Privacy and data controls to check</h2>
-    <p>Dream entries can be personal, so interpretation pages should be specific about privacy without overpromising. Noctalia's <a href="/en/privacy-policy" class="text-dream-salmon hover:underline">privacy policy</a> explains EU-hosted journal data, AI providers, no sale of personal data, no targeted advertising, account deletion rights and audio used for transcription without persistent Noctalia storage.</p>
+    <p>Dream entries can be intimate. Noctalia's <a href="/en/privacy-policy" class="text-dream-salmon hover:underline">privacy policy</a> explains EU-hosted journal data, AI providers, no sale of personal data, no targeted advertising, account deletion rights and audio used for transcription without persistent Noctalia storage.</p>
   </section>
 
   <section class="glass-panel p-8 rounded-2xl border border-white/10 bg-white/5">
@@ -145,7 +145,7 @@
 
   <section class="glass-panel p-8 rounded-2xl border border-dream-salmon/20 bg-dream-salmon/5">
     <h2 class="text-2xl font-serif text-white mb-4">Try AI interpretation after your next dream</h2>
-    <p>Start with one captured dream. Speak it into Noctalia on Android, save the transcript, then review the AI interpretation, symbols, generated image and guided follow-up questions when you are fully awake.</p>
-    <p class="mt-4 flex flex-wrap gap-4"><a href="https://play.google.com/store/apps/details?id=com.tanuki75.noctalia&hl=en" class="text-dream-salmon hover:underline" rel="nofollow noopener noreferrer" target="_blank">Get Noctalia on Google Play</a><a href="/en/voice-dream-journal" class="text-dream-salmon hover:underline">See the voice journal workflow</a></p>
+    <p>Start with one dream. Speak it into Noctalia on Android, save the transcript, then review the AI interpretation, symbols, generated image and guided follow-up questions when you are fully awake.</p>
+    <p class="mt-4 flex flex-wrap gap-4"><a href="https://play.google.com/store/apps/details?id=com.tanuki75.noctalia&hl=en" class="text-dream-salmon hover:underline" rel="nofollow noopener noreferrer" target="_blank">Record your next dream with Noctalia</a><a href="/en/voice-dream-journal" class="text-dream-salmon hover:underline">See the voice journal workflow</a></p>
   </section>
 </div>

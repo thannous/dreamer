@@ -373,11 +373,11 @@
 <i class="w-5 h-5 text-dream-salmon" data-lucide="book-open"></i>
                     Esplora i simboli correlati
                 </h2>
-<p class="text-sm text-purple-300/60 mb-4">Immergiti più a fondo nei simboli di questo articolo:</p>
+<p class="text-sm text-purple-300/60 mb-4">Approfondisci i simboli di questo articolo:</p>
 <div class="flex flex-wrap gap-3">
-<a class="inline-flex items-center gap-2 px-4 py-2 glass-button rounded-full text-sm hover:text-dream-salmon transition-colors" href="../simboli/notte">Significato del sogno notturno</a>
+<a class="inline-flex items-center gap-2 px-4 py-2 glass-button rounded-full text-sm hover:text-dream-salmon transition-colors" href="../simboli/notte">Sognare la notte</a>
 <a class="inline-flex items-center gap-2 px-4 py-2 glass-button rounded-full text-sm hover:text-dream-salmon transition-colors" href="../simboli/morte">Significato del sogno di morte</a>
-<a class="inline-flex items-center gap-2 px-4 py-2 glass-button rounded-full text-sm hover:text-dream-salmon transition-colors" href="../simboli/bocca">Significato del sogno in bocca</a>
+<a class="inline-flex items-center gap-2 px-4 py-2 glass-button rounded-full text-sm hover:text-dream-salmon transition-colors" href="../simboli/bocca">Sognare la bocca</a>
 <a class="inline-flex items-center gap-2 px-4 py-2 glass-button rounded-full text-sm hover:text-dream-salmon transition-colors" href="../simboli/inseguimento">Significato del sogno di essere inseguito</a>
 </div>
 </section>
@@ -413,7 +413,7 @@
         <a href="come-ricordare-i-tuoi-sogni-10-tecniche-efficaci" class="glass-panel rounded-xl p-6 block hover:border-dream-salmon/30 transition-all hover:-translate-y-1">
             <span class="text-xs text-dream-salmon uppercase mb-2 block">Guida</span>
             <h3 class="font-serif text-lg text-dream-cream mb-2">Come ricordare i tuoi sogni: 10 tecniche efficaci</h3>
-            <p class="text-sm text-gray-400">Scopri metodi scientificamente provati per migliorare il ricordo dei tuoi sogni e non dimenticarli mai i tuoi sogni al risveglio. Tecniche semplici che puoi applicare stasera.</p>
+            <p class="text-sm text-gray-400">Dieci abitudini semplici per trattenere più frammenti al risveglio, dal risveglio graduale alla nota presa prima di alzarti.</p>
         </a>
         <a href="incubazione-dei-sogni-come-sognare-esattamente-cio-che-desideri-stasera" class="glass-panel rounded-xl p-6 block hover:border-dream-salmon/30 transition-all hover:-translate-y-1">
             <span class="text-xs text-dream-salmon uppercase mb-2 block">Guida</span>
@@ -423,7 +423,7 @@
         <a href="incubi-cause-significato-e-come-fermarli" class="glass-panel rounded-xl p-6 block hover:border-dream-salmon/30 transition-all hover:-translate-y-1">
             <span class="text-xs text-dream-salmon uppercase mb-2 block">Guida</span>
             <h3 class="font-serif text-lg text-dream-cream mb-2">Incubi: cause, significato e come fermarli</h3>
-            <p class="text-sm text-gray-400">Perché abbiamo gli incubi? Scopri le cause dei brutti sogni, cosa significano e tecniche comprovate per ridurne la frequenza e dormire meglio.</p>
+            <p class="text-sm text-gray-400">Perché arrivano gli incubi, cosa possono significare e cosa no, e come la ripetizione immaginativa e un sonno più regolare aiutano a ridurli.</p>
         </a>
   </div>
 </section>

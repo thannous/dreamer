@@ -359,7 +359,7 @@
 <a class="glass-panel rounded-xl p-6 block hover:border-dream-salmon/30 transition-all hover:-translate-y-1" href="sommeil-paradoxal-reves">
 <span class="text-xs text-dream-salmon uppercase mb-2 block">Science</span>
 <h3 class="font-serif text-lg text-dream-cream mb-2">Sommeil paradoxal et r&#234;ves : comprendre la phase de r&#234;ve</h3>
-<p class="text-sm text-gray-400">D&#233;couvrez comment le sommeil paradoxal fa&#231;onne vos r&#234;ves et pourquoi cette phase est essentielle &#224; votre bien-&#234;tre.</p>
+<p class="text-sm text-gray-400">À quel moment de la nuit survient le sommeil paradoxal, pourquoi ses rêves sont si intenses et ce qui le raccourcit.</p>
 </a>
 <a class="glass-panel rounded-xl p-6 block hover:border-dream-salmon/30 transition-all hover:-translate-y-1" href="comment-se-souvenir-de-ses-reves">
 <span class="text-xs text-dream-salmon uppercase mb-2 block">Guide</span>

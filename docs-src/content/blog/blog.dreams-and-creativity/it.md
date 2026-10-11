@@ -366,7 +366,7 @@ No. Le sveglie ripetute frammentano il sonno, e dormire poco peggiora attenzione
         <a href="sonno-rem-e-sogni-comprendere-il-ripristino-notturno-del-cervello" class="glass-panel rounded-xl p-6 block hover:border-dream-salmon/30 transition-all hover:-translate-y-1">
             <span class="text-xs text-dream-salmon uppercase mb-2 block">Scienza</span>
             <h3 class="font-serif text-lg text-dream-cream mb-2">Sonno REM e sogni: comprendere il ripristino notturno del cervello</h3>
-            <p class="text-sm text-gray-400">Scopri cosa succede durante il sonno REM e perché questa fase è essenziale per la memoria, le emozioni e la creatività.</p>
+            <p class="text-sm text-gray-400">In quale momento della notte arriva il sonno REM, perché i suoi sogni sono così vividi e cosa lo accorcia.</p>
         </a>
         <a href="come-ricordare-i-tuoi-sogni-10-tecniche-efficaci" class="glass-panel rounded-xl p-6 block hover:border-dream-salmon/30 transition-all hover:-translate-y-1">
             <span class="text-xs text-dream-salmon uppercase mb-2 block">Guida</span>

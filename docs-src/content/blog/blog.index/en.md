@@ -258,7 +258,7 @@
 <span class="text-xs text-purple-300/60">6 min read</span>
 </div>
 <h2 class="font-serif text-xl md:text-2xl mb-3 text-dream-cream group-hover:text-white transition-colors">Back-to-School Nightmares in Children: Stress, Sleep and the Evening Routine</h2>
-<p class="text-sm text-gray-400 line-clamp-2">Why going back to school triggers nightmares in children — and the evening routine that calms.</p>
+<p class="text-sm text-gray-400 line-clamp-2">Why going back to school triggers nightmares in children, and the evening routine that calms.</p>
 </div>
 </a>
 </article>
@@ -276,7 +276,7 @@
 <span class="text-xs text-purple-300/60">5 min read</span>
 </div>
 <h2 class="font-serif text-xl md:text-2xl mb-3 text-dream-cream group-hover:text-white transition-colors">Climate dreams: when eco-anxiety follows you into sleep</h2>
-<p class="text-sm text-gray-400 line-clamp-2">Why floods, fires and storms drift through your dreams — and how to journal them without feeding the fear.</p>
+<p class="text-sm text-gray-400 line-clamp-2">Why floods, fires and storms drift through your dreams, and how to journal them without feeding the fear.</p>
 </div>
 </a>
 </article>
@@ -378,7 +378,7 @@
 <span class="text-xs text-purple-300/60">7 min read</span>
 </div>
 <h2 class="font-serif text-xl md:text-2xl mb-3 text-dream-cream group-hover:text-white transition-colors">Do dreams regulate emotions? What a 2026 study found</h2>
-<p class="text-sm text-gray-400 line-clamp-2">Fear in dreams did not predict instant relief. A study of 4,715 daily reports reveals a more complex link with morning mood.</p>
+<p class="text-sm text-gray-400 line-clamp-2">Fear in dreams did not predict instant relief. A study of 4,715 daily reports points to a more complex link with morning mood.</p>
 </div>
 </a>
 </article>
@@ -500,7 +500,7 @@
                                 Why Do We Forget Our Dreams?
                             </h2>
 <p class="text-sm text-gray-400 line-clamp-2">
-                                Discover the brain mechanisms and neurochemistry that explain why we forget 95% of our dreams upon waking.
+                                Why dreams fade within minutes of waking, what REM sleep and memory have to do with it, and simple habits to keep more of them.
                             </p>
 </div>
 </a>
@@ -520,8 +520,7 @@
                                 Recurring Dreams Meaning: Understanding Their Messages
                             </h2>
 <p class="text-sm text-gray-400 line-clamp-2">
-                                Why do you keep having the same dream? Discover what your subconscious is trying to tell
-                                you.
+                                Why the same dream keeps coming back, what to note between episodes, and when repeated nightmares are worth a doctor's visit.
                             </p>
 </div>
 </a>
@@ -542,7 +541,7 @@
                                 Lucid Dreaming for Beginners: Take Control of Your Nights
                             </h2>
 <p class="text-sm text-gray-400 line-clamp-2">
-                                Learn the basic techniques to become aware in your dreams and explore infinite worlds.
+                                How beginners can try lucid dreaming with a dream journal, dream signs, reality checks and MILD, without losing sleep.
                             </p>
 </div>
 </a>
@@ -562,7 +561,7 @@
                                 Teeth Falling Out Dreams: Meaning and Interpretation
                             </h2>
 <p class="text-sm text-gray-400 line-clamp-2">
-                                Why do you dream about losing your teeth? Discover the 7 most common interpretations.
+                                Seven possible readings of dreams about teeth falling out, from jaw tension to fear of being judged, and the variations worth noting.
                             </p>
 </div>
 </a>
@@ -582,7 +581,7 @@
                                 Falling Dreams Meaning: Why You Dream of Falling
                             </h2>
 <p class="text-sm text-gray-400 line-clamp-2">
-                                Why do you dream about falling into the void? Discover the psychological meaning.
+                                Why falling dreams happen, from the hypnic jerk at sleep onset to long falls, and what to note when you wake.
                             </p>
 </div>
 </a>
@@ -602,8 +601,7 @@
                                 Flying Dreams Meaning: 6 Scenarios Explained
                             </h2>
 <p class="text-sm text-gray-400 line-clamp-2">
-                                Why do you dream about flying? Discover what flying dreams reveal about freedom and
-                                ambition.
+                                What effortless soaring, failing to take off or flying to escape can suggest, and what to note when you wake.
                             </p>
 </div>
 </a>
@@ -623,7 +621,7 @@
                                 Dream Symbols Dictionary: Interpretation from A to Z
                             </h2>
 <p class="text-sm text-gray-400 line-clamp-2">
-                                Explore 150 common dream symbols as contextual starting points for reflection.
+                                150 common dream symbols from A to Z, as a starting point for your own notes.
                             </p>
 </div>
 </a>
@@ -643,8 +641,7 @@
                                 Dreams About Snakes: What Your Subconscious is Warning You About
                             </h2>
 <p class="text-sm text-gray-400 line-clamp-2">
-                                Uncover the powerful symbolism behind snake dreams and what they reveal about
-                                transformation, fear, and hidden wisdom.
+                                What a snake dream can be about depending on the scene, from a bite or a chase to a shed skin or a calm snake, and what to note when you wake.
                             </p>
 </div>
 </a>
@@ -664,8 +661,7 @@
                                 Dream Incubation: How to Dream About Exactly What You Want Tonight
                             </h2>
 <p class="text-sm text-gray-400 line-clamp-2">
-                                Learn the ancient art of dream incubation to solve problems, spark creativity, and
-                                explore specific topics in your dreams.
+                                A six-step method for choosing a question before sleep and noting what comes back on waking, with what research shows and its limits.
                             </p>
 </div>
 </a>
@@ -685,8 +681,7 @@
                                 Can Dreams Predict the Future? The Science of Precognitive Dreams
                             </h2>
 <p class="text-sm text-gray-400 line-clamp-2">
-                                Explore the fascinating science behind precognitive dreams and whether they can really
-                                predict the future.
+                                What controlled studies say about dreams that seem to predict the future, and how coincidence and memory bias explain many cases.
                             </p>
 </div>
 </a>
@@ -706,7 +701,7 @@
                                 Being Chased Dreams: Meaning and Interpretation
                             </h2>
 <p class="text-sm text-gray-400 line-clamp-2">
-                                Why do you dream about being chased? Discover the psychological meanings behind chase dreams and what your subconscious is trying to tell you about fear and avoidance.
+                                Why chase dreams are so common, what the chaser and the ending of the scene can tell you, and what helps when they keep coming back.
                             </p>
 </div>
 </a>
@@ -726,7 +721,7 @@
                                 Dreams About Death: Meaning and Interpretation
                             </h2>
 <p class="text-sm text-gray-400 line-clamp-2">
-                                What does it mean to dream about death? Discover the symbolic meanings behind death dreams - they rarely predict actual death and often represent transformation and change.
+                                Dreams of your own death, of a loved one dying or of someone who has died, read through memory, fear and grief rather than as predictions.
                             </p>
 </div>
 </a>
@@ -746,7 +741,7 @@
                                 Water Dreams: Meaning of Drowning, Ocean, and Flood Dreams
                             </h2>
 <p class="text-sm text-gray-400 line-clamp-2">
-                                What do water dreams mean? Discover the symbolic interpretations of drowning, ocean, flood, and water dreams. Water represents emotions - learn what your subconscious is telling you.
+                                What a flood, rising water, a flooded house or clear and murky water can point to, and which details to note when you wake.
                             </p>
 </div>
 </a>
@@ -766,7 +761,7 @@
                                 Dreams About Your Ex: What They Really Mean
                             </h2>
 <p class="text-sm text-gray-400 line-clamp-2">
-                                Why do you keep dreaming about your ex? Discover the psychological meanings behind dreams about former partners and what your subconscious is processing.
+                                What dreams of getting back together, arguing or seeing your ex with someone new can reflect, without assuming you want them back.
                             </p>
 </div>
 </a>
@@ -786,7 +781,7 @@
                                 Pregnancy Dream Meaning: 6 Scenarios Explained
                             </h2>
 <p class="text-sm text-gray-400 line-clamp-2">
-                                What do pregnancy dreams mean? Discover why you dream about being pregnant, giving birth, or babies - even if you're not expecting. Symbolic meanings explained.
+                                What dreaming of being pregnant, giving birth or seeing someone else expecting can mean, what research says and what to note when you wake.
                             </p>
 </div>
 </a>
@@ -846,7 +841,7 @@
                                 Dream Journaling: The Complete Guide to Recording Your Night Adventures
                             </h2>
 <p class="text-sm text-gray-400 line-clamp-2">
-                                Learn how to start a dream journal that actually works. Discover proven techniques to improve dream recall, what to write, and how journaling transforms your sleep.
+                                What to write in a dream journal after waking, with a 60-second template, a sample entry and habits that help you remember more.
                             </p>
 </div>
 </a>
@@ -866,7 +861,7 @@
                                 Dreams and Mental Health: How Your Sleep Reveals Your Mind
                             </h2>
 <p class="text-sm text-gray-400 line-clamp-2">
-                                Discover the deep connection between dreams and mental health. Learn how anxiety, depression, and trauma affect your dreams, and how dream work can support healing.
+                                How anxiety, depression, stress and trauma show up in dreams, and when frequent nightmares are worth raising with a professional.
                             </p>
 </div>
 </a>
@@ -886,7 +881,7 @@
                                 Why Do We Dream? The Science Behind Your Nightly Adventures
                             </h2>
 <p class="text-sm text-gray-400 line-clamp-2">
-                                Explore the fascinating science of dreaming. Learn about major theories, brain activity during dreams, and what your dreams reveal about consciousness.
+                                What dream research has measured about memory, emotion and threat rehearsal, and which explanations are still theory.
                             </p>
 </div>
 </a>
@@ -906,7 +901,7 @@
                                 REM Sleep and Dreams: Understanding Your Brain's Nightly Reset
                             </h2>
 <p class="text-sm text-gray-400 line-clamp-2">
-                                Discover the science of REM sleep and why it's crucial for dreaming. Learn about sleep cycles, REM vs non-REM dreams, and how to optimize your REM sleep for better dream recall.
+                                When REM sleep happens in the night, why its dreams feel so vivid, and what cuts it short.
                             </p>
 </div>
 </a>
@@ -926,7 +921,7 @@
                                 History of Dream Interpretation: Ancient to Modern
                             </h2>
 <p class="text-sm text-gray-400 line-clamp-2">
-                                Explore the fascinating evolution of dream interpretation from ancient civilizations to modern neuroscience. Discover how cultures worldwide have decoded the language of dreams.
+                                How people have read dreams over time, from Mesopotamian omens and an Egyptian dream book to Aristotle, Freud, Jung and sleep labs.
                             </p>
 </div>
 </a>
@@ -968,7 +963,7 @@
                                 Dreams and Creativity: How Your Sleeping Brain Solves Problems
                             </h2>
 <p class="text-sm text-gray-400 line-clamp-2">
-                                Discover how dreams fuel creativity and problem-solving. Learn about famous breakthroughs born in dreams and techniques to harness your sleeping mind.
+                                What sleep research says about dreams and problem solving, and how to note an idea before it fades.
                             </p>
 </div>
 </a>
@@ -1031,7 +1026,7 @@
                                 Sleep Day 2026: Environment and Dreams
                             </h2>
 <p class="text-sm text-gray-400 line-clamp-2">
-                                Light, noise, temperature: discover how your sleep environment directly shapes the content and quality of your dreams.
+                                How light, noise and temperature in the bedroom affect sleep and dreams, and what you can adjust tonight.
                             </p>
 </div>
 </a>
@@ -1094,7 +1089,7 @@
                                 Daylight Saving Time and Sleep
                             </h2>
 <p class="text-sm text-gray-400 line-clamp-2">
-                                How the biannual clock change disrupts your circadian rhythm, compresses REM sleep, and transforms your dream life.
+                                Why the spring clock change hits harder, what it does to REM sleep and dreams, and how to adjust over a few days.
                             </p>
 </div>
 </a>
@@ -1115,7 +1110,7 @@
                                 Sleep Debt: The Hidden Cost of Chronic Sleep Deprivation
                             </h2>
 <p class="text-sm text-gray-400 line-clamp-2">
-                                How accumulated sleep debt silently erodes your health, transforms your dreams through REM rebound, and what science says about recovery.
+                                What sleep debt does to your health and dreams, why a weekend lie-in is not enough, and how to recover for real.
                             </p>
 </div>
 </a>
@@ -1136,7 +1131,7 @@
                                 Spring Sleep Disruption: Longer Days and Your Dreams
                             </h2>
 <p class="text-sm text-gray-400 line-clamp-2">
-                                How the spring equinox and longer days suppress melatonin, disrupt your circadian rhythm, and alter your dream patterns.
+                                Why longer evenings and early light can delay sleep and wake you early, how that changes dream recall, and simple ways to adapt.
                             </p>
 </div>
 </a>
@@ -1157,7 +1152,7 @@
                                 Sleep Is Your #1 Health Lever
                             </h2>
 <p class="text-sm text-gray-400 line-clamp-2">
-                                An OHSU study reveals insufficient sleep outranks diet and exercise for life expectancy. Only smoking is worse.
+                                What an OHSU study found when it compared short sleep with diet and exercise as predictors of life expectancy, and the limits of that link.
                             </p>
 </div>
 </a>
@@ -1178,7 +1173,7 @@
                                 Wearable Sleep Trackers and Dreams
                             </h2>
 <p class="text-sm text-gray-400 line-clamp-2">
-                                40% of people track sleep weekly. Discover what wearables actually measure, their accuracy limits, and why dream journaling fills the gap.
+                                What a watch or ring actually measures at night, how accurate it is, and why no sensor can record what you dreamed.
                             </p>
 </div>
 </a>

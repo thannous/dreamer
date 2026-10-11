@@ -29,7 +29,7 @@
   "nextPath": "",
   "preloadImage": "",
   "jsonLd": [
-    "{\n          \"@context\": \"https://schema.org\",\n          \"@graph\": [\n                    {\n                              \"@type\": \"AboutPage\",\n                              \"name\": \"About Noctalia\",\n                              \"url\": \"https://noctalia.app/en/about\",\n                              \"inLanguage\": \"en\",\n                              \"about\": {\n                                        \"@id\": \"https://noctalia.app/#organization\"\n                              },\n                              \"mainEntity\": {\n                                        \"@id\": \"https://noctalia.app/en/about#person\"\n                              }\n                    },\n                    {\n                              \"@type\": \"Organization\",\n                              \"@id\": \"https://noctalia.app/#organization\",\n                              \"name\": \"Noctalia\",\n                              \"url\": \"https://noctalia.app\",\n                              \"founder\": {\n                                        \"@id\": \"https://noctalia.app/en/about#person\"\n                              }\n                    },\n                    {\n                              \"@type\": \"Person\",\n                              \"@id\": \"https://noctalia.app/en/about#person\",\n                              \"name\": \"Thanh Chau\",\n                              \"jobTitle\": \"Founder & Publication Director\",\n                              \"url\": \"https://noctalia.app/en/about\",\n                              \"worksFor\": {\n                                        \"@id\": \"https://noctalia.app/#organization\"\n                              },\n                              \"description\": \"Software engineer and long-time dream journaler, Thanh created Noctalia because the most useful dream notes are the ones captured before morning erases them. He leads product and editorial direction, with a focus on clear sources, practical reflection, and honest limits around AI interpretation.\"\n                    }\n          ]\n}",
+    "{\n          \"@context\": \"https://schema.org\",\n          \"@graph\": [\n                    {\n                              \"@type\": \"AboutPage\",\n                              \"name\": \"About Noctalia\",\n                              \"url\": \"https://noctalia.app/en/about\",\n                              \"inLanguage\": \"en\",\n                              \"about\": {\n                                        \"@id\": \"https://noctalia.app/#organization\"\n                              },\n                              \"mainEntity\": {\n                                        \"@id\": \"https://noctalia.app/en/about#person\"\n                              }\n                    },\n                    {\n                              \"@type\": \"Organization\",\n                              \"@id\": \"https://noctalia.app/#organization\",\n                              \"name\": \"Noctalia\",\n                              \"url\": \"https://noctalia.app\",\n                              \"founder\": {\n                                        \"@id\": \"https://noctalia.app/en/about#person\"\n                              }\n                    },\n                    {\n                              \"@type\": \"Person\",\n                              \"@id\": \"https://noctalia.app/en/about#person\",\n                              \"name\": \"Thanh Chau\",\n                              \"jobTitle\": \"Founder & Publication Director\",\n                              \"url\": \"https://noctalia.app/en/about\",\n                              \"worksFor\": {\n                                        \"@id\": \"https://noctalia.app/#organization\"\n                              },\n                              \"description\": \"Thanh is a software engineer who has kept a dream journal for years. He created Noctalia because the most useful dream notes are the ones written down before morning erases them. He leads the product and the editorial line, with three rules: cite clear sources, keep reflection practical, and say plainly what AI interpretation cannot do.\"\n                    }\n          ]\n}",
     "{\n            \"@context\": \"https://schema.org\",\n            \"@type\": \"BreadcrumbList\",\n            \"itemListElement\": [\n                {\n                    \"@type\": \"ListItem\",\n                    \"position\": 1,\n                    \"name\": \"Home\",\n                    \"item\": \"https://noctalia.app/\"\n                },\n                {\n                    \"@type\": \"ListItem\",\n                    \"position\": 2,\n                    \"name\": \"About Noctalia\",\n                    \"item\": \"https://noctalia.app/en/about\"\n                }\n            ]\n        }"
   ],
   "activeNav": null
@@ -58,41 +58,41 @@
                     <div>
                         <h3 class="text-white font-medium">Thanh Chau</h3>
                         <p class="text-sm text-dream-salmon mb-2">Founder &amp; Publication Director</p>
-                        <p class="text-sm">Software engineer and long-time dream journaler, Thanh created Noctalia because the most useful dream notes are the ones captured before morning erases them. He leads product and editorial direction, with a focus on clear sources, practical reflection, and honest limits around AI interpretation.</p>
+                        <p class="text-sm">Thanh is a software engineer who has kept a dream journal for years. He created Noctalia because the most useful dream notes are the ones written down before morning erases them. He leads the product and the editorial line, with three rules: cite clear sources, keep reflection practical, and say plainly what AI interpretation cannot do.</p>
                     </div>
                 </div>
             </section>
 
             <section class="glass-panel p-8 rounded-2xl border border-white/10 bg-white/5">
                 <h2 class="text-2xl font-serif text-white mb-4">How we create our resources</h2>
-                <p>Our blog articles and guides are written to be clear, practical, and grounded in well-established concepts from sleep research and psychology.</p>
+                <p>We want our articles and guides to be clear and practical, and to rest on what sleep research and psychology have actually established.</p>
                 <div class="mt-6 space-y-4">
                     <div class="flex items-start gap-3">
                         <i data-lucide="search" class="w-5 h-5 text-dream-salmon mt-0.5 flex-shrink-0"></i>
                         <div>
                             <h3 class="text-white font-medium mb-1">Research-based writing</h3>
-                            <p class="text-sm">We consult peer-reviewed studies, clinical guidelines, and established works in dream psychology. When referencing research, we link to the original source (PubMed, APA, university publications).</p>
+                            <p class="text-sm">We read peer-reviewed studies, clinical guidelines, and reference works in dream psychology. When we cite research, we link to the original source (PubMed, APA, university publications).</p>
                         </div>
                     </div>
                     <div class="flex items-start gap-3">
                         <i data-lucide="user-check" class="w-5 h-5 text-dream-salmon mt-0.5 flex-shrink-0"></i>
                         <div>
-                            <h3 class="text-white font-medium mb-1">Expert citations</h3>
-                            <p class="text-sm">Our articles cite named researchers and their institutional affiliations — including sleep scientists, psychologists, and dream researchers from Harvard, APA, and other institutions.</p>
+                            <h3 class="text-white font-medium mb-1">Named researchers</h3>
+                            <p class="text-sm">When an article relies on a study, we name the researchers behind it and, where it helps, their institution, instead of writing “experts say”.</p>
                         </div>
                     </div>
                     <div class="flex items-start gap-3">
                         <i data-lucide="refresh-cw" class="w-5 h-5 text-dream-salmon mt-0.5 flex-shrink-0"></i>
                         <div>
                             <h3 class="text-white font-medium mb-1">Regular updates</h3>
-                            <p class="text-sm">Articles are reviewed and updated to reflect new findings. Each article displays its publication and last-modified dates.</p>
+                            <p class="text-sm">We revise articles when new findings change what they say. Each article shows when it was published and when it was last updated.</p>
                         </div>
                     </div>
                     <div class="flex items-start gap-3">
                         <i data-lucide="shield-check" class="w-5 h-5 text-dream-salmon mt-0.5 flex-shrink-0"></i>
                         <div>
                             <h3 class="text-white font-medium mb-1">Clear boundaries</h3>
-                            <p class="text-sm">We distinguish informational content from medical advice. Every article includes a disclaimer, and health-related topics always recommend consulting a qualified professional.</p>
+                            <p class="text-sm">Our content informs; it does not give medical advice. Articles carry a notice that says so, and those on health topics say when to see a qualified professional.</p>
                         </div>
                     </div>
                 </div>
