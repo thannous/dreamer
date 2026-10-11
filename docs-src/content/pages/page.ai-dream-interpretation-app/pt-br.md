@@ -23,21 +23,21 @@
   "twitterImage": "https://noctalia.app/img/og/noctalia-en-1200x630.jpg",
   "twitterImageAlt": "App Noctalia de diário e interpretação de sonhos",
   "publishedTime": "2026-05-20T00:00:00+02:00",
-  "modifiedTime": "2026-10-10T00:00:00+02:00",
+  "modifiedTime": "2026-10-11T00:00:00+02:00",
   "author": "Thanh Chau",
   "prevPath": "",
   "nextPath": "",
   "preloadImage": "",
   "jsonLd": [
-    "{\"@context\":\"https://schema.org\",\"@type\":\"WebPage\",\"name\":\"App de interpretação de sonhos com IA\",\"description\":\"Registre um sonho por voz, receba pistas de interpretação com IA, conecte os símbolos e guarde seus relatos em um app Android.\",\"url\":\"https://noctalia.app/pt-br/app-interpretacao-de-sonhos-ia\",\"inLanguage\":\"pt-BR\",\"dateModified\":\"2026-10-10T00:00:00+02:00\",\"publisher\":{\"@id\":\"https://noctalia.app/#organization\"}}",
+    "{\"@context\":\"https://schema.org\",\"@type\":\"WebPage\",\"name\":\"App de interpretação de sonhos com IA\",\"description\":\"Registre um sonho por voz, receba pistas de interpretação com IA, conecte os símbolos e guarde seus relatos em um app Android.\",\"url\":\"https://noctalia.app/pt-br/app-interpretacao-de-sonhos-ia\",\"inLanguage\":\"pt-BR\",\"dateModified\":\"2026-10-11T00:00:00+02:00\",\"publisher\":{\"@id\":\"https://noctalia.app/#organization\"}}",
     "{\"@context\":\"https://schema.org\",\"@type\":\"BreadcrumbList\",\"itemListElement\":[{\"@type\":\"ListItem\",\"position\":1,\"name\":\"Início\",\"item\":\"https://noctalia.app/pt-br/\"},{\"@type\":\"ListItem\",\"position\":2,\"name\":\"App de interpretação de sonhos com IA\",\"item\":\"https://noctalia.app/pt-br/app-interpretacao-de-sonhos-ia\"}]}",
-    "{\"@context\":\"https://schema.org\",\"@type\":\"FAQPage\",\"mainEntity\":[{\"@type\":\"Question\",\"name\":\"O que uma IA pode analisar em um sonho?\",\"acceptedAnswer\":{\"@type\":\"Answer\",\"text\":\"Uma IA pode comparar o relato, as emoções, os lugares, os personagens, os símbolos e os sonhos anteriores para propor pistas de interpretação. Ela deve continuar sendo um apoio à reflexão, não uma verdade final.\"}},{\"@type\":\"Question\",\"name\":\"Por que um dicionário de sonhos nem sempre basta?\",\"acceptedAnswer\":{\"@type\":\"Answer\",\"text\":\"Um dicionário dá referências simbólicas, mas o sentido depende do contexto pessoal, da emoção ao acordar e dos padrões que se repetem no seu diário de sonhos.\"}},{\"@type\":\"Question\",\"name\":\"O Noctalia dá um significado definitivo?\",\"acceptedAnswer\":{\"@type\":\"Answer\",\"text\":\"Não. O Noctalia formula pistas de interpretação e perguntas de reflexão. Você mantém o controle sobre o sentido, principalmente nos sonhos sensíveis ou recorrentes.\"}},{\"@type\":\"Question\",\"name\":\"Como proteger a privacidade dos seus sonhos?\",\"acceptedAnswer\":{\"@type\":\"Answer\",\"text\":\"Verifique a política de privacidade, as opções de exclusão, o papel dos fornecedores de IA e os dados realmente necessários. Os sonhos são íntimos e devem ser tratados como tal.\"}}]}"
+    "{\"@context\":\"https://schema.org\",\"@type\":\"FAQPage\",\"mainEntity\":[{\"@type\":\"Question\",\"name\":\"O que uma IA pode analisar em um sonho?\",\"acceptedAnswer\":{\"@type\":\"Answer\",\"text\":\"Uma IA pode comparar o relato, as emoções, os lugares, os personagens e os símbolos do sonho para propor pistas de interpretação. Ela deve continuar sendo um apoio à reflexão, não uma verdade final.\"}},{\"@type\":\"Question\",\"name\":\"Por que um dicionário de sonhos nem sempre basta?\",\"acceptedAnswer\":{\"@type\":\"Answer\",\"text\":\"Um dicionário dá referências simbólicas, mas o sentido depende do contexto pessoal, da emoção ao acordar e dos padrões que se repetem no seu diário de sonhos.\"}},{\"@type\":\"Question\",\"name\":\"O Noctalia dá um significado definitivo?\",\"acceptedAnswer\":{\"@type\":\"Answer\",\"text\":\"Não. O Noctalia formula pistas de interpretação e perguntas de reflexão. Você mantém o controle sobre o sentido, principalmente nos sonhos sensíveis ou recorrentes.\"}},{\"@type\":\"Question\",\"name\":\"Como proteger a privacidade dos seus sonhos?\",\"acceptedAnswer\":{\"@type\":\"Answer\",\"text\":\"Verifique a política de privacidade, as opções de exclusão, o papel dos fornecedores de IA e os dados realmente necessários. Os sonhos são íntimos e devem ser tratados como tal.\"}}]}"
   ],
   "activeNav": "resources"
 }
 ---
 <h1 class="font-serif text-4xl md:text-5xl mb-4 text-dream-cream">App de interpretação de sonhos com IA</h1>
-<p class="text-sm text-purple-300/70 mb-6">Atualizado em 10 de outubro de 2026</p>
+<p class="text-sm text-purple-300/70 mb-6">Atualizado em 11 de outubro de 2026</p>
 <p class="text-lg text-purple-200/80 leading-relaxed mb-10">Ao acordar, muitas vezes sobram só uma cena e uma emoção. O Noctalia permite anotá-las na hora e depois tirar do relato pistas de interpretação com IA: símbolos, emoções, lugares, personagens, imagens e perguntas para você se fazer. A interpretação de sonhos com IA só faz sentido quando parte do seu contexto, não de um significado imposto.</p>
 
 <div class="grid md:grid-cols-3 gap-4 mb-10 text-sm">
@@ -91,6 +91,50 @@
   </section>
 
   <section class="glass-panel p-8 rounded-2xl border border-white/10 bg-white/5">
+    <h2 class="text-2xl font-serif text-white mb-4">Mais dois exemplos: um pesadelo e um sonho recorrente</h2>
+    <p>Os dois relatos abaixo são fictícios. As pistas mostram o tipo de leitura que você pode receber, não uma resposta palavra por palavra do app.</p>
+    <div class="grid md:grid-cols-2 gap-4 mt-6 text-sm">
+      <article class="rounded-xl border border-white/10 bg-white/5 p-4 space-y-3">
+        <h3 class="text-white font-medium">Um pesadelo</h3>
+        <p><strong class="text-purple-200">Relato:</strong> “Alguém me segue em um estacionamento subterrâneo. Procuro meu carro, todas as fileiras são iguais. Acordo num sobressalto, com o coração disparado.”</p>
+        <p><strong class="text-purple-200">Elementos identificados:</strong> estacionamento subterrâneo, perseguidor sem rosto, fileiras idênticas, medo ao acordar.</p>
+        <p><strong class="text-purple-200">Pistas de interpretação:</strong> as fileiras iguais podem evocar a sensação de andar em círculos. A perseguição pode evocar uma pressão cuja origem não se vê. Nada neste relato permite prever um perigo real.</p>
+        <p><strong class="text-purple-200">Pergunta de diário:</strong> “Essa sensação de estar sendo seguido, eu reconheço de outro lugar?”</p>
+        <p class="text-purple-200/70">Dê nome ao medo com as suas palavras: a análise só registra as emoções que você escreve. Se os pesadelos voltam com frequência e atrapalham o seu sono, converse com um médico.</p>
+      </article>
+      <article class="rounded-xl border border-white/10 bg-white/5 p-4 space-y-3">
+        <h3 class="text-white font-medium">Um sonho recorrente</h3>
+        <p><strong class="text-purple-200">Relato:</strong> “De novo o sonho da prova. Estou na sala, não estudei, a folha continua em branco. É a terceira vez este mês. Acordo mais irritado do que preocupado.”</p>
+        <p><strong class="text-purple-200">Elementos identificados:</strong> prova, folha em branco, falta de preparo, repetição mencionada, irritação.</p>
+        <p><strong class="text-purple-200">Pistas de interpretação:</strong> a cena pode evocar o receio de ser avaliado antes de se sentir pronto. A irritação, mais do que o pânico, matiza essa pista: talvez seja cansaço mais do que medo.</p>
+        <p><strong class="text-purple-200">Pergunta de diário:</strong> “Nos dias em que esse sonho volta, o que me espera no dia seguinte?”</p>
+        <p class="text-purple-200/70">Cada análise parte do relato que você entrega. Por isso, escreva que o sonho se repete: assim ele pode ser classificado como recorrente, e o filtro Recorrentes do diário mostra esses sonhos juntos. Ao relê-los, observe o que muda de uma vez para outra.</p>
+      </article>
+    </div>
+  </section>
+
+  <section class="glass-panel p-8 rounded-2xl border border-white/10 bg-white/5">
+    <h2 class="text-2xl font-serif text-white mb-4">Como fazer uma boa pergunta de acompanhamento</h2>
+    <p>Depois da análise, a conversa continua sobre o mesmo sonho. Você escolhe um ângulo (Símbolos, Emoções, Crescimento pessoal) ou faz a sua própria pergunta, digitada ou ditada. A IA só conhece o sonho e o que você escreve para ela: uma boa pergunta traz o que ela não consegue adivinhar.</p>
+    <div class="overflow-x-auto mt-6">
+      <table class="w-full text-left text-sm min-w-[560px]">
+        <thead class="text-purple-200"><tr><th class="py-3 pr-4">Pergunta vaga</th><th class="py-3 pr-4">Pergunta que ajuda</th></tr></thead>
+        <tbody class="divide-y divide-white/10">
+          <tr><td class="py-4 pr-4">O que meu sonho quer dizer?</td><td class="py-4 pr-4 text-white">Por que fico mais irritado do que assustado diante da folha em branco?</td></tr>
+          <tr><td class="py-4 pr-4">O que o estacionamento simboliza?</td><td class="py-4 pr-4 text-white">Esse estacionamento parece o do meu antigo trabalho. Que pistas essa ligação abre?</td></tr>
+          <tr><td class="py-4 pr-4">Esse sonho anuncia alguma coisa?</td><td class="py-4 pr-4 text-white">Esse sonho me deixou a sensação de andar em círculos. No que posso prestar atenção esta semana?</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <ul class="list-disc pl-5 space-y-2 mt-6">
+      <li><strong>Traga as suas associações.</strong> Um lugar, uma pessoa, algo do dia anterior: é isso que torna uma pista pessoal.</li>
+      <li><strong>Corrija o que não soa certo.</strong> “Não, eu não estava com medo, estava irritado.” O resto da conversa leva isso em conta.</li>
+      <li><strong>Peça mais quando quiser.</strong> As respostas são curtas por padrão. Escreva “aprofunde” ou “me dê um exemplo”.</li>
+    </ul>
+    <p class="mt-4">Cada sonho tem um teto de trocas: até 10 mensagens de acompanhamento por sonho analisado no plano gratuito e até 20 mensagens de acompanhamento por sonho com o Plus. Perguntas precisas aproveitam melhor esse limite.</p>
+  </section>
+
+  <section class="glass-panel p-8 rounded-2xl border border-white/10 bg-white/5">
     <h2 class="text-2xl font-serif text-white mb-4">Privacidade: o que verificar antes de confiar seus sonhos</h2>
     <p>Os sonhos às vezes contêm detalhes íntimos. Antes de usar um app de diário ou de interpretação com IA, verifique o que é coletado, por quê, e como você pode retomar o controle.</p>
     <ul class="list-disc pl-5 space-y-2 mt-4">
@@ -123,7 +167,7 @@
     <div class="space-y-4">
       <details class="rounded-xl border border-white/10 bg-white/5 p-4">
         <summary class="text-dream-cream font-medium cursor-pointer">O que uma IA pode analisar em um sonho?</summary>
-        <p class="mt-3 text-sm text-gray-400">Uma IA pode comparar o relato, as emoções, os lugares, os personagens, os símbolos e os sonhos anteriores para propor pistas de interpretação. Ela deve continuar sendo um apoio à reflexão, não uma verdade final.</p>
+        <p class="mt-3 text-sm text-gray-400">Uma IA pode comparar o relato, as emoções, os lugares, os personagens e os símbolos do sonho para propor pistas de interpretação. Ela deve continuar sendo um apoio à reflexão, não uma verdade final.</p>
       </details>
       <details class="rounded-xl border border-white/10 bg-white/5 p-4">
         <summary class="text-dream-cream font-medium cursor-pointer">Por que um dicionário de sonhos nem sempre basta?</summary>
