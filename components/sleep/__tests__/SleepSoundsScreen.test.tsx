@@ -1,13 +1,14 @@
 /* @jest-environment jsdom */
 
-jest.mock('@/components/ui/DreamerBackground', () => ({ DreamerArtworkWindow: () => null, DreamerBackground: () => null }));
-
-
 import React from 'react';
 import { cleanup, fireEvent, render, screen, waitFor } from '@testing-library/react';
 import { afterEach, beforeEach, describe, expect, it, jest } from '@jest/globals';
 
 import { SleepSoundsScreen } from '@/components/sleep/SleepSoundsScreen';
+
+jest.mock('@/components/sleep/SleepAmbienceScene', () => ({ SleepAmbienceScene: () => null }));
+jest.mock('@/components/sleep/SleepTimerRing', () => ({ SleepTimerRing: () => null }));
+jest.mock('expo-image', () => ({ Image: () => null }));
 
 const mockBack = jest.fn();
 const mockGetPreferences = jest.fn();
@@ -89,14 +90,6 @@ jest.mock('expo-router', () => ({
   },
 }));
 
-jest.mock('@/components/inspiration/AtmosphericBackground', () => ({
-  AtmosphericBackground: () => null,
-}));
-
-jest.mock('@/components/inspiration/GlassCard', () => ({
-  GlassCard: ({ children }: { children?: React.ReactNode }) => <div>{children}</div>,
-}));
-
 jest.mock('@/components/ui/icon-symbol', () => ({
   IconSymbol: ({ name }: { name: string }) => <span data-testid={`icon.${name}`} />,
 }));
@@ -129,25 +122,12 @@ jest.mock('@/constants/noctaliaDesign', () => ({
   }),
 }));
 
-jest.mock('@/context/ScrollPerfContext', () => ({
-  ScrollPerfProvider: ({ children }: { children?: React.ReactNode }) => <>{children}</>,
-}));
-
 jest.mock('@/context/ThemeContext', () => ({
+  ThemeModeScope: ({ children }: { children?: React.ReactNode }) => <>{children}</>,
   useTheme: () => ({
     colors: {},
     mode: 'dark',
     shadows: { lg: {} },
-  }),
-}));
-
-jest.mock('@/hooks/useScrollIdle', () => ({
-  useScrollIdle: () => ({
-    isScrolling: false,
-    onMomentumScrollBegin: jest.fn(),
-    onMomentumScrollEnd: jest.fn(),
-    onScrollBeginDrag: jest.fn(),
-    onScrollEndDrag: jest.fn(),
   }),
 }));
 

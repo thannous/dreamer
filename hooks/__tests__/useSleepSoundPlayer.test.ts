@@ -49,7 +49,6 @@ jest.mock('expo-router', () => ({
 
 const sound: SleepSoundConfig = {
   id: 'rain',
-  icon: 'cloud.rain.fill',
   remoteUrl: 'https://noctalia.app/audio/sleep/rain.m4a',
 };
 
@@ -218,6 +217,14 @@ describe('useSleepSoundPlayer', () => {
     await act(async () => {
       await result.current.play();
     });
+
+    // The last minute fades out instead of cutting the sound.
+    act(() => {
+      jest.setSystemTime(new Date('2026-08-04T20:14:30Z'));
+      jest.advanceTimersByTime(500);
+    });
+    expect(mockPlayer.volume).toBeCloseTo(0.65 / 2, 1);
+    expect(mockPlayer.pause).not.toHaveBeenCalled();
 
     act(() => {
       jest.setSystemTime(new Date('2026-08-04T20:15:00Z'));

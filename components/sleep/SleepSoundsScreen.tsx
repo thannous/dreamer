@@ -1,24 +1,19 @@
-import React, { useCallback, useEffect, useMemo, useState } from 'react';
-import { Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
-import Animated, { useReducedMotion } from 'react-native-reanimated';
-import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import { Image } from 'expo-image';
 import { router } from 'expo-router';
+import React, { useCallback, useEffect, useMemo, useState } from 'react';
+import { Pressable, ScrollView, StyleSheet, Text, View, type StyleProp, type ViewStyle } from 'react-native';
+import Animated, { useReducedMotion, type CSSStyle } from 'react-native-reanimated';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
-import { DreamerArtworkWindow } from '@/components/ui/DreamerBackground';
-import { GlassCard } from '@/components/inspiration/GlassCard';
-import { PressableScale } from '@/components/motion';
+import { EASE, PressableScale, Reveal } from '@/components/motion';
 import { IconSymbol } from '@/components/ui/icon-symbol';
 import { ThemeLayout } from '@/constants/journalTheme';
 import { getNoctaliaDesignTokens } from '@/constants/noctaliaDesign';
 import { Fonts } from '@/constants/theme';
-import { ScrollPerfProvider } from '@/context/ScrollPerfContext';
-import { useTheme } from '@/context/ThemeContext';
-import { useScrollIdle } from '@/hooks/useScrollIdle';
+import { ThemeModeScope, useTheme } from '@/context/ThemeContext';
 import { useSleepSoundPlayer } from '@/hooks/useSleepSoundPlayer';
 import { useTranslation } from '@/hooks/useTranslation';
 import { getSleepSoundCopy } from '@/lib/sleepSoundCopy';
-import { useHeaderScroll } from '@/components/ui/headerStretch';
-import { withHeaderScroll } from '@/components/ui/HeaderScrollScope';
 import {
   DEFAULT_SLEEP_SOUND_ID,
   DEFAULT_SLEEP_TIMER_MINUTES,
@@ -32,35 +27,36 @@ import {
   saveSleepSoundPreferences,
 } from '@/services/sleepSoundPreferences';
 
+import { SleepAmbienceScene } from './SleepAmbienceScene';
+import { SLEEP_AMBIENCE_SCENES } from './sleepAmbienceScenes';
+import { SleepTimerRing } from './SleepTimerRing';
+
 /**
- * Selected state on this screen is carried entirely by colour, so colour crosses over
- * rather than repainting. The chips and cards are 44pt+ already and sit 5–10pt apart,
- * which is why every one of them opts out of the default hit slop: overlapping slop in a
- * radio group makes the gap between two options ambiguous.
+ * Selected state on this screen is carried by colour and a ring, so colour crosses over
+ * rather than repainting. The options are 44pt+ already and sit apart, which is why every
+ * one of them opts out of the default hit slop: overlapping slop in a radio group makes
+ * the gap between two options ambiguous.
  */
 const SELECTION_TRANSITION = ['backgroundColor', 'borderColor'] as const;
 
+const PLAYER_SIZE = 92;
+const BUTTON_SIZE = 68;
+
 /**
- * The hero icon breathes while audio plays.
+ * The play button breathes while audio plays.
  *
- * Purpose: state indication. Everything else on this screen looks identical playing or
- * paused — the countdown is 15pt of text — and the sound itself is the kind of thing a
- * user starts and then stops trusting they actually started. A 4 s cycle at 6 % scale is
- * slower and shallower than anything else in the app on purpose: this screen's job is to
- * put someone to sleep, so the motion has to be at the edge of noticeable.
- *
- * It runs as a Reanimated CSS animation — declared once, run on the UI thread, and gone
- * the moment `playing` is false, so a paused player never breathes.
+ * Purpose: state indication. The sound itself is the kind of thing a user starts and
+ * then stops trusting they actually started. A 4 s cycle is slower than anything else in
+ * the app on purpose: this screen's job is to put someone to sleep.
  */
 const BREATHING = {
   animationName: {
-    from: { transform: [{ scale: 1 }], opacity: 0.85 },
-    to: { transform: [{ scale: 1.06 }], opacity: 1 },
+    from: { transform: [{ scale: 1 }], opacity: 0.35 },
+    to: { transform: [{ scale: 1.18 }], opacity: 0 },
   },
   animationDuration: 4000,
   animationIterationCount: 'infinite',
-  animationDirection: 'alternate',
-  animationTimingFunction: 'ease-in-out',
+  animationTimingFunction: 'ease-out',
 } as const;
 
 function formatRemainingTime(totalSeconds: number): string {
@@ -70,14 +66,12 @@ function formatRemainingTime(totalSeconds: number): string {
 }
 
 function SleepSoundsContent() {
-  // This screen's own scroll, published to its header painting and title.
-  const onHeaderScroll = useHeaderScroll();
   const { colors, mode } = useTheme();
   const noctalia = useMemo(() => getNoctaliaDesignTokens(colors, mode), [colors, mode]);
   const { currentLang, t } = useTranslation();
   const copy = useMemo(() => getSleepSoundCopy(currentLang), [currentLang]);
   const insets = useSafeAreaInsets();
-  const scrollPerf = useScrollIdle();
+  const reducedMotion = useReducedMotion();
   const [soundId, setSoundId] = useState<SleepSoundId>(DEFAULT_SLEEP_SOUND_ID);
   const [durationMinutes, setDurationMinutes] = useState<SleepTimerMinutes>(
     DEFAULT_SLEEP_TIMER_MINUTES,
@@ -147,8 +141,6 @@ function SleepSoundsContent() {
     void player.play();
   }, [player]);
 
-  const reducedMotion = useReducedMotion();
-  const backButtonTop = insets.top + ThemeLayout.spacing.lg20;
   const downloadFailed = player.error === 'download_failed';
   const isPreparing =
     !preferencesLoaded ||
@@ -160,75 +152,94 @@ function SleepSoundsContent() {
       : player.hasStarted && player.remainingSeconds > 0
         ? copy.resume
         : copy.play;
+  const progress = player.remainingSeconds / (durationMinutes * 60);
+
+  // Once the sound plays, the choices step back and the night takes the screen.
+  const choicesStyle = useMemo<CSSStyle<ViewStyle>>(() => ({
+    opacity: player.isPlaying ? 0 : 1,
+    transform: [{ translateY: player.isPlaying && !reducedMotion ? 8 : 0 }],
+    transitionProperty: ['opacity', 'transform'],
+    transitionDuration: 900,
+    transitionTimingFunction: EASE.out,
+  }), [player.isPlaying, reducedMotion]);
+  const restingStyle = useMemo<CSSStyle<ViewStyle>>(() => ({
+    opacity: player.isPlaying ? 1 : 0,
+    transitionProperty: 'opacity',
+    transitionDuration: 900,
+    transitionDelay: player.isPlaying ? 500 : 0,
+    transitionTimingFunction: EASE.out,
+  }), [player.isPlaying]);
 
   return (
-    <ScrollPerfProvider isScrolling={scrollPerf.isScrolling}>
-      <View
-        style={[styles.container, { backgroundColor: noctalia.screen.background }]}
-        testID="screen.sleepSounds"
-      >
+    <View
+      style={[styles.container, { backgroundColor: noctalia.screen.background }]}
+      testID="screen.sleepSounds"
+    >
+      <SleepAmbienceScene
+        soundId={soundId}
+        playing={player.isPlaying}
+        ground={noctalia.screen.background}
+      />
 
+      <View style={[styles.header, { top: insets.top + ThemeLayout.spacing.md }]}>
         <Pressable
           onPress={() => router.back()}
           style={({ pressed }) => [
-            styles.floatingBackButton,
-            {
-              top: backButtonTop,
-              backgroundColor: noctalia.surface.raised,
-              borderColor: noctalia.surface.border,
-            },
+            styles.backButton,
+            { borderColor: noctalia.surface.border },
             pressed && styles.pressed,
           ]}
           testID="sleep-sounds-back"
           accessibilityRole="button"
           accessibilityLabel={t('journal.back_button')}
         >
-          <IconSymbol name="chevron.left" size={21} color={noctalia.text.secondary} />
+          <IconSymbol name="chevron.left" size={21} color={noctalia.text.primary} />
         </Pressable>
-        <ScrollView onScroll={onHeaderScroll} scrollEventThrottle={16}
-          style={styles.scrollView}
-          contentInsetAdjustmentBehavior="never"
-          contentContainerStyle={{
-            paddingBottom: insets.bottom + ThemeLayout.spacing.xl,
-            paddingTop: insets.top,
-          }}
-          onScrollBeginDrag={scrollPerf.onScrollBeginDrag}
-          onScrollEndDrag={scrollPerf.onScrollEndDrag}
-          onMomentumScrollBegin={scrollPerf.onMomentumScrollBegin}
-          onMomentumScrollEnd={scrollPerf.onMomentumScrollEnd}
-        >
-          <DreamerArtworkWindow scene="sleep" bleedTop={insets.top} />
-          <View style={styles.content}>
-            <View style={styles.titleSection}>
-              <Animated.View
-                style={[
-                  styles.heroIcon,
-                  { backgroundColor: noctalia.surface.soft },
-                  player.isPlaying && !reducedMotion ? BREATHING : null,
-                ]}
-              >
-                <IconSymbol
-                  name="speaker.wave.2.fill"
-                  size={30}
-                  color={noctalia.accent.text}
-                />
-              </Animated.View>
-              <Text style={[styles.title, { color: noctalia.text.primary }]}>
-                {copy.screenTitle}
-              </Text>
-              <Text style={[styles.subtitle, { color: noctalia.text.secondary }]}>
-                {copy.screenSubtitle}
-              </Text>
-            </View>
+        <View style={styles.kicker}>
+          <View style={[styles.kickerRule, { backgroundColor: noctalia.accent.text }]} />
+          <Text style={[styles.kickerText, { color: noctalia.text.secondary }]} accessibilityRole="header">
+            {copy.screenTitle}
+          </Text>
+        </View>
+      </View>
 
-            <View style={styles.section}>
-              <Text style={[styles.sectionTitle, { color: noctalia.text.primary }]}>
-                {copy.chooseSound}
-              </Text>
-              <View style={styles.soundList}>
+      <ScrollView
+        style={styles.scrollView}
+        contentInsetAdjustmentBehavior="never"
+        showsVerticalScrollIndicator={false}
+        contentContainerStyle={[
+          styles.scrollContent,
+          {
+            paddingTop: insets.top + 96,
+            paddingBottom: insets.bottom + ThemeLayout.spacing.lg,
+          },
+        ]}
+      >
+        <View style={styles.content}>
+          <Reveal key={sound.id} distance={10} style={styles.story}>
+            <Text style={[styles.eyebrow, { color: noctalia.accent.text }]}>
+              {soundCopy.description}
+            </Text>
+            <Text style={[styles.title, { color: noctalia.text.primary }]}>
+              {soundCopy.title}
+            </Text>
+            <Text style={[styles.storyText, { color: noctalia.text.secondary }]}>
+              {soundCopy.story}
+            </Text>
+          </Reveal>
+
+          <View>
+            <Animated.View
+              pointerEvents={player.isPlaying ? 'none' : 'auto'}
+              accessibilityElementsHidden={player.isPlaying}
+              importantForAccessibility={player.isPlaying ? 'no-hide-descendants' : 'auto'}
+              style={[styles.choices, choicesStyle] as StyleProp<ViewStyle>}
+            >
+              <View accessibilityRole="radiogroup" accessibilityLabel={copy.chooseSound} style={styles.scenes}>
+                <View style={[styles.sceneLine, { backgroundColor: noctalia.surface.border }]} />
                 {SLEEP_SOUNDS.map((candidate) => {
                   const selected = candidate.id === soundId;
-                  const candidateCopy = copy.sounds[candidate.id];
+                  const scene = SLEEP_AMBIENCE_SCENES[candidate.id];
                   return (
                     <PressableScale
                       key={candidate.id}
@@ -236,117 +247,116 @@ function SleepSoundsContent() {
                       disabled={player.isPlaying}
                       haptic={player.isPlaying ? 'none' : 'selection'}
                       hitSlop={0}
-                      transitionProperties={SELECTION_TRANSITION}
                       testID={`sleep-sound-${candidate.id}`}
                       accessibilityRole="radio"
+                      accessibilityLabel={copy.sounds[candidate.id].title}
                       accessibilityState={{ checked: selected, disabled: player.isPlaying }}
-                      style={[
-                        styles.soundCard,
-                        {
-                          backgroundColor: selected
-                            ? noctalia.surface.active
-                            : noctalia.surface.raised,
-                          borderColor: selected
-                            ? noctalia.accent.base
-                            : noctalia.surface.border,
-                        },
-                      ]}
+                      style={styles.sceneOption}
                     >
                       <View
                         style={[
-                          styles.soundIcon,
-                          { backgroundColor: noctalia.surface.soft },
-                        ]}
-                      >
-                        <IconSymbol
-                          name={candidate.icon}
-                          size={24}
-                          color={selected ? noctalia.accent.text : noctalia.text.secondary}
-                        />
-                      </View>
-                      <View style={styles.soundCopy}>
-                        <Text style={[styles.soundTitle, { color: noctalia.text.primary }]}>
-                          {candidateCopy.title}
-                        </Text>
-                        <Text
-                          style={[styles.soundDescription, { color: noctalia.text.secondary }]}
-                        >
-                          {candidateCopy.description}
-                        </Text>
-                      </View>
-                      {selected ? (
-                        <IconSymbol
-                          name="checkmark.circle.fill"
-                          size={22}
-                          color={noctalia.accent.text}
-                        />
-                      ) : null}
-                    </PressableScale>
-                  );
-                })}
-              </View>
-            </View>
-
-            <View style={styles.section}>
-              <Text style={[styles.sectionTitle, { color: noctalia.text.primary }]}>
-                {copy.chooseDuration}
-              </Text>
-              <View
-                style={[
-                  styles.timerGroup,
-                  { backgroundColor: noctalia.surface.raised, borderColor: noctalia.surface.border },
-                ]}
-              >
-                {SLEEP_SOUND_TIMER_OPTIONS.map((minutes) => {
-                  const selected = durationMinutes === minutes;
-                  return (
-                    <PressableScale
-                      key={minutes}
-                      onPress={() => handleSelectDuration(minutes)}
-                      disabled={player.isPlaying}
-                      haptic={player.isPlaying ? 'none' : 'selection'}
-                      hitSlop={0}
-                      transitionProperties={SELECTION_TRANSITION}
-                      testID={`sleep-duration-${minutes}`}
-                      accessibilityRole="radio"
-                      accessibilityState={{ checked: selected, disabled: player.isPlaying }}
-                      style={[
-                        styles.timerOption,
-                        {
-                          // Declared on both branches so the transition has a value to
-                          // cross from; `undefined` would make it snap.
-                          backgroundColor: selected ? noctalia.accent.base : 'transparent',
-                        },
-                      ]}
-                    >
-                      <Text
-                        style={[
-                          styles.timerText,
+                          styles.sceneThumb,
                           {
-                            color: selected
-                              ? noctalia.text.onAccent
-                              : noctalia.text.secondary,
+                            borderColor: selected ? noctalia.action.primary : noctalia.surface.border,
+                            backgroundColor: noctalia.surface.soft,
                           },
                         ]}
                       >
-                        {minutes} {copy.minutes}
+                        <Image
+                          source={scene.source}
+                          contentFit="cover"
+                          contentPosition={scene.thumbnailPosition}
+                          cachePolicy="memory"
+                          accessible={false}
+                          style={styles.sceneImage}
+                        />
+                      </View>
+                      <Text
+                        numberOfLines={2}
+                        style={[
+                          styles.sceneLabel,
+                          { color: selected ? noctalia.accent.text : noctalia.text.secondary },
+                        ]}
+                      >
+                        {copy.sounds[candidate.id].title}
                       </Text>
                     </PressableScale>
                   );
                 })}
               </View>
-            </View>
 
-            <GlassCard intensity="strong" style={styles.playerCard}>
-              <Text style={[styles.nowPlayingLabel, { color: noctalia.text.secondary }]}>
-                {soundCopy.title}
-              </Text>
-              <Text
-                testID="sleep-remaining-time"
-                style={[styles.remainingTime, { color: noctalia.text.primary }]}
-              >
-                {formatRemainingTime(player.remainingSeconds)}
-              </Text>
+              <View style={styles.durations}>
+                <Text style={[styles.groupLabel, { color: noctalia.text.tertiary }]}>
+                  {copy.chooseDuration}
+                </Text>
+                <View accessibilityRole="radiogroup" accessibilityLabel={copy.chooseDuration} style={styles.durationRow}>
+                  {SLEEP_SOUND_TIMER_OPTIONS.map((minutes) => {
+                    const selected = durationMinutes === minutes;
+                    return (
+                      <PressableScale
+                        key={minutes}
+                        onPress={() => handleSelectDuration(minutes)}
+                        disabled={player.isPlaying}
+                        haptic={player.isPlaying ? 'none' : 'selection'}
+                        hitSlop={0}
+                        transitionProperties={SELECTION_TRANSITION}
+                        testID={`sleep-duration-${minutes}`}
+                        accessibilityRole="radio"
+                        accessibilityState={{ checked: selected, disabled: player.isPlaying }}
+                        style={[
+                          styles.durationOption,
+                          {
+                            // Declared on both branches so the transition has a value to
+                            // cross from; `undefined` would make it snap.
+                            backgroundColor: selected ? noctalia.surface.active : 'transparent',
+                            borderColor: selected ? noctalia.action.primary : noctalia.surface.border,
+                          },
+                        ]}
+                      >
+                        <Text
+                          style={[
+                            styles.durationText,
+                            { color: selected ? noctalia.accent.text : noctalia.text.secondary },
+                          ]}
+                        >
+                          {minutes} {copy.minutes}
+                        </Text>
+                      </PressableScale>
+                    );
+                  })}
+                </View>
+              </View>
+            </Animated.View>
+
+            <Animated.View
+              pointerEvents="none"
+              style={[styles.resting, restingStyle] as StyleProp<ViewStyle>}
+            >
+              {player.isPlaying ? (
+                <Text style={[styles.restingText, { color: noctalia.text.secondary }]}>
+                  {copy.backgroundHint}
+                </Text>
+              ) : null}
+            </Animated.View>
+          </View>
+
+          <View style={styles.player}>
+            <View style={styles.playerControl}>
+              {player.isPlaying && !reducedMotion ? (
+                <Animated.View
+                  style={[
+                    styles.halo,
+                    { borderColor: noctalia.action.primary },
+                    BREATHING,
+                  ] as StyleProp<ViewStyle>}
+                />
+              ) : null}
+              <SleepTimerRing
+                size={PLAYER_SIZE}
+                progress={progress}
+                track={noctalia.surface.border}
+                fill={noctalia.action.primary}
+              />
               <PressableScale
                 onPress={handleTogglePlayback}
                 disabled={isPreparing}
@@ -359,216 +369,216 @@ function SleepSoundsContent() {
                 accessibilityRole="button"
                 accessibilityLabel={primaryLabel}
                 style={[
-                  styles.primaryButton,
+                  styles.playButton,
                   {
-                    backgroundColor: isPreparing
-                      ? noctalia.action.disabled
-                      : noctalia.action.primary,
-                    borderColor: isPreparing
-                      ? noctalia.action.disabledBorder
-                      : noctalia.action.primaryBorder,
+                    backgroundColor: isPreparing ? noctalia.action.disabled : noctalia.action.primary,
+                    borderColor: isPreparing ? noctalia.action.disabledBorder : noctalia.action.primaryBorder,
                   },
                 ]}
               >
-                {!isPreparing ? (
-                  <IconSymbol
-                    name={player.isPlaying ? 'pause.fill' : 'play.fill'}
-                    size={22}
-                    color={noctalia.action.primaryText}
-                  />
-                ) : null}
-                <Text
-                  style={[
-                    styles.primaryButtonText,
-                    {
-                      color: isPreparing
-                        ? noctalia.action.disabledText
-                        : noctalia.action.primaryText,
-                    },
-                  ]}
-                >
-                  {primaryLabel}
-                </Text>
+                <IconSymbol
+                  name={player.isPlaying ? 'pause.fill' : 'play.fill'}
+                  size={26}
+                  color={isPreparing ? noctalia.action.disabledText : noctalia.action.primaryText}
+                />
               </PressableScale>
-
-              {player.error ? (
-                <Text style={[styles.errorText, { color: noctalia.status.danger.text }]}>
-                  {downloadFailed ? copy.downloadError : copy.error}
-                </Text>
-              ) : null}
-            </GlassCard>
-
-            <View style={styles.hints}>
-              <Text style={[styles.hintText, { color: noctalia.text.secondary }]}>
-                {copy.volumeHint}
+            </View>
+            <View style={styles.playerCopy}>
+              <Text
+                testID="sleep-remaining-time"
+                style={[styles.remainingTime, { color: noctalia.text.primary }]}
+              >
+                {formatRemainingTime(player.remainingSeconds)}
               </Text>
-              <Text style={[styles.hintText, { color: noctalia.text.tertiary }]}>
-                {copy.backgroundHint}
+              <Text style={[styles.playerLabel, { color: noctalia.text.secondary }]}>
+                {primaryLabel}
               </Text>
             </View>
           </View>
-        </ScrollView>
-      </View>
-    </ScrollPerfProvider>
+
+          {player.error ? (
+            <Text style={[styles.errorText, { color: noctalia.status.danger.text }]}>
+              {downloadFailed ? copy.downloadError : copy.error}
+            </Text>
+          ) : (
+            <Text style={[styles.hintText, { color: noctalia.text.tertiary }]}>
+              {copy.volumeHint}
+            </Text>
+          )}
+        </View>
+      </ScrollView>
+    </View>
+  );
+}
+
+/** The sleep screen is always a night scene, whatever the app's theme. */
+export function SleepSoundsScreen() {
+  return (
+    <ThemeModeScope mode="dark">
+      <SleepSoundsContent />
+    </ThemeModeScope>
   );
 }
 
 const styles = StyleSheet.create({
   container: { flex: 1 },
   scrollView: { flex: 1 },
-  floatingBackButton: {
+  scrollContent: { flexGrow: 1, justifyContent: 'flex-end' },
+  header: {
     position: 'absolute',
     left: ThemeLayout.spacing.lg20,
+    right: ThemeLayout.spacing.lg20,
     zIndex: 50,
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 14,
+  },
+  backButton: {
     width: 44,
     height: 44,
     borderRadius: 22,
     borderWidth: 1,
-    borderCurve: 'continuous',
     alignItems: 'center',
     justifyContent: 'center',
+    backgroundColor: 'rgba(3, 4, 13, 0.35)',
+  },
+  kicker: { flexDirection: 'row', alignItems: 'center', gap: 10, flexShrink: 1 },
+  kickerRule: { width: 22, height: 1 },
+  kickerText: {
+    fontFamily: Fonts.spaceGrotesk.medium,
+    fontSize: 11,
+    lineHeight: 14,
+    letterSpacing: 2,
+    textTransform: 'uppercase',
+    flexShrink: 1,
   },
   content: {
-    paddingHorizontal: ThemeLayout.spacing.lg20,
-    gap: ThemeLayout.spacing.lg,
+    width: '100%',
+    maxWidth: 520,
+    alignSelf: 'center',
+    paddingHorizontal: 24,
+    gap: 26,
   },
-  titleSection: {
-    alignItems: 'center',
-    gap: 12,
-  },
-  heroIcon: {
-    width: 68,
-    height: 68,
-    borderRadius: 24,
-    borderCurve: 'continuous',
-    alignItems: 'center',
-    justifyContent: 'center',
+  story: { gap: 10 },
+  eyebrow: {
+    fontFamily: Fonts.spaceGrotesk.medium,
+    fontSize: 11,
+    lineHeight: 14,
+    letterSpacing: 1.8,
+    textTransform: 'uppercase',
   },
   title: {
-    alignSelf: 'stretch',
-    fontFamily: Fonts.fraunces.bold,
-    fontSize: 30,
-    lineHeight: 36,
+    fontFamily: Fonts.fraunces.regular,
+    fontSize: 50,
+    lineHeight: 56,
+    letterSpacing: -0.5,
+  },
+  storyText: {
+    fontFamily: Fonts.lora.regularItalic,
+    fontSize: 17,
+    lineHeight: 26,
+    maxWidth: 440,
+  },
+  choices: { gap: 22 },
+  scenes: { flexDirection: 'row', justifyContent: 'space-between' },
+  // Links the three places, like the steps of a path.
+  sceneLine: { position: 'absolute', top: 31, left: '16%', right: '16%', height: 1 },
+  sceneOption: { flex: 1, alignItems: 'center', gap: 8, minHeight: 44 },
+  sceneThumb: {
+    width: 62,
+    height: 62,
+    borderRadius: 31,
+    borderWidth: 2,
+    padding: 3,
+    overflow: 'hidden',
+  },
+  sceneImage: { flex: 1, borderRadius: 26 },
+  sceneLabel: {
+    fontFamily: Fonts.spaceGrotesk.medium,
+    fontSize: 12,
+    lineHeight: 16,
     textAlign: 'center',
+    paddingHorizontal: 4,
   },
-  subtitle: {
-    maxWidth: 420,
-    paddingHorizontal: 12,
-    fontFamily: Fonts.spaceGrotesk.regular,
-    fontSize: 15,
-    lineHeight: 22,
-    textAlign: 'center',
+  durations: { gap: 10 },
+  groupLabel: {
+    fontFamily: Fonts.spaceGrotesk.medium,
+    fontSize: 11,
+    lineHeight: 14,
+    letterSpacing: 1.8,
+    textTransform: 'uppercase',
   },
-  section: { gap: 12 },
-  sectionTitle: {
-    fontFamily: Fonts.spaceGrotesk.bold,
-    fontSize: 16,
-    lineHeight: 22,
-  },
-  soundList: { gap: 12 },
-  soundCard: {
-    minHeight: 78,
-    padding: ThemeLayout.spacing.md,
-    borderWidth: 1,
-    borderRadius: 20,
-    borderCurve: 'continuous',
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 12,
-  },
-  soundIcon: {
-    width: 48,
-    height: 48,
-    borderRadius: 16,
-    borderCurve: 'continuous',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  soundCopy: { flex: 1, gap: ThemeLayout.spacing.xs },
-  soundTitle: {
-    fontFamily: Fonts.spaceGrotesk.bold,
-    fontSize: 15,
-    lineHeight: 20,
-  },
-  soundDescription: {
-    fontFamily: Fonts.spaceGrotesk.regular,
-    fontSize: 13,
-    lineHeight: 18,
-  },
-  timerGroup: {
-    padding: ThemeLayout.spacing.xs,
-    borderWidth: 1,
-    borderRadius: 18,
-    borderCurve: 'continuous',
-    flexDirection: 'row',
-    gap: ThemeLayout.spacing.xs,
-  },
-  timerOption: {
+  durationRow: { flexDirection: 'row', gap: 10 },
+  durationOption: {
     flex: 1,
     minHeight: 44,
-    paddingHorizontal: ThemeLayout.spacing.xs,
-    paddingVertical: ThemeLayout.spacing.sm,
-    borderRadius: 14,
-    borderCurve: 'continuous',
+    borderWidth: 1,
+    borderRadius: 22,
     alignItems: 'center',
     justifyContent: 'center',
   },
-  timerText: {
-    fontFamily: Fonts.spaceGrotesk.bold,
+  durationText: {
+    fontFamily: Fonts.spaceGrotesk.medium,
     fontSize: 14,
     lineHeight: 20,
     fontVariant: ['tabular-nums'],
   },
-  playerCard: {
-    padding: 24,
-    borderRadius: 26,
-    alignItems: 'center',
-    gap: ThemeLayout.spacing.md,
+  resting: {
+    position: 'absolute',
+    top: 0,
+    right: 0,
+    bottom: 0,
+    left: 0,
+    justifyContent: 'center',
   },
-  nowPlayingLabel: {
+  restingText: {
+    fontFamily: Fonts.lora.regularItalic,
+    fontSize: 16,
+    lineHeight: 24,
+  },
+  player: { flexDirection: 'row', alignItems: 'center', gap: 20 },
+  playerControl: {
+    width: PLAYER_SIZE,
+    height: PLAYER_SIZE,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  halo: {
+    position: 'absolute',
+    width: PLAYER_SIZE,
+    height: PLAYER_SIZE,
+    borderRadius: PLAYER_SIZE / 2,
+    borderWidth: 1,
+  },
+  playButton: {
+    width: BUTTON_SIZE,
+    height: BUTTON_SIZE,
+    borderRadius: BUTTON_SIZE / 2,
+    borderWidth: 1,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  playerCopy: { flex: 1, gap: 2 },
+  remainingTime: {
+    fontFamily: Fonts.fraunces.regular,
+    fontSize: 40,
+    lineHeight: 46,
+    fontVariant: ['tabular-nums'],
+  },
+  playerLabel: {
     fontFamily: Fonts.spaceGrotesk.medium,
     fontSize: 14,
     lineHeight: 19,
-  },
-  remainingTime: {
-    fontFamily: Fonts.fraunces.semiBold,
-    fontSize: 42,
-    lineHeight: 48,
-    fontVariant: ['tabular-nums'],
-  },
-  primaryButton: {
-    width: '100%',
-    minHeight: 54,
-    paddingHorizontal: 20,
-    borderWidth: 1,
-    borderRadius: 18,
-    borderCurve: 'continuous',
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'center',
-    gap: ThemeLayout.spacing.sm,
-  },
-  primaryButtonText: {
-    fontFamily: Fonts.spaceGrotesk.bold,
-    fontSize: 15,
   },
   errorText: {
     fontFamily: Fonts.spaceGrotesk.medium,
     fontSize: 13,
     lineHeight: 18,
-    textAlign: 'center',
-  },
-  hints: {
-    paddingHorizontal: 12,
-    gap: ThemeLayout.spacing.sm,
   },
   hintText: {
     fontFamily: Fonts.spaceGrotesk.regular,
     fontSize: 13,
     lineHeight: 19,
-    textAlign: 'center',
   },
   pressed: { opacity: 0.76 },
 });
-
-export const SleepSoundsScreen = withHeaderScroll(SleepSoundsContent);
