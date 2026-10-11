@@ -110,7 +110,7 @@
 <div class="prose max-w-none text-gray-300">
 <h2 id="prevalence">Why are chase dreams so common?</h2>
 <p>
-                    If you have dreamed of <a class="text-dream-salmon hover:underline" href="../symbols/being-chased">being chased</a>, you are in very large company. In a survey of 1,181 Canadian university students, being chased was one of four dream themes reported by more than 60% of respondents, alongside falling, school and sex (<a class="text-dream-salmon hover:underline" href="https://asdreams.org/journal/issues/asdj13-4.htm" rel="nofollow noopener noreferrer" target="_blank">Nielsen, Zadra et al., 2003</a>). Having this dream says nothing unusual about you.
+                    If you have dreamed of <a class="text-dream-salmon hover:underline" href="../symbols/being-chased">being chased</a>, you are in very large company. In a survey of 1,181 Canadian university students, being chased was one of four dream themes reported by more than 60% of respondents, alongside falling, school and sex (<a class="text-dream-salmon hover:underline" href="https://doi.org/10.1023/B:DREM.0000003144.40929.0b" rel="nofollow noopener noreferrer" target="_blank">Nielsen, Zadra et al., 2003</a>). Having this dream says nothing unusual about you.
                 </p>
 <p>
                     Why this scene in particular? Nobody knows for sure. One well-known hypothesis holds that dreaming partly rehearses threats, and few threats are as old or as simple as something running after you. We come back to that idea below, because it remains a hypothesis.
@@ -407,7 +407,7 @@
 <section class="mt-16 glass-panel rounded-2xl p-6" id="sources">
 <h2 class="font-serif text-2xl text-dream-cream mb-4">Sources and further reading</h2>
 <ul class="mt-6 space-y-2 text-sm text-gray-400">
-<li><a href="https://asdreams.org/journal/issues/asdj13-4.htm" rel="nofollow noopener noreferrer" target="_blank">Nielsen, Zadra et al. (2003), "The Typical Dreams of Canadian University Students", <em>Dreaming</em>, 13(4)</a></li>
+<li><a href="https://doi.org/10.1023/B:DREM.0000003144.40929.0b" rel="nofollow noopener noreferrer" target="_blank">Nielsen, Zadra et al. (2003), "The Typical Dreams of Canadian University Students", <em>Dreaming</em>, 13(4)</a></li>
 <li><a href="https://pubmed.ncbi.nlm.nih.gov/24497669/" rel="nofollow noopener noreferrer" target="_blank">Robert and Zadra (2014), "Thematic and content analysis of idiopathic nightmares and bad dreams", <em>Sleep</em></a></li>
 <li><a href="https://pubmed.ncbi.nlm.nih.gov/11515147/" rel="nofollow noopener noreferrer" target="_blank">Revonsuo (2000), "The reinterpretation of dreams: an evolutionary hypothesis of the function of dreaming", <em>Behavioral and Brain Sciences</em></a></li>
 <li><a href="https://pubmed.ncbi.nlm.nih.gov/29852917/" rel="nofollow noopener noreferrer" target="_blank">Morgenthaler et al. (2018), "Position paper for the treatment of nightmare disorder in adults", American Academy of Sleep Medicine</a></li>
