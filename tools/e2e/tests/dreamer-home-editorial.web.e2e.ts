@@ -26,6 +26,8 @@ async function home(page: Page) {
 async function populatedHome(page: Page, failImage = false) {
   await page.clock.setSystemTime(new Date('2026-10-02T12:00:00Z'));
   await page.route('https://picsum.photos/**', route => failImage ? route.abort() : route.fulfill({ path: artwork }));
+  // Generated mock illustrations are the bundled 9:16 dream art, not picsum.
+  if (failImage) await page.route(/mock-data(?:%2F|\/)assets(?:%2F|\/)dreams(?:%2F|\/)/, route => route.abort());
   await startGuest(page);
   await home(page);
   await page.getByTestId('btn.header.home.settings').click();
