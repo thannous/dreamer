@@ -190,6 +190,16 @@ export function LucidScreen({
       ) : (
         content
       )}
+      {scroll && artEdge !== undefined ? (
+        // Night artwork under the light clock: what scrolls over it fades into the night.
+        <LucidStatusBarVeil
+          scrollY={veilScrollY}
+          start={8}
+          end={artEdge}
+          top={insets.top}
+          ground={getLucidPalette(colors, 'dark').backgroundDeep}
+        />
+      ) : null}
       {scroll ? (
         <LucidStatusBarVeil
           scrollY={veilScrollY}
