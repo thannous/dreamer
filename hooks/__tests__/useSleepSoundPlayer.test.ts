@@ -434,6 +434,56 @@ describe('useSleepSoundPlayer', () => {
     expect(result.current.remainingSeconds).toBe(29 * 60);
   });
 
+  it('classifies a dropout afresh once a late source has loaded and played', async () => {
+    mockStatus.isLoaded = false;
+    const { result, rerender } = renderHook(() =>
+      useSleepSoundPlayer({
+        sound,
+        durationMinutes: 30,
+        title: 'Gentle rain',
+        albumTitle: 'Evening ambience',
+      }),
+    );
+    await flushDownload();
+    act(() => {
+      jest.advanceTimersByTime(30_000);
+    });
+    expect(result.current.error).toBe('download_failed');
+
+    mockStatus.isLoaded = true;
+    mockStatus.playing = true;
+    rerender();
+    expect(result.current.error).toBeNull();
+
+    mockStatus.playing = false;
+    mockStatus.isLoaded = false;
+    rerender();
+    expect(result.current.error).toBeNull();
+    act(() => {
+      jest.advanceTimersByTime(3_000);
+    });
+    expect(result.current.error).toBe('playback_interrupted');
+  });
+
+  it('does not call a sound interrupted when it was never heard', async () => {
+    const { result, rerender } = renderHook(() =>
+      useSleepSoundPlayer({
+        sound,
+        durationMinutes: 30,
+        title: 'Gentle rain',
+        albumTitle: 'Evening ambience',
+      }),
+    );
+    await flushDownload();
+
+    mockStatus.isLoaded = false;
+    rerender();
+    act(() => {
+      jest.advanceTimersByTime(3_000);
+    });
+    expect(result.current.error).toBeNull();
+  });
+
   it('does not start a retried download after the screen loses focus', async () => {
     jest.mocked(ensureSleepSoundFile).mockRejectedValueOnce(new Error('offline'));
     let resolveRetry: (uri: string) => void = () => {};

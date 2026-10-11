@@ -52,7 +52,8 @@ export function useSleepSoundPlayer({
   const [downloadAttempt, setDownloadAttempt] = useState(0);
   const [failure, setFailure] = useState<SourceFailure | null>(null);
   const playAfterDownloadRef = useRef<string | null>(null);
-  const loadedKeyRef = useRef<string | null>(null);
+  // The download attempt the listener actually heard; cleared by Stop.
+  const [playedKey, setPlayedKey] = useState<string | null>(null);
   const downloadKey = `${sound.id}:${downloadAttempt}`;
   const sourceUri = resolved?.id === sound.id ? resolved.uri : null;
   const player = useAudioPlayer(sourceUri ? { uri: sourceUri } : null, {
@@ -62,6 +63,9 @@ export function useSleepSoundPlayer({
   const status = useAudioPlayerStatus(player);
   const isPlayable = Boolean(sourceUri) && status.isLoaded;
   // A source that loads after the timeout clears the error on its own.
+  // A late load retires the failure, so a later dropout is classified afresh.
+  if (isPlayable && failure?.key === downloadKey) setFailure(null);
+  if (status.playing && isPlayable && playedKey !== downloadKey) setPlayedKey(downloadKey);
   const sourceFailed = failure?.key === downloadKey && !isPlayable;
   const [hasStarted, setHasStarted] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -85,19 +89,15 @@ export function useSleepSoundPlayer({
   }, [downloadKey, sound]);
 
   useEffect(() => {
-    if (isPlayable) loadedKeyRef.current = downloadKey;
-  }, [downloadKey, isPlayable]);
-
-  useEffect(() => {
     if (!sourceUri || isPlayable || sourceFailed) return;
     // The file is on the phone once it has played: losing it now is a playback problem.
-    const kind = loadedKeyRef.current === downloadKey ? 'playback' : 'download';
+    const kind = playedKey === downloadKey ? 'playback' : 'download';
     const timeoutId = setTimeout(
       () => setFailure({ key: downloadKey, kind }),
       kind === 'playback' ? PLAYBACK_LOSS_GRACE_MS : SOURCE_LOAD_TIMEOUT_MS,
     );
     return () => clearTimeout(timeoutId);
-  }, [downloadKey, isPlayable, sourceFailed, sourceUri]);
+  }, [downloadKey, isPlayable, playedKey, sourceFailed, sourceUri]);
   const [remainingSeconds, setRemainingSeconds] = useState(durationMinutes * 60);
   const [timerRunning, setTimerRunning] = useState(false);
   const remainingMsRef = useRef(durationMinutes * 60_000);
@@ -154,6 +154,7 @@ export function useSleepSoundPlayer({
     setRemainingSeconds(sessionDurationSeconds);
     setTimerRunning(false);
     setHasStarted(false);
+    setPlayedKey(null);
     setError(null);
 
     if (status.isLoaded) {

@@ -168,7 +168,8 @@ function SleepSoundsContent() {
   }, [errorMessage, needsRetry]);
   const isPreparing =
     !preferencesLoaded ||
-    (!needsRetry && !player.hasStarted && (!player.isLoaded || player.isBuffering));
+    // A started sound whose file left the player cannot resume until it is back.
+    (!needsRetry && (!player.isLoaded || (!player.hasStarted && player.isBuffering)));
   const primaryLabel = isPreparing
     ? copy.loading
     : needsRetry

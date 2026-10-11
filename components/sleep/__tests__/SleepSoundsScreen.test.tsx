@@ -1,7 +1,7 @@
 /* @jest-environment jsdom */
 
 import React from 'react';
-import { cleanup, fireEvent, render, screen, waitFor } from '@testing-library/react';
+import { act, cleanup, fireEvent, render, screen, waitFor } from '@testing-library/react';
 import { afterEach, beforeEach, describe, expect, it, jest } from '@jest/globals';
 
 import { SleepSoundsScreen } from '@/components/sleep/SleepSoundsScreen';
@@ -245,6 +245,22 @@ describe('SleepSoundsScreen', () => {
 
     fireEvent.click(toggle);
     expect(mockPlay).toHaveBeenCalledTimes(1);
+  });
+
+  it('keeps Resume unavailable while a started sound is back to loading', async () => {
+    mockPlayer.hasStarted = true;
+    mockPlayer.isLoaded = false;
+    render(<SleepSoundsScreen />);
+
+    await waitFor(() => {
+      expect(mockGetPreferences).toHaveBeenCalled();
+    });
+    await act(async () => {
+      await Promise.resolve();
+    });
+    const toggle = screen.getByTestId('sleep-playback-toggle');
+    expect(toggle.getAttribute('aria-label')).toBe('Preparing sound…');
+    expect((toggle as HTMLButtonElement).disabled).toBe(true);
   });
 
   it('does not blame the network when a downloaded sound stops while playing', async () => {
