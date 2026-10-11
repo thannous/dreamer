@@ -359,7 +359,10 @@ describe('immersive home journey', () => {
     expect(cta).not.toHaveTextContent(/Begin the journey/i);
     expect(screen.getByRole('button', { name: /Begin the journey/i })).toBe(cta);
     const hero = within(screen.getByTestId('home.world.hero'));
-    expect(hero.getByTestId('home.world.name').props.numberOfLines).toBeUndefined();
+    // One line per word, shrunk to fit: never truncated, never split mid-word.
+    const worldName = hero.getByTestId('home.world.name');
+    expect(worldName.props.numberOfLines).toBe(1);
+    expect(worldName.props.adjustsFontSizeToFit).toBe(true);
     expect(hero.getByText('Enter the night').props.numberOfLines).toBeUndefined();
     expect(hero.getByText('Before sleep').props.numberOfLines).toBeUndefined();
     expect(screen.getByTestId('home.world-switcher.tide.locked')).toBeTruthy();

@@ -12,6 +12,13 @@ export type ScreenContainerProps = ViewProps & {
   className?: string;
 };
 
+/** True where `ScreenContainer` narrows and pads its content, leaving side gutters. */
+export function useWideConstrainedLayout(): boolean {
+  const { width } = useWindowDimensions();
+  return (Platform.OS === 'web' && width >= DESKTOP_BREAKPOINT)
+    || (Platform.OS === 'android' && width >= TABLET_BREAKPOINT);
+}
+
 export function ScreenContainer({
   children,
   style,
@@ -21,10 +28,7 @@ export function ScreenContainer({
   desktopPaddingHorizontal = 32,
   ...rest
 }: ScreenContainerProps) {
-  const { width } = useWindowDimensions();
-  const isWideConstrainedLayout =
-    (Platform.OS === 'web' && width >= DESKTOP_BREAKPOINT)
-    || (Platform.OS === 'android' && width >= TABLET_BREAKPOINT);
+  const isWideConstrainedLayout = useWideConstrainedLayout();
 
   if (!isWideConstrainedLayout && !fillContent) {
     return (
