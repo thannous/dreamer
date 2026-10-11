@@ -157,6 +157,7 @@ jest.mock('@/hooks/useLucidNightAudio', () => ({
 }));
 
 jest.mock('@/components/lucid/LucidUI', () => ({
+  LUCID_HERO_DARK_SHARE: 0.5,
   LUCID_TAB_BAR_INSET: 92,
   LucidScreen: ({ children, testID }: { children: React.ReactNode; testID?: string }) => (
     <main data-testid={testID}>{children}</main>
