@@ -1,7 +1,7 @@
 import { Image } from 'expo-image';
 import { LinearGradient } from 'expo-linear-gradient';
 import React, { type ReactNode } from 'react';
-import { StyleSheet, View } from 'react-native';
+import { StyleSheet, View, type ViewProps } from 'react-native';
 
 import { LucidSpace } from '@/constants/lucidTheme';
 
@@ -21,11 +21,14 @@ export function LucidNightSanctuary({
   reflow,
   source,
   children,
+  onLayout,
 }: {
   fadeColor: string;
   reflow: boolean;
   source: number;
   children?: ReactNode;
+  /** Lets the screen keep a light status bar while the painting sits under it. */
+  onLayout?: ViewProps['onLayout'];
 }) {
   return (
     <View
@@ -33,6 +36,7 @@ export function LucidNightSanctuary({
       importantForAccessibility="no-hide-descendants"
       pointerEvents="none"
       style={[styles.hero, reflow && styles.heroReflow]}
+      onLayout={onLayout}
     >
       <Image
         accessible={false}

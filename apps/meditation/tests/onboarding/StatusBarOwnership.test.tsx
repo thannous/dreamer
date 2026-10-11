@@ -20,6 +20,7 @@ jest.mock('expo-router', () => {
   return {
     Stack: () => <View />,
     useIsFocused: () => mockIsFocused,
+    useNavigation: () => ({ reset: jest.fn() }),
     useRouter: () => ({
       push: jest.fn(),
       replace: jest.fn(),
