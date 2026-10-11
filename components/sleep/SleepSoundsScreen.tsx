@@ -2,6 +2,7 @@ import { Image } from 'expo-image';
 import { router } from 'expo-router';
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { Pressable, ScrollView, StyleSheet, Text, View, type StyleProp, type ViewStyle } from 'react-native';
+import { SystemBars } from 'react-native-edge-to-edge';
 import Animated, { useReducedMotion, type CSSStyle } from 'react-native-reanimated';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
@@ -415,6 +416,8 @@ function SleepSoundsContent() {
 export function SleepSoundsScreen() {
   return (
     <ThemeModeScope mode="dark">
+      {/* The root bars follow the app's theme; over this night scene they stay light. */}
+      <SystemBars style="light" />
       <SleepSoundsContent />
     </ThemeModeScope>
   );

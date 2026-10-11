@@ -1,7 +1,7 @@
 import { Directory, File, Paths } from 'expo-file-system';
 import { Platform } from 'react-native';
 
-import type { SleepSoundConfig } from '@/lib/sleepSounds';
+import type { SleepSoundConfig, SleepSoundId } from '@/lib/sleepSounds';
 
 const DIRECTORY_SEGMENT = 'sleep-sounds';
 
@@ -20,23 +20,41 @@ export async function ensureSleepSoundFile(sound: SleepSoundConfig): Promise<str
   const target = new File(directory, fileName);
   if (target.exists) return target.uri;
 
+  const legacy = new File(directory, `${sound.id}.m4a`);
+  if (legacy.exists && LEGACY_SOURCES[sound.id] === fileName) {
+    // Same recording under the old name: keep it rather than download it again.
+    legacy.move(target);
+    return target.uri;
+  }
+
   directory.create({ idempotent: true, intermediates: true });
   // Android streams into the destination, so a failed download can leave a
   // partial file behind: write to a temporary name and move it into place.
   const partial = new File(directory, `${fileName}.part`);
-  const downloaded = await File.downloadFileAsync(sound.remoteUrl, partial, { idempotent: true });
-  downloaded.move(target);
-  removeSupersededCopy(directory, sound.id, fileName);
+  try {
+    const downloaded = await File.downloadFileAsync(sound.remoteUrl, partial, { idempotent: true });
+    downloaded.move(target);
+  } catch (error) {
+    // Offline, the older recording still beats silence until the new one arrives.
+    if (legacy.exists) return legacy.uri;
+    throw error;
+  }
+  if (legacy.exists) {
+    try {
+      legacy.delete();
+    } catch {
+      // Housekeeping only: a stale copy costs space, never playback.
+    }
+  }
   return target.uri;
 }
 
-/** The first builds kept each loop as `<id>.m4a`; drop it once its replacement is in place. */
-function removeSupersededCopy(directory: Directory, soundId: string, fileName: string) {
-  const legacy = new File(directory, `${soundId}.m4a`);
-  if (legacy.uri === new File(directory, fileName).uri || !legacy.exists) return;
-  try {
-    legacy.delete();
-  } catch {
-    // Housekeeping only: a stale copy costs space, never playback.
-  }
-}
+/**
+ * The first builds kept each loop as `<id>.m4a`. This is the published file each of
+ * those copies came from, so a copy whose recording has not changed is kept.
+ */
+const LEGACY_SOURCES: Record<SleepSoundId, string> = {
+  rain: 'rain.m4a',
+  ocean: 'ocean-waves.m4a',
+  'brown-noise': 'brown-noise.m4a',
+};

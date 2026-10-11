@@ -9,6 +9,7 @@ import { SleepSoundsScreen } from '@/components/sleep/SleepSoundsScreen';
 jest.mock('@/components/sleep/SleepAmbienceScene', () => ({ SleepAmbienceScene: () => null }));
 jest.mock('@/components/sleep/SleepTimerRing', () => ({ SleepTimerRing: () => null }));
 jest.mock('expo-image', () => ({ Image: () => null }));
+jest.mock('react-native-edge-to-edge', () => ({ SystemBars: () => null }));
 
 const mockBack = jest.fn();
 const mockGetPreferences = jest.fn();
