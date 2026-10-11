@@ -298,6 +298,8 @@ for (const profile of ['existing', 'plus'] as const) {
     await expect(screen.getByTestId('settings-account-open-signin', { visible: true })).toBeVisible();
     await expect(screen.getByTestId('btn.auth.signOut')).toHaveCount(0);
     await screen.getByTestId('settings.back', { visible: true }).tap();
+    // journal() branches on a one-shot isVisible(); wait for Today before it reads.
+    await expect(screen.getByTestId('screen.home', { visible: true })).toBeVisible();
     await journal(screen);
     await expect(screen.getByTestId('journal-first-page', { visible: true })).toBeVisible();
     await expect(screen.getByTestId(/^dream\.item\./, { visible: true })).toHaveCount(0);
