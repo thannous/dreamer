@@ -169,6 +169,8 @@ export const TID = {
     PersonalReadingNext: 'btn.inspiration.personalReadingNext',
     PersonalReadingRecap: 'btn.inspiration.personalReadingRecap',
     ImageUpgrade: 'btn.journal.imageUpgrade',
+    ChatLimitUpgrade: 'btn.chat.limitUpgrade',
+    FreeAnalysesNudge: 'btn.quota.freeAnalysesNudge',
     JournalIllustrate: 'btn.journal.illustrate',
     JournalImageRetry: 'btn.journal.imageRetry',
     PaywallTermsOfUse: 'btn.paywall.termsOfUse',
