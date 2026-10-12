@@ -1,5 +1,5 @@
 import type { ViewStyle } from 'react-native';
-import type { CSSStyle } from 'react-native-reanimated';
+import { cubicBezier, type CSSStyle } from 'react-native-reanimated';
 
 import { EASE } from '@/components/motion/motion';
 
@@ -45,9 +45,10 @@ export const DREAM_STORY = {
   chapterLead: 240,
   /**
    * The capture screen's seal, from the save to the saved moment: written, lifted, condensed, risen.
-   * Long enough for each beat to be seen: the pen writes for about 0.9 s before the ink lifts.
+   * Long enough for each beat to be seen and for each to fade into the next: the pen writes
+   * for about a second before the ink lifts.
    */
-  prologue: 3500,
+  prologue: 3800,
   /** The seal's veil outlasts the screen transition that covers it. */
   prologueVeilHold: 700,
   /** One pass of the light band across a canvas being painted. */
@@ -66,6 +67,12 @@ export const DREAM_STORY = {
   /** The journal card's single glow, in and out. */
   epilogueHalo: 1800,
 } as const;
+
+/**
+ * The prologue's curve: gentler than `EASE.inOut`, whose steep middle makes every keyframe
+ * of a long story start late and stop short, so nothing in the dream snaps into place.
+ */
+export const DREAM_EASE = cubicBezier(0.4, 0, 0.2, 1);
 
 /** Under reduce motion a stagger is still motion; it collapses to a near-simultaneous fade. */
 export const reducedDelay = (delay: number): number => Math.min(delay, 120);

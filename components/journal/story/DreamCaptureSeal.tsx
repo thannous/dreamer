@@ -21,7 +21,7 @@ import { getNoctaliaPalette } from '@/constants/noctaliaPalette';
 import { useTheme } from '@/context/ThemeContext';
 import { TID } from '@/lib/testIDs';
 
-import { DREAM_STORY } from './dreamStoryMotion';
+import { DREAM_EASE, DREAM_STORY } from './dreamStoryMotion';
 import { sparklePath } from './sparkle';
 
 const BOOK_ART = require('@/assets/images/dream-seal-book.webp');
@@ -51,22 +51,24 @@ const WORD_PULL = 0.9;
  * these, so the story keeps its proportions whatever the prologue lasts.
  */
 const BEAT = {
-  night: 10,
-  bookIn: 12,
-  /** The pen writes the dream's first lines between these two beats. */
-  write: 14,
-  written: 40,
-  lineGap: 1.5,
+  night: 18,
+  bookIn: 16,
+  /** The pen glides in, writes the dream's first lines between these two beats, then glides away. */
+  penIn: 3,
+  write: 16,
+  written: 46,
+  lineGap: 4,
+  penOut: 6,
   /** The ink leaves the page as words of light, which reach the glow in reading order. */
-  lift: 46,
-  gather: 48,
+  lift: 49,
+  gather: 52,
   gatherSpread: 8,
-  wordFlight: 9,
+  wordFlight: 12,
   /** The journal fades as its ink lifts, so the words of light leave over the night. */
-  bookOut: 46,
-  bookGone: 62,
-  starBorn: 70,
-  starSettled: 75,
+  bookOut: 49,
+  bookGone: 66,
+  starBorn: 74,
+  starSettled: 79,
 } as const;
 
 /** The night sky behind the seal, in fractions of the screen. Fixed so every save shows the same sky. */
@@ -90,7 +92,7 @@ const SKY = [
 /** Motes of light drawn in from around the book, each from its own point of an ellipse. */
 const MOTES = [1, 0.7, 0.9, 0.6, 1, 0.75, 0.95, 0.65, 0.85, 0.8].map((reach, index) => {
   const angle = ((index * 36 + 12) * Math.PI) / 180;
-  return { x: Math.cos(angle) * 160 * reach, y: Math.sin(angle) * 100 * reach, from: 47 + index * 1.1 };
+  return { x: Math.cos(angle) * 160 * reach, y: Math.sin(angle) * 100 * reach, from: 50 + index * 1.1 };
 });
 
 /** The comet's tail: echoes of the star that follow it up, each later, smaller and fainter. */
@@ -162,27 +164,31 @@ const moteFlight = (x: number, y: number, from: number): CSSAnimationKeyframes<V
     '0%': away(0, 0.5),
     [pct(from)]: away(0, 0.5),
     [pct(from + 3)]: away(1, 1),
-    [pct(from + 12)]: gathered,
+    [pct(from + 13)]: gathered,
     '100%': gathered,
   };
 };
 
-/** A written word leaving the page: it takes over from the ink, catches the light, then flies into the glow. */
+/**
+ * A written word leaving the page: it takes over from the ink, then flies into the glow in
+ * one glide, catching the light on the way. Each property keeps its own keyframes, so the
+ * colour change never stops the flight.
+ */
 const wordFlight = (
   index: number, count: number, dx: number, dy: number, lit: string
 ): CSSAnimationKeyframes<TextStyle> => {
   const from = BEAT.gather + (count > 1 ? (BEAT.gatherSpread * index) / (count - 1) : 0);
-  const at = (opacity: number, pull: number, scale: number, color: string) => ({
-    opacity, color, transform: [{ translateX: dx * pull }, { translateY: dy * pull }, { scale }],
-  });
+  const home = { transform: [{ translateX: 0 }, { translateY: 0 }, { scale: 1 }] };
+  const gone = { opacity: 0, color: lit, transform: [{ translateX: dx }, { translateY: dy }, { scale: 0.35 }] };
   return {
-    '0%': at(0, 0, 1, PAGE_INK),
-    [pct(BEAT.lift)]: at(0, 0, 1, PAGE_INK),
-    [pct(BEAT.lift + 1.5)]: at(1, 0, 1, PAGE_INK),
-    [pct(from)]: at(1, 0, 1, PAGE_INK),
-    [pct(from + 3)]: at(1, 0.15, 1.08, lit),
-    [pct(from + BEAT.wordFlight)]: at(0, 1, 0.3, lit),
-    '100%': at(0, 1, 0.3, lit),
+    '0%': { opacity: 0, color: PAGE_INK, ...home },
+    [pct(BEAT.lift)]: { opacity: 0 },
+    [pct(BEAT.lift + 2)]: { opacity: 1 },
+    [pct(from)]: { color: PAGE_INK, ...home },
+    [pct(from + 4)]: { color: lit },
+    [pct(from + BEAT.wordFlight * 0.6)]: { opacity: 1 },
+    [pct(from + BEAT.wordFlight)]: gone,
+    '100%': gone,
   };
 };
 
@@ -271,7 +277,7 @@ export function DreamCaptureSeal({ text }: { text: string }) {
   const motion = useMemo(() => {
     const base = {
       animationDuration: DREAM_STORY.prologue,
-      animationTimingFunction: EASE.inOut,
+      animationTimingFunction: DREAM_EASE,
       animationFillMode: 'both',
     } as const;
     const animate = <S extends object>(animationName: CSSAnimationKeyframes<S>, extra?: Partial<CSSStyle<S>>) =>
@@ -279,7 +285,7 @@ export function DreamCaptureSeal({ text }: { text: string }) {
     const spark = animate<ViewStyle>({
       '0%': { opacity: 0, transform: [{ translateY: 0 }, { scale: 0.6 }] },
       [pct(BEAT.starBorn - 8)]: { opacity: 0, transform: [{ translateY: 0 }, { scale: 0.6 }] },
-      [pct(BEAT.starBorn)]: { opacity: 1, transform: [{ translateY: 0 }, { scale: 1.15 }] },
+      [pct(BEAT.starBorn)]: { opacity: 1, transform: [{ translateY: 0 }, { scale: 1.06 }] },
       [pct(BEAT.starSettled)]: { opacity: 1, transform: [{ translateY: 0 }, { scale: 1 }] },
       '100%': { opacity: 1, transform: [{ translateY: rise }, { scale: 1 }] },
     });
@@ -295,48 +301,48 @@ export function DreamCaptureSeal({ text }: { text: string }) {
       }),
       stars: SKY.map((point) => animate<ViewStyle>(skyStar(point.at, 'pulse' in point ? point.pulse : undefined))),
       book: animate<ViewStyle>({
-        '0%': { opacity: 0, transform: [{ translateY: 10 }, { scale: 0.97 }] },
-        '2%': { opacity: 0, transform: [{ translateY: 10 }, { scale: 0.97 }] },
+        '0%': { opacity: 0, transform: [{ translateY: 8 }, { scale: 0.985 }] },
+        '3%': { opacity: 0, transform: [{ translateY: 8 }, { scale: 0.985 }] },
         [pct(BEAT.bookIn)]: { opacity: 1, transform: [{ translateY: 0 }, { scale: 1 }] },
         [pct(BEAT.bookOut)]: { opacity: 1, transform: [{ translateY: 0 }, { scale: 1 }] },
-        [pct(BEAT.bookGone)]: { opacity: 0, transform: [{ translateY: 14 }, { scale: 0.94 }] },
-        '100%': { opacity: 0, transform: [{ translateY: 14 }, { scale: 0.94 }] },
+        [pct(BEAT.bookGone)]: { opacity: 0, transform: [{ translateY: 10 }, { scale: 0.96 }] },
+        '100%': { opacity: 0, transform: [{ translateY: 10 }, { scale: 0.96 }] },
       }),
       // The written ink hands over to the words of light, which take its exact place.
       ink: animate<ViewStyle>({
         '0%': { opacity: 1 },
         [pct(BEAT.lift)]: { opacity: 1 },
-        [pct(BEAT.lift + 1.5)]: { opacity: 0 },
+        [pct(BEAT.lift + 2)]: { opacity: 0 },
         '100%': { opacity: 0 },
       }, { animationTimingFunction: 'linear' }),
       glow: animate<ViewStyle>({
-        '0%': { opacity: 0, transform: [{ scale: 1.3 }] },
-        '38%': { opacity: 0, transform: [{ scale: 1.3 }] },
-        '50%': { opacity: 0.9, transform: [{ scale: 1 }] },
-        '56%': { opacity: 0.7, transform: [{ scale: 1.06 }] },
-        '62%': { opacity: 0.95, transform: [{ scale: 0.96 }] },
+        '0%': { opacity: 0, transform: [{ scale: 1.2 }] },
+        '40%': { opacity: 0, transform: [{ scale: 1.2 }] },
+        '54%': { opacity: 0.85, transform: [{ scale: 1 }] },
+        '60%': { opacity: 0.72, transform: [{ scale: 1.04 }] },
+        '66%': { opacity: 0.9, transform: [{ scale: 0.97 }] },
         [pct(BEAT.starBorn)]: { opacity: 0, transform: [{ scale: 0.12 }] },
         '100%': { opacity: 0, transform: [{ scale: 0.12 }] },
       }),
       motes: MOTES.map((mote) => animate<ViewStyle>(moteFlight(mote.x, mote.y, mote.from))),
       rings: [
-        animate<ViewStyle>(ringWave(BEAT.starBorn - 4, 86, 1.1, 0.7)),
-        animate<ViewStyle>(ringWave(BEAT.starBorn, 94, 1.6, 0.4)),
+        animate<ViewStyle>(ringWave(BEAT.starBorn - 2, 90, 1.1, 0.5)),
+        animate<ViewStyle>(ringWave(BEAT.starBorn + 1, 96, 1.5, 0.3)),
       ],
       spark,
       trail: TRAIL.map((echo) => ({ ...spark, animationDelay: echo.delay })),
       halo: animate<ViewStyle>({
         '0%': { opacity: 0.3, transform: [{ scale: 1 }] },
         '90%': { opacity: 0.3, transform: [{ scale: 1 }] },
-        '100%': { opacity: 0.55, transform: [{ scale: 2.2 }] },
+        '100%': { opacity: 0.45, transform: [{ scale: 1.6 }] },
       }),
       glint: animate<ViewStyle>({
-        '0%': { opacity: 0, transform: [{ rotate: '-45deg' }, { scale: 0 }] },
-        [pct(BEAT.starBorn - 6)]: { opacity: 0, transform: [{ rotate: '-45deg' }, { scale: 0 }] },
-        [pct(BEAT.starBorn)]: { opacity: 1, transform: [{ rotate: '0deg' }, { scale: 1.4 }] },
-        [pct(BEAT.starSettled + 2)]: { opacity: 0.8, transform: [{ rotate: '20deg' }, { scale: 0.7 }] },
-        '94%': { opacity: 0.8, transform: [{ rotate: '70deg' }, { scale: 0.7 }] },
-        '100%': { opacity: 1, transform: [{ rotate: '90deg' }, { scale: 1.1 }] },
+        '0%': { opacity: 0, transform: [{ rotate: '-30deg' }, { scale: 0 }] },
+        [pct(BEAT.starBorn - 7)]: { opacity: 0, transform: [{ rotate: '-30deg' }, { scale: 0 }] },
+        [pct(BEAT.starBorn)]: { opacity: 1, transform: [{ rotate: '0deg' }, { scale: 1.1 }] },
+        [pct(BEAT.starSettled + 2)]: { opacity: 0.8, transform: [{ rotate: '15deg' }, { scale: 0.75 }] },
+        '94%': { opacity: 0.8, transform: [{ rotate: '60deg' }, { scale: 0.75 }] },
+        '100%': { opacity: 0.9, transform: [{ rotate: '90deg' }, { scale: 0.95 }] },
       }),
     };
   }, [rise]);
@@ -347,32 +353,40 @@ export function DreamCaptureSeal({ text }: { text: string }) {
     if (!placed) return null;
     const schedule = writingSchedule(placed.map((row) => row.width));
     const linear = { animationDuration: DREAM_STORY.prologue, animationTimingFunction: 'linear', animationFillMode: 'both' } as const;
-    const penAt = (opacity: number, x: number, row: number, wobble = 0, away = 0) => ({
-      opacity,
-      transform: [
-        { translateX: x - NIB.x * pen + away },
-        { translateY: pageTop + row * lineHeight + lineHeight * 0.74 - NIB.y * pen + wobble - away },
-      ],
-    });
+    // Writing runs at a steady pace; arriving, changing line and leaving glide on the story's curve.
+    const penAt = (
+      opacity: number, x: number, row: number, wobble = 0, away = 0, glide = false
+    ): CSSAnimationKeyframes<ViewStyle>[string] => {
+      const frame: CSSAnimationKeyframes<ViewStyle>[string] = {
+        opacity,
+        transform: [
+          { translateX: x - NIB.x * pen + away },
+          { translateY: pageTop + row * lineHeight + lineHeight * 0.74 - NIB.y * pen + wobble - away },
+        ],
+      };
+      // React Native's ViewStyle declares a string `animationTimingFunction`, which narrows the
+      // keyframe block's type; Reanimated reads the curve object at run time.
+      return glide ? ({ ...frame, animationTimingFunction: DREAM_EASE } as unknown as typeof frame) : frame;
+    };
     const last = schedule.length - 1;
     const lineEnd = (row: number) => pageLeft + placed[row].width;
     const penFrames: CSSAnimationKeyframes<ViewStyle> = {
-      '0%': penAt(0, pageLeft, 0, 0, 14),
-      [pct(BEAT.write - 3)]: penAt(0, pageLeft, 0, 0, 14),
+      '0%': penAt(0, pageLeft, 0, 0, 16),
+      [pct(BEAT.write - BEAT.penIn)]: penAt(0, pageLeft, 0, 0, 16, true),
     };
     schedule.forEach((line, row) => {
-      const strokes = Math.max(4, Math.round((line.to - line.from) / 1.2));
+      const strokes = Math.max(4, Math.round((line.to - line.from) / 1.6));
       penFrames[pct(line.from)] = penAt(1, pageLeft, row);
       for (let stroke = 1; stroke < strokes; stroke += 1) {
         // A writing hand never runs on a rail: the nib rises and dips along the line.
-        const wobble = (stroke % 2 ? -1 : 1) * fontSize * 0.09;
+        const wobble = (stroke % 2 ? -1 : 1) * fontSize * 0.06;
         penFrames[pct(line.from + ((line.to - line.from) * stroke) / strokes)] =
           penAt(1, pageLeft + (placed[row].width * stroke) / strokes, row, wobble);
       }
-      penFrames[pct(line.to)] = penAt(1, lineEnd(row), row);
+      penFrames[pct(line.to)] = penAt(1, lineEnd(row), row, 0, 0, true);
     });
-    penFrames[pct(schedule[last].to + 4)] = penAt(0, lineEnd(last), last, 0, 18);
-    penFrames['100%'] = penAt(0, lineEnd(last), last, 0, 18);
+    penFrames[pct(schedule[last].to + BEAT.penOut)] = penAt(0, lineEnd(last), last, 0, 20);
+    penFrames['100%'] = penAt(0, lineEnd(last), last, 0, 20);
 
     const count = placed.reduce((sum, row) => sum + row.words.length, 0);
     let order = 0;
@@ -392,7 +406,7 @@ export function DreamCaptureSeal({ text }: { text: string }) {
         const dy = (bookHeight / 2 - (pageTop + rowIndex * lineHeight + word.y + word.height / 2)) * WORD_PULL;
         const style = {
           ...linear,
-          animationTimingFunction: EASE.inOut,
+          animationTimingFunction: DREAM_EASE,
           animationName: wordFlight(order, count, dx, dy, lit),
         } as CSSStyle<TextStyle>;
         order += 1;
