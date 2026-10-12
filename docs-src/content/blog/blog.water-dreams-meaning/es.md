@@ -89,7 +89,11 @@
 
 <!-- Plan A image: water flood dream -->
 <figure class="my-10 rounded-2xl overflow-hidden border border-dream-salmon/15 bg-white/5">
-<img alt="Casa en un sueño con agua entrando por el suelo" class="w-full h-auto" height="933" loading="lazy" decoding="async" src="../../img/blog/plan-a/water-flood-dream-es.jpg" width="1400">
+<picture>
+<source sizes="100vw" srcset="/img/blog/plan-a/water-flood-dream-es-480w.avif 480w, /img/blog/plan-a/water-flood-dream-es-800w.avif 800w, /img/blog/plan-a/water-flood-dream-es-1200w.avif 1200w, /img/blog/plan-a/water-flood-dream-es-1400w.avif 1400w" type="image/avif">
+<source sizes="100vw" srcset="/img/blog/plan-a/water-flood-dream-es-480w.webp 480w, /img/blog/plan-a/water-flood-dream-es-800w.webp 800w, /img/blog/plan-a/water-flood-dream-es-1200w.webp 1200w, /img/blog/plan-a/water-flood-dream-es-1400w.webp 1400w" type="image/webp">
+<img alt="Casa en un sueño con agua entrando por el suelo" class="w-full h-auto" height="933" loading="lazy" decoding="async" src="/img/blog/plan-a/water-flood-dream-es.jpg" width="1400">
+</picture>
 <figcaption class="px-5 py-4 text-sm text-purple-200/70">En una casa inundada, anota primero la habitación, las personas presentes, el nivel del agua y lo que intentabas proteger.</figcaption>
 </figure>
 

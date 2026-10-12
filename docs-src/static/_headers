@@ -92,6 +92,11 @@
 /screenshot/*
   Cache-Control: public, max-age=31556952, immutable
 
+# Landing videos keep stable names (no ?v= in the URLs experience.js builds),
+# so they get a long TTL without immutable.
+/video/*
+  Cache-Control: public, max-age=2592000, stale-while-revalidate=86400
+
 # Security headers
 /*
   X-Content-Type-Options: nosniff
