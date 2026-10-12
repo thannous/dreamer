@@ -79,9 +79,9 @@ function InspirationScreen() {
   const scrollPerf = useScrollIdle();
   const { dreams, loaded: dreamsLoaded } = useDreamsData();
   const { user } = useAuth();
-  const { tier, usage, loading: quotaLoading } = useQuota();
+  const { tier, usage, loading: quotaLoading, error: quotaError } = useQuota();
   const freeAnalysesNudge = getFreeAnalysesNudge({
-    tier, signedIn: Boolean(user), loading: quotaLoading, usage,
+    tier, signedIn: Boolean(user), loading: quotaLoading, error: quotaError, usage,
   });
   useClearWebFocus();
   // Note: guestLimitReached was removed - quota is now enforced on analysis, not recording

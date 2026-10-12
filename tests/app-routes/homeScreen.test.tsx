@@ -252,6 +252,7 @@ let mockUser: { id: string } | null = null;
 let mockQuota: {
   tier: 'guest' | 'free' | 'plus';
   loading: boolean;
+  error?: Error | null;
   usage?: { analysis: { used: number; limit: number | null; remaining: number | null } };
 } = { tier: 'guest', loading: false };
 jest.mock('@/context/AuthContext', () => ({
@@ -611,6 +612,18 @@ describe('Home Accueil Aujourd’hui', () => {
     cleanup();
 
     mockQuota = { tier: 'free', loading: true };
+    await renderHome([]);
+    expect(screen.queryByTestId(TID.Button.FreeAnalysesNudge)).toBeNull();
+  });
+
+  it('hides a stale analyses count after a failed quota refresh', async () => {
+    mockUser = { id: 'user-1' };
+    mockQuota = {
+      tier: 'free',
+      loading: false,
+      error: new Error('offline'),
+      usage: { analysis: { used: 2, limit: 3, remaining: 1 } },
+    };
     await renderHome([]);
     expect(screen.queryByTestId(TID.Button.FreeAnalysesNudge)).toBeNull();
   });

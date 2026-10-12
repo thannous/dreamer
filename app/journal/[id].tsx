@@ -410,7 +410,7 @@ const JournalDetailContent = memo(function JournalDetailContent({ dream }: { dre
   });
   // After an analysis, warn when the included analyses are about to run out.
   const lastFreeAnalysesNudge = getFreeAnalysesNudge({
-    tier, signedIn: Boolean(user), loading: quotaLoading, usage, maxRemaining: 1,
+    tier, signedIn: Boolean(user), loading: quotaLoading, error: quotaError, usage, maxRemaining: 1,
   });
 
   const canResumeAnalysis = Boolean(dream && isResumableAnalysisRequest(dream));

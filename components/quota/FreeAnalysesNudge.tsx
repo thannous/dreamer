@@ -18,22 +18,25 @@ export type FreeAnalysesNudgeState = {
 
 /**
  * A signed-in free account sees how many included analyses are left this month,
- * with a path to Plus. Guests, Plus and unknown quotas get nothing.
+ * with a path to Plus. Guests, Plus and unknown quotas get nothing. A failed
+ * refresh keeps the previous usage, so an error hides the row until it succeeds.
  */
 export function getFreeAnalysesNudge({
   tier,
   signedIn,
   loading,
+  error,
   usage,
   maxRemaining,
 }: {
   tier: SubscriptionTier;
   signedIn: boolean;
   loading: boolean;
+  error?: Error | null;
   usage?: QuotaUsage | null;
   maxRemaining?: number;
 }): FreeAnalysesNudgeState | null {
-  if (!signedIn || tier !== 'free' || loading) return null;
+  if (!signedIn || tier !== 'free' || loading || error) return null;
   const metric = usage?.analysis;
   if (typeof metric?.limit !== 'number' || typeof metric.remaining !== 'number') return null;
   const remaining = Math.max(0, metric.remaining);
