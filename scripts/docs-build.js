@@ -15,6 +15,7 @@ const {
 } = require('./lib/docs-site-config');
 const { renderManagedPage } = require('./lib/docs-renderer');
 const { writeLandingStylesheet } = require('./lib/landing-stylesheet');
+const { minifyStaticStylesheets } = require('./lib/minify-static-stylesheets');
 const { buildSymbolContentByLanguage } = require('./sync-app-symbol-dictionary');
 const { staticPageLanguages } = require('./lib/site-manifest');
 const {
@@ -41,6 +42,7 @@ function hashAssetFiles() {
     // It transforms the css sources into landing.css, so a change there must
     // move ?v= too, or the edge keeps serving the old immutable bundle.
     path.join(ROOT_DIR, 'scripts', 'lib', 'landing-stylesheet.js'),
+    path.join(ROOT_DIR, 'scripts', 'lib', 'minify-static-stylesheets.js'),
   ];
 
   function hashInput(inputPath) {
@@ -211,6 +213,7 @@ function copyStaticFiles() {
   fs.rmSync(path.join(DOCS_DIR, 'scripts'), { recursive: true, force: true });
   copyDir(path.join(DOCS_SRC_DIR, 'static'), DOCS_DIR);
   writeLandingStylesheet(path.join(DOCS_SRC_DIR, 'static'), DOCS_DIR);
+  minifyStaticStylesheets(DOCS_DIR);
   // The app and the site share the same three canonical symbol catalogs.
   // Copy them after static assets so stale snapshots under docs-src/static/data
   // can never drive generated symbol or guide pages.
@@ -244,6 +247,8 @@ function main() {
   runNodeScript(path.join('scripts', 'generate-image-seo-assets.js'));
   runNodeScript(path.join('scripts', 'generate-symbol-hero-posters.js'));
   runNodeScript(path.join('scripts', 'generate-symbol-responsive-images.js'));
+  runNodeScript(path.join('scripts', 'generate-symbol-avif-images.js'));
+  runNodeScript(path.join('scripts', 'generate-blog-responsive-images.js'));
   // Bundles docs-src/experience into docs-src/static/js/experience so the
   // output is covered by the asset version hash computed just after.
   runNodeScript(path.join('scripts', 'build-experience.js'));

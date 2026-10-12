@@ -78,12 +78,16 @@ function renderTierInlineScript() {
     "          if (!location.hash && 'scrollRestoration' in history) history.scrollRestoration = 'manual';",
     // Warm the actual media element before CSS/module downloads finish. The
     // experience layer adopts it, so range requests and decoded data are reused.
+    // Portrait screens get the portrait cut: same framing as the landscape
+    // master under object-fit: cover, more pixels on phones, ~40% fewer bytes.
+    // experience.js picks the same variant with the same media query.
+    "          var introVariant = window.matchMedia && window.matchMedia('(orientation: portrait)').matches ? '540x960' : '1280';",
     "          var intro = document.createElement('video');",
     '          intro.muted = true; intro.defaultMuted = true; intro.playsInline = true;',
     "          intro.preload = 'auto';",
     "          ['webm', 'mp4'].forEach(function (extension) {",
     "            var source = document.createElement('source');",
-    "            source.src = '/video/intro/noctalia-intro-1280.' + extension;",
+    "            source.src = '/video/intro/noctalia-intro-' + introVariant + '.' + extension;",
     "            source.type = extension === 'webm' ? 'video/webm; codecs=\"vp9\"' : 'video/mp4';",
     '            intro.appendChild(source);',
     '          });',

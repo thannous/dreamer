@@ -878,7 +878,7 @@ function renderGuideHubStyles() {
           padding: clamp(1.15rem, 2vw, 1.65rem);
           background:
             linear-gradient(90deg, rgba(18,8,31,0.96), rgba(18,8,31,0.58)),
-            url('/img/blog/dream-symbols-dictionary.webp') center right / cover no-repeat;
+            url('${cardBackgroundVariant('/img/blog/dream-symbols-dictionary.webp')}') center right / cover no-repeat;
         }
         .guides-feature-label, .guides-card-kicker {
           position: relative;
@@ -1155,7 +1155,16 @@ function guideHubCardImage(card) {
     emotions: '/img/blog/dreams-mental-health.webp',
     spirituality: '/img/blog/dream-interpretation-history.webp'
   };
-  return images[card.key] || '/img/guides/noctalia-guides-hub-bg.webp';
+  return cardBackgroundVariant(images[card.key] || '/img/guides/noctalia-guides-hub-bg.webp');
+}
+
+// Hub cards show these photos behind a dark gradient at about 400px wide, so
+// the 800w variant is enough; the full 1200w files made this page ~1 MB.
+function cardBackgroundVariant(src) {
+  const variant = src.replace(/\.webp$/, '-800w.webp');
+  return fs.existsSync(path.join(DOCS_SRC_DIR, 'static', variant.replace(/^\/+/, '')))
+    ? variant
+    : src;
 }
 
 function renderHubBentoCard(lang, t, pages, card) {
