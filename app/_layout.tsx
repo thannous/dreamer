@@ -854,8 +854,18 @@ function RootLayoutNav({
                 sits above the tabs. It follows the same instant tab switch. */}
             <Stack.Screen name="recording" options={{ headerShown: false, animation: 'none' }} />
             {/* Repeated Android detail transitions redraw the retained journal;
-                measured draw stalls exceed a frame. Keep this frequent route instant. */}
-            <Stack.Screen name="journal/[id]" options={{ headerShown: false, scrollEdgeEffects: { top: 'hidden' }, ...(Platform.OS === 'android' ? { animation: 'none' as const } : {}) }} />
+                measured draw stalls exceed a frame. Keep this frequent route instant.
+                On iOS a dream arriving from the capture seal fades in under the seal's
+                star instead of sliding over it. */}
+            <Stack.Screen name="journal/[id]" options={({ route }) => ({
+              headerShown: false,
+              scrollEdgeEffects: { top: 'hidden' },
+              ...(Platform.OS === 'android'
+                ? { animation: 'none' as const }
+                : (route.params as { saved?: string } | undefined)?.saved === '1'
+                  ? { animation: 'fade' as const, animationDuration: 600 }
+                  : {}),
+            })} />
             <Stack.Screen name="dream-chat/[id]" options={{ headerShown: false }} />
             <Stack.Screen name="dream-categories/[id]" options={{ headerShown: false }} />
             <Stack.Screen name="symbol-dictionary" options={{ headerShown: false }} />

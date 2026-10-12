@@ -237,6 +237,9 @@ jest.mock('@/components/inspiration/AtmosphericBackground', () => ({
   AtmosphericBackground: () => null,
 }));
 
+// The page's paper grain is decorative art; these journeys only need the page.
+jest.mock('@/components/journal/JournalPaper', () => ({ JournalPaper: () => null }));
+
 jest.mock('@/components/inspiration/GlassCard', () => ({
   FlatGlassCard: ({ children }: { children?: React.ReactNode }) => <div>{children}</div>,
 }));

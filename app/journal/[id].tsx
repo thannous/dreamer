@@ -11,6 +11,7 @@ import { isInitialDreamCategorizationPending, subscribeInitialDreamCategorizatio
 import { useDreamMedia } from '@/hooks/useDreamMedia';
 import { Toast } from '@/components/Toast';
 import { DreamRecallAssistantCard } from '@/components/journal/DreamRecallAssistantCard';
+import { JournalPaper } from '@/components/journal/JournalPaper';
 import { SavedDreamMoment, type SavedDreamPhase } from '@/components/journal/SavedDreamMoment';
 import { DreamPaintedArtwork } from '@/components/journal/story/DreamPaintedArtwork';
 import { DreamPaintingWait } from '@/components/journal/story/DreamPaintingWait';
@@ -2675,6 +2676,7 @@ const JournalDetailContent = memo(function JournalDetailContent({ dream }: { dre
 
   return (
     <View testID="screen.dreamDetail" className="relative flex-1 overflow-hidden bg-ink">
+      <JournalPaper />
       <KeyboardAvoidingView
         className="flex-1"
         behavior={keyboardBehavior}
