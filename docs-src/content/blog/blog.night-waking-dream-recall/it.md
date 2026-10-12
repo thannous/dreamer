@@ -4,7 +4,7 @@
   "layout": "blogArticle",
   "lang": "it",
   "slug": "risveglio-notturno-ricordo-sogni",
-  "title": "Risveglio notturno e ricordo dei sogni: cosa fare appena svegli | Noctalia",
+  "title": "Risvegli notturni: come ricordare i sogni | Noctalia",
   "description": "Risveglio notturno e ricordo dei sogni: come salvare un sogno in poche parole alle 3 di notte, riaddormentarti e capire quando parlarne con un medico.",
   "robots": "index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1",
   "themeColor": "#0a0514",

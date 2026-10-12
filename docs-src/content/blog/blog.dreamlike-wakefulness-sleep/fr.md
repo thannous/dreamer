@@ -4,7 +4,7 @@
   "layout": "blogArticle",
   "lang": "fr",
   "slug": "rever-eveille-etats-oniriques",
-  "title": "Rêver éveillé : les états oniriques ne sont pas réservés au sommeil | Noctalia",
+  "title": "Rêver éveillé : comprendre les états oniriques | Noctalia",
   "description": "Rêver éveillé : une étude Cell Reports 2026 montre des états proches du rêve pendant l’éveil, l’endormissement et le sommeil léger. Ce que cela change.",
   "robots": "max-image-preview:large",
   "themeColor": "#0a0514",

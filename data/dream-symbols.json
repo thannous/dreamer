@@ -141,7 +141,8 @@
             "question": "Que signifie rêver d’eau profonde ou agitée ?",
             "answer": "Une eau profonde, haute ou agitée indique souvent des émotions intenses, du stress ou une responsabilité difficile à contenir."
           }
-        ]
+        ],
+        "documentTitle": "Rêver d’eau claire, trouble ou profonde"
       },
       "es": {
         "slug": "agua",
@@ -414,7 +415,8 @@
           }
         ],
         "documentMetaDescription": "Zähne fallen aus im Traum, ohne Schmerzen oder mit Blut: was die Szene über Selbstbild und Sprechen sagen kann, mit Fragen und einem Tagebuchbeispiel.",
-        "modifiedAt": "2026-10-09"
+        "modifiedAt": "2026-10-09",
+        "documentTitle": "Zähne fallen aus im Traum: mögliche Bedeutung"
       },
       "it": {
         "slug": "denti",
@@ -709,7 +711,8 @@
           }
         ],
         "documentMetaDescription": "Rêver de voler, planer librement, peiner à rester en l'air ou fuir un danger : ce que la scène peut dire de liberté et de recul, avec questions et exemple.",
-        "modifiedAt": "2026-10-09"
+        "modifiedAt": "2026-10-09",
+        "documentTitle": "Rêver de voler : sens et scénarios"
       },
       "es": {
         "slug": "volar",
@@ -2536,7 +2539,8 @@
           }
         ],
         "documentMetaDescription": "Rêver de feu, d'incendie ou de sa maison en flammes : ce que la scène peut dire de colère, de désir ou de changement, avec questions et exemple de journal.",
-        "modifiedAt": "2026-10-09"
+        "modifiedAt": "2026-10-09",
+        "documentTitle": "Rêver de feu ou d’incendie : signification"
       },
       "es": {
         "slug": "fuego",
@@ -2748,7 +2752,8 @@
           }
         ],
         "documentMetaDescription": "Rêver d'inondation, de maison inondée ou d'eau trouble : ce que la scène peut dire d'un trop-plein de stress ou d'émotions, avec questions et exemple.",
-        "modifiedAt": "2026-10-09"
+        "modifiedAt": "2026-10-09",
+        "documentTitle": "Rêver d’inondation ou de maison inondée"
       },
       "es": {
         "slug": "inundacion",
@@ -2810,7 +2815,8 @@
           }
         ],
         "documentMetaDescription": "Überschwemmung im Traum, ein überflutetes Haus oder schmutziges Wasser: was die Szene über Stress und Überforderung sagen kann, mit Fragen und Beispiel.",
-        "modifiedAt": "2026-10-09"
+        "modifiedAt": "2026-10-09",
+        "documentTitle": "Überschwemmung im Traum: mögliche Bedeutung"
       },
       "it": {
         "slug": "alluvione",
@@ -2841,7 +2847,8 @@
           }
         ],
         "modifiedAt": "2026-10-09",
-        "documentMetaDescription": "Sognare un’alluvione, una casa allagata o acqua sporca: che cosa può dire la scena di stress ed emozioni che traboccano, con domande ed esempio di diario."
+        "documentMetaDescription": "Sognare un’alluvione, una casa allagata o acqua sporca: che cosa può dire la scena di stress ed emozioni che traboccano, con domande ed esempio di diario.",
+        "documentTitle": "Sognare un’alluvione: significato e contesto"
       },
       "pt": {
         "slug": "enchente",
@@ -7870,7 +7877,8 @@
           }
         ],
         "documentMetaDescription": "Rêver d'un hôpital, d'être hospitalisé, de médecins ou de malades : ce que votre rôle et l'ambiance peuvent dire, avec un exemple de journal, sans prédiction.",
-        "modifiedAt": "2026-10-09"
+        "modifiedAt": "2026-10-09",
+        "documentTitle": "Rêver d’hôpital : sens et scénarios"
       },
       "es": {
         "slug": "hospital",
