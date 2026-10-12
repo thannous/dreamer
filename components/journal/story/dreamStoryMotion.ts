@@ -43,9 +43,9 @@ export const DREAM_STORY = {
   chapterLead: 240,
   /**
    * The capture screen's seal, from the save to the saved moment: the words gather, condense, rise.
-   * Long enough for each beat to be seen: the words hold about half a second before they gather.
+   * Long enough for each beat to be seen: the words hold about 0.8 s before they gather.
    */
-  prologue: 2200,
+  prologue: 3000,
   /** The seal's veil outlasts the screen transition that covers it. */
   prologueVeilHold: 700,
   /** One pass of the light band across a canvas being painted. */
