@@ -214,6 +214,8 @@ jest.doMock('react-native', () => {
       },
       dismiss: jest.fn(),
     },
+    // The seal's journal and pen are decorative art; these journeys only need it to render.
+    Image: () => null,
     KeyboardAvoidingView: createElement('div'),
     Pressable: MockPressable,
     Platform: {

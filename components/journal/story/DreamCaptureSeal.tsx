@@ -1,6 +1,8 @@
 import * as Haptics from 'expo-haptics';
 import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import {
+  Image,
+  Text,
   View,
   useWindowDimensions,
   type LayoutChangeEvent,
@@ -15,11 +17,25 @@ import Svg, { Circle, Defs, Path, RadialGradient, Stop } from 'react-native-svg'
 
 import { EASE } from '@/components/motion/motion';
 import { getNoctaliaDesignTokens } from '@/constants/noctaliaDesign';
+import { getNoctaliaPalette } from '@/constants/noctaliaPalette';
 import { useTheme } from '@/context/ThemeContext';
 import { TID } from '@/lib/testIDs';
 
 import { DREAM_STORY } from './dreamStoryMotion';
 import { sparklePath } from './sparkle';
+
+const BOOK_ART = require('@/assets/images/dream-seal-book.webp');
+const PEN_ART = require('@/assets/images/dream-seal-pen.webp');
+
+/** The notebook art's aspect, and its left page's writing area in fractions of the art. */
+const BOOK_RATIO = 1536 / 1024;
+const PAGE = { left: 190 / 1536, top: 280 / 1024, width: 520 / 1536 } as const;
+/** The pen art's nib in fractions of the art, and the pen's size against the book. */
+const NIB = { x: 0.148, y: 0.874 } as const;
+const PEN_SCALE = 0.215;
+const MAX_LINES = 3;
+/** The page is paper in both themes, so its ink is the paper theme's text. */
+const PAGE_INK = getNoctaliaPalette('light').title;
 
 const GLOW = 280;
 const SPARK = 28;
@@ -27,25 +43,30 @@ const GLINT = 44;
 const RING = 200;
 /** Where the saved moment's medallion opens on the next screen, below its navigation. */
 const MEDALLION_CENTER_FROM_TOP = 76 + 120;
-const WORDS = 180;
 /** How far a word travels toward the glow before it is gone. */
-const WORD_PULL = 0.8;
+const WORD_PULL = 0.9;
 
 /**
  * The seal's beats, in percent of the prologue. Every keyframe below is placed against
  * these, so the story keeps its proportions whatever the prologue lasts.
  */
 const BEAT = {
-  /** The veil is down and the words are read. */
-  night: 20,
-  wordsIn: 18,
-  /** The first word leaves for the glow; the last one leaves `gatherSpread` later. */
-  gather: 40,
-  gatherSpread: 14,
-  wordFlight: 10,
-  /** The glow has swallowed the words and the star is lit. */
-  starBorn: 66,
-  starSettled: 72,
+  night: 10,
+  bookIn: 12,
+  /** The pen writes the dream's first lines between these two beats. */
+  write: 14,
+  written: 40,
+  lineGap: 1.5,
+  /** The ink leaves the page as words of light, which reach the glow in reading order. */
+  lift: 46,
+  gather: 48,
+  gatherSpread: 8,
+  wordFlight: 9,
+  /** The journal fades as its ink lifts, so the words of light leave over the night. */
+  bookOut: 46,
+  bookGone: 62,
+  starBorn: 70,
+  starSettled: 75,
 } as const;
 
 /** The night sky behind the seal, in fractions of the screen. Fixed so every save shows the same sky. */
@@ -57,19 +78,19 @@ const SKY = [
   { x: 0.62, y: 0.17, size: 3, at: 10 },
   { x: 0.06, y: 0.38, size: 2, at: 20 },
   { x: 0.94, y: 0.44, size: 2, at: 13, pulse: 44 },
-  { x: 0.2, y: 0.66, size: 2.5, at: 22 },
-  { x: 0.84, y: 0.62, size: 3, at: 16 },
-  { x: 0.5, y: 0.78, size: 2, at: 24, pulse: 56 },
+  { x: 0.2, y: 0.7, size: 2.5, at: 22 },
+  { x: 0.84, y: 0.68, size: 3, at: 16 },
+  { x: 0.5, y: 0.8, size: 2, at: 24, pulse: 56 },
   { x: 0.1, y: 0.86, size: 3, at: 19 },
   { x: 0.7, y: 0.9, size: 2, at: 26 },
   { x: 0.38, y: 0.93, size: 2.5, at: 28 },
   { x: 0.9, y: 0.82, size: 2, at: 21, pulse: 34 },
 ] as const;
 
-/** Motes of light drawn in from around the words, each from its own point of an ellipse. */
+/** Motes of light drawn in from around the book, each from its own point of an ellipse. */
 const MOTES = [1, 0.7, 0.9, 0.6, 1, 0.75, 0.95, 0.65, 0.85, 0.8].map((reach, index) => {
   const angle = ((index * 36 + 12) * Math.PI) / 180;
-  return { x: Math.cos(angle) * 150 * reach, y: Math.sin(angle) * 96 * reach, from: 42 + index * 1.2 };
+  return { x: Math.cos(angle) * 160 * reach, y: Math.sin(angle) * 100 * reach, from: 47 + index * 1.1 };
 });
 
 /** The comet's tail: echoes of the star that follow it up, each later, smaller and fainter. */
@@ -79,11 +100,44 @@ const TRAIL = [
   { delay: 210, size: 4, opacity: 0.15 },
 ] as const;
 
+type PlacedRow = { width: number; height: number; words: LayoutRectangle[] };
+
 const pct = (value: number) => `${Math.round(value * 10) / 10}%`;
 
-const excerpt = (text: string) => {
-  const flat = text.replace(/\s+/g, ' ').trim();
-  return flat.length > WORDS ? `${flat.slice(0, WORDS - 1).trimEnd()}…` : flat;
+const near = (a: number, b: number) => Math.abs(a - b) < 0.5;
+const samePlacement = (a: PlacedRow[], b: PlacedRow[]) => a.length === b.length && a.every((row, index) =>
+  near(row.width, b[index].width) && row.words.every((word, at) =>
+    near(word.x, b[index].words[at].x) && near(word.width, b[index].words[at].width)));
+
+/** The dream's first words as the pen writes them: up to three lines, closed with an ellipsis when it goes on. */
+const pageLines = (text: string, maxChars: number): string[][] => {
+  const words = text.replace(/\s+/g, ' ').trim().split(' ').filter(Boolean);
+  const lines: string[][] = [[]];
+  for (const word of words) {
+    const line = lines[lines.length - 1];
+    if (line.length && [...line, word].join(' ').length > maxChars) {
+      if (lines.length === MAX_LINES) {
+        line[line.length - 1] = `${line[line.length - 1]}…`;
+        break;
+      }
+      lines.push([word]);
+    } else {
+      line.push(word);
+    }
+  }
+  return lines.filter((line) => line.length);
+};
+
+/** When each line is written: the writing time is shared by the lines' lengths. */
+const writingSchedule = (widths: number[]) => {
+  const total = widths.reduce((sum, width) => sum + width, 0) || 1;
+  const span = BEAT.written - BEAT.write - BEAT.lineGap * Math.max(widths.length - 1, 0);
+  let from: number = BEAT.write;
+  return widths.map((width) => {
+    const line = { from, to: from + (span * width) / total };
+    from = line.to + BEAT.lineGap;
+    return line;
+  });
 };
 
 const skyStar = (at: number, pulse?: number): CSSAnimationKeyframes<ViewStyle> => {
@@ -113,21 +167,22 @@ const moteFlight = (x: number, y: number, from: number): CSSAnimationKeyframes<V
   };
 };
 
-/** A word, read, then catching the light in reading order and flying into the glow. */
+/** A written word leaving the page: it takes over from the ink, catches the light, then flies into the glow. */
 const wordFlight = (
-  index: number, count: number, dx: number, dy: number, ink: string, light: string
+  index: number, count: number, dx: number, dy: number, lit: string
 ): CSSAnimationKeyframes<TextStyle> => {
   const from = BEAT.gather + (count > 1 ? (BEAT.gatherSpread * index) / (count - 1) : 0);
-  const at = (opacity: number, pull: number, y: number, scale: number, color: string) => ({
-    opacity, color, transform: [{ translateX: dx * pull }, { translateY: dy * pull + y }, { scale }],
+  const at = (opacity: number, pull: number, scale: number, color: string) => ({
+    opacity, color, transform: [{ translateX: dx * pull }, { translateY: dy * pull }, { scale }],
   });
   return {
-    '0%': at(0, 0, 8, 1, ink),
-    [pct(BEAT.wordsIn)]: at(1, 0, 0, 1, ink),
-    [pct(from)]: at(1, 0, 0, 1, ink),
-    [pct(from + 3)]: at(1, 0.15, 0, 1.06, light),
-    [pct(from + BEAT.wordFlight)]: at(0, 1, 0, 0.3, light),
-    '100%': at(0, 1, 0, 0.3, light),
+    '0%': at(0, 0, 1, PAGE_INK),
+    [pct(BEAT.lift)]: at(0, 0, 1, PAGE_INK),
+    [pct(BEAT.lift + 1.5)]: at(1, 0, 1, PAGE_INK),
+    [pct(from)]: at(1, 0, 1, PAGE_INK),
+    [pct(from + 3)]: at(1, 0.15, 1.08, lit),
+    [pct(from + BEAT.wordFlight)]: at(0, 1, 0.3, lit),
+    '100%': at(0, 1, 0.3, lit),
   };
 };
 
@@ -141,15 +196,16 @@ const ringWave = (born: number, fade: number, reach: number, peak: number): CSSA
 
 /**
  * The prologue of the dream story, played on the capture screen once the dream is
- * durably saved. Night falls over the draft and its sky lights star by star; the dream's
- * own words are read, then catch the light one by one and fly into a breathing glow while
- * motes of light are drawn in with them. The glow condenses into a single star, born with
- * a glint and a ring of light, which rises with a comet's tail to where the saved moment's
- * window will open as the sky sinks below it. Two touches mark the star's birth and its
- * arrival, after the save's own success haptic. The glow is a radial light with no edge, so
- * it reads as light on the night ground and as a warm haze on the paper ground. It holds
- * touch for its moment so nothing is pressed twice, and is decorative to assistive
- * technology: the next screen announces the save. The caller skips it under reduce motion.
+ * durably saved. Night falls over the draft and its sky lights star by star as the dream
+ * journal opens, and a fountain pen writes the dream's first words on its page. The ink
+ * then leaves the page as words of light that fly, in reading order, into a breathing glow
+ * with motes drawn in around them, while the journal fades into the night. The glow
+ * condenses into a single star, born with a glint and a ring of light, which rises with a
+ * comet's tail to where the saved moment's window will open as the sky sinks below it.
+ * Two touches mark the star's birth and its arrival, after the save's own success haptic.
+ * The page is paper in both themes, and so is its ink. It holds touch for its moment so
+ * nothing is pressed twice, and is decorative to assistive technology: the next screen
+ * announces the save. The caller skips it under reduce motion.
  */
 export function DreamCaptureSeal({ text }: { text: string }) {
   const { width, height } = useWindowDimensions();
@@ -157,11 +213,21 @@ export function DreamCaptureSeal({ text }: { text: string }) {
   const { colors, mode } = useTheme();
   const noctalia = useMemo(() => getNoctaliaDesignTokens(colors, mode), [colors, mode]);
   const light = noctalia.accent.base;
-  const ink = noctalia.text.primary;
   const lit = noctalia.accent.text;
   const star = noctalia.atmosphere.star;
   const rise = insets.top + MEDALLION_CENTER_FROM_TOP - height / 2;
-  const words = useMemo(() => excerpt(text).split(' '), [text]);
+
+  const bookWidth = Math.min(width - 12, 460);
+  const bookHeight = bookWidth / BOOK_RATIO;
+  const fontSize = Math.round(bookWidth * 0.04);
+  const lineHeight = Math.round(fontSize * 1.6);
+  const pageLeft = PAGE.left * bookWidth;
+  const pageTop = PAGE.top * bookHeight;
+  const pen = bookWidth * PEN_SCALE;
+  const lines = useMemo(
+    () => pageLines(text, Math.floor((PAGE.width * bookWidth) / (fontSize * 0.5))),
+    [text, bookWidth, fontSize]
+  );
 
   useEffect(() => {
     if (process.env.EXPO_OS === 'web') return;
@@ -175,25 +241,32 @@ export function DreamCaptureSeal({ text }: { text: string }) {
     return () => timers.forEach(clearTimeout);
   }, []);
 
-  // Each word flies toward the glow from where it was laid out, so its path waits for layout.
-  const [flights, setFlights] = useState<{ dx: number; dy: number }[] | null>(null);
-  const layout = useRef<{ box?: LayoutRectangle; words: (LayoutRectangle | undefined)[] }>({ words: [] });
-  const settleFlights = useCallback(() => {
-    const { box, words: placed } = layout.current;
-    if (flights || !box || placed.filter(Boolean).length < words.length) return;
-    setFlights(placed.map((word) => ({
-      dx: (box.width / 2 - (word!.x + word!.width / 2)) * WORD_PULL,
-      dy: (box.height / 2 - (word!.y + word!.height / 2)) * WORD_PULL,
-    })));
-  }, [flights, words.length]);
-  const onBoxLayout = useCallback((event: LayoutChangeEvent) => {
-    layout.current.box = event.nativeEvent.layout;
-    settleFlights();
-  }, [settleFlights]);
-  const onWordLayout = useCallback((index: number, event: LayoutChangeEvent) => {
-    layout.current.words[index] = event.nativeEvent.layout;
-    settleFlights();
-  }, [settleFlights]);
+  // The pen's path and each word's flight follow the written lines, so they wait for layout.
+  // A later layout that moves them (web applies a word's margin after its first layout)
+  // replaces the first one; it lands before the pen starts.
+  const [placed, setPlaced] = useState<PlacedRow[] | null>(null);
+  const layout = useRef<{ rows: (LayoutRectangle | undefined)[]; words: (LayoutRectangle | undefined)[][] }>({
+    rows: [], words: [],
+  });
+  const settle = useCallback(() => {
+    const { rows, words } = layout.current;
+    const complete = lines.every((line, row) => rows[row] && line.every((_, index) => words[row]?.[index]));
+    if (!lines.length || !complete) return;
+    const next = lines.map((line, row) => ({
+      width: rows[row]!.width,
+      height: rows[row]!.height,
+      words: line.map((_, index) => words[row]![index]!),
+    }));
+    setPlaced((current) => (current && samePlacement(current, next) ? current : next));
+  }, [lines]);
+  const onRowLayout = useCallback((row: number, event: LayoutChangeEvent) => {
+    layout.current.rows[row] = event.nativeEvent.layout;
+    settle();
+  }, [settle]);
+  const onWordLayout = useCallback((row: number, index: number, event: LayoutChangeEvent) => {
+    (layout.current.words[row] ??= [])[index] = event.nativeEvent.layout;
+    settle();
+  }, [settle]);
 
   const motion = useMemo(() => {
     const base = {
@@ -221,18 +294,34 @@ export function DreamCaptureSeal({ text }: { text: string }) {
         '100%': { transform: [{ translateY: 22 }] },
       }),
       stars: SKY.map((point) => animate<ViewStyle>(skyStar(point.at, 'pulse' in point ? point.pulse : undefined))),
+      book: animate<ViewStyle>({
+        '0%': { opacity: 0, transform: [{ translateY: 10 }, { scale: 0.97 }] },
+        '2%': { opacity: 0, transform: [{ translateY: 10 }, { scale: 0.97 }] },
+        [pct(BEAT.bookIn)]: { opacity: 1, transform: [{ translateY: 0 }, { scale: 1 }] },
+        [pct(BEAT.bookOut)]: { opacity: 1, transform: [{ translateY: 0 }, { scale: 1 }] },
+        [pct(BEAT.bookGone)]: { opacity: 0, transform: [{ translateY: 14 }, { scale: 0.94 }] },
+        '100%': { opacity: 0, transform: [{ translateY: 14 }, { scale: 0.94 }] },
+      }),
+      // The written ink hands over to the words of light, which take its exact place.
+      ink: animate<ViewStyle>({
+        '0%': { opacity: 1 },
+        [pct(BEAT.lift)]: { opacity: 1 },
+        [pct(BEAT.lift + 1.5)]: { opacity: 0 },
+        '100%': { opacity: 0 },
+      }, { animationTimingFunction: 'linear' }),
       glow: animate<ViewStyle>({
         '0%': { opacity: 0, transform: [{ scale: 1.3 }] },
-        '24%': { opacity: 0.8, transform: [{ scale: 1 }] },
-        '34%': { opacity: 0.65, transform: [{ scale: 1.06 }] },
-        '44%': { opacity: 0.95, transform: [{ scale: 0.96 }] },
+        '38%': { opacity: 0, transform: [{ scale: 1.3 }] },
+        '50%': { opacity: 0.9, transform: [{ scale: 1 }] },
+        '56%': { opacity: 0.7, transform: [{ scale: 1.06 }] },
+        '62%': { opacity: 0.95, transform: [{ scale: 0.96 }] },
         [pct(BEAT.starBorn)]: { opacity: 0, transform: [{ scale: 0.12 }] },
         '100%': { opacity: 0, transform: [{ scale: 0.12 }] },
       }),
       motes: MOTES.map((mote) => animate<ViewStyle>(moteFlight(mote.x, mote.y, mote.from))),
       rings: [
-        animate<ViewStyle>(ringWave(BEAT.starBorn - 4, 84, 1.1, 0.7)),
-        animate<ViewStyle>(ringWave(BEAT.starBorn, 92, 1.6, 0.4)),
+        animate<ViewStyle>(ringWave(BEAT.starBorn - 4, 86, 1.1, 0.7)),
+        animate<ViewStyle>(ringWave(BEAT.starBorn, 94, 1.6, 0.4)),
       ],
       spark,
       trail: TRAIL.map((echo) => ({ ...spark, animationDelay: echo.delay })),
@@ -252,12 +341,68 @@ export function DreamCaptureSeal({ text }: { text: string }) {
     };
   }, [rise]);
 
-  const wordMotion = useMemo(() => flights?.map((flight, index) => ({
-    animationName: wordFlight(index, flights.length, flight.dx, flight.dy, ink, lit),
-    animationDuration: DREAM_STORY.prologue,
-    animationTimingFunction: EASE.inOut,
-    animationFillMode: 'both',
-  }) as CSSStyle<TextStyle>), [flights, ink, lit]);
+  // Once the lines are laid out, the ink is revealed under the nib, the pen follows it,
+  // and each word knows its way to the glow at the book's centre.
+  const writing = useMemo(() => {
+    if (!placed) return null;
+    const schedule = writingSchedule(placed.map((row) => row.width));
+    const linear = { animationDuration: DREAM_STORY.prologue, animationTimingFunction: 'linear', animationFillMode: 'both' } as const;
+    const penAt = (opacity: number, x: number, row: number, wobble = 0, away = 0) => ({
+      opacity,
+      transform: [
+        { translateX: x - NIB.x * pen + away },
+        { translateY: pageTop + row * lineHeight + lineHeight * 0.74 - NIB.y * pen + wobble - away },
+      ],
+    });
+    const last = schedule.length - 1;
+    const lineEnd = (row: number) => pageLeft + placed[row].width;
+    const penFrames: CSSAnimationKeyframes<ViewStyle> = {
+      '0%': penAt(0, pageLeft, 0, 0, 14),
+      [pct(BEAT.write - 3)]: penAt(0, pageLeft, 0, 0, 14),
+    };
+    schedule.forEach((line, row) => {
+      const strokes = Math.max(4, Math.round((line.to - line.from) / 1.2));
+      penFrames[pct(line.from)] = penAt(1, pageLeft, row);
+      for (let stroke = 1; stroke < strokes; stroke += 1) {
+        // A writing hand never runs on a rail: the nib rises and dips along the line.
+        const wobble = (stroke % 2 ? -1 : 1) * fontSize * 0.09;
+        penFrames[pct(line.from + ((line.to - line.from) * stroke) / strokes)] =
+          penAt(1, pageLeft + (placed[row].width * stroke) / strokes, row, wobble);
+      }
+      penFrames[pct(line.to)] = penAt(1, lineEnd(row), row);
+    });
+    penFrames[pct(schedule[last].to + 4)] = penAt(0, lineEnd(last), last, 0, 18);
+    penFrames['100%'] = penAt(0, lineEnd(last), last, 0, 18);
+
+    const count = placed.reduce((sum, row) => sum + row.words.length, 0);
+    let order = 0;
+    return {
+      pen: { ...linear, animationName: penFrames } as CSSStyle<ViewStyle>,
+      masks: placed.map((row, rowIndex) => ({
+        ...linear,
+        animationName: {
+          '0%': { width: 0 },
+          [pct(schedule[rowIndex].from)]: { width: 0 },
+          [pct(schedule[rowIndex].to)]: { width: row.width },
+          '100%': { width: row.width },
+        },
+      }) as CSSStyle<ViewStyle>),
+      words: placed.map((row, rowIndex) => row.words.map((word) => {
+        const dx = (bookWidth / 2 - (pageLeft + word.x + word.width / 2)) * WORD_PULL;
+        const dy = (bookHeight / 2 - (pageTop + rowIndex * lineHeight + word.y + word.height / 2)) * WORD_PULL;
+        const style = {
+          ...linear,
+          animationTimingFunction: EASE.inOut,
+          animationName: wordFlight(order, count, dx, dy, lit),
+        } as CSSStyle<TextStyle>;
+        order += 1;
+        return style;
+      })),
+    };
+  }, [placed, pen, pageLeft, pageTop, lineHeight, fontSize, bookWidth, bookHeight, lit]);
+
+  const wordStyle = { fontSize, lineHeight, marginRight: fontSize * 0.28 };
+  const rowFrame = (row: number) => ({ position: 'absolute' as const, left: pageLeft, top: pageTop + row * lineHeight });
 
   return (
     <View
@@ -279,6 +424,32 @@ export function DreamCaptureSeal({ text }: { text: string }) {
           }, motion.stars[index]] as StyleProp<ViewStyle>} />
         ))}
       </Animated.View>
+
+      {/* The journal and its pen. The written ink fades with the page; its words leave it. */}
+      <View className="absolute" style={{ width: bookWidth, height: bookHeight }}>
+        <Animated.View className="absolute inset-0" style={motion.book as StyleProp<ViewStyle>}>
+          <Image source={BOOK_ART} resizeMode="contain" style={{ width: bookWidth, height: bookHeight }} />
+          <Animated.View className="absolute inset-0" style={motion.ink as StyleProp<ViewStyle>}>
+            {writing && placed ? placed.map((row, rowIndex) => (
+              <Animated.View key={rowIndex} className="overflow-hidden"
+                style={[rowFrame(rowIndex), { height: row.height }, writing.masks[rowIndex]] as StyleProp<ViewStyle>}>
+                <View className="flex-row" style={{ width: row.width }}>
+                  {lines[rowIndex].map((word, index) => (
+                    <Text key={index} className="font-serif-italic" style={[wordStyle, { color: PAGE_INK }]}>{word}</Text>
+                  ))}
+                </View>
+              </Animated.View>
+            )) : null}
+          </Animated.View>
+        </Animated.View>
+        {writing ? (
+          <Animated.View className="absolute left-0 top-0"
+            style={[{ width: pen, height: pen }, writing.pen] as StyleProp<ViewStyle>}>
+            <Image source={PEN_ART} resizeMode="contain" style={{ width: pen, height: pen }} />
+          </Animated.View>
+        ) : null}
+      </View>
+
       <Animated.View className="absolute" style={[{ width: GLOW, height: GLOW }, motion.glow] as StyleProp<ViewStyle>}>
         <Svg width={GLOW} height={GLOW}>
           <Defs>
@@ -291,18 +462,26 @@ export function DreamCaptureSeal({ text }: { text: string }) {
           <Circle cx={GLOW / 2} cy={GLOW / 2} r={GLOW / 2} fill="url(#seal-glow)" />
         </Svg>
       </Animated.View>
-      <View className="absolute flex-row flex-wrap justify-center px-10" style={{ width }} onLayout={onBoxLayout}>
-        {words.map((word, index) => (
-          <Animated.Text
-            key={index}
-            onLayout={(event) => onWordLayout(index, event)}
-            className="font-serif text-[18px] leading-7 text-ivory"
-            style={[{ marginHorizontal: 2.5 }, wordMotion?.[index] ?? { opacity: 0 }] as StyleProp<TextStyle>}
-          >
-            {word}
-          </Animated.Text>
+
+      {/* The same lines again: laid out first to place the pen, then flown into the glow. */}
+      <View className="absolute" pointerEvents="none" style={{ width: bookWidth, height: bookHeight }}>
+        {lines.map((line, rowIndex) => (
+          <View key={rowIndex} className="flex-row" style={rowFrame(rowIndex)}
+            onLayout={(event) => onRowLayout(rowIndex, event)}>
+            {line.map((word, index) => (
+              <Animated.Text
+                key={index}
+                onLayout={(event) => onWordLayout(rowIndex, index, event)}
+                className="font-serif-italic"
+                style={[wordStyle, writing?.words[rowIndex][index] ?? { opacity: 0 }] as StyleProp<TextStyle>}
+              >
+                {word}
+              </Animated.Text>
+            ))}
+          </View>
         ))}
       </View>
+
       {MOTES.map((_, index) => (
         <Animated.View key={index} className="absolute h-1 w-1 rounded-full bg-champagne"
           style={motion.motes[index] as StyleProp<ViewStyle>} />

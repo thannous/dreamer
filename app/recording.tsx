@@ -700,8 +700,8 @@ function RecordingScreen() {
     router.replace(buildJournalDetailHref(dream, options));
   }, []);
 
-  // Prologue of the dream story: the saved draft condenses into a star before its page
-  // opens. The veil is lifted only once the next page covers this one, so the emptied
+  // Prologue of the dream story: the saved draft is written into the journal, then lifts
+  // into a star before its page opens. The veil is lifted only once the next page covers this one, so the emptied
   // composer is never glimpsed during the transition.
   const reducedMotion = useReducedMotion();
   /** The saved words while the seal condenses them into a star, null otherwise. */
