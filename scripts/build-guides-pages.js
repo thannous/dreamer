@@ -51,6 +51,7 @@ const SYMBOL_IMAGE_ALT_SUFFIX = {
   fr: 'illustration de symbole onirique',
   it: 'illustrazione di simbolo onirico',
 };
+const DICTIONARY_EDITORIAL_ASSET_ID = 'editorial.dream-symbols-dictionary';
 const DICTIONARY_IMAGE_COPY = {
   de: {
     alt: 'Ein aufgeschlagenes Traumlexikon mit Schlüssel, Auge, Baum, Welle und Tür',
@@ -2718,8 +2719,22 @@ function generateDictionaryPage(lang, t) {
     ? getPageResponsiveImages(IMAGE_SEO_REGISTRY, canonicalPath)
     : null;
   const dictionaryCopy = DICTIONARY_IMAGE_COPY[lang] || DICTIONARY_IMAGE_COPY.en;
-  const editorialPicture = pageImageSet
-    ? renderResponsivePicture(IMAGE_SEO_REGISTRY, pageImageSet.images.editorial, {
+  // Locales outside the image-SEO pilot still get its AVIF variants and the
+  // 4:5 mobile crop: the hero is the mobile LCP element of every dictionary.
+  const editorialImageRef = pageImageSet
+    ? pageImageSet.images.editorial
+    : IMAGE_SEO_REGISTRY?.assets[DICTIONARY_EDITORIAL_ASSET_ID]
+      ? {
+          assetId: DICTIONARY_EDITORIAL_ASSET_ID,
+          aspect: '16x9',
+          mobileAspect: '4x5',
+          mobileBreakpoint: '1024px',
+          mobileSizes: '100vw',
+          alt: dictionaryCopy.alt,
+        }
+      : null;
+  const editorialPicture = editorialImageRef
+    ? renderResponsivePicture(IMAGE_SEO_REGISTRY, editorialImageRef, {
         figure: false,
         priority: true,
         sizes: '100vw',
