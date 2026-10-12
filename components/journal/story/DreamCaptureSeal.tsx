@@ -1,4 +1,5 @@
-import React, { useCallback, useMemo, useRef, useState } from 'react';
+import * as Haptics from 'expo-haptics';
+import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import {
   View,
   useWindowDimensions,
@@ -144,7 +145,8 @@ const ringWave = (born: number, fade: number, reach: number, peak: number): CSSA
  * own words are read, then catch the light one by one and fly into a breathing glow while
  * motes of light are drawn in with them. The glow condenses into a single star, born with
  * a glint and a ring of light, which rises with a comet's tail to where the saved moment's
- * window will open as the sky sinks below it. The glow is a radial light with no edge, so
+ * window will open as the sky sinks below it. Two touches mark the star's birth and its
+ * arrival, after the save's own success haptic. The glow is a radial light with no edge, so
  * it reads as light on the night ground and as a warm haze on the paper ground. It holds
  * touch for its moment so nothing is pressed twice, and is decorative to assistive
  * technology: the next screen announces the save. The caller skips it under reduce motion.
@@ -160,6 +162,18 @@ export function DreamCaptureSeal({ text }: { text: string }) {
   const star = noctalia.atmosphere.star;
   const rise = insets.top + MEDALLION_CENTER_FROM_TOP - height / 2;
   const words = useMemo(() => excerpt(text).split(' '), [text]);
+
+  useEffect(() => {
+    if (process.env.EXPO_OS === 'web') return;
+    const haptic = (style: Haptics.ImpactFeedbackStyle) => {
+      void Haptics.impactAsync(style).catch(() => {});
+    };
+    const timers = [
+      setTimeout(() => haptic(Haptics.ImpactFeedbackStyle.Light), (DREAM_STORY.prologue * BEAT.starBorn) / 100),
+      setTimeout(() => haptic(Haptics.ImpactFeedbackStyle.Soft), DREAM_STORY.prologue),
+    ];
+    return () => timers.forEach(clearTimeout);
+  }, []);
 
   // Each word flies toward the glow from where it was laid out, so its path waits for layout.
   const [flights, setFlights] = useState<{ dx: number; dy: number }[] | null>(null);

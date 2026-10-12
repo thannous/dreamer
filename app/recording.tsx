@@ -1163,7 +1163,7 @@ function RecordingScreen() {
       const openSavedDream = () => navigateToSavedDream(savedDream, {
         saved: true, recall: completeWithHelp, autoAnalyze: isNewDream && !user && !completeWithHelp,
       });
-      // One success haptic at the causal moment, paired with the seal or the next page.
+      // One success haptic at the causal moment; the seal then marks its star's birth and arrival.
       void Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success).catch(() => {});
       if (reducedMotion) {
         openSavedDream();
