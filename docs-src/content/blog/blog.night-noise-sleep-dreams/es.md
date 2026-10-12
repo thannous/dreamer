@@ -4,7 +4,7 @@
   "layout": "blogArticle",
   "lang": "es",
   "slug": "ruido-nocturno-descanso-suenos",
-  "title": "Ruido nocturno, descanso y sueños: entender las noches fragmentadas | Noctalia",
+  "title": "Ruido nocturno: sueño y recuerdos de sueños | Noctalia",
   "description": "El ruido nocturno corta el sueño en despertares breves que ayudan a recordar lo soñado. Qué cambia, qué anotar al despertar y cómo reducir las interrupciones.",
   "robots": "index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1",
   "themeColor": "#0a0514",

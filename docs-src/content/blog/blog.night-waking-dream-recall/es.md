@@ -4,7 +4,7 @@
   "layout": "blogArticle",
   "lang": "es",
   "slug": "despertares-nocturnos-recordar-suenos",
-  "title": "Despertares nocturnos y recuerdo de sueños: qué hacer al despertar | Noctalia",
+  "title": "Despertares nocturnos: recordar los sueños | Noctalia",
   "description": "Despertares nocturnos y recuerdo de sueños: cómo guardar un sueño en pocas palabras a las 3:20, volver a dormir y saber cuándo consultar.",
   "robots": "index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1",
   "themeColor": "#0a0514",

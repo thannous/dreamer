@@ -4,7 +4,7 @@
   "layout": "blogArticle",
   "lang": "de",
   "slug": "naechtlicher-laerm-schlaf-traeume",
-  "title": "Nächtlicher Lärm, Schlaf und Träume: fragmentierte Nächte verstehen | Noctalia",
+  "title": "Nächtlicher Lärm: Schlaf und Traumerinnerung | Noctalia",
   "description": "Nächtlicher Lärm zerlegt den Schlaf in kurze Wachphasen, und Träume bleiben eher hängen. Was Lärm verändert, was Sie notieren und wie Sie Störungen dämpfen.",
   "robots": "index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1",
   "themeColor": "#0a0514",

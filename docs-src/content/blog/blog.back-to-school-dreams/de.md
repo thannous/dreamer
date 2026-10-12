@@ -5,7 +5,7 @@
   "lang": "de",
   "slug": "traum-zurueck-in-die-schule",
   "title": "Von der Schule träumen: alte Schule und erster Tag | Noctalia",
-  "description": "Was es bedeutet, als Erwachsener von der Rückkehr in die Schule zu träumen: alte Schule, erster Tag, in den Fluren verlaufen, zu spät kommen und Stress zum Schulanfang.",
+  "description": "Von der alten Schule träumen: mögliche Bedeutungen von Verspätung, Irrwegen und dem ersten Schultag, mit Fragen für Ihr Traumtagebuch.",
   "robots": "max-image-preview:large",
   "themeColor": "#0a0514",
   "htmlClass": "scroll-smooth blog-article",

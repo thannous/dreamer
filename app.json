@@ -73,7 +73,8 @@
     "web": {
       "output": "single",
       "favicon": "./assets/images/favicon.png",
-      "name": "Noctalia",
+      "name": "Noctalia Dream Journal | Record and Explore Your Dreams",
+      "description": "Keep a dream journal in your browser. Write or record dreams, revisit your entries, and explore possible symbols and emotions with Noctalia.",
       "shortName": "Noctalia",
       "themeColor": "#000000",
       "backgroundColor": "#ffffff"
