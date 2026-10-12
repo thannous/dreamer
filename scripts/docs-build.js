@@ -38,6 +38,9 @@ function hashAssetFiles() {
     path.join(DOCS_SRC_DIR, 'static', 'img', 'seo'),
     path.join(DOCS_SRC_DIR, 'static', 'img', 'og', 'noctalia-dreamscape-v2-1200x630.jpg'),
     path.join(DOCS_SRC_DIR, 'config', 'image-assets.json'),
+    // It transforms the css sources into landing.css, so a change there must
+    // move ?v= too, or the edge keeps serving the old immutable bundle.
+    path.join(ROOT_DIR, 'scripts', 'lib', 'landing-stylesheet.js'),
   ];
 
   function hashInput(inputPath) {
