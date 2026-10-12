@@ -12,8 +12,9 @@ import { EASE } from '@/components/motion/motion';
  *       as a page: the card settles, a star lights between two threads, the paragraphs
  *       follow one another.
  *   Prologue — once the dream is durably saved, written or told, night falls over the
- *       draft, its words gather into a glow that condenses into a star, and the star rises
- *       to where the medallion will open.
+ *       draft and its sky lights; the words catch the light one by one and fly into a glow
+ *       that condenses into a star, born with a glint and a ring, which rises with a
+ *       comet's tail to where the medallion will open.
  *   I.  Saved — the astrolabe settles once around a window onto the night sky.
  *   II. Read  — while the analysis runs, its stars light one after another (no fake
  *       progress: the loop says "working", never "73 %"). When the reading lands, the
@@ -43,7 +44,7 @@ export const DREAM_STORY = {
   chapterLead: 240,
   /**
    * The capture screen's seal, from the save to the saved moment: the words gather, condense, rise.
-   * Long enough for each beat to be seen: the words hold about 0.8 s before they gather.
+   * Long enough for each beat to be seen: the words hold about 0.7 s before the first one leaves.
    */
   prologue: 3000,
   /** The seal's veil outlasts the screen transition that covers it. */

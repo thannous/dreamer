@@ -12,6 +12,7 @@ import { useTranslation } from '@/hooks/useTranslation';
 import { TID } from '@/lib/testIDs';
 
 import { entrance, paintSettle, paintSweep, twinkle } from './story/dreamStoryMotion';
+import { sparklePath } from './story/sparkle';
 
 const ASTRAL_ART = require('@/assets/images/onboarding-astral-background.webp');
 
@@ -40,10 +41,6 @@ const READING_STAR = 5;
 
 /** Where the dream is in its story: just saved, being read, or read. */
 export type SavedDreamPhase = 'saved' | 'reading' | 'read';
-
-const sparklePath = (cx: number, cy: number, size: number) =>
-  `M${cx} ${cy - size} Q${cx} ${cy} ${cx + size} ${cy} Q${cx} ${cy} ${cx} ${cy + size} ` +
-  `Q${cx} ${cy} ${cx - size} ${cy} Q${cx} ${cy} ${cx} ${cy - size} Z`;
 
 /**
  * The moment a captured dream lands in the journal: a window onto the night sky held
