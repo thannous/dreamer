@@ -143,8 +143,15 @@ function htmlAttributes(meta) {
   const lang = meta.lang || siteConfig.defaultLanguage;
   attrs.push(` lang="${escapeHtml(getLanguageTag(lang))}"`);
 
-  if (meta.htmlClass && meta.htmlClass.trim()) {
-    attrs.push(` class="${escapeHtml(meta.htmlClass)}"`);
+  // Landing pages mark <html> statically so observatory.css never needs
+  // html:has(.noctalia-observatory): that selector made every DOM insertion
+  // during the intro restyle the whole page (about 2,200 elements each time).
+  const htmlClass = [meta.htmlClass, meta.layout === 'landing' ? 'oh-observatory-root' : '']
+    .map((value) => (value || '').trim())
+    .filter(Boolean)
+    .join(' ');
+  if (htmlClass) {
+    attrs.push(` class="${escapeHtml(htmlClass)}"`);
   }
 
   return attrs.join('');
