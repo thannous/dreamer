@@ -213,6 +213,8 @@ function createLucidExpoConfig(baseExpo: ExpoConfig): ExpoConfig {
       favicon: lucidIcon,
       name: 'Noctalia Lucid',
       shortName: 'Lucid',
+      // The companion does not share Dreamer's journal description.
+      description: undefined,
       themeColor: '#070B18',
       backgroundColor: '#070B18',
     },
