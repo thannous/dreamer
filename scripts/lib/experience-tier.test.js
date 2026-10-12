@@ -60,11 +60,11 @@ describe('renderTierInlineScript', () => {
 
 describe('early intro loading', () => {
   const vm = require('node:vm');
-  function boot({ reduced = false, saveData = false, effectiveType = '4g' } = {}) {
+  function boot({ reduced = false, saveData = false, effectiveType = '4g', introSeen = false } = {}) {
     let release;
     const video = { children: [], appendChild(source) { this.children.push(source); }, replaceChildren: jest.fn(), removeAttribute: jest.fn(), load: jest.fn() };
     const document = { documentElement: { dataset: {}, classList: { add() {}, remove() {} } }, createElement: jest.fn(tag => tag === 'video' ? video : {}) };
-    const window = { matchMedia: query => ({ matches: query.includes('reduced-motion') ? reduced : true }), setTimeout: fn => { release = fn; } };
+    const window = { matchMedia: query => ({ matches: query.includes('reduced-motion') ? reduced : true }), setTimeout: fn => { release = fn; }, sessionStorage: { getItem: key => (introSeen && key === 'noctalia:intro-seen' ? '1' : null) } };
     const context = { document, window, navigator: { hardwareConcurrency: 8, deviceMemory: 8, connection: { saveData, effectiveType } }, location: { hash: '' }, history: {} };
     vm.runInNewContext(renderTierInlineScript().replace(/<\/?script>/g, ''), context);
     return { window, document, video, release: () => release?.() };
@@ -78,6 +78,11 @@ describe('early intro loading', () => {
   });
   it.each([{ reduced: true }, { saveData: true }, { effectiveType: '2g' }, { effectiveType: 'slow-2g' }])('does not download a film when motion or network preferences prevent autoplay: %j', options => {
     expect(boot(options).document.createElement).not.toHaveBeenCalled();
+  });
+  it('does not download the film again once it played this session', () => {
+    const s = boot({ introSeen: true });
+    expect(s.document.createElement).not.toHaveBeenCalled();
+    expect(s.window.__expIntroVideo).toBeUndefined();
   });
   it('does not unload a film already adopted by the experience layer', () => {
     const s = boot(); s.window.__expIntroVideo = null; s.release();
