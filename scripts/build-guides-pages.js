@@ -2057,6 +2057,23 @@ function renderLayoutCss() {
         }
         #symbolsList > section {
           scroll-margin-top: var(--dictionary-scroll-offset, 8rem);
+          /* Skip style and layout for letter sections far from the viewport:
+             the full list is ~3,800 elements, and styling it in one go
+             took ~1 s of main thread under 4x CPU throttling. The size
+             is an estimate per card count; once rendered, "auto" keeps
+             the real height. */
+          content-visibility: auto;
+          contain-intrinsic-size: auto calc(var(--symbol-cards, 6) * 440px + 72px);
+        }
+        @media (min-width: 768px) {
+          #symbolsList > section {
+            contain-intrinsic-size: auto calc(var(--symbol-cards, 6) * 340px + 72px);
+          }
+        }
+        @media (min-width: 1280px) {
+          #symbolsList > section {
+            contain-intrinsic-size: auto calc(var(--symbol-cards, 6) * 195px + 72px);
+          }
         }
         #dictionaryLayout,
         #mobilePills,
@@ -2884,7 +2901,7 @@ ${(rg.steps || []).map((step, index) => `                        <li class="refl
                             ${cardLinksHtml}
                         </div>`;
     }).join('\n');
-    return `                <section id="${letter}" class="mb-12">
+    return `                <section id="${letter}" class="mb-12" style="--symbol-cards: ${syms.length};">
                     <h2 class="font-serif text-2xl text-dream-salmon mb-6 flex items-center" aria-label="${escapeHtml(`${dc.section_heading} ${letter}`)}">
                         <span class="w-10 h-10 rounded-lg bg-dream-salmon/10 flex items-center justify-center" aria-hidden="true">${letter}</span>
                     </h2>
@@ -3817,6 +3834,31 @@ ${symbolCatEntries}
             });
             setSearchValue(heroSearch.value || '');
 
+            // Letter sections use content-visibility: auto, so the ones the
+            // scroll passes take their real height only once rendered and the
+            // smooth scroll can stop short or overshoot. Re-align when it ends.
+            let letterAlignToken = 0;
+            function alignLetterTarget(target) {
+                const token = ++letterAlignToken;
+                const align = (triesLeft) => {
+                    if (token !== letterAlignToken) return;
+                    const offset = parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--dictionary-scroll-offset')) || 0;
+                    const delta = target.getBoundingClientRect().top - offset;
+                    if (Math.abs(delta) <= 2 || triesLeft === 0) return;
+                    window.scrollBy({ top: delta, behavior: 'instant' });
+                    window.requestAnimationFrame(() => window.requestAnimationFrame(() => align(triesLeft - 1)));
+                };
+                let started = false;
+                const start = () => {
+                    if (started) return;
+                    started = true;
+                    window.removeEventListener('scrollend', start);
+                    align(4);
+                };
+                window.addEventListener('scrollend', start, { once: true });
+                window.setTimeout(start, 1000);
+            }
+
             // ── Smooth scroll for letter navigation ───────────────────────
             document.querySelectorAll('.letter-link[href], .sidebar-alpha-link[href], .mobile-alpha-link[href]').forEach(link => {
                 link.addEventListener('click', (e) => {
@@ -3833,6 +3875,7 @@ ${symbolCatEntries}
                         updateSectionScrollOffset();
                         setActiveAlpha(link.dataset.letter);
                         target.scrollIntoView({ behavior: window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 'instant' : 'smooth', block: 'start' });
+                        alignLetterTarget(target);
                         if (letterNavigationTimer) window.clearTimeout(letterNavigationTimer);
                         letterNavigationTimer = window.setTimeout(() => {
                             document.body.classList.remove('dictionary-letter-navigation');
