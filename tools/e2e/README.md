@@ -31,6 +31,12 @@ mise exec -- npm run test:testerarmy:typecheck
 ```
 
 Discovery starts no engine: `mise exec -- node tools/e2e/run.mjs lucid web list`.
+To use an already open local Chrome instead of downloading or launching a test
+browser, enable its remote debugging and set `E2E_WEB_CDP_ENDPOINT` to its
+loopback DevTools HTTP or WebSocket URL before running the same commands.
+The engine creates its own test context, preserves existing tabs and sessions,
+and disconnects without closing Chrome. An invalid or unreachable endpoint
+fails the run; it does not fall back to launching another browser.
 The web products start separate local servers on ports 8096–8099; root app
 services are mocked and external requests are blocked in app tests. Meditation
 web proves routing/storage on the web only, not native audio or purchases.
