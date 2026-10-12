@@ -30,6 +30,9 @@ jest.doMock('@/context/AuthContext', () => ({ AuthContext: React.createContext(n
 jest.doMock('@/services/dreamMediaService', () => ({
   resolveDreamMedia: async () => ({ imageUrl: '', thumbnailUrl: undefined }),
 }));
+jest.doMock('@/lib/dreamMediaDiskCache', () => ({
+  resolveWithDiskCache: async () => ({ imageUrl: '', thumbnailUrl: undefined }),
+}));
 jest.doMock('@/services/supabaseDreamService', () => ({
   fetchDreamListPage: jest.fn(),
 }));
