@@ -1462,9 +1462,11 @@ const initFilm = (isFull) => {
     holdDreamsForIntro();
     introPlaying = true;
     video.pause();
-    // The landscape master and loop share a composition; object-fit: cover
-    // applies the same viewport crop on phones and desktops.
-    return playIntro(film, video, '1280').then((result) => {
+    // The portrait cut keeps the landscape master's framing under
+    // object-fit: cover, so the hand-off to the (landscape) loop still lines up.
+    // Same query as the early warm-up in scripts/lib/experience-tier.js.
+    const variant = window.matchMedia('(orientation: portrait)').matches ? '540x960' : '1280';
+    return playIntro(film, video, variant).then((result) => {
       if (result.unavailable) showRetry();
       introPlaying = false;
       heroShown = true;
