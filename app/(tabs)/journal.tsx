@@ -33,7 +33,7 @@ import {
 } from '@/constants/layout';
 import { useDreams } from '@/context/DreamsContext';
 import { AuthContext } from '@/context/AuthContext';
-import { resolveDreamMedia } from '@/services/dreamMediaService';
+import { resolveWithDiskCache } from '@/lib/dreamMediaDiskCache';
 import { ScrollPerfProvider } from '@/context/ScrollPerfContext';
 import { useTheme } from '@/context/ThemeContext';
 import { useClearWebFocus } from '@/hooks/useClearWebFocus';
@@ -368,7 +368,7 @@ function JournalListScreen() {
     const generation = mediaGeneration.current;
     const resolved = await Promise.all(entries.slice(0, PREFETCH_MAX_PER_FLUSH).map(async (dream) => ({
       ...dream,
-      ...await resolveDreamMedia(dream, mediaUserId),
+      ...await resolveWithDiskCache(dream, mediaUserId, false),
     })));
     for (const dream of resolved) {
       if (generation !== mediaGeneration.current) return;

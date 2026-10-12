@@ -13,6 +13,7 @@ import {
 import { ScreenContainer } from "@/components/ScreenContainer";
 import { TodayHero } from "@/components/home/TodayHero";
 import { PersonalReadingCard } from "@/components/inspiration/PersonalReadingCard";
+import { FreeAnalysesNudge, getFreeAnalysesNudge } from "@/components/quota/FreeAnalysesNudge";
 import { useNotificationSettingsController } from "@/components/settings/useNotificationSettingsController";
 import { buildPersonalReading } from "@/lib/personalReading";
 import { PressableScale } from "@/components/motion";
@@ -27,6 +28,8 @@ import { useDreamsData } from "@/context/DreamsContext";
 import { useTheme } from "@/context/ThemeContext";
 import { ScrollPerfProvider } from "@/context/ScrollPerfContext";
 import { useAppState } from "@/hooks/useAppState";
+import { useAuth } from "@/context/AuthContext";
+import { useQuota } from "@/hooks/useQuota";
 import { useClearWebFocus } from "@/hooks/useClearWebFocus";
 import { useScrollIdle } from "@/hooks/useScrollIdle";
 import { useTranslation } from "@/hooks/useTranslation";
@@ -75,6 +78,11 @@ function InspirationScreen() {
   const insets = useSafeAreaInsets();
   const scrollPerf = useScrollIdle();
   const { dreams, loaded: dreamsLoaded } = useDreamsData();
+  const { user } = useAuth();
+  const { tier, usage, loading: quotaLoading, error: quotaError } = useQuota();
+  const freeAnalysesNudge = getFreeAnalysesNudge({
+    tier, signedIn: Boolean(user), loading: quotaLoading, error: quotaError, usage,
+  });
   useClearWebFocus();
   // Note: guestLimitReached was removed - quota is now enforced on analysis, not recording
   const [selectedRitualId, setSelectedRitualId] = useState<RitualId>("starter");
@@ -330,6 +338,7 @@ function InspirationScreen() {
                 <PersonalReadingCard reading={personalReading} nextReminderText={nextReminderText}
                   animateOnMount={false} compact />
               ) : null}
+              {freeAnalysesNudge ? <FreeAnalysesNudge nudge={freeAnalysesNudge} /> : null}
               {!notificationSettings.unsupported ? <Pressable
                 onPress={() => router.push('/settings')}
                 accessibilityRole="button" accessibilityLabel={nextReminderText ?? t('home.today.add_reminder')}
