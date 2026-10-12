@@ -8,6 +8,7 @@ const {
   main,
 } = require('./docs-deploy');
 const {
+  assertDeployStaging,
   createDeployStaging,
 } = require('./lib/docs-deploy-staging');
 
@@ -135,7 +136,7 @@ describe('docs-deploy helpers', () => {
 
   it('stages runtime files while excluding source and audit artifacts', () => {
     const docsDir = path.join(tmpRoot, 'docs');
-    for (const directory of ['css', 'js', 'en', 'fr', 'es', 'de', 'it', 'pt-br', 'scripts', 'data']) {
+    for (const directory of ['css', 'js', 'en', 'fr', 'es', 'de', 'it', 'pt-br', 'scripts', 'data', 'video/intro']) {
       fs.mkdirSync(path.join(docsDir, directory), { recursive: true });
     }
     for (const fileName of [
@@ -157,6 +158,13 @@ describe('docs-deploy helpers', () => {
     fs.writeFileSync(path.join(docsDir, 'AGENTS.md'), 'internal', 'utf8');
     fs.writeFileSync(path.join(docsDir, 'scripts', 'build.js'), 'internal', 'utf8');
     fs.writeFileSync(path.join(docsDir, 'data', 'symbols.json'), '{}', 'utf8');
+    const dataset = 'data/dream-journal-apps-comparison-2026.csv';
+    const video = 'video/noctalia-product-walkthrough-en-2026-07.mp4';
+    const intro = 'video/intro/noctalia-intro-1280.webm';
+    fs.writeFileSync(path.join(docsDir, dataset), 'app,platform\nNoctalia,Android\n');
+    fs.writeFileSync(path.join(docsDir, 'data', 'private-feedback.csv'), 'private');
+    fs.writeFileSync(path.join(docsDir, video), Buffer.from([0, 1, 2, 3]));
+    fs.writeFileSync(path.join(docsDir, intro), Buffer.from([4, 5, 6, 7]));
 
     const stageRoot = path.join(tmpRoot, 'stage');
     const staging = createDeployStaging({ docsDir, tempRoot: stageRoot });
@@ -166,7 +174,15 @@ describe('docs-deploy helpers', () => {
     expect(fs.existsSync(path.join(staging.deployDir, 'pt-br', 'index.html'))).toBe(true);
     expect(fs.existsSync(path.join(staging.deployDir, 'AGENTS.md'))).toBe(false);
     expect(fs.existsSync(path.join(staging.deployDir, 'scripts'))).toBe(false);
-    expect(fs.existsSync(path.join(staging.deployDir, 'data'))).toBe(false);
+    for (const publicFile of [dataset, video, intro]) {
+      expect(fs.readFileSync(path.join(staging.deployDir, publicFile)))
+        .toEqual(fs.readFileSync(path.join(docsDir, publicFile)));
+    }
+    expect(fs.readdirSync(path.join(staging.deployDir, 'data')))
+      .toEqual(['dream-journal-apps-comparison-2026.csv']);
+    // A public CSV exception must not allow another data export into an upload.
+    fs.writeFileSync(path.join(staging.deployDir, 'data', 'private-feedback.csv'), 'private');
+    expect(() => assertDeployStaging(staging.deployDir)).toThrow('internal artifact in deployment: data/private-feedback.csv');
   });
 
   it('rejects incomplete Cloudflare Pages config', () => {

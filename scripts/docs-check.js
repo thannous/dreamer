@@ -496,7 +496,7 @@ function main() {
   runNodeScript(path.join('scripts', 'check-content-hub-contract.js'));
   runNodeScript(path.join('scripts', 'check-symbol-illustration-parity.js'));
   runNodeScript(path.join('scripts', 'generate-symbol-hero-posters.js'), ['--check']);
-  runNodeScript(path.join('scripts', 'check-docs-links.js'));
+  runNodeScript(path.join('scripts', 'check-docs-deploy-surface.js'));
   runNodeScript(path.join('scripts', 'check-docs-shell.js'));
   runNodeScript(path.join('scripts', 'check-article-date-contract.js'));
   runNodeScript(path.join('scripts', 'check-intent-ownership.js'));
