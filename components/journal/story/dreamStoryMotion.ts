@@ -12,10 +12,9 @@ import { EASE } from '@/components/motion/motion';
  *       as a page: the card settles, a star lights between two threads, the paragraphs
  *       follow one another.
  *   Prologue — once the dream is durably saved, written or told, night falls over the
- *       draft and the dream journal opens; a pen writes the dream's first words, then the
- *       ink leaves the page as words of light that fly into a glow. The glow condenses into
- *       a star, born with a glint and a ring, which rises with a comet's tail to where the
- *       medallion will open.
+ *       draft and the dream journal opens under a lamp; a pen writes the dream's first
+ *       words and draws a ring above them. The reader dives into the page until it is the
+ *       dream's own page, and the night fills the ring, which is the medallion.
  *   I.  Saved — the astrolabe settles once around a window onto the night sky.
  *   II. Read  — while the analysis runs, its stars light one after another (no fake
  *       progress: the loop says "working", never "73 %"). When the reading lands, the
@@ -44,11 +43,11 @@ export const DREAM_STORY = {
   /** The reading chapters start once the last star is lit. */
   chapterLead: 240,
   /**
-   * The capture screen's seal, from the save to the saved moment: written, lifted, condensed, risen.
-   * Long enough for each beat to be seen and for each to fade into the next: the pen writes
-   * for about a second before the ink lifts.
+   * The capture screen's seal, from the save to the saved moment: written, ringed, entered, filled.
+   * Long enough for each beat to be lived: the pen writes for about a second, and the dive
+   * into the page takes as long again.
    */
-  prologue: 3800,
+  prologue: 4400,
   /** The seal's veil outlasts the screen transition that covers it. */
   prologueVeilHold: 700,
   /** One pass of the light band across a canvas being painted. */

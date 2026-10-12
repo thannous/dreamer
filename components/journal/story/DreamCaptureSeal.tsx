@@ -6,15 +6,14 @@ import {
   View,
   useWindowDimensions,
   type LayoutChangeEvent,
-  type LayoutRectangle,
   type StyleProp,
-  type TextStyle,
   type ViewStyle,
 } from 'react-native';
 import Animated, { type CSSAnimationKeyframes, type CSSStyle } from 'react-native-reanimated';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import Svg, { Circle, Defs, Path, RadialGradient, Stop } from 'react-native-svg';
+import Svg, { Circle, Defs, Ellipse, Path, RadialGradient, Stop } from 'react-native-svg';
 
+import { JournalPaper } from '@/components/journal/JournalPaper';
 import { EASE } from '@/components/motion/motion';
 import { getNoctaliaDesignTokens } from '@/constants/noctaliaDesign';
 import { getNoctaliaPalette } from '@/constants/noctaliaPalette';
@@ -24,95 +23,81 @@ import { TID } from '@/lib/testIDs';
 import { DREAM_EASE, DREAM_STORY } from './dreamStoryMotion';
 import { sparklePath } from './sparkle';
 
-const BOOK_ART = require('@/assets/images/dream-seal-book.webp');
+const IVORY_JOURNAL = require('@/assets/images/dream-seal-book.webp');
+const NIGHT_JOURNAL = require('@/assets/images/dream-seal-book-night.webp');
 const PEN_ART = require('@/assets/images/dream-seal-pen.webp');
+const ASTRAL_ART = require('@/assets/images/onboarding-astral-background.webp');
 
-/** The notebook art's aspect, and its left page's writing area in fractions of the art. */
-const BOOK_RATIO = 1536 / 1024;
-const PAGE = { left: 190 / 1536, top: 280 / 1024, width: 520 / 1536 } as const;
-/** The pen art's nib in fractions of the art, and the pen's size against the book. */
+/** The journal art's aspect, and its right page in fractions of the art (both journals share it). */
+const JOURNAL_RATIO = 1536 / 1024;
+const RIGHT_PAGE = { left: 785 / 1536, top: 105 / 1024, right: 1380 / 1536, bottom: 850 / 1024 } as const;
+/** The pen art's nib in fractions of the art, and the pen's size against the journal. */
 const NIB = { x: 0.148, y: 0.874 } as const;
 const PEN_SCALE = 0.215;
 const MAX_LINES = 3;
-/** The page is paper in both themes, so its ink is the paper theme's text. */
-const PAGE_INK = getNoctaliaPalette('light').title;
-
-const GLOW = 280;
-const SPARK = 28;
-const GLINT = 44;
-const RING = 200;
-/** Where the saved moment's medallion opens on the next screen, below its navigation. */
+/** The saved moment's medallion, and where it opens on the next screen, below its navigation. */
+const MEDALLION = 148;
 const MEDALLION_CENTER_FROM_TOP = 76 + 120;
-/** How far a word travels toward the glow before it is gone. */
-const WORD_PULL = 0.9;
+/** The pen draws the medallion's ring in this many strokes. */
+const RING_STROKES = 24;
+/** The lamp is warm light in both themes. */
+const LAMP = getNoctaliaPalette('dark').accent;
 
 /**
  * The seal's beats, in percent of the prologue. Every keyframe below is placed against
  * these, so the story keeps its proportions whatever the prologue lasts.
  */
 const BEAT = {
-  night: 18,
-  bookIn: 16,
-  /** The pen glides in, writes the dream's first lines between these two beats, then glides away. */
+  night: 14,
+  journalIn: 16,
+  /** The lamp lights the page while the pen works. */
+  lampOn: 18,
+  lampOff: 62,
+  /** The pen glides in, writes the dream's first lines, then draws the ring above them. */
   penIn: 3,
-  write: 16,
-  written: 46,
-  lineGap: 4,
-  penOut: 6,
-  /** The ink leaves the page as words of light, which reach the glow in reading order. */
-  lift: 49,
-  gather: 52,
-  gatherSpread: 8,
-  wordFlight: 12,
-  /** The journal fades as its ink lifts, so the words of light leave over the night. */
-  bookOut: 49,
-  bookGone: 66,
-  starBorn: 74,
-  starSettled: 79,
+  write: 17,
+  written: 41,
+  lineGap: 3,
+  ringFrom: 44,
+  ringClosed: 50,
+  penGone: 54,
+  /** The reader dives into the page until it is the dream's own page. */
+  diveFrom: 54,
+  diveTo: 80,
+  inkGone: [58, 68],
+  pageCover: [62, 74],
+  grainIn: [70, 80],
+  ringSettles: [74, 80],
+  /** The night fills the ring, which becomes the saved moment's window. */
+  skyIn: [80, 92],
 } as const;
 
-/** The night sky behind the seal, in fractions of the screen. Fixed so every save shows the same sky. */
+/** The night sky behind the journal, in fractions of the screen. Fixed so every save shows the same sky. */
 const SKY = [
-  { x: 0.14, y: 0.12, size: 3, at: 8, pulse: 38 },
-  { x: 0.78, y: 0.08, size: 2, at: 11 },
-  { x: 0.9, y: 0.22, size: 2.5, at: 14, pulse: 50 },
-  { x: 0.32, y: 0.24, size: 2, at: 17 },
-  { x: 0.62, y: 0.17, size: 3, at: 10 },
-  { x: 0.06, y: 0.38, size: 2, at: 20 },
-  { x: 0.94, y: 0.44, size: 2, at: 13, pulse: 44 },
-  { x: 0.2, y: 0.7, size: 2.5, at: 22 },
-  { x: 0.84, y: 0.68, size: 3, at: 16 },
-  { x: 0.5, y: 0.8, size: 2, at: 24, pulse: 56 },
-  { x: 0.1, y: 0.86, size: 3, at: 19 },
-  { x: 0.7, y: 0.9, size: 2, at: 26 },
-  { x: 0.38, y: 0.93, size: 2.5, at: 28 },
-  { x: 0.9, y: 0.82, size: 2, at: 21, pulse: 34 },
+  { x: 0.14, y: 0.12, size: 3, at: 6, pulse: 30 },
+  { x: 0.78, y: 0.08, size: 2, at: 9 },
+  { x: 0.9, y: 0.22, size: 2.5, at: 12, pulse: 40 },
+  { x: 0.32, y: 0.2, size: 2, at: 15 },
+  { x: 0.62, y: 0.15, size: 3, at: 8 },
+  { x: 0.06, y: 0.36, size: 2, at: 18 },
+  { x: 0.94, y: 0.4, size: 2, at: 11, pulse: 34 },
+  { x: 0.2, y: 0.74, size: 2.5, at: 20 },
+  { x: 0.84, y: 0.7, size: 3, at: 14 },
+  { x: 0.5, y: 0.82, size: 2, at: 22, pulse: 46 },
+  { x: 0.1, y: 0.88, size: 3, at: 17 },
+  { x: 0.7, y: 0.9, size: 2, at: 24 },
+  { x: 0.38, y: 0.94, size: 2.5, at: 26 },
+  { x: 0.9, y: 0.84, size: 2, at: 19, pulse: 28 },
 ] as const;
-
-/** Motes of light drawn in from around the book, each from its own point of an ellipse. */
-const MOTES = [1, 0.7, 0.9, 0.6, 1, 0.75, 0.95, 0.65, 0.85, 0.8].map((reach, index) => {
-  const angle = ((index * 36 + 12) * Math.PI) / 180;
-  return { x: Math.cos(angle) * 160 * reach, y: Math.sin(angle) * 100 * reach, from: 50 + index * 1.1 };
-});
-
-/** The comet's tail: echoes of the star that follow it up, each later, smaller and fainter. */
-const TRAIL = [
-  { delay: 70, size: 8, opacity: 0.5 },
-  { delay: 140, size: 6, opacity: 0.3 },
-  { delay: 210, size: 4, opacity: 0.15 },
-] as const;
-
-type PlacedRow = { width: number; height: number; words: LayoutRectangle[] };
 
 const pct = (value: number) => `${Math.round(value * 10) / 10}%`;
-
-const near = (a: number, b: number) => Math.abs(a - b) < 0.5;
-const samePlacement = (a: PlacedRow[], b: PlacedRow[]) => a.length === b.length && a.every((row, index) =>
-  near(row.width, b[index].width) && row.words.every((word, at) =>
-    near(word.x, b[index].words[at].x) && near(word.width, b[index].words[at].width)));
+const smoothstep = (t: number) => t * t * (3 - 2 * t);
+const fade = (from: number, to: number, start = 0, end = 1): CSSAnimationKeyframes<ViewStyle> => ({
+  '0%': { opacity: start }, [pct(from)]: { opacity: start }, [pct(to)]: { opacity: end }, '100%': { opacity: end },
+});
 
 /** The dream's first words as the pen writes them: up to three lines, closed with an ellipsis when it goes on. */
-const pageLines = (text: string, maxChars: number): string[][] => {
+const pageLines = (text: string, maxChars: number): string[] => {
   const words = text.replace(/\s+/g, ' ').trim().split(' ').filter(Boolean);
   const lines: string[][] = [[]];
   for (const word of words) {
@@ -127,7 +112,7 @@ const pageLines = (text: string, maxChars: number): string[][] => {
       line.push(word);
     }
   }
-  return lines.filter((line) => line.length);
+  return lines.filter((line) => line.length).map((line) => line.join(' '));
 };
 
 /** When each line is written: the writing time is shared by the lines' lengths. */
@@ -157,82 +142,63 @@ const skyStar = (at: number, pulse?: number): CSSAnimationKeyframes<ViewStyle> =
   };
 };
 
-const moteFlight = (x: number, y: number, from: number): CSSAnimationKeyframes<ViewStyle> => {
-  const away = (opacity: number, scale: number) => ({ opacity, transform: [{ translateX: x }, { translateY: y }, { scale }] });
-  const gathered = { opacity: 0, transform: [{ translateX: 0 }, { translateY: 0 }, { scale: 0.3 }] };
-  return {
-    '0%': away(0, 0.5),
-    [pct(from)]: away(0, 0.5),
-    [pct(from + 3)]: away(1, 1),
-    [pct(from + 13)]: gathered,
-    '100%': gathered,
+/** An arc of the ring, from `start` to `end` degrees clockwise from the top, around (r, r). */
+const arcPath = (r: number, start: number, end: number) => {
+  const point = (degrees: number) => {
+    const radians = ((degrees - 90) * Math.PI) / 180;
+    return `${r + (r - 1) * Math.cos(radians)} ${r + (r - 1) * Math.sin(radians)}`;
   };
+  return `M${point(start)} A${r - 1} ${r - 1} 0 0 1 ${point(end)}`;
 };
-
-/**
- * A written word leaving the page: it takes over from the ink, then flies into the glow in
- * one glide, catching the light on the way. Each property keeps its own keyframes, so the
- * colour change never stops the flight.
- */
-const wordFlight = (
-  index: number, count: number, dx: number, dy: number, lit: string
-): CSSAnimationKeyframes<TextStyle> => {
-  const from = BEAT.gather + (count > 1 ? (BEAT.gatherSpread * index) / (count - 1) : 0);
-  const home = { transform: [{ translateX: 0 }, { translateY: 0 }, { scale: 1 }] };
-  const gone = { opacity: 0, color: lit, transform: [{ translateX: dx }, { translateY: dy }, { scale: 0.35 }] };
-  return {
-    '0%': { opacity: 0, color: PAGE_INK, ...home },
-    [pct(BEAT.lift)]: { opacity: 0 },
-    [pct(BEAT.lift + 2)]: { opacity: 1 },
-    [pct(from)]: { color: PAGE_INK, ...home },
-    [pct(from + 4)]: { color: lit },
-    [pct(from + BEAT.wordFlight * 0.6)]: { opacity: 1 },
-    [pct(from + BEAT.wordFlight)]: gone,
-    '100%': gone,
-  };
-};
-
-const ringWave = (born: number, fade: number, reach: number, peak: number): CSSAnimationKeyframes<ViewStyle> => ({
-  '0%': { opacity: 0, transform: [{ scale: 0.08 }] },
-  [pct(born)]: { opacity: 0, transform: [{ scale: 0.08 }] },
-  [pct(born + 2)]: { opacity: peak, transform: [{ scale: 0.2 }] },
-  [pct(fade)]: { opacity: 0, transform: [{ scale: reach }] },
-  '100%': { opacity: 0, transform: [{ scale: reach }] },
-});
 
 /**
  * The prologue of the dream story, played on the capture screen once the dream is
- * durably saved. Night falls over the draft and its sky lights star by star as the dream
- * journal opens, and a fountain pen writes the dream's first words on its page. The ink
- * then leaves the page as words of light that fly, in reading order, into a breathing glow
- * with motes drawn in around them, while the journal fades into the night. The glow
- * condenses into a single star, born with a glint and a ring of light, which rises with a
- * comet's tail to where the saved moment's window will open as the sky sinks below it.
- * Two touches mark the star's birth and its arrival, after the save's own success haptic.
- * The page is paper in both themes, and so is its ink. It holds touch for its moment so
- * nothing is pressed twice, and is decorative to assistive technology: the next screen
- * announces the save. The caller skips it under reduce motion.
+ * durably saved. Night falls over the draft and its sky lights as the dream journal opens
+ * under a lamp. A fountain pen writes the dream's first words on the right page, then
+ * draws a ring above them and lifts away. The reader then dives into the page: it grows
+ * until it fills the screen and its paper becomes the dream page's own, the ring landing
+ * exactly where the saved moment's window opens, and the night sky fills it. The next
+ * page fades in around that window. In the night theme the journal's paper is night
+ * paper written in gold; in the paper theme it is ivory written in ink. Two touches mark
+ * the ring closing and the sky filling it, after the save's own success haptic. It holds
+ * touch for its moment so nothing is pressed twice, and is decorative to assistive
+ * technology: the next screen announces the save. The caller skips it under reduce motion.
  */
 export function DreamCaptureSeal({ text }: { text: string }) {
   const { width, height } = useWindowDimensions();
   const insets = useSafeAreaInsets();
   const { colors, mode } = useTheme();
   const noctalia = useMemo(() => getNoctaliaDesignTokens(colors, mode), [colors, mode]);
-  const light = noctalia.accent.base;
-  const lit = noctalia.accent.text;
+  const night = mode === 'dark';
+  const ink = night ? noctalia.accent.text : noctalia.text.primary;
+  const ringInk = noctalia.accent.text;
   const star = noctalia.atmosphere.star;
-  const rise = insets.top + MEDALLION_CENTER_FROM_TOP - height / 2;
 
-  const bookWidth = Math.min(width - 12, 460);
-  const bookHeight = bookWidth / BOOK_RATIO;
-  const fontSize = Math.round(bookWidth * 0.04);
+  // The journal, centred; its right page; and the dive that turns that page into the screen.
+  const journalWidth = Math.min(width - 12, 460);
+  const journalHeight = journalWidth / JOURNAL_RATIO;
+  const page = {
+    x: RIGHT_PAGE.left * journalWidth,
+    y: RIGHT_PAGE.top * journalHeight,
+    w: (RIGHT_PAGE.right - RIGHT_PAGE.left) * journalWidth,
+    h: (RIGHT_PAGE.bottom - RIGHT_PAGE.top) * journalHeight,
+  };
+  const medallionY = insets.top + MEDALLION_CENTER_FROM_TOP;
+  const zoom = Math.max(width / page.w, height / page.h) * 1.02;
+  // Where the ring sits on the page so that, once the page covers the screen, it is the medallion.
+  const ring = {
+    x: page.x + page.w / 2,
+    y: page.y + (page.h + (2 * medallionY - height) / zoom) / 2,
+    r: MEDALLION / 2 / zoom,
+  };
+  const fontSize = Math.round(journalWidth * 0.034);
   const lineHeight = Math.round(fontSize * 1.6);
-  const pageLeft = PAGE.left * bookWidth;
-  const pageTop = PAGE.top * bookHeight;
-  const pen = bookWidth * PEN_SCALE;
+  const lineLeft = page.x + page.w * 0.1;
+  const linesTop = ring.y + ring.r + lineHeight * 0.6;
+  const pen = journalWidth * PEN_SCALE;
   const lines = useMemo(
-    () => pageLines(text, Math.floor((PAGE.width * bookWidth) / (fontSize * 0.5))),
-    [text, bookWidth, fontSize]
+    () => pageLines(text, Math.floor((page.w * 0.8) / (fontSize * 0.5))),
+    [text, page.w, fontSize]
   );
 
   useEffect(() => {
@@ -240,39 +206,24 @@ export function DreamCaptureSeal({ text }: { text: string }) {
     const haptic = (style: Haptics.ImpactFeedbackStyle) => {
       void Haptics.impactAsync(style).catch(() => {});
     };
+    const at = (beat: number) => (DREAM_STORY.prologue * beat) / 100;
     const timers = [
-      setTimeout(() => haptic(Haptics.ImpactFeedbackStyle.Light), (DREAM_STORY.prologue * BEAT.starBorn) / 100),
-      setTimeout(() => haptic(Haptics.ImpactFeedbackStyle.Soft), DREAM_STORY.prologue),
+      setTimeout(() => haptic(Haptics.ImpactFeedbackStyle.Light), at(BEAT.ringClosed)),
+      setTimeout(() => haptic(Haptics.ImpactFeedbackStyle.Soft), at((BEAT.skyIn[0] + BEAT.skyIn[1]) / 2)),
     ];
     return () => timers.forEach(clearTimeout);
   }, []);
 
-  // The pen's path and each word's flight follow the written lines, so they wait for layout.
-  // A later layout that moves them (web applies a word's margin after its first layout)
-  // replaces the first one; it lands before the pen starts.
-  const [placed, setPlaced] = useState<PlacedRow[] | null>(null);
-  const layout = useRef<{ rows: (LayoutRectangle | undefined)[]; words: (LayoutRectangle | undefined)[][] }>({
-    rows: [], words: [],
-  });
-  const settle = useCallback(() => {
-    const { rows, words } = layout.current;
-    const complete = lines.every((line, row) => rows[row] && line.every((_, index) => words[row]?.[index]));
-    if (!lines.length || !complete) return;
-    const next = lines.map((line, row) => ({
-      width: rows[row]!.width,
-      height: rows[row]!.height,
-      words: line.map((_, index) => words[row]![index]!),
-    }));
-    setPlaced((current) => (current && samePlacement(current, next) ? current : next));
+  // The ink is revealed under the nib, so each line's width waits for layout. A later layout
+  // that changes it (web can lay text out twice) replaces the first; it lands before the pen.
+  const [widths, setWidths] = useState<number[] | null>(null);
+  const measured = useRef<(number | undefined)[]>([]);
+  const onLineLayout = useCallback((index: number, event: LayoutChangeEvent) => {
+    measured.current[index] = event.nativeEvent.layout.width;
+    if (measured.current.filter((value) => value !== undefined).length < lines.length) return;
+    const next = lines.map((_, line) => measured.current[line]!);
+    setWidths((current) => (current && current.every((value, line) => Math.abs(value - next[line]) < 0.5) ? current : next));
   }, [lines]);
-  const onRowLayout = useCallback((row: number, event: LayoutChangeEvent) => {
-    layout.current.rows[row] = event.nativeEvent.layout;
-    settle();
-  }, [settle]);
-  const onWordLayout = useCallback((row: number, index: number, event: LayoutChangeEvent) => {
-    (layout.current.words[row] ??= [])[index] = event.nativeEvent.layout;
-    settle();
-  }, [settle]);
 
   const motion = useMemo(() => {
     const base = {
@@ -282,141 +233,157 @@ export function DreamCaptureSeal({ text }: { text: string }) {
     } as const;
     const animate = <S extends object>(animationName: CSSAnimationKeyframes<S>, extra?: Partial<CSSStyle<S>>) =>
       ({ ...base, animationName, ...extra }) as CSSStyle<S>;
-    const spark = animate<ViewStyle>({
-      '0%': { opacity: 0, transform: [{ translateY: 0 }, { scale: 0.6 }] },
-      [pct(BEAT.starBorn - 8)]: { opacity: 0, transform: [{ translateY: 0 }, { scale: 0.6 }] },
-      [pct(BEAT.starBorn)]: { opacity: 1, transform: [{ translateY: 0 }, { scale: 1.06 }] },
-      [pct(BEAT.starSettled)]: { opacity: 1, transform: [{ translateY: 0 }, { scale: 1 }] },
-      '100%': { opacity: 1, transform: [{ translateY: rise }, { scale: 1 }] },
-    });
+
+    // The dive: the page's ring travels to the medallion while the scale grows geometrically,
+    // which reads as a steady approach rather than a rush at the end.
+    const centre = { x: journalWidth / 2, y: journalHeight / 2 };
+    const startFocus = { x: width / 2 + (ring.x - centre.x), y: height / 2 + (ring.y - centre.y) };
+    const endFocus = { x: width / 2, y: medallionY };
+    const dive: CSSAnimationKeyframes<ViewStyle> = {
+      '0%': { opacity: 0, transform: [{ translateX: 0 }, { translateY: 8 }, { scale: 0.985 }] },
+      '2%': { opacity: 0, transform: [{ translateX: 0 }, { translateY: 8 }, { scale: 0.985 }] },
+      [pct(BEAT.journalIn)]: { opacity: 1, transform: [{ translateX: 0 }, { translateY: 0 }, { scale: 1 }] },
+    };
+    const steps = 10;
+    for (let step = 0; step <= steps; step += 1) {
+      const progress = smoothstep(step / steps);
+      const scale = zoom ** progress;
+      const focus = {
+        x: startFocus.x + (endFocus.x - startFocus.x) * progress,
+        y: startFocus.y + (endFocus.y - startFocus.y) * progress,
+      };
+      // Each step is already eased, so the steps join linearly.
+      dive[pct(BEAT.diveFrom + ((BEAT.diveTo - BEAT.diveFrom) * step) / steps)] = {
+        opacity: 1,
+        transform: [
+          { translateX: focus.x - width / 2 - scale * (ring.x - centre.x) },
+          { translateY: focus.y - height / 2 - scale * (ring.y - centre.y) },
+          { scale },
+        ],
+        animationTimingFunction: 'linear',
+      };
+    }
+    dive['100%'] = dive[pct(BEAT.diveTo)];
+
+    const lamp: CSSAnimationKeyframes<ViewStyle> = {
+      '0%': { opacity: 0 },
+      '12%': { opacity: 0 },
+      [pct(BEAT.lampOn)]: { opacity: 0.55 },
+      '25%': { opacity: 0.47 },
+      '31%': { opacity: 0.58 },
+      '36%': { opacity: 0.5 },
+      '43%': { opacity: 0.56 },
+      '50%': { opacity: 0.5 },
+      [pct(BEAT.lampOff)]: { opacity: 0 },
+      '100%': { opacity: 0 },
+    };
+
     return {
       veil: animate<ViewStyle>({
         '0%': { opacity: 0 }, [pct(BEAT.night)]: { opacity: 0.96 }, '100%': { opacity: 0.96 },
       }, { animationTimingFunction: EASE.out }),
-      // The sky sinks as the star rises, so the eye travels up with it.
+      // The stars part as the reader dives towards the page.
       sky: animate<ViewStyle>({
-        '0%': { transform: [{ translateY: 0 }] },
-        [pct(BEAT.starSettled)]: { transform: [{ translateY: 0 }] },
-        '100%': { transform: [{ translateY: 22 }] },
+        '0%': { opacity: 1, transform: [{ scale: 1 }] },
+        [pct(BEAT.diveFrom)]: { opacity: 1, transform: [{ scale: 1 }] },
+        [pct(BEAT.diveTo)]: { opacity: 0, transform: [{ scale: 1.35 }] },
+        '100%': { opacity: 0, transform: [{ scale: 1.35 }] },
       }),
       stars: SKY.map((point) => animate<ViewStyle>(skyStar(point.at, 'pulse' in point ? point.pulse : undefined))),
-      book: animate<ViewStyle>({
-        '0%': { opacity: 0, transform: [{ translateY: 8 }, { scale: 0.985 }] },
-        '3%': { opacity: 0, transform: [{ translateY: 8 }, { scale: 0.985 }] },
-        [pct(BEAT.bookIn)]: { opacity: 1, transform: [{ translateY: 0 }, { scale: 1 }] },
-        [pct(BEAT.bookOut)]: { opacity: 1, transform: [{ translateY: 0 }, { scale: 1 }] },
-        [pct(BEAT.bookGone)]: { opacity: 0, transform: [{ translateY: 10 }, { scale: 0.96 }] },
-        '100%': { opacity: 0, transform: [{ translateY: 10 }, { scale: 0.96 }] },
-      }),
-      // The written ink hands over to the words of light, which take its exact place.
-      ink: animate<ViewStyle>({
-        '0%': { opacity: 1 },
-        [pct(BEAT.lift)]: { opacity: 1 },
-        [pct(BEAT.lift + 2)]: { opacity: 0 },
-        '100%': { opacity: 0 },
-      }, { animationTimingFunction: 'linear' }),
-      glow: animate<ViewStyle>({
-        '0%': { opacity: 0, transform: [{ scale: 1.2 }] },
-        '40%': { opacity: 0, transform: [{ scale: 1.2 }] },
-        '54%': { opacity: 0.85, transform: [{ scale: 1 }] },
-        '60%': { opacity: 0.72, transform: [{ scale: 1.04 }] },
-        '66%': { opacity: 0.9, transform: [{ scale: 0.97 }] },
-        [pct(BEAT.starBorn)]: { opacity: 0, transform: [{ scale: 0.12 }] },
-        '100%': { opacity: 0, transform: [{ scale: 0.12 }] },
-      }),
-      motes: MOTES.map((mote) => animate<ViewStyle>(moteFlight(mote.x, mote.y, mote.from))),
-      rings: [
-        animate<ViewStyle>(ringWave(BEAT.starBorn - 2, 90, 1.1, 0.5)),
-        animate<ViewStyle>(ringWave(BEAT.starBorn + 1, 96, 1.5, 0.3)),
-      ],
-      spark,
-      trail: TRAIL.map((echo) => ({ ...spark, animationDelay: echo.delay })),
-      halo: animate<ViewStyle>({
-        '0%': { opacity: 0.3, transform: [{ scale: 1 }] },
-        '90%': { opacity: 0.3, transform: [{ scale: 1 }] },
-        '100%': { opacity: 0.45, transform: [{ scale: 1.6 }] },
+      dive: animate<ViewStyle>(dive),
+      lamp: animate<ViewStyle>(lamp),
+      ink: animate<ViewStyle>(fade(BEAT.inkGone[0], BEAT.inkGone[1], 1, 0)),
+      pageCover: animate<ViewStyle>(fade(BEAT.pageCover[0], BEAT.pageCover[1])),
+      grain: animate<ViewStyle>(fade(BEAT.grainIn[0], BEAT.grainIn[1])),
+      drawnRing: animate<ViewStyle>(fade(BEAT.ringSettles[0], BEAT.ringSettles[1], 1, 0)),
+      ring: animate<ViewStyle>(fade(BEAT.ringSettles[0], BEAT.ringSettles[1])),
+      ringStrokes: Array.from({ length: RING_STROKES }, (_, stroke) => {
+        const drawn = BEAT.ringFrom + ((BEAT.ringClosed - BEAT.ringFrom) * (stroke + 1)) / RING_STROKES;
+        return animate<ViewStyle>(fade(drawn - 0.3, drawn), { animationTimingFunction: 'linear' });
       }),
       glint: animate<ViewStyle>({
         '0%': { opacity: 0, transform: [{ rotate: '-30deg' }, { scale: 0 }] },
-        [pct(BEAT.starBorn - 7)]: { opacity: 0, transform: [{ rotate: '-30deg' }, { scale: 0 }] },
-        [pct(BEAT.starBorn)]: { opacity: 1, transform: [{ rotate: '0deg' }, { scale: 1.1 }] },
-        [pct(BEAT.starSettled + 2)]: { opacity: 0.8, transform: [{ rotate: '15deg' }, { scale: 0.75 }] },
-        '94%': { opacity: 0.8, transform: [{ rotate: '60deg' }, { scale: 0.75 }] },
-        '100%': { opacity: 0.9, transform: [{ rotate: '90deg' }, { scale: 0.95 }] },
+        [pct(BEAT.ringClosed - 1.5)]: { opacity: 0, transform: [{ rotate: '-30deg' }, { scale: 0 }] },
+        [pct(BEAT.ringClosed)]: { opacity: 1, transform: [{ rotate: '0deg' }, { scale: 1 }] },
+        [pct(BEAT.penGone + 2)]: { opacity: 0, transform: [{ rotate: '45deg' }, { scale: 0.6 }] },
+        '100%': { opacity: 0, transform: [{ rotate: '45deg' }, { scale: 0.6 }] },
+      }),
+      skyFill: animate<ViewStyle>({
+        '0%': { opacity: 0, transform: [{ scale: 1.08 }] },
+        [pct(BEAT.skyIn[0])]: { opacity: 0, transform: [{ scale: 1.08 }] },
+        [pct(BEAT.skyIn[1])]: { opacity: 1, transform: [{ scale: 1 }] },
+        '100%': { opacity: 1, transform: [{ scale: 1 }] },
+      }),
+      halo: animate<ViewStyle>({
+        '0%': { opacity: 0, transform: [{ scale: 0.8 }] },
+        [pct(BEAT.skyIn[0])]: { opacity: 0, transform: [{ scale: 0.8 }] },
+        [pct((BEAT.skyIn[0] + BEAT.skyIn[1]) / 2)]: { opacity: 0.9, transform: [{ scale: 1.05 }] },
+        '100%': { opacity: 0.45, transform: [{ scale: 1 }] },
       }),
     };
-  }, [rise]);
+  }, [height, journalHeight, journalWidth, medallionY, ring.x, ring.y, width, zoom]);
 
-  // Once the lines are laid out, the ink is revealed under the nib, the pen follows it,
-  // and each word knows its way to the glow at the book's centre.
-  const writing = useMemo(() => {
-    if (!placed) return null;
-    const schedule = writingSchedule(placed.map((row) => row.width));
-    const linear = { animationDuration: DREAM_STORY.prologue, animationTimingFunction: 'linear', animationFillMode: 'both' } as const;
-    // Writing runs at a steady pace; arriving, changing line and leaving glide on the story's curve.
-    const penAt = (
-      opacity: number, x: number, row: number, wobble = 0, away = 0, glide = false
-    ): CSSAnimationKeyframes<ViewStyle>[string] => {
+  // The pen glides in, writes each line at a steady pace, glides up to draw the ring, then away.
+  const penMotion = useMemo(() => {
+    if (!widths) return null;
+    const schedule = writingSchedule(widths);
+    const nibAt = (opacity: number, x: number, y: number, away = 0, glide = false) => {
       const frame: CSSAnimationKeyframes<ViewStyle>[string] = {
         opacity,
-        transform: [
-          { translateX: x - NIB.x * pen + away },
-          { translateY: pageTop + row * lineHeight + lineHeight * 0.74 - NIB.y * pen + wobble - away },
-        ],
+        transform: [{ translateX: x - NIB.x * pen + away }, { translateY: y - NIB.y * pen - away }],
       };
       // React Native's ViewStyle declares a string `animationTimingFunction`, which narrows the
       // keyframe block's type; Reanimated reads the curve object at run time.
       return glide ? ({ ...frame, animationTimingFunction: DREAM_EASE } as unknown as typeof frame) : frame;
     };
-    const last = schedule.length - 1;
-    const lineEnd = (row: number) => pageLeft + placed[row].width;
-    const penFrames: CSSAnimationKeyframes<ViewStyle> = {
-      '0%': penAt(0, pageLeft, 0, 0, 16),
-      [pct(BEAT.write - BEAT.penIn)]: penAt(0, pageLeft, 0, 0, 16, true),
+    const baseline = (row: number) => linesTop + row * lineHeight + lineHeight * 0.74;
+    const frames: CSSAnimationKeyframes<ViewStyle> = {
+      '0%': nibAt(0, lineLeft, baseline(0), 16),
+      [pct(BEAT.write - BEAT.penIn)]: nibAt(0, lineLeft, baseline(0), 16, true),
     };
     schedule.forEach((line, row) => {
       const strokes = Math.max(4, Math.round((line.to - line.from) / 1.6));
-      penFrames[pct(line.from)] = penAt(1, pageLeft, row);
+      frames[pct(line.from)] = nibAt(1, lineLeft, baseline(row));
       for (let stroke = 1; stroke < strokes; stroke += 1) {
         // A writing hand never runs on a rail: the nib rises and dips along the line.
         const wobble = (stroke % 2 ? -1 : 1) * fontSize * 0.06;
-        penFrames[pct(line.from + ((line.to - line.from) * stroke) / strokes)] =
-          penAt(1, pageLeft + (placed[row].width * stroke) / strokes, row, wobble);
+        frames[pct(line.from + ((line.to - line.from) * stroke) / strokes)] =
+          nibAt(1, lineLeft + (widths[row] * stroke) / strokes, baseline(row) + wobble);
       }
-      penFrames[pct(line.to)] = penAt(1, lineEnd(row), row, 0, 0, true);
+      frames[pct(line.to)] = nibAt(1, lineLeft + widths[row], baseline(row), 0, true);
     });
-    penFrames[pct(schedule[last].to + BEAT.penOut)] = penAt(0, lineEnd(last), last, 0, 20);
-    penFrames['100%'] = penAt(0, lineEnd(last), last, 0, 20);
-
-    const count = placed.reduce((sum, row) => sum + row.words.length, 0);
-    let order = 0;
+    // Up to the top of the ring, around it once, then away.
+    for (let stroke = 0; stroke <= RING_STROKES; stroke += 1) {
+      const radians = ((stroke / RING_STROKES) * 360 - 90) * (Math.PI / 180);
+      frames[pct(BEAT.ringFrom + ((BEAT.ringClosed - BEAT.ringFrom) * stroke) / RING_STROKES)] = nibAt(
+        1, ring.x + ring.r * Math.cos(radians), ring.y + ring.r * Math.sin(radians), 0, stroke === RING_STROKES
+      );
+    }
+    frames[pct(BEAT.penGone)] = nibAt(0, ring.x, ring.y - ring.r, 22);
+    frames['100%'] = nibAt(0, ring.x, ring.y - ring.r, 22);
     return {
-      pen: { ...linear, animationName: penFrames } as CSSStyle<ViewStyle>,
-      masks: placed.map((row, rowIndex) => ({
-        ...linear,
+      pen: {
+        animationName: frames,
+        animationDuration: DREAM_STORY.prologue,
+        animationTimingFunction: 'linear',
+        animationFillMode: 'both',
+      } as CSSStyle<ViewStyle>,
+      masks: schedule.map((line, row) => ({
         animationName: {
           '0%': { width: 0 },
-          [pct(schedule[rowIndex].from)]: { width: 0 },
-          [pct(schedule[rowIndex].to)]: { width: row.width },
-          '100%': { width: row.width },
+          [pct(line.from)]: { width: 0 },
+          [pct(line.to)]: { width: widths[row] },
+          '100%': { width: widths[row] },
         },
+        animationDuration: DREAM_STORY.prologue,
+        animationTimingFunction: 'linear',
+        animationFillMode: 'both',
       }) as CSSStyle<ViewStyle>),
-      words: placed.map((row, rowIndex) => row.words.map((word) => {
-        const dx = (bookWidth / 2 - (pageLeft + word.x + word.width / 2)) * WORD_PULL;
-        const dy = (bookHeight / 2 - (pageTop + rowIndex * lineHeight + word.y + word.height / 2)) * WORD_PULL;
-        const style = {
-          ...linear,
-          animationTimingFunction: DREAM_EASE,
-          animationName: wordFlight(order, count, dx, dy, lit),
-        } as CSSStyle<TextStyle>;
-        order += 1;
-        return style;
-      })),
     };
-  }, [placed, pen, pageLeft, pageTop, lineHeight, fontSize, bookWidth, bookHeight, lit]);
+  }, [widths, pen, linesTop, lineHeight, lineLeft, fontSize, ring.x, ring.y, ring.r]);
 
-  const wordStyle = { fontSize, lineHeight, marginRight: fontSize * 0.28 };
-  const rowFrame = (row: number) => ({ position: 'absolute' as const, left: pageLeft, top: pageTop + row * lineHeight });
+  const lineStyle = { fontSize, lineHeight, color: ink };
+  const ringBox = ring.r * 2;
 
   return (
     <View
@@ -439,90 +406,102 @@ export function DreamCaptureSeal({ text }: { text: string }) {
         ))}
       </Animated.View>
 
-      {/* The journal and its pen. The written ink fades with the page; its words leave it. */}
-      <View className="absolute" style={{ width: bookWidth, height: bookHeight }}>
-        <Animated.View className="absolute inset-0" style={motion.book as StyleProp<ViewStyle>}>
-          <Image source={BOOK_ART} resizeMode="contain" style={{ width: bookWidth, height: bookHeight }} />
-          <Animated.View className="absolute inset-0" style={motion.ink as StyleProp<ViewStyle>}>
-            {writing && placed ? placed.map((row, rowIndex) => (
-              <Animated.View key={rowIndex} className="overflow-hidden"
-                style={[rowFrame(rowIndex), { height: row.height }, writing.masks[rowIndex]] as StyleProp<ViewStyle>}>
-                <View className="flex-row" style={{ width: row.width }}>
-                  {lines[rowIndex].map((word, index) => (
-                    <Text key={index} className="font-serif-italic" style={[wordStyle, { color: PAGE_INK }]}>{word}</Text>
-                  ))}
-                </View>
-              </Animated.View>
-            )) : null}
-          </Animated.View>
-        </Animated.View>
-        {writing ? (
-          <Animated.View className="absolute left-0 top-0"
-            style={[{ width: pen, height: pen }, writing.pen] as StyleProp<ViewStyle>}>
-            <Image source={PEN_ART} resizeMode="contain" style={{ width: pen, height: pen }} />
-          </Animated.View>
-        ) : null}
-      </View>
-
-      <Animated.View className="absolute" style={[{ width: GLOW, height: GLOW }, motion.glow] as StyleProp<ViewStyle>}>
-        <Svg width={GLOW} height={GLOW}>
-          <Defs>
-            <RadialGradient id="seal-glow" cx="50%" cy="50%" r="50%">
-              <Stop offset="0" stopColor={light} stopOpacity={0.5} />
-              <Stop offset="0.45" stopColor={light} stopOpacity={0.18} />
-              <Stop offset="1" stopColor={light} stopOpacity={0} />
-            </RadialGradient>
-          </Defs>
-          <Circle cx={GLOW / 2} cy={GLOW / 2} r={GLOW / 2} fill="url(#seal-glow)" />
-        </Svg>
-      </Animated.View>
-
-      {/* The same lines again: laid out first to place the pen, then flown into the glow. */}
-      <View className="absolute" pointerEvents="none" style={{ width: bookWidth, height: bookHeight }}>
-        {lines.map((line, rowIndex) => (
-          <View key={rowIndex} className="flex-row" style={rowFrame(rowIndex)}
-            onLayout={(event) => onRowLayout(rowIndex, event)}>
-            {line.map((word, index) => (
-              <Animated.Text
-                key={index}
-                onLayout={(event) => onWordLayout(rowIndex, index, event)}
-                className="font-serif-italic"
-                style={[wordStyle, writing?.words[rowIndex][index] ?? { opacity: 0 }] as StyleProp<TextStyle>}
-              >
-                {word}
-              </Animated.Text>
-            ))}
-          </View>
+      {/* Lines laid out unseen, to reveal the ink under the nib at each line's own width. */}
+      <View className="absolute opacity-0" style={{ width: journalWidth, height: journalHeight }}>
+        {lines.map((line, index) => (
+          <Text key={index} numberOfLines={1} onLayout={(event) => onLineLayout(index, event)}
+            className="absolute left-0 top-0 font-serif-italic" style={lineStyle}>{line}</Text>
         ))}
       </View>
 
-      {MOTES.map((_, index) => (
-        <Animated.View key={index} className="absolute h-1 w-1 rounded-full bg-champagne"
-          style={motion.motes[index] as StyleProp<ViewStyle>} />
-      ))}
-      {motion.rings.map((ring, index) => (
-        <Animated.View key={index} className="absolute rounded-full" style={[{
-          width: RING, height: RING, borderWidth: 1.5, borderColor: light,
-        }, ring] as StyleProp<ViewStyle>} />
-      ))}
-      {TRAIL.map((echo, index) => (
-        <View key={index} className="absolute inset-0 items-center justify-center" style={{ opacity: echo.opacity }}>
-          <Animated.View className="items-center justify-center"
-            style={[{ width: SPARK, height: SPARK }, motion.trail[index]] as StyleProp<ViewStyle>}>
-            <View className="rounded-full bg-champagne" style={{ width: echo.size, height: echo.size }} />
+      <View className="absolute" style={{ width: journalWidth, height: journalHeight }}>
+        <Animated.View className="absolute inset-0" style={motion.dive as StyleProp<ViewStyle>}>
+          <Image source={night ? NIGHT_JOURNAL : IVORY_JOURNAL} resizeMode="contain"
+            style={{ width: journalWidth, height: journalHeight }} />
+          <Animated.View className="absolute" style={[{
+            left: page.x - page.w * 0.4, top: page.y - page.h * 0.25, width: page.w * 1.8, height: page.h * 1.5,
+          }, motion.lamp] as StyleProp<ViewStyle>}>
+            <Svg width="100%" height="100%">
+              <Defs>
+                <RadialGradient id="seal-lamp" cx="50%" cy="45%" r="50%">
+                  <Stop offset="0" stopColor={LAMP} stopOpacity={0.42} />
+                  <Stop offset="0.5" stopColor={LAMP} stopOpacity={0.12} />
+                  <Stop offset="1" stopColor={LAMP} stopOpacity={0} />
+                </RadialGradient>
+              </Defs>
+              <Ellipse cx="50%" cy="50%" rx="50%" ry="50%" fill="url(#seal-lamp)" />
+            </Svg>
           </Animated.View>
-        </View>
-      ))}
-      <Animated.View className="items-center justify-center"
-        style={[{ width: SPARK, height: SPARK }, motion.spark] as StyleProp<ViewStyle>}>
-        <Animated.View className="absolute rounded-full bg-champagne"
-          style={[{ width: SPARK, height: SPARK }, motion.halo] as StyleProp<ViewStyle>} />
-        <Animated.View className="absolute" style={[{ width: GLINT, height: GLINT }, motion.glint] as StyleProp<ViewStyle>}>
-          <Svg width={GLINT} height={GLINT}>
-            <Path d={sparklePath(GLINT / 2, GLINT / 2, GLINT / 2)} fill={light} />
-          </Svg>
+          {/* The page itself, which takes over from the art as it fills the screen. */}
+          <Animated.View className="absolute bg-ink" style={[{ left: page.x, top: page.y, width: page.w, height: page.h },
+            motion.pageCover] as StyleProp<ViewStyle>} />
+          <Animated.View className="absolute inset-0" style={motion.ink as StyleProp<ViewStyle>}>
+            {penMotion && widths ? lines.map((line, row) => (
+              <Animated.View key={row} className="absolute overflow-hidden"
+                style={[{ left: lineLeft, top: linesTop + row * lineHeight, height: lineHeight }, penMotion.masks[row]] as StyleProp<ViewStyle>}>
+                {/* Wider than the line, so the mask alone decides what is written. */}
+                <Text className="font-serif-italic" style={[lineStyle, { width: widths[row] + fontSize }]}>{line}</Text>
+              </Animated.View>
+            )) : null}
+          </Animated.View>
+          <Animated.View className="absolute" style={[{ left: ring.x - ring.r, top: ring.y - ring.r, width: ringBox, height: ringBox },
+            motion.drawnRing] as StyleProp<ViewStyle>}>
+            {motion.ringStrokes.map((stroke, index) => (
+              <Animated.View key={index} className="absolute inset-0" style={stroke as StyleProp<ViewStyle>}>
+                <Svg width={ringBox} height={ringBox}>
+                  <Path d={arcPath(ring.r, (index * 360) / RING_STROKES, ((index + 1) * 360) / RING_STROKES + 1)}
+                    stroke={ringInk} strokeWidth={0.9} strokeLinecap="round" fill="none" />
+                </Svg>
+              </Animated.View>
+            ))}
+          </Animated.View>
         </Animated.View>
-        <View className="h-2.5 w-2.5 rounded-full bg-champagne" />
+
+        {penMotion ? (
+          <Animated.View className="absolute left-0 top-0" style={[{ width: pen, height: pen }, penMotion.pen] as StyleProp<ViewStyle>}>
+            {/* The pen's soft shadow on the paper, then the pen. */}
+            <Image source={PEN_ART} resizeMode="contain" tintColor="#000000"
+              style={{ position: 'absolute', left: 5, top: 7, width: pen, height: pen, opacity: 0.22 }} />
+            <Image source={PEN_ART} resizeMode="contain" style={{ width: pen, height: pen }} />
+          </Animated.View>
+        ) : null}
+        <Animated.View className="absolute items-center justify-center" style={[{
+          left: ring.x - 9, top: ring.y - ring.r - 9, width: 18, height: 18,
+        }, motion.glint] as StyleProp<ViewStyle>}>
+          <Svg width={18} height={18}><Path d={sparklePath(9, 9, 9)} fill={ringInk} /></Svg>
+        </Animated.View>
+      </View>
+
+      {/* The dream page's own grain, then its window: the ring settles crisp and fills with night. */}
+      <Animated.View className="absolute inset-0" style={motion.grain as StyleProp<ViewStyle>}>
+        <JournalPaper />
+      </Animated.View>
+      <Animated.View className="absolute" style={[{
+        left: width / 2 - 170, top: medallionY - 140, width: 340, height: 280,
+      }, motion.halo] as StyleProp<ViewStyle>}>
+        <Svg width={340} height={280}>
+          <Defs>
+            <RadialGradient id="seal-halo" cx="50%" cy="50%" r="50%">
+              <Stop offset="0" stopColor={noctalia.atmosphere.glow} stopOpacity={night ? 0.24 : 0.16} />
+              <Stop offset="0.55" stopColor={noctalia.atmosphere.glow} stopOpacity={night ? 0.07 : 0.05} />
+              <Stop offset="1" stopColor={noctalia.atmosphere.glow} stopOpacity={0} />
+            </RadialGradient>
+          </Defs>
+          <Ellipse cx={170} cy={140} rx={170} ry={140} fill="url(#seal-halo)" />
+        </Svg>
+      </Animated.View>
+      <Animated.View className="absolute overflow-hidden rounded-full bg-ink" style={[{
+        left: width / 2 - MEDALLION / 2, top: medallionY - MEDALLION / 2, width: MEDALLION, height: MEDALLION,
+      }, motion.skyFill] as StyleProp<ViewStyle>}>
+        <Image source={ASTRAL_ART} resizeMode="cover" style={{ width: MEDALLION, height: MEDALLION }} />
+      </Animated.View>
+      <Animated.View className="absolute" style={[{
+        left: width / 2 - MEDALLION / 2, top: medallionY - MEDALLION / 2, width: MEDALLION, height: MEDALLION,
+      }, motion.ring] as StyleProp<ViewStyle>}>
+        <Svg width={MEDALLION} height={MEDALLION}>
+          <Circle cx={MEDALLION / 2} cy={MEDALLION / 2} r={MEDALLION / 2 - 0.75} fill="none"
+            stroke={ringInk} strokeOpacity={0.7} strokeWidth={1.5} />
+        </Svg>
       </Animated.View>
     </View>
   );
