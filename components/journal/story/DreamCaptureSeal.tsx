@@ -49,23 +49,25 @@ const LAMP = getNoctaliaPalette('dark').accent;
  */
 const BEAT = {
   night: 14,
-  journalIn: 16,
+  journalIn: 10,
+  /** The view glides from the whole journal to its right page, the ring's place already centred. */
+  framed: 20,
   /** The lamp lights the page while the pen works. */
-  lampOn: 18,
+  lampOn: 20,
   lampOff: 62,
   /** The pen glides in, writes the dream's first lines, then draws the ring above them. */
   penIn: 3,
-  write: 17,
-  written: 41,
+  write: 20,
+  written: 43,
   lineGap: 3,
-  ringFrom: 44,
-  ringClosed: 50,
-  penGone: 54,
-  /** The reader dives into the page until it is the dream's own page. */
-  diveFrom: 54,
+  ringFrom: 45,
+  ringClosed: 51,
+  penGone: 55,
+  /** The reader dives into the page, around the ring, until it is the dream's own page. */
+  diveFrom: 55,
   diveTo: 80,
-  inkGone: [58, 68],
-  pageCover: [62, 74],
+  inkGone: [59, 68],
+  pageCover: [63, 74],
   grainIn: [70, 80],
   ringSettles: [74, 80],
   /** The night fills the ring, which becomes the saved moment's window. */
@@ -154,10 +156,11 @@ const arcPath = (r: number, start: number, end: number) => {
 /**
  * The prologue of the dream story, played on the capture screen once the dream is
  * durably saved. Night falls over the draft and its sky lights as the dream journal opens
- * under a lamp. A fountain pen writes the dream's first words on the right page, then
- * draws a ring above them and lifts away. The reader then dives into the page: it grows
- * until it fills the screen and its paper becomes the dream page's own, the ring landing
- * exactly where the saved moment's window opens, and the night sky fills it. The next
+ * under a lamp, and the view glides to its right page so that the ring's place is already
+ * where the saved moment's window will open. A fountain pen writes the dream's first words,
+ * then draws the ring above them and lifts away. The reader then dives into the page around
+ * the ring, which never moves: the page grows until it fills the screen and its paper
+ * becomes the dream page's own, and the night sky fills the ring. The next
  * page fades in around that window. In the night theme the journal's paper is night
  * paper written in gold; in the paper theme it is ivory written in ink. Two touches mark
  * the ring closing and the sky filling it, after the save's own success haptic. It holds
@@ -234,11 +237,18 @@ export function DreamCaptureSeal({ text }: { text: string }) {
     const animate = <S extends object>(animationName: CSSAnimationKeyframes<S>, extra?: Partial<CSSStyle<S>>) =>
       ({ ...base, animationName, ...extra }) as CSSStyle<S>;
 
-    // The dive: the page's ring travels to the medallion while the scale grows geometrically,
-    // which reads as a steady approach rather than a rush at the end.
+    // The framing: once the journal has settled, the view glides until the ring's place on the
+    // page is where the medallion will open, so the ring is drawn there and never travels.
     const centre = { x: journalWidth / 2, y: journalHeight / 2 };
-    const startFocus = { x: width / 2 + (ring.x - centre.x), y: height / 2 + (ring.y - centre.y) };
-    const endFocus = { x: width / 2, y: medallionY };
+    const framed = { translateX: centre.x - ring.x, translateY: medallionY - height / 2 - (ring.y - centre.y) };
+    const frame: CSSAnimationKeyframes<ViewStyle> = {
+      '0%': { transform: [{ translateX: 0 }, { translateY: 0 }] },
+      [pct(BEAT.journalIn)]: { transform: [{ translateX: 0 }, { translateY: 0 }] },
+      [pct(BEAT.framed)]: { transform: [{ translateX: framed.translateX }, { translateY: framed.translateY }] },
+      '100%': { transform: [{ translateX: framed.translateX }, { translateY: framed.translateY }] },
+    };
+    // The dive: the page grows around the ring, which stays put, the scale growing
+    // geometrically so it reads as a steady approach rather than a rush at the end.
     const dive: CSSAnimationKeyframes<ViewStyle> = {
       '0%': { opacity: 0, transform: [{ translateX: 0 }, { translateY: 8 }, { scale: 0.985 }] },
       '2%': { opacity: 0, transform: [{ translateX: 0 }, { translateY: 8 }, { scale: 0.985 }] },
@@ -246,18 +256,13 @@ export function DreamCaptureSeal({ text }: { text: string }) {
     };
     const steps = 10;
     for (let step = 0; step <= steps; step += 1) {
-      const progress = smoothstep(step / steps);
-      const scale = zoom ** progress;
-      const focus = {
-        x: startFocus.x + (endFocus.x - startFocus.x) * progress,
-        y: startFocus.y + (endFocus.y - startFocus.y) * progress,
-      };
+      const scale = zoom ** smoothstep(step / steps);
       // Each step is already eased, so the steps join linearly.
       dive[pct(BEAT.diveFrom + ((BEAT.diveTo - BEAT.diveFrom) * step) / steps)] = {
         opacity: 1,
         transform: [
-          { translateX: focus.x - width / 2 - scale * (ring.x - centre.x) },
-          { translateY: focus.y - height / 2 - scale * (ring.y - centre.y) },
+          { translateX: -(scale - 1) * (ring.x - centre.x) },
+          { translateY: -(scale - 1) * (ring.y - centre.y) },
           { scale },
         ],
         animationTimingFunction: 'linear',
@@ -267,7 +272,7 @@ export function DreamCaptureSeal({ text }: { text: string }) {
 
     const lamp: CSSAnimationKeyframes<ViewStyle> = {
       '0%': { opacity: 0 },
-      '12%': { opacity: 0 },
+      [pct(BEAT.journalIn + 4)]: { opacity: 0 },
       [pct(BEAT.lampOn)]: { opacity: 0.55 },
       '25%': { opacity: 0.47 },
       '31%': { opacity: 0.58 },
@@ -290,6 +295,7 @@ export function DreamCaptureSeal({ text }: { text: string }) {
         '100%': { opacity: 0, transform: [{ scale: 1.35 }] },
       }),
       stars: SKY.map((point) => animate<ViewStyle>(skyStar(point.at, 'pulse' in point ? point.pulse : undefined))),
+      frame: animate<ViewStyle>(frame),
       dive: animate<ViewStyle>(dive),
       lamp: animate<ViewStyle>(lamp),
       ink: animate<ViewStyle>(fade(BEAT.inkGone[0], BEAT.inkGone[1], 1, 0)),
@@ -321,7 +327,7 @@ export function DreamCaptureSeal({ text }: { text: string }) {
         '100%': { opacity: 0.45, transform: [{ scale: 1 }] },
       }),
     };
-  }, [height, journalHeight, journalWidth, medallionY, ring.x, ring.y, width, zoom]);
+  }, [height, journalHeight, journalWidth, medallionY, ring.x, ring.y, zoom]);
 
   // The pen glides in, writes each line at a steady pace, glides up to draw the ring, then away.
   const penMotion = useMemo(() => {
@@ -414,7 +420,7 @@ export function DreamCaptureSeal({ text }: { text: string }) {
         ))}
       </View>
 
-      <View className="absolute" style={{ width: journalWidth, height: journalHeight }}>
+      <Animated.View className="absolute" style={[{ width: journalWidth, height: journalHeight }, motion.frame] as StyleProp<ViewStyle>}>
         <Animated.View className="absolute inset-0" style={motion.dive as StyleProp<ViewStyle>}>
           <Image source={night ? NIGHT_JOURNAL : IVORY_JOURNAL} resizeMode="contain"
             style={{ width: journalWidth, height: journalHeight }} />
@@ -470,7 +476,7 @@ export function DreamCaptureSeal({ text }: { text: string }) {
         }, motion.glint] as StyleProp<ViewStyle>}>
           <Svg width={18} height={18}><Path d={sparklePath(9, 9, 9)} fill={ringInk} /></Svg>
         </Animated.View>
-      </View>
+      </Animated.View>
 
       {/* The dream page's own grain, then its window: the ring settles crisp and fills with night. */}
       <Animated.View className="absolute inset-0" style={motion.grain as StyleProp<ViewStyle>}>
