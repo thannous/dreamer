@@ -45,9 +45,9 @@ export const DREAM_STORY = {
   /**
    * The capture screen's seal, from the save to the saved moment: written, ringed, entered, filled.
    * Long enough for each beat to be lived: the pen writes for about a second, and the dive
-   * into the page takes as long again.
+   * into the page takes half as long again.
    */
-  prologue: 4400,
+  prologue: 4800,
   /** The seal's veil outlasts the screen transition that covers it. */
   prologueVeilHold: 700,
   /** One pass of the light band across a canvas being painted. */

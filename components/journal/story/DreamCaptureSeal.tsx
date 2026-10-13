@@ -48,30 +48,30 @@ const LAMP = getNoctaliaPalette('dark').accent;
  * these, so the story keeps its proportions whatever the prologue lasts.
  */
 const BEAT = {
-  night: 14,
-  journalIn: 10,
+  night: 13,
+  journalIn: 9,
   /** The view glides from the whole journal to its right page, the ring's place already centred. */
-  framed: 20,
+  framed: 18,
   /** The lamp lights the page while the pen works. */
-  lampOn: 20,
-  lampOff: 62,
+  lampOn: 18,
+  lampOff: 58,
   /** The pen glides in, writes the dream's first lines, then draws the ring above them. */
   penIn: 3,
-  write: 20,
-  written: 43,
-  lineGap: 3,
-  ringFrom: 45,
-  ringClosed: 51,
-  penGone: 55,
+  write: 18,
+  written: 39.5,
+  lineGap: 2.75,
+  ringFrom: 41.5,
+  ringClosed: 47,
+  penGone: 50.5,
   /** The reader dives into the page, around the ring, until it is the dream's own page. */
-  diveFrom: 55,
-  diveTo: 80,
-  inkGone: [59, 68],
-  pageCover: [63, 74],
-  grainIn: [70, 80],
-  ringSettles: [74, 80],
+  diveFrom: 50.5,
+  diveTo: 81,
+  inkGone: [55, 65],
+  pageCover: [60, 73],
+  grainIn: [70, 81],
+  ringSettles: [75, 81],
   /** The night fills the ring, which becomes the saved moment's window. */
-  skyIn: [80, 92],
+  skyIn: [81, 93],
 } as const;
 
 /** The night sky behind the journal, in fractions of the screen. Fixed so every save shows the same sky. */

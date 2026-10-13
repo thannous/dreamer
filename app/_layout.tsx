@@ -83,6 +83,19 @@ import {
   savePendingRecordingNotification,
 } from '@/services/storageService';
 
+/**
+ * Dream pages that arrived from the capture seal. The page clears its `saved` param as soon
+ * as it mounts, which recomputes its options mid-transition; remembering the arrival keeps
+ * the fade instead of falling back to a slide.
+ */
+const sealArrivals = new Set<string>();
+const arrivesFromSeal = (route: { key?: string; params?: unknown }) => {
+  const saved = (route.params as { saved?: string } | undefined)?.saved === '1';
+  if (!route.key) return saved;
+  if (saved) sealArrivals.add(route.key);
+  return sealArrivals.has(route.key);
+};
+
 // Expo devtools keeps the screen awake in development, which can throw when the native activity
 // isn't ready (seen as "Unable to activate keep awake"). Swallow the failure to avoid red screens
 // while keeping production behavior unchanged.
@@ -856,13 +869,13 @@ function RootLayoutNav({
             {/* Repeated Android detail transitions redraw the retained journal;
                 measured draw stalls exceed a frame. Keep this frequent route instant.
                 On iOS a dream arriving from the capture seal fades in under the seal's
-                star instead of sliding over it. */}
+                window instead of sliding over it. */}
             <Stack.Screen name="journal/[id]" options={({ route }) => ({
               headerShown: false,
               scrollEdgeEffects: { top: 'hidden' },
               ...(Platform.OS === 'android'
                 ? { animation: 'none' as const }
-                : (route.params as { saved?: string } | undefined)?.saved === '1'
+                : arrivesFromSeal(route)
                   ? { animation: 'fade' as const, animationDuration: 600 }
                   : {}),
             })} />
