@@ -56,22 +56,23 @@ const BEAT = {
   lampOn: 18,
   lampOff: 58,
   /** The pen glides in, writes the dream's first lines, then draws the ring above them. */
-  penIn: 3,
+  penIn: 4,
   write: 18,
   written: 39.5,
   lineGap: 2.75,
   ringFrom: 41.5,
   ringClosed: 47,
-  penGone: 50.5,
-  /** The reader dives into the page, around the ring, until it is the dream's own page. */
-  diveFrom: 50.5,
-  diveTo: 81,
-  inkGone: [55, 65],
-  pageCover: [60, 73],
-  grainIn: [70, 81],
-  ringSettles: [75, 81],
+  penGone: 51.5,
+  /** A breath once the pen has gone, then the reader dives into the page around the ring. */
+  diveFrom: 52.5,
+  diveTo: 82,
+  /** The words stay legible well into the dive; the page's own grain takes over as the art's fades. */
+  inkGone: [58, 70],
+  pageCover: [62, 76],
+  grainIn: [66, 80],
+  ringSettles: [76, 82],
   /** The night fills the ring, which becomes the saved moment's window. */
-  skyIn: [81, 93],
+  skyIn: [82, 94],
 } as const;
 
 /** The night sky behind the journal, in fractions of the screen. Fixed so every save shows the same sky. */
@@ -344,8 +345,8 @@ export function DreamCaptureSeal({ text }: { text: string }) {
     };
     const baseline = (row: number) => linesTop + row * lineHeight + lineHeight * 0.74;
     const frames: CSSAnimationKeyframes<ViewStyle> = {
-      '0%': nibAt(0, lineLeft, baseline(0), 16),
-      [pct(BEAT.write - BEAT.penIn)]: nibAt(0, lineLeft, baseline(0), 16, true),
+      '0%': nibAt(0, lineLeft, baseline(0), 30),
+      [pct(BEAT.write - BEAT.penIn)]: nibAt(0, lineLeft, baseline(0), 30, true),
     };
     schedule.forEach((line, row) => {
       const strokes = Math.max(4, Math.round((line.to - line.from) / 1.6));
@@ -365,8 +366,8 @@ export function DreamCaptureSeal({ text }: { text: string }) {
         1, ring.x + ring.r * Math.cos(radians), ring.y + ring.r * Math.sin(radians), 0, stroke === RING_STROKES
       );
     }
-    frames[pct(BEAT.penGone)] = nibAt(0, ring.x, ring.y - ring.r, 22);
-    frames['100%'] = nibAt(0, ring.x, ring.y - ring.r, 22);
+    frames[pct(BEAT.penGone)] = nibAt(0, ring.x, ring.y - ring.r, 30);
+    frames['100%'] = nibAt(0, ring.x, ring.y - ring.r, 30);
     return {
       pen: {
         animationName: frames,
@@ -456,7 +457,7 @@ export function DreamCaptureSeal({ text }: { text: string }) {
               <Animated.View key={index} className="absolute inset-0" style={stroke as StyleProp<ViewStyle>}>
                 <Svg width={ringBox} height={ringBox}>
                   <Path d={arcPath(ring.r, (index * 360) / RING_STROKES, ((index + 1) * 360) / RING_STROKES + 1)}
-                    stroke={ringInk} strokeWidth={0.9} strokeLinecap="round" fill="none" />
+                    stroke={ringInk} strokeWidth={0.7} strokeOpacity={0.9} strokeLinecap="round" fill="none" />
                 </Svg>
               </Animated.View>
             ))}

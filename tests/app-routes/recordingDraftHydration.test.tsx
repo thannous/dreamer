@@ -45,6 +45,8 @@ jest.mock('react-native', () => {
     Text: ({ children }: any) => <span>{children}</span>,
     View: Box,
     ScrollView: Box,
+    // The save seal's journal and pen are decorative art; this journey only needs it to render.
+    Image: () => null,
     KeyboardAvoidingView: Box,
     TextInput: Input,
     Pressable: ({ children, onPress, disabled, testID, accessibilityLabel }: any) => (

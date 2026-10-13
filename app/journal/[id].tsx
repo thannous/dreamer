@@ -18,6 +18,7 @@ import { DreamPaintingWait } from '@/components/journal/story/DreamPaintingWait'
 import { DREAM_STORY } from '@/components/journal/story/dreamStoryMotion';
 import { WaitingStars } from '@/components/journal/story/WaitingStars';
 import { markDreamStoryEpilogue } from '@/lib/dreamStoryEpilogue';
+import { hasDreamStoryHandoff } from '@/lib/dreamStoryPrologue';
 import { DreamShareImage } from '@/components/journal/DreamShareImage';
 import { getImageJobFailure } from '@/lib/imageJobErrors';
 import { ErrorType } from '@/lib/errors';
@@ -272,6 +273,8 @@ const JournalDetailContent = memo(function JournalDetailContent({ dream }: { dre
   // The arrival either opens on the saved moment or, with artwork already present, on the
   // cover with a toast. Decided once so the confirmation is never shown twice.
   const [opensOnSavedMoment] = useState(() => isSavedArrival && !dream?.imageUrl?.trim());
+  // Arriving from the capture seal, the window is already open: it is taken over, not opened again.
+  const [windowHandedOver] = useState(() => opensOnSavedMoment && !!dream && hasDreamStoryHandoff(getDreamIdentityKey(dream)));
   // Act III: an illustration present when the dream is first shown opens the page as its
   // cover. One painted during this visit lands where the reader is instead, so nothing
   // they are reading moves; the cover becomes how the next visit opens.
@@ -2706,7 +2709,7 @@ const JournalDetailContent = memo(function JournalDetailContent({ dream }: { dre
         >
           <View ref={readingContentRef} collapsable={false} onLayout={measureTranscriptSection} className="px-4 pb-6">
             {showSavedMoment ? (
-              <SavedDreamMoment phase={savedMomentPhase} painting={paintingInProgress}
+              <SavedDreamMoment phase={savedMomentPhase} painting={paintingInProgress} handedOver={windowHandedOver}
                 artwork={paintedArtwork} landArtwork={artworkLanding} onOpenArtwork={() => setIsIllustrationFullscreen(true)} />
             ) : null}
             <View onLayout={({ nativeEvent: { layout } }) => {

@@ -47,6 +47,7 @@ import {
 import { isMockModeEnabled } from '@/lib/env';
 import { DreamPersistenceError } from '@/lib/dreamStorageRead';
 import { getDreamIdentityKey } from '@/lib/dreamIdentity';
+import { markDreamStoryHandoff } from '@/lib/dreamStoryPrologue';
 import { classifyError, GuestDreamLimitError } from '@/lib/errors';
 import { hasAiConsent } from '@/lib/aiConsent';
 import { formatCaptureNarrative } from '@/services/captureConversation';
@@ -1170,6 +1171,8 @@ function RecordingScreen() {
       } else {
         setSealingSavedDream(latestTranscript);
         sealTimerRef.current = setTimeout(() => {
+          // The seal ends on the saved moment's window: the page takes it over as it is.
+          markDreamStoryHandoff(getDreamIdentityKey(savedDream));
           openSavedDream();
           sealTimerRef.current = setTimeout(() => {
             sealTimerRef.current = null;

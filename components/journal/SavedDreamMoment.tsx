@@ -50,10 +50,13 @@ export type SavedDreamPhase = 'saved' | 'reading' | 'read';
  * once the reading has landed. While its illustration is made (Act III) a band of light
  * crosses the window; once painted, the dream's own image settles into it and the
  * medallion opens the full view. Under reduced motion the layers only fade in and the
- * looping stars and light hold still.
+ * looping stars and light hold still. Arriving from the capture seal, which ends on this
+ * window already open, the window stays put and only the astrolabe settles around it.
  */
-export function SavedDreamMoment({ phase = 'saved', painting = false, artwork = null, landArtwork = true, onOpenArtwork }: {
+export function SavedDreamMoment({ phase = 'saved', painting = false, handedOver = false, artwork = null, landArtwork = true, onOpenArtwork }: {
   phase?: SavedDreamPhase;
+  /** The capture seal has just shown this window: it is taken over rather than opened again. */
+  handedOver?: boolean;
   /** The illustration job is running: the window is being painted. */
   painting?: boolean;
   /** The dream's own illustration, once it has landed. */
@@ -72,9 +75,9 @@ export function SavedDreamMoment({ phase = 'saved', painting = false, artwork = 
   const motion = useMemo(() => ({
     halo: entrance(null, 1200, 0, reduced),
     orbit: entrance({ from: [{ rotate: '-24deg' }], to: [{ rotate: '0deg' }] }, 1400, 80, reduced),
-    medallion: entrance({ from: [{ scale: 0.94 }], to: [{ scale: 1 }] }, 700, 0, reduced),
+    medallion: handedOver ? null : entrance({ from: [{ scale: 0.94 }], to: [{ scale: 1 }] }, 700, 0, reduced),
     label: entrance({ from: [{ translateY: 8 }], to: [{ translateY: 0 }] }, 400, 320, reduced),
-  }), [reduced]);
+  }), [handedOver, reduced]);
   const readingStars = useMemo(
     () => READING_STARS.map((_, index) => twinkle(index, READING_STARS.length, reduced)),
     [reduced]
