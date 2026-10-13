@@ -13,6 +13,7 @@ import Animated, { type CSSAnimationKeyframes, type CSSStyle } from 'react-nativ
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import Svg, { Circle, Defs, Ellipse, Path, RadialGradient, Stop } from 'react-native-svg';
 
+import { JournalPageEdges } from '@/components/journal/JournalPageEdges';
 import { JournalPaper } from '@/components/journal/JournalPaper';
 import { EASE } from '@/components/motion/motion';
 import { getNoctaliaDesignTokens } from '@/constants/noctaliaDesign';
@@ -484,6 +485,7 @@ export function DreamCaptureSeal({ text }: { text: string }) {
       {/* The dream page's own grain, then its window: the ring settles crisp and fills with night. */}
       <Animated.View className="absolute inset-0" style={motion.grain as StyleProp<ViewStyle>}>
         <JournalPaper />
+        <JournalPageEdges />
       </Animated.View>
       <Animated.View className="absolute" style={[{
         left: width / 2 - 170, top: medallionY - 140, width: 340, height: 280,

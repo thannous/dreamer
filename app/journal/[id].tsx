@@ -11,6 +11,7 @@ import { isInitialDreamCategorizationPending, subscribeInitialDreamCategorizatio
 import { useDreamMedia } from '@/hooks/useDreamMedia';
 import { Toast } from '@/components/Toast';
 import { DreamRecallAssistantCard } from '@/components/journal/DreamRecallAssistantCard';
+import { JournalPageEdges } from '@/components/journal/JournalPageEdges';
 import { JournalPaper } from '@/components/journal/JournalPaper';
 import { Fonts } from '@/constants/theme';
 import { SavedDreamMoment, type SavedDreamPhase } from '@/components/journal/SavedDreamMoment';
@@ -110,10 +111,10 @@ import {
   useWindowDimensions,
   View,
 } from 'react-native';
-import Animated, { useReducedMotion } from 'react-native-reanimated';
+import Animated, { Extrapolation, interpolate, useAnimatedStyle, useReducedMotion } from 'react-native-reanimated';
 import { useHeaderScroll } from '@/components/ui/headerStretch';
 import { withHeaderScroll } from '@/components/ui/HeaderScrollScope';
-import { useFrameParallax } from '@/components/ui/scrollDepth';
+import { useFrameParallax, useHeaderScrollY } from '@/components/ui/scrollDepth';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { IconSymbol } from '@/components/ui/icon-symbol';
 
@@ -246,6 +247,25 @@ function ArrivalReveal({ play, index, className, children }: {
   return play
     ? <Reveal index={index} delay={ARRIVAL_REVEAL_DELAY} className={className}>{children}</Reveal>
     : <View className={className}>{children}</View>;
+}
+
+/**
+ * The page under the navigation: clear at rest, so the back link floats on the journal
+ * page, and paper again once the reading scrolls under it, fading out at its lower edge.
+ */
+function HeaderPaperVeil({ height }: { height: number }) {
+  const scrollY = useHeaderScrollY();
+  const { colors, mode } = useTheme();
+  const ground = getNoctaliaDesignTokens(colors, mode).screen.background;
+  const veil = useAnimatedStyle(() => ({
+    opacity: interpolate(scrollY.get(), [0, 32], [0, 1], Extrapolation.CLAMP),
+  }));
+  return (
+    <Animated.View pointerEvents="none" style={[{ position: 'absolute', top: 0, left: 0, right: 0, height: height + 24 }, veil]}>
+      <View className="overflow-hidden bg-ink" style={{ height }}><JournalPaper /></View>
+      <LinearGradient colors={[ground, `${ground}00`]} style={{ height: 24 }} />
+    </Animated.View>
+  );
 }
 
 /** On arrival from the seal, the page's secondary details and steps join once the astrolabe has settled. */
@@ -2878,10 +2898,10 @@ const JournalDetailContent = memo(function JournalDetailContent({ dream }: { dre
             </View>
         </ScrollView>
 
-        <View className={`absolute top-0 left-0 right-0 z-50 px-3 pb-3 ${hasIllustratedCover && navigationOverImage ? '' : 'bg-ink'}`}
+        <View className="absolute top-0 left-0 right-0 z-50 px-3 pb-3"
           testID="journal.detail.navigation"
           style={{ paddingTop: insets.top + 12 }}>
-        {hasIllustratedCover && navigationOverImage ? null : <JournalPaper />}
+        {hasIllustratedCover && navigationOverImage ? null : <HeaderPaperVeil height={insets.top + 68} />}
         <PressableScale
           onPress={handleBackPress}
           className={`min-h-11 flex-row items-center gap-2 self-start rounded-[22px] px-3 ${hasIllustratedCover && navigationOverImage ? 'bg-ink' : ''}`}
@@ -3177,6 +3197,8 @@ const JournalDetailContent = memo(function JournalDetailContent({ dream }: { dre
             />
           </View>
         )}
+        {/* The journal page's own edges, over everything that rests on it. */}
+        {!isEditing && !isEditingTranscript ? <JournalPageEdges /> : null}
         </View>
       </KeyboardAvoidingView>
     </View>
