@@ -163,7 +163,8 @@ const arcPath = (r: number, start: number, end: number) => {
  * the ring, which never moves: the page grows until it fills the screen and its paper
  * becomes the dream page's own, and the night sky fills the ring. The next
  * page fades in around that window. In the night theme the journal's paper is night
- * paper written in gold; in the paper theme it is ivory written in ink. Two touches mark
+ * paper, in the paper theme it is ivory; both are written in the accent ink of the dream
+ * page's story. Two touches mark
  * the ring closing and the sky filling it, after the save's own success haptic. It holds
  * touch for its moment so nothing is pressed twice, and is decorative to assistive
  * technology: the next screen announces the save. The caller skips it under reduce motion.
@@ -174,8 +175,9 @@ export function DreamCaptureSeal({ text }: { text: string }) {
   const { colors, mode } = useTheme();
   const noctalia = useMemo(() => getNoctaliaDesignTokens(colors, mode), [colors, mode]);
   const night = mode === 'dark';
-  const ink = night ? noctalia.accent.text : noctalia.text.primary;
-  const ringInk = noctalia.accent.text;
+  // One ink in both themes: the same as the dream page's story, which this writing becomes.
+  const ink = noctalia.accent.text;
+  const ringInk = ink;
   const star = noctalia.atmosphere.star;
 
   // The journal, centred; its right page; and the dive that turns that page into the screen.

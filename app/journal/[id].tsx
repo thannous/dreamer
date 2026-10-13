@@ -12,6 +12,7 @@ import { useDreamMedia } from '@/hooks/useDreamMedia';
 import { Toast } from '@/components/Toast';
 import { DreamRecallAssistantCard } from '@/components/journal/DreamRecallAssistantCard';
 import { JournalPaper } from '@/components/journal/JournalPaper';
+import { Fonts } from '@/constants/theme';
 import { SavedDreamMoment, type SavedDreamPhase } from '@/components/journal/SavedDreamMoment';
 import { DreamPaintedArtwork } from '@/components/journal/story/DreamPaintedArtwork';
 import { DreamPaintingWait } from '@/components/journal/story/DreamPaintingWait';
@@ -232,6 +233,8 @@ const cropDreamImageToAspect = async (
 
 /** After the medallion starts to settle, so the dream's own content follows it. */
 const ARRIVAL_REVEAL_DELAY = 360;
+/** On arrival from the capture seal, the next steps wait for the astrolabe to settle. */
+const ARRIVAL_DOCK_DELAY = 1000;
 
 /** Staggers the arrival from capture once; every other visit shows sections immediately. */
 function ArrivalReveal({ play, index, className, children }: {
@@ -243,6 +246,11 @@ function ArrivalReveal({ play, index, className, children }: {
   return play
     ? <Reveal index={index} delay={ARRIVAL_REVEAL_DELAY} className={className}>{children}</Reveal>
     : <View className={className}>{children}</View>;
+}
+
+/** On arrival from the seal, the page's secondary details and steps join once the astrolabe has settled. */
+function ArrivalLater({ play, children }: { play: boolean; children: React.ReactNode }) {
+  return play ? <Reveal delay={ARRIVAL_DOCK_DELAY} distance={6}>{children}</Reveal> : <>{children}</>;
 }
 
 function JournalDetailScreen() {
@@ -344,9 +352,10 @@ const JournalDetailContent = memo(function JournalDetailContent({ dream }: { dre
   const coverParallax = useFrameParallax(coverTravel);
   const onHeaderScroll = useHeaderScroll();
   const noctalia = useMemo(() => getNoctaliaDesignTokens(colors, mode), [colors, mode]);
+  // The story is written in the journal's own ink, as the pen wrote it in the capture seal.
   const markdownStyles = useMemo(() => StyleSheet.create({
-    transcript: { fontSize: 16, lineHeight: 26, color: noctalia.text.secondary },
-  }), [noctalia.text.secondary]);
+    transcript: { fontFamily: Fonts.lora.regularItalic, fontSize: 17, lineHeight: 28, color: noctalia.accent.text },
+  }), [noctalia.accent.text]);
   const { language } = useLanguage();
   useClearWebFocus();
 
@@ -1829,7 +1838,7 @@ const JournalDetailContent = memo(function JournalDetailContent({ dream }: { dre
     >
       <View className="mb-3 flex-row items-center justify-between">
         <View className="flex-1 pr-3">
-          <Text key={`story-heading-${windowSize.fontScale}`} allowFontScaling={false} style={{ fontSize: 18 * compactTextScale, lineHeight: 24 * compactTextScale }} accessibilityRole="header" testID={TID.Text.DreamDetailDreamZone} className="font-sans-bold text-[18px] text-ivory">
+          <Text key={`story-heading-${windowSize.fontScale}`} allowFontScaling={false} style={{ fontSize: 12 * compactTextScale, lineHeight: 18 * compactTextScale }} accessibilityRole="header" testID={TID.Text.DreamDetailDreamZone} className="font-sans-medium text-[12px] uppercase tracking-[2px] text-champagne-on">
             {t('journal.original_transcript')}
           </Text>
         </View>
@@ -1893,6 +1902,31 @@ const JournalDetailContent = memo(function JournalDetailContent({ dream }: { dre
     </View>
   );
 
+  const renderMetadataChips = () => (
+    <View className="flex-row flex-wrap items-center gap-x-5 gap-y-2">
+      {dream.dreamType && (analysisState.isAnalyzed || dream.dreamType !== 'Symbolic Dream') ? (
+        <View className="max-w-full flex-row items-center gap-1.5">
+          <IconSymbol name="moon.stars.fill" size={15} color={noctalia.accent.text} />
+          <Text key={`dream-type-${windowSize.fontScale}`} allowFontScaling={false} style={metadataTextStyle} className="shrink font-sans-medium text-[13px] text-ivory-muted">{dreamTypeLabel || dream.dreamType}</Text>
+        </View>
+      ) : null}
+      {dreamThemeLabel ? (
+        <View className="max-w-full flex-row items-center gap-1.5">
+          <IconSymbol name="paintpalette" size={15} color={noctalia.accent.text} />
+          <Text key={`dream-theme-${windowSize.fontScale}`} allowFontScaling={false} style={metadataTextStyle} className="shrink font-sans-medium text-[13px] text-ivory-muted">{dreamThemeLabel}</Text>
+        </View>
+      ) : (
+        <Pressable onPress={startMetadataEditing} disabled={isAnalysisLocked} accessibilityRole="button"
+          className={`min-h-[44px] max-w-full justify-center ${isAnalysisLocked ? 'opacity-70' : ''}`}>
+          <View className="flex-row items-center gap-1.5 rounded-full border border-line px-3 py-1.5">
+            <IconSymbol name="paintpalette" size={14} color={noctalia.accent.text} />
+            <Text className="shrink font-sans-medium text-[13px] text-champagne-on">{t('journal.detail.theme_placeholder')}</Text>
+          </View>
+        </Pressable>
+      )}
+    </View>
+  );
+
   const renderMetadataCard = (variant: 'inline' | 'floating' = 'inline') => {
     const compactMetadata = variant === 'inline' && !isEditing;
     // The main content card and its inner accent cards share one surface colour so the
@@ -1906,7 +1940,8 @@ const JournalDetailContent = memo(function JournalDetailContent({ dream }: { dre
         testID={TID.Component.MetadataCard}
         style={compactMetadata ? undefined : variant === 'floating' ? shadows.xl : shadows.md}
         className={[
-          compactMetadata ? 'mx-2 mb-7 pr-10' : 'mb-6 rounded-t-xl rounded-b-lg px-5 pt-5 bg-ink-raised',
+          // On arrival the story follows the title closely; the chips wait below it.
+          compactMetadata ? `mx-2 ${opensOnSavedMoment ? 'mb-1' : 'mb-7'} pr-10` : 'mb-6 rounded-t-xl rounded-b-lg px-5 pt-5 bg-ink-raised',
           compactMetadata ? '' : borderClassName,
           // Keep room for the floating edit/check button so it doesn't overlap chips
           isEditing ? 'pb-16' : compactMetadata ? '' : 'pb-5',
@@ -1932,7 +1967,7 @@ const JournalDetailContent = memo(function JournalDetailContent({ dream }: { dre
               {dream.title || t('journal.detail.untitled_dream')}
             </Text>
           )}
-          <Text key={`dream-date-${windowSize.fontScale}`} allowFontScaling={false} style={{ fontSize: 12 * compactTextScale, lineHeight: 20 * compactTextScale }} className="mb-5 font-sans text-[12px] leading-5 text-ivory-muted">
+          <Text key={`dream-date-${windowSize.fontScale}`} allowFontScaling={false} style={{ fontSize: 12 * compactTextScale, lineHeight: 20 * compactTextScale }} className={`${opensOnSavedMoment ? 'mb-2' : 'mb-5'} font-sans text-[12px] leading-5 text-ivory-muted`}>
             {formatDreamDate(dream.id)} · {formatDreamTime(dream.id)}
           </Text>
           {!isEditingTranscript && hasUncategorizedDraft && initialCategorizationPending ? (
@@ -1963,28 +1998,7 @@ const JournalDetailContent = memo(function JournalDetailContent({ dream }: { dre
       </>
 
       {compactMetadata ? (
-        <View className="flex-row flex-wrap items-center gap-x-5 gap-y-2">
-          {dream.dreamType && (analysisState.isAnalyzed || dream.dreamType !== 'Symbolic Dream') ? (
-            <View className="max-w-full flex-row items-center gap-1.5">
-              <IconSymbol name="moon.stars.fill" size={15} color={noctalia.accent.text} />
-              <Text key={`dream-type-${windowSize.fontScale}`} allowFontScaling={false} style={metadataTextStyle} className="shrink font-sans-medium text-[13px] text-ivory-muted">{dreamTypeLabel || dream.dreamType}</Text>
-            </View>
-          ) : null}
-          {dreamThemeLabel ? (
-            <View className="max-w-full flex-row items-center gap-1.5">
-              <IconSymbol name="paintpalette" size={15} color={noctalia.accent.text} />
-              <Text key={`dream-theme-${windowSize.fontScale}`} allowFontScaling={false} style={metadataTextStyle} className="shrink font-sans-medium text-[13px] text-ivory-muted">{dreamThemeLabel}</Text>
-            </View>
-          ) : (
-            <Pressable onPress={startMetadataEditing} disabled={isAnalysisLocked} accessibilityRole="button"
-              className={`min-h-[44px] max-w-full justify-center ${isAnalysisLocked ? 'opacity-70' : ''}`}>
-              <View className="flex-row items-center gap-1.5 rounded-full border border-line px-3 py-1.5">
-                <IconSymbol name="paintpalette" size={14} color={noctalia.accent.text} />
-                <Text className="shrink font-sans-medium text-[13px] text-champagne-on">{t('journal.detail.theme_placeholder')}</Text>
-              </View>
-            </Pressable>
-          )}
-        </View>
+        opensOnSavedMoment ? null : renderMetadataChips()
       ) : <>
       {(isEditing || (dream.dreamType && (analysisState.isAnalyzed || dream.dreamType !== 'Symbolic Dream'))) && (
         <View className={`mt-2 flex-row gap-2 ${isEditing ? 'items-start' : 'items-center'}`}
@@ -2301,7 +2315,7 @@ const JournalDetailContent = memo(function JournalDetailContent({ dream }: { dre
         <View className="gap-1 px-2">
           {arrivalMessage ? (
             <Text testID={TID.Text.DreamDetailActionMessage}
-              className="text-center font-sans text-[13px] leading-[18px] text-ivory-muted">
+              className="text-center font-sans text-[12px] leading-[17px] text-ivory-muted">
               {arrivalMessage}
             </Text>
           ) : null}
@@ -2316,14 +2330,14 @@ const JournalDetailContent = memo(function JournalDetailContent({ dream }: { dre
           accessibilityRole="button"
           accessibilityState={{ disabled }}
           accessibilityHint={quotaHintLabel ?? undefined}
-          className={`min-h-[52px] flex-row items-center justify-center gap-2 rounded-md px-4 py-3 ${
-            analysisFirst ? 'bg-champagne' : 'border border-line-strong bg-ink-soft'
+          className={`flex-row items-center justify-center gap-2 px-4 ${
+            analysisFirst ? 'min-h-[52px] rounded-md bg-champagne py-3' : 'min-h-[40px]'
           } ${disabled ? 'opacity-75' : ''}`}
         >
           <IconSymbol name={analysisIcon} size={18}
             color={analysisFirst ? noctalia.action.primaryText : noctalia.accent.text} />
           <Text testID={TID.Text.DreamDetailActionTitle}
-            className={`shrink text-center font-sans-bold text-[16px] ${analysisFirst ? 'text-on-champagne' : 'text-ivory'}`}>
+            className={`shrink text-center ${analysisFirst ? 'font-sans-bold text-[16px] text-on-champagne' : 'font-sans-medium text-[15px] text-champagne-on'}`}>
             {analysisAccessLabel ?? detailActionCard.cta}
           </Text>
         </PressableScale>
@@ -2333,17 +2347,17 @@ const JournalDetailContent = memo(function JournalDetailContent({ dream }: { dre
           testID="btn.savedDream.returnToJournal"
           className={analysisFirst
             ? 'min-h-[44px] items-center justify-center px-4'
-            : 'min-h-[52px] items-center justify-center rounded-md bg-champagne px-4 py-3'}>
+            : 'min-h-[48px] items-center justify-center rounded-md border border-line-strong px-4 py-2.5'}>
           <Text className={analysisFirst
             ? 'font-sans-medium text-[15px] text-ivory'
-            : 'font-sans-bold text-[16px] text-on-champagne'}>
+            : 'font-sans-medium text-[16px] text-ivory'}>
             {t('journal.detail.saved.return')}
           </Text>
         </PressableScale>
       );
 
       return (
-        <View testID={TID.Component.DreamDetailActionCard} className="gap-2.5">
+        <View testID={TID.Component.DreamDetailActionCard} className={analysisFirst ? 'gap-2.5' : 'gap-1.5'}>
           {analysisFirst
             ? <>{analysisButton}{captions}{returnButton}</>
             : <>{returnButton}{analysisButton}{captions}</>}
@@ -2760,6 +2774,11 @@ const JournalDetailContent = memo(function JournalDetailContent({ dream }: { dre
                 </View>
               </ArrivalReveal>
             )}
+            {opensOnSavedMoment && !isEditing ? (
+              <ArrivalLater play>
+                <View className="mx-2 mb-7">{renderMetadataChips()}</View>
+              </ArrivalLater>
+            ) : null}
 
             <View>
               {renderStaleBanner()}
@@ -2862,9 +2881,10 @@ const JournalDetailContent = memo(function JournalDetailContent({ dream }: { dre
         <View className={`absolute top-0 left-0 right-0 z-50 px-3 pb-3 ${hasIllustratedCover && navigationOverImage ? '' : 'bg-ink'}`}
           testID="journal.detail.navigation"
           style={{ paddingTop: insets.top + 12 }}>
+        {hasIllustratedCover && navigationOverImage ? null : <JournalPaper />}
         <PressableScale
           onPress={handleBackPress}
-          className="min-h-11 flex-row items-center gap-2 self-start rounded-[22px] bg-ink px-3"
+          className={`min-h-11 flex-row items-center gap-2 self-start rounded-[22px] px-3 ${hasIllustratedCover && navigationOverImage ? 'bg-ink' : ''}`}
           testID={TID.Button.NavigateJournal}
           accessibilityRole="button"
           accessibilityLabel={t('journal.back_button')}
@@ -2879,12 +2899,17 @@ const JournalDetailContent = memo(function JournalDetailContent({ dream }: { dre
             className={`absolute bottom-0 left-0 right-0 bg-ink px-6 pt-3 ${isSavedArrival ? '' : 'border-t border-line'}`}
             style={{ paddingBottom: Math.max(insets.bottom, 12) }}
             onLayout={({ nativeEvent }) => setActionDockHeight(nativeEvent.layout.height)}>
+            <View pointerEvents="none" className="absolute inset-0 overflow-hidden">
+              <View style={{ position: 'absolute', left: 0, right: 0, top: actionDockHeight - windowSize.height, height: windowSize.height }}>
+                <JournalPaper />
+              </View>
+            </View>
             {isSavedArrival ? (
               <LinearGradient pointerEvents="none"
                 colors={[`${noctalia.screen.background}00`, noctalia.screen.background]}
                 style={{ position: 'absolute', left: 0, right: 0, top: -32, height: 32 }} />
             ) : null}
-            {renderDetailActionCard()}
+            <ArrivalLater play={opensOnSavedMoment}>{renderDetailActionCard()}</ArrivalLater>
           </View>
         ) : null}
 
