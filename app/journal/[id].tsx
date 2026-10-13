@@ -14,6 +14,7 @@ import { DreamRecallAssistantCard } from '@/components/journal/DreamRecallAssist
 import { JournalPageEdges } from '@/components/journal/JournalPageEdges';
 import { JournalPageTurner, useJournalPageTurnLock } from '@/components/journal/JournalPageTurner';
 import { JournalPaper } from '@/components/journal/JournalPaper';
+import { JournalRunningHead, RUNNING_HEAD_GAP, RUNNING_HEAD_HEIGHT } from '@/components/journal/JournalRunningHead';
 import { Fonts } from '@/constants/theme';
 import { SavedDreamMoment, type SavedDreamPhase } from '@/components/journal/SavedDreamMoment';
 import { DreamPaintedArtwork } from '@/components/journal/story/DreamPaintedArtwork';
@@ -36,7 +37,7 @@ import {
   ReplaceImageSheet,
   type AnalysisNotice,
 } from '@/components/journal/JournalDetailSheets';
-import { PressableScale, Reveal } from '@/components/motion';
+import { DURATION, EASING, PressableScale, Reveal } from '@/components/motion';
 import { getNoctaliaDesignTokens } from '@/constants/noctaliaDesign';
 import { useAuth } from '@/context/AuthContext';
 import { SignInToOpenDream } from '@/components/auth/SignInToOpenDream';
@@ -112,7 +113,10 @@ import {
   useWindowDimensions,
   View,
 } from 'react-native';
-import Animated, { Extrapolation, interpolate, useAnimatedStyle, useReducedMotion } from 'react-native-reanimated';
+import Animated, {
+  Extrapolation, interpolate, useAnimatedReaction, useAnimatedStyle, useReducedMotion, useSharedValue, withTiming,
+} from 'react-native-reanimated';
+import { scheduleOnRN } from 'react-native-worklets';
 import { useHeaderScroll } from '@/components/ui/headerStretch';
 import { withHeaderScroll } from '@/components/ui/HeaderScrollScope';
 import { useFrameParallax, useHeaderScrollY } from '@/components/ui/scrollDepth';
@@ -250,11 +254,18 @@ function ArrivalReveal({ play, index, className, children }: {
     : <View className={className}>{children}</View>;
 }
 
+/** Where the running head has scrolled up under the page's top margin. */
+const RUNNING_HEAD_TOP = 12;
+/** How far the reader scrolls back up before the way back returns, and on before it leaves. */
+const RETURN_REVEAL = 24;
+const RETURN_CONCEAL = 8;
+
 /**
- * The page under the navigation: clear at rest, so the back link floats on the journal
- * page, and paper again once the reading scrolls under it, fading out at its lower edge.
+ * The page's top margin, under the clock: clear at rest, so the running head lies on the
+ * open page, and paper once the reading scrolls up into it, so no line runs under the
+ * clock; its lower edge fades, as a line does going under a margin.
  */
-function HeaderPaperVeil({ height }: { height: number }) {
+function PageTopMargin({ height }: { height: number }) {
   const scrollY = useHeaderScrollY();
   const { colors, mode } = useTheme();
   const ground = getNoctaliaDesignTokens(colors, mode).screen.background;
@@ -262,9 +273,63 @@ function HeaderPaperVeil({ height }: { height: number }) {
     opacity: interpolate(scrollY.get(), [0, 32], [0, 1], Extrapolation.CLAMP),
   }));
   return (
-    <Animated.View pointerEvents="none" style={[{ position: 'absolute', top: 0, left: 0, right: 0, height: height + 24 }, veil]}>
+    <Animated.View pointerEvents="none" style={[{ position: 'absolute', top: 0, left: 0, right: 0, height: height + 16 }, veil]}>
       <View className="overflow-hidden bg-ink" style={{ height }}><JournalPaper /></View>
-      <LinearGradient colors={[ground, `${ground}00`]} style={{ height: 24 }} />
+      <LinearGradient colors={[ground, `${ground}00`]} style={{ height: 16 }} />
+    </Animated.View>
+  );
+}
+
+/**
+ * The way back to the journal once the running head has gone up with the page: away
+ * while the page is read, it comes back as a small tab of the page's paper as soon as
+ * the reader scrolls back up a little, and leaves when the reading goes on or the running
+ * head is in sight again.
+ */
+function JournalReturnTab({ top, onPress }: { top: number; onPress: () => void }) {
+  const scrollY = useHeaderScrollY();
+  const reduced = useReducedMotion();
+  const { t } = useTranslation();
+  const { colors, mode, shadows } = useTheme();
+  const ink = getNoctaliaDesignTokens(colors, mode).text.primary;
+  const [reachable, setReachable] = useState(false);
+  const wanted = useSharedValue(0);
+  const shown = useSharedValue(0);
+  const heading = useSharedValue(1);
+  const turnedAt = useSharedValue(0);
+
+  useAnimatedReaction(() => scrollY.get(), (y, previous) => {
+    if (previous == null || y === previous) return;
+    const way = y < previous ? -1 : 1;
+    if (way !== heading.get()) {
+      heading.set(way);
+      turnedAt.set(previous);
+    }
+    const headGone = y > RUNNING_HEAD_TOP + RUNNING_HEAD_HEIGHT;
+    let next = wanted.get();
+    if (!headGone) next = 0;
+    else if (way < 0 && turnedAt.get() - y >= RETURN_REVEAL) next = 1;
+    else if (way > 0 && y - turnedAt.get() >= RETURN_CONCEAL) next = 0;
+    if (next === wanted.get()) return;
+    wanted.set(next);
+    shown.set(withTiming(next, { duration: DURATION.fast, easing: EASING.out }));
+    scheduleOnRN(setReachable, next === 1);
+  });
+
+  const tab = useAnimatedStyle(() => ({
+    opacity: shown.get(),
+    transform: [{ translateY: reduced ? 0 : interpolate(shown.get(), [0, 1], [-6, 0]) }],
+  }));
+
+  return (
+    <Animated.View pointerEvents={reachable ? 'box-none' : 'none'} accessibilityElementsHidden={!reachable}
+      importantForAccessibility={reachable ? 'auto' : 'no-hide-descendants'}
+      style={[{ position: 'absolute', top, left: 16 }, tab]}>
+      <PressableScale onPress={onPress} testID="journal.detail.returnTab" accessibilityRole="button"
+        accessibilityLabel={t('journal.back_button')} hitSlop={{ top: 4, bottom: 4, left: 4, right: 4 }}
+        className="h-10 w-10 items-center justify-center rounded-full border border-line bg-ink" style={shadows.sm}>
+        <IconSymbol name="chevron.left" size={18} color={ink} />
+      </PressableScale>
     </Animated.View>
   );
 }
@@ -281,12 +346,14 @@ function JournalDetailScreen() {
   const dream = resolveDreamRoute(dreams, route);
   // The journal's pages in the order they were written: a later dream lies one page on.
   const neighbours = useMemo(() => {
-    if (!dream) return { newer: null, older: null };
+    if (!dream) return { newer: null, older: null, folio: undefined };
     const pages = sortDreams(dreams);
     const index = pages.findIndex((page) => page.id === dream.id);
     return {
       newer: index > 0 ? pages[index - 1] : null,
       older: index >= 0 && index < pages.length - 1 ? pages[index + 1] : null,
+      // Pages are numbered from the first dream written.
+      folio: index >= 0 ? pages.length - index : undefined,
     };
   }, [dream, dreams]);
   // Turning a page stays on this screen: the page's own arrival and offers do not follow it.
@@ -299,13 +366,14 @@ function JournalDetailScreen() {
       analyzeAfterPurchase: undefined, analysisOwnerId: undefined,
     });
   }, []);
-  const content = <JournalDetailContent key={JSON.stringify([user?.id, route.id, route.remoteId, route.clientRequestId])} dream={dream} />;
+  const content = <JournalDetailContent key={JSON.stringify([user?.id, route.id, route.remoteId, route.clientRequestId])}
+    dream={dream} folio={neighbours.folio} />;
   return dream
-    ? <JournalPageTurner newer={neighbours.newer} older={neighbours.older} onTurn={turnTo}>{content}</JournalPageTurner>
+    ? <JournalPageTurner newer={neighbours.newer} older={neighbours.older} folio={neighbours.folio} onTurn={turnTo}>{content}</JournalPageTurner>
     : content;
 }
 
-const JournalDetailContent = memo(function JournalDetailContent({ dream }: { dream?: DreamAnalysis }) {
+const JournalDetailContent = memo(function JournalDetailContent({ dream, folio }: { dream?: DreamAnalysis; folio?: number }) {
   const { id, remoteId, clientRequestId, saved: savedParam, recall: recallParam, autoAnalyze: autoAnalyzeParam, analyzeAfterPurchase, analysisOwnerId, share: shareParam } = useLocalSearchParams<{ id: string; remoteId?: string; clientRequestId?: string; saved?: string | string[]; recall?: string | string[]; autoAnalyze?: string; analyzeAfterPurchase?: string; analysisOwnerId?: string; share?: string }>();
   const recallRequested = isJournalSavedConfirmationParam(recallParam);
   const { state: onboardingState, transition: transitionOnboarding } = useOnboarding();
@@ -377,7 +445,6 @@ const JournalDetailContent = memo(function JournalDetailContent({ dream }: { dre
   const metadataTextStyle = { fontSize: 13 * compactTextScale, lineHeight: 18 * compactTextScale };
   const [coverViewport, setCoverViewport] = useState<{ width: number; height: number } | null>(null);
   const [readingActionVisible, setReadingActionVisible] = useState(false);
-  const [navigationOverImage, setNavigationOverImage] = useState(false);
   const [failedCoverUri, setFailedCoverUri] = useState<string | null>(null);
   const [actionDockHeight, setActionDockHeight] = useState(100);
   const [coverIntroHeight, setCoverIntroHeight] = useState<number | null>(null);
@@ -611,14 +678,11 @@ const JournalDetailContent = memo(function JournalDetailContent({ dream }: { dre
     });
   }, []);
   const updateReadingChrome = useCallback((offsetY: number) => {
-    const navigationMidpoint = offsetY + insets.top + 34;
-    const imageTop = navigationHeight + introHeight;
-    setNavigationOverImage(navigationMidpoint >= imageTop && navigationMidpoint < imageTop + coverHeight);
     const visibleStoryHeight = Math.min(144, viewportHeight * 0.2, transcriptSectionHeight || 144);
     const threshold = Math.max(1, navigationHeight + transcriptSectionOffset
       - viewportHeight + visibleStoryHeight);
     setReadingActionVisible(offsetY >= threshold);
-  }, [coverHeight, insets.top, introHeight, navigationHeight, transcriptSectionHeight, transcriptSectionOffset, viewportHeight]);
+  }, [navigationHeight, transcriptSectionHeight, transcriptSectionOffset, viewportHeight]);
   // Rotation, text scaling and measured content can move artwork without a scroll
   // event. Recompute chrome before paint using the latest observed offset.
   useLayoutEffect(() => {
@@ -2755,7 +2819,7 @@ const JournalDetailContent = memo(function JournalDetailContent({ dream }: { dre
           }}
 
           contentContainerStyle={{
-            paddingTop: navigationHeight,
+            paddingTop: navigationHeight - RUNNING_HEAD_HEIGHT - RUNNING_HEAD_GAP,
             paddingBottom: ((isEditing || isEditingTranscript) ? 220 : actionDockHeight + 32) + insets.bottom,
           }}
           scrollEventThrottle={16}
@@ -2767,6 +2831,10 @@ const JournalDetailContent = memo(function JournalDetailContent({ dream }: { dre
           }}
           keyboardShouldPersistTaps="handled"
         >
+          <View style={{ marginBottom: RUNNING_HEAD_GAP }}>
+            <JournalRunningHead folio={folio} onBack={handleBackPress} testID="journal.detail.navigation"
+              backTestID={TID.Button.NavigateJournal} />
+          </View>
           <View ref={readingContentRef} collapsable={false} onLayout={measureTranscriptSection} className="px-4 pb-6">
             {showSavedMoment ? (
               <SavedDreamMoment phase={savedMomentPhase} painting={paintingInProgress} handedOver={windowHandedOver}
@@ -2924,22 +2992,8 @@ const JournalDetailContent = memo(function JournalDetailContent({ dream }: { dre
             </View>
         </ScrollView>
 
-        <View className="absolute top-0 left-0 right-0 z-50 px-3 pb-3"
-          testID="journal.detail.navigation"
-          style={{ paddingTop: insets.top + 12 }}>
-        {hasIllustratedCover && navigationOverImage ? null : <HeaderPaperVeil height={insets.top + 68} />}
-        <PressableScale
-          onPress={handleBackPress}
-          className={`min-h-11 flex-row items-center gap-2 self-start rounded-[22px] px-3 ${hasIllustratedCover && navigationOverImage ? 'bg-ink' : ''}`}
-          testID={TID.Button.NavigateJournal}
-          accessibilityRole="button"
-          accessibilityLabel={t('journal.back_button')}
-          hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}
-        >
-          <IconSymbol name="chevron.left" size={22} color={noctalia.text.primary} />
-          <Text key={`journal-back-${windowSize.fontScale}`} allowFontScaling={false} style={metadataTextStyle} className="font-sans-medium text-[13px] text-ivory">{t('nav.journal')}</Text>
-        </PressableScale>
-        </View>
+        <PageTopMargin height={insets.top} />
+        <JournalReturnTab top={insets.top + 6} onPress={handleBackPress} />
         {!isEditing && !isEditingTranscript && (!hasIllustratedCover || readingActionVisible) ? (
           <View testID="component.dreamDetail.actionDock"
             className={`absolute bottom-0 left-0 right-0 bg-ink px-6 pt-3 ${isSavedArrival ? '' : 'border-t border-line'}`}

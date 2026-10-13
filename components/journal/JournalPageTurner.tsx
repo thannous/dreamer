@@ -44,11 +44,13 @@ export function useJournalPageTurnLock(locked: boolean) {
  * back swipe at the binding stay as they are; under reduce motion the page changes at
  * once.
  */
-export function JournalPageTurner({ newer, older, onTurn, children }: {
+export function JournalPageTurner({ newer, older, folio, onTurn, children }: {
   /** The dream after this one, turned to towards the left. */
   newer: DreamAnalysis | null;
   /** The dream before this one, turned back to towards the right. */
   older: DreamAnalysis | null;
+  /** This page's number, from which the pages either side take theirs. */
+  folio?: number;
   onTurn: (dream: DreamAnalysis) => void;
   children: React.ReactNode;
 }) {
@@ -58,8 +60,8 @@ export function JournalPageTurner({ newer, older, onTurn, children }: {
   const shadow = useMemo(() => getNoctaliaDesignTokens(colors, mode).surface.overlay, [colors, mode]);
   const [locked, setLocked] = useState(false);
   // The likenesses stay those of the turn in progress until the turned-to page has settled.
-  const [frozen, setFrozen] = useState<{ newer: DreamAnalysis | null; older: DreamAnalysis | null } | null>(null);
-  const shown = frozen ?? { newer, older };
+  const [frozen, setFrozen] = useState<{ newer: DreamAnalysis | null; older: DreamAnalysis | null; folio?: number } | null>(null);
+  const shown = frozen ?? { newer, older, folio };
 
   const direction = useSharedValue(0);
   const progress = useSharedValue(0);
@@ -70,7 +72,7 @@ export function JournalPageTurner({ newer, older, onTurn, children }: {
   const finishTurn = useCallback((turnedTo: number) => {
     const target = turnedTo === FORWARD ? shown.newer : shown.older;
     if (!target) return;
-    setFrozen({ newer: shown.newer, older: shown.older });
+    setFrozen({ newer: shown.newer, older: shown.older, folio: shown.folio });
     void Haptics.selectionAsync().catch(() => {});
     onTurn(target);
     // Give the real page a moment to lay itself out under the turned page, then let it in.
@@ -92,7 +94,7 @@ export function JournalPageTurner({ newer, older, onTurn, children }: {
         }));
       }
     }, 60);
-  }, [direction, onTurn, progress, settle, settled, shown.newer, shown.older]);
+  }, [direction, onTurn, progress, settle, settled, shown.folio, shown.newer, shown.older]);
 
   const turnAtOnce = useCallback((turnedTo: number) => {
     const target = turnedTo === FORWARD ? shown.newer : shown.older;
@@ -184,7 +186,7 @@ export function JournalPageTurner({ newer, older, onTurn, children }: {
         <View className="flex-1 bg-ink">
           {shown.newer ? (
             <Animated.View pointerEvents="none" style={[pageFrame, laterPage]}>
-              <JournalPagePreview dream={shown.newer} />
+              <JournalPagePreview dream={shown.newer} folio={shown.folio ? shown.folio + 1 : undefined} />
               <Animated.View className="absolute inset-0" style={[{ backgroundColor: shadow }, laterShade]} />
             </Animated.View>
           ) : null}
@@ -195,7 +197,7 @@ export function JournalPageTurner({ newer, older, onTurn, children }: {
           </Animated.View>
           {shown.older ? (
             <Animated.View pointerEvents="none" style={[pageFrame, earlierPage]}>
-              <JournalPagePreview dream={shown.older} />
+              <JournalPagePreview dream={shown.older} folio={shown.folio ? shown.folio - 1 : undefined} />
               <Animated.View className="absolute inset-0" style={[{ backgroundColor: shadow }, earlierShade]} />
             </Animated.View>
           ) : null}
