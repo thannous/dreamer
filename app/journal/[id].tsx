@@ -12,6 +12,7 @@ import { useDreamMedia } from '@/hooks/useDreamMedia';
 import { Toast } from '@/components/Toast';
 import { DreamRecallAssistantCard } from '@/components/journal/DreamRecallAssistantCard';
 import { JournalPageEdges } from '@/components/journal/JournalPageEdges';
+import { JournalPageTurner, useJournalPageTurnLock } from '@/components/journal/JournalPageTurner';
 import { JournalPaper } from '@/components/journal/JournalPaper';
 import { Fonts } from '@/constants/theme';
 import { SavedDreamMoment, type SavedDreamPhase } from '@/components/journal/SavedDreamMoment';
@@ -58,7 +59,7 @@ import {
   isResumableAnalysisRequest,
 } from '@/lib/analysisRequest';
 import { getDreamThemeLabel, getDreamTypeLabel } from '@/lib/dreamLabels';
-import { deriveDraftTitle, getDreamSyncState, normalizeDreamMemoryMetadata } from '@/lib/dreamUtils';
+import { deriveDraftTitle, getDreamSyncState, normalizeDreamMemoryMetadata, sortDreams } from '@/lib/dreamUtils';
 import {
   buildReflectionResumeHref,
   getDreamAnalysisState,
@@ -278,7 +279,30 @@ function JournalDetailScreen() {
   const { user } = useAuth();
   const { dreams } = useDreamsData();
   const dream = resolveDreamRoute(dreams, route);
-  return <JournalDetailContent key={JSON.stringify([user?.id, route.id, route.remoteId, route.clientRequestId])} dream={dream} />;
+  // The journal's pages in the order they were written: a later dream lies one page on.
+  const neighbours = useMemo(() => {
+    if (!dream) return { newer: null, older: null };
+    const pages = sortDreams(dreams);
+    const index = pages.findIndex((page) => page.id === dream.id);
+    return {
+      newer: index > 0 ? pages[index - 1] : null,
+      older: index >= 0 && index < pages.length - 1 ? pages[index + 1] : null,
+    };
+  }, [dream, dreams]);
+  // Turning a page stays on this screen: the page's own arrival and offers do not follow it.
+  const turnTo = useCallback((target: DreamAnalysis) => {
+    router.setParams({
+      ...getDreamRouteParams(target),
+      remoteId: target.remoteId != null ? String(target.remoteId) : undefined,
+      clientRequestId: target.clientRequestId || undefined,
+      saved: undefined, recall: undefined, autoAnalyze: undefined, share: undefined,
+      analyzeAfterPurchase: undefined, analysisOwnerId: undefined,
+    });
+  }, []);
+  const content = <JournalDetailContent key={JSON.stringify([user?.id, route.id, route.remoteId, route.clientRequestId])} dream={dream} />;
+  return dream
+    ? <JournalPageTurner newer={neighbours.newer} older={neighbours.older} onTurn={turnTo}>{content}</JournalPageTurner>
+    : content;
 }
 
 const JournalDetailContent = memo(function JournalDetailContent({ dream }: { dream?: DreamAnalysis }) {
@@ -570,6 +594,8 @@ const JournalDetailContent = memo(function JournalDetailContent({ dream }: { dre
   const [isEditing, setIsEditing] = useState(false);
   const [isPickingImage, setIsPickingImage] = useState(false);
   const [isEditingTranscript, setIsEditingTranscript] = useState(false);
+  // A page being written in, or its illustration held open, is not leafed through.
+  useJournalPageTurnLock(isEditing || isEditingTranscript || isIllustrationFullscreen);
   const [isKeyboardVisible, setIsKeyboardVisible] = useState(false);
   const [transcriptSectionOffset, setTranscriptSectionOffset] = useState(0);
   const [transcriptSectionHeight, setTranscriptSectionHeight] = useState(0);

@@ -239,6 +239,11 @@ jest.mock('@/components/inspiration/AtmosphericBackground', () => ({
 
 // The page's paper grain is decorative art; these journeys only need the page.
 jest.mock('@/components/journal/JournalPaper', () => ({ JournalPaper: () => null }));
+// Leafing through the journal is a gesture around the page; these journeys only need the page.
+jest.mock('@/components/journal/JournalPageTurner', () => ({
+  JournalPageTurner: ({ children }: { children: React.ReactNode }) => children,
+  useJournalPageTurnLock: () => {},
+}));
 
 jest.mock('@/components/inspiration/GlassCard', () => ({
   FlatGlassCard: ({ children }: { children?: React.ReactNode }) => <div>{children}</div>,
