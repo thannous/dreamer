@@ -14,7 +14,7 @@ import Animated, { type CSSAnimationKeyframes, type CSSStyle } from 'react-nativ
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import Svg, { Circle, Defs, Ellipse, Path, RadialGradient, Stop } from 'react-native-svg';
 
-import { JournalPageEdges } from '@/components/journal/JournalPageEdges';
+import { JOURNAL_LEAF_BLOCK, JournalPageEdges } from '@/components/journal/JournalPageEdges';
 
 import { JournalPaper } from '@/components/journal/JournalPaper';
 import { EASE } from '@/components/motion/motion';
@@ -36,11 +36,12 @@ const ASTRAL_ART = require('@/assets/images/onboarding-astral-background.webp');
 const JOURNAL_RATIO = 1536 / 1024;
 const RIGHT_PAGE = { left: 785 / 1536, top: 105 / 1024, right: 1380 / 1536, bottom: 850 / 1024 } as const;
 /**
- * The right page's own edges in the art: the binding's crease, and the outer edge of the
- * block of leaves beside it. The dive ends with them on the screen's edges, where the dream
- * page has its binding and its leaves, so the journal's edges become the page's own.
+ * The right page's own edges in the art: the binding's crease, and where its paper ends
+ * and the block of leaves begins. The dive ends with the crease on the screen's left edge
+ * and the paper's end where the dream page's block of leaves begins, so the journal's
+ * edges become the page's own.
  */
-const SPREAD = { binding: 771 / 1536, foreEdge: 1430 / 1536 } as const;
+const SPREAD = { binding: 771 / 1536, paperEnd: 1386 / 1536 } as const;
 /** How far down its page the ring sits, so the signs and the name have room below it. */
 const RING_DROP = 0.33;
 /** The pen art's nib in fractions of the art, and the pen's size against the journal. */
@@ -205,11 +206,11 @@ export function DreamCaptureSeal({ name, mark, provisionalName, date, previousPa
   };
   const medallionY = insets.top + MEDALLION_CENTER_FROM_TOP;
   // The dive ends with the spread's edges on the screen's: that fixes how far it goes.
-  const zoom = width / ((SPREAD.foreEdge - SPREAD.binding) * journalWidth);
-  // Where the ring sits on the page: centred between its edges, so that once they reach the
-  // screen's edges it is the medallion.
+  const zoom = (width - JOURNAL_LEAF_BLOCK) / ((SPREAD.paperEnd - SPREAD.binding) * journalWidth);
+  // Where the ring sits on the page: half a screen from the binding, so that once the edges
+  // are in place it is the medallion.
   const ring = {
-    x: journalWidth * (SPREAD.binding + SPREAD.foreEdge) / 2,
+    x: journalWidth * SPREAD.binding + width / (2 * zoom),
     y: page.y + page.h * RING_DROP,
     r: MEDALLION / 2 / zoom,
   };

@@ -2,28 +2,27 @@ import { LinearGradient } from 'expo-linear-gradient';
 import React, { useId, useMemo } from 'react';
 import { Platform, View, useWindowDimensions } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import Svg, { Defs, LinearGradient as Fade, Path, Stop } from 'react-native-svg';
+import Svg, { Defs, G, LinearGradient as Gradient, Mask, Path, Rect, Stop } from 'react-native-svg';
 
-import { getNoctaliaDesignTokens } from '@/constants/noctaliaDesign';
+import { getNoctaliaPalette } from '@/constants/noctaliaPalette';
 import { useTheme } from '@/context/ThemeContext';
 
-/**
- * The leaves still to turn along the fore-edge, outermost first: where each edge sits and
- * how it catches the light. Thick enough to read as a block of pages one can leaf through.
- */
-const LEAVES = [
-  { right: 0.5, opacity: 0.12 },
-  { right: 1.9, opacity: 0.17 },
-  { right: 3.3, opacity: 0.22 },
-  { right: 4.7, opacity: 0.27 },
-  { right: 6.1, opacity: 0.32 },
-  { right: 7.5, opacity: 0.38 },
-  { right: 8.9, opacity: 0.46 },
+/** The block of leaves still to turn; the capture seal lands the journal's own paper's edge where it starts. */
+export const JOURNAL_LEAF_BLOCK = 10;
+const BLOCK = JOURNAL_LEAF_BLOCK;
+/** The edges within the block, outermost first, alternately in shadow and catching the light. */
+const EDGES = [
+  { inset: 1.2, light: false, opacity: 0.55 },
+  { inset: 2.6, light: true, opacity: 0.5 },
+  { inset: 4, light: false, opacity: 0.5 },
+  { inset: 5.4, light: true, opacity: 0.45 },
+  { inset: 6.8, light: false, opacity: 0.42 },
+  { inset: 8.2, light: true, opacity: 0.4 },
 ];
-/** The block of leaves, and the shadow this page casts on it. */
-const BLOCK = 10;
-const CAST = 22;
-/** How far round the screen's corner the leaves follow it before they fade, in radians. */
+/** The page's own shading where it meets the block, and where it runs into the binding. */
+const SHADE = 14;
+const BINDING = 20;
+/** How far round the screen's corner the edges follow it before they fade, in radians. */
 const CORNER_SWEEP = (70 * Math.PI) / 180;
 
 /**
@@ -37,69 +36,94 @@ function displayCornerRadius(top: number): number {
   return 0;
 }
 
+/** A point on the screen's right-hand corner arcs, `inset` in from its edge. */
+const onCorner = (width: number, corner: number, inset: number, angle: number, y: number) => {
+  const radius = corner - inset;
+  return `${width - corner + radius * Math.cos(angle)} ${y + radius * Math.sin(angle)}`;
+};
+
 /**
- * One leaf's edge, `inset` from the screen's right side: down the side and, where the
- * display is rounded, round its corners on the same centre, so the leaves stay concentric
- * with the glass instead of being cut by it.
+ * One line `inset` from the screen's right side: down the side and, where the display is
+ * rounded, round its corners on the same centre, so it stays concentric with the glass.
  */
-function leafPath(width: number, height: number, inset: number, corner: number): string {
+function edgePath(width: number, height: number, inset: number, corner: number): string {
   const x = width - inset;
   const radius = corner - inset;
   if (radius <= 0) return `M${x} 0 L${x} ${height}`;
-  const centre = width - corner;
-  const along = (angle: number, y: number) => `${centre + radius * Math.cos(angle)} ${y + radius * Math.sin(angle)}`;
   return [
-    `M${along(-CORNER_SWEEP, corner)}`,
+    `M${onCorner(width, corner, inset, -CORNER_SWEEP, corner)}`,
     `A${radius} ${radius} 0 0 1 ${x} ${corner}`,
     `L${x} ${height - corner}`,
-    `A${radius} ${radius} 0 0 1 ${along(CORNER_SWEEP, height - corner)}`,
+    `A${radius} ${radius} 0 0 1 ${onCorner(width, corner, inset, CORNER_SWEEP, height - corner)}`,
+  ].join(' ');
+}
+
+/** The block of leaves: the band between the screen's edge and `BLOCK` in from it, round the corners too. */
+function blockPath(width: number, height: number, corner: number): string {
+  if (corner <= BLOCK) return `M${width - BLOCK} 0 H${width} V${height} H${width - BLOCK} Z`;
+  const outer = corner;
+  const inner = corner - BLOCK;
+  return [
+    `M${onCorner(width, corner, 0, -CORNER_SWEEP, corner)}`,
+    `A${outer} ${outer} 0 0 1 ${width} ${corner}`,
+    `L${width} ${height - corner}`,
+    `A${outer} ${outer} 0 0 1 ${onCorner(width, corner, 0, CORNER_SWEEP, height - corner)}`,
+    `L${onCorner(width, corner, BLOCK, CORNER_SWEEP, height - corner)}`,
+    `A${inner} ${inner} 0 0 0 ${width - BLOCK} ${height - corner}`,
+    `L${width - BLOCK} ${corner}`,
+    `A${inner} ${inner} 0 0 0 ${onCorner(width, corner, BLOCK, -CORNER_SWEEP, corner)}`,
+    'Z',
   ].join(' ');
 }
 
 /**
  * The edges of the journal page a dream is written on, the right-hand page the capture
- * seal dives into: on the left the paper curves into the binding, on the right the leaves
- * beneath it show as a stack of fine edges, which follow the screen's rounded corners and
- * fade as they turn them. Decorative, still, and kept to the margins so the reading keeps
- * its full width.
+ * seal dives into, in the very colours of the journal's art so that its edges become the
+ * page's own: on the left the paper runs into the binding's crease, on the right lies the
+ * block of leaves still to turn, its edges alternately in shadow and catching the light.
+ * The block follows the screen's rounded corners and fades as it turns them. Decorative,
+ * still, and kept to the margins so the reading keeps its full width.
  */
 export function JournalPageEdges() {
   const { width, height } = useWindowDimensions();
   const insets = useSafeAreaInsets();
-  const { colors, mode } = useTheme();
-  const noctalia = useMemo(() => getNoctaliaDesignTokens(colors, mode), [colors, mode]);
-  const fadeId = `leaves${useId().replace(/[^a-zA-Z0-9]/g, '')}`;
-  const night = mode === 'dark';
-  const shadow = noctalia.surface.overlay;
-  // The leaves' edges take the page's ink, so they read on night paper and on ivory alike.
-  const leaf = noctalia.text.primary;
+  const { mode } = useTheme();
+  const leaves = useMemo(() => getNoctaliaPalette(mode).journalLeaves, [mode]);
+  const id = useId().replace(/[^a-zA-Z0-9]/g, '');
   const corner = displayCornerRadius(insets.top);
-  const turned = corner > 0 ? corner * 0.4 / height : 0;
+  const turned = corner > 0 ? (corner * 0.4) / height : 0;
 
   return (
     <View pointerEvents="none" accessible={false} importantForAccessibility="no-hide-descendants"
       accessibilityElementsHidden className="absolute inset-0">
-      <LinearGradient start={{ x: 0, y: 0.5 }} end={{ x: 1, y: 0.5 }} colors={[shadow, 'transparent']}
-        style={{ position: 'absolute', left: 0, top: 0, bottom: 0, width: 22, opacity: night ? 0.55 : 0.26 }} />
-      {/* The block of leaves, a shade apart from the page, and the shadow the page casts on it. */}
-      <LinearGradient start={{ x: 0, y: 0.5 }} end={{ x: 1, y: 0.5 }} colors={[shadow, 'transparent']}
-        style={{ position: 'absolute', right: 0, top: corner * 0.4, bottom: corner * 0.4, width: BLOCK, opacity: night ? 0.35 : 0.16 }} />
-      <LinearGradient start={{ x: 0, y: 0.5 }} end={{ x: 1, y: 0.5 }} colors={['transparent', shadow]}
-        style={{ position: 'absolute', right: BLOCK, top: corner * 0.5, bottom: corner * 0.5, width: CAST, opacity: night ? 0.5 : 0.3 }} />
+      <LinearGradient start={{ x: 0, y: 0.5 }} end={{ x: 1, y: 0.5 }} colors={[leaves.binding, `${leaves.binding}00`]}
+        style={{ position: 'absolute', left: 0, top: 0, bottom: 0, width: BINDING, opacity: 0.7 }} />
+      <LinearGradient start={{ x: 0, y: 0.5 }} end={{ x: 1, y: 0.5 }} colors={[`${leaves.inner}00`, leaves.inner]}
+        style={{ position: 'absolute', right: BLOCK, top: corner * 0.5, bottom: corner * 0.5, width: SHADE, opacity: 0.6 }} />
       <Svg width={width} height={height} style={{ position: 'absolute', left: 0, top: 0 }}>
         <Defs>
-          {/* The leaves fade out as they turn the screen's corners. */}
-          <Fade id={fadeId} x1="0" y1="0" x2="0" y2={height} gradientUnits="userSpaceOnUse">
-            <Stop offset="0" stopColor={leaf} stopOpacity={0} />
-            <Stop offset={turned} stopColor={leaf} stopOpacity={1} />
-            <Stop offset={1 - turned} stopColor={leaf} stopOpacity={1} />
-            <Stop offset="1" stopColor={leaf} stopOpacity={0} />
-          </Fade>
+          <Gradient id={`across${id}`} x1={width - BLOCK} y1="0" x2={width} y2="0" gradientUnits="userSpaceOnUse">
+            <Stop offset="0" stopColor={leaves.inner} />
+            <Stop offset="1" stopColor={leaves.outer} />
+          </Gradient>
+          {/* The block fades out as it turns the screen's corners. */}
+          <Gradient id={`along${id}`} x1="0" y1="0" x2="0" y2={height} gradientUnits="userSpaceOnUse">
+            <Stop offset="0" stopColor="#FFFFFF" stopOpacity={0} />
+            <Stop offset={turned} stopColor="#FFFFFF" stopOpacity={1} />
+            <Stop offset={1 - turned} stopColor="#FFFFFF" stopOpacity={1} />
+            <Stop offset="1" stopColor="#FFFFFF" stopOpacity={0} />
+          </Gradient>
+          <Mask id={`fade${id}`} x="0" y="0" width={width} height={height} maskUnits="userSpaceOnUse">
+            <Rect x="0" y="0" width={width} height={height} fill={`url(#along${id})`} />
+          </Mask>
         </Defs>
-        {LEAVES.map((edge) => (
-          <Path key={edge.right} d={leafPath(width, height, edge.right, corner)} fill="none"
-            stroke={`url(#${fadeId})`} strokeOpacity={edge.opacity} strokeWidth={1} />
-        ))}
+        <G mask={`url(#fade${id})`}>
+          <Path d={blockPath(width, height, corner)} fill={`url(#across${id})`} />
+          {EDGES.map((edge) => (
+            <Path key={edge.inset} d={edgePath(width, height, edge.inset, corner)} fill="none"
+              stroke={edge.light ? leaves.light : leaves.line} strokeOpacity={edge.opacity} strokeWidth={0.8} />
+          ))}
+        </G>
       </Svg>
     </View>
   );
