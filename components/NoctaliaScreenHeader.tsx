@@ -174,7 +174,11 @@ export const NoctaliaScreenHeader = memo(function NoctaliaScreenHeader({
                   onPress={action.onPress}
                   style={({ pressed }) => [
                     styles.tabIconButton,
-                    { backgroundColor: action.active ? noctalia.action.primary : iconButtonBg },
+                    {
+                      // A dark scrim and a hairline keep the button legible over any painting.
+                      backgroundColor: action.active ? noctalia.action.primary : `${noctalia.screen.background}B8`,
+                      borderColor: action.active ? noctalia.action.primaryBorder : noctalia.text.tertiary,
+                    },
                     pressed && styles.pressed,
                   ]}
                   hitSlop={8}
@@ -184,7 +188,7 @@ export const NoctaliaScreenHeader = memo(function NoctaliaScreenHeader({
                 >
                   <IconSymbol
                     name={action.icon}
-                    size={22}
+                    size={32}
                     color={action.active ? noctalia.action.primaryText : noctalia.text.primary}
                   />
                 </Pressable>
@@ -381,6 +385,7 @@ const styles = StyleSheet.create({
     width: 44,
     height: 44,
     borderRadius: 22,
+    borderWidth: 1,
     alignItems: 'center',
     justifyContent: 'center',
   },
