@@ -1948,7 +1948,7 @@ describe('Recording screen', () => {
     expect(mockReplace).not.toHaveBeenCalled();
   });
 
-  it.each(['pending', 'failed'] as const)('reopens a dream whose analysis is %s so its page follows or retries it', async (status) => {
+  it.each(['pending', 'failed'] as const)('reopens a dream whose analysis is %s so its page follows or retries it', async (status: 'pending' | 'failed') => {
     mockPendingRecordingIntent = { entryId: 'pending-entry', savedDreamId: 42, phase: 'analysis_requested' };
     mockDreams = [{
       ...buildDream('dream read in the background', 42),

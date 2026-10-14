@@ -1,7 +1,7 @@
 // Historical exact UI assertions executed under the guarded TesterArmy engine.
 import path from 'node:path';
 import type { Page } from 'playwright/test';
-import { createParityTest, expect, withDialog } from '../web-parity-fixtures';
+import { createParityTest, expect, expectIllustrationOnPlate, withDialog } from '../web-parity-fixtures';
 
 const artwork = path.resolve(process.cwd(), '../../e2e/fixtures/home-dream.png');
 const dreamTitle = 'L’éléphant au sommet de la grande roue';
@@ -41,7 +41,8 @@ async function populatedHome(page: Page, failImage = false) {
   await expect(page.getByTestId('component.dreamDetail.readingZone')).toContainText(/\S[\s\S]{80}/);
   await page.getByTestId('btn.journal.illustrate').click();
   await expect(page.getByTestId('btn.journal.illustrate')).toHaveCount(0);
-  if (!failImage) await expect(page.getByTestId('btn.journal.illustration.expand')).toBeVisible();
+  // Painted in the seal's window, the illustration leaves it for the plate at the top of the page.
+  if (!failImage) await expectIllustrationOnPlate(page);
   await expect(page.getByTestId('journal.detail.image.generation_dots')).toHaveCount(0);
   if (failImage) {
     // Bring the lazy artwork into range before waiting for its failure state.

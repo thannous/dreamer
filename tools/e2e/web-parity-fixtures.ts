@@ -29,6 +29,24 @@ export async function withDialog(page: Page, handler: DialogHandler, action: () 
   const unsubscribe = await browser.onDialog(handler);
   try { await action(); } finally { await unsubscribe(); }
 }
+/**
+ * While the capture seal is struck, the journal asks whether to analyse a new dream when an
+ * analysis is available (not for a guest's first dream, analysed at once, nor without allowance).
+ * The seal holds until the question is answered.
+ */
+export async function answerSeal(page: Page, answer: 'now' | 'later') {
+  const question = page.getByTestId(answer === 'now' ? 'btn.dreamCaptureSeal.readNow' : 'btn.dreamCaptureSeal.readLater');
+  await expect(question).toBeVisible();
+  await question.click();
+}
+/**
+ * A new illustration is painted in the seal's window, then leaves it for the plate at the top
+ * of the page once the seal is on the screen; the plate's picture opens it whole.
+ */
+export async function expectIllustrationOnPlate(page: Page) {
+  await page.getByTestId('component.dreamDetail.savedMoment').scrollIntoViewIfNeeded();
+  await expect(page.getByTestId('btn.journal.illustration.expand')).toBeVisible();
+}
 type Body = (fixtures: Fixtures, info: ParityInfo) => Promise<void>;
 type Hook = (fixtures: Fixtures) => Promise<void>;
 

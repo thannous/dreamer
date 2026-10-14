@@ -1,5 +1,5 @@
 import type { Page } from 'playwright/test';
-import { test, expect } from './fixtures';
+import { answerSeal, test, expect } from './fixtures';
 
 async function startGuest(page: Page) {
   await page.goto('/', { waitUntil: 'domcontentloaded' });
@@ -234,8 +234,9 @@ for (const profile of ['new', 'plus'] as const) {
     const story = `E2E ${profile} traveler finds a lantern on a silver bridge.`;
     await page.getByTestId('input.dreamTranscript').fill(story);
     await page.getByTestId('btn.saveDream').click();
+    // The journal asks during the seal; yes opens the page already reading the dream.
+    await answerSeal(page, 'now');
     await expect(page.getByTestId('component.transcriptCard')).toContainText(story);
-    await page.getByTestId('btn.dream.primaryCta').click();
     await expect(page.getByTestId('component.dreamDetail.readingZone')).toContainText(/\S{20}/);
     await expect(page.getByTestId('analysis.reading.modal')).toHaveCount(0);
     await expect(page.getByTestId('screen.paywall')).toHaveCount(0);

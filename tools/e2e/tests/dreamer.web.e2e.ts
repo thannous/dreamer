@@ -94,8 +94,11 @@ test('free user saves, renames and finds the exact story in Journal', async ({ a
   await app.screenshot('saved-story-found-in-journal');
 });
 
-// Act I of the dream story: the arrival from capture opens on the saved moment once,
-// and its single primary next step follows the analysis permission.
+// Act I of the dream story: the arrival from capture opens on the saved moment once. The
+// seal carries the dream's next step, which follows the analysis permission: the journal
+// asks during the seal whether to analyse a dream it can analyse now, and "Later" leaves
+// that offer on the seal (owner decision 2026-10-14, PR #358, which replaced the "Dream
+// saved" line and the dock's analysis button with the seal itself).
 for (const profile of ['plus', 'existing'] as const) {
   test(`${profile} account lands once on the saved moment with its next step`, async ({ app, screen, browser }) => {
     await isolateWeb(browser, app);
@@ -111,24 +114,25 @@ for (const profile of ['plus', 'existing'] as const) {
     const story = `E2E ${profile} silver owl above a sleeping mountain.`;
     await screen.getByTestId('input.dreamTranscript', { visible: true }).fill(story);
     await screen.getByTestId('btn.saveDream', { visible: true }).tap();
-    // Prologue: the saved draft condenses into a star before its page opens.
+    // Prologue: the dream is written into the journal and sealed before its page opens.
     await expect(screen.getByTestId('component.recording.dreamSeal')).toHaveCount(1);
+    if (profile === 'plus') {
+      await expect(screen.getByRole('heading', 'Run an analysis to understand this dream?', { visible: true })).toBeVisible();
+      await screen.getByTestId('btn.dreamCaptureSeal.readLater', { visible: true }).tap();
+    }
     const moment = screen.getByTestId('component.dreamDetail.savedMoment', { visible: true });
-    await expect(moment).toContainText(/dream saved/i);
-    // The moment is the confirmation: no second toast announces the save.
-    await expect(screen.getByTestId('text.recording.saveConfirmation')).toHaveCount(1);
+    // The struck seal is the confirmation, and its words offer the next step: no toast or line announces the save.
+    const next = moment.getByTestId('btn.dream.primaryCta');
+    // Set in small capitals on the seal.
+    await expect(next).toContainText(profile === 'plus' ? /analyze this dream/i : /discover noctalia plus/i);
+    await expect(screen.getByTestId('text.recording.saveConfirmation')).toHaveCount(0);
     await expect(screen.getByTestId('component.transcriptCard', { visible: true })).toContainText(story);
     await expect(screen.getByTestId('component.dreamRecall.offer', { visible: true })).toContainText('Remember a little more?');
-    const analysis = screen.getByTestId('btn.dream.primaryCta', { visible: true });
     const back = screen.getByTestId('btn.savedDream.returnToJournal', { visible: true });
-    await expect(analysis).toBeVisible();
     await expect(back).toContainText('Back to journal');
-    const [analysisBox, backBox] = [await analysis.boundingBox(), await back.boundingBox()];
-    // Included analysis continues the story; otherwise the journal stays first.
-    if (profile === 'plus') {
-      await expect(analysis).toContainText('Analyze this dream');
-      expect(analysisBox!.y).toBeLessThan(backBox!.y);
-    } else expect(backBox!.y).toBeLessThan(analysisBox!.y);
+    // The seal stands under the dream's name, above its story; the way back stays at hand below.
+    const [nextBox, backBox] = [await next.boundingBox(), await back.boundingBox()];
+    expect(nextBox!.y).toBeLessThan(backBox!.y);
     // The arrival is authored motion: record the settled moment, not one of its frames.
     await expect.poll(() => browser.evaluate(() => document.getAnimations().filter(animation =>
       animation.playState === 'running' && animation.effect?.getTiming().iterations !== Infinity).length)).toBe(0);
@@ -168,8 +172,9 @@ test('plus account watches its saved dream being read, then lit as a constellati
   const story = 'E2E lantern drifting over dark water toward a doorway of light.';
   await screen.getByTestId('input.dreamTranscript', { visible: true }).fill(story);
   await screen.getByTestId('btn.saveDream', { visible: true }).tap();
+  // The journal asks during the seal; yes opens the page already reading the dream.
+  await screen.getByTestId('btn.dreamCaptureSeal.readNow', { visible: true }).tap();
   await expect(screen.getByTestId('component.dreamDetail.savedMoment', { visible: true })).toBeVisible();
-  await screen.getByTestId('btn.dream.primaryCta', { visible: true }).tap();
   const wait = screen.getByTestId('component.dreamDetail.readingWait');
   await expect(wait).toContainText('Noctalia is reading your dream…');
   await expect(wait).toContainText('Its symbols and emotions will appear here.');
@@ -185,7 +190,7 @@ test('plus account watches its saved dream being read, then lit as a constellati
   await offConsent();
   await settledMotion(browser);
   const landed = await constellation.boundingBox();
-  // The reading landed below the story: it was brought into view rather than left off-screen.
+  // The reading lands under the seal, above the story, where the reader already is.
   expect(landed!.y).toBeGreaterThan(0);
   expect(landed!.y + landed!.height).toBeLessThan(844);
   await app.screenshot('plus-reading-constellation');
@@ -212,7 +217,8 @@ test('plus account watches its saved dream being read, then lit as a constellati
   await expect(card).toHaveCount(1);
   await card.tap();
   await expect(screen.getByTestId('component.dreamDetail.constellation')).toContainText('Doorway');
-  await expect(screen.getByTestId('component.dreamDetail.savedMoment')).toHaveCount(0);
+  // The seal stays at the head of the reading, at rest.
+  await expect(screen.getByTestId('component.dreamDetail.savedMoment')).toHaveCount(1);
   expect(await browser.evaluate(() => [...document.querySelectorAll('[data-testid="component.dreamDetail.constellation"]')]
     .reduce((count, node) => count + node.getAnimations({ subtree: true }).length, 0))).toBe(0);
   await app.screenshot('plus-revisit-constellation-at-rest');
@@ -465,9 +471,9 @@ test('Quick Settings keeps interior taps open and accepts every sign-in button e
 // the app's own paintings instead so the landing is deterministic and actually visible.
 const MOCK_PAINTING = fileURLToPath(new URL('../../../assets/images/onboarding-reverie-background.webp', import.meta.url));
 
-// Act III and the epilogue: the illustration is painted into the window and the page
-// without moving what the reader sees; the journal card glows once; the next visit opens
-// on the cover.
+// Act III and the epilogue: the illustration is painted in the seal's window, then leaves
+// it for the plate at the top of the page without moving what the reader sees (PR #358);
+// the journal card glows once; the next visit opens on the plate.
 test('plus account watches its dream painted into the window, then finds it glowing in the journal', async ({ app, screen, browser }) => {
   await isolateWeb(browser, app);
   await browser.route('https://picsum.photos/**', route => route.fulfill({ path: MOCK_PAINTING, contentType: 'image/webp' }));
@@ -476,30 +482,29 @@ test('plus account watches its dream painted into the window, then finds it glow
   const story = 'E2E painted harbor where the lanterns float above the tide.';
   await screen.getByTestId('input.dreamTranscript', { visible: true }).fill(story);
   await screen.getByTestId('btn.saveDream', { visible: true }).tap();
-  await screen.getByTestId('btn.dream.primaryCta', { visible: true }).tap();
+  await screen.getByTestId('btn.dreamCaptureSeal.readNow', { visible: true }).tap();
   await expect(screen.getByTestId('component.dreamDetail.constellation', { visible: true })).toContainText('Doorway');
   await offConsent();
   await settledMotion(browser);
   await screen.getByTestId('btn.journal.illustrate').scrollIntoView();
   await screen.getByTestId('btn.journal.illustrate', { visible: true }).tap();
-  const canvas = screen.getByTestId('journal.detail.image.generation_dots');
-  await expect(canvas).toContainText('Noctalia is painting your dream…');
-  await app.screenshot('plus-dream-being-painted');
-  const readingZone = screen.getByTestId('component.dreamDetail.readingZone', { visible: true });
-  const readingBefore = await readingZone.boundingBox();
-  const painted = screen.getByTestId('component.dreamDetail.paintedArtwork', { visible: true });
-  await expect(painted).toBeVisible();
-  await expect(screen.getByTestId('journal.detail.image.generation_dots')).toHaveCount(0);
+  // Painted in the seal's window: no canvas of its own is added to the page.
   await expect(screen.getByTestId('component.dreamDetail.savedMoment.artwork')).toHaveCount(1);
-  // Nothing above the reading moved: no cover was inserted over the page being read.
-  expect((await readingZone.boundingBox())!.y).toBe(readingBefore!.y);
+  await expect(screen.getByTestId('journal.detail.image.generation_dots')).toHaveCount(0);
+  await expect(screen.getByTestId('component.dreamDetail.paintedArtwork')).toHaveCount(0);
+  await app.screenshot('plus-painting-landed-in-the-seal');
+  // Back at the seal, the reader watches the illustration leave it for the plate at the top of
+  // the page, while the reading stays where it is on the screen.
+  const readingZone = screen.getByTestId('component.dreamDetail.readingZone', { visible: true });
+  await screen.getByTestId('component.dreamDetail.savedMoment').scrollIntoView();
+  const readingBefore = await readingZone.boundingBox();
+  const plate = screen.getByTestId('btn.journal.illustration.expand');
+  await expect(plate).toHaveCount(1);
   await settledMotion(browser);
-  await app.screenshot('plus-painting-landed-in-page');
-  const open = screen.getByTestId('btn.dreamDetail.savedMoment.open');
-  await open.scrollIntoView();
-  await settledMotion(browser);
-  await app.screenshot('plus-painting-in-the-window');
-  await open.tap();
+  expect(Math.abs((await readingZone.boundingBox())!.y - readingBefore!.y)).toBeLessThanOrEqual(2);
+  await app.screenshot('plus-painting-on-the-plate');
+  await plate.scrollIntoView();
+  await plate.tap();
   await expect(screen.getByTestId('modal.journal.illustration.fullscreen', { visible: true })).toBeVisible();
   await screen.getByTestId('btn.journal.illustration.close', { visible: true }).tap();
   await expect(screen.getByTestId('modal.journal.illustration.fullscreen')).toHaveCount(0);
@@ -513,14 +518,14 @@ test('plus account watches its dream painted into the window, then finds it glow
     document.querySelector('[data-testid="component.journal.storyHalo"]') ?? document.body).opacity))).toBeGreaterThan(0.8);
   await app.screenshot('plus-journal-epilogue-glow');
   await expect(halo).toHaveCount(0);
-  // The next visit opens on the cover, at rest.
+  // The next visit opens on the plate, at rest, the seal at the head of the reading.
   await screen.getByRole('textbox', 'Search dreams…', { visible: true }).fill('lanterns float');
   const card = screen.getByTestId(/^dream\.item\./, { visible: true });
   await expect(card).toHaveCount(1);
   await card.tap();
   await expect(screen.getByTestId('btn.journal.illustration.expand', { visible: true })).toBeVisible();
   await expect(screen.getByTestId('component.dreamDetail.paintedArtwork')).toHaveCount(0);
-  await expect(screen.getByTestId('component.dreamDetail.savedMoment')).toHaveCount(0);
+  await expect(screen.getByTestId('component.dreamDetail.savedMoment.artwork')).toHaveCount(0);
   await expect(screen.getByTestId('component.journal.storyHalo')).toHaveCount(0);
-  await app.screenshot('plus-revisit-opens-on-cover');
+  await app.screenshot('plus-revisit-opens-on-the-plate');
 });

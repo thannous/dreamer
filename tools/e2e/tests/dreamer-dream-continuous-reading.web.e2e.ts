@@ -1,7 +1,7 @@
 // Historical exact UI assertions executed under the guarded TesterArmy engine.
 import path from 'node:path';
 import type { Page } from 'playwright/test';
-import { createParityTest, expect, withDialog } from '../web-parity-fixtures';
+import { createParityTest, expect, expectIllustrationOnPlate, withDialog } from '../web-parity-fixtures';
 
 const artwork = path.resolve(process.cwd(), '../../e2e/fixtures/home-dream.png');
 
@@ -43,6 +43,8 @@ for (const mode of ['light', 'dark'] as const) {
     await page.getByTestId('btn.saveDreamEdit').click();
     await page.getByTestId('btn.journal.illustrate').click();
     await expect(page.getByTestId('journal.detail.image.generation_dots')).toHaveCount(0);
+    // Painted in the seal's window, the illustration leaves it for the plate at the top of the page.
+    await expectIllustrationOnPlate(page);
     await page.getByTestId('btn.journal.illustration.expand').scrollIntoViewIfNeeded();
     const image = page.getByTestId('btn.journal.illustration.expand');
     // Expo retains the previous blob image during a crossfade. Check the painted mock
@@ -61,8 +63,10 @@ for (const mode of ['light', 'dark'] as const) {
       await page.setViewportSize(viewport);
       await expect(heading).toBeInViewport({ ratio: 1 });
       await expect(metadata).toBeInViewport({ ratio: 1 });
-      await expect(metadata).toContainText(/\d{4}/);
-      await expect.poll(async () => (await image.boundingBox())?.height ?? 0).toBeLessThan(viewport.height);
+      // The date is engraved on the rim of the seal at the head of the reading (PR #358).
+      await expect(page.getByTestId('component.savedDream.sealDate')).toContainText(/\d{4}/);
+      // The plate fills the screen, the dream's name set at its foot (PR #358); it never runs past it.
+      await expect.poll(async () => (await image.boundingBox())?.height ?? 0).toBeLessThanOrEqual(viewport.height);
       await page.screenshot({ path: info.outputPath(`dream-${mode}-arrival-${viewport.width}x${viewport.height}.png`) });
     }
     await page.setViewportSize({ width: 320, height: 568 });
@@ -73,17 +77,20 @@ for (const mode of ['light', 'dark'] as const) {
     await enlargedText.evaluate(node => node.parentNode?.removeChild(node));
     await page.setViewportSize({ width: 390, height: 844 });
     await expect(page.getByTestId('component.dreamDetail.actionCard')).toBeHidden();
-    // Chrome over artwork stays transparent; reading text gets an opaque
-    // navigation background so its letters cannot show through the back control.
+    // The way back is the page's running head, a round arrow on its own opaque disc that
+    // scrolls away with the page (PR #358): no bar ever lies over the reading text.
     // Disable browser scroll anchoring to exercise native-style rotation where
     // geometry changes without preserving the position of a reading paragraph.
     await page.addStyleTag({ content: '[data-testid="screen.dreamDetail"] * { overflow-anchor: none; }' });
+    // The story now follows the seal and the reading below the plate (PR #358); its action
+    // comes into the dock once the reader has scrolled the story onto the screen.
     await image.hover();
-    await page.mouse.wheel(0, 400);
+    const story = (await page.getByTestId('component.transcriptCard').boundingBox())!;
+    await page.mouse.wheel(0, story.y - 200);
     await expect(page.getByTestId('journal.detail.navigation')).toHaveCSS('background-color', 'rgba(0, 0, 0, 0)');
     await page.setViewportSize({ width: 844, height: 390 });
     await expect(image).not.toBeInViewport();
-    await expect(page.getByTestId('journal.detail.navigation')).toHaveCSS('background-color', mode === 'dark' ? 'rgb(3, 4, 13)' : 'rgb(240, 228, 212)');
+    await expect(page.getByTestId('journal.detail.navigation')).not.toBeInViewport();
     await expect(page.getByTestId('component.dreamDetail.actionDock')).toBeVisible();
     await page.screenshot({ path: info.outputPath(`dream-${mode}-rotation-reading-header.png`) });
     await page.setViewportSize({ width: 390, height: 844 });
@@ -107,7 +114,7 @@ for (const mode of ['light', 'dark'] as const) {
     await expect(page.getByTestId('btn.editDream')).toBeEnabled();
     await expect(page.getByTestId('btn.editDream')).toContainText('Éditer');
     await analysis.scrollIntoViewIfNeeded();
-    await expect(page.getByTestId('journal.detail.navigation')).toHaveCSS('background-color', mode === 'dark' ? 'rgb(3, 4, 13)' : 'rgb(240, 228, 212)');
+    await expect(page.getByTestId('journal.detail.navigation')).not.toBeInViewport();
     await expect(action).toBeInViewport();
     await page.screenshot({ path: info.outputPath(`dream-${mode}-reading.png`) });
     await action.click();
