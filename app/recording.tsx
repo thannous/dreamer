@@ -28,6 +28,8 @@ import { useDreamsData, useDreamsActions } from '@/context/DreamsContext';
 import { useAuth } from '@/context/AuthContext';
 import { useLanguage } from '@/context/LanguageContext';
 import { useOnboarding } from '@/context/OnboardingContext';
+import { useQuota } from '@/hooks/useQuota';
+import { getSavedAnalysisAction } from '@/lib/savedAnalysisAccess';
 import { useQuickSettings } from '@/context/QuickSettingsContext';
 import { useTheme } from '@/context/ThemeContext';
 import { useRecordingDraftPersistence } from '@/hooks/useRecordingDraftPersistence';
@@ -170,7 +172,7 @@ function RecordingScreen() {
   const { colors, mode } = useTheme();
   const { language } = useLanguage();
   const { t } = useTranslation();
-  const { formatDreamDate, formatDreamTime } = useLocaleFormatting();
+  const { formatDreamStamp } = useLocaleFormatting();
   const openQuickSettings = useQuickSettings();
   const {
     state: onboardingState,
@@ -715,6 +717,13 @@ function RecordingScreen() {
   // the next page covers this one, so the emptied composer is never glimpsed during the
   // transition.
   const reducedMotion = useReducedMotion();
+  // The journal only asks whether to read a dream now when it can be read now. A guest's
+  // first reading is not asked for: it is the demonstration, read and illustrated at once.
+  const { tier: quotaTier, loading: quotaLoading, error: quotaError, quotaStatus, usage: quotaUsage } = useQuota();
+  const readingOffered = getSavedAnalysisAction({
+    tier: quotaTier, loading: quotaLoading, error: quotaError, status: quotaStatus,
+  }) === 'analyze';
+  const firstGuestReading = readingOffered && !user && quotaTier === 'guest' && (quotaUsage?.analysis?.used ?? 0) === 0;
   /** The dream being sealed until its page takes over, null otherwise. */
   const [sealing, setSealing] = useState<{
     identity: string;
@@ -724,7 +733,11 @@ function RecordingScreen() {
     previousPage: boolean;
     /** Its date and time, as its page shows them under its name. */
     date: string;
-    open: () => void;
+    /** A new dream, written without help: the journal asks whether to read it now. */
+    askReading: boolean;
+    /** A guest's first dream: it is read at once, unasked. */
+    readAtOnce: boolean;
+    open: (read: boolean) => void;
   } | null>(null);
   const sealTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   useEffect(() => () => {
@@ -774,11 +787,11 @@ function RecordingScreen() {
     sealWrote.current = { title, provisional, ...(mark ? { mark } : null) };
     markDreamNamed(sealing.identity, provisional);
   }, [sealing]);
-  const sealOpened = useCallback(() => {
+  const sealOpened = useCallback((read: boolean) => {
     if (!sealing) return;
     // The seal ends on the saved moment's window and the name in its place: the page takes them over as they are.
     markDreamStoryHandoff(sealing.identity, sealWrote.current);
-    sealing.open();
+    sealing.open(read || sealing.readAtOnce);
     sealTimerRef.current = setTimeout(() => {
       sealTimerRef.current = null;
       setSealing(null);
@@ -799,11 +812,15 @@ function RecordingScreen() {
     const savedDream = dreams.find((dream) => dream.id === pending.savedDreamId);
     if (!savedDream) return;
     restoredPendingIntentRef.current = pending.entryId;
-    navigateToSavedDream(
-      savedDream,
-      pending.phase === 'analysis_confirmation' ? { saved: true } : undefined
-    );
-  }, [dreams, navigateToSavedDream, onboardingState.pendingRecordingIntent]);
+    // The capture seal asks about the reading and opens the page; a dream already read
+    // leaves nothing to confirm, so the step ends here instead of sending the reader back.
+    if (savedDream.isAnalyzed || savedDream.analysisStatus !== 'none' || savedDream.analysisRequestId) {
+      void transitionOnboarding({ type: 'CLEAR_PENDING_INTENT' }).catch(() => {});
+      return;
+    }
+    // Opened as it is, not as a dream just saved: that arrival belongs to the capture seal.
+    navigateToSavedDream(savedDream);
+  }, [dreams, navigateToSavedDream, onboardingState.pendingRecordingIntent, transitionOnboarding]);
 
   const handleVoiceCaptureFailure = useCallback((failure: VoiceCaptureFailure) => {
     setVoiceFallbackReason(failure);
@@ -1227,20 +1244,24 @@ function RecordingScreen() {
         });
       }
       // Written or told, a saved dream enters the story the same way: the seal, then its saved moment.
-      const openSavedDream = () => navigateToSavedDream(savedDream, {
-        saved: true, recall: completeWithHelp, autoAnalyze: isNewDream && !user && !completeWithHelp,
+      // Its page reads it at once only when the reader said so in the journal.
+      const openSavedDream = (read: boolean) => navigateToSavedDream(savedDream, {
+        saved: true, recall: completeWithHelp, autoAnalyze: read,
       });
       // One success haptic at the causal moment; the seal then marks its star's birth and arrival.
       void Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success).catch(() => {});
+      const readAtOnce = isNewDream && !completeWithHelp && firstGuestReading;
       if (reducedMotion) {
-        openSavedDream();
+        openSavedDream(readAtOnce);
       } else {
         setPreAnalysisOver(false);
         setSealing({
           identity: getDreamIdentityKey(savedDream),
           provisionalName: savedDream.title || t('journal.detail.untitled_dream'),
           previousPage: dreams.some((dream) => dream.id !== savedDream.id),
-          date: `${formatDreamDate(savedDream.id)} · ${formatDreamTime(savedDream.id)}`,
+          date: formatDreamStamp(savedDream.id),
+          askReading: isNewDream && !completeWithHelp && !readAtOnce,
+          readAtOnce,
           open: openSavedDream,
         });
       }
@@ -1278,8 +1299,8 @@ function RecordingScreen() {
     clearAfterSuccessfulSave,
     draftDream,
     dreams,
-    formatDreamDate,
-    formatDreamTime,
+    firstGuestReading,
+    formatDreamStamp,
     isHydrated,
     isPersisting,
     isRecordingRef,
@@ -1292,7 +1313,6 @@ function RecordingScreen() {
     t,
     transitionOnboarding,
     transcript,
-    user,
   ]);
 
 
@@ -2127,7 +2147,7 @@ function RecordingScreen() {
 
       {sealing ? (
         <DreamCaptureSeal name={sealName} mark={sealMark} provisionalName={sealing.provisionalName} date={sealing.date}
-          previousPage={sealing.previousPage}
+          previousPage={sealing.previousPage} askReading={sealing.askReading && readingOffered}
           onNamed={sealNamed} onSealed={sealOpened} />
       ) : null}
       <MicPermissionRationaleSheet

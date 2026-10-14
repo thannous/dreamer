@@ -1,4 +1,4 @@
-import type { ViewInstance, ScrollViewInstance } from 'react-native';
+import type { LayoutChangeEvent, ViewInstance, ScrollViewInstance } from 'react-native';
 import { getSavedAnalysisAction } from '@/lib/savedAnalysisAccess';
 import { MarkdownText } from '@/components/ui/MarkdownText';
 import { DreamAnalysisContent } from '@/components/journal/DreamAnalysisContent';
@@ -12,12 +12,16 @@ import { useDreamMedia } from '@/hooks/useDreamMedia';
 import { Toast } from '@/components/Toast';
 import { DreamRecallAssistantCard } from '@/components/journal/DreamRecallAssistantCard';
 import { JournalCoverPlate } from '@/components/journal/JournalCoverPlate';
+import { JournalEditLink } from '@/components/journal/JournalEditLink';
+import { JournalFolio } from '@/components/journal/JournalFolio';
 import { JournalPageEdges } from '@/components/journal/JournalPageEdges';
 import { JournalPageTurner, useJournalPageLaidOut, useJournalPageTurnedTo, useJournalPageTurnLock } from '@/components/journal/JournalPageTurner';
 import { JournalPaper } from '@/components/journal/JournalPaper';
 import { JournalRunningHead, RUNNING_HEAD_GAP, RUNNING_HEAD_HEIGHT } from '@/components/journal/JournalRunningHead';
 import { Fonts } from '@/constants/theme';
-import { SavedDreamMoment, type SavedDreamPhase, type SealMark } from '@/components/journal/SavedDreamMoment';
+import { SavedDreamMoment, type SavedDreamAction, type SavedDreamPhase, type SealMark } from '@/components/journal/SavedDreamMoment';
+import { CoverFlight } from '@/components/journal/story/CoverFlight';
+import { SEAL_EMBLEMS, SEAL_MEASURES, SEAL_NAME_LINES } from '@/components/journal/story/sealMarks';
 import { WrittenTitle } from '@/components/journal/story/WrittenTitle';
 import { DreamPaintedArtwork } from '@/components/journal/story/DreamPaintedArtwork';
 import { DreamPaintingWait } from '@/components/journal/story/DreamPaintingWait';
@@ -42,6 +46,7 @@ import {
   type AnalysisNotice,
 } from '@/components/journal/JournalDetailSheets';
 import { DURATION, EASING, PressableScale, Reveal } from '@/components/motion';
+import { QUOTAS } from '@/constants/limits';
 import { getNoctaliaDesignTokens } from '@/constants/noctaliaDesign';
 import { useAuth } from '@/context/AuthContext';
 import { SignInToOpenDream } from '@/components/auth/SignInToOpenDream';
@@ -260,6 +265,35 @@ function ArrivalReveal({ play, index, className, children }: {
 
 /** Where the running head has scrolled up under the page's top margin. */
 const RUNNING_HEAD_TOP = 12;
+/** How long a block appearing on the page takes to open up. */
+const PAGE_FLOW_MS = 560;
+
+/**
+ * A block that appears on the page while it is read (the seal, its reading) opens up
+ * instead of pushing what follows down at once; it then follows its content's height as
+ * that grows. A block already there when the page opens is laid out as it is.
+ */
+function OpenUp({ appear, children, onLayout }: {
+  appear: boolean;
+  children: React.ReactNode;
+  onLayout?: (event: LayoutChangeEvent) => void;
+}) {
+  const reduced = useReducedMotion();
+  const [opening] = useState(appear && !reduced);
+  const height = useSharedValue(0);
+  const style = useAnimatedStyle(() => ({ height: height.get() }));
+  if (!opening) return <View onLayout={onLayout}>{children}</View>;
+  return (
+    <Animated.View style={[{ overflow: 'hidden' }, style]} onLayout={onLayout}>
+      <View style={{ position: 'absolute', left: 0, right: 0, top: 0 }}
+        onLayout={({ nativeEvent: { layout } }) => {
+          height.set(withTiming(layout.height, { duration: PAGE_FLOW_MS, easing: EASING.inOut }));
+        }}>
+        {children}
+      </View>
+    </Animated.View>
+  );
+}
 /** How far the reader scrolls back up before the way back returns, and on before it leaves. */
 const RETURN_REVEAL = 24;
 const RETURN_CONCEAL = 8;
@@ -399,6 +433,15 @@ const JournalDetailContent = memo(function JournalDetailContent({ dream, folio }
   if (artworkAtArrival === null && dream) {
     setArtworkAtArrival(Boolean(dream.imageUrl?.trim()));
   }
+  // An illustration painted during this visit leaves the seal for the top of the page and
+  // becomes its plate there, as every illustrated dream opens.
+  const [plateRevealed, setPlateRevealed] = useState(false);
+  const [coverFlight, setCoverFlight] = useState<{
+    from: { x: number; y: number; size: number };
+    to: { top: number; drift: number };
+    landed: boolean;
+  } | null>(null);
+  const sealWindowRef = useRef<ViewInstance | null>(null);
   const analysisLaunchInFlightRef = useRef(false);
   const autoAnalysisHandledRef = useRef(false);
   const autoAnalysisExpiresAtRef = useRef<number | null>(null);
@@ -504,7 +547,7 @@ const JournalDetailContent = memo(function JournalDetailContent({ dream, folio }
       blurActiveElement();
     }
   }, [isShareModalVisible]);
-  const { formatDreamDate, formatDreamTime } = useLocaleFormatting();
+  const { formatDreamDate, formatDreamTime, formatDreamStamp } = useLocaleFormatting();
   const {
     canAnalyzeNow,
     canAnalyze,
@@ -659,6 +702,8 @@ const JournalDetailContent = memo(function JournalDetailContent({ dream, folio }
   const [coverShown, setCoverShown] = useState(false);
   const [isKeyboardVisible, setIsKeyboardVisible] = useState(false);
   const [transcriptSectionOffset, setTranscriptSectionOffset] = useState(0);
+  // Where the reading starts in the page: under the running head and the name, or the plate.
+  const [readingContentTop, setReadingContentTop] = useState(insets.top + 76);
   const [transcriptSectionHeight, setTranscriptSectionHeight] = useState(0);
   const readingScrollOffset = useRef(0);
   const readingContentRef = useRef<ViewInstance | null>(null);
@@ -673,10 +718,10 @@ const JournalDetailContent = memo(function JournalDetailContent({ dream, folio }
   }, []);
   const updateReadingChrome = useCallback((offsetY: number) => {
     const visibleStoryHeight = Math.min(144, viewportHeight * 0.2, transcriptSectionHeight || 144);
-    const threshold = Math.max(1, navigationHeight + transcriptSectionOffset
+    const threshold = Math.max(1, readingContentTop + transcriptSectionOffset
       - viewportHeight + visibleStoryHeight);
     setReadingActionVisible(offsetY >= threshold);
-  }, [navigationHeight, transcriptSectionHeight, transcriptSectionOffset, viewportHeight]);
+  }, [readingContentTop, transcriptSectionHeight, transcriptSectionOffset, viewportHeight]);
   // Rotation, text scaling and measured content can move artwork without a scroll
   // event. Recompute chrome before paint using the latest observed offset.
   useLayoutEffect(() => {
@@ -1038,27 +1083,6 @@ const JournalDetailContent = memo(function JournalDetailContent({ dream, folio }
   const reducedMotion = useReducedMotion();
   const readingZoneTopRef = useRef<number | null>(null);
   const readingRevealScrolledRef = useRef(false);
-  useEffect(() => {
-    if (readingStory === 'waiting') {
-      readingRevealScrolledRef.current = false;
-      return;
-    }
-    if (readingStory !== 'revealed' || readingRevealScrolledRef.current) return;
-    // The dock resizes as the reading lands, which re-runs this effect and cancels the
-    // pending frame: only the frame that actually runs marks the reveal as handled.
-    const frame = requestAnimationFrame(() => {
-      readingRevealScrolledRef.current = true;
-      const top = readingZoneTopRef.current;
-      if (top == null) return;
-      const visibleBottom = readingScrollOffset.current + viewportHeight - actionDockHeight;
-      // The reader asked for this reading: bring it into view when it lands below the fold,
-      // never pull them back up from further down the page.
-      if (navigationHeight + top > visibleBottom - 120) {
-        scrollViewRef.current?.scrollTo({ y: Math.max(top - 12, 0), animated: !reducedMotion });
-      }
-    });
-    return () => cancelAnimationFrame(frame);
-  }, [actionDockHeight, navigationHeight, readingStory, reducedMotion, viewportHeight]);
   const isImageJobPending = illustrationSidecar === 'pending';
   const isSyncPending = dreamSyncState === 'pending';
   const isSyncFailed = dreamSyncState === 'failed';
@@ -1645,7 +1669,7 @@ const JournalDetailContent = memo(function JournalDetailContent({ dream, folio }
   }, []);
 
   const handleFirstValueBackup = useCallback(() => {
-    router.push('/settings?section=account');
+    router.push('/settings?section=account&auth=signup');
   }, []);
 
   const runAnalyze = useCallback(
@@ -1748,27 +1772,6 @@ const JournalDetailContent = memo(function JournalDetailContent({ dream, folio }
   }, [autoAnalyzeParam]);
 
   useEffect(() => {
-    if (autoAnalyzeParam !== '1' || autoAnalysisHandledRef.current || !dream) return;
-    if (!isSavedArrival || recallRequested || user || tier !== 'guest'
-      || dream.isAnalyzed || dream.analysisStatus !== 'none' || dream.analysisRequestId) {
-      autoAnalysisHandledRef.current = true;
-      router.setParams({ autoAnalyze: undefined });
-      return;
-    }
-    // An unavailable credit can be a stale quota response during the first
-    // guest bootstrap. Wait for a confirmed eligible response or the timeout.
-    if (quotaLoading || savedAnalysisAction !== 'analyze' || !guestImageAvailable) return;
-    const timer = setTimeout(() => {
-      if (autoAnalysisHandledRef.current) return;
-      autoAnalysisHandledRef.current = true;
-      void runAnalyze(true);
-      router.setParams({ autoAnalyze: undefined });
-    }, 0);
-    return () => clearTimeout(timer);
-  }, [autoAnalyzeParam, dream, guestImageAvailable, isSavedArrival, quotaLoading,
-    recallRequested, runAnalyze, savedAnalysisAction, tier, user]);
-
-  useEffect(() => {
     if (analyzeAfterPurchase !== '1' || purchaseAnalysisHandledRef.current) return;
     // Wait for the verified subscription to reach this screen; never consume a
     // free credit while the purchase result is still propagating.
@@ -1821,6 +1824,34 @@ const JournalDetailContent = memo(function JournalDetailContent({ dream, folio }
     }
   }, [autoAnalyzeParam, canResumeAnalysis, dream, ensureAnalyzeAllowed, guestNeedsAccount, hasExistingImage, runAnalyze, savedAnalysisAction, user]);
 
+  // Asked in the journal as the seal was struck, the reader chose to read the dream now: the
+  // page takes the step the seal offers, as if pressed, once the allowance confirms it.
+  useEffect(() => {
+    if (autoAnalyzeParam !== '1' || autoAnalysisHandledRef.current || !dream) return;
+    if (!isSavedArrival || recallRequested
+      || dream.isAnalyzed || dream.analysisStatus !== 'none' || dream.analysisRequestId) {
+      autoAnalysisHandledRef.current = true;
+      router.setParams({ autoAnalyze: undefined });
+      return;
+    }
+    // An unavailable credit can be a stale quota response during the first
+    // guest bootstrap. Wait for a confirmed eligible response or the timeout.
+    if (quotaLoading || savedAnalysisAction !== 'analyze') return;
+    const timer = setTimeout(() => {
+      if (autoAnalysisHandledRef.current) return;
+      // A guest's reading comes with its illustration while one is still offered.
+      if (!user && guestImageAvailable) {
+        autoAnalysisHandledRef.current = true;
+        router.setParams({ autoAnalyze: undefined });
+        void runAnalyze(true);
+        return;
+      }
+      void handleAnalyze();
+    }, 0);
+    return () => clearTimeout(timer);
+  }, [autoAnalyzeParam, dream, guestImageAvailable, handleAnalyze, isSavedArrival, quotaLoading, recallRequested,
+    runAnalyze, savedAnalysisAction, user]);
+
   const handleReplaceImage = useCallback(() => {
     void runAnalyze(shouldReplaceExistingImage('replace'));
   }, [runAnalyze]);
@@ -1865,8 +1896,29 @@ const JournalDetailContent = memo(function JournalDetailContent({ dream, folio }
   const keyboardVerticalOffset = Platform.select({ ios: 0, android: 0, web: 0 }) ?? 0;
   const shouldHideHeroMedia = isKeyboardVisible && (isEditing);
   const coverImageFailed = Boolean((failedCoverUri && failedCoverUri === displayImageUrl) || (!displayImageUrl && media.error));
-  const hasIllustratedCover = artworkAtArrival === true && Boolean(dream?.imageUrl?.trim())
+  const hasIllustratedCover = (artworkAtArrival === true || plateRevealed) && Boolean(dream?.imageUrl?.trim())
     && !shouldHideHeroMedia && !coverImageFailed;
+  useEffect(() => {
+    if (readingStory === 'waiting') {
+      readingRevealScrolledRef.current = false;
+      return;
+    }
+    if (readingStory !== 'revealed' || readingRevealScrolledRef.current) return;
+    // The dock resizes as the reading lands, which re-runs this effect and cancels the
+    // pending frame: only the frame that actually runs marks the reveal as handled.
+    const frame = requestAnimationFrame(() => {
+      readingRevealScrolledRef.current = true;
+      const top = readingZoneTopRef.current;
+      if (top == null) return;
+      const visibleBottom = readingScrollOffset.current + viewportHeight - actionDockHeight;
+      // The reader asked for this reading: bring it into view when it lands below the fold,
+      // never pull them back up from further down the page.
+      if (readingContentTop + top > visibleBottom - 120) {
+        scrollViewRef.current?.scrollTo({ y: Math.max(readingContentTop + top - 12, 0), animated: !reducedMotion });
+      }
+    });
+    return () => cancelAnimationFrame(frame);
+  }, [actionDockHeight, readingContentTop, readingStory, reducedMotion, viewportHeight]);
   const pageReady = coverIntroHeight !== null && (!hasIllustratedCover || coverShown);
   useEffect(() => {
     if (pageReady) pageLaidOut();
@@ -1942,6 +1994,65 @@ const JournalDetailContent = memo(function JournalDetailContent({ dream, folio }
   const finishNaming = useCallback(() => {
     setNaming((current) => (current.stage === 'writing' ? { ...current, stage: 'named' } : current));
   }, []);
+
+  // The seal, under the name and before the story, at the head of the reading: from the
+  // capture on arrival, and on every page whose dream is being or has been read.
+  const readingBegun = readingInFlight || showCompletedReading;
+  const sealVisible = !shouldHideHeroMedia && (opensOnSavedMoment || readingBegun);
+  // On a page opened again, the seal bears the dream's type and theme as its reading left them.
+  const pageSeal = useMemo(() => {
+    if (!dream?.theme || !(dream.theme in SEAL_EMBLEMS)) return null;
+    const typed = dream.dreamType && (analysisState.isAnalyzed || dream.dreamType !== 'Symbolic Dream');
+    const legend = [typed ? dreamTypeLabel : null, dreamThemeLabel].filter(Boolean).join(' · ');
+    return { mark: { theme: dream.theme, legend }, settled: true };
+  }, [analysisState.isAnalyzed, dream?.dreamType, dream?.theme, dreamThemeLabel, dreamTypeLabel]);
+  const sealShows = opensOnSavedMoment ? (naming.stage === 'waiting' ? null : sealing) : pageSeal;
+  // The seal's rim carries the dream's details, which the name then leaves to it.
+  const detailsOnSeal = sealVisible && Boolean(sealShows?.mark);
+
+  // The illustration waits in the seal until the reading has landed and the seal is in
+  // sight, then flies out to become the page's plate.
+  const sealHoldsArtwork = sealVisible && artworkAtArrival === false && Boolean(paintedArtwork) && artworkLanded
+    && !plateRevealed && !readingInFlight;
+  const releaseArtwork = useCallback(() => {
+    const seal = sealWindowRef.current;
+    if (!seal || coverFlight || isEditing || isIllustrationFullscreen) return;
+    seal.measureInWindow((x, y, sealWidth) => {
+      const centre = { x: x + sealWidth / 2, y: y + SEAL_MEASURES.orbit / 2 };
+      if (centre.y < insets.top + 24 || centre.y > viewportHeight - 96) return;
+      if (reducedMotion) {
+        setPlateRevealed(true);
+        return;
+      }
+      // The plate takes the place of the running head and the name, above the reading,
+      // which stays where the reader has it: on the screen it ends just above the reading.
+      const top = readingContentTop - readingScrollOffset.current - coverHeight;
+      // As the page lays its picture out there, drifted for its place on the screen.
+      const place = (top + coverHeight / 2 - windowSize.height / 2) / (windowSize.height / 2 + coverHeight / 2);
+      const drift = reducedMotion ? 0 : -coverTravel * Math.max(-1, Math.min(1, place));
+      setCoverFlight({ from: { ...centre, size: SEAL_MEASURES.medallion }, to: { top, drift }, landed: false });
+    });
+  }, [coverFlight, coverHeight, coverTravel, insets.top, isEditing, isIllustrationFullscreen, readingContentTop, reducedMotion,
+    viewportHeight, windowSize.height]);
+  useEffect(() => {
+    if (!sealHoldsArtwork) return;
+    const frame = requestAnimationFrame(releaseArtwork);
+    return () => cancelAnimationFrame(frame);
+  }, [releaseArtwork, sealHoldsArtwork]);
+  const coverFlightArrived = useCallback(() => setPlateRevealed(true), []);
+  const coverFlightGone = useCallback(() => setCoverFlight(null), []);
+  // The flight fades once the plate shows under it, or after a moment at most.
+  const plateUnderFlight = plateRevealed && Boolean(coverFlight) && !coverFlight?.landed;
+  useEffect(() => {
+    if (!plateUnderFlight) return;
+    const landed = () => setCoverFlight((current) => (current ? { ...current, landed: true } : current));
+    if (coverShown) {
+      const frame = requestAnimationFrame(landed);
+      return () => cancelAnimationFrame(frame);
+    }
+    const timer = setTimeout(landed, 700);
+    return () => clearTimeout(timer);
+  }, [coverShown, plateUnderFlight]);
 
   if (!dream) {
     return (
@@ -2058,7 +2169,7 @@ const JournalDetailContent = memo(function JournalDetailContent({ dream, folio }
         style={compactMetadata ? undefined : variant === 'floating' ? shadows.xl : shadows.md}
         className={[
           // On arrival the story follows the title closely; the chips wait below it.
-          compactMetadata ? `mx-2 ${opensOnSavedMoment ? 'mb-1' : 'mb-7'}` : 'mb-6 rounded-t-xl rounded-b-lg px-5 pt-5 bg-ink-raised',
+          compactMetadata ? `mx-2 ${opensOnSavedMoment || sealVisible ? 'mb-1' : 'mb-7'}` : 'mb-6 rounded-t-xl rounded-b-lg px-5 pt-5 bg-ink-raised',
           compactMetadata ? '' : borderClassName,
           compactMetadata ? '' : 'pb-5',
           variant === 'floating' ? 'rounded-[20px]' : '',
@@ -2078,7 +2189,12 @@ const JournalDetailContent = memo(function JournalDetailContent({ dream, folio }
               placeholderTextColor={noctalia.text.secondary}
               selectionColor={noctalia.accent.base}
             />
-          ) : namingOn && !windowHandedOver ? (
+          ) : (
+            // Above its seal, the name keeps the same lines whatever its length, so the seal
+            // lies at the same place on every page.
+            <View style={compactMetadata && sealVisible && !hasIllustratedCover
+              ? { minHeight: SEAL_NAME_LINES * 32 * titleTextScale + 8 } : undefined}>
+          {namingOn && !windowHandedOver ? (
             <View className="mb-2">
               <WrittenTitle key={`dream-heading-${windowSize.fontScale}`}
                 text={naming.title ?? (dream.title || t('journal.detail.untitled_dream'))}
@@ -2091,9 +2207,22 @@ const JournalDetailContent = memo(function JournalDetailContent({ dream, folio }
               {heldTitle ?? (dream.title || t('journal.detail.untitled_dream'))}
             </Text>
           )}
-          <Text key={`dream-date-${windowSize.fontScale}`} allowFontScaling={false} style={{ fontSize: 12 * compactTextScale, lineHeight: 20 * compactTextScale }} className={`${opensOnSavedMoment ? 'mb-2' : 'mb-5'} font-sans text-[12px] leading-5 text-ivory-muted`}>
-            {formatDreamDate(dream.id)} · {formatDreamTime(dream.id)}
-          </Text>
+            </View>
+          )}
+          {/* The date, unless the seal's rim carries it, and beside it the page's one way to edit it. */}
+          <View className={`${opensOnSavedMoment || (compactMetadata && sealVisible) ? 'mb-2' : 'mb-5'} flex-row items-center ${
+            compactMetadata && sealVisible ? 'justify-end' : 'justify-between'} gap-3`}>
+            {compactMetadata && sealVisible ? null : (
+              <Text key={`dream-date-${windowSize.fontScale}`} allowFontScaling={false} style={{ fontSize: 12 * compactTextScale, lineHeight: 20 * compactTextScale }} className="shrink font-sans text-[12px] leading-5 text-ivory-muted">
+                {formatDreamDate(dream.id)} · {formatDreamTime(dream.id)}
+              </Text>
+            )}
+            {compactMetadata ? (
+              <ArrivalLater play={opensOnSavedMoment} ready={!namingOn}>
+                <JournalEditLink onEdit={startEditing} disabled={isAnalysisLocked} lineHeight={20 * compactTextScale} />
+              </ArrivalLater>
+            ) : null}
+          </View>
           {!isEditing && hasUncategorizedDraft && initialCategorizationPending ? (
             <Text testID="text.dreamMetadata.pending" accessibilityLiveRegion="polite" className="mb-4 font-sans text-[13px] text-ivory-muted">
               {t('journal.detail.metadata.loading')}
@@ -2122,7 +2251,7 @@ const JournalDetailContent = memo(function JournalDetailContent({ dream, folio }
       </>
 
       {compactMetadata ? (
-        opensOnSavedMoment ? null : renderMetadataChips()
+        opensOnSavedMoment || detailsOnSeal ? null : renderMetadataChips()
       ) : <>
       {(isEditing || (dream.dreamType && (analysisState.isAnalyzed || dream.dreamType !== 'Symbolic Dream'))) && (
         <View className={`mt-2 flex-row gap-2 ${isEditing ? 'items-start' : 'items-center'}`}
@@ -2329,6 +2458,51 @@ const JournalDetailContent = memo(function JournalDetailContent({ dream, folio }
     );
   };
 
+  // The page's next step, as the dock and, after a capture, the seal both offer it.
+  const primaryDisabled = !detailActionCard || detailActionCard.disabled || isPrimaryActionBusy || isAnalysisLocked;
+  const primaryPress = isStalePrimaryAction
+    ? handleStaleReanalyze
+    : visiblePrimaryAction === 'analyze'
+      ? handleAnalyze
+      : handleJourneyPress;
+  const primaryButtonTestID = isStalePrimaryAction
+    ? TID.Button.AnalysisStaleCta
+    : TID.Button.DreamDetailPrimaryCta;
+  const analysisIcon = guestNeedsAccount ? 'person.fill' : visiblePrimaryAction === 'analyze'
+    ? (isStalePrimaryAction ? 'arrow.clockwise' : 'sparkles') : 'arrow.right';
+  // The saved moment already confirms the save; only a message explaining the offer remains.
+  const arrivalMessage = !detailActionCard || analysisAccessLabel
+    || detailActionCard.message === t('journal.detail.action.analyze.message') ? null : detailActionCard.message;
+  // After a capture the struck seal offers the dream's reading itself, then shows it read.
+  const sealReads = sealVisible && isSavedArrival && !isStalePrimaryAction && Boolean(detailActionCard)
+    && (visiblePrimaryAction === 'analyze' || readingInFlight);
+  // Whatever page it is on, the seal says while the dream is being read; the dock need not.
+  const sealShowsReading = sealVisible && readingInFlight;
+  const sealAction: SavedDreamAction | null = !sealVisible ? null
+    : readingInFlight ? { label: t('loading.analyzing') }
+      : !sealReads || !detailActionCard ? null : {
+        label: analysisAccessLabel ?? detailActionCard.cta,
+        icon: analysisIcon,
+        onPress: primaryPress,
+        disabled: primaryDisabled,
+        hint: quotaHintLabel,
+        testID: primaryButtonTestID,
+      };
+
+  const renderReturnToJournal = (quiet: boolean) => (
+    <PressableScale accessibilityRole="button" onPress={handleBackPress}
+      testID="btn.savedDream.returnToJournal"
+      className={quiet
+        ? 'min-h-[44px] items-center justify-center px-4'
+        : 'min-h-[48px] items-center justify-center rounded-md border border-line-strong px-4 py-2.5'}>
+      <Text className={quiet
+        ? 'font-sans-medium text-[15px] text-ivory'
+        : 'font-sans-medium text-[16px] text-ivory'}>
+        {t('journal.detail.saved.return')}
+      </Text>
+    </PressableScale>
+  );
+
   const renderDetailActionCard = (
     visibleFamilies?: ('analyze' | 'explore' | 'continue')[]
   ) => {
@@ -2337,6 +2511,27 @@ const JournalDetailContent = memo(function JournalDetailContent({ dream, folio }
     }
     if (visibleFamilies && !visibleFamilies.includes(visiblePrimaryAction)) {
       return null;
+    }
+    // On a page opened again, the seal shows the reading under way on its own.
+    if (sealShowsReading && !isSavedArrival) {
+      return null;
+    }
+    // The seal offers the reading, or shows it under way: the dock keeps the offer's one
+    // caption (why it is what it is, otherwise the allowance) and leads back.
+    if (sealReads) {
+      const caption = readingInFlight ? null
+        : arrivalMessage ? (
+          <Text testID={TID.Text.DreamDetailActionMessage}
+            className="text-center font-sans text-[12px] leading-[17px] text-ivory-muted">
+            {arrivalMessage}
+          </Text>
+        ) : guestNeedsAccount ? null : renderQuotaHint('center');
+      return (
+        <View testID={TID.Component.DreamDetailActionCard} className="gap-1">
+          {caption ? <View className="px-2">{caption}</View> : null}
+          {renderReturnToJournal(true)}
+        </View>
+      );
     }
 
     if (awaitingPurchasedAnalysis || isAnalyzing || isAnalysisPending) {
@@ -2360,18 +2555,11 @@ const JournalDetailContent = memo(function JournalDetailContent({ dream, folio }
       );
     }
 
-    const disabled = detailActionCard.disabled || isPrimaryActionBusy || isAnalysisLocked;
-    const onPress = isStalePrimaryAction
-      ? handleStaleReanalyze
-      : visiblePrimaryAction === 'analyze'
-        ? handleAnalyze
-        : handleJourneyPress;
+    const disabled = primaryDisabled;
+    const onPress = primaryPress;
     const isCompactExplorationAction =
       !isStalePrimaryAction &&
       (visiblePrimaryAction === 'continue' || visiblePrimaryAction === 'explore');
-    const primaryButtonTestID = isStalePrimaryAction
-      ? TID.Button.AnalysisStaleCta
-      : TID.Button.DreamDetailPrimaryCta;
 
     if (isCompactExplorationAction) {
       return (
@@ -2391,17 +2579,11 @@ const JournalDetailContent = memo(function JournalDetailContent({ dream, folio }
       );
     }
 
-    const analysisIcon = guestNeedsAccount ? 'person.fill' : visiblePrimaryAction === 'analyze'
-      ? (isStalePrimaryAction ? 'arrow.clockwise' : 'sparkles') : 'arrow.right';
-
     if (isSavedArrival && !isStalePrimaryAction) {
       // Act I ends on one clear next step: the story continues into the analysis when the
       // permission allows it, otherwise the journal is the way out and the offer stays secondary.
       const analysisFirst = visiblePrimaryAction === 'analyze' && !analysisAccessLabel
         && (savedAnalysisAction === 'analyze' || canResumeAnalysis);
-      // The saved moment already confirms the save; only a message explaining the offer remains.
-      const arrivalMessage = analysisAccessLabel || detailActionCard.message === t('journal.detail.action.analyze.message')
-        ? null : detailActionCard.message;
       // One caption at most: the explanation of the offer, otherwise the allowance.
       const quotaCaption = guestNeedsAccount || arrivalMessage ? null : renderQuotaHint('center');
       const captions = arrivalMessage || quotaCaption ? (
@@ -2435,19 +2617,7 @@ const JournalDetailContent = memo(function JournalDetailContent({ dream, folio }
           </Text>
         </PressableScale>
       );
-      const returnButton = (
-        <PressableScale accessibilityRole="button" onPress={handleBackPress}
-          testID="btn.savedDream.returnToJournal"
-          className={analysisFirst
-            ? 'min-h-[44px] items-center justify-center px-4'
-            : 'min-h-[48px] items-center justify-center rounded-md border border-line-strong px-4 py-2.5'}>
-          <Text className={analysisFirst
-            ? 'font-sans-medium text-[15px] text-ivory'
-            : 'font-sans-medium text-[16px] text-ivory'}>
-            {t('journal.detail.saved.return')}
-          </Text>
-        </PressableScale>
-      );
+      const returnButton = renderReturnToJournal(analysisFirst);
 
       return (
         <View testID={TID.Component.DreamDetailActionCard} className={analysisFirst ? 'gap-2.5' : 'gap-1.5'}>
@@ -2518,38 +2688,45 @@ const JournalDetailContent = memo(function JournalDetailContent({ dream, folio }
     );
   };
 
+  // After a guest's reading, as they read on: what a free account keeps safe and adds.
   const renderFirstValueBackupCard = () => {
     if (user || !analysisState.isAnalyzed || isEditing) {
       return null;
     }
+    const benefits = [
+      { icon: 'lock.shield' as const, text: t('journal.detail.account_invite.benefit.backup') },
+      { icon: 'sparkles' as const, text: t('journal.detail.account_invite.benefit.analyses', { count: QUOTAS.free.analysis ?? 0 }) },
+      { icon: 'book.fill' as const, text: t('journal.detail.account_invite.benefit.dreams') },
+    ];
 
     return (
-      <View
-        testID={TID.Component.FirstValueBackupCard}
-        className={`mb-5 gap-2.5 rounded-lg border border-line-strong bg-ink-soft p-4`}
-      >
-        <View className="flex-row items-center gap-2">
-          <IconSymbol name="lock.shield" size={20} color={noctalia.accent.text} />
-          <Text
-            className={`flex-1 font-display-medium text-[16px] leading-[22px] text-ivory`}
-            testID={TID.Text.FirstValueBackupTitle}
-          >
-            {t('journal.detail.backup_prompt.title')}
-          </Text>
-        </View>
-        <Text className={`font-sans text-[13px] leading-[18px] text-ivory-muted`}>
-          {t('journal.detail.backup_prompt.message')}
+      <View testID={TID.Component.FirstValueBackupCard}
+        className="mx-2 mb-7 gap-3 rounded-lg border border-line-strong bg-ink-soft p-5">
+        <Text testID={TID.Text.FirstValueBackupTitle} accessibilityRole="header"
+          className="font-display-semibold text-[20px] leading-[26px] text-ivory">
+          {t('journal.detail.account_invite.title')}
         </Text>
+        <Text className="font-sans text-[14px] leading-[20px] text-ivory-muted">
+          {t('journal.detail.account_invite.message')}
+        </Text>
+        <View className="gap-2.5">
+          {benefits.map((benefit) => (
+            <View key={benefit.icon} className="flex-row items-start gap-2.5">
+              <IconSymbol name={benefit.icon} size={16} color={noctalia.accent.text} style={{ marginTop: 2 }} />
+              <Text className="flex-1 font-sans text-[14px] leading-[20px] text-ivory">{benefit.text}</Text>
+            </View>
+          ))}
+        </View>
         <PressableScale
           testID={TID.Button.FirstValueBackupCta}
           onPress={handleFirstValueBackup}
-          className={`flex-row items-center gap-1.5 self-start rounded-full border border-line bg-ink-active px-3.5 py-[9px]`}
           accessibilityRole="button"
+          className="mt-1 min-h-[48px] flex-row items-center justify-center gap-2 rounded-md bg-champagne px-4 py-3"
         >
-          <Text className={`font-sans-bold text-[13px] text-ivory`}>
-            {t('journal.detail.backup_prompt.cta')}
+          <Text className="font-sans-bold text-[15px] text-on-champagne">
+            {t('journal.detail.account_invite.cta')}
           </Text>
-          <IconSymbol name="arrow.right" size={16} color={noctalia.accent.text} />
+          <IconSymbol name="arrow.right" size={18} color={noctalia.action.primaryText} />
         </PressableScale>
       </View>
     );
@@ -2618,7 +2795,7 @@ const JournalDetailContent = memo(function JournalDetailContent({ dream, folio }
         contentFit="cover"
         onError={() => setFailedCoverUri(displayImageUrl ?? null)}
         onDisplay={() => setCoverShown(true)}
-        transition={turnedTo ? 0 : imageConfig.transition}
+        transition={turnedTo || plateRevealed ? 0 : imageConfig.transition}
         cachePolicy={imageConfig.cachePolicy}
         priority={imageConfig.priority}
         placeholder={{ blurhash: 'L6PZfSi_.AyE_3t7t7R**0o#DgR4' }}
@@ -2630,6 +2807,10 @@ const JournalDetailContent = memo(function JournalDetailContent({ dream, folio }
 
   const renderIllustrationSection = () => {
     if (shouldHideHeroMedia || !shouldShowIllustrationSection) {
+      return null;
+    }
+    // The seal paints the illustration in its window, then lets it out to the plate.
+    if (sealVisible && !coverImageFailed && (dream.imageUrl?.trim() || paintingRequested)) {
       return null;
     }
 
@@ -2766,9 +2947,18 @@ const JournalDetailContent = memo(function JournalDetailContent({ dream, folio }
     );
   };
 
-  const runningHead = (overArt: boolean) => (
-    <JournalRunningHead folio={folio} onBack={handleBackPress} testID="journal.detail.navigation" overArt={overArt}
-      backTestID={TID.Button.NavigateJournal} edit onEdit={startEditing} editDisabled={isAnalysisLocked} />
+  const runningHead = (
+    <JournalRunningHead onBack={handleBackPress} testID="journal.detail.navigation" backTestID={TID.Button.NavigateJournal} />
+  );
+  const sealBlock = (
+    <View ref={sealWindowRef} collapsable={false}>
+      <SavedDreamMoment phase={savedMomentPhase} painting={paintingInProgress && !plateRevealed}
+        handedOver={windowHandedOver} action={sealAction} sealing={sealShows}
+        artwork={artworkAtArrival === false ? paintedArtwork : null} artworkAway={Boolean(coverFlight) || plateRevealed}
+        landArtwork={artworkLanding} onOpenArtwork={() => setIsIllustrationFullscreen(true)}
+        date={formatDreamStamp(dream.id)} still={!opensOnSavedMoment && !readingInFlight}
+        announce={opensOnSavedMoment} wordsLine={opensOnSavedMoment || readingInFlight} />
+    </View>
   );
   const heading = (
     <View pointerEvents="box-none" onLayout={({ nativeEvent: { layout } }) => {
@@ -2787,7 +2977,10 @@ const JournalDetailContent = memo(function JournalDetailContent({ dream, folio }
         behavior={keyboardBehavior}
         keyboardVerticalOffset={keyboardVerticalOffset}
       >
-        <View className="flex-1">
+        {/* Kept as real views: blocks come and go inside them while the page is read (the
+            dock, the plate taking the running head's place), and the native mounting
+            tracks those changes reliably only under parents that exist natively. */}
+        <View className="flex-1" collapsable={false}>
         <ScrollView
           ref={scrollViewRef}
           className="flex-1"
@@ -2807,23 +3000,48 @@ const JournalDetailContent = memo(function JournalDetailContent({ dream, folio }
             readingScrollOffset.current = nativeEvent.contentOffset.y;
             updateReadingChrome(nativeEvent.contentOffset.y);
           }}
+          // Scrolled back to a seal still holding its illustration, the reader sees it leave.
+          onScrollEndDrag={sealHoldsArtwork ? releaseArtwork : undefined}
+          onMomentumScrollEnd={sealHoldsArtwork ? releaseArtwork : undefined}
+          // While the illustration leaves for the plate, the reading holds still on the screen
+          // as the plate comes in above it. The reading is the third block under the running
+          // head and the name, the second under the plate: the index must name it, or the
+          // native side keeps an anchor it can no longer find and drifts on every update.
+          maintainVisibleContentPosition={sealHoldsArtwork || coverFlight
+            ? { minIndexForVisible: hasIllustratedCover ? 1 : 2 } : undefined}
           keyboardShouldPersistTaps="handled"
         >
           {hasIllustratedCover ? (
             <JournalCoverPlate testID={TID.Component.JournalIllustration} height={coverHeight} titleHeight={coverIntroHeight}
-              picture={renderCoverPicture()} head={runningHead(true)}>
+              picture={renderCoverPicture()} head={runningHead}>
               {heading}
             </JournalCoverPlate>
           ) : (
-            <View style={{ marginBottom: RUNNING_HEAD_GAP }}>{runningHead(false)}</View>
+            <View style={{ marginBottom: RUNNING_HEAD_GAP }} collapsable={false}>{runningHead}</View>
           )}
-          <View ref={readingContentRef} collapsable={false} onLayout={measureTranscriptSection} className="px-4 pb-6">
-            {showSavedMoment ? (
-              <SavedDreamMoment phase={savedMomentPhase} painting={paintingInProgress} handedOver={windowHandedOver}
-                sealing={naming.stage === 'waiting' ? null : sealing}
-                artwork={paintedArtwork} landArtwork={artworkLanding} onOpenArtwork={() => setIsIllustrationFullscreen(true)} />
+          {/* The name, then the reading, which starts with the name's seal. */}
+          {hasIllustratedCover ? null : <View className="px-4" collapsable={false}>{heading}</View>}
+          <View ref={readingContentRef} collapsable={false} className="px-4 pb-6"
+            onLayout={({ nativeEvent: { layout } }) => {
+              setReadingContentTop((previous) => (previous === layout.y ? previous : layout.y));
+              measureTranscriptSection();
+            }}>
+            {sealVisible ? (
+              <OpenUp appear={!opensOnSavedMoment && readingInFlight}>{sealBlock}</OpenUp>
             ) : null}
-            {hasIllustratedCover ? null : heading}
+            {/* The reading, under its seal and before the story it reads. */}
+            <View>{renderStaleBanner()}</View>
+            {readingBegun ? (
+              <OpenUp appear={readingInFlight}
+                onLayout={({ nativeEvent }) => { readingZoneTopRef.current = nativeEvent.layout.y; }}>
+                <DreamAnalysisContent dream={dream}
+                  pending={isAnalysisPending || readingAwaited}
+                  reveal={readingStory === 'revealed'} />
+              </OpenUp>
+            ) : null}
+            {showCompletedReading && !readingInFlight && lastFreeAnalysesNudge ? (
+              <FreeAnalysesNudge nudge={lastFreeAnalysesNudge} className="mx-2 mb-6" />
+            ) : null}
             {!isEditing && dreamMemoryItems.length > 0 && (
               <View className="mx-2 mb-7 gap-2 border-t border-t-line pt-3">
                 <View className="flex-row items-center gap-2">
@@ -2866,25 +3084,14 @@ const JournalDetailContent = memo(function JournalDetailContent({ dream, folio }
                 </View>
               </ArrivalReveal>
             )}
-            {opensOnSavedMoment && !isEditing ? (
+            {opensOnSavedMoment && !isEditing && !detailsOnSeal ? (
               <ArrivalLater play ready={!namingOn}>
                 <View className="mx-2 mb-7">{renderMetadataChips()}</View>
               </ArrivalLater>
             ) : null}
 
-            <View>
-              {renderStaleBanner()}
-            </View>
-
-            {(showCompletedReading || readingInFlight) ? (
-              <DreamAnalysisContent dream={dream}
-                pending={isAnalysisPending || readingAwaited}
-                reveal={readingStory === 'revealed'}
-                onLayout={({ nativeEvent }) => { readingZoneTopRef.current = nativeEvent.layout.y; }} />
-            ) : null}
-            {showCompletedReading && !readingInFlight && lastFreeAnalysesNudge ? (
-              <FreeAnalysesNudge nudge={lastFreeAnalysesNudge} className="mx-2 mb-6" />
-            ) : null}
+            {/* A guest reads on into what an account keeps and adds. */}
+            {showCompletedReading && !readingInFlight ? renderFirstValueBackupCard() : null}
             {!hasIllustratedCover ? renderIllustrationSection() : null}
             {!recallRequested ? (
               <ArrivalReveal play={opensOnSavedMoment} index={2}>
@@ -2895,11 +3102,6 @@ const JournalDetailContent = memo(function JournalDetailContent({ dream, folio }
               </ArrivalReveal>
             ) : null}
 
-            <View>
-              {renderFirstValueBackupCard()}
-
-
-            </View>
 
             <View>
               {renderDetailZoneHeader(t('journal.detail.zone.actions'))}
@@ -2966,12 +3168,17 @@ const JournalDetailContent = memo(function JournalDetailContent({ dream, folio }
                   {t('journal.menu.delete')}
                 </Text>
               </PressableScale>
+              <JournalFolio folio={folio} className="mt-8" />
             </View>
             </View>
         </ScrollView>
 
         <JournalReturnTab top={insets.top + 6} onPress={handleBackPress} />
-        {!isEditing && (!hasIllustratedCover || readingActionVisible) ? (
+        {coverFlight && paintedArtwork ? (
+          <CoverFlight source={paintedArtwork} from={coverFlight.from} to={coverFlight.to} height={coverHeight} travel={coverTravel}
+            landed={coverFlight.landed} onArrived={coverFlightArrived} onGone={coverFlightGone} />
+        ) : null}
+        {!isEditing && (!hasIllustratedCover || readingActionVisible) && !(sealShowsReading && !isSavedArrival) ? (
           <View testID="component.dreamDetail.actionDock"
             className={`absolute bottom-0 left-0 right-0 bg-ink px-6 pt-3 ${isSavedArrival ? '' : 'border-t border-line'}`}
             style={{ paddingBottom: Math.max(insets.bottom, 12) }}

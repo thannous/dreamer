@@ -27,9 +27,9 @@ test('a saved dream survives a completely fresh browser and synchronizes edits a
     await second.getByTestId(/^dream\.item\./).filter({ hasText: story }).click();
     await expect(second.getByTestId('component.transcriptCard')).toContainText(story);
     const revision = `${story} The lighthouse now has a blue door.`;
-    await second.getByTestId('btn.editTranscript').click();
+    await second.getByTestId('btn.editDream').click();
     await second.getByTestId('input.dreamTranscript').fill(revision);
-    await second.getByTestId('btn.editTranscript').click();
+    await second.getByTestId('btn.saveDreamEdit').click();
     await expect.poll(async () => (await owner.from('dreams').select('transcript')).data?.map(row => row.transcript)).toEqual([revision]);
     await journal(page);
     await page.reload({ waitUntil: 'domcontentloaded' });

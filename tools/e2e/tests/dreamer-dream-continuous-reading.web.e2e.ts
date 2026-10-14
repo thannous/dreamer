@@ -38,9 +38,9 @@ for (const mode of ['light', 'dark'] as const) {
     await page.getByTestId('btn.saveDream').click();
     await page.getByTestId('btn.dream.primaryCta').click();
     await expect(page.getByTestId('component.dreamDetail.readingZone')).toContainText(/\S[\s\S]{80}/);
-    await page.getByTestId('btn.editMetadata').click();
+    await page.getByTestId('btn.editDream').click();
     await page.getByTestId('input.dreamTitle').fill('L’éléphant au sommet de la grande roue');
-    await page.getByTestId('btn.editMetadata').click();
+    await page.getByTestId('btn.saveDreamEdit').click();
     await page.getByTestId('btn.journal.illustrate').click();
     await expect(page.getByTestId('journal.detail.image.generation_dots')).toHaveCount(0);
     await page.getByTestId('btn.journal.illustration.expand').scrollIntoViewIfNeeded();
@@ -104,8 +104,8 @@ for (const mode of ['light', 'dark'] as const) {
     await expect(analysis).toContainText('Un lien possible avec un souvenir encore présent.');
     await expect(analysis).toContainText('Retrouves-tu une sensation de ce rêve dans ta journée ?');
     await expect(page.getByTestId('analysis.reading.modal')).toHaveCount(0);
-    await expect(page.getByTestId('btn.editTranscript')).toBeEnabled();
-    await expect(page.getByTestId('btn.editTranscript')).toContainText('Modifier');
+    await expect(page.getByTestId('btn.editDream')).toBeEnabled();
+    await expect(page.getByTestId('btn.editDream')).toContainText('Éditer');
     await analysis.scrollIntoViewIfNeeded();
     await expect(page.getByTestId('journal.detail.navigation')).toHaveCSS('background-color', mode === 'dark' ? 'rgb(3, 4, 13)' : 'rgb(240, 228, 212)');
     await expect(action).toBeInViewport();
@@ -125,10 +125,10 @@ test('a dream without an image analyzes inline and keeps editing and stale-analy
   await page.getByTestId('btn.dream.primaryCta').click();
   await expect(page.getByTestId('component.dreamDetail.readingZone')).toContainText(/\S[\s\S]{80}/);
   await expect(page.getByTestId('analysis.reading.modal')).toHaveCount(0);
-  await page.getByTestId('btn.editTranscript').click();
+  await page.getByTestId('btn.editDream').click();
   await expect(page.getByTestId('component.dreamDetail.actionCard')).toBeHidden();
   await page.getByTestId('input.dreamTranscript').fill(story + ' I found a silver door.');
-  await page.getByTestId('btn.editTranscript').click();
+  await page.getByTestId('btn.saveDreamEdit').click();
   await expect(page.getByTestId('component.transcriptCard')).toContainText('silver door');
   await expect(page.getByTestId('component.dreamDetail.staleBanner')).toBeVisible();
   await expect(page.getByTestId('btn.dream.staleCta')).toBeEnabled();

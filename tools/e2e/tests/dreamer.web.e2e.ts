@@ -85,9 +85,9 @@ test('free user saves, renames and finds the exact story in Journal', async ({ a
   await screen.getByTestId('input.dreamTranscript', { visible: true }).fill(story);
   await screen.getByTestId('btn.saveDream', { visible: true }).tap();
   await expect(screen.getByTestId('component.transcriptCard', { visible: true })).toContainText(story);
-  await screen.getByTestId('btn.editMetadata', { visible: true }).tap();
+  await screen.getByTestId('btn.editDream', { visible: true }).tap();
   await screen.getByTestId('input.dreamTitle', { visible: true }).fill('E2E sapphire lighthouse');
-  await screen.getByTestId('btn.editMetadata', { visible: true }).tap();
+  await screen.getByTestId('btn.saveDreamEdit', { visible: true }).tap();
   await journal(screen);
   await openDream(screen, 'E2E sapphire lighthouse');
   await expect(screen.getByTestId('component.transcriptCard', { visible: true })).toContainText(story);
@@ -227,9 +227,9 @@ test('free user recovers empty search, edits, cancels deletion and deletes only 
   await expect(screen.getByTestId(/^dream\.item\./, { visible: true })).toHaveCount(0);
   await openDream(screen, 'The Infinite Library');
   const story = 'E2E revised story: the library has a blue door.';
-  await screen.getByTestId('btn.editTranscript', { visible: true }).tap();
+  await screen.getByTestId('btn.editDream', { visible: true }).tap();
   await screen.getByTestId('input.dreamTranscript', { visible: true }).fill(story);
-  await screen.getByTestId('btn.editTranscript', { visible: true }).tap();
+  await screen.getByTestId('btn.saveDreamEdit', { visible: true }).tap();
   await expect(screen.getByTestId('component.transcriptCard', { visible: true })).toContainText(story);
   await screen.getByTestId('btn.dream.delete', { visible: true }).tap();
   await screen.getByRole('button', 'Cancel', { visible: true }).tap();

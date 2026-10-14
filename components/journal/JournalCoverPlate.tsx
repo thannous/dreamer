@@ -17,10 +17,10 @@ const TITLE_ESTIMATE = 180;
 
 /**
  * A dream page that opens on its illustration, as a plate: the picture fills the screen
- * from its top edge, under the clock, the running head printed over a light veil of the
- * page's own ground, and it dissolves into the paper at the bottom, where the dream's name
- * is set on a near-opaque band of that ground. The dream page and its likeness in the
- * journal both lay it out here, so a page turned to takes over without anything moving.
+ * from its top edge, under the clock and the way back to the journal, and dissolves into
+ * the paper at the bottom, where the dream's name is set on a near-opaque band of the
+ * page's ground. The dream page and its likeness in the journal both lay it out here, so
+ * a page turned to takes over without anything moving.
  */
 export function JournalCoverPlate({ height, titleHeight, picture, head, children, testID }: {
   height: number;
@@ -38,6 +38,9 @@ export function JournalCoverPlate({ height, titleHeight, picture, head, children
   const palette = useMemo(() => getNoctaliaPalette(mode), [mode]);
 
   const headTop = insets.top + HEAD_TOP;
+  // At night a veil of the night itself settles the clock over the picture; on paper there
+  // is none, and the picture reaches the top of the screen as it is.
+  const veiled = mode === 'dark';
   const veil = headTop + RUNNING_HEAD_HEIGHT + 32;
   const titleTop = height - insets.bottom - (titleHeight ?? TITLE_ESTIMATE);
   const bandTop = Math.max(0, titleTop - 24 - DISSOLVE);
@@ -46,10 +49,12 @@ export function JournalCoverPlate({ height, titleHeight, picture, head, children
   return (
     <View testID={testID} className="relative overflow-hidden" style={{ height }}>
       {picture}
-      <LinearGradient pointerEvents="none"
-        colors={[palette.backgroundArtwork.scrim, palette.backgroundArtwork.scrim, palette.backgroundArtwork.transparent]}
-        locations={[0, (headTop + RUNNING_HEAD_HEIGHT * 0.6) / veil, 1]}
-        style={{ position: 'absolute', top: 0, left: 0, right: 0, height: veil }} />
+      {veiled ? (
+        <LinearGradient pointerEvents="none"
+          colors={[palette.backgroundArtwork.scrim, palette.backgroundArtwork.scrim, palette.backgroundArtwork.transparent]}
+          locations={[0, (headTop + RUNNING_HEAD_HEIGHT * 0.6) / veil, 1]}
+          style={{ position: 'absolute', top: 0, left: 0, right: 0, height: veil }} />
+      ) : null}
       <LinearGradient pointerEvents="none"
         colors={[palette.illustration.transparent, palette.backgroundArtwork.scrim, palette.illustration.scrim, palette.background]}
         locations={[0, (DISSOLVE * 0.55) / band, DISSOLVE / band, 1]}

@@ -29,9 +29,9 @@ async function prepareReflection(page: Page, media: 'loaded' | 'failed' | 'absen
       await expect(page.getByTestId('journal.detail.image.unavailable')).toBeVisible();
     }
   }
-  await page.getByTestId('btn.editMetadata').click();
+  await page.getByTestId('btn.editDream').click();
   await page.getByTestId('input.dreamTitle').fill(dreamTitle);
-  await page.getByTestId('btn.editMetadata').click();
+  await page.getByTestId('btn.saveDreamEdit').click();
   await page.getByTestId('component.transcriptCard').scrollIntoViewIfNeeded();
   await page.getByTestId('component.dreamDetail.actionCard').click();
   await expect(page.getByTestId('screen.dreamCategories')).toBeVisible();

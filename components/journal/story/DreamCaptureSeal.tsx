@@ -5,6 +5,7 @@ import {
   Text,
   View,
   useWindowDimensions,
+  type ImageSourcePropType,
   type LayoutChangeEvent,
   type StyleProp,
   type TextLayoutEvent,
@@ -17,14 +18,20 @@ import Svg, { Circle, Defs, Ellipse, Path, RadialGradient, Stop } from 'react-na
 import { JOURNAL_LEAF_BLOCK, JournalPageEdges } from '@/components/journal/JournalPageEdges';
 
 import { JournalPaper } from '@/components/journal/JournalPaper';
+import { PressableScale, Reveal } from '@/components/motion';
 import { EASE } from '@/components/motion/motion';
 import { getNoctaliaDesignTokens } from '@/constants/noctaliaDesign';
 import { getNoctaliaPalette } from '@/constants/noctaliaPalette';
+import { Fonts } from '@/constants/theme';
 import { useTheme } from '@/context/ThemeContext';
+import { useTranslation } from '@/hooks/useTranslation';
 import { TID } from '@/lib/testIDs';
 
 import { DREAM_EASE, DREAM_STORY } from './dreamStoryMotion';
-import { SEAL_EMBLEMS, SEAL_GOLD, SEAL_MEASURES, SealChoice, SealLegend, type SealMark } from './sealMarks';
+import {
+  SEAL_EMBLEMS, SEAL_GOLD, SEAL_MEASURES, SEAL_NAME_LINES, SealChoice, SealLegend, sealHeadingHeight, sealTextScales,
+  type SealMark,
+} from './sealMarks';
 import { sparklePath } from './sparkle';
 
 const IVORY_JOURNAL = require('@/assets/images/dream-seal-book.webp');
@@ -42,21 +49,59 @@ const RIGHT_PAGE = { left: 785 / 1536, top: 105 / 1024, right: 1380 / 1536, bott
  * edges become the page's own.
  */
 const SPREAD = { binding: 771 / 1536, paperEnd: 1386 / 1536 } as const;
-/** How far down its page the ring sits, so the signs and the name have room below it. */
-const RING_DROP = 0.33;
+/** How far down its page, as drawn, the ring sits: the name is written above it, the journal's question below. */
+const RING_DROP = 0.58;
+/**
+ * The journal is drawn taller than its art: its top and bottom edges (the gilt corners, the
+ * spine's cap, the ribbon) keep their drawing, and the pages between them are drawn this much
+ * taller, so the name and the journal's question have room on the page.
+ */
+const ART_BANDS = { top: 200 / 1024, bottom: 800 / 1024 } as const;
+const BOOK_STRETCH = 1.4;
+/** Where a height in the art, as a fraction of it, falls on the journal drawn taller. */
+const onTallJournal = (fraction: number, artHeight: number) => (fraction <= ART_BANDS.top
+  ? fraction
+  : fraction <= ART_BANDS.bottom
+    ? ART_BANDS.top + (fraction - ART_BANDS.top) * BOOK_STRETCH
+    : ART_BANDS.top + (ART_BANDS.bottom - ART_BANDS.top) * BOOK_STRETCH + (fraction - ART_BANDS.bottom)) * artHeight;
+/** How close the view comes to the page before the dive, against the dive's own closeness. */
+const NEAREST = 0.7;
+
+/** The journal's art drawn taller: its edges as drawn, its pages stretched between them. */
+function TallJournal({ source, width, artHeight, style }: {
+  source: ImageSourcePropType;
+  width: number;
+  artHeight: number;
+  style?: StyleProp<ViewStyle>;
+}) {
+  const bands = [[0, ART_BANDS.top, 1], [ART_BANDS.top, ART_BANDS.bottom, BOOK_STRETCH], [ART_BANDS.bottom, 1, 1]] as const;
+  return (
+    <View style={[{ width, height: onTallJournal(1, artHeight) }, style]}>
+      {bands.map(([from, to, stretch], index) => {
+        const top = onTallJournal(from, artHeight);
+        // Each band runs a hair into the next, so no seam shows between them.
+        const height = onTallJournal(to, artHeight) - top + (index < bands.length - 1 ? 1 : 0);
+        return (
+          <View key={from} className="absolute left-0 overflow-hidden" style={{ top, width, height }}>
+            <Image source={source} resizeMode="stretch"
+              style={{ position: 'absolute', left: 0, top: -from * artHeight * stretch, width, height: artHeight * stretch }} />
+          </View>
+        );
+      })}
+    </View>
+  );
+}
 /** The pen art's nib in fractions of the art, and the pen's size against the journal. */
 const NIB = { x: 0.148, y: 0.874 } as const;
 const PEN_SCALE = 0.215;
-/** The saved moment's medallion, and where it opens on the next screen, below its running head. */
+/** The saved moment's medallion. */
 const MEDALLION = 148;
-const MEDALLION_CENTER_FROM_TOP = 76 + 120;
 /**
- * Where the dream page sets the name and date on arrival: below the saved moment (its
- * astrolabe, its label and their margins), inside the reading margins. The name lands
- * there exactly, so the page takes it over as it is.
+ * Where the dream page sets the name on arrival: at the top of its page, under its
+ * running head, inside the reading margins; its seal follows the lines kept for the name.
+ * The name and the seal land there exactly, so the page takes them over as they are.
  */
-const NAME_TOP_FROM_TOP = 76 + 240 + 12 + 24;
-const SAVED_LABEL_LINE = 18;
+const NAME_TOP_FROM_TOP = 76;
 const NAME_LEFT = 24;
 const NAME_RIGHT = 24;
 /** The name's size on the journal page, before it rises to the dream page's own. */
@@ -95,7 +140,6 @@ const CLOSE = {
   shortest: 700,
   longest: 1500,
   lineLift: 120,
-  dateIn: 260,
   penAway: 320,
   breath: 100,
   /** The signs turn at least this long while the name is written; the chosen one then glides into the ring. */
@@ -103,6 +147,12 @@ const CLOSE = {
   glide: 420,
   /** The struck seal is seen on the page before the dive carries it. */
   struckHold: 300,
+  /**
+   * Asked whether to read the dream now, the page holds still: the question comes this
+   * long into the hold, and the dive waits this long past it, so it is caught standing.
+   */
+  askAfter: 100,
+  askLead: 700,
   /** From the dive's start: the page grows around the ring while the name rises to its place. */
   dive: 1420,
   pageCover: [460, 1130],
@@ -130,6 +180,19 @@ const SKY = [
   { x: 0.9, y: 0.84, size: 2, at: 910, pulse: 1340 },
 ] as const;
 
+/**
+ * The seal covers the whole capture screen, its navigation and save bar included: they are
+ * raised above the screen's own layers, which its layout-only views do not contain once
+ * flattened, so the seal is raised above them, or they would show through the dream page as
+ * it fades in.
+ */
+const ABOVE_THE_SCREEN = { zIndex: 100, elevation: 20 } as const;
+
+/** The question leaves with the answer, as the dive takes up. */
+const ANSWERED = {
+  animationName: { from: { opacity: 1 }, to: { opacity: 0 } }, animationDuration: 180, animationFillMode: 'both',
+} as CSSStyle<ViewStyle>;
+
 /** The previous dream's page, sketched as a skeleton: its title, its date, its story. */
 const SKELETON_LINES = [0.8, 0.74, 0.8, 0.66, 0.78, 0.5] as const;
 
@@ -156,11 +219,11 @@ const arcPath = (r: number, start: number, end: number) => {
  * until the pre-analysis has named the dream, a few seconds at most, after which the
  * dream's first words name it. While the pen writes the name, the signs a dream can bear
  * turn around the ring, and the dream's own, from the same pre-analysis, glides into the
- * ring and is struck there in ink, its type and theme engraved around it; the date follows
- * the name, and the pen lifts away. The reader dives into the page around the ring, which never moves: the page
+ * ring and is struck there in ink, its type and theme engraved around its top and the date
+ * around its foot, and the pen lifts away. The reader dives into the page around the ring, which never moves: the page
  * grows until it fills the screen and its paper becomes the dream page's own, the night
  * fills the ring, where the emblem turns to gold, the struck seal grows with the page to
- * the saved moment's size, and the name and date rise to the very place the dream page sets them,
+ * the saved moment's size, and the name rises to the very place the dream page sets it,
  * so that page takes everything over as it is. The name is laid out as the dream page lays
  * it out, only smaller on the journal page, so it keeps its lines all the way. In the
  * night theme the journal's paper is night paper, in the paper theme ivory. Two touches
@@ -168,25 +231,31 @@ const arcPath = (r: number, start: number, end: number) => {
  * is pressed twice, and is decorative to assistive technology: the next screen announces
  * the save. The caller skips it under reduce motion.
  */
-export function DreamCaptureSeal({ name, mark, provisionalName, date, previousPage, onNamed, onSealed }: {
+export function DreamCaptureSeal({ name, mark, provisionalName, date, previousPage, askReading = false, onNamed, onSealed }: {
   /** The pre-analysis's name for the dream, once it has given one. */
   name: string | null;
   /** What the same pre-analysis classed the dream as, struck into the seal with its name. */
   mark: SealMark | null;
   /** The dream's first words, written instead when the pre-analysis has not named it in time. */
   provisionalName: string;
-  /** The dream's date and time, as its page shows them under its name. */
+  /** The dream's date and time, engraved along the foot of the seal's rim as its page shows it. */
   date: string;
   /** The journal already holds a dream, whose page is turned over first. */
   previousPage: boolean;
   /** The name the pen is about to write, whether it is the first words standing in, and the seal it strikes. */
   onNamed: (name: string, provisional: boolean, mark: SealMark | null) => void;
-  /** The window is open: the dream's page can take over. */
-  onSealed: () => void;
+  /**
+   * Whether the dream can be read now: once the seal is struck, the journal asks, and the
+   * dive waits for the answer.
+   */
+  askReading?: boolean;
+  /** The window is open: the dream's page can take over, reading the dream if so answered. */
+  onSealed: (read: boolean) => void;
 }) {
   const { width, height, fontScale } = useWindowDimensions();
   const insets = useSafeAreaInsets();
   const { colors, mode } = useTheme();
+  const { t } = useTranslation();
   const noctalia = useMemo(() => getNoctaliaDesignTokens(colors, mode), [colors, mode]);
   const night = mode === 'dark';
   // The ring in the accent ink of the dream page's story; the name in the page's own text.
@@ -197,21 +266,22 @@ export function DreamCaptureSeal({ name, mark, provisionalName, date, previousPa
 
   // The journal, centred; its right page; and the dive that turns that page into the screen.
   const journalWidth = Math.min(width - 12, 460);
-  const journalHeight = journalWidth / JOURNAL_RATIO;
+  const artHeight = journalWidth / JOURNAL_RATIO;
+  const journalHeight = onTallJournal(1, artHeight);
   const page = {
     x: RIGHT_PAGE.left * journalWidth,
-    y: RIGHT_PAGE.top * journalHeight,
+    y: onTallJournal(RIGHT_PAGE.top, artHeight),
     w: (RIGHT_PAGE.right - RIGHT_PAGE.left) * journalWidth,
-    h: (RIGHT_PAGE.bottom - RIGHT_PAGE.top) * journalHeight,
+    h: onTallJournal(RIGHT_PAGE.bottom, artHeight) - onTallJournal(RIGHT_PAGE.top, artHeight),
   };
-  const medallionY = insets.top + MEDALLION_CENTER_FROM_TOP;
+  const medallionY = insets.top + NAME_TOP_FROM_TOP + sealHeadingHeight(fontScale) + SEAL_MEASURES.orbit / 2;
   // The dive ends with the spread's edges on the screen's: that fixes how far it goes.
   const zoom = (width - JOURNAL_LEAF_BLOCK) / ((SPREAD.paperEnd - SPREAD.binding) * journalWidth);
   // Where the ring sits on the page: half a screen from the binding, so that once the edges
   // are in place it is the medallion.
   const ring = {
     x: journalWidth * SPREAD.binding + width / (2 * zoom),
-    y: page.y + page.h * RING_DROP,
+    y: page.y + (RIGHT_PAGE.bottom - RIGHT_PAGE.top) * artHeight * RING_DROP,
     r: MEDALLION / 2 / zoom,
   };
   const centre = { x: journalWidth / 2, y: journalHeight / 2 };
@@ -220,26 +290,29 @@ export function DreamCaptureSeal({ name, mark, provisionalName, date, previousPa
   const origin = { x: (width - journalWidth) / 2 + framed.translateX, y: (height - journalHeight) / 2 + framed.translateY };
 
   // The name and date as the dream page sets them, and the same block, smaller, on the journal page.
-  const titleScale = Math.min(1.4, Math.max(1, fontScale));
-  const dateScale = Math.min(1.3, Math.max(1, fontScale));
+  const titleScale = sealTextScales(fontScale).title;
   const nameStyle = { fontSize: 26 * titleScale, lineHeight: 32 * titleScale };
-  const dateStyle = { fontSize: 12 * dateScale, lineHeight: 20 * dateScale };
   const target = {
     left: NAME_LEFT,
-    top: insets.top + NAME_TOP_FROM_TOP + SAVED_LABEL_LINE * fontScale,
+    top: insets.top + NAME_TOP_FROM_TOP,
     width: width - NAME_LEFT - NAME_RIGHT,
   };
-  const small = BOOK_NAME_SIZE / nameStyle.fontSize;
-  // The view comes close enough for the name to fit the page's text measure at that size.
-  const push = Math.min(zoom * 0.6, Math.max(1, (small * target.width) / (page.w * 0.8)));
+  // The view comes close enough for the name to fit the page's text measure; when it would
+  // come too close, the name is written a little smaller instead, so it stays on the paper.
+  const measure = page.w * 0.8;
+  const small = Math.min(BOOK_NAME_SIZE / nameStyle.fontSize, (measure * zoom * NEAREST) / target.width);
+  const push = Math.min(zoom * NEAREST, Math.max(1, (small * target.width) / measure));
   // The seal is struck at the saved moment's size and shown at the page's scale; on the
   // journal page its signs ride a wider orbit, larger, so they read there, clear of the name.
   const onTheJournal = push / zoom;
   const bookSign = BOOK_SIGN / onTheJournal;
   const bookOrbit = (push * ring.r + BOOK_SIGN * 0.73 + BOOK_SIGN_GAP) / onTheJournal;
+  // The signs' reach around the ring, on the screen; the name is written above it in the
+  // lines the dream page keeps for it, and the journal's question asked below it.
+  const signsReach = bookOrbit * onTheJournal + BOOK_SIGN * 0.73;
   const book = {
     x: width / 2 + push * (page.x + page.w * 0.1 - ring.x),
-    y: medallionY + bookOrbit * onTheJournal + BOOK_SIGN * 0.73 + 12,
+    y: medallionY - signsReach - 14 - SEAL_NAME_LINES * nameStyle.lineHeight * small,
   };
   const pen = journalWidth * PEN_SCALE * push;
 
@@ -268,7 +341,9 @@ export function DreamCaptureSeal({ name, mark, provisionalName, date, previousPa
 
   const [opened, setOpened] = useState(false);
   const [late, setLate] = useState(false);
-  const [closing, setClosing] = useState<{ text: string; widths: number[]; provisional: boolean; mark: SealMark | null } | null>(null);
+  const [closing, setClosing] = useState<{
+    text: string; widths: number[]; provisional: boolean; mark: SealMark | null; ask: boolean;
+  } | null>(null);
   useEffect(() => {
     const opening = setTimeout(() => setOpened(true), ms(openTotal));
     const deadline = setTimeout(() => setLate(true), ms(DREAM_STORY.nameDeadline));
@@ -288,7 +363,7 @@ export function DreamCaptureSeal({ name, mark, provisionalName, date, previousPa
           // Past the wait, an unmeasured name is written at an estimate rather than not at all.
           : late ? [target.width] : null;
       if (widths) {
-        setClosing({ text, widths, provisional: text !== name, mark: text === name ? mark : null });
+        setClosing({ text, widths, provisional: text !== name, mark: text === name ? mark : null, ask: askReading });
         break;
       }
     }
@@ -314,8 +389,10 @@ export function DreamCaptureSeal({ name, mark, provisionalName, date, previousPa
     const written = schedule[schedule.length - 1].to;
     const choice = Math.max(written, CLOSE.choiceAtLeast);
     const contact = choice + CLOSE.glide;
-    const diveFrom = Math.max(written + CLOSE.penAway + CLOSE.breath, closing.mark ? contact + CLOSE.struckHold : 0);
-    return { schedule, written, choice, contact, diveFrom, total: diveFrom + CLOSE.end };
+    const still = Math.max(written + CLOSE.penAway + CLOSE.breath, closing.mark ? contact + CLOSE.struckHold : 0);
+    const pauseAt = closing.ask ? still + CLOSE.askAfter : null;
+    const diveFrom = still + (closing.ask ? CLOSE.askLead : 0);
+    return { schedule, written, choice, contact, diveFrom, pauseAt, total: diveFrom + CLOSE.end };
   }, [closing]);
 
   useEffect(() => {
@@ -325,23 +402,49 @@ export function DreamCaptureSeal({ name, mark, provisionalName, date, previousPa
     }, ms(ringTo));
     return () => clearTimeout(timer);
   }, [ms, ringTo]);
+  // Asked, the page holds still from the question to the answer; the timeline is then
+  // as far on as it had run, and the dive takes up from there.
+  const [asking, setAsking] = useState(false);
+  const [answer, setAnswer] = useState<boolean | null>(null);
+  const startedAt = useRef(0);
+  const heldAt = useRef(0);
   useEffect(() => {
     if (!closing || !close) return;
     named.current(closing.text, closing.provisional, closing.mark);
-    const timers = [setTimeout(() => sealed.current(), ms(close.total))];
-    if (process.env.EXPO_OS !== 'web') {
-      if (closing.mark) {
-        timers.push(setTimeout(() => {
-          void Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Rigid).catch(() => {});
-        }, ms(close.contact)));
-      }
+    startedAt.current = Date.now();
+    const timers: ReturnType<typeof setTimeout>[] = [];
+    if (close.pauseAt !== null) {
       timers.push(setTimeout(() => {
-        void Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Soft).catch(() => {});
-      }, ms(close.diveFrom + (CLOSE.skyIn[0] + CLOSE.skyIn[1]) / 2)));
+        heldAt.current = Date.now() - startedAt.current;
+        setAsking(true);
+      }, ms(close.pauseAt)));
+    }
+    if (closing.mark && process.env.EXPO_OS !== 'web') {
+      timers.push(setTimeout(() => {
+        void Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Rigid).catch(() => {});
+      }, ms(close.contact)));
     }
     return () => timers.forEach(clearTimeout);
     // The name and its beats are fixed once the pen starts writing, so this runs once.
   }, [close, closing, ms]);
+  useEffect(() => {
+    if (!close || (close.pauseAt !== null && answer === null)) return;
+    const ran = close.pauseAt !== null ? heldAt.current : 0;
+    const read = answer === true;
+    const timers = [setTimeout(() => sealed.current(read), Math.max(0, ms(close.total) - ran))];
+    if (process.env.EXPO_OS !== 'web') {
+      timers.push(setTimeout(() => {
+        void Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Soft).catch(() => {});
+      }, Math.max(0, ms(close.diveFrom + (CLOSE.skyIn[0] + CLOSE.skyIn[1]) / 2) - ran)));
+    }
+    return () => timers.forEach(clearTimeout);
+  }, [answer, close, ms]);
+  const answerReading = useCallback((read: boolean) => {
+    if (process.env.EXPO_OS !== 'web') void Haptics.selectionAsync().catch(() => {});
+    setAsking(false);
+    setAnswer(read);
+  }, []);
+  const playing = { animationPlayState: asking ? 'paused' : 'running' } as const;
 
   // The pen, placed by its nib at a point on the screen.
   const nibAt = useCallback((opacity: number, x: number, y: number, away = 0, glide = false) => {
@@ -576,8 +679,7 @@ export function DreamCaptureSeal({ name, mark, provisionalName, date, previousPa
         [at(line.to)]: { width: closing.widths[index] },
         '100%': { width: closing.widths[index] },
       }, { animationTimingFunction: 'linear' })),
-      date: animate<ViewStyle>(fade(close.written, close.written + CLOSE.dateIn)),
-      // The name and its date leave the journal page for their place on the dream page.
+      // The name leaves the journal page for its place on the dream page.
       rise: animate<ViewStyle>({
         '0%': onTheBook,
         [at(diving(0))]: onTheBook,
@@ -619,16 +721,50 @@ export function DreamCaptureSeal({ name, mark, provisionalName, date, previousPa
   const nameClass = 'font-display-semibold text-[26px] leading-8 text-ivory';
   const glintAt = { x: width / 2 - origin.x, y: medallionY - push * ring.r - origin.y };
 
+  // The question, in the journal's ink on its page under the seal, at the reader's own size.
+  const askTop = medallionY + signsReach + 12;
+  const pageRight = width / 2 + push * (page.x + page.w - ring.x);
+  const question = close?.pauseAt != null && (asking || answer !== null) ? (
+    <Animated.View pointerEvents={asking ? 'box-none' : 'none'} className="absolute"
+      style={[ABOVE_THE_SCREEN, { left: book.x, top: askTop, width: Math.max(180, pageRight - book.x - 12) },
+        answer !== null ? ANSWERED : null] as StyleProp<ViewStyle>}>
+      <Reveal distance={4}>
+        <Text accessibilityRole="header" allowFontScaling={false}
+          style={{ fontFamily: Fonts.lora.regularItalic, fontSize: 13, lineHeight: 18, color: ink }}>
+          {t('journal.seal.ask_reading')}
+        </Text>
+        <View className="mt-0.5 flex-row items-center gap-6">
+          <PressableScale onPress={() => answerReading(true)} disabled={!asking} testID="btn.dreamCaptureSeal.readNow"
+            accessibilityRole="button" hitSlop={{ top: 12, bottom: 12, left: 12, right: 12 }}
+            className="flex-row items-center gap-1.5">
+            <Svg width={10} height={10}><Path d={sparklePath(5, 5, 5)} fill={ink} /></Svg>
+            <Text allowFontScaling={false} style={{ color: ink }} className="font-sans-bold text-[13px] leading-[18px]">
+              {t('journal.seal.read_now')}
+            </Text>
+          </PressableScale>
+          <PressableScale onPress={() => answerReading(false)} disabled={!asking} testID="btn.dreamCaptureSeal.readLater"
+            accessibilityRole="button" hitSlop={{ top: 12, bottom: 12, left: 12, right: 12 }}>
+            <Text allowFontScaling={false} className="font-sans-medium text-[13px] leading-[18px] text-ivory-muted">
+              {t('journal.seal.read_later')}
+            </Text>
+          </PressableScale>
+        </View>
+      </Reveal>
+    </Animated.View>
+  ) : null;
+
   return (
+    <>
     <View
       testID={TID.Component.DreamCaptureSeal}
       accessible={false}
       importantForAccessibility="no-hide-descendants"
       accessibilityElementsHidden
       className="absolute inset-0 items-center justify-center"
+      style={ABOVE_THE_SCREEN}
     >
       <Animated.View className="absolute inset-0 bg-ink" style={opening.veil as StyleProp<ViewStyle>} />
-      <Animated.View className="absolute inset-0" style={closingMotion?.sky as StyleProp<ViewStyle>}>
+      <Animated.View className="absolute inset-0" style={[closingMotion?.sky, playing] as StyleProp<ViewStyle>}>
         {SKY.map((point, index) => (
           <Animated.View key={index} className="absolute rounded-full" style={[{
             left: point.x * width - point.size / 2,
@@ -652,11 +788,11 @@ export function DreamCaptureSeal({ name, mark, provisionalName, date, previousPa
       </View>
 
       <Animated.View className="absolute" style={[{ width: journalWidth, height: journalHeight }, opening.frame] as StyleProp<ViewStyle>}>
-        <Animated.View className="absolute inset-0" style={(closingMotion?.journal ?? opening.journal) as StyleProp<ViewStyle>}>
-          <Image source={art} resizeMode="contain" style={{ width: journalWidth, height: journalHeight }} />
+        <Animated.View className="absolute inset-0" style={[closingMotion?.journal ?? opening.journal, playing] as StyleProp<ViewStyle>}>
+          <TallJournal source={art} width={journalWidth} artHeight={artHeight} />
           <Animated.View className="absolute" style={[{
             left: page.x - page.w * 0.4, top: page.y - page.h * 0.25, width: page.w * 1.8, height: page.h * 1.5,
-          }, closingMotion?.lamp ?? opening.lamp] as StyleProp<ViewStyle>}>
+          }, closingMotion?.lamp ?? opening.lamp, playing] as StyleProp<ViewStyle>}>
             <Svg width="100%" height="100%">
               <Defs>
                 <RadialGradient id="seal-lamp" cx="50%" cy="45%" r="50%">
@@ -675,8 +811,8 @@ export function DreamCaptureSeal({ name, mark, provisionalName, date, previousPa
               position: 'absolute', left: page.x, top: page.y, width: page.w, height: page.h, transformOrigin: 'left center',
             }, opening.sheet] as StyleProp<ViewStyle>}>
               <Animated.View className="overflow-hidden" style={[sheetFrame, opening.sheetFront] as StyleProp<ViewStyle>}>
-                <Image source={art} resizeMode="contain"
-                  style={{ position: 'absolute', left: -page.x, top: -page.y, width: journalWidth, height: journalHeight }} />
+                <TallJournal source={art} width={journalWidth} artHeight={artHeight}
+                  style={{ position: 'absolute', left: -page.x, top: -page.y }} />
                 <Svg width={page.w} height={page.h} style={{ position: 'absolute', left: 0, top: 0 }}>
                   <Circle cx={ring.x - page.x} cy={ring.y - page.y} r={ring.r - 0.5} fill="none"
                     stroke={ink} strokeOpacity={0.3} strokeWidth={0.7} />
@@ -697,8 +833,8 @@ export function DreamCaptureSeal({ name, mark, provisionalName, date, previousPa
               <Animated.View className="overflow-hidden" style={[sheetFrame, opening.sheetBack] as StyleProp<ViewStyle>}>
                 {/* Mirrored, so that once turned it lies over the left page as the left page itself. */}
                 <View style={[sheetFrame, { transform: [{ scaleX: -1 }] }]}>
-                  <Image source={art} resizeMode="contain"
-                    style={{ position: 'absolute', left: -(page.x - page.w), top: -page.y, width: journalWidth, height: journalHeight }} />
+                  <TallJournal source={art} width={journalWidth} artHeight={artHeight}
+                    style={{ position: 'absolute', left: -(page.x - page.w), top: -page.y }} />
                 </View>
               </Animated.View>
               <Animated.View className="absolute inset-0 bg-black" style={opening.sheetShade as StyleProp<ViewStyle>} />
@@ -707,9 +843,9 @@ export function DreamCaptureSeal({ name, mark, provisionalName, date, previousPa
 
           {/* The page itself, which takes over from the art as it fills the screen. */}
           <Animated.View className="absolute bg-ink" style={[{ left: page.x, top: page.y, width: page.w, height: page.h },
-            closingMotion?.pageCover ?? hidden] as StyleProp<ViewStyle>} />
+            closingMotion?.pageCover ?? hidden, playing] as StyleProp<ViewStyle>} />
           <Animated.View className="absolute" style={[{ left: ring.x - ring.r, top: ring.y - ring.r, width: ringBox, height: ringBox },
-            closingMotion?.drawnRing] as StyleProp<ViewStyle>}>
+            closingMotion?.drawnRing, playing] as StyleProp<ViewStyle>}>
             {opening.ringStrokes.map((stroke, index) => (
               <Animated.View key={index} className="absolute inset-0" style={stroke as StyleProp<ViewStyle>}>
                 <Svg width={ringBox} height={ringBox}>
@@ -736,13 +872,13 @@ export function DreamCaptureSeal({ name, mark, provisionalName, date, previousPa
 
       {/* The dream page's own grain, then its window: the ring settles crisp and fills with night. */}
       {/* Opaque, so it takes over from the journal above and below its page as well. */}
-      <Animated.View className="absolute inset-0 bg-ink" style={(closingMotion?.grain ?? hidden) as StyleProp<ViewStyle>}>
+      <Animated.View className="absolute inset-0 bg-ink" style={[closingMotion?.grain ?? hidden, playing] as StyleProp<ViewStyle>}>
         <JournalPaper />
         <JournalPageEdges />
       </Animated.View>
       <Animated.View className="absolute" style={[{
         left: width / 2 - 170, top: medallionY - 140, width: 340, height: 280,
-      }, closingMotion?.halo ?? hidden] as StyleProp<ViewStyle>}>
+      }, closingMotion?.halo ?? hidden, playing] as StyleProp<ViewStyle>}>
         <Svg width={340} height={280}>
           <Defs>
             <RadialGradient id="seal-halo" cx="50%" cy="50%" r="50%">
@@ -756,17 +892,17 @@ export function DreamCaptureSeal({ name, mark, provisionalName, date, previousPa
       </Animated.View>
       <Animated.View className="absolute overflow-hidden rounded-full bg-ink" style={[{
         left: width / 2 - MEDALLION / 2, top: medallionY - MEDALLION / 2, width: MEDALLION, height: MEDALLION,
-      }, closingMotion?.skyFill ?? hidden] as StyleProp<ViewStyle>}>
+      }, closingMotion?.skyFill ?? hidden, playing] as StyleProp<ViewStyle>}>
         <Image source={ASTRAL_ART} resizeMode="cover" style={{ width: MEDALLION, height: MEDALLION }} />
       </Animated.View>
       {closing?.mark && closingMotion ? (
         <Animated.View className="absolute rounded-full bg-black" style={[{
           left: width / 2 - MEDALLION / 2, top: medallionY - MEDALLION / 2, width: MEDALLION, height: MEDALLION,
-        }, closingMotion.wash] as StyleProp<ViewStyle>} />
+        }, closingMotion.wash, playing] as StyleProp<ViewStyle>} />
       ) : null}
       <Animated.View className="absolute" style={[{
         left: width / 2 - MEDALLION / 2, top: medallionY - MEDALLION / 2, width: MEDALLION, height: MEDALLION,
-      }, closingMotion?.ring ?? hidden] as StyleProp<ViewStyle>}>
+      }, closingMotion?.ring ?? hidden, playing] as StyleProp<ViewStyle>}>
         <Svg width={MEDALLION} height={MEDALLION}>
           <Circle cx={MEDALLION / 2} cy={MEDALLION / 2} r={MEDALLION / 2 - 0.75} fill="none"
             stroke={ink} strokeOpacity={0.7} strokeWidth={1.5} />
@@ -777,9 +913,11 @@ export function DreamCaptureSeal({ name, mark, provisionalName, date, previousPa
       {closing && close && closingMotion ? (
         <Animated.View testID="component.dreamCaptureSeal.seal" className="absolute" style={[{
           left: sealBox.left, top: sealBox.top, width: SEAL_MEASURES.orbit, height: SEAL_MEASURES.orbit,
-        }, closingMotion.seal] as StyleProp<ViewStyle>}>
+        }, closingMotion.seal, playing] as StyleProp<ViewStyle>}>
           <SealChoice mark={closing.mark} ink={ink} choice={ms(close.choice)} contact={ms(close.contact)} gold={false}
             sign={bookSign} orbit={bookOrbit} />
+          <SealLegend text={date} side="bottom" reduced={false}
+            from={ms(closing.mark ? close.contact + 240 : close.written + CLOSE.penAway)} />
           {closing.mark ? (
             <>
               <Animated.View className="absolute rounded-full" style={[{
@@ -787,11 +925,11 @@ export function DreamCaptureSeal({ name, mark, provisionalName, date, previousPa
                 width: MEDALLION, height: MEDALLION, borderWidth: 1.5, borderColor: ink,
               }, closingMotion.ripple] as StyleProp<ViewStyle>} />
               <Animated.View style={[emblemBox, closingMotion.struck] as StyleProp<ViewStyle>}>
-                <Animated.View className="absolute inset-0" style={closingMotion.struckInk as StyleProp<ViewStyle>}>
+                <Animated.View className="absolute inset-0" style={[closingMotion.struckInk, playing] as StyleProp<ViewStyle>}>
                   <Image source={SEAL_EMBLEMS[closing.mark.theme]} tintColor={ink} resizeMode="contain"
                     style={{ width: SEAL_MEASURES.emblem, height: SEAL_MEASURES.emblem }} />
                 </Animated.View>
-                <Animated.View className="absolute inset-0" style={closingMotion.struckGold as StyleProp<ViewStyle>}>
+                <Animated.View className="absolute inset-0" style={[closingMotion.struckGold, playing] as StyleProp<ViewStyle>}>
                   <Image source={SEAL_EMBLEMS[closing.mark.theme]} tintColor={SEAL_GOLD} resizeMode="contain"
                     style={{ width: SEAL_MEASURES.emblem, height: SEAL_MEASURES.emblem }} />
                 </Animated.View>
@@ -802,11 +940,11 @@ export function DreamCaptureSeal({ name, mark, provisionalName, date, previousPa
         </Animated.View>
       ) : null}
 
-      {/* The name and date, written small on the journal page, rising to where the dream page sets them. */}
+      {/* The name, written small on the journal page, rising to where the dream page sets it. */}
       {closing && closingMotion ? (
         <Animated.View testID="component.dreamCaptureSeal.name" className="absolute" style={[{
           left: target.left, top: target.top, width: target.width, transformOrigin: 'left top',
-        }, closingMotion.rise] as StyleProp<ViewStyle>}>
+        }, closingMotion.rise, playing] as StyleProp<ViewStyle>}>
           <View style={{ height: closing.widths.length * nameStyle.lineHeight }}>
             {closing.widths.map((lineWidth, index) => (
               <Animated.View key={index} className="absolute overflow-hidden" style={[{
@@ -819,13 +957,10 @@ export function DreamCaptureSeal({ name, mark, provisionalName, date, previousPa
               </Animated.View>
             ))}
           </View>
-          <Animated.View style={[{ marginTop: 8 }, closingMotion.date] as StyleProp<ViewStyle>}>
-            <Text allowFontScaling={false} className="font-sans text-[12px] leading-5 text-ivory-muted" style={dateStyle}>
-              {date}
-            </Text>
-          </Animated.View>
         </Animated.View>
       ) : null}
     </View>
+    {question}
+    </>
   );
 }

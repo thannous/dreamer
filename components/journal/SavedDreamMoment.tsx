@@ -1,12 +1,13 @@
 import * as Haptics from 'expo-haptics';
 import { Image, type ImageSource } from 'expo-image';
 import { LinearGradient } from 'expo-linear-gradient';
-import React, { useEffect, useMemo } from 'react';
-import { Image as Mark, Text, View, type StyleProp, type ViewStyle } from 'react-native';
+import React, { useEffect, useMemo, useRef, type ComponentProps } from 'react';
+import { AccessibilityInfo, Image as Mark, Text, View, type StyleProp, type ViewStyle } from 'react-native';
 import Animated, { useReducedMotion, type CSSStyle } from 'react-native-reanimated';
 import Svg, { Circle, Defs, Ellipse, Path, RadialGradient, Stop } from 'react-native-svg';
 
 import { PressableScale } from '@/components/motion';
+import { IconSymbol } from '@/components/ui/icon-symbol';
 import { EASE } from '@/components/motion/motion';
 import { getNoctaliaDesignTokens } from '@/constants/noctaliaDesign';
 import { useTheme } from '@/context/ThemeContext';
@@ -27,6 +28,8 @@ const EMBLEM = SEAL_MEASURES.emblem;
 /** Keyframe offsets are kept to a hundredth of a percent, so beats a few milliseconds apart stay apart. */
 const percent = (value: number, total: number) => `${Math.round((value / total) * 10000) / 100}%`;
 const HALO_WIDTH = 340;
+/** The line under the seal, which the capture seal lands the dream's name below. */
+const WORDS_LINE = 18;
 const HALO_HEIGHT = 280;
 
 // Fixed points so the sky is identical on every arrival and in screenshots.
@@ -52,6 +55,21 @@ export type { SealMark };
 export type SavedDreamPhase = 'saved' | 'reading' | 'read';
 
 /**
+ * What the seal offers under it: the dream's reading, or the step that opens it, and while
+ * the dream is read, that it is. Pressing the seal or its words takes the step.
+ */
+export type SavedDreamAction = {
+  label: string;
+  icon?: ComponentProps<typeof IconSymbol>['name'] | null;
+  /** Absent while the dream is being read: the words only say so. */
+  onPress?: () => void;
+  disabled?: boolean;
+  /** What pressing costs or opens, for assistive technologies. */
+  hint?: string | null;
+  testID?: string;
+};
+
+/**
  * The moment a captured dream lands in the journal: a window onto the night sky held
  * in an astrolabe, which settles into alignment once. It appears only on the arrival
  * from capture, so the motion budget of a success state is spent at most once per dream.
@@ -61,8 +79,16 @@ export type SavedDreamPhase = 'saved' | 'reading' | 'read';
  * medallion opens the full view. Under reduced motion the layers only fade in and the
  * looping stars and light hold still. Arriving from the capture seal, which ends on this
  * window already open, the window stays put and only the astrolabe settles around it.
+ * The struck seal says the dream is saved, so the words under it offer the next step
+ * instead (`action`), and the seal itself takes it; the save is still announced to
+ * assistive technologies (`announce`). Its rim carries the dream's details: what it is
+ * along the top, its date along the foot. On a dream page opened again it is drawn at
+ * rest (`still`), at the head of the dream's reading.
  */
-export function SavedDreamMoment({ phase = 'saved', painting = false, handedOver = false, sealing = null, artwork = null, landArtwork = true, onOpenArtwork }: {
+export function SavedDreamMoment({
+  phase = 'saved', painting = false, handedOver = false, sealing = null, artwork = null, landArtwork = true,
+  onOpenArtwork, action = null, date = null, still = false, announce = false, wordsLine = true, artworkAway = false,
+}: {
   phase?: SavedDreamPhase;
   /**
    * The seal choosing, then struck with what the dream is when its pre-analysis has said
@@ -75,23 +101,40 @@ export function SavedDreamMoment({ phase = 'saved', painting = false, handedOver
   painting?: boolean;
   /** The dream's own illustration, once it has landed. */
   artwork?: ImageSource | null;
+  /** The illustration has left the window for the page's plate: the night shows through again. */
+  artworkAway?: boolean;
   /** The illustration has just landed: it settles once. Later mounts show it at rest. */
   landArtwork?: boolean;
   onOpenArtwork?: () => void;
+  action?: SavedDreamAction | null;
+  /** The dream's date, engraved along the foot of the rim. */
+  date?: string | null;
+  /** Drawn at rest: nothing enters. */
+  still?: boolean;
+  /** Just saved: the save is announced to assistive technologies. */
+  announce?: boolean;
+  /** The line under the seal is kept even without words, so what follows does not move when they come. */
+  wordsLine?: boolean;
 }) {
   const { t } = useTranslation();
+  const announced = useRef(false);
+  useEffect(() => {
+    if (!announce || announced.current) return;
+    announced.current = true;
+    AccessibilityInfo.announceForAccessibility?.(t('recording.save.confirmation'));
+  }, [announce, t]);
   const { colors, mode } = useTheme();
   const reduced = useReducedMotion();
   const noctalia = useMemo(() => getNoctaliaDesignTokens(colors, mode), [colors, mode]);
   const dark = mode === 'dark';
   const accent = noctalia.accent.text;
 
-  const motion = useMemo(() => ({
+  const motion = useMemo(() => (still ? { halo: null, orbit: null, medallion: null, label: null } : {
     halo: entrance(null, 1200, 0, reduced),
     orbit: entrance({ from: [{ rotate: '-24deg' }], to: [{ rotate: '0deg' }] }, 1400, 80, reduced),
     medallion: handedOver ? null : entrance({ from: [{ scale: 0.94 }], to: [{ scale: 1 }] }, 700, 0, reduced),
     label: entrance({ from: [{ translateY: 8 }], to: [{ translateY: 0 }] }, 400, 320, reduced),
-  }), [handedOver, reduced]);
+  }), [handedOver, reduced, still]);
   const readingStars = useMemo(
     () => READING_STARS.map((_, index) => twinkle(index, READING_STARS.length, reduced)),
     [reduced]
@@ -177,10 +220,13 @@ export function SavedDreamMoment({ phase = 'saved', painting = false, handedOver
         </Animated.View>
       ) : null}
       {artwork ? (
-        <Animated.View testID={TID.Component.SavedDreamArtwork} className="absolute inset-0"
-          style={settle as StyleProp<ViewStyle>}>
-          <Image source={artwork} contentFit="cover" style={{ width: '100%', height: '100%' }} />
-        </Animated.View>
+        // Kept in place once gone, only unseen: the window does not change what it holds.
+        <View collapsable={false} className="absolute inset-0" style={{ opacity: artworkAway ? 0 : 1 }}>
+          <Animated.View testID={TID.Component.SavedDreamArtwork} className="absolute inset-0"
+            style={settle as StyleProp<ViewStyle>}>
+            <Image source={artwork} contentFit="cover" style={{ width: '100%', height: '100%' }} />
+          </Animated.View>
+        </View>
       ) : null}
       <Svg width={MEDALLION} height={MEDALLION} style={{ position: 'absolute', top: 0, left: 0 }}>
         <Circle cx={MEDALLION / 2} cy={MEDALLION / 2} r={MEDALLION / 2 - 0.75} fill="none"
@@ -189,111 +235,150 @@ export function SavedDreamMoment({ phase = 'saved', painting = false, handedOver
     </Animated.View>
   );
 
-  return (
-    <View testID={TID.Component.SavedDreamMoment} className="mb-6 items-center">
-      <View className="items-center justify-center" style={{ width: ORBIT, height: ORBIT }}>
-        <View
-          accessible={false}
-          importantForAccessibility="no-hide-descendants"
-          accessibilityElementsHidden
-          pointerEvents="none"
-          className="absolute inset-0 items-center justify-center"
+  const takeStep = action?.onPress && !action.disabled ? action.onPress : undefined;
+  // What the rim says, for assistive technologies: the rim itself is drawn, not read.
+  const details = [seal?.legend, date].filter(Boolean).join(', ');
+  const astrolabe = (
+    <View className="items-center justify-center" style={{ width: ORBIT, height: ORBIT }}>
+      <View
+        accessible={false}
+        importantForAccessibility="no-hide-descendants"
+        accessibilityElementsHidden
+        pointerEvents="none"
+        className="absolute inset-0 items-center justify-center"
+      >
+        <Animated.View
+          className="absolute"
+          style={[{ width: HALO_WIDTH, height: HALO_HEIGHT }, motion.halo] as StyleProp<ViewStyle>}
         >
-          <Animated.View
-            className="absolute"
-            style={[{ width: HALO_WIDTH, height: HALO_HEIGHT }, motion.halo] as StyleProp<ViewStyle>}
-          >
-            <Svg width={HALO_WIDTH} height={HALO_HEIGHT}>
-              <Defs>
-                <RadialGradient id="savedDreamHalo" cx="50%" cy="50%" rx="50%" ry="50%">
-                  <Stop offset="0%" stopColor={noctalia.atmosphere.glow} stopOpacity={dark ? 0.24 : 0.16} />
-                  <Stop offset="55%" stopColor={noctalia.atmosphere.glow} stopOpacity={dark ? 0.07 : 0.05} />
-                  <Stop offset="100%" stopColor={noctalia.atmosphere.glow} stopOpacity={0} />
-                </RadialGradient>
-              </Defs>
-              <Ellipse cx={HALO_WIDTH / 2} cy={HALO_HEIGHT / 2} rx={HALO_WIDTH / 2} ry={HALO_HEIGHT / 2} fill="url(#savedDreamHalo)" />
-              {HALO_STARS.map((star) => (
-                <Circle key={`${star.x}:${star.y}`} cx={star.x} cy={star.y} r={star.r} fill={noctalia.atmosphere.star} />
-              ))}
-            </Svg>
-          </Animated.View>
-
-          <Animated.View
-            className="absolute"
-            style={[{ width: ORBIT, height: ORBIT }, motion.orbit] as StyleProp<ViewStyle>}
-          >
-            <Svg width={ORBIT} height={ORBIT}>
-              <Circle cx={CENTER} cy={CENTER} r={94} fill="none" stroke={accent} strokeOpacity={0.34} strokeWidth={0.75} />
-              <Circle cx={CENTER} cy={CENTER} r={110} fill="none" stroke={accent} strokeOpacity={0.26}
-                strokeWidth={0.75} strokeDasharray="1.5 5" />
-              <Circle cx={210} cy={57} r={2.2} fill={accent} />
-              <Circle cx={31.6} cy={87.8} r={1.6} fill={accent} fillOpacity={0.8} />
-              <Circle cx={29.9} cy={183.1} r={1.4} fill={accent} fillOpacity={0.7} />
-              <Circle cx={CENTER} cy={CENTER + 110} r={7} fill="none" stroke={accent} strokeOpacity={0.4} strokeWidth={0.75} />
-              <Path d={sparklePath(CENTER, CENTER + 110, 10)} fill={accent} />
-            </Svg>
-            {phase === 'saved' ? null : READING_STARS.map((star, index) => (
-              <Animated.View
-                key={index}
-                className="absolute rounded-full bg-champagne"
-                style={[{
-                  left: star.x - READING_STAR / 2,
-                  top: star.y - READING_STAR / 2,
-                  width: READING_STAR,
-                  height: READING_STAR,
-                }, phase === 'reading' ? readingStars[index] : null] as StyleProp<ViewStyle>}
-              />
+          <Svg width={HALO_WIDTH} height={HALO_HEIGHT}>
+            <Defs>
+              <RadialGradient id="savedDreamHalo" cx="50%" cy="50%" rx="50%" ry="50%">
+                <Stop offset="0%" stopColor={noctalia.atmosphere.glow} stopOpacity={dark ? 0.24 : 0.16} />
+                <Stop offset="55%" stopColor={noctalia.atmosphere.glow} stopOpacity={dark ? 0.07 : 0.05} />
+                <Stop offset="100%" stopColor={noctalia.atmosphere.glow} stopOpacity={0} />
+              </RadialGradient>
+            </Defs>
+            <Ellipse cx={HALO_WIDTH / 2} cy={HALO_HEIGHT / 2} rx={HALO_WIDTH / 2} ry={HALO_HEIGHT / 2} fill="url(#savedDreamHalo)" />
+            {HALO_STARS.map((star) => (
+              <Circle key={`${star.x}:${star.y}`} cx={star.x} cy={star.y} r={star.r} fill={noctalia.atmosphere.star} />
             ))}
-          </Animated.View>
-          {seal ? (
-            <>
-              {settled ? null : (
-                <Animated.View className="absolute rounded-full" style={[{
-                  width: MEDALLION, height: MEDALLION, borderWidth: 1.5, borderColor: accent,
-                }, strike.ripple] as StyleProp<ViewStyle>} />
-              )}
-              <View testID="component.savedDream.sealLegend" className="absolute left-0 top-0" style={{ width: ORBIT, height: ORBIT }}>
-                <SealLegend text={seal.legend} reduced={reduced} still={settled} />
-              </View>
-            </>
-          ) : null}
-        </View>
+          </Svg>
+        </Animated.View>
 
-        {artwork && onOpenArtwork ? (
-          // Once painted, the window opens: pressing it shows the illustration full size.
-          <PressableScale
-            testID={TID.Button.SavedDreamArtworkOpen}
-            onPress={onOpenArtwork}
-            accessibilityRole="button"
-            accessibilityLabel={t('journal.detail.image.expand_accessibility')}
-            className="rounded-full"
-          >
-            {medallion}
-          </PressableScale>
-        ) : (
-          <View accessible={false} importantForAccessibility="no-hide-descendants" accessibilityElementsHidden
-            pointerEvents="none">
-            {medallion}
-          </View>
-        )}
-        {sealing && !settled && !reduced ? (
-          <View accessible={false} importantForAccessibility="no-hide-descendants" accessibilityElementsHidden
-            pointerEvents="none" className="absolute left-0 top-0" style={{ width: ORBIT, height: ORBIT }}>
-            <SealChoice mark={seal} ink={accent} choice={DREAM_STORY.sealChoice} contact={DREAM_STORY.sealContact} />
+        <Animated.View
+          className="absolute"
+          style={[{ width: ORBIT, height: ORBIT }, motion.orbit] as StyleProp<ViewStyle>}
+        >
+          <Svg width={ORBIT} height={ORBIT}>
+            <Circle cx={CENTER} cy={CENTER} r={94} fill="none" stroke={accent} strokeOpacity={0.34} strokeWidth={0.75} />
+            <Circle cx={CENTER} cy={CENTER} r={110} fill="none" stroke={accent} strokeOpacity={0.26}
+              strokeWidth={0.75} strokeDasharray="1.5 5" />
+            <Circle cx={210} cy={57} r={2.2} fill={accent} />
+            <Circle cx={31.6} cy={87.8} r={1.6} fill={accent} fillOpacity={0.8} />
+            <Circle cx={29.9} cy={183.1} r={1.4} fill={accent} fillOpacity={0.7} />
+            <Circle cx={CENTER} cy={CENTER + 110} r={7} fill="none" stroke={accent} strokeOpacity={0.4} strokeWidth={0.75} />
+            <Path d={sparklePath(CENTER, CENTER + 110, 10)} fill={accent} />
+          </Svg>
+          {phase === 'saved' ? null : READING_STARS.map((star, index) => (
+            <Animated.View
+              key={index}
+              className="absolute rounded-full bg-champagne"
+              style={[{
+                left: star.x - READING_STAR / 2,
+                top: star.y - READING_STAR / 2,
+                width: READING_STAR,
+                height: READING_STAR,
+              }, phase === 'reading' ? readingStars[index] : null] as StyleProp<ViewStyle>}
+            />
+          ))}
+        </Animated.View>
+        {seal ? (
+          <>
+            {settled ? null : (
+              <Animated.View className="absolute rounded-full" style={[{
+                width: MEDALLION, height: MEDALLION, borderWidth: 1.5, borderColor: accent,
+              }, strike.ripple] as StyleProp<ViewStyle>} />
+            )}
+            <View testID="component.savedDream.sealLegend" className="absolute left-0 top-0" style={{ width: ORBIT, height: ORBIT }}>
+              <SealLegend text={seal.legend} reduced={reduced} still={settled || still} />
+            </View>
+          </>
+        ) : null}
+        {date ? (
+          <View testID="component.savedDream.sealDate" className="absolute left-0 top-0" style={{ width: ORBIT, height: ORBIT }}>
+            <SealLegend text={date} side="bottom" reduced={reduced} still={settled || still}
+              from={seal && !settled ? DREAM_STORY.sealContact + 240 : 320} />
           </View>
         ) : null}
       </View>
 
-      <Animated.View style={motion.label as StyleProp<ViewStyle>}>
-        <Text
-          testID={TID.Text.RecordingSaveConfirmation}
-          accessibilityRole="header"
-          accessibilityLiveRegion="polite"
-          className="mt-3 text-center font-sans-medium text-[12px] leading-[18px] uppercase tracking-[2px] text-champagne-on"
+      {artwork && onOpenArtwork && !action ? (
+        // Once painted, the window opens: pressing it shows the illustration full size. Once
+        // the illustration has left for the plate, the same view stays, only no longer pressed.
+        <PressableScale
+          testID={TID.Button.SavedDreamArtworkOpen}
+          onPress={artworkAway ? undefined : onOpenArtwork}
+          disabled={artworkAway}
+          accessibilityRole="button"
+          accessibilityLabel={t('journal.detail.image.expand_accessibility')}
+          accessibilityElementsHidden={artworkAway}
+          importantForAccessibility={artworkAway ? 'no-hide-descendants' : 'auto'}
+          className="rounded-full"
         >
-          {t('recording.save.confirmation')}
-        </Text>
-      </Animated.View>
+          {medallion}
+        </PressableScale>
+      ) : (
+        <View accessible={false} importantForAccessibility="no-hide-descendants" accessibilityElementsHidden
+          pointerEvents="none">
+          {medallion}
+        </View>
+      )}
+      {sealing && !settled && !reduced ? (
+        <View accessible={false} importantForAccessibility="no-hide-descendants" accessibilityElementsHidden
+          pointerEvents="none" className="absolute left-0 top-0" style={{ width: ORBIT, height: ORBIT }}>
+          <SealChoice mark={seal} ink={accent} choice={DREAM_STORY.sealChoice} contact={DREAM_STORY.sealContact} />
+        </View>
+      ) : null}
+    </View>
+  );
+  // One line, always kept, so the page under the seal never moves as the step changes;
+  // keyed, so the words enter afresh when the step they offer appears or changes.
+  const words = !wordsLine && !action ? null : (
+    <View className="mt-3 items-center justify-center" style={{ height: WORDS_LINE }}>
+      {action ? (
+        <Animated.View key={action.label} style={motion.label as StyleProp<ViewStyle>}
+          className={`flex-row items-center gap-1.5 ${action.disabled ? 'opacity-60' : ''}`}>
+          {action.icon ? <IconSymbol name={action.icon} size={14} color={accent} /> : null}
+          <Text testID={TID.Text.DreamDetailActionTitle} accessibilityLiveRegion="polite" numberOfLines={1}
+            className="shrink text-center font-sans-medium text-[12px] leading-[18px] uppercase tracking-[2px] text-champagne-on">
+            {action.label}
+          </Text>
+          {action.onPress ? <IconSymbol name="chevron.right" size={12} color={accent} /> : null}
+        </Animated.View>
+      ) : null}
+    </View>
+  );
+
+  return (
+    <View testID={TID.Component.SavedDreamMoment} className="mb-6 items-center">
+      {action?.onPress ? (
+        <PressableScale testID={action.testID} onPress={takeStep} disabled={!takeStep} haptic="light"
+          accessibilityRole="button" accessibilityLabel={action.label} accessibilityHint={action.hint ?? undefined}
+          accessibilityValue={details ? { text: details } : undefined}
+          accessibilityState={{ disabled: !takeStep }} className="items-center">
+          {astrolabe}
+          {words}
+        </PressableScale>
+      ) : (
+        <>
+          {/* Grouped only while the window holds no button of its own to press. */}
+          {details && !(artwork && onOpenArtwork)
+            ? <View accessible accessibilityRole="text" accessibilityLabel={details}>{astrolabe}</View>
+            : astrolabe}
+          {words}
+        </>
+      )}
     </View>
   );
 }

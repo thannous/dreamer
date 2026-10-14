@@ -74,9 +74,9 @@ test('capture gives the story room, respects explicit and automatic themes, and 
   }
   await expect(page.getByTestId('component.dreamDetail.readingZone')).toBeVisible();
   await expect(page.getByTestId('analysis.reading.modal')).toHaveCount(0);
-  await page.getByTestId('btn.editTranscript').click();
+  await page.getByTestId('btn.editDream').click();
   await expect(page.getByTestId('input.dreamTranscript')).toHaveValue(story);
-  await page.getByTestId('btn.editTranscript').click();
+  await page.getByTestId('btn.saveDreamEdit').click();
   await page.screenshot({ path: info.outputPath('capture-saved.png') });
 });
 

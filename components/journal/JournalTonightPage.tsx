@@ -6,6 +6,7 @@ import Svg, { Circle } from 'react-native-svg';
 
 import { JournalPageEdges } from '@/components/journal/JournalPageEdges';
 import { JournalPaper } from '@/components/journal/JournalPaper';
+import { JournalFolio } from '@/components/journal/JournalFolio';
 import { JournalRunningHead, RUNNING_HEAD_GAP } from '@/components/journal/JournalRunningHead';
 import { PressableScale } from '@/components/motion';
 import { IconSymbol } from '@/components/ui/icon-symbol';
@@ -59,7 +60,7 @@ export function JournalTonightPage({ folio, interactive }: {
       <JournalPaper />
       <View style={{ paddingTop: insets.top + 12 }}>
         <View style={{ marginBottom: RUNNING_HEAD_GAP }}>
-          <JournalRunningHead folio={folio} onBack={interactive ? () => router.replace('/(tabs)/journal') : undefined}
+          <JournalRunningHead onBack={interactive ? () => router.replace('/(tabs)/journal') : undefined}
             backTestID="journal.tonight.back" />
         </View>
         {/* Where the next dream's seal will be struck, sketched in dotted ink. */}
@@ -106,6 +107,9 @@ export function JournalTonightPage({ folio, interactive }: {
             )
           ) : null}
         </View>
+      </View>
+      <View pointerEvents="none" className="absolute left-0 right-0" style={{ bottom: insets.bottom + 12 }}>
+        <JournalFolio folio={folio} />
       </View>
       <JournalPageEdges />
     </View>

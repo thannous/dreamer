@@ -182,8 +182,6 @@ export const TID = {
     SubscriptionQaProbe: 'btn.subscription.qa.probe',
     SubscriptionQaRefresh: 'btn.subscription.qa.refresh',
     SubscriptionQaOpenPaywall: 'btn.subscription.qa.openPaywall',
-    EditMetadata: 'btn.editMetadata',
-    EditTranscript: 'btn.editTranscript',
     EditDream: 'btn.editDream',
     SaveDreamEdit: 'btn.saveDreamEdit',
     CancelDreamEdit: 'btn.cancelDreamEdit',

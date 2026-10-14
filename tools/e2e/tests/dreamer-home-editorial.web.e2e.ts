@@ -48,9 +48,9 @@ async function populatedHome(page: Page, failImage = false) {
     await page.getByTestId('component.metadataCard').scrollIntoViewIfNeeded();
     await expect(page.getByTestId('journal.detail.image.unavailable')).toBeVisible();
   }
-  await page.getByTestId('btn.editMetadata').click();
+  await page.getByTestId('btn.editDream').click();
   await page.getByTestId('input.dreamTitle').fill(dreamTitle);
-  await page.getByTestId('btn.editMetadata').click();
+  await page.getByTestId('btn.saveDreamEdit').click();
   await page.goBack();
   await home(page);
 }

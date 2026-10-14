@@ -87,10 +87,10 @@ test('free user saves a dream and finds the exact story in the journal', async (
   await page.getByTestId('input.dreamTranscript').fill(story);
   await page.getByTestId('btn.saveDream').click();
   await expect(page.getByTestId('component.transcriptCard')).toContainText(story);
-  await expect(page.getByTestId('btn.editMetadata')).toBeEnabled();
-  await page.getByTestId('btn.editMetadata').click();
+  await expect(page.getByTestId('btn.editDream')).toBeEnabled();
+  await page.getByTestId('btn.editDream').click();
   await page.getByTestId('input.dreamTitle').fill('E2E sapphire lighthouse');
-  await page.getByTestId('btn.editMetadata').click();
+  await page.getByTestId('btn.saveDreamEdit').click();
   await journal(page);
   await openDream(page, 'E2E sapphire lighthouse');
   await expect(page.getByTestId('component.transcriptCard')).toContainText(story);
@@ -110,7 +110,8 @@ for (const editor of ['metadata', 'transcript'] as const) {
     await page.getByTestId('btn.saveDream').click();
     await page.clock.runFor(100);
     await expect(page.getByTestId('component.transcriptCard')).toContainText(story);
-    const button = page.getByTestId(editor === 'metadata' ? 'btn.editMetadata' : 'btn.editTranscript');
+    // One edit control opens the name and the story together; the sheet saves them.
+    const button = page.getByTestId('btn.editDream');
     const input = page.getByTestId(editor === 'metadata' ? 'input.dreamTitle' : 'input.dreamTranscript');
     await button.click();
     await page.clock.runFor(100);
@@ -128,7 +129,7 @@ for (const editor of ['metadata', 'transcript'] as const) {
     await expect(input).toHaveValue(draft);
     await page.screenshot({ path: info.outputPath(`${editor}-draft-after-categorization.png`) });
     await page.clock.resume();
-    await button.click();
+    await page.getByTestId('btn.saveDreamEdit').click();
     await expect(input).toHaveCount(0);
     await journal(page);
     await openDream(page, editor === 'metadata' ? draft : 'E2E sapphire lighthouse above the quiet ocean');
@@ -136,7 +137,7 @@ for (const editor of ['metadata', 'transcript'] as const) {
     else await expect(page.getByTestId('component.transcriptCard')).toContainText(draft);
     await journal(page);
     await openDream(page, 'The Infinite Library');
-    await page.getByTestId(editor === 'metadata' ? 'btn.editMetadata' : 'btn.editTranscript').click();
+    await page.getByTestId('btn.editDream').click();
     await expect(input).toHaveValue(/\S/);
     await expect(input).not.toHaveValue(draft);
   });
@@ -160,9 +161,9 @@ test('free user edits a story, cancels deletion, then deletes only that dream', 
   await selectProfile(page, 'existing');
   await journal(page);
   await openDream(page, 'The Infinite Library');
-  await page.getByTestId('btn.editTranscript').click();
+  await page.getByTestId('btn.editDream').click();
   await page.getByTestId('input.dreamTranscript').fill('E2E revised story: the library has a blue door.');
-  await page.getByTestId('btn.editTranscript').click();
+  await page.getByTestId('btn.saveDreamEdit').click();
   await expect(page.getByTestId('component.transcriptCard')).toContainText('E2E revised story');
   await page.getByTestId('btn.dream.delete').click();
   await page.getByRole('button', { name: 'Cancel', exact: true }).click();

@@ -32,7 +32,7 @@ appId: com.tanuki75.noctalia
 
 # Enter edit mode
 - tapOn:
-      id: btn.editMetadata
+      id: btn.editDream
 
 # Verify chips are visible (Edit Mode)
 - assertVisible: "Lucid Dream"
@@ -86,7 +86,7 @@ appId: com.tanuki75.noctalia
 
 # Save changes
 - tapOn:
-      id: btn.editMetadata
+      id: btn.saveDreamEdit
 
 # Verify new state (Read Mode)
 - assertVisible: "Nightmare"

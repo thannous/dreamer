@@ -45,6 +45,25 @@ const MEDALLION = 148;
 const ORBIT = 240;
 /** The seal's measures, for the capture seal that strikes it before the page takes it over. */
 export const SEAL_MEASURES = { medallion: MEDALLION, orbit: ORBIT, emblem: EMBLEM } as const;
+/**
+ * On a dream page that shows its seal, the name sits at the top of the page and keeps this
+ * many lines above the seal, whatever its length, so the seal lies at the same place on
+ * every such page: the capture seal can land on it before the name is known.
+ */
+export const SEAL_NAME_LINES = 3;
+/** The text scales the dream page applies to its name and to its smaller lines. */
+export const sealTextScales = (fontScale: number) => ({
+  title: Math.min(1.4, Math.max(1, fontScale)),
+  compact: Math.min(1.3, Math.max(1, fontScale)),
+});
+/**
+ * The name's block above the seal, as the dream page lays it out: the lines kept for the
+ * name and its margin, the line of the edit link and its margin, then the block's own.
+ */
+export const sealHeadingHeight = (fontScale: number) => {
+  const scales = sealTextScales(fontScale);
+  return SEAL_NAME_LINES * 32 * scales.title + 8 + 20 * scales.compact + 8 + 4;
+};
 const CENTER = ORBIT / 2;
 /** What the seal is struck with: the emblem of the dream's theme, and its type and theme in words. */
 export type SealMark = { theme: DreamTheme; legend: string };
@@ -296,16 +315,18 @@ function Glow({ size, color }: { size: number; color: string }) {
 
 /**
  * The legend engraved around the window, letter after letter from its start, centred on
- * the top of the seal. The letters are measured first, so each sits on the arc by its own
- * width.
+ * the top of the seal, or along its foot (`bottom`), where it reads upright from left to
+ * right as on a postmark. The letters are measured first, so each sits on the arc by its
+ * own width.
  */
-export function SealLegend({ text, reduced, from = DREAM_STORY.sealContact, still = false }: {
+export function SealLegend({ text, reduced, from = DREAM_STORY.sealContact, still = false, side = 'top' }: {
   text: string;
   reduced: boolean;
   /** When the engraving starts, in milliseconds. */
   from?: number;
   /** Already engraved, as the capture seal left it. */
   still?: boolean;
+  side?: 'top' | 'bottom';
 }) {
   const letters = useMemo(() => [...text.toUpperCase()].map((letter) => (letter === ' ' ? '\u00a0' : letter)), [text]);
   const glyphs = useMemo(() => [...new Set(letters)], [letters]);
@@ -322,12 +343,14 @@ export function SealLegend({ text, reduced, from = DREAM_STORY.sealContact, stil
       const width = widths[letter];
       const angle = (along + width / 2) / LEGEND_RADIUS;
       along += width + LEGEND_TRACKING;
+      const foot = side === 'bottom';
       return {
         letter,
         width,
         left: CENTER + LEGEND_RADIUS * Math.sin(angle) - width / 2,
-        top: CENTER - LEGEND_RADIUS * Math.cos(angle) - LEGEND_LINE / 2,
-        angle,
+        top: CENTER + (foot ? 1 : -1) * LEGEND_RADIUS * Math.cos(angle) - LEGEND_LINE / 2,
+        // Along the foot the letters lean the other way, their tops towards the window.
+        angle: foot ? -angle : angle,
         motion: (still ? null : reduced ? {
           animationName: { from: { opacity: 0 }, to: { opacity: 1 } },
           animationDuration: 200,
@@ -344,7 +367,7 @@ export function SealLegend({ text, reduced, from = DREAM_STORY.sealContact, stil
         }) as CSSStyle<ViewStyle>,
       };
     });
-  }, [from, letters, measured, reduced, still, widths]);
+  }, [from, letters, measured, reduced, side, still, widths]);
 
   const letterClass = 'font-sans-medium text-[10px] text-champagne-on';
   return (
