@@ -21,8 +21,16 @@ const BACKWARD = 1;
 const COMMIT = 0.35;
 /** The binding's own gesture: the system back swipe starts here, so turning starts past it. */
 const BINDING = 28;
-/** The new page settles in over its likeness once it has been turned to. */
-const SETTLE_MS = 220;
+/**
+ * Once turned to, the dream page takes over from its likeness: only when it has laid
+ * itself out (or, failing that, after a while), and by a crossfade, so nothing jumps.
+ */
+const SETTLE_MS = 240;
+const SETTLE_AT_LATEST = 900;
+/** While the turned-to page settles in over (forward) or under (back) its likeness. */
+const IDLE = 0;
+const SETTLING_FORWARD = 1;
+const SETTLING_BACK = 2;
 /**
  * Once a session, a while after the first dream page opens, its corner lifts a little to
  * show the next page beneath, then falls back: the journal can be leafed through.
@@ -32,6 +40,25 @@ const HINT_LIFT = 0.15;
 let hintedThisSession = false;
 
 const PageTurnLockContext = createContext<(locked: boolean) => void>(() => {});
+const PageArrivalContext = createContext<{ laidOut: () => void; arriving: () => boolean }>({
+  laidOut: () => {},
+  arriving: () => false,
+});
+
+/** The dream page says it has laid itself out, so a page just turned to can take over. */
+export function useJournalPageLaidOut(): () => void {
+  return useContext(PageArrivalContext).laidOut;
+}
+
+/**
+ * Whether this dream page is being turned to: its likeness already shows it whole, so it
+ * shows its own pictures at once instead of letting them fade in.
+ */
+export function useJournalPageTurnedTo(): boolean {
+  const { arriving } = useContext(PageArrivalContext);
+  const [turnedTo] = useState(arriving);
+  return turnedTo;
+}
 
 /** While a page is being written in, it cannot be turned. */
 export function useJournalPageTurnLock(locked: boolean) {
@@ -79,6 +106,14 @@ export function JournalPageTurner({ newer, older, folio, tonight = false, onTurn
   const direction = useSharedValue(0);
   const progress = useSharedValue(0);
   const settle = useSharedValue(1);
+  const phase = useSharedValue(IDLE);
+  // The turn waiting for its page to lay itself out before that page takes over (0: none).
+  const awaiting = useSharedValue(0);
+  const awaitTimer = useSharedValue<ReturnType<typeof setTimeout> | null>(null);
+  useEffect(() => () => {
+    const timer = awaitTimer.get();
+    if (timer) clearTimeout(timer);
+  }, [awaitTimer]);
   // On tonight's page: the last dream's page lies turned over, and turns back from there.
   const [atTonight, setAtTonight] = useState(false);
   const turnedOver = useSharedValue(false);
@@ -93,6 +128,32 @@ export function JournalPageTurner({ newer, older, folio, tonight = false, onTurn
 
   const settled = useCallback(() => setFrozen(null), []);
 
+  // The page turned to fades in over its likeness (forward), or its likeness fades off it (back).
+  const settleIn = useCallback((turnedTo: number) => {
+    awaiting.set(0);
+    const timer = awaitTimer.get();
+    if (timer) clearTimeout(timer);
+    awaitTimer.set(null);
+    settle.set(withTiming(turnedTo === FORWARD ? 1 : 0, { duration: SETTLE_MS, easing: EASING.out }, (done) => {
+      if (!done) return;
+      phase.set(IDLE);
+      direction.set(0);
+      progress.set(0);
+      settle.set(1);
+      scheduleOnRN(settled);
+    }));
+  }, [awaitTimer, awaiting, direction, phase, progress, settle, settled]);
+
+  const pageLaidOut = useCallback(() => {
+    const turnedTo = awaiting.get();
+    if (turnedTo === 0) return;
+    awaiting.set(0);
+    // Two frames on, the page laid out is painted too before it is let in.
+    requestAnimationFrame(() => requestAnimationFrame(() => settleIn(turnedTo)));
+  }, [awaiting, settleIn]);
+  const arriving = useCallback(() => awaiting.get() !== 0, [awaiting]);
+  const arrival = useMemo(() => ({ laidOut: pageLaidOut, arriving }), [arriving, pageLaidOut]);
+
   const finishTurn = useCallback((turnedTo: number) => {
     if (turnedTo === FORWARD && !shown.newer) {
       reachTonight();
@@ -102,27 +163,22 @@ export function JournalPageTurner({ newer, older, folio, tonight = false, onTurn
     if (!target) return;
     setFrozen({ newer: shown.newer, older: shown.older, folio: shown.folio });
     void Haptics.selectionAsync().catch(() => {});
+    // The likeness holds the place while the page turned to lays itself out: forward, the
+    // turned page is set back flat but unseen over it; back, the likeness stays on top.
+    if (turnedTo === FORWARD) {
+      settle.set(0);
+      progress.set(0);
+      phase.set(SETTLING_FORWARD);
+    } else {
+      settle.set(1);
+      phase.set(SETTLING_BACK);
+    }
+    awaiting.set(turnedTo);
+    awaitTimer.set(setTimeout(() => {
+      if (awaiting.get() !== 0) settleIn(awaiting.get());
+    }, SETTLE_AT_LATEST));
     onTurn(target);
-    // Give the real page a moment to lay itself out under the turned page, then let it in.
-    setTimeout(() => {
-      if (turnedTo === FORWARD) {
-        settle.set(0);
-        progress.set(0);
-        direction.set(0);
-        settle.set(withTiming(1, { duration: SETTLE_MS, easing: EASING.out }, (done) => {
-          if (done) scheduleOnRN(settled);
-        }));
-      } else {
-        settle.set(withTiming(0, { duration: SETTLE_MS, easing: EASING.out }, (done) => {
-          if (!done) return;
-          progress.set(0);
-          direction.set(0);
-          settle.set(1);
-          scheduleOnRN(settled);
-        }));
-      }
-    }, 60);
-  }, [direction, onTurn, progress, reachTonight, settle, settled, shown.folio, shown.newer, shown.older]);
+  }, [awaitTimer, awaiting, onTurn, phase, progress, reachTonight, settle, settleIn, shown.folio, shown.newer, shown.older]);
 
   const turnAtOnce = useCallback((turnedTo: number) => {
     if (turnedTo === FORWARD && !shown.newer && tonight) {
@@ -164,9 +220,11 @@ export function JournalPageTurner({ newer, older, folio, tonight = false, onTurn
     .failOffsetY([-12, 12])
     .hitSlop({ left: -BINDING })
     .onStart(() => {
+      if (phase.get() !== IDLE) return;
       if (!turnedOver.get()) direction.set(0);
     })
     .onUpdate((event) => {
+      if (phase.get() !== IDLE) return;
       // On tonight's page only a turn back moves anything: the last dream's page comes down again.
       if (turnedOver.get()) {
         if (!reduced) progress.set(Math.max(0, 1 - Math.max(0, event.translationX) / (width * 0.8)));
@@ -185,6 +243,7 @@ export function JournalPageTurner({ newer, older, folio, tonight = false, onTurn
       progress.set(available ? Math.min(1, amount) : Math.min(0.06, amount * 0.15));
     })
     .onEnd((event) => {
+      if (phase.get() !== IDLE) return;
       if (turnedOver.get()) {
         const back = event.velocityX > 700 || (reduced ? event.translationX > width * COMMIT : 1 - progress.get() > COMMIT);
         if (!back) {
@@ -226,46 +285,59 @@ export function JournalPageTurner({ newer, older, folio, tonight = false, onTurn
           if (done) direction.set(0);
         }));
       }
-    }), [direction, finishTurn, hasLaterDream, hasNewer, hasOlder, leaveTonight, locked, progress, reduced, turnAtOnce,
-    turnedOver, width]);
+    }), [direction, finishTurn, hasLaterDream, hasNewer, hasOlder, leaveTonight, locked, phase, progress, reduced,
+    turnAtOnce, turnedOver, width]);
 
-  // The page turning over: it lifts from the binding, darkening as it stands on edge.
+  // The page turning over: it lifts from the binding, darkening as it stands on edge. Once
+  // turned forward it is set back flat, unseen, and the page turned to fades in there.
   const currentPage = useAnimatedStyle(() => {
-    const forward = direction.get() === FORWARD;
-    const turn = forward ? progress.get() : 0;
+    const idle = phase.get() === IDLE;
+    const turn = idle && direction.get() === FORWARD ? progress.get() : 0;
     return {
-      opacity: settle.get(),
+      opacity: phase.get() === SETTLING_FORWARD ? settle.get() : 1,
       transform: [{ perspective: 1600 }, { rotateY: `${-92 * turn}deg` }],
     };
   });
   const currentShade = useAnimatedStyle(() => ({
-    opacity: direction.get() === FORWARD ? interpolate(progress.get(), [0, 1], [0, 0.45], Extrapolation.CLAMP) : 0,
+    opacity: phase.get() === IDLE && direction.get() === FORWARD
+      ? interpolate(progress.get(), [0, 1], [0, 0.45], Extrapolation.CLAMP) : 0,
   }));
   // The later page, lying beneath: in shadow while the turning page still covers it.
-  const laterPage = useAnimatedStyle(() => ({ opacity: direction.get() === FORWARD ? 1 : 0 }));
-  const laterShade = useAnimatedStyle(() => ({
-    opacity: direction.get() === FORWARD ? interpolate(progress.get(), [0, 1], [0.4, 0], Extrapolation.CLAMP) : 0,
+  const laterPage = useAnimatedStyle(() => ({
+    opacity: (phase.get() === IDLE && direction.get() === FORWARD) || phase.get() === SETTLING_FORWARD ? 1 : 0,
   }));
-  // The earlier page, coming back over: from on edge at the binding to lying flat.
+  const laterShade = useAnimatedStyle(() => ({
+    opacity: phase.get() === IDLE && direction.get() === FORWARD
+      ? interpolate(progress.get(), [0, 1], [0.4, 0], Extrapolation.CLAMP) : 0,
+  }));
+  // The earlier page, coming back over: from on edge at the binding to lying flat, then
+  // fading off the page turned to once it has laid itself out beneath.
   const earlierPage = useAnimatedStyle(() => {
-    const backward = direction.get() === BACKWARD;
-    const turn = backward ? progress.get() : 0;
+    if (phase.get() === SETTLING_BACK) {
+      return { opacity: settle.get(), transform: [{ perspective: 1600 }, { rotateY: '0deg' }] };
+    }
+    const turn = phase.get() === IDLE && direction.get() === BACKWARD ? progress.get() : 0;
     return {
-      opacity: backward && turn > 0 ? settle.get() : 0,
+      opacity: turn > 0 ? 1 : 0,
       transform: [{ perspective: 1600 }, { rotateY: `${-92 * (1 - turn)}deg` }],
     };
   });
   const earlierShade = useAnimatedStyle(() => ({
-    opacity: direction.get() === BACKWARD ? interpolate(progress.get(), [0, 1], [0.45, 0], Extrapolation.CLAMP) : 0,
+    opacity: phase.get() === IDLE && direction.get() === BACKWARD
+      ? interpolate(progress.get(), [0, 1], [0.45, 0], Extrapolation.CLAMP) : 0,
   }));
+  // The shadow the earlier page casts as it comes over. Once it lies flat it covers the
+  // page whole, so the shadow is gone before the page shows through it.
   const currentUnderShade = useAnimatedStyle(() => ({
-    opacity: direction.get() === BACKWARD ? interpolate(progress.get(), [0, 1], [0, 0.4], Extrapolation.CLAMP) : 0,
+    opacity: phase.get() === IDLE && direction.get() === BACKWARD
+      ? interpolate(progress.get(), [0, 1], [0, 0.4], Extrapolation.CLAMP) : 0,
   }));
 
   const pageFrame = { position: 'absolute' as const, top: 0, left: 0, right: 0, bottom: 0, transformOrigin: 'left center' };
 
   return (
     <PageTurnLockContext.Provider value={setLocked}>
+      <PageArrivalContext.Provider value={arrival}>
       <GestureDetector gesture={pan} touchAction="pan-y">
         <View className="flex-1 bg-ink">
           {shown.newer ? (
@@ -293,6 +365,7 @@ export function JournalPageTurner({ newer, older, folio, tonight = false, onTurn
           ) : null}
         </View>
       </GestureDetector>
+      </PageArrivalContext.Provider>
     </PageTurnLockContext.Provider>
   );
 }

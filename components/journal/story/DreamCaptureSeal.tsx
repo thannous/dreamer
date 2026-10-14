@@ -52,13 +52,13 @@ const MEDALLION = 148;
 const MEDALLION_CENTER_FROM_TOP = 76 + 120;
 /**
  * Where the dream page sets the name and date on arrival: below the saved moment (its
- * astrolabe, its label and their margins), inside the reading margins and clear of the
- * edit button. The name lands there exactly, so the page takes it over as it is.
+ * astrolabe, its label and their margins), inside the reading margins. The name lands
+ * there exactly, so the page takes it over as it is.
  */
 const NAME_TOP_FROM_TOP = 76 + 240 + 12 + 24;
 const SAVED_LABEL_LINE = 18;
 const NAME_LEFT = 24;
-const NAME_RIGHT = 64;
+const NAME_RIGHT = 24;
 /** The name's size on the journal page, before it rises to the dream page's own. */
 const BOOK_NAME_SIZE = 17;
 /** The signs on the journal page, on screen: each sign's size, and the gap between their medals and the ring. */

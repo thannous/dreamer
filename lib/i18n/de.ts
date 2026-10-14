@@ -580,6 +580,8 @@ const translations: Record<string, string> = {
     'journal.tonight.waiting': 'Diese Seite wartet auf den Traum dieser Nacht.',
     'journal.tonight.write': 'Meinen Traum aufschreiben',
     'journal.tonight.remind': 'Beim Aufwachen erinnern',
+    'journal.detail.edit_page': 'Bearbeiten',
+    'journal.detail.edit_page_accessibility': 'Diesen Traum bearbeiten',
     'journal.detail.explore_button.new': 'Meine Reflexion beginnen',
     'journal.detail.explore_button.continue': 'Meine Reflexion fortsetzen',
     'journal.detail.analyze_button.default': 'Diesen Traum analysieren',

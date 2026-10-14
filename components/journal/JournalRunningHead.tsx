@@ -7,6 +7,7 @@ import { Fonts } from '@/constants/theme';
 import { getNoctaliaDesignTokens } from '@/constants/noctaliaDesign';
 import { useTheme } from '@/context/ThemeContext';
 import { useTranslation } from '@/hooks/useTranslation';
+import { TID } from '@/lib/testIDs';
 
 /** The running head's line, and the white space it leaves before the page's text. */
 export const RUNNING_HEAD_HEIGHT = 44;
@@ -14,16 +15,20 @@ export const RUNNING_HEAD_GAP = 20;
 
 /**
  * The line printed at the top of a journal page, as in a book: the journal's name on the
- * inner side, the way back to it, and the page's number on the outer side. It belongs to
- * the page and scrolls away with it. Without `onBack` it is only printed, as on a page
- * being turned to.
+ * inner side, the way back to it, and the page's number on the outer side, with the page's
+ * one way to edit it beside the number. It belongs to the page and scrolls away with it.
+ * Without `onBack` or `onEdit` it is only printed, as on a page being turned to.
  */
-export function JournalRunningHead({ folio, onBack, testID, backTestID }: {
+export function JournalRunningHead({ folio, onBack, testID, backTestID, edit, onEdit, editDisabled = false }: {
   /** This dream's place in the journal, counted from the first dream written. */
   folio?: number;
   onBack?: () => void;
   testID?: string;
   backTestID?: string;
+  /** The page can be edited: its one edit control, pressable when `onEdit` is given. */
+  edit?: boolean;
+  onEdit?: () => void;
+  editDisabled?: boolean;
 }) {
   const { t } = useTranslation();
   const { colors, mode } = useTheme();
@@ -49,12 +54,34 @@ export function JournalRunningHead({ folio, onBack, testID, backTestID }: {
       ) : (
         <View className="min-h-11 flex-row items-center gap-2 px-3">{title}</View>
       )}
-      {folio ? (
-        <Text allowFontScaling={false} accessible={false} className="px-3 text-[13px] text-ivory-muted"
-          style={{ fontFamily: Fonts.lora.regular }}>
-          {folio}
-        </Text>
-      ) : null}
+      <View className="flex-row items-center">
+        {edit ? (() => {
+          const label = (
+            <>
+              <IconSymbol name="pencil" size={14} color={noctalia.accent.text} />
+              <Text allowFontScaling={false} className="font-sans-medium text-[13px] text-champagne-on">
+                {t('journal.detail.edit_page')}
+              </Text>
+            </>
+          );
+          return onEdit ? (
+            <PressableScale onPress={onEdit} disabled={editDisabled} testID={TID.Button.EditDream}
+              accessibilityRole="button" accessibilityLabel={t('journal.detail.edit_page_accessibility')}
+              hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}
+              className={`min-h-11 flex-row items-center gap-1.5 px-2 ${editDisabled ? 'opacity-60' : ''}`}>
+              {label}
+            </PressableScale>
+          ) : (
+            <View className="min-h-11 flex-row items-center gap-1.5 px-2">{label}</View>
+          );
+        })() : null}
+        {folio ? (
+          <Text allowFontScaling={false} accessible={false} className="px-3 text-[13px] text-ivory-muted"
+            style={{ fontFamily: Fonts.lora.regular }}>
+            {folio}
+          </Text>
+        ) : null}
+      </View>
     </View>
   );
 }

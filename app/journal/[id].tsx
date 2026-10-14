@@ -12,7 +12,7 @@ import { useDreamMedia } from '@/hooks/useDreamMedia';
 import { Toast } from '@/components/Toast';
 import { DreamRecallAssistantCard } from '@/components/journal/DreamRecallAssistantCard';
 import { JournalPageEdges } from '@/components/journal/JournalPageEdges';
-import { JournalPageTurner, useJournalPageTurnLock } from '@/components/journal/JournalPageTurner';
+import { JournalPageTurner, useJournalPageLaidOut, useJournalPageTurnedTo, useJournalPageTurnLock } from '@/components/journal/JournalPageTurner';
 import { JournalPaper } from '@/components/journal/JournalPaper';
 import { JournalRunningHead, RUNNING_HEAD_GAP, RUNNING_HEAD_HEIGHT } from '@/components/journal/JournalRunningHead';
 import { Fonts } from '@/constants/theme';
@@ -654,9 +654,13 @@ const JournalDetailContent = memo(function JournalDetailContent({ dream, folio }
   const [editableTranscript, setEditableTranscript] = useState('');
   const [isEditing, setIsEditing] = useState(false);
   const [isPickingImage, setIsPickingImage] = useState(false);
-  const [isEditingTranscript, setIsEditingTranscript] = useState(false);
   // A page being written in, or its illustration held open, is not leafed through.
-  useJournalPageTurnLock(isEditing || isEditingTranscript || isIllustrationFullscreen);
+  useJournalPageTurnLock(isEditing || isIllustrationFullscreen);
+  // A page just turned to takes over from its likeness once it has laid itself out: its
+  // heading measured and its illustration, sized to it, on screen.
+  const pageLaidOut = useJournalPageLaidOut();
+  const turnedTo = useJournalPageTurnedTo();
+  const [coverShown, setCoverShown] = useState(false);
   const [isKeyboardVisible, setIsKeyboardVisible] = useState(false);
   const [transcriptSectionOffset, setTranscriptSectionOffset] = useState(0);
   const [transcriptSectionHeight, setTranscriptSectionHeight] = useState(0);
@@ -686,6 +690,8 @@ const JournalDetailContent = memo(function JournalDetailContent({ dream, folio }
     measureTranscriptSection();
   }, [measureTranscriptSection, updateReadingChrome]);
   const scrollViewRef = useRef<ScrollViewInstance | null>(null);
+  const editorScrollRef = useRef<ScrollViewInstance | null>(null);
+  const editingStoryRef = useRef(false);
   const lastAnalysisNoticeRef = useRef<AnalysisNotice | null>(null);
   const previousDreamRef = useRef(dream);
 
@@ -713,15 +719,12 @@ const JournalDetailContent = memo(function JournalDetailContent({ dream, folio }
       setEditableTitle(dream?.title || '');
       setEditableTheme(dream?.theme || '');
       setEditableDreamType(dream?.dreamType || '');
-    }
-    if (changedDream || !isEditingTranscript) {
       setEditableTranscript(dream?.transcript || '');
     }
     if (changedDream) {
       setIsEditing(false);
-      setIsEditingTranscript(false);
     }
-  }, [dream, isEditing, isEditingTranscript]);
+  }, [dream, isEditing]);
 
   useEffect(() => {
     const showEvent = Platform.OS === 'ios' ? 'keyboardWillShow' : 'keyboardDidShow';
@@ -773,15 +776,6 @@ const JournalDetailContent = memo(function JournalDetailContent({ dream, folio }
     // A newer title, analysis or user edit owns the dream after it changes.
     return () => { cancelled = true; };
   }, [canUseReference, dream, language, updateDream]);
-
-  useEffect(() => {
-    if (!isEditingTranscript || !scrollViewRef.current) {
-      return;
-    }
-    requestAnimationFrame(() => {
-      scrollViewRef.current?.scrollTo({ y: Math.max(transcriptSectionOffset - 32, 0), animated: true });
-    });
-  }, [isEditingTranscript, transcriptSectionOffset]);
 
 
   const { shareImageRef, shareComposite } = useDreamShareComposite();
@@ -886,7 +880,7 @@ const JournalDetailContent = memo(function JournalDetailContent({ dream, folio }
   );
   const primaryKind = reflectionJourney.primary.kind;
   const primaryAction = getJournalDetailPrimaryFamily(primaryKind);
-  const isStalePrimaryAction = isAnalysisStale && !isEditing && !isEditingTranscript;
+  const isStalePrimaryAction = isAnalysisStale && !isEditing;
   const visiblePrimaryAction = isStalePrimaryAction ? 'analyze' : primaryAction;
   const quotaHint = useMemo(
     () =>
@@ -1154,12 +1148,17 @@ const JournalDetailContent = memo(function JournalDetailContent({ dream, folio }
   const shareMediaPending = Platform.OS !== 'web' && Boolean(dream?.imageUrl || dream?.thumbnailUrl) && media.loading;
   const clipboardSupported = Platform.OS === 'web' && Boolean(getShareNavigator()?.clipboard?.writeText);
 
-  const startMetadataEditing = useCallback(() => {
+  // The page has one way to edit it: its name, details and story together.
+  const startEditing = useCallback(() => {
     if (isAnalysisLocked) return;
-    setIsEditingTranscript(false);
     setHeldTitle(null);
     setIsEditing(true);
   }, [isAnalysisLocked]);
+
+  const cancelEditing = useCallback(() => {
+    Keyboard.dismiss();
+    setIsEditing(false);
+  }, []);
 
   const handleSave = useCallback(async () => {
     if (!dream) return;
@@ -1167,6 +1166,13 @@ const JournalDetailContent = memo(function JournalDetailContent({ dream, folio }
     const normalizedTitle = editableTitle.trim() || dream.title;
     const normalizedTheme = editableTheme.trim() || dream.theme;
     const normalizedDreamType = editableDreamType.trim() || dream.dreamType;
+    const normalizedTranscript = editableTranscript.trim().length === 0 ? dream.transcript : editableTranscript;
+    Keyboard.dismiss();
+    if (normalizedTitle === dream.title && normalizedTheme === dream.theme
+      && normalizedDreamType === dream.dreamType && normalizedTranscript === dream.transcript) {
+      setIsEditing(false);
+      return;
+    }
 
     const updatedDream: DreamAnalysis = {
       ...dream,
@@ -1175,11 +1181,12 @@ const JournalDetailContent = memo(function JournalDetailContent({ dream, folio }
       // but we keep runtime flexible and trust persisted values here.
       theme: normalizedTheme as DreamAnalysis['theme'],
       dreamType: normalizedDreamType as DreamAnalysis['dreamType'],
+      transcript: normalizedTranscript,
     };
 
     await updateDream(updatedDream);
     setIsEditing(false);
-  }, [dream, editableTitle, editableTheme, editableDreamType, updateDream]);
+  }, [dream, editableTitle, editableTheme, editableDreamType, editableTranscript, updateDream]);
 
   const handlePickImage = useCallback(async () => {
     if (!dream || isAnalysisLocked) return;
@@ -1842,20 +1849,6 @@ const JournalDetailContent = memo(function JournalDetailContent({ dream, folio }
     );
   }, [reanalyzeImagePolicy, runAnalyze]);
 
-  const handleTranscriptSave = useCallback(async () => {
-    if (!dream) return;
-    const normalizedTranscript = editableTranscript.trim().length === 0
-      ? dream.transcript
-      : editableTranscript;
-
-    const updatedDream: DreamAnalysis = {
-      ...dream,
-      transcript: normalizedTranscript,
-    };
-    await updateDream(updatedDream);
-    setIsEditingTranscript(false);
-  }, [dream, editableTranscript, updateDream]);
-
   const handleStaleReanalyze = useCallback(() => {
     if (isAnalysisLocked) return;
     setReanalyzeImagePolicy('keep');
@@ -1874,10 +1867,14 @@ const JournalDetailContent = memo(function JournalDetailContent({ dream, folio }
     default: undefined,
   });
   const keyboardVerticalOffset = Platform.select({ ios: 0, android: 0, web: 0 }) ?? 0;
-  const shouldHideHeroMedia = isKeyboardVisible && (isEditing || isEditingTranscript);
+  const shouldHideHeroMedia = isKeyboardVisible && (isEditing);
   const coverImageFailed = Boolean((failedCoverUri && failedCoverUri === displayImageUrl) || (!displayImageUrl && media.error));
   const hasIllustratedCover = artworkAtArrival === true && Boolean(dream?.imageUrl?.trim())
     && !shouldHideHeroMedia && !coverImageFailed;
+  const pageReady = coverIntroHeight !== null && (!hasIllustratedCover || coverShown);
+  useEffect(() => {
+    if (pageReady) pageLaidOut();
+  }, [pageLaidOut, pageReady]);
   const paintedArtwork = !coverImageFailed && displayImageUrl ? { uri: displayImageUrl, cacheKey: imageCacheKey } : null;
   // Act III keeps painting until the image can actually be shown: stored artwork is
   // saved on the dream before its signed URL resolves. Its landing plays once per visit,
@@ -1995,69 +1992,34 @@ const JournalDetailContent = memo(function JournalDetailContent({ dream, folio }
       testID={TID.Component.TranscriptCard}
       className="font-sans text-[15px] leading-6"
     >
-      <View className="mb-3 flex-row items-center justify-between">
-        <View className="flex-1 pr-3">
-          <Text key={`story-heading-${windowSize.fontScale}`} allowFontScaling={false} style={{ fontSize: 12 * compactTextScale, lineHeight: 18 * compactTextScale }} accessibilityRole="header" testID={TID.Text.DreamDetailDreamZone} className="font-sans-medium text-[12px] uppercase tracking-[2px] text-champagne-on">
-            {t('journal.original_transcript')}
-          </Text>
-        </View>
-        <PressableScale
-          onPress={isEditingTranscript ? handleTranscriptSave : () => {
-            setEditableTranscript(dream.transcript || '');
-            setIsEditingTranscript(true);
-          }}
-          testID={TID.Button.EditTranscript}
-          accessibilityRole="button"
-          accessibilityLabel={t(isEditingTranscript ? 'journal.detail.save_edit' : 'journalDetail.a11y.editTranscript')}
-          disabled={isAnalysisLocked}
-          className={`min-h-11 min-w-11 flex-row items-center justify-center gap-2 rounded-full ${!isEditingTranscript ? '' : 'border border-line'} ${
-            isEditingTranscript ? 'bg-champagne' : 'bg-transparent'
-          } ${isAnalysisLocked ? 'opacity-70' : ''}`}
-          hitSlop={8}
-        >
-          <IconSymbol
-            name={isEditingTranscript ? 'checkmark' : 'pencil'}
-            size={18}
-            color={isEditingTranscript ? noctalia.action.primaryText : noctalia.accent.text}
-          />
-          <Text allowFontScaling={false} style={metadataTextStyle} className={`font-sans-medium text-[13px] ${isEditingTranscript ? 'text-on-champagne' : 'text-champagne-on'}`}>{t(isEditingTranscript ? 'journal.detail.save_edit' : 'journal.detail.edit_story')}</Text>
-        </PressableScale>
-      </View>
-      {isEditingTranscript && hasUncategorizedDraft && initialCategorizationPending ? (
+      <Text key={`story-heading-${windowSize.fontScale}`} allowFontScaling={false} style={{ fontSize: 12 * compactTextScale, lineHeight: 18 * compactTextScale }} accessibilityRole="header" testID={TID.Text.DreamDetailDreamZone} className="mb-3 font-sans-medium text-[12px] uppercase tracking-[2px] text-champagne-on">
+        {t('journal.original_transcript')}
+      </Text>
+      {isEditing && hasUncategorizedDraft && initialCategorizationPending ? (
         <Text testID="text.dreamMetadata.pending" accessibilityLiveRegion="polite" className="mb-4 font-sans text-[13px] text-ivory-muted">
           {t('journal.detail.metadata.loading')}
         </Text>
       ) : null}
-      {isEditingTranscript ? (
+      {isEditing ? (
         <TextInput
           testID={TID.Input.DreamTranscript}
           className="min-h-[140px] rounded-md border border-line bg-ink-active p-3 font-sans text-[15px] leading-[22px] text-ivory"
           multiline
+          style={{ maxHeight: Math.max(160, windowSize.height * 0.36) }}
           value={editableTranscript}
           onChangeText={setEditableTranscript}
+          onFocus={() => { editingStoryRef.current = true; }}
+          onBlur={() => { editingStoryRef.current = false; }}
           placeholder={t('recording.placeholder.accessibility')}
           accessibilityLabel={t('recording.placeholder.accessibility')}
           placeholderTextColor={noctalia.text.secondary}
           selectionColor={noctalia.accent.base}
           textAlignVertical="top"
-          autoFocus
         />
       ) : (
         <MarkdownText style={markdownStyles.transcript}>{dream.transcript}</MarkdownText>
       )}
       {dream.captureOriginalTranscript ? <CaptureOriginal source={dream.captureOriginalTranscript} /> : null}
-      {isEditingTranscript ? (
-        <View className="mt-3 flex-row flex-wrap justify-end gap-3">
-          <Pressable onPress={() => { setEditableTranscript(dream.transcript || ''); setIsEditingTranscript(false); }}
-            accessibilityRole="button" className="min-h-[44px] justify-center px-3">
-            <Text className="font-sans-medium text-ivory">{t('common.cancel')}</Text>
-          </Pressable>
-          <Pressable onPress={handleTranscriptSave} accessibilityRole="button" disabled={isAnalysisLocked}
-            className="min-h-[44px] justify-center rounded-md bg-champagne px-4">
-            <Text className="font-sans-bold text-on-champagne">{t('journal.detail.save_edit')}</Text>
-          </Pressable>
-        </View>
-      ) : null}
     </View>
   );
 
@@ -2075,7 +2037,7 @@ const JournalDetailContent = memo(function JournalDetailContent({ dream, folio }
           <Text key={`dream-theme-${windowSize.fontScale}`} allowFontScaling={false} style={metadataTextStyle} className="shrink font-sans-medium text-[13px] text-ivory-muted">{dreamThemeLabel}</Text>
         </View>
       ) : (
-        <Pressable onPress={startMetadataEditing} disabled={isAnalysisLocked} accessibilityRole="button"
+        <Pressable onPress={startEditing} disabled={isAnalysisLocked} accessibilityRole="button"
           className={`min-h-[44px] max-w-full justify-center ${isAnalysisLocked ? 'opacity-70' : ''}`}>
           <View className="flex-row items-center gap-1.5 rounded-full border border-line px-3 py-1.5">
             <IconSymbol name="paintpalette" size={14} color={noctalia.accent.text} />
@@ -2100,10 +2062,9 @@ const JournalDetailContent = memo(function JournalDetailContent({ dream, folio }
         style={compactMetadata ? undefined : variant === 'floating' ? shadows.xl : shadows.md}
         className={[
           // On arrival the story follows the title closely; the chips wait below it.
-          compactMetadata ? `mx-2 ${opensOnSavedMoment ? 'mb-1' : 'mb-7'} pr-10` : 'mb-6 rounded-t-xl rounded-b-lg px-5 pt-5 bg-ink-raised',
+          compactMetadata ? `mx-2 ${opensOnSavedMoment ? 'mb-1' : 'mb-7'}` : 'mb-6 rounded-t-xl rounded-b-lg px-5 pt-5 bg-ink-raised',
           compactMetadata ? '' : borderClassName,
-          // Keep room for the floating edit/check button so it doesn't overlap chips
-          isEditing ? 'pb-16' : compactMetadata ? '' : 'pb-5',
+          compactMetadata ? '' : 'pb-5',
           variant === 'floating' ? 'rounded-[20px]' : '',
         ].join(' ')}
       >
@@ -2137,7 +2098,7 @@ const JournalDetailContent = memo(function JournalDetailContent({ dream, folio }
           <Text key={`dream-date-${windowSize.fontScale}`} allowFontScaling={false} style={{ fontSize: 12 * compactTextScale, lineHeight: 20 * compactTextScale }} className={`${opensOnSavedMoment ? 'mb-2' : 'mb-5'} font-sans text-[12px] leading-5 text-ivory-muted`}>
             {formatDreamDate(dream.id)} · {formatDreamTime(dream.id)}
           </Text>
-          {!isEditingTranscript && hasUncategorizedDraft && initialCategorizationPending ? (
+          {!isEditing && hasUncategorizedDraft && initialCategorizationPending ? (
             <Text testID="text.dreamMetadata.pending" accessibilityLiveRegion="polite" className="mb-4 font-sans text-[13px] text-ivory-muted">
               {t('journal.detail.metadata.loading')}
             </Text>
@@ -2241,7 +2202,7 @@ const JournalDetailContent = memo(function JournalDetailContent({ dream, folio }
           dreamThemeLabel ? (
             <Text className="flex-1 font-sans-bold text-[14px] text-ivory">{dreamThemeLabel}</Text>
           ) : (
-            <Pressable onPress={startMetadataEditing} disabled={isAnalysisLocked}
+            <Pressable onPress={startEditing} disabled={isAnalysisLocked}
               accessibilityRole="button" className="min-h-[44px] flex-1 justify-center">
               <Text className={`font-sans-medium text-[14px] text-champagne-on underline`}>{t('journal.detail.theme_placeholder')}</Text>
             </Pressable>
@@ -2250,37 +2211,6 @@ const JournalDetailContent = memo(function JournalDetailContent({ dream, folio }
       </View>
       </>}
 
-      <PressableScale
-        onPress={isEditing ? handleSave : startMetadataEditing}
-        testID={TID.Button.EditMetadata}
-        nativeID={TID.Button.EditMetadata}
-        accessibilityLabel={
-          isEditing
-            ? t('journal.detail.edit_metadata.save_accessibility')
-            : t('journal.detail.edit_metadata.edit_accessibility')
-        }
-        accessibilityRole="button"
-        accessibilityHint={
-          isAnalysisLocked
-            ? t('journal.detail.edit_metadata.locked_hint')
-            : isEditing
-              ? t('journal.detail.edit_metadata.save_hint')
-              : t('journal.detail.edit_metadata.edit_hint')
-        }
-        accessibilityState={{ disabled: isAnalysisLocked }}
-        accessible
-        disabled={isAnalysisLocked}
-        className={`absolute ${compactMetadata ? 'top-0 right-0' : 'bottom-4 right-4'} h-8 w-8 items-center justify-center rounded-full ${
-          isEditing ? 'bg-champagne' : compactMetadata ? 'bg-transparent' : 'bg-ink-active'
-        } ${isAnalysisLocked ? 'opacity-70' : ''}`}
-        hitSlop={8}
-      >
-        <IconSymbol
-          name={isEditing ? 'checkmark' : 'pencil'}
-          size={16}
-          color={isEditing ? noctalia.action.primaryText : noctalia.accent.text}
-        />
-      </PressableScale>
     </View>
   );
   };
@@ -2406,7 +2336,7 @@ const JournalDetailContent = memo(function JournalDetailContent({ dream, folio }
   const renderDetailActionCard = (
     visibleFamilies?: ('analyze' | 'explore' | 'continue')[]
   ) => {
-    if (!detailActionCard || isEditing || isEditingTranscript) {
+    if (!detailActionCard || isEditing) {
       return null;
     }
     if (visibleFamilies && !visibleFamilies.includes(visiblePrimaryAction)) {
@@ -2593,7 +2523,7 @@ const JournalDetailContent = memo(function JournalDetailContent({ dream, folio }
   };
 
   const renderFirstValueBackupCard = () => {
-    if (user || !analysisState.isAnalyzed || isEditing || isEditingTranscript) {
+    if (user || !analysisState.isAnalyzed || isEditing) {
       return null;
     }
 
@@ -2641,7 +2571,7 @@ const JournalDetailContent = memo(function JournalDetailContent({ dream, folio }
   );
 
   const renderStaleBanner = () => {
-    if (!isAnalysisStale || isEditing || isEditingTranscript) {
+    if (!isAnalysisStale || isEditing) {
       return null;
     }
 
@@ -2707,7 +2637,7 @@ const JournalDetailContent = memo(function JournalDetailContent({ dream, folio }
               className="absolute top-0 right-0 left-0"
               style={{ height: coverLayout.imageHeight }}
             >
-              <Animated.View ref={coverParallax.frame} style={StyleSheet.absoluteFill} pointerEvents="none">
+              <Animated.View ref={coverParallax.frame} onLayout={coverParallax.onLayout} style={StyleSheet.absoluteFill} pointerEvents="none">
               <Animated.View style={[{ position: 'absolute', left: 0, right: 0, top: -coverTravel, bottom: -coverTravel }, coverParallax.style]}>
               <Image
                 key={displayImageUrl ?? dream.imageUrl}
@@ -2715,7 +2645,8 @@ const JournalDetailContent = memo(function JournalDetailContent({ dream, folio }
                 style={{ width: '100%', height: '100%' }}
                 contentFit="cover"
                 onError={() => setFailedCoverUri(displayImageUrl ?? null)}
-                transition={imageConfig.transition}
+                onDisplay={() => setCoverShown(true)}
+                transition={turnedTo ? 0 : imageConfig.transition}
                 cachePolicy={imageConfig.cachePolicy}
                 priority={imageConfig.priority}
                 placeholder={{ blurhash: 'L6PZfSi_.AyE_3t7t7R**0o#DgR4' }}
@@ -2877,7 +2808,7 @@ const JournalDetailContent = memo(function JournalDetailContent({ dream, folio }
 
           contentContainerStyle={{
             paddingTop: navigationHeight - RUNNING_HEAD_HEIGHT - RUNNING_HEAD_GAP,
-            paddingBottom: ((isEditing || isEditingTranscript) ? 220 : actionDockHeight + 32) + insets.bottom,
+            paddingBottom: ((isEditing) ? 220 : actionDockHeight + 32) + insets.bottom,
           }}
           scrollEventThrottle={16}
           onScroll={(event) => {
@@ -2890,7 +2821,7 @@ const JournalDetailContent = memo(function JournalDetailContent({ dream, folio }
         >
           <View style={{ marginBottom: RUNNING_HEAD_GAP }}>
             <JournalRunningHead folio={folio} onBack={handleBackPress} testID="journal.detail.navigation"
-              backTestID={TID.Button.NavigateJournal} />
+              backTestID={TID.Button.NavigateJournal} edit onEdit={startEditing} editDisabled={isAnalysisLocked} />
           </View>
           <View ref={readingContentRef} collapsable={false} onLayout={measureTranscriptSection} className="px-4 pb-6">
             {showSavedMoment ? (
@@ -2938,7 +2869,7 @@ const JournalDetailContent = memo(function JournalDetailContent({ dream, folio }
             ) : null}
             <View>{renderSyncStatusCard()}</View>
 
-            {!isEditingTranscript && (
+            {!isEditing && (
               <ArrivalReveal play={opensOnSavedMoment} index={1} className="mt-2 mb-5">
                 <View>
                   <View className="px-2 pb-4">
@@ -3052,7 +2983,7 @@ const JournalDetailContent = memo(function JournalDetailContent({ dream, folio }
         </ScrollView>
 
         <JournalReturnTab top={insets.top + 6} onPress={handleBackPress} />
-        {!isEditing && !isEditingTranscript && (!hasIllustratedCover || readingActionVisible) ? (
+        {!isEditing && (!hasIllustratedCover || readingActionVisible) ? (
           <View testID="component.dreamDetail.actionDock"
             className={`absolute bottom-0 left-0 right-0 bg-ink px-6 pt-3 ${isSavedArrival ? '' : 'border-t border-line'}`}
             style={{ paddingBottom: Math.max(insets.bottom, 12) }}
@@ -3072,76 +3003,68 @@ const JournalDetailContent = memo(function JournalDetailContent({ dream, folio }
         ) : null}
 
         {isEditing && (
-          <View
-            pointerEvents="auto"
-            className="absolute inset-0 justify-end bg-ink-overlay px-4 pt-6 pb-4"
-          >
-            {dream.imageUrl ? (
-              <View className="mb-3 w-full items-center border-transparent bg-transparent">
-                {dream.imageSource !== 'ai' ? (
-                  <PressableScale
-                    onPress={handlePickImage}
-                    disabled={isPickingImage || isAnalysisLocked}
-                    className={`flex-row items-center gap-2 rounded-[10px] border border-line bg-ink-raised px-3.5 py-2.5 ${
-                      (isPickingImage || isAnalysisLocked) ? 'opacity-70' : ''
-                    }`}
-                  >
-                    {isPickingImage ? (
-                      <ActivityIndicator color={noctalia.text.primary} />
-                    ) : (
-                      <IconSymbol name="photo" size={18} color={noctalia.text.primary} />
-                    )}
-                    <Text className="font-sans-bold text-[14px] text-ivory">
-                      {isPickingImage
-                        ? t('journal.detail.image.adding_from_library')
-                        : t('journal.detail.image.replace_user_button')}
+          <View pointerEvents="auto" testID={TID.Component.DreamEditor} className="absolute inset-0 bg-ink-overlay"
+            style={{ paddingTop: insets.top }}>
+            {Platform.OS === 'ios' && isKeyboardVisible ? (
+              <Pressable
+                onPress={Keyboard.dismiss}
+                testID="btn.journal.dismissKeyboard"
+                accessibilityRole="button"
+                accessibilityLabel={t('common.done')}
+                className="min-h-11 items-end justify-center self-end px-7"
+              >
+                <Text className="font-sans-medium text-[15px] text-champagne-on">{t('common.done')}</Text>
+              </Pressable>
+            ) : null}
+            <ScrollView ref={editorScrollRef} className="flex-1" keyboardShouldPersistTaps="handled"
+              contentContainerStyle={{ flexGrow: 1, justifyContent: 'flex-end', paddingHorizontal: 16, paddingTop: 12, paddingBottom: floatingTranscriptBottom }}
+              onLayout={() => {
+                // The keyboard shrinks the sheet: keep the story being written in view.
+                if (editingStoryRef.current) editorScrollRef.current?.scrollToEnd({ animated: true });
+              }}>
+              {dream.imageUrl ? (
+                <View className="mb-3 w-full items-center border-transparent bg-transparent">
+                  {dream.imageSource !== 'ai' ? (
+                    <PressableScale
+                      onPress={handlePickImage}
+                      disabled={isPickingImage || isAnalysisLocked}
+                      className={`flex-row items-center gap-2 rounded-[10px] border border-line bg-ink-raised px-3.5 py-2.5 ${
+                        (isPickingImage || isAnalysisLocked) ? 'opacity-70' : ''
+                      }`}
+                    >
+                      {isPickingImage ? (
+                        <ActivityIndicator color={noctalia.text.primary} />
+                      ) : (
+                        <IconSymbol name="photo" size={18} color={noctalia.text.primary} />
+                      )}
+                      <Text className="font-sans-bold text-[14px] text-ivory">
+                        {isPickingImage
+                          ? t('journal.detail.image.adding_from_library')
+                          : t('journal.detail.image.replace_user_button')}
+                      </Text>
+                    </PressableScale>
+                  ) : (
+                    <Text className="rounded-[10px] bg-ink-raised px-3.5 py-2.5 text-center font-sans-medium text-[13px] leading-[18px] text-ivory-muted">
+                      {t('journal.detail.image.ai_locked_note')}
                     </Text>
-                  </PressableScale>
-                ) : (
-                  <Text className="text-center font-sans-medium text-[13px] leading-[18px] text-ivory-muted">
-                    {t('journal.detail.image.ai_locked_note')}
-                  </Text>
-                )}
-              </View>
-            ) : null}
-            {Platform.OS === 'ios' && isKeyboardVisible ? (
-              <Pressable
-                onPress={Keyboard.dismiss}
-                testID="btn.journal.dismissKeyboard"
-                accessibilityRole="button"
-                accessibilityLabel={t('common.done')}
-                className="min-h-11 items-end justify-center self-end px-3"
-              >
-                <Text className="font-sans-medium text-[15px] text-champagne-on">{t('common.done')}</Text>
-              </Pressable>
-            ) : null}
-            <View style={{ marginBottom: floatingTranscriptBottom }}>
+                  )}
+                </View>
+              ) : null}
               {renderMetadataCard('floating')}
-            </View>
-          </View>
-        )}
-        {isEditingTranscript && (
-          <View
-            pointerEvents="auto"
-            className="absolute inset-0 justify-end bg-ink-overlay px-4 pt-6"
-          >
-            {Platform.OS === 'ios' && isKeyboardVisible ? (
-              <Pressable
-                onPress={Keyboard.dismiss}
-                testID="btn.journal.dismissKeyboard"
-                accessibilityRole="button"
-                accessibilityLabel={t('common.done')}
-                className="min-h-11 items-end justify-center self-end px-3"
-              >
-                <Text className="font-sans-medium text-[15px] text-champagne-on">{t('common.done')}</Text>
-              </Pressable>
-            ) : null}
-            <View
-              className="mt-6 mb-7 rounded-lg border border-line bg-ink-raised px-4 pt-6 pb-4"
-              style={[shadows.xl, { marginBottom: floatingTranscriptBottom }]}
-            >
-              {renderTranscriptBody()}
-            </View>
+              <View className="rounded-lg border border-line bg-ink-raised px-4 pt-5 pb-3" style={shadows.xl}>
+                {renderTranscriptBody()}
+                <View className="mt-3 flex-row flex-wrap justify-end gap-3">
+                  <Pressable onPress={cancelEditing} testID={TID.Button.CancelDreamEdit} accessibilityRole="button"
+                    className="min-h-[44px] justify-center px-3">
+                    <Text className="font-sans-medium text-ivory">{t('common.cancel')}</Text>
+                  </Pressable>
+                  <Pressable onPress={handleSave} testID={TID.Button.SaveDreamEdit} accessibilityRole="button"
+                    disabled={isAnalysisLocked} className="min-h-[44px] justify-center rounded-md bg-champagne px-4">
+                    <Text className="font-sans-bold text-on-champagne">{t('journal.detail.save_edit')}</Text>
+                  </Pressable>
+                </View>
+              </View>
+            </ScrollView>
           </View>
         )}
         <AnalysisNoticeSheet
@@ -3336,7 +3259,7 @@ const JournalDetailContent = memo(function JournalDetailContent({ dream, folio }
           </View>
         )}
         {/* The journal page's own edges, over everything that rests on it. */}
-        {!isEditing && !isEditingTranscript ? <JournalPageEdges /> : null}
+        {!isEditing ? <JournalPageEdges /> : null}
         </View>
       </KeyboardAvoidingView>
     </View>

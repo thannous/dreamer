@@ -99,6 +99,7 @@ jest.mock('react-native', () => {
       showsVerticalScrollIndicator: _showsVerticalScrollIndicator,
       horizontal: _horizontal,
       numberOfLines: _numberOfLines,
+      onChangeText,
       style,
       className,
       ...rest
@@ -109,6 +110,7 @@ jest.mock('react-native', () => {
       ...(style ? { style } : {}),
       ...(testID ? { 'data-testid': testID } : {}),
       ...(onPress ? { onClick: onPress } : {}),
+      ...(onChangeText ? { onChange: (event: { target: { value: string } }) => onChangeText(event.target.value) } : {}),
       ...(accessibilityRole ? { role: accessibilityRole } : {}),
       ...(accessibilityLabel ? { 'aria-label': accessibilityLabel } : {}),
     };
@@ -243,6 +245,8 @@ jest.mock('@/components/journal/JournalPaper', () => ({ JournalPaper: () => null
 jest.mock('@/components/journal/JournalPageTurner', () => ({
   JournalPageTurner: ({ children }: { children: React.ReactNode }) => children,
   useJournalPageTurnLock: () => {},
+  useJournalPageLaidOut: () => () => {},
+  useJournalPageTurnedTo: () => false,
 }));
 
 jest.mock('@/components/inspiration/GlassCard', () => ({
@@ -873,7 +877,7 @@ describe('journal detail saved confirmation route', () => {
     expect(mockAnalyzeDream).not.toHaveBeenCalled();
     expect(mockSetParams).toHaveBeenCalledWith({ analyzeAfterPurchase: undefined, analysisOwnerId: undefined });
     expect(screen.queryByText('loading.analyzing')).toBeNull();
-    expect((screen.getByTestId(TID.Button.EditMetadata) as HTMLButtonElement).disabled).toBe(false);
+    expect((screen.getByTestId(TID.Button.EditDream) as HTMLButtonElement).disabled).toBe(false);
   });
 
   it('locks edits and deletion while valid purchased access is propagating', async () => {
@@ -882,7 +886,7 @@ describe('journal detail saved confirmation route', () => {
     render(<JournalDetailScreen />);
 
     expect(mockAnalyzeDream).not.toHaveBeenCalled();
-    expect((screen.getByTestId(TID.Button.EditMetadata) as HTMLButtonElement).disabled).toBe(true);
+    expect((screen.getByTestId(TID.Button.EditDream) as HTMLButtonElement).disabled).toBe(true);
     expect((screen.getByTestId(TID.Button.DreamDelete) as HTMLButtonElement).disabled).toBe(true);
   });
 
@@ -1153,7 +1157,7 @@ describe('journal detail saved confirmation route', () => {
     expect(screen.getByTestId(TID.Modal.JournalIllustrationFullscreen)).toBeTruthy();
     await act(async () => { fireEvent.click(screen.getByTestId(TID.Button.JournalIllustrationClose)); });
     expect(screen.queryByTestId(TID.Modal.JournalIllustrationFullscreen)).toBeNull();
-    await act(async () => { fireEvent.click(screen.getByTestId(TID.Button.EditMetadata)); });
+    await act(async () => { fireEvent.click(screen.getByTestId(TID.Button.EditDream)); });
     expect((screen.getByTestId(TID.Input.DreamTitle) as HTMLInputElement).value).toBe(title);
     expect(mockUpdateDream).not.toHaveBeenCalled();
   });
@@ -1214,14 +1218,27 @@ describe('journal detail saved confirmation route', () => {
     expect(screen.getByTestId(TID.Input.DreamTitle)).toBeTruthy();
   });
 
-  it('names transcript editing actions and cancels without writing the dream', () => {
+  it('edits the name and the story from one control and cancels without writing the dream', () => {
     render(<JournalDetailScreen />);
-    fireEvent.click(screen.getByTestId(TID.Button.EditTranscript));
+    expect(screen.queryByTestId(TID.Button.EditMetadata)).toBeNull();
+    expect(screen.queryByTestId(TID.Button.EditTranscript)).toBeNull();
+    fireEvent.click(screen.getByTestId(TID.Button.EditDream));
+    expect(screen.getByTestId(TID.Input.DreamTitle)).toBeTruthy();
     expect(screen.getByTestId(TID.Input.DreamTranscript).getAttribute('aria-label')).toBe('recording.placeholder.accessibility');
-    expect(screen.getByTestId(TID.Button.EditTranscript).getAttribute('aria-label')).toBe('journal.detail.save_edit');
-    fireEvent.click(screen.getByRole('button', { name: 'common.cancel' }));
+    fireEvent.click(screen.getByTestId(TID.Button.CancelDreamEdit));
     expect(screen.queryByTestId(TID.Input.DreamTranscript)).toBeNull();
     expect(mockUpdateDream).not.toHaveBeenCalled();
+  });
+
+  it('saves the name and the story together in one write', async () => {
+    render(<JournalDetailScreen />);
+    fireEvent.click(screen.getByTestId(TID.Button.EditDream));
+    fireEvent.change(screen.getByTestId(TID.Input.DreamTitle), { target: { value: 'A new name' } });
+    fireEvent.change(screen.getByTestId(TID.Input.DreamTranscript), { target: { value: 'A new story' } });
+    await act(async () => { fireEvent.click(screen.getByTestId(TID.Button.SaveDreamEdit)); });
+    expect(mockUpdateDream).toHaveBeenCalledTimes(1);
+    expect(mockUpdateDream).toHaveBeenCalledWith(expect.objectContaining({ title: 'A new name', transcript: 'A new story' }));
+    expect(screen.queryByTestId(TID.Component.DreamEditor)).toBeNull();
   });
 
   it('makes unknown analysis access explicit before the click', () => {
