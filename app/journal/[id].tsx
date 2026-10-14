@@ -117,7 +117,7 @@ import {
   View,
 } from 'react-native';
 import Animated, {
-  Extrapolation, interpolate, useAnimatedReaction, useAnimatedStyle, useReducedMotion, useSharedValue, withTiming,
+  interpolate, useAnimatedReaction, useAnimatedStyle, useReducedMotion, useSharedValue, withTiming,
 } from 'react-native-reanimated';
 import { scheduleOnRN } from 'react-native-worklets';
 import { useHeaderScroll } from '@/components/ui/headerStretch';
@@ -262,26 +262,6 @@ const RUNNING_HEAD_TOP = 12;
 /** How far the reader scrolls back up before the way back returns, and on before it leaves. */
 const RETURN_REVEAL = 24;
 const RETURN_CONCEAL = 8;
-
-/**
- * The page's top margin, under the clock: clear at rest, so the running head lies on the
- * open page, and paper once the reading scrolls up into it, so no line runs under the
- * clock; its lower edge fades, as a line does going under a margin.
- */
-function PageTopMargin({ height }: { height: number }) {
-  const scrollY = useHeaderScrollY();
-  const { colors, mode } = useTheme();
-  const ground = getNoctaliaDesignTokens(colors, mode).screen.background;
-  const veil = useAnimatedStyle(() => ({
-    opacity: interpolate(scrollY.get(), [0, 32], [0, 1], Extrapolation.CLAMP),
-  }));
-  return (
-    <Animated.View pointerEvents="none" style={[{ position: 'absolute', top: 0, left: 0, right: 0, height: height + 16 }, veil]}>
-      <View className="overflow-hidden bg-ink" style={{ height }}><JournalPaper /></View>
-      <LinearGradient colors={[ground, `${ground}00`]} style={{ height: 16 }} />
-    </Animated.View>
-  );
-}
 
 /**
  * The way back to the journal once the running head has gone up with the page: away
@@ -3071,7 +3051,6 @@ const JournalDetailContent = memo(function JournalDetailContent({ dream, folio }
             </View>
         </ScrollView>
 
-        <PageTopMargin height={insets.top} />
         <JournalReturnTab top={insets.top + 6} onPress={handleBackPress} />
         {!isEditing && !isEditingTranscript && (!hasIllustratedCover || readingActionVisible) ? (
           <View testID="component.dreamDetail.actionDock"
