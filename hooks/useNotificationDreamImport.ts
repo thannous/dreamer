@@ -10,12 +10,15 @@ import { useAppState } from '@/hooks/useAppState';
 import { useTranslation } from '@/hooks/useTranslation';
 import { buildDraftDream } from '@/lib/dreamUtils';
 import { GuestDreamLimitError } from '@/lib/errors';
+import { canImportNotificationDream, notificationDreamScope } from '@/lib/notificationDreamCapture';
 import { createScopedLogger } from '@/lib/logger';
 import {
+  claimWaitingNotificationDreams,
   readNotificationDreamInbox,
   removeImportedNotificationDreams,
   subscribeNotificationDreamInbox,
 } from '@/services/notificationDreamInbox';
+import { registerDreamCaptureBackgroundTask } from '@/services/notificationDreamTask';
 
 const log = createScopedLogger('[NotificationDreamImport]');
 
@@ -28,7 +31,8 @@ const log = createScopedLogger('[NotificationDreamImport]');
 export function useNotificationDreamImport(): void {
   const { dreams, loaded } = useDreamsData();
   const { addDream } = useDreamsActions();
-  const { loading: authLoading } = useAuth();
+  const { user, loading: authLoading } = useAuth();
+  const scope = notificationDreamScope(user?.id);
   const { t } = useTranslation();
   const dreamsRef = useRef(dreams);
   const importingRef = useRef(false);
@@ -52,8 +56,10 @@ export function useNotificationDreamImport(): void {
         rerunRef.current = false;
         const captures = await readNotificationDreamInbox();
         const imported: string[] = [];
+        const waiting: string[] = [];
         let blockedByGuestLimit = false;
         for (const capture of captures) {
+          if (!canImportNotificationDream(capture, scope)) continue;
           const alreadySaved = dreamsRef.current.some(
             (dream) => dream.clientRequestId === capture.clientRequestId
           );
@@ -71,12 +77,16 @@ export function useNotificationDreamImport(): void {
               // next launch or return to the app tries again.
               log.warn('Unable to save a dictated dream', error);
               if (error instanceof GuestDreamLimitError) blockedByGuestLimit = true;
+              waiting.push(capture.id);
               continue;
             }
           }
           imported.push(capture.id);
         }
         await removeImportedNotificationDreams(imported);
+        // A reply that has to wait stays with this journal, even if another
+        // account signs in on the device before the next try.
+        await claimWaitingNotificationDreams(waiting, scope);
         // The reply notice already said the dream was saved: it is, on this
         // device, but a full guest journal keeps it out of the journal. Say so
         // once per launch, while the user is looking at the app.
@@ -97,7 +107,7 @@ export function useNotificationDreamImport(): void {
     } finally {
       importingRef.current = false;
     }
-  }, [addDream, ready, t]);
+  }, [addDream, ready, scope, t]);
 
   useEffect(() => {
     void importPending();
@@ -111,6 +121,7 @@ export function useNotificationDreamImport(): void {
   );
 
   useAppState(() => {
+    void registerDreamCaptureBackgroundTask();
     void importPending();
   });
 }

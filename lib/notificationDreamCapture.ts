@@ -30,6 +30,11 @@ export type NotificationDreamCapture = {
   capturedAt: number;
   /** Reused as the dream's idempotency key, so a retried import never duplicates. */
   clientRequestId: string;
+  /**
+   * The journal a failed import was meant for (`guest` or `user:<id>`). Set
+   * only when a reply has to wait, so it never lands in another account.
+   */
+  ownerScope?: string;
 };
 
 /** The subset of an expo-notifications response this feature reads. */
@@ -96,7 +101,8 @@ function isCapture(value: unknown): value is NotificationDreamCapture {
     typeof entry.capturedAt === 'number' &&
     Number.isFinite(entry.capturedAt) &&
     typeof entry.clientRequestId === 'string' &&
-    entry.clientRequestId.length > 0
+    entry.clientRequestId.length > 0 &&
+    (entry.ownerScope === undefined || typeof entry.ownerScope === 'string')
   );
 }
 
@@ -155,5 +161,36 @@ export function removeNotificationDreamCaptures(
   return {
     captures: inbox.captures.filter((entry) => !removed.has(entry.id)),
     seenIds: inbox.seenIds,
+  };
+}
+
+export const GUEST_DREAM_SCOPE = 'guest';
+
+export function notificationDreamScope(userId: string | null | undefined): string {
+  return userId ? `user:${userId}` : GUEST_DREAM_SCOPE;
+}
+
+/**
+ * A waiting reply goes only to the journal it was meant for. Like the guest
+ * journal itself, a guest's reply moves to the account that signs in here.
+ */
+export function canImportNotificationDream(capture: NotificationDreamCapture, scope: string): boolean {
+  if (!capture.ownerScope || capture.ownerScope === scope) return true;
+  return capture.ownerScope === GUEST_DREAM_SCOPE && scope !== GUEST_DREAM_SCOPE;
+}
+
+/** Ties replies that could not be imported yet to the journal they were meant for. */
+export function claimNotificationDreamCaptures(
+  inbox: NotificationDreamInbox,
+  ids: readonly string[],
+  scope: string
+): NotificationDreamInbox {
+  const claimed = new Set(ids);
+  if (!inbox.captures.some((entry) => claimed.has(entry.id) && !entry.ownerScope)) return inbox;
+  return {
+    ...inbox,
+    captures: inbox.captures.map((entry) =>
+      claimed.has(entry.id) && !entry.ownerScope ? { ...entry, ownerScope: scope } : entry
+    ),
   };
 }

@@ -6,6 +6,7 @@ import { generateUUID } from '@/lib/dreamUtils';
 import { logger } from '@/lib/logger';
 import {
   addNotificationDreamCapture,
+  claimNotificationDreamCaptures,
   isDreamCaptureResponse,
   parseDreamCaptureResponse,
   parseNotificationDreamInbox,
@@ -47,6 +48,11 @@ export async function readNotificationDreamInbox(): Promise<NotificationDreamCap
 export async function removeImportedNotificationDreams(ids: readonly string[]): Promise<void> {
   if (ids.length === 0) return;
   await updateInbox((inbox) => ({ inbox: removeNotificationDreamCaptures(inbox, ids), result: undefined }));
+}
+
+export async function claimWaitingNotificationDreams(ids: readonly string[], scope: string): Promise<void> {
+  if (ids.length === 0) return;
+  await updateInbox((inbox) => ({ inbox: claimNotificationDreamCaptures(inbox, ids, scope), result: undefined }));
 }
 
 /** Lets the mounted journal import a reply that arrived while the app was alive. */

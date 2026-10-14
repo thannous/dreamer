@@ -21,10 +21,14 @@ if (Platform.OS === 'android') {
   );
 }
 
+let registered = false;
+
+/** Safe to call on every return to the app: a failed registration is retried. */
 export async function registerDreamCaptureBackgroundTask(): Promise<void> {
-  if (Platform.OS !== 'android') return;
+  if (Platform.OS !== 'android' || registered) return;
   try {
     await Notifications.registerTaskAsync(DREAM_CAPTURE_BACKGROUND_TASK);
+    registered = true;
   } catch (error) {
     if (__DEV__) {
       console.warn('[NotificationDreamTask] Unable to register the reply task', error);

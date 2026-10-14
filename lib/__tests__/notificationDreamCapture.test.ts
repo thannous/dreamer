@@ -1,6 +1,9 @@
 import {
   DICTATE_DREAM_ACTION_ID,
   addNotificationDreamCapture,
+  canImportNotificationDream,
+  claimNotificationDreamCaptures,
+  notificationDreamScope,
   parseDreamCaptureResponse,
   parseNotificationDreamInbox,
   removeNotificationDreamCaptures,
@@ -72,6 +75,25 @@ describe('notification dream capture', () => {
       inbox = addNotificationDreamCapture(inbox, capture).inbox;
     }
     expect(inbox.captures).toHaveLength(60);
+  });
+
+  it('never imports a waiting reply into another account', () => {
+    const capture = parseDreamCaptureResponse(reply(), options(10))!;
+    const accountA = notificationDreamScope('a');
+    const accountB = notificationDreamScope('b');
+    const guest = notificationDreamScope(null);
+
+    const { inbox } = addNotificationDreamCapture({ captures: [], seenIds: [] }, capture);
+    const waitingForA = claimNotificationDreamCaptures(inbox, [capture.id], accountA).captures[0];
+    expect(canImportNotificationDream(waitingForA, accountA)).toBe(true);
+    expect(canImportNotificationDream(waitingForA, accountB)).toBe(false);
+    expect(canImportNotificationDream(waitingForA, guest)).toBe(false);
+
+    // A full guest journal: the reply follows the guest into the account they create.
+    const waitingForGuest = claimNotificationDreamCaptures(inbox, [capture.id], guest).captures[0];
+    expect(canImportNotificationDream(waitingForGuest, accountB)).toBe(true);
+    expect(claimNotificationDreamCaptures({ captures: [waitingForA], seenIds: [] }, [capture.id], accountB).captures[0])
+      .toEqual(waitingForA);
   });
 
   it('keeps valid replies when the stored inbox is partly corrupted', () => {
