@@ -321,7 +321,7 @@ describe('root product composition (real root and DreamsProvider)', () => {
     await mountStartup();
     mockReplace.mockClear();
     const response = {
-      actionIdentifier: 'dictate-dream',
+      actionIdentifier: 'dictateDream',
       userText: 'A train made of glass',
       notification: { date: 1, request: { identifier: 'morning', content: { data: { url: '/recording' } } } },
     };

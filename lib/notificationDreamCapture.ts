@@ -11,8 +11,9 @@
  * No React, Expo, or platform imports - this module is the part tests pin down.
  */
 
-export const DREAM_CAPTURE_CATEGORY_ID = 'dreamer-dream-capture';
-export const DICTATE_DREAM_ACTION_ID = 'dictate-dream';
+// Expo warns that `:` and `-` in a category identifier can break the category.
+export const DREAM_CAPTURE_CATEGORY_ID = 'dreamerDreamCapture';
+export const DICTATE_DREAM_ACTION_ID = 'dictateDream';
 
 /** Headless task that receives Android action replies while the app is not in the foreground. */
 export const DREAM_CAPTURE_BACKGROUND_TASK = 'dreamer-dream-capture-response';

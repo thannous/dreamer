@@ -384,8 +384,9 @@ function RootLayoutNav({
           const response = Notifications.getLastNotificationResponse();
           if (!isLucidTrainer && isDreamCaptureResponse(response)) {
             // A dream dictated from a reminder reply is saved, not opened.
-            Notifications.clearLastNotificationResponse();
+            // Clear the replayable response only once the words are kept.
             await captureDreamFromNotificationResponse(response);
+            Notifications.clearLastNotificationResponse();
           } else if (response?.notification) {
             await enqueueNotification(response.notification);
           }
@@ -795,14 +796,13 @@ function RootLayoutNav({
     if (Platform.OS !== 'web') {
       const subscription = Notifications.addNotificationResponseReceivedListener((response) => {
         if (!isLucidTrainer && isDreamCaptureResponse(response)) {
-          try {
-            Notifications.clearLastNotificationResponse();
-          } catch {
-            // The capture below is idempotent; a stale last response is harmless.
-          }
-          void captureDreamFromNotificationResponse(response).catch((error) => {
-            if (__DEV__) console.warn('[RootLayoutNav] Unable to keep a dictated dream', error);
-          });
+          // Clear the replayable response only once the words are kept, so a
+          // failed write is retried from the last response at next launch.
+          void captureDreamFromNotificationResponse(response)
+            .then(() => Notifications.clearLastNotificationResponse())
+            .catch((error) => {
+              if (__DEV__) console.warn('[RootLayoutNav] Unable to keep a dictated dream', error);
+            });
           return;
         }
         void enqueueNotification(response.notification);
