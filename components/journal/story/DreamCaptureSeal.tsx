@@ -51,7 +51,10 @@ const SAVED_LABEL_LINE = 18;
 const NAME_LEFT = 24;
 const NAME_RIGHT = 64;
 /** The name's size on the journal page, before it rises to the dream page's own. */
-const BOOK_NAME_SIZE = 15;
+const BOOK_NAME_SIZE = 17;
+/** The signs on the journal page, on screen: each sign's size, and the gap between their medals and the ring. */
+const BOOK_SIGN = 18;
+const BOOK_SIGN_GAP = 12;
 /** The pen draws the medallion's ring in this many strokes. */
 const RING_STROKES = 24;
 /** The lamp is warm light in both themes. */
@@ -218,7 +221,15 @@ export function DreamCaptureSeal({ name, mark, provisionalName, date, previousPa
   const small = BOOK_NAME_SIZE / nameStyle.fontSize;
   // The view comes close enough for the name to fit the page's text measure at that size.
   const push = Math.min(zoom * 0.6, Math.max(1, (small * target.width) / (page.w * 0.8)));
-  const book = { x: width / 2 - push * page.w * 0.4, y: medallionY + push * ring.r + 24 };
+  // The seal is struck at the saved moment's size and shown at the page's scale; on the
+  // journal page its signs ride a wider orbit, larger, so they read there, clear of the name.
+  const onTheJournal = push / zoom;
+  const bookSign = BOOK_SIGN / onTheJournal;
+  const bookOrbit = (push * ring.r + BOOK_SIGN * 0.73 + BOOK_SIGN_GAP) / onTheJournal;
+  const book = {
+    x: width / 2 - push * page.w * 0.4,
+    y: medallionY + bookOrbit * onTheJournal + BOOK_SIGN * 0.73 + 12,
+  };
   const pen = journalWidth * PEN_SCALE * push;
 
   // The first act's length: the page turn only when there is a page to turn.
@@ -507,7 +518,7 @@ export function DreamCaptureSeal({ name, mark, provisionalName, date, previousPa
 
     // The struck seal is laid out at the saved moment's size and scaled with the page, so
     // it stays on the ring through the dive and arrives crisp at its own size.
-    const sealScale: CSSAnimationKeyframes<ViewStyle> = { '0%': { transform: [{ scale: push / zoom }] } };
+    const sealScale: CSSAnimationKeyframes<ViewStyle> = { '0%': { transform: [{ scale: onTheJournal }] } };
     for (let step = 0; step <= steps; step += 1) {
       const scale = push * (zoom / push) ** smoothstep(step / steps);
       sealScale[at(diving((CLOSE.dive * step) / steps))] = { transform: [{ scale: scale / zoom }], animationTimingFunction: 'linear' };
@@ -579,7 +590,7 @@ export function DreamCaptureSeal({ name, mark, provisionalName, date, previousPa
         '100%': { opacity: 0.45, transform: [{ scale: 1 }] },
       }),
     };
-  }, [close, closing, dive, nameStart.x, nameStart.y, nameStyle.lineHeight, nibAt, ms, onTheBook, push, small, zoom]);
+  }, [close, closing, dive, nameStart.x, nameStart.y, nameStyle.lineHeight, nibAt, ms, onTheBook, onTheJournal, push, small, zoom]);
   const sealBox = { left: width / 2 - SEAL_MEASURES.orbit / 2, top: medallionY - SEAL_MEASURES.orbit / 2 };
   const emblemBox = {
     position: 'absolute' as const,
@@ -755,7 +766,8 @@ export function DreamCaptureSeal({ name, mark, provisionalName, date, previousPa
         <Animated.View testID="component.dreamCaptureSeal.seal" className="absolute" style={[{
           left: sealBox.left, top: sealBox.top, width: SEAL_MEASURES.orbit, height: SEAL_MEASURES.orbit,
         }, closingMotion.seal] as StyleProp<ViewStyle>}>
-          <SealChoice mark={closing.mark} ink={ink} choice={ms(close.choice)} contact={ms(close.contact)} gold={false} />
+          <SealChoice mark={closing.mark} ink={ink} choice={ms(close.choice)} contact={ms(close.contact)} gold={false}
+            sign={bookSign} orbit={bookOrbit} />
           {closing.mark ? (
             <>
               <Animated.View className="absolute rounded-full" style={[{
