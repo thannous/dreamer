@@ -1948,6 +1948,18 @@ describe('Recording screen', () => {
     expect(mockReplace).not.toHaveBeenCalled();
   });
 
+  it.each(['pending', 'failed'] as const)('reopens a dream whose analysis is %s so its page follows or retries it', async (status) => {
+    mockPendingRecordingIntent = { entryId: 'pending-entry', savedDreamId: 42, phase: 'analysis_requested' };
+    mockDreams = [{
+      ...buildDream('dream read in the background', 42),
+      analysisStatus: status,
+      analysisRequestId: '00000000-0000-4000-8000-000000000042',
+    }];
+    render(<RecordingScreen />);
+    await waitFor(() => expect(mockReplace).toHaveBeenCalledWith({ pathname: '/journal/[id]', params: { id: '42' } }));
+    expect(mockTransitionOnboarding).not.toHaveBeenCalledWith({ type: 'CLEAR_PENDING_INTENT' });
+  });
+
   it('asks in the journal whether to analyse the dream, and opens it to be analysed on yes', async () => {
     render(<RecordingScreen />);
     await awaitEditorReady();

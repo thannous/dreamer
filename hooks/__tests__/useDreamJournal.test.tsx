@@ -7,7 +7,6 @@ import { beforeEach, describe, expect, it, jest } from '@jest/globals';
 import type { GuestDreamMigrationOwner, DreamAnalysis, DreamListReadResult, DreamMutation, PendingImageJob, QuotaStatus } from '../../lib/types';
 import { GuestDreamLimitError, QuotaError, QuotaErrorCode } from '../../lib/errors';
 import { getDreamAnalysisFreshness, hashDreamTranscript } from '../../lib/dreamAnalysisFreshness';
-import { getDreamIdentityKey } from '../../lib/dreamIdentity';
 import { markDreamNamed } from '../../lib/dreamNaming';
 
 type AnyFunction = (...args: any[]) => any;
@@ -1559,7 +1558,7 @@ describe('useDreamJournal', () => {
       // Its own id: the names given on arrival last for the session.
       const namedDream = buildDream({ id: 77, title: 'First words', analysisStatus: 'none', isAnalyzed: false, theme: undefined });
       setSavedDreams([namedDream]);
-      markDreamNamed(getDreamIdentityKey(namedDream));
+      markDreamNamed(namedDream);
 
       const { result } = await renderLoadedDreamJournal();
 
@@ -1582,7 +1581,7 @@ describe('useDreamJournal', () => {
       // Its own id: the names given on arrival last for the session.
       const standIn = buildDream({ id: 78, title: 'First words', analysisStatus: 'none', isAnalyzed: false, theme: undefined });
       setSavedDreams([standIn]);
-      markDreamNamed(getDreamIdentityKey(standIn), true);
+      markDreamNamed(standIn, true);
 
       const { result } = await renderLoadedDreamJournal();
 
@@ -2867,7 +2866,8 @@ describe('useDreamJournal', () => {
       expect(mockUpdateDreamInSupabase.mock.calls[1]?.[0]).toEqual(
         expect.objectContaining({
           revisionId: 'revision-pending-acked',
-          title: 'Analyzed Title',
+          // Classed before its reading, the dream keeps its name.
+          title: 'Test Dream',
           interpretation: 'Deep meaning',
           analysisStatus: 'done',
           isAnalyzed: true,

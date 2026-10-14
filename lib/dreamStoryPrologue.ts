@@ -1,3 +1,4 @@
+import { matchesDreamTarget, type DreamTarget } from '@/lib/dreamIdentity';
 import type { DreamTheme } from '@/lib/types';
 
 /**
@@ -16,18 +17,23 @@ export type DreamStoryHandoffName = {
   mark?: { theme: DreamTheme; legend: string };
 };
 
-let pending: { key: string; expiresAt: number; name?: DreamStoryHandoffName } | null = null;
+type Target = Exclude<DreamTarget, number>;
 
-export function markDreamStoryHandoff(key: string, name?: DreamStoryHandoffName, now = Date.now()): void {
-  pending = { key, expiresAt: now + HANDOFF_TTL_MS, ...(name ? { name } : null) };
+// The dream is held by its target, not its identity key: synchronization can give it its
+// remote id while the seal plays, which changes the key but not the dream.
+let pending: { target: Target; expiresAt: number; name?: DreamStoryHandoffName } | null = null;
+
+export function markDreamStoryHandoff(dream: Target, name?: DreamStoryHandoffName, now = Date.now()): void {
+  const target = { id: dream.id, remoteId: dream.remoteId, clientRequestId: dream.clientRequestId };
+  pending = { target, expiresAt: now + HANDOFF_TTL_MS, ...(name ? { name } : null) };
 }
 
 /** Whether the seal has just handed this dream's window over. */
-export function hasDreamStoryHandoff(key: string, now = Date.now()): boolean {
-  return pending !== null && pending.key === key && pending.expiresAt > now;
+export function hasDreamStoryHandoff(dream: Target, now = Date.now()): boolean {
+  return pending !== null && pending.expiresAt > now && matchesDreamTarget(dream, pending.target);
 }
 
 /** The name the seal has just written for this dream, if it handed the dream over. */
-export function getDreamStoryHandoffName(key: string, now = Date.now()): DreamStoryHandoffName | undefined {
-  return hasDreamStoryHandoff(key, now) ? pending?.name : undefined;
+export function getDreamStoryHandoffName(dream: Target, now = Date.now()): DreamStoryHandoffName | undefined {
+  return hasDreamStoryHandoff(dream, now) ? pending?.name : undefined;
 }

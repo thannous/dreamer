@@ -49,7 +49,7 @@ import {
 } from '@/lib/dreamUtils';
 import { isMockModeEnabled } from '@/lib/env';
 import { DreamPersistenceError } from '@/lib/dreamStorageRead';
-import { getDreamIdentityKey } from '@/lib/dreamIdentity';
+import { getDreamIdentityKey, resolveDreamTarget } from '@/lib/dreamIdentity';
 import { getDreamThemeLabel, getDreamTypeLabel } from '@/lib/dreamLabels';
 import { markDreamNamed } from '@/lib/dreamNaming';
 import { markDreamStoryHandoff } from '@/lib/dreamStoryPrologue';
@@ -726,7 +726,10 @@ function RecordingScreen() {
   const firstGuestReading = readingOffered && !user && quotaTier === 'guest' && (quotaUsage?.analysis?.used ?? 0) === 0;
   /** The dream being sealed until its page takes over, null otherwise. */
   const [sealing, setSealing] = useState<{
+    /** Its pre-analysis's key, as the save registered it. */
     identity: string;
+    /** The dream itself, still found once synchronization gives it its remote id. */
+    target: Pick<DreamAnalysis, 'id' | 'remoteId' | 'clientRequestId'>;
     /** Its first words, which name it if the pre-analysis does not in time. */
     provisionalName: string;
     /** The journal held a dream before this one. */
@@ -754,7 +757,7 @@ function RecordingScreen() {
   // first words once it has ended without doing so (a moment after, as its result reaches
   // the journal just behind its end).
   const sealedDream = useMemo(
-    () => (sealing ? dreams.find((dream) => getDreamIdentityKey(dream) === sealing.identity) : undefined),
+    () => (sealing ? resolveDreamTarget(dreams, sealing.target) : undefined),
     [dreams, sealing]
   );
   const [preAnalysisOver, setPreAnalysisOver] = useState(false);
@@ -785,12 +788,12 @@ function RecordingScreen() {
   const sealNamed = useCallback((title: string, provisional: boolean, mark: SealMark | null) => {
     if (!sealing) return;
     sealWrote.current = { title, provisional, ...(mark ? { mark } : null) };
-    markDreamNamed(sealing.identity, provisional);
+    markDreamNamed(sealing.target, provisional);
   }, [sealing]);
   const sealOpened = useCallback((read: boolean) => {
     if (!sealing) return;
     // The seal ends on the saved moment's window and the name in its place: the page takes them over as they are.
-    markDreamStoryHandoff(sealing.identity, sealWrote.current);
+    markDreamStoryHandoff(sealing.target, sealWrote.current);
     sealing.open(read || sealing.readAtOnce);
     sealTimerRef.current = setTimeout(() => {
       sealTimerRef.current = null;
@@ -814,7 +817,8 @@ function RecordingScreen() {
     restoredPendingIntentRef.current = pending.entryId;
     // The capture seal asks about the reading and opens the page; a dream already read
     // leaves nothing to confirm, so the step ends here instead of sending the reader back.
-    if (savedDream.isAnalyzed || savedDream.analysisStatus !== 'none' || savedDream.analysisRequestId) {
+    // A reading still on its way or failed reopens its page, which follows or retries it.
+    if (savedDream.isAnalyzed || savedDream.analysisStatus === 'done') {
       void transitionOnboarding({ type: 'CLEAR_PENDING_INTENT' }).catch(() => {});
       return;
     }
@@ -1257,6 +1261,7 @@ function RecordingScreen() {
         setPreAnalysisOver(false);
         setSealing({
           identity: getDreamIdentityKey(savedDream),
+          target: { id: savedDream.id, remoteId: savedDream.remoteId, clientRequestId: savedDream.clientRequestId },
           provisionalName: savedDream.title || t('journal.detail.untitled_dream'),
           previousPage: dreams.some((dream) => dream.id !== savedDream.id),
           date: formatDreamStamp(savedDream.id),

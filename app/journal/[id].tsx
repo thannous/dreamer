@@ -416,12 +416,12 @@ const JournalDetailContent = memo(function JournalDetailContent({ dream, folio }
   // cover with a toast. Decided once so the confirmation is never shown twice.
   const [opensOnSavedMoment] = useState(() => isSavedArrival && !dream?.imageUrl?.trim());
   // Arriving from the capture seal, the window is already open: it is taken over, not opened again.
-  const [windowHandedOver] = useState(() => opensOnSavedMoment && !!dream && hasDreamStoryHandoff(getDreamIdentityKey(dream)));
+  const [windowHandedOver] = useState(() => opensOnSavedMoment && !!dream && hasDreamStoryHandoff(dream));
   // First words that stood in for a name stay shown on this visit as they were written: a
   // pre-analysis that renames the dream later shows from its next opening, not under the
   // reader's eyes. Opening the name to edit it lets the current one show.
   const [heldTitle, setHeldTitle] = useState<string | null>(() => {
-    const written = windowHandedOver && dream ? getDreamStoryHandoffName(getDreamIdentityKey(dream)) : undefined;
+    const written = windowHandedOver && dream ? getDreamStoryHandoffName(dream) : undefined;
     return written?.provisional ? written.title : null;
   });
   // Act III: an illustration present when the dream is first shown opens the page as its
@@ -1953,7 +1953,7 @@ const JournalDetailContent = memo(function JournalDetailContent({ dream, folio }
     /** Struck by the capture seal, which named the dream too: the page shows both as left. */
     settled?: boolean;
   }>(() => {
-    const sealed = windowHandedOver && dream ? getDreamStoryHandoffName(getDreamIdentityKey(dream)) : undefined;
+    const sealed = windowHandedOver && dream ? getDreamStoryHandoffName(dream) : undefined;
     if (sealed?.mark) return { stage: 'named', title: sealed.title, seal: sealed.mark, settled: true };
     return { stage: opensOnSavedMoment ? 'waiting' : 'named' };
   });
@@ -1976,11 +1976,14 @@ const JournalDetailContent = memo(function JournalDetailContent({ dream, folio }
     setNaming({ stage: showSavedMoment ? 'striking' : windowHandedOver ? 'named' : 'writing', title, seal });
     if (!seal && !windowHandedOver) setHeldTitle(title);
   }
-  const namedIdentity = naming.title && dream ? getDreamIdentityKey(dream) : null;
+  const namedDream = useMemo(() => (naming.title && dream
+    ? { id: dream.id, remoteId: dream.remoteId, clientRequestId: dream.clientRequestId }
+    : null
+  ), [naming.title, dream?.id, dream?.remoteId, dream?.clientRequestId]); // eslint-disable-line react-hooks/exhaustive-deps
   const namedProvisionally = !naming.seal;
   useEffect(() => {
-    if (namedIdentity) markDreamNamed(namedIdentity, namedProvisionally);
-  }, [namedIdentity, namedProvisionally]);
+    if (namedDream) markDreamNamed(namedDream, namedProvisionally);
+  }, [namedDream, namedProvisionally]);
   useEffect(() => {
     if (naming.stage !== 'striking') return;
     const timer = setTimeout(() => setNaming((current) => ({ ...current, stage: windowHandedOver ? 'named' : 'writing' })),
