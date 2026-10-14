@@ -50,7 +50,7 @@ export async function removeImportedNotificationDreams(ids: readonly string[]): 
   await updateInbox((inbox) => ({ inbox: removeNotificationDreamCaptures(inbox, ids), result: undefined }));
 }
 
-export async function claimWaitingNotificationDreams(ids: readonly string[], scope: string): Promise<void> {
+export async function claimNotificationDreams(ids: readonly string[], scope: string): Promise<void> {
   if (ids.length === 0) return;
   await updateInbox((inbox) => ({ inbox: claimNotificationDreamCaptures(inbox, ids, scope), result: undefined }));
 }

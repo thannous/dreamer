@@ -13,7 +13,7 @@ import { GuestDreamLimitError } from '@/lib/errors';
 import { canImportNotificationDream, notificationDreamScope } from '@/lib/notificationDreamCapture';
 import { createScopedLogger } from '@/lib/logger';
 import {
-  claimWaitingNotificationDreams,
+  claimNotificationDreams,
   readNotificationDreamInbox,
   removeImportedNotificationDreams,
   subscribeNotificationDreamInbox,
@@ -54,12 +54,18 @@ export function useNotificationDreamImport(): void {
     try {
       do {
         rerunRef.current = false;
-        const captures = await readNotificationDreamInbox();
+        const captures = (await readNotificationDreamInbox()).filter((capture) =>
+          canImportNotificationDream(capture, scope)
+        );
+        // Tie each reply to this journal before saving it, so a failed save or
+        // cleanup never leaves it open to another account signing in here.
+        await claimNotificationDreams(
+          captures.filter((capture) => !capture.ownerScope).map((capture) => capture.id),
+          scope
+        );
         const imported: string[] = [];
-        const waiting: string[] = [];
         let blockedByGuestLimit = false;
         for (const capture of captures) {
-          if (!canImportNotificationDream(capture, scope)) continue;
           const alreadySaved = dreamsRef.current.some(
             (dream) => dream.clientRequestId === capture.clientRequestId
           );
@@ -77,16 +83,12 @@ export function useNotificationDreamImport(): void {
               // next launch or return to the app tries again.
               log.warn('Unable to save a dictated dream', error);
               if (error instanceof GuestDreamLimitError) blockedByGuestLimit = true;
-              waiting.push(capture.id);
               continue;
             }
           }
           imported.push(capture.id);
         }
         await removeImportedNotificationDreams(imported);
-        // A reply that has to wait stays with this journal, even if another
-        // account signs in on the device before the next try.
-        await claimWaitingNotificationDreams(waiting, scope);
         // The reply notice already said the dream was saved: it is, on this
         // device, but a full guest journal keeps it out of the journal. Say so
         // once per launch, while the user is looking at the app.

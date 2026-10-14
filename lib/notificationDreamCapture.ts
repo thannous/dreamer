@@ -31,8 +31,8 @@ export type NotificationDreamCapture = {
   /** Reused as the dream's idempotency key, so a retried import never duplicates. */
   clientRequestId: string;
   /**
-   * The journal a failed import was meant for (`guest` or `user:<id>`). Set
-   * only when a reply has to wait, so it never lands in another account.
+   * The journal the reply belongs to (`guest` or `user:<id>`), set by the
+   * first journal that tries to import it, so it never lands in another account.
    */
   ownerScope?: string;
 };
@@ -179,7 +179,7 @@ export function canImportNotificationDream(capture: NotificationDreamCapture, sc
   return capture.ownerScope === GUEST_DREAM_SCOPE && scope !== GUEST_DREAM_SCOPE;
 }
 
-/** Ties replies that could not be imported yet to the journal they were meant for. */
+/** Ties replies to the journal about to import them; an existing owner is kept. */
 export function claimNotificationDreamCaptures(
   inbox: NotificationDreamInbox,
   ids: readonly string[],
