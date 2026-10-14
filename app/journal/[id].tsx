@@ -16,12 +16,14 @@ import { JournalPageTurner, useJournalPageTurnLock } from '@/components/journal/
 import { JournalPaper } from '@/components/journal/JournalPaper';
 import { JournalRunningHead, RUNNING_HEAD_GAP, RUNNING_HEAD_HEIGHT } from '@/components/journal/JournalRunningHead';
 import { Fonts } from '@/constants/theme';
-import { SavedDreamMoment, type SavedDreamPhase } from '@/components/journal/SavedDreamMoment';
+import { SavedDreamMoment, type SavedDreamPhase, type SealMark } from '@/components/journal/SavedDreamMoment';
+import { WrittenTitle } from '@/components/journal/story/WrittenTitle';
 import { DreamPaintedArtwork } from '@/components/journal/story/DreamPaintedArtwork';
 import { DreamPaintingWait } from '@/components/journal/story/DreamPaintingWait';
 import { DREAM_STORY } from '@/components/journal/story/dreamStoryMotion';
 import { WaitingStars } from '@/components/journal/story/WaitingStars';
 import { markDreamStoryEpilogue } from '@/lib/dreamStoryEpilogue';
+import { markDreamNamed } from '@/lib/dreamNaming';
 import { hasDreamStoryHandoff } from '@/lib/dreamStoryPrologue';
 import { DreamShareImage } from '@/components/journal/DreamShareImage';
 import { getImageJobFailure } from '@/lib/imageJobErrors';
@@ -240,7 +242,8 @@ const cropDreamImageToAspect = async (
 /** After the medallion starts to settle, so the dream's own content follows it. */
 const ARRIVAL_REVEAL_DELAY = 360;
 /** On arrival from the capture seal, the next steps wait for the astrolabe to settle. */
-const ARRIVAL_DOCK_DELAY = 1000;
+/** Held back until the naming ends: an entrance that has not started yet. */
+const ARRIVAL_NOT_YET = 60 * 60 * 1000;
 
 /** Staggers the arrival from capture once; every other visit shows sections immediately. */
 function ArrivalReveal({ play, index, className, children }: {
@@ -334,9 +337,13 @@ function JournalReturnTab({ top, onPress }: { top: number; onPress: () => void }
   );
 }
 
-/** On arrival from the seal, the page's secondary details and steps join once the astrolabe has settled. */
-function ArrivalLater({ play, children }: { play: boolean; children: React.ReactNode }) {
-  return play ? <Reveal delay={ARRIVAL_DOCK_DELAY} distance={6}>{children}</Reveal> : <>{children}</>;
+/**
+ * On arrival from the seal, the page's secondary details and steps join once the dream has
+ * been named. Keyed, so their entrance starts afresh then rather than resuming a delay.
+ */
+function ArrivalLater({ play, ready, children }: { play: boolean; ready: boolean; children: React.ReactNode }) {
+  if (!play) return <>{children}</>;
+  return <Reveal key={ready ? 'named' : 'naming'} delay={ready ? 120 : ARRIVAL_NOT_YET} distance={6}>{children}</Reveal>;
 }
 
 function JournalDetailScreen() {
@@ -1901,6 +1908,43 @@ const JournalDetailContent = memo(function JournalDetailContent({ dream, folio }
   const floatingTranscriptBottom = Platform.OS === 'ios' ? 32 : 24;
   const showSavedMoment = opensOnSavedMoment && !hasIllustratedCover && !shouldHideHeroMedia;
 
+  // The arrival names the dream: once the page has come in, the seal is struck with what
+  // the dream is, then its name is written. Both wait a moment at most for a categorization
+  // still on its way; without it the seal stays plain and the page writes the name it has.
+  // Whichever it writes stays the dream's name.
+  const [naming, setNaming] = useState<{ stage: 'waiting' | 'striking' | 'writing' | 'named'; title?: string; seal?: SealMark | null }>(
+    () => ({ stage: opensOnSavedMoment ? 'waiting' : 'named' }));
+  const [namingTime, setNamingTime] = useState<'early' | 'due' | 'late'>('early');
+  const namingWaits = naming.stage === 'waiting';
+  useEffect(() => {
+    if (!namingWaits) return;
+    const due = setTimeout(() => setNamingTime('due'), DREAM_STORY.namingFrom);
+    const late = setTimeout(() => setNamingTime('late'), DREAM_STORY.namingFrom + DREAM_STORY.namingHold);
+    return () => { clearTimeout(due); clearTimeout(late); };
+  }, [namingWaits]);
+  // The name is taken as the dream has it at that moment, during render so nothing stale is written.
+  if (namingWaits && dream && namingTime !== 'early' && (!initialCategorizationPending || namingTime === 'late')) {
+    const legend = [dreamTypeLabel, dreamThemeLabel].filter(Boolean).join(' · ');
+    const seal = showSavedMoment && dream.theme ? { theme: dream.theme, legend } : null;
+    setNaming({ stage: seal ? 'striking' : 'writing', title: dream.title || t('journal.detail.untitled_dream'), seal });
+  }
+  const namedIdentity = naming.title && dream ? getDreamIdentityKey(dream) : null;
+  useEffect(() => {
+    if (namedIdentity) markDreamNamed(namedIdentity);
+  }, [namedIdentity]);
+  useEffect(() => {
+    if (naming.stage !== 'striking') return;
+    const timer = setTimeout(() => setNaming((current) => ({ ...current, stage: 'writing' })),
+      reducedMotion ? 240 : DREAM_STORY.sealStrike);
+    return () => clearTimeout(timer);
+  }, [naming.stage, reducedMotion]);
+  // A name changed meanwhile, by the reader's own hand, ends the ceremony: that name stands.
+  const namingOn = naming.stage !== 'named'
+    && (!naming.title || naming.title === (dream?.title || t('journal.detail.untitled_dream')));
+  const finishNaming = useCallback(() => {
+    setNaming((current) => (current.stage === 'writing' ? { ...current, stage: 'named' } : current));
+  }, []);
+
   if (!dream) {
     return (
       <View className="relative flex-1 overflow-hidden bg-ink">
@@ -2072,6 +2116,14 @@ const JournalDetailContent = memo(function JournalDetailContent({ dream, folio }
               placeholderTextColor={noctalia.text.secondary}
               selectionColor={noctalia.accent.base}
             />
+          ) : namingOn ? (
+            <View className="mb-2">
+              <WrittenTitle key={`dream-heading-${windowSize.fontScale}`}
+                text={naming.title ?? (dream.title || t('journal.detail.untitled_dream'))}
+                writing={naming.stage === 'writing'} onWritten={finishNaming} lineHeight={32 * titleTextScale}
+                style={{ fontSize: 26 * titleTextScale, lineHeight: 32 * titleTextScale }}
+                className="font-display-semibold text-[26px] leading-8 text-ivory" />
+            </View>
           ) : (
             <Text key={`dream-heading-${windowSize.fontScale}`} allowFontScaling={false} style={{ fontSize: 26 * titleTextScale, lineHeight: 32 * titleTextScale }} accessibilityRole="header" className="mb-2 font-display-semibold text-[26px] leading-8 text-ivory">
               {dream.title || t('journal.detail.untitled_dream')}
@@ -2838,6 +2890,7 @@ const JournalDetailContent = memo(function JournalDetailContent({ dream, folio }
           <View ref={readingContentRef} collapsable={false} onLayout={measureTranscriptSection} className="px-4 pb-6">
             {showSavedMoment ? (
               <SavedDreamMoment phase={savedMomentPhase} painting={paintingInProgress} handedOver={windowHandedOver}
+                seal={naming.stage === 'waiting' ? null : naming.seal ?? null}
                 artwork={paintedArtwork} landArtwork={artworkLanding} onOpenArtwork={() => setIsIllustrationFullscreen(true)} />
             ) : null}
             <View onLayout={({ nativeEvent: { layout } }) => {
@@ -2889,7 +2942,7 @@ const JournalDetailContent = memo(function JournalDetailContent({ dream, folio }
               </ArrivalReveal>
             )}
             {opensOnSavedMoment && !isEditing ? (
-              <ArrivalLater play>
+              <ArrivalLater play ready={!namingOn}>
                 <View className="mx-2 mb-7">{renderMetadataChips()}</View>
               </ArrivalLater>
             ) : null}
@@ -3009,7 +3062,7 @@ const JournalDetailContent = memo(function JournalDetailContent({ dream, folio }
                 colors={[`${noctalia.screen.background}00`, noctalia.screen.background]}
                 style={{ position: 'absolute', left: 0, right: 0, top: -32, height: 32 }} />
             ) : null}
-            <ArrivalLater play={opensOnSavedMoment}>{renderDetailActionCard()}</ArrivalLater>
+            <ArrivalLater play={opensOnSavedMoment} ready={!namingOn}>{renderDetailActionCard()}</ArrivalLater>
           </View>
         ) : null}
 

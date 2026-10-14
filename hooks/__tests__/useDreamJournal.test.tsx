@@ -7,6 +7,8 @@ import { beforeEach, describe, expect, it, jest } from '@jest/globals';
 import type { GuestDreamMigrationOwner, DreamAnalysis, DreamListReadResult, DreamMutation, PendingImageJob, QuotaStatus } from '../../lib/types';
 import { GuestDreamLimitError, QuotaError, QuotaErrorCode } from '../../lib/errors';
 import { getDreamAnalysisFreshness, hashDreamTranscript } from '../../lib/dreamAnalysisFreshness';
+import { getDreamIdentityKey } from '../../lib/dreamIdentity';
+import { markDreamNamed } from '../../lib/dreamNaming';
 
 type AnyFunction = (...args: any[]) => any;
 const typedJestFn = <T extends AnyFunction>() => jest.fn() as jest.MockedFunction<T>;
@@ -1553,6 +1555,29 @@ describe('useDreamJournal', () => {
       );
     });
 
+    it('keeps the name a dream was given on arrival when its categorization lands later', async () => {
+      // Its own id: the names given on arrival last for the session.
+      const namedDream = buildDream({ id: 77, title: 'First words', analysisStatus: 'none', isAnalyzed: false, theme: undefined });
+      setSavedDreams([namedDream]);
+      markDreamNamed(getDreamIdentityKey(namedDream));
+
+      const { result } = await renderLoadedDreamJournal();
+
+      await act(async () => {
+        await result.current.applyDreamCategorization(77, {
+          title: 'Late title',
+          theme: 'calm',
+          dreamType: 'Lucid Dream',
+          hasPerson: false,
+          hasAnimal: true,
+        });
+      });
+
+      expect(result.current.dreams[0]).toEqual(
+        expect.objectContaining({ title: 'First words', theme: 'calm', dreamType: 'Lucid Dream', hasAnimal: true })
+      );
+    });
+
     it('does not let late categorization overwrite pending analysis', async () => {
       const pendingDream = buildDream({
         id: 1,
@@ -3032,7 +3057,8 @@ describe('useDreamJournal', () => {
       expect(mockIncrementLocalAnalysisCount).toHaveBeenCalled();
 
       const analyzedDream = result.current.dreams[0];
-      expect(analyzedDream.title).toBe('Analyzed Title');
+      // A guest's dream keeps the name its seal gave it; the reading fills in the rest.
+      expect(analyzedDream.title).toBe('Test Dream');
       expect(analyzedDream.interpretation).toBe('Deep meaning');
       expect(analyzedDream.imageUrl).toBe('');
       expect(analyzedDream.isAnalyzed).toBe(true);
@@ -3082,7 +3108,7 @@ describe('useDreamJournal', () => {
         expect(mockSubmitImageGenerationJob).toHaveBeenCalled();
         expect(result.current.dreams[0]).toEqual(
           expect.objectContaining({
-            title: 'Analyzed Title',
+            title: 'Test Dream',
             interpretation: 'Deep meaning',
             isAnalyzed: true,
             analysisStatus: 'done',
@@ -3383,7 +3409,7 @@ describe('useDreamJournal', () => {
         expect(onProgress).toHaveBeenCalledWith('complete');
         expect(analyzed).toEqual(
           expect.objectContaining({
-            title: 'Analyzed Title',
+            title: 'Test Dream',
             interpretation: 'Deep meaning',
             isAnalyzed: true,
             analysisStatus: 'done',
@@ -3393,7 +3419,7 @@ describe('useDreamJournal', () => {
         expect(analyzed?.imageJobStatus).toBeUndefined();
         expect(result.current.dreams[0]).toEqual(
           expect.objectContaining({
-            title: 'Analyzed Title',
+            title: 'Test Dream',
             interpretation: 'Deep meaning',
             isAnalyzed: true,
             analysisStatus: 'done',
@@ -3445,7 +3471,7 @@ describe('useDreamJournal', () => {
       expect(mockSubmitImageGenerationJob).not.toHaveBeenCalled();
       expect(analyzed).toEqual(
         expect.objectContaining({
-          title: 'Analyzed Title',
+          title: 'Test Dream',
           interpretation: 'Deep meaning',
           isAnalyzed: true,
           analysisStatus: 'done',
@@ -3518,7 +3544,7 @@ describe('useDreamJournal', () => {
       expect(mockSubmitImageGenerationJob).not.toHaveBeenCalled();
       expect(analyzed).toEqual(
         expect.objectContaining({
-          title: 'Analyzed Title',
+          title: 'Test Dream',
           interpretation: 'Deep meaning',
           isAnalyzed: true,
           analysisStatus: 'done',

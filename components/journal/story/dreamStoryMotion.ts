@@ -16,6 +16,8 @@ import { EASE } from '@/components/motion/motion';
  *       words and draws a ring above them. The reader dives into the page until it is the
  *       dream's own page, and the night fills the ring, which is the medallion.
  *   I.  Saved — the astrolabe settles once around a window onto the night sky.
+ *       The seal is struck: the emblem of the dream's theme is pressed into the window and
+ *       its type and theme are engraved around it. Then the page writes the dream's name.
  *   II. Read  — while the analysis runs, its stars light one after another (no fake
  *       progress: the loop says "working", never "73 %"). When the reading lands, the
  *       dream's real symbols ignite as a constellation, the thread draws itself, then the
@@ -50,6 +52,16 @@ export const DREAM_STORY = {
   prologue: 4800,
   /** The seal's veil outlasts the screen transition that covers it. */
   prologueVeilHold: 700,
+  /**
+   * The arrival names the dream: once the page has come in, the seal is struck with what
+   * the dream is, then its name is written. The categorization still on its way is waited
+   * for this long at most.
+   */
+  namingFrom: 700,
+  namingHold: 1000,
+  /** The emblem pressed into the window and the legend engraved around it. */
+  sealStrike: 1150,
+  sealContact: 340,
   /** One pass of the light band across a canvas being painted. */
   paintSweep: 2600,
   /** A landed painting settling into its frame. */
