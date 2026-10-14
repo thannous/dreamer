@@ -5,7 +5,7 @@
   "lang": "es",
   "slug": "alternativa-oniri",
   "title": "Alternativa a Oniri para diario de sueños | Noctalia",
-  "description": "Compara Oniri y Noctalia: sueño lúcido, análisis IA, voz, imágenes, Android y privacidad.",
+  "description": "Compara Oniri y Noctalia para tu diario de sueños: sueño lúcido, análisis IA, voz, imágenes y privacidad. Descubre las diferencias en Android.",
   "robots": "index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1",
   "themeColor": "#0a0514",
   "htmlClass": "",

@@ -248,6 +248,19 @@ jest.mock('@/context/ThemeContext', () => {
 jest.mock('@/context/DreamsContext', () => ({
   useDreamsData: () => mockUseDreamsData(),
 }));
+let mockUser: { id: string } | null = null;
+let mockQuota: {
+  tier: 'guest' | 'free' | 'plus';
+  loading: boolean;
+  error?: Error | null;
+  usage?: { analysis: { used: number; limit: number | null; remaining: number | null } };
+} = { tier: 'guest', loading: false };
+jest.mock('@/context/AuthContext', () => ({
+  useAuth: () => ({ user: mockUser }),
+}));
+jest.mock('@/hooks/useQuota', () => ({
+  useQuota: () => mockQuota,
+}));
 jest.mock('@/lib/analytics', () => ({
   trackProductEvent: (...args: unknown[]) => mockTrackProductEvent(...args),
 }));
@@ -335,6 +348,8 @@ describe('Home Accueil Aujourd’hui', () => {
     mockGetRitualPreference.mockResolvedValue(null);
     mockPush.mockReset();
     mockTrackProductEvent.mockClear();
+    mockUser = null;
+    mockQuota = { tier: 'guest', loading: false };
   });
 
   afterEach(() => {
@@ -560,5 +575,56 @@ describe('Home Accueil Aujourd’hui', () => {
     fireEvent.click(screen.getByTestId(TID.Button.HomeTodayCta));
     expect(mockPush).toHaveBeenCalledWith('/recording');
     setIntervalSpy.mockRestore();
+  });
+
+  it('shows a signed-in free account its remaining analyses and opens the quota offer', async () => {
+    mockUser = { id: 'user-1' };
+    mockQuota = { tier: 'free', loading: false, usage: { analysis: { used: 1, limit: 3, remaining: 2 } } };
+    await renderHome([]);
+
+    const nudge = screen.getByTestId(TID.Button.FreeAnalysesNudge);
+    expect(nudge.textContent).toContain('quota.free_nudge.remaining');
+    fireEvent.click(nudge);
+    expect(mockPush).toHaveBeenCalledWith({ pathname: '/paywall', params: { trigger: 'settings_quota' } });
+  });
+
+  it('opens the analysis limit offer once the included analyses are used', async () => {
+    mockUser = { id: 'user-1' };
+    mockQuota = { tier: 'free', loading: false, usage: { analysis: { used: 3, limit: 3, remaining: 0 } } };
+    await renderHome([]);
+
+    const nudge = screen.getByTestId(TID.Button.FreeAnalysesNudge);
+    expect(nudge.textContent).toContain('quota.free_nudge.empty');
+    fireEvent.click(nudge);
+    expect(mockPush).toHaveBeenCalledWith({ pathname: '/paywall', params: { trigger: 'analysis_limit' } });
+  });
+
+  it('keeps the analyses row away from guests, Plus and unloaded quotas', async () => {
+    mockQuota = { tier: 'guest', loading: false, usage: { analysis: { used: 0, limit: 2, remaining: 2 } } };
+    await renderHome([]);
+    expect(screen.queryByTestId(TID.Button.FreeAnalysesNudge)).toBeNull();
+    cleanup();
+
+    mockUser = { id: 'user-1' };
+    mockQuota = { tier: 'plus', loading: false, usage: { analysis: { used: 9, limit: null, remaining: null } } };
+    await renderHome([]);
+    expect(screen.queryByTestId(TID.Button.FreeAnalysesNudge)).toBeNull();
+    cleanup();
+
+    mockQuota = { tier: 'free', loading: true };
+    await renderHome([]);
+    expect(screen.queryByTestId(TID.Button.FreeAnalysesNudge)).toBeNull();
+  });
+
+  it('hides a stale analyses count after a failed quota refresh', async () => {
+    mockUser = { id: 'user-1' };
+    mockQuota = {
+      tier: 'free',
+      loading: false,
+      error: new Error('offline'),
+      usage: { analysis: { used: 2, limit: 3, remaining: 1 } },
+    };
+    await renderHome([]);
+    expect(screen.queryByTestId(TID.Button.FreeAnalysesNudge)).toBeNull();
   });
 });

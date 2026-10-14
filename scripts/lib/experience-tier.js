@@ -57,21 +57,13 @@ function renderTierInlineScript() {
     "        document.documentElement.dataset.expTier = tier;",
     '        window.__EXP_TIER__ = tier;',
     "        var slowConnection = Boolean(navigator.connection && /(^|-)2g$/.test(navigator.connection.effectiveType || ''));",
+    // The film plays once per session (experience.js writes this key when it
+    // starts). Later visits keep the ink veil until the hero loop plays, but
+    // neither warm the film nor reset the scroll position.
+    '        var introSeen = false;',
+    "        try { introSeen = window.sessionStorage.getItem('noctalia:intro-seen') === '1'; } catch (e) {}",
     "        if (tier !== 'static' && !slowConnection) {",
-    "          if (!location.hash && 'scrollRestoration' in history) history.scrollRestoration = 'manual';",
     "          document.documentElement.classList.add('exp-intro-pending');",
-    // Warm the actual media element before CSS/module downloads finish. The
-    // experience layer adopts it, so range requests and decoded data are reused.
-    "          var intro = document.createElement('video');",
-    '          intro.muted = true; intro.defaultMuted = true; intro.playsInline = true;',
-    "          intro.preload = 'auto';",
-    "          ['webm', 'mp4'].forEach(function (extension) {",
-    "            var source = document.createElement('source');",
-    "            source.src = '/video/intro/noctalia-intro-1280.' + extension;",
-    "            source.type = extension === 'webm' ? 'video/webm; codecs=\"vp9\"' : 'video/mp4';",
-    '            intro.appendChild(source);',
-    '          });',
-    '          window.__expIntroVideo = intro;',
     '          window.__expIntroGateTimer = window.setTimeout(function () {',
     "            document.documentElement.classList.remove('exp-intro-pending');",
     '            if (window.__expIntroVideo) {',
@@ -81,6 +73,25 @@ function renderTierInlineScript() {
     '              window.__expIntroVideo = null;',
     '            }',
     '          }, 12000);',
+    '        }',
+    "        if (tier !== 'static' && !slowConnection && !introSeen) {",
+    "          if (!location.hash && 'scrollRestoration' in history) history.scrollRestoration = 'manual';",
+    // Warm the actual media element before CSS/module downloads finish. The
+    // experience layer adopts it, so range requests and decoded data are reused.
+    // Portrait screens get the portrait cut: same framing as the landscape
+    // master under object-fit: cover, more pixels on phones, ~40% fewer bytes.
+    // experience.js picks the same variant with the same media query.
+    "          var introVariant = window.matchMedia && window.matchMedia('(orientation: portrait)').matches ? '540x960' : '1280';",
+    "          var intro = document.createElement('video');",
+    '          intro.muted = true; intro.defaultMuted = true; intro.playsInline = true;',
+    "          intro.preload = 'auto';",
+    "          ['webm', 'mp4'].forEach(function (extension) {",
+    "            var source = document.createElement('source');",
+    "            source.src = '/video/intro/noctalia-intro-' + introVariant + '.' + extension;",
+    "            source.type = extension === 'webm' ? 'video/webm; codecs=\"vp9\"' : 'video/mp4';",
+    '            intro.appendChild(source);',
+    '          });',
+    '          window.__expIntroVideo = intro;',
     '        }',
     '      })();',
     '    </script>',

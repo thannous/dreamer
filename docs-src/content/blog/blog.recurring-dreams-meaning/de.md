@@ -401,7 +401,7 @@
 <h2 class="font-serif text-2xl text-dream-cream mb-4">Quellen und weiterführende Literatur</h2>
 <ul class="mt-6 space-y-2 text-sm text-gray-400">
 <li><a href="https://theconversation.com/being-chased-losing-your-teeth-or-falling-down-what-science-says-about-recurring-dreams-166006" rel="nofollow noopener noreferrer" target="_blank">The Conversation, „What science says about recurring dreams“</a></li>
-<li><a href="https://asdreams.org/journal/issues/asdj13-4.htm" rel="nofollow noopener noreferrer" target="_blank">Nielsen, Zadra et al. (2003), „The Typical Dreams of Canadian University Students“, <em>Dreaming</em></a></li>
+<li><a href="https://doi.org/10.1023/B:DREM.0000003144.40929.0b" rel="nofollow noopener noreferrer" target="_blank">Nielsen, Zadra et al. (2003), „The Typical Dreams of Canadian University Students“, <em>Dreaming</em></a></li>
 <li><a href="https://doi.org/10.1016/j.concog.2005.02.002" rel="nofollow noopener noreferrer" target="_blank">Zadra, Desjardins und Marcotte (2006), <em>Consciousness and Cognition</em></a></li>
 <li><a href="https://doi.org/10.1037/0022-3514.50.3.612" rel="nofollow noopener noreferrer" target="_blank">Brown und Donderi (1986), <em>Journal of Personality and Social Psychology</em></a></li>
 <li><a href="https://doi.org/10.1007/s11031-017-9656-0" rel="nofollow noopener noreferrer" target="_blank">Weinstein, Campbell und Vansteenkiste (2018), <em>Motivation and Emotion</em></a></li>

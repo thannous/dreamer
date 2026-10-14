@@ -69,6 +69,13 @@ jest.mock('@/lib/breathGuidance', () => ({
   stopBreathVoice: (...args: unknown[]) => mockStopBreathVoice(...(args as [])),
 }));
 
+// The screen sizes its ring from the height between the system bars; expo-router
+// provides the safe area in the app.
+jest.mock('react-native-safe-area-context', () => ({
+  ...jest.requireActual('react-native-safe-area-context'),
+  useSafeAreaInsets: () => ({ top: 0, right: 0, bottom: 0, left: 0 }),
+}));
+
 jest.mock('uniwind', () => ({
   ScopedTheme: ({ children }: React.PropsWithChildren<{ theme: string }>) => children,
   Uniwind: { setTheme: jest.fn() },

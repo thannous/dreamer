@@ -5,7 +5,7 @@
   "lang": "de",
   "slug": "traumlexikon-app",
   "title": "Traumlexikon App für Android | Noctalia",
-  "description": "Durchsuche 150 öffentliche Traumsymbol-Einträge, vergleiche mögliche Bedeutungen und verbinde das Symbol in Noctalia mit deinem gespeicherten Traum.",
+  "description": "Durchsuche 160 öffentliche Traumsymbol-Einträge, vergleiche mögliche Bedeutungen und verbinde das Symbol in Noctalia mit deinem gespeicherten Traum.",
   "robots": "index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1",
   "themeColor": "#0a0514",
   "htmlClass": "",
@@ -23,22 +23,22 @@
   "twitterImage": "https://noctalia.app/img/og/noctalia-de-1200x630.jpg",
   "twitterImageAlt": "Noctalia Traumlexikon App",
   "publishedTime": "2026-06-04T00:00:00+02:00",
-  "modifiedTime": "2026-10-10T00:00:00+02:00",
+  "modifiedTime": "2026-10-11T00:00:00+02:00",
   "author": "Thanh Chau",
   "prevPath": "",
   "nextPath": "",
   "preloadImage": "",
   "jsonLd": [
-    "{\"@context\":\"https://schema.org\",\"@type\":\"WebPage\",\"name\":\"Traumlexikon App für Android\",\"description\":\"Durchsuche 150 öffentliche Traumsymbol-Einträge, vergleiche mögliche Bedeutungen und verbinde das Symbol in Noctalia mit deinem gespeicherten Traum.\",\"url\":\"https://noctalia.app/de/traumlexikon-app\",\"inLanguage\":\"de\",\"dateModified\":\"2026-10-10T00:00:00+02:00\",\"about\":{\"@id\":\"https://noctalia.app/#software\"},\"publisher\":{\"@id\":\"https://noctalia.app/#organization\"}}",
+    "{\"@context\":\"https://schema.org\",\"@type\":\"WebPage\",\"name\":\"Traumlexikon App für Android\",\"description\":\"Durchsuche 160 öffentliche Traumsymbol-Einträge, vergleiche mögliche Bedeutungen und verbinde das Symbol in Noctalia mit deinem gespeicherten Traum.\",\"url\":\"https://noctalia.app/de/traumlexikon-app\",\"inLanguage\":\"de\",\"dateModified\":\"2026-10-11T00:00:00+02:00\",\"about\":{\"@id\":\"https://noctalia.app/#software\"},\"publisher\":{\"@id\":\"https://noctalia.app/#organization\"}}",
     "{\"@context\":\"https://schema.org\",\"@type\":\"BreadcrumbList\",\"itemListElement\":[{\"@type\":\"ListItem\",\"position\":1,\"name\":\"Startseite\",\"item\":\"https://noctalia.app/de/\"},{\"@type\":\"ListItem\",\"position\":2,\"name\":\"Traumlexikon App für Android\",\"item\":\"https://noctalia.app/de/traumlexikon-app\"}]} ",
-    "{\"@context\":\"https://schema.org\",\"@type\":\"FAQPage\",\"mainEntity\":[{\"@type\":\"Question\",\"name\":\"Ist das Noctalia-Traumlexikon kostenlos?\",\"acceptedAnswer\":{\"@type\":\"Answer\",\"text\":\"Ja. Im öffentlichen Web-Lexikon kannst du 150 redaktionelle Traumsymbol-Einträge nach Kategorie oder von A bis Z durchsuchen, ohne die App zu installieren.\"}},{\"@type\":\"Question\",\"name\":\"Hat ein Symbol immer dieselbe Bedeutung?\",\"acceptedAnswer\":{\"@type\":\"Answer\",\"text\":\"Nein. Dasselbe Symbol kann mit unterschiedlichen Erinnerungen, Gefühlen und Situationen zusammenhängen. Nutze das Lexikon als Sammlung von Möglichkeiten und vergleiche sie mit dem ganzen Traum.\"}},{\"@type\":\"Question\",\"name\":\"Was ergänzt die Android-App zum Lexikon?\",\"acceptedAnswer\":{\"@type\":\"Answer\",\"text\":\"Die App ergänzt Sprach- oder Texteingabe, ein privates Journal, KI-Reflexion, Gefühls- und Symbolkontext, generierte Bilder und Anschlussfragen.\"}},{\"@type\":\"Question\",\"name\":\"Kann ein Traumlexikon diagnostizieren oder vorhersagen?\",\"acceptedAnswer\":{\"@type\":\"Answer\",\"text\":\"Nein. Die Einträge sind informative Denkanstöße, keine medizinische Beratung, psychologische Diagnose oder Vorhersage.\"}}]}"
+    "{\"@context\":\"https://schema.org\",\"@type\":\"FAQPage\",\"mainEntity\":[{\"@type\":\"Question\",\"name\":\"Ist das Noctalia-Traumlexikon kostenlos?\",\"acceptedAnswer\":{\"@type\":\"Answer\",\"text\":\"Ja. Im öffentlichen Web-Lexikon kannst du 160 redaktionelle Traumsymbol-Einträge nach Kategorie oder von A bis Z durchsuchen, ohne die App zu installieren.\"}},{\"@type\":\"Question\",\"name\":\"Hat ein Symbol immer dieselbe Bedeutung?\",\"acceptedAnswer\":{\"@type\":\"Answer\",\"text\":\"Nein. Dasselbe Symbol kann mit unterschiedlichen Erinnerungen, Gefühlen und Situationen zusammenhängen. Nutze das Lexikon als Sammlung von Möglichkeiten und vergleiche sie mit dem ganzen Traum.\"}},{\"@type\":\"Question\",\"name\":\"Was ergänzt die Android-App zum Lexikon?\",\"acceptedAnswer\":{\"@type\":\"Answer\",\"text\":\"Die App ergänzt Sprach- oder Texteingabe, ein privates Journal, KI-Reflexion, Gefühls- und Symbolkontext, generierte Bilder und Anschlussfragen.\"}},{\"@type\":\"Question\",\"name\":\"Kann ein Traumlexikon diagnostizieren oder vorhersagen?\",\"acceptedAnswer\":{\"@type\":\"Answer\",\"text\":\"Nein. Die Einträge sind informative Denkanstöße, keine medizinische Beratung, psychologische Diagnose oder Vorhersage.\"}}]}"
   ],
   "activeNav": "resources"
 }
 ---
 <h1 class="font-serif text-4xl md:text-5xl mb-4 text-dream-cream">Traumlexikon App für Android</h1>
-<p class="text-sm text-purple-300/70 mb-6">Aktualisiert am 10. Oktober 2026</p>
-<p class="text-lg text-purple-200/80 leading-relaxed mb-10">Noctalia verbindet ein öffentliches Lexikon mit 150 redaktionellen Traumsymbol-Einträgen und ein Android-Journal. Suche nach möglichen Bedeutungen und setze das Symbol anschließend wieder in den ganzen Traum, deine Gefühle und die Details vom Aufwachen ein.</p>
+<p class="text-sm text-purple-300/70 mb-6">Aktualisiert am 11. Oktober 2026</p>
+<p class="text-lg text-purple-200/80 leading-relaxed mb-10">Noctalia verbindet ein öffentliches Lexikon mit 160 redaktionellen Traumsymbol-Einträgen und ein Android-Journal. Suche nach möglichen Bedeutungen und setze das Symbol anschließend wieder in den ganzen Traum, deine Gefühle und die Details vom Aufwachen ein.</p>
 
 <div class="space-y-8 text-gray-300 leading-relaxed">
   <section class="glass-panel p-8 rounded-2xl border border-white/10 bg-white/5">
@@ -47,7 +47,7 @@
   </section>
 
   <section class="grid md:grid-cols-3 gap-6">
-    <div class="glass-panel p-6 rounded-2xl border border-white/10 bg-white/5"><h2 class="text-xl font-serif text-white mb-3">1. Nachschlagen</h2><p>Durchsuche 150 öffentliche Einträge nach Kategorie oder von A bis Z. Jeder Eintrag zeigt Varianten, Fragen und mögliche Assoziationen.</p></div>
+    <div class="glass-panel p-6 rounded-2xl border border-white/10 bg-white/5"><h2 class="text-xl font-serif text-white mb-3">1. Nachschlagen</h2><p>Durchsuche 160 öffentliche Einträge nach Kategorie oder von A bis Z. Jeder Eintrag zeigt Varianten, Fragen und mögliche Assoziationen.</p></div>
     <div class="glass-panel p-6 rounded-2xl border border-white/10 bg-white/5"><h2 class="text-xl font-serif text-white mb-3">2. Kontext ergänzen</h2><p>Notiere, was das Symbol tat, wie es aussah und was du fühltest. Ein ruhiges Meer und eine Überschwemmung sind nicht dieselbe Szene.</p></div>
     <div class="glass-panel p-6 rounded-2xl border border-white/10 bg-white/5"><h2 class="text-xl font-serif text-white mb-3">3. Vergleichen</h2><p>Speichere den ganzen Traum in der App und achte darauf, welche Symbole in mehreren Einträgen wiederkehren, statt aus einer einzigen Suche Schlüsse zu ziehen.</p></div>
   </section>
@@ -65,6 +65,39 @@
   </section>
 
   <section class="glass-panel p-8 rounded-2xl border border-white/10 bg-white/5">
+    <h2 class="text-2xl font-serif text-white mb-4">Häufige Traumsymbole im Lexikon</h2>
+    <p>Diese zehn Einträge behandeln Bilder, die in Träumen häufig vorkommen. Neben jedem steht ein erstes Detail, das du nach dem Aufwachen notieren kannst.</p>
+    <ul class="list-disc pl-5 mt-4 space-y-2">
+      <li><a href="/de/traumsymbole/wasser" class="text-dream-salmon hover:underline">Wasser</a>: klar oder trüb, ruhig oder aufgewühlt.</li>
+      <li><a href="/de/traumsymbole/fallen" class="text-dream-salmon hover:underline">Fallen</a>: wovon du gefallen bist und ob es jemand gesehen hat.</li>
+      <li><a href="/de/traumsymbole/fliegen" class="text-dream-salmon hover:underline">Fliegen</a>: leicht, anstrengend oder nicht zu steuern.</li>
+      <li><a href="/de/traumsymbole/zaehne" class="text-dream-salmon hover:underline">Zähne fallen aus</a>: einzeln oder alle auf einmal, mit oder ohne Schmerz.</li>
+      <li><a href="/de/traumsymbole/schlange" class="text-dream-salmon hover:underline">Schlange</a>: bedrohlich, ruhig oder einfach da.</li>
+      <li><a href="/de/traumsymbole/verfolgung" class="text-dream-salmon hover:underline">Verfolgt werden</a>: wer oder was dir folgte und wie nah.</li>
+      <li><a href="/de/traumsymbole/tod" class="text-dream-salmon hover:underline">Tod</a>: wer starb und was dich mit dieser Person verbindet.</li>
+      <li><a href="/de/traumsymbole/haus" class="text-dream-salmon hover:underline">Haus</a>: vertraut, aus der Kindheit, fremd oder baufällig.</li>
+      <li><a href="/de/traumsymbole/hund" class="text-dream-salmon hover:underline">Hund</a>: dein eigener, ein bekannter oder ein fremder Hund.</li>
+      <li><a href="/de/traumsymbole/mond" class="text-dream-salmon hover:underline">Mond</a>: voll, als Sichel, riesig oder rot.</li>
+    </ul>
+    <p class="mt-4">Im <a href="/de/guides/traumsymbole-lexikon" class="text-dream-salmon hover:underline">vollständigen Lexikon</a> findest du die übrigen Einträge nach Kategorie und von A bis Z.</p>
+  </section>
+
+  <section class="glass-panel p-8 rounded-2xl border border-white/10 bg-white/5 overflow-x-auto">
+    <h2 class="text-2xl font-serif text-white mb-4">Ein Symbol, zwei Träume: das Haus</h2>
+    <p class="mb-4">Ein erfundenes Beispiel. Zwei Menschen träumen von einem Haus. Sie würden denselben Eintrag öffnen, doch die Deutung fällt anders aus.</p>
+    <table class="w-full text-left text-sm min-w-[720px]">
+      <thead class="text-purple-200"><tr><th class="py-3 pr-4">Detail</th><th class="py-3 pr-4">Erster Traum</th><th class="py-3 pr-4">Zweiter Traum</th></tr></thead>
+      <tbody class="divide-y divide-white/10">
+        <tr><td class="py-4 pr-4 text-white font-medium">Szene</td><td class="py-4 pr-4">Du öffnest zu Hause eine Tür und findest einen Raum, den du nicht kanntest, hell und leer.</td><td class="py-4 pr-4">Du bist im Haus deiner Kindheit. Die Decke bekommt Risse und du suchst den Ausgang.</td></tr>
+        <tr><td class="py-4 pr-4 text-white font-medium">Gefühl beim Aufwachen</td><td class="py-4 pr-4">Neugier, etwas Aufregung.</td><td class="py-4 pr-4">Angst, dann Traurigkeit.</td></tr>
+        <tr><td class="py-4 pr-4 text-white font-medium">Mögliche Spur</td><td class="py-4 pr-4">Etwas in deinem Leben, das du gerade erst erkundest: ein Projekt, eine neue Rolle.</td><td class="py-4 pr-4">Ein alter Halt, der brüchig wirkt, oder eine Sorge um einen Angehörigen oder eine Wohnung.</td></tr>
+        <tr><td class="py-4 pr-4 text-white font-medium">Frage fürs Journal</td><td class="py-4 pr-4">Was in meinem Leben fühlt sich gerade wie ein neu entdeckter Raum an?</td><td class="py-4 pr-4">Was wirkt heute weniger stabil als früher?</td></tr>
+      </tbody>
+    </table>
+    <p class="mt-4">Keine dieser Spuren ist ein Ergebnis. Prüfe sie an deinem Alltag und an späteren Träumen: Wenn das Haus wiederkommt, notiere, was sich verändert hat. In der App ist jeder Traum ein eigener Journaleintrag, und eine Analyse startet nur, wenn du sie anforderst.</p>
+  </section>
+
+  <section class="glass-panel p-8 rounded-2xl border border-white/10 bg-white/5">
     <h2 class="text-2xl font-serif text-white mb-4">Redaktionelle Grenzen und Datenschutz</h2>
     <p>Das Lexikon ist redaktioneller Inhalt, kein Datensatz privater Nutzerträume und keine klinische Beratung. Als Prüfer dieser Seite ist keine klinische Fachperson genannt. Für das Android-Journal erklärt die <a href="/de/datenschutz" class="text-dream-salmon hover:underline">Datenschutzerklärung</a> Hosting, KI-Anbieter und Löschmöglichkeiten.</p>
   </section>
@@ -72,7 +105,7 @@
   <section class="glass-panel p-8 rounded-2xl border border-white/10 bg-white/5">
     <h2 class="text-2xl font-serif text-white mb-4">FAQ zum Traumlexikon</h2>
     <div class="space-y-5">
-      <div><h3 class="text-white font-medium">Ist das Noctalia-Traumlexikon kostenlos?</h3><p class="mt-1">Ja. Im öffentlichen Web-Lexikon kannst du 150 redaktionelle Traumsymbol-Einträge nach Kategorie oder von A bis Z durchsuchen, ohne die App zu installieren.</p></div>
+      <div><h3 class="text-white font-medium">Ist das Noctalia-Traumlexikon kostenlos?</h3><p class="mt-1">Ja. Im öffentlichen Web-Lexikon kannst du 160 redaktionelle Traumsymbol-Einträge nach Kategorie oder von A bis Z durchsuchen, ohne die App zu installieren.</p></div>
       <div><h3 class="text-white font-medium">Hat ein Symbol immer dieselbe Bedeutung?</h3><p class="mt-1">Nein. Dasselbe Symbol kann mit unterschiedlichen Erinnerungen, Gefühlen und Situationen zusammenhängen. Nutze das Lexikon als Sammlung von Möglichkeiten und vergleiche sie mit dem ganzen Traum.</p></div>
       <div><h3 class="text-white font-medium">Was ergänzt die Android-App zum Lexikon?</h3><p class="mt-1">Die App ergänzt Sprach- oder Texteingabe, ein privates Journal, KI-Reflexion, Gefühls- und Symbolkontext, generierte Bilder und Anschlussfragen.</p></div>
       <div><h3 class="text-white font-medium">Kann ein Traumlexikon diagnostizieren oder vorhersagen?</h3><p class="mt-1">Nein. Die Einträge sind informative Denkanstöße, keine medizinische Beratung, psychologische Diagnose oder Vorhersage.</p></div>

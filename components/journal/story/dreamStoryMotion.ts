@@ -41,8 +41,11 @@ export const DREAM_STORY = {
   thread: 420,
   /** The reading chapters start once the last star is lit. */
   chapterLead: 240,
-  /** The capture screen's seal, from the save to the saved moment: the words gather, condense, rise. */
-  prologue: 860,
+  /**
+   * The capture screen's seal, from the save to the saved moment: the words gather, condense, rise.
+   * Long enough for each beat to be seen: the words hold about half a second before they gather.
+   */
+  prologue: 2200,
   /** The seal's veil outlasts the screen transition that covers it. */
   prologueVeilHold: 700,
   /** One pass of the light band across a canvas being painted. */

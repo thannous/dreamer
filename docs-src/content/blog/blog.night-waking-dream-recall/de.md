@@ -4,7 +4,7 @@
   "layout": "blogArticle",
   "lang": "de",
   "slug": "naechtliches-erwachen-traumerinnerung",
-  "title": "Nächtliches Erwachen und Traumerinnerung: was beim Aufwachen hilft | Noctalia",
+  "title": "Nachts aufwachen und Träume erinnern | Noctalia",
   "description": "Nächtliches Erwachen und Traumerinnerung: einen Traum um 3 Uhr in wenigen Wörtern sichern, weiterschlafen und wissen, wann ein Arztbesuch sinnvoll ist.",
   "robots": "index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1",
   "themeColor": "#0a0514",

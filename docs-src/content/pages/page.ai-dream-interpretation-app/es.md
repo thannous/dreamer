@@ -23,13 +23,13 @@
   "twitterImage": "https://noctalia.app/img/og/noctalia-en-1200x630.jpg",
   "twitterImageAlt": "Noctalia dream journal app",
   "publishedTime": "2026-05-20T00:00:00+02:00",
-  "modifiedTime": "2026-10-10T00:00:00+02:00",
+  "modifiedTime": "2026-10-11T00:00:00+02:00",
   "author": "Thanh Chau",
   "prevPath": "",
   "nextPath": "",
   "preloadImage": "",
   "jsonLd": [
-    "{\n  \"@context\": \"https://schema.org\",\n  \"@type\": \"WebPage\",\n  \"name\": \"App de interpretación de sueños con IA\",\n  \"description\": \"Noctalia captura sueños por voz, explora símbolos, crea imágenes y permite profundizar con reflexión guiada.\",\n  \"url\": \"https://noctalia.app/es/app-interpretacion-suenos-ia\",\n  \"inLanguage\": \"es\",\n  \"dateModified\": \"2026-10-10T00:00:00+02:00\",\n  \"publisher\": {\n    \"@id\": \"https://noctalia.app/#organization\"\n  }\n}",
+    "{\n  \"@context\": \"https://schema.org\",\n  \"@type\": \"WebPage\",\n  \"name\": \"App de interpretación de sueños con IA\",\n  \"description\": \"Noctalia captura sueños por voz, explora símbolos, crea imágenes y permite profundizar con reflexión guiada.\",\n  \"url\": \"https://noctalia.app/es/app-interpretacion-suenos-ia\",\n  \"inLanguage\": \"es\",\n  \"dateModified\": \"2026-10-11T00:00:00+02:00\",\n  \"publisher\": {\n    \"@id\": \"https://noctalia.app/#organization\"\n  }\n}",
     "{\n  \"@context\": \"https://schema.org\",\n  \"@type\": \"BreadcrumbList\",\n  \"itemListElement\": [\n    {\n      \"@type\": \"ListItem\",\n      \"position\": 1,\n      \"name\": \"Inicio\",\n      \"item\": \"https://noctalia.app/es/\"\n    },\n    {\n      \"@type\": \"ListItem\",\n      \"position\": 2,\n      \"name\": \"App de interpretación de sueños con IA\",\n      \"item\": \"https://noctalia.app/es/app-interpretacion-suenos-ia\"\n    }\n  ]\n}",
     "{\n  \"@context\": \"https://schema.org\",\n  \"@type\": \"FAQPage\",\n  \"mainEntity\": [\n    {\n      \"@type\": \"Question\",\n      \"name\": \"Qué buscar\",\n      \"acceptedAnswer\": {\n        \"@type\": \"Answer\",\n        \"text\": \"Que guarde el sueño en segundos, explique la privacidad con claridad y permita borrar o exportar tus relatos. Que lea los símbolos en su contexto, te haga preguntas y diga lo que no puede hacer.\"\n      }\n    },\n    {\n      \"@type\": \"Question\",\n      \"name\": \"Por qué Noctalia encaja\",\n      \"acceptedAnswer\": {\n        \"@type\": \"Answer\",\n        \"text\": \"Noctalia funciona en Android, se usa con la voz, crea imágenes, está en varios idiomas y se apoya en un diccionario público de símbolos que sigue creciendo.\"\n      }\n    }\n  ]\n}"
   ],
@@ -37,7 +37,7 @@
 }
 ---
 <h1 class="font-serif text-4xl md:text-5xl mb-4 text-dream-cream">App de interpretación de sueños con IA</h1>
-<p class="text-sm text-purple-300/70 mb-6">Actualizado el 10 de octubre de 2026</p>
+<p class="text-sm text-purple-300/70 mb-6">Actualizado el 11 de octubre de 2026</p>
 <p class="text-lg text-purple-200/80 leading-relaxed mb-10">Al despertar suele quedar una escena suelta. Una buena app de interpretación de sueños con IA te deja guardarla primero y luego te propone pistas y preguntas, sin diagnosticar ni predecir nada.</p>
 
 <div class="space-y-8 text-gray-300 leading-relaxed">
@@ -114,6 +114,50 @@
       <li>¿La plataforma encaja con el dispositivo que usas al despertar?</li>
       <li>Compara con la <a href="/es/politica-privacidad" class="text-dream-salmon hover:underline">política de privacidad</a> de Noctalia.</li>
     </ul>
+  </section>
+
+  <section class="glass-panel p-8 rounded-2xl border border-white/10 bg-white/5">
+    <h2 class="text-2xl font-serif text-white mb-4">Dos ejemplos: una pesadilla y un sueño recurrente</h2>
+    <p>Los dos sueños son inventados. Las pistas muestran el tipo de lectura que puedes obtener, no una respuesta literal de la app.</p>
+    <div class="grid md:grid-cols-2 gap-4 mt-6 text-sm">
+      <article class="rounded-xl border border-white/10 bg-white/5 p-4 space-y-3">
+        <h3 class="text-white font-medium">Una pesadilla</h3>
+        <p><strong class="text-purple-200">Relato:</strong> «Alguien me sigue por un aparcamiento subterráneo. Busco mi coche y todas las filas son iguales. Me despierto de golpe, con el corazón a mil.»</p>
+        <p><strong class="text-purple-200">Elementos detectados:</strong> aparcamiento subterráneo, alguien sin rostro que me sigue, filas idénticas, miedo al despertar.</p>
+        <p><strong class="text-purple-200">Pistas de interpretación:</strong> las filas iguales pueden evocar la sensación de dar vueltas sin avanzar. La persecución puede evocar una presión cuyo origen no se ve. Nada en este relato permite predecir un peligro real.</p>
+        <p><strong class="text-purple-200">Pregunta para el diario:</strong> «¿Reconozco en otro momento esta sensación de que alguien me sigue?»</p>
+        <p class="text-purple-200/70">Nombra el miedo con tus palabras: el análisis solo recoge las emociones que escribes. Si las pesadillas vuelven a menudo y te estropean el sueño, coméntalo con un médico. La <a href="/es/blog/guia-pesadillas" class="text-dream-salmon hover:underline">guía sobre pesadillas</a> explica qué puede ayudar.</p>
+      </article>
+      <article class="rounded-xl border border-white/10 bg-white/5 p-4 space-y-3">
+        <h3 class="text-white font-medium">Un sueño recurrente</h3>
+        <p><strong class="text-purple-200">Relato:</strong> «Otra vez el sueño del examen. Estoy en el aula, no he estudiado, la hoja sigue en blanco. Es la tercera vez este mes. Me despierto más molesto que preocupado.»</p>
+        <p><strong class="text-purple-200">Elementos detectados:</strong> examen, hoja en blanco, falta de preparación, repetición señalada, molestia.</p>
+        <p><strong class="text-purple-200">Pistas de interpretación:</strong> la escena puede evocar el temor a que te evalúen antes de estar listo. La molestia, más que el pánico, matiza esa pista: quizá sea cansancio más que miedo.</p>
+        <p><strong class="text-purple-200">Pregunta para el diario:</strong> «Los días en que vuelve este sueño, ¿qué me espera al día siguiente?»</p>
+        <p class="text-purple-200/70">Cada análisis parte del relato que le das. Escribe que el sueño se repite: así puede clasificarse como recurrente, y el filtro Recurrentes del diario te muestra esos sueños juntos. Al releerlos, fíjate en lo que cambia de una vez a otra. La <a href="/es/blog/significado-suenos-recurrentes" class="text-dream-salmon hover:underline">guía sobre sueños recurrentes</a> profundiza en ello.</p>
+      </article>
+    </div>
+  </section>
+
+  <section class="glass-panel p-8 rounded-2xl border border-white/10 bg-white/5">
+    <h2 class="text-2xl font-serif text-white mb-4">Cómo hacer una buena pregunta de seguimiento</h2>
+    <p>Después del análisis, la conversación sigue sobre el mismo sueño. Eliges un ángulo (Símbolos, Emociones, Crecimiento personal) o haces tu propia pregunta, escrita o dictada. La IA solo conoce el sueño y lo que le escribes: una buena pregunta le da lo que no puede adivinar.</p>
+    <div class="overflow-x-auto mt-6">
+      <table class="w-full text-left text-sm min-w-[560px]">
+        <thead class="text-purple-200"><tr><th class="py-3 pr-4">Pregunta vaga</th><th class="py-3 pr-4">Pregunta que ayuda</th></tr></thead>
+        <tbody class="divide-y divide-white/10">
+          <tr><td class="py-4 pr-4">¿Qué significa mi sueño?</td><td class="py-4 pr-4 text-white">¿Por qué estoy más molesto que asustado ante la hoja en blanco?</td></tr>
+          <tr><td class="py-4 pr-4">¿Qué simboliza el aparcamiento?</td><td class="py-4 pr-4 text-white">Este aparcamiento se parece al de mi antiguo trabajo. ¿Qué pistas abre esa relación?</td></tr>
+          <tr><td class="py-4 pr-4">¿Este sueño anuncia algo?</td><td class="py-4 pr-4 text-white">Este sueño me dejó la sensación de dar vueltas sin avanzar. ¿En qué puedo fijarme esta semana?</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <ul class="list-disc pl-5 space-y-2 mt-6">
+      <li><strong>Aporta tus asociaciones.</strong> Un lugar, una persona, algo del día anterior: eso es lo que vuelve personal una pista.</li>
+      <li><strong>Corrige lo que no encaja.</strong> «No, no tenía miedo, estaba molesto.» El resto de la conversación lo tiene en cuenta.</li>
+      <li><strong>Pide más cuando lo quieras.</strong> Las respuestas son breves por defecto. Escribe «profundiza» o «dame un ejemplo».</li>
+    </ul>
+    <p class="mt-4">Cada sueño tiene un tope de intercambios: hasta 10 mensajes de seguimiento por sueño analizado con el plan gratuito y hasta 20 mensajes de seguimiento por sueño con Plus. Las preguntas precisas los aprovechan mejor.</p>
   </section>
 
       <section class="glass-panel p-8 rounded-2xl border border-white/10 bg-white/5">

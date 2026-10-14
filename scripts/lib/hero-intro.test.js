@@ -12,6 +12,8 @@ function setup(allowAuto = true) {
   const context = {
     HERO_SELECTOR: 'header', FILM_BASE: 'loop', canPlayFilm: manual => manual || allowAuto,
     createVideo: () => video, holdDreamsForIntro() {}, revealDreamsAfterIntro() {}, activeLenis: null,
+    // First visit of the session: the intro is still due.
+    introSeenThisSession: () => false,
     hideHeroForIntro: jest.fn(), showHeroAfterIntro: jest.fn(),
     html: { lang: 'fr', classList: { contains: () => false } },
     document: {

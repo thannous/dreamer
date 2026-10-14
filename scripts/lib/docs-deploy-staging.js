@@ -21,6 +21,14 @@ const ALLOWED_ROOT_DIRECTORIES = new Set([
   'js',
   'logo',
   'screenshot',
+  // Public landing films and the downloadable press walkthrough.
+  'video',
+]);
+
+// Linked from the localized comparison and press pages. Keep every other
+// data export excluded, including source catalogs and private reports.
+const ALLOWED_PUBLIC_DATA_FILES = new Set([
+  'data/dream-journal-apps-comparison-2026.csv',
 ]);
 
 const ALLOWED_ROOT_FILES = new Set([
@@ -89,7 +97,10 @@ function assertDeployStaging(deployDir) {
     if (EXCLUDED_RUNTIME_ASSETS.has(relativePath)) {
       errors.push(`obsolete heavyweight asset in deployment: ${relativePath}`);
     }
-    if (FORBIDDEN_STAGE_PATTERNS.some((pattern) => pattern.test(relativePath))) {
+    if (
+      !ALLOWED_PUBLIC_DATA_FILES.has(relativePath) &&
+      FORBIDDEN_STAGE_PATTERNS.some((pattern) => pattern.test(relativePath))
+    ) {
       errors.push(`internal artifact in deployment: ${relativePath}`);
     }
   }
@@ -120,6 +131,13 @@ function createDeployStaging(options = {}) {
       (ALLOWED_ROOT_FILES.has(entry.name) || isRootVerificationFile(entry.name))
     ) {
       copyFile(sourcePath, destinationPath);
+    }
+  }
+
+  for (const relativePath of ALLOWED_PUBLIC_DATA_FILES) {
+    const sourcePath = path.join(docsDir, relativePath);
+    if (fs.existsSync(sourcePath)) {
+      copyFile(sourcePath, path.join(deployDir, relativePath));
     }
   }
 

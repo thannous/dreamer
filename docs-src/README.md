@@ -265,12 +265,15 @@ npm run docs:deploy:prod
 `docs:deploy:prod` is the manual production publish. It first runs the publish
 guard (`scripts/check-site-publish-proof.mjs`): it refuses unless `HEAD` is
 `origin/master` after `git fetch`, the checkout is clean, and
-`npm run verify:release` passed on that `master` SHA. There is no override. It
+`npm run verify:release:site` (or `npm run verify:release`) passed on that
+`master` SHA. There is no override. It
 then runs `docs:release-check` and uploads an allowlisted directory with
 `wrangler pages deploy --project-name noctalia --branch master --commit-hash <HEAD>`.
 Right before the upload it fetches and runs every check again, and must
-accept the same `HEAD`, which labels the upload. Run `npm run verify:release`
-first, from a clean checkout of the approved `master` SHA. `docs:deploy:preview`
+accept the same `HEAD`, which labels the upload. Run `npm run verify:release:site`
+first, from a clean checkout of the approved `master` SHA: it leaves out the
+app checks (`build:web`, the backend journey under Docker, the TesterArmy app
+campaigns), which the static site does not ship. `docs:deploy:preview`
 is not guarded, but accepts only the exact preview branch `preview` (compared
 byte for byte) and refuses any other value. The token and account
 id stay in the environment (`CLOUDFLARE_API_TOKEN`, `CLOUDFLARE_ACCOUNT_ID`).

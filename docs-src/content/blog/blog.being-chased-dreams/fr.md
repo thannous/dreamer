@@ -110,7 +110,7 @@
 <div class="prose max-w-none text-gray-300">
 <h2 id="prevalence">Pourquoi rêve-t-on si souvent d'être poursuivi ?</h2>
 <p>
-                    Si vous avez rêvé d'<a class="text-dream-salmon hover:underline" href="../symboles/poursuite">être poursuivi</a>, vous êtes en très nombreuse compagnie. Dans une enquête menée auprès de 1 181 étudiants canadiens, la poursuite faisait partie des quatre thèmes de rêve rapportés par plus de 60 % des répondants, avec la chute, l'école et la sexualité (<a class="text-dream-salmon hover:underline" href="https://asdreams.org/journal/issues/asdj13-4.htm" rel="nofollow noopener noreferrer" target="_blank">Nielsen, Zadra et al., 2003</a>). Faire ce rêve n'a donc rien d'anormal.
+                    Si vous avez rêvé d'<a class="text-dream-salmon hover:underline" href="../symboles/poursuite">être poursuivi</a>, vous êtes en très nombreuse compagnie. Dans une enquête menée auprès de 1 181 étudiants canadiens, la poursuite faisait partie des quatre thèmes de rêve rapportés par plus de 60 % des répondants, avec la chute, l'école et la sexualité (<a class="text-dream-salmon hover:underline" href="https://doi.org/10.1023/B:DREM.0000003144.40929.0b" rel="nofollow noopener noreferrer" target="_blank">Nielsen, Zadra et al., 2003</a>). Faire ce rêve n'a donc rien d'anormal.
                 </p>
 <p>
                     Pourquoi cette scène plutôt qu'une autre ? Personne ne le sait avec certitude. Une hypothèse connue veut que le rêve serve en partie à répéter des menaces, et peu de menaces sont aussi anciennes et simples que quelque chose qui vous court après. Nous y revenons plus bas, car cela reste une hypothèse.
@@ -407,7 +407,7 @@
 <section class="mt-16 glass-panel rounded-2xl p-6" id="sources">
 <h2 class="font-serif text-2xl text-dream-cream mb-4">Sources et lectures</h2>
 <ul class="mt-6 space-y-2 text-sm text-gray-400">
-<li><a href="https://asdreams.org/journal/issues/asdj13-4.htm" rel="nofollow noopener noreferrer" target="_blank">Nielsen, Zadra et al. (2003), « The Typical Dreams of Canadian University Students », <em>Dreaming</em>, 13(4)</a></li>
+<li><a href="https://doi.org/10.1023/B:DREM.0000003144.40929.0b" rel="nofollow noopener noreferrer" target="_blank">Nielsen, Zadra et al. (2003), « The Typical Dreams of Canadian University Students », <em>Dreaming</em>, 13(4)</a></li>
 <li><a href="https://pubmed.ncbi.nlm.nih.gov/24497669/" rel="nofollow noopener noreferrer" target="_blank">Robert et Zadra (2014), « Thematic and content analysis of idiopathic nightmares and bad dreams », <em>Sleep</em></a></li>
 <li><a href="https://pubmed.ncbi.nlm.nih.gov/11515147/" rel="nofollow noopener noreferrer" target="_blank">Revonsuo (2000), « The reinterpretation of dreams: an evolutionary hypothesis of the function of dreaming », <em>Behavioral and Brain Sciences</em></a></li>
 <li><a href="https://pubmed.ncbi.nlm.nih.gov/29852917/" rel="nofollow noopener noreferrer" target="_blank">Morgenthaler et al. (2018), « Position paper for the treatment of nightmare disorder in adults », American Academy of Sleep Medicine</a></li>

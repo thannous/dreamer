@@ -108,6 +108,13 @@ manuel `full` de `.circleci/continue.yml` n'y manque) :
 - builds livrés, refaits pour chaque commit : `npm run docs:build` et
   `npm run docs:check` (site), `npm run build:web` (app web Vercel).
 
+`npm run verify:release` est `release --target app` : `build:web`,
+`test:e2e:backend` et les campagnes TesterArmy Dreamer, Lucid et Meditation
+portent la cible `app`. `npm run verify:release:site` lance tout le reste et
+suffit pour publier noctalia.app seul (`docs:deploy:prod`) ; l'app web
+(`web:deploy:prod`, qui exige la cible `app`) et une release mobile passent par
+`npm run verify:release`.
+
 `verify-local.config.mjs` est la source de vérité de cette liste ; le
 portefeuille CircleCI n'est qu'un lancement manuel facultatif, gardé en phase
 par ce test. Les contrôles qui

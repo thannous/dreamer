@@ -198,6 +198,14 @@ export function createDreamMediaResolver({ sign, now = Date.now, storageOrigin, 
     return promise;
   }
 
+  function mediaCacheKey(source: string | null | undefined, userId: string | null, variant: string, version: Version) {
+    if (!source || version === undefined) return undefined;
+    const parsed = parse(source);
+    if (!parsed || !('path' in parsed)) return undefined;
+    // This key names bytes already authorized for this account; it grants no access.
+    return JSON.stringify(['dream-media-v1', origin, userId ?? 'guest', BUCKET, parsed.path, variant, version]);
+  }
+
   return {
     setDreamMediaScope(userId: string | null) {
       if (userId === owner) return;
@@ -231,13 +239,9 @@ export function createDreamMediaResolver({ sign, now = Date.now, storageOrigin, 
       if (requestGeneration !== generation || userId !== owner) {
         return { imageUrl: '', imageStatus: 'error', thumbnailStatus: 'error' };
       }
-      const cacheKey = (source: string | null | undefined, resource: Resource, variant: string) => {
-        if (!source || !resource.url || resource.status !== 'ready' || version === undefined) return undefined;
-        const parsed = parse(source);
-        if (!parsed || !('path' in parsed)) return undefined;
-        // Emitted only after resolve authorized the source; this key grants no access.
-        return JSON.stringify(['dream-media-v1', origin, userId ?? 'guest', BUCKET, parsed.path, variant, version]);
-      };
+      // Emitted only after resolve authorized the source.
+      const cacheKey = (source: string | null | undefined, resource: Resource, variant: string) =>
+        resource.url && resource.status === 'ready' ? mediaCacheKey(source, userId, variant, version) : undefined;
       const expirations = [image.expiresAt, thumbnail.expiresAt].filter((value): value is number => value !== undefined);
       return {
         imageUrl: image.url, thumbnailUrl: thumbnail.url || undefined,
@@ -245,6 +249,23 @@ export function createDreamMediaResolver({ sign, now = Date.now, storageOrigin, 
         thumbnailCacheKey: cacheKey(dream.thumbnailUrl, thumbnail, 'thumbnail'),
         imageStatus: image.status, thumbnailStatus: thumbnail.status,
         ...(expirations.length ? { expiresAt: Math.min(...expirations) } : {}),
+      };
+    },
+    /**
+     * Disk cache keys of this account's own objects, known without signing. A hit lets
+     * a cold start show bytes already on the device without asking for a signed URL.
+     */
+    getDreamMediaCacheKeys(dream: DreamMediaInput, userId: string | null): { imageCacheKey?: string; thumbnailCacheKey?: string } {
+      if (!userId || userId !== owner) return {};
+      const version = dream.imageUpdatedAt ?? dream.analysisRequestId ?? dream.analyzedAt;
+      const ownKey = (source: string | null | undefined, variant: string) => {
+        const parsed = source ? parse(source) : null;
+        return parsed && 'path' in parsed && parsed.path.split('/')[0] === owner
+          ? mediaCacheKey(source, userId, variant, version) : undefined;
+      };
+      return {
+        imageCacheKey: ownKey(dream.imageUrl, 'original'),
+        thumbnailCacheKey: ownKey(dream.thumbnailUrl, 'thumbnail'),
       };
     },
     getDreamMediaMetrics: () => ({ ...counters, cacheEntries: cache.size, pendingPaths: pending.size, activeBatches: active }),
@@ -256,4 +277,6 @@ const resolver = createDreamMediaResolver({
   guestOwner: getGuestMediaOwner,
   sign: (bucket, paths, expiresIn) => supabase.storage.from(bucket).createSignedUrls(paths, expiresIn),
 });
-export const { resolveDreamMedia, setDreamMediaScope, invalidateDreamMedia, getDreamMediaMetrics } = resolver;
+export const {
+  resolveDreamMedia, setDreamMediaScope, invalidateDreamMedia, getDreamMediaCacheKeys, getDreamMediaMetrics,
+} = resolver;

@@ -5,7 +5,7 @@
   "lang": "fr",
   "slug": "alternative-oniri",
   "title": "Alternative à Oniri pour journal de rêves | Noctalia",
-  "description": "Comparez Oniri et Noctalia: rêve lucide, analyse IA, voix, images, Android et confidentialité.",
+  "description": "Comparez Oniri et Noctalia pour votre journal de rêves : rêve lucide, analyse IA, voix, images et confidentialité. Repérez les différences sur Android.",
   "robots": "index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1",
   "themeColor": "#0a0514",
   "htmlClass": "",

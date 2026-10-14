@@ -1,5 +1,6 @@
 import Ionicons from '@expo/vector-icons/Ionicons';
 import { Image } from 'expo-image';
+import { LinearGradient } from 'expo-linear-gradient';
 import { Fragment, type ReactNode, useEffect, useState } from 'react';
 import {
   ActivityIndicator,
@@ -120,6 +121,7 @@ export function LucidJourneyMap({
   trailing,
   onPrimaryAction,
   onSessionPress,
+  onSceneLayout,
 }: {
   programLabel: string;
   progressValue: number;
@@ -142,6 +144,8 @@ export function LucidJourneyMap({
   trailing?: ReactNode;
   onPrimaryAction: () => void;
   onSessionPress: (session: LucidProgramSession) => void;
+  /** Bottom edge of the painted scene, below which the immersive map is transparent. */
+  onSceneLayout?: (bottom: number) => void;
 }) {
   const { colors } = useTheme();
   const { fontScale, width } = useWindowDimensions();
@@ -163,10 +167,25 @@ export function LucidJourneyMap({
     naturalSceneHeight,
     naturalSceneHeight * currentAnchor.top + IMMERSIVE_SPLIT_CLEARANCE
   );
-  const immersiveSceneHeight = naturalSceneHeight + IMMERSIVE_CARD_GAP;
+  // The immersive header floats over the artwork. Where it reaches lower than
+  // the painted moon, the whole scene moves down together under it, so the
+  // title never sits on the moon and the nodes stay on the painted path.
+  const [headerBottom, setHeaderBottom] = useState(0);
+  const sceneOffset = immersive && !reflow
+    ? Math.max(0, Math.ceil(headerBottom + LucidSpace.sm - sceneClearanceEdge(naturalSceneHeight)))
+    : 0;
+  const immersiveSceneHeight = naturalSceneHeight + IMMERSIVE_CARD_GAP + sceneOffset;
 
   const progressHeader = (
     <View
+      onLayout={
+        immersive && !reflow
+          ? ({ nativeEvent }) => {
+              const nextBottom = nativeEvent.layout.y + nativeEvent.layout.height;
+              if (Math.abs(nextBottom - headerBottom) > 0.5) setHeaderBottom(nextBottom);
+            }
+          : undefined
+      }
       style={[
         styles.header,
         immersive && (reflow ? styles.headerImmersiveReflow : styles.headerImmersive),
@@ -268,8 +287,10 @@ export function LucidJourneyMap({
   const journeyScene = (
     <View
       onLayout={
-        immersive && !reflow
+        immersive
           ? ({ nativeEvent }) => {
+              onSceneLayout?.(nativeEvent.layout.y + nativeEvent.layout.height);
+              if (reflow) return;
               const nextWidth = nativeEvent.layout.width;
               if (Math.abs(nextWidth - sceneWidth) > 0.5) setSceneWidth(nextWidth);
             }
@@ -284,6 +305,8 @@ export function LucidJourneyMap({
             : styles.sceneMap,
         immersive && styles.sceneImmersive,
         immersive && { backgroundColor: palette.backgroundDeep },
+        // The reflowed header sits in the flow, so it clears device chrome here.
+        immersive && reflow && { paddingTop: immersiveTopInset + LucidSpace.lg },
       ]}
       testID="lucid-journey-scene"
     >
@@ -291,7 +314,7 @@ export function LucidJourneyMap({
         <>
           <View
             pointerEvents="none"
-            style={[styles.sceneImageClip, { top: 0, height: insertionY }]}
+            style={[styles.sceneImageClip, { top: sceneOffset, height: insertionY }]}
           >
             <Image
               accessibilityIgnoresInvertColors
@@ -306,13 +329,20 @@ export function LucidJourneyMap({
               ]}
               testID="lucid-journey-background"
             />
+            {sceneOffset > 0 ? (
+              // The night above the moved scene melts into the painted sky.
+              <LinearGradient
+                colors={[palette.backgroundDeep, `${palette.backgroundDeep}00`]}
+                style={styles.sceneSkyBlend}
+              />
+            ) : null}
           </View>
           <View
             pointerEvents="none"
             style={[
               styles.sceneImageClip,
               {
-                top: insertionY + IMMERSIVE_CARD_GAP,
+                top: sceneOffset + insertionY + IMMERSIVE_CARD_GAP,
                 height: naturalSceneHeight - insertionY,
               },
             ]}
@@ -353,7 +383,11 @@ export function LucidJourneyMap({
 
       <View
         accessibilityRole="list"
-        style={[styles.path, reflow ? styles.pathReflow : styles.pathMap]}
+        style={[
+          styles.path,
+          reflow ? styles.pathReflow : styles.pathMap,
+          sceneOffset > 0 && { top: sceneOffset },
+        ]}
         testID="lucid-journey-path"
       >
         {visualJourneyDays.map((day) => {
@@ -368,6 +402,16 @@ export function LucidJourneyMap({
                   day.status === 'upcoming' ? labels.unlockHint : primaryActionLabel
                 }
                 compact={immersive && !reflow}
+                compactLines={
+                  immersive && !reflow
+                    ? compactLabelLines(
+                        day.session.session,
+                        currentSession.session,
+                        naturalSceneHeight,
+                        fontScale
+                      )
+                    : undefined
+                }
                 mapStyle={
                   !reflow
                     ? immersive
@@ -438,6 +482,7 @@ function JourneyNode({
   labels,
   lockedHint,
   compact,
+  compactLines = 2,
   mapStyle,
   reduceMotion,
   reflow,
@@ -447,6 +492,8 @@ function JourneyNode({
   labels: LucidJourneyLabels;
   lockedHint: string;
   compact: boolean;
+  /** Lines the compact label may take before its row reaches the next marker. */
+  compactLines?: number;
   mapStyle?: ViewStyle;
   reduceMotion: boolean;
   reflow: boolean;
@@ -569,7 +616,9 @@ function JourneyNode({
         >
           {compact ? (
             <Text
-              numberOfLines={2}
+              // A long compound (natural-awakening) in a narrow column needs a
+              // third line where the marker below leaves room for it.
+              numberOfLines={compactLines}
               style={[
                 styles.nodeCompactLabel,
                 {
@@ -772,6 +821,37 @@ const JOURNEY_ANCHORS: Readonly<Record<number, JourneyAnchor>> = {
   1: { left: '24%', top: 0.82 },
 };
 
+/** Top of the painted crescent's glow in the source asset, above the highest marker. */
+const JOURNEY_MOON_TOP = 0.05;
+
+/**
+ * Highest painted element the floating header must clear: the moon, or the top
+ * edge of the highest marker (node rows are centred on their anchor).
+ */
+function sceneClearanceEdge(naturalSceneHeight: number): number {
+  const highest = Math.min(...Object.values(JOURNEY_ANCHORS).map((anchor) => anchor.top));
+  const topNodeEdge = naturalSceneHeight * highest - (LucidSpace.xl + LucidSpace.xs);
+  return Math.min(naturalSceneHeight * JOURNEY_MOON_TOP, topNodeEdge);
+}
+
+/**
+ * Map rows hang from their marker and grow downwards, so a label gets a third
+ * line only when the row still ends above the next marker's row.
+ */
+function compactLabelLines(
+  session: number,
+  currentSession: number,
+  naturalSceneHeight: number,
+  fontScale: number
+): number {
+  if (!JOURNEY_ANCHORS[session - 1]) return 3;
+  const top = (value: number) =>
+    immersiveAnchorForSession(value, currentSession, naturalSceneHeight).top as number;
+  const room = top(session - 1) - top(session) - LucidSpace.xs * 2;
+  const lines = Math.floor(room / (LucidType.bodySm[1] * fontScale));
+  return Math.max(2, Math.min(3, lines));
+}
+
 function journeyAnchorForSession(session: number): JourneyAnchor {
   return JOURNEY_ANCHORS[session] ?? JOURNEY_ANCHORS[1];
 }
@@ -822,6 +902,7 @@ const styles = StyleSheet.create({
     overflow: 'hidden',
   },
   segmentedImage: { position: 'absolute', left: 0 },
+  sceneSkyBlend: { position: 'absolute', top: 0, right: 0, left: 0, height: LucidSpace.xl },
   scrim: { backgroundColor: 'rgba(3, 11, 16, 0.24)' },
   header: {
     marginTop: LucidSpace.lg,

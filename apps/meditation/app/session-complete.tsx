@@ -169,7 +169,9 @@ export default function SessionCompleteScreen() {
               <Button
                 testID="btn.complete.home"
                 label={t('complete.home')}
-                onPress={() => router.replace('/(drawer)/(tabs)')}
+                // Back to the home already under this screen, not a second copy
+                // stacked on it that the iOS back swipe would then reveal.
+                onPress={() => router.dismissTo('/(drawer)/(tabs)')}
               />
             </View>
           </ScrollView>

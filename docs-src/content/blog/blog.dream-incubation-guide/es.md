@@ -210,7 +210,7 @@
 <section class="mt-16 glass-panel rounded-2xl p-6" id="sources">
 <h2 class="font-serif text-2xl text-dream-cream mb-4">Fuentes y lecturas</h2>
 <ul class="mt-6 space-y-2 text-sm text-gray-400">
-<li><a href="https://asdreams.org/journal/articles/barrett3-2.htm" rel="nofollow noopener noreferrer" target="_blank">Barrett (1993), «The “Committee of Sleep”: A Study of Dream Incubation for Problem Solving», <em>Dreaming</em>, 3(2)</a></li>
+<li><a href="https://doi.org/10.1037/h0094375" rel="nofollow noopener noreferrer" target="_blank">Barrett (1993), «The “Committee of Sleep”: A Study of Dream Incubation for Problem Solving», <em>Dreaming</em>, 3(2)</a></li>
 <li><a href="https://www.media.mit.edu/publications/targeted-dream-incubation-at-sleep-onset-increases-post-sleep-creative-performance/" rel="nofollow noopener noreferrer" target="_blank">Horowitz, Esfahany et al. (2023), «Targeted dream incubation at sleep onset increases post-sleep creative performance», <em>Scientific Reports</em>, 13:7319</a></li>
 <li><a href="https://whc.unesco.org/es/list/491" rel="nofollow noopener noreferrer" target="_blank">UNESCO, Centro del Patrimonio Mundial, «Santuario de Esculapio en Epidauro»</a></li>
 <li><a href="https://www.sleepfoundation.org/nutrition/alcohol-and-sleep" rel="nofollow noopener noreferrer" target="_blank">Sleep Foundation, «Alcohol and Sleep»</a></li>

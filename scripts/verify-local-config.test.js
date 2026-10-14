@@ -77,7 +77,7 @@ describe('verify-local.config.mjs', () => {
   });
 
   it('runs every step of the CircleCI portfolio on a published master commit', () => {
-    // A release runs every release check, `when` ones included.
+    // A release of the app target runs every release check, `when` ones included.
     const release = config.checks
       .filter((check) => (check.kinds ?? ['pr', 'release']).includes('release'))
       .map((check) => check.command)
@@ -95,6 +95,25 @@ describe('verify-local.config.mjs', () => {
       expect(expected.delete(setup)).toBe(true);
     }
     expect([...expected].filter((step) => !release.includes(step))).toEqual([]);
+  });
+
+  it('verify:release runs the app checks the web app publish requires; verify:release:site leaves them out', () => {
+    // The site publish asks the guard for no target, so Docker and the app
+    // campaigns never hold back noctalia.app. A target dropped on any side
+    // would let the web app or a mobile release ship without those checks.
+    const { RELEASE_TARGETS } = require('./web-deploy');
+    expect(RELEASE_TARGETS).toEqual(['app']);
+    const scripts = scriptsOf('package.json');
+    expect(scripts['verify:release']).toBe('node scripts/verify-local.mjs release --target app');
+    expect(scripts['verify:release:site']).toBe('node scripts/verify-local.mjs release');
+    const app = config.checks.filter((check) => check.targets).map((check) => [check.name, check.targets]);
+    expect(app).toEqual([
+      ['web-build', ['app']],
+      ['e2e-backend', ['app']],
+      ['testerarmy-dreamer', ['app']],
+      ['testerarmy-lucid', ['app']],
+      ['testerarmy-meditation', ['app']],
+    ]);
   });
 
   it('keeps the former pre-push suite in verify:pr', () => {

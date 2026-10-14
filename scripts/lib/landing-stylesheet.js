@@ -5,11 +5,13 @@
  *
  * The bundle is generated into `docs/` by `docs:build`; the sources below stay
  * the editable files. Order matches the previous <link> order, so the cascade
- * is unchanged.
+ * is unchanged. The written bundle is minified because it blocks rendering of
+ * the landing; esbuild gets no target, so no syntax is lowered.
  */
 
 const fs = require('fs');
 const path = require('path');
+const esbuild = require('../../apps/site/dependencies')('esbuild');
 
 const LANDING_CSS_HREF = '/css/landing.css';
 const LANDING_CSS_SOURCES = [
@@ -28,7 +30,12 @@ function buildLandingStylesheet(staticDir) {
 function writeLandingStylesheet(staticDir, outputDir) {
   const outputPath = path.join(outputDir, LANDING_CSS_HREF);
   fs.mkdirSync(path.dirname(outputPath), { recursive: true });
-  fs.writeFileSync(outputPath, buildLandingStylesheet(staticDir), 'utf8');
+  const { code } = esbuild.transformSync(buildLandingStylesheet(staticDir), {
+    loader: 'css',
+    minify: true,
+    legalComments: 'none',
+  });
+  fs.writeFileSync(outputPath, code, 'utf8');
   return outputPath;
 }
 

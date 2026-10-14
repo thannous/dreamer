@@ -432,7 +432,7 @@
 <h2 class="font-serif text-2xl text-dream-cream mb-4">Sources and further reading</h2>
 <ul class="mt-6 space-y-2 text-sm text-gray-400">
 <li><a href="https://doi.org/10.1111/1467-8721.01211" rel="nofollow noopener noreferrer" target="_blank">Öhman and Mineka (2003), "The Malicious Serpent: Snakes as a Prototypical Stimulus for an Evolved Module of Fear", <em>Current Directions in Psychological Science</em>, 12(1)</a></li>
-<li><a href="https://asdreams.org/journal/issues/asdj13-4.htm" rel="nofollow noopener noreferrer" target="_blank">Nielsen, Zadra et al. (2003), "The Typical Dreams of Canadian University Students", <em>Dreaming</em>, 13(4)</a></li>
+<li><a href="https://doi.org/10.1023/B:DREM.0000003144.40929.0b" rel="nofollow noopener noreferrer" target="_blank">Nielsen, Zadra et al. (2003), "The Typical Dreams of Canadian University Students", <em>Dreaming</em>, 13(4)</a></li>
 <li><a href="https://www.cambridge.org/core/journals/behavioral-and-brain-sciences/article/reinterpretation-of-dreams-an-evolutionary-hypothesis-of-the-function-of-dreaming/EE0E7DB39E361540D2DDA79C262EDA7E" rel="nofollow noopener noreferrer" target="_blank">Revonsuo (2000), "The reinterpretation of dreams", <em>Behavioral and Brain Sciences</em></a></li>
 <li><a href="https://www.ninds.nih.gov/health-information/public-education/brain-basics/brain-basics-understanding-sleep" rel="nofollow noopener noreferrer" target="_blank">NINDS, "Brain Basics: Understanding Sleep"</a></li>
 <li><a href="https://www.mayoclinic.org/diseases-conditions/nightmare-disorder/symptoms-causes/syc-20353515" rel="nofollow noopener noreferrer" target="_blank">Mayo Clinic, "Nightmare disorder"</a></li>
