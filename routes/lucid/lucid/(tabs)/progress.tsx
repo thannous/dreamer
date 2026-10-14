@@ -7,6 +7,7 @@ import {
   shouldUseLucidProgressReflow,
 } from '@/components/lucid/LucidProgressConstellation';
 import {
+  LUCID_HERO_DARK_SHARE,
   LUCID_TAB_BAR_INSET,
   LucidButton,
   LucidCard,
@@ -354,6 +355,7 @@ const METRIC_ORDER: Record<LucidGuidanceFocus, readonly LucidProgressMetric[]> =
 };
 
 export default function LucidProgressScreen() {
+  const [heroHeight, setHeroHeight] = React.useState<number>();
   const { fontScale, width } = useWindowDimensions();
   const reflow = shouldUseLucidProgressReflow(width, fontScale);
   const { colors, mode } = useTheme();
@@ -403,8 +405,10 @@ export default function LucidProgressScreen() {
       bottomInset={LUCID_TAB_BAR_INSET}
       testID="lucid-progress"
       contentStyle={styles.screenContent}
+      darkTop={heroHeight === undefined ? undefined : heroHeight * LUCID_HERO_DARK_SHARE}
     >
       <LucidProgressConstellation
+        onLayout={({ nativeEvent }) => setHeroHeight(nativeEvent.layout.height)}
         fadeColor={palette.background}
         reflow={reflow}
         source={PROGRESS_CONSTELLATION}

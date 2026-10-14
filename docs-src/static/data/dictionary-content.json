@@ -7,21 +7,21 @@
     "twitter_title": "Dream Symbols Dictionary A-Z",
     "twitter_description": "150 dream symbols with meanings, examples and personal prompts.",
     "h1_text": "Dream Symbols Dictionary A‑Z",
-    "intro_paragraph": "Search the dream symbol that stayed with you after waking: water, teeth, a door, a hospital, a wolf, a house or a repeated action. This A-Z dictionary covers 150 symbols with quick meanings, reflection prompts and related themes so you can move from a generic definition to your own dream context.",
+    "intro_paragraph": "Search the dream symbol that stayed with you after waking: water, teeth, a door, a hospital, a wolf, a house or a repeated action. This A-Z dictionary covers 150 symbols, each with a short meaning, questions to ask yourself and related themes, so you can go from a general definition back to your own dream.",
     "hero_search_placeholder": "Search a symbol (water, snake, falling…)",
     "sticky_search_placeholder": "Search a symbol (water, snake, falling…)",
     "no_results_text": "No symbols found for",
     "browse_by_category": "Browse by Category",
     "section_heading": "Symbols starting with",
     "ask_yourself_label": "Ask yourself:",
-    "cta_title": "Save every dream. Understand what it means to you.",
-    "cta_subtitle": "Speak or type your dream. Noctalia brings together the symbol dictionary and our guides to help you understand it in context.",
+    "cta_title": "Save every dream and see which symbols come back.",
+    "cta_subtitle": "Speak or type your dream when you wake up. Noctalia brings together the symbol dictionary and our guides so you can read the dream in its own context.",
     "cta_button": "Analyze My Dream",
     "faq_title": "Frequently Asked Questions",
     "faq": [
       {
         "q": "How to interpret dream symbols?",
-        "a": "Dream symbol interpretation depends on the dreamer's personal context. The same symbol can have different meanings depending on each person's experiences and culture. It's important to consider your emotions in the dream and your personal associations with the symbol."
+        "a": "Start with the scene, not a fixed definition: what happened to the symbol, how you felt and what it reminds you of. The same image can read differently depending on your experiences and culture, so compare a few possible readings and keep the one that fits your current situation."
       },
       {
         "q": "Are dream symbols universal?",
@@ -33,7 +33,7 @@
       }
     ],
     "analyze_heading": "From dictionary meaning to your dream context",
-    "analyze_text": "A dictionary answers “what can this symbol mean?”. Noctalia helps with the next question: why did it appear in your dream, with your emotions, people and setting?",
+    "analyze_text": "A dictionary tells you what a symbol can mean. Noctalia helps with the next question: what was it doing in your dream, with the emotions, people and setting you remember?",
     "related_heading": "Related Articles",
     "related_articles": [
       {
@@ -57,7 +57,7 @@
     ],
     "reflection_guide": {
       "kicker": "Dream symbols · Reflection guide",
-      "title": "A symbol is a question—not an answer",
+      "title": "A symbol is a question, not an answer",
       "deck": "Use dictionaries as prompts, then return to lived experience.",
       "steps": [
         {
@@ -99,14 +99,14 @@
     "browse_by_category": "Parcourir par catégorie",
     "section_heading": "Symboles commençant par",
     "ask_yourself_label": "À vous demander :",
-    "cta_title": "Allez au-delà d’un symbole : analysez et enregistrez tous vos rêves.",
-    "cta_subtitle": "Noctalia réunit le dictionnaire des symboles et nos guides pour vous aider à comprendre vos rêves dans leur contexte.",
+    "cta_title": "Notez chaque rêve et repérez les symboles qui reviennent.",
+    "cta_subtitle": "Dictez ou écrivez votre rêve au réveil. Noctalia réunit le dictionnaire des symboles et nos guides pour que vous puissiez le relire dans son contexte.",
     "cta_button": "Analyser mon rêve",
     "faq_title": "Questions fréquentes",
     "faq": [
       {
         "q": "Comment interpréter les symboles de rêves ?",
-        "a": "L'interprétation dépend du contexte personnel du rêveur. Le même symbole peut avoir des significations différentes selon les expériences et la culture de chacun. Il est important de considérer vos émotions dans le rêve et vos associations personnelles avec le symbole."
+        "a": "Partez de la scène plutôt que d’une définition figée : ce qui arrive au symbole, ce que vous ressentiez, ce qu’il vous rappelle. La même image peut se lire autrement selon votre vécu et votre culture ; comparez quelques lectures possibles et gardez celle qui correspond à votre situation actuelle."
       },
       {
         "q": "Les symboles de rêves sont-ils universels ?",
@@ -118,7 +118,7 @@
       }
     ],
     "analyze_heading": "Du dictionnaire au contexte de votre rêve",
-    "analyze_text": "Un dictionnaire répond à “que peut signifier ce symbole ?”. Noctalia aide avec la question suivante : pourquoi apparaît-il dans votre rêve, avec vos émotions, vos lieux et vos personnes ?",
+    "analyze_text": "Un dictionnaire dit ce qu’un symbole peut signifier. Noctalia vous aide pour la question suivante : que faisait-il dans votre rêve, avec les émotions, les personnes et les lieux dont vous vous souvenez ?",
     "related_heading": "Articles connexes",
     "related_articles": [
       {
@@ -142,7 +142,7 @@
     ],
     "reflection_guide": {
       "kicker": "Symboles de rêve · Guide de réflexion",
-      "title": "Un symbole est une question — pas une réponse",
+      "title": "Un symbole est une question, pas une réponse",
       "deck": "Utilisez les dictionnaires comme des amorces, puis revenez à votre vécu.",
       "steps": [
         {
@@ -184,14 +184,14 @@
     "browse_by_category": "Explorar por categoría",
     "section_heading": "Símbolos que empiezan con",
     "ask_yourself_label": "Pregúntate:",
-    "cta_title": "Guarda todos tus sueños. Entiende lo que significan para ti.",
-    "cta_subtitle": "Dicta o escribe tu sueño. Noctalia reúne el diccionario de símbolos y nuestras guías para ayudarte a comprenderlo en su contexto.",
+    "cta_title": "Guarda cada sueño y mira qué símbolos se repiten.",
+    "cta_subtitle": "Dicta o escribe tu sueño al despertar. Noctalia reúne el diccionario de símbolos y nuestras guías para que lo releas en su contexto.",
     "cta_button": "Analizar mi sueño gratis",
     "faq_title": "Preguntas frecuentes",
     "faq": [
       {
         "q": "¿Cómo interpretar símbolos de sueños?",
-        "a": "La interpretación depende del contexto personal del soñador. El mismo símbolo puede tener significados diferentes según las experiencias y la cultura de cada persona. Es importante considerar tus emociones en el sueño y tus asociaciones personales con el símbolo."
+        "a": "Empieza por la escena, no por una definición fija: qué le pasa al símbolo, qué sentías y qué te recuerda. La misma imagen puede leerse de otra forma según tus experiencias y tu cultura, así que compara varias lecturas posibles y quédate con la que encaja con tu situación actual."
       },
       {
         "q": "¿Son universales los símbolos de los sueños?",
@@ -203,7 +203,7 @@
       }
     ],
     "analyze_heading": "De la lista de significados a tu sueño real",
-    "analyze_text": "Un diccionario te da un punto de partida. Noctalia va más lejos: conecta el símbolo con lo que sentías, quién aparecía y qué está pasando en tu vida.",
+    "analyze_text": "Un diccionario te da un punto de partida. Noctalia te ayuda con el paso siguiente: relacionar el símbolo con lo que sentías, con quién aparecía y con lo que está pasando en tu vida.",
     "related_heading": "Artículos relacionados",
     "related_articles": [
       {
@@ -221,7 +221,7 @@
       {
         "tag": "Práctica",
         "title": "Cómo empezar un diario de sueños",
-        "desc": "Construye un hábito de registro de sueños desde esta noche.",
+        "desc": "Empieza tu diario de sueños esta misma noche.",
         "href": "../blog/dream-journal-guide"
       }
     ],
@@ -331,7 +331,7 @@
     ],
     "reflection_guide": {
       "kicker": "Traumsymbole · Reflexionsleitfaden",
-      "title": "Ein Symbol ist eine Frage – keine Antwort",
+      "title": "Ein Symbol ist eine Frage, keine Antwort",
       "deck": "Nutze Wörterbücher als Anstoß und kehre dann zu deinem Erleben zurück.",
       "steps": [
         {
@@ -373,14 +373,14 @@
     "browse_by_category": "Sfoglia per categoria",
     "section_heading": "Simboli che iniziano con",
     "ask_yourself_label": "Chiediti:",
-    "cta_title": "Salva ogni sogno. Scopri cosa significa per te.",
-    "cta_subtitle": "Detta o scrivi il tuo sogno. Noctalia riunisce il dizionario dei simboli e le nostre guide per aiutarti a capirlo nel suo contesto.",
+    "cta_title": "Salva ogni sogno e guarda quali simboli ritornano.",
+    "cta_subtitle": "Detta o scrivi il tuo sogno al risveglio. Noctalia riunisce il dizionario dei simboli e le nostre guide per rileggerlo nel suo contesto.",
     "cta_button": "Analizza il mio sogno",
     "faq_title": "Domande frequenti",
     "faq": [
       {
         "q": "Come si interpretano i simboli dei sogni?",
-        "a": "L'interpretazione dipende dal contesto personale del sognatore. Lo stesso simbolo può avere significati diversi a seconda delle esperienze e della cultura di ciascuno. È importante considerare le proprie emozioni nel sogno e le associazioni personali con il simbolo."
+        "a": "Parti dalla scena, non da una definizione fissa: che cosa succede al simbolo, che cosa provavi e che cosa ti ricorda. La stessa immagine può leggersi in modo diverso secondo le tue esperienze e la tua cultura, quindi confronta alcune letture possibili e tieni quella che corrisponde alla tua situazione attuale."
       },
       {
         "q": "I simboli dei sogni sono universali?",
@@ -392,13 +392,13 @@
       }
     ],
     "analyze_heading": "Dal significato del dizionario al tuo sogno reale",
-    "analyze_text": "Un dizionario risponde a “che cosa può significare questo simbolo?”. Noctalia aiuta con la domanda successiva: perché compare proprio nel tuo sogno, con le tue emozioni, persone e situazioni?",
+    "analyze_text": "Un dizionario dice che cosa può significare un simbolo. Noctalia ti aiuta con la domanda successiva: che cosa ci faceva nel tuo sogno, con le emozioni, le persone e i luoghi che ricordi?",
     "related_heading": "Articoli correlati",
     "related_articles": [
       {
         "tag": "Interpretazione",
         "title": "Significato dei sogni ricorrenti",
-        "desc": "Comprendi perché certi sogni continuano a verificarsi.",
+        "desc": "Perché certi sogni tornano più volte.",
         "href": "../blog/recurring-dreams-meaning"
       },
       {
@@ -410,7 +410,7 @@
       {
         "tag": "Pratica",
         "title": "Come iniziare un diario dei sogni",
-        "desc": "Costruisci un'abitudine duratura di diaristica dei sogni.",
+        "desc": "Inizia il tuo diario dei sogni da stasera.",
         "href": "../blog/dream-journal-guide"
       }
     ],

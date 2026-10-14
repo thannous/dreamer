@@ -110,7 +110,7 @@
 <div class="prose max-w-none text-gray-300">
 <h2 id="prevalence">Why are chase dreams so common?</h2>
 <p>
-                    If you have dreamed of <a class="text-dream-salmon hover:underline" href="../symbols/being-chased">being chased</a>, you are in very large company. In a survey of 1,181 Canadian university students, being chased was one of four dream themes reported by more than 60% of respondents, alongside falling, school and sex (<a class="text-dream-salmon hover:underline" href="https://asdreams.org/journal/issues/asdj13-4.htm" rel="nofollow noopener noreferrer" target="_blank">Nielsen, Zadra et al., 2003</a>). Having this dream says nothing unusual about you.
+                    If you have dreamed of <a class="text-dream-salmon hover:underline" href="../symbols/being-chased">being chased</a>, you are in very large company. In a survey of 1,181 Canadian university students, being chased was one of four dream themes reported by more than 60% of respondents, alongside falling, school and sex (<a class="text-dream-salmon hover:underline" href="https://doi.org/10.1023/B:DREM.0000003144.40929.0b" rel="nofollow noopener noreferrer" target="_blank">Nielsen, Zadra et al., 2003</a>). Having this dream says nothing unusual about you.
                 </p>
 <p>
                     Why this scene in particular? Nobody knows for sure. One well-known hypothesis holds that dreaming partly rehearses threats, and few threats are as old or as simple as something running after you. We come back to that idea below, because it remains a hypothesis.
@@ -323,7 +323,7 @@
 <i class="w-5 h-5 text-dream-salmon" data-lucide="book-open"></i>
                     Explore Related Symbols
                 </h2>
-<p class="text-sm text-purple-300/60 mb-4">Dive deeper into the symbols from this article:</p>
+<p class="text-sm text-purple-300/60 mb-4">Read up on the symbols mentioned in this article:</p>
 <div class="flex flex-wrap gap-3">
 <a class="inline-flex items-center gap-2 px-4 py-2 glass-button rounded-full text-sm hover:text-dream-salmon transition-colors" href="../symbols/being-chased">Being Chased Dream Meaning</a>
 <a class="inline-flex items-center gap-2 px-4 py-2 glass-button rounded-full text-sm hover:text-dream-salmon transition-colors" href="../symbols/dog">Dog Dream Meaning</a>
@@ -407,7 +407,7 @@
 <section class="mt-16 glass-panel rounded-2xl p-6" id="sources">
 <h2 class="font-serif text-2xl text-dream-cream mb-4">Sources and further reading</h2>
 <ul class="mt-6 space-y-2 text-sm text-gray-400">
-<li><a href="https://asdreams.org/journal/issues/asdj13-4.htm" rel="nofollow noopener noreferrer" target="_blank">Nielsen, Zadra et al. (2003), "The Typical Dreams of Canadian University Students", <em>Dreaming</em>, 13(4)</a></li>
+<li><a href="https://doi.org/10.1023/B:DREM.0000003144.40929.0b" rel="nofollow noopener noreferrer" target="_blank">Nielsen, Zadra et al. (2003), "The Typical Dreams of Canadian University Students", <em>Dreaming</em>, 13(4)</a></li>
 <li><a href="https://pubmed.ncbi.nlm.nih.gov/24497669/" rel="nofollow noopener noreferrer" target="_blank">Robert and Zadra (2014), "Thematic and content analysis of idiopathic nightmares and bad dreams", <em>Sleep</em></a></li>
 <li><a href="https://pubmed.ncbi.nlm.nih.gov/11515147/" rel="nofollow noopener noreferrer" target="_blank">Revonsuo (2000), "The reinterpretation of dreams: an evolutionary hypothesis of the function of dreaming", <em>Behavioral and Brain Sciences</em></a></li>
 <li><a href="https://pubmed.ncbi.nlm.nih.gov/29852917/" rel="nofollow noopener noreferrer" target="_blank">Morgenthaler et al. (2018), "Position paper for the treatment of nightmare disorder in adults", American Academy of Sleep Medicine</a></li>
@@ -446,17 +446,17 @@
         <a href="recurring-dreams-meaning" class="glass-panel rounded-xl p-6 block hover:border-dream-salmon/30 transition-all hover:-translate-y-1">
             <span class="text-xs text-dream-salmon uppercase mb-2 block">Interpretation</span>
             <h3 class="font-serif text-lg text-dream-cream mb-2">Recurring Dreams Meaning: Understanding Their Messages</h3>
-            <p class="text-sm text-gray-400">Why do you keep having the same dream? Discover what your subconscious is trying to tell you.</p>
+            <p class="text-sm text-gray-400">Why the same dream keeps coming back, what to note between episodes, and when repeated nightmares are worth a doctor's visit.</p>
         </a>
         <a href="teeth-falling-out-dreams" class="glass-panel rounded-xl p-6 block hover:border-dream-salmon/30 transition-all hover:-translate-y-1">
             <span class="text-xs text-dream-salmon uppercase mb-2 block">Interpretation</span>
             <h3 class="font-serif text-lg text-dream-cream mb-2">Teeth Falling Out Dreams: Meaning and Interpretation</h3>
-            <p class="text-sm text-gray-400">Why do you dream about losing your teeth? Discover the 7 most common interpretations.</p>
+            <p class="text-sm text-gray-400">Seven possible readings of dreams about teeth falling out, from jaw tension to fear of being judged, and the variations worth noting.</p>
         </a>
         <a href="falling-dreams-meaning" class="glass-panel rounded-xl p-6 block hover:border-dream-salmon/30 transition-all hover:-translate-y-1">
             <span class="text-xs text-dream-salmon uppercase mb-2 block">Interpretation</span>
             <h3 class="font-serif text-lg text-dream-cream mb-2">Falling Dreams Meaning: Why You Dream of Falling</h3>
-            <p class="text-sm text-gray-400">Why do you dream about falling into the void? Discover the psychological meaning.</p>
+            <p class="text-sm text-gray-400">Why falling dreams happen, from the hypnic jerk at sleep onset to long falls, and what to note when you wake.</p>
         </a>
   </div>
 </section>

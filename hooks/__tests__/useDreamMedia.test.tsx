@@ -7,7 +7,10 @@ import { useDreamMedia } from '../useDreamMedia';
 import type { DreamAnalysis } from '@/lib/types';
 
 jest.mock('@/context/AuthContext', () => ({ AuthContext: require('react').createContext(null) }));
-jest.mock('@/services/dreamMediaService', () => ({ resolveDreamMedia: jest.fn(), getDirectDreamMediaUrl: () => undefined }));
+jest.mock('@/services/dreamMediaService', () => ({
+  resolveDreamMedia: jest.fn(), getDirectDreamMediaUrl: () => undefined, getDreamMediaCacheKeys: () => ({}),
+}));
+jest.mock('expo-image', () => ({ Image: { getCachePathAsync: async () => null } }));
 const mockNetwork = { isConnected: true, isInternetReachable: true };
 jest.mock('../useNetworkOnline', () => ({ useNetworkOnline: () => mockNetwork.isInternetReachable ?? mockNetwork.isConnected ?? true }));
 const resolve = jest.mocked(resolveDreamMedia);

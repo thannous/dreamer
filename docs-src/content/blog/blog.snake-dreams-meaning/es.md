@@ -88,7 +88,7 @@
 <div class="prose max-w-none text-gray-300">
 <h2 id="simbolismo">Por qué las serpientes aparecen tanto en los sueños</h2>
 <p>La <a class="text-dream-salmon hover:underline" href="../simbolos/serpiente">serpiente</a> es un animal que nuestra atención detecta muy rápido, y el miedo a las serpientes se aprende con facilidad (lo vemos más abajo). No es raro que también aparezca de noche.</p>
-<p>Las serpientes forman parte de los temas oníricos que estudian los investigadores. En una <a class="text-dream-salmon hover:underline" href="https://asdreams.org/journal/issues/asdj13-4.htm" rel="nofollow noopener noreferrer" target="_blank">encuesta sobre los sueños típicos de universitarios canadienses</a> (Nielsen, Zadra et al., 2003), serpientes e insectos formaban un mismo grupo de temas, mencionado con más frecuencia por las mujeres. Soñar con serpientes es, por tanto, habitual y no es motivo de preocupación por sí mismo.</p>
+<p>Las serpientes forman parte de los temas oníricos que estudian los investigadores. En una <a class="text-dream-salmon hover:underline" href="https://doi.org/10.1023/B:DREM.0000003144.40929.0b" rel="nofollow noopener noreferrer" target="_blank">encuesta sobre los sueños típicos de universitarios canadienses</a> (Nielsen, Zadra et al., 2003), serpientes e insectos formaban un mismo grupo de temas, mencionado con más frecuencia por las mujeres. Soñar con serpientes es, por tanto, habitual y no es motivo de preocupación por sí mismo.</p>
 <p>La serpiente arrastra además una historia cultural llena de contradicciones: la tentación del Edén, la vara de Asclepio como emblema de la medicina, la muda como renovación, el veneno como peligro. En español hasta hablamos de «lengua viperina». Tu sueño puede tomar algo de esas imágenes, pero tu propia relación con las serpientes pesa más: un miedo de la infancia, un reptil de un amigo, un documental que viste la noche anterior.</p>
 <h2 id="tipos">¿Qué serpiente viste?</h2>
 <p>Antes de buscar un significado, describe al animal. Estas pistas no son definiciones: son preguntas para contrastar con lo que sentiste.</p>
@@ -302,17 +302,17 @@
                     <a href="significado-suenos-recurrentes" class="glass-panel rounded-xl p-6 block hover:border-dream-salmon/30 transition-all hover:-translate-y-1">
                         <span class="text-xs text-dream-salmon uppercase mb-2 block">Interpretación</span>
                         <h3 class="font-serif text-lg text-dream-cream mb-2">Significado de Sueños Recurrentes: Entender sus Mensajes</h3>
-                        <p class="text-sm text-gray-400">¿Por qué sigues teniendo el mismo sueño? Descubre lo que tu subconsciente está tratando de decirte.</p>
+                        <p class="text-sm text-gray-400">Por qué vuelve el mismo sueño, qué anotar entre un episodio y otro, y cuándo las pesadillas repetidas merecen una consulta médica.</p>
                     </a>
                     <a href="suenos-dientes-caen" class="glass-panel rounded-xl p-6 block hover:border-dream-salmon/30 transition-all hover:-translate-y-1">
                         <span class="text-xs text-dream-salmon uppercase mb-2 block">Interpretación</span>
                         <h3 class="font-serif text-lg text-dream-cream mb-2">Soñar que se caen los dientes: significado e interpretación</h3>
-                        <p class="text-sm text-gray-400">¿Por qué sueñas que pierdes los dientes? Descubre las 7 interpretaciones más comunes.</p>
+                        <p class="text-sm text-gray-400">Siete posibles lecturas de los sueños en los que se caen los dientes, de la tensión en la mandíbula al miedo al qué dirán, y las variantes que conviene anotar.</p>
                     </a>
                     <a href="suenos-de-caer" class="glass-panel rounded-xl p-6 block hover:border-dream-salmon/30 transition-all hover:-translate-y-1">
                         <span class="text-xs text-dream-salmon uppercase mb-2 block">Interpretación</span>
                         <h3 class="font-serif text-lg text-dream-cream mb-2">Sueños de caer: por qué sueñas que caes al vacío</h3>
-                        <p class="text-sm text-gray-400">¿Por qué sueñas con caer al vacío? Descubre el significado psicológico.</p>
+                        <p class="text-sm text-gray-400">Por qué soñamos con caer, desde la sacudida hípnica al dormirse hasta las caídas largas, y qué anotar al despertar.</p>
                     </a>
               </div>
             </section>

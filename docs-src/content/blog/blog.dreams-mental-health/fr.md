@@ -407,7 +407,7 @@
 <li><a href="https://doi.org/10.5664/jcsm.7178" rel="nofollow noopener noreferrer" target="_blank">Morgenthaler et al. (2018), « Position Paper for the Treatment of Nightmare Disorder in Adults », <em>Journal of Clinical Sleep Medicine</em></a></li>
 <li><a href="https://doi.org/10.1037/a0016570" rel="nofollow noopener noreferrer" target="_blank">Walker et van der Helm (2009), « Overnight therapy? The role of sleep in emotional brain processing », <em>Psychological Bulletin</em>, 135(5)</a></li>
 <li><a href="https://www.nimh.nih.gov/health/publications/post-traumatic-stress-disorder-ptsd" rel="nofollow noopener noreferrer" target="_blank">NIMH, « Post-Traumatic Stress Disorder »</a></li>
-<li><a href="https://asdreams.org/journal/issues/asdj13-4.htm" rel="nofollow noopener noreferrer" target="_blank">Nielsen, Zadra et al. (2003), « The Typical Dreams of Canadian University Students », <em>Dreaming</em>, 13(4)</a></li>
+<li><a href="https://doi.org/10.1023/B:DREM.0000003144.40929.0b" rel="nofollow noopener noreferrer" target="_blank">Nielsen, Zadra et al. (2003), « The Typical Dreams of Canadian University Students », <em>Dreaming</em>, 13(4)</a></li>
 <li><a href="https://dreamresearch.net/" rel="nofollow noopener noreferrer" target="_blank">DreamResearch.net, G. William Domhoff</a></li>
 </ul>
 <p class="mt-6 text-xs text-purple-200/60">Mis à jour le 9 octobre 2026</p>
@@ -458,17 +458,17 @@
         <a href="pourquoi-oublie-reves-reveil" class="glass-panel rounded-xl p-6 block hover:border-dream-salmon/30 transition-all hover:-translate-y-1">
             <span class="text-xs text-dream-salmon uppercase mb-2 block">Science</span>
             <h3 class="font-serif text-lg text-dream-cream mb-2">Pourquoi oublie-t-on ses rêves au réveil ? Les explications scientifiques</h3>
-            <p class="text-sm text-gray-400">Découvrez les mécanismes cérébraux et neurochimiques qui expliquent pourquoi nous oublions 95% de nos rêves.</p>
+            <p class="text-sm text-gray-400">Pourquoi les rêves s'effacent quelques minutes après le réveil, le rôle du sommeil paradoxal et de la mémoire, et des gestes simples pour en garder plus.</p>
         </a>
         <a href="reves-premonitoires-science" class="glass-panel rounded-xl p-6 block hover:border-dream-salmon/30 transition-all hover:-translate-y-1">
             <span class="text-xs text-dream-salmon uppercase mb-2 block">Science</span>
             <h3 class="font-serif text-lg text-dream-cream mb-2">Les rêves peuvent-ils prédire l'avenir ? La science des rêves prémonitoires</h3>
-            <p class="text-sm text-gray-400">Explorez la science fascinante des rêves prémonitoires et s'ils peuvent vraiment prédire l'avenir.</p>
+            <p class="text-sm text-gray-400">Ce que disent les études contrôlées sur les rêves qui semblent prédire l'avenir, et comment le hasard et les biais de mémoire expliquent beaucoup de cas.</p>
         </a>
         <a href="pourquoi-nous-revons-science" class="glass-panel rounded-xl p-6 block hover:border-dream-salmon/30 transition-all hover:-translate-y-1">
             <span class="text-xs text-dream-salmon uppercase mb-2 block">Science</span>
             <h3 class="font-serif text-lg text-dream-cream mb-2">Pourquoi rêvons-nous ? La science derrière vos aventures nocturnes</h3>
-            <p class="text-sm text-gray-400">Explorez la science fascinante des rêves. Découvrez les théories majeures, l'activité cérébrale pendant les rêves et ce qu'ils révèlent sur la conscience.</p>
+            <p class="text-sm text-gray-400">Ce que la recherche a mesuré sur la mémoire, les émotions et la répétition des menaces pendant le rêve, et ce qui reste une hypothèse.</p>
         </a>
   </div>
 </section>

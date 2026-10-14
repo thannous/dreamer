@@ -1,13 +1,15 @@
 /* @jest-environment jsdom */
 
-jest.mock('@/components/ui/DreamerBackground', () => ({ DreamerArtworkWindow: () => null, DreamerBackground: () => null }));
-
-
 import React from 'react';
-import { cleanup, fireEvent, render, screen, waitFor } from '@testing-library/react';
+import { act, cleanup, fireEvent, render, screen, waitFor } from '@testing-library/react';
 import { afterEach, beforeEach, describe, expect, it, jest } from '@jest/globals';
 
 import { SleepSoundsScreen } from '@/components/sleep/SleepSoundsScreen';
+
+jest.mock('@/components/sleep/SleepAmbienceScene', () => ({ SleepAmbienceScene: () => null }));
+jest.mock('@/components/sleep/SleepTimerRing', () => ({ SleepTimerRing: () => null }));
+jest.mock('expo-image', () => ({ Image: () => null }));
+jest.mock('react-native-edge-to-edge', () => ({ SystemBars: () => null }));
 
 const mockBack = jest.fn();
 const mockGetPreferences = jest.fn();
@@ -89,14 +91,6 @@ jest.mock('expo-router', () => ({
   },
 }));
 
-jest.mock('@/components/inspiration/AtmosphericBackground', () => ({
-  AtmosphericBackground: () => null,
-}));
-
-jest.mock('@/components/inspiration/GlassCard', () => ({
-  GlassCard: ({ children }: { children?: React.ReactNode }) => <div>{children}</div>,
-}));
-
 jest.mock('@/components/ui/icon-symbol', () => ({
   IconSymbol: ({ name }: { name: string }) => <span data-testid={`icon.${name}`} />,
 }));
@@ -129,25 +123,12 @@ jest.mock('@/constants/noctaliaDesign', () => ({
   }),
 }));
 
-jest.mock('@/context/ScrollPerfContext', () => ({
-  ScrollPerfProvider: ({ children }: { children?: React.ReactNode }) => <>{children}</>,
-}));
-
 jest.mock('@/context/ThemeContext', () => ({
+  ThemeModeScope: ({ children }: { children?: React.ReactNode }) => <>{children}</>,
   useTheme: () => ({
     colors: {},
     mode: 'dark',
     shadows: { lg: {} },
-  }),
-}));
-
-jest.mock('@/hooks/useScrollIdle', () => ({
-  useScrollIdle: () => ({
-    isScrolling: false,
-    onMomentumScrollBegin: jest.fn(),
-    onMomentumScrollEnd: jest.fn(),
-    onScrollBeginDrag: jest.fn(),
-    onScrollEndDrag: jest.fn(),
   }),
 }));
 
@@ -249,5 +230,51 @@ describe('SleepSoundsScreen', () => {
     expect(mockStop).not.toHaveBeenCalled();
     expect(mockPlay).not.toHaveBeenCalled();
     expect(mockPause).toHaveBeenCalledTimes(1);
+  });
+
+  it('turns a failed download into a clear retry instead of a dead play button', async () => {
+    mockPlayer.error = 'download_failed';
+    mockPlayer.isLoaded = false;
+    render(<SleepSoundsScreen />);
+
+    const toggle = await screen.findByLabelText('Try again');
+    expect((toggle as HTMLButtonElement).disabled).toBe(false);
+    expect(screen.getByTestId('sleep-sound-error').textContent).toBe(
+      'This sound could not be downloaded. Check your connection, then try again. Once downloaded, it plays offline.',
+    );
+
+    fireEvent.click(toggle);
+    expect(mockPlay).toHaveBeenCalledTimes(1);
+  });
+
+  it('keeps Resume unavailable while a started sound is back to loading', async () => {
+    mockPlayer.hasStarted = true;
+    mockPlayer.isLoaded = false;
+    render(<SleepSoundsScreen />);
+
+    await waitFor(() => {
+      expect(mockGetPreferences).toHaveBeenCalled();
+    });
+    await act(async () => {
+      await Promise.resolve();
+    });
+    const toggle = screen.getByTestId('sleep-playback-toggle');
+    expect(toggle.getAttribute('aria-label')).toBe('Preparing sound…');
+    expect((toggle as HTMLButtonElement).disabled).toBe(true);
+  });
+
+  it('does not blame the network when a downloaded sound stops while playing', async () => {
+    mockPlayer.error = 'playback_interrupted';
+    mockPlayer.hasStarted = true;
+    mockPlayer.isLoaded = false;
+    render(<SleepSoundsScreen />);
+
+    const toggle = await screen.findByLabelText('Try again');
+    expect(screen.getByTestId('sleep-sound-error').textContent).toBe(
+      'The sound stopped unexpectedly. Tap Try again to resume it.',
+    );
+
+    fireEvent.click(toggle);
+    expect(mockPlay).toHaveBeenCalledTimes(1);
   });
 });

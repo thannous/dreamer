@@ -5,7 +5,7 @@ import { ScrollView, View, useWindowDimensions } from 'react-native';
 import { DailyRitualShelf } from '@/components/journey/DailyRitualShelf';
 import { UpcomingJourneyRail } from '@/components/journey/UpcomingJourneyRail';
 import { WeeklyJourney } from '@/components/journey/WeeklyJourney';
-import { WorldJourneyPicker } from '@/components/journey/WorldJourneyPicker';
+import { ARTWORK_TEXT_HALO, WorldJourneyPicker } from '@/components/journey/WorldJourneyPicker';
 import { WorldPreviewShelf } from '@/components/journey/WorldPreviewShelf';
 import { Button, Card, Eyebrow, Tag, Text } from '@/components/ui';
 import { WorldScene } from '@/components/worlds/WorldScene';
@@ -79,6 +79,7 @@ export default function HomeTab() {
   const selectedWorldId = selectedWorldAccess === 'not-owned' ? DEFAULT_WORLD_ID : worldId;
   const activeWorldId = presentationWorldId;
   const world = presentationWorld;
+  const worldName = t(world.nameKey);
   const [worldRecoveryBusy, setWorldRecoveryBusy] = useState(false);
   const [worldRecoveryMessage, setWorldRecoveryMessage] = useState<TranslationKey | null>(null);
 
@@ -271,12 +272,17 @@ export default function HomeTab() {
           testID="home.world.hero">
           <Eyebrow className="pr-12">{t(greetingKey(hour))}</Eyebrow>
           <View className={compactViewport ? 'gap-3' : 'gap-4'}>
+            {/* At most one line per word: a single word wider than the screen
+                (Constellation with large text) shrinks instead of breaking
+                mid-word, since a split word would need an extra line. */}
             <Text
               variant={narrowViewport ? 'hero' : 'saga'}
               accessibilityRole="header"
               maxFontSizeMultiplier={1.4}
+              numberOfLines={worldName.split(/\s+/).length}
+              adjustsFontSizeToFit
               testID="home.world.name">
-              {t(world.nameKey)}
+              {worldName}
             </Text>
             <View className="flex-row flex-wrap items-center gap-x-3 gap-y-2">
               <Tag label={t(`world.${world.id}.moment` as TranslationKey)} />
@@ -305,7 +311,11 @@ export default function HomeTab() {
           className={compactViewport ? 'mt-5 gap-3' : 'mt-7 gap-3'}
           testID="home.journey.deck">
           {recommendationExplanation ? (
-            <Text variant="bodySm" testID="home.journey.reason">
+            <Text
+              variant="bodySm"
+              tone="default"
+              style={world.appearance === 'dark' ? ARTWORK_TEXT_HALO : undefined}
+              testID="home.journey.reason">
               {recommendationExplanation}
             </Text>
           ) : null}

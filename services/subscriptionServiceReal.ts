@@ -1,5 +1,5 @@
 import Constants from 'expo-constants';
-import { Platform } from 'react-native';
+import { Linking, Platform } from 'react-native';
 import Purchases, { CustomerInfo, PurchasesPackage } from 'react-native-purchases';
 
 import {
@@ -327,6 +327,28 @@ export async function restorePurchases(): Promise<SubscriptionStatus> {
   const info = await Purchases.restorePurchases();
   const status = mapStatus(info);
   return status;
+}
+
+// Google Play lists the signed-in account's subscriptions here when RevenueCat has no management URL.
+const PLAY_SUBSCRIPTIONS_URL = 'https://play.google.com/store/account/subscriptions';
+
+/**
+ * Opens subscription management in the store that owns the subscription. RevenueCat's
+ * management URL names that store (App Store, Google Play or web billing); App Store
+ * subscriptions on iOS get the in-app sheet instead.
+ */
+export async function openManagement(userId?: string | null): Promise<SubscriptionStatus> {
+  if (!persistedState.configured) {
+    await ensureConfigured(userId);
+  }
+  const { managementURL } = await Purchases.getCustomerInfo();
+  const isAppStoreUrl = !managementURL || managementURL.startsWith('https://apps.apple.com/');
+  if (Platform.OS === 'ios' && isAppStoreUrl) {
+    await Purchases.showManageSubscriptions();
+  } else {
+    await Linking.openURL(managementURL ?? PLAY_SUBSCRIPTIONS_URL);
+  }
+  return refreshStatus();
 }
 
 export async function logOutUser(): Promise<void> {

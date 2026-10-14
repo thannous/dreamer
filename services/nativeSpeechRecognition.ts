@@ -790,9 +790,10 @@ export async function startNativeSpeechSession(
         lang: languageCode,
         interimResults: true,
         addsPunctuation: true,
-        // On web keep the session alive longer; native ignores/handles as supported.
-        // This prevents premature stop before the user speaks.
-        continuous: Platform.OS === 'web',
+        // Web and iOS keep listening through pauses until the user stops. Non-continuous
+        // iOS 18+ ends the session at the first pause-final result (about 2 s of silence).
+        // Android stays non-continuous and restarts hands-free (shouldRestartHandsFreeSpeech).
+        continuous: Platform.OS === 'web' || Platform.OS === 'ios',
         requiresOnDeviceRecognition,
         androidRecognitionServicePackage,
         recordingOptions: supportsRecording

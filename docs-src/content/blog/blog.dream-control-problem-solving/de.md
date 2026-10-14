@@ -39,7 +39,7 @@
 ---
 <article class="max-w-5xl mx-auto">
 <!-- Breadcrumb -->
-<nav aria-label="Semmelbrösel" class="text-sm text-purple-200/60 mb-8">
+<nav aria-label="Brotkrümelnavigation" class="text-sm text-purple-200/60 mb-8">
 <ol class="flex items-center gap-2 flex-wrap" itemscope="" itemtype="https://schema.org/BreadcrumbList">
 <li itemprop="itemListElement" itemscope="" itemtype="https://schema.org/ListItem">
 <a class="hover:text-dream-salmon transition-colors" href="/de/" itemprop="item"><span itemprop="name">Startseite</span></a>
@@ -344,7 +344,7 @@ In vereinfachter Form, ja: Schreiben Sie Ihre Frage vor dem Schlafen auf, verkn�
 <a class="glass-panel rounded-xl p-6 block hover:border-dream-salmon/30 transition-all hover:-translate-y-1" href="traeume-und-kreativitaet">
 <span class="text-xs text-dream-salmon uppercase mb-2 block">Wissenschaft</span>
 <h3 class="font-serif text-lg text-dream-cream mb-2">Träume und Kreativität: Wie Ihr schlafendes Gehirn Probleme löst</h3>
-<p class="text-sm text-gray-400">Entdecken Sie, wie Träume Kreativität und Innovation fördern, von Kekulé bis zur modernen Forschung.</p>
+<p class="text-sm text-gray-400">Was die Schlafforschung über Träume und Problemlösen sagt und wie Sie eine Idee notieren, bevor sie verblasst.</p>
 </a>
 <a class="glass-panel rounded-xl p-6 block hover:border-dream-salmon/30 transition-all hover:-translate-y-1" href="trauminkubation-wie-sie-heute-abend-genau-das-traeumen-was-sie-wollen">
 <span class="text-xs text-dream-salmon uppercase mb-2 block">Leitfaden</span>

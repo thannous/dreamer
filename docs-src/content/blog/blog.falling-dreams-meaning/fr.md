@@ -397,7 +397,7 @@
 <section class="mt-16 glass-panel rounded-2xl p-6" id="sources">
 <h2 class="font-serif text-2xl text-dream-cream mb-4">Sources et lectures</h2>
 <ul class="mt-6 space-y-2 text-sm text-gray-400">
-<li><a href="https://asdreams.org/journal/issues/asdj13-4.htm" rel="nofollow noopener noreferrer" target="_blank">Nielsen, Zadra et al. (2003), « The Typical Dreams of Canadian University Students », <em>Dreaming</em>, 13(4)</a></li>
+<li><a href="https://doi.org/10.1023/B:DREM.0000003144.40929.0b" rel="nofollow noopener noreferrer" target="_blank">Nielsen, Zadra et al. (2003), « The Typical Dreams of Canadian University Students », <em>Dreaming</em>, 13(4)</a></li>
 <li><a href="https://www.sleepfoundation.org/sleep-faqs/hypnic-jerks" rel="nofollow noopener noreferrer" target="_blank">Sleep Foundation, « Hypnic Jerks »</a></li>
 <li><a href="https://www.cambridge.org/core/journals/behavioral-and-brain-sciences/article/reinterpretation-of-dreams-an-evolutionary-hypothesis-of-the-function-of-dreaming/EE0E7DB39E361540D2DDA79C262EDA7E" rel="nofollow noopener noreferrer" target="_blank">Revonsuo (2000), « The reinterpretation of dreams », <em>Behavioral and Brain Sciences</em></a></li>
 <li><a href="https://dictionary.apa.org/dream" rel="nofollow noopener noreferrer" target="_blank">APA Dictionary of Psychology, « Dream »</a></li>
@@ -436,17 +436,17 @@
         <a href="signification-reves-recurrents" class="glass-panel rounded-xl p-6 block hover:border-dream-salmon/30 transition-all hover:-translate-y-1">
             <span class="text-xs text-dream-salmon uppercase mb-2 block">Interprétation</span>
             <h3 class="font-serif text-lg text-dream-cream mb-2">Signification des rêves récurrents : comprendre leurs messages</h3>
-            <p class="text-sm text-gray-400">Pourquoi refaites-vous toujours le même rêve ? Découvrez ce que votre inconscient essaie de vous dire.</p>
+            <p class="text-sm text-gray-400">Pourquoi le même rêve revient, quoi noter d'une nuit à l'autre et quand des cauchemars répétés justifient un avis médical.</p>
         </a>
         <a href="reves-dents-qui-tombent" class="glass-panel rounded-xl p-6 block hover:border-dream-salmon/30 transition-all hover:-translate-y-1">
             <span class="text-xs text-dream-salmon uppercase mb-2 block">Interprétation</span>
             <h3 class="font-serif text-lg text-dream-cream mb-2">Rêver de perdre ses dents : signification et interprétation</h3>
-            <p class="text-sm text-gray-400">Pourquoi rêvez-vous de perdre vos dents ? Découvrez les 7 interprétations les plus courantes.</p>
+            <p class="text-sm text-gray-400">Sept pistes pour les rêves de dents qui tombent, de la tension de la mâchoire à la peur du regard des autres, et les variantes à noter.</p>
         </a>
         <a href="reves-de-voler" class="glass-panel rounded-xl p-6 block hover:border-dream-salmon/30 transition-all hover:-translate-y-1">
             <span class="text-xs text-dream-salmon uppercase mb-2 block">Interprétation</span>
             <h3 class="font-serif text-lg text-dream-cream mb-2">Rêves de voler : ce que ça signifie</h3>
-            <p class="text-sm text-gray-400">Pourquoi rêvez-vous de voler ? Découvrez ce que les rêves de vol révèlent sur la liberté et l'ambition.</p>
+            <p class="text-sm text-gray-400">Ce que peuvent suggérer un vol sans effort, un décollage raté ou une fuite dans les airs, et quoi noter au réveil.</p>
         </a>
   </div>
 </section>

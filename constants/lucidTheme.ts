@@ -77,6 +77,9 @@ export const LucidScene = {
 //
 // Tous les couples texte/surface tiennent 4,5:1 au pire cas, mesurés sur les
 // quatre surfaces de chaque thème.
+/** Night of the painted scenes, whatever the ambience: the ground of the veil over them. */
+export const LUCID_NIGHT_GROUND = '#030B10';
+
 export function getLucidPalette(colors: ThemeColors, mode: 'light' | 'dark') {
   const dark = mode === 'dark';
 
@@ -146,7 +149,7 @@ export function getLucidPalette(colors: ThemeColors, mode: 'light' | 'dark') {
 
   return {
     background: dark ? '#06131A' : '#F2F6F6',
-    backgroundDeep: dark ? '#030B10' : '#E6EDED',
+    backgroundDeep: dark ? LUCID_NIGHT_GROUND : '#E6EDED',
     surface: dark ? '#0D2029' : '#FFFFFF',
     surfaceRaised: dark ? '#153039' : '#EAF1F1',
     surfaceMuted: dark ? '#0A1B22' : '#E1EAEA',

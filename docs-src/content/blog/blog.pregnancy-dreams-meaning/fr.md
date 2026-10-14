@@ -432,17 +432,17 @@ Un rêve n'est pas un test de grossesse. Si vous pensez être enceinte, un test 
         <a href="signification-reves-recurrents" class="glass-panel rounded-xl p-6 block hover:border-dream-salmon/30 transition-all hover:-translate-y-1">
             <span class="text-xs text-dream-salmon uppercase mb-2 block">Interprétation</span>
             <h3 class="font-serif text-lg text-dream-cream mb-2">Signification des rêves récurrents : comprendre leurs messages</h3>
-            <p class="text-sm text-gray-400">Pourquoi refaites-vous toujours le même rêve ? Découvrez ce que votre inconscient essaie de vous dire.</p>
+            <p class="text-sm text-gray-400">Pourquoi le même rêve revient, quoi noter d'une nuit à l'autre et quand des cauchemars répétés justifient un avis médical.</p>
         </a>
         <a href="reves-dents-qui-tombent" class="glass-panel rounded-xl p-6 block hover:border-dream-salmon/30 transition-all hover:-translate-y-1">
             <span class="text-xs text-dream-salmon uppercase mb-2 block">Interprétation</span>
             <h3 class="font-serif text-lg text-dream-cream mb-2">Rêver de perdre ses dents : signification et interprétation</h3>
-            <p class="text-sm text-gray-400">Pourquoi rêvez-vous de perdre vos dents ? Découvrez les 7 interprétations les plus courantes.</p>
+            <p class="text-sm text-gray-400">Sept pistes pour les rêves de dents qui tombent, de la tension de la mâchoire à la peur du regard des autres, et les variantes à noter.</p>
         </a>
         <a href="reves-de-chute" class="glass-panel rounded-xl p-6 block hover:border-dream-salmon/30 transition-all hover:-translate-y-1">
             <span class="text-xs text-dream-salmon uppercase mb-2 block">Interprétation</span>
             <h3 class="font-serif text-lg text-dream-cream mb-2">Rêves de chute : pourquoi rêvez-vous de tomber ?</h3>
-            <p class="text-sm text-gray-400">Pourquoi rêvez-vous de tomber dans le vide ? Découvrez la signification psychologique.</p>
+            <p class="text-sm text-gray-400">Pourquoi on rêve de tomber, de la secousse hypnique à l'endormissement aux longues chutes, et quoi noter au réveil.</p>
         </a>
   </div>
 </section>

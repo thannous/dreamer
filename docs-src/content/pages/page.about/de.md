@@ -29,7 +29,7 @@
   "nextPath": "",
   "preloadImage": "",
   "jsonLd": [
-    "{\n          \"@context\": \"https://schema.org\",\n          \"@graph\": [\n                    {\n                              \"@type\": \"AboutPage\",\n                              \"name\": \"Über Noctalia\",\n                              \"url\": \"https://noctalia.app/de/ueber-uns\",\n                              \"inLanguage\": \"de\",\n                              \"about\": {\n                                        \"@id\": \"https://noctalia.app/#organization\"\n                              },\n                              \"mainEntity\": {\n                                        \"@id\": \"https://noctalia.app/de/ueber-uns#person\"\n                              }\n                    },\n                    {\n                              \"@type\": \"Organization\",\n                              \"@id\": \"https://noctalia.app/#organization\",\n                              \"name\": \"Noctalia\",\n                              \"url\": \"https://noctalia.app\",\n                              \"founder\": {\n                                        \"@id\": \"https://noctalia.app/de/ueber-uns#person\"\n                              }\n                    },\n                    {\n                              \"@type\": \"Person\",\n                              \"@id\": \"https://noctalia.app/de/ueber-uns#person\",\n                              \"name\": \"Thanh Chau\",\n                              \"jobTitle\": \"Founder & Publication Director\",\n                              \"url\": \"https://noctalia.app/de/ueber-uns\",\n                              \"worksFor\": {\n                                        \"@id\": \"https://noctalia.app/#organization\"\n                              },\n                              \"description\": \"Softwareentwickler und langjähriger Traumtagebuch-Nutzer: Thanh hat Noctalia entwickelt, weil die wertvollsten Notizen oft die sind, die vor dem Verblassen am Morgen entstehen. Er verantwortet Produkt und Redaktion mit Fokus auf klare Quellen, praktische Reflexion und ehrliche Grenzen von KI-Deutung.\"\n                    }\n          ]\n}",
+    "{\n          \"@context\": \"https://schema.org\",\n          \"@graph\": [\n                    {\n                              \"@type\": \"AboutPage\",\n                              \"name\": \"Über Noctalia\",\n                              \"url\": \"https://noctalia.app/de/ueber-uns\",\n                              \"inLanguage\": \"de\",\n                              \"about\": {\n                                        \"@id\": \"https://noctalia.app/#organization\"\n                              },\n                              \"mainEntity\": {\n                                        \"@id\": \"https://noctalia.app/de/ueber-uns#person\"\n                              }\n                    },\n                    {\n                              \"@type\": \"Organization\",\n                              \"@id\": \"https://noctalia.app/#organization\",\n                              \"name\": \"Noctalia\",\n                              \"url\": \"https://noctalia.app\",\n                              \"founder\": {\n                                        \"@id\": \"https://noctalia.app/de/ueber-uns#person\"\n                              }\n                    },\n                    {\n                              \"@type\": \"Person\",\n                              \"@id\": \"https://noctalia.app/de/ueber-uns#person\",\n                              \"name\": \"Thanh Chau\",\n                              \"jobTitle\": \"Founder & Publication Director\",\n                              \"url\": \"https://noctalia.app/de/ueber-uns\",\n                              \"worksFor\": {\n                                        \"@id\": \"https://noctalia.app/#organization\"\n                              },\n                              \"description\": \"Thanh ist Softwareentwickler und führt seit Jahren ein Traumtagebuch. Er hat Noctalia gebaut, weil die wertvollsten Notizen oft die sind, die man aufschreibt, bevor der Morgen sie verwischt. Er verantwortet Produkt und Redaktion nach drei Regeln: klare Quellen nennen, beim Praktischen bleiben und offen sagen, was eine KI-Deutung nicht leisten kann.\"\n                    }\n          ]\n}",
     "{\n            \"@context\": \"https://schema.org\",\n            \"@type\": \"BreadcrumbList\",\n            \"itemListElement\": [\n                {\n                    \"@type\": \"ListItem\",\n                    \"position\": 1,\n                    \"name\": \"Startseite\",\n                    \"item\": \"https://noctalia.app/de/\"\n                },\n                {\n                    \"@type\": \"ListItem\",\n                    \"position\": 2,\n                    \"name\": \"Über Noctalia\",\n                    \"item\": \"https://noctalia.app/de/ueber-uns\"\n                }\n            ]\n        }"
   ],
   "activeNav": null
@@ -58,41 +58,41 @@
                     <div>
                         <h3 class="text-white font-medium">Thanh Chau</h3>
                         <p class="text-sm text-dream-salmon mb-2">Gründer &amp; Verantwortlicher</p>
-                        <p class="text-sm">Softwareentwickler und langjähriger Traumtagebuch-Nutzer: Thanh hat Noctalia entwickelt, weil die wertvollsten Notizen oft die sind, die vor dem Verblassen am Morgen entstehen. Er verantwortet Produkt und Redaktion mit Fokus auf klare Quellen, praktische Reflexion und ehrliche Grenzen von KI-Deutung.</p>
+                        <p class="text-sm">Thanh ist Softwareentwickler und führt seit Jahren ein Traumtagebuch. Er hat Noctalia gebaut, weil die wertvollsten Notizen oft die sind, die man aufschreibt, bevor der Morgen sie verwischt. Er verantwortet Produkt und Redaktion nach drei Regeln: klare Quellen nennen, beim Praktischen bleiben und offen sagen, was eine KI-Deutung nicht leisten kann.</p>
                     </div>
                 </div>
             </section>
 
             <section class="glass-panel p-8 rounded-2xl border border-white/10 bg-white/5">
                 <h2 class="text-2xl font-serif text-white mb-4">Wie wir unsere Inhalte erstellen</h2>
-                <p>Unsere Artikel und Guides sollen klar, praktisch und an etablierten Konzepten aus Schlafforschung und Psychologie orientiert sein.</p>
+                <p>Unsere Artikel und Guides sollen klar und praktisch sein und sich auf das stützen, was Schlafforschung und Psychologie tatsächlich belegt haben.</p>
                 <div class="mt-6 space-y-4">
                     <div class="flex items-start gap-3">
                         <i data-lucide="search" class="w-5 h-5 text-dream-salmon mt-0.5 flex-shrink-0"></i>
                         <div>
                             <h3 class="text-white font-medium mb-1">Forschungsbasiertes Schreiben</h3>
-                            <p class="text-sm">Wir konsultieren begutachtete Studien, klinische Leitlinien und anerkannte Werke der Traumpsychologie. Bei Verweisen auf Forschung verlinken wir zur Originalquelle (PubMed, APA, universitäre Publikationen).</p>
+                            <p class="text-sm">Wir lesen begutachtete Studien, klinische Leitlinien und Standardwerke der Traumpsychologie. Wenn wir Forschung zitieren, verlinken wir die Originalquelle (PubMed, APA, universitäre Publikationen).</p>
                         </div>
                     </div>
                     <div class="flex items-start gap-3">
                         <i data-lucide="user-check" class="w-5 h-5 text-dream-salmon mt-0.5 flex-shrink-0"></i>
                         <div>
-                            <h3 class="text-white font-medium mb-1">Expertenzitate</h3>
-                            <p class="text-sm">Unsere Artikel zitieren namentlich genannte Forscher und deren institutionelle Zugehörigkeit — darunter Schlafwissenschaftler, Psychologen und Traumforscher von Harvard, APA und anderen Institutionen.</p>
+                            <h3 class="text-white font-medium mb-1">Forschende mit Namen</h3>
+                            <p class="text-sm">Stützt sich ein Artikel auf eine Studie, nennen wir die Forschenden dahinter und, wo es hilft, ihre Institution. „Experten sagen“ reicht uns nicht.</p>
                         </div>
                     </div>
                     <div class="flex items-start gap-3">
                         <i data-lucide="refresh-cw" class="w-5 h-5 text-dream-salmon mt-0.5 flex-shrink-0"></i>
                         <div>
                             <h3 class="text-white font-medium mb-1">Regelmäßige Aktualisierungen</h3>
-                            <p class="text-sm">Artikel werden überprüft und aktualisiert, um neue Erkenntnisse widerzuspiegeln. Jeder Artikel zeigt sein Veröffentlichungs- und Änderungsdatum.</p>
+                            <p class="text-sm">Wir überarbeiten einen Artikel, wenn neue Ergebnisse seine Aussagen verändern. Jeder Artikel zeigt, wann er erschienen ist und wann er zuletzt aktualisiert wurde.</p>
                         </div>
                     </div>
                     <div class="flex items-start gap-3">
                         <i data-lucide="shield-check" class="w-5 h-5 text-dream-salmon mt-0.5 flex-shrink-0"></i>
                         <div>
                             <h3 class="text-white font-medium mb-1">Klare Grenzen</h3>
-                            <p class="text-sm">Wir unterscheiden informativen Inhalt von medizinischer Beratung. Jeder Artikel enthält einen Hinweis, und gesundheitsbezogene Themen empfehlen stets die Konsultation eines qualifizierten Fachmanns.</p>
+                            <p class="text-sm">Unsere Inhalte informieren, sie beraten nicht medizinisch. Die Artikel tragen einen entsprechenden Hinweis, und Artikel zu Gesundheitsthemen sagen, wann du dich an eine Fachperson wenden solltest.</p>
                         </div>
                     </div>
                 </div>

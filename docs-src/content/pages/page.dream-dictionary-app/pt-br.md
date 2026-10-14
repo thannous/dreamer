@@ -5,7 +5,7 @@
   "lang": "pt-br",
   "slug": "app-dicionario-de-sonhos",
   "title": "App dicionário de sonhos | Noctalia",
-  "description": "Percorra 150 fichas públicas de símbolos, compare significados possíveis e conecte um símbolo ao seu próprio sonho no Noctalia para Android.",
+  "description": "Percorra 160 fichas públicas de símbolos, compare significados possíveis e conecte um símbolo ao seu próprio sonho no Noctalia para Android.",
   "robots": "index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1",
   "themeColor": "#0a0514",
   "htmlClass": "",
@@ -23,22 +23,22 @@
   "twitterImage": "https://noctalia.app/img/og/noctalia-en-1200x630.jpg",
   "twitterImageAlt": "App dicionário de sonhos Noctalia",
   "publishedTime": "2026-06-04T00:00:00+02:00",
-  "modifiedTime": "2026-07-09T00:00:00+02:00",
+  "modifiedTime": "2026-10-11T00:00:00+02:00",
   "author": "Thanh Chau",
   "prevPath": "",
   "nextPath": "",
   "preloadImage": "",
   "jsonLd": [
-    "{\"@context\":\"https://schema.org\",\"@type\":\"WebPage\",\"name\":\"App dicionário de sonhos\",\"description\":\"Percorra 150 fichas públicas de símbolos, compare significados possíveis e conecte um símbolo ao seu próprio sonho no Noctalia para Android.\",\"url\":\"https://noctalia.app/pt-br/app-dicionario-de-sonhos\",\"inLanguage\":\"pt-BR\",\"dateModified\":\"2026-07-09T00:00:00+02:00\",\"about\":{\"@id\":\"https://noctalia.app/#software\"},\"publisher\":{\"@id\":\"https://noctalia.app/#organization\"}}",
+    "{\"@context\":\"https://schema.org\",\"@type\":\"WebPage\",\"name\":\"App dicionário de sonhos\",\"description\":\"Percorra 160 fichas públicas de símbolos, compare significados possíveis e conecte um símbolo ao seu próprio sonho no Noctalia para Android.\",\"url\":\"https://noctalia.app/pt-br/app-dicionario-de-sonhos\",\"inLanguage\":\"pt-BR\",\"dateModified\":\"2026-10-11T00:00:00+02:00\",\"about\":{\"@id\":\"https://noctalia.app/#software\"},\"publisher\":{\"@id\":\"https://noctalia.app/#organization\"}}",
     "{\"@context\":\"https://schema.org\",\"@type\":\"BreadcrumbList\",\"itemListElement\":[{\"@type\":\"ListItem\",\"position\":1,\"name\":\"Início\",\"item\":\"https://noctalia.app/pt-br/\"},{\"@type\":\"ListItem\",\"position\":2,\"name\":\"App dicionário de sonhos\",\"item\":\"https://noctalia.app/pt-br/app-dicionario-de-sonhos\"}]} ",
-    "{\"@context\":\"https://schema.org\",\"@type\":\"FAQPage\",\"mainEntity\":[{\"@type\":\"Question\",\"name\":\"O dicionário do Noctalia é gratuito?\",\"acceptedAnswer\":{\"@type\":\"Answer\",\"text\":\"Sim. O dicionário web público permite percorrer 150 fichas editoriais de símbolos por categoria ou de A a Z sem instalar o app.\"}},{\"@type\":\"Question\",\"name\":\"Um símbolo tem sempre o mesmo significado?\",\"acceptedAnswer\":{\"@type\":\"Answer\",\"text\":\"Não. Um mesmo símbolo pode remeter a lembranças, emoções e situações diferentes. Use o dicionário como um conjunto de possibilidades a comparar com o sonho completo.\"}},{\"@type\":\"Question\",\"name\":\"O que o app Android adiciona ao dicionário?\",\"acceptedAnswer\":{\"@type\":\"Answer\",\"text\":\"O app adiciona o registro por voz ou texto, um diário privado, a reflexão por IA, o contexto emocional e simbólico, imagens geradas e perguntas de acompanhamento.\"}},{\"@type\":\"Question\",\"name\":\"Um dicionário de sonhos pode diagnosticar ou prever?\",\"acceptedAnswer\":{\"@type\":\"Answer\",\"text\":\"Não. As fichas são pistas informativas, não uma orientação médica, um diagnóstico psicológico ou uma previsão.\"}}]}"
+    "{\"@context\":\"https://schema.org\",\"@type\":\"FAQPage\",\"mainEntity\":[{\"@type\":\"Question\",\"name\":\"O dicionário do Noctalia é gratuito?\",\"acceptedAnswer\":{\"@type\":\"Answer\",\"text\":\"Sim. O dicionário web público permite percorrer 160 fichas editoriais de símbolos por categoria ou de A a Z sem instalar o app.\"}},{\"@type\":\"Question\",\"name\":\"Um símbolo tem sempre o mesmo significado?\",\"acceptedAnswer\":{\"@type\":\"Answer\",\"text\":\"Não. Um mesmo símbolo pode remeter a lembranças, emoções e situações diferentes. Use o dicionário como um conjunto de possibilidades a comparar com o sonho completo.\"}},{\"@type\":\"Question\",\"name\":\"O que o app Android adiciona ao dicionário?\",\"acceptedAnswer\":{\"@type\":\"Answer\",\"text\":\"O app adiciona o registro por voz ou texto, um diário privado, a reflexão por IA, o contexto emocional e simbólico, imagens geradas e perguntas de acompanhamento.\"}},{\"@type\":\"Question\",\"name\":\"Um dicionário de sonhos pode diagnosticar ou prever?\",\"acceptedAnswer\":{\"@type\":\"Answer\",\"text\":\"Não. As fichas são pistas informativas, não uma orientação médica, um diagnóstico psicológico ou uma previsão.\"}}]}"
   ],
   "activeNav": "resources"
 }
 ---
 <h1 class="font-serif text-4xl md:text-5xl mb-4 text-dream-cream">App dicionário de sonhos</h1>
-<p class="text-sm text-purple-300/70 mb-6">Atualizado em 9 de julho de 2026</p>
-<p class="text-lg text-purple-200/80 leading-relaxed mb-10">O Noctalia associa um dicionário público de 150 fichas editoriais de símbolos a um diário Android. Pesquise os significados possíveis de um símbolo e depois recoloque-o no sonho completo, nas suas emoções e nos detalhes registrados ao acordar.</p>
+<p class="text-sm text-purple-300/70 mb-6">Atualizado em 11 de outubro de 2026</p>
+<p class="text-lg text-purple-200/80 leading-relaxed mb-10">O Noctalia associa um dicionário público de 160 fichas editoriais de símbolos a um diário Android. Pesquise os significados possíveis de um símbolo e depois recoloque-o no sonho completo, nas suas emoções e nos detalhes registrados ao acordar.</p>
 
 <div class="space-y-8 text-gray-300 leading-relaxed">
   <section class="glass-panel p-8 rounded-2xl border border-white/10 bg-white/5">
@@ -47,9 +47,9 @@
   </section>
 
   <section class="grid md:grid-cols-3 gap-6">
-    <div class="glass-panel p-6 rounded-2xl border border-white/10 bg-white/5"><h2 class="text-xl font-serif text-white mb-3">1. Pesquisar</h2><p>Percorra 150 fichas públicas por categoria ou de A a Z. Cada ficha apresenta variantes, perguntas e associações possíveis.</p></div>
+    <div class="glass-panel p-6 rounded-2xl border border-white/10 bg-white/5"><h2 class="text-xl font-serif text-white mb-3">1. Pesquisar</h2><p>Percorra 160 fichas públicas por categoria ou de A a Z. Cada ficha apresenta variantes, perguntas e associações possíveis.</p></div>
     <div class="glass-panel p-6 rounded-2xl border border-white/10 bg-white/5"><h2 class="text-xl font-serif text-white mb-3">2. Contextualizar</h2><p>Anote a ação do símbolo, seu aspecto e o que você sentiu. Um mar calmo e uma enchente não descrevem a mesma cena.</p></div>
-    <div class="glass-panel p-6 rounded-2xl border border-white/10 bg-white/5"><h2 class="text-xl font-serif text-white mb-3">3. Comparar</h2><p>Guarde o sonho completo no app e observe os símbolos repetidos entre várias entradas em vez de concluir depois de uma pesquisa.</p></div>
+    <div class="glass-panel p-6 rounded-2xl border border-white/10 bg-white/5"><h2 class="text-xl font-serif text-white mb-3">3. Comparar</h2><p>Guarde o sonho completo no app e repare nos símbolos que voltam de uma entrada para outra, em vez de tirar conclusões de uma única pesquisa.</p></div>
   </section>
 
   <section class="glass-panel p-8 rounded-2xl border border-white/10 bg-white/5 overflow-x-auto">
@@ -65,6 +65,38 @@
   </section>
 
   <section class="glass-panel p-8 rounded-2xl border border-white/10 bg-white/5">
+    <h2 class="text-2xl font-serif text-white mb-4">Símbolos frequentes do dicionário</h2>
+    <p>Estes dez símbolos aparecem com frequência nos sonhos. Ao lado de cada um, um primeiro detalhe para anotar ao acordar. No app Android, você encontra todos eles no dicionário de símbolos, em português.</p>
+    <ul class="list-disc pl-5 mt-4 space-y-2">
+      <li><span class="text-white font-medium">Água</span>: limpa ou turva, calma ou agitada.</li>
+      <li><span class="text-white font-medium">Queda</span>: de onde você caía e se alguém viu.</li>
+      <li><span class="text-white font-medium">Voar</span>: fácil, cansativo ou impossível de controlar.</li>
+      <li><span class="text-white font-medium">Perder os dentes</span>: um por um ou todos de uma vez, com ou sem dor.</li>
+      <li><span class="text-white font-medium">Cobra</span>: ameaçadora, calma ou simplesmente ali.</li>
+      <li><span class="text-white font-medium">Ser perseguido</span>: quem ou o que seguia você, e a que distância.</li>
+      <li><span class="text-white font-medium">Morte</span>: quem morria e que vínculo você tem com essa pessoa.</li>
+      <li><span class="text-white font-medium">Casa</span>: conhecida, da infância, desconhecida ou em ruínas.</li>
+      <li><span class="text-white font-medium">Cachorro</span>: o seu, um cachorro conhecido ou um desconhecido.</li>
+      <li><span class="text-white font-medium">Lua</span>: cheia, crescente, enorme ou vermelha.</li>
+    </ul>
+  </section>
+
+  <section class="glass-panel p-8 rounded-2xl border border-white/10 bg-white/5 overflow-x-auto">
+    <h2 class="text-2xl font-serif text-white mb-4">Um símbolo, dois sonhos: a casa</h2>
+    <p class="mb-4">Exemplo fictício. Duas pessoas sonham com uma casa. Elas abririam a mesma ficha, mas a leitura muda.</p>
+    <table class="w-full text-left text-sm min-w-[720px]">
+      <thead class="text-purple-200"><tr><th class="py-3 pr-4">Detalhe</th><th class="py-3 pr-4">Primeiro sonho</th><th class="py-3 pr-4">Segundo sonho</th></tr></thead>
+      <tbody class="divide-y divide-white/10">
+        <tr><td class="py-4 pr-4 text-white font-medium">Cena</td><td class="py-4 pr-4">Você abre uma porta em casa e encontra um cômodo que não conhecia, claro e vazio.</td><td class="py-4 pr-4">Você está na casa da sua infância. O teto racha e você procura a saída.</td></tr>
+        <tr><td class="py-4 pr-4 text-white font-medium">Emoção ao acordar</td><td class="py-4 pr-4">Curiosidade, um pouco de empolgação.</td><td class="py-4 pr-4">Medo, depois tristeza.</td></tr>
+        <tr><td class="py-4 pr-4 text-white font-medium">Pista possível</td><td class="py-4 pr-4">Algo na sua vida que você começa a explorar: um projeto, um papel novo.</td><td class="py-4 pr-4">Uma referência antiga que parece frágil, ou uma preocupação com um parente ou com uma moradia.</td></tr>
+        <tr><td class="py-4 pr-4 text-white font-medium">Pergunta para anotar</td><td class="py-4 pr-4">O que, neste momento, parece um cômodo recém-descoberto?</td><td class="py-4 pr-4">O que me parece menos firme do que antes?</td></tr>
+      </tbody>
+    </table>
+    <p class="mt-4">Nenhuma dessas pistas é uma conclusão. Confira cada uma com o seu dia a dia e com os sonhos seguintes: se a casa voltar, anote o que mudou. No app, cada sonho é uma entrada separada do diário, e a análise só acontece quando você pede.</p>
+  </section>
+
+  <section class="glass-panel p-8 rounded-2xl border border-white/10 bg-white/5">
     <h2 class="text-2xl font-serif text-white mb-4">Limites editoriais e privacidade</h2>
     <p>O dicionário é um conteúdo editorial, não um conjunto de sonhos privados nem um recurso clínico. Nenhum clínico é apresentado como revisor desta página. Para o diário Android, a <a href="/pt-br/politica-de-privacidade" class="text-dream-salmon hover:underline">política de privacidade</a> explica a hospedagem, os fornecedores de IA e os controles de exclusão.</p>
   </section>
@@ -72,7 +104,7 @@
   <section class="glass-panel p-8 rounded-2xl border border-white/10 bg-white/5">
     <h2 class="text-2xl font-serif text-white mb-4">Perguntas frequentes sobre o dicionário de sonhos</h2>
     <div class="space-y-5">
-      <div><h3 class="text-white font-medium">O dicionário do Noctalia é gratuito?</h3><p class="mt-1">Sim. O dicionário web público permite percorrer 150 fichas editoriais de símbolos por categoria ou de A a Z sem instalar o app.</p></div>
+      <div><h3 class="text-white font-medium">O dicionário do Noctalia é gratuito?</h3><p class="mt-1">Sim. O dicionário web público permite percorrer 160 fichas editoriais de símbolos por categoria ou de A a Z sem instalar o app.</p></div>
       <div><h3 class="text-white font-medium">Um símbolo tem sempre o mesmo significado?</h3><p class="mt-1">Não. Um mesmo símbolo pode remeter a lembranças, emoções e situações diferentes. Use o dicionário como um conjunto de possibilidades a comparar com o sonho completo.</p></div>
       <div><h3 class="text-white font-medium">O que o app Android adiciona ao dicionário?</h3><p class="mt-1">O app adiciona o registro por voz ou texto, um diário privado, a reflexão por IA, o contexto emocional e simbólico, imagens geradas e perguntas de acompanhamento.</p></div>
       <div><h3 class="text-white font-medium">Um dicionário de sonhos pode diagnosticar ou prever?</h3><p class="mt-1">Não. As fichas são pistas informativas, não uma orientação médica, um diagnóstico psicológico ou uma previsão.</p></div>

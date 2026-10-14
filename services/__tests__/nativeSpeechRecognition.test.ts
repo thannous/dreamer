@@ -789,6 +789,30 @@ describe('iOS first-use speech authorization', () => {
     (await pendingSession)?.abort();
   });
 
+  it('keeps iOS dictation open through pauses and joins the segments it finalizes', async () => {
+    jest.useFakeTimers();
+    Platform.OS = 'ios';
+    AppState.currentState = 'active';
+    const { speechModule, listeners } = createSpeechModule();
+    speechModule.getPermissionsAsync.mockResolvedValue({ granted: true });
+    const onEnd = jest.fn();
+    const emit = (event: string, payload: unknown) => listeners.get(event)?.(payload);
+
+    const pendingSession = startNativeSpeechSession('fr-FR', { permissionAlreadyGranted: true, onEnd });
+    await jest.advanceTimersByTimeAsync(0);
+    const session = await pendingSession;
+
+    expect(speechModule.start).toHaveBeenCalledWith(expect.objectContaining({ continuous: true }));
+    // iOS 18+ finalizes each phrase after a pause; the session must keep going.
+    emit('result', { isFinal: true, results: [{ transcript: 'Je marchais au bord d’un lac.' }] });
+    emit('result', { isFinal: true, results: [{ transcript: 'Une maison éclairée apparaissait.' }] });
+    expect(onEnd).not.toHaveBeenCalled();
+
+    await expect(session?.stop()).resolves.toMatchObject({
+      transcript: 'Je marchais au bord d’un lac. Une maison éclairée apparaissait.',
+    });
+  });
+
   it('does not start when speech authorization is denied despite microphone access', async () => {
     Platform.OS = 'ios';
     const { speechModule } = createSpeechModule();

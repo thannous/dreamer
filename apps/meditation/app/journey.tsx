@@ -5,6 +5,7 @@ import React from 'react';
 import { Pressable, ScrollView, StyleSheet, View } from 'react-native';
 import { withUniwind } from 'uniwind';
 
+import { ARTWORK_TEXT_HALO } from '@/components/journey/WorldJourneyPicker';
 import { BackLink, Button, IconSymbol, Text } from '@/components/ui';
 import { withAlpha, WorldScene } from '@/components/worlds/WorldScene';
 import { canAccessWorld, DEFAULT_WORLD_ID, isWorldId, WORLD_BY_ID, type MeditationWorld } from '@/constants/worlds';
@@ -37,6 +38,7 @@ function JourneyContent({ world }: { world: MeditationWorld }) {
       resumable: ratio >= RESUME_MIN_RATIO && ratio <= RESUME_MAX_RATIO,
     };
   });
+  const halo = world.appearance === 'dark' ? ARTWORK_TEXT_HALO : undefined;
   const completedCount = chapters.filter((chapter) => chapter.done).length;
   const resumableChapters = chapters.filter((chapter) => chapter.resumable);
   const featured = resumableChapters.sort((a, b) =>
@@ -54,9 +56,11 @@ function JourneyContent({ world }: { world: MeditationWorld }) {
           locations={[0, 0.62, 1]} style={StyleSheet.absoluteFill} />
         <View className="gap-6">
           <BackLink label={t('common.back')} />
+          {/* The title sits where the scrim thins over the painting: on a dark
+              world its light parts would otherwise wash out the ivory text. */}
           <View className="gap-2">
-            <Text variant="overline">{t(world.nameKey)}</Text>
-            <Text variant="hero" accessibilityRole="header">{t('journey.title')}</Text>
+            <Text variant="overline" style={halo}>{t(world.nameKey)}</Text>
+            <Text variant="hero" accessibilityRole="header" style={halo}>{t('journey.title')}</Text>
           </View>
         </View>
         <Text variant="bodySm" testID="journey.complete" className="mt-12">

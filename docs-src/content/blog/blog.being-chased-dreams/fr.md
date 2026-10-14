@@ -110,7 +110,7 @@
 <div class="prose max-w-none text-gray-300">
 <h2 id="prevalence">Pourquoi rêve-t-on si souvent d'être poursuivi ?</h2>
 <p>
-                    Si vous avez rêvé d'<a class="text-dream-salmon hover:underline" href="../symboles/poursuite">être poursuivi</a>, vous êtes en très nombreuse compagnie. Dans une enquête menée auprès de 1 181 étudiants canadiens, la poursuite faisait partie des quatre thèmes de rêve rapportés par plus de 60 % des répondants, avec la chute, l'école et la sexualité (<a class="text-dream-salmon hover:underline" href="https://asdreams.org/journal/issues/asdj13-4.htm" rel="nofollow noopener noreferrer" target="_blank">Nielsen, Zadra et al., 2003</a>). Faire ce rêve n'a donc rien d'anormal.
+                    Si vous avez rêvé d'<a class="text-dream-salmon hover:underline" href="../symboles/poursuite">être poursuivi</a>, vous êtes en très nombreuse compagnie. Dans une enquête menée auprès de 1 181 étudiants canadiens, la poursuite faisait partie des quatre thèmes de rêve rapportés par plus de 60 % des répondants, avec la chute, l'école et la sexualité (<a class="text-dream-salmon hover:underline" href="https://doi.org/10.1023/B:DREM.0000003144.40929.0b" rel="nofollow noopener noreferrer" target="_blank">Nielsen, Zadra et al., 2003</a>). Faire ce rêve n'a donc rien d'anormal.
                 </p>
 <p>
                     Pourquoi cette scène plutôt qu'une autre ? Personne ne le sait avec certitude. Une hypothèse connue veut que le rêve serve en partie à répéter des menaces, et peu de menaces sont aussi anciennes et simples que quelque chose qui vous court après. Nous y revenons plus bas, car cela reste une hypothèse.
@@ -407,7 +407,7 @@
 <section class="mt-16 glass-panel rounded-2xl p-6" id="sources">
 <h2 class="font-serif text-2xl text-dream-cream mb-4">Sources et lectures</h2>
 <ul class="mt-6 space-y-2 text-sm text-gray-400">
-<li><a href="https://asdreams.org/journal/issues/asdj13-4.htm" rel="nofollow noopener noreferrer" target="_blank">Nielsen, Zadra et al. (2003), « The Typical Dreams of Canadian University Students », <em>Dreaming</em>, 13(4)</a></li>
+<li><a href="https://doi.org/10.1023/B:DREM.0000003144.40929.0b" rel="nofollow noopener noreferrer" target="_blank">Nielsen, Zadra et al. (2003), « The Typical Dreams of Canadian University Students », <em>Dreaming</em>, 13(4)</a></li>
 <li><a href="https://pubmed.ncbi.nlm.nih.gov/24497669/" rel="nofollow noopener noreferrer" target="_blank">Robert et Zadra (2014), « Thematic and content analysis of idiopathic nightmares and bad dreams », <em>Sleep</em></a></li>
 <li><a href="https://pubmed.ncbi.nlm.nih.gov/11515147/" rel="nofollow noopener noreferrer" target="_blank">Revonsuo (2000), « The reinterpretation of dreams: an evolutionary hypothesis of the function of dreaming », <em>Behavioral and Brain Sciences</em></a></li>
 <li><a href="https://pubmed.ncbi.nlm.nih.gov/29852917/" rel="nofollow noopener noreferrer" target="_blank">Morgenthaler et al. (2018), « Position paper for the treatment of nightmare disorder in adults », American Academy of Sleep Medicine</a></li>
@@ -445,17 +445,17 @@
         <a href="signification-reves-recurrents" class="glass-panel rounded-xl p-6 block hover:border-dream-salmon/30 transition-all hover:-translate-y-1">
             <span class="text-xs text-dream-salmon uppercase mb-2 block">Interprétation</span>
             <h3 class="font-serif text-lg text-dream-cream mb-2">Signification des rêves récurrents : comprendre leurs messages</h3>
-            <p class="text-sm text-gray-400">Pourquoi refaites-vous toujours le même rêve ? Découvrez ce que votre inconscient essaie de vous dire.</p>
+            <p class="text-sm text-gray-400">Pourquoi le même rêve revient, quoi noter d'une nuit à l'autre et quand des cauchemars répétés justifient un avis médical.</p>
         </a>
         <a href="reves-dents-qui-tombent" class="glass-panel rounded-xl p-6 block hover:border-dream-salmon/30 transition-all hover:-translate-y-1">
             <span class="text-xs text-dream-salmon uppercase mb-2 block">Interprétation</span>
             <h3 class="font-serif text-lg text-dream-cream mb-2">Rêver de perdre ses dents : signification et interprétation</h3>
-            <p class="text-sm text-gray-400">Pourquoi rêvez-vous de perdre vos dents ? Découvrez les 7 interprétations les plus courantes.</p>
+            <p class="text-sm text-gray-400">Sept pistes pour les rêves de dents qui tombent, de la tension de la mâchoire à la peur du regard des autres, et les variantes à noter.</p>
         </a>
         <a href="reves-de-chute" class="glass-panel rounded-xl p-6 block hover:border-dream-salmon/30 transition-all hover:-translate-y-1">
             <span class="text-xs text-dream-salmon uppercase mb-2 block">Interprétation</span>
             <h3 class="font-serif text-lg text-dream-cream mb-2">Rêves de chute : pourquoi rêvez-vous de tomber ?</h3>
-            <p class="text-sm text-gray-400">Pourquoi rêvez-vous de tomber dans le vide ? Découvrez la signification psychologique.</p>
+            <p class="text-sm text-gray-400">Pourquoi on rêve de tomber, de la secousse hypnique à l'endormissement aux longues chutes, et quoi noter au réveil.</p>
         </a>
   </div>
 </section>

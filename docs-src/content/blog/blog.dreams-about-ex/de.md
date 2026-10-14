@@ -295,19 +295,19 @@
 <i class="w-5 h-5 text-dream-salmon" data-lucide="book-open"></i>
                     Verwandte Symbole erkunden
                 </h2>
-<p class="text-sm text-purple-300/60 mb-4">Tauchen Sie tiefer in die Symbole aus diesem Artikel ein:</p>
+<p class="text-sm text-purple-300/60 mb-4">Passende Traumsymbole aus dem Artikel:</p>
 <div class="flex flex-wrap gap-3">
 <a class="inline-flex items-center gap-2 px-4 py-2 glass-button rounded-full text-sm hover:text-dream-salmon transition-colors" href="../traumsymbole/haus">
-                        Haustraumbedeutung
+                        Traum von einem Haus
                     </a>
 <a class="inline-flex items-center gap-2 px-4 py-2 glass-button rounded-full text-sm hover:text-dream-salmon transition-colors" href="../traumsymbole/tuer">
-                        Türtraumbedeutung
+                        Traum von einer Tür
                     </a>
 <a class="inline-flex items-center gap-2 px-4 py-2 glass-button rounded-full text-sm hover:text-dream-salmon transition-colors" href="../traumsymbole/telefon">
-                        Telefontraumbedeutung
+                        Traum von einem Telefon
                     </a>
 <a class="inline-flex items-center gap-2 px-4 py-2 glass-button rounded-full text-sm hover:text-dream-salmon transition-colors" href="../traumsymbole/spiegel">
-                        Spiegeltraumbedeutung
+                        Traum von einem Spiegel
                     </a>
 </div>
 </section>
@@ -376,17 +376,17 @@
                     <a href="wiederkehrende-traeume-bedeuten-ihre-verborgenen-botschaften-verstehen" class="glass-panel rounded-xl p-6 block hover:border-dream-salmon/30 transition-all hover:-translate-y-1">
                         <span class="text-xs text-dream-salmon uppercase mb-2 block">Deutung</span>
                         <h3 class="font-serif text-lg text-dream-cream mb-2">Wiederkehrende Träume: Ihre verborgenen Botschaften verstehen</h3>
-                        <p class="text-sm text-gray-400">Warum haben Sie immer denselben Traum? Entdecken Sie, was Ihr Unterbewusstsein Ihnen sagen möchte.</p>
+                        <p class="text-sm text-gray-400">Warum derselbe Traum wiederkehrt, was Sie zwischen den Episoden notieren können und wann wiederholte Albträume ärztlich abgeklärt werden sollten.</p>
                     </a>
                     <a href="traeume-von-ausfallenden-zaehnen-bedeutung-und-interpretation" class="glass-panel rounded-xl p-6 block hover:border-dream-salmon/30 transition-all hover:-translate-y-1">
                         <span class="text-xs text-dream-salmon uppercase mb-2 block">Deutung</span>
                         <h3 class="font-serif text-lg text-dream-cream mb-2">Träume von ausfallenden Zähnen: Bedeutung und Interpretation</h3>
-                        <p class="text-sm text-gray-400">Warum träumen Sie vom Zahnausfall? Entdecken Sie die 7 häufigsten Interpretationen.</p>
+                        <p class="text-sm text-gray-400">Sieben mögliche Lesarten von Träumen über ausfallende Zähne, vom verspannten Kiefer bis zur Angst vor Blamage, und die Varianten, auf die Sie achten können.</p>
                     </a>
                     <a href="bedeutung-von-fallenden-traeumen-warum-sie-vom-fallen-traeumen" class="glass-panel rounded-xl p-6 block hover:border-dream-salmon/30 transition-all hover:-translate-y-1">
                         <span class="text-xs text-dream-salmon uppercase mb-2 block">Deutung</span>
                         <h3 class="font-serif text-lg text-dream-cream mb-2">Fallende Träume: Warum Sie vom Fallen träumen</h3>
-                        <p class="text-sm text-gray-400">Warum träumen Sie davon, ins Leere zu fallen? Entdecken Sie die psychologische Bedeutung.</p>
+                        <p class="text-sm text-gray-400">Warum wir vom Fallen träumen, vom Zucken beim Einschlafen bis zum langen Sturz, und was Sie nach dem Aufwachen notieren können.</p>
                     </a>
               </div>
             </section>

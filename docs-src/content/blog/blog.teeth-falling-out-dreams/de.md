@@ -38,7 +38,7 @@
 ---
 <article class="max-w-5xl mx-auto">
 <!-- Breadcrumb -->
-<nav aria-label="Semmelbrösel" class="text-sm text-purple-200/60 mb-8">
+<nav aria-label="Brotkrümelnavigation" class="text-sm text-purple-200/60 mb-8">
 <ol class="flex items-center gap-2 flex-wrap" itemscope="" itemtype="https://schema.org/BreadcrumbList">
 <li itemprop="itemListElement" itemscope="" itemtype="https://schema.org/ListItem">
 <a class="hover:text-dream-salmon transition-colors" href="/de/" itemprop="item"><span itemprop="name">Startseite</span></a>
@@ -312,11 +312,11 @@ Wenn diese Träume oder Albträume allgemein mehrmals pro Woche auftreten, Ihren
 <i class="w-5 h-5 text-dream-salmon" data-lucide="book-open"></i>
                     Verwandte Symbole erkunden
                 </h2>
-<p class="text-sm text-purple-300/60 mb-4">Tauchen Sie tiefer in die Symbole aus diesem Artikel ein:</p>
+<p class="text-sm text-purple-300/60 mb-4">Passende Traumsymbole aus dem Artikel:</p>
 <div class="flex flex-wrap gap-3">
-<a class="inline-flex items-center gap-2 px-4 py-2 glass-button rounded-full text-sm hover:text-dream-salmon transition-colors" href="../traumsymbole/zaehne">Zähne Traumbedeutung</a>
-<a class="inline-flex items-center gap-2 px-4 py-2 glass-button rounded-full text-sm hover:text-dream-salmon transition-colors" href="../traumsymbole/mund">Mundtraumbedeutung</a>
-<a class="inline-flex items-center gap-2 px-4 py-2 glass-button rounded-full text-sm hover:text-dream-salmon transition-colors" href="../traumsymbole/spiegel">Spiegeltraumbedeutung</a>
+<a class="inline-flex items-center gap-2 px-4 py-2 glass-button rounded-full text-sm hover:text-dream-salmon transition-colors" href="../traumsymbole/zaehne">Traum von Zahnverlust</a>
+<a class="inline-flex items-center gap-2 px-4 py-2 glass-button rounded-full text-sm hover:text-dream-salmon transition-colors" href="../traumsymbole/mund">Traum vom Mund</a>
+<a class="inline-flex items-center gap-2 px-4 py-2 glass-button rounded-full text-sm hover:text-dream-salmon transition-colors" href="../traumsymbole/spiegel">Traum von einem Spiegel</a>
 <a class="inline-flex items-center gap-2 px-4 py-2 glass-button rounded-full text-sm hover:text-dream-salmon transition-colors" href="../traumsymbole/nacktheit">Bedeutung von Nacktheitsträumen</a>
 </div>
 </section>
@@ -442,17 +442,17 @@ Meistens nicht. Wenn er mehrmals pro Woche auftritt, Ihren Schlaf stört oder Si
         <a href="wiederkehrende-traeume-bedeuten-ihre-verborgenen-botschaften-verstehen" class="glass-panel rounded-xl p-6 block hover:border-dream-salmon/30 transition-all hover:-translate-y-1">
             <span class="text-xs text-dream-salmon uppercase mb-2 block">Deutung</span>
             <h3 class="font-serif text-lg text-dream-cream mb-2">Wiederkehrende Träume: Ihre verborgenen Botschaften verstehen</h3>
-            <p class="text-sm text-gray-400">Warum haben Sie immer denselben Traum? Entdecken Sie, was Ihr Unterbewusstsein Ihnen sagen möchte.</p>
+            <p class="text-sm text-gray-400">Warum derselbe Traum wiederkehrt, was Sie zwischen den Episoden notieren können und wann wiederholte Albträume ärztlich abgeklärt werden sollten.</p>
         </a>
         <a href="bedeutung-von-fallenden-traeumen-warum-sie-vom-fallen-traeumen" class="glass-panel rounded-xl p-6 block hover:border-dream-salmon/30 transition-all hover:-translate-y-1">
             <span class="text-xs text-dream-salmon uppercase mb-2 block">Deutung</span>
             <h3 class="font-serif text-lg text-dream-cream mb-2">Fallende Träume: Warum Sie vom Fallen träumen</h3>
-            <p class="text-sm text-gray-400">Warum träumen Sie davon, ins Leere zu fallen? Entdecken Sie die psychologische Bedeutung.</p>
+            <p class="text-sm text-gray-400">Warum wir vom Fallen träumen, vom Zucken beim Einschlafen bis zum langen Sturz, und was Sie nach dem Aufwachen notieren können.</p>
         </a>
         <a href="bedeutung-von-fliegenden-traeumen-was-es-bedeutet-in-seinen-traeumen-zu-fliegen" class="glass-panel rounded-xl p-6 block hover:border-dream-salmon/30 transition-all hover:-translate-y-1">
             <span class="text-xs text-dream-salmon uppercase mb-2 block">Deutung</span>
             <h3 class="font-serif text-lg text-dream-cream mb-2">Fliegende Träume: Was es bedeutet, in Träumen zu fliegen</h3>
-            <p class="text-sm text-gray-400">Warum träumen Sie vom Fliegen? Entdecken Sie, was Flugträume über Freiheit und Ehrgeiz verraten.</p>
+            <p class="text-sm text-gray-400">Was müheloses Gleiten, ein misslungener Start oder die Flucht durch die Luft andeuten können und was Sie morgens notieren sollten.</p>
         </a>
   </div>
 </section>
