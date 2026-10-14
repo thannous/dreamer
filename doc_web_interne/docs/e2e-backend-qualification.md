@@ -64,6 +64,9 @@ stack, and is intended for a locally owned stack with loopback port forwarding.
 npm CLI on Linux and its co-located Go engine on macOS. An earlier macOS launcher
 failed OS signature validation, so the default Docker path retains the Go engine.
 The native pilot used the pinned 2.120.0 npm launcher successfully without changing OS security settings.
+With `--runtime`, the runner passes no `SUPABASE_*` variable to the CLI except
+`SUPABASE_NATIVE_POSTGRES_USER`, which Supabase requires for root runs of the native
+runtime. The report's rerun command repeats `E2E_SUPABASE_CLI` and that user when they are set.
 `E2E_DOCKER_CLI` and `DOCKER_HOST` can select a local Docker-compatible runtime.
 No hosted test branch is required.
 

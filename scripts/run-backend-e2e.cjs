@@ -26,10 +26,16 @@ const cli = process.env.E2E_SUPABASE_CLI || (!runtime && process.platform === 'd
   ? path.join(path.dirname(require.resolve(`@supabase/cli-darwin-${process.arch}/package.json`)), 'bin/supabase-go')
   : path.join(root, 'node_modules/.bin/supabase'));
 const docker = process.env.E2E_DOCKER_CLI || 'docker';
-const rerunArgs = [...(runtime ? ['--runtime', runtime] : []), ...args]
-  .map(arg => `'${arg.replaceAll("'", "'\"'\"'")}'`).join(' ');
+const quote = arg => `'${arg.replaceAll("'", "'\"'\"'")}'`;
+const rerunArgs = [...(runtime ? ['--runtime', runtime] : []), ...args].map(quote).join(' ');
+// Supabase documents this one for root runs of the native runtime; other SUPABASE_* settings are dropped.
+const keptSupabaseEnv = runtime ? ['SUPABASE_NATIVE_POSTGRES_USER'] : [];
+// The rerun repeats the overrides that chose the executable and the database user.
+const rerunEnv = ['E2E_SUPABASE_CLI', ...keptSupabaseEnv]
+  .filter(key => process.env[key]).map(key => `${key}=${quote(process.env[key])} `).join('');
 const cliEnv = runtime ? {
-  ...Object.fromEntries(Object.entries(process.env).filter(([key]) => !key.startsWith('SUPABASE_'))),
+  ...Object.fromEntries(Object.entries(process.env)
+    .filter(([key]) => !key.startsWith('SUPABASE_') || keptSupabaseEnv.includes(key))),
   SUPABASE_HOME: process.env.E2E_SUPABASE_HOME || path.join(root, 'test-results/backend-e2e-cli-home'),
   SUPABASE_EXPERIMENTAL_STACK: '1',
   DO_NOT_TRACK: '1',
@@ -126,7 +132,7 @@ try {
   command(process.execPath, [path.join(path.dirname(require.resolve('playwright/package.json')), 'cli.js'), 'test', '--config', 'playwright.backend.config.ts', ...args], {
     env: { ...process.env, E2E_BACKEND_STATUS_FILE: statusFile, E2E_BACKEND_PROFILE: profile,
       E2E_BACKEND_RUNTIME: runtime || 'legacy-docker', E2E_BACKEND_CLI_VERSION: cliVersion || 'supplied VM',
-      E2E_BACKEND_RERUN: `mise exec -- npm run test:e2e:backend${rerunArgs ? ` -- ${rerunArgs}` : ''}`,
+      E2E_BACKEND_RERUN: `${rerunEnv}mise exec -- npm run test:e2e:backend${rerunArgs ? ` -- ${rerunArgs}` : ''}`,
       E2E_BACKEND_MIGRATION_FIXTURES: JSON.stringify(migrationFixtures) },
   });
 } finally {

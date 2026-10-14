@@ -171,6 +171,7 @@ export default {
     'scripts/mobile-release.js',
     'scripts/verify-analysis-authorization.mjs',
     'scripts/run-backend-e2e.cjs',
+    'scripts/lib/backend-e2e-local.cjs',
     'tools/e2e/run.mjs',
     'scripts/verify-local-config.test.js',
     'scripts/pre-push-hook.test.js',
