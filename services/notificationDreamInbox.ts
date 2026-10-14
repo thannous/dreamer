@@ -52,8 +52,11 @@ export async function removeImportedNotificationDreams(ids: readonly string[]): 
   await updateInbox((inbox) => ({ inbox: removeNotificationDreamCaptures(inbox, ids), result: undefined }));
 }
 
-export async function rememberNotificationDreamScope(scope: string): Promise<void> {
-  await AsyncStorage.setItem(SCOPE_KEY, scope);
+/** Queued with the inbox writes, so the last journal to call it is the one kept. */
+export function rememberNotificationDreamScope(scope: string): Promise<void> {
+  const next = inboxWrite.then(() => AsyncStorage.setItem(SCOPE_KEY, scope));
+  inboxWrite = next.catch(() => undefined);
+  return next;
 }
 
 export async function claimNotificationDreams(ids: readonly string[], scope: string): Promise<void> {
@@ -86,7 +89,9 @@ export async function captureDreamFromNotificationResponse(
   });
   // Owned from the start by the journal open when the reminder was answered,
   // so an expired session or another sign-in later cannot take it.
-  const ownerScope = parsed ? await AsyncStorage.getItem(SCOPE_KEY).catch(() => null) : null;
+  const ownerScope = parsed
+    ? await inboxWrite.then(() => AsyncStorage.getItem(SCOPE_KEY)).catch(() => null)
+    : null;
   const capture = parsed && ownerScope ? { ...parsed, ownerScope } : parsed;
 
   // Keep the words first. Everything after this is feedback.

@@ -52,6 +52,14 @@ export function useNotificationDreamImport(): void {
     scopeRef.current = scope;
   }, [scope]);
 
+  // A reply made while the app is closed belongs to the journal open here.
+  useEffect(() => {
+    if (!ready) return;
+    rememberNotificationDreamScope(scope).catch((error) => {
+      log.warn('Unable to remember the open journal', error);
+    });
+  }, [ready, scope]);
+
   const importPending = useCallback(async () => {
     if (!ready) return;
     if (importingRef.current) {
@@ -65,8 +73,6 @@ export function useNotificationDreamImport(): void {
     try {
       do {
         rerunRef.current = false;
-        if (stale()) break;
-        await rememberNotificationDreamScope(scope);
         const captures = (await readNotificationDreamInbox()).filter((capture) =>
           canImportNotificationDream(capture, scope)
         );
