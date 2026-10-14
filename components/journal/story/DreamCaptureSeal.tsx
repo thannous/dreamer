@@ -1,4 +1,5 @@
 import * as Haptics from 'expo-haptics';
+import { Image as Emblem } from 'expo-image';
 import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import {
   Image,
@@ -15,6 +16,9 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import Svg, { Circle, Defs, Ellipse, Path, RadialGradient, Stop } from 'react-native-svg';
 
 import { JournalPageEdges } from '@/components/journal/JournalPageEdges';
+import {
+  SEAL_EMBLEMS, SEAL_GOLD, SEAL_MEASURES, SealChoice, SealLegend, type SealMark,
+} from '@/components/journal/SavedDreamMoment';
 import { JournalPaper } from '@/components/journal/JournalPaper';
 import { EASE } from '@/components/motion/motion';
 import { getNoctaliaDesignTokens } from '@/constants/noctaliaDesign';
@@ -84,6 +88,11 @@ const CLOSE = {
   dateIn: 260,
   penAway: 320,
   breath: 100,
+  /** The signs turn at least this long while the name is written; the chosen one then glides into the ring. */
+  choiceAtLeast: 1000,
+  glide: 420,
+  /** The struck seal is seen on the page before the dive carries it. */
+  struckHold: 300,
   /** From the dive's start: the page grows around the ring while the name rises to its place. */
   dive: 1420,
   pageCover: [460, 1130],
@@ -135,10 +144,13 @@ const arcPath = (r: number, start: number, end: number) => {
  * already holds a dream, its page lies there sketched, and turns over to a fresh one. The
  * view comes closer, a fountain pen draws the ring, then waits where the name will start
  * until the pre-analysis has named the dream, a few seconds at most, after which the
- * dream's first words name it. The pen writes the name, the date follows it, and the pen
- * lifts away. The reader dives into the page around the ring, which never moves: the page
+ * dream's first words name it. While the pen writes the name, the signs a dream can bear
+ * turn around the ring, and the dream's own, from the same pre-analysis, glides into the
+ * ring and is struck there in ink, its type and theme engraved around it; the date follows
+ * the name, and the pen lifts away. The reader dives into the page around the ring, which never moves: the page
  * grows until it fills the screen and its paper becomes the dream page's own, the night
- * fills the ring, and the name and date rise to the very place the dream page sets them,
+ * fills the ring, where the emblem turns to gold, the struck seal grows with the page to
+ * the saved moment's size, and the name and date rise to the very place the dream page sets them,
  * so that page takes everything over as it is. The name is laid out as the dream page lays
  * it out, only smaller on the journal page, so it keeps its lines all the way. In the
  * night theme the journal's paper is night paper, in the paper theme ivory. Two touches
@@ -146,17 +158,19 @@ const arcPath = (r: number, start: number, end: number) => {
  * is pressed twice, and is decorative to assistive technology: the next screen announces
  * the save. The caller skips it under reduce motion.
  */
-export function DreamCaptureSeal({ name, provisionalName, date, previousPage, onNamed, onSealed }: {
+export function DreamCaptureSeal({ name, mark, provisionalName, date, previousPage, onNamed, onSealed }: {
   /** The pre-analysis's name for the dream, once it has given one. */
   name: string | null;
+  /** What the same pre-analysis classed the dream as, struck into the seal with its name. */
+  mark: SealMark | null;
   /** The dream's first words, written instead when the pre-analysis has not named it in time. */
   provisionalName: string;
   /** The dream's date and time, as its page shows them under its name. */
   date: string;
   /** The journal already holds a dream, whose page is turned over first. */
   previousPage: boolean;
-  /** The name the pen is about to write, and whether it is the first words standing in. */
-  onNamed: (name: string, provisional: boolean) => void;
+  /** The name the pen is about to write, whether it is the first words standing in, and the seal it strikes. */
+  onNamed: (name: string, provisional: boolean, mark: SealMark | null) => void;
   /** The window is open: the dream's page can take over. */
   onSealed: () => void;
 }) {
@@ -206,7 +220,7 @@ export function DreamCaptureSeal({ name, provisionalName, date, previousPage, on
   const small = BOOK_NAME_SIZE / nameStyle.fontSize;
   // The view comes close enough for the name to fit the page's text measure at that size.
   const push = Math.min(zoom * 0.6, Math.max(1, (small * target.width) / (page.w * 0.8)));
-  const book = { x: width / 2 - push * page.w * 0.4, y: medallionY + push * ring.r + 14 };
+  const book = { x: width / 2 - push * page.w * 0.4, y: medallionY + push * ring.r + 24 };
   const pen = journalWidth * PEN_SCALE * push;
 
   // The first act's length: the page turn only when there is a page to turn.
@@ -234,7 +248,7 @@ export function DreamCaptureSeal({ name, provisionalName, date, previousPage, on
 
   const [opened, setOpened] = useState(false);
   const [late, setLate] = useState(false);
-  const [closing, setClosing] = useState<{ text: string; widths: number[]; provisional: boolean } | null>(null);
+  const [closing, setClosing] = useState<{ text: string; widths: number[]; provisional: boolean; mark: SealMark | null } | null>(null);
   useEffect(() => {
     const opening = setTimeout(() => setOpened(true), ms(openTotal));
     const deadline = setTimeout(() => setLate(true), ms(DREAM_STORY.nameDeadline));
@@ -254,7 +268,7 @@ export function DreamCaptureSeal({ name, provisionalName, date, previousPage, on
           // Past the wait, an unmeasured name is written at an estimate rather than not at all.
           : late ? [target.width] : null;
       if (widths) {
-        setClosing({ text, widths, provisional: text !== name });
+        setClosing({ text, widths, provisional: text !== name, mark: text === name ? mark : null });
         break;
       }
     }
@@ -278,8 +292,10 @@ export function DreamCaptureSeal({ name, provisionalName, date, previousPage, on
       return line;
     });
     const written = schedule[schedule.length - 1].to;
-    const diveFrom = written + CLOSE.penAway + CLOSE.breath;
-    return { schedule, written, diveFrom, total: diveFrom + CLOSE.end };
+    const choice = Math.max(written, CLOSE.choiceAtLeast);
+    const contact = choice + CLOSE.glide;
+    const diveFrom = Math.max(written + CLOSE.penAway + CLOSE.breath, closing.mark ? contact + CLOSE.struckHold : 0);
+    return { schedule, written, choice, contact, diveFrom, total: diveFrom + CLOSE.end };
   }, [closing]);
 
   useEffect(() => {
@@ -291,9 +307,14 @@ export function DreamCaptureSeal({ name, provisionalName, date, previousPage, on
   }, [ms, ringTo]);
   useEffect(() => {
     if (!closing || !close) return;
-    named.current(closing.text, closing.provisional);
+    named.current(closing.text, closing.provisional, closing.mark);
     const timers = [setTimeout(() => sealed.current(), ms(close.total))];
     if (process.env.EXPO_OS !== 'web') {
+      if (closing.mark) {
+        timers.push(setTimeout(() => {
+          void Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Rigid).catch(() => {});
+        }, ms(close.contact)));
+      }
       timers.push(setTimeout(() => {
         void Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Soft).catch(() => {});
       }, ms(close.diveFrom + (CLOSE.skyIn[0] + CLOSE.skyIn[1]) / 2)));
@@ -486,7 +507,40 @@ export function DreamCaptureSeal({ name, provisionalName, date, previousPage, on
     pen[at(close.written + CLOSE.penAway)] = lifted;
     pen['100%'] = lifted;
 
+    // The struck seal is laid out at the saved moment's size and scaled with the page, so
+    // it stays on the ring through the dive and arrives crisp at its own size.
+    const sealScale: CSSAnimationKeyframes<ViewStyle> = { '0%': { transform: [{ scale: push / zoom }] } };
+    for (let step = 0; step <= steps; step += 1) {
+      const scale = push * (zoom / push) ** smoothstep(step / steps);
+      sealScale[at(diving((CLOSE.dive * step) / steps))] = { transform: [{ scale: scale / zoom }], animationTimingFunction: 'linear' };
+    }
+    sealScale['100%'] = { transform: [{ scale: 1 }] };
+    const cut = close.total * 0.004;
+    const night = [diving(CLOSE.skyIn[0]), diving(CLOSE.skyIn[1])] as const;
+
     return {
+      seal: animate<ViewStyle>(sealScale),
+      // The sign meets the ring and is pressed into it.
+      struck: animate<ViewStyle>({
+        '0%': { opacity: 0, transform: [{ scale: 1.1 }] },
+        [at(close.contact)]: { opacity: 0, transform: [{ scale: 1.1 }] },
+        [at(close.contact + cut)]: { opacity: 1, transform: [{ scale: 1.1 }] },
+        [at(close.contact + 130)]: { opacity: 1, transform: [{ scale: 0.94 }] },
+        [at(close.contact + 380)]: { opacity: 1, transform: [{ scale: 1 }] },
+        '100%': { opacity: 1, transform: [{ scale: 1 }] },
+      }, { animationTimingFunction: EASE.out }),
+      // In ink on the page's paper, in gold once the night fills the ring.
+      struckInk: animate<ViewStyle>(fade(night[0], night[1], 1, 0)),
+      struckGold: animate<ViewStyle>(fade(night[0], night[1])),
+      ripple: animate<ViewStyle>({
+        '0%': { opacity: 0, transform: [{ scale: 1 }] },
+        [at(close.contact)]: { opacity: 0, transform: [{ scale: 1 }] },
+        [at(close.contact + cut)]: { opacity: 0.6, transform: [{ scale: 1 }] },
+        [at(close.contact + 720)]: { opacity: 0, transform: [{ scale: 1.24 }] },
+        '100%': { opacity: 0, transform: [{ scale: 1.24 }] },
+      }, { animationTimingFunction: EASE.out }),
+      // The night dims a little under the emblem, as on the saved moment.
+      wash: animate<ViewStyle>(fade(night[0], night[1], 0, 0.32)),
       sky: animate<ViewStyle>({
         '0%': { opacity: 1, transform: [{ scale: 1 }] },
         [at(diving(0))]: { opacity: 1, transform: [{ scale: 1 }] },
@@ -528,6 +582,14 @@ export function DreamCaptureSeal({ name, provisionalName, date, previousPage, on
       }),
     };
   }, [close, closing, dive, nameStart.x, nameStart.y, nameStyle.lineHeight, nibAt, ms, onTheBook, push, small, zoom]);
+  const sealBox = { left: width / 2 - SEAL_MEASURES.orbit / 2, top: medallionY - SEAL_MEASURES.orbit / 2 };
+  const emblemBox = {
+    position: 'absolute' as const,
+    left: (SEAL_MEASURES.orbit - SEAL_MEASURES.emblem) / 2,
+    top: (SEAL_MEASURES.orbit - SEAL_MEASURES.emblem) / 2,
+    width: SEAL_MEASURES.emblem,
+    height: SEAL_MEASURES.emblem,
+  };
 
   const hidden = { opacity: 0 };
   const ringBox = ring.r * 2;
@@ -676,6 +738,11 @@ export function DreamCaptureSeal({ name, provisionalName, date, previousPage, on
       }, closingMotion?.skyFill ?? hidden] as StyleProp<ViewStyle>}>
         <Image source={ASTRAL_ART} resizeMode="cover" style={{ width: MEDALLION, height: MEDALLION }} />
       </Animated.View>
+      {closing?.mark && closingMotion ? (
+        <Animated.View className="absolute rounded-full bg-black" style={[{
+          left: width / 2 - MEDALLION / 2, top: medallionY - MEDALLION / 2, width: MEDALLION, height: MEDALLION,
+        }, closingMotion.wash] as StyleProp<ViewStyle>} />
+      ) : null}
       <Animated.View className="absolute" style={[{
         left: width / 2 - MEDALLION / 2, top: medallionY - MEDALLION / 2, width: MEDALLION, height: MEDALLION,
       }, closingMotion?.ring ?? hidden] as StyleProp<ViewStyle>}>
@@ -684,6 +751,34 @@ export function DreamCaptureSeal({ name, provisionalName, date, previousPage, on
             stroke={ink} strokeOpacity={0.7} strokeWidth={1.5} />
         </Svg>
       </Animated.View>
+
+      {/* The seal choosing while the name is written, then struck: it grows with the page into the saved moment. */}
+      {closing && close && closingMotion ? (
+        <Animated.View testID="component.dreamCaptureSeal.seal" className="absolute" style={[{
+          left: sealBox.left, top: sealBox.top, width: SEAL_MEASURES.orbit, height: SEAL_MEASURES.orbit,
+        }, closingMotion.seal] as StyleProp<ViewStyle>}>
+          <SealChoice mark={closing.mark} ink={ink} choice={ms(close.choice)} contact={ms(close.contact)} gold={false} />
+          {closing.mark ? (
+            <>
+              <Animated.View className="absolute rounded-full" style={[{
+                left: (SEAL_MEASURES.orbit - MEDALLION) / 2, top: (SEAL_MEASURES.orbit - MEDALLION) / 2,
+                width: MEDALLION, height: MEDALLION, borderWidth: 1.5, borderColor: ink,
+              }, closingMotion.ripple] as StyleProp<ViewStyle>} />
+              <Animated.View style={[emblemBox, closingMotion.struck] as StyleProp<ViewStyle>}>
+                <Animated.View className="absolute inset-0" style={closingMotion.struckInk as StyleProp<ViewStyle>}>
+                  <Emblem source={SEAL_EMBLEMS[closing.mark.theme]} tintColor={ink} contentFit="contain"
+                    style={{ width: SEAL_MEASURES.emblem, height: SEAL_MEASURES.emblem }} />
+                </Animated.View>
+                <Animated.View className="absolute inset-0" style={closingMotion.struckGold as StyleProp<ViewStyle>}>
+                  <Emblem source={SEAL_EMBLEMS[closing.mark.theme]} tintColor={SEAL_GOLD} contentFit="contain"
+                    style={{ width: SEAL_MEASURES.emblem, height: SEAL_MEASURES.emblem }} />
+                </Animated.View>
+              </Animated.View>
+              <SealLegend text={closing.mark.legend} reduced={false} from={ms(close.contact)} />
+            </>
+          ) : null}
+        </Animated.View>
+      ) : null}
 
       {/* The name and date, written small on the journal page, rising to where the dream page sets them. */}
       {closing && closingMotion ? (

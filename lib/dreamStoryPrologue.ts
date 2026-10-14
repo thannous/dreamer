@@ -1,3 +1,5 @@
+import type { DreamTheme } from '@/lib/types';
+
 /**
  * The dream story's prologue hand-off: the capture seal ends on the saved moment's window,
  * already open and filled with night. The dream's page then takes that window over instead
@@ -7,8 +9,12 @@
  */
 const HANDOFF_TTL_MS = 10_000;
 
-/** The name the seal wrote, which the page shows as the seal left it. */
-export type DreamStoryHandoffName = { title: string; provisional: boolean };
+/** The name the seal wrote and the seal it struck, which the page shows as the seal left them. */
+export type DreamStoryHandoffName = {
+  title: string;
+  provisional: boolean;
+  mark?: { theme: DreamTheme; legend: string };
+};
 
 let pending: { key: string; expiresAt: number; name?: DreamStoryHandoffName } | null = null;
 

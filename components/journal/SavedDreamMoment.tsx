@@ -21,7 +21,7 @@ import { sparklePath } from './story/sparkle';
 
 const ASTRAL_ART = require('@/assets/images/onboarding-astral-background.webp');
 /** Each theme's emblem, an ink mask the seal tints. */
-const EMBLEMS: Record<DreamTheme, ImageSource> = {
+export const SEAL_EMBLEMS: Record<DreamTheme, ImageSource> = {
   mystical: require('@/assets/images/dream-seal-emblem-mystical.webp'),
   calm: require('@/assets/images/dream-seal-emblem-calm.webp'),
   surreal: require('@/assets/images/dream-seal-emblem-surreal.webp'),
@@ -30,7 +30,7 @@ const EMBLEMS: Record<DreamTheme, ImageSource> = {
   nostalgic: require('@/assets/images/dream-seal-emblem-nostalgic.webp'),
 };
 /** The emblem is pressed in the warm light of the journal's lamp, in both themes. */
-const SEAL_GOLD = getNoctaliaPalette('dark').accent;
+export const SEAL_GOLD = getNoctaliaPalette('dark').accent;
 const EMBLEM = 92;
 /** The legend runs between the window's rim and the astrolabe's inner orbit. */
 const LEGEND_RADIUS = 84;
@@ -46,6 +46,8 @@ const SIGN_ORBIT = 104;
 
 const MEDALLION = 148;
 const ORBIT = 240;
+/** The seal's measures, for the capture seal that strikes it before the page takes it over. */
+export const SEAL_MEASURES = { medallion: MEDALLION, orbit: ORBIT, emblem: EMBLEM } as const;
 const CENTER = ORBIT / 2;
 const HALO_WIDTH = 340;
 const HALO_HEIGHT = 280;
@@ -77,17 +79,26 @@ export type SealMark = { theme: DreamTheme; legend: string };
 const percent = (value: number, total: number) => `${Math.round((value / total) * 10000) / 100}%`;
 
 /**
- * The seal choosing: the signs a dream can bear appear on the astrolabe and turn
- * while it chooses. With a mark, the turn slows until its sign stands at the top, which
- * glides into the window, changing from the page's ink to the lamp's gold, and is pressed
- * there; the others fade. Without one, the signs fade as they turn and the seal stays plain.
+ * The seal choosing: the signs a dream can bear appear on the astrolabe and turn while it
+ * chooses. With a mark, the turn slows until its sign stands at the top, which glides into
+ * the window and is pressed there; the others fade. Without one, the signs fade as they
+ * turn and the seal stays plain. Its beats are given in milliseconds from its start: the
+ * end of the turn (`choice`) and the moment the sign meets the window (`contact`). On the
+ * page the sign changes from the page's ink to the lamp's gold as it glides over the night;
+ * in the journal, whose ring still holds paper, it stays in ink.
  */
-function SealChoice({ mark, ink }: { mark: SealMark | null; ink: string }) {
+export function SealChoice({ mark, ink, choice, contact, gold = true }: {
+  mark: SealMark | null;
+  ink: string;
+  choice: number;
+  contact: number;
+  gold?: boolean;
+}) {
   const motion = useMemo(() => {
-    const choice = DREAM_STORY.sealChoice;
-    const contact = DREAM_STORY.sealContact;
-    const total = mark ? contact + 60 : choice;
+    const total = mark ? contact * 1.03 : choice;
     const at = (value: number) => percent(value, total);
+    // A sliver of the story, so a change of state reads as a cut, not a fade.
+    const cut = total * 0.004;
     const chosen = mark ? SIGNS.indexOf(mark.theme) : -1;
     const turn = mark ? -(360 + chosen * SIGN_STEP) : -200;
     const base = { animationDuration: total, animationFillMode: 'both' } as const;
@@ -100,15 +111,17 @@ function SealChoice({ mark, ink }: { mark: SealMark | null; ink: string }) {
       },
       animationTimingFunction: DREAM_EASE,
     }) as CSSStyle<ViewStyle>;
+    const shown = choice * 0.23;
     const signs = SIGNS.map((_, index) => ({
       ...base,
       animationTimingFunction: 'ease-in-out',
       animationName: index === chosen ? {
-        '0%': { opacity: 0 }, [at(350)]: { opacity: 0.55 }, [at(choice - 200)]: { opacity: 0.55 },
-        [at(choice)]: { opacity: 1 }, [at(choice + 12)]: { opacity: 0 }, '100%': { opacity: 0 },
+        '0%': { opacity: 0 }, [at(shown)]: { opacity: 0.55 }, [at(choice * 0.87)]: { opacity: 0.55 },
+        [at(choice)]: { opacity: 1 }, [at(choice + cut)]: { opacity: 0 }, '100%': { opacity: 0 },
       } : {
-        '0%': { opacity: 0 }, [at(350)]: { opacity: 0.55 },
-        [at(mark ? choice : choice - 500)]: { opacity: 0.55 }, [at(mark ? choice + 300 : choice)]: { opacity: 0 },
+        '0%': { opacity: 0 }, [at(shown)]: { opacity: 0.55 },
+        [at(mark ? choice : choice * 0.67)]: { opacity: 0.55 },
+        [at(mark ? Math.min(choice * 1.2, contact) : choice)]: { opacity: 0 },
         '100%': { opacity: 0 },
       },
     }) as CSSStyle<ViewStyle>);
@@ -123,22 +136,22 @@ function SealChoice({ mark, ink }: { mark: SealMark | null; ink: string }) {
         animationName: {
           '0%': { opacity: 0, transform: [{ translateY: -SIGN_ORBIT }, { scale: glide.from }] },
           [at(choice)]: { opacity: 0, transform: [{ translateY: -SIGN_ORBIT }, { scale: glide.from }] },
-          [at(choice + 12)]: { opacity: 1, transform: [{ translateY: -SIGN_ORBIT }, { scale: glide.from }] },
+          [at(choice + cut)]: { opacity: 1, transform: [{ translateY: -SIGN_ORBIT }, { scale: glide.from }] },
           [at(contact)]: { opacity: 1, transform: [{ translateY: 0 }, { scale: glide.to }] },
-          [at(contact + 12)]: { opacity: 0, transform: [{ translateY: 0 }, { scale: glide.to }] },
+          [at(contact + cut)]: { opacity: 0, transform: [{ translateY: 0 }, { scale: glide.to }] },
           '100%': { opacity: 0, transform: [{ translateY: 0 }, { scale: glide.to }] },
         },
       } as CSSStyle<ViewStyle>,
-      inkFades: {
+      inkFades: (gold ? {
         ...base,
         animationName: { '0%': { opacity: 1 }, [at(choice)]: { opacity: 1 }, [at(contact)]: { opacity: 0 }, '100%': { opacity: 0 } },
-      } as CSSStyle<ViewStyle>,
+      } : null) as CSSStyle<ViewStyle> | null,
       goldRises: {
         ...base,
         animationName: { '0%': { opacity: 0 }, [at(choice)]: { opacity: 0 }, [at(contact)]: { opacity: 1 }, '100%': { opacity: 1 } },
       } as CSSStyle<ViewStyle>,
     };
-  }, [mark]);
+  }, [choice, contact, gold, mark]);
 
   return (
     <>
@@ -152,7 +165,7 @@ function SealChoice({ mark, ink }: { mark: SealMark | null; ink: string }) {
               width: SIGN, height: SIGN,
             }, motion.upright] as StyleProp<ViewStyle>}>
               <Animated.View style={motion.signs[index] as StyleProp<ViewStyle>}>
-                <Image source={EMBLEMS[theme]} tintColor={ink} contentFit="contain" style={{ width: SIGN, height: SIGN }} />
+                <Image source={SEAL_EMBLEMS[theme]} tintColor={ink} contentFit="contain" style={{ width: SIGN, height: SIGN }} />
               </Animated.View>
             </Animated.View>
           );
@@ -163,11 +176,13 @@ function SealChoice({ mark, ink }: { mark: SealMark | null; ink: string }) {
           left: CENTER - EMBLEM / 2, top: CENTER - EMBLEM / 2, width: EMBLEM, height: EMBLEM,
         }, motion.traveller] as StyleProp<ViewStyle>}>
           <Animated.View className="absolute inset-0" style={motion.inkFades as StyleProp<ViewStyle>}>
-            <Image source={EMBLEMS[mark.theme]} tintColor={ink} contentFit="contain" style={{ width: EMBLEM, height: EMBLEM }} />
+            <Image source={SEAL_EMBLEMS[mark.theme]} tintColor={ink} contentFit="contain" style={{ width: EMBLEM, height: EMBLEM }} />
           </Animated.View>
-          <Animated.View className="absolute inset-0" style={motion.goldRises as StyleProp<ViewStyle>}>
-            <Image source={EMBLEMS[mark.theme]} tintColor={SEAL_GOLD} contentFit="contain" style={{ width: EMBLEM, height: EMBLEM }} />
-          </Animated.View>
+          {gold ? (
+            <Animated.View className="absolute inset-0" style={motion.goldRises as StyleProp<ViewStyle>}>
+              <Image source={SEAL_EMBLEMS[mark.theme]} tintColor={SEAL_GOLD} contentFit="contain" style={{ width: EMBLEM, height: EMBLEM }} />
+            </Animated.View>
+          ) : null}
         </Animated.View>
       ) : null}
     </>
@@ -179,7 +194,14 @@ function SealChoice({ mark, ink }: { mark: SealMark | null; ink: string }) {
  * the top of the seal. The letters are measured first, so each sits on the arc by its own
  * width.
  */
-function SealLegend({ text, reduced }: { text: string; reduced: boolean }) {
+export function SealLegend({ text, reduced, from = DREAM_STORY.sealContact, still = false }: {
+  text: string;
+  reduced: boolean;
+  /** When the engraving starts, in milliseconds. */
+  from?: number;
+  /** Already engraved, as the capture seal left it. */
+  still?: boolean;
+}) {
   const letters = useMemo(() => [...text.toUpperCase()].map((letter) => (letter === ' ' ? '\u00a0' : letter)), [text]);
   const glyphs = useMemo(() => [...new Set(letters)], [letters]);
   const [widths, setWidths] = useState<Record<string, number>>({});
@@ -201,7 +223,7 @@ function SealLegend({ text, reduced }: { text: string; reduced: boolean }) {
         left: CENTER + LEGEND_RADIUS * Math.sin(angle) - width / 2,
         top: CENTER - LEGEND_RADIUS * Math.cos(angle) - LEGEND_LINE / 2,
         angle,
-        motion: (reduced ? {
+        motion: (still ? null : reduced ? {
           animationName: { from: { opacity: 0 }, to: { opacity: 1 } },
           animationDuration: 200,
           animationFillMode: 'both',
@@ -211,13 +233,13 @@ function SealLegend({ text, reduced }: { text: string; reduced: boolean }) {
             to: { opacity: 1, transform: [{ scale: 1 }] },
           },
           animationDuration: 260,
-          animationDelay: DREAM_STORY.sealContact + 20 + index * step,
+          animationDelay: from + 20 + index * step,
           animationTimingFunction: EASE.out,
           animationFillMode: 'both',
         }) as CSSStyle<ViewStyle>,
       };
     });
-  }, [letters, measured, reduced, widths]);
+  }, [from, letters, measured, reduced, still, widths]);
 
   const letterClass = 'font-sans-medium text-[10px] text-champagne-on';
   return (
@@ -259,8 +281,11 @@ function SealLegend({ text, reduced }: { text: string; reduced: boolean }) {
  */
 export function SavedDreamMoment({ phase = 'saved', painting = false, handedOver = false, sealing = null, artwork = null, landArtwork = true, onOpenArtwork }: {
   phase?: SavedDreamPhase;
-  /** The seal choosing, then struck with what the dream is when its pre-analysis has said it. */
-  sealing?: { mark: SealMark | null } | null;
+  /**
+   * The seal choosing, then struck with what the dream is when its pre-analysis has said
+   * it; or, `settled`, already struck by the capture seal and shown as it was left.
+   */
+  sealing?: { mark: SealMark | null; settled?: boolean } | null;
   /** The capture seal has just shown this window: it is taken over rather than opened again. */
   handedOver?: boolean;
   /** The illustration job is running: the window is being painted. */
@@ -332,14 +357,15 @@ export function SavedDreamMoment({ phase = 'saved', painting = false, handedOver
     };
   }, [reduced]);
   const seal = sealing?.mark ?? null;
+  const settled = sealing?.settled === true;
   const struck = seal != null;
   useEffect(() => {
-    if (!struck || process.env.EXPO_OS === 'web') return;
+    if (!struck || settled || process.env.EXPO_OS === 'web') return;
     const timer = setTimeout(() => {
       void Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Rigid).catch(() => {});
     }, reduced ? 0 : DREAM_STORY.sealContact);
     return () => clearTimeout(timer);
-  }, [reduced, struck]);
+  }, [reduced, settled, struck]);
   const settle = useMemo(() => (landArtwork ? paintSettle(reduced) : null), [landArtwork, reduced]);
 
   const medallion = (
@@ -349,13 +375,14 @@ export function SavedDreamMoment({ phase = 'saved', painting = false, handedOver
     >
       <Image source={ASTRAL_ART} contentFit="cover" contentPosition="center" style={{ width: '100%', height: '100%' }} />
       {seal ? (
-        <Animated.View pointerEvents="none" className="absolute inset-0 bg-black" style={strike.wash as StyleProp<ViewStyle>} />
+        <Animated.View pointerEvents="none" className="absolute inset-0 bg-black"
+          style={(settled ? { opacity: 0.32 } : strike.wash) as StyleProp<ViewStyle>} />
       ) : null}
       {seal ? (
         <Animated.View testID="component.savedDream.sealEmblem" className="absolute" style={[{
           left: (MEDALLION - EMBLEM) / 2, top: (MEDALLION - EMBLEM) / 2, width: EMBLEM, height: EMBLEM,
-        }, strike.emblem] as StyleProp<ViewStyle>}>
-          <Image source={EMBLEMS[seal.theme]} tintColor={SEAL_GOLD} contentFit="contain" style={{ width: EMBLEM, height: EMBLEM }} />
+        }, settled ? null : strike.emblem] as StyleProp<ViewStyle>}>
+          <Image source={SEAL_EMBLEMS[seal.theme]} tintColor={SEAL_GOLD} contentFit="contain" style={{ width: EMBLEM, height: EMBLEM }} />
         </Animated.View>
       ) : null}
       {painting && !artwork ? (
@@ -437,11 +464,13 @@ export function SavedDreamMoment({ phase = 'saved', painting = false, handedOver
           </Animated.View>
           {seal ? (
             <>
-              <Animated.View className="absolute rounded-full" style={[{
-                width: MEDALLION, height: MEDALLION, borderWidth: 1.5, borderColor: accent,
-              }, strike.ripple] as StyleProp<ViewStyle>} />
+              {settled ? null : (
+                <Animated.View className="absolute rounded-full" style={[{
+                  width: MEDALLION, height: MEDALLION, borderWidth: 1.5, borderColor: accent,
+                }, strike.ripple] as StyleProp<ViewStyle>} />
+              )}
               <View testID="component.savedDream.sealLegend" className="absolute left-0 top-0" style={{ width: ORBIT, height: ORBIT }}>
-                <SealLegend text={seal.legend} reduced={reduced} />
+                <SealLegend text={seal.legend} reduced={reduced} still={settled} />
               </View>
             </>
           ) : null}
@@ -464,10 +493,10 @@ export function SavedDreamMoment({ phase = 'saved', painting = false, handedOver
             {medallion}
           </View>
         )}
-        {sealing && !reduced ? (
+        {sealing && !settled && !reduced ? (
           <View accessible={false} importantForAccessibility="no-hide-descendants" accessibilityElementsHidden
             pointerEvents="none" className="absolute left-0 top-0" style={{ width: ORBIT, height: ORBIT }}>
-            <SealChoice mark={seal} ink={accent} />
+            <SealChoice mark={seal} ink={accent} choice={DREAM_STORY.sealChoice} contact={DREAM_STORY.sealContact} />
           </View>
         ) : null}
       </View>

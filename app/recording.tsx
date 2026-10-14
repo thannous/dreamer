@@ -48,6 +48,7 @@ import {
 import { isMockModeEnabled } from '@/lib/env';
 import { DreamPersistenceError } from '@/lib/dreamStorageRead';
 import { getDreamIdentityKey } from '@/lib/dreamIdentity';
+import { getDreamThemeLabel, getDreamTypeLabel } from '@/lib/dreamLabels';
 import { markDreamNamed } from '@/lib/dreamNaming';
 import { markDreamStoryHandoff } from '@/lib/dreamStoryPrologue';
 import { classifyError, GuestDreamLimitError } from '@/lib/errors';
@@ -127,6 +128,7 @@ import {
 } from 'react-native';
 import { useReducedMotion } from 'react-native-reanimated';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import type { SealMark } from '@/components/journal/SavedDreamMoment';
 import { DreamCaptureSeal } from '@/components/journal/story/DreamCaptureSeal';
 import { DREAM_STORY } from '@/components/journal/story/dreamStoryMotion';
 import { useHeaderScroll } from '@/components/ui/headerStretch';
@@ -758,10 +760,18 @@ function RecordingScreen() {
     };
   }, [sealing]);
   const sealName = sealedDream?.theme ? sealedDream.title : preAnalysisOver ? sealing?.provisionalName ?? null : null;
-  const sealWrote = useRef<{ title: string; provisional: boolean } | undefined>(undefined);
-  const sealNamed = useCallback((title: string, provisional: boolean) => {
+  // What the same pre-analysis classed the dream as, which the seal strikes while its name is written.
+  const sealMark = useMemo<SealMark | null>(() => (sealedDream?.theme ? {
+    theme: sealedDream.theme,
+    legend: [
+      getDreamTypeLabel(sealedDream.dreamType, t) ?? sealedDream.dreamType,
+      getDreamThemeLabel(sealedDream.theme, t) ?? sealedDream.theme,
+    ].filter(Boolean).join(' · '),
+  } : null), [sealedDream, t]);
+  const sealWrote = useRef<{ title: string; provisional: boolean; mark?: SealMark } | undefined>(undefined);
+  const sealNamed = useCallback((title: string, provisional: boolean, mark: SealMark | null) => {
     if (!sealing) return;
-    sealWrote.current = { title, provisional };
+    sealWrote.current = { title, provisional, ...(mark ? { mark } : null) };
     markDreamNamed(sealing.identity, provisional);
   }, [sealing]);
   const sealOpened = useCallback(() => {
@@ -2116,7 +2126,7 @@ function RecordingScreen() {
       </StandardBottomSheet>
 
       {sealing ? (
-        <DreamCaptureSeal name={sealName} provisionalName={sealing.provisionalName} date={sealing.date}
+        <DreamCaptureSeal name={sealName} mark={sealMark} provisionalName={sealing.provisionalName} date={sealing.date}
           previousPage={sealing.previousPage}
           onNamed={sealNamed} onSealed={sealOpened} />
       ) : null}

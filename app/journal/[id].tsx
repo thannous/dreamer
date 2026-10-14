@@ -1921,8 +1921,17 @@ const JournalDetailContent = memo(function JournalDetailContent({ dream, folio }
   // already wrote it in the journal. Both wait a moment at most for a pre-analysis still on
   // its way; without it the seal stays plain and the page writes the name it has. Whichever
   // name it writes stays the dream's.
-  const [naming, setNaming] = useState<{ stage: 'waiting' | 'striking' | 'writing' | 'named'; title?: string; seal?: SealMark | null }>(
-    () => ({ stage: opensOnSavedMoment ? 'waiting' : 'named' }));
+  const [naming, setNaming] = useState<{
+    stage: 'waiting' | 'striking' | 'writing' | 'named';
+    title?: string;
+    seal?: SealMark | null;
+    /** Struck by the capture seal, which named the dream too: the page shows both as left. */
+    settled?: boolean;
+  }>(() => {
+    const sealed = windowHandedOver && dream ? getDreamStoryHandoffName(getDreamIdentityKey(dream)) : undefined;
+    if (sealed?.mark) return { stage: 'named', title: sealed.title, seal: sealed.mark, settled: true };
+    return { stage: opensOnSavedMoment ? 'waiting' : 'named' };
+  });
   const [namingTime, setNamingTime] = useState<'early' | 'due' | 'late'>('early');
   const namingWaits = naming.stage === 'waiting';
   useEffect(() => {
@@ -1953,7 +1962,7 @@ const JournalDetailContent = memo(function JournalDetailContent({ dream, folio }
       reducedMotion ? 240 : naming.seal ? DREAM_STORY.sealStrike : DREAM_STORY.sealChoice);
     return () => clearTimeout(timer);
   }, [naming.seal, naming.stage, reducedMotion, windowHandedOver]);
-  const sealing = useMemo(() => ({ mark: naming.seal ?? null }), [naming.seal]);
+  const sealing = useMemo(() => ({ mark: naming.seal ?? null, settled: naming.settled }), [naming.seal, naming.settled]);
   // A name changed meanwhile, by the reader's own hand, ends the ceremony: that name stands.
   const namingOn = naming.stage !== 'named'
     && (!naming.title || naming.title === (heldTitle ?? (dream?.title || t('journal.detail.untitled_dream'))));
