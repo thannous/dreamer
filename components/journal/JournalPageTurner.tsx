@@ -1,9 +1,9 @@
 import * as Haptics from 'expo-haptics';
-import React, { createContext, useCallback, useContext, useEffect, useMemo, useState } from 'react';
+import React, { createContext, useCallback, useContext, useEffect, useMemo, useRef, useState } from 'react';
 import { View, useWindowDimensions } from 'react-native';
 import { Gesture, GestureDetector } from 'react-native-gesture-handler';
 import Animated, {
-  Extrapolation, interpolate, useAnimatedStyle, useReducedMotion, useSharedValue, withSpring, withTiming,
+  Extrapolation, interpolate, useAnimatedStyle, useReducedMotion, useSharedValue, withSequence, withSpring, withTiming,
 } from 'react-native-reanimated';
 import { scheduleOnRN } from 'react-native-worklets';
 
@@ -23,6 +23,13 @@ const COMMIT = 0.35;
 const BINDING = 28;
 /** The new page settles in over its likeness once it has been turned to. */
 const SETTLE_MS = 220;
+/**
+ * Once a session, a while after the first dream page opens, its corner lifts a little to
+ * show the next page beneath, then falls back: the journal can be leafed through.
+ */
+const HINT_AFTER = 2200;
+const HINT_LIFT = 0.15;
+let hintedThisSession = false;
 
 const PageTurnLockContext = createContext<(locked: boolean) => void>(() => {});
 
@@ -63,6 +70,8 @@ export function JournalPageTurner({ newer, older, folio, tonight = false, onTurn
   const { colors, mode } = useTheme();
   const shadow = useMemo(() => getNoctaliaDesignTokens(colors, mode).surface.overlay, [colors, mode]);
   const [locked, setLocked] = useState(false);
+  const lockedNow = useRef(locked);
+  useEffect(() => { lockedNow.current = locked; }, [locked]);
   // The likenesses stay those of the turn in progress until the turned-to page has settled.
   const [frozen, setFrozen] = useState<{ newer: DreamAnalysis | null; older: DreamAnalysis | null; folio?: number } | null>(null);
   const shown = frozen ?? { newer, older, folio };
@@ -128,6 +137,23 @@ export function JournalPageTurner({ newer, older, folio, tonight = false, onTurn
     void Haptics.selectionAsync().catch(() => {});
     onTurn(target);
   }, [direction, onTurn, progress, reachTonight, shown.newer, shown.older, tonight, turnedOver]);
+
+  // The hint: the page lifts towards the next one and falls back, once a session.
+  useEffect(() => {
+    if (reduced || hintedThisSession || (!newer && !tonight)) return;
+    const timer = setTimeout(() => {
+      if (hintedThisSession || lockedNow.current || direction.get() !== 0 || turnedOver.get()) return;
+      hintedThisSession = true;
+      direction.set(FORWARD);
+      progress.set(withSequence(
+        withTiming(HINT_LIFT, { duration: 520, easing: EASING.inOut }),
+        withTiming(0, { duration: 640, easing: EASING.inOut }, (done) => {
+          if (done) direction.set(0);
+        })
+      ));
+    }, HINT_AFTER);
+    return () => clearTimeout(timer);
+  }, [direction, newer, progress, reduced, tonight, turnedOver]);
 
   const hasLaterDream = shown.newer != null;
   const hasNewer = hasLaterDream || tonight;

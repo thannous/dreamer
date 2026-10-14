@@ -7,13 +7,22 @@ import Svg, { Defs, LinearGradient as Fade, Path, Stop } from 'react-native-svg'
 import { getNoctaliaDesignTokens } from '@/constants/noctaliaDesign';
 import { useTheme } from '@/context/ThemeContext';
 
-/** The leaves under this one along the fore-edge, outermost first: where each edge sits and how it catches the light. */
+/**
+ * The leaves still to turn along the fore-edge, outermost first: where each edge sits and
+ * how it catches the light. Thick enough to read as a block of pages one can leaf through.
+ */
 const LEAVES = [
-  { right: 0.5, opacity: 0.1 },
-  { right: 2.5, opacity: 0.16 },
-  { right: 4.5, opacity: 0.22 },
-  { right: 6.5, opacity: 0.3 },
+  { right: 0.5, opacity: 0.12 },
+  { right: 1.9, opacity: 0.17 },
+  { right: 3.3, opacity: 0.22 },
+  { right: 4.7, opacity: 0.27 },
+  { right: 6.1, opacity: 0.32 },
+  { right: 7.5, opacity: 0.38 },
+  { right: 8.9, opacity: 0.46 },
 ];
+/** The block of leaves, and the shadow this page casts on it. */
+const BLOCK = 10;
+const CAST = 22;
 /** How far round the screen's corner the leaves follow it before they fade, in radians. */
 const CORNER_SWEEP = (70 * Math.PI) / 180;
 
@@ -72,8 +81,11 @@ export function JournalPageEdges() {
       accessibilityElementsHidden className="absolute inset-0">
       <LinearGradient start={{ x: 0, y: 0.5 }} end={{ x: 1, y: 0.5 }} colors={[shadow, 'transparent']}
         style={{ position: 'absolute', left: 0, top: 0, bottom: 0, width: 22, opacity: night ? 0.55 : 0.26 }} />
+      {/* The block of leaves, a shade apart from the page, and the shadow the page casts on it. */}
+      <LinearGradient start={{ x: 0, y: 0.5 }} end={{ x: 1, y: 0.5 }} colors={[shadow, 'transparent']}
+        style={{ position: 'absolute', right: 0, top: corner * 0.4, bottom: corner * 0.4, width: BLOCK, opacity: night ? 0.35 : 0.16 }} />
       <LinearGradient start={{ x: 0, y: 0.5 }} end={{ x: 1, y: 0.5 }} colors={['transparent', shadow]}
-        style={{ position: 'absolute', right: 8, top: corner * 0.5, bottom: corner * 0.5, width: 14, opacity: night ? 0.4 : 0.22 }} />
+        style={{ position: 'absolute', right: BLOCK, top: corner * 0.5, bottom: corner * 0.5, width: CAST, opacity: night ? 0.5 : 0.3 }} />
       <Svg width={width} height={height} style={{ position: 'absolute', left: 0, top: 0 }}>
         <Defs>
           {/* The leaves fade out as they turn the screen's corners. */}
