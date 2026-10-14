@@ -3,6 +3,7 @@
  * Simulates API calls with realistic delays and data
  */
 
+import { DREAM_THEMES } from '@/lib/dreamThemes';
 import { getRandomImageForTheme } from '@/mock-data/assets';
 import { getMockCategorizationDelayMs } from '@/lib/env';
 import { generateAnalysisResult, generateChatResponse } from '@/mock-data/generators';
@@ -162,7 +163,7 @@ export async function generateImageForDream(prompt: string, _previousImageUrl?: 
   await delay(2000 + Math.random() * 2000); // 2-4 seconds
 
   // Extract theme from prompt if possible, otherwise use random
-  const themes: DreamTheme[] = ['surreal', 'mystical', 'calm', 'noir'];
+  const themes: readonly DreamTheme[] = DREAM_THEMES;
   let theme: DreamTheme = 'surreal';
 
   for (const t of themes) {

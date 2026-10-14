@@ -77,8 +77,8 @@ export function createNoctaliaTheme(mode: ThemeMode, ambience: ThemeAmbience): T
     navbarTextActive: p.title,
     navbarTextInactive: p.muted,
     tags: mode === 'dark'
-      ? { surreal: '#7F6FA8', mystical: '#6C568F', calm: '#446B8C', noir: '#31354F' }
-      : { surreal: '#B8AECB', mystical: '#C5B8D8', calm: '#A5C4E0', noir: '#A8A8C0' },
+      ? { surreal: '#7F6FA8', mystical: '#6C568F', calm: '#446B8C', noir: '#31354F', luminous: '#6B5A34', nostalgic: '#6E4F5B' }
+      : { surreal: '#B8AECB', mystical: '#C5B8D8', calm: '#A5C4E0', noir: '#A8A8C0', luminous: '#E3D3A8', nostalgic: '#D9BFC5' },
   };
 }
 

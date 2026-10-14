@@ -575,6 +575,8 @@ const translations: Record<string, string> = {
     'dream.theme.mystical': 'Mystique',
     'dream.theme.calm': 'Calme',
     'dream.theme.noir': 'Noir',
+    'dream.theme.luminous': 'Lumineux',
+    'dream.theme.nostalgic': 'Nostalgique',
     'journal.detail.explore_button.new': 'Commencer ma réflexion',
     'journal.detail.explore_button.continue': 'Reprendre ma réflexion',
     'journal.detail.analyze_button.default': 'Analyser ce rêve',

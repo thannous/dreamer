@@ -1618,6 +1618,10 @@ export const useDreamJournal = () => {
           ...safeAnalysisFields,
           // A guest's dream keeps the name its seal gave it.
           title: !user && latestBeforeAnalysis.title?.trim() ? latestBeforeAnalysis.title : safeAnalysisFields.title,
+          // Its pre-analysis classed it, as its seal shows: the reading does not class it again.
+          ...(latestBeforeAnalysis.theme
+            ? { theme: latestBeforeAnalysis.theme, dreamType: latestBeforeAnalysis.dreamType }
+            : null),
           transcript: latestBeforeAnalysis.transcript,
           analysisStatus: 'done',
           analyzedAt: Date.now(),

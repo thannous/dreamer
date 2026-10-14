@@ -1,7 +1,8 @@
 import { createClient } from 'jsr:@supabase/supabase-js@2';
 import { aiLanguageName, type AiLanguage, localizedForAi } from '../lib/aiLanguage.ts';
 import { corsHeaders, GUEST_LIMITS } from '../lib/constants.ts';
-import { CATEGORIZE_DREAM_SCHEMA, DREAM_TYPE_VALUES } from '../lib/schemas.ts';
+import { describeDreamThemes, LEGACY_DREAM_THEMES, normalizeDreamTheme } from '../lib/dreamThemes.ts';
+import { CATEGORIZE_DREAM_SCHEMA, DREAM_TYPE_VALUES, withDreamThemes } from '../lib/schemas.ts';
 import {
   callGeminiWithFallback,
   classifyGeminiError,
@@ -287,7 +288,7 @@ export async function handleAnalyzeDream(ctx: ApiContext): Promise<Response> {
     if (parsedInput instanceof Response) return parsedInput;
     const invalidRequestId = validateAnalysisRequestId(body);
     if (invalidRequestId) return invalidRequestId;
-    const { transcript, lang } = parsedInput;
+    const { transcript, lang, themes } = parsedInput;
     const { text: promptTranscript, truncated: truncatedForPrompt } = boundTranscriptForPrompt(transcript);
     const fingerprint = guestCheck.fingerprint;
 
@@ -370,7 +371,7 @@ export async function handleAnalyzeDream(ctx: ApiContext): Promise<Response> {
       quotaUsed = { analysis: toCount((quotaResult as any)?.new_count) };
     }
 
-    const analysis = await runDreamAnalysis({ apiKey, transcript: promptTranscript, truncatedForPrompt, lang, route: '/analyzeDream' });
+    const analysis = await runDreamAnalysis({ apiKey, transcript: promptTranscript, truncatedForPrompt, lang, themes, route: '/analyzeDream' });
 
     console.log('[api] /analyzeDream success', {
       titleLength: analysis.title.length,
@@ -407,7 +408,7 @@ export async function handleAnalyzeDreamFull(ctx: ApiContext): Promise<Response>
     if (parsedInput instanceof Response) return parsedInput;
     const invalidRequestId = validateAnalysisRequestId(body);
     if (invalidRequestId) return invalidRequestId;
-    const { transcript, lang } = parsedInput;
+    const { transcript, lang, themes } = parsedInput;
     const { text: promptTranscript, truncated: truncatedForPrompt } = boundTranscriptForPrompt(transcript);
 
     const admission = await admitSynchronousAiRequest({
@@ -441,7 +442,7 @@ export async function handleAnalyzeDreamFull(ctx: ApiContext): Promise<Response>
     const quotaUsed = quotaClaim.quotaUsed;
     const imageModel = resolveImageModel(quotaClaim.tier);
 
-    const analysis = await runDreamAnalysis({ apiKey, transcript: promptTranscript, truncatedForPrompt, lang, route: '/analyzeDreamFull' });
+    const analysis = await runDreamAnalysis({ apiKey, transcript: promptTranscript, truncatedForPrompt, lang, themes, route: '/analyzeDreamFull' });
     const imagePrompt = analysis.imagePrompt;
 
     const { imageBase64, mimeType } = await generateImageFromPrompt({
@@ -516,7 +517,7 @@ export async function handleCategorizeDream(ctx: ApiContext): Promise<Response> 
     }
     const parsedInput = parseDreamTextInput(body);
     if (parsedInput instanceof Response) return parsedInput;
-    const { transcript, lang } = parsedInput;
+    const { transcript, lang, themes } = parsedInput;
     const { text: promptTranscript, truncated: truncatedForPrompt } = boundTranscriptForPrompt(transcript);
 
     const admission = await admitSynchronousAiRequest({
@@ -537,7 +538,7 @@ export async function handleCategorizeDream(ctx: ApiContext): Promise<Response> 
     const langName = aiLanguageName(lang);
     const systemInstruction = `${localizedForAi(lang, CATEGORIZE_SYSTEM_INSTRUCTIONS)} ${REFLECTION_POLICY}`;
 
-    const prompt = `You analyze user dreams with keys: {"title": string, "theme": "surreal"|"mystical"|"calm"|"noir", "dreamType": ${DREAM_TYPE_VALUES.map((type) => JSON.stringify(type)).join("|")}, "hasPerson": boolean, "hasAnimal": boolean}. Choose a visual theme. ${DREAM_TYPE_POLICY} Never infer trauma or diagnosis. The title MUST be in ${langName}.
+    const prompt = `You analyze user dreams with keys: {"title": string, "theme": ${themes.map((theme) => JSON.stringify(theme)).join("|")}, "dreamType": ${DREAM_TYPE_VALUES.map((type) => JSON.stringify(type)).join("|")}, "hasPerson": boolean, "hasAnimal": boolean}. Choose a visual theme${themes.length > LEGACY_DREAM_THEMES.length ? `: ${describeDreamThemes(themes)}` : ''}. ${DREAM_TYPE_POLICY} Never infer trauma or diagnosis. The title MUST be in ${langName}.
 
 "hasPerson": true if the dream mentions any person (self, friend, stranger, family member, character, figure, etc.), false otherwise
 "hasAnimal": true if the dream mentions any animal (pet, wild animal, creature, bird, mythical being, etc.), false otherwise
@@ -553,7 +554,7 @@ ${truncatedForPrompt ? "Only an excerpt is available; do not infer the omitted c
       systemInstruction,
       {
         responseMimeType: 'application/json',
-        responseJsonSchema: CATEGORIZE_DREAM_SCHEMA,
+        responseJsonSchema: withDreamThemes(CATEGORIZE_DREAM_SCHEMA, themes),
         thinkingLevel: 'minimal',
         maxOutputTokens: 512,
       }
@@ -572,9 +573,7 @@ ${truncatedForPrompt ? "Only an excerpt is available; do not infer the omitted c
       throw new Error('Missing required fields in model response');
     }
 
-    const theme = ['surreal', 'mystical', 'calm', 'noir'].includes(analysis.theme)
-      ? analysis.theme
-      : 'surreal';
+    const theme = normalizeDreamTheme(analysis.theme, themes);
     const dreamType = normalizeAnalysisDreamType(analysis.dreamType);
 
     return new Response(

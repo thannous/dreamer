@@ -163,7 +163,7 @@ const processAnalysisJob = async (input: {
 
     const { data: dream, error: dreamError } = await adminClient
       .from('dreams')
-      .select('id,user_id,transcript,analysis_status,analysis_request_id,is_analyzed')
+      .select('id,user_id,transcript,analysis_status,analysis_request_id,is_analyzed,theme,dream_type')
       .eq('id', job.dream_id)
       .eq('user_id', job.user_id)
       .limit(1)
@@ -200,13 +200,19 @@ const processAnalysisJob = async (input: {
     if (tierError) throw tierError;
     const imageTier = tierData === 'plus' || tierData === 'premium' ? 'PLUS' : 'FREE';
     const lang = String(job.request_payload?.lang ?? 'en');
-    const analysis = await runDreamAnalysis({
+    const reading = await runDreamAnalysis({
       apiKey,
       transcript: resolvedTranscript.promptTranscript,
       truncatedForPrompt: resolvedTranscript.truncatedForPrompt,
       lang,
       route: '/analysis-job-worker',
     });
+    // A dream its pre-analysis classed keeps that class, as its seal shows: the reading
+    // does not class it again (and an app that cannot show a newer theme never meets one).
+    const classed = typeof (dream as any).theme === 'string' && (dream as any).theme.length > 0;
+    const analysis = classed
+      ? { ...reading, theme: String((dream as any).theme), dreamType: String((dream as any).dream_type ?? reading.dreamType) }
+      : reading;
 
     const { data: completionData, error: completionError } = await adminClient.rpc(
       'complete_authenticated_analysis_job',

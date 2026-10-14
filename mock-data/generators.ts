@@ -49,6 +49,8 @@ const THEMES: DreamTheme[] = [
   'mystical',
   'calm',
   'noir',
+  'luminous',
+  'nostalgic',
 ];
 
 const DREAM_TYPES: DreamType[] = ['Lucid Dream', 'Recurring Dream', 'Nightmare', 'Symbolic Dream'];

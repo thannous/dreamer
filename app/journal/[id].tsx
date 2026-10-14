@@ -24,6 +24,7 @@ import { DREAM_STORY } from '@/components/journal/story/dreamStoryMotion';
 import { WaitingStars } from '@/components/journal/story/WaitingStars';
 import { markDreamStoryEpilogue } from '@/lib/dreamStoryEpilogue';
 import { markDreamNamed } from '@/lib/dreamNaming';
+import { DREAM_THEMES } from '@/lib/dreamThemes';
 import { getDreamStoryHandoffName, hasDreamStoryHandoff } from '@/lib/dreamStoryPrologue';
 import { DreamShareImage } from '@/components/journal/DreamShareImage';
 import { getImageJobFailure } from '@/lib/imageJobErrors';
@@ -162,7 +163,6 @@ const getShareNavigator = (): ShareNavigator | undefined => {
 };
 
 const DREAM_TYPES: DreamType[] = ['Lucid Dream', 'Recurring Dream', 'Nightmare', 'Symbolic Dream', 'Everyday Dream', 'Fantastical Dream'];
-const DREAM_THEMES: DreamTheme[] = ['surreal', 'mystical', 'calm', 'noir'];
 const isMockMode = isMockModeEnabled();
 const DREAM_IMAGE_ASPECT = 9 / 16;
 const DREAM_IMAGE_CROP_EPSILON = 0.01;
@@ -714,7 +714,7 @@ const JournalDetailContent = memo(function JournalDetailContent({ dream, folio }
   }, [dream?.dreamType]);
 
   const sortedDreamThemes = useMemo(() => {
-    return sortWithSelectionFirst(DREAM_THEMES, dream?.theme);
+    return sortWithSelectionFirst([...DREAM_THEMES], dream?.theme);
   }, [dream?.theme]);
 
   useEffect(() => {

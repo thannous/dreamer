@@ -63,6 +63,12 @@ export const ANALYZE_DREAM_SCHEMA = {
   ],
 };
 
+/** A response schema whose theme is kept to the themes offered for the request. */
+export const withDreamThemes = <T extends { properties: { theme: object } }>(schema: T, themes: readonly string[]): T => ({
+  ...schema,
+  properties: { ...schema.properties, theme: { type: 'string', enum: [...themes] } },
+});
+
 export const CATEGORIZE_DREAM_SCHEMA = {
   type: 'object',
   additionalProperties: false,

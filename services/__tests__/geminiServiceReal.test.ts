@@ -1,6 +1,8 @@
 import { afterEach, beforeEach, describe, expect, it, jest } from '@jest/globals';
 import { TextEncoder, TextDecoder } from 'node:util';
 
+import { DREAM_THEMES } from '@/lib/dreamThemes';
+
 const mockStreamingFetch = jest.fn();
 jest.mock('expo/fetch', () => ({ fetch: (...args: unknown[]) => mockStreamingFetch(...args) }));
 
@@ -214,7 +216,7 @@ describe('geminiServiceReal', () => {
         'https://api.example.com/analyzeDream',
         expect.objectContaining({
           method: 'POST',
-          body: JSON.stringify({ transcript: 'I was flying', lang: 'en' }),
+          body: JSON.stringify({ transcript: 'I was flying', lang: 'en', themes: DREAM_THEMES }),
         })
       );
       expect(result).toEqual(mockResult);
@@ -230,7 +232,7 @@ describe('geminiServiceReal', () => {
       expect(global.fetch).toHaveBeenCalledWith(
         expect.any(String),
         expect.objectContaining({
-          body: JSON.stringify({ transcript: 'Test dream', lang: 'en' }),
+          body: JSON.stringify({ transcript: 'Test dream', lang: 'en', themes: DREAM_THEMES }),
         })
       );
     });
@@ -245,7 +247,7 @@ describe('geminiServiceReal', () => {
       expect(global.fetch).toHaveBeenCalledWith(
         expect.any(String),
         expect.objectContaining({
-          body: JSON.stringify({ transcript: 'Test dream', lang: 'fr', fingerprint: 'fingerprint-123' }),
+          body: JSON.stringify({ transcript: 'Test dream', lang: 'fr', themes: DREAM_THEMES, fingerprint: 'fingerprint-123' }),
         })
       );
     });
@@ -260,7 +262,7 @@ describe('geminiServiceReal', () => {
       expect(global.fetch).toHaveBeenCalledWith(
         expect.any(String),
         expect.objectContaining({
-          body: JSON.stringify({ transcript: 'Test dream', lang: 'en' }),
+          body: JSON.stringify({ transcript: 'Test dream', lang: 'en', themes: DREAM_THEMES }),
         })
       );
     });
@@ -281,6 +283,7 @@ describe('geminiServiceReal', () => {
           body: JSON.stringify({
             transcript: 'Test dream',
             lang: 'en',
+            themes: DREAM_THEMES,
             remoteDreamId: 123,
             analysisRequestId: '11111111-1111-4111-8111-111111111111',
           }),
@@ -319,7 +322,7 @@ describe('geminiServiceReal', () => {
         'https://api.example.com/categorizeDream',
         expect.objectContaining({
           method: 'POST',
-          body: JSON.stringify({ transcript: 'Flying dream', lang: 'es' }),
+          body: JSON.stringify({ transcript: 'Flying dream', lang: 'es', themes: DREAM_THEMES }),
         })
       );
       expect(result).toEqual(mockResult);
@@ -335,7 +338,7 @@ describe('geminiServiceReal', () => {
       expect(global.fetch).toHaveBeenCalledWith(
         expect.any(String),
         expect.objectContaining({
-          body: JSON.stringify({ transcript: 'Dream', lang: 'en' }),
+          body: JSON.stringify({ transcript: 'Dream', lang: 'en', themes: DREAM_THEMES }),
         })
       );
     });
@@ -352,7 +355,7 @@ describe('geminiServiceReal', () => {
         'https://api.example.com/analyzeDreamFull',
         expect.objectContaining({
           method: 'POST',
-          body: JSON.stringify({ transcript: 'Dream transcript', lang: 'en' }),
+          body: JSON.stringify({ transcript: 'Dream transcript', lang: 'en', themes: DREAM_THEMES }),
         })
       );
       expect(result.imageUrl).toBe('https://img.example.com/dream.jpg');
@@ -387,7 +390,7 @@ describe('geminiServiceReal', () => {
       expect(global.fetch).toHaveBeenCalledWith(
         expect.any(String),
         expect.objectContaining({
-          body: JSON.stringify({ transcript: 'Dream', lang: 'en', fingerprint: 'fp-456' }),
+          body: JSON.stringify({ transcript: 'Dream', lang: 'en', themes: DREAM_THEMES, fingerprint: 'fp-456' }),
         })
       );
     });
@@ -408,6 +411,7 @@ describe('geminiServiceReal', () => {
           body: JSON.stringify({
             transcript: 'Dream',
             lang: 'en',
+            themes: DREAM_THEMES,
             remoteDreamId: 456,
             analysisRequestId: '22222222-2222-4222-8222-222222222222',
           }),
@@ -505,7 +509,7 @@ describe('geminiServiceReal', () => {
       expect(global.fetch).toHaveBeenCalledWith(
         expect.any(String),
         expect.objectContaining({
-          body: JSON.stringify({ transcript: 'Dream', lang: 'en', fingerprint: 'fp-789' }),
+          body: JSON.stringify({ transcript: 'Dream', lang: 'en', themes: DREAM_THEMES, fingerprint: 'fp-789' }),
         })
       );
     });

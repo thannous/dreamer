@@ -13,6 +13,7 @@ import { getNoctaliaPalette } from '@/constants/noctaliaPalette';
 import { useTheme } from '@/context/ThemeContext';
 import { useTranslation } from '@/hooks/useTranslation';
 import { TID } from '@/lib/testIDs';
+import { DREAM_THEMES } from '@/lib/dreamThemes';
 import type { DreamTheme } from '@/lib/types';
 
 import { DREAM_EASE, DREAM_STORY, entrance, paintSettle, paintSweep, twinkle } from './story/dreamStoryMotion';
@@ -25,6 +26,8 @@ const EMBLEMS: Record<DreamTheme, ImageSource> = {
   calm: require('@/assets/images/dream-seal-emblem-calm.webp'),
   surreal: require('@/assets/images/dream-seal-emblem-surreal.webp'),
   noir: require('@/assets/images/dream-seal-emblem-noir.webp'),
+  luminous: require('@/assets/images/dream-seal-emblem-luminous.webp'),
+  nostalgic: require('@/assets/images/dream-seal-emblem-nostalgic.webp'),
 };
 /** The emblem is pressed in the warm light of the journal's lamp, in both themes. */
 const SEAL_GOLD = getNoctaliaPalette('dark').accent;
@@ -35,9 +38,10 @@ const LEGEND_LINE = 14;
 const LEGEND_TRACKING = 1.6;
 /** Past this arc the legend would wrap the window: it is left unengraved. */
 const LEGEND_MAX_ARC = 4.2;
-/** The four signs on the astrolabe while the seal chooses, clockwise from the top. */
-const SIGNS: DreamTheme[] = ['mystical', 'calm', 'surreal', 'noir'];
-const SIGN = 30;
+/** The signs on the astrolabe while the seal chooses, clockwise from the top, a sixth of a turn apart. */
+const SIGNS = DREAM_THEMES;
+const SIGN_STEP = 360 / SIGNS.length;
+const SIGN = 28;
 const SIGN_ORBIT = 104;
 
 const MEDALLION = 148;
@@ -73,7 +77,7 @@ export type SealMark = { theme: DreamTheme; legend: string };
 const percent = (value: number, total: number) => `${Math.round((value / total) * 10000) / 100}%`;
 
 /**
- * The seal choosing: the four signs a dream can bear appear on the astrolabe and turn
+ * The seal choosing: the signs a dream can bear appear on the astrolabe and turn
  * while it chooses. With a mark, the turn slows until its sign stands at the top, which
  * glides into the window, changing from the page's ink to the lamp's gold, and is pressed
  * there; the others fade. Without one, the signs fade as they turn and the seal stays plain.
@@ -85,7 +89,7 @@ function SealChoice({ mark, ink }: { mark: SealMark | null; ink: string }) {
     const total = mark ? contact + 60 : choice;
     const at = (value: number) => percent(value, total);
     const chosen = mark ? SIGNS.indexOf(mark.theme) : -1;
-    const turn = mark ? -(360 + chosen * 90) : -200;
+    const turn = mark ? -(360 + chosen * SIGN_STEP) : -200;
     const base = { animationDuration: total, animationFillMode: 'both' } as const;
     const turning = (sign: 1 | -1) => ({
       ...base,
@@ -140,7 +144,7 @@ function SealChoice({ mark, ink }: { mark: SealMark | null; ink: string }) {
     <>
       <Animated.View className="absolute left-0 top-0" style={[{ width: ORBIT, height: ORBIT }, motion.ring] as StyleProp<ViewStyle>}>
         {SIGNS.map((theme, index) => {
-          const angle = (index * Math.PI) / 2;
+          const angle = (index * SIGN_STEP * Math.PI) / 180;
           return (
             <Animated.View key={theme} className="absolute" style={[{
               left: CENTER + SIGN_ORBIT * Math.sin(angle) - SIGN / 2,

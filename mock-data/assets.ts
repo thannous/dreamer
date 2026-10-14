@@ -48,6 +48,8 @@ const THEME_ART: Record<DreamTheme, MockDreamArt[]> = {
   mystical: ['doors', 'staircase', 'cat'],
   calm: ['tide', 'harbour', 'frozen-lake'],
   noir: ['station', 'no-driver', 'glass-teeth'],
+  luminous: ['floating', 'tide', 'staircase'],
+  nostalgic: ['harbour', 'station', 'cat'],
 };
 
 /**

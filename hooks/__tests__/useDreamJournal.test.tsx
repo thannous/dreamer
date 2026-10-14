@@ -3044,6 +3044,20 @@ describe('useDreamJournal', () => {
       );
     });
 
+    it('keeps the theme and type its pre-analysis gave a dream through its reading', async () => {
+      setSavedDreams([buildDream({ id: 1, isAnalyzed: false, analysisStatus: 'none', theme: 'luminous', dreamType: 'Everyday Dream' })]);
+
+      const { result } = await renderLoadedDreamJournal();
+
+      await act(async () => {
+        await result.current.analyzeDream(1, 'My dream transcript');
+      });
+
+      expect(result.current.dreams[0]).toEqual(expect.objectContaining({
+        interpretation: 'Deep meaning', isAnalyzed: true, theme: 'luminous', dreamType: 'Everyday Dream',
+      }));
+    });
+
     it('reuses the analysis image prompt when queuing image generation', async () => {
       const existingDream = buildDream({
         id: 1,
