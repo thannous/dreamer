@@ -1,5 +1,6 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import * as Notifications from 'expo-notifications';
+import { Platform } from 'react-native';
 
 import { generateUUID } from '@/lib/dreamUtils';
 import { logger } from '@/lib/logger';
@@ -81,16 +82,21 @@ export async function captureDreamFromNotificationResponse(
     : false;
   if (added) listeners.forEach((listener) => listener());
 
-  const identifier = response?.notification?.request?.identifier;
-  if (typeof identifier === 'string' && identifier) {
-    // Android keeps a spinner on a replied notification until the app updates it.
-    await Notifications.dismissNotificationAsync(identifier).catch(() => undefined);
-  }
+  const rawIdentifier = response?.notification?.request?.identifier;
+  const identifier = typeof rawIdentifier === 'string' && rawIdentifier ? rawIdentifier : undefined;
 
   if (added) {
-    await presentDreamCapturedNotification().catch((error) => {
+    // On Android the notice replaces the replied reminder, which also ends its
+    // reply spinner and removes its reply button.
+    await presentDreamCapturedNotification(identifier).catch((error) => {
       logger.warn('[NotificationDreamInbox] Unable to confirm the dictated dream', error);
     });
+  }
+
+  if (identifier && (Platform.OS !== 'android' || !added)) {
+    // Android 15+ ignores this for a replied notification; older versions and
+    // iOS still remove it.
+    await Notifications.dismissNotificationAsync(identifier).catch(() => undefined);
   }
 
   return true;

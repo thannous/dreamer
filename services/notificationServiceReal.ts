@@ -715,13 +715,19 @@ export async function presentAnalysisReadyNotification(dreamId: number): Promise
  * Confirms a dream dictated from a reminder reply. It reaches the watch the
  * same way the reminder did, so the user knows the words were kept.
  */
-export async function presentDreamCapturedNotification(): Promise<void> {
+export async function presentDreamCapturedNotification(replacingIdentifier?: string): Promise<void> {
   if (Platform.OS === 'web') {
     return;
   }
 
   const t = await getNotificationTranslator();
   await Notifications.scheduleNotificationAsync({
+    // Android 15+ refuses to cancel a notification that got a direct reply; the
+    // app has to update it instead. Posting under the same identifier replaces
+    // the replied reminder (an immediate post leaves its weekly schedule
+    // alone on Android). On iOS the same identifier would replace the pending
+    // weekly request, so the notice gets its own.
+    ...(Platform.OS === 'android' && replacingIdentifier ? { identifier: replacingIdentifier } : {}),
     content: {
       title: t('notifications.dream_capture.saved_title'),
       body: t('notifications.dream_capture.saved_body'),

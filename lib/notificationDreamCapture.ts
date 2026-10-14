@@ -67,11 +67,22 @@ export function parseDreamCaptureResponse(
   const deliveredAt = typeof date === 'number' && Number.isFinite(date) ? Math.round(date) : options.now;
 
   return {
-    id: `${requestId}:${deliveredAt}`,
+    // The text is part of the id: a redelivered reply keeps its id, while a
+    // second, different reply to the same notification is a new dream.
+    id: `${requestId}:${deliveredAt}:${hashText(text)}`,
     text,
     capturedAt: options.now,
     clientRequestId: options.createClientRequestId(),
   };
+}
+
+/** Small stable string hash (djb2), enough to tell two replies apart. */
+function hashText(text: string): string {
+  let hash = 5381;
+  for (let index = 0; index < text.length; index += 1) {
+    hash = ((hash << 5) + hash + text.charCodeAt(index)) | 0;
+  }
+  return (hash >>> 0).toString(36);
 }
 
 function isCapture(value: unknown): value is NotificationDreamCapture {

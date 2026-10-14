@@ -42,6 +42,15 @@ describe('notification dream capture', () => {
     expect(addNotificationDreamCapture(imported, redelivered).added).toBe(false);
   });
 
+  it('keeps a second, different reply to the same notification', () => {
+    // Android leaves a replied notification in place, so its reply field can be used again.
+    const first = parseDreamCaptureResponse(reply(), options(10))!;
+    const second = parseDreamCaptureResponse(reply({ userText: 'And then a house of salt' }), options(20))!;
+
+    const { inbox } = addNotificationDreamCapture({ captures: [], seenIds: [] }, first);
+    expect(addNotificationDreamCapture(inbox, second).added).toBe(true);
+  });
+
   it('treats the next morning reply to the same weekly reminder as a new dream', () => {
     const monday = parseDreamCaptureResponse(reply(), options(10))!;
     const nextMonday = parseDreamCaptureResponse(
