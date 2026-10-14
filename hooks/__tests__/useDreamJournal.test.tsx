@@ -1578,6 +1578,27 @@ describe('useDreamJournal', () => {
       );
     });
 
+    it('renames a dream whose first words stood in for a name when its categorization lands later', async () => {
+      // Its own id: the names given on arrival last for the session.
+      const standIn = buildDream({ id: 78, title: 'First words', analysisStatus: 'none', isAnalyzed: false, theme: undefined });
+      setSavedDreams([standIn]);
+      markDreamNamed(getDreamIdentityKey(standIn), true);
+
+      const { result } = await renderLoadedDreamJournal();
+
+      await act(async () => {
+        await result.current.applyDreamCategorization(78, {
+          title: 'Late title',
+          theme: 'calm',
+          dreamType: 'Lucid Dream',
+          hasPerson: false,
+          hasAnimal: false,
+        });
+      });
+
+      expect(result.current.dreams[0]).toEqual(expect.objectContaining({ title: 'Late title', theme: 'calm' }));
+    });
+
     it('does not let late categorization overwrite pending analysis', async () => {
       const pendingDream = buildDream({
         id: 1,

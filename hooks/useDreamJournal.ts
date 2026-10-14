@@ -24,7 +24,7 @@ import {
   type AnalysisSource,
 } from '@/lib/analytics';
 import { isResumableAnalysisRequest } from '@/lib/analysisRequest';
-import { isDreamNamed } from '@/lib/dreamNaming';
+import { keepsDreamName } from '@/lib/dreamNaming';
 import { DreamPersistenceError, requireReadableDreams } from '@/lib/dreamStorageRead';
 import {
   getAnalysisJobPollDelay,
@@ -878,8 +878,8 @@ export const useDreamJournal = () => {
 
       const enrichedDream: DreamAnalysis = {
         ...currentDream,
-        // Once its page has named it, a dream keeps that name.
-        title: isDreamNamed(getDreamIdentityKey(currentDream)) ? currentDream.title : categorization.title,
+        // A dream keeps the name its pre-analysis gave it on arrival; first words only stand in.
+        title: keepsDreamName(getDreamIdentityKey(currentDream)) ? currentDream.title : categorization.title,
         theme: categorization.theme,
         dreamType: currentDream.memory?.origin === 'remembered'
           ? currentDream.dreamType

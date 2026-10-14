@@ -32,6 +32,7 @@ import { useQuickSettings } from '@/context/QuickSettingsContext';
 import { useTheme } from '@/context/ThemeContext';
 import { useRecordingDraftPersistence } from '@/hooks/useRecordingDraftPersistence';
 import { useRecordingSession } from '@/hooks/useRecordingSession';
+import { useLocaleFormatting } from '@/hooks/useLocaleFormatting';
 import { useTranslation } from '@/hooks/useTranslation';
 import { blurActiveElement } from '@/lib/accessibility';
 import {
@@ -167,6 +168,7 @@ function RecordingScreen() {
   const { colors, mode } = useTheme();
   const { language } = useLanguage();
   const { t } = useTranslation();
+  const { formatDreamDate, formatDreamTime } = useLocaleFormatting();
   const openQuickSettings = useQuickSettings();
   const {
     state: onboardingState,
@@ -718,6 +720,8 @@ function RecordingScreen() {
     provisionalName: string;
     /** The journal held a dream before this one. */
     previousPage: boolean;
+    /** Its date and time, as its page shows them under its name. */
+    date: string;
     open: () => void;
   } | null>(null);
   const sealTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
@@ -754,13 +758,16 @@ function RecordingScreen() {
     };
   }, [sealing]);
   const sealName = sealedDream?.theme ? sealedDream.title : preAnalysisOver ? sealing?.provisionalName ?? null : null;
-  const sealNamed = useCallback(() => {
-    if (sealing) markDreamNamed(sealing.identity);
+  const sealWrote = useRef<{ title: string; provisional: boolean } | undefined>(undefined);
+  const sealNamed = useCallback((title: string, provisional: boolean) => {
+    if (!sealing) return;
+    sealWrote.current = { title, provisional };
+    markDreamNamed(sealing.identity, provisional);
   }, [sealing]);
   const sealOpened = useCallback(() => {
     if (!sealing) return;
-    // The seal ends on the saved moment's window: the page takes it over as it is.
-    markDreamStoryHandoff(sealing.identity);
+    // The seal ends on the saved moment's window and the name in its place: the page takes them over as they are.
+    markDreamStoryHandoff(sealing.identity, sealWrote.current);
     sealing.open();
     sealTimerRef.current = setTimeout(() => {
       sealTimerRef.current = null;
@@ -1223,6 +1230,7 @@ function RecordingScreen() {
           identity: getDreamIdentityKey(savedDream),
           provisionalName: savedDream.title || t('journal.detail.untitled_dream'),
           previousPage: dreams.some((dream) => dream.id !== savedDream.id),
+          date: `${formatDreamDate(savedDream.id)} · ${formatDreamTime(savedDream.id)}`,
           open: openSavedDream,
         });
       }
@@ -1260,6 +1268,8 @@ function RecordingScreen() {
     clearAfterSuccessfulSave,
     draftDream,
     dreams,
+    formatDreamDate,
+    formatDreamTime,
     isHydrated,
     isPersisting,
     isRecordingRef,
@@ -2106,7 +2116,8 @@ function RecordingScreen() {
       </StandardBottomSheet>
 
       {sealing ? (
-        <DreamCaptureSeal name={sealName} provisionalName={sealing.provisionalName} previousPage={sealing.previousPage}
+        <DreamCaptureSeal name={sealName} provisionalName={sealing.provisionalName} date={sealing.date}
+          previousPage={sealing.previousPage}
           onNamed={sealNamed} onSealed={sealOpened} />
       ) : null}
       <MicPermissionRationaleSheet

@@ -24,7 +24,7 @@ import { DREAM_STORY } from '@/components/journal/story/dreamStoryMotion';
 import { WaitingStars } from '@/components/journal/story/WaitingStars';
 import { markDreamStoryEpilogue } from '@/lib/dreamStoryEpilogue';
 import { markDreamNamed } from '@/lib/dreamNaming';
-import { hasDreamStoryHandoff } from '@/lib/dreamStoryPrologue';
+import { getDreamStoryHandoffName, hasDreamStoryHandoff } from '@/lib/dreamStoryPrologue';
 import { DreamShareImage } from '@/components/journal/DreamShareImage';
 import { getImageJobFailure } from '@/lib/imageJobErrors';
 import { ErrorType } from '@/lib/errors';
@@ -402,6 +402,13 @@ const JournalDetailContent = memo(function JournalDetailContent({ dream, folio }
   const [opensOnSavedMoment] = useState(() => isSavedArrival && !dream?.imageUrl?.trim());
   // Arriving from the capture seal, the window is already open: it is taken over, not opened again.
   const [windowHandedOver] = useState(() => opensOnSavedMoment && !!dream && hasDreamStoryHandoff(getDreamIdentityKey(dream)));
+  // First words that stood in for a name stay shown on this visit as they were written: a
+  // pre-analysis that renames the dream later shows from its next opening, not under the
+  // reader's eyes. Opening the name to edit it lets the current one show.
+  const [heldTitle, setHeldTitle] = useState<string | null>(() => {
+    const written = windowHandedOver && dream ? getDreamStoryHandoffName(getDreamIdentityKey(dream)) : undefined;
+    return written?.provisional ? written.title : null;
+  });
   // Act III: an illustration present when the dream is first shown opens the page as its
   // cover. One painted during this visit lands where the reader is instead, so nothing
   // they are reading moves; the cover becomes how the next visit opens.
@@ -1170,6 +1177,7 @@ const JournalDetailContent = memo(function JournalDetailContent({ dream, folio }
   const startMetadataEditing = useCallback(() => {
     if (isAnalysisLocked) return;
     setIsEditingTranscript(false);
+    setHeldTitle(null);
     setIsEditing(true);
   }, [isAnalysisLocked]);
 
@@ -1930,16 +1938,15 @@ const JournalDetailContent = memo(function JournalDetailContent({ dream, folio }
   if (namingWaits && dream && namingTime !== 'early' && (!initialCategorizationPending || namingTime === 'late')) {
     const legend = [dreamTypeLabel, dreamThemeLabel].filter(Boolean).join(' · ');
     const seal = dream.theme ? { theme: dream.theme, legend } : null;
-    setNaming({
-      stage: showSavedMoment ? 'striking' : windowHandedOver ? 'named' : 'writing',
-      title: dream.title || t('journal.detail.untitled_dream'),
-      seal,
-    });
+    const title = dream.title || t('journal.detail.untitled_dream');
+    setNaming({ stage: showSavedMoment ? 'striking' : windowHandedOver ? 'named' : 'writing', title, seal });
+    if (!seal && !windowHandedOver) setHeldTitle(title);
   }
   const namedIdentity = naming.title && dream ? getDreamIdentityKey(dream) : null;
+  const namedProvisionally = !naming.seal;
   useEffect(() => {
-    if (namedIdentity) markDreamNamed(namedIdentity);
-  }, [namedIdentity]);
+    if (namedIdentity) markDreamNamed(namedIdentity, namedProvisionally);
+  }, [namedIdentity, namedProvisionally]);
   useEffect(() => {
     if (naming.stage !== 'striking') return;
     const timer = setTimeout(() => setNaming((current) => ({ ...current, stage: windowHandedOver ? 'named' : 'writing' })),
@@ -1949,7 +1956,7 @@ const JournalDetailContent = memo(function JournalDetailContent({ dream, folio }
   const sealing = useMemo(() => ({ mark: naming.seal ?? null }), [naming.seal]);
   // A name changed meanwhile, by the reader's own hand, ends the ceremony: that name stands.
   const namingOn = naming.stage !== 'named'
-    && (!naming.title || naming.title === (dream?.title || t('journal.detail.untitled_dream')));
+    && (!naming.title || naming.title === (heldTitle ?? (dream?.title || t('journal.detail.untitled_dream'))));
   const finishNaming = useCallback(() => {
     setNaming((current) => (current.stage === 'writing' ? { ...current, stage: 'named' } : current));
   }, []);
@@ -2135,7 +2142,7 @@ const JournalDetailContent = memo(function JournalDetailContent({ dream, folio }
             </View>
           ) : (
             <Text key={`dream-heading-${windowSize.fontScale}`} allowFontScaling={false} style={{ fontSize: 26 * titleTextScale, lineHeight: 32 * titleTextScale }} accessibilityRole="header" className="mb-2 font-display-semibold text-[26px] leading-8 text-ivory">
-              {dream.title || t('journal.detail.untitled_dream')}
+              {heldTitle ?? (dream.title || t('journal.detail.untitled_dream'))}
             </Text>
           )}
           <Text key={`dream-date-${windowSize.fontScale}`} allowFontScaling={false} style={{ fontSize: 12 * compactTextScale, lineHeight: 20 * compactTextScale }} className={`${opensOnSavedMoment ? 'mb-2' : 'mb-5'} font-sans text-[12px] leading-5 text-ivory-muted`}>
@@ -2905,7 +2912,8 @@ const JournalDetailContent = memo(function JournalDetailContent({ dream, folio }
             <View onLayout={({ nativeEvent: { layout } }) => {
               setCoverIntroHeight(previous => previous === layout.height ? previous : layout.height);
             }}>
-              {!isEditing ? <ArrivalReveal play={opensOnSavedMoment} index={0}>{renderMetadataCard()}</ArrivalReveal> : null}
+              {/* After the seal, the name and date are already in place: they do not enter again. */}
+              {!isEditing ? <ArrivalReveal play={opensOnSavedMoment && !windowHandedOver} index={0}>{renderMetadataCard()}</ArrivalReveal> : null}
             </View>
             {hasIllustratedCover ? renderIllustrationSection() : null}
             {!isEditing && dreamMemoryItems.length > 0 && (

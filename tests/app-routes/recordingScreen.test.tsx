@@ -622,6 +622,7 @@ jest.doMock('@/lib/env', () => ({
 
 jest.doMock('@/lib/locale', () => ({
   getTranscriptionLocale: () => 'fr-FR',
+  getFormattingLocale: () => 'fr-FR',
 }));
 
 jest.doMock('@/lib/logger', () => ({

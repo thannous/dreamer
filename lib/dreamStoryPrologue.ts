@@ -7,13 +7,21 @@
  */
 const HANDOFF_TTL_MS = 10_000;
 
-let pending: { key: string; expiresAt: number } | null = null;
+/** The name the seal wrote, which the page shows as the seal left it. */
+export type DreamStoryHandoffName = { title: string; provisional: boolean };
 
-export function markDreamStoryHandoff(key: string, now = Date.now()): void {
-  pending = { key, expiresAt: now + HANDOFF_TTL_MS };
+let pending: { key: string; expiresAt: number; name?: DreamStoryHandoffName } | null = null;
+
+export function markDreamStoryHandoff(key: string, name?: DreamStoryHandoffName, now = Date.now()): void {
+  pending = { key, expiresAt: now + HANDOFF_TTL_MS, ...(name ? { name } : null) };
 }
 
 /** Whether the seal has just handed this dream's window over. */
 export function hasDreamStoryHandoff(key: string, now = Date.now()): boolean {
   return pending !== null && pending.key === key && pending.expiresAt > now;
+}
+
+/** The name the seal has just written for this dream, if it handed the dream over. */
+export function getDreamStoryHandoffName(key: string, now = Date.now()): DreamStoryHandoffName | undefined {
+  return hasDreamStoryHandoff(key, now) ? pending?.name : undefined;
 }
