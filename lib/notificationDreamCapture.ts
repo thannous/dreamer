@@ -168,6 +168,26 @@ export function removeNotificationDreamCaptures(
   };
 }
 
+/** Drops the waiting replies of one journal, for a deleted account. */
+export function forgetNotificationDreamCaptures(inbox: NotificationDreamInbox, scope: string): NotificationDreamInbox {
+  if (!inbox.captures.some((entry) => entry.ownerScope === scope)) return inbox;
+  return { ...inbox, captures: inbox.captures.filter((entry) => entry.ownerScope !== scope) };
+}
+
+/** Whether two responses are the same reply, so clearing one never clears a newer reply. */
+export function isSameDreamCaptureResponse(
+  a: DreamCaptureResponseLike | null | undefined,
+  b: DreamCaptureResponseLike | null | undefined
+): boolean {
+  if (!a || !b) return false;
+  return (
+    a.actionIdentifier === b.actionIdentifier &&
+    a.userText === b.userText &&
+    a.notification?.request?.identifier === b.notification?.request?.identifier &&
+    a.notification?.date === b.notification?.date
+  );
+}
+
 export const GUEST_DREAM_SCOPE = 'guest';
 
 export function notificationDreamScope(userId: string | null | undefined): string {

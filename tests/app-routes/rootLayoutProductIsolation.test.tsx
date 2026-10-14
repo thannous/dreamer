@@ -75,7 +75,7 @@ jest.mock('@/components/navigation/DesktopShell', () => ({ DesktopShell: (props:
 jest.mock('@/components/analysis/AnalysisFlightIndicator', () => ({ AnalysisFlightIndicator: () => <div data-testid="analysis-host" /> }));
 jest.mock('@/components/reminders/EngagementRemindersHost', () => ({ EngagementRemindersHost: () => <div data-testid="reminders-host" /> }));
 jest.mock('@/components/reminders/NotificationDreamImportHost', () => ({ NotificationDreamImportHost: () => <div data-testid="dream-reply-host" /> }));
-jest.mock('@/services/notificationDreamInbox', () => ({ captureDreamFromNotificationResponse: (...args: unknown[]) => mockCaptureDream(...args) }));
+jest.mock('@/services/notificationDreamInbox', () => ({ captureDreamFromNotificationResponse: (...args: unknown[]) => mockCaptureDream(...args), clearDreamCaptureResponse: jest.fn() }));
 jest.mock('@/services/notificationDreamTask', () => ({ registerDreamCaptureBackgroundTask: jest.fn().mockResolvedValue(undefined) }));
 jest.mock('@/components/speech/OfflineModelPromptHost', () => ({ OfflineModelPromptHost: () => <div data-testid="speech-host" /> }));
 jest.mock('@/components/releases/WhatsNewModal', () => ({ WhatsNewModalHost: () => null }));

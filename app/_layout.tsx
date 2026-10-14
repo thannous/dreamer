@@ -77,7 +77,7 @@ import { QuickSettingsProvider } from '@/components/settings/QuickSettingsProvid
 import type { LanguagePreference } from '@/lib/types';
 import { scheduleProductBootstrap } from '@/lib/productBootstrap';
 import { setAiConsentPromptRequired } from '@/lib/aiConsent';
-import { captureDreamFromNotificationResponse } from '@/services/notificationDreamInbox';
+import { captureDreamFromNotificationResponse, clearDreamCaptureResponse } from '@/services/notificationDreamInbox';
 import { registerDreamCaptureBackgroundTask } from '@/services/notificationDreamTask';
 import { configureNotificationHandler } from '@/services/notificationService';
 import {
@@ -386,7 +386,7 @@ function RootLayoutNav({
             // A dream dictated from a reminder reply is saved, not opened.
             // Clear the replayable response only once the words are kept.
             await captureDreamFromNotificationResponse(response);
-            Notifications.clearLastNotificationResponse();
+            clearDreamCaptureResponse(response);
           } else if (response?.notification) {
             await enqueueNotification(response.notification);
           }
@@ -799,7 +799,7 @@ function RootLayoutNav({
           // Clear the replayable response only once the words are kept, so a
           // failed write is retried from the last response at next launch.
           void captureDreamFromNotificationResponse(response)
-            .then(() => Notifications.clearLastNotificationResponse())
+            .then(() => clearDreamCaptureResponse(response))
             .catch((error) => {
               if (__DEV__) console.warn('[RootLayoutNav] Unable to keep a dictated dream', error);
             });

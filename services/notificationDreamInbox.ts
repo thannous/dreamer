@@ -7,7 +7,9 @@ import { logger } from '@/lib/logger';
 import {
   addNotificationDreamCapture,
   claimNotificationDreamCaptures,
+  forgetNotificationDreamCaptures,
   isDreamCaptureResponse,
+  isSameDreamCaptureResponse,
   parseDreamCaptureResponse,
   parseNotificationDreamInbox,
   removeNotificationDreamCaptures,
@@ -57,6 +59,30 @@ export function rememberNotificationDreamScope(scope: string): Promise<void> {
   const next = inboxWrite.then(() => AsyncStorage.setItem(SCOPE_KEY, scope));
   inboxWrite = next.catch(() => undefined);
   return next;
+}
+
+/**
+ * A deleted account's replies leave the device with it, and the closed-app
+ * capture stops naming that account.
+ */
+export async function forgetNotificationDreams(scope: string): Promise<void> {
+  await updateInbox((inbox) => ({ inbox: forgetNotificationDreamCaptures(inbox, scope), result: undefined }));
+  const next = inboxWrite.then(async () => {
+    if ((await AsyncStorage.getItem(SCOPE_KEY)) === scope) await AsyncStorage.removeItem(SCOPE_KEY);
+  });
+  inboxWrite = next.catch(() => undefined);
+  await next;
+}
+
+/**
+ * Clears the replayable response once its reply is kept, unless a newer
+ * response has replaced it: that one is still waiting to be kept.
+ */
+export function clearDreamCaptureResponse(response: DreamCaptureResponseLike | null): void {
+  const latest = Notifications.getLastNotificationResponse();
+  if (!latest || isSameDreamCaptureResponse(latest, response)) {
+    Notifications.clearLastNotificationResponse();
+  }
 }
 
 export async function claimNotificationDreams(ids: readonly string[], scope: string): Promise<void> {

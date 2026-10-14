@@ -5,6 +5,8 @@ import { Platform } from 'react-native';
 import { DREAM_CAPTURE_BACKGROUND_TASK } from '@/lib/notificationDreamCapture';
 import { captureDreamFromNotificationResponse } from '@/services/notificationDreamInbox';
 
+const CAPTURE_ATTEMPTS = 3;
+
 /**
  * Android runs a reminder reply in a headless JS instance when the app is in
  * the background or closed, so the task must be defined while the bundle is
@@ -16,7 +18,17 @@ if (Platform.OS === 'android') {
     DREAM_CAPTURE_BACKGROUND_TASK,
     async ({ data }) => {
       if (!data || !('actionIdentifier' in data)) return;
-      await captureDreamFromNotificationResponse(data);
+      // Nothing replays a reply once this headless run ends, so a storage
+      // hiccup gets a few more tries before the words are given up.
+      for (let attempt = 1; ; attempt += 1) {
+        try {
+          await captureDreamFromNotificationResponse(data);
+          return;
+        } catch (error) {
+          if (attempt >= CAPTURE_ATTEMPTS) throw error;
+          await new Promise((resolve) => setTimeout(resolve, 300 * attempt));
+        }
+      }
     }
   );
 }

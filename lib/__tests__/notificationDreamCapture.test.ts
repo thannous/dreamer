@@ -3,6 +3,8 @@ import {
   addNotificationDreamCapture,
   canImportNotificationDream,
   claimNotificationDreamCaptures,
+  forgetNotificationDreamCaptures,
+  isSameDreamCaptureResponse,
   notificationDreamScope,
   parseDreamCaptureResponse,
   parseNotificationDreamInbox,
@@ -103,6 +105,27 @@ describe('notification dream capture', () => {
     expect(canImportNotificationDream(takenByB, accountA)).toBe(false);
     expect(claimNotificationDreamCaptures({ captures: [waitingForA], seenIds: [] }, [capture.id], accountB).captures[0])
       .toEqual(waitingForA);
+  });
+
+  it('does not take a newer reply for the one just kept', () => {
+    // Clearing the replayable response after A must not drop B, which arrived meanwhile.
+    expect(isSameDreamCaptureResponse(reply(), reply())).toBe(true);
+    expect(isSameDreamCaptureResponse(reply(), reply({ userText: 'A house of salt' }))).toBe(false);
+  });
+
+  it('removes only the deleted account\'s waiting replies', () => {
+    const capture = parseDreamCaptureResponse(reply(), options(10))!;
+    const other = parseDreamCaptureResponse(reply({ userText: 'A house of salt' }), options(20))!;
+    const inbox = {
+      captures: [
+        { ...capture, ownerScope: notificationDreamScope('a') },
+        { ...other, ownerScope: notificationDreamScope('b') },
+      ],
+      seenIds: [],
+    };
+    expect(forgetNotificationDreamCaptures(inbox, notificationDreamScope('a')).captures.map((c) => c.id)).toEqual([
+      other.id,
+    ]);
   });
 
   it('keeps valid replies when the stored inbox is partly corrupted', () => {

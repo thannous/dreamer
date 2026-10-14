@@ -1,7 +1,9 @@
-import { signOut } from '@/lib/auth';
+import { getCurrentUser, signOut } from '@/lib/auth';
 import { getApiBaseUrl } from '@/lib/config';
 import { fetchJSON } from '@/lib/http';
 import { NETWORK_REQUEST_POLICIES } from '@/lib/networkPolicy';
+import { notificationDreamScope } from '@/lib/notificationDreamCapture';
+import { forgetNotificationDreams } from '@/services/notificationDreamInbox';
 import { clearRemoteDreamStorage } from '@/services/storageService';
 
 export type AccountDeletionResponse = {
@@ -24,7 +26,8 @@ export async function requestAccountDeletion(): Promise<AccountDeletionResponse>
 
 /**
  * Local cleanup after a confirmed server-side deletion: drops cached dreams
- * and signs the device out (AuthContext then routes back to the auth screen).
+ * and dreams dictated from a reminder that were still waiting on the device,
+ * then signs the device out (AuthContext then routes back to the auth screen).
  * Cache clearing is best-effort; sign-out failures still surface.
  */
 export async function finalizeAccountDeletion(): Promise<void> {
@@ -33,6 +36,13 @@ export async function finalizeAccountDeletion(): Promise<void> {
   } catch {
     // Best-effort: the remote cache is keyed per user and becomes unreachable
     // once the session is gone.
+  }
+  try {
+    const user = await getCurrentUser();
+    if (user) await forgetNotificationDreams(notificationDreamScope(user.id));
+  } catch {
+    // Best-effort: a waiting reply stays tied to the deleted account and is
+    // never imported into another journal.
   }
   await signOut();
 }
