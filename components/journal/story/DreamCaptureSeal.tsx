@@ -1,5 +1,4 @@
 import * as Haptics from 'expo-haptics';
-import { Image as Emblem } from 'expo-image';
 import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import {
   Image,
@@ -16,9 +15,7 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import Svg, { Circle, Defs, Ellipse, Path, RadialGradient, Stop } from 'react-native-svg';
 
 import { JournalPageEdges } from '@/components/journal/JournalPageEdges';
-import {
-  SEAL_EMBLEMS, SEAL_GOLD, SEAL_MEASURES, SealChoice, SealLegend, type SealMark,
-} from '@/components/journal/SavedDreamMoment';
+
 import { JournalPaper } from '@/components/journal/JournalPaper';
 import { EASE } from '@/components/motion/motion';
 import { getNoctaliaDesignTokens } from '@/constants/noctaliaDesign';
@@ -27,6 +24,7 @@ import { useTheme } from '@/context/ThemeContext';
 import { TID } from '@/lib/testIDs';
 
 import { DREAM_EASE, DREAM_STORY } from './dreamStoryMotion';
+import { SEAL_EMBLEMS, SEAL_GOLD, SEAL_MEASURES, SealChoice, SealLegend, type SealMark } from './sealMarks';
 import { sparklePath } from './sparkle';
 
 const IVORY_JOURNAL = require('@/assets/images/dream-seal-book.webp');
@@ -766,11 +764,11 @@ export function DreamCaptureSeal({ name, mark, provisionalName, date, previousPa
               }, closingMotion.ripple] as StyleProp<ViewStyle>} />
               <Animated.View style={[emblemBox, closingMotion.struck] as StyleProp<ViewStyle>}>
                 <Animated.View className="absolute inset-0" style={closingMotion.struckInk as StyleProp<ViewStyle>}>
-                  <Emblem source={SEAL_EMBLEMS[closing.mark.theme]} tintColor={ink} contentFit="contain"
+                  <Image source={SEAL_EMBLEMS[closing.mark.theme]} tintColor={ink} resizeMode="contain"
                     style={{ width: SEAL_MEASURES.emblem, height: SEAL_MEASURES.emblem }} />
                 </Animated.View>
                 <Animated.View className="absolute inset-0" style={closingMotion.struckGold as StyleProp<ViewStyle>}>
-                  <Emblem source={SEAL_EMBLEMS[closing.mark.theme]} tintColor={SEAL_GOLD} contentFit="contain"
+                  <Image source={SEAL_EMBLEMS[closing.mark.theme]} tintColor={SEAL_GOLD} resizeMode="contain"
                     style={{ width: SEAL_MEASURES.emblem, height: SEAL_MEASURES.emblem }} />
                 </Animated.View>
               </Animated.View>

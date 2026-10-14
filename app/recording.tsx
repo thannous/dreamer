@@ -128,7 +128,7 @@ import {
 } from 'react-native';
 import { useReducedMotion } from 'react-native-reanimated';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import type { SealMark } from '@/components/journal/SavedDreamMoment';
+import type { SealMark } from '@/components/journal/story/sealMarks';
 import { DreamCaptureSeal } from '@/components/journal/story/DreamCaptureSeal';
 import { DREAM_STORY } from '@/components/journal/story/dreamStoryMotion';
 import { useHeaderScroll } from '@/components/ui/headerStretch';
