@@ -48,16 +48,16 @@ export function DreamCaptureSeal({ text }: { text: string }) {
     return {
       veil: {
         ...base,
-        animationName: { '0%': { opacity: 0 }, '22%': { opacity: 0.96 }, '100%': { opacity: 0.96 } },
+        animationName: { '0%': { opacity: 0 }, '20%': { opacity: 0.96 }, '100%': { opacity: 0.96 } },
       },
       words: {
         ...base,
         animationTimingFunction: EASE.inOut,
         animationName: {
           '0%': { opacity: 0, transform: [{ scale: 1 }] },
-          '16%': { opacity: 1, transform: [{ scale: 1 }] },
-          '30%': { opacity: 1, transform: [{ scale: 1 }] },
-          '56%': { opacity: 0, transform: [{ scale: 0.2 }] },
+          '18%': { opacity: 1, transform: [{ scale: 1 }] },
+          '45%': { opacity: 1, transform: [{ scale: 1 }] },
+          '66%': { opacity: 0, transform: [{ scale: 0.2 }] },
           '100%': { opacity: 0, transform: [{ scale: 0.2 }] },
         },
       },
@@ -66,8 +66,8 @@ export function DreamCaptureSeal({ text }: { text: string }) {
         animationTimingFunction: EASE.inOut,
         animationName: {
           '0%': { opacity: 0, transform: [{ scale: 1.3 }] },
-          '34%': { opacity: 0.9, transform: [{ scale: 1 }] },
-          '58%': { opacity: 0, transform: [{ scale: 0.12 }] },
+          '40%': { opacity: 0.9, transform: [{ scale: 1 }] },
+          '66%': { opacity: 0, transform: [{ scale: 0.12 }] },
           '100%': { opacity: 0, transform: [{ scale: 0.12 }] },
         },
       },
@@ -76,9 +76,9 @@ export function DreamCaptureSeal({ text }: { text: string }) {
         animationTimingFunction: EASE.inOut,
         animationName: {
           '0%': { opacity: 0, transform: [{ translateY: 0 }, { scale: 0.6 }] },
-          '46%': { opacity: 0, transform: [{ translateY: 0 }, { scale: 0.6 }] },
-          '56%': { opacity: 1, transform: [{ translateY: 0 }, { scale: 1.15 }] },
-          '62%': { opacity: 1, transform: [{ translateY: 0 }, { scale: 1 }] },
+          '58%': { opacity: 0, transform: [{ translateY: 0 }, { scale: 0.6 }] },
+          '66%': { opacity: 1, transform: [{ translateY: 0 }, { scale: 1.15 }] },
+          '72%': { opacity: 1, transform: [{ translateY: 0 }, { scale: 1 }] },
           '100%': { opacity: 1, transform: [{ translateY: rise }, { scale: 1 }] },
         },
       },
