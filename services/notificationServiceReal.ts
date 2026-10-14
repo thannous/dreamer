@@ -55,6 +55,8 @@ const NOTIFICATION_PROMPT_KEYS = [
 
 // Notification channel for Android
 const NOTIFICATION_CHANNEL_ID = 'dream-reminders';
+// The reply confirmation must not buzz again like a reminder does.
+const DREAM_CAPTURE_SAVED_CHANNEL_ID = 'dream-capture-saved';
 
 /** Sunday, 10:00 local: late enough for a lie-in, early enough to plan the week. */
 export const WEEKLY_RECAP_URL = WEEKLY_RECAP_NOTIFICATION_URL;
@@ -739,6 +741,15 @@ export async function presentDreamCapturedNotification(replacingIdentifier?: str
   }
 
   const t = await getNotificationTranslator();
+  if (Platform.OS === 'android') {
+    await Notifications.setNotificationChannelAsync(DREAM_CAPTURE_SAVED_CHANNEL_ID, {
+      name: t('notifications.dream_capture.saved_channel'),
+      importance: AndroidImportance.LOW,
+      sound: null,
+      enableVibrate: false,
+      vibrationPattern: null,
+    });
+  }
   await Notifications.scheduleNotificationAsync({
     // Android 15+ refuses to cancel a notification that got a direct reply; the
     // app has to update it instead. Posting under the same identifier replaces
@@ -750,8 +761,8 @@ export async function presentDreamCapturedNotification(replacingIdentifier?: str
       title: t('notifications.dream_capture.saved_title'),
       body: t('notifications.dream_capture.saved_body'),
       sound: false,
-      priority: Notifications.AndroidNotificationPriority.DEFAULT,
+      priority: Notifications.AndroidNotificationPriority.LOW,
     },
-    trigger: Platform.OS === 'android' ? { channelId: NOTIFICATION_CHANNEL_ID } : null,
+    trigger: Platform.OS === 'android' ? { channelId: DREAM_CAPTURE_SAVED_CHANNEL_ID } : null,
   });
 }

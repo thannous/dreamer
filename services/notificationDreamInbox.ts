@@ -18,6 +18,8 @@ import {
 import { presentDreamCapturedNotification } from '@/services/notificationService';
 
 const INBOX_KEY = 'noctalia_notification_dream_inbox_v1';
+/** The journal last open on this device; a reply made while the app is closed belongs to it. */
+const SCOPE_KEY = 'noctalia_notification_dream_scope_v1';
 
 type InboxListener = () => void;
 const listeners = new Set<InboxListener>();
@@ -50,6 +52,10 @@ export async function removeImportedNotificationDreams(ids: readonly string[]): 
   await updateInbox((inbox) => ({ inbox: removeNotificationDreamCaptures(inbox, ids), result: undefined }));
 }
 
+export async function rememberNotificationDreamScope(scope: string): Promise<void> {
+  await AsyncStorage.setItem(SCOPE_KEY, scope);
+}
+
 export async function claimNotificationDreams(ids: readonly string[], scope: string): Promise<void> {
   if (ids.length === 0) return;
   await updateInbox((inbox) => ({ inbox: claimNotificationDreamCaptures(inbox, ids, scope), result: undefined }));
@@ -74,10 +80,14 @@ export async function captureDreamFromNotificationResponse(
 ): Promise<boolean> {
   if (!isDreamCaptureResponse(response)) return false;
 
-  const capture = parseDreamCaptureResponse(response, {
+  const parsed = parseDreamCaptureResponse(response, {
     now: Date.now(),
     createClientRequestId: generateUUID,
   });
+  // Owned from the start by the journal open when the reminder was answered,
+  // so an expired session or another sign-in later cannot take it.
+  const ownerScope = parsed ? await AsyncStorage.getItem(SCOPE_KEY).catch(() => null) : null;
+  const capture = parsed && ownerScope ? { ...parsed, ownerScope } : parsed;
 
   // Keep the words first. Everything after this is feedback.
   const added = capture

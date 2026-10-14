@@ -14,6 +14,7 @@ import { canImportNotificationDream, notificationDreamScope } from '@/lib/notifi
 import { createScopedLogger } from '@/lib/logger';
 import {
   claimNotificationDreams,
+  rememberNotificationDreamScope,
   readNotificationDreamInbox,
   removeImportedNotificationDreams,
   subscribeNotificationDreamInbox,
@@ -64,6 +65,8 @@ export function useNotificationDreamImport(): void {
     try {
       do {
         rerunRef.current = false;
+        if (stale()) break;
+        await rememberNotificationDreamScope(scope);
         const captures = (await readNotificationDreamInbox()).filter((capture) =>
           canImportNotificationDream(capture, scope)
         );

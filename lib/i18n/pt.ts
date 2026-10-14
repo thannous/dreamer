@@ -1804,6 +1804,7 @@ const translations: Record<string, string> = {
     'notifications.dream_capture.placeholder': 'Dite seu sonho…',
     'notifications.dream_capture.saved_title': 'Sonho salvo',
     'notifications.dream_capture.saved_body': 'Ele espera por você no diário.',
+    'notifications.dream_capture.saved_channel': 'Sonhos ditados',
     'notifications.dream_capture.guest_limit_message': 'Você salvou {limit} sonhos sem conta. O sonho que você ditou no lembrete fica guardado neste aparelho. Crie uma conta gratuita para adicioná-lo ao diário.',
     'notifications.dream_capture.later': 'Mais tarde',
     'weekly_recap.title': 'Sua semana em sonhos',

@@ -1759,6 +1759,7 @@ const translations: Record<string, string> = {
     'notifications.dream_capture.placeholder': 'Dicta tu sueño…',
     'notifications.dream_capture.saved_title': 'Sueño guardado',
     'notifications.dream_capture.saved_body': 'Te espera en tu diario.',
+    'notifications.dream_capture.saved_channel': 'Sueños dictados',
     'notifications.dream_capture.guest_limit_message': 'Has guardado {limit} sueños sin cuenta. El sueño que dictaste desde el recordatorio se guarda en este dispositivo. Crea una cuenta gratuita para añadirlo a tu diario.',
     'notifications.dream_capture.later': 'Más tarde',
     'weekly_recap.title': 'Tu semana en sueños',
