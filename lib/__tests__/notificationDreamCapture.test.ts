@@ -66,15 +66,20 @@ describe('notification dream capture', () => {
   });
 
   it('keeps every reply waiting for the journal, however many arrive first', () => {
-    let inbox = { captures: [], seenIds: [] } as ReturnType<typeof parseNotificationDreamInbox>;
-    for (let day = 0; day < 60; day += 1) {
-      const capture = parseDreamCaptureResponse(
+    const replyOn = (day: number) =>
+      parseDreamCaptureResponse(
         reply({ notification: { date: 1_760_000_000_000 + day * 86_400_000, request: { identifier: 'morning' } } }),
         options(day)
       )!;
-      inbox = addNotificationDreamCapture(inbox, capture).inbox;
+    let inbox = { captures: [], seenIds: [] } as ReturnType<typeof parseNotificationDreamInbox>;
+    for (let day = 0; day < 60; day += 1) {
+      inbox = addNotificationDreamCapture(inbox, replyOn(day)).inbox;
     }
     expect(inbox.captures).toHaveLength(60);
+
+    // The oldest one, imported, is still recognised when it is delivered again.
+    const imported = removeNotificationDreamCaptures(inbox, [replyOn(0).id]);
+    expect(addNotificationDreamCapture(imported, replyOn(0)).added).toBe(false);
   });
 
   it('never imports a waiting reply into another account', () => {

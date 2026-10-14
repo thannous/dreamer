@@ -146,7 +146,7 @@ export function addNotificationDreamCapture(
     inbox: {
       // Pending replies are never evicted: each one was already confirmed to the user.
       captures: [...inbox.captures, capture],
-      seenIds: [...inbox.seenIds, capture.id].slice(-MAX_NOTIFICATION_DREAM_INBOX_SIZE),
+      seenIds: inbox.seenIds,
     },
     added: true,
   };
@@ -158,9 +158,13 @@ export function removeNotificationDreamCaptures(
   ids: readonly string[]
 ): NotificationDreamInbox {
   const removed = new Set(ids);
+  // Remembered at import, so waiting replies never push an imported id out of the history.
+  const imported = inbox.captures.filter((entry) => removed.has(entry.id)).map((entry) => entry.id);
   return {
     captures: inbox.captures.filter((entry) => !removed.has(entry.id)),
-    seenIds: inbox.seenIds,
+    seenIds: [...inbox.seenIds.filter((id) => !removed.has(id)), ...imported].slice(
+      -MAX_NOTIFICATION_DREAM_INBOX_SIZE
+    ),
   };
 }
 
