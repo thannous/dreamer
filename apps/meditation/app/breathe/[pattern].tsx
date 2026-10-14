@@ -1,6 +1,7 @@
 import { useLocalSearchParams } from 'expo-router';
 import React, { useEffect, useRef, useState } from 'react';
 import { AccessibilityInfo, ScrollView, useWindowDimensions, View } from 'react-native';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { TrainerControls } from '@/components/trainer/TrainerControls';
 import { TrainerFocus } from '@/components/trainer/TrainerFocus';
@@ -39,6 +40,7 @@ export default function BreatheExercise() {
   const { pattern: patternParam } = useLocalSearchParams<{ pattern: string }>();
   const { language, t } = useTranslation();
   const { width, height, fontScale } = useWindowDimensions();
+  const insets = useSafeAreaInsets();
   const reducedMotion = useReducedMotion();
   const screenReader = useScreenReader();
   const { recordPractice } = useLibrary();
@@ -154,9 +156,13 @@ export default function BreatheExercise() {
   // Compact reflow only. Never clamp the user's type size: 160% and 200% must
   // still render the full labels, countdown and CTA.
   const compact = fontScale >= 1.5 || height < 720;
+  // The ring is sized from the height left between the system bars. Sized
+  // from the whole window, it pushed the last row of controls under the home
+  // indicator on a 6.9 inch iPhone.
+  const availableHeight = height - insets.top - insets.bottom;
   const ringSize = Math.min(
     width * 0.68,
-    height * (compact ? 0.12 : started ? 0.31 : 0.21),
+    availableHeight * (compact ? 0.12 : started ? 0.27 : 0.21),
     compact ? 128 : 300
   );
   const cycleTotal = Math.max(

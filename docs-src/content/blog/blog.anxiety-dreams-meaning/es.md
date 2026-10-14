@@ -382,7 +382,7 @@
 <section class="mt-16 glass-panel rounded-2xl p-6" id="sources">
 <h2 class="font-serif text-2xl text-dream-cream mb-4">Fuentes y lecturas</h2>
 <ul class="mt-6 space-y-2 text-sm text-gray-400">
-<li><a href="https://asdreams.org/journal/issues/asdj13-4.htm" rel="nofollow noopener noreferrer" target="_blank">Nielsen, Zadra et al. (2003), «The Typical Dreams of Canadian University Students», <em>Dreaming</em>, 13(4)</a></li>
+<li><a href="https://doi.org/10.1023/B:DREM.0000003144.40929.0b" rel="nofollow noopener noreferrer" target="_blank">Nielsen, Zadra et al. (2003), «The Typical Dreams of Canadian University Students», <em>Dreaming</em>, 13(4)</a></li>
 <li><a href="https://pubmed.ncbi.nlm.nih.gov/11515147/" rel="nofollow noopener noreferrer" target="_blank">Revonsuo (2000), «The reinterpretation of dreams: an evolutionary hypothesis of the function of dreaming», <em>Behavioral and Brain Sciences</em></a></li>
 <li><a href="https://doi.org/10.1037/a0016570" rel="nofollow noopener noreferrer" target="_blank">Walker y van der Helm (2009), «Overnight therapy? The role of sleep in emotional brain processing», <em>Psychological Bulletin</em></a></li>
 <li><a href="https://doi.org/10.1207/s15402010bsm0401_4" rel="nofollow noopener noreferrer" target="_blank">Krakow y Zadra (2006), «Clinical management of chronic nightmares: imagery rehearsal therapy», <em>Behavioral Sleep Medicine</em></a></li>
@@ -445,7 +445,7 @@
 <a class="glass-panel rounded-xl p-6 block hover:border-dream-salmon/30 transition-all hover:-translate-y-1" href="suenos-salud-mental">
 <span class="text-xs text-dream-salmon uppercase mb-2 block">Ciencia</span>
 <h3 class="font-serif text-lg text-dream-cream mb-2">Sueños y Salud Mental: Cómo Tu Sueño Revela Tu Mente</h3>
-<p class="text-sm text-gray-400">Descubre la conexión entre los sueños y la salud mental, incluyendo cómo la ansiedad, la depresión y el trauma afectan tus sueños.</p>
+<p class="text-sm text-gray-400">Cómo la ansiedad, la depresión, el estrés y el trauma aparecen en los sueños, y cuándo conviene hablar de las pesadillas frecuentes con un profesional.</p>
 </a>
 <a class="glass-panel rounded-xl p-6 block hover:border-dream-salmon/30 transition-all hover:-translate-y-1" href="suenos-estres-trabajo">
 <span class="text-xs text-dream-salmon uppercase mb-2 block">Guía Completa</span>

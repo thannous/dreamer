@@ -382,7 +382,7 @@
 <section class="mt-16 glass-panel rounded-2xl p-6" id="sources">
 <h2 class="font-serif text-2xl text-dream-cream mb-4">Sources et lectures</h2>
 <ul class="mt-6 space-y-2 text-sm text-gray-400">
-<li><a href="https://asdreams.org/journal/issues/asdj13-4.htm" rel="nofollow noopener noreferrer" target="_blank">Nielsen, Zadra et al. (2003), « The Typical Dreams of Canadian University Students », <em>Dreaming</em>, 13(4)</a></li>
+<li><a href="https://doi.org/10.1023/B:DREM.0000003144.40929.0b" rel="nofollow noopener noreferrer" target="_blank">Nielsen, Zadra et al. (2003), « The Typical Dreams of Canadian University Students », <em>Dreaming</em>, 13(4)</a></li>
 <li><a href="https://pubmed.ncbi.nlm.nih.gov/11515147/" rel="nofollow noopener noreferrer" target="_blank">Revonsuo (2000), « The reinterpretation of dreams: an evolutionary hypothesis of the function of dreaming », <em>Behavioral and Brain Sciences</em></a></li>
 <li><a href="https://doi.org/10.1037/a0016570" rel="nofollow noopener noreferrer" target="_blank">Walker et van der Helm (2009), « Overnight therapy? The role of sleep in emotional brain processing », <em>Psychological Bulletin</em></a></li>
 <li><a href="https://doi.org/10.1207/s15402010bsm0401_4" rel="nofollow noopener noreferrer" target="_blank">Krakow et Zadra (2006), « Clinical management of chronic nightmares: imagery rehearsal therapy », <em>Behavioral Sleep Medicine</em></a></li>
@@ -445,7 +445,7 @@
 <a class="glass-panel rounded-xl p-6 block hover:border-dream-salmon/30 transition-all hover:-translate-y-1" href="reves-sante-mentale">
 <span class="text-xs text-dream-salmon uppercase mb-2 block">Science</span>
 <h3 class="font-serif text-lg text-dream-cream mb-2">Rêves et santé mentale : comment votre sommeil révèle votre esprit</h3>
-<p class="text-sm text-gray-400">Découvrez le lien entre les rêves et la santé mentale, y compris comment l'anxiété, la dépression et les traumatismes affectent les rêves.</p>
+<p class="text-sm text-gray-400">Comment l'anxiété, la dépression, le stress et les traumatismes se retrouvent dans les rêves, et quand des cauchemars fréquents justifient d'en parler à un professionnel.</p>
 </a>
 <a class="glass-panel rounded-xl p-6 block hover:border-dream-salmon/30 transition-all hover:-translate-y-1" href="reves-stress-travail">
 <span class="text-xs text-dream-salmon uppercase mb-2 block">Guide Complet</span>

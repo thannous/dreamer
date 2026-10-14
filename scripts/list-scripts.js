@@ -42,7 +42,7 @@ function classifyScript(name) {
 }
 
 function scriptSafety(name) {
-  if (name === 'verify:pr' || name === 'verify:release') return 'writes a local proof';
+  if (name === 'verify:pr' || name === 'verify:release' || name === 'verify:release:site') return 'writes a local proof';
   if (name === 'release:build') return 'starts a remote build';
   if (name === 'release:prepare') return 'writes release manifests';
   if (name === 'release:versions:sync') return 'writes local version mirrors';

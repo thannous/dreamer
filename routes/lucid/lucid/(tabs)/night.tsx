@@ -1,13 +1,14 @@
 import Ionicons from '@expo/vector-icons/Ionicons';
 import { router } from 'expo-router';
-import React, { useMemo, useState, useSyncExternalStore } from 'react';
-import { Alert, Pressable, StyleSheet, Text, useWindowDimensions, View } from 'react-native';
+import React, { useEffect, useMemo, useState, useSyncExternalStore } from 'react';
+import { AccessibilityInfo, Alert, Platform, Pressable, StyleSheet, Text, useWindowDimensions, View } from 'react-native';
 
 import {
   LucidNightSanctuary,
   shouldUseLucidNightReflow,
 } from '@/components/lucid/LucidNightSanctuary';
 import {
+  LUCID_HERO_DARK_SHARE,
   LUCID_TAB_BAR_INSET,
   LucidButton,
   LucidScreen,
@@ -26,6 +27,7 @@ import {
   canUseLucidNightSignals,
   evaluateLucidSafetyPolicyFromState,
 } from '@/lib/lucid/safety';
+import { getSleepSoundCopy } from '@/lib/sleepSoundCopy';
 import { DEFAULT_SLEEP_SOUND_ID, SLEEP_SOUNDS, type SleepSoundId } from '@/lib/sleepSounds';
 
 const NIGHT_SANCTUARY = require('../../../../assets/images/lucid/night-ritual-sanctuary.webp');
@@ -384,6 +386,8 @@ export default function LucidNightScreen() {
   const palette = getLucidPalette(colors, mode);
   const { state, content, updateAudioSafetyConsent, updatePreferences } = useLucidTrainer();
   const copy = COPY[content.locale];
+  const ambienceCopy = getSleepSoundCopy(content.locale);
+  const [heroHeight, setHeroHeight] = useState<number>();
   const [soundId, setSoundId] = useState<SleepSoundId>(DEFAULT_SLEEP_SOUND_ID);
   const [timerMinutes, setTimerMinutes] = useState(360);
   const [speaker, setSpeaker] = useState(false);
@@ -399,6 +403,14 @@ export default function LucidNightScreen() {
     title: copy[selectedAmbience.id],
     albumTitle: copy.library,
   });
+  const ambienceNeedsRetry =
+    ambience.error === 'download_failed' || ambience.error === 'playback_interrupted';
+  const ambienceErrorMessage =
+    ambience.error === 'download_failed'
+      ? ambienceCopy.downloadError
+      : ambience.error === 'playback_interrupted'
+        ? ambienceCopy.interruptedError
+        : ambienceCopy.error;
   const policy = useMemo(
     () =>
       evaluateLucidSafetyPolicyFromState(state, {
@@ -446,6 +458,13 @@ export default function LucidNightScreen() {
     ] as (string | null)[]
   ).filter((label): label is string => label !== null);
   const showSignals = signalsOpen || !!audio.plan;
+  // Android reads the message through its live region; VoiceOver needs an announcement,
+  // made once the ambience controls are on screen to give it context.
+  useEffect(() => {
+    if (showSignals && ambienceNeedsRetry && Platform.OS === 'ios') {
+      AccessibilityInfo.announceForAccessibility(ambienceErrorMessage);
+    }
+  }, [ambienceErrorMessage, ambienceNeedsRetry, showSignals]);
   const calibrationStatusCopy =
     calibration.status === 'suspended'
       ? copy.suspended
@@ -470,8 +489,14 @@ export default function LucidNightScreen() {
       testID="lucid-night"
       bottomInset={LUCID_TAB_BAR_INSET}
       contentStyle={styles.screenContent}
+      darkTop={heroHeight === undefined ? undefined : heroHeight * LUCID_HERO_DARK_SHARE}
     >
-      <LucidNightSanctuary fadeColor={palette.background} reflow={reflow} source={NIGHT_SANCTUARY} />
+      <LucidNightSanctuary
+        fadeColor={palette.background}
+        reflow={reflow}
+        source={NIGHT_SANCTUARY}
+        onLayout={({ nativeEvent }) => setHeroHeight(nativeEvent.layout.height)}
+      />
 
       <View style={styles.mainContent}>
         <View style={styles.heroCopy}>
@@ -691,10 +716,16 @@ export default function LucidNightScreen() {
             </View>
             <View style={[styles.ambienceControls, reflow && styles.ambienceControlsReflow]}>
               <LucidButton
-                label={ambience.isPlaying ? copy.ambiencePause : copy.ambiencePlay}
+                label={
+                  ambienceNeedsRetry
+                    ? ambienceCopy.retry
+                    : ambience.isPlaying
+                      ? copy.ambiencePause
+                      : copy.ambiencePlay
+                }
                 variant="secondary"
-                icon={ambience.isPlaying ? 'pause' : 'play'}
-                disabled={ambience.error !== 'download_failed' && (!ambience.isLoaded || ambience.isBuffering)}
+                icon={ambienceNeedsRetry ? 'refresh' : ambience.isPlaying ? 'pause' : 'play'}
+                disabled={!ambienceNeedsRetry && (!ambience.isLoaded || ambience.isBuffering)}
                 onPress={() => void (ambience.isPlaying ? ambience.pause() : ambience.play())}
                 testID="lucid-night-ambience-play"
               />
@@ -706,6 +737,15 @@ export default function LucidNightScreen() {
                 testID="lucid-night-ambience-stop"
               />
             </View>
+            {ambience.error ? (
+              <Text
+                testID="lucid-night-ambience-error"
+                accessibilityLiveRegion="polite"
+                style={[styles.error, { color: palette.danger }]}
+              >
+                {ambienceErrorMessage}
+              </Text>
+            ) : null}
 
             <Text accessibilityRole="header" style={[styles.sectionTitle, { color: palette.text }]}>
               {copy.cueSection}

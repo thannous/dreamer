@@ -5,7 +5,7 @@
   "lang": "it",
   "slug": "sognare-tornare-scuola",
   "title": "Sognare di tornare a scuola: vecchia scuola e primo giorno | Noctalia",
-  "description": "Cosa significa sognare di tornare a scuola da adulti: ritrovare la vecchia scuola, il primo giorno, perdersi nei corridoi, arrivare in ritardo e lo stress da rientro.",
+  "description": "Sognare di tornare a scuola: vecchi corridoi, primo giorno e ritardi. Esplora il contesto e le emozioni con domande per il tuo diario dei sogni.",
   "robots": "max-image-preview:large",
   "themeColor": "#0a0514",
   "htmlClass": "scroll-smooth blog-article",

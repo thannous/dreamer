@@ -308,7 +308,7 @@
 <i class="w-5 h-5 text-dream-salmon" data-lucide="book-open"></i>
                     Explore Related Symbols
                 </h2>
-<p class="text-sm text-purple-300/60 mb-4">Dive deeper into the symbols from this article:</p>
+<p class="text-sm text-purple-300/60 mb-4">Read up on the symbols mentioned in this article:</p>
 <div class="flex flex-wrap gap-3">
 <a class="inline-flex items-center gap-2 px-4 py-2 glass-button rounded-full text-sm hover:text-dream-salmon transition-colors" href="../symbols/moon">Moon Dream Meaning</a>
 <a class="inline-flex items-center gap-2 px-4 py-2 glass-button rounded-full text-sm hover:text-dream-salmon transition-colors" href="../symbols/night">Night Dream Meaning</a>
@@ -346,7 +346,7 @@
 <a class="glass-panel rounded-xl p-6 block hover:border-dream-salmon/30 transition-all hover:-translate-y-1" href="rem-sleep-dreams">
 <span class="text-xs text-dream-salmon uppercase mb-2 block">Science</span>
 <h3 class="font-serif text-lg text-dream-cream mb-2">REM Sleep and Dreams: The Science of Your Nightly Theater</h3>
-<p class="text-sm text-gray-400">Discover why REM sleep is the stage where your most vivid dreams unfold and what science reveals about this crucial phase.</p>
+<p class="text-sm text-gray-400">When REM sleep happens in the night, why its dreams feel so vivid, and what cuts it short.</p>
 </a>
 <a class="glass-panel rounded-xl p-6 block hover:border-dream-salmon/30 transition-all hover:-translate-y-1" href="sleep-debt-health-dreams">
 <span class="text-xs text-dream-salmon uppercase mb-2 block">Health</span>
@@ -356,7 +356,7 @@
 <a class="glass-panel rounded-xl p-6 block hover:border-dream-salmon/30 transition-all hover:-translate-y-1" href="wearable-sleep-trackers-dreams">
 <span class="text-xs text-dream-salmon uppercase mb-2 block">Science</span>
 <h3 class="font-serif text-lg text-dream-cream mb-2">Wearable Sleep Trackers and Dreams: What They Measure vs. What They Miss</h3>
-<p class="text-sm text-gray-400">Discover what sleep trackers actually measure, their accuracy limits, and why dream journaling fills the gap wearables leave behind.</p>
+<p class="text-sm text-gray-400">What a watch or ring actually measures at night, how accurate it is, and why no sensor can record what you dreamed.</p>
 </a>
 </div>
 </section>

@@ -300,7 +300,7 @@ A simplified version, yes: write your question before bed, pair it with a short 
 <i class="w-5 h-5 text-dream-salmon" data-lucide="book-open"></i>
                     Explore Related Symbols
                 </h2>
-<p class="text-sm text-purple-300/60 mb-4">Dive deeper into the symbols from this article:</p>
+<p class="text-sm text-purple-300/60 mb-4">Read up on the symbols mentioned in this article:</p>
 <div class="flex flex-wrap gap-3">
 <a class="inline-flex items-center gap-2 px-4 py-2 glass-button rounded-full text-sm hover:text-dream-salmon transition-colors" href="../symbols/key">Key Dream Meaning</a>
 <a class="inline-flex items-center gap-2 px-4 py-2 glass-button rounded-full text-sm hover:text-dream-salmon transition-colors" href="../symbols/door">Door Dream Meaning</a>
@@ -344,7 +344,7 @@ A simplified version, yes: write your question before bed, pair it with a short 
 <a class="glass-panel rounded-xl p-6 block hover:border-dream-salmon/30 transition-all hover:-translate-y-1" href="dreams-and-creativity">
 <span class="text-xs text-dream-salmon uppercase mb-2 block">Science</span>
 <h3 class="font-serif text-lg text-dream-cream mb-2">Dreams and Creativity: How Your Sleeping Brain Solves Problems</h3>
-<p class="text-sm text-gray-400">Discover how dreams fuel creativity and innovation, from Kekule to modern research.</p>
+<p class="text-sm text-gray-400">What sleep research says about dreams and problem solving, and how to note an idea before it fades.</p>
 </a>
 <a class="glass-panel rounded-xl p-6 block hover:border-dream-salmon/30 transition-all hover:-translate-y-1" href="dream-incubation-guide">
 <span class="text-xs text-dream-salmon uppercase mb-2 block">Guide</span>

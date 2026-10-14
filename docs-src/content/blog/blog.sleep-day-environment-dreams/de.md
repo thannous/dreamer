@@ -39,7 +39,7 @@
 ---
 <article class="max-w-5xl mx-auto">
 <!-- Breadcrumb -->
-<nav aria-label="Semmelbrösel" class="text-sm text-purple-200/60 mb-8">
+<nav aria-label="Brotkrümelnavigation" class="text-sm text-purple-200/60 mb-8">
 <ol class="flex items-center gap-2 flex-wrap" itemscope="" itemtype="https://schema.org/BreadcrumbList">
 <li itemprop="itemListElement" itemscope="" itemtype="https://schema.org/ListItem">
 <a class="hover:text-dream-salmon transition-colors" href="/de/" itemprop="item"><span itemprop="name">Startseite</span></a>
@@ -371,7 +371,7 @@
 <a class="glass-panel rounded-xl p-6 block hover:border-dream-salmon/30 transition-all hover:-translate-y-1" href="rem-schlaf-und-traeume-den-naechtlichen-reset-ihres-gehirns-verstehen">
 <span class="text-xs text-dream-salmon uppercase mb-2 block">Wissenschaft</span>
 <h3 class="font-serif text-lg text-dream-cream mb-2">REM-Schlaf und Träume: Den nächtlichen Reset Ihres Gehirns verstehen</h3>
-<p class="text-sm text-gray-400">Entdecken Sie, wie der REM-Schlaf Ihre Träume formt und warum diese Phase für Ihr Wohlbefinden essentiell ist.</p>
+<p class="text-sm text-gray-400">Wann der REM-Schlaf in der Nacht auftritt, warum seine Träume so lebhaft wirken und was ihn verkürzt.</p>
 </a>
 <a class="glass-panel rounded-xl p-6 block hover:border-dream-salmon/30 transition-all hover:-translate-y-1" href="so-erinnern-sie-sich-an-ihre-traeume-10-effektive-techniken">
 <span class="text-xs text-dream-salmon uppercase mb-2 block">Leitfaden</span>

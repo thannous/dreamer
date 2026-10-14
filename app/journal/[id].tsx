@@ -80,6 +80,7 @@ import {
   isJournalSavedConfirmationParam,
   shouldOfferSavedDreamAnalysis,
 } from '@/lib/journalSavedConfirmation';
+import { FreeAnalysesNudge, getFreeAnalysesNudge } from '@/components/quota/FreeAnalysesNudge';
 import { buildAnalysisPaywallHref, buildPaywallHref, consumePurchasedAnalysisReturn, hasPendingPurchasedAnalysisReturn } from '@/lib/paywallRoute';
 import { sortWithSelectionFirst } from '@/lib/sorting';
 import { TID } from '@/lib/testIDs';
@@ -406,6 +407,10 @@ const JournalDetailContent = memo(function JournalDetailContent({ dream }: { dre
   const canUseReference = referenceImagesEnabled && Boolean(user);
   const savedAnalysisAction = getSavedAnalysisAction({
     tier, loading: quotaLoading, error: quotaError, status: quotaStatus,
+  });
+  // After an analysis, warn when the included analyses are about to run out.
+  const lastFreeAnalysesNudge = getFreeAnalysesNudge({
+    tier, signedIn: Boolean(user), loading: quotaLoading, error: quotaError, usage, maxRemaining: 1,
   });
 
   const canResumeAnalysis = Boolean(dream && isResumableAnalysisRequest(dream));
@@ -2760,6 +2765,9 @@ const JournalDetailContent = memo(function JournalDetailContent({ dream }: { dre
                 pending={isAnalysisPending || readingAwaited}
                 reveal={readingStory === 'revealed'}
                 onLayout={({ nativeEvent }) => { readingZoneTopRef.current = nativeEvent.layout.y; }} />
+            ) : null}
+            {showCompletedReading && !readingInFlight && lastFreeAnalysesNudge ? (
+              <FreeAnalysesNudge nudge={lastFreeAnalysesNudge} className="mx-2 mb-6" />
             ) : null}
             {!hasIllustratedCover ? renderIllustrationSection() : null}
             {!recallRequested ? (

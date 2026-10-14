@@ -49,6 +49,14 @@ config.resolver.resolveRequest = (context, moduleName, platform) => {
   if (process.env.NOCTALIA_APP_VARIANT !== 'lucid' && moduleName === '@/components/lucid/LucidAuthBottomSheet') {
     return { type: 'empty' };
   }
+  // Only mock journals (EXPO_PUBLIC_MOCK_MODE=true, read like lib/env.ts) show the demo
+  // dream art from mock-data/assets.ts; other builds leave its ten images (~0.5 MB) out.
+  if (
+    String(process.env.EXPO_PUBLIC_MOCK_MODE ?? '').toLowerCase() !== 'true' &&
+    moduleName.startsWith('@/mock-data/assets/dreams/')
+  ) {
+    return { type: 'empty' };
+  }
   return (upstreamResolveRequest ?? context.resolveRequest)(context, moduleName, platform);
 };
 

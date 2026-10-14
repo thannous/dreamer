@@ -38,7 +38,7 @@
 ---
 <article class="max-w-5xl mx-auto">
 <!-- Breadcrumb -->
-<nav aria-label="Semmelbrösel" class="text-sm text-purple-200/60 mb-8">
+<nav aria-label="Brotkrümelnavigation" class="text-sm text-purple-200/60 mb-8">
 <ol class="flex items-center gap-2 flex-wrap" itemscope="" itemtype="https://schema.org/BreadcrumbList">
 <li itemprop="itemListElement" itemscope="" itemtype="https://schema.org/ListItem">
 <a class="hover:text-dream-salmon transition-colors" href="/de/" itemprop="item"><span itemprop="name">Startseite</span></a>
@@ -197,12 +197,12 @@ Nicht immer. Klar sein heißt, zu wissen, dass man träumt; wie stark man den Tr
 <i class="w-5 h-5 text-dream-salmon" data-lucide="book-open"></i>
                     Verwandte Symbole erkunden
                 </h2>
-<p class="text-sm text-purple-300/60 mb-4">Tauchen Sie tiefer in die Symbole aus diesem Artikel ein:</p>
+<p class="text-sm text-purple-300/60 mb-4">Passende Traumsymbole aus dem Artikel:</p>
 <div class="flex flex-wrap gap-3">
-<a class="inline-flex items-center gap-2 px-4 py-2 glass-button rounded-full text-sm hover:text-dream-salmon transition-colors" href="../traumsymbole/fliegen">Fliegende Traumbedeutung</a>
-<a class="inline-flex items-center gap-2 px-4 py-2 glass-button rounded-full text-sm hover:text-dream-salmon transition-colors" href="../traumsymbole/fallen">Fallende Traumbedeutung</a>
-<a class="inline-flex items-center gap-2 px-4 py-2 glass-button rounded-full text-sm hover:text-dream-salmon transition-colors" href="../traumsymbole/nacht">Nachttraumbedeutung</a>
-<a class="inline-flex items-center gap-2 px-4 py-2 glass-button rounded-full text-sm hover:text-dream-salmon transition-colors" href="../traumsymbole/tuer">Türtraumbedeutung</a>
+<a class="inline-flex items-center gap-2 px-4 py-2 glass-button rounded-full text-sm hover:text-dream-salmon transition-colors" href="../traumsymbole/fliegen">Traum vom Fliegen</a>
+<a class="inline-flex items-center gap-2 px-4 py-2 glass-button rounded-full text-sm hover:text-dream-salmon transition-colors" href="../traumsymbole/fallen">Traum vom Fallen</a>
+<a class="inline-flex items-center gap-2 px-4 py-2 glass-button rounded-full text-sm hover:text-dream-salmon transition-colors" href="../traumsymbole/nacht">Traum von der Nacht</a>
+<a class="inline-flex items-center gap-2 px-4 py-2 glass-button rounded-full text-sm hover:text-dream-salmon transition-colors" href="../traumsymbole/tuer">Traum von einer Tür</a>
 </div>
 </section>
 <!-- Related Symbols End -->

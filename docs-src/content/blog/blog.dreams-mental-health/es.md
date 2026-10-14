@@ -407,7 +407,7 @@
 <li><a href="https://doi.org/10.5664/jcsm.7178" rel="nofollow noopener noreferrer" target="_blank">Morgenthaler et al. (2018), «Position Paper for the Treatment of Nightmare Disorder in Adults», <em>Journal of Clinical Sleep Medicine</em></a></li>
 <li><a href="https://doi.org/10.1037/a0016570" rel="nofollow noopener noreferrer" target="_blank">Walker y van der Helm (2009), «Overnight therapy? The role of sleep in emotional brain processing», <em>Psychological Bulletin</em>, 135(5)</a></li>
 <li><a href="https://www.nimh.nih.gov/health/publications/post-traumatic-stress-disorder-ptsd" rel="nofollow noopener noreferrer" target="_blank">NIMH, «Post-Traumatic Stress Disorder»</a></li>
-<li><a href="https://asdreams.org/journal/issues/asdj13-4.htm" rel="nofollow noopener noreferrer" target="_blank">Nielsen, Zadra et al. (2003), «The Typical Dreams of Canadian University Students», <em>Dreaming</em>, 13(4)</a></li>
+<li><a href="https://doi.org/10.1023/B:DREM.0000003144.40929.0b" rel="nofollow noopener noreferrer" target="_blank">Nielsen, Zadra et al. (2003), «The Typical Dreams of Canadian University Students», <em>Dreaming</em>, 13(4)</a></li>
 <li><a href="https://dreamresearch.net/" rel="nofollow noopener noreferrer" target="_blank">DreamResearch.net, G. William Domhoff</a></li>
 </ul>
 <p class="mt-6 text-xs text-purple-200/60">Actualizado el 9 de octubre de 2026</p>
@@ -458,17 +458,17 @@
         <a href="por-que-olvidamos-suenos" class="glass-panel rounded-xl p-6 block hover:border-dream-salmon/30 transition-all hover:-translate-y-1">
             <span class="text-xs text-dream-salmon uppercase mb-2 block">Ciencia</span>
             <h3 class="font-serif text-lg text-dream-cream mb-2">¿Por qué olvidamos los sueños al despertar? Las explicaciones científicas</h3>
-            <p class="text-sm text-gray-400">Descubre los mecanismos cerebrales y neuroquímicos que explican por qué olvidamos el 95% de nuestros sueños.</p>
+            <p class="text-sm text-gray-400">Por qué los sueños se borran a los pocos minutos de despertar, qué papel tienen el sueño REM y la memoria, y hábitos sencillos para recordar más.</p>
         </a>
         <a href="suenos-premonitorios-ciencia" class="glass-panel rounded-xl p-6 block hover:border-dream-salmon/30 transition-all hover:-translate-y-1">
             <span class="text-xs text-dream-salmon uppercase mb-2 block">Ciencia</span>
             <h3 class="font-serif text-lg text-dream-cream mb-2">¿Pueden los sueños predecir el futuro? La ciencia de los sueños premonitorios</h3>
-            <p class="text-sm text-gray-400">Explora la fascinante ciencia de los sueños premonitorios y si realmente pueden predecir el futuro.</p>
+            <p class="text-sm text-gray-400">Lo que dicen los estudios controlados sobre los sueños que parecen predecir el futuro, y cómo el azar y los sesgos de memoria explican muchos casos.</p>
         </a>
         <a href="por-que-sonamos-ciencia" class="glass-panel rounded-xl p-6 block hover:border-dream-salmon/30 transition-all hover:-translate-y-1">
             <span class="text-xs text-dream-salmon uppercase mb-2 block">Ciencia</span>
             <h3 class="font-serif text-lg text-dream-cream mb-2">¿Por qué soñamos? La ciencia detrás de tus aventuras nocturnas</h3>
-            <p class="text-sm text-gray-400">Explora la fascinante ciencia de los sueños. Aprende sobre las teorías principales, la actividad cerebral durante los sueños y lo que revelan sobre la consciencia.</p>
+            <p class="text-sm text-gray-400">Lo que la investigación ha medido sobre la memoria, las emociones y el ensayo de amenazas en los sueños, y lo que sigue siendo hipótesis.</p>
         </a>
   </div>
 </section>

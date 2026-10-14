@@ -2184,8 +2184,8 @@ body .noctalia-consent-actions button:hover {
 /* `overflow-x: hidden` turns these into scroll containers, which breaks
  * position: sticky for the dream space; clip keeps the same clipping. */
 @supports (overflow-x: clip) {
-  html:has(.noctalia-observatory),
-  html:has(.noctalia-observatory) body,
+  html.oh-observatory-root,
+  html.oh-observatory-root body,
   main.noctalia-observatory {
     overflow-x: clip;
   }

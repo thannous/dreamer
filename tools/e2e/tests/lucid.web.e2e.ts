@@ -66,6 +66,34 @@ async function completeOnboarding(fixtures: Fixtures, checkContrast = false) {
   await expect(screen.getByRole('tab', 'Journal', { visible: true })).toBeVisible();
 }
 
+// Night and Settings are tabs without a button. Expo Router 58 sent every visit
+// to them back to Today, so the profile button, the Night shortcut and the
+// Night link did nothing.
+test('Lucid opens Night and Settings from Today and from a link', async fixtures => {
+  await completeOnboarding(fixtures);
+  const { app, screen, browser } = fixtures;
+  await app.open('/lucid?ambience=dark');
+  // Night and Settings take no slot either: the four visible tabs share the bar.
+  await expect(screen.getByRole('tab', /.*/, { visible: true })).toHaveCount(4);
+  const share = await browser.evaluate(() => {
+    const tabs = Array.from(document.querySelectorAll('[role="tab"]'));
+    // Each tab sits in its slot; the slots share one row.
+    const row = tabs[0].parentElement!.parentElement!.getBoundingClientRect().width;
+    return tabs.reduce((sum, tab) => sum + tab.getBoundingClientRect().width, 0) / row;
+  });
+  expect(share).toBeGreaterThan(0.95);
+  await screen.getByTestId('lucid-tab-settings', { visible: true }).tap();
+  await expect(screen.getByTestId('lucid-settings', { visible: true })).toBeVisible();
+  await expect(screen.getByRole('tab', /.*/, { visible: true })).toHaveCount(4);
+  await app.open('/lucid?ambience=dark');
+  await screen.getByTestId('lucid-tab-night', { visible: true }).tap();
+  await expect(screen.getByTestId('lucid-night', { visible: true })).toBeVisible();
+  await app.open('/lucid/night?ambience=dark');
+  await expect(screen.getByTestId('lucid-night', { visible: true })).toBeVisible();
+  expect(await browser.evaluate(() => location.pathname)).toBe('/lucid/night');
+  await app.screenshot('lucid-night-from-link');
+});
+
 test('PR237 Lucid dark time fields stay readable and the schedule survives reload', async fixtures => {
   await completeOnboarding(fixtures, true);
   const { app, screen, browser } = fixtures;

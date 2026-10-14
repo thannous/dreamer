@@ -381,7 +381,7 @@
 <section class="mt-16 glass-panel rounded-2xl p-6" id="sources">
 <h2 class="font-serif text-2xl text-dream-cream mb-4">Fonti e letture</h2>
 <ul class="mt-6 space-y-2 text-sm text-gray-400">
-<li><a href="https://asdreams.org/journal/issues/asdj13-4.htm" rel="nofollow noopener noreferrer" target="_blank">Nielsen, Zadra et al. (2003), «The Typical Dreams of Canadian University Students», <em>Dreaming</em>, 13(4)</a></li>
+<li><a href="https://doi.org/10.1023/B:DREM.0000003144.40929.0b" rel="nofollow noopener noreferrer" target="_blank">Nielsen, Zadra et al. (2003), «The Typical Dreams of Canadian University Students», <em>Dreaming</em>, 13(4)</a></li>
 <li><a href="https://pubmed.ncbi.nlm.nih.gov/11515147/" rel="nofollow noopener noreferrer" target="_blank">Revonsuo (2000), «The reinterpretation of dreams: an evolutionary hypothesis of the function of dreaming», <em>Behavioral and Brain Sciences</em></a></li>
 <li><a href="https://doi.org/10.1037/a0016570" rel="nofollow noopener noreferrer" target="_blank">Walker e van der Helm (2009), «Overnight therapy? The role of sleep in emotional brain processing», <em>Psychological Bulletin</em></a></li>
 <li><a href="https://doi.org/10.1207/s15402010bsm0401_4" rel="nofollow noopener noreferrer" target="_blank">Krakow e Zadra (2006), «Clinical management of chronic nightmares: imagery rehearsal therapy», <em>Behavioral Sleep Medicine</em></a></li>
@@ -444,7 +444,7 @@
         <a href="sogni-e-salute-mentale-come-il-tuo-sonno-rivela-la-tua-mente" class="glass-panel rounded-xl p-6 block hover:border-dream-salmon/30 transition-all hover:-translate-y-1">
             <span class="text-xs text-dream-salmon uppercase mb-2 block">Scienza</span>
             <h3 class="font-serif text-lg text-dream-cream mb-2">Sogni e salute mentale: come il tuo sonno rivela la tua mente</h3>
-            <p class="text-sm text-gray-400">Scopri la connessione tra sogni e salute mentale, incluso come ansia, depressione e trauma influenzano i sogni.</p>
+            <p class="text-sm text-gray-400">Come ansia, depressione, stress e trauma compaiono nei sogni, e quando gli incubi frequenti meritano di essere affrontati con un professionista.</p>
         </a>
         <a href="sogni-stressanti-sul-lavoro-perche-il-tuo-lavoro-ti-segue-nel-sonno" class="glass-panel rounded-xl p-6 block hover:border-dream-salmon/30 transition-all hover:-translate-y-1">
             <span class="text-xs text-dream-salmon uppercase mb-2 block">Guida Completa</span>

@@ -51,6 +51,7 @@ const SYMBOL_IMAGE_ALT_SUFFIX = {
   fr: 'illustration de symbole onirique',
   it: 'illustrazione di simbolo onirico',
 };
+const DICTIONARY_EDITORIAL_ASSET_ID = 'editorial.dream-symbols-dictionary';
 const DICTIONARY_IMAGE_COPY = {
   de: {
     alt: 'Ein aufgeschlagenes Traumlexikon mit Schlüssel, Auge, Baum, Welle und Tür',
@@ -877,7 +878,7 @@ function renderGuideHubStyles() {
           padding: clamp(1.15rem, 2vw, 1.65rem);
           background:
             linear-gradient(90deg, rgba(18,8,31,0.96), rgba(18,8,31,0.58)),
-            url('/img/blog/dream-symbols-dictionary.webp') center right / cover no-repeat;
+            url('${cardBackgroundVariant('/img/blog/dream-symbols-dictionary.webp')}') center right / cover no-repeat;
         }
         .guides-feature-label, .guides-card-kicker {
           position: relative;
@@ -1154,7 +1155,16 @@ function guideHubCardImage(card) {
     emotions: '/img/blog/dreams-mental-health.webp',
     spirituality: '/img/blog/dream-interpretation-history.webp'
   };
-  return images[card.key] || '/img/guides/noctalia-guides-hub-bg.webp';
+  return cardBackgroundVariant(images[card.key] || '/img/guides/noctalia-guides-hub-bg.webp');
+}
+
+// Hub cards show these photos behind a dark gradient at about 400px wide, so
+// the 800w variant is enough; the full 1200w files made this page ~1 MB.
+function cardBackgroundVariant(src) {
+  const variant = src.replace(/\.webp$/, '-800w.webp');
+  return fs.existsSync(path.join(DOCS_SRC_DIR, 'static', variant.replace(/^\/+/, '')))
+    ? variant
+    : src;
 }
 
 function renderHubBentoCard(lang, t, pages, card) {
@@ -2057,6 +2067,23 @@ function renderLayoutCss() {
         }
         #symbolsList > section {
           scroll-margin-top: var(--dictionary-scroll-offset, 8rem);
+          /* Skip style and layout for letter sections far from the viewport:
+             the full list is ~3,800 elements, and styling it in one go
+             took ~1 s of main thread under 4x CPU throttling. The size
+             is an estimate per card count; once rendered, "auto" keeps
+             the real height. */
+          content-visibility: auto;
+          contain-intrinsic-size: auto calc(var(--symbol-cards, 6) * 440px + 72px);
+        }
+        @media (min-width: 768px) {
+          #symbolsList > section {
+            contain-intrinsic-size: auto calc(var(--symbol-cards, 6) * 340px + 72px);
+          }
+        }
+        @media (min-width: 1280px) {
+          #symbolsList > section {
+            contain-intrinsic-size: auto calc(var(--symbol-cards, 6) * 195px + 72px);
+          }
         }
         #dictionaryLayout,
         #mobilePills,
@@ -2701,8 +2728,22 @@ function generateDictionaryPage(lang, t) {
     ? getPageResponsiveImages(IMAGE_SEO_REGISTRY, canonicalPath)
     : null;
   const dictionaryCopy = DICTIONARY_IMAGE_COPY[lang] || DICTIONARY_IMAGE_COPY.en;
-  const editorialPicture = pageImageSet
-    ? renderResponsivePicture(IMAGE_SEO_REGISTRY, pageImageSet.images.editorial, {
+  // Locales outside the image-SEO pilot still get its AVIF variants and the
+  // 4:5 mobile crop: the hero is the mobile LCP element of every dictionary.
+  const editorialImageRef = pageImageSet
+    ? pageImageSet.images.editorial
+    : IMAGE_SEO_REGISTRY?.assets[DICTIONARY_EDITORIAL_ASSET_ID]
+      ? {
+          assetId: DICTIONARY_EDITORIAL_ASSET_ID,
+          aspect: '16x9',
+          mobileAspect: '4x5',
+          mobileBreakpoint: '1024px',
+          mobileSizes: '100vw',
+          alt: dictionaryCopy.alt,
+        }
+      : null;
+  const editorialPicture = editorialImageRef
+    ? renderResponsivePicture(IMAGE_SEO_REGISTRY, editorialImageRef, {
         figure: false,
         priority: true,
         sizes: '100vw',
@@ -2884,7 +2925,7 @@ ${(rg.steps || []).map((step, index) => `                        <li class="refl
                             ${cardLinksHtml}
                         </div>`;
     }).join('\n');
-    return `                <section id="${letter}" class="mb-12">
+    return `                <section id="${letter}" class="mb-12" style="--symbol-cards: ${syms.length};">
                     <h2 class="font-serif text-2xl text-dream-salmon mb-6 flex items-center" aria-label="${escapeHtml(`${dc.section_heading} ${letter}`)}">
                         <span class="w-10 h-10 rounded-lg bg-dream-salmon/10 flex items-center justify-center" aria-hidden="true">${letter}</span>
                     </h2>
@@ -3817,6 +3858,31 @@ ${symbolCatEntries}
             });
             setSearchValue(heroSearch.value || '');
 
+            // Letter sections use content-visibility: auto, so the ones the
+            // scroll passes take their real height only once rendered and the
+            // smooth scroll can stop short or overshoot. Re-align when it ends.
+            let letterAlignToken = 0;
+            function alignLetterTarget(target) {
+                const token = ++letterAlignToken;
+                const align = (triesLeft) => {
+                    if (token !== letterAlignToken) return;
+                    const offset = parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--dictionary-scroll-offset')) || 0;
+                    const delta = target.getBoundingClientRect().top - offset;
+                    if (Math.abs(delta) <= 2 || triesLeft === 0) return;
+                    window.scrollBy({ top: delta, behavior: 'instant' });
+                    window.requestAnimationFrame(() => window.requestAnimationFrame(() => align(triesLeft - 1)));
+                };
+                let started = false;
+                const start = () => {
+                    if (started) return;
+                    started = true;
+                    window.removeEventListener('scrollend', start);
+                    align(4);
+                };
+                window.addEventListener('scrollend', start, { once: true });
+                window.setTimeout(start, 1000);
+            }
+
             // ── Smooth scroll for letter navigation ───────────────────────
             document.querySelectorAll('.letter-link[href], .sidebar-alpha-link[href], .mobile-alpha-link[href]').forEach(link => {
                 link.addEventListener('click', (e) => {
@@ -3833,6 +3899,7 @@ ${symbolCatEntries}
                         updateSectionScrollOffset();
                         setActiveAlpha(link.dataset.letter);
                         target.scrollIntoView({ behavior: window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 'instant' : 'smooth', block: 'start' });
+                        alignLetterTarget(target);
                         if (letterNavigationTimer) window.clearTimeout(letterNavigationTimer);
                         letterNavigationTimer = window.setTimeout(() => {
                             document.body.classList.remove('dictionary-letter-navigation');

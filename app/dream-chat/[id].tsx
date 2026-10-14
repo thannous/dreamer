@@ -288,6 +288,13 @@ function DreamChatContent() {
   const hasQuotaCheckClearance = shouldGateOnQuotaCheck ? quotaCheckComplete : true;
   const isQuotaGateBlocked = shouldGateOnQuotaCheck && explorationBlocked;
 
+  // Guests need an account first; free accounts go straight to the Plus offer.
+  const openMessageLimitUpgrade = useCallback(() => {
+    router.push(tier === 'guest'
+      ? '/settings?section=account&auth=signup'
+      : buildPaywallHref('exploration_limit'));
+  }, [tier]);
+
   const showMessageLimitAlert = useCallback(() => {
     const actions = [
       { text: t('common.ok') },
@@ -297,7 +304,7 @@ function DreamChatContent() {
           text: tier === 'guest'
             ? t('dream_chat.limit_cta_guest')
             : t('dream_chat.limit_cta_free'),
-          onPress: () => router.push('/settings' as const),
+          onPress: openMessageLimitUpgrade,
         }]),
     ];
     Alert.alert(
@@ -305,7 +312,7 @@ function DreamChatContent() {
       t('dream_chat.limit_warning'),
       actions
     );
-  }, [t, tier]);
+  }, [openMessageLimitUpgrade, t, tier]);
 
   const runQuotaCheck = useCallback(async () => {
     if (!isMountedRef.current) return;
@@ -1293,6 +1300,7 @@ function DreamChatContent() {
       messagesRemaining={messagesRemaining}
       t={t}
       tier={tier}
+      onUpgrade={openMessageLimitUpgrade}
       visible={shouldShowCounter}
     />
   );
@@ -1351,6 +1359,7 @@ type ComposerFooterProps = {
   messagesRemaining: number;
   t: (key: string, replacements?: { [k: string]: string | number }) => string;
   tier: string;
+  onUpgrade: () => void;
   visible?: boolean;
 };
 
@@ -1369,6 +1378,7 @@ function ComposerFooter({
   messagesRemaining,
   t,
   tier,
+  onUpgrade,
   visible = true,
 }: ComposerFooterProps) {
   const { isKeyboardVisible } = useKeyboardStateContext();
@@ -1433,7 +1443,8 @@ function ComposerFooter({
           {tier !== 'plus' && (
             <View>
               <GesturePressable
-                onPress={() => router.push('/settings')}
+                onPress={onUpgrade}
+                testID={TID.Button.ChatLimitUpgrade}
                 style={[
                   styles.limitCtaButton,
                   { backgroundColor: noctalia.status.danger.icon },

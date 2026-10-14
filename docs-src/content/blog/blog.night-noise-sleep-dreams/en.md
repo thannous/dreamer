@@ -4,7 +4,7 @@
   "layout": "blogArticle",
   "lang": "en",
   "slug": "night-noise-sleep-dreams",
-  "title": "Night noise, sleep and dreams: understanding fragmented nights | Noctalia",
+  "title": "Night Noise: Sleep Disruption and Dream Recall | Noctalia",
   "description": "Night noise breaks sleep into brief awakenings, so dreams are easier to remember. What sound changes, what to note on waking, how to cut interruptions.",
   "robots": "index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1",
   "themeColor": "#0a0514",

@@ -389,7 +389,7 @@
 <li><a href="https://doi.org/10.5664/jcsm.7178" rel="nofollow noopener noreferrer" target="_blank">Morgenthaler et al. (2018), «Position Paper for the Treatment of Nightmare Disorder in Adults», <em>Journal of Clinical Sleep Medicine</em></a></li>
 <li><a href="https://doi.org/10.1037/a0016570" rel="nofollow noopener noreferrer" target="_blank">Walker e van der Helm (2009), «Overnight therapy? The role of sleep in emotional brain processing», <em>Psychological Bulletin</em>, 135(5)</a></li>
 <li><a href="https://www.nimh.nih.gov/health/publications/post-traumatic-stress-disorder-ptsd" rel="nofollow noopener noreferrer" target="_blank">NIMH, «Post-Traumatic Stress Disorder»</a></li>
-<li><a href="https://asdreams.org/journal/issues/asdj13-4.htm" rel="nofollow noopener noreferrer" target="_blank">Nielsen, Zadra et al. (2003), «The Typical Dreams of Canadian University Students», <em>Dreaming</em>, 13(4)</a></li>
+<li><a href="https://doi.org/10.1023/B:DREM.0000003144.40929.0b" rel="nofollow noopener noreferrer" target="_blank">Nielsen, Zadra et al. (2003), «The Typical Dreams of Canadian University Students», <em>Dreaming</em>, 13(4)</a></li>
 <li><a href="https://dreamresearch.net/" rel="nofollow noopener noreferrer" target="_blank">DreamResearch.net, G. William Domhoff</a></li>
 </ul>
 <p class="mt-6 text-xs text-purple-200/60">Aggiornato il 9 ottobre 2026</p>
@@ -400,12 +400,12 @@
 <i class="w-5 h-5 text-dream-salmon" data-lucide="book-open"></i>
                     Esplora i simboli correlati
                 </h2>
-<p class="text-sm text-purple-300/60 mb-4">Immergiti più a fondo nei simboli di questo articolo:</p>
+<p class="text-sm text-purple-300/60 mb-4">Approfondisci i simboli di questo articolo:</p>
 <div class="flex flex-wrap gap-3">
-<a class="inline-flex items-center gap-2 px-4 py-2 glass-button rounded-full text-sm hover:text-dream-salmon transition-colors" href="../simboli/denti">Denti (perdita di denti) Significato del sogno</a>
-<a class="inline-flex items-center gap-2 px-4 py-2 glass-button rounded-full text-sm hover:text-dream-salmon transition-colors" href="../simboli/esame">Esame sul significato dei sogni</a>
+<a class="inline-flex items-center gap-2 px-4 py-2 glass-button rounded-full text-sm hover:text-dream-salmon transition-colors" href="../simboli/denti">Sognare di perdere i denti</a>
+<a class="inline-flex items-center gap-2 px-4 py-2 glass-button rounded-full text-sm hover:text-dream-salmon transition-colors" href="../simboli/esame">Sognare un esame</a>
 <a class="inline-flex items-center gap-2 px-4 py-2 glass-button rounded-full text-sm hover:text-dream-salmon transition-colors" href="../simboli/inseguimento">Significato del sogno di essere inseguito</a>
-<a class="inline-flex items-center gap-2 px-4 py-2 glass-button rounded-full text-sm hover:text-dream-salmon transition-colors" href="../simboli/cadere">Significato del sogno che cade</a>
+<a class="inline-flex items-center gap-2 px-4 py-2 glass-button rounded-full text-sm hover:text-dream-salmon transition-colors" href="../simboli/cadere">Sognare di cadere</a>
 </div>
 </section>
 <!-- Related Symbols End -->
@@ -440,17 +440,17 @@
         <a href="perche-dimentichiamo-i-nostri-sogni-la-scienza-dietro-l-amnesia-onirica" class="glass-panel rounded-xl p-6 block hover:border-dream-salmon/30 transition-all hover:-translate-y-1">
             <span class="text-xs text-dream-salmon uppercase mb-2 block">Scienza</span>
             <h3 class="font-serif text-lg text-dream-cream mb-2">Perché dimentichiamo i sogni? La scienza dietro l'amnesia onirica</h3>
-            <p class="text-sm text-gray-400">Scopri i meccanismi cerebrali e la neurochimica che spiegano perché dimentichiamo il 95% dei sogni al risveglio.</p>
+            <p class="text-sm text-gray-400">Perché i sogni svaniscono pochi minuti dopo il risveglio, che ruolo hanno il sonno REM e la memoria, e abitudini semplici per ricordarne di più.</p>
         </a>
         <a href="i-sogni-possono-predire-il-futuro-la-sorprendente-scienza-dei-sogni-precognitivi" class="glass-panel rounded-xl p-6 block hover:border-dream-salmon/30 transition-all hover:-translate-y-1">
             <span class="text-xs text-dream-salmon uppercase mb-2 block">Scienza</span>
             <h3 class="font-serif text-lg text-dream-cream mb-2">I sogni possono predire il futuro? La scienza dei sogni precognitivi</h3>
-            <p class="text-sm text-gray-400">Esplora l'affascinante scienza dietro i sogni precognitivi e se possono davvero predire il futuro.</p>
+            <p class="text-sm text-gray-400">Cosa dicono gli studi controllati sui sogni che sembrano predire il futuro, e come il caso e i bias della memoria spiegano molti episodi.</p>
         </a>
         <a href="perche-sogniamo-la-scienza-dietro-le-tue-avventure-notturne" class="glass-panel rounded-xl p-6 block hover:border-dream-salmon/30 transition-all hover:-translate-y-1">
             <span class="text-xs text-dream-salmon uppercase mb-2 block">Scienza</span>
             <h3 class="font-serif text-lg text-dream-cream mb-2">Perché sogniamo? La scienza dietro le tue avventure notturne</h3>
-            <p class="text-sm text-gray-400">Esplora l'affascinante scienza del sognare. Scopri le principali teorie, l'attività cerebrale durante i sogni e cosa i tuoi sogni rivelano sulla coscienza.</p>
+            <p class="text-sm text-gray-400">Cosa ha misurato la ricerca su memoria, emozioni e simulazione delle minacce nei sogni, e cosa resta un'ipotesi.</p>
         </a>
   </div>
 </section>

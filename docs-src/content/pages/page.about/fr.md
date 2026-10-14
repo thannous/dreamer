@@ -29,7 +29,7 @@
   "nextPath": "",
   "preloadImage": "",
   "jsonLd": [
-    "{\n          \"@context\": \"https://schema.org\",\n          \"@graph\": [\n                    {\n                              \"@type\": \"AboutPage\",\n                              \"name\": \"À propos de Noctalia\",\n                              \"url\": \"https://noctalia.app/fr/a-propos\",\n                              \"inLanguage\": \"fr\",\n                              \"about\": {\n                                        \"@id\": \"https://noctalia.app/#organization\"\n                              },\n                              \"mainEntity\": {\n                                        \"@id\": \"https://noctalia.app/fr/a-propos#person\"\n                              }\n                    },\n                    {\n                              \"@type\": \"Organization\",\n                              \"@id\": \"https://noctalia.app/#organization\",\n                              \"name\": \"Noctalia\",\n                              \"url\": \"https://noctalia.app\",\n                              \"founder\": {\n                                        \"@id\": \"https://noctalia.app/fr/a-propos#person\"\n                              }\n                    },\n                    {\n                              \"@type\": \"Person\",\n                              \"@id\": \"https://noctalia.app/fr/a-propos#person\",\n                              \"name\": \"Thanh Chau\",\n                              \"jobTitle\": \"Founder & Publication Director\",\n                              \"url\": \"https://noctalia.app/fr/a-propos\",\n                              \"worksFor\": {\n                                        \"@id\": \"https://noctalia.app/#organization\"\n                              },\n                              \"description\": \"Ingénieur logiciel et utilisateur de journaux de rêves depuis longtemps, Thanh a créé Noctalia parce que les notes les plus utiles sont souvent celles que l'on capture avant que le matin les efface. Il pilote le produit et la direction éditoriale avec une attention particulière aux sources, à la réflexion pratique et aux limites honnêtes de l'interprétation IA.\"\n                    }\n          ]\n}",
+    "{\n          \"@context\": \"https://schema.org\",\n          \"@graph\": [\n                    {\n                              \"@type\": \"AboutPage\",\n                              \"name\": \"À propos de Noctalia\",\n                              \"url\": \"https://noctalia.app/fr/a-propos\",\n                              \"inLanguage\": \"fr\",\n                              \"about\": {\n                                        \"@id\": \"https://noctalia.app/#organization\"\n                              },\n                              \"mainEntity\": {\n                                        \"@id\": \"https://noctalia.app/fr/a-propos#person\"\n                              }\n                    },\n                    {\n                              \"@type\": \"Organization\",\n                              \"@id\": \"https://noctalia.app/#organization\",\n                              \"name\": \"Noctalia\",\n                              \"url\": \"https://noctalia.app\",\n                              \"founder\": {\n                                        \"@id\": \"https://noctalia.app/fr/a-propos#person\"\n                              }\n                    },\n                    {\n                              \"@type\": \"Person\",\n                              \"@id\": \"https://noctalia.app/fr/a-propos#person\",\n                              \"name\": \"Thanh Chau\",\n                              \"jobTitle\": \"Founder & Publication Director\",\n                              \"url\": \"https://noctalia.app/fr/a-propos\",\n                              \"worksFor\": {\n                                        \"@id\": \"https://noctalia.app/#organization\"\n                              },\n                              \"description\": \"Ingénieur logiciel, Thanh tient un journal de rêves depuis des années. Il a créé Noctalia parce que les notes les plus utiles sont souvent celles que l'on prend avant que le matin les efface. Il dirige le produit et la ligne éditoriale avec trois règles : citer des sources claires, garder la réflexion concrète et dire franchement ce que l'interprétation par IA ne peut pas faire.\"\n                    }\n          ]\n}",
     "{\n            \"@context\": \"https://schema.org\",\n            \"@type\": \"BreadcrumbList\",\n            \"itemListElement\": [\n                {\n                    \"@type\": \"ListItem\",\n                    \"position\": 1,\n                    \"name\": \"Accueil\",\n                    \"item\": \"https://noctalia.app/fr/\"\n                },\n                {\n                    \"@type\": \"ListItem\",\n                    \"position\": 2,\n                    \"name\": \"À propos de Noctalia\",\n                    \"item\": \"https://noctalia.app/fr/a-propos\"\n                }\n            ]\n        }"
   ],
   "activeNav": null
@@ -58,41 +58,41 @@
                     <div>
                         <h3 class="text-white font-medium">Thanh Chau</h3>
                         <p class="text-sm text-dream-salmon mb-2">Fondateur &amp; Directeur de la publication</p>
-                        <p class="text-sm">Ingénieur logiciel et utilisateur de journaux de rêves depuis longtemps, Thanh a créé Noctalia parce que les notes les plus utiles sont souvent celles que l'on capture avant que le matin les efface. Il pilote le produit et la direction éditoriale avec une attention particulière aux sources, à la réflexion pratique et aux limites honnêtes de l'interprétation IA.</p>
+                        <p class="text-sm">Ingénieur logiciel, Thanh tient un journal de rêves depuis des années. Il a créé Noctalia parce que les notes les plus utiles sont souvent celles que l'on prend avant que le matin les efface. Il dirige le produit et la ligne éditoriale avec trois règles&nbsp;: citer des sources claires, garder la réflexion concrète et dire franchement ce que l'interprétation par IA ne peut pas faire.</p>
                     </div>
                 </div>
             </section>
 
             <section class="glass-panel p-8 rounded-2xl border border-white/10 bg-white/5">
                 <h2 class="text-2xl font-serif text-white mb-4">Notre approche éditoriale</h2>
-                <p>Nos articles et guides visent à être clairs, pratiques et basés sur des notions établies en recherche sur le sommeil et en psychologie.</p>
+                <p>Nous voulons des articles et des guides clairs, utiles au quotidien, appuyés sur ce que la recherche sur le sommeil et la psychologie ont réellement établi.</p>
                 <div class="mt-6 space-y-4">
                     <div class="flex items-start gap-3">
                         <i data-lucide="search" class="w-5 h-5 text-dream-salmon mt-0.5 flex-shrink-0"></i>
                         <div>
                             <h3 class="text-white font-medium mb-1">Rédaction basée sur la recherche</h3>
-                            <p class="text-sm">Nous consultons des études évaluées par des pairs, des directives cliniques et des ouvrages reconnus en psychologie du rêve. Lorsque nous citons des recherches, nous renvoyons vers la source originale (PubMed, APA, publications universitaires).</p>
+                            <p class="text-sm">Nous lisons des études évaluées par des pairs, des recommandations cliniques et des ouvrages de référence en psychologie du rêve. Quand nous citons une recherche, nous renvoyons vers la source originale (PubMed, APA, publications universitaires).</p>
                         </div>
                     </div>
                     <div class="flex items-start gap-3">
                         <i data-lucide="user-check" class="w-5 h-5 text-dream-salmon mt-0.5 flex-shrink-0"></i>
                         <div>
-                            <h3 class="text-white font-medium mb-1">Citations d’experts</h3>
-                            <p class="text-sm">Nos articles citent des chercheurs nommés et leurs affiliations institutionnelles — spécialistes du sommeil, psychologues et chercheurs sur les rêves de Harvard, de l’APA et d’autres institutions.</p>
+                            <h3 class="text-white font-medium mb-1">Des chercheurs nommés</h3>
+                            <p class="text-sm">Quand un article s’appuie sur une étude, nous nommons les chercheurs qui l’ont menée et, si c’est utile, leur institution, plutôt que d’écrire «&nbsp;selon les experts&nbsp;».</p>
                         </div>
                     </div>
                     <div class="flex items-start gap-3">
                         <i data-lucide="refresh-cw" class="w-5 h-5 text-dream-salmon mt-0.5 flex-shrink-0"></i>
                         <div>
                             <h3 class="text-white font-medium mb-1">Mises à jour régulières</h3>
-                            <p class="text-sm">Les articles sont révisés et mis à jour pour refléter les nouvelles découvertes. Chaque article affiche ses dates de publication et de dernière modification.</p>
+                            <p class="text-sm">Nous révisons un article quand de nouveaux résultats changent ce qu’il dit. Chaque article affiche sa date de publication et celle de sa dernière mise à jour.</p>
                         </div>
                     </div>
                     <div class="flex items-start gap-3">
                         <i data-lucide="shield-check" class="w-5 h-5 text-dream-salmon mt-0.5 flex-shrink-0"></i>
                         <div>
                             <h3 class="text-white font-medium mb-1">Limites claires</h3>
-                            <p class="text-sm">Nous distinguons le contenu informatif du conseil médical. Chaque article inclut un avertissement, et les sujets liés à la santé recommandent toujours de consulter un professionnel qualifié.</p>
+                            <p class="text-sm">Nos contenus informent, ils ne donnent pas d’avis médical. Les articles portent un avertissement qui le rappelle, et ceux qui touchent à la santé disent quand consulter un professionnel qualifié.</p>
                         </div>
                     </div>
                 </div>

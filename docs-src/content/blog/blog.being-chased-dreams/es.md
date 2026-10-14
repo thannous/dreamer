@@ -110,7 +110,7 @@ Pasos a tu espalda, un pasillo que no se acaba, las piernas como de plomo justo 
 <div class="prose max-w-none text-gray-300">
 <h2 id="prevalencia">¿Por qué es tan frecuente soñar que te persiguen?</h2>
 <p>
-                    Si has soñado que te perseguían, no eres ni mucho menos el único. En una encuesta a 1.181 universitarios canadienses, <a class="text-dream-salmon hover:underline" href="../simbolos/persecucion">ser perseguido</a> fue uno de los cuatro temas oníricos que mencionaron más del 60 % de los participantes, junto con caer, la escuela y el sexo (<a class="text-dream-salmon hover:underline" href="https://asdreams.org/journal/issues/asdj13-4.htm" rel="nofollow noopener noreferrer" target="_blank">Nielsen, Zadra y otros, 2003</a>). Tener este sueño no dice nada raro de ti.
+                    Si has soñado que te perseguían, no eres ni mucho menos el único. En una encuesta a 1.181 universitarios canadienses, <a class="text-dream-salmon hover:underline" href="../simbolos/persecucion">ser perseguido</a> fue uno de los cuatro temas oníricos que mencionaron más del 60 % de los participantes, junto con caer, la escuela y el sexo (<a class="text-dream-salmon hover:underline" href="https://doi.org/10.1023/B:DREM.0000003144.40929.0b" rel="nofollow noopener noreferrer" target="_blank">Nielsen, Zadra y otros, 2003</a>). Tener este sueño no dice nada raro de ti.
                 </p>
 <p>
                     ¿Por qué precisamente esta escena? Nadie lo sabe con certeza. Una hipótesis conocida sostiene que soñar sirve en parte para ensayar amenazas, y pocas amenazas son tan antiguas y tan simples como algo que corre detrás de ti. Volvemos a ella más abajo, porque sigue siendo una hipótesis.
@@ -407,7 +407,7 @@ Pasos a tu espalda, un pasillo que no se acaba, las piernas como de plomo justo 
 <section class="mt-16 glass-panel rounded-2xl p-6" id="sources">
 <h2 class="font-serif text-2xl text-dream-cream mb-4">Fuentes y lecturas</h2>
 <ul class="mt-6 space-y-2 text-sm text-gray-400">
-<li><a href="https://asdreams.org/journal/issues/asdj13-4.htm" rel="nofollow noopener noreferrer" target="_blank">Nielsen, Zadra y otros (2003), «The Typical Dreams of Canadian University Students», <em>Dreaming</em>, 13(4)</a></li>
+<li><a href="https://doi.org/10.1023/B:DREM.0000003144.40929.0b" rel="nofollow noopener noreferrer" target="_blank">Nielsen, Zadra y otros (2003), «The Typical Dreams of Canadian University Students», <em>Dreaming</em>, 13(4)</a></li>
 <li><a href="https://pubmed.ncbi.nlm.nih.gov/24497669/" rel="nofollow noopener noreferrer" target="_blank">Robert y Zadra (2014), «Thematic and content analysis of idiopathic nightmares and bad dreams», <em>Sleep</em></a></li>
 <li><a href="https://pubmed.ncbi.nlm.nih.gov/11515147/" rel="nofollow noopener noreferrer" target="_blank">Revonsuo (2000), «The reinterpretation of dreams: an evolutionary hypothesis of the function of dreaming», <em>Behavioral and Brain Sciences</em></a></li>
 <li><a href="https://pubmed.ncbi.nlm.nih.gov/29852917/" rel="nofollow noopener noreferrer" target="_blank">Morgenthaler y otros (2018), «Position paper for the treatment of nightmare disorder in adults», American Academy of Sleep Medicine</a></li>
@@ -445,17 +445,17 @@ Pasos a tu espalda, un pasillo que no se acaba, las piernas como de plomo justo 
         <a href="significado-suenos-recurrentes" class="glass-panel rounded-xl p-6 block hover:border-dream-salmon/30 transition-all hover:-translate-y-1">
             <span class="text-xs text-dream-salmon uppercase mb-2 block">Interpretación</span>
             <h3 class="font-serif text-lg text-dream-cream mb-2">Significado de Sueños Recurrentes: Entender sus Mensajes</h3>
-            <p class="text-sm text-gray-400">¿Por qué sigues teniendo el mismo sueño? Descubre lo que tu subconsciente está tratando de decirte.</p>
+            <p class="text-sm text-gray-400">Por qué vuelve el mismo sueño, qué anotar entre un episodio y otro, y cuándo las pesadillas repetidas merecen una consulta médica.</p>
         </a>
         <a href="suenos-dientes-caen" class="glass-panel rounded-xl p-6 block hover:border-dream-salmon/30 transition-all hover:-translate-y-1">
             <span class="text-xs text-dream-salmon uppercase mb-2 block">Interpretación</span>
             <h3 class="font-serif text-lg text-dream-cream mb-2">Soñar que se caen los dientes: significado e interpretación</h3>
-            <p class="text-sm text-gray-400">¿Por qué sueñas que pierdes los dientes? Descubre las 7 interpretaciones más comunes.</p>
+            <p class="text-sm text-gray-400">Siete posibles lecturas de los sueños en los que se caen los dientes, de la tensión en la mandíbula al miedo al qué dirán, y las variantes que conviene anotar.</p>
         </a>
         <a href="suenos-de-caer" class="glass-panel rounded-xl p-6 block hover:border-dream-salmon/30 transition-all hover:-translate-y-1">
             <span class="text-xs text-dream-salmon uppercase mb-2 block">Interpretación</span>
             <h3 class="font-serif text-lg text-dream-cream mb-2">Sueños de caer: por qué sueñas que caes al vacío</h3>
-            <p class="text-sm text-gray-400">¿Por qué sueñas con caer al vacío? Descubre el significado psicológico.</p>
+            <p class="text-sm text-gray-400">Por qué soñamos con caer, desde la sacudida hípnica al dormirse hasta las caídas largas, y qué anotar al despertar.</p>
         </a>
   </div>
 </section>

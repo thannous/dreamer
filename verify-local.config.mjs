@@ -10,7 +10,15 @@
 //                           into checks, plus the surfaces the PR changed.
 //   npm run verify:release  before a publish: the PR checks, run again, plus the
 //                           full local validation of
-//                           doc_web_interne/docs/circleci-migration.md.
+//                           doc_web_interne/docs/circleci-migration.md
+//                           (`release --target app`). The web app and mobile
+//                           releases need it.
+//   npm run verify:release:site
+//                           before a noctalia.app publish only: the same run
+//                           without the checks of the `app` target (the web
+//                           app build, its backend journey under Docker and
+//                           the TesterArmy app campaigns), which the static
+//                           site does not ship.
 //
 // A check without `when` is reused by a later PR run whose inputs are identical;
 // a release reuses nothing. A `when` check runs only
@@ -306,12 +314,16 @@ export default {
     },
     { name: 'jest-full', command: 'npm run test:fast', kinds: ['release'] },
     // noctalia.app (Cloudflare Pages) and the Vercel web app, rebuilt for the delivered commit.
+    // `targets: ['app']` marks what only an app release runs (npm run
+    // verify:release, which web:deploy:prod requires); npm run
+    // verify:release:site, enough for the static site, leaves it out.
     { name: 'site-build', command: 'npm run docs:build && npm run docs:check', kinds: ['release'], perCommit: true },
-    { name: 'web-build', command: 'npm run build:web', kinds: ['release'], perCommit: true },
+    { name: 'web-build', command: 'npm run build:web', kinds: ['release'], targets: ['app'], perCommit: true },
     {
       name: 'e2e-backend',
       command: 'npm run test:e2e:backend',
       kinds: ['release'],
+      targets: ['app'],
       specialised: true,
       requires: {
         command: 'docker info',
@@ -332,12 +344,13 @@ export default {
       specialised: true,
       requires: TESTERARMY,
     },
-    { name: 'testerarmy-dreamer', command: DREAMER_PASSES, kinds: ['release'], specialised: true, requires: TESTERARMY },
-    { name: 'testerarmy-lucid', command: 'npm run test:testerarmy:lucid', kinds: ['release'], specialised: true, requires: TESTERARMY },
+    { name: 'testerarmy-dreamer', command: DREAMER_PASSES, kinds: ['release'], targets: ['app'], specialised: true, requires: TESTERARMY },
+    { name: 'testerarmy-lucid', command: 'npm run test:testerarmy:lucid', kinds: ['release'], targets: ['app'], specialised: true, requires: TESTERARMY },
     {
       name: 'testerarmy-meditation',
       command: 'npm run test:testerarmy:meditation',
       kinds: ['release'],
+      targets: ['app'],
       specialised: true,
       requires: { command: `${TESTERARMY.command} && ${MEDITATION_DEPS.command}`, hint: `${TESTERARMY.hint}; ${MEDITATION_DEPS.hint}` },
     },

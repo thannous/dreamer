@@ -326,12 +326,12 @@
 <a class="glass-panel rounded-xl p-6 block hover:border-dream-salmon/30 transition-all hover:-translate-y-1" href="sonno-rem-e-sogni-comprendere-il-ripristino-notturno-del-cervello">
 <span class="text-xs text-dream-salmon uppercase mb-2 block">Scienza del sonno</span>
 <h3 class="font-serif text-lg text-dream-cream mb-2">Sonno REM e sogni: comprendere il ripristino notturno del cervello</h3>
-<p class="text-sm text-gray-400">Scopri come la fase REM modella i tuoi sogni e perch&eacute; &egrave; essenziale per il tuo benessere.</p>
+<p class="text-sm text-gray-400">In quale momento della notte arriva il sonno REM, perché i suoi sogni sono così vividi e cosa lo accorcia.</p>
 </a>
 <a class="glass-panel rounded-xl p-6 block hover:border-dream-salmon/30 transition-all hover:-translate-y-1" href="sonno-salute-priorita">
 <span class="text-xs text-dream-salmon uppercase mb-2 block">Salute</span>
 <h3 class="font-serif text-lg text-dream-cream mb-2">Il sonno come leva di salute numero uno: lo studio OHSU</h3>
-<p class="text-sm text-gray-400">Uno studio rivela che la carenza di sonno supera la cattiva alimentazione e la mancanza di esercizio per l'aspettativa di vita.</p>
+<p class="text-sm text-gray-400">Cosa ha trovato uno studio OHSU confrontando il dormire poco con alimentazione ed esercizio rispetto all'aspettativa di vita, e i limiti di questo legame.</p>
 </a>
 <a class="glass-panel rounded-xl p-6 block hover:border-dream-salmon/30 transition-all hover:-translate-y-1" href="/it/blog/">
 <span class="text-xs text-dream-salmon uppercase mb-2 block">Risorse</span>
