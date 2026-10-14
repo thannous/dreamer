@@ -1,11 +1,15 @@
+import { router } from 'expo-router';
 import { useCallback, useEffect, useRef } from 'react';
-import { Platform } from 'react-native';
+import { Alert, AppState, Platform } from 'react-native';
+
+import { GUEST_DREAM_RECORDING_LIMIT } from '@/constants/limits';
 
 import { useAuth } from '@/context/AuthContext';
 import { useDreamsActions, useDreamsData } from '@/context/DreamsContext';
 import { useAppState } from '@/hooks/useAppState';
 import { useTranslation } from '@/hooks/useTranslation';
 import { buildDraftDream } from '@/lib/dreamUtils';
+import { GuestDreamLimitError } from '@/lib/errors';
 import { createScopedLogger } from '@/lib/logger';
 import {
   readNotificationDreamInbox,
@@ -29,6 +33,7 @@ export function useNotificationDreamImport(): void {
   const dreamsRef = useRef(dreams);
   const importingRef = useRef(false);
   const rerunRef = useRef(false);
+  const guestLimitShownRef = useRef(false);
   const ready = Platform.OS !== 'web' && loaded && !authLoading;
 
   useEffect(() => {
@@ -47,6 +52,7 @@ export function useNotificationDreamImport(): void {
         rerunRef.current = false;
         const captures = await readNotificationDreamInbox();
         const imported: string[] = [];
+        let blockedByGuestLimit = false;
         for (const capture of captures) {
           const alreadySaved = dreamsRef.current.some(
             (dream) => dream.clientRequestId === capture.clientRequestId
@@ -64,12 +70,27 @@ export function useNotificationDreamImport(): void {
               // Kept in the inbox (a full guest journal, a storage error): the
               // next launch or return to the app tries again.
               log.warn('Unable to save a dictated dream', error);
+              if (error instanceof GuestDreamLimitError) blockedByGuestLimit = true;
               continue;
             }
           }
           imported.push(capture.id);
         }
         await removeImportedNotificationDreams(imported);
+        // The reply notice already said the dream was saved: it is, on this
+        // device, but a full guest journal keeps it out of the journal. Say so
+        // once per launch, while the user is looking at the app.
+        if (blockedByGuestLimit && !guestLimitShownRef.current && AppState.currentState === 'active') {
+          guestLimitShownRef.current = true;
+          Alert.alert(
+            t('recording.guest_recording.limit_title'),
+            t('notifications.dream_capture.guest_limit_message', { limit: GUEST_DREAM_RECORDING_LIMIT }),
+            [
+              { text: t('recording.guest_recording.signup'), onPress: () => router.push('/settings?section=account&auth=signup') },
+              { text: t('notifications.dream_capture.later'), style: 'cancel' },
+            ]
+          );
+        }
       } while (rerunRef.current);
     } catch (error) {
       log.warn('Unable to read dictated dreams', error);

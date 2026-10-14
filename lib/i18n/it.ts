@@ -1804,6 +1804,8 @@ const translations: Record<string, string> = {
     'notifications.dream_capture.placeholder': 'Detta il tuo sogno…',
     'notifications.dream_capture.saved_title': 'Sogno salvato',
     'notifications.dream_capture.saved_body': 'Ti aspetta nel tuo diario.',
+    'notifications.dream_capture.guest_limit_message': 'Hai salvato {limit} sogni senza account. Il sogno dettato dal promemoria resta su questo dispositivo. Crea un account gratuito per aggiungerlo al tuo diario.',
+    'notifications.dream_capture.later': 'Più tardi',
     'weekly_recap.title': 'La tua settimana di sogni',
     'weekly_recap.subtitle': 'Sette notti, una lettura. Ecco cosa è tornato.',
     'weekly_recap.empty.subtitle': 'Nessun sogno registrato negli ultimi sette giorni.',

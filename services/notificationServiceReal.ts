@@ -328,6 +328,8 @@ function getInactivityCopy(
  * language. A paired watch shows it with dictation, and so does the lock
  * screen. A failure only costs the action: the reminder still opens capture.
  */
+let dreamCaptureCategoryRegistered = false;
+
 async function ensureDreamCaptureCategory(t: NotificationTranslator): Promise<void> {
   try {
     await Notifications.setNotificationCategoryAsync(DREAM_CAPTURE_CATEGORY_ID, [
@@ -341,6 +343,7 @@ async function ensureDreamCaptureCategory(t: NotificationTranslator): Promise<vo
         options: { opensAppToForeground: false },
       },
     ]);
+    dreamCaptureCategoryRegistered = true;
   } catch (error) {
     if (__DEV__) {
       console.warn('Unable to register the dream capture notification action', error);
@@ -460,7 +463,12 @@ export async function reconcileDreamerReminders(
     decision.toCancel.map((identifier) => Notifications.cancelScheduledNotificationAsync(identifier))
   );
 
-  const t = decision.toSchedule.length > 0 ? await getNotificationTranslator() : null;
+  // The category is registered once per launch even when nothing is
+  // rescheduled, so a failed attempt during a rebuild is retried later.
+  const t =
+    decision.toSchedule.length > 0 || !dreamCaptureCategoryRegistered
+      ? await getNotificationTranslator()
+      : null;
   if (t) await ensureDreamCaptureCategory(t);
   const promptByWeekday = t ? buildWeeklyPromptRotation(t) : {};
   const scheduledIds: string[] = [];

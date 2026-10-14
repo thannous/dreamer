@@ -1759,6 +1759,8 @@ const translations: Record<string, string> = {
     'notifications.dream_capture.placeholder': 'Diktiere deinen Traum…',
     'notifications.dream_capture.saved_title': 'Traum gespeichert',
     'notifications.dream_capture.saved_body': 'Er wartet in deinem Journal.',
+    'notifications.dream_capture.guest_limit_message': 'Du hast {limit} Träume ohne Konto gespeichert. Der Traum, den du in der Erinnerung diktiert hast, bleibt auf diesem Gerät. Erstelle ein kostenloses Konto, um ihn deinem Journal hinzuzufügen.',
+    'notifications.dream_capture.later': 'Später',
     'weekly_recap.title': 'Deine Traumwoche',
     'weekly_recap.subtitle': 'Sieben Nächte, eine Lesung. Das kam zurück.',
     'weekly_recap.empty.subtitle': 'In den letzten sieben Tagen wurde kein Traum festgehalten.',

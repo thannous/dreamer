@@ -1805,6 +1805,8 @@ const translations: Record<string, string> = {
     'notifications.dream_capture.placeholder': 'Dicte ton rêve…',
     'notifications.dream_capture.saved_title': 'Rêve enregistré',
     'notifications.dream_capture.saved_body': 'Il t’attend dans ton journal.',
+    'notifications.dream_capture.guest_limit_message': 'Tu as enregistré {limit} rêves sans compte. Le rêve dicté depuis le rappel est gardé sur cet appareil. Crée un compte gratuit pour l’ajouter à ton journal.',
+    'notifications.dream_capture.later': 'Plus tard',
     'weekly_recap.title': 'Ta semaine en rêves',
     'weekly_recap.subtitle': 'Sept nuits, une lecture. Voici ce qui est revenu.',
     'weekly_recap.empty.subtitle': 'Aucun rêve enregistré ces sept derniers jours.',
