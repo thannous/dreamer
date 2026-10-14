@@ -93,7 +93,17 @@ function resolveResponsiveSymbolIllustration(illustration) {
     };
   }
 
-  return responsive;
+  // AVIF siblings come from scripts/generate-symbol-avif-images.js; the hero
+  // offers them only when every width exists.
+  const avifVariants = responsive.variants.map((variant) => ({
+    filePath: variant.filePath.replace(/\.webp$/, '.avif'),
+    url: variant.url.replace(/\.webp$/, '.avif'),
+    width: variant.width,
+  }));
+  const avifSrcset = avifVariants.every((variant) => fs.existsSync(variant.filePath))
+    ? avifVariants.map((variant) => `${variant.url} ${variant.width}w`).join(', ')
+    : '';
+  return { ...responsive, avifSrcset };
 }
 
 function readCatalogModifiedDate(fallbackDate) {
@@ -901,7 +911,8 @@ function generatePage(symbol, allSymbols, i18n, extended, lang) {
             </section>` : '';
 
   const heroPictureHtml = illustration && responsiveIllustration ? `
-                    <picture class="symbol-hero-media">
+                    <picture class="symbol-hero-media">${responsiveIllustration.avifSrcset ? `
+                        <source type="image/avif" srcset="${escapeHtml(responsiveIllustration.avifSrcset)}" sizes="100vw">` : ''}
                         <img src="${escapeHtml(responsiveIllustration.src)}"
                              ${responsiveIllustration.srcset ? `srcset="${escapeHtml(responsiveIllustration.srcset)}"` : ''}
                              sizes="100vw"

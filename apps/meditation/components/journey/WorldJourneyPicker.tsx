@@ -3,7 +3,7 @@ import * as Haptics from 'expo-haptics';
 import React from 'react';
 
 import { IconSymbol, Text } from '@/components/ui';
-import { Themes } from '@/constants/theme';
+import { NightTheme, Themes } from '@/constants/theme';
 import type { MeditationWorld, WorldId } from '@/constants/worlds';
 import { useTranslation } from '@/context/LanguageContext';
 import type { WorldAccess, WorldPurchaseResourceStatus } from '@/context/WorldPurchaseContext';
@@ -13,6 +13,13 @@ import type { TranslationKey } from '@/lib/i18n';
  * the slop only widens the short names sideways. */
 const HIT_SLOP = { left: 6, right: 6 } as const;
 const PRESS_RETENTION = { top: 12, bottom: 12, left: 12, right: 12 } as const;
+/** A soft night halo keeps short copy legible where it crosses a highlight
+ * of a dark artwork. Light artworks already carry dark text. */
+export const ARTWORK_TEXT_HALO = {
+  textShadowColor: NightTheme.background,
+  textShadowOffset: { width: 0, height: 0 },
+  textShadowRadius: 10,
+} as const;
 export const ACTIVE_JOURNEY_CTA_TEST_ID = 'home.journey.cta';
 /** Literal IDs keep Maestro's static anchor audit honest while the names are
  * still rendered from the world registry. */
@@ -109,9 +116,14 @@ function WorldIndexEntry({
           className="h-1.5 w-1.5 rounded-full bg-champagne"
         />
       ) : null}
+      {/* Full ivory, not the muted tone: the names sit on the bright centre of
+          the artwork, where muted text fell under 3:1. The selected name keeps
+          its dot, weight and underline. */}
       <Text
         variant={highlighted ? 'label' : 'bodySm'}
+        tone="default"
         className={highlighted ? 'underline' : ''}
+        style={appearance === 'dark' ? ARTWORK_TEXT_HALO : undefined}
         testID={testID ? `${testID}.name` : undefined}>
         {name}
       </Text>

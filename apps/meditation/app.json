@@ -15,7 +15,8 @@
       "infoPlist": {
         "UIBackgroundModes": [
           "audio"
-        ]
+        ],
+        "CFBundleDisplayName": "Meditation"
       },
       "icon": "./assets/images/icon.png"
     },
@@ -42,6 +43,56 @@
         "android.permission.WRITE_EXTERNAL_STORAGE",
         "android.permission.SYSTEM_ALERT_WINDOW"
       ]
+    },
+    "locales": {
+      "de": {
+        "ios": {
+          "CFBundleDisplayName": "Meditation"
+        },
+        "android": {
+          "app_name": "Meditation"
+        }
+      },
+      "en": {
+        "ios": {
+          "CFBundleDisplayName": "Meditation"
+        },
+        "android": {
+          "app_name": "Meditation"
+        }
+      },
+      "es": {
+        "ios": {
+          "CFBundleDisplayName": "Meditación"
+        },
+        "android": {
+          "app_name": "Meditación"
+        }
+      },
+      "fr": {
+        "ios": {
+          "CFBundleDisplayName": "Méditation"
+        },
+        "android": {
+          "app_name": "Méditation"
+        }
+      },
+      "it": {
+        "ios": {
+          "CFBundleDisplayName": "Meditazione"
+        },
+        "android": {
+          "app_name": "Meditazione"
+        }
+      },
+      "pt": {
+        "ios": {
+          "CFBundleDisplayName": "Meditação"
+        },
+        "android": {
+          "app_name": "Meditação"
+        }
+      }
     },
     "web": {
       "output": "static",
@@ -87,6 +138,10 @@
             "enableSceneSupport": true
           }
         }
+      ],
+      [
+        "./plugins/withAndroidDefaultLabel",
+        "Meditation"
       ]
     ],
     "experiments": {

@@ -1,6 +1,6 @@
 import Ionicons from '@expo/vector-icons/Ionicons';
 import { LinearGradient } from 'expo-linear-gradient';
-import React, { useState, type ComponentProps, type ReactNode } from 'react';
+import React, { useEffect, useRef, useState, type ComponentProps, type ReactNode } from 'react';
 import {
   ActivityIndicator,
   Pressable,
@@ -14,11 +14,14 @@ import {
   type ScrollViewProps,
   type ViewStyle,
 } from 'react-native';
+import { useSharedValue } from 'react-native-reanimated';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
-import { ScreenContainer } from '@/components/ScreenContainer';
+import { ScreenContainer, useWideConstrainedLayout } from '@/components/ScreenContainer';
+import { LucidArtStatusBar, type LucidArtStatusBarController } from '@/components/lucid/LucidArtStatusBar';
 import { LucidGlass } from '@/components/lucid/LucidGlass';
-import { getLucidPalette, LucidIcon, LucidPress, LucidRadius, LucidSpace, LucidType } from '@/constants/lucidTheme';
+import { LucidStatusBarVeil, VEIL_EDGE_FADE } from '@/components/lucid/LucidStatusBarVeil';
+import { getLucidPalette, LUCID_NIGHT_GROUND, LucidIcon, LucidPress, LucidRadius, LucidSpace, LucidType } from '@/constants/lucidTheme';
 import { useTheme } from '@/context/ThemeContext';
 import { useLucidReducedMotion } from '@/hooks/useLucidReducedMotion';
 
@@ -29,6 +32,10 @@ const DISABLED_OPACITY = 0.45;
 
 // La barre d'onglets flotte à `max(insets.bottom, 10)` et mesure jusqu’à 84px : le contenu doit réserver de quoi passer dessous sans s'y cacher.
 export const LUCID_TAB_BAR_INSET = 92;
+
+// Les peintures d'en-tête fondent vers le fond à partir de la moitié environ :
+// au-dessus, l'horloge et la batterie restent sur la nuit et passent en clair.
+export const LUCID_HERO_DARK_SHARE = 0.5;
 
 export function LucidScreenHeader({
   eyebrow,
@@ -88,6 +95,7 @@ export function LucidScreen({
   scroll = true,
   contentStyle,
   colorMode = 'theme',
+  darkTop,
   testID,
   ...scrollProps
 }: {
@@ -114,11 +122,34 @@ export function LucidScreen({
   contentStyle?: ViewStyle;
   /** Fixed dark artwork keeps its audited dark text palette in either app theme. */
   colorMode?: 'theme' | 'dark';
+  /** Depth of the night artwork at the top of the page; the status bar reads
+   * light until the page has scrolled past it. */
+  darkTop?: number;
   testID?: string;
 } & Omit<ScrollViewProps, 'contentContainerStyle'>) {
   const { colors, mode } = useTheme();
   const palette = getLucidPalette(colors, colorMode === 'dark' ? 'dark' : mode);
   const insets = useSafeAreaInsets();
+  // Wide Android layouts pad the content, so light gutters sit under the
+  // clock and battery whatever the artwork does.
+  const wideLayout = useWideConstrainedLayout();
+  const artEdge = darkTop === undefined || wideLayout ? undefined : darkTop - insets.top;
+  const scrollY = useRef(0);
+  const veilScrollY = useSharedValue(0);
+  // Kept out of state: crossing the artwork's edge flips the status bar in the
+  // scroll event itself, without re-rendering the screen.
+  const overArtRef = useRef(false);
+  const artStatusBarRef: LucidArtStatusBarController = useRef(null);
+  const updateOverArt = (next: boolean) => {
+    if (next === overArtRef.current) return;
+    overArtRef.current = next;
+    artStatusBarRef.current?.(next);
+  };
+  // The artwork can be re-measured (rotation, reflow) away from the top.
+  useEffect(() => {
+    updateOverArt(artEdge !== undefined && scrollY.current < artEdge);
+  });
+  const { onScroll, scrollEventThrottle } = scrollProps;
   const content = (
     <ScreenContainer style={styles.screenContainer} maxWidth={760} fillContent={!scroll}>
       <View
@@ -153,14 +184,46 @@ export function LucidScreen({
           keyboardShouldPersistTaps="handled"
           showsVerticalScrollIndicator={false}
           {...scrollProps}
+          scrollEventThrottle={scrollEventThrottle ?? 16}
+          onScroll={(event) => {
+            onScroll?.(event);
+            scrollY.current = event.nativeEvent.contentOffset.y;
+            veilScrollY.set(scrollY.current);
+            if (darkTop !== undefined) updateOverArt(artEdge !== undefined && scrollY.current < artEdge);
+          }}
         >
           {content}
         </ScrollView>
       ) : (
         content
       )}
+      {scroll && artEdge !== undefined ? (
+        // Night artwork under the light clock: what scrolls over it fades into the night.
+        <LucidStatusBarVeil
+          scrollY={veilScrollY}
+          start={8}
+          end={artEdge}
+          top={insets.top}
+          ground={LUCID_NIGHT_GROUND}
+        />
+      ) : null}
+      {scroll ? (
+        <LucidStatusBarVeil
+          scrollY={veilScrollY}
+          // Past artwork, it crossfades with the night veil at the edge, where the clock turns dark.
+          start={artEdge === undefined ? 8 : Math.max(8, artEdge - VEIL_EDGE_FADE / 2)}
+          startFade={artEdge === undefined ? undefined : VEIL_EDGE_FADE}
+          top={insets.top}
+          ground={palette.background}
+          tint={palette.atmosphere[0]}
+        />
+      ) : null}
       {footer ? (
         <View style={[styles.footer, { paddingBottom: Math.max(insets.bottom, 20) }]}>{footer}</View>
+      ) : null}
+      {darkTop !== undefined ? (
+        <LucidArtStatusBar overArtRef={overArtRef} controllerRef={artStatusBarRef}
+          pageBar={mode === 'dark' ? 'light' : 'dark'} />
       ) : null}
     </View>
   );

@@ -29,7 +29,7 @@
   "nextPath": "",
   "preloadImage": "",
   "jsonLd": [
-    "{\n          \"@context\": \"https://schema.org\",\n          \"@graph\": [\n                    {\n                              \"@type\": \"AboutPage\",\n                              \"name\": \"Chi siamo\",\n                              \"url\": \"https://noctalia.app/it/chi-siamo\",\n                              \"inLanguage\": \"it\",\n                              \"about\": {\n                                        \"@id\": \"https://noctalia.app/#organization\"\n                              },\n                              \"mainEntity\": {\n                                        \"@id\": \"https://noctalia.app/it/chi-siamo#person\"\n                              }\n                    },\n                    {\n                              \"@type\": \"Organization\",\n                              \"@id\": \"https://noctalia.app/#organization\",\n                              \"name\": \"Noctalia\",\n                              \"url\": \"https://noctalia.app\",\n                              \"founder\": {\n                                        \"@id\": \"https://noctalia.app/it/chi-siamo#person\"\n                              }\n                    },\n                    {\n                              \"@type\": \"Person\",\n                              \"@id\": \"https://noctalia.app/it/chi-siamo#person\",\n                              \"name\": \"Thanh Chau\",\n                              \"jobTitle\": \"Founder & Publication Director\",\n                              \"url\": \"https://noctalia.app/it/chi-siamo\",\n                              \"worksFor\": {\n                                        \"@id\": \"https://noctalia.app/#organization\"\n                              },\n                              \"description\": \"Ingegnere del software e utilizzatore di diari dei sogni da anni, Thanh ha creato Noctalia perché le note più utili sono spesso quelle salvate prima che il mattino cancelli i dettagli. Guida prodotto e linea editoriale con attenzione a fonti chiare, riflessione pratica e limiti onesti dell'interpretazione IA.\"\n                    }\n          ]\n}",
+    "{\n          \"@context\": \"https://schema.org\",\n          \"@graph\": [\n                    {\n                              \"@type\": \"AboutPage\",\n                              \"name\": \"Chi siamo\",\n                              \"url\": \"https://noctalia.app/it/chi-siamo\",\n                              \"inLanguage\": \"it\",\n                              \"about\": {\n                                        \"@id\": \"https://noctalia.app/#organization\"\n                              },\n                              \"mainEntity\": {\n                                        \"@id\": \"https://noctalia.app/it/chi-siamo#person\"\n                              }\n                    },\n                    {\n                              \"@type\": \"Organization\",\n                              \"@id\": \"https://noctalia.app/#organization\",\n                              \"name\": \"Noctalia\",\n                              \"url\": \"https://noctalia.app\",\n                              \"founder\": {\n                                        \"@id\": \"https://noctalia.app/it/chi-siamo#person\"\n                              }\n                    },\n                    {\n                              \"@type\": \"Person\",\n                              \"@id\": \"https://noctalia.app/it/chi-siamo#person\",\n                              \"name\": \"Thanh Chau\",\n                              \"jobTitle\": \"Founder & Publication Director\",\n                              \"url\": \"https://noctalia.app/it/chi-siamo\",\n                              \"worksFor\": {\n                                        \"@id\": \"https://noctalia.app/#organization\"\n                              },\n                              \"description\": \"Thanh è ingegnere del software e tiene un diario dei sogni da anni. Ha creato Noctalia perché le note più utili sono spesso quelle scritte prima che il mattino cancelli i dettagli. Guida prodotto e linea editoriale con tre regole: citare fonti chiare, restare sul pratico e dire apertamente cosa l'interpretazione con l'IA non può fare.\"\n                    }\n          ]\n}",
     "{\n            \"@context\": \"https://schema.org\",\n            \"@type\": \"BreadcrumbList\",\n            \"itemListElement\": [\n                {\n                    \"@type\": \"ListItem\",\n                    \"position\": 1,\n                    \"name\": \"Home\",\n                    \"item\": \"https://noctalia.app/it/\"\n                },\n                {\n                    \"@type\": \"ListItem\",\n                    \"position\": 2,\n                    \"name\": \"Chi siamo\",\n                    \"item\": \"https://noctalia.app/it/chi-siamo\"\n                }\n            ]\n        }"
   ],
   "activeNav": null
@@ -58,41 +58,41 @@
                     <div>
                         <h3 class="text-white font-medium">Thanh Chau</h3>
                         <p class="text-sm text-dream-salmon mb-2">Fondatore e Direttore della pubblicazione</p>
-                        <p class="text-sm">Ingegnere del software e utilizzatore di diari dei sogni da anni, Thanh ha creato Noctalia perché le note più utili sono spesso quelle salvate prima che il mattino cancelli i dettagli. Guida prodotto e linea editoriale con attenzione a fonti chiare, riflessione pratica e limiti onesti dell'interpretazione IA.</p>
+                        <p class="text-sm">Thanh è ingegnere del software e tiene un diario dei sogni da anni. Ha creato Noctalia perché le note più utili sono spesso quelle scritte prima che il mattino cancelli i dettagli. Guida prodotto e linea editoriale con tre regole: citare fonti chiare, restare sul pratico e dire apertamente cosa l'interpretazione con l'IA non può fare.</p>
                     </div>
                 </div>
             </section>
 
             <section class="glass-panel p-8 rounded-2xl border border-white/10 bg-white/5">
                 <h2 class="text-2xl font-serif text-white mb-4">Come creiamo le nostre risorse</h2>
-                <p>I nostri articoli e guide sono pensati per essere chiari, pratici e basati su concetti consolidati di ricerca sul sonno e psicologia.</p>
+                <p>Vogliamo articoli e guide chiari, pratici e fondati su ciò che la ricerca sul sonno e la psicologia hanno davvero dimostrato.</p>
                 <div class="mt-6 space-y-4">
                     <div class="flex items-start gap-3">
                         <i data-lucide="search" class="w-5 h-5 text-dream-salmon mt-0.5 flex-shrink-0"></i>
                         <div>
                             <h3 class="text-white font-medium mb-1">Scrittura basata sulla ricerca</h3>
-                            <p class="text-sm">Consultiamo studi sottoposti a revisione paritaria, linee guida cliniche e opere riconosciute in psicologia del sogno. Quando citiamo ricerche, rimandiamo alla fonte originale (PubMed, APA, pubblicazioni universitarie).</p>
+                            <p class="text-sm">Leggiamo studi sottoposti a revisione paritaria, linee guida cliniche e opere di riferimento in psicologia del sogno. Quando citiamo una ricerca, rimandiamo alla fonte originale (PubMed, APA, pubblicazioni universitarie).</p>
                         </div>
                     </div>
                     <div class="flex items-start gap-3">
                         <i data-lucide="user-check" class="w-5 h-5 text-dream-salmon mt-0.5 flex-shrink-0"></i>
                         <div>
-                            <h3 class="text-white font-medium mb-1">Citazioni di esperti</h3>
-                            <p class="text-sm">I nostri articoli citano ricercatori con nome e affiliazione istituzionale — scienziati del sonno, psicologi e ricercatori di Harvard, APA e altre istituzioni.</p>
+                            <h3 class="text-white font-medium mb-1">Ricercatori con nome</h3>
+                            <p class="text-sm">Quando un articolo si basa su uno studio, indichiamo il nome di chi lo ha condotto e, se serve, la sua istituzione, invece di scrivere «secondo gli esperti».</p>
                         </div>
                     </div>
                     <div class="flex items-start gap-3">
                         <i data-lucide="refresh-cw" class="w-5 h-5 text-dream-salmon mt-0.5 flex-shrink-0"></i>
                         <div>
                             <h3 class="text-white font-medium mb-1">Aggiornamenti regolari</h3>
-                            <p class="text-sm">Gli articoli vengono rivisti e aggiornati per riflettere nuove scoperte. Ogni articolo mostra le date di pubblicazione e ultima modifica.</p>
+                            <p class="text-sm">Rivediamo un articolo quando nuovi risultati cambiano ciò che dice. Ogni articolo mostra quando è stato pubblicato e quando è stato aggiornato l'ultima volta.</p>
                         </div>
                     </div>
                     <div class="flex items-start gap-3">
                         <i data-lucide="shield-check" class="w-5 h-5 text-dream-salmon mt-0.5 flex-shrink-0"></i>
                         <div>
                             <h3 class="text-white font-medium mb-1">Confini chiari</h3>
-                            <p class="text-sm">Distinguiamo il contenuto informativo dalla consulenza medica. Ogni articolo include un avviso, e gli argomenti legati alla salute raccomandano sempre di consultare un professionista qualificato.</p>
+                            <p class="text-sm">I nostri contenuti informano, non danno consigli medici. Gli articoli riportano un avviso che lo ricorda, e quelli sui temi di salute indicano quando rivolgersi a un professionista qualificato.</p>
                         </div>
                     </div>
                 </div>

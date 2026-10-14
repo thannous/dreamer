@@ -80,6 +80,7 @@ export default function SettingsScreen() {
             testID="settings.motion"
             label={t('settings.motion')}
             value={t('settings.motion.system')}
+            stacked
           />
           <SettingsRow
             testID={TID.Button.SettingsLanguage}

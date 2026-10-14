@@ -81,8 +81,8 @@
         "sourceFilename": "exec-0d2f63bc-ed4f-49ad-82cc-e3a0621fa759.png",
         "width": 1536,
         "height": 1024,
-        "bytes": 130086,
-        "sha256": "c342d23741b36c67d10ea0e8ea88ca3f56ae7e4e475cb42658ceb17262846e07"
+        "bytes": 89524,
+        "sha256": "2c213c057be38ca563a3f409b9b2d3e51c4c96c071d473087392786cbbf489ba"
       },
       {
         "scene": "reverie",
@@ -93,8 +93,8 @@
         "sourceFilename": "exec-05de105e-d56a-488b-a7ad-435b75d7b266.png",
         "width": 1536,
         "height": 1024,
-        "bytes": 206406,
-        "sha256": "a211a07d025baa887a2cd79dd82d3fdb79dbabd04a6492f50dc4c377735eb2e4"
+        "bytes": 156748,
+        "sha256": "3ab9fa37646e8d8ed650dcfdd6874eb4439b08992944d844c28189248e682b99"
       },
       {
         "scene": "path",
@@ -105,8 +105,8 @@
         "sourceFilename": "exec-b7b081bb-5057-4e28-bd0a-75a5a45c6a49.png",
         "width": 1536,
         "height": 1024,
-        "bytes": 148062,
-        "sha256": "6c2f9da325d96172f9a68ae26c6feac501fb5fb5d6adb3e792d305bf5297b8c5"
+        "bytes": 100896,
+        "sha256": "bf16ea5fbd73f469bc0bebf961934a09ffc9403d20f6d4a096e1522da662b5f7"
       },
       {
         "scene": "astral",
@@ -117,8 +117,8 @@
         "sourceFilename": "exec-1ce75242-30d3-4866-9cd0-4edef2cc7c65.png",
         "width": 1536,
         "height": 1024,
-        "bytes": 152676,
-        "sha256": "09298e54ed49480d64cc3129c90f54be8fb72173c55ccb579d6bc77ed5e8213d"
+        "bytes": 102636,
+        "sha256": "f2d67111fb25c014a67aedcdc581a9d54b15c5bec7972c560f41aef96d698846"
       },
       {
         "scene": "journal",
@@ -129,8 +129,8 @@
         "sourceFilename": "exec-c595a440-dfc0-482d-bbd5-d15d835850fa.png",
         "width": 1536,
         "height": 1024,
-        "bytes": 220930,
-        "sha256": "1ab9c3468785713f8f0599e84bc449d881678da6f1a277f065a1f9b98db03d9c"
+        "bytes": 172782,
+        "sha256": "789e10a9269a28a876091b19b67dfa80187e77926a7a96462a892ea1f4ec3af7"
       },
       {
         "scene": "dialogue",
@@ -141,8 +141,8 @@
         "sourceFilename": "exec-4e351f00-8003-4b07-bb3e-bec3b7042294.png",
         "width": 1536,
         "height": 1024,
-        "bytes": 171010,
-        "sha256": "8cd2e08c67835a954f121c09d49d920e3a098a7777b85c0ba7ba863745377b54"
+        "bytes": 127028,
+        "sha256": "696e26be3f43711389125823cc8abe9561f6187bb4bee864b5edd57b1ca05ddb"
       },
       {
         "scene": "ritual",
@@ -153,8 +153,8 @@
         "sourceFilename": "exec-d9040906-f175-44e6-bec1-0ac98fd80501.png",
         "width": 1536,
         "height": 1024,
-        "bytes": 325316,
-        "sha256": "ddcafaa2a17890ae9e673040bcfd3e28d31dbb06318690bcdf1259580540ee77"
+        "bytes": 256738,
+        "sha256": "570856f32d43020d231c07c8daeae94dfd25a46c5ac7b5a772103d87af640cce"
       },
       {
         "scene": "sleep",
@@ -165,8 +165,8 @@
         "sourceFilename": "exec-11b982fb-7d98-4c2d-87d3-332119ee24a8.png",
         "width": 1536,
         "height": 1024,
-        "bytes": 149222,
-        "sha256": "4f936c4abd75e2dd322d4f410817214853550faa37fddb4b026a43a80f99b4a0"
+        "bytes": 101256,
+        "sha256": "fc221e2ffb771d760da4e30e4eeb106ea0c2c0b964990e92c5f199acb573e0cf"
       },
       {
         "scene": "symbols",
@@ -177,8 +177,8 @@
         "sourceFilename": "exec-09a85261-ffca-43d9-bbe7-d276a3c4a7fc.png",
         "width": 1536,
         "height": 1024,
-        "bytes": 173656,
-        "sha256": "bcf9091a2ca116df4088f92183442d996748cc848ac91982414f37f2c620a2b3"
+        "bytes": 127328,
+        "sha256": "fbefb278df7cfa64bbf3ea3d38b72dc6c505996d5cb447cb399e1102696068ae"
       },
       {
         "scene": "observatory",
@@ -189,15 +189,15 @@
         "sourceFilename": "exec-1ece0dbb-acba-4a03-a3e0-330f0ba7814b.png",
         "width": 1536,
         "height": 1024,
-        "bytes": 193878,
-        "sha256": "02927531792fcbe0be007b341120803b7f7405e27634d9468360443bcadee82e"
+        "bytes": 147282,
+        "sha256": "38f0e81a40901036974cc02072500eff8b58617f7ca994e3be11f2e13e4ced44"
       }
     ],
     "format": {
       "type": "WebP",
-      "quality": 82,
+      "quality": 76,
       "effort": 6,
-      "conversion": "format optimization only; no recolouring or compositing"
+      "conversion": "format optimization only; no recolouring or compositing. Re-encoded from the quality 82 files on 2026-10-11 to cut ~0.5 MB from the app; PSNR 35.7 dB on the ritual scene."
     },
     "paletteReferenceDecision": "Agent-selected working direction; no owner review or approval is claimed."
   }

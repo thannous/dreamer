@@ -366,7 +366,7 @@ No. Las alarmas repetidas fragmentan el sueño, y dormir poco perjudica la atenc
 <a class="glass-panel rounded-xl p-6 block hover:border-dream-salmon/30 transition-all hover:-translate-y-1" href="sueno-rem-suenos">
 <span class="text-xs text-dream-salmon uppercase mb-2 block">Ciencia</span>
 <h3 class="font-serif text-lg text-dream-cream mb-2">Sueño REM y sueños: comprender el reinicio nocturno de tu cerebro</h3>
-<p class="text-sm text-gray-400">Descubre qué ocurre durante el sueño REM y por qué esta fase es esencial para la memoria, las emociones y la creatividad.</p>
+<p class="text-sm text-gray-400">En qué momento de la noche llega el sueño REM, por qué sus sueños son tan vívidos y qué lo acorta.</p>
 </a>
 <a class="glass-panel rounded-xl p-6 block hover:border-dream-salmon/30 transition-all hover:-translate-y-1" href="como-recordar-suenos">
 <span class="text-xs text-dream-salmon uppercase mb-2 block">Guía</span>

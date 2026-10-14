@@ -143,8 +143,15 @@ function htmlAttributes(meta) {
   const lang = meta.lang || siteConfig.defaultLanguage;
   attrs.push(` lang="${escapeHtml(getLanguageTag(lang))}"`);
 
-  if (meta.htmlClass && meta.htmlClass.trim()) {
-    attrs.push(` class="${escapeHtml(meta.htmlClass)}"`);
+  // Landing pages mark <html> statically so observatory.css never needs
+  // html:has(.noctalia-observatory): that selector made every DOM insertion
+  // during the intro restyle the whole page (about 2,200 elements each time).
+  const htmlClass = [meta.htmlClass, meta.layout === 'landing' ? 'oh-observatory-root' : '']
+    .map((value) => (value || '').trim())
+    .filter(Boolean)
+    .join(' ');
+  if (htmlClass) {
+    attrs.push(` class="${escapeHtml(htmlClass)}"`);
   }
 
   return attrs.join('');
@@ -700,17 +707,22 @@ function removeHtmlAttribute(tag, name) {
   return tag.replace(new RegExp(`\\s+${name}=(['"])[\\s\\S]*?\\1`, 'i'), '');
 }
 
-function responsiveBlogImageSrcset(src) {
+function responsiveBlogImageSrcset(src, format = 'webp') {
   if (!/\/img\/blog\/[^"']+\.webp$/i.test(src)) return null;
   const fileName = path.basename(src).replace(/-(?:480|600|800|1200)w(?=\.webp$)/i, '');
   const stem = fileName.replace(/\.webp$/i, '');
   const variants = [480, 800, 1200].map((width) => ({
     width,
-    sourcePath: path.join(DOCS_SRC_DIR, 'static', 'img', 'blog', `${stem}-${width}w.webp`),
-    url: src.replace(/[^/]+$/, `${stem}-${width}w.webp`),
+    sourcePath: path.join(DOCS_SRC_DIR, 'static', 'img', 'blog', `${stem}-${width}w.${format}`),
+    url: src.replace(/[^/]+$/, `${stem}-${width}w.${format}`),
   }));
   if (!variants.every((variant) => fs.existsSync(variant.sourcePath))) return null;
   return variants.map((variant) => `${variant.url} ${variant.width}w`).join(', ');
+}
+
+// AVIF siblings come from scripts/generate-blog-responsive-images.js.
+function responsiveBlogAvifSrcset(src) {
+  return responsiveBlogImageSrcset(src) ? responsiveBlogImageSrcset(src, 'avif') : null;
 }
 
 function imageStem(value) {
@@ -729,14 +741,17 @@ function addFigureRole(figureTag, role) {
   return upsertHtmlAttribute(figureTag, 'data-image-seo-role', role);
 }
 
-function renderArticlePicture({ src, srcset, alt, width, height, role = 'editorial' }) {
+function renderArticlePicture({ src, srcset, avifSrcset, alt, width, height, role = 'editorial' }) {
   const sizes = role === 'editorial'
     ? '100vw'
     : '(max-width: 768px) 100vw, 920px';
   const loading = role === 'editorial' ? '' : ' loading="lazy"';
   const priority = role === 'editorial' ? ' fetchpriority="high"' : '';
+  const avifSource = srcset && avifSrcset
+    ? `\n                        <source type="image/avif" srcset="${escapeHtml(avifSrcset)}" sizes="${sizes}">`
+    : '';
   const source = srcset
-    ? `\n                        <source type="image/webp" srcset="${escapeHtml(srcset)}" sizes="${sizes}">`
+    ? `${avifSource}\n                        <source type="image/webp" srcset="${escapeHtml(srcset)}" sizes="${sizes}">`
     : '';
   const imgSrcset = srcset ? ` srcset="${escapeHtml(srcset)}"` : '';
 
@@ -947,6 +962,7 @@ function optimizeBlogArticleImages(bodyHtml, meta, imageContext = null) {
       : renderArticlePicture({
           src: normalizedSource,
           srcset,
+          avifSrcset: responsiveBlogAvifSrcset(normalizedSource),
           alt: imageAltFromTag(imgTag, meta.ogImageAlt || meta.title),
           width: dimensions.width,
           height: dimensions.height,
@@ -1020,7 +1036,11 @@ function optimizeBlogIndexImages(bodyHtml) {
     } else {
       next = removeHtmlAttribute(next, 'fetchpriority');
     }
-    return next;
+    const avifSrcset = responsiveBlogAvifSrcset(src);
+    if (!avifSrcset) return next;
+    // display: contents keeps the card layout that targets the bare <img>.
+    const sizes = next.match(/\bsizes=(['"])([^"']+)\1/i)?.[2] || '';
+    return `<picture style="display: contents"><source type="image/avif" srcset="${escapeHtml(avifSrcset)}"${sizes ? ` sizes="${escapeHtml(sizes)}"` : ''}>${next}</picture>`;
   });
 }
 

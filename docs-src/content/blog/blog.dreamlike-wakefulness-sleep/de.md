@@ -4,7 +4,7 @@
   "layout": "blogArticle",
   "lang": "de",
   "slug": "wachtraeumen-onirische-zustaende",
-  "title": "Wachträumen: Traumähnliche Zustände gibt es nicht nur im Schlaf | Noctalia",
+  "title": "Wachträumen: traumähnliche Zustände am Tag | Noctalia",
   "description": "Wachträumen: Eine Cell-Reports-Studie fand 2026 traumähnliche Zustände im Wachsein, beim Einschlafen und im leichten Schlaf. Was das fürs Traumtagebuch heißt.",
   "robots": "max-image-preview:large",
   "themeColor": "#0a0514",

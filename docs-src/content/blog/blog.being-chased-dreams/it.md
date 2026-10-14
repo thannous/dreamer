@@ -110,7 +110,7 @@
 <div class="prose max-w-none text-gray-300">
 <h2 id="prevalence">Perché si sogna così spesso di essere inseguiti?</h2>
 <p>
-                    Se hai sognato di <a class="text-dream-salmon hover:underline" href="../simboli/inseguimento">essere inseguito</a>, sei in ottima compagnia. In un sondaggio su 1.181 studenti universitari canadesi, l'inseguimento era uno dei quattro temi onirici riferiti da oltre il 60% dei partecipanti, insieme alla caduta, alla scuola e al sesso (<a class="text-dream-salmon hover:underline" href="https://asdreams.org/journal/issues/asdj13-4.htm" rel="nofollow noopener noreferrer" target="_blank">Nielsen, Zadra e altri, 2003</a>). Fare questo sogno non dice niente di strano su di te.
+                    Se hai sognato di <a class="text-dream-salmon hover:underline" href="../simboli/inseguimento">essere inseguito</a>, sei in ottima compagnia. In un sondaggio su 1.181 studenti universitari canadesi, l'inseguimento era uno dei quattro temi onirici riferiti da oltre il 60% dei partecipanti, insieme alla caduta, alla scuola e al sesso (<a class="text-dream-salmon hover:underline" href="https://doi.org/10.1023/B:DREM.0000003144.40929.0b" rel="nofollow noopener noreferrer" target="_blank">Nielsen, Zadra e altri, 2003</a>). Fare questo sogno non dice niente di strano su di te.
                 </p>
 <p>
                     Perché proprio questa scena? Nessuno lo sa con certezza. Un'ipotesi nota sostiene che sognare serva in parte a provare le minacce, e poche minacce sono antiche e semplici come qualcosa che ti corre dietro. Ne riparliamo più avanti, perché resta un'ipotesi.
@@ -323,13 +323,13 @@
 <i class="w-5 h-5 text-dream-salmon" data-lucide="book-open"></i>
                     Esplora i simboli correlati
                 </h2>
-<p class="text-sm text-purple-300/60 mb-4">Immergiti più a fondo nei simboli di questo articolo:</p>
+<p class="text-sm text-purple-300/60 mb-4">Approfondisci i simboli di questo articolo:</p>
 <div class="flex flex-wrap gap-3">
 <a class="inline-flex items-center gap-2 px-4 py-2 glass-button rounded-full text-sm hover:text-dream-salmon transition-colors" href="../simboli/inseguimento">Significato del sogno di essere inseguito</a>
 <a class="inline-flex items-center gap-2 px-4 py-2 glass-button rounded-full text-sm hover:text-dream-salmon transition-colors" href="../simboli/cane">Significato del sogno del cane</a>
 <a class="inline-flex items-center gap-2 px-4 py-2 glass-button rounded-full text-sm hover:text-dream-salmon transition-colors" href="../simboli/serpente">Significato del sogno del serpente</a>
 <a class="inline-flex items-center gap-2 px-4 py-2 glass-button rounded-full text-sm hover:text-dream-salmon transition-colors" href="../simboli/foresta">Significato del sogno della foresta</a>
-<a class="inline-flex items-center gap-2 px-4 py-2 glass-button rounded-full text-sm hover:text-dream-salmon transition-colors" href="../simboli/notte">Significato del sogno notturno</a>
+<a class="inline-flex items-center gap-2 px-4 py-2 glass-button rounded-full text-sm hover:text-dream-salmon transition-colors" href="../simboli/notte">Sognare la notte</a>
 </div>
 </section>
 <!-- Related Symbols End -->
@@ -407,7 +407,7 @@
 <section class="mt-16 glass-panel rounded-2xl p-6" id="sources">
 <h2 class="font-serif text-2xl text-dream-cream mb-4">Fonti e letture</h2>
 <ul class="mt-6 space-y-2 text-sm text-gray-400">
-<li><a href="https://asdreams.org/journal/issues/asdj13-4.htm" rel="nofollow noopener noreferrer" target="_blank">Nielsen, Zadra e altri (2003), «The Typical Dreams of Canadian University Students», <em>Dreaming</em>, 13(4)</a></li>
+<li><a href="https://doi.org/10.1023/B:DREM.0000003144.40929.0b" rel="nofollow noopener noreferrer" target="_blank">Nielsen, Zadra e altri (2003), «The Typical Dreams of Canadian University Students», <em>Dreaming</em>, 13(4)</a></li>
 <li><a href="https://pubmed.ncbi.nlm.nih.gov/24497669/" rel="nofollow noopener noreferrer" target="_blank">Robert e Zadra (2014), «Thematic and content analysis of idiopathic nightmares and bad dreams», <em>Sleep</em></a></li>
 <li><a href="https://pubmed.ncbi.nlm.nih.gov/11515147/" rel="nofollow noopener noreferrer" target="_blank">Revonsuo (2000), «The reinterpretation of dreams: an evolutionary hypothesis of the function of dreaming», <em>Behavioral and Brain Sciences</em></a></li>
 <li><a href="https://pubmed.ncbi.nlm.nih.gov/29852917/" rel="nofollow noopener noreferrer" target="_blank">Morgenthaler e altri (2018), «Position paper for the treatment of nightmare disorder in adults», American Academy of Sleep Medicine</a></li>
@@ -445,17 +445,17 @@
         <a href="significato-dei-sogni-ricorrenti-comprendere-i-loro-messaggi-nascosti" class="glass-panel rounded-xl p-6 block hover:border-dream-salmon/30 transition-all hover:-translate-y-1">
             <span class="text-xs text-dream-salmon uppercase mb-2 block">Interpretazione</span>
             <h3 class="font-serif text-lg text-dream-cream mb-2">Significato dei sogni ricorrenti: comprendere i loro messaggi</h3>
-            <p class="text-sm text-gray-400">Perché continui a fare lo stesso sogno? Scopri cosa il tuo subconscio sta cercando di dirti.</p>
+            <p class="text-sm text-gray-400">Perché lo stesso sogno ritorna, cosa annotare tra un episodio e l'altro e quando gli incubi ripetuti meritano un parere medico.</p>
         </a>
         <a href="sogni-di-denti-che-cadono-significato-e-interpretazione" class="glass-panel rounded-xl p-6 block hover:border-dream-salmon/30 transition-all hover:-translate-y-1">
             <span class="text-xs text-dream-salmon uppercase mb-2 block">Interpretazione</span>
             <h3 class="font-serif text-lg text-dream-cream mb-2">Sogni di denti che cadono: significato e interpretazione</h3>
-            <p class="text-sm text-gray-400">Perché sogni di perdere i denti? Scopri le 7 interpretazioni più comuni.</p>
+            <p class="text-sm text-gray-400">Denti che cadono, si muovono o si sgretolano in sogno, con gli scenari da confrontare, le emozioni in gioco e cosa dice la ricerca.</p>
         </a>
         <a href="significato-dei-sogni-che-cadono-perche-sogni-di-cadere" class="glass-panel rounded-xl p-6 block hover:border-dream-salmon/30 transition-all hover:-translate-y-1">
             <span class="text-xs text-dream-salmon uppercase mb-2 block">Interpretazione</span>
             <h3 class="font-serif text-lg text-dream-cream mb-2">Sogni di cadere: perché sogni di cadere nel vuoto</h3>
-            <p class="text-sm text-gray-400">Perché sogni di cadere nel vuoto? Scopri il significato psicologico.</p>
+            <p class="text-sm text-gray-400">Perché si sogna di cadere, dalla scossa ipnica all'addormentamento alle cadute lunghe, e cosa annotare al risveglio.</p>
         </a>
   </div>
 </section>

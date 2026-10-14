@@ -23,7 +23,7 @@
   "twitterImage": "https://noctalia.app/img/og/noctalia-fr-1200x630.jpg",
   "twitterImageAlt": "Application de journal de reves IA Noctalia",
   "publishedTime": "2026-05-09T00:00:00+02:00",
-  "modifiedTime": "2026-07-31T00:00:00+02:00",
+  "modifiedTime": "2026-10-10T00:00:00+02:00",
   "author": "Thanh Chau",
   "prevPath": "",
   "nextPath": "",
@@ -35,8 +35,8 @@
 }
 ---
 <h1 class="font-serif text-4xl md:text-5xl mb-6 text-dream-cream">Kit presse Noctalia</h1>
-<p class="text-sm text-purple-300/70 mb-6">Mis à jour le 4 août 2026</p>
-<p class="text-lg text-purple-200/80 leading-relaxed mb-10">Noctalia est un journal de rêves Android pensé pour enregistrer ses rêves par la voix, les transformer en entrées structurées, puis explorer symboles, images, motifs récurrents et questions de suivi guidées.</p>
+<p class="text-sm text-purple-300/70 mb-6">Mis à jour le 10 octobre 2026</p>
+<p class="text-lg text-purple-200/80 leading-relaxed mb-10">Noctalia est un journal de rêves Android. On y raconte son rêve à voix haute, l'app en fait une entrée structurée, puis on explore symboles, images, motifs récurrents et questions de suivi guidées.</p>
 
 <div class="space-y-8 text-gray-300 leading-relaxed">
   <section class="glass-panel p-8 rounded-2xl border border-white/10 bg-white/5">
@@ -56,7 +56,7 @@
     <h3 class="text-white font-medium mb-2">Description courte</h3>
     <p>Journal de rêves Android avec capture vocale, réflexion IA, symboles, images générées et exploration guidée.</p>
     <h3 class="text-white font-medium mt-6 mb-2">Description longue</h3>
-    <p>Noctalia aide à capturer un rêve avant que les détails ne disparaissent. L'utilisateur peut enregistrer par voix ou texte, recevoir une réflexion structurée, retrouver les symboles et émotions récurrents, générer une image du rêve et poursuivre avec une exploration guidée.</p>
+    <p>Avec Noctalia, on note un rêve avant que ses détails ne s'effacent. L'utilisateur peut enregistrer par voix ou texte, recevoir une réflexion structurée, retrouver les symboles et émotions récurrents, générer une image du rêve et poursuivre avec une exploration guidée.</p>
   </section>
 
   <section class="glass-panel p-8 rounded-2xl border border-white/10 bg-white/5">
@@ -102,7 +102,7 @@
 
   <section class="glass-panel p-8 rounded-2xl border border-white/10 bg-white/5">
     <h2 class="text-2xl font-serif text-white mb-4">Note éditoriale</h2>
-    <p>Noctalia est conçu pour le journaling, la réflexion personnelle et le bien-être. Ce n'est pas un dispositif médical et il ne remplace pas l'avis d'un professionnel de santé.</p>
+    <p>Noctalia est une app de journal, de réflexion personnelle et de bien-être. Ce n'est pas un dispositif médical et il ne remplace pas l'avis d'un professionnel de santé.</p>
   </section>
 
   <section class="glass-panel p-8 rounded-2xl border border-white/10 bg-white/5">

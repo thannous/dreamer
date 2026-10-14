@@ -39,7 +39,7 @@
 ---
 <article class="max-w-5xl mx-auto">
 <!-- Breadcrumb -->
-<nav aria-label="Semmelbr&ouml;sel" class="text-sm text-purple-200/60 mb-8">
+<nav aria-label="Brotkrümelnavigation" class="text-sm text-purple-200/60 mb-8">
 <ol class="flex items-center gap-2 flex-wrap" itemscope="" itemtype="https://schema.org/BreadcrumbList">
 <li itemprop="itemListElement" itemscope="" itemtype="https://schema.org/ListItem">
 <a class="hover:text-dream-salmon transition-colors" href="/de/" itemprop="item"><span itemprop="name">Startseite</span></a>

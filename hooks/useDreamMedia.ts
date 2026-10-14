@@ -2,7 +2,8 @@ import { useContext, useEffect, useState } from 'react';
 import { useNetworkOnline } from './useNetworkOnline';
 import { AuthContext } from '@/context/AuthContext';
 import type { DreamAnalysis } from '@/lib/types';
-import { getDirectDreamMediaUrl, resolveDreamMedia, type DreamMediaResult } from '@/services/dreamMediaService';
+import { resolveWithDiskCache } from '@/lib/dreamMediaDiskCache';
+import { getDirectDreamMediaUrl, type DreamMediaResult } from '@/services/dreamMediaService';
 
 /** Resolve only mounted media; never replace durable references in journal state. */
 export function useDreamMedia(dream?: DreamAnalysis | null) {
@@ -23,7 +24,7 @@ export function useDreamMedia(dream?: DreamAnalysis | null) {
     const run = async () => {
       let value: DreamMediaResult;
       try {
-        value = await resolveDreamMedia({ imageUrl, thumbnailUrl, imageUpdatedAt, analysisRequestId, analyzedAt }, userId, { cacheOnly: !online });
+        value = await resolveWithDiskCache({ imageUrl, thumbnailUrl, imageUpdatedAt, analysisRequestId, analyzedAt }, userId, !online);
       } catch {
         value = { imageUrl: '', imageStatus: 'error', thumbnailStatus: 'error' };
       }

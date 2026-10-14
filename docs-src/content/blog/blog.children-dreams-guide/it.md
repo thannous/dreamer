@@ -429,17 +429,17 @@
 <a class="glass-panel rounded-xl p-6 block hover:border-dream-salmon/30 transition-all hover:-translate-y-1" href="incubi-cause-significato-e-come-fermarli">
 <span class="text-xs text-dream-salmon uppercase mb-2 block">Guida</span>
 <h3 class="font-serif text-lg text-dream-cream mb-2">Incubi: cause, significato e come fermarli</h3>
-<p class="text-sm text-gray-400">Scopri perché si verificano gli incubi e impara tecniche comprovate per ridurne la frequenza.</p>
+<p class="text-sm text-gray-400">Perché arrivano gli incubi, cosa possono significare e cosa no, e come la ripetizione immaginativa e un sonno più regolare aiutano a ridurli.</p>
 </a>
 <a class="glass-panel rounded-xl p-6 block hover:border-dream-salmon/30 transition-all hover:-translate-y-1" href="perche-sogniamo-la-scienza-dietro-le-tue-avventure-notturne">
 <span class="text-xs text-dream-salmon uppercase mb-2 block">Scienza</span>
 <h3 class="font-serif text-lg text-dream-cream mb-2">Perché sogniamo? La scienza dietro le tue avventure notturne</h3>
-<p class="text-sm text-gray-400">Scopri le ultime teorie scientifiche sul perché sogniamo e a cosa servono i sogni.</p>
+<p class="text-sm text-gray-400">Cosa ha misurato la ricerca su memoria, emozioni e simulazione delle minacce nei sogni, e cosa resta un'ipotesi.</p>
 </a>
 <a class="glass-panel rounded-xl p-6 block hover:border-dream-salmon/30 transition-all hover:-translate-y-1" href="sonno-rem-e-sogni-comprendere-il-ripristino-notturno-del-cervello">
 <span class="text-xs text-dream-salmon uppercase mb-2 block">Scienza</span>
 <h3 class="font-serif text-lg text-dream-cream mb-2">Sonno REM e sogni: comprendere il ripristino notturno del cervello</h3>
-<p class="text-sm text-gray-400">Scopri come funziona il sonno REM e perché è essenziale per i sogni, la memoria e la salute emotiva.</p>
+<p class="text-sm text-gray-400">In quale momento della notte arriva il sonno REM, perché i suoi sogni sono così vividi e cosa lo accorcia.</p>
 </a>
 </div>
 </section>

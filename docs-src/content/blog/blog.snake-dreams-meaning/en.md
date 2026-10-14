@@ -339,7 +339,7 @@
 <i class="w-5 h-5 text-dream-salmon" data-lucide="book-open"></i>
                     Explore Related Symbols
                 </h2>
-<p class="text-sm text-purple-300/60 mb-4">Dive deeper into the symbols from this article:</p>
+<p class="text-sm text-purple-300/60 mb-4">Read up on the symbols mentioned in this article:</p>
 <div class="flex flex-wrap gap-3">
 <a class="inline-flex items-center gap-2 px-4 py-2 glass-button rounded-full text-sm hover:text-dream-salmon transition-colors" href="../symbols/snake">Snake Dream Meaning</a>
 <a class="inline-flex items-center gap-2 px-4 py-2 glass-button rounded-full text-sm hover:text-dream-salmon transition-colors" href="../symbols/spider">Spider Dream Meaning</a>
@@ -432,7 +432,7 @@
 <h2 class="font-serif text-2xl text-dream-cream mb-4">Sources and further reading</h2>
 <ul class="mt-6 space-y-2 text-sm text-gray-400">
 <li><a href="https://doi.org/10.1111/1467-8721.01211" rel="nofollow noopener noreferrer" target="_blank">Öhman and Mineka (2003), "The Malicious Serpent: Snakes as a Prototypical Stimulus for an Evolved Module of Fear", <em>Current Directions in Psychological Science</em>, 12(1)</a></li>
-<li><a href="https://asdreams.org/journal/issues/asdj13-4.htm" rel="nofollow noopener noreferrer" target="_blank">Nielsen, Zadra et al. (2003), "The Typical Dreams of Canadian University Students", <em>Dreaming</em>, 13(4)</a></li>
+<li><a href="https://doi.org/10.1023/B:DREM.0000003144.40929.0b" rel="nofollow noopener noreferrer" target="_blank">Nielsen, Zadra et al. (2003), "The Typical Dreams of Canadian University Students", <em>Dreaming</em>, 13(4)</a></li>
 <li><a href="https://www.cambridge.org/core/journals/behavioral-and-brain-sciences/article/reinterpretation-of-dreams-an-evolutionary-hypothesis-of-the-function-of-dreaming/EE0E7DB39E361540D2DDA79C262EDA7E" rel="nofollow noopener noreferrer" target="_blank">Revonsuo (2000), "The reinterpretation of dreams", <em>Behavioral and Brain Sciences</em></a></li>
 <li><a href="https://www.ninds.nih.gov/health-information/public-education/brain-basics/brain-basics-understanding-sleep" rel="nofollow noopener noreferrer" target="_blank">NINDS, "Brain Basics: Understanding Sleep"</a></li>
 <li><a href="https://www.mayoclinic.org/diseases-conditions/nightmare-disorder/symptoms-causes/syc-20353515" rel="nofollow noopener noreferrer" target="_blank">Mayo Clinic, "Nightmare disorder"</a></li>
@@ -471,17 +471,17 @@
         <a href="recurring-dreams-meaning" class="glass-panel rounded-xl p-6 block hover:border-dream-salmon/30 transition-all hover:-translate-y-1">
             <span class="text-xs text-dream-salmon uppercase mb-2 block">Interpretation</span>
             <h3 class="font-serif text-lg text-dream-cream mb-2">Recurring Dreams Meaning: Understanding Their Messages</h3>
-            <p class="text-sm text-gray-400">Why do you keep having the same dream? Discover what your subconscious is trying to tell you.</p>
+            <p class="text-sm text-gray-400">Why the same dream keeps coming back, what to note between episodes, and when repeated nightmares are worth a doctor's visit.</p>
         </a>
         <a href="teeth-falling-out-dreams" class="glass-panel rounded-xl p-6 block hover:border-dream-salmon/30 transition-all hover:-translate-y-1">
             <span class="text-xs text-dream-salmon uppercase mb-2 block">Interpretation</span>
             <h3 class="font-serif text-lg text-dream-cream mb-2">Teeth Falling Out Dreams: Meaning and Interpretation</h3>
-            <p class="text-sm text-gray-400">Why do you dream about losing your teeth? Discover the 7 most common interpretations.</p>
+            <p class="text-sm text-gray-400">Seven possible readings of dreams about teeth falling out, from jaw tension to fear of being judged, and the variations worth noting.</p>
         </a>
         <a href="falling-dreams-meaning" class="glass-panel rounded-xl p-6 block hover:border-dream-salmon/30 transition-all hover:-translate-y-1">
             <span class="text-xs text-dream-salmon uppercase mb-2 block">Interpretation</span>
             <h3 class="font-serif text-lg text-dream-cream mb-2">Falling Dreams Meaning: Why You Dream of Falling</h3>
-            <p class="text-sm text-gray-400">Why do you dream about falling into the void? Discover the psychological meaning.</p>
+            <p class="text-sm text-gray-400">Why falling dreams happen, from the hypnic jerk at sleep onset to long falls, and what to note when you wake.</p>
         </a>
   </div>
 </section>

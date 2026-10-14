@@ -23,7 +23,7 @@
   "twitterImage": "https://noctalia.app/img/og/noctalia-de-1200x630.jpg",
   "twitterImageAlt": "Traumtagebuch mit Traumillustrationen & Deutung",
   "publishedTime": "",
-  "modifiedTime": "2026-10-09",
+  "modifiedTime": "2026-10-10",
   "author": "",
   "prevPath": "",
   "nextPath": "",
@@ -50,8 +50,8 @@
                         <a href="https://play.google.com/store/apps/details?id=com.tanuki75.noctalia&amp;hl=de" class="oh-btn-primary">
                             Ersten Traum aufnehmen <i data-lucide="play"></i>
                         </a>
-                        <a href="/de/guides/traumsymbole-lexikon" class="oh-btn-quiet" aria-label="Das Traumsymbol-Lexikon entdecken">
-                            <i data-lucide="book-open"></i> Symbole entdecken
+                        <a href="/de/guides/traumsymbole-lexikon" class="oh-btn-quiet" aria-label="Im Traumsymbol-Lexikon nachschlagen">
+                            <i data-lucide="book-open"></i> Symbole nachschlagen
                         </a>
                     </div>
                 </div>
@@ -82,7 +82,7 @@
             </li>
             <li class="oh-promise reveal">
                 <h3>Deine Träume bleiben deine</h3>
-                <p>Sprachaudio dient nur der Transkription und wird nicht dauerhaft gespeichert. Noctalia verkauft keine personenbezogenen Daten und nutzt keine zielgerichtete Werbung.</p>
+                <p>Die Sprachaufnahme dient nur der Transkription und wird nicht dauerhaft gespeichert. Noctalia verkauft keine personenbezogenen Daten und nutzt keine zielgerichtete Werbung.</p>
             </li>
         </ul>
     </section>
@@ -272,7 +272,7 @@
                 <h2 class="oh-h2">Eine Nacht ist eine Szene. Zehn Nächte sind eine Karte.</h2>
             </div>
             <div>
-                <p class="oh-lede">Jeder aufgenommene Traum fügt seine Symbole dem Himmel hinzu. Kehrt dasselbe Bild zurück, werden seine Linien heller – und ein Muster erscheint, das keine einzelne Nacht zeigen konnte.</p>
+                <p class="oh-lede">Jeder aufgenommene Traum fügt seine Symbole dem Himmel hinzu. Kehrt dasselbe Bild zurück, werden seine Linien heller. So erscheint ein Muster, das keine einzelne Nacht zeigen konnte.</p>
                 <p class="oh-starmap-hint">Fahre über einen Stern oder tippe ihn an, um seinen Träumen zu folgen.</p>
             </div>
         </div>
@@ -491,7 +491,7 @@
                 <span class="oh-index" aria-hidden="true">5 Uhr</span>
                 <h2 class="oh-h2">Traumsymbol-Lexikon</h2>
             </div>
-            <p class="oh-lede">Entdecke 150 häufige Symbole, jeweils mit Kontextfragen und möglichen Assoziationen. Die Szene – und wie du dich darin gefühlt hast – zählt mehr als jede feste Definition.</p>
+            <p class="oh-lede">Blättere durch 150 häufige Symbole, jeweils mit Kontextfragen und möglichen Assoziationen. Was zählt, ist die Szene und wie du dich darin gefühlt hast, mehr als jede feste Definition.</p>
         </div>
 
         <div class="oh-symbols reveal">
@@ -563,7 +563,7 @@
 
         <div class="oh-symbols-cta reveal">
             <a href="guides/traumsymbole-lexikon" class="oh-btn-quiet">
-                <i data-lucide="book-open"></i> Alle 150 Symbole entdecken <i data-lucide="arrow-right"></i>
+                <i data-lucide="book-open"></i> Alle 150 Symbole ansehen <i data-lucide="arrow-right"></i>
             </a>
         </div>
     </section>
@@ -597,7 +597,7 @@
             </div>
             <div class="oh-wake-pitch reveal">
                 <p class="oh-wake-sentence">Noctalia hält die Szene fest, bevor sie verblasst.</p>
-                <p class="oh-lede">Du sagst, was übrig ist. Die App transkribiert es, zeigt Symbole und Gefühle und lässt dich weiter entdecken.</p>
+                <p class="oh-lede">Du sagst, was übrig ist. Die App transkribiert es, zeigt Symbole und Gefühle, und dann kannst du nachhaken.</p>
                 <a href="https://play.google.com/store/apps/details?id=com.tanuki75.noctalia&amp;hl=de" class="oh-btn-quiet">Beim nächsten Aufwachen ausprobieren <i data-lucide="arrow-right"></i></a>
             </div>
         </div>
@@ -642,7 +642,7 @@
                 </div>
             </details>
             <details class="oh-feature" name="oh-features">
-                <summary><span class="oh-feature-num" aria-hidden="true">03</span><h3 class="oh-feature-title">Entdecken</h3></summary>
+                <summary><span class="oh-feature-num" aria-hidden="true">03</span><h3 class="oh-feature-title">Erkunden</h3></summary>
                 <div class="oh-feature-body">
                     <p>Stelle Folgefragen, prüfe, welche Assoziationen wirklich zu deinem Leben passen, und erzeuge ein Bild, wenn die Szene es verdient.</p>
                     <p class="oh-feature-links"><a href="/de/traumlexikon-app">Traumlexikon-App <i data-lucide="arrow-up-right"></i></a></p>
@@ -652,7 +652,7 @@
                         <picture>
                             <source type="image/webp" srcset="/img/app/en/chat-480w.webp 480w, /img/app/en/chat-800w.webp 800w" sizes="(min-width: 768px) 300px, 78vw">
                             <source type="image/jpeg" srcset="/img/app/en/chat-800w.jpg 800w" sizes="(min-width: 768px) 300px, 78vw">
-                            <img src="/img/app/en/chat-800w.jpg" alt="Erkunde Erkenntnisse und Symbolik deines Traums" class="w-full h-full object-cover" width="800" height="1639" loading="lazy" decoding="async">
+                            <img src="/img/app/en/chat-800w.jpg" alt="Die Symbole deines Traums erkunden" class="w-full h-full object-cover" width="800" height="1639" loading="lazy" decoding="async">
                         </picture>
                     </div>
                 </div>
@@ -779,7 +779,7 @@
             <span class="oh-index" aria-hidden="true">7:15 Uhr</span>
             <p class="oh-ending-mentions"><span>Kostenlos bei Google Play</span><span>Deine Träume bleiben privat</span></p>
             <h2 class="oh-ending-title"><span>Öffne die Augen.</span> <span class="oh-accent-line">Der Traum ist noch da.</span></h2>
-            <p class="oh-lede">Halte ihn fest, bevor er verblasst – in deinen Worten, auf deinem Handy, gleich nach dem Aufwachen.</p>
+            <p class="oh-lede">Halte ihn gleich nach dem Aufwachen fest, in deinen Worten, auf deinem Handy, bevor er verblasst.</p>
             <div class="oh-hero-cta">
                 <a href="https://play.google.com/store/apps/details?id=com.tanuki75.noctalia&amp;hl=de" class="oh-btn-primary">
                     Ersten Traum aufnehmen <i data-lucide="play"></i>

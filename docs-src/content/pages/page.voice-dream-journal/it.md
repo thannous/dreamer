@@ -23,13 +23,13 @@
   "twitterImage": "https://noctalia.app/img/og/noctalia-it-1200x630.jpg",
   "twitterImageAlt": "Diario dei sogni vocale Noctalia",
   "publishedTime": "2026-06-04T00:00:00+02:00",
-  "modifiedTime": "2026-07-09T00:00:00+02:00",
+  "modifiedTime": "2026-10-11T00:00:00+02:00",
   "author": "Thanh Chau",
   "prevPath": "",
   "nextPath": "",
   "preloadImage": "",
   "jsonLd": [
-    "{\"@context\":\"https://schema.org\",\"@type\":\"WebPage\",\"name\":\"Diario dei sogni vocale Android\",\"description\":\"Registra un sogno a voce su Android prima che svanisca e conserva una voce ricercabile con testo, umore, simboli e riflessione guidata.\",\"url\":\"https://noctalia.app/it/diario-dei-sogni-vocale\",\"inLanguage\":\"it\",\"dateModified\":\"2026-07-09T00:00:00+02:00\",\"about\":{\"@id\":\"https://noctalia.app/#software\"},\"publisher\":{\"@id\":\"https://noctalia.app/#organization\"}}",
+    "{\"@context\":\"https://schema.org\",\"@type\":\"WebPage\",\"name\":\"Diario dei sogni vocale Android\",\"description\":\"Registra un sogno a voce su Android prima che svanisca e conserva una voce ricercabile con testo, umore, simboli e riflessione guidata.\",\"url\":\"https://noctalia.app/it/diario-dei-sogni-vocale\",\"inLanguage\":\"it\",\"dateModified\":\"2026-10-11T00:00:00+02:00\",\"about\":{\"@id\":\"https://noctalia.app/#software\"},\"publisher\":{\"@id\":\"https://noctalia.app/#organization\"}}",
     "{\"@context\":\"https://schema.org\",\"@type\":\"BreadcrumbList\",\"itemListElement\":[{\"@type\":\"ListItem\",\"position\":1,\"name\":\"Home\",\"item\":\"https://noctalia.app/it/\"},{\"@type\":\"ListItem\",\"position\":2,\"name\":\"Diario dei sogni vocale Android\",\"item\":\"https://noctalia.app/it/diario-dei-sogni-vocale\"}]} ",
     "{\"@context\":\"https://schema.org\",\"@type\":\"FAQPage\",\"mainEntity\":[{\"@type\":\"Question\",\"name\":\"Posso registrare un sogno a voce in Noctalia?\",\"acceptedAnswer\":{\"@type\":\"Answer\",\"text\":\"Sì. Su Android puoi raccontare il sogno poco dopo il risveglio e salvare la trascrizione come voce del diario.\"}},{\"@type\":\"Question\",\"name\":\"Posso scrivere invece di parlare?\",\"acceptedAnswer\":{\"@type\":\"Answer\",\"text\":\"Sì. La voce è utile quando i dettagli svaniscono, ma Noctalia supporta anche voci scritte per correggere o completare il racconto.\"}},{\"@type\":\"Question\",\"name\":\"Che cosa succede alla registrazione audio?\",\"acceptedAnswer\":{\"@type\":\"Answer\",\"text\":\"Secondo l'informativa sulla privacy, l'audio viene usato per la trascrizione, non è conservato in modo permanente da Noctalia e il testo trascritto viene salvato nel diario.\"}},{\"@type\":\"Question\",\"name\":\"Noctalia offre diagnosi o previsioni?\",\"acceptedAnswer\":{\"@type\":\"Answer\",\"text\":\"No. Noctalia serve a registrare ed esplorare i sogni. L'app non fornisce consigli medici, diagnosi psicologiche o previsioni.\"}}]}"
   ],
@@ -37,19 +37,19 @@
 }
 ---
 <h1 class="font-serif text-4xl md:text-5xl mb-4 text-dream-cream">Diario dei sogni vocale Android</h1>
-<p class="text-sm text-purple-300/70 mb-6">Aggiornato il 9 luglio 2026</p>
-<p class="text-lg text-purple-200/80 leading-relaxed mb-10">Un sogno può perdere dettagli mentre cerchi le parole giuste. Con Noctalia su Android racconti prima ciò che ricordi e conservi la trascrizione come voce ricercabile con umore, simboli, immagine e domande di riflessione.</p>
+<p class="text-sm text-purple-300/70 mb-6">Aggiornato l'11 ottobre 2026</p>
+<p class="text-lg text-purple-200/80 leading-relaxed mb-10">Un sogno può perdere dettagli mentre cerchi le parole giuste. Con Noctalia su Android racconti prima ciò che ricordi e conservi la trascrizione come voce ricercabile. L'analisi (umore, simboli, domande di riflessione) e l'immagine arrivano dopo, se le chiedi.</p>
 
 <div class="space-y-8 text-gray-300 leading-relaxed">
   <section class="grid md:grid-cols-3 gap-6">
     <div class="glass-panel p-6 rounded-2xl border border-white/10 bg-white/5"><h2 class="text-xl font-serif text-white mb-3">1. Parla</h2><p>Descrivi scena, persone, luoghi, emozioni e frammenti nell'ordine in cui tornano alla memoria.</p></div>
     <div class="glass-panel p-6 rounded-2xl border border-white/10 bg-white/5"><h2 class="text-xl font-serif text-white mb-3">2. Rileggi</h2><p>Conserva la trascrizione come base del diario e aggiungi i dettagli che riaffiorano quando sei completamente sveglio.</p></div>
-    <div class="glass-panel p-6 rounded-2xl border border-white/10 bg-white/5"><h2 class="text-xl font-serif text-white mb-3">3. Esplora</h2><p>Torna più tardi a emozioni, simboli, pattern e domande guidate invece di interpretare in fretta.</p></div>
+    <div class="glass-panel p-6 rounded-2xl border border-white/10 bg-white/5"><h2 class="text-xl font-serif text-white mb-3">3. Esplora</h2><p>Torna più tardi a emozioni, simboli, temi ricorrenti e domande guidate invece di interpretare in fretta.</p></div>
   </section>
 
   <section class="glass-panel p-8 rounded-2xl border border-white/10 bg-white/5">
     <h2 class="text-2xl font-serif text-white mb-4">Dalla nota vocale a una voce utile</h2>
-    <p>Una raccolta di file audio diventa presto difficile da consultare. Il diario vocale Noctalia trasforma la cattura in testo e la collega agli altri elementi del sogno. Puoi cercare la voce, completarla e confrontarla con sogni precedenti quando luoghi, persone o emozioni si ripetono.</p>
+    <p>Una cartella di note vocali diventa presto impossibile da consultare. Noctalia trascrive la registrazione in un testo che puoi cercare; analisi e immagine si aggiungono quando le chiedi. Puoi cercare la voce, completarla e confrontarla con sogni precedenti quando luoghi, persone o emozioni si ripetono.</p>
   </section>
 
   <section class="glass-panel p-8 rounded-2xl border border-white/10 bg-white/5 overflow-x-auto">
@@ -65,8 +65,39 @@
   </section>
 
   <section class="grid md:grid-cols-2 gap-6">
-    <div class="glass-panel p-8 rounded-2xl border border-white/10 bg-white/5"><h2 class="text-2xl font-serif text-white mb-4">Dopo la cattura</h2><p>La voce salvata può alimentare l'<a href="/it/app-analisi-sogni-android" class="text-dream-salmon hover:underline">analisi del sogno</a>, l'esplorazione dei simboli e le domande successive. Ogni suggerimento resta una possibilità, non una verità imposta.</p></div>
-    <div class="glass-panel p-8 rounded-2xl border border-white/10 bg-white/5"><h2 class="text-2xl font-serif text-white mb-4">Privacy in parole chiare</h2><p>L'<a href="/it/privacy-policy" class="text-dream-salmon hover:underline">informativa sulla privacy</a> indica che l'audio viene usato per la trascrizione e non è conservato in modo permanente da Noctalia. Descrive anche dati del diario, fornitori e diritti di cancellazione.</p><p class="mt-4 text-sm text-purple-200/70">Questa pagina è revisionata dal team editoriale Noctalia; non viene indicato alcun professionista clinico come revisore.</p></div>
+    <div class="glass-panel p-8 rounded-2xl border border-white/10 bg-white/5"><h2 class="text-2xl font-serif text-white mb-4">Dopo la registrazione</h2><p>La voce salvata può alimentare l'<a href="/it/app-analisi-sogni-android" class="text-dream-salmon hover:underline">analisi del sogno</a>, l'esplorazione dei simboli e le domande successive. Ogni suggerimento resta una possibilità, non una verità imposta.</p></div>
+    <div class="glass-panel p-8 rounded-2xl border border-white/10 bg-white/5"><h2 class="text-2xl font-serif text-white mb-4">La privacy, spiegata in chiaro</h2><p>L'<a href="/it/privacy-policy" class="text-dream-salmon hover:underline">informativa sulla privacy</a> indica che l'audio viene usato per la trascrizione e non è conservato in modo permanente da Noctalia. Descrive anche dati del diario, fornitori e diritti di cancellazione.</p><p class="mt-4 text-sm text-purple-200/70">Questa pagina è revisionata dal team editoriale Noctalia; non viene indicato alcun professionista clinico come revisore.</p></div>
+  </section>
+
+  <section class="glass-panel p-8 rounded-2xl border border-white/10 bg-white/5">
+    <h2 class="text-2xl font-serif text-white mb-4">Cosa dire nei primi 60 secondi dopo il risveglio</h2>
+    <p>Non serve raccontare tutto il sogno. Resta a letto, avvia la registrazione e parla senza cercare belle frasi. Se non sai da dove partire, segui quest'ordine.</p>
+    <ol class="list-decimal pl-5 mt-4 space-y-2">
+      <li><strong class="text-white">L'immagine più nitida.</strong> Comincia da ciò che è ancora chiaro: un volto, una stanza, un oggetto.</li>
+      <li><strong class="text-white">Il luogo e le persone.</strong> Di' chi c'era, anche se è sfocato: «un collega, credo».</li>
+      <li><strong class="text-white">Cosa succedeva.</strong> Racconta l'azione nell'ordine in cui ti torna in mente. L'ordine vero del sogno può aspettare la rilettura.</li>
+      <li><strong class="text-white">Cosa provavi.</strong> Dai un nome all'emozione del sogno, poi a quella del risveglio se è diversa.</li>
+      <li><strong class="text-white">Il dettaglio che non torna.</strong> Un orologio senza lancette, la pioggia in casa, una parola sentita. Dillo anche se ti sembra secondario.</li>
+    </ol>
+    <p class="mt-4">Esitazioni e frasi a metà non sono un problema. Prima di salvare, Noctalia ti mostra il testo trascritto e puoi correggerlo con la tastiera. Potrai modificarlo anche più tardi dal diario.</p>
+  </section>
+
+  <section class="glass-panel p-8 rounded-2xl border border-white/10 bg-white/5">
+    <h2 class="text-2xl font-serif text-white mb-4">Esempio: dalla trascrizione grezza alla voce rivista</h2>
+    <p class="text-sm text-purple-200/70">Un sogno inventato per mostrare il metodo, non un testo prodotto dall'app.</p>
+    <div class="grid md:grid-cols-2 gap-6 mt-4">
+      <div class="rounded-2xl border border-white/10 p-6">
+        <h3 class="text-white font-medium mb-2">Trascrizione grezza, detta alle 7:12</h3>
+        <p class="text-purple-200/80">«ehm allora ero nella cucina di mia nonna ma era anche una stazione cioè c'erano i binari e mia sorella era lì credo cercava il biglietto e io sapevo che il treno partiva ma non mi muovevo ero calmo è questo lo strano e l'orologio non aveva lan cette ah e pioveva dentro»</p>
+      </div>
+      <div class="rounded-2xl border border-white/10 p-6">
+        <h3 class="text-white font-medium mb-2">Voce rivista alle 8:30</h3>
+        <p><strong class="text-purple-200">Titolo:</strong> La cucina-stazione</p>
+        <p class="mt-2">Sono nella cucina di mia nonna, che è anche una stazione con i binari. Mia sorella è lì, credo. Cerca il biglietto. So che il treno sta per partire, ma non mi muovo. Sono calmo, ed è questo che mi stupisce. L'orologio non ha lancette. Piove dentro casa.</p>
+        <p class="mt-2"><strong class="text-purple-200">Aggiunto più tardi:</strong> le piastrelle erano quelle della cucina vera, verdi e bianche.</p>
+      </div>
+    </div>
+    <p class="mt-4">La rilettura corregge la parola capita male («lan cette» diventa «lancette») e divide il flusso in frasi. Non aggiunge nulla al sogno. Il «credo» resta, perché il dubbio fa parte del ricordo. Il dettaglio tornato dopo è annotato a parte, per non confonderlo con ciò che hai detto al risveglio.</p>
   </section>
 
   <section class="glass-panel p-8 rounded-2xl border border-white/10 bg-white/5">
@@ -81,7 +112,7 @@
 
   <section class="glass-panel p-8 rounded-2xl border border-dream-salmon/20 bg-dream-salmon/5">
     <h2 class="text-2xl font-serif text-white mb-4">Inizia con una nota vocale</h2>
-    <p>Installa Noctalia su Android e racconta un sogno domani mattina prima di iniziare il resto della giornata.</p>
+    <p>Installa Noctalia su Android e racconta un sogno domani mattina, prima di aprire i messaggi.</p>
     <p class="mt-4"><a href="https://play.google.com/store/apps/details?id=com.tanuki75.noctalia&amp;hl=it" class="text-dream-salmon hover:underline" rel="nofollow noopener noreferrer" target="_blank">Installa Noctalia da Google Play</a></p>
   </section>
 </div>

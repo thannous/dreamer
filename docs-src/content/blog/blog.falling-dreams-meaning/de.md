@@ -38,7 +38,7 @@
 ---
 <article class="max-w-5xl mx-auto">
 <!-- Breadcrumb -->
-<nav aria-label="Semmelbrösel" class="text-sm text-purple-200/60 mb-8">
+<nav aria-label="Brotkrümelnavigation" class="text-sm text-purple-200/60 mb-8">
 <ol class="flex items-center gap-2 flex-wrap" itemscope="" itemtype="https://schema.org/BreadcrumbList">
 <li itemprop="itemListElement" itemscope="" itemtype="https://schema.org/ListItem">
 <a class="hover:text-dream-salmon transition-colors" href="/de/" itemprop="item"><span itemprop="name">Startseite</span></a>
@@ -317,12 +317,12 @@
 <i class="w-5 h-5 text-dream-salmon" data-lucide="book-open"></i>
                     Verwandte Symbole erkunden
                 </h2>
-<p class="text-sm text-purple-300/60 mb-4">Tauchen Sie tiefer in die Symbole aus diesem Artikel ein:</p>
+<p class="text-sm text-purple-300/60 mb-4">Passende Traumsymbole aus dem Artikel:</p>
 <div class="flex flex-wrap gap-3">
-<a class="inline-flex items-center gap-2 px-4 py-2 glass-button rounded-full text-sm hover:text-dream-salmon transition-colors" href="../traumsymbole/fallen">Fallende Traumbedeutung</a>
-<a class="inline-flex items-center gap-2 px-4 py-2 glass-button rounded-full text-sm hover:text-dream-salmon transition-colors" href="../traumsymbole/fliegen">Fliegende Traumbedeutung</a>
-<a class="inline-flex items-center gap-2 px-4 py-2 glass-button rounded-full text-sm hover:text-dream-salmon transition-colors" href="../traumsymbole/treppe">Treppen-Traumbedeutung</a>
-<a class="inline-flex items-center gap-2 px-4 py-2 glass-button rounded-full text-sm hover:text-dream-salmon transition-colors" href="../traumsymbole/berg">Bergtraum-Bedeutung</a>
+<a class="inline-flex items-center gap-2 px-4 py-2 glass-button rounded-full text-sm hover:text-dream-salmon transition-colors" href="../traumsymbole/fallen">Traum vom Fallen</a>
+<a class="inline-flex items-center gap-2 px-4 py-2 glass-button rounded-full text-sm hover:text-dream-salmon transition-colors" href="../traumsymbole/fliegen">Traum vom Fliegen</a>
+<a class="inline-flex items-center gap-2 px-4 py-2 glass-button rounded-full text-sm hover:text-dream-salmon transition-colors" href="../traumsymbole/treppe">Traum von einer Treppe</a>
+<a class="inline-flex items-center gap-2 px-4 py-2 glass-button rounded-full text-sm hover:text-dream-salmon transition-colors" href="../traumsymbole/berg">Traum von einem Berg</a>
 </div>
 </section>
 <!-- Related Symbols End -->
@@ -400,7 +400,7 @@
 <section class="mt-16 glass-panel rounded-2xl p-6" id="sources">
 <h2 class="font-serif text-2xl text-dream-cream mb-4">Quellen und weiterführende Literatur</h2>
 <ul class="mt-6 space-y-2 text-sm text-gray-400">
-<li><a href="https://asdreams.org/journal/issues/asdj13-4.htm" rel="nofollow noopener noreferrer" target="_blank">Nielsen, Zadra et al. (2003), „The Typical Dreams of Canadian University Students“, <em>Dreaming</em>, 13(4)</a></li>
+<li><a href="https://doi.org/10.1023/B:DREM.0000003144.40929.0b" rel="nofollow noopener noreferrer" target="_blank">Nielsen, Zadra et al. (2003), „The Typical Dreams of Canadian University Students“, <em>Dreaming</em>, 13(4)</a></li>
 <li><a href="https://www.sleepfoundation.org/sleep-faqs/hypnic-jerks" rel="nofollow noopener noreferrer" target="_blank">Sleep Foundation, „Hypnic Jerks“</a></li>
 <li><a href="https://www.cambridge.org/core/journals/behavioral-and-brain-sciences/article/reinterpretation-of-dreams-an-evolutionary-hypothesis-of-the-function-of-dreaming/EE0E7DB39E361540D2DDA79C262EDA7E" rel="nofollow noopener noreferrer" target="_blank">Revonsuo (2000), „The reinterpretation of dreams“, <em>Behavioral and Brain Sciences</em></a></li>
 <li><a href="https://dictionary.apa.org/dream" rel="nofollow noopener noreferrer" target="_blank">APA Dictionary of Psychology, „Dream“</a></li>

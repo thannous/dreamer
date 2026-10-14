@@ -12,6 +12,11 @@ import { TID } from '@/lib/testIDs';
 
 // Decorative artwork; expo-image needs a native view the test runtime does not provide.
 jest.mock('@/components/ui/NightSkyBand', () => ({ NightSkyBand: () => null }));
+// The seal's length is a motion choice; these journeys only need it to end before the next page.
+jest.mock('@/components/journal/story/dreamStoryMotion', () => {
+  const actual = jest.requireActual('@/components/journal/story/dreamStoryMotion');
+  return { ...actual, DREAM_STORY: { ...actual.DREAM_STORY, prologue: 300 } };
+});
 
 const mockGetGuestRecordedDreamCount = jest.fn(async () => 0);
 const mockSubscribeGuestDreamRecordingCount = jest.fn(() => () => undefined);

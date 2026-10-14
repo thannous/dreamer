@@ -1,4 +1,4 @@
-import { useRouter } from 'expo-router';
+import { useNavigation } from 'expo-router';
 import React, { useState } from 'react';
 import { ScrollView, StyleSheet, View, useWindowDimensions } from 'react-native';
 import { ScopedTheme } from 'uniwind';
@@ -16,12 +16,18 @@ import { formatHour, formatTimeEntry, parseTimeEntry } from '@/lib/reminders';
 import { TID } from '@/lib/testIDs';
 import { requestPermission, syncReminders } from '@/services/notificationService';
 
+/** The root layout's stack, typed only for the reset that closes onboarding. */
+type RootStackReset = {
+  getState(): object | undefined;
+  reset(state: object): void;
+};
+
 /**
  * Last step. Opting in reaches the same scheduler as Settings; opting out
  * remains a pure exit and never requests notification permission.
  */
 export default function ReminderStep() {
-  const router = useRouter();
+  const rootNavigation = useNavigation<RootStackReset>('/');
   const { t } = useTranslation();
   const { state, update, complete } = useOnboarding();
   const { setReminders } = useSettings();
@@ -65,7 +71,16 @@ export default function ReminderStep() {
 
   const leave = async () => {
     await complete();
-    router.replace('/(drawer)/(tabs)');
+    // Onboarding is behind the listener now: home becomes the only screen of
+    // the root stack, so back leaves the app instead of reopening Welcome,
+    // which `replace` left underneath. Expo Router 58 drops a partial RESET
+    // (it needs the stack's key, routeNames and `stale: false`), so the
+    // payload starts from the current root state.
+    rootNavigation.reset({
+      ...rootNavigation.getState(),
+      index: 0,
+      routes: [{ name: '(drawer)' }],
+    });
   };
 
   const finish = async () => {

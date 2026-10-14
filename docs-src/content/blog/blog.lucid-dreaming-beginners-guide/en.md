@@ -399,7 +399,7 @@ A lucid dream itself is not considered dangerous. Methods that interrupt the nig
 <i class="w-5 h-5 text-dream-salmon" data-lucide="book-open"></i>
                     Explore Related Symbols
                 </h2>
-<p class="text-sm text-purple-300/60 mb-4">Dive deeper into the symbols from this article:</p>
+<p class="text-sm text-purple-300/60 mb-4">Read up on the symbols mentioned in this article:</p>
 <div class="flex flex-wrap gap-3">
 <a class="inline-flex items-center gap-2 px-4 py-2 glass-button rounded-full text-sm hover:text-dream-salmon transition-colors" href="../symbols/flying">Flying Dream Meaning</a>
 <a class="inline-flex items-center gap-2 px-4 py-2 glass-button rounded-full text-sm hover:text-dream-salmon transition-colors" href="../symbols/falling">Falling Dream Meaning</a>
@@ -444,12 +444,12 @@ A lucid dream itself is not considered dangerous. Methods that interrupt the nig
                     <a href="why-we-forget-dreams" class="glass-panel rounded-xl p-6 block hover:border-dream-salmon/30 transition-all hover:-translate-y-1">
                         <span class="text-xs text-dream-salmon uppercase mb-2 block">Science</span>
                         <h3 class="font-serif text-lg text-dream-cream mb-2">Why Do We Forget Our Dreams? The Science Behind Dream Amnesia</h3>
-                        <p class="text-sm text-gray-400">Discover the brain mechanisms and neurochemistry that explain why we forget 95% of our dreams upon waking.</p>
+                        <p class="text-sm text-gray-400">Why dreams fade within minutes of waking, what REM sleep and memory have to do with it, and simple habits to keep more of them.</p>
                     </a>
                     <a href="recurring-dreams-meaning" class="glass-panel rounded-xl p-6 block hover:border-dream-salmon/30 transition-all hover:-translate-y-1">
                         <span class="text-xs text-dream-salmon uppercase mb-2 block">Interpretation</span>
                         <h3 class="font-serif text-lg text-dream-cream mb-2">Recurring Dreams Meaning: Understanding Their Messages</h3>
-                        <p class="text-sm text-gray-400">Why do you keep having the same dream? Discover what your subconscious is trying to tell you.</p>
+                        <p class="text-sm text-gray-400">Why the same dream keeps coming back, what to note between episodes, and when repeated nightmares are worth a doctor's visit.</p>
                     </a>
               </div>
             </section>

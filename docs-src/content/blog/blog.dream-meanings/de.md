@@ -37,7 +37,7 @@
 ---
 <article class="max-w-5xl mx-auto">
 <!-- Breadcrumb -->
-<nav aria-label="Semmelbrösel" class="text-sm text-purple-200/60 mb-8">
+<nav aria-label="Brotkrümelnavigation" class="text-sm text-purple-200/60 mb-8">
 <ol class="flex items-center gap-2 flex-wrap" itemscope="" itemtype="https://schema.org/BreadcrumbList">
 <li itemprop="itemListElement" itemscope="" itemtype="https://schema.org/ListItem">
 <a class="hover:text-dream-salmon transition-colors" href="/de/" itemprop="item"><span itemprop="name">Startseite</span></a>
@@ -77,7 +77,7 @@ Die Ratgeber eignen sich zum schnellen Nachschlagen im Web. Wenn Sie den Traum s
 <section class="glass-panel rounded-2xl p-6 md:p-8 mt-10 border border-dream-salmon/10" data-blog-hub-expanded="true">
   <h2 class="font-serif text-2xl text-dream-cream mb-4">Einen Traum in vier Schritten lesen</h2>
   <div class="prose prose-invert prose-purple max-w-none text-gray-300 leading-relaxed space-y-4">
-    <p><strong>Kurze Antwort:</strong> Ein Traum hat keine einzige, feste Bedeutung. Manche Themen kennen sehr viele Menschen: In <a class="text-dream-salmon hover:underline" href="https://asdreams.org/journal/issues/asdj13-4.htm" rel="nofollow noopener noreferrer" target="_blank">einer Befragung von über tausend kanadischen Studierenden</a> gehörten Verfolgtwerden und Fallen zu den Träumen, die die meisten schon einmal gehabt hatten. Was ein Thema für Sie bedeutet, hängt von drei Dingen ab: der Szene, dem Gefühl im Traum und dem, was gerade in Ihrem Leben passiert.</p>
+    <p><strong>Kurze Antwort:</strong> Ein Traum hat keine einzige, feste Bedeutung. Manche Themen kennen sehr viele Menschen: In <a class="text-dream-salmon hover:underline" href="https://doi.org/10.1023/B:DREM.0000003144.40929.0b" rel="nofollow noopener noreferrer" target="_blank">einer Befragung von über tausend kanadischen Studierenden</a> gehörten Verfolgtwerden und Fallen zu den Träumen, die die meisten schon einmal gehabt hatten. Was ein Thema für Sie bedeutet, hängt von drei Dingen ab: der Szene, dem Gefühl im Traum und dem, was gerade in Ihrem Leben passiert.</p>
     <ul><li><strong>Zuerst die Szene notieren.</strong> Ort, Personen, Handlung, noch ohne Deutung.</li><li><strong>Das Gefühl benennen.</strong> Angst, Erleichterung, Scham, Neugier: Es sagt oft mehr als das Symbol.</li><li><strong>Auf die letzten Tage schauen.</strong> Eine Sorge, ein Gespräch, eine Veränderung, die gerade ansteht.</li><li><strong>Dann einen Ratgeber unten öffnen</strong> und nur behalten, was zu Ihrem Traum passt. Jede Deutung ist eine Spur zum Prüfen, kein Urteil.</li></ul>
     <p>Orte verdienen dieselbe Aufmerksamkeit. Ein <a class="text-dream-salmon hover:underline" href="../traumsymbole/wald">Wald im Traum</a> kann sich geborgen, düster, vertraut oder verwirrend anfühlen, und das sind vier verschiedene Träume.</p>
     <p><strong>Beispiel (fiktiver Tagebucheintrag):</strong> „Ich gehe in der Dämmerung durch einen Wald. Mein Handy hat keinen Empfang. Ich habe keine Angst, ich bin eher genervt.“ Gefühl: Ärger statt Angst. Möglicher Zusammenhang: ein Projekt im Job, bei dem niemand die Richtung vorgibt. Frage an sich selbst: Wo habe ich das Gefühl, ohne Karte voranzugehen?</p>
@@ -183,23 +183,23 @@ Die Ratgeber eignen sich zum schnellen Nachschlagen im Web. Wenn Sie den Traum s
                     Verwandte Symbole erkunden
                 </h2>
 <p class="text-sm text-purple-300/60 mb-4">
-                    Tauchen Sie tiefer in die Symbole dieses Hubs ein – oder stöbern Sie im <a class="text-dream-salmon hover:underline" href="../guides/traumsymbole-lexikon">Wörterbuch der Traumsymbole</a>.
+                    Lesen Sie die Symbole dieser Übersicht nach oder stöbern Sie im <a class="text-dream-salmon hover:underline" href="../guides/traumsymbole-lexikon">Wörterbuch der Traumsymbole</a>.
                 </p>
 <div class="flex flex-wrap gap-3">
 <a class="inline-flex items-center gap-2 px-4 py-2 glass-button rounded-full text-sm hover:text-dream-salmon transition-colors" href="../traumsymbole/wasser">
-                        Wassertraumbedeutung
+                        Traum von Wasser
                     </a>
 <a class="inline-flex items-center gap-2 px-4 py-2 glass-button rounded-full text-sm hover:text-dream-salmon transition-colors" href="../traumsymbole/fliegen">
-                        Fliegende Traumbedeutung
+                        Traum vom Fliegen
                     </a>
 <a class="inline-flex items-center gap-2 px-4 py-2 glass-button rounded-full text-sm hover:text-dream-salmon transition-colors" href="../traumsymbole/zaehne">
-                        Zähne Traumbedeutung
+                        Traum von Zahnverlust
                     </a>
 <a class="inline-flex items-center gap-2 px-4 py-2 glass-button rounded-full text-sm hover:text-dream-salmon transition-colors" href="../traumsymbole/schlange">
-                        Bedeutung des Traums Schlange
+                        Traum von einer Schlange
                     </a>
 <a class="inline-flex items-center gap-2 px-4 py-2 glass-button rounded-full text-sm hover:text-dream-salmon transition-colors" href="../traumsymbole/verfolgung">
-                        Bedeutung des Traums „Gejagt werden“
+                        Traum vom Verfolgtwerden
                     </a>
 </div>
 </section>

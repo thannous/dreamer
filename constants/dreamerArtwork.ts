@@ -2,7 +2,7 @@
 export const DREAMER_ARTWORK = {
   reverie: require('@/assets/images/onboarding-reverie-background.webp'),
   path: require('@/assets/images/onboarding-path-background.webp'),
-  capture: require('@/assets/images/onboarding-capture-background.png'),
+  capture: require('@/assets/images/onboarding-capture-background.webp'),
   astral: require('@/assets/images/onboarding-astral-background.webp'),
   journal: require('@/assets/images/dreamer/journal-v1.webp'),
   dialogue: require('@/assets/images/dreamer/dialogue-v1.webp'),

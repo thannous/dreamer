@@ -63,6 +63,27 @@ const showHeroAfterIntro = () => {
   });
 };
 
+// The opening film plays once per browser session; later landing visits in
+// the same session open directly on the hero loop. The head script reads the
+// same key so it does not warm the film or hold the ink veil.
+const INTRO_SEEN_KEY = 'noctalia:intro-seen';
+
+const introSeenThisSession = () => {
+  try {
+    return window.sessionStorage.getItem(INTRO_SEEN_KEY) === '1';
+  } catch {
+    return false;
+  }
+};
+
+const markIntroSeen = () => {
+  try {
+    window.sessionStorage.setItem(INTRO_SEEN_KEY, '1');
+  } catch {
+    // Storage blocked: the film simply plays again on the next visit.
+  }
+};
+
 const holdDreamsForIntro = () => {
   // Every attempt, replays included, starts behind the ink veil.
   html.classList.remove('exp-intro-unveiled');
@@ -1312,6 +1333,7 @@ const playIntro = (film, loop, variant) =>
     intro.addEventListener('playing', () => {
       if (finished) return;
       played = true;
+      markIntroSeen();
       window.clearTimeout(firstFrameTimer);
       overlay.classList.add('is-playing');
       // Lift the veil once the overlay's fade-in has covered it.
@@ -1440,9 +1462,11 @@ const initFilm = (isFull) => {
     holdDreamsForIntro();
     introPlaying = true;
     video.pause();
-    // The landscape master and loop share a composition; object-fit: cover
-    // applies the same viewport crop on phones and desktops.
-    return playIntro(film, video, '1280').then((result) => {
+    // The portrait cut keeps the landscape master's framing under
+    // object-fit: cover, so the hand-off to the (landscape) loop still lines up.
+    // Same query as the early warm-up in scripts/lib/experience-tier.js.
+    const variant = window.matchMedia('(orientation: portrait)').matches ? '540x960' : '1280';
+    return playIntro(film, video, variant).then((result) => {
       if (result.unavailable) showRetry();
       introPlaying = false;
       heroShown = true;
@@ -1451,6 +1475,7 @@ const initFilm = (isFull) => {
     });
   };
   replayIntroOnReturn = () => {
+    if (introSeenThisSession()) return;
     activeLenis?.scrollTo(0, { immediate: true });
     window.scrollTo(0, 0);
     startIntro();
@@ -1460,6 +1485,31 @@ const initFilm = (isFull) => {
     revealDreamsAfterIntro();
     showRetry();
     return Promise.resolve();
+  }
+  if (introSeenThisSession()) {
+    // Later visits open on the loop. The ink veil stays until the loop plays,
+    // then the loop appears without its slow fade, so the brighter still never
+    // shows through.
+    heroShown = true;
+    return new Promise((resolve) => {
+      let revealed = false;
+      const reveal = () => {
+        if (revealed) return;
+        revealed = true;
+        revealDreamsAfterIntro();
+        resolve();
+      };
+      video.addEventListener('playing', () => {
+        film.classList.add('is-handoff', 'is-playing');
+        window.requestAnimationFrame(() => {
+          reveal();
+          window.requestAnimationFrame(() => film.classList.remove('is-handoff'));
+        });
+      }, { once: true });
+      video.addEventListener('error', reveal, { once: true });
+      window.setTimeout(reveal, 1500);
+      startLoop();
+    });
   }
   if (!window.location.hash) window.scrollTo(0, 0);
   return startIntro();

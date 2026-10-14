@@ -12,6 +12,7 @@ import { searchBarLayout } from '@/components/ui/SearchBar';
 
 jest.mock('@/context/AuthContext', () => ({ AuthContext: require('react').createContext(null) }));
 jest.mock('@/services/dreamMediaService', () => ({ resolveDreamMedia: async (dream: any) => ({ imageUrl: dream.imageUrl ?? '', thumbnailUrl: dream.thumbnailUrl }) }));
+jest.mock('@/lib/dreamMediaDiskCache', () => ({ resolveWithDiskCache: async (dream: any) => ({ imageUrl: dream.imageUrl ?? '', thumbnailUrl: dream.thumbnailUrl }) }));
 jest.mock('@/hooks/useRemoteJournalList', () => ({ useRemoteJournalList: () => ({ items: [], loading: false, error: false, complete: true, loadMore: jest.fn() }) }));
 jest.mock('@/components/journal/RemoteJournalList', () => ({ RemoteJournalList: ({ header, onOpenDream }: any) => <div data-testid="journal-remote-preview">{header}<button onClick={() => onOpenDream({ remoteId: 2501 })}>Open remote preview</button></div> }));
 

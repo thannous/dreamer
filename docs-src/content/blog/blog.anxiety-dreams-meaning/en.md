@@ -382,7 +382,7 @@
 <section class="mt-16 glass-panel rounded-2xl p-6" id="sources">
 <h2 class="font-serif text-2xl text-dream-cream mb-4">Sources and further reading</h2>
 <ul class="mt-6 space-y-2 text-sm text-gray-400">
-<li><a href="https://asdreams.org/journal/issues/asdj13-4.htm" rel="nofollow noopener noreferrer" target="_blank">Nielsen, Zadra et al. (2003), “The Typical Dreams of Canadian University Students”, <em>Dreaming</em>, 13(4)</a></li>
+<li><a href="https://doi.org/10.1023/B:DREM.0000003144.40929.0b" rel="nofollow noopener noreferrer" target="_blank">Nielsen, Zadra et al. (2003), “The Typical Dreams of Canadian University Students”, <em>Dreaming</em>, 13(4)</a></li>
 <li><a href="https://pubmed.ncbi.nlm.nih.gov/11515147/" rel="nofollow noopener noreferrer" target="_blank">Revonsuo (2000), “The reinterpretation of dreams: an evolutionary hypothesis of the function of dreaming”, <em>Behavioral and Brain Sciences</em></a></li>
 <li><a href="https://doi.org/10.1037/a0016570" rel="nofollow noopener noreferrer" target="_blank">Walker &amp; van der Helm (2009), “Overnight therapy? The role of sleep in emotional brain processing”, <em>Psychological Bulletin</em></a></li>
 <li><a href="https://doi.org/10.1207/s15402010bsm0401_4" rel="nofollow noopener noreferrer" target="_blank">Krakow &amp; Zadra (2006), “Clinical management of chronic nightmares: imagery rehearsal therapy”, <em>Behavioral Sleep Medicine</em></a></li>
@@ -399,7 +399,7 @@
 <i class="w-5 h-5 text-dream-salmon" data-lucide="book-open"></i>
                     Explore Related Symbols
                 </h2>
-<p class="text-sm text-purple-300/60 mb-4">Dive deeper into the symbols from this article:</p>
+<p class="text-sm text-purple-300/60 mb-4">Read up on the symbols mentioned in this article:</p>
 <div class="flex flex-wrap gap-3">
 <a class="inline-flex items-center gap-2 px-4 py-2 glass-button rounded-full text-sm hover:text-dream-salmon transition-colors" href="../symbols/exam">Exam Dream Meaning</a>
 <a class="inline-flex items-center gap-2 px-4 py-2 glass-button rounded-full text-sm hover:text-dream-salmon transition-colors" href="../symbols/lost">Lost Dream Meaning</a>
@@ -445,7 +445,7 @@
 <a class="glass-panel rounded-xl p-6 block hover:border-dream-salmon/30 transition-all hover:-translate-y-1" href="dreams-mental-health">
 <span class="text-xs text-dream-salmon uppercase mb-2 block">Science</span>
 <h3 class="font-serif text-lg text-dream-cream mb-2">Dreams and Mental Health: How Your Sleep Reveals Your Mind</h3>
-<p class="text-sm text-gray-400">Discover the connection between dreams and mental health, including how anxiety, depression, and trauma affect dreams.</p>
+<p class="text-sm text-gray-400">How anxiety, depression, stress and trauma show up in dreams, and when frequent nightmares are worth raising with a professional.</p>
 </a>
 <a class="glass-panel rounded-xl p-6 block hover:border-dream-salmon/30 transition-all hover:-translate-y-1" href="stress-dreams-work">
 <span class="text-xs text-dream-salmon uppercase mb-2 block">Complete Guide</span>

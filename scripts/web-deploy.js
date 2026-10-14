@@ -8,7 +8,9 @@
 // Order: guard, clean copy, link, pull, build, guard again, deploy.
 // 1. The publish guard (scripts/check-site-publish-proof.mjs) must accept: HEAD
 //    is origin/master after `git fetch`, the checkout is clean, and a passed
-//    `release` proof of `npm run verify:release` exists for HEAD. No override.
+//    `release` proof of `npm run verify:release` exists for HEAD, covering the
+//    `app` target (the checks that `npm run verify:release:site`, enough for
+//    the static site, leaves out). No override.
 // 2. The guard proves tracked files only, so nothing runs in the working
 //    directory: `git archive` of the guarded SHA is extracted into a fresh temp
 //    dir (no .git, no untracked or ignored file).
@@ -121,10 +123,13 @@ const REDACTED = '[redacted]';
 // Pulled values shorter than this (true, 1, prod) are not redacted, so the
 // log stays readable; secrets are longer.
 const MIN_REDACTED_LENGTH = 6;
+// The release targets of verify-local.config.mjs the proof must cover: the
+// app checks, which `npm run verify:release` runs and verify:release:site does not.
+const RELEASE_TARGETS = Object.freeze(['app']);
 
 async function guardProductionPublish() {
   const { assertSitePublishProof } = await import('./check-site-publish-proof.mjs');
-  return assertSitePublishProof({ root: ROOT_DIR, label: 'the Vercel web app (dream.noctalia.app)' });
+  return assertSitePublishProof({ root: ROOT_DIR, label: 'the Vercel web app (dream.noctalia.app)', targets: [...RELEASE_TARGETS] });
 }
 
 // A clean copy of exactly `commitHash`: the files of its tree, no .git, no
@@ -639,7 +644,7 @@ function printHelp() {
 
 Publishes the Vercel web app (project ${VERCEL_SCOPE}/${VERCEL_PROJECT}) to
 production. Refuses unless HEAD is the fetched origin/master, the checkout is
-clean, and \`npm run verify:release\` passed on HEAD
+clean, and \`npm run verify:release\` (the app target included) passed on HEAD
 (scripts/check-site-publish-proof.mjs). In a clean copy of that commit (git
 archive in a temp dir) it links the pinned project, pulls the production
 settings, builds, runs the guard again on the same HEAD, then deploys only the
@@ -789,6 +794,7 @@ if (require.main === module) {
 }
 
 module.exports = {
+  RELEASE_TARGETS,
   SIGNAL_EXIT_CODES,
   VERCEL_CLI_FILES_SHA256,
   VERCEL_CLI_INTEGRITY,

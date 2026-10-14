@@ -4,7 +4,7 @@
   "layout": "blogArticle",
   "lang": "fr",
   "slug": "bruit-nocturne-sommeil-reves",
-  "title": "Bruit nocturne, sommeil et rêves : comprendre les nuits fragmentées | Noctalia",
+  "title": "Bruit nocturne : sommeil et souvenirs de rêves | Noctalia",
   "description": "Le bruit nocturne fragmente le sommeil en brefs réveils qui aident à retenir les rêves. Ce qu'il change, quoi noter au réveil, comment limiter les coupures.",
   "robots": "index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1",
   "themeColor": "#0a0514",
