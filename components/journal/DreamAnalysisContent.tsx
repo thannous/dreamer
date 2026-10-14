@@ -8,6 +8,7 @@ import { useTranslation } from '@/hooks/useTranslation';
 import { isPoeticDreamQuote } from '@/lib/dreamQuote';
 import { markPerformance, performanceTraceId } from '@/lib/performanceTrace';
 import { TID } from '@/lib/testIDs';
+import { useLiveTestID } from './DecorativeCopy';
 import type { DreamAnalysis } from '@/lib/types';
 import { DreamReadingWait } from './story/DreamReadingWait';
 import { DreamSymbolConstellation, MAX_CONSTELLATION_STARS } from './story/DreamSymbolConstellation';
@@ -43,6 +44,7 @@ export function DreamAnalysisContent({ dream, pending, reveal = false, onLayout 
   const { colors } = useTheme();
   const { t } = useTranslation();
   const reduced = useReducedMotion();
+  const tid = useLiveTestID();
   useEffect(() => {
     if (!pending && dream.analysisRequestId) {
       markPerformance('analysis.text_displayed', { trace: performanceTraceId(dream.analysisRequestId) });
@@ -67,8 +69,8 @@ export function DreamAnalysisContent({ dream, pending, reveal = false, onLayout 
   const quote = dream.shareableQuote?.trim();
 
   return (
-    <View testID={TID.Component.DreamDetailReadingZone} onLayout={onLayout} className="mx-2 mb-8 gap-5">
-      <Text accessibilityRole="header" testID={TID.Text.DreamDetailReadingZone} className="font-sans-bold text-[18px] text-ivory">
+    <View testID={tid(TID.Component.DreamDetailReadingZone)} onLayout={onLayout} className="mx-2 mb-8 gap-5">
+      <Text accessibilityRole="header" testID={tid(TID.Text.DreamDetailReadingZone)} className="font-sans-bold text-[18px] text-ivory">
         {t('journal.detail.zone.reading')}
       </Text>
       {pending ? (
@@ -95,7 +97,7 @@ export function DreamAnalysisContent({ dream, pending, reveal = false, onLayout 
           ) : null)}
           {dream.reflectionQuestions?.length ? (
             <Chapter reveal={reveal} delay={chapterDelay(3)} className="mt-3">
-              <View testID={TID.Component.DreamDetailReflectionZone} className="gap-3">
+              <View testID={tid(TID.Component.DreamDetailReflectionZone)} className="gap-3">
                 <Text accessibilityRole="header" className="font-display-medium text-[20px] leading-7 text-ivory">{t('journal.detail.reflection_header')}</Text>
                 {dream.reflectionQuestions.map((question, index) => (
                   <MarkdownText key={`${index}-${question}`} variant="reading" style={body}>{`${index + 1}. ${question}`}</MarkdownText>
@@ -112,7 +114,7 @@ export function DreamAnalysisContent({ dream, pending, reveal = false, onLayout 
                 <View className="h-1.5 w-1.5 rounded-full bg-champagne" />
                 <View className="h-px w-8 bg-champagne opacity-40" />
               </View>
-              <Text testID={TID.Text.DreamDetailQuote} className="text-center font-serif-italic text-[18px] leading-7 text-ivory">{`« ${quote} »`}</Text>
+              <Text testID={tid(TID.Text.DreamDetailQuote)} className="text-center font-serif-italic text-[18px] leading-7 text-ivory">{`« ${quote} »`}</Text>
               {isPoeticDreamQuote(dream) ? <Text className="text-center font-sans text-[12px] text-ivory-muted">{t('journal.detail.quote_attribution')}</Text> : null}
             </Chapter>
           ) : null}

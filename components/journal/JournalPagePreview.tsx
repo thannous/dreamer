@@ -10,6 +10,7 @@ import { JournalFolio } from '@/components/journal/JournalFolio';
 import { JournalPageEdges } from '@/components/journal/JournalPageEdges';
 import { JournalPaper } from '@/components/journal/JournalPaper';
 import { JournalRunningHead, RUNNING_HEAD_GAP } from '@/components/journal/JournalRunningHead';
+import { DecorativeCopy } from '@/components/journal/DecorativeCopy';
 import { SavedDreamMoment } from '@/components/journal/SavedDreamMoment';
 import { SEAL_EMBLEMS, SEAL_NAME_LINES } from '@/components/journal/story/sealMarks';
 import { IconSymbol } from '@/components/ui/icon-symbol';
@@ -115,59 +116,61 @@ export function JournalPagePreview({ dream, folio }: { dream: DreamAnalysis; fol
   );
 
   return (
-    <View className="flex-1 overflow-hidden bg-ink" accessible={false} importantForAccessibility="no-hide-descendants"
-      accessibilityElementsHidden>
-      <JournalPaper />
-      {cover ? (
-        <JournalCoverPlate height={window.height} titleHeight={introHeight} head={head}
-          picture={<Image source={cover} contentFit="cover"
-            style={{ position: 'absolute', left: 0, right: 0, top: -coverTravel, bottom: -coverTravel }} />}>
-          {heading}
-        </JournalCoverPlate>
-      ) : null}
-      <View style={{ paddingTop: cover ? 0 : navigationHeight - 64 }}>
-        {cover ? null : <View style={{ marginBottom: RUNNING_HEAD_GAP }}>{head}</View>}
-        <View className="px-4 pb-6">
-          {cover ? null : heading}
-          {showReading ? (
-            <>
-              <SavedDreamMoment phase="read" still wordsLine={false} sealing={sealMark ? { mark: sealMark, settled: true } : null}
-                date={formatDreamStamp(dream.id)} />
-              <DreamAnalysisContent dream={dream} pending={false} />
-            </>
-          ) : null}
+    <DecorativeCopy>
+      <View className="flex-1 overflow-hidden bg-ink" accessible={false} importantForAccessibility="no-hide-descendants"
+        accessibilityElementsHidden>
+        <JournalPaper />
+        {cover ? (
+          <JournalCoverPlate height={window.height} titleHeight={introHeight} head={head}
+            picture={<Image source={cover} contentFit="cover"
+              style={{ position: 'absolute', left: 0, right: 0, top: -coverTravel, bottom: -coverTravel }} />}>
+            {heading}
+          </JournalCoverPlate>
+        ) : null}
+        <View style={{ paddingTop: cover ? 0 : navigationHeight - 64 }}>
+          {cover ? null : <View style={{ marginBottom: RUNNING_HEAD_GAP }}>{head}</View>}
+          <View className="px-4 pb-6">
+            {cover ? null : heading}
+            {showReading ? (
+              <>
+                <SavedDreamMoment phase="read" still wordsLine={false} sealing={sealMark ? { mark: sealMark, settled: true } : null}
+                  date={formatDreamStamp(dream.id)} />
+                <DreamAnalysisContent dream={dream} pending={false} />
+              </>
+            ) : null}
 
-          <View className="mt-2 mb-5">
-            <View className="px-2 pb-4">
-              <Text allowFontScaling={false} style={{ fontSize: 12 * compactTextScale, lineHeight: 18 * compactTextScale }}
-                className="mb-3 font-sans-medium text-[12px] uppercase tracking-[2px] text-champagne-on">
-                {t('journal.original_transcript')}
-              </Text>
-              <MarkdownText style={{ fontFamily: Fonts.lora.regularItalic, fontSize: 17, lineHeight: 28, color: noctalia.accent.text }}>
-                {dream.transcript}
-              </MarkdownText>
+            <View className="mt-2 mb-5">
+              <View className="px-2 pb-4">
+                <Text allowFontScaling={false} style={{ fontSize: 12 * compactTextScale, lineHeight: 18 * compactTextScale }}
+                  className="mb-3 font-sans-medium text-[12px] uppercase tracking-[2px] text-champagne-on">
+                  {t('journal.original_transcript')}
+                </Text>
+                <MarkdownText style={{ fontFamily: Fonts.lora.regularItalic, fontSize: 17, lineHeight: 28, color: noctalia.accent.text }}>
+                  {dream.transcript}
+                </MarkdownText>
+              </View>
             </View>
-          </View>
 
-          <View className="mt-5 mb-3 flex-row items-center gap-2.5">
-            <Text className="font-sans-bold text-[16px] text-ivory">{t('journal.detail.zone.actions')}</Text>
-          </View>
-          <View className="mb-6 flex-row justify-around gap-3">
-            <View className="flex-1 flex-row items-center justify-center gap-2 rounded-md border border-line-strong bg-ink-soft px-4 py-3.5">
-              <IconSymbol name={dream.isFavorite ? 'heart.fill' : 'heart'} size={24} color={noctalia.accent.text} />
-              <Text className="font-sans-medium text-[14px] text-ivory">
-                {dream.isFavorite ? t('journal.detail.favorite.on') : t('journal.detail.favorite.off')}
-              </Text>
+            <View className="mt-5 mb-3 flex-row items-center gap-2.5">
+              <Text className="font-sans-bold text-[16px] text-ivory">{t('journal.detail.zone.actions')}</Text>
             </View>
-            <View className="flex-1 flex-row items-center justify-center gap-2 rounded-md border border-line-strong bg-ink-soft px-4 py-3.5">
-              <IconSymbol name="square.and.arrow.up" size={24} color={noctalia.accent.text} />
-              <Text className="font-sans-medium text-[14px] text-ivory">{t('journal.detail.share.button_default')}</Text>
+            <View className="mb-6 flex-row justify-around gap-3">
+              <View className="flex-1 flex-row items-center justify-center gap-2 rounded-md border border-line-strong bg-ink-soft px-4 py-3.5">
+                <IconSymbol name={dream.isFavorite ? 'heart.fill' : 'heart'} size={24} color={noctalia.accent.text} />
+                <Text className="font-sans-medium text-[14px] text-ivory">
+                  {dream.isFavorite ? t('journal.detail.favorite.on') : t('journal.detail.favorite.off')}
+                </Text>
+              </View>
+              <View className="flex-1 flex-row items-center justify-center gap-2 rounded-md border border-line-strong bg-ink-soft px-4 py-3.5">
+                <IconSymbol name="square.and.arrow.up" size={24} color={noctalia.accent.text} />
+                <Text className="font-sans-medium text-[14px] text-ivory">{t('journal.detail.share.button_default')}</Text>
+              </View>
             </View>
+            <JournalFolio folio={folio} className="mt-8" />
           </View>
-          <JournalFolio folio={folio} className="mt-8" />
         </View>
+        <JournalPageEdges />
       </View>
-      <JournalPageEdges />
-    </View>
+    </DecorativeCopy>
   );
 }

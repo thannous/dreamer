@@ -4,6 +4,7 @@ import Animated, { useReducedMotion, type CSSStyle } from 'react-native-reanimat
 
 import { EASE } from '@/components/motion/motion';
 import { TID } from '@/lib/testIDs';
+import { useLiveTestID } from '../DecorativeCopy';
 
 import { DREAM_STORY, reducedDelay } from './dreamStoryMotion';
 
@@ -52,13 +53,14 @@ export function DreamSymbolConstellation({ names, play }: { names: readonly stri
   const { fontScale } = useWindowDimensions();
   const [width, setWidth] = useState(0);
   const stars = names.slice(0, MAX_CONSTELLATION_STARS);
+  const tid = useLiveTestID();
   const rows = useMemo(() => rowsFor(fontScale), [fontScale]);
   const points = useMemo(() => (width ? layoutStars(stars.length, width, rows) : []), [rows, stars.length, width]);
   const labelWidth = width ? Math.max(56, width / stars.length - 8) : 0;
 
   return (
     <View
-      testID={TID.Component.DreamSymbolConstellation}
+      testID={tid(TID.Component.DreamSymbolConstellation)}
       accessible={false}
       importantForAccessibility="no-hide-descendants"
       accessibilityElementsHidden

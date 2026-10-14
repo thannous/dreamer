@@ -13,6 +13,7 @@ import { getNoctaliaDesignTokens } from '@/constants/noctaliaDesign';
 import { useTheme } from '@/context/ThemeContext';
 import { useTranslation } from '@/hooks/useTranslation';
 import { TID } from '@/lib/testIDs';
+import { useLiveTestID } from './DecorativeCopy';
 
 import { DREAM_STORY, entrance, paintSettle, paintSweep, twinkle } from './story/dreamStoryMotion';
 import {
@@ -87,7 +88,8 @@ export type SavedDreamAction = {
  */
 export function SavedDreamMoment({
   phase = 'saved', painting = false, handedOver = false, sealing = null, artwork = null, landArtwork = true,
-  onOpenArtwork, action = null, date = null, still = false, announce = false, wordsLine = true, artworkAway = false,
+  onOpenArtwork, onArtworkError, action = null, date = null, still = false, announce = false, wordsLine = true,
+  artworkAway = false,
 }: {
   phase?: SavedDreamPhase;
   /**
@@ -106,6 +108,8 @@ export function SavedDreamMoment({
   /** The illustration has just landed: it settles once. Later mounts show it at rest. */
   landArtwork?: boolean;
   onOpenArtwork?: () => void;
+  /** The illustration could not be shown in the window. */
+  onArtworkError?: () => void;
   action?: SavedDreamAction | null;
   /** The dream's date, engraved along the foot of the rim. */
   date?: string | null;
@@ -117,6 +121,7 @@ export function SavedDreamMoment({
   wordsLine?: boolean;
 }) {
   const { t } = useTranslation();
+  const tid = useLiveTestID();
   const announced = useRef(false);
   useEffect(() => {
     if (!announce || announced.current) return;
@@ -205,7 +210,7 @@ export function SavedDreamMoment({
           style={(settled ? { opacity: 0.32 } : strike.wash) as StyleProp<ViewStyle>} />
       ) : null}
       {seal ? (
-        <Animated.View testID="component.savedDream.sealEmblem" className="absolute" style={[{
+        <Animated.View testID={tid('component.savedDream.sealEmblem')} className="absolute" style={[{
           left: (MEDALLION - EMBLEM) / 2, top: (MEDALLION - EMBLEM) / 2, width: EMBLEM, height: EMBLEM,
         }, settled ? null : strike.emblem] as StyleProp<ViewStyle>}>
           <Mark source={SEAL_EMBLEMS[seal.theme]} tintColor={SEAL_GOLD} resizeMode="contain" style={{ width: EMBLEM, height: EMBLEM }} />
@@ -222,9 +227,9 @@ export function SavedDreamMoment({
       {artwork ? (
         // Kept in place once gone, only unseen: the window does not change what it holds.
         <View collapsable={false} className="absolute inset-0" style={{ opacity: artworkAway ? 0 : 1 }}>
-          <Animated.View testID={TID.Component.SavedDreamArtwork} className="absolute inset-0"
+          <Animated.View testID={tid(TID.Component.SavedDreamArtwork)} className="absolute inset-0"
             style={settle as StyleProp<ViewStyle>}>
-            <Image source={artwork} contentFit="cover" style={{ width: '100%', height: '100%' }} />
+            <Image source={artwork} contentFit="cover" style={{ width: '100%', height: '100%' }} onError={onArtworkError} />
           </Animated.View>
         </View>
       ) : null}
@@ -300,13 +305,13 @@ export function SavedDreamMoment({
                 width: MEDALLION, height: MEDALLION, borderWidth: 1.5, borderColor: accent,
               }, strike.ripple] as StyleProp<ViewStyle>} />
             )}
-            <View testID="component.savedDream.sealLegend" className="absolute left-0 top-0" style={{ width: ORBIT, height: ORBIT }}>
+            <View testID={tid('component.savedDream.sealLegend')} className="absolute left-0 top-0" style={{ width: ORBIT, height: ORBIT }}>
               <SealLegend text={seal.legend} reduced={reduced} still={settled || still} />
             </View>
           </>
         ) : null}
         {date ? (
-          <View testID="component.savedDream.sealDate" className="absolute left-0 top-0" style={{ width: ORBIT, height: ORBIT }}>
+          <View testID={tid('component.savedDream.sealDate')} className="absolute left-0 top-0" style={{ width: ORBIT, height: ORBIT }}>
             <SealLegend text={date} side="bottom" reduced={reduced} still={settled || still}
               from={seal && !settled ? DREAM_STORY.sealContact + 240 : 320} />
           </View>
@@ -317,7 +322,7 @@ export function SavedDreamMoment({
         // Once painted, the window opens: pressing it shows the illustration full size. Once
         // the illustration has left for the plate, the same view stays, only no longer pressed.
         <PressableScale
-          testID={TID.Button.SavedDreamArtworkOpen}
+          testID={tid(TID.Button.SavedDreamArtworkOpen)}
           onPress={artworkAway ? undefined : onOpenArtwork}
           disabled={artworkAway}
           accessibilityRole="button"
@@ -350,7 +355,7 @@ export function SavedDreamMoment({
         <Animated.View key={action.label} style={motion.label as StyleProp<ViewStyle>}
           className={`flex-row items-center gap-1.5 ${action.disabled ? 'opacity-60' : ''}`}>
           {action.icon ? <IconSymbol name={action.icon} size={14} color={accent} /> : null}
-          <Text testID={TID.Text.DreamDetailActionTitle} accessibilityLiveRegion="polite" numberOfLines={1}
+          <Text testID={tid(TID.Text.DreamDetailActionTitle)} accessibilityLiveRegion="polite" numberOfLines={1}
             className="shrink text-center font-sans-medium text-[12px] leading-[18px] uppercase tracking-[2px] text-champagne-on">
             {action.label}
           </Text>
@@ -361,9 +366,9 @@ export function SavedDreamMoment({
   );
 
   return (
-    <View testID={TID.Component.SavedDreamMoment} className="mb-6 items-center">
+    <View testID={tid(TID.Component.SavedDreamMoment)} className="mb-6 items-center">
       {action?.onPress ? (
-        <PressableScale testID={action.testID} onPress={takeStep} disabled={!takeStep} haptic="light"
+        <PressableScale testID={tid(action.testID)} onPress={takeStep} disabled={!takeStep} haptic="light"
           accessibilityRole="button" accessibilityLabel={action.label} accessibilityHint={action.hint ?? undefined}
           accessibilityValue={details ? { text: details } : undefined}
           accessibilityState={{ disabled: !takeStep }} className="items-center">

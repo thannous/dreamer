@@ -250,6 +250,10 @@ const ARRIVAL_REVEAL_DELAY = 360;
 /** On arrival from the capture seal, the next steps wait for the astrolabe to settle. */
 /** Held back until the naming ends: an entrance that has not started yet. */
 const ARRIVAL_NOT_YET = 60 * 60 * 1000;
+/** How long the reading is held in place after the plate comes in above it. */
+const PLATE_SETTLE_MS = 800;
+/** On the web, a pause this long in the scrolling ends it, as the end of a drag does on a device. */
+const SCROLL_REST_MS = 160;
 
 /** Staggers the arrival from capture once; every other visit shows sections immediately. */
 function ArrivalReveal({ play, index, className, children }: {
@@ -436,6 +440,17 @@ const JournalDetailContent = memo(function JournalDetailContent({ dream, folio }
   // An illustration painted during this visit leaves the seal for the top of the page and
   // becomes its plate there, as every illustrated dream opens.
   const [plateRevealed, setPlateRevealed] = useState(false);
+  // For a moment after the plate comes in above the reading, the reading is held where it was.
+  const [plateSettling, setPlateSettling] = useState(false);
+  const revealPlate = useCallback(() => {
+    setPlateRevealed(true);
+    setPlateSettling(true);
+  }, []);
+  useEffect(() => {
+    if (!plateSettling) return;
+    const timer = setTimeout(() => setPlateSettling(false), PLATE_SETTLE_MS);
+    return () => clearTimeout(timer);
+  }, [plateSettling]);
   const [coverFlight, setCoverFlight] = useState<{
     from: { x: number; y: number; size: number };
     to: { top: number; drift: number };
@@ -701,35 +716,21 @@ const JournalDetailContent = memo(function JournalDetailContent({ dream, folio }
   const turnedTo = useJournalPageTurnedTo();
   const [coverShown, setCoverShown] = useState(false);
   const [isKeyboardVisible, setIsKeyboardVisible] = useState(false);
-  const [transcriptSectionOffset, setTranscriptSectionOffset] = useState(0);
   // Where the reading starts in the page: under the running head and the name, or the plate.
   const [readingContentTop, setReadingContentTop] = useState(insets.top + 76);
-  const [transcriptSectionHeight, setTranscriptSectionHeight] = useState(0);
   const readingScrollOffset = useRef(0);
   const readingContentRef = useRef<ViewInstance | null>(null);
-  const transcriptSectionRef = useRef<ViewInstance | null>(null);
-  const measureTranscriptSection = useCallback(() => {
-    const content = readingContentRef.current;
-    if (!content) return;
-    transcriptSectionRef.current?.measureLayout?.(content, (_left, top, _width, height) => {
-      setTranscriptSectionOffset(previous => previous === top ? previous : top);
-      setTranscriptSectionHeight(previous => previous === height ? previous : height);
-    });
-  }, []);
+  // Past the plate, the page's actions come in as soon as its reading is on the screen: the
+  // seal and the analysis, which now come before the story, or the story itself.
   const updateReadingChrome = useCallback((offsetY: number) => {
-    const visibleStoryHeight = Math.min(144, viewportHeight * 0.2, transcriptSectionHeight || 144);
-    const threshold = Math.max(1, readingContentTop + transcriptSectionOffset
-      - viewportHeight + visibleStoryHeight);
-    setReadingActionVisible(offsetY >= threshold);
-  }, [readingContentTop, transcriptSectionHeight, transcriptSectionOffset, viewportHeight]);
+    const visibleReadingHeight = Math.min(144, viewportHeight * 0.2);
+    setReadingActionVisible(offsetY >= Math.max(1, readingContentTop - viewportHeight + visibleReadingHeight));
+  }, [readingContentTop, viewportHeight]);
   // Rotation, text scaling and measured content can move artwork without a scroll
   // event. Recompute chrome before paint using the latest observed offset.
   useLayoutEffect(() => {
     updateReadingChrome(readingScrollOffset.current);
-    // Web onLayout observes size, so a position-only move can leave the old
-    // story offset behind. Read its position relative to the content ancestor.
-    measureTranscriptSection();
-  }, [measureTranscriptSection, updateReadingChrome]);
+  }, [updateReadingChrome]);
   const scrollViewRef = useRef<ScrollViewInstance | null>(null);
   const editorScrollRef = useRef<ScrollViewInstance | null>(null);
   const editingStoryRef = useRef(false);
@@ -2024,7 +2025,7 @@ const JournalDetailContent = memo(function JournalDetailContent({ dream, folio }
       const centre = { x: x + sealWidth / 2, y: y + SEAL_MEASURES.orbit / 2 };
       if (centre.y < insets.top + 24 || centre.y > viewportHeight - 96) return;
       if (reducedMotion) {
-        setPlateRevealed(true);
+        revealPlate();
         return;
       }
       // The plate takes the place of the running head and the name, above the reading,
@@ -2036,14 +2037,37 @@ const JournalDetailContent = memo(function JournalDetailContent({ dream, folio }
       setCoverFlight({ from: { ...centre, size: SEAL_MEASURES.medallion }, to: { top, drift }, landed: false });
     });
   }, [coverFlight, coverHeight, coverTravel, insets.top, isEditing, isIllustrationFullscreen, readingContentTop, reducedMotion,
-    viewportHeight, windowSize.height]);
+    revealPlate, viewportHeight, windowSize.height]);
   useEffect(() => {
     if (!sealHoldsArtwork) return;
     const frame = requestAnimationFrame(releaseArtwork);
     return () => cancelAnimationFrame(frame);
   }, [releaseArtwork, sealHoldsArtwork]);
-  const coverFlightArrived = useCallback(() => setPlateRevealed(true), []);
+  const scrollRestRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  useEffect(() => () => {
+    if (scrollRestRef.current) clearTimeout(scrollRestRef.current);
+  }, []);
+  const coverFlightArrived = revealPlate;
   const coverFlightGone = useCallback(() => setCoverFlight(null), []);
+  // While the seal holds the illustration, while it flies and as the plate settles in.
+  const holdsReading = sealHoldsArtwork || Boolean(coverFlight) || plateSettling;
+  // The web has no maintainVisibleContentPosition, and its layout events follow sizes only,
+  // so a reading moved by the plate (coming in, or resized by a rotation) keeps a stale top.
+  // After each commit, before the browser paints, its top is read again; while the plate
+  // comes in above, the page scrolls by as much, leaving the reading where the reader has it.
+  const readingPlaceRef = useRef<number | null>(null);
+  // Every commit, on purpose: any of them may move the reading. A top that did not move sets nothing.
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  useLayoutEffect(() => {
+    if (Platform.OS !== 'web') return;
+    const place = (readingContentRef.current as unknown as HTMLElement | null)?.offsetTop ?? null;
+    const previous = readingPlaceRef.current;
+    readingPlaceRef.current = place;
+    if (place === null || place === previous) return;
+    setReadingContentTop(place);
+    if (!holdsReading || previous === null) return;
+    scrollViewRef.current?.scrollTo({ y: Math.max(0, readingScrollOffset.current + place - previous), animated: false });
+  });
   // The flight fades once the plate shows under it, or after a moment at most.
   const plateUnderFlight = plateRevealed && Boolean(coverFlight) && !coverFlight?.landed;
   useEffect(() => {
@@ -2094,11 +2118,8 @@ const JournalDetailContent = memo(function JournalDetailContent({ dream, folio }
     );
   }
 
-  const renderTranscriptBody = (measureForReading = false) => (
+  const renderTranscriptBody = () => (
     <View
-      ref={measureForReading ? transcriptSectionRef : undefined}
-      collapsable={measureForReading ? false : undefined}
-      onLayout={measureForReading ? measureTranscriptSection : undefined}
       testID={TID.Component.TranscriptCard}
       className="font-sans text-[15px] leading-6"
     >
@@ -2959,6 +2980,7 @@ const JournalDetailContent = memo(function JournalDetailContent({ dream, folio }
         handedOver={windowHandedOver} action={sealAction} sealing={sealShows}
         artwork={artworkAtArrival === false ? paintedArtwork : null} artworkAway={Boolean(coverFlight) || plateRevealed}
         landArtwork={artworkLanding} onOpenArtwork={() => setIsIllustrationFullscreen(true)}
+        onArtworkError={() => setFailedCoverUri(displayImageUrl ?? null)}
         date={formatDreamStamp(dream.id)} still={!opensOnSavedMoment && !readingInFlight}
         announce={opensOnSavedMoment} wordsLine={opensOnSavedMoment || readingInFlight} />
     </View>
@@ -3002,6 +3024,11 @@ const JournalDetailContent = memo(function JournalDetailContent({ dream, folio }
             onHeaderScroll(event);
             readingScrollOffset.current = nativeEvent.contentOffset.y;
             updateReadingChrome(nativeEvent.contentOffset.y);
+            // The web has no end of drag or momentum: a pause in the scrolling stands for it.
+            if (Platform.OS === 'web' && sealHoldsArtwork) {
+              if (scrollRestRef.current) clearTimeout(scrollRestRef.current);
+              scrollRestRef.current = setTimeout(releaseArtwork, SCROLL_REST_MS);
+            }
           }}
           // Scrolled back to a seal still holding its illustration, the reader sees it leave.
           onScrollEndDrag={sealHoldsArtwork ? releaseArtwork : undefined}
@@ -3010,7 +3037,7 @@ const JournalDetailContent = memo(function JournalDetailContent({ dream, folio }
           // as the plate comes in above it. The reading is the third block under the running
           // head and the name, the second under the plate: the index must name it, or the
           // native side keeps an anchor it can no longer find and drifts on every update.
-          maintainVisibleContentPosition={sealHoldsArtwork || coverFlight
+          maintainVisibleContentPosition={holdsReading
             ? { minIndexForVisible: hasIllustratedCover ? 1 : 2 } : undefined}
           keyboardShouldPersistTaps="handled"
         >
@@ -3027,7 +3054,6 @@ const JournalDetailContent = memo(function JournalDetailContent({ dream, folio }
           <View ref={readingContentRef} collapsable={false} className="px-4 pb-6"
             onLayout={({ nativeEvent: { layout } }) => {
               setReadingContentTop((previous) => (previous === layout.y ? previous : layout.y));
-              measureTranscriptSection();
             }}>
             {sealVisible ? (
               <OpenUp appear={!opensOnSavedMoment && readingInFlight}>{sealBlock}</OpenUp>
@@ -3082,7 +3108,7 @@ const JournalDetailContent = memo(function JournalDetailContent({ dream, folio }
               <ArrivalReveal play={opensOnSavedMoment} index={1} className="mt-2 mb-5">
                 <View>
                   <View className="px-2 pb-4">
-                    {renderTranscriptBody(true)}
+                    {renderTranscriptBody()}
                   </View>
                 </View>
               </ArrivalReveal>
