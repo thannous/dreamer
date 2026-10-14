@@ -20,7 +20,7 @@ export const DREAM_CAPTURE_BACKGROUND_TASK = 'dreamer-dream-capture-response';
 
 /** Generous cap: a long dictated dream, never an accidental paste of a book. */
 export const MAX_NOTIFICATION_DREAM_LENGTH = 20_000;
-/** The inbox only bridges the gap until the next app launch. */
+/** How many imported reply ids are remembered to ignore late redeliveries. */
 export const MAX_NOTIFICATION_DREAM_INBOX_SIZE = 50;
 
 export type NotificationDreamCapture = {
@@ -138,7 +138,8 @@ export function addNotificationDreamCapture(
   }
   return {
     inbox: {
-      captures: [...inbox.captures, capture].slice(-MAX_NOTIFICATION_DREAM_INBOX_SIZE),
+      // Pending replies are never evicted: each one was already confirmed to the user.
+      captures: [...inbox.captures, capture],
       seenIds: [...inbox.seenIds, capture.id].slice(-MAX_NOTIFICATION_DREAM_INBOX_SIZE),
     },
     added: true,

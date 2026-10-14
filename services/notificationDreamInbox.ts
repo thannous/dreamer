@@ -85,15 +85,24 @@ export async function captureDreamFromNotificationResponse(
   const rawIdentifier = response?.notification?.request?.identifier;
   const identifier = typeof rawIdentifier === 'string' && rawIdentifier ? rawIdentifier : undefined;
 
+  let replaced = false;
   if (added) {
     // On Android the notice replaces the replied reminder, which also ends its
     // reply spinner and removes its reply button.
-    await presentDreamCapturedNotification(identifier).catch((error) => {
-      logger.warn('[NotificationDreamInbox] Unable to confirm the dictated dream', error);
-    });
+    replaced = await presentDreamCapturedNotification(identifier).then(
+      () => Platform.OS === 'android',
+      (error) => {
+        logger.warn('[NotificationDreamInbox] Unable to confirm the dictated dream', error);
+        return false;
+      }
+    );
   }
 
-  if (identifier && (Platform.OS !== 'android' || !added)) {
+  // A duplicate delivery (Android hands a background reply to both the
+  // listener and the task) must not dismiss the notice the first one posted
+  // under the same identifier.
+  const duplicate = Boolean(capture) && !added;
+  if (identifier && !replaced && !(Platform.OS === 'android' && duplicate)) {
     // Android 15+ ignores this for a replied notification; older versions and
     // iOS still remove it.
     await Notifications.dismissNotificationAsync(identifier).catch(() => undefined);

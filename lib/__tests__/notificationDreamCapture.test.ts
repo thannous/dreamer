@@ -62,6 +62,18 @@ describe('notification dream capture', () => {
     expect(addNotificationDreamCapture(inbox, nextMonday).added).toBe(true);
   });
 
+  it('keeps every reply waiting for the journal, however many arrive first', () => {
+    let inbox = { captures: [], seenIds: [] } as ReturnType<typeof parseNotificationDreamInbox>;
+    for (let day = 0; day < 60; day += 1) {
+      const capture = parseDreamCaptureResponse(
+        reply({ notification: { date: 1_760_000_000_000 + day * 86_400_000, request: { identifier: 'morning' } } }),
+        options(day)
+      )!;
+      inbox = addNotificationDreamCapture(inbox, capture).inbox;
+    }
+    expect(inbox.captures).toHaveLength(60);
+  });
+
   it('keeps valid replies when the stored inbox is partly corrupted', () => {
     const valid = parseDreamCaptureResponse(reply(), options(10))!;
     const stored = JSON.stringify({ captures: [valid, { id: 'x' }, null], seenIds: [valid.id, 3] });
