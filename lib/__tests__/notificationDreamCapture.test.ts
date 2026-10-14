@@ -92,6 +92,10 @@ describe('notification dream capture', () => {
     // A full guest journal: the reply follows the guest into the account they create.
     const waitingForGuest = claimNotificationDreamCaptures(inbox, [capture.id], guest).captures[0];
     expect(canImportNotificationDream(waitingForGuest, accountB)).toBe(true);
+    // Once that account has taken it over, no other account can.
+    const takenByB = claimNotificationDreamCaptures({ captures: [waitingForGuest], seenIds: [] }, [capture.id], accountB)
+      .captures[0];
+    expect(canImportNotificationDream(takenByB, accountA)).toBe(false);
     expect(claimNotificationDreamCaptures({ captures: [waitingForA], seenIds: [] }, [capture.id], accountB).captures[0])
       .toEqual(waitingForA);
   });

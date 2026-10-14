@@ -179,18 +179,24 @@ export function canImportNotificationDream(capture: NotificationDreamCapture, sc
   return capture.ownerScope === GUEST_DREAM_SCOPE && scope !== GUEST_DREAM_SCOPE;
 }
 
-/** Ties replies to the journal about to import them; an existing owner is kept. */
+/**
+ * Ties replies to the journal about to import them. An unowned reply, or a
+ * guest's reply taken over by the account that signs in, now belongs to that
+ * journal; any other owner is kept.
+ */
 export function claimNotificationDreamCaptures(
   inbox: NotificationDreamInbox,
   ids: readonly string[],
   scope: string
 ): NotificationDreamInbox {
   const claimed = new Set(ids);
-  if (!inbox.captures.some((entry) => claimed.has(entry.id) && !entry.ownerScope)) return inbox;
+  const takes = (entry: NotificationDreamCapture) =>
+    claimed.has(entry.id) &&
+    entry.ownerScope !== scope &&
+    (!entry.ownerScope || (entry.ownerScope === GUEST_DREAM_SCOPE && scope !== GUEST_DREAM_SCOPE));
+  if (!inbox.captures.some(takes)) return inbox;
   return {
     ...inbox,
-    captures: inbox.captures.map((entry) =>
-      claimed.has(entry.id) && !entry.ownerScope ? { ...entry, ownerScope: scope } : entry
-    ),
+    captures: inbox.captures.map((entry) => (takes(entry) ? { ...entry, ownerScope: scope } : entry)),
   };
 }

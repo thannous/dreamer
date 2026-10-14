@@ -60,7 +60,7 @@ export function useNotificationDreamImport(): void {
         // Tie each reply to this journal before saving it, so a failed save or
         // cleanup never leaves it open to another account signing in here.
         await claimNotificationDreams(
-          captures.filter((capture) => !capture.ownerScope).map((capture) => capture.id),
+          captures.map((capture) => capture.id),
           scope
         );
         const imported: string[] = [];
