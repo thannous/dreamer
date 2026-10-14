@@ -1,0 +1,146 @@
+/**
+ * Dream capture from a notification reply.
+ *
+ * The morning reminder carries a text-input action. On a paired watch (Apple
+ * Watch mirrors iPhone notifications, Wear OS bridges Android ones) or on the
+ * lock screen, the user dictates the dream and sends it without opening the
+ * app. The reply lands in a small durable inbox first, because the app may be
+ * running headless or about to be suspended; the journal imports it the next
+ * time it is mounted.
+ *
+ * No React, Expo, or platform imports - this module is the part tests pin down.
+ */
+
+export const DREAM_CAPTURE_CATEGORY_ID = 'dreamer-dream-capture';
+export const DICTATE_DREAM_ACTION_ID = 'dictate-dream';
+
+/** Headless task that receives Android action replies while the app is not in the foreground. */
+export const DREAM_CAPTURE_BACKGROUND_TASK = 'dreamer-dream-capture-response';
+
+/** Generous cap: a long dictated dream, never an accidental paste of a book. */
+export const MAX_NOTIFICATION_DREAM_LENGTH = 20_000;
+/** The inbox only bridges the gap until the next app launch. */
+export const MAX_NOTIFICATION_DREAM_INBOX_SIZE = 50;
+
+export type NotificationDreamCapture = {
+  /** Stable per reply: the same response delivered twice maps to one capture. */
+  id: string;
+  text: string;
+  capturedAt: number;
+  /** Reused as the dream's idempotency key, so a retried import never duplicates. */
+  clientRequestId: string;
+};
+
+/** The subset of an expo-notifications response this feature reads. */
+export type DreamCaptureResponseLike = {
+  actionIdentifier?: unknown;
+  userText?: unknown;
+  notification?: {
+    date?: unknown;
+    request?: { identifier?: unknown };
+  } | null;
+};
+
+export function isDreamCaptureResponse(response: DreamCaptureResponseLike | null | undefined): boolean {
+  return response?.actionIdentifier === DICTATE_DREAM_ACTION_ID;
+}
+
+/**
+ * Turns a notification reply into a capture, or null when it is not a dream
+ * reply or carries no words. `capturedAt` is the moment the reply was handled;
+ * the notification's own date only makes the id stable across redeliveries.
+ */
+export function parseDreamCaptureResponse(
+  response: DreamCaptureResponseLike | null | undefined,
+  options: { now: number; createClientRequestId: () => string }
+): NotificationDreamCapture | null {
+  if (!response || !isDreamCaptureResponse(response)) return null;
+  if (typeof response.userText !== 'string') return null;
+
+  const text = response.userText.trim().slice(0, MAX_NOTIFICATION_DREAM_LENGTH);
+  if (!text) return null;
+
+  const identifier = response.notification?.request?.identifier;
+  const date = response.notification?.date;
+  const requestId = typeof identifier === 'string' && identifier ? identifier : 'unknown';
+  const deliveredAt = typeof date === 'number' && Number.isFinite(date) ? Math.round(date) : options.now;
+
+  return {
+    id: `${requestId}:${deliveredAt}`,
+    text,
+    capturedAt: options.now,
+    clientRequestId: options.createClientRequestId(),
+  };
+}
+
+function isCapture(value: unknown): value is NotificationDreamCapture {
+  if (!value || typeof value !== 'object') return false;
+  const entry = value as Record<string, unknown>;
+  return (
+    typeof entry.id === 'string' &&
+    entry.id.length > 0 &&
+    typeof entry.text === 'string' &&
+    entry.text.trim().length > 0 &&
+    typeof entry.capturedAt === 'number' &&
+    Number.isFinite(entry.capturedAt) &&
+    typeof entry.clientRequestId === 'string' &&
+    entry.clientRequestId.length > 0
+  );
+}
+
+export type NotificationDreamInbox = {
+  /** Replies kept on the device, waiting for the journal to import them. */
+  captures: NotificationDreamCapture[];
+  /**
+   * Recent reply ids, kept after import. The same response can come back from
+   * the live listener, the last response read at launch and the Android task.
+   */
+  seenIds: string[];
+};
+
+/** Reads a stored inbox, dropping anything malformed instead of failing the whole queue. */
+export function parseNotificationDreamInbox(serialized: string | null | undefined): NotificationDreamInbox {
+  if (!serialized) return { captures: [], seenIds: [] };
+  try {
+    const parsed = JSON.parse(serialized) as unknown;
+    if (!parsed || typeof parsed !== 'object') return { captures: [], seenIds: [] };
+    const raw = parsed as { captures?: unknown; seenIds?: unknown };
+    return {
+      captures: Array.isArray(raw.captures) ? raw.captures.filter(isCapture) : [],
+      seenIds: Array.isArray(raw.seenIds)
+        ? raw.seenIds.filter((id): id is string => typeof id === 'string' && id.length > 0)
+        : [],
+    };
+  } catch {
+    return { captures: [], seenIds: [] };
+  }
+}
+
+/** Adds a reply once. A redelivered reply, even after its import, is ignored. */
+export function addNotificationDreamCapture(
+  inbox: NotificationDreamInbox,
+  capture: NotificationDreamCapture
+): { inbox: NotificationDreamInbox; added: boolean } {
+  if (inbox.seenIds.includes(capture.id) || inbox.captures.some((entry) => entry.id === capture.id)) {
+    return { inbox, added: false };
+  }
+  return {
+    inbox: {
+      captures: [...inbox.captures, capture].slice(-MAX_NOTIFICATION_DREAM_INBOX_SIZE),
+      seenIds: [...inbox.seenIds, capture.id].slice(-MAX_NOTIFICATION_DREAM_INBOX_SIZE),
+    },
+    added: true,
+  };
+}
+
+/** Drops imported replies while remembering their ids. */
+export function removeNotificationDreamCaptures(
+  inbox: NotificationDreamInbox,
+  ids: readonly string[]
+): NotificationDreamInbox {
+  const removed = new Set(ids);
+  return {
+    captures: inbox.captures.filter((entry) => !removed.has(entry.id)),
+    seenIds: inbox.seenIds,
+  };
+}

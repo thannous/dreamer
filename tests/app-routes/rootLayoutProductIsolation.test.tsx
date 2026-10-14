@@ -23,6 +23,7 @@ const mockMigration = jest.fn().mockResolvedValue(undefined);
 const mockDreamMigration = jest.fn().mockResolvedValue(undefined);
 const mockMark = jest.fn();
 let mockNotificationListener: ((response: any) => void) | undefined;
+const mockCaptureDream = jest.fn().mockResolvedValue(true);
 const mockReplace = jest.fn();
 const mockGuestSession = jest.fn();
 const mockNavigation = { isReady: () => true, addListener: () => () => undefined };
@@ -73,6 +74,9 @@ jest.mock('@/components/ErrorBoundary', () => ({ ErrorBoundary: (props: React.Pr
 jest.mock('@/components/navigation/DesktopShell', () => ({ DesktopShell: (props: React.PropsWithChildren) => mockChildren(props) }));
 jest.mock('@/components/analysis/AnalysisFlightIndicator', () => ({ AnalysisFlightIndicator: () => <div data-testid="analysis-host" /> }));
 jest.mock('@/components/reminders/EngagementRemindersHost', () => ({ EngagementRemindersHost: () => <div data-testid="reminders-host" /> }));
+jest.mock('@/components/reminders/NotificationDreamImportHost', () => ({ NotificationDreamImportHost: () => <div data-testid="dream-reply-host" /> }));
+jest.mock('@/services/notificationDreamInbox', () => ({ captureDreamFromNotificationResponse: (...args: unknown[]) => mockCaptureDream(...args) }));
+jest.mock('@/services/notificationDreamTask', () => ({ registerDreamCaptureBackgroundTask: jest.fn().mockResolvedValue(undefined) }));
 jest.mock('@/components/speech/OfflineModelPromptHost', () => ({ OfflineModelPromptHost: () => <div data-testid="speech-host" /> }));
 jest.mock('@/components/releases/WhatsNewModal', () => ({ WhatsNewModalHost: () => null }));
 jest.mock('@/components/settings/QuickSettingsProvider', () => ({ QuickSettingsProvider: (props: React.PropsWithChildren) => mockChildren(props) }));
@@ -307,6 +311,28 @@ describe('root product composition (real root and DreamsProvider)', () => {
     });
     await act(async () => { jest.advanceTimersByTime(100); await Promise.resolve(); });
     expect(mockReplace).toHaveBeenCalledWith(url);
+  });
+
+  // The reply was dictated on a watch or a lock screen: opening capture on the
+  // phone would be a surprise, and the words must reach the journal inbox.
+  it('saves a dream dictated in a reminder reply without opening capture', async () => {
+    mockLucid = false;
+    mockUser = null;
+    await mountStartup();
+    mockReplace.mockClear();
+    const response = {
+      actionIdentifier: 'dictate-dream',
+      userText: 'A train made of glass',
+      notification: { date: 1, request: { identifier: 'morning', content: { data: { url: '/recording' } } } },
+    };
+    await act(async () => {
+      mockNotificationListener?.(response);
+      await Promise.resolve();
+    });
+    await act(async () => { jest.advanceTimersByTime(100); await Promise.resolve(); });
+    expect(mockCaptureDream).toHaveBeenCalledWith(response);
+    expect(mockReplace).not.toHaveBeenCalled();
+    expect(require('@/services/storageService').savePendingRecordingNotification).not.toHaveBeenCalled();
   });
 
   it.each([null, { id: 'journal-account' }])('retains Journal provider, routes and hosts for user %j', async (user) => {

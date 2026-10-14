@@ -1,0 +1,97 @@
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import * as Notifications from 'expo-notifications';
+
+import { generateUUID } from '@/lib/dreamUtils';
+import { logger } from '@/lib/logger';
+import {
+  addNotificationDreamCapture,
+  isDreamCaptureResponse,
+  parseDreamCaptureResponse,
+  parseNotificationDreamInbox,
+  removeNotificationDreamCaptures,
+  type DreamCaptureResponseLike,
+  type NotificationDreamCapture,
+  type NotificationDreamInbox,
+} from '@/lib/notificationDreamCapture';
+import { presentDreamCapturedNotification } from '@/services/notificationService';
+
+const INBOX_KEY = 'noctalia_notification_dream_inbox_v1';
+
+type InboxListener = () => void;
+const listeners = new Set<InboxListener>();
+
+// Serializes read-modify-write cycles within one JS runtime.
+let inboxWrite: Promise<unknown> = Promise.resolve();
+
+function updateInbox<T>(
+  update: (inbox: NotificationDreamInbox) => { inbox: NotificationDreamInbox; result: T }
+): Promise<T> {
+  const next = inboxWrite.then(async () => {
+    const current = parseNotificationDreamInbox(await AsyncStorage.getItem(INBOX_KEY));
+    const { inbox, result } = update(current);
+    if (inbox !== current) {
+      await AsyncStorage.setItem(INBOX_KEY, JSON.stringify(inbox));
+    }
+    return result;
+  });
+  inboxWrite = next.catch(() => undefined);
+  return next;
+}
+
+export async function readNotificationDreamInbox(): Promise<NotificationDreamCapture[]> {
+  await inboxWrite;
+  return parseNotificationDreamInbox(await AsyncStorage.getItem(INBOX_KEY)).captures;
+}
+
+export async function removeImportedNotificationDreams(ids: readonly string[]): Promise<void> {
+  if (ids.length === 0) return;
+  await updateInbox((inbox) => ({ inbox: removeNotificationDreamCaptures(inbox, ids), result: undefined }));
+}
+
+/** Lets the mounted journal import a reply that arrived while the app was alive. */
+export function subscribeNotificationDreamInbox(listener: InboxListener): () => void {
+  listeners.add(listener);
+  return () => {
+    listeners.delete(listener);
+  };
+}
+
+/**
+ * Handles a reminder reply wherever it arrives: the foreground listener, the
+ * last response read at launch, or the Android headless task. Returns true when
+ * the response was a dream reply, so callers skip the usual "open capture"
+ * navigation: the user answered from the watch and expects nothing to open.
+ */
+export async function captureDreamFromNotificationResponse(
+  response: DreamCaptureResponseLike | null | undefined
+): Promise<boolean> {
+  if (!isDreamCaptureResponse(response)) return false;
+
+  const capture = parseDreamCaptureResponse(response, {
+    now: Date.now(),
+    createClientRequestId: generateUUID,
+  });
+
+  // Keep the words first. Everything after this is feedback.
+  const added = capture
+    ? await updateInbox((inbox) => {
+        const outcome = addNotificationDreamCapture(inbox, capture);
+        return { inbox: outcome.inbox, result: outcome.added };
+      })
+    : false;
+  if (added) listeners.forEach((listener) => listener());
+
+  const identifier = response?.notification?.request?.identifier;
+  if (typeof identifier === 'string' && identifier) {
+    // Android keeps a spinner on a replied notification until the app updates it.
+    await Notifications.dismissNotificationAsync(identifier).catch(() => undefined);
+  }
+
+  if (added) {
+    await presentDreamCapturedNotification().catch((error) => {
+      logger.warn('[NotificationDreamInbox] Unable to confirm the dictated dream', error);
+    });
+  }
+
+  return true;
+}
