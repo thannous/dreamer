@@ -88,10 +88,10 @@ export async function captureDreamFromNotificationResponse(
     createClientRequestId: generateUUID,
   });
   // Owned from the start by the journal open when the reminder was answered,
-  // so an expired session or another sign-in later cannot take it.
-  const ownerScope = parsed
-    ? await inboxWrite.then(() => AsyncStorage.getItem(SCOPE_KEY)).catch(() => null)
-    : null;
+  // so an expired session or another sign-in later cannot take it. A failed
+  // read fails the capture like a failed write: no notice, and a replayable
+  // response is tried again, rather than a reply any journal could claim.
+  const ownerScope = parsed ? await inboxWrite.then(() => AsyncStorage.getItem(SCOPE_KEY)) : null;
   const capture = parsed && ownerScope ? { ...parsed, ownerScope } : parsed;
 
   // Keep the words first. Everything after this is feedback.

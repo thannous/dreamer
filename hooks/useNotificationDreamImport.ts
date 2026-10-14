@@ -53,12 +53,18 @@ export function useNotificationDreamImport(): void {
   }, [scope]);
 
   // A reply made while the app is closed belongs to the journal open here.
-  useEffect(() => {
+  // Written again whenever the app comes and goes, so a failed write is retried
+  // before the next closed-app reply.
+  const rememberScope = useCallback(() => {
     if (!ready) return;
     rememberNotificationDreamScope(scope).catch((error) => {
       log.warn('Unable to remember the open journal', error);
     });
   }, [ready, scope]);
+
+  useEffect(() => {
+    rememberScope();
+  }, [rememberScope]);
 
   const importPending = useCallback(async () => {
     if (!ready) return;
@@ -152,8 +158,9 @@ export function useNotificationDreamImport(): void {
   );
 
   useAppState(() => {
+    rememberScope();
     void registerDreamCaptureBackgroundTask();
     void ensureDreamCaptureReplyAction().catch(() => undefined);
     void importPending();
-  });
+  }, rememberScope);
 }
