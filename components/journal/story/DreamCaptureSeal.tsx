@@ -63,8 +63,6 @@ const OPEN = {
   ring: 600,
   toName: 350,
 } as const;
-/** How long after the save the pre-analysis is waited for before the first words name the dream. */
-const NAME_DEADLINE = 5000;
 const CLOSE = {
   perCharacter: 45,
   shortest: 700,
@@ -227,7 +225,7 @@ export function DreamCaptureSeal({ name, provisionalName, previousPage, onNamed,
   const [closing, setClosing] = useState<{ text: string; lines: string[]; widths: number[] } | null>(null);
   useEffect(() => {
     const opening = setTimeout(() => setOpened(true), ms(openTotal));
-    const deadline = setTimeout(() => setLate(true), ms(NAME_DEADLINE));
+    const deadline = setTimeout(() => setLate(true), ms(DREAM_STORY.nameDeadline));
     return () => { clearTimeout(opening); clearTimeout(deadline); };
   }, [ms, openTotal]);
   // Once the ring is drawn, the pen writes the pre-analysis's name as soon as it is known, or

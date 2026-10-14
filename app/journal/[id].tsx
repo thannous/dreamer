@@ -1920,9 +1920,12 @@ const JournalDetailContent = memo(function JournalDetailContent({ dream, folio }
   useEffect(() => {
     if (!namingWaits) return;
     const due = setTimeout(() => setNamingTime('due'), DREAM_STORY.namingFrom);
-    const late = setTimeout(() => setNamingTime('late'), DREAM_STORY.namingFrom + DREAM_STORY.namingHold);
+    // After the capture seal the pre-analysis has already been waited for; without it, the
+    // page opens at the save and waits for it as long as the seal would have.
+    const late = setTimeout(() => setNamingTime('late'),
+      windowHandedOver ? DREAM_STORY.namingFrom + DREAM_STORY.namingHold : DREAM_STORY.nameDeadline);
     return () => { clearTimeout(due); clearTimeout(late); };
-  }, [namingWaits]);
+  }, [namingWaits, windowHandedOver]);
   // The name is taken as the dream has it at that moment, during render so nothing stale is written.
   if (namingWaits && dream && namingTime !== 'early' && (!initialCategorizationPending || namingTime === 'late')) {
     const legend = [dreamTypeLabel, dreamThemeLabel].filter(Boolean).join(' · ');

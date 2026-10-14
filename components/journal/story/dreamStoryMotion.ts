@@ -62,6 +62,11 @@ export const DREAM_STORY = {
   namingFrom: 700,
   namingHold: 1000,
   /**
+   * How long after the save the pre-analysis is waited for: only past this does a dream
+   * take its first words as its name.
+   */
+  nameDeadline: 5000,
+  /**
    * The four signs turn on the astrolabe while the seal chooses; the chosen one glides
    * into the window and is pressed there, and the legend is engraved around it.
    */
