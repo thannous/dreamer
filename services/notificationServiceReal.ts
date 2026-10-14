@@ -723,6 +723,16 @@ export async function presentAnalysisReadyNotification(dreamId: number): Promise
  * Confirms a dream dictated from a reminder reply. It reaches the watch the
  * same way the reminder did, so the user knows the words were kept.
  */
+/**
+ * Registers the reply action if this launch has not managed to yet. Called on
+ * every return to the app, because reminder reconciliation can skip a launch
+ * whose plan did not change.
+ */
+export async function ensureDreamCaptureReplyAction(): Promise<void> {
+  if (Platform.OS === 'web' || dreamCaptureCategoryRegistered) return;
+  await ensureDreamCaptureCategory(await getNotificationTranslator());
+}
+
 export async function presentDreamCapturedNotification(replacingIdentifier?: string): Promise<void> {
   if (Platform.OS === 'web') {
     return;

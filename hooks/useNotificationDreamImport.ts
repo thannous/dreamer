@@ -19,6 +19,7 @@ import {
   subscribeNotificationDreamInbox,
 } from '@/services/notificationDreamInbox';
 import { registerDreamCaptureBackgroundTask } from '@/services/notificationDreamTask';
+import { ensureDreamCaptureReplyAction } from '@/services/notificationService';
 
 const log = createScopedLogger('[NotificationDreamImport]');
 
@@ -143,6 +144,7 @@ export function useNotificationDreamImport(): void {
 
   useAppState(() => {
     void registerDreamCaptureBackgroundTask();
+    void ensureDreamCaptureReplyAction().catch(() => undefined);
     void importPending();
   });
 }
