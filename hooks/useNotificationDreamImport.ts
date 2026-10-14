@@ -38,11 +38,17 @@ export function useNotificationDreamImport(): void {
   const importingRef = useRef(false);
   const rerunRef = useRef(false);
   const guestLimitShownRef = useRef(false);
+  const scopeRef = useRef(scope);
+  const latestImportRef = useRef<(() => Promise<void>) | null>(null);
   const ready = Platform.OS !== 'web' && loaded && !authLoading;
 
   useEffect(() => {
     dreamsRef.current = dreams;
   }, [dreams]);
+
+  useEffect(() => {
+    scopeRef.current = scope;
+  }, [scope]);
 
   const importPending = useCallback(async () => {
     if (!ready) return;
@@ -51,12 +57,16 @@ export function useNotificationDreamImport(): void {
       return;
     }
     importingRef.current = true;
+    // A pass started for one account stops as soon as another signs in; the
+    // newest pass then runs with its own journal.
+    const stale = () => scopeRef.current !== scope;
     try {
       do {
         rerunRef.current = false;
         const captures = (await readNotificationDreamInbox()).filter((capture) =>
           canImportNotificationDream(capture, scope)
         );
+        if (stale()) break;
         // Tie each reply to this journal before saving it, so a failed save or
         // cleanup never leaves it open to another account signing in here.
         await claimNotificationDreams(
@@ -66,6 +76,7 @@ export function useNotificationDreamImport(): void {
         const imported: string[] = [];
         let blockedByGuestLimit = false;
         for (const capture of captures) {
+          if (stale()) break;
           const alreadySaved = dreamsRef.current.some(
             (dream) => dream.clientRequestId === capture.clientRequestId
           );
@@ -103,13 +114,21 @@ export function useNotificationDreamImport(): void {
             ]
           );
         }
-      } while (rerunRef.current);
+      } while (rerunRef.current && !stale());
     } catch (error) {
       log.warn('Unable to read dictated dreams', error);
     } finally {
       importingRef.current = false;
+      if (rerunRef.current) {
+        rerunRef.current = false;
+        void latestImportRef.current?.();
+      }
     }
   }, [addDream, ready, scope, t]);
+
+  useEffect(() => {
+    latestImportRef.current = importPending;
+  }, [importPending]);
 
   useEffect(() => {
     void importPending();
