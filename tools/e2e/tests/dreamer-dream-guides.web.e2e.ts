@@ -39,26 +39,26 @@ async function openGuides(page: Page, preference: 'light' | 'dark' | 'auto') {
 
 async function expectCompleteText(text: Locator, row: Locator) {
   await expect(text).toBeVisible();
-  const rowBounds = (await row.boundingBox())!;
-  const geometry = await text.evaluate((element) => {
+  const rowElement = await row.elementHandle();
+  // Rows settle after a theme or locale change: read the text and its row in the same frame,
+  // once laid out, rather than one before the other.
+  const fits = () => text.evaluate((element, rowNode) => {
     const bounds = element.getBoundingClientRect();
+    const rowBounds = (rowNode as Element).getBoundingClientRect();
     const range = document.createRange();
     range.selectNodeContents(element);
     const fragments = Array.from(range.getClientRects());
+    const textBottom = Math.max(...fragments.map((rect) => rect.bottom));
     return {
-      left: bounds.left, right: bounds.right, top: bounds.top, bottom: bounds.bottom, viewportWidth: innerWidth,
-      textLeft: Math.min(...fragments.map((rect) => rect.left)),
-      textRight: Math.max(...fragments.map((rect) => rect.right)),
-      textTop: Math.min(...fragments.map((rect) => rect.top)),
-      textBottom: Math.max(...fragments.map((rect) => rect.bottom)),
+      startsOnScreen: Math.min(...fragments.map((rect) => rect.left)) >= 0,
+      // Visible serif glyphs and trailing spaces may overhang their line box.
+      endsOnScreen: Math.max(...fragments.map((rect) => rect.right)) <= innerWidth,
+      startsInRow: Math.min(...fragments.map((rect) => rect.top)) >= rowBounds.top - 1,
+      endsInBox: textBottom <= bounds.bottom + 1,
+      endsInRow: textBottom <= rowBounds.bottom + 1,
     };
-  });
-  expect(geometry.textLeft).toBeGreaterThanOrEqual(0);
-  // Visible serif glyphs and trailing spaces may overhang their line box.
-  expect(geometry.textRight).toBeLessThanOrEqual(geometry.viewportWidth);
-  expect(geometry.textTop).toBeGreaterThanOrEqual(rowBounds.y - 1);
-  expect(geometry.textBottom).toBeLessThanOrEqual(geometry.bottom + 1);
-  expect(geometry.textBottom).toBeLessThanOrEqual(rowBounds.y + rowBounds.height + 1);
+  }, rowElement);
+  await expect.poll(fits).toEqual({ startsOnScreen: true, endsOnScreen: true, startsInRow: true, endsInBox: true, endsInRow: true });
 }
 
 async function checkReading(page: Page) {

@@ -357,7 +357,9 @@ test('contextual backgrounds remain usable on narrow and desktop screens with a 
       await readable(page, info, `explorer-${mode}-${viewport.width}`);
       await expect(page.getByTestId('btn.explorer.guides')).toBeInViewport();
       await page.getByTestId('tab.addDream').filter({ visible: true }).click();
-      await artwork(page, 'capture', mode);
+      // On a desktop browser the sidebar carries the painting and Capture keeps a plain page.
+      if (viewport.width < 1024) await artwork(page, 'capture', mode);
+      else await expect(page.getByTestId('image.background.capture')).toHaveCount(0);
       await readable(page, info, `capture-${mode}-${viewport.width}`);
       await page.getByTestId('input.dreamTranscript').fill('Le ciel était calme.');
       await expect(page.getByTestId('btn.saveDream')).toBeEnabled();

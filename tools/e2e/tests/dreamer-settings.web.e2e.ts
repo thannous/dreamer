@@ -16,7 +16,8 @@ async function chooseTheme(page: Page, theme: 'light' | 'dark' | 'auto') {
     await expect(page.getByTestId(`settings-theme-choice.option.${value}`)).toBeVisible();
   }
   await page.getByTestId(`settings-theme-choice.option.${theme}`).click();
-  await expect(page.getByTestId('settings-theme-choice.sheet')).toHaveCount(0);
+  // The sheet stays mounted once closed; what the reader sees is that it is gone.
+  await expect(page.getByTestId('settings-theme-choice.sheet')).toBeHidden();
 }
 
 for (const theme of ['light', 'dark'] as const) {
@@ -43,7 +44,7 @@ for (const theme of ['light', 'dark'] as const) {
     await expect(page.getByTestId('screen.settings')).toHaveCSS('background-color', background);
     await page.getByTestId('settings-language-choice').click();
     await page.getByTestId('settings-language-choice.option.fr').click();
-    await expect(page.getByTestId('settings-language-choice.sheet')).toHaveCount(0);
+    await expect(page.getByTestId('settings-language-choice.sheet')).toBeHidden();
     await page.getByTestId('settings-section-account').scrollIntoViewIfNeeded();
     await page.evaluate(() => window.scrollTo({ left: 0 }));
     await page.screenshot({ path: testInfo.outputPath(`settings-${theme}-top.png`) });
@@ -78,7 +79,7 @@ for (const theme of ['light', 'dark'] as const) {
     await page.getByTestId('settings-notifications-weekday-time').click();
     await expect(page.getByTestId('settings-notifications-weekday-sheet')).toBeVisible();
     await page.getByRole('button', { name: 'Terminé', exact: true }).click();
-    await expect(page.getByTestId('settings-notifications-weekday-sheet')).toHaveCount(0);
+    await expect(page.getByTestId('settings-notifications-weekday-sheet')).toBeHidden();
     await expect(page.getByTestId('quota.analysisValue')).toContainText('/ 3');
     for (const id of ['settings-legal-privacy-policy', 'settings-legal-terms-of-use', 'settings-legal-account-deletion', 'settings-delete-account']) {
       await expect(page.getByTestId(id)).toHaveCount(1);
