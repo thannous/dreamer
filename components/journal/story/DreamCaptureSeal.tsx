@@ -35,6 +35,14 @@ const ASTRAL_ART = require('@/assets/images/onboarding-astral-background.webp');
 /** The journal art's aspect, and its right page in fractions of the art (both journals share it). */
 const JOURNAL_RATIO = 1536 / 1024;
 const RIGHT_PAGE = { left: 785 / 1536, top: 105 / 1024, right: 1380 / 1536, bottom: 850 / 1024 } as const;
+/**
+ * The right page's own edges in the art: the binding's crease, and the outer edge of the
+ * block of leaves beside it. The dive ends with them on the screen's edges, where the dream
+ * page has its binding and its leaves, so the journal's edges become the page's own.
+ */
+const SPREAD = { binding: 771 / 1536, foreEdge: 1430 / 1536 } as const;
+/** How far down its page the ring sits, so the signs and the name have room below it. */
+const RING_DROP = 0.33;
 /** The pen art's nib in fractions of the art, and the pen's size against the journal. */
 const NIB = { x: 0.148, y: 0.874 } as const;
 const PEN_SCALE = 0.215;
@@ -196,11 +204,13 @@ export function DreamCaptureSeal({ name, mark, provisionalName, date, previousPa
     h: (RIGHT_PAGE.bottom - RIGHT_PAGE.top) * journalHeight,
   };
   const medallionY = insets.top + MEDALLION_CENTER_FROM_TOP;
-  const zoom = Math.max(width / page.w, height / page.h) * 1.02;
-  // Where the ring sits on the page so that, once the page covers the screen, it is the medallion.
+  // The dive ends with the spread's edges on the screen's: that fixes how far it goes.
+  const zoom = width / ((SPREAD.foreEdge - SPREAD.binding) * journalWidth);
+  // Where the ring sits on the page: centred between its edges, so that once they reach the
+  // screen's edges it is the medallion.
   const ring = {
-    x: page.x + page.w / 2,
-    y: page.y + (page.h + (2 * medallionY - height) / zoom) / 2,
+    x: journalWidth * (SPREAD.binding + SPREAD.foreEdge) / 2,
+    y: page.y + page.h * RING_DROP,
     r: MEDALLION / 2 / zoom,
   };
   const centre = { x: journalWidth / 2, y: journalHeight / 2 };
@@ -227,7 +237,7 @@ export function DreamCaptureSeal({ name, mark, provisionalName, date, previousPa
   const bookSign = BOOK_SIGN / onTheJournal;
   const bookOrbit = (push * ring.r + BOOK_SIGN * 0.73 + BOOK_SIGN_GAP) / onTheJournal;
   const book = {
-    x: width / 2 - push * page.w * 0.4,
+    x: width / 2 + push * (page.x + page.w * 0.1 - ring.x),
     y: medallionY + bookOrbit * onTheJournal + BOOK_SIGN * 0.73 + 12,
   };
   const pen = journalWidth * PEN_SCALE * push;
@@ -724,7 +734,8 @@ export function DreamCaptureSeal({ name, mark, provisionalName, date, previousPa
       </Animated.View>
 
       {/* The dream page's own grain, then its window: the ring settles crisp and fills with night. */}
-      <Animated.View className="absolute inset-0" style={(closingMotion?.grain ?? hidden) as StyleProp<ViewStyle>}>
+      {/* Opaque, so it takes over from the journal above and below its page as well. */}
+      <Animated.View className="absolute inset-0 bg-ink" style={(closingMotion?.grain ?? hidden) as StyleProp<ViewStyle>}>
         <JournalPaper />
         <JournalPageEdges />
       </Animated.View>
