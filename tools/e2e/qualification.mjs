@@ -3,6 +3,8 @@ import { execFileSync } from 'node:child_process';
 import { readFileSync, readdirSync, lstatSync, realpathSync, writeFileSync, mkdirSync } from 'node:fs';
 import { join, relative, sep, resolve, basename } from 'node:path';
 
+// The locked SDK (package.json, package-lock.json); a report from another version does not qualify.
+export const SDK_PINS = { e2e: '0.20.0', '@e2e-dev/web': '0.14.0', '@e2e-dev/mobile': '0.12.0', 'agent-device': '0.21.25' };
 export const digest = bytes => createHash('sha256').update(bytes).digest('hex');
 export function writeOnce(file, value) {
   writeFileSync(file, JSON.stringify(value, null, 2) + '\n', { flag: 'wx' });
@@ -67,7 +69,7 @@ function artifactBytes(output, artifact) {
   if (typeof artifact.path !== 'string' || artifact.path.startsWith('/') || artifact.path.split(/[\\/]/).includes('..')
     || !/^[a-f0-9]{64}$/.test(artifact.sha256 ?? '') || !Number.isSafeInteger(artifact.size) || artifact.size <= 0)
     fail('ARTIFACT_IDENTITY');
-  const base = realpathSync(join(output, 'artifacts'));
+  const base = realpathSync(join(output, 'results'));
   const file = resolve(base, artifact.path);
   const actual = realpathSync(file);
   if (!actual.startsWith(base + sep) || lstatSync(file).isSymbolicLink()) fail('ARTIFACT_PATH');
@@ -75,10 +77,23 @@ function artifactBytes(output, artifact) {
   if (bytes.length !== artifact.size || digest(bytes) !== artifact.sha256) fail('ARTIFACT_BYTES');
   return { kind: artifact.kind, path: artifact.path, size: bytes.length, sha256: artifact.sha256 };
 }
+// Since e2e 0.20 a trace is the test's page, results/<file-title-slug>-<result id head>/trace.md,
+// not an attempt artifact. The slug is for reading; the id's 16 hex characters name the result.
+function tracePage(output, result) {
+  const base = realpathSync(join(output, 'results'));
+  const owners = readdirSync(base, { withFileTypes: true }).filter(entry => entry.isDirectory() && entry.name.endsWith(`-${result.id.slice(0, 16)}`));
+  if (owners.length !== 1 || !/^[a-f0-9]{16}/.test(result.id)) fail('MEDIA_TRACE_MISSING');
+  const path = `${owners[0].name}/trace.md`, file = join(base, path);
+  try { if (lstatSync(file).isSymbolicLink() || !lstatSync(file).isFile()) fail('ARTIFACT_PATH'); }
+  catch (error) { if (error.code === 'ENOENT') fail('MEDIA_TRACE_MISSING'); throw error; }
+  const bytes = readFileSync(file);
+  if (!bytes.length) fail('MEDIA_TRACE_MISSING');
+  return { kind: 'trace', path, size: bytes.length, sha256: digest(bytes) };
+}
 function verifyProvenance(document, options, requirePass = true) {
   const run = document?.run;
   const now = Date.now();
-  if (document?.schemaVersion !== 'report-1' || !run || typeof run.id !== 'string' || !run.id || run.runner?.version !== '0.18.0'
+  if (document?.schemaVersion !== 'report-1' || !run || typeof run.id !== 'string' || !run.id || run.runner?.version !== SDK_PINS.e2e
     || run.vcs?.commit !== options.revision || (requirePass && (run.exitCode !== 0 || run.status !== 'passed'))
     || run.environment?.runtime !== (options.runtime ?? `node ${process.version}`)
     || !Array.isArray(run.errors) || run.errors.length || !Array.isArray(run.results)
@@ -86,7 +101,7 @@ function verifyProvenance(document, options, requirePass = true) {
     || run.targets[0].id !== options.target || run.targets[0].platform !== options.platform
     || run.targets[0].engine?.name !== (options.platform === 'web' ? 'web' : 'mobile')
     || (options.platform === 'web' && run.targets[0].baseOrigin !== options.origin)
-    || run.targets[0].engine?.version !== (options.platform === 'web' ? '0.13.0' : '0.10.0')
+    || run.targets[0].engine?.version !== SDK_PINS[options.platform === 'web' ? '@e2e-dev/web' : '@e2e-dev/mobile']
     || typeof run.startedAt !== 'string' || typeof run.finishedAt !== 'string'
     || !Number.isFinite(Date.parse(run.startedAt)) || !Number.isFinite(Date.parse(run.finishedAt)) || Date.parse(run.startedAt) < options.startedAt
     || Date.parse(run.startedAt) > now || Date.parse(run.finishedAt) < Date.parse(run.startedAt)
@@ -138,8 +153,8 @@ export function verifyReport(document, options) {
       || attempt.steps.some(step => step.status !== 'passed')
       || !Array.isArray(attempt.artifacts)) fail('LIFECYCLE_INCOMPLETE');
     if (options.video && !attempt.artifacts.some(a => a.kind === 'video')) fail('MEDIA_VIDEO_MISSING');
-    if (options.trace && !attempt.artifacts.some(a => a.kind === 'trace')) fail('MEDIA_TRACE_MISSING');
     for (const artifact of attempt.artifacts) artifacts.push(artifactBytes(options.output, artifact));
+    if (options.trace) artifacts.push(tracePage(options.output, result));
     passed.push(row);
   }
   if (!passed.length) fail('NO_PASS');

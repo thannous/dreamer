@@ -76,9 +76,11 @@ async function checkReading(page: Page) {
     expect(bounds.x + bounds.width).toBeLessThanOrEqual(page.viewportSize()!.width);
     geometry.push({ id: guide.id, ...bounds });
   }
-  for (let i = 1; i < geometry.length; i++) {
-    expect(geometry[i].y).toBeGreaterThanOrEqual(geometry[i - 1].y + geometry[i - 1].height);
-  }
+  // The rows settle after the theme or locale changes their text: read them once laid out.
+  await expect.poll(async () => {
+    const boxes = await Promise.all(guides.map(guide => screen.getByTestId(`dream-guide-${guide.id}`).boundingBox()));
+    return boxes.every((box, i) => i === 0 || box!.y >= boxes[i - 1]!.y + boxes[i - 1]!.height);
+  }).toBe(true);
   await expect(screen).toContainText(`${dictionary.symbols.length} symboles`);
   const dictionaryButton = screen.getByTestId('btn.dreamGuides.dictionary');
   await expectCompleteText(dictionaryButton.getByText('Ouvrir le dictionnaire', { exact: true }), dictionaryButton);

@@ -7,18 +7,18 @@ import { createHash } from 'node:crypto';
 import { spawnSync } from 'node:child_process';
 import { EventEmitter } from 'node:events';
 import { fileURLToPath } from 'node:url';
-import { verifyReport, preserveStatus, compareSnapshots, aggregateReports, writeOnce, createAttemptOutput, verifyEvidenceFiles, verifyNativeCleanup, campaignFailureRecord, startSdkProgress } from './qualification.mjs';
+import { SDK_PINS, verifyReport, preserveStatus, compareSnapshots, aggregateReports, writeOnce, createAttemptOutput, verifyEvidenceFiles, verifyNativeCleanup, campaignFailureRecord, startSdkProgress } from './qualification.mjs';
 
 const sha = value => createHash('sha256').update(value).digest('hex');
 const before = { revision: 'a'.repeat(40), files: { 'app/recording.tsx': sha('source') }, outputs: {} };
 function report() {
   return { schemaVersion: 'report-1', run: {
-    id: 'public-control', runner: { version: '0.18.0' }, vcs: { commit: before.revision },
+    id: 'public-control', runner: { version: SDK_PINS.e2e }, vcs: { commit: before.revision },
     startedAt: new Date(Date.now() - 1000).toISOString(), finishedAt: new Date().toISOString(),
-    exitCode: 0, status: 'passed', errors: [], targets: [{ id: 'dreamer-android', platform: 'android', engine: { name: 'mobile', version: '0.10.0' } }],
+    exitCode: 0, status: 'passed', errors: [], targets: [{ id: 'dreamer-android', platform: 'android', engine: { name: 'mobile', version: SDK_PINS['@e2e-dev/mobile'] } }],
     summary: { discovered: 2, selected: 1, executed: 1, passed: 1, skipped: 0, failed: 0, interrupted: 0, flaky: 0 },
     environment: { runtime: `node ${process.version}` }, usage: { modelTokens: 0, maxModelCallsInStep: 0 },
-    results: [{ testId: 'public-fixture', targetId: 'dreamer-android', platform: 'android', agent: 'default', selected: true, repeat: 0, status: 'passed', attempts: [
+    results: [{ id: 'c0ffee'.repeat(10) + 'beef', testId: 'public-fixture', targetId: 'dreamer-android', platform: 'android', agent: 'default', selected: true, repeat: 0, status: 'passed', attempts: [
       { index: 0, status: 'passed', cleanup: 'complete', secondaryErrors: [], steps: [{ api: 'app.open', status: 'passed' }], artifacts: [] },
     ] }, { testId: 'excluded-fixture', targetId: 'dreamer-android', platform: 'android', agent: 'default', selected: false, repeat: 0, status: 'skipped', attempts: [] }],
   } };
@@ -49,12 +49,27 @@ test('missing app.open, attempt, duplicate result, foreign target/source and sta
 test('artifact bytes/hash and traversal are checked on real files', () => {
   const dir = mkdtempSync(join(tmpdir(), 'noctalia-proof-'));
   try {
-    mkdirSync(join(dir, 'artifacts')); writeFileSync(join(dir, 'artifacts', 'capture.png'), 'public PNG fixture');
+    mkdirSync(join(dir, 'results')); writeFileSync(join(dir, 'results', 'capture.png'), 'public PNG fixture');
     const r = report(); const a = { kind: 'screenshot', path: 'capture.png', size: 18, sha256: sha('public PNG fixture') };
     r.run.results[0].attempts[0].artifacts = [a];
     assert.equal(verifyReport(r, options({ output: dir })).artifacts.length, 1);
     a.sha256 = '0'.repeat(64); assert.throws(() => verifyReport(r, options({ output: dir })), /ARTIFACT/);
     a.path = '../escape'; assert.throws(() => verifyReport(r, options({ output: dir })), /ARTIFACT/);
+  } finally { rmSync(dir, { recursive: true, force: true }); }
+});
+test('a requested trace is the own non-empty trace page of each passed result', () => {
+  const dir = mkdtempSync(join(tmpdir(), 'noctalia-proof-'));
+  try {
+    const r = report(), owner = `dreamer-mobile-public-fixture-${r.run.results[0].id.slice(0, 16)}`;
+    mkdirSync(join(dir, 'results', owner), { recursive: true });
+    assert.throws(() => verifyReport(r, options({ output: dir, trace: true })), /MEDIA_TRACE_MISSING/);
+    writeFileSync(join(dir, 'results', owner, 'trace.md'), '');
+    assert.throws(() => verifyReport(r, options({ output: dir, trace: true })), /MEDIA_TRACE_MISSING/);
+    writeFileSync(join(dir, 'results', owner, 'trace.md'), '# public fixture');
+    assert.deepEqual(verifyReport(r, options({ output: dir, trace: true })).artifacts,
+      [{ kind: 'trace', path: `${owner}/trace.md`, size: 16, sha256: sha('# public fixture') }]);
+    mkdirSync(join(dir, 'results', `another-${r.run.results[0].id.slice(0, 16)}`));
+    assert.throws(() => verifyReport(r, options({ output: dir, trace: true })), /MEDIA_TRACE_MISSING/);
   } finally { rmSync(dir, { recursive: true, force: true }); }
 });
 test('skips and excluded IDs are retained separately and never counted passed', () => {
@@ -108,7 +123,7 @@ test('finding with no requested or declared media and no artifacts directory is 
 });
 
 test('web report must identify the exact loopback origin and engine', () => {
-  const r = report(); r.run.targets[0] = { id: 'dreamer-web', platform: 'web', baseOrigin: 'http://127.0.0.1:8096', engine: { name: 'web', version: '0.13.0' } };
+  const r = report(); r.run.targets[0] = { id: 'dreamer-web', platform: 'web', baseOrigin: 'http://127.0.0.1:8096', engine: { name: 'web', version: SDK_PINS['@e2e-dev/web'] } };
   for (const row of r.run.results) { row.targetId = 'dreamer-web'; row.platform = 'web'; }
   const opts = options({ target: 'dreamer-web', platform: 'web', origin: 'http://127.0.0.1:8096' });
   assert.equal(verifyReport(r, opts).passed.length, 1);
@@ -134,7 +149,7 @@ test('SDK cleanup proof remains a qualification diagnostic even for a red body',
 });
 
 test('web public fixture setup precedes app.open, other UI before it and every native prefix are refused', () => {
-  const r = report(); r.run.targets[0] = { id: 'dreamer-web', platform: 'web', baseOrigin: 'http://127.0.0.1:8096', engine: { name: 'web', version: '0.13.0' } };
+  const r = report(); r.run.targets[0] = { id: 'dreamer-web', platform: 'web', baseOrigin: 'http://127.0.0.1:8096', engine: { name: 'web', version: SDK_PINS['@e2e-dev/web'] } };
   for (const row of r.run.results) { row.targetId = 'dreamer-web'; row.platform = 'web'; }
   const opts = options({ target: 'dreamer-web', platform: 'web', origin: 'http://127.0.0.1:8096' });
   r.run.results[0].attempts[0].steps.unshift({ api: 'browser.route', status: 'passed' }, { api: 'browser.setViewport', status: 'passed' });

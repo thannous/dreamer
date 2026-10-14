@@ -5,7 +5,7 @@ import { createRequire } from 'node:module';
 import { homedir, tmpdir } from 'node:os';
 import { delimiter, join, resolve, basename, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { digest, sourceSnapshot, compareSnapshots, verifyReport, aggregateReports, writeOnce, preserveStatus, directoryFiles, hashFiles, createAttemptOutput, verifyEvidenceFiles, verifyNativeCleanup, campaignFailureRecord, startSdkProgress } from './qualification.mjs';
+import { SDK_PINS, digest, sourceSnapshot, compareSnapshots, verifyReport, aggregateReports, writeOnce, preserveStatus, directoryFiles, hashFiles, createAttemptOutput, verifyEvidenceFiles, verifyNativeCleanup, campaignFailureRecord, startSdkProgress } from './qualification.mjs';
 import { normalizeAvdName, appInputs, nativeInputs, binaryInputs, releaseMetadata, validateReleaseReceipt, verifyInstalledRelease, runWithInstallDiagnostics, validateBuildCommand, archiveReleaseBinary } from './native-release.mjs';
 
 const cwd = fileURLToPath(new URL('.', import.meta.url));
@@ -117,7 +117,7 @@ const installationErrorDetails = [];
 const startedAt = Date.now();
 const expectedOrigin = platform === 'web' ? `http://127.0.0.1:${env.E2E_WEB_PORT ?? ({ dreamer: 8096, lucid: 8097, meditation: 8098, site: 8099 }[product])}` : undefined;
 const pins = Object.fromEntries(['e2e', '@e2e-dev/web', '@e2e-dev/mobile', 'agent-device'].map(name => [name, JSON.parse(readFileSync(join(cwd, 'node_modules', name, 'package.json'), 'utf8')).version]));
-if (pins.e2e !== '0.18.0' || pins['@e2e-dev/web'] !== '0.13.0' || pins['@e2e-dev/mobile'] !== '0.10.0' || pins['agent-device'] !== '0.21.22') throw new Error('INSTALLED_SDK_PINS');
+if (Object.entries(SDK_PINS).some(([name, version]) => pins[name] !== version)) throw new Error('INSTALLED_SDK_PINS');
 const campaignId = env.E2E_CAMPAIGN_ID ?? env.CIRCLE_WORKFLOW_JOB_ID ?? null;
 const context = () => ({ locale: env.E2E_WEB_LOCALE ?? (product === 'lucid' ? 'fr-FR' : 'en-US'), featureSheets: env.EXPO_PUBLIC_ONBOARDING_FEATURE_SHEETS_ENABLED === 'true' });
 async function execute(executable, argv, logName, childEnv = env, workdir = cwd) {
@@ -271,7 +271,7 @@ async function runSdk() {
   if (primary === 0) {
     const report = JSON.parse(readFileSync(join(output, 'report.json'), 'utf8'));
     const proof = verifyReport(report, { target: `${product}-${platform}`, platform, revision: sourceBefore.revision,
-      startedAt, output, context: context(), origin: expectedOrigin, video: args.includes('--video'), trace: platform === 'web' || args.includes('--trace'), collection, repeatCount });
+      startedAt, output, context: context(), origin: expectedOrigin, video: args.includes('--video'), trace: true, collection, repeatCount });
     writeOnce(join(output, 'qualification.json'), proof);
   }
   return primary;
@@ -323,7 +323,7 @@ try {
   writeOnce(join(output, 'source-start.json'), sourceBefore);
   writeOnce(join(output, 'evidence.json'), {
     startedAt: new Date(startedAt).toISOString(), product, platform, device: env.E2E_DEVICE ?? null, bundle, binary,
-    campaignId, pins, origin: expectedOrigin, repeatCount: args.includes('--repeat-each') ? Number(args[args.indexOf('--repeat-each') + 1]) : 1, context: context(), requestedMedia: { video: args.includes('--video'), trace: platform === 'web' || args.includes('--trace') },
+    campaignId, pins, origin: expectedOrigin, repeatCount: args.includes('--repeat-each') ? Number(args[args.indexOf('--repeat-each') + 1]) : 1, context: context(), requestedMedia: { video: args.includes('--video'), trace: true },
     revision: read('git', ['rev-parse', 'HEAD']), workingTree: read('git', ['status', '--porcelain']),
     trackedDiffSha256: createHash('sha256').update(diff).digest('hex'),
     command: ['node', 'tools/e2e/run.mjs', product, platform, command, ...args, ...(releaseFile ? ['--release-receipt', resolve(releaseFile)] : []), ...(installRelease ? ['--install-release'] : [])],
