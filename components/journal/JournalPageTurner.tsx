@@ -8,6 +8,7 @@ import Animated, {
 import { scheduleOnRN } from 'react-native-worklets';
 
 import { JournalPagePreview } from '@/components/journal/JournalPagePreview';
+import { JournalTonightPage } from '@/components/journal/JournalTonightPage';
 import { EASING } from '@/components/motion/motion';
 import { getNoctaliaDesignTokens } from '@/constants/noctaliaDesign';
 import { useTheme } from '@/context/ThemeContext';
@@ -40,17 +41,20 @@ export function useJournalPageTurnLock(locked: boolean) {
  * revealing the next, later dream beneath it; towards the right the earlier dream's page
  * comes back over it. Let go past a third of the way, or with a flick, the page finishes
  * turning and the real page takes the place of its likeness; otherwise it falls back.
- * Without a page on one side it only lifts a little. Vertical scrolling and the system
- * back swipe at the binding stay as they are; under reduce motion the page changes at
- * once.
+ * After the last dream lies tonight's page, still blank: the last dream's page turns over
+ * onto it and stays turned, and turning back brings it down again. Without a page on one
+ * side it only lifts a little. Vertical scrolling and the system back swipe at the binding
+ * stay as they are; under reduce motion the page changes at once.
  */
-export function JournalPageTurner({ newer, older, folio, onTurn, children }: {
+export function JournalPageTurner({ newer, older, folio, tonight = false, onTurn, children }: {
   /** The dream after this one, turned to towards the left. */
   newer: DreamAnalysis | null;
   /** The dream before this one, turned back to towards the right. */
   older: DreamAnalysis | null;
   /** This page's number, from which the pages either side take theirs. */
   folio?: number;
+  /** After the last dream, tonight's blank page can be turned to. */
+  tonight?: boolean;
   onTurn: (dream: DreamAnalysis) => void;
   children: React.ReactNode;
 }) {
@@ -66,10 +70,25 @@ export function JournalPageTurner({ newer, older, folio, onTurn, children }: {
   const direction = useSharedValue(0);
   const progress = useSharedValue(0);
   const settle = useSharedValue(1);
+  // On tonight's page: the last dream's page lies turned over, and turns back from there.
+  const [atTonight, setAtTonight] = useState(false);
+  const turnedOver = useSharedValue(false);
+  const reachTonight = useCallback(() => {
+    void Haptics.selectionAsync().catch(() => {});
+    setAtTonight(true);
+  }, []);
+  const leaveTonight = useCallback(() => {
+    void Haptics.selectionAsync().catch(() => {});
+    setAtTonight(false);
+  }, []);
 
   const settled = useCallback(() => setFrozen(null), []);
 
   const finishTurn = useCallback((turnedTo: number) => {
+    if (turnedTo === FORWARD && !shown.newer) {
+      reachTonight();
+      return;
+    }
     const target = turnedTo === FORWARD ? shown.newer : shown.older;
     if (!target) return;
     setFrozen({ newer: shown.newer, older: shown.older, folio: shown.folio });
@@ -94,16 +113,24 @@ export function JournalPageTurner({ newer, older, folio, onTurn, children }: {
         }));
       }
     }, 60);
-  }, [direction, onTurn, progress, settle, settled, shown.folio, shown.newer, shown.older]);
+  }, [direction, onTurn, progress, reachTonight, settle, settled, shown.folio, shown.newer, shown.older]);
 
   const turnAtOnce = useCallback((turnedTo: number) => {
+    if (turnedTo === FORWARD && !shown.newer && tonight) {
+      direction.set(FORWARD);
+      progress.set(1);
+      turnedOver.set(true);
+      reachTonight();
+      return;
+    }
     const target = turnedTo === FORWARD ? shown.newer : shown.older;
     if (!target) return;
     void Haptics.selectionAsync().catch(() => {});
     onTurn(target);
-  }, [onTurn, shown.newer, shown.older]);
+  }, [direction, onTurn, progress, reachTonight, shown.newer, shown.older, tonight, turnedOver]);
 
-  const hasNewer = shown.newer != null;
+  const hasLaterDream = shown.newer != null;
+  const hasNewer = hasLaterDream || tonight;
   const hasOlder = shown.older != null;
   const pan = useMemo(() => Gesture.Pan()
     .enabled(!locked)
@@ -111,9 +138,14 @@ export function JournalPageTurner({ newer, older, folio, onTurn, children }: {
     .failOffsetY([-12, 12])
     .hitSlop({ left: -BINDING })
     .onStart(() => {
-      direction.set(0);
+      if (!turnedOver.get()) direction.set(0);
     })
     .onUpdate((event) => {
+      // On tonight's page only a turn back moves anything: the last dream's page comes down again.
+      if (turnedOver.get()) {
+        if (!reduced) progress.set(Math.max(0, 1 - Math.max(0, event.translationX) / (width * 0.8)));
+        return;
+      }
       // The way the page turns is the way the hand first moves: activation may report no travel yet.
       if (direction.get() === 0) {
         if (Math.abs(event.translationX) < 2) return;
@@ -127,6 +159,28 @@ export function JournalPageTurner({ newer, older, folio, onTurn, children }: {
       progress.set(available ? Math.min(1, amount) : Math.min(0.06, amount * 0.15));
     })
     .onEnd((event) => {
+      if (turnedOver.get()) {
+        const back = event.velocityX > 700 || (reduced ? event.translationX > width * COMMIT : 1 - progress.get() > COMMIT);
+        if (!back) {
+          progress.set(withSpring(1, { duration: 320, dampingRatio: 0.85 }));
+          return;
+        }
+        const down = () => {
+          'worklet';
+          turnedOver.set(false);
+          direction.set(0);
+          scheduleOnRN(leaveTonight);
+        };
+        if (reduced) {
+          progress.set(0);
+          down();
+          return;
+        }
+        progress.set(withTiming(0, { duration: 260 * progress.get() + 90, easing: EASING.inOut }, (done) => {
+          if (done) down();
+        }));
+        return;
+      }
       const turnedTo = direction.get();
       const available = turnedTo === FORWARD ? hasNewer : hasOlder;
       const flick = turnedTo === FORWARD ? event.velocityX < -700 : event.velocityX > 700;
@@ -135,15 +189,19 @@ export function JournalPageTurner({ newer, older, folio, onTurn, children }: {
         return;
       }
       if (available && (progress.get() > COMMIT || flick)) {
+        const ontoTonight = turnedTo === FORWARD && !hasLaterDream;
         progress.set(withTiming(1, { duration: 260 * (1 - progress.get()) + 90, easing: EASING.inOut }, (done) => {
-          if (done) scheduleOnRN(finishTurn, turnedTo);
+          if (!done) return;
+          if (ontoTonight) turnedOver.set(true);
+          scheduleOnRN(finishTurn, turnedTo);
         }));
       } else {
         progress.set(withSpring(0, { duration: 320, dampingRatio: 0.85 }, (done) => {
           if (done) direction.set(0);
         }));
       }
-    }), [direction, finishTurn, hasNewer, hasOlder, locked, progress, reduced, turnAtOnce, width]);
+    }), [direction, finishTurn, hasLaterDream, hasNewer, hasOlder, leaveTonight, locked, progress, reduced, turnAtOnce,
+    turnedOver, width]);
 
   // The page turning over: it lifts from the binding, darkening as it stands on edge.
   const currentPage = useAnimatedStyle(() => {
@@ -189,8 +247,14 @@ export function JournalPageTurner({ newer, older, folio, onTurn, children }: {
               <JournalPagePreview dream={shown.newer} folio={shown.folio ? shown.folio + 1 : undefined} />
               <Animated.View className="absolute inset-0" style={[{ backgroundColor: shadow }, laterShade]} />
             </Animated.View>
+          ) : tonight ? (
+            <Animated.View pointerEvents={atTonight ? 'box-none' : 'none'} style={[pageFrame, laterPage]}>
+              <JournalTonightPage folio={shown.folio ? shown.folio + 1 : undefined} interactive={atTonight} />
+              <Animated.View pointerEvents="none" className="absolute inset-0" style={[{ backgroundColor: shadow }, laterShade]} />
+            </Animated.View>
           ) : null}
-          <Animated.View style={[pageFrame, currentPage]}>
+          <Animated.View pointerEvents={atTonight ? 'none' : 'auto'} accessibilityElementsHidden={atTonight}
+            importantForAccessibility={atTonight ? 'no-hide-descendants' : 'auto'} style={[pageFrame, currentPage]}>
             {children}
             <Animated.View pointerEvents="none" className="absolute inset-0" style={[{ backgroundColor: shadow }, currentShade]} />
             <Animated.View pointerEvents="none" className="absolute inset-0" style={[{ backgroundColor: shadow }, currentUnderShade]} />

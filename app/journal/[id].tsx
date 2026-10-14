@@ -356,7 +356,7 @@ function JournalDetailScreen() {
   const content = <JournalDetailContent key={JSON.stringify([user?.id, route.id, route.remoteId, route.clientRequestId])}
     dream={dream} folio={neighbours.folio} />;
   return dream
-    ? <JournalPageTurner newer={neighbours.newer} older={neighbours.older} folio={neighbours.folio} onTurn={turnTo}>{content}</JournalPageTurner>
+    ? <JournalPageTurner newer={neighbours.newer} older={neighbours.older} folio={neighbours.folio} tonight onTurn={turnTo}>{content}</JournalPageTurner>
     : content;
 }
 
