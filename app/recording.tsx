@@ -47,11 +47,16 @@ import {
 import { isMockModeEnabled } from '@/lib/env';
 import { DreamPersistenceError } from '@/lib/dreamStorageRead';
 import { getDreamIdentityKey } from '@/lib/dreamIdentity';
+import { markDreamNamed } from '@/lib/dreamNaming';
 import { markDreamStoryHandoff } from '@/lib/dreamStoryPrologue';
 import { classifyError, GuestDreamLimitError } from '@/lib/errors';
 import { hasAiConsent } from '@/lib/aiConsent';
 import { formatCaptureNarrative } from '@/services/captureConversation';
-import { trackInitialDreamCategorization } from '@/lib/initialDreamCategorization';
+import {
+  isInitialDreamCategorizationPending,
+  subscribeInitialDreamCategorization,
+  trackInitialDreamCategorization,
+} from '@/lib/initialDreamCategorization';
 import { getTranscriptionLocale } from '@/lib/locale';
 import { createScopedLogger } from '@/lib/logger';
 import {
@@ -701,12 +706,20 @@ function RecordingScreen() {
     router.replace(buildJournalDetailHref(dream, options));
   }, []);
 
-  // Prologue of the dream story: the saved draft is written into the journal, then lifts
-  // into a star before its page opens. The veil is lifted only once the next page covers this one, so the emptied
-  // composer is never glimpsed during the transition.
+  // Prologue of the dream story: the journal turns to a fresh page, where the saved dream
+  // is named by its pre-analysis, then opens onto its page. The veil is lifted only once
+  // the next page covers this one, so the emptied composer is never glimpsed during the
+  // transition.
   const reducedMotion = useReducedMotion();
-  /** The saved words while the seal condenses them into a star, null otherwise. */
-  const [sealingSavedDream, setSealingSavedDream] = useState<string | null>(null);
+  /** The dream being sealed until its page takes over, null otherwise. */
+  const [sealing, setSealing] = useState<{
+    identity: string;
+    /** Its first words, which name it if the pre-analysis does not in time. */
+    provisionalName: string;
+    /** The journal held a dream before this one. */
+    previousPage: boolean;
+    open: () => void;
+  } | null>(null);
   const sealTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   useEffect(() => () => {
     if (sealTimerRef.current) clearTimeout(sealTimerRef.current);
@@ -714,10 +727,46 @@ function RecordingScreen() {
   // The seal is a guarded transition: hardware Back cannot pop the capture before the
   // saved dream opens. The guard ends as the next page takes focus.
   useFocusEffect(useCallback(() => {
-    if (!sealingSavedDream) return;
+    if (!sealing) return;
     const subscription = BackHandler.addEventListener('hardwareBackPress', () => true);
     return () => subscription.remove();
-  }, [sealingSavedDream]));
+  }, [sealing]));
+  // The name the seal writes: the pre-analysis's once it has categorized the dream, or the
+  // first words once it has ended without doing so (a moment after, as its result reaches
+  // the journal just behind its end).
+  const sealedDream = useMemo(
+    () => (sealing ? dreams.find((dream) => getDreamIdentityKey(dream) === sealing.identity) : undefined),
+    [dreams, sealing]
+  );
+  const [preAnalysisOver, setPreAnalysisOver] = useState(false);
+  useEffect(() => {
+    if (!sealing) return;
+    let settling: ReturnType<typeof setTimeout> | undefined;
+    const check = () => {
+      if (settling || isInitialDreamCategorizationPending(sealing.identity)) return;
+      settling = setTimeout(() => setPreAnalysisOver(true), 200);
+    };
+    const unsubscribe = subscribeInitialDreamCategorization(check);
+    check();
+    return () => {
+      unsubscribe();
+      if (settling) clearTimeout(settling);
+    };
+  }, [sealing]);
+  const sealName = sealedDream?.theme ? sealedDream.title : preAnalysisOver ? sealing?.provisionalName ?? null : null;
+  const sealNamed = useCallback(() => {
+    if (sealing) markDreamNamed(sealing.identity);
+  }, [sealing]);
+  const sealOpened = useCallback(() => {
+    if (!sealing) return;
+    // The seal ends on the saved moment's window: the page takes it over as it is.
+    markDreamStoryHandoff(sealing.identity);
+    sealing.open();
+    sealTimerRef.current = setTimeout(() => {
+      sealTimerRef.current = null;
+      setSealing(null);
+    }, DREAM_STORY.prologueVeilHold);
+  }, [sealing]);
 
   useEffect(() => {
     const pending = onboardingState.pendingRecordingIntent;
@@ -1169,16 +1218,13 @@ function RecordingScreen() {
       if (reducedMotion) {
         openSavedDream();
       } else {
-        setSealingSavedDream(latestTranscript);
-        sealTimerRef.current = setTimeout(() => {
-          // The seal ends on the saved moment's window: the page takes it over as it is.
-          markDreamStoryHandoff(getDreamIdentityKey(savedDream));
-          openSavedDream();
-          sealTimerRef.current = setTimeout(() => {
-            sealTimerRef.current = null;
-            setSealingSavedDream(null);
-          }, DREAM_STORY.prologueVeilHold);
-        }, DREAM_STORY.prologue);
+        setPreAnalysisOver(false);
+        setSealing({
+          identity: getDreamIdentityKey(savedDream),
+          provisionalName: savedDream.title || t('journal.detail.untitled_dream'),
+          previousPage: dreams.some((dream) => dream.id !== savedDream.id),
+          open: openSavedDream,
+        });
       }
     } catch (error) {
       if (error instanceof GuestDreamLimitError) {
@@ -1723,6 +1769,7 @@ function RecordingScreen() {
     }
   }, [cancelConversation, handleSaveDream, isHydrated, isPersisting, isRecordingRef, language, noteInput, stopRecording, t, transcript]);
 
+
   const handleConversationSubmit = useCallback(async () => {
     captureMicrophoneMutedRef.current = true;
     if (isRecordingRef.current || dictationIntentRef.current === 'listening') {
@@ -2058,7 +2105,10 @@ function RecordingScreen() {
         </ScrollView>
       </StandardBottomSheet>
 
-      {sealingSavedDream ? <DreamCaptureSeal text={sealingSavedDream} /> : null}
+      {sealing ? (
+        <DreamCaptureSeal name={sealName} provisionalName={sealing.provisionalName} previousPage={sealing.previousPage}
+          onNamed={sealNamed} onSealed={sealOpened} />
+      ) : null}
       <MicPermissionRationaleSheet
         visible={showMicRationaleSheet}
         onClose={handleMicRationaleClose}

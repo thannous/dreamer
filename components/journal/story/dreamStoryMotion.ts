@@ -12,9 +12,11 @@ import { EASE } from '@/components/motion/motion';
  *       as a page: the card settles, a star lights between two threads, the paragraphs
  *       follow one another.
  *   Prologue — once the dream is durably saved, written or told, night falls over the
- *       draft and the dream journal opens under a lamp; a pen writes the dream's first
- *       words and draws a ring above them. The reader dives into the page until it is the
- *       dream's own page, and the night fills the ring, which is the medallion.
+ *       draft and the dream journal opens under a lamp, on the previous dream's page,
+ *       which turns over to a fresh one. A pen draws a ring, then writes the name the
+ *       pre-analysis gives the dream, waiting for it a few seconds at most. The reader dives
+ *       into the page until it is the dream's own page, and the night fills the ring,
+ *       which is the medallion.
  *   I.  Saved — the astrolabe settles once around a window onto the night sky.
  *       The seal is struck: the emblem of the dream's theme is pressed into the window and
  *       its type and theme are engraved around it. Then the page writes the dream's name.
@@ -45,9 +47,9 @@ export const DREAM_STORY = {
   /** The reading chapters start once the last star is lit. */
   chapterLead: 240,
   /**
-   * The capture screen's seal, from the save to the saved moment: written, ringed, entered, filled.
-   * Long enough for each beat to be lived: the pen writes for about a second, and the dive
-   * into the page takes half as long again.
+   * The pace of the capture screen's seal, from the save to the saved moment: turned,
+   * ringed, named, entered, filled. Its beats are set against this length; the seal itself
+   * lasts as long as the pre-analysis keeps the pen waiting, and the name takes to write.
    */
   prologue: 4800,
   /** The seal's veil outlasts the screen transition that covers it. */
@@ -59,9 +61,13 @@ export const DREAM_STORY = {
    */
   namingFrom: 700,
   namingHold: 1000,
-  /** The emblem pressed into the window and the legend engraved around it. */
-  sealStrike: 1150,
-  sealContact: 340,
+  /**
+   * The four signs turn on the astrolabe while the seal chooses; the chosen one glides
+   * into the window and is pressed there, and the legend is engraved around it.
+   */
+  sealChoice: 1500,
+  sealContact: 2150,
+  sealStrike: 3050,
   /** One pass of the light band across a canvas being painted. */
   paintSweep: 2600,
   /** A landed painting settling into its frame. */

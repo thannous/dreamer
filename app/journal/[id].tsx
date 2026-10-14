@@ -1908,10 +1908,11 @@ const JournalDetailContent = memo(function JournalDetailContent({ dream, folio }
   const floatingTranscriptBottom = Platform.OS === 'ios' ? 32 : 24;
   const showSavedMoment = opensOnSavedMoment && !hasIllustratedCover && !shouldHideHeroMedia;
 
-  // The arrival names the dream: once the page has come in, the seal is struck with what
-  // the dream is, then its name is written. Both wait a moment at most for a categorization
-  // still on its way; without it the seal stays plain and the page writes the name it has.
-  // Whichever it writes stays the dream's name.
+  // The arrival seals the dream: once the page has come in, the seal chooses among the four
+  // signs and is struck with the dream's, then the name is written, unless the capture seal
+  // already wrote it in the journal. Both wait a moment at most for a pre-analysis still on
+  // its way; without it the seal stays plain and the page writes the name it has. Whichever
+  // name it writes stays the dream's.
   const [naming, setNaming] = useState<{ stage: 'waiting' | 'striking' | 'writing' | 'named'; title?: string; seal?: SealMark | null }>(
     () => ({ stage: opensOnSavedMoment ? 'waiting' : 'named' }));
   const [namingTime, setNamingTime] = useState<'early' | 'due' | 'late'>('early');
@@ -1925,8 +1926,12 @@ const JournalDetailContent = memo(function JournalDetailContent({ dream, folio }
   // The name is taken as the dream has it at that moment, during render so nothing stale is written.
   if (namingWaits && dream && namingTime !== 'early' && (!initialCategorizationPending || namingTime === 'late')) {
     const legend = [dreamTypeLabel, dreamThemeLabel].filter(Boolean).join(' · ');
-    const seal = showSavedMoment && dream.theme ? { theme: dream.theme, legend } : null;
-    setNaming({ stage: seal ? 'striking' : 'writing', title: dream.title || t('journal.detail.untitled_dream'), seal });
+    const seal = dream.theme ? { theme: dream.theme, legend } : null;
+    setNaming({
+      stage: showSavedMoment ? 'striking' : windowHandedOver ? 'named' : 'writing',
+      title: dream.title || t('journal.detail.untitled_dream'),
+      seal,
+    });
   }
   const namedIdentity = naming.title && dream ? getDreamIdentityKey(dream) : null;
   useEffect(() => {
@@ -1934,10 +1939,11 @@ const JournalDetailContent = memo(function JournalDetailContent({ dream, folio }
   }, [namedIdentity]);
   useEffect(() => {
     if (naming.stage !== 'striking') return;
-    const timer = setTimeout(() => setNaming((current) => ({ ...current, stage: 'writing' })),
-      reducedMotion ? 240 : DREAM_STORY.sealStrike);
+    const timer = setTimeout(() => setNaming((current) => ({ ...current, stage: windowHandedOver ? 'named' : 'writing' })),
+      reducedMotion ? 240 : naming.seal ? DREAM_STORY.sealStrike : DREAM_STORY.sealChoice);
     return () => clearTimeout(timer);
-  }, [naming.stage, reducedMotion]);
+  }, [naming.seal, naming.stage, reducedMotion, windowHandedOver]);
+  const sealing = useMemo(() => ({ mark: naming.seal ?? null }), [naming.seal]);
   // A name changed meanwhile, by the reader's own hand, ends the ceremony: that name stands.
   const namingOn = naming.stage !== 'named'
     && (!naming.title || naming.title === (dream?.title || t('journal.detail.untitled_dream')));
@@ -2116,7 +2122,7 @@ const JournalDetailContent = memo(function JournalDetailContent({ dream, folio }
               placeholderTextColor={noctalia.text.secondary}
               selectionColor={noctalia.accent.base}
             />
-          ) : namingOn ? (
+          ) : namingOn && !windowHandedOver ? (
             <View className="mb-2">
               <WrittenTitle key={`dream-heading-${windowSize.fontScale}`}
                 text={naming.title ?? (dream.title || t('journal.detail.untitled_dream'))}
@@ -2890,7 +2896,7 @@ const JournalDetailContent = memo(function JournalDetailContent({ dream, folio }
           <View ref={readingContentRef} collapsable={false} onLayout={measureTranscriptSection} className="px-4 pb-6">
             {showSavedMoment ? (
               <SavedDreamMoment phase={savedMomentPhase} painting={paintingInProgress} handedOver={windowHandedOver}
-                seal={naming.stage === 'waiting' ? null : naming.seal ?? null}
+                sealing={naming.stage === 'waiting' ? null : sealing}
                 artwork={paintedArtwork} landArtwork={artworkLanding} onOpenArtwork={() => setIsIllustrationFullscreen(true)} />
             ) : null}
             <View onLayout={({ nativeEvent: { layout } }) => {
