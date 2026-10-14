@@ -11,6 +11,7 @@ import { isInitialDreamCategorizationPending, subscribeInitialDreamCategorizatio
 import { useDreamMedia } from '@/hooks/useDreamMedia';
 import { Toast } from '@/components/Toast';
 import { DreamRecallAssistantCard } from '@/components/journal/DreamRecallAssistantCard';
+import { JournalCoverPlate } from '@/components/journal/JournalCoverPlate';
 import { JournalPageEdges } from '@/components/journal/JournalPageEdges';
 import { JournalPageTurner, useJournalPageLaidOut, useJournalPageTurnedTo, useJournalPageTurnLock } from '@/components/journal/JournalPageTurner';
 import { JournalPaper } from '@/components/journal/JournalPaper';
@@ -444,14 +445,9 @@ const JournalDetailContent = memo(function JournalDetailContent({ dream, folio }
   const [coverIntroHeight, setCoverIntroHeight] = useState<number | null>(null);
   const viewportHeight = coverViewport?.height ?? windowSize.height;
   const navigationHeight = insets.top + 76;
-  // The heading owns its intrinsic height (including enlarged native text).
-  // Artwork uses the remaining viewport, while fullscreen retains the original.
-  const introHeight = coverIntroHeight ?? 180 * Math.min(windowSize.fontScale, 1.4);
-  const coverHeight = Math.max(96, Math.min(
-    viewportHeight * 0.62,
-    viewportHeight - navigationHeight - introHeight - insets.bottom - 24
-  ));
-  const coverLayout = { imageHeight: coverHeight };
+  // A page with its illustration opens on it as a plate filling the screen; the dream's
+  // name is set at its foot, at its own measured height (including enlarged native text).
+  const coverHeight = viewportHeight;
   // The illustration lies a little deeper than the page and drifts as it scrolls.
   const coverTravel = Math.round(coverHeight * 0.06);
   const coverParallax = useFrameParallax(coverTravel);
@@ -2604,13 +2600,41 @@ const JournalDetailContent = memo(function JournalDetailContent({ dream, folio }
     illustrationSidecar === 'failed' ||
     (analysisState.isAnalyzed && visibleIllustrationCta !== 'none');
 
+  // The plate's picture: the illustration, drifting as the page scrolls, opens whole when pressed.
+  const renderCoverPicture = () => (
+    <PressableScale
+      testID={TID.Button.JournalIllustrationExpand}
+      onPress={() => setIsIllustrationFullscreen(true)}
+      accessibilityRole="button"
+      accessibilityLabel={t('journal.detail.image.expand_accessibility')}
+      className="absolute inset-0"
+    >
+      <Animated.View ref={coverParallax.frame} onLayout={coverParallax.onLayout} style={StyleSheet.absoluteFill} pointerEvents="none">
+      <Animated.View style={[{ position: 'absolute', left: 0, right: 0, top: -coverTravel, bottom: -coverTravel }, coverParallax.style]}>
+      <Image
+        key={displayImageUrl ?? dream.imageUrl}
+        source={displayImageUrl ? { uri: displayImageUrl, cacheKey: imageCacheKey } : null}
+        style={{ width: '100%', height: '100%' }}
+        contentFit="cover"
+        onError={() => setFailedCoverUri(displayImageUrl ?? null)}
+        onDisplay={() => setCoverShown(true)}
+        transition={turnedTo ? 0 : imageConfig.transition}
+        cachePolicy={imageConfig.cachePolicy}
+        priority={imageConfig.priority}
+        placeholder={{ blurhash: 'L6PZfSi_.AyE_3t7t7R**0o#DgR4' }}
+      />
+      </Animated.View>
+      </Animated.View>
+    </PressableScale>
+  );
+
   const renderIllustrationSection = () => {
     if (shouldHideHeroMedia || !shouldShowIllustrationSection) {
       return null;
     }
 
     return (
-      <View testID={TID.Component.JournalIllustration} className={hasIllustratedCover ? '-mx-4 mb-4' : 'mb-5 overflow-hidden rounded-lg'}>
+      <View testID={TID.Component.JournalIllustration} className="mb-5 overflow-hidden rounded-lg">
         {coverImageFailed ? (
           <View testID="journal.detail.image.unavailable" className="mx-2 mb-5 flex-row items-center gap-3 rounded-lg bg-ink-soft p-3">
             <IconSymbol name="photo" size={24} color={noctalia.text.secondary} />
@@ -2627,54 +2651,7 @@ const JournalDetailContent = memo(function JournalDetailContent({ dream, folio }
           ) : (
             <DreamPaintingWait queued={false} />
           )
-        ) : dream.imageUrl ? (
-          <View className="relative overflow-hidden bg-ink">
-            <PressableScale
-              testID={TID.Button.JournalIllustrationExpand}
-              onPress={() => setIsIllustrationFullscreen(true)}
-              accessibilityRole="button"
-              accessibilityLabel={t('journal.detail.image.expand_accessibility')}
-              className="absolute top-0 right-0 left-0"
-              style={{ height: coverLayout.imageHeight }}
-            >
-              <Animated.View ref={coverParallax.frame} onLayout={coverParallax.onLayout} style={StyleSheet.absoluteFill} pointerEvents="none">
-              <Animated.View style={[{ position: 'absolute', left: 0, right: 0, top: -coverTravel, bottom: -coverTravel }, coverParallax.style]}>
-              <Image
-                key={displayImageUrl ?? dream.imageUrl}
-                source={displayImageUrl ? { uri: displayImageUrl, cacheKey: imageCacheKey } : null}
-                style={{ width: '100%', height: '100%' }}
-                contentFit="cover"
-                onError={() => setFailedCoverUri(displayImageUrl ?? null)}
-                onDisplay={() => setCoverShown(true)}
-                transition={turnedTo ? 0 : imageConfig.transition}
-                cachePolicy={imageConfig.cachePolicy}
-                priority={imageConfig.priority}
-                placeholder={{ blurhash: 'L6PZfSi_.AyE_3t7t7R**0o#DgR4' }}
-              />
-              </Animated.View>
-              </Animated.View>
-            </PressableScale>
-            <View
-              pointerEvents="none"
-              className="absolute top-0 right-0 left-0"
-              style={{ height: coverLayout.imageHeight + 1 }}
-            >
-              {/* The page's ground eases into the top of the illustration as well, so it never
-                  starts on a hard edge under the heading. */}
-              <LinearGradient
-                colors={[noctalia.screen.background, `${noctalia.screen.background}A6`, `${noctalia.screen.background}3D`, `${noctalia.screen.background}00`]}
-                locations={[0, 0.3, 0.62, 1]}
-                style={{ position: 'absolute', top: 0, right: 0, left: 0, height: Math.min(72, coverLayout.imageHeight * 0.18) }}
-              />
-              <LinearGradient
-                colors={noctalia.cover.gradient}
-                locations={noctalia.cover.gradientLocations}
-                style={{ position: 'absolute', bottom: 0, right: 0, left: 0, height: Math.min(180, coverLayout.imageHeight) }}
-              />
-            </View>
-            <View pointerEvents="none" style={{ height: coverLayout.imageHeight }} />
-          </View>
-        ) : paintingRequested ? (
+        ) : dream.imageUrl ? null : paintingRequested ? (
           <DreamPaintingWait queued={dream.imageJobStatus === 'queued'} />
         ) : illustrationSidecar === 'failed' ? (
           visibleIllustrationCta === 'retry' || getImageJobFailure(dream.imageJobErrorCode) ? (
@@ -2789,6 +2766,19 @@ const JournalDetailContent = memo(function JournalDetailContent({ dream, folio }
     );
   };
 
+  const runningHead = (overArt: boolean) => (
+    <JournalRunningHead folio={folio} onBack={handleBackPress} testID="journal.detail.navigation" overArt={overArt}
+      backTestID={TID.Button.NavigateJournal} edit onEdit={startEditing} editDisabled={isAnalysisLocked} />
+  );
+  const heading = (
+    <View pointerEvents="box-none" onLayout={({ nativeEvent: { layout } }) => {
+      setCoverIntroHeight(previous => previous === layout.height ? previous : layout.height);
+    }}>
+      {/* After the seal, the name and date are already in place: they do not enter again. */}
+      {!isEditing ? <ArrivalReveal play={opensOnSavedMoment && !windowHandedOver} index={0}>{renderMetadataCard()}</ArrivalReveal> : null}
+    </View>
+  );
+
   return (
     <View testID="screen.dreamDetail" className="relative flex-1 overflow-hidden bg-ink">
       <JournalPaper />
@@ -2807,7 +2797,7 @@ const JournalDetailContent = memo(function JournalDetailContent({ dream, folio }
           }}
 
           contentContainerStyle={{
-            paddingTop: navigationHeight - RUNNING_HEAD_HEIGHT - RUNNING_HEAD_GAP,
+            paddingTop: hasIllustratedCover ? 0 : navigationHeight - RUNNING_HEAD_HEIGHT - RUNNING_HEAD_GAP,
             paddingBottom: ((isEditing) ? 220 : actionDockHeight + 32) + insets.bottom,
           }}
           scrollEventThrottle={16}
@@ -2819,23 +2809,21 @@ const JournalDetailContent = memo(function JournalDetailContent({ dream, folio }
           }}
           keyboardShouldPersistTaps="handled"
         >
-          <View style={{ marginBottom: RUNNING_HEAD_GAP }}>
-            <JournalRunningHead folio={folio} onBack={handleBackPress} testID="journal.detail.navigation"
-              backTestID={TID.Button.NavigateJournal} edit onEdit={startEditing} editDisabled={isAnalysisLocked} />
-          </View>
+          {hasIllustratedCover ? (
+            <JournalCoverPlate testID={TID.Component.JournalIllustration} height={coverHeight} titleHeight={coverIntroHeight}
+              picture={renderCoverPicture()} head={runningHead(true)}>
+              {heading}
+            </JournalCoverPlate>
+          ) : (
+            <View style={{ marginBottom: RUNNING_HEAD_GAP }}>{runningHead(false)}</View>
+          )}
           <View ref={readingContentRef} collapsable={false} onLayout={measureTranscriptSection} className="px-4 pb-6">
             {showSavedMoment ? (
               <SavedDreamMoment phase={savedMomentPhase} painting={paintingInProgress} handedOver={windowHandedOver}
                 sealing={naming.stage === 'waiting' ? null : sealing}
                 artwork={paintedArtwork} landArtwork={artworkLanding} onOpenArtwork={() => setIsIllustrationFullscreen(true)} />
             ) : null}
-            <View onLayout={({ nativeEvent: { layout } }) => {
-              setCoverIntroHeight(previous => previous === layout.height ? previous : layout.height);
-            }}>
-              {/* After the seal, the name and date are already in place: they do not enter again. */}
-              {!isEditing ? <ArrivalReveal play={opensOnSavedMoment && !windowHandedOver} index={0}>{renderMetadataCard()}</ArrivalReveal> : null}
-            </View>
-            {hasIllustratedCover ? renderIllustrationSection() : null}
+            {hasIllustratedCover ? null : heading}
             {!isEditing && dreamMemoryItems.length > 0 && (
               <View className="mx-2 mb-7 gap-2 border-t border-t-line pt-3">
                 <View className="flex-row items-center gap-2">
