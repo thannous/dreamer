@@ -144,7 +144,8 @@ responsable de l'intégration et signaler les nouveaux commits.
    `npm run verify:pr` (seuls les contrôles dont les entrées ont changé
    tournent) avant de pousser, et mettre à jour le commit vérifié et le
    résultat.
-4. Le CTO fusionne en squash quand la PR n'est plus en brouillon, que le
+4. Sur demande explicite de thanh, l'agent peut fusionner en squash, sans
+   relecture ni intervention imposée du CTO, quand la PR n'est plus en brouillon, que le
    commit vérifié est la tête de la PR
    (`gh pr view <PR> --json headRefOid,mergeable`), sans fil ouvert ni conflit.
    `gh pr merge <PR> --squash --match-head-commit <SHA vérifié>` évite une
