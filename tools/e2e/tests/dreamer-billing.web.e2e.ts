@@ -209,6 +209,14 @@ test('guest resumes a durable recording before the Plus offer after signing in',
   });
   await page.getByTestId('btn.mockProfile.existing').click();
   await expect(page.getByTestId('screen.recording')).toBeVisible();
-  await expect(page).toHaveURL(/\/recording\?.*entryId=billing-return-durable-capture/);
+  // Capture consumes its URL parameters after applying the entry; the durable
+  // entry itself must remain owned and resumable until the user finishes it.
+  await expect(page).toHaveURL(/\/recording(?:\?|$)/);
+  await expect.poll(() => page.evaluate(() => {
+    const prefix = 'noctalia_mock_dogfood_v1:gemini_dream_journal_onboarding_state_v2:user:';
+    const key = Object.keys(localStorage).find(key => key.startsWith(prefix));
+    return key ? JSON.parse(localStorage.getItem(key)!).pendingRecordingIntent?.entryId : null;
+  })).toBe('billing-return-durable-capture');
+  await expect.poll(() => page.evaluate(() => sessionStorage.getItem('dreamer:return_to_paywall'))).toBeNull();
   await expect(page.getByTestId('screen.paywall')).toHaveCount(0);
 });
