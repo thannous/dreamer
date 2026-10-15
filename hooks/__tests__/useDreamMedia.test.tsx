@@ -58,6 +58,15 @@ it('reports resource failure without throwing into the journal', async () => {
   expect(state.current.imageUrl).toBe('');
 });
 
+it('renders a dream without an illustration once, with nothing to resolve', async () => {
+  let renders = 0;
+  const { result: state } = renderHook(() => { renders += 1; return useDreamMedia(dream('')); }, { wrapper });
+  await act(async () => {});
+  expect(state.current).toMatchObject({ imageUrl: '', thumbnailUrl: undefined, loading: false, error: false });
+  expect(renders).toBe(1);
+  expect(resolve).not.toHaveBeenCalled();
+});
+
 it('ignores a late request for an image replaced before resolution', async () => {
   const old = pending(); const replacement = pending();
   resolve.mockReturnValueOnce(old.promise).mockReturnValueOnce(replacement.promise);

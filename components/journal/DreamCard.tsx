@@ -144,7 +144,6 @@ export const DreamCard = memo(function DreamCard({
   const coverMinHeight = Math.min(coverWidth * 16 / 9, 620);
   // The illustration drifts through its frame as the card crosses the screen.
   const coverTravel = Math.round(coverMinHeight * 0.05);
-  const coverParallax = useFrameParallax(coverTravel);
   // The scrim's own colour at decreasing strength, so the fade eases into the illustration.
   const scrimFade = useMemo(() => {
     const base = Number(/([\d.]+)\)$/.exec(noctalia.illustration.scrim)?.[1] ?? 1);
@@ -160,6 +159,8 @@ export const DreamCard = memo(function DreamCard({
   const canExpand = reading.key === readingKey && reading.canExpand;
   const hasImage = (Boolean(imageUri) || (media.loading && Boolean(dream.imageUrl || dream.thumbnailUrl)))
     && failedImageAttempt !== imageAttemptKey;
+  // Only an illustration drifts: a text card's frame is never mounted.
+  const coverParallax = useFrameParallax(hasImage ? coverTravel : 0);
 
   useEffect(() => {
     if ((!useFullImage && failedImageAttempt !== imageAttemptKey)

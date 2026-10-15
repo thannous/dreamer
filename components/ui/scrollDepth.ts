@@ -48,22 +48,26 @@ const useFrameRef: () => ReturnType<typeof useAnimatedRef<View>> = typeof useAni
  * its lower part as the card enters at the bottom and its upper part as it leaves at the
  * top, so it seems to lie further away than the card. The picture overhangs its frame by
  * `travel` points above and below. Put `frame` and `onLayout` on the frame and `style` on
- * the picture.
+ * the picture. A `travel` of 0 (no picture shown) keeps the style still.
  */
 export function useFrameParallax(travel: number) {
   const frame = useFrameRef();
-  const scrollY = useHeaderScrollY();
+  const screenScroll = useHeaderScrollY();
   // A frame is measured again once laid out, so a new page takes its drift at once rather
   // than on its first scroll.
   const laidOut = useScreenScrollValue();
   const reduced = useReducedMotion();
   const { height: screen } = useWindowDimensions();
+  // A still frame follows no scroll: its style is not run on each scroll frame, and never
+  // measures a frame that is not mounted (Reanimated warns on each such measure).
+  const drifts = travel > 0 && !reduced;
+  const scrollY = drifts ? screenScroll : RESTING_SCROLL;
   const style = useAnimatedStyle(() => {
     // Read to run again on every scroll frame of its screen, and once its frame is laid out.
     scrollY.get();
     laidOut.get();
     // Positions are only known on the UI thread; the first pass on the JS thread rests.
-    if (reduced || travel <= 0 || !globalThis._WORKLET) return { transform: [{ translateY: 0 }] };
+    if (!drifts || !globalThis._WORKLET) return { transform: [{ translateY: 0 }] };
     const box = measure(frame);
     if (!box || box.height <= 0) return { transform: [{ translateY: 0 }] };
     const progress = (box.pageY + box.height / 2 - screen / 2) / (screen / 2 + box.height / 2);

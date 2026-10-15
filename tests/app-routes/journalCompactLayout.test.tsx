@@ -12,7 +12,8 @@ import { searchBarLayout } from '@/components/ui/SearchBar';
 
 jest.mock('@/context/AuthContext', () => ({ AuthContext: require('react').createContext(null) }));
 jest.mock('@/services/dreamMediaService', () => ({ resolveDreamMedia: async (dream: any) => ({ imageUrl: dream.imageUrl ?? '', thumbnailUrl: dream.thumbnailUrl }) }));
-jest.mock('@/lib/dreamMediaDiskCache', () => ({ resolveWithDiskCache: async (dream: any) => ({ imageUrl: dream.imageUrl ?? '', thumbnailUrl: dream.thumbnailUrl }) }));
+const mockResolveWithDiskCache = jest.fn(async (dream: any, _userId?: string | null, _cacheOnly?: boolean) => ({ imageUrl: dream.imageUrl ?? '', thumbnailUrl: dream.thumbnailUrl }));
+jest.mock('@/lib/dreamMediaDiskCache', () => ({ resolveWithDiskCache: (dream: any, userId: string | null, cacheOnly: boolean) => mockResolveWithDiskCache(dream, userId, cacheOnly) }));
 jest.mock('@/hooks/useRemoteJournalList', () => ({ useRemoteJournalList: () => ({ items: [], loading: false, error: false, complete: true, loadMore: jest.fn() }) }));
 jest.mock('@/components/journal/RemoteJournalList', () => ({ RemoteJournalList: ({ header, onOpenDream }: any) => <div data-testid="journal-remote-preview">{header}<button onClick={() => onOpenDream({ remoteId: 2501 })}>Open remote preview</button></div> }));
 
@@ -210,10 +211,11 @@ jest.mock('@/hooks/useClearWebFocus', () => ({ useClearWebFocus: () => {} }));
 jest.mock('@/lib/accessibility', () => ({ blurActiveElement: () => {} }));
 jest.mock('@/lib/analytics', () => ({ trackProductEvent: () => Promise.resolve() }));
 jest.mock('@/lib/imageUtils', () => ({ getDreamThumbnailUri: () => null, preloadImage: () => Promise.resolve() }));
-jest.mock('@/context/ScrollPerfContext', () => ({ ScrollPerfProvider: ({ children, isScrolling }: any) => <div data-testid="scroll-perf" data-scrolling={isScrolling}>{children}</div> }));
 jest.mock('@/components/inspiration/AtmosphericBackground', () => ({ AtmosphericBackground: () => null }));
+// The header gets new inline actions on each render of the screen: its renders count the screen's.
+let mockHeaderRenders = 0;
 jest.mock('@/components/NoctaliaScreenHeader', () => ({
-  NoctaliaScreenHeader: ({ titleKey, actions = [], slot, inlineSlot }: any) => <header data-testid="journal-shared-header"><span>Noctalia</span><span>{titleKey}</span>{actions.map((action: any) => <button key={action.testID} data-testid={action.testID} aria-label={action.accessibilityLabel} onClick={action.onPress} />)}{inlineSlot ?? slot}</header>,
+  NoctaliaScreenHeader: ({ titleKey, actions = [], slot, inlineSlot }: any) => (mockHeaderRenders += 1) && <header data-testid="journal-shared-header"><span>Noctalia</span><span>{titleKey}</span>{actions.map((action: any) => <button key={action.testID} data-testid={action.testID} aria-label={action.accessibilityLabel} onClick={action.onPress} />)}{inlineSlot ?? slot}</header>,
 }));
 jest.mock('@/components/inspiration/PageHeader', () => ({ PageHeaderContent: () => <header data-testid="journal-header">Journal</header> }));
 jest.mock('@/components/ui/icon-symbol', () => ({ IconSymbol: () => null }));
@@ -687,7 +689,12 @@ describe('Journal compact large-text layout', () => {
     expect(document.activeElement).toBe(input);
     const renderItem = mockListProps.renderItem;
     expect(dreamCard.hasAttribute('data-scroll-state')).toBe(false);
-    expect(screen.getByTestId('scroll-perf').getAttribute('data-scrolling')).toBe('false');
+    act(() => {
+      mockListProps.onViewableItemsChanged({ viewableItems: [{ index: 0, item: guestDream }], changed: [] });
+    });
+    await waitFor(() => expect(mockResolveWithDiskCache).toHaveBeenCalled());
+    mockResolveWithDiskCache.mockClear();
+    const screenRenders = mockHeaderRenders;
 
     mockListScrollToOffset.mockClear();
     mockKeyboardDismiss.mockClear();
@@ -699,13 +706,15 @@ describe('Journal compact large-text layout', () => {
     expect(mockKeyboardDismiss).toHaveBeenCalled();
     expect(mockListProps.renderItem).toBe(renderItem);
     expect(mockListProps.extraData).toBeUndefined();
-    expect(screen.getByTestId('scroll-perf').getAttribute('data-scrolling')).toBe('true');
 
+    // Once the terminated drag rests, the visible window is warmed again.
     await waitFor(() => {
-      expect(screen.getByTestId('scroll-perf').getAttribute('data-scrolling')).toBe('false');
-      expect(mockListProps.renderItem).toBe(renderItem);
-      expect(mockListProps.extraData).toBeUndefined();
+      expect(mockResolveWithDiskCache).toHaveBeenCalledWith(expect.objectContaining({ id: guestDream.id }), null, false);
     });
+    expect(mockListProps.renderItem).toBe(renderItem);
+    expect(mockListProps.extraData).toBeUndefined();
+    // Starting and resting a scroll does not render the screen again.
+    expect(mockHeaderRenders).toBe(screenRenders);
   });
 
   it('resets collapsed search when the overlay layout key changes', () => {
