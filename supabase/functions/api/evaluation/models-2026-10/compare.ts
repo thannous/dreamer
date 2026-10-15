@@ -24,6 +24,7 @@ import {
   requestGeminiGenerateContent,
 } from '../../services/gemini.ts';
 import { atomicWriteJson, validateFixtures } from '../ti559/core.ts';
+import { arrayBoundViolations } from './bounds.ts';
 
 const TEXT_MODELS = ['gemini-3.8-flash', 'gemini-3.5-flash-lite', 'claude-haiku-5-5'] as const;
 const IMAGE_MODELS = ['gemini-3.1-flash-lite-image', 'gemini-nano-banana-2.1'] as const;
@@ -46,26 +47,6 @@ export const withoutArrayBounds = (schema: unknown): unknown => {
       .filter(([key]) => key !== 'minItems' && key !== 'maxItems')
       .map(([key, value]) => [key, withoutArrayBounds(value)])
   );
-};
-
-/** Arrays outside the schema's bounds; Claude is sent the schema without them, so check here. */
-export const arrayBoundViolations = (schema: unknown, value: unknown, path = '$'): string[] => {
-  if (!schema || typeof schema !== 'object') return [];
-  const node = schema as { minItems?: number; maxItems?: number; items?: unknown; properties?: Record<string, unknown> };
-  if (Array.isArray(value)) {
-    const outside = (typeof node.minItems === 'number' && value.length < node.minItems)
-      || (typeof node.maxItems === 'number' && value.length > node.maxItems);
-    return [
-      ...(outside ? [`${path} has ${value.length} items`] : []),
-      ...value.flatMap((item, index) => arrayBoundViolations(node.items, item, `${path}[${index}]`)),
-    ];
-  }
-  const properties = node.properties;
-  if (value && typeof value === 'object' && properties) {
-    return Object.entries(value as Record<string, unknown>)
-      .flatMap(([key, item]) => arrayBoundViolations(properties[key], item, `${path}.${key}`));
-  }
-  return [];
 };
 
 const parseArgs = (args: string[]) => {

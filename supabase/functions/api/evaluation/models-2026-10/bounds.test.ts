@@ -1,6 +1,6 @@
 import { assertEquals } from 'https://deno.land/std@0.224.0/assert/mod.ts';
 import { ANALYZE_DREAM_SCHEMA } from '../../lib/schemas.ts';
-import { arrayBoundViolations } from './compare.ts';
+import { arrayBoundViolations } from './bounds.ts';
 
 Deno.test('a response with more quote excerpts than production accepts is flagged', () => {
   const response = { title: 'T', interpretation: 'I', quoteSourceExcerpts: ['a', 'b', 'c', 'd'], symbols: [] };
