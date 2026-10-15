@@ -71,6 +71,8 @@ Deno.test('resolveImageModel ignores retired preview overrides', () => {
 
   assertEquals(resolveImageModel('plus', readEnv, '2K'), GEMINI_FLASH_IMAGE_MODEL);
   assertEquals(resolveImageModel('free', readEnv), GEMINI_FLASH_LITE_IMAGE_MODEL);
+  // The deprecated previous HD default, as copied from the old .env.example.
+  assertEquals(resolveImageModel('plus', envReader({ IMAGEN_HD_MODEL: 'gemini-3.1-flash-image' }), '2K'), GEMINI_FLASH_IMAGE_MODEL);
 });
 
 Deno.test('resolveImagePromptModel uses the stable default when no override is configured', () => {

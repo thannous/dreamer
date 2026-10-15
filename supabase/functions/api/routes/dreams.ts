@@ -24,7 +24,7 @@ import {
 } from '../lib/aiRequestPolicy.ts';
 import { boundTranscriptForPrompt } from '../lib/prompts.ts';
 import { admitSynchronousAiRequest } from '../services/aiAdmission.ts';
-import { CLAUDE_SYNC_ANALYSIS_TIMEOUT_MS, runDreamAnalysis, REFLECTION_POLICY, normalizeAnalysisDreamType, DREAM_TYPE_POLICY } from '../services/dreamAnalysis.ts';
+import { CLAUDE_SYNC_ANALYSIS_TIMEOUT_MS, CORE_REFLECTION_POLICY, runDreamAnalysis, normalizeAnalysisDreamType, DREAM_TYPE_POLICY } from '../services/dreamAnalysis.ts';
 
 export {
   sanitizeAnalysisDetails,
@@ -536,7 +536,7 @@ export async function handleCategorizeDream(ctx: ApiContext): Promise<Response> 
     });
 
     const langName = aiLanguageName(lang);
-    const systemInstruction = `${localizedForAi(lang, CATEGORIZE_SYSTEM_INSTRUCTIONS)} ${REFLECTION_POLICY}`;
+    const systemInstruction = `${localizedForAi(lang, CATEGORIZE_SYSTEM_INSTRUCTIONS)} ${CORE_REFLECTION_POLICY}`;
 
     const prompt = `You analyze user dreams with keys: {"title": string, "theme": ${themes.map((theme) => JSON.stringify(theme)).join("|")}, "dreamType": ${DREAM_TYPE_VALUES.map((type) => JSON.stringify(type)).join("|")}, "hasPerson": boolean, "hasAnimal": boolean}. Choose a visual theme${themes.length > LEGACY_DREAM_THEMES.length ? `: ${describeDreamThemes(themes)}` : ''}. ${DREAM_TYPE_POLICY} Never infer trauma or diagnosis. The title MUST be in ${langName}.
 

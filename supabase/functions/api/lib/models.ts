@@ -43,8 +43,13 @@ export const RETIRED_TEXT_PREVIEW_MODELS: ReadonlySet<string> = new Set([
   'gemini-3.1-flash-lite-preview',
 ]);
 
-/** Image previews that were retired; env overrides pointing at them are ignored. */
+/**
+ * Retired or deprecated image models; env overrides pointing at them are ignored.
+ * `gemini-3.1-flash-image` (deprecated 2026-10-06) was the HD default in `.env.example`,
+ * so a secret copied from it must not keep HD on that model.
+ */
 export const RETIRED_IMAGE_MODELS: ReadonlySet<string> = new Set([
+  'gemini-3.1-flash-image',
   'gemini-2.5-flash-image-preview',
   'gemini-3.1-flash-image-preview',
   'gemini-3-pro-image-preview',
