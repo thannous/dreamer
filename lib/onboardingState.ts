@@ -689,9 +689,6 @@ export function resolveStartupDecision(
       ? { destination: input.pendingAuthDestination, reason: 'auth_return' }
       : { destination: '/settings', reason: 'default' };
   }
-  if (input.hasUser && input.pendingPaywallDestination) {
-    return { destination: input.pendingPaywallDestination, reason: 'paywall_return' };
-  }
   if (input.onboardingState.pendingRecordingIntent) {
     return {
       destination: pendingIntentDestination(input.onboardingState.pendingRecordingIntent),
@@ -700,6 +697,9 @@ export function resolveStartupDecision(
   }
   if (input.pendingNotificationUrl === '/recording') {
     return { destination: '/recording', reason: 'notification' };
+  }
+  if (input.hasUser && input.pendingPaywallDestination) {
+    return { destination: input.pendingPaywallDestination, reason: 'paywall_return' };
   }
   return { destination: input.defaultDestination ?? '/recording', reason: 'default' };
 }

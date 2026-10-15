@@ -2,6 +2,7 @@
 import React from 'react';
 import { URL as NodeURL } from 'node:url';
 import { act, cleanup, render, screen } from '@testing-library/react';
+import { clearReturnToPaywallIntent, requestReturnToPaywallIntent } from '@/lib/navigationIntents';
 
 let mockLucid = true;
 let mockPlatform = 'ios';
@@ -83,7 +84,7 @@ jest.mock('@/components/settings/QuickSettingsProvider', () => ({ QuickSettingsP
 jest.mock('@/components/VercelAnalytics', () => ({ VercelAnalytics: () => null }));
 jest.mock('@/components/VercelSpeedInsights', () => ({ VercelSpeedInsights: () => null }));
 jest.mock('@/lib/i18n', () => ({ loadTranslations: jest.fn().mockResolvedValue(undefined) }));
-jest.mock('@/lib/analytics', () => ({ trackProductEvent: jest.fn() }));
+jest.mock('@/lib/analytics', () => ({ trackProductEvent: jest.fn(), getPaywallTrigger: jest.fn(() => 'settings') }));
 jest.mock('@/lib/productAnalytics', () => ({ setProductAnalyticsLocale: jest.fn() }));
 jest.mock('@/lib/performanceTrace', () => ({ markPerformance: (...args: unknown[]) => mockMark(...args) }));
 jest.mock('@/lib/guestSession', () => ({ initGuestSession: () => mockGuestSession() }));
@@ -119,10 +120,25 @@ describe('root product composition (real root and DreamsProvider)', () => {
     mockPathname = '/recording'; mockSearchParams = {}; mockAuthReturn = null;
     mockOnboardingPersisting = false; mockOnboardingStatus = 'completed';
     mockOnboardingPath = null; mockPendingRecordingIntent = null; mockForeground = undefined;
+    clearReturnToPaywallIntent();
     Object.defineProperty(globalThis, 'URL', { configurable: true, writable: true, value: NodeURL });
     require('react-native').Linking.getInitialURL.mockResolvedValue(null);
   });
   afterEach(() => { cleanup(); jest.useRealTimers(); });
+
+  // Browser E2E cannot deliver native Back/swipe events. Bypass handleClose and
+  // exercise the real root's native foreground callback after the return is observed.
+  it.each(['android', 'ios'])('does not replay a completed paywall return after a system exit on %s', async (platform) => {
+    mockPlatform = platform; mockLucid = false; mockUser = { id: 'user-1' };
+    mockPathname = '/paywall'; mockSearchParams = { trigger: 'settings' };
+    requestReturnToPaywallIntent('settings', { persist: true });
+    const view = await mountStartup();
+    mockPathname = '/journal'; mockSearchParams = {};
+    await act(async () => { view.rerender(<RootLayout />); });
+    mockReplace.mockClear();
+    await act(async () => { mockForeground?.(); jest.advanceTimersByTime(100); });
+    expect(mockReplace).not.toHaveBeenCalled();
+  });
 
   it.each([
     ['android', false, 1],

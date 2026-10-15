@@ -156,25 +156,31 @@ for (const action of ['purchase', 'restore'] as const) {
   });
 }
 
+async function openGuestOfferSignIn(page: Page) {
+  await page.goto('/', { waitUntil: 'domcontentloaded' });
+  await page.getByTestId('btn.onboarding.intro.next').click();
+  if (process.env.EXPO_PUBLIC_ONBOARDING_FEATURE_SHEETS_ENABLED === 'true') {
+    await withDialog(page, 'accept', () => page.getByTestId('btn.onboarding.feature.close').click());
+  }
+  await page.getByTestId('btn.onboarding.skip').click();
+  await page.getByTestId('btn.recording.home').or(page.getByTestId('tab.home')).filter({ visible: true }).click();
+  await page.getByTestId('btn.header.home.settings').click();
+  await page.getByTestId('quick-settings.plus').click();
+  await expect(page.getByTestId('screen.paywall')).toBeVisible();
+  await expect(page.getByTestId('btn.paywall.purchase')).toContainText('Sign in');
+  await page.getByTestId('btn.paywall.purchase').click();
+  await page.getByTestId('settings-account-open-signin').click();
+}
+
 for (const profile of ['existing', 'new'] as const) {
   test(`guest returns to the Plus offer after signing into a ${profile} mock account`, async ({ page }, info) => {
-    await page.goto('/', { waitUntil: 'domcontentloaded' });
-    await page.getByTestId('btn.onboarding.intro.next').click();
-    if (process.env.EXPO_PUBLIC_ONBOARDING_FEATURE_SHEETS_ENABLED === 'true') {
-      await withDialog(page, 'accept', () => page.getByTestId('btn.onboarding.feature.close').click());
-    }
-    await page.getByTestId('btn.onboarding.skip').click();
-    await page.getByTestId('btn.recording.home').or(page.getByTestId('tab.home')).filter({ visible: true }).click();
-    await page.getByTestId('btn.header.home.settings').click();
-    await page.getByTestId('quick-settings.plus').click();
-    await expect(page.getByTestId('screen.paywall')).toBeVisible();
-    await expect(page.getByTestId('btn.paywall.purchase')).toContainText('Sign in');
-    await page.getByTestId('btn.paywall.purchase').click();
-    await page.getByTestId('settings-account-open-signin').click();
+    await openGuestOfferSignIn(page);
     await page.getByTestId(`btn.mockProfile.${profile}`).click();
     await expect(page).toHaveURL(/\/paywall\?trigger=settings$/);
     await expect(page.getByTestId('btn.paywall.purchase')).toBeEnabled();
     await expect(page.getByTestId('btn.paywall.restore')).toBeVisible();
+    // A system Back/gesture can bypass the paywall's explicit close handler.
+    await expect.poll(() => page.evaluate(() => sessionStorage.getItem('dreamer:return_to_paywall'))).toBeNull();
     await page.getByTestId('btn.paywall.selectMonthly').click();
     await page.screenshot({ path: info.outputPath(`${profile}-offer-after-signin.png`) });
     await page.getByTestId('btn.paywall.close').click();
@@ -183,3 +189,26 @@ for (const profile of ['existing', 'new'] as const) {
     await expect(page.getByTestId('screen.paywall')).toHaveCount(0);
   });
 }
+
+test('guest resumes a durable recording before the Plus offer after signing in', async ({ page }) => {
+  await openGuestOfferSignIn(page);
+  // Restore an owned mock draft's durable intent while the auth screen is open.
+  // This opt-in mock storage namespace never touches real account data.
+  await page.evaluate(() => {
+    const key = 'noctalia_mock_dogfood_v1:gemini_dream_journal_onboarding_state_v2:guest';
+    const state = JSON.parse(localStorage.getItem(key)!);
+    state.status = 'completed';
+    state.selectedPath = 'analyze';
+    state.completionReason = 'analyze';
+    state.pendingRecordingIntent = {
+      entryId: 'billing-return-durable-capture', intent: 'fresh', source: 'onboarding',
+      postSave: 'confirm_analysis', phase: 'capture',
+      createdAt: Date.now(), expiresAt: Date.now() + 24 * 60 * 60 * 1000,
+    };
+    localStorage.setItem(key, JSON.stringify(state));
+  });
+  await page.getByTestId('btn.mockProfile.existing').click();
+  await expect(page.getByTestId('screen.recording')).toBeVisible();
+  await expect(page).toHaveURL(/\/recording\?.*entryId=billing-return-durable-capture/);
+  await expect(page.getByTestId('screen.paywall')).toHaveCount(0);
+});
