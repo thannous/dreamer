@@ -170,7 +170,11 @@ if (import.meta.main) {
         await save();
         console.log(`${fixture.id} ${model}: ${(results[slot] as any).status}`);
       }
-      if (!imagePrompt) continue;
+      if (!imagePrompt) {
+        results.push({ kind: 'image', id: fixture.id, status: 'skipped (no gemini-3.8-flash image prompt)' });
+        await save();
+        continue;
+      }
       for (const model of rotate(IMAGE_MODELS, index)) {
         const start = performance.now();
         const slot = results.push({ kind: 'image', id: fixture.id, model, imagePrompt, status: 'pending' }) - 1;
@@ -196,4 +200,8 @@ if (import.meta.main) {
   } finally {
     globalThis.fetch = realFetch;
   }
+  // An incomplete comparison must not read as a successful run.
+  const incomplete = results.filter((result) => result.status !== 'valid');
+  console.log(`${results.length - incomplete.length}/${results.length} cells valid, ${requests} requests.`);
+  if (incomplete.length) Deno.exitCode = 1;
 }

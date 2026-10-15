@@ -173,11 +173,16 @@ const toSystemInstruction = (
 
 // Gemini 3.8 Flash does not support minimal; Lite 3.5 is qualified separately.
 // Pin omitted levels to low rather than inheriting a provider default.
-// Image requests run at minimal unless high is asked, whichever image model serves them.
+// Image models known to accept minimal run at minimal unless high is asked;
+// other image models keep their provider default rather than an unsupported level.
+const MINIMAL_THINKING_IMAGE_MODELS = new Set([
+  GEMINI_FLASH_IMAGE_MODEL, GEMINI_FLASH_LITE_IMAGE_MODEL, 'gemini-nano-banana-2.1',
+]);
 const toThinkingLevel = (
   model: string, thinkingLevel?: GeminiThinkingLevel, isImage = false
-): GeminiThinkingLevel => {
+): GeminiThinkingLevel | undefined => {
   if (isImage) {
+    if (!MINIMAL_THINKING_IMAGE_MODELS.has(model)) return undefined;
     return thinkingLevel === 'high' ? 'high' : 'minimal';
   }
   if (!thinkingLevel) return 'low';
