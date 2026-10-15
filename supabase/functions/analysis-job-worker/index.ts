@@ -208,8 +208,8 @@ const processAnalysisJob = async (input: {
       route: '/analysis-job-worker',
     });
     // A dream its pre-analysis classed keeps that class and the name its seal wrote: the
-    // reading neither classes nor renames it (and an app that cannot show a newer theme
-    // never meets one).
+    // reading neither classes nor renames it. Synchronized values are shared across
+    // app versions; request capability negotiation does not filter journal reads.
     const classed = typeof (dream as any).theme === 'string' && (dream as any).theme.length > 0;
     const name = typeof (dream as any).title === 'string' ? (dream as any).title.trim() : '';
     const analysis = classed
