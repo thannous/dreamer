@@ -77,8 +77,8 @@ function PaywallScreen() {
   } = useSubscription({ loadPackages: true });
   const operationInFlightRef = useRef(false);
   const [operationPending, setOperationPending] = useState(false);
-  const [awaitingServerAccess, setAwaitingServerAccess] = useState(Boolean(activationPending));
-  useEffect(() => setAwaitingServerAccess(Boolean(activationPending)), [activationPending]);
+  const [confirmationPendingFor, setConfirmationPendingFor] = useState<string | null>(null);
+  const awaitingServerAccess = Boolean(activationPending || (user?.id && confirmationPendingFor === user.id));
   const busy = processing || operationPending;
   const { quotaStatus } = useQuota();
   const insets = useSafeAreaInsets();
@@ -216,7 +216,7 @@ function PaywallScreen() {
   }, [currentLang]);
 
   const confirmAccessAndResume = useCallback(async (result: Awaited<ReturnType<typeof purchase>> | null) => {
-    setAwaitingServerAccess(true);
+    setConfirmationPendingFor(user?.id ?? null);
     let confirmed = result;
     if (!confirmed?.serverConfirmed || !confirmed.isActive || confirmed.tier !== 'plus') {
       try {
@@ -231,7 +231,7 @@ function PaywallScreen() {
       }
     }
     if (!confirmed.serverConfirmed || !confirmed.isActive || confirmed.tier !== 'plus') return false;
-    setAwaitingServerAccess(false);
+    setConfirmationPendingFor(null);
     const returnRoute = requestAnalysisReturnRoute(params, user?.id);
     if (returnRoute) {
       navigateToDream(returnRoute);
@@ -275,7 +275,7 @@ function PaywallScreen() {
         tier: nextStatus?.tier ?? 'plus',
       });
       if (!nextStatus?.isActive && !nextStatus?.storeActive) {
-        setAwaitingServerAccess(true);
+        setConfirmationPendingFor(user?.id ?? null);
         return;
       }
       if (!await confirmAccessAndResume(nextStatus)) return;
@@ -290,7 +290,7 @@ function PaywallScreen() {
       operationInFlightRef.current = false;
       setOperationPending(false);
     }
-  }, [analyticsTier, canPurchase, confirmAccessAndResume, effectiveSelectedId, paywallTrigger, purchase, selectedPlan, t]);
+  }, [analyticsTier, canPurchase, confirmAccessAndResume, effectiveSelectedId, paywallTrigger, purchase, selectedPlan, t, user?.id]);
 
   const handleRestore = useCallback(async () => {
     if (processing || requiresAuth || awaitingServerAccess || operationInFlightRef.current) return;
