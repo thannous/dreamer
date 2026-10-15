@@ -281,6 +281,12 @@ export default {
         'app.json',
       ],
     },
+    // Negative target/scheduler cases cannot safely be exercised by a live browser journey.
+    {
+      name: 'backend-runner-guards',
+      command: 'node --test scripts/lib/backend-e2e-local.test.cjs',
+      inputs: ['scripts/lib/backend-e2e-local.cjs', 'scripts/lib/backend-e2e-local.test.cjs', 'scripts/run-backend-e2e.cjs'],
+    },
     { name: 'typecheck-app', command: 'npm run typecheck:app', exclude: DOCS },
     { name: 'typecheck-tests', command: 'npm run typecheck:tests', exclude: DOCS },
     { name: 'lint', command: 'npm run lint', exclude: DOCS },

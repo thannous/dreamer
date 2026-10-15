@@ -27,11 +27,12 @@ const cli = process.env.E2E_SUPABASE_CLI || (!runtime && process.platform === 'd
   : path.join(root, 'node_modules/.bin/supabase'));
 const docker = process.env.E2E_DOCKER_CLI || 'docker';
 const quote = arg => `'${arg.replaceAll("'", "'\"'\"'")}'`;
-const rerunArgs = [...(runtime ? ['--runtime', runtime] : []), ...args].map(quote).join(' ');
+const rerunArgs = [...(runtime ? ['--runtime', runtime] : []),
+  ...(suppliedStatus ? ['--status-file', path.resolve(suppliedStatus)] : []), ...args].map(quote).join(' ');
 // Supabase documents this one for root runs of the native runtime; other SUPABASE_* settings are dropped.
 const keptSupabaseEnv = runtime ? ['SUPABASE_NATIVE_POSTGRES_USER'] : [];
 // The rerun repeats the overrides that chose the executable and the database user.
-const rerunEnv = ['E2E_SUPABASE_CLI', ...keptSupabaseEnv]
+const rerunEnv = ['E2E_SUPABASE_CLI', 'E2E_SUPABASE_HOME', 'E2E_DOCKER_CLI', ...keptSupabaseEnv]
   .filter(key => process.env[key]).map(key => `${key}=${quote(process.env[key])} `).join('');
 const cliEnv = runtime ? {
   ...Object.fromEntries(Object.entries(process.env)
@@ -131,9 +132,11 @@ try {
   fs.writeFileSync(profile, Object.entries(publicEnv).map(([key, value]) => `${key}=${value}`).join('\n') + '\n', { mode: 0o600 });
   command(process.execPath, [path.join(path.dirname(require.resolve('playwright/package.json')), 'cli.js'), 'test', '--config', 'playwright.backend.config.ts', ...args], {
     env: { ...process.env, E2E_BACKEND_STATUS_FILE: statusFile, E2E_BACKEND_PROFILE: profile,
-      E2E_BACKEND_RUNTIME: runtime || 'legacy-docker', E2E_BACKEND_CLI_VERSION: cliVersion || 'supplied VM',
+      E2E_BACKEND_RUNTIME: suppliedStatus ? 'supplied-unknown' : runtime || 'legacy-docker',
+      E2E_BACKEND_CLI_VERSION: cliVersion || 'unknown (supplied stack)',
       E2E_BACKEND_RERUN: `${rerunEnv}mise exec -- npm run test:e2e:backend${rerunArgs ? ` -- ${rerunArgs}` : ''}`,
-      E2E_BACKEND_MIGRATION_FIXTURES: JSON.stringify(migrationFixtures) },
+      // Copies prepared here are never applied to a supplied stack. Its migration state is unknown.
+      E2E_BACKEND_MIGRATION_FIXTURES: JSON.stringify(suppliedStatus ? null : migrationFixtures) },
   });
 } finally {
   // Only this run's randomly named disposable database is removed; no reset or --all.
