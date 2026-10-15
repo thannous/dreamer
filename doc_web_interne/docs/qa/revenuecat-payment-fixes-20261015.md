@@ -64,6 +64,11 @@ the expiry and cross-account counterexamples retain their quota assertions.
 The existing paywall isolation fixture now returns realistic typed operation
 results. No new isolation suite replaces the TesterArmy journeys.
 
+The first committed-head verification found two failures in the existing QA lab
+isolation fixture because its mocked module did not export the new diagnostics.
+That mock was aligned with the module; both focused controls then passed. This
+test-only follow-up does not change the application or the TesterArmy scenarios.
+
 One intermediate run passed the payment cases but found an incorrect final test
 expectation: clicking Today opens Home, not Capture. The test now verifies Home
 and the absence of a reopened offer. The final 16-case run passed after that
