@@ -2,6 +2,7 @@ import { beforeEach, describe, expect, it, jest } from '@jest/globals';
 
 import { fetchJSON } from '@/lib/http';
 import { signOut } from '@/lib/auth';
+import { forgetNotificationDreams } from '@/services/notificationDreamInbox';
 import { clearRemoteDreamStorage } from '@/services/storageService';
 import {
   finalizeAccountDeletion,
@@ -20,6 +21,10 @@ jest.mock('@/lib/auth', () => ({
   signOut: jest.fn(),
 }));
 
+jest.mock('@/services/notificationDreamInbox', () => ({
+  forgetNotificationDreams: jest.fn(),
+}));
+
 jest.mock('@/services/storageService', () => ({
   clearRemoteDreamStorage: jest.fn(),
 }));
@@ -27,6 +32,7 @@ jest.mock('@/services/storageService', () => ({
 const mockFetchJSON = jest.mocked(fetchJSON);
 const mockSignOut = jest.mocked(signOut);
 const mockClearRemoteDreamStorage = jest.mocked(clearRemoteDreamStorage);
+const mockForgetNotificationDreams = jest.mocked(forgetNotificationDreams);
 
 describe('requestAccountDeletion', () => {
   beforeEach(() => {
@@ -59,25 +65,28 @@ describe('finalizeAccountDeletion', () => {
     jest.clearAllMocks();
   });
 
-  it('clears the local dream cache then signs out', async () => {
+  it('clears the local dream cache and the waiting dictated dreams, then signs out', async () => {
     const calls: string[] = [];
     mockClearRemoteDreamStorage.mockImplementation(async () => {
       calls.push('clear');
+    });
+    mockForgetNotificationDreams.mockImplementation(async (scope: string) => {
+      calls.push(`forget ${scope}`);
     });
     mockSignOut.mockImplementation(async () => {
       calls.push('signOut');
     });
 
-    await finalizeAccountDeletion();
+    await finalizeAccountDeletion('user-1');
 
-    expect(calls).toEqual(['clear', 'signOut']);
+    expect(calls).toEqual(['clear', 'forget user:user-1', 'signOut']);
   });
 
   it('still signs out when cache clearing fails', async () => {
     mockClearRemoteDreamStorage.mockRejectedValue(new Error('sqlite busy'));
     mockSignOut.mockResolvedValue(undefined);
 
-    await finalizeAccountDeletion();
+    await finalizeAccountDeletion('user-1');
 
     expect(mockSignOut).toHaveBeenCalledTimes(1);
   });
@@ -86,6 +95,6 @@ describe('finalizeAccountDeletion', () => {
     mockClearRemoteDreamStorage.mockResolvedValue(undefined);
     mockSignOut.mockRejectedValue(new Error('sign out failed'));
 
-    await expect(finalizeAccountDeletion()).rejects.toThrow('sign out failed');
+    await expect(finalizeAccountDeletion('user-1')).rejects.toThrow('sign out failed');
   });
 });

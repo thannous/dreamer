@@ -351,6 +351,7 @@ export default function LucidDataScreen() {
         style: 'destructive',
         onPress: () =>
           void (async () => {
+            if (!user) return;
             setBusy('account');
             let localCleanupStarted = false;
             try {
@@ -359,7 +360,7 @@ export default function LucidDataScreen() {
               localCleanupStarted = true;
               await clearLucidMorningVoiceNotes(userScope);
               await resetLocalData();
-              await finalizeAccountDeletion();
+              await finalizeAccountDeletion(user.id);
               router.replace('/lucid/onboarding');
             } catch {
               Alert.alert(

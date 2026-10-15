@@ -184,6 +184,14 @@ export async function presentAnalysisReadyNotification(dreamId: number): Promise
   console.log('[MOCK NOTIFICATIONS] presentAnalysisReadyNotification called with dreamId:', dreamId);
 }
 
+export async function ensureDreamCaptureReplyAction(): Promise<void> {
+  console.log('[MOCK NOTIFICATIONS] ensureDreamCaptureReplyAction called');
+}
+
+export async function presentDreamCapturedNotification(replacingIdentifier?: string): Promise<void> {
+  console.log('[MOCK NOTIFICATIONS] presentDreamCapturedNotification called', replacingIdentifier);
+}
+
 export async function cancelAllNotifications(): Promise<void> {
   console.log('[MOCK NOTIFICATIONS] Cancelling all scheduled notifications');
   mockScheduledNotifications = [];
