@@ -39,12 +39,19 @@ jest.mock('react-native', () => {
   return {
     Platform: { OS: 'web', select: (values: any) => values.web ?? values.default },
     StyleSheet: { create: (styles: any) => styles, flatten: (style: any) => style, absoluteFill: {} },
+    // Render the native modal's children here; browser E2E covers its focus trap.
+    Modal: ({ visible, children }: { visible?: boolean; children?: React.ReactNode }) =>
+      visible ? <div role="dialog">{children}</div> : null,
+    AccessibilityInfo: { setAccessibilityFocus: jest.fn() },
+    findNodeHandle: () => 1,
     Alert: { alert: jest.fn() },
     AppState: { addEventListener: () => ({ remove: jest.fn() }) },
     Keyboard: { addListener: () => ({ remove: jest.fn() }), dismiss: jest.fn() },
     Text: ({ children }: any) => <span>{children}</span>,
     View: Box,
     ScrollView: Box,
+    // The save seal's journal and pen are decorative art; this journey only needs it to render.
+    Image: () => null,
     KeyboardAvoidingView: Box,
     TextInput: Input,
     Pressable: ({ children, onPress, disabled, testID, accessibilityLabel }: any) => (

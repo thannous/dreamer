@@ -1,5 +1,5 @@
 import type { ViewStyle } from 'react-native';
-import type { CSSStyle } from 'react-native-reanimated';
+import { cubicBezier, type CSSStyle } from 'react-native-reanimated';
 
 import { EASE } from '@/components/motion/motion';
 
@@ -12,9 +12,14 @@ import { EASE } from '@/components/motion/motion';
  *       as a page: the card settles, a star lights between two threads, the paragraphs
  *       follow one another.
  *   Prologue — once the dream is durably saved, written or told, night falls over the
- *       draft, its words gather into a glow that condenses into a star, and the star rises
- *       to where the medallion will open.
+ *       draft and the dream journal opens under a lamp, on the previous dream's page,
+ *       which turns over to a fresh one. A pen draws a ring, then writes the name the
+ *       pre-analysis gives the dream, waiting for it a few seconds at most. The reader dives
+ *       into the page until it is the dream's own page, and the night fills the ring,
+ *       which is the medallion.
  *   I.  Saved — the astrolabe settles once around a window onto the night sky.
+ *       The seal is struck: the emblem of the dream's theme is pressed into the window and
+ *       its type and theme are engraved around it. Then the page writes the dream's name.
  *   II. Read  — while the analysis runs, its stars light one after another (no fake
  *       progress: the loop says "working", never "73 %"). When the reading lands, the
  *       dream's real symbols ignite as a constellation, the thread draws itself, then the
@@ -42,12 +47,32 @@ export const DREAM_STORY = {
   /** The reading chapters start once the last star is lit. */
   chapterLead: 240,
   /**
-   * The capture screen's seal, from the save to the saved moment: the words gather, condense, rise.
-   * Long enough for each beat to be seen: the words hold about half a second before they gather.
+   * The pace of the capture screen's seal, from the save to the saved moment: turned,
+   * ringed, named, entered, filled. Its beats are set against this length; the seal itself
+   * lasts as long as the pre-analysis keeps the pen waiting, and the name takes to write.
    */
-  prologue: 2200,
+  prologue: 4800,
   /** The seal's veil outlasts the screen transition that covers it. */
   prologueVeilHold: 700,
+  /**
+   * The arrival names the dream: once the page has come in, the seal is struck with what
+   * the dream is, then its name is written. The categorization still on its way is waited
+   * for this long at most.
+   */
+  namingFrom: 700,
+  namingHold: 1000,
+  /**
+   * How long after the save the pre-analysis is waited for: only past this does a dream
+   * take its first words as its name.
+   */
+  nameDeadline: 5000,
+  /**
+   * The four signs turn on the astrolabe while the seal chooses; the chosen one glides
+   * into the window and is pressed there, and the legend is engraved around it.
+   */
+  sealChoice: 1500,
+  sealContact: 2150,
+  sealStrike: 3050,
   /** One pass of the light band across a canvas being painted. */
   paintSweep: 2600,
   /** A landed painting settling into its frame. */
@@ -64,6 +89,12 @@ export const DREAM_STORY = {
   /** The journal card's single glow, in and out. */
   epilogueHalo: 1800,
 } as const;
+
+/**
+ * The prologue's curve: gentler than `EASE.inOut`, whose steep middle makes every keyframe
+ * of a long story start late and stop short, so nothing in the dream snaps into place.
+ */
+export const DREAM_EASE = cubicBezier(0.4, 0, 0.2, 1);
 
 /** Under reduce motion a stagger is still motion; it collapses to a near-simultaneous fade. */
 export const reducedDelay = (delay: number): number => Math.min(delay, 120);

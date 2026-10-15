@@ -1,7 +1,7 @@
 // Historical exact UI assertions executed under the guarded TesterArmy engine.
 import path from 'node:path';
 import type { Page } from 'playwright/test';
-import { createParityTest, expect, withDialog } from '../web-parity-fixtures';
+import { createParityTest, expect, expectIllustrationOnPlate, withDialog } from '../web-parity-fixtures';
 
 const artwork = path.resolve(process.cwd(), '../../e2e/fixtures/home-dream.png');
 const dreamTitle = 'L’éléphant au sommet de la grande roue';
@@ -29,16 +29,17 @@ async function prepareReflection(page: Page, media: 'loaded' | 'failed' | 'absen
   await expect(page.getByTestId('component.dreamDetail.readingZone')).toContainText(/\S[\s\S]{80}/);
   if (media !== 'absent') {
     await page.getByTestId('btn.journal.illustrate').click();
-    if (media !== 'failed') await expect(page.getByTestId('btn.journal.illustration.expand')).toBeVisible();
+    // Painted in the seal's window, the illustration leaves it for the plate at the top of the page.
+    if (media !== 'failed') await expectIllustrationOnPlate(page);
     await expect(page.getByTestId('journal.detail.image.generation_dots')).toHaveCount(0);
     if (media === 'failed') {
       await page.getByTestId('component.metadataCard').scrollIntoViewIfNeeded();
       await expect(page.getByTestId('journal.detail.image.unavailable')).toBeVisible();
     }
   }
-  await page.getByTestId('btn.editMetadata').click();
+  await page.getByTestId('btn.editDream').click();
   await page.getByTestId('input.dreamTitle').fill(dreamTitle);
-  await page.getByTestId('btn.editMetadata').click();
+  await page.getByTestId('btn.saveDreamEdit').click();
   await page.getByTestId('component.transcriptCard').scrollIntoViewIfNeeded();
   await page.getByTestId('component.dreamDetail.actionCard').click();
   await expect(page.getByTestId('screen.dreamCategories')).toBeVisible();

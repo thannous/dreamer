@@ -180,7 +180,8 @@ for (const editor of ['metadata', 'transcript'] as const) {
     const pending = screen.getByTestId('text.dreamMetadata.pending');
     await expect(pending).toBeVisible();
     await expect(pending).toHaveCount(1);
-    const button = screen.getByTestId(editor === 'metadata' ? 'btn.editMetadata' : 'btn.editTranscript', { visible: true });
+    // One edit control opens the name and the story together; the sheet saves them.
+    const button = screen.getByTestId('btn.editDream', { visible: true });
     await screen.scrollUntilVisible(button); await button.tap();
     const input = screen.getByTestId(editor === 'metadata' ? 'input.dreamTitle' : 'input.dreamTranscript');
     const draft = editor === 'metadata' ? 'E2E personal lighthouse title' : 'E2E revised story: the lighthouse has a blue door. I climb three quiet staircases, count the windows, and see a yellow boat passing the harbour. The lamp turns slowly above me while I write down every detail before waking.';
@@ -197,7 +198,8 @@ for (const editor of ['metadata', 'transcript'] as const) {
     await expect(input).toBeVisible();
     await expect(input).toHaveValue(draft);
     await app.screenshot(`release-${editor}-draft-after-categorization`);
-    await screen.scrollUntilVisible(button); await button.tap();
+    const save = screen.getByTestId('btn.saveDreamEdit', { visible: true });
+    await screen.scrollUntilVisible(save); await save.tap();
     await expect(input).toHaveCount(0);
     const back = screen.getByTestId('btn.navigateJournal', { visible: true });
     await screen.scrollUntilVisible(back, { direction: 'up' }); await back.tap();

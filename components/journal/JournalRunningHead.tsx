@@ -1,0 +1,47 @@
+import React, { useMemo } from 'react';
+import { View } from 'react-native';
+
+import { PressableScale } from '@/components/motion';
+import { IconSymbol } from '@/components/ui/icon-symbol';
+import { getNoctaliaDesignTokens } from '@/constants/noctaliaDesign';
+import { useTheme } from '@/context/ThemeContext';
+import { useTranslation } from '@/hooks/useTranslation';
+
+/** The running head's line, and the white space it leaves before the page's text. */
+export const RUNNING_HEAD_HEIGHT = 44;
+export const RUNNING_HEAD_GAP = 20;
+const BACK_SIZE = 42;
+
+/**
+ * The top of a journal page: the way back to the journal, the round arrow the app's other
+ * pages use. It belongs to the page and scrolls away with it. Without `onBack` it is only
+ * drawn, as on a page being turned to.
+ */
+export function JournalRunningHead({ onBack, testID, backTestID }: {
+  onBack?: () => void;
+  testID?: string;
+  backTestID?: string;
+}) {
+  const { t } = useTranslation();
+  const { colors, mode, shadows } = useTheme();
+  const noctalia = useMemo(() => getNoctaliaDesignTokens(colors, mode), [colors, mode]);
+  const button = [shadows.sm, {
+    width: BACK_SIZE, height: BACK_SIZE, borderRadius: BACK_SIZE / 2, borderWidth: 1,
+    backgroundColor: noctalia.surface.raised, borderColor: noctalia.surface.border,
+  }];
+  const arrow = <IconSymbol name="chevron.left" size={21} color={noctalia.text.secondary} />;
+
+  return (
+    <View testID={testID} className="flex-row items-center px-4" style={{ height: RUNNING_HEAD_HEIGHT }}>
+      {onBack ? (
+        <PressableScale onPress={onBack} testID={backTestID} accessibilityRole="button"
+          accessibilityLabel={t('journal.back_button')} hitSlop={{ top: 2, bottom: 2, left: 2, right: 2 }}
+          className="items-center justify-center" style={button}>
+          {arrow}
+        </PressableScale>
+      ) : (
+        <View className="items-center justify-center" style={button}>{arrow}</View>
+      )}
+    </View>
+  );
+}

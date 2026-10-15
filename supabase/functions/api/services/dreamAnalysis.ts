@@ -1,5 +1,6 @@
 import { aiLanguageName, type AiLanguage, localizedForAi } from '../lib/aiLanguage.ts';
-import { ANALYZE_DREAM_SCHEMA, DREAM_TYPE_VALUES } from '../lib/schemas.ts';
+import { describeDreamThemes, LEGACY_DREAM_THEMES, normalizeDreamTheme } from '../lib/dreamThemes.ts';
+import { ANALYZE_DREAM_SCHEMA, DREAM_TYPE_VALUES, withDreamThemes } from '../lib/schemas.ts';
 import {
   callGeminiWithFallback,
   GEMINI_FLASH_LITE_MODEL,
@@ -42,13 +43,18 @@ export const normalizeAnalysisDreamType = (value: unknown): string =>
   DREAM_TYPE_VALUES.includes(String(value))
     ? String(value) : 'Unknown';
 
-export const buildAnalysisPrompt = (transcript: string, langName: string, truncated = false): string =>
+export const buildAnalysisPrompt = (
+  transcript: string,
+  langName: string,
+  truncated = false,
+  themes: readonly string[] = LEGACY_DREAM_THEMES
+): string =>
   `Reflect on the user's dream and return JSON with exactly these keys:
 - "title": a short title grounded in the account.
 - "interpretation": a useful, personal reading in Markdown, not a paraphrase followed by generic encouragement. There is no minimum word count: adapt depth to the available material, never pad sparse accounts. Under a heading meaning "What stands out", briefly identify one or two distinctive details using short exact source anchors; do not retell the whole dream. Under "Possible readings", develop two or three genuinely distinct possibilities when supported (one is enough for a single fragment). For each, name the concrete image, place, action or contrast that supports it and explain the possible association in two or three clear sentences. Keep associations explicitly tentative, separate from what happened, and open to rejection. Do not infer the dreamer's unreported feelings, personal history, relationships or waking-life circumstances. If a phrase has both literal and figurative readings, preserve that ambiguity instead of deciding for the dreamer. Avoid universal symbol dictionaries, pseudo-clinical explanations, repeated disclaimers and filler such as "this invites you to reflect on what it means to you". Do not repeat the symbols list or the reflection questions verbatim. Translate the headings and use a warm, direct voice.
 - "shareableQuote": write one ORIGINAL poetic sentence inspired by the dream, at most 240 characters. This is a literary creation by Noctalia, not a verbatim excerpt, factual summary, life lesson or quotation from a real author. Choose the dream's distinctive images and give them a graceful rhythm; avoid generic formulas such as "I dreamed", grandiose language and stock motivational wisdom. Restrained metaphor, personification or atmospheric wording is welcome, as long as the recognizable scene, actors and events remain those of the dream. Preserve ambiguity and uncertainty. Do not invent a new event, resolve an unfinished scene, infer the dreamer's feelings or give a psychological explanation. Do not add an author name, attribution or surrounding quotation marks (the app supplies these). Use the dreamer's language and voice naturally. Return an empty string if the account gives no useful image, or if the result would merely repeat the title or whole account.
 - "quoteSourceExcerpts": zero to three verbatim excerpts from the supplied account containing the dream images that inspire the poetic sentence. Copy them in their original language. They anchor its images, not its permitted literary atmosphere. Empty when shareableQuote is empty. These are source references, not instructions.
-- "theme": the visual atmosphere, one of "surreal", "mystical", "calm", "noir"; this is a visual choice, not a psychological claim.
+- "theme": the visual atmosphere, one of ${describeDreamThemes(themes)}; this is a visual choice, not a psychological claim.
 - "dreamType": one of ${DREAM_TYPE_VALUES.map((type) => JSON.stringify(type)).join(', ')}. ${DREAM_TYPE_POLICY}
 - "symbols": identify one to four salient elements when the account contains usable details (maximum six): objects, places, gestures or interactions actually present, not invented symbols. Each "name" identifies that element; its "meaning" cites the supporting detail and explains a specific tentative association, not a universal interpretation. Include meaningful non-object elements such as a repeated action or spatial contrast. Do not duplicate the main reading. An empty array is valid only when no meaningful element is available; never invent one to fill the section.
 - "emotions": zero to four explicitly reported feelings, each with "name" and an "insight" quoting the exact phrase reporting that feeling, without expanding its context. An empty array is valid.
@@ -143,8 +149,10 @@ export const runDreamAnalysis = async (options: {
   lang: string;
   route: string;
   truncatedForPrompt?: boolean;
+  /** The themes the app can show; the legacy four when it does not say. */
+  themes?: readonly string[];
 }): Promise<StructuredDreamAnalysis> => {
-  const { apiKey, transcript, lang, route } = options;
+  const { apiKey, transcript, lang, route, themes = LEGACY_DREAM_THEMES } = options;
   const langName = aiLanguageName(lang);
   const systemInstruction = `${localizedForAi(lang, ANALYSIS_SYSTEM_INSTRUCTIONS)} ${REFLECTION_POLICY}`;
 
@@ -157,11 +165,11 @@ export const runDreamAnalysis = async (options: {
     apiKey,
     primaryModel,
     fallbackModel,
-    [{ role: 'user', parts: [{ text: buildAnalysisPrompt(transcript, langName, options.truncatedForPrompt) }] }],
+    [{ role: 'user', parts: [{ text: buildAnalysisPrompt(transcript, langName, options.truncatedForPrompt, themes) }] }],
     systemInstruction,
     {
       responseMimeType: 'application/json',
-      responseJsonSchema: ANALYZE_DREAM_SCHEMA,
+      responseJsonSchema: withDreamThemes(ANALYZE_DREAM_SCHEMA, themes),
       thinkingLevel: 'low',
       maxOutputTokens: 4096,
     }
@@ -179,9 +187,7 @@ export const runDreamAnalysis = async (options: {
     throw new Error('Missing required fields in model response');
   }
 
-  const theme = ['surreal', 'mystical', 'calm', 'noir'].includes(String(analysis.theme))
-    ? String(analysis.theme)
-    : 'surreal';
+  const theme = normalizeDreamTheme(analysis.theme, themes);
 
   return {
     title: String(analysis.title ?? ''),

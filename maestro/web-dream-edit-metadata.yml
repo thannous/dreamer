@@ -20,12 +20,12 @@ url: "http://localhost:8081"
 - assertVisible: "The Infinite Library"
 - scrollUntilVisible:
     element:
-      id: "btn.editMetadata"
+      id: "btn.editDream"
     direction: DOWN
     visibilityPercentage: 20
     centerElement: true
 - tapOn:
-    id: "btn.editMetadata"
+    id: "btn.editDream"
     retryTapIfNoChange: true
     waitToSettleTimeoutMs: 500
 - waitForAnimationToEnd
@@ -39,12 +39,12 @@ url: "http://localhost:8081"
     id: "chip.type.Nightmare"
 - scrollUntilVisible:
     element:
-      id: "btn.editMetadata"
+      id: "btn.saveDreamEdit"
     direction: DOWN
     visibilityPercentage: 20
     centerElement: true
 - tapOn:
-    id: "btn.editMetadata"
+    id: "btn.saveDreamEdit"
     retryTapIfNoChange: true
     waitToSettleTimeoutMs: 500
 - waitForAnimationToEnd

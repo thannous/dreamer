@@ -15,6 +15,7 @@ export const Ellipse = createSvgElement('ellipse');
 export const G = createSvgElement('g');
 export const Line = createSvgElement('line');
 export const LinearGradient = createSvgElement('linearGradient');
+export const Mask = createSvgElement('mask');
 export const Path = createSvgElement('path');
 export const RadialGradient = createSvgElement('radialGradient');
 export const Rect = createSvgElement('rect');

@@ -16,6 +16,7 @@ const JOURNAL = {
   'nav-active': 'navbarTextActive', 'nav-inactive': 'navbarTextInactive',
   'tag-surreal': 'tags.surreal', 'tag-mystical': 'tags.mystical',
   'tag-calm': 'tags.calm', 'tag-noir': 'tags.noir',
+  'tag-luminous': 'tags.luminous', 'tag-nostalgic': 'tags.nostalgic',
 };
 const DESIGN = {
   'champagne-soft': 'action.primaryBorder', line: 'surface.border',

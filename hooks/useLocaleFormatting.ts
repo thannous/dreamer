@@ -60,6 +60,13 @@ export function useLocaleFormatting() {
     [localeTag]
   );
 
+  /** A dream's day and time as its seal's rim carries them: the day without its weekday. */
+  const formatDreamStamp = useCallback(
+    (timestamp: number) => `${formatLocaleDate(timestamp, localeTag, { day: 'numeric', month: 'long', year: 'numeric' })}`
+      + ` · ${baseFormatDreamTime(timestamp, localeTag)}`,
+    [localeTag]
+  );
+
   const getMoonCycleLabel = useCallback(
     () => baseGetCurrentMoonCycleTimestamp(localeTag),
     [localeTag]
@@ -74,6 +81,7 @@ export function useLocaleFormatting() {
     formatDreamDate,
     formatDreamTime,
     formatShortDate,
+    formatDreamStamp,
     getMoonCycleLabel,
   };
 }

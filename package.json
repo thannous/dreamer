@@ -1,6 +1,6 @@
 {
   "name": "noctalia",
-  "main": "expo-router/entry",
+  "main": "index.ts",
   "version": "3.5.0",
   "engines": {
     "node": ">=24.19.0 <25"
@@ -280,6 +280,7 @@
     "expo-sqlite": "~58.0.10",
     "expo-symbols": "~58.0.4",
     "expo-system-ui": "~58.0.5",
+    "expo-task-manager": "~58.0.11",
     "expo-updates": "~58.0.15",
     "expo-web-browser": "~58.0.6",
     "mdast-util-from-markdown": "2.0.3",
@@ -337,7 +338,7 @@
     "playwright": "^1.58.2",
     "react-test-renderer": "19.3.0",
     "sharp": "^0.34.5",
-    "supabase": "^2.54.11",
+    "supabase": "2.120.0",
     "typescript": "~6.0.3",
     "vercel": "62.2.0",
     "vite-tsconfig-paths": "^5.1.1",

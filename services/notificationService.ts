@@ -35,3 +35,5 @@ export const hasNotificationPermissions = service.hasNotificationPermissions;
 export const sendTestNotification = service.sendTestNotification;
 export const reconcileDreamerReminders = service.reconcileDreamerReminders;
 export const presentAnalysisReadyNotification = service.presentAnalysisReadyNotification;
+export const presentDreamCapturedNotification = service.presentDreamCapturedNotification;
+export const ensureDreamCaptureReplyAction = service.ensureDreamCaptureReplyAction;

@@ -7,6 +7,7 @@ import { beforeEach, describe, expect, it, jest } from '@jest/globals';
 import type { GuestDreamMigrationOwner, DreamAnalysis, DreamListReadResult, DreamMutation, PendingImageJob, QuotaStatus } from '../../lib/types';
 import { GuestDreamLimitError, QuotaError, QuotaErrorCode } from '../../lib/errors';
 import { getDreamAnalysisFreshness, hashDreamTranscript } from '../../lib/dreamAnalysisFreshness';
+import { markDreamNamed } from '../../lib/dreamNaming';
 
 type AnyFunction = (...args: any[]) => any;
 const typedJestFn = <T extends AnyFunction>() => jest.fn() as jest.MockedFunction<T>;
@@ -1553,6 +1554,50 @@ describe('useDreamJournal', () => {
       );
     });
 
+    it('keeps the name a dream was given on arrival when its categorization lands later', async () => {
+      // Its own id: the names given on arrival last for the session.
+      const namedDream = buildDream({ id: 77, title: 'First words', analysisStatus: 'none', isAnalyzed: false, theme: undefined });
+      setSavedDreams([namedDream]);
+      markDreamNamed(namedDream);
+
+      const { result } = await renderLoadedDreamJournal();
+
+      await act(async () => {
+        await result.current.applyDreamCategorization(77, {
+          title: 'Late title',
+          theme: 'calm',
+          dreamType: 'Lucid Dream',
+          hasPerson: false,
+          hasAnimal: true,
+        });
+      });
+
+      expect(result.current.dreams[0]).toEqual(
+        expect.objectContaining({ title: 'First words', theme: 'calm', dreamType: 'Lucid Dream', hasAnimal: true })
+      );
+    });
+
+    it('renames a dream whose first words stood in for a name when its categorization lands later', async () => {
+      // Its own id: the names given on arrival last for the session.
+      const standIn = buildDream({ id: 78, title: 'First words', analysisStatus: 'none', isAnalyzed: false, theme: undefined });
+      setSavedDreams([standIn]);
+      markDreamNamed(standIn, true);
+
+      const { result } = await renderLoadedDreamJournal();
+
+      await act(async () => {
+        await result.current.applyDreamCategorization(78, {
+          title: 'Late title',
+          theme: 'calm',
+          dreamType: 'Lucid Dream',
+          hasPerson: false,
+          hasAnimal: false,
+        });
+      });
+
+      expect(result.current.dreams[0]).toEqual(expect.objectContaining({ title: 'Late title', theme: 'calm' }));
+    });
+
     it('does not let late categorization overwrite pending analysis', async () => {
       const pendingDream = buildDream({
         id: 1,
@@ -2821,7 +2866,8 @@ describe('useDreamJournal', () => {
       expect(mockUpdateDreamInSupabase.mock.calls[1]?.[0]).toEqual(
         expect.objectContaining({
           revisionId: 'revision-pending-acked',
-          title: 'Analyzed Title',
+          // Classed before its reading, the dream keeps its name.
+          title: 'Test Dream',
           interpretation: 'Deep meaning',
           analysisStatus: 'done',
           isAnalyzed: true,
@@ -2998,6 +3044,20 @@ describe('useDreamJournal', () => {
       );
     });
 
+    it('keeps the theme and type its pre-analysis gave a dream through its reading', async () => {
+      setSavedDreams([buildDream({ id: 1, isAnalyzed: false, analysisStatus: 'none', theme: 'luminous', dreamType: 'Everyday Dream' })]);
+
+      const { result } = await renderLoadedDreamJournal();
+
+      await act(async () => {
+        await result.current.analyzeDream(1, 'My dream transcript');
+      });
+
+      expect(result.current.dreams[0]).toEqual(expect.objectContaining({
+        interpretation: 'Deep meaning', isAnalyzed: true, theme: 'luminous', dreamType: 'Everyday Dream',
+      }));
+    });
+
     it('reuses the analysis image prompt when queuing image generation', async () => {
       const existingDream = buildDream({
         id: 1,
@@ -3032,7 +3092,8 @@ describe('useDreamJournal', () => {
       expect(mockIncrementLocalAnalysisCount).toHaveBeenCalled();
 
       const analyzedDream = result.current.dreams[0];
-      expect(analyzedDream.title).toBe('Analyzed Title');
+      // A guest's dream keeps the name its seal gave it; the reading fills in the rest.
+      expect(analyzedDream.title).toBe('Test Dream');
       expect(analyzedDream.interpretation).toBe('Deep meaning');
       expect(analyzedDream.imageUrl).toBe('');
       expect(analyzedDream.isAnalyzed).toBe(true);
@@ -3082,7 +3143,7 @@ describe('useDreamJournal', () => {
         expect(mockSubmitImageGenerationJob).toHaveBeenCalled();
         expect(result.current.dreams[0]).toEqual(
           expect.objectContaining({
-            title: 'Analyzed Title',
+            title: 'Test Dream',
             interpretation: 'Deep meaning',
             isAnalyzed: true,
             analysisStatus: 'done',
@@ -3383,7 +3444,7 @@ describe('useDreamJournal', () => {
         expect(onProgress).toHaveBeenCalledWith('complete');
         expect(analyzed).toEqual(
           expect.objectContaining({
-            title: 'Analyzed Title',
+            title: 'Test Dream',
             interpretation: 'Deep meaning',
             isAnalyzed: true,
             analysisStatus: 'done',
@@ -3393,7 +3454,7 @@ describe('useDreamJournal', () => {
         expect(analyzed?.imageJobStatus).toBeUndefined();
         expect(result.current.dreams[0]).toEqual(
           expect.objectContaining({
-            title: 'Analyzed Title',
+            title: 'Test Dream',
             interpretation: 'Deep meaning',
             isAnalyzed: true,
             analysisStatus: 'done',
@@ -3445,7 +3506,7 @@ describe('useDreamJournal', () => {
       expect(mockSubmitImageGenerationJob).not.toHaveBeenCalled();
       expect(analyzed).toEqual(
         expect.objectContaining({
-          title: 'Analyzed Title',
+          title: 'Test Dream',
           interpretation: 'Deep meaning',
           isAnalyzed: true,
           analysisStatus: 'done',
@@ -3518,7 +3579,7 @@ describe('useDreamJournal', () => {
       expect(mockSubmitImageGenerationJob).not.toHaveBeenCalled();
       expect(analyzed).toEqual(
         expect.objectContaining({
-          title: 'Analyzed Title',
+          title: 'Test Dream',
           interpretation: 'Deep meaning',
           isAnalyzed: true,
           analysisStatus: 'done',

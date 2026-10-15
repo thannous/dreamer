@@ -31,6 +31,7 @@ import { ErrorBoundary } from '@/components/ErrorBoundary';
 import { DesktopShell } from '@/components/navigation/DesktopShell';
 import { AnalysisFlightIndicator } from '@/components/analysis/AnalysisFlightIndicator';
 import { EngagementRemindersHost } from '@/components/reminders/EngagementRemindersHost';
+import { NotificationDreamImportHost } from '@/components/reminders/NotificationDreamImportHost';
 import { OfflineModelPromptHost } from '@/components/speech/OfflineModelPromptHost';
 import { WhatsNewModalHost } from '@/components/releases/WhatsNewModal';
 import { VercelAnalytics } from '@/components/VercelAnalytics';
@@ -59,6 +60,7 @@ import {
 } from '@/lib/lucid/routes';
 import { isSafeAppNotificationRoute } from '@/lib/notificationRoutes';
 import { normalizeAppLanguage, resolveEffectiveLanguage } from '@/lib/language';
+import { isDreamCaptureResponse } from '@/lib/notificationDreamCapture';
 import { createNotificationResponseTracker } from '@/lib/notificationResponse';
 import {
   canReuseObservedStartupDestination,
@@ -75,6 +77,8 @@ import { QuickSettingsProvider } from '@/components/settings/QuickSettingsProvid
 import type { LanguagePreference } from '@/lib/types';
 import { scheduleProductBootstrap } from '@/lib/productBootstrap';
 import { setAiConsentPromptRequired } from '@/lib/aiConsent';
+import { captureDreamFromNotificationResponse, clearDreamCaptureResponse } from '@/services/notificationDreamInbox';
+import { registerDreamCaptureBackgroundTask } from '@/services/notificationDreamTask';
 import { configureNotificationHandler } from '@/services/notificationService';
 import {
   clearPendingRecordingNotification,
@@ -82,6 +86,19 @@ import {
   getPendingRecordingNotification,
   savePendingRecordingNotification,
 } from '@/services/storageService';
+
+/**
+ * Dream pages that arrived from the capture seal. The page clears its `saved` param as soon
+ * as it mounts, which recomputes its options mid-transition; remembering the arrival keeps
+ * the fade instead of falling back to a slide.
+ */
+const sealArrivals = new Set<string>();
+const arrivesFromSeal = (route: { key?: string; params?: unknown }) => {
+  const saved = (route.params as { saved?: string } | undefined)?.saved === '1';
+  if (!route.key) return saved;
+  if (saved) sealArrivals.add(route.key);
+  return sealArrivals.has(route.key);
+};
 
 // Expo devtools keeps the screen awake in development, which can throw when the native activity
 // isn't ready (seen as "Unable to activate keep awake"). Swallow the failure to avoid red screens
@@ -378,7 +395,12 @@ function RootLayoutNav({
 
         if (Platform.OS !== 'web') {
           const response = Notifications.getLastNotificationResponse();
-          if (response?.notification) {
+          if (!isLucidTrainer && isDreamCaptureResponse(response)) {
+            // A dream dictated from a reminder reply is saved, not opened.
+            // Clear the replayable response only once the words are kept.
+            await captureDreamFromNotificationResponse(response);
+            clearDreamCaptureResponse(response);
+          } else if (response?.notification) {
             await enqueueNotification(response.notification);
           }
         }
@@ -786,6 +808,16 @@ function RootLayoutNav({
   useEffect(() => {
     if (Platform.OS !== 'web') {
       const subscription = Notifications.addNotificationResponseReceivedListener((response) => {
+        if (!isLucidTrainer && isDreamCaptureResponse(response)) {
+          // Clear the replayable response only once the words are kept, so a
+          // failed write is retried from the last response at next launch.
+          void captureDreamFromNotificationResponse(response)
+            .then(() => clearDreamCaptureResponse(response))
+            .catch((error) => {
+              if (__DEV__) console.warn('[RootLayoutNav] Unable to keep a dictated dream', error);
+            });
+          return;
+        }
         void enqueueNotification(response.notification);
       });
 
@@ -854,8 +886,18 @@ function RootLayoutNav({
                 sits above the tabs. It follows the same instant tab switch. */}
             <Stack.Screen name="recording" options={{ headerShown: false, animation: 'none' }} />
             {/* Repeated Android detail transitions redraw the retained journal;
-                measured draw stalls exceed a frame. Keep this frequent route instant. */}
-            <Stack.Screen name="journal/[id]" options={{ headerShown: false, scrollEdgeEffects: { top: 'hidden' }, ...(Platform.OS === 'android' ? { animation: 'none' as const } : {}) }} />
+                measured draw stalls exceed a frame. Keep this frequent route instant.
+                On iOS a dream arriving from the capture seal fades in under the seal's
+                window instead of sliding over it. */}
+            <Stack.Screen name="journal/[id]" options={({ route }) => ({
+              headerShown: false,
+              scrollEdgeEffects: { top: 'hidden' },
+              ...(Platform.OS === 'android'
+                ? { animation: 'none' as const }
+                : arrivesFromSeal(route)
+                  ? { animation: 'fade' as const, animationDuration: 600 }
+                  : {}),
+            })} />
             <Stack.Screen name="dream-chat/[id]" options={{ headerShown: false }} />
             <Stack.Screen name="dream-categories/[id]" options={{ headerShown: false }} />
             <Stack.Screen name="symbol-dictionary" options={{ headerShown: false }} />
@@ -874,7 +916,7 @@ function RootLayoutNav({
           </Stack>
           </DesktopShell>
           </QuickSettingsProvider>
-          {!isLucidTrainer ? <><OfflineModelPromptHost /><EngagementRemindersHost /><AnalysisFlightIndicator /></> : null}
+          {!isLucidTrainer ? <><OfflineModelPromptHost /><EngagementRemindersHost /><NotificationDreamImportHost /><AnalysisFlightIndicator /></> : null}
           {!isLucidTrainer ? <VercelAnalytics /> : null}
           {!isLucidTrainer ? <VercelSpeedInsights /> : null}
         </JournalRuntime>
@@ -1067,6 +1109,7 @@ export default function RootLayout() {
 
   useEffect(() => {
     configureNotificationHandler();
+    if (!isLucidTrainer) void registerDreamCaptureBackgroundTask();
   }, []);
 
   useEffect(() => {

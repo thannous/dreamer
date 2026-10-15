@@ -24,6 +24,7 @@ import {
   type AnalysisSource,
 } from '@/lib/analytics';
 import { isResumableAnalysisRequest } from '@/lib/analysisRequest';
+import { keepsDreamName } from '@/lib/dreamNaming';
 import { DreamPersistenceError, requireReadableDreams } from '@/lib/dreamStorageRead';
 import {
   getAnalysisJobPollDelay,
@@ -877,7 +878,8 @@ export const useDreamJournal = () => {
 
       const enrichedDream: DreamAnalysis = {
         ...currentDream,
-        title: categorization.title,
+        // A dream keeps the name its pre-analysis gave it on arrival; first words only stand in.
+        title: keepsDreamName(currentDream) ? currentDream.title : categorization.title,
         theme: categorization.theme,
         dreamType: currentDream.memory?.origin === 'remembered'
           ? currentDream.dreamType
@@ -1614,6 +1616,14 @@ export const useDreamJournal = () => {
         let next: DreamAnalysis = {
           ...latestBeforeAnalysis,
           ...safeAnalysisFields,
+          // A guest's dream, or one its pre-analysis classed, keeps the name its seal gave it.
+          title: latestBeforeAnalysis.title?.trim() && (!user || latestBeforeAnalysis.theme)
+            ? latestBeforeAnalysis.title
+            : safeAnalysisFields.title,
+          // Its pre-analysis classed it, as its seal shows: the reading does not class it again.
+          ...(latestBeforeAnalysis.theme
+            ? { theme: latestBeforeAnalysis.theme, dreamType: latestBeforeAnalysis.dreamType }
+            : null),
           transcript: latestBeforeAnalysis.transcript,
           analysisStatus: 'done',
           analyzedAt: Date.now(),

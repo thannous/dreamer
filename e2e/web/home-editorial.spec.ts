@@ -1,6 +1,6 @@
 import path from 'node:path';
 import type { Page } from 'playwright/test';
-import { test, expect } from './fixtures';
+import { expectIllustrationOnPlate, test, expect } from './fixtures';
 
 const artwork = path.resolve(__dirname, '../fixtures/home-dream.png');
 const dreamTitle = 'L’éléphant au sommet de la grande roue';
@@ -21,6 +21,8 @@ async function home(page: Page) {
 async function populatedHome(page: Page, failImage = false) {
   await page.clock.setSystemTime(new Date('2026-10-02T12:00:00Z'));
   await page.route('https://picsum.photos/**', route => failImage ? route.abort() : route.fulfill({ path: artwork }));
+  // Generated mock illustrations are the bundled 9:16 dream art, not picsum.
+  if (failImage) await page.route(/mock-data(?:%2F|\/)assets(?:%2F|\/)dreams(?:%2F|\/)/, route => route.abort());
   await startGuest(page);
   await home(page);
   await page.getByTestId('btn.header.home.settings').click();
@@ -34,16 +36,17 @@ async function populatedHome(page: Page, failImage = false) {
   await expect(page.getByTestId('component.dreamDetail.readingZone')).toContainText(/\S{20}/);
   await page.getByTestId('btn.journal.illustrate').click();
   await expect(page.getByTestId('btn.journal.illustrate')).toHaveCount(0);
-  if (!failImage) await expect(page.getByTestId('btn.journal.illustration.expand')).toBeVisible();
+  // Painted in the seal's window, the illustration leaves it for the plate at the top of the page.
+  if (!failImage) await expectIllustrationOnPlate(page);
   await expect(page.getByTestId('journal.detail.image.generation_dots')).toHaveCount(0);
   if (failImage) {
     // Bring the lazy artwork into range before waiting for its failure state.
     await page.getByTestId('component.metadataCard').scrollIntoViewIfNeeded();
     await expect(page.getByTestId('journal.detail.image.unavailable')).toBeVisible();
   }
-  await page.getByTestId('btn.editMetadata').click();
+  await page.getByTestId('btn.editDream').click();
   await page.getByTestId('input.dreamTitle').fill(dreamTitle);
-  await page.getByTestId('btn.editMetadata').click();
+  await page.getByTestId('btn.saveDreamEdit').click();
   await page.goBack();
   await home(page);
 }

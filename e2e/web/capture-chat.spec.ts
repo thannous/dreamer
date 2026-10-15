@@ -79,9 +79,9 @@ test('chat keeps chronological replies, edits and pending details through reload
   await expect(page.getByTestId('component.dreamDetail.readingZone')).toContainText(/\S{20}/);
   await expect(page.getByTestId('analysis.reading.modal')).toHaveCount(0);
   await page.screenshot({ path: info.outputPath('chat-dream-inline-analysis.png') });
-  await page.getByTestId('btn.editTranscript').click();
+  await page.getByTestId('btn.editDream').click();
   await expect(page.getByTestId('input.dreamTranscript')).toHaveValue(expected);
-  await page.getByTestId('btn.editTranscript').click();
+  await page.getByTestId('btn.saveDreamEdit').click();
   await page.getByTestId('btn.navigateJournal').click();
   await expect(page.getByTestId('screen.journal').filter({ visible: true })).toBeVisible();
   await expect(page.getByTestId(/^dream\.item\./).filter({ visible: true })).toHaveCount(1);

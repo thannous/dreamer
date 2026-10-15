@@ -46,6 +46,8 @@ export interface ThemeColors {
     mystical: string;
     calm: string;
     noir: string;
+    luminous: string;
+    nostalgic: string;
   };
 }
 

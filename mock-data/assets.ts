@@ -30,12 +30,13 @@ export function getMockDreamArt(name: MockDreamArt): number {
 /** A URI for a dream's `imageUrl`. */
 export function getMockDreamImage(name: MockDreamArt): string {
   const art: unknown = DREAM_ART[name];
-  // Outside mock mode, metro.config.js resolves the art to empty modules, yet the mock
-  // storage still builds its predefined dreams when it loads.
-  if (typeof art !== 'number') return '';
-  // Expo 58 registers numeric asset modules on web too. Resolve those through
-  // its registry; react-native-web has no Image.resolveAssetSource.
-  const uri = Asset.fromModule(art).uri;
+  // A native build registers the art as a numeric asset module, resolved through Expo's
+  // registry (react-native-web has no Image.resolveAssetSource); the web bundle hands it
+  // over as `{ uri, width, height }`. Outside mock mode, metro.config.js resolves the art
+  // to empty modules, yet the mock storage still builds its predefined dreams when it loads.
+  const uri = typeof art === 'number' ? Asset.fromModule(art).uri
+    : typeof (art as { uri?: unknown } | null)?.uri === 'string' ? (art as { uri: string }).uri : '';
+  if (!uri) return '';
   // The media resolver accepts absolute URLs. Expo's web assets may be relative
   // to the app, so retain their own origin rather than treating them as storage IDs.
   return uri && typeof window !== 'undefined' && window.location?.href
@@ -48,6 +49,8 @@ const THEME_ART: Record<DreamTheme, MockDreamArt[]> = {
   mystical: ['doors', 'staircase', 'cat'],
   calm: ['tide', 'harbour', 'frozen-lake'],
   noir: ['station', 'no-driver', 'glass-teeth'],
+  luminous: ['floating', 'tide', 'staircase'],
+  nostalgic: ['harbour', 'station', 'cat'],
 };
 
 /**

@@ -49,7 +49,7 @@ export type DreamType = 'Lucid Dream' | 'Recurring Dream' | 'Nightmare' | 'Symbo
 /**
  * Canonical dream visual/emotional themes.
  */
-export type DreamTheme = 'surreal' | 'mystical' | 'calm' | 'noir';
+export type DreamTheme = 'surreal' | 'mystical' | 'calm' | 'noir' | 'luminous' | 'nostalgic';
 
 export interface DreamCategorization {
   title: string;

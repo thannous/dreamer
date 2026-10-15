@@ -73,6 +73,11 @@ let mockIsRecording = false;
 const mockIsRecordingRef = { current: false };
 const mockResolveDeviceSpeechCapability = jest.fn();
 
+/** Once the seal is struck, the journal asks whether to analyse the dream now; the reader answers. */
+const answerTheJournal = async (answer: 'now' | 'later' = 'later') => {
+  fireEvent.click(await screen.findByTestId(answer === 'now' ? 'btn.dreamCaptureSeal.readNow' : 'btn.dreamCaptureSeal.readLater'));
+};
+
 const buildDream = (transcript: string, id = 42): DreamAnalysis => ({
   id,
   transcript,
@@ -194,6 +199,11 @@ jest.doMock('react-native', () => {
 
   return {
     __esModule: true,
+    // Render the native modal's children here; browser E2E covers its focus trap.
+    Modal: ({ visible, children }: { visible?: boolean; children?: React.ReactNode }) =>
+      visible ? <div role="dialog">{children}</div> : null,
+    AccessibilityInfo: { setAccessibilityFocus: jest.fn() },
+    findNodeHandle: () => 1,
     Alert: { alert: jest.fn() },
     BackHandler: { addEventListener: jest.fn(() => ({ remove: jest.fn() })) },
     AppState: {
@@ -214,6 +224,8 @@ jest.doMock('react-native', () => {
       },
       dismiss: jest.fn(),
     },
+    // The seal's journal and pen are decorative art; these journeys only need it to render.
+    Image: () => null,
     KeyboardAvoidingView: createElement('div'),
     Pressable: MockPressable,
     Platform: {
@@ -620,6 +632,7 @@ jest.doMock('@/lib/env', () => ({
 
 jest.doMock('@/lib/locale', () => ({
   getTranscriptionLocale: () => 'fr-FR',
+  getFormattingLocale: () => 'fr-FR',
 }));
 
 jest.doMock('@/lib/logger', () => ({
@@ -912,6 +925,7 @@ describe('Recording screen', () => {
     fireEvent.click(getCaptureSaveAction());
     // A told dream enters the story like a written one: the seal, then its saved moment.
     await screen.findByTestId(TID.Component.DreamCaptureSeal);
+    await answerTheJournal();
     await waitFor(() => expect(mockReplace).toHaveBeenCalledWith({ pathname: '/journal/[id]', params: { id: '42', saved: '1' } }));
     expect(mockAddDream).toHaveBeenCalledWith(expect.objectContaining({ transcript: 'My corrected account.', captureOriginalTranscript: answerPair('A blue garden at dawn', 'A door was open.') }));
     expect(mockAnalyzeDream).not.toHaveBeenCalled();
@@ -1498,6 +1512,7 @@ describe('Recording screen', () => {
       const firstCapture = mockAddDream.mock.calls[0][0];
 
       fireEvent.click(getCaptureSaveAction());
+      await answerTheJournal();
       await waitFor(() => expect(mockReplace).toHaveBeenCalledWith({
         pathname: '/journal/[id]',
         params: { id: '42', saved: '1' },
@@ -1549,6 +1564,7 @@ describe('Recording screen', () => {
     await waitFor(() => expect(mockTrackDreamSaveMilestone).toHaveBeenCalledWith(true));
     expect(mockTrackDreamSaveMilestone).toHaveBeenCalledTimes(1);
     // The detail opens once the capture seal (the story's prologue) has played.
+    await answerTheJournal();
     await waitFor(() => expect(mockReplace).toHaveBeenCalledWith({
       pathname: '/journal/[id]', params: { id: '42', saved: '1' },
     }));
@@ -1578,6 +1594,7 @@ describe('Recording screen', () => {
       target: { value: 'A blue room under the rain' },
     });
     fireEvent.click(await screen.findByTestId('recording-save'));
+    await answerTheJournal();
 
     await waitFor(() => {
       expect(mockAddDream).toHaveBeenCalledWith(
@@ -1621,6 +1638,7 @@ describe('Recording screen', () => {
     expect(mockReplace).not.toHaveBeenCalled();
     unfocus.slice(1).forEach((cleanup: (() => void) | undefined) => cleanup?.());
 
+    await answerTheJournal();
     await waitFor(() => expect(mockReplace).toHaveBeenCalledWith({
       pathname: '/journal/[id]',
       params: { id: '42', saved: '1' },
@@ -1635,6 +1653,7 @@ describe('Recording screen', () => {
       target: { value: 'A blue room under the rain' },
     });
     fireEvent.click(await screen.findByTestId('recording-save'));
+    await answerTheJournal();
 
     await waitFor(() => {
       expect(mockAddDream).toHaveBeenCalled();
@@ -1684,8 +1703,11 @@ describe('Recording screen', () => {
       await awaitEditorReady();
       fireEvent.change(screen.getByTestId(TID.Input.DreamTranscript), { target: { value: 'A quiet lake' } });
       await act(async () => { fireEvent.click(getCaptureSaveAction()); });
+      // The journal asks only when the dream can be analysed now.
+      if (access === 'available' || access === 'plus') await answerTheJournal();
+      else expect(screen.queryByTestId('btn.dreamCaptureSeal.readLater')).toBeNull();
       await waitFor(() => expect(mockReplace).toHaveBeenCalledTimes(1));
-      expect(mockReplace).toHaveBeenCalledWith({ pathname: '/journal/[id]', params: { id: '42', saved: '1', ...(access === 'guest' ? { autoAnalyze: '1' } : {}) } });
+      expect(mockReplace).toHaveBeenCalledWith({ pathname: '/journal/[id]', params: { id: '42', saved: '1' } });
       mockQuotaState.loading = false;
       mockQuotaState.error = null;
       view.rerender(<RecordingScreen />);
@@ -1706,6 +1728,7 @@ describe('Recording screen', () => {
     mockQuotaState.tier = 'plus';
     view.rerender(<RecordingScreen />);
     await act(async () => { finish(buildDream('A quiet lake')); });
+    await answerTheJournal();
     await waitFor(() => expect(mockReplace).toHaveBeenCalledTimes(1));
     expect(mockReplace).toHaveBeenCalledWith({ pathname: '/journal/[id]', params: { id: '42', saved: '1' } });
   });
@@ -1725,6 +1748,7 @@ describe('Recording screen', () => {
       target: { value: 'A fox waits beside a frozen lake' },
     });
     fireEvent.click(await screen.findByTestId('recording-save'));
+    await answerTheJournal();
 
     await waitFor(() => {
       expect(mockAddDream).toHaveBeenCalled();
@@ -1898,10 +1922,11 @@ describe('Recording screen', () => {
     mockDreams = [buildDream('already saved pending dream', 42)];
     const { rerender } = render(<RecordingScreen />);
 
+    // Opened as it is: the arrival of a dream just saved belongs to the capture seal.
     await waitFor(() => {
       expect(mockReplace).toHaveBeenCalledWith({
         pathname: '/journal/[id]',
-        params: { id: '42', saved: '1' },
+        params: { id: '42' },
       });
     });
     expect(mockReplace).toHaveBeenCalledTimes(1);
@@ -1918,6 +1943,51 @@ describe('Recording screen', () => {
     expect(mockReplace).toHaveBeenCalledTimes(1);
     expect(mockTransitionOnboarding).not.toHaveBeenCalledWith({ type: 'CLEAR_PENDING_INTENT' });
     expect(screen.queryByTestId('first-dream-sheet')).toBeNull();
+  });
+
+  it('ends the pending step instead of reopening a dream already analysed', async () => {
+    mockPendingRecordingIntent = { entryId: 'pending-entry', savedDreamId: 42, phase: 'analysis_confirmation' };
+    mockDreams = [{ ...buildDream('already read pending dream', 42), isAnalyzed: true, analysisStatus: 'done' }];
+    render(<RecordingScreen />);
+    await waitFor(() => expect(mockTransitionOnboarding).toHaveBeenCalledWith({ type: 'CLEAR_PENDING_INTENT' }));
+    expect(mockReplace).not.toHaveBeenCalled();
+  });
+
+  it.each(['pending', 'failed'] as const)('reopens a dream whose analysis is %s so its page follows or retries it', async (status: 'pending' | 'failed') => {
+    mockPendingRecordingIntent = { entryId: 'pending-entry', savedDreamId: 42, phase: 'analysis_requested' };
+    mockDreams = [{
+      ...buildDream('dream read in the background', 42),
+      analysisStatus: status,
+      analysisRequestId: '00000000-0000-4000-8000-000000000042',
+    }];
+    render(<RecordingScreen />);
+    await waitFor(() => expect(mockReplace).toHaveBeenCalledWith({ pathname: '/journal/[id]', params: { id: '42' } }));
+    expect(mockTransitionOnboarding).not.toHaveBeenCalledWith({ type: 'CLEAR_PENDING_INTENT' });
+  });
+
+  it('asks in the journal whether to analyse the dream, and opens it to be analysed on yes', async () => {
+    render(<RecordingScreen />);
+    await awaitEditorReady();
+    fireEvent.change(screen.getByTestId(TID.Input.DreamTranscript), { target: { value: 'A bell under the sea' } });
+    fireEvent.click(getCaptureSaveAction());
+    await answerTheJournal('now');
+    await waitFor(() => expect(mockReplace).toHaveBeenCalledWith({
+      pathname: '/journal/[id]', params: { id: '42', saved: '1', autoAnalyze: '1' },
+    }));
+    expect(mockAnalyzeDream).not.toHaveBeenCalled();
+  });
+
+  it("analyses a guest's first dream at once, without asking", async () => {
+    mockQuotaState = { tier: 'guest', loading: false, error: null, usage: { analysis: { used: 0, limit: 2, remaining: 2 } } };
+    mockCurrentUser = null;
+    render(<RecordingScreen />);
+    await awaitEditorReady();
+    fireEvent.change(screen.getByTestId(TID.Input.DreamTranscript), { target: { value: 'A first dream of a guest' } });
+    fireEvent.click(getCaptureSaveAction());
+    await waitFor(() => expect(mockReplace).toHaveBeenCalledWith({
+      pathname: '/journal/[id]', params: { id: '42', saved: '1', autoAnalyze: '1' },
+    }));
+    expect(screen.queryByTestId('btn.dreamCaptureSeal.readNow')).toBeNull();
   });
 
   it('restores an exhausted saved capture straight to the offer only once', async () => {

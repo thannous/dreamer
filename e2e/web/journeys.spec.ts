@@ -1,5 +1,5 @@
 import type { Page } from 'playwright/test';
-import { test, expect } from './fixtures';
+import { answerSeal, test, expect } from './fixtures';
 
 async function startGuest(page: Page) {
   await page.goto('/', { waitUntil: 'domcontentloaded' });
@@ -81,10 +81,10 @@ test('free user saves a dream and finds the exact story in the journal', async (
   await page.getByTestId('input.dreamTranscript').fill(story);
   await page.getByTestId('btn.saveDream').click();
   await expect(page.getByTestId('component.transcriptCard')).toContainText(story);
-  await expect(page.getByTestId('btn.editMetadata')).toBeEnabled();
-  await page.getByTestId('btn.editMetadata').click();
+  await expect(page.getByTestId('btn.editDream')).toBeEnabled();
+  await page.getByTestId('btn.editDream').click();
   await page.getByTestId('input.dreamTitle').fill('E2E sapphire lighthouse');
-  await page.getByTestId('btn.editMetadata').click();
+  await page.getByTestId('btn.saveDreamEdit').click();
   await journal(page);
   await openDream(page, 'E2E sapphire lighthouse');
   await expect(page.getByTestId('component.transcriptCard')).toContainText(story);
@@ -108,9 +108,9 @@ test('free user edits a story, cancels deletion, then deletes only that dream', 
   await selectProfile(page, 'existing');
   await journal(page);
   await openDream(page, 'The Infinite Library');
-  await page.getByTestId('btn.editTranscript').click();
+  await page.getByTestId('btn.editDream').click();
   await page.getByTestId('input.dreamTranscript').fill('E2E revised story: the library has a blue door.');
-  await page.getByTestId('btn.editTranscript').click();
+  await page.getByTestId('btn.saveDreamEdit').click();
   await expect(page.getByTestId('component.transcriptCard')).toContainText('E2E revised story');
   await page.getByTestId('btn.dream.delete').click();
   await page.getByRole('button', { name: 'Cancel', exact: true }).click();
@@ -234,8 +234,9 @@ for (const profile of ['new', 'plus'] as const) {
     const story = `E2E ${profile} traveler finds a lantern on a silver bridge.`;
     await page.getByTestId('input.dreamTranscript').fill(story);
     await page.getByTestId('btn.saveDream').click();
+    // The journal asks during the seal; yes opens the page already reading the dream.
+    await answerSeal(page, 'now');
     await expect(page.getByTestId('component.transcriptCard')).toContainText(story);
-    await page.getByTestId('btn.dream.primaryCta').click();
     await expect(page.getByTestId('component.dreamDetail.readingZone')).toContainText(/\S{20}/);
     await expect(page.getByTestId('analysis.reading.modal')).toHaveCount(0);
     await expect(page.getByTestId('screen.paywall')).toHaveCount(0);
