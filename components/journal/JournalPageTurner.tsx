@@ -35,15 +35,14 @@ const IDLE = 0;
 const SETTLING_FORWARD = 1;
 const SETTLING_BACK = 2;
 /**
- * Once a session, the first dream page opened arrives still lifted a little off the next
- * one and falls shut on it as a page does: slowly at first, then faster, landing with a
- * slight rebound. The journal can be leafed through.
+ * Each dream page opened arrives still lifted a little off the next one and falls shut on
+ * it as a page does: slowly at first, then faster, landing with a slight rebound. The
+ * journal can be leafed through. Pages turned to on the same screen do not fall again.
  */
 const HINT_LIFT = 0.18;
 const HINT_HOLD = 220;
 const HINT_FALL = 560;
 const HINT_REBOUND = 0.02;
-let hintedThisSession = false;
 
 const PageTurnLockContext = createContext<(locked: boolean) => void>(() => {});
 const PageArrivalContext = createContext<{ laidOut: () => void; arriving: () => boolean }>({
@@ -223,11 +222,12 @@ export function JournalPageTurner({ newer, older, folio, tonight = false, hint =
     turnAtOnce(turnedTo);
   }, [atTonight, direction, leaveTonight, phase, progress, turnAtOnce, turnedOver]);
 
-  // The hint: arriving, the page falls shut over the next one, once a session.
+  // The hint: arriving, the page falls shut over the next one, once per opening.
+  const hinted = useRef(false);
   useEffect(() => {
-    if (!hint || reduced || hintedThisSession || (!newer && !tonight)) return;
+    if (!hint || reduced || hinted.current || (!newer && !tonight)) return;
     if (lockedNow.current || direction.get() !== 0 || turnedOver.get()) return;
-    hintedThisSession = true;
+    hinted.current = true;
     direction.set(FORWARD);
     progress.set(withSequence(
       withTiming(HINT_LIFT, { duration: 0 }),
