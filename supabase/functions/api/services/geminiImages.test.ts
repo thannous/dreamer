@@ -19,9 +19,9 @@ Deno.test('disabled or missing HD flag forces Lite for every tier and ignores pr
   }
 });
 
-Deno.test('resolveImageModel uses stable Flash Image only for explicit subscriber HD requests', () => {
+Deno.test('resolveImageModel uses the HD image model only for explicit subscriber HD requests', () => {
   assertEquals(resolveImageModel('plus', envReader({}), '4K'), GEMINI_FLASH_IMAGE_MODEL);
-  assertEquals(GEMINI_FLASH_IMAGE_MODEL, 'gemini-3.1-flash-image');
+  assertEquals(GEMINI_FLASH_IMAGE_MODEL, 'gemini-nano-banana-2.1');
 });
 
 Deno.test('resolveImageModel uses stable Flash Lite Image for every non-subscriber tier', () => {

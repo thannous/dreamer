@@ -59,7 +59,7 @@ Deno.test('prompt keeps malicious transcript as JSON data and distinguishes omit
 });
 
 Deno.test('analysis sends the compact policy once at system level and preserves source-only output', async () => {
-  assertEquals(ANALYSIS_PROMPT_VERSION, 'analysis-2026-09-18.poetic3');
+  assertEquals(ANALYSIS_PROMPT_VERSION, 'analysis-2026-10-15.poetic4');
   // The client uses this established stamp to distinguish authored lines from old excerpts.
   assertEquals(/^analysis-\d{4}-\d{2}-\d{2}\.poetic\d+$/.test(ANALYSIS_PROMPT_VERSION), true);
   const originalFetch = globalThis.fetch;

@@ -175,8 +175,8 @@ const toSystemInstruction = (
 // Pin omitted levels to low rather than inheriting a provider default.
 // Image models known to accept minimal run at minimal unless high is asked;
 // other image models keep their provider default rather than an unsupported level.
-const MINIMAL_THINKING_IMAGE_MODELS = new Set([
-  GEMINI_FLASH_IMAGE_MODEL, GEMINI_FLASH_LITE_IMAGE_MODEL, 'gemini-nano-banana-2.1',
+const MINIMAL_THINKING_IMAGE_MODELS: ReadonlySet<string> = new Set([
+  'gemini-3.1-flash-image', 'gemini-3.1-flash-lite-image', 'gemini-nano-banana-2.1',
 ]);
 const toThinkingLevel = (
   model: string, thinkingLevel?: GeminiThinkingLevel, isImage = false

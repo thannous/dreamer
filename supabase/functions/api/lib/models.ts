@@ -20,8 +20,8 @@ export const GEMINI_MODELS = {
     fallback: 'gemini-3.5-flash-lite',
   },
   image: {
-    /** Plus-tier dream illustrations. */
-    default: 'gemini-3.1-flash-image',
+    /** Plus-tier HD (2K/4K) illustrations; Lite renders 1K only. Replaces the deprecated gemini-3.1-flash-image. */
+    default: 'gemini-nano-banana-2.1',
     /** Free / guest-tier illustrations. */
     lite: 'gemini-3.1-flash-lite-image',
   },
