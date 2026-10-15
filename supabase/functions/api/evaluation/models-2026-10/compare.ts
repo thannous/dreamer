@@ -57,7 +57,7 @@ const parseArgs = (args: string[]) => {
   if (args.some((arg) => arg !== '--execute' && arg !== outputArg)) {
     throw new Error('Usage: compare.ts [--execute --output=<new directory>]');
   }
-  if (execute && !outputArg) throw new Error('--execute requires --output=<new directory>.');
+  if (execute && !outputArg?.slice('--output='.length)) throw new Error('--execute requires --output=<new directory>.');
   return { execute, output: outputArg?.slice('--output='.length) };
 };
 
@@ -134,6 +134,8 @@ if (import.meta.main) {
     const raw = await requestGeminiGenerateContent({
       apiKey: geminiKey,
       model,
+      // One HTTP request per cell, as for Claude: retries would skew latency and the budget.
+      maxRetries: 0,
       contents: [{ role: 'user', parts: [{ text: prompt }] }],
       systemInstruction: system,
       // Production analysis settings.
@@ -147,6 +149,8 @@ if (import.meta.main) {
     const raw = await requestGeminiGenerateContent({
       apiKey: geminiKey,
       model,
+      // One HTTP request per cell, as for Claude: retries would skew latency and the budget.
+      maxRetries: 0,
       contents: [{ role: 'user', parts: [{ text: prompt }] }],
       config: { responseModalities: ['IMAGE'], imageConfig: { aspectRatio: '9:16', imageSize: '1K' } },
     });

@@ -359,6 +359,8 @@ type GeminiRequestOptions = {
   contents: GeminiContent[] | string;
   systemInstruction?: string | GeminiContent;
   config?: GeminiGenerationConfig;
+  /** SDK retries for this call; the SDK default (4) applies when omitted. */
+  maxRetries?: number;
 };
 
 export const buildInteractionParams = (options: GeminiRequestOptions) => {
@@ -404,7 +406,10 @@ export const requestGeminiGenerateContent = async (
 ): Promise<any> => {
   const client = getClient(options.apiKey);
   try {
-    return await client.interactions.create(buildInteractionParams(options));
+    return await client.interactions.create(
+      buildInteractionParams(options),
+      options.maxRetries === undefined ? undefined : { maxRetries: options.maxRetries }
+    );
   } catch (error) {
     throw toApiError(error);
   }
