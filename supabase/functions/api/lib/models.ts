@@ -46,8 +46,11 @@ export const CLAUDE_MODELS = {
   categorize: { model: 'claude-haiku-5-5', effort: 'low', timeoutMs: 15_000 },
   /** One short question. The app waits 15 s. */
   recall: { model: 'claude-haiku-5-5', effort: 'low', timeoutMs: 7_000 },
-  /** A faithful rewrite of the whole account. The app waits 20 s. */
-  formatRecall: { model: 'claude-haiku-5-5', effort: 'low', timeoutMs: 10_000 },
+  /**
+   * A faithful rewrite of the whole account. The app waits 20 s. A longer account goes straight to
+   * Gemini, as before: its rewrite would take Claude most of that time and leave none for the fallback.
+   */
+  formatRecall: { model: 'claude-haiku-5-5', effort: 'low', timeoutMs: 10_000, maxTranscriptChars: 4_000 },
 } as const;
 
 /** Text previews that were retired from the Interactions API (404 on request). */

@@ -52,7 +52,8 @@ Keep the author's person, tense, vocabulary and all remembered details, includin
     const claude = CLAUDE_MODELS.formatRecall;
     const transcript = await runClaudeFirst({
       route: '/format-recall',
-      anthropicApiKey: deps.anthropicApiKey === undefined ? Deno.env.get('ANTHROPIC_API_KEY') : deps.anthropicApiKey,
+      anthropicApiKey: parsed.transcript.length > claude.maxTranscriptChars ? null
+        : deps.anthropicApiKey === undefined ? Deno.env.get('ANTHROPIC_API_KEY') : deps.anthropicApiKey,
       config: claude,
       claude: async (key) => {
         const { text, usage } = await requestClaudeJson({
