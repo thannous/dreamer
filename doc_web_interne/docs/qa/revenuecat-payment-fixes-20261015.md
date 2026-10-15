@@ -37,7 +37,7 @@ convergence are simulated; no real purchase or production account was used.
 | Existing subscription hook and onboarding controls | 60 passed |
 | Focused lint | No errors; existing hook/import warnings remain |
 
-Canonical final run:
+Canonical initial fix run (e2e 0.21.0):
 `tools/e2e/.e2e/dreamer-web/1792098117771-34418-cfe7308c-2af0-4cbd-a498-5d45d74b4b0c/`.
 Use its `report.json`, `qualification.json`, `end.json` and per-test `trace.md`.
 The tests were executed on the stable working tree based on `577b76ef5`, before
@@ -84,6 +84,30 @@ E2E_WEB_PORT=4518 mise exec -- node tools/e2e/run.mjs dreamer web run --grep 'mo
 The initial red run is retained at
 `tools/e2e/.e2e/dreamer-web/1792097796250-31700-653561ab-7271-45a9-99b8-32b5bb19b2bb/`.
 Audit results remain historical evidence; the fixes do not rewrite those results.
+
+## PR review and e2e 0.21.1 follow-up, 2026-10-16
+
+PR #371 was mergeable on `69389f7`, with no review threads or requested changes;
+the automated code review reported no findings on that head. Its local PR proof
+passed, and the fetched base remained `577b76ef5`.
+
+The [official 0.21.1 release](https://github.com/tester-army/e2e/releases/tag/e2e%400.21.1)
+fixes runner diagnostics, broken pipes and hosted-session deadlines, and adds the
+programmatic runner API and optional keyboard observations. Only `e2e` changed:
+web 0.15.0, mobile 0.12.1, agent-device 0.21.25 and Playwright 1.64.0 remain pinned.
+Both engine peer ranges and Node 24.19.0 accept the new version. The package,
+lockfile and qualification version pin now agree on 0.21.1.
+
+The same rerun command above freshly passed all 16 selected scenarios on
+`d27ecab7804cc099fa43c8dde5d3c4dda10a29b2` with e2e 0.21.1. Canonical output:
+`tools/e2e/.e2e/dreamer-web/1792104012511-57560-bd5b1131-9a6c-4ad5-9d4b-cccdff610c4a/`.
+Run `01a141b9-2181-71a7-90b6-e775c557b6d9` reports 16 executed/passed, zero
+selected skips, failures, flaky tests or model tokens, and 16 trace pages.
+The wrapper reports exit 0, stable source/output inputs and no secondary errors.
+The checkout remains dirty with preserved personal settings and local artifacts;
+this is not a clean-checkout claim. Collection, E2E TypeScript and all 31 runner
+guard controls also passed. This report-only follow-up changes no executable input;
+the final PR head records its own local `verify:pr` result before push and merge.
 
 Native Release binaries, real Store transactions, RevenueCat dashboard transfer
 settings and production backend convergence remain unqualified. The changes do
