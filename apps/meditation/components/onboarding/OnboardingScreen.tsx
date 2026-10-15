@@ -29,7 +29,7 @@ type Props = React.PropsWithChildren<{
   canContinue?: boolean;
   onSkip?: () => void;
   skipLabel?: string;
-  /** Maestro anchor for the step, from `TID.Screen`. */
+  /** Automation anchor for the step, from `TID.Screen`. */
   testID?: string;
 }>;
 

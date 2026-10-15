@@ -87,8 +87,6 @@ upload_cert.der
 docs-src/img-tmp/*
 
 # Local test/agent artifacts
-.maestro-home/
-maestro-results/
 tmp-stage/
 tmp-stage-index/
 /output/

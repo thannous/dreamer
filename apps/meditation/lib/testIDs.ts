@@ -1,5 +1,5 @@
 /**
- * Stable anchors for the Maestro flows.
+ * Stable anchors for UI automation (TesterArmy journeys and component tests).
  *
  * Targeting visible text would mean rewriting every flow six times — the app
  * ships in six languages, and the copy is the part most likely to change.

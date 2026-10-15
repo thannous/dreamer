@@ -7,7 +7,6 @@ const { spawnSync } = require('child_process');
 const {
   commandExists,
   getAdbCandidates,
-  getMaestroCandidates,
   resolveCommand,
   resolveNpmInvocation,
 } = require('./android-tooling');
@@ -15,9 +14,6 @@ const {
   detectAdbMdnsServices,
   detectUsbAndroidDevice,
 } = require('./check-android-adb-device');
-const {
-  evaluateVoiceAnalysisEvidence,
-} = require('./android-voice-analysis-evidence');
 const { getOpenPaymentProfileRequirements } = require('./update-google-play-payments-profile-state');
 const {
   getTrackStatus,
@@ -38,6 +34,14 @@ const EXPECTED_GOOGLE_OAUTH_ANDROID_SHA1 = 'BC:CF:C2:96:38:47:81:D6:8C:B7:B6:5A:
 const EXPECTED_ANDROID_PACKAGE_NAME = 'com.tanuki75.noctalia';
 const RELEASE_QUALIFICATION_WORKFLOW =
   '.eas/workflows/android-release-qualification.yml';
+// Owner decision 2026-10-14: the Android release journeys run locally with
+// TesterArmy on an emulator, against a production-apk Release build, instead of
+// a Maestro EAS job. tools/e2e/run.mjs writes one immutable folder per run here.
+const TESTERARMY_ANDROID_RUNS = 'tools/e2e/.e2e/dreamer-android';
+const TESTERARMY_RELEASE_PROFILE = 'production-apk';
+const TESTERARMY_RELEASE_COMMANDS =
+  'build production-apk with `node tools/e2e/run.mjs dreamer android build` (E2E_BUILD_PROFILE=production-apk), then run `E2E_DEVICE=<emulator-serial> E2E_RELEASE_RECEIPT=<its release.json> npm run test:testerarmy:mobile -- dreamer android run --install-release` (tools/e2e/README.md)';
+const VOICE_MANUAL_CHECKLIST = 'doc_web_interne/docs/android-release-checklist.md';
 const REQUIRED_EAS_PROFILES = ['preview', 'release', 'production-apk', 'production'];
 const ANALYSIS_BUNDLE_EAS_PROFILES = ['release', 'production-apk', 'production'];
 const REQUIRED_TESTSTORE_PUBLIC_ENV = [
@@ -762,11 +766,96 @@ function checkEasWorkflowTriggers(
   return { files, problems };
 }
 
+function readRunJson(runDir, name, { existsSync, readFileSync }) {
+  const filePath = path.join(runDir, name);
+  if (!existsSync(filePath)) return null;
+  try {
+    return JSON.parse(readFileSync(filePath, 'utf8'));
+  } catch {
+    return null;
+  }
+}
+
+// The newest TesterArmy run that qualified the installed production-apk build of
+// the candidate. end.json is the runner's final verdict (applicationQualified is
+// false on any SDK, install, identity or cleanup failure); release-used.json is
+// the build receipt the runner validated and installed.
+function findTesterArmyReleaseRun({
+  rootDir,
+  versionCode,
+  existsSync,
+  readFileSync,
+  readdirSync,
+}) {
+  const runsDir = path.join(rootDir, TESTERARMY_ANDROID_RUNS);
+  if (!existsSync(runsDir)) return { run: null, runs: 0 };
+  let names;
+  try {
+    names = readdirSync(runsDir).map(String).sort().reverse();
+  } catch {
+    return { run: null, runs: 0 };
+  }
+  for (const name of names) {
+    const runDir = path.join(runsDir, name);
+    const io = { existsSync, readFileSync };
+    const end = readRunJson(runDir, 'end.json', io);
+    if (end?.applicationQualified !== true || end.exitCode !== 0) continue;
+    const evidence = readRunJson(runDir, 'evidence.json', io);
+    if (evidence?.product !== 'dreamer' || evidence.platform !== 'android') continue;
+    const release = readRunJson(runDir, 'release-used.json', io);
+    if (
+      release?.profile?.name !== TESTERARMY_RELEASE_PROFILE ||
+      release.binary?.bundle !== EXPECTED_ANDROID_PACKAGE_NAME ||
+      String(release.binary?.build) !== String(versionCode)
+    ) {
+      continue;
+    }
+    return {
+      run: `${TESTERARMY_ANDROID_RUNS}/${name}`,
+      runs: names.length,
+      finishedAt: end.finishedAt,
+      revision: evidence.revision,
+    };
+  }
+  return { run: null, runs: names.length };
+}
+
+function getTesterArmyReleaseCheck({ prebuild, versionCode, ...io }) {
+  if (prebuild) {
+    return {
+      status: 'manual',
+      details: `Deferred until the production-apk candidate (versionCode ${versionCode || 'missing'}) is built.`,
+      remediation: `Before Android production release, ${TESTERARMY_RELEASE_COMMANDS}.`,
+    };
+  }
+  if (!versionCode) {
+    return {
+      status: 'blocked',
+      details: 'No candidate versionCode to match a TesterArmy run against.',
+      remediation: 'Fix the Android release candidate versionCode check first.',
+    };
+  }
+  const found = findTesterArmyReleaseRun({ versionCode, ...io });
+  if (found.run) {
+    return {
+      status: 'pass',
+      details: `${found.run} qualified the installed ${TESTERARMY_RELEASE_PROFILE} build ${EXPECTED_ANDROID_PACKAGE_NAME} versionCode ${versionCode}${found.revision ? ` from ${String(found.revision).slice(0, 12)}` : ''}${found.finishedAt ? ` (${found.finishedAt})` : ''}.`,
+      remediation: 'None.',
+    };
+  }
+  return {
+    status: 'blocked',
+    details: `No TesterArmy run under ${TESTERARMY_ANDROID_RUNS} (${found.runs} run(s) found) qualified an installed ${TESTERARMY_RELEASE_PROFILE} build of ${EXPECTED_ANDROID_PACKAGE_NAME} versionCode ${versionCode}.`,
+    remediation: `On an emulator, ${TESTERARMY_RELEASE_COMMANDS}; the run must end with applicationQualified true.`,
+  };
+}
+
 function checkAndroidReleaseGates({
   rootDir = ROOT,
   spawn = spawnSync,
   existsSync = fs.existsSync,
   readFileSync = fs.readFileSync,
+  readdirSync = fs.readdirSync,
   env = process.env,
   platform = process.platform,
   phase = 'qualification',
@@ -927,18 +1016,15 @@ function checkAndroidReleaseGates({
   const releaseWorkflowReady =
     releaseWorkflow.includes('type: build') &&
     releaseWorkflow.includes('profile: production-apk') &&
-    releaseWorkflow.includes('type: maestro') &&
-    releaseWorkflow.includes('build_id: ${{ needs.build_android.outputs.build_id }}') &&
-    releaseWorkflow.includes('flow_path: maestro/release-smoke.yml') &&
     isDispatchOnlyReleaseWorkflow(releaseWorkflow, RELEASE_TAG_WORKFLOWS['android-release-qualification.yml']);
   addCheck(
     checks,
     releaseWorkflowReady ? 'pass' : 'fail',
-    'EAS Android Release build and smoke workflow',
+    'EAS Android Release build workflow',
     releaseWorkflowReady
-      ? `${RELEASE_QUALIFICATION_WORKFLOW} builds production-apk and runs release-smoke.yml on dispatch only.`
-      : `${RELEASE_QUALIFICATION_WORKFLOW} is missing, does not chain production-apk to the Release smoke flow, does not check the release tag, or has a trigger other than workflow_dispatch with a required release_tag input.`,
-    'Add a validated EAS workflow whose only trigger is workflow_dispatch with a required release_tag input, that runs scripts/check-android-release-ref.js, builds production-apk and passes its build_id to maestro/release-smoke.yml.'
+      ? `${RELEASE_QUALIFICATION_WORKFLOW} builds production-apk on dispatch only, after the release tag check.`
+      : `${RELEASE_QUALIFICATION_WORKFLOW} is missing, does not build production-apk, does not check the release tag, or has a trigger other than workflow_dispatch with a required release_tag input.`,
+    'Add a validated EAS workflow whose only trigger is workflow_dispatch with a required release_tag input, that runs scripts/check-android-release-ref.js before building production-apk.'
   );
 
   const easWorkflows = checkEasWorkflowTriggers(rootDir, { existsSync, readFileSync });
@@ -975,34 +1061,30 @@ function checkAndroidReleaseGates({
       : 'Run npm run subscription:qa:release-smoke on the Play-installed candidate and close its single final verdict before Android production release.'
   );
 
-  const fallbackFlowPath = path.join(rootDir, 'maestro/recording-text-fallback.yml');
-  const runMaestroPath = path.join(rootDir, 'scripts/run-maestro-android.js');
-  const suiteText = existsSync(runMaestroPath) ? readFileSync(runMaestroPath, 'utf8') : '';
-  const hasFallbackFlow = existsSync(fallbackFlowPath);
-  const suiteReferencesFallback = suiteText.includes('maestro/recording-text-fallback.yml');
-  addCheck(
-    checks,
-    hasFallbackFlow && suiteReferencesFallback ? 'pass' : 'fail',
-    'Recording text fallback E2E flow registered',
-    hasFallbackFlow && suiteReferencesFallback
-      ? 'maestro/recording-text-fallback.yml exists and is listed in the Android suites.'
-      : 'Fallback flow file or suite registration is missing.',
-    'Add the flow file and include it in scripts/run-maestro-android.js.'
-  );
-
-  const voiceEvidenceCheck = evaluateVoiceAnalysisEvidence({
+  const testerArmyCheck = getTesterArmyReleaseCheck({
+    prebuild,
+    versionCode: androidCandidateVersionCode,
     rootDir,
-    phase,
     existsSync,
     readFileSync,
-    env,
+    readdirSync,
   });
   addCheck(
     checks,
-    voiceEvidenceCheck.status,
-    'Release voice transcription, save and analysis evidence',
-    voiceEvidenceCheck.details,
-    voiceEvidenceCheck.remediation
+    testerArmyCheck.status,
+    'TesterArmy Android Release journeys (production-apk)',
+    testerArmyCheck.details,
+    testerArmyCheck.remediation
+  );
+
+  // Real speech needs a person: the automated voice receipt went with Maestro
+  // (owner decision 2026-10-14) and the manual checklist replaces it.
+  addCheck(
+    checks,
+    'manual',
+    'Release voice transcription, save and analysis',
+    `No automated check: real speech recognition needs a person speaking to the installed candidate (versionCode ${androidCandidateVersionCode || 'missing'}).`,
+    `Run the manual voice checklist of ${VOICE_MANUAL_CHECKLIST} on the candidate and record its result with the release evidence.`
   );
 
   const adbCommand = resolveCommand('adb', { spawn, existsSync, env, platform });
@@ -1037,20 +1119,6 @@ function checkAndroidReleaseGates({
       'Install adb, then run this check again with an emulator/device connected.'
     );
   }
-
-  const maestroCommand = resolveCommand('maestro', { spawn, existsSync, env, platform });
-  const maestroAvailable = Boolean(maestroCommand);
-  addCheck(
-    checks,
-    maestroAvailable ? 'pass' : 'blocked',
-    'Maestro CLI',
-    maestroAvailable
-      ? maestroCommand === 'maestro'
-        ? 'maestro is available in PATH.'
-        : `maestro was found at ${maestroCommand}, but it is not available in PATH.`
-      : 'maestro is not available in PATH or common Homebrew formula locations.',
-    'Install Maestro CLI and make maestro available in PATH.'
-  );
 
   const projectCheck = getGoogleCloudProjectCheck(envValues[PLAY_INTEGRITY_PROJECT_NUMBER_KEY], projectStateResult);
   addCheck(checks, projectCheck.status, 'Google Cloud project number confirmation', projectCheck.details, projectCheck.remediation);
@@ -1166,7 +1234,7 @@ module.exports = {
   getAdbDeviceVisibilityCheck,
   getAdbCandidates,
   getAndroidReleaseOptimizationCheck,
-  getMaestroCandidates,
+  findTesterArmyReleaseRun,
   listAdbDevices,
   parseDotEnv,
   resolveCommand,

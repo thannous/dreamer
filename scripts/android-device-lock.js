@@ -26,10 +26,6 @@ function parseLockOwner(value, label = '--lock-owner') {
   return owner;
 }
 
-function inferLockOwnerFromSuite(suite) {
-  return String(suite || '') === 'lucid' ? 'lucid' : 'dreamer';
-}
-
 function defaultMetroPortForOwner(owner) {
   return PRODUCT_METRO_PORTS[parseLockOwner(owner, 'owner')];
 }
@@ -771,7 +767,6 @@ module.exports = {
   findDeviceArg,
   fingerprintDevice,
   formatLockDiagnostic,
-  inferLockOwnerFromSuite,
   isEmulatorSerial,
   isLockStale,
   listReadyAdbSerials,

@@ -114,7 +114,7 @@ Trends, responsive navigation, Journal geometry and feature-sheet stories.
 The original Playwright web suite remains for local runs. Since the owner decision
 of 2026-10-08, CI runs these 83 cases only here: every Playwright title has a
 TesterArmy counterpart, with a stricter quota assertion and one Europe/Paris
-browser timezone. Backend and Maestro suites remain required. The relevant
+browser timezone. Backend suites remain required. The relevant
 functional assertions protect the current contract.
 An obsolete expectation may be revised with a recorded product reason and a
 focused current journey. Preserve the old red/pass result as history; it does not
@@ -168,7 +168,7 @@ rely on local runs. A manual pipeline runs the exact Dreamer and Lucid journeys 
 the Noctalia workflow, Meditation in its own workflow, and the generated site after
 `docs:build` and `docs:check`. Each job installs this package's locked e2e 0.21.0 dependencies
 and Chromium, uses one worker with no replay or model, and retains JUnit, reports, screenshots,
-trace pages and source identity under `tools/e2e/.e2e/`. Existing backend, Maestro and
+trace pages and source identity under `tools/e2e/.e2e/`. Existing backend and
 quality checks remain required. `E2E_KEEP_METRO_CACHE=1` drops Metro's `--clear`
 for Dreamer and Lucid: CI restores the transforms master saved, and
 `metro.config.js` keys them by every public build input, so a profile or
@@ -179,6 +179,21 @@ dependencies before the app quality checks. Dreamer and Lucid share the root
 manifest. Meditation has its own manifest and check:
 `npm --prefix apps/meditation run dependencies:check`.
 Run the affected check before a local native build; CI checks both manifests.
+
+## Android release evidence
+
+Since the owner decision of 2026-10-14, Maestro is retired and this runner holds
+the Android release journeys. `npm run android:gates:strict` passes its
+TesterArmy check only when a run under `tools/e2e/.e2e/dreamer-android/` has a
+final `end.json` with `applicationQualified: true` and exit 0, for the installed
+`production-apk` build of `com.tanuki75.noctalia` whose versionCode is the
+candidate's (`QA_ANDROID_VERSION_CODE`, else `app.json`). Build that profile with
+the native build command below (`E2E_BUILD_PROFILE=production-apk`), then run
+`E2E_DEVICE=<emulator-serial> E2E_RELEASE_RECEIPT=<its release.json> npm run test:testerarmy:mobile -- dreamer android run --install-release`.
+Its journeys stay offline; they do not prove purchases, real voice or backend
+accounts. Real voice and RevenueCat Test Store purchases follow the manual
+checklists of `doc_web_interne/docs/android-expo57-qa-runbook.md` and
+`doc_web_interne/docs/revenuecat-qa-workflow.md`.
 
 ## Native Release provenance and diagnostic handoff
 
@@ -284,7 +299,7 @@ beginner WBTB restrictions, shared account-form validation, two morning captures
 persisted in Journal and their confirmed sign linked to both Atlas sources,
 and stabilization/SSILD pause and resume after reload. Browser locale is French
 for this suite. These mock-service browser journeys do not qualify native Lucid.
-The existing Playwright visual journey and native Maestro coverage remain.
+The existing Playwright visual journey remains; native Lucid runs here (`lucid.mobile.e2e.ts`).
 
 ## Complete verdict and immutable evidence
 
@@ -357,7 +372,7 @@ The optional `@e2e-dev/decision` / Jev setup described in the installed
 package installs neither that executor nor `ai`; exact journeys require no
 model dependency, and the upgrade does not enable a provider.
 Use a provider barrier when replay must never call a model; strict cache alone
-does not forbid a call on a cache miss. Existing Maestro, Playwright, backend and
+does not forbid a call on a cache miss. Existing Playwright, backend and
 CI checks remain until an explicitly reviewed pipeline change. Still-relevant
 assertions remain until their replacement passes; obsolete historical criteria
 may be revised with their current product reason and old result preserved.

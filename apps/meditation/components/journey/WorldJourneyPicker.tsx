@@ -21,8 +21,8 @@ export const ARTWORK_TEXT_HALO = {
   textShadowRadius: 10,
 } as const;
 export const ACTIVE_JOURNEY_CTA_TEST_ID = 'home.journey.cta';
-/** Literal IDs keep Maestro's static anchor audit honest while the names are
- * still rendered from the world registry. */
+/** Literal IDs keep the automation anchors stable and searchable while the
+ * names are still rendered from the world registry. */
 export const WORLD_JOURNEY_TEST_ID: Record<WorldId, string> = {
   constellation: 'home.world-switcher.constellation',
   dawn: 'home.world-switcher.dawn',

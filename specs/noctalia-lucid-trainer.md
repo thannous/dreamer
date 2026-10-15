@@ -97,7 +97,8 @@ npm run start:lucid:mock     # profil .env.lucid.mock
 npm run android:lucid        # build+run natif Android
 npm run ios:lucid            # build+run natif iOS
 npm run lucid:gates          # portes de release (cf. §13)
-npm run test:e2e:lucid       # suite Maestro du compagnon (cf. §12 et §14.8)
+npm run test:testerarmy:lucid  # parcours TesterArmy web du compagnon (cf. §12)
+E2E_DEVICE=<émulateur> npm run test:testerarmy:mobile -- lucid android  # build Release installé
 ```
 
 ### 2.2 Identité applicative (`createLucidExpoConfig`)
@@ -600,9 +601,10 @@ Ce qui est réellement en place :
 La logique décidable du module est presque entièrement pure et testée à ce titre : plans de signaux,
 plans de rappels, calendrier, fusion d'états, résolution de conflits, backoff, coaching.
 
-**E2E** : suite Maestro `lucid` (`npm run test:e2e:lucid`, profil `.env.lucid.mock`) — quatre flux
-(`lucid-smoke`, `lucid-morning-review`, `lucid-night-safety`, `lucid-night-unlock`) et deux sous-flux
-partagés. Voir §14.8 pour ce qu'ils couvrent et ce qu'ils ne prouvent pas encore.
+**E2E** : TesterArmy — `tools/e2e/tests/lucid.web.e2e.ts` (`npm run test:testerarmy:lucid`) et
+`tools/e2e/tests/lucid.mobile.e2e.ts` (`npm run test:testerarmy:mobile -- lucid <android|ios>`, profil
+`lucid-mock`, deux parcours natifs : intention et expérience requises, plan local activé puis
+redémarrage). L'ancienne suite Maestro `lucid` a été retirée le 2026-10-14 (§14.8).
 
 ---
 
@@ -738,25 +740,24 @@ React, réinitialisé à chaque visite. Seuls `audioVolume` et `audioCuesEnabled
 préférences. Re-confirmer la sécurité chaque nuit se défend ; redemander chaque nuit le son et la durée
 est une friction non décidée.
 
-### 14.8 Les flux Maestro sont écrits, pas exécutés
+### 14.8 Les flux Maestro (retirés le 2026-10-14)
 
-La suite `lucid` existe (`npm run test:e2e:lucid`, profil `.env.lucid.mock`) et compte quatre flux —
+La suite `lucid` (`npm run test:e2e:lucid`, profil `.env.lucid.mock`) comptait quatre flux —
 `lucid-smoke.yml`, `lucid-morning-review.yml`, `lucid-night-safety.yml`, `lucid-night-unlock.yml` —
 plus deux sous-flux partagés (`open-lucid-app.yml`, `complete-lucid-onboarding.yml`, ce dernier
-paramétré par `ACCEPT_AUDIO_SAFETY`). Ils couvrent le démarrage, l'onboarding, la traversée des
+paramétré par `ACCEPT_AUDIO_SAFETY`). Ils couvraient le démarrage, l'onboarding, la traversée des
 onglets, le bilan du matin, le refus des signaux nocturnes tant que la sécurité audio n'est pas
 acceptée, **et la transition inverse** : une fois les conditions remplies, le verrou s'ouvre — sans
 quoi un bouton câblé sur `false` passerait la suite.
 
 Au relevé historique du 20 août, aucun de ces flux n'avait tourné : il n'y a pas eu d'émulateur dans la session qui les a écrits.
-Leur syntaxe est calquée sur les flux existants et leurs testID sont tous vérifiés dans le code, mais
-la première exécution reste à faire, et c'est elle qui dira si le filet tient.
+Leur syntaxe était calquée sur les flux existants et leurs testID étaient tous vérifiés dans le code.
 
-Restent hors couverture : le parcours programme → séance → complétion, le bilan hebdomadaire,
-l'export et la suppression des données, l'abonnement. Et surtout : **rien dans le dépôt n'atteste
-d'une exécution réelle** — les flux demandent la CLI Maestro et un émulateur Android. Tant qu'ils
-n'ont pas tourné, ils sont une intention de test, pas une preuve, et la matrice de validation du
-runbook de release reste entièrement manuelle.
+Ils ont été retirés le 2026-10-14 avec Maestro. Les parcours TesterArmy
+(§12) les remplacent en partie ; le refus puis l'ouverture du verrou nocturne selon la sécurité audio
+n'y a pas d'équivalent natif. Restent hors couverture native : le parcours programme → séance →
+complétion, le bilan hebdomadaire, l'export et la suppression des données, l'abonnement. La matrice
+de validation du runbook de release reste manuelle pour ces points.
 
 ### 14.9 Portugais absent
 

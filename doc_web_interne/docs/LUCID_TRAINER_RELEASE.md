@@ -114,7 +114,7 @@ Only after explicit authorization for native build/signing:
 - confirm `RECEIVE_BOOT_COMPLETED`, the Noctalia custom-scheme `<queries>` entry, all cue sound resources, and the absence of the boot-action disabling plugin in the generated Lucid binary;
 - verify HTTPS App Link association for `lucid.noctalia.app` on the installed candidate;
 - test fresh install, upgrade path if one exists, reboot restoration of a scheduled reminder and night cue, notification denial/re-enable, native cue delivery after JS suspension, expiry without replay, cancellation, audio interruption, offline restart, encrypted legacy migration, export/share, cloud-first delete, stale-device reset rejection, account switch, purchase, and restore;
-- run the smallest applicable Maestro smoke flow on the installed artifact;
+- run the Lucid TesterArmy native journeys on the installed artifact (`E2E_DEVICE=<emulator-serial> npm run test:testerarmy:mobile -- lucid android`);
 - preserve APK/AAB checksum, signing fingerprint, build logs, install source, and device evidence.
 
 Do not call an emulator installation “physical-device proof” or an unsigned/debug artifact a store candidate.

@@ -50,7 +50,7 @@ export function sourceSnapshot(root, product, native = false) {
   // Its bytes are retained and compared separately; sourceClean is never forged.
   const allowedOutputPrefixes = product === 'site' ? ['docs-src/static/js/experience/'] : [];
   const outputs = paths.filter(file => allowedOutputPrefixes.some(prefix => file.startsWith(prefix)));
-  const excludeNative = ['tools/e2e/', 'e2e/', 'maestro/', 'doc_web_interne/', 'docs/', 'docs-src/', '.circleci/', '.github/'];
+  const excludeNative = ['tools/e2e/', 'e2e/', 'doc_web_interne/', 'docs/', 'docs-src/', '.circleci/', '.github/'];
   const inputs = paths.filter(file => !outputs.includes(file)
     && (!native || (!excludeNative.some(prefix => file.startsWith(prefix)) && file !== 'AGENTS.md')));
   return {

@@ -126,7 +126,7 @@ Its native source revision is unknown; Metro served the current JavaScript.
 This evidence qualifies that debug configuration, not a store release or iOS.
 The physical device, existing user accounts and their data were untouched.
 
-Three flows passed with zero automatic retries:
+Three flows (Maestro, retired 2026-10-14) passed with zero automatic retries:
 
 - `test:e2e:permissions`: denied microphone offers text entry; granting it removes
   the rationale; a text draft remains editable; notification warnings follow
@@ -145,30 +145,11 @@ The Test Store QA lab requires both the explicit QA flag and a `test_` key for
 the current platform in real mode. Ordinary real-mode accounts cannot see it,
 which the backend E2E login asserts. Mock mode keeps its existing lab.
 
-Prepare an appropriate private real-mode profile, use the existing compatible
-debug binary, and start Metro through the canonical script:
-
-```sh
-mise exec -- npm run start -- --profile /absolute/private/native.env --dev-client --port 8081
-# In another terminal, with Maestro/Java available and a disposable emulator:
-DEV_CLIENT_URL='exp+noctalia://expo-development-client/?url=http%3A%2F%2F127.0.0.1%3A8081' \
-  mise exec -- npm run test:e2e:permissions -- --device <emulator> --env-file /absolute/private/native.env
-DEV_CLIENT_URL='exp+noctalia://expo-development-client/?url=http%3A%2F%2F127.0.0.1%3A8081' \
-  mise exec -- npm run test:e2e:storage -- --device <emulator> --env-file /absolute/private/native.env
-```
-
-For the SDK probe, use a separate real-mode profile with a RevenueCat Test Store
-key and `EXPO_PUBLIC_SUBSCRIPTION_QA_LAB=true`, start its Metro on port 8086, and run:
-
-```sh
-DEV_CLIENT_URL='exp+noctalia://expo-development-client/?url=http%3A%2F%2F127.0.0.1%3A8086' \
-  mise exec -- npm run test:e2e:subscription-teststore -- --device <emulator> \
-    --env-file /absolute/private/teststore.env --metro-port 8086 --retries 0 --no-restart-metro
-```
-
-Private ignored evidence is under `maestro-results/android/`: each successful flow
-has `commands.json`, screenshots and logs, plus a compact `*-evidence.json`
-manifest with revision, binary, fixtures, rerun command and limitations.
-`test:e2e:resilience` remains the distinct standalone release gate and requires
-its existing release preflight. No native build, reinstall or store submission
-was performed in this work package.
+These three flows, their npm scripts and `test:e2e:resilience` were removed with
+Maestro on 2026-10-14; the results above remain historical evidence for that debug
+binary. Native permission recovery and offline storage have no TesterArmy journey
+yet. The read-only SDK probe is superseded by the manual
+[RevenueCat Test Store checklist](revenuecat-qa-workflow.md#2-revenuecat-test-store--checklist-manuelle).
+Native release journeys run through `test:testerarmy:mobile` (see the
+[TesterArmy guide](../../tools/e2e/README.md)). No native build, reinstall or
+store submission was performed in this work package.

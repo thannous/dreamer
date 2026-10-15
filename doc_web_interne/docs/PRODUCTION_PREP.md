@@ -50,7 +50,7 @@ la piste Internal Testing.
 - Mises à jour OTA: `runtimeVersion.policy` `fingerprint`, `updates.url` configuré (expo-owner tanuki75). Utiliser le même compte Expo pour les builds de prod. La policy fingerprint lie les OTA à la compatibilité native réelle, pas au numéro de version marketing.
 
 ## Tests / validation
-- Lancer `npm run typecheck:app`, `npm run lint`, `npm test -- --runInBand --watchman=false`, Maestro flows (`npm run test:e2e*` selon périmètre), puis `eas build --platform android --profile production` (AAB).
+- Lancer `npm run typecheck:app`, `npm run lint`, `npm test -- --runInBand --watchman=false`, parcours TesterArmy selon périmètre (`npm run test:testerarmy`, `E2E_DEVICE=<émulateur> npm run test:testerarmy:mobile -- dreamer android` sur un build Release installé), puis `eas build --platform android --profile production` (AAB).
 - Traiter `npm run typecheck:tests` comme gate à corriger ou waiver explicite avant release si la dette TypeScript tests existe encore.
 - Vérifier web export: `npx expo export --platform web` + navigation directe vers routes dynamiques (`/journal/…`, `/dream-chat/…`).
 - Tester Google Sign-In, RevenueCat, Play Integrity et notifications sur device réel installé depuis Google Play Internal Testing (newArch activée).
