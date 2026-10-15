@@ -18,7 +18,6 @@ jest.mock('@/lib/http', () => ({
 }));
 
 jest.mock('@/lib/auth', () => ({
-  getCurrentUser: jest.fn(async () => ({ id: 'user-1' })),
   signOut: jest.fn(),
 }));
 
@@ -78,7 +77,7 @@ describe('finalizeAccountDeletion', () => {
       calls.push('signOut');
     });
 
-    await finalizeAccountDeletion();
+    await finalizeAccountDeletion('user-1');
 
     expect(calls).toEqual(['clear', 'forget user:user-1', 'signOut']);
   });
@@ -87,7 +86,7 @@ describe('finalizeAccountDeletion', () => {
     mockClearRemoteDreamStorage.mockRejectedValue(new Error('sqlite busy'));
     mockSignOut.mockResolvedValue(undefined);
 
-    await finalizeAccountDeletion();
+    await finalizeAccountDeletion('user-1');
 
     expect(mockSignOut).toHaveBeenCalledTimes(1);
   });
@@ -96,6 +95,6 @@ describe('finalizeAccountDeletion', () => {
     mockClearRemoteDreamStorage.mockResolvedValue(undefined);
     mockSignOut.mockRejectedValue(new Error('sign out failed'));
 
-    await expect(finalizeAccountDeletion()).rejects.toThrow('sign out failed');
+    await expect(finalizeAccountDeletion('user-1')).rejects.toThrow('sign out failed');
   });
 });
