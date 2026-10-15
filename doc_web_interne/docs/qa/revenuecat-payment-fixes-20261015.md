@@ -109,6 +109,49 @@ this is not a clean-checkout claim. Collection, E2E TypeScript and all 31 runner
 guard controls also passed. This report-only follow-up changes no executable input;
 the final PR head records its own local `verify:pr` result before push and merge.
 
+## Final review corrections and local evidence
+
+The new-head review on `1edaa124f` found two additional return-navigation cases.
+Both were reproduced and fixed: startup acknowledges the paywall continuation
+only after the signed-in account's gates and selected route are observed, so
+native Back/swipes can leave without calling the explicit close handler. A
+durable recording or notification now wins before this generic offer return.
+Observing that higher-priority destination also ends the generic continuation.
+
+The stale-return regression fails before the fix in
+`tools/e2e/.e2e/dreamer-web/1792104759215-70261-efc8bc33-1be3-4495-96ea-29bd016ddb72/`.
+The valid durable-capture conflict fails at the paywall before the fix in
+`tools/e2e/.e2e/dreamer-web/1792104855123-70613-6b6fb893-992f-453b-acc2-a2cc764ecef1/`.
+The first directory's separate durable fixture was initially invalid and sent
+the app to onboarding; only the second directory proves that priority defect.
+
+The final campaign freshly passed all 17 selected scenarios on
+`eab7f598fc54ebe15b463dfdd62522d2668779b8`, using e2e 0.21.1 and the same engines.
+Canonical output:
+`tools/e2e/.e2e/dreamer-web/1792105084274-75797-055e97df-a7bb-4e72-bb4c-fcf7a95c78f2/`.
+Run `01a141c9-7997-7392-bf04-db8499223796` has exit 0, stable inputs, no selected
+skips, failures, flaky tests, model calls or secondary errors, and 17 trace pages.
+The final PR proof covers its own committed head; only this report changes after
+the executed revision. Preserved local WIP means the checkout is not clean.
+
+Browser E2E cannot deliver iOS swipe/Android Back events. Two focused controls
+in the existing root suite bypass the paywall close handler and invoke its native
+foreground callback after a system exit; both failed before and pass after the
+fix. The focused root/onboarding suites pass 69 controls. These simulate native
+callbacks and do not qualify a native binary or physical gesture.
+
+Capture deliberately clears its URL parameters after applying an entry. The
+new E2E therefore checks Capture, the retained account-scoped durable entry and
+the cleared generic offer return. An intermediate URL-parameter expectation
+failed after the behavior was already fixed; it was replaced with those durable
+outcomes rather than changing Capture.
+
+Latest 17-case rerun:
+
+```sh
+E2E_WEB_PORT=4518 mise exec -- node tools/e2e/run.mjs dreamer web run --grep 'mock.*purchase|mock receipt|cancelled renewal|restore activates|restore with no|mock restore|guest returns to the Plus offer|guest resumes a durable recording|guest can start a first dream|free user can open the Plus offer and return|exhausted free account can keep a dream|Plus user signs out and returns'
+```
+
 Native Release binaries, real Store transactions, RevenueCat dashboard transfer
 settings and production backend convergence remain unqualified. The changes do
 not modify SDK configuration, the backend, deployment gates or CI routing.
