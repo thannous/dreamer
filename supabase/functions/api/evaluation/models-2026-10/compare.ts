@@ -170,6 +170,8 @@ if (import.meta.main) {
             status = 'invalid (missing title or interpretation)';
           }
           if (status === 'valid' && boundViolations.length) status = 'invalid (array bounds)';
+          // Production falls back to Gemini on any other Claude stop, so users never see these.
+          if (model.startsWith('claude-') && stopReason !== 'end_turn') status = `invalid (stop: ${stopReason})`;
           results[slot] = { kind: 'analysis', id: fixture.id, model, milliseconds, stopReason, usage, rawText: text, response, delivered, boundViolations, status };
           // Render only a prompt production would have kept.
           if (model === 'gemini-3.8-flash' && status === 'valid') imagePrompt = (delivered as { imagePrompt: string }).imagePrompt;

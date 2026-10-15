@@ -191,6 +191,26 @@ Deno.test('a failed, refused or unusable Claude analysis falls back to Gemini', 
   }
 });
 
+Deno.test('a stalled Claude analysis gives up at its timeout and falls back to Gemini', async () => {
+  const originalFetch = globalThis.fetch;
+  const hosts: string[] = [];
+  globalThis.fetch = (input, init) => {
+    const request = new Request(input, init);
+    const host = new URL(request.url).hostname;
+    hosts.push(host);
+    if (host !== 'api.anthropic.com') return Promise.resolve(geminiAnalysis('Gemini door'));
+    // Never answers; only the client timeout ends it.
+    return new Promise((_, reject) => request.signal.addEventListener('abort', () => reject(new DOMException('Aborted', 'AbortError'))));
+  };
+  try {
+    const result = await runDreamAnalysis({ apiKey: 'synthetic-gemini-key', anthropicApiKey: 'synthetic-anthropic-key', claudeTimeoutMs: 50, transcript: 'A door.', lang: 'en', route: 'test' });
+    assertEquals(hosts, ['api.anthropic.com', 'generativelanguage.googleapis.com']);
+    assertEquals(result.title, 'Gemini door');
+  } finally {
+    globalThis.fetch = originalFetch;
+  }
+});
+
 Deno.test('literary license stays scoped to the poetic field and never becomes factual analysis', () => {
   const prompt = buildAnalysisPrompt('A red bird.', 'English');
   assertStringIncludes(REFLECTION_POLICY, 'In factual analysis fields');

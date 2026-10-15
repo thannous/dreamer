@@ -150,10 +150,19 @@ export const sanitizeAnalysisDetails = (analysis: unknown): DreamAnalysisDetails
   };
 };
 
+/**
+ * Claude budget on the synchronous routes. The app gives up on /analyzeDream at 45 s and
+ * /analyzeDreamFull at 60 s (lib/networkPolicy.ts); a stalled Claude call must leave
+ * time for the Gemini fallback (and the image) before then.
+ */
+export const CLAUDE_SYNC_ANALYSIS_TIMEOUT_MS = 20_000;
+
 export const runDreamAnalysis = async (options: {
   apiKey: string;
   /** When set, analysis runs on Claude first and falls back to Gemini on any failure. */
   anthropicApiKey?: string | null;
+  /** How long Claude may take before the Gemini fallback starts. */
+  claudeTimeoutMs?: number;
   transcript: string;
   lang: string;
   route: string;
@@ -171,7 +180,7 @@ export const runDreamAnalysis = async (options: {
   if (anthropicApiKey) {
     const { model, effort } = CLAUDE_MODELS.analysis;
     try {
-      const { text, usage } = await requestClaudeJson({ apiKey: anthropicApiKey, model, effort, system: systemInstruction, prompt, schema });
+      const { text, usage } = await requestClaudeJson({ apiKey: anthropicApiKey, model, effort, system: systemInstruction, prompt, schema, timeoutMs: options.claudeTimeoutMs });
       const analysis = JSON.parse(text) as Record<string, unknown>;
       // Claude is not sent the schema's array bounds; keep the three excerpts the app accepts.
       if (Array.isArray(analysis.quoteSourceExcerpts)) analysis.quoteSourceExcerpts = analysis.quoteSourceExcerpts.slice(0, 3);
