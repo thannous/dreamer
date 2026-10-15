@@ -3255,7 +3255,7 @@ const JournalDetailContent = memo(function JournalDetailContent({ dream, folio }
                   {t('journal.menu.delete')}
                 </Text>
               </PressableScale>
-              <JournalFolio folio={folio} className="mt-8" />
+              <JournalFolio folio={folio} className="mt-8" turns="dream" />
             </View>
             </View>
         </ScrollView>

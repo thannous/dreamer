@@ -108,8 +108,8 @@ export function JournalTonightPage({ folio, interactive }: {
             )
           ) : null}
         </View>
-        <View pointerEvents="none" style={{ marginTop: 'auto', paddingTop: 24 }}>
-          <JournalFolio folio={folio} />
+        <View pointerEvents={interactive ? 'box-none' : 'none'} style={{ marginTop: 'auto', paddingTop: 24 }}>
+          <JournalFolio folio={folio} turns={interactive ? 'tonight' : undefined} />
         </View>
       </ScrollView>
       <JournalPageEdges />

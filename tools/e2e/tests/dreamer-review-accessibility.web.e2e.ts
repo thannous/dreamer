@@ -55,8 +55,6 @@ test('review: keyboard page navigation reaches tonight and its write action on a
   await page.setViewportSize({ width: 568, height: 320 });
   const next = page.getByTestId('journal.page.next');
   await next.focus();
-  // Focused, the control shows itself to the keyboard user.
-  await expect(next).toHaveCSS('opacity', '1');
   await page.keyboard.press('Enter');
   const write = page.getByTestId('journal.tonight.write');
   await write.scrollIntoViewIfNeeded();
@@ -103,9 +101,11 @@ test('review: an illustrated long title remains fully inside a scrollable cover'
   }).toBe(true);
   await page.getByTestId('component.transcriptCard').scrollIntoViewIfNeeded();
   await expect(page.getByTestId('component.transcriptCard')).toBeInViewport();
-  // The page stays clean: unfocused, the page controls are unseen and take no pointer.
+  // The page stays clean: no bar over it; its turns sit at its foot, after its last action.
   const next = page.getByTestId('journal.page.next');
-  await expect(next).toHaveCSS('opacity', '0');
-  await expect(next).toHaveCSS('pointer-events', 'none');
+  await next.scrollIntoViewIfNeeded();
+  await expect(next).toBeVisible();
+  const deleteBox = (await page.getByTestId('btn.dream.delete').boundingBox())!;
+  expect((await next.boundingBox())!.y).toBeGreaterThan(deleteBox.y);
   await page.screenshot({ path: info.outputPath('long-cover-title.png') });
 });
