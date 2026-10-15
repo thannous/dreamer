@@ -27,6 +27,7 @@ import {
   type DreamerScheduledRequest,
   type DreamerTimeContext,
 } from '@/lib/dreamerNotifications';
+import { DICTATE_DREAM_ACTION_ID, DREAM_CAPTURE_CATEGORY_ID } from '@/lib/notificationDreamCapture';
 import { getTranslator, loadTranslations } from '@/lib/i18n';
 import { normalizeAppLanguage, resolveEffectiveLanguage } from '@/lib/language';
 import type { RitualId } from '@/lib/inspirationRituals';
@@ -54,6 +55,8 @@ const NOTIFICATION_PROMPT_KEYS = [
 
 // Notification channel for Android
 const NOTIFICATION_CHANNEL_ID = 'dream-reminders';
+// The reply confirmation must not buzz again like a reminder does.
+const DREAM_CAPTURE_SAVED_CHANNEL_ID = 'dream-capture-saved';
 
 /** Sunday, 10:00 local: late enough for a lie-in, early enough to plan the week. */
 export const WEEKLY_RECAP_URL = WEEKLY_RECAP_NOTIFICATION_URL;
@@ -322,6 +325,34 @@ function getInactivityCopy(
   return { title: t(`${prefix}.title`), body: t(`${prefix}.body`) };
 }
 
+/**
+ * Registers the "tell my dream" reply on capture reminders, in the user's
+ * language. A paired watch shows it with dictation, and so does the lock
+ * screen. A failure only costs the action: the reminder still opens capture.
+ */
+let dreamCaptureCategoryRegistered = false;
+
+async function ensureDreamCaptureCategory(t: NotificationTranslator): Promise<void> {
+  try {
+    await Notifications.setNotificationCategoryAsync(DREAM_CAPTURE_CATEGORY_ID, [
+      {
+        identifier: DICTATE_DREAM_ACTION_ID,
+        buttonTitle: t('notifications.dream_capture.action'),
+        textInput: {
+          submitButtonTitle: t('notifications.dream_capture.submit'),
+          placeholder: t('notifications.dream_capture.placeholder'),
+        },
+        options: { opensAppToForeground: false },
+      },
+    ]);
+    dreamCaptureCategoryRegistered = true;
+  } catch (error) {
+    if (__DEV__) {
+      console.warn('Unable to register the dream capture notification action', error);
+    }
+  }
+}
+
 async function scheduleOwnedOccurrence(params: {
   occurrence: DreamerDesiredOccurrence;
   timeContext: DreamerTimeContext;
@@ -336,6 +367,9 @@ async function scheduleOwnedOccurrence(params: {
     data: buildDreamerNotificationContentData(occurrence, timeContext),
     sound: true,
     priority: params.priority ?? Notifications.AndroidNotificationPriority.DEFAULT,
+    ...(occurrence.url === RECORDING_NOTIFICATION_URL
+      ? { categoryIdentifier: DREAM_CAPTURE_CATEGORY_ID }
+      : {}),
   };
 
   if (occurrence.weekday != null && occurrence.time) {
@@ -431,7 +465,13 @@ export async function reconcileDreamerReminders(
     decision.toCancel.map((identifier) => Notifications.cancelScheduledNotificationAsync(identifier))
   );
 
-  const t = decision.toSchedule.length > 0 ? await getNotificationTranslator() : null;
+  // The category is registered once per launch even when nothing is
+  // rescheduled, so a failed attempt during a rebuild is retried later.
+  const t =
+    decision.toSchedule.length > 0 || !dreamCaptureCategoryRegistered
+      ? await getNotificationTranslator()
+      : null;
+  if (t) await ensureDreamCaptureCategory(t);
   const promptByWeekday = t ? buildWeeklyPromptRotation(t) : {};
   const scheduledIds: string[] = [];
   for (const occurrence of decision.toSchedule) {
@@ -480,6 +520,7 @@ async function scheduleOwnedFamily(params: {
   if (desired.length === 0) return;
 
   const t = await getNotificationTranslator();
+  await ensureDreamCaptureCategory(t);
   const promptByWeekday = buildWeeklyPromptRotation(t);
   for (const occurrence of desired) {
     const copy = copyForOccurrence(t, occurrence, promptByWeekday);
@@ -523,6 +564,7 @@ export async function sendTestNotification(): Promise<void> {
   }
 
   const t = await getNotificationTranslator();
+  await ensureDreamCaptureCategory(t);
 
   await Notifications.scheduleNotificationAsync({
     content: {
@@ -531,6 +573,7 @@ export async function sendTestNotification(): Promise<void> {
       data: { url: RECORDING_NOTIFICATION_URL, test: true },
       sound: true,
       priority: Notifications.AndroidNotificationPriority.HIGH,
+      categoryIdentifier: DREAM_CAPTURE_CATEGORY_ID,
     },
     trigger: {
       type: Notifications.SchedulableTriggerInputTypes.TIME_INTERVAL,
@@ -675,5 +718,51 @@ export async function presentAnalysisReadyNotification(dreamId: number): Promise
       seconds: 1,
       channelId: NOTIFICATION_CHANNEL_ID,
     },
+  });
+}
+
+/**
+ * Confirms a dream dictated from a reminder reply. It reaches the watch the
+ * same way the reminder did, so the user knows the words were kept.
+ */
+/**
+ * Registers the reply action if this launch has not managed to yet. Called on
+ * every return to the app, because reminder reconciliation can skip a launch
+ * whose plan did not change.
+ */
+export async function ensureDreamCaptureReplyAction(): Promise<void> {
+  if (Platform.OS === 'web' || dreamCaptureCategoryRegistered) return;
+  await ensureDreamCaptureCategory(await getNotificationTranslator());
+}
+
+export async function presentDreamCapturedNotification(replacingIdentifier?: string): Promise<void> {
+  if (Platform.OS === 'web') {
+    return;
+  }
+
+  const t = await getNotificationTranslator();
+  if (Platform.OS === 'android') {
+    await Notifications.setNotificationChannelAsync(DREAM_CAPTURE_SAVED_CHANNEL_ID, {
+      name: t('notifications.dream_capture.saved_channel'),
+      importance: AndroidImportance.LOW,
+      sound: null,
+      enableVibrate: false,
+      vibrationPattern: null,
+    });
+  }
+  await Notifications.scheduleNotificationAsync({
+    // Android 15+ refuses to cancel a notification that got a direct reply; the
+    // app has to update it instead. Posting under the same identifier replaces
+    // the replied reminder (an immediate post leaves its weekly schedule
+    // alone on Android). On iOS the same identifier would replace the pending
+    // weekly request, so the notice gets its own.
+    ...(Platform.OS === 'android' && replacingIdentifier ? { identifier: replacingIdentifier } : {}),
+    content: {
+      title: t('notifications.dream_capture.saved_title'),
+      body: t('notifications.dream_capture.saved_body'),
+      sound: false,
+      priority: Notifications.AndroidNotificationPriority.LOW,
+    },
+    trigger: Platform.OS === 'android' ? { channelId: DREAM_CAPTURE_SAVED_CHANNEL_ID } : null,
   });
 }

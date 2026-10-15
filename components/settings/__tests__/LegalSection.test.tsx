@@ -121,8 +121,11 @@ describe('LegalSection', () => {
     expect(queryByTestId('settings-delete-account')).toBeNull();
   });
 
-  it('requires a two-step confirmation before deleting the account', async () => {
-    mockRequestAccountDeletion.mockResolvedValue({ deleted: true });
+  it('keeps the deleted identity when server deletion invalidates auth after confirmation', async () => {
+    mockRequestAccountDeletion.mockImplementation(async () => {
+      mockUser = null;
+      return { deleted: true };
+    });
     mockFinalizeAccountDeletion.mockResolvedValue(undefined);
 
     const { getByTestId } = render(<LegalSection />);
@@ -147,7 +150,7 @@ describe('LegalSection', () => {
 
     // Success: local cleanup + sign-out, then the success message.
     await waitFor(() => {
-      expect(mockFinalizeAccountDeletion).toHaveBeenCalledTimes(1);
+      expect(mockFinalizeAccountDeletion).toHaveBeenCalledWith('user-1');
     });
     await waitFor(() => {
       expect(alertSpy).toHaveBeenCalledTimes(3);

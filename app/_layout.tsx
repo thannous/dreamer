@@ -31,6 +31,7 @@ import { ErrorBoundary } from '@/components/ErrorBoundary';
 import { DesktopShell } from '@/components/navigation/DesktopShell';
 import { AnalysisFlightIndicator } from '@/components/analysis/AnalysisFlightIndicator';
 import { EngagementRemindersHost } from '@/components/reminders/EngagementRemindersHost';
+import { NotificationDreamImportHost } from '@/components/reminders/NotificationDreamImportHost';
 import { OfflineModelPromptHost } from '@/components/speech/OfflineModelPromptHost';
 import { WhatsNewModalHost } from '@/components/releases/WhatsNewModal';
 import { VercelAnalytics } from '@/components/VercelAnalytics';
@@ -59,6 +60,7 @@ import {
 } from '@/lib/lucid/routes';
 import { isSafeAppNotificationRoute } from '@/lib/notificationRoutes';
 import { normalizeAppLanguage, resolveEffectiveLanguage } from '@/lib/language';
+import { isDreamCaptureResponse } from '@/lib/notificationDreamCapture';
 import { createNotificationResponseTracker } from '@/lib/notificationResponse';
 import {
   canReuseObservedStartupDestination,
@@ -75,6 +77,8 @@ import { QuickSettingsProvider } from '@/components/settings/QuickSettingsProvid
 import type { LanguagePreference } from '@/lib/types';
 import { scheduleProductBootstrap } from '@/lib/productBootstrap';
 import { setAiConsentPromptRequired } from '@/lib/aiConsent';
+import { captureDreamFromNotificationResponse, clearDreamCaptureResponse } from '@/services/notificationDreamInbox';
+import { registerDreamCaptureBackgroundTask } from '@/services/notificationDreamTask';
 import { configureNotificationHandler } from '@/services/notificationService';
 import {
   clearPendingRecordingNotification,
@@ -391,7 +395,12 @@ function RootLayoutNav({
 
         if (Platform.OS !== 'web') {
           const response = Notifications.getLastNotificationResponse();
-          if (response?.notification) {
+          if (!isLucidTrainer && isDreamCaptureResponse(response)) {
+            // A dream dictated from a reminder reply is saved, not opened.
+            // Clear the replayable response only once the words are kept.
+            await captureDreamFromNotificationResponse(response);
+            clearDreamCaptureResponse(response);
+          } else if (response?.notification) {
             await enqueueNotification(response.notification);
           }
         }
@@ -799,6 +808,16 @@ function RootLayoutNav({
   useEffect(() => {
     if (Platform.OS !== 'web') {
       const subscription = Notifications.addNotificationResponseReceivedListener((response) => {
+        if (!isLucidTrainer && isDreamCaptureResponse(response)) {
+          // Clear the replayable response only once the words are kept, so a
+          // failed write is retried from the last response at next launch.
+          void captureDreamFromNotificationResponse(response)
+            .then(() => clearDreamCaptureResponse(response))
+            .catch((error) => {
+              if (__DEV__) console.warn('[RootLayoutNav] Unable to keep a dictated dream', error);
+            });
+          return;
+        }
         void enqueueNotification(response.notification);
       });
 
@@ -897,7 +916,7 @@ function RootLayoutNav({
           </Stack>
           </DesktopShell>
           </QuickSettingsProvider>
-          {!isLucidTrainer ? <><OfflineModelPromptHost /><EngagementRemindersHost /><AnalysisFlightIndicator /></> : null}
+          {!isLucidTrainer ? <><OfflineModelPromptHost /><EngagementRemindersHost /><NotificationDreamImportHost /><AnalysisFlightIndicator /></> : null}
           {!isLucidTrainer ? <VercelAnalytics /> : null}
           {!isLucidTrainer ? <VercelSpeedInsights /> : null}
         </JournalRuntime>
@@ -1090,6 +1109,7 @@ export default function RootLayout() {
 
   useEffect(() => {
     configureNotificationHandler();
+    if (!isLucidTrainer) void registerDreamCaptureBackgroundTask();
   }, []);
 
   useEffect(() => {

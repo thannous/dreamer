@@ -73,14 +73,14 @@ export function LegalSection() {
   );
 
   const runDeletion = useCallback(() => {
-    if (isDeleting) return;
+    if (isDeleting || !user) return;
     setIsDeleting(true);
     requestAccountDeletion()
       .then(async () => {
         // Sign out right away: the local session is dead server-side, and the
         // auth gate must route back to the sign-in screen even if the user
         // dismisses the confirmation alert.
-        await finalizeAccountDeletion().catch(() => {
+        await finalizeAccountDeletion(user.id).catch(() => {
           // The account is already deleted; stale local tokens expire on their own.
         });
         Alert.alert(
@@ -92,7 +92,7 @@ export function LegalSection() {
         setIsDeleting(false);
         Alert.alert(t('settings.deleteAccount.errorMessage'));
       });
-  }, [isDeleting, t]);
+  }, [isDeleting, t, user]);
 
   const confirmDeletion = useCallback(() => {
     Alert.alert(
