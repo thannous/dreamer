@@ -1,5 +1,10 @@
 # RevenueCat payment journey fixes
 
+Current evidence: 17 local TesterArmy journeys passed with e2e 0.21.1 on
+`697ef71603dc4f6b55b5259e52df02a7cd5d7142`, including pending activation after
+dismissal/re-entry. See [the latest recovery validation](#latest-recovery-validation).
+The earlier runs below remain historical evidence of their stated revisions.
+
 Owner: Codex, branch `codex/fix-payment-journeys`. Scope: the three priority
 findings in the 2026-10-15 payment audit. Implementation, local checks and PR
 delivery are authorized. Merge and publication are separate stages.
@@ -151,6 +156,38 @@ Latest 17-case rerun:
 ```sh
 E2E_WEB_PORT=4518 mise exec -- node tools/e2e/run.mjs dreamer web run --grep 'mock.*purchase|mock receipt|cancelled renewal|restore activates|restore with no|mock restore|guest returns to the Plus offer|guest resumes a durable recording|guest can start a first dream|free user can open the Plus offer and return|exhausted free account can keep a dream|Plus user signs out and returns'
 ```
+
+## Latest recovery validation
+
+The review of `ad98500bf` identified loss of the activation retry on paywall
+dismissal and the mismatch between global mock mode and the selected keyless
+mock subscription service. Both are corrected. The shared subscription provider
+retains an account-scoped pending activation until confirmation; the screen
+derives its pending presentation from that state and its own account-scoped
+confirmation. Dismissing and reopening the screen retains the retry and blocks
+a duplicate store operation. Account changes cannot inherit another account's
+pending presentation. This is navigation continuity in a running app; process
+restart recovery is not qualified by these runs.
+
+Convergence now uses the service facade's actual selection, including keyless
+web/development fallbacks, and never sends a mock receipt to the real backend.
+The browser fixture requires global mock mode and forbids real Auth/backend
+traffic, so that mixed-mode fallback is a documented E2E gap. Two focused cases
+in the existing hook suite force global mode off with the fallback selected and
+assert simulated confirmation with zero backend calls; both fail before and
+pass after the correction. Existing service selection controls check the exported
+selection flag. The focused hook/service/paywall suites pass 76 tests.
+
+Both delayed-activation E2E cases now dismiss/reopen before retry and still assert
+exactly one purchase or one restore. Both failed before at
+`tools/e2e/.e2e/dreamer-web/1792106147860-85227-1662e5e1-44bb-4edd-abb9-01f08d72c6a4/`.
+The final 17-case command above passed on `697ef71603dc4f6b55b5259e52df02a7cd5d7142`:
+`tools/e2e/.e2e/dreamer-web/1792106353689-86232-e6a4e0cd-7612-466a-bdca-91708f6fba84/`.
+Run `01a141dc-d845-7117-bb02-d2c6154f0319` has 17 passed, no selected skips,
+failures, flaky tests, model calls or secondary errors, stable inputs and exit 0.
+The local PR check passes 149 suites/1,855 tests, with one existing skipped test;
+the final head records its proof after this report-only follow-up. The unchanged
+31 runner guards remain covered by their earlier local run with the same pins.
 
 Native Release binaries, real Store transactions, RevenueCat dashboard transfer
 settings and production backend convergence remain unqualified. The changes do
