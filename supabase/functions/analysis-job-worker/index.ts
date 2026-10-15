@@ -202,6 +202,7 @@ const processAnalysisJob = async (input: {
     const lang = String(job.request_payload?.lang ?? 'en');
     const reading = await runDreamAnalysis({
       apiKey,
+      anthropicApiKey: Deno.env.get('ANTHROPIC_API_KEY')?.trim(),
       transcript: resolvedTranscript.promptTranscript,
       truncatedForPrompt: resolvedTranscript.truncatedForPrompt,
       lang,

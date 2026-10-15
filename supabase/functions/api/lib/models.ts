@@ -27,6 +27,16 @@ export const GEMINI_MODELS = {
   },
 } as const;
 
+/**
+ * Claude models. Dream analysis runs on Claude when `ANTHROPIC_API_KEY` is set
+ * and falls back to Gemini (`GEMINI_MODELS.text`) on any failure; without the
+ * key, analysis stays on Gemini.
+ */
+export const CLAUDE_MODELS = {
+  /** Medium effort: complete referral and injection refusals, about 10 s (synthetic test, 2026-10-15). */
+  analysis: { model: 'claude-haiku-5-5', effort: 'medium' },
+} as const;
+
 /** Text previews that were retired from the Interactions API (404 on request). */
 export const RETIRED_TEXT_PREVIEW_MODELS: ReadonlySet<string> = new Set([
   'gemini-3-flash-preview',

@@ -1,6 +1,8 @@
 import { aiLanguageName, type AiLanguage, localizedForAi } from '../lib/aiLanguage.ts';
 import { describeDreamThemes, LEGACY_DREAM_THEMES, normalizeDreamTheme } from '../lib/dreamThemes.ts';
+import { CLAUDE_MODELS } from '../lib/models.ts';
 import { ANALYZE_DREAM_SCHEMA, DREAM_TYPE_VALUES, withDreamThemes } from '../lib/schemas.ts';
+import { ClaudeStopError, requestClaudeJson } from './claude.ts';
 import {
   callGeminiWithFallback,
   GEMINI_FLASH_LITE_MODEL,
@@ -150,6 +152,8 @@ export const sanitizeAnalysisDetails = (analysis: unknown): DreamAnalysisDetails
 
 export const runDreamAnalysis = async (options: {
   apiKey: string;
+  /** When set, analysis runs on Claude first and falls back to Gemini on any failure. */
+  anthropicApiKey?: string | null;
   transcript: string;
   lang: string;
   route: string;
@@ -157,24 +161,55 @@ export const runDreamAnalysis = async (options: {
   /** The themes the app can show; the legacy four when it does not say. */
   themes?: readonly string[];
 }): Promise<StructuredDreamAnalysis> => {
-  const { apiKey, transcript, lang, route, themes = LEGACY_DREAM_THEMES } = options;
+  const { apiKey, anthropicApiKey, transcript, lang, route, themes = LEGACY_DREAM_THEMES } = options;
   const langName = aiLanguageName(lang);
   const systemInstruction = analysisSystemInstruction(lang);
+  const prompt = buildAnalysisPrompt(transcript, langName, options.truncatedForPrompt, themes);
+  const schema = withDreamThemes(ANALYZE_DREAM_SCHEMA, themes);
+  const normalizeOptions = { transcript, lang, truncatedForPrompt: options.truncatedForPrompt, themes };
+
+  if (anthropicApiKey) {
+    const { model, effort } = CLAUDE_MODELS.analysis;
+    try {
+      const { text, usage } = await requestClaudeJson({ apiKey: anthropicApiKey, model, effort, system: systemInstruction, prompt, schema });
+      const analysis = JSON.parse(text) as Record<string, unknown>;
+      // Claude is not sent the schema's array bounds; keep the three excerpts the app accepts.
+      if (Array.isArray(analysis.quoteSourceExcerpts)) analysis.quoteSourceExcerpts = analysis.quoteSourceExcerpts.slice(0, 3);
+      const result = normalizeDreamAnalysis(analysis, normalizeOptions);
+      // Spend telemetry: categorical and token counts only, never content.
+      console.log('[ai-spend] analysis', {
+        route, provider: 'anthropic', model, effort, promptVersion: ANALYSIS_PROMPT_VERSION,
+        inputTokens: usage?.input_tokens ?? null,
+        outputTokens: usage?.output_tokens ?? null,
+        cacheReadTokens: usage?.cache_read_input_tokens ?? null,
+        cacheWriteTokens: usage?.cache_creation_input_tokens ?? null,
+      });
+      return result;
+    } catch (error) {
+      // Never log the error message or response body: they can carry dream content.
+      const status = (error as { status?: unknown })?.status;
+      console.warn(`[api] ${route}: Claude analysis failed, falling back to Gemini`, {
+        status: typeof status === 'number' ? status : null,
+        stopReason: error instanceof ClaudeStopError ? error.stopReason : null,
+        invalidJson: error instanceof SyntaxError,
+      });
+    }
+  }
 
   const primaryModel = resolveTextModel('GEMINI_MODEL', GEMINI_FLASH_MODEL);
   const fallbackModel = resolveTextModel('GEMINI_FALLBACK_MODEL', GEMINI_FLASH_LITE_MODEL);
   // Spend telemetry: categorical only (route, models, prompt version), never content.
-  console.log('[ai-spend] analysis', { route, primaryModel, fallbackModel, promptVersion: ANALYSIS_PROMPT_VERSION });
+  console.log('[ai-spend] analysis', { route, provider: 'gemini', primaryModel, fallbackModel, promptVersion: ANALYSIS_PROMPT_VERSION });
 
   const { text } = await callGeminiWithFallback(
     apiKey,
     primaryModel,
     fallbackModel,
-    [{ role: 'user', parts: [{ text: buildAnalysisPrompt(transcript, langName, options.truncatedForPrompt, themes) }] }],
+    [{ role: 'user', parts: [{ text: prompt }] }],
     systemInstruction,
     {
       responseMimeType: 'application/json',
-      responseJsonSchema: withDreamThemes(ANALYZE_DREAM_SCHEMA, themes),
+      responseJsonSchema: schema,
       thinkingLevel: 'low',
       maxOutputTokens: 4096,
     }
@@ -188,7 +223,7 @@ export const runDreamAnalysis = async (options: {
     console.error(`[api] ${route}: model returned invalid JSON`, { responseLength: text.length });
     throw new Error('Failed to parse model response');
   }
-  return normalizeDreamAnalysis(analysis, { transcript, lang, truncatedForPrompt: options.truncatedForPrompt, themes });
+  return normalizeDreamAnalysis(analysis, normalizeOptions);
 };
 
 /** What the app receives from a parsed model response; shared with the model evaluations. */

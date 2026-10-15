@@ -63,6 +63,17 @@ export const ANALYZE_DREAM_SCHEMA = {
   ],
 };
 
+/** Claude structured outputs reject array length bounds; the app clamps counts itself. */
+export const withoutArrayBounds = (schema: unknown): unknown => {
+  if (Array.isArray(schema)) return schema.map(withoutArrayBounds);
+  if (!schema || typeof schema !== 'object') return schema;
+  return Object.fromEntries(
+    Object.entries(schema as Record<string, unknown>)
+      .filter(([key]) => key !== 'minItems' && key !== 'maxItems')
+      .map(([key, value]) => [key, withoutArrayBounds(value)])
+  );
+};
+
 /** A response schema whose theme is kept to the themes offered for the request. */
 export const withDreamThemes = <T extends { properties: { theme: object } }>(schema: T, themes: readonly string[]): T => ({
   ...schema,

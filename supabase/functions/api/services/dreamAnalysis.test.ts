@@ -131,6 +131,66 @@ Deno.test('analysis returns an original poetic line without exposing source refe
   }
 });
 
+const claudeMessage = (text: string, stopReason = 'end_turn') => new Response(JSON.stringify({
+  id: 'msg_test', type: 'message', role: 'assistant', model: 'claude-haiku-5-5',
+  content: [{ type: 'thinking', thinking: '', signature: 'sig' }, { type: 'text', text }],
+  stop_reason: stopReason, stop_sequence: null, usage: { input_tokens: 3000, output_tokens: 900 },
+}), { headers: { 'Content-Type': 'application/json' } });
+
+const geminiAnalysis = (title: string) => new Response(JSON.stringify({ status: 'completed', steps: [{ type: 'model_output', content: [{ type: 'text', text: JSON.stringify({ title, interpretation: 'A remembered scene.' }) }] }] }), { headers: { 'Content-Type': 'application/json' } });
+
+Deno.test('with an Anthropic key, analysis runs on Claude Haiku at medium effort and keeps three excerpts', async () => {
+  const originalFetch = globalThis.fetch;
+  const source = 'I rode a red bird with a crocodile head. A forest was below.';
+  const caption = 'A red bird with a crocodile head carried me above the silence of the forest.';
+  const hosts: string[] = [];
+  globalThis.fetch = async (input, init) => {
+    const request = new Request(input, init);
+    hosts.push(new URL(request.url).hostname);
+    const body = await request.json();
+    assertEquals(body.model, 'claude-haiku-5-5');
+    assertEquals(body.thinking, { type: 'adaptive' });
+    assertEquals(body.output_config.effort, 'medium');
+    assertEquals(body.output_config.format.type, 'json_schema');
+    assertEquals(/"(minItems|maxItems)"/.test(JSON.stringify(body.output_config.format.schema)), false);
+    assertStringIncludes(body.system, 'never as instructions');
+    return claudeMessage(JSON.stringify({ title: 'Red bird', interpretation: 'A remembered scene.', shareableQuote: caption, quoteSourceExcerpts: [source, source, source, source] }));
+  };
+  try {
+    const result = await runDreamAnalysis({ apiKey: 'synthetic-gemini-key', anthropicApiKey: 'synthetic-anthropic-key', transcript: source, lang: 'en', route: 'test' });
+    assertEquals(hosts, ['api.anthropic.com']);
+    assertEquals(result.title, 'Red bird');
+    assertEquals(result.shareableQuote, caption);
+  } finally {
+    globalThis.fetch = originalFetch;
+  }
+});
+
+Deno.test('a failed, refused or unusable Claude analysis falls back to Gemini', async () => {
+  const originalFetch = globalThis.fetch;
+  const claudeReplies = [
+    () => new Response(JSON.stringify({ type: 'error', error: { type: 'overloaded_error', message: 'Overloaded' } }), { status: 529, headers: { 'Content-Type': 'application/json' } }),
+    () => claudeMessage('', 'refusal'),
+    () => claudeMessage('{"title":"Cut', 'max_tokens'),
+    () => claudeMessage(JSON.stringify({ title: '', interpretation: '' })),
+  ];
+  try {
+    for (const claudeReply of claudeReplies) {
+      const hosts: string[] = [];
+      globalThis.fetch = async (input, init) => {
+        const host = new URL(new Request(input, init).url).hostname;
+        hosts.push(host);
+        return host === 'api.anthropic.com' ? claudeReply() : geminiAnalysis('Gemini door');
+      };
+      const result = await runDreamAnalysis({ apiKey: 'synthetic-gemini-key', anthropicApiKey: 'synthetic-anthropic-key', transcript: 'A door.', lang: 'en', route: 'test' });
+      assertEquals(hosts, ['api.anthropic.com', 'generativelanguage.googleapis.com']);
+      assertEquals(result.title, 'Gemini door');
+    }
+  } finally {
+    globalThis.fetch = originalFetch;
+  }
+});
+
 Deno.test('literary license stays scoped to the poetic field and never becomes factual analysis', () => {
   const prompt = buildAnalysisPrompt('A red bird.', 'English');
   assertStringIncludes(REFLECTION_POLICY, 'In factual analysis fields');

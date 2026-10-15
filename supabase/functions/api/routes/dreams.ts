@@ -371,7 +371,7 @@ export async function handleAnalyzeDream(ctx: ApiContext): Promise<Response> {
       quotaUsed = { analysis: toCount((quotaResult as any)?.new_count) };
     }
 
-    const analysis = await runDreamAnalysis({ apiKey, transcript: promptTranscript, truncatedForPrompt, lang, themes, route: '/analyzeDream' });
+    const analysis = await runDreamAnalysis({ apiKey, anthropicApiKey: Deno.env.get('ANTHROPIC_API_KEY'), transcript: promptTranscript, truncatedForPrompt, lang, themes, route: '/analyzeDream' });
 
     console.log('[api] /analyzeDream success', {
       titleLength: analysis.title.length,
@@ -442,7 +442,7 @@ export async function handleAnalyzeDreamFull(ctx: ApiContext): Promise<Response>
     const quotaUsed = quotaClaim.quotaUsed;
     const imageModel = resolveImageModel(quotaClaim.tier);
 
-    const analysis = await runDreamAnalysis({ apiKey, transcript: promptTranscript, truncatedForPrompt, lang, themes, route: '/analyzeDreamFull' });
+    const analysis = await runDreamAnalysis({ apiKey, anthropicApiKey: Deno.env.get('ANTHROPIC_API_KEY'), transcript: promptTranscript, truncatedForPrompt, lang, themes, route: '/analyzeDreamFull' });
     const imagePrompt = analysis.imagePrompt;
 
     const { imageBase64, mimeType } = await generateImageFromPrompt({

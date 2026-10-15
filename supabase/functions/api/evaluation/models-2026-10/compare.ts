@@ -11,7 +11,7 @@
  */
 import Anthropic from 'https://esm.sh/@anthropic-ai/sdk@0.132.1?target=deno';
 import { aiLanguageName } from '../../lib/aiLanguage.ts';
-import { ANALYZE_DREAM_SCHEMA } from '../../lib/schemas.ts';
+import { ANALYZE_DREAM_SCHEMA, withoutArrayBounds } from '../../lib/schemas.ts';
 import {
   ANALYSIS_PROMPT_VERSION,
   analysisSystemInstruction,
@@ -39,17 +39,6 @@ type ImageModel = typeof IMAGE_MODELS[number];
 /** Rotate the start model per fixture so no model always runs first. */
 export const rotate = <T>(items: readonly T[], offset: number): T[] =>
   items.map((_, index) => items[(index + offset) % items.length]);
-
-/** Claude structured outputs reject array length bounds; the app clamps counts itself. */
-export const withoutArrayBounds = (schema: unknown): unknown => {
-  if (Array.isArray(schema)) return schema.map(withoutArrayBounds);
-  if (!schema || typeof schema !== 'object') return schema;
-  return Object.fromEntries(
-    Object.entries(schema as Record<string, unknown>)
-      .filter(([key]) => key !== 'minItems' && key !== 'maxItems')
-      .map(([key, value]) => [key, withoutArrayBounds(value)])
-  );
-};
 
 const parseArgs = (args: string[]) => {
   const execute = args.includes('--execute');
