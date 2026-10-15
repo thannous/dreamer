@@ -6,7 +6,7 @@ import { IconSymbol } from '@/components/ui/icon-symbol';
 import { useTranslation } from '@/hooks/useTranslation';
 import { Gesture, GestureDetector } from 'react-native-gesture-handler';
 import Animated, {
-  Extrapolation, interpolate, useAnimatedStyle, useReducedMotion, useSharedValue, withSequence, withSpring, withTiming,
+  Easing, Extrapolation, interpolate, useAnimatedStyle, useReducedMotion, useSharedValue, withSequence, withSpring, withTiming,
 } from 'react-native-reanimated';
 import { scheduleOnRN } from 'react-native-worklets';
 
@@ -35,11 +35,14 @@ const IDLE = 0;
 const SETTLING_FORWARD = 1;
 const SETTLING_BACK = 2;
 /**
- * Once a session, a while after the first dream page opens, its corner lifts a little to
- * show the next page beneath, then falls back: the journal can be leafed through.
+ * Once a session, the first dream page opened arrives still lifted a little off the next
+ * one and falls shut on it as a page does: slowly at first, then faster, landing with a
+ * slight rebound. The journal can be leafed through.
  */
-const HINT_AFTER = 2200;
-const HINT_LIFT = 0.15;
+const HINT_LIFT = 0.18;
+const HINT_HOLD = 220;
+const HINT_FALL = 560;
+const HINT_REBOUND = 0.02;
 let hintedThisSession = false;
 
 const PageTurnLockContext = createContext<(locked: boolean) => void>(() => {});
@@ -83,7 +86,7 @@ export function useJournalPageTurnLock(locked: boolean) {
  * side it only lifts a little. Vertical scrolling and the system back swipe at the binding
  * stay as they are; under reduce motion the page changes at once.
  */
-export function JournalPageTurner({ newer, older, folio, tonight = false, onTurn, children }: {
+export function JournalPageTurner({ newer, older, folio, tonight = false, hint = true, onTurn, children }: {
   /** The dream after this one, turned to towards the left. */
   newer: DreamAnalysis | null;
   /** The dream before this one, turned back to towards the right. */
@@ -92,6 +95,8 @@ export function JournalPageTurner({ newer, older, folio, tonight = false, onTurn
   folio?: number;
   /** After the last dream, tonight's blank page can be turned to. */
   tonight?: boolean;
+  /** The page may show on arrival that it can be turned (not under the capture seal's own arrival). */
+  hint?: boolean;
   onTurn: (dream: DreamAnalysis) => void;
   children: React.ReactNode;
 }) {
@@ -218,22 +223,23 @@ export function JournalPageTurner({ newer, older, folio, tonight = false, onTurn
     turnAtOnce(turnedTo);
   }, [atTonight, direction, leaveTonight, phase, progress, turnAtOnce, turnedOver]);
 
-  // The hint: the page lifts towards the next one and falls back, once a session.
+  // The hint: arriving, the page falls shut over the next one, once a session.
   useEffect(() => {
-    if (reduced || hintedThisSession || (!newer && !tonight)) return;
-    const timer = setTimeout(() => {
-      if (hintedThisSession || lockedNow.current || direction.get() !== 0 || turnedOver.get()) return;
-      hintedThisSession = true;
-      direction.set(FORWARD);
-      progress.set(withSequence(
-        withTiming(HINT_LIFT, { duration: 520, easing: EASING.inOut }),
-        withTiming(0, { duration: 640, easing: EASING.inOut }, (done) => {
-          if (done) direction.set(0);
-        })
-      ));
-    }, HINT_AFTER);
-    return () => clearTimeout(timer);
-  }, [direction, newer, progress, reduced, tonight, turnedOver]);
+    if (!hint || reduced || hintedThisSession || (!newer && !tonight)) return;
+    if (lockedNow.current || direction.get() !== 0 || turnedOver.get()) return;
+    hintedThisSession = true;
+    direction.set(FORWARD);
+    progress.set(withSequence(
+      withTiming(HINT_LIFT, { duration: 0 }),
+      // Held while the screen comes in, then let go: it falls as under its own weight.
+      withTiming(HINT_LIFT, { duration: HINT_HOLD }),
+      withTiming(0, { duration: HINT_FALL, easing: Easing.in(Easing.quad) }),
+      withTiming(HINT_REBOUND, { duration: 150, easing: EASING.out }),
+      withTiming(0, { duration: 220, easing: EASING.inOut }, (done) => {
+        if (done) direction.set(0);
+      })
+    ));
+  }, [direction, hint, newer, progress, reduced, tonight, turnedOver]);
 
   // A screen reader takes the horizontal swipe for itself: its user gets the buttons.
   const [screenReader, setScreenReader] = useState(false);

@@ -366,7 +366,9 @@ function ArrivalLater({ play, ready, children }: { play: boolean; ready: boolean
 }
 
 function JournalDetailScreen() {
-  const route = useLocalSearchParams<{ id: string; remoteId?: string; clientRequestId?: string }>();
+  const route = useLocalSearchParams<{ id: string; remoteId?: string; clientRequestId?: string; saved?: string | string[] }>();
+  // Arriving from the capture seal, the page has its own ceremony: it does not also fall shut.
+  const [arrivedFromSeal] = useState(() => isJournalSavedConfirmationParam(route.saved));
   const { user } = useAuth();
   const { dreams } = useDreamsData();
   const dream = resolveDreamRoute(dreams, route);
@@ -395,7 +397,8 @@ function JournalDetailScreen() {
   const content = <JournalDetailContent key={JSON.stringify([user?.id, route.id, route.remoteId, route.clientRequestId])}
     dream={dream} folio={neighbours.folio} />;
   return dream
-    ? <JournalPageTurner newer={neighbours.newer} older={neighbours.older} folio={neighbours.folio} tonight onTurn={turnTo}>{content}</JournalPageTurner>
+    ? <JournalPageTurner newer={neighbours.newer} older={neighbours.older} folio={neighbours.folio} tonight hint={!arrivedFromSeal}
+      onTurn={turnTo}>{content}</JournalPageTurner>
     : content;
 }
 
