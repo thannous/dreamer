@@ -17,11 +17,12 @@ deno run --no-lock --allow-read=supabase/functions/api/evaluation --allow-env \
   supabase/functions/api/evaluation/models-2026-10/compare.ts
 ```
 
-Run (15 requests at most, no retries, about 0.22 USD; the output directory must not exist):
+Run (15 requests at most, no retries, about 0.22 USD; the output directory must not exist, and
+`--allow-read` must cover it too because results are saved by an atomic rename):
 
 ```sh
 GEMINI_API_KEY=… ANTHROPIC_API_KEY=… deno run --no-lock \
-  --allow-read=supabase/functions/api/evaluation --allow-env \
+  --allow-read=supabase/functions/api/evaluation,/tmp,/private/tmp --allow-env \
   --allow-write=/tmp,/private/tmp \
   --allow-net=generativelanguage.googleapis.com,api.anthropic.com \
   supabase/functions/api/evaluation/models-2026-10/compare.ts --execute --output=/tmp/models-2026-10-run
