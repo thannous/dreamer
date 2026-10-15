@@ -107,6 +107,7 @@ describe('subscriptionService', () => {
     mockSetPlatformOS('web');
 
     const service = require('../subscriptionService');
+    expect(service.isMockSubscriptionService).toBe(true);
     await service.getSubscriptionStatus();
 
     expect(mockService.getStatus).toHaveBeenCalled();
@@ -119,6 +120,7 @@ describe('subscriptionService', () => {
     mockSetPublicEnv('EXPO_PUBLIC_REVENUECAT_WEB_KEY', 'rc-web-key');
 
     const service = require('../subscriptionService');
+    expect(service.isMockSubscriptionService).toBe(false);
     await service.getSubscriptionStatus();
 
     expect(mockRealService.getStatus).toHaveBeenCalled();
@@ -130,6 +132,7 @@ describe('subscriptionService', () => {
     mockSetPlatformOS('ios');
 
     const service = require('../subscriptionService');
+    expect(service.isMockSubscriptionService).toBe(true);
     await service.getSubscriptionStatus();
 
     expect(mockService.getStatus).toHaveBeenCalled();

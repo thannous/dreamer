@@ -3,18 +3,28 @@
 Default framework for new journeys since the owner's 2026-10-05 instruction.
 Follow https://docs.expo.dev/guides/using-e2e/ and the skill bundled in this
 package's `node_modules/e2e/skills/e2e/`. Dependencies and lockfile are isolated
-from the application's Playwright version. The locked runtime is `e2e` 0.21.0,
+from the application's Playwright version. The locked runtime is `e2e` 0.21.1,
 `@e2e-dev/web` 0.15.0, `@e2e-dev/mobile` 0.12.1 and `agent-device` 0.21.25
 (the mobile engine's own exact dependency). `SDK_PINS` in `qualification.mjs`
 holds the same four versions; the runner refuses another installed version and
-a report from another runner or engine. The engine peer ranges accept e2e 0.21.0.
+a report from another runner or engine. The engine peer ranges accept e2e 0.21.1.
 Web 0.15.0 drives `playwright-core` 1.64.0, so the matcher Playwright moves to
 1.64.0 too and both share one Chromium build.
 Node 24.19.0 is pinned by the root mise file and satisfies e2e 0.21's
 `^22.22.3 || >=24.8.0` requirement. The runner uses e2e's bundled TypeScript
 loader; the scoped public matcher preload is unchanged.
 
-What 0.21 changes here:
+What 0.21.1 changes here:
+
+- Corrects CLI broken-pipe handling, timeout reporting and hosted-session deadline
+  handling. The qualification report and trace format remain compatible.
+- Adds `run()` from `e2e/runner` and an optional measured `keyboardVisible`
+  observation. This harness keeps its existing CLI and engines; receiving mobile
+  keyboard measurements requires a supporting mobile engine.
+- Corrects MCP locator advice and the bug-bash skill's repro glob example.
+  See the [official release notes](https://github.com/tester-army/e2e/releases/tag/e2e%400.21.1).
+
+What 0.21.0 changes here:
 
 - Reads (`textContent()`, `inputValue()`, `getAttribute()`, `isEnabled()`,
   `isChecked()`, `boundingBox()`...) wait for one match until the action timeout
@@ -166,7 +176,7 @@ CircleCI runs only when triggered manually (web app or API; see the
 [CircleCI guide](../../doc_web_interne/docs/circleci-migration.md)); pushes and PRs
 rely on local runs. A manual pipeline runs the exact Dreamer and Lucid journeys in
 the Noctalia workflow, Meditation in its own workflow, and the generated site after
-`docs:build` and `docs:check`. Each job installs this package's locked e2e 0.21.0 dependencies
+`docs:build` and `docs:check`. Each job installs this package's locked e2e 0.21.1 dependencies
 and Chromium, uses one worker with no replay or model, and retains JUnit, reports, screenshots,
 trace pages and source identity under `tools/e2e/.e2e/`. Existing backend, Maestro and
 quality checks remain required. `E2E_KEEP_METRO_CACHE=1` drops Metro's `--clear`

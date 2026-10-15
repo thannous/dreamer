@@ -194,6 +194,8 @@ jest.mock('@/services/subscriptionService', () => ({
 
 jest.mock('@/services/mocks/subscriptionServiceMock', () => ({
   applyMockScenario: jest.fn(),
+  delayMockSubscriptionActivation: jest.fn(),
+  getMockBillingOperationCounts: jest.fn(() => ({ purchases: 0, restores: 0 })),
 }));
 
 jest.mock('expo-router', () => ({ router: { push: jest.fn() } }));
