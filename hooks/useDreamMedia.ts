@@ -18,6 +18,9 @@ export function useDreamMedia(dream?: DreamAnalysis | null) {
   const identity = JSON.stringify([userId, imageUrl, thumbnailUrl, imageUpdatedAt, dream?.analysisRequestId, dream?.analyzedAt]);
   const [resolved, setResolved] = useState<{ identity: string; epoch: number; value: DreamMediaResult }>();
   useEffect(() => {
+    // A dream without an illustration has nothing to resolve: the result would equal the
+    // unresolved one and only render its card once more.
+    if (!imageUrl && !thumbnailUrl) return;
     let current = true;
     let timer: ReturnType<typeof setTimeout> | undefined;
     let attempts = 0;

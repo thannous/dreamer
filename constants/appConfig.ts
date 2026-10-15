@@ -3,13 +3,6 @@
  * Replaces magic numbers throughout the codebase.
  */
 
-export const SPLASH_ANIMATION = {
-  /** Delay before starting outro animation */
-  OUTRO_DELAY_MS: 2800,
-  /** Duration of fade animation */
-  FADE_DURATION_MS: 300,
-} as const;
-
 export const RECORDING = {
   /** Soft visual reference for recording progress. Not a storage or input limit. */
   TRANSCRIPT_PROGRESS_REFERENCE_CHARS: 600,

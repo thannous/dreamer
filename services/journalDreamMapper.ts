@@ -4,6 +4,7 @@ import type { SyncMutationResult, SyncMutationResultStatus } from '@/lib/journal
 import { normalizeDreamMemoryMetadata } from '@/lib/dreamUtils';
 import { ANALYSIS_TRANSCRIPT_HASH_KEY, isAnalysisTranscriptHash } from '@/lib/dreamAnalysisFreshness';
 import { toStoredImageReference } from '@/lib/journalImageReference';
+import { toLegacyDreamTheme } from '@/lib/dreamThemes';
 
 export type SupabaseDreamRow = {
   id: number;
@@ -19,6 +20,8 @@ export type SupabaseDreamRow = {
   image_url: string | null;
   chat_history: ChatMessage[] | null;
   theme: DreamTheme | null;
+  /** The full theme; theme is its projection for apps that know only the first four. */
+  precise_theme?: DreamTheme | null;
   dream_type: string;
   is_favorite: boolean | null;
   image_generation_failed?: boolean | null;
@@ -132,7 +135,7 @@ export const mapRowToDream = (row: SupabaseDreamRow, now: () => number = Date.no
     imageUrl,
     thumbnailUrl: hasImage ? imageUrl : undefined,
     chatHistory: Array.isArray(row.chat_history) ? row.chat_history : [],
-    theme: row.theme ?? undefined,
+    theme: row.precise_theme ?? row.theme ?? undefined,
     dreamType: (row.dream_type ?? 'Symbolic Dream') as DreamType,
     isFavorite: row.is_favorite ?? false,
     imageGenerationFailed,
@@ -169,7 +172,8 @@ export const mapDreamToRow = (
     shareable_quote: dream.shareableQuote,
     image_url: toStoredImageReference(dream.imageUrl) || null,
     chat_history: dream.chatHistory ?? [],
-    theme: dream.theme ?? null,
+    theme: dream.theme ? toLegacyDreamTheme(dream.theme) : null,
+    precise_theme: dream.theme ?? null,
     dream_type: dream.dreamType,
     is_favorite: dream.isFavorite ?? false,
     is_analyzed: dream.isAnalyzed ?? false,
@@ -252,7 +256,7 @@ export const mapRowToDreamListItem = (row: SupabaseDreamRow, now: () => number =
     imageUrl,
     thumbnailUrl: imageUrl ? imageUrl : undefined,
     dreamType: (row.dream_type ?? 'Symbolic Dream') as DreamType,
-    theme: row.theme ?? undefined,
+    theme: row.precise_theme ?? row.theme ?? undefined,
     isFavorite: row.is_favorite ?? false,
     memory: normalizeDreamMemoryMetadata(row.memory),
     isAnalyzed: row.is_analyzed ?? undefined,

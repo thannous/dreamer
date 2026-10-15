@@ -21,7 +21,9 @@ import * as SplashScreen from 'expo-splash-screen';
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { Linking, NativeModules, Platform } from 'react-native';
 import { SystemBars } from 'react-native-edge-to-edge';
-import AnimatedSplashScreen, { getSplashMinimumVisibleMs } from '@/components/AnimatedSplashScreen';
+import StartupSplashScreen, {
+  STARTUP_SPLASH_MINIMUM_VISIBLE_MS,
+} from '@/components/StartupSplashScreen';
 import { ErrorBoundary } from '@/components/ErrorBoundary';
 import { AuthProvider, useAuth } from '@/context/AuthContext';
 import { LanguageProvider, useLanguage } from '@/context/LanguageContext';
@@ -161,9 +163,9 @@ function LucidRootContent() {
   const [splashDelayElapsed, setSplashDelayElapsed] = useState(false);
   const [languageBootstrapped, setLanguageBootstrapped] = useState(false);
   const [startupDestinationCommitted, setStartupDestinationCommitted] = useState(false);
-  const [startupDestinationPainted, setStartupDestinationPainted] = useState(
-    Platform.OS !== 'android'
-  );
+  // Every platform waits for the first screen's first frame: the still splash leaves
+  // without a fade, so it must not uncover a screen that has not drawn yet.
+  const [startupDestinationPainted, setStartupDestinationPainted] = useState(false);
   const { language, loaded: preferenceLoaded } = useLanguage();
   const [preferenceTimedOut, setPreferenceTimedOut] = useState(false);
   useEffect(() => {
@@ -174,7 +176,6 @@ function LucidRootContent() {
   const shouldShowCustomSplash = showCustomSplash;
   const fontsSettled = fontsLoaded || Boolean(fontError) || splashTimedOut;
   const prefersReducedMotion = usePrefersReducedMotion();
-  const splashMinimumVisibleMs = getSplashMinimumVisibleMs(Platform.OS);
   const minimumSplashElapsed =
     prefersReducedMotion || splashTimedOut || splashDelayElapsed;
   const startupSplashPrerequisitesReady =
@@ -234,17 +235,13 @@ function LucidRootContent() {
 
     const timer = setTimeout(
       () => setSplashDelayElapsed(true),
-      splashMinimumVisibleMs
+      STARTUP_SPLASH_MINIMUM_VISIBLE_MS
     );
     return () => clearTimeout(timer);
-  }, [fontsSettled, prefersReducedMotion, splashMinimumVisibleMs, splashTimedOut]);
+  }, [fontsSettled, prefersReducedMotion, splashTimedOut]);
 
   useEffect(() => {
-    if (
-      Platform.OS !== 'android' ||
-      !startupSplashPrerequisitesReady ||
-      startupDestinationPainted
-    ) {
+    if (!startupSplashPrerequisitesReady || startupDestinationPainted) {
       return;
     }
 
@@ -316,13 +313,7 @@ function LucidRootContent() {
         ) : null}
       </ErrorBoundary>
       {shouldShowCustomSplash && (
-        <AnimatedSplashScreen
-          status={shouldFadeSplash ? 'outro' : 'intro'}
-          // Android uses a lightweight bitmap-only implementation while iOS
-          // retains the animated treatment.
-          forceStatic={Platform.OS === 'android' || splashTimedOut}
-          onAnimationEnd={handleSplashFinished}
-        />
+        <StartupSplashScreen done={shouldFadeSplash} onDone={handleSplashFinished} />
       )}
     </GestureHandlerRootView>
   );
