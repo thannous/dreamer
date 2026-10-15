@@ -55,8 +55,9 @@ export const requestClaudeJson = async (options: {
   if (response.stop_reason !== 'end_turn') {
     throw new ClaudeStopError(response.stop_reason);
   }
-  const text = response.content
-    .map((block) => (block.type === 'text' ? block.text : ''))
+  // The esm.sh build resolves the SDK types loosely; type the blocks used here explicitly.
+  const text = (response.content as { type: string; text?: string }[])
+    .map((block) => (block.type === 'text' ? block.text ?? '' : ''))
     .join('');
   return { text, usage: (response.usage as ClaudeUsage | undefined) ?? null };
 };
