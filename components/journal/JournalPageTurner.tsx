@@ -1,6 +1,6 @@
 import * as Haptics from 'expo-haptics';
 import React, { createContext, useCallback, useContext, useEffect, useMemo, useRef, useState } from 'react';
-import { Platform, Pressable, View, useWindowDimensions } from 'react-native';
+import { AccessibilityInfo, Platform, Pressable, View, useWindowDimensions } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { IconSymbol } from '@/components/ui/icon-symbol';
 import { useTranslation } from '@/hooks/useTranslation';
@@ -201,8 +201,8 @@ export function JournalPageTurner({ newer, older, folio, tonight = false, onTurn
     onTurn(target);
   }, [direction, onTurn, progress, reachTonight, shown.newer, shown.older, tonight, turnedOver]);
 
-  // Explicit buttons share the same targets as swipes and are available to
-  // keyboards and assistive technology. A discrete action changes page at once.
+  // Explicit buttons share the same targets as swipes for keyboards and assistive technology;
+  // a touch reader turns the page and needs none. A discrete action changes page at once.
   const navigatePage = useCallback((turnedTo: number) => {
     if (lockedNow.current || phase.get() !== IDLE) return;
     if (atTonight) {
@@ -234,6 +234,21 @@ export function JournalPageTurner({ newer, older, folio, tonight = false, onTurn
     }, HINT_AFTER);
     return () => clearTimeout(timer);
   }, [direction, newer, progress, reduced, tonight, turnedOver]);
+
+  // A screen reader takes the horizontal swipe for itself: its user gets the buttons.
+  const [screenReader, setScreenReader] = useState(false);
+  useEffect(() => {
+    if (Platform.OS === 'web') return;
+    let live = true;
+    AccessibilityInfo.isScreenReaderEnabled().then((on) => { if (live) setScreenReader(on); }).catch(() => {});
+    const subscription = AccessibilityInfo.addEventListener('screenReaderChanged', setScreenReader);
+    return () => {
+      live = false;
+      subscription.remove();
+    };
+  }, []);
+  // On the web they stay in reach of the keyboard, seen only while focused.
+  const [focusedSide, setFocusedSide] = useState<number | null>(null);
 
   const hasLaterDream = shown.newer != null;
   const hasNewer = hasLaterDream || tonight;
@@ -391,23 +406,29 @@ export function JournalPageTurner({ newer, older, folio, tonight = false, onTurn
           ) : null}
         </View>
       </GestureDetector>
-          {/* Reserve the controls' own space so they never cover the reading dock. */}
-          <View className="flex-row justify-between px-4"
-            style={{ paddingTop: 8, paddingBottom: Math.max(insets.bottom, 8) }}>
-            {([BACKWARD, FORWARD] as const).map((side) => {
-              const available = side === BACKWARD ? atTonight || hasOlder : !atTonight && hasNewer;
-              if (!available) return <View key={side} />;
-              const label = t(side === BACKWARD ? 'journal.page.previous' : 'journal.page.next');
-              return <Pressable key={side} onPress={() => navigatePage(side)} disabled={locked}
-                accessibilityRole="button" accessibilityLabel={label} accessibilityState={{ disabled: locked }}
-                testID={side === BACKWARD ? 'journal.page.previous' : 'journal.page.next'}
-                style={{ width: 44, height: 44, borderRadius: 22, alignItems: 'center', justifyContent: 'center',
-                  backgroundColor: noctalia.screen.background, borderWidth: 1, borderColor: noctalia.surface.border,
-                  opacity: locked ? 0.4 : 1 }}>
-                <IconSymbol name={side === BACKWARD ? 'chevron.left' : 'chevron.right'} size={20} color={noctalia.text.primary} />
-              </Pressable>;
-            })}
-          </View>
+          {Platform.OS === 'web' || screenReader ? (
+            // With a screen reader the controls keep their own space, so they never cover the
+            // reading dock; on the web they wait unseen at the page's edges until focused.
+            <View pointerEvents="box-none" className={Platform.OS === 'web' ? 'absolute inset-0 flex-row items-center justify-between px-2' : 'flex-row justify-between px-4'}
+              style={Platform.OS === 'web' ? undefined : { paddingTop: 8, paddingBottom: Math.max(insets.bottom, 8) }}>
+              {([BACKWARD, FORWARD] as const).map((side) => {
+                const available = side === BACKWARD ? atTonight || hasOlder : !atTonight && hasNewer;
+                if (!available) return <View key={side} />;
+                const label = t(side === BACKWARD ? 'journal.page.previous' : 'journal.page.next');
+                const unseen = Platform.OS === 'web' && focusedSide !== side;
+                return <Pressable key={side} onPress={() => navigatePage(side)} disabled={locked}
+                  onFocus={() => setFocusedSide(side)}
+                  onBlur={() => setFocusedSide((current) => (current === side ? null : current))}
+                  accessibilityRole="button" accessibilityLabel={label} accessibilityState={{ disabled: locked }}
+                  testID={side === BACKWARD ? 'journal.page.previous' : 'journal.page.next'}
+                  style={{ width: 44, height: 44, borderRadius: 22, alignItems: 'center', justifyContent: 'center',
+                    backgroundColor: noctalia.screen.background, borderWidth: 1, borderColor: noctalia.surface.border,
+                    opacity: unseen ? 0 : locked ? 0.4 : 1, pointerEvents: unseen ? 'none' : 'auto' }}>
+                  <IconSymbol name={side === BACKWARD ? 'chevron.left' : 'chevron.right'} size={20} color={noctalia.text.primary} />
+                </Pressable>;
+              })}
+            </View>
+          ) : null}
       </View>
       </PageArrivalContext.Provider>
     </PageTurnLockContext.Provider>
