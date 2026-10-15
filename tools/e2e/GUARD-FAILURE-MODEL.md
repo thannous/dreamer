@@ -3,7 +3,7 @@
 Written before implementation. Existing UI journeys cannot safely manufacture a
 foreign build/device, an SDK teardown failure, a stale report, filesystem capture
 corruption, a process signal or concurrent source edits. The Node controls cover
-only those failures. They use the observed SDK0.18 report shape and public fixtures;
+only those failures. They use the observed SDK 0.20 report shape (trace pages under `results/`) and public fixtures;
 real native/web journeys remain the proof of successful application behaviour.
 
 - SDK0 may carry attempt cleanup failure or secondary recording error.

@@ -73,5 +73,6 @@ export default {
   // app.open/restart use config.timeout, capped by the remaining test budget.
   workers: 1, retries: 0, timeout: product === 'meditation' && !native ? 180_000 : 120_000, assertionTimeout: 30_000,
   launchTimeout: 180_000, output,
-  reporters: ['list', 'markdown', 'junit'], trace: native ? 'off' : 'on', cache: 'off',
+  // Every engine writes a trace page per test (results/<test>/trace.md); each pass keeps one as evidence.
+  reporters: ['list', 'markdown', 'junit'], trace: 'on', cache: 'off',
 } satisfies E2EConfig;

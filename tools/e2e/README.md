@@ -3,12 +3,54 @@
 Default framework for new journeys since the owner's 2026-10-05 instruction.
 Follow https://docs.expo.dev/guides/using-e2e/ and the skill bundled in this
 package's `node_modules/e2e/skills/e2e/`. Dependencies and lockfile are isolated
-from the application's Playwright version. The locked runtime is `e2e` 0.18.0,
-`@e2e-dev/web` 0.13.0, `@e2e-dev/mobile` 0.10.0 and `agent-device` 0.21.22.
-The engine peer ranges accept e2e 0.18.0; web and matcher Playwright remain 1.63.0.
-Node 24.19.0 is pinned by the root mise file and satisfies e2e 0.18's
+from the application's Playwright version. The locked runtime is `e2e` 0.21.0,
+`@e2e-dev/web` 0.15.0, `@e2e-dev/mobile` 0.12.1 and `agent-device` 0.21.25
+(the mobile engine's own exact dependency). `SDK_PINS` in `qualification.mjs`
+holds the same four versions; the runner refuses another installed version and
+a report from another runner or engine. The engine peer ranges accept e2e 0.21.0.
+Web 0.15.0 drives `playwright-core` 1.64.0, so the matcher Playwright moves to
+1.64.0 too and both share one Chromium build.
+Node 24.19.0 is pinned by the root mise file and satisfies e2e 0.21's
 `^22.22.3 || >=24.8.0` requirement. The runner uses e2e's bundled TypeScript
 loader; the scoped public matcher preload is unchanged.
+
+What 0.21 changes here:
+
+- Reads (`textContent()`, `inputValue()`, `getAttribute()`, `isEnabled()`,
+  `isChecked()`, `boundingBox()`...) wait for one match until the action timeout
+  instead of failing at once on zero matches. `isVisible()`, `isHidden()` and
+  `count()` still answer from the current screen.
+- One `agent.act` per atomic goal: two outcomes worth checking are two calls,
+  each pinned by its own check, so a split flow fails at the goal that broke.
+- `--max-duration <ms>` (config `maxDuration`) stops a run after that long;
+  `E2E_CACHE_DIR` or `--cache-dir` lets worktrees share one replay cache.
+- On the web, `web({ colorScheme, reducedMotion })` and
+  `browser.emulateMedia()` set what `@media` rules read; a target `command`
+  can name host variables to pass through with `inheritEnv`.
+- The report shape and trace pages are the 0.20 ones; qualification is unchanged.
+
+What 0.20 changes here:
+
+- A trace is a Markdown page per test, `results/<test>/trace.md`, on every
+  engine, native included. There is no Playwright trace any more. Each page
+  lists every step with the node it landed on, what an assertion read while it
+  waited, the screen's changes and, on the web, what the app logged (console,
+  uncaught errors, failed requests). Read it first when a run fails. The config
+  keeps a page for every test (`trace: 'on'`), and qualification requires one
+  for each passed test and hashes it with the other evidence.
+- Screenshots, videos and downloads moved from `artifacts/` to
+  `results/<test>/attempt-<n>/`; `failures/` is gone and `summary.md` links each
+  failure to its trace page.
+- `expect(screen).toHaveScreenshot()` compares the screen or one element with a
+  committed PNG per target and OS (`<test file>-snapshots/`). Mac baselines never
+  serve Linux CI. No journey uses it yet: a baseline needs its own reviewed
+  screen and a CI-written Linux file.
+- On a device, `device.setAirplaneMode(true)` takes an Android 11+ emulator
+  offline (Wi-Fi and cellular); `setNetwork('offline')` cuts Wi-Fi only. Both
+  are unsupported on an iOS Simulator. Restore the network in `afterEach`.
+- `device.locator()` roles are agent-device kinds (`text`, `button`,
+  `text-field`, `navigation-bar`), no longer iOS class names (`StaticText`).
+- A test that records a soft failure and then calls `test.skip` now fails.
 
 These pins describe the current package, not a permanent version ceiling. Within
 requested work, read the candidate version's installed skill/topics and peer ranges,
@@ -80,7 +122,7 @@ automatically block feature or framework adoption or permit silently bypassing C
 
 The public `surfaceOf()` Page/context keeps CSS, geometry, keyboard, image and
 clock checks. TesterArmy owns isolated attempts and traces; the pinned isolated
-Playwright 1.63.0 package supplies matchers only. The parity fixture preserves
+Playwright 1.64.0 package supplies matchers only. The parity fixture preserves
 Desktop Chrome 1280x720 by default (explicit mobile overrides remain), with
 30-second actions and 15-second exact assertions from the historical config.
 Attempts allow 180 seconds because a fresh Linux locale campaign used 57 seconds
@@ -124,9 +166,9 @@ CircleCI runs only when triggered manually (web app or API; see the
 [CircleCI guide](../../doc_web_interne/docs/circleci-migration.md)); pushes and PRs
 rely on local runs. A manual pipeline runs the exact Dreamer and Lucid journeys in
 the Noctalia workflow, Meditation in its own workflow, and the generated site after
-`docs:build` and `docs:check`. Each job installs this package's locked e2e 0.18.0 dependencies
+`docs:build` and `docs:check`. Each job installs this package's locked e2e 0.21.0 dependencies
 and Chromium, uses one worker with no replay or model, and retains JUnit, reports, screenshots,
-traces and source identity under `tools/e2e/.e2e/`. Existing backend, Maestro and
+trace pages and source identity under `tools/e2e/.e2e/`. Existing backend, Maestro and
 quality checks remain required. `E2E_KEEP_METRO_CACHE=1` drops Metro's `--clear`
 for Dreamer and Lucid: CI restores the transforms master saved, and
 `metro.config.js` keys them by every public build input, so a profile or
@@ -272,8 +314,8 @@ open are refused; native ordering stays strict. SDK exit0 alone is insufficient.
 runner/engine/target/agent/source/origin, unchanged inputs, zero model use, every
 selected runnable pair passed once, native `app.open()` first, complete cleanup, no
 secondary errors, and intact declared/requested artifacts. A body requesting no
-media and declaring none may produce a report only. Requested missing video/trace
-is refused. Source/output/install/lock failures are independent final checks;
+media and declaring none still keeps its trace page. A missing trace page or
+requested video is refused. Source/output/install/lock failures are independent final checks;
 primary SDK failures and SIGINT130/SIGTERM143 retain priority over secondary errors.
 After process completion the wrapper releases only its own lock, including when
 resource cleanup is failed/missing. `resourceCleanup` records that limitation and
@@ -325,7 +367,7 @@ typechecked test is not evidence that the user journey passed.
 ## agent-device inspection and live exploration
 
 The host CLI and the official `agent-device` Codex skill are installed. This
-package uses the engine's exact `agent-device` 0.21.22 dependency through its
+package uses the engine's exact `agent-device` 0.21.25 dependency through its
 local CLI. A globally installed CLI may have a different version; the guarded
 package commands use this local pin. Read its version-matched `help workflow`
 or `help debugging` for specialized work. Use exact compatible pins for a measured
