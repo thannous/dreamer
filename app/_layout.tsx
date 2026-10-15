@@ -960,9 +960,9 @@ export default function RootLayout() {
   const [splashDelayElapsed, setSplashDelayElapsed] = useState(false);
   const [languageBootstrapped, setLanguageBootstrapped] = useState(false);
   const [startupDestinationCommitted, setStartupDestinationCommitted] = useState(false);
-  const [startupDestinationPainted, setStartupDestinationPainted] = useState(
-    Platform.OS !== 'android'
-  );
+  // Every platform waits for the first screen's first frame: the still splash leaves
+  // without a fade, so it must not uncover a screen that has not drawn yet.
+  const [startupDestinationPainted, setStartupDestinationPainted] = useState(false);
   const [initialLanguagePreference, setInitialLanguagePreference] = useState<LanguagePreference>('auto');
   const splashTimedOut = useSplashFailsafe(showCustomSplash);
   const shouldShowCustomSplash = showCustomSplash;
@@ -1087,11 +1087,7 @@ export default function RootLayout() {
   }, [fontsSettled, prefersReducedMotion, splashTimedOut]);
 
   useEffect(() => {
-    if (
-      Platform.OS !== 'android' ||
-      !startupSplashPrerequisitesReady ||
-      startupDestinationPainted
-    ) {
+    if (!startupSplashPrerequisitesReady || startupDestinationPainted) {
       return;
     }
 
