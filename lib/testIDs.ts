@@ -286,6 +286,7 @@ export const TID = {
   },
   Toast: {
     PaywallSuccess: 'toast.paywall.success',
+    PaywallInfo: 'toast.paywall.info',
   },
   Text: {
     AuthEmail: 'text.auth.email',

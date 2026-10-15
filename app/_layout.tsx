@@ -49,7 +49,9 @@ import { usePrefersReducedMotion } from '@/hooks/usePrefersReducedMotion';
 import { useSplashFailsafe } from '@/hooks/useSplashFailsafe';
 import { useSubscriptionInitialize } from '@/hooks/useSubscriptionInitialize';
 // useSubscriptionMonitor est maintenant intégré dans useSubscription
-import { trackProductEvent } from '@/lib/analytics';
+import { getPaywallTrigger, trackProductEvent } from '@/lib/analytics';
+import { clearReturnToPaywallIntent, peekReturnToPaywallTrigger } from '@/lib/navigationIntents';
+import { buildPaywallHref } from '@/lib/paywallRoute';
 import { isLucidTrainer } from '@/lib/appVariant';
 import { isPasswordResetPath } from '@/lib/authRoutes';
 import { authReturnHref, completeAuthReturn, isAuthReturnObserved, type AuthReturnIntent } from '@/lib/authReturnIntent';
@@ -140,7 +142,15 @@ const ROOT_VIEW_STYLE = { flex: 1 } as const;
 function resolveAppStartupDecision(
   input: Parameters<typeof resolveStartupDecision>[0]
 ): StartupDestinationDecision {
-  if (!isLucidTrainer) return resolveStartupDecision(input);
+  if (!isLucidTrainer) {
+    // Account scope changes restart navigation after onboarding has loaded.
+    // Honour the same offer intent as AuthContext instead of opening Capture.
+    const paywallTrigger = input.hasUser ? peekReturnToPaywallTrigger() : null;
+    return resolveStartupDecision({
+      ...input,
+      pendingPaywallDestination: paywallTrigger ? buildPaywallHref(getPaywallTrigger(paywallTrigger)) : null,
+    });
+  }
   const explicit = input.defaultDestination;
   const explicitPath = typeof explicit === 'string' ? explicit : String(explicit?.pathname ?? '');
   return {
@@ -250,6 +260,7 @@ function RootLayoutNav({
   const authReturnSettingsObserved = useRef<AuthReturnIntent | null>(null);
   const authReturnOnboardingOwned = useRef<AuthReturnIntent | null>(null);
   const [authReturnEngaged, setAuthReturnEngaged] = useState<AuthReturnIntent | null>(null);
+  const [paywallReturnEngaged, setPaywallReturnEngaged] = useState<Href | null>(null);
   const initialLaunchConsumed = useRef(false);
   const pathnameRef = useRef(pathname);
   const initialWebHrefRef = useRef<string | null>(
@@ -319,6 +330,7 @@ function RootLayoutNav({
     hasInitialNavigated.current = false;
     setStartupDestination(null);
     setStartupDestinationEngaged(false);
+    setPaywallReturnEngaged(null);
   }, [onboardingScope]);
 
   const enqueueNotification = useCallback(async (notification: Notifications.Notification) => {
@@ -475,10 +487,24 @@ function RootLayoutNav({
         if (isStartup) setStartupDestinationEngaged(true);
         if (decision.reason === 'notification') setNotificationWinningEngaged(true);
         if (decision.reason === 'auth_return') setAuthReturnEngaged(authReturnIntent);
+        if (!isLucidTrainer && peekReturnToPaywallTrigger()
+          && decision.reason !== 'onboarding' && decision.reason !== 'returning_guest_blocked') {
+          setPaywallReturnEngaged(decision.destination);
+        }
       });
     },
     [authReturnIntent]
   );
+
+  useEffect(() => {
+    if (!startupReady || !user || !paywallReturnEngaged
+      || !isStartupDestinationObserved(paywallReturnEngaged, pathname)) return;
+    // Acknowledge only after the account's gates and destination are observed.
+    // Native Back/swipes need no close handler to prevent replay; a higher-priority
+    // dream return also satisfies this generic authentication continuation.
+    clearReturnToPaywallIntent();
+    setPaywallReturnEngaged(null);
+  }, [pathname, paywallReturnEngaged, startupReady, user]);
 
   useEffect(() => {
     if (!authReturnEngaged || !user || !isAuthReturnObserved(authReturnEngaged, pathname, searchParams)) return;

@@ -57,6 +57,8 @@ const shouldMock = shouldUseMockSubscriptionService({
 });
 const service = shouldMock ? mockService : realService;
 
+// Includes keyless web/development fallbacks, not only the global mock profile.
+export const isMockSubscriptionService = shouldMock;
 export const initializeSubscription = service.initialize;
 export const isSubscriptionInitialized = service.isInitialized;
 export const getSubscriptionStoreMode = service.getStoreMode;
