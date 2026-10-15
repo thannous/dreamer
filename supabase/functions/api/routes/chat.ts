@@ -764,6 +764,7 @@ export async function handleChat(
             system: systemPreamble,
             messages: claudeMessages,
             timeoutMs: claudeChat.timeoutMs,
+            maxTokens: claudeChat.maxTokens,
           });
         } catch (claudeError) {
           logClaudeFallback('/chat', claudeError);
@@ -858,6 +859,7 @@ export async function handleChat(
           system: systemPreamble,
           messages: claudeMessages ?? [],
           timeoutMs: claudeChat.timeoutMs,
+          maxTokens: claudeChat.maxTokens,
         });
         return { value: { reply: text, parts: [{ text }] as GeminiPart[] }, usage };
       },

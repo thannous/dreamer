@@ -37,8 +37,11 @@ export const GEMINI_MODELS = {
 export const CLAUDE_MODELS = {
   /** Medium effort: complete referral and injection refusals, about 10 s (synthetic test, 2026-10-15). */
   analysis: { model: 'claude-haiku-5-5', effort: 'medium' },
-  /** Medium: low repeated the referral twice. First text in about 2 s; the app waits 45 s, the timeout bounds the first text. */
-  chat: { model: 'claude-haiku-5-5', effort: 'medium', timeoutMs: 20_000 },
+  /**
+   * Medium: low repeated the referral twice. First text in about 2 s; the app waits 45 s, the timeout bounds the first text.
+   * maxTokens covers thinking and text, keeping a reply far below the 32,000-character history limit (Gemini chat: 2048).
+   */
+  chat: { model: 'claude-haiku-5-5', effort: 'medium', timeoutMs: 20_000, maxTokens: 4096 },
   /** Title, theme and type only. The app waits 30 s. */
   categorize: { model: 'claude-haiku-5-5', effort: 'low', timeoutMs: 15_000 },
   /** One short question. The app waits 15 s. */

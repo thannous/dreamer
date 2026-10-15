@@ -93,13 +93,15 @@ type ClaudeTextOptions = {
   system: string;
   messages: ClaudeMessage[];
   timeoutMs: number;
+  /** Thinking and text together. */
+  maxTokens?: number;
 };
 
 /** One plain-text reply. Throws on any non-final stop or an empty answer. */
 export const requestClaudeText = async (options: ClaudeTextOptions): Promise<{ text: string; usage: ClaudeUsage | null }> => {
   const response = await createClient(options.apiKey, options.timeoutMs).messages.create({
     model: options.model,
-    max_tokens: 16000,
+    max_tokens: options.maxTokens ?? 16000,
     system: options.system,
     messages: options.messages,
     thinking: { type: 'adaptive' },
@@ -123,7 +125,7 @@ export const startClaudeTextStream = async (options: ClaudeTextOptions): Promise
   // The overall bound only stops a stream that hangs after its first text.
   const stream = createClient(options.apiKey, 120_000).messages.stream({
     model: options.model,
-    max_tokens: 16000,
+    max_tokens: options.maxTokens ?? 16000,
     system: options.system,
     messages: options.messages,
     thinking: { type: 'adaptive' },

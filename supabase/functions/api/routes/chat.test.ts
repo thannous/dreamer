@@ -167,6 +167,8 @@ Deno.test('with an Anthropic key, chat streams Claude Haiku at medium effort fro
     const body = await request.json();
     assertEquals(body.model, 'claude-haiku-5-5');
     assertEquals(body.output_config.effort, 'medium');
+    // A reply must fit the 32,000-character history limit when it is replayed.
+    assertEquals(body.max_tokens, 4096);
     assertEquals(body.stream, true);
     assertEquals(body.messages.map((message: { role: string }) => message.role), ['user', 'assistant', 'user']);
     assertEquals(JSON.stringify(body.messages).includes('private reasoning'), false);
