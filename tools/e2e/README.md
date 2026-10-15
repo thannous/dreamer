@@ -3,15 +3,31 @@
 Default framework for new journeys since the owner's 2026-10-05 instruction.
 Follow https://docs.expo.dev/guides/using-e2e/ and the skill bundled in this
 package's `node_modules/e2e/skills/e2e/`. Dependencies and lockfile are isolated
-from the application's Playwright version. The locked runtime is `e2e` 0.20.0,
-`@e2e-dev/web` 0.14.0, `@e2e-dev/mobile` 0.12.0 and `agent-device` 0.21.25
+from the application's Playwright version. The locked runtime is `e2e` 0.21.0,
+`@e2e-dev/web` 0.15.0, `@e2e-dev/mobile` 0.12.1 and `agent-device` 0.21.25
 (the mobile engine's own exact dependency). `SDK_PINS` in `qualification.mjs`
 holds the same four versions; the runner refuses another installed version and
-a report from another runner or engine. The engine peer ranges accept e2e 0.20.0;
-web and matcher Playwright remain 1.63.0.
-Node 24.19.0 is pinned by the root mise file and satisfies e2e 0.20's
+a report from another runner or engine. The engine peer ranges accept e2e 0.21.0.
+Web 0.15.0 drives `playwright-core` 1.64.0, so the matcher Playwright moves to
+1.64.0 too and both share one Chromium build.
+Node 24.19.0 is pinned by the root mise file and satisfies e2e 0.21's
 `^22.22.3 || >=24.8.0` requirement. The runner uses e2e's bundled TypeScript
 loader; the scoped public matcher preload is unchanged.
+
+What 0.21 changes here:
+
+- Reads (`textContent()`, `inputValue()`, `getAttribute()`, `isEnabled()`,
+  `isChecked()`, `boundingBox()`...) wait for one match until the action timeout
+  instead of failing at once on zero matches. `isVisible()`, `isHidden()` and
+  `count()` still answer from the current screen.
+- One `agent.act` per atomic goal: two outcomes worth checking are two calls,
+  each pinned by its own check, so a split flow fails at the goal that broke.
+- `--max-duration <ms>` (config `maxDuration`) stops a run after that long;
+  `E2E_CACHE_DIR` or `--cache-dir` lets worktrees share one replay cache.
+- On the web, `web({ colorScheme, reducedMotion })` and
+  `browser.emulateMedia()` set what `@media` rules read; a target `command`
+  can name host variables to pass through with `inheritEnv`.
+- The report shape and trace pages are the 0.20 ones; qualification is unchanged.
 
 What 0.20 changes here:
 
@@ -106,7 +122,7 @@ automatically block feature or framework adoption or permit silently bypassing C
 
 The public `surfaceOf()` Page/context keeps CSS, geometry, keyboard, image and
 clock checks. TesterArmy owns isolated attempts and traces; the pinned isolated
-Playwright 1.63.0 package supplies matchers only. The parity fixture preserves
+Playwright 1.64.0 package supplies matchers only. The parity fixture preserves
 Desktop Chrome 1280x720 by default (explicit mobile overrides remain), with
 30-second actions and 15-second exact assertions from the historical config.
 Attempts allow 180 seconds because a fresh Linux locale campaign used 57 seconds
@@ -150,7 +166,7 @@ CircleCI runs only when triggered manually (web app or API; see the
 [CircleCI guide](../../doc_web_interne/docs/circleci-migration.md)); pushes and PRs
 rely on local runs. A manual pipeline runs the exact Dreamer and Lucid journeys in
 the Noctalia workflow, Meditation in its own workflow, and the generated site after
-`docs:build` and `docs:check`. Each job installs this package's locked e2e 0.20.0 dependencies
+`docs:build` and `docs:check`. Each job installs this package's locked e2e 0.21.0 dependencies
 and Chromium, uses one worker with no replay or model, and retains JUnit, reports, screenshots,
 trace pages and source identity under `tools/e2e/.e2e/`. Existing backend, Maestro and
 quality checks remain required. `E2E_KEEP_METRO_CACHE=1` drops Metro's `--clear`

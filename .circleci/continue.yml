@@ -97,7 +97,7 @@ commands:
   install-testerarmy:
     steps:
       - run:
-          name: Install isolated locked TesterArmy e2e 0.20.0 dependencies
+          name: Install isolated locked TesterArmy e2e 0.21.0 dependencies
           command: npm run test:testerarmy:setup
       - run:
           name: Install isolated Chromium and Linux browser dependencies
@@ -281,7 +281,7 @@ jobs:
       - attach_workspace:
           at: tools/e2e
       - run:
-          name: Install isolated locked TesterArmy e2e 0.20.0 dependencies
+          name: Install isolated locked TesterArmy e2e 0.21.0 dependencies
           command: npm run test:testerarmy:setup
       - run:
           name: Verify the exact passed-ID union and all browser contexts
