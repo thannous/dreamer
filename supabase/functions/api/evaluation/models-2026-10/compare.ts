@@ -16,6 +16,7 @@ import {
   ANALYSIS_PROMPT_VERSION,
   analysisSystemInstruction,
   buildAnalysisPrompt,
+  normalizeDreamAnalysis,
 } from '../../services/dreamAnalysis.ts';
 import {
   extractInteractionImage,
@@ -45,6 +46,26 @@ export const withoutArrayBounds = (schema: unknown): unknown => {
       .filter(([key]) => key !== 'minItems' && key !== 'maxItems')
       .map(([key, value]) => [key, withoutArrayBounds(value)])
   );
+};
+
+/** Arrays outside the schema's bounds; Claude is sent the schema without them, so check here. */
+export const arrayBoundViolations = (schema: unknown, value: unknown, path = '$'): string[] => {
+  if (!schema || typeof schema !== 'object') return [];
+  const node = schema as { minItems?: number; maxItems?: number; items?: unknown; properties?: Record<string, unknown> };
+  if (Array.isArray(value)) {
+    const outside = (typeof node.minItems === 'number' && value.length < node.minItems)
+      || (typeof node.maxItems === 'number' && value.length > node.maxItems);
+    return [
+      ...(outside ? [`${path} has ${value.length} items`] : []),
+      ...value.flatMap((item, index) => arrayBoundViolations(node.items, item, `${path}[${index}]`)),
+    ];
+  }
+  const properties = node.properties;
+  if (value && typeof value === 'object' && properties) {
+    return Object.entries(value as Record<string, unknown>)
+      .flatMap(([key, item]) => arrayBoundViolations(properties[key], item, `${path}.${key}`));
+  }
+  return [];
 };
 
 const parseArgs = (args: string[]) => {
@@ -162,7 +183,17 @@ if (import.meta.main) {
           const milliseconds = Math.round(performance.now() - start);
           let response: unknown = null;
           try { response = JSON.parse(text); } catch { /* kept as rawText */ }
-          results[slot] = { kind: 'analysis', id: fixture.id, model, milliseconds, stopReason, usage, rawText: text, response, status: response ? 'valid' : 'invalid' };
+          // Score what the app would show: production normalization, and the schema bounds Claude was not sent.
+          const boundViolations = arrayBoundViolations(ANALYZE_DREAM_SCHEMA, response);
+          let delivered: unknown = null;
+          let status = response ? 'valid' : 'invalid (JSON)';
+          try {
+            if (response) delivered = normalizeDreamAnalysis(response as Record<string, unknown>, { transcript: fixture.transcript, lang: fixture.lang });
+          } catch {
+            status = 'invalid (missing title or interpretation)';
+          }
+          if (status === 'valid' && boundViolations.length) status = 'invalid (array bounds)';
+          results[slot] = { kind: 'analysis', id: fixture.id, model, milliseconds, stopReason, usage, rawText: text, response, delivered, boundViolations, status };
           if (model === 'gemini-3.8-flash') imagePrompt = String((response as any)?.imagePrompt ?? '');
         } catch (error) {
           results[slot] = { kind: 'analysis', id: fixture.id, model, status: 'error', error: String((error as any)?.status ?? 'request failed') };

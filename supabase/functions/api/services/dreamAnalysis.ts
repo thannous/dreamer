@@ -187,6 +187,15 @@ export const runDreamAnalysis = async (options: {
     console.error(`[api] ${route}: model returned invalid JSON`, { responseLength: text.length });
     throw new Error('Failed to parse model response');
   }
+  return normalizeDreamAnalysis(analysis, { transcript, lang, truncatedForPrompt: options.truncatedForPrompt, themes });
+};
+
+/** What the app receives from a parsed model response; shared with the model evaluations. */
+export const normalizeDreamAnalysis = (
+  analysis: Record<string, unknown>,
+  options: { transcript: string; lang: string; truncatedForPrompt?: boolean; themes?: readonly string[] }
+): StructuredDreamAnalysis => {
+  const { transcript, lang, themes = LEGACY_DREAM_THEMES } = options;
   if (!analysis.title || !analysis.interpretation) {
     throw new Error('Missing required fields in model response');
   }

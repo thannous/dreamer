@@ -27,7 +27,8 @@ GEMINI_API_KEY=… ANTHROPIC_API_KEY=… deno run --no-lock \
   supabase/functions/api/evaluation/models-2026-10/compare.ts --execute --output=/tmp/models-2026-10-run
 ```
 
-The run writes `results.json` (raw text, parsed response, latency and provider usage per
+The run writes `results.json` (raw text, parsed response, the response as the app would show it
+after production normalization, any array outside the schema bounds, latency and provider usage per
 call), `request-count.json` and `images/`. Keep the output out of Git. It exits with code 1
 when any analysis or image cell is not valid, including an image pair skipped for lack of a prompt.
 
