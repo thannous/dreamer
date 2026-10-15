@@ -49,7 +49,9 @@ import { usePrefersReducedMotion } from '@/hooks/usePrefersReducedMotion';
 import { useSplashFailsafe } from '@/hooks/useSplashFailsafe';
 import { useSubscriptionInitialize } from '@/hooks/useSubscriptionInitialize';
 // useSubscriptionMonitor est maintenant intégré dans useSubscription
-import { trackProductEvent } from '@/lib/analytics';
+import { getPaywallTrigger, trackProductEvent } from '@/lib/analytics';
+import { peekReturnToPaywallTrigger } from '@/lib/navigationIntents';
+import { buildPaywallHref } from '@/lib/paywallRoute';
 import { isLucidTrainer } from '@/lib/appVariant';
 import { isPasswordResetPath } from '@/lib/authRoutes';
 import { authReturnHref, completeAuthReturn, isAuthReturnObserved, type AuthReturnIntent } from '@/lib/authReturnIntent';
@@ -140,7 +142,15 @@ const ROOT_VIEW_STYLE = { flex: 1 } as const;
 function resolveAppStartupDecision(
   input: Parameters<typeof resolveStartupDecision>[0]
 ): StartupDestinationDecision {
-  if (!isLucidTrainer) return resolveStartupDecision(input);
+  if (!isLucidTrainer) {
+    // Account scope changes restart navigation after onboarding has loaded.
+    // Honour the same offer intent as AuthContext instead of opening Capture.
+    const paywallTrigger = input.hasUser ? peekReturnToPaywallTrigger() : null;
+    return resolveStartupDecision({
+      ...input,
+      pendingPaywallDestination: paywallTrigger ? buildPaywallHref(getPaywallTrigger(paywallTrigger)) : null,
+    });
+  }
   const explicit = input.defaultDestination;
   const explicitPath = typeof explicit === 'string' ? explicit : String(explicit?.pathname ?? '');
   return {

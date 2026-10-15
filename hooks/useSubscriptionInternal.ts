@@ -17,6 +17,7 @@ import {
   restoreSubscriptionPurchases,
 } from '@/services/subscriptionService';
 import { syncSubscriptionFromServer } from '@/services/subscriptionSyncService';
+import { simulateMockSubscriptionSync } from '@/services/mocks/subscriptionServiceMock';
 import { useSubscriptionCustomerInfoListener } from './useSubscriptionCustomerInfoListener';
 import { useSubscriptionExpiryTimer } from './useSubscriptionExpiryTimer';
 import { useSubscriptionMonitor } from './useSubscriptionMonitor';
@@ -231,6 +232,7 @@ export function useSubscriptionInternal(options?: UseSubscriptionOptions) {
     }
   ) => {
     if (isMockMode) {
+      simulateMockSubscriptionSync(source, userId);
       return null;
     }
     if (!userId) {

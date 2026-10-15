@@ -83,7 +83,7 @@ function PaywallScreen() {
   const sortedPackages = useMemo(() => sortPackages(packages), [packages]);
   const annualDiscount = useMemo(() => calculateAnnualDiscount(packages), [packages]);
   const [selectedId, setSelectedId] = useState<string | null>(null);
-  const [toastMessage, setToastMessage] = useState<string | null>(null);
+  const [toast, setToast] = useState<{ message: string; mode: 'success' | 'info' } | null>(null);
   const [showErrorSheet, setShowErrorSheet] = useState(false);
   const viewedAnalyticsKeyRef = useRef<string | null>(null);
   const purchaseOutcomeRef = useRef<'none' | 'completed' | 'restored'>('none');
@@ -213,8 +213,7 @@ function PaywallScreen() {
     });
   }, [currentLang]);
 
-  const resumeConfirmedAnalysis = useCallback(async (result: Awaited<ReturnType<typeof purchase>> | null) => {
-    if (!params.dreamId || params.dreamOwnerId !== user?.id) return true;
+  const confirmAccessAndResume = useCallback(async (result: Awaited<ReturnType<typeof purchase>> | null) => {
     setAwaitingServerAccess(true);
     let confirmed = result;
     if (!confirmed?.serverConfirmed || !confirmed.isActive || confirmed.tier !== 'plus') {
@@ -222,30 +221,38 @@ function PaywallScreen() {
         // One automatic convergence retry; further retries never repeat the store purchase.
         confirmed = await refreshSubscription();
       } catch {
+        // The pending state owns this recovery; a generic error sheet would
+        // obscure its retry button after a successful store transaction.
+        clearError();
+        setShowErrorSheet(false);
         return false;
       }
     }
     if (!confirmed.serverConfirmed || !confirmed.isActive || confirmed.tier !== 'plus') return false;
+    setAwaitingServerAccess(false);
     const returnRoute = requestAnalysisReturnRoute(params, user?.id);
     if (returnRoute) {
-      setAwaitingServerAccess(false);
       navigateToDream(returnRoute);
-      return true;
     }
-    return false;
-  }, [navigateToDream, params, refreshSubscription, user?.id]);
+    return true;
+  }, [clearError, navigateToDream, params, refreshSubscription, user?.id]);
 
   const handleRetryActivation = useCallback(async () => {
     if (operationInFlightRef.current || processing) return;
     operationInFlightRef.current = true;
     setOperationPending(true);
     try {
-      await resumeConfirmedAnalysis(null);
+      if (await confirmAccessAndResume(null)) {
+        setToast({
+          message: t(purchaseOutcomeRef.current === 'restored' ? 'subscription.paywall.toast.restored' : 'subscription.paywall.toast.success'),
+          mode: 'success',
+        });
+      }
     } finally {
       operationInFlightRef.current = false;
       setOperationPending(false);
     }
-  }, [processing, resumeConfirmedAnalysis]);
+  }, [confirmAccessAndResume, processing, t]);
 
   const handlePurchase = useCallback(async () => {
     if (!effectiveSelectedId || !canPurchase || !selectedPlan || operationInFlightRef.current) return;
@@ -265,10 +272,12 @@ function PaywallScreen() {
         plan: selectedPlan,
         tier: nextStatus?.tier ?? 'plus',
       });
-      if (nextStatus?.isActive || nextStatus?.storeActive) {
-        if (!await resumeConfirmedAnalysis(nextStatus)) return;
+      if (!nextStatus?.isActive && !nextStatus?.storeActive) {
+        setAwaitingServerAccess(true);
+        return;
       }
-      setToastMessage(t('subscription.paywall.toast.success'));
+      if (!await confirmAccessAndResume(nextStatus)) return;
+      setToast({ message: t('subscription.paywall.toast.success'), mode: 'success' });
     } catch (purchaseError) {
       void trackProductEvent('purchase_failed', {
         trigger: paywallTrigger,
@@ -279,15 +288,15 @@ function PaywallScreen() {
       operationInFlightRef.current = false;
       setOperationPending(false);
     }
-  }, [analyticsTier, canPurchase, effectiveSelectedId, paywallTrigger, purchase, selectedPlan, t, resumeConfirmedAnalysis]);
+  }, [analyticsTier, canPurchase, confirmAccessAndResume, effectiveSelectedId, paywallTrigger, purchase, selectedPlan, t]);
 
   const handleRestore = useCallback(async () => {
-    if (processing || requiresAuth || operationInFlightRef.current) return;
+    if (processing || requiresAuth || awaitingServerAccess || operationInFlightRef.current) return;
     operationInFlightRef.current = true;
     setOperationPending(true);
     try {
       const nextStatus = await restore();
-      const restored = Boolean(nextStatus?.isActive);
+      const restored = Boolean(nextStatus?.isActive || nextStatus?.storeActive);
       if (restored) {
         purchaseOutcomeRef.current = 'restored';
         clearReturnToPaywallIntent();
@@ -296,10 +305,12 @@ function PaywallScreen() {
         trigger: paywallTrigger,
         outcome: restored ? 'restored' : 'nothing_to_restore',
       });
-      if (restored || nextStatus?.storeActive) {
-        if (!await resumeConfirmedAnalysis(nextStatus)) return;
+      if (!restored) {
+        setToast({ message: t('subscription.paywall.toast.nothing_to_restore'), mode: 'info' });
+        return;
       }
-      setToastMessage(t('subscription.paywall.toast.restored'));
+      if (!await confirmAccessAndResume(nextStatus)) return;
+      setToast({ message: t('subscription.paywall.toast.restored'), mode: 'success' });
     } catch (restoreError) {
       void trackProductEvent('restore_completed', {
         trigger: paywallTrigger,
@@ -309,10 +320,10 @@ function PaywallScreen() {
       operationInFlightRef.current = false;
       setOperationPending(false);
     }
-  }, [paywallTrigger, processing, requiresAuth, restore, t, resumeConfirmedAnalysis]);
+  }, [awaitingServerAccess, confirmAccessAndResume, paywallTrigger, processing, requiresAuth, restore, t]);
 
   const handleHideToast = useCallback(() => {
-    setToastMessage(null);
+    setToast(null);
   }, []);
 
   const handleCloseErrorSheet = useCallback(() => {
@@ -330,11 +341,13 @@ function PaywallScreen() {
   }, [t, translationRevision]);
 
   const activeTierKey = 'plus';
-  const headerTitle = isActive
+  const headerTitle = awaitingServerAccess
+    ? t('subscription.paywall.activation_pending.title')
+    : isActive
     ? t(`subscription.paywall.header.${activeTierKey}` as const)
     : isDreamAnalysisOffer ? t('recording.saved_analysis.title')
       : translateWithFallback(paywallVariant.headerTitleKey);
-  const headerSubtitle = isActive
+  const headerSubtitle = isActive && !awaitingServerAccess
     ? t(`subscription.paywall.header.subtitle.${activeTierKey}` as const)
     : isDreamAnalysisOffer ? t('subscription.paywall.saved_dream.message')
       : translateWithFallback(paywallVariant.headerSubtitleKey);
@@ -594,7 +607,7 @@ function PaywallScreen() {
 
             {!isDreamAnalysisOffer ? <SubscriptionExpiryNotice status={subscriptionStatus} loading={loading} /> : null}
 
-            {isActive && formattedExpiryDate ? (
+            {isActive && !awaitingServerAccess && formattedExpiryDate ? (
               <Text style={[styles.expiryDate, { color: noctalia.text.secondary }]}>
                 {t('subscription.paywall.expiry_date', { date: formattedExpiryDate })}
                 {subscriptionStatus?.willRenew !== undefined
@@ -733,7 +746,7 @@ function PaywallScreen() {
                   billingDetail={pkg.billingDetail}
                   badge={pkg.badge}
                   state={
-                    processing || loading
+                    processing || loading || awaitingServerAccess
                       ? effectiveSelectedId === pkg.id
                         ? 'selectedDisabled'
                         : 'disabled'
@@ -841,7 +854,7 @@ function PaywallScreen() {
               <Pressable
                 style={({ pressed }) => [styles.secondaryButton, pressed && styles.secondaryButtonPressed]}
                 onPress={handleRestore}
-                disabled={busy}
+                disabled={busy || awaitingServerAccess}
                 accessibilityRole="button"
                 testID={TID.Button.PaywallRestore}
               >
@@ -886,12 +899,12 @@ function PaywallScreen() {
         </ScreenContainer>
       </ScrollView>
 
-      {toastMessage ? (
+      {toast ? (
         <Toast
-          message={toastMessage}
-          mode="success"
+          message={toast.message}
+          mode={toast.mode}
           onHide={handleHideToast}
-          testID={TID.Toast.PaywallSuccess}
+          testID={toast.mode === 'success' ? TID.Toast.PaywallSuccess : TID.Toast.PaywallInfo}
         />
       ) : null}
 

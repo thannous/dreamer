@@ -91,7 +91,8 @@ test('restore with no mock receipt keeps the account free', async ({ page }) => 
   await setupFreeAccount(page);
   await offer(page);
   await page.getByTestId('btn.paywall.restore').click();
-  await expect(page.getByTestId('toast.paywall.success')).toBeVisible();
+  await expect(page.getByTestId('toast.paywall.info')).toContainText('No active subscription');
+  await expect(page.getByTestId('toast.paywall.success')).toHaveCount(0);
   await page.getByTestId('btn.paywall.close').click();
   await expect(page.getByTestId('quota.analysisValue')).toHaveText('5 / 3');
   await expect(page.getByRole('button', { name: 'Upgrade to Noctalia Plus', exact: true })).toBeVisible();
@@ -109,7 +110,7 @@ test('cancelled renewal keeps Plus until expiry, then free limits return without
   await expect(page.getByTestId('subscription-expired-notice')).toBeVisible();
   await offer(page);
   await page.getByTestId('btn.paywall.restore').click();
-  await expect(page.getByTestId('toast.paywall.success')).toBeVisible();
+  await expect(page.getByTestId('toast.paywall.info')).toContainText('No active subscription');
   await page.getByTestId('btn.paywall.close').click();
   await expect(page.getByTestId('quota.analysisValue')).toHaveText('5 / 3');
   await page.getByTestId('settings.back').click();
@@ -133,7 +134,52 @@ test('a mock receipt cannot unlock a different account', async ({ page }) => {
   await page.getByTestId('quick-settings.all').click();
   await offer(page);
   await page.getByTestId('btn.paywall.restore').click();
-  await expect(page.getByTestId('toast.paywall.success')).toBeVisible();
+  await expect(page.getByTestId('toast.paywall.info')).toContainText('No active subscription');
   await page.getByTestId('btn.paywall.close').click();
   await expect(page.getByTestId('quota.analysisValue')).toHaveText('0 / 3');
 });
+
+for (const action of ['purchase', 'restore'] as const) {
+  test(`mock ${action} waits for activation and recovers without a second store operation`, async ({ page }, info) => {
+    await setupFreeAccount(page);
+    if (action === 'restore') await page.getByTestId('btn.subscription.qa.scenario.restore_available').click();
+    await page.getByTestId('btn.subscription.qa.delayActivation').click();
+    await offer(page);
+    await page.getByTestId(`btn.paywall.${action}`).click();
+    await expect(page.getByText('Your subscription is recognized. Access activation is still pending. You can retry without purchasing again.')).toBeVisible();
+    await expect(page.getByTestId('toast.paywall.success')).toHaveCount(0);
+    await page.screenshot({ path: info.outputPath(`${action}-activation-pending.png`) });
+    await page.getByTestId('btn.paywall.purchase').click();
+    await assertPlus(page);
+    await expect(page.getByTestId('text.subscription.qa.purchaseCalls')).toHaveText(action === 'purchase' ? '1' : '0');
+    await expect(page.getByTestId('text.subscription.qa.restoreCalls')).toHaveText(action === 'restore' ? '1' : '0');
+  });
+}
+
+for (const profile of ['existing', 'new'] as const) {
+  test(`guest returns to the Plus offer after signing into a ${profile} mock account`, async ({ page }, info) => {
+    await page.goto('/', { waitUntil: 'domcontentloaded' });
+    await page.getByTestId('btn.onboarding.intro.next').click();
+    if (process.env.EXPO_PUBLIC_ONBOARDING_FEATURE_SHEETS_ENABLED === 'true') {
+      await withDialog(page, 'accept', () => page.getByTestId('btn.onboarding.feature.close').click());
+    }
+    await page.getByTestId('btn.onboarding.skip').click();
+    await page.getByTestId('btn.recording.home').or(page.getByTestId('tab.home')).filter({ visible: true }).click();
+    await page.getByTestId('btn.header.home.settings').click();
+    await page.getByTestId('quick-settings.plus').click();
+    await expect(page.getByTestId('screen.paywall')).toBeVisible();
+    await expect(page.getByTestId('btn.paywall.purchase')).toContainText('Sign in');
+    await page.getByTestId('btn.paywall.purchase').click();
+    await page.getByTestId('settings-account-open-signin').click();
+    await page.getByTestId(`btn.mockProfile.${profile}`).click();
+    await expect(page).toHaveURL(/\/paywall\?trigger=settings$/);
+    await expect(page.getByTestId('btn.paywall.purchase')).toBeEnabled();
+    await expect(page.getByTestId('btn.paywall.restore')).toBeVisible();
+    await page.getByTestId('btn.paywall.selectMonthly').click();
+    await page.screenshot({ path: info.outputPath(`${profile}-offer-after-signin.png`) });
+    await page.getByTestId('btn.paywall.close').click();
+    await page.getByTestId('btn.recording.home').or(page.getByTestId('tab.home')).filter({ visible: true }).click();
+    await expect(page.getByTestId('btn.header.home.settings')).toBeVisible();
+    await expect(page.getByTestId('screen.paywall')).toHaveCount(0);
+  });
+}

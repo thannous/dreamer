@@ -24,6 +24,8 @@ import {
 } from '@/services/subscriptionService';
 import {
   applyMockScenario,
+  delayMockSubscriptionActivation,
+  getMockBillingOperationCounts,
   setNextMockPurchaseOutcome,
   type MockPurchaseOutcome,
   type MockSubscriptionScenario,
@@ -137,6 +139,7 @@ export function SubscriptionQALab({ presentation = 'card' }: SubscriptionQALabPr
     [userValue, tier, activeValue, productValue, renewalValue].map(stateSlug).join('.')
   );
   const versionValue = user?.app_metadata?.subscription_version ?? 'none';
+  const mockOperations = isMockMode ? getMockBillingOperationCounts(user?.id) : null;
   const quotaValue = quotaStatus
     ? `${quotaStatus.usage.analysis.limit === null ? 'unlimited' : quotaStatus.usage.analysis.remaining} analysis left`
     : 'not loaded';
@@ -248,6 +251,16 @@ export function SubscriptionQALab({ presentation = 'card' }: SubscriptionQALabPr
       setAction({ label: `Next mock purchase: ${outcome}`, kind: 'success' });
     } catch (err) {
       setAction({ label: 'Mock purchase setup failed', detail: (err as Error).message, kind: 'error' });
+    }
+  }, [isMockMode, user]);
+
+  const handleDelayedActivation = useCallback(async () => {
+    if (!isMockMode || !user) return;
+    try {
+      await delayMockSubscriptionActivation();
+      setAction({ label: 'Next activation: two sync failures, then recovery', kind: 'warning' });
+    } catch (err) {
+      setAction({ label: 'Mock activation setup failed', detail: (err as Error).message, kind: 'error' });
     }
   }, [isMockMode, user]);
 
@@ -422,6 +435,10 @@ export function SubscriptionQALab({ presentation = 'card' }: SubscriptionQALabPr
         <StatusCell label="Expiry" value={expiryValue} />
         <StatusCell label="Renews" value={renewalValue} />
         <StatusCell label="Server version" value={`${versionValue}`} />
+        {mockOperations ? <>
+          <StatusCell label="Mock purchase calls" value={`${mockOperations.purchases}`} testID="text.subscription.qa.purchaseCalls" />
+          <StatusCell label="Mock restore calls" value={`${mockOperations.restores}`} testID="text.subscription.qa.restoreCalls" />
+        </> : null}
         <StatusCell label="Quota" value={quotaValue} />
         <StatusCell
           label="Auth"
@@ -541,6 +558,13 @@ export function SubscriptionQALab({ presentation = 'card' }: SubscriptionQALabPr
 
       {isMockMode ? (
         <ActionGroup title="Next mock purchase · no payment">
+          <QaButton
+            label="Delay server activation"
+            hint="Fail sync and automatic retry; explicit retry recovers"
+            disabled={isBusy || !user}
+            onPress={() => void handleDelayedActivation()}
+            testID="btn.subscription.qa.delayActivation"
+          />
           {(['success', 'cancelled', 'error'] as const).map((outcome) => (
             <QaButton
               key={outcome}

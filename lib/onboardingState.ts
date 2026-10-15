@@ -103,6 +103,7 @@ export type StartupDestinationInput = {
   onboardingState: OnboardingState;
   pendingNotificationUrl?: '/recording' | null;
   pendingAuthDestination?: Href | null;
+  pendingPaywallDestination?: Href | null;
   defaultDestination?: Href;
 };
 
@@ -112,6 +113,7 @@ export type StartupDestinationReason =
   | 'pending_intent'
   | 'notification'
   | 'auth_return'
+  | 'paywall_return'
   | 'default';
 
 export type StartupDestinationDecision = {
@@ -686,6 +688,9 @@ export function resolveStartupDecision(
     return input.hasUser
       ? { destination: input.pendingAuthDestination, reason: 'auth_return' }
       : { destination: '/settings', reason: 'default' };
+  }
+  if (input.hasUser && input.pendingPaywallDestination) {
+    return { destination: input.pendingPaywallDestination, reason: 'paywall_return' };
   }
   if (input.onboardingState.pendingRecordingIntent) {
     return {
