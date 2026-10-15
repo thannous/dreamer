@@ -28,13 +28,23 @@ export const GEMINI_MODELS = {
 } as const;
 
 /**
- * Claude models. Dream analysis runs on Claude when `ANTHROPIC_API_KEY` is set
- * and falls back to Gemini (`GEMINI_MODELS.text`) on any failure; without the
- * key, analysis stays on Gemini.
+ * Claude models. Text features (analysis, chat, categorization, recall) run on
+ * Claude when `ANTHROPIC_API_KEY` is set and fall back to Gemini
+ * (`GEMINI_MODELS.text`) on any failure; without the key they stay on Gemini.
+ * Images stay on Gemini. Each `timeoutMs` leaves the Gemini fallback room before
+ * the app gives up on that route (lib/networkPolicy.ts).
  */
 export const CLAUDE_MODELS = {
   /** Medium effort: complete referral and injection refusals, about 10 s (synthetic test, 2026-10-15). */
   analysis: { model: 'claude-haiku-5-5', effort: 'medium' },
+  /** Medium: low repeated the referral twice. First text in about 2 s; the app waits 45 s, the timeout bounds the first text. */
+  chat: { model: 'claude-haiku-5-5', effort: 'medium', timeoutMs: 20_000 },
+  /** Title, theme and type only. The app waits 30 s. */
+  categorize: { model: 'claude-haiku-5-5', effort: 'low', timeoutMs: 15_000 },
+  /** One short question. The app waits 15 s. */
+  recall: { model: 'claude-haiku-5-5', effort: 'low', timeoutMs: 7_000 },
+  /** A faithful rewrite of the whole account. The app waits 20 s. */
+  formatRecall: { model: 'claude-haiku-5-5', effort: 'low', timeoutMs: 10_000 },
 } as const;
 
 /** Text previews that were retired from the Interactions API (404 on request). */

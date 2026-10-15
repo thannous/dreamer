@@ -2,6 +2,16 @@ import { buildChatHistory, buildChatSystem } from '../services/chatContext.ts';
 import { createClient } from 'jsr:@supabase/supabase-js@2';
 import { corsHeaders, GUEST_LIMITS } from '../lib/constants.ts';
 import { buildDreamContextPrompt, DREAM_CONTEXT_TRANSCRIPT_MAX_CHARS } from '../lib/prompts.ts';
+import { CLAUDE_MODELS } from '../lib/models.ts';
+import {
+  type ClaudeTextStream,
+  logClaudeFallback,
+  logClaudeSpend,
+  requestClaudeText,
+  runClaudeFirst,
+  startClaudeTextStream,
+  toClaudeMessages,
+} from '../services/claude.ts';
 import {
   callGeminiWithFallback,
   classifyGeminiError,
@@ -736,25 +746,48 @@ export async function handleChat(
       }
     };
 
+    // Claude reads text only; a turn with media stays on Gemini.
+    const anthropicApiKey = Deno.env.get('ANTHROPIC_API_KEY')?.trim();
+    const claudeMessages = anthropicApiKey ? toClaudeMessages(contents) : null;
+    const claudeChat = CLAUDE_MODELS.chat;
+
     if (wantsStream) {
-      // Stream setup errors (including a one-shot model fallback) happen before
-      // the response starts, so they still surface as normal JSON errors.
-      let events: AsyncIterable<any>;
-      const streamOptions = (model: string) => ({
-        apiKey,
-        model,
-        contents,
-        systemInstruction: systemPreamble,
-        config: chatConfig,
-      });
-      try {
-        events = await requestGeminiStream(streamOptions(primaryModel));
-      } catch (streamError) {
-        if (primaryModel === fallbackModel) throw streamError;
-        console.warn('[api] /chat: primary stream failed, retrying with fallback', {
-          primaryModel,
+      // Stream setup errors (including the fallbacks) happen before the response
+      // starts, so they still surface as normal JSON errors.
+      let claudeStream: ClaudeTextStream | null = null;
+      if (anthropicApiKey && claudeMessages) {
+        try {
+          claudeStream = await startClaudeTextStream({
+            apiKey: anthropicApiKey,
+            model: claudeChat.model,
+            effort: claudeChat.effort,
+            system: systemPreamble,
+            messages: claudeMessages,
+            timeoutMs: claudeChat.timeoutMs,
+          });
+        } catch (claudeError) {
+          logClaudeFallback('/chat', claudeError);
+        }
+      }
+
+      let events: AsyncIterable<any> | null = null;
+      if (!claudeStream) {
+        const streamOptions = (model: string) => ({
+          apiKey,
+          model,
+          contents,
+          systemInstruction: systemPreamble,
+          config: chatConfig,
         });
-        events = await requestGeminiStream(streamOptions(fallbackModel));
+        try {
+          events = await requestGeminiStream(streamOptions(primaryModel));
+        } catch (streamError) {
+          if (primaryModel === fallbackModel) throw streamError;
+          console.warn('[api] /chat: primary stream failed, retrying with fallback', {
+            primaryModel,
+          });
+          events = await requestGeminiStream(streamOptions(fallbackModel));
+        }
       }
 
       const encoder = new TextEncoder();
@@ -765,18 +798,27 @@ export async function handleChat(
           let accumulated = '';
           const interaction = new GeminiChatStream();
           try {
-            for await (const event of events) {
-              const delta = interaction.push(event);
-              if (delta) {
+            if (claudeStream) {
+              for await (const delta of claudeStream.deltas) {
                 accumulated += delta;
                 send({ delta });
               }
+              logClaudeSpend('/chat', claudeChat.model, claudeChat.effort, claudeStream.usage());
+            } else {
+              for await (const event of events ?? []) {
+                const delta = interaction.push(event);
+                if (delta) {
+                  accumulated += delta;
+                  send({ delta });
+                }
+              }
             }
 
-            const rawParts = interaction.finish();
+            const rawParts = claudeStream ? null : interaction.finish();
             const reply = accumulated.trim();
             if (!reply) throw new Error('Empty model response');
 
+            // A Claude reply is stored as plain text; Gemini keeps its signed parts.
             const modelMessage = buildModelMessage(
               reply,
               rawParts && rawParts.length > 0 ? rawParts : [{ text: reply }]
@@ -804,24 +846,42 @@ export async function handleChat(
       });
     }
 
-    const { text: reply, raw } = await callGeminiWithFallback(
-      apiKey,
-      primaryModel,
-      fallbackModel,
-      contents,
-      systemPreamble,
-      chatConfig
-    );
+    const { reply, parts } = await runClaudeFirst({
+      route: '/chat',
+      anthropicApiKey: claudeMessages ? anthropicApiKey : null,
+      config: claudeChat,
+      claude: async (key) => {
+        const { text, usage } = await requestClaudeText({
+          apiKey: key,
+          model: claudeChat.model,
+          effort: claudeChat.effort,
+          system: systemPreamble,
+          messages: claudeMessages ?? [],
+          timeoutMs: claudeChat.timeoutMs,
+        });
+        return { value: { reply: text, parts: [{ text }] as GeminiPart[] }, usage };
+      },
+      fallback: async () => {
+        const { text, raw } = await callGeminiWithFallback(
+          apiKey,
+          primaryModel,
+          fallbackModel,
+          contents,
+          systemPreamble,
+          chatConfig
+        );
+        if (typeof text !== 'string' || !text.trim()) {
+          throw new Error('Empty model response');
+        }
+        if (raw?.status !== 'completed') throw new Error('Incomplete interaction');
+        return { reply: text.trim(), parts: extractModelParts(raw) };
+      },
+    });
 
-    if (typeof reply !== 'string' || !reply.trim()) {
-      throw new Error('Empty model response');
-    }
-
-    if (raw?.status !== 'completed') throw new Error('Incomplete interaction');
-    const modelMessage = buildModelMessage(reply.trim(), extractModelParts(raw));
+    const modelMessage = buildModelMessage(reply, parts);
     await persistModelMessage(modelMessage);
 
-    return new Response(JSON.stringify({ text: reply.trim(), message: modelMessage }), {
+    return new Response(JSON.stringify({ text: reply, message: modelMessage }), {
       status: 200,
       headers: { 'Content-Type': 'application/json', ...corsHeaders },
     });

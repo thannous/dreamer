@@ -103,6 +103,106 @@ Deno.test('guest history preserves opaque signed model steps after JSON reload',
   assertThrows(() => sanitizeGuestModelParts(Array(129).fill({ text: 'a' }), 'a'));
 });
 
+const sse = (events: unknown[], named = false) => new Response(
+  events.map((event) => `${named ? `event: ${(event as { type: string }).type}\n` : ''}data: ${JSON.stringify(event)}\n\n`).join(''),
+  { headers: { 'Content-Type': 'text/event-stream' } },
+);
+
+const claudeStream = (text: string) => sse([
+  { type: 'message_start', message: { id: 'msg_test', type: 'message', role: 'assistant', model: 'claude-haiku-5-5', content: [], stop_reason: null, stop_sequence: null, usage: { input_tokens: 1200, output_tokens: 1 } } },
+  { type: 'content_block_start', index: 0, content_block: { type: 'text', text: '' } },
+  { type: 'content_block_delta', index: 0, delta: { type: 'text_delta', text } },
+  { type: 'content_block_stop', index: 0 },
+  { type: 'message_delta', delta: { stop_reason: 'end_turn', stop_sequence: null }, usage: { output_tokens: 40 } },
+  { type: 'message_stop' },
+], true);
+
+/** An authenticated turn whose history holds a signed Gemini answer and the new question. */
+const streamingTurn = () => {
+  const committed: unknown[] = [];
+  const context = buildContext({ dreamId: '42', message: 'Est-ce une dépression ?', clientRequestId: '3f73ab45-9a14-4db9-94a3-d24724457d9e', stream: true, lang: 'fr' });
+  context.supabase = {
+    rpc: async (name: string, params: Record<string, unknown>) => {
+      if (name === 'complete_authenticated_chat_turn') {
+        committed.push(params.p_model_message);
+        return { data: { completed: true }, error: null };
+      }
+      return {
+        data: {
+          allowed: true, completed: false, attemptCount: 1,
+          history: [
+            { id: 'u1', role: 'user', text: 'Que veut dire la porte ?' },
+            { id: 'm1', role: 'model', text: 'Une porte fermée.', parts: [{ thought: true, thoughtSignature: 'opaque-fixture', text: 'private reasoning' }, { text: 'Une porte fermée.' }] },
+            { id: 'u2', role: 'user', text: 'Est-ce une dépression ?' },
+          ],
+          dream: { id: 42, transcript: 'Une porte fermée.', title: 'Porte', interpretation: '', shareable_quote: '', dream_type: 'Dream', theme: null },
+        },
+        error: null,
+      };
+    },
+  } as unknown as ApiContext['supabase'];
+  return { context, committed };
+};
+
+const withChatKeys = async (run: () => Promise<void>) => {
+  const originalFetch = globalThis.fetch;
+  const saved = { gemini: Deno.env.get('GEMINI_API_KEY'), anthropic: Deno.env.get('ANTHROPIC_API_KEY') };
+  Deno.env.set('GEMINI_API_KEY', 'synthetic-gemini-key');
+  Deno.env.set('ANTHROPIC_API_KEY', 'synthetic-anthropic-key');
+  try {
+    await run();
+  } finally {
+    globalThis.fetch = originalFetch;
+    for (const [name, value] of [['GEMINI_API_KEY', saved.gemini], ['ANTHROPIC_API_KEY', saved.anthropic]] as const) {
+      if (value === undefined) Deno.env.delete(name); else Deno.env.set(name, value);
+    }
+  }
+};
+
+Deno.test('with an Anthropic key, chat streams Claude Haiku at medium effort from text-only history', () => withChatKeys(async () => {
+  const hosts: string[] = [];
+  globalThis.fetch = async (input, init) => {
+    const request = new Request(input, init);
+    hosts.push(new URL(request.url).hostname);
+    const body = await request.json();
+    assertEquals(body.model, 'claude-haiku-5-5');
+    assertEquals(body.output_config.effort, 'medium');
+    assertEquals(body.stream, true);
+    assertEquals(body.messages.map((message: { role: string }) => message.role), ['user', 'assistant', 'user']);
+    assertEquals(JSON.stringify(body.messages).includes('private reasoning'), false);
+    return claudeStream('Un rêve ne peut pas répondre à cela.');
+  };
+  const { context, committed } = streamingTurn();
+  const response = await handleChat(context, { admitRequest: async () => ({ tier: 'free', actorClass: 'FREE' }) });
+  const events = (await response.text()).split('\n\n').filter(Boolean).map((line) => JSON.parse(line.replace(/^data: /, '')));
+  assertEquals(hosts, ['api.anthropic.com']);
+  assertEquals(events[0], { delta: 'Un rêve ne peut pas répondre à cela.' });
+  assertEquals(events.at(-1).done, true);
+  assertEquals((committed[0] as { parts: unknown }).parts, [{ text: 'Un rêve ne peut pas répondre à cela.' }]);
+}));
+
+Deno.test('a chat stream that fails before its first Claude text falls back to Gemini', () => withChatKeys(async () => {
+  const hosts: string[] = [];
+  globalThis.fetch = async (input, init) => {
+    const host = new URL(new Request(input, init).url).hostname;
+    hosts.push(host);
+    if (host === 'api.anthropic.com') {
+      return new Response(JSON.stringify({ type: 'error', error: { type: 'overloaded_error', message: 'Overloaded' } }), { status: 529, headers: { 'Content-Type': 'application/json' } });
+    }
+    return sse([
+      { event_type: 'step.start', index: 0, step: { type: 'model_output', content: [{ type: 'text', text: 'Réponse Gemini.' }] } },
+      { event_type: 'step.stop', index: 0 },
+      { event_type: 'interaction.completed', interaction: { status: 'completed' } },
+    ]);
+  };
+  const { context } = streamingTurn();
+  const response = await handleChat(context, { admitRequest: async () => ({ tier: 'free', actorClass: 'FREE' }) });
+  const events = (await response.text()).split('\n\n').filter(Boolean).map((line) => JSON.parse(line.replace(/^data: /, '')));
+  assertEquals(hosts, ['api.anthropic.com', 'generativelanguage.googleapis.com']);
+  assertEquals(events[0], { delta: 'Réponse Gemini.' });
+  assertEquals(events.at(-1).done, true);
+}));
+
 Deno.test('guest history preserves long signed answers without widening legacy text limits', () => {
   const text = 'a'.repeat(5000);
   const parts = [{ thought: true, thoughtSignature: 'fixture-signature' }, { text }];
