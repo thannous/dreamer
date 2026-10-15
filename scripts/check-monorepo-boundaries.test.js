@@ -34,7 +34,8 @@ test('shared map names existing inputs and actual shared execution consumers', (
     expect(['build', 'execution', 'content', 'contract', 'runtime']).toContain(graph);
     for (const consumer of consumers.split(' ')) expect(['noctalia', 'meditation', 'site', 'edge_functions', 'edge_contracts']).toContain(consumer);
   }
-  expect(fs.readFileSync(path.join(root, 'apps/meditation/package.json'), 'utf8')).toContain('scripts/android-device-lock.js');
+  // Meditation's only use was its Maestro scripts, retired on 2026-10-14.
+  expect(fs.readFileSync(path.join(root, 'apps/meditation/package.json'), 'utf8')).not.toContain('scripts/android-device-lock.js');
   expect(fs.readFileSync(path.join(root, 'package.json'), 'utf8')).toContain('scripts/expo-safe-runner.js');
   expect(fs.readFileSync(path.join(root, 'scripts/expo-safe-runner.js'), 'utf8')).toContain("require('./android-device-lock')");
 });
