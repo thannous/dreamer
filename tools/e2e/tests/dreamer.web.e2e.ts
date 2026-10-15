@@ -487,6 +487,12 @@ test('plus account watches its dream painted into the window, then finds it glow
   await offConsent();
   await settledMotion(browser);
   await screen.getByTestId('btn.journal.illustrate').scrollIntoView();
+  // The seal offers the illustration itself; the page below keeps only the dreamer's own picture.
+  const sealBox = (await screen.getByTestId('component.dreamDetail.savedMoment').boundingBox())!;
+  const illustrateBox = (await screen.getByTestId('btn.journal.illustrate').boundingBox())!;
+  expect(illustrateBox.y >= sealBox.y && illustrateBox.y + illustrateBox.height <= sealBox.y + sealBox.height).toBe(true);
+  await expect(screen.getByTestId('btn.journal.addImageFromLibrary')).toHaveCount(1);
+  await app.screenshot('plus-seal-offers-illustration');
   await screen.getByTestId('btn.journal.illustrate', { visible: true }).tap();
   // Painted in the seal's window: no canvas of its own is added to the page.
   await expect(screen.getByTestId('component.dreamDetail.savedMoment.artwork')).toHaveCount(1);

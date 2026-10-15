@@ -172,6 +172,7 @@ export const TID = {
     ChatLimitUpgrade: 'btn.chat.limitUpgrade',
     FreeAnalysesNudge: 'btn.quota.freeAnalysesNudge',
     JournalIllustrate: 'btn.journal.illustrate',
+    JournalAddImageFromLibrary: 'btn.journal.addImageFromLibrary',
     JournalImageRetry: 'btn.journal.imageRetry',
     PaywallTermsOfUse: 'btn.paywall.termsOfUse',
     PaywallPrivacyPolicy: 'btn.paywall.privacyPolicy',

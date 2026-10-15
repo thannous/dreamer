@@ -675,6 +675,7 @@ const translations: Record<string, string> = {
     'journal.detail.image.generation_failed': 'Ilustração indisponível',
     'journal.detail.image.quota_exceeded_message': 'Sua cota de ilustrações foi atingida. Você ainda pode adicionar uma imagem do seu dispositivo.',
     'journal.detail.image.upgrade_action': 'Desbloquear imagens de sonhos com o Plus',
+    'journal.detail.image.seal_upgrade': 'Ilustrar · Plus',
     'journal.detail.reanalyze_prompt.title': 'Atualizar este sonho?',
     'journal.detail.reanalyze_prompt.message': 'Você editou a transcrição. Quer atualizar a análise agora?',
     'journal.detail.reanalyze_prompt.reanalyze': 'Atualizar',
