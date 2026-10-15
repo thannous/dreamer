@@ -69,7 +69,7 @@ jest.mock('@/hooks/useSubscriptionInitialize', () => ({ useSubscriptionInitializ
 jest.mock('@/hooks/useAppState', () => ({ useAppState: (callback: () => void) => { mockForeground = callback; } }));
 jest.mock('@/hooks/usePrefersReducedMotion', () => ({ usePrefersReducedMotion: () => true }));
 jest.mock('@/hooks/useSplashFailsafe', () => ({ useSplashFailsafe: () => false }));
-jest.mock('@/components/AnimatedSplashScreen', () => ({ __esModule: true, default: () => null, getSplashMinimumVisibleMs: () => 0 }));
+jest.mock('@/components/StartupSplashScreen', () => ({ __esModule: true, default: () => null, STARTUP_SPLASH_MINIMUM_VISIBLE_MS: 0 }));
 jest.mock('@/components/ErrorBoundary', () => ({ ErrorBoundary: (props: React.PropsWithChildren) => mockChildren(props) }));
 jest.mock('@/components/navigation/DesktopShell', () => ({ DesktopShell: (props: React.PropsWithChildren) => mockChildren(props) }));
 jest.mock('@/components/analysis/AnalysisFlightIndicator', () => ({ AnalysisFlightIndicator: () => <div data-testid="analysis-host" /> }));

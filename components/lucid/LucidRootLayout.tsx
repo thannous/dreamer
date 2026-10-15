@@ -21,7 +21,9 @@ import * as SplashScreen from 'expo-splash-screen';
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { Linking, NativeModules, Platform } from 'react-native';
 import { SystemBars } from 'react-native-edge-to-edge';
-import AnimatedSplashScreen, { getSplashMinimumVisibleMs } from '@/components/AnimatedSplashScreen';
+import StartupSplashScreen, {
+  STARTUP_SPLASH_MINIMUM_VISIBLE_MS,
+} from '@/components/StartupSplashScreen';
 import { ErrorBoundary } from '@/components/ErrorBoundary';
 import { AuthProvider, useAuth } from '@/context/AuthContext';
 import { LanguageProvider, useLanguage } from '@/context/LanguageContext';
@@ -174,7 +176,6 @@ function LucidRootContent() {
   const shouldShowCustomSplash = showCustomSplash;
   const fontsSettled = fontsLoaded || Boolean(fontError) || splashTimedOut;
   const prefersReducedMotion = usePrefersReducedMotion();
-  const splashMinimumVisibleMs = getSplashMinimumVisibleMs(Platform.OS);
   const minimumSplashElapsed =
     prefersReducedMotion || splashTimedOut || splashDelayElapsed;
   const startupSplashPrerequisitesReady =
@@ -234,10 +235,10 @@ function LucidRootContent() {
 
     const timer = setTimeout(
       () => setSplashDelayElapsed(true),
-      splashMinimumVisibleMs
+      STARTUP_SPLASH_MINIMUM_VISIBLE_MS
     );
     return () => clearTimeout(timer);
-  }, [fontsSettled, prefersReducedMotion, splashMinimumVisibleMs, splashTimedOut]);
+  }, [fontsSettled, prefersReducedMotion, splashTimedOut]);
 
   useEffect(() => {
     if (
@@ -316,13 +317,7 @@ function LucidRootContent() {
         ) : null}
       </ErrorBoundary>
       {shouldShowCustomSplash && (
-        <AnimatedSplashScreen
-          status={shouldFadeSplash ? 'outro' : 'intro'}
-          // Android uses a lightweight bitmap-only implementation while iOS
-          // retains the animated treatment.
-          forceStatic={Platform.OS === 'android' || splashTimedOut}
-          onAnimationEnd={handleSplashFinished}
-        />
+        <StartupSplashScreen done={shouldFadeSplash} onDone={handleSplashFinished} />
       )}
     </GestureHandlerRootView>
   );
