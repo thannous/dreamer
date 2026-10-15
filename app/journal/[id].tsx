@@ -2511,7 +2511,8 @@ const JournalDetailContent = memo(function JournalDetailContent({ dream, folio }
   // Asked there, it keeps its words while it paints, so the seal stays the same button meanwhile.
   const sealSettled = sealVisible && !readingInFlight && !sealReads;
   const sealPaints = sealSettled && illustrationAskedOnSeal && paintingInProgress && !plateRevealed;
-  const sealIllustrates = sealSettled && !dream.imageUrl?.trim() && !paintingInProgress
+  // Only a dream with no illustration yet: a failed one keeps its own card and its own step.
+  const sealIllustrates = sealSettled && illustrationSidecar === 'empty' && !paintingInProgress
     && (visibleIllustrationCta === 'illustrate' || visibleIllustrationCta === 'upgrade');
   const sealAction: SavedDreamAction | null = !sealVisible ? null
     : readingInFlight ? { label: t('loading.analyzing') }
