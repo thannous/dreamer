@@ -6,7 +6,7 @@ import { mapRowToDream, mapRowToDreamListItem, type SupabaseDreamRow } from './j
 
 export function createJournalRepository({ getClient, now = () => Date.now() }: { getClient: () => SupabaseClient; now?: () => number }) {
   const DREAMS_TABLE = 'dreams';
-  const JOURNAL_LIST_COLUMNS = 'id,created_at,client_request_id,revision_id,updated_at,transcript,title,shareable_quote,exploration_started_at,image_url,dream_type,theme,is_favorite,memory,is_analyzed,analyzed_at,analysis_status,analysis_request_id,image_generation_failed';
+  const JOURNAL_LIST_COLUMNS = 'id,created_at,client_request_id,revision_id,updated_at,transcript,title,shareable_quote,exploration_started_at,image_url,dream_type,theme,precise_theme,is_favorite,memory,is_analyzed,analyzed_at,analysis_status,analysis_request_id,image_generation_failed';
 
   async function resolveJournalUser(expectedUserId?: string): Promise<string> {
     const userId = expectedUserId ?? (await getClient().auth.getUser()).data.user?.id;
