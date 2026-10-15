@@ -17,6 +17,15 @@ export function getNoctaliaPalette(mode: ThemeMode) {
     line: dark ? '#514637' : 'rgba(126, 83, 49, 0.25)',
     overlay: dark ? 'rgba(0, 0, 0, 0.64)' : 'rgba(38, 27, 28, 0.44)',
     onAccent: dark ? '#382D35' : '#FFF9EF',
+    // The journal's block of leaves and its binding as its art draws them, in night paper
+    // or ivory: the dream page's own edges take them over at the end of the capture seal.
+    journalLeaves: {
+      inner: dark ? '#161C2E' : '#DDCDB2',
+      outer: dark ? '#0E1323' : '#B49B76',
+      line: dark ? '#080D1D' : '#A68B66',
+      light: dark ? '#1C2236' : '#E6D3B4',
+      binding: dark ? '#060915' : '#B7A180',
+    },
     // Dreamer uses curated paintings, with contrast measured behind actual copy.
     // Preserve their colour and detail rather than flattening them into the ground.
     backgroundArtwork: {
@@ -77,8 +86,8 @@ export function createNoctaliaTheme(mode: ThemeMode, ambience: ThemeAmbience): T
     navbarTextActive: p.title,
     navbarTextInactive: p.muted,
     tags: mode === 'dark'
-      ? { surreal: '#7F6FA8', mystical: '#6C568F', calm: '#446B8C', noir: '#31354F' }
-      : { surreal: '#B8AECB', mystical: '#C5B8D8', calm: '#A5C4E0', noir: '#A8A8C0' },
+      ? { surreal: '#7F6FA8', mystical: '#6C568F', calm: '#446B8C', noir: '#31354F', luminous: '#6B5A34', nostalgic: '#6E4F5B' }
+      : { surreal: '#B8AECB', mystical: '#C5B8D8', calm: '#A5C4E0', noir: '#A8A8C0', luminous: '#E3D3A8', nostalgic: '#D9BFC5' },
   };
 }
 

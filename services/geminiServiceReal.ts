@@ -1,3 +1,4 @@
+import { DREAM_THEMES } from '@/lib/dreamThemes';
 import { createStreamingTextPublisher } from '@/lib/chat/streamingTextPublisher';
 // Backend proxy integration for RN app. Configure base URL via EXPO_PUBLIC_API_URL
 // or app.json extra.apiUrl. Endpoints expected:
@@ -143,6 +144,7 @@ function buildAnalysisRequestBody(
   return {
     transcript,
     lang,
+    themes: DREAM_THEMES,
     ...(fingerprint && { fingerprint }),
     ...(context?.remoteDreamId != null ? { remoteDreamId: context.remoteDreamId } : {}),
     ...(context?.analysisRequestId ? { analysisRequestId: context.analysisRequestId } : {}),
@@ -167,7 +169,8 @@ export type CategorizeDreamResult = DreamCategorization;
 export async function categorizeDream(transcript: string, lang: string = 'en'): Promise<CategorizeDreamResult> {
   return fetchWithSessionHeaders<CategorizeDreamResult>('/categorizeDream', {
     method: 'POST',
-    body: { transcript, lang },
+    // The themes this app can show: the service only offers those.
+    body: { transcript, lang, themes: DREAM_THEMES },
     ...NETWORK_REQUEST_POLICIES.categorizeDream,
   });
 }

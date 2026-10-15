@@ -1,3 +1,4 @@
+import { DREAM_THEMES as ALL_DREAM_THEMES } from '@/lib/dreamThemes';
 import { compareDreamFacets } from '@/lib/dreamFacets';
 import { matchEmotionFamily, type EmotionFamilyId } from '@/lib/dreamEmotions';
 import { startOfDay } from '@/lib/streakUtils';
@@ -9,7 +10,7 @@ const MIN_DREAMS_FOR_PATTERNS = 3;
 const TOP_LIMIT = 5;
 const MAX_THEME_POINTS = 30;
 const ORDERED_WEEKDAYS = [1, 2, 3, 4, 5, 6, 0] as const;
-const DREAM_THEMES: ReadonlySet<DreamTheme> = new Set(['surreal', 'mystical', 'calm', 'noir']);
+const DREAM_THEMES: ReadonlySet<DreamTheme> = new Set(ALL_DREAM_THEMES);
 // Unknown is deliberately not a motif: insufficient evidence must not become a pattern.
 const DREAM_TYPES: ReadonlySet<DreamType> = new Set([
   'Lucid Dream',

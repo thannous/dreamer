@@ -1,3 +1,4 @@
+import { offeredDreamThemes } from './dreamThemes.ts';
 import { isAiLanguage } from './aiLanguage.ts';
 import { corsHeaders } from './constants.ts';
 import { boundTranscriptForPrompt } from './prompts.ts';
@@ -87,8 +88,8 @@ export const parseLegacyImageTranscriptInput = (
 };
 
 export const parseDreamTextInput = (
-  body: { transcript?: unknown; lang?: unknown }
-): { transcript: string; lang: string } | Response => {
+  body: { transcript?: unknown; lang?: unknown; themes?: unknown }
+): { transcript: string; lang: string; themes: string[] } | Response => {
   const transcript = validateBoundedText(body?.transcript, {
     field: 'transcript',
     maxChars: AI_REQUEST_LIMITS.transcriptRequestChars,
@@ -105,6 +106,7 @@ export const parseDreamTextInput = (
   return {
     transcript: transcript.value,
     lang: normalizeAiLanguage(language.value || 'en'),
+    themes: offeredDreamThemes(body?.themes),
   };
 };
 

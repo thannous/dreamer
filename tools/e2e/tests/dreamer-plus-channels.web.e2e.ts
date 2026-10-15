@@ -1,6 +1,6 @@
 // Paths from a free account to the Plus offer: the remaining-analyses row and the chat limit.
 import type { Page } from 'playwright/test';
-import { createParityTest, expect, withDialog } from '../web-parity-fixtures';
+import { answerSeal, createParityTest, expect, withDialog } from '../web-parity-fixtures';
 const test = createParityTest();
 
 const nudge = 'btn.quota.freeAnalysesNudge';
@@ -85,8 +85,9 @@ test('after an analysis the dream page stays quiet while analyses remain and Hom
   const story = 'E2E free traveler finds a lantern on a silver bridge.';
   await page.getByTestId('input.dreamTranscript').fill(story);
   await page.getByTestId('btn.saveDream').click();
+  // The journal asks during the seal; yes opens the page already reading the dream.
+  await answerSeal(page, 'now');
   await expect(page.getByTestId('component.transcriptCard')).toContainText(story);
-  await page.getByTestId('btn.dream.primaryCta').click();
   await expect(page.getByTestId('component.dreamDetail.readingZone')).toContainText(/\S[\s\S]{80}/);
   await expect(dreamRow(page)).toHaveCount(0);
   await home(page);
@@ -107,6 +108,8 @@ test('an analyzed dream offers Plus once the included analyses are used', async 
 test('the chat message limit opens the Plus offer for a free account', async ({ page }) => {
   await selectProfile(page, 'existing');
   await openDream(page, 'The Infinite Library');
+  // Below the plate, the seal and the reading (PR #358), the story brings its action into the dock.
+  await page.getByTestId('component.transcriptCard').scrollIntoViewIfNeeded();
   await page.getByTestId('component.dreamDetail.actionCard').click();
   await page.getByTestId('btn.dreamCategory.freeChat').click();
   const input = page.getByTestId('chat.input.message');

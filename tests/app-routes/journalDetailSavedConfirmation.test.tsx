@@ -10,6 +10,11 @@ import { trackInitialDreamCategorization } from '@/lib/initialDreamCategorizatio
 import { TID } from '@/lib/testIDs';
 
 // Static hook fixtures need an actual context notification across a memo boundary.
+const mockMarkPerformance = jest.fn();
+jest.mock('@/lib/performanceTrace', () => ({
+  markPerformance: (...args: unknown[]) => mockMarkPerformance(...args),
+  performanceTraceId: () => 1,
+}));
 const mockRenderContext = React.createContext({});
 const render = (ui: React.ReactElement) => renderTree(ui, { wrapper: ({ children }) => (
   <mockRenderContext.Provider value={{}}>{children}</mockRenderContext.Provider>
@@ -34,6 +39,7 @@ const mockCompositeEvents: {
   display: () => void;
   report: (source: string, ready: boolean) => void;
 }[] = [];
+const mockAnnounceForAccessibility = jest.fn();
 let mockThemeMode: 'light' | 'dark' = 'dark';
 const mockRetryMedia = jest.fn();
 const mockShareComposite = jest.fn();
@@ -99,6 +105,7 @@ jest.mock('react-native', () => {
       showsVerticalScrollIndicator: _showsVerticalScrollIndicator,
       horizontal: _horizontal,
       numberOfLines: _numberOfLines,
+      onChangeText,
       style,
       className,
       ...rest
@@ -109,6 +116,7 @@ jest.mock('react-native', () => {
       ...(style ? { style } : {}),
       ...(testID ? { 'data-testid': testID } : {}),
       ...(onPress ? { onClick: onPress } : {}),
+      ...(onChangeText ? { onChange: (event: { target: { value: string } }) => onChangeText(event.target.value) } : {}),
       ...(accessibilityRole ? { role: accessibilityRole } : {}),
       ...(accessibilityLabel ? { 'aria-label': accessibilityLabel } : {}),
     };
@@ -126,6 +134,7 @@ jest.mock('react-native', () => {
 
   return {
     __esModule: true,
+    AccessibilityInfo: { announceForAccessibility: mockAnnounceForAccessibility },
     ActivityIndicator: () => <div role="progressbar" />,
     Alert: { alert: jest.fn() },
     Keyboard: {
@@ -147,6 +156,7 @@ jest.mock('react-native', () => {
       create: <T extends Record<string, any>>(styles: T) => styles,
       hairlineWidth: 1,
     },
+    Image: createElement('img'),
     Text: createElement('span'),
     TextInput: createElement('input'),
     useWindowDimensions: () => ({ width: 390, height: 844, scale: 1, fontScale: 1 }),
@@ -235,6 +245,22 @@ jest.mock('@/components/motion', () => ({
 
 jest.mock('@/components/inspiration/AtmosphericBackground', () => ({
   AtmosphericBackground: () => null,
+}));
+
+// The page's paper grain is decorative art; these journeys only need the page.
+jest.mock('@/components/journal/JournalPaper', () => ({ JournalPaper: () => null }));
+// Leafing through the journal is a gesture around the page; these journeys only need the page.
+jest.mock('@/components/journal/JournalPageTurner', () => ({
+  JournalPageTurner: ({ children, newer, older, onTurn }: {
+    children: React.ReactNode; newer: DreamAnalysis | null; older: DreamAnalysis | null;
+    onTurn: (dream: DreamAnalysis) => void;
+  }) => <>{children}
+    {newer ? <button data-testid="test.page.newer" onClick={() => onTurn(newer)}>Newer</button> : null}
+    {older ? <button data-testid="test.page.older" onClick={() => onTurn(older)}>Older</button> : null}
+  </>,
+  useJournalPageTurnLock: () => {},
+  useJournalPageLaidOut: () => () => {},
+  useJournalPageTurnedTo: () => false,
 }));
 
 jest.mock('@/components/inspiration/GlassCard', () => ({
@@ -393,6 +419,7 @@ jest.mock('@/hooks/useLocaleFormatting', () => ({
   useLocaleFormatting: () => ({
     formatDreamDate: () => '3 sept.',
     formatDreamTime: () => '07:12',
+    formatDreamStamp: () => '3 septembre 2026 · 07:12',
   }),
 }));
 
@@ -447,6 +474,7 @@ const { default: JournalDetailScreen } = require('@/app/journal/[id]');
 
 describe('journal detail saved confirmation route', () => {
   beforeEach(() => {
+    mockAnnounceForAccessibility.mockClear();
     mockThemeMode = 'dark';
     mockReferenceImagesEnabled = false;
     mockCategorizeDream.mockReset();
@@ -527,12 +555,29 @@ describe('journal detail saved confirmation route', () => {
   });
 
   it.each([
-    { label: 'image credits exhausted', setup: () => { mockQuotaUsage.image = { used: 2, limit: 2, remaining: 0 }; } },
-    { label: 'analysis credits exhausted', setup: () => { mockQuotaStatus = { canAnalyze: false }; } },
     { label: 'signed in', setup: () => { mockUser = { id: 'user-1' }; mockTier = 'free'; } },
+    { label: 'a guest without illustration credits', setup: () => { mockQuotaUsage.image = { used: 2, limit: 2, remaining: 0 }; } },
+  ])('analyses on arrival, without illustration, when the reader said yes in the journal: $label', async ({ setup }: { setup: () => void }) => {
+    mockUser = null;
+    mockTier = 'guest';
+    mockQuotaUsage = {
+      analysis: { used: 1, limit: 2, remaining: 1 },
+      image: { used: 0, limit: 2, remaining: 2 },
+    };
+    mockSearchParams = { id: '42', saved: '1', autoAnalyze: '1' };
+    setup();
+    await act(async () => { render(<JournalDetailScreen />); });
+    await waitFor(() => expect(mockAnalyzeDream).toHaveBeenCalledTimes(1));
+    expect(mockAnalyzeDream).toHaveBeenCalledWith(mockDreams[0], mockDreams[0].transcript, {
+      replaceExistingImage: false, lang: 'fr', analyticsSource: 'journal_detail',
+    });
+  });
+
+  it.each([
+    { label: 'analysis credits exhausted', setup: () => { mockQuotaStatus = { canAnalyze: false }; } },
     { label: 'already pending', setup: () => { mockDreams = [buildDream({ analysisStatus: 'pending' })]; } },
     { label: 'recall requested', setup: () => { mockSearchParams.recall = '1'; } },
-  ])('does not auto-consume a guest demo when $label', async ({ setup }: { setup: () => void }) => {
+  ])('does not start the analysis asked for in the journal when $label', async ({ setup }: { setup: () => void }) => {
     mockUser = null;
     mockTier = 'guest';
     mockQuotaUsage = {
@@ -865,7 +910,7 @@ describe('journal detail saved confirmation route', () => {
     expect(mockAnalyzeDream).not.toHaveBeenCalled();
     expect(mockSetParams).toHaveBeenCalledWith({ analyzeAfterPurchase: undefined, analysisOwnerId: undefined });
     expect(screen.queryByText('loading.analyzing')).toBeNull();
-    expect((screen.getByTestId(TID.Button.EditMetadata) as HTMLButtonElement).disabled).toBe(false);
+    expect((screen.getByTestId(TID.Button.EditDream) as HTMLButtonElement).disabled).toBe(false);
   });
 
   it('locks edits and deletion while valid purchased access is propagating', async () => {
@@ -874,7 +919,7 @@ describe('journal detail saved confirmation route', () => {
     render(<JournalDetailScreen />);
 
     expect(mockAnalyzeDream).not.toHaveBeenCalled();
-    expect((screen.getByTestId(TID.Button.EditMetadata) as HTMLButtonElement).disabled).toBe(true);
+    expect((screen.getByTestId(TID.Button.EditDream) as HTMLButtonElement).disabled).toBe(true);
     expect((screen.getByTestId(TID.Button.DreamDelete) as HTMLButtonElement).disabled).toBe(true);
   });
 
@@ -1145,7 +1190,7 @@ describe('journal detail saved confirmation route', () => {
     expect(screen.getByTestId(TID.Modal.JournalIllustrationFullscreen)).toBeTruthy();
     await act(async () => { fireEvent.click(screen.getByTestId(TID.Button.JournalIllustrationClose)); });
     expect(screen.queryByTestId(TID.Modal.JournalIllustrationFullscreen)).toBeNull();
-    await act(async () => { fireEvent.click(screen.getByTestId(TID.Button.EditMetadata)); });
+    await act(async () => { fireEvent.click(screen.getByTestId(TID.Button.EditDream)); });
     expect((screen.getByTestId(TID.Input.DreamTitle) as HTMLInputElement).value).toBe(title);
     expect(mockUpdateDream).not.toHaveBeenCalled();
   });
@@ -1167,11 +1212,12 @@ describe('journal detail saved confirmation route', () => {
     const before = (first: Element, second: Element) => {
       expect(first.compareDocumentPosition(second) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy();
     };
-    before(narrative, reading);
+    // The reading follows its seal, under the name, and comes before the story it reads.
+    before(reading, narrative);
     expect(reading.contains(screen.getByText('Lake'))).toBe(true);
-    if (withImage) before(illustration, narrative);
+    if (withImage) before(illustration, reading);
     else {
-      before(reading, illustration);
+      before(narrative, illustration);
     }
   });
 
@@ -1206,14 +1252,25 @@ describe('journal detail saved confirmation route', () => {
     expect(screen.getByTestId(TID.Input.DreamTitle)).toBeTruthy();
   });
 
-  it('names transcript editing actions and cancels without writing the dream', () => {
+  it('edits the name and the story from one control and cancels without writing the dream', () => {
     render(<JournalDetailScreen />);
-    fireEvent.click(screen.getByTestId(TID.Button.EditTranscript));
+    fireEvent.click(screen.getByTestId(TID.Button.EditDream));
+    expect(screen.getByTestId(TID.Input.DreamTitle)).toBeTruthy();
     expect(screen.getByTestId(TID.Input.DreamTranscript).getAttribute('aria-label')).toBe('recording.placeholder.accessibility');
-    expect(screen.getByTestId(TID.Button.EditTranscript).getAttribute('aria-label')).toBe('journal.detail.save_edit');
-    fireEvent.click(screen.getByRole('button', { name: 'common.cancel' }));
+    fireEvent.click(screen.getByTestId(TID.Button.CancelDreamEdit));
     expect(screen.queryByTestId(TID.Input.DreamTranscript)).toBeNull();
     expect(mockUpdateDream).not.toHaveBeenCalled();
+  });
+
+  it('saves the name and the story together in one write', async () => {
+    render(<JournalDetailScreen />);
+    fireEvent.click(screen.getByTestId(TID.Button.EditDream));
+    fireEvent.change(screen.getByTestId(TID.Input.DreamTitle), { target: { value: 'A new name' } });
+    fireEvent.change(screen.getByTestId(TID.Input.DreamTranscript), { target: { value: 'A new story' } });
+    await act(async () => { fireEvent.click(screen.getByTestId(TID.Button.SaveDreamEdit)); });
+    expect(mockUpdateDream).toHaveBeenCalledTimes(1);
+    expect(mockUpdateDream).toHaveBeenCalledWith(expect.objectContaining({ title: 'A new name', transcript: 'A new story' }));
+    expect(screen.queryByTestId(TID.Component.DreamEditor)).toBeNull();
   });
 
   it('makes unknown analysis access explicit before the click', () => {
@@ -1230,12 +1287,11 @@ describe('journal detail saved confirmation route', () => {
     expect(screen.getByTestId(TID.Button.DreamDetailPrimaryCta).textContent).toContain('journal.detail.analysis_options');
   });
 
-  it('shows a visible saved confirmation when the mounted detail has saved=1', () => {
+  it('announces the save when the mounted detail has saved=1, the seal itself showing it', () => {
     render(<JournalDetailScreen />);
 
-    expect(screen.getByTestId(TID.Text.RecordingSaveConfirmation).textContent).toBe(
-      'recording.save.confirmation'
-    );
+    expect(mockAnnounceForAccessibility).toHaveBeenCalledWith('recording.save.confirmation');
+    expect(screen.queryByTestId(TID.Text.RecordingSaveConfirmation)).toBeNull();
     expect(mockSetParams).toHaveBeenCalledWith({ saved: undefined });
   });
 
@@ -1397,6 +1453,21 @@ describe('stable dream route identity', () => {
     fireEvent.click(screen.getByTestId(TID.Button.DreamFavorite));
     expect(mockToggleFavorite).toHaveBeenCalledWith(selected);
   });
+  // A real capture cannot reliably produce timestamp collisions; isolate the route
+  // boundary so equal-date sync records cannot navigate back to the same dream.
+  it('turns to the other equal-date record and never offers itself as a neighbour', () => {
+    mockSetParams.mockClear();
+    mockDreams = [buildDream({ remoteId: 17, clientRequestId: 'request-17' }),
+      buildDream({ remoteId: 2501, clientRequestId: 'request-2501' })];
+    mockSearchParams = { id: '42', remoteId: '2501' };
+    render(<JournalDetailScreen />);
+    const turns = screen.queryAllByTestId(/^test\.page\.(newer|older)$/);
+    expect(turns).toHaveLength(1);
+    fireEvent.click(turns[0]);
+    expect(mockSetParams).toHaveBeenCalledWith(expect.objectContaining({
+      id: '42', remoteId: '17', clientRequestId: 'request-17',
+    }));
+  });
   it('does not pick the first dream for an ambiguous legacy date-only route', () => {
     mockDreams = [buildDream({ remoteId: 17 }), buildDream({ remoteId: 2501 })];
     mockSearchParams = { id: '42' };
@@ -1438,4 +1509,19 @@ it('renders a sparse unclassified reflection without empty insight sections', ()
   expect(screen.getByText('Votre récit décrit une porte.')).toBeTruthy();
   expect(screen.queryByText('journal.detail.symbols_header')).toBeNull();
   expect(screen.queryByText('journal.detail.emotions_header')).toBeNull();
+});
+
+// An invisible preview's performance marker has no visual E2E assertion; retain
+// this isolated counterexample so latency evidence describes only live content.
+it('does not report a decorative analysis as displayed but reports the live reading', () => {
+  const { DecorativeCopy } = require('@/components/journal/DecorativeCopy');
+  const { DreamAnalysisContent } = require('@/components/journal/DreamAnalysisContent');
+  const dream = buildDream({ analysisRequestId: 'reading-42', isAnalyzed: true,
+    analysisStatus: 'done', interpretation: 'A quiet city.' });
+  mockMarkPerformance.mockClear();
+  const view = render(<DecorativeCopy><DreamAnalysisContent dream={dream} pending={false} /></DecorativeCopy>);
+  expect(mockMarkPerformance).not.toHaveBeenCalledWith('analysis.text_displayed', expect.anything());
+  view.rerender(<DreamAnalysisContent dream={dream} pending={false} />);
+  expect(mockMarkPerformance).toHaveBeenCalledWith('analysis.text_displayed', { trace: 1 });
+  cleanup();
 });

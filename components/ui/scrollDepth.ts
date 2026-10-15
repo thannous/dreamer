@@ -1,4 +1,4 @@
-import { createContext, useContext, useRef } from 'react';
+import { createContext, useCallback, useContext, useRef } from 'react';
 import { useWindowDimensions, type View } from 'react-native';
 import {
   Extrapolation, interpolate, makeMutable, measure, useAnimatedRef, useAnimatedStyle, useReducedMotion,
@@ -47,16 +47,21 @@ const useFrameRef: () => ReturnType<typeof useAnimatedRef<View>> = typeof useAni
  * A picture in a card drifts through its frame as the card crosses the screen: it shows
  * its lower part as the card enters at the bottom and its upper part as it leaves at the
  * top, so it seems to lie further away than the card. The picture overhangs its frame by
- * `travel` points above and below. Put `frame` on the frame and `style` on the picture.
+ * `travel` points above and below. Put `frame` and `onLayout` on the frame and `style` on
+ * the picture.
  */
 export function useFrameParallax(travel: number) {
   const frame = useFrameRef();
   const scrollY = useHeaderScrollY();
+  // A frame is measured again once laid out, so a new page takes its drift at once rather
+  // than on its first scroll.
+  const laidOut = useScreenScrollValue();
   const reduced = useReducedMotion();
   const { height: screen } = useWindowDimensions();
   const style = useAnimatedStyle(() => {
-    // Read to run again on every scroll frame of its screen.
+    // Read to run again on every scroll frame of its screen, and once its frame is laid out.
     scrollY.get();
+    laidOut.get();
     // Positions are only known on the UI thread; the first pass on the JS thread rests.
     if (reduced || travel <= 0 || !globalThis._WORKLET) return { transform: [{ translateY: 0 }] };
     const box = measure(frame);
@@ -64,5 +69,6 @@ export function useFrameParallax(travel: number) {
     const progress = (box.pageY + box.height / 2 - screen / 2) / (screen / 2 + box.height / 2);
     return { transform: [{ translateY: interpolate(progress, [-1, 1], [travel, -travel], Extrapolation.CLAMP) }] };
   });
-  return { frame, style };
+  const onLayout = useCallback(() => { laidOut.set(laidOut.get() + 1); }, [laidOut]);
+  return { frame, style, onLayout };
 }

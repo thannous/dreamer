@@ -27,6 +27,8 @@ const DREAM_THEME_LABEL_KEYS: Record<DreamTheme, string> = {
   mystical: 'dream.theme.mystical',
   calm: 'dream.theme.calm',
   noir: 'dream.theme.noir',
+  luminous: 'dream.theme.luminous',
+  nostalgic: 'dream.theme.nostalgic',
 };
 
 /**

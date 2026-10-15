@@ -33,6 +33,8 @@ const THEME_PILL_CLASS: Record<string, string> = {
   mystical: 'bg-tag-mystical',
   calm: 'bg-tag-calm',
   noir: 'bg-tag-noir',
+  luminous: 'bg-tag-luminous',
+  nostalgic: 'bg-tag-nostalgic',
 };
 
 export const AtlasDreamRow = memo(function AtlasDreamRow({

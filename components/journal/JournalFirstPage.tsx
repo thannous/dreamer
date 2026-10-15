@@ -9,8 +9,8 @@ import { useTheme } from '@/context/ThemeContext';
 import { useTranslation } from '@/hooks/useTranslation';
 import { TID } from '@/lib/testIDs';
 
-const LIGHT_NOTEBOOK = require('@/assets/images/journal-first-page-light.webp');
-const DARK_NOTEBOOK = require('@/assets/images/journal-first-page-dark.webp');
+/** The same journal and pen as the save animation's, cut out so one image sits on both grounds. */
+const NOTEBOOK = require('@/assets/images/journal-first-page.webp');
 
 type JournalFirstPageProps = {
   bottomInset: number;
@@ -54,7 +54,7 @@ export function JournalFirstPage({ bottomInset, onStartDream, onSettings }: Jour
             </Text>
             <Image
               testID="journal-first-page-art"
-              source={mode === 'dark' ? DARK_NOTEBOOK : LIGHT_NOTEBOOK}
+              source={NOTEBOOK}
               contentFit="contain"
               accessible={false}
               importantForAccessibility="no"

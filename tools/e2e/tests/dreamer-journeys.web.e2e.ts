@@ -1,6 +1,6 @@
 // Historical UI assertions, run on the public TesterArmy web surface.
 import type { Page } from 'playwright/test';
-import { createParityTest, expect, withDialog } from '../web-parity-fixtures';
+import { answerSeal, createParityTest, expect, withDialog } from '../web-parity-fixtures';
 const test = createParityTest();
 
 async function startGuest(page: Page) {
@@ -87,60 +87,20 @@ test('free user saves a dream and finds the exact story in the journal', async (
   await page.getByTestId('input.dreamTranscript').fill(story);
   await page.getByTestId('btn.saveDream').click();
   await expect(page.getByTestId('component.transcriptCard')).toContainText(story);
-  await expect(page.getByTestId('btn.editMetadata')).toBeEnabled();
-  await page.getByTestId('btn.editMetadata').click();
+  await expect(page.getByTestId('btn.editDream')).toBeEnabled();
+  await page.getByTestId('btn.editDream').click();
   await page.getByTestId('input.dreamTitle').fill('E2E sapphire lighthouse');
-  await page.getByTestId('btn.editMetadata').click();
+  await page.getByTestId('btn.saveDreamEdit').click();
   await journal(page);
   await openDream(page, 'E2E sapphire lighthouse');
   await expect(page.getByTestId('component.transcriptCard')).toContainText(story);
 });
 
-for (const editor of ['metadata', 'transcript'] as const) {
-  test(`background categorization preserves the ${editor} draft until it is saved`, async ({ page }, info) => {
-    await selectProfile(page, 'existing');
-    // Hold the mock response until the user has entered an edit. No sleep or
-    // application hook is needed: the browser clock controls the real timers.
-    await page.evaluate(() => { Math.random = () => 0.99; });
-    const now = new Date('2026-10-06T10:00:00Z');
-    await page.clock.install({ time: new Date(now.getTime() - 1000) });
-    await page.clock.pauseAt(now);
-    const story = 'E2E sapphire lighthouse above the quiet ocean.';
-    await page.getByTestId('input.dreamTranscript').fill(story);
-    await page.getByTestId('btn.saveDream').click();
-    await page.clock.runFor(100);
-    await expect(page.getByTestId('component.transcriptCard')).toContainText(story);
-    const button = page.getByTestId(editor === 'metadata' ? 'btn.editMetadata' : 'btn.editTranscript');
-    const input = page.getByTestId(editor === 'metadata' ? 'input.dreamTitle' : 'input.dreamTranscript');
-    await button.click();
-    await page.clock.runFor(100);
-    const draft = editor === 'metadata' ? 'E2E personal lighthouse title' : 'E2E revised story: the lighthouse has a blue door.';
-    await input.fill(draft);
-    await expect(input).toHaveValue(draft);
-    const backgroundSaved = page.waitForEvent('console', {
-      predicate: message => message.text() === '[MOCK STORAGE] Dreams saved successfully',
-    });
-    await page.clock.runFor(1500);
-    // This mock provider stores journal rows in memory. Its completion event
-    // witnesses the update; the assertions below check the actual user outcome.
-    await backgroundSaved;
-    await expect(input).toBeVisible();
-    await expect(input).toHaveValue(draft);
-    await page.screenshot({ path: info.outputPath(`${editor}-draft-after-categorization.png`) });
-    await page.clock.resume();
-    await button.click();
-    await expect(input).toHaveCount(0);
-    await journal(page);
-    await openDream(page, editor === 'metadata' ? draft : 'E2E sapphire lighthouse above the quiet ocean');
-    if (editor === 'metadata') await expect(page.getByRole('heading', { name: draft, exact: true })).toBeVisible();
-    else await expect(page.getByTestId('component.transcriptCard')).toContainText(draft);
-    await journal(page);
-    await openDream(page, 'The Infinite Library');
-    await page.getByTestId(editor === 'metadata' ? 'btn.editMetadata' : 'btn.editTranscript').click();
-    await expect(input).toHaveValue(/\S/);
-    await expect(input).not.toHaveValue(draft);
-  });
-}
+// Retired 2026-10-14 (seal workflow, PR #358): the capture seal now waits for the dream's
+// pre-analysis before its page opens, so in the browser's mock profile (0.5-1 s) the
+// categorization always lands before an edit can start. "Background categorization preserves
+// the metadata/transcript draft" stays covered on Android and iOS by the mock-persistent
+// profile with EXPO_PUBLIC_MOCK_CATEGORIZATION_DELAY_MS=30000 (tools/e2e/NATIVE-MATRIX.md).
 
 test('free user searches, sees no match, and recovers the journal', async ({ page }, info) => {
   await page.setViewportSize({ width: 390, height: 844 });
@@ -160,9 +120,9 @@ test('free user edits a story, cancels deletion, then deletes only that dream', 
   await selectProfile(page, 'existing');
   await journal(page);
   await openDream(page, 'The Infinite Library');
-  await page.getByTestId('btn.editTranscript').click();
+  await page.getByTestId('btn.editDream').click();
   await page.getByTestId('input.dreamTranscript').fill('E2E revised story: the library has a blue door.');
-  await page.getByTestId('btn.editTranscript').click();
+  await page.getByTestId('btn.saveDreamEdit').click();
   await expect(page.getByTestId('component.transcriptCard')).toContainText('E2E revised story');
   await page.getByTestId('btn.dream.delete').click();
   await page.getByRole('button', { name: 'Cancel', exact: true }).click();
@@ -286,8 +246,9 @@ for (const profile of ['new', 'plus'] as const) {
     const story = `E2E ${profile} traveler finds a lantern on a silver bridge.`;
     await page.getByTestId('input.dreamTranscript').fill(story);
     await page.getByTestId('btn.saveDream').click();
+    // The journal asks during the seal; yes opens the page already reading the dream.
+    await answerSeal(page, 'now');
     await expect(page.getByTestId('component.transcriptCard')).toContainText(story);
-    await page.getByTestId('btn.dream.primaryCta').click();
     await expect(page.getByTestId('component.dreamDetail.readingZone')).toContainText(/\S[\s\S]{80}/);
     await expect(page.getByTestId('analysis.reading.modal')).toHaveCount(0);
     await expect(page.getByTestId('screen.paywall')).toHaveCount(0);

@@ -1,6 +1,6 @@
 import path from 'node:path';
 import type { Page } from 'playwright/test';
-import { test, expect } from './fixtures';
+import { expectIllustrationOnPlate, test, expect } from './fixtures';
 
 const artwork = path.resolve(__dirname, '../fixtures/home-dream.png');
 const dreamTitle = 'L’éléphant au sommet de la grande roue';
@@ -8,6 +8,8 @@ const story = 'An elephant lands on top of a Ferris wheel among turquoise and co
 
 async function prepareReflection(page: Page, media: 'loaded' | 'failed' | 'absent' = 'loaded') {
   await page.route('https://picsum.photos/**', route => media === 'failed' ? route.abort() : route.fulfill({ path: artwork }));
+  // Generated mock illustrations are the bundled 9:16 dream art, not picsum.
+  if (media === 'failed') await page.route(/mock-data(?:%2F|\/)assets(?:%2F|\/)dreams(?:%2F|\/)/, route => route.abort());
   await page.goto('/');
   await page.getByTestId('btn.onboarding.intro.next').click();
   await page.getByTestId('btn.onboarding.skip').click();
@@ -22,16 +24,17 @@ async function prepareReflection(page: Page, media: 'loaded' | 'failed' | 'absen
   await expect(page.getByTestId('component.dreamDetail.readingZone')).toContainText(/\S{20}/);
   if (media !== 'absent') {
     await page.getByTestId('btn.journal.illustrate').click();
-    if (media !== 'failed') await expect(page.getByTestId('btn.journal.illustration.expand')).toBeVisible();
+    // Painted in the seal's window, the illustration leaves it for the plate at the top of the page.
+    if (media !== 'failed') await expectIllustrationOnPlate(page);
     await expect(page.getByTestId('journal.detail.image.generation_dots')).toHaveCount(0);
     if (media === 'failed') {
       await page.getByTestId('component.metadataCard').scrollIntoViewIfNeeded();
       await expect(page.getByTestId('journal.detail.image.unavailable')).toBeVisible();
     }
   }
-  await page.getByTestId('btn.editMetadata').click();
+  await page.getByTestId('btn.editDream').click();
   await page.getByTestId('input.dreamTitle').fill(dreamTitle);
-  await page.getByTestId('btn.editMetadata').click();
+  await page.getByTestId('btn.saveDreamEdit').click();
   await page.getByTestId('component.transcriptCard').scrollIntoViewIfNeeded();
   await page.getByTestId('component.dreamDetail.actionCard').click();
   await expect(page.getByTestId('screen.dreamCategories')).toBeVisible();
