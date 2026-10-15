@@ -171,6 +171,7 @@ export default {
     'scripts/mobile-release.js',
     'scripts/verify-analysis-authorization.mjs',
     'scripts/run-backend-e2e.cjs',
+    'scripts/lib/backend-e2e-local.cjs',
     'tools/e2e/run.mjs',
     'scripts/verify-local-config.test.js',
     'scripts/pre-push-hook.test.js',
@@ -279,6 +280,12 @@ export default {
         // The production ref is pinned against app.json.
         'app.json',
       ],
+    },
+    // Negative target/scheduler cases cannot safely be exercised by a live browser journey.
+    {
+      name: 'backend-runner-guards',
+      command: 'node --test scripts/lib/backend-e2e-local.test.cjs',
+      inputs: ['scripts/lib/backend-e2e-local.cjs', 'scripts/lib/backend-e2e-local.test.cjs', 'scripts/run-backend-e2e.cjs'],
     },
     { name: 'typecheck-app', command: 'npm run typecheck:app', exclude: DOCS },
     { name: 'typecheck-tests', command: 'npm run typecheck:tests', exclude: DOCS },

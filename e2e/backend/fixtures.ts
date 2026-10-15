@@ -2,12 +2,10 @@ import { randomUUID } from 'node:crypto';
 import { readFileSync } from 'node:fs';
 import { createClient } from '@supabase/supabase-js';
 import { test as base, expect, type BrowserContext, type Page } from 'playwright/test';
+import { assertBackendTarget } from '../../scripts/lib/backend-e2e-local.cjs';
 
 const status = JSON.parse(readFileSync(process.env.E2E_BACKEND_STATUS_FILE!, 'utf8'));
-const url = new URL(status.API_URL);
-if (url.protocol !== 'http:' || url.hostname !== '127.0.0.1' || url.port !== '56321') {
-  throw new Error('Backend E2E only accepts the disposable local Supabase API on 127.0.0.1:56321');
-}
+const url = assertBackendTarget(status);
 const options = { auth: { persistSession: false, autoRefreshToken: false } };
 const admin = createClient(url.href, status.SERVICE_ROLE_KEY, options);
 
