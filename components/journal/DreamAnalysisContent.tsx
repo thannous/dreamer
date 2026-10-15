@@ -8,7 +8,7 @@ import { useTranslation } from '@/hooks/useTranslation';
 import { isPoeticDreamQuote } from '@/lib/dreamQuote';
 import { markPerformance, performanceTraceId } from '@/lib/performanceTrace';
 import { TID } from '@/lib/testIDs';
-import { useLiveTestID } from './DecorativeCopy';
+import { useIsDecorativeCopy, useLiveTestID } from './DecorativeCopy';
 import type { DreamAnalysis } from '@/lib/types';
 import { DreamReadingWait } from './story/DreamReadingWait';
 import { DreamSymbolConstellation, MAX_CONSTELLATION_STARS } from './story/DreamSymbolConstellation';
@@ -45,11 +45,12 @@ export function DreamAnalysisContent({ dream, pending, reveal = false, onLayout 
   const { t } = useTranslation();
   const reduced = useReducedMotion();
   const tid = useLiveTestID();
+  const decorative = useIsDecorativeCopy();
   useEffect(() => {
-    if (!pending && dream.analysisRequestId) {
+    if (!decorative && !pending && dream.analysisRequestId) {
       markPerformance('analysis.text_displayed', { trace: performanceTraceId(dream.analysisRequestId) });
     }
-  }, [pending, dream.analysisRequestId]);
+  }, [decorative, pending, dream.analysisRequestId]);
   const body = { fontSize: 16, lineHeight: 26, color: colors.textPrimary };
   const insights = [
     { key: 'symbols', heading: t('journal.detail.symbols_header'), items: dream.symbols?.map(item => ({ name: item.name, text: item.meaning })) },

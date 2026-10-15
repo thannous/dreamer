@@ -1,6 +1,9 @@
 import * as Haptics from 'expo-haptics';
 import React, { createContext, useCallback, useContext, useEffect, useMemo, useRef, useState } from 'react';
-import { View, useWindowDimensions } from 'react-native';
+import { Platform, Pressable, View, useWindowDimensions } from 'react-native';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import { IconSymbol } from '@/components/ui/icon-symbol';
+import { useTranslation } from '@/hooks/useTranslation';
 import { Gesture, GestureDetector } from 'react-native-gesture-handler';
 import Animated, {
   Extrapolation, interpolate, useAnimatedStyle, useReducedMotion, useSharedValue, withSequence, withSpring, withTiming,
@@ -92,10 +95,14 @@ export function JournalPageTurner({ newer, older, folio, tonight = false, onTurn
   onTurn: (dream: DreamAnalysis) => void;
   children: React.ReactNode;
 }) {
-  const { width } = useWindowDimensions();
+  const { width, height } = useWindowDimensions();
+  const [pageHeight, setPageHeight] = useState(height);
+  const insets = useSafeAreaInsets();
+  const { t } = useTranslation();
   const reduced = useReducedMotion();
   const { colors, mode } = useTheme();
-  const shadow = useMemo(() => getNoctaliaDesignTokens(colors, mode).surface.overlay, [colors, mode]);
+  const noctalia = useMemo(() => getNoctaliaDesignTokens(colors, mode), [colors, mode]);
+  const shadow = noctalia.surface.overlay;
   const [locked, setLocked] = useState(false);
   const lockedNow = useRef(locked);
   useEffect(() => { lockedNow.current = locked; }, [locked]);
@@ -193,6 +200,23 @@ export function JournalPageTurner({ newer, older, folio, tonight = false, onTurn
     void Haptics.selectionAsync().catch(() => {});
     onTurn(target);
   }, [direction, onTurn, progress, reachTonight, shown.newer, shown.older, tonight, turnedOver]);
+
+  // Explicit buttons share the same targets as swipes and are available to
+  // keyboards and assistive technology. A discrete action changes page at once.
+  const navigatePage = useCallback((turnedTo: number) => {
+    if (lockedNow.current || phase.get() !== IDLE) return;
+    if (atTonight) {
+      if (turnedTo !== BACKWARD) return;
+      turnedOver.set(false);
+      progress.set(0);
+      direction.set(0);
+      leaveTonight();
+      return;
+    }
+    direction.set(0);
+    progress.set(0);
+    turnAtOnce(turnedTo);
+  }, [atTonight, direction, leaveTonight, phase, progress, turnAtOnce, turnedOver]);
 
   // The hint: the page lifts towards the next one and falls back, once a session.
   useEffect(() => {
@@ -338,11 +362,12 @@ export function JournalPageTurner({ newer, older, folio, tonight = false, onTurn
   return (
     <PageTurnLockContext.Provider value={setLocked}>
       <PageArrivalContext.Provider value={arrival}>
+      <View className="flex-1 bg-ink">
       <GestureDetector gesture={pan} touchAction="pan-y">
-        <View className="flex-1 bg-ink">
+        <View className="flex-1 bg-ink" onLayout={({ nativeEvent: { layout } }) => setPageHeight(layout.height)}>
           {shown.newer ? (
             <Animated.View pointerEvents="none" style={[pageFrame, laterPage]}>
-              <JournalPagePreview dream={shown.newer} folio={shown.folio ? shown.folio + 1 : undefined} />
+              <JournalPagePreview height={pageHeight} dream={shown.newer} folio={shown.folio ? shown.folio + 1 : undefined} />
               <Animated.View className="absolute inset-0" style={[{ backgroundColor: shadow }, laterShade]} />
             </Animated.View>
           ) : tonight ? (
@@ -352,19 +377,38 @@ export function JournalPageTurner({ newer, older, folio, tonight = false, onTurn
             </Animated.View>
           ) : null}
           <Animated.View pointerEvents={atTonight ? 'none' : 'auto'} accessibilityElementsHidden={atTonight}
-            importantForAccessibility={atTonight ? 'no-hide-descendants' : 'auto'} style={[pageFrame, currentPage]}>
+            importantForAccessibility={atTonight ? 'no-hide-descendants' : 'auto'}
+            {...(Platform.OS === 'web' ? { 'aria-hidden': atTonight, inert: atTonight } : {})} style={[pageFrame, currentPage]}>
             {children}
             <Animated.View pointerEvents="none" className="absolute inset-0" style={[{ backgroundColor: shadow }, currentShade]} />
             <Animated.View pointerEvents="none" className="absolute inset-0" style={[{ backgroundColor: shadow }, currentUnderShade]} />
           </Animated.View>
           {shown.older ? (
             <Animated.View pointerEvents="none" style={[pageFrame, earlierPage]}>
-              <JournalPagePreview dream={shown.older} folio={shown.folio ? shown.folio - 1 : undefined} />
+              <JournalPagePreview height={pageHeight} dream={shown.older} folio={shown.folio ? shown.folio - 1 : undefined} />
               <Animated.View className="absolute inset-0" style={[{ backgroundColor: shadow }, earlierShade]} />
             </Animated.View>
           ) : null}
         </View>
       </GestureDetector>
+          {/* Reserve the controls' own space so they never cover the reading dock. */}
+          <View className="flex-row justify-between px-4"
+            style={{ paddingTop: 8, paddingBottom: Math.max(insets.bottom, 8) }}>
+            {([BACKWARD, FORWARD] as const).map((side) => {
+              const available = side === BACKWARD ? atTonight || hasOlder : !atTonight && hasNewer;
+              if (!available) return <View key={side} />;
+              const label = t(side === BACKWARD ? 'journal.page.previous' : 'journal.page.next');
+              return <Pressable key={side} onPress={() => navigatePage(side)} disabled={locked}
+                accessibilityRole="button" accessibilityLabel={label} accessibilityState={{ disabled: locked }}
+                testID={side === BACKWARD ? 'journal.page.previous' : 'journal.page.next'}
+                style={{ width: 44, height: 44, borderRadius: 22, alignItems: 'center', justifyContent: 'center',
+                  backgroundColor: noctalia.screen.background, borderWidth: 1, borderColor: noctalia.surface.border,
+                  opacity: locked ? 0.4 : 1 }}>
+                <IconSymbol name={side === BACKWARD ? 'chevron.left' : 'chevron.right'} size={20} color={noctalia.text.primary} />
+              </Pressable>;
+            })}
+          </View>
+      </View>
       </PageArrivalContext.Provider>
     </PageTurnLockContext.Provider>
   );

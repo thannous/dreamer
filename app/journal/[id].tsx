@@ -374,7 +374,7 @@ function JournalDetailScreen() {
   const neighbours = useMemo(() => {
     if (!dream) return { newer: null, older: null, folio: undefined };
     const pages = sortDreams(dreams);
-    const index = pages.findIndex((page) => page.id === dream.id);
+    const index = pages.findIndex((page) => getDreamIdentityKey(page) === getDreamIdentityKey(dream));
     return {
       newer: index > 0 ? pages[index - 1] : null,
       older: index >= 0 && index < pages.length - 1 ? pages[index + 1] : null,

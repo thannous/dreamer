@@ -1,6 +1,6 @@
 import { router } from 'expo-router';
 import React, { useMemo } from 'react';
-import { Image, Pressable, StyleSheet, Text, View } from 'react-native';
+import { Image, Platform, Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import Svg, { Circle } from 'react-native-svg';
 
@@ -56,9 +56,10 @@ export function JournalTonightPage({ folio, interactive }: {
   return (
     <View className="flex-1 overflow-hidden bg-ink" pointerEvents={interactive ? 'auto' : 'none'}
       accessibilityElementsHidden={!interactive} importantForAccessibility={interactive ? 'auto' : 'no-hide-descendants'}
-      testID="journal.tonight">
+      testID="journal.tonight"
+      {...(Platform.OS === 'web' ? { 'aria-hidden': !interactive, inert: !interactive } : {})}>
       <JournalPaper />
-      <View style={{ paddingTop: insets.top + 12 }}>
+      <ScrollView style={{ flex: 1 }} contentContainerStyle={{ flexGrow: 1, paddingTop: insets.top + 12, paddingBottom: 16 }}>
         <View style={{ marginBottom: RUNNING_HEAD_GAP }}>
           <JournalRunningHead onBack={interactive ? () => router.replace('/(tabs)/journal') : undefined}
             backTestID="journal.tonight.back" />
@@ -107,10 +108,10 @@ export function JournalTonightPage({ folio, interactive }: {
             )
           ) : null}
         </View>
-      </View>
-      <View pointerEvents="none" className="absolute left-0 right-0" style={{ bottom: insets.bottom + 12 }}>
-        <JournalFolio folio={folio} />
-      </View>
+        <View pointerEvents="none" style={{ marginTop: 'auto', paddingTop: 24 }}>
+          <JournalFolio folio={folio} />
+        </View>
+      </ScrollView>
       <JournalPageEdges />
     </View>
   );

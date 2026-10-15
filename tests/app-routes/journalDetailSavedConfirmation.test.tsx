@@ -10,6 +10,11 @@ import { trackInitialDreamCategorization } from '@/lib/initialDreamCategorizatio
 import { TID } from '@/lib/testIDs';
 
 // Static hook fixtures need an actual context notification across a memo boundary.
+const mockMarkPerformance = jest.fn();
+jest.mock('@/lib/performanceTrace', () => ({
+  markPerformance: (...args: unknown[]) => mockMarkPerformance(...args),
+  performanceTraceId: () => 1,
+}));
 const mockRenderContext = React.createContext({});
 const render = (ui: React.ReactElement) => renderTree(ui, { wrapper: ({ children }) => (
   <mockRenderContext.Provider value={{}}>{children}</mockRenderContext.Provider>
@@ -246,7 +251,13 @@ jest.mock('@/components/inspiration/AtmosphericBackground', () => ({
 jest.mock('@/components/journal/JournalPaper', () => ({ JournalPaper: () => null }));
 // Leafing through the journal is a gesture around the page; these journeys only need the page.
 jest.mock('@/components/journal/JournalPageTurner', () => ({
-  JournalPageTurner: ({ children }: { children: React.ReactNode }) => children,
+  JournalPageTurner: ({ children, newer, older, onTurn }: {
+    children: React.ReactNode; newer: DreamAnalysis | null; older: DreamAnalysis | null;
+    onTurn: (dream: DreamAnalysis) => void;
+  }) => <>{children}
+    {newer ? <button data-testid="test.page.newer" onClick={() => onTurn(newer)}>Newer</button> : null}
+    {older ? <button data-testid="test.page.older" onClick={() => onTurn(older)}>Older</button> : null}
+  </>,
   useJournalPageTurnLock: () => {},
   useJournalPageLaidOut: () => () => {},
   useJournalPageTurnedTo: () => false,
@@ -1442,6 +1453,21 @@ describe('stable dream route identity', () => {
     fireEvent.click(screen.getByTestId(TID.Button.DreamFavorite));
     expect(mockToggleFavorite).toHaveBeenCalledWith(selected);
   });
+  // A real capture cannot reliably produce timestamp collisions; isolate the route
+  // boundary so equal-date sync records cannot navigate back to the same dream.
+  it('turns to the other equal-date record and never offers itself as a neighbour', () => {
+    mockSetParams.mockClear();
+    mockDreams = [buildDream({ remoteId: 17, clientRequestId: 'request-17' }),
+      buildDream({ remoteId: 2501, clientRequestId: 'request-2501' })];
+    mockSearchParams = { id: '42', remoteId: '2501' };
+    render(<JournalDetailScreen />);
+    const turns = screen.queryAllByTestId(/^test\.page\.(newer|older)$/);
+    expect(turns).toHaveLength(1);
+    fireEvent.click(turns[0]);
+    expect(mockSetParams).toHaveBeenCalledWith(expect.objectContaining({
+      id: '42', remoteId: '17', clientRequestId: 'request-17',
+    }));
+  });
   it('does not pick the first dream for an ambiguous legacy date-only route', () => {
     mockDreams = [buildDream({ remoteId: 17 }), buildDream({ remoteId: 2501 })];
     mockSearchParams = { id: '42' };
@@ -1483,4 +1509,19 @@ it('renders a sparse unclassified reflection without empty insight sections', ()
   expect(screen.getByText('Votre récit décrit une porte.')).toBeTruthy();
   expect(screen.queryByText('journal.detail.symbols_header')).toBeNull();
   expect(screen.queryByText('journal.detail.emotions_header')).toBeNull();
+});
+
+// An invisible preview's performance marker has no visual E2E assertion; retain
+// this isolated counterexample so latency evidence describes only live content.
+it('does not report a decorative analysis as displayed but reports the live reading', () => {
+  const { DecorativeCopy } = require('@/components/journal/DecorativeCopy');
+  const { DreamAnalysisContent } = require('@/components/journal/DreamAnalysisContent');
+  const dream = buildDream({ analysisRequestId: 'reading-42', isAnalyzed: true,
+    analysisStatus: 'done', interpretation: 'A quiet city.' });
+  mockMarkPerformance.mockClear();
+  const view = render(<DecorativeCopy><DreamAnalysisContent dream={dream} pending={false} /></DecorativeCopy>);
+  expect(mockMarkPerformance).not.toHaveBeenCalledWith('analysis.text_displayed', expect.anything());
+  view.rerender(<DreamAnalysisContent dream={dream} pending={false} />);
+  expect(mockMarkPerformance).toHaveBeenCalledWith('analysis.text_displayed', { trace: 1 });
+  cleanup();
 });

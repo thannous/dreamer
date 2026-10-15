@@ -11,6 +11,11 @@ export function DecorativeCopy({ children }: { children: ReactNode }) {
   return <Decorative.Provider value>{children}</Decorative.Provider>;
 }
 
+/** Decorative copies must not emit effects that describe a live display. */
+export function useIsDecorativeCopy(): boolean {
+  return useContext(Decorative);
+}
+
 /** Test ids as the live page sets them, withheld inside a decorative copy. */
 export function useLiveTestID(): (id: string | undefined) => string | undefined {
   const decorative = useContext(Decorative);

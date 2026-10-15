@@ -571,6 +571,8 @@ const translations: Record<string, string> = {
     'dream.theme.luminous': 'Luminoso',
     'dream.theme.nostalgic': 'Nostalgico',
     'journal.tonight.title': 'La notte di {date}',
+    'journal.page.previous': 'Pagina precedente',
+    'journal.page.next': 'Pagina successiva',
     'journal.tonight.waiting': 'Questa pagina aspetta il sogno di questa notte.',
     'journal.tonight.write': 'Scrivere il mio sogno',
     'journal.tonight.remind': 'Ricordamelo al risveglio',

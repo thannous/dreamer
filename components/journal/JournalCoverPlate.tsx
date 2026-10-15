@@ -42,12 +42,16 @@ export function JournalCoverPlate({ height, titleHeight, picture, head, children
   // is none, and the picture reaches the top of the screen as it is.
   const veiled = mode === 'dark';
   const veil = headTop + RUNNING_HEAD_HEIGHT + 32;
-  const titleTop = height - insets.bottom - (titleHeight ?? TITLE_ESTIMATE);
+  // The plate lives in the reading scroll view: grow it when the complete title
+  // needs more than a screen, keeping its first line below the running head.
+  const plateHeight = Math.max(height, headTop + RUNNING_HEAD_HEIGHT + RUNNING_HEAD_GAP
+    + (titleHeight ?? TITLE_ESTIMATE) + insets.bottom + 24);
+  const titleTop = plateHeight - insets.bottom - (titleHeight ?? TITLE_ESTIMATE);
   const bandTop = Math.max(0, titleTop - 24 - DISSOLVE);
-  const band = height - bandTop;
+  const band = plateHeight - bandTop;
 
   return (
-    <View testID={testID} className="relative overflow-hidden" style={{ height }}>
+    <View testID={testID} className="relative overflow-hidden" style={{ height: plateHeight }}>
       {picture}
       {veiled ? (
         <LinearGradient pointerEvents="none"

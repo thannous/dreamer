@@ -1,7 +1,11 @@
 import * as Haptics from 'expo-haptics';
 import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import {
+  AccessibilityInfo,
+  findNodeHandle,
   Image,
+  Modal,
+  Platform,
   Text,
   View,
   useWindowDimensions,
@@ -9,6 +13,7 @@ import {
   type LayoutChangeEvent,
   type StyleProp,
   type TextLayoutEvent,
+  type ViewInstance,
   type ViewStyle,
 } from 'react-native';
 import Animated, { type CSSAnimationKeyframes, type CSSStyle } from 'react-native-reanimated';
@@ -405,6 +410,18 @@ export function DreamCaptureSeal({ name, mark, provisionalName, date, previousPa
   // Asked, the page holds still from the question to the answer; the timeline is then
   // as far on as it had run, and the dive takes up from there.
   const [asking, setAsking] = useState(false);
+  const questionRef = useRef<ViewInstance | null>(null);
+  useEffect(() => {
+    if (!asking) return;
+    const timer = setTimeout(() => {
+      if (Platform.OS === 'web') questionRef.current?.focus();
+      else {
+        const node = findNodeHandle(questionRef.current);
+        if (node) AccessibilityInfo.setAccessibilityFocus(node);
+      }
+    }, 120);
+    return () => clearTimeout(timer);
+  }, [asking]);
   const [answer, setAnswer] = useState<boolean | null>(null);
   const startedAt = useRef(0);
   const heldAt = useRef(0);
@@ -729,10 +746,12 @@ export function DreamCaptureSeal({ name, mark, provisionalName, date, previousPa
       style={[ABOVE_THE_SCREEN, { left: book.x, top: askTop, width: Math.max(180, pageRight - book.x - 12) },
         answer !== null ? ANSWERED : null] as StyleProp<ViewStyle>}>
       <Reveal distance={4}>
-        <Text accessibilityRole="header" allowFontScaling={false}
-          style={{ fontFamily: Fonts.lora.regularItalic, fontSize: 13, lineHeight: 18, color: ink }}>
-          {t('journal.seal.ask_reading')}
-        </Text>
+        <View ref={questionRef} accessible accessibilityRole="header" tabIndex={-1}>
+          <Text allowFontScaling={false}
+            style={{ fontFamily: Fonts.lora.regularItalic, fontSize: 13, lineHeight: 18, color: ink }}>
+            {t('journal.seal.ask_reading')}
+          </Text>
+        </View>
         <View className="mt-0.5 flex-row items-center gap-6">
           <PressableScale onPress={() => answerReading(true)} disabled={!asking} testID="btn.dreamCaptureSeal.readNow"
             accessibilityRole="button" hitSlop={{ top: 12, bottom: 12, left: 12, right: 12 }}
@@ -754,12 +773,14 @@ export function DreamCaptureSeal({ name, mark, provisionalName, date, previousPa
   ) : null;
 
   return (
-    <>
+    <Modal visible transparent animationType="none" statusBarTranslucent navigationBarTranslucent
+      onRequestClose={() => { if (asking) answerReading(false); }}>
     <View
       testID={TID.Component.DreamCaptureSeal}
       accessible={false}
       importantForAccessibility="no-hide-descendants"
       accessibilityElementsHidden
+      {...(Platform.OS === 'web' ? { 'aria-hidden': true, inert: true } : {})}
       className="absolute inset-0 items-center justify-center"
       style={ABOVE_THE_SCREEN}
     >
@@ -961,6 +982,6 @@ export function DreamCaptureSeal({ name, mark, provisionalName, date, previousPa
       ) : null}
     </View>
     {question}
-    </>
+    </Modal>
   );
 }

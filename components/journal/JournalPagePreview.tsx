@@ -1,6 +1,6 @@
 import { Image } from 'expo-image';
 import React, { useMemo, useState } from 'react';
-import { Text, View, useWindowDimensions } from 'react-native';
+import { Platform, Text, View, useWindowDimensions } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { DreamAnalysisContent } from '@/components/journal/DreamAnalysisContent';
@@ -35,7 +35,7 @@ import type { DreamAnalysis } from '@/lib/types';
  * actions), so that once turned to, the dream page takes its place without anything moving.
  * It runs none of the page's work and offers none of its controls.
  */
-export function JournalPagePreview({ dream, folio }: { dream: DreamAnalysis; folio?: number }) {
+export function JournalPagePreview({ dream, folio, height }: { dream: DreamAnalysis; folio?: number; height: number }) {
   const window = useWindowDimensions();
   const insets = useSafeAreaInsets();
   const { t } = useTranslation();
@@ -61,7 +61,7 @@ export function JournalPagePreview({ dream, folio }: { dream: DreamAnalysis; fol
   const cover = dream.imageUrl?.trim() && media.imageUrl
     ? { uri: withCacheBuster(media.imageUrl, imageVersion), cacheKey: imageVersion ? `${dream.imageUrl}|${imageVersion}` : undefined }
     : null;
-  const coverTravel = Math.round(window.height * 0.06);
+  const coverTravel = Math.round(height * 0.06);
 
   const head = <JournalRunningHead />;
   // A read dream's seal heads its reading, between its name and its story, and carries its details.
@@ -118,10 +118,10 @@ export function JournalPagePreview({ dream, folio }: { dream: DreamAnalysis; fol
   return (
     <DecorativeCopy>
       <View className="flex-1 overflow-hidden bg-ink" accessible={false} importantForAccessibility="no-hide-descendants"
-        accessibilityElementsHidden>
+        accessibilityElementsHidden {...(Platform.OS === 'web' ? { 'aria-hidden': true, inert: true } : {})}>
         <JournalPaper />
         {cover ? (
-          <JournalCoverPlate height={window.height} titleHeight={introHeight} head={head}
+          <JournalCoverPlate height={height} titleHeight={introHeight} head={head}
             picture={<Image source={cover} contentFit="cover"
               style={{ position: 'absolute', left: 0, right: 0, top: -coverTravel, bottom: -coverTravel }} />}>
             {heading}

@@ -1,8 +1,8 @@
 /**
  * A dream's visual atmosphere: how strange, light or dark it feels, and how vivid or
  * quiet. The first four are the ones every app version can show; the others are offered
- * only to an app that says it can show them, so an older app never receives a theme it
- * would print as a raw word.
+ * only when the requesting app declares them. Account synchronization is separate:
+ * older installed clients can still receive a newer theme and show its raw label.
  */
 export const LEGACY_DREAM_THEMES: readonly string[] = ['surreal', 'mystical', 'calm', 'noir'];
 export const DREAM_THEME_VALUES: readonly string[] = [...LEGACY_DREAM_THEMES, 'luminous', 'nostalgic'];
