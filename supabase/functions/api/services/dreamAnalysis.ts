@@ -53,9 +53,15 @@ export const discloseAnalysisExcerpt = (interpretation: string, lang: string, tr
 /** Shared by initial categorization and full analysis so the same account uses the same rules. */
 export const DREAM_TYPE_POLICY = `Choose a type supported by the account. Prefer explicitly established Lucid Dream, Recurring Dream or Nightmare over the broader scene categories. Lucidity requires knowing one is dreaming; recurrence requires the same dream on separate occasions, not repeated actions within one dream; a nightmare requires reported fear or distress. Otherwise use Fantastical Dream for clearly impossible scenes, transformations or imaginary creatures (for example, riding a cloud that turns into a duck). Use Everyday Dream for recognizable, plausible everyday situations (for example, shopping or talking with colleagues) without fantastical elements. Neither vividness nor a visual theme establishes lucidity or symbolism. Do not use Symbolic Dream by default or infer a hidden meaning. Use Unknown when the remembered content is too sparse or ambiguous to support a type; never force a classification.`;
 
+/** Case-insensitive: Claude structured outputs may vary an enum value's case ("Lucid dream"). */
 export const normalizeAnalysisDreamType = (value: unknown): string =>
-  DREAM_TYPE_VALUES.includes(String(value))
-    ? String(value) : 'Unknown';
+  DREAM_TYPE_VALUES.find((type) => type.toLowerCase() === String(value).toLowerCase()) ?? 'Unknown';
+
+/** Claude is not sent the schema's array bounds; keep the three excerpts the app accepts. */
+export const keepAcceptedQuoteExcerpts = (analysis: Record<string, unknown>): Record<string, unknown> =>
+  Array.isArray(analysis.quoteSourceExcerpts)
+    ? { ...analysis, quoteSourceExcerpts: analysis.quoteSourceExcerpts.slice(0, 3) }
+    : analysis;
 
 export const buildAnalysisPrompt = (
   transcript: string,
@@ -188,9 +194,7 @@ export const runDreamAnalysis = async (options: {
     const { model, effort } = CLAUDE_MODELS.analysis;
     try {
       const { text, usage } = await requestClaudeJson({ apiKey: anthropicApiKey, model, effort, system: systemInstruction, prompt, schema, timeoutMs: options.claudeTimeoutMs });
-      const analysis = JSON.parse(text) as Record<string, unknown>;
-      // Claude is not sent the schema's array bounds; keep the three excerpts the app accepts.
-      if (Array.isArray(analysis.quoteSourceExcerpts)) analysis.quoteSourceExcerpts = analysis.quoteSourceExcerpts.slice(0, 3);
+      const analysis = keepAcceptedQuoteExcerpts(JSON.parse(text) as Record<string, unknown>);
       const result = normalizeDreamAnalysis(analysis, normalizeOptions);
       // Spend telemetry: categorical and token counts only, never content.
       console.log('[ai-spend] analysis', {

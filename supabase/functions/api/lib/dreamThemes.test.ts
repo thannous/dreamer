@@ -20,4 +20,5 @@ Deno.test('newer themes are offered only to an app that shows them, unknown ones
 Deno.test('a theme outside those offered falls back to surreal', () => {
   assertEquals(normalizeDreamTheme('luminous', ['surreal', 'mystical', 'calm', 'noir']), 'surreal');
   assertEquals(normalizeDreamTheme('luminous', ['surreal', 'mystical', 'calm', 'noir', 'luminous']), 'luminous');
+  assertEquals(normalizeDreamTheme('Mystical', ['surreal', 'mystical', 'calm', 'noir']), 'mystical');
 });

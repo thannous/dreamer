@@ -29,7 +29,8 @@ GEMINI_API_KEY=… ANTHROPIC_API_KEY=… deno run --no-lock \
 ```
 
 The run writes `results.json` (raw text, parsed response, the response as the app would show it
-after production normalization, any array outside the schema bounds, latency and provider usage per
+after production clamping and normalization, any array outside the schema bounds (recorded, not
+failed, since the app clamps it), latency and provider usage per
 call), `request-count.json` and `images/`. Keep the output out of Git. It exits with code 1
 when any analysis or image cell is not valid, including an image pair skipped because the
 current model's analysis was not valid.

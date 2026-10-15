@@ -32,6 +32,8 @@ Deno.test('unclassified output is a compatible non-null string, never a fabricat
       assertEquals(normalizeAnalysisDreamType(value), value);
     }
   }
+  // Claude structured outputs may vary an enum value's case.
+  assertEquals(normalizeAnalysisDreamType('Lucid dream'), 'Lucid Dream');
 });
 
 Deno.test('excerpt disclosure is server supplied in all supported languages even when the model omits it', () => {

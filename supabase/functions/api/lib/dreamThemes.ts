@@ -23,9 +23,9 @@ export const offeredDreamThemes = (requested: unknown): string[] => {
   return DREAM_THEME_VALUES.filter((theme) => LEGACY_DREAM_THEMES.includes(theme) || shown.has(theme));
 };
 
-/** The theme a model answered, kept to the themes offered. */
+/** The theme a model answered, kept to the themes offered. Case-insensitive: Claude may vary an enum value's case. */
 export const normalizeDreamTheme = (value: unknown, themes: readonly string[]): string =>
-  themes.includes(String(value)) ? String(value) : 'surreal';
+  themes.find((theme) => theme.toLowerCase() === String(value).toLowerCase()) ?? 'surreal';
 
 /** How the offered themes read in a prompt: as before for the legacy four, with their meanings once there are more. */
 export const describeDreamThemes = (themes: readonly string[]): string =>

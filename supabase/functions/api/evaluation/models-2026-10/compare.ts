@@ -16,6 +16,7 @@ import {
   ANALYSIS_PROMPT_VERSION,
   analysisSystemInstruction,
   buildAnalysisPrompt,
+  keepAcceptedQuoteExcerpts,
   normalizeDreamAnalysis,
 } from '../../services/dreamAnalysis.ts';
 import {
@@ -160,16 +161,17 @@ if (import.meta.main) {
           const milliseconds = Math.round(performance.now() - start);
           let response: unknown = null;
           try { response = JSON.parse(text); } catch { /* kept as rawText */ }
-          // Score what the app would show: production normalization, and the schema bounds Claude was not sent.
+          // Score what the app would show, with production's clamping (excerpts kept to three,
+          // other arrays truncated by normalization). Arrays over the schema bounds Claude was
+          // not sent are recorded, not failed, since the app delivers them clamped.
           const boundViolations = arrayBoundViolations(ANALYZE_DREAM_SCHEMA, response);
           let delivered: unknown = null;
           let status = response ? 'valid' : 'invalid (JSON)';
           try {
-            if (response) delivered = normalizeDreamAnalysis(response as Record<string, unknown>, { transcript: fixture.transcript, lang: fixture.lang });
+            if (response) delivered = normalizeDreamAnalysis(keepAcceptedQuoteExcerpts(response as Record<string, unknown>), { transcript: fixture.transcript, lang: fixture.lang });
           } catch {
             status = 'invalid (missing title or interpretation)';
           }
-          if (status === 'valid' && boundViolations.length) status = 'invalid (array bounds)';
           // Production falls back to Gemini on any other Claude stop, so users never see these.
           if (model.startsWith('claude-') && stopReason !== 'end_turn') status = `invalid (stop: ${stopReason})`;
           results[slot] = { kind: 'analysis', id: fixture.id, model, milliseconds, stopReason, usage, rawText: text, response, delivered, boundViolations, status };
