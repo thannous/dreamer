@@ -175,7 +175,8 @@ if (import.meta.main) {
           }
           if (status === 'valid' && boundViolations.length) status = 'invalid (array bounds)';
           results[slot] = { kind: 'analysis', id: fixture.id, model, milliseconds, stopReason, usage, rawText: text, response, delivered, boundViolations, status };
-          if (model === 'gemini-3.8-flash') imagePrompt = String((response as any)?.imagePrompt ?? '');
+          // Render only a prompt production would have kept.
+          if (model === 'gemini-3.8-flash' && status === 'valid') imagePrompt = (delivered as { imagePrompt: string }).imagePrompt;
         } catch (error) {
           results[slot] = { kind: 'analysis', id: fixture.id, model, status: 'error', error: String((error as any)?.status ?? 'request failed') };
         }
@@ -183,7 +184,7 @@ if (import.meta.main) {
         console.log(`${fixture.id} ${model}: ${(results[slot] as any).status}`);
       }
       if (!imagePrompt) {
-        results.push({ kind: 'image', id: fixture.id, status: 'skipped (no gemini-3.8-flash image prompt)' });
+        results.push({ kind: 'image', id: fixture.id, status: 'skipped (no valid gemini-3.8-flash analysis)' });
         await save();
         continue;
       }
