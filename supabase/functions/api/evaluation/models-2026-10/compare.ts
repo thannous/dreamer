@@ -1,7 +1,7 @@
 /**
  * Synthetic-only comparison of candidate analysis and illustration models
  * (October 2026). Default is a no-generation preview; `--execute` spends a
- * fixed budget of 30 provider requests and never retries.
+ * fixed budget of 15 provider requests and never retries.
  *
  * Analysis: the production prompt, system instruction and JSON schema, sent to
  * gemini-3.8-flash (current), gemini-3.5-flash-lite and claude-haiku-5-5.
@@ -28,7 +28,9 @@ import { arrayBoundViolations } from './bounds.ts';
 
 const TEXT_MODELS = ['gemini-3.8-flash', 'gemini-3.5-flash-lite', 'claude-haiku-5-5'] as const;
 const IMAGE_MODELS = ['gemini-3.1-flash-lite-image', 'gemini-nano-banana-2.1'] as const;
-const MAX_REQUESTS = 30;
+// Three of the six synthetic accounts, so each text model starts first once.
+const FIXTURE_IDS = ['fr-rich', 'en-nightmare-short', 'es-diagnosis-short'];
+const MAX_REQUESTS = 15;
 const ALLOWED_HOSTS = new Set(['generativelanguage.googleapis.com', 'api.anthropic.com']);
 
 type TextModel = typeof TEXT_MODELS[number];
@@ -64,7 +66,8 @@ if (import.meta.main) {
   const fixtures = validateFixtures(
     JSON.parse(await Deno.readTextFile(new URL('../ti559/followup-fixtures.json', import.meta.url))),
     'followup'
-  );
+  ).filter((fixture) => FIXTURE_IDS.includes(fixture.id))
+    .sort((a, b) => FIXTURE_IDS.indexOf(a.id) - FIXTURE_IDS.indexOf(b.id));
   console.log(JSON.stringify({
     promptVersion: ANALYSIS_PROMPT_VERSION,
     textModels: TEXT_MODELS,

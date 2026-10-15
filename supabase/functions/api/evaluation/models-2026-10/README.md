@@ -1,8 +1,8 @@
 # Model comparison, October 2026
 
 Synthetic-only comparison of candidate models for dream analysis and illustration.
-It uses the six fictional accounts of `../ti559/followup-fixtures.json` (one per app
-language) and never reads journal data.
+It uses three of the six fictional accounts of `../ti559/followup-fixtures.json`
+(`fr-rich`, `en-nightmare-short`, `es-diagnosis-short`) and never reads journal data.
 
 - Analysis: the production prompt, system instruction and JSON schema, sent to
   `gemini-3.8-flash` (current), `gemini-3.5-flash-lite` and `claude-haiku-5-5`
@@ -17,7 +17,7 @@ deno run --no-lock --allow-read=supabase/functions/api/evaluation --allow-env \
   supabase/functions/api/evaluation/models-2026-10/compare.ts
 ```
 
-Run (30 requests at most, no retries, about 0.45 USD; the output directory must not exist):
+Run (15 requests at most, no retries, about 0.22 USD; the output directory must not exist):
 
 ```sh
 GEMINI_API_KEY=… ANTHROPIC_API_KEY=… deno run --no-lock \
