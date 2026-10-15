@@ -34,7 +34,6 @@ import {
 import { useDreams } from '@/context/DreamsContext';
 import { AuthContext } from '@/context/AuthContext';
 import { resolveWithDiskCache } from '@/lib/dreamMediaDiskCache';
-import { ScrollPerfProvider } from '@/context/ScrollPerfContext';
 import { useTheme } from '@/context/ThemeContext';
 import { useClearWebFocus } from '@/hooks/useClearWebFocus';
 import { useLocaleFormatting } from '@/hooks/useLocaleFormatting';
@@ -220,8 +219,9 @@ function JournalListScreen() {
     minimumViewTime: JOURNAL_LIST.MINIMUM_VIEW_TIME,
   });
 
+  // A ref only: prefetch waits for scroll to rest, and no element of this screen reads it,
+  // so starting or ending a scroll does not render the screen again.
   const isScrollingRef = useRef(false);
-  const [isScrolling, setIsScrolling] = useState(false);
   const scrollIdleTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const overlaySearchDragOriginRef = useRef({ pageX: 0, pageY: 0, offset: 0 });
 
@@ -239,9 +239,7 @@ function JournalListScreen() {
   }, [mobileListKey, isDesktopLayout, searchConsumesLayout, listScrollY]);
 
   const setScrolling = useCallback((next: boolean) => {
-    if (isScrollingRef.current === next) return;
     isScrollingRef.current = next;
-    setIsScrolling(next);
   }, []);
 
   const listBottomPadding = isDesktopLayout
@@ -358,11 +356,16 @@ function JournalListScreen() {
     </View>
   );
   const mediaGeneration = useRef(0);
+  // A new list cancels the warm-up still running for the previous one. The thumbnails already
+  // warmed stay known until the account changes: their keys name the exact image, so a search
+  // keystroke or a favourite does not decode the first thumbnails again.
   useLayoutEffect(() => {
     mediaGeneration.current += 1;
-    prefetchedImageUrisRef.current.clear();
     return () => { mediaGeneration.current += 1; };
   }, [mediaUserId, filteredDreams]);
+  useLayoutEffect(() => {
+    prefetchedImageUrisRef.current.clear();
+  }, [mediaUserId]);
 
   const prefetchDreamMedia = useCallback(async (entries: DreamAnalysis[]) => {
     const generation = mediaGeneration.current;
@@ -996,162 +999,160 @@ function JournalListScreen() {
   }
 
   return (
-    <ScrollPerfProvider isScrolling={isScrolling}>
-      <View className="flex-1 bg-ink" testID={TID.Screen.Journal}>
+    <View className="flex-1 bg-ink" testID={TID.Screen.Journal}>
 
-        {isDesktopLayout ? listHeader : (
-          <Animated.View
-            testID="journal-search-chrome"
-            className="pb-2"
-            onLayout={(event) => {
-              const nextHeight = event.nativeEvent.layout.height;
-              setMeasuredHeader((current) => current.key === headerMeasureKey && current.height === nextHeight
-                ? current : { key: headerMeasureKey, height: nextHeight });
-            }}
-            // Overlay chrome is taller than the uncovered list box on short
-            // landscape. box-none lets FlashList receive drags that miss the
-            // SearchBar. Vertical drags that start on the controls are forwarded
-            // to the list so the bar can collapse, while taps still reach the
-            // input and clear button.
+      {isDesktopLayout ? listHeader : (
+        <Animated.View
+          testID="journal-search-chrome"
+          className="pb-2"
+          onLayout={(event) => {
+            const nextHeight = event.nativeEvent.layout.height;
+            setMeasuredHeader((current) => current.key === headerMeasureKey && current.height === nextHeight
+              ? current : { key: headerMeasureKey, height: nextHeight });
+          }}
+          // Overlay chrome is taller than the uncovered list box on short
+          // landscape. box-none lets FlashList receive drags that miss the
+          // SearchBar. Vertical drags that start on the controls are forwarded
+          // to the list so the bar can collapse, while taps still reach the
+          // input and clear button.
+          pointerEvents={searchConsumesLayout ? 'auto' : 'box-none'}
+          style={[{
+            ...(searchConsumesLayout
+              ? null
+              : {
+                  position: 'absolute' as const,
+                  top: 0,
+                  start: 0,
+                  end: 0,
+                  zIndex: 2,
+                }),
+          }, searchCollapseStyle]}
+        >
+          <View
             pointerEvents={searchConsumesLayout ? 'auto' : 'box-none'}
-            style={[{
-              ...(searchConsumesLayout
-                ? null
-                : {
-                    position: 'absolute' as const,
-                    top: 0,
-                    start: 0,
-                    end: 0,
-                    zIndex: 2,
-                  }),
-            }, searchCollapseStyle]}
+            testID="journal-search-controls"
+            onTouchStart={searchConsumesLayout ? undefined : handleOverlaySearchTouchStart}
+            onStartShouldSetResponderCapture={searchConsumesLayout ? undefined : () => false}
+            onMoveShouldSetResponderCapture={searchConsumesLayout ? undefined : shouldForwardOverlaySearchDrag}
+            onMoveShouldSetResponder={searchConsumesLayout ? undefined : shouldForwardOverlaySearchDrag}
+            onResponderGrant={searchConsumesLayout ? undefined : handleOverlaySearchDragGrant}
+            onResponderMove={searchConsumesLayout ? undefined : handleOverlaySearchDragMove}
+            onResponderRelease={searchConsumesLayout ? undefined : handleOverlaySearchDragEnd}
+            onResponderTerminate={searchConsumesLayout ? undefined : handleOverlaySearchDragEnd}
           >
-            <View
-              pointerEvents={searchConsumesLayout ? 'auto' : 'box-none'}
-              testID="journal-search-controls"
-              onTouchStart={searchConsumesLayout ? undefined : handleOverlaySearchTouchStart}
-              onStartShouldSetResponderCapture={searchConsumesLayout ? undefined : () => false}
-              onMoveShouldSetResponderCapture={searchConsumesLayout ? undefined : shouldForwardOverlaySearchDrag}
-              onMoveShouldSetResponder={searchConsumesLayout ? undefined : shouldForwardOverlaySearchDrag}
-              onResponderGrant={searchConsumesLayout ? undefined : handleOverlaySearchDragGrant}
-              onResponderMove={searchConsumesLayout ? undefined : handleOverlaySearchDragMove}
-              onResponderRelease={searchConsumesLayout ? undefined : handleOverlaySearchDragEnd}
-              onResponderTerminate={searchConsumesLayout ? undefined : handleOverlaySearchDragEnd}
-            >
-              <NoctaliaScreenHeader
-                scene="journal"
-                // On phones the header floats over the list: its painting grows down on a pull.
-                pinned={!searchConsumesLayout}
-                titleKey="nav.journal"
-                variant="tab"
-                actions={[{
-                  icon: 'gear',
-                  onPress: openQuickSettings,
-                  accessibilityLabel: t('nav.settings'),
-                  testID: TID.Button.HeaderJournalSettings,
-                }]}
-                inlineSlot={searchBar}
-              />
-            </View>
-          </Animated.View>
-        )}
-
-      {/* List */}
-      {previewEligible && previewFiltersSupported && mediaUserId ? (
-        <RemoteJournalList key={mediaUserId} userId={mediaUserId} searchQuery={deferredSearchQuery}
-          onOpenDream={openRemoteDream} header={isDesktopLayout ? undefined : listHeader} bottomInset={overlayNavClearance}
-          onScroll={handleStaticListScroll} />
-      ) : isDesktopLayout ? (
-        <AnimatedDreamList
-          onLoad={onListLoaded}
-          testID={TID.List.Dreams}
-          ref={flatListRef}
-          // Web grid measurements can arrive after filtering removed their row.
-          // Recreate the grid when its item membership changes to discard stale layouts.
-          key={`desktop-${desktopColumns}-${Platform.OS === 'web' ? visibleItems.map(keyExtractor).join(',') : ''}`}
-          data={visibleItems}
-          onEndReached={hasMore ? loadMore : undefined}
-          onEndReachedThreshold={0.5}
-          ListFooterComponent={listFooter}
-          keyExtractor={keyExtractor}
-          renderItem={renderDreamItemDesktop}
-          extraData={storyGlowKey ?? undefined}
-          // Perf: helps FlashList recycle views by layout type to reduce scroll-time layout work.
-          getItemType={getDreamItemType}
-          numColumns={desktopColumns}
-          contentContainerStyle={listContentDesktopStyle}
-          ListEmptyComponent={renderEmptyState}
-          showsVerticalScrollIndicator={false}
-          viewabilityConfig={viewabilityConfigRef.current}
-          onViewableItemsChanged={onViewableItemsChanged}
-          onScrollBeginDrag={handleScrollBegin}
-          onScrollEndDrag={scheduleIdle}
-          onMomentumScrollBegin={handleScrollBegin}
-          onMomentumScrollEnd={scheduleIdle}
-        />
-      ) : (
-        <View style={{ flex: 1, marginBottom: overlayNavClearance }}>
-        <AnimatedDreamList
-          onLoad={onListLoaded}
-          testID={TID.List.Dreams}
-          ref={flatListRef}
-          // Like the desktop grid, discard stale web measurements after filtering.
-          key={isWeb ? `${mobileListKey}-${visibleItems.map(keyExtractor).join(',')}` : mobileListKey}
-          data={visibleItems}
-          onEndReached={hasMore ? loadMore : undefined}
-          onEndReachedThreshold={0.5}
-          ListFooterComponent={listFooter}
-          keyExtractor={keyExtractor}
-          renderItem={isTabletLayout ? renderDreamItemTablet : renderDreamItem}
-          extraData={storyGlowKey ?? undefined}
-          numColumns={isTabletLayout ? 2 : 1}
-          // Perf: helps FlashList recycle views by layout type to reduce scroll-time layout work.
-          getItemType={getDreamItemType}
-          contentContainerStyle={listContentStyle}
-          // Keep layout styles on the wrapper: Reanimated supplies style arrays,
-          // while FlashList's web container spreads its style as an object.
-          ListHeaderComponent={listHeader}
-          onScroll={isWeb || searchConsumesLayout ? handleStaticListScroll : handleListScroll}
-          scrollEventThrottle={16}
-          keyboardShouldPersistTaps="handled"
-          keyboardDismissMode="on-drag"
-          contentInsetAdjustmentBehavior="never"
-          ListEmptyComponent={renderEmptyState}
-          showsVerticalScrollIndicator={false}
-          viewabilityConfig={viewabilityConfigRef.current}
-          onViewableItemsChanged={onViewableItemsChanged}
-          onScrollBeginDrag={handleScrollBegin}
-          onScrollEndDrag={scheduleIdle}
-          onMomentumScrollBegin={handleScrollBegin}
-          onMomentumScrollEnd={scheduleIdle}
-        />
-        </View>
+            <NoctaliaScreenHeader
+              scene="journal"
+              // On phones the header floats over the list: its painting grows down on a pull.
+              pinned={!searchConsumesLayout}
+              titleKey="nav.journal"
+              variant="tab"
+              actions={[{
+                icon: 'gear',
+                onPress: openQuickSettings,
+                accessibilityLabel: t('nav.settings'),
+                testID: TID.Button.HeaderJournalSettings,
+              }]}
+              inlineSlot={searchBar}
+            />
+          </View>
+        </Animated.View>
       )}
 
-      <AdvancedFilterSheet
-        visible={showAdvancedFilters}
-        onClose={() => setShowAdvancedFilters(false)}
-        onClear={handleClearFilters}
-        maxHeight={advancedFiltersMaxHeight}
-        availableThemes={availableThemes}
-        availableDreamTypes={availableDreamTypes}
-        selectedTheme={selectedTheme}
-        selectedDreamType={selectedDreamType}
-        dateRange={dateRange}
-        rememberedOnly={showRememberedOnly}
-        recurringOnly={showRecurringOnly}
-        analysisStatus={analysisStatus}
-        onThemeSelect={toggleThemeFilter}
-        onDreamTypeSelect={toggleDreamTypeFilter}
-        onDateRangeChange={handleDateRangeChange}
-        onRememberedToggle={handleRememberedToggle}
-        onRecurringToggle={handleRecurringToggle}
-        onAnalysisStatusChange={handleAnalysisStatusChange}
-        sortOrder={sortOrder}
-        onSortOrderChange={setSortOrder}
+    {/* List */}
+    {previewEligible && previewFiltersSupported && mediaUserId ? (
+      <RemoteJournalList key={mediaUserId} userId={mediaUserId} searchQuery={deferredSearchQuery}
+        onOpenDream={openRemoteDream} header={isDesktopLayout ? undefined : listHeader} bottomInset={overlayNavClearance}
+        onScroll={handleStaticListScroll} />
+    ) : isDesktopLayout ? (
+      <AnimatedDreamList
+        onLoad={onListLoaded}
+        testID={TID.List.Dreams}
+        ref={flatListRef}
+        // Web grid measurements can arrive after filtering removed their row.
+        // Recreate the grid when its item membership changes to discard stale layouts.
+        key={`desktop-${desktopColumns}-${Platform.OS === 'web' ? visibleItems.map(keyExtractor).join(',') : ''}`}
+        data={visibleItems}
+        onEndReached={hasMore ? loadMore : undefined}
+        onEndReachedThreshold={0.5}
+        ListFooterComponent={listFooter}
+        keyExtractor={keyExtractor}
+        renderItem={renderDreamItemDesktop}
+        extraData={storyGlowKey ?? undefined}
+        // Perf: helps FlashList recycle views by layout type to reduce scroll-time layout work.
+        getItemType={getDreamItemType}
+        numColumns={desktopColumns}
+        contentContainerStyle={listContentDesktopStyle}
+        ListEmptyComponent={renderEmptyState}
+        showsVerticalScrollIndicator={false}
+        viewabilityConfig={viewabilityConfigRef.current}
+        onViewableItemsChanged={onViewableItemsChanged}
+        onScrollBeginDrag={handleScrollBegin}
+        onScrollEndDrag={scheduleIdle}
+        onMomentumScrollBegin={handleScrollBegin}
+        onMomentumScrollEnd={scheduleIdle}
+      />
+    ) : (
+      <View style={{ flex: 1, marginBottom: overlayNavClearance }}>
+      <AnimatedDreamList
+        onLoad={onListLoaded}
+        testID={TID.List.Dreams}
+        ref={flatListRef}
+        // Like the desktop grid, discard stale web measurements after filtering.
+        key={isWeb ? `${mobileListKey}-${visibleItems.map(keyExtractor).join(',')}` : mobileListKey}
+        data={visibleItems}
+        onEndReached={hasMore ? loadMore : undefined}
+        onEndReachedThreshold={0.5}
+        ListFooterComponent={listFooter}
+        keyExtractor={keyExtractor}
+        renderItem={isTabletLayout ? renderDreamItemTablet : renderDreamItem}
+        extraData={storyGlowKey ?? undefined}
+        numColumns={isTabletLayout ? 2 : 1}
+        // Perf: helps FlashList recycle views by layout type to reduce scroll-time layout work.
+        getItemType={getDreamItemType}
+        contentContainerStyle={listContentStyle}
+        // Keep layout styles on the wrapper: Reanimated supplies style arrays,
+        // while FlashList's web container spreads its style as an object.
+        ListHeaderComponent={listHeader}
+        onScroll={isWeb || searchConsumesLayout ? handleStaticListScroll : handleListScroll}
+        scrollEventThrottle={16}
+        keyboardShouldPersistTaps="handled"
+        keyboardDismissMode="on-drag"
+        contentInsetAdjustmentBehavior="never"
+        ListEmptyComponent={renderEmptyState}
+        showsVerticalScrollIndicator={false}
+        viewabilityConfig={viewabilityConfigRef.current}
+        onViewableItemsChanged={onViewableItemsChanged}
+        onScrollBeginDrag={handleScrollBegin}
+        onScrollEndDrag={scheduleIdle}
+        onMomentumScrollBegin={handleScrollBegin}
+        onMomentumScrollEnd={scheduleIdle}
       />
       </View>
-    </ScrollPerfProvider>
+    )}
+
+    <AdvancedFilterSheet
+      visible={showAdvancedFilters}
+      onClose={() => setShowAdvancedFilters(false)}
+      onClear={handleClearFilters}
+      maxHeight={advancedFiltersMaxHeight}
+      availableThemes={availableThemes}
+      availableDreamTypes={availableDreamTypes}
+      selectedTheme={selectedTheme}
+      selectedDreamType={selectedDreamType}
+      dateRange={dateRange}
+      rememberedOnly={showRememberedOnly}
+      recurringOnly={showRecurringOnly}
+      analysisStatus={analysisStatus}
+      onThemeSelect={toggleThemeFilter}
+      onDreamTypeSelect={toggleDreamTypeFilter}
+      onDateRangeChange={handleDateRangeChange}
+      onRememberedToggle={handleRememberedToggle}
+      onRecurringToggle={handleRecurringToggle}
+      onAnalysisStatusChange={handleAnalysisStatusChange}
+      sortOrder={sortOrder}
+      onSortOrderChange={setSortOrder}
+    />
+    </View>
   );
 }
 

@@ -508,7 +508,6 @@ const JournalDetailContent = memo(function JournalDetailContent({ dream, folio }
   const coverHeight = viewportHeight;
   // The illustration lies a little deeper than the page and drifts as it scrolls.
   const coverTravel = Math.round(coverHeight * 0.06);
-  const coverParallax = useFrameParallax(coverTravel);
   const onHeaderScroll = useHeaderScroll();
   const noctalia = useMemo(() => getNoctaliaDesignTokens(colors, mode), [colors, mode]);
   // The story is written in the journal's own ink, as the pen wrote it in the capture seal.
@@ -1899,6 +1898,8 @@ const JournalDetailContent = memo(function JournalDetailContent({ dream, folio }
   const coverImageFailed = Boolean((failedCoverUri && failedCoverUri === displayImageUrl) || (!displayImageUrl && media.error));
   const hasIllustratedCover = (artworkAtArrival === true || plateRevealed) && Boolean(dream?.imageUrl?.trim())
     && !shouldHideHeroMedia && !coverImageFailed;
+  // Only the plate's picture drifts; without a plate its frame is never mounted.
+  const coverParallax = useFrameParallax(hasIllustratedCover ? coverTravel : 0);
   useEffect(() => {
     if (readingStory === 'waiting') {
       readingRevealScrolledRef.current = false;
