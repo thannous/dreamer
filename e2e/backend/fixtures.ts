@@ -7,7 +7,7 @@ import { assertBackendTarget } from '../../scripts/lib/backend-e2e-local.cjs';
 const status = JSON.parse(readFileSync(process.env.E2E_BACKEND_STATUS_FILE!, 'utf8'));
 const url = assertBackendTarget(status);
 const options = { auth: { persistSession: false, autoRefreshToken: false } };
-const admin = createClient(url.href, status.SERVICE_ROLE_KEY, options);
+export const admin = createClient(url.href, status.SERVICE_ROLE_KEY, options);
 
 export const client = () => createClient(url.href, status.ANON_KEY, options);
 export type Account = { id: string; email: string; password: string };
