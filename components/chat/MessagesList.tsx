@@ -23,11 +23,13 @@ import {
   useMessageListProps,
   useUpdateLastMessageIndex,
 } from '@/hooks/useChatList';
+import { buildDisplayMessages } from '@/lib/chat/streamingDisplay';
+import type { StreamingReply, StreamingReplyChannel } from '@/lib/chat/streamingReplyChannel';
 import { MotiView } from '@/lib/moti';
 import type { ChatMessage } from '@/lib/types';
 import { AnimatedLegendList } from '@legendapp/list/reanimated';
 import { LinearGradient } from 'expo-linear-gradient';
-import React, { memo, useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import React, { memo, useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react';
 import {
   Pressable,
   StyleSheet,
@@ -50,6 +52,8 @@ type LegendListComponent = React.ComponentType<any> | React.ReactElement | null;
 
 interface MessagesListProps {
   messages: ChatMessage[];
+  /** A reply streaming in, shown after `messages` until history holds it. */
+  streamingReply?: StreamingReplyChannel;
   isLoading?: boolean;
   loadingText?: string;
   ListHeaderComponent?: LegendListComponent;
@@ -181,8 +185,17 @@ function BottomSpacer() {
   return <Animated.View style={animatedStyle} />;
 }
 
+/** The reply streaming in; a new fragment renders the list that reads it, not its screen. */
+function useStreamingReply(channel?: StreamingReplyChannel): StreamingReply | null {
+  const [reply, setReply] = useState(() => channel?.get() ?? null);
+  // Fragments arrive from network callbacks, after this subscription is in place.
+  useLayoutEffect(() => channel?.subscribe(setReply), [channel]);
+  return channel ? reply : null;
+}
+
 export function MessagesList({
-  messages,
+  messages: history,
+  streamingReply,
   isLoading,
   loadingText,
   ListHeaderComponent,
@@ -193,6 +206,11 @@ export function MessagesList({
   retryA11yLabel,
   onScrollStateChange,
 }: MessagesListProps) {
+  const streaming = useStreamingReply(streamingReply);
+  const messages = useMemo(
+    () => buildDisplayMessages(history, streaming?.text ?? null, streaming?.requestId ?? null),
+    [history, streaming]
+  );
   const handwritingAnimatedMessages = useRef<Set<string>>(new Set());
   const prevMessagesLengthRef = useRef(0);
   const prevLastRoleRef = useRef<ChatMessage['role'] | undefined>(undefined);
@@ -274,7 +292,9 @@ export function MessagesList({
   const renderItem = useCallback(
     ({ item, index }: { item: ChatMessage; index: number }) => {
       const messageId = item.id;
-      const isNew = !didInitialHydrate && !hasAnimatedMessages.current.has(messageId);
+      // A completed reply takes the place of its streaming bubble: it is already on screen.
+      const isNew = !didInitialHydrate && !hasAnimatedMessages.current.has(messageId)
+        && !streamingReply?.continuesStream(messageId);
       const isStreamingMessage =
         isStreamingSnapshot && index === messages.length - 1 && item.role === 'model';
       const allowHandwrite = isNearBottomSnapshot && !isUserScrolling;
@@ -342,6 +362,7 @@ export function MessagesList({
       messages.length,
       onRetryMessage,
       retryA11yLabel,
+      streamingReply,
     ]
   );
 

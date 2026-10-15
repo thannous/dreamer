@@ -20,7 +20,7 @@ import { useChatSendLock } from '@/hooks/useChatSendLock';
 import { useQuota } from '@/hooks/useQuota';
 import { useTranslation } from '@/hooks/useTranslation';
 import { requestAiConsent } from '@/lib/aiConsent';
-import { buildDisplayMessages } from '@/lib/chat/streamingDisplay';
+import { createStreamingReplyChannel } from '@/lib/chat/streamingReplyChannel';
 import { getDeviceFingerprint } from '@/lib/deviceFingerprint';
 import { QUOTAS } from '@/constants/limits';
 import { getDreamAnalysisState } from '@/lib/dreamUsage';
@@ -192,16 +192,12 @@ function DreamChatContent() {
   const isInteractionLocked = isLoading || isSendStarting;
   // Partial model reply for the active send. Identity is the user message request id.
   const streamingRequestIdRef = useRef<string | null>(null);
-  const [streaming, setStreaming] = useState<{ requestId: string; text: string } | null>(null);
-
-  // While a reply streams in, render it as a virtual trailing model message
-  // and drop the "thinking" indicator as soon as the first tokens arrive.
-  // Replacement is tied to this send's completed reply, not text equality.
-  const displayMessages = useMemo(
-    () => buildDisplayMessages(messages, streaming?.text ?? null, streaming?.requestId ?? null),
-    [messages, streaming]
-  );
-  const showThinkingIndicator = isInteractionLocked && !streaming?.text;
+  // The list shows the partial reply as a virtual trailing model message, read from this
+  // channel: a fragment renders the list, not this screen (its header, composer and sheets).
+  // The screen keeps only whether text has arrived, to drop the "thinking" indicator.
+  const [streamingReply] = useState(createStreamingReplyChannel);
+  const [hasStreamingText, setHasStreamingText] = useState(false);
+  const showThinkingIndicator = isInteractionLocked && !hasStreamingText;
   const [isScrolling, setIsScrolling] = useState(false);
   const [explorationBlocked, setExplorationBlocked] = useState(false);
   const [quotaCheckComplete, setQuotaCheckComplete] = useState(false);
@@ -588,12 +584,15 @@ function DreamChatContent() {
 
       const onStreamDelta = (text: string) => {
         if (streamingRequestIdRef.current !== chatRequestId) return;
-        setStreaming({ requestId: chatRequestId, text });
+        streamingReply.publish({ requestId: chatRequestId, text });
+        setHasStreamingText(Boolean(text));
       };
-      const finishStreaming = () => {
+      // `replyId`: the completed reply that takes the streaming bubble's place.
+      const finishStreaming = (replyId?: string) => {
         if (streamingRequestIdRef.current !== chatRequestId) return;
         streamingRequestIdRef.current = null;
-        setStreaming(null);
+        streamingReply.end(replyId);
+        setHasStreamingText(false);
       };
       const startStreaming = () => {
         streamingRequestIdRef.current = chatRequestId;
@@ -652,7 +651,7 @@ function DreamChatContent() {
             const finalMessages = [...updatedMessages, aiMessage];
 
             setMessages(finalMessages);
-            finishStreaming();
+            finishStreaming(aiMessage.id);
 
             // Persist chat history to dream
             const dreamUpdate: Partial<DreamAnalysis> = {
@@ -786,7 +785,7 @@ function DreamChatContent() {
         const finalMessages = [...updatedMessages, aiMessage];
 
         setMessages(finalMessages);
-        finishStreaming();
+        finishStreaming(aiMessage.id);
         if (debugChat) {
           console.debug('[DreamChat] sendMessage success', {
             dreamId: dream.id,
@@ -894,6 +893,7 @@ function DreamChatContent() {
       releaseSendLock,
       showMessageLimitAlert,
       shouldGateOnQuotaCheck,
+      streamingReply,
       t,
       tryAcquireSendLock,
       applyServerDreamState,
@@ -1324,7 +1324,8 @@ function DreamChatContent() {
           </Pressable>
 
           <MessagesList
-            messages={displayMessages}
+            messages={messages}
+            streamingReply={streamingReply}
             isLoading={showThinkingIndicator}
             loadingText={t('dream_chat.thinking')}
             ListHeaderComponent={headerComponent}
