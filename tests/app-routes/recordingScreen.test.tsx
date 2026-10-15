@@ -199,6 +199,11 @@ jest.doMock('react-native', () => {
 
   return {
     __esModule: true,
+    // Render the native modal's children here; browser E2E covers its focus trap.
+    Modal: ({ visible, children }: { visible?: boolean; children?: React.ReactNode }) =>
+      visible ? <div role="dialog">{children}</div> : null,
+    AccessibilityInfo: { setAccessibilityFocus: jest.fn() },
+    findNodeHandle: () => 1,
     Alert: { alert: jest.fn() },
     BackHandler: { addEventListener: jest.fn(() => ({ remove: jest.fn() })) },
     AppState: {
