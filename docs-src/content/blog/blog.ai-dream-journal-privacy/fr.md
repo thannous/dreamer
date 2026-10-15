@@ -23,7 +23,7 @@
   "twitterImage": "https://noctalia.app/img/blog/dream-memory-hero.webp",
   "twitterImageAlt": "Fragments de mémoire onirique protégés dans une lumière nocturne",
   "publishedTime": "2026-06-20T00:00:00+02:00",
-  "modifiedTime": "2026-10-09",
+  "modifiedTime": "2026-10-15",
   "author": "Thanh Chau",
   "prevPath": "/fr/blog/reves-regulation-emotions-etude-2026",
   "nextPath": "/fr/blog/rever-eveille-etats-oniriques",
@@ -58,7 +58,7 @@
 <li><strong>Publicité :</strong> ni revente de données ni ciblage publicitaire, écrit noir sur blanc.</li>
 </ul>
 <h2>Ce que répond Noctalia</h2>
-<p>Notre <a class="text-dream-salmon hover:underline" href="/fr/politique-confidentialite">politique de confidentialité</a> l'indique : l'application utilise d'abord la reconnaissance vocale intégrée du téléphone (celle du système). Si elle est indisponible ou échoue, l'audio peut être envoyé à Google Cloud Speech-to-Text, gardé quelques minutes, jamais stocké par Noctalia. Le texte des rêves part chez Google (Gemini) pour l'analyse et les images, avec l'entraînement des modèles généraux désactivé quand le service le permet. L'analyse, la discussion et les images n'ont lieu qu'après votre accord dans l'application. Le journal est hébergé dans l'UE. Pas de revente, pas de publicité ciblée. La <a class="text-dream-salmon hover:underline" href="/fr/suppression-compte">suppression du compte</a> se fait dans les Paramètres ; les données sont en général effacées sous 30 jours.</p>
+<p>Notre <a class="text-dream-salmon hover:underline" href="/fr/politique-confidentialite">politique de confidentialité</a> l'indique : l'application utilise d'abord la reconnaissance vocale intégrée du téléphone (celle du système). Si elle est indisponible ou échoue, l'audio peut être envoyé à Google Cloud Speech-to-Text, gardé quelques minutes, jamais stocké par Noctalia. Le texte des rêves part chez Anthropic (Claude) pour l'analyse et la discussion, et chez Google (Gemini) pour les images ou pour le texte quand Claude n'est pas disponible, avec l'entraînement des modèles généraux désactivé quand le service le permet. L'analyse, la discussion et les images n'ont lieu qu'après votre accord dans l'application. Le journal est hébergé dans l'UE. Pas de revente, pas de publicité ciblée. La <a class="text-dream-salmon hover:underline" href="/fr/suppression-compte">suppression du compte</a> se fait dans les Paramètres ; les données sont en général effacées sous 30 jours.</p>
 <h2>Ce que change l'AI Act</h2>
 <p>Le règlement européen sur l'IA, adopté en 2024, s'applique par étapes depuis 2025. Un journal de rêves ne figure pas parmi ses usages à haut risque. Si vous dialoguez avec une IA, vous devez en être informé. Un badge « conforme à l'AI Act » dit donc peu de chose de vos notes : l'accès et la suppression relèvent du RGPD.</p>
 <h2>Une bonne analyse doit rester réversible</h2>
@@ -76,6 +76,6 @@
 <li><a href="https://digital-strategy.ec.europa.eu/en/policies/regulatory-framework-ai" rel="nofollow noopener noreferrer" target="_blank">Commission européenne : AI Act (en anglais)</a></li>
 <li><a href="https://www.cnil.fr/fr/intelligence-artificielle" rel="nofollow noopener noreferrer" target="_blank">CNIL : intelligence artificielle et données personnelles</a></li>
 </ul>
-<p class="mt-6 text-xs text-purple-200/60">Mis à jour le 9 octobre 2026</p>
+<p class="mt-6 text-xs text-purple-200/60">Mis à jour le 15 octobre 2026</p>
 </section>
 </article>

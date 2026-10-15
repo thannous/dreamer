@@ -23,7 +23,7 @@
   "twitterImage": "https://noctalia.app/img/blog/dream-memory-hero.webp",
   "twitterImageAlt": "Protected dream memory fragments in nocturnal light",
   "publishedTime": "2026-06-20T00:00:00+02:00",
-  "modifiedTime": "2026-10-09",
+  "modifiedTime": "2026-10-15",
   "author": "Thanh Chau",
   "prevPath": "/en/blog/dreams-emotion-regulation-study-2026",
   "nextPath": "/en/blog/dreamlike-wakefulness-sleep",
@@ -58,7 +58,7 @@
 <li><strong>Advertising:</strong> no data sale, no targeted ads, in plain words.</li>
 </ul>
 <h2>How does Noctalia answer these checks?</h2>
-<p>Our <a class="text-dream-salmon hover:underline" href="/en/privacy-policy">privacy policy</a> says: the app first uses the phone's built-in (system) speech recognition. If that is unavailable or fails, audio may go to Google Cloud Speech-to-Text, held a few minutes, never stored by Noctalia. Dream text goes to Google (Gemini) for analysis and images, with training of general models turned off where the service allows. Analysis, chat and images happen only after you agree in the app. The journal is hosted in the EU. No data sale, no targeted ads. <a class="text-dream-salmon hover:underline" href="/en/account-deletion">Account deletion</a> is in Settings; data is generally erased within 30 days.</p>
+<p>Our <a class="text-dream-salmon hover:underline" href="/en/privacy-policy">privacy policy</a> says: the app first uses the phone's built-in (system) speech recognition. If that is unavailable or fails, audio may go to Google Cloud Speech-to-Text, held a few minutes, never stored by Noctalia. Dream text goes to Anthropic (Claude) for analysis and chat, and to Google (Gemini) for images or for text when Claude is unavailable, with training of general models turned off where the service allows. Analysis, chat and images happen only after you agree in the app. The journal is hosted in the EU. No data sale, no targeted ads. <a class="text-dream-salmon hover:underline" href="/en/account-deletion">Account deletion</a> is in Settings; data is generally erased within 30 days.</p>
 <h2>What the EU AI Act changes</h2>
 <p>The AI Act, adopted in 2024, has applied in stages since 2025. A dream journal is not among its high-risk uses. If you chat with an AI, you must be told it is a machine. So an “AI Act compliant” badge says little about your notes: access and deletion come from the GDPR.</p>
 <h2>Good analysis should stay reversible</h2>
@@ -76,6 +76,6 @@
 <li><a href="https://digital-strategy.ec.europa.eu/en/policies/regulatory-framework-ai" rel="nofollow noopener noreferrer" target="_blank">European Commission: AI Act</a></li>
 <li><a href="https://www.cnil.fr/fr/intelligence-artificielle" rel="nofollow noopener noreferrer" target="_blank">CNIL: AI and personal data (in French)</a></li>
 </ul>
-<p class="mt-6 text-xs text-purple-200/60">Updated October 9, 2026</p>
+<p class="mt-6 text-xs text-purple-200/60">Updated October 15, 2026</p>
 </section>
 </article>

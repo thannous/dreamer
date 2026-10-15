@@ -23,7 +23,7 @@
   "twitterImage": "https://noctalia.app/img/og/noctalia-fr-1200x630.jpg",
   "twitterImageAlt": "Politique de Confidentialité",
   "publishedTime": "",
-  "modifiedTime": "2026-10-08",
+  "modifiedTime": "2026-10-15",
   "author": "",
   "prevPath": "",
   "nextPath": "",
@@ -36,7 +36,7 @@
 }
 ---
 <h1 class="font-serif text-4xl md:text-5xl mb-6 text-dream-cream">Politique de Confidentialité</h1>
-        <p class="text-lg text-purple-200/80 mb-10">Dernière mise à jour : 8 octobre 2026</p>
+        <p class="text-lg text-purple-200/80 mb-10">Dernière mise à jour : 15 octobre 2026</p>
         <div class="space-y-8 text-gray-300 leading-relaxed">
             <div class="p-6 rounded-2xl bg-dream-salmon/5 border border-dream-salmon/20">
                 <p class="text-dream-salmon font-medium flex gap-2 items-start">
@@ -131,8 +131,8 @@
                 <p>Noctalia s'appuie sur des services d'Intelligence Artificielle pour transcrire et analyser vos rêves, ainsi que pour générer des images associées.</p>
                 <ul class="list-disc pl-5 mt-4 space-y-2">
                     <li><strong>Reconnaissance vocale&nbsp;:</strong> nous utilisons en priorité la reconnaissance vocale native de votre appareil (via les interfaces système). En cas d'échec ou d'indisponibilité, un enregistrement audio peut être temporairement transmis à un service de reconnaissance vocale tiers (par exemple Google Cloud Speech-to-Text) via notre backend, afin de produire une transcription. Ces enregistrements audio sont traités en temps réel pour produire la transcription et ne font l'objet d'aucun stockage persistant par Noctalia.</li>
-                    <li><strong>Analyse de rêves et génération de contenu&nbsp;:</strong> le texte de vos rêves et certaines métadonnées strictement nécessaires sont envoyés à notre prestataire d'IA principal, actuellement <strong>Google (Gemini)</strong>, afin de générer des analyses, résumés, éléments de dialogue et visuels.</li>
-                    <li><strong>Autres fournisseurs d'IA de premier plan&nbsp;:</strong> à l'avenir, nous pourrons recourir à d'autres prestataires d'IA de haut niveau tels que <strong>Anthropic, OpenAI, Perplexity, Mistral</strong>, ou des services équivalents. Nous ne les activerons que si nous disposons de garanties contractuelles et techniques équivalentes (sécurité, confidentialité, limitations d'usage).</li>
+                    <li><strong>Analyse de rêves et génération de contenu&nbsp;:</strong> le texte de vos rêves et certaines métadonnées strictement nécessaires sont envoyés à nos prestataires d'IA&nbsp;: <strong>Anthropic (Claude)</strong> pour les analyses, résumés et éléments de dialogue, et <strong>Google (Gemini)</strong> pour les visuels, ainsi que pour le texte lorsque Claude n'est pas disponible.</li>
+                    <li><strong>Autres fournisseurs d'IA de premier plan&nbsp;:</strong> à l'avenir, nous pourrons recourir à d'autres prestataires d'IA de haut niveau tels que <strong>OpenAI, Perplexity, Mistral</strong>, ou des services équivalents. Nous ne les activerons que si nous disposons de garanties contractuelles et techniques équivalentes (sécurité, confidentialité, limitations d'usage).</li>
                     <li><strong>Entraînement des modèles&nbsp;:</strong> dans la mesure où ces services le permettent, nous configurons nos prestataires d'IA pour qu'ils <strong>n'utilisent pas vos données pour entraîner leurs modèles généraux</strong>. Le cas échéant, vos données ne sont utilisées que pour fournir le service demandé (transcription, analyse, génération d'image ou de texte).</li>
                 </ul>
             </section>
@@ -171,7 +171,7 @@
                     <li><strong>Analyse d'audience du site&nbsp;:</strong> Ahrefs Pte Ltd fournit la mesure sans cookie décrite ci-dessus. Les détails figurent dans la <a href="https://ahrefs.com/legal/privacy-policy" class="text-dream-salmon hover:underline">politique de confidentialité d'Ahrefs</a>.</li>
                     <li><strong>Analyse d'usage avec consentement&nbsp;:</strong> Microsoft fournit Clarity uniquement après votre accord. Les détails figurent dans la <a href="https://privacy.microsoft.com/privacystatement" class="text-dream-salmon hover:underline">déclaration de confidentialité de Microsoft</a>.</li>
                     <li><strong>Mesure de fréquentation avec consentement&nbsp;:</strong> Google fournit Google Analytics uniquement après votre accord. Les détails figurent dans la <a href="https://policies.google.com/privacy" class="text-dream-salmon hover:underline">politique de confidentialité de Google</a>.</li>
-                    <li><strong>Fournisseurs d'IA et de reconnaissance vocale&nbsp;:</strong> Google (Gemini, Google Cloud Speech-to-Text), et le cas échéant d'autres fournisseurs d'IA de premier plan (Anthropic, OpenAI, Perplexity, Mistral, ou services équivalents) pour la transcription, l'analyse de vos rêves et la génération d'images ou de contenus.</li>
+                    <li><strong>Fournisseurs d'IA et de reconnaissance vocale&nbsp;:</strong> Google (Gemini, Google Cloud Speech-to-Text), Anthropic (Claude), et le cas échéant d'autres fournisseurs d'IA de premier plan (OpenAI, Perplexity, Mistral, ou services équivalents) pour la transcription, l'analyse de vos rêves et la génération d'images ou de contenus.</li>
                     <li><strong>Gestion des abonnements&nbsp;:</strong> RevenueCat (USA) gère les abonnements intégrés. RevenueCat reçoit un identifiant utilisateur anonyme et les informations d'achat fournies par la boutique applicable, Apple App Store ou Google Play. Vos informations de paiement complètes ne transitent jamais par Noctalia. Après la suppression de votre compte, Noctalia supprime les données d'abonnement de son côté&nbsp;; les registres d'achat peuvent toutefois être conservés par Apple, Google Play et RevenueCat conformément à leurs propres obligations légales. La suppression du compte ne résilie pas l'abonnement, qui se gère dans les réglages d'abonnement de l'Apple App Store ou de Google Play.</li>
                     <li><strong>Conseils externes et autorités&nbsp;:</strong> cabinets juridiques, comptables ou autorités administratives et judiciaires lorsque la loi nous y oblige ou pour la défense de nos droits.</li>
                 </ul>

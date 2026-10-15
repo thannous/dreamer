@@ -23,7 +23,7 @@
   "twitterImage": "https://noctalia.app/img/blog/dream-memory-hero.webp",
   "twitterImageAlt": "Fragmentos de memoria onírica protegidos en una luz nocturna",
   "publishedTime": "2026-06-20T00:00:00+02:00",
-  "modifiedTime": "2026-10-09",
+  "modifiedTime": "2026-10-15",
   "author": "Thanh Chau",
   "prevPath": "/es/blog/suenos-regulacion-emociones-estudio-2026",
   "nextPath": "/es/blog/sonar-despierto-estados-oniricos",
@@ -58,7 +58,7 @@
 <li><strong>Publicidad:</strong> ni venta de datos ni anuncios segmentados, por escrito.</li>
 </ul>
 <h2>Qué responde Noctalia</h2>
-<p>Según nuestra <a class="text-dream-salmon hover:underline" href="/es/politica-privacidad">política de privacidad</a>, la app usa primero el reconocimiento de voz integrado del móvil (el del sistema). Si no está disponible o falla, el audio puede ir unos minutos a Google Cloud Speech-to-Text, sin que Noctalia lo guarde. El texto va a Google (Gemini) para análisis e imágenes, sin entrenar modelos generales cuando el servicio lo permite. El análisis, la conversación y las imágenes solo ocurren después de que aceptas en la app. Diario alojado en la UE, sin venta de datos ni anuncios segmentados. La <a class="text-dream-salmon hover:underline" href="/es/eliminacion-cuenta">eliminación de la cuenta</a> está en Ajustes; los datos se borran en general en 30 días.</p>
+<p>Según nuestra <a class="text-dream-salmon hover:underline" href="/es/politica-privacidad">política de privacidad</a>, la app usa primero el reconocimiento de voz integrado del móvil (el del sistema). Si no está disponible o falla, el audio puede ir unos minutos a Google Cloud Speech-to-Text, sin que Noctalia lo guarde. El texto va a Anthropic (Claude) para el análisis y la conversación, y a Google (Gemini) para las imágenes o para el texto cuando Claude no está disponible, sin entrenar modelos generales cuando el servicio lo permite. El análisis, la conversación y las imágenes solo ocurren después de que aceptas en la app. Diario alojado en la UE, sin venta de datos ni anuncios segmentados. La <a class="text-dream-salmon hover:underline" href="/es/eliminacion-cuenta">eliminación de la cuenta</a> está en Ajustes; los datos se borran en general en 30 días.</p>
 <h2>Qué cambia con la Ley de IA europea</h2>
 <p>La Ley de IA, adoptada en 2024, se aplica por fases desde 2025. Un diario de sueños no figura entre sus usos de alto riesgo; si conversas con una IA, deben avisarte. Un sello «conforme a la Ley de IA» dice poco de tus notas: acceso y borrado dependen del RGPD.</p>
 <h2>El análisis debe poder corregirse</h2>
@@ -76,6 +76,6 @@
 <li><a href="https://digital-strategy.ec.europa.eu/en/policies/regulatory-framework-ai" rel="nofollow noopener noreferrer" target="_blank">Comisión Europea: Ley de IA</a></li>
 <li><a href="https://www.cnil.fr/fr/intelligence-artificielle" rel="nofollow noopener noreferrer" target="_blank">CNIL: inteligencia artificial y datos personales (en francés)</a></li>
 </ul>
-<p class="mt-6 text-xs text-purple-200/60">Actualizado el 9 de octubre de 2026</p>
+<p class="mt-6 text-xs text-purple-200/60">Actualizado el 15 de octubre de 2026</p>
 </section>
 </article>
