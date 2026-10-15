@@ -112,6 +112,7 @@ export const NoctaliaScreenHeader = memo(function NoctaliaScreenHeader({
   const iconButtonBg = noctalia.surface.soft;
   const quietIconColor = noctalia.text.secondary;
   const [measuredHeight, setMeasuredHeight] = useState(0);
+  const [titleTop, setTitleTop] = useState<number>();
   // Scrolling down, the header fades away to give the page its room.
   const fadeStyle = useHeaderFadeStyle(measuredHeight);
   // Header copy over a painting keeps its contrast through a soft halo of the page's ground,
@@ -147,7 +148,7 @@ export const NoctaliaScreenHeader = memo(function NoctaliaScreenHeader({
           // its content, it ends with the header so it never covers what scrolls beneath.
           <NightSkyBand height={(measuredHeight || insets.top + 160) + (pinned ? 0 : 40)} background={noctalia.screen.background}
             scene={scene} pinned={pinned} fadeEnd={measuredHeight || undefined} fadeOnScroll={false}
-            immersive={Boolean(stageHeight)} />
+            immersive={Boolean(stageHeight)} titleTop={titleTop} />
         ) : null}
         <View pointerEvents={passThrough} style={[styles.tabBrandRow, { paddingHorizontal: horizontalPadding }]}>
           {showBrand ? (
@@ -198,7 +199,8 @@ export const NoctaliaScreenHeader = memo(function NoctaliaScreenHeader({
         </View>
         {/* The open painting between the wordmark and the title. */}
         {stageHeight ? <View pointerEvents={passThrough} style={styles.stageSpace} /> : null}
-        <View pointerEvents={pinned ? 'none' : undefined} style={{ paddingHorizontal: horizontalPadding }}>
+        <View pointerEvents={pinned ? 'none' : undefined} style={{ paddingHorizontal: horizontalPadding }}
+          onLayout={stageHeight ? (event) => setTitleTop(event.nativeEvent.layout.y) : undefined}>
           <Text
             accessibilityRole="header"
             allowFontScaling={false}

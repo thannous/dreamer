@@ -24,6 +24,10 @@ type Props = {
   fixed?: boolean;
   /** An open scene: veiled only behind the wordmark at the top and the title at its foot. */
   immersive?: boolean;
+  /** Open scene: where the title block starts, in points, so its veil is in place above it. */
+  titleTop?: number;
+  /** Copy covers the whole painting (Today's hero): it reads on the copy veil from the top. */
+  reading?: boolean;
 };
 
 /**
@@ -83,7 +87,7 @@ export function DreamerArtworkWindow({ scene, style, bleedTop = 0 }: {
 }
 
 /** A static, decorative painting fades into the page's own readable ground. */
-export function DreamerBackground({ scene, height, background, pinned = false, fadeEnd, fadeOnScroll = true, fixed = false, immersive = false }: Props) {
+export function DreamerBackground({ scene, height, background, pinned = false, fadeEnd, fadeOnScroll = true, fixed = false, immersive = false, titleTop, reading = false }: Props) {
   const { colors, mode } = useTheme();
   const tokens = getNoctaliaDesignTokens(colors, mode);
   const insets = useSafeAreaInsets();
@@ -97,21 +101,27 @@ export function DreamerBackground({ scene, height, background, pinned = false, f
   // header, so content with its own ground below never meets it as an edge.
   const fadeEndAt = Math.min(1, Math.max(readingStart + 0.05, (fadeEnd ?? height) / height));
   const fadeStart = Math.max(readingStart, fadeEndAt - 80 / height);
-  // Open scene: clear from below the wordmark to above the title, which reads on the
-  // veil gathering into the ground at the header's foot.
-  const wordmarkEnd = Math.min(0.3, (insets.top + 72) / height);
-  const titleVeil = Math.max(wordmarkEnd, fadeEndAt - 160 / height);
-  const clearEnd = Math.max(wordmarkEnd, titleVeil - 120 / height);
+  // The wordmark row reads on the copy veil, then the scene opens. Open scene: clear down
+  // to the title block (however far a wrapped intro lifts it), which reads on the copy veil.
+  const { copy, reveal, scrim } = tokens.backgroundArtwork;
+  const wordmarkEnd = (insets.top + 64) / height;
+  // In a short window the title reaches the wordmark row and the scene stays veiled.
+  const titleVeil = Math.max(0, Math.min(fadeEndAt - 160 / height, ((titleTop ?? Infinity) - 8) / height));
+  const openHold = Math.min(0.24, wordmarkEnd, titleVeil);
+  const openStart = Math.min(0.32, wordmarkEnd + 40 / height, titleVeil);
+  const clearEnd = Math.min(titleVeil, Math.max(openStart, titleVeil - 120 / height));
+  const scrimStart = Math.max(readingStart, Math.min(fadeStart, wordmarkEnd + 56 / height));
   const veil = immersive
     ? {
-        colors: [tokens.backgroundArtwork.scrim, tokens.backgroundArtwork.reveal, tokens.backgroundArtwork.reveal,
-          tokens.backgroundArtwork.scrim, ground, ground] as const,
-        locations: [0, wordmarkEnd, clearEnd, titleVeil, fadeEndAt, 1] as const,
+        colors: [copy, copy, reveal, reveal, copy, ground, ground] as const,
+        locations: [0, openHold, openStart, clearEnd, titleVeil, fadeEndAt, 1] as const,
       }
-    : {
-        colors: [tokens.backgroundArtwork.reveal, tokens.backgroundArtwork.scrim, tokens.backgroundArtwork.scrim, ground, ground] as const,
-        locations: [0, readingStart, fadeStart, fadeEndAt, 1] as const,
-      };
+    : reading
+      ? { colors: [copy, copy, ground, ground] as const, locations: [0, fadeStart, fadeEndAt, 1] as const }
+      : {
+          colors: [copy, copy, scrim, scrim, ground, ground] as const,
+          locations: [0, Math.min(readingStart, wordmarkEnd), scrimStart, fadeStart, fadeEndAt, 1] as const,
+        };
 
   return (
     <Animated.View

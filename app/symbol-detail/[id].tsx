@@ -194,7 +194,7 @@ export default function SymbolDetailScreen() {
             </Animated.View>
             <LinearGradient
               pointerEvents="none"
-              colors={['rgba(8,3,15,0.55)', 'rgba(8,3,15,0.04)', 'rgba(8,3,15,0.30)', 'rgba(9,4,19,0.92)']}
+              colors={['rgba(8,3,15,0.55)', 'rgba(8,3,15,0.04)', 'rgba(8,3,15,0.45)', 'rgba(9,4,19,0.92)']}
               locations={[0, 0.3, 0.56, 0.9]}
               style={StyleSheet.absoluteFill}
             />

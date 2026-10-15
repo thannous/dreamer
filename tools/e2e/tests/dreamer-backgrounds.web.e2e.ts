@@ -195,43 +195,47 @@ async function artwork(page: Page, scene: string, mode: 'light' | 'dark') {
   else expect(lightness, `${scene}: the night painting is retained in dark mode`).toBeLessThan(0.5);
 }
 
-/** The picture must retain its actual colour, not merely exist beneath a wash.
- * Compare the clear part of Capture's opening to the same decoded image in a
- * browser canvas; the former 75–90% veils fail this observable assertion.
+/** Since the 2026-10-11 Capture redesign the painting reaches the top third behind the
+ * title, the mode control and the composer: it is veiled behind copy rather than an
+ * unmasked opening, and `readable` keeps every visible text over it at AA. Here the
+ * painting must reach the top edge, lie behind the whole title and still show through its
+ * veil: with all text ink hidden, the header differs from the same header without it.
  */
-async function immersivePainting(page: Page, info: ParityInfo, label: string) {
-  const picture = page.getByTestId('image.background.capture').filter({ visible: true });
-  const expectedPng = await picture.evaluate(element => {
-    const img = element instanceof HTMLImageElement ? element : element.querySelector('img');
-    if (!img) throw new Error('Decoded painting missing');
-    const bounds = element.getBoundingClientRect();
-    const canvas = document.createElement('canvas');
-    canvas.width = Math.round(bounds.width);
-    canvas.height = Math.round(bounds.height);
-    const ctx = canvas.getContext('2d')!;
-    const scale = Math.max(canvas.width / img.naturalWidth, canvas.height / img.naturalHeight);
-    const width = img.naturalWidth * scale;
-    const height = img.naturalHeight * scale;
-    ctx.drawImage(img, (canvas.width - width) / 2, (canvas.height - height) / 2, width, height);
-    return canvas.toDataURL('image/png').split(',')[1];
+async function paintedHeader(page: Page, info: ParityInfo, label: string) {
+  const picture = await page.getByTestId('image.background.capture').filter({ visible: true }).elementHandle();
+  const title = page.getByTestId('screen.recording').getByRole('heading').first();
+  const [painting, heading] = await Promise.all([picture?.boundingBox(), title.boundingBox()]);
+  if (!picture || !painting || !heading) throw new Error('Capture painting or title missing');
+  expect(painting.y, 'The painting reaches the top edge').toBeLessThanOrEqual(0);
+  expect(painting.y + painting.height, 'The painting lies behind the whole title').toBeGreaterThanOrEqual(heading.y + heading.height);
+  const clip = { x: 0, y: 0, width: Math.round(painting.width), height: Math.round(heading.y + heading.height) };
+  await page.evaluate(() => {
+    const mask = document.createElement('style');
+    mask.id = 'painted-header-mask';
+    mask.textContent = '* { color: transparent !important; text-shadow: none !important; caret-color: transparent !important; } ::placeholder { color: transparent !important; }';
+    document.head.appendChild(mask);
   });
-  const actual = await picture.screenshot({ scale: 'css' });
-  const baseline = await sharp(Buffer.from(expectedPng, 'base64')).removeAlpha().raw().toBuffer({ resolveWithObject: true });
-  const rendered = await sharp(actual).removeAlpha().raw().toBuffer({ resolveWithObject: true });
-  expect(rendered.info.width).toBe(baseline.info.width);
-  expect(rendered.info.height).toBeGreaterThanOrEqual(120);
+  let shots: Buffer[];
+  try {
+    const withPainting = await page.screenshot({ scale: 'css', clip });
+    await picture.evaluate(element => element.style.setProperty('visibility', 'hidden', 'important'));
+    shots = [withPainting, await page.screenshot({ scale: 'css', clip })];
+  } finally {
+    await picture.evaluate(element => element.style.removeProperty('visibility'));
+    await page.evaluate(() => document.getElementById('painted-header-mask')?.remove());
+  }
+  const [painted, bare] = await Promise.all(shots.map(shot => sharp(shot).removeAlpha().raw().toBuffer({ resolveWithObject: true })));
   let difference = 0;
   let count = 0;
-  // The last 40 points blend into the reading surface; keep them out of this comparison.
-  for (let y = 12; y < rendered.info.height - 48; y += 3) {
-    for (let x = 12; x < rendered.info.width - 12; x += 3) {
-      const offset = (y * rendered.info.width + x) * 3;
-      for (let c = 0; c < 3; c++) { difference += Math.abs(rendered.data[offset + c] - baseline.data[offset + c]); count++; }
+  for (let y = 0; y < painted.info.height; y += 3) {
+    for (let x = 0; x < painted.info.width; x += 3) {
+      const offset = (y * painted.info.width + x) * 3;
+      for (let c = 0; c < 3; c++) { difference += Math.abs(painted.data[offset + c] - bare.data[offset + c]); count++; }
     }
   }
   const meanChannelDifference = difference / count;
-  await info.attach(`${label}-painting-colour`, { contentType: 'application/json', body: JSON.stringify({ meanChannelDifference, sampledChannels: count, maximum: 8 }) });
-  expect(meanChannelDifference, 'The scene keeps its own colour in either theme').toBeLessThan(8);
+  await info.attach(`${label}-painted-header`, { contentType: 'application/json', body: JSON.stringify({ painting, heading, meanChannelDifference, sampledChannels: count, minimum: 2 }) });
+  expect(meanChannelDifference, 'The painting shows through the veil behind the header').toBeGreaterThan(2);
 }
 
 /** Browser history navigation keeps the mock session and avoids a new app launch. */
@@ -250,7 +254,7 @@ for (const mode of ['light', 'dark'] as const) {
     await readable(page, info, `home-${mode}`);
     await page.getByTestId('tab.addDream').filter({ visible: true }).click();
     await artwork(page, 'capture', mode);
-    await immersivePainting(page, info, `capture-${mode}`);
+    await paintedHeader(page, info, `capture-${mode}`);
     await readable(page, info, `capture-${mode}`);
     await page.getByTestId('input.dreamTranscript').fill('Un phare doré éclairait un lac calme.');
     await expect(page.getByTestId('btn.saveDream')).toBeEnabled();
