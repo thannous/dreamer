@@ -149,8 +149,21 @@ for (const action of ['purchase', 'restore'] as const) {
     await expect(page.getByText('Your subscription is recognized. Access activation is still pending. You can retry without purchasing again.')).toBeVisible();
     await expect(page.getByTestId('toast.paywall.success')).toHaveCount(0);
     await page.screenshot({ path: info.outputPath(`${action}-activation-pending.png`) });
+    await page.getByTestId('btn.paywall.close').click();
+    await page.getByTestId('btn.recording.home').or(page.getByTestId('tab.home')).filter({ visible: true }).click();
+    await page.getByTestId('btn.header.home.settings').click();
+    await page.getByTestId('quick-settings.plus').click();
+    await expect(page.getByText('Your subscription is recognized. Access activation is still pending. You can retry without purchasing again.')).toBeVisible();
+    await expect(page.getByTestId('toast.paywall.success')).toHaveCount(0);
     await page.getByTestId('btn.paywall.purchase').click();
-    await assertPlus(page);
+    await expect(page.getByTestId('toast.paywall.success')).toBeVisible();
+    await page.getByTestId('btn.paywall.close').click();
+    await page.getByTestId('btn.header.home.settings').click();
+    await page.getByTestId('quick-settings.all').click();
+    await expect(page.getByTestId('quota.analysisValue')).toContainText('Unlimited');
+    if (!await page.getByTestId('text.subscription.qa.mode').isVisible()) {
+      await page.getByTestId('screen.subscription.qaLab.toggle').click();
+    }
     await expect(page.getByTestId('text.subscription.qa.purchaseCalls')).toHaveText(action === 'purchase' ? '1' : '0');
     await expect(page.getByTestId('text.subscription.qa.restoreCalls')).toHaveText(action === 'restore' ? '1' : '0');
   });

@@ -12,9 +12,11 @@ import type { UseSubscriptionOptions } from './useSubscription';
 
 // Mock __DEV__ global
 (globalThis as any).__DEV__ = true;
+let mockSelectedSubscriptionMock = false;
 
 jest.mock('../services/subscriptionService', () => {
   return {
+    get isMockSubscriptionService() { return mockSelectedSubscriptionMock; },
     initializeSubscription: jest.fn(async () => ({ tier: 'free', isActive: false })),
     isSubscriptionInitialized: jest.fn(() => false),
     getSubscriptionStatus: jest.fn(async () => ({ tier: 'free', isActive: false })),
@@ -124,6 +126,7 @@ const renderSubscriptionHook = (options?: UseSubscriptionOptions) =>
 describe('useSubscription', () => {
   beforeEach(async () => {
     jest.clearAllMocks();
+    mockSelectedSubscriptionMock = false;
     const { Platform } = require('react-native');
     Platform.OS = 'ios';
     mockCurrentUser = { id: 'user-1', app_metadata: { subscription_version: 1 }, user_metadata: {} };
@@ -301,6 +304,28 @@ describe('useSubscription', () => {
   });
 
   describe('purchase functionality', () => {
+    // The web E2E fixture enforces global mock mode and blocks real Auth/backend
+    // traffic. Cover the selected-service fallback separately with owned auth data.
+    it.each(['purchase', 'restore'])('confirms fallback mock %s without contacting the backend when global mock mode is off', async (action: string) => {
+      const mockMode = jest.spyOn(require('../lib/env'), 'isMockModeEnabled').mockReturnValue(false);
+      mockSelectedSubscriptionMock = true;
+      const { syncSubscriptionFromServer } = require('../services/subscriptionSyncService');
+      syncSubscriptionFromServer.mockRejectedValue(new Error('Mock receipts cannot be confirmed by the real backend'));
+      try {
+        const { result } = renderSubscriptionHook();
+        await act(async () => {});
+        let outcome: any;
+        await act(async () => {
+          outcome = action === 'purchase' ? await result.current.purchase('mock_monthly') : await result.current.restore();
+        });
+        expect(outcome).toEqual(expect.objectContaining({ tier: 'plus', isActive: true, serverConfirmed: true }));
+        expect(syncSubscriptionFromServer).not.toHaveBeenCalled();
+      } finally {
+        mockMode.mockRestore();
+        syncSubscriptionFromServer.mockReset().mockResolvedValue({ ok: true, tier: 'plus', isActive: true, version: 1, changed: true });
+      }
+    });
+
     it('given authenticated user when purchasing successfully then upgrades subscription', async () => {
       // Given
       const { result } = renderSubscriptionHook();

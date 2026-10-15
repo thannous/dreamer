@@ -66,6 +66,7 @@ function PaywallScreen() {
     isActive,
     loading,
     processing,
+    activationPending,
     error,
     clearError,
     packages,
@@ -76,7 +77,8 @@ function PaywallScreen() {
   } = useSubscription({ loadPackages: true });
   const operationInFlightRef = useRef(false);
   const [operationPending, setOperationPending] = useState(false);
-  const [awaitingServerAccess, setAwaitingServerAccess] = useState(false);
+  const [awaitingServerAccess, setAwaitingServerAccess] = useState(Boolean(activationPending));
+  useEffect(() => setAwaitingServerAccess(Boolean(activationPending)), [activationPending]);
   const busy = processing || operationPending;
   const { quotaStatus } = useQuota();
   const insets = useSafeAreaInsets();
