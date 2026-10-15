@@ -222,3 +222,9 @@ Deno.test('HD image requests preserve explicit resolution and supported minimal 
   assertEquals(request.generation_config?.thinking_level, 'minimal');
   assertEquals(request.store, false);
 });
+
+Deno.test('image requests use minimal thinking for any image model', () => {
+  const request = buildInteractionParams({ apiKey: 'test', model: 'gemini-nano-banana-2.1', contents: 'A garden',
+    config: { responseModalities: ['IMAGE'], imageConfig: { aspectRatio: '9:16', imageSize: '1K' } } });
+  assertEquals(request.generation_config?.thinking_level, 'minimal');
+});

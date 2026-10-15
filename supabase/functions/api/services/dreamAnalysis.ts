@@ -33,6 +33,10 @@ const EXCERPT_DISCLOSURES: Record<AiLanguage, string> = {
   pt: 'Esta reflexão se baseia em um trecho do seu relato; o restante do texto não foi incluído.',
 };
 
+/** The system instruction every analysis request sends, shared with the model evaluations. */
+export const analysisSystemInstruction = (lang: string): string =>
+  `${localizedForAi(lang, ANALYSIS_SYSTEM_INSTRUCTIONS)} ${REFLECTION_POLICY}`;
+
 export const discloseAnalysisExcerpt = (interpretation: string, lang: string, truncated: boolean): string =>
   truncated ? `${localizedForAi(lang, EXCERPT_DISCLOSURES)}\n\n${interpretation}` : interpretation;
 
@@ -154,7 +158,7 @@ export const runDreamAnalysis = async (options: {
 }): Promise<StructuredDreamAnalysis> => {
   const { apiKey, transcript, lang, route, themes = LEGACY_DREAM_THEMES } = options;
   const langName = aiLanguageName(lang);
-  const systemInstruction = `${localizedForAi(lang, ANALYSIS_SYSTEM_INSTRUCTIONS)} ${REFLECTION_POLICY}`;
+  const systemInstruction = analysisSystemInstruction(lang);
 
   const primaryModel = resolveTextModel('GEMINI_MODEL', GEMINI_FLASH_MODEL);
   const fallbackModel = resolveTextModel('GEMINI_FALLBACK_MODEL', GEMINI_FLASH_LITE_MODEL);
