@@ -42,7 +42,9 @@ export const DREAMER_OFFSET_KEY = 'dreamerReminderOffsetMinutes';
 export const DREAMER_OWNER_KEY = 'noctaliaNotificationOwner';
 export const LUCID_TRAINER_NOTIFICATION_OWNER = 'lucid-trainer';
 
-export const DREAMER_NOTIFICATION_PLAN_VERSION = 1;
+// 2: capture reminders carry the dream-dictation action, so reminders scheduled
+// by an older build are rebuilt once with it.
+export const DREAMER_NOTIFICATION_PLAN_VERSION = 2;
 
 export const RECORDING_NOTIFICATION_URL = '/recording';
 export const WEEKLY_RECAP_NOTIFICATION_URL = '/weekly-recap';
