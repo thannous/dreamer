@@ -147,7 +147,7 @@ describe('journal repository', () => {
     const page = await repository.fetchDreamListPage('user-a', { pageSize: 2 });
 
     expect(mock.selectedColumns).toEqual([
-      'id,created_at,client_request_id,revision_id,updated_at,transcript,title,shareable_quote,exploration_started_at,image_url,dream_type,theme,is_favorite,memory,is_analyzed,analyzed_at,analysis_status,analysis_request_id,image_generation_failed',
+      'id,created_at,client_request_id,revision_id,updated_at,transcript,title,shareable_quote,exploration_started_at,image_url,dream_type,theme,precise_theme,is_favorite,memory,is_analyzed,analyzed_at,analysis_status,analysis_request_id,image_generation_failed',
     ]);
     expect(page.items.map((item) => item.remoteId)).toEqual([18, 17]);
     expect(page.items[0].id).toBe(page.items[1].id);

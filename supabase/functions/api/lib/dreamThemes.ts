@@ -1,8 +1,9 @@
 /**
  * A dream's visual atmosphere: how strange, light or dark it feels, and how vivid or
  * quiet. The first four are the ones every app version can show; the others are offered
- * only when the requesting app declares them. Account synchronization is separate:
- * older installed clients can still receive a newer theme and show its raw label.
+ * only when the requesting app declares them. Stored dreams keep the full theme in
+ * dreams.precise_theme; dreams.theme holds its legacy projection for older installed apps
+ * (migration 20261015120000).
  */
 export const LEGACY_DREAM_THEMES: readonly string[] = ['surreal', 'mystical', 'calm', 'noir'];
 export const DREAM_THEME_VALUES: readonly string[] = [...LEGACY_DREAM_THEMES, 'luminous', 'nostalgic'];
