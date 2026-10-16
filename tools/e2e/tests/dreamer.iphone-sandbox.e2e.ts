@@ -120,6 +120,16 @@ test('Physical iPhone prepares Sandbox confirmation visual inspection', async (f
   await open(f);
   await settings(f);
   await tap(f.screen, 'settings-theme-choice', 'up');
+  let originalTheme: string | undefined;
+  for (const value of ['dynamic', 'auto', 'light', 'dark']) {
+    if (await f.screen.getByTestId(`settings-theme-choice.option.${value}`, { visible: true }).isChecked()) originalTheme = value;
+  }
+  assert.ok(originalTheme, 'Record the existing preference before temporarily selecting the dynamic theme');
+  phase('theme-preference-preserved', { originalTheme });
+  if (originalTheme !== 'dynamic') {
+    await f.screen.getByTestId('settings-theme-choice.option.dynamic', { visible: true }).tap();
+    await tap(f.screen, 'settings-theme-choice', 'up');
+  }
   await expect(f.screen.getByTestId('settings-theme-choice.option.dynamic', { visible: true })).toBeChecked();
   await f.app.screenshot('theme-dynamic-confirmed');
   await f.screen.getByRole('button', /^(Annuler|Cancel)$/, { visible: true }).tap();
