@@ -111,5 +111,12 @@ describe('Plus chat ceiling', () => {
     expect(ceiling).toBe(100);
     expect(latest).toEqual({ plus: ceiling, premium: ceiling });
     expect({ plus: contract('plus'), premium: contract('premium') }).toEqual({ plus: ceiling, premium: ceiling });
+
+    // The chat history must keep every user message a Plus conversation may contain.
+    const chatContext = fs.readFileSync(
+      path.resolve(__dirname, '..', 'supabase', 'functions', 'api', 'services', 'chatContext.ts'),
+      'utf8'
+    );
+    expect(Number(chatContext.match(/MAX_CHAT_USER_MESSAGES = (\d+)/)[1])).toBe(ceiling);
   });
 });

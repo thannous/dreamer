@@ -1,5 +1,5 @@
 import { assert, assertEquals, assertStringIncludes } from 'https://deno.land/std@0.224.0/assert/mod.ts';
-import { buildChatHistory, buildChatSystem, MAX_OLDER_CHAT_NOTES_CHARS } from './chatContext.ts';
+import { buildChatHistory, buildChatSystem, MAX_CHAT_USER_MESSAGES, MAX_OLDER_CHAT_NOTES_CHARS } from './chatContext.ts';
 
 const exchanges = () => Array.from({ length: 20 }, (_, index) => [
   { role: 'user', text: index === 0 ? 'Le vélo me rappelle ma sœur, pas la liberté.' : `Message ${index + 1}` },
@@ -46,13 +46,24 @@ Deno.test('escaped text and metadata fit serialized notes bound with explicit tr
   assertEquals(result.recentMessages, history.slice(-20));
 });
 
-Deno.test('count-bound notes disclose older users omitted beyond20 and preserve chronological order', () => {
-  const history = [...exchanges(), ...exchanges()];
+Deno.test('a Plus conversation keeps its first association past exchange 20', () => {
+  const history = [...exchanges(), ...exchanges(), ...exchanges()];
+  const notes = JSON.parse(buildChatHistory(history).olderUserNotes!);
+  assertEquals(notes.omittedUserMessages, 0);
+  assertEquals(notes.messages[0].text, history[0].text);
+  assertEquals(notes.messages[0].messageOrder, 1);
+});
+
+Deno.test('count-bound notes disclose older users omitted beyond the per-dream ceiling and preserve chronological order', () => {
+  const history = Array.from({ length: MAX_CHAT_USER_MESSAGES + 20 }, (_, index) => [
+    { role: 'user', text: `U${index + 1}` },
+    { role: 'model', text: `A${index + 1}` },
+  ]).flat();
   const notes = JSON.parse(buildChatHistory(history).olderUserNotes!);
   assertEquals(notes.omittedUserMessages, 20);
-  assertEquals(notes.messages.length, 10);
+  assertEquals(notes.messages.length, MAX_CHAT_USER_MESSAGES - 10);
   assertEquals(notes.messages[0].messageOrder, 41);
-  assertEquals(notes.messages[9].messageOrder, 59);
+  assertEquals(notes.messages.at(-1).messageOrder, history.length - 21);
 });
 
 Deno.test('parts-only user text remains verbatim and does not include thought parts', () => {
