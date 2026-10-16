@@ -119,6 +119,10 @@ test('Physical iPhone prepares Sandbox confirmation visual inspection', async (f
   assert.ok(!state().purchaseAttempt || state().purchaseAttempt.completedAt, 'Never repeat a pending purchase attempt');
   await open(f);
   await settings(f);
+  await tap(f.screen, 'settings-theme-choice', 'up');
+  await expect(f.screen.getByTestId('settings-theme-choice.option.dynamic', { visible: true })).toBeChecked();
+  await f.app.screenshot('theme-dynamic-confirmed');
+  await f.screen.getByRole('button', /^(Annuler|Cancel)$/, { visible: true }).tap();
   const ownerId = await qa(f);
   const before = await subscriber(ownerId);
   assert.ok(Object.values(before.subscriptions).every(x => Date.parse(x.expires_date) <= Date.now()), 'An active receipt blocks a new purchase');
