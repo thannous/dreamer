@@ -345,6 +345,9 @@
 <a class="inline-flex items-center gap-2 px-4 py-2 glass-button rounded-full text-sm hover:text-dream-salmon transition-colors" href="../simboli/ponte">
                         Significato del sogno del ponte
                     </a>
+<a class="inline-flex items-center gap-2 px-4 py-2 glass-button rounded-full text-sm hover:text-dream-salmon transition-colors" href="../simboli/pesce">
+                        Significato del sogno dei pesci
+                    </a>
 </div>
 </section>
 <!-- Related Symbols End -->

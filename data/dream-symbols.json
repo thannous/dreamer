@@ -655,6 +655,7 @@
       "en": {
         "slug": "flying",
         "name": "Flying",
+        "seoTitle": "Flying, soaring or floating",
         "shortDescription": "Dreaming of flying often goes with a sense of freedom or a wish to see things from above. How you flew tells you most: soaring with ease, struggling to stay up, or escaping something on the ground. Your mood in the air is the main clue.",
         "askYourself": [
           "Was flying easy, tiring, or out of my control?",
@@ -3028,14 +3029,14 @@
       "it": {
         "slug": "automobile",
         "name": "Automobile",
-        "documentTitle": "Sognare un’automobile: significato e scenari",
+        "documentTitle": "Sognare di guidare una macchina: significato",
         "shortDescription": "Sognare un’automobile ti mette spesso per strada con una domanda di controllo: chi guida, a che velocità e verso dove. Il tuo posto in auto, le sue condizioni e ciò che provavi durante il viaggio contano più di un significato fisso.",
         "askYourself": [
           "Ero alla guida, passeggero o guardavo l’auto da fuori?",
           "L’auto andava bene, si guastava, restava senza freni o faceva un incidente?",
           "Quale scelta o cambiamento di questo periodo assomiglia a quel viaggio?"
         ],
-        "seoTitle": "automobile, guida o perdita di controllo",
+        "seoTitle": "di guidare una macchina",
         "faq": [
           {
             "question": "Cosa significa sognare un’automobile?",
@@ -3055,7 +3056,7 @@
           }
         ],
         "modifiedAt": "2026-10-09",
-        "documentMetaDescription": "Sognare un’automobile: guidare, essere passeggero, restare senza freni o fare un incidente. Che cosa può dire la scena del controllo, con domande ed esempio."
+        "documentMetaDescription": "Sognare di guidare una macchina, di essere in macchina con qualcuno o di perdere il controllo senza freni: che cosa può dire la scena, con domande ed esempio."
       },
       "pt": {
         "slug": "carro",
@@ -7069,6 +7070,8 @@
       "it": {
         "slug": "treno",
         "name": "Treno",
+        "seoTitle": "di viaggiare in treno",
+        "documentTitle": "Sognare di viaggiare in treno: significato",
         "shortDescription": "Sognare un treno significa spesso lasciarsi portare sui binari: un viaggio tranquillo, la carrozza sbagliata, una stazione dove non arriva nulla. Il treno viene spesso associato alla direzione che prende la tua vita. Conta soprattutto dove andava.",
         "askYourself": [
           "Ero a bordo, al binario o guardavo passare il treno?",
@@ -7093,7 +7096,7 @@
             "answer": "Aspettare al binario si avvicina spesso a una fase di passaggio: tra due lavori, due case, due fasi della vita. Un treno che non arriva mai può fare eco a una speranza rimandata di continuo. Sapevi quale treno stavi aspettando?"
           }
         ],
-        "documentMetaDescription": "Sognare un treno, il treno sbagliato, un deragliamento o una stazione: che cosa può dire la scena del tuo percorso, con domande ed esempio di diario.",
+        "documentMetaDescription": "Sognare di prendere il treno, di viaggiare in treno o di salire su quello sbagliato: che cosa può dire la scena del tuo percorso, con domande ed esempio.",
         "modifiedAt": "2026-10-09"
       },
       "pt": {
@@ -8852,6 +8855,8 @@
       "it": {
         "slug": "piangere",
         "name": "Piangere",
+        "seoTitle": "di piangere",
+        "documentTitle": "Sognare di piangere tanto o svegliarsi in lacrime",
         "shortDescription": "Piangere in sogno può lasciarti con le guance bagnate e un nodo in gola, o stranamente sollevato. La scena richiama spesso un’emozione che di giorno ha poco spazio: dolore, stanchezza, sollievo. Chi piangeva, e perché, orienta la lettura.",
         "askYourself": [
           "Piangevo di tristezza, di rabbia, di sollievo o di gioia?",
@@ -8876,7 +8881,7 @@
             "answer": "Voler piangere senza che arrivino le lacrime può accompagnare emozioni difficili da esprimere, o un periodo in cui tieni duro per andare avanti. Chiediti dove senti, in questo momento, di non poter lasciar andare."
           }
         ],
-        "documentMetaDescription": "Piangere in sogno, svegliarsi in lacrime o vedere qualcuno piangere: che cosa può dire la scena di un’emozione trattenuta, con domande ed esempio di diario.",
+        "documentMetaDescription": "Sognare di piangere tanto, svegliarsi in lacrime o vedere qualcuno piangere: che cosa può dire la scena di un’emozione trattenuta, con domande ed esempio.",
         "modifiedAt": "2026-10-09"
       },
       "pt": {
@@ -13639,6 +13644,8 @@
       "it": {
         "slug": "nonno",
         "name": "Nonno",
+        "seoTitle": "il nonno o i nonni",
+        "documentTitle": "Sognare il nonno o i nonni: significato e scenari",
         "shortDescription": "Sognare il nonno riporta spesso una voce, un laboratorio, un orto o una poltrona: ricordi, valori di famiglia, consigli e a volte autorità. Il suo atteggiamento e ciò che provavi accanto a lui aiutano a capire che cosa smuove oggi la scena.",
         "modifiedAt": "2026-10-09",
         "askYourself": [
@@ -13664,7 +13671,7 @@
             "answer": "Vederlo indebolito può fare eco a una preoccupazione reale per la sua salute, o al tempo che passa in famiglia. Non è una previsione. Se è vivo, il sogno a volte segue semplicemente una visita, una telefonata o notizie su di lui."
           }
         ],
-        "documentMetaDescription": "Sognare il nonno, vivo o morto, che parla o che è malato: che cosa può dire la scena dei ricordi e dei valori di famiglia, con domande ed esempio di diario."
+        "documentMetaDescription": "Sognare il nonno o i nonni, vivi o morti, che parlano o sono malati: che cosa può dire la scena dei ricordi e dei valori di famiglia, con domande ed esempio."
       },
       "pt": {
         "slug": "avo",
@@ -27035,7 +27042,7 @@
         "name": "Cacca",
         "seoTitle": "cacca o feci",
         "documentTitle": "Sognare cacca: significato e scenari",
-        "documentMetaDescription": "Sognare cacca o feci, pulirla, pestarla o un water intasato: che cosa può dire la scena su vergogna e sollievo, con domande ed esempio di diario.",
+        "documentMetaDescription": "Sognare cacca o feci, pestarla o pulirla, e la credenza che porti soldi: che cosa può dire la scena su vergogna e sollievo, con domande ed esempio.",
         "shortDescription": "Sognare la cacca è spesso una scena imbarazzante: un bagno senza porta, una macchia che qualcuno potrebbe vedere. Viene associata a vergogna, intimità, sollievo o a qualcosa di cui vuoi liberarti. Il luogo e il tuo gesto contano di più.",
         "askYourself": [
           "Dov’era: nel water, sul pavimento, sui vestiti, in un luogo pubblico?",
