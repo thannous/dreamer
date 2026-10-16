@@ -410,7 +410,7 @@
     "no_results_text": "Nessun simbolo trovato per",
     "browse_by_category": "Sfoglia per categoria",
     "priority_links_heading": "I più cercati",
-    "priority_links_intro": "Tre simboli molto cercati: scegli la scena più vicina al tuo sogno.",
+    "priority_links_intro": "Cinque simboli molto cercati: scegli la scena più vicina al tuo sogno.",
     "priority_links": [
       {
         "label": "Sognare cacca",
@@ -426,6 +426,16 @@
         "label": "Sognare pesci",
         "href": "/it/simboli/pesce",
         "desc": "Pesci vivi, morti o pescati: che cosa cambia secondo l’acqua e il tuo gesto."
+      },
+      {
+        "label": "Sognare il mare",
+        "href": "/it/simboli/oceano",
+        "desc": "Mare calmo, mare agitato o onde alte: che cosa cambia secondo l’acqua e il punto in cui ti trovi."
+      },
+      {
+        "label": "Sognare scarafaggi",
+        "href": "/it/simboli/scarafaggio",
+        "desc": "Uno solo o un’invasione, in cucina o nel letto: fastidio, sporco e spazi da riprendere."
       }
     ],
     "section_heading": "Simboli che iniziano con",
