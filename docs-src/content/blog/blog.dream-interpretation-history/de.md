@@ -256,7 +256,7 @@
 </aside>
 <h2 id="cultural-differences">Traumdeutungen einordnen und die eigenen Träume lesen</h2>
 <p>
-                    Ein einzelner Bericht spricht nicht für ein ganzes Volk. Im 17. Jahrhundert beschrieben jesuitische Missionare Gemeinschaften der Haudenosaunee (Irokesen), in denen ein Traum einen Wunsch der Seele ausdrücken konnte, den andere halfen zu erfüllen; der Anthropologe Anthony Wallace <a class="text-dream-salmon hover:underline" href="https://dreamsofantiquity.ku.de/id/eprint/70186/" rel="noopener noreferrer" target="_blank">analysierte diese Berichte 1958</a>. Es bleiben Beschreibungen von außen.
+                    Ein einzelner Bericht spricht nicht für ein ganzes Volk. Im 17. Jahrhundert beschrieben jesuitische Missionare Gemeinschaften der Haudenosaunee (Irokesen), in denen ein Traum einen Wunsch der Seele ausdrücken konnte, den andere halfen zu erfüllen; der Anthropologe Anthony Wallace <a class="text-dream-salmon hover:underline" href="https://doi.org/10.1525/aa.1958.60.2.02a00030" rel="noopener noreferrer" target="_blank">analysierte diese Berichte 1958</a>. Es bleiben Beschreibungen von außen.
                 </p>
 <p>
                     Auch Übersetzungen können täuschen. Das englische Wort <em>Dreaming</em> („Traumzeit“), das für Vorstellungen australischer Aborigines verwendet wird, <a class="text-dream-salmon hover:underline" href="https://theconversation.com/dreamtime-and-the-dreaming-who-dreamed-up-these-terms-20835" rel="noopener noreferrer" target="_blank">stammt von Übersetzern des 19. Jahrhunderts</a>. Es meint das Gesetz der Ahnen und die Erschaffung der Welt, nicht in erster Linie nächtliche Träume.
@@ -378,7 +378,7 @@
 <li><a href="https://pubmed.ncbi.nlm.nih.gov/11515147/" rel="nofollow noopener noreferrer" target="_blank">Revonsuo (2000), „The reinterpretation of dreams“, <em>Behavioral and Brain Sciences</em></a></li>
 <li><a href="https://bicr.atr.jp/dni/en/research-projects/neural-decoding-of-visual-imagery-during-sleep/" rel="nofollow noopener noreferrer" target="_blank">Horikawa et al. (2013), „Neural decoding of visual imagery during sleep“, <em>Science</em></a></li>
 <li><a href="https://pubmed.ncbi.nlm.nih.gov/33607035/" rel="nofollow noopener noreferrer" target="_blank">Konkoly et al. (2021), <em>Current Biology</em></a></li>
-<li><a href="https://dreamsofantiquity.ku.de/id/eprint/70186/" rel="nofollow noopener noreferrer" target="_blank">Wallace (1958), „Dreams and the Wishes of the Soul“, <em>American Anthropologist</em> (bibliografischer Eintrag)</a></li>
+<li><a href="https://doi.org/10.1525/aa.1958.60.2.02a00030" rel="nofollow noopener noreferrer" target="_blank">Wallace (1958), „Dreams and the Wishes of the Soul“, <em>American Anthropologist</em> (bibliografischer Eintrag)</a></li>
 <li><a href="https://theconversation.com/dreamtime-and-the-dreaming-who-dreamed-up-these-terms-20835" rel="nofollow noopener noreferrer" target="_blank">The Conversation, „Dreamtime and the Dreaming: who dreamed up these terms?“</a></li>
 </ul>
 <p class="mt-6 text-xs text-purple-200/60">Letzte Aktualisierung: 9. Oktober 2026</p>
