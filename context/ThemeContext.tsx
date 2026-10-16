@@ -1,4 +1,5 @@
 import React, { createContext, useContext, useState, useEffect, useMemo, useCallback } from 'react';
+import { Appearance, Platform } from 'react-native';
 import { Uniwind } from 'uniwind';
 import { useColorScheme } from '@/hooks/use-color-scheme';
 import {
@@ -111,7 +112,12 @@ export const ThemeProvider: React.FC<React.PropsWithChildren> = ({ children }) =
   // `system` remains available as an explicit legacy-compatible preference.
   useEffect(() => {
     Uniwind.setTheme(preference === 'auto' ? 'system' : ambience);
-  }, [ambience, preference]);
+    // Uniwind resets native appearance to the system for custom palettes.
+    // Keep native dialogs aligned with the morning/evening app palette.
+    if (Platform.OS !== 'web' && preference === 'dynamic') {
+      Appearance.setColorScheme(mode);
+    }
+  }, [ambience, mode, preference]);
 
   // Select the complete app palette. Features may retain their own brand
   // vocabulary while reading `colors.ambience` for morning/afterglow variants.
