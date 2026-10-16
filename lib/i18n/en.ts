@@ -675,6 +675,7 @@ const translations: Record<string, string> = {
     'journal.detail.image.generation_failed': 'Illustration unavailable',
     'journal.detail.image.quota_exceeded_message': 'Your illustration quota has been reached. You can still add an image from your device.',
     'journal.detail.image.upgrade_action': 'Unlock dream images with Plus',
+    'journal.detail.image.seal_upgrade': 'Illustrate · Plus',
     'journal.detail.reanalyze_prompt.title': 'Update this dream?',
     'journal.detail.reanalyze_prompt.message': 'You edited the transcript. Do you want to update the analysis now?',
     'journal.detail.reanalyze_prompt.reanalyze': 'Update',

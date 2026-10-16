@@ -359,7 +359,7 @@ export function SavedDreamMoment({
             className="shrink text-center font-sans-medium text-[12px] leading-[18px] uppercase tracking-[2px] text-champagne-on">
             {action.label}
           </Text>
-          {action.onPress ? <IconSymbol name="chevron.right" size={12} color={accent} /> : null}
+          {action.onPress && !action.disabled ? <IconSymbol name="chevron.right" size={12} color={accent} /> : null}
         </Animated.View>
       ) : null}
     </View>

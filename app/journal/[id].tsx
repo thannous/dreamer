@@ -366,7 +366,9 @@ function ArrivalLater({ play, ready, children }: { play: boolean; ready: boolean
 }
 
 function JournalDetailScreen() {
-  const route = useLocalSearchParams<{ id: string; remoteId?: string; clientRequestId?: string }>();
+  const route = useLocalSearchParams<{ id: string; remoteId?: string; clientRequestId?: string; saved?: string | string[] }>();
+  // Arriving from the capture seal, the page has its own ceremony: it does not also fall shut.
+  const [arrivedFromSeal] = useState(() => isJournalSavedConfirmationParam(route.saved));
   const { user } = useAuth();
   const { dreams } = useDreamsData();
   const dream = resolveDreamRoute(dreams, route);
@@ -395,7 +397,8 @@ function JournalDetailScreen() {
   const content = <JournalDetailContent key={JSON.stringify([user?.id, route.id, route.remoteId, route.clientRequestId])}
     dream={dream} folio={neighbours.folio} />;
   return dream
-    ? <JournalPageTurner newer={neighbours.newer} older={neighbours.older} folio={neighbours.folio} tonight onTurn={turnTo}>{content}</JournalPageTurner>
+    ? <JournalPageTurner newer={neighbours.newer} older={neighbours.older} folio={neighbours.folio} tonight hint={!arrivedFromSeal}
+      onTurn={turnTo}>{content}</JournalPageTurner>
     : content;
 }
 
@@ -524,6 +527,7 @@ const JournalDetailContent = memo(function JournalDetailContent({ dream, folio }
     router.setParams({ saved: undefined });
   }, [savedParam]);
   const [isRetryingImage, setIsRetryingImage] = useState(false);
+  const [illustrationAskedOnSeal, setIllustrationAskedOnSeal] = useState(false);
   const [isRetryingSync, setIsRetryingSync] = useState(false);
   const [syncRetryFailed, setSyncRetryFailed] = useState(false);
   const [isAnalyzing, setIsAnalyzing] = useState(false);
@@ -2503,16 +2507,46 @@ const JournalDetailContent = memo(function JournalDetailContent({ dream, folio }
     && (visiblePrimaryAction === 'analyze' || readingInFlight);
   // Whatever page it is on, the seal says while the dream is being read; the dock need not.
   const sealShowsReading = sealVisible && readingInFlight;
+  // Once read, the seal offers the dream's illustration, which it then paints in its own window.
+  // Asked there, it keeps its words while it paints, so the seal stays the same button meanwhile.
+  const sealSettled = sealVisible && !readingInFlight && !sealReads;
+  const sealPaints = sealSettled && illustrationAskedOnSeal && paintingInProgress && !plateRevealed;
+  // Only a dream with no illustration yet: a failed one keeps its own card and its own step.
+  const sealIllustrates = sealSettled && illustrationSidecar === 'empty' && !paintingInProgress
+    && (visibleIllustrationCta === 'illustrate' || visibleIllustrationCta === 'upgrade');
   const sealAction: SavedDreamAction | null = !sealVisible ? null
     : readingInFlight ? { label: t('loading.analyzing') }
-      : !sealReads || !detailActionCard ? null : {
-        label: analysisAccessLabel ?? detailActionCard.cta,
-        icon: analysisIcon,
-        onPress: primaryPress,
-        disabled: primaryDisabled,
-        hint: quotaHintLabel,
-        testID: primaryButtonTestID,
-      };
+      : sealPaints ? {
+        label: t('analysis.reading.image_generating'),
+        icon: 'sparkles',
+        onPress: () => {},
+        disabled: true,
+        testID: TID.Button.JournalIllustrate,
+      }
+        : sealIllustrates ? (visibleIllustrationCta === 'upgrade' ? {
+          label: t('journal.detail.image.seal_upgrade'),
+          icon: 'sparkles',
+          onPress: handleImageUpgrade,
+          hint: t('journal.detail.image.upgrade_action'),
+          testID: TID.Button.ImageUpgrade,
+        } : {
+          label: t('journal.detail.image.generate_action'),
+          icon: 'sparkles',
+          onPress: () => {
+            setIllustrationAskedOnSeal(true);
+            void onRetryImage();
+          },
+          disabled: isRetryingImage || isImageJobPending,
+          testID: TID.Button.JournalIllustrate,
+        })
+          : !sealReads || !detailActionCard ? null : {
+            label: analysisAccessLabel ?? detailActionCard.cta,
+            icon: analysisIcon,
+            onPress: primaryPress,
+            disabled: primaryDisabled,
+            hint: quotaHintLabel,
+            testID: primaryButtonTestID,
+          };
 
   const renderReturnToJournal = (quiet: boolean) => (
     <PressableScale accessibilityRole="button" onPress={handleBackPress}
@@ -2889,6 +2923,29 @@ const JournalDetailContent = memo(function JournalDetailContent({ dream, folio }
               ) : null}
             </View>
           )
+        ) : sealIllustrates ? (
+          // The seal offers the illustration; the page keeps only the dreamer's own picture.
+          <PressableScale
+            onPress={handlePickImage}
+            disabled={isPickingImage || isAnalysisLocked}
+            testID={TID.Button.JournalAddImageFromLibrary}
+            accessibilityRole="button"
+            accessibilityState={{ disabled: isPickingImage || isAnalysisLocked }}
+            className={`min-h-[44px] flex-row items-center justify-center gap-2 self-center px-3 ${
+              (isPickingImage || isAnalysisLocked) ? 'opacity-70' : ''
+            }`}
+          >
+            {isPickingImage ? (
+              <ActivityIndicator size="small" color={noctalia.text.secondary} />
+            ) : (
+              <IconSymbol name="photo" size={16} color={noctalia.text.secondary} />
+            )}
+            <Text className="font-sans-medium text-[14px] text-ivory-muted">
+              {isPickingImage
+                ? t('journal.detail.image.adding_from_library')
+                : t('journal.detail.image.add_from_library')}
+            </Text>
+          </PressableScale>
         ) : (
           <View className="min-h-[180px] flex-col items-center justify-center gap-2.5 rounded-lg border border-line bg-ink-soft px-5 py-6">
             <IconSymbol name="photo" size={28} color={noctalia.text.secondary} />
@@ -3198,7 +3255,7 @@ const JournalDetailContent = memo(function JournalDetailContent({ dream, folio }
                   {t('journal.menu.delete')}
                 </Text>
               </PressableScale>
-              <JournalFolio folio={folio} className="mt-8" />
+              <JournalFolio folio={folio} className="mt-8" turns="dream" />
             </View>
             </View>
         </ScrollView>
