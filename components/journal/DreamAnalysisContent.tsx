@@ -3,12 +3,12 @@ import { Text, View, type ViewProps } from 'react-native';
 import { useReducedMotion } from 'react-native-reanimated';
 import { Reveal } from '@/components/motion';
 import { MarkdownText } from '@/components/ui/MarkdownText';
-import { useTheme } from '@/context/ThemeContext';
 import { useTranslation } from '@/hooks/useTranslation';
 import { isPoeticDreamQuote } from '@/lib/dreamQuote';
 import { markPerformance, performanceTraceId } from '@/lib/performanceTrace';
 import { TID } from '@/lib/testIDs';
 import { useIsDecorativeCopy, useLiveTestID } from './DecorativeCopy';
+import { BookOrnament, BookSectionMark, BookStar, BookSubheading, useBookBody } from './JournalBook';
 import type { DreamAnalysis } from '@/lib/types';
 import { DreamReadingWait } from './story/DreamReadingWait';
 import { DreamSymbolConstellation, MAX_CONSTELLATION_STARS } from './story/DreamSymbolConstellation';
@@ -33,6 +33,8 @@ function Chapter({ reveal, delay, className, children }: {
  * The complete saved reading belongs to the dream, including its reflection prompts.
  * It is Act II of the dream story: a waiting state while the analysis runs, then the
  * dream's symbols as a constellation and the reading in chapters, ending on its quote.
+ * It is set as the rest of the page is, as a book: serif body text, justified, and parts
+ * opened by an ornament.
  */
 export function DreamAnalysisContent({ dream, pending, reveal = false, onLayout }: {
   dream: DreamAnalysis;
@@ -41,7 +43,6 @@ export function DreamAnalysisContent({ dream, pending, reveal = false, onLayout 
   reveal?: boolean;
   onLayout?: ViewProps['onLayout'];
 }) {
-  const { colors } = useTheme();
   const { t } = useTranslation();
   const reduced = useReducedMotion();
   const tid = useLiveTestID();
@@ -51,7 +52,8 @@ export function DreamAnalysisContent({ dream, pending, reveal = false, onLayout 
       markPerformance('analysis.text_displayed', { trace: performanceTraceId(dream.analysisRequestId) });
     }
   }, [decorative, pending, dream.analysisRequestId]);
-  const body = { fontSize: 16, lineHeight: 26, color: colors.textPrimary };
+  const body = useBookBody();
+  const question = useBookBody(true);
   const insights = [
     { key: 'symbols', heading: t('journal.detail.symbols_header'), items: dream.symbols?.map(item => ({ name: item.name, text: item.meaning })) },
     { key: 'emotions', heading: t('journal.detail.emotions_header'), items: dream.emotions?.map(item => ({ name: item.name, text: item.insight })) },
@@ -71,9 +73,7 @@ export function DreamAnalysisContent({ dream, pending, reveal = false, onLayout 
 
   return (
     <View testID={tid(TID.Component.DreamDetailReadingZone)} onLayout={onLayout} className="mx-2 mb-8 gap-5">
-      <Text accessibilityRole="header" testID={tid(TID.Text.DreamDetailReadingZone)} className="font-sans-bold text-[18px] text-ivory">
-        {t('journal.detail.zone.reading')}
-      </Text>
+      <BookSectionMark label={t('journal.detail.zone.reading')} testID={tid(TID.Text.DreamDetailReadingZone)} />
       {pending ? (
         <DreamReadingWait />
       ) : (
@@ -84,12 +84,12 @@ export function DreamAnalysisContent({ dream, pending, reveal = false, onLayout 
           </Chapter>
           {insights.map((section, sectionIndex) => section.items?.length ? (
             <Chapter key={section.key} reveal={reveal} delay={chapterDelay(sectionIndex + 1)} className="mt-3 gap-4">
-              <Text accessibilityRole="header" className="font-display-medium text-[20px] leading-7 text-ivory">{section.heading}</Text>
+              <BookSubheading>{section.heading}</BookSubheading>
               {section.items.map((item, index) => (
                 <View key={`${item.name}-${index}`} className="gap-1">
                   <View className="flex-row items-center gap-2">
-                    {section.key === 'symbols' ? <View className="h-1.5 w-1.5 rounded-full bg-champagne" /> : null}
-                    <Text className="shrink font-sans-bold text-[16px] leading-6 text-ivory">{item.name}</Text>
+                    {section.key === 'symbols' ? <BookStar size={4} /> : null}
+                    <Text className="shrink font-serif-bold-italic text-[17px] leading-6 text-ivory">{item.name}</Text>
                   </View>
                   <MarkdownText variant="reading" style={body}>{item.text}</MarkdownText>
                 </View>
@@ -99,9 +99,9 @@ export function DreamAnalysisContent({ dream, pending, reveal = false, onLayout 
           {dream.reflectionQuestions?.length ? (
             <Chapter reveal={reveal} delay={chapterDelay(3)} className="mt-3">
               <View testID={tid(TID.Component.DreamDetailReflectionZone)} className="gap-3">
-                <Text accessibilityRole="header" className="font-display-medium text-[20px] leading-7 text-ivory">{t('journal.detail.reflection_header')}</Text>
-                {dream.reflectionQuestions.map((question, index) => (
-                  <MarkdownText key={`${index}-${question}`} variant="reading" style={body}>{`${index + 1}. ${question}`}</MarkdownText>
+                <BookSubheading>{t('journal.detail.reflection_header')}</BookSubheading>
+                {dream.reflectionQuestions.map((item, index) => (
+                  <MarkdownText key={`${index}-${item}`} variant="reading" style={question}>{`${index + 1}. ${item}`}</MarkdownText>
                 ))}
               </View>
             </Chapter>
@@ -109,14 +109,9 @@ export function DreamAnalysisContent({ dream, pending, reveal = false, onLayout 
           {quote ? (
             // The reading ends on the dream's own line, set apart like the last page of a chapter.
             <Chapter reveal={reveal} delay={chapterDelay(4)} className="mt-4 items-center gap-3 px-2">
-              <View accessible={false} importantForAccessibility="no-hide-descendants" accessibilityElementsHidden
-                className="flex-row items-center gap-2">
-                <View className="h-px w-8 bg-champagne opacity-40" />
-                <View className="h-1.5 w-1.5 rounded-full bg-champagne" />
-                <View className="h-px w-8 bg-champagne opacity-40" />
-              </View>
+              <BookOrnament />
               <Text testID={tid(TID.Text.DreamDetailQuote)} className="text-center font-serif-italic text-[18px] leading-7 text-ivory">{`« ${quote} »`}</Text>
-              {isPoeticDreamQuote(dream) ? <Text className="text-center font-sans text-[12px] text-ivory-muted">{t('journal.detail.quote_attribution')}</Text> : null}
+              {isPoeticDreamQuote(dream) ? <Text className="text-center font-serif-italic text-[13px] text-ivory-muted">{t('journal.detail.quote_attribution')}</Text> : null}
             </Chapter>
           ) : null}
         </>
