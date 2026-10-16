@@ -1,63 +1,111 @@
 # Apparence native et palettes dynamiques — 16 octobre 2026
 
-Responsable : fil `popup-native-theme`. Périmètre : cohérence clair/sombre des
-fenêtres natives avec le thème dynamique de Dreamer. Pas de publication demandée.
+Responsable : fil `popup-native-theme`, PR #382. Périmètre : cohérence du thème
+natif de Dreamer et observation de la confirmation Apple StoreKit. Aucune
+publication ni fusion de cette PR demandée.
 
-## Diagnostic et correction
+## Résultat observé sur iPhone
 
-La capture privée fournie montre la confirmation d’achat Apple StoreKit avec
-`Environment: Sandbox`. Le service appelle `Purchases.purchasePackage` ; le
-message de succès propre à Noctalia est un toast distinct dans le paywall.
-Apple gère la confirmation système et sa présentation, comme expliqué dans
-[WWDC25, StoreKit](https://developer.apple.com/videos/play/wwdc2025/241/).
+Le 16 octobre à **19:26, heure de Paris**, la confirmation « Tout est prêt /
+Votre achat a bien été effectué / Environment: Sandbox » a été capturée en
+**sombre, avec titre blanc**, après sélection du thème dynamique et chargement
+du correctif. Le texte, le bouton bleu OK et la forme restent ceux d’Apple.
+La capture initiale de référence avait un fond clair ; son réglage d’apparence
+au moment de l’achat n’a pas été enregistré. La comparaison qualifie le rendu
+observé après correction, pas tous les modes ni une causalité contrôlée avant/après.
+
+Le client physique est Noctalia **3.5.0 (13)**, installé pour le développement,
+iOS **27.0.1**. Sa révision native compilée est inconnue. Le JS contrôlé vient de
+`8dcdb38d1c9ad6579da29959dee16fbd8eeef734` (préparation TesterArmy),
+servi depuis le worktree de cette PR sur Metro **4521**. Aucune réinstallation,
+aucun effacement de données, compte nouveau ou reset billing. Cette observation
+ne qualifie pas un binaire Release/TestFlight ultérieur.
+
+## Cause contrôlée par l’app
 
 Uniwind 1.12.2 remet `Appearance` en mode système pour les palettes personnalisées
 `morning` et `afterglow`. Avec un système clair et la palette du soir sombre,
 le style natif pouvait donc rester clair. Après `Uniwind.setTheme`,
-[ThemeContext](../../../context/ThemeContext.tsx) applique désormais le mode
-clair/sombre de la palette dynamique sur les plateformes natives. L’option
-`auto` conserve la remise au mode système de Uniwind.
-L’API agit sur le style de l’application ; voir
-[React Native Appearance](https://reactnative.dev/docs/appearance).
+[ThemeContext](../../../context/ThemeContext.tsx) applique le mode clair/sombre
+de la palette dynamique sur les plateformes natives. L’option `auto` conserve
+le suivi du système. Références :
+[React Native Appearance](https://reactnative.dev/docs/appearance) et
+[WWDC25, StoreKit](https://developer.apple.com/videos/play/wwdc2025/241/).
 
-## Preuves et relance
+## Parcours physique et limites
 
-Code testé : `e79f04ad0f77685566723d5184de98b4b9ee0f20`, base
-`cf78f078fda2717903c0a8e96563a733fd309062`. Les ajouts documentaires ultérieurs
-ne changent pas ces entrées applicatives. Node 24.19.0, React Native 0.88.0-rc.3,
-Uniwind 1.12.2, RNTL 14.1.0.
+- Le reçu mensuel précédent a expiré naturellement ; aucun achat n’a été lancé
+  pendant ses renouvellements automatiques. API et identité native fraîche
+  contrôlées avant la nouvelle tentative.
+- Le wrapper versionné vérifie source propre, profil stable, worktree Metro,
+  correspondance nom/UDID et version du client. Un seul worker ; e2e 0.21.1,
+  mobile 0.12.1 et agent-device 0.21.25. DevToolsSecurity est resté activé selon
+  l’autorisation durable du propriétaire.
+- Premier run arrêté avant l’achat : le thème existant était **Sombre**, alors
+  que le contrôle exigeait Dynamique. Le run suivant a mémorisé ce choix et
+  sélectionné temporairement **Dynamique** par l’interface réelle.
+- Préparation TesterArmy : **1/1 passed**, jusqu’à un seul appui Acheter et sa
+  capture. Cette réussite ne prétend pas qualifier une transaction terminée.
+- La feuille Apple a été lue visuellement : « À des fins de test uniquement »
+  et absence de débit, bon produit mensuel. Le propriétaire a confirmé avec le
+  bouton latéral et laissé l’alerte finale ouverte, selon sa réponse dans ce fil.
+- Le vérificateur existant relie la tentative, cette confirmation humaine, une
+  transaction native **Sandbox / PURCHASE** (pas RENEWAL), son compte, son
+  produit et le reçu RevenueCat **app_store / is_sandbox=true**, avec le même
+  identifiant de transaction et une date cohérente. Aucun deuxième achat.
+- La capture et l’arbre natif montrent ensuite l’alerte reconnue et son bouton
+  OK. Acquittement après capture ; restauration du réglage initial Sombre.
+  Le suivi récurrent est désactivé une fois l’observation obtenue.
 
-- Contrôle isolé : ancien code en échec (`dark` attendu, `light` obtenu) ; après
-  correction, 5/5 tests des deux suites ThemeContext passent. Les deux nouveaux
-  contrôles simulent le contrat de Uniwind et de Appearance : soir/matin avec
-  système opposé, puis libération du style imposé en retournant à `auto`.
-- Exception isolée : les parcours navigateur ne peuvent pas lire le style natif ;
-  le parcours StoreKit nécessite une transaction et l’iPhone est utilisé par un
-  autre fil. Ces contrôles protègent la frontière API, sans prouver un rendu iOS.
-- TesterArmy frais : 2/2 parcours de réglages clair/sombre passent, dont le retour
-  à `auto`, la persistance et la conservation des choix. Source propre et stable,
-  locale `fr-FR`, services simulés, port 4520, aucune utilisation de modèle.
-  SDK `e2e` 0.21.1, moteur web 0.15.0, Playwright 1.64.0.
-- Artefact canonique local :
-  `tools/e2e/.e2e/dreamer-web/1792167875157-73998-ee4bbe16-5c5f-4f2f-bb2f-957e8227e047/`
-  (`qualification.json`, `report.json`, traces et captures). Rapport Jest dans
-  `tools/e2e/.e2e/native-alert-theme-20261016/jest.json`.
-- Le premier lancement E2E a refusé le lien de dépendances non ignoré
-  (`SOURCE_SYMLINK`) avant les tests. Un répertoire de dépendances local ignoré
-  contenant les liens a rétabli la préparation normale, sans changer les gardes.
+Cette preuve est composée : préparation automatisée, geste physique du
+propriétaire, transaction/reçu concordants et inspection visuelle. Ce n’est pas
+un unique rejeu automatisé de tout le cycle d’achat, ni une nouvelle qualification
+des quotas, du renouvellement, de la restauration ou d’un binaire de distribution.
+
+## Artefacts et relance
+
+Preuves privées, hors Git :
+
+- `tools/e2e/.e2e/native-alert-iphone-20261016/` : capture finale
+  `completion-alert.png`, préflight, état, attestations, preuve de transaction,
+  journaux et traces agent-device. Ne pas publier emails, JWS ou clés.
+- `tools/e2e/.e2e/owner-iphone-sandbox-1792171186281/` : échec du premier
+  prérequis de thème, sans achat.
+- `tools/e2e/.e2e/owner-iphone-sandbox-1792171395451/` : préparation passée,
+  trace, capture du thème choisi et feuille Apple.
+
+Relance : profil privé `.env.ios-sandbox.local` pointant sur les preuves de ce fil,
+le pilote signé existant, le compte validé et Metro 4521. Lire le runbook
+[RevenueCat QA](../revenuecat-qa-workflow.md). Une tentative déjà amorcée doit être
+reprise sans acheter à nouveau. Le choix initial d’apparence doit être restauré.
 
 ```sh
+CI=1 EXPO_NO_METRO_LAZY=1 mise exec -- npm run start -- --profile .env.ios-sandbox.local --dev-client --lan --port 4521
+mise exec -- node tools/e2e/run-iphone-sandbox-local.mjs --check
+# Uniquement après expiration du reçu et en l’absence de tentative en attente :
+mise exec -- node tools/e2e/run-iphone-sandbox-local.mjs --grep 'prepares Sandbox confirmation visual inspection' --allow-sandbox-purchase
+```
+
+## Autres contrôles du correctif
+
+Sur `e79f04ad0f77685566723d5184de98b4b9ee0f20` : 5/5 tests ThemeContext et
+2/2 parcours web FR frais (choix clair/sombre, persistance et retour à auto),
+services simulés, aucun modèle. Les deux nouveaux contrôles isolés reproduisaient
+`dark` attendu / `light` obtenu avant correction ; ils couvrent soir/matin et la
+libération du style en revenant à auto. Exception : le navigateur ne lit pas
+Appearance natif ; ces mocks protègent la frontière API sans prouver un rendu iOS.
+Ces entrées applicatives sont inchangées dans le candidat physique.
+
+Artefact web canonique :
+`tools/e2e/.e2e/dreamer-web/1792167875157-73998-ee4bbe16-5c5f-4f2f-bb2f-957e8227e047/`.
+Le premier lancement avait refusé un lien de dépendances non ignoré
+(`SOURCE_SYMLINK`), corrigé dans la préparation locale sans modifier les gardes.
+Le contrôle CDP optionnel du 16 octobre avait échoué faute d’Origin ; il ne
+constitue pas une preuve native et n’a pas été nécessaire au résultat StoreKit.
+
+```sh
+mise exec -- npm run test:testerarmy:typecheck
 mise exec -- npm run test:file -- context/__tests__/ThemeContext.native.test.tsx context/__tests__/ThemeContext.test.tsx
 E2E_WEB_PORT=4520 E2E_WEB_LOCALE=fr-FR mise exec -- node tools/e2e/run.mjs dreamer web run --grep 'grouped settings preserve'
 mise exec -- npm run verify:pr
 ```
-
-## Limite et prochaine action
-
-Aucun nouveau binaire installé et aucun achat exécuté ici. Le texte, le bouton,
-la forme et la mention Sandbox restent gérés par Apple. Le rendu de cette alerte
-StoreKit après correction est **non qualifié** : elle peut imposer sa propre
-apparence et ne pas suivre celle de l’application. Après intégration du code dans
-le candidat iOS, recontrôler cette alerte lors du parcours Sandbox autorisé avec
-son propriétaire. L’iPhone, son état billing, Metro 4519 et les preuves du fil
-d’achat sont restés intacts.
