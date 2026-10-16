@@ -23,13 +23,13 @@
   "twitterImage": "https://noctalia.app/img/og/noctalia-de-1200x630.jpg",
   "twitterImageAlt": "Tarife und Preise des Noctalia Traumtagebuchs",
   "publishedTime": "2026-07-31T00:00:00+02:00",
-  "modifiedTime": "2026-10-11T00:00:00+02:00",
+  "modifiedTime": "2026-10-15T00:00:00+02:00",
   "author": "Thanh Chau",
   "prevPath": "",
   "nextPath": "",
   "preloadImage": "",
   "jsonLd": [
-    "{\"@context\":\"https://schema.org\",\"@type\":\"WebPage\",\"name\":\"Noctalia Tarife und Preise\",\"description\":\"Vergleiche den kostenlosen Träumer-Tarif mit dem optionalen Noctalia-Plus-Abo. Google Play zeigt Preis und verfügbare Optionen vor dem Kauf.\",\"url\":\"https://noctalia.app/de/preise\",\"inLanguage\":\"de\",\"datePublished\":\"2026-07-31T00:00:00+02:00\",\"dateModified\":\"2026-10-11T00:00:00+02:00\"}",
+    "{\"@context\":\"https://schema.org\",\"@type\":\"WebPage\",\"name\":\"Noctalia Tarife und Preise\",\"description\":\"Vergleiche den kostenlosen Träumer-Tarif mit dem optionalen Noctalia-Plus-Abo. Google Play zeigt Preis und verfügbare Optionen vor dem Kauf.\",\"url\":\"https://noctalia.app/de/preise\",\"inLanguage\":\"de\",\"datePublished\":\"2026-07-31T00:00:00+02:00\",\"dateModified\":\"2026-10-15T00:00:00+02:00\"}",
     "{\"@context\":\"https://schema.org\",\"@type\":\"BreadcrumbList\",\"itemListElement\":[{\"@type\":\"ListItem\",\"position\":1,\"name\":\"Startseite\",\"item\":\"https://noctalia.app/de/\"},{\"@type\":\"ListItem\",\"position\":2,\"name\":\"Preise\",\"item\":\"https://noctalia.app/de/preise\"}]}",
     "{\"@context\":\"https://schema.org\",\"@type\":\"MobileApplication\",\"name\":\"Noctalia\",\"operatingSystem\":\"Android\",\"applicationCategory\":\"LifestyleApplication\",\"downloadUrl\":\"https://play.google.com/store/apps/details?id=com.tanuki75.noctalia\",\"offers\":{\"@type\":\"Offer\",\"price\":\"0\",\"priceCurrency\":\"EUR\",\"url\":\"https://play.google.com/store/apps/details?id=com.tanuki75.noctalia\",\"description\":\"Kostenlose Installation mit optionalen, von Google Play angezeigten Noctalia-Plus-Käufen.\"}}",
     "{\"@context\":\"https://schema.org\",\"@type\":\"FAQPage\",\"mainEntity\":[{\"@type\":\"Question\",\"name\":\"Kann ich Noctalia kostenlos nutzen?\",\"acceptedAnswer\":{\"@type\":\"Answer\",\"text\":\"Ja. Der Träumer-Tarif enthält unbegrenzte Traumaufzeichnungen, drei Traumanalysen pro Monat (jeweils mit Bild), geführte Erkundungen ohne monatliches Limit, bis zu 10 Folgenachrichten pro analysiertem Traum und ein gespeichertes Traumtagebuch.\"}},{\"@type\":\"Question\",\"name\":\"Wie viel kostet Noctalia Plus?\",\"acceptedAnswer\":{\"@type\":\"Answer\",\"text\":\"Öffne den Google-Play-Eintrag oder den Abo-Bildschirm in der App, um vor dem Kauf den aktuellen Preis, den Abrechnungszeitraum, Steuern, die Berechtigung und mögliche Angebote für dein Land und Konto zu sehen.\"}},{\"@type\":\"Question\",\"name\":\"Gibt es monatliche und jährliche Abos?\",\"acceptedAnswer\":{\"@type\":\"Answer\",\"text\":\"Monatliche und jährliche Optionen können verfügbar sein. Google Play zeigt die aktuell für dein Land und Konto angebotenen Optionen, deshalb kann die Verfügbarkeit variieren.\"}},{\"@type\":\"Question\",\"name\":\"Wo kann ich ein Abo verwalten oder kündigen?\",\"acceptedAnswer\":{\"@type\":\"Answer\",\"text\":\"Noctalia Plus wird über Google Play abgerechnet. Du kannst das Abo im Bereich Abonnements des Google-Play-Kontos verwalten oder kündigen, das für den Kauf verwendet wurde.\"}}]}"
@@ -38,7 +38,7 @@
 }
 ---
 <h1 class="font-serif text-4xl md:text-5xl mb-4 text-dream-cream">Noctalia Tarife und Preise</h1>
-<p class="text-sm text-purple-300/70 mb-6">Aktualisiert am 11. Oktober 2026</p>
+<p class="text-sm text-purple-300/70 mb-6">Aktualisiert am 15. Oktober 2026</p>
 <p class="text-lg text-purple-200/80 leading-relaxed mb-10">Starte mit dem kostenlosen Träumer-Tarif und wechsle nur dann zu Plus, wenn du mehr geführte Reflexion nutzen möchtest. Noctalia lässt sich kostenlos auf Android installieren. Preis, Steuern, Abrechnungszeitraum, Voraussetzungen und Angebote hängen von deinem Land und Konto ab. Den Betrag, den du tatsächlich zahlst, zeigt Google Play.</p>
 
 <div class="space-y-8 text-gray-300 leading-relaxed">
@@ -61,8 +61,8 @@
       <h2 class="text-3xl font-serif text-white mb-3">Noctalia Plus</h2>
       <p class="text-2xl text-dream-cream mb-5">Aktueller Preis bei Google Play</p>
       <ul class="list-disc pl-5 space-y-2">
-        <li>Unbegrenzte Traumanalysen und Bilder</li>
-        <li>Bis zu 20 Folgenachrichten pro Traum</li>
+        <li>Unbegrenzte Traumanalysen, jede mit einem Bild</li>
+        <li>Unbegrenzter Chat bei fairer Nutzung: bis zu 100 Folgenachrichten pro Traum</li>
         <li>360°-Synthese am Ende einer geführten Erkundung</li>
         <li>Abrechnung und Verlängerung über Google Play</li>
       </ul>
@@ -77,9 +77,9 @@
       <tbody class="divide-y divide-white/10">
         <tr><td class="py-4 pr-4 text-white font-medium">Traum per Sprache oder Text festhalten</td><td class="py-4 pr-4">Ohne Limit</td><td class="py-4 pr-4">Ohne Limit</td></tr>
         <tr><td class="py-4 pr-4 text-white font-medium">Traumanalyse</td><td class="py-4 pr-4">3 pro Monat</td><td class="py-4 pr-4">Ohne Limit</td></tr>
-        <tr><td class="py-4 pr-4 text-white font-medium">Traumbild</td><td class="py-4 pr-4">Eines zu jeder Analyse</td><td class="py-4 pr-4">Ohne Limit</td></tr>
+        <tr><td class="py-4 pr-4 text-white font-medium">Traumbild</td><td class="py-4 pr-4">Eines zu jeder Analyse</td><td class="py-4 pr-4">Eines zu jeder Analyse</td></tr>
         <tr><td class="py-4 pr-4 text-white font-medium">Geführte Erkundungen</td><td class="py-4 pr-4">Ohne monatliches Limit</td><td class="py-4 pr-4">Ohne monatliches Limit</td></tr>
-        <tr><td class="py-4 pr-4 text-white font-medium">Folgenachrichten</td><td class="py-4 pr-4">Bis zu 10 pro analysiertem Traum</td><td class="py-4 pr-4">Bis zu 20 pro Traum</td></tr>
+        <tr><td class="py-4 pr-4 text-white font-medium">Folgenachrichten</td><td class="py-4 pr-4">Bis zu 10 pro analysiertem Traum</td><td class="py-4 pr-4">Unbegrenzt bei fairer Nutzung: bis zu 100 pro Traum</td></tr>
         <tr><td class="py-4 pr-4 text-white font-medium">360°-Synthese am Ende einer geführten Erkundung</td><td class="py-4 pr-4">Nicht enthalten</td><td class="py-4 pr-4">Enthalten</td></tr>
         <tr><td class="py-4 pr-4 text-white font-medium">Traumtagebuch</td><td class="py-4 pr-4">Gespeichert, jederzeit nachlesbar</td><td class="py-4 pr-4">Gespeichert, jederzeit nachlesbar</td></tr>
         <tr><td class="py-4 pr-4 text-white font-medium">Bezahlung</td><td class="py-4 pr-4">Keine</td><td class="py-4 pr-4">Abo, abgerechnet und verlängert über Google Play</td></tr>

@@ -470,7 +470,7 @@ describe('SupabaseQuotaProvider', () => {
       expect(status.tier).toBe('plus');
       expect(status.usage.analysis.limit).toBeNull();
       expect(status.usage.exploration.limit).toBeNull();
-      expect(status.usage.messages.limit).toBe(20);
+      expect(status.usage.messages.limit).toBe(100);
       expect(status.canAnalyze).toBe(true);
       expect(status.canExplore).toBe(true);
       expect(status.canGenerateImage).toBe(true);
@@ -846,7 +846,7 @@ describe('SupabaseQuotaProvider', () => {
       expect(status.tier).toBe('plus');
       expect(status.usage.analysis.limit).toBeNull();
       expect(status.usage.exploration.limit).toBeNull();
-      expect(status.usage.messages.limit).toBe(20);
+      expect(status.usage.messages.limit).toBe(100);
       expect(status.canAnalyze).toBe(true);
       expect(status.canExplore).toBe(true);
       expect(status.canGenerateImage).toBe(true);

@@ -1,7 +1,8 @@
 # Native qualification matrix
 
-The current exact verdict is the immutable run manifest identified in the
-[current delivery report](../../doc_web_interne/docs/qa/native-retro-qualification-20261006.md). This matrix describes source selection and invariants, not a pass count.
+Billing's current local verdict is in the [native billing report](../../doc_web_interne/docs/qa/revenuecat-native-qa-20261016.md).
+Earlier campaigns retain the immutable run manifest identified in the
+[retrospective delivery report](../../doc_web_interne/docs/qa/native-retro-qualification-20261006.md). This matrix describes source selection and invariants, not a pass count.
 Each selected test starts with `app.open()`, uses one worker on one disposable
 owned target, and performs exact assertions on an identified installed Release.
 
@@ -10,6 +11,7 @@ owned target, and performs exact assertions on an identified installed Release.
 | Dreamer | Android | production-apk, story OFF | Capture onboarding/empty save/mode draft, French + themes + restart, language row, drawer bounds/backdrop/settings, account destination, Plus offer closure (6) | Store error is environmental; no purchase/provider/backend proof |
 | Dreamer | Android + iOS Simulator | mock-persistent, story ON | Same six invariants plus feature-story Capture→Explorer (7 per platform) | Synthetic account/catalogue, local storage; no real entitlement |
 | Dreamer | Android + iOS Simulator | mock-persistent, 30000ms categorization opt-in | Metadata draft and transcript draft survive same-entry background completion, exact save/Journal round-trip, another entry receives its own draft (2 per platform) | Real mock update witnessed pending before edits; no production timing claim |
+| Dreamer | iOS Simulator | mock-persistent, `native-billing` | Purchase; restore with/without receipt; delayed purchase/restore activation after reentry without another Store operation; existing/new mock sign-in returns to the offer, dismissal and native foreground preserve Home, exact account quotas and zero automatic purchases (7) | Synthetic auth, receipt and entitlement confirmation; no real Store/RevenueCat backend, OAuth, reinstall restoration or Android qualification |
 | Lucid | Android | lucid-mock | Both intention/experience required; local plan activation + restart + tabs (2) | No real cloud/account sync or native full historical browser parity |
 | Lucid | iOS Simulator | lucid-mock, signed | Same two invariants with SecureStore restart (2) | Local ad hoc signature and existing entitlements; no fallback or Store profile |
 | Meditation | Android + iOS Simulator | meditation-local | Onboarding/restart/all tabs, breathing start/pause/resume/exit, language immediate/restart, bundled session play/seek15s/resume (4 per platform) | Bundled audio/local storage; no purchase, entitlement or physical audio proof |

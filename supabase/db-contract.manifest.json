@@ -537,7 +537,7 @@
         "quota_type": "messages_per_dream"
       },
       "expect": {
-        "quota_limit": 20
+        "quota_limit": 100
       }
     },
     {
@@ -573,7 +573,7 @@
         "quota_type": "messages_per_dream"
       },
       "expect": {
-        "quota_limit": 20
+        "quota_limit": 100
       }
     }
   ],
