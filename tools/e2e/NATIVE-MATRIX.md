@@ -1,6 +1,6 @@
 # Native qualification matrix
 
-Billing's current local verdict is in the [native billing report](../../doc_web_interne/docs/qa/revenuecat-native-qa-20261016.md).
+Billing's local verdicts are in the [iOS billing report](../../doc_web_interne/docs/qa/revenuecat-native-qa-20261016.md) and the [Android billing report](../../doc_web_interne/docs/qa/revenuecat-android-native-qa-20261016.md).
 Earlier campaigns retain the immutable run manifest identified in the
 [retrospective delivery report](../../doc_web_interne/docs/qa/native-retro-qualification-20261006.md). This matrix describes source selection and invariants, not a pass count.
 Each selected test starts with `app.open()`, uses one worker on one disposable
@@ -12,6 +12,7 @@ owned target, and performs exact assertions on an identified installed Release.
 | Dreamer | Android + iOS Simulator | mock-persistent, story ON | Same six invariants plus feature-story Capture→Explorer (7 per platform) | Synthetic account/catalogue, local storage; no real entitlement |
 | Dreamer | Android + iOS Simulator | mock-persistent, 30000ms categorization opt-in | Metadata draft and transcript draft survive same-entry background completion, exact save/Journal round-trip, another entry receives its own draft (2 per platform) | Real mock update witnessed pending before edits; no production timing claim |
 | Dreamer | iOS Simulator | mock-persistent, `native-billing` | Purchase; restore with/without receipt; delayed purchase/restore activation after reentry without another Store operation; existing/new mock sign-in returns to the offer, dismissal and native foreground preserve Home, exact account quotas and zero automatic purchases (7) | Synthetic auth, receipt and entitlement confirmation; no real Store/RevenueCat backend, OAuth, reinstall restoration or Android qualification |
+| Dreamer | Android emulator | mock-persistent, `native-billing` | Same seven billing journeys; exact Store-operation counts, Free/Plus quotas, existing/new sign-in return to offer, dismissal then native foreground reaches Capture without reopening offer (7) | Synthetic auth/receipts/convergence; no real Play/RevenueCat backend, OAuth, physical device, reinstall restoration or process-death proof; Free empty-restore exit uses visible footer |
 | Lucid | Android | lucid-mock | Both intention/experience required; local plan activation + restart + tabs (2) | No real cloud/account sync or native full historical browser parity |
 | Lucid | iOS Simulator | lucid-mock, signed | Same two invariants with SecureStore restart (2) | Local ad hoc signature and existing entitlements; no fallback or Store profile |
 | Meditation | Android + iOS Simulator | meditation-local | Onboarding/restart/all tabs, breathing start/pause/resume/exit, language immediate/restart, bundled session play/seek15s/resume (4 per platform) | Bundled audio/local storage; no purchase, entitlement or physical audio proof |
