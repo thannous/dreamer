@@ -1,0 +1,194 @@
+{
+  "schemaVersion": 1,
+  "kind": "noctalia-physical-ios-real-apple-sandbox-qualification",
+  "date": "2026-10-16",
+  "scope": "Existing developer-signed physical iPhone app; real Apple Sandbox, mock=false; composed human + e2e evidence",
+  "sourceRevision": "ed9fb3ff9f244eec4e3a560eb6a91e07b525877f",
+  "candidate": {
+    "bundle": "com.tanuki75.noctalia",
+    "version": "3.5.0",
+    "build": "13",
+    "install": "existing developer-signed Expo development client",
+    "compiledNativeSource": "unknown"
+  },
+  "platform": "ios",
+  "os": "27.0.1",
+  "effectiveVersions": {
+    "e2e": "0.21.1",
+    "mobile": "0.12.1",
+    "agentDevice": "0.21.25"
+  },
+  "outcomes": {
+    "purchase": "qualified-composed-proof",
+    "restore": "passed-new-tester-receipt",
+    "authReturn": "qualified-composed-proof"
+  },
+  "finalQualifyingExecutions": {
+    "passed": 3,
+    "failed": 0,
+    "scope": "One Google continuation plus two final receipt/Plus checks; not the whole campaign"
+  },
+  "nativeReceipt": {
+    "note": "Decoded payload from native signed transaction logs; signature not independently cryptographically verified. Corroborated by provider API.",
+    "transactions": [
+      {
+        "environment": "Sandbox",
+        "bundle": "com.tanuki75.noctalia",
+        "product": "noctalia_plus_monthly",
+        "purchaseDate": "2026-10-16T16:14:51.000Z",
+        "expiresDate": "2026-10-16T16:19:51.000Z",
+        "signedDate": "2026-10-16T16:14:58.459Z",
+        "transactionReason": "PURCHASE",
+        "ownerIdentityMatches": true
+      },
+      {
+        "environment": "Sandbox",
+        "bundle": "com.tanuki75.noctalia",
+        "product": "noctalia_plus_monthly",
+        "purchaseDate": "2026-10-16T16:14:51.000Z",
+        "expiresDate": "2026-10-16T16:19:51.000Z",
+        "signedDate": "2026-10-16T16:14:50.694Z",
+        "transactionReason": "PURCHASE",
+        "ownerIdentityMatches": true
+      }
+    ]
+  },
+  "nativeNewReceiptRestore": {
+    "observedAt": "2026-10-16T16:20:18.453981+00:00",
+    "source": "actual native SDK logs after last restore start",
+    "restoreCompleted": true,
+    "receiptPostAcceptedHttp200": true,
+    "storeKitAccountError": false,
+    "activePlusReported": true,
+    "e2eRunId": "01a1457f-095e-7fc0-a711-1317dffa0861",
+    "receiptPurchaseDate": "2026-10-16T16:14:51Z",
+    "evidenceScope": "New tester receipt, after owner physical purchase confirmation; native success alert manually acknowledged, rest of restore exact e2e assertions passed"
+  },
+  "qualifyingRuns": [
+    {
+      "scope": "authReturnContinuation",
+      "id": "01a14541-69e0-7da8-9e37-38d20ab101a2",
+      "status": "passed",
+      "reportRelativeToWorktree": "tools/e2e/.e2e/owner-iphone-sandbox-1792163277093/report.json",
+      "reportSha256": "7ff7e3ecea8013be05fb70afede29057b80babce37173070efa8f31c38afbd18",
+      "executionSourceRevision": "ed9fb3ff9f244eec4e3a560eb6a91e07b525877f",
+      "executionTestSourceSha256": null,
+      "testSourceHashNote": "Only recorded invocation hashes included; null means unavailable.",
+      "assertedTests": [
+        {
+          "titlePath": [
+            "Physical iPhone inspects existing subscriber and foreground after Google"
+          ],
+          "status": "passed"
+        }
+      ]
+    },
+    {
+      "scope": "newReceiptRestoreAndPurchaseContinuation",
+      "id": "01a1457f-095e-7fc0-a711-1317dffa0861",
+      "status": "passed",
+      "reportRelativeToWorktree": "tools/e2e/.e2e/owner-iphone-sandbox-1792167315567/report.json",
+      "reportSha256": "1b33000cfbf8170d9698fe63d152c710c4da7b28a633439182f04f5b7bb86b46",
+      "executionSourceRevision": "ed9fb3ff9f244eec4e3a560eb6a91e07b525877f",
+      "executionTestSourceSha256": {
+        "tools/e2e/run-iphone-sandbox-local.mjs": "8b7f6eceeab6219df5e01e4cd06e9c73e1d431b46f63205873039aacd964c376",
+        "tools/e2e/e2e.iphone-sandbox.config.ts": "21025b3d311b46361c6235b2122e3a3c9f7901ad6e4d8fe895aa07178e7025d9",
+        "tools/e2e/tests/dreamer.iphone-sandbox.e2e.ts": "c0366e2a546f930cd7ce0cdbd691e98ab9357c8dcd0306ab9479991955de80f9"
+      },
+      "testSourceHashNote": "Only recorded invocation hashes included; null means unavailable.",
+      "assertedTests": [
+        {
+          "titlePath": [
+            "Physical iPhone real Apple sandbox restores receipt and keeps server-confirmed Plus"
+          ],
+          "status": "passed"
+        },
+        {
+          "titlePath": [
+            "Physical iPhone confirms fresh sandbox purchase after owner side-button"
+          ],
+          "status": "passed"
+        }
+      ]
+    }
+  ],
+  "historicalRunsNotCountedAsFinalPass": [
+    {
+      "id": "01a1453b-a4ba-78d9-a46f-0363e496d424",
+      "status": "error"
+    },
+    {
+      "id": "01a1453f-473d-7945-bfa6-783f50b3f11e",
+      "status": "failed"
+    },
+    {
+      "id": "01a14542-71a6-7c66-8081-ca06b1e4048a",
+      "status": "failed"
+    },
+    {
+      "id": "01a14543-aa8c-7fad-b4e4-6315863977bc",
+      "status": "passed"
+    },
+    {
+      "id": "01a14556-553b-79c8-bbf0-1773f0612f11",
+      "status": "passed"
+    },
+    {
+      "id": "01a1455a-0155-739f-8d7c-d2f15149325a",
+      "status": "failed"
+    },
+    {
+      "id": "01a14571-bbcc-7512-be2a-51db5f3c28aa",
+      "status": "failed"
+    },
+    {
+      "id": "01a1457b-c09d-7f30-bfb5-1106a06ba39a",
+      "status": "failed"
+    }
+  ],
+  "failureDetails": "See companion Markdown for the retained watchdog, locator/scroll, active subscription, cancellation and native AX failures; UI-only noAccount success is not qualified.",
+  "deliveryDelta": {
+    "appSourceChanged": false,
+    "profile": "Private identities and paths externalized into ignored env; example placeholders only",
+    "runner": "Explicit selection, purchase opt-in, one worker/zero retries, validated-account preflight and read-only check",
+    "authTest": "Guest return accepts Plus-active or Free offer; full guest login not replayed during delivery",
+    "localChecks": [
+      "TesterArmy typecheck passed",
+      "Focused ESLint passed",
+      "node --check passed",
+      "SDK discovery passed",
+      "No-filter/worker/retry override refusals passed",
+      "Read-only installed-candidate/Metro preflight passed"
+    ],
+    "optionalNativeReplay": {
+      "runId": "01a1459f-2d85-710f-bacf-ca8c0cdd6045",
+      "status": "not-executed",
+      "cause": "iPhone owned by popup-theme task; ENGINE_FAILURE before app/test start; foreign session preserved"
+    },
+    "evidenceReuse": "Original reports keep their recorded source/test hashes; delivered parameterization is not a fresh native pass."
+  },
+  "boundaries": {
+    "realPayment": false,
+    "productionDeployment": false,
+    "storePublication": false,
+    "appReinstalledByThisTask": false,
+    "personalDataCleared": false,
+    "rawPrivateEvidenceCommitted": false
+  },
+  "retrospective": {
+    "reuseSandboxTester": true,
+    "reuseSignedDriverAndPrivateProfile": true,
+    "billingCustomerResetByDefault": false,
+    "durableDevToolsSecurity": "Owner authorized enabled state on existing development Mac; retain between campaigns."
+  },
+  "limits": [
+    "Original Google run failed due to iOS automation watchdog; auth return evidence is split, not a fully green single replay",
+    "Developer client host compiled native source unknown; no Release or TestFlight qualification",
+    "Initial StoreKit noAccount resolved by actual Sandbox sign-in and qualified fresh replay; earlier UI-only success is not counted as the native proof.",
+    "No production deployment or real payment.",
+    "Native Apple purchase sheet is outside app AX; purchase proof is composed, not an uninterrupted fully green single e2e replay.",
+    "No independent verification of Apple JWS signature; SDK/RevenueCat accepted receipt HTTP 200 and provider API corroborated Sandbox.",
+    "No fresh purchase/native replay of delivered parameterization during delivery; iPhone allocated elsewhere."
+  ],
+  "privateEvidenceRelativeToRepository": "outputs/revenuecat-ios-sandbox-20261016/qualification.json"
+}

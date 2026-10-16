@@ -431,3 +431,28 @@ missing proof files, SDK/wrapper exits and hashes of the available report/log by
 It returns nonzero and never writes a qualifying `campaign.json`. The original
 reports, logs and partial media remain in the uploaded directory; an interrupted
 ZIP/video is not claimed complete. No SDK test or app is launched by collection.
+
+## Physical iPhone Apple Sandbox billing
+
+The opt-in `run-iphone-sandbox-local.mjs` uses the existing developer-signed app on an owned
+physical iPhone. It does not install/reset the app or change macOS security settings.
+Configure the ignored `.env.ios-sandbox.local` from `.env.ios-sandbox.example`, retaining the
+existing signed runner, device/account identity and private evidence/preflight. Start the
+canonical local Metro profile before `--check` or a run; `--list` needs no device/Metro.
+
+```sh
+mise exec -- node tools/e2e/run-iphone-sandbox-local.mjs --check
+mise exec -- node tools/e2e/run-iphone-sandbox-local.mjs --list --grep 'restores receipt'
+mise exec -- node tools/e2e/run-iphone-sandbox-local.mjs --grep 'restores receipt'
+```
+
+An explicit `--grep` is required. One worker and zero retries cannot be overridden through
+this wrapper. Fresh purchases also require `--allow-sandbox-purchase`; verify the actual
+Apple test-only/no-charge sheet and expected account before physical confirmation. The
+native sheet may be absent from the app accessibility tree. Resume an already completed
+purchase with the continuation test; do not tap Buy again to check it. Original failures,
+human steps and continuation passes stay distinct evidence.
+
+See the [reusable iOS runbook](../../doc_web_interne/docs/revenuecat-qa-workflow.md#ios-physique--réutiliser-la-préparation-sandbox)
+and the [dated qualification](../../doc_web_interne/docs/qa/revenuecat-ios-sandbox-20261016.md).
+This developer-client proof does not qualify Release/TestFlight or production delivery.
