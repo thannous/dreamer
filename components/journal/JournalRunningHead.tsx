@@ -1,9 +1,10 @@
 import React, { useMemo } from 'react';
-import { View } from 'react-native';
+import { Text, View } from 'react-native';
 
 import { PressableScale } from '@/components/motion';
 import { IconSymbol } from '@/components/ui/icon-symbol';
 import { getNoctaliaDesignTokens } from '@/constants/noctaliaDesign';
+import { Fonts } from '@/constants/theme';
 import { useTheme } from '@/context/ThemeContext';
 import { useTranslation } from '@/hooks/useTranslation';
 
@@ -15,12 +16,14 @@ const BACK_SIZE = 42;
 /**
  * The top of a journal page: the way back to the journal, the round arrow the app's other
  * pages use. It belongs to the page and scrolls away with it. Without `onBack` it is only
- * drawn, as on a page being turned to.
+ * drawn, as on a page being turned to. A `label` is printed across it in spaced capitals,
+ * as a book prints its title at the head of each page; it is decorative.
  */
-export function JournalRunningHead({ onBack, testID, backTestID }: {
+export function JournalRunningHead({ onBack, testID, backTestID, label }: {
   onBack?: () => void;
   testID?: string;
   backTestID?: string;
+  label?: string;
 }) {
   const { t } = useTranslation();
   const { colors, mode, shadows } = useTheme();
@@ -33,6 +36,16 @@ export function JournalRunningHead({ onBack, testID, backTestID }: {
 
   return (
     <View testID={testID} className="flex-row items-center px-4" style={{ height: RUNNING_HEAD_HEIGHT }}>
+      {label ? (
+        <View pointerEvents="none" className="absolute inset-0 items-center justify-center"
+          style={{ paddingHorizontal: BACK_SIZE + 24 }}>
+          <Text allowFontScaling={false} accessible={false} importantForAccessibility="no" numberOfLines={1}
+            style={{ fontFamily: Fonts.lora.regular, fontSize: 11, lineHeight: 16, letterSpacing: 3 }}
+            className="uppercase text-ivory-muted">
+            {label}
+          </Text>
+        </View>
+      ) : null}
       {onBack ? (
         <PressableScale onPress={onBack} testID={backTestID} accessibilityRole="button"
           accessibilityLabel={t('journal.back_button')} hitSlop={{ top: 2, bottom: 2, left: 2, right: 2 }}

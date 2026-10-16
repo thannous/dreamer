@@ -69,7 +69,9 @@ test('guest saves the exact story and reads its simulated analysis inline', asyn
   await screen.getByTestId('btn.saveDream', { visible: true }).tap();
   await expect(screen.getByTestId('component.transcriptCard', { visible: true })).toContainText(story);
   const reading = screen.getByTestId('component.dreamDetail.readingZone', { visible: true });
-  await expect(reading).toContainText('Analysis');
+  // Revised 2026-10-16 (was 'Analysis'): the page is set as a book, its section names in
+  // spaced capitals, so the visible heading reads "ANALYSIS".
+  await expect(reading).toContainText(/Analysis/i);
   await expect(reading).toContainText('Symbols');
   expect((await reading.textContent() ?? '').length).toBeGreaterThan(100);
   await expect(screen.getByTestId('analysis.reading.modal')).toHaveCount(0);

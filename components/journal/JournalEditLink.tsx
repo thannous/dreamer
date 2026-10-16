@@ -24,7 +24,7 @@ export function JournalEditLink({ onEdit, disabled = false, lineHeight }: {
   const label = (
     <>
       <IconSymbol name="pencil" size={13} color={accent} />
-      <Text allowFontScaling={false} style={{ lineHeight }} className="font-sans-medium text-[13px] text-champagne-on">
+      <Text allowFontScaling={false} style={{ lineHeight }} className="font-serif-italic text-[14px] text-champagne-on">
         {t('journal.detail.edit_page')}
       </Text>
     </>
